@@ -22,7 +22,7 @@ def infiniteMobiusCriticalFisherTangentWeight
     (Real.log n - squarefreeMobiusLogMoment 1 sigma) : ℝ) : ℂ) *
       infiniteMobiusSignedWeight sigma n
 
-private theorem norm_infiniteMobiusCriticalFisherTangentWeight_sq
+theorem norm_infiniteMobiusCriticalFisherTangentWeight_sq
     {sigma : ℝ} (hsigma : 1 < sigma) (n : ℕ) :
     ‖infiniteMobiusCriticalFisherTangentWeight sigma n‖ ^ 2 =
       4 * (sigma - 1) ^ 2 * squarefreeMobiusProbability sigma n *

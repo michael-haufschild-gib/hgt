@@ -48,14 +48,6 @@ theorem completedMollG_one (N : ℕ) : completedMollG (fun _ => 1) N = completed
 
 /-! ### §2 Reality -/
 
-private lemma natCast_cpow_conj_mirror (a : ℕ) (s : ℂ) :
-    (a : ℂ) ^ ((starRingEnd ℂ) s) = (starRingEnd ℂ) ((a : ℂ) ^ s) := by
-  have harg : (a : ℂ).arg ≠ Real.pi := by
-    rw [← Complex.ofReal_natCast, Complex.arg_ofReal_of_nonneg (Nat.cast_nonneg a)]
-    exact Ne.symm Real.pi_ne_zero
-  have h := Complex.cpow_conj (a : ℂ) s harg
-  rwa [map_natCast] at h
-
 /-- Schwarz reality of the general Dirichlet polynomial: real coefficients commute with
 conjugation. -/
 theorem mollPoly_conj (b : ℕ → ℝ) (N : ℕ) (s : ℂ) :
@@ -63,7 +55,7 @@ theorem mollPoly_conj (b : ℕ → ℝ) (N : ℕ) (s : ℂ) :
   unfold mollPoly
   rw [map_sum]
   refine Finset.sum_congr rfl fun n _ => ?_
-  rw [map_mul, Complex.conj_ofReal, ← map_neg, natCast_cpow_conj_mirror]
+  rw [map_mul, Complex.conj_ofReal, ← map_neg, natCast_cpow_conj]
 
 /-- The exact asymmetric FE of the general carrier, unconditional on the strip. -/
 theorem mollG_one_sub (b : ℕ → ℝ) (N : ℕ) {s : ℂ} (h0 : 0 < s.re) (h1 : s.re < 1) :

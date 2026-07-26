@@ -2488,21 +2488,13 @@ theorem dyadicProuhetDecayCharacter_eq_exp_neg_log_two_half :
   congr 1
   ring
 
-theorem norm_spectralTranslationPhase_eq_exp_neg_mul_im_halfLine
-    (t : ℝ) (z : ℂ) :
-    ‖spectralTranslationPhase t z‖ = Real.exp (-t * z.im) := by
-  unfold spectralTranslationPhase
-  rw [Complex.norm_exp]
-  congr 1
-  simp [Complex.mul_re]
-
 theorem spectralTranslationPhase_logTwo_ne_dyadicProuhetDecayCharacter
     {z : ℂ} (hz : z.im < 1 / 2) :
     spectralTranslationPhase (Real.log 2) z ≠
       (dyadicProuhetDecayCharacter : ℂ) := by
   intro h
   have hnorm := congrArg norm h
-  rw [norm_spectralTranslationPhase_eq_exp_neg_mul_im_halfLine] at hnorm
+  rw [norm_spectralTranslationPhase_eq_exp_neg_mul_im] at hnorm
   simp only [Complex.norm_real, Real.norm_eq_abs,
     dyadicProuhetDecayCharacter_eq_exp_neg_log_two_half,
     abs_of_pos (Real.exp_pos _)] at hnorm
@@ -2545,7 +2537,7 @@ theorem spectralTranslationPhase_logTwo_ne_dyadicProuhetGrowthCharacter
       (dyadicProuhetGrowthCharacter : ℂ) := by
   intro h
   have hnorm := congrArg norm h
-  rw [norm_spectralTranslationPhase_eq_exp_neg_mul_im_halfLine] at hnorm
+  rw [norm_spectralTranslationPhase_eq_exp_neg_mul_im] at hnorm
   simp only [Complex.norm_real, Real.norm_eq_abs,
     abs_of_pos dyadicProuhetGrowthCharacter_pos] at hnorm
   have hlog : 0 < Real.log 2 := Real.log_pos (by norm_num)

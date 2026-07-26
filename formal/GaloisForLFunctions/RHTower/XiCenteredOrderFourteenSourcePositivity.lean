@@ -355,7 +355,6 @@ theorem normalizedPrimeArchMoment_fourteen_pos :
       rw [hzero, Complex.zero_re] at hre
       linarith [normalizedPrimeArchMoment_zero_pos]
   | inr hNonempty =>
-      letI : Nonempty XiZeroCopy := hNonempty
       let q₀ : XiZeroCopy := Classical.choice hNonempty
       have hpow := summable_xiZeroCopyReciprocalSquare_pow 14
       have hreal :

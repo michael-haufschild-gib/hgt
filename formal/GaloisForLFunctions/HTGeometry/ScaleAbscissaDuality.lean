@@ -139,10 +139,6 @@ theorem transfer_limit {m₀ σ₀ β : ℚ} (hm : 0 ≤ m₀) (h : m₀ + (σ�
     σ₀ ≤ 1 / 2 + 2 * β := by
   linarith
 
-/-- **At the record the limit is the abscissa where the record's growth bound vanishes.** -/
-theorem transfer_limit_record : (1 : ℚ) / 2 + 2 * bourgainTheta = 17 / 21 := by
-  unfold bourgainTheta; norm_num
-
 /-! ### What a datum below the chord buys -/
 
 /-- A datum at `σ₀ = 3/4` must beat `13/168` to free more than the trivial range, but must beat the

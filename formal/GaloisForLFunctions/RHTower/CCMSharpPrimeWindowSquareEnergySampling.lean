@@ -269,7 +269,7 @@ private theorem LSeriesSummable_of_realDirichletWeightedTerm_summable
       Real.norm_of_nonneg (hf n), realDirichletWeightedTerm, if_neg hn,
       Complex.norm_cpow_real, Complex.norm_natCast]
 
-private theorem realDirichletWeightedTerm_summable_of_LSeriesSummable
+theorem realDirichletWeightedTerm_summable_of_LSeriesSummable
     {f : ℕ → ℝ} (hf : ∀ n, 0 ≤ f n) {sigma : ℝ}
     (h : LSeriesSummable (fun n => ((f n : ℝ) : ℂ)) (sigma : ℂ)) :
     Summable (realDirichletWeightedTerm f sigma) := by

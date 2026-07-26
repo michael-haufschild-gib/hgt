@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerArithmeticSemisimpleHodge
+import GaloisForLFunctions.RHTower.DeningerArithmeticOrientedHodge
 import GaloisForLFunctions.RHTower.DeningerCompactOpenGradedRealJetUniversalityLaw
 import GaloisForLFunctions.RHTower.XiWeilPolarization
 
@@ -10,15 +10,17 @@ source jets, Schwarz reflection carries the derivative parity `(-1)^k`; rephasin
 by `I^k` removes that parity.  The resulting normalized Real structure conjugates coefficients
 and reindexes through `rho ↦ conj rho`.
 
-On multiplicity-exact semisimplified `H¹`, the positive Hodge star factors as this source Real
-structure followed by the complex-linear arithmetic Weil transport
+On multiplicity-exact semisimplified `H¹`, the even ordinary/compact-support identification
+factors as this source Real structure followed by the complex-linear arithmetic Weil transport
 
 `rho ↦ 1 - conj rho`.
 
-The Real structure commutes with Frobenius unconditionally.  Frobenius commutes with the Weil
-transport exactly when RH holds.  This identifies the precise source operator that a
-Green/Hodge construction must produce; no positivity, zero-location, or simplicity premise is
-used in the factorization.
+The genuine degree-one Hodge star also contains the canonical orientation character of the
+fixed-point-free functional-equation orbits.  It factors through the correspondingly oriented
+Weil transport.  The Real structure commutes with Frobenius unconditionally.  Frobenius commutes
+with either Weil transport exactly when RH holds.  The oriented transport is the precise source
+operator that a Green/Hodge construction must produce; no zero-location or simplicity premise is
+used in these factorizations.
 -/
 
 open Complex
@@ -225,6 +227,150 @@ theorem deningerArithmeticGradedTheta_weilTransport_iff_riemannHypothesis :
     congr 1
     exact deningerArithmeticGradedTheta_sourceReal a
 
+/-- Multiplication by the negative functional-equation orientation character. -/
+def deningerArithmeticGradedOrientationEquiv :
+    DeningerArithmeticGradedH1 ≃ₗ[ℂ]
+      DeningerArithmeticGradedH1 where
+  toFun :=
+    finsuppDiagonal
+      (fun q => -deningerArithmeticFEOrientation q)
+  invFun :=
+    finsuppDiagonal
+      (fun q => -deningerArithmeticFEOrientation q)
+  left_inv a := by
+    ext q
+    simp only [finsuppDiagonal_apply]
+    rw [deningerArithmeticFEOrientation_sq]
+    ring
+  right_inv a := by
+    ext q
+    simp only [finsuppDiagonal_apply]
+    rw [deningerArithmeticFEOrientation_sq]
+    ring
+  map_add' a b := by
+    ext q
+    simp only [finsuppDiagonal_apply, Finsupp.add_apply]
+    ring
+  map_smul' c a := by
+    ext q
+    simp only [finsuppDiagonal_apply, Finsupp.smul_apply, smul_eq_mul]
+    ring
+
+@[simp]
+theorem deningerArithmeticGradedOrientationEquiv_apply
+    (a : DeningerArithmeticGradedH1) (q : XiZeroCopy) :
+    deningerArithmeticGradedOrientationEquiv a q =
+      -deningerArithmeticFEOrientation q * a q := by
+  rfl
+
+/--
+Oriented arithmetic Weil transport.  This is the linear comparison from normalized source
+Schwarz reality to the genuine odd Hodge star.
+-/
+def deningerArithmeticGradedOrientedWeilTransport :
+    DeningerArithmeticGradedH1 ≃ₗ[ℂ]
+      DeningerArithmeticGradedH1 :=
+  deningerArithmeticGradedWeilTransport.trans
+    deningerArithmeticGradedOrientationEquiv
+
+@[simp]
+theorem deningerArithmeticGradedOrientedWeilTransport_apply
+    (a : DeningerArithmeticGradedH1) (q : XiZeroCopy) :
+    deningerArithmeticGradedOrientedWeilTransport a q =
+      -deningerArithmeticFEOrientation q *
+        deningerArithmeticGradedWeilTransport a q := by
+  rfl
+
+/--
+Exact genuine Real/Hodge factorization: odd Hodge star is normalized source Schwarz reality
+followed by oriented arithmetic Weil transport.
+-/
+theorem deningerArithmeticGradedOrientedHodge_factor
+    (a : DeningerArithmeticGradedH1) :
+    deningerArithmeticGradedOrientedWeilTransport
+        (deningerArithmeticGradedSourceReal a) =
+      deningerArithmeticGradedOrientedHodge.sigma a := by
+  ext q
+  rw [deningerArithmeticGradedOrientedWeilTransport_apply,
+    deningerArithmeticGradedHodgeStar_factor,
+    deningerArithmeticGradedHodgeStar_apply,
+    deningerArithmeticGradedOrientedHodgeSigma_apply]
+
+/--
+Frobenius naturality of the oriented Weil transport is exactly the residual Deninger purity
+condition, hence exactly RH.
+-/
+theorem
+    deningerArithmeticGradedTheta_orientedWeilTransport_iff_riemannHypothesis :
+    (∀ a : DeningerArithmeticGradedH1,
+      deningerArithmeticGradedTheta
+          (deningerArithmeticGradedOrientedWeilTransport a) =
+        deningerArithmeticGradedOrientedWeilTransport
+          (deningerArithmeticGradedTheta a)) ↔
+      RiemannHypothesis := by
+  constructor
+  · intro hW
+    rw [← deningerArithmeticGradedTheta_orientedHodge_iff_riemannHypothesis]
+    intro a
+    rw [← deningerArithmeticGradedOrientedHodge_factor]
+    calc
+      deningerArithmeticGradedTheta
+          (deningerArithmeticGradedOrientedWeilTransport
+            (deningerArithmeticGradedSourceReal a)) =
+          deningerArithmeticGradedOrientedWeilTransport
+            (deningerArithmeticGradedTheta
+              (deningerArithmeticGradedSourceReal a)) :=
+        hW (deningerArithmeticGradedSourceReal a)
+      _ = deningerArithmeticGradedOrientedWeilTransport
+            (deningerArithmeticGradedSourceReal
+              (deningerArithmeticGradedTheta a)) := by
+        rw [deningerArithmeticGradedTheta_sourceReal]
+      _ = deningerArithmeticGradedOrientedHodge.sigma
+            (deningerArithmeticGradedTheta a) :=
+        deningerArithmeticGradedOrientedHodge_factor
+          (deningerArithmeticGradedTheta a)
+  · intro hRH
+    have hH :=
+      deningerArithmeticGradedTheta_orientedHodge_iff_riemannHypothesis.mpr hRH
+    intro a
+    have hWa :
+        deningerArithmeticGradedOrientedWeilTransport a =
+          deningerArithmeticGradedOrientedHodge.sigma
+            (deningerArithmeticGradedSourceReal a) := by
+      calc
+        deningerArithmeticGradedOrientedWeilTransport a =
+            deningerArithmeticGradedOrientedWeilTransport
+              (deningerArithmeticGradedSourceReal
+                (deningerArithmeticGradedSourceReal a)) := by
+          rw [deningerArithmeticGradedSourceReal_sq]
+        _ = deningerArithmeticGradedOrientedHodge.sigma
+              (deningerArithmeticGradedSourceReal a) :=
+          deningerArithmeticGradedOrientedHodge_factor
+            (deningerArithmeticGradedSourceReal a)
+    have hWTheta :
+        deningerArithmeticGradedOrientedWeilTransport
+            (deningerArithmeticGradedTheta a) =
+          deningerArithmeticGradedOrientedHodge.sigma
+            (deningerArithmeticGradedSourceReal
+              (deningerArithmeticGradedTheta a)) := by
+      calc
+        deningerArithmeticGradedOrientedWeilTransport
+            (deningerArithmeticGradedTheta a) =
+            deningerArithmeticGradedOrientedWeilTransport
+              (deningerArithmeticGradedSourceReal
+                (deningerArithmeticGradedSourceReal
+                  (deningerArithmeticGradedTheta a))) := by
+          rw [deningerArithmeticGradedSourceReal_sq]
+        _ = deningerArithmeticGradedOrientedHodge.sigma
+              (deningerArithmeticGradedSourceReal
+                (deningerArithmeticGradedTheta a)) :=
+          deningerArithmeticGradedOrientedHodge_factor
+            (deningerArithmeticGradedSourceReal
+              (deningerArithmeticGradedTheta a))
+    rw [hWa, hWTheta, hH]
+    congr 1
+    exact deningerArithmeticGradedTheta_sourceReal a
+
 /--
 Direct Deninger Real/Hodge decomposition and exact residual purity gate.
 -/
@@ -251,6 +397,33 @@ theorem deningerArithmetic_realHodge_factorization :
     deningerArithmeticGradedTheta_sourceReal,
     deningerArithmeticGradedHodgeStar_factor,
     deningerArithmeticGradedTheta_weilTransport_iff_riemannHypothesis⟩
+
+/--
+Genuine odd Deninger Real/Hodge decomposition and exact residual purity gate.
+-/
+theorem deningerArithmetic_orientedRealHodge_factorization :
+    (∀ a : DeningerArithmeticGradedH1,
+      deningerArithmeticGradedSourceReal
+          (deningerArithmeticGradedSourceReal a) = a) ∧
+    (∀ a : DeningerArithmeticGradedH1,
+      deningerArithmeticGradedTheta
+          (deningerArithmeticGradedSourceReal a) =
+        deningerArithmeticGradedSourceReal
+          (deningerArithmeticGradedTheta a)) ∧
+    (∀ a : DeningerArithmeticGradedH1,
+      deningerArithmeticGradedOrientedWeilTransport
+          (deningerArithmeticGradedSourceReal a) =
+        deningerArithmeticGradedOrientedHodge.sigma a) ∧
+    ((∀ a : DeningerArithmeticGradedH1,
+      deningerArithmeticGradedTheta
+          (deningerArithmeticGradedOrientedWeilTransport a) =
+        deningerArithmeticGradedOrientedWeilTransport
+          (deningerArithmeticGradedTheta a)) ↔
+      RiemannHypothesis) := by
+  exact ⟨deningerArithmeticGradedSourceReal_sq,
+    deningerArithmeticGradedTheta_sourceReal,
+    deningerArithmeticGradedOrientedHodge_factor,
+    deningerArithmeticGradedTheta_orientedWeilTransport_iff_riemannHypothesis⟩
 
 end
 

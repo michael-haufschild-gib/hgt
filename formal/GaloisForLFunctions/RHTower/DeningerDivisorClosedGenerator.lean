@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.DeningerClosedOperatorPolarization
 import GaloisForLFunctions.RHTower.DeningerDivisorFlow
-import GaloisForLFunctions.RHTower.XiWeilDivisorHilbert
+import GaloisForLFunctions.RHTower.XiDivisorHilbertCarrier
 import GaloisForLFunctions.HTGeometry.HilbertSchmidtMatrix
 
 /-!

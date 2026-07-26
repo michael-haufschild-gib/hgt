@@ -27,35 +27,6 @@ noncomputable section
 def compactThorinLogKernel (x : ℝ) (z : ℂ) : ℂ :=
   if x = 0 then z else -Complex.log (1 - (x : ℂ) * z) / (x : ℂ)
 
-private theorem norm_one_sub_real_mul_ge_half_for_thorin
-    {B x : ℝ} (hB : 0 < B) (hx : |x| ≤ B)
-    {z : ℂ} (hz : ‖z‖ < 1 / (2 * B)) :
-    (1 : ℝ) / 2 ≤ ‖1 - (x : ℂ) * z‖ := by
-  have hxnorm : ‖(x : ℂ)‖ ≤ B := by
-    simpa [Complex.norm_real, Real.norm_eq_abs] using hx
-  have hprod : ‖(x : ℂ) * z‖ < (1 : ℝ) / 2 := by
-    rw [norm_mul]
-    calc
-      ‖(x : ℂ)‖ * ‖z‖ ≤ B * ‖z‖ := by gcongr
-      _ < B * (1 / (2 * B)) := mul_lt_mul_of_pos_left hz hB
-      _ = (1 : ℝ) / 2 := by field_simp
-  have htri : (1 : ℝ) ≤ ‖1 - (x : ℂ) * z‖ + ‖(x : ℂ) * z‖ := by
-    calc
-      (1 : ℝ) = ‖(1 : ℂ)‖ := by norm_num
-      _ = ‖(1 - (x : ℂ) * z) + (x : ℂ) * z‖ := by ring_nf
-      _ ≤ ‖1 - (x : ℂ) * z‖ + ‖(x : ℂ) * z‖ := norm_add_le _ _
-  linarith
-
-private theorem norm_inv_one_sub_real_mul_le_two_for_thorin
-    {B x : ℝ} (hB : 0 < B) (hx : |x| ≤ B)
-    {z : ℂ} (hz : ‖z‖ < 1 / (2 * B)) :
-    ‖(1 - (x : ℂ) * z)⁻¹‖ ≤ 2 := by
-  rw [norm_inv]
-  calc
-    ‖1 - (x : ℂ) * z‖⁻¹ ≤ ((1 : ℝ) / 2)⁻¹ :=
-      inv_anti₀ (by norm_num) (norm_one_sub_real_mul_ge_half_for_thorin hB hx hz)
-    _ = 2 := by norm_num
-
 private theorem norm_real_mul_lt_half
     {B x : ℝ} (hB : 0 < B) (hx : |x| ≤ B)
     {z : ℂ} (hz : ‖z‖ < 1 / (2 * B)) :
@@ -160,16 +131,6 @@ theorem integrable_compactThorinLogKernel
   filter_upwards [hbound] with x hx
   exact norm_compactThorinLogKernel hB hx hz
 
-private theorem norm_lt_thorin_radius_of_mem_ball
-    {B : ℝ} {z₀ z : ℂ}
-    (hz : z ∈ Metric.ball z₀ (1 / (2 * B) - ‖z₀‖)) :
-    ‖z‖ < 1 / (2 * B) := by
-  rw [Metric.mem_ball, dist_eq_norm] at hz
-  calc
-    ‖z‖ = ‖(z - z₀) + z₀‖ := by ring_nf
-    _ ≤ ‖z - z₀‖ + ‖z₀‖ := norm_add_le _ _
-    _ < 1 / (2 * B) := by linarith
-
 /-- Differentiation under a compact Thorin integral produces its Markov transform. -/
 theorem hasDerivAt_compactThorinExponent
     (μ : Measure ℝ) [IsFiniteMeasure μ]
@@ -181,7 +142,7 @@ theorem hasDerivAt_compactThorinExponent
   have hsnhds : s ∈ nhds z₀ := Metric.ball_mem_nhds z₀ hrpos
   have hmem : ∀ z ∈ s, ‖z‖ < 1 / (2 * B) := by
     intro z hz
-    exact norm_lt_thorin_radius_of_mem_ball (by simpa [hs] using hz)
+    exact norm_lt_markov_radius_of_mem_ball (by simpa [hs] using hz)
   have hmeas : ∀ z : ℂ, AEStronglyMeasurable
       (fun x : ℝ => compactThorinLogKernel x z) μ := by
     intro z
@@ -197,7 +158,7 @@ theorem hasDerivAt_compactThorinExponent
   have hmajor : ∀ᵐ x : ℝ ∂μ, ∀ z ∈ s,
       ‖(1 - (x : ℂ) * z)⁻¹‖ ≤ (2 : ℝ) := by
     filter_upwards [hbound] with x hx z hz
-    exact norm_inv_one_sub_real_mul_le_two_for_thorin hB hx (hmem z hz)
+    exact norm_inv_one_sub_real_mul_le_two hB hx (hmem z hz)
   have hdiff : ∀ᵐ x : ℝ ∂μ, ∀ z ∈ s,
       HasDerivAt (compactThorinLogKernel x)
         ((1 - (x : ℂ) * z)⁻¹) z := by

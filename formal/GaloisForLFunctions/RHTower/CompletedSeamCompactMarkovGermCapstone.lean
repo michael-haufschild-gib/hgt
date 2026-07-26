@@ -33,7 +33,7 @@ def compactMarkovTransform (μ : Measure ℝ) (z : ℂ) : ℂ :=
 theorem compactMarkovKernelMoment_zero (μ : Measure ℝ) (z : ℂ) :
     compactMarkovKernelMoment μ 0 z = compactMarkovTransform μ z := rfl
 
-private theorem norm_one_sub_real_mul_ge_half
+theorem norm_one_sub_real_mul_ge_half
     {B x : ℝ} (hB : 0 < B) (hx : |x| ≤ B)
     {z : ℂ} (hz : ‖z‖ < 1 / (2 * B)) :
     (1 : ℝ) / 2 ≤ ‖1 - (x : ℂ) * z‖ := by
@@ -52,7 +52,7 @@ private theorem norm_one_sub_real_mul_ge_half
       _ ≤ ‖1 - (x : ℂ) * z‖ + ‖(x : ℂ) * z‖ := norm_add_le _ _
   linarith
 
-private theorem norm_inv_one_sub_real_mul_le_two
+theorem norm_inv_one_sub_real_mul_le_two
     {B x : ℝ} (hB : 0 < B) (hx : |x| ≤ B)
     {z : ℂ} (hz : ‖z‖ < 1 / (2 * B)) :
     ‖(1 - (x : ℂ) * z)⁻¹‖ ≤ 2 := by
@@ -82,7 +82,7 @@ theorem integrable_compactMarkovKernel
   exact mul_le_mul (pow_le_pow_left₀ (norm_nonneg _) hxnorm k)
     (pow_le_pow_left₀ (norm_nonneg _) hinv (k + 1)) (by positivity) (by positivity)
 
-private theorem norm_lt_markov_radius_of_mem_ball
+theorem norm_lt_markov_radius_of_mem_ball
     {B : ℝ} {z₀ z : ℂ}
     (hz : z ∈ Metric.ball z₀ (1 / (2 * B) - ‖z₀‖)) :
     ‖z‖ < 1 / (2 * B) := by

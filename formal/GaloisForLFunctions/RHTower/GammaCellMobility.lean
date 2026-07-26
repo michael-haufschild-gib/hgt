@@ -167,30 +167,16 @@ theorem zeta_mem_gammaFECell : GammaFECell riemannZeta :=
 
 /-! ### §4 Convolution mobility -/
 
-/-- Dirichlet convolution preserves integrality: the integer casts form a subring of `ℂ`, closed
-under the antidiagonal sum `(b ⋆ c) n = ∑ b(i)·c(j)`. -/
-private theorem intCast_conv_integral (b c : ArithmeticFunction ℂ)
-    (hb : ∀ n, ∃ k : ℤ, b n = (k : ℂ)) (hc : ∀ n, ∃ k : ℤ, c n = (k : ℂ)) :
-    ∀ n, ∃ k : ℤ, (b * c) n = (k : ℂ) := by
-  intro n
-  have hmem : ∀ x : ℂ, (∃ k : ℤ, x = (k : ℂ)) ↔ x ∈ (Int.castRingHom ℂ).range := by
-    intro x
-    rw [RingHom.mem_range]
-    exact ⟨fun ⟨k, hk⟩ => ⟨k, hk.symm⟩, fun ⟨k, hk⟩ => ⟨k, hk.symm⟩⟩
-  rw [ArithmeticFunction.mul_apply, hmem]
-  exact Subring.sum_mem _ fun x _ =>
-    Subring.mul_mem _ ((hmem _).mp (hb x.fst)) ((hmem _).mp (hc x.snd))
-
 /-- **Convolution mobility.**  The gamma cell is closed under Dirichlet convolution by `dzo`: from a
 member `f` with coefficients `a` and factor `γ_f`, the product `f·dzo` is a member with coefficients
 `a ⋆ dzoCoeff` and factor `γ_f · 8^{s−1/2}`.  Multiplicativity is `IsMultiplicative.mul`, integrality
-is `intCast_conv_integral`, `L(a ⋆ dzoCoeff) = L(a)·L(dzo)` on `Re s > 1`, nonvanishing is the product
+is `RHTower.intCast_conv_integral`, `L(a ⋆ dzoCoeff) = L(a)·L(dzo)` on `Re s > 1`, nonvanishing is the product
 of nonvanishing factors, and the functional equation is the termwise product of the two. -/
 theorem gammaFECell_mul_dzo {f : ℂ → ℂ} (hf : GammaFECell f) :
     GammaFECell (fun s => f s * dzo s) := by
   obtain ⟨a, ha_mul, ha_int, ha_summ, ha_ls, γf, hγf_ne, hγf_fe⟩ := hf
   refine ⟨a * dzoCoeff, ha_mul.mul dzoCoeff_multiplicative,
-    intCast_conv_integral a dzoCoeff ha_int dzoCoeff_integral, ?_, ?_,
+    RHTower.intCast_conv_integral a dzoCoeff ha_int dzoCoeff_integral, ?_, ?_,
     fun s => γf s * (8 : ℂ) ^ (s - 1 / 2), ?_, ?_⟩
   · intro s hs
     exact ArithmeticFunction.LSeriesSummable_mul (ha_summ s hs) (dzoCoeff_summable s)

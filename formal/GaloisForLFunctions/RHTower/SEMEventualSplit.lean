@@ -75,22 +75,6 @@ theorem eventually_sem_domination_on_annulus {ρ : ℂ} {r₀ R : ℝ} (hr₀ : 
         ((xi_eq_zero_iff (hstrip z (hKsub hz)).1 (hz1K z hz)).mpr hζ0)
     exact mul_ne_zero two_ne_zero hζne
 
-/-- Completed SEM domination is exactly raw domination after cancelling the nonzero archimedean
-factor on the open strip. -/
-theorem completedSEM_domination_iff_raw {N : ℕ} {s : ℂ} (hσ : 0 < s.re) (h1 : s ≠ 1) :
-    (‖xi s - completedSEM N s‖ < ‖completedSEM N s‖)
-      ↔ (‖2 * riemannZeta s - semCarrier N s‖ < ‖semCarrier N s‖) := by
-  have h0 : s ≠ 0 := fun h => by simp [h] at hσ
-  have hG : Gammaℝ s ≠ 0 := Gammaℝ_ne_zero_of_re_pos hσ
-  unfold completedSEM
-  rw [xi_eq_archFactor_mul_zeta h0 h1 hG]
-  rw [show archFactor s * riemannZeta s - archFactor s * semCarrier N s / 2
-      = (archFactor s / 2) * (2 * riemannZeta s)
-        - (archFactor s / 2) * semCarrier N s from by ring]
-  rw [show archFactor s * semCarrier N s / 2
-      = (archFactor s / 2) * semCarrier N s from by ring]
-  exact norm_mul_sub_lt_iff (div_ne_zero (archFactor_ne_zero h0 h1 hG) two_ne_zero)
-
 /-- Completed SEM domination holds eventually on the two charts of any fixed isolating annulus. -/
 theorem eventually_completedSEM_domination_on_annulus {ρ : ℂ} {r₀ R : ℝ}
     (hr₀ : 0 < r₀) (hrR : r₀ < R)
@@ -111,7 +95,7 @@ theorem eventually_completedSEM_domination_on_annulus {ρ : ℂ} {r₀ R : ℝ}
     intro h
     rw [h] at hstripz
     simp at hstripz
-  exact (completedSEM_domination_iff_raw hstripz.1 hz1).mpr (hN.2 z hzK)
+  exact (completedSEM_domination_iff hstripz.1 hz1).mpr (hN.2 z hzK)
 
 /-- **Eventual fixed-annulus SEM split supply.**  Around every strip point there is one isolating
 annulus such that every sufficiently large symmetrized Euler--Maclaurin truncation dominates `xi`

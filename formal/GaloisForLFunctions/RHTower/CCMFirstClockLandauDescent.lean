@@ -121,7 +121,7 @@ theorem ccmFirstClockLandau_integrable_transfer
     (ccmFirstClockLandauContinuation_eventuallyEq_complexMGF hsource hr)
     hrho0 hrhoR
 
-private theorem integrableOn_ccmFirstClockLandauDensity_sub_of_transfer
+theorem integrableOn_ccmFirstClockLandauDensity_sub_of_transfer
     (hsource : CCMFirstClockPublishedSourceNonnegative)
     {r rho : ℝ}
     (htransfer : Integrable (fun L : ℝ => Real.exp (rho * id L))

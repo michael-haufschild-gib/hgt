@@ -46,24 +46,6 @@ def xiPhysicalEndpointValuationCorrection
   xiPhysicalEndpointValuationAtom p e -
     xiUnitDoubleRefinementValuationCoefficient p e
 
-private theorem xiPrimeValuationGeometricNode_one_eq_inv'
-    (p : Nat.Primes) :
-    xiPrimeValuationGeometricNode 1 p = ((p : ℝ))⁻¹ := by
-  have hp : 0 < (p : ℝ) := by exact_mod_cast p.prop.pos
-  rw [xiPrimeValuationGeometricNode]
-  rw [show -(1 : ℝ) * Real.log (p : ℝ) = -Real.log (p : ℝ) by ring]
-  rw [Real.exp_neg, Real.exp_log hp]
-
-private theorem xiPrimeValuationGeometricNode_two_eq_inv_sq'
-    (p : Nat.Primes) :
-    xiPrimeValuationGeometricNode 2 p = ((p : ℝ))⁻¹ ^ 2 := by
-  have hp : 0 < (p : ℝ) := by exact_mod_cast p.prop.pos
-  rw [xiPrimeValuationGeometricNode]
-  rw [show -(2 : ℝ) * Real.log (p : ℝ) =
-      -Real.log (p : ℝ) + -Real.log (p : ℝ) by ring,
-    Real.exp_add, Real.exp_neg, Real.exp_log hp]
-  ring
-
 /-- The refinement orientation is exactly the negative of the previously formalized scale
 shuttle. -/
 theorem xiUnitDoubleRefinementValuationCoefficient_eq_neg_scaleShuttle
@@ -84,8 +66,8 @@ theorem xiUnitDoubleRefinementValuationCoefficient_eq
   rw [xiUnitDoubleRefinementValuationCoefficient,
     poissonSpectralHalfDensity_xiPrimeValuationLaplaceRate_eq_geometric,
     poissonSpectralHalfDensity_xiPrimeValuationLaplaceRate_eq_geometric,
-    xiPrimeValuationGeometricNode_one_eq_inv',
-    xiPrimeValuationGeometricNode_two_eq_inv_sq']
+    xiPrimeValuationGeometricNode_one_eq_inv,
+    xiPrimeValuationGeometricNode_two_eq_inv_sq]
   rw [pow_mul]
   ring
 
@@ -625,6 +607,5 @@ theorem continuedPrimeArchSourceRelativeTrace_im_eq_half_apertureOddKernel
   simp
 
 end
-
 
 end RHTower

@@ -304,11 +304,6 @@ theorem tsum_pairs_four_mul_massAt_le {c : ℝ} (hc : 1 / 2 ≤ c)
           xiBudgetMassAt c (xiWardQuadrupleEmbed p) := htsumF.symm
     _ ≤ ∑' d : XiZeroCopy, xiBudgetMassAt c d := hcomp
 
-theorem xiRightCenteredZero_im_eq_spectral_reAt (q : XiRightUpperZeroCopy) :
-    (xiRightCenteredZero q.1).im = (xiSpectralPoint q.1.1).re := by
-  rw [xiRightCenteredZero]
-  simp [Complex.mul_im]
-
 /-- **The height floor from a certified budget.**  If the total spectral mass
 at abscissa `c` is at most `B`, every strict-right Schwarz pair has squared
 height at least `8c/B − (c+1/2)²`. -/
@@ -327,7 +322,7 @@ theorem height_sq_ge_of_budget_le {c B : ℝ} (hc : 1 / 2 ≤ c) (hB : 0 < B)
       linarith
   have h2 := tsum_pairs_four_mul_massAt_le hc hne
   have h4 := xiBudgetMassAt_ge hc q.1.1
-  rw [xiRightCenteredZero_im_eq_spectral_reAt]
+  rw [xiRightCenteredZero_im_eq_spectral_re]
   set u := (xiSpectralPoint q.1.1).re
   have hden : (0 : ℝ) < u ^ 2 + (c + 1 / 2) ^ 2 := by positivity
   have hcpos : (0 : ℝ) < c := by linarith
@@ -826,7 +821,7 @@ theorem offline_mass_lt_online_at_edge (q : XiRightUpperZeroCopy)
     xiBudgetMassAt (1 / 2) q.1.1 <
       2 * (1 / 2) / ((xiSpectralPoint q.1.1).re ^ 2 + (1 / 2) ^ 2) := by
   have hfloor := xiWard_offlinePair_height_sq_gt_sixtyfive q
-  rw [xiRightCenteredZero_im_eq_spectral_reAt] at hfloor
+  rw [xiRightCenteredZero_im_eq_spectral_re] at hfloor
   have hvlt := abs_im_xiSpectralPoint_lt_half q.1.1
   have hthr : (1 / 2 : ℝ) ^ 2 <
       3 * (xiSpectralPoint q.1.1).re ^ 2 + (xiSpectralPoint q.1.1).im ^ 2 := by

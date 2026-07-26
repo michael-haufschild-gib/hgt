@@ -245,3 +245,21 @@ theorem norm_sq_mobiusGammaContactCharge :
 end
 
 end GaloisForLFunctions.RHTower
+
+namespace GaloisForLFunctions.RHTower
+
+open Complex MeasureTheory
+open GaloisForLFunctions.HTGeometry
+
+noncomputable section
+
+theorem mobiusContactGammaFactorialScale_eq (n : ℕ) :
+    (-2 - mobiusGammaContactPartialCharge n) / 2 =
+      GaloisForLFunctions.reciprocalGammaFactorialScale n := by
+  rw [mobiusGammaContactPartialCharge_eq]
+  simp only [GaloisForLFunctions.reciprocalGammaFactorialScale]
+  ring
+
+end
+
+end GaloisForLFunctions.RHTower

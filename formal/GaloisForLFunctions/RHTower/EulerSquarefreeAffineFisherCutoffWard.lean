@@ -171,7 +171,7 @@ theorem eulerSquareResidualCriticalClockParameter_re (sigma t : ℝ) :
     (eulerSquareResidualCriticalClockParameter sigma t).re = 2 * sigma := by
   simp [eulerSquareResidualCriticalClockParameter]
 
-private theorem ofReal_eulerSquareResidualMass_eq
+theorem ofReal_eulerSquareResidualMass_eq
     {sigma : ℝ} (hsigma : 1 < sigma) (n : ℕ) :
     (eulerSquareResidualMass sigma n : ℂ) =
       1 / (n : ℂ) ^ ((2 * sigma : ℝ) : ℂ) := by
@@ -190,7 +190,7 @@ private theorem ofReal_eulerSquareResidualMass_eq
     rw [Complex.cpow_neg, one_div]
     norm_cast
 
-private theorem ofReal_eulerSquareResidualTotal_eq_zeta
+theorem ofReal_eulerSquareResidualTotal_eq_zeta
     {sigma : ℝ} (hsigma : 1 < sigma) :
     (eulerSquareResidualTotal sigma : ℂ) =
       riemannZeta ((2 * sigma : ℝ) : ℂ) := by
@@ -748,32 +748,6 @@ theorem eulerSquarefreeAffineCriticalClockCappedMoment_eq_cutMoment_add_tail
     (eulerSquarefreeAffineCriticalClockProbabilityMeasure_Iio_zero hsigma)
     k hu
 
-private theorem integral_positiveClockCap_pow_squarefreeMobiusCriticalClock'
-    (k : ℕ) {sigma u : ℝ} (hsigma : 1 < sigma) (hu : 0 ≤ u) :
-    (∫ y : ℝ, positiveClockCap u y ^ k
-      ∂(squarefreeMobiusCriticalClockProbabilityMeasure sigma : Measure ℝ)) =
-      squarefreeMobiusCriticalClockCappedMoment k sigma u := by
-  let p := squarefreeMobiusCriticalPMF sigma
-  let Y := squarefreeMobiusCriticalClock sigma
-  have hsource : Integrable (fun n : ℕ => positiveClockCap u (Y n) ^ k)
-      p.toMeasure := by
-    have hmap := BoundedContinuousFunction.integrable
-      (squarefreeMobiusCriticalClockProbabilityMeasure sigma : Measure ℝ)
-      (positiveClockCapPowBCF k u hu)
-    rw [squarefreeMobiusCriticalClockProbabilityMeasure] at hmap
-    exact (integrable_map_measure
-      (positiveClockCapPowBCF k u hu).continuous.aestronglyMeasurable
-      (Measurable.of_discrete.aemeasurable : AEMeasurable Y p.toMeasure)).1 hmap
-  unfold squarefreeMobiusCriticalClockProbabilityMeasure
-    squarefreeMobiusCriticalIndexProbabilityMeasure ProbabilityMeasure.map
-  simp only [ProbabilityMeasure.coe_mk]
-  rw [integral_map
-    (Measurable.of_discrete.aemeasurable : AEMeasurable Y p.toMeasure)
-    ((continuous_positiveClockCap u).pow k).aestronglyMeasurable]
-  rw [PMF.integral_eq_tsum p _ hsource]
-  simp only [smul_eq_mul, p, squarefreeMobiusCriticalPMF_toReal hsigma]
-  rfl
-
 private theorem tendsto_eulerSquarefreeAffineCriticalClockCappedMoment
     (k : ℕ) {u L : ℝ} (hu : 0 ≤ u)
     (hsquarefree :
@@ -812,7 +786,7 @@ private theorem tendsto_eulerSquarefreeAffineCriticalClockCappedMoment
     apply hsquarefree.congr'
     filter_upwards [self_mem_nhdsWithin] with sigma hsigma
     exact
-      (integral_positiveClockCap_pow_squarefreeMobiusCriticalClock'
+      (integral_positiveClockCap_pow_squarefreeMobiusCriticalClock
         k hsigma hu).symm
   have hvalue :
       (∫ x : ℝ, positiveClockCap u x ^ k

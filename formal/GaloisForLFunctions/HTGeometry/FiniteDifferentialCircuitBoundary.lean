@@ -315,3 +315,35 @@ theorem exists_hypertranscendental_atom_of_scalarAwareFiniteDifferentialCircuit
 end
 
 end GaloisForLFunctions.HTGeometry
+
+namespace GaloisForLFunctions.HTGeometry
+
+open Set
+
+noncomputable section
+
+/-- Adjoining a nonempty finite family is adjoining its head and then its tail. -/
+theorem differentialAdjoin_fin_succ
+    {F E : Type*} [Field F] [Field E] [Algebra F E] [Differential E]
+    {n : ℕ} (x : Fin (n + 1) → E) :
+    (differentialAdjoin (differentialAdjoin F ({x 0} : Set E))
+      (Set.range fun i : Fin n => x i.succ)).restrictScalars F =
+        differentialAdjoin F (Set.range x) := by
+  rw [differentialAdjoin, differentialAdjoin,
+    IntermediateField.adjoin_adjoin_left]
+  congr 1
+  ext z
+  constructor
+  · rintro (⟨w, hw, k, rfl⟩ | ⟨w, ⟨i, rfl⟩, k, rfl⟩)
+    · simp only [Set.mem_singleton_iff] at hw
+      subst w
+      exact ⟨x 0, ⟨0, rfl⟩, k, rfl⟩
+    · exact ⟨x i.succ, ⟨i.succ, rfl⟩, k, rfl⟩
+  · rintro ⟨w, ⟨i, rfl⟩, k, rfl⟩
+    refine Fin.cases ?_ (fun j => ?_) i
+    · exact Set.mem_union_left _ ⟨x 0, Set.mem_singleton _, k, rfl⟩
+    · exact Set.mem_union_right _ ⟨x j.succ, ⟨j, rfl⟩, k, rfl⟩
+
+end
+
+end GaloisForLFunctions.HTGeometry

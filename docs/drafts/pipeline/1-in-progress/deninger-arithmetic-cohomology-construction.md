@@ -1047,3 +1047,100 @@ metric by transporting a form already known to be positive exactly under RH.
   still `(24)`, and may not be assumed.  `[OPEN CORE]`: formalize `(19)`--`(24)`, then construct
   the oriented Weil transport from the prime--Gamma/positive-time source Green operator and prove
   its Frobenius naturality before divisor evaluation.
+
+- 2026-07-26 — `[FORMALIZED] [DAC_ORIENTED_HILBERT_HODGE]`.
+  Equations `(19)`--`(24)` are now formalized on both finite support and the canonical Hilbert
+  completion.  Direct Lean checks pass for:
+  `DeningerArithmeticSemisimpleHodge.lean`,
+  `DeningerArithmeticOrientedHodge.lean`,
+  `XiDivisorHilbertCarrier.lean`,
+  `DeningerDivisorClosedGenerator.lean`, and
+  `DeningerArithmeticOrientedHilbertHodge.lean`.
+
+  The completed operator is
+  \[
+    (Ja)_q=-\epsilon_q\overline{a_{Rq}},\qquad
+    \omega(a,b)=\langle Ja,b\rangle.
+  \]
+  Lean proves unconditionally:
+  \(J^2=-1\), antiunitarity, alternation and nondegeneracy of \(\omega\),
+  \(\omega(a,Ja)>0\) for \(a\ne0\), preservation of the maximal diagonal Frobenius domain,
+  closedness and density of that domain, and the weight-one cup derivation law.  It also proves
+  the exact equivalence
+  \[
+    J\Theta=\Theta J\text{ on }\operatorname{Dom}\Theta
+      \Longleftrightarrow \mathrm{RH}.                   \tag{25}
+  \]
+  This is a target-side purity gate, not an RH proof.
+
+  To keep this construction independent of the unrelated resolvent/positivity import graph, the
+  bare carrier `XiDivisorL2` was extracted to `XiDivisorHilbertCarrier.lean`; the existing
+  `XiWeilDivisorHilbert.lean` and closed-generator module now share that minimal definition.
+
+  `DeningerArithmeticCompletedCohomology.lean` has been drafted to assemble
+  \(H^0=\mathbf C\), \(H^1=\ell^2(\operatorname{Div}\Xi)\), and
+  \(H^2=\mathbf C(-1)\), with endpoint and middle Poincare pairings, endpoint and middle Hodge
+  metrics, endpoint weights, closed middle Frobenius, derivation laws, and `(25)`.  Direct checking
+  is pending while another repository-wide build is replacing transitive `.olean` files.
+
+  `[SCOPE LOCK]`: no CCM construction belongs to this card.  Reusable generic lemmas may be used
+  only when they directly close the Deninger chain
+  \(H^0/H^1/H^2\to\) cup/Poincare \(\to\) Frobenius \(\to\) determinant/Lefschetz
+  \(\to\) source Green/Hodge positivity \(\to\) RH.
+
+  `[OPEN CORE]`: construct a prime--Gamma/positive-time source Green operator whose completed
+  comparison map lands densely in this Hilbert \(H^1\), prove it induces the oriented Hodge
+  operator \(J\), and prove Frobenius naturality before any divisor evaluation.  By `(25)`, that
+  naturality is the precise non-circular theorem from which RH follows.
+
+- 2026-07-26 — `[SCOPE RESET] [DIRECT DENINGER ONLY]`.
+  Work is now locked to the theorem chain stated in `docs/Deninger program.md`:
+  \[
+    H^0/H^1/H^2
+      \longrightarrow \cup/\operatorname{PD}
+      \longrightarrow \Theta
+      \longrightarrow \det_\infty/\operatorname{Lefschetz}
+      \longrightarrow \operatorname{Green}/\star
+      \longrightarrow \mathrm{RH}.
+  \]
+  No CCM conjecture, packet, positivity criterion, or module is an allowed research branch.
+  Only an isolated generic lemma may be reused when its statement is independently part of the
+  displayed Deninger chain.
+
+  Direct corpus audit against the nine sections of the program:
+
+  | Deninger obligation | Direct source theorem/module | Status |
+  |---|---|---|
+  | \(H^0=\mathbf C,\ H^1=\mathcal O/\Xi\mathcal O,\ H^2=\mathbf C(-1)\) | `DeningerArithmeticCochainComplex` | Lean-proved |
+  | compact-open topology and \(H^1_c\subset\mathcal H^1\subset H^1\) | `DeningerArithmeticJetProductEquivalence`, `DeningerArithmeticJetHilbertRigging` | Lean-proved |
+  | source Frobenius and closed dense Hilbert domain | `DeningerArithmeticTopologicalCohomology`, `DeningerArithmeticJetFrobenius` | Lean-proved |
+  | cup/Poincaré derivation law | `DeningerArithmeticPoincareDuality`, `DeningerPrimeGammaPoincareDuality` | Lean-proved |
+  | regularized determinant \(=\widehat\zeta\) | `DeningerArithmeticJetDeterminant` | Lean-proved |
+  | prime-power plus archimedean Lefschetz distribution | `DeningerArithmeticLefschetz` | Lean-proved |
+  | odd positive completed Hodge form | `DeningerArithmeticOrientedHilbertHodge` | Lean-proved |
+  | source derivation of semisimple completed \(H^1\) | `DeningerArithmeticAssociatedGraded` | drafted; direct check pending |
+  | Frobenius naturality of source Green/Hodge operator | `[DAC_SOURCE_GREEN_PURITY]` | open mathematical core |
+  | RH extraction from that naturality | `deningerDivisorClosedTheta_orientedHodge_iff_riemannHypothesis` | Lean-proved equivalence |
+
+  `[CONJECTURE] [DAC_SOURCE_ASSOCIATED_GRADED]` has now been reduced to a paper proof and a Lean
+  draft.  On compact-open source cohomology define the decreasing jet-depth filtration
+  \[
+    F^nH^1=\{x:\ j_{\rho,k}(x)=0\text{ for every }k<n\}.
+  \]
+  The exact source formula
+  \[
+    j_{\rho,k}(\Theta x)
+      =\lambda_\rho j_{\rho,k}(x)
+        +k i\,j_{\rho,k-1}(x)
+  \]
+  gives \(\Theta(F^n)\subseteq F^n\), while
+  \[
+    (\Theta-\Theta_{\rm ss})(F^n)\subseteq F^{n+1}.
+  \]
+  Hence the induced map on every \(F^n/F^{n+1}\) is multiplication by
+  \(\lambda_\rho\).  Taking the Hilbert direct sum of all grades yields the already constructed
+  multiplicity-exact \(\ell^2(\rho,k)\) carrier and its maximal diagonal closed generator.
+  `DeningerArithmeticAssociatedGraded.lean` formalizes the filtration, preservation, congruence
+  modulo the next step, and comparison on finite source jets.  Its first direct check reached a
+  missing transitive `.olean` cache before elaborating the new file; no unrelated dependency was
+  rebuilt.

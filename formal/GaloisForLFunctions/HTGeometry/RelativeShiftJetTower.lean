@@ -21,8 +21,6 @@ namespace HTGeometry.Rel
 
 variable {C K : Type*} [Field C] [Field K] [Algebra C K]
 
-
-
 section Restrict
 
 variable (sigma : K ≃+* K) (S : IntermediateField C K)
@@ -80,48 +78,6 @@ theorem transcendental_ambient [CharZero C]
   · exact hcT
   · intro hmem
     exact hcW hmem
-
-/-- Normalise a quotient of polynomials to lowest terms with monic denominator. -/
-theorem exists_coprime_monic_repr {y : K} (htr : Transcendental S y) {b : K}
-    (hb : b ∈ IntermediateField.adjoin S {y}) :
-    ∃ N D : Polynomial S, D.Monic ∧ IsCoprime N D ∧ b = aeval y N / aeval y D := by
-  classical
-  obtain ⟨r, t, hrt⟩ := (IntermediateField.mem_adjoin_simple_iff S b).mp hb
-  have hinj := aeval_injective_of_transcendental (E := S) htr
-  rcases eq_or_ne t 0 with rfl | ht
-  · exact ⟨0, 1, Polynomial.monic_one, isCoprime_one_right, by simp [hrt]⟩
-  · set g : Polynomial S := GCDMonoid.gcd r t with hg
-    have hgne : g ≠ 0 := gcd_ne_zero_of_right ht
-    set r' : Polynomial S := r / g with hr'
-    set t' : Polynomial S := t / g with ht'
-    have hcop' : IsCoprime r' t' := isCoprime_div_gcd_div_gcd ht
-    have hrmul : r' * g = r := by
-      rw [hr', mul_comm]
-      exact EuclideanDomain.mul_div_cancel' hgne (gcd_dvd_left r t)
-    have htmul : t' * g = t := by
-      rw [ht', mul_comm]
-      exact EuclideanDomain.mul_div_cancel' hgne (gcd_dvd_right r t)
-    have ht'ne : t' ≠ 0 := fun h => ht (by rw [← htmul, h, zero_mul])
-    set u : S := (t'.leadingCoeff)⁻¹ with hu
-    have hlead : t'.leadingCoeff ≠ 0 := Polynomial.leadingCoeff_ne_zero.mpr ht'ne
-    have hune : u ≠ 0 := inv_ne_zero hlead
-    refine ⟨r' * Polynomial.C u, t' * Polynomial.C u, ?_, ?_, ?_⟩
-    · rw [Polynomial.Monic, Polynomial.leadingCoeff_mul, Polynomial.leadingCoeff_C, hu,
-        mul_inv_cancel₀ hlead]
-    · obtain ⟨p, q, hpq⟩ := hcop'
-      refine ⟨p * Polynomial.C u⁻¹, q * Polynomial.C u⁻¹, ?_⟩
-      have hCu : (Polynomial.C u⁻¹) * (Polynomial.C u) = (1 : Polynomial S) := by
-        rw [← Polynomial.C_mul, inv_mul_cancel₀ hune, Polynomial.C_1]
-      calc p * Polynomial.C u⁻¹ * (r' * Polynomial.C u)
-            + q * Polynomial.C u⁻¹ * (t' * Polynomial.C u)
-          = (p * r' + q * t') * (Polynomial.C u⁻¹ * Polynomial.C u) := by ring
-        _ = 1 := by rw [hCu, hpq, mul_one]
-    · have hgK : aeval y g ≠ 0 := fun h => hgne (hinj (by simpa using h))
-      have huK : (algebraMap S K u) ≠ 0 :=
-        (map_ne_zero_iff _ (algebraMap S K).injective).mpr hune
-      rw [hrt, ← hrmul, ← htmul]
-      simp only [map_mul, Polynomial.aeval_C]
-      rw [mul_div_mul_right _ _ hgK, mul_div_mul_right _ _ huK]
 
 /-- **Descent step, ambient form.**  The `sigma`-defect of an element of `S(y)` lies in the span of
 the old admissible defects together with `c`. -/
@@ -203,10 +159,6 @@ theorem descentStep_fixed_ambient [CharZero C]
   rw [hbeq, ha, ← IsScalarTower.algebraMap_apply C S K]
 
 end Ambient
-
-
-
-
 
 /-- The tower obtained by adjoining the jets one at a time. -/
 noncomputable def jetTower (F : IntermediateField C K) (y : ℕ → K) :
@@ -388,6 +340,5 @@ theorem jetTower_transcendental [CharZero C]
   (jetTower_induction sigma F y c hFstab hcF hy hfixF hdefF hindep n).2.2.2
 
 end Tower
-
 
 end HTGeometry.Rel

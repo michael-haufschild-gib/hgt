@@ -68,23 +68,6 @@ theorem gear_fe (m : ℕ) (hm : 3 ≤ m) (s : ℂ) :
 
 /-! ### §2 The integer multiplicative coefficient stream and its `L`-series -/
 
-/-- A coprime factorisation of a prime power is trivial: if `a·b = 2^e` and `gcd a b = 1`, then `a`
-or `b` is `1` (two nontrivial factors would both be even, contradicting coprimality). -/
-private theorem coprime_mul_two_pow (a b : ℕ) (hab : Nat.Coprime a b) (e : ℕ)
-    (hprod : a * b = 2 ^ e) : a = 1 ∨ b = 1 := by
-  by_contra hcon
-  rw [not_or] at hcon
-  obtain ⟨ha1, hb1⟩ := hcon
-  have hda : a ∣ 2 ^ e := ⟨b, hprod.symm⟩
-  have hdb : b ∣ 2 ^ e := ⟨a, by rw [mul_comm]; exact hprod.symm⟩
-  obtain ⟨i, _, rfl⟩ := (Nat.dvd_prime_pow Nat.prime_two).mp hda
-  obtain ⟨j, _, rfl⟩ := (Nat.dvd_prime_pow Nat.prime_two).mp hdb
-  have hi : i ≠ 0 := fun h => ha1 (by rw [h, pow_zero])
-  have hj : j ≠ 0 := fun h => hb1 (by rw [h, pow_zero])
-  have h2 : 2 ∣ Nat.gcd (2 ^ i) (2 ^ j) := Nat.dvd_gcd (dvd_pow_self 2 hi) (dvd_pow_self 2 hj)
-  rw [hab.gcd_eq_one] at h2
-  exact absurd h2 (by decide)
-
 /-- The coefficient stream of `gear m`: supported on `{1, 2^m, 2^{2m}}` with values `1`,
 `−(2 + 2^{m−1})`, `2^m`. -/
 def gearCoeff (m : ℕ) : ArithmeticFunction ℂ :=
@@ -283,26 +266,12 @@ theorem gearProdCoeff_multiplicative (S : Finset ℕ) (hS : ∀ m ∈ S, 3 ≤ m
     (fun _ _ ha hb => ha.mul hb) ArithmeticFunction.isMultiplicative_one
     (fun m hmS => gearCoeff_multiplicative m (hS m hmS))
 
-/-- Dirichlet convolution preserves integrality: the integer casts form a subring of `ℂ`, closed
-under the antidiagonal sum `(b ⋆ c) n = ∑ b(i)·c(j)`. -/
-private theorem intCast_conv_integral (b c : ArithmeticFunction ℂ)
-    (hb : ∀ n, ∃ k : ℤ, b n = (k : ℂ)) (hc : ∀ n, ∃ k : ℤ, c n = (k : ℂ)) :
-    ∀ n, ∃ k : ℤ, (b * c) n = (k : ℂ) := by
-  intro n
-  have hmem : ∀ x : ℂ, (∃ k : ℤ, x = (k : ℂ)) ↔ x ∈ (Int.castRingHom ℂ).range := by
-    intro x
-    rw [RingHom.mem_range]
-    exact ⟨fun ⟨k, hk⟩ => ⟨k, hk.symm⟩, fun ⟨k, hk⟩ => ⟨k, hk.symm⟩⟩
-  rw [ArithmeticFunction.mul_apply, hmem]
-  exact Subring.sum_mem _ fun x _ =>
-    Subring.mul_mem _ ((hmem _).mp (hb x.fst)) ((hmem _).mp (hc x.snd))
-
 /-- **`gearProdCoeff S` is integer-valued**: the convolution unit is `{0, 1}`-valued, convolution
 preserves integrality, and each factor stream is integer-valued. -/
 theorem gearProdCoeff_integral (S : Finset ℕ) : ∀ n, ∃ k : ℤ, gearProdCoeff S n = (k : ℂ) :=
   Finset.prod_induction (fun m => gearCoeff m)
     (fun f : ArithmeticFunction ℂ => ∀ n, ∃ k : ℤ, f n = (k : ℂ))
-    (fun a b ha hb => intCast_conv_integral a b ha hb)
+    (fun a b ha hb => RHTower.intCast_conv_integral a b ha hb)
     (fun n => by
       rw [ArithmeticFunction.one_apply]
       exact if h : n = 1 then ⟨1, by rw [if_pos h]; norm_num⟩

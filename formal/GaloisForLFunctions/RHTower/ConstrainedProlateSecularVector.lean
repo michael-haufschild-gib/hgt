@@ -38,12 +38,6 @@ open Filter Set
 
 namespace RHTower
 
-/-- Division by a fixed positive constant is monotone. -/
-private theorem div_le_div_of_le_of_pos' {a b c : ℝ} (h : a ≤ b) (hc : 0 < c) :
-    a / c ≤ b / c := by
-  rw [div_le_iff₀ hc, div_mul_cancel₀ _ hc.ne']
-  exact h
-
 noncomputable section
 
 /-- The coordinate vector of a constrained eigenvector at spectral parameter `μ`. -/
@@ -202,7 +196,7 @@ theorem secularVector_tail_fraction_tendsto_zero
         (pow_le_pow_left₀ hd21.le (by linarith [hrmem.2]) 2)
     have h3' : (∑' j : ℕ, ℓ lam (j + 2) ^ 2) / (d lam 2 - d lam 1) ^ 2
         ≤ 2 * lam / (d lam 2 - d lam 1) ^ 2 :=
-      div_le_div_of_le_of_pos' hT2 (pow_pos hd21 2)
+      div_le_div_of_le_of_pos hT2 (pow_pos hd21 2)
     exact le_trans h1' (le_trans h2' h3')
   have hheadfloor : 0 < a0 ^ 2 / 2 / d lam 1 ^ 2 :=
     div_pos (half_pos ha0sq) (pow_pos hd1pos 2)
@@ -210,7 +204,7 @@ theorem secularVector_tail_fraction_tendsto_zero
       ≤ secularVector (d lam) (ℓ lam) (infiniteSecularRoot (d lam) (ℓ lam)) 0 ^ 2 := by
     have h1'' := secularVector_head_sq_ge (ℓ := ℓ lam) hd0 hrmem
     have h2'' : a0 ^ 2 / 2 / d lam 1 ^ 2 ≤ ℓ lam 0 ^ 2 / d lam 1 ^ 2 :=
-      div_le_div_of_le_of_pos' hbig (pow_pos hd1pos 2)
+      div_le_div_of_le_of_pos hbig (pow_pos hd1pos 2)
     exact le_trans h2'' h1''
   have hheadpos : 0 < secularVector (d lam) (ℓ lam)
       (infiniteSecularRoot (d lam) (ℓ lam)) 0 ^ 2 := lt_of_lt_of_le hheadfloor hhead_ge
@@ -228,12 +222,12 @@ theorem secularVector_tail_fraction_tendsto_zero
         / secularVector (d lam) (ℓ lam) (infiniteSecularRoot (d lam) (ℓ lam)) 0 ^ 2
       ≤ (2 * lam / (d lam 2 - d lam 1) ^ 2)
         / secularVector (d lam) (ℓ lam) (infiniteSecularRoot (d lam) (ℓ lam)) 0 ^ 2 :=
-        div_le_div_of_le_of_pos' htail_le hheadpos
+        div_le_div_of_le_of_pos htail_le hheadpos
     _ ≤ (2 * lam / (d lam 2 - d lam 1) ^ 2) / (a0 ^ 2 / 2 / d lam 1 ^ 2) :=
         div_le_div_of_nonneg_left hnn hheadfloor hhead_ge
     _ = 4 * lam * d lam 1 ^ 2 / (a0 ^ 2 * (d lam 2 - d lam 1) ^ 2) := heqA
     _ ≤ 4 * lam ^ 2 * d lam 1 ^ 2 / (a0 ^ 2 * (d lam 2 - d lam 1) ^ 2) := by
-        refine div_le_div_of_le_of_pos' ?_ (mul_pos ha0sq (pow_pos hd21 2))
+        refine div_le_div_of_le_of_pos ?_ (mul_pos ha0sq (pow_pos hd21 2))
         have hle : 4 * lam ≤ 4 * lam ^ 2 := by nlinarith
         exact mul_le_mul_of_nonneg_right hle (sq_nonneg _)
     _ = 4 / a0 ^ 2 * (lam * d lam 1 / (d lam 2 - d lam 1)) ^ 2 := heqB.symm

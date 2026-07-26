@@ -1,4 +1,5 @@
 import Mathlib
+import GaloisForLFunctions.HTGeometry.GammaAnalyticOffPoles
 
 /-!
 # The differentiated functional equation of Γ
@@ -2833,13 +2834,8 @@ theorem gamma_deriv_not_all_zero :
 inverse of the entire reciprocal `1/Γ` (nonzero exactly off the poles).  Exposes the analyticity that
 `contDiffAt_Gamma` proves inline, giving `AnalyticAt` of every derivative and hence differentiability of
 `Γ`, `Γ'`, `Γ''`, … at each point off `−ℕ`. -/
-theorem analyticAt_Gamma (x : ℂ) (hx : ∀ n : ℕ, x ≠ -(n:ℂ)) : AnalyticAt ℂ Complex.Gamma x := by
-  have hinv : AnalyticAt ℂ (fun s => (Complex.Gamma s)⁻¹) x :=
-    (Complex.differentiable_one_div_Gamma.differentiableOn.analyticOnNhd isOpen_univ) x (Set.mem_univ x)
-  have hne : (fun s => (Complex.Gamma s)⁻¹) x ≠ 0 := inv_ne_zero (Complex.Gamma_ne_zero hx)
-  have hΓ : AnalyticAt ℂ (fun s => ((Complex.Gamma s)⁻¹)⁻¹) x := hinv.inv hne
-  have heq : (fun s => ((Complex.Gamma s)⁻¹)⁻¹) = Complex.Gamma := by funext s; rw [inv_inv]
-  rwa [heq] at hΓ
+theorem analyticAt_Gamma (x : ℂ) (hx : ∀ n : ℕ, x ≠ -(n:ℂ)) : AnalyticAt ℂ Complex.Gamma x :=
+  HTGeometry.analyticAt_Gamma_off_poles hx
 
 
 

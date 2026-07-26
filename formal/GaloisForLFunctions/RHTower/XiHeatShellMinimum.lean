@@ -27,6 +27,8 @@ theorem nonempty_xiZeroCopy : Nonempty XiZeroCopy := by
   have hpos := xi_divisor_pos_on_support ⟨ρ, hρ⟩
   omega
 
+instance : Nonempty XiZeroCopy := nonempty_xiZeroCopy
+
 /-- **The shell coordinate attains its minimum on the divisor.**  Finiteness of every shell plus
 nonemptiness of the divisor give a copy of least shell coordinate. -/
 theorem exists_min_xiSpectralSq_re :

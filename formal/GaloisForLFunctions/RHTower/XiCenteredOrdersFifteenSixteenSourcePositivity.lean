@@ -422,7 +422,6 @@ theorem normalizedPrimeArchMoment_pos_of_atomwise_re_pos
       rw [hzero, Complex.zero_re] at hzeroMoment
       linarith [normalizedPrimeArchMoment_zero_pos]
   | inr hNonempty =>
-      letI : Nonempty XiZeroCopy := hNonempty
       let q₀ : XiZeroCopy := Classical.choice hNonempty
       have hpow := summable_xiZeroCopyReciprocalSquare_pow n
       have hreal :

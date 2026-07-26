@@ -96,7 +96,7 @@ displacement.** -/
 theorem procB_of_offline_record {κ lam θ : ℚ} (hmu : epMu κ lam = θ) :
     epMu (procB_fst lam) (procB_snd κ) = θ ∧
       epDisplacement (procB_fst lam) (procB_snd κ) = - epDisplacement κ lam := by
-  exact ⟨by rw [procB_preserves_epMu]; exact hmu, procB_negates_displacement κ lam⟩
+  exact ⟨by rw [HTGeometry.epMu_procB]; exact hmu, procB_negates_displacement κ lam⟩
 
 /-- **And their midpoint attains it on the line.**  So an off-line record produces three pairs with
 the same exponent: the target is attained on a nondegenerate face, not at a vertex. -/
@@ -105,7 +105,7 @@ theorem offline_record_gives_face {κ lam θ : ℚ} (hmu : epMu κ lam = θ) :
       epDisplacement (mixFst κ (procB_fst lam) (1 / 2))
         (mixSnd lam (procB_snd κ) (1 / 2)) = 0 := by
   constructor
-  · rw [epMu_mix, procB_preserves_epMu, hmu]; ring
+  · rw [epMu_mix, HTGeometry.epMu_procB, hmu]; ring
   · rw [epDisplacement_mix, procB_negates_displacement]; ring
 
 /-- **The characterisation.**  Some pair has threshold equal to the critical length if and only if the

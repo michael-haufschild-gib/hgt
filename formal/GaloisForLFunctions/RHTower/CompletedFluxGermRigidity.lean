@@ -236,29 +236,6 @@ theorem seamFluxCriticalPhaseAt_iff {ρ : ℂ} (hρ : xi ρ ≠ 0) :
       · simp
     rw [seamFluxCriticalPhaseAt, heq]
 
-/-- Two analytic one-variable germs with identical iterated derivatives agree locally. -/
-private theorem analyticAt_eventuallyEq_of_iteratedDeriv_eq {f g : ℂ → ℂ} {z : ℂ}
-    (hf : AnalyticAt ℂ f z) (hg : AnalyticAt ℂ g z)
-    (hder : ∀ n : ℕ, iteratedDeriv n f z = iteratedDeriv n g z) :
-    f =ᶠ[𝓝 z] g := by
-  have hd : AnalyticAt ℂ (f - g) z := hf.sub hg
-  have hzero : ∀ n : ℕ, iteratedDeriv n (f - g) z = 0 := by
-    intro n
-    rw [iteratedDeriv_sub hf.contDiffAt hg.contDiffAt, hder n, sub_self]
-  have htop : analyticOrderAt (f - g) z = ⊤ := by
-    by_contra hfin
-    obtain ⟨m, hm⟩ := ENat.ne_top_iff_exists.mp hfin
-    have hle : ((m + 1 : ℕ) : ℕ∞) ≤ analyticOrderAt (f - g) z := by
-      rw [natCast_le_analyticOrderAt_iff_iteratedDeriv_eq_zero hd]
-      intro i _hi
-      exact hzero i
-    rw [← hm] at hle
-    have : (m + 1 : ℕ) ≤ m := by exact_mod_cast hle
-    omega
-  have hev : (f - g) =ᶠ[𝓝 z] 0 := analyticOrderAt_eq_top.mp htop
-  filter_upwards [hev] with x hx
-  exact sub_eq_zero.mp hx
-
 /-- Equality of all completed-flux Taylor coefficients is exactly equality of the two analytic
 residue-filled germs. -/
 theorem completedFluxTaylorCoeff_all_eq_iff_germ_eq (a b : ℂ) :

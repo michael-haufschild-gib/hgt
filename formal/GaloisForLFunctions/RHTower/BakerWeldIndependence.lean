@@ -144,12 +144,6 @@ theorem bakerLinearIndependence_of_card_le_two (n : ℕ) (hn : n ≤ 2)
 
 /-! ### §2 Algebraicity transfers: `ℝ ↪ ℂ` and integer casts -/
 
-/-- A real number algebraic over `ℤ` stays algebraic over `ℤ` under the embedding `ℝ ↪ ℂ`. -/
-private lemma isAlgebraic_ofReal {x : ℝ} (h : IsAlgebraic ℤ x) : IsAlgebraic ℤ (x : ℂ) := by
-  have h2 := h.algHom (IsScalarTower.toAlgHom ℤ ℝ ℂ)
-  have hx : (IsScalarTower.toAlgHom ℤ ℝ ℂ) x = (x : ℂ) := by simp [Complex.coe_algebraMap]
-  rwa [hx] at h2
-
 /-- Every rational integer, viewed as a real number, is algebraic over `ℤ`. -/
 private lemma isAlgebraic_intCast (a : ℤ) : IsAlgebraic ℤ ((a : ℤ) : ℝ) := by
   rw [show ((a : ℤ) : ℝ) = algebraMap ℤ ℝ a from by rw [algebraMap_int_eq]; simp]

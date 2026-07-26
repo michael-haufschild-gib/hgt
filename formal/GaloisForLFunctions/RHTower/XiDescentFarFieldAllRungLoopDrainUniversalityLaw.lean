@@ -40,7 +40,7 @@ theorem xiDescent_farField_allRungLocalLoopDrain
     carrierCharge_eq_one_of_ne_zero xi k hxi
   have hdescentCharge :
       carrierCharge xiDescent k ((ρ - (1 / 2 : ℂ)) ^ 2) = 1 :=
-    (carrierCharge_xiDescent_center_sq_allRungs hright k).trans hxiCharge
+    (RHTower.xiDescent_carrierCharge_center_sq hright k).trans hxiCharge
   obtain ⟨R₀, hR₀, hloop⟩ :=
     deckChar_loopCharge_xiDescent_center_sq hright k
   refine ⟨R₀, hR₀, fun r hr hrR ↦ ?_⟩

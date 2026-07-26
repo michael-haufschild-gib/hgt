@@ -56,27 +56,6 @@ local instance ellipticGammaStructuralGeneratorDifferentialAlgebra
     (meromorphicEllipticCompositum sigma tau)
     (meromorphicEllipticCompositum_derivationClosed sigma tau) x⟩
 
-private theorem meroField_deriv_algebraMap_complex_structuralGenerator (c : ℂ) :
-    (algebraMap ℂ (meroField Set.univ) c)′ = 0 := by
-  change
-    (algebraMap (analyticSubring Set.univ) (meroField Set.univ)
-      (constToAnalytic Set.univ c))′ = 0
-  rw [meroFieldDifferential_algebraMap isOpen_univ isPreconnected_univ
-    Set.univ_nonempty]
-  have hconst : analyticSubringDeriv isOpen_univ
-      (constToAnalytic Set.univ c) = 0 := by
-    apply Subtype.ext
-    rw [analyticSubringDeriv_coe]
-    let f : ℂ → ℂ := fun _ ↦ c
-    calc
-      Germ.coeRingHom (Filter.principal Set.univ) (deriv f) =
-          Germ.coeRingHom (Filter.principal Set.univ) (0 : ℂ → ℂ) := by
-        congr 1
-        funext z
-        simp [f]
-      _ = 0 := (Germ.coeRingHom (Filter.principal Set.univ)).map_zero
-  rw [hconst, map_zero]
-
 /-- The derivative of the genuine theta logarithmic derivative is elliptic: the additive
 quasiperiod constant disappears under differentiation. -/
 theorem thetaLogDerivMero_deriv_mem_ellipticMeroField
@@ -91,7 +70,7 @@ theorem thetaLogDerivMero_deriv_mem_ellipticMeroField
     rw [map_sub]
     change (thetaLogDerivMero tau htau)′ -
       (algebraMap ℂ (meroField Set.univ) (2 * Real.pi * I))′ = _
-    rw [meroField_deriv_algebraMap_complex_structuralGenerator, sub_zero]
+    rw [meroField_deriv_algebraMap_complex_rationalBase, sub_zero]
 
 /-- Every translate of a theta logarithmic derivative is DA over any translation-stable paired
 elliptic compositum containing its elliptic derivative field. -/
@@ -295,6 +274,5 @@ theorem hypertranscendentalOver_ellipticGammaExternalLogDerivDefectMero_iff_nonr
         h sigma tau hsigma htau hindependent)
 
 end
-
 
 end GaloisForLFunctions

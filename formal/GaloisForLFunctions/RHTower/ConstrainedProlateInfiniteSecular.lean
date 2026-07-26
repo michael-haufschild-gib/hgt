@@ -48,7 +48,7 @@ open Filter Set
 namespace RHTower
 
 /-- Division by a fixed positive constant is monotone. -/
-private theorem div_le_div_of_le_of_pos {a b c : ℝ} (h : a ≤ b) (hc : 0 < c) :
+theorem div_le_div_of_le_of_pos {a b c : ℝ} (h : a ≤ b) (hc : 0 < c) :
     a / c ≤ b / c := by
   rw [div_le_iff₀ hc, div_mul_cancel₀ _ hc.ne']
   exact h

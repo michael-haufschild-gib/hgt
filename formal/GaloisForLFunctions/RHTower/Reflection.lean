@@ -27,7 +27,7 @@ theorem differentiable_conj_reflect {f : ℂ → ℂ} (hf : Differentiable ℂ f
   rw [Complex.conj_conj] at h
   exact h
 
-private lemma natCast_cpow_conj (a : ℕ) (s : ℂ) :
+lemma natCast_cpow_conj (a : ℕ) (s : ℂ) :
     (a : ℂ) ^ ((starRingEnd ℂ) s) = (starRingEnd ℂ) ((a : ℂ) ^ s) := by
   have harg : (a : ℂ).arg ≠ Real.pi := by
     rw [← Complex.ofReal_natCast, Complex.arg_ofReal_of_nonneg (Nat.cast_nonneg a)]

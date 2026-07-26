@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.GammaFactorialComposition
 import GaloisForLFunctions.HTGeometry.GammaHypertranscendental
+import GaloisForLFunctions.HTGeometry.GammaAnalyticOffPoles
 
 namespace GaloisForLFunctions
 
@@ -106,14 +107,8 @@ theorem locallyPolynomialJetRigidAt_Gamma :
   simpa [gammaPolyJetEval] using hlocal
 
 theorem analyticAt_Gamma_on_rightHalfPlane
-    (z : ℂ) (hz : z ∈ rightHalfPlane) : AnalyticAt ℂ Complex.Gamma z := by
-  apply analyticAt_Gamma
-  intro p hp
-  have hre := congrArg Complex.re hp
-  change 0 < z.re at hz
-  simp only [Complex.neg_re, Complex.natCast_re] at hre
-  have hpnonneg : (0 : ℝ) ≤ p := Nat.cast_nonneg p
-  linarith
+    (z : ℂ) (hz : z ∈ rightHalfPlane) : AnalyticAt ℂ Complex.Gamma z :=
+  HTGeometry.analyticAt_Gamma_of_re_pos hz
 
 theorem hypertranscendental_Gamma_comp_Gamma :
     Hypertranscendental (fun z => Complex.Gamma (Complex.Gamma z)) := by

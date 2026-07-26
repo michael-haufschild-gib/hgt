@@ -3,6 +3,7 @@ import GaloisForLFunctions.RHTower.BoundedClockZeroTransfer
 import GaloisForLFunctions.RHTower.HedenmalmLocalFrameObstruction
 import GaloisForLFunctions.RHTower.XiHedenmalmEigenbasis
 import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
+import GaloisForLFunctions.HTGeometry.GammaAnalyticOffPoles
 
 /-!
 # Boundary Abel growth and critical-line zeta multiplicity
@@ -69,63 +70,6 @@ private theorem tendsto_ofReal_nhdsGT_zero_nhdsNE_zero :
   · exact Complex.continuous_ofReal.continuousAt.tendsto.mono_left nhdsWithin_le_nhds
   · filter_upwards [self_mem_nhdsWithin] with r hr
     simpa using hr.ne'
-
-private theorem analyticAt_Gamma_of_re_pos_boundary {s : ℂ} (hs : 0 < s.re) :
-    AnalyticAt ℂ Complex.Gamma s := by
-  have hinv : AnalyticAt ℂ (fun z => (Complex.Gamma z)⁻¹) s :=
-    (Complex.differentiable_one_div_Gamma.differentiableOn.analyticOnNhd isOpen_univ)
-      s (mem_univ s)
-  have h := hinv.inv (inv_ne_zero (Complex.Gamma_ne_zero_of_re_pos hs))
-  change AnalyticAt ℂ (fun z => ((Complex.Gamma z)⁻¹)⁻¹) s at h
-  simpa using h
-
-private theorem analyticAt_zetaResidueUnit_boundary (s : ℂ) :
-    AnalyticAt ℂ zetaResidueUnit s := by
-  by_cases hs : s = 1
-  · simpa [hs] using zetaResidueUnit_analyticAt
-  · have hdiff : DifferentiableOn ℂ (fun z => (z - 1) * riemannZeta z) ({1}ᶜ) := by
-      intro z hz
-      exact (differentiableAt_id.sub_const 1).mul
-        (differentiableAt_riemannZeta (by simpa using hz)) |>.differentiableWithinAt
-    have han : AnalyticAt ℂ (fun z => (z - 1) * riemannZeta z) s :=
-      (hdiff.analyticOnNhd isOpen_compl_singleton) s (by simpa using hs)
-    exact han.congr (zetaResidueUnit_eventuallyEq hs).symm
-
-/-- Local copy of the canonical identity-theorem output.  It is kept here so this module can be
-checked directly with `lake env lean` before the final module build refreshes its parent `.olean`. -/
-private theorem mellin_boundary_identity
-    (hG : AnalyticOnNhd ℂ (mellin mobiusDiscreteLaplaceTransform) rightHalf) :
-    ∀ s ∈ rightHalf,
-      mellin mobiusDiscreteLaplaceTransform s * zetaResidueUnit s =
-        Complex.Gamma s * (s - 1) := by
-  let G : ℂ → ℂ := mellin mobiusDiscreteLaplaceTransform
-  have hleft : AnalyticOnNhd ℂ
-      (fun s => G s * zetaResidueUnit s) rightHalf := by
-    intro s hs
-    exact (hG s hs).mul (analyticAt_zetaResidueUnit_boundary s)
-  have hright : AnalyticOnNhd ℂ
-      (fun s => Complex.Gamma s * (s - 1)) rightHalf := by
-    intro s hs
-    have hspos : 0 < s.re := lt_trans (by norm_num) (mem_rightHalf.mp hs)
-    exact (analyticAt_Gamma_of_re_pos_boundary hspos).mul
-      (analyticAt_id.sub analyticAt_const)
-  have hevent :
-      (fun s => G s * zetaResidueUnit s) =ᶠ[𝓝 (2 : ℂ)]
-        (fun s => Complex.Gamma s * (s - 1)) := by
-    have hgt : ∀ᶠ s : ℂ in 𝓝 (2 : ℂ), 1 < s.re :=
-      (isOpen_lt continuous_const Complex.continuous_re).mem_nhds (by norm_num)
-    filter_upwards [hgt] with s hs
-    have hs1 : s ≠ 1 := by
-      intro hsone
-      subst s
-      norm_num at hs
-    have hzeta : riemannZeta s ≠ 0 := riemannZeta_ne_zero_of_one_lt_re hs
-    rw [show G s = Complex.Gamma s * (riemannZeta s)⁻¹ by
-      simpa [G] using mellin_mobiusDiscreteLaplaceTransform_eq_gamma_div_zeta hs]
-    simp only [zetaResidueUnit, Function.update_of_ne hs1]
-    field_simp
-  exact hleft.eqOn_of_preconnected_of_eventuallyEq hright
-    convex_rightHalf.isPreconnected two_mem_rightHalf hevent
 
 /-- **Source-to-Abel boundary estimate.**  Exact half-power decay makes the critical radial
 Mellin family bounded after multiplication by the radial distance.  The head contributes `D/r`;
@@ -313,7 +257,7 @@ theorem deriv_riemannZeta_ne_zero_of_mobiusLaplaceCriticalAbelBound
     have hr0 : (r : ℂ) ≠ 0 := ofReal_ne_zero.mpr hr.ne'
     field_simp
   have hcanonicalIdentity :=
-    mellin_boundary_identity
+    mellin_mobiusDiscreteLaplaceTransform_mul_zetaResidueUnit_eq_of_analyticOnNhd
       (analyticOnNhd_mellin_mobiusDiscreteLaplaceTransform hdecay)
   have hrightZero : Tendsto
       (fun r : ℝ => Complex.Gamma (rho + (r : ℂ)) * (rho + (r : ℂ) - 1))

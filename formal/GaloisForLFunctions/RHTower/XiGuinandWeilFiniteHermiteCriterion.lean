@@ -128,29 +128,6 @@ private theorem denseRange_ratCast_fin (n : ℕ) :
   simpa [Pi.map_apply] using
     (DenseRange.piMap (fun _ : Fin n => Rat.denseRange_cast))
 
-private theorem exists_nat_pos_int_scale_rat_vector {n : ℕ} (a : Fin n → ℚ) :
-    ∃ D : ℕ, 0 < D ∧ ∃ z : Fin n → ℤ, ∀ i, (z i : ℚ) = (D : ℚ) * a i := by
-  let D : ℕ := ∏ i : Fin n, (a i).den
-  have hDpos : 0 < D := by
-    dsimp [D]
-    exact Finset.prod_pos fun i _ => (a i).den_pos
-  have hdiv (i : Fin n) : (a i).den ∣ D := by
-    dsimp [D]
-    exact Finset.dvd_prod_of_mem (fun j : Fin n => (a j).den) (Finset.mem_univ i)
-  let z : Fin n → ℤ := fun i => (a i).num * (D / (a i).den : ℕ)
-  refine ⟨D, hDpos, z, ?_⟩
-  intro i
-  have hmul : (a i).den * (D / (a i).den) = D := Nat.mul_div_cancel' (hdiv i)
-  dsimp [z]
-  calc
-    (((a i).num * (D / (a i).den : ℕ) : ℤ) : ℚ) =
-        ((a i).num : ℚ) * ((D / (a i).den : ℕ) : ℚ) := by push_cast; rfl
-    _ = (a i * (a i).den) * ((D / (a i).den : ℕ) : ℚ) := by
-      rw [Rat.mul_den_eq_num]
-    _ = a i * (((a i).den : ℚ) * ((D / (a i).den : ℕ) : ℚ)) := by ring
-    _ = a i * (D : ℚ) := by rw [← Nat.cast_mul, hmul]
-    _ = (D : ℚ) * a i := by ring
-
 /-- Integer-polynomial positivity already gives every real-polynomial finite shifted
 trace--Hankel inequality. -/
 theorem finite_shifted_traceHankel_nonnegative_of_int

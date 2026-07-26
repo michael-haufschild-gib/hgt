@@ -33,13 +33,6 @@ def infiniteFisherOneCornerJoinedReporter
     (e D : H →L[ℂ] H) (psi : H) : H →L[ℂ] H :=
   cutoffLowerBoundary e (pointedFisherConnection psi (D psi))
 
-private theorem inv_sqrt_two_norm_sq :
-    ‖((Real.sqrt 2)⁻¹ : ℂ)‖ ^ 2 = (1 / 2 : ℝ) := by
-  rw [norm_inv, Complex.norm_real, Real.norm_eq_abs,
-    abs_of_pos (Real.sqrt_pos.2 (by norm_num : (0 : ℝ) < 2))]
-  rw [inv_pow, Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2)]
-  norm_num
-
 private theorem projection_norm_sq_add_complement
     (e : H →L[ℂ] H) (he : IsIdempotentElem e)
     (heAdj : adjoint e = e) (x : H) :
@@ -127,7 +120,7 @@ theorem hsNormSq_infiniteFisherOneCornerJoinedReporter_le_half
   rw [hsNormSq_smul
     ((isHilbertSchmidt_rankOne A B).add
       (isHilbertSchmidt_rankOne C E)),
-    inv_sqrt_two_norm_sq,
+    invSqrtTwo_norm_sq,
     hsNormSq_rankOne_add_rankOne]
   change
     (1 / 2 : ℝ) *

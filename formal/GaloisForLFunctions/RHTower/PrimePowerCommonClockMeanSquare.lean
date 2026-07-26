@@ -19,24 +19,6 @@ namespace RHTower
 
 noncomputable section
 
-private theorem tendsto_complex_geom_cesaro_of_norm_eq_one_of_ne_one
-    {w : ℂ} (hw : ‖w‖ = 1) (hne : w ≠ 1) :
-    Tendsto (fun N : ℕ => ((N : ℝ)⁻¹ : ℂ) * ∑ m ∈ Finset.range N, w ^ m)
-      atTop (nhds 0) := by
-  apply squeeze_zero_norm'
-    (a := fun N : ℕ => (2 / ‖1 - w‖) / (N : ℝ))
-  · exact Eventually.of_forall fun N => by
-      rw [norm_mul, norm_inv, Complex.norm_real, Real.norm_eq_abs,
-        abs_of_nonneg (Nat.cast_nonneg N)]
-      calc
-        (N : ℝ)⁻¹ * ‖∑ m ∈ Finset.range N, w ^ m‖
-            ≤ (N : ℝ)⁻¹ * (2 / ‖1 - w‖) :=
-              mul_le_mul_of_nonneg_left (norm_geom_sum_le hw hne N)
-                (inv_nonneg.mpr (Nat.cast_nonneg N))
-        _ = (2 / ‖1 - w‖) / (N : ℝ) := by ring
-  · simpa [div_eq_mul_inv, mul_comm] using
-      (tendsto_const_div_atTop_nhds_zero_nat (2 / ‖1 - w‖))
-
 private theorem tendsto_cos_two_mul_cesaro_of_exp_ne_one (theta : ℝ)
     (hne : Complex.exp (((2 * theta : ℝ) : ℂ) * Complex.I) ≠ 1) :
     Tendsto
@@ -47,7 +29,7 @@ private theorem tendsto_cos_two_mul_cesaro_of_exp_ne_one (theta : ℝ)
   have hw : ‖w‖ = 1 := by
     simp [w, Complex.norm_exp]
   have hwne : w ≠ 1 := by simpa [w] using hne
-  have h := tendsto_complex_geom_cesaro_of_norm_eq_one_of_ne_one hw hwne
+  have h := RHTower.tendsto_complex_geom_cesaro_of_norm_eq_one_of_ne_one hw hwne
   have hre := (Complex.continuous_re.tendsto (0 : ℂ)).comp h
   apply hre.congr'
   exact Eventually.of_forall fun N => by

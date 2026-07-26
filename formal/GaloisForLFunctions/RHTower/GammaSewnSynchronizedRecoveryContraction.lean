@@ -636,27 +636,6 @@ private theorem tendsto_finset_prod_one
         (ih (fun q hq ↦ hf q (Finset.mem_insert_of_mem hq))) using 1
       simp
 
-private theorem continuousAt_gammaSewnQuadraticGain_zero
-    (p : Nat.Primes) :
-    ContinuousAt
-      (fun x : ℝ => gammaSewnMobiusValuationQuadraticDefectGain x p) 0 := by
-  let q : ℝ → ℝ := fun x => xiMobiusContinuousApertureDiskNode x p
-  let c : ℝ → ℝ :=
-    fun x => gammaSewnMobiusValuationContractionMultiplier x p
-  change ContinuousAt (fun x : ℝ =>
-    (7 * q x ^ 2 + 10 * q x + 7) /
-      (8 * (1 + q x ^ 4) * (1 + c x) * (1 + c x ^ 2))) 0
-  have hq : ContinuousAt q 0 := by
-    dsimp only [q, xiMobiusContinuousApertureDiskNode]
-    fun_prop
-  have hc : ContinuousAt c 0 := by
-    simpa only [c] using
-      continuousAt_gammaSewnMobiusValuationContractionMultiplier_zero p
-  apply ContinuousAt.div
-  · fun_prop
-  · fun_prop
-  · simp [q, c, gammaSewnMobiusValuationContractionMultiplier_zero]
-
 /-- Gamma sewing is first-jet flat: its strict contraction begins only at quadratic order. -/
 theorem tendsto_gammaSewnMobiusValuationContraction_sub_one_div_zero
     (p : Nat.Primes) :
@@ -677,7 +656,7 @@ theorem tendsto_gammaSewnMobiusValuationContraction_sub_one_div_zero
       Tendsto g (𝓝[>] (0 : ℝ)) (𝓝 (3 / 8 : ℝ)) := by
     have h : Tendsto g (𝓝 (0 : ℝ))
         (𝓝 (gammaSewnMobiusValuationQuadraticDefectGain 0 p)) :=
-      (continuousAt_gammaSewnQuadraticGain_zero p).tendsto
+      (continuousAt_gammaSewnMobiusValuationQuadraticDefectGain_zero p).tendsto
     have h' := h.mono_left
       (inf_le_left : 𝓝[>] (0 : ℝ) ≤ 𝓝 0)
     simpa only [g, gammaSewnMobiusValuationQuadraticDefectGain_zero] using h'

@@ -32,11 +32,6 @@ def primeAlgebraicClockStep (q : ℕ) : ℂ :=
 def primeAlgebraicWeylDeterminantPhase (p : Nat.Primes) (d q : ℕ) : ℂ :=
   (p : ℂ) ^ (-((d : ℂ) / (q : ℂ)) * Complex.I)
 
-private theorem isAlgebraic_natComplex (n : ℕ) : IsAlgebraic ℚ (n : ℂ) := by
-  have h : IsAlgebraic ℚ (algebraMap ℚ ℂ (n : ℚ)) :=
-    (isIntegral_algebraMap : IsIntegral ℚ (algebraMap ℚ ℂ (n : ℚ))).isAlgebraic
-  simpa using h
-
 /-- The norm of the rational-imaginary clock step is exactly `1/q`. -/
 theorem norm_primeAlgebraicClockStep (q : ℕ) :
     ‖primeAlgebraicClockStep q‖ = 1 / (q : ℝ) := by
@@ -84,9 +79,9 @@ theorem primeAlgebraicWeylDeterminantPhase_transcendental
   unfold primeAlgebraicWeylDeterminantPhase
   apply GaloisForLFunctions.RHTower.GelfondSchneiderProof.Setup.transcendental_cpow_of_isAlgebraic_of_irrational
       (p : ℂ) (-((d : ℂ) / (q : ℂ)) * Complex.I)
-  · exact isAlgebraic_natComplex p
-  · exact (((isAlgebraic_natComplex d).mul
-      (isAlgebraic_natComplex q).inv).neg).mul
+  · exact RHTower.isAlgebraic_natComplex p
+  · exact (((RHTower.isAlgebraic_natComplex d).mul
+      (RHTower.isAlgebraic_natComplex q).inv).neg).mul
         GaloisForLFunctions.RHTower.isAlgebraic_I
   · constructor
     · exact_mod_cast p.2.ne_zero
@@ -108,7 +103,7 @@ theorem primeAlgebraicWeylDeterminantPhase_isAlgebraic_iff
     by_contra hd
     exact primeAlgebraicWeylDeterminantPhase_transcendental p hd hq halgebraic
   · rintro rfl
-    simpa [primeAlgebraicWeylDeterminantPhase] using isAlgebraic_natComplex 1
+    simpa [primeAlgebraicWeylDeterminantPhase] using RHTower.isAlgebraic_natComplex 1
 
 /-- Minimal interface for a source construction whose moving-fiber determinant holonomy is
 algebraic and equals the exact rank-`d` prime--Weyl phase. -/
@@ -128,7 +123,7 @@ theorem algebraicPrimeWeylDeterminantDescent_iff
     rw [← h.holonomy_eq_phase]
     exact h.holonomy_isAlgebraic
   · rintro rfl
-    refine ⟨⟨1, by simpa using isAlgebraic_natComplex 1, ?_⟩⟩
+    refine ⟨⟨1, by simpa using RHTower.isAlgebraic_natComplex 1, ?_⟩⟩
     simp [primeAlgebraicWeylDeterminantPhase]
 
 /-- Algebraic moving-fiber determinant descent attached to the local Xi multiplicity. -/

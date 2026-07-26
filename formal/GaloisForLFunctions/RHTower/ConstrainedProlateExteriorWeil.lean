@@ -149,22 +149,6 @@ lemma constrainedProlatePrimeSeriesTerm_nonneg (n : ℕ) :
   exact mul_nonneg (div_nonneg (Real.log_nonneg hk) (by positivity))
     (Real.arcsin_nonneg.mpr (by positivity))
 
-/-- The logarithmically weighted inverse-square series is summable. -/
-lemma summable_log_nat_div_sq :
-    Summable (fun n : ℕ => Real.log n / (n : ℝ) ^ 2) := by
-  have h := RHTower.summable_abs_log_natCast_pow_mul_rpow_neg 1 2 (by norm_num)
-  apply h.congr
-  intro n
-  rcases n with _ | n
-  · simp
-  have hn : 0 < ((n + 1 : ℕ) : ℝ) := by positivity
-  have hlog : 0 ≤ Real.log ((n + 1 : ℕ) : ℝ) :=
-    Real.log_nonneg (by norm_num)
-  rw [abs_of_nonneg hlog, pow_one, Real.rpow_neg hn.le]
-  rw [show ((n + 1 : ℕ) : ℝ) ^ (2 : ℝ) = ((n + 1 : ℕ) : ℝ) ^ (2 : ℕ) by
-    exact Real.rpow_natCast _ 2]
-  field_simp
-
 /-- The radial prime series is dominated by a logarithmically weighted inverse-square series. -/
 lemma constrainedProlatePrimeSeriesTerm_le (n : ℕ) :
     constrainedProlatePrimeSeriesTerm n ≤

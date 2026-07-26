@@ -84,6 +84,21 @@ theorem zetaResidueUnit_diffAt {t : ℂ} (ht : t ≠ 1) : DifferentiableAt ℂ z
 theorem zetaResidueUnit_ne_zero_eventually : ∀ᶠ s in 𝓝 (1 : ℂ), zetaResidueUnit s ≠ 0 :=
   zetaResidueUnit_analyticAt.continuousAt.eventually_ne (by rw [zetaResidueUnit_one]; norm_num)
 
+/-- **The regularized zeta residue unit is entire.**  Away from `1` it agrees with the product
+`(s-1)·ζ(s)`, which is differentiable there; at `1` itself analyticity is the removable-singularity
+statement `zetaResidueUnit_analyticAt`.  This is the global form used by every Mellin/Laplace
+criterion in the corpus. -/
+theorem analyticAt_zetaResidueUnit (s : ℂ) : AnalyticAt ℂ zetaResidueUnit s := by
+  by_cases hs : s = 1
+  · simpa [hs] using zetaResidueUnit_analyticAt
+  · have hdiff : DifferentiableOn ℂ (fun z => (z - 1) * riemannZeta z) ({1}ᶜ) := by
+      intro z hz
+      exact (differentiableAt_id.sub_const 1).mul
+        (differentiableAt_riemannZeta (by simpa using hz)) |>.differentiableWithinAt
+    have han : AnalyticAt ℂ (fun z => (z - 1) * riemannZeta z) s :=
+      (hdiff.analyticOnNhd isOpen_compl_singleton) s (by simpa using hs)
+    exact han.congr (zetaResidueUnit_eventuallyEq hs).symm
+
 /-- `logDeriv (z ↦ (z-1)⁻¹) s = -(s-1)⁻¹`. -/
 theorem logDeriv_inv_sub_one {s : ℂ} (hs : s ≠ 1) :
     logDeriv (fun z => (z - 1)⁻¹) s = -(s - 1)⁻¹ := by

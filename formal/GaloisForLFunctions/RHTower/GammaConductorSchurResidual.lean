@@ -32,7 +32,7 @@ def gammaConductorModeSchurResidual (t u : ℝ) : ℝ :=
 def gammaConductorSchurResidualBracket (x : ℝ) : ℝ :=
   (1 - x) ^ (-(1 : ℝ) / 2) - 1 - (3 / 8) * x ^ 2
 
-private lemma tanh_pos_of_pos {t : ℝ} (ht : 0 < t) : 0 < Real.tanh t := by
+lemma tanh_pos_of_pos {t : ℝ} (ht : 0 < t) : 0 < Real.tanh t := by
   rw [Real.tanh_eq_sinh_div_cosh]
   exact div_pos ((Real.sinh_pos_iff).2 ht) (Real.cosh_pos t)
 

@@ -139,3 +139,25 @@ the claimed nonzero main term vanishes.
   over `[1,∞)` into the countable disjoint family `((2k−1)π, 2kπ)`. Tractable but a large build; the
   PNT-asymptotic Sections 1–3 are tied to the preprint's contour machinery not in the corpus. Left
   for a session that first builds the alternating-harmonic infrastructure in `HTGeometry`.
+- 2026-07-26 -- First of the two named missing pieces built:
+  `GaloisForLFunctions.HTGeometry.AlternatingHarmonicPair` formalizes the grouped alternating
+  harmonic value `sum_{k>=0} (1/(2k+1) - 1/(2k+2)) = log 2`, unconditionally, axioms
+  `[propext, Classical.choice, Quot.sound]`.
+
+  The 2026-07-24 note anticipated an Abel/Euler--Mascheroni construction; mathlib in fact already
+  carries the harmonic numbers and `Real.tendsto_harmonic_sub_log_add_one`
+  (`Mathlib/NumberTheory/Harmonic/EulerMascheroni.lean`), so no Abel summation is needed. The proof
+  is: `sum_alternatingHarmonicPair_eq` telescopes the partial sums to `harmonic (2n) - harmonic n`,
+  and splitting that as a difference of two Euler--Mascheroni increments cancels `gamma` and leaves
+  `log(2n+1) - log(n+1) -> log 2` (`tendsto_harmonic_two_mul_sub_harmonic`).
+
+  Grouping matters and is respected: the grouped terms are `1/((2k+1)(2k+2)) > 0`
+  (`alternatingHarmonicPair_eq`, `alternatingHarmonicPair_pos`), hence absolutely summable
+  (`summable_alternatingHarmonicPair`), so the value is a genuine `HasSum`
+  (`hasSum_alternatingHarmonicPair`, `tsum_alternatingHarmonicPair`) and not merely a limit of
+  partial sums of a conditionally convergent series.
+
+  Remaining for the card's Section 4 core `int_1^infty sgn(sin x)/x^2 dx = 1 - (2/pi) log 2`: the
+  second named piece, the decomposition of the improper integral over `[1,infty)` into the countable
+  disjoint family `((2k-1)pi, 2k pi)` on which `sin` is negative. Sections 1--3 remain tied to the
+  preprint's contour machinery and are not in scope.

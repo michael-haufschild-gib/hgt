@@ -37,12 +37,6 @@ open Filter Set
 
 namespace RHTower
 
-/-- Division by a fixed positive constant is monotone. -/
-private theorem div_le_div_of_le_of_pos'' {a b c : ℝ} (h : a ≤ b) (hc : 0 < c) :
-    a / c ≤ b / c := by
-  rw [div_le_iff₀ hc, div_mul_cancel₀ _ hc.ne']
-  exact h
-
 /-- Monotonicity of `a/·` across two negative denominators. -/
 private theorem div_le_div_of_neg_of_le {a b c : ℝ} (ha : 0 ≤ a) (hb : b < 0) (hcb : c ≤ b) :
     a / b ≤ a / c := by
@@ -468,7 +462,7 @@ theorem depthSecularRoot_ratio_tendsto
     obtain ⟨⟨hhead, hk01, hk12⟩, hfloor⟩ := hst
     obtain ⟨_, _, hlow, hhigh⟩ :=
       depthSecularRoot_bracket hk01 hk12 hfloor hhead hsm hSn hk1n hbrl
-    exact ⟨div_le_div_of_le_of_pos'' hlow hd1, div_le_div_of_le_of_pos'' hhigh hd1⟩
+    exact ⟨div_le_div_of_le_of_pos hlow hd1, div_le_div_of_le_of_pos hhigh hd1⟩
   exact tendsto_of_tendsto_of_tendsto_of_le_of_le' hcheck hhat
     (hbracket.mono fun lam h => h.1) (hbracket.mono fun lam h => h.2)
 

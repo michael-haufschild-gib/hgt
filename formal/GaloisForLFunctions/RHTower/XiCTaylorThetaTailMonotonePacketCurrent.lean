@@ -8,14 +8,6 @@ namespace RHTower
 
 noncomputable section
 
-lemma norm_spectralTranslationPhase_eq_exp_neg_mul_im
-    (t : ℝ) (z : ℂ) :
-    ‖spectralTranslationPhase t z‖ = Real.exp (-t * z.im) := by
-  unfold spectralTranslationPhase
-  rw [Complex.norm_exp]
-  congr 1
-  simp [Complex.mul_re]
-
 lemma mul_exp_neg_le_one_sub_exp_neg_div
     {t y : ℝ} (ht : 0 ≤ t) (hy : 0 < y) :
     t * Real.exp (-t * y) ≤

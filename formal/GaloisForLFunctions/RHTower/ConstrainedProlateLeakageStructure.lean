@@ -33,11 +33,6 @@ open Filter
 
 namespace RHTower
 
-private theorem div_le_div_of_le_of_pos₄ {a b c : ℝ} (h : a ≤ b) (hc : 0 < c) :
-    a / c ≤ b / c := by
-  rw [div_le_iff₀ hc, div_mul_cancel₀ _ hc.ne']
-  exact h
-
 /-! ## Step-four comparison of Fuchs rates -/
 
 /-- One ladder step beats any constant ratio: the Fuchs rate at index `n + 4` dominates the one
@@ -140,7 +135,7 @@ theorem FuchsEnvelope.ratio_tendsto_zero (h : FuchsEnvelope D e) (j : ℕ) :
   have hF2pos : 0 < fuchsRate c (e (j + 1)) lam := fuchsRate_pos hc _ hlam
   have hD1pos : 0 < D lam (j + 1) := lt_of_lt_of_le hF2pos hl
   calc D lam j / D lam (j + 1)
-      ≤ fuchsRate C (e j) lam / D lam (j + 1) := div_le_div_of_le_of_pos₄ hu hD1pos
+      ≤ fuchsRate C (e j) lam / D lam (j + 1) := div_le_div_of_le_of_pos hu hD1pos
     _ ≤ fuchsRate C (e j) lam / fuchsRate c (e (j + 1)) lam :=
         div_le_div_of_nonneg_left (fuchsRate_pos hC _ hlam).le hF2pos hl
     _ = C / c * (lam ^ 8)⁻¹ := by
@@ -177,7 +172,7 @@ theorem FuchsEnvelope.tail_tendsto_zero (h : FuchsEnvelope D e) (j : ℕ) :
       mul_le_mul_of_nonneg_left hu hlam.le
     calc lam * D lam (j + 1) / (D lam (j + 2) - D lam (j + 1))
         ≤ lam * fuchsRate C (e (j + 1)) lam / (D lam (j + 2) - D lam (j + 1)) :=
-          div_le_div_of_le_of_pos₄ hnum (lt_of_lt_of_le hdenpos hden)
+          div_le_div_of_le_of_pos hnum (lt_of_lt_of_le hdenpos hden)
       _ ≤ lam * fuchsRate C (e (j + 1)) lam / (fuchsRate c (e (j + 2)) lam / 2) :=
           div_le_div_of_nonneg_left
             (mul_nonneg hlam.le hF1pos.le) hdenpos hden

@@ -8,39 +8,6 @@ open Complex Real Metric Set
 
 noncomputable section
 
-theorem hasDerivAt_log_norm_complex {f : ℝ → ℂ} {f' : ℂ} {x : ℝ}
-    (hf : HasDerivAt f f' x) (h0 : f x ≠ 0) :
-    HasDerivAt (fun y => Real.log ‖f y‖) (f' / f x).re x := by
-  have hre : HasDerivAt (fun y => (f y).re) f'.re x :=
-    Complex.reCLM.hasFDerivAt.comp_hasDerivAt x hf
-  have him : HasDerivAt (fun y => (f y).im) f'.im x :=
-    Complex.imCLM.hasFDerivAt.comp_hasDerivAt x hf
-  let B : ℝ := 2 * ((f x).re * f'.re + (f x).im * f'.im)
-  have hnsq : HasDerivAt (fun y => Complex.normSq (f y)) B x := by
-    have h := (hre.mul hre).add (him.mul him)
-    have heq : (fun y => Complex.normSq (f y)) =
-        fun y => (f y).re * (f y).re + (f y).im * (f y).im := by
-      funext y
-      rw [Complex.normSq_apply]
-    rw [heq]
-    convert h using 1
-    dsimp [B]
-    ring
-  have hnsq0 : Complex.normSq (f x) ≠ 0 := fun h => h0 (Complex.normSq_eq_zero.mp h)
-  have hlog := (Real.hasDerivAt_log hnsq0).comp x hnsq
-  have hhalf := hlog.const_mul (1 / 2 : ℝ)
-  simp only [Function.comp_apply] at hhalf
-  have heq : (fun y => (1 / 2 : ℝ) * Real.log (Complex.normSq (f y))) =
-      fun y => Real.log ‖f y‖ := by
-    funext y
-    rw [Complex.normSq_eq_norm_sq, Real.log_pow]
-    ring
-  rw [heq] at hhalf
-  convert hhalf using 1
-  rw [Complex.div_re]
-  dsimp [B]
-  field_simp [Complex.normSq_apply]
-
 theorem hasDerivAt_stripPt_horizontal (τ σ : ℝ) :
     HasDerivAt (fun x : ℝ => stripPt x τ) 1 σ := by
   unfold stripPt
@@ -55,7 +22,7 @@ theorem hasDerivAt_log_norm_archFactor_horizontal {σ τ : ℝ}
       (archFactorDeriv (stripPt σ τ)) σ := by
     simpa using (hasDerivAt_archFactor_of_re_pos hre).comp σ
       (hasDerivAt_stripPt_horizontal τ σ)
-  have h := hasDerivAt_log_norm_complex harch (archFactor_stripPt_ne_zero hσ hτ)
+  have h := GaloisForLFunctions.HTGeometry.hasDerivAt_log_norm_complex harch (archFactor_stripPt_ne_zero hσ hτ)
   simpa [stripWindingRate, stripWinding] using h
 
 theorem log_norm_archFactor_horizontal_strictMonoOn {τ : ℝ} (hτ : 12 ≤ τ) :

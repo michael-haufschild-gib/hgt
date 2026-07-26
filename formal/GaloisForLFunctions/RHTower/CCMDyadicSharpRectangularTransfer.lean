@@ -23,48 +23,6 @@ noncomputable section
 
 namespace RHTower
 
-private theorem dyadicTransfer_measurable_criticalMellinPrimeMass :
-    Measurable criticalMellinPrimeMass := by
-  let F : ℕ → ℝ := fun m =>
-    ∑ k ∈ Finset.Icc 0 m,
-      ((k : ℝ) ^ (-1 / 2 : ℝ)) * ArithmeticFunction.vonMangoldt k
-  have hF : Measurable F := measurable_of_countable F
-  have hfloor : Measurable (fun h : ℝ => ⌊Real.exp h⌋₊) :=
-    Real.measurable_exp.nat_floor
-  change Measurable (fun h : ℝ => F ⌊Real.exp h⌋₊)
-  exact hF.comp hfloor
-
-private theorem dyadicTransfer_criticalMellinPrimeMass_nonneg (h : ℝ) :
-    0 ≤ criticalMellinPrimeMass h := by
-  rw [criticalMellinPrimeMass]
-  exact Finset.sum_nonneg fun k _ =>
-    mul_nonneg (Real.rpow_nonneg (Nat.cast_nonneg k) _)
-      ArithmeticFunction.vonMangoldt_nonneg
-
-private theorem dyadicTransfer_criticalMellinPrimeMass_mono :
-    Monotone criticalMellinPrimeMass := by
-  intro a b hab
-  rw [criticalMellinPrimeMass, criticalMellinPrimeMass]
-  apply Finset.sum_le_sum_of_subset_of_nonneg
-  · intro k hk
-    simp only [Finset.mem_Icc] at hk ⊢
-    exact ⟨hk.1, hk.2.trans (Nat.floor_mono (Real.exp_le_exp.mpr hab))⟩
-  · intro k _ _
-    exact mul_nonneg (Real.rpow_nonneg (Nat.cast_nonneg k) _)
-      ArithmeticFunction.vonMangoldt_nonneg
-
-private theorem dyadicTransfer_integrableOn_criticalMellinPrimeMass_Ioc
-    {a b : ℝ} :
-    IntegrableOn criticalMellinPrimeMass (Ioc a b) := by
-  have hg : Integrable (fun _ : ℝ => criticalMellinPrimeMass b)
-      (volume.restrict (Ioc a b)) :=
-    integrableOn_const (ne_of_lt measure_Ioc_lt_top)
-  refine hg.mono' ?_ ?_
-  · exact dyadicTransfer_measurable_criticalMellinPrimeMass.aestronglyMeasurable
-  · filter_upwards [ae_restrict_mem measurableSet_Ioc] with h hh
-    rw [Real.norm_eq_abs, abs_of_nonneg (dyadicTransfer_criticalMellinPrimeMass_nonneg h)]
-    exact dyadicTransfer_criticalMellinPrimeMass_mono hh.2
-
 private theorem dyadicTransfer_integrableOn_criticalMellinCompletedError_Ioc
     {a b : ℝ} :
     IntegrableOn criticalMellinCompletedError (Ioc a b) := by
@@ -77,7 +35,7 @@ private theorem dyadicTransfer_integrableOn_criticalMellinCompletedError_Ioc
       (Real.continuous_sinh.comp
         (continuous_id.div_const 2))).continuousOn.integrableOn_Icc.mono_set
           (fun h hh => ⟨hh.1.le, hh.2⟩)
-  · exact dyadicTransfer_integrableOn_criticalMellinPrimeMass_Ioc
+  · exact integrableOn_criticalMellinPrimeMass_Ioc
 
 private theorem dyadicTransfer_integrableOn_comp_sub_Ioc
     (f : ℝ → ℝ) (a b L : ℝ)

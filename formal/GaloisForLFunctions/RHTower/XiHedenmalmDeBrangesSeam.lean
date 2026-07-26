@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.XiHedenmalmMultiplicityChain
+import GaloisForLFunctions.RHTower.XiHedenmalmMultiplicityFourierBridge
 import GaloisForLFunctions.HTGeometry.ReflectedDividedDifference
 
 /-!

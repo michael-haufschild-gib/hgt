@@ -27,19 +27,6 @@ def thetaCuspPrimitiveRayCartesianCoreIntegrand
   thetaCuspPrimitiveRayDensityPair a b p *
     xiCTaylorThetaTailCorePairCurrent d z p
 
-private theorem summable_thetaCuspTailSecondDensityAtom_all (x : ℝ) :
-    Summable (fun n : ℕ => thetaCuspTailSecondDensityAtom (n + 1) x) := by
-  unfold thetaCuspTailSecondDensityAtom
-  simpa only using (summable_thetaCuspTailDerivative 2 x).mul_left 4
-
-private theorem summable_thetaCuspTailSecondDensityAtom_pair_all (x y : ℝ) :
-    Summable (fun q : ℕ × ℕ =>
-      thetaCuspTailSecondDensityAtom (q.1 + 1) x *
-        thetaCuspTailSecondDensityAtom (q.2 + 1) y) :=
-  summable_mul_of_summable_norm
-    (summable_thetaCuspTailSecondDensityAtom_all x).norm
-    (summable_thetaCuspTailSecondDensityAtom_all y).norm
-
 private theorem continuous_thetaCuspTailSecondDensityAtom_all (n : ℕ) :
     Continuous (thetaCuspTailSecondDensityAtom n) := by
   unfold thetaCuspTailSecondDensityAtom
@@ -99,7 +86,7 @@ theorem thetaCuspPrimitiveRayDensityPair_le_full
   let i : ℕ → ℕ × ℕ := fun g =>
     ((a * (g + 1)).pred, (b * (g + 1)).pred)
   have hFsum : Summable F :=
-    summable_thetaCuspTailSecondDensityAtom_pair_all p.1 p.2
+    summable_thetaCuspTailSecondDensityAtom_pair p.1 p.2
   have hF0 (q : ℕ × ℕ) : 0 ≤ F q := by
     exact mul_nonneg
       (thetaCuspTailSecondDensityAtom_pos (Nat.succ_pos q.1) hp.1.le).le

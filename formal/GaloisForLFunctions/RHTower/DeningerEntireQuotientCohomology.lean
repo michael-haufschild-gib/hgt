@@ -1,4 +1,3 @@
-import GaloisForLFunctions.RHTower.DeningerPrimeGammaPoincareDuality
 import GaloisForLFunctions.RHTower.XiHedenmalmMultiplicityChain
 
 /-!

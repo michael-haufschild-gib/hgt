@@ -251,14 +251,6 @@ theorem thetaCuspShellGammaThreshold_productFiber
   push_cast
   ring
 
-private lemma norm_spectralTranslationPhase_eq_exp_neg_mul_im_gamma
-    (t : ℝ) (z : ℂ) :
-    ‖spectralTranslationPhase t z‖ = Real.exp (-t * z.im) := by
-  unfold spectralTranslationPhase
-  rw [Complex.norm_exp]
-  congr 1
-  simp [Complex.mul_re]
-
 /-- Every polynomial theta atom remains phase-integrable on a positive half-line whenever the
 phase growth stays below the atom's exponential envelope. -/
 theorem integrableOn_thetaCuspPolynomialAtom_mul_phase_of_neg_one_lt_im
@@ -283,7 +275,7 @@ theorem integrableOn_thetaCuspPolynomialAtom_mul_phase_of_neg_one_lt_im
         fun_prop)).aestronglyMeasurable.restrict
   · filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
     rw [norm_mul, Complex.norm_real,
-      norm_spectralTranslationPhase_eq_exp_neg_mul_im_gamma,
+      RHTower.norm_spectralTranslationPhase_eq_exp_neg_mul_im,
       Real.norm_eq_abs]
     rw [show -x * z.im = -z.im * x by ring]
     rw [Real.norm_eq_abs, abs_mul, abs_of_pos (Real.exp_pos _)]
@@ -313,7 +305,7 @@ theorem integrableOn_thetaCuspSourceTerm_mul_phase_of_neg_one_lt_im
       thetaCuspSourceTerm_nonneg_of_pos hx n
     rw [norm_mul, Complex.norm_real, Real.norm_eq_abs,
       abs_of_nonneg hsource0,
-      norm_spectralTranslationPhase_eq_exp_neg_mul_im_gamma,
+      RHTower.norm_spectralTranslationPhase_eq_exp_neg_mul_im,
       Real.norm_eq_abs,
       abs_of_nonneg (mul_nonneg (Real.exp_pos _).le hsource0)]
     rw [show -x * z.im = -z.im * x by ring]
@@ -506,7 +498,7 @@ theorem hasDerivAt_thetaCuspShellPhaseTransform
         abs_of_nonneg hsource0, norm_mul, norm_mul,
         Complex.norm_real, Real.norm_eq_abs,
         abs_of_nonneg hx0, norm_I, mul_one,
-        norm_spectralTranslationPhase_eq_exp_neg_mul_im_gamma]]
+        RHTower.norm_spectralTranslationPhase_eq_exp_neg_mul_im]]
     dsimp only [bound]
     simpa only [mul_assoc, mul_comm, mul_left_comm] using
       mul_le_mul_of_nonneg_left hosc hsource0
@@ -576,7 +568,7 @@ theorem norm_thetaCuspUniversalGammaPhaseIntegrand
   unfold thetaCuspUniversalGammaPhaseIntegrand
   rw [norm_mul, Complex.norm_real, Real.norm_eq_abs,
     abs_of_pos (thetaCuspUniversalGammaAmplitude_pos ht),
-    norm_spectralTranslationPhase_eq_exp_neg_mul_im_gamma]
+    RHTower.norm_spectralTranslationPhase_eq_exp_neg_mul_im]
 
 /-- Shell prefactor has critical-line weight `exp ((Im z - 1/2) log n)`;
 its norm is independent of `Re z`. -/
@@ -587,7 +579,7 @@ theorem norm_thetaCuspShellGammaDirichletPrefactor
       Real.exp ((z.im - 1 / 2) * Real.log (n : ℝ)) := by
   rw [norm_mul, Complex.norm_real, Real.norm_eq_abs,
     abs_of_pos (Real.exp_pos _),
-    norm_spectralTranslationPhase_eq_exp_neg_mul_im_gamma,
+    RHTower.norm_spectralTranslationPhase_eq_exp_neg_mul_im,
     ← Real.exp_add]
   congr 1
   ring
@@ -615,7 +607,7 @@ theorem norm_thetaCuspUniversalGammaCore
   unfold thetaCuspUniversalGammaCore
   rw [norm_mul, Complex.norm_real, Real.norm_eq_abs,
     abs_of_pos (mul_pos (Real.exp_pos _) (Real.exp_pos _)),
-    norm_spectralTranslationPhase_eq_exp_neg_mul_im_gamma,
+    RHTower.norm_spectralTranslationPhase_eq_exp_neg_mul_im,
     Real.rpow_def_of_pos ht]
   calc
     (Real.exp (Real.log t / 4) * Real.exp (-Real.pi * t)) *
@@ -1501,7 +1493,7 @@ theorem hasDerivAt_thetaCuspShellWardPhaseTransform
         abs_of_nonneg hW0, norm_mul, norm_mul,
         Complex.norm_real, Real.norm_eq_abs,
         abs_of_nonneg hx0, norm_I, mul_one,
-        norm_spectralTranslationPhase_eq_exp_neg_mul_im_gamma]]
+        RHTower.norm_spectralTranslationPhase_eq_exp_neg_mul_im]]
     dsimp only [bound]
     simpa only [mul_assoc, mul_comm, mul_left_comm] using
       mul_le_mul_of_nonneg_left hosc hW0
@@ -1550,7 +1542,7 @@ theorem tendsto_thetaCuspWardGibbsAtom_mul_phase_atTop_zero
   filter_upwards with x
   unfold thetaCuspWardGibbsAtom
   simp only [norm_mul, Complex.norm_real, Real.norm_eq_abs]
-  rw [norm_spectralTranslationPhase_eq_exp_neg_mul_im_gamma,
+  rw [RHTower.norm_spectralTranslationPhase_eq_exp_neg_mul_im,
     abs_of_pos (Real.exp_pos _)]
   congr 2
   ring
@@ -8439,7 +8431,7 @@ theorem integrableOn_thetaCuspWard_phaseSpectralDerivative_tilted
       abs_of_nonneg hW0, norm_mul, norm_mul,
       Complex.norm_real, Real.norm_eq_abs,
       abs_of_nonneg hx0, norm_I, mul_one,
-      norm_spectralTranslationPhase_eq_exp_neg_mul_im_gamma]
+      RHTower.norm_spectralTranslationPhase_eq_exp_neg_mul_im]
     simp only [sub_im, ofReal_im, mul_im, ofReal_re,
       I_re, I_im, zero_sub, zero_mul, mul_one]
     have hd0 : 0 ≤ thetaCuspTiltedWardDensity a n x :=

@@ -15,7 +15,7 @@ noncomputable section
 
 namespace RHTower
 
-private theorem measurable_criticalMellinPrimeMass :
+theorem measurable_criticalMellinPrimeMass :
     Measurable criticalMellinPrimeMass := by
   let F : ℕ → ℝ := fun m =>
     ∑ k ∈ Finset.Icc 0 m,
@@ -26,14 +26,14 @@ private theorem measurable_criticalMellinPrimeMass :
   change Measurable (fun h : ℝ => F ⌊Real.exp h⌋₊)
   exact hF.comp hfloor
 
-private theorem criticalMellinPrimeMass_nonneg (h : ℝ) :
+theorem criticalMellinPrimeMass_nonneg (h : ℝ) :
     0 ≤ criticalMellinPrimeMass h := by
   rw [criticalMellinPrimeMass]
   exact Finset.sum_nonneg fun k _ =>
     mul_nonneg (Real.rpow_nonneg (Nat.cast_nonneg k) _)
       ArithmeticFunction.vonMangoldt_nonneg
 
-private theorem criticalMellinPrimeMass_mono :
+theorem criticalMellinPrimeMass_mono :
     Monotone criticalMellinPrimeMass := by
   intro a b hab
   rw [criticalMellinPrimeMass, criticalMellinPrimeMass]
@@ -45,7 +45,7 @@ private theorem criticalMellinPrimeMass_mono :
     exact mul_nonneg (Real.rpow_nonneg (Nat.cast_nonneg k) _)
       ArithmeticFunction.vonMangoldt_nonneg
 
-private theorem integrableOn_criticalMellinPrimeMass_Ioc
+theorem integrableOn_criticalMellinPrimeMass_Ioc
     {a b : ℝ} :
     IntegrableOn criticalMellinPrimeMass (Ioc a b) := by
   have hg : Integrable (fun _ : ℝ => criticalMellinPrimeMass b)

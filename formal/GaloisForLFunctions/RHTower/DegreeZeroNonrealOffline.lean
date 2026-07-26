@@ -69,22 +69,6 @@ theorem dzoQuartic_fe (s : ℂ) :
 
 /-! ## Integer multiplicative coefficient stream -/
 
-private theorem coprime_mul_two_pow_quartic (a b : ℕ) (hab : Nat.Coprime a b) (e : ℕ)
-    (hprod : a * b = 2 ^ e) : a = 1 ∨ b = 1 := by
-  by_contra hcon
-  rw [not_or] at hcon
-  obtain ⟨ha1, hb1⟩ := hcon
-  have hda : a ∣ 2 ^ e := ⟨b, hprod.symm⟩
-  have hdb : b ∣ 2 ^ e := ⟨a, by rw [mul_comm]; exact hprod.symm⟩
-  obtain ⟨i, _, rfl⟩ := (Nat.dvd_prime_pow Nat.prime_two).mp hda
-  obtain ⟨j, _, rfl⟩ := (Nat.dvd_prime_pow Nat.prime_two).mp hdb
-  have hi : i ≠ 0 := fun h => ha1 (by rw [h, pow_zero])
-  have hj : j ≠ 0 := fun h => hb1 (by rw [h, pow_zero])
-  have h2 : 2 ∣ Nat.gcd (2 ^ i) (2 ^ j) :=
-    Nat.dvd_gcd (dvd_pow_self 2 hi) (dvd_pow_self 2 hj)
-  rw [hab.gcd_eq_one] at h2
-  exact absurd h2 (by decide)
-
 /-- Integer coefficients supported on the single prime column at exponents `0, 8, 16`. -/
 def dzoQuarticCoeff : ArithmeticFunction ℂ :=
   ⟨fun n => if n = 1 then 1 else if n = 256 then 40 else if n = 65536 then 256 else 0,
@@ -116,14 +100,14 @@ theorem dzoQuarticCoeff_multiplicative :
       subst hn
       simp [dzoQuarticCoeff_apply]
     rcases eq_or_ne (m * n) 256 with h256 | h256
-    · rcases coprime_mul_two_pow_quartic m n hcop 8
+    · rcases coprime_mul_two_pow m n hcop 8
         (h256.trans (by norm_num)) with rfl | rfl
       · obtain rfl : n = 256 := by omega
         simp [dzoQuarticCoeff_apply]
       · obtain rfl : m = 256 := by omega
         simp [dzoQuarticCoeff_apply]
     rcases eq_or_ne (m * n) 65536 with h65536 | h65536
-    · rcases coprime_mul_two_pow_quartic m n hcop 16
+    · rcases coprime_mul_two_pow m n hcop 16
         (h65536.trans (by norm_num)) with rfl | rfl
       · obtain rfl : n = 65536 := by omega
         simp [dzoQuarticCoeff_apply]

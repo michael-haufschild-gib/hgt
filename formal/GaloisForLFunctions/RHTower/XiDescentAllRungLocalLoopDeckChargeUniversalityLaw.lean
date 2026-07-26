@@ -13,13 +13,6 @@ open Complex Set
 
 namespace RHTower
 
-/-- Descent preserves the local carrier charge at every dyadic rung. -/
-theorem carrierCharge_xiDescent_center_sq_allRungs {ρ : ℂ} (hρ : ρ ∈ rightHalf)
-    (k : ℕ) :
-    carrierCharge xiDescent k ((ρ - (1 / 2 : ℂ)) ^ 2) = carrierCharge xi k ρ := by
-  unfold carrierCharge
-  rw [analyticOrderAt_xiDescent_center_sq hρ]
-
 /-- **Xi-descent all-rung local-loop deck-charge universality law.** Around every right-half point,
 all sufficiently small circles about its descended image have a loop charge whose multiplicative
 deck character equals both the descended carrier charge and Xi's original carrier charge, at every
@@ -48,6 +41,6 @@ theorem deckChar_loopCharge_xiDescent_center_sq {ρ : ℂ} (hρ : ρ ∈ rightHa
         carrierCharge xi k ρ := by
     rw [loopCharge, hwind r hr hrR, deckChar_wCharge]
     rfl
-  exact ⟨hloop.trans (carrierCharge_xiDescent_center_sq_allRungs hρ k).symm, hloop⟩
+  exact ⟨hloop.trans (xiDescent_carrierCharge_center_sq hρ k).symm, hloop⟩
 
 end RHTower

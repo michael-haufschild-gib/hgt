@@ -6,6 +6,7 @@ import GaloisForLFunctions.RHTower.SoninSemilocalGammaShiftedKernel
 import GaloisForLFunctions.RHTower.CompletedPrimeFluxFittingAttachment
 import Mathlib.Analysis.MellinInversion
 import Mathlib.MeasureTheory.Function.LpSeminorm.LpNorm
+import GaloisForLFunctions.HTGeometry.GammaAnalyticOffPoles
 
 /-!
 # Exact Mellin--Plancherel bridge for the Möbius--Laplace source
@@ -702,27 +703,6 @@ theorem analyticOnNhd_mellin_mobiusDiscreteLaplaceTransform_of_base
   exact (differentiableAt_mellin_mobiusDiscreteLaplaceTransform_of_base hbase hs)
     |>.differentiableWithinAt
 
-private theorem analyticAt_Gamma_of_re_pos_mellinBridge {s : ℂ} (hs : 0 < s.re) :
-    AnalyticAt ℂ Complex.Gamma s := by
-  have hinv : AnalyticAt ℂ (fun z => (Complex.Gamma z)⁻¹) s :=
-    (Complex.differentiable_one_div_Gamma.differentiableOn.analyticOnNhd isOpen_univ)
-      s (mem_univ s)
-  have h := hinv.inv (inv_ne_zero (Complex.Gamma_ne_zero_of_re_pos hs))
-  change AnalyticAt ℂ (fun z => ((Complex.Gamma z)⁻¹)⁻¹) s at h
-  simpa using h
-
-private theorem analyticAt_zetaResidueUnit_mellinBridge (s : ℂ) :
-    AnalyticAt ℂ zetaResidueUnit s := by
-  by_cases hs : s = 1
-  · simpa [hs] using zetaResidueUnit_analyticAt
-  · have hdiff : DifferentiableOn ℂ (fun z => (z - 1) * riemannZeta z) ({1}ᶜ) := by
-      intro z hz
-      exact (differentiableAt_id.sub_const 1).mul
-        (differentiableAt_riemannZeta (by simpa using hz)) |>.differentiableWithinAt
-    have han : AnalyticAt ℂ (fun z => (z - 1) * riemannZeta z) s :=
-      (hdiff.analyticOnNhd isOpen_compl_singleton) s (by simpa using hs)
-    exact han.congr (zetaResidueUnit_eventuallyEq hs).symm
-
 /-- One finite base energy propagates the denominator-free classical identity from `Re s > 1`
 to the full energy half-plane. -/
 theorem mellin_mobiusDiscreteLaplaceTransform_mul_zetaResidueUnit_eq_of_base
@@ -737,11 +717,11 @@ theorem mellin_mobiusDiscreteLaplaceTransform_mul_zetaResidueUnit_eq_of_base
     analyticOnNhd_mellin_mobiusDiscreteLaplaceTransform_of_base hbase
   have hleft : AnalyticOnNhd ℂ (fun s => G s * zetaResidueUnit s) U := by
     intro s hs
-    exact (hG s hs).mul (analyticAt_zetaResidueUnit_mellinBridge s)
+    exact (hG s hs).mul (RHTower.analyticAt_zetaResidueUnit s)
   have hright : AnalyticOnNhd ℂ (fun s => Complex.Gamma s * (s - 1)) U := by
     intro s hs
     have hspos : 0 < s.re := hsigma.trans (show sigma < s.re from hs)
-    exact (analyticAt_Gamma_of_re_pos_mellinBridge hspos).mul
+    exact (HTGeometry.analyticAt_Gamma_of_re_pos hspos).mul
       (analyticAt_id.sub analyticAt_const)
   let A : ℝ := max sigma 1 + 1
   have hAone : 1 < A := by dsimp only [A]; linarith [le_max_right sigma 1]

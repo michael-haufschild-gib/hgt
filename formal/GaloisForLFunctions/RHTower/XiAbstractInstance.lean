@@ -26,25 +26,10 @@ namespace RHTower
 
 noncomputable section
 
-/-- Every admissible family over the Xi divisor is an abstract spectral family. -/
-def SpectralFamily.toAbstract (F : SpectralFamily) :
-    HTGeometry.AbstractSpectralFamily XiZeroCopy where
-  pt := F.pt
-  inv := xiZeroCopyLineConjEquiv
-  base := F.base
-  base_pos := F.base_pos
-  base_le := F.base_le
-  abs_im_lt := F.abs_im_lt
-  summable_weight := fun hσ => F.summable_weight hσ
-  shell_finite := F.shell_finite
-  conj_stable := F.conj_stable
-
-theorem SpectralFamily.toAbstract_traceC (F : SpectralFamily) (τ : ℂ) :
-    F.toAbstract.traceC τ = F.traceC τ := rfl
-
-/-- The Poisson family of the Xi divisor as an abstract spectral family. -/
+/-- The Poisson family of the Xi divisor as an abstract spectral family.  No transport is needed:
+`RHTower.SpectralFamily` *is* `HTGeometry.AbstractSpectralFamily XiZeroCopy`. -/
 def xiPoissonAbstract : HTGeometry.AbstractSpectralFamily XiZeroCopy :=
-  (xiPoissonFamily xiPoissonBottomHeight_pos).toAbstract
+  xiPoissonFamily xiPoissonBottomHeight_pos
 
 theorem xiPoissonAbstract_pt (q : XiZeroCopy) : xiPoissonAbstract.pt q = xiPoissonPoint q := rfl
 
@@ -72,7 +57,6 @@ reference to zeta. -/
 theorem riemannHypothesis_of_abstract_line_bound {σ C : ℝ} (hσ : 0 < σ)
     (hline : ∀ x : ℝ, ‖xiPoissonAbstract.traceC ((σ : ℂ) + (x : ℂ) * I)‖ ≤ C) :
     RiemannHypothesis := by
-  letI : Nonempty XiZeroCopy := nonempty_xiZeroCopy
   have hall := xiPoissonAbstract.im_eq_zero_of_line_bound_all hσ hline
   exact riemannHypothesis_of_xiSpectralPoint_real
     (xiSpectralPoint_real_of_xiPoissonPoint_im_eq_zero hall)
@@ -83,7 +67,6 @@ theorem abs_re_sub_half_le_of_abstract_line_growth {σ C lam : ℝ} (hσ : 0 < �
     (hline : ∀ x : ℝ,
       ‖xiPoissonAbstract.traceC ((σ : ℂ) + (x : ℂ) * I)‖ ≤ C * Real.exp (lam * |x|))
     (q : XiZeroCopy) : |(xiSpectralPoint q).im| ≤ lam := by
-  letI : Nonempty XiZeroCopy := nonempty_xiZeroCopy
   have hall := xiPoissonAbstract.abs_im_le_of_line_growth_all hσ hlam hline q
   rw [xiPoissonAbstract_pt, xiPoissonPoint] at hall
   split_ifs at hall with hc
@@ -103,7 +86,6 @@ theorem xiPoissonAbstract_defect (σ : ℝ) :
 
 theorem xiPoissonPoint_im_eq_zero_of_riemannHypothesis (hRH : RiemannHypothesis)
     (q : XiZeroCopy) : (xiPoissonPoint q).im = 0 := by
-  letI : Nonempty XiZeroCopy := nonempty_xiZeroCopy
   obtain ⟨σ, C, hσ, hline⟩ := riemannHypothesis_iff_exists_xiPoissonTrace_line_bound.mp hRH
   exact xiPoissonAbstract.im_eq_zero_of_line_bound_all hσ hline q
 
@@ -177,7 +159,6 @@ vanishing of the weighted second moment of the distance of the zeros from the cr
 theorem riemannHypothesis_iff_xiPoissonEnergy_eq_zero {σ : ℝ} (hσ : 0 < σ)
     (hσ' : σ ≤ 2 * Real.pi) :
     RiemannHypothesis ↔ xiPoissonAbstract.energy σ = 0 := by
-  letI : Nonempty XiZeroCopy := nonempty_xiZeroCopy
   constructor
   · intro hRH
     exact (xiPoissonAbstract.im_eq_zero_iff_energy_eq_zero hσ hσ').mp
@@ -201,7 +182,6 @@ the Poisson trace of the Xi divisor is not smaller than its own majorant at one 
 theorem riemannHypothesis_iff_xiPoissonTraceReal_le {σ : ℝ} (hσ : 0 < σ)
     (hle : σ ≤ 4 * Real.pi) :
     RiemannHypothesis ↔ xiPoissonTraceReal σ ≤ (xiPoissonTraceC (σ : ℂ)).re := by
-  letI : Nonempty XiZeroCopy := nonempty_xiZeroCopy
   have hiff := xiPoissonAbstract.im_eq_zero_iff_traceReal_le hσ hle
   constructor
   · intro hRH

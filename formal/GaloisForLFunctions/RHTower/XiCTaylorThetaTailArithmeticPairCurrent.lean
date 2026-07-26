@@ -156,12 +156,12 @@ def xiCTaylorThetaTailCoreAtomPairCorrelationKernel
     thetaCuspTailSecondDensityAtom (q.2 + 1) p.2 *
       xiCTaylorThetaTailCorePairCurrent d z p
 
-private theorem summable_thetaCuspTailSecondDensityAtom (x : ℝ) :
+theorem summable_thetaCuspTailSecondDensityAtom (x : ℝ) :
     Summable (fun n : ℕ => thetaCuspTailSecondDensityAtom (n + 1) x) := by
   unfold thetaCuspTailSecondDensityAtom
   simpa only using (summable_thetaCuspTailDerivative 2 x).mul_left 4
 
-private theorem summable_thetaCuspTailSecondDensityAtom_pair (x y : ℝ) :
+theorem summable_thetaCuspTailSecondDensityAtom_pair (x y : ℝ) :
     Summable (fun q : ℕ × ℕ =>
       thetaCuspTailSecondDensityAtom (q.1 + 1) x *
         thetaCuspTailSecondDensityAtom (q.2 + 1) y) :=

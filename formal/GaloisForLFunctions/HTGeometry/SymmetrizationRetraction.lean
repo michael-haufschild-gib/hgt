@@ -84,11 +84,6 @@ theorem demand_average_is_mu (c κ lam : ℚ) :
       = epMu κ lam := by
   unfold covDemandOfPair covFunctional procB_fst procB_snd epMu; ring
 
-/-- **At the critical scale the pair itself already equals its retract.** -/
-theorem demand_at_critical_is_mu (κ lam : ℚ) :
-    covDemandOfPair (1 / 2) κ lam = epMu κ lam := by
-  unfold covDemandOfPair covFunctional epMu; ring
-
 /-! ### The line of symmetry carries everything -/
 
 /-- **Reaching the target on the critical line is exactly reaching it on the line of symmetry.** -/

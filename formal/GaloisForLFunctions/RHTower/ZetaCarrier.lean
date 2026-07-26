@@ -69,14 +69,6 @@ theorem analyticOrderAt_one_sub (f : ℂ → ℂ) (z : ℂ) :
 /-- The length-`N` Dirichlet polynomial `Σ_{1≤n≤N} n^{−s}`. -/
 noncomputable def dirichletPoly (N : ℕ) : ℂ → ℂ := fun s => ∑ n ∈ Finset.Icc 1 N, (n : ℂ) ^ (-s)
 
-private lemma natCast_cpow_conj' (a : ℕ) (s : ℂ) :
-    (a : ℂ) ^ ((starRingEnd ℂ) s) = (starRingEnd ℂ) ((a : ℂ) ^ s) := by
-  have harg : (a : ℂ).arg ≠ Real.pi := by
-    rw [← Complex.ofReal_natCast, Complex.arg_ofReal_of_nonneg (Nat.cast_nonneg a)]
-    exact Ne.symm Real.pi_ne_zero
-  have h := Complex.cpow_conj (a : ℂ) s harg
-  rwa [map_natCast] at h
-
 theorem dirichletPoly_differentiable (N : ℕ) : Differentiable ℂ (dirichletPoly N) := by
   have h : Differentiable ℂ (∑ n ∈ Finset.Icc 1 N, fun s : ℂ => (n : ℂ) ^ (-s)) := by
     apply Differentiable.sum
@@ -94,7 +86,7 @@ theorem dirichletPoly_conj (N : ℕ) (s : ℂ) :
   unfold dirichletPoly
   rw [map_sum]
   refine Finset.sum_congr rfl fun n _ => ?_
-  rw [← map_neg, natCast_cpow_conj']
+  rw [← map_neg, natCast_cpow_conj]
 
 /-! ### §3 The concrete χ of ζ -/
 

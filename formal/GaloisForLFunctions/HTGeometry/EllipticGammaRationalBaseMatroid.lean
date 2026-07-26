@@ -50,7 +50,7 @@ local instance ellipticGammaRationalBaseMeroCharZero :
   charZero_of_injective_algebraMap
     (algebraMap ℂ (meroField Set.univ)).injective
 
-private theorem meroField_deriv_algebraMap_complex_rationalBase (c : ℂ) :
+theorem meroField_deriv_algebraMap_complex_rationalBase (c : ℂ) :
     (algebraMap ℂ (meroField Set.univ) c)′ = 0 := by
   change
     (algebraMap (analyticSubring Set.univ) (meroField Set.univ)

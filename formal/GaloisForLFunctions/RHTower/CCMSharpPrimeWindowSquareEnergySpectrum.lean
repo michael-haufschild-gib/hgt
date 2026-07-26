@@ -27,20 +27,6 @@ def squarePrimeWindowPositiveExcessDirichletCoefficient (m : ℕ) : ℂ :=
 def squarePrimeWindowPositiveExcessSquareDirichletCoefficient (m : ℕ) : ℂ :=
   (((dyadicWeightedPrimeWindowPositiveExcess (m ^ 2)) ^ 2 : ℝ) : ℂ)
 
-private theorem realDirichletWeightedTerm_summable_of_nonnegative_LSeriesSummable
-    {f : ℕ → ℝ} (hf : ∀ n, 0 ≤ f n) {sigma : ℝ}
-    (h : LSeriesSummable (fun n => ((f n : ℝ) : ℂ)) (sigma : ℂ)) :
-    Summable (realDirichletWeightedTerm f sigma) := by
-  have hnorm := h.norm
-  apply hnorm.congr
-  intro n
-  by_cases hn : n = 0
-  · subst n
-    simp [realDirichletWeightedTerm]
-  · rw [LSeries.term_of_ne_zero hn, norm_div, norm_real,
-      Real.norm_of_nonneg (hf n), realDirichletWeightedTerm, if_neg hn,
-      Complex.norm_cpow_real, Complex.norm_natCast]
-
 /-- **Fixed-abscissa square-energy zero-free law.**  Critical square-sample energy at exponent
 `1 + 2*alpha` places the complete Xi divisor in `Re rho <= 1/2 + alpha`. -/
 theorem xi_zero_re_le_half_add_of_squarePrimeWindowPositiveExcessEnergy
@@ -236,7 +222,7 @@ theorem four_mul_xi_zero_re_sub_one_le_squarePrimeWindowPositiveExcessSquare_abs
       (realDirichletWeightedTerm
         (fun m => (dyadicWeightedPrimeWindowPositiveExcess (m ^ 2)) ^ 2)
         sigma) :=
-    realDirichletWeightedTerm_summable_of_nonnegative_LSeriesSummable
+    realDirichletWeightedTerm_summable_of_LSeriesSummable
       (fun m => sq_nonneg (dyadicWeightedPrimeWindowPositiveExcess (m ^ 2)))
       hSquareLSeries
   let alpha : ℝ := (sigma - 1) / 4

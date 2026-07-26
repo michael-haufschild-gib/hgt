@@ -104,19 +104,6 @@ private theorem gammaJordanPolynomialFourier_const_mul
   simp
   ring
 
-private theorem gammaJacobiPolynomial_two_recurrence (s : ℝ) :
-    semilocalArchimedeanJacobiCoefficient 0 *
-        semilocalArchimedeanJacobiCoefficient 1 *
-          (semilocalArchimedeanJacobiPolynomial 2).eval s =
-      s ^ 2 - semilocalArchimedeanJacobiCoefficient 0 ^ 2 := by
-  have hrec := semilocalArchimedeanJacobiPolynomial_eval_recurrence 0 s
-  rw [semilocalArchimedeanJacobiPolynomial_eval_zero,
-    semilocalArchimedeanJacobiPolynomial_eval_one] at hrec
-  have ha0 : semilocalArchimedeanJacobiCoefficient 0 ≠ 0 :=
-    (semilocalArchimedeanJacobiCoefficient_pos 0).ne'
-  field_simp [ha0] at hrec
-  nlinarith
-
 private theorem two_mul_X_sq_eq_gammaJacobi_zero_add_two :
     C (2 : ℝ) * X ^ 2 =
       semilocalArchimedeanJacobiPolynomial 0 +
@@ -125,7 +112,7 @@ private theorem two_mul_X_sq_eq_gammaJacobi_zero_add_two :
             semilocalArchimedeanJacobiPolynomial 2 := by
   apply Polynomial.funext
   intro s
-  have hrec := gammaJacobiPolynomial_two_recurrence s
+  have hrec := RHTower.semilocalArchimedeanJacobiPolynomial_two_recurrence s
   have ha0 := semilocalArchimedeanJacobiCoefficient_sq 0
   norm_num at ha0
   simp only [eval_mul, eval_C, eval_pow, eval_X,

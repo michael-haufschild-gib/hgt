@@ -174,6 +174,31 @@ theorem
         sum_norm_sq_bourgainA6AffinePhysicalLocalTranslateCoefficients]
         using hbound
 
+/-- Finite-cover summation for translated affine physical cells. -/
+theorem
+    setLIntegral_le_card_mul_of_bourgainA6AffinePhysicalFundamentalCell_cover
+    {ι : Type*} [Fintype ι]
+    (A : Set BourgainPhaseSpace)
+    (H : ℕ) (G N₀ M D a b : ℝ)
+    (center : ι → BourgainPhaseSpace)
+    (f : BourgainPhaseSpace → ENNReal)
+    (hcover :
+      A ⊆ ⋃ i,
+        bourgainA6TranslatedAffinePhysicalFundamentalCell
+          H G N₀ M D a b (center i))
+    {B : ENNReal}
+    (hlocal :
+      ∀ i,
+        (∫⁻ x in bourgainA6TranslatedAffinePhysicalFundamentalCell
+          H G N₀ M D a b (center i), f x) ≤ B) :
+    (∫⁻ x in A, f x) ≤ (Fintype.card ι : ENNReal) * B := by
+  exact setLIntegral_le_card_mul_of_finite_cover
+    A
+    (fun i =>
+      bourgainA6TranslatedAffinePhysicalFundamentalCell
+        H G N₀ M D a b (center i))
+    f hcover hlocal
+
 end
 
 end RHTower

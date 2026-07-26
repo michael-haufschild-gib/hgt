@@ -30,12 +30,6 @@ open Filter Set
 
 namespace RHTower
 
-/-- Division by a fixed positive constant is monotone. -/
-private theorem div_le_div_of_le_of_pos₃ {a b c : ℝ} (h : a ≤ b) (hc : 0 < c) :
-    a / c ≤ b / c := by
-  rw [div_le_iff₀ hc, div_mul_cancel₀ _ hc.ne']
-  exact h
-
 variable {d ℓ : ℕ → ℝ}
 
 /-- **The head–constraint pairing is exactly the negative tail.**  At the exact ground root the
@@ -137,7 +131,7 @@ theorem secularVector_head_seed_defect_tendsto_zero
         + ℓ lam 1 * secularVector (d lam) (ℓ lam)
           (infiniteSecularRoot (d lam) (ℓ lam)) 1|
         ≤ 2 * lam / (d lam 2 - d lam 1) :=
-      le_trans habs (div_le_div_of_le_of_pos₃ hT2 hd21)
+      le_trans habs (div_le_div_of_le_of_pos hT2 hd21)
     calc (ℓ lam 0 * secularVector (d lam) (ℓ lam)
           (infiniteSecularRoot (d lam) (ℓ lam)) 0
         + ℓ lam 1 * secularVector (d lam) (ℓ lam)
@@ -155,7 +149,7 @@ theorem secularVector_head_seed_defect_tendsto_zero
       ≤ secularVector (d lam) (ℓ lam) (infiniteSecularRoot (d lam) (ℓ lam)) 0 ^ 2 := by
     have h1'' := secularVector_head_sq_ge (ℓ := ℓ lam) hd0 hrmem
     have h2'' : a0 ^ 2 / 2 / d lam 1 ^ 2 ≤ ℓ lam 0 ^ 2 / d lam 1 ^ 2 :=
-      div_le_div_of_le_of_pos₃ hbig (pow_pos hd1pos 2)
+      div_le_div_of_le_of_pos hbig (pow_pos hd1pos 2)
     exact le_trans h2'' h1''
   have hDfloor : 0 < a0 ^ 2 / 2 / d lam 1 ^ 2 * (a0 ^ 2 / 2) :=
     mul_pos hheadfloor (half_pos ha0sq)
@@ -189,7 +183,7 @@ theorem secularVector_head_seed_defect_tendsto_zero
         / ((secularVector (d lam) (ℓ lam) (infiniteSecularRoot (d lam) (ℓ lam)) 0 ^ 2
             + secularVector (d lam) (ℓ lam) (infiniteSecularRoot (d lam) (ℓ lam)) 1 ^ 2)
           * (ℓ lam 0 ^ 2 + ℓ lam 1 ^ 2)) :=
-        div_le_div_of_le_of_pos₃ hnum (lt_of_lt_of_le hDfloor hD_ge)
+        div_le_div_of_le_of_pos hnum (lt_of_lt_of_le hDfloor hD_ge)
     _ ≤ (2 * lam / (d lam 2 - d lam 1)) ^ 2
         / (a0 ^ 2 / 2 / d lam 1 ^ 2 * (a0 ^ 2 / 2)) :=
         div_le_div_of_nonneg_left (sq_nonneg _) hDfloor hD_ge

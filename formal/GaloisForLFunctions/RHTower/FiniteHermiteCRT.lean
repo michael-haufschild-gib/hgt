@@ -1,6 +1,8 @@
-import GaloisForLFunctions.RHTower.SimultaneousFiniteJetFlatness
 import Mathlib.RingTheory.Ideal.Quotient.Operations
+import Mathlib.Algebra.Polynomial.Derivative
 import Mathlib.Algebra.Polynomial.RingDivision
+import Mathlib.Analysis.Complex.Basic
+import Mathlib.Tactic
 
 /-!
 # Finite Hermite interpolation from the polynomial Chinese remainder theorem

@@ -22,26 +22,14 @@ def thetaCuspPrimitiveDirectionDensityPair
     thetaCuspTailSecondDensityAtom (q.1.1 * g) p.1 *
       thetaCuspTailSecondDensityAtom (q.1.2 * g) p.2
 
-private theorem summable_thetaCuspTailSecondDensityAtom_pnat_reassembly (x : ℝ) :
-    Summable (fun n : ℕ+ => thetaCuspTailSecondDensityAtom n x) := by
-  have hnat : Summable
-      (fun k : ℕ => thetaCuspTailSecondDensityAtom (k + 1) x) := by
-    unfold thetaCuspTailSecondDensityAtom
-    simpa only using (summable_thetaCuspTailDerivative 2 x).mul_left 4
-  have h := (Equiv.pnatEquivNat.summable_iff).mpr hnat
-  apply h.congr
-  intro n
-  simp only [Function.comp_apply, Equiv.pnatEquivNat_apply]
-  rw [PNat.natPred_add_one]
-
 private theorem summable_thetaCuspTailSecondDensityAtom_pair_pnat_reassembly
     (x y : ℝ) :
     Summable (fun q : ℕ+ × ℕ+ =>
       thetaCuspTailSecondDensityAtom q.1 x *
         thetaCuspTailSecondDensityAtom q.2 y) :=
   summable_mul_of_summable_norm
-    (summable_thetaCuspTailSecondDensityAtom_pnat_reassembly x).norm
-    (summable_thetaCuspTailSecondDensityAtom_pnat_reassembly y).norm
+    (summable_thetaCuspTailSecondDensityAtom_pnat x).norm
+    (summable_thetaCuspTailSecondDensityAtom_pnat y).norm
 
 /-- The family of complete primitive-direction densities is absolutely summable pointwise. -/
 theorem summable_thetaCuspPrimitiveDirectionDensityPair (p : ℝ × ℝ) :
@@ -304,6 +292,5 @@ theorem xiCTaylorThetaTailCore_current_eq_tsum_primitiveDirectionGlobalJoint
   exact integral_thetaCuspPrimitiveDirectionCoreIntegrand_eq_globalJoint q d z
 
 end
-
 
 end RHTower

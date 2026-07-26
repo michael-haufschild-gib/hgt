@@ -274,32 +274,6 @@ private theorem landau_integrable_transfer_of_momentsAbove
       hsource hb hbHalf hMom hr)
     hrho0 hrhoR
 
-private theorem density_sub_integrable_of_generic_transfer
-    (hsource : CCMFirstClockPublishedSourceNonnegative)
-    {r rho : ℝ}
-    (htransfer : Integrable (fun L : ℝ => Real.exp (rho * id L))
-      (ccmFirstClockLandauMeasure r)) :
-    IntegrableOn (ccmFirstClockLandauDensity (r - rho))
-      (Ioi (Real.pi / 2)) := by
-  have hmeas : AEMeasurable
-      (fun L => ENNReal.ofReal (ccmFirstClockLandauDensity r L))
-      (volume.restrict (Ioi (Real.pi / 2))) :=
-    (measurable_ccmFirstClockLandauDensity r).ennreal_ofReal
-      |>.aemeasurable.restrict
-  have hnonneg :=
-    ccmFirstClockLandauDensity_nonneg_ae hsource r
-  rw [ccmFirstClockLandauMeasure,
-    integrable_withDensity_iff_integrable_smul₀' hmeas
-      (Filter.Eventually.of_forall fun _ => ENNReal.ofReal_lt_top)] at htransfer
-  apply htransfer.congr
-  filter_upwards [ae_restrict_mem measurableSet_Ioi, hnonneg] with L hL hden
-  rw [ENNReal.toReal_ofReal hden]
-  simp only [id_eq, smul_eq_mul]
-  unfold ccmFirstClockLandauDensity
-  rw [show -(r - rho) * L = -r * L + rho * L by ring,
-    Real.exp_add]
-  ring
-
 /-- **Universal CCM Landau halving law.**  If the positive first-clock tail has all
 Laplace moments above `b`, normal continuation and the identity theorem force all moments
 above `b/2`. -/
@@ -338,7 +312,7 @@ theorem ccmFirstClockTailMomentsAbove_half
     landau_integrable_transfer_of_momentsAbove
       hsource hb hbHalf hMom hr hRhalf hrho0 hrhoR
   have hsub :=
-    density_sub_integrable_of_generic_transfer hsource htransfer
+    integrableOn_ccmFirstClockLandauDensity_sub_of_transfer hsource htransfer
   have hra : r - rho = a := by
     dsimp only [r, rho]
     ring

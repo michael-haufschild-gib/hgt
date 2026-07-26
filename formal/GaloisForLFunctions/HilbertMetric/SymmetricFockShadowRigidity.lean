@@ -227,15 +227,6 @@ theorem tightOperatorFamily_subspace_finrank_lt_iff_exists_adjoint_not_mem
 
 variable {I : Type*} [Fintype I] [DecidableEq I]
 
-private theorem symmetricFockAnnihilation_mem_loweringShadow
-    (n : ℕ) (U : Submodule ℝ (EuclideanSpace ℝ (Sym I (n + 1))))
-    (i : I) (x : EuclideanSpace ℝ (Sym I (n + 1))) (hx : x ∈ U) :
-    symmetricFockAnnihilation n i x ∈ symmetricFockLoweringShadow n U := by
-  apply (show U.map (symmetricFockAnnihilation n i) ≤
-      symmetricFockLoweringShadow n U from
-    le_iSup (fun j : I => U.map (symmetricFockAnnihilation n j)) i)
-  exact ⟨x, hx, rfl⟩
-
 /-- Equality in the symmetric-Fock shadow law is exactly closure under every creation operator. -/
 theorem symmetricFockLoweringShadow_finrank_eq_iff_adjoint_mem
     (n : ℕ) (U : Submodule ℝ (EuclideanSpace ℝ (Sym I (n + 1)))) :
@@ -253,7 +244,7 @@ theorem symmetricFockLoweringShadow_finrank_eq_iff_adjoint_mem
     (symmetricFockAnnihilation_energy n)
     (symmetricFockAnnihilation_adjoint_energy n)
     U (symmetricFockLoweringShadow n U)
-    (symmetricFockAnnihilation_mem_loweringShadow n U)
+    (annihilation_mem_loweringShadow n U)
 
 /-- Strict symmetric-Fock shadow expansion is exactly detected by a creation departure. -/
 theorem symmetricFockLoweringShadow_finrank_lt_iff_exists_adjoint_not_mem
@@ -272,7 +263,7 @@ theorem symmetricFockLoweringShadow_finrank_lt_iff_exists_adjoint_not_mem
     (symmetricFockAnnihilation_energy n)
     (symmetricFockAnnihilation_adjoint_energy n)
     U (symmetricFockLoweringShadow n U)
-    (symmetricFockAnnihilation_mem_loweringShadow n U)
+    (annihilation_mem_loweringShadow n U)
 
 /-- Equality in the weighted endpoint charge is exactly equality at every positive-weight step. -/
 theorem weightedFockShadowCharge_eq_iff
@@ -450,7 +441,6 @@ theorem gradedFockLoweringCharge_lt_iff_exists_level_defect
         (gradedFockLoweringCharge_eq_iff_levelwise_creator_closed M U hshadow).1
           heq n hn hnpos
       exact hyout (hclosed.2 i y hy)
-
 
 end
 

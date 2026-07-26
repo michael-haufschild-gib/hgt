@@ -234,10 +234,6 @@ private theorem continuousOn_logDeriv_XiC_comp {s : Set ℝ} {e : ℝ → ℂ} (
       (XiC_analytic (e x) (Set.mem_univ _)) (hne x hx)
   exact (hA.continuousAt.comp he.continuousAt).continuousWithinAt
 
-private theorem xiPacketMass_nonneg (w : ℂ) : 0 ≤ xiPacketMass w := by
-  unfold xiPacketMass
-  exact Nat.cast_nonneg _
-
 /-- The boundary integral of `f` around a coordinate rectangle is bounded by the four
 edgewise integrals of the norm. -/
 theorem norm_rectIntegral_le (f : ℂ → ℂ) {z₁ z₂ : ℂ}
@@ -403,7 +399,7 @@ private theorem vertical_edge_integral_le {γ c g M h x₀ : ℝ}
     obtain ⟨_, ⟨hwim1, hwim2⟩, _⟩ := (mem_heightFiber hc0.le).mp hw
     rw [intervalIntegral.integral_const_mul]
     exact mul_le_mul_of_nonneg_left
-      (integral_inv_sqrt_edge_le hh0 hwim1 hwim2) (xiPacketMass_nonneg w)
+      (integral_inv_sqrt_edge_le hh0 hwim1 hwim2) (RHTower.SlabConjugatedGermTheorem.xiPacketMass_nonneg w)
   have hprofsum : (∫ _ in (-c)..c, M) +
       (∫ y in (-c)..c, ∑ w ∈ heightFiber γ c,
         xiPacketMass w * (Real.sqrt (h ^ 2 + (y - w.im) ^ 2))⁻¹) ≤
@@ -524,7 +520,7 @@ theorem tendsto_slabDisplacementDefect {γ c g M : ℝ}
       ‖logDeriv XiC ((x : ℂ) + ((c : ℝ) : ℂ) * I)‖ ≤ M₁ := fun x hx =>
     (hCt x hx).trans ((le_max_right _ _).trans (le_max_left _ _))
   set S : ℝ := ∑ w ∈ heightFiber γ c, xiPacketMass w with hSdef
-  have hS0 : 0 ≤ S := Finset.sum_nonneg fun w _ => xiPacketMass_nonneg w
+  have hS0 : 0 ≤ S := Finset.sum_nonneg fun w _ => RHTower.SlabConjugatedGermTheorem.xiPacketMass_nonneg w
   have hπ : ‖(2 * Real.pi * I : ℂ)⁻¹‖ = (2 * Real.pi)⁻¹ := by
     rw [norm_inv, norm_mul, norm_mul, Complex.norm_I, Complex.norm_ofNat, mul_one,
       Complex.norm_real, Real.norm_eq_abs, abs_of_pos Real.pi_pos]

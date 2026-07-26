@@ -29,7 +29,7 @@ theorem eulerPositiveTotal_eq_squarefree_mul_residual
   rw [Complex.ofReal_mul,
     ofReal_eulerPositiveTotal_eq_riemannZeta hsigma,
     ofReal_squarefreeMobiusTotal_eq_zetaRatio hsigma,
-    ofReal_eulerSquareResidualTotal_eq_riemannZeta hsigma]
+    RHTower.ofReal_eulerSquareResidualTotal_eq_zeta hsigma]
   have htwo :
       (((2 * sigma : ℝ) : ℂ)) = 2 * (sigma : ℂ) := by
     norm_cast

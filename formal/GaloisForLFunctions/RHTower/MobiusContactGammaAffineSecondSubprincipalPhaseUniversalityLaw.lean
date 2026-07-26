@@ -18,13 +18,6 @@ namespace GaloisForLFunctions.RHTower
 
 noncomputable section
 
-private theorem mobiusContactGammaFactorialScale_eq (n : ℕ) :
-    (-2 - mobiusGammaContactPartialCharge n) / 2 =
-      GaloisForLFunctions.reciprocalGammaFactorialScale n := by
-  rw [mobiusGammaContactPartialCharge_eq]
-  simp only [GaloisForLFunctions.reciprocalGammaFactorialScale]
-  ring
-
 /-- Moving-pole affine order--energy phase written directly in the finite Möbius contact
 coordinate. -/
 def GammaMobiusContactAffineOrderEnergyPhase

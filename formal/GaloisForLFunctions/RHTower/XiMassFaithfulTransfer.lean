@@ -126,7 +126,6 @@ theorem riemannHypothesis_iff_exists_xiMassTrace_line_bound {a : ℝ} (ha : 1 / 
     RiemannHypothesis ↔
       ∃ σ C : ℝ, 0 < σ ∧
         ∀ x : ℝ, ‖(xiMassFamily ha).traceC ((σ : ℂ) + (x : ℂ) * I)‖ ≤ C := by
-  letI : Nonempty XiZeroCopy := nonempty_xiZeroCopy
   constructor
   · intro hRH
     obtain ⟨σ, C, hσ, hline⟩ :=
@@ -208,7 +207,6 @@ theorem nine_mul_exp_mul_xiPoissonEnergy_le {a σ : ℝ} (ha : 1 / 2 ≤ a) (hσ
 theorem riemannHypothesis_iff_xiMassEnergy_eq_zero {a σ : ℝ} (ha : 1 / 2 ≤ a) (hσ : 0 < σ)
     (hσ' : σ ≤ 2 * Real.pi) :
     RiemannHypothesis ↔ (xiPoissonAbstract.mass ha).energy σ = 0 := by
-  letI : Nonempty XiZeroCopy := nonempty_xiZeroCopy
   constructor
   · intro hRH
     refine ((xiPoissonAbstract.mass ha).im_eq_zero_iff_energy_eq_zero hσ hσ').mp fun q => ?_

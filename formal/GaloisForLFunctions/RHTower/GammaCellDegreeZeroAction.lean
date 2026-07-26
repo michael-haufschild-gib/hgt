@@ -31,21 +31,6 @@ theorem lSeriesSummable_of_finite_coefficient_support {a : ArithmeticFunction �
     rw [ha]
     simp
 
-/-- Dirichlet convolution preserves integer-valued complex coefficient streams. -/
-theorem intCast_conv_integral (b c : ArithmeticFunction ℂ)
-    (hb : ∀ n, ∃ k : ℤ, b n = (k : ℂ)) (hc : ∀ n, ∃ k : ℤ, c n = (k : ℂ)) :
-    ∀ n, ∃ k : ℤ, (b * c) n = (k : ℂ) := by
-  intro n
-  have hmem : ∀ x : ℂ, (∃ k : ℤ, x = (k : ℂ)) ↔
-      x ∈ (Int.castRingHom ℂ).range := by
-    intro x
-    rw [RingHom.mem_range]
-    exact ⟨fun ⟨k, hk⟩ => ⟨k, hk.symm⟩,
-      fun ⟨k, hk⟩ => ⟨k, hk.symm⟩⟩
-  rw [ArithmeticFunction.mul_apply, hmem]
-  exact Subring.sum_mem _ fun x _ =>
-    Subring.mul_mem _ ((hmem _).mp (hb x.fst)) ((hmem _).mp (hc x.snd))
-
 /-- Every gamma-cell member is nonzero somewhere.  Its multiplicative coefficient stream has first
 coefficient `1` and converges on `Re s > 1`, so its L-series cannot vanish identically there. -/
 theorem gammaFECell_exists_ne_zero {f : ℂ → ℂ} (hf : GammaFECell f) :

@@ -1,13 +1,13 @@
 # High-exponent shells have a zero-free multiplier and the full Xi divisor
 
 - **ID:** `high-exponent-shell-zero-free-common-divisor-law`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper), `[RH SOURCE THEOREM]`
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean), `[RH SOURCE THEOREM]`
 - **Scientific status:** `[PROVED] [PROOF VALUE ONLY] [NOVELTY NOT EVALUATED BY REQUEST]`
 - **Parents:**
-  - `../3-formalized/not_new_scientific_knowledge/mfree-moebius-ladder-carrier-bridge.md`
-  - `mobius-incidence-clock-gini-fisher-four-unit-law.md`
-  - `squarefree-fixed-current-right-half-ward-localization.md`
+  - `not_new_scientific_knowledge/mfree-moebius-ladder-carrier-bridge.md`
+  - `../2-fully-proven/mobius-incidence-clock-gini-fisher-four-unit-law.md`
+  - `../2-fully-proven/squarefree-fixed-current-right-half-ward-localization.md`
   - `new_scientific_knowledge/scalar-ht-persistent-clock-character-law.md`
   - `new_scientific_knowledge/charged-scalar-core-fixed-current-torsor.md`
 
@@ -204,6 +204,81 @@ have no auxiliary strict right-half divisor.  It does not prove RH: the tempting
 codiagonal is already impossible for the known nonzero incoming Euler-pole vector.  The surviving
 use is the prime-two-dominated cofinal test family for the single closed fixed-current graph.
 
+## Lean certificate
+
+All five card claims that carry a proof — `(1)`–`(5)`, `(7)`, `(13)`, `(16)` — are formalized
+unconditionally.  Every listed theorem builds with no warnings and `#print axioms` returns exactly
+`propext, Classical.choice, Quot.sound`.
+
+Modules (all imported by their theorem-area umbrella):
+
+- `formal/GaloisForLFunctions/RHTower/HighExponentShellZeroFree.lean`
+- `formal/GaloisForLFunctions/RHTower/HighExponentShellCriticalClock.lean`
+- `formal/GaloisForLFunctions/RHTower/HighExponentShellSourcePole.lean`
+- `formal/GaloisForLFunctions/RHTower/HighExponentShellClockMoments.lean`
+- `formal/GaloisForLFunctions/RHTower/HighExponentShellClockMeasure.lean`
+- `formal/GaloisForLFunctions/RHTower/HighExponentShellGiniEnergy.lean`
+- `formal/GaloisForLFunctions/HTGeometry/ExponentialClockTotalEnergy.lean`
+
+| Card item | Lean name |
+|---|---|
+| `(1)` shell indicator, largest exponent `= m` | `RHTower.shellIndicator`, `RHTower.shellIndicator_eq_one_iff` |
+| disjoint supports | `RHTower.shellIndicator_eq_zero_of_ne` |
+| smallest member of the shell | `RHTower.shellIndicator_two_pow` |
+| `(2)` `S_m(s) = zeta(s)H_m(s)` | `RHTower.LSeries_shellIndicator` |
+| `(3)` zero-free multiplier on `re s > 1/2`, `m >= 12` | `RHTower.riemannZeta_natCast_mul_sub_succ_mul_ne_zero`, `RHTower.shellMultiplier_ne_zero` |
+| `(16)` prime-two domination | `RHTower.norm_riemannZeta_diff_sub_shellHead_le`, `RHTower.le_norm_shellHead` |
+| `(4)` common strict right-half divisor with `Xi` | `RHTower.analyticOrderAt_mul_shellMultiplier`, `RHTower.analyticOrderAt_riemannZeta_mul_shellMultiplier`, `RHTower.analyticOrderAt_completedRiemannZeta_mul_shellMultiplier`, `RHTower.riemannZeta_mul_shellMultiplier_eq_zero_iff` |
+| `(5)` log-derivative split | `RHTower.logDeriv_riemannZeta_mul_shellMultiplier` |
+| `(13)` `H_m(1) > 0` | `RHTower.shellMultiplier_one_eq_ofReal_pos`, `RHTower.shellResidue_pos` |
+| arithmetic source, nonnegative, positive | `RHTower.shellMellin_eq_tsum`, `RHTower.shellMellin_nonneg`, `RHTower.shellMellin_pos` |
+| simple pole at `sigma = 1`; pole factorisation | `RHTower.tendsto_shellMellin_residue`, `RHTower.shellSource_eq_of_ne_one` |
+| `(14)` `Exp(1)` clock, Laplace form | `RHTower.tendsto_shellCriticalClockLaplace` |
+| `(14)` `Exp(1)` clock, weak-convergence form | `RHTower.charFun_shellClockProbabilityMeasure`, `RHTower.tendsto_charFun_shellClockProbabilityMeasure`, `RHTower.tendsto_shellClockProbabilityMeasure` |
+| shell clock moments | `RHTower.ofReal_shellLogMoment`, `RHTower.tendsto_shellLogMoment_one`, `RHTower.tendsto_shellLogMoment_two` |
+| `(7)` `epsilon E|H - H'| -> 1` | `RHTower.tendsto_shellGapProbabilityMeasure`, `RHTower.tendsto_integral_abs_shellGapProbabilityMeasure` |
+| `(7)` four-unit incidence energy | `RHTower.tendsto_shellRelativeClockEnergy` |
+| `(7)` four-unit projective-Fisher energy | `RHTower.tendsto_shellClockVariance`, `RHTower.tendsto_shellProjectiveFisherEnergy` |
+| `Exp(1)` totals (class invariants) | `GaloisForLFunctions.HTGeometry.tendsto_exponentialCutMass_atTop`, `..._exponentialCutOverlap_atTop`, `..._exponentialCutEnergy_atTop` |
+
+The prime-two domination is quantitative and sharper than the card's prose: for `m >= 12` and
+`re s > 1/2`,
+
+```text
+| (zeta(ms) - zeta((m+1)s)) - (2^(-ms) - 2^(-(m+1)s)) |
+   <= 2^(-m re s) (512/5)(3^(-6) + 4^(-6) + 1/2500)  <  2^(-m re s) (21/100),
+| 2^(-ms) - 2^(-(m+1)s) |
+   >= 2^(-m re s) (29/100).
+```
+
+so the `n = 2` term strictly dominates the entire tail, pointwise on the half-plane.
+
+## Reuse audit
+
+Built on existing tree infrastructure, no duplication:
+
+- `RHTower.MFreeLadder`: `MFree`, `mFreeIndicator`, `LSeries_mFree_eq_riemannZeta_div` — the whole
+  `(2)` factorisation;
+- `RHTower.ZetaLogDerivResidue`: `zetaResidueUnit`, `analyticAt_zetaResidueUnit` — the analytic
+  unit at the zeta pole, reused verbatim for `U_m = G·H_m`;
+- `RHTower.GammaInvGrowth`: `HilbertSchmidt.tsum_reciprocal_square_tail_le` — the reciprocal-square
+  tail used in the sixth-power tail bound;
+- `HTGeometry.CriticalClockSourceUniversality`: `criticalClockLaplace`,
+  `tendsto_criticalClockLaplace_of_simplePole`, `exponentialCutMass/Overlap/Energy`;
+- `RHTower.MobiusCriticalClockWeakConvergence`: `squarefreeMobiusCriticalClockParameter`,
+  `mobiusCriticalExponentialProbabilityMeasure`,
+  `charFun_mobiusCriticalExponentialProbabilityMeasure`,
+  `mobiusCriticalExponentialGapProbabilityMeasure` — the universal limit laws;
+- `RHTower.MobiusIncidenceClockGiniFisherFourUnit`:
+  `tendsto_integral_abs_of_weak_of_uniform_sq` and the three Laplace-gap moment facts.  These four
+  were `private`; they are general (the first uses nothing about the measures beyond a uniform
+  square bound) and are now public, which is the only edit made to that module;
+- `RHTower.EulerFisherCurvature`: `summable_abs_log_natCast_pow_mul_rpow_neg`;
+- mathlib: `zeta_eq_tsum_one_div_nat_cpow`, `summable_one_div_nat_cpow`,
+  `riemannZeta_ne_zero_of_one_lt_re`, `analyticOn_riemannZeta`, `analyticOrderAt_mul`,
+  `LSeries_iteratedDeriv`, `ProbabilityMeasure.tendsto_of_tendsto_charFun`,
+  `Summable.tsum_lt_tsum`.
+
 ## Gates
 
 - [x] exact shell indicator and Dirichlet series
@@ -215,6 +290,13 @@ use is the prime-two-dominated cofinal test family for the single closed fixed-c
 - [x] bounded-codiagonal shortcut rejected using the incoming pole
 - [x] scalar codiagonal strengthened from unbounded to nonclosable
 - [x] proof contribution evaluated without a novelty gate
+- [x] every proven card claim formalized in Lean, unconditional, axiom-clean
 - [ ] construct a shell-label-preserving closed Ward graph
 - [ ] prove a uniform relative estimate through pole cancellation
 - [ ] RH
+
+## Log
+
+- 2026-07-26 — formalized: zero-free law, prime-two domination, divisor identities, positive
+  residue, `Exp(1)` critical clock in both Laplace and weak-convergence form, clock moments,
+  four-unit incidence and projective-Fisher energies.  Card moved to `3-formalized`.

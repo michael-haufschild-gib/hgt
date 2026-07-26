@@ -42,7 +42,7 @@ private theorem sonin_adjoint_mul
       ContinuousLinearMap.adjoint T * ContinuousLinearMap.adjoint S := by
   exact ContinuousLinearMap.adjoint_comp S T
 
-private theorem sonin_adjoint_smul (c : Complex)
+theorem sonin_adjoint_smul (c : Complex)
     (T : SoninL2 →L[Complex] SoninL2) :
     ContinuousLinearMap.adjoint (c • T) =
       star c • ContinuousLinearMap.adjoint T := by

@@ -35,7 +35,7 @@ theorem thetaCuspTailSecondDensityAtom_pnat_mul
     Real.log_mul (by exact_mod_cast n.ne_zero) (by exact_mod_cast m.ne_zero)]
   ring_nf
 
-private theorem summable_thetaCuspTailSecondDensityAtom_pnat (x : ℝ) :
+theorem summable_thetaCuspTailSecondDensityAtom_pnat (x : ℝ) :
     Summable (fun n : ℕ+ => thetaCuspTailSecondDensityAtom n x) := by
   have hnat : Summable
       (fun k : ℕ => thetaCuspTailSecondDensityAtom (k + 1) x) := by

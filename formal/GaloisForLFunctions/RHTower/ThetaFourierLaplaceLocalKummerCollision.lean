@@ -47,7 +47,7 @@ def ThetaCuspDerivativeSquareRootRightZeroBand : Prop :=
       ∀ w ∈ thetaCuspFourierLaplaceRightZeroBand,
         h w ^ 2 = deriv thetaCuspFourierLaplace w
 
-private theorem rightZeroBand_mem_fourierLaplaceStrip
+theorem rightZeroBand_mem_fourierLaplaceStrip
     {w : ℂ} (hw : w ∈ thetaCuspFourierLaplaceRightZeroBand) :
     w ∈ thetaCuspFourierLaplaceStrip := by
   rw [thetaCuspFourierLaplaceRightZeroBand, Set.mem_setOf_eq] at hw

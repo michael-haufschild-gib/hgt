@@ -131,16 +131,6 @@ theorem norm_squarefreeMobiusCriticalClockCutoff_signed_sq_eq_CDF
   rw [norm_squarefreeMobiusCriticalClockCutoff_signed_sq hsigma,
     squarefreeMobiusCriticalClockCutMass_eq_CDF hsigma]
 
-private theorem norm_infiniteMobiusCriticalFisherTangentWeight_sq'
-    {sigma : ℝ} (hsigma : 1 < sigma) (n : ℕ) :
-    ‖infiniteMobiusCriticalFisherTangentWeight sigma n‖ ^ 2 =
-      4 * (sigma - 1) ^ 2 * squarefreeMobiusProbability sigma n *
-        (Real.log n - squarefreeMobiusLogMoment 1 sigma) ^ 2 := by
-  rw [infiniteMobiusCriticalFisherTangentWeight, norm_mul, mul_pow,
-    norm_infiniteMobiusSignedWeight_sq hsigma, Complex.norm_real, Real.norm_eq_abs,
-    sq_abs]
-  ring
-
 /-- Exact Fisher-energy value relation for the hard clock cutoff. -/
 theorem norm_squarefreeMobiusCriticalClockCutoff_fisherTangent_sq
     {sigma u : ℝ} (hsigma : 1 < sigma) :
@@ -153,7 +143,7 @@ theorem norm_squarefreeMobiusCriticalClockCutoff_fisherTangent_sq
   intro n
   by_cases hn : n ∈ squarefreeMobiusCriticalClockCut sigma u
   · rw [indicator_of_mem hn, indicator_of_mem hn]
-    exact norm_infiniteMobiusCriticalFisherTangentWeight_sq' hsigma n
+    exact norm_infiniteMobiusCriticalFisherTangentWeight_sq hsigma n
   · rw [indicator_of_notMem hn, indicator_of_notMem hn]
 
 /-- Hard-cut Fisher tangent energy is nonnegative with no scalar side conditions. -/

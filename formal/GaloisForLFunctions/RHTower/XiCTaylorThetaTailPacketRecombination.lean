@@ -355,3 +355,22 @@ theorem criticalLogPhase_tail_packetCurrent_eq_translatedProfile
 end
 
 end RHTower
+
+namespace RHTower
+
+open scoped BigOperators
+open strip. -/
+
+noncomputable section
+
+lemma norm_spectralTranslationPhase_eq_exp_neg_mul_im
+    (t : ℝ) (z : ℂ) :
+    ‖spectralTranslationPhase t z‖ = Real.exp (-t * z.im) := by
+  unfold spectralTranslationPhase
+  rw [Complex.norm_exp]
+  congr 1
+  simp [Complex.mul_re]
+
+end
+
+end RHTower

@@ -191,7 +191,7 @@ theorem completedSEM_analyticOnNhd_strip {N : ℕ} (hN : 1 ≤ N) :
 
 /-- The archimedean factor divides out: completed-level domination for the symmetrized
 member is equivalent to the raw inequality against `2ζ`. -/
-private theorem completedSEM_domination_iff {N : ℕ} {s : ℂ} (hσ : 0 < s.re) (h1 : s ≠ 1) :
+theorem completedSEM_domination_iff {N : ℕ} {s : ℂ} (hσ : 0 < s.re) (h1 : s ≠ 1) :
     (‖xi s - completedSEM N s‖ < ‖completedSEM N s‖)
       ↔ (‖2 * riemannZeta s - semCarrier N s‖ < ‖semCarrier N s‖) := by
   have h0 : s ≠ 0 := fun h => by simp [h] at hσ

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiHedenmalmSourceCapstone
-import GaloisForLFunctions.RHTower.XiHedenmalmMultiplicityChain
+import GaloisForLFunctions.RHTower.XiHedenmalmMultiplicityFourierBridge
 
 /-!
 # Hedenmalm completeness as a static value constraint

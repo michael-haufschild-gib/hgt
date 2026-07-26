@@ -134,7 +134,7 @@ theorem completedSeamMomentGerm_eventuallyEq_primeArchXiCompactMarkovTransform_o
     primeArchXiCompactMomentMeasure_finite
   have hbound : ∀ᵐ x : ℝ ∂primeArchXiCompactMomentMeasure, |x| ≤ 1 :=
     ae_primeArchXiCompactMomentMeasure_mem_zero_one.mono fun _ hx => hx.2
-  apply analyticAt_eventuallyEq_of_all_iteratedDeriv_eq
+  apply RHTower.analyticAt_eventuallyEq_of_iteratedDeriv_eq
     analyticAt_completedSeamMomentGerm
     (analyticAt_compactMarkovTransform
       primeArchXiCompactMomentMeasure zero_lt_one hbound)

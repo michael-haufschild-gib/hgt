@@ -2,6 +2,7 @@ import GaloisForLFunctions.RHTower.SalemFermiModeCriterion
 import GaloisForLFunctions.RHTower.ZetaRealStrip
 import GaloisForLFunctions.RHTower.ZetaTruncatedExtension
 import Mathlib.NumberTheory.LSeries.MellinEqDirichlet
+import GaloisForLFunctions.HTGeometry.GammaAnalyticOffPoles
 
 /-!
 # Salem's Fermi-mode improper integral
@@ -219,15 +220,6 @@ theorem analyticOnNhd_mellin_salemFermiKernel :
     salemFermiKernel_isBigO_exp_neg
     salemFermiKernel_isBigO_one_at_zero hs).differentiableWithinAt
 
-private theorem analyticAt_Gamma_of_re_pos_salem {s : ℂ} (hs : 0 < s.re) :
-    AnalyticAt ℂ Complex.Gamma s := by
-  have hinv : AnalyticAt ℂ (fun z => (Complex.Gamma z)⁻¹) s :=
-    (Complex.differentiable_one_div_Gamma.differentiableOn.analyticOnNhd isOpen_univ)
-      s (mem_univ s)
-  have h := hinv.inv (inv_ne_zero (Complex.Gamma_ne_zero_of_re_pos hs))
-  change AnalyticAt ℂ (fun z => ((Complex.Gamma z)⁻¹)⁻¹) s at h
-  simpa using h
-
 theorem mellin_salemFermiKernel_eq_closedForm
     {s : ℂ} (hs0 : 0 < s.re) (hs1 : s ≠ 1) :
     mellin salemFermiKernel s =
@@ -241,7 +233,7 @@ theorem mellin_salemFermiKernel_eq_closedForm
     analyticOnNhd_mellin_salemFermiKernel.mono Set.diff_subset
   have hright : AnalyticOnNhd ℂ G U := by
     intro z hz
-    have hGamma := analyticAt_Gamma_of_re_pos_salem hz.1
+    have hGamma := HTGeometry.analyticAt_Gamma_of_re_pos hz.1
     have hdyadic : AnalyticAt ℂ (fun w : ℂ => 1 - (2 : ℂ) ^ (1 - w)) z := by
       have hd : Differentiable ℂ (fun w : ℂ => 1 - (2 : ℂ) ^ (1 - w)) := by
         apply Differentiable.sub (differentiable_const _)

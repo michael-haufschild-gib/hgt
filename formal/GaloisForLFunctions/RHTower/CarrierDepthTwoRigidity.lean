@@ -77,7 +77,7 @@ theorem hasDerivAt_log_norm_dirichletPoly_two_horizontal {σ τ : ℝ} (hσ : 0 
     HasDerivAt (fun x : ℝ => Real.log ‖dirichletPoly 2 (stripPt x τ)‖)
       (((2 : ℂ) ^ (-stripPt σ τ) * Complex.log 2 * (-1)) /
         dirichletPoly 2 (stripPt σ τ)).re σ := by
-  apply hasDerivAt_log_norm_complex
+  apply GaloisForLFunctions.HTGeometry.hasDerivAt_log_norm_complex
   · simpa using (hasDerivAt_dirichletPoly_two (stripPt σ τ)).comp σ
       (hasDerivAt_stripPt_horizontal τ σ)
   · exact dirichletPoly_two_ne_zero (by simpa [stripPt_re] using hσ)

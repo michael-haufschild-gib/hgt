@@ -23,7 +23,7 @@ namespace RHTower
 
 noncomputable section
 
-private theorem xiPrimeValuationGeometricNode_one_eq_inv
+theorem xiPrimeValuationGeometricNode_one_eq_inv
     (p : Nat.Primes) :
     xiPrimeValuationGeometricNode 1 p = ((p : ℝ))⁻¹ := by
   have hp : 0 < (p : ℝ) := by exact_mod_cast p.prop.pos
@@ -31,7 +31,7 @@ private theorem xiPrimeValuationGeometricNode_one_eq_inv
   rw [show -(1 : ℝ) * Real.log (p : ℝ) = -Real.log (p : ℝ) by ring]
   rw [Real.exp_neg, Real.exp_log hp]
 
-private theorem xiPrimeValuationGeometricNode_two_eq_inv_sq
+theorem xiPrimeValuationGeometricNode_two_eq_inv_sq
     (p : Nat.Primes) :
     xiPrimeValuationGeometricNode 2 p = ((p : ℝ))⁻¹ ^ 2 := by
   have hp : 0 < (p : ℝ) := by exact_mod_cast p.prop.pos
@@ -194,29 +194,13 @@ theorem xiPhysicalEndpointResponseWeightRemainder_le_log_div_sq
   rw [div_le_div_iff₀ hleft hright]
   nlinarith
 
-private theorem summable_log_nat_div_sq :
-    Summable (fun n : ℕ => Real.log n / (n : ℝ) ^ 2) := by
-  have h := RHTower.summable_abs_log_natCast_pow_mul_rpow_neg 1 2 (by norm_num)
-  apply h.congr
-  intro n
-  rcases n with _ | n
-  · simp
-  have hn : 0 < ((n + 1 : ℕ) : ℝ) := by positivity
-  have hlog : 0 ≤ Real.log ((n + 1 : ℕ) : ℝ) :=
-    Real.log_nonneg (by norm_num)
-  rw [abs_of_nonneg hlog, pow_one, Real.rpow_neg hn.le]
-  rw [show ((n + 1 : ℕ) : ℝ) ^ (2 : ℝ) =
-      ((n + 1 : ℕ) : ℝ) ^ (2 : ℕ) by
-    exact Real.rpow_natCast _ 2]
-  field_simp
-
 /-- The correction from the fused response current to the physical endpoint weight is trace
 class over all ordinary primes. -/
 theorem summable_xiPhysicalEndpointResponseWeightRemainder :
     Summable xiPhysicalEndpointResponseWeightRemainder := by
   have hprime : Summable (fun p : Nat.Primes =>
       Real.log (p : ℝ) / (p : ℝ) ^ 2) :=
-    summable_log_nat_div_sq.comp_injective Subtype.val_injective
+    GaloisForLFunctions.summable_log_nat_div_sq.comp_injective Subtype.val_injective
   exact Summable.of_nonneg_of_le
     (fun p => (xiPhysicalEndpointResponseWeightRemainder_pos p).le)
     xiPhysicalEndpointResponseWeightRemainder_le_log_div_sq hprime

@@ -143,16 +143,11 @@ vertical-edge energy `∮ |tr|² ds` up to the factor `2π`. -/
 def heightFiberMassSquare (γ c : ℝ) : ℝ :=
   ∑ w ∈ heightFiber γ c, xiPacketMass w ^ 2
 
-/-- Packet masses are nonnegative. -/
-theorem xiPacketMass_nonneg (w : ℂ) : 0 ≤ xiPacketMass w := by
-  unfold xiPacketMass
-  exact Nat.cast_nonneg _
-
 /-- **`Q ≤ M²` on the height fiber, unconditionally.**  The certificate's one-sided bound:
 the mass-square sum never exceeds the squared total mass. -/
 theorem heightFiberMassSquare_le_sq (γ c : ℝ) :
     heightFiberMassSquare γ c ≤ heightFiberMass γ c ^ 2 :=
-  sum_sq_le_sq_sum _ _ fun w _ => xiPacketMass_nonneg w
+  sum_sq_le_sq_sum _ _ fun w _ => RHTower.SlabConjugatedGermTheorem.xiPacketMass_nonneg w
 
 /-- **`Q = M²` iff the fiber is a single point.**  Every fiber point carries positive mass,
 so the algebraic equality case collapses to fiber subsingletonness. -/
@@ -160,7 +155,7 @@ theorem heightFiberMassSquare_eq_sq_iff_subsingleton {γ c : ℝ} (hc : 0 ≤ c)
     heightFiberMassSquare γ c = heightFiberMass γ c ^ 2 ↔
       ∀ w ∈ heightFiber γ c, ∀ w' ∈ heightFiber γ c, w = w' := by
   unfold heightFiberMassSquare heightFiberMass
-  rw [sum_sq_eq_sq_sum_iff fun w _ => xiPacketMass_nonneg w]
+  rw [sum_sq_eq_sq_sum_iff fun w _ => RHTower.SlabConjugatedGermTheorem.xiPacketMass_nonneg w]
   constructor
   · intro hone w hw w' hw'
     exact hone w hw w' hw'

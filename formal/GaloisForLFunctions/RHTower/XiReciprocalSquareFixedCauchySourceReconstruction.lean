@@ -274,7 +274,7 @@ theorem xiReciprocalSquareCauchySourceMinusTest_evaluation
         (z : ℂ) (xiSpectralPoint q) = _
   rfl
 
-private theorem xiWeilHilbertQuadratic_I_polarization_difference
+theorem xiWeilHilbertQuadratic_I_polarization_difference
     (f g : lp (fun _ : XiZeroCopy => ℂ) 2)
     (hsym : inner ℂ (xiWeilLineConjLp f) g =
       (starRingEnd ℂ) (inner ℂ (xiWeilLineConjLp g) f)) :

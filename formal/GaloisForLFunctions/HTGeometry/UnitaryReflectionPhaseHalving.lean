@@ -57,7 +57,7 @@ theorem hasDerivAt_phaseHalvedAmplitude {w z : ℝ → ℂ} {w' z' : ℂ} {x : �
   simpa only [Function.comp_apply, Pi.mul_apply] using
     Complex.reCLM.hasFDerivAt.comp_hasDerivAt x hprod
 
-private theorem hasDerivAt_log_norm_complex {f : ℝ → ℂ} {f' : ℂ} {x : ℝ}
+theorem hasDerivAt_log_norm_complex {f : ℝ → ℂ} {f' : ℂ} {x : ℝ}
     (hf : HasDerivAt f f' x) (h0 : f x ≠ 0) :
     HasDerivAt (fun y => Real.log ‖f y‖) (f' / f x).re x := by
   have hre : HasDerivAt (fun y => (f y).re) f'.re x :=

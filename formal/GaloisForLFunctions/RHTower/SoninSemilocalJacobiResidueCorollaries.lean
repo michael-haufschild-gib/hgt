@@ -55,19 +55,6 @@ theorem semilocalFinitePrimeActualProlateGroundDefect_signed_pos
   exact semilocalFinitePrimeProlateGroundDefect_signed_pos
     hlambda hk p hp hprime
 
-theorem semilocalArchimedeanJacobiPolynomial_two_recurrence (s : ℝ) :
-    semilocalArchimedeanJacobiCoefficient 0 *
-        semilocalArchimedeanJacobiCoefficient 1 *
-          (semilocalArchimedeanJacobiPolynomial 2).eval s =
-      s ^ 2 - semilocalArchimedeanJacobiCoefficient 0 ^ 2 := by
-  have hrec := semilocalArchimedeanJacobiPolynomial_eval_recurrence 0 s
-  rw [semilocalArchimedeanJacobiPolynomial_eval_zero,
-    semilocalArchimedeanJacobiPolynomial_eval_one] at hrec
-  have ha0 : semilocalArchimedeanJacobiCoefficient 0 ≠ 0 :=
-    (semilocalArchimedeanJacobiCoefficient_pos 0).ne'
-  field_simp [ha0] at hrec
-  nlinarith
-
 def semilocalFinitePrimeNormalizedSecondMoment
     {n : ℕ} (p : Fin (n + 1) → ℕ) : ℝ :=
   (∫ s : ℝ, s ^ 2 * semilocalFinitePrimeEulerDensity p s

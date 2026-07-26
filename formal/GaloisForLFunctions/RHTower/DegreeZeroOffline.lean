@@ -65,7 +65,7 @@ theorem dzo_fe (s : ℂ) : dzo s = (8 : ℂ) ^ (1 - 2 * s) * dzo (1 - s) := by
 
 /-- A coprime factorisation of a prime power is trivial: if `a·b = 2^e` and `gcd a b = 1`, then `a` or
 `b` is `1` (two nontrivial factors would both be even, contradicting coprimality). -/
-private theorem coprime_mul_two_pow (a b : ℕ) (hab : Nat.Coprime a b) (e : ℕ)
+theorem coprime_mul_two_pow (a b : ℕ) (hab : Nat.Coprime a b) (e : ℕ)
     (hprod : a * b = 2 ^ e) : a = 1 ∨ b = 1 := by
   by_contra hcon
   rw [not_or] at hcon
@@ -297,5 +297,28 @@ theorem integralMultiplicativeFEClass_not_forcesRHParity :
     ¬ ForcesRHParity IntegralMultiplicativeFEClass := by
   rw [forcesRHParity_iff_categorical]
   exact fun hcat => hcat integralMultiplicativeFEClass_carriesOffLineCharge
+
+end RHTower
+
+namespace RHTower
+
+noncomputable section
+
+/-- Dirichlet convolution preserves integer-valued complex coefficient streams. -/
+theorem intCast_conv_integral (b c : ArithmeticFunction ℂ)
+    (hb : ∀ n, ∃ k : ℤ, b n = (k : ℂ)) (hc : ∀ n, ∃ k : ℤ, c n = (k : ℂ)) :
+    ∀ n, ∃ k : ℤ, (b * c) n = (k : ℂ) := by
+  intro n
+  have hmem : ∀ x : ℂ, (∃ k : ℤ, x = (k : ℂ)) ↔
+      x ∈ (Int.castRingHom ℂ).range := by
+    intro x
+    rw [RingHom.mem_range]
+    exact ⟨fun ⟨k, hk⟩ => ⟨k, hk.symm⟩,
+      fun ⟨k, hk⟩ => ⟨k, hk.symm⟩⟩
+  rw [ArithmeticFunction.mul_apply, hmem]
+  exact Subring.sum_mem _ fun x _ =>
+    Subring.mul_mem _ ((hmem _).mp (hb x.fst)) ((hmem _).mp (hc x.snd))
+
+end
 
 end RHTower

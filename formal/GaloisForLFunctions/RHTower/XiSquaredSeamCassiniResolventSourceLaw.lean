@@ -421,20 +421,13 @@ def xiSquaredSeamPowerThirtyTwoReflectionDefectEnergy : ℝ :=
     ‖xiSquaredSeamOneCoordinate q ^ 32 -
       (starRingEnd ℂ) (xiSquaredSeamOneCoordinate q ^ 32)‖ ^ 2
 
-/-- Pointwise conversion between complex conjugation distance and transverse square. -/
-lemma norm_sub_conj_sq_eq_four_im_sq_cassiniPower (z : ℂ) :
-    ‖z - (starRingEnd ℂ) z‖ ^ 2 = 4 * z.im ^ 2 := by
-  rw [Complex.sq_norm, Complex.normSq_apply]
-  simp [Complex.conj_re, Complex.conj_im]
-  ring
-
 theorem summable_xiSquaredSeamPowerThirtyTwoReflectionDefectEnergy :
     Summable (fun q : XiZeroCopy =>
       ‖xiSquaredSeamOneCoordinate q ^ 32 -
         (starRingEnd ℂ) (xiSquaredSeamOneCoordinate q ^ 32)‖ ^ 2) := by
   apply summable_xiSquaredSeamPowerThirtyTwoTransverseCharge.mul_left 4 |>.congr
   intro q
-  exact (norm_sub_conj_sq_eq_four_im_sq_cassiniPower _).symm
+  exact (norm_sub_conj_sq_eq_four_im_sq _).symm
 
 /-- The Cassini reflection defect is exactly four times the remaining transverse charge. -/
 theorem xiSquaredSeamPowerThirtyTwoReflectionDefectEnergy_eq_four_mul_transverseCharge :
@@ -442,7 +435,7 @@ theorem xiSquaredSeamPowerThirtyTwoReflectionDefectEnergy_eq_four_mul_transverse
       4 * xiSquaredSeamPowerThirtyTwoTransverseCharge := by
   rw [xiSquaredSeamPowerThirtyTwoReflectionDefectEnergy,
     xiSquaredSeamPowerThirtyTwoTransverseCharge]
-  simp_rw [norm_sub_conj_sq_eq_four_im_sq_cassiniPower]
+  simp_rw [norm_sub_conj_sq_eq_four_im_sq]
   exact tsum_mul_left
 
 /-- The intrinsic Jensen/jet residual is one quarter of an exact divisor-reflection energy. -/

@@ -84,11 +84,6 @@ theorem covDemand_strictMono_of_displacement_pos {κ lam x y : ℚ}
 
 /-! ### The `B`-process is the length reflection -/
 
-/-- `B` preserves the pointwise exponent. -/
-theorem procB_preserves_epMu (κ lam : ℚ) :
-    epMu (procB_fst lam) (procB_snd κ) = epMu κ lam := by
-  unfold epMu procB_fst procB_snd; ring
-
 /-- **`B` negates the displacement.** -/
 theorem procB_negates_displacement (κ lam : ℚ) :
     epDisplacement (procB_fst lam) (procB_snd κ) = - epDisplacement κ lam := by
@@ -98,7 +93,7 @@ theorem procB_negates_displacement (κ lam : ℚ) :
 length variable in the critical length. -/
 theorem procB_is_length_reflection (x₀ κ lam : ℚ) :
     covDemandOfPair x₀ (procB_fst lam) (procB_snd κ) = covDemandOfPair (1 - x₀) κ lam := by
-  rw [covDemand_factorisation, covDemand_factorisation, procB_preserves_epMu,
+  rw [covDemand_factorisation, covDemand_factorisation, epMu_procB,
     procB_negates_displacement]
   ring
 

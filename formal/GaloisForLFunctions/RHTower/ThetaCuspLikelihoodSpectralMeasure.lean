@@ -52,7 +52,7 @@ theorem thetaCuspLikelihoodGap_pos {n : ℕ} (hn : 2 ≤ n) :
   simp only [thetaCuspLikelihoodGap]
   nlinarith
 
-private theorem thetaCuspSourceTerm_eq_scaleForm (n : ℕ) (x : ℝ) :
+theorem thetaCuspSourceTerm_eq_scaleForm (n : ℕ) (x : ℝ) :
     thetaCuspSourceTerm x n =
       (Real.exp (x / 2) * 2 * Real.pi * Real.exp x ^ 2) *
         (n : ℝ) ^ 2 *
@@ -365,7 +365,7 @@ theorem thetaCuspFullSource_eq_first_mul_one_add_spectralIntegral
 
 /-! ### All-order tilted moments and the strict Hankel hierarchy -/
 
-private theorem ae_nonneg_thetaCuspAtomLikelihoodSpectralMeasure
+theorem ae_nonneg_thetaCuspAtomLikelihoodSpectralMeasure
     {n : ℕ} (hn : 2 ≤ n) :
     ∀ᵐ t ∂thetaCuspAtomLikelihoodSpectralMeasure n, 0 ≤ t := by
   rw [thetaCuspAtomLikelihoodSpectralMeasure, ae_add_measure_iff]
@@ -377,7 +377,7 @@ private theorem ae_nonneg_thetaCuspAtomLikelihoodSpectralMeasure
     filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
     exact (thetaCuspLikelihoodGap_pos hn).le.trans ht.le
 
-private theorem ae_nonneg_thetaCuspHigherLikelihoodSpectralMeasure :
+theorem ae_nonneg_thetaCuspHigherLikelihoodSpectralMeasure :
     ∀ᵐ t ∂thetaCuspHigherLikelihoodSpectralMeasure, 0 ≤ t := by
   rw [thetaCuspHigherLikelihoodSpectralMeasure, Measure.ae_sum_iff]
   intro k

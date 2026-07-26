@@ -279,20 +279,13 @@ theorem convex_thetaCuspFourierLaplaceRightZeroBand :
   exact (convex_halfSpace_im_gt (-(1 : ℝ) / 2)).inter
     (convex_halfSpace_im_lt 0)
 
-private theorem rightZeroBand_subset_fourierLaplaceStrip
-    {w : ℂ} (hw : w ∈ thetaCuspFourierLaplaceRightZeroBand) :
-    w ∈ thetaCuspFourierLaplaceStrip := by
-  rw [thetaCuspFourierLaplaceRightZeroBand, Set.mem_setOf_eq] at hw
-  rw [thetaCuspFourierLaplaceStrip, Set.mem_setOf_eq]
-  constructor <;> linarith [hw.1, hw.2]
-
 /-- Under RH, the theta-cusp Fourier--Laplace source is zero-free on its right-zero band. -/
 theorem thetaCuspFourierLaplace_ne_zero_rightZeroBand_of_rh
     (hRH : RiemannHypothesis) {w : ℂ}
     (hw : w ∈ thetaCuspFourierLaplaceRightZeroBand) :
     thetaCuspFourierLaplace w ≠ 0 := by
   rw [thetaCuspFourierLaplace_eq_XiC_on_strip
-    (rightZeroBand_subset_fourierLaplaceStrip hw), XiC]
+    (rightZeroBand_mem_fourierLaplaceStrip hw), XiC]
   apply rh_iff_xi_ne_zero_right.mp hRH
   rw [mem_rightHalf]
   simp
@@ -306,7 +299,7 @@ theorem deriv_thetaCuspFourierLaplace_ne_zero_rightZeroBand_of_rh
   intro hzero
   have hXiC : deriv XiC w = 0 := by
     rw [← deriv_thetaCuspFourierLaplace_eq_deriv_XiC
-      (rightZeroBand_subset_fourierLaplaceStrip hw)]
+      (rightZeroBand_mem_fourierLaplaceStrip hw)]
     exact hzero
   have him := deriv_XiC_zero_im_eq_zero_of_rh hRH hXiC
   exact (ne_of_lt hw.2) him
@@ -325,7 +318,7 @@ theorem thetaCuspDerivativeCommonKummerRootRightZeroBand_of_rh
       convex_thetaCuspFourierLaplaceRightZeroBand hnonempty
   have hanalytic :=
     analyticOnNhd_thetaCuspFourierLaplace.mono
-      (fun _ hw => rightZeroBand_subset_fourierLaplaceStrip hw)
+      (fun _ hw => rightZeroBand_mem_fourierLaplaceStrip hw)
   obtain ⟨g, hg, _hgne, hgpow⟩ :=
     U0KummerBranch.exists_analyticOnNhd_pow_eq
       isOpen_thetaCuspFourierLaplaceRightZeroBand hsc

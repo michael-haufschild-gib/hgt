@@ -262,7 +262,8 @@ private theorem integral_sq_mul_mobiusCriticalLaplaceGapDensity :
   rw [hhalf]
   norm_num
 
-private theorem integral_abs_mobiusCriticalExponentialGapProbabilityMeasure :
+/-- The universal Laplace gap law has absolute first moment one. -/
+theorem integral_abs_mobiusCriticalExponentialGapProbabilityMeasure :
     (∫ x : ℝ, |x|
       ∂(mobiusCriticalExponentialGapProbabilityMeasure : Measure ℝ)) = 1 := by
   rw [mobiusCriticalExponentialGapProbabilityMeasure_eq_laplace]
@@ -278,7 +279,8 @@ private theorem integral_abs_mobiusCriticalExponentialGapProbabilityMeasure :
     ring]
   exact integral_abs_mul_mobiusCriticalLaplaceGapDensity
 
-private theorem integrable_sq_mobiusCriticalExponentialGapProbabilityMeasure :
+/-- The universal Laplace gap law has an integrable square. -/
+theorem integrable_sq_mobiusCriticalExponentialGapProbabilityMeasure :
     Integrable (fun x : ℝ => x ^ 2)
       (mobiusCriticalExponentialGapProbabilityMeasure : Measure ℝ) := by
   rw [mobiusCriticalExponentialGapProbabilityMeasure_eq_laplace]
@@ -290,7 +292,8 @@ private theorem integrable_sq_mobiusCriticalExponentialGapProbabilityMeasure :
   change Integrable (fun x : ℝ => mobiusCriticalLaplaceGapDensity x * x ^ 2)
   simpa [mul_comm] using integrable_sq_mul_mobiusCriticalLaplaceGapDensity
 
-private theorem integral_sq_mobiusCriticalExponentialGapProbabilityMeasure :
+/-- The universal Laplace gap law has second moment two. -/
+theorem integral_sq_mobiusCriticalExponentialGapProbabilityMeasure :
     (∫ x : ℝ, x ^ 2
       ∂(mobiusCriticalExponentialGapProbabilityMeasure : Measure ℝ)) = 2 := by
   rw [mobiusCriticalExponentialGapProbabilityMeasure_eq_laplace]
@@ -368,7 +371,11 @@ private theorem integral_abs_sub_clippedAbs_le
       rw [integral_div]
     _ ≤ C / R := (div_le_div_iff_of_pos_right hR).mpr hbound
 
-private theorem tendsto_integral_abs_of_weak_of_uniform_sq
+/-- **Weak convergence plus a uniform second moment gives convergence of the absolute first
+moment.**  Clipping `|x|` at a height `R` gives a bounded continuous test function; the clipping
+error is controlled uniformly by `C/R`.  No property of the measures beyond the uniform square
+bound is used. -/
+theorem tendsto_integral_abs_of_weak_of_uniform_sq
     {I : Type*} {F : Filter I} [NeBot F]
     {mus : I → ProbabilityMeasure ℝ} {mu : ProbabilityMeasure ℝ} {C : ℝ}
     (hC : 0 ≤ C)

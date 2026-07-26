@@ -131,7 +131,7 @@ noncomputable def pointedFisherConnection
   ((Real.sqrt 2)⁻¹ : ℂ) •
     (rankOne ℂ chi psi + rankOne ℂ psi chi)
 
-private theorem invSqrtTwo_norm_sq :
+theorem invSqrtTwo_norm_sq :
     ‖((Real.sqrt 2)⁻¹ : ℂ)‖ ^ 2 = (1 / 2 : ℝ) := by
   rw [norm_inv, Complex.norm_real, Real.norm_eq_abs,
     abs_of_pos (Real.sqrt_pos.2 (by norm_num : (0 : ℝ) < 2))]

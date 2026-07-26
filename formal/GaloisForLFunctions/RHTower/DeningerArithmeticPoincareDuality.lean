@@ -169,21 +169,38 @@ The proof uses the source-defined exact point spectrum, not a divisor-defined Hi
 theorem riemannHypothesis
     (Hodge : DeningerArithmeticHodgeStar) :
     RiemannHypothesis := by
-  apply riemannHypothesis_of_xiSpectralPoint_real
-  intro q
-  obtain ⟨x, hx0, hx⟩ :=
-    exists_deningerEntireTheta_eigenvector q.1
-  have hre :=
-    Hodge.eigenvalue_re_eq_half hx0 hx
-  have him :
-      (xiSpectralPointSupport q.1).im = 0 := by
-    norm_num [Complex.mul_re] at hre
+  have hreal :
+      ∀ q : XiZeroCopy, ∃ t : ℝ, xiSpectralPoint q = (t : ℂ) := by
+    intro q
+    obtain ⟨x, hx0, hx⟩ :=
+      exists_deningerEntireTheta_eigenvector q.1
+    have hre :=
+      Hodge.eigenvalue_re_eq_half hx0 hx
+    have him :
+        (xiSpectralPointSupport q.1).im = 0 := by
+      norm_num [Complex.mul_re] at hre
+      linarith
+    refine ⟨(xiSpectralPoint q).re, ?_⟩
+    apply Complex.ext
+    · simp
+    · rw [xiSpectralPoint_eq_support]
+      simpa using him
+  rw [rh_iff_xi_ne_zero_right]
+  intro z hz hzero
+  let rho : XiDivisorSupport :=
+    ⟨z, mem_xi_divisor_support_of_eq_zero hzero⟩
+  have hpos := xi_divisor_pos_on_support rho
+  have hn :
+      0 < Int.toNat ((MeromorphicOn.divisor xi Set.univ) (rho : ℂ)) := by
+    omega
+  let q : XiZeroCopy := ⟨rho, ⟨0, hn⟩⟩
+  obtain ⟨t, ht⟩ := hreal q
+  have him := congrArg Complex.im ht
+  have hre : z.re = 1 / 2 := by
+    dsimp only [q, rho, xiSpectralPoint] at him
+    simp at him
     linarith
-  refine ⟨(xiSpectralPoint q).re, ?_⟩
-  apply Complex.ext
-  · simp
-  · rw [xiSpectralPoint_eq_support]
-    simpa using him
+  exact (ne_of_gt (mem_rightHalf.mp hz)) hre
 
 end DeningerArithmeticHodgeStar
 

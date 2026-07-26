@@ -45,31 +45,10 @@ local instance multipleEllipticGammaHTMeroCharZero : CharZero (meroField Set.uni
   charZero_of_injective_algebraMap
     (algebraMap ℂ (meroField Set.univ)).injective
 
-private theorem meroField_deriv_algebraMap_complex_multipleEllipticGammaHT (c : ℂ) :
-    (algebraMap ℂ (meroField Set.univ) c)′ = 0 := by
-  change
-    (algebraMap (analyticSubring Set.univ) (meroField Set.univ)
-      (constToAnalytic Set.univ c))′ = 0
-  rw [meroFieldDifferential_algebraMap isOpen_univ isPreconnected_univ
-    Set.univ_nonempty]
-  have hconst : analyticSubringDeriv isOpen_univ
-      (constToAnalytic Set.univ c) = 0 := by
-    apply Subtype.ext
-    rw [analyticSubringDeriv_coe]
-    let f : ℂ → ℂ := fun _ ↦ c
-    calc
-      Germ.coeRingHom (Filter.principal Set.univ) (deriv f) =
-          Germ.coeRingHom (Filter.principal Set.univ) (0 : ℂ → ℂ) := by
-        congr 1
-        funext z
-        simp [f]
-      _ = 0 := (Germ.coeRingHom (Filter.principal Set.univ)).map_zero
-  rw [hconst, map_zero]
-
 local instance multipleEllipticGammaHTComplexDifferentialAlgebra :
     DifferentialAlgebra ℂ (meroField Set.univ) :=
   ⟨fun c ↦ by
-    rw [meroField_deriv_algebraMap_complex_multipleEllipticGammaHT]
+    rw [meroField_deriv_algebraMap_complex_rationalBase]
     change (0 : meroField Set.univ) = algebraMap ℂ (meroField Set.univ) 0
     rw [map_zero]⟩
 

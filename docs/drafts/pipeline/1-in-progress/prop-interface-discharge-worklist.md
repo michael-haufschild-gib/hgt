@@ -23,53 +23,53 @@ definitions, 50 undischarged interfaces.
 | 23 | `GaloisForLFunctions.HTGeometry.ErlangRecoveryAdmissible` | `GaloisForLFunctions.HTGeometry.ErlangWignerSmithPacket` | HTGeometry | **discharged** — `HTGeometry.ErlangBoundedSource` |
 | 13 | `GaloisForLFunctions.RHTower.SuzukiAllAngleRealZeros` | `GaloisForLFunctions.RHTower.SuzukiFiniteApertureHermiteBiehler` | RHTower | **discharged** — `RHTower.SuzukiAllAngleWitnesses` |
 | 12 | `GaloisForLFunctions.HTGeometry.IsConstantMvPolynomial` | `GaloisForLFunctions.HTGeometry.DisjointBlockPolynomialIndependence` | HTGeometry | **discharged** — `HTGeometry.NonconstantMvPolynomialWitnesses` |
-| 10 | `GaloisForLFunctions.HTGeometry.MembraneLocalPrincipalBrackets` | `GaloisForLFunctions.HTGeometry.HolographicLocalityBound` | HTGeometry | open |
+| 10 | `GaloisForLFunctions.HTGeometry.MembraneLocalPrincipalBrackets` | `GaloisForLFunctions.HTGeometry.HolographicLocalityBound` | HTGeometry | **discharged** — `HTGeometry.MembraneLocalityWitnesses` |
 | 8 | `GaloisForLFunctions.FiniteGeometricLayerTower` | `GaloisForLFunctions.HTGeometry.FiniteGeometricLayerDAResonance` | HTGeometry | **inductive — realized by its own `nil`/`cons` constructors**; explicit towers in `HTGeometry.FiniteGeometricLayerTowerWitnesses` |
 | 8 | `GaloisForLFunctions.PeriodicFrom` | `GaloisForLFunctions.HTGeometry.GeometricPeriodicPhase` | HTGeometry | **discharged** — `HTGeometry.PeriodicFromWitnesses` |
-| 7 | `GaloisForLFunctions.CompatiblePrimitiveExtensionSystem` | `GaloisForLFunctions.HTGeometry.ParameterizedPrimitiveAction` | HTGeometry | open |
+| 7 | `GaloisForLFunctions.CompatiblePrimitiveExtensionSystem` | `GaloisForLFunctions.HTGeometry.ParameterizedPrimitiveAction` | HTGeometry | **discharged** — `HTGeometry.PrimitiveSystemWitnesses` |
 | 7 | `GaloisForLFunctions.HTGeometry.BooleanEdgeFieldSymmetric` | `GaloisForLFunctions.HTGeometry.CoherenceFlatness` | HTGeometry | **discharged** — `HTGeometry.BooleanEdgeFieldWitnesses` |
 | 7 | `GaloisForLFunctions.RHTower.IsActionStable` | `GaloisForLFunctions.RHTower.OmegaObstruction` | RHTower | **discharged** — `RHTower.ActionStableWitnesses` |
-| 6 | `GaloisForLFunctions.HTGeometry.MultipleSineDifferentialRegimeInput` | `GaloisForLFunctions.HTGeometry.ClockPeriodCommensurabilityBoundary` | HTGeometry | open |
-| 6 | `GaloisForLFunctions.HTGeometry.MvPolynomialProjectivelySmooth` | `GaloisForLFunctions.HTGeometry.MvPolynomialWaringSmoothHorizon` | HTGeometry | open |
-| 6 | `GaloisForLFunctions.HTGeometry.TateClockFiniteObservableSurjective` | `GaloisForLFunctions.HTGeometry.HypertranscendentalClockBoundary` | HTGeometry | open |
-| 6 | `GaloisForLFunctions.LinearReflectionAntiInvariant` | `GaloisForLFunctions.HTGeometry.ReflectionTateAnomaly` | HTGeometry | open |
-| 6 | `GaloisForLFunctions.MultipleEllipticGammaHasRankThreeMinor` | `GaloisForLFunctions.HTGeometry.MultipleEllipticGammaHypertranscendence` | HTGeometry | open |
+| 6 | `GaloisForLFunctions.HTGeometry.MultipleSineDifferentialRegimeInput` | `GaloisForLFunctions.HTGeometry.ClockPeriodCommensurabilityBoundary` | HTGeometry | **consistent** — `HTGeometry.MultipleSineRegimeWitnesses`; substantive realization is the analytic multiple-sine dichotomy (open) |
+| 6 | `GaloisForLFunctions.HTGeometry.MvPolynomialProjectivelySmooth` | `GaloisForLFunctions.HTGeometry.MvPolynomialWaringSmoothHorizon` | HTGeometry | **discharged** — `HTGeometry.ProjectiveSmoothWitnesses` |
+| 6 | `GaloisForLFunctions.HTGeometry.TateClockFiniteObservableSurjective` | `GaloisForLFunctions.HTGeometry.HypertranscendentalClockBoundary` | HTGeometry | **discharged** — `HTGeometry.TateClockObservableWitnesses` |
+| 6 | `GaloisForLFunctions.LinearReflectionAntiInvariant` | `GaloisForLFunctions.HTGeometry.ReflectionTateAnomaly` | HTGeometry | **discharged** — `HTGeometry.ReflectionAntiInvariantWitnesses` |
+| 6 | `GaloisForLFunctions.MultipleEllipticGammaHasRankThreeMinor` | `GaloisForLFunctions.HTGeometry.MultipleEllipticGammaHypertranscendence` | HTGeometry | **discharged** — `HTGeometry.RankThreeMinorWitnesses` |
 | 6 | `GaloisForLFunctions.commutingActions` | `GaloisForLFunctions.HTGeometry.RankOneCohomology` | HTGeometry | **discharged** — `HTGeometry.CommutingActionWitnesses` |
 | 6 | `GaloisForLFunctions.commutingAdditiveActions` | `GaloisForLFunctions.HTGeometry.KoszulCohomology` | HTGeometry | **discharged** — `HTGeometry.CommutingActionWitnesses` |
-| 4 | `GaloisForLFunctions.ClosedUnderLogarithmicPrimitives` | `GaloisForLFunctions.HTGeometry.ExponentialGaugeSelection` | HTGeometry | open |
+| 4 | `GaloisForLFunctions.ClosedUnderLogarithmicPrimitives` | `GaloisForLFunctions.HTGeometry.ExponentialGaugeSelection` | HTGeometry | **discharged** — `HTGeometry.ExponentialGaugeWitnesses` |
 | 4 | `GaloisForLFunctions.HTGeometry.DerivationInvariantSubmodule` | `GaloisForLFunctions.HTGeometry.FiniteLinearStateDifferentialEscape` | HTGeometry | **discharged** — `HTGeometry.DerivationInvariantSubmoduleWitnesses` |
-| 4 | `GaloisForLFunctions.IsAdditiveDifferentialHopfIdeal` | `GaloisForLFunctions.HTGeometry.DifferentialHopfIdeal` | HTGeometry | open |
-| 4 | `GaloisForLFunctions.IsBohrAP` | `GaloisForLFunctions.HTGeometry.AlmostPeriodicHull` | HTGeometry | open |
-| 4 | `GaloisForLFunctions.IsDifferentialExponentialGauge` | `GaloisForLFunctions.HTGeometry.ExponentialGaugeSelection` | HTGeometry | open |
-| 3 | `GaloisForLFunctions.CompatiblePrimitiveSystem` | `GaloisForLFunctions.HTGeometry.DifferenceDifferential` | HTGeometry | open |
-| 3 | `GaloisForLFunctions.HTGeometry.IsSubdirectConstraint` | `GaloisForLFunctions.HTGeometry.PrimeConstraintJoining` | HTGeometry | open |
-| 3 | `GaloisForLFunctions.HTGeometry.MatrixDensityClockCyclic` | `GaloisForLFunctions.HTGeometry.WeightedBivariateMarginalLock` | HTGeometry,RHTower | open |
-| 3 | `GaloisForLFunctions.HTGeometry.OneGeneratorRungeDense` | `GaloisForLFunctions.HTGeometry.RungeOneAtomAbsorption` | HTGeometry | open |
-| 3 | `GaloisForLFunctions.HTGeometry.RayTailCoefficientIndependent` | `GaloisForLFunctions.HTGeometry.SeparatedRayTailPacket` | HTGeometry | open |
-| 3 | `GaloisForLFunctions.HTGeometry.probabilityCarrierExpandedPatternRelationHolds` | `GaloisForLFunctions.HTGeometry.BoundaryCarrierTranslationFreeness` | HTGeometry | open |
-| 3 | `GaloisForLFunctions.HasBesselBound` | `GaloisForLFunctions.RHTower.DirichletHilbertRiggingBarrier` | RHTower | open |
-| 3 | `GaloisForLFunctions.RHTower.SchanuelConjecture` | `GaloisForLFunctions.RHTower.SchanuelWeldApex` | RHTower | open |
-| 2 | `GaloisForLFunctions.HTGeometry.ClosedBooleanConstraintShiftInvariant` | `GaloisForLFunctions.HTGeometry.IsodivisorialPrimeWalshStoneSaturation` | HTGeometry | open |
-| 2 | `GaloisForLFunctions.HTGeometry.ExponentZeroGaugeSeparatedReflectionClass` | `GaloisForLFunctions.HTGeometry.ExponentZeroEulerGaugeReflectionTransversal` | HTGeometry | open |
-| 2 | `GaloisForLFunctions.HTGeometry.IsMetricBornologicallyCofinal` | `GaloisForLFunctions.HTGeometry.HypertranscendentalClockBoundary` | HTGeometry | open |
-| 2 | `GaloisForLFunctions.HTGeometry.ShiftClockFiberIndependent` | `GaloisForLFunctions.HTGeometry.PrimeDirichletTailPattern` | HTGeometry | open |
-| 2 | `GaloisForLFunctions.IsQuotientAffineDifferentialIdeal` | `GaloisForLFunctions.HTGeometry.ParameterizedPrimitiveQuotient` | HTGeometry | open |
-| 2 | `GaloisForLFunctions.RHTower.IsAbscissa` | `GaloisForLFunctions.RHTower.LandauAbscissaRigidity` | RHTower | open |
-| 2 | `GaloisForLFunctions.allSourceDefectsOnSeam` | `GaloisForLFunctions.RHTower.ConsolidatedBridges` | RHTower | open |
-| 1 | `GaloisForLFunctions.FacetComplementRankOne` | `GaloisForLFunctions.HTGeometry.SimplicialConstraintTower` | HTGeometry | open |
-| 1 | `GaloisForLFunctions.FiniteGeometricLayerTower.below` | `GaloisForLFunctions.HTGeometry.FiniteGeometricLayerDAResonance` | HTGeometry | open |
-| 1 | `GaloisForLFunctions.GammaPowerRel` | `GaloisForLFunctions.HTGeometry.GammaHypertranscendental` | HTGeometry | open |
-| 1 | `GaloisForLFunctions.HTGeometry.ConjugationInvariantClockReadout` | `GaloisForLFunctions.HTGeometry.ClockCalibrationHolonomy` | HTGeometry | open |
-| 1 | `GaloisForLFunctions.HTGeometry.FiniteDifferentialCircuit.below` | `GaloisForLFunctions.HTGeometry.FiniteDifferentialCircuitBoundary` | HTGeometry | open |
-| 1 | `GaloisForLFunctions.HTGeometry.PatternRelationHolds` | `GaloisForLFunctions.HTGeometry.CountableDifferentialPattern` | HTGeometry | open |
-| 1 | `GaloisForLFunctions.HTGeometry.PolynomialCoefficientDifferentialRelationHolds` | `GaloisForLFunctions.HTGeometry.PolynomialCoefficientDifferentialFreeness` | HTGeometry | open |
-| 1 | `GaloisForLFunctions.IsDifferentialExponentialFamily` | `GaloisForLFunctions.HTGeometry.ExponentialGaugeSelection` | HTGeometry | open |
-| 1 | `GaloisForLFunctions.RHTower.PrimeIndexedLogExpansion` | `GaloisForLFunctions.RHTower.OmegaObstruction` | RHTower | open |
-| 1 | `GaloisForLFunctions.RHTower.PrimeLogExpansion` | `GaloisForLFunctions.RHTower.OmegaObstruction` | RHTower | open |
-| 1 | `GaloisForLFunctions.detectsOffSeamDefect` | `GaloisForLFunctions.RHTower.ConsolidatedBridges` | RHTower | open |
-| 1 | `GaloisForLFunctions.offLineProducesOffSeamSupport` | `GaloisForLFunctions.RHTower.ConsolidatedBridges` | RHTower | open |
-| 1 | `GaloisForLFunctions.offSeamSourceDefectFor` | `GaloisForLFunctions.RHTower.ConsolidatedBridges` | RHTower | open |
-| 1 | `GaloisForLFunctions.supportConfinedToSeam` | `GaloisForLFunctions.RHTower.ConsolidatedBridges` | RHTower | open |
+| 4 | `GaloisForLFunctions.IsAdditiveDifferentialHopfIdeal` | `GaloisForLFunctions.HTGeometry.DifferentialHopfIdeal` | HTGeometry | **discharged** — `HTGeometry.DifferentialHopfIdealWitnesses` |
+| 4 | `GaloisForLFunctions.IsBohrAP` | `GaloisForLFunctions.HTGeometry.AlmostPeriodicHull` | HTGeometry | **discharged** — `HTGeometry.BohrAPWitnesses` |
+| 4 | `GaloisForLFunctions.IsDifferentialExponentialGauge` | `GaloisForLFunctions.HTGeometry.ExponentialGaugeSelection` | HTGeometry | **discharged** — `HTGeometry.ExponentialGaugeWitnesses` |
+| 3 | `GaloisForLFunctions.CompatiblePrimitiveSystem` | `GaloisForLFunctions.HTGeometry.DifferenceDifferential` | HTGeometry | **discharged** — `HTGeometry.PrimitiveSystemWitnesses` |
+| 3 | `GaloisForLFunctions.HTGeometry.IsSubdirectConstraint` | `GaloisForLFunctions.HTGeometry.PrimeConstraintJoining` | HTGeometry | **discharged** — `HTGeometry.SubdirectConstraintWitnesses` |
+| 3 | `GaloisForLFunctions.HTGeometry.MatrixDensityClockCyclic` | `GaloisForLFunctions.HTGeometry.WeightedBivariateMarginalLock` | HTGeometry,RHTower | **discharged** — `HTGeometry.MatrixDensityClockWitnesses` |
+| 3 | `GaloisForLFunctions.HTGeometry.OneGeneratorRungeDense` | `GaloisForLFunctions.HTGeometry.RungeOneAtomAbsorption` | HTGeometry | **discharged** — `HTGeometry.RungeDenseWitnesses` |
+| 3 | `GaloisForLFunctions.HTGeometry.RayTailCoefficientIndependent` | `GaloisForLFunctions.HTGeometry.SeparatedRayTailPacket` | HTGeometry | **discharged** — `HTGeometry.TailIndependenceWitnesses` |
+| 3 | `GaloisForLFunctions.HTGeometry.probabilityCarrierExpandedPatternRelationHolds` | `GaloisForLFunctions.HTGeometry.BoundaryCarrierTranslationFreeness` | HTGeometry | **discharged** — `HTGeometry.PatternRelationWitnesses` |
+| 3 | `GaloisForLFunctions.HasBesselBound` | `GaloisForLFunctions.RHTower.DirichletHilbertRiggingBarrier` | RHTower | **discharged** — `RHTower.BesselBoundWitnesses` |
+| 3 | `GaloisForLFunctions.RHTower.SchanuelConjecture` | `GaloisForLFunctions.RHTower.SchanuelWeldApex` | RHTower | **irreducible external open input** — split stagewise in `RHTower.SchanuelStageWitnesses`: stage 0 proved, stage 1 shown *equivalent* to Hermite–Lindemann (mathlib has only the analytical part) |
+| 2 | `GaloisForLFunctions.HTGeometry.ClosedBooleanConstraintShiftInvariant` | `GaloisForLFunctions.HTGeometry.IsodivisorialPrimeWalshStoneSaturation` | HTGeometry | **discharged** — `HTGeometry.ShiftInvariantConstraintWitnesses` |
+| 2 | `GaloisForLFunctions.HTGeometry.ExponentZeroGaugeSeparatedReflectionClass` | `GaloisForLFunctions.HTGeometry.ExponentZeroEulerGaugeReflectionTransversal` | HTGeometry | **discharged** — `HTGeometry.GaugeSeparatedClassWitnesses` |
+| 2 | `GaloisForLFunctions.HTGeometry.IsMetricBornologicallyCofinal` | `GaloisForLFunctions.HTGeometry.HypertranscendentalClockBoundary` | HTGeometry | **discharged** — `HTGeometry.MetricCofinalWitnesses` |
+| 2 | `GaloisForLFunctions.HTGeometry.ShiftClockFiberIndependent` | `GaloisForLFunctions.HTGeometry.PrimeDirichletTailPattern` | HTGeometry | **discharged** — `HTGeometry.TailIndependenceWitnesses` |
+| 2 | `GaloisForLFunctions.IsQuotientAffineDifferentialIdeal` | `GaloisForLFunctions.HTGeometry.ParameterizedPrimitiveQuotient` | HTGeometry | **discharged** — `HTGeometry.PrimitiveSystemWitnesses` |
+| 2 | `GaloisForLFunctions.RHTower.IsAbscissa` | `GaloisForLFunctions.RHTower.LandauAbscissaRigidity` | RHTower | **discharged** — `RHTower.LandauAbscissaWitnesses` |
+| 2 | `GaloisForLFunctions.allSourceDefectsOnSeam` | `GaloisForLFunctions.RHTower.ConsolidatedBridges` | RHTower | **discharged** — `RHTower.ConsolidatedBridgeWitnesses` |
+| 1 | `GaloisForLFunctions.FacetComplementRankOne` | `GaloisForLFunctions.HTGeometry.SimplicialConstraintTower` | HTGeometry | **discharged** — `HTGeometry.FacetComplementWitnesses` |
+| 1 | `GaloisForLFunctions.FiniteGeometricLayerTower.below` | `GaloisForLFunctions.HTGeometry.FiniteGeometricLayerDAResonance` | HTGeometry | recursor artifact — not a premise |
+| 1 | `GaloisForLFunctions.GammaPowerRel` | `GaloisForLFunctions.HTGeometry.GammaHypertranscendental` | HTGeometry | **discharged** — `HTGeometry.GammaPowerRelWitnesses` |
+| 1 | `GaloisForLFunctions.HTGeometry.ConjugationInvariantClockReadout` | `GaloisForLFunctions.HTGeometry.ClockCalibrationHolonomy` | HTGeometry | **discharged** — `HTGeometry.ClockReadoutWitnesses` |
+| 1 | `GaloisForLFunctions.HTGeometry.FiniteDifferentialCircuit.below` | `GaloisForLFunctions.HTGeometry.FiniteDifferentialCircuitBoundary` | HTGeometry | recursor artifact — not a premise |
+| 1 | `GaloisForLFunctions.HTGeometry.PatternRelationHolds` | `GaloisForLFunctions.HTGeometry.CountableDifferentialPattern` | HTGeometry | **discharged** — `HTGeometry.PatternRelationWitnesses` |
+| 1 | `GaloisForLFunctions.HTGeometry.PolynomialCoefficientDifferentialRelationHolds` | `GaloisForLFunctions.HTGeometry.PolynomialCoefficientDifferentialFreeness` | HTGeometry | **discharged** — `HTGeometry.PatternRelationWitnesses` |
+| 1 | `GaloisForLFunctions.IsDifferentialExponentialFamily` | `GaloisForLFunctions.HTGeometry.ExponentialGaugeSelection` | HTGeometry | **discharged** — `HTGeometry.ExponentialGaugeWitnesses` |
+| 1 | `GaloisForLFunctions.RHTower.PrimeIndexedLogExpansion` | `GaloisForLFunctions.RHTower.OmegaObstruction` | RHTower | **discharged** — `RHTower.PrimeLogExpansionWitnesses` |
+| 1 | `GaloisForLFunctions.RHTower.PrimeLogExpansion` | `GaloisForLFunctions.RHTower.OmegaObstruction` | RHTower | **discharged** — `RHTower.PrimeLogExpansionWitnesses` |
+| 1 | `GaloisForLFunctions.detectsOffSeamDefect` | `GaloisForLFunctions.RHTower.ConsolidatedBridges` | RHTower | **discharged** — `RHTower.ConsolidatedBridgeWitnesses` |
+| 1 | `GaloisForLFunctions.offLineProducesOffSeamSupport` | `GaloisForLFunctions.RHTower.ConsolidatedBridges` | RHTower | **discharged** — `RHTower.ConsolidatedBridgeWitnesses` |
+| 1 | `GaloisForLFunctions.offSeamSourceDefectFor` | `GaloisForLFunctions.RHTower.ConsolidatedBridges` | RHTower | **discharged** — `RHTower.ConsolidatedBridgeWitnesses` |
+| 1 | `GaloisForLFunctions.supportConfinedToSeam` | `GaloisForLFunctions.RHTower.ConsolidatedBridges` | RHTower | **discharged** — `RHTower.ConsolidatedBridgeWitnesses` |
 
 ## Resolved
 
@@ -78,6 +78,33 @@ definitions, 50 undischarged interfaces.
 | `HilbertMetric.IsFullCCRMatrixTuple` | **unsatisfiable in positive dimension** (`not_exists_isFullCCRMatrixTuple`); every consumer restated with the satisfiable `IsBlockCCRMatrixTuple` |
 | `HilbertMetric.IsInvariantFullCompression` | realized: `blockCCRTuple_isInvariantFullCompression`, `exists_invariant_commuting_blockCCRTuple` |
 | `HilbertMetric.IsCommutingFullTuple` | realized: `blockCCRTuple_zero_isCommutingFullTuple` |
+| `RHTower.IsAbscissa` | realized: Lebesgue measure on the half line has Laplace abscissa zero (`isAbscissa_volume_zero`) |
+| `MultipleEllipticGammaHasRankThreeMinor` | realized by the parameter pair `i, i√2`, whose period triple `1, i, i√2` is rationally independent by irrationality of `√2` |
+| `GammaPowerRel` | realized by the zero relation, so the gamma hypertranscendence no-go concerns nonzero relations |
+| `RHTower.SchanuelConjecture` | **irreducible external open input.**  Split stagewise: stage 0 proved unconditionally, stage 1 proved *equivalent* to Hermite–Lindemann — the missing half of Lindemann–Weierstrass, of which mathlib carries only the analytical part |
+| `HTGeometry.MultipleSineDifferentialRegimeInput` | consistent (empty clock direction set); the substantive realization is the analytic multiple-sine DA/HT dichotomy, which the corpus does not contain |
+| `HTGeometry.MatrixDensityClockCyclic` | realized by every constant clock, whose diagonal is central |
+| `HTGeometry.OneGeneratorRungeDense` | realized by every algebraic generator (`Algebra.adjoin C {r} = ⊤`), since a subalgebra lies in its own closure |
+| `HTGeometry.PatternRelationHolds`, `…PolynomialCoefficientDifferentialRelationHolds`, `…probabilityCarrierExpandedPatternRelationHolds` | realized by the zero coefficient family, so the rigidity theorems say exactly that the zero relation is the only one |
+| `HTGeometry.RayTailCoefficientIndependent`, `HTGeometry.ShiftClockFiberIndependent` | consistent (empty coefficient index); the substantive case is that a nonzero combination has infinite nonvanishing locus |
+| `HTGeometry.ExponentZeroGaugeSeparatedReflectionClass` | realized by the empty and singleton classes — the extreme gauge transversals |
+| bridge interfaces `allSourceDefectsOnSeam`, `detectsOffSeamDefect`, `offSeamSourceDefectFor`, `supportConfinedToSeam`, `offLineProducesOffSeamSupport` | each realized (empty source, total seam, all-on-line), so both bridges are consistent; the contrapositive forms `not_detects_and_confine_of_offLine` and `not_support_detects_and_confine_of_offLine` record exactly what they forbid |
+| `HTGeometry.IsMetricBornologicallyCofinal` | realized by the identity and every surjective sampling, and — at the opposite extreme — by every nonempty sampling of a uniformly bounded transport |
+| `FacetComplementRankOne` | realized by the empty family, the full simplex, and the vertex-deletion family — the two cases of the simplex-or-deletion classification |
+| `HTGeometry.ClosedBooleanConstraintShiftInvariant` | realized by `∅`, `univ`, and every constant-pattern singleton; the sparse-constraint prime-tail theorem becomes premise-free on the all-positive singleton |
+| `IsDifferentialExponentialGauge`, `IsDifferentialExponentialFamily`, `ClosedUnderLogarithmicPrimitives` | realized by the unit gauge/family with vanishing direction and by `⊤`; the gauge axioms are also shown to force the normalization `u 0 = 1` |
+| `IsAdditiveDifferentialHopfIdeal` | realized by `⊥` |
+| `CompatiblePrimitiveSystem`, `CompatiblePrimitiveExtensionSystem`, `IsQuotientAffineDifferentialIdeal` | realized by the tautological defect data of an arbitrary tuple, by the zero tuple over an extension, and by `⊥`/`⊤` in the affine differential quotient |
+| `HTGeometry.ConjugationInvariantClockReadout` | realized by constants, by every readout of a commutative calibration group, and canonically by the conjugacy-class map, giving premise-free gauge invariance of the closed-holonomy conjugacy class |
+| `HTGeometry.DerivInvariantObservableSpace` | realized by `⊥`, `⊤`, closed under `⊓`, `⨅`, and — the finite-dimensional case — by the line spanned by a derivative eigenfunction; the exponential is one, giving `differentiallyAlgebraic_complex_exp` and `not_mem_span_exp_of_hypertranscendental` |
+| `HasBesselBound` | Bessel's inequality realizes it: every orthonormal mode family has bound one, so the non-diagonal normality barrier holds for orthonormal frames with no premise |
+| `RHTower.PrimeLogExpansion`, `RHTower.PrimeIndexedLogExpansion` | realized by `0`, by each prime logarithm, and closed under sums; the prime-indexed form reduces prime-log lattice stability to a prime-indexed expansion of each moved prime logarithm |
+| `IsBohrAP` | realized by constants and by every character `s ↦ exp (i λ s)`, whose orbit lies on a compact unimodular circle; orbit relative compactness is stable under scalars and sums, so every trigonometric polynomial is Bohr almost periodic |
+| `HTGeometry.MembraneLocalPrincipalBrackets` | free whenever the membrane supports cover all law pairs (`membraneLocalPrincipalBrackets_of_covering`) and whenever all principal brackets vanish; at singleton supports it is *exactly* bracket vanishing, hence incompatible with bracket independence — the two ends of the locality/compression trade-off |
+| `HTGeometry.MvPolynomialProjectivelySmooth` | reduced to the checkable criterion "some partial derivative is a nonzero constant"; realized by coordinates and nondegenerate linear forms |
+| `HTGeometry.IsSubdirectConstraint` | realized by every relation containing the constant profiles — in particular `univ` and the diagonal; premise removed from the coupled-prime realization theorem |
+| `LinearReflectionAntiInvariant` | realized by `0`, by every vector of `-id`, and by the anti-symmetric part `v - C v` of an arbitrary vector for an involution; equivalently membership in `ker (C + id)`.  The averaging firewall and the restricted-gauge criterion become premise-free on anti-symmetric parts |
+| `HTGeometry.TateClockFiniteObservableSurjective` | realized by the finitely supported clock variations (`tateClockFiniteObservableSurjective_finiteSupport`) and, by monotonicity, by `⊤`; removes the premise from the conormal no-go, product density, and Hausdorff blindness |
 | `RHTower.IsActionStable` | realized by `⊥`, `⊤`, closed under `⊓`, `⊔`, `⨅`; reduced to generators (`isActionStable_closure`) and, for the prime-log lattice, to the prime logarithms, which removes the premise from the gauge and resection integrality gates |
 | `HTGeometry.BooleanEdgeFieldSymmetric` | realized by constants, vertex coboundaries, conjunctions/disjunctions, and the symmetric part of an arbitrary field, so the Boolean flatness criterion applies with no symmetry premise |
 | `HTGeometry.DerivationInvariantSubmodule` | realized by `⊥`, `⊤`, and closed under `⊓`, `⊔`, `⨅`; taking `⊤` yields `differentialAlgebraicOver_of_finiteDimensional` and `not_hypertranscendentalOver_of_finiteDimensional` |

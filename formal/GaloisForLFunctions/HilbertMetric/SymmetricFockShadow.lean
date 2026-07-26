@@ -340,7 +340,7 @@ def symmetricFockLoweringShadow (n : ℕ)
     Submodule ℝ (EuclideanSpace ℝ (Sym I n)) :=
   ⨆ i, U.map (symmetricFockAnnihilation n i)
 
-private theorem annihilation_mem_loweringShadow (n : ℕ)
+theorem annihilation_mem_loweringShadow (n : ℕ)
     (U : Submodule ℝ (EuclideanSpace ℝ (Sym I (n + 1))))
     (i : I) (x : EuclideanSpace ℝ (Sym I (n + 1))) (hx : x ∈ U) :
     symmetricFockAnnihilation n i x ∈ symmetricFockLoweringShadow n U := by

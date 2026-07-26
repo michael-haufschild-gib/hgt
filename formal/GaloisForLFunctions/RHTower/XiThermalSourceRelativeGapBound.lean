@@ -145,7 +145,7 @@ theorem xiThermalOrientationTerm_le_thirtyTwo_over_fortyNine_node_sq
       ring
     _ ≤ (32 / 49 : ℝ) * (v - u) ^ 2 := hcore
 
-private lemma four_mul_u_mul_v_le_boundary_ratio
+lemma four_mul_u_mul_v_le_boundary_ratio
     {a u v : ℝ} (hu0 : 0 ≤ u) (hu : u ≤ 1 / 4)
     (ha : 1 / 4 < a) (hv : a ≤ v) :
     4 * u * v ≤ (a / (a - 1 / 4) ^ 2) * (v - u) ^ 2 := by

@@ -126,28 +126,6 @@ theorem differentialIndependent_fin_succ_iff
     rw [he'] at hfin
     exact hfin
 
-/-- Adjoining a nonempty finite family is adjoining its head and then its tail. -/
-theorem differentialAdjoin_fin_succ
-    {F E : Type*} [Field F] [Field E] [Algebra F E] [Differential E]
-    {n : ℕ} (x : Fin (n + 1) → E) :
-    (differentialAdjoin (differentialAdjoin F ({x 0} : Set E))
-      (Set.range fun i : Fin n => x i.succ)).restrictScalars F =
-        differentialAdjoin F (Set.range x) := by
-  rw [differentialAdjoin, differentialAdjoin,
-    IntermediateField.adjoin_adjoin_left]
-  congr 1
-  ext z
-  constructor
-  · rintro (⟨w, hw, k, rfl⟩ | ⟨w, ⟨i, rfl⟩, k, rfl⟩)
-    · simp only [Set.mem_singleton_iff] at hw
-      subst w
-      exact ⟨x 0, ⟨0, rfl⟩, k, rfl⟩
-    · exact ⟨x i.succ, ⟨i.succ, rfl⟩, k, rfl⟩
-  · rintro ⟨w, ⟨i, rfl⟩, k, rfl⟩
-    refine Fin.cases ?_ (fun j => ?_) i
-    · exact Set.mem_union_left _ ⟨x 0, Set.mem_singleton _, k, rfl⟩
-    · exact Set.mem_union_right _ ⟨x j.succ, ⟨j, rfl⟩, k, rfl⟩
-
 /-- Differential algebraicity is transitive across a nonempty finite differentially algebraic
 family. -/
 theorem differentialAlgebraicOver_trans_fin_succ
@@ -527,46 +505,6 @@ theorem automorphismFamily_exists_logIncrement_jet_telescoping_of_differentialAl
     intro i
     simpa [omegaJet, omega] using hk i⟩
 
-/-- A nonzero affine linear relation over the base obstructs algebraic independence. -/
-theorem not_algebraicIndependent_of_finsupp_linearCombination_eq
-    {κ C K L : Type*} [Field C] [Field K] [Field L]
-    [Algebra C K] [Algebra C L] [Algebra K L] [IsScalarTower C K L]
-    (x : κ → L) (c : κ →₀ C) (hc : c ≠ 0) (a : K)
-    (hrel :
-      Finsupp.linearCombination L x
-        (Finsupp.mapRange (algebraMap C L)
-          (map_zero (algebraMap C L)) c) = algebraMap K L a) :
-    ¬ AlgebraicIndependent K x := by
-  classical
-  intro hAI
-  let P : MvPolynomial κ K :=
-    c.sum (fun j r => MvPolynomial.C (algebraMap C K r) * MvPolynomial.X j) -
-      MvPolynomial.C a
-  have hP : P ≠ 0 := by
-    obtain ⟨j, hj⟩ := Finsupp.ne_iff.mp hc
-    have hjmem : j ∈ c.support := Finsupp.mem_support_iff.mpr hj
-    let e0 : κ → K := fun _ => 0
-    let e1 : κ → K := fun i => if i = j then 1 else 0
-    intro hzero
-    have h0 := congrArg (MvPolynomial.eval e0) hzero
-    have h1 := congrArg (MvPolynomial.eval e1) hzero
-    rw [map_zero] at h0 h1
-    have h0' : -a = 0 := by
-      simpa [P, e0, Finsupp.sum] using h0
-    have h1' : algebraMap C K (c j) - a = 0 := by
-      simpa [P, e1, Finsupp.sum, hj, hjmem] using h1
-    have hjK : algebraMap C K (c j) ≠ 0 := by
-      simpa using (algebraMap C K).injective.ne hj
-    apply hjK
-    linear_combination h1' - h0'
-  apply hP
-  apply hAI.eq_zero_of_aeval_eq_zero
-  have hrel' := hrel
-  rw [Finsupp.linearCombination_apply,
-    Finsupp.sum_mapRange_index (fun _ => by simp)] at hrel'
-  simpa [P, Finsupp.sum, IsScalarTower.algebraMap_apply C K L]
-    using sub_eq_zero.mpr hrel'
-
 /-- A nonzero affine differential-character relation on the jet family makes the underlying
 element differentially algebraic. -/
 theorem differentialAlgebraicOver_of_finsupp_jet_linear_eq
@@ -581,7 +519,7 @@ theorem differentialAlgebraicOver_of_finsupp_jet_linear_eq
           (map_zero (algebraMap C L)) c) = algebraMap K L a) :
     DifferentialAlgebraicOver K x := by
   unfold DifferentialAlgebraicOver DifferentialIndependent
-  exact not_algebraicIndependent_of_finsupp_linearCombination_eq
+  exact GaloisForLFunctions.HTGeometry.not_algebraicIndependent_of_finsupp_linearCombination_eq
     (fun p : Unit × ℕ ↦ differentialJet p.2 x) c hc a hrel
 
 /-- A simultaneous logarithmic-increment jet telescoper forces differential algebraicity of the
@@ -848,7 +786,7 @@ theorem automorphismFamily_algebraicIndependent_iff_no_constant_simultaneous_tel
         g = algebraMap K L k + algebraMap C L c0 := by rw [hc0]; abel
         _ = algebraMap K L a := by
           simp [a, IsScalarTower.algebraMap_apply C K L]
-    exact (not_algebraicIndependent_of_finsupp_linearCombination_eq
+    exact (GaloisForLFunctions.HTGeometry.not_algebraicIndependent_of_finsupp_linearCombination_eq
       x c hc a (by simpa [g, cL] using hgbase)) hAI
   · exact automorphismFamily_algebraicIndependent_of_no_constant_simultaneous_telescoping
       tau sigma hcomp hCfixed hfixed x b hshift

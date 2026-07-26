@@ -20,46 +20,6 @@ namespace RHTower
 
 noncomputable section
 
-private lemma four_mul_u_mul_v_le_quartet_boundary_ratio
-    {a u v : ℝ} (hu0 : 0 ≤ u) (hu : u ≤ 1 / 4)
-    (ha : 1 / 4 < a) (hv : a ≤ v) :
-    4 * u * v ≤ (a / (a - 1 / 4) ^ 2) * (v - u) ^ 2 := by
-  have hau : 0 < a - u := by linarith
-  have hav : 0 < v - u := by linarith
-  have hab : 0 < a - 1 / 4 := by linarith
-  have ha0 : 0 ≤ a := by linarith
-  have hmonoVCore : v * (a - u) ^ 2 ≤ a * (v - u) ^ 2 := by
-    have h1 : 0 ≤ v - a := sub_nonneg.mpr hv
-    have h2 : 0 ≤ a * v - u ^ 2 := by
-      have huv : u ≤ a := hu.trans ha.le
-      have haa : a ^ 2 ≤ a * v := by
-        nlinarith [mul_nonneg ha0 (sub_nonneg.mpr hv)]
-      nlinarith [mul_nonneg (sub_nonneg.mpr huv) (add_nonneg ha0 hu0)]
-    nlinarith [mul_nonneg h1 h2]
-  have hmonoV :
-      4 * u * v / (v - u) ^ 2 ≤ 4 * u * a / (a - u) ^ 2 := by
-    rw [div_le_div_iff₀ (sq_pos_of_pos hav) (sq_pos_of_pos hau)]
-    calc
-      4 * u * v * (a - u) ^ 2 = (4 * u) * (v * (a - u) ^ 2) := by ring
-      _ ≤ (4 * u) * (a * (v - u) ^ 2) :=
-        mul_le_mul_of_nonneg_left hmonoVCore (by positivity)
-      _ = 4 * u * a * (v - u) ^ 2 := by ring
-  have hmonoUCore : u * (a - 1 / 4) ^ 2 ≤ (1 / 4 : ℝ) * (a - u) ^ 2 := by
-    have h1 : 0 ≤ (1 / 4 : ℝ) - u := sub_nonneg.mpr hu
-    have h2 : 0 ≤ a ^ 2 - (1 / 4 : ℝ) * u := by
-      nlinarith [mul_nonneg (sub_nonneg.mpr (hu.trans ha.le))
-        (add_nonneg ha0 hu0)]
-    nlinarith [mul_nonneg h1 h2]
-  have hmonoU :
-      4 * u * a / (a - u) ^ 2 ≤ a / (a - 1 / 4) ^ 2 := by
-    rw [div_le_div_iff₀ (sq_pos_of_pos hau) (sq_pos_of_pos hab)]
-    have hscaled := mul_nonneg (mul_nonneg (by norm_num : (0 : ℝ) ≤ 4) ha0)
-      (sub_nonneg.mpr hmonoUCore)
-    nlinarith
-  have hratio := hmonoV.trans hmonoU
-  rw [div_le_iff₀ (sq_pos_of_pos hav)] at hratio
-  exact hratio
-
 /-- The exact orientation factor after the off-line FE--Schwarz quartet is charged as one orbit. -/
 def xiThermalQuartetRelativeOrientationFactor : ℝ :=
   16 * xiEndpointCompletedCurvature * (4 - xiEndpointCompletedCurvature) /
@@ -154,7 +114,7 @@ theorem xiThermalOrientationTerm_le_quartetRelativeFactor_node_sq (q : XiZeroCop
     dsimp [D, u, v]
     positivity
   have hratio :=
-    four_mul_u_mul_v_le_quartet_boundary_ratio hu0 hu ha hv
+    four_mul_u_mul_v_le_boundary_ratio hu0 hu ha hv
   rw [xiThermalNode, xiZeroCopyReciprocalSquare_re_formula,
     xiZeroCopyReciprocalSquare_im_formula]
   change (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im /

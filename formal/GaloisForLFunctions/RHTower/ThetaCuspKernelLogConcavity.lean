@@ -947,7 +947,7 @@ theorem thetaCuspLogConcavityNumerator_neg_all (x : ℝ) :
 def thetaCuspLogSource (x : ℝ) : ℝ :=
   Real.log (thetaCuspFullSource x)
 
-private theorem hasDerivAt_thetaCuspFullSource_iterate_zero (x : ℝ) :
+theorem hasDerivAt_thetaCuspFullSource_iterate_zero (x : ℝ) :
     HasDerivAt thetaCuspFullSource
       (iteratedDeriv 1 thetaCuspFullSource x) x := by
   have h := hasDerivAt_thetaCuspFullDerivative 0 x

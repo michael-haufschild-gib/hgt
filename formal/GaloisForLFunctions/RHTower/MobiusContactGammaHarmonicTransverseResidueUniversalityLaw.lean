@@ -21,20 +21,13 @@ noncomputable section
 def mobiusContactGammaHarmonicMicroscopeScale (n : ℕ) : ℂ :=
   ((-2 - mobiusGammaContactPartialCharge n) / 2) * (harmonic n : ℂ)
 
-private theorem mobiusContactGammaFactorialScale_eq (n : ℕ) :
-    (-2 - mobiusGammaContactPartialCharge n) / 2 =
-      GaloisForLFunctions.reciprocalGammaFactorialScale n := by
-  rw [mobiusGammaContactPartialCharge_eq]
-  simp only [GaloisForLFunctions.reciprocalGammaFactorialScale]
-  ring
-
 /-- Contact-harmonic and intrinsic Gamma harmonic microscope scales coincide exactly. -/
 theorem mobiusContactGammaHarmonicMicroscopeScale_eq (n : ℕ) :
     mobiusContactGammaHarmonicMicroscopeScale n =
       GaloisForLFunctions.gammaHarmonicMicroscopeScale n := by
   rw [mobiusContactGammaHarmonicMicroscopeScale,
     GaloisForLFunctions.gammaHarmonicMicroscopeScale,
-    mobiusContactGammaFactorialScale_eq]
+    GaloisForLFunctions.RHTower.mobiusContactGammaFactorialScale_eq]
 
 /-- At pole `-n`, the exact transverse Riccati residue is the contact defect times the positive
 integer digamma value. -/
@@ -45,7 +38,7 @@ theorem tendsto_gammaFactorialFirstJetDefect_mobiusContact_poleResidue
       (𝓝[≠] 0)
       (𝓝 (-2 * ((-2 - mobiusGammaContactPartialCharge n) / 2) *
         Complex.digamma ((n : ℂ) + 1))) := by
-  simpa only [mobiusContactGammaFactorialScale_eq] using
+  simpa only [GaloisForLFunctions.RHTower.mobiusContactGammaFactorialScale_eq] using
     (GaloisForLFunctions.tendsto_gammaFactorialFirstJetDefect_pole_residue n)
 
 /-- Dividing fixed-pole residues by the contact-harmonic scale leaves the universal nonzero
@@ -56,7 +49,7 @@ theorem tendsto_normalized_gammaFactorialFirstJetDefect_mobiusContact_poleResidu
         Complex.digamma ((n : ℂ) + 1)) /
           mobiusContactGammaHarmonicMicroscopeScale n)
       atTop (𝓝 (-2)) := by
-  simpa only [mobiusContactGammaFactorialScale_eq,
+  simpa only [GaloisForLFunctions.RHTower.mobiusContactGammaFactorialScale_eq,
     mobiusContactGammaHarmonicMicroscopeScale_eq] using
     GaloisForLFunctions.tendsto_normalized_gammaFactorialFirstJetDefect_pole_residue
 

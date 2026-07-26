@@ -490,7 +490,7 @@ theorem integrableOn_thetaCuspTailSecondDensity_mul_phase_of_neg_one_lt_im
     have hx0 : 0 ≤ x := hx.le
     have hrho := abs_thetaCuspTailSecondDensity_le_exp_neg_one hx0
     rw [norm_mul, Complex.norm_real, Real.norm_eq_abs,
-      norm_spectralTranslationPhase_eq_exp_neg_mul_im_halfLine]
+      RHTower.norm_spectralTranslationPhase_eq_exp_neg_mul_im]
     dsimp only [C, c]
     rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg
       thetaCuspTailSecondDensityExpOneConstant_nonneg (Real.exp_pos _).le)]
@@ -532,7 +532,7 @@ theorem integrableOn_thetaCuspTailSecondDensity_mul_phaseDerivative_of_neg_one_l
     have hx0 : 0 ≤ x := hx.le
     have hrho := abs_thetaCuspTailSecondDensity_le_exp_neg_one hx0
     rw [norm_mul, norm_mul, norm_mul, Complex.norm_real, Real.norm_eq_abs,
-      norm_I, mul_one, norm_spectralTranslationPhase_eq_exp_neg_mul_im_halfLine]
+      norm_I, mul_one, RHTower.norm_spectralTranslationPhase_eq_exp_neg_mul_im]
     simp only [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hx0, pow_one]
     rw [abs_of_nonneg (mul_nonneg
       thetaCuspTailSecondDensityExpOneConstant_nonneg
@@ -611,7 +611,7 @@ theorem hasDerivAt_thetaCuspTailSecondDensityPhaseValue
           (x * Real.exp (-x * z.im)) by
       dsimp only [F']
       rw [norm_mul, norm_mul, norm_mul, Complex.norm_real, Real.norm_eq_abs,
-        norm_I, mul_one, norm_spectralTranslationPhase_eq_exp_neg_mul_im_halfLine,
+        norm_I, mul_one, RHTower.norm_spectralTranslationPhase_eq_exp_neg_mul_im,
         hxnorm]
       ]
     dsimp only [bound, C]

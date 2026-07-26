@@ -456,3 +456,20 @@ functional-equation estimate may enter as a hypothesis of the final declaration.
   `N^(4+ε)M²` separated-pair estimate and recurrence (2.26); sharp
   `A₆`, first-spacing elimination, Huxley--Watt second spacing, and final
   exponent optimization remain downstream.
+- 2026-07-26 — `[SECTION 2 NORMALIZED CELL TRANSLATION/GRID] [LEAN-PROVED]`
+  `BourgainA6NormalizedCellTranslation.lean` proves arbitrary-translate
+  invariance by exact unit-character coefficient twisting, preservation of
+  both coefficient `ℓ²` masses, and finite-cover summation.
+  `BourgainA6NormalizedCellGrid.lean` composes the affine Taylor transpose
+  with the normalized two-base osculating map as a continuous linear
+  equivalence, identifies the sharp physical cell as the exact preimage of
+  the independent-parabola period cell, and pulls back the explicit
+  anisotropic product grid. The cover has exact cardinality
+  `∏j(m_j+1)`, and its set-integral aggregation theorem builds.
+  `[OPEN CORE]` Source audit confirms that the remaining obstruction is
+  not translation or covering: the present exact theorem is the one-step
+  `H³/D≪1` localization corresponding to Bourgain (1.22). Removing that
+  scale restriction requires formalizing the Section-1 multiplicative
+  bootstrap `b(R)≪R^ε b(R^(2/3))`. Only after that full bilinear
+  decoupling theorem is available can one take `H≈D` in (2.22), recover
+  (2.23), and run the Section-2 `A₆` recurrence.

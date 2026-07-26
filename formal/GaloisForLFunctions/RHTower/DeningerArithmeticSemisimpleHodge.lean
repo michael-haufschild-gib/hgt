@@ -1,4 +1,3 @@
-import GaloisForLFunctions.RHTower.DeningerArithmeticJetHilbertRigging
 import GaloisForLFunctions.RHTower.DeningerDivisorFlow
 import Mathlib.Data.Finsupp.Order
 
@@ -26,10 +25,14 @@ noncomputable section
 /-- Multiplicity-exact algebraic associated-graded carrier of source local jets. -/
 abbrev DeningerArithmeticGradedH1 := DeningerDivisorH1
 
+/-- Finite-support boundary of the multiplicity-exact associated-graded source jets. -/
+abbrev DeningerArithmeticGradedSourceJetTest := XiZeroCopy →₀ ℂ
+
 /-- The source jet-copy index is definitionally the multiplicity-exact Xi divisor-copy index. -/
 def deningerArithmeticGradedH1EquivSourceJets :
-    DeningerArithmeticGradedH1 ≃ₗ[ℂ] DeningerArithmeticJetTest :=
-  LinearEquiv.refl ℂ DeningerArithmeticJetTest
+    DeningerArithmeticGradedH1 ≃ₗ[ℂ]
+      DeningerArithmeticGradedSourceJetTest :=
+  LinearEquiv.refl ℂ DeningerArithmeticGradedSourceJetTest
 
 /-- Semisimple graded Frobenius: every local graded copy has the support eigenvalue. -/
 def deningerArithmeticGradedTheta :
@@ -209,42 +212,61 @@ theorem riemannHypothesis_of_deningerArithmeticGradedTheta_hodgeStar
         deningerArithmeticGradedHodgeStar
           (deningerArithmeticGradedTheta a)) :
     RiemannHypothesis := by
-  apply riemannHypothesis_of_xiSpectralPoint_real
-  intro q
-  have h := hcompat (Finsupp.single q 1)
-  have hq :
-      deningerDivisorThetaEigen (xiZeroCopyReflectEquiv q) =
-        (starRingEnd ℂ) (deningerDivisorThetaEigen q) := by
-    have hzero :
-        (deningerArithmeticGradedTheta
-            (deningerArithmeticGradedHodgeStar (Finsupp.single q 1)))
-              (xiZeroCopyReflectEquiv q) -
-          deningerArithmeticGradedHodgeStar
-              (deningerArithmeticGradedTheta (Finsupp.single q 1))
-              (xiZeroCopyReflectEquiv q) = 0 := by
-      rw [h]
-      ring
-    have hdefect :=
-      deningerArithmeticGradedTheta_hodgeStar_defect
-        (Finsupp.single q 1) (xiZeroCopyReflectEquiv q)
-    rw [hzero] at hdefect
-    simp [xiZeroCopyReflectEquiv_apply_apply] at hdefect
-    exact sub_eq_zero.mp hdefect.symm
-  have hweight := deningerDivisorThetaEigen_add_reflect q
-  have hconj :
-      deningerDivisorThetaEigen q +
-        (starRingEnd ℂ) (deningerDivisorThetaEigen q) = 1 := by
-    rw [← hq]
-    exact hweight
-  have hre := congrArg Complex.re hconj
-  have hlambda : (deningerDivisorThetaEigen q).re = 1 / 2 := by
-    simp only [add_re, conj_re, one_re] at hre
+  have hreal :
+      ∀ q : XiZeroCopy, ∃ t : ℝ, xiSpectralPoint q = (t : ℂ) := by
+    intro q
+    have h := hcompat (Finsupp.single q 1)
+    have hq :
+        deningerDivisorThetaEigen (xiZeroCopyReflectEquiv q) =
+          (starRingEnd ℂ) (deningerDivisorThetaEigen q) := by
+      have hzero :
+          (deningerArithmeticGradedTheta
+              (deningerArithmeticGradedHodgeStar (Finsupp.single q 1)))
+                (xiZeroCopyReflectEquiv q) -
+            deningerArithmeticGradedHodgeStar
+                (deningerArithmeticGradedTheta (Finsupp.single q 1))
+                (xiZeroCopyReflectEquiv q) = 0 := by
+        rw [h]
+        ring
+      have hdefect :=
+        deningerArithmeticGradedTheta_hodgeStar_defect
+          (Finsupp.single q 1) (xiZeroCopyReflectEquiv q)
+      rw [hzero] at hdefect
+      simp [xiZeroCopyReflectEquiv_apply_apply] at hdefect
+      exact sub_eq_zero.mp hdefect.symm
+    have hweight := deningerDivisorThetaEigen_add_reflect q
+    have hconj :
+        deningerDivisorThetaEigen q +
+          (starRingEnd ℂ) (deningerDivisorThetaEigen q) = 1 := by
+      rw [← hq]
+      exact hweight
+    have hre := congrArg Complex.re hconj
+    have hlambda : (deningerDivisorThetaEigen q).re = 1 / 2 := by
+      simp only [add_re, conj_re, one_re] at hre
+      linarith
+    have him : (xiSpectralPoint q).im = 0 := by
+      rw [deningerDivisorThetaEigen_eq] at hlambda
+      simp [mul_re] at hlambda
+      linarith
+    exact
+      ⟨(xiSpectralPoint q).re,
+        Complex.ext (by simp) (by simpa using him)⟩
+  rw [rh_iff_xi_ne_zero_right]
+  intro z hz hzero
+  let ρ : XiDivisorSupport :=
+    ⟨z, mem_xi_divisor_support_of_eq_zero hzero⟩
+  have hpos := xi_divisor_pos_on_support ρ
+  have hn :
+      0 < Int.toNat ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ)) := by
+    omega
+  let q : XiZeroCopy := ⟨ρ, ⟨0, hn⟩⟩
+  obtain ⟨t, ht⟩ := hreal q
+  have him := congrArg Complex.im ht
+  have hre : z.re = 1 / 2 := by
+    dsimp only [q, ρ, xiSpectralPoint] at him
+    simp at him
     linarith
-  have him : (xiSpectralPoint q).im = 0 := by
-    rw [deningerDivisorThetaEigen_eq] at hlambda
-    simp [mul_re] at hlambda
-    linarith
-  exact ⟨(xiSpectralPoint q).re, Complex.ext (by simp) (by simpa using him)⟩
+  exact (ne_of_gt (mem_rightHalf.mp hz)) hre
 
 /-- Exact Deninger purity gate on multiplicity-exact semisimplified arithmetic cohomology. -/
 theorem deningerArithmeticGradedTheta_hodgeStar_iff_riemannHypothesis :

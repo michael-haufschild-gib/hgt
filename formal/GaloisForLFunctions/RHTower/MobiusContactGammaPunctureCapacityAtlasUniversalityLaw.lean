@@ -17,14 +17,6 @@ open GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-private theorem mobiusGammaContactPartialCharge_defect_eq_punctureScale
-    (n : ℕ) :
-    (-2 - mobiusGammaContactPartialCharge n) / 2 =
-      GaloisForLFunctions.reciprocalGammaFactorialScale n := by
-  rw [mobiusGammaContactPartialCharge_eq]
-  simp only [GaloisForLFunctions.reciprocalGammaFactorialScale]
-  ring
-
 /-- The actual inverse-Gamma puncture sheet normalized by the oriented finite Möbius contact-charge
 defect. -/
 def gammaPunctureMobiusContactNormalizedSheet (n : ℕ) (z : ℂ) : ℂ :=
@@ -37,7 +29,7 @@ theorem gammaPunctureMobiusContactNormalizedSheet_eq
     gammaPunctureMobiusContactNormalizedSheet n z =
       gammaPunctureNormalizedSheet n z := by
   rw [gammaPunctureMobiusContactNormalizedSheet, gammaPunctureNormalizedSheet,
-    mobiusGammaContactPartialCharge_defect_eq_punctureScale]
+    mobiusContactGammaFactorialScale_eq]
 
 /-- The contact-normalized actual sheet is the selected common-collar branch. -/
 theorem gammaPunctureMobiusContactNormalizedSheet_eq_branch

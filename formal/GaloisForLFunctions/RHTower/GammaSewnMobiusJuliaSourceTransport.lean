@@ -176,27 +176,6 @@ theorem gammaSewnMobiusJuliaDefect_eq_aperture_mul_sqrt_gain
         (gammaSewnMobiusValuationQuadraticDefectGain x p *
           (1 + gammaSewnMobiusValuationContractionMultiplier x p)))]
 
-theorem continuousAt_gammaSewnMobiusValuationQuadraticDefectGain_zero
-    (p : Nat.Primes) :
-    ContinuousAt (fun x : ℝ =>
-      gammaSewnMobiusValuationQuadraticDefectGain x p) 0 := by
-  let q : ℝ → ℝ := fun x => xiMobiusContinuousApertureDiskNode x p
-  let c : ℝ → ℝ := fun x =>
-    gammaSewnMobiusValuationContractionMultiplier x p
-  change ContinuousAt (fun x : ℝ =>
-    (7 * q x ^ 2 + 10 * q x + 7) /
-      (8 * (1 + q x ^ 4) * (1 + c x) * (1 + c x ^ 2))) 0
-  have hq : ContinuousAt q 0 := by
-    dsimp only [q, xiMobiusContinuousApertureDiskNode]
-    fun_prop
-  have hc : ContinuousAt c 0 := by
-    simpa only [c] using
-      continuousAt_gammaSewnMobiusValuationContractionMultiplier_zero p
-  apply ContinuousAt.div
-  · fun_prop
-  · fun_prop
-  · simp [q, c, gammaSewnMobiusValuationContractionMultiplier_zero]
-
 /-- **Prime-log Julia tangent law.**  Although the scalar compression has zero first derivative
 at the boundary, its retained environment has the nonzero logarithmic tangent
 `log(p) * sqrt(3/4)`. -/

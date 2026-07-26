@@ -124,7 +124,7 @@ the height fiber, a nonnegative real. -/
 def fiberVariance (γ c : ℝ) : ℝ :=
   ∑ w ∈ heightFiber γ c, xiPacketMass w * w.im ^ 2
 
-private theorem xiPacketMass_nonneg (w : ℂ) : 0 ≤ xiPacketMass w := by
+theorem xiPacketMass_nonneg (w : ℂ) : 0 ≤ xiPacketMass w := by
   unfold xiPacketMass
   exact Nat.cast_nonneg _
 

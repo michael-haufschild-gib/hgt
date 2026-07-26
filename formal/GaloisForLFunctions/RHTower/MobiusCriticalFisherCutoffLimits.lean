@@ -228,7 +228,7 @@ def squarefreeMobiusCriticalClockCappedMoment (k : ℕ) (sigma u : ℝ) : ℝ :=
   ∑' n : ℕ, squarefreeMobiusProbability sigma n *
     positiveClockCap u (squarefreeMobiusCriticalClock sigma n) ^ k
 
-private theorem integral_positiveClockCap_pow_squarefreeMobiusCriticalClock
+theorem integral_positiveClockCap_pow_squarefreeMobiusCriticalClock
     (k : ℕ) {sigma u : ℝ} (hsigma : 1 < sigma) (hu : 0 ≤ u) :
     (∫ y : ℝ, positiveClockCap u y ^ k
       ∂(squarefreeMobiusCriticalClockProbabilityMeasure sigma : Measure ℝ)) =

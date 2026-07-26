@@ -70,18 +70,13 @@ lemma finitePrimeSquarefreeLoschmidtMode_eq_prod (T : Finset Nat.Primes) :
       rw [Complex.exp_add, ← finitePrimeSquarefreeLoschmidtMode]
       rw [ih]
 
-private theorem isAlgebraic_natComplex (n : ℕ) : IsAlgebraic ℚ (n : ℂ) := by
-  have h : IsAlgebraic ℚ (algebraMap ℚ ℂ (n : ℚ)) :=
-    (isIntegral_algebraMap : IsIntegral ℚ (algebraMap ℚ ℂ (n : ℚ))).isAlgebraic
-  simpa using h
-
 /-- A nontrivial positive rational base cannot have unit principal `I`-power.  This is the exact
 Gelfond--Schneider phase-separation lemma consumed by the squarefree spectrum. -/
 lemma positiveRational_cpow_I_ne_one
     {a b : ℕ} (ha : 0 < a) (hb : 0 < b) (hab : a ≠ b) :
     (((a : ℂ) / (b : ℂ)) ^ Complex.I) ≠ 1 := by
   have halg : IsAlgebraic ℚ ((a : ℂ) / (b : ℂ)) :=
-    (isAlgebraic_natComplex a).mul (isAlgebraic_natComplex b).inv
+    (RHTower.isAlgebraic_natComplex a).mul (RHTower.isAlgebraic_natComplex b).inv
   have hzero : (a : ℂ) / (b : ℂ) ≠ 0 :=
     div_ne_zero (by exact_mod_cast ha.ne') (by exact_mod_cast hb.ne')
   have hone : (a : ℂ) / (b : ℂ) ≠ 1 := by
@@ -94,7 +89,7 @@ lemma positiveRational_cpow_I_ne_one
   intro hpow
   apply htrans
   rw [show ((1 : ℕ) : ℂ) * I = I by norm_num, hpow]
-  simpa using (isAlgebraic_natComplex 1)
+  simpa using (RHTower.isAlgebraic_natComplex 1)
 
 /-- Distinct squarefree prime supports have distinct unitary time-one modes.  Unique factorization
 reduces equality to a nontrivial positive rational `I`-power, excluded by Gelfond--Schneider. -/

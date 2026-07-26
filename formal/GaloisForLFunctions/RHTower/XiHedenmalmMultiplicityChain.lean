@@ -1,7 +1,5 @@
-import GaloisForLFunctions.RHTower.XiHedenmalmFourierEquation
 import GaloisForLFunctions.RHTower.XiHadamardFactorization
-import GaloisForLFunctions.RHTower.CarrierSlope
-import GaloisForLFunctions.HTGeometry.ReflectedDividedDifference
+import GaloisForLFunctions.RHTower.AnalyticDividedDifference
 
 /-!
 # Exact multiplicity depth of the Hedenmalm divided chain
@@ -256,26 +254,6 @@ theorem xiThetaDividedChain_one_self_ne_zero_iff_multiplicity_one
     exact hne (xiThetaDividedChain_vanish_before_multiplicity rho hlt)
   · intro hm
     simpa only [hm] using xiThetaDividedChain_nonzero_at_multiplicity rho
-
-theorem xiThetaEigenFourier_eq_I_mul_dividedChain_one (alpha z : ℂ) :
-    xiThetaEigenFourier alpha z = I * xiThetaDividedChain alpha 1 z := by
-  simp [xiThetaEigenFourier, xiThetaDividedChain]
-
-/-- The original Hedenmalm quotient has a nonzero base value exactly at a simple zero. -/
-theorem xiThetaEigenFourier_self_ne_zero_iff_multiplicity_one
-    (rho : XiDivisorSupport) :
-    xiThetaEigenFourier (xiSpectralPointSupport rho)
-      (xiSpectralPointSupport rho) ≠ 0 ↔ xiSupportMultiplicity rho = 1 := by
-  rw [xiThetaEigenFourier_eq_I_mul_dividedChain_one]
-  constructor
-  · intro hne
-    apply (xiThetaDividedChain_one_self_ne_zero_iff_multiplicity_one rho).mp
-    intro hzero
-    apply hne
-    rw [hzero, mul_zero]
-  · intro hm
-    exact mul_ne_zero I_ne_zero
-      ((xiThetaDividedChain_one_self_ne_zero_iff_multiplicity_one rho).mpr hm)
 
 /-- Spectral-coordinate multiplication gives the Jordan recurrence pointwise. -/
 theorem xiThetaDividedChain_multiplication_step

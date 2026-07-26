@@ -43,28 +43,6 @@ theorem xiWeilPolarization_cauchy_realReciprocalKrylov_symm
   simp
   ring
 
-private theorem realReciprocalKrylov_quadratic_I_difference
-    (f g : lp (fun _ : XiZeroCopy => ℂ) 2)
-    (hsym : inner ℂ (xiWeilLineConjLp f) g =
-      (starRingEnd ℂ) (inner ℂ (xiWeilLineConjLp g) f)) :
-    xiWeilHilbertQuadratic (f + I • g) -
-        xiWeilHilbertQuadratic (f - I • g) =
-      4 * (inner ℂ (xiWeilLineConjLp g) f).im := by
-  unfold xiWeilHilbertQuadratic
-  simp only [xiWeilLineConjLinearIsometry_apply,
-    map_add, map_sub, map_smul, inner_add_left, inner_add_right,
-    inner_sub_left, inner_sub_right, inner_smul_left, inner_smul_right,
-    conj_I]
-  rw [hsym]
-  simp [Complex.mul_re]
-  have him : (inner ℂ f (xiWeilLineConjLp g)).im =
-      -(inner ℂ (xiWeilLineConjLp g) f).im := by
-    have h := congrArg Complex.im
-      (inner_conj_symm f (xiWeilLineConjLp g))
-    simpa only [conj_im] using h.symm
-  rw [him]
-  ring
-
 theorem xiReciprocalCauchyRealKrylovSourceContrast_eq_zero
     (z : XiContinuedCauchyPoint) (p : Polynomial ℝ) :
     ((xiWeilPolarization
@@ -126,7 +104,7 @@ theorem xiReciprocalCauchyRealKrylovSourceContrast_eq_zero
       (xiRealPolynomialToComplex p)]
   change (xiWeilHilbertQuadratic (f + I • g) -
       xiWeilHilbertQuadratic (f - I • g)) / 4 = 0
-  rw [realReciprocalKrylov_quadratic_I_difference f g hsym, hcross]
+  rw [xiWeilHilbertQuadratic_I_polarization_difference f g hsym, hcross]
   ring
 
 def XiReciprocalSquareFixedCauchyRealKrylovResponseRecovery : Prop :=

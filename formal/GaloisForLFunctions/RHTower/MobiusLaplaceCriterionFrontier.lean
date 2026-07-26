@@ -6,6 +6,7 @@ import GaloisForLFunctions.RHTower.ZetaLogDerivResidue
 import Mathlib.Analysis.Normed.Ring.InfiniteSum
 import Mathlib.Analysis.SpecialFunctions.Gamma.Beta
 import Mathlib.NumberTheory.TsumDivisorsAntidiagonal
+import GaloisForLFunctions.HTGeometry.GammaAnalyticOffPoles
 
 /-!
 # The 2026 discrete Möbius--Laplace criterion frontier
@@ -1238,29 +1239,6 @@ theorem mellin_mobiusDiscreteLaplaceTransform_eq_gamma_div_zeta
   rw [mellin_mobiusDiscreteLaplaceTransform_eq_gamma_mul_LSeries hs,
     LSeries_moebius_eq_inv_riemannZeta hs]
 
-/-- Gamma is analytic at every point of positive real part. -/
-private theorem analyticAt_Gamma_of_re_pos {s : ℂ} (hs : 0 < s.re) :
-    AnalyticAt ℂ Complex.Gamma s := by
-  have hinv : AnalyticAt ℂ (fun z => (Complex.Gamma z)⁻¹) s :=
-    (Complex.differentiable_one_div_Gamma.differentiableOn.analyticOnNhd isOpen_univ)
-      s (mem_univ s)
-  have h := hinv.inv (inv_ne_zero (Complex.Gamma_ne_zero_of_re_pos hs))
-  change AnalyticAt ℂ (fun z => ((Complex.Gamma z)⁻¹)⁻¹) s at h
-  simpa using h
-
-/-- The regularized zeta residue unit is analytic everywhere. -/
-private theorem analyticAt_zetaResidueUnit (s : ℂ) :
-    AnalyticAt ℂ zetaResidueUnit s := by
-  by_cases hs : s = 1
-  · simpa [hs] using zetaResidueUnit_analyticAt
-  · have hdiff : DifferentiableOn ℂ (fun z => (z - 1) * riemannZeta z) ({1}ᶜ) := by
-      intro z hz
-      exact (differentiableAt_id.sub_const 1).mul
-        (differentiableAt_riemannZeta (by simpa using hz)) |>.differentiableWithinAt
-    have han : AnalyticAt ℂ (fun z => (z - 1) * riemannZeta z) s :=
-      (hdiff.analyticOnNhd isOpen_compl_singleton) s (by simpa using hs)
-    exact han.congr (zetaResidueUnit_eventuallyEq hs).symm
-
 /-- The source decay gives analyticity of its Mellin transform on `Re s > 1/2`. -/
 theorem analyticOnNhd_mellin_mobiusDiscreteLaplaceTransform
     (hdecay : MobiusDiscreteLaplaceHalfDecay) :
@@ -1293,12 +1271,12 @@ theorem mellin_mobiusDiscreteLaplaceTransform_mul_zetaResidueUnit_eq_of_analytic
   have hleft : AnalyticOnNhd ℂ
       (fun s => G s * zetaResidueUnit s) rightHalf := by
     intro s hs
-    exact (hG s hs).mul (analyticAt_zetaResidueUnit s)
+    exact (hG s hs).mul (RHTower.analyticAt_zetaResidueUnit s)
   have hright : AnalyticOnNhd ℂ
       (fun s => Complex.Gamma s * (s - 1)) rightHalf := by
     intro s hs
     have hspos : 0 < s.re := lt_trans (by norm_num) (mem_rightHalf.mp hs)
-    exact (analyticAt_Gamma_of_re_pos hspos).mul
+    exact (HTGeometry.analyticAt_Gamma_of_re_pos hspos).mul
       (analyticAt_id.sub analyticAt_const)
   have hevent :
       (fun s => G s * zetaResidueUnit s) =ᶠ[𝓝 (2 : ℂ)]
@@ -1383,9 +1361,9 @@ theorem mobiusLaplaceMellinContinuationWall_of_riemannHypothesis
   refine ⟨G, ?_, ?_⟩
   · intro s hs
     have hspos : 0 < s.re := lt_trans (by norm_num) (mem_rightHalf.mp hs)
-    exact ((analyticAt_Gamma_of_re_pos hspos).mul
+    exact ((HTGeometry.analyticAt_Gamma_of_re_pos hspos).mul
       (analyticAt_id.sub analyticAt_const)).div
-        (analyticAt_zetaResidueUnit s)
+        (RHTower.analyticAt_zetaResidueUnit s)
         (zetaResidueUnit_ne_zero_of_riemannHypothesis hRH hs)
   · intro s hs
     dsimp [G]

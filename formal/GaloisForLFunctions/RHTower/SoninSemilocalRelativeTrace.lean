@@ -150,20 +150,13 @@ theorem soninSemilocalRelativeTraceDensity_isTraceClass
   exact (centralSoninProjectionCorrection_isHilbertSchmidt a ha).adjoint.comp_isTraceClass
     (centralSoninSemilocalRelativeGramLinearCross_isHilbertSchmidt a ha pk)
 
-private theorem adjoint_smul_soninL2 (c : Complex)
-    (T : SoninL2 →L[Complex] SoninL2) :
-    ContinuousLinearMap.adjoint (c • T) =
-      star c • ContinuousLinearMap.adjoint T := by
-  change star (c • T) = star c • star T
-  rw [star_smul]
-
 /-- The full semilocal linear cross is self-adjoint. -/
 theorem adjoint_centralSoninSemilocalRelativeGramLinearCross
     (a : ℝ) (pk : Nat.Primes × ℕ) :
     ContinuousLinearMap.adjoint (centralSoninSemilocalRelativeGramLinearCross a pk) =
       centralSoninSemilocalRelativeGramLinearCross a pk := by
   rw [centralSoninSemilocalRelativeGramLinearCross, adjoint_add_soninL2,
-    adjoint_smul_soninL2, adjoint_smul_soninL2, adjoint_mul_soninL2,
+    sonin_adjoint_smul, sonin_adjoint_smul, adjoint_mul_soninL2,
     adjoint_mul_soninL2, adjoint_adjoint, adjoint_adjoint]
   simp only [star_star]
   abel

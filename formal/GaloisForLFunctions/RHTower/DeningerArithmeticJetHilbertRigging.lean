@@ -66,7 +66,8 @@ theorem deningerArithmeticJetTestToCompact_apply
   classical
   induction a using Finsupp.induction with
   | zero =>
-      simp
+      change (0 : ℂ) = 0
+      rfl
   | single_add idx c a hidx _hc ih =>
       have hadd :
           ((Finsupp.single idx c + a).sum fun j d =>
@@ -253,6 +254,25 @@ theorem deningerArithmeticJetTestToHilbert_single
         (Finsupp.single idx c) =
       lp.single 2 idx c := by
   simp [deningerArithmeticJetTestToHilbert]
+
+/-- The algebraic finite-test inclusion preserves every jet coefficient. -/
+@[simp]
+theorem deningerArithmeticJetTestToHilbert_apply
+    (a : DeningerArithmeticJetTest)
+    (idx : DeningerArithmeticJetCoordinate) :
+    deningerArithmeticJetTestToHilbert a idx = a idx := by
+  classical
+  induction a using Finsupp.induction with
+  | zero =>
+      change (0 : ℂ) = 0
+      rfl
+  | single_add q c a hq _hc ih =>
+      rw [map_add, lp.coeFn_add, Pi.add_apply,
+        deningerArithmeticJetTestToHilbert_single, ih]
+      by_cases hqi : q = idx
+      · subst q
+        simp
+      · simp [lp.single_apply, hqi]
 
 /-- Finite jet families are dense in the canonical jet Hilbert space. -/
 theorem deningerArithmeticJetTestToHilbert_dense :

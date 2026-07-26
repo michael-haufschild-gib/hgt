@@ -111,6 +111,26 @@ theorem norm_traceC_le_of_abs_im_le {lam : ℝ} (him : ∀ i, |(F.pt i).im| ≤ 
       _ = lam * |τ.im| := by ring
   linarith
 
+/-- If every displacement vanishes the envelope collapses to plain boundedness: the `lam = 0` case
+of `norm_traceC_le_of_abs_im_le`. -/
+theorem norm_traceC_le_of_im_eq_zero (him : ∀ i, (F.pt i).im = 0) {τ : ℂ} (hτ : 0 < τ.re) :
+    ‖F.traceC τ‖ ≤ F.traceReal τ.re := by
+  have h := F.norm_traceC_le_of_abs_im_le (lam := 0) (fun i => by rw [him i]; simp) hτ
+  simpa using h
+
+/-- The indices at or above a height cut -- the complement of `below`. -/
+def cut (g : ℝ) : Set ι := {i : ι | g ≤ (F.pt i).re}
+
+theorem mem_cut {g : ℝ} {i : ι} : i ∈ F.cut g ↔ g ≤ (F.pt i).re := Iff.rfl
+
+theorem cut_inv {g : ℝ} {i : ι} (hi : i ∈ F.cut g) : F.inv i ∈ F.cut g := by
+  rw [mem_cut, F.conj_stable, Complex.conj_re]
+  exact hi
+
+theorem finite_cut_shell (g R : ℝ) :
+    {i : ι | i ∈ F.cut g ∧ (F.pt i).re ≤ R}.Finite :=
+  (F.shell_finite R).subset fun _ hi => hi.2
+
 /-- The real-time trace is antitone. -/
 theorem traceReal_antitone {σ v : ℝ} (hσ : 0 < σ) (hv : 0 ≤ v) :
     F.traceReal (σ + v) ≤ F.traceReal σ := by

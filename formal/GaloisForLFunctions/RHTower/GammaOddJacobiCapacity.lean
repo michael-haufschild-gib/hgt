@@ -23,10 +23,6 @@ open scoped BigOperators Nat Real
 
 namespace RHTower
 
-private lemma tanh_pos_of_pos' {t : ℝ} (ht : 0 < t) : 0 < Real.tanh t := by
-  rw [Real.tanh_eq_sinh_div_cosh]
-  exact div_pos ((Real.sinh_pos_iff).2 ht) (Real.cosh_pos t)
-
 /-- Exact multiplicative factorization of the Gamma characteristic at a frequency sum. -/
 theorem semilocalArchimedeanCharacteristic_add_factorization
     {t u : ℝ} (ht : 0 < t) (hu : 0 < u) :
@@ -34,8 +30,8 @@ theorem semilocalArchimedeanCharacteristic_add_factorization
       semilocalArchimedeanCharacteristic t *
         semilocalArchimedeanCharacteristic u *
           (1 + Real.tanh t * Real.tanh u) ^ (-(1 : ℝ) / 2) := by
-  have ht0 : 0 < Real.tanh t := tanh_pos_of_pos' ht
-  have hu0 : 0 < Real.tanh u := tanh_pos_of_pos' hu
+  have ht0 : 0 < Real.tanh t := tanh_pos_of_pos ht
+  have hu0 : 0 < Real.tanh u := tanh_pos_of_pos hu
   have hfactor : Real.cosh (t + u) =
       (Real.cosh t * Real.cosh u) *
         (1 + Real.tanh t * Real.tanh u) := by
@@ -238,8 +234,8 @@ theorem hasSum_gammaOddJacobiCoefficient_mul
     HasSum (fun k : ℕ =>
       gammaOddJacobiCoefficient k t * gammaOddJacobiCoefficient k u)
       (gammaOddCovarianceKernel t u) := by
-  have htanh0 : 0 < Real.tanh t := tanh_pos_of_pos' ht
-  have hutanh0 : 0 < Real.tanh u := tanh_pos_of_pos' hu
+  have htanh0 : 0 < Real.tanh t := tanh_pos_of_pos ht
+  have hutanh0 : 0 < Real.tanh u := tanh_pos_of_pos hu
   have hx0 : 0 ≤ Real.tanh t * Real.tanh u := (mul_pos htanh0 hutanh0).le
   have hx1 : Real.tanh t * Real.tanh u < 1 := by
     calc

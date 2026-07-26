@@ -3,6 +3,7 @@ import GaloisForLFunctions.RHTower.ThueMorseMellinFlatness
 import GaloisForLFunctions.RHTower.LandauIntegralTransfer
 import GaloisForLFunctions.RHTower.XiZerosInfinite
 import GaloisForLFunctions.RHTower.XiEndpointStrongHeightGap
+import GaloisForLFunctions.HTGeometry.GammaAnalyticOffPoles
 
 /-!
 # Subcritical Landau carriers for the Möbius--Laplace source
@@ -220,29 +221,6 @@ theorem mellin_mobiusLaplaceComparisonCutoff {a K d : ℝ} {s : ℂ}
       simpa [mobiusLaplaceComparisonCutoff, Pi.sub_apply] using hsub.2]
     rw [hcarrier.2]
 
-/-- Gamma is analytic at every point with positive real part. -/
-theorem analyticAt_Gamma_of_re_pos_public {s : ℂ} (hs : 0 < s.re) :
-    AnalyticAt ℂ Complex.Gamma s := by
-  have hinv : AnalyticAt ℂ (fun z => (Complex.Gamma z)⁻¹) s :=
-    (Complex.differentiable_one_div_Gamma.differentiableOn.analyticOnNhd isOpen_univ)
-      s (mem_univ s)
-  have h := hinv.inv (inv_ne_zero (Complex.Gamma_ne_zero_of_re_pos hs))
-  change AnalyticAt ℂ (fun z => ((Complex.Gamma z)⁻¹)⁻¹) s at h
-  simpa using h
-
-/-- Public analytic-at form of the entire regularized zeta residue unit. -/
-theorem analyticAt_zetaResidueUnit_public (s : ℂ) :
-    AnalyticAt ℂ zetaResidueUnit s := by
-  by_cases hs : s = 1
-  · simpa [hs] using zetaResidueUnit_analyticAt
-  · have hdiff : DifferentiableOn ℂ (fun z => (z - 1) * riemannZeta z) ({1}ᶜ) := by
-      intro z hz
-      exact (differentiableAt_id.sub_const 1).mul
-        (differentiableAt_riemannZeta (by simpa using hz)) |>.differentiableWithinAt
-    have han : AnalyticAt ℂ (fun z => (z - 1) * riemannZeta z) s :=
-      (hdiff.analyticOnNhd isOpen_compl_singleton) s (by simpa using hs)
-    exact han.congr (zetaResidueUnit_eventuallyEq hs).symm
-
 /-- The unconditional low-height Xi gap makes the residue unit nonzero. -/
 theorem zetaResidueUnit_ne_zero_of_re_pos_abs_im_le_four {s : ℂ}
     (hre : 0 < s.re) (him : |s.im| ≤ 4) : zetaResidueUnit s ≠ 0 := by
@@ -284,9 +262,9 @@ theorem analyticAt_mobiusLaplaceComparisonCutoffContinuation
     AnalyticAt ℂ (mobiusLaplaceComparisonCutoffContinuation a K d) s := by
   have hunit := zetaResidueUnit_ne_zero_of_re_pos_abs_im_le_four hre him
   have hreg : AnalyticAt ℂ mobiusLaplaceRegularizedMellin s := by
-    exact ((analyticAt_Gamma_of_re_pos_public hre).mul
+    exact ((HTGeometry.analyticAt_Gamma_of_re_pos hre).mul
       (analyticAt_id.sub analyticAt_const)).div
-        (analyticAt_zetaResidueUnit_public s) hunit
+        (RHTower.analyticAt_zetaResidueUnit s) hunit
   have hsa : s - (a : ℂ) ≠ 0 := by
     intro h
     have heq : s = (a : ℂ) := sub_eq_zero.mp h
@@ -648,11 +626,11 @@ theorem not_mobiusLaplaceComparisonCutoffNonnegative
       ha hd hab rfl hinter
   have hleftAn : AnalyticOnNhd ℂ (fun s => H s * zetaResidueUnit s) U := by
     intro s hs
-    exact (hH s hs).mul (analyticAt_zetaResidueUnit_public s)
+    exact (hH s hs).mul (RHTower.analyticAt_zetaResidueUnit s)
   have hrightAn : AnalyticOnNhd ℂ (fun s => Complex.Gamma s * (s - 1)) U := by
     intro s hs
     have hsre : b < s.re := hs
-    exact (analyticAt_Gamma_of_re_pos_public (hb0.trans hsre)).mul
+    exact (HTGeometry.analyticAt_Gamma_of_re_pos (hb0.trans hsre)).mul
       (analyticAt_id.sub analyticAt_const)
   have hevent : (fun s => H s * zetaResidueUnit s) =ᶠ[𝓝 (2 : ℂ)]
       (fun s => Complex.Gamma s * (s - 1)) := by
@@ -718,11 +696,11 @@ theorem no_analytic_gamma_div_zeta_continuation_below_half
   let U : Set ℂ := {s : ℂ | b < s.re}
   have hleftAn : AnalyticOnNhd ℂ (fun s => H s * zetaResidueUnit s) U := by
     intro s hs
-    exact (hH s hs).mul (analyticAt_zetaResidueUnit_public s)
+    exact (hH s hs).mul (RHTower.analyticAt_zetaResidueUnit s)
   have hrightAn : AnalyticOnNhd ℂ (fun s => Complex.Gamma s * (s - 1)) U := by
     intro s hs
     have hsre : b < s.re := hs
-    exact (analyticAt_Gamma_of_re_pos_public (hb0.trans hsre)).mul
+    exact (HTGeometry.analyticAt_Gamma_of_re_pos (hb0.trans hsre)).mul
       (analyticAt_id.sub analyticAt_const)
   have hevent : (fun s => H s * zetaResidueUnit s) =ᶠ[𝓝 (2 : ℂ)]
       (fun s => Complex.Gamma s * (s - 1)) := by

@@ -262,3 +262,26 @@ theorem semilocalArchimedeanJacobiFourier_eq_closedForm (n : ℕ) (t : ℝ) :
   exact congrFun (hfun n) t
 
 end RHTower
+
+namespace RHTower
+
+open scoped BigOperators
+
+noncomputable section
+
+theorem semilocalArchimedeanJacobiPolynomial_two_recurrence (s : ℝ) :
+    semilocalArchimedeanJacobiCoefficient 0 *
+        semilocalArchimedeanJacobiCoefficient 1 *
+          (semilocalArchimedeanJacobiPolynomial 2).eval s =
+      s ^ 2 - semilocalArchimedeanJacobiCoefficient 0 ^ 2 := by
+  have hrec := semilocalArchimedeanJacobiPolynomial_eval_recurrence 0 s
+  rw [semilocalArchimedeanJacobiPolynomial_eval_zero,
+    semilocalArchimedeanJacobiPolynomial_eval_one] at hrec
+  have ha0 : semilocalArchimedeanJacobiCoefficient 0 ≠ 0 :=
+    (semilocalArchimedeanJacobiCoefficient_pos 0).ne'
+  field_simp [ha0] at hrec
+  nlinarith
+
+end
+
+end RHTower

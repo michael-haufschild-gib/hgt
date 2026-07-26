@@ -29,7 +29,7 @@ noncomputable section
 def primeImaginaryOrderPhase (p : Nat.Primes) (m : ℕ) : ℂ :=
   (p : ℂ) ^ ((m : ℂ) * Complex.I)
 
-private theorem isAlgebraic_natComplex (n : ℕ) : IsAlgebraic ℚ (n : ℂ) := by
+theorem isAlgebraic_natComplex (n : ℕ) : IsAlgebraic ℚ (n : ℂ) := by
   have h : IsAlgebraic ℚ (algebraMap ℚ ℂ (n : ℚ)) :=
     (isIntegral_algebraMap : IsIntegral ℚ (algebraMap ℚ ℂ (n : ℚ))).isAlgebraic
   simpa using h

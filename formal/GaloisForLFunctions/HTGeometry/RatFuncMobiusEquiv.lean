@@ -38,23 +38,6 @@ theorem algEquiv_ext_X
     exact DFunLike.congr_fun hpoly p
   exact DFunLike.congr_fun hring z
 
-/-- A nondegenerate Möbius denominator is a nonzero rational function. -/
-theorem mobius_denominator_ne_zero
-    {a b c d : K} (hdet : a * d - b * c ≠ 0) :
-    algebraMap K (RatFunc K) c * X + algebraMap K (RatFunc K) d ≠ 0 := by
-  have hpoly : Polynomial.C c * Polynomial.X + Polynomial.C d ≠ 0 := by
-    by_cases hc : c = 0
-    · have hd : d ≠ 0 := by
-        intro hd
-        apply hdet
-        simp [hc, hd]
-      simpa [hc] using Polynomial.C_ne_zero.mpr hd
-    · intro h
-      apply hc
-      have hcoeff := congrArg (fun p : K[X] => p.coeff 1) h
-      simpa using hcoeff
-  simpa using RatFunc.algebraMap_ne_zero hpoly
-
 /-- The denominator appearing when the inverse Möbius coordinate is solved for `X`. -/
 theorem mobius_inverse_denominator_eq
     {a b c d : K} (hdet : a * d - b * c ≠ 0) :
@@ -63,7 +46,7 @@ theorem mobius_inverse_denominator_eq
       algebraMap K (RatFunc K) (a * d - b * c) /
         (algebraMap K (RatFunc K) c * X +
           algebraMap K (RatFunc K) d) := by
-  have hden := mobius_denominator_ne_zero hdet
+  have hden := mobius_den_ne_zero hdet
   rw [mobius]
   apply (eq_div_iff hden).2
   rw [sub_mul, mul_assoc, div_mul_cancel₀ _ hden]
@@ -78,7 +61,7 @@ theorem mobius_inverse_denominator_ne_zero
   rw [mobius_inverse_denominator_eq hdet]
   exact div_ne_zero
     ((map_ne_zero (algebraMap K (RatFunc K))).2 hdet)
-    (mobius_denominator_ne_zero hdet)
+    (mobius_den_ne_zero hdet)
 
 /-- Solving a nondegenerate Möbius coordinate for the original rational coordinate. -/
 theorem mobius_inverse_formula
@@ -87,7 +70,7 @@ theorem mobius_inverse_formula
         algebraMap K (RatFunc K) b) /
       (algebraMap K (RatFunc K) a -
         algebraMap K (RatFunc K) c * mobius a b c d) = X := by
-  have hden := mobius_denominator_ne_zero hdet
+  have hden := mobius_den_ne_zero hdet
   have hinv := mobius_inverse_denominator_ne_zero hdet
   apply (div_eq_iff hinv).2
   rw [mobius_inverse_denominator_eq hdet]
@@ -111,7 +94,7 @@ theorem mobius_ne_C
     {a b c d : K} (hdet : a * d - b * c ≠ 0) (k : K) :
     mobius a b c d ≠ C k := by
   intro h
-  have hden := mobius_denominator_ne_zero hdet
+  have hden := mobius_den_ne_zero hdet
   have hcross :
       algebraMap K (RatFunc K) a * X + algebraMap K (RatFunc K) b =
         algebraMap K (RatFunc K) k *
@@ -202,7 +185,7 @@ theorem mobiusEquiv_mul
   simp only [map_div₀, map_add, map_mul, AlgEquiv.commutes,
     mobiusEquiv_X]
   rw [mobius]
-  have hden := mobius_denominator_ne_zero hdet
+  have hden := mobius_den_ne_zero hdet
   have hres :
       (A * a + B * c) * (C * b + D * d) -
           (A * b + B * d) * (C * a + D * c) ≠ 0 := by
@@ -216,7 +199,7 @@ theorem mobiusEquiv_mul
   have hinner :
       algebraMap K (RatFunc K) C * mobius a b c d +
           algebraMap K (RatFunc K) D ≠ 0 := by
-    have hsource := mobius_denominator_ne_zero hDET
+    have hsource := mobius_den_ne_zero hDET
     have hmapped := (map_ne_zero (mobiusEquiv a b c d hdet)).2 hsource
     change mobiusEquiv a b c d hdet
       (algebraMap K (RatFunc K) C * X +
@@ -227,7 +210,7 @@ theorem mobiusEquiv_mul
   have hresden :
       algebraMap K (RatFunc K) (C * a + D * c) * X +
           algebraMap K (RatFunc K) (C * b + D * d) ≠ 0 :=
-    mobius_denominator_ne_zero hres
+    mobius_den_ne_zero hres
   rw [mobius]
   apply (div_eq_div_iff hinner hresden).2
   rw [mobius]

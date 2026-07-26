@@ -181,51 +181,6 @@ end RHTower
 namespace RHTower
 namespace CompactBVPrimeWindow
 
-/-- The square-root coefficient has the expected shifted zeta Dirichlet series. -/
-theorem LSeries_sqrt_eq_riemannZeta_shift
-    {s : ℂ} (hs : 3 / 2 < s.re) :
-    LSeries (fun n : ℕ => ((Real.sqrt n : ℝ) : ℂ)) s =
-      riemannZeta (s - 1 / 2) := by
-  have hshift : 1 < (s - 1 / 2).re := by
-    norm_num [Complex.sub_re] at hs ⊢
-    linarith
-  rw [zeta_eq_tsum_one_div_nat_cpow hshift]
-  unfold LSeries
-  apply tsum_congr
-  intro n
-  rcases n.eq_zero_or_pos with rfl | hn
-  · rw [LSeries.term_zero]
-    norm_num
-    have hne : s - 1 / 2 ≠ 0 := by
-      intro h
-      have hre := congrArg Complex.re h
-      norm_num [Complex.sub_re] at hre
-      linarith
-    rw [Complex.zero_cpow hne]
-  · have hn0 : n ≠ 0 := Nat.ne_of_gt hn
-    have hnC : (n : ℂ) ≠ 0 := by exact_mod_cast hn0
-    rw [LSeries.term_of_ne_zero hn0, Real.sqrt_eq_rpow]
-    have hsqrt : (((n : ℝ) ^ (1 / 2 : ℝ) : ℝ) : ℂ) =
-        (n : ℂ) ^ (1 / 2 : ℂ) := by
-      simpa using Complex.ofReal_cpow (Nat.cast_nonneg n) (1 / 2 : ℝ)
-    rw [hsqrt]
-    rw [Complex.cpow_sub _ _ hnC]
-    have hhalf : (n : ℂ) ^ (1 / 2 : ℂ) ≠ 0 :=
-      Complex.cpow_ne_zero_iff.mpr (Or.inl hnC)
-    have hs0 : (n : ℂ) ^ s ≠ 0 :=
-      Complex.cpow_ne_zero_iff.mpr (Or.inl hnC)
-    field_simp [hhalf, hs0]
-
-/-- Absolute convergence of the square-root coefficient on `Re s > 3/2`. -/
-theorem sqrt_LSeriesSummable
-    {s : ℂ} (hs : 3 / 2 < s.re) :
-    LSeriesSummable (fun n : ℕ => ((Real.sqrt n : ℝ) : ℂ)) s := by
-  apply LSeriesSummable_of_le_const_mul_rpow (x := 3 / 2) hs
-  refine ⟨1, fun n _hn => ?_⟩
-  rw [norm_real, Real.norm_eq_abs, abs_of_nonneg (Real.sqrt_nonneg n),
-    Real.sqrt_eq_rpow]
-  norm_num
-
 /-- The honest moving-window coefficient has an absolutely convergent L-series initially. -/
 theorem weightedPrimeWindow_LSeriesSummable
     (W : CompactBVPrimeWindow) {s : ℂ} (hs : 3 / 2 < s.re) :

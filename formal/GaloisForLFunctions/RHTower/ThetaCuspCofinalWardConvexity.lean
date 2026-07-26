@@ -82,14 +82,6 @@ theorem hasDerivAt_thetaCuspCofinalTiltedWardDensity (a x : ℝ) :
     thetaCuspCofinalTiltedWardDerivative]
   ring
 
-private theorem hasDerivAt_thetaCuspFullSource_public (x : ℝ) :
-    HasDerivAt thetaCuspFullSource
-      (iteratedDeriv 1 thetaCuspFullSource x) x := by
-  have h := hasDerivAt_thetaCuspFullDerivative 0 x
-  rw [← iteratedDeriv_thetaCuspFullSource 0,
-    ← iteratedDeriv_thetaCuspFullSource 1] at h
-  simpa using h
-
 theorem hasDerivAt_thetaCuspCofinalTiltedWardDerivative (a x : ℝ) :
     HasDerivAt (thetaCuspCofinalTiltedWardDerivative a)
       (thetaCuspCofinalTiltedWardSecondDerivative a x) x := by
@@ -105,7 +97,7 @@ theorem hasDerivAt_thetaCuspCofinalTiltedWardDerivative (a x : ℝ) :
           Real.exp (a * x) * iteratedDeriv 1 thetaCuspFullSource x) /
         (2 * Real.pi)) x := by
     dsimp only [R]
-    convert (he.mul (hasDerivAt_thetaCuspFullSource_public x)).div_const
+    convert (he.mul (hasDerivAt_thetaCuspFullSource_iterate_zero x)).div_const
       (2 * Real.pi) using 1
   have hF := hasDerivAt_thetaCuspCofinalTiltedWardDensity a x
   have hraw := (hF.const_mul (a - 1 / 2 : ℝ)).sub hR

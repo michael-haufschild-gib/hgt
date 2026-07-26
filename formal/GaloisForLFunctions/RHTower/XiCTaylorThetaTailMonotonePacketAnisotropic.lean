@@ -76,7 +76,7 @@ theorem positiveTailCompletion_profileIntegrand_re_pos
       (spectralTranslationPhase t z).re ≤
           ‖spectralTranslationPhase t z‖ := Complex.re_le_norm _
       _ = Real.exp (-t * z.im) :=
-        norm_spectralTranslationPhase_eq_exp_neg_mul_im t z
+        RHTower.norm_spectralTranslationPhase_eq_exp_neg_mul_im t z
       _ < 1 := Real.exp_lt_one_iff.mpr (by nlinarith)
   simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, zero_mul,
     sub_re, one_re]

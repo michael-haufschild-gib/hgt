@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.XiWeilPositivityBand
 import GaloisForLFunctions.RHTower.XiSchwartzMetricSupport
+import GaloisForLFunctions.RHTower.XiDivisorHilbertCarrier
 
 /-!
 # The divisor Hilbert space carrying the Weil form
@@ -26,9 +27,6 @@ open Complex
 namespace RHTower
 
 noncomputable section
-
-/-- The Hilbert space of square-summable functions on the divisor. -/
-abbrev XiDivisorL2 : Type := lp (fun _ : XiZeroCopy => ℂ) 2
 
 /-! ## §1 Kernels restrict into `ℓ²` -/
 

@@ -20,20 +20,11 @@ namespace RHTower
 
 noncomputable section
 
-private theorem sourceTerm_scale (n : ℕ) (x : ℝ) :
-    thetaCuspSourceTerm x n =
-      (Real.exp (x / 2) * 2 * Real.pi * Real.exp x ^ 2) *
-        (n : ℝ) ^ 2 *
-        (2 * (Real.pi * Real.exp x ^ 2) * (n : ℝ) ^ 2 - 3) *
-        Real.exp (-(Real.pi * Real.exp x ^ 2) * (n : ℝ) ^ 2) := by
-  unfold thetaCuspSourceTerm thetaCuspSeed
-  ring
-
 /-- Positivity of the first theta atom on the full positive-likelihood-coordinate domain. -/
 theorem thetaCuspSourceTerm_one_pos_of_likelihoodCoordinate_pos {x : ℝ}
     (hB : 0 < thetaCuspLikelihoodCoordinate x) :
     0 < thetaCuspSourceTerm x 1 := by
-  rw [sourceTerm_scale]
+  rw [thetaCuspSourceTerm_eq_scaleForm]
   norm_num
   have hweight : 0 < 2 * (Real.pi * Real.exp x ^ 2) - 3 := by
     unfold thetaCuspLikelihoodCoordinate at hB
@@ -60,8 +51,8 @@ private theorem atomRatio_scale
     unfold thetaCuspLikelihoodGap
     apply congrArg Real.exp
     ring
-  rw [thetaCuspAtomLikelihoodRatio, sourceTerm_scale,
-    sourceTerm_scale, hexp]
+  rw [thetaCuspAtomLikelihoodRatio, thetaCuspSourceTerm_eq_scaleForm,
+    thetaCuspSourceTerm_eq_scaleForm, hexp]
   norm_num
   field_simp [hcommon, hden, Real.exp_ne_zero]
 
@@ -587,24 +578,6 @@ theorem thetaCuspLikelihoodSeamChannel_reflection_lt_iff
       exact hexponent
     simpa only [mul_one] using mul_lt_mul_of_pos_left hfactor hchannel
 
-private theorem ae_nonneg_atomLikelihoodMeasure
-    {n : ℕ} (hn : 2 ≤ n) :
-    ∀ᵐ t ∂thetaCuspAtomLikelihoodSpectralMeasure n, 0 ≤ t := by
-  rw [thetaCuspAtomLikelihoodSpectralMeasure, ae_add_measure_iff]
-  constructor
-  · apply Measure.ae_smul_measure
-    rw [ae_dirac_iff measurableSet_Ici]
-    exact (thetaCuspLikelihoodGap_pos hn).le
-  · apply Measure.ae_smul_measure
-    filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
-    exact (thetaCuspLikelihoodGap_pos hn).le.trans ht.le
-
-private theorem ae_nonneg_higherLikelihoodMeasure :
-    ∀ᵐ t ∂thetaCuspHigherLikelihoodSpectralMeasure, 0 ≤ t := by
-  rw [thetaCuspHigherLikelihoodSpectralMeasure, Measure.ae_sum_iff]
-  intro k
-  exact ae_nonneg_atomLikelihoodMeasure (by omega)
-
 /-- Differentiating the fixed Laplace response produces the negative first tilted moment. -/
 theorem hasDerivAt_thetaCuspHigherLikelihoodSpectralResponse
     {B : ℝ} (hB : 0 < B) :
@@ -635,7 +608,7 @@ theorem hasDerivAt_thetaCuspHigherLikelihoodSpectralResponse
         (half_pos hB)
   have hdom : ∀ᵐ t ∂thetaCuspHigherLikelihoodSpectralMeasure,
       ∀ z ∈ s, ‖-t * Real.exp (-z * t)‖ ≤ bound t := by
-    filter_upwards [ae_nonneg_higherLikelihoodMeasure] with t ht
+    filter_upwards [ae_nonneg_thetaCuspHigherLikelihoodSpectralMeasure] with t ht
     intro z hz
     have hzLower := hpositive z hz
     have hexp : Real.exp (-z * t) ≤ Real.exp (-(B / 2) * t) := by

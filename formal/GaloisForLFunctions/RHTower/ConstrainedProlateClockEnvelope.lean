@@ -28,11 +28,6 @@ open Filter
 
 namespace RHTower
 
-private theorem div_le_div_of_le_of_pos₅ {a b c : ℝ} (h : a ≤ b) (hc : 0 < c) :
-    a / c ≤ b / c := by
-  rw [div_le_iff₀ hc, div_mul_cancel₀ _ hc.ne']
-  exact h
-
 /-- A polynomial index ladder over a shared clock. -/
 noncomputable def clockRate (E : ℝ → ℝ) (A : ℝ) (n : ℕ) (lam : ℝ) : ℝ :=
   A * lam ^ (2 * n + 1) * E lam
@@ -168,7 +163,7 @@ theorem ClockEnvelope.ratio_tendsto_zero (h : ClockEnvelope D e E) (j : ℕ) :
   have hF2pos : 0 < clockRate E c (e (j + 1)) lam := clockRate_pos hc hlam hEp _
   have hD1pos : 0 < D lam (j + 1) := lt_of_lt_of_le hF2pos hl
   calc D lam j / D lam (j + 1)
-      ≤ clockRate E C (e j) lam / D lam (j + 1) := div_le_div_of_le_of_pos₅ hu hD1pos
+      ≤ clockRate E C (e j) lam / D lam (j + 1) := div_le_div_of_le_of_pos hu hD1pos
     _ ≤ clockRate E C (e j) lam / clockRate E c (e (j + 1)) lam :=
         div_le_div_of_nonneg_left (clockRate_pos hC hlam hEp _).le hF2pos hl
     _ = C / c * (lam ^ 8)⁻¹ := by
@@ -205,7 +200,7 @@ theorem ClockEnvelope.tail_tendsto_zero (h : ClockEnvelope D e E) (j : ℕ) :
       mul_le_mul_of_nonneg_left hu hlam.le
     calc lam * D lam (j + 1) / (D lam (j + 2) - D lam (j + 1))
         ≤ lam * clockRate E C (e (j + 1)) lam / (D lam (j + 2) - D lam (j + 1)) :=
-          div_le_div_of_le_of_pos₅ hnum (lt_of_lt_of_le hdenpos hden)
+          div_le_div_of_le_of_pos hnum (lt_of_lt_of_le hdenpos hden)
       _ ≤ lam * clockRate E C (e (j + 1)) lam / (clockRate E c (e (j + 2)) lam / 2) :=
           div_le_div_of_nonneg_left (mul_nonneg hlam.le hF1pos.le) hdenpos hden
       _ = 2 * (C / c) * (lam ^ 7)⁻¹ := by

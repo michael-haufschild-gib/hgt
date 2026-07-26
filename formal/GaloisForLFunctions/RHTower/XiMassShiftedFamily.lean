@@ -73,6 +73,7 @@ theorem xiPoissonPoint_re_lt_csqrtRe {a : ℝ} (ha : 1 / 2 ≤ a) (q : XiZeroCop
 /-- **The mass-shifted family is admissible.** -/
 def xiMassFamily {a : ℝ} (ha : 1 / 2 ≤ a) : SpectralFamily where
   pt := fun q => HTGeometry.csqrt (xiMassArg a q)
+  inv := xiZeroCopyLineConjEquiv
   base := a
   base_pos := by linarith
   base_le := by

@@ -409,6 +409,22 @@ theorem abs_im_le_iff_exists_line_growth {lam : ℝ} (hlam : 0 ≤ lam) :
   · rintro ⟨σ, C, hσ, hline⟩
     exact F.abs_im_le_of_line_growth_all hσ hlam hline
 
+/-- **Subexponential growth already forces reality.**  The hypothesis need not be boundedness: it is
+enough that for every `eps > 0` the trace is `O(exp (eps |x|))` on *some* vertical line, with the
+line allowed to depend on `eps`. -/
+theorem im_eq_zero_of_subexponential
+    (h : ∀ eps : ℝ, 0 < eps → ∃ σ C : ℝ, 0 < σ ∧ ∀ x : ℝ,
+      ‖F.traceC ((σ : ℂ) + (x : ℂ) * I)‖ ≤ C * Real.exp (eps * |x|)) :
+    ∀ i : ι, (F.pt i).im = 0 := by
+  intro i
+  have hall : ∀ eps : ℝ, 0 < eps → |(F.pt i).im| ≤ eps := by
+    intro eps heps
+    obtain ⟨σ, C, hσ, hline⟩ := h eps heps
+    exact F.abs_im_le_of_line_growth_all hσ heps.le hline i
+  have hzero : |(F.pt i).im| ≤ 0 := le_of_forall_pos_le_add fun eps heps => by
+    simpa using hall eps heps
+  exact abs_eq_zero.mp (le_antisymm hzero (abs_nonneg _))
+
 end
 
 end AbstractSpectralFamily

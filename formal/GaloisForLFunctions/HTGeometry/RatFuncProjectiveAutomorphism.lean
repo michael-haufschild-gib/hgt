@@ -26,7 +26,7 @@ def mobius (a b c d : K) : RatFunc K :=
   (algebraMap K (RatFunc K) a * X + algebraMap K (RatFunc K) b) /
     (algebraMap K (RatFunc K) c * X + algebraMap K (RatFunc K) d)
 
-private theorem mobius_den_ne_zero
+theorem mobius_den_ne_zero
     {a b c d : K} (hdet : a * d - b * c ≠ 0) :
     algebraMap K (RatFunc K) c * X + algebraMap K (RatFunc K) d ≠ 0 := by
   have hpoly : Polynomial.C c * Polynomial.X + Polynomial.C d ≠ 0 := by

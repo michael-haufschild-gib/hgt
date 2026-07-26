@@ -8,44 +8,6 @@ open scoped BigOperators Topology
 noncomputable section
 namespace RHTower
 
-theorem ofReal_eulerSquareResidualMass_eq_cpow
-    {sigma : ℝ} (hsigma : 1 < sigma) (n : ℕ) :
-    (eulerSquareResidualMass sigma n : ℂ) =
-      1 / (n : ℂ) ^ ((2 * sigma : ℝ) : ℂ) := by
-  by_cases hn : n = 0
-  · subst n
-    have htwo : (2 * (sigma : ℂ)) ≠ 0 := by
-      exact_mod_cast (by linarith : (2 * sigma : ℝ) ≠ 0)
-    rw [eulerSquareResidualMass, if_pos rfl]
-    norm_num
-    rw [Complex.zero_cpow htwo]
-  · rw [eulerSquareResidualMass, if_neg hn,
-      Complex.ofReal_cpow (Nat.cast_nonneg n)]
-    rw [show ((-2 * sigma : ℝ) : ℂ) = -((2 * sigma : ℝ) : ℂ) by
-      push_cast
-      ring]
-    rw [Complex.cpow_neg, one_div]
-    norm_cast
-
-theorem ofReal_eulerSquareResidualTotal_eq_riemannZeta
-    {sigma : ℝ} (hsigma : 1 < sigma) :
-    (eulerSquareResidualTotal sigma : ℂ) =
-      riemannZeta ((2 * sigma : ℝ) : ℂ) := by
-  have hmap :=
-    Complex.ofRealCLM.map_tsum (summable_eulerSquareResidualMass hsigma)
-  simp only [Complex.ofRealCLM_apply] at hmap
-  calc
-    (eulerSquareResidualTotal sigma : ℂ) =
-        ∑' n : ℕ, (eulerSquareResidualMass sigma n : ℂ) := by
-      rw [eulerSquareResidualTotal]
-      exact hmap
-    _ = ∑' n : ℕ, 1 / (n : ℂ) ^ ((2 * sigma : ℝ) : ℂ) := by
-      exact tsum_congr (ofReal_eulerSquareResidualMass_eq_cpow hsigma)
-    _ = riemannZeta ((2 * sigma : ℝ) : ℂ) := by
-      exact (zeta_eq_tsum_one_div_nat_cpow (by
-        simp
-        linarith : 1 < (((2 * sigma : ℝ) : ℂ)).re)).symm
-
 theorem ofReal_eulerSquareResidualLogMoment_one_eq_infinitePrimeFlux
     {sigma : ℝ} (hsigma : 1 < sigma) :
     (eulerSquareResidualLogMoment 1 sigma : ℂ) =
@@ -70,14 +32,14 @@ theorem ofReal_eulerSquareResidualLogMoment_one_eq_infinitePrimeFlux
     funext n
     rw [eulerSquareResidualProbability, Complex.ofReal_mul,
       Complex.ofReal_div, pow_one,
-      ofReal_eulerSquareResidualMass_eq_cpow hsigma]
+      ofReal_eulerSquareResidualMass_eq hsigma]
     ring]
   rw [tsum_div_const]
   rw [← neg_neg (∑' n : ℕ,
       (Real.log n : ℂ) / (n : ℂ) ^ ((2 * sigma : ℝ) : ℂ)),
     ← GaloisForLFunctions.zeta_deriv_eq_neg_tsum
       (by simp; linarith : 1 < (((2 * sigma : ℝ) : ℂ)).re)]
-  rw [ofReal_eulerSquareResidualTotal_eq_riemannZeta hsigma]
+  rw [ofReal_eulerSquareResidualTotal_eq_zeta hsigma]
   simp only [infinitePrimeFlux, logDeriv_apply]
   ring
 

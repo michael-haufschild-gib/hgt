@@ -152,7 +152,7 @@ theorem xi_re_eq_half_of_anchorJetProjectiveReflectionCompatible
       rw [continuedHzeta_anchorJet_conj r hstrip.1 (Nat.pos_of_ne_zero hr)]
   have hlocal : continuedHzeta (1 - rho) =ᶠ[𝓝 (1 : ℂ)]
       (fun a => c * continuedHzeta ((starRingEnd ℂ) rho) a) :=
-    analyticAt_eventuallyEq_of_all_iteratedDeriv_eq
+    RHTower.analyticAt_eventuallyEq_of_iteratedDeriv_eq
       (continuedHzeta_analyticAt_one hrefstrip.1)
       ((analyticAt_const : AnalyticAt ℂ (fun _ : ℂ => c) 1).mul
         (continuedHzeta_analyticAt_one hconjstrip.1)) hder

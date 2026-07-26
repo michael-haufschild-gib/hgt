@@ -1,182 +1,21 @@
 import GaloisForLFunctions.RHTower.XiSpectralFamilyDecay
+import GaloisForLFunctions.HTGeometry.AbstractSpectralGraded
 
 /-!
-# Graded half-plane decay
+# The graded envelope of an admissible family
 
-The Phragmén--Lindelöf step with a growth hypothesis `exp (lam |x|)` on the line instead of a
-constant.  Multiplying the least-height twist by `exp (lam y)` on the third quadrant and by
-`exp (-lam y)` on the fourth turns both real-ray bounds back into constants, while leaving the
-imaginary-ray bounds untouched because `exp (lam i v)` has modulus one.  The order-one envelope is
-unaffected, so the same quadrant theorem applies and returns
+Unified with the index-free layer.  `RHTower.SpectralFamily` is by definition
+`HTGeometry.AbstractSpectralFamily XiZeroCopy` (see `RHTower.XiSpectralFamily`), so every statement
+this module used to re-prove for the Xi divisor is already available as the corresponding abstract
+law in `GaloisForLFunctions.HTGeometry.AbstractSpectralGraded`.  The module survives only as an import node of the RH
+tower; it adds no Xi-specific content.
 
-`‖trace t‖ <= M exp (lam |Im t|) exp (-(bottomHeight (Re t - sigma)))`.
+Former Xi-indexed statements and their index-free replacements:
 
-At `lam = 0` this is the ungraded statement; the point of the grading is that every value of `lam`
-below `1/2` is a zero-free region.
+- `gtwist`
+- `norm_gtwist`
+- `differentiableOn_gtwist`
+- `norm_gtwist_le`
+- `norm_twist_le_of_line_growth`
+- `norm_traceC_le_of_line_growth`
 -/
-
-open Complex Filter Asymptotics
-open scoped BigOperators
-
-namespace RHTower
-
-namespace SpectralFamily
-
-noncomputable section
-
-variable (F : SpectralFamily)
-
-/-- The twist with an extra exponential factor. -/
-def gtwist (σ l : ℝ) (y : ℂ) : ℂ := F.twist σ y * Complex.exp ((l : ℂ) * y)
-
-theorem norm_gtwist (σ l : ℝ) (y : ℂ) :
-    ‖F.gtwist σ l y‖ = ‖F.twist σ y‖ * Real.exp (l * y.re) := by
-  rw [gtwist, norm_mul, Complex.norm_exp]
-  congr 2
-  simp [Complex.mul_re]
-
-theorem differentiableOn_gtwist (σ l : ℝ) :
-    DifferentiableOn ℂ (F.gtwist σ l) {y : ℂ | y.im < σ} := by
-  intro y hy
-  have h1 := F.differentiableOn_twist σ y hy
-  have h2 : DifferentiableAt ℂ (fun z : ℂ => Complex.exp ((l : ℂ) * z)) y := by fun_prop
-  exact h1.mul h2.differentiableWithinAt
-
-theorem norm_gtwist_le {σ l : ℝ} (hσ : 0 < σ) {y : ℂ} (hy : y.im ≤ 0) :
-    ‖F.gtwist σ l y‖ ≤
-      F.traceReal σ * Real.exp ((1 / 2 + F.bottomHeight + |l|) * ‖y‖) := by
-  rw [norm_gtwist]
-  have h1 := F.norm_twist_le hσ hy
-  have h2 : Real.exp (l * y.re) ≤ Real.exp (|l| * ‖y‖) := by
-    refine Real.exp_le_exp.mpr ?_
-    calc l * y.re ≤ |l * y.re| := le_abs_self _
-      _ = |l| * |y.re| := abs_mul _ _
-      _ ≤ |l| * ‖y‖ := mul_le_mul_of_nonneg_left (Complex.abs_re_le_norm y) (abs_nonneg _)
-  calc ‖F.twist σ y‖ * Real.exp (l * y.re)
-      ≤ (F.traceReal σ * Real.exp ((1 / 2 + F.bottomHeight) * ‖y‖)) *
-          Real.exp (|l| * ‖y‖) := by
-        refine mul_le_mul h1 h2 (Real.exp_pos _).le ?_
-        exact mul_nonneg (F.traceReal_nonneg σ) (Real.exp_pos _).le
-    _ = F.traceReal σ * Real.exp ((1 / 2 + F.bottomHeight + |l|) * ‖y‖) := by
-        rw [mul_assoc, ← Real.exp_add]
-        congr 2
-        ring
-
-/-- **Graded Phragmén--Lindelöf.** -/
-theorem norm_twist_le_of_line_growth {σ C lam : ℝ} (hσ : 0 < σ)
-    (hline : ∀ x : ℝ, ‖F.traceC ((σ : ℂ) + (x : ℂ) * I)‖ ≤ C * Real.exp (lam * |x|))
-    {y : ℂ} (hy : y.im ≤ 0) :
-    ‖F.twist σ y‖ ≤ max C (F.traceReal σ) * Real.exp (lam * |y.re|) := by
-  have hsub : ∀ (l : ℝ) (s t : Set ℝ), closure (s ×ℂ t) ⊆ {z : ℂ | z.im < σ} →
-      DiffContOnCl ℂ (F.gtwist σ l) (s ×ℂ t) := by
-    intro l s t hsu
-    exact ⟨(F.differentiableOn_gtwist σ l).mono (subset_closure.trans hsu),
-      ((F.differentiableOn_gtwist σ l).mono hsu).continuousOn⟩
-  have hclos : ∀ s : Set ℝ, closure (s ×ℂ Set.Iio 0) ⊆ {z : ℂ | z.im < σ} := by
-    intro s z hz
-    rw [Complex.closure_reProdIm, closure_Iio] at hz
-    have h := (Complex.mem_reProdIm.mp hz).2
-    simp only [Set.mem_Iic] at h
-    simp only [Set.mem_setOf_eq]
-    linarith
-  have hgrow : ∀ (l : ℝ) (S : Set ℂ), (∀ z ∈ S, z.im ≤ 0) →
-      ∃ c < (2 : ℝ), ∃ B, (F.gtwist σ l) =O[Bornology.cobounded ℂ ⊓ 𝓟 S]
-        fun z => Real.exp (B * ‖z‖ ^ c) := by
-    intro l S hS
-    refine ⟨1, by norm_num, 1 / 2 + F.bottomHeight + |l|, isBigO_iff.mpr ⟨F.traceReal σ, ?_⟩⟩
-    rw [eventually_inf_principal]
-    filter_upwards with z hz
-    rw [Real.rpow_one, Real.norm_eq_abs, abs_of_pos (Real.exp_pos _)]
-    exact F.norm_gtwist_le hσ (hS z hz)
-  have him : ∀ (l : ℝ) (x : ℝ), x ≤ 0 →
-      ‖F.gtwist σ l ((x : ℂ) * I)‖ ≤ max C (F.traceReal σ) := by
-    intro l x hx
-    rw [norm_gtwist]
-    have hre : ((x : ℂ) * I).re = 0 := by simp
-    rw [hre, mul_zero, Real.exp_zero, mul_one]
-    exact le_trans (F.norm_twist_imaginary_ray hσ hx) (le_max_right _ _)
-  rcases le_or_gt y.re 0 with hcase | hcase
-  · -- third quadrant, twist by `exp (lam y)`
-    have hreal : ∀ x : ℝ, x ≤ 0 → ‖F.gtwist σ lam ((x : ℝ) : ℂ)‖ ≤ max C (F.traceReal σ) := by
-      intro x hx
-      rw [norm_gtwist, Complex.ofReal_re, twist, norm_mul, F.norm_exp_twist]
-      simp only [Complex.ofReal_im, mul_zero, neg_zero, Real.exp_zero, mul_one]
-      refine le_trans ?_ (le_max_left _ _)
-      have h := hline x
-      have habs : |x| = -x := abs_of_nonpos hx
-      rw [habs] at h
-      calc ‖F.traceC ((σ : ℂ) + (x : ℂ) * I)‖ * Real.exp (lam * x)
-          ≤ (C * Real.exp (lam * -x)) * Real.exp (lam * x) :=
-            mul_le_mul_of_nonneg_right h (Real.exp_pos _).le
-        _ = C := by
-            rw [mul_assoc, ← Real.exp_add,
-              show lam * -x + lam * x = 0 from by ring, Real.exp_zero, mul_one]
-    have hpl := PhragmenLindelof.quadrant_III
-      (hsub lam (Set.Iio 0) (Set.Iio 0) (hclos (Set.Iio 0)))
-      (hgrow lam (Set.Iio 0 ×ℂ Set.Iio 0)
-        (fun z hz => (Set.mem_Iio.mp (Complex.mem_reProdIm.mp hz).2).le))
-      (fun x hx => hreal x hx) (fun x hx => him lam x hx) hcase hy
-    rw [norm_gtwist] at hpl
-    have hpos : (0 : ℝ) < Real.exp (lam * y.re) := Real.exp_pos _
-    rw [← le_div_iff₀ hpos] at hpl
-    refine le_trans hpl (le_of_eq ?_)
-    rw [abs_of_nonpos hcase, div_eq_mul_inv, ← Real.exp_neg,
-      show lam * -y.re = -(lam * y.re) from by ring]
-  · -- fourth quadrant, twist by `exp (-lam y)`
-    have hreal : ∀ x : ℝ, 0 ≤ x → ‖F.gtwist σ (-lam) ((x : ℝ) : ℂ)‖ ≤ max C (F.traceReal σ) := by
-      intro x hx
-      rw [norm_gtwist, Complex.ofReal_re, twist, norm_mul, F.norm_exp_twist]
-      simp only [Complex.ofReal_im, mul_zero, neg_zero, Real.exp_zero, mul_one]
-      refine le_trans ?_ (le_max_left _ _)
-      have h := hline x
-      have habs : |x| = x := abs_of_nonneg hx
-      rw [habs] at h
-      calc ‖F.traceC ((σ : ℂ) + (x : ℂ) * I)‖ * Real.exp (-lam * x)
-          ≤ (C * Real.exp (lam * x)) * Real.exp (-lam * x) :=
-            mul_le_mul_of_nonneg_right h (Real.exp_pos _).le
-        _ = C := by
-            rw [mul_assoc, ← Real.exp_add,
-              show lam * x + -lam * x = 0 from by ring, Real.exp_zero, mul_one]
-    have hpl := PhragmenLindelof.quadrant_IV
-      (hsub (-lam) (Set.Ioi 0) (Set.Iio 0) (hclos (Set.Ioi 0)))
-      (hgrow (-lam) (Set.Ioi 0 ×ℂ Set.Iio 0)
-        (fun z hz => (Set.mem_Iio.mp (Complex.mem_reProdIm.mp hz).2).le))
-      (fun x hx => hreal x hx) (fun x hx => him (-lam) x hx) hcase.le hy
-    rw [norm_gtwist] at hpl
-    have hpos : (0 : ℝ) < Real.exp (-lam * y.re) := Real.exp_pos _
-    rw [← le_div_iff₀ hpos] at hpl
-    refine le_trans hpl (le_of_eq ?_)
-    rw [abs_of_pos hcase, div_eq_mul_inv, ← Real.exp_neg,
-      show -(-lam * y.re) = lam * y.re from by ring]
-
-/-- **Graded half-plane decay.** -/
-theorem norm_traceC_le_of_line_growth {σ C lam : ℝ} (hσ : 0 < σ)
-    (hline : ∀ x : ℝ, ‖F.traceC ((σ : ℂ) + (x : ℂ) * I)‖ ≤ C * Real.exp (lam * |x|))
-    {t : ℂ} (ht : σ ≤ t.re) :
-    ‖F.traceC t‖ ≤
-      max C (F.traceReal σ) * Real.exp (lam * |t.im|) *
-        Real.exp (-(F.bottomHeight * (t.re - σ))) := by
-  set y : ℂ := -I * (t - (σ : ℂ)) with hy
-  have hyim : y.im = σ - t.re := by rw [hy]; simp [Complex.mul_im]
-  have hyre : y.re = t.im := by rw [hy]; simp [Complex.mul_re]
-  have hyle : y.im ≤ 0 := by rw [hyim]; linarith
-  have harg : (σ : ℂ) + y * I = t := by
-    rw [hy]
-    have hxx : (-I * (t - (σ : ℂ))) * I = t - (σ : ℂ) := by
-      rw [mul_comm (-I) _, mul_assoc]
-      simp [Complex.I_mul_I]
-    rw [hxx]; ring
-  have hpl := F.norm_twist_le_of_line_growth hσ hline hyle
-  rw [twist, harg, norm_mul, F.norm_exp_twist, hyim, hyre] at hpl
-  rw [show Real.exp (-(F.bottomHeight * (σ - t.re))) =
-      Real.exp (F.bottomHeight * (t.re - σ)) from by congr 1; ring] at hpl
-  rw [← le_div_iff₀ (Real.exp_pos _)] at hpl
-  refine le_trans hpl (le_of_eq ?_)
-  rw [Real.exp_neg]
-  field_simp
-
-end
-
-end SpectralFamily
-
-end RHTower
