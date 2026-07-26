@@ -298,3 +298,40 @@ With that implication, `not_facetComplementRankOne` gives `htDim ≥ 2` and the 
 periodic pencil (`boundaryWedge_ppDim_eq_two`) gives `htDim ≤ 2`, closing `htDim = ppDim = 2`.  The
 combinatorial half is now unconditional and uniform; the remaining half is the analytic bridge the
 card already flagged.
+
+## Lean progress — the period-rank obstruction to a one-variable realization
+
+`GaloisForLFunctions/HTGeometry/BoundaryWedgePeriodRankObstruction.lean` (axiom-clean, build green,
+umbrella-registered) supplies the analytic half of `(8)` for this family, on top of the combinatorial
+half of the previous section.
+
+The key observation is that the boundary wedge is *more* degenerate than the general
+one-vertex-complement threshold the parent card uses: here every facet complement has cardinality
+`s+1 ≥ 3` (resp. `r+1 ≥ 3`).  Three omitted vertices mean three `ℚ`-independent periods, and the
+rank-three period boundary is already unconditional in Lean
+(`meromorphicNF_constant_of_rankThree_periods`, `RankThreePeriods.lean`) — the elliptic rank-two case,
+which is the genuinely hard part of the parent card's HT period-rank law, is **not needed here**.
+
+- `differentiallyAlgebraic_of_const`, `not_hypertranscendental_of_const` — a constant satisfies the
+  order-zero relation `y₀ − c = 0` (via `differentiallyAlgebraic_of_algebraic`), so it is
+  differentially algebraic and not hypertranscendental.
+- `periodic_of_mem_span_range` — periodicity at a family of steps propagates to their integer span
+  (`Submodule.span_induction`, `Function.Periodic.add_period`, `Function.Periodic.zsmul`).
+- `ScalarFacetRealization` — the realization interface: `ℚ`-independent translation steps `ω v`
+  together with, for every facet, a meromorphic hypertranscendental carrier invariant under exactly
+  the translations that facet omits.  This is the analytic output of the facet-separator and
+  isolated-carrier steps (§1–2 of the parent card).
+- **`no_scalarFacetRealization_of_three_omitted`** — a facet omitting three vertices gives its
+  carrier three `ℚ`-independent periods, hence a non-discrete rank-three period group, hence a
+  constant carrier, contradicting hypertranscendence.  No one-variable realization survives.
+- **`boundaryWedge_no_scalarFacetRealization`** and `isEmpty_scalarFacetRealization` — applied to the
+  boundary wedge through `card_sdiff_leftFacet = s+1`, uniformly in `r, s ≥ 2`.
+
+**Scope, stated exactly.**  What is now unconditional in Lean is: *no `ScalarFacetRealization` of the
+boundary wedge exists*, for every `r, s ≥ 2`.  What is still paper-level is the derivation of that
+datum from the definition of an exact one-variable HT realization — the facet separator and the
+isolation of a differentially transcendental facet carrier with the omitted periods (§1–2 of
+`ht-period-rank-one-scalar-stanley-reisner-principalization`) — together with a Lean definition of the
+intrinsic `htDim` functional itself.  Those two steps are shared with the parent card and are what
+its own last gate is about; the analytic obstruction they feed is now closed for this family, and it
+is closed using only the rank-three boundary, not the elliptic rank-two theory.
