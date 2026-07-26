@@ -767,3 +767,21 @@ becomes the period identity `G_A(z + omega_v) = G_A(z)`.  That is the realizatio
 shared with `boundary-wedge-uniform-ht-dimension-gap`, and it is now the only gap between the
 formalized algebra and the formalized analysis (`RankThreePeriods`,
 `RankTwoRealDependentPeriods`, `BoundaryWedgePeriodRankObstruction`).
+
+## Lean progress — §2 transported: annihilation becomes periodicity
+
+`GaloisForLFunctions/HTGeometry/ScalarSRRealizationBridge.lean` (axiom-clean, build green)
+formalizes the transport that §2 performs by hand.  A `ScalarSRRealization` carries two defining
+properties — the vertex coordinate `x_v` acts as `T_v - 1`, and a nonzero Stanley--Reisner class has a
+hypertranscendental carrier — and from them:
+
+- `periodic_carrier_of_mul_eq_zero` derives `(17)`: `x_v q = 0` forces `G(z + omega_v) = G(z)`;
+- `toScalarFacetRealization` combines this with the separator `(12)`/`(14)` to produce, for every
+  facet, a hypertranscendental carrier whose periods include every omitted step — exactly `(15)`--`(17)`;
+- `no_scalarSRRealization_of_three_omitted` then contradicts hypertranscendence whenever a facet omits
+  three vertices, using the already-formalized rank-three period boundary.
+
+So for facets omitting at least three vertices the whole chain `(12)` -> `(17)` -> period-rank -> no
+realization is unconditional in Lean.  The general statement `(6)` (complements of size at most one)
+still needs the rank-two case with `alpha/beta` nonreal, i.e. the elliptic branch of the period-rank
+law, which remains the single analytic gap.

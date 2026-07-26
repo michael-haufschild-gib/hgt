@@ -2203,3 +2203,4 @@ import GaloisForLFunctions.HTGeometry.RankThreeMinorWitnesses
 import GaloisForLFunctions.HTGeometry.GammaPowerRelWitnesses
 import GaloisForLFunctions.HTGeometry.MultipleSineRegimeWitnesses
 import GaloisForLFunctions.HTGeometry.StanleyReisnerFacetSeparator
+import GaloisForLFunctions.HTGeometry.ScalarSRRealizationBridge

@@ -393,3 +393,35 @@ a facet gives a nonzero class killed by all `s+1 >= 3` omitted vertex coordinate
 side (`no_scalarFacetRealization_of_three_omitted`) turns exactly that pattern into a contradiction.
 The single remaining gap is the transport between the two: that a realization sends a nonzero class to
 a differentially transcendental function and annihilation to periodicity.
+
+## Lean progress — the realization bridge: no one-variable realization at all
+
+`GaloisForLFunctions/HTGeometry/ScalarSRRealizationBridge.lean` (axiom-clean, build green,
+umbrella-registered) closes the gap between the algebraic and analytic layers.
+
+`ScalarSRRealization` is the one-variable realization datum: `Q`-independent translation steps and a
+carrier map on Stanley--Reisner classes such that
+
+- `carrier_vertex` — the vertex coordinate `x_v` acts as the difference operator `T_v - 1` (the
+  convention `t_v = 1 + x_v` recorded by `stanleyReisnerTranslationClass`);
+- `carrier_ht` — a **nonzero** class has a hypertranscendental carrier (the faithfulness supplied by
+  the full nonlinear Stanley--Reisner differential matroid condition `(4)`).
+
+Neither field mentions periods or dimensions.  From them:
+
+- **`periodic_carrier_of_mul_eq_zero`** — annihilation *becomes* periodicity: `(17)` is now derived,
+  not assumed.
+- **`toScalarFacetRealization`** — the facet monomials of `exists_facetSeparator` assemble into the
+  analytic datum `ScalarFacetRealization`: `(15)`--`(17)` in Lean.
+- `no_scalarSRRealization_of_three_omitted` — the period-rank obstruction in realization form.
+- **`boundaryWedge_no_scalarSRRealization`** / `isEmpty_scalarSRRealization` — for every `r, s >= 2`
+  the boundary wedge admits **no** scalar Stanley--Reisner realization.
+- `htDim_eq_two_of_realizability` — the corpus-idiom packaging: a least-realizable-dimension
+  functional equals `2` once dimension `2` is realizable and dimensions `0, 1` are excluded.
+
+So `htDim >= 2` is now fully derived in Lean for this family, from the definition of a realization
+rather than from an assumed obstruction, and `htDim <= 2` is the periodic pencil already formalized at
+the `ppDim` level (`boundaryWedge_ppDim_eq_two`).  The only remaining formal step for the last gate is
+a Lean definition of the intrinsic `htDim` functional itself — i.e. a `d`-variable realization
+structure whose `d = 1` case is `ScalarSRRealization` and whose `d = 2` case is witnessed by the
+pencil — after which `htDim_eq_two_of_realizability` closes `htDim = ppDim = 2` immediately.
