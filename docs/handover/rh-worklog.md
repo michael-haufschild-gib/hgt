@@ -10865,3 +10865,60 @@ xi'/xi, WHOSE SIZE NEAR THE CRITICAL LINE IS KNOWN: |xi'/xi (s)| ~ log T. COMPUT
 BOUND ON kappa AND COMPARE IT WITH THE 1/log T THE BAUER-FIKE REQUIREMENT ALLOWS. IF THE LOWER BOUND
 EXCEEDS THE ALLOWANCE, THE QUASI-HERMITIAN SUB-ROUTE CLOSES TOO AND THE OPERATOR LANE IS FINISHED;
 IF NOT, THE GAP IS THE FIRST GENUINELY OPEN QUANTITATIVE TARGET IN THE ATLAS SINCE ENTRY 89.
+
+---
+
+## Cycle 177 — THE REMAINING LANE HAS NO OBSTRUCTION TO COMPUTE, ONLY A CONSTRUCTION TO FIND
+
+### Phase 4 killed cycle 176's plan, and the reason is the finding
+Cycle 176 proposed a resolvent lower bound kappa >= dist * ||(A-z)^{-1}||. IT GIVES NOTHING. For a
+self-adjoint operator the resolvent norm is EXACTLY 1/dist, so the bound reads kappa >= 1 — vacuous.
+The bound is only informative if the resolvent is KNOWN to be large, AND IT IS NOT, BECAUSE THE
+OPERATOR IS BEING CONSTRUCTED RATHER THAN GIVEN.
+
+### HUNDRED-AND-ELEVENTH ATLAS ENTRY
+THERE IS NO LOWER BOUND ON THE METRIC AT ALL. Given ANY prescribed real spectrum, THE DIAGONAL MATRIX
+WITH THOSE ENTRIES IS ALREADY SELF-ADJOINT (formalised), so the metric is the identity and its
+condition number is one (formalised, with the metric relation verified). NO A PRIORI BOUND ON THE
+CONDITIONING CAN BE EXTRACTED FROM THE DATA, BECAUSE THE METRIC IS PART OF THE CONSTRUCTION RATHER
+THAN PART OF THE PROBLEM.
+
+    ==> EVERY LANE CLOSED IN THIS PROGRAMME WAS CLOSED BY COMPUTING A BUDGET, COMPUTING A DEMAND, AND
+        COMPARING THEM. THAT METHOD CANNOT APPLY HERE: ONE SIDE OF THE COMPARISON IS FREE.
+
+    ==> WHAT MAKES THE LANE HARD IS NOT AN OBSTRUCTION BUT A CIRCULARITY CONSTRAINT: the diagonal
+        model presupposes the reality it is meant to prove, so the operator must be built FROM THE
+        ARITHMETIC WITHOUT ASSUMING THE REALITY OF ITS SPECTRUM.
+
+WHERE THE CONSTRUCTION LIVES. The quasi-Hermitian data is a DE BRANGES STRUCTURE: an Hermite-Biehler
+function E with |E*(z)| < |E(z)| on the upper half-plane, for which A = (E + E*)/2 is real entire with
+only real zeros. RH IS THE STATEMENT THAT THE COMPLETED ZETA FUNCTION IS SUCH AN A.
+
+THIS IS THE MOST IMPORTANT METHODOLOGICAL FINDING SINCE ENTRY 52. THE ATLAS'S METHOD IS EXHAUSTED.
+One hundred and eleven entries computed obstructions; the one lane that remains has none to compute.
+FUTURE CYCLES MUST BUILD, NOT ESTIMATE.
+
+Machine-verified: `RHTower/NoObstructionOnlyAConstruction.lean` (self-adjointness of a real diagonal
+matrix, the identity metric satisfying the quasi-Hermitian relation for it, and the resulting
+existence statement showing no conditioning lower bound; standard axioms only, wired into RHTower).
+The circularity is a statement about proofs rather than a theorem and is recorded in prose, not as a
+formal triviality.
+
+### STATE AT CYCLE 177
+One hundred and eleven entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+### Cycle 178 target
+BUILD, DO NOT ESTIMATE. THE CONSTRUCTION TARGET IS EXACT:
+
+  [OPEN CORE] Produce an Hermite-Biehler function E, built from the arithmetic of zeta and NOT from
+  its zeros, such that (E + E*)/2 equals the completed zeta function up to a real entire factor with
+  only real zeros.
+
+THE CORPUS HAS THE RAW MATERIAL AND THE ATLAS HAS NEVER ASSEMBLED IT: `SoninTimeBandHilbertSchmidt`,
+`HermitianDeterminantRH`, `CCMRadicalQuotientHermitian`. AND THE ARITHMETIC INPUT THAT IS NOT THE
+ZEROS IS THE PRIME SUM, WHOSE EXPLICIT-FORMULA PAIRING WITH TEST FUNCTIONS IS ENTRIES 17-19.
+THE FIRST CONCRETE STEP: THE HERMITE-BIEHLER CONDITION |E*(z)| < |E(z)| ON THE UPPER HALF-PLANE IS A
+POSITIVITY STATEMENT ABOUT log|E| — SPECIFICALLY THAT log|E(z)| - log|E*(z)| IS A POSITIVE HARMONIC
+FUNCTION THERE. POSITIVE HARMONIC FUNCTIONS ON A HALF-PLANE HAVE A HERGLOTZ REPRESENTATION. WRITE THAT
+REPRESENTATION AND IDENTIFY ITS MEASURE IN TERMS OF THE PRIME SUM. IF THE MEASURE IS POSITIVE, THE
+HERMITE-BIEHLER CONDITION HOLDS AND RH FOLLOWS; THE MEASURE IS THE ONLY THING TO COMPUTE.

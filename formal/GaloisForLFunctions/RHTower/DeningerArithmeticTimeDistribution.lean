@@ -790,10 +790,15 @@ private theorem integrable_deningerTimeTestLaplace_mul_vonMangoldtTerm
           ((2 * Real.pi * ξ : ℝ) : ℂ) *
             Complex.I) n
   have hK : Integrable K := by
-    simpa only [K,
-      fourier_deningerExponentiallyTiltedTimeTest] using
-        integrable_fourier_deningerExponentiallyTiltedTimeTest
-          φ c
+    rw [show K =
+        𝓕 (deningerExponentiallyTiltedTimeTest φ c) by
+      funext ξ
+      exact
+        (fourier_deningerExponentiallyTiltedTimeTest
+          φ c ξ).symm]
+    exact
+      integrable_fourier_deningerExponentiallyTiltedTimeTest
+        φ c
   have hTmeas : AEStronglyMeasurable T := by
     rcases n.eq_zero_or_pos with rfl | hn
     · simp only [T, LSeries.term_zero]
@@ -883,10 +888,149 @@ theorem integral_deningerTimeTestLaplace_mul_vonMangoldtTerm
     rw [hexp, ← Real.rpow_add hnpos]
     simp
   rw [deningerExponentiallyTiltedTimeTest]
-  rw [← Complex.ofReal_exp]
-  push_cast
-  rw [hcancel]
-  ring
+  have hexpC :
+      Complex.exp
+          (((c * Real.log n : ℝ) : ℂ)) =
+        (Real.exp (c * Real.log n) : ℂ) := by
+    rw [Complex.ofReal_exp]
+  rw [hexpC]
+  calc
+    (((ArithmeticFunction.vonMangoldt n : ℝ) *
+          (n : ℝ) ^ (-c) : ℝ) : ℂ) *
+        ((φ (Real.log n) : ℂ) *
+          (Real.exp (c * Real.log n) : ℂ)) =
+      (ArithmeticFunction.vonMangoldt n : ℂ) *
+        (φ (Real.log n) : ℂ) *
+          (((n : ℝ) ^ (-c) *
+            Real.exp (c * Real.log n) : ℝ) : ℂ) := by
+      push_cast
+      ring
+    _ = (ArithmeticFunction.vonMangoldt n : ℂ) *
+        (φ (Real.log n) : ℂ) := by
+      rw [hcancel]
+      simp
+
+/--
+Euler-line source evaluation for an arbitrary Deninger test.  The honest von-Mangoldt
+`LSeries` returns the complete prime-power sampling sum.
+-/
+theorem integral_deningerTimeTestLaplace_mul_vonMangoldtLSeries
+    (φ : DeningerTimeTestFunction) {c : ℝ}
+    (hc : 1 < c) :
+    (∫ ξ : ℝ,
+        deningerTimeTestLaplace φ
+            ((c : ℂ) -
+              ((2 * Real.pi * ξ : ℝ) : ℂ) *
+                Complex.I) *
+          LSeries
+            (fun k =>
+              (ArithmeticFunction.vonMangoldt k : ℂ))
+            ((c : ℂ) -
+              ((2 * Real.pi * ξ : ℝ) : ℂ) *
+                Complex.I)) =
+      ∑' n : ℕ,
+        (ArithmeticFunction.vonMangoldt n : ℂ) *
+          (φ (Real.log n) : ℂ) := by
+  let K : ℝ → ℂ :=
+    fun ξ =>
+      deningerTimeTestLaplace φ
+        ((c : ℂ) -
+          ((2 * Real.pi * ξ : ℝ) : ℂ) *
+            Complex.I)
+  let F : ℕ → ℝ → ℂ :=
+    fun n ξ =>
+      K ξ *
+        LSeries.term
+          (fun k =>
+            (ArithmeticFunction.vonMangoldt k : ℂ))
+          ((c : ℂ) -
+            ((2 * Real.pi * ξ : ℝ) : ℂ) *
+              Complex.I) n
+  have hFint : ∀ n, Integrable (F n) :=
+    fun n => by
+      simpa only [F, K] using
+        integrable_deningerTimeTestLaplace_mul_vonMangoldtTerm
+          φ c n
+  let J : ℝ :=
+    ∫ ξ : ℝ, ‖K ξ‖
+  have hvm :
+      LSeriesSummable
+        (fun k =>
+          (ArithmeticFunction.vonMangoldt k : ℂ))
+        (c : ℂ) :=
+    ArithmeticFunction.LSeriesSummable_vonMangoldt
+      (by simpa using hc)
+  have hnormIntegral : ∀ n : ℕ,
+      (∫ ξ : ℝ, ‖F n ξ‖) =
+        ‖LSeries.term
+          (fun k =>
+            (ArithmeticFunction.vonMangoldt k : ℂ))
+          (c : ℂ) n‖ * J := by
+    intro n
+    rw [show
+        (fun ξ : ℝ => ‖F n ξ‖) =
+          fun ξ : ℝ =>
+            ‖LSeries.term
+              (fun k =>
+                (ArithmeticFunction.vonMangoldt k : ℂ))
+              (c : ℂ) n‖ * ‖K ξ‖ by
+      funext ξ
+      dsimp only [F]
+      rw [norm_mul,
+        norm_deningerEulerFourier_vonMangoldtTerm
+          n c ξ]
+      ring]
+    rw [integral_const_mul]
+  have hFsum :
+      Summable
+        (fun n => ∫ ξ : ℝ, ‖F n ξ‖) := by
+    rw [show
+        (fun n => ∫ ξ : ℝ, ‖F n ξ‖) =
+          fun n =>
+            ‖LSeries.term
+              (fun k =>
+                (ArithmeticFunction.vonMangoldt k : ℂ))
+              (c : ℂ) n‖ * J by
+      funext n
+      exact hnormIntegral n]
+    exact hvm.norm.mul_right J
+  have hinterchange :=
+    integral_tsum_of_summable_integral_norm
+      hFint hFsum
+  rw [show
+      (fun ξ : ℝ => ∑' n, F n ξ) =
+        fun ξ : ℝ =>
+          K ξ *
+            LSeries
+              (fun k =>
+                (ArithmeticFunction.vonMangoldt k : ℂ))
+              ((c : ℂ) -
+                ((2 * Real.pi * ξ : ℝ) : ℂ) *
+                  Complex.I) by
+    funext ξ
+    have hsum :
+        LSeriesSummable
+          (fun k =>
+            (ArithmeticFunction.vonMangoldt k : ℂ))
+          ((c : ℂ) -
+            ((2 * Real.pi * ξ : ℝ) : ℂ) *
+              Complex.I) :=
+      ArithmeticFunction.LSeriesSummable_vonMangoldt
+        (by simpa using hc)
+    dsimp only [F]
+    rw [LSeries, ← tsum_mul_left]] at hinterchange
+  rw [show
+      (fun n : ℕ => ∫ ξ : ℝ, F n ξ) =
+        fun n : ℕ =>
+          (ArithmeticFunction.vonMangoldt n : ℂ) *
+            (φ (Real.log n) : ℂ) by
+    funext n
+    rcases n.eq_zero_or_pos with rfl | hn
+    · simp [F]
+    · simpa only [F, K] using
+        integral_deningerTimeTestLaplace_mul_vonMangoldtTerm
+          φ c n hn] at hinterchange
+  simpa only [K] using hinterchange.symm
 
 /-- `L¹` mass controlling every critical-strip Laplace amplitude after two derivatives. -/
 def deningerTimeTestSecondDerivativeExponentialMass
@@ -1716,6 +1860,59 @@ noncomputable def deningerPrimeArchimedeanLefschetzDistribution :
     DeningerTimeDistribution :=
   deningerPrimeLefschetzDistribution +
     deningerArchimedeanLefschetzDistribution
+
+/-- The natural-number Euler sampling sum is exactly the positive-time prime-power comb. -/
+theorem tsum_vonMangoldt_timeTest_eq_deningerPrimePower
+    (φ : DeningerTimeTestFunction) :
+    (∑' n : ℕ,
+        (ArithmeticFunction.vonMangoldt n : ℂ) *
+          (φ (Real.log n) : ℂ)) =
+      ∑' n : DeningerPrimePowerIndex,
+        (deningerPrimePowerWeight n : ℂ) *
+          (φ (deningerPrimePowerTime n) : ℂ) := by
+  let f : ℕ → ℂ :=
+    fun n =>
+      (ArithmeticFunction.vonMangoldt n : ℂ) *
+        (φ (Real.log n) : ℂ)
+  have hsupp :
+      Function.support f ⊆
+        {n : ℕ | 2 ≤ n} := by
+    intro n hn
+    change 2 ≤ n
+    by_contra hnot
+    have hnle : n ≤ 1 := by omega
+    interval_cases n
+    · exact hn (by simp [f])
+    · exact hn (by simp [f])
+  have hsub :=
+    tsum_subtype_eq_of_support_subset hsupp
+  simpa only [f, deningerPrimePowerWeight,
+    deningerPrimePowerTime] using hsub.symm
+
+/--
+Euler-line source evaluation in the exact finite-place distribution coordinates used by
+Deninger's Lefschetz formula.
+-/
+theorem integral_deningerTimeTestLaplace_mul_vonMangoldtLSeries_eq_primeDistribution
+    (φ : DeningerTimeTestFunction) {c : ℝ}
+    (hc : 1 < c) :
+    (∫ ξ : ℝ,
+        deningerTimeTestLaplace φ
+            ((c : ℂ) -
+              ((2 * Real.pi * ξ : ℝ) : ℂ) *
+                Complex.I) *
+          LSeries
+            (fun k =>
+              (ArithmeticFunction.vonMangoldt k : ℂ))
+            ((c : ℂ) -
+              ((2 * Real.pi * ξ : ℝ) : ℂ) *
+                Complex.I)) =
+      ∑' n : DeningerPrimePowerIndex,
+        (deningerPrimePowerWeight n : ℂ) *
+          (φ (deningerPrimePowerTime n) : ℂ) := by
+  rw [integral_deningerTimeTestLaplace_mul_vonMangoldtLSeries
+    φ hc,
+    tsum_vonMangoldt_timeTest_eq_deningerPrimePower]
 
 @[simp]
 theorem deningerTimeTestLaplace_zero

@@ -41,6 +41,7 @@ private theorem centralCutoffCommutator_isHilbertSchmidt
     change adjoint P ∘L adjoint ((1 - P) ∘L X) = _
     rw [ContinuousLinearMap.adjoint_comp,
       adjoint_one_sub hPadj, hXadj, hPadj]
+    rfl
   have hU : IsHilbertSchmidt U := by
     rw [← hAdjL]
     exact hL.adjoint
@@ -79,9 +80,16 @@ theorem hsNormSq_centralSoninProjectionQuantumWalk_sub_adjoint_eq
       centralSoninProjectionQuantumWalk a -
           adjoint (centralSoninProjectionQuantumWalk a) =
         (4 : ℂ) • C := by
-    rw [centralSoninProjectionQuantumWalk_sub_adjoint_eq_four_mul_cutoffCommutator]
-    dsimp only [C]
-    module
+    calc
+      centralSoninProjectionQuantumWalk a -
+          adjoint (centralSoninProjectionQuantumWalk a) =
+          4 * ccmCommutator (centralPhysicalForbidden a).starProjection
+            (centralFourierForbidden a).starProjection :=
+        centralSoninProjectionQuantumWalk_sub_adjoint_eq_four_mul_cutoffCommutator a
+      _ = (4 : ℂ) • C := by
+        dsimp only [C]
+        rw [Algebra.smul_def]
+        rw [map_ofNat]
   rw [hwalk, hsNormSq_smul_eq hC (4 : ℂ)]
   norm_num
   rw [show hsNormSq C =
