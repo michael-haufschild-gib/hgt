@@ -45,6 +45,18 @@ theorem xiHeightAdaptiveDiscLadder_of_riemannHypothesis
   intro ρ hρ _hρball hzero
   exact absurd hzero ((rh_iff_xi_ne_zero_right.mp hRH) ρ hρ)
 
+/-- Under RH, the global depth-`k` analytic Kummer root restricts to any regional root window. -/
+theorem xiDiscKummerRoot_of_riemannHypothesis
+    (k : ℕ) (r : ℝ) (hRH : RiemannHypothesis) :
+    XiDiscKummerRoot k r := by
+  obtain ⟨g, hg, hpow⟩ :=
+    (rhLadder_iff_root k).mp ((rh_iff_forall_ladder.mp hRH) k)
+  refine ⟨g, hg.mono ?_, ?_⟩
+  · intro z hz
+    exact hz.1
+  · intro z hz
+    exact hpow z hz.1
+
 /-- Under RH, the global dyadic Kummer root at a chosen depth restricts to every regional root
 window.  Thus every height-adaptive regional-root interface is inhabited. -/
 theorem xiHeightAdaptiveDiscKummerRoots_of_riemannHypothesis
@@ -53,13 +65,7 @@ theorem xiHeightAdaptiveDiscKummerRoots_of_riemannHypothesis
   intro r _hr
   obtain ⟨k, hk⟩ :=
     exists_nat_two_pow_gt_real (C * (1 + r) * Real.log (2 + r))
-  obtain ⟨g, hg, hpow⟩ :=
-    (rhLadder_iff_root k).mp ((rh_iff_forall_ladder.mp hRH) k)
-  refine ⟨k, hk, g, hg.mono ?_, ?_⟩
-  · intro z hz
-    exact hz.1
-  · intro z hz
-    exact hpow z hz.1
+  exact ⟨k, hk, xiDiscKummerRoot_of_riemannHypothesis k r hRH⟩
 
 /-- RH supplies the countable integer-disc version of the regional Kummer-root interface. -/
 theorem xiNatHeightAdaptiveDiscKummerRoots_of_riemannHypothesis

@@ -283,6 +283,14 @@ def BoundedVerticalClockDichotomy (B : ℝ) (f : ℂ → ℂ) : Prop :=
   ∀ z : ℂ, f z = 0 → z.im = 0 ∨
     ∃ T : ℝ, 0 < T ∧ T ≤ B ∧ ∀ k : ℤ, f (z + (k * T) * Complex.I) = 0
 
+/-- Under RH, the constant Xi approximant satisfies every bounded-clock dichotomy through its
+real-zero branch; the numerical clock bound is irrelevant. -/
+theorem boundedVerticalClockDichotomy_XiC_of_riemannHypothesis
+    (B : ℝ) (hRH : RiemannHypothesis) :
+    BoundedVerticalClockDichotomy B XiC := by
+  intro z hzero
+  exact Or.inl (xiC_zero_im_eq_zero_of_riemannHypothesis hRH hzero)
+
 /-- Locally uniform eventually-entire approximants with an eventually uniform bounded vertical
 clock dichotomy force RH. Hurwitz zero selection is internal. -/
 theorem riemannHypothesis_of_bounded_vertical_clock_dichotomy_approximants
@@ -467,14 +475,21 @@ theorem boundedVerticalClockApproximationCertificate_iff_riemannHypothesis :
       intro n y hy
       exact refl_mem_uniformity hu
     · exact Eventually.of_forall fun _ => XiC_differentiable
-    · apply Eventually.of_forall
-      intro n z hz
-      exact Or.inl (xiC_zero_im_eq_zero_of_riemannHypothesis hRH hz)
+    · exact Eventually.of_forall fun _ =>
+        boundedVerticalClockDichotomy_XiC_of_riemannHypothesis 1 hRH
 
 /-- Compact-local form of the bounded clock dichotomy. -/
 def LocalBoundedVerticalClockDichotomy (B R : ℝ) (f : ℂ → ℂ) : Prop :=
   ∀ z ∈ closedBall (0 : ℂ) R, f z = 0 → z.im = 0 ∨
     ∃ T : ℝ, 0 < T ∧ T ≤ B ∧ ∀ k : ℤ, f (z + (k * T) * Complex.I) = 0
+
+/-- The RH-produced global clock dichotomy restricts to every compact window. -/
+theorem localBoundedVerticalClockDichotomy_XiC_of_riemannHypothesis
+    (B R : ℝ) (hRH : RiemannHypothesis) :
+    LocalBoundedVerticalClockDichotomy B R XiC := by
+  intro z _hball hzero
+  exact
+    boundedVerticalClockDichotomy_XiC_of_riemannHypothesis B hRH z hzero
 
 /-- Compact-local bounded clock dichotomies suffice for RH; no condition is imposed on spurious
 approximant zeros escaping to infinity. -/

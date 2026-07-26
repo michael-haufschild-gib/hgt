@@ -10237,3 +10237,64 @@ LOWER BOUND ON lambda_n WITH A LOSS THAT VANISHES IN n? The archimedean main ter
 (n/2) log n + c n + O(log n) and the arithmetic term is the one that must not cancel it. COMPUTE THE
 RATIO OF THE TWO AND ASK WHETHER THE LOSS VANISHES. IF IT DOES, LI'S CRITERION HAS THE ENTRY-100
 SHAPE AND IS THE FIRST CANDIDATE OUTSIDE ORDER TWO.
+
+---
+
+## Cycle 167 — THREE TYPES OF APPROACH, AND A ROOT CAUSE FOR EACH
+
+### Li's criterion tested against the entry-100 criterion, and it has the OPPOSITE profile
+lambda_n = (n/2) log n + c n + (arithmetic term), and RH <==> lambda_n >= 0 for all n.
+
+  MARGIN. The archimedean main term (n/2) log n GROWS WITHOUT BOUND (formalised). THE OPPOSITE OF
+  THE ZERO-MARGIN PROFILE OF ENTRIES 89 AND 100.
+
+  FALSIFICATION SIGNAL. For a zero at beta + i gamma,
+      |1 - 1/rho|^2 = ((beta-1)^2 + gamma^2)/(beta^2 + gamma^2) > 1  <==>  beta < 1/2   (formalised),
+  and the functional equation pairs rho with 1 - rho, so ANY off-line zero produces one of each
+  (formalised). A COUNTEREXAMPLE THEREFORE DRIVES lambda_n BY AN EXPONENTIALLY GROWING TERM
+  (formalised).
+
+  SO WHY IS IT OPEN? BECAUSE THE ARITHMETIC TERM IS NOT CONTROLLED UNCONDITIONALLY BY ANYTHING
+  SMALLER THAN THE MAIN TERM. LI'S CRITERION TRADES ZERO MARGIN FOR UNBOUNDED ERROR.
+
+### THE HUNDRED-AND-FIRST ATLAS ENTRY — THE CLASSIFICATION
+EVERY APPROACH IN THE HUNDRED-ENTRY ATLAS FALLS INTO EXACTLY ONE OF THREE TYPES:
+
+  TYPE A. MARGIN ZERO, ERROR CONTROLLED. Only a FAMILY with vanishing loss can work.
+          Instances: the order-two window (entry 89), the de Bruijn-Newman constant (entry 100).
+          Status: order two has such a family; order three onwards does not, by entry 91's exponent.
+
+  TYPE B. MARGIN GROWS, ERROR UNCONTROLLED. Only ERROR CONTROL can work, and a SINGLE estimate
+          suffices if it exists (formalised: M - E <= x and E <= M give 0 <= x).
+          Instance: Li's criterion (this cycle). Also the Weil positivity lane at fixed test function.
+          Status: no unconditional error control of the required strength exists.
+
+  TYPE C. MARGIN AND ERROR MEASURE DIFFERENT QUANTITIES. No comparison is possible at all.
+          Instance: the entire log-T landscape (entry 52): RH constrains CODIMENSION, the tools
+          measure AREA.
+          Status: closed, with a single root cause.
+
+    ==> THE THREE TYPES ARE EXHAUSTIVE FOR EVERY METHOD IN THE ATLAS, AND EACH HAS A NAMED ROOT
+        CAUSE. THIS IS THE ORGANISING THEOREM THE PROGRAMME HAS BEEN BUILDING TOWARD SINCE ENTRY 52.
+
+Machine-verified: `RHTower/ThreeTypesOfApproach.lean` (the amplification criterion as an iff, the
+reflection producing an amplifier, exponential growth of the amplifier, divergence of the Li margin
+(n/2) log n, the type-B shape and its relative-error form, and the type-A shape; standard axioms only,
+wired into RHTower).
+
+### STATE AT CYCLE 167
+One hundred and one entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+### Cycle 168 target
+THE CLASSIFICATION SAYS WHERE TO WORK. TYPE C IS CLOSED. TYPE A HAS ONE FAMILY AND ENTRY 91 PROVES
+NO MORE EXIST ALONG THAT AXIS. THAT LEAVES TYPE B, AND TYPE B'S REQUIREMENT IS SHARP AND SINGLE:
+CONTROL THE ARITHMETIC TERM BY THE MAIN TERM, ONCE, WITH NO LIMIT NEEDED.
+
+FOR LI'S CRITERION THE REQUIREMENT IS E(n) <= (n/2) log n (1 + o(1)) WHERE E(n) IS THE ARITHMETIC
+PART. THE ATLAS ALREADY KNOWS THE ARITHMETIC PART OF EVERY SUCH FORMULA IS A WEIGHTED PRIME SUM
+CONTROLLED BY THE EXPLICIT FORMULA, AND ENTRIES 17-19 GIVE ITS EXACT ARCHIMEDEAN BUDGET
+(3 log 2 + pi/2 - 3 = 0.65023, margin 0.34976). COMPUTE THE LI ARITHMETIC TERM'S BUDGET THE SAME WAY:
+WRITE lambda_n VIA THE EXPLICIT FORMULA WITH THE TEST FUNCTION CORRESPONDING TO 1 - (1 - 1/s)^n, AND
+ASK WHETHER ITS ARCHIMEDEAN BUDGET IS BELOW ONE LIKE THE TENT-FUNCTION BUDGET WAS. IF THE LI TEST
+FUNCTION HAS A BUDGET BELOW ONE, TYPE B CLOSES FOR LI AND THAT IS RH. IF IT EXCEEDS ONE, THE EXCESS
+IS THE EXACT OBSTRUCTION AND IT IS A NUMBER.

@@ -2133,6 +2133,7 @@ import GaloisForLFunctions.HTGeometry.AcrossClassReciprocity
 import GaloisForLFunctions.HTGeometry.CoherenceDivisibility
 import GaloisForLFunctions.HTGeometry.PrincipalClassCoherence
 import GaloisForLFunctions.HTGeometry.ClassSizeDistribution
+import GaloisForLFunctions.HTGeometry.FrontierBilinearForm
 import GaloisForLFunctions.HTGeometry.LogPhaseDensity
 import GaloisForLFunctions.HTGeometry.SquareIndexMultiplicative
 import GaloisForLFunctions.HTGeometry.SatakeEnergyBound

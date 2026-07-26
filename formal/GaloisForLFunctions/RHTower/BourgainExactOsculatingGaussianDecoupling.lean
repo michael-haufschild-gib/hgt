@@ -34,7 +34,7 @@ def bourgainPairedTripleWeight
     ‖bourgainPairedTripleWeight c₁ c₂ hk‖ =
       ‖bourgainTripleWeight c₁ hk.1‖ *
         ‖bourgainTripleWeight c₂ hk.2‖ := by
-  simp [bourgainPairedTripleWeight, norm_mul]
+  simp [bourgainPairedTripleWeight]
 
 /-- A perturbation radius at most `1/24` leaves every natural parabola scale
 large enough to detect its corresponding integer moment. -/
@@ -52,54 +52,39 @@ theorem bourgainPerturbedNaturalScale_detects_moments
   have hHr : (0 : ℝ) < H := by exact_mod_cast hH
   have hden : 0 < 1 + 4 * (6 * δ) := by positivity
   have hden_le : 1 + 4 * (6 * δ) ≤ 2 := by linarith
-  constructor
-  · unfold bourgainPerturbedSpacingScale
-      bourgainIndependentParabolaNaturalScale
-    simp only [Matrix.cons_val_zero]
+  have hdetect {A : ℝ} (hA : 0 < A) :
+      A ≤ 2 * (A / (1 + 4 * (6 * δ))) := by
     rw [show
-      2 * ((H : ℝ) / (1 + 4 * (6 * δ))) =
-        (2 * (H : ℝ)) / (1 + 4 * (6 * δ)) by ring]
+      2 * (A / (1 + 4 * (6 * δ))) =
+        (2 * A) / (1 + 4 * (6 * δ)) by ring]
     apply (le_div_iff₀ hden).2
     nlinarith
-  constructor
-  · unfold bourgainPerturbedSpacingScale
-      bourgainIndependentParabolaNaturalScale
-    simp only [Matrix.cons_val_one]
-    rw [show
-      2 * ((H : ℝ) ^ (2 : ℕ) / (1 + 4 * (6 * δ))) =
-        (2 * (H : ℝ) ^ (2 : ℕ)) / (1 + 4 * (6 * δ)) by ring]
-    apply (le_div_iff₀ hden).2
-    nlinarith [sq_pos_of_pos hHr]
-  constructor
-  · unfold bourgainPerturbedSpacingScale
-      bourgainIndependentParabolaNaturalScale
-    simp only [Matrix.cons_val_two]
-    rw [show
-      2 * ((H : ℝ) / (1 + 4 * (6 * δ))) =
-        (2 * (H : ℝ)) / (1 + 4 * (6 * δ)) by ring]
-    apply (le_div_iff₀ hden).2
-    nlinarith
-  · unfold bourgainPerturbedSpacingScale
-      bourgainIndependentParabolaNaturalScale
-    simp only [Matrix.cons_val_three]
-    rw [show
-      2 * ((H : ℝ) ^ (2 : ℕ) / (1 + 4 * (6 * δ))) =
-        (2 * (H : ℝ) ^ (2 : ℕ)) / (1 + 4 * (6 * δ)) by ring]
-    apply (le_div_iff₀ hden).2
-    nlinarith [sq_pos_of_pos hHr]
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · simpa [bourgainPerturbedSpacingScale,
+      bourgainIndependentParabolaNaturalScale, Matrix.cons_val] using
+      hdetect hHr
+  · simpa [bourgainPerturbedSpacingScale,
+      bourgainIndependentParabolaNaturalScale, Matrix.cons_val] using
+      hdetect (sq_pos_of_pos hHr)
+  · simpa [bourgainPerturbedSpacingScale,
+      bourgainIndependentParabolaNaturalScale, Matrix.cons_val] using
+      hdetect hHr
+  · simpa [bourgainPerturbedSpacingScale,
+      bourgainIndependentParabolaNaturalScale, Matrix.cons_val] using
+      hdetect (sq_pos_of_pos hHr)
 
 /-- Sharp Gaussian decoupling for the exact paired osculating frequencies.
 All Taylor dependence is confined to the explicit condition `δ ≤ 1/24`. -/
 theorem integral_bourgainExactOsculatingPaired_gaussian_subpower
     {ε : ℝ} (hε : 0 < ε) :
     ∃ C : ℝ, 0 < C ∧
-      ∀ (H : ℕ), 0 < H →
-      ∀ {D a b : ℝ}, 0 < D → 0 < a → a < b →
+      ∀ (H : ℕ) (hH : 0 < H),
+      ∀ {D a b : ℝ} (hD : 0 < D) (ha : 0 < a) (hab : a < b),
       let hscale : (H : ℝ) / D ≠ 0 :=
-        div_ne_zero (Nat.cast_ne_zero.mpr ‹0 < H›.ne') ‹0 < D›.ne'
+        div_ne_zero (Nat.cast_ne_zero.mpr hH.ne') hD.ne'
       let E :=
         bourgainScaledOsculatingPhaseContinuousLinearEquiv
-          hscale ‹0 < a› ‹a < b›
+          hscale ha hab
       let X := bourgainIndependentParabolaNaturalScale H
       let δ :=
         bourgainOsculatingFrequencyPerturbationSize X
@@ -112,9 +97,9 @@ theorem integral_bourgainExactOsculatingPaired_gaussian_subpower
           bourgainRealGaussianL2Integrand X
             (bourgainPairedTripleCloud
               (bourgainExactLeftOsculatingFrequency
-                hscale ‹0 < a› ‹a < b› D)
+                hscale ha hab D)
               (bourgainExactRightOsculatingFrequency
-                hscale ‹0 < a› ‹a < b› D))
+                hscale ha hab D))
             (bourgainPairedTripleWeight c₁ c₂) x) ≤
           C * (H : ℝ) ^ ε *
             (∑ n : Fin H, ‖c₁ n‖ ^ (2 : ℕ)) ^ (3 : ℕ) *

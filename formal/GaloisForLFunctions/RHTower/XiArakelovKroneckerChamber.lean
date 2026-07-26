@@ -136,6 +136,19 @@ def XiArakelovIntegralConjugateChamberAt (rho : ℂ) : Prop :=
     ∀ z ∈ ((minpoly ℤ (GaloisForLFunctions.arakelovW rho)).map
       (Int.castRingHom ℂ)).roots, ‖z‖ ≤ 1
 
+/-- The two global Arakelov source conditions are exactly their pointwise chamber packaging on
+the Xi divisor. -/
+theorem xiArakelovIntegralConjugateChambers_iff :
+    XiArakelovCoordinatesIntegral ∧ XiArakelovConjugateRootsContractive ↔
+      ∀ rho : ℂ, xi rho = 0 → XiArakelovIntegralConjugateChamberAt rho := by
+  constructor
+  · rintro ⟨hint, hcontract⟩ rho hzero
+    exact ⟨hint rho hzero, hcontract rho hzero⟩
+  · intro h
+    exact
+      ⟨fun rho hzero => (h rho hzero).1,
+        fun rho hzero => (h rho hzero).2⟩
+
 /-- **Arithmetic constraint times conjugate orientation implies RH.** Integrality makes the full
 conjugate product arithmetically nonvanishing; contractivity squeezes it onto the unit boundary;
 the Arakelov coordinate then puts every Xi zero on the critical line. -/
@@ -168,10 +181,9 @@ theorem riemannHypothesis_of_xiArakelovCoordinatesIntegral_of_conjugateRootsCont
 theorem riemannHypothesis_of_xiArakelovIntegralConjugateChamber
     (h : ∀ rho : ℂ, xi rho = 0 → XiArakelovIntegralConjugateChamberAt rho) :
     RiemannHypothesis := by
-  apply riemannHypothesis_of_xiArakelovCoordinatesIntegral_of_conjugateRootsContractive
-  · intro rho hzero
-    exact (h rho hzero).1
-  · intro rho hzero
-    exact (h rho hzero).2
+  obtain ⟨hint, hcontract⟩ := xiArakelovIntegralConjugateChambers_iff.2 h
+  exact
+    riemannHypothesis_of_xiArakelovCoordinatesIntegral_of_conjugateRootsContractive
+      hint hcontract
 
 end RHTower

@@ -42,6 +42,15 @@ theorem xiHorizontalMultiplicity_eq_order_of_RH
   · intro hρnot
     exact (hρnot hρmem).elim
 
+/-- Under RH, any simple Xi zero is a horizontal-singleton zero. -/
+theorem xiHorizontalSingletonZero_of_riemannHypothesis_of_orderOne
+    (hRH : RiemannHypothesis) {ρ : ℂ} (hzero : xi ρ = 0)
+    (horder : (analyticOrderAt xi ρ).toNat = 1) :
+    XiHorizontalSingletonZero ρ := by
+  have hstrip := xi_zero_re_mem_open_unit hzero
+  refine ⟨mem_stripHeightFinset.mpr ⟨hstrip.1, hstrip.2, rfl, hzero⟩, ?_⟩
+  exact (xiHorizontalMultiplicity_eq_order_of_RH hRH hzero).trans horder
+
 /-- **Xi horizontal multiplicity-one universality law.**  Exact-height divisor mass one is
 equivalent to the conjunction of RH and analytic simplicity of every Xi zero. -/
 theorem xiHorizontalFibersMultiplicityOne_iff_rh_and_orderOne :
@@ -62,7 +71,9 @@ theorem xiHorizontalFibersMultiplicityOne_iff_rh_and_orderOne :
     rw [mem_rightHalf] at hright
     linarith
   · rintro ⟨hRH, horder⟩ ρ hzero
-    exact (xiHorizontalMultiplicity_eq_order_of_RH hRH hzero).trans (horder ρ hzero)
+    exact
+      (xiHorizontalSingletonZero_of_riemannHypothesis_of_orderOne
+        hRH hzero (horder ρ hzero)).2
 
 end
 
