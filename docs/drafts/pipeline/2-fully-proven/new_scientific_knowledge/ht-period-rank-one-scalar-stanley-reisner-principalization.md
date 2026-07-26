@@ -1110,3 +1110,38 @@ What is left for the lattice branch is only the comparison itself: feed a bound 
 radius `2r` from `exists_exp_growth_bound_of_quasiperiods` into `AnalyticOnNhd.sum_divisor_le`, which
 gives `#zeros in the ball of radius r <= log(M/||f c||)/log 2 = O(r)`, and contradict it with the
 `(2N+1)^2` zeros just produced.
+
+## Lean progress — the LATTICE branch is closed: `(24)`--`(26)` fully unconditional
+
+`GaloisForLFunctions/HTGeometry/QuasiPeriodLatticeNoZeros.lean` (axiom-clean, build green,
+umbrella-registered) completes the scalar constant-multiplier law with **no hypothesis beyond
+entirety**.
+
+- **`ne_zero_of_quasiperiods_lattice`** — an entire `f` with `f(z+w_1) = a f(z)`, `f(z+w_2) = b f(z)`
+  and `R`-independent steps has **no zeros**.  A zero would give `(2N+1)^2` zeros in a disc of radius
+  linear in `N` (`card_latticeBox`, `eq_zero_of_mem_latticeBox`), while the multiplier relations make
+  `f` of exponential type (`exists_exp_growth_bound_of_quasiperiods`) and Jensen's inequality bounds
+  the zero count of such a function linearly in the radius.  Quadratic beats linear.
+- **`differentiallyAlgebraic_of_quasiperiods_entire`** — the full law: an entire function reproduced
+  by two `Q`-independent translations up to constant multipliers is differentially algebraic.  No
+  nonvanishing hypothesis, no `a,b != 0` hypothesis, no elliptic input.  `R`-dependent steps go
+  through the non-discrete step group; `R`-independent steps go through the zero-freeness above and
+  Liouville on the lattice.
+
+**Corpus reuse (this is where the search paid).**  The two Jensen-side ingredients already existed:
+`RHTower/ExponentialTypeZeroDensity.exponentialType_zeroCount_linear` (linear zero density at finite
+exponential type) and `card_le_sum_divisor_of_finite_zeros` (a finite injective family of zeros
+contributes its cardinality to the analytic divisor count).  The second was sitting inside
+`RHTower/PrimeLogExponentialTypeUniqueness.lean`; it is generic, so it moved next to the first.
+Nothing was re-proved.
+
+**Consequence for the card.**  `QuasiPeriodFacetRealization` no longer carries `carrier_ne_zero`, and
+its multipliers are no longer required to be nonzero.  Therefore
+
+- **`facetComplementRankOne_of_quasiPeriodRealization`** — `(33)` for `m = 1`, and
+- **`stanleyReisnerIdeal_principal_of_quasiPeriodRealization`** — the principal squarefree ideal
+
+are now unconditional for entire carriers.  The section *Constant-multiplier and finite-state
+stability* is complete in its scalar half.  What remains of the lattice branch is only the matrix
+case `m > 1`, where the finite-dimensional-span argument does not apply because a lattice is
+discrete.

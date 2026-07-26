@@ -105,4 +105,65 @@ theorem exponentialType_zeroCount_linear
     _ ≤ B * (1 + r) / Real.log 2 := div_le_div_of_nonneg_right hnum hlog2.le
     _ = K * (1 + r) := by dsimp [K]; ring
 
+/-- A finite injective family of zeros in a closed ball contributes at least its cardinality to
+the analytic divisor count in that ball. -/
+theorem card_le_sum_divisor_of_finite_zeros
+    {f : ℂ → ℂ} (hf : Differentiable ℂ f) {c : ℂ} (hfc : f c ≠ 0)
+    {α : Type*} [DecidableEq α] (s : Finset α) (z : α → ℂ)
+    (hinj : Set.InjOn z s) {r : ℝ}
+    (hball : ∀ i ∈ s, z i ∈ closedBall c r)
+    (hzero : ∀ i ∈ s, f (z i) = 0) :
+    (s.card : ℤ) ≤ ∑ᶠ u, (MeromorphicOn.divisor f (closedBall c r)) u := by
+  let d := MeromorphicOn.divisor f (closedBall c r)
+  have hfanUniv : AnalyticOnNhd ℂ f Set.univ :=
+    hf.differentiableOn.analyticOnNhd isOpen_univ
+  have horderC : meromorphicOrderAt f c ≠ ⊤ := by
+    rw [(hfanUniv c (Set.mem_univ c)).meromorphicOrderAt_eq]
+    rw [(hfanUniv c (Set.mem_univ c)).analyticOrderAt_eq_zero.mpr hfc]
+    simp
+  have horder : ∀ u : ℂ, meromorphicOrderAt f u ≠ ⊤ := by
+    intro u
+    exact hfanUniv.meromorphicOn.meromorphicOrderAt_ne_top_of_isPreconnected
+      isPreconnected_univ (Set.mem_univ c) (Set.mem_univ u) horderC
+  have hfan : AnalyticOnNhd ℂ f (closedBall c r) :=
+    hfanUniv.mono (Set.subset_univ _)
+  have hsupport : closedBall c r ∩ f ⁻¹' {0} = Function.support d := by
+    exact hfan.meromorphicNFOn.zero_set_eq_divisor_support
+      (fun u => horder u)
+  let Z : Finset ℂ := s.image z
+  have hZcard : Z.card = s.card := by
+    exact Finset.card_image_iff.mpr hinj
+  have hZsupport : (Z : Set ℂ) ⊆ Function.support d := by
+    intro u hu
+    simp only [Z, Finset.mem_coe, Finset.mem_image] at hu
+    obtain ⟨i, hi, rfl⟩ := hu
+    rw [← hsupport]
+    exact ⟨hball i hi, hzero i hi⟩
+  have hdnonneg : ∀ u : ℂ, 0 ≤ d u :=
+    MeromorphicOn.AnalyticOnNhd.divisor_nonneg hfan
+  have hone : ∀ u ∈ Z, (1 : ℤ) ≤ d u := by
+    intro u hu
+    have hne : d u ≠ 0 := hZsupport hu
+    have hnn : 0 ≤ d u := hdnonneg u
+    omega
+  have hdfin : (Function.support d).Finite :=
+    d.finiteSupport (isCompact_closedBall c r)
+  let D : Finset ℂ := hdfin.toFinset
+  have hZsub : Z ⊆ D := by
+    intro u hu
+    have hu' : u ∈ Function.support d := hZsupport (by simpa using hu)
+    simpa [D] using hu'
+  calc
+    (s.card : ℤ) = ∑ u ∈ Z, (1 : ℤ) := by simp [hZcard]
+    _ ≤ ∑ u ∈ Z, d u := by
+      exact Finset.sum_le_sum fun u hu => hone u hu
+    _ ≤ ∑ u ∈ D, d u := by
+      exact Finset.sum_le_sum_of_subset_of_nonneg hZsub
+        (fun u _ _ => hdnonneg u)
+    _ = ∑ᶠ u, d u := by
+      symm
+      apply finsum_eq_sum_of_support_subset
+      intro u hu
+      simpa [D] using hu
+
 end RHTower

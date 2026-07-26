@@ -25,9 +25,10 @@ constant, whether the two steps are `ℝ`-dependent (non-discrete period group) 
 * `differentiallyAlgebraic_of_quasiperiods_realDependent` — on that branch the law needs neither
   nonvanishing nor nonzero multipliers, being the one-dimensional case of
   `differentiallyAlgebraic_of_quasiperiods_of_not_discrete`;
-* `QuasiPeriodFacetRealization` and **`facetComplementRankOne_of_quasiPeriodRealization`** — the
-  facet-codimension law for constant-multiplier data: every facet still omits at most one ambient
-  vertex, so scalar quasiperiodicity is no escape from the principalization theorem.
+* `QuasiPeriodFacetRealization` — the constant-multiplier facet datum, with
+  `ScalarFacetRealization.toQuasiPeriod` exhibiting the invariant datum as the case "all multipliers
+  `1`".  The facet-codimension law it obeys is proved in `QuasiPeriodLatticeNoZeros`, where the
+  lattice branch is closed.
 -/
 
 open Finset
@@ -200,9 +201,9 @@ theorem not_hypertranscendental_of_quasiperiods_realDependent {f : ℂ → ℂ}
 /-! ### The facet-codimension law for constant-multiplier data -/
 
 /-- **A constant-multiplier facet datum.**  `ℚ`-independent translation steps together with, for
-every facet, an entire nowhere-vanishing hypertranscendental carrier which each omitted translation
-reproduces up to a nonzero constant factor.  Taking all multipliers `1` recovers the invariant
-datum `ScalarFacetRealization`. -/
+every facet, an entire hypertranscendental carrier which each omitted translation reproduces up to a
+constant factor.  Taking all multipliers `1` recovers the invariant datum
+`ScalarFacetRealization`. -/
 structure QuasiPeriodFacetRealization (V : Finset α) (facets : Set (Finset α)) where
   /-- The translation steps attached to the vertices. -/
   ω : α → ℂ
@@ -212,56 +213,23 @@ structure QuasiPeriodFacetRealization (V : Finset α) (facets : Set (Finset α))
   carrier : Finset α → (ℂ → ℂ)
   /-- Each carrier is entire. -/
   carrier_entire : ∀ F ∈ facets, Differentiable ℂ (carrier F)
-  /-- Each carrier is nowhere zero. -/
-  carrier_ne_zero : ∀ F ∈ facets, ∀ z, carrier F z ≠ 0
-  /-- Each omitted translation reproduces the carrier up to a nonzero constant multiplier. -/
+  /-- Each omitted translation reproduces the carrier up to a constant multiplier. -/
   carrier_multiplier : ∀ F ∈ facets, ∀ v ∈ V \ F,
-    ∃ a : ℂ, a ≠ 0 ∧ ∀ z, carrier F (z + ω v) = a * carrier F z
+    ∃ a : ℂ, ∀ z, carrier F (z + ω v) = a * carrier F z
   /-- Each carrier is hypertranscendental. -/
   carrier_hypertranscendental : ∀ F ∈ facets, Hypertranscendental (carrier F)
 
-/-- An entire nowhere-vanishing invariant datum is the constant-multiplier datum with all
-multipliers `1`. -/
+/-- An entire invariant datum is the constant-multiplier datum with all multipliers `1`. -/
 def ScalarFacetRealization.toQuasiPeriod {V : Finset α} {facets : Set (Finset α)}
     (R : ScalarFacetRealization V facets)
-    (hentire : ∀ F ∈ facets, Differentiable ℂ (R.carrier F))
-    (hne : ∀ F ∈ facets, ∀ z, R.carrier F z ≠ 0) :
+    (hentire : ∀ F ∈ facets, Differentiable ℂ (R.carrier F)) :
     QuasiPeriodFacetRealization V facets where
   ω := R.ω
   indep := R.indep
   carrier := R.carrier
   carrier_entire := hentire
-  carrier_ne_zero := hne
   carrier_multiplier := fun F hF v hv =>
-    ⟨1, one_ne_zero, fun z => by rw [R.carrier_periodic F hF v hv z, one_mul]⟩
+    ⟨1, fun z => by rw [R.carrier_periodic F hF v hv z, one_mul]⟩
   carrier_hypertranscendental := R.carrier_hypertranscendental
-
-/-- **Two omitted vertices kill a constant-multiplier carrier.**  Their steps are two
-`ℚ`-independent quasi-periods, so the quasi-period rank law makes the carrier differentially
-algebraic. -/
-theorem no_quasiPeriodFacetRealization_of_two_omitted {V : Finset α} {facets : Set (Finset α)}
-    (R : QuasiPeriodFacetRealization V facets) {F : Finset α} (hF : F ∈ facets) {u v : α}
-    (hu : u ∈ V \ F) (hv : v ∈ V \ F) (huv : u ≠ v) : False := by
-  obtain ⟨a, ha, hau⟩ := R.carrier_multiplier F hF u hu
-  obtain ⟨b, hb, hbv⟩ := R.carrier_multiplier F hF v hv
-  have hindep : LinearIndependent ℚ ![R.ω u, R.ω v] := by
-    rw [← comp_cons_two]
-    exact R.indep.comp _ (injective_cons_two huv)
-  exact R.carrier_hypertranscendental F hF
-    (differentiallyAlgebraic_of_quasiperiods (R.carrier_entire F hF) (R.carrier_ne_zero F hF)
-      hindep ha hb hau hbv)
-
-/-- **The facet-codimension law for constant-multiplier data.**  Every facet omits at most one
-ambient vertex: scalar quasiperiodicity with constant multipliers supplies no extra analytic
-direction. -/
-theorem facetComplementRankOne_of_quasiPeriodRealization {V : Finset α} {facets : Set (Finset α)}
-    (R : QuasiPeriodFacetRealization V facets) (hsub : ∀ F ∈ facets, F ⊆ V) :
-    FacetComplementRankOne V facets := by
-  intro F hF
-  refine ⟨hsub F hF, ?_⟩
-  by_contra hlt
-  have h2 : 2 ≤ (V \ F).card := by omega
-  obtain ⟨u, hu, v, hv, huv⟩ := Finset.one_lt_card.mp h2
-  exact no_quasiPeriodFacetRealization_of_two_omitted R hF hu hv huv
 
 end GaloisForLFunctions.HTGeometry

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.QuasiPeriodDifferentialAlgebraicity
+import GaloisForLFunctions.HTGeometry.QuasiPeriodLatticeNoZeros
 import GaloisForLFunctions.HTGeometry.StanleyReisnerFacetIdeal
 
 /-!
