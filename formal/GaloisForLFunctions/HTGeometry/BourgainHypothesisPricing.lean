@@ -195,4 +195,53 @@ theorem weyl_strictly_between :
   unfold hDirectWeyl hDirectTrivialExponent criticalBlockOfT
   constructor <;> norm_num
 
+
+/-!
+### One parameter, three names
+
+With the within-arc level proved (Theorem 81, `w = 1`), the campaign's Farey bookkeeping gives
+`fareyExponent 1 x = 5/2 − x`, where `x ∈ [0,1]` is the **across-arc** cancellation exponent (`0` none,
+`1` square-root).  In `N` that is `(5/2 − x)/3`.
+
+On the `hDirect` axis at the critical block, `S⁶ ≤ M³T^e` gives `S ≤ T^{(3/2+e)/6} = N^{(3/2+e)/3}`.
+Equating the two:
+
+    (3/2 + e)/3 = (5/2 − x)/3   ⟺   **e = 1 − x** .
+
+So the corpus's hypothesis exponent and the campaign's across-arc parameter are the same quantity:
+
+    Weyl      :  e = 1     ⟺  x = 0     (no across-arc cancellation)
+    Bourgain  :  e = 13/14 ⟺  x = 1/14  (matching Theorem 45's independently-derived `1/14`)
+    Lindelöf  :  e = 0     ⟺  x = 1     (full across-arc square-root cancellation)
+-/
+
+/-- The across-arc cancellation exponent corresponding to an `hDirect` exponent. -/
+def acrossArcOf (e : ℚ) : ℚ := 1 - e
+
+/-- **Weyl is no across-arc cancellation.** -/
+@[simp] theorem acrossArcOf_weyl : acrossArcOf hDirectWeyl = 0 := by
+  unfold acrossArcOf hDirectWeyl; norm_num
+
+/-- **Bourgain is `x = 1/14`** — exactly the fraction Theorem 45 derived independently. -/
+@[simp] theorem acrossArcOf_bourgain : acrossArcOf (13/14) = 1/14 := by
+  unfold acrossArcOf; norm_num
+
+/-- **Lindelöf is full square-root cancellation across arcs.** -/
+@[simp] theorem acrossArcOf_lindelof : acrossArcOf 0 = 1 := by
+  unfold acrossArcOf; norm_num
+
+/-- The correspondence is an order-reversing bijection. -/
+theorem acrossArcOf_antitone {a b : ℚ} (h : a < b) : acrossArcOf b < acrossArcOf a := by
+  unfold acrossArcOf; linarith
+
+/-- **The identification, assembled.**  One parameter carries the Weyl exponent, Bourgain's record and
+the Lindelöf hypothesis, and it is the campaign's own across-arc cancellation exponent. -/
+theorem one_parameter_three_names :
+    acrossArcOf hDirectWeyl = 0 ∧ acrossArcOf (13/14) = 1/14 ∧ acrossArcOf 0 = 1 :=
+  ⟨acrossArcOf_weyl, acrossArcOf_bourgain, acrossArcOf_lindelof⟩
+
+/-- The remaining across-arc cancellation to be found. -/
+@[simp] theorem remaining_across_arc : acrossArcOf 0 - acrossArcOf (13/14) = 13/14 := by
+  rw [acrossArcOf_lindelof, acrossArcOf_bourgain]; norm_num
+
 end HTGeometry

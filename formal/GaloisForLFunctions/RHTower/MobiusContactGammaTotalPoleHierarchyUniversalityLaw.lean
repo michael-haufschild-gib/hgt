@@ -248,10 +248,10 @@ theorem mobiusContactGamma_totalPoleHierarchyUniversality :
     higherJetResidues := mobiusContactGammaHigherJet_completeResidueHierarchyUniversality
     scaleFreeJetRatios := mobiusContactGamma_scaleFreeJetRatioUniversality
     punctureAtlas := gammaPunctureMobiusContact_completeAtlasUniversality
-    punctureCapacity := fun hn hz hshell =>
-      gammaPunctureMobiusContactNormalizedSheet_capacity_congruent hn hz hshell
-    punctureTangent := fun hz =>
-      tendsto_gammaPunctureMobiusContactNormalizedSheet_tangentFactor_one hz
+    punctureCapacity :=
+      gammaPunctureMobiusContactNormalizedSheet_capacity_congruent
+    punctureTangent :=
+      tendsto_gammaPunctureMobiusContactNormalizedSheet_tangentFactor_one
     iterateFirstJet := mobiusContactGammaIteration_completeFirstJetMicroscopeUniversality
     iterateAllJets := mobiusContactGammaIteration_completeAllJetHypertranscendenceUniversality
     digammaGammaAllJets := mobiusContactDigammaGamma_completeAllJetPoleObstructionUniversality

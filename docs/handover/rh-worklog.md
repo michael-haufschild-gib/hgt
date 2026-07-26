@@ -6901,3 +6901,63 @@ COUNTING FUNCTION HAS ANY UNCONDITIONAL EVALUATION AT ALL — via the argument p
 number, which IS computable from boundary data on a contour that does NOT cross the strip: the
 BOUNDARY of the strip. THAT IS THE ONE ROUTE ENTRY 47 DOES NOT BLOCK, because it uses the strip's
 boundary rather than a crossing. TEST IT.
+
+---
+
+## Cycle 114 (2026-07-26) — COUNTS DO EXCLUDE, AND THE GAP IS UNIFORMITY IN THE HEIGHT
+### Refines entry 39 and locates the missing ingredient exactly.
+
+### The boundary route, followed to its end
+Entry 47 leaves open the argument principle on the boundary of a sub-rectangle of the strip: it never
+crosses the strip. Followed through, it computes exactly N(sigma, T), the zero-count — which lands in
+the counting closure of entries 38/39. BUT THE LANDING IS SOFTER THAN THAT VERDICT RECORDED, and the
+refinement matters.
+
+### THE REFINEMENT
+Entry 39 said a bound N <= S excludes nothing once S >= 1. True. Its converse is the point:
+
+    A ZERO-COUNT IS A NATURAL NUMBER, SO A BOUND N < 1 FORCES N = 0 — A GENUINE EXCLUSION.
+
+That is exactly how zero-free regions are obtained. So the obstruction is NOT the counting. It is that
+every unconditional density bound GROWS WITH THE HEIGHT: N(sigma,T) << T^{c(1-sigma)} log^A T exceeds
+one for large T, whatever sigma > 1/2. EXCLUSION NEEDS A BOUND BELOW ONE UNIFORMLY IN T.
+
+    ==> THE MISSING INGREDIENT IS NOT A SHARPER HEIGHT-GROWING DENSITY BOUND BUT A HEIGHT-UNIFORM
+        ONE.
+
+### AND THAT MEETS THE META-OBSERVATION OF CYCLE 102
+Uniformity in T is unavailable because THE THEORY HAS ONLY ONE INVARIANT AND THAT INVARIANT IS A
+FUNCTION OF THE HEIGHT. Every quantity in the atlas carries log T (five independent appearances,
+entry 36), so every bound grows, so no bound is uniform. THE TWO CLOSURES AND THE META-OBSERVATION
+MEET AT ONE POINT.
+
+This is the most precise localisation of the difficulty the programme has produced: not "the error is
+the zero sum" (true but coarse), not "counts don't exclude" (false, as just corrected), but
+UNIFORMITY IN THE HEIGHT OF A SUB-UNIT COUNT, unavailable because log T is the only invariant.
+
+Machine-verified: `RHTower/IntegralityAndUniformity.lean` (integrality exclusion N < 1 implies N = 0
+and its converse, the failure of exclusion for bounds at or above one, the eventual exceeding of one
+by any growing bound, growth of the logarithmic and power shapes, and the contradiction from a
+uniformly sub-unit growing bound; standard axioms only, wired into RHTower).
+
+### FORTY-EIGHTH ATLAS ENTRY (and entry 39 refined)
+    integrality and uniformity   counts DO exclude: N is an integer, so N < 1 gives N = 0. The
+                                 obstruction is that unconditional density bounds grow in T while
+                                 exclusion needs a sub-unit bound uniform in T. Uniformity is
+                                 unavailable because log T is the theory's only invariant.
+    entry 39 REFINED             "counts exclude nothing" holds only for bounds at or above one.
+
+### STATE AT CYCLE 114
+Forty-eight entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+### Cycle 115 target
+The gap is now a single named quantity: a height-uniform sub-unit bound on N(sigma, T) for some fixed
+sigma > 1/2. ASK WHAT SUCH A BOUND WOULD HAVE TO LOOK LIKE. Since N(sigma,T) counts zeros in a region
+of area growing linearly in T, a uniform bound below one means the region is EVENTUALLY EMPTY, i.e. a
+zero-free half-strip. So the target is not a bound at all — IT IS THE ZERO-FREE REGION ITSELF, and the
+integrality observation says the two are the same statement. THEREFORE: the only route is to prove a
+zero-free half-strip directly, and the only unconditional tool that produces zero-free regions is the
+Borel-Caratheodory / three-circles machinery, which the atlas capped. VERIFY THAT THE CAP IS EXACTLY
+THE OBSTRUCTION TO UNIFORMITY — if the Borel-Caratheodory ceiling and the uniformity gap are the same
+obstruction seen twice, the atlas has ONE remaining open problem rather than two, and it is precisely
+the zero-free-region cap.
