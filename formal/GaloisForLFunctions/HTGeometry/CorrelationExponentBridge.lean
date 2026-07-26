@@ -652,4 +652,114 @@ theorem within_arc_rigidity :
     muOfBlock (ofCoherenceScale (fareyExponent 1 1)) = 0 := by
   unfold ofCoherenceScale fareyExponent muOfBlock; norm_num
 
+
+/-!
+### Why within-arc cancellation is neutral: a conservation law in the Farey weights
+
+The neutrality of Theorem 40 is not a numerical accident.  Summing over Farey denominators,
+
+    Σ_{q ≤ L} φ(q) q^{-s}  ≍  L^{2-s}     for `s < 2`,
+
+so with `L/q` blocks per arc and theta size `L/√q`:
+
+    no cancellation:   L² · Σ φ(q) q^{-3/2}  ≍  L² · L^{1/2}   = L^{5/2}
+    within-arc only:   L^{3/2} · Σ φ(q) q^{-1} ≍ L^{3/2} · L¹   = L^{5/2}
+
+The prefactors differ by `L^{1/2}` and the arithmetic sums differ by `L^{1/2}` in the opposite
+direction.  **The Farey weight `φ(q)` has exactly the power law that makes the within-arc square root
+neutral**, and nothing in this depends on the phase: the block count per arc, the theta size, and the
+Farey weight are all universal features of a theta-resonance decomposition.
+-/
+
+/-- Exponent of `Σ_{q ≤ L} φ(q) q^{-s}` in powers of `L`, valid for `s < 2`. -/
+def fareyMomentExponent (s : ℚ) : ℚ := 2 - s
+
+/-- Total exponent with no cancellation: prefactor `L²` against `s = 3/2`. -/
+def totalNoCancellation : ℚ := 2 + fareyMomentExponent (3/2)
+
+/-- Total exponent with within-arc square-root cancellation: prefactor `L^{3/2}` against `s = 1`. -/
+def totalWithinArc : ℚ := 3/2 + fareyMomentExponent 1
+
+@[simp] theorem totalNoCancellation_eq : totalNoCancellation = 5/2 := by
+  unfold totalNoCancellation fareyMomentExponent; norm_num
+
+@[simp] theorem totalWithinArc_eq : totalWithinArc = 5/2 := by
+  unfold totalWithinArc fareyMomentExponent; norm_num
+
+/-- **The conservation law.**  The two totals agree, because the prefactor gained by within-arc
+cancellation is exactly cancelled by the change in the Farey moment. -/
+theorem within_arc_neutrality : totalNoCancellation = totalWithinArc := by
+  rw [totalNoCancellation_eq, totalWithinArc_eq]
+
+/-- The mechanism, isolated: the prefactor drops by `1/2` and the Farey moment rises by `1/2`. -/
+theorem neutrality_mechanism :
+    (2 : ℚ) - 3/2 = 1/2 ∧ fareyMomentExponent 1 - fareyMomentExponent (3/2) = 1/2 := by
+  constructor
+  · norm_num
+  · unfold fareyMomentExponent; norm_num
+
+/-- **Universality.**  The identity holds for any decomposition with `L/q` blocks per arc and theta
+size `L/q^{1/2}`, whatever the phase: for every `s`, halving the block count exponent and raising the
+Farey moment exponent by the same amount leaves the total fixed. -/
+theorem neutrality_universal (p s : ℚ) :
+    (p + fareyMomentExponent s) = ((p - 1/2) + fareyMomentExponent (s - 1/2)) := by
+  unfold fareyMomentExponent; ring
+
+
+/-!
+### Validation: the same bookkeeping governs the Dirichlet divisor problem
+
+Voronoi's expansion writes `Δ(x) ≍ x^{1/4} Σ_{n ≤ x} d(n)n^{-3/4} e(2√(nx))`.  A bound
+`Σ_{n ∼ M} d(n)e(2√(nx)) ≪ M^{b}` contributes `x^{1/4}·M^{b-3/4}`, which at the dominant scale `M ≍ x`
+gives `Δ(x) ≪ x^{b - 1/2}`.  Hence
+
+    b = 5/6  ⟹  Δ(x) ≪ x^{1/3}       — Voronoi 1903, the classical exponent
+    b = 1/2  ⟹  Δ(x) ≪ x^{1/4+ε}     — the Dirichlet divisor conjecture
+
+These are exactly the incoherent and coherent block totals of the coherence decomposition.  The
+Lindelöf hypothesis and the divisor conjecture are therefore the *same* coherence statement for two
+different phases, and the classical exponents `1/6` and `1/3` are the same incoherent bookkeeping.
+-/
+
+/-- The divisor-problem exponent delivered by a block exponent `b` for the Voronoi sum, in the
+regime `b ≥ 3/4` where the dominant scale is `M ≍ x`. -/
+def divisorExponentOfBlock (b : ℚ) : ℚ := b - 1/2
+
+/-- **The incoherent block total gives Voronoi's classical `1/3`.** -/
+@[simp] theorem divisor_incoherent : divisorExponentOfBlock (5/6) = 1/3 := by
+  unfold divisorExponentOfBlock; norm_num
+
+/-- **The threshold.**  Below `b = 3/4` the dominant scale moves to small `M` and the bound saturates
+at `x^{1/4}`, so the divisor conjecture corresponds to `b ≤ 3/4` — *not* to square-root cancellation
+in the Voronoi sum. -/
+@[simp] theorem divisor_threshold : divisorExponentOfBlock (3/4) = 1/4 := by
+  unfold divisorExponentOfBlock; norm_num
+
+/-- The `ζ` and divisor problems share the incoherent block total but **not** their targets: `ζ` needs
+`b = 1/2`, the divisor problem only `b = 3/4`. -/
+theorem shared_incoherent_distinct_targets :
+    muOfBlock (5/6) = 1/6 ∧ divisorExponentOfBlock (5/6) = 1/3 ∧
+    muOfBlock (1/2) = 0 ∧ divisorExponentOfBlock (3/4) = 1/4 ∧ (1/2 : ℚ) < 3/4 := by
+  refine ⟨?_, divisor_incoherent, ?_, divisor_threshold, by norm_num⟩
+  · unfold muOfBlock; norm_num
+  · unfold muOfBlock; norm_num
+
+/-- Block exponent corresponding to the divisor-problem record `Δ(x) ≪ x^{131/416}`. -/
+def divisorRecordBlock : ℚ := 131/416 + 1/2
+
+@[simp] theorem divisorRecordBlock_eq : divisorRecordBlock = 339/416 := by
+  unfold divisorRecordBlock; norm_num
+
+/-- **The zeta problem is currently ahead in the shared bookkeeping.**  Bourgain's block exponent
+`17/21` is strictly smaller than the divisor record's `339/416`. -/
+theorem zeta_ahead_of_divisor : (17/21 : ℚ) < divisorRecordBlock := by
+  rw [divisorRecordBlock_eq]; norm_num
+
+/-- Both records sit strictly between the divisor threshold `3/4` and the incoherent total `5/6`. -/
+theorem records_between :
+    (3/4 : ℚ) < 17/21 ∧ (17/21 : ℚ) < 5/6 ∧
+    (3/4 : ℚ) < divisorRecordBlock ∧ divisorRecordBlock < 5/6 := by
+  rw [divisorRecordBlock_eq]
+  refine ⟨by norm_num, by norm_num, by norm_num, by norm_num⟩
+
 end HTGeometry

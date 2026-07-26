@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.SoninCoupledProjectiveFeshbachEquivalence
 import GaloisForLFunctions.RHTower.PrimeArchShiftThirteenCircleCone
 import GaloisForLFunctions.RHTower.XiSquaredEulerAllDegreeChargeCriterion
+import GaloisForLFunctions.RHTower.XiFourthTraceExtendedCriticalLineBand
 
 /-!
 # Centered analytic-tail vacuum cone
@@ -9,7 +10,7 @@ The vacuum-Feshbach reduction leaves one target-normalized variance for each zer
 integer polynomial tail.  This module discharges an explicit part of that right-edge interface.
 
 The endpoint disk makes every nonconstant polynomial tail small at every reciprocal-square Xi
-atom.  If its coefficient `l1` mass is at most eight times the centered vacuum amplitude, the
+atom.  If its coefficient `l1` mass is at most `423 / 50` times the centered vacuum amplitude, the
 sector law then makes every multiplicity-copy trace-Hankel summand nonnegative.  Summation gives
 target variance positivity without a Sonin comparison.  Consequently the coupled-Sonin
 normalized-variance hypothesis is required only on the strict complementary coefficient family.
@@ -85,11 +86,33 @@ theorem norm_xiZeroCopyReciprocalSquare_le_eightyFive_div_eightyFour_mul_re
         nlinarith [sq_nonneg z.re]
   exact (sq_le_sq₀ (norm_nonneg z) (by positivity)).mp hsq'
 
+/-- The fourth-trace source band improves the linear norm/real-mass estimate to `295 / 294`. -/
+theorem norm_xiZeroCopyReciprocalSquare_le_twoHundredNinetyFive_div_twoHundredNinetyFour_mul_re
+    (q : XiZeroCopy) :
+    ‖xiZeroCopyReciprocalSquare q‖ ≤
+      (295 / 294 : ℝ) * (xiZeroCopyReciprocalSquare q).re := by
+  let z := xiZeroCopyReciprocalSquare q
+  have hre : 0 < z.re := xiZeroCopyReciprocalSquare_re_pos q
+  have him : z.im ^ 2 ≤ (1 / 147 : ℝ) * z.re ^ 2 := by
+    simpa only [z, xiThermalNode] using
+      xiThermalOrientationTerm_le_one_over_oneHundredFortySeven_node_sq q
+  have hsq : ‖z‖ ^ 2 ≤ (148 / 147 : ℝ) * z.re ^ 2 := by
+    rw [Complex.sq_norm]
+    rw [Complex.normSq_apply]
+    nlinarith
+  have hsq' : ‖z‖ ^ 2 ≤ ((295 / 294 : ℝ) * z.re) ^ 2 := by
+    calc
+      ‖z‖ ^ 2 ≤ (148 / 147 : ℝ) * z.re ^ 2 := hsq
+      _ ≤ ((295 / 294 : ℝ) * z.re) ^ 2 := by
+        have hfactor : (148 / 147 : ℝ) ≤ (295 / 294) ^ 2 := by norm_num
+        nlinarith [sq_nonneg z.re]
+  exact (sq_le_sq₀ (norm_nonneg z) (by positivity)).mp hsq'
+
 /-- **Atomwise centered analytic-tail law.**  The endpoint radius and reciprocal sector make each
 multiplicity-copy trace-Hankel term nonnegative throughout the coefficient cone. -/
 theorem xiCenteredAnalyticTailHankelTerm_nonneg
     (p : Polynomial ℝ) (hp : p.coeff 0 = 0) (μ : ℝ)
-    (htail : polynomialNonconstantCoeffL1 p ≤ 8 * |μ|)
+    (htail : polynomialNonconstantCoeffL1 p ≤ (423 / 50 : ℝ) * |μ|)
     (q : XiZeroCopy) :
     0 ≤ xiSquaredEulerApertureHankelTerm (p - C μ) q := by
   let z := xiZeroCopyReciprocalSquare q
@@ -100,17 +123,17 @@ theorem xiCenteredAnalyticTailHankelTerm_nonneg
   have hw0 : ‖w‖ ≤ ‖z‖ * polynomialNonconstantCoeffL1 p := by
     simpa only [w] using
       norm_evalRealPolynomial_le_norm_mul_nonconstantCoeffL1_of_coeff_zero p z hp hzone
-  have hw : ‖w‖ ≤ (16 / 41 : ℝ) * |μ| := by
+  have hw : ‖w‖ ≤ (423 / 1025 : ℝ) * |μ| := by
     have htail0 : 0 ≤ polynomialNonconstantCoeffL1 p := by
       exact Finset.sum_nonneg fun _ _ => abs_nonneg _
     calc
       ‖w‖ ≤ ‖z‖ * polynomialNonconstantCoeffL1 p := hw0
-      _ ≤ (2 / 41 : ℝ) * (8 * |μ|) := by
+      _ ≤ (2 / 41 : ℝ) * ((423 / 50 : ℝ) * |μ|) := by
         gcongr
-      _ = (16 / 41 : ℝ) * |μ| := by ring
-  have hzre : ‖z‖ ≤ (85 / 84 : ℝ) * z.re := by
+      _ = (423 / 1025 : ℝ) * |μ| := by ring
+  have hzre : ‖z‖ ≤ (295 / 294 : ℝ) * z.re := by
     simpa only [z] using
-      norm_xiZeroCopyReciprocalSquare_le_eightyFive_div_eightyFour_mul_re q
+      norm_xiZeroCopyReciprocalSquare_le_twoHundredNinetyFive_div_twoHundredNinetyFour_mul_re q
   have hre : 0 < z.re := by
     simpa only [z] using xiZeroCopyReciprocalSquare_re_pos q
   have hperturbNorm :
@@ -130,20 +153,22 @@ theorem xiCenteredAnalyticTailHankelTerm_nonneg
                 Complex.norm_real, Real.norm_eq_abs, abs_mul]
               simp
             rw [hnorm]
-      _ ≤ ((85 / 84 : ℝ) * z.re) *
-          (2 * |μ| * ((16 / 41 : ℝ) * |μ|) +
-            ((16 / 41 : ℝ) * |μ|) ^ 2) := by
+      _ ≤ ((295 / 294 : ℝ) * z.re) *
+          (2 * |μ| * ((423 / 1025 : ℝ) * |μ|) +
+            ((423 / 1025 : ℝ) * |μ|) ^ 2) := by
         gcongr
       _ ≤ z.re * μ ^ 2 := by
         have hcoef :
-            (85 / 84 : ℝ) * (2 * (16 / 41 : ℝ) + (16 / 41 : ℝ) ^ 2) ≤ 1 := by
+            (295 / 294 : ℝ) *
+                (2 * (423 / 1025 : ℝ) + (423 / 1025 : ℝ) ^ 2) ≤ 1 := by
           norm_num
         calc
-          (85 / 84 : ℝ) * z.re *
-              (2 * |μ| * ((16 / 41 : ℝ) * |μ|) +
-                ((16 / 41 : ℝ) * |μ|) ^ 2) =
-              z.re * ((85 / 84 : ℝ) *
-                (2 * (16 / 41 : ℝ) + (16 / 41 : ℝ) ^ 2)) * |μ| ^ 2 := by ring
+          (295 / 294 : ℝ) * z.re *
+              (2 * |μ| * ((423 / 1025 : ℝ) * |μ|) +
+                ((423 / 1025 : ℝ) * |μ|) ^ 2) =
+              z.re * ((295 / 294 : ℝ) *
+                (2 * (423 / 1025 : ℝ) + (423 / 1025 : ℝ) ^ 2)) * |μ| ^ 2 := by
+            ring
           _ ≤ z.re * 1 * |μ| ^ 2 := by gcongr
           _ = z.re * μ ^ 2 := by rw [sq_abs]; ring
   unfold xiSquaredEulerApertureHankelTerm
@@ -173,7 +198,7 @@ theorem xiCenteredAnalyticTailHankelTerm_nonneg
 /-- Atomwise analytic-tail control sums to a nonnegative completed prime--Gamma Hankel value. -/
 theorem re_primeArchSourceTraceHankel_sub_C_nonneg_of_tailL1
     (p : Polynomial ℝ) (hp : p.coeff 0 = 0) (μ : ℝ)
-    (htail : polynomialNonconstantCoeffL1 p ≤ 8 * |μ|) :
+    (htail : polynomialNonconstantCoeffL1 p ≤ (423 / 50 : ℝ) * |μ|) :
     0 ≤ (primeArchSourceTraceHankel (p - C μ)).re := by
   have hsum :
       0 ≤ xiSquaredEulerApertureHankelValue (p - C μ) :=
@@ -183,11 +208,11 @@ theorem re_primeArchSourceTraceHankel_sub_C_nonneg_of_tailL1
   exact hsum
 
 /-- Uncentered formulation: a polynomial is nonnegative whenever the `l1` mass of its vacuum tail
-is at most eight times its constant amplitude. -/
+is at most `423 / 50` times its constant amplitude. -/
 theorem re_primeArchSourceTraceHankel_nonneg_of_vacuumTailL1
     (p : Polynomial ℝ)
     (htail : polynomialNonconstantCoeffL1 (HTGeometry.polynomialVacuumTail p) ≤
-      8 * |p.coeff 0|) :
+      (423 / 50 : ℝ) * |p.coeff 0|) :
     0 ≤ (primeArchSourceTraceHankel p).re := by
   let q := HTGeometry.polynomialVacuumTail p
   have h := re_primeArchSourceTraceHankel_sub_C_nonneg_of_tailL1 q
@@ -210,7 +235,7 @@ def primeArchNormalizedPolynomialMean (p : Polynomial ℝ) : ℝ :=
 theorem re_primeArchSourceTraceHankel_vacuumCentered_nonneg_of_tailL1
     (p : Polynomial ℝ) (hp : p.coeff 0 = 0)
     (htail : polynomialNonconstantCoeffL1 p ≤
-      8 * |primeArchNormalizedPolynomialMean p|) :
+      (423 / 50 : ℝ) * |primeArchNormalizedPolynomialMean p|) :
     0 ≤ (primeArchSourceTraceHankel
       (HTGeometry.momentVacuumCenteredPolynomial normalizedPrimeArchMoment p)).re := by
   have h := re_primeArchSourceTraceHankel_sub_C_nonneg_of_tailL1 p hp
@@ -222,7 +247,8 @@ theorem re_primeArchSourceTraceHankel_vacuumCentered_nonneg_of_tailL1
 theorem primeArchNormalizedVariance_nonneg_of_centeredTailL1
     (q : Polynomial ℤ) (hq : q.coeff 0 = 0)
     (htail : polynomialNonconstantCoeffL1 (q.map (Int.castRingHom ℝ)) ≤
-      8 * |primeArchNormalizedPolynomialMean (q.map (Int.castRingHom ℝ))|) :
+      (423 / 50 : ℝ) *
+        |primeArchNormalizedPolynomialMean (q.map (Int.castRingHom ℝ))|) :
     0 ≤ HTGeometry.momentNormalizedVariance normalizedPrimeArchMoment
       (q.map (Int.castRingHom ℝ)) := by
   apply (HTGeometry.momentNormalizedVariance_nonneg_iff_feshbach
@@ -233,7 +259,8 @@ theorem primeArchNormalizedVariance_nonneg_of_centeredTailL1
 
 /-- Strict complement of the centered analytic-tail cone. -/
 def PrimeArchCenteredAnalyticTailResidual (q : Polynomial ℤ) : Prop :=
-  8 * |primeArchNormalizedPolynomialMean (q.map (Int.castRingHom ℝ))| <
+  (423 / 50 : ℝ) *
+      |primeArchNormalizedPolynomialMean (q.map (Int.castRingHom ℝ))| <
     polynomialNonconstantCoeffL1 (q.map (Int.castRingHom ℝ))
 
 /-- **Counterexample localization.**  Any failure of RH has a negative target-normalized variance
@@ -267,7 +294,7 @@ theorem exists_centeredAnalyticTailResidual_negativeVariance_of_not_riemannHypot
     unfold PrimeArchCenteredAnalyticTailResidual
     by_contra hcone
     have htail : polynomialNonconstantCoeffL1 p ≤
-        8 * |primeArchNormalizedPolynomialMean p| := by
+        (423 / 50 : ℝ) * |primeArchNormalizedPolynomialMean p| := by
       exact le_of_not_gt hcone
     have hnonneg := primeArchNormalizedVariance_nonneg_of_centeredTailL1 q hq htail
     change 0 ≤ targetVar at hnonneg
@@ -298,7 +325,7 @@ theorem primeArchVacuumFeshbachIntNonnegative_of_centeredResidualNormalizedVaria
   let targetVar : ℝ :=
     HTGeometry.momentNormalizedVariance normalizedPrimeArchMoment p
   by_cases hcone : polynomialNonconstantCoeffL1 p ≤
-      8 * |primeArchNormalizedPolynomialMean p|
+      (423 / 50 : ℝ) * |primeArchNormalizedPolynomialMean p|
   · apply (HTGeometry.momentNormalizedVariance_nonneg_iff_feshbach
       normalizedPrimeArchMoment normalizedPrimeArchMoment_zero_pos p).1
     exact primeArchNormalizedVariance_nonneg_of_centeredTailL1 q hq hcone

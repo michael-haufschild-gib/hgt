@@ -5043,3 +5043,69 @@ SPLIT THE ERROR INTO ITS EULER-MACLAURIN PART (elementary, boundable uncondition
 GENUINELY ARITHMETIC PART. If the elementary part alone can exceed 0.17488, the margin is already
 consumed and the ladder is tight; if it is provably far below, the surplus available for the
 arithmetic part is quantified for the first time.
+
+---
+
+## Cycle 86 (2026-07-26) — THE PROJECT'S DECLARED OPEN CORE REDUCES TO THE PURE ZERO SUM
+### Everything except the zeros is O(L e^{-x/2}) in the shift. Explicit constant 4.63.
+
+### Phase 1: I went to the project's OWN declared frontier
+`RiemannHypothesisSOTA2026.lean` names the sharpened open core
+    SUZUKI-RECTANGULAR-WARD-DEFECT-SEMIBOUNDED:
+    "any nonnegative explicit source energy whose Ward defect is merely eventually bounded below on
+     the logarithmic rectangular mesh proves RH; false RH forces that defect to -infinity cofinally."
+`SuzukiRectangularWardDefectBoundedness.lean` supplies the connector
+    riemannHypothesis_of_suzukiRectangularWardDefect_eventually_bddBelow.
+The defect is built from xiScrewWindowCurvature L (log n) — THE TENT TRANSLATED to [x, x+2L].
+
+### The two eliminations
+1. POLE AND PRIME MAIN TERM: already cancel identically for the translated window (corpus
+   `PoleTermCancellation`, cycle 65, via the translation identity).
+2. ARCHIMEDEAN: NEW. The translated window vanishes at the origin (x > 0), so the collapsed
+   archimedean integral reduces to  -2 int_x^{x+2L} g_x(u) e^{-u/2}/(1-e^{-2u}) du.  For u >= 1 the
+   denominator is >= 1 - e^{-2}, and the tent has height L, so
+
+       |A_inf(g_x)|  <=  (4L/(1-e^{-2})) e^{-x/2}  <=  4.63 * L * e^{-x/2}.
+
+    ==> EVERY NON-ZERO-SUM CONTRIBUTION TO THE SCREW WARD DEFECT IS O(L e^{-x/2}).
+        THEREFORE   liminf_{x->inf} (screw Ward defect)  =  liminf_{x->inf} (PURE ZERO SUM),
+        AND THE PROJECT'S OPEN CORE IS SEMIBOUNDEDNESS OF THE ZERO SUM ALONE.
+
+This is the translated-window counterpart of entry 17: for the symmetric window the exponentially
+LARGE terms cancel; for the translated window the surviving archimedean term is exponentially SMALL.
+In both cases the functional reduces to its arithmetic content, and nothing else can be blamed.
+
+### Why the defect can reach -infinity, made precise
+The translated tent has ghat_x(r) = e^{-irx} Fejer(r), so a zero pair at 1/2 +- a + i gam contributes
+e^{-i gam x} e^{+ a x} Fejer(...) from the REFLECTED zero. THE e^{+ax} IS THE ENTIRE -infinity
+MECHANISM. Under RH a = 0 and the contribution is bounded. This identifies the exact analytic source
+of the corpus's converse theorem.
+
+Machine-verified: `RHTower/ScrewArchimedeanShiftDecay.lean` (the kernel denominator bound on the far
+mesh, its positivity, the shifted exponential integral 2(e^{-a/2} - e^{-b/2}) proved from HasDerivAt,
+the bound by 2 e^{-x/2}, the decay estimate, the explicit constant 4.63 via e^{-2} <= 0.1354, and
+BOTH directions of the semiboundedness transfer between defect and zero sum; standard axioms only,
+wired into RHTower).
+
+### TWENTIETH ATLAS ENTRY
+    screw shift decay   the archimedean part of the rectangular Ward defect is <= 4.63 L e^{-x/2};
+                        with the pole/prime-main cancellation this reduces the project's named open
+                        core to semiboundedness of the pure zero sum.
+
+### STATE AT CYCLE 86
+Twenty entries. RH IS NEITHER PROVEN NOR DISPROVEN. The explicit-formula method is now completely
+characterised: entries 17-20 show that for BOTH window families every non-arithmetic term either
+cancels identically or decays exponentially, so no explicit-formula argument can succeed by
+manipulating the archimedean, pole, or main prime terms. WHAT REMAINS IS THE ZERO SUM ITSELF.
+
+### Cycle 87 target
+The zero sum for the translated window is  sum_rho e^{-i gam x} e^{a x} Fejer(rho').  Semiboundedness
+in x is an ALMOST-PERIODICITY question: under RH the exponents are purely imaginary and the sum is a
+Besicovitch almost periodic function of x, hence bounded; off RH one exponent has positive real part.
+SO THE OPEN CORE IS: SHOW THE SCREW WARD DEFECT IS ALMOST PERIODIC IN THE SHIFT. Almost periodicity is
+a structural property that does NOT require knowing the zeros — it requires only that the Dirichlet
+exponents be real. CONJECTURE: the screw Ward defect, as a function of the shift, has a Bohr mean
+value, and its mean equals the archimedean constant computed in cycle 84. If the mean exists and is
+finite, no exponent can have positive real part, and RH follows. TEST WHETHER THE BOHR MEAN OF THE
+SCREW DEFECT IS COMPUTABLE UNCONDITIONALLY FROM THE PRIME SIDE — the prime side is a Dirichlet
+polynomial in x with real frequencies log n, whose Bohr mean is elementary.
