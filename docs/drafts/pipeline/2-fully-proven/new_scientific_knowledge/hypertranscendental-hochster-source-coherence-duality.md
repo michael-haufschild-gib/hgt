@@ -2117,3 +2117,41 @@ equivalence proved at `Tor₁` and `Tor₂`.  The remaining piece is the backwar
 boundary comes from a coboundary) at general degree, i.e. the degree-`p` analogue of `pairCochain` /
 `tripleCochain`, for which the uniform ingredients (`tupleSign_comp_perm`, the canonical increasing
 enumeration of a finite set) are now in place.
+
+### Lean progress — the strand equivalence in EVERY Koszul degree (cycles and boundaries)
+
+`HochsterStrandGeneralBoundary.lean` (axiom-clean, build green) completes the degree-uniform strand
+equivalence: for every finite complex, every multidegree `σ` and every Koszul degree, a strand element
+is a Koszul cycle exactly when its cochain is a reduced simplicial cocycle of `Δ_σ`, and a Koszul
+boundary exactly when its cochain is a reduced simplicial coboundary.
+
+- `tupleSign_mul_self` — the iterated incidence sign squares to `1`.
+- `exists_perm_comp_of_mem` — two injective tuples hitting the same values differ by a permutation
+  (via `choose` + `Equiv.ofBijective`).
+- `srFaceDetector_koszulD` — the degree-uniform face-detector identity for the general Koszul
+  differential, generalizing `srFaceDetector_srKoszulBoundary` and `..._srKoszulBoundary3`.
+- **`tupleCochain`** — the degree-uniform replacement for `pairCochain`/`tripleCochain`: a cochain is
+  built from a *permutation-invariant* weight by evaluating it at the **canonical increasing
+  enumeration** `Finset.orderEmbOfFin` of the complement.  This removes the ad-hoc `p<q` / `p<q<r`
+  guards and the hand-written sorting arguments; `tupleCochain_sdiff` evaluates it at an arbitrary
+  injective tuple.
+- `srFaceDetector_congr`, `strandTensor_congr` — presentation-independence of the detector, and the
+  invisibility of cochain values at nonface complements.
+- **`hochster_strand_boundary_iff`** — `strandTensor (p+1) g ∈ koszulBoundaries ↔ ∃ h, δh = g` on the
+  codimension-`(p+1)` faces of `σ`.  The primitive is `tupleCochain` of the weight
+  `(-1)^(p+1) · tupleSign σ u · (face detector of the tensor at u)`, a product of two families that
+  each transform by the sign of the permutation, hence invariant; the leading `(-1)^(p+1)` cancels the
+  rotation sign of the chain map.
+- `strandTensor_eq_zero_iff`, **`koszulD_strandTensor_eq_zero_iff`** — the cycle half.
+- **`hochster_strand_correspondence`** — the two halves packaged: cycles ↔ cocycles and boundaries ↔
+  coboundaries, in every degree.
+
+**Precise scope (anti-theatre note).**  What is proved is that the strand map is a chain map in every
+degree and that it *reflects* cycles and boundaries exactly: a cochain is a cocycle (resp. coboundary)
+on the faces of `Δ_σ` **iff** its strand image is a Koszul cycle (resp. boundary).  What is not yet
+proved at general degree is that the strand map *exhausts* the multidegree-`σ` part of the Koszul
+complex — i.e. that every multidegree-`σ`-homogeneous alternating tensor is `strandTensor g` for some
+cochain `g`.  That surjectivity is what would upgrade the correspondence to a literal isomorphism
+`Tor_{i,σ} ≅ H̃^{|σ|−i−1}(Δ_σ)` at every `i`; it is available at `Tor₁` and `Tor₂`, where the strand
+was parametrized directly (`srHollowSimplexSyzygyVec`, `strandTwo`).  The remaining step is the
+multigraded exhaustion, for which `StanleyReisnerMultigrading.srMk_homogeneous_eq` is the seed.
