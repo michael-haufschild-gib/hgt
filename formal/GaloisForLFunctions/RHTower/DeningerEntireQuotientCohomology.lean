@@ -150,6 +150,25 @@ theorem deningerEntireThetaClass_eq :
           deningerEntireCoordinateClass := by
   rfl
 
+/-- The quotient of the source theta coordinate is the displayed Frobenius class. -/
+theorem deningerEntireH1Class_thetaCoordinate :
+    deningerEntireH1Class deningerEntireThetaCoordinate =
+      deningerEntireThetaClass := by
+  rw [deningerEntireThetaCoordinate, deningerEntireThetaClass,
+    deningerEntireCoordinateClass]
+  change
+    deningerEntireH1Class
+      ((algebraMap ℂ DeningerEntire) (1 / 2) * 1 +
+        (algebraMap ℂ DeningerEntire) Complex.I *
+          deningerEntireCoordinate) =
+      algebraMap ℂ DeningerEntireH1 (1 / 2) +
+        algebraMap ℂ DeningerEntireH1 Complex.I *
+          deningerEntireH1Class deningerEntireCoordinate
+  exact map_add deningerEntireH1Class _ _ |>.trans <| by
+    rw [map_mul deningerEntireH1Class, map_one deningerEntireH1Class,
+      deningerEntireH1Class.commutes, mul_one,
+      map_mul deningerEntireH1Class, deningerEntireH1Class.commutes]
+
 /-- Frobenius-flow generator on algebraic middle cohomology. -/
 def deningerEntireTheta : Module.End ℂ DeningerEntireH1 :=
   LinearMap.mulLeft ℂ deningerEntireThetaClass
@@ -242,7 +261,7 @@ theorem deningerEntireTheta_dividedChainClass
           deningerEntireDividedChainClass
             (xiSpectralPointSupport rho) k := by
   change
-    deningerEntireH1Class deningerEntireThetaCoordinate *
+    deningerEntireThetaClass *
         deningerEntireH1Class
           (deningerEntireDividedChain (xiSpectralPointSupport rho) (k + 1)) =
       (1 / 2 + Complex.I * xiSpectralPointSupport rho) •
@@ -251,6 +270,7 @@ theorem deningerEntireTheta_dividedChainClass
         Complex.I •
           deningerEntireH1Class
             (deningerEntireDividedChain (xiSpectralPointSupport rho) k)
+  rw [← deningerEntireH1Class_thetaCoordinate]
   have h := congrArg deningerEntireH1Class
     (deningerEntireThetaCoordinate_mul_dividedChain rho hk)
   simpa only [map_mul, map_add, Algebra.smul_def, AlgHom.commutes] using h
@@ -283,6 +303,71 @@ theorem deningerEntireDividedChainClass_multiplicity_ne_zero
     xiThetaDividedChain_nonzero_at_multiplicity rho
   apply hterminal
   simpa [deningerEntireXi_apply, deningerEntireDividedChain_apply, hXi] using heval.symm
+
+/--
+Every source-defined Xi divisor produces a genuine Frobenius eigenvector in algebraic middle
+cohomology.  The proof chooses the first nonzero class in the multiplicity-exact divided chain;
+the preceding class then vanishes, so the Jordan recurrence becomes an eigenvector equation.
+-/
+theorem exists_deningerEntireTheta_eigenvector
+    (rho : XiDivisorSupport) :
+    ∃ x : DeningerEntireH1,
+      x ≠ 0 ∧
+        deningerEntireTheta x =
+          (1 / 2 + Complex.I * xiSpectralPointSupport rho) • x := by
+  classical
+  have hex :
+      ∃ j : ℕ,
+        deningerEntireDividedChainClass
+          (xiSpectralPointSupport rho) j ≠ 0 :=
+    ⟨xiSupportMultiplicity rho,
+      deningerEntireDividedChainClass_multiplicity_ne_zero rho⟩
+  have hfind0 : Nat.find hex ≠ 0 := by
+    intro hzero
+    have hnonzero := Nat.find_spec hex
+    rw [hzero, deningerEntireDividedChainClass_zero] at hnonzero
+    exact hnonzero rfl
+  obtain ⟨k, hfind⟩ := Nat.exists_eq_succ_of_ne_zero hfind0
+  have hclass :
+      deningerEntireDividedChainClass
+        (xiSpectralPointSupport rho) (k + 1) ≠ 0 := by
+    have hnonzero := Nat.find_spec hex
+    rw [hfind] at hnonzero
+    simpa only [Nat.succ_eq_add_one] using hnonzero
+  have hkmult : k < xiSupportMultiplicity rho := by
+    have hle :
+        Nat.find hex ≤ xiSupportMultiplicity rho :=
+      Nat.find_min' hex
+        (deningerEntireDividedChainClass_multiplicity_ne_zero rho)
+    omega
+  have hkzero :
+      deningerEntireDividedChainClass
+        (xiSpectralPointSupport rho) k = 0 := by
+    by_contra hk
+    have hle : Nat.find hex ≤ k := Nat.find_min' hex hk
+    omega
+  refine ⟨deningerEntireDividedChainClass
+      (xiSpectralPointSupport rho) (k + 1), hclass, ?_⟩
+  rw [deningerEntireTheta_dividedChainClass rho hkmult]
+  rw [hkzero]
+  have hsourceZero :
+      Complex.I • (0 : DeningerEntire) = 0 := by
+    apply DeningerEntire.ext
+    intro z
+    simp only [deningerEntire_smul_apply, deningerEntire_zero_apply,
+      mul_zero]
+  have hIzero : Complex.I • (0 : DeningerEntireH1) = 0 := by
+    calc
+      Complex.I • (0 : DeningerEntireH1) =
+          Complex.I • deningerEntireH1Class (0 : DeningerEntire) := by
+            rw [map_zero]
+      _ = deningerEntireH1Class (Complex.I • (0 : DeningerEntire)) := by
+            exact
+              (deningerEntireH1Class.toLinearMap.map_smul
+                Complex.I (0 : DeningerEntire)).symm
+      _ = deningerEntireH1Class (0 : DeningerEntire) := by rw [hsourceZero]
+      _ = 0 := map_zero deningerEntireH1Class
+  rw [hIzero, add_zero]
 
 /-- The first removable divided chain is the exact global divided difference of `XiC`. -/
 theorem deningerEntire_coordinate_sub_mul_dividedChain_one (alpha : ℂ) :
@@ -428,6 +513,42 @@ theorem XiC_eq_zero_of_deningerEntireTheta_eigenvalue
           ((deningerEntireCoordinateClass -
             algebraMap ℂ DeningerEntireH1 alpha) * x)) := by rw [mul_assoc]
     _ = 0 := by rw [hI, mul_zero]
+
+/--
+Exact source-defined point-spectrum theorem: `1/2 + I*alpha` is an eigenvalue of the
+entire-quotient Frobenius generator precisely when the prime--Gamma completed Xi source vanishes
+at `alpha`.  No zero list or spectral realization is assumed in the definition of either side.
+-/
+theorem XiC_eq_zero_iff_exists_deningerEntireTheta_eigenvector
+    (alpha : ℂ) :
+    XiC alpha = 0 ↔
+      ∃ x : DeningerEntireH1,
+        x ≠ 0 ∧
+          deningerEntireTheta x =
+            (1 / 2 + Complex.I * alpha) • x := by
+  constructor
+  · intro hXi
+    obtain ⟨q, hq⟩ :=
+      (XiC_eq_zero_iff_exists_xiZeroCopy alpha).mp hXi
+    obtain ⟨x, hx0, hx⟩ :=
+      exists_deningerEntireTheta_eigenvector q.1
+    refine ⟨x, hx0, ?_⟩
+    calc
+      deningerEntireTheta x =
+          (1 / 2 + Complex.I * xiSpectralPointSupport q.1) • x := hx
+      _ = (1 / 2 + Complex.I * alpha) • x := by
+        rw [← xiSpectralPoint_eq_support q, hq]
+  · rintro ⟨x, hx0, hx⟩
+    have hXi :=
+      XiC_eq_zero_of_deningerEntireTheta_eigenvalue
+        (rho := 1 / 2 + Complex.I * alpha) hx0 hx
+    have hcenter :
+        ((1 / 2 + Complex.I * alpha - 1 / 2) / Complex.I) =
+          alpha := by
+      field_simp [Complex.I_ne_zero]
+      ring
+    rw [hcenter] at hXi
+    exact hXi
 
 end
 

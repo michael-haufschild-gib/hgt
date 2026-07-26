@@ -81,14 +81,14 @@ theorem detuned_magnitude {a L : ℝ} (hL : 0 < L) :
   exact div_pos hnum hden
 
 /-- **The detection inequality.**  Negativity occurs once `e^{aL}` exceeds `π²·log θ / L`. -/
-theorem detection_condition {a L T : ℝ} (hL : 0 < L) (hT : 0 < T)
+theorem detection_condition {a L T : ℝ} (hL : 0 < L)
     (hdet : π ^ 2 * T / L ≤ Real.exp (a * L)) :
     π ^ 2 * T ≤ L * Real.exp (a * L) := by
   rw [div_le_iff₀ hL] at hdet
   linarith
 
 /-- **The cost identity.**  With `L = log T / a` the number of primes is `e^L = T^{1/a}`. -/
-theorem detection_cost {a T : ℝ} (ha : 0 < a) (hT : 0 < T) :
+theorem detection_cost {a T : ℝ} (hT : 0 < T) :
     Real.exp (Real.log T / a) = T ^ (1 / a) := by
   rw [Real.rpow_def_of_pos hT]
   congr 1

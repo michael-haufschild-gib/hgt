@@ -215,6 +215,34 @@ theorem lintegral_Icc_four_ofReal_mul_eq
   simp_rw [lintegral_mul_const _ (hmA' _)]
   rw [lintegral_mul_const _ hmAint]
 
+/-- Four-dimensional sup-norm cube has its expected elementary volume. -/
+theorem volume_fin_four_normCube
+    {R : ℝ} (hR : 0 ≤ R) :
+    volume {x : Fin 4 → ℝ | ‖x‖ ≤ R} =
+      ENNReal.ofReal ((2 * R) ^ (4 : ℕ)) := by
+  have hset :
+      {x : Fin 4 → ℝ | ‖x‖ ≤ R} =
+        Set.Icc (fun _ : Fin 4 => -R) (fun _ : Fin 4 => R) := by
+    ext x
+    simp only [Set.mem_setOf_eq, Set.mem_Icc]
+    rw [pi_norm_le_iff_of_nonneg hR]
+    constructor
+    · intro h
+      constructor <;> intro i
+      · have hi := h i
+        rw [Real.norm_eq_abs, abs_le] at hi
+        exact hi.1
+      · have hi := h i
+        rw [Real.norm_eq_abs, abs_le] at hi
+        exact hi.2
+    · rintro ⟨hl, hu⟩ i
+      rw [Real.norm_eq_abs, abs_le]
+      exact ⟨hl i, hu i⟩
+  rw [hset, Real.volume_Icc_pi, Fin.prod_univ_four]
+  rw [show R - -R = 2 * R by ring,
+    ENNReal.ofReal_pow (mul_nonneg (by norm_num) hR)]
+  ring
+
 end
 
 end RHTower

@@ -16,6 +16,14 @@ Dirichlet series with a functional equation of degree `d`; there the frequency d
 
 Everything here is unconditional and exact: no asymptotic estimate is used, only the exact
 evaluation of `∫ exp(i·0·t) dt` on the diagonal.
+
+Relation to `GaloisForLFunctions.RHTower.WeylEquidistribution.trig_time_average`, which gives the
+`T → ∞` Cesàro limit of the same phase sum, namely `∑_{θ_i = 0} c_i`.  That statement is the
+asymptotic diagonal extraction; what is proved here is the **exact identity at finite interval
+length** together with error bounds that are uniform in the interval and its position
+(`oscInt_norm_le`, `genPoly_meanValue_error`, `genPoly_meanValue_error_of_gap`).  The uniform bounds
+are what a quantitative statement about the required averaging length needs, and they do not follow
+from the limit form.
 -/
 
 open Finset Complex

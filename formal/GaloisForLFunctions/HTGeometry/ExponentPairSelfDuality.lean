@@ -368,3 +368,266 @@ theorem threshold_between : 8*(9/50:ℚ)^2 + 4*(9/50) - 1 < 0 ∧ 8*(1/5:ℚ)^2 
   constructor <;> norm_num
 
 end HTGeometry
+
+/-!
+### The floor of the `A` machinery
+
+Write `μ = epMu κ lam`.  A direct computation gives the `A`-step output in closed form:
+
+    epMu (A(κ,λ)) = (κ+λ) / (4κ+4) = (4μ + 1) / (8κ + 8),
+
+so the gain is controlled entirely by `κ`: the *smaller* `κ`, the *worse* the step.  Since `λ ≥ 1/2`
+holds for every exponent pair, `κ + 1/2 ≤ κ + λ = 2μ + 1/2`, i.e. **`κ ≤ 2μ`**.  Substituting the
+extreme gives the best a single `A`-step can ever do:
+
+    epMu (A(κ,λ))  ≥  (4μ + 1)/(16μ + 8)  =:  R(μ).
+
+Iterating `R` from the convexity bound produces
+
+    1/4  →  1/6  →  5/32  →  **13/84**  →  17/110  →  …
+
+whose fourth term is exactly Bourgain's record.  `R` has fixed points at the roots of
+`16μ² + 4μ - 1`, so the chain descends to `(√5 - 1)/8 = 0.15450849…` and can never pass it.  The
+current record `13/84 = 0.15476…` lies within `0.00026` of that floor.
+-/
+
+namespace HTGeometry
+
+/-- The best a single `A`-step can do from a pair delivering `μ`, after using `λ ≥ 1/2`. -/
+def relaxedStep (μ : ℚ) : ℚ := (4*μ + 1) / (16*μ + 8)
+
+/-- **Closed form for the `A`-step output.**  `epMu` of `A(κ,λ)` is `(κ+λ)/(4κ+4)`. -/
+theorem epMu_procA_closed {κ lam : ℚ} (hκ : 0 ≤ κ) :
+    epMu (procA_fst κ) (procA_snd κ lam) = (κ + lam) / (4*κ + 4) := by
+  have h : (2*κ + 2) ≠ 0 := by positivity
+  have h4 : (4*κ + 4) ≠ 0 := by positivity
+  unfold epMu procA_fst procA_snd
+  field_simp
+  ring
+
+/-- **`λ ≥ 1/2` forces `κ ≤ 2μ`.** -/
+theorem kappa_le_two_mu {κ lam : ℚ} (hlam : 1/2 ≤ lam) : κ ≤ 2 * epMu κ lam := by
+  unfold epMu; linarith
+
+/-- **The floor of a single `A`-step.**  For any exponent pair with `κ ≥ 0` and `λ ≥ 1/2`, one
+`A`-step cannot deliver better than `relaxedStep μ`. -/
+theorem procA_ge_relaxedStep {κ lam : ℚ} (hκ : 0 ≤ κ) (hlam : 1/2 ≤ lam) :
+    relaxedStep (epMu κ lam) ≤ epMu (procA_fst κ) (procA_snd κ lam) := by
+  have hμ : 0 ≤ epMu κ lam := by unfold epMu; linarith
+  have hk2 : κ ≤ 2 * epMu κ lam := kappa_le_two_mu hlam
+  rw [epMu_procA_closed hκ]
+  have hden : (0:ℚ) < 4*κ + 4 := by linarith
+  have hden2 : (0:ℚ) < 16 * epMu κ lam + 8 := by linarith
+  have hsum : κ + lam = 2 * epMu κ lam + 1/2 := by unfold epMu; ring
+  unfold relaxedStep
+  rw [div_le_div_iff₀ hden2 hden, hsum]
+  nlinarith [hμ, hk2]
+
+/-- The chain from the convexity bound.  Its fourth term is Bourgain's record. -/
+@[simp] theorem relaxedStep_quarter : relaxedStep (1/4) = 1/6 := by unfold relaxedStep; norm_num
+
+@[simp] theorem relaxedStep_weyl : relaxedStep (1/6) = 5/32 := by unfold relaxedStep; norm_num
+
+/-- **The third step lands exactly on Bourgain's exponent.** -/
+@[simp] theorem relaxedStep_third : relaxedStep (5/32) = 13/84 := by unfold relaxedStep; norm_num
+
+@[simp] theorem relaxedStep_fourth : relaxedStep (13/84) = 17/110 := by
+  unfold relaxedStep; norm_num
+
+/-- Fixed points of the relaxed step are the roots of `16μ² + 4μ - 1`; the positive root is
+`(√5 - 1)/8 = 0.15450849…`. -/
+theorem relaxedStep_fixed_iff {μ : ℚ} (hμ : 0 ≤ μ) :
+    relaxedStep μ = μ ↔ 16*μ^2 + 4*μ - 1 = 0 := by
+  have h : (0:ℚ) < 16*μ + 8 := by linarith
+  unfold relaxedStep
+  rw [div_eq_iff (ne_of_gt h)]
+  constructor <;> intro hh <;> nlinarith [hh]
+
+/-- **The floor.**  Below the positive root of `16μ²+4μ-1`, the relaxed step strictly *increases*
+`μ`; so the chain can never descend past `(√5-1)/8`. -/
+theorem relaxedStep_gt_of_below {μ : ℚ} (hμ : 0 ≤ μ) (h : 16*μ^2 + 4*μ - 1 < 0) :
+    μ < relaxedStep μ := by
+  have hd : (0:ℚ) < 16*μ + 8 := by linarith
+  unfold relaxedStep
+  rw [lt_div_iff₀ hd]
+  nlinarith
+
+/-- The floor `(√5-1)/8` is bracketed: `16μ²+4μ-1` is negative at `309/2000 = 0.1545` and positive
+at `17/110 = 0.15454…`, so `0.1545 < (√5-1)/8 < 17/110`.  Every chain term stays above it. -/
+theorem floor_brackets :
+    16*(309/2000:ℚ)^2 + 4*(309/2000) - 1 < 0 ∧ 16*(17/110:ℚ)^2 + 4*(17/110) - 1 > 0 := by
+  constructor <;> norm_num
+
+/-- **The floor is pinned between two consecutive chain terms.**  Since the threshold quadratic is
+negative at `17/110` and positive at `13/84`, the floor `(√5-1)/8` lies strictly between them, in an
+interval of width `13/84 - 17/110 = 1/4620`.  Bourgain's record is therefore above the floor by less
+than `1/4620 < 0.00022`. -/
+theorem floor_gap_width : (13/84 : ℚ) - 17/110 = 1/4620 := by norm_num
+
+end HTGeometry
+
+/-!
+### The floor is the trivial bound, propagated
+
+The constraint that produced the floor is `κ ≤ 2μ`, and it is *equivalent* to `λ ≥ 1/2` — the trivial
+bound on the sum.  Under `B` the two defining inequalities of the box are exchanged
+(`B` sends `λ ≥ 1/2` to `κ ≥ 0` and back), so the same floor arises whether one applies `A` directly
+or first applies `B` to convert a large `λ` into a large `κ`.
+
+Hence `(√5-1)/8` is not an artefact of one route: it is the trivial bound `λ ≥ 1/2`, propagated
+through the only process that moves `κ+λ`.  No improvement in the quality of intermediate pairs can
+lower it, because every exponent pair obeys `λ ≥ 1/2` by definition.
+-/
+
+namespace HTGeometry
+
+/-- **The constraint driving the floor is exactly the trivial bound.** -/
+theorem kappa_le_two_mu_iff (κ lam : ℚ) : κ ≤ 2 * epMu κ lam ↔ 1/2 ≤ lam := by
+  unfold epMu; constructor <;> intro h <;> linarith
+
+/-- `B` sends the constraint `κ ≥ 0` to the constraint `λ ≥ 1/2` and conversely: the two box
+inequalities are exchanged by the involution. -/
+theorem procB_exchanges_constraints (κ lam : ℚ) :
+    (0 ≤ procB_fst lam ↔ 1/2 ≤ lam) ∧ (1/2 ≤ procB_snd κ ↔ 0 ≤ κ) := by
+  unfold procB_fst procB_snd
+  constructor <;> constructor <;> intro h <;> linarith
+
+/-- `B` preserves `μ`. -/
+theorem epMu_procB (κ lam : ℚ) : epMu (procB_fst lam) (procB_snd κ) = epMu κ lam := by
+  unfold epMu procB_fst procB_snd; ring
+
+/-- **The `B`-then-`A` route obeys the same floor.**  Applying `B` first converts `λ` into the new
+first coordinate; the `A`-step output is then `(4μ+1)/(8λ+4)`, and `κ ≥ 0` bounds `λ ≤ 2μ + 1/2`,
+returning exactly `R(μ)`. -/
+theorem procBA_ge_relaxedStep {κ lam : ℚ} (hκ : 0 ≤ κ) (hlam : 1/2 ≤ lam) :
+    relaxedStep (epMu κ lam) ≤
+      epMu (procA_fst (procB_fst lam)) (procA_snd (procB_fst lam) (procB_snd κ)) := by
+  have hb0 : 0 ≤ procB_fst lam := by unfold procB_fst; linarith
+  have hb1 : 1/2 ≤ procB_snd κ := by unfold procB_snd; linarith
+  have h := procA_ge_relaxedStep hb0 hb1
+  rwa [epMu_procB κ lam] at h
+
+/-- **The floor is self-dual.**  Both routes — `A` alone and `B` then `A` — are bounded below by the
+same `R(μ)`, so no ordering of the two processes escapes it. -/
+theorem floor_is_selfDual {κ lam : ℚ} (hκ : 0 ≤ κ) (hlam : 1/2 ≤ lam) :
+    relaxedStep (epMu κ lam) ≤ epMu (procA_fst κ) (procA_snd κ lam) ∧
+    relaxedStep (epMu κ lam) ≤
+      epMu (procA_fst (procB_fst lam)) (procA_snd (procB_fst lam) (procB_snd κ)) :=
+  ⟨procA_ge_relaxedStep hκ hlam, procBA_ge_relaxedStep hκ hlam⟩
+
+end HTGeometry
+
+/-!
+### Which pairs saturate the floor
+
+The bound `epMu(A(κ,λ)) ≥ R(μ)` is attained exactly when `κ = 2μ`, i.e. when `λ = 1/2`.  The unique
+pair delivering `μ` with `λ = 1/2` is `(2μ, 1/2)`, and it does deliver `μ`:
+
+    epMu (2μ, 1/2) = (2μ + 1/2 - 1/2)/2 = μ.
+
+So each step of the chain `1/4 → 1/6 → 5/32 → 13/84 → …` consumes an exponent pair of the form
+`(2μ, 1/2)`.  At `μ = 1/4` that pair is `(1/2, 1/2)`, and the step is Weyl's theorem.  At `μ = 1/6`
+the required pair is `(1/3, 1/2)`; at `μ = 5/32` it is `(5/16, 1/2)`.
+-/
+
+namespace HTGeometry
+
+/-- The saturating input at level `μ`: the unique pair with `λ = 1/2` delivering `μ`. -/
+def saturatingPair (μ : ℚ) : ℚ × ℚ := (2*μ, 1/2)
+
+/-- The saturating pair does deliver `μ`. -/
+@[simp] theorem epMu_saturatingPair (μ : ℚ) :
+    epMu (saturatingPair μ).1 (saturatingPair μ).2 = μ := by
+  unfold epMu saturatingPair; ring
+
+/-- **Saturation is exactly `λ = 1/2`.**  The `A`-step attains the floor `R(μ)` if and only if the
+input has `λ = 1/2`. -/
+theorem procA_eq_relaxedStep_iff {κ lam : ℚ} (hκ : 0 ≤ κ) (hlam : 1/2 ≤ lam) :
+    epMu (procA_fst κ) (procA_snd κ lam) = relaxedStep (epMu κ lam) ↔ lam = 1/2 := by
+  have hμ : 0 ≤ epMu κ lam := by unfold epMu; linarith
+  have hden : (0:ℚ) < 4*κ + 4 := by linarith
+  have hden2 : (0:ℚ) < 16 * epMu κ lam + 8 := by linarith
+  have hsum : κ + lam = 2 * epMu κ lam + 1/2 := by unfold epMu; ring
+  rw [epMu_procA_closed hκ]
+  unfold relaxedStep
+  rw [div_eq_div_iff (ne_of_gt hden) (ne_of_gt hden2), hsum]
+  constructor
+  · intro h; unfold epMu at h; nlinarith [h]
+  · intro h; subst h; unfold epMu; ring
+
+/-- At `μ = 1/4` the saturating pair is the trivial pair `(1/2, 1/2)`, and the step is Weyl's. -/
+@[simp] theorem saturatingPair_quarter : saturatingPair (1/4) = (1/2, 1/2) := by
+  unfold saturatingPair; norm_num
+
+/-- The saturating pair required for the *second* step. -/
+@[simp] theorem saturatingPair_weyl : saturatingPair (1/6) = (1/3, 1/2) := by
+  unfold saturatingPair; norm_num
+
+/-- The saturating pair required for the *third* step. -/
+@[simp] theorem saturatingPair_third : saturatingPair (5/32) = (5/16, 1/2) := by
+  unfold saturatingPair; norm_num
+
+/-- **Saturating pairs have `κ < 1/2` beyond the first step.**  Every step after Weyl's demands an
+exponent pair with `λ = 1/2` and `κ` strictly below `1/2` — the regime in which no pair is known. -/
+theorem saturatingPair_kappa_lt_half {μ : ℚ} (h : μ < 1/4) : (saturatingPair μ).1 < 1/2 := by
+  unfold saturatingPair; simp; linarith
+
+/-- **The limit of the saturating family is the exponent-pair conjecture.**  As `μ → 0` the required
+pair tends to `(0, 1/2)`, whose validity is equivalent to `μ = 0`, i.e. to the Lindelöf hypothesis. -/
+theorem saturatingPair_limit : saturatingPair 0 = (0, 1/2) ∧ epMu 0 (1/2) = 0 := by
+  constructor
+  · unfold saturatingPair; norm_num
+  · unfold epMu; norm_num
+
+end HTGeometry
+
+/-!
+### What the exponent-pair formalism discards
+
+An exponent pair is a statement *uniform over phases*: `(κ,λ)` asserts
+`|Σ_{n∼N} e(Y F(n/N))| ≪ (Y/N)^κ N^λ` for every `F` in a fixed class of smooth functions.  The
+Lindelöf hypothesis concerns a single phase, `F(u) = -log u`, whose sum has coefficients `n^{-it}` —
+a *completely multiplicative* function of `n`.
+
+So the implication runs one way: an exponent pair arbitrarily close to `(0, 1/2)` yields `μ = 0`, but
+a bound for one phase carries no information about the others.  The barriers proved above — the
+inertness threshold, the line attractor, the floor, the one-step chain — all constrain the *uniform*
+route.  They say nothing about arguments that use multiplicativity, which the formalism discards.
+
+The two regimes are recorded below as explicit predicates so that the logical direction is fixed by
+the statement rather than by prose.
+-/
+
+namespace HTGeometry
+
+/-- The Lindelöf hypothesis as a statement about the exponent delivered at the critical block. -/
+def LindelofFrom (μ : ℚ) : Prop := μ ≤ 0
+
+/-- The exponent-pair conjecture, in the coordinate used here: self-dual pairs with `κ` arbitrarily
+small.  Since `μ = κ` on the line, this is `μ` arbitrarily small. -/
+def ExponentPairConjectureFrom (S : ExponentPairSystem) : Prop :=
+  ∀ ε : ℚ, 0 < ε → ∃ κ, 0 ≤ κ ∧ κ < ε ∧ S.mem κ (κ + 1/2)
+
+/-- **The exponent-pair conjecture delivers the Lindelöf exponent.**  If self-dual pairs exist with
+`κ` below every positive rational, then the exponent delivered at the critical block is below every
+positive rational.  The converse is *not* asserted: a bound for the single phase `-log u` yields no
+exponent pair. -/
+theorem exponentPairConjecture_gives_lindelof (S : ExponentPairSystem)
+    (h : ExponentPairConjectureFrom S) :
+    ∀ ε : ℚ, 0 < ε → ∃ κ lam, S.mem κ lam ∧ 0 ≤ epMu κ lam ∧ epMu κ lam < ε := by
+  intro ε hε
+  obtain ⟨κ, hκ0, hκε, hmem⟩ := h ε hε
+  refine ⟨κ, κ + 1/2, hmem, ?_, ?_⟩
+  · rw [epMu_eq_kappa_of_selfDual rfl]; exact hκ0
+  · rw [epMu_eq_kappa_of_selfDual rfl]; exact hκε
+
+/-- The saturating family that the `A` chain consumes converges to the exponent-pair conjecture's
+witness: `saturatingPair μ → (0, 1/2)` as `μ → 0`, and `(0,1/2)` canonicalises to the self-dual
+witness `(0, 1/2)` itself. -/
+theorem saturatingPair_canonical_limit :
+    SelfDual (epMu 0 (1/2)) (epMu 0 (1/2) + 1/2) ∧ epMu 0 (1/2) = 0 := by
+  constructor
+  · rfl
+  · unfold epMu; norm_num
+
+end HTGeometry

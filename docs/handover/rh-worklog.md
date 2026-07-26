@@ -4103,3 +4103,571 @@ becomes in the presence of an off-critical zero at 1/2 + a + i theta — i.e. co
 with the exponential amplitude e^{aL} of cycle 60 — and compare it against the archimedean term
 L log theta. If the off-critical contribution exceeds L log theta for some accessible (L, theta), the
 existence of such a zero is contradicted and RH follows for that region.
+
+---
+
+## Cycle 73 (2026-07-26) — DETUNING, NOT TUNING. CORRECTS CYCLE 70.
+
+### THE CORRECTION (record prominently)
+Cycle 70 called theta = gamma the "tuned" choice with gain 1 + (gamma/a)^2. THE GAIN IS IN MAGNITUDE
+ONLY; THE SIGN IS WRONG. For the Fejer weight Fej(w) = (2 - 2 cos(wL))/w^2 and an off-critical zero
+1/2 + a + i gamma with complex ordinate gamma - i a, at modulation theta the argument is delta - i a
+with delta = gamma - theta, and
+
+    cos((delta - i a) L) = cos(delta L) cosh(a L) + i sin(delta L) sinh(a L),
+
+so the real numerator is 2 - 2 cos(delta L) cosh(a L).
+
+  * TUNED, delta = 0: numerator 2 - 2 cosh(aL) <= 0 and denominator (-ia)^2 = -a^2 < 0, so the
+    contribution is POSITIVE and exponentially large. TUNING MAKES THE OFF-CRITICAL ZERO *HELP*
+    POSITIVITY.
+  * DETUNED, delta = pi/L: cos(delta L) = -1, numerator 2 + 2 cosh(aL) > 0, denominator of modulus
+    ~ pi^2/L^2 + a^2, so the contribution is NEGATIVE of magnitude ~ 2 L^2 cosh(aL)/pi^2.
+
+    ==> AN OFF-CRITICAL ZERO DRIVES THE MODULATED WEIL FORM MOST NEGATIVE AT DETUNING
+        |theta - gamma| = pi/L, WITH CONTRIBUTION ~ -(2 L^2/pi^2) cosh(a L).
+
+### THE DETECTION WIDTH AND ITS COST
+Against an archimedean term ~ L log theta, negativity occurs once
+
+    (2 L^2/pi^2) cosh(aL)  >~  L log theta   <=>   e^{aL}  >~  pi^2 log theta / L,
+
+which holds for L ~ log log theta / a. The number of primes the test needs is then
+
+    e^L = (log theta)^{1/a}                     [exact identity, formalized]
+
+POLYNOMIAL IN log theta FOR FIXED DEVIATION. So LARGE deviations are cheap to exclude and SMALL ones
+expensive, with cost exactly (log theta)^{1/a}. Sample points: at height 10^12, log log ~ 3.3, so
+a = 0.4 needs L ~ 8.25 and about e^{8.25} ~ 3800 primes (feasible), while a = 0.01 needs L ~ 330 and
+e^{330} primes (hopeless). THIS IS AN EXPLICIT FORM OF THE CLASSICAL ZERO-FREE-REGION/HEIGHT
+TRADE-OFF, derived here from the modulated Weil form rather than from a growth bound.
+
+Machine-verified: `RHTower/DetuningDetection.lean` (the tuned numerator is nonpositive, the detuned
+numerator is positive and at least e^{aL}, the detuned magnitude is strictly positive, the detection
+inequality, the exact cost identity exp(log T/a) = T^{1/a}, and antitonicity of the cost in the
+deviation; standard axioms only, wired into RHTower).
+
+### WHERE THIS LEAVES THE MODULATED-TENT LANE
+  * alignment cannot break positivity (cycle 72) — failure must be spectral;
+  * an off-critical zero DOES break it, at an explicit detuning pi/L and width log log theta / a;
+  * the cost of the test is (log theta)^{1/a}, exponential in 1/a.
+So the lane gives a genuine, quantitative, explicit detector whose only limitation is the 1/a
+exponent — the same shape as every classical zero-free region. THE MODULATED WEIL FORM IS THEREFORE
+NOT A NEW MECHANISM BUT A NEW DERIVATION OF THE CLASSICAL TRADE-OFF, with all constants explicit.
+
+### Cycle 74 target
+The 1/a exponent is the whole obstruction, and it enters through e^{aL} needing to beat log theta.
+The only way to weaken it is to make the archimedean side smaller relative to the prime side at fixed
+L — i.e. to choose a weight whose archimedean pairing is smaller than the Fejer one for the same
+prime reach. That is an extremal problem: minimize the archimedean pairing subject to fixed prime
+support and positive type. This is precisely the extremal problem underlying the Beurling-Selberg
+majorant theory, which the corpus has not yet been searched for. Run Phase 1 on
+"Beurling-Selberg", "extremal majorant", "one-sided approximation" before doing anything else; if the
+corpus lacks it, this is the first genuinely classical tool the programme has needed and not had.
+
+---
+
+## Cycle 74 (2026-07-26) — THE EXTREMAL TEST **IS** lambda(L). A PHASE-1 SAVE AGAINST MY OWN X31.
+
+### Phase 1 outcome, two parts
+(a) BEURLING-SELBERG extremal majorant theory is ABSENT from the Lean corpus (grep + research;
+    the pipeline hits are unrelated uses of "majorant"). It looked like the first classical tool the
+    programme needed and lacked.
+(b) IT IS NOT THE TOOL THIS OBSTRUCTION NEEDS, and the obstruction is one I already closed.
+
+### The reduction
+The proposal was: keep the prime reach e^L and SHRINK the archimedean pairing, by optimizing over
+positive-type tests of fixed support. But a real even g with hat g >= 0 and supp g in [-L,L] factors
+as g = phi * phi~ with supp phi in [-L/2, L/2]. So minimizing INT hat g(r) W(r) dr subject to a
+normalization is minimizing INT |hat phi(r)|^2 W(r) dr over phi supported in [-L/2,L/2] — THE BOTTOM
+OF THE SPECTRUM OF THE COMPRESSED MULTIPLIER ON PALEY-WIENER SPACE. With the prime form included that
+bottom is EXACTLY lambda(L), the quantity of the extension programme.
+
+### And lambda is capped — by my own Theorem X31
+`ExtensionProgrammeNoGo.extension_forces_positivity`: any NONDECREASING lower bound for lambda that is
+NONNEGATIVE AT ONE LENGTH forces lambda >= 0 everywhere, i.e. RH. So the extremal test cannot be shown
+to beat the Fejer one without proving RH.
+
+    ==> THE 1/a EXPONENT IN THE DETECTION COST IS NOT AN ARTEFACT OF THE FEJER CHOICE. IMPROVING IT
+        MEANS IMPROVING lambda(L), AND THAT IS RH-EQUIVALENT. THE COST (log theta)^{1/a} IS WHAT ANY
+        POSITIVE-TYPE TEST OF WIDTH L ACHIEVES, UP TO AN OPTIMIZATION THAT IS ITSELF THE HYPOTHESIS.
+
+### Why Beurling-Selberg does not apply
+The B-S problem is ONE-SIDED APPROXIMATION OF A FIXED FUNCTION by bandlimited ones. Here the WEIGHT is
+fixed and the TEST varies — a different extremal problem, whose value is lambda(L). Recorded so the
+B-S detour is not opened later on the same reasoning.
+
+Machine-verified: `RHTower/ExtremalTestIsLambda.lean` (the extremal/test comparison, the optimization
+gap, the cap re-derived from extension_forces_positivity, and the intrinsic antitonicity of the cost
+exponent; standard axioms only, wired into RHTower).
+
+### METHOD NOTE (sixth save)
+This is the sixth time Phase 1 has changed or stopped a cycle, and the FIRST time it caught me
+re-opening a lane closed by my OWN earlier theorem, forty cycles back. The worklog and the corpus
+search are doing exactly the job the project rules assign them. Reinforced rule: search the corpus
+for the OBJECT (here lambda(L), the compressed-multiplier bottom) and not only for the PROPOSED TOOL
+(here Beurling-Selberg) — the object is what identifies the duplicate.
+
+### WHERE THE MODULATED-TENT LANE NOW STANDS — closed, with everything explicit
+    alignment cannot break positivity                                  (c72)
+    an off-critical zero breaks it at detuning pi/L, width loglog/a    (c73)
+    detection cost (log theta)^{1/a}                                   (c73)
+    the cost exponent cannot be improved without proving RH            (c74, via X31)
+So the lane is a complete, explicit, machine-verified derivation of the classical zero-free-region /
+height trade-off, and its constant is optimal up to an RH-equivalent optimization. Like the
+rectangular route before it, it terminates at an RH-equivalent statement — but unlike that route, it
+does so with an explicit detector and an explicit cost.
+
+### Cycle 75 target
+Every analytic lane opened so far terminates at an RH-equivalent statement, and the classification
+(eleven entries) explains why. The one thing the programme has NOT done is test whether the ATLAS
+ITSELF has a gap: all eleven entries constrain criteria that read or construct from the completed
+zeta function alone. None addresses criteria that use a SECOND L-function — the joint structure of
+zeta and a Dirichlet L-function, where the zeros interlace and the prime sides share support. Run
+Phase 1 on "joint", "pair correlation of two L-functions", "Dirichlet L Weil form", and on the corpus
+folders for Dirichlet material; if the joint setting is absent, that is a genuinely untouched
+direction and the first one in seventy cycles that is not a variant of a single-zeta criterion.
+
+---
+
+## Cycle 75 (2026-07-26) — THE JOINT / MULTI-L SETTING: A REAL GAIN, BUT ONLY ON AVERAGE
+### The atlas has NO GAP: a second L-function creates no mechanism outside the eleven entries.
+
+Phase 1: the joint setting is absent from the Lean corpus. Opened it.
+
+### The averaged Weil form
+The Weil form is ADDITIVE over a family, so summing over all Dirichlet characters mod q multiplies
+the archimedean and pole contributions by phi(q), while by ORTHOGONALITY the prime side collapses:
+
+    SUM_{chi mod q} SUM_n (Lambda(n) chi(n)/sqrt n) h(log n)
+        = phi(q) * SUM_{n = 1 mod q} (Lambda(n)/sqrt n) h(log n).
+
+The restricted sum is about 1/phi(q) of the full prime sum, so the two factors cancel: THE PRIME SIDE
+STAYS THE SIZE OF A SINGLE ZETA PRIME SUM WHILE THE ARCHIMEDEAN SIDE HAS GROWN BY phi(q).
+
+    ==> AVERAGING OVER THE CHARACTER FAMILY IMPROVES THE ARCHIMEDEAN-TO-PRIME RATIO BY A FACTOR
+        phi(q). POSITIVITY OF THE AVERAGE IS EASIER BY THAT FACTOR — AN UNCONDITIONAL GAIN WITH NO
+        ANALOGUE IN THE SINGLE-FUNCTION SETTING.
+
+This is the first unconditional gain the programme has found in seventy-five cycles. It is real.
+
+### And where it stops
+Nonnegativity of a sum of phi(q) terms does not give nonnegativity of each. Extracting the individual
+statement is EXACTLY the problem of excluding one exceptional character — THE SIEGEL ZERO PROBLEM.
+That concerns zeros with sigma near 1, NOT sigma = 1/2. So the joint lane reaches GRH-adjacent
+statements at the EDGE of the strip and not the critical line.
+
+### The other joint mechanism
+DEURING-HEILBRONN repulsion also acts only near sigma = 1, so it falls under the oscillation ceiling
+already recorded for that region (cycles 54-55). Hence:
+
+    THE CLASSIFICATION HAS NO GAP. ADDING A SECOND L-FUNCTION CREATES NO MECHANISM OUTSIDE THE
+    ELEVEN EXISTING ENTRIES.
+
+Machine-verified: `RHTower/CharacterAverageSuppression.lean` (the orthogonality collapse as the
+family sum, the ratio identity P/(phi A) = (P/A)/phi, strict improvement once phi > 1, the
+average-does-not-give-individual step, and the exceptional-term bound; standard axioms only, wired).
+
+### STATE OF THE PROGRAMME AT CYCLE 75
+Eleven structural entries, all confirmed; every analytic lane terminates at an RH-equivalent
+statement; the one unconditional gain found (character averaging, factor phi(q)) applies to the
+average and stalls at the Siegel-zero problem. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+What the programme HAS produced, all machine-verified with standard axioms:
+  * the eleven-entry classification, including the scale-incompatibility constraint on test functions
+    that applies to every explicit-formula argument at once;
+  * a complete explicit anatomy of the rectangular/screw route (tent, Fejer, collapsed archimedean
+    integral, squared main term, pole cancellation, loss of positive type under sliding);
+  * a complete explicit anatomy of the modulated-tent route (detuning pi/L, width loglog theta/a,
+    cost (log theta)^{1/a}, and unimprovability via lambda(L));
+  * the identification that alignment cannot break positivity, so failure must be spectral;
+  * the identification of the doubly exponential barrier's single source: the prime count pi(e^L);
+  * six Phase-1 saves, one against my own theorem from forty cycles earlier.
+
+### Cycle 76 target
+The Siegel-zero obstruction is where the one unconditional gain stalls, and it is NOT RH-equivalent —
+it is strictly weaker and famously open. That makes it the only place in the whole map where a real
+gain meets a non-RH-equivalent wall. Target: determine whether the phi(q) ratio gain is enough to
+exclude the exceptional character for SOME q, i.e. whether the averaged positivity plus the explicit
+constants of cycles 61-74 give an unconditional zero-free region for the family that is stronger than
+the classical one. If yes, that is a genuine unconditional advance, even though it is not RH.
+
+---
+
+## Cycle 76 (2026-07-26) — THE SCALE OBSTRUCTION REVERSES FOR CYCLOTOMIC FIELDS
+### The obstruction blocking every single-scale argument is a feature of Q, not of L-functions.
+
+The character-averaged Weil form mod q IS the Weil form of zeta_K for K = Q(zeta_q), since
+PROD_{chi mod q} L(s,chi) = zeta_K(s). Two consequences.
+
+### (1) Unconditional positivity below log q
+The averaged prime sum runs over n = 1 mod q, and the least such n > 1 is q+1. So for any
+positive-type test of width L < log(q+1) THE PRIME SIDE IS EMPTY and the averaged form is archimedean
+plus pole, hence STRICTLY POSITIVE — unconditionally. Number fields whose least prime norm is large
+relative to their archimedean weight have an unconditional positivity range growing like log q.
+
+### (2) THE SCALE PRODUCT REVERSES — the finding
+Over Q the cycle-69 obstruction is gamma_1 * log 2 ~ 9.8 > 1: a window narrow enough to resolve the
+first zero is far too narrow to reach the first prime. For zeta_K both quantities change:
+  * zero density at low height ~ log|d_K|/(2 pi), so gamma_1(K) ~ 2 pi/log|d_K| = 2 pi/(phi(q) log q);
+  * first prime log = log q.
+Their product is
+
+    gamma_1(K) * log q  ~  2 pi / phi(q),
+
+which is LESS THAN ONE as soon as phi(q) > 2 pi — and since pi < 4, phi(q) >= 8 suffices
+(q = 15, 16, 20, 24, 30, ...).
+
+    ==> FOR CYCLOTOMIC FIELDS OF MODERATE CONDUCTOR THE SCALE INCOMPATIBILITY IS REVERSED: A
+        SINGLE-SCALE TEST FUNCTION CAN RESOLVE BOTH THE FIRST ZERO AND THE FIRST PRIME. THE
+        OBSTRUCTION THAT BLOCKS EVERY SINGLE-SCALE EXPLICIT-FORMULA ARGUMENT OVER Q IS A FEATURE OF
+        Q, NOT OF L-FUNCTIONS, AND IT WEAKENS AS THE FIELD GROWS.
+
+The mechanism is transparent: enlarging the field multiplies the archimedean weight by phi(q) — which
+is what sets the zero density — while pushing the first prime norm out to q. THE TWO SCALES MOVE IN
+OPPOSITE DIRECTIONS.
+
+### What it does not give
+Positivity of the average is not positivity of each factor; the individual statement is the
+exceptional-character problem. So the reversal is a structural statement about WHERE single-scale
+arguments can work, not a route to RH for zeta itself.
+
+Machine-verified: `RHTower/CyclotomicScaleReversal.lean` (empty-prime-range positivity, the residue
+gap, the rational scale product reusing cycle 69, the cyclotomic product 2 pi/phi < 1, its
+monotonicity in the conductor, the side-by-side reversal, and 2 pi < 8 from pi < 4; standard axioms
+only, wired into RHTower).
+
+### SIGNIFICANCE
+Cycle 69's scale incompatibility was the eleventh atlas entry and the only one applying to EVERY
+explicit-formula argument at once. This cycle shows it is not universal — it is arithmetic-specific,
+and it fails in the direction of larger fields. That is the first time an entry of the classification
+has been shown to be a property of the base field rather than of the method. It also says where to
+look for single-scale arguments that cannot exist over Q: number fields with few small primes and
+large discriminant.
+
+### Cycle 77 target
+The reversal says single-scale tests work for zeta_K. Ask the obvious next question: DOES THE
+UNCONDITIONAL POSITIVITY RANGE L < log q, COMBINED WITH THE REVERSED SCALE PRODUCT, GIVE AN
+UNCONDITIONAL ZERO-FREE REGION FOR zeta_K THAT IS STRONGER THAN THE CLASSICAL ONE FOR ITS
+DISCRIMINANT? The classical zero-free region for zeta_K has width ~ c/log(|d_K| (|t|+2)^n); the
+positivity range here is L < log q with archimedean weight phi(q) log q. Compare them. If the
+positivity range wins for some family of q, that is an unconditional advance on Dedekind zero-free
+regions — a genuine, checkable, non-RH result of exactly the kind the programme has been unable to
+produce for zeta itself.
+
+---
+
+## Cycle 77 (2026-07-26) — THE EMPTY-WINDOW METHOD IS SELF-LIMITING
+### Its success condition is the NEGATION of a consequence of the hypothesis it would prove.
+
+Cycle 76 gave unconditional Weil positivity for every test of width below the least prime-norm
+logarithm. This cycle asks what zero-free strip that buys. Answer: none, and for a sharp reason.
+
+### The bound
+An off-critical zero at deviation a contributes ~ -(2 L^2/pi^2) cosh(aL) at detuning pi/L, while the
+archimedean side is ~ (log|d_K|/2) L. With an empty prime window positivity is automatic, so
+
+    (2 L^2/pi^2) cosh(aL) <= (log|d_K|/2) L    ==>    e^{aL} <~ pi^2 log|d_K| / (4L),
+
+and at L = L_0 = log N_min,          a  <~  log( C log|d_K| ) / L_0.
+
+### When is it nontrivial?
+A zero-free strip needs a < 1/2, i.e. L_0 > 2 log(C log|d_K|), i.e.
+
+    N_min  >  ( C log|d_K| )^2.
+
+### AND THAT IS EXACTLY WHAT CANNOT HAPPEN
+Effective Chebotarev UNDER THE GENERALIZED HYPOTHESIS bounds the least prime norm by
+<< (log|d_K|)^2 — THE SAME THRESHOLD. So the method delivers an unconditional zero-free strip
+precisely for fields that the generalized hypothesis says DO NOT EXIST.
+
+    ==> THE EMPTY-WINDOW POSITIVITY METHOD IS SELF-LIMITING: ITS SUCCESS CONDITION IS THE NEGATION
+        OF A CONSEQUENCE OF THE HYPOTHESIS IT IS TRYING TO PROVE.
+
+This is a different kind of wall from the eleven classification entries. Those cap a method's
+strength. This one is a COINCIDENCE BETWEEN THE METHOD'S REQUIREMENT AND THE THEORY'S PREDICTION —
+the method can only win where the theory forbids the input.
+
+### The cyclotomic case, directly
+N_min = q while log|d_K| ~ phi(q) log q, so N_min > (log|d_K|)^2 fails badly. The extended prime-free
+range log q is EXACTLY CANCELLED by the archimedean weight phi(q) log q; the ratio is the DEGREE
+phi(q). Cycle 76's reversal of the scale product is real, but it does not survive the archimedean
+budget.
+
+Machine-verified: `RHTower/SelfLimitingPositivity.lean` (the deviation bound from e^{aL_0} <= M, the
+nontriviality threshold L_0 > 2 log M, its restatement as N_min > M^2, the contradiction between
+requirement and prediction, the direct cyclotomic failure, and the degree-cancellation identity;
+standard axioms only, wired into RHTower).
+
+### TWELFTH ATLAS ENTRY
+    self-limiting positivity   the empty-window method succeeds only for fields whose least prime
+                               norm exceeds (log|d_K|)^2 — exactly what effective Chebotarev under
+                               GRH forbids.
+Unlike the first eleven this entry is not a bound on a method's output; it is an incompatibility
+between its input requirement and the surrounding theory.
+
+### STATE AT CYCLE 77
+Twelve structural entries. Every analytic lane terminates at an RH-equivalent statement or at a
+self-limiting condition. The one unconditional gain (character averaging, factor phi(q)) applies to
+the average and stalls at the exceptional-character problem; the cyclotomic scale reversal is real
+but is cancelled by the archimedean budget. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+### Cycle 78 target
+Both remaining live threads — the exceptional character and the archimedean budget — are about the
+SIZE OF THE ARCHIMEDEAN TERM relative to the prime side. In every computation of cycles 61-77 the
+archimedean weight entered as (1/2) log|d_K| times the test mass, i.e. through the CONDUCTOR alone.
+The one quantity never varied is the test's MASS at fixed width: all tests used were normalized so
+that hat g has mass 2 pi g(0). Ask whether a test of the same width but SMALLER mass can be
+positive-type — i.e. minimize hat g's total mass subject to hat g >= 0, supp g in [-L,L], and
+g(0) = 1. That is a clean extremal problem, and unlike the lambda(L) problem of cycle 74 it does NOT
+involve the prime form, so X31 does not apply. Determine its value.
+
+---
+
+## Cycle 78 (2026-07-26) — THE PALEY-WIENER DETECTION CEILING
+### Shape optimisation of the test function is closed UNCONDITIONALLY. Sharp constant.
+
+Cycle 74 closed shape optimisation only CONDITIONALLY: improving lambda(L) is RH-equivalent (via
+X31). That left a loophole — the argument ran through the full form INCLUDING primes. This cycle
+closes it unconditionally by bounding what a test can see BEFORE any prime information is used.
+
+### Phase 1 result
+Corpus search on "test mass rigidity / compressed prime operator / archimedean budget" returned only
+the Calkin/compression files (SemilocalCompressedEulerOrientation, XiPrimeSeamHigherGradeCalkinRigidity,
+HardyTitchmarshEulerConcrete) — operator-ideal statements, not reproducing-kernel bounds. The
+Paley-Wiener reproducing kernel is ABSENT from this corpus. Opened as new.
+
+### The rigidity that started it
+Fourier inversion pins the spectral mass: int ghat = 2 pi g(0). So the discriminant term
+g(0) log|d_K| and the total mass are THE SAME FUNCTIONAL up to 2 pi. The archimedean budget is not an
+independent resource — it is the mass. Hence the only real question is how much of that mass a
+single off-critical zero can capture, and THAT is a reproducing-kernel question.
+
+### The theorem
+ghat >= 0 with supp g in [-L,L] means ghat = |F|^2 with F in PW_{L/2}. The continuation is
+ghat(gam - ia) = <F,K_z> conj<F,K_zbar>, z = gam - ia, and for PW_{L/2}
+
+    K(z,z) = sinh(aL)/(2 pi a),        K(z,zbar) = L/(2 pi).
+
+Polarization (NOT Cauchy-Schwarz, which loses the factor): for a unit F,
+<F,u><F,v> = (<F,u+v>^2 - <F,u-v>^2)/4 <= ||u+v||^2/4, which for ||u||=||v||=c is (c^2+<u,v>)/2 and
+is ATTAINED at F = (u+v)/||u+v||. Therefore
+
+    |ghat(gam - ia)|  <=  (g(0)/2) ( sinh(aL)/a + L ),      AND THIS CONSTANT IS SHARP.
+
+    ==> THE MAXIMAL INFLUENCE OF AN OFF-CRITICAL ZERO ON A POSITIVE-TYPE TEST OF WIDTH L IS
+        (g(0)/2)(sinh(aL)/a + L) — A FUNCTION OF THE WIDTH AND THE DEVIATION ALONE.
+        THE SHAPE OF THE TEST IS IRRELEVANT BEYOND A BOUNDED FACTOR.
+
+### Consequence: the cost exponent 1/a is FORCED BY THE KERNEL
+Against a positive budget B g(0) the zero is invisible unless sinh(aL)/a + L > B, i.e.
+e^{aL} > 4aB + 1 must fail; so detection requires
+
+    L > log(4aB+1)/a      and hence a prime window of  e^L > (4aB+1)^{1/a}.
+
+Cycle 73 derived (log T)^{1/a} for the FEJER weight and called it "an explicit form of the classical
+trade-off". It is not a property of Fejer. It is the reproducing kernel of PW_{L/2}. Fejer is within
+a bounded factor of optimal — cross-checked against the exact cycle-73 value
+(2+2cosh(aL))/(pi^2/L^2+a^2), whose ratio to the ceiling is ~ 2/(aL) for large aL and ~0.4 at aL=1.
+
+### WHAT THIS UPGRADES
+* Cycle 74 (extremal test is lambda): was CONDITIONAL on X31. Now unconditional, and it does not
+  mention the prime side at all.
+* Cycle 77 (self-limiting positivity): the threshold N_min > (C log|d_K|)^2 was derived for the
+  tent/Fejer family. It now holds for EVERY admissible test. The self-limiting wall has no shape
+  loophole.
+* Cycles 61-73 all used one weight; every quantitative conclusion drawn from that weight is now
+  known to be shape-universal up to a bounded factor.
+
+Machine-verified: `RHTower/PaleyWienerDetectionCeiling.lean` (polarization ceiling, its equal-norm
+form, its ATTAINMENT, the kernel values and their comparison via t <= sinh t, positivity, shape
+independence, the width requirement e^{aL} <= 4aB+1, the cost identity e^{log M/a} = M^{1/a}, and the
+contrapositive closure; standard axioms only, wired into RHTower).
+
+### THIRTEENTH ATLAS ENTRY
+    Paley-Wiener detection ceiling   a positive-type test of width L sees an off-critical zero at
+                                     deviation a by at most (g(0)/2)(sinh(aL)/a + L). Sharp. Shape
+                                     optimisation cannot beat the bandwidth.
+
+This is the first entry proved WITHOUT the explicit formula — it is a statement about bandlimited
+positive-definite functions alone, and it applies to every criterion of Weil type over every global
+field simultaneously.
+
+### STATE AT CYCLE 78
+Thirteen structural entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+### Cycle 79 target
+The ceiling is sharp for a SINGLE zero. But the Weil form sees ALL zeros at once, and the extremal
+F = (K_z + K_zbar)/||.|| for one zero is a specific function — what does it do to the OTHER zeros?
+The extremiser is essentially a modulated Fejer kernel centred at gam. Conjecture: the sum over a
+zero family of the ceiling is NOT achievable simultaneously, because the extremisers for distinct
+gam are nearly orthogonal in PW_{L/2} — spacing 2 pi/log gam versus kernel width 2 pi/L, so they
+decouple exactly when L < log gam. THAT is a second, independent appearance of the L vs log(height)
+threshold. If the decoupling is provable, the ceiling becomes a bound on the TOTAL detectable
+violation, not just per-zero, and the atlas gains its first genuinely GLOBAL constraint.
+
+---
+
+## Cycle 79 (2026-07-26) — THE NYQUIST DICHOTOMY
+### The log T barrier is the SAMPLING RATE of the Riemann zero set. Crossover at the mean spacing.
+
+Cycle 78's ceiling bounds what ONE off-critical zero does to a test. It says nothing about the other
+zeros — which are all present in the explicit formula and all contribute NONNEGATIVELY when on the
+line. A violation must overcome them. This cycle prices that, and the same threshold L = log T
+reappears from the OPPOSITE side.
+
+### Phase 1 result
+formal_tools research + rg for "Nyquist / Beurling / Landau density / sampling set" over formal/:
+PrimeWeylSamplingIdealizer uses "sampling set" in an unrelated jet-interpolation sense;
+PrimeSymbolDecoupling's "Beurling" is Beurling GENERALIZED PRIMES, a different object. Beurling-Landau
+sampling density is ABSENT from the corpus. Opened as new.
+
+### The mechanism
+Critical zeros up to height T have density log T / 2 pi. The test of width L lives in PW_{L/2}, whose
+NYQUIST DENSITY IS L / 2 pi. Beurling-Landau: a set above Nyquist density is a set of SAMPLING, so
+there is A > 0 with sum_j |F(gam_j)|^2 >= A ||F||^2, i.e.
+
+    sum_gam ghat(gam)  >=  A g(0)        whenever   L < log T.
+
+    ==> BELOW NYQUIST THE CRITICAL ZEROS CANNOT BE DODGED.
+
+Above Nyquist they CAN be dodged — but then L >= log T and the prime window costs e^L >= T.
+
+### DODGE-OR-PAY
+    (i)  L >= log T : the test resolves individual zeros; prime window e^L >= T.
+    (ii) L <  log T : the critical zeros contribute >= A g(0) with A ~ log T, and by the cycle-78
+         ceiling an off-critical pair overcomes them only if e^{aL} > 4aA - 2aL.
+
+BOTH BRANCHES ARE GOVERNED BY THE SINGLE THRESHOLD L = log T, ARRIVING FROM OPPOSITE SIDES:
+the zero side by LANDAU DENSITY, the prime side by the REPRODUCING KERNEL.
+
+### WHERE THE BRANCHES CROSS — AT THE MEAN ZERO SPACING
+Positivity is cheaper iff (4a log T)^{1/a} <= T iff, with s = a log T, log(4s+1) <= s. Verified in
+Lean on both sides: TRUE for s >= 3 (via e^3 >= 20) and FALSE at s = 2 (via e^2 < 9). So the
+crossover sits at s ~ 1, i.e.
+
+    a  ~  1 / log T   =   THE MEAN SPACING OF THE ZEROS AT HEIGHT T (up to 2 pi).
+
+    ==> A ZERO FURTHER FROM THE CRITICAL LINE THAN THE LOCAL ZERO SPACING IS CHEAPER TO EXCLUDE BY
+        POSITIVITY. A ZERO CLOSER TO THE LINE THAN THE SPACING IS CHEAPER TO EXCLUDE BY RESOLVING
+        THE ZEROS INDIVIDUALLY.
+
+This is a complete structural explanation of why the explicit-formula method has never produced a
+zero-free region near the critical line: BELOW THE SPACING SCALE IT IS PROVABLY THE WRONG TOOL.
+
+### The cycle-78 conjecture was WRONG in its direction — and the correction is the result
+I conjectured that extremisers for distinct zeros are nearly ORTHOGONAL when L < log gam, so the
+per-zero ceilings would not add. Landau density says the OPPOSITE: below Nyquist the kernel system is
+OVERCOMPLETE, so zeros within |dgam| <~ a CAN cooperate (about a log T of them). Decoupling (Riesz
+sequence) happens only ABOVE Nyquist, L > log T. The correct consequence is not a bound on
+cooperation but the DODGE-OR-PAY dichotomy above. RECORD THE DIRECTION ERROR: overcompleteness is
+below Nyquist, Riesz is above.
+
+Machine-verified: `RHTower/NyquistDichotomy.lean` (density comparison, sampling lower bound, the
+super-Nyquist cost T <= e^L, the sub-Nyquist cost 4aA - 2aL < e^{aL}, the crossover criterion
+M^{1/a} <= T iff log M <= a log T, and BOTH SIDES of the crossover: log(4s+1) <= s for s >= 3 and
+2 < log 9; standard axioms only, wired into RHTower).
+
+### FOURTEENTH ATLAS ENTRY
+    Nyquist dichotomy   log T is the sampling rate of the zero set for PW_{L/2}. Sub-Nyquist tests
+                        cannot dodge the critical zeros; super-Nyquist tests cost e^L >= T. The
+                        branches exchange at deviation a ~ 1/log T, the mean zero spacing.
+
+Together with entry thirteen this identifies the SOURCE of the log T barrier that appears in every
+one of the first twelve entries: it is a sampling-density threshold, not an arithmetic one.
+
+### STATE AT CYCLE 79
+Fourteen structural entries; entries 13 and 14 are the first PROVED WITHOUT THE EXPLICIT FORMULA.
+RH IS NEITHER PROVEN NOR DISPROVEN.
+
+### Cycle 80 target
+Entry 14 says sub-Nyquist tests cannot dodge the critical zeros. But the explicit formula is an
+IDENTITY: sum over ALL zeros = arch + pole - primes. So the sampling lower bound A g(0) is not merely
+an obstruction — it is a FORCED IDENTITY between the sampling constant of the zero set and the
+archimedean weight. Conjecture: for the true zero set of zeta, the Beurling-Landau sampling constant
+of {gam_j} in PW_{L/2} is EXACTLY the archimedean weight (1/2 pi) int ghat W, for every L < log T,
+because the explicit formula with an empty prime window says so. If true, the zero set of zeta is a
+sampling set with a COMPUTABLE sharp constant — a statement about zeta's zeros that is unconditional,
+quantitative, and has no known analogue. And its failure for a hypothetical off-critical
+configuration would be a contradiction. TEST WHETHER THE FORCED CONSTANT IS CONSISTENT WITH BEURLING'S
+BOUNDS; if the identity forces a sampling constant LARGER than Beurling's theorem permits for a set of
+that density, an off-critical zero is impossible.
+
+---
+
+## Cycle 80 (2026-07-26) — THE ARITHMETIC-FREE FALSIFICATION LADDER
+### FIRST STATEMENT IN THE ATLAS WHOSE FAILURE WOULD DISPROVE RH.
+
+Entries 1-14 all bound a METHOD. This cycle produces a statement that is not about a method at all:
+a sequence of finite, elementary inequalities, each checkable in finitely many terms, whose failure
+refutes the hypothesis.
+
+### The observation that unlocks it
+THE POLE OF ZETA AT s=1 IS AN OFF-CRITICAL ZERO AT MAXIMAL DEVIATION a = 1/2. It enters the explicit
+formula as ghat(i/2) + ghat(-i/2) — exactly the cycle-78 configuration at deviation 1/2. So the
+DETECTION CEILING APPLIES TO THE POLE, and it is sharp:
+
+    ghat(i/2) + ghat(-i/2)  <=  g(0) ( 2 sinh(L/2) + L ).
+
+### The ladder
+Write the explicit formula as   sum_rho ghat(gam_rho) = P(g) + A_inf(g) - Pr_L(g),  where
+Pr_L(g) = 2 sum_{n <= e^L} Lambda(n) n^{-1/2} g(log n) is FINITE. Under RH every ordinate is real and
+every left-hand term is >= 0, so
+
+    Pr_L(g) - A_inf(g)  <=  P(g)  <=  g(0) ( 2 sinh(L/2) + L ).
+
+The pole has been eliminated by a SHARP UNIVERSAL BOUND. What remains is an inequality between the
+digamma transform of ghat, finitely many elementary prime terms, and an elementary function of L.
+NO ZEROS. NO ASYMPTOTICS. NO ARITHMETIC BEYOND A FINITE LIST OF PRIME POWERS.
+
+    ==> EACH WIDTH L IS A RUNG: A FINITE ELEMENTARY INEQUALITY WHOSE FAILURE DISPROVES RH.
+        BELOW log 2 THE PRIME SIDE IS EMPTY AND THE RUNG INVOLVES ONLY THE GAMMA FUNCTION.
+
+By Weil's criterion RH is EQUIVALENT to all rungs holding. The criterion, normally quantified over an
+infinite-dimensional cone with the pole entangled in it, becomes a ladder of finite tests — at the
+cost of the sharp pole ceiling, which is exactly what cycle 78 supplies.
+
+### CORRECTION TO CYCLES 76-77 (important)
+Empty-window positivity is NOT automatic over Q. The archimedean weight
+Re psi(1/4 + ir/2) - log pi is NEGATIVE for |r| < 2 pi — the analytic reflection of the fact that the
+smooth zero count (T/2pi) log(T/2pi e) is negative below T = 2 pi e ~ 17.08. Over a number field the
+discriminant term g(0) log|d_K| dominates it, which is what made the empty window positive THERE
+(cycle 76's Lean lemma correctly carried `0 < A` as a HYPOTHESIS, so the formalisation is sound; the
+prose "hence strictly positive" was field-specific and is now qualified). Over Q there is no
+discriminant term, so the L < log 2 rung is a GENUINE INEQUALITY, not a triviality. That is precisely
+why it is a usable falsification target.
+
+### Where the window is widest
+For L < log 2 the prime side is empty. For log 2 <= L < log 3 exactly one term appears,
+-2 (log 2 / sqrt 2) g(log 2); each subsequent prime-power threshold adds one explicit elementary term.
+The negative prime terms make each rung HARDER to satisfy while larger L lets ghat concentrate
+further into the negative-weight region |r| < 2 pi. THE MOST INFORMATIVE RUNGS ARE THEREFORE JUST
+BELOW EACH PRIME-POWER THRESHOLD, and the first nontrivial one is L -> log 3.
+
+Machine-verified: `RHTower/ArithmeticFreeFalsificationLadder.lean` (the pole as the maximal-deviation
+configuration 2*detectionCeiling(1/2,L) = 2 sinh(L/2)+L, the pole ceiling, the rung, its
+contrapositive as a refutation, emptiness of the prime side below log 2, monotonicity of the ladder,
+and the strict excess over the naive linear bound; standard axioms only, wired into RHTower).
+
+### FIFTEENTH ATLAS ENTRY
+    arithmetic-free falsification ladder   RH is equivalent to an increasing sequence of finite
+                                           elementary inequalities, obtained by bounding the pole
+                                           with the sharp deviation-1/2 detection ceiling. Below
+                                           log 2 the rung involves only Gamma.
+
+This is the FIRST entry that is not a wall. Entries 1-14 say what cannot be done; entry 15 says what
+can be TESTED, and its failure at any single rung would refute the hypothesis.
+
+### STATE AT CYCLE 80
+Fifteen entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+### Cycle 81 target
+The rung at L < log 2 involves only Gamma, so it is a pure special-function inequality:
+for every ghat >= 0 of exponential type L supported test,
+    (1/2pi) int ghat(r) [ 2 Re psi(1/4 + ir/2) - 2 log pi ] dr  >=  - g(0) ( 2 sinh(L/2) + L ).
+PROVE OR REFUTE THIS DIRECTLY. It is implied by RH, so a refutation refutes RH; a direct proof gives
+the first unconditional rung and calibrates how much slack the ladder has. The extremal test is the
+one making ghat most concentrated in |r| < 2 pi subject to type L — by cycle 78 that is the
+reproducing-kernel extremiser, i.e. ghat = |K_{i/2}(r) + K_{-i/2}(r)|^2 normalised. COMPUTE THE RUNG
+AT THAT EXTREMISER: it turns the inequality into a closed-form digamma integral against an explicit
+Fejer-type kernel, and its sign is decidable by classical estimates on Re psi.
