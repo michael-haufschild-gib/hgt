@@ -1845,3 +1845,68 @@ The two remaining deep targets (exact ranks; general finite-complex chain equiva
 mathlib-scale infrastructure absent from mathlib (Koszul-homology-of-regular-sequence; the general
 simplicial cochain `d²=0`, whose `Fin.succAbove` commutation identity is not available by name —
 `Fin.succAbove_succAbove` does not exist; only `Fin.succAbove_succAbove_predAbove`).
+
+### Lean progress — the general reduced simplicial cochain complex (the missing topological half)
+
+The previously recorded blocker ("the general finite-complex chain equivalence needs the general
+simplicial cochain complex, whose `d²=0` requires a `Fin.succAbove` simplicial identity not readily in
+mathlib") is **removed**.  The `Fin.succAbove` route was the wrong presentation.  Indexing cochains by
+*finite vertex sets* instead of ordered tuples makes the whole complex degree-uniform and the `d²=0`
+cancellation identical to the Koszul one already used throughout the corpus.
+
+`SimplicialCochainComplex.lean` (axiom-clean, build green):
+
+- `faceSign F σ v = (-1)^{#\{u ∈ σ : u < v\}}` — the incidence sign, with the only two facts needed:
+  `faceSign_erase_of_lt` (erasing a smaller vertex flips it), `faceSign_erase_of_gt` (erasing a larger
+  vertex preserves it), and `faceSign_mul_self` (it is `±1`).
+- `faceSign_mul_faceSign_erase_antisymm` — the incidence-sign antisymmetry
+  `faceSign σ u · faceSign (σ∖u) v + faceSign σ v · faceSign (σ∖v) u = 0`, the entire content of `δ²=0`.
+- `simplicialCoboundary F f σ = ∑_{v∈σ} faceSign σ v · f (σ∖v)`, its linear form
+  `simplicialCoboundaryₗ`, and **`simplicialCoboundary_simplicialCoboundary` : `δ ∘ δ = 0`** —
+  unconditional, over any commutative ring, in **every degree at once** (the formula never mentions
+  `#σ`), with the empty face present so the complex is the *reduced* one.  The cancellation is the
+  `(u,v) ↔ (v,u)` involution via the corpus lemma `antisym_sigma_sum_zero`, exactly the device behind
+  `koszulD_koszulD_eq_zero` — so both halves of the Hochster correspondence now rest on one principle.
+- `cardCochains F c` and `simplicialCoboundary_mem_cardCochains` — the cardinality grading, exhibiting
+  `C⁰ → C¹ → C² → ⋯` as an honest graded complex.
+- `faceVanishingCochains F facets` (cochains vanishing on all faces of `Δ`) is `δ`-stable because faces
+  are closed downwards, so the cochain complex of an arbitrary finite complex is the quotient
+  `complexCochains`, with `complexCoboundary_complexCoboundary` : **`δ_Δ² = 0` for every finite
+  complex**.  No decidability of `IsFaceOf` is required.
+
+### Lean progress — exact reduced cohomology of a hollow simplex in EVERY dimension
+
+`HollowSimplexReducedCohomology.lean` (axiom-clean, build green) uses the new complex to supply the
+topological half of the `Tor₁` strand uniformly, matching the already-exact algebraic half
+`srHollowSimplexSyzygyVec_boundary_iff`:
+
+- `hollowFacets σ` (the boundary complex `∂σ`) with `isFaceOf_hollowFacets_iff` (its faces are exactly
+  the proper subsets of `σ`), `isFaceOf_hollowFacets_erase`, `not_isFaceOf_hollowFacets_self`.
+- `simplicialCoboundary_mem_faceVanishing_of_card` — top-degree cochains of `∂σ` are cocycles.
+- `hollowPrimitive F σ i₀ a` — the explicit primitive supported on the codimension-two faces
+  `σ ∖ {i₀,k}` through a base vertex, sign-corrected; `simplicialCoboundary_hollowPrimitive_of_ne`
+  and `simplicialCoboundary_hollowPrimitive_base` compute its coboundary on every facet.  It is the
+  topological mirror of the algebraic spanning `2`-chain of
+  `srHollowSimplexSyzygyVec_boundary_of_sum_zero`.
+- **`hollowSimplex_coboundary_iff`** : `(∃ h, ∀ i ∈ σ, (δh)(σ∖i) = a i) ↔ ∑_{i∈σ} faceSign σ i · a i = 0`.
+  Only values on `(|σ|−2)`-subsets of `σ` can contribute, so no degree bookkeeping is needed: this is
+  exactly `H̃^{|σ|−2}(∂Δ^{|σ|−1}) ≅ F`, for **every** `|σ|`, over any commutative ring.
+- `hollowSimplex_reducedCohomology_nonzero` — the top cochain concentrated on one facet is not a
+  coboundary, so the reduced cohomology is nonzero in every dimension.
+
+### Lean progress — the uniform-degree Hochster correspondence (both sides, all dimensions)
+
+- **`hochster_hollowSimplex_boundary_iff`** : for a hollow simplex `σ`, the multidegree-`σ` first
+  Koszul syzygy `w(l)` is a Koszul boundary **iff** the matching top simplicial cochain
+  `i ↦ faceSign σ i · l i` is a simplicial coboundary.  Both sides are cut out by a single linear
+  functional, so `Tor_{1,σ}` and `H̃^{|σ|−2}(Δ_σ)` are each exactly one-dimensional and correspond.
+- `hochster_hollowFacets_boundary_iff` — the same statement on the explicit boundary complex `∂σ`,
+  with every structural hypothesis discharged (only `σ.Nonempty`).
+- `hochster_hollowFacets_both_nonzero` — on `∂σ` the basis syzygy at any vertex is not a Koszul
+  boundary **and** the matching top cochain is not a simplicial coboundary: the Hochster class is
+  nonzero on both sides simultaneously, in every dimension, over any nontrivial commutative ring.
+
+This upgrades the concrete degree-`1` cycle-graph instances `hochster_C3/C4/C5/C6_*` of
+`HochsterCycleRealization` (which relied on graph-specific Betti formulas) to a single theorem valid
+in every dimension, and it replaces the previously recorded "mathlib-scale, gated" status of the
+general chain-equivalence half with an actual unconditional construction.

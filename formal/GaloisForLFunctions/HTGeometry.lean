@@ -2148,3 +2148,5 @@ import GaloisForLFunctions.HTGeometry.DualityLoopWeights
 import GaloisForLFunctions.HTGeometry.SquareIndexSymmetricSquare
 import GaloisForLFunctions.HTGeometry.CompatibleSystemInvolution
 import GaloisForLFunctions.HTGeometry.DualExponentReturn
+import GaloisForLFunctions.HTGeometry.SimplicialCochainComplex
+import GaloisForLFunctions.HTGeometry.HollowSimplexReducedCohomology

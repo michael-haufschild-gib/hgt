@@ -5,7 +5,7 @@
 
 your task:
 if you are already working on a card, keep going.
-else: pick a card from docs/drafts/pipeline/2-fully-proven/needs-audit
+else: pick a card from docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge
 
 do: formalize UNCONDITIONALLY in lean any proven theorem in the chosen card. add missing infrastructure, lean proofs, everything needed to mark the card as fully done - no simplifications.
 
@@ -26,9 +26,40 @@ Non-negotiable working mode rules:
 6. Always check what our extensive lean corpus can provide you! Reuse as much as possible.
 7. The only reason to stop working on a card if a proof is mathematically impossible. Open research is not mathematically impossible.
 
-folders:
-- formal/GaloisForLFunctions/HTGeometry for lean about hypertranscendental functions in general
-- formal/GaloisForLFunctions/RHTower for lean about the riemann zeta function
+You are not allowed to change the cron timing.
+
+**Always use  lake env lean <file>  and only lake build <module> for the final audit.**
+make sure you don't leave stale lean processes running - clean up after yourself
+LEAN PROOFS MUST BE UNCONDTIONAL!!!
+
+
+## loop theorems
+/loop 1m (use the croncreate tool)
+
+if you are not idle, keep going.
+else your task is:
+
+Audit HTGeometry, HilbertMetric, and RHTower for any remaining hypothesis or Prop interface - then attempt to discharge it:
+1. reuse existing formal results to discharge every tractable premise
+2. create and formally prove missing connector theorems,
+3. use the /hgtl7 skill´s research process on each non-immediate mathematical obstacle until no further hypothesis can be discharged or structurally replaced.
+
+lean rules:
+1. You work independent from other agents and can run 1 build process in the foreground at a time yourself.
+2. Be efficient with lean builds, do not constantly do minor edits and build, but batch changes and builds.
+3. Optimize lean code. Use caching and limit rebuilds of dependencies to only what is truly necessary for your work.
+4. lean proofs must be unconditional
+5. always check first what the project lean code already offers. Some card proofs are already formalized. Reuse as much as possible. Connect your new lean code to obvious connectors like to discharge theorems or connect theorems to a stronger statement.
+6. no computations.
+
+Non-negotiable working mode rules:
+1. If it cannot be done in a single session -> Does not matter. Do it!
+2. If it cannot be done in a single context window -> Does not matter. Do it!
+3. If it takes months -> Does not matter. Do it!
+4. If it is "research-level construction" -> Does not matter. If there is any way you could build it you build it no matter what.
+5. Missing in mathlib -> Build it no matter the effort.
+6. Always check what our extensive lean corpus can provide you! Reuse as much as possible.
+7. The only reason to stop working on a card if a proof is mathematically impossible. Open research is not mathematically impossible.
 
 You are not allowed to change the cron timing.
 

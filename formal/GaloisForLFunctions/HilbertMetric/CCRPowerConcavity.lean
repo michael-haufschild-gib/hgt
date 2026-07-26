@@ -12,9 +12,10 @@ variable `u = t ^ d`.  Its power-scale second derivative is not merely nonpositi
 dimension normalization it is exactly the negative sum of the mixed-commutator and traceless
 leakage energies.
 
-The first section also discharges the finite block connector.  A commuting full matrix tuple
-satisfying the canonical commutation relations and preserving a coordinate summand automatically
-produces the rectangular completion required by `CCRDimensionFluctuation`.
+The first section also discharges the finite block connector.  A matrix tuple preserving a
+coordinate summand and satisfying the canonical commutation relations on that summand automatically
+produces the rectangular completion required by `CCRDimensionFluctuation`; on a finite space the
+unrestricted relation is impossible, since its trace reads `0 = Fintype.card (n ⊕ m)`.
 -/
 
 open scoped BigOperators
@@ -52,6 +53,78 @@ def IsFullCCRMatrixTuple
   ∀ i j, T i * (T j).transpose =
     (if i = j then 1 else 0) + (T j).transpose * T i
 
+/-- Canonical commutation relations required only on the invariant coordinate block.  On a finite
+space the full relation forces the trace identity `0 = Fintype.card (n ⊕ m)`, so only this block
+form is satisfiable in positive dimension. -/
+def IsBlockCCRMatrixTuple
+    (T : I → Matrix (n ⊕ m) (n ⊕ m) ℝ) : Prop :=
+  ∀ i j a b, (T i * (T j).transpose) (Sum.inl a) (Sum.inl b) =
+    ((if i = j then 1 else 0 : Matrix (n ⊕ m) (n ⊕ m) ℝ) +
+      (T j).transpose * T i) (Sum.inl a) (Sum.inl b)
+
+omit [Fintype I] in
+/-- The full relation restricts to the invariant block. -/
+theorem IsFullCCRMatrixTuple.isBlockCCRMatrixTuple
+    {T : I → Matrix (n ⊕ m) (n ⊕ m) ℝ} (hccr : IsFullCCRMatrixTuple T) :
+    IsBlockCCRMatrixTuple T := by
+  intro i j a b
+  rw [hccr i j]
+
+omit [Fintype I] [DecidableEq I] [DecidableEq n] [DecidableEq m] in
+/-- The upper-left Gram entry of a full tuple splits into its compression and leakage blocks. -/
+theorem fullCCR_mul_transpose_inl_inl
+    (T : I → Matrix (n ⊕ m) (n ⊕ m) ℝ) (i j : I) (a b : n) :
+    (T i * (T j).transpose) (Sum.inl a) (Sum.inl b) =
+      (fullCCRCompressionBlock T i *
+          (fullCCRCompressionBlock T j).transpose) a b +
+        (fullCCRLeakageBlock T i * (fullCCRLeakageBlock T j).transpose) a b := by
+  simp [Matrix.mul_apply, Fintype.sum_sum_type, fullCCRCompressionBlock,
+    fullCCRLeakageBlock, Matrix.transpose_apply]
+
+omit [Fintype I] [DecidableEq I] [DecidableEq n] [DecidableEq m] in
+/-- On an invariant summand the reversed upper-left Gram entry sees only the compression block. -/
+theorem fullCCR_transpose_mul_inl_inl
+    (T : I → Matrix (n ⊕ m) (n ⊕ m) ℝ)
+    (hinv : IsInvariantFullCompression T) (i j : I) (a b : n) :
+    ((T j).transpose * T i) (Sum.inl a) (Sum.inl b) =
+      ((fullCCRCompressionBlock T j).transpose *
+        fullCCRCompressionBlock T i) a b := by
+  unfold IsInvariantFullCompression at hinv
+  simp [Matrix.mul_apply, Fintype.sum_sum_type, fullCCRCompressionBlock,
+    Matrix.transpose_apply, hinv]
+
+omit [Fintype I] [Fintype n] [Fintype m] in
+/-- The Kronecker identity block of the full space restricts to the Kronecker identity block of the
+compression space. -/
+theorem fullCCR_deltaOne_inl_inl (i j : I) (a b : n) :
+    (if i = j then (1 : Matrix (n ⊕ m) (n ⊕ m) ℝ) else 0)
+        (Sum.inl a) (Sum.inl b) =
+      (if i = j then (1 : Matrix n n ℝ) else 0) a b := by
+  by_cases h : i = j <;> simp [h, Matrix.one_apply]
+
+omit [Fintype I] in
+/-- **Invariant-block CCR equivalence.**  On an invariant coordinate summand the block relation is
+exactly the rectangular CCR completion of the compression and leakage blocks. -/
+theorem isBlockCCRMatrixTuple_iff_isCCRCompletion
+    (T : I → Matrix (n ⊕ m) (n ⊕ m) ℝ)
+    (hinv : IsInvariantFullCompression T) :
+    IsBlockCCRMatrixTuple T ↔
+      IsCCRCompletion (fullCCRCompressionBlock T) (fullCCRLeakageBlock T) := by
+  constructor
+  · intro h i j
+    ext a b
+    have hh := h i j a b
+    rw [fullCCR_mul_transpose_inl_inl, Matrix.add_apply, fullCCR_deltaOne_inl_inl,
+      fullCCR_transpose_mul_inl_inl T hinv] at hh
+    simp only [Matrix.sub_apply, Matrix.add_apply]
+    linarith
+  · intro h i j a b
+    have hh := congrArg (fun M : Matrix n n ℝ => M a b) (h i j)
+    simp only [Matrix.sub_apply, Matrix.add_apply] at hh
+    rw [fullCCR_mul_transpose_inl_inl, Matrix.add_apply, fullCCR_deltaOne_inl_inl,
+      fullCCR_transpose_mul_inl_inl T hinv]
+    linarith
+
 omit [Fintype I] [DecidableEq I] [DecidableEq n] [DecidableEq m] in
 /-- Commutativity descends to the upper-left blocks of an invariant summand. -/
 theorem fullCCRCompressionBlock_commutes
@@ -76,38 +149,17 @@ omit [Fintype I] in
 /-- The upper-right blocks supply the exact rectangular CCR completion of the compression. -/
 theorem fullCCRLeakageBlock_isCCRCompletion
     (T : I → Matrix (n ⊕ m) (n ⊕ m) ℝ)
-    (hinv : IsInvariantFullCompression T) (hccr : IsFullCCRMatrixTuple T) :
-    IsCCRCompletion (fullCCRCompressionBlock T) (fullCCRLeakageBlock T) := by
-  intro i j
-  ext a b
-  have h := congrArg (fun M : Matrix (n ⊕ m) (n ⊕ m) ℝ =>
-    M (Sum.inl a) (Sum.inl b)) (hccr i j)
-  simp only [Matrix.mul_apply, Fintype.sum_sum_type, Matrix.transpose_apply,
-    Matrix.add_apply] at h
-  simp only [Matrix.mul_apply, fullCCRCompressionBlock, fullCCRLeakageBlock,
-    Matrix.transpose_apply, Matrix.add_apply, Matrix.sub_apply]
-  unfold IsInvariantFullCompression at hinv
-  have hzero : (∑ x : m, T j (Sum.inr x) (Sum.inl a) *
-      T i (Sum.inr x) (Sum.inl b)) = 0 := by simp [hinv]
-  rw [hzero, add_zero] at h
-  by_cases hij : i = j
-  · subst j
-    simp only [if_pos, Matrix.one_apply] at h ⊢
-    by_cases hab : a = b
-    · subst b
-      simp at h ⊢
-      linarith
-    · simp [hab] at h ⊢
-      linarith
-  · simp [hij] at h ⊢
-    linarith
+    (hinv : IsInvariantFullCompression T) (hccr : IsBlockCCRMatrixTuple T) :
+    IsCCRCompletion (fullCCRCompressionBlock T) (fullCCRLeakageBlock T) :=
+  (isBlockCCRMatrixTuple_iff_isCCRCompletion T hinv).mp hccr
 
-/-- Full finite CCR tuples obey the literal pairwise dimension--fluctuation identity on every
-invariant coordinate summand. -/
+/-- Finite matrix tuples with an invariant coordinate summand carrying the block canonical
+commutation relations obey the literal pairwise dimension--fluctuation identity. -/
 theorem fullCCR_dimension_fluctuation_pairwise_identity
     (T : I → Matrix (n ⊕ m) (n ⊕ m) ℝ)
-    (hinv : IsInvariantFullCompression T) (hcomm : IsCommutingFullTuple T)
-    (hccr : IsFullCCRMatrixTuple T) :
+    (hinv : IsInvariantFullCompression T)
+    (hcomm : IsCommutingCCRCompression (fullCCRCompressionBlock T))
+    (hccr : IsBlockCCRMatrixTuple T) :
     (Fintype.card I : ℝ) * ((Fintype.card I : ℝ) + 1) *
         ((Fintype.card I : ℝ) * ccrMeanEnergy (fullCCRCompressionBlock T) -
           ccrNumberVariance (fullCCRCompressionBlock T) (fullCCRLeakageBlock T)) =
@@ -117,26 +169,29 @@ theorem fullCCR_dimension_fluctuation_pairwise_identity
           (fullCCRCompressionBlock T) (fullCCRLeakageBlock T) := by
   exact ccr_dimension_fluctuation_pairwise_identity
     (fullCCRCompressionBlock T) (fullCCRLeakageBlock T)
-    (fullCCRCompressionBlock_commutes T hinv hcomm)
+    hcomm
     (fullCCRLeakageBlock_isCCRCompletion T hinv hccr)
 
-/-- The full-block variance is at most the number of modes times its compressed mean energy. -/
+/-- The invariant-block variance is at most the number of modes times its compressed mean
+energy. -/
 theorem fullCCR_numberVariance_le_card_mul_mean
     (T : I → Matrix (n ⊕ m) (n ⊕ m) ℝ)
-    (hinv : IsInvariantFullCompression T) (hcomm : IsCommutingFullTuple T)
-    (hccr : IsFullCCRMatrixTuple T) :
+    (hinv : IsInvariantFullCompression T)
+    (hcomm : IsCommutingCCRCompression (fullCCRCompressionBlock T))
+    (hccr : IsBlockCCRMatrixTuple T) :
     ccrNumberVariance (fullCCRCompressionBlock T) (fullCCRLeakageBlock T) ≤
       (Fintype.card I : ℝ) * ccrMeanEnergy (fullCCRCompressionBlock T) := by
   exact ccr_numberVariance_le_card_mul_mean
     (fullCCRCompressionBlock T) (fullCCRLeakageBlock T)
-    (fullCCRCompressionBlock_commutes T hinv hcomm)
+    hcomm
     (fullCCRLeakageBlock_isCCRCompletion T hinv hccr)
 
-/-- Equality for a full tuple is literal mixed normality plus pure-trace leakage. -/
+/-- Equality for an invariant-block tuple is literal mixed normality plus pure-trace leakage. -/
 theorem fullCCR_numberVariance_eq_card_mul_mean_literal_iff
     (T : I → Matrix (n ⊕ m) (n ⊕ m) ℝ)
-    (hinv : IsInvariantFullCompression T) (hcomm : IsCommutingFullTuple T)
-    (hccr : IsFullCCRMatrixTuple T) :
+    (hinv : IsInvariantFullCompression T)
+    (hcomm : IsCommutingCCRCompression (fullCCRCompressionBlock T))
+    (hccr : IsBlockCCRMatrixTuple T) :
     ccrNumberVariance (fullCCRCompressionBlock T) (fullCCRLeakageBlock T) =
         (Fintype.card I : ℝ) * ccrMeanEnergy (fullCCRCompressionBlock T) ↔
       (∀ i j, ccrMixedCommutator (fullCCRCompressionBlock T) i j = 0) ∧
@@ -144,15 +199,16 @@ theorem fullCCR_numberVariance_eq_card_mul_mean_literal_iff
           (fullCCRCompressionBlock T) (fullCCRLeakageBlock T) i j = 0 := by
   exact ccr_numberVariance_eq_card_mul_mean_literal_iff
     (fullCCRCompressionBlock T) (fullCCRLeakageBlock T)
-    (fullCCRCompressionBlock_commutes T hinv hcomm)
+    hcomm
     (fullCCRLeakageBlock_isCCRCompletion T hinv hccr)
 
-/-- Strict full-block variance is equivalent to a literal mixed-normality or pure-trace leakage
-defect. -/
+/-- Strict invariant-block variance is equivalent to a literal mixed-normality or pure-trace
+leakage defect. -/
 theorem fullCCR_numberVariance_lt_card_mul_mean_literal_iff
     (T : I → Matrix (n ⊕ m) (n ⊕ m) ℝ)
-    (hinv : IsInvariantFullCompression T) (hcomm : IsCommutingFullTuple T)
-    (hccr : IsFullCCRMatrixTuple T) :
+    (hinv : IsInvariantFullCompression T)
+    (hcomm : IsCommutingCCRCompression (fullCCRCompressionBlock T))
+    (hccr : IsBlockCCRMatrixTuple T) :
     ccrNumberVariance (fullCCRCompressionBlock T) (fullCCRLeakageBlock T) <
         (Fintype.card I : ℝ) * ccrMeanEnergy (fullCCRCompressionBlock T) ↔
       (∃ i j, ccrMixedCommutator (fullCCRCompressionBlock T) i j ≠ 0) ∨
@@ -160,7 +216,7 @@ theorem fullCCR_numberVariance_lt_card_mul_mean_literal_iff
           (fullCCRCompressionBlock T) (fullCCRLeakageBlock T) i j ≠ 0 := by
   exact ccr_numberVariance_lt_card_mul_mean_literal_iff
     (fullCCRCompressionBlock T) (fullCCRLeakageBlock T)
-    (fullCCRCompressionBlock_commutes T hinv hcomm)
+    hcomm
     (fullCCRLeakageBlock_isCCRCompletion T hinv hccr)
 
 /-- Reparametrize a smooth log-volume by the reciprocal dimension power `t = u^(1/d)`. -/
@@ -389,12 +445,13 @@ theorem ccr_dimensionPowerSecondDerivative_classification
     · intro hdefect
       exact Or.inr ⟨sub_neg.mpr (hlt.mpr hdefect), hden⟩
 
-/-- Full commuting CCR tuples inherit the exact power-curvature rigidity classification on every
-invariant coordinate summand.  The full matrix hypotheses discharge both compression interfaces. -/
+/-- Invariant-block CCR tuples inherit the exact power-curvature rigidity classification.  The
+block matrix hypotheses discharge both compression interfaces. -/
 theorem fullCCR_dimensionPowerSecondDerivative_classification
     (T : I → Matrix (n ⊕ m) (n ⊕ m) ℝ)
-    (hinv : IsInvariantFullCompression T) (hcomm : IsCommutingFullTuple T)
-    (hccr : IsFullCCRMatrixTuple T) (hI : 0 < Fintype.card I)
+    (hinv : IsInvariantFullCompression T)
+    (hcomm : IsCommutingCCRCompression (fullCCRCompressionBlock T))
+    (hccr : IsBlockCCRMatrixTuple T) (hI : 0 < Fintype.card I)
     {u : ℝ} (hu : 0 < u) (F₁ F₂ : ℝ → ℝ)
     (hmean : logarithmicScaleMean F₁ (u ^ (1 / (Fintype.card I : ℝ) : ℝ)) =
       ccrMeanEnergy (fullCCRCompressionBlock T))
@@ -411,7 +468,7 @@ theorem fullCCR_dimensionPowerSecondDerivative_classification
             (fullCCRCompressionBlock T) (fullCCRLeakageBlock T) i j ≠ 0) := by
   exact ccr_dimensionPowerSecondDerivative_classification
     (fullCCRCompressionBlock T) (fullCCRLeakageBlock T)
-    (fullCCRCompressionBlock_commutes T hinv hcomm)
+    hcomm
     (fullCCRLeakageBlock_isCCRCompletion T hinv hccr)
     hI hu F₁ F₂ hmean hvariance
 
@@ -473,13 +530,14 @@ theorem ccr_logarithmicConvex_dimensionPowerConcave
   · exact ccr_dimensionPowerReparametrization_concaveOn
       A B hcomm hccr hI hF hF₁ hmean hvariance
 
-/-- Full commuting CCR tuples preserving a finite summand satisfy the scale-sandwich law through
+/-- Invariant-block CCR tuples preserving a finite summand satisfy the scale-sandwich law through
 their literal compression and leakage blocks. -/
 theorem fullCCR_logarithmicConvex_dimensionPowerConcave
     (T : ℝ → I → Matrix (n ⊕ m) (n ⊕ m) ℝ)
     (hinv : ∀ t, 0 < t → IsInvariantFullCompression (T t))
-    (hcomm : ∀ t, 0 < t → IsCommutingFullTuple (T t))
-    (hccr : ∀ t, 0 < t → IsFullCCRMatrixTuple (T t))
+    (hcomm : ∀ t, 0 < t →
+      IsCommutingCCRCompression (fullCCRCompressionBlock (T t)))
+    (hccr : ∀ t, 0 < t → IsBlockCCRMatrixTuple (T t))
     (hI : 0 < Fintype.card I) {F F₁ F₂ : ℝ → ℝ}
     (hF : ∀ t, 0 < t → HasDerivAt F (F₁ t) t)
     (hF₁ : ∀ t, 0 < t → HasDerivAt F₁ (F₂ t) t)
@@ -493,7 +551,7 @@ theorem fullCCR_logarithmicConvex_dimensionPowerConcave
   exact ccr_logarithmicConvex_dimensionPowerConcave
     (fun t => fullCCRCompressionBlock (T t))
     (fun t => fullCCRLeakageBlock (T t))
-    (fun t ht => fullCCRCompressionBlock_commutes (T t) (hinv t ht) (hcomm t ht))
+    (fun t ht => hcomm t ht)
     (fun t ht => fullCCRLeakageBlock_isCCRCompletion (T t) (hinv t ht) (hccr t ht))
     hI hF hF₁ hmean hvariance
 
