@@ -156,6 +156,71 @@ theorem setLIntegral_bourgainSquareRootExactLocalSum_bilinear_translate
         bourgainSquareRootBilinearTaylorError_translateCoefficients] using
         hbound
 
+/-- Arbitrary-lower-base version of the translated application estimate. -/
+theorem setLIntegral_bourgainSquareRootExactLocalSum_bilinear_translate_of_lower
+    {ε : ℝ} (hε : 0 < ε) :
+    ∃ C : ℝ, 0 < C ∧
+      ∀ {A a₀ b₀ N D : ℝ},
+        (hA : 0 < A) → (hAa₀ : A ≤ a₀) → (ha₀b₀ : a₀ < b₀) →
+        (hb₀ : b₀ ≤ 1) → (hN : 0 ≤ N) → (hD : 0 < D) →
+      ∀ (H : ℕ), (hH : 0 < H) →
+      (hHD : (H : ℝ) ≤ D) → ∀ (c₁ c₂ : Fin H → ℂ)
+        (y : BourgainPhaseSpace),
+      2 * bourgainSquareRootPhaseOperatorBound A * N ≤
+        (H : ℝ) ^ (2 : ℕ) →
+      (∫⁻ x in {x : Fin 4 → ℝ | ‖x‖ ≤ N},
+        ENNReal.ofReal
+          (‖bourgainSquareRootExactLocalSum H D a₀ c₁ (x + y)‖ ^
+                (6 : ℕ) *
+            ‖bourgainSquareRootExactLocalSum H D b₀ c₂ (x + y)‖ ^
+              (6 : ℕ))) ≤
+        (1024 : ENNReal) *
+          (ENNReal.ofReal
+              |(3 * (b₀ - a₀) ^ (4 : ℕ) /
+                (32 * a₀ ^ (3 : ℕ) * b₀ ^ (3 : ℕ)))⁻¹| *
+            ENNReal.ofReal |(((H : ℝ) / D) ^ (6 : ℕ))⁻¹| *
+            ENNReal.ofReal
+              ((H : ℝ) ^ (8 : ℕ) *
+                (C * (H : ℝ) ^ ε *
+                  (∑ n : Fin H, ‖c₁ n‖ ^ (2 : ℕ)) ^ (3 : ℕ) *
+                  (∑ n : Fin H, ‖c₂ n‖ ^ (2 : ℕ)) ^ (3 : ℕ))) +
+            ENNReal.ofReal
+                (bourgainSquareRootBilinearTaylorError
+                  N a₀ b₀ ((H : ℝ) / D) c₁ c₂) *
+              ENNReal.ofReal ((2 * N) ^ (4 : ℕ))) := by
+  obtain ⟨C, hC, hlocal⟩ :=
+    setLIntegral_bourgainSquareRootExactLocalSum_bilinear_application_of_lower
+      hε
+  refine ⟨C, hC, ?_⟩
+  intro A a₀ b₀ N D hA hAa₀ ha₀b₀ hb₀ hN hD
+    H hH hHD c₁ c₂ y hphysical
+  let c₁' :=
+    bourgainSquareRootExactLocalTranslateCoefficients H D a₀ c₁ y
+  let c₂' :=
+    bourgainSquareRootExactLocalTranslateCoefficients H D b₀ c₂ y
+  have hbound :=
+    hlocal hA hAa₀ ha₀b₀ hb₀ hN hD H hH hHD c₁' c₂' hphysical
+  calc
+    (∫⁻ x in {x : Fin 4 → ℝ | ‖x‖ ≤ N},
+        ENNReal.ofReal
+          (‖bourgainSquareRootExactLocalSum H D a₀ c₁ (x + y)‖ ^
+                (6 : ℕ) *
+            ‖bourgainSquareRootExactLocalSum H D b₀ c₂ (x + y)‖ ^
+              (6 : ℕ))) =
+      ∫⁻ x in {x : Fin 4 → ℝ | ‖x‖ ≤ N},
+        ENNReal.ofReal
+          (‖bourgainSquareRootExactLocalSum H D a₀ c₁' x‖ ^ (6 : ℕ) *
+            ‖bourgainSquareRootExactLocalSum H D b₀ c₂' x‖ ^
+              (6 : ℕ)) := by
+      apply lintegral_congr
+      intro x
+      rw [bourgainSquareRootExactLocalSum_add,
+        bourgainSquareRootExactLocalSum_add]
+    _ ≤ _ := by
+      simpa [c₁', c₂',
+        bourgainSquareRootBilinearTaylorError_translateCoefficients] using
+        hbound
+
 end
 
 end RHTower

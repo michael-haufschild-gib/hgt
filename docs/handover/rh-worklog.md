@@ -9161,3 +9161,61 @@ higher cumulants through iterated applications. THE CONSTANTS ARE EXPLICIT IN TH
 THAT INVERSE, WHICH IS 1/c. STATE THE REPRESENTATION FOR THE THIRD CUMULANT — the first case where
 V''' enters — AND CHECK THAT ITS CONSTANT IS b/c^3 AS THE POWER COUNTING ASSUMES. If it is, the
 induction to general d is the standard iteration and the expansion is rigorous.
+
+---
+
+## Cycle 151 — THE THIRD-CUMULANT CONSTANT IS SHARP, AND IT IS EXACTLY -V'''/(V'')^3
+
+### Phase 1 (corpus)
+`formal_tools.py research "Helffer Sjostrand covariance Witten Laplacian cumulant"` plus
+`rg "Helffer|Witten|brascamp"`: NO Helffer-Sjostrand covariance representation in the corpus. The
+Witten hits are Born/Witten POSITION AMPLITUDES (a different object) and the Laplacian hits are the
+planar Laplacian in the Bottcher area. Not a duplicate.
+
+### What cycle 150 asked and what cycle 151 answers
+Cycle 150 assumed |kappa_d| ~ b^{d-2}/c^{2d-3}. Its first nontrivial case is d = 3, reading
+|kappa_3| ~ b/c^3. THIS CYCLE CONFIRMS THAT CASE WITH THE SHARP CONSTANT.
+
+### The computation
+Take V = c x^2/2 + eps x^3/6, so V'' = c and V''' = eps. Against the centred Gaussian of variance
+1/c, whose even moments are E0[x^2] = 1/c, E0[x^4] = 3/c^2, E0[x^6] = 15/c^3, first order in eps:
+
+    E[x^3] ~ -(eps/6)(15/c^3),   E[x] ~ -(eps/6)(3/c^2),   E[x^2] ~ 1/c,
+
+and kappa_3 = E[x^3] - 3E[x^2]E[x] + 2E[x]^3 gives, to first order,
+
+    kappa_3 = (-15/6 + 9/6) eps/c^3 = -eps/c^3.
+
+    ==> kappa_3 = -V'''/(V'')^3 EXACTLY AT LEADING ORDER. The power counting's b/c^3 is not merely
+        the right shape: IT CARRIES THE CONSTANT ONE.
+
+This is the Helffer-Sjostrand picture in its simplest instance: the propagator solves V'' u = 1, so
+u = 1/c; the covariance is E[u]; and the third cumulant is -E[V''' u^3]. BOTH ARE REAL-VARIABLE
+STATEMENTS, confirming cycle 150's claim that the complex Cauchy radius is not needed here.
+
+A Gaussian has V''' = 0 and hence kappa_3 = 0 (formalised): THE WHOLE THIRD CUMULANT IS CARRIED BY THE
+NON-GAUSSIANITY, exactly as the mechanism requires and exactly as cycle 149 said it must be.
+
+Machine-verified: `RHTower/ThirdCumulantConstantIsSharp.lean` (the propagator equation c(1/c)=1, the
+vertex value eps(1/c)^3 = eps/c^3, the cancellation -15/6 + 9/6 = -1, the leading third cumulant
+equal to -eps/c^3, its identification with minus the vertex value, its vanishing for a Gaussian, and
+the bound |kappa_3| <= b/c^3 under |V'''| <= b; standard axioms only, wired into RHTower).
+
+### EIGHTY-FIFTH ATLAS ENTRY
+    third cumulant sharp   For V = c x^2/2 + eps x^3/6 the leading third cumulant is exactly
+                           -eps/c^3 = -V'''/(V'')^3, from the Gaussian moments 3/c^2 and 15/c^3 via
+                           -15/6 + 9/6 = -1. The d = 3 case of the diagrammatic power counting holds
+                           WITH CONSTANT ONE, by a real-variable computation, and vanishes identically
+                           for a Gaussian.
+
+### STATE AT CYCLE 151
+Eighty-five entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+### Cycle 152 target
+The d = 3 case is sharp. THE INDUCTION IS THE REMAINING PIECE. The Helffer-Sjostrand route gives
+kappa_{d+1} = d/dh [kappa_d] under the tilt V_h = V - h x, and each differentiation produces one more
+propagator (one factor 1/c) and, when it lands on the vertex, one more V'''. CHECK THE FOURTH
+CUMULANT THE SAME WAY: for V = c x^2/2 + eps x^3/6 compute kappa_4 to second order in eps against the
+Gaussian and confirm the predicted b^2/c^5 WITH ITS CONSTANT. Gaussian moments needed: E0[x^8] =
+105/c^4, E0[x^6] = 15/c^3, E0[x^4] = 3/c^2. IF THE d = 4 CONSTANT ALSO COMES OUT CLEAN, THE PATTERN
+IS THE STANDARD TREE COUNT AND THE INDUCTION IS ROUTINE.

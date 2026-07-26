@@ -95,6 +95,18 @@ theorem riemannHypothesis_of_xiArakelovCoordinatesIntegral_of_hurwitzCharacterAl
   riemannHypothesis_of_xiRightArakelovHurwitzAlgebraic
     (xiRightArakelovHurwitzAlgebraic_of_integral_of_relativeAlgebraic hint hrelative)
 
+/-- Once integral Arakelov coordinates are supplied, relative Hurwitz algebraicity on hypothetical
+right-half Xi zeros is exactly RH: the reverse direction is vacuous because RH empties that
+fibre. -/
+theorem xiRightHurwitzCharacterAlgebraicOverArakelov_iff_riemannHypothesis_of_integral
+    (hint : XiArakelovCoordinatesIntegral) :
+    XiRightHurwitzCharacterAlgebraicOverArakelov ↔ RiemannHypothesis := by
+  constructor
+  · exact
+      riemannHypothesis_of_xiArakelovCoordinatesIntegral_of_hurwitzCharacterAlgebraicOverArakelov
+        hint
+  · exact xiRightHurwitzCharacterAlgebraicOverArakelov_of_riemannHypothesis
+
 end
 
 end RHTower
