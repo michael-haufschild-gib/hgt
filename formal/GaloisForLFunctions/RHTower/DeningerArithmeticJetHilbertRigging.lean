@@ -236,6 +236,104 @@ theorem deningerArithmeticJetHilbertToH1_injective :
     congrFun (congrFun h idx.1) idx.2
   simpa [deningerArithmeticJetHilbertToH1] using hidx
 
+/-- Algebraic inclusion of finite jet families into the square-summable carrier. -/
+def deningerArithmeticJetTestToHilbert :
+    DeningerArithmeticJetTest →ₗ[ℂ]
+      DeningerArithmeticJetHilbert :=
+  Finsupp.lsum ℂ fun idx =>
+    lp.lsingle (E := fun _ : DeningerArithmeticJetCoordinate => ℂ)
+      2 idx
+
+@[simp]
+theorem deningerArithmeticJetTestToHilbert_single
+    (idx : DeningerArithmeticJetCoordinate) (c : ℂ) :
+    deningerArithmeticJetTestToHilbert
+        (Finsupp.single idx c) =
+      lp.single 2 idx c := by
+  simp [deningerArithmeticJetTestToHilbert]
+
+/-- Finite jet families are dense in the canonical jet Hilbert space. -/
+theorem deningerArithmeticJetTestToHilbert_dense :
+    DenseRange deningerArithmeticJetTestToHilbert := by
+  rw [denseRange_iff_closure_range]
+  apply Set.Subset.antisymm
+  · exact closure_minimal (Set.subset_univ _) isClosed_univ
+  · intro x _hx
+    have hsum :
+        HasSum
+          (fun idx : DeningerArithmeticJetCoordinate =>
+            lp.single 2 idx (x idx))
+          x :=
+      lp.hasSum_single ENNReal.ofNat_ne_top x
+    apply isClosed_closure.mem_of_tendsto hsum
+    filter_upwards [] with S
+    apply subset_closure
+    let a : DeningerArithmeticJetTest :=
+      ∑ idx ∈ S, Finsupp.single idx (x idx)
+    refine ⟨a, ?_⟩
+    simp [a, deningerArithmeticJetTestToHilbert]
+
+/--
+Conjugate-linear finite-test inclusion forced by the variance of the continuous-dual pairing.
+-/
+def deningerArithmeticJetTestToHilbertConj :
+    DeningerArithmeticJetTest →ₛₗ[starRingEnd ℂ]
+      DeningerArithmeticJetHilbert where
+  toFun a := star (deningerArithmeticJetTestToHilbert a)
+  map_add' a b := by
+    rw [map_add, star_add]
+  map_smul' c a := by
+    ext idx
+    simp [map_smul]
+
+@[simp]
+theorem deningerArithmeticJetTestToHilbertConj_single
+    (idx : DeningerArithmeticJetCoordinate) (c : ℂ) :
+    deningerArithmeticJetTestToHilbertConj
+        (Finsupp.single idx c) =
+      lp.single 2 idx ((starRingEnd ℂ) c) := by
+  ext j
+  by_cases hji : j = idx
+  · subst j
+    simp [deningerArithmeticJetTestToHilbertConj]
+  · simp [deningerArithmeticJetTestToHilbertConj, hji]
+
+/-- The Hilbert distribution embedding has the expected jet coordinates. -/
+@[simp]
+theorem deningerCompactOpenH1Jet_jetHilbertToH1
+    (idx : DeningerArithmeticJetCoordinate)
+    (x : DeningerArithmeticJetHilbert) :
+    deningerCompactOpenH1Jet idx.1 idx.2
+        (deningerArithmeticJetHilbertToH1 x) =
+      x idx := by
+  rw [← deningerCompactOpenH1AllJets_apply]
+  simp [deningerArithmeticJetHilbertToH1]
+
+/--
+The finite-test/`ell^2`/product rigging realizes the original source Poincare evaluation pairing.
+-/
+theorem deningerArithmeticJetHilbert_pairing
+    (a : DeningerArithmeticJetTest)
+    (x : DeningerArithmeticJetHilbert) :
+    deningerArithmeticJetTestToCompact a
+        (deningerArithmeticJetHilbertToH1 x) =
+      @inner ℂ DeningerArithmeticJetHilbert _
+        (deningerArithmeticJetTestToHilbertConj a) x := by
+  classical
+  induction a using Finsupp.induction with
+  | zero =>
+      simp [deningerArithmeticJetTestToHilbertConj]
+  | single_add idx c a hidx _hc ih =>
+      rw [map_add, deningerArithmeticJetTestToCompact_single,
+        ContinuousLinearMap.add_apply,
+        ContinuousLinearMap.smul_apply,
+        deningerCompactOpenH1Jet_jetHilbertToH1,
+        map_add, inner_add_left,
+        deningerArithmeticJetTestToHilbertConj_single,
+        lp.inner_single_left, ih]
+      simp [RCLike.inner_apply]
+      ring
+
 end
 
 end RHTower

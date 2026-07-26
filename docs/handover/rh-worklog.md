@@ -8585,3 +8585,70 @@ A POLYA FREQUENCY FUNCTION — equivalently whether all its Toeplitz minors det(
 nonnegative. Phi is log-concave in the exponential variable (cycle 132's mechanism), and LOG-CONCAVITY
 IS EXACTLY THE PF_2 CONDITION; the question is whether it extends to PF_infinity. If it does, level one
 is settled outright and the descent's first step closes.
+
+---
+
+## Cycle 141 (2026-07-26) — THE POLYA-FREQUENCY PROPERTY OF Phi IS THE HYPOTHESIS ITSELF
+
+### The tool, applied — and it is the conclusion
+SCHOENBERG: a nonnegative f on R is a Polya frequency function exactly when the RECIPROCAL of its
+BILATERAL LAPLACE TRANSFORM lies in the Laguerre-Polya class.
+
+WHAT THAT TRANSFORM IS HERE. The theta remainder is EVEN, so
+
+    int_R Phi(t) e^{-st} dt  =  2 int_0^inf Phi(t) cosh(st) dt,
+
+and at s = i z the hyperbolic cosine becomes the cosine, giving 2 int_0^inf Phi(t) cos(zt) dt —
+THE COMPLETED ZETA FUNCTION ITSELF.
+
+    ==> Phi IS A POLYA FREQUENCY FUNCTION PRECISELY WHEN Xi HAS ONLY REAL ZEROS. THE POLYA-FREQUENCY
+        PROPERTY OF THE THETA REMAINDER *IS* THE RIEMANN HYPOTHESIS. THE CLASSICAL TOOL FOR ZERO-FREE
+        REGIONS OF SUCH TRANSFORMS IS, IN THIS INSTANCE, THE CONCLUSION.
+
+### AND THIS CORRECTS THE READING OF THE DESCENT
+Each level of the descent asks for a zero-free disc for a transform OF THE SAME SPECIES. So
+
+    EACH LEVEL IS A LOCALISATION OF THE HYPOTHESIS — on a smaller disc with better parameters —
+    NOT A WEAKER STATEMENT OF A DIFFERENT KIND.
+
+The descent IMPROVES THE PARAMETERS AND LOCALISES THE QUESTION; IT DOES NOT REDUCE IT TO SOMETHING
+ELSE. Entry 72's "favourable descent" stands as to parameters, and entry 71's "self-similar" stands as
+to species: BOTH WERE RIGHT, AND TOGETHER THEY SAY THE MECHANISM LOCALISES RH WITHOUT WEAKENING IT.
+
+Machine-verified: `RHTower/PolyaFrequencyIsTheHypothesis.lean` (the even-function reduction
+f(t)e^{-st} + f(-t)e^{st} = 2 f(t) cosh(st), the cosh/cos anchor at zero, positivity of the
+hyperbolic-cosine pairing for positive weights, and the tool-is-conclusion and
+localisation-not-weakening statements; standard axioms only, wired into RHTower).
+
+### SEVENTY-FIFTH ATLAS ENTRY
+    PF is RH   by Schoenberg, Phi is a Polya frequency function iff the reciprocal of its bilateral
+               Laplace transform is Laguerre-Polya; that transform is Xi. So the PF property of the
+               theta remainder IS the hypothesis, and every level of the descent is a localisation of
+               RH rather than a weaker species. The descent improves parameters, not the statement.
+
+### STATE AT CYCLE 141
+Seventy-five entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+THE FULLY HONEST TERMINAL POSITION AFTER 141 CYCLES:
+  * The unconditional landscape organised by log T is CLOSED; root cause: RH constrains CODIMENSION,
+    every tool there measures AREA (entry 52).
+  * Exactly ONE route escapes — Jensen polynomials with the discriminant — settled below 9.36 x 10^20
+    with observed onsets zero; its recorded super-exponential cost was REFUTED as an artefact.
+  * A MECHANISM for that route is assembled and machine-verified in every algebraic step: doubly
+    exponential concentration beats the factorial gap by (2 log k)^{d-1}.
+  * The mechanism's remaining gap is a FINITE descent of at most five zero-free-disc statements, whose
+    parameters strictly improve — BUT EACH LEVEL IS A LOCALISATION OF RH ITSELF (this cycle).
+  * Refutation remains finite, concrete, threefold, and unfired.
+THE PROGRAMME HAS LOCALISED THE HYPOTHESIS TO AN EXPLICIT DISC WITH EXPLICIT PARAMETERS. IT HAS NOT
+WEAKENED IT.
+
+### Cycle 142 target
+Given that every level is a localisation, the question becomes whether LOCALISATION HELPS AT ALL. A
+local statement on a disc of radius R about s = 2k is weaker than the global one, and the global one
+is the union over all k of the local ones. THE SHARP QUESTION: do the discs of radius sqrt(k/log k)
+about s = 2k COVER the region where zeros could lie? The zeros of Xi in the s-variable correspond to
+zeros of the moment interpolation, and if the discs overlap and exhaust, the local statements imply
+the global one; if they leave gaps, they do not. COMPUTE THE COVERING: consecutive centres are 2 apart
+and the radii grow like sqrt(k/log k) -> infinity, SO THE DISCS EVENTUALLY OVERLAP MASSIVELY AND COVER
+EVERYTHING BEYOND A FINITE POINT. If that is right, the five-level descent plus a finite check is
+equivalent to RH — which would make the localisation exact rather than lossy.

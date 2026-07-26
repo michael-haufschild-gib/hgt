@@ -2097,5 +2097,7 @@ import GaloisForLFunctions.HTGeometry.ScaleWindowIncompatibility
 import GaloisForLFunctions.HTGeometry.FunctionalEquationScaleContact
 import GaloisForLFunctions.HTGeometry.OffLineTransfer
 import GaloisForLFunctions.HTGeometry.OffLineExponentPairProfile
+import GaloisForLFunctions.HTGeometry.TransferBand
+import GaloisForLFunctions.HTGeometry.DisproofRoute
 import GaloisForLFunctions.HTGeometry.LogPhaseDensity
 import GaloisForLFunctions.HTGeometry.SquareIndexMultiplicative
