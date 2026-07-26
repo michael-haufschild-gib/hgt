@@ -27,6 +27,12 @@ private theorem centralCutoffCommutator_isHilbertSchmidt
   let U : SoninL2 →L[ℂ] SoninL2 := upperBoundary P X
   have hL : IsHilbertSchmidt L := by
     simpa only [L, P, X] using centralProlateTransition_isHilbertSchmidt a ha
+  have hPadj : adjoint P = P := by
+    simpa only [P] using
+      (isSelfAdjoint_starProjection (centralFourierForbidden a)).star_eq
+  have hXadj : adjoint X = X := by
+    simpa only [X] using
+      (isSelfAdjoint_starProjection (centralPhysicalForbidden a)).star_eq
   have hAdjL : adjoint L = U := by
     dsimp only [L, U]
     unfold crossBoundary upperBoundary
@@ -34,9 +40,7 @@ private theorem centralCutoffCommutator_isHilbertSchmidt
     rw [ContinuousLinearMap.adjoint_comp]
     change adjoint P ∘L adjoint ((1 - P) ∘L X) = _
     rw [ContinuousLinearMap.adjoint_comp,
-      adjoint_one_sub (isSelfAdjoint_starProjection (centralFourierForbidden a)).star_eq,
-      (isSelfAdjoint_starProjection (centralPhysicalForbidden a)).star_eq,
-      (isSelfAdjoint_starProjection (centralFourierForbidden a)).star_eq]
+      adjoint_one_sub hPadj, hXadj, hPadj]
   have hU : IsHilbertSchmidt U := by
     rw [← hAdjL]
     exact hL.adjoint
@@ -75,8 +79,9 @@ theorem hsNormSq_centralSoninProjectionQuantumWalk_sub_adjoint_eq
       centralSoninProjectionQuantumWalk a -
           adjoint (centralSoninProjectionQuantumWalk a) =
         (4 : ℂ) • C := by
-    simpa only [C, Algebra.smul_def] using
-      centralSoninProjectionQuantumWalk_sub_adjoint_eq_four_mul_cutoffCommutator a
+    rw [centralSoninProjectionQuantumWalk_sub_adjoint_eq_four_mul_cutoffCommutator]
+    dsimp only [C]
+    module
   rw [hwalk, hsNormSq_smul_eq hC (4 : ℂ)]
   norm_num
   rw [show hsNormSq C =

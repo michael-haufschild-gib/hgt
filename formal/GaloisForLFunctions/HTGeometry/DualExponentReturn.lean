@@ -72,6 +72,35 @@ theorem exponent_return_iff (d : ℕ) (hd : 2 ≤ d) :
   · rintro rfl
     exact ⟨1, by norm_num⟩
 
+/-- **The resonance-return equation.**  For a trivial phase of leading integer exponent `k`, the
+resonating exponent `1/d` reappears among the dual exponents exactly when `m d + n (k d - 1) = 1` has a
+solution in non-negative integers, and that happens only for `d = 2`, `k = 1`.  In particular no choice
+of the integer part of the phase repairs the failure in degree `≥ 3`. -/
+theorem resonance_return_iff (d k m n : ℕ) (hd : 2 ≤ d) (hk : 1 ≤ k) :
+    m * d + n * (k * d - 1) = 1 ↔ d = 2 ∧ k = 1 ∧ m = 0 ∧ n = 1 := by
+  have hkd : 2 ≤ k * d := Nat.mul_le_mul hk hd
+  constructor
+  · intro h
+    have hm : m = 0 := by
+      by_contra hm0
+      have : d ≤ m * d := Nat.le_mul_of_pos_left d (by omega)
+      omega
+    subst hm
+    simp only [zero_mul, zero_add] at h
+    have hn : n = 1 := Nat.eq_one_of_mul_eq_one_right h
+    subst hn
+    simp only [one_mul] at h
+    have hkd1 : k * d = 2 := by omega
+    have hk1 : k = 1 := by
+      by_contra hk2
+      have : 2 * d ≤ k * d := Nat.mul_le_mul_right d (by omega)
+      omega
+    subst hk1
+    simp only [one_mul] at hkd1
+    exact ⟨hkd1, rfl, rfl, rfl⟩
+  · rintro ⟨rfl, rfl, rfl, rfl⟩
+    norm_num
+
 /-- The fixed exponent `2/d` is a positive integer only in degrees `1` and `2`. -/
 theorem fixedExp_isInt_iff (d : ℕ) (hd : 0 < d) :
     (∃ m : ℕ, 0 < m ∧ d * m = 2) ↔ d = 1 ∨ d = 2 := by
