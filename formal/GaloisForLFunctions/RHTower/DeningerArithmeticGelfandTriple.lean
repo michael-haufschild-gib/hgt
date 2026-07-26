@@ -54,16 +54,49 @@ theorem deningerCompactOpenThetaEigenvector_eigen
     (exists_deningerCompactOpenTheta_eigenvector rho)).2
 
 /--
+A complex-linear test embedding cannot realize the ordinary continuous-dual pairing through
+mathlib's conjugate-linear-first Hilbert product: scalar multiplication by `I` forces every such
+pairing to vanish.  This is why the genuine Gelfand test embedding below is conjugate-linear.
+-/
+theorem deningerLinearTestHilbertPairing_eq_zero
+    {H : Type*} [NormedAddCommGroup H]
+    [InnerProductSpace ℂ H]
+    (testToHilbert :
+      DeningerArithmeticTopologicalH1Compact →L[ℂ] H)
+    (hilbertToDistribution :
+      H →L[ℂ] DeningerArithmeticCompactOpenH1)
+    (pairing_compatibility :
+      ∀ ell x,
+        ell (hilbertToDistribution x) =
+          @inner ℂ H _ (testToHilbert ell) x)
+    (ell : DeningerArithmeticTopologicalH1Compact)
+    (x : H) :
+    ell (hilbertToDistribution x) = 0 := by
+  have hbase := pairing_compatibility ell x
+  have hI := pairing_compatibility (Complex.I • ell) x
+  simp only [map_smul, ContinuousLinearMap.smul_apply,
+    inner_smul_left, conj_I] at hI
+  rw [hbase] at hI
+  have hinner :
+      @inner ℂ H _ (testToHilbert ell) x = 0 := by
+    have htwoI : (2 * Complex.I : ℂ) ≠ 0 := by norm_num
+    apply mul_left_cancel₀ htwoI
+    linear_combination hI
+  exact hbase.trans hinner
+
+/--
 Source-defined Gelfand triple around a Hilbert middle-cohomology completion.
 
-`testToHilbert` has dense range, `hilbertToDistribution` is injective, and the two embeddings
-realize the original continuous-dual pairing as the Hilbert pairing.
+`testToHilbert` is conjugate-linear with dense range, `hilbertToDistribution` is linear and
+injective, and the two embeddings realize the original continuous-dual pairing as the Hilbert
+pairing.  Conjugate-linearity in the test embedding is forced by mathlib's
+conjugate-linear-first inner-product convention.
 -/
 structure DeningerArithmeticGelfandTriple
     (H : Type*) [NormedAddCommGroup H]
     [InnerProductSpace ℂ H] [CompleteSpace H] where
   testToHilbert :
-    DeningerArithmeticTopologicalH1Compact →L[ℂ] H
+    DeningerArithmeticTopologicalH1Compact →L⋆[ℂ] H
   hilbertToDistribution :
     H →L[ℂ] DeningerArithmeticCompactOpenH1
   test_dense : DenseRange testToHilbert

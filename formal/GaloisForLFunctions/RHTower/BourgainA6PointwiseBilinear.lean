@@ -35,7 +35,9 @@ theorem continuous_bourgainA6BlockFamilySum
     (N K M q₀ : ℕ) :
     Continuous (bourgainA6BlockFamilySum N K M q₀) := by
   unfold bourgainA6BlockFamilySum
-  fun_prop [continuous_bourgainA6PhysicalBlockSum]
+  apply continuous_finsetSum
+  intro i hi
+  exact continuous_bourgainA6PhysicalBlockSum _ _ _ _
 
 /-- Literal three-color pointwise decomposition of a consecutive `A₆` block
 family. -/
@@ -77,7 +79,8 @@ theorem integral_bourgainA6BlockFamilySum_pow_twelve_le_majorant
           ‖∑ i : Fin K, f i x‖ ^ (12 : ℕ))
         (volume.restrict
           (Metric.closedBall (0 : BourgainPhaseSpace) R)) := by
-    apply ContinuousOn.integrableOn_compact isCompact_closedBall
+    apply ContinuousOn.integrableOn_compact
+      (isCompact_closedBall (0 : BourgainPhaseSpace) R)
     fun_prop
   have hdiag :
       ∀ i : Fin K,
@@ -85,7 +88,8 @@ theorem integral_bourgainA6BlockFamilySum_pow_twelve_le_majorant
           (volume.restrict
             (Metric.closedBall (0 : BourgainPhaseSpace) R)) := by
     intro i
-    apply ContinuousOn.integrableOn_compact isCompact_closedBall
+    apply ContinuousOn.integrableOn_compact
+      (isCompact_closedBall (0 : BourgainPhaseSpace) R)
     exact (hf i).norm.pow 12 |>.continuousOn
   have hpair :
       ∀ (c : Fin 3) (i : Fin K),
@@ -97,7 +101,8 @@ theorem integral_bourgainA6BlockFamilySum_pow_twelve_le_majorant
             (volume.restrict
               (Metric.closedBall (0 : BourgainPhaseSpace) R)) := by
     intro c i hi j hj
-    apply ContinuousOn.integrableOn_compact isCompact_closedBall
+    apply ContinuousOn.integrableOn_compact
+      (isCompact_closedBall (0 : BourgainPhaseSpace) R)
     exact (((hf i).norm.pow 6).mul ((hf j).norm.pow 6)).continuousOn
   have h :=
     integral_norm_sum_pow_twelve_le_bourgainThreeColorBilinearMajorant

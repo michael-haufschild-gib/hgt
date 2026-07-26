@@ -8406,3 +8406,59 @@ the descent may strictly simplify. IF EACH DESCENT STEP STRICTLY SIMPLIFIES THE 
 TERMINATES AND THE ROUTE CLOSES. Test whether the tilted measure of a log-concave measure is again
 log-concave with a better parameter — Prekopa-Leindler says log-concavity is preserved, and the
 convexity parameter IMPROVES under tilting toward the mode.
+
+---
+
+## Cycle 138 (2026-07-26) — THE SELF-SIMILARITY IS A DESCENT, NOT A CIRCLE
+
+### Which kind of self-similarity
+Each step of the regress passes from the measure in u to the measure in w = log u. THAT SUBSTITUTION
+ADDS AN EXPONENTIAL TO THE DECAY TOWER: a density falling like exp(-e^{2u}) becomes, in the new
+variable, one falling like exp(-e^{2e^w}). So the convexity of -log GROWS at each level and the
+non-Gaussianity parameter SHRINKS.
+
+    ==> THE REGRESS IS NOT VICIOUS. IT IS A STRICTLY IMPROVING SEQUENCE.
+
+### And it terminates
+What is NEEDED at each level is a constant of FACTORIAL size; what is SUPPLIED grows like an ITERATED
+EXPONENTIAL. A tower outgrows any factorial, so the improvement overtakes the requirement AT A FINITE
+LEVEL, and the regress can be cut there.
+
+    ==> THE SELF-SIMILARITY IS A DESCENT: EACH STEP STRICTLY INCREASES THE CONCENTRATION, THE SUPPLY
+        GROWS LIKE A TOWER WHILE THE DEMAND GROWS LIKE A FACTORIAL, AND THE TWO CROSS AT A FINITE
+        LEVEL.
+
+This reverses the reading of entry 71. The gap is self-similar, but self-similarity here is the
+FAVOURABLE kind — a descent with strictly improving parameters and a terminating comparison, not a
+closed loop.
+
+### What remains, and it is of a new type
+IDENTIFY THE CROSSING LEVEL EXPLICITLY. That is a comparison of two explicit growth sequences, and it
+is THE FIRST QUESTION IN THIS DEVELOPMENT WHOSE ANSWER IS A SPECIFIC NATURAL NUMBER RATHER THAN A
+STRUCTURE. Every previous open point was a structural absence; this one is an arithmetic comparison
+between a tower and a factorial.
+
+Machine-verified: `RHTower/DescentImprovesAndTerminates.lean` (unboundedness of the iterated
+exponential, its overtaking of any fixed constant, the cut once supply exceeds demand, the improvement
+step A/c2 <= A/c1 for c1 <= c2, its compounding along a chain, and the distinction from a circle;
+standard axioms only, wired into RHTower).
+
+### SEVENTY-SECOND ATLAS ENTRY (entry 71 reinterpreted)
+    favourable descent   each step of the self-similar regress passes to w = log u, adding an
+                         exponential to the decay tower, so convexity grows and the non-Gaussianity
+                         parameter shrinks. Supply grows like a tower, demand like a factorial; they
+                         cross at a finite level and the regress is cut there. The self-similarity is
+                         a descent, not a circle.
+    entry 71 REINTERPRETED  the gap is self-similar, but of the favourable kind.
+
+### STATE AT CYCLE 138
+Seventy-two entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+### Cycle 139 target
+Compute the crossing level. The supply at level r is the convexity c_r, growing like the tower
+exp(exp(...)) with r exponentials; the demand at degree d is the cumulant constant, of size (d-1)!.
+The crossing is the least r with c_r > (d-1)!, i.e. tower(r) > (d-1)!. TAKING LOGARITHMS r TIMES,
+THE CONDITION IS ROUGHLY r >= log* ((d-1)!) — THE ITERATED LOGARITHM — WHICH IS AT MOST 5 FOR EVERY d
+BELOW ANY CONCEIVABLE BOUND. IF THAT IS RIGHT, THE DESCENT TERMINATES AT LEVEL FIVE OR LESS FOR EVERY
+DEGREE OF INTEREST, AND THE MECHANISM CLOSES WITH AN EXPLICIT FINITE VERIFICATION. Compute log* of
+(d-1)! for the relevant range and state the exact level.
