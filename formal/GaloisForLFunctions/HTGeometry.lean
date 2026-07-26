@@ -2253,3 +2253,4 @@ import GaloisForLFunctions.HTGeometry.EllipticPoleSpace
 import GaloisForLFunctions.HTGeometry.EllipticPrincipalJet
 import GaloisForLFunctions.HTGeometry.FundamentalParallelogram
 import GaloisForLFunctions.HTGeometry.EllipticFundamentalPoles
+import GaloisForLFunctions.HTGeometry.EllipticCountingTools

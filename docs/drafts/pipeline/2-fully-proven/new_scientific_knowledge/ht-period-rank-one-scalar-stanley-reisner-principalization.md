@@ -1378,3 +1378,23 @@ umbrella-registered):
   integer translate of one in the parallelogram.
 
 So the pole representatives are a finite set, as the counting argument requires.
+
+#### Step 3 machinery: the count and the order bookkeeping
+
+`GaloisForLFunctions/HTGeometry/EllipticCountingTools.lean` (axiom-clean, build green,
+umbrella-registered) supplies the two remaining generic ingredients.
+
+- **`exists_ne_zero_ker_of_finrank_lt`** and **`exists_ne_zero_ker_of_card_lt`** — a linear map into
+  a space of strictly smaller dimension, resp. into a coordinate space with fewer coordinates, kills
+  a nonzero vector.  This is what converts "more monomials than principal-part coefficients" into an
+  actual relation, via `LinearMap.finrank_le_finrank_of_injective`.
+- `meromorphicOrderAt_poleFactor_mul` — the order of `(. - p)^d g` at `p` is `d` plus the order of
+  `g` (`meromorphicOrderAt_mul` and `meromorphicOrderAt_pow_id_sub_const`);
+- **`nonneg_order_poleFactor`** — hence a pole of order at most `d` is cleared, which is exactly the
+  hypothesis the principal-jet machinery consumes.
+
+All the generic pieces of the plan are now in place: the Liouville kernel, the principal-jet linear
+map (binary and n-ary), the finiteness of the pole representatives, the dimension count, and the
+order bookkeeping.  What remains is the assembly for a concrete carrier: bound the pole orders of the
+monomials `f^i (f')^j` in terms of the pole order of `f`, run the count, and multiply the resulting
+differential polynomial by the value slot `y_0` so that the relation also holds at the poles.
