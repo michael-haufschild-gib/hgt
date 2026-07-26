@@ -70,4 +70,71 @@ theorem nonneg_order_poleFactor {g : ℂ → ℂ} {p : ℂ} {d : ℕ} (hg : Mero
   rw [hzero, add_comm (d : WithTop ℤ) (meromorphicOrderAt g p)]
   exact add_le_add_left hord _
 
+
+/-! ### Pole orders of monomials -/
+
+/-- A power multiplies the pole-order bound. -/
+theorem order_pow_ge {g : ℂ → ℂ} {p : ℂ} {m : ℕ} (hg : MeromorphicAt g p)
+    (ho : (-(m : ℤ) : WithTop ℤ) ≤ meromorphicOrderAt g p) (i : ℕ) :
+    (-((m * i : ℕ) : ℤ) : WithTop ℤ) ≤ meromorphicOrderAt (fun z => g z ^ i) p := by
+  induction i with
+  | zero =>
+      have hfun : (fun z => g z ^ 0) = fun _ : ℂ => (1 : ℂ) := by
+        funext z; simp
+      rw [hfun]
+      classical
+      have hconst : meromorphicOrderAt (fun _ : ℂ => (1 : ℂ)) p = 0 := by
+        rw [meromorphicOrderAt_const]
+        simp
+      rw [hconst]
+      simp
+  | succ n ih =>
+      have hfun : (fun z => g z ^ (n + 1)) = (fun z => g z ^ n) * g := by
+        funext z
+        show g z ^ (n + 1) = g z ^ n * g z
+        ring
+      have hmerpow : MeromorphicAt (fun z => g z ^ n) p := hg.pow n
+      rw [hfun, meromorphicOrderAt_mul hmerpow hg]
+      have hcast : (-((m * (n + 1) : ℕ) : ℤ) : WithTop ℤ)
+          = (-((m * n : ℕ) : ℤ) : WithTop ℤ) + (-(m : ℤ) : WithTop ℤ) := by
+        norm_cast
+        push_cast
+        ring_nf
+      rw [hcast]
+      exact add_le_add ih ho
+
+/-- **Pole order of a monomial.**  If both factors have order at least `−m`, the monomial
+`g₁^i g₂^j` has order at least `−m(i+j)`. -/
+theorem order_monomial_ge {g₁ g₂ : ℂ → ℂ} {p : ℂ} {m : ℕ} (h₁ : MeromorphicAt g₁ p)
+    (h₂ : MeromorphicAt g₂ p)
+    (ho₁ : (-(m : ℤ) : WithTop ℤ) ≤ meromorphicOrderAt g₁ p)
+    (ho₂ : (-(m : ℤ) : WithTop ℤ) ≤ meromorphicOrderAt g₂ p) (i j : ℕ) :
+    (-((m * (i + j) : ℕ) : ℤ) : WithTop ℤ)
+      ≤ meromorphicOrderAt (fun z => g₁ z ^ i * g₂ z ^ j) p := by
+  have hm₁ : MeromorphicAt (fun z => g₁ z ^ i) p := h₁.pow i
+  have hm₂ : MeromorphicAt (fun z => g₂ z ^ j) p := h₂.pow j
+  have hfun : (fun z => g₁ z ^ i * g₂ z ^ j) = (fun z => g₁ z ^ i) * (fun z => g₂ z ^ j) := rfl
+  rw [hfun, meromorphicOrderAt_mul hm₁ hm₂]
+  have hcast : (-((m * (i + j) : ℕ) : ℤ) : WithTop ℤ)
+      = (-((m * i : ℕ) : ℤ) : WithTop ℤ) + (-((m * j : ℕ) : ℤ) : WithTop ℤ) := by
+    norm_cast
+    push_cast
+    ring_nf
+  rw [hcast]
+  exact add_le_add (order_pow_ge h₁ ho₁ i) (order_pow_ge h₂ ho₂ j)
+
+/-- The monomial bound at the uniform degree `N`. -/
+theorem order_monomial_ge_of_le {g₁ g₂ : ℂ → ℂ} {p : ℂ} {m N : ℕ} (h₁ : MeromorphicAt g₁ p)
+    (h₂ : MeromorphicAt g₂ p)
+    (ho₁ : (-(m : ℤ) : WithTop ℤ) ≤ meromorphicOrderAt g₁ p)
+    (ho₂ : (-(m : ℤ) : WithTop ℤ) ≤ meromorphicOrderAt g₂ p) {i j : ℕ} (hij : i + j ≤ N) :
+    (-((m * N : ℕ) : ℤ) : WithTop ℤ)
+      ≤ meromorphicOrderAt (fun z => g₁ z ^ i * g₂ z ^ j) p := by
+  refine le_trans ?_ (order_monomial_ge h₁ h₂ ho₁ ho₂ i j)
+  have hle : (m * (i + j) : ℕ) ≤ m * N := Nat.mul_le_mul_left m hij
+  have : (-((m * N : ℕ) : ℤ)) ≤ (-((m * (i + j) : ℕ) : ℤ)) := by
+    simp only [neg_le_neg_iff]
+    exact_mod_cast hle
+  exact_mod_cast this
+
 end GaloisForLFunctions.HTGeometry

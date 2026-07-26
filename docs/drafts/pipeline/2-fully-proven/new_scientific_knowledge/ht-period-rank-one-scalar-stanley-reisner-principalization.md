@@ -1398,3 +1398,18 @@ map (binary and n-ary), the finiteness of the pole representatives, the dimensio
 order bookkeeping.  What remains is the assembly for a concrete carrier: bound the pole orders of the
 monomials `f^i (f')^j` in terms of the pole order of `f`, run the count, and multiply the resulting
 differential polynomial by the value slot `y_0` so that the relation also holds at the poles.
+
+Assembly step (a), the pole orders of the monomials, is also done, in the same module:
+
+- `order_pow_ge` — a power multiplies the pole-order bound (induction on the exponent, using only
+  `meromorphicOrderAt_mul`, so no `WithTop` multiplication monotonicity is needed);
+- **`order_monomial_ge`** and `order_monomial_ge_of_le` — if `g_1` and `g_2` both have order at least
+  `-m` at `p`, then `g_1^i g_2^j` has order at least `-m(i+j)`, hence at least `-mN` when
+  `i + j <= N`.
+
+**A simplification worth recording.**  The sharp bound `ord(f') >= ord(f) - 1` is *not* needed, and
+mathlib has no lemma for it.  It suffices to take `m` to be a common bound for the pole orders of `f`
+and of `f'` at the finitely many pole representatives -- no relation between the two is required,
+because the count only needs the total pole order of the monomials to grow linearly in `N`.  Mathlib
+supplies `MeromorphicAt.deriv`, so `f'` is meromorphic wherever `f` is, and the pole set of `f'` is
+contained in that of `f`.
