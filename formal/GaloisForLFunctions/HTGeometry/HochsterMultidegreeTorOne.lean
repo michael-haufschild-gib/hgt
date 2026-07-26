@@ -187,6 +187,95 @@ theorem srHollowSimplexSyzygyVec_isCycle_iff (facets : Finset (Finset α)) (σ :
     rwa [map_smul, srFaceDetector_prod, smul_eq_mul, mul_one, map_zero] at this
   · intro h; rw [h, zero_smul]
 
+/-! ### The strand chain map from reduced cochains to the Koszul strand -/
+
+/-- The degree-one strand map: a cochain on the codimension-one faces of `σ` becomes the
+multidegree-`σ` Koszul `1`-chain with incidence-sign corrected coefficients. -/
+def strandOne (F : Type*) [CommRing F] (facets : Finset (Finset α)) (σ : Finset α)
+    (a : Finset α → F) : α → stanleyReisnerRing F facets :=
+  srHollowSimplexSyzygyVec F facets σ (fun i => faceSign F σ i * a (σ.erase i))
+
+/-- The degree-two strand map: a cochain on the codimension-two faces of `σ` becomes the
+multidegree-`σ` Koszul `2`-chain in strictly-upper-triangular form, which represents an alternating
+tensor without introducing a factor `2`. -/
+def strandTwo (F : Type*) [CommRing F] (facets : Finset (Finset α)) (σ : Finset α)
+    (g : Finset α → F) : α → α → stanleyReisnerRing F facets :=
+  fun i j => if i < j ∧ i ∈ σ ∧ j ∈ σ then
+      (faceSign F σ i * faceSign F (σ.erase i) j * g ((σ.erase i).erase j))
+        • ∏ w ∈ (σ.erase i).erase j, srVertexX F facets w
+    else 0
+
+omit [LinearOrder α] [Fintype α] in
+/-- Strand elements whose coefficients agree on the codimension-one faces of `σ` coincide: a
+coefficient at a nonface slot is invisible because the corresponding monomial vanishes. -/
+theorem srHollowSimplexSyzygyVec_congr (facets : Finset (Finset α)) (σ : Finset α) {l l' : α → F}
+    (hll : ∀ i ∈ σ, IsFaceOf (↑facets : Set (Finset α)) (σ.erase i) → l i = l' i) :
+    srHollowSimplexSyzygyVec F facets σ l = srHollowSimplexSyzygyVec F facets σ l' := by
+  funext i
+  simp only [srHollowSimplexSyzygyVec]
+  by_cases hi : i ∈ σ
+  · rw [if_pos hi, if_pos hi]
+    by_cases hface : IsFaceOf (↑facets : Set (Finset α)) (σ.erase i)
+    · rw [hll i hi hface]
+    · rw [srProd_eq_zero_of_not_isFace facets hface, smul_zero, smul_zero]
+  · rw [if_neg hi, if_neg hi]
+
+/-- **Chain map in degree one.**  The Koszul differential of the degree-one strand map is the full
+`σ`-monomial scaled by the coboundary of the cochain evaluated at `σ` — the top slot of the cochain
+complex of the induced subcomplex, which survives exactly when `σ` is a face. -/
+theorem srKoszulRelation_strandOne (facets : Finset (Finset α)) (σ : Finset α) (a : Finset α → F) :
+    srKoszulRelation facets (strandOne F facets σ a)
+      = simplicialCoboundary F a σ • ∏ w ∈ σ, srVertexX F facets w :=
+  srKoszulRelation_srHollowSimplexSyzygyVec facets σ _
+
+/-- **Chain map in degree two.**  The Koszul boundary of the degree-two strand map is the degree-one
+strand map of the coboundary.  So the strand maps intertwine the reduced simplicial coboundary of the
+induced subcomplex `Δ_σ` with the Koszul differential of the multidegree-`σ` strand — the chain map
+underlying Hochster's correspondence, valid for every finite complex and every multidegree. -/
+theorem srKoszulBoundary_strandTwo (facets : Finset (Finset α)) (σ : Finset α) (g : Finset α → F) :
+    srKoszulBoundary facets (strandTwo F facets σ g)
+      = strandOne F facets σ (simplicialCoboundary F g) := by
+  funext m
+  rw [srKoszulBoundary, strandOne, srHollowSimplexSyzygyVec]
+  by_cases hm : m ∈ σ
+  · have hterm : ∀ j : α, ((strandTwo F facets σ g m j - strandTwo F facets σ g j m)
+        * srVertexX F facets j)
+        = if j ∈ σ.erase m then
+            (faceSign F σ m * faceSign F (σ.erase m) j * g ((σ.erase m).erase j))
+              • ∏ w ∈ σ.erase m, srVertexX F facets w
+          else 0 := by
+      intro j
+      simp only [strandTwo]
+      by_cases hj : j ∈ σ.erase m
+      · have hjσ : j ∈ σ := Finset.mem_of_mem_erase hj
+        have hjm : j ≠ m := Finset.ne_of_mem_erase hj
+        rw [if_pos hj]
+        rcases lt_or_gt_of_ne hjm with hlt | hlt
+        · rw [if_neg (fun hc => absurd hc.1 (asymm hlt)), if_pos ⟨hlt, hjσ, hm⟩, zero_sub,
+            ← neg_smul, signedPair_symm' g hm hjσ (Ne.symm hjm),
+            show (σ.erase j).erase m = (σ.erase m).erase j from Finset.erase_right_comm,
+            smul_mul_assoc, Finset.prod_erase_mul (σ.erase m) (srVertexX F facets) hj]
+        · rw [if_pos ⟨hlt, hm, hjσ⟩, if_neg (fun hc => absurd hc.1 (asymm hlt)), sub_zero,
+            smul_mul_assoc, Finset.prod_erase_mul (σ.erase m) (srVertexX F facets) hj]
+      · rw [if_neg hj]
+        by_cases hjσ : j ∈ σ
+        · have hjm : j = m := by
+            by_contra hc
+            exact hj (Finset.mem_erase.mpr ⟨hc, hjσ⟩)
+          subst hjm
+          simp
+        · rw [if_neg (fun hc => hjσ hc.2.2), if_neg (fun hc => hjσ hc.2.1), sub_zero, zero_mul]
+    rw [Finset.sum_congr rfl (fun j _ => hterm j), Finset.sum_ite_mem, Finset.univ_inter,
+      ← Finset.sum_smul, if_pos hm]
+    congr 1
+    show _ = faceSign F σ m * ∑ v ∈ σ.erase m, faceSign F (σ.erase m) v * g ((σ.erase m).erase v)
+    rw [Finset.mul_sum]
+    exact Finset.sum_congr rfl (fun j _ => by ring)
+  · rw [if_neg hm]
+    refine Finset.sum_eq_zero (fun j _ => ?_)
+    simp only [strandTwo]
+    rw [if_neg (fun hc => hm hc.2.1), if_neg (fun hc => hm hc.2.2), sub_zero, zero_mul]
+
 /-! ### The boundary half: Hochster's formula at `Tor₁` -/
 
 /-- **Hochster's formula at `Tor₁`, for every finite complex and every multidegree.**  A
@@ -241,67 +330,11 @@ theorem hochster_multidegree_boundary_iff (facets : Finset (Finset α)) (σ : Fi
         have := faceSign_mul_self (F := F) (σ.erase i) v
         linear_combination (faceSign F σ i * b i v) * this), ← Finset.mul_sum, hrow]
   · rintro ⟨h, hh⟩
-    refine ⟨fun i j => if i < j ∧ i ∈ σ ∧ j ∈ σ then
-        (faceSign F σ i * faceSign F (σ.erase i) j * h ((σ.erase i).erase j))
-          • ∏ w ∈ (σ.erase i).erase j, srVertexX F facets w
-      else 0, ?_⟩
-    funext m
-    rw [srKoszulBoundary]
-    by_cases hm : m ∈ σ
-    · have hterm : ∀ j : α, (((if m < j ∧ m ∈ σ ∧ j ∈ σ then
-            (faceSign F σ m * faceSign F (σ.erase m) j * h ((σ.erase m).erase j))
-              • ∏ w ∈ (σ.erase m).erase j, srVertexX F facets w else 0)
-          - (if j < m ∧ j ∈ σ ∧ m ∈ σ then
-            (faceSign F σ j * faceSign F (σ.erase j) m * h ((σ.erase j).erase m))
-              • ∏ w ∈ (σ.erase j).erase m, srVertexX F facets w else 0))
-          * srVertexX F facets j)
-          = if j ∈ σ.erase m then
-              (faceSign F σ m * faceSign F (σ.erase m) j * h ((σ.erase m).erase j))
-                • ∏ w ∈ σ.erase m, srVertexX F facets w
-            else 0 := by
-        intro j
-        by_cases hj : j ∈ σ.erase m
-        · have hjσ : j ∈ σ := Finset.mem_of_mem_erase hj
-          have hjm : j ≠ m := Finset.ne_of_mem_erase hj
-          rw [if_pos hj]
-          rcases lt_or_gt_of_ne hjm with hlt | hlt
-          · rw [if_neg (fun hc => absurd hc.1 (asymm hlt)), if_pos ⟨hlt, hjσ, hm⟩, zero_sub,
-              ← neg_smul, signedPair_symm' h hm hjσ (Ne.symm hjm),
-              show (σ.erase j).erase m = (σ.erase m).erase j from Finset.erase_right_comm,
-              smul_mul_assoc, Finset.prod_erase_mul (σ.erase m) (srVertexX F facets) hj]
-          · rw [if_pos ⟨hlt, hm, hjσ⟩, if_neg (fun hc => absurd hc.1 (asymm hlt)), sub_zero,
-              smul_mul_assoc, Finset.prod_erase_mul (σ.erase m) (srVertexX F facets) hj]
-        · rw [if_neg hj]
-          by_cases hjσ : j ∈ σ
-          · have hjm : j = m := by
-              by_contra hc
-              exact hj (Finset.mem_erase.mpr ⟨hc, hjσ⟩)
-            subst hjm
-            simp
-          · rw [if_neg (fun hc => hjσ hc.2.2), if_neg (fun hc => hjσ hc.2.1), sub_zero, zero_mul]
-      rw [Finset.sum_congr rfl (fun j _ => hterm j), Finset.sum_ite_mem, Finset.univ_inter,
-        ← Finset.sum_smul, srHollowSimplexSyzygyVec, if_pos hm]
-      by_cases hface : IsFaceOf (↑facets : Set (Finset α)) (σ.erase m)
-      · have hsum : ∑ j ∈ σ.erase m,
-            faceSign F σ m * faceSign F (σ.erase m) j * h ((σ.erase m).erase j) = l m := by
-          have hcob := hh m hm hface
-          rw [show simplicialCoboundary F h (σ.erase m)
-              = ∑ v ∈ σ.erase m, faceSign F (σ.erase m) v * h ((σ.erase m).erase v) from rfl]
-            at hcob
-          have hmul : ∑ j ∈ σ.erase m,
-              faceSign F σ m * faceSign F (σ.erase m) j * h ((σ.erase m).erase j)
-              = faceSign F σ m * ∑ j ∈ σ.erase m,
-                faceSign F (σ.erase m) j * h ((σ.erase m).erase j) := by
-            rw [Finset.mul_sum]
-            exact Finset.sum_congr rfl (fun j _ => by ring)
-          rw [hmul, hcob]
-          have := faceSign_mul_self (F := F) σ m
-          linear_combination (l m) * this
-        rw [hsum]
-      · rw [srProd_eq_zero_of_not_isFace facets hface, smul_zero, smul_zero]
-    · rw [srHollowSimplexSyzygyVec, if_neg hm]
-      refine Finset.sum_eq_zero (fun j _ => ?_)
-      rw [if_neg (fun hc => hm hc.2.1), if_neg (fun hc => hm hc.2.2), sub_zero, zero_mul]
+    refine ⟨strandTwo F facets σ h, ?_⟩
+    rw [srKoszulBoundary_strandTwo]
+    simp only [strandOne]
+    refine srHollowSimplexSyzygyVec_congr facets σ (fun i hi hface => ?_)
+    rw [hh i hi hface, ← mul_assoc, faceSign_mul_self, one_mul]
 
 /-- **Hochster's formula at `Tor₁` for arbitrary complexes and multidegrees, packaged.**  Under the
 incidence-sign dictionary `l ↦ (i ↦ faceSign σ i · l i)`, the multidegree-`σ` strand of the first

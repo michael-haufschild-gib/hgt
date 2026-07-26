@@ -1952,3 +1952,33 @@ with the general reduced simplicial cochain complex supplied from scratch.  What
 higher-`i` layer `Tor_{i,σ} ≅ H̃^{|σ|−i−1}(Δ_σ)` for `i ≥ 2` (the corpus has the Koszul complex in all
 degrees, `koszulD` with `d² = 0`, and the cochain complex in all degrees, so the remaining work is the
 multidegree-strand identification one level up), and the exact ranks for non-hollow `σ`.
+
+### Lean progress — the strand CHAIN MAP (cochains of `Δ_σ` → multidegree-`σ` Koszul strand)
+
+The card's Lean target asks for the squarefree Koszul strands *and their chain equivalence with
+reduced cochains of induced subcomplexes*.  The chain-map half is now explicit and unconditional
+(`HochsterMultidegreeTorOne.lean`, axiom-clean):
+
+- `strandOne F facets σ a` — a cochain on the codimension-one faces of `σ` becomes the multidegree-`σ`
+  Koszul `1`-chain with incidence-sign corrected coefficients.
+- `strandTwo F facets σ g` — a cochain on the codimension-two faces of `σ` becomes the multidegree-`σ`
+  Koszul `2`-chain in strictly-upper-triangular form, the representative of an alternating tensor that
+  keeps the construction characteristic-free.
+- `srKoszulRelation_strandOne` : `d₁ (strandOne a) = (δa)(σ) · ∏_σ x` — the degree-`1` chain-map
+  identity; the target slot survives exactly when `σ` is a face, matching `C^{|σ|}(Δ_σ)`.
+- **`srKoszulBoundary_strandTwo`** : `d₂ (strandTwo g) = strandOne (δg)` — the degree-`2` chain-map
+  identity.  So the strand maps intertwine the reduced simplicial coboundary of `Δ_σ` with the Koszul
+  differential, for every finite complex and every multidegree.
+- `srHollowSimplexSyzygyVec_congr` — coefficients at nonface slots are invisible (the monomial
+  vanishes), which is why the chain map is insensitive to the values a cochain takes off `Δ_σ`.
+
+With `hochster_multidegree_boundary_iff` (which now reads off the chain map directly in its backward
+direction) this gives the chain equivalence at the `Tor₁` level: the chain map carries coboundaries
+onto Koszul boundaries and, conversely, every strand boundary comes from a coboundary.
+
+**Convention note for the next level.**  The corpus differential `srKoszulBoundary c i = ∑_j (c_ij −
+c_ji) x_j` is the standard alternating `d₂` read on *upper-triangular* representatives, while
+`srKoszulBoundary3` produces *antisymmetric* `2`-tensors; composing them directly costs a factor `2`.
+The characteristic-free `Tor₂` statement therefore has to pass through the upper-triangular
+representative of `d₃`, i.e. `srKoszulBoundary (upperTri (srKoszulBoundary3 n)) = 0` for alternating
+`n`, which is the standard `d₂ ∘ d₃ = 0`.  That is the next increment.
