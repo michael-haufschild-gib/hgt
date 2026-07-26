@@ -7852,3 +7852,64 @@ controlled by the tail of an explicit integral. THE CORPUS HAS EXTENSIVE THETA-T
 CENTRAL-DERIVATIVE TAIL — if the corpus already carries a sharper tail bound than the one limiting
 d <= 8, the settled degree can be raised by assembly rather than by new analysis, and that would be
 the first time the programme's own machinery advances the external frontier.
+
+---
+
+## Cycle 129 (2026-07-26) — DEGREE-UNIFORMITY IS THE WRONG SHAPE
+### The assembly hope closes, and the single analytic input is stated in its correct form.
+
+### PHASE 1 AUDIT RESULT
+The corpus carries 160 XiCTaylorThetaTail* modules with DEGREE-UNIFORM geometric remainder bounds
+(e.g. `abs_integral_xiCTaylorThetaTailCoreDyadicHaarRemainderKernel_le_half_pow` — "a degree-uniform
+top-row bound in the simple geometric form"). The hope was to assemble one into a better settled
+range for the Jensen route.
+
+### WHY IT CANNOT WORK
+Hyperbolicity at degree d is certified when the expansion error falls below the STABILITY RADIUS of
+the Hermite model, and that radius SHRINKS SUPER-EXPONENTIALLY: entry 58's intrinsic cost is exactly
+log(1/r(d)) ~ d^2 log d, so r(d) -> 0.
+
+    AN ERROR BOUND THAT DOES NOT DEPEND ON THE DEGREE — HOWEVER SHARP — EXCEEDS THE RADIUS ONCE THE
+    RADIUS DROPS BELOW IT, AND THE RADIUS DROPS BELOW EVERY POSITIVE CONSTANT. A DEGREE-UNIFORM BOUND
+    THEREFORE SETTLES ONLY FINITELY MANY DEGREES.
+
+    ==> WHAT IS REQUIRED IS NOT A UNIFORM BOUND BUT AN ERROR DECAYING AT LEAST AS FAST AS
+        exp(-c d^2 log d) IN THE DEGREE. THAT IS STRICTLY STRONGER THAN UNIFORMITY, AND IT IS THE
+        PRECISE SHAPE OF THE SINGLE ANALYTIC INPUT ON WHICH THE WHOLE REMAINING ROUTE DEPENDS.
+
+The assembly hope is closed, and the target is now stated in its correct form — not "a better tail
+bound" but "a tail bound whose decay in the DEGREE beats a super-exponentially shrinking radius".
+
+Machine-verified: `RHTower/UniformityIsTheWrongShape.lean` (a constant error eventually exceeds a
+vanishing radius, the resulting finiteness of the settled range, the required per-degree decay, the
+vanishing of exp(-c d^2 log d), and the fact that a constant sequence does not decay; standard axioms
+only, wired into RHTower).
+
+### SIXTY-THIRD ATLAS ENTRY
+    wrong shape   the Hermite stability radius satisfies log(1/r(d)) ~ d^2 log d, so any degree-uniform
+                  error bound settles only finitely many degrees. The single analytic input must decay
+                  like exp(-c d^2 log d) IN THE DEGREE; uniformity in the degree is insufficient by
+                  construction. The corpus's degree-uniform theta-tail bounds cannot be assembled into
+                  a better settled range.
+
+### STATE AT CYCLE 129
+Sixty-three entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+THE PROGRAMME'S FINAL LOCALISATION, after 129 cycles:
+    THE RIEMANN HYPOTHESIS, ALONG THE ONLY ROUTE THAT ESCAPES THE UNCONDITIONAL CLOSURE, REDUCES TO A
+    SINGLE ANALYTIC ESTIMATE: AN EXPANSION OF THE CENTRAL DERIVATIVES zeta^{(2n)}(1/2) WHOSE ERROR
+    DECAYS FASTER THAN exp(-c d^2 log d) IN THE JENSEN DEGREE d.
+Everything else — the closure of the log T landscape, the reality- and codimension-sensitivity of the
+discriminant, the reduction to finitely many polynomial inequalities, the perturbative stability, the
+refutation certificates — is settled and machine-verified.
+
+### Cycle 130 target
+State and attack the required estimate. The central derivatives have the integral representation
+zeta^{(2n)}(1/2) = (-1)^n int_1^inf Phi(t) (log t)^{2n} dt / (something), with Phi the theta remainder;
+the Jensen-degree decay demanded is a statement about how the MOMENTS of Phi against (log t)^{2n}
+behave as the moment order grows. MOMENT ASYMPTOTICS OF THAT SHAPE ARE EXACTLY WHAT LAPLACE'S METHOD
+GIVES, AND THE ERROR IN LAPLACE'S METHOD IS CONTROLLED BY THE SMOOTHNESS OF Phi AT ITS MAXIMUM.
+TEST WHETHER Phi'S REGULARITY AT THE RELEVANT POINT IS STRONG ENOUGH TO GIVE exp(-c d^2 log d): if Phi
+is analytic there with a quantified radius, Laplace's method yields factorially small errors, and
+factorial decay beats exp(-c d^2 log d) for large d — WHICH WOULD SETTLE ALL SUFFICIENTLY LARGE
+DEGREES AND LEAVE ONLY A FINITE, EXPLICIT RANGE.

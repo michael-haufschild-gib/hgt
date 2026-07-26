@@ -22,6 +22,7 @@ namespace RHTower
 noncomputable section
 
 /- The descended all-jets observation is onto the full multiplicity-bounded Xi-jet product. -/
+set_option maxHeartbeats 800000 in
 theorem deningerCompactOpenH1AllJets_surjective :
     Function.Surjective deningerCompactOpenH1AllJets := by
   letI :

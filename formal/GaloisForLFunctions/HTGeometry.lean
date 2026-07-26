@@ -2086,4 +2086,5 @@ import GaloisForLFunctions.HTGeometry.LengthReflectionLaw
 import GaloisForLFunctions.HTGeometry.CriticalLengthEigenspace
 import GaloisForLFunctions.HTGeometry.CoveringBuysNothing
 import GaloisForLFunctions.HTGeometry.CoveringCannotReachLindelof
+import GaloisForLFunctions.HTGeometry.SupportFunctionMaximalAtCritical
 import GaloisForLFunctions.HTGeometry.LogPhaseDensity
