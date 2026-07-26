@@ -5571,3 +5571,64 @@ defect of Q on the compressed space is O(1/L), so translations act on Q as ASYMP
 and by entry 26's approximate form, an asymptotic isometry constrains the spectrum asymptotically,
 which by entry 24 is enough. COMPUTE THE TRANSLATION DEFECT OF Q. If it is o(1) in L, the two halves
 of the missing structure meet.
+
+---
+
+## Cycle 94 (2026-07-26) — COMPRESSED TRANSLATIONS ARE SIMILITUDES IN DENSITY, NEVER IN NORM
+### Cycle 93's conjecture REFUTED. The refutation explains why Szego/Toeplitz asymptotics cannot work.
+
+### The kill
+Let V_s = P T_s P be the compressed translation on L^2[-l, l]. A function supported in [l - s, l] is
+carried by T_s into [l, l + s], ENTIRELY OUTSIDE the window, so V_s ANNIHILATES IT. Such a unit
+vector exists AT EVERY WIDTH, however large.
+
+An operator with a kernel vector cannot be a delta-approximate similitude of ratio q > delta: from
+| ||Vx||^2 - q ||x||^2 | <= delta ||x||^2 with Vx = 0 and ||x|| = 1 one gets q <= delta immediately.
+
+    ==> THE TRANSLATION DEFECT OF Q IS NOT O(1/L). IT IS 1, AT EVERY WIDTH. CONJECTURE REFUTED.
+
+### But the edge is thin — and that is the real content
+The annihilated subspace occupies a window of length s inside one of length 2l, a fraction
+s/2l -> 0. In the prolate/time-frequency picture the transition band has dimension O(log) inside a
+space whose dimension is proportional to the time-bandwidth area. SO THE COMPRESSED TRANSLATIONS ARE
+ASYMPTOTIC SIMILITUDES IN THE SENSE OF DENSITY.
+
+AND DENSITY IS NOT ENOUGH. Density-sense similitude controls the eigenvalue DISTRIBUTION — that is
+exactly what Szego-type limit theorems deliver — but says nothing about the EXTREME eigenvalues,
+because the exceptional subspace, though of vanishing proportion, is precisely where extremes live.
+The hypothesis is a statement about the extremes: 𝒫 <= Q bounds the TOP of the spectrum.
+
+    ==> A VANISHING FRACTION IS NOT A VANISHING NORM. THIS IS THE SECOND INSTANCE OF THE COMPRESSION
+        WALL (entry 25), AND IT EXPLAINS WHY SZEGO AND TOEPLITZ ASYMPTOTICS HAVE NEVER PRODUCED THE
+        HYPOTHESIS: THEY ARE DENSITY THEOREMS AND THE HYPOTHESIS IS AN EXTREMAL STATEMENT.
+
+Machine-verified: `RHTower/DensityNotNormSimilitude.lean` (the kernel obstruction to approximate
+similitude, its persistence at every width, the vanishing of the edge fraction s/2l, its positivity
+at every finite width, the density-versus-norm dichotomy, and the extremal character of the
+domination statement; standard axioms only, wired into RHTower).
+
+### TWENTY-EIGHTH ATLAS ENTRY
+    density not norm   compressed translations annihilate an edge subspace at every width, so their
+                       similitude defect is 1 in norm while the edge fraction s/2l tends to zero.
+                       Density-sense similitude gives the eigenvalue distribution (Szego); the
+                       hypothesis is extremal, so it is not reachable that way.
+
+### STATE AT CYCLE 94
+Twenty-eight entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+A PATTERN NOW REPEATS THREE TIMES (entries 25, 28, and the cycle-89 guardrail): EVERY ATTEMPT TO
+MANUFACTURE THE MISSING STRUCTURE BY TRUNCATION, COMPRESSION, OR APPROXIMATION FAILS AT THE EDGE, AND
+THE FAILURE IS ALWAYS OF SIZE ONE IN NORM WHILE VANISHING IN DENSITY. The structure must be present
+BEFORE compression, on the whole line, or it is not present at all.
+
+### Cycle 95 target
+Take the pattern seriously and work on the WHOLE LINE, where Q is an exact Fourier multiplier with
+symbol 1 - sum_n 4 s_n/(s_n^2 + r^2) + c, s_n = 2n + 5/2, and translations act EXACTLY as isometries.
+The prime operator on the whole line has symbol 2 sum_n Lambda(n) n^{-1/2} cos(r log n), which does
+not converge — that divergence is WHY compression was introduced. SO THE QUESTION IS: IS THERE A
+REGULARISATION OF THE PRIME SYMBOL THAT CONVERGES ON THE WHOLE LINE AND PRESERVES THE ORDER RELATION
+𝒫 <= Q? Abel or Cesaro summation of the prime symbol converges for Re s > 1 and its boundary
+behaviour at Re s = 1/2 is the object of the hypothesis — but the ORDER RELATION may survive
+regularisation even where the symbol does not converge pointwise. TEST WHETHER 𝒫 <= Q IS STABLE UNDER
+ABEL REGULARISATION: if the regularised inequality is equivalent to the compressed one, the whole-line
+setting is available and the edge obstruction disappears.

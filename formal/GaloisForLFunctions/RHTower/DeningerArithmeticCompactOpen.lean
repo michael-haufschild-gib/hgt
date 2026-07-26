@@ -256,6 +256,45 @@ theorem mk_smul (c : ℂ) (F : DeningerCompactOpenEntire) :
     mk S (c • F) = c • mk S F :=
   rfl
 
+@[simp]
+theorem mk_eq_zero_iff_mem
+    (F : DeningerCompactOpenEntire) :
+    mk S F = 0 ↔ F ∈ S := by
+  constructor
+  · intro hzero
+    change mk S F = mk S 0 at hzero
+    have hrel :
+        (deningerCompactOpenQuotientRel S) F 0 :=
+      Quotient.exact hzero
+    have hneg : -F ∈ S := by
+      have :=
+        QuotientAddGroup.leftRel_apply.mp
+          (show QuotientAddGroup.leftRel
+              S.toAddSubgroup F 0 from hrel)
+      change -F + 0 ∈ S at this
+      simpa using this
+    have hneg' : -F ∈ S.toAddSubgroup :=
+      hneg
+    have hpos : -(-F) ∈ S.toAddSubgroup :=
+      neg_mem hneg'
+    change -(-F) ∈ S at hpos
+    have hnn : -(-F) = F := by
+      ext z
+      simp
+    rw [hnn] at hpos
+    exact hpos
+  · intro hF
+    change mk S F = mk S 0
+    apply Quotient.sound
+    apply QuotientAddGroup.leftRel_apply.mpr
+    change -F + 0 ∈ S
+    have hF' : F ∈ S.toAddSubgroup :=
+      hF
+    have hneg : -F ∈ S.toAddSubgroup :=
+      neg_mem hF'
+    change -F ∈ S at hneg
+    simpa using hneg
+
 instance instModule :
     Module ℂ (DeningerCompactOpenQuotient S) :=
   Function.Surjective.module ℂ

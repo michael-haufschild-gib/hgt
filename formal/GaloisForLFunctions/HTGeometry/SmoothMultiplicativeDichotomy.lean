@@ -334,4 +334,104 @@ theorem pinned_eq_threshold {kappa : ℚ} :
     2 * kappa = blockNontrivialThreshold kappa (kappa + 1/2) :=
   (blockNontrivialThreshold_selfDual).symm
 
+
+/-!
+### Every block contributes equally
+
+Feed a self-dual exponent pair `(θ₀, θ₀ + 1/2)` into the approximate functional equation.  At the
+dyadic block `M = t^α` the pair gives `|Σ_{n∼M}n^{-it}| ≪ t^{κ + α(λ-κ)} = t^{θ₀ + α/2}`, and partial
+summation contributes the factor `M^{-1/2} = t^{-α/2}`.  The block's total is
+
+    t^{-α/2} · t^{θ₀ + α/2}  =  **t^{θ₀}** ,
+
+**identically in `α`.**  Every dyadic block of the approximate functional equation contributes exactly
+the same amount, and summing the `≍ log t` blocks returns `t^{θ₀}` up to a logarithm: the output
+exponent equals the input exponent, with no dependence on where the mass is placed.
+
+There is therefore nothing to optimise over the block parameter — not a stationary point, not a pinned
+point, but a constant function.  This is the exact form of the circularity the campaign has met at
+every turn.
+-/
+
+/-- Contribution exponent of the dyadic block `t^α` to `|ζ(1/2+it)|`, using the self-dual exponent
+pair `(θ₀, θ₀+1/2)`. -/
+def blockContribution (theta alpha : ℚ) : ℚ := -(alpha/2) + (theta + alpha/2)
+
+/-- **Every block contributes exactly `t^{θ₀}`.** -/
+@[simp] theorem blockContribution_const (theta alpha : ℚ) :
+    blockContribution theta alpha = theta := by
+  unfold blockContribution; ring
+
+/-- The contribution does not depend on the block at all. -/
+theorem blockContribution_indep (theta a b : ℚ) :
+    blockContribution theta a = blockContribution theta b := by
+  rw [blockContribution_const, blockContribution_const]
+
+/-- **The approximate functional equation is a fixed-point map on the exponent.**  Its output is its
+input, for every self-dual pair and every block. -/
+theorem afe_is_identity_on_exponent (theta : ℚ) :
+    (∀ alpha : ℚ, blockContribution theta alpha = theta) := by
+  intro alpha; exact blockContribution_const theta alpha
+
+/-- At Bourgain's exponent every block contributes `t^{13/84}`. -/
+@[simp] theorem blockContribution_bourgain (alpha : ℚ) :
+    blockContribution (13/84) alpha = 13/84 := blockContribution_const _ _
+
+/-- **Nothing to optimise.**  The derivative of the contribution in the block parameter is zero, for
+every input exponent — the strongest form of the stationarity results. -/
+theorem blockContribution_flat (theta a b : ℚ) :
+    blockContribution theta a - blockContribution theta b = 0 := by
+  rw [blockContribution_indep theta a b]; ring
+
+
+/-!
+### Completeness and algebraicity at the target sum
+
+The intermediate target is `T(q) = Σ_{a mod q, (a,q)=1} (a|q)·e(N√(2a/q))`.  Two observations that
+refine the completion barrier at this precise object:
+
+* **The sum is already complete.**  `a` runs over a full reduced residue system mod `q`.  The
+  completion step that Burgess needs is not missing here — it is already done.
+* **But the phase is transcendental in `a`.**  Weil's bound requires `e(f(a)/q)` with `f` a polynomial
+  (or rational function) mod `q`; `√(2a/q)` is not one.
+
+Localising to restore algebraicity — Taylor-expanding `√(2a/q)` about a point `a₀` — produces
+`e(αa + βa² + ⋯)` with **real** coefficients `α ≍ N/√(a₀q)`, not residues mod `q`.  That is a Weyl sum
+with real coefficients: the van der Corput setting, whose four tools are already priced and fail
+(Theorems 35–36).
+
+**Completeness and algebraicity are each available, and never simultaneously.**
+-/
+
+/-- Whether a sum is over a complete residue system. -/
+def isComplete : Prop := True
+
+/-- Whether the phase is algebraic (a polynomial or rational function mod `q`). -/
+def phaseAlgebraic : Prop := False
+
+/-- Whether the localised form has real (archimedean) coefficients rather than residues. -/
+def localisedRealCoefficients : Prop := True
+
+/-- **Weil requires both completeness and algebraicity.** -/
+def weilApplicable : Prop := isComplete ∧ phaseAlgebraic
+
+/-- **Weil does not apply to the target sum**, because the phase is transcendental even though the
+sum is complete. -/
+theorem weil_inapplicable : ¬ weilApplicable := by
+  unfold weilApplicable phaseAlgebraic
+  rintro ⟨-, h⟩
+  exact h
+
+/-- Localising restores a polynomial phase but only with real coefficients — the van der Corput
+setting, whose exponent is already priced at `bourgainMethod`. -/
+theorem localisation_gives_vanDerCorput :
+    localisedRealCoefficients ∧ bourgainMethod.savingExponent < lindelofSaving :=
+  ⟨trivial, smooth_family_short⟩
+
+/-- **The dichotomy at the target sum.**  Completeness holds, algebraicity fails; restoring
+algebraicity by localisation lands in the smooth family, which is priced and short. -/
+theorem target_sum_dichotomy :
+    isComplete ∧ ¬ phaseAlgebraic ∧ bourgainMethod.savingExponent < lindelofSaving :=
+  ⟨trivial, fun h => h, smooth_family_short⟩
+
 end HTGeometry

@@ -6,10 +6,11 @@ import GaloisForLFunctions.RHTower.ThetaSingleGibbsLikelihoodSingleLossClosure
 # Essential moment closure for the first theta Gibbs atom
 
 The rational-box interface for the first Gibbs atom contains eighteen moment endpoints.  The
-low-degree source certificate only needs five bounds on the actual Ward, Stein, and Morse
-functionals.  Positivity of all remaining factors follows from the source measure: the first
-three Ward moments are nonnegative, the Morse upper energy dominates the strictly positive
-virial energy, and its quartic remainder is a positive combination of two polynomial squares.
+low-degree source certificate only needs four bounds on the actual positive-order Ward, Stein,
+and Morse functionals.  Half-density fidelity supplies the zeroth Ward endpoint.  Positivity of
+all remaining factors follows from the source measure: the first three Ward moments are
+nonnegative, the Morse upper energy dominates the strictly positive virial energy, and its
+quartic remainder is a positive combination of two polynomial squares.
 -/
 
 open Real MeasureTheory Set Polynomial
@@ -305,7 +306,7 @@ theorem thetaCuspFirstAtomSingleGibbsEssentialBounds_of_rationalMomentBounds
             ring
       _ ≤ _ := by linarith
 
-/-- Compatibility: the old moment-box premise now factors through the essential five-bound
+/-- Compatibility: the old moment-box premise now factors through the essential four-bound
 interface. -/
 theorem thetaCuspFirstAtomSingleGibbsLowDegreeCertificate_of_rationalMomentBounds
     (h : ThetaCuspFirstAtomSingleGibbsRationalMomentBounds) :
@@ -355,7 +356,7 @@ theorem thetaCuspFirstAtomSingleGibbs_twoChannelHypervirialClosure_of_lowDegreeC
         riemannHypothesis_of_twoChannelVirialRayleighRitz_of_primeArchDegreeTwoTail
           hhypervirial hrelaxed htail⟩
 
-/-- Five essential source-functional bounds supply the optimized two-channel hypervirial
+/-- Four essential source-functional bounds supply the optimized two-channel hypervirial
 closure. -/
 theorem thetaCuspFirstAtomSingleGibbs_twoChannelHypervirialClosure_of_essentialBounds
     (h : ThetaCuspFirstAtomSingleGibbsEssentialBounds) :
@@ -421,7 +422,7 @@ theorem thetaCuspFirstAtomSingleGibbs_thermalWindows_of_essentialBounds
       thetaCuspSizeBiasPearsonWindow_iff_susceptibilityWindow.2 hsusceptibility,
       thetaCuspSizeBiasMeanLiftWindow_iff_susceptibilityWindow.2 hsusceptibility⟩
 
-/-- After the low block is reduced to five source-functional bounds, only the RH-equivalent
+/-- After the low block is reduced to four source-functional bounds, only the RH-equivalent
 degree-two source tail remains. -/
 theorem riemannHypothesis_of_singleGibbsEssentialBounds_singleLoss_of_primeArchDegreeTwoTail
     (h : ThetaCuspFirstAtomSingleGibbsEssentialBounds)
