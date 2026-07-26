@@ -1982,3 +1982,37 @@ c_ji) x_j` is the standard alternating `d₂` read on *upper-triangular* represe
 The characteristic-free `Tor₂` statement therefore has to pass through the upper-triangular
 representative of `d₃`, i.e. `srKoszulBoundary (upperTri (srKoszulBoundary3 n)) = 0` for alternating
 `n`, which is the standard `d₂ ∘ d₃ = 0`.  That is the next increment.
+
+### Lean progress — degree-three strand chain map and the characteristic-free `d₂ ∘ d₃ = 0`
+
+`HochsterStrandDegreeThree.lean` (axiom-clean, build green) extends the strand chain map one level and
+fixes the representation convention the extension needs.
+
+The corpus differential `srKoszulBoundary c i = ∑_j (c i j − c j i) x_j` is the standard alternating
+`d₂` read on *strictly-upper-triangular representatives*: on such a representative it computes
+`∑_j a i j x_j`, while on the antisymmetric tensor itself it computes `2 ∑_j a i j x_j`.  Since
+`srKoszulBoundary3` emits antisymmetric tensors, composing the two directly carries a factor `2` —
+invisible in the corpus statement `d₂ ∘ d₃ = 0`, fatal for a characteristic-free `Tor₂` statement.
+
+- `koszulUpperTri` and `srKoszulBoundary_koszulUpperTri` — on an antisymmetric, zero-diagonal tensor
+  the corpus differential of the upper-triangular representative is exactly `∑_j a i j x_j`.
+- **`srKoszulBoundary_koszulUpperTri_srKoszulBoundary3`** — the **standard** `d₂ ∘ d₃ = 0`,
+  unconditional and characteristic-free: the `(j,k)`-involution against the symmetric monomial
+  product, diagonal killed by alternation.
+- `faceSign3_antisym12`, `faceSign3_antisym23` — the iterated incidence sign
+  `faceSign σ i · faceSign (σ∖i) j · faceSign (σ∖{i,j}) k` is antisymmetric under both adjacent
+  transpositions, each being one instance of `faceSign_mul_faceSign_erase_antisymm`.
+- `strandThree` and `strandThree_isAlternating3` — the degree-three strand map sends a cochain on the
+  codimension-three faces of `σ` to a genuine alternating Koszul `3`-tensor.
+- **`koszulUpperTri_srKoszulBoundary3_strandThree`** : `upperTri (d₃ (strandThree h)) = strandTwo (δh)`
+  — the degree-three chain-map identity, for every finite complex and every multidegree.
+- `strandTwo_congr` and **`strandTwo_isKoszulBoundary3_of_coboundary`** — the backward half of
+  Hochster's correspondence at `Tor₂`: a degree-two strand cochain that agrees on the codimension-two
+  faces of `σ` with a coboundary is an (upper-triangular) third Koszul boundary.  So the strand chain
+  map descends to a map `H̃^{|σ|−3}(Δ_σ) → Tor_{2,σ}`.
+
+Remaining at this level: the forward half (every strand `d₃`-boundary comes from a coboundary), which
+needs the codimension-three cochain built from the face detectors of the `3`-tensor — i.e. the triple
+analogue of `pairCochain`, whose evaluation requires `σ ∖ {i,j,k}` injectivity plus the permutation
+invariance of the weight `S₃(i,j,k) · n i j k` (a product of two alternating families, hence
+symmetric).
