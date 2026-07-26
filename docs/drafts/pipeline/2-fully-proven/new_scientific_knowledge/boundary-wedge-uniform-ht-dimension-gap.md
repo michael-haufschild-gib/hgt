@@ -439,3 +439,29 @@ two vertices, and that the two-vertex case survives only in the elliptic (lattic
 This gives a second, independent route to the same conclusion as
 `boundaryWedge_no_scalarSRRealization`, now as a corollary of the general facet-codimension bound
 rather than of the wedge-specific obstruction.
+
+## Lean progress — realizations in a prescribed number of variables, and `htDim = 2`
+
+`GaloisForLFunctions/HTGeometry/SRRealizationDimension.lean` (axiom-clean, build green,
+umbrella-registered) gives the `d`-variable form of the realization datum and assembles the
+dimension statement in the corpus idiom.
+
+- `SRRealization d` — `Q`-independent translation steps in `C^d` and a carrier map on
+  Stanley--Reisner classes for which the vertex coordinates act as difference operators along the
+  steps and nonzero classes have nonconstant carriers.  Nonconstancy is what the dimension exclusions
+  consume, and hypertranscendence implies it.
+- `SRRealization.ofScalar` — the strong one-variable datum `ScalarSRRealization` gives a
+  `1`-variable realization, transported along `(Fin 1 -> C) ~= C`; nonconstancy comes from
+  hypertranscendence.
+- **`isEmpty_srRealization_zero`** — **no realization in zero variables**: every step would be the
+  zero vector of a trivial space, which no `Q`-linearly independent family contains.  Purely
+  algebraic.
+- **`boundaryWedge_htDim_eq_two_of_realizable`** — for the boundary wedge, a
+  least-realizable-dimension functional equals `2` as soon as a **two-variable** realization exists.
+  Dimensions `0` and `1` are discharged unconditionally, by `isEmpty_srRealization_zero` and by
+  `isEmpty_scalarSRRealization` respectively; the two remaining hypotheses only say that the abstract
+  realizability predicate at those dimensions yields the corresponding concrete datum.
+
+So the last gate now reduces to a single positive input: a **two-variable realization witness**, i.e.
+the periodic pencil of `(3)` promoted from its matrix form (`boundaryWedge_ppDim_eq_two`) to a carrier
+map.  Everything else in `htDim = 2` is formalized and unconditional.
