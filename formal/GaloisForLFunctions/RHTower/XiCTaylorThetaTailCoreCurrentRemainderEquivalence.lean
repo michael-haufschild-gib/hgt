@@ -295,6 +295,48 @@ theorem xiCTaylorThetaTailCoreFiniteArithmeticRemainderJointSublinearUpper_iff_c
   rw [xiCTaylorThetaTailCoreFiniteArithmeticRemainderJointSublinearUpper_iff_riemannHypothesis hD,
     xiCTaylorThetaTailCoreCurrentSublinearUpper_iff_riemannHypothesis hD]
 
+/-- Existence of one source-selected odd schedule satisfying the concrete finite-arithmetic joint
+remainder estimate is exactly RH. -/
+theorem
+    exists_xiCTaylorThetaTailCoreFiniteArithmeticRemainderJointSublinearUpper_iff_riemannHypothesis :
+    (∃ D : ℕ → ℕ, XiCTaylorOddThetaTailSuperaccurateSchedule D ∧
+      XiCTaylorThetaTailCoreCurrentJointSublinearUpper
+        (1 / 8 : ℝ) (1 / 4 : ℝ) D
+        canonicalThetaTailCoreFiniteArithmeticPrefixCurrent
+        canonicalThetaTailCoreFiniteArithmeticRemainderCurrent) ↔
+      RiemannHypothesis := by
+  constructor
+  · rintro ⟨D, hD, hremainder⟩
+    exact
+      (xiCTaylorThetaTailCoreFiniteArithmeticRemainderJointSublinearUpper_iff_riemannHypothesis
+        hD).1 hremainder
+  · intro hRH
+    obtain ⟨D, hD⟩ := exists_xiCTaylorOddThetaTailSuperaccurateSchedule
+    exact ⟨D, hD,
+      (xiCTaylorThetaTailCoreFiniteArithmeticRemainderJointSublinearUpper_iff_riemannHypothesis
+        hD).2 hRH⟩
+
+/-- The concrete finite-arithmetic joint remainder estimate on every source-selected odd schedule
+is exactly RH. -/
+theorem
+    forall_xiCTaylorThetaTailCoreFiniteArithmeticRemainderJointSublinearUpper_iff_riemannHypothesis :
+    (∀ D : ℕ → ℕ, XiCTaylorOddThetaTailSuperaccurateSchedule D →
+      XiCTaylorThetaTailCoreCurrentJointSublinearUpper
+        (1 / 8 : ℝ) (1 / 4 : ℝ) D
+        canonicalThetaTailCoreFiniteArithmeticPrefixCurrent
+        canonicalThetaTailCoreFiniteArithmeticRemainderCurrent) ↔
+      RiemannHypothesis := by
+  constructor
+  · intro hall
+    obtain ⟨D, hD⟩ := exists_xiCTaylorOddThetaTailSuperaccurateSchedule
+    exact
+      (xiCTaylorThetaTailCoreFiniteArithmeticRemainderJointSublinearUpper_iff_riemannHypothesis
+        hD).1 (hall D hD)
+  · intro hRH D hD
+    exact
+      (xiCTaylorThetaTailCoreFiniteArithmeticRemainderJointSublinearUpper_iff_riemannHypothesis
+        hD).2 hRH
+
 end
 
 end RHTower

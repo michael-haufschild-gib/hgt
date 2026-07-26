@@ -272,6 +272,33 @@ theorem xiCTaylorAnisotropicLogDerivSublinearUpper_iff_riemannHypothesis
   ⟨riemannHypothesis_of_xiCTaylorAnisotropicLogDerivSublinearUpper hN,
     xiCTaylorAnisotropicLogDerivSublinearUpper_of_riemannHypothesis hN⟩
 
+/-- Existence of one superaccurate Taylor schedule with sublinear logarithmic-derivative current
+is exactly RH; the schedule is supplied by the unconditional diagonal construction. -/
+theorem exists_xiCTaylorAnisotropicLogDerivSublinearUpper_iff_riemannHypothesis :
+    (∃ N : ℕ → ℕ, XiCTaylorSuperaccurateSchedule N ∧
+      XiCTaylorAnisotropicLogDerivSublinearUpper N) ↔ RiemannHypothesis := by
+  constructor
+  · rintro ⟨N, hN, hlogDeriv⟩
+    exact (xiCTaylorAnisotropicLogDerivSublinearUpper_iff_riemannHypothesis hN).1 hlogDeriv
+  · intro hRH
+    obtain ⟨N, hN⟩ := exists_xiCTaylorSuperaccurateSchedule
+    exact ⟨N, hN,
+      (xiCTaylorAnisotropicLogDerivSublinearUpper_iff_riemannHypothesis hN).2 hRH⟩
+
+/-- Sublinear finite Taylor logarithmic-derivative current on every superaccurate schedule is
+exactly RH. -/
+theorem forall_xiCTaylorAnisotropicLogDerivSublinearUpper_iff_riemannHypothesis :
+    (∀ N : ℕ → ℕ, XiCTaylorSuperaccurateSchedule N →
+      XiCTaylorAnisotropicLogDerivSublinearUpper N) ↔ RiemannHypothesis := by
+  constructor
+  · intro hall
+    obtain ⟨N, hN⟩ := exists_xiCTaylorSuperaccurateSchedule
+    exact
+      (xiCTaylorAnisotropicLogDerivSublinearUpper_iff_riemannHypothesis hN).1
+        (hall N hN)
+  · intro hRH N hN
+    exact (xiCTaylorAnisotropicLogDerivSublinearUpper_iff_riemannHypothesis hN).2 hRH
+
 end
 
 end RHTower

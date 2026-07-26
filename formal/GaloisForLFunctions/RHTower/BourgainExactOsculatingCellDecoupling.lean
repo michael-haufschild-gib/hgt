@@ -189,6 +189,74 @@ theorem setLIntegral_bourgainSquareRootExactLocalSum_fundamentalCell_gaussian
                   hcube H hH hD ha hab hsmall c₁ c₂
     _ = _ := by ring
 
+/-- Translation-uniform form of the sharp exact-curve cell estimate. -/
+theorem setLIntegral_bourgainSquareRootExactLocalSum_translatedCell_gaussian
+    {ε : ℝ} (hε : 0 < ε) :
+    ∃ C : ℝ, 0 < C ∧
+      ∀ (H : ℕ) (hH : 0 < H),
+      ∀ {D a b : ℝ} (hD : 0 < D) (ha : 0 < a) (hab : a < b),
+      let hscale : (H : ℝ) / D ≠ 0 :=
+        div_ne_zero (Nat.cast_ne_zero.mpr hH.ne') hD.ne'
+      let E :=
+        bourgainScaledOsculatingPhaseContinuousLinearEquiv
+          hscale ha hab
+      let X := bourgainIndependentParabolaNaturalScale H
+      let δ :=
+        bourgainOsculatingFrequencyPerturbationSize X
+          ‖(E.symm :
+            BourgainPhaseSpace →L[ℝ] BourgainPhaseSpace)‖
+          a b ((H : ℝ) / D)
+      δ ≤ 1 / 24 →
+      ∀ (c₁ c₂ : Fin H → ℂ) (y : BourgainPhaseSpace),
+        (∫⁻ z in bourgainTranslatedOsculatingFundamentalCell
+            H ((H : ℝ) / D) a b y,
+          ENNReal.ofReal
+            (‖bourgainSquareRootExactLocalSum H D a c₁ z‖ ^ (6 : ℕ) *
+              ‖bourgainSquareRootExactLocalSum H D b c₂ z‖ ^
+                (6 : ℕ))) ≤
+          ENNReal.ofReal
+              |((((H : ℝ) / D) ^ (6 : ℕ)) *
+                (3 * (b - a) ^ (4 : ℕ) /
+                  (32 * a ^ (3 : ℕ) * b ^ (3 : ℕ))))⁻¹| *
+            ENNReal.ofReal ((H : ℝ) ^ (6 : ℕ)) *
+            ENNReal.ofReal
+              (C * (H : ℝ) ^ ε *
+                (∑ n : Fin H, ‖c₁ n‖ ^ (2 : ℕ)) ^ (3 : ℕ) *
+                (∑ n : Fin H, ‖c₂ n‖ ^ (2 : ℕ)) ^ (3 : ℕ)) := by
+  obtain ⟨C, hC, hcell⟩ :=
+    setLIntegral_bourgainSquareRootExactLocalSum_fundamentalCell_gaussian
+      hε
+  refine ⟨C, hC, ?_⟩
+  intro H hH D a b hD ha hab
+  dsimp only
+  intro hsmall c₁ c₂ y
+  let c₁' :=
+    bourgainSquareRootExactLocalTranslateCoefficients H D a c₁ y
+  let c₂' :=
+    bourgainSquareRootExactLocalTranslateCoefficients H D b c₂ y
+  have hbound :=
+    hcell H hH hD ha hab hsmall c₁' c₂'
+  rw [setLIntegral_bourgainTranslatedOsculatingFundamentalCell]
+  calc
+    (∫⁻ x in bourgainOsculatingFundamentalCell
+        H ((H : ℝ) / D) a b,
+      ENNReal.ofReal
+        (‖bourgainSquareRootExactLocalSum H D a c₁ (x + y)‖ ^ (6 : ℕ) *
+          ‖bourgainSquareRootExactLocalSum H D b c₂ (x + y)‖ ^
+            (6 : ℕ))) =
+      ∫⁻ x in bourgainOsculatingFundamentalCell
+        H ((H : ℝ) / D) a b,
+      ENNReal.ofReal
+        (‖bourgainSquareRootExactLocalSum H D a c₁' x‖ ^ (6 : ℕ) *
+          ‖bourgainSquareRootExactLocalSum H D b c₂' x‖ ^
+            (6 : ℕ)) := by
+        apply lintegral_congr
+        intro x
+        rw [bourgainSquareRootExactLocalSum_add,
+          bourgainSquareRootExactLocalSum_add]
+    _ ≤ _ := by
+      simpa [c₁', c₂'] using hbound
+
 end
 
 end RHTower

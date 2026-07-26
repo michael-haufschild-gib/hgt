@@ -388,6 +388,124 @@ theorem deningerTimeTestLaplace_mul_sq
         (deningerTimeTestDerivative
           (deningerTimeTestDerivative φ)) s := by ring
 
+set_option maxHeartbeats 600000 in
+/-- The Laplace amplitude of every positive-time test is an entire function. -/
+theorem analyticOnNhd_deningerTimeTestLaplace
+    (φ : DeningerTimeTestFunction) :
+    AnalyticOnNhd ℂ
+      (deningerTimeTestLaplace φ) Set.univ := by
+  rw [Complex.analyticOnNhd_univ_iff_differentiable]
+  intro s₀
+  let F : ℂ → ℝ → ℂ :=
+    fun s t =>
+      (φ t : ℂ) * Complex.exp ((t : ℂ) * s)
+  let F' : ℂ → ℝ → ℂ :=
+    fun s t =>
+      (φ t : ℂ) *
+        (Complex.exp ((t : ℂ) * s) * (t : ℂ))
+  let bound : ℝ → ℝ :=
+    fun t =>
+      ‖(φ t : ℂ)‖ *
+        (|t| * Real.exp (|t| * (‖s₀‖ + 1)))
+  have hφCompact :
+      HasCompactSupport (fun t : ℝ => (φ t : ℂ)) := by
+    simpa only [Function.comp_apply] using
+      (φ.hasCompactSupport.comp_left
+        (g := fun r : ℝ => (r : ℂ)) rfl)
+  have hFCont : ∀ s : ℂ, Continuous (F s) := by
+    intro s
+    dsimp only [F]
+    fun_prop
+  have hF'Cont : ∀ s : ℂ, Continuous (F' s) := by
+    intro s
+    dsimp only [F']
+    fun_prop
+  have hFInt : ∀ s : ℂ, Integrable (F s) := by
+    intro s
+    exact (hFCont s).integrable_of_hasCompactSupport
+      hφCompact.mul_right
+  have hboundCont : Continuous bound := by
+    dsimp only [bound]
+    fun_prop
+  have hboundCompact : HasCompactSupport bound := by
+    dsimp only [bound]
+    exact hφCompact.norm.mul_right
+  have hboundInt : Integrable bound :=
+    hboundCont.integrable_of_hasCompactSupport hboundCompact
+  have hdiff :
+      ∀ t : ℝ, ∀ s : ℂ,
+        HasDerivAt (fun z : ℂ => F z t) (F' s t) s := by
+    intro t s
+    have hlin :
+        HasDerivAt
+          (fun z : ℂ => (t : ℂ) * z)
+          (t : ℂ) s := by
+      simpa using
+        ((hasDerivAt_id s).const_mul (t : ℂ))
+    simpa only [F, F', mul_assoc] using
+      hlin.cexp.const_mul (φ t : ℂ)
+  have hnormBound :
+      ∀ t : ℝ, ∀ s ∈ Metric.closedBall s₀ 1,
+        ‖F' s t‖ ≤ bound t := by
+    intro t s hs
+    have hdist : ‖s - s₀‖ ≤ 1 := by
+      simpa only [Metric.mem_closedBall, dist_eq] using hs
+    have hsnorm : ‖s‖ ≤ ‖s₀‖ + 1 := by
+      calc
+        ‖s‖ ≤ ‖s₀‖ + ‖s - s₀‖ :=
+          norm_le_norm_add_norm_sub' s s₀
+        _ ≤ ‖s₀‖ + 1 := by gcongr
+    have htre :
+        t * s.re ≤ |t| * (‖s₀‖ + 1) := by
+      calc
+        t * s.re ≤ |t * s.re| :=
+          le_abs_self _
+        _ = |t| * |s.re| := abs_mul t s.re
+        _ ≤ |t| * ‖s‖ :=
+          mul_le_mul_of_nonneg_left
+            (Complex.abs_re_le_norm s) (abs_nonneg t)
+        _ ≤ |t| * (‖s₀‖ + 1) :=
+          mul_le_mul_of_nonneg_left hsnorm (abs_nonneg t)
+    have hexp :
+        Real.exp (((t : ℂ) * s).re) ≤
+          Real.exp (|t| * (‖s₀‖ + 1)) := by
+      rw [show ((t : ℂ) * s).re = t * s.re by
+        simp [Complex.mul_re]]
+      exact Real.exp_le_exp.mpr htre
+    dsimp only [F', bound]
+    rw [norm_mul, norm_mul, Complex.norm_exp,
+      Complex.norm_real, Real.norm_eq_abs]
+    rw [show ‖(t : ℂ)‖ = |t| by simp]
+    calc
+      |φ t| * (Real.exp (((t : ℂ) * s).re) * |t|) =
+          |φ t| * (|t| * Real.exp (((t : ℂ) * s).re)) := by
+        ring
+      _ ≤ |φ t| *
+          (|t| * Real.exp (|t| * (‖s₀‖ + 1))) := by
+        exact mul_le_mul_of_nonneg_left
+          (mul_le_mul_of_nonneg_left hexp (abs_nonneg t))
+          (abs_nonneg (φ t))
+  have hderiv :=
+    hasDerivAt_integral_of_dominated_loc_of_deriv_le
+      (x₀ := s₀) (s := Metric.closedBall s₀ 1)
+      (F := F) (F' := F') (bound := bound)
+      (Metric.closedBall_mem_nhds s₀ zero_lt_one)
+      (Filter.Eventually.of_forall
+        (fun s => (hFCont s).aestronglyMeasurable))
+      (hFInt s₀)
+      (hF'Cont s₀).aestronglyMeasurable
+      (Filter.Eventually.of_forall hnormBound)
+      hboundInt
+      (Filter.Eventually.of_forall
+        (fun t s _hs => hdiff t s))
+  have hderivAt :
+      HasDerivAt
+        (fun s => ∫ t : ℝ, F s t)
+        (∫ t : ℝ, F' s₀ t) s₀ :=
+    hderiv.2
+  simpa only [deningerTimeTestLaplace, F] using
+    hderivAt.differentiableAt
+
 /-- `L¹` mass controlling every critical-strip Laplace amplitude after two derivatives. -/
 def deningerTimeTestSecondDerivativeExponentialMass
     (φ : DeningerTimeTestFunction) : ℝ :=

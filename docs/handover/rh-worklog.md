@@ -10626,3 +10626,64 @@ f''(u*) = -(2j/u*^2 + 4 pi e^{2u*} + ...) ALREADY COMPUTED IN ENTRY 97, AND SEE 
 THE MARGIN CAN ABSORB BEFORE 1 + 2u* REACHES ZERO. THAT NUMBER IS AN UPPER BOUND FOR THE FLOW CONSTANT
 COMING FROM THE ORDER-TWO INEQUALITY ALONE, AND IF IT TENDS TO ZERO AS j GROWS IT IS EXACTLY THE
 VANISHING-LOSS FAMILY ENTRY 105 ASKED FOR.
+
+---
+
+## Cycle 173 — THE ORDER-TWO CONDITION IS BLIND TO THE BACKWARD FLOW
+
+### The sensitivity, computed exactly
+With f(u) = log Phi(u) + 2j log u + t u^2, the saddle solves f'(u) = 0, and at t = 0 the curvature
+computed in entry 97 is f''(u*) = -(4j/u* + 2j/u*^2). Hence
+
+    du*/dt = -(2u*)/f''(u*) = u*^3 / ( j (2u* + 1) )        (formalised as an exact identity).
+
+WITH u* ~ (1/2) log j THIS IS ~ (log j)^2/(8j) — IT SHRINKS AS THE JET ORDER GROWS.
+
+### THE ABSORPTION TIME DIVERGES — HUNDRED-AND-SEVENTH ATLAS ENTRY
+The margin dies when u* falls from its value to -1/2, a drop of (2u*+1)/2. At the above rate that
+takes
+
+    |t| = j (2u* + 1)^2 / (2 u*^3)        (formalised as an exact identity)
+        >= j / (2 u*^3)                    (formalised)
+        ~  4j / log j                      (and x/(log x)^3 --> infinity, formalised).
+
+    ==> THE ORDER-TWO CONDITION SURVIVES ARBITRARILY LONG BACKWARD FLOW AT EVERY FIXED JET ORDER, AND
+        THE HIGHER THE ORDER THE MORE INSENSITIVE IT BECOMES. IT SUPPLIES NO INFORMATION ABOUT THE
+        FLOW CONSTANT, AND THE VANISHING-LOSS FAMILY SOUGHT IN THE FLOW DIRECTION DOES NOT EXIST
+        THERE.
+
+THIS EXPLAINS A KNOWN FACT: the nonnegativity of the flow constant needed a PAIR-CORRELATION argument
+(Rodgers-Tao) rather than a Turan-type inequality. THE REASON IS NOW QUANTITATIVE — LOW-ORDER MOMENT
+CONDITIONS ARE BLIND TO THE FLOW BY A FACTOR j/log j, AND THE BLINDNESS GROWS WITH THE ORDER.
+
+Machine-verified: `RHTower/OrderTwoIsBlindToTheFlow.lean` (the sensitivity identity
+-(2u)/(-(4j/u + 2j/u^2)) = u^3/(j(2u+1)), the absorption identity
+((2u+1)/2)/(u^3/(j(2u+1))) = j(2u+1)^2/(2u^3), the lower bound j/(2u^3), the divergence of
+x/(log x)^3, and the resulting unboundedness; standard axioms only, wired into RHTower).
+
+### STATE AT CYCLE 173
+One hundred and seven entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+CLOSURE OF THE VERTICAL SEARCH. Entry 105 listed four vertical parameters and left the flow time open.
+Entry 106 showed the flow time is the second coordinate of the same tilt family as the jet order.
+ENTRY 107 SHOWS THE FIRST COORDINATE'S CONDITION IS QUANTITATIVELY BLIND TO MOTION ALONG THE SECOND.
+SO ALL FOUR VERTICAL PARAMETERS ARE NOW ACCOUNTED FOR:
+    jet order        vanishing loss at order two only              (89, 91)
+    minor order      fails from order three                        (91)
+    derivative order disjoint from an equivalent subfamily         (88)
+    flow time        not independent; order two is blind to it     (106, 107)
+AND ALL HEIGHT-INDEXED TOOLS HAVE CONSTANT LOSS (105). THE SEARCH SPACE THE ATLAS CAN SEE IS
+EXHAUSTED.
+
+### Cycle 174 target
+THE SEARCH SPACE IS EXHAUSTED IN THE PARAMETERS THE ATLAS HAS CONSIDERED. THE HONEST NEXT MOVE IS TO
+FIND A PARAMETER THE ATLAS HAS NOT CONSIDERED, AND THERE IS EXACTLY ONE STRUCTURAL DEGREE OF FREEDOM
+THAT HAS APPEARED IN NO ENTRY: THE CHOICE OF THE MEASURE ITSELF. Every vertical entry tilts the SAME
+measure Phi. BUT THE HYPOTHESIS IS NOT ABOUT Phi — IT IS ABOUT THE ZEROS, AND MANY MEASURES HAVE THE
+SAME ZEROS. Specifically, Phi may be replaced by any positive measure whose cosine transform has the
+same zero set up to a nonvanishing entire factor. THE SET OF SUCH MEASURES IS THE ORBIT OF Phi UNDER
+THE LAGUERRE-POLYA MULTIPLIER SEMIGROUP, AND ENTRY 92 SHOWED THAT SEMIGROUP ACTS ONE-WAY. ASK THE
+QUESTION ENTRY 92 DID NOT: WHAT IS THE ORBIT'S BOUNDARY? Concretely, IS THERE A POSITIVE MEASURE nu,
+NOT A MULTIPLIER IMAGE OF Phi, WHOSE COSINE TRANSFORM HAS EXACTLY THE ZEROS OF XI? IF YES, ITS
+MOMENTS OBEY DIFFERENT INEQUALITIES AND THE ORDER-TWO WINDOW IS COMPUTED WITH A DIFFERENT CAP. THAT
+IS A GENUINELY NEW DEGREE OF FREEDOM AND IT IS THE LAST ONE VISIBLE.
