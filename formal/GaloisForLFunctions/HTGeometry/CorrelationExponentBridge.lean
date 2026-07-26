@@ -9,15 +9,15 @@ shape `‖C(h)‖ ≪ N^a h^b` for `1 ≤ h < H` gives
 since the diagonal contributes `N²/H` and the weighted off-diagonal contributes
 `(N/H²)·N^a H^{b+2}`.  Balancing the two at `H = N^{(1-a)/(1+b)}` yields
 
-    ‖Σ‖  ≪  N^{blockExponent a b},      blockExponent a b = 1 - (1-a)/(2(1+b)),
+    ‖Σ‖  ≪  N^{correlationBlockExponent a b},      correlationBlockExponent a b = 1 - (1-a)/(2(1+b)),
 
-and hence `μ = (blockExponent a b - 1/2)/2`.
+and hence `μ = (correlationBlockExponent a b - 1/2)/2`.
 
 The second-derivative test supplies `a = b = 1/2` for the critical block, and the formula returns
 `5/6` and `μ = 1/6` — Weyl's exponent, derived rather than quoted.  The formula also shows what would
 be needed for more: `μ = 0` forces `a + b = 0`, i.e. correlations of size `N^ε`, which is below the
 square-root barrier of the correlation sum itself.  Imposing only that a correlation of `N` unimodular
-terms is not estimated below square root, i.e. `a ≥ 1/2`, gives `blockExponent (1/2) 0 = 3/4` and
+terms is not estimated below square root, i.e. `a ≥ 1/2`, gives `correlationBlockExponent (1/2) 0 = 3/4` and
 `μ = 1/8`.
 -/
 import Mathlib.Tactic.Linarith
@@ -28,7 +28,7 @@ namespace HTGeometry
 
 /-- The block exponent produced by a correlation bound `‖C(h)‖ ≪ N^a h^b`, after optimising the
 van der Corput shift parameter. -/
-def blockExponent (a b : ℚ) : ℚ := 1 - (1 - a) / (2 * (1 + b))
+def correlationBlockExponent (a b : ℚ) : ℚ := 1 - (1 - a) / (2 * (1 + b))
 
 /-- The optimal shift parameter, as an exponent of `N`. -/
 def optimalShift (a b : ℚ) : ℚ := (1 - a) / (1 + b)
@@ -38,22 +38,22 @@ def muOfBlock (c : ℚ) : ℚ := (c - 1/2) / 2
 
 /-- **The second-derivative test input reproduces Weyl's exponent.**  With `a = b = 1/2` the block
 exponent is `5/6` and the optimal shift is `N^{1/3}`. -/
-@[simp] theorem blockExponent_secondDeriv : blockExponent (1/2) (1/2) = 5/6 := by
-  unfold blockExponent; norm_num
+@[simp] theorem blockExponent_secondDeriv : correlationBlockExponent (1/2) (1/2) = 5/6 := by
+  unfold correlationBlockExponent; norm_num
 
 @[simp] theorem optimalShift_secondDeriv : optimalShift (1/2) (1/2) = 1/3 := by
   unfold optimalShift; norm_num
 
 /-- **Weyl's exponent, derived.** -/
-@[simp] theorem mu_secondDeriv : muOfBlock (blockExponent (1/2) (1/2)) = 1/6 := by
+@[simp] theorem mu_secondDeriv : muOfBlock (correlationBlockExponent (1/2) (1/2)) = 1/6 := by
   rw [blockExponent_secondDeriv]; unfold muOfBlock; norm_num
 
-/-- **The Lindelöf condition on the correlation exponents.**  `blockExponent a b = 1/2` — that is,
+/-- **The Lindelöf condition on the correlation exponents.**  `correlationBlockExponent a b = 1/2` — that is,
 square-root cancellation on the block, equivalently `μ = 0` — holds exactly when `a + b = 0`. -/
 theorem blockExponent_eq_half_iff {a b : ℚ} (hb : -1 < b) :
-    blockExponent a b = 1/2 ↔ a + b = 0 := by
+    correlationBlockExponent a b = 1/2 ↔ a + b = 0 := by
   have hpos : (0:ℚ) < 2 * (1 + b) := by linarith
-  unfold blockExponent
+  unfold correlationBlockExponent
   rw [sub_eq_iff_eq_add]
   constructor
   · intro h
@@ -91,19 +91,19 @@ theorem lindelof_needs_subSqrt_correlation {a b : ℚ} (ha : 1/2 ≤ a) (hb : 0 
 /-- **The floor of the route.**  With the best correlation input that does not itself beat square-root
 cancellation (`a = 1/2`) and no growth in the shift (`b = 0`), the block exponent is `3/4` and the
 Lindelöf exponent is `1/8`. -/
-@[simp] theorem blockExponent_sqrtCorrelation : blockExponent (1/2) 0 = 3/4 := by
-  unfold blockExponent; norm_num
+@[simp] theorem blockExponent_sqrtCorrelation : correlationBlockExponent (1/2) 0 = 3/4 := by
+  unfold correlationBlockExponent; norm_num
 
 /-- **`μ = 1/8` is the floor of the van der Corput route.** -/
-@[simp] theorem mu_sqrtCorrelation : muOfBlock (blockExponent (1/2) 0) = 1/8 := by
+@[simp] theorem mu_sqrtCorrelation : muOfBlock (correlationBlockExponent (1/2) 0) = 1/8 := by
   rw [blockExponent_sqrtCorrelation]; unfold muOfBlock; norm_num
 
 /-- The block exponent is monotone in each correlation exponent: better correlation bounds give
 better block bounds, and the dependence is strict. -/
 theorem blockExponent_strictMono_a {a a' b : ℚ} (hb : -1 < b) (h : a < a') :
-    blockExponent a b < blockExponent a' b := by
+    correlationBlockExponent a b < correlationBlockExponent a' b := by
   have hpos : (0:ℚ) < 2 * (1 + b) := by linarith
-  unfold blockExponent
+  unfold correlationBlockExponent
   have hlt : (1 - a') < (1 - a) := by linarith
   have : (1 - a') / (2 * (1 + b)) < (1 - a) / (2 * (1 + b)) := by
     rw [div_lt_div_iff₀ hpos hpos]
@@ -111,14 +111,14 @@ theorem blockExponent_strictMono_a {a a' b : ℚ} (hb : -1 < b) (h : a < a') :
   linarith
 
 /-- At `a = 1` the correlation bound is trivial and the block exponent is `1`: no cancellation. -/
-@[simp] theorem blockExponent_trivial (b : ℚ) : blockExponent 1 b = 1 := by
-  unfold blockExponent; norm_num
+@[simp] theorem blockExponent_trivial (b : ℚ) : correlationBlockExponent 1 b = 1 := by
+  unfold correlationBlockExponent; norm_num
 
 /-- **The three-way coincidence at `1/8`.**  The van der Corput route's floor `muOfBlock
-(blockExponent (1/2) 0)`, the exponent-pair floor `(κ+λ = 3/4)`, and the eighth-moment target all
+(correlationBlockExponent (1/2) 0)`, the exponent-pair floor `(κ+λ = 3/4)`, and the eighth-moment target all
 give the same Lindelöf exponent. -/
 theorem floor_coincidence :
-    muOfBlock (blockExponent (1/2) 0) = 1/8 ∧ blockExponent (1/2) 0 = 3/4 ∧
+    muOfBlock (correlationBlockExponent (1/2) 0) = 1/8 ∧ correlationBlockExponent (1/2) 0 = 3/4 ∧
       muOfBlock (3/4) = 1/8 := by
   refine ⟨mu_sqrtCorrelation, blockExponent_sqrtCorrelation, ?_⟩
   unfold muOfBlock; norm_num
@@ -306,7 +306,7 @@ def ofCoherenceScale (e : ℚ) : ℚ := e / 3
 /-- **Three derivations of Weyl's exponent agree.**  The correlation bridge with second-derivative
 input, the incoherent coherence-block sum, and the theta-sum resonance count all give `5/6`. -/
 theorem weyl_three_ways :
-    blockExponent (1/2) (1/2) = 5/6 ∧ incoherentBlockTotal 3 = 5/6 ∧
+    correlationBlockExponent (1/2) (1/2) = 5/6 ∧ incoherentBlockTotal 3 = 5/6 ∧
       ofCoherenceScale resonanceModulusTotal = 5/6 :=
   ⟨blockExponent_secondDeriv, incoherentBlockTotal_three, ofCoherenceScale_modulus⟩
 

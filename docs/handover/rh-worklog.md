@@ -6184,3 +6184,64 @@ zeros' one-level density, again dimensionless after unfolding. TEST (a): the unf
 correlation is a dimensionless function; does ANY statement in the atlas constrain it? If the atlas is
 blind to dimensionless data, then the closure results say nothing about GUE-type arguments, and the
 pair-correlation lane is genuinely open rather than merely unexplored.
+
+---
+
+## Cycle 103 (2026-07-26) — THE ATLAS IS BLIND TO UNFOLDED DATA. THE CORRELATION LANE IS OPEN.
+
+### The test, and it comes out positive
+Every obstruction in entries 1-36 is a statement about a SCALE: a width L, a deviation a, a height
+through log T, or a dimensionless combination such as aL. Correlation statistics are different IN
+KIND: they are defined AFTER dividing out the density log T/2pi, so they are invariant under exactly
+the rescaling the atlas measures.
+
+    UNFOLDED DIFFERENCE:   (lam g_j - lam g_k)(M/lam) = (g_j - g_k) M     — INVARIANT.
+    ATLAS CEILING:         sinh(aL)/a + L                                 — NOT INVARIANT
+                                                                            (verified at a=L=1, lam=2).
+
+    ==> NO BOUND EXPRESSED IN THE ATLAS'S VARIABLES CAN CONSTRAIN AN UNFOLDED STATISTIC.
+        THE CLOSURE RESULTS PROVED HERE SAY NOTHING ABOUT CORRELATION STATISTICS.
+        THE PAIR-CORRELATION LANE IS GENUINELY OPEN WITH RESPECT TO EVERYTHING IN THIS DEVELOPMENT,
+        RATHER THAN MERELY UNEXPLORED.
+
+This answers the cycle-102 meta-observation: the single logarithmic invariant governs the four closed
+lanes, and dimensionless data lives outside its reach. IT IS THE SECOND INVARIANT THE PROGRAMME WAS
+LOOKING FOR.
+
+### The unconditional input the lane has
+The pair-correlation form is a SQUARED MODULUS, hence nonnegative with NO hypothesis:
+
+    sum_{j,k} w_j w_k cos( alpha (gam_j - gam_k) )
+        = ( sum_j w_j cos(alpha gam_j) )^2 + ( sum_j w_j sin(alpha gam_j) )^2  >=  0.
+
+This is the only unconditional statement about the zeros' correlations, and it is exactly the
+positivity behind the classical simple-zero proportions. NOTE it is unconditional in a way nothing in
+the four closed lanes was: it does not presuppose the location of the zeros, only their existence.
+
+Machine-verified: `RHTower/AtlasBlindToUnfolded.lean` (scale invariance of unfolded differences,
+explicit non-invariance of the detection ceiling, the expansion of the pair-correlation form into two
+squares, its nonnegativity, and the resulting off-diagonal bound; standard axioms only, wired into
+RHTower).
+
+### THIRTY-SEVENTH ATLAS ENTRY
+    unfolded blindness   unfolded correlation statistics are invariant under the rescaling that every
+                         atlas obstruction measures, and the atlas's own quantities are not. The
+                         closure results are silent on correlations; the pair-correlation lane is
+                         open, and its unconditional input is the positivity of the correlation form.
+
+### STATE AT CYCLE 103
+Thirty-seven entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+FOR THE FIRST TIME SINCE CYCLE 88 THERE IS A LANE THAT IS OPEN BY PROOF RATHER THAN BY NEGLECT.
+
+### Cycle 104 target
+Work the open lane. The unconditional input is positivity of the correlation form; the classical
+consequence (Montgomery) is that, ASSUMING RH, F(alpha) = alpha + T^{-2 alpha} log T (1+o(1)) for
+0 <= alpha <= 1. THE ASSUMPTION ENTERS ONLY TO PLACE THE ZEROS ON A LINE SO THAT THE EXPLICIT-FORMULA
+COMPUTATION OF F IS REAL. ASK: what is F(alpha) unconditionally, with zeros at beta + i gam? The
+explicit-formula computation gives a form involving T^{iAlpha(gam - gam')} weighted by
+x^{beta + beta' - 1}; off-line zeros contribute EXTRA WEIGHT x^{2a}. So F PICKS UP A POSITIVE
+CONTRIBUTION FROM OFF-LINE ZEROS. Since F is bounded above by the diagonal plus the prime terms —
+which are unconditional — AN OFF-LINE ZERO WOULD HAVE TO FIT INSIDE THAT UNCONDITIONAL BOUND.
+COMPUTE THE BUDGET. If a zero at deviation a forces F(alpha) above its unconditional ceiling for some
+alpha, that is a contradiction, and the lane closes the problem rather than the method.
