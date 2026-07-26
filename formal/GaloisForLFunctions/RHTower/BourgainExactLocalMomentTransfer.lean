@@ -354,80 +354,6 @@ theorem bourgainSquareRootLocalSample_mem
   · exact add_le_add_right
       ((div_le_div_iff_of_pos_right hD).2 hnH) _
 
-/-- Application-range version of the exact local estimate.  Sample
-containment and both operator-norm fit conditions are discharged by
-`H ≤ D` and the concrete physical-cube condition `12N ≤ H²`. -/
-theorem setLIntegral_bourgainSquareRootExactLocalSum_bilinear_application
-    {ε : ℝ} (hε : 0 < ε) :
-    ∃ C : ℝ, 0 < C ∧
-      ∀ {a₀ b₀ N D : ℝ},
-        (ha₀ : 1 / 2 ≤ a₀) → (ha₀b₀ : a₀ < b₀) →
-        (hb₀ : b₀ ≤ 1) → (hN : 0 ≤ N) → (hD : 0 < D) →
-      ∀ (H : ℕ), (hH : 0 < H) →
-      (hHD : (H : ℝ) ≤ D) → ∀ (c₁ c₂ : Fin H → ℂ),
-      12 * N ≤ (H : ℝ) ^ (2 : ℕ) →
-      (∫⁻ x in {x : Fin 4 → ℝ | ‖x‖ ≤ N},
-        ENNReal.ofReal
-          (‖bourgainSquareRootExactLocalSum H D a₀ c₁ x‖ ^ (6 : ℕ) *
-            ‖bourgainSquareRootExactLocalSum H D b₀ c₂ x‖ ^
-              (6 : ℕ))) ≤
-        (1024 : ENNReal) *
-          (ENNReal.ofReal
-              |(3 * (b₀ - a₀) ^ (4 : ℕ) /
-                (32 * a₀ ^ (3 : ℕ) * b₀ ^ (3 : ℕ)))⁻¹| *
-            ENNReal.ofReal |(((H : ℝ) / D) ^ (6 : ℕ))⁻¹| *
-            ENNReal.ofReal
-              ((H : ℝ) ^ (8 : ℕ) *
-                (C * (H : ℝ) ^ ε *
-                  (∑ n : Fin H, ‖c₁ n‖ ^ (2 : ℕ)) ^ (3 : ℕ) *
-                  (∑ n : Fin H, ‖c₂ n‖ ^ (2 : ℕ)) ^ (3 : ℕ))) +
-            ENNReal.ofReal
-                (bourgainSquareRootBilinearTaylorError
-                  N a₀ b₀ ((H : ℝ) / D) c₁ c₂) *
-              ENNReal.ofReal ((2 * N) ^ (4 : ℕ))) := by
-  obtain ⟨C, hC, hlocal⟩ :=
-    setLIntegral_bourgainSquareRootExactLocalSum_bilinear_subpower hε
-  refine ⟨C, hC, ?_⟩
-  intro a₀ b₀ N D ha₀ ha₀b₀ hb₀ hN hD H hH hHD c₁ c₂ hphysical
-  have ha₀pos : 0 < a₀ := lt_of_lt_of_le (by norm_num) ha₀
-  have hscale0 : 0 ≤ (H : ℝ) / D := by positivity
-  have hscale1 : (H : ℝ) / D ≤ 1 :=
-    (div_le_one hD).2 hHD
-  have hscale : (H : ℝ) / D ≠ 0 := by positivity
-  have hopScale :=
-    opNorm_bourgainParabolaPhaseScale_le_one
-      hscale hscale0 hscale1
-  have hopPhase :=
-    opNorm_bourgainSquareRootPhaseCoordinates_le_six
-      ha₀ ha₀b₀ hb₀
-  have hfit :
-      ‖(bourgainParabolaPhaseScaleContinuousLinearEquiv hscale :
-          (Fin 4 → ℝ) →L[ℝ] (Fin 4 → ℝ))‖ *
-        (‖(bourgainSquareRootPhaseCoordinateContinuousLinearEquiv
-            ha₀pos ha₀b₀ :
-            (Fin 4 → ℝ) →L[ℝ] (Fin 4 → ℝ))‖ * N) ≤
-          (H : ℝ) ^ (2 : ℕ) / 2 := by
-    calc
-      ‖(bourgainParabolaPhaseScaleContinuousLinearEquiv hscale :
-          (Fin 4 → ℝ) →L[ℝ] (Fin 4 → ℝ))‖ *
-        (‖(bourgainSquareRootPhaseCoordinateContinuousLinearEquiv
-            ha₀pos ha₀b₀ :
-            (Fin 4 → ℝ) →L[ℝ] (Fin 4 → ℝ))‖ * N) ≤
-          1 * (6 * N) := by
-        apply mul_le_mul hopScale
-        · exact mul_le_mul_of_nonneg_right hopPhase hN
-        · positivity
-        · norm_num
-      _ ≤ (H : ℝ) ^ (2 : ℕ) / 2 := by
-        norm_num
-        linarith
-  exact hlocal ha₀pos ha₀b₀ hN hD.ne'
-    (div_pos (Nat.cast_pos.mpr hH) hD)
-    H hH c₁ c₂
-    (bourgainSquareRootLocalSample_mem hD)
-    (bourgainSquareRootLocalSample_mem hD)
-    hfit
-
 /-- Application-range estimate with an arbitrary fixed positive lower base
 `A`.  The physical radius is adjusted by the explicit operator bound at
 `A`; no `a₀ ≥ 1/2` restriction remains. -/
@@ -502,6 +428,47 @@ theorem setLIntegral_bourgainSquareRootExactLocalSum_bilinear_application_of_low
     (bourgainSquareRootLocalSample_mem hD)
     (bourgainSquareRootLocalSample_mem hD)
     hfit
+
+/-- Application-range version of the exact local estimate.  Sample
+containment and both operator-norm fit conditions are discharged by
+`H ≤ D` and the concrete physical-cube condition `12N ≤ H²`. -/
+theorem setLIntegral_bourgainSquareRootExactLocalSum_bilinear_application
+    {ε : ℝ} (hε : 0 < ε) :
+    ∃ C : ℝ, 0 < C ∧
+      ∀ {a₀ b₀ N D : ℝ},
+        (ha₀ : 1 / 2 ≤ a₀) → (ha₀b₀ : a₀ < b₀) →
+        (hb₀ : b₀ ≤ 1) → (hN : 0 ≤ N) → (hD : 0 < D) →
+      ∀ (H : ℕ), (hH : 0 < H) →
+      (hHD : (H : ℝ) ≤ D) → ∀ (c₁ c₂ : Fin H → ℂ),
+      12 * N ≤ (H : ℝ) ^ (2 : ℕ) →
+      (∫⁻ x in {x : Fin 4 → ℝ | ‖x‖ ≤ N},
+        ENNReal.ofReal
+          (‖bourgainSquareRootExactLocalSum H D a₀ c₁ x‖ ^ (6 : ℕ) *
+            ‖bourgainSquareRootExactLocalSum H D b₀ c₂ x‖ ^
+              (6 : ℕ))) ≤
+        (1024 : ENNReal) *
+          (ENNReal.ofReal
+              |(3 * (b₀ - a₀) ^ (4 : ℕ) /
+                (32 * a₀ ^ (3 : ℕ) * b₀ ^ (3 : ℕ)))⁻¹| *
+            ENNReal.ofReal |(((H : ℝ) / D) ^ (6 : ℕ))⁻¹| *
+            ENNReal.ofReal
+              ((H : ℝ) ^ (8 : ℕ) *
+                (C * (H : ℝ) ^ ε *
+                  (∑ n : Fin H, ‖c₁ n‖ ^ (2 : ℕ)) ^ (3 : ℕ) *
+                  (∑ n : Fin H, ‖c₂ n‖ ^ (2 : ℕ)) ^ (3 : ℕ))) +
+            ENNReal.ofReal
+                (bourgainSquareRootBilinearTaylorError
+                  N a₀ b₀ ((H : ℝ) / D) c₁ c₂) *
+              ENNReal.ofReal ((2 * N) ^ (4 : ℕ))) := by
+  obtain ⟨C, hC, hlower⟩ :=
+    setLIntegral_bourgainSquareRootExactLocalSum_bilinear_application_of_lower hε
+  refine ⟨C, hC, ?_⟩
+  intro a₀ b₀ N D ha₀ ha₀b₀ hb₀ hN hD H hH hHD c₁ c₂ hphysical
+  refine hlower (A := 1 / 2) (by norm_num) ha₀ ha₀b₀ hb₀ hN hD H hH hHD c₁ c₂ ?_
+  have hle : bourgainSquareRootPhaseOperatorBound (1 / 2 : ℝ) ≤ 6 := by
+    rw [bourgainSquareRootPhaseOperatorBound]
+    refine max_le ?_ ?_ <;> norm_num
+  nlinarith [hN, hle, hphysical]
 
 end
 

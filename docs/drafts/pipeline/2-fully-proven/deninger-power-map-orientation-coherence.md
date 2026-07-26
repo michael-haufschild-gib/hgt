@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven
 - **Type:** SOURCE CONSTRUCTION LEMMA
 - **Parent:** `deninger-mw-gamma-brst-complex`
-- **Lean status:** pending
+- **Lean status:** direct check passes in `DeningerArithmeticPowerOrientation.lean`
 
 ## Statement
 
@@ -129,4 +129,3 @@ The cotangent transitivity triangle and functoriality of fundamental classes are
 explicit orientation-preserving reduction `(1)` for the power-map presentations is recorded here
 because it is the exact arithmetic-semigroup coherence needed by the Deninger construction.
 No novelty beyond that specialized extraction is claimed.
-

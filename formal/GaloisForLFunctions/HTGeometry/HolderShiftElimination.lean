@@ -287,50 +287,65 @@ theorem add_single_sub_single (α : Fin m →₀ ℕ) (j : Fin m) :
   · rw [if_neg hk]
     omega
 
-/-- The jet substitution: coefficients shift by `ratShift`, each jet variable translates by
-its pole part — the transformation law of the digamma jet vector under `s ↦ s+1`. -/
-def jetTranslate (m : ℕ) :
+end Jet
+
+/-! ## The arbitrary-increment jet substitution
+
+The elimination below is parameterized by an arbitrary rational jet increment `rj`.  The only
+analytic input that distinguishes one increment family from another is the exact obstruction that
+no nonzero constant linear combination of the increments is a rational shift coboundary; it enters
+as the hypothesis `Hres` of `no_shift_stable_annihilatorWith`.  The digamma case
+(`rj := polePart`) is recovered below, its obstruction being
+`ratShift_sub_polePart_combination`. -/
+
+section RationalIncrement
+
+open MvPolynomial
+
+namespace RationalIncrementHolder
+
+def jetTranslateWith (rj : ℕ → RatFunc ℂ) (m : ℕ) :
     MvPolynomial (Fin m) (RatFunc ℂ) →+* MvPolynomial (Fin m) (RatFunc ℂ) :=
   ((mvPolynomialBaseTranslation
-      (fun j : Fin m => polePart (j : ℕ))).toAlgHom.toRingHom).comp
+      (fun j : Fin m => rj (j : ℕ))).toAlgHom.toRingHom).comp
     (MvPolynomial.map ratShift)
 
-theorem jetTranslate_C (k : RatFunc ℂ) :
-    jetTranslate m (C k) = C (ratShift k) := by
-  unfold jetTranslate
+theorem jetTranslate_CWith (rj : ℕ → RatFunc ℂ) (k : RatFunc ℂ) :
+    jetTranslateWith rj m (C k) = C (ratShift k) := by
+  unfold jetTranslateWith
   rw [RingHom.comp_apply, MvPolynomial.map_C]
   rw [show (C (ratShift k) : MvPolynomial (Fin m) (RatFunc ℂ))
       = algebraMap (RatFunc ℂ) (MvPolynomial (Fin m) (RatFunc ℂ)) (ratShift k) from rfl]
   exact (mvPolynomialBaseTranslation _).commutes _
 
-theorem jetTranslate_X (j : Fin m) :
-    jetTranslate m (X j) = X j + C (polePart (j : ℕ)) := by
-  unfold jetTranslate
+theorem jetTranslate_XWith (rj : ℕ → RatFunc ℂ) (j : Fin m) :
+    jetTranslateWith rj m (X j) = X j + C (rj (j : ℕ)) := by
+  unfold jetTranslateWith
   rw [RingHom.comp_apply, MvPolynomial.map_X]
   exact mvPolynomialBaseTranslation_X _ j
 
 /-- The translated monomial `Π_j (Y_j + polePart j)^{α_j}`. -/
-def transMonomial (α : Fin m →₀ ℕ) : MvPolynomial (Fin m) (RatFunc ℂ) :=
-  ∏ j : Fin m, (X j + C (polePart (j : ℕ))) ^ (α j)
+def transMonomialWith (rj : ℕ → RatFunc ℂ) (α : Fin m →₀ ℕ) : MvPolynomial (Fin m) (RatFunc ℂ) :=
+  ∏ j : Fin m, (X j + C (rj (j : ℕ))) ^ (α j)
 
-theorem jetTranslate_monomial (α : Fin m →₀ ℕ) (a : RatFunc ℂ) :
-    jetTranslate m (monomial α a) = C (ratShift a) * transMonomial α := by
+theorem jetTranslate_monomialWith (rj : ℕ → RatFunc ℂ) (α : Fin m →₀ ℕ) (a : RatFunc ℂ) :
+    jetTranslateWith rj m (monomial α a) = C (ratShift a) * transMonomialWith rj α := by
   rw [MvPolynomial.monomial_eq, map_mul]
   congr 1
-  · exact jetTranslate_C a
+  · exact jetTranslate_CWith rj a
   · rw [Finsupp.prod_fintype _ _ (fun j => pow_zero _), map_prod]
     refine Finset.prod_congr rfl fun j _ => ?_
-    rw [map_pow, jetTranslate_X]
+    rw [map_pow, jetTranslate_XWith rj]
 
-theorem transMonomial_zero : transMonomial (0 : Fin m →₀ ℕ) = 1 := by
-  unfold transMonomial
+theorem transMonomial_zeroWith (rj : ℕ → RatFunc ℂ) : transMonomialWith rj (0 : Fin m →₀ ℕ) = 1 := by
+  unfold transMonomialWith
   refine Finset.prod_eq_one fun j _ => ?_
   rw [Finsupp.coe_zero, Pi.zero_apply, pow_zero]
 
-theorem transMonomial_add_single (α : Fin m →₀ ℕ) (j : Fin m) :
-    transMonomial (α + Finsupp.single j 1)
-      = transMonomial α * (X j + C (polePart (j : ℕ))) := by
-  unfold transMonomial
+theorem transMonomial_add_singleWith (rj : ℕ → RatFunc ℂ) (α : Fin m →₀ ℕ) (j : Fin m) :
+    transMonomialWith rj (α + Finsupp.single j 1)
+      = transMonomialWith rj α * (X j + C (rj (j : ℕ))) := by
+  unfold transMonomialWith
   rw [Finset.prod_congr rfl (fun k _ => by rw [Finsupp.add_apply, pow_add]),
     Finset.prod_mul_distrib]
   congr 1
@@ -341,26 +356,26 @@ theorem transMonomial_add_single (α : Fin m →₀ ℕ) (j : Fin m) :
   rw [Finsupp.single_apply, if_pos rfl, pow_one]
 
 /-- The subtop layer of a translated monomial: `Σ_j α_j·polePart j·Y^{α − e_j}`. -/
-def subTopMonomial (α : Fin m →₀ ℕ) : MvPolynomial (Fin m) (RatFunc ℂ) :=
+def subTopMonomialWith (rj : ℕ → RatFunc ℂ) (α : Fin m →₀ ℕ) : MvPolynomial (Fin m) (RatFunc ℂ) :=
   ∑ j : Fin m,
-    monomial (α - Finsupp.single j 1) ((α j : RatFunc ℂ) * polePart (j : ℕ))
+    monomial (α - Finsupp.single j 1) ((α j : RatFunc ℂ) * rj (j : ℕ))
 
-theorem subTopMonomial_zero : subTopMonomial (0 : Fin m →₀ ℕ) = 0 := by
-  unfold subTopMonomial
+theorem subTopMonomial_zeroWith (rj : ℕ → RatFunc ℂ) : subTopMonomialWith rj (0 : Fin m →₀ ℕ) = 0 := by
+  unfold subTopMonomialWith
   refine Finset.sum_eq_zero fun j _ => ?_
   rw [Finsupp.coe_zero, Pi.zero_apply, Nat.cast_zero, zero_mul, map_zero]
 
 theorem X_eq_monomial (j : Fin m) :
     (X j : MvPolynomial (Fin m) (RatFunc ℂ)) = monomial (Finsupp.single j 1) 1 := rfl
 
-theorem subTopMonomial_add_single (α : Fin m →₀ ℕ) (j : Fin m) :
-    subTopMonomial (α + Finsupp.single j 1)
-      = subTopMonomial α * X j + C (polePart (j : ℕ)) * monomial α 1 := by
-  unfold subTopMonomial
+theorem subTopMonomial_add_singleWith (rj : ℕ → RatFunc ℂ) (α : Fin m →₀ ℕ) (j : Fin m) :
+    subTopMonomialWith rj (α + Finsupp.single j 1)
+      = subTopMonomialWith rj α * X j + C (rj (j : ℕ)) * monomial α 1 := by
+  unfold subTopMonomialWith
   rw [Finset.sum_mul]
   rw [← Finset.sum_erase_add _ _ (Finset.mem_univ j),
     ← Finset.sum_erase_add _
-      (fun k => monomial (α - Finsupp.single k 1) ((α k : RatFunc ℂ) * polePart (k : ℕ))
+      (fun k => monomial (α - Finsupp.single k 1) ((α k : RatFunc ℂ) * rj (k : ℕ))
         * X j) (Finset.mem_univ j), add_assoc]
   congr 1
   · -- off-`j` terms match after commuting the added unit past the removed one
@@ -382,8 +397,8 @@ theorem subTopMonomial_add_single (α : Fin m →₀ ℕ) (j : Fin m) :
     have happ : ((α + Finsupp.single j 1 : Fin m →₀ ℕ)) j = α j + 1 := by
       rw [Finsupp.add_apply, Finsupp.single_apply, if_pos rfl]
     rw [happ]
-    have hCmul : C (polePart (j : ℕ)) * (monomial α 1 : MvPolynomial (Fin m) (RatFunc ℂ))
-        = monomial α (polePart (j : ℕ)) := by
+    have hCmul : C (rj (j : ℕ)) * (monomial α 1 : MvPolynomial (Fin m) (RatFunc ℂ))
+        = monomial α (rj (j : ℕ)) := by
       rw [MvPolynomial.C_mul_monomial, mul_one]
     rw [hCmul]
     by_cases hα : α j = 0
@@ -398,14 +413,14 @@ monomial, plus the gradient layer `Σ_j α_j·c_j·Y^{α−e_j}`, plus an error 
 degrees at most `degSum α − 2`. -/
 theorem transMonomial_decomposition (α : Fin m →₀ ℕ) :
     ∃ E : MvPolynomial (Fin m) (RatFunc ℂ),
-      transMonomial α = monomial α 1 + subTopMonomial α + E ∧
+      transMonomialWith rj α = monomial α 1 + subTopMonomialWith rj α + E ∧
       ∀ β : Fin m →₀ ℕ, degSum α ≤ degSum β + 1 → coeff β E = 0 := by
   generalize hN : degSum α = N
   induction N using Nat.strong_induction_on generalizing α with
   | _ N ih =>
     rcases eq_or_ne α 0 with rfl | hα0
     · refine ⟨0, ?_, fun β _ => coeff_zero β⟩
-      rw [transMonomial_zero, subTopMonomial_zero, add_zero, add_zero]
+      rw [transMonomial_zeroWith rj, subTopMonomial_zeroWith rj, add_zero, add_zero]
       rw [show (monomial (0 : Fin m →₀ ℕ) (1 : RatFunc ℂ)) = C 1 from (C_apply).symm, map_one]
     · have hpos : 0 < degSum α := by
         rcases Nat.eq_zero_or_pos (degSum α) with h0 | h
@@ -424,19 +439,19 @@ theorem transMonomial_decomposition (α : Fin m →₀ ℕ) :
       have hres : α' + Finsupp.single j 1 = α := sub_single_add_single hj
       have hdeg' : degSum α' + 1 = degSum α := degSum_sub_single hj
       obtain ⟨E', hE'eq, hE'coeff⟩ := ih (degSum α') (by omega) α' rfl
-      refine ⟨C (polePart (j : ℕ)) * subTopMonomial α'
-        + E' * (X j + C (polePart (j : ℕ))), ?_, ?_⟩
-      · rw [← hres, transMonomial_add_single, hE'eq, subTopMonomial_add_single,
+      refine ⟨C (rj (j : ℕ)) * subTopMonomialWith rj α'
+        + E' * (X j + C (rj (j : ℕ))), ?_, ?_⟩
+      · rw [← hres, transMonomial_add_singleWith rj, hE'eq, subTopMonomial_add_singleWith rj,
           show (monomial (α' + Finsupp.single j 1) (1 : RatFunc ℂ))
               = monomial α' 1 * X j by
             rw [X_eq_monomial, monomial_mul, mul_one]]
         ring
       · intro β hβ
         rw [← hN, ← hdeg'] at hβ
-        have h1 : coeff β (C (polePart (j : ℕ)) * subTopMonomial α') = 0 := by
+        have h1 : coeff β (C (rj (j : ℕ)) * subTopMonomialWith rj α') = 0 := by
           rw [coeff_C_mul]
-          have hsub : coeff β (subTopMonomial α') = 0 := by
-            unfold subTopMonomial
+          have hsub : coeff β (subTopMonomialWith rj α') = 0 := by
+            unfold subTopMonomialWith
             rw [coeff_sum]
             refine Finset.sum_eq_zero fun k _ => ?_
             by_cases hk : α' k = 0
@@ -447,7 +462,7 @@ theorem transMonomial_decomposition (α : Fin m →₀ ℕ) :
               rw [hEq] at hlt
               omega
           rw [hsub, mul_zero]
-        have h2 : coeff β (E' * (X j + C (polePart (j : ℕ)))) = 0 := by
+        have h2 : coeff β (E' * (X j + C (rj (j : ℕ)))) = 0 := by
           rw [mul_add, coeff_add]
           have h2a : coeff β (E' * X j) = 0 := by
             rw [coeff_mul_X']
@@ -457,18 +472,18 @@ theorem transMonomial_decomposition (α : Fin m →₀ ℕ) :
               have hdegβ := degSum_sub_single (Finsupp.mem_support_iff.mp hmem)
               omega
             · rw [if_neg hmem]
-          have h2b : coeff β (E' * C (polePart (j : ℕ))) = 0 := by
+          have h2b : coeff β (E' * C (rj (j : ℕ))) = 0 := by
             rw [mul_comm, coeff_C_mul, hE'coeff β (by omega), mul_zero]
           rw [h2a, h2b, add_zero]
         rw [coeff_add, h1, h2, add_zero]
 
-theorem coeff_transMonomial_of_degSum_eq {α β : Fin m →₀ ℕ}
+theorem coeff_transMonomial_of_degSum_eqWith (rj : ℕ → RatFunc ℂ) {α β : Fin m →₀ ℕ}
     (h : degSum β = degSum α) :
-    coeff β (transMonomial α) = if α = β then 1 else 0 := by
+    coeff β (transMonomialWith rj α) = if α = β then 1 else 0 := by
   obtain ⟨E, hEq, hE⟩ := transMonomial_decomposition α
   rw [hEq, coeff_add, coeff_add, coeff_monomial]
-  have h1 : coeff β (subTopMonomial α) = 0 := by
-    unfold subTopMonomial
+  have h1 : coeff β (subTopMonomialWith rj α) = 0 := by
+    unfold subTopMonomialWith
     rw [coeff_sum]
     refine Finset.sum_eq_zero fun k _ => ?_
     by_cases hk : α k = 0
@@ -480,15 +495,15 @@ theorem coeff_transMonomial_of_degSum_eq {α β : Fin m →₀ ℕ}
       omega
   rw [h1, hE β (by omega), add_zero, add_zero]
 
-theorem coeff_transMonomial_of_degSum_succ {α β : Fin m →₀ ℕ}
+theorem coeff_transMonomial_of_degSum_succWith (rj : ℕ → RatFunc ℂ) {α β : Fin m →₀ ℕ}
     (h : degSum β + 1 = degSum α) :
-    coeff β (transMonomial α)
+    coeff β (transMonomialWith rj α)
       = ∑ j : Fin m, if α = β + Finsupp.single j 1
-          then (α j : RatFunc ℂ) * polePart (j : ℕ) else 0 := by
+          then (α j : RatFunc ℂ) * rj (j : ℕ) else 0 := by
   obtain ⟨E, hEq, hE⟩ := transMonomial_decomposition α
   rw [hEq, coeff_add, coeff_add, coeff_monomial,
     if_neg (fun hEq' => by rw [hEq'] at h; omega), hE β (by omega), zero_add, add_zero]
-  unfold subTopMonomial
+  unfold subTopMonomialWith
   rw [coeff_sum]
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [coeff_monomial]
@@ -518,13 +533,13 @@ theorem coeff_transMonomial_of_degSum_succ {α β : Fin m →₀ ℕ}
     · rw [if_pos (hiff.mpr hcase), if_pos hcase]
     · rw [if_neg (fun h' => hcase (hiff.mp h')), if_neg hcase]
 
-theorem coeff_transMonomial_of_degSum_lt {α β : Fin m →₀ ℕ}
+theorem coeff_transMonomial_of_degSum_ltWith (rj : ℕ → RatFunc ℂ) {α β : Fin m →₀ ℕ}
     (h : degSum α < degSum β) :
-    coeff β (transMonomial α) = 0 := by
+    coeff β (transMonomialWith rj α) = 0 := by
   obtain ⟨E, hEq, hE⟩ := transMonomial_decomposition α
   rw [hEq, coeff_add, coeff_add, coeff_monomial,
     if_neg (fun hEq' => by rw [hEq'] at h; omega), hE β (by omega), zero_add, add_zero]
-  unfold subTopMonomial
+  unfold subTopMonomialWith
   rw [coeff_sum]
   refine Finset.sum_eq_zero fun k _ => ?_
   by_cases hk : α k = 0
@@ -535,61 +550,61 @@ theorem coeff_transMonomial_of_degSum_lt {α β : Fin m →₀ ℕ}
     rw [hEq'] at hlt
     omega
 
-theorem totalDegree_transMonomial_le (α : Fin m →₀ ℕ) :
-    (transMonomial α).totalDegree ≤ degSum α := by
+theorem totalDegree_transMonomial_leWith (rj : ℕ → RatFunc ℂ) (α : Fin m →₀ ℕ) :
+    (transMonomialWith rj α).totalDegree ≤ degSum α := by
   refine le_trans (MvPolynomial.totalDegree_finsetProd _ _) ?_
   rw [degSum_eq_univ_sum]
   refine Finset.sum_le_sum fun j _ => ?_
   refine le_trans (MvPolynomial.totalDegree_pow _ _) ?_
-  have hle : (X j + C (polePart (j : ℕ)) :
+  have hle : (X j + C (rj (j : ℕ)) :
       MvPolynomial (Fin m) (RatFunc ℂ)).totalDegree ≤ 1 := by
     refine le_trans (MvPolynomial.totalDegree_add _ _) ?_
     rw [MvPolynomial.totalDegree_X, MvPolynomial.totalDegree_C]
     omega
-  calc (α j) * (X j + C (polePart (j : ℕ)) :
+  calc (α j) * (X j + C (rj (j : ℕ)) :
       MvPolynomial (Fin m) (RatFunc ℂ)).totalDegree ≤ (α j) * 1 :=
         Nat.mul_le_mul_left _ hle
     _ = α j := Nat.mul_one _
 
 /-- The jet substitution expanded over the support. -/
-theorem jetTranslate_eq_sum (P : MvPolynomial (Fin m) (RatFunc ℂ)) :
-    jetTranslate m P
-      = ∑ α ∈ P.support, C (ratShift (coeff α P)) * transMonomial α := by
+theorem jetTranslate_eq_sumWith (rj : ℕ → RatFunc ℂ) (P : MvPolynomial (Fin m) (RatFunc ℂ)) :
+    jetTranslateWith rj m P
+      = ∑ α ∈ P.support, C (ratShift (coeff α P)) * transMonomialWith rj α := by
   conv_lhs => rw [P.as_sum]
   rw [map_sum]
-  exact Finset.sum_congr rfl fun α _ => jetTranslate_monomial α _
+  exact Finset.sum_congr rfl fun α _ => jetTranslate_monomialWith rj α _
 
-theorem totalDegree_jetTranslate_le (P : MvPolynomial (Fin m) (RatFunc ℂ)) :
-    (jetTranslate m P).totalDegree ≤ P.totalDegree := by
-  rw [jetTranslate_eq_sum]
+theorem totalDegree_jetTranslate_leWith (rj : ℕ → RatFunc ℂ) (P : MvPolynomial (Fin m) (RatFunc ℂ)) :
+    (jetTranslateWith rj m P).totalDegree ≤ P.totalDegree := by
+  rw [jetTranslate_eq_sumWith rj]
   refine le_trans (MvPolynomial.totalDegree_finsetSum _ _) ?_
   refine Finset.sup_le fun α hα => ?_
-  calc (C (ratShift (coeff α P)) * transMonomial α).totalDegree
+  calc (C (ratShift (coeff α P)) * transMonomialWith rj α).totalDegree
       ≤ (C (ratShift (coeff α P)) :
-          MvPolynomial (Fin m) (RatFunc ℂ)).totalDegree + (transMonomial α).totalDegree :=
+          MvPolynomial (Fin m) (RatFunc ℂ)).totalDegree + (transMonomialWith rj α).totalDegree :=
         MvPolynomial.totalDegree_mul _ _
     _ ≤ 0 + degSum α := by
         exact Nat.add_le_add (le_of_eq (MvPolynomial.totalDegree_C _))
-          (totalDegree_transMonomial_le α)
+          (totalDegree_transMonomial_leWith rj α)
     _ ≤ P.totalDegree := by
         rw [Nat.zero_add]
         exact MvPolynomial.le_totalDegree hα
 
 /-- **Top-layer law of the jet substitution.**  On the highest jet-degree layer the
 substitution acts coefficientwise by the shift. -/
-theorem coeff_jetTranslate_of_le_degSum {P : MvPolynomial (Fin m) (RatFunc ℂ)}
+theorem coeff_jetTranslate_of_le_degSumWith (rj : ℕ → RatFunc ℂ) {P : MvPolynomial (Fin m) (RatFunc ℂ)}
     {β : Fin m →₀ ℕ} (hd : ∀ α ∈ P.support, degSum α ≤ degSum β) :
-    coeff β (jetTranslate m P) = ratShift (coeff β P) := by
-  rw [jetTranslate_eq_sum, coeff_sum]
+    coeff β (jetTranslateWith rj m P) = ratShift (coeff β P) := by
+  rw [jetTranslate_eq_sumWith rj, coeff_sum]
   have hstep : ∀ α ∈ P.support,
-      coeff β (C (ratShift (coeff α P)) * transMonomial α)
+      coeff β (C (ratShift (coeff α P)) * transMonomialWith rj α)
         = if α = β then ratShift (coeff α P) else 0 := by
     intro α hα
     rw [coeff_C_mul]
     rcases lt_or_eq_of_le (hd α hα) with hlt | heq
-    · rw [coeff_transMonomial_of_degSum_lt hlt, mul_zero,
+    · rw [coeff_transMonomial_of_degSum_ltWith rj hlt, mul_zero,
         if_neg (fun hEq => by rw [hEq] at hlt; omega)]
-    · rw [coeff_transMonomial_of_degSum_eq heq.symm]
+    · rw [coeff_transMonomial_of_degSum_eqWith rj heq.symm]
       by_cases hcase : α = β
       · rw [if_pos hcase, if_pos hcase, mul_one]
       · rw [if_neg hcase, if_neg hcase, mul_zero]
@@ -601,17 +616,17 @@ theorem coeff_jetTranslate_of_le_degSum {P : MvPolynomial (Fin m) (RatFunc ℂ)}
 
 /-- **Subtop-layer law of the jet substitution.**  One layer below the top, the substitution
 acts by the shift plus the gradient term collecting the pole parts. -/
-theorem coeff_jetTranslate_of_le_degSum_succ {P : MvPolynomial (Fin m) (RatFunc ℂ)}
+theorem coeff_jetTranslate_of_le_degSum_succWith (rj : ℕ → RatFunc ℂ) {P : MvPolynomial (Fin m) (RatFunc ℂ)}
     {β : Fin m →₀ ℕ} (hd : ∀ α ∈ P.support, degSum α ≤ degSum β + 1) :
-    coeff β (jetTranslate m P) = ratShift (coeff β P)
-      + ∑ j : Fin m, ((β j + 1 : ℕ) : RatFunc ℂ) * polePart (j : ℕ)
+    coeff β (jetTranslateWith rj m P) = ratShift (coeff β P)
+      + ∑ j : Fin m, ((β j + 1 : ℕ) : RatFunc ℂ) * rj (j : ℕ)
           * ratShift (coeff (β + Finsupp.single j 1) P) := by
-  rw [jetTranslate_eq_sum, coeff_sum]
+  rw [jetTranslate_eq_sumWith rj, coeff_sum]
   have hstep : ∀ α ∈ P.support,
-      coeff β (C (ratShift (coeff α P)) * transMonomial α)
+      coeff β (C (ratShift (coeff α P)) * transMonomialWith rj α)
         = (if α = β then ratShift (coeff α P) else 0)
           + ∑ j : Fin m, if α = β + Finsupp.single j 1
-              then ratShift (coeff α P) * ((α j : RatFunc ℂ) * polePart (j : ℕ)) else 0 := by
+              then ratShift (coeff α P) * ((α j : RatFunc ℂ) * rj (j : ℕ)) else 0 := by
     intro α hα
     rw [coeff_C_mul]
     have hcases : degSum α < degSum β ∨ degSum α = degSum β
@@ -619,19 +634,19 @@ theorem coeff_jetTranslate_of_le_degSum_succ {P : MvPolynomial (Fin m) (RatFunc 
       have := hd α hα
       omega
     rcases hcases with hlt | heq | hsucc
-    · rw [coeff_transMonomial_of_degSum_lt hlt, mul_zero,
+    · rw [coeff_transMonomial_of_degSum_ltWith rj hlt, mul_zero,
         if_neg (fun hEq => by rw [hEq] at hlt; omega)]
       rw [Finset.sum_eq_zero (fun j _ => if_neg (fun hEq => by
         rw [hEq, degSum_add, degSum_single] at hlt
         omega)), add_zero]
-    · rw [coeff_transMonomial_of_degSum_eq heq.symm]
+    · rw [coeff_transMonomial_of_degSum_eqWith rj heq.symm]
       rw [Finset.sum_eq_zero (fun j _ => if_neg (fun hEq => by
         rw [hEq, degSum_add, degSum_single] at heq
         omega)), add_zero]
       by_cases hcase : α = β
       · rw [if_pos hcase, if_pos hcase, mul_one]
       · rw [if_neg hcase, if_neg hcase, mul_zero]
-    · rw [coeff_transMonomial_of_degSum_succ (by omega), Finset.mul_sum]
+    · rw [coeff_transMonomial_of_degSum_succWith rj (by omega), Finset.mul_sum]
       rw [if_neg (fun hEq => by rw [hEq] at hsucc; omega), zero_add]
       refine Finset.sum_congr rfl fun j _ => ?_
       by_cases hcase : α = β + Finsupp.single j 1
@@ -646,7 +661,7 @@ theorem coeff_jetTranslate_of_le_degSum_succ {P : MvPolynomial (Fin m) (RatFunc 
   · rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [Finset.sum_ite_eq' P.support (β + Finsupp.single j 1)
-      (fun α => ratShift (coeff α P) * ((α j : RatFunc ℂ) * polePart (j : ℕ)))]
+      (fun α => ratShift (coeff α P) * ((α j : RatFunc ℂ) * rj (j : ℕ)))]
     have happ : ((β + Finsupp.single j 1 : Fin m →₀ ℕ)) j = β j + 1 := by
       rw [Finsupp.add_apply, Finsupp.single_apply, if_pos rfl]
     by_cases hβ : β + Finsupp.single j 1 ∈ P.support
@@ -654,11 +669,7 @@ theorem coeff_jetTranslate_of_le_degSum_succ {P : MvPolynomial (Fin m) (RatFunc 
       ring
     · rw [if_neg hβ, MvPolynomial.notMem_support_iff.mp hβ, map_zero, mul_zero]
 
-end Jet
-
 /-! ## The elimination theorem -/
-
-section Elimination
 
 open MvPolynomial
 
@@ -666,16 +677,19 @@ open MvPolynomial
 `ℂ(X)` closed under subtraction, `ℂ(X)`-scalar multiples, and the jet substitution, and
 containing no nonzero constant, contains no nonzero element.  A double-minimal member
 (minimal jet degree `D`, then minimal top-layer support) satisfies
-`jetTranslate P = u·P`; the top layer is shift-periodic and hence has constant coefficient
+`jetTranslateWith rj P = u·P`; the top layer is shift-periodic and hence has constant coefficient
 ratios; the layer below then satisfies difference equations whose right sides lie in the
 span of the pole parts, forcing the gradient of the top form to vanish — impossible in
 characteristic zero once `D ≥ 1`. -/
-theorem no_shift_stable_annihilator {m : ℕ}
+theorem no_shift_stable_annihilatorWith (rj : ℕ → RatFunc ℂ) {m : ℕ}
     (I : Set (MvPolynomial (Fin m) (RatFunc ℂ)))
     (Hsub : ∀ G H, G ∈ I → H ∈ I → G - H ∈ I)
     (Hsmul : ∀ (k : RatFunc ℂ) (G), G ∈ I → C k * G ∈ I)
-    (Hshift : ∀ G, G ∈ I → jetTranslate m G ∈ I)
+    (Hshift : ∀ G, G ∈ I → jetTranslateWith rj m G ∈ I)
     (Hconst : ∀ k : RatFunc ℂ, C k ∈ I → k = 0)
+    (Hres : ∀ {w : RatFunc ℂ} {δ : Fin m → ℂ},
+      ratShift w - w = ∑ j : Fin m, algebraMap ℂ (RatFunc ℂ) (δ j) * rj (j : ℕ) →
+      ∀ j, δ j = 0)
     (Hne : ∃ G ∈ I, G ≠ 0) : False := by
   classical
   obtain ⟨G₀, hG₀I, hG₀0⟩ := Hne
@@ -713,7 +727,7 @@ theorem no_shift_stable_annihilator {m : ℕ}
   have hσa : ratShift a ≠ 0 := fun h0 =>
     ha (ratShift_injective (by rw [h0, map_zero]))
   -- the eliminant
-  set Q := C (ratShift a) * P - C a * jetTranslate m P with hQ_def
+  set Q := C (ratShift a) * P - C a * jetTranslateWith rj m P with hQ_def
   have hQI : Q ∈ I := Hsub _ _ (Hsmul _ _ hPI) (Hsmul _ _ (Hshift _ hPI))
   have hdegall : ∀ α ∈ P.support, degSum α ≤ D := fun α hα => by
     rw [← hPD]
@@ -722,7 +736,7 @@ theorem no_shift_stable_annihilator {m : ℕ}
       coeff β Q = ratShift a * coeff β P - a * ratShift (coeff β P) := by
     intro β hβ
     rw [hQ_def, coeff_sub, coeff_C_mul, coeff_C_mul,
-      coeff_jetTranslate_of_le_degSum (fun α hα => by rw [hβ]; exact hdegall α hα)]
+      coeff_jetTranslate_of_le_degSumWith rj (fun α hα => by rw [hβ]; exact hdegall α hα)]
   -- the eliminant vanishes
   have hQ0 : Q = 0 := by
     by_contra hQne
@@ -736,7 +750,7 @@ theorem no_shift_stable_annihilator {m : ℕ}
       · refine le_trans (MvPolynomial.totalDegree_mul _ _) ?_
         rw [MvPolynomial.totalDegree_C, Nat.zero_add]
         rw [← hPD]
-        exact totalDegree_jetTranslate_le P
+        exact totalDegree_jetTranslate_leWith rj P
     have hss : (Q.support.filter fun α => degSum α = D)
         ⊂ (P.support.filter fun α => degSum α = D) := by
       rw [Finset.ssubset_iff_of_subset ?_]
@@ -777,26 +791,26 @@ theorem no_shift_stable_annihilator {m : ℕ}
       htop (β + Finsupp.single k 1) (by rw [degSum_add, degSum_single]; omega)
     have hcoeffQ : coeff β Q = 0 := by rw [hQ0, coeff_zero]
     rw [hQ_def, coeff_sub, coeff_C_mul, coeff_C_mul,
-      coeff_jetTranslate_of_le_degSum_succ
+      coeff_jetTranslate_of_le_degSum_succWith rj
         (fun α hα => by
           have := hdegall α hα
           omega)] at hcoeffQ
     -- rewrite the shifted top coefficients through the constants
-    have hsum : ∑ k : Fin m, ((β k + 1 : ℕ) : RatFunc ℂ) * polePart (k : ℕ)
+    have hsum : ∑ k : Fin m, ((β k + 1 : ℕ) : RatFunc ℂ) * rj (k : ℕ)
           * ratShift (coeff (β + Finsupp.single k 1) P)
         = ratShift a * ∑ k : Fin m, ((β k + 1 : ℕ) : RatFunc ℂ)
-            * algebraMap ℂ (RatFunc ℂ) (t k) * polePart (k : ℕ) := by
+            * algebraMap ℂ (RatFunc ℂ) (t k) * rj (k : ℕ) := by
       rw [Finset.mul_sum]
       refine Finset.sum_congr rfl fun k _ => ?_
       rw [ht k, map_mul, ratShift_const]
       ring
     rw [hsum] at hcoeffQ
     set S := ∑ k : Fin m, ((β k + 1 : ℕ) : RatFunc ℂ)
-      * algebraMap ℂ (RatFunc ℂ) (t k) * polePart (k : ℕ) with hS_def
+      * algebraMap ℂ (RatFunc ℂ) (t k) * rj (k : ℕ) with hS_def
     -- the difference equation for the coefficient ratio
     have hw : ratShift (coeff β P / a) - coeff β P / a
         = ∑ k : Fin m, algebraMap ℂ (RatFunc ℂ) (-(((β k : ℂ) + 1) * t k))
-            * polePart (k : ℕ) := by
+            * rj (k : ℕ) := by
       have hnum : ratShift (coeff β P) * a - ratShift a * coeff β P
           = (a * ratShift a) * (-S) := by
         linear_combination -hcoeffQ
@@ -809,7 +823,7 @@ theorem no_shift_stable_annihilator {m : ℕ}
       rw [show ((β k : ℂ) + 1) = (((β k + 1 : ℕ) : ℂ)) by push_cast; ring,
         map_natCast]
       ring
-    have hδ := ratShift_sub_polePart_combination hw j
+    have hδ := Hres hw j
     have ht0 : t j = 0 := by
       have hne : ((β j : ℂ) + 1) ≠ 0 := Nat.cast_add_one_ne_zero (β j)
       have := neg_eq_zero.mp hδ
@@ -826,6 +840,72 @@ theorem no_shift_stable_annihilator {m : ℕ}
   rw [hres] at this
   exact ha this
 
+end RationalIncrementHolder
+
+end RationalIncrement
+
+/-! ## The digamma jet substitution -/
+
+section Jet
+
+open MvPolynomial
+
+variable {m : ℕ}
+
+/-- The jet substitution: coefficients shift by `ratShift`, each jet variable translates by its
+pole part — the transformation law of the digamma jet vector under `s ↦ s+1`.  It is the
+arbitrary-increment substitution at the digamma pole parts. -/
+def jetTranslate (m : ℕ) :
+    MvPolynomial (Fin m) (RatFunc ℂ) →+* MvPolynomial (Fin m) (RatFunc ℂ) :=
+  RationalIncrementHolder.jetTranslateWith polePart m
+
+theorem jetTranslate_C (k : RatFunc ℂ) :
+    jetTranslate m (C k) = C (ratShift k) :=
+  RationalIncrementHolder.jetTranslate_CWith polePart k
+
+theorem jetTranslate_X (j : Fin m) :
+    jetTranslate m (X j) = X j + C (polePart (j : ℕ)) :=
+  RationalIncrementHolder.jetTranslate_XWith polePart j
+
+/-- The translated monomial `Π_j (Y_j + polePart j)^{α_j}`. -/
+def transMonomial (α : Fin m →₀ ℕ) : MvPolynomial (Fin m) (RatFunc ℂ) :=
+  RationalIncrementHolder.transMonomialWith polePart α
+
+theorem jetTranslate_monomial (α : Fin m →₀ ℕ) (a : RatFunc ℂ) :
+    jetTranslate m (monomial α a) = C (ratShift a) * transMonomial α :=
+  RationalIncrementHolder.jetTranslate_monomialWith polePart α a
+
+theorem totalDegree_jetTranslate_le (P : MvPolynomial (Fin m) (RatFunc ℂ)) :
+    (jetTranslate m P).totalDegree ≤ P.totalDegree :=
+  RationalIncrementHolder.totalDegree_jetTranslate_leWith polePart P
+
+theorem coeff_jetTranslate_of_le_degSum {P : MvPolynomial (Fin m) (RatFunc ℂ)}
+    {β : Fin m →₀ ℕ} (hd : ∀ α ∈ P.support, degSum α ≤ degSum β) :
+    coeff β (jetTranslate m P) = ratShift (coeff β P) :=
+  RationalIncrementHolder.coeff_jetTranslate_of_le_degSumWith polePart hd
+
+end Jet
+
+/-! ## The elimination theorem -/
+
+section Elimination
+
+open MvPolynomial
+
+/-- **No shift-stable annihilator space.**  A subset of the jet-polynomial algebra over `ℂ(X)`
+closed under subtraction, `ℂ(X)`-scalar multiples, and the digamma jet substitution, and
+containing no nonzero constant, contains no nonzero element.  This is the arbitrary-increment
+elimination theorem at `rj := polePart`, whose residue hypothesis is exactly
+`ratShift_sub_polePart_combination`. -/
+theorem no_shift_stable_annihilator {m : ℕ}
+    (I : Set (MvPolynomial (Fin m) (RatFunc ℂ)))
+    (Hsub : ∀ G H, G ∈ I → H ∈ I → G - H ∈ I)
+    (Hsmul : ∀ (k : RatFunc ℂ) (G), G ∈ I → C k * G ∈ I)
+    (Hshift : ∀ G, G ∈ I → jetTranslate m G ∈ I)
+    (Hconst : ∀ k : RatFunc ℂ, C k ∈ I → k = 0)
+    (Hne : ∃ G ∈ I, G ≠ 0) : False :=
+  RationalIncrementHolder.no_shift_stable_annihilatorWith polePart I Hsub Hsmul Hshift Hconst
+    (fun h => ratShift_sub_polePart_combination h) Hne
 end Elimination
 
 end GaloisForLFunctions

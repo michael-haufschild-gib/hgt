@@ -257,5 +257,62 @@ factorial improvement needed to overcome the `n^n` Hardy loss.
 - [ ] uniformly `exp(O(n))`-conditioned identity-zero intertwiner
 - [x] anchor-preserving scalar CDD factors proved neutral for the intertwiner gate
 - [ ] literature novelty audit
-- [ ] unconditional Lean formalization of the finite reusable skeleton
+- [x] unconditional Lean formalization of the finite reusable skeleton
+  (`HTGeometry/FermionicFactorialTraceBound.lean`; scope boundary recorded under `## Lean progress`)
 - [ ] compact-local intrinsically mixing projective-HT quantum field theory
+
+## Lean progress
+
+- 2026-07-26 — **Open-core item 5 (the finite factorial trace skeleton) formalized**, new module
+  `HTGeometry/FermionicFactorialTraceBound.lean` (unconditional, axioms
+  `[propext, Classical.choice, Quot.sound]`).  A corpus search found no factorial/elementary-
+  symmetric bound anywhere, so this is new infrastructure.
+
+  The mathematical content of equation `(7)` is the factorial gain
+  `e_n(spectrum) <= ||.||_1^n / n!`, and that is what is proved:
+  * `pow_succ_two_term_le` — the binomial expansion retains its first two terms:
+    `b^(m+1) + (m+1) a b^m <= (a+b)^(m+1)` for `a,b >= 0`.
+  * `sum_powersetCard_succ_insert` — the Pascal recursion for elementary symmetric sums,
+    `e_(n+1)(insert a s) = e_(n+1)(s) + f(a) e_n(s)`, from `Finset.powersetCard_succ_insert`
+    plus disjointness and injectivity of `insert a` on subsets missing `a`.
+  * `factorial_mul_sum_powersetCard_le_sum_pow` — **the fermionic factorial gain**:
+    `n! e_n(f,s) <= (sum_(i in s) f i)^n` for every nonnegative weight, by induction on the
+    ground set using the two lemmas above; and the divided form
+    `sum_powersetCard_le_sum_pow_div_factorial`.
+  * `sum_powersetCard_eigenvalues_le_trace_pow_div_factorial` — the positive-operator form:
+    for `A` positive semidefinite, `e_n(spectrum A) <= (Tr A)^n / n!`
+    (`Matrix.PosSemidef.eigenvalues_nonneg` and `IsHermitian.trace_eq_sum_eigenvalues`).
+  * `trace_kronecker_one` — the internal multiplicity `(9)`: `Tr(A tensor I_K) = d Tr A`,
+    `d = dim K`; and `multiplicity_mul_sum_powersetCard_eigenvalues_le` for the `d^n` form of the
+    estimate that componentwise antisymmetrisation produces.
+
+  **Scope boundary, stated exactly.**  What is formalized is the finite spectral/combinatorial core
+  — the source of the `1/n!` and of the `d^n` — in the matrix model.  The identification of
+  `e_n(spectrum)` with the trace of the compression of `A^(tensor n)` to the antisymmetric subspace,
+  and the trace-class operator setting on `L^2(R) tensor K`, are *not* formalized: mathlib has no
+  exterior-power trace or Hardy-space nuclearity API to build on.  The theorem docstrings therefore
+  state only the elementary symmetric bound, and the operator reading appears only as motivation in
+  the module header.  This is exactly the restriction the card's open-core item 5 asks for
+  ("only where the existing HTGeometry API supports a reusable unconditional statement").
+- 2026-07-26 — **The permutation-projection half of item 5 formalized too**, appended to
+  `HTGeometry/FermionicFactorialTraceBound.lean` (unconditional, axioms
+  `[propext, Classical.choice, Quot.sound]`).  This is equations `(3)`--`(4)` of the card, in the
+  finite index model `ParticleTensor m k n = (Fin n -> m) -> (Fin n -> k) -> C` (external/rapidity
+  indices and internal indices kept separate):
+  * `identityZeroTwist` — the twist `D_n^(-I)(sigma)`: exchange of the **external** variables alone,
+    carrying the sign; the internal indices are untouched, which is what distinguishes it from the
+    full fermionic twist.  `identityZeroTwist_one` / `identityZeroTwist_mul` verify it is a genuine
+    representation of the permutation group.
+  * `componentwiseAntisymmetrizer` — the projection `Q_n = P_n^(rap,-) tensor I_(K^(tensor n))`,
+    the antisymmetriser applied to the external variable only.
+  * `identityZeroTwist_componentwiseAntisymmetrizer` — its image is twist-invariant (the reindex
+    `sigma |-> tau sigma` of the group sum), and `componentwiseAntisymmetrizer_idempotent` — it is a
+    projection.
+  * `componentwiseAntisymmetrizer_eq_self_iff` — **its fixed points are exactly the invariant
+    vectors**, and `identityZeroTwist_eq_self_iff_antisymm` restates invariance as componentwise
+    rapidity antisymmetry `v(x . sigma, y) = sgn(sigma) v(x,y)` for each fixed internal tuple.
+    Together these are the card's identification of `H_n^(-I)` and `Q_n`.
+  With the factorial trace bound above, both halves of open-core item 5 ("the finite
+  permutation-projection **and** factorial trace skeleton") are now formalized, and the gate is
+  checked.  The scope boundary recorded in the previous entry is unchanged: the infinite-dimensional
+  trace-class and Hardy-nuclearity layer is not formalized, and no theorem here claims it.

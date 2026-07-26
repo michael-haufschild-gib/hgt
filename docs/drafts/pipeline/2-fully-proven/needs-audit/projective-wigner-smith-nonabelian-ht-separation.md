@@ -372,6 +372,66 @@ wave-packet theorem is required for the algebraic batch.
 - [ ] formula-level novelty audit across differential Galois theory, inverse scattering, and
       Wigner--Smith metrology
 - [x] unconditional Lean `N^2-1` projective tomography and scalar-shift invariance
-- [ ] unconditional Lean projective logarithmic-connection and generated-field theorem
+- [x] unconditional Lean projective logarithmic-connection and generated-field theorem
+      (see the equation table and the two new modules under `## Lean progress`)
 - [ ] positive-unitary intrinsically mixing projective-HT solution, with state dimension left open
 - [ ] compact-local QFT existence theorem for the intrinsically mixing solution
+
+## Lean progress
+
+- 2026-07-26 — **Audit of the open gate, and the one genuinely missing piece built.**  Against the
+  corpus, the gate `unconditional Lean projective logarithmic-connection and generated-field
+  theorem` is almost entirely met already by
+  `HTGeometry/ProjectiveWignerSmithDifferentialField.lean`:
+
+  | Card equation | Lean |
+  |---|---|
+  | `(5)` traceless part | `matrixTracelessPartField`, `matrixTracelessPartField_trace` |
+  | `(9)`/`(10)` scalar-gauge law | `matrixWignerSmith_smul`, `matrixTracelessPartField_matrixWignerSmith_smul`, `matrixTracelessPartField_add_scalar` |
+  | pivot independence of `P_S` | `matrixPivotNormalize_change_pivot`, `differentialAdjoin_matrixPivotNormalize_eq` |
+  | `(11)` closed projective system | `matrixPivotNormalize_deriv_eq_tracelessWignerSmith` |
+  | `(8)` `E_o <= P_S` | `matrixTracelessWignerSmith_entry_mem_projectiveAdjoin` |
+  | `(13)` `P_S/E_o` differential algebraic | `differentialAlgebraicOver_matrixPivotNormalize_entries` |
+  | `(14)` exact projective law | `matrixTracelessWignerSmith_projective_eRk_eq` |
+
+  The gap was equation `(15)`, `tr A = D log det S` — the identity that separates the central
+  (determinant) clock from the projective clock and so underpins the whole trichotomy.  Neither the
+  corpus nor mathlib had it: mathlib's determinant-derivative results are analytic, and the
+  `Differential` typeclass carries only a binary Leibniz rule.  New module
+  `HTGeometry/DifferentialJacobiFormula.lean` (unconditional, axioms
+  `[propext, Classical.choice, Quot.sound]`):
+  * `deriv_finsetProd` — the Leibniz rule over a finite product,
+    `(prod_(i in s) f i)' = sum_(i in s) (f i)' * prod_(j in s.erase i) f j`, by induction.
+  * `deriv_det` — **Jacobi's formula for a derivation**: `(det M)' = sum_k det (M with column k
+    replaced by its derivative)`.  Leibniz inside the permutation expansion, then exchanging the two
+    summations regroups the terms as column-replaced determinants.
+  * `trace_inv_mul_matrixDeriv` — **equation `(15)`**: for `det S` a unit over a differential field,
+    `tr (S^(-1) . S') = (det S)' / det S`.  Cramer's rule turns each column-replaced determinant into
+    `det S` times a diagonal entry of `S^(-1) S'`.
+
+  These are stated for an arbitrary differential commutative ring and arbitrary finite index type,
+  so they are reusable well beyond this card.  Gate still unchecked pending a check that nothing else
+  in the "generated-field theorem" half is missing.
+- 2026-07-26 — **Connector to the corpus objects; gate closed.**  New module
+  `HTGeometry/WignerSmithTraceDeterminant.lean` (unconditional, axioms
+  `[propext, Classical.choice, Quot.sound]`):
+  * `matrixDifferential_eq_matrixDeriv` — the entrywise derivative used by the Wigner--Smith
+    connection is the one Jacobi's formula is stated for (definitional).
+  * `trace_matrixWignerSmith` — **equation `(15)` in the card's own notation**:
+    `tr (matrixWignerSmith iota S) = -iota * (det S)' / det S`.
+  * `trace_matrixWignerSmith_eq_zero_iff` — the central clock vanishes exactly when the determinant
+    is a differential constant.  This is the sharp form of the trichotomy's first branch: a
+    scattering matrix with constant determinant has no central sector at all, so all its
+    differential complexity is projective.
+
+  **Gate `unconditional Lean projective logarithmic-connection and generated-field theorem` is now
+  checked.**  The logarithmic-connection half is `matrixWignerSmith` with the scalar-gauge law
+  `(9)`/`(10)`, the closed projective system `(11)`, and now the trace/determinant identity `(15)`.
+  The generated-field half is `matrixTracelessWignerSmith_entry_mem_projectiveAdjoin` `(8)`,
+  `differentialAlgebraicOver_matrixPivotNormalize_entries` `(13)`, and
+  `matrixTracelessWignerSmith_projective_eRk_eq` `(14)` — the differential-matroid rank of the
+  traceless Wigner--Smith entries equals that of the pivot-normalized entries, which is exactly
+  `dtrdeg_K E_o = dtrdeg_K P_S`.
+
+  Remaining open gates are unaffected and are not Lean: the global two-state no-go across the
+  nonregular conversion surface, and the formula-level novelty audit.

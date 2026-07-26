@@ -32,67 +32,14 @@ by the order-fourteen radial source. -/
 theorem orderFifteenReciprocalPower_re_pos_of_sectorRatio
     {A B : ℝ} (hA : 0 < A) (hsector : 100 * B ^ 2 < A ^ 2) :
     0 < ((((A : ℂ) - B * I)⁻¹) ^ 15).re := by
-  let mu : ℂ := ((A : ℂ) - B * I)⁻¹
-  have hden : 0 < A ^ 2 + B ^ 2 := by nlinarith [sq_nonneg B]
-  have hmure : mu.re = A / (A ^ 2 + B ^ 2) := by
-    dsimp only [mu]
-    rw [Complex.inv_re, Complex.normSq_apply]
-    simp
-    ring
-  have hmuim : mu.im = B / (A ^ 2 + B ^ 2) := by
-    dsimp only [mu]
-    rw [Complex.inv_im, Complex.normSq_apply]
-    simp
-    ring
-  have hmurepos : 0 < mu.re := by rw [hmure]; positivity
-  have htan : Real.tan (Complex.arg mu) = B / A := by
-    rw [Complex.tan_arg, hmuim, hmure]
-    field_simp
-  have hsq : (10 * B) ^ 2 < A ^ 2 := by nlinarith
-  have habsB : |B| < A / 10 := by
+  refine GaloisForLFunctions.HTGeometry.re_inv_sub_mul_I_pow_pos
+    (t := 1 / 10) hA ?_ ?_
+  · have hsq : (10 * B) ^ 2 < A ^ 2 := by nlinarith
     have h := abs_lt_of_sq_lt_sq hsq hA.le
     norm_num [abs_mul] at h
     nlinarith
-  have habsRatio : |B / A| < 1 / 10 := by
-    rw [abs_div, abs_of_pos hA]
-    rw [div_lt_iff₀ hA]
-    nlinarith
-  have hargRange : |Complex.arg mu| < Real.pi / 2 := by
-    rw [Complex.abs_arg_lt_pi_div_two_iff]
-    exact Or.inl hmurepos
-  have htanabs : Real.tan |Complex.arg mu| = |B / A| := by
-    by_cases harg : 0 ≤ Complex.arg mu
-    · rw [abs_of_nonneg harg, htan, abs_of_nonneg]
-      rw [← htan]
-      exact Real.tan_nonneg_of_nonneg_of_le_pi_div_two harg
-        ((le_abs_self _).trans hargRange.le)
-    · have hargneg : Complex.arg mu < 0 := lt_of_not_ge harg
-      rw [abs_of_neg hargneg, Real.tan_neg, htan, abs_of_neg]
-      rw [← htan]
-      exact Real.tan_neg_of_neg_of_pi_div_two_lt hargneg (by
-        rw [abs_lt] at hargRange
-        exact hargRange.1)
-  have hargSmall : |Complex.arg mu| < 1 / 10 := by
-    by_cases hargzero : Complex.arg mu = 0
-    · simp [hargzero]
-    · have hargabspos : 0 < |Complex.arg mu| := abs_pos.mpr hargzero
-      have hlt := Real.lt_tan hargabspos hargRange
-      rw [htanabs] at hlt
-      exact hlt.trans habsRatio
-  have hangle : |15 * Complex.arg mu| < Real.pi / 2 := by
-    rw [abs_mul]
-    norm_num
-    have hpi := Real.pi_gt_three
-    nlinarith
-  have hmu : mu ≠ 0 := by
-    exact inv_ne_zero (by
-      intro hz
-      have hzre := congrArg Complex.re hz
-      simp at hzre
-      linarith)
-  change 0 < (mu ^ 15).re
-  exact GaloisForLFunctions.HTGeometry.re_pow_pos_of_abs_arg_lt hmu (by
-    simpa using hangle)
+  · norm_num
+    nlinarith [Real.pi_gt_d20]
 
 /-- Off the critical line, the central four-fifths of the critical strip satisfies the rational
 order-fifteen sector certificate at every absolute-Euler squared coordinate. -/

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.RationalIncrementHolderElimination
+import GaloisForLFunctions.HTGeometry.HolderShiftElimination
 
 /-!
 # Hypertranscendence from a rational translation increment

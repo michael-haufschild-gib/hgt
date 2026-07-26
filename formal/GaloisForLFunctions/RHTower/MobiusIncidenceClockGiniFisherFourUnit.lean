@@ -49,7 +49,8 @@ theorem finiteIncidenceRelativeClockEnergy_eq_gini
   unfold finiteIncidenceGiniEnergy
   ring
 
-private theorem pmf_toMeasure_eq_sum_smul_dirac
+/-- A countable PMF measure is the weighted sum of Dirac masses. -/
+theorem pmf_toMeasure_eq_sum_smul_dirac
     {X : Type*} [MeasurableSpace X] [MeasurableSingletonClass X] [Countable X]
     (p : PMF X) :
     p.toMeasure = Measure.sum (fun x => (p x) • Measure.dirac x) := by
@@ -59,7 +60,8 @@ private theorem pmf_toMeasure_eq_sum_smul_dirac
   intro x
   by_cases hx : x ∈ s <;> simp [Measure.smul_apply, hs, hx]
 
-private theorem integrable_squarefreeMobiusCriticalClock_sq
+/-- The rescaled squarefree critical clock is square integrable at every `sigma > 1`. -/
+theorem integrable_squarefreeMobiusCriticalClock_sq
     {sigma : ℝ} (hsigma : 1 < sigma) :
     Integrable (fun y : ℝ => y ^ 2)
       (squarefreeMobiusCriticalClockProbabilityMeasure sigma : Measure ℝ) := by
@@ -86,7 +88,9 @@ private theorem integrable_squarefreeMobiusCriticalClock_sq
     (continuous_pow 2).aestronglyMeasurable
     (Measurable.of_discrete.aemeasurable : AEMeasurable clock p.toMeasure)).2 hsource
 
-private theorem integral_squarefreeMobiusCriticalClock_sq
+/-- The second moment of the rescaled squarefree critical clock is the rescaled second
+logarithmic moment. -/
+theorem integral_squarefreeMobiusCriticalClock_sq
     {sigma : ℝ} (hsigma : 1 < sigma) :
     (∫ y : ℝ, y ^ 2
       ∂(squarefreeMobiusCriticalClockProbabilityMeasure sigma : Measure ℝ)) =

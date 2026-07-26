@@ -281,88 +281,6 @@ theorem bourgainA6UnitBilinearTaylorErrorConstant_nonneg
     bourgainA6UnitLocalTaylorErrorConstant_nonneg hA
   positivity
 
-/-- Full bilinear Taylor error with arbitrary fixed positive lower base. -/
-theorem bourgainSquareRootBilinearTaylorError_unit_le_mul_of_lower
-    {N M : ℕ} (hN : 0 < N) (hM : 0 < M)
-    (hMN : M ^ (2 : ℕ) ≤ N)
-    {A a b : ℝ} (hA : 0 < A) (hAa : A ≤ a) (hAb : A ≤ b) :
-    bourgainSquareRootBilinearTaylorError
-        ((M : ℝ) ^ (2 : ℕ) / 12) a b
-        ((M : ℝ) / (N : ℝ))
-        (fun _ : Fin M => (1 : ℂ)) (fun _ : Fin M => (1 : ℂ)) ≤
-      bourgainA6UnitBilinearTaylorErrorConstant A *
-        (M : ℝ) ^ (6 : ℕ) := by
-  let E₁ :=
-    bourgainSquareRootLocalTaylorError
-      ((M : ℝ) ^ (2 : ℕ) / 12) a
-      ((M : ℝ) / (N : ℝ)) (fun _ : Fin M => (1 : ℂ))
-  let E₂ :=
-    bourgainSquareRootLocalTaylorError
-      ((M : ℝ) ^ (2 : ℕ) / 12) b
-      ((M : ℝ) / (N : ℝ)) (fun _ : Fin M => (1 : ℂ))
-  let K : ℝ := bourgainA6UnitLocalTaylorErrorConstant A
-  have ha0 : (0 : ℝ) < a := hA.trans_le hAa
-  have hb0 : (0 : ℝ) < b := hA.trans_le hAb
-  have hδ : 0 ≤ (M : ℝ) / (N : ℝ) := by positivity
-  have hR : 0 ≤ (M : ℝ) ^ (2 : ℕ) / 12 := by positivity
-  have hE₁0 : 0 ≤ E₁ := by
-    exact bourgainSquareRootLocalTaylorError_nonneg hR ha0 hδ _
-  have hE₂0 : 0 ≤ E₂ := by
-    exact bourgainSquareRootLocalTaylorError_nonneg hR hb0 hδ _
-  have hK : 0 ≤ K := by
-    exact bourgainA6UnitLocalTaylorErrorConstant_nonneg hA
-  have hE₁ : E₁ ≤ K := by
-    simpa only [E₁, K] using
-      bourgainSquareRootLocalTaylorError_unit_le_of_lower
-        hN hM hMN hA hAa
-  have hE₂ : E₂ ≤ K := by
-    simpa only [E₂, K] using
-      bourgainSquareRootLocalTaylorError_unit_le_of_lower
-        hN hM hMN hA hAb
-  have hE₁6 : E₁ ^ (6 : ℕ) ≤ K ^ (6 : ℕ) :=
-    pow_le_pow_left₀ hE₁0 hE₁ 6
-  have hE₂6 : E₂ ^ (6 : ℕ) ≤ K ^ (6 : ℕ) :=
-    pow_le_pow_left₀ hE₂0 hE₂ 6
-  have hEprod :
-      E₁ ^ (6 : ℕ) * E₂ ^ (6 : ℕ) ≤ K ^ (12 : ℕ) := by
-    calc
-      E₁ ^ (6 : ℕ) * E₂ ^ (6 : ℕ) ≤
-          K ^ (6 : ℕ) * K ^ (6 : ℕ) := by
-        gcongr
-      _ = K ^ (12 : ℕ) := by ring
-  have hMone : (1 : ℝ) ≤ (M : ℝ) := by exact_mod_cast hM
-  have hM6 : (1 : ℝ) ≤ (M : ℝ) ^ (6 : ℕ) := by
-    simpa using pow_le_pow_left₀ (by norm_num : (0 : ℝ) ≤ 1) hMone 6
-  have htail : K ^ (12 : ℕ) ≤ K ^ (12 : ℕ) * (M : ℝ) ^ (6 : ℕ) := by
-    calc
-      K ^ (12 : ℕ) = K ^ (12 : ℕ) * 1 := by ring
-      _ ≤ K ^ (12 : ℕ) * (M : ℝ) ^ (6 : ℕ) :=
-        mul_le_mul_of_nonneg_left hM6 (by positivity)
-  unfold bourgainSquareRootBilinearTaylorError
-  simp only [norm_one, Finset.sum_const, Finset.card_univ,
-    Fintype.card_fin, nsmul_eq_mul, mul_one]
-  change
-    (M : ℝ) ^ (6 : ℕ) * E₂ ^ (6 : ℕ) +
-        E₁ ^ (6 : ℕ) * (M : ℝ) ^ (6 : ℕ) +
-        E₁ ^ (6 : ℕ) * E₂ ^ (6 : ℕ) ≤ _
-  calc
-    (M : ℝ) ^ (6 : ℕ) * E₂ ^ (6 : ℕ) +
-          E₁ ^ (6 : ℕ) * (M : ℝ) ^ (6 : ℕ) +
-          E₁ ^ (6 : ℕ) * E₂ ^ (6 : ℕ) ≤
-        (M : ℝ) ^ (6 : ℕ) * K ^ (6 : ℕ) +
-          K ^ (6 : ℕ) * (M : ℝ) ^ (6 : ℕ) +
-          K ^ (12 : ℕ) := by
-      gcongr
-    _ ≤ (M : ℝ) ^ (6 : ℕ) * K ^ (6 : ℕ) +
-          K ^ (6 : ℕ) * (M : ℝ) ^ (6 : ℕ) +
-          K ^ (12 : ℕ) * (M : ℝ) ^ (6 : ℕ) := by
-      exact add_le_add_right htail _
-    _ = bourgainA6UnitBilinearTaylorErrorConstant A *
-        (M : ℝ) ^ (6 : ℕ) := by
-      unfold bourgainA6UnitBilinearTaylorErrorConstant
-      dsimp only [K]
-      ring
-
 /-- Taylor error is monotone in the nonnegative physical radius. -/
 theorem bourgainSquareRootLocalTaylorError_mono_radius
     {R S a δ : ℝ} (_hR : 0 ≤ R) (hRS : R ≤ S)
@@ -467,6 +385,20 @@ theorem bourgainSquareRootBilinearTaylorError_unit_le_mul_of_lower_of_radius_le
       unfold bourgainA6UnitBilinearTaylorErrorConstant
       dsimp only [K]
       ring
+
+/-- Full bilinear Taylor error with arbitrary fixed positive lower base. -/
+theorem bourgainSquareRootBilinearTaylorError_unit_le_mul_of_lower
+    {N M : ℕ} (hN : 0 < N) (hM : 0 < M)
+    (hMN : M ^ (2 : ℕ) ≤ N)
+    {A a b : ℝ} (hA : 0 < A) (hAa : A ≤ a) (hAb : A ≤ b) :
+    bourgainSquareRootBilinearTaylorError
+        ((M : ℝ) ^ (2 : ℕ) / 12) a b
+        ((M : ℝ) / (N : ℝ))
+        (fun _ : Fin M => (1 : ℂ)) (fun _ : Fin M => (1 : ℂ)) ≤
+      bourgainA6UnitBilinearTaylorErrorConstant A *
+        (M : ℝ) ^ (6 : ℕ) :=
+  bourgainSquareRootBilinearTaylorError_unit_le_mul_of_lower_of_radius_le
+    hN hM hMN hA hAa hAb (by positivity) le_rfl
 
 end
 

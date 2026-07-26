@@ -1,4 +1,5 @@
 import Mathlib.Algebra.BigOperators.Ring.Finset
+import Mathlib.Algebra.Module.Basic
 import Mathlib.Tactic
 
 /-!
@@ -58,5 +59,32 @@ theorem deningerHyperbolicLocalization_quadraticInteger_eq_degree
   simp [hepsilon]
 
 end HyperbolicLocalization
+
+section HyperbolicPushPull
+
+variable {A V : Type*}
+variable [CommRing A] [AddCommGroup V] [Module A V]
+
+/--
+The Milnor--Witt push--pull formula becomes ordinary degree after passage to
+the hyperbolically localized coefficient channel.
+-/
+theorem deningerHyperbolicLocalization_push_pull_eq_degree
+    (epsilon hyperbolicInv : A)
+    (hsquare : epsilon ^ 2 = 1)
+    (hinverse : (1 + epsilon) * hyperbolicInv = 1)
+    (pull push : V → V)
+    (n : ℕ)
+    (hquadraticDegree :
+      ∀ v, push (pull v) =
+        (∑ j ∈ Finset.range n, epsilon ^ j) • v)
+    (v : V) :
+    push (pull v) = (n : A) • v := by
+  rw [hquadraticDegree,
+    deningerHyperbolicLocalization_quadraticInteger_eq_degree
+      epsilon hyperbolicInv hsquare hinverse n]
+  simp
+
+end HyperbolicPushPull
 
 end RHTower

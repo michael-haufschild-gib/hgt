@@ -1,4 +1,5 @@
 import Mathlib.Analysis.SpecialFunctions.Complex.Log
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
 
 /-!
 # Powers stay in a right half-plane while the sector budget lasts
@@ -143,6 +144,76 @@ theorem re_pow_pos_of_abs_arg_lt {z : ℂ} (hz : z ≠ 0) {n : ℕ}
   have hcos : 0 < Real.cos ((n : ℝ) * Complex.arg z) :=
     Real.cos_pos_of_mem_Ioo (abs_lt.mp h)
   positivity
+
+/-- **The argument of a reciprocal in a tangent sector.**  If `0 < A` and `|B| < t · A`, then
+`(A - B i)⁻¹` has argument of modulus below `t`.  Its tangent is `B / A`, and on `(-π/2, π/2)` the
+tangent dominates the angle, so the tangent bound transfers to the angle. -/
+theorem abs_arg_inv_sub_mul_I_lt {A B t : ℝ} (hA : 0 < A) (hB : |B| < t * A) :
+    |Complex.arg (((A : ℂ) - B * I)⁻¹)| < t := by
+  let mu : ℂ := ((A : ℂ) - B * I)⁻¹
+  show |Complex.arg mu| < t
+  have hden : 0 < A ^ 2 + B ^ 2 := by nlinarith [sq_nonneg B]
+  have hmure : mu.re = A / (A ^ 2 + B ^ 2) := by
+    dsimp only [mu]
+    rw [Complex.inv_re, Complex.normSq_apply]
+    simp
+    ring
+  have hmuim : mu.im = B / (A ^ 2 + B ^ 2) := by
+    dsimp only [mu]
+    rw [Complex.inv_im, Complex.normSq_apply]
+    simp
+    ring
+  have hmurepos : 0 < mu.re := by rw [hmure]; positivity
+  have htan : Real.tan (Complex.arg mu) = B / A := by
+    rw [Complex.tan_arg, hmuim, hmure]
+    field_simp
+  have habsRatio : |B / A| < t := by
+    rw [abs_div, abs_of_pos hA, div_lt_iff₀ hA]
+    exact hB
+  have hargRange : |Complex.arg mu| < Real.pi / 2 := by
+    rw [Complex.abs_arg_lt_pi_div_two_iff]
+    exact Or.inl hmurepos
+  have htanabs : Real.tan |Complex.arg mu| = |B / A| := by
+    by_cases harg : 0 ≤ Complex.arg mu
+    · rw [abs_of_nonneg harg, htan, abs_of_nonneg]
+      rw [← htan]
+      exact Real.tan_nonneg_of_nonneg_of_le_pi_div_two harg
+        ((le_abs_self _).trans hargRange.le)
+    · have hargneg : Complex.arg mu < 0 := lt_of_not_ge harg
+      rw [abs_of_neg hargneg, Real.tan_neg, htan, abs_of_neg]
+      rw [← htan]
+      exact Real.tan_neg_of_neg_of_pi_div_two_lt hargneg (by
+        rw [abs_lt] at hargRange
+        exact hargRange.1)
+  by_cases hargzero : Complex.arg mu = 0
+  · rw [hargzero, abs_zero]
+    exact lt_of_le_of_lt (abs_nonneg (B / A)) habsRatio
+  · have hargabspos : 0 < |Complex.arg mu| := abs_pos.mpr hargzero
+    have hlt := Real.lt_tan hargabspos hargRange
+    rw [htanabs] at hlt
+    exact hlt.trans habsRatio
+
+/-- **Reciprocal sector power positivity.**  Every power of `(A - B i)⁻¹` stays in the right
+half-plane while the angle budget lasts: `0 < A`, `|B| < t · A` and `m · t ≤ π/2` give
+`Re ((A - B i)⁻¹ ^ m) > 0`.  This is the tangent-sector bound composed with
+`re_pow_pos_of_abs_arg_lt`. -/
+theorem re_inv_sub_mul_I_pow_pos {A B t : ℝ} (hA : 0 < A) (hB : |B| < t * A) {m : ℕ}
+    (hangle : (m : ℝ) * t ≤ Real.pi / 2) :
+    0 < ((((A : ℂ) - B * I)⁻¹) ^ m).re := by
+  have hne : (((A : ℂ) - B * I)⁻¹) ≠ 0 := by
+    refine inv_ne_zero ?_
+    intro hz
+    have hzre := congrArg Complex.re hz
+    simp at hzre
+    linarith
+  have harg := abs_arg_inv_sub_mul_I_lt hA hB
+  refine re_pow_pos_of_abs_arg_lt hne ?_
+  rcases Nat.eq_zero_or_pos m with rfl | hm
+  · simp only [Nat.cast_zero, zero_mul, abs_zero]
+    linarith [Real.pi_pos]
+  · have hmpos : (0 : ℝ) < (m : ℝ) := by exact_mod_cast hm
+    rw [abs_mul, abs_of_nonneg hmpos.le]
+    exact lt_of_lt_of_le (mul_lt_mul_of_pos_left harg hmpos) hangle
 
 end GaloisForLFunctions.HTGeometry
 

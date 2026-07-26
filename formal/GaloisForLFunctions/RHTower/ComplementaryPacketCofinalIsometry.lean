@@ -46,6 +46,20 @@ theorem setIntegral_Ioi_comp_add_right (g : ℝ → ℝ) (a : ℝ) :
       = ∫ r in ((fun r : ℝ => r + a) ⁻¹' (Ioi a)), g (r + a) := by rw [hpre]
     _ = ∫ s in Ioi a, g s := hmp.setIntegral_preimage_emb hme g (Ioi a)
 
+/-- Translation of an integral over a half line with arbitrary base point. -/
+theorem setIntegral_Ioi_comp_add_right' (g : ℝ → ℝ) (L a : ℝ) :
+    (∫ r in Ioi L, g (r + a)) = ∫ s in Ioi (L + a), g s := by
+  have hmp : MeasurePreserving (fun r : ℝ => r + a) volume volume :=
+    measurePreserving_add_right volume a
+  have hme : MeasurableEmbedding (fun r : ℝ => r + a) :=
+    (Homeomorph.addRight a).measurableEmbedding
+  have hpre : (fun r : ℝ => r + a) ⁻¹' (Ioi (L + a)) = Ioi L := by
+    ext r
+    simp
+  calc (∫ r in Ioi L, g (r + a))
+      = ∫ r in ((fun r : ℝ => r + a) ⁻¹' (Ioi (L + a))), g (r + a) := by rw [hpre]
+    _ = ∫ s in Ioi (L + a), g s := hmp.setIntegral_preimage_emb hme g (Ioi (L + a))
+
 /-- The two-point modulus of the boundary affine packet path. -/
 def packetTranslationModulus (k : ℝ → ℝ) (c a : ℝ) : ℝ :=
   (∫ r in Ioc (0 : ℝ) a, (k r + c) ^ 2) + ∫ r in Ioi (0 : ℝ), (k (r + a) - k r) ^ 2

@@ -686,3 +686,67 @@ theorem finiteMobiusFisherTangentWeight_eq_four_mul_deriv_source
   ring
 
 end RHTower
+
+namespace RHTower
+
+/-! ### The finite Fisher tangent as a Hilbert vector -/
+
+/-- The finite completed critical Fisher tangent as a Hilbert vector. -/
+def finiteMobiusFisherTangent (sigma : ℝ) (N : ℕ) : finiteMobiusHilbert N :=
+  WithLp.toLp 2 (finiteMobiusFisherTangentWeight sigma N)
+
+@[simp] theorem finiteMobiusFisherTangent_apply (sigma : ℝ) (N : ℕ)
+    (i : squarefreeMobiusCriticalFiniteIndex N) :
+    finiteMobiusFisherTangent sigma N i = finiteMobiusFisherTangentWeight sigma N i := rfl
+
+/-- The finite Fisher tangent is exactly `-2` times the centered logarithmic clock observable
+applied to the normalized source state. -/
+theorem finiteMobiusFisherTangent_eq_smul (sigma : ℝ) (N : ℕ) :
+    finiteMobiusFisherTangent sigma N
+      = (-2 : ℂ) • finiteMobiusCriticalCenteredLogObservable sigma N
+          (finiteMobiusSource sigma N) := by
+  apply (WithLp.equiv 2 _).injective
+  funext i
+  change finiteMobiusFisherTangentWeight sigma N i
+    = (-2 : ℂ) * (finiteMobiusCriticalCenteredLogObservable sigma N
+        (finiteMobiusSource sigma N) i)
+  rw [finiteMobiusFisherTangentWeight, finiteMobiusCriticalCenteredLogObservable,
+    finiteMobiusDiagonal_apply, finiteMobiusSource_apply]
+  push_cast
+  ring
+
+/-- **The finite Fisher tangent has the scaled finite logarithmic variance as its energy.** -/
+theorem norm_finiteMobiusFisherTangent_sq (sigma : ℝ) (N : ℕ) :
+    ‖finiteMobiusFisherTangent sigma N‖ ^ 2
+      = 4 * (sigma - 1) ^ 2 * finiteMobiusLogVariance sigma N := by
+  have hnorm : ‖(-2 : ℂ)‖ = 2 := by norm_num
+  rw [finiteMobiusFisherTangent_eq_smul, norm_smul, mul_pow, hnorm,
+    norm_finiteMobiusCriticalCenteredLogObservable_source_sq]
+  ring
+
+/-- **The finite-clock Fisher identity.**  The erased doubled-clock quantum Fisher value of the
+Möbius parity source is exactly the squared norm of its finite Fisher tangent. -/
+theorem finiteMobiusDoubledErasedQFI_eq_norm_finiteMobiusFisherTangent_sq (sigma : ℝ) (N : ℕ) :
+    finiteMobiusDoubledErasedQFI sigma N = ‖finiteMobiusFisherTangent sigma N‖ ^ 2 := by
+  rw [finiteMobiusDoubledErasedQFI_eq_variance, norm_finiteMobiusFisherTangent_sq]
+
+/-- The doubled clock commutator energy is the same finite Fisher tangent energy. -/
+theorem norm_finiteMobiusDoubledClock_commutator_source_sq_eq_norm_fisherTangent_sq
+    (sigma : ℝ) (N : ℕ) :
+    ‖((finiteMobiusDoubledObservable sigma N * finiteMobiusDoubledClock N -
+        finiteMobiusDoubledClock N * finiteMobiusDoubledObservable sigma N) :
+        finiteMobiusDoubledHilbert N →L[ℂ] finiteMobiusDoubledHilbert N)
+        (finiteMobiusDoubledSource sigma N)‖ ^ 2
+      = ‖finiteMobiusFisherTangent sigma N‖ ^ 2 := by
+  rw [norm_finiteMobiusDoubledClock_commutator_source_sq, norm_finiteMobiusFisherTangent_sq]
+
+/-- **Cofinal limit of the finite-clock Fisher identity.**  Finite squarefree cutoffs exhaust the
+Hilbert tangent energy of the infinite source. -/
+theorem tendsto_norm_finiteMobiusFisherTangent_sq {sigma : ℝ} (hsigma : 1 < sigma) :
+    Tendsto (fun N : ℕ => ‖finiteMobiusFisherTangent sigma N‖ ^ 2) atTop
+      (nhds (‖infiniteMobiusCriticalFisherTangentLp sigma hsigma‖ ^ 2)) := by
+  rw [norm_infiniteMobiusCriticalFisherTangentLp_sq hsigma]
+  refine (tendsto_finiteMobiusDoubledErasedQFI hsigma).congr fun N => ?_
+  rw [finiteMobiusDoubledErasedQFI_eq_norm_finiteMobiusFisherTangent_sq]
+
+end RHTower

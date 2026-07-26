@@ -226,3 +226,100 @@ claim.
 - [ ] continue the framed source to `ell_E`
 - [ ] independent specialist literature audit
 - [ ] RH
+
+## Formalization
+
+Both `[PROVED HERE]` sections of this card — the packet connection equation `(6)` and the exact
+Möbius synthesis `(13)` — are compiled unconditionally in Lean.  Every module builds clean with no
+warnings and `#print axioms` gives exactly `propext, Classical.choice, Quot.sound`.
+
+### The packet connection
+
+`formal/GaloisForLFunctions/RHTower/DampedComplementaryPacketConnection.lean`
+
+| Card item | Lean name |
+|---|---|
+| `(1)` damped divisor-clock kernel `k_{ω,δ}` | `RHTower.dampedPacketKernel` |
+| its closed step form | `RHTower.dampedPacketKernel_eq` |
+| zero damping recovers the boundary kernel | `RHTower.dampedPacketKernel_zero_damping` |
+| **`(5)`** `k_{ω,δ}(0) = R_ω(1) = ω/(1+ω)` | `RHTower.dampedPacketKernel_zero` |
+| `(2)` the continuous divisor-clock packet | `RHTower.dampedPacketPath` |
+| left limit of the incoming branch | `RHTower.tendsto_dampedPacketPath_nhdsLT` |
+| **`(4)`** the unit moving boundary jump `e^(-δh)` | `RHTower.dampedPacketPath_jump` |
+| **`(6)`** the packet connection equation | `RHTower.dampedPacketPath_connection` |
+| **`(7)`** `k' = -(1+ω+δ)k - q_δ` between atoms | `RHTower.hasDerivAt_dampedPacketKernel` |
+| **`(8)`** the shifted power-sum atom `m^(-1-δ)` at `log m` | `RHTower.tendsto_dampedPacketKernel_nhdsLT` |
+
+`(6)` is a statement about distributions in `t`.  It is formalised in the equivalent **integrated**
+form obtained by taking the `h`-primitive, which turns every atom into an absolutely continuous
+contribution and therefore holds pointwise, with no distributional interpretation and no test
+functions: for `0 < ω`, every `δ`, all `h₁ ≤ h₂` and **every** `t`,
+
+```text
+e^(-(1+ω)h₂) B_{h₂}(t) - e^(-(1+ω)h₁) B_{h₁}(t)
+  = e^(-δt) (e^(-(1+ω)h₁) - e^(-(1+ω)h₂))/(1+ω)
+    - e^(-(1+ω+δ)t) (S_ω(t-h₁) - S_ω(t-h₂)) ,
+```
+
+where `S_ω(s) = ∑_{m ≤ e^s} m^ω` is the step profile.  The two sides of `(6)` are visible term by
+term: the first summand is the primitive of the continuous term `q_δ`, and the second collects
+exactly the atoms `e^(-δh) m^(-1-δ)` swept by the moving clock, since the transported atom weight at
+`h = t - log m` is `e^(-(1+ω+δ)t) m^ω`.  The proof is a three-case split (both branches outgoing,
+the moving boundary crossed, both branches incoming) and the `m = 1` term is precisely the unit
+boundary jump `(4)`.
+
+The two classical readings are proved separately and are what identifies the right-hand side of
+`(6)`: `hasDerivAt_dampedPacketKernel` gives the exact smooth relation on every interval
+`(log m, log (m+1))`, and `tendsto_dampedPacketKernel_nhdsLT` gives the left limit at `log m`,
+exhibiting the jump `m^(-1-δ)` of `(8)`.
+
+### The signed Möbius synthesis
+
+`formal/GaloisForLFunctions/RHTower/ShiftedEulerMobiusSynthesis.lean`
+
+| Card item | Lean name |
+|---|---|
+| `(10)` `c_ω(n) = ∑_{dm=n} μ(d) d^(-ω) m^ω` | `RHTower.shiftedEulerCoefficient` |
+| `(10)` as a weighted Möbius divisor sum | `RHTower.shiftedEulerCoefficient_eq` |
+| **`(10)`** Euler product form `n^ω ∏_{p ∣ n}(1 - p^(-2ω))` | `RHTower.shiftedEulerCoefficient_eq_prod` |
+| **`(12)`** the exact atomic coefficient | `RHTower.sum_divisorsAntidiagonal_shifted` |
+| **`(13)`** the synthesis of the atoms | `RHTower.mobiusSynthesis_atoms` |
+| **`(11)`** the Euler main density `1/ζ(1+2ω)` | `RHTower.ofReal_tsum_moebius_rpow` |
+
+`(12)` is the pointwise identity
+
+```text
+∑_{dm=n} μ(d) d^(-1-2ω-δ) m^(-1-δ) = c_ω(n) n^(-1-ω-δ) ,
+```
+
+and `(13)` is its summed form: for any bounded `f` (the atoms are tested against a bounded weight),
+`0 < ω`, `0 < δ`,
+
+```text
+∑_d μ(d) d^(-1-2ω) ( ∑_m d^(-δ) m^(-1-δ) f(log d + log m) )
+  = ∑_n c_ω(n) n^(-1-ω-δ) f(log n) ,
+```
+
+proved by absolute convergence of the double family and the divisor-antidiagonal regrouping
+`(d, m) ↦ n = dm`.  The atom of `(6)` at clock `h = log d` sits at `t = log d + log m = log n` with
+weight `d^(-δ) m^(-1-δ)`, so this **is** the synthesis of the packet connections.
+
+`(11)` is proved for every real `s > 1` in the form
+`(∑' n, μ(n) n^(-s) : ℝ) = (ζ(s))⁻¹`, by casting the corpus Möbius normalization
+`RHTower.LSeries_moebius_eq_inv_riemannZeta`; at `s = 1 + 2ω` it is the exact coefficient of the
+continuous term of `(13)`.
+
+The Euler product form of `(10)` is proved through the multiplicativity of `d ↦ μ(d) d^(-2ω)`: its
+divisor sum is multiplicative, and on a prime power `p^k` (`k ≥ 1`) it collapses to `1 - p^(-2ω)`
+because `μ(p^j) = 0` for `j ≥ 2`.
+
+### Remaining
+
+Nothing in the formalisation of this card's own theorems.  The Gamma completion weld `(14)`–`(17)`
+is **not** a `[PROVED HERE]` item: it consumes Suzuki's kernel zero moment `(15)`,
+`∫_0^1 g_ω^{(1)}(x) x^ω dx = 0`, which is a cited parent result
+(`not_new_scientific_knowledge/suzuki-euler-pole-archimedean-moment-annihilation.md`) and is not
+formalised anywhere in the corpus; gates 7 and 8 rest on it.  The four unchecked gates
+(`insert the connection weld into the Gamma/Sonin relative square`, `trace neutrality or Lüders
+orthogonality`, `continue the framed source to ell_E`, specialist audit, RH) are open **research**,
+not open formalisation.

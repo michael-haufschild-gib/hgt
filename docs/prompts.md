@@ -41,30 +41,24 @@ else your task is:
 
 Audit HTGeometry, HilbertMetric, and RHTower for any remaining hypothesis or Prop interface - then attempt to discharge it:
 1. reuse existing formal results to discharge every tractable premise
-2. create and formally prove missing connector theorems,
-3. use the /hgtl7 skill´s research process on each non-immediate mathematical obstacle until no further hypothesis can be discharged or structurally replaced.
+2. create and formally prove missing connector theorems
+3. subsume theorems under a larger universal law which is nontrivial
+
+use the /hgtl7 skill´s research process on each non-immediate mathematical obstacle
 
 lean rules:
-1. You work independent from other agents and can run 1 build process in the foreground at a time yourself.
-2. Be efficient with lean builds, do not constantly do minor edits and build, but batch changes and builds.
-3. Optimize lean code. Use caching and limit rebuilds of dependencies to only what is truly necessary for your work.
-4. lean proofs must be unconditional
-5. always check first what the project lean code already offers. Some card proofs are already formalized. Reuse as much as possible. Connect your new lean code to obvious connectors like to discharge theorems or connect theorems to a stronger statement.
-6. no computations.
+1. You always build in the foreground, 1 build process at a time - other agents are also building in paralle.
+2. Always use  lake env lean <file>  and only lake build <module> for the final audit.
+3. Be efficient with lean builds, do not constantly do minor edits and build, but batch changes and builds.
+4. make sure you don't leave stale lean processes running - clean up after yourself
 
-Non-negotiable working mode rules:
-1. If it cannot be done in a single session -> Does not matter. Do it!
-2. If it cannot be done in a single context window -> Does not matter. Do it!
-3. If it takes months -> Does not matter. Do it!
-4. If it is "research-level construction" -> Does not matter. If there is any way you could build it you build it no matter what.
-5. Missing in mathlib -> Build it no matter the effort.
-6. Always check what our extensive lean corpus can provide you! Reuse as much as possible.
-7. The only reason to stop working on a card if a proof is mathematically impossible. Open research is not mathematically impossible.
-
-You are not allowed to change the cron timing.
+Mandatory:
+1. no computations.
+2. LEAN PROOFS MUST BE UNCONDTIONAL!!!
+3. no subagents or background tasks
+4. You are not allowed to change the cron timing.
 
 **Always use  lake env lean <file>  and only lake build <module> for the final audit.**
-make sure you don't leave stale lean processes running - clean up after yourself
 LEAN PROOFS MUST BE UNCONDTIONAL!!!
 
 
@@ -98,7 +92,7 @@ Non-negotiable working mode rules:
 7. The only reason to stop working on a card if a proof is mathematically impossible. Open research is not mathematically impossible.
 
 You are not allowed to change the cron timing.
-
+You work independent from other agents and can run 1 build process in the foreground at a time yourself.
 **Always use  lake env lean <file>  and only lake build <module> for the final audit.**
 make sure you don't leave stale lean processes running - clean up after yourself
 LEAN PROOFS MUST BE UNCONDTIONAL!!!
@@ -106,7 +100,9 @@ LEAN PROOFS MUST BE UNCONDTIONAL!!!
 ## research and formalize
 /goal
 
-perform exhaustive research and use the hgt-fields-medalist and conjecturing to develop step by step the arithmetic cohomology theory for the docs/Deninger program.md and in consequence the rh proof.
+perform exhaustive research and use the hgt-fields-medalist skill and iterative conjecturing to develop step by step the "field with one element": docs/the field with one element.md.
+
+do not favor one method. do not attempt to proof rh but focus on that field construction itself.
 
 rules:
 1. limit lean builds to the absolute necessary. be as memory and cpu efficient as possible. each agent can run max 1 process at a time so agents can build in parallel without clogging the system. always build in foreground. there are more agents active not just you.
@@ -119,7 +115,7 @@ rules:
 **Always use  lake env lean <file>  and only lake build <module> for the final audit.**
 make sure you don't leave stale lean processes running - clean up after yourself
 
-goal is met when the arithmetic cohomology theory is fully developed and formalized and in a second step the rh proof is derived.
+goal is met when the field is fully developed and formalized.
 
 ## physics
 /goal
@@ -454,7 +450,7 @@ LEAN PROOFS MUST BE UNCONDTIONAL!!!
 
 ''''
 /goal 
-use the /hgtl7 skill and conjecturing iteratively to create new frontier-moving knowledge to prove or disprove the Selberg’s orthogonality conjectures (see: docs/Langlands functoriality and the Selberg class conjectures.md)
+use the $/hgtl7 skill and conjecturing iteratively to create new frontier-moving knowledge to prove or disprove the Selberg’s orthogonality conjectures (see: docs/Langlands functoriality and the Selberg class conjectures.md)
 
 do not think about or use context window, effort, time it takes. focus only on the research and creating new scientific knowledge. this is a multi-session long running task with multiple automatic context window compactions. keep a working log of important findings and dead ends to not duplicate work.
 

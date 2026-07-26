@@ -147,9 +147,10 @@ action.  Required identities are
 \]
 At finite dimension the second identity follows from the first once the \(U_n\)-action is
 unitary: commuting a unitary with \(Q\) also commutes it with \(Q^\dagger\), hence with
-  \(\Delta\).  The source obligations are therefore the framed transfer action, positivity of
-  the Gamma rank channel, and moving-Hodge naturality.  No Xi-zero location is involved in this
-  reduction.
+\(\Delta\).  `deninger-unitary-brst-hodge-descent` proves this implication and harmonic-sector
+preservation unconditionally.  The source obligations are therefore the framed transfer action,
+positive realization of the localized Gamma rank channel, and moving-Hodge naturality.  No
+Xi-zero location is involved in this reduction.
 
 The odd Hodge operator is the phase-polarized supercharge on harmonic degree one, calibrated by
 the rectangular formula
@@ -209,12 +210,20 @@ comparison theorems, not construction inputs.
   then forces the \(n^{1/2}\) half-density law.
 - `[PROJECT-PROVED]` Hyperbolic localization constructs the rank coefficient channel
   algebraically and forces \(n_\epsilon=n\) without a positivity assumption.
+- `[PROJECT-PROVED]` A unitary centered chain transfer automatically commutes with
+  \(Q^\dagger\), \(\Delta\), and the finite harmonic sector; Laplacian equivariance is no longer
+  an independent gate.
+- `[PROJECT-PROVED]` The hyperbolically localized Gamma-rank boundary has an explicit positive
+  odd realization on \(\ell^2(\mathbb Q_{>0}^{\times}\sqcup
+  \mathbb Q_{>0}^{\times},\mathbb C)\).  Its algebraic core is dense; centered power shifts are
+  unitary cup/Hodge intertwiners; Hodge commutes with \(Q^0,Q^1,Q^2\) and preserves
+  \(\ker Q^2\).
 - `[PROJECT-PROVED]` Source H0/H1/H2 algebraic complex, source prime--Gamma Poincare pairing,
   rectangular quaternionic atom, BRST--Hodge operator algebra, determinant/Lefschetz consumers.
-- `[OPEN CORE]` Construct the MW/\(\mathrm{ko}\)--Gamma coefficient packet and its framed
-  transfer action on the bar skeleton; construct the positive odd Hilbert realization of its
-  hyperbolically localized rank boundary and prove compatibility with the incidence differential;
-  prove moving-Hodge naturality; then construct the cofinal analytic limit.
+- `[OPEN CORE]` Construct the MW/\(\mathrm{ko}\) coefficient packet and coherently framed
+  transfer action; prove the MW/Steinberg relation subspace is closed and stable under the
+  constructed Gamma Hodge operator; prove moving-Hodge naturality; then construct the cofinal
+  analytic limit.
 - `[NO RH CLAIM]` Clause 6 is still open and is the decisive purity theorem.
 
 ## Log

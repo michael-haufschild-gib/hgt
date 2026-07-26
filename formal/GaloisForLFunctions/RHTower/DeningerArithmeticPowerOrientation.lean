@@ -71,10 +71,8 @@ theorem deningerPowerIteratedCotangentMatrix_reduction (a b : R) :
       deningerPowerIteratedCotangentMatrix,
       deningerPowerOrientationRight,
       deningerPowerSplitCotangentMatrix,
-      Matrix.mul_apply] <;>
-    ring
+      Matrix.mul_apply]
 
 end
 
 end RHTower
-

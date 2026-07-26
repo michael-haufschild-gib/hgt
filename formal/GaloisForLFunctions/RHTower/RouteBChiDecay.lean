@@ -97,7 +97,6 @@ theorem norm_zetaChi_lt_one {σ t : ℝ} (hσ1 : 1/2 < σ) (hσ2 : σ < 1) (ht :
     mul_neg_of_pos_of_neg hσpos (by linarith [hlarge])
   exact lt_of_le_of_lt key hfinal
 
-
 /-- With `‖zetaChi z‖ ≤ 1` (proven off the line), the certificate floor reduces to a pure
 Dirichlet-polynomial domination `‖D(1−z)‖ + ε < ‖D z‖`: the χ-factor is discharged. -/
 theorem norm_gN_ge_of_dirichlet_domination {N : ℕ} {z : ℂ} {ε : ℝ}
@@ -254,15 +253,15 @@ theorem line_sphere_re_im_bounds {τ RJ : ℝ} {z : ℂ}
       _ ≤ ‖z - (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I)‖ := Complex.abs_im_le_norm _
       _ = RJ := hdist
 
-/-- **Left-arc χ circle envelope from finite scalar data.**  On the left half of
-`sphere(1/2+iτ,RJ)`, the line bound `norm_zetaChi_le_left_line` is dominated by
-one radius/height scalar `K`; if `exp(RJ*K) ≤ χB`, then the whole left arc has
-`‖χ‖ ≤ χB`. -/
-theorem norm_zetaChi_le_left_line_sphere {τ RJ χB K : ℝ}
+/-- **Left-arc χ circle envelope from an external scalar upper bound.**  This is the
+monotone form of `norm_zetaChi_le_left_line_sphere`: the center-height scalar may be
+bounded by any nonnegative `K`, so a whole window can use one top/bottom scalar. -/
+theorem norm_zetaChi_le_left_line_sphere_of_K_bound {τ RJ χB K : ℝ}
     (hRJ12 : RJ < 1 / 2) (hheight : RJ < τ)
-    (hK : K = (1 / 2 : ℝ) * Real.log ((1 / 2 : ℝ) ^ 2 + ((τ + RJ) / 2) ^ 2)
-      + (1 / ((τ - RJ) / 2) ^ 2 + Real.pi / (2 * ((τ - RJ) / 2))) - Real.log Real.pi)
-    (hK0 : 0 ≤ K) (hbudget : Real.exp (RJ * K) ≤ χB) :
+    (hK0 : 0 ≤ K)
+    (hKbound : (1 / 2 : ℝ) * Real.log ((1 / 2 : ℝ) ^ 2 + ((τ + RJ) / 2) ^ 2)
+      + (1 / ((τ - RJ) / 2) ^ 2 + Real.pi / (2 * ((τ - RJ) / 2))) - Real.log Real.pi ≤ K)
+    (hbudget : Real.exp (RJ * K) ≤ χB) :
     ∀ z ∈ Metric.sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
       z.re ≤ 1 / 2 → ‖zetaChi z‖ ≤ χB := by
   intro z hz hleft
@@ -322,9 +321,11 @@ theorem norm_zetaChi_le_left_line_sphere {τ RJ χB K : ℝ}
       field_simp [ne_of_gt hy0pos]
     rw [hleftfrac, hrightfrac]
     exact hmul
-  have hKz_le : Kz ≤ K := by
-    rw [hK, hKzdef]
+  have hKz_le_center : Kz ≤ (1 / 2 : ℝ) * Real.log ((1 / 2 : ℝ) ^ 2 + ((τ + RJ) / 2) ^ 2)
+      + (1 / ((τ - RJ) / 2) ^ 2 + Real.pi / (2 * ((τ - RJ) / 2))) - Real.log Real.pi := by
+    rw [hKzdef]
     linarith [hlog_le, hinv_sq, hfrac]
+  have hKz_le : Kz ≤ K := le_trans hKz_le_center hKbound
   have hexp_le : Real.exp ((1 / 2 - z.re) * Kz) ≤ Real.exp (RJ * K) := by
     apply Real.exp_le_exp.mpr
     have hprod1 : (1 / 2 - z.re) * Kz ≤ (1 / 2 - z.re) * K := by
@@ -335,6 +336,20 @@ theorem norm_zetaChi_le_left_line_sphere {τ RJ χB K : ℝ}
   have hline' : ‖zetaChi z‖ ≤ Real.exp ((1 / 2 - z.re) * Kz) := by
     simpa [Kz] using hline
   exact le_trans hline' (le_trans hexp_le hbudget)
+
+/-- **Left-arc χ circle envelope from finite scalar data.**  On the left half of
+`sphere(1/2+iτ,RJ)`, the line bound `norm_zetaChi_le_left_line` is dominated by
+one radius/height scalar `K`; if `exp(RJ*K) ≤ χB`, then the whole left arc has
+`‖χ‖ ≤ χB`. -/
+theorem norm_zetaChi_le_left_line_sphere {τ RJ χB K : ℝ}
+    (hRJ12 : RJ < 1 / 2) (hheight : RJ < τ)
+    (hK : K = (1 / 2 : ℝ) * Real.log ((1 / 2 : ℝ) ^ 2 + ((τ + RJ) / 2) ^ 2)
+      + (1 / ((τ - RJ) / 2) ^ 2 + Real.pi / (2 * ((τ - RJ) / 2))) - Real.log Real.pi)
+    (hK0 : 0 ≤ K) (hbudget : Real.exp (RJ * K) ≤ χB) :
+    ∀ z ∈ Metric.sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
+      z.re ≤ 1 / 2 → ‖zetaChi z‖ ≤ χB := by
+  refine norm_zetaChi_le_left_line_sphere_of_K_bound hRJ12 hheight hK0 ?_ hbudget
+  exact le_of_eq hK.symm
 
 end RHTower
 
@@ -429,90 +444,6 @@ theorem norm_zetaChi_le_line_sphere {τ RJ χB K : ℝ}
 end RHTower
 
 namespace RHTower
-
-/-- **Left-arc χ circle envelope from an external scalar upper bound.**  This is the
-monotone form of `norm_zetaChi_le_left_line_sphere`: the center-height scalar may be
-bounded by any nonnegative `K`, so a whole window can use one top/bottom scalar. -/
-theorem norm_zetaChi_le_left_line_sphere_of_K_bound {τ RJ χB K : ℝ}
-    (hRJ12 : RJ < 1 / 2) (hheight : RJ < τ)
-    (hK0 : 0 ≤ K)
-    (hKbound : (1 / 2 : ℝ) * Real.log ((1 / 2 : ℝ) ^ 2 + ((τ + RJ) / 2) ^ 2)
-      + (1 / ((τ - RJ) / 2) ^ 2 + Real.pi / (2 * ((τ - RJ) / 2))) - Real.log Real.pi ≤ K)
-    (hbudget : Real.exp (RJ * K) ≤ χB) :
-    ∀ z ∈ Metric.sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
-      z.re ≤ 1 / 2 → ‖zetaChi z‖ ≤ χB := by
-  intro z hz hleft
-  obtain ⟨hre_abs, him_abs⟩ := line_sphere_re_im_bounds (τ := τ) (RJ := RJ) hz
-  have hdist : ‖z - (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I)‖ = RJ := by
-    rw [← dist_eq_norm]
-    exact Metric.mem_sphere.mp hz
-  have hRJ0 : 0 ≤ RJ := by
-    rw [← hdist]
-    exact norm_nonneg _
-  have hre_ge : 1 / 2 - RJ ≤ z.re := by
-    have := (abs_le.mp hre_abs).1
-    linarith
-  have hsig0 : 0 < z.re := by linarith
-  have hwidth0 : 0 ≤ 1 / 2 - z.re := by linarith
-  have hwidth_le : 1 / 2 - z.re ≤ RJ := by
-    have := (abs_le.mp hre_abs).1
-    linarith
-  have him_ge : τ - RJ ≤ z.im := by
-    have := (abs_le.mp him_abs).1
-    linarith
-  have him_le : z.im ≤ τ + RJ := by
-    have := (abs_le.mp him_abs).2
-    linarith
-  have him_pos : 0 < z.im := by linarith
-  have hz_decomp : ((z.re : ℂ) + (z.im : ℂ) * I) = z := by
-    apply Complex.ext <;> simp
-  have hline := norm_zetaChi_le_left_line (σ := z.re) (t := z.im) hsig0 hleft him_pos
-  rw [hz_decomp] at hline
-  set Kz : ℝ := (1 / 2 : ℝ) * Real.log ((1 / 2 : ℝ) ^ 2 + (z.im / 2) ^ 2)
-      + (1 / (z.im / 2) ^ 2 + Real.pi / (2 * (z.im / 2))) - Real.log Real.pi with hKzdef
-  have hy0pos : 0 < (τ - RJ) / 2 := by linarith
-  have hzhalf_pos : 0 < z.im / 2 := by linarith
-  have hzhalf_nonneg : 0 ≤ z.im / 2 := le_of_lt hzhalf_pos
-  have hy1_nonneg : 0 ≤ (τ + RJ) / 2 := by linarith
-  have hy_low : (τ - RJ) / 2 ≤ z.im / 2 := by linarith
-  have hy_high : z.im / 2 ≤ (τ + RJ) / 2 := by linarith
-  have hsq_high : (z.im / 2) ^ 2 ≤ ((τ + RJ) / 2) ^ 2 := by
-    nlinarith [hzhalf_nonneg, hy_high, hy1_nonneg]
-  have hlog_le : (1 / 2 : ℝ) * Real.log ((1 / 2 : ℝ) ^ 2 + (z.im / 2) ^ 2)
-      ≤ (1 / 2 : ℝ) * Real.log ((1 / 2 : ℝ) ^ 2 + ((τ + RJ) / 2) ^ 2) := by
-    apply mul_le_mul_of_nonneg_left _ (by norm_num)
-    apply Real.log_le_log (by positivity)
-    nlinarith [hsq_high]
-  have hsq_low : ((τ - RJ) / 2) ^ 2 ≤ (z.im / 2) ^ 2 := by
-    nlinarith [hy0pos.le, hy_low, hzhalf_nonneg]
-  have hden_low_pos : 0 < ((τ - RJ) / 2) ^ 2 := by positivity
-  have hinv_sq : 1 / (z.im / 2) ^ 2 ≤ 1 / ((τ - RJ) / 2) ^ 2 := by
-    exact one_div_le_one_div_of_le hden_low_pos hsq_low
-  have hinv : 1 / (z.im / 2) ≤ 1 / ((τ - RJ) / 2) := by
-    exact one_div_le_one_div_of_le hy0pos hy_low
-  have hfrac : Real.pi / (2 * (z.im / 2)) ≤ Real.pi / (2 * ((τ - RJ) / 2)) := by
-    have hmul := mul_le_mul_of_nonneg_left hinv (by positivity : 0 ≤ Real.pi / 2)
-    have hleftfrac : Real.pi / (2 * (z.im / 2)) = (Real.pi / 2) * (1 / (z.im / 2)) := by
-      field_simp [ne_of_gt hzhalf_pos]
-    have hrightfrac : Real.pi / (2 * ((τ - RJ) / 2)) = (Real.pi / 2) * (1 / ((τ - RJ) / 2)) := by
-      field_simp [ne_of_gt hy0pos]
-    rw [hleftfrac, hrightfrac]
-    exact hmul
-  have hKz_le_center : Kz ≤ (1 / 2 : ℝ) * Real.log ((1 / 2 : ℝ) ^ 2 + ((τ + RJ) / 2) ^ 2)
-      + (1 / ((τ - RJ) / 2) ^ 2 + Real.pi / (2 * ((τ - RJ) / 2))) - Real.log Real.pi := by
-    rw [hKzdef]
-    linarith [hlog_le, hinv_sq, hfrac]
-  have hKz_le : Kz ≤ K := le_trans hKz_le_center hKbound
-  have hexp_le : Real.exp ((1 / 2 - z.re) * Kz) ≤ Real.exp (RJ * K) := by
-    apply Real.exp_le_exp.mpr
-    have hprod1 : (1 / 2 - z.re) * Kz ≤ (1 / 2 - z.re) * K := by
-      exact mul_le_mul_of_nonneg_left hKz_le hwidth0
-    have hprod2 : (1 / 2 - z.re) * K ≤ RJ * K := by
-      exact mul_le_mul_of_nonneg_right hwidth_le hK0
-    exact le_trans hprod1 hprod2
-  have hline' : ‖zetaChi z‖ ≤ Real.exp ((1 / 2 - z.re) * Kz) := by
-    simpa [Kz] using hline
-  exact le_trans hline' (le_trans hexp_le hbudget)
 
 /-- **Window-level χ circle envelope from top/bottom scalar data.**  If
 `τ ∈ [T,T+U]`, the left-arc growth scalar at height `τ` is bounded by the

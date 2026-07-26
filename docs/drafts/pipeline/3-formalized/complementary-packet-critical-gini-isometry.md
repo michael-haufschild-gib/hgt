@@ -316,7 +316,7 @@ survives except its cofinal slope, and the bounded local defect (the `ζ(2)` exp
 infinitesimal separation) is annihilated by the escaping clock, which is exactly the card's
 positive statement.
 
-### Remaining
+### Discharging the transfer hypotheses
 
 `[LEAN-PROVED]` The integrability hypothesis of the four-unit transfer is discharged in
 `formal/GaloisForLFunctions/RHTower/ComplementaryPacketModulusMeasurable.lean` (imported by
@@ -385,15 +385,48 @@ rescaled transfer turns the escaping Gini limit `∫|x| dμ_σ → 1` together w
 value four.  The locally expansive `ζ(2)` coefficient never enters: it is inside the bounded defect
 that the escaping clock annihilates, which is exactly the card's positive statement.
 
+`[LEAN-PROVED]` **`(8)` and the no-go are closed.**  Compiled in
+`formal/GaloisForLFunctions/RHTower/ComplementaryPacketLocalZetaTwo.lean` (imported by
+`GaloisForLFunctions.RHTower`; builds clean, no warnings; axiom-clean).
+
+| Card item | Lean name |
+|---|---|
+| step profile `k_ω + c_ω = e^(-(1+ω)t) ∑_{m ≤ e^t} m^ω` | `RHTower.packetStepSum`, `RHTower.complementaryPacketKernel_add_const` |
+| jump mass swept by a translation | `RHTower.packetJump` |
+| **increment identity** `Δ_a k = jump + drift` | `RHTower.complementaryPacketKernel_sub_eq` |
+| uniform drift bound `≤ 5a` | `RHTower.abs_packetDrift_le` |
+| swept jump mass `≤ (⌊e^(r+a)⌋ − ⌊e^r⌋) e^(-r)` | `RHTower.packetJump_le` |
+| increment envelope `≤ 4 e^(-r)` | `RHTower.abs_complementaryPacketKernel_sub_le` |
+| **tail bound** `∫_{log N}^∞ (Δ_a k)² ≤ 50 a/N` | `RHTower.setIntegral_complementaryPacketKernel_sub_sq_tail` |
+| **quantitative local expansion** | `RHTower.abs_complementaryPacketModulus_sub_partialZeta_le` |
+| **`(8)`** `lim_{a→0+} D_ω(a)/a = ζ(2) = π²/6` | `RHTower.tendsto_complementaryPacketModulus_div_nhdsGT` |
+| **the no-go**: `a < D_ω(a)` near zero | `RHTower.eventually_lt_complementaryPacketModulus` |
+
+The quantitative form is the content; the limit is a corollary.  For `0 < ω ≤ 1/2`, `N ≥ 1` and
+`0 < a ≤ 1/(4(N+1))`,
+
+```text
+| D_ω(a) − a·∑_{n ≤ N} 1/n² |  ≤  60 N a² + 50 a/N .
+```
+
+Two regions.  Beyond `log N` the increment identity bounds `|Δ_a k|` by the crossed-integer count
+`(⌊e^(r+a)⌋ − ⌊e^r⌋)e^(-r)` plus `5a`; multiplying by the envelope `4e^(-r)` and integrating gives
+`O(a/N)` — the `a` factor comes from the exact translation identity
+`∫_{Ioi L} ⌊e^(r+a)⌋e^(-2r) = e^(2a)∫_{Ioi (L+a)} ⌊e^u⌋e^(-2u)`, not from a discrepancy estimate.
+Below `log N` the window `[log(m+1) − a, log(m+1))` is the only place where the translation crosses
+an integer once `a ≤ 1/(4(m+1))`, so the square of the increment linearises: off the window the
+increment is pure drift `O(a)`, and on the window it is within `7a` of `1/(m+1)`, the exact jump.
+Summing the `N` pieces and adding the swept branch — whose profile is `e^(-(1+ω)r)` for
+`0 < r < log 2`, contributing the jump `1` at the origin — gives the displayed bound.
+
+Both the `O(a²)` and the `O(a/N)` errors are explicit, so `(8)` follows by choosing `N` with
+`50/N < ε/3` and then `a` with `60Na < ε/3`.  Since `π²/6 > 1`, the packet is locally expansive and
+`RHTower.eventually_lt_complementaryPacketModulus` falsifies pointwise contractivity outright — the
+card's no-go half, now machine-checked.
+
 ### Remaining
 
-1. **`(8)`** the local `ζ(2)` expansion `lim_{a→0+} D_ω(a)/a = ζ(2)`.  This is the only item that
-   does not follow from the envelope; it needs the jump structure of `k_ω`, which
-   `RHTower.complementaryPacketKernel_eq` already exhibits (`k_ω` is continuous off `{log m}` and
-   jumps by `1/m` at `log m`), together with the translation-modulus asymptotics of a jump
-   function.  Note that `(8)` is the card's **no-go** half — the falsification of pointwise
-   contractivity — not an input to the four-unit law.
-2. **`(8)`** the local `ζ(2)` expansion, which needs the jump structure of `k_ω` at `log m` with
-   jump `1/m`; this is the only item that does not follow from the envelope alone.  The closed step
-   form `RHTower.complementaryPacketKernel_eq` exhibits those jumps directly: `k_ω` is continuous
-   off `{log m}` and jumps by `e^{-(1+ω)log m} m^ω = 1/m` at `log m`.
+Nothing in the formalisation.  Every `[PROVED HERE]` item of this card — `(3)`, `(4)`, `(5)`, `(7)`,
+`(8)`, `(12)`, `(13)`, `(15)` and the no-go — is compiled unconditionally in Lean.  The open gates
+below (`anti-causal readout`, `pole-to-divisor identity`, `graph convergence to ℓ_E`, specialist
+audit, RH) are open **research**, not open formalisation.

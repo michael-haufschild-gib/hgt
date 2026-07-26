@@ -366,31 +366,29 @@ theorem integrableOn_thetaCuspSourceTerm_mul_phaseSpectralDerivative
       _ = x * (‖spectralTranslationPhase x z‖ *
           thetaCuspFullSource x) := by ring
 
-/-- A positive shell branch is holomorphic in the lower open half-strip.  Its derivative is the
-literal `i x` spectral insertion, not a formal `deriv` placeholder. -/
-theorem hasDerivAt_thetaCuspShellPhaseTransform
-    {z₀ : ℂ} (hz₀ : -1 < z₀.im) {n : ℕ} (hn : 0 < n) :
-    HasDerivAt
-      (fun z =>
-        thetaCuspShellHalfLineTransform
-          (fun x => spectralTranslationPhase x z) n)
-      (thetaCuspShellHalfLineTransform
-        (fun x => ((x : ℂ) * I) *
-          spectralTranslationPhase x z₀) n) z₀ := by
+/-- **Differentiation under the half-line phase integral.**  For a continuous nonnegative atom
+whose exponentially tilted mass is integrable at every rate below one, the phase transform
+`z ↦ ∫ a(x) e(x, z)` is complex differentiable at every height above `-1`, with derivative the
+literal first spectral moment.  The bound is `‖a(x) · i x · e(x,z)‖ ≤ C a(x) e^{q x}` on a small
+ball, where `x ≤ e^{d x}/d` absorbs the linear factor into a slightly larger rate. -/
+theorem hasDerivAt_atom_phaseTransform {z₀ : ℂ} (hz₀ : -1 < z₀.im) (a : ℝ → ℝ)
+    (hcont : Continuous a) (ha0 : ∀ x ∈ Ioi (0 : ℝ), 0 ≤ a x)
+    (hexp : ∀ q : ℝ, q < 1 →
+      Integrable (fun x : ℝ => Real.exp (q * x) * a x) (volume.restrict (Ioi 0)))
+    (hint : Integrable (fun x : ℝ => (a x : ℂ) * spectralTranslationPhase x z₀)
+      (volume.restrict (Ioi 0))) :
+    HasDerivAt (fun z => ∫ x : ℝ in Ioi 0, (a x : ℂ) * spectralTranslationPhase x z)
+      (∫ x : ℝ in Ioi 0, (a x : ℂ) * (((x : ℂ) * I) * spectralTranslationPhase x z₀)) z₀ := by
   let ε : ℝ := (1 + z₀.im) / 4
   let L : ℝ := z₀.im - ε
   let c : ℝ := -L
   let d : ℝ := (1 - c) / 2
   let q : ℝ := c + d
   let C : ℝ := 1 / d
-  let bound : ℝ → ℝ := fun x =>
-    C * (Real.exp (q * x) * thetaCuspSourceTerm x n)
-  let F : ℂ → ℝ → ℂ := fun z x =>
-    (thetaCuspSourceTerm x n : ℂ) *
-      spectralTranslationPhase x z
+  let bound : ℝ → ℝ := fun x => C * (Real.exp (q * x) * a x)
+  let F : ℂ → ℝ → ℂ := fun z x => (a x : ℂ) * spectralTranslationPhase x z
   let F' : ℂ → ℝ → ℂ := fun z x =>
-    (thetaCuspSourceTerm x n : ℂ) *
-      (((x : ℂ) * I) * spectralTranslationPhase x z)
+    (a x : ℂ) * (((x : ℂ) * I) * spectralTranslationPhase x z)
   have hε : 0 < ε := by
     dsimp only [ε]
     linarith
@@ -406,45 +404,29 @@ theorem hasDerivAt_thetaCuspShellPhaseTransform
   have hq : q < 1 := by
     dsimp only [q, d]
     linarith
-  have him {z : ℂ} (hz : z ∈ Metric.ball z₀ ε) :
-      L < z.im := by
+  have him {z : ℂ} (hz : z ∈ Metric.ball z₀ ε) : L < z.im := by
     have hdist : ‖z - z₀‖ < ε := by
       rw [← dist_eq_norm]
       exact Metric.mem_ball.mp hz
     have himdiff : |z.im - z₀.im| ≤ ‖z - z₀‖ := by
       simpa only [Complex.sub_im] using Complex.abs_im_le_norm (z - z₀)
-    have hlower : -‖z - z₀‖ ≤ z.im - z₀.im :=
-      (abs_le.mp himdiff).1
+    have hlower : -‖z - z₀‖ ≤ z.im - z₀.im := (abs_le.mp himdiff).1
     dsimp only [L]
     linarith
-  have hbound :
-      Integrable bound (volume.restrict (Ioi 0)) := by
+  have hbound : Integrable bound (volume.restrict (Ioi 0)) := by
     dsimp only [bound]
-    exact
-      (integrableOn_exp_mul_thetaCuspSourceTerm_of_lt_one
-        hn hq).const_mul C
+    exact (hexp q hq).const_mul C
   have hFmeas : ∀ z : ℂ,
-      AEStronglyMeasurable (F z)
-        (volume.restrict (Ioi 0)) := by
+      AEStronglyMeasurable (F z) (volume.restrict (Ioi 0)) := by
     intro z
-    have hsource :
-        Continuous (fun x : ℝ => thetaCuspSourceTerm x n) := by
-      unfold thetaCuspSourceTerm thetaCuspSeed
-      fun_prop
     dsimp only [F]
-    exact ((Complex.continuous_ofReal.comp hsource).mul
+    exact ((Complex.continuous_ofReal.comp hcont).mul
       (by
         unfold spectralTranslationPhase
         fun_prop)).aestronglyMeasurable.restrict
-  have hF'meas :
-      AEStronglyMeasurable (F' z₀)
-        (volume.restrict (Ioi 0)) := by
-    have hsource :
-        Continuous (fun x : ℝ => thetaCuspSourceTerm x n) := by
-      unfold thetaCuspSourceTerm thetaCuspSeed
-      fun_prop
+  have hF'meas : AEStronglyMeasurable (F' z₀) (volume.restrict (Ioi 0)) := by
     dsimp only [F']
-    exact ((Complex.continuous_ofReal.comp hsource).mul
+    exact ((Complex.continuous_ofReal.comp hcont).mul
       (((Complex.continuous_ofReal.comp continuous_id).mul
         continuous_const).mul
         (by
@@ -460,71 +442,72 @@ theorem hasDerivAt_thetaCuspShellPhaseTransform
       dsimp only [c]
       linarith
     have hdx0 : 0 ≤ d * x := mul_nonneg hd.le hx0
-    have hdxle : d * x ≤ Real.exp (d * x) := by
-      exact (le_add_of_nonneg_left zero_le_one).trans
+    have hdxle : d * x ≤ Real.exp (d * x) :=
+      (le_add_of_nonneg_left zero_le_one).trans
         (by
-          simpa only [add_comm] using
-            Real.add_one_le_exp (d * x))
+          simpa only [add_comm] using Real.add_one_le_exp (d * x))
     have hxle : x ≤ Real.exp (d * x) / d := by
       apply (le_div_iff₀ hd).2
       simpa only [mul_comm] using hdxle
-    have hexp :
-        Real.exp (-x * z.im) ≤ Real.exp (c * x) := by
+    have hexple : Real.exp (-x * z.im) ≤ Real.exp (c * x) := by
       apply Real.exp_le_exp.mpr
       nlinarith
-    have hosc :
-        x * Real.exp (-x * z.im) ≤
-          C * Real.exp (q * x) := by
+    have hosc : x * Real.exp (-x * z.im) ≤ C * Real.exp (q * x) := by
       calc
-        x * Real.exp (-x * z.im) ≤
-            x * Real.exp (c * x) := by gcongr
-        _ ≤ (Real.exp (d * x) / d) *
-            Real.exp (c * x) := by gcongr
+        x * Real.exp (-x * z.im) ≤ x * Real.exp (c * x) := by gcongr
+        _ ≤ (Real.exp (d * x) / d) * Real.exp (c * x) := by gcongr
         _ = C * Real.exp (q * x) := by
           rw [show Real.exp (d * x) / d * Real.exp (c * x) =
-              (1 / d) *
-                (Real.exp (d * x) * Real.exp (c * x)) by ring,
+              (1 / d) * (Real.exp (d * x) * Real.exp (c * x)) by ring,
             ← Real.exp_add]
           dsimp only [C, q]
           congr 2
           ring
-    have hsource0 : 0 ≤ thetaCuspSourceTerm x n :=
-      thetaCuspSourceTerm_nonneg_of_pos hx n
-    rw [show ‖F' z x‖ =
-        thetaCuspSourceTerm x n *
-          (x * Real.exp (-x * z.im)) by
+    have ha0x : 0 ≤ a x := ha0 x hx
+    rw [show ‖F' z x‖ = a x * (x * Real.exp (-x * z.im)) by
       dsimp only [F']
       rw [norm_mul, Complex.norm_real, Real.norm_eq_abs,
-        abs_of_nonneg hsource0, norm_mul, norm_mul,
+        abs_of_nonneg ha0x, norm_mul, norm_mul,
         Complex.norm_real, Real.norm_eq_abs,
         abs_of_nonneg hx0, norm_I, mul_one,
         RHTower.norm_spectralTranslationPhase_eq_exp_neg_mul_im]]
     dsimp only [bound]
     simpa only [mul_assoc, mul_comm, mul_left_comm] using
-      mul_le_mul_of_nonneg_left hosc hsource0
-  have hFint :
-      Integrable (F z₀) (volume.restrict (Ioi 0)) := by
-    dsimp only [F]
-    exact
-      integrableOn_thetaCuspSourceTerm_mul_phase_of_neg_one_lt_im
-        hn hz₀
+      mul_le_mul_of_nonneg_left hosc ha0x
   have hdiff : ∀ᵐ x : ℝ ∂(volume.restrict (Ioi 0)),
       ∀ z ∈ Metric.ball z₀ ε,
         HasDerivAt (fun z => F z x) (F' z x) z := by
     filter_upwards with x
     intro z _hz
     dsimp only [F, F']
-    convert
-      (hasDerivAt_spectralTranslationPhase x z).const_mul
-        (thetaCuspSourceTerm x n : ℂ) using 1 <;> ring
+    convert (hasDerivAt_spectralTranslationPhase x z).const_mul (a x : ℂ) using 1
   have hresult := hasDerivAt_integral_of_dominated_loc_of_deriv_le
     (F := F) (F' := F') (x₀ := z₀)
     (s := Metric.ball z₀ ε) (bound := bound)
     (Metric.ball_mem_nhds z₀ hε)
     (Eventually.of_forall hFmeas)
-    hFint hF'meas hdom hbound hdiff
-  simpa only [thetaCuspShellHalfLineTransform, F, F'] using
-    hresult.2
+    hint hF'meas hdom hbound hdiff
+  simpa only [F, F'] using hresult.2
+
+/-- A positive shell branch is holomorphic in the lower open half-strip.  Its derivative is the
+literal `i x` spectral insertion, not a formal `deriv` placeholder. -/
+theorem hasDerivAt_thetaCuspShellPhaseTransform
+    {z₀ : ℂ} (hz₀ : -1 < z₀.im) {n : ℕ} (hn : 0 < n) :
+    HasDerivAt
+      (fun z =>
+        thetaCuspShellHalfLineTransform
+          (fun x => spectralTranslationPhase x z) n)
+      (thetaCuspShellHalfLineTransform
+        (fun x => ((x : ℂ) * I) *
+          spectralTranslationPhase x z₀) n) z₀ := by
+  simpa only [thetaCuspShellHalfLineTransform] using
+    hasDerivAt_atom_phaseTransform hz₀ (fun x => thetaCuspSourceTerm x n)
+      (by
+        unfold thetaCuspSourceTerm thetaCuspSeed
+        fun_prop)
+      (fun x hx => thetaCuspSourceTerm_nonneg_of_pos hx n)
+      (fun _ hq => integrableOn_exp_mul_thetaCuspSourceTerm_of_lt_one hn hq)
+      (integrableOn_thetaCuspSourceTerm_mul_phase_of_neg_one_lt_im hn hz₀)
 
 /-- Universal upper incomplete-Gamma tail attached to the completed theta source. -/
 def thetaCuspUniversalGammaPhaseTail (z : ℂ) (N : ℝ) : ℂ :=
@@ -1373,154 +1356,20 @@ theorem hasDerivAt_thetaCuspShellWardPhaseTransform
     HasDerivAt
       (fun z => thetaCuspShellWardPhaseTransform z n)
       (thetaCuspShellWardPhaseTransformSpectralDerivative z₀ n) z₀ := by
-  let ε : ℝ := (1 + z₀.im) / 4
-  let L : ℝ := z₀.im - ε
-  let c : ℝ := -L
-  let d : ℝ := (1 - c) / 2
-  let q : ℝ := c + d
-  let C : ℝ := 1 / d
-  let bound : ℝ → ℝ := fun x =>
-    C * (Real.exp (q * x) * thetaCuspWardGibbsAtom n x)
-  let F : ℂ → ℝ → ℂ := fun z x =>
-    (thetaCuspWardGibbsAtom n x : ℂ) *
-      spectralTranslationPhase x z
-  let F' : ℂ → ℝ → ℂ := fun z x =>
-    (thetaCuspWardGibbsAtom n x : ℂ) *
-      (((x : ℂ) * I) * spectralTranslationPhase x z)
-  have hε : 0 < ε := by
-    dsimp only [ε]
-    linarith
-  have hL : -1 < L := by
-    dsimp only [L, ε]
-    linarith
-  have hc : c < 1 := by
-    dsimp only [c]
-    linarith
-  have hd : 0 < d := by
-    dsimp only [d]
-    linarith
-  have hq : q < 1 := by
-    dsimp only [q, d]
-    linarith
-  have him {z : ℂ} (hz : z ∈ Metric.ball z₀ ε) :
-      L < z.im := by
-    have hdist : ‖z - z₀‖ < ε := by
-      rw [← dist_eq_norm]
-      exact Metric.mem_ball.mp hz
-    have himdiff : |z.im - z₀.im| ≤ ‖z - z₀‖ := by
-      simpa only [Complex.sub_im] using Complex.abs_im_le_norm (z - z₀)
-    have hlower : -‖z - z₀‖ ≤ z.im - z₀.im :=
-      (abs_le.mp himdiff).1
-    dsimp only [L]
-    linarith
-  have hbound :
-      Integrable bound (volume.restrict (Ioi 0)) := by
-    dsimp only [bound]
-    simpa only [thetaCuspWardGibbsAtom] using
-      (integrableOn_exp_mul_thetaCuspPolynomialAtom_of_lt_one
-        (X ^ 2) hn hq).const_mul C
-  have hFmeas : ∀ z : ℂ,
-      AEStronglyMeasurable (F z)
-        (volume.restrict (Ioi 0)) := by
-    intro z
-    have hW : Continuous (thetaCuspWardGibbsAtom n) :=
-      continuous_iff_continuousAt.mpr fun x =>
-        (hasDerivAt_thetaCuspWardGibbsAtom n x).continuousAt
-    dsimp only [F]
-    exact ((Complex.continuous_ofReal.comp hW).mul
-      (by
-        unfold spectralTranslationPhase
-        fun_prop)).aestronglyMeasurable.restrict
-  have hF'meas :
-      AEStronglyMeasurable (F' z₀)
-        (volume.restrict (Ioi 0)) := by
-    have hW : Continuous (thetaCuspWardGibbsAtom n) :=
-      continuous_iff_continuousAt.mpr fun x =>
-        (hasDerivAt_thetaCuspWardGibbsAtom n x).continuousAt
-    dsimp only [F']
-    exact ((Complex.continuous_ofReal.comp hW).mul
-      (((Complex.continuous_ofReal.comp continuous_id).mul
-        continuous_const).mul
-        (by
-          unfold spectralTranslationPhase
-          fun_prop))).aestronglyMeasurable.restrict
-  have hdom : ∀ᵐ x : ℝ ∂(volume.restrict (Ioi 0)),
-      ∀ z ∈ Metric.ball z₀ ε, ‖F' z x‖ ≤ bound x := by
-    filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
-    intro z hz
-    have hx0 : 0 ≤ x := hx.le
-    have hzL := him hz
-    have hrate : -z.im ≤ c := by
-      dsimp only [c]
-      linarith
-    have hdx0 : 0 ≤ d * x := mul_nonneg hd.le hx0
-    have hdxle : d * x ≤ Real.exp (d * x) := by
-      exact (le_add_of_nonneg_left zero_le_one).trans
-        (by
-          simpa only [add_comm] using
-            Real.add_one_le_exp (d * x))
-    have hxle : x ≤ Real.exp (d * x) / d := by
-      apply (le_div_iff₀ hd).2
-      simpa only [mul_comm] using hdxle
-    have hexp :
-        Real.exp (-x * z.im) ≤ Real.exp (c * x) := by
-      apply Real.exp_le_exp.mpr
-      nlinarith
-    have hosc :
-        x * Real.exp (-x * z.im) ≤
-          C * Real.exp (q * x) := by
-      calc
-        x * Real.exp (-x * z.im) ≤
-            x * Real.exp (c * x) := by gcongr
-        _ ≤ (Real.exp (d * x) / d) *
-            Real.exp (c * x) := by gcongr
-        _ = C * Real.exp (q * x) := by
-          rw [show Real.exp (d * x) / d * Real.exp (c * x) =
-              (1 / d) *
-                (Real.exp (d * x) * Real.exp (c * x)) by ring,
-            ← Real.exp_add]
-          dsimp only [C, q]
-          congr 2
-          ring
-    have hW0 : 0 ≤ thetaCuspWardGibbsAtom n x := by
-      rw [thetaCuspWardGibbsAtom_apply]
-      positivity
-    rw [show ‖F' z x‖ =
-        thetaCuspWardGibbsAtom n x *
-          (x * Real.exp (-x * z.im)) by
-      dsimp only [F']
-      rw [norm_mul, Complex.norm_real, Real.norm_eq_abs,
-        abs_of_nonneg hW0, norm_mul, norm_mul,
-        Complex.norm_real, Real.norm_eq_abs,
-        abs_of_nonneg hx0, norm_I, mul_one,
-        RHTower.norm_spectralTranslationPhase_eq_exp_neg_mul_im]]
-    dsimp only [bound]
-    simpa only [mul_assoc, mul_comm, mul_left_comm] using
-      mul_le_mul_of_nonneg_left hosc hW0
-  have hFint :
-      Integrable (F z₀) (volume.restrict (Ioi 0)) := by
-    dsimp only [F]
-    simpa only [thetaCuspWardGibbsAtom] using
-      integrableOn_thetaCuspPolynomialAtom_mul_phase_of_neg_one_lt_im
-        (X ^ 2) hn hz₀
-  have hdiff : ∀ᵐ x : ℝ ∂(volume.restrict (Ioi 0)),
-      ∀ z ∈ Metric.ball z₀ ε,
-        HasDerivAt (fun z => F z x) (F' z x) z := by
-    filter_upwards with x
-    intro z _hz
-    dsimp only [F, F']
-    convert
-      (hasDerivAt_spectralTranslationPhase x z).const_mul
-        (thetaCuspWardGibbsAtom n x : ℂ) using 1 <;> ring
-  have hresult := hasDerivAt_integral_of_dominated_loc_of_deriv_le
-    (F := F) (F' := F') (x₀ := z₀)
-    (s := Metric.ball z₀ ε) (bound := bound)
-    (Metric.ball_mem_nhds z₀ hε)
-    (Eventually.of_forall hFmeas)
-    hFint hF'meas hdom hbound hdiff
   simpa only [thetaCuspShellWardPhaseTransform,
-    thetaCuspShellWardPhaseTransformSpectralDerivative, F, F'] using
-    hresult.2
+    thetaCuspShellWardPhaseTransformSpectralDerivative] using
+    hasDerivAt_atom_phaseTransform hz₀ (thetaCuspWardGibbsAtom n)
+      (continuous_iff_continuousAt.mpr fun x =>
+        (hasDerivAt_thetaCuspWardGibbsAtom n x).continuousAt)
+      (fun x _ => by
+        rw [thetaCuspWardGibbsAtom_apply]
+        positivity)
+      (fun _ hq => by
+        simpa only [thetaCuspWardGibbsAtom] using
+          integrableOn_exp_mul_thetaCuspPolynomialAtom_of_lt_one (X ^ 2) hn hq)
+      (by
+        simpa only [thetaCuspWardGibbsAtom] using
+          integrableOn_thetaCuspPolynomialAtom_mul_phase_of_neg_one_lt_im (X ^ 2) hn hz₀)
 
 theorem tendsto_thetaCuspWardGibbsAtom_mul_phase_atTop_zero
     {n : ℕ} (hn : 0 < n) {z : ℂ} (hz : -1 < z.im) :

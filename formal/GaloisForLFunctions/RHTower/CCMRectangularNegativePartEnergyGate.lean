@@ -146,43 +146,42 @@ theorem differentiableOn_xiRectangularNegativePartLandauContinuation_landauBall
   simpa only [xiRectangularNegativePartLandauContinuation] using
     ((hshift s hs).const_mul (2 : ℂ)).add hcorrDiff.differentiableWithinAt
 
-theorem exists_xiRectangularNegativePartLandauCoefficient_summable_left_of_boundary
-    (L : ℝ) (hne : Nonempty XiRightZeroCopy)
-    (henergy : XiRectangularRightNegativePartEnergy L) :
-    ∃ beta sigma : ℝ,
-      0 < beta ∧
+/-- The rectangular Landau correction only needs to converge at one abscissa strictly to the
+left of a hypothetical transverse boundary. -/
+theorem exists_xiRectangularNegativePartLandauCoefficient_summable_left_of_boundary_of_one_abscissa
+    (L beta : ℝ) (hne : Nonempty XiRightZeroCopy)
+    (hbetaDelta : beta < xiRightTransverseSup)
+    (hcorrBase : LSeriesSummable
+      (fun n => ((xiRectangularRightNegativePart L n : ℝ) : ℂ))
+      (((1 + beta : ℝ) : ℂ))) :
+    ∃ sigma : ℝ,
       1 + beta < sigma ∧
       sigma < 1 + xiRightTransverseSup ∧
       LSeriesSummable
         (fun n => ((xiRectangularNegativePartLandauCoefficient L n : ℝ) : ℂ))
         (sigma : ℂ) := by
   let delta : ℝ := xiRightTransverseSup
-  let beta : ℝ := delta / 4
   have hdelta : 0 < delta := xiRightTransverseSup_pos hne
   have hdeltahalf : delta ≤ 1 / 2 := xiRightTransverseSup_le_half hne
-  have hbeta0 : 0 < beta := by dsimp only [beta]; positivity
-  have hbetaDelta : beta < delta := by dsimp only [beta]; linarith
   have hupper : ∀ q : XiRightZeroCopy,
       (xiRightCenteredZero q).re ≤ delta :=
     fun q => xiRightCenteredZero_re_le_sup q
   obtain ⟨eta, heta, hordinate⟩ :=
     exists_xiRightCenteredZero_abs_im_lower_bound
-  have hcorrBase : LSeriesSummable
-      (fun n => ((xiRectangularRightNegativePart L n : ℝ) : ℂ))
-      (((1 + beta : ℝ) : ℂ)) := henergy beta hbeta0
   let r : ℝ := min (min (1 / 8) (eta / 4)) ((delta - beta) / 4)
   have hr : 0 < r := by
     dsimp only [r]
     exact lt_min
       (lt_min (by norm_num) (div_pos heta (by norm_num)))
-      (div_pos (sub_pos.mpr hbetaDelta) (by norm_num))
+      (div_pos (sub_pos.mpr (by simpa only [delta] using hbetaDelta)) (by norm_num))
   have hrquarter : r ≤ 1 / 4 :=
     (min_le_left _ _).trans ((min_le_left _ _).trans (by norm_num))
   have hreta : r ≤ eta / 2 :=
     (min_le_left _ _).trans ((min_le_right _ _).trans (by linarith))
   have hrgap : r ≤ (delta - beta) / 4 := min_le_right _ _
   have hbetaGap : beta + r < delta := by
-    have hgap : 0 < delta - beta := sub_pos.mpr hbetaDelta
+    have hgap : 0 < delta - beta := by
+      simpa only [delta] using sub_pos.mpr hbetaDelta
     linarith
   have hcont :=
     differentiableOn_xiRectangularNegativePartLandauContinuation_landauBall
@@ -262,14 +261,31 @@ theorem exists_xiRectangularNegativePartLandauCoefficient_summable_left_of_bound
     (xiRectangularNegativePartLandauCoefficient_nonneg L)
     hh hsum (R := R)
     (G := xiRectangularNegativePartLandauContinuation L) hGd hagree hineq
-  refine ⟨beta, sigma, hbeta0, ?_, ?_, ?_⟩
+  refine ⟨sigma, ?_, ?_, ?_⟩
   · dsimp only [sigma]
-    have hgap : 0 < delta - beta := sub_pos.mpr hbetaDelta
-    linarith
+    have hgap : 0 < delta - beta := sub_pos.mpr
+      (by simpa only [delta] using hbetaDelta)
+    linarith [hrgap]
   · dsimp only [sigma, delta]
     linarith
   · simpa only [delta] using htransfer
 
+theorem exists_xiRectangularNegativePartLandauCoefficient_summable_left_of_boundary
+    (L : ℝ) (hne : Nonempty XiRightZeroCopy)
+    (henergy : XiRectangularRightNegativePartEnergy L) :
+    ∃ beta sigma : ℝ,
+      0 < beta ∧
+      1 + beta < sigma ∧
+      sigma < 1 + xiRightTransverseSup ∧
+      LSeriesSummable
+        (fun n => ((xiRectangularNegativePartLandauCoefficient L n : ℝ) : ℂ))
+        (sigma : ℂ) := by
+  have hdelta : 0 < xiRightTransverseSup := xiRightTransverseSup_pos hne
+  have hbeta0 : 0 < xiRightTransverseSup / 4 := by linarith
+  obtain ⟨sigma, h1, h2, h3⟩ :=
+    exists_xiRectangularNegativePartLandauCoefficient_summable_left_of_boundary_of_one_abscissa
+      L (xiRightTransverseSup / 4) hne (by linarith) (henergy _ hbeta0)
+  exact ⟨xiRightTransverseSup / 4, sigma, hbeta0, h1, h2, h3⟩
 /-- Summable negative Dirichlet energy of one rectangular carrier proves RH. -/
 theorem riemannHypothesis_of_xiRectangularRightNegativePartEnergy
     {L : ℝ} (hL : 0 < L)

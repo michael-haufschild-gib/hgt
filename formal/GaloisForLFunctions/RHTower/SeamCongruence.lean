@@ -199,50 +199,31 @@ theorem xi_linePoint_eq_zero_of_re_eq_zero {u : ℝ}
 
 /-! ### §3a Generic sign squeeze for line-real carriers -/
 
-/-- **Generic line-real sign squeeze.** A peeled carrier whose critical-line trace is
-real and has `s` certified sign alternations has all its window multiplicity on the
-line, provided the enclosed multiplicity budget is at most `s`. This is the common
-constraint behind the ξ and completed finite-carrier readers. -/
-theorem window_online_of_line_real_sign_data {F : ℂ → ℂ} {t : Finset ℂ}
+/-- **The line-real window core.**  Given `s` strictly increasing critical-line parameters inside
+the window at which the carrier's real trace vanishes, the whole enclosed multiplicity budget
+`∑ m ≤ s` sits on the line, none of it lies strictly to the right, and every configuration point
+is simple.  Strict sign interleaving and disjoint non-strict brackets are two ways of producing
+those parameters; this is everything they share. -/
+theorem window_online_of_line_real_zeros {F : ℂ → ℂ} {t : Finset ℂ}
     {m : ℂ → ℕ} {h : ℂ → ℂ} {a : ℂ} {R : ℝ}
-    (hFcont : Continuous fun u : ℝ => (F (linePoint u)).re)
     (hline_zero : ∀ u : ℝ, (F (linePoint u)).re = 0 → F (linePoint u) = 0)
     (hclosed : ∀ z ∈ t, lineReflect z ∈ t)
     (hmrefl : ∀ z ∈ t, m (lineReflect z) = m z)
     (hh0 : ∀ z ∈ ball a R, h z ≠ 0)
     (hfact : ∀ z ∈ ball a R, F z = (∏ w ∈ t, (z - w) ^ m w) * h z)
-    {s : ℕ} {ts : ℕ → ℝ}
-    (hmono : ∀ i, i < s → ts i < ts (i + 1))
-    (hsign : ∀ i, i < s →
-      (F (linePoint (ts i))).re * (F (linePoint (ts (i + 1)))).re < 0)
-    (hseg : ∀ u : ℝ, ts 0 ≤ u → u ≤ ts s → linePoint u ∈ ball a R)
-    (hcount : ∑ z ∈ t, m z ≤ s) :
-    ∑ z ∈ t.filter (fun z => z.re = 1 / 2), m z = ∑ z ∈ t, m z ∧
-      ∑ z ∈ t.filter (fun z => 1 / 2 < z.re), m z = 0 := by
+    {s : ℕ} {z : ℕ → ℝ}
+    (hzball : ∀ i, i < s → linePoint (z i) ∈ ball a R)
+    (hzzero : ∀ i, i < s → (F (linePoint (z i))).re = 0)
+    (hzlt : ∀ i j, i < j → j < s → z i < z j)
+    (hcount : ∑ w ∈ t, m w ≤ s) :
+    (∑ w ∈ t.filter (fun w => w.re = 1 / 2), m w = ∑ w ∈ t, m w ∧
+        ∑ w ∈ t.filter (fun w => 1 / 2 < w.re), m w = 0) ∧
+      ∀ w ∈ t, m w ≤ 1 := by
   classical
-  obtain ⟨z, hz⟩ := exists_interleaved_zeros hFcont hmono hsign
-  have hchain : ∀ j, j ≤ s → ∀ i, i ≤ j → ts i ≤ ts j := by
-    intro j
-    induction j with
-    | zero =>
-        intro _ i hi
-        rw [Nat.le_zero.mp hi]
-    | succ n ih =>
-        intro hns i hi
-        rcases eq_or_lt_of_le hi with heq | hlt
-        · rw [heq]
-        · have hin : i ≤ n := Nat.lt_succ_iff.mp hlt
-          have h1 : ts i ≤ ts n := ih (Nat.le_of_succ_le hns) i hin
-          exact h1.trans (hmono n (Nat.lt_of_succ_le hns)).le
-  have hzball : ∀ i, i < s → linePoint (z i) ∈ ball a R := by
-    intro i hi
-    have h0i : ts 0 ≤ ts i := hchain i (le_of_lt hi) 0 (Nat.zero_le i)
-    have hi1s : ts (i + 1) ≤ ts s := hchain s le_rfl (i + 1) (Nat.succ_le_of_lt hi)
-    exact hseg (z i) (h0i.trans (hz i hi).1.le) ((hz i hi).2.1.le.trans hi1s)
   have hzmem : ∀ i, i < s → linePoint (z i) ∈ t ∧ m (linePoint (z i)) ≠ 0 := by
     intro i hi
     have hF0 : F (linePoint (z i)) = 0 :=
-      hline_zero (z i) (hz i hi).2.2
+      hline_zero (z i) (hzzero i hi)
     have hfz := hfact _ (hzball i hi)
     rw [hF0] at hfz
     rcases mul_eq_zero.mp hfz.symm with hp | hcontra
@@ -258,13 +239,6 @@ theorem window_online_of_line_real_sign_data {F : ℂ → ℂ} {t : Finset ℂ}
         rw [← hwp]
         exact ⟨hw, hmpos.ne'⟩
     · exact absurd hcontra (hh0 _ (hzball i hi))
-  have hzlt : ∀ i j, i < j → j < s → z i < z j := by
-    intro i j hij hjs
-    have h1 : z i < ts (i + 1) := (hz i (lt_trans hij hjs)).2.1
-    have h2 : ts (i + 1) ≤ ts j :=
-      hchain j (le_of_lt hjs) (i + 1) (Nat.succ_le_of_lt hij)
-    have h3 : ts j < z j := (hz j hjs).1
-    linarith
   set P : Finset ℂ := (Finset.range s).image (fun i => linePoint (z i)) with hP_def
   have hPsub : P ⊆ t.filter (fun z => z.re = 1 / 2) := by
     intro x hx
@@ -299,7 +273,107 @@ theorem window_online_of_line_real_sign_data {F : ℂ → ℂ} {t : Finset ℂ}
   have hLeq : ∑ z ∈ t.filter (fun z => z.re = 1 / 2), m z = ∑ z ∈ t, m z := by
     omega
   have hID := window_identity hclosed hmrefl
-  exact ⟨hLeq, by omega⟩
+  have hID := window_identity hclosed hmrefl
+  have hN0 : ∑ w ∈ t.filter (fun z => 1 / 2 < z.re), m w = 0 := by omega
+  refine ⟨⟨hLeq, hN0⟩, ?_⟩
+  have hPs : ∑ x ∈ P, m x = s := by omega
+  have hPone : ∀ x ∈ P, m x = 1 := by
+    intro x hx
+    by_contra hne
+    have h2le : 2 ≤ m x := by
+      have := hone x hx
+      omega
+    have hlt : ∑ y ∈ P, (1 : ℕ) < ∑ y ∈ P, m y :=
+      Finset.sum_lt_sum hone ⟨x, hx, by omega⟩
+    rw [Finset.sum_const, hPcard, smul_eq_mul, mul_one, hPs] at hlt
+    omega
+  have hout : ∀ x ∈ t.filter (fun z => z.re = 1 / 2) \ P, m x = 0 := by
+    have hsd := Finset.sum_sdiff hPsub (f := m)
+    have hzero : ∑ x ∈ t.filter (fun z => z.re = 1 / 2) \ P, m x = 0 := by
+      omega
+    exact fun x hx => Finset.sum_eq_zero_iff.mp hzero x hx
+  have hright : ∀ w ∈ t, 1 / 2 < w.re → m w = 0 := fun w hw hwre =>
+    Finset.sum_eq_zero_iff.mp hN0 w (Finset.mem_filter.mpr ⟨hw, hwre⟩)
+  intro w hw
+  rcases lt_trichotomy w.re (1 / 2) with hlt | heq | hgt
+  · have hqre : 1 / 2 < (lineReflect w).re := by
+      have hre : (lineReflect w).re = 1 - w.re := by
+        simp [lineReflect, Complex.sub_re, Complex.conj_re]
+      rw [hre]
+      linarith
+    have hz0 := hright _ (hclosed w hw) hqre
+    rw [hmrefl w hw] at hz0
+    omega
+  · by_cases hP : w ∈ P
+    · rw [hPone w hP]
+    · rw [hout w (Finset.mem_sdiff.mpr ⟨Finset.mem_filter.mpr ⟨hw, heq⟩, hP⟩)]
+      omega
+  · rw [hright w hw hgt]
+    omega
+
+/-- Strict sign interleaving on a segment inside the window yields strictly increasing
+critical-line parameters, all inside the ball, at which the real trace vanishes. -/
+theorem exists_line_real_window_zeros {F : ℂ → ℂ} {a : ℂ} {R : ℝ}
+    (hFcont : Continuous fun u : ℝ => (F (linePoint u)).re)
+    {s : ℕ} {ts : ℕ → ℝ}
+    (hmono : ∀ i, i < s → ts i < ts (i + 1))
+    (hsign : ∀ i, i < s →
+      (F (linePoint (ts i))).re * (F (linePoint (ts (i + 1)))).re < 0)
+    (hseg : ∀ u : ℝ, ts 0 ≤ u → u ≤ ts s → linePoint u ∈ ball a R) :
+    ∃ z : ℕ → ℝ, (∀ i, i < s → linePoint (z i) ∈ ball a R) ∧
+      (∀ i, i < s → (F (linePoint (z i))).re = 0) ∧
+      (∀ i j, i < j → j < s → z i < z j) := by
+  obtain ⟨z, hz⟩ := exists_interleaved_zeros hFcont hmono hsign
+  have hchain : ∀ j, j ≤ s → ∀ i, i ≤ j → ts i ≤ ts j := by
+    intro j
+    induction j with
+    | zero =>
+        intro _ i hi
+        rw [Nat.le_zero.mp hi]
+    | succ n ih =>
+        intro hns i hi
+        rcases eq_or_lt_of_le hi with heq | hlt
+        · rw [heq]
+        · have hin : i ≤ n := Nat.lt_succ_iff.mp hlt
+          have h1 : ts i ≤ ts n := ih (Nat.le_of_succ_le hns) i hin
+          exact h1.trans (hmono n (Nat.lt_of_succ_le hns)).le
+  refine ⟨z, ?_, fun i hi => (hz i hi).2.2, ?_⟩
+  · intro i hi
+    have h0i : ts 0 ≤ ts i := hchain i (le_of_lt hi) 0 (Nat.zero_le i)
+    have hi1s : ts (i + 1) ≤ ts s := hchain s le_rfl (i + 1) (Nat.succ_le_of_lt hi)
+    exact hseg (z i) (h0i.trans (hz i hi).1.le) ((hz i hi).2.1.le.trans hi1s)
+  · intro i j hij hjs
+    have h1 : z i < ts (i + 1) := (hz i (lt_trans hij hjs)).2.1
+    have h2 : ts (i + 1) ≤ ts j :=
+      hchain j (le_of_lt hjs) (i + 1) (Nat.succ_le_of_lt hij)
+    have h3 : ts j < z j := (hz j hjs).1
+    linarith
+
+/-- **Generic line-real sign squeeze.** A peeled carrier whose critical-line trace is
+real and has `s` certified sign alternations has all its window multiplicity on the
+line, provided the enclosed multiplicity budget is at most `s`. This is the common
+constraint behind the ξ and completed finite-carrier readers. -/
+theorem window_online_of_line_real_sign_data {F : ℂ → ℂ} {t : Finset ℂ}
+    {m : ℂ → ℕ} {h : ℂ → ℂ} {a : ℂ} {R : ℝ}
+    (hFcont : Continuous fun u : ℝ => (F (linePoint u)).re)
+    (hline_zero : ∀ u : ℝ, (F (linePoint u)).re = 0 → F (linePoint u) = 0)
+    (hclosed : ∀ z ∈ t, lineReflect z ∈ t)
+    (hmrefl : ∀ z ∈ t, m (lineReflect z) = m z)
+    (hh0 : ∀ z ∈ ball a R, h z ≠ 0)
+    (hfact : ∀ z ∈ ball a R, F z = (∏ w ∈ t, (z - w) ^ m w) * h z)
+    {s : ℕ} {ts : ℕ → ℝ}
+    (hmono : ∀ i, i < s → ts i < ts (i + 1))
+    (hsign : ∀ i, i < s →
+      (F (linePoint (ts i))).re * (F (linePoint (ts (i + 1)))).re < 0)
+    (hseg : ∀ u : ℝ, ts 0 ≤ u → u ≤ ts s → linePoint u ∈ ball a R)
+    (hcount : ∑ z ∈ t, m z ≤ s) :
+    ∑ z ∈ t.filter (fun z => z.re = 1 / 2), m z = ∑ z ∈ t, m z ∧
+      ∑ z ∈ t.filter (fun z => 1 / 2 < z.re), m z = 0 := by
+  classical
+  obtain ⟨z, hzball, hzzero, hzlt⟩ :=
+    exists_line_real_window_zeros hFcont hmono hsign hseg
+  exact (window_online_of_line_real_zeros hline_zero hclosed hmrefl hh0 hfact
+    hzball hzzero hzlt hcount).1
 
 /-- Non-strict disjoint sign brackets still produce distinct zeros.  This is the bracket shape
 emitted by moment/first-moment Hardy certificates: the product may be zero at an endpoint, but
@@ -355,70 +429,15 @@ theorem window_online_of_line_real_zero_brackets {F : ℂ → ℂ} {t : Finset �
       ∑ z ∈ t.filter (fun z => 1 / 2 < z.re), m z = 0 := by
   classical
   obtain ⟨z, hz⟩ := exists_zeros_of_nonpos_brackets hFcont hord hsign
-  have hzball : ∀ i, i < s → linePoint (z i) ∈ ball a R := by
-    intro i hi
-    exact hseg i hi (z i) (hz i hi).1 (hz i hi).2.1
-  have hzmem : ∀ i, i < s → linePoint (z i) ∈ t ∧ m (linePoint (z i)) ≠ 0 := by
-    intro i hi
-    have hF0 : F (linePoint (z i)) = 0 :=
-      hline_zero (z i) (hz i hi).2.2
-    have hfz := hfact _ (hzball i hi)
-    rw [hF0] at hfz
-    rcases mul_eq_zero.mp hfz.symm with hp | hcontra
-    · obtain ⟨w, hw, hwzero⟩ := Finset.prod_eq_zero_iff.mp hp
-      rcases Nat.eq_zero_or_pos (m w) with hm0 | hmpos
-      · rw [hm0, pow_zero] at hwzero
-        exact absurd hwzero one_ne_zero
-      · have hbase : linePoint (z i) - w = 0 :=
-          (pow_eq_zero_iff hmpos.ne').mp hwzero
-        have hwp : w = linePoint (z i) := by
-          have := sub_eq_zero.mp hbase
-          exact this.symm
-        rw [← hwp]
-        exact ⟨hw, hmpos.ne'⟩
-    · exact absurd hcontra (hh0 _ (hzball i hi))
-  have hzlt : ∀ i j, i < j → j < s → z i < z j := by
-    intro i j hij hjs
-    have hi : i < s := lt_trans hij hjs
-    have hzi : z i ≤ v i := (hz i hi).2.1
-    have hzj : u j ≤ z j := (hz j hjs).1
-    have hgap := hsep i j hij hjs
-    linarith
-  set P : Finset ℂ := (Finset.range s).image (fun i => linePoint (z i)) with hP_def
-  have hPsub : P ⊆ t.filter (fun z => z.re = 1 / 2) := by
-    intro x hx
-    obtain ⟨i, hi, rfl⟩ := Finset.mem_image.mp hx
-    have his : i < s := Finset.mem_range.mp hi
-    exact Finset.mem_filter.mpr ⟨(hzmem i his).1, linePoint_re (z i)⟩
-  have hPcard : P.card = s := by
-    rw [hP_def, Finset.card_image_of_injOn, Finset.card_range]
-    intro i hi j hj hij
-    have his : i < s := Finset.mem_range.mp (Finset.mem_coe.mp hi)
-    have hjs : j < s := Finset.mem_range.mp (Finset.mem_coe.mp hj)
-    by_contra hne
-    rcases lt_or_gt_of_ne hne with hlt | hgt
-    · have := hzlt i j hlt hjs
-      have hzeq : z i = z j := linePoint_injective hij
-      linarith
-    · have := hzlt j i hgt his
-      have hzeq : z i = z j := linePoint_injective hij
-      linarith
-  have hone : ∀ x ∈ P, 1 ≤ m x := by
-    intro x hx
-    obtain ⟨i, hi, rfl⟩ := Finset.mem_image.mp hx
-    have his : i < s := Finset.mem_range.mp hi
-    exact Nat.one_le_iff_ne_zero.mpr (hzmem i his).2
-  have hsP : s ≤ ∑ x ∈ P, m x := by
-    have := Finset.card_nsmul_le_sum P m 1 hone
-    rwa [hPcard, smul_eq_mul, mul_one] at this
-  have hPL : ∑ x ∈ P, m x ≤ ∑ z ∈ t.filter (fun z => z.re = 1 / 2), m z :=
-    Finset.sum_le_sum_of_subset hPsub
-  have hLD : ∑ z ∈ t.filter (fun z => z.re = 1 / 2), m z ≤ ∑ z ∈ t, m z :=
-    Finset.sum_le_sum_of_subset (Finset.filter_subset _ _)
-  have hLeq : ∑ z ∈ t.filter (fun z => z.re = 1 / 2), m z = ∑ z ∈ t, m z := by
-    omega
-  have hID := window_identity hclosed hmrefl
-  exact ⟨hLeq, by omega⟩
+  refine (window_online_of_line_real_zeros hline_zero hclosed hmrefl hh0 hfact
+    (z := z) (fun i hi => hseg i hi (z i) (hz i hi).1 (hz i hi).2.1)
+    (fun i hi => (hz i hi).2.2) ?_ hcount).1
+  intro i j hij hjs
+  have hi : i < s := lt_trans hij hjs
+  have hzi : z i ≤ v i := (hz i hi).2.1
+  have hzj : u j ≤ z j := (hz j hjs).1
+  have hgap := hsep i j hij hjs
+  linarith
 
 /-- If the completed finite carrier has zero real part at a critical-line point, it
 vanishes there. -/
@@ -472,6 +491,44 @@ theorem completedGN_window_online_of_sign_data {N : ℕ}
 
 /-! ### §4 The sign-data capstone: on-line sum = total, right-half sum = 0 -/
 
+/-- The full ξ window squeeze: on a sign-certified peeled window the enclosed multiplicity is
+entirely on the critical line, none of it strictly to the right, and every configuration point is
+simple.  Reflection symmetry of the multiplicities comes from `xi_orderAt_lineReflect`; the rest is
+`window_online_of_line_real_zeros`. -/
+private theorem xi_window_full_of_sign_data {t₁ : Finset ℂ} {m₁ : ℂ → ℕ} {h : ℂ → ℂ}
+    {a : ℂ} {R : ℝ}
+    (hm₁ : ∀ z ∈ t₁, (m₁ z : ℕ∞) = analyticOrderAt xi z)
+    (hcl₁ : ∀ z ∈ t₁, lineReflect z ∈ t₁)
+    (hh0 : ∀ z ∈ ball a R, h z ≠ 0)
+    (hfact₁ : ∀ z ∈ ball a R, xi z = (∏ w ∈ t₁, (z - w) ^ m₁ w) * h z)
+    {s : ℕ} {ts : ℕ → ℝ}
+    (hmono : ∀ i, i < s → ts i < ts (i + 1))
+    (hsign : ∀ i, i < s →
+      (xi (linePoint (ts i))).re * (xi (linePoint (ts (i + 1)))).re < 0)
+    (hseg : ∀ u : ℝ, ts 0 ≤ u → u ≤ ts s → linePoint u ∈ ball a R)
+    (hcount : ∑ z ∈ t₁, m₁ z ≤ s)
+ :
+    (∑ z ∈ t₁.filter (fun z => z.re = 1 / 2), m₁ z = ∑ z ∈ t₁, m₁ z ∧
+        ∑ z ∈ t₁.filter (fun z => 1 / 2 < z.re), m₁ z = 0) ∧
+      ∀ w ∈ t₁, m₁ w ≤ 1 := by
+  classical
+  have hFcont : Continuous fun u : ℝ => (xi (linePoint u)).re := by
+    have hline : Continuous linePoint := by
+      unfold linePoint
+      exact continuous_const.add (Complex.continuous_ofReal.mul continuous_const)
+    exact Complex.continuous_re.comp (xi_differentiable.continuous.comp hline)
+  have hmr₁ : ∀ z ∈ t₁, m₁ (lineReflect z) = m₁ z := by
+    intro w hw
+    have h1 := xi_orderAt_lineReflect w
+    have h2 := hm₁ _ (hcl₁ w hw)
+    rw [h1, ← hm₁ w hw] at h2
+    exact Nat.cast_inj.mp h2
+  obtain ⟨z, hzball, hzzero, hzlt⟩ :=
+    exists_line_real_window_zeros hFcont hmono hsign hseg
+  exact window_online_of_line_real_zeros
+    (fun _ hu => xi_linePoint_eq_zero_of_re_eq_zero hu) hcl₁ hmr₁ hh0 hfact₁
+    hzball hzzero hzlt hcount
+
 /-- **The seam discharge on sign-certified windows.** A peeled ξ-window whose
 enclosed count is at most `s`, together with `s` certified sign alternations
 of `Re ξ` along the in-window line segment, has its ENTIRE multiplicity on
@@ -492,108 +549,8 @@ theorem window_online_of_sign_data {t₁ : Finset ℂ} {m₁ : ℂ → ℕ} {h :
     (hseg : ∀ u : ℝ, ts 0 ≤ u → u ≤ ts s → linePoint u ∈ ball a R)
     (hcount : ∑ z ∈ t₁, m₁ z ≤ s) :
     ∑ z ∈ t₁.filter (fun z => z.re = 1 / 2), m₁ z = ∑ z ∈ t₁, m₁ z ∧
-      ∑ z ∈ t₁.filter (fun z => 1 / 2 < z.re), m₁ z = 0 := by
-  classical
-  -- the real trace of ξ along the line is continuous
-  have hFcont : Continuous fun u : ℝ => (xi (linePoint u)).re := by
-    have hline : Continuous linePoint := by
-      unfold linePoint
-      exact continuous_const.add (Complex.continuous_ofReal.mul continuous_const)
-    exact Complex.continuous_re.comp (xi_differentiable.continuous.comp hline)
-  -- the interleaved zeros
-  obtain ⟨z, hz⟩ := exists_interleaved_zeros hFcont hmono hsign
-  -- the monotone chain of the sign points
-  have hchain : ∀ j, j ≤ s → ∀ i, i ≤ j → ts i ≤ ts j := by
-    intro j
-    induction j with
-    | zero =>
-        intro _ i hi
-        rw [Nat.le_zero.mp hi]
-    | succ n ih =>
-        intro hns i hi
-        rcases eq_or_lt_of_le hi with heq | hlt
-        · rw [heq]
-        · have hin : i ≤ n := Nat.lt_succ_iff.mp hlt
-          have h1 : ts i ≤ ts n := ih (Nat.le_of_succ_le hns) i hin
-          exact h1.trans (hmono n (Nat.lt_of_succ_le hns)).le
-  -- each zero sits in the window ball
-  have hzball : ∀ i, i < s → linePoint (z i) ∈ ball a R := by
-    intro i hi
-    have h0i : ts 0 ≤ ts i := hchain i (le_of_lt hi) 0 (Nat.zero_le i)
-    have hi1s : ts (i + 1) ≤ ts s := hchain s le_rfl (i + 1) (Nat.succ_le_of_lt hi)
-    exact hseg (z i) (h0i.trans (hz i hi).1.le) ((hz i hi).2.1.le.trans hi1s)
-  -- each zero is a configuration point with positive multiplicity
-  have hzmem : ∀ i, i < s → linePoint (z i) ∈ t₁ ∧ m₁ (linePoint (z i)) ≠ 0 := by
-    intro i hi
-    have hxi0 : xi (linePoint (z i)) = 0 :=
-      xi_linePoint_eq_zero_of_re_eq_zero (hz i hi).2.2
-    have hfz := hfact₁ _ (hzball i hi)
-    rw [hxi0] at hfz
-    rcases mul_eq_zero.mp hfz.symm with hp | hcontra
-    · obtain ⟨w, hw, hwzero⟩ := Finset.prod_eq_zero_iff.mp hp
-      rcases Nat.eq_zero_or_pos (m₁ w) with hm0 | hmpos
-      · rw [hm0, pow_zero] at hwzero
-        exact absurd hwzero one_ne_zero
-      · have hbase : linePoint (z i) - w = 0 :=
-          (pow_eq_zero_iff hmpos.ne').mp hwzero
-        have hwp : w = linePoint (z i) := by
-          have := sub_eq_zero.mp hbase
-          exact this.symm
-        rw [← hwp]
-        exact ⟨hw, hmpos.ne'⟩
-    · exact absurd hcontra (hh0 _ (hzball i hi))
-  -- the zeros are pairwise distinct (strict interleaving)
-  have hzlt : ∀ i j, i < j → j < s → z i < z j := by
-    intro i j hij hjs
-    have h1 : z i < ts (i + 1) := (hz i (lt_trans hij hjs)).2.1
-    have h2 : ts (i + 1) ≤ ts j :=
-      hchain j (le_of_lt hjs) (i + 1) (Nat.succ_le_of_lt hij)
-    have h3 : ts j < z j := (hz j hjs).1
-    linarith
-  -- package as an image finset inside the on-line filter
-  set P : Finset ℂ := (Finset.range s).image (fun i => linePoint (z i)) with hP_def
-  have hPsub : P ⊆ t₁.filter (fun z => z.re = 1 / 2) := by
-    intro x hx
-    obtain ⟨i, hi, rfl⟩ := Finset.mem_image.mp hx
-    have his : i < s := Finset.mem_range.mp hi
-    exact Finset.mem_filter.mpr ⟨(hzmem i his).1, linePoint_re (z i)⟩
-  have hPcard : P.card = s := by
-    rw [hP_def, Finset.card_image_of_injOn, Finset.card_range]
-    intro i hi j hj hij
-    have his : i < s := Finset.mem_range.mp (Finset.mem_coe.mp hi)
-    have hjs : j < s := Finset.mem_range.mp (Finset.mem_coe.mp hj)
-    by_contra hne
-    rcases lt_or_gt_of_ne hne with hlt | hgt
-    · have := hzlt i j hlt hjs
-      have hzeq : z i = z j := linePoint_injective hij
-      linarith
-    · have := hzlt j i hgt his
-      have hzeq : z i = z j := linePoint_injective hij
-      linarith
-  -- the squeeze: s ≤ L ≤ D ≤ s
-  have hone : ∀ x ∈ P, 1 ≤ m₁ x := by
-    intro x hx
-    obtain ⟨i, hi, rfl⟩ := Finset.mem_image.mp hx
-    have his : i < s := Finset.mem_range.mp hi
-    exact Nat.one_le_iff_ne_zero.mpr (hzmem i his).2
-  have hsP : s ≤ ∑ x ∈ P, m₁ x := by
-    have := Finset.card_nsmul_le_sum P m₁ 1 hone
-    rwa [hPcard, smul_eq_mul, mul_one] at this
-  have hPL : ∑ x ∈ P, m₁ x ≤ ∑ z ∈ t₁.filter (fun z => z.re = 1 / 2), m₁ z :=
-    Finset.sum_le_sum_of_subset hPsub
-  have hLD : ∑ z ∈ t₁.filter (fun z => z.re = 1 / 2), m₁ z ≤ ∑ z ∈ t₁, m₁ z :=
-    Finset.sum_le_sum_of_subset (Finset.filter_subset _ _)
-  have hLeq : ∑ z ∈ t₁.filter (fun z => z.re = 1 / 2), m₁ z = ∑ z ∈ t₁, m₁ z := by
-    omega
-  -- the identity kills the right half
-  have hmr₁ : ∀ z ∈ t₁, m₁ (lineReflect z) = m₁ z := by
-    intro w hw
-    have h1 := xi_orderAt_lineReflect w
-    have h2 := hm₁ _ (hcl₁ w hw)
-    rw [h1, ← hm₁ w hw] at h2
-    exact Nat.cast_inj.mp h2
-  have hID := window_identity hcl₁ hmr₁
-  exact ⟨hLeq, by omega⟩
+      ∑ z ∈ t₁.filter (fun z => 1 / 2 < z.re), m₁ z = 0 :=
+  (xi_window_full_of_sign_data hm₁ hcl₁ hh0 hfact₁ hmono hsign hseg hcount).1
 
 /-! ### §5 The consumers: window-RH certificate, exact hL, all rungs -/
 
@@ -1061,139 +1018,8 @@ theorem window_simple_of_sign_data {t₁ : Finset ℂ} {m₁ : ℂ → ℕ} {h :
       (xi (linePoint (ts i))).re * (xi (linePoint (ts (i + 1)))).re < 0)
     (hseg : ∀ u : ℝ, ts 0 ≤ u → u ≤ ts s → linePoint u ∈ ball a R)
     (hcount : ∑ z ∈ t₁, m₁ z ≤ s) :
-    ∀ w ∈ t₁, m₁ w ≤ 1 := by
-  classical
-  have hFcont : Continuous fun u : ℝ => (xi (linePoint u)).re := by
-    have hline : Continuous linePoint := by
-      unfold linePoint
-      exact continuous_const.add (Complex.continuous_ofReal.mul continuous_const)
-    exact Complex.continuous_re.comp (xi_differentiable.continuous.comp hline)
-  obtain ⟨z, hz⟩ := exists_interleaved_zeros hFcont hmono hsign
-  have hchain : ∀ j, j ≤ s → ∀ i, i ≤ j → ts i ≤ ts j := by
-    intro j
-    induction j with
-    | zero =>
-        intro _ i hi
-        rw [Nat.le_zero.mp hi]
-    | succ n ih =>
-        intro hns i hi
-        rcases eq_or_lt_of_le hi with heq | hlt
-        · rw [heq]
-        · have hin : i ≤ n := Nat.lt_succ_iff.mp hlt
-          have h1 : ts i ≤ ts n := ih (Nat.le_of_succ_le hns) i hin
-          exact h1.trans (hmono n (Nat.lt_of_succ_le hns)).le
-  have hzball : ∀ i, i < s → linePoint (z i) ∈ ball a R := by
-    intro i hi
-    have h0i : ts 0 ≤ ts i := hchain i (le_of_lt hi) 0 (Nat.zero_le i)
-    have hi1s : ts (i + 1) ≤ ts s := hchain s le_rfl (i + 1) (Nat.succ_le_of_lt hi)
-    exact hseg (z i) (h0i.trans (hz i hi).1.le) ((hz i hi).2.1.le.trans hi1s)
-  have hzmem : ∀ i, i < s → linePoint (z i) ∈ t₁ ∧ m₁ (linePoint (z i)) ≠ 0 := by
-    intro i hi
-    have hxi0 : xi (linePoint (z i)) = 0 :=
-      xi_linePoint_eq_zero_of_re_eq_zero (hz i hi).2.2
-    have hfz := hfact₁ _ (hzball i hi)
-    rw [hxi0] at hfz
-    rcases mul_eq_zero.mp hfz.symm with hp | hcontra
-    · obtain ⟨w, hw, hwzero⟩ := Finset.prod_eq_zero_iff.mp hp
-      rcases Nat.eq_zero_or_pos (m₁ w) with hm0 | hmpos
-      · rw [hm0, pow_zero] at hwzero
-        exact absurd hwzero one_ne_zero
-      · have hbase : linePoint (z i) - w = 0 :=
-          (pow_eq_zero_iff hmpos.ne').mp hwzero
-        have hwp : w = linePoint (z i) := (sub_eq_zero.mp hbase).symm
-        rw [← hwp]
-        exact ⟨hw, hmpos.ne'⟩
-    · exact absurd hcontra (hh0 _ (hzball i hi))
-  have hzlt : ∀ i j, i < j → j < s → z i < z j := by
-    intro i j hij hjs
-    have h1 : z i < ts (i + 1) := (hz i (lt_trans hij hjs)).2.1
-    have h2 : ts (i + 1) ≤ ts j :=
-      hchain j (le_of_lt hjs) (i + 1) (Nat.succ_le_of_lt hij)
-    have h3 : ts j < z j := (hz j hjs).1
-    linarith
-  set P : Finset ℂ := (Finset.range s).image (fun i => linePoint (z i)) with hP_def
-  have hPsub : P ⊆ t₁.filter (fun z => z.re = 1 / 2) := by
-    intro x hx
-    obtain ⟨i, hi, rfl⟩ := Finset.mem_image.mp hx
-    have his : i < s := Finset.mem_range.mp hi
-    exact Finset.mem_filter.mpr ⟨(hzmem i his).1, linePoint_re (z i)⟩
-  have hPcard : P.card = s := by
-    rw [hP_def, Finset.card_image_of_injOn, Finset.card_range]
-    intro i hi j hj hij
-    have his : i < s := Finset.mem_range.mp (Finset.mem_coe.mp hi)
-    have hjs : j < s := Finset.mem_range.mp (Finset.mem_coe.mp hj)
-    by_contra hne
-    rcases lt_or_gt_of_ne hne with hlt | hgt
-    · have := hzlt i j hlt hjs
-      have hzeq : z i = z j := linePoint_injective hij
-      linarith
-    · have := hzlt j i hgt his
-      have hzeq : z i = z j := linePoint_injective hij
-      linarith
-  have hone : ∀ x ∈ P, 1 ≤ m₁ x := by
-    intro x hx
-    obtain ⟨i, hi, rfl⟩ := Finset.mem_image.mp hx
-    have his : i < s := Finset.mem_range.mp hi
-    exact Nat.one_le_iff_ne_zero.mpr (hzmem i his).2
-  have hsP : s ≤ ∑ x ∈ P, m₁ x := by
-    have := Finset.card_nsmul_le_sum P m₁ 1 hone
-    rwa [hPcard, smul_eq_mul, mul_one] at this
-  have hPL : ∑ x ∈ P, m₁ x ≤ ∑ w ∈ t₁.filter (fun z => z.re = 1 / 2), m₁ w :=
-    Finset.sum_le_sum_of_subset hPsub
-  have hLD : ∑ w ∈ t₁.filter (fun z => z.re = 1 / 2), m₁ w ≤ ∑ w ∈ t₁, m₁ w :=
-    Finset.sum_le_sum_of_subset (Finset.filter_subset _ _)
-  -- everything is tight
-  have hPs : ∑ x ∈ P, m₁ x = s := by omega
-  have hLs : ∑ w ∈ t₁.filter (fun z => z.re = 1 / 2), m₁ w = s := by omega
-  -- inside P: exactly one each
-  have hPone : ∀ x ∈ P, m₁ x = 1 := by
-    intro x hx
-    by_contra hne
-    have h2le : 2 ≤ m₁ x := by
-      have := hone x hx
-      omega
-    have hlt : ∑ y ∈ P, (1 : ℕ) < ∑ y ∈ P, m₁ y :=
-      Finset.sum_lt_sum hone ⟨x, hx, by omega⟩
-    rw [Finset.sum_const, hPcard, smul_eq_mul, mul_one, hPs] at hlt
-    omega
-  -- on the line but outside P: nothing
-  have hout : ∀ x ∈ t₁.filter (fun z => z.re = 1 / 2) \ P, m₁ x = 0 := by
-    have hsd := Finset.sum_sdiff hPsub (f := m₁)
-    have hzero : ∑ x ∈ t₁.filter (fun z => z.re = 1 / 2) \ P, m₁ x = 0 := by
-      omega
-    exact fun x hx => Finset.sum_eq_zero_iff.mp hzero x hx
-  -- right half: nothing (the squeeze)
-  have hmr₁ : ∀ w ∈ t₁, m₁ (lineReflect w) = m₁ w := by
-    intro w hw
-    have h1 := xi_orderAt_lineReflect w
-    have h2 := hm₁ _ (hcl₁ w hw)
-    rw [h1, ← hm₁ w hw] at h2
-    exact Nat.cast_inj.mp h2
-  have hID := window_identity hcl₁ hmr₁
-  have hN0 : ∑ w ∈ t₁.filter (fun z => 1 / 2 < z.re), m₁ w = 0 := by omega
-  have hright : ∀ w ∈ t₁, 1 / 2 < w.re → m₁ w = 0 := by
-    intro w hw hwre
-    exact Finset.sum_eq_zero_iff.mp hN0 w (Finset.mem_filter.mpr ⟨hw, hwre⟩)
-  -- assemble by trichotomy
-  intro w hw
-  rcases lt_trichotomy w.re (1 / 2) with hlt | heq | hgt
-  · have hqmem : lineReflect w ∈ t₁ := hcl₁ w hw
-    have hqre : 1 / 2 < (lineReflect w).re := by
-      have : (lineReflect w).re = 1 - w.re := by
-        simp [lineReflect, Complex.sub_re, Complex.conj_re]
-      rw [this]
-      linarith
-    have := hright _ hqmem hqre
-    rw [hmr₁ w hw] at this
-    omega
-  · by_cases hP : w ∈ P
-    · rw [hPone w hP]
-    · have hmem : w ∈ t₁.filter (fun z => z.re = 1 / 2) \ P :=
-        Finset.mem_sdiff.mpr ⟨Finset.mem_filter.mpr ⟨hw, heq⟩, hP⟩
-      rw [hout w hmem]
-      omega
-  · rw [hright w hw hgt]
-    omega
+    ∀ w ∈ t₁, m₁ w ≤ 1 :=
+  (xi_window_full_of_sign_data hm₁ hcl₁ hh0 hfact₁ hmono hsign hseg hcount).2
 
 /-- **Window RH with simplicity**: on a sign-certified peeled window, every
 zero of ξ in the ball lies on the critical line AND is simple. -/

@@ -7,11 +7,25 @@ namespace RHTower
 
 noncomputable section
 
-theorem xiCTaylorThetaTailCoreCurrentSublinearUpper_of_riemannHypothesis
+/-- Under RH the scheduled theta-tail core current is absolutely, rather than merely one-sided,
+sublinear relative to the scaled squared Taylor value.  The proof uses only local nonvanishing of
+`XiC` on the left-strip fibre and uniform convergence of the scheduled value and derivative. -/
+theorem eventually_abs_xiCTaylorThetaTailCoreCurrent_lt_scaled_normSq_of_riemannHypothesis
     {D : ℕ → ℕ} (hD : XiCTaylorOddThetaTailSuperaccurateSchedule D)
-    (hRH : RiemannHypothesis) :
-    XiCTaylorThetaTailCoreCurrentSublinearUpper D := by
-  intro sigma _hsigma0 hsigmaHalf epsilon hepsilon
+    (hRH : RiemannHypothesis)
+    (sigma : ℂ) (hsigmaHalf : sigma.re < 1 / 2)
+    (epsilon : ℝ) (hepsilon : 0 < epsilon) :
+    ∀ᶠ n : ℕ in atTop,
+      |orientedPolynomialCurrent
+          (xiCTaylorThetaTailCorePolynomial
+            (D (xiCTaylorAnisotropicScheduleStage sigma n)))
+          (xiCTaylorAnisotropicCenteredPoint sigma n)| <
+        (epsilon * ((n + 1 : ℕ) : ℝ)) *
+          Complex.normSq
+            ((xiCTaylorPolynomial
+              (xiCTaylorOddDegreeSchedule D
+                (xiCTaylorAnisotropicScheduleStage sigma n))).eval
+                  (xiCTaylorAnisotropicCenteredPoint sigma n)) := by
   let alpha : ℂ := xiCTaylorCenteredPoint sigma
   have halphaIm : 0 < alpha.im := by
     dsimp [alpha, xiCTaylorCenteredPoint]
@@ -33,7 +47,9 @@ theorem xiCTaylorThetaTailCoreCurrentSublinearUpper_of_riemannHypothesis
       (tendsto_xiCTaylorAnisotropicCenteredPoint sigma)
   have hXiLower : ∀ᶠ n : ℕ in atTop,
       2 * c < ‖XiC (xiCTaylorAnisotropicCenteredPoint sigma n)‖ := by
-    have hlt : 2 * c < ‖XiC alpha‖ := by dsimp [c]; linarith [norm_pos_iff.mpr hXiNe]
+    have hlt : 2 * c < ‖XiC alpha‖ := by
+      dsimp [c]
+      linarith [norm_pos_iff.mpr hXiNe]
     exact hXiTend.eventually (eventually_gt_nhds hlt)
   have htolTend : Tendsto (fun n : ℕ =>
       xiCTaylorScheduleTolerance (xiCTaylorAnisotropicScheduleStage sigma n))
@@ -47,7 +63,8 @@ theorem xiCTaylorThetaTailCoreCurrentSublinearUpper_of_riemannHypothesis
   obtain ⟨Cder, _hCder, hderivUpper⟩ :=
     eventually_xiC_anisotropic_deriv_upper sigma
   let K : ℝ := (Cder + 2) * (Cval + 2)
-  have hnLarge : ∀ᶠ n : ℕ in atTop, K < epsilon * ((n + 1 : ℕ) : ℝ) * c ^ 2 := by
+  have hnLarge : ∀ᶠ n : ℕ in atTop,
+      K < epsilon * ((n + 1 : ℕ) : ℝ) * c ^ 2 := by
     have hslope : 0 < epsilon * c ^ 2 := mul_pos hepsilon (sq_pos_of_pos hc)
     have hq : Tendsto (fun n : ℕ => (((n + 1 : ℕ) : ℝ))) atTop atTop :=
       tendsto_natCast_atTop_atTop.comp (tendsto_add_atTop_nat 1)
@@ -70,7 +87,8 @@ theorem xiCTaylorThetaTailCoreCurrentSublinearUpper_of_riemannHypothesis
     simpa only [P, z, k, xiCTaylorPolynomial_derivative_eval,
       dist_eq_norm, norm_sub_rev] using happ.2
   have hdefect := xiCTaylorThetaTailTopDefect_at_anisotropicCenteredPoint hD sigma n
-  have hE : ‖E.eval z‖ < tol := by simpa only [E, d, z, k] using hdefect.1
+  have hE : ‖E.eval z‖ < tol := by
+    simpa only [E, d, z, k] using hdefect.1
   have hEderiv : ‖E.derivative.eval z‖ < tol := by
     simpa only [E, d, z, k] using hdefect.2
   have htolOne : tol ≤ 1 := xiCTaylorScheduleTolerance_le_one k
@@ -111,10 +129,10 @@ theorem xiCTaylorThetaTailCoreCurrentSublinearUpper_of_riemannHypothesis
     have htol : tol < c := by simpa only [tol, k] using hnTol
     have hxi : 2 * c < ‖XiC z‖ := by simpa only [z] using hnXi
     linarith [hvalueErr]
-  have hcurrent : orientedPolynomialCurrent U z ≤ K := by
+  have hcurrent : |orientedPolynomialCurrent U z| ≤ K := by
     calc
-      orientedPolynomialCurrent U z ≤ |orientedPolynomialCurrent U z| := le_abs_self _
-      _ ≤ ‖U.derivative.eval z * (starRingEnd ℂ) (U.eval z)‖ :=
+      |orientedPolynomialCurrent U z| ≤
+          ‖U.derivative.eval z * (starRingEnd ℂ) (U.eval z)‖ :=
         Complex.abs_im_le_norm _
       _ = ‖U.derivative.eval z‖ * ‖U.eval z‖ := by simp
       _ ≤ (Cder + 2) * (Cval + 2) :=
@@ -124,11 +142,20 @@ theorem xiCTaylorThetaTailCoreCurrentSublinearUpper_of_riemannHypothesis
     rw [Complex.normSq_eq_norm_sq]
     nlinarith [norm_nonneg (P.eval z)]
   calc
-    orientedPolynomialCurrent U z ≤ K := hcurrent
+    |orientedPolynomialCurrent U z| ≤ K := hcurrent
     _ < epsilon * ((n + 1 : ℕ) : ℝ) * c ^ 2 := hnK
     _ < (epsilon * ((n + 1 : ℕ) : ℝ)) * Complex.normSq (P.eval z) := by
       gcongr
 
+theorem xiCTaylorThetaTailCoreCurrentSublinearUpper_of_riemannHypothesis
+    {D : ℕ → ℕ} (hD : XiCTaylorOddThetaTailSuperaccurateSchedule D)
+    (hRH : RiemannHypothesis) :
+    XiCTaylorThetaTailCoreCurrentSublinearUpper D := by
+  intro sigma _hsigma0 hsigmaHalf epsilon hepsilon
+  filter_upwards
+    [eventually_abs_xiCTaylorThetaTailCoreCurrent_lt_scaled_normSq_of_riemannHypothesis
+      hD hRH sigma hsigmaHalf epsilon hepsilon] with n hn
+  exact lt_of_abs_lt hn
 /-- Exact logical status of the finite theta-tail core-current condition on any source-selected
 odd super-accurate schedule.  The forward implication is the finite source gate; the reverse
 implication uses RH only to keep the limiting Xi value away from zero on each open left-strip

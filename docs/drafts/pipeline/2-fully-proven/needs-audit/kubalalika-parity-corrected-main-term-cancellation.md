@@ -133,8 +133,11 @@ the claimed nonzero main term vanishes.
 - [x] Section 1 formalized in Lean: `GaloisForLFunctions.HTGeometry.NearDiagonalParity`
   (`range_nearDiagonalSubst`, `range_nearDiagonalSubst_of_odd`,
   `exists_pow_two_of_even_of_vonMangoldt_ne_zero`).
-- [ ] Section 2 (the odd-harmonic Fourier identity) formalizable but not yet built; see the route
-  note below.
+- [x] Section 2 (the odd-harmonic Fourier identity) formalized in Lean:
+  `GaloisForLFunctions.RHTower.OddHarmonicAbel.tendsto_sum_oddHarmonicSine` --
+  `sin theta != 0 -> sum_(k<N) sin((2k+1) theta)/(2k+1) -> (pi/4) sgn(sin theta)`, unconditional,
+  via Abel's limit theorem; supporting boundary value in
+  `HTGeometry.OddHarmonicBoundaryValue.im_half_log_ratio`.
 - [ ] Section 3 remains outside scope: prime number theorem plus the preprint's contour machinery,
   neither in the corpus.
 

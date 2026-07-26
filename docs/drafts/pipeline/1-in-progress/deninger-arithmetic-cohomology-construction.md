@@ -1363,13 +1363,15 @@ metric by transporting a form already known to be positive exactly under RH.
   5. more strongly, hyperbolic localization \(GW[h^{-1}]\) constructs the rank channel
      algebraically: \((1-\epsilon)h=0\) forces \(\epsilon=1\), so
      \(GW_{\mathbb R}[h^{-1}]\simeq\mathbb Z[1/2]\) and \(n_\epsilon=n\).
+  6. a unitary centered transfer commuting with the source differential automatically commutes
+     with its adjoint, the BRST--Hodge Laplacian, and the harmonic sector.
 
   Paper proofs:
   `deninger-power-bar-cochain`, `deninger-power-map-orientation-coherence`,
   `deninger-polarized-transfer-half-density`, and
   `deninger-gamma-rank-character-rigidity`, together with
-  `deninger-hyperbolic-localization-rank-collapse`.  Lean interfaces are drafted for the five
-  algebraic statements and await one batched low-load direct check.
+  `deninger-hyperbolic-localization-rank-collapse` and
+  `deninger-unitary-brst-hodge-descent`.  Direct Lean checks pass for all six source statements.
 
   The remaining transfer-layer theorem is now precise: construct the finite
   MW/\(\mathrm{ko}\)--Gamma coefficient packet, its coherently framed power action, and a
@@ -1377,3 +1379,105 @@ metric by transporting a form already known to be positive exactly under RH.
   The subsequent open purity theorem is compatibility with the incidence differential,
   moving-Hodge naturality, and cofinal harmonic convergence, not another divisor-side Hodge
   declaration.
+
+  The Gamma-rank realization and its bar-skeleton compatibility are now constructed rather than
+  conjectured.  `DeningerArithmeticGammaRankRegular.lean` gives the dense algebraic core,
+  \(\ell^2(G\sqcup G)\) completion, antiunitary \(J^2=-1\), alternating cup, strict
+  cup--Hodge positivity, unitary centered power action, and exact commutation with
+  \(Q^0,Q^1,Q^2\), including preservation of the good degree-two cocycle kernel.  Remaining
+  incidence gate is specifically the closed \(J\)-stability of the MW/Steinberg relation
+  subspace and coherent framed transfer, followed by cofinal harmonic convergence.
+
+- 2026-07-26 — `[SCOPE CORRECTION] [DIRECT COEFFICIENT COMPLEX]`.
+  The Gamma/CCM support branches are frozen.  They do not construct Deninger's missing
+  arithmetic cohomology and no further theorem in either branch counts toward this card.
+
+  Deninger's own exact gap is \(R\alpha_*\mathscr G\) on the rational-Witt dynamical
+  approximation.  The active conjecture is now
+  `[DAC_ROST_SCHMID_FLOW_REALIZATION]` on
+  `deninger-rost-schmid-flow-realization`: derive the coefficient complex from the forgetful
+  functor from Milnor--Witt to ordinary finite correspondences, resolve it by arithmetic
+  Rost--Schmid residues, add the archimedean boundary, construct the three-term leafwise
+  complex, and make transverse flow act on it by a commuting chain endomorphism.
+
+  `[CORRECTION] [DAC_RESIDUE_FLOW_TOTALIZATION]`.
+  `DeningerArithmeticResidueFlowTotalization.lean` formalizes the three-term mapping fiber
+  of a chain endomorphism on a two-term complex:
+  \[
+    A^0\longrightarrow A^1\oplus A^0\longrightarrow A^1,
+    \qquad
+    d^0(a)=(\partial a,\nabla^0a),\quad
+    d^1(b,a)=\nabla^1b-\partial a.
+  \]
+  It proves \(d^1d^0=0\) from
+  \(\nabla^1\partial=\partial\nabla^0\), identifies \(H^0\)-cocycles,
+  \(H^1\)-cocycles and coboundaries, and proves
+  \(\operatorname{im}d^1=\operatorname{im}\nabla^1+
+  \operatorname{im}\partial\), giving the exact \(H^2\) quotient.  Direct Lean check passes
+  cleanly.  It does **not** construct dynamical \(H^0,H^1,H^2\): transverse flow is an
+  endomorphism of leafwise cochains, not a cohomological differential.
+
+  `[OPEN CORE]` Construct the actual archimedean Milnor--Witt/Rost--Schmid coefficient sheaf
+  and its three-term leafwise complex, then construct the transverse flow chain endomorphism.
+
+- 2026-07-26 — `[LITERATURE] [DAC_RS_FROBENIUS_CHAIN_MAP]`.
+  Déglise--Feld--Jin Proposition 1.4.6 proves that proper pushforward commutes with the
+  Rost--Schmid differential.  Since every monic power map is finite, its Frobenius pushforward
+  is already a source chain map; Proposition 1.4.1 gives the multiplicative composition law.
+  Their smoothable-lci Gysin map exists on homology, while cycle-level
+  \(\infty\)-categorical refinement is explicitly future work.  The next direct construction is
+  therefore coherent chain-level Verschiebung for the ramified power maps, followed by its
+  \(\mathbb Q_{>0}\)-suspension and archimedean boundary—not another coefficient positivity
+  model.
+
+- 2026-07-26 — `[LITERATURE] [DAC_RS_GYSIN_COHERENCE]`.
+  The May 2026 sequel *Homotopy coherent Gysin functoriality* closes that stated future-work
+  gap.  It constructs a strict simplicial contravariant Gysin functor and applies it to
+  Rost--Schmid MW-homodules over noetherian excellent bases.  Therefore the ramified power-map
+  pullbacks \(V_n=\pi_n^*\) on \(\mathbb A^1_{\mathbb Z}\) exist with all higher composition
+  coherences.  Together with proper pushforward, finite-place Frobenius/Verschiebung
+  functoriality is source-available.
+
+  `[LITERATURE] [DAC_MW_ORDINARY_RANK_BRIDGE]`.
+  Kolderup--Röndigs--Østvær construct integral Milnor--Witt motivic cohomology over arithmetic
+  bases as
+  \[
+    \widetilde{\mathsf M\mathbb Z}
+    =
+    \mathsf M\mathbb Z
+    \mathop{\times}^{h}_{\mathsf M\mathbb Z/2}
+    \mathsf W\mathbb Z.
+  \]
+  The canonical projection to \(\mathsf M\mathbb Z\) is rank on degree-zero quadratic
+  coefficients and therefore sends \(n_\epsilon\) to \(n\).  This comparison is finite-place
+  algebra, not an archimedean positivity theorem.
+
+  `[OPEN CORE]` Compare the ordinary projection of this derived MW coefficient system with
+  Deninger's finite-correspondence/rational-Witt site while retaining the Witt homotopy fiber
+  as the duality channel; descend the \(\mathbb Q_{>0}\)-localization to the leafwise flow
+  connection; then construct the archimedean extension and its positive flow-natural Hodge
+  operator.
+
+- 2026-07-26 — `[LITERATURE] [DAC_WEIL_ARAKELOV_DYNAMICAL_LIFT]`.
+  Flach--Morin give the precise direct compatibility that the missing dynamical complex must
+  satisfy:
+  \[
+    R\Gamma_{\mathrm{ar},c}(X,\widetilde{\mathbb C}(n))
+    \simeq
+    \operatorname{Fib}\!\left(
+      \Theta-n:R\Gamma_{\mathrm{dyn},c}(X)\to
+      R\Gamma_{\mathrm{dyn},c}(X)\right).
+  \]
+  Their left side is constructed from the mapping fiber of the motivic-to-Deligne regulator,
+  followed by the Weil--Arakelov two-copy extension with acyclic cup-\(\theta\).  This exposes
+  the correct roles: a three-term leafwise complex supplies dynamical degrees \(0,1,2\);
+  \(\Theta\) is a commuting endomorphism; its Weil--Arakelov specialization is a four-term
+  mapping fiber.
+
+  `[LEAN-PROVED] [DAC_WEIL_ARAKELOV_FIBER_ALGEBRA]`.
+  `DeningerArithmeticWeilArakelovFiber.lean` formalizes that four-term fiber and proves both
+  consecutive differential compositions vanish, together with endpoint and transgression
+  formulas.  Direct Lean check passes.  Active construction is now
+  `deninger-weil-arakelov-dynamical-lift`: build the Milnor--Witt regulator fiber on the
+  rational-Witt flow space and prove the Flach--Morin equivalence, before Hodge or determinant
+  comparison.

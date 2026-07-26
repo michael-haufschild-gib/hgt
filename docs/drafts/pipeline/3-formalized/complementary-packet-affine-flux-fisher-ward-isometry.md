@@ -272,3 +272,109 @@ edge state, as proved in `(9)`--`(11)`.
 positive scalar response by a bounded state whose value is affine flux.  The proof-relevant
 scalarization must remain a closed graph quotient and use the source probability before the
 critical limit; it cannot be a bounded row on packet space.
+
+## Formalization
+
+Every `[PROVED HERE]` item of this card is compiled unconditionally in Lean, together with the
+abstract Ward decomposition `(13)`.  All modules build clean with no warnings and `#print axioms`
+gives exactly `propext, Classical.choice, Quot.sound`.
+
+`formal/GaloisForLFunctions/RHTower/ComplementaryPacketAffineFlux.lean`
+
+| Card item | Lean name |
+|---|---|
+| `(1)`, `(2)` full-line affine profile `b_ω` | `RHTower.affinePacketProfile` |
+| its measurability and half-line integrability | `RHTower.measurable_affinePacketProfile`, `RHTower.integrableOn_affinePacketProfile` |
+| `(3)` the affine flux | `RHTower.affinePacketFlux` |
+| flux of a single packet | `RHTower.affinePacketFlux_eq` |
+| **`(4)`** exact flux theorem | `RHTower.affinePacketFlux_sub` |
+| **`(15)`, `(16)`** flux unbounded on the packet-edge span | `RHTower.tendsto_affinePacketFlux_sq_div_modulus_atTop` |
+
+`affinePacketFlux_eq` is the sharper statement the argument actually gives: for every single `h ≥ 0`
+
+```text
+Φ_ω(B_h) = -c_ω h + ∫_0^∞ k_ω ,
+```
+
+each packet being separately integrable on the physical half line — the swept interval `[-h, 0]`
+contributes `-c_ω h` and the kernel contributes a fixed mass.  `(4)` is the difference, in which the
+kernel mass cancels identically: **the flux of a packet difference does not see `k_ω` at all**.
+
+For `(16)` the Lean statement is the squared ratio, which is the form the cofinal metric law
+supplies:
+
+```lean
+Tendsto (fun a => (Φ_ω(B_{h+a}) - Φ_ω(B_h))^2 / D_ω(a)) atTop atTop
+```
+
+proved from `|Φ|² = c_ω² a²` and `D_ω(a)/a → c_ω²` — so the ratio is `a·(1 + o(1))`, i.e. the
+flux-to-norm ratio grows like `√a`, on the closed span of the packet-edge domain itself.
+
+`formal/GaloisForLFunctions/RHTower/ComplementaryPacketWardIsometry.lean`
+
+| Card item | Lean name |
+|---|---|
+| first moment of the rescaled critical clock | `RHTower.integrable_squarefreeMobiusCriticalClock_id`, `RHTower.integral_squarefreeMobiusCriticalClock_id` |
+| the clock is supported on `[0,∞)` | `RHTower.ae_nonneg_squarefreeMobiusCriticalClockProbabilityMeasure` |
+| `(5)`, `(6)` conditional edge flux | `RHTower.packetEdgeWardScore` |
+| **`(7)`** edge-to-score Ward identity | `RHTower.packetEdgeWardScore_eq` |
+| **`(8)`** the completed Fisher tangent coefficient | `RHTower.infiniteMobiusCriticalFisherTangentWeight_eq_packetEdgeWardScore` |
+| **`(10)`** score energy `= 4·Var` | `RHTower.packetEdgeWardEnergy_eq` |
+| the critical Ward energy is the projective Fisher energy | `RHTower.complementaryPacketCriticalWardEnergy_eq` |
+| **`(10)`** four-unit limit | `RHTower.tendsto_complementaryPacketCriticalWardEnergy` |
+| **`(11)`** critical Ward isometry | `RHTower.tendsto_complementaryPacketWardIsometryRatio` |
+
+`(7)` is proved in the general form: for any probability law `μ` on the clock supported on `[0,∞)`
+with a finite first moment, and any `ε > 0`, `ω ≥ 0`,
+
+```text
+-(ε/c_ω) · ∫ 2 (Φ_ω(B_{y/ε}) - Φ_ω(B_{x/ε})) dμ(y) = -2 (x - ∫ y dμ) .
+```
+
+The rescaling is explicit because the corpus clock law already carries `ε·log d`; the packet based
+at the divisor clock `log d` is therefore read at `x/ε`, and the factor `ε` cancels against the
+`1/ε` of the flux, leaving the centered score with **no** dependence on `ω` or on the kernel.
+
+`(8)` is the sharp form of "the score is not chosen by norm matching":
+
+```lean
+infiniteMobiusCriticalFisherTangentWeight σ n
+  = (packetEdgeWardScore ((σ-1)/2) (σ-1) μ_σ ((σ-1) * Real.log n) : ℂ)
+      * infiniteMobiusSignedWeight σ n
+```
+
+so the scalar coefficient of the already formalized completed Fisher tangent **is** the conditional
+affine flux of the packet edge field, on the nose.
+
+`(9)` needs no new Lean: the packet edge field is `G_σ = 2(B_{H'} - B_H)`, so
+`ε·E‖G_σ‖² = 4 ε E[D_ω(|H - H'|)]`, which is exactly
+`RHTower.complementaryPacketCriticalEnergy` of the parent card, and
+`RHTower.tendsto_complementaryPacketCriticalEnergy` is its four-unit limit.  `(11)` is the quotient
+of the two four-unit limits.
+
+`formal/GaloisForLFunctions/HTGeometry/BlockUnitaryWardDecomposition.lean`
+
+| Card item | Lean name |
+|---|---|
+| **`(13)`** block-unitary Ward decomposition | `HTGeometry.norm_sq_antiCausal_deriv_eq` |
+
+For a normalized curve split by boundary unitarity into `‖a x‖² + ‖c x‖² = 1` with `c 0 = 0`,
+
+```text
+‖c'(0)‖² = -⟪a''(0), a(0)⟫ - ‖a'(0)‖² ,
+```
+
+by differentiating the unitarity relation twice.  It is stated over a real inner product space,
+which is what a complex Hilbert space is under `InnerProductSpace.complexToReal`; its real inner
+product is `Re⟪·,·⟫`, so this is the `Re` form of `(13)`.  The second term is manifestly
+nonnegative, which is the only structural input the RH attack uses from `(13)`.
+
+### Remaining
+
+Nothing in the formalisation of this card's own theorems.  Two cited transfers belong to their own
+cards and are recorded there, not here: the `W_2` coupling to the von Mangoldt fixed current
+(`mobius-fixed-current-von-mangoldt-critical-transport-weld`), and the Laguerre backward-shift
+contact to the pole ground state, whose Fisher--Stein form is the module
+`GaloisForLFunctions/RHTower/MobiusCriticalFisherSteinContact.lean`.  The four unchecked gates
+(`Gamma/Sonin graph core`, `completed Ward curvature ≤ 4`, `anti-causal derivative is ell_E`,
+specialist audit, RH) are open **research**, not open formalisation.

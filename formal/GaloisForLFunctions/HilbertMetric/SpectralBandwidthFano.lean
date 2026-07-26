@@ -258,25 +258,22 @@ theorem sum_orbital_diagonalFano_le_slaterSpectralFanoMargin
   rw [Finset.sum_add_distrib, Finset.sum_sub_distrib]
   linarith
 
-/-- **The two endpoint-budget normalisations agree.**  The per-orbital budget
-`lower - (upper - lower - 1)^2 / 4` used by the Slater estimates and the product budget
-`lower*upper - (lower + upper - 1)^2 / 4` used by the occupation-weighted estimates are the same
-number: the two squares differ by `(a+b-1)^2 - (b-a-1)^2 = 4a(b-1)`, which is exactly the gap
-`a*b - a` between the two leading terms. -/
-theorem endpointBudget_eq (lower upper : ℝ) :
-    lower - (upper - lower - 1) ^ 2 / 4 =
-      lower * upper - (lower + upper - 1) ^ 2 / 4 := by
-  ring
+/-- **Slater margin splitting law.**  Every pointwise algebraic identity
 
-/-- **Three-defect spectral-bandwidth identity.**  The Slater Fano margin is exactly its universal
-spectral-band floor plus endpoint leakage, spectral-centering energy, and occupied coherence. -/
-theorem slaterSpectralFanoMargin_three_defect
-    (v : ι → κ → ℝ) (energy : κ → ℝ) (lower upper : ℝ) :
+`m - q + m ^ 2 = base + ((lower + upper) * m - lower * upper - q) + rest m`
+
+splits the Slater Fano margin into the extensive floor `card ι * base`, the endpoint-secant
+defect, the `rest` defect of the occupied spectral means, and occupied coherence.  The
+balancing decomposition and the lower-endpoint decomposition are this one law at two choices
+of `rest`. -/
+theorem slaterSpectralFanoMargin_split
+    (v : ι → κ → ℝ) (energy : κ → ℝ) (lower upper base : ℝ) (rest : ℝ → ℝ)
+    (hrest : ∀ m q : ℝ, m - q + m ^ 2 =
+      base + ((lower + upper) * m - lower * upper - q) + rest m) :
     slaterSpectralFanoMargin v energy =
-      (Fintype.card ι : ℝ) *
-          (lower - (upper - lower - 1) ^ 2 / 4) +
+      (Fintype.card ι : ℝ) * base +
         slaterSpectralSecantDefect v energy lower upper +
-        slaterSpectralCenteringDefect v energy lower upper +
+        (∑ i, rest (orbitalSpectralMean v energy i)) +
         slaterSpectralCoherenceDefect v energy := by
   have hmargin :
       slaterSpectralFanoMargin v energy =
@@ -289,26 +286,38 @@ theorem slaterSpectralFanoMargin_three_defect
     rw [Finset.sum_add_distrib, Finset.sum_sub_distrib]
     ring
   rw [hmargin]
-  unfold slaterSpectralSecantDefect slaterSpectralCenteringDefect
+  unfold slaterSpectralSecantDefect
   apply congrArg (fun x => x + slaterSpectralCoherenceDefect v energy)
   calc
     (∑ i, (orbitalSpectralMean v energy i -
         orbitalSpectralSecondMoment v energy i +
           orbitalSpectralMean v energy i ^ 2)) =
-        ∑ i, ((lower - (upper - lower - 1) ^ 2 / 4) +
+        ∑ i, (base +
           ((lower + upper) * orbitalSpectralMean v energy i - lower * upper -
             orbitalSpectralSecondMoment v energy i) +
-          (orbitalSpectralMean v energy i - (lower + upper - 1) / 2) ^ 2) := by
-      apply Finset.sum_congr rfl
-      intro i _
-      ring
-    _ = (Fintype.card ι : ℝ) *
-          (lower - (upper - lower - 1) ^ 2 / 4) +
+          rest (orbitalSpectralMean v energy i)) :=
+      Finset.sum_congr rfl fun i _ =>
+        hrest (orbitalSpectralMean v energy i) (orbitalSpectralSecondMoment v energy i)
+    _ = (Fintype.card ι : ℝ) * base +
         (∑ i, ((lower + upper) * orbitalSpectralMean v energy i - lower * upper -
           orbitalSpectralSecondMoment v energy i)) +
-        ∑ i, (orbitalSpectralMean v energy i - (lower + upper - 1) / 2) ^ 2 := by
+        ∑ i, rest (orbitalSpectralMean v energy i) := by
       rw [Finset.sum_add_distrib, Finset.sum_add_distrib,
         Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
+
+/-- **Three-defect spectral-bandwidth identity.**  The Slater Fano margin is exactly its universal
+spectral-band floor plus endpoint leakage, spectral-centering energy, and occupied coherence. -/
+theorem slaterSpectralFanoMargin_three_defect
+    (v : ι → κ → ℝ) (energy : κ → ℝ) (lower upper : ℝ) :
+    slaterSpectralFanoMargin v energy =
+      (Fintype.card ι : ℝ) *
+          (lower - (upper - lower - 1) ^ 2 / 4) +
+        slaterSpectralSecantDefect v energy lower upper +
+        slaterSpectralCenteringDefect v energy lower upper +
+        slaterSpectralCoherenceDefect v energy :=
+  slaterSpectralFanoMargin_split v energy lower upper
+    (lower - (upper - lower - 1) ^ 2 / 4) (fun m => (m - (lower + upper - 1) / 2) ^ 2)
+    (fun m q => by ring)
 
 /-- **Spectral-bandwidth Slater Fano law.**  The universal mean-minus-variance lower bound is
 extensive in the occupied rank and independent of ambient dimension. -/
@@ -335,39 +344,9 @@ theorem slaterSpectralFanoMargin_lower_endpoint_defect
       (Fintype.card ι : ℝ) * lower +
         slaterSpectralSecantDefect v energy lower upper +
         slaterSpectralLowerEndpointDefect v energy lower upper +
-        slaterSpectralCoherenceDefect v energy := by
-  have hmargin :
-      slaterSpectralFanoMargin v energy =
-        (∑ i, (orbitalSpectralMean v energy i -
-          orbitalSpectralSecondMoment v energy i +
-            orbitalSpectralMean v energy i ^ 2)) +
-          slaterSpectralCoherenceDefect v energy := by
-    unfold slaterSpectralFanoMargin slaterSpectralMean slaterSpectralVariance
-    rw [slaterCompressedSpectralEnergy_eq_diagonal_add_coherence]
-    rw [Finset.sum_add_distrib, Finset.sum_sub_distrib]
-    ring
-  rw [hmargin]
-  unfold slaterSpectralSecantDefect slaterSpectralLowerEndpointDefect
-  apply congrArg (fun x => x + slaterSpectralCoherenceDefect v energy)
-  calc
-    (∑ i, (orbitalSpectralMean v energy i -
-        orbitalSpectralSecondMoment v energy i +
-          orbitalSpectralMean v energy i ^ 2)) =
-        ∑ i, (lower +
-          ((lower + upper) * orbitalSpectralMean v energy i - lower * upper -
-            orbitalSpectralSecondMoment v energy i) +
-          (orbitalSpectralMean v energy i - lower) *
-            (orbitalSpectralMean v energy i - (upper - 1))) := by
-      apply Finset.sum_congr rfl
-      intro i _
-      ring
-    _ = (Fintype.card ι : ℝ) * lower +
-        (∑ i, ((lower + upper) * orbitalSpectralMean v energy i - lower * upper -
-          orbitalSpectralSecondMoment v energy i)) +
-        ∑ i, (orbitalSpectralMean v energy i - lower) *
-          (orbitalSpectralMean v energy i - (upper - 1)) := by
-      rw [Finset.sum_add_distrib, Finset.sum_add_distrib,
-        Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
+        slaterSpectralCoherenceDefect v energy :=
+  slaterSpectralFanoMargin_split v energy lower upper lower
+    (fun m => (m - lower) * (m - (upper - 1))) (fun m q => by ring)
 
 /-- When the spectral width is at most one, the exact interval-only lower bound improves to
 `card ι * lower`. -/
@@ -400,20 +379,6 @@ theorem slaterSpectralFanoMargin_nonnegative_of_bandwidth
   have hfactor : 0 ≤ lower - (upper - lower - 1) ^ 2 / 4 := by nlinarith
   have hcard : 0 ≤ (Fintype.card ι : ℝ) := by positivity
   exact le_trans (mul_nonneg hcard hfactor) hlowerBound
-
-/-- A negative Slater Fano margin necessarily lies beyond the spectral-bandwidth threshold. -/
-theorem slaterSpectralFanoMargin_negative_forces_bandwidth
-    (v : ι → κ → ℝ) (energy : κ → ℝ)
-    (hframe : IsOrthonormalCoordinateFrame v)
-    (lower upper : ℝ)
-    (hlower : ∀ k, lower ≤ energy k) (hupper : ∀ k, energy k ≤ upper)
-    (hnegative : slaterSpectralFanoMargin v energy < 0) :
-    4 * lower < (upper - lower - 1) ^ 2 := by
-  by_contra hnot
-  have hthreshold : (upper - lower - 1) ^ 2 ≤ 4 * lower := le_of_not_gt hnot
-  have hnonnegative := slaterSpectralFanoMargin_nonnegative_of_bandwidth
-    v energy hframe lower upper hlower hupper hthreshold
-  linarith
 
 /-- Equality in the spectral-bandwidth lower bound holds exactly when endpoint leakage,
 spectral-centering energy, and occupied coherence all vanish. -/

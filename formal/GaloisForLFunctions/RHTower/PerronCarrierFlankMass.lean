@@ -648,13 +648,17 @@ def HasPerronCarrierHorizontalMassAt
     (F : ℂ → ℂ) (c : ℝ) (M : ℕ) : Prop :=
   IntegrableOn (perronCarrierHorizontalWeight F c M) (Ioi 1)
 
-/-- Weighted carrier strip mass produces a quiet horizontal exhaustion for every Perron kernel. -/
-theorem HasPerronCarrierHorizontalMassAt.hasPerronHorizontalEscapeAt
+/-- Weighted horizontal carrier mass gives integrability of the actual pair of horizontal Perron
+edge norms over all positive heights. -/
+theorem HasPerronCarrierHorizontalMassAt.perronHorizontalContourNorm_integrableOn_Ioi
     {F : ℂ → ℂ} {c δ : ℝ} {n M : ℕ}
+    (hmass : HasPerronCarrierHorizontalMassAt F c M)
     (hF : Differentiable ℂ F) (hc0 : 0 < c)
-    (hn : 1 ≤ n) (hδ0 : 0 < δ) (hδn : δ < (n : ℝ))
-    (hmass : HasPerronCarrierHorizontalMassAt F c M) :
-    HasPerronHorizontalEscapeAt F c n δ M := by
+    (hn : 1 ≤ n) (hδ0 : 0 < δ) (hδn : δ < (n : ℝ)) :
+    IntegrableOn (fun T : ℝ =>
+      ‖∫ x in (-(M : ℝ))..c, perronContourIntegrand F n δ (↑x + ↑T * I)‖ +
+      ‖∫ x in (-(M : ℝ))..c, perronContourIntegrand F n δ (↑x + ↑(-T) * I)‖)
+      (Ioi 0) := by
   let K : ℝ := perronStripKernelEnvelope n M δ c
   let u : ℝ → ℝ := fun T =>
     ‖∫ x in (-(M : ℝ))..c, perronContourIntegrand F n δ (↑x + ↑T * I)‖ +
@@ -754,6 +758,31 @@ theorem HasPerronCarrierHorizontalMassAt.hasPerronHorizontalEscapeAt
   have huInt : IntegrableOn u (Ioi 0) := by
     rw [← Ioc_union_Ioi_eq_Ioi (by norm_num : (0 : ℝ) ≤ 1)]
     exact huLow.union huHigh
+  exact huInt
+
+/-- Weighted carrier strip mass produces a quiet horizontal exhaustion for every Perron kernel. -/
+theorem HasPerronCarrierHorizontalMassAt.hasPerronHorizontalEscapeAt
+    {F : ℂ → ℂ} {c δ : ℝ} {n M : ℕ}
+    (hF : Differentiable ℂ F) (hc0 : 0 < c)
+    (hn : 1 ≤ n) (hδ0 : 0 < δ) (hδn : δ < (n : ℝ))
+    (hmass : HasPerronCarrierHorizontalMassAt F c M) :
+    HasPerronHorizontalEscapeAt F c n δ M := by
+  let u : ℝ → ℝ := fun T =>
+    ‖∫ x in (-(M : ℝ))..c, perronContourIntegrand F n δ (↑x + ↑T * I)‖ +
+    ‖∫ x in (-(M : ℝ))..c, perronContourIntegrand F n δ (↑x + ↑(-T) * I)‖
+  have hGcont : Continuous (perronContourIntegrand F n δ) :=
+    (hF.mul (perronEAt_differentiable hn hδ0 hδn)).continuous
+  have htopcont : Continuous (fun T : ℝ =>
+      ∫ x in (-(M : ℝ))..c, perronContourIntegrand F n δ (↑x + ↑T * I)) := by
+    apply intervalIntegral.continuous_parametric_intervalIntegral_of_continuous'
+    exact hGcont.comp (by fun_prop)
+  have hbotcont : Continuous (fun T : ℝ =>
+      ∫ x in (-(M : ℝ))..c, perronContourIntegrand F n δ (↑x + ↑(-T) * I)) := by
+    apply intervalIntegral.continuous_parametric_intervalIntegral_of_continuous'
+    exact hGcont.comp (by fun_prop)
+  have hucont : Continuous u := htopcont.norm.add hbotcont.norm
+  have huInt : IntegrableOn u (Ioi 0) :=
+    hmass.perronHorizontalContourNorm_integrableOn_Ioi hF hc0 hn hδ0 hδn
   obtain ⟨T, hTtop, hTnonneg, huT⟩ :=
     exists_seq_atTop_tendsto_zero_of_continuous_integrableOn_Ioi hucont huInt
   refine ⟨T, hTtop, hTnonneg, ?_, ?_⟩

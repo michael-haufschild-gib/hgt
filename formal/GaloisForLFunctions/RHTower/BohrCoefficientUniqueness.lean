@@ -281,154 +281,6 @@ private theorem freq_ne_of_not_dvd {m : ℕ} (hm : 1 ≤ m) {Q : ℕ} (hQ : 1 �
     have hmn : m * n = Q ^ 2 := by exact_mod_cast hcast
     exact ⟨n, hmn.symm⟩
 
-theorem conductor_datum_finite_support {ι : Type*} {a : ℕ → ℂ} {σ₀ : ℝ} (hσ : σ₀ < 1/2)
-    (hsum : LSeriesSummable a σ₀) (J : Finset ι) (c : ι → ℂ) (Q : ι → ℕ)
-    (hQ : ∀ j ∈ J, 1 ≤ Q j)
-    (hFE : ∀ s : ℂ, σ₀ < s.re → s.re < 1 - σ₀ →
-      LSeries a s = (∑ j ∈ J, c j * (Q j : ℂ) ^ ((1 : ℂ) - 2 * s)) * LSeries a (1 - s)) :
-    ∀ m : ℕ, 1 ≤ m → (∀ j ∈ J, ¬ (m ∣ (Q j) ^ 2)) → a m = 0 := by
-  intro m hm hdiv
-  have hb_sum : Summable fun n : ℕ => ‖a n * (n : ℂ) ^ (-(1/2 : ℂ))‖ := by
-    have hhalf : LSeriesSummable a (((1:ℝ)/2 : ℝ) : ℂ) :=
-      hsum.of_re_le_re (by rw [Complex.ofReal_re, Complex.ofReal_re]; linarith)
-    have hnorm : Summable fun n => ‖LSeries.term a (((1:ℝ)/2 : ℝ) : ℂ) n‖ :=
-      summable_norm_iff.mpr hhalf
-    refine hnorm.congr fun n => ?_
-    rcases eq_or_ne n 0 with rfl | hn
-    · simp only [LSeries.term_zero, norm_zero, Nat.cast_zero]
-      rw [Complex.zero_cpow (by norm_num : -(1/2 : ℂ) ≠ 0), mul_zero, norm_zero]
-    · have hn0 : 0 < n := Nat.pos_of_ne_zero hn
-      rw [LSeries.norm_term_eq, if_neg hn, norm_mul,
-        Complex.norm_natCast_cpow_of_pos hn0, Complex.ofReal_re,
-        show (-(1/2 : ℂ)).re = -((1:ℝ)/2) by simp,
-        Real.rpow_neg (Nat.cast_nonneg n), div_eq_mul_inv]
-  have hb0 : (fun n : ℕ => a n * (n : ℂ) ^ (-(1/2 : ℂ))) 0 = 0 := by
-    simp only [Nat.cast_zero]
-    rw [Complex.zero_cpow (by norm_num : -(1/2 : ℂ) ≠ 0), mul_zero]
-  have hL1 : ∀ y : ℝ, LSeries a ((1/2 : ℂ) + ↑y * Complex.I)
-      = ∑' n : ℕ, (a n * (n : ℂ) ^ (-(1/2 : ℂ)))
-          * Complex.exp (((-Real.log n : ℝ) : ℂ) * Complex.I * (y : ℂ)) := by
-    intro y
-    rw [show LSeries a ((1/2 : ℂ) + ↑y * Complex.I)
-        = ∑' n : ℕ, LSeries.term a ((1/2 : ℂ) + ↑y * Complex.I) n from rfl]
-    exact tsum_congr (fun n => term_eq_char_plus a y n)
-  have hL2 : ∀ y : ℝ, LSeries a ((1/2 : ℂ) - ↑y * Complex.I)
-      = ∑' n : ℕ, (a n * (n : ℂ) ^ (-(1/2 : ℂ)))
-          * Complex.exp (((Real.log n : ℝ) : ℂ) * Complex.I * (y : ℂ)) := by
-    intro y
-    rw [show LSeries a ((1/2 : ℂ) - ↑y * Complex.I)
-        = ∑' n : ℕ, LSeries.term a ((1/2 : ℂ) - ↑y * Complex.I) n from rfl]
-    exact tsum_congr (fun n => term_eq_char_minus a y n)
-  -- integrand equality: fL(y) = fR(y)
-  have hInteg : ∀ y : ℝ,
-      (∑' n : ℕ, (a n * (n : ℂ) ^ (-(1/2 : ℂ)))
-          * Complex.exp (((Real.log m - Real.log n : ℝ) : ℂ) * Complex.I * (y : ℂ)))
-        = ∑' n : ℕ, ∑ j ∈ J, (c j * (a n * (n : ℂ) ^ (-(1/2 : ℂ))))
-            * Complex.exp (((Real.log m + Real.log n - 2 * Real.log (Q j) : ℝ) : ℂ)
-                * Complex.I * (y : ℂ)) := by
-    intro y
-    have hre : ((1/2 : ℂ) + ↑y * Complex.I).re = 1/2 := by simp
-    have hfey := hFE ((1/2 : ℂ) + ↑y * Complex.I) (by rw [hre]; linarith) (by rw [hre]; linarith)
-    rw [show (1 : ℂ) - ((1/2 : ℂ) + ↑y * Complex.I) = (1/2 : ℂ) - ↑y * Complex.I by ring] at hfey
-    have hD : (∑ j ∈ J, c j * (Q j : ℂ) ^ ((1 : ℂ) - 2 * ((1/2 : ℂ) + ↑y * Complex.I)))
-        = ∑ j ∈ J, c j
-            * Complex.exp (((-(2 * Real.log (Q j)) : ℝ) : ℂ) * Complex.I * (y : ℂ)) := by
-      apply Finset.sum_congr rfl; intro j hj
-      rw [qpow_eq_char (Q j) (hQ j hj) y]
-    have hDshift : Complex.exp (((Real.log m : ℝ) : ℂ) * Complex.I * (y : ℂ))
-        * (∑ j ∈ J, c j
-            * Complex.exp (((-(2 * Real.log (Q j)) : ℝ) : ℂ) * Complex.I * (y : ℂ)))
-        = ∑ j ∈ J, c j
-            * Complex.exp (((Real.log m - 2 * Real.log (Q j) : ℝ) : ℂ) * Complex.I * (y : ℂ)) := by
-      rw [Finset.mul_sum]
-      apply Finset.sum_congr rfl; intro j hj
-      rw [show ((Real.log m - 2 * Real.log (Q j) : ℝ) : ℂ) * Complex.I * (y : ℂ)
-            = ((Real.log m : ℝ) : ℂ) * Complex.I * (y : ℂ)
-              + ((-(2 * Real.log (Q j)) : ℝ) : ℂ) * Complex.I * (y : ℂ) by push_cast; ring,
-        Complex.exp_add]
-      ring
-    -- common middle value
-    have hMidL : (∑' n : ℕ, (a n * (n : ℂ) ^ (-(1/2 : ℂ)))
-          * Complex.exp (((Real.log m - Real.log n : ℝ) : ℂ) * Complex.I * (y : ℂ)))
-        = (∑ j ∈ J, c j
-            * Complex.exp (((Real.log m - 2 * Real.log (Q j) : ℝ) : ℂ) * Complex.I * (y : ℂ)))
-          * LSeries a ((1/2 : ℂ) - ↑y * Complex.I) := by
-      have step1 : (∑' n : ℕ, (a n * (n : ℂ) ^ (-(1/2 : ℂ)))
-            * Complex.exp (((Real.log m - Real.log n : ℝ) : ℂ) * Complex.I * (y : ℂ)))
-          = Complex.exp (((Real.log m : ℝ) : ℂ) * Complex.I * (y : ℂ))
-            * LSeries a ((1/2 : ℂ) + ↑y * Complex.I) := by
-        rw [hL1 y, ← tsum_mul_left]
-        apply tsum_congr; intro n
-        rw [show ((Real.log m - Real.log n : ℝ) : ℂ) * Complex.I * (y : ℂ)
-              = ((Real.log m : ℝ) : ℂ) * Complex.I * (y : ℂ)
-                + ((-Real.log n : ℝ) : ℂ) * Complex.I * (y : ℂ) by push_cast; ring,
-          Complex.exp_add]
-        ring
-      rw [step1, hfey, hD, ← mul_assoc, hDshift]
-    have hMidR : (∑' n : ℕ, ∑ j ∈ J, (c j * (a n * (n : ℂ) ^ (-(1/2 : ℂ))))
-          * Complex.exp (((Real.log m + Real.log n - 2 * Real.log (Q j) : ℝ) : ℂ)
-              * Complex.I * (y : ℂ)))
-        = (∑ j ∈ J, c j
-            * Complex.exp (((Real.log m - 2 * Real.log (Q j) : ℝ) : ℂ) * Complex.I * (y : ℂ)))
-          * LSeries a ((1/2 : ℂ) - ↑y * Complex.I) := by
-      have step : (∑' n : ℕ, ∑ j ∈ J, (c j * (a n * (n : ℂ) ^ (-(1/2 : ℂ))))
-            * Complex.exp (((Real.log m + Real.log n - 2 * Real.log (Q j) : ℝ) : ℂ)
-                * Complex.I * (y : ℂ)))
-          = (∑ j ∈ J, c j
-              * Complex.exp (((Real.log m - 2 * Real.log (Q j) : ℝ) : ℂ) * Complex.I * (y : ℂ)))
-            * ∑' n : ℕ, (a n * (n : ℂ) ^ (-(1/2 : ℂ)))
-                * Complex.exp (((Real.log n : ℝ) : ℂ) * Complex.I * (y : ℂ)) := by
-        rw [← tsum_mul_left]
-        apply tsum_congr; intro n
-        rw [Finset.sum_mul]
-        apply Finset.sum_congr rfl; intro j hj
-        rw [show ((Real.log m + Real.log n - 2 * Real.log (Q j) : ℝ) : ℂ) * Complex.I * (y : ℂ)
-              = ((Real.log m - 2 * Real.log (Q j) : ℝ) : ℂ) * Complex.I * (y : ℂ)
-                + ((Real.log n : ℝ) : ℂ) * Complex.I * (y : ℂ) by push_cast; ring,
-          Complex.exp_add]
-        ring
-      rw [step, hL2 y]
-    rw [hMidL, hMidR]
-  -- the two Cesàro-average limits
-  have havgL := char_avg_tendsto hb_sum (fun n => Real.log m - Real.log n)
-  have hCsum : Summable fun n : ℕ => ∑ j ∈ J, ‖c j * (a n * (n : ℂ) ^ (-(1/2 : ℂ)))‖ := by
-    have hrw : (fun n : ℕ => ∑ j ∈ J, ‖c j * (a n * (n : ℂ) ^ (-(1/2 : ℂ)))‖)
-        = fun n => (∑ j ∈ J, ‖c j‖) * ‖a n * (n : ℂ) ^ (-(1/2 : ℂ))‖ := by
-      funext n; rw [Finset.sum_mul]; apply Finset.sum_congr rfl; intro j hj; rw [norm_mul]
-    rw [hrw]; exact hb_sum.mul_left _
-  have havgR := char_avg_finsum J (fun n j => c j * (a n * (n : ℂ) ^ (-(1/2 : ℂ))))
-    (fun n j => Real.log m + Real.log n - 2 * Real.log (Q j)) hCsum
-  -- diagonal values
-  have hLdiag := diag_collapse_sub (bb := fun n : ℕ => a n * (n : ℂ) ^ (-(1/2 : ℂ))) hb0 hm
-  have hRdiag : (∑' n : ℕ, ∑ j ∈ J,
-      if Real.log m + Real.log n - 2 * Real.log (Q j) = 0
-        then c j * (a n * (n : ℂ) ^ (-(1/2 : ℂ))) else 0) = 0 := by
-    have hzero : (fun n : ℕ => ∑ j ∈ J,
-        if Real.log m + Real.log n - 2 * Real.log (Q j) = 0
-          then c j * (a n * (n : ℂ) ^ (-(1/2 : ℂ))) else 0) = fun _ => (0:ℂ) := by
-      funext n
-      apply Finset.sum_eq_zero; intro j hj
-      exact if_neg (freq_ne_of_not_dvd hm (hQ j hj) (hdiv j hj) n)
-    rw [hzero, tsum_zero]
-  -- combine
-  have hbm : a m * (m : ℂ) ^ (-(1/2 : ℂ)) = 0 := by
-    have hfun : (fun T : ℝ => (↑T)⁻¹ * ∫ y in (0:ℝ)..T,
-          ∑' n : ℕ, (a n * (n : ℂ) ^ (-(1/2 : ℂ)))
-            * Complex.exp (((Real.log m - Real.log n : ℝ) : ℂ) * Complex.I * (y : ℂ)))
-        = (fun T : ℝ => (↑T)⁻¹ * ∫ y in (0:ℝ)..T,
-          ∑' n : ℕ, ∑ j ∈ J, (c j * (a n * (n : ℂ) ^ (-(1/2 : ℂ))))
-            * Complex.exp (((Real.log m + Real.log n - 2 * Real.log (Q j) : ℝ) : ℂ)
-                * Complex.I * (y : ℂ))) := by
-      funext T; congr 1; exact intervalIntegral.integral_congr (fun y _ => hInteg y)
-    rw [hfun] at havgL
-    have huniq := tendsto_nhds_unique havgL havgR
-    rw [hLdiag, hRdiag] at huniq
-    exact huniq
-  have hmne : ((m : ℂ) ^ (-(1/2 : ℂ))) ≠ 0 := by
-    rw [← norm_ne_zero_iff, Complex.norm_natCast_cpow_of_pos (by omega : 0 < m)]
-    exact (Real.rpow_pos_of_pos (by exact_mod_cast (by omega : 0 < m)) _).ne'
-  exact (mul_eq_zero.mp hbm).resolve_right hmne
-
 private theorem freq_zero_iff_mul {m : ℕ} (hm : 1 ≤ m) {Q : ℕ} (hQ : 1 ≤ Q)
     {n : ℕ} (hn : 1 ≤ n) :
     Real.log (m : ℝ) + Real.log (n : ℝ) - 2 * Real.log (Q : ℝ) = 0 ↔ m * n = Q ^ 2 := by
@@ -661,6 +513,23 @@ theorem conductor_datum_pairing {ι : Type*} {a : ℕ → ℂ} {σ₀ : ℝ} (h�
     rw [hLdiag, hRdiag] at huniq
     exact huniq
   exact hbm
+
+/-- Reflection payoff.  When `m ≥ 1` divides no `Q_j²`, every pairing partner in
+`conductor_datum_pairing` is absent, so the identity reads `aₘ·m^{−½} = 0` and `m^{−½} ≠ 0`
+forces `aₘ = 0`. -/
+theorem conductor_datum_finite_support {ι : Type*} {a : ℕ → ℂ} {σ₀ : ℝ} (hσ : σ₀ < 1/2)
+    (hsum : LSeriesSummable a σ₀) (J : Finset ι) (c : ι → ℂ) (Q : ι → ℕ)
+    (hQ : ∀ j ∈ J, 1 ≤ Q j)
+    (hFE : ∀ s : ℂ, σ₀ < s.re → s.re < 1 - σ₀ →
+      LSeries a s = (∑ j ∈ J, c j * (Q j : ℂ) ^ ((1 : ℂ) - 2 * s)) * LSeries a (1 - s)) :
+    ∀ m : ℕ, 1 ≤ m → (∀ j ∈ J, ¬ (m ∣ (Q j) ^ 2)) → a m = 0 := by
+  intro m hm hdiv
+  have hpair := conductor_datum_pairing hσ hsum J c Q hQ hFE m hm
+  rw [Finset.sum_eq_zero fun j hj => if_neg (hdiv j hj)] at hpair
+  have hmne : ((m : ℂ) ^ (-(1/2 : ℂ))) ≠ 0 := by
+    rw [← norm_ne_zero_iff, Complex.norm_natCast_cpow_of_pos (by omega : 0 < m)]
+    exact (Real.rpow_pos_of_pos (by exact_mod_cast (by omega : 0 < m)) _).ne'
+  exact (mul_eq_zero.mp hpair).resolve_right hmne
 
 /-- The reflection coefficient pairing solved for `aₘ`.  Clearing the `m^{−½}` factor in
 `conductor_datum_pairing` via `m^{½}·m^{−½} = 1` gives, for every `m ≥ 1`,

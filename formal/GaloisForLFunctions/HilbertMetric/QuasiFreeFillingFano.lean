@@ -586,6 +586,15 @@ theorem quasiFreeSpectralFanoMargin_one
   rw [quasiFreeSpectralFanoMargin, slaterSpectralFanoMargin,
     quasiFreeSpectralMean_one, quasiFreeSpectralVariance_one]
 
+/-- Full occupation splits the quasi-free compression defect into the two Slater defects. -/
+theorem quasiFreeSpectralCompressionDefect_one
+    (v : ι → κ → ℝ) (energy : κ → ℝ) (lower upper : ℝ) :
+    quasiFreeSpectralCompressionDefect v energy (fun _ => 1) lower upper =
+      slaterSpectralCenteringDefect v energy lower upper +
+        slaterSpectralCoherenceDefect v energy := by
+  rw [quasiFreeSpectralCompressionDefect_eq_centering_add_coherence,
+    quasiFreeSpectralCenteringDefect_one, quasiFreeSpectralCoherenceDefect_one]
+
 end
 
 end GaloisForLFunctions.HilbertMetric

@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven
 - **Type:** POSITIVE SURVIVOR / SOURCE POLARIZATION LEMMA
 - **Parent:** `deninger-polarized-transfer-half-density`
-- **Lean status:** drafted in `DeningerArithmeticGammaRankRigidity.lean`; direct check pending
+- **Lean status:** direct check passes in `DeningerArithmeticGammaRankRigidity.lean`
 
 ## Statement
 

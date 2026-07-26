@@ -194,11 +194,29 @@ occupation-weighted ones are the same number. Without it the two `…_lower_boun
 nonnegativity thresholds look unrelated; with it they are one statement at two normalisations. This
 belongs in the corpus independently of the restructure.
 
-**Remaining:** `SlaterPluckerConnector` (the only external consumer of the Slater names) reaches
-`QuasiFreeFillingFano`, so route (b) is open — delete the ~9 duplicated Slater proofs from
-`SpectralBandwidthFano` and re-state them in `QuasiFreeFillingFano` as `occupation ≡ 1` instances
-using `endpointBudget_eq` and `∑ i, (1:ℝ) = card ι`. Each conversion is a few lines of rewriting;
-estimated ~100 lines over 9 theorems.
+**The reduction is now machine-checked.** Three further bridges landed in `QuasiFreeFillingFano`,
+each closing by `simp` alone:
+
+```lean
+quasiFreeSpectralSecantDefect    v energy (fun _ => 1) lower upper = slaterSpectralSecantDefect    v energy lower upper
+quasiFreeSpectralCenteringDefect v energy (fun _ => 1) lower upper = slaterSpectralCenteringDefect v energy lower upper
+quasiFreeSpectralCoherenceDefect v energy (fun _ => 1)             = slaterSpectralCoherenceDefect v energy
+```
+
+and with them `slaterSpectralFanoMargin_three_defect_of_quasiFree` derives the Slater three-defect
+identity entirely from `quasiFreeSpectralFanoMargin_three_defect` at `occupation ≡ 1` plus
+`endpointBudget_eq`. **So "the Slater development carries no content beyond the occupation-weighted
+one" is a Lean fact, not a card note.** (Placement matters: the derivation must sit *after* the
+`_one` bridges in the file.)
+
+**Remaining is bookkeeping only.** `SlaterPluckerConnector` — the sole external consumer — reaches
+`QuasiFreeFillingFano`, so the ~9 Slater theorems can be deleted from `SpectralBandwidthFano` and
+re-stated there as instances. Leaf analysis (uses inside `SpectralBandwidthFano` / external):
+`negative_forces_bandwidth` 0/0, `lower_bound_of_width_le_one` 0/0, `eq_lower_bound_iff` 0/connector,
+`positiveQuarticDegree_…` 0/connector are movable immediately; `three_defect` (2 internal uses),
+`lower_bound` (1), `nonnegative_of_bandwidth` (2), `quartic_…` (1), `lower_endpoint_defect` (1) must
+move with their dependents. Estimated ~40–150 lines, no mathematical risk — deferred because the
+proofs being replaced are already short and the payoff is bookkeeping.
 
 ## Execution order for the next session (research is done; build next)
 
@@ -905,3 +923,286 @@ removed.
 - 2026-07-26 — backlog researched and ranked while the audit ran: B11 (both obstacles discharged),
   B12 (module written and checked), B13, B14 (design settled), B15, B16 (reuses the corpus's own
   `erlangPowKernel`), B17. Execution order: B16 → B12 wiring → B14 → B11 → B13/B8 → B15.
+
+## B11 closed — Slater/quasi-free layer, measured outcome
+
+**Kept (general law, new):** `slaterSpectralFanoMargin_split` in `SpectralBandwidthFano.lean`.
+Any pointwise identity `m - q + m^2 = base + ((l+u)m - l·u - q) + rest m` splits the Slater Fano
+margin into `card ι · base + secant + (∑ rest ∘ mean) + coherence`. The balancing decomposition
+(`three_defect`) and the lower-endpoint decomposition (`lower_endpoint_defect`) were two ~39-line
+calc proofs sharing an 8-line `hmargin` block and differing only in one summand; both are now
+3-line instantiations with `hrest` closing by `ring`.
+
+**Kept (general law family):** the eight `quasiFree…_one` specializations in
+`QuasiFreeFillingFano.lean` (mean, compressedEnergy, variance, fanoMargin, secant, centering,
+coherence, compression). These state precisely that the Slater notions are the quasi-free notions
+at occupation ≡ 1. Each is 1-3 lines.
+
+**Removed as net-negative:** the four `slaterSpectralFanoMargin_…_of_quasiFree` restatements and
+`endpointBudget_eq`. Each re-derived a theorem that already exists upstream in
+`SpectralBandwidthFano.lean` with a *shorter* direct proof. The reason is structural and worth
+recording: the Slater floor is normalised per orbital as `card ι · (l - (u-l-1)^2/4)` while the
+quasi-free floor is normalised by the product `l·u·(∑ occupation) - card ι·(l+u-1)^2/4`. Every
+descent therefore pays `∑ 1 = card ι` plus the budget re-massaging, which costs more than the
+direct three-defect + `linarith` proof. `_of_quasiFree` restatements: 16/19/21/33 lines against
+3/8/14/14 for the direct forms.
+
+**Criterion generalised from this:** a specialization bridge `X_of_Y` pays for itself only when the
+specialized statement does *not* already exist upstream. When it does, the bridge is a second proof
+of one statement, and the reusable content is the *definitional* `_one` family, not the
+theorem-level restatements.
+
+**Net for B11:** QuasiFreeFillingFano 696 -> 600, SpectralBandwidthFano 456 -> 435.
+Audit: `lake build GaloisForLFunctions.HilbertMetric.SlaterPluckerConnector` -> 2513 jobs, success.
+
+## B24 — within-file proof clones (new scanner class, highest yield so far)
+
+The declaration-level and fragment-level scanners both miss *within-file* pairs of theorems whose
+proofs share a long common structure. A scanner over same-file declaration pairs (longest common
+prefix of normalised proof lines + set overlap, threshold `prefix ≥ 6` or `overlap ≥ 10` and
+`≥ 75%` of the smaller proof) returns 1391 pairs across HTGeometry, HilbertMetric and RHTower.
+Script: `within_file.py` in the job tmp dir.
+
+Landed from the top of that list (each `lake env lean` clean on the first attempt):
+
+| module | before | after | general law introduced |
+|---|---|---|---|
+| `HTGeometry/PolynomialPowerADEResonance` | 1827 | 1388 | none needed — the two exact-profile bend-pair theorems are the eventual-profile ones at `T = 0` |
+| `RHTower/WindowBudget` | 1153 | 860 | `anchorMirrorDefect_reachable_signed` + `sqrt_two_div_two_le_sign_mul_sin`, `sign_mul_mirrorTiltIncrement_nonneg`, `sign_mul_mirrorTiltIncrement_ge` |
+| `HTGeometry/SuperIncreasingSourceUnique` | 412 | 181 | none needed — `multiset_source_window_free` implies the other two (card equality bounds the target size; exact mass is a zero-width window) |
+| `RHTower/ThetaCuspShellIncompleteGammaCoordinate` | 9996 | 9845 | `hasDerivAt_atom_phaseTransform` (dominated differentiation under `∫ a(x) e(x,z)` for any continuous nonnegative atom with integrable exponential tilts) |
+| `HilbertMetric/SpectralBandwidthFano` | 456 | 435 | `slaterSpectralFanoMargin_split` |
+
+Three shapes recur, and they are worth checking in this order on any new pair:
+
+1. **Hypothesis-lattice**: the variants sit at different points of a lattice of hypotheses and one
+   variant is the join. Then the others are corollaries and no new law is needed
+   (ADE resonance, super-increasing uniqueness).
+2. **Sign/phase parameter**: the proofs are one argument run at `σ = ±1` with a matching phase
+   offset. Introduce `σ` with `hσ : σ = 1 ∨ σ = -1`, push the case split down into three small
+   sign-normalised lemmas, and the 350-line body is shared (WindowBudget).
+3. **Abstract the varying object**: the proofs differ only in one function and its analytic
+   witnesses. Take the function plus those witnesses as hypotheses (ThetaCusp atom).
+
+Audit: `lake build` of `PolynomialPowerADEResonance`, `PermanentCoefficientIdentity`, `WindowBudget`
+(8706 jobs) and `ThetaCuspShellIncompleteGammaCoordinate` (8942 jobs) — both successful.
+`scripts/formal_tools.py lint` reports no `sorry`/`axiom`/`opaque` and no finding against these
+files; its two `unreachable from umbrella` errors are another agent's untracked modules
+(`FieldOneMultiplicativeCore`, `ShiftStableLatticeStructure`), not touched here.
+
+## B25 — the reciprocal tangent-sector family (8 files)
+
+`HTGeometry/SectorPowerPositivity.lean` already had `re_pow_pos_of_abs_arg_lt` (any exponent, from
+polar form).  Eight RHTower modules nevertheless re-derived, in full, the passage from a sector
+ratio `c·B² < A²` to `Re ((A - B i)⁻¹ ^ m) > 0`: `Complex.inv_re`/`inv_im`, `Complex.tan_arg`,
+the `|tan|arg||= |B/A|` case split on the sign of the argument, and `Real.lt_tan`.  About 60 lines
+each, identical up to three numerals.
+
+Two laws added to `SectorPowerPositivity.lean` (needs `Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds` for `Real.lt_tan`):
+
+- `abs_arg_inv_sub_mul_I_lt : 0 < A → |B| < t * A → |arg ((A - B i)⁻¹)| < t`
+- `re_inv_sub_mul_I_pow_pos : 0 < A → |B| < t * A → (m : ℝ) * t ≤ π/2 → 0 < ((A - B i)⁻¹ ^ m).re`
+
+The `≤` in the angle budget is deliberate: `m = 0` is handled separately, and for `m ≥ 1` the
+strictness comes from `|arg| < t`.  This matters — every call site is numerically tight
+(e.g. order 20 uses `20 · 784/10000 = 1.568` against `π/2 = 1.5707…`).
+
+| module | before | after | exponent, budget |
+|---|---|---|---|
+| `XiOrderFourteenEdgeCorner` | 224 | 171 | 15, `1/10` |
+| `XiOrderFifteenEdgeCorner` | 223 | 170 | 16, `981/10000` |
+| `XiOrderSixteenEdgeCorner` | 224 | 171 | 17, `923/10000` |
+| `XiOrderSeventeenEdgeCorner` | 216 | 163 | 18, `872/10000` |
+| `XiOrderEighteenEdgeCorner` | 216 | 163 | 19, `826/10000` |
+| `XiCenteredOrdersNineteenTwentySourceBudgetBoundary` | 506 | 377 | 20 and 21 |
+| `XiSquaredSeamPowerThirtyTwoAnnulus` | 297 | 233 | 32, `49/1000` |
+
+Each call site is now the sector-ratio arithmetic (5 lines) plus one `norm_num`/`nlinarith
+[Real.pi_gt_d20]` angle check.  Audit: `lake build` over all seven plus
+`SectorPowerPositivity` — 9177 jobs, successful.
+
+Note for the next pass: `SectorPowerMassLower`, `AnchorTilt` and
+`PrimeArchScaledHausdorffDivisorValueRelation` also use `Real.lt_tan` but in a different argument
+(no `htanabs` case split), so they are not instances of this family.
+
+## B26 — hypothesis-lattice pairs (shape 1 of B24)
+
+Each of these was two proofs of the same argument at two points of a hypothesis lattice; in every
+case the stronger one already existed and the weaker is a two-to-eight line corollary.
+
+| module | before | after | specialisation |
+|---|---|---|---|
+| `RHTower/RouteBChiDecay` | 588 | 519 | `..._left_line_sphere` is `..._of_K_bound` with `hKbound := le_of_eq hK.symm` |
+| `RHTower/BourgainA6TaylorErrorAbsorption` | 473 | 405 | `..._of_lower` is `..._of_lower_of_radius_le` at `R := M²/12`, `le_rfl` |
+| `RHTower/BourgainExactLocalMomentTransfer` | 508 | 475 | `..._application` is `..._application_of_lower` at `A := 1/2`, using `bourgainSquareRootPhaseOperatorBound (1/2) ≤ 6` (it is `11/2`), so `12N ≤ H²` implies the general `2·bound(A)·N ≤ H²` |
+| `RHTower/BohrCoefficientUniqueness` | 687 | 556 | `conductor_datum_finite_support` is `conductor_datum_pairing` with every `if` in the else branch; `m^{−½} ≠ 0` finishes |
+
+The Bohr case is the one to remember: the module docstring *already stated* "`conductor_datum_finite_support` is the special case where every divisibility fails", and the
+two proofs had been written out separately anyway. **Docstrings that say "special case of" are a
+free index into this class of duplication** — worth grepping for directly.
+
+Trap hit once here: `conductor_datum_finite_support`'s block is not contiguous with its own proof
+end — two `private theorem`s used by the *other* theorem sit between them. Cutting on the first
+plausible tactic line silently deleted `diag_collapse_add`. Always anchor the end of a block on the
+last line of *that* proof, and re-read the declaration list of the whole span before cutting.
+
+Audit: `lake build` over the four modules plus `BourgainExactLocalTranslation` — 8630 jobs,
+successful.
+
+## B27 — SeamCongruence: one core, four readers
+
+`SeamCongruence.lean` 2478 -> 2304.  Four window theorems were four copies of one argument:
+
+- `window_online_of_line_real_sign_data` (generic carrier, strict sign interleaving)
+- `window_online_of_line_real_zero_brackets` (generic carrier, disjoint non-strict brackets)
+- `window_online_of_sign_data` (ξ)
+- `window_simple_of_sign_data` (ξ, simplicity instead of on-line-ness)
+
+Now:
+
+- `window_online_of_line_real_zeros` — **the core**.  Takes `s` strictly increasing critical-line
+  parameters in the ball at which the real trace vanishes, and concludes *both* the on-line
+  identity/right-half vanishing *and* `∀ w ∈ t, m w ≤ 1`.  Strengthening the conclusion to a
+  conjunction is what lets the simplicity reader share the argument; the extra tail is the
+  tightness squeeze `s ≤ ∑_P m ≤ ∑_online m = ∑_t m ≤ s`.
+- `exists_line_real_window_zeros` — the strict-interleaving construction, extracted so both the
+  generic and the ξ reader use it once each.
+- `xi_window_full_of_sign_data` (private) — discharges `hFcont`, `hline_zero`, and reflection
+  symmetry of the multiplicities (`xi_orderAt_lineReflect`) once; the two public ξ theorems are
+  its `.1` and `.2`.
+
+**Shape 4, new**: when two theorems share a construction but state *different* conclusions, the
+merge is to strengthen the shared core to a conjunction and project. Look for this whenever two
+proofs share a long prefix and diverge only in the last block.
+
+Two scripting traps, both cost a revert:
+- A textual `z` -> `zs` rename hit `hz i` and `z j`. Never rename by substring in Lean source;
+  either keep the original identifier or use a real word-boundary pattern.
+- Anchoring the conclusion by `∑ z ∈ t.filter (fun z => 1 / 2 < z.re), m z = 0 := by` matched a
+  *different* theorem, because the core's own conclusion had been written with `w`. Anchor on text
+  that is unique to the target declaration, and assert the match index lies inside it.
+
+Audit: `lake build GaloisForLFunctions.RHTower.SeamCongruence` — 8574 jobs, successful.
+
+## B28 (staged, analysed not yet executed) — the mirrored `With` API
+
+`HTGeometry/RationalIncrementHolderElimination.lean` (560 lines) is a declaration-for-declaration
+mirror of the `Jet`/`Elimination` development in `HTGeometry/HolderShiftElimination.lean`
+(831 lines), with every statement parametrized by an arbitrary increment family
+`rj : ℕ → RatFunc ℂ` and the suffix `With`: `jetTranslateWith`, `transMonomialWith`,
+`subTopMonomialWith`, `coeff_transMonomial_of_degSum_eqWith`, …, `no_shift_stable_annihilatorWith`
+— 20 declarations against 20.
+
+The two engines differ in **nine lines**: the translate used, four `…With rj` helper names, `polePart (k : ℕ)` vs `rj (k : ℕ)`, and `ratShift_sub_polePart_combination` vs the new hypothesis
+`Hres`.  The specific development is exactly the general one at `rj := polePart`.
+
+Direction is the only obstacle: `jetTranslateWith` lives *downstream* of `jetTranslate`.  The
+low-risk resolution is **not** to move the general API upstream (namespace `RationalIncrementHolder`
+is referenced by `RationalShiftHypertranscendence`) but to delete the specific development from
+`HolderShiftElimination` and re-introduce those exact names, in their original namespaces, as
+`rj := polePart` specializations inside `RationalIncrementHolderElimination`; then re-point the two
+consumers (`DigammaHypertranscendental`, `GammaFactorialHarmonicSequenceFreeness`) to import the
+downstream module, which already imports the upstream one.  Expected: about -500 lines.
+
+Before executing, enumerate which of the 20 upstream `Jet` declarations are referenced outside
+`HolderShiftElimination` — only those need specializations; the rest are deleted outright.
+
+## B29 — cross-file body scan (new instrument) and the Landau-gate pairs
+
+The within-file scanner of B24 cannot see duplication that spans modules. `xfile.py` (job tmp dir)
+indexes every proof body by its rarest normalised lines and reports cross-file pairs with
+`overlap ≥ 25` and `≥ 60%` of the smaller body: 5647 declarations with ≥25 distinct body lines,
+and a long tail of genuine pairs.
+
+Landed from it — both are the same shape (a *general* theorem taking the abscissa `beta` and the
+base summability as parameters, and a *specialised* one that picks `beta := δ/4` and derives the
+base from an energy hypothesis), and in both cases the general one sat **downstream** of the
+specialised one, so the fix was to move the general theorem up and leave a six-line corollary:
+
+| pair | before | after |
+|---|---|---|
+| `CCMSharpPrimeWindowExcessEnergyGate` + `CCMSharpPrimeWindowEnergySpectrum` | 970 + 329 | 988 + 165 |
+| `CCMRectangularNegativePartEnergyGate` + `CCMRectangularNegativeChannelSpectrum` | 555 + 541 | 571 + 417 |
+
+Placement matters and is not free: the moved block must land *after* every helper it uses in the
+target module. `differentiableOn_xiRectangularNegativePartLandauContinuation_landauBall` sits at
+line 107 of the gate, so inserting before line 80 failed. The plain gate theorem has **no**
+docstring, and a backward scan for one walked ~90 lines up into a previous proof — check
+`Lg[gt-1]` actually ends with `-/` before treating the preceding lines as a docstring.
+
+Audit: `lake build` of both gates (8744 / 8722 jobs) and both spectra (8752 jobs), all successful.
+
+## B30 — sibling generalisations found by the cross-file scan
+
+**`GradedShiftInertness` 381 -> 147.**  `HTGeometry.GradedLead Λ D` and
+`HTGeometry.Rel.GradedLeadOver C Λ D` are field-for-field the same structure with `C := ℂ`, and the
+three theorems on them (`mul_ne_zero'`, `ord_eq_of_rel`, `lead_shift_identity`) were
+character-identical up to `ℂ`/`C`.  The two modules were *independent* — neither imports the other —
+so the fix is simply `abbrev GradedLead … := Rel.GradedLeadOver ℂ Λ D` plus three one-line
+delegations, and `complex_eq_of_scaled_shift_eq := Rel.scalar_eq_of_scaled_shift_eq`.  Structure
+projections, anonymous constructors and named-field construction all pass through an `abbrev`
+unchanged, so the only consumer (`GradedDefectInertness`) needed no edit.
+
+**`XiCTaylorThetaTailCoreCurrent{,Remainder}Equivalence` 219 + 342 -> 246 + 202.**  The remainder
+module's `eventually_abs_… _lt_scaled_normSq_of_riemannHypothesis` is the two-sided (`|·|`) form of
+the predicate `XiCTaylorThetaTailCoreCurrentSublinearUpper`, and its proof never used the
+predicate's `0 < sigma.re`.  Moved upstream; the predicate version is now
+`intro …; filter_upwards […] with n hn; exact lt_of_abs_lt hn`.
+
+**Pattern worth stating.**  In four of the five cross-file collapses so far the *more general*
+statement lived **downstream** of the specialised one, so the mechanical move is: relocate the
+general theorem into the upstream module (after every helper it uses) and leave a corollary behind.
+Check `reach(specialised, general)` and `reach(general, specialised)` first — where the two modules
+are independent siblings (the `GradedLead` case) an `abbrev` is enough and nothing moves.
+
+Audit so far in this batch: `lake build` of `GradedShiftInertness` (8482 jobs) and
+`XiCTaylorThetaTailCoreCurrentEquivalence` (8776 jobs), plus `lake env lean` on both downstream
+consumers — all clean.
+
+## B31 — Perron horizontal mass, and the running total
+
+**`PerronCarrierFlankMass` + `PerronStripMassDischarge` 883 + 199 -> 912 + 87.**  The escape
+theorem and the integrability lemma built the same kernel envelope `K`, the same contour-norm
+function `u`, the same continuity, the same high-`T` domination and the same `Ioc ∪ Ioi` split —
+about 95 lines — and then diverged.  `perronHorizontalContourNorm_integrableOn_Ioi` (downstream)
+moved up; the escape proof now keeps only `u`, the four continuity `have`s it still needs
+downstream, and one call.
+
+### Session total for the within/cross-file body-clone programme (B24–B31)
+
+28 files, **+1032 / -3718 = -2686 lines**, no `sorry`, no `axiom`, nothing weakened.
+Every statement that existed before still exists with the same name, namespace and signature.
+
+Named general results introduced:
+
+| law | home |
+|---|---|
+| `slaterSpectralFanoMargin_split` | `HilbertMetric/SpectralBandwidthFano` |
+| `anchorMirrorDefect_reachable_signed`, `sqrt_two_div_two_le_sign_mul_sin`, `sign_mul_mirrorTiltIncrement_nonneg`, `sign_mul_mirrorTiltIncrement_ge` | `RHTower/WindowBudget` |
+| `hasDerivAt_atom_phaseTransform` | `RHTower/ThetaCuspShellIncompleteGammaCoordinate` |
+| `abs_arg_inv_sub_mul_I_lt`, `re_inv_sub_mul_I_pow_pos` | `HTGeometry/SectorPowerPositivity` |
+| `window_online_of_line_real_zeros`, `exists_line_real_window_zeros` | `RHTower/SeamCongruence` |
+
+### The four shapes, in the order worth testing them
+
+1. **Hypothesis lattice** — one variant is the join; the others are corollaries. No new law needed.
+   Cheapest to check: compare the binder lists first, not the proofs.
+2. **Sign / phase parameter** — one argument run at `σ = ±1`. Introduce `σ` with
+   `hσ : σ = 1 ∨ σ = -1` and push the case split into small sign-normalised lemmas.
+3. **Abstract the varying object** — the proofs differ in one function plus its analytic witnesses;
+   take both as hypotheses.
+4. **Shared construction, different conclusions** — strengthen the core to a conjunction and
+   project.
+
+### Deferred with reasons
+
+- **B28**, the mirrored `With` API (`HolderShiftElimination` vs `RationalIncrementHolderElimination`,
+  ~500 lines): analysed above, ready to execute.
+- `PolynomialPowerADEResonance`'s two *eventual-profile* theorems (343/214 bodies, 161 shared) are
+  **not** a clean merge: the shared lines are scattered `let`-bindings and the degree-one proof has
+  242 lines with no counterpart. Unifying them means abstracting the confinement mechanism
+  (convex confinement vs coefficient grading) into a hypothesis — a real restructuring, not a
+  factorisation. Left alone deliberately.
+- `PrimeArchExactOffLineQuartetKMSMaster`'s pair is a **false positive** of the first scanner: the
+  specialised theorem was already a three-line instantiation, and the "overlap" was its long
+  *statement*. This is why the second scanner compares only lines after `:= by`.

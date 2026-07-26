@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven
 - **Type:** SOURCE COMPLEX LEMMA
 - **Parent:** `deninger-mw-gamma-brst-complex`
-- **Lean status:** pending
+- **Lean status:** direct check passes in `DeningerArithmeticPowerBar.lean`
 
 ## Statement
 
@@ -111,4 +111,3 @@ separate and cannot be inserted into `(1)`.
 Bar coboundaries are standard.  New content is the dependency-closed extraction of the exact
 good truncation and the valuation-stable finite filtration needed by Deninger's power
 correspondences.  No broader novelty is claimed.
-

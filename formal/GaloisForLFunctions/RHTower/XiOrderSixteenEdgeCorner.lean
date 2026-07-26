@@ -30,69 +30,16 @@ strictly positive seventeenth reciprocal power. -/
 theorem orderSeventeenReciprocalPower_re_pos_of_sectorRatio
     {A B : ℝ} (hA : 0 < A) (hsector : 118 * B ^ 2 < A ^ 2) :
     0 < ((((A : ℂ) - B * I)⁻¹) ^ 17).re := by
-  let mu : ℂ := ((A : ℂ) - B * I)⁻¹
-  have hden : 0 < A ^ 2 + B ^ 2 := by nlinarith [sq_nonneg B]
-  have hmure : mu.re = A / (A ^ 2 + B ^ 2) := by
-    dsimp only [mu]
-    rw [Complex.inv_re, Complex.normSq_apply]
-    simp
-    ring
-  have hmuim : mu.im = B / (A ^ 2 + B ^ 2) := by
-    dsimp only [mu]
-    rw [Complex.inv_im, Complex.normSq_apply]
-    simp
-    ring
-  have hmurepos : 0 < mu.re := by rw [hmure]; positivity
-  have htan : Real.tan (Complex.arg mu) = B / A := by
-    rw [Complex.tan_arg, hmuim, hmure]
-    field_simp
-  have hsq : (10000 * B) ^ 2 < (923 * A) ^ 2 := by
-    nlinarith [sq_pos_of_pos hA]
-  have habsScaled : |10000 * B| < 923 * A := by
-    exact abs_lt_of_sq_lt_sq hsq (mul_nonneg (by norm_num) hA.le)
-  have habsB : |B| < (923 / 10000 : ℝ) * A := by
+  refine GaloisForLFunctions.HTGeometry.re_inv_sub_mul_I_pow_pos
+    (t := 923 / 10000) hA ?_ ?_
+  · have hsq : (10000 * B) ^ 2 < (923 * A) ^ 2 := by nlinarith [sq_pos_of_pos hA]
+    have habsScaled : |10000 * B| < 923 * A :=
+      abs_lt_of_sq_lt_sq hsq (mul_nonneg (by norm_num) hA.le)
     rw [abs_mul] at habsScaled
     norm_num at habsScaled
     nlinarith
-  have habsRatio : |B / A| < 923 / 10000 := by
-    rw [abs_div, abs_of_pos hA]
-    rw [div_lt_iff₀ hA]
-    exact habsB
-  have hargRange : |Complex.arg mu| < Real.pi / 2 := by
-    rw [Complex.abs_arg_lt_pi_div_two_iff]
-    exact Or.inl hmurepos
-  have htanabs : Real.tan |Complex.arg mu| = |B / A| := by
-    by_cases harg : 0 ≤ Complex.arg mu
-    · rw [abs_of_nonneg harg, htan, abs_of_nonneg]
-      rw [← htan]
-      exact Real.tan_nonneg_of_nonneg_of_le_pi_div_two harg
-        ((le_abs_self _).trans hargRange.le)
-    · have hargneg : Complex.arg mu < 0 := lt_of_not_ge harg
-      rw [abs_of_neg hargneg, Real.tan_neg, htan, abs_of_neg]
-      rw [← htan]
-      exact Real.tan_neg_of_neg_of_pi_div_two_lt hargneg (by
-        rw [abs_lt] at hargRange
-        exact hargRange.1)
-  have hargSmall : |Complex.arg mu| < 923 / 10000 := by
-    by_cases hargzero : Complex.arg mu = 0
-    · simp [hargzero]
-    · have hargabspos : 0 < |Complex.arg mu| := abs_pos.mpr hargzero
-      have hlt := Real.lt_tan hargabspos hargRange
-      rw [htanabs] at hlt
-      exact hlt.trans habsRatio
-  have hangle : |17 * Complex.arg mu| < Real.pi / 2 := by
-    rw [abs_mul]
-    norm_num
+  · norm_num
     nlinarith [Real.pi_gt_d20]
-  have hmu : mu ≠ 0 := by
-    exact inv_ne_zero (by
-      intro hz
-      have hzre := congrArg Complex.re hz
-      simp at hzre
-      linarith)
-  change 0 < (mu ^ 17).re
-  exact GaloisForLFunctions.HTGeometry.re_pow_pos_of_abs_arg_lt hmu (by
-    simpa using hangle)
 
 /-- Off the critical line, the protected central band satisfies the rational order-seventeen
 sector certificate at every absolute-Euler squared coordinate. -/

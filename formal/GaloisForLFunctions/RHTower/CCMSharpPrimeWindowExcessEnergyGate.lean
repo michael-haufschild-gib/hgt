@@ -446,45 +446,42 @@ theorem dyadicSharpNegativePartLandauContinuation_eq_LSeries_rightOf
     (hGdiff.analyticOnNhd hUopen) (hLdiff.analyticOnNhd hUopen)
       hUpre hz0U hevent
 
-/-- Landau transfer for the negative-part-corrected sharp values.  Under false RH it produces
-absolute convergence of the original sharp source at a real point left of the rightmost
-transverse pole. -/
-theorem exists_dyadicSharpNegativePartLandauCoefficient_summable_left_of_boundary
-    (hne : Nonempty XiRightZeroCopy)
-    (henergy : DyadicSharpPrimeSourceNegativePartEnergy) :
-    ∃ beta sigma : ℝ,
-      0 < beta ∧
+/-- One-abscissa Landau transfer for the negative-part-corrected sharp source.  The correction
+need only converge at `1 + beta`, provided that abscissa lies strictly left of the hypothetical
+rightmost transverse Xi boundary. -/
+theorem exists_dyadicSharpNegativePartLandauCoefficient_summable_left_of_boundary_of_one_abscissa
+    (beta : ℝ) (hne : Nonempty XiRightZeroCopy)
+    (hbetaDelta : beta < xiRightTransverseSup)
+    (hcorrBase : LSeriesSummable
+      (fun n => ((dyadicSharpPrimeSourceNegativePart n : ℝ) : ℂ))
+      (((1 + beta : ℝ) : ℂ))) :
+    ∃ sigma : ℝ,
       1 + beta < sigma ∧
       sigma < 1 + xiRightTransverseSup ∧
       LSeriesSummable
         (fun n => ((dyadicSharpNegativePartLandauCoefficient n : ℝ) : ℂ))
         (sigma : ℂ) := by
   let delta : ℝ := xiRightTransverseSup
-  let beta : ℝ := delta / 4
   have hdelta : 0 < delta := xiRightTransverseSup_pos hne
   have hdeltahalf : delta ≤ 1 / 2 := xiRightTransverseSup_le_half hne
-  have hbeta0 : 0 < beta := by dsimp only [beta]; positivity
-  have hbetaDelta : beta < delta := by dsimp only [beta]; linarith
   have hupper : ∀ q : XiRightZeroCopy,
       (xiRightCenteredZero q).re ≤ delta :=
     fun q => xiRightCenteredZero_re_le_sup q
   obtain ⟨eta, heta, hordinate⟩ := exists_xiDivisorSupport_abs_im_lower_bound
-  have hcorrBase : LSeriesSummable
-      (fun n => ((dyadicSharpPrimeSourceNegativePart n : ℝ) : ℂ))
-      (((1 + beta : ℝ) : ℂ)) := henergy beta hbeta0
   let r : ℝ := min (min (1 / 8) (eta / 4)) ((delta - beta) / 4)
   have hr : 0 < r := by
     dsimp only [r]
     exact lt_min
       (lt_min (by norm_num) (div_pos heta (by norm_num)))
-      (div_pos (sub_pos.mpr hbetaDelta) (by norm_num))
+      (div_pos (sub_pos.mpr (by simpa only [delta] using hbetaDelta)) (by norm_num))
   have hrquarter : r ≤ 1 / 4 :=
     (min_le_left _ _).trans ((min_le_left _ _).trans (by norm_num))
   have hreta : r ≤ eta / 2 :=
     (min_le_left _ _).trans ((min_le_right _ _).trans (by linarith))
   have hrgap : r ≤ (delta - beta) / 4 := min_le_right _ _
   have hbetaGap : beta + r < delta := by
-    have hgap : 0 < delta - beta := sub_pos.mpr hbetaDelta
+    have hgap : 0 < delta - beta := by
+      simpa only [delta] using sub_pos.mpr hbetaDelta
     linarith
   let sigmaFar : ℝ := 2
   have hcorrFar : LSeriesSummable
@@ -492,7 +489,7 @@ theorem exists_dyadicSharpNegativePartLandauCoefficient_summable_left_of_boundar
       (sigmaFar : ℂ) :=
     hcorrBase.of_re_le_re (by
       simp only [ofReal_re]
-      dsimp only [sigmaFar, beta]
+      dsimp only [sigmaFar]
       linarith)
   have hsumFar : LSeriesSummable
       (fun n => ((dyadicSharpNegativePartLandauCoefficient n : ℝ) : ℂ))
@@ -507,7 +504,8 @@ theorem exists_dyadicSharpNegativePartLandauCoefficient_summable_left_of_boundar
       dyadicSharpNegativePartLandauContinuation
       (Metric.closedBall (((sigmaFar + 1 : ℝ) : ℂ)) (Rfar : ℝ)) := by
     apply (differentiableOn_dyadicSharpNegativePartLandauContinuation_rightOf
-      beta delta hdelta hbetaDelta hupper hcorrBase).mono
+      beta delta hdelta
+        (by simpa only [delta] using hbetaDelta) hupper hcorrBase).mono
     intro s hs
     rw [Metric.mem_closedBall, dist_eq_norm] at hs
     change 1 + delta < s.re
@@ -553,8 +551,8 @@ theorem exists_dyadicSharpNegativePartLandauCoefficient_summable_left_of_boundar
     dsimp only [sigmaNear]
     linarith
   have heqNear := dyadicSharpNegativePartLandauContinuation_eq_LSeries_rightOf
-    beta delta hdelta hbetaDelta hupper hcorrBase
-      hsigmaNear hsumNear
+    beta delta hdelta (by simpa only [delta] using hbetaDelta)
+      hupper hcorrBase hsigmaNear hsumNear
   have hcont :=
     differentiableOn_dyadicSharpNegativePartLandauContinuation_landauBall
       beta hdelta.le hr hrquarter hreta hbetaGap hordinate hcorrBase
@@ -604,13 +602,33 @@ theorem exists_dyadicSharpNegativePartLandauCoefficient_summable_left_of_boundar
     · change sigmaNear + h - r / 2 < sigma
       dsimp only [sigmaNear, h, sigma]
       linarith
-  refine ⟨beta, sigma, hbeta0, ?_, ?_, hsum⟩
+  refine ⟨sigma, ?_, ?_, hsum⟩
   · dsimp only [sigma]
-    have hgap : 0 < delta - beta := sub_pos.mpr hbetaDelta
+    have hgap : 0 < delta - beta := sub_pos.mpr
+      (by simpa only [delta] using hbetaDelta)
     linarith [hrgap]
   · dsimp only [sigma, delta]
     linarith
 
+/-- Landau transfer for the negative-part-corrected sharp values.  Under false RH it produces
+absolute convergence of the original sharp source at a real point left of the rightmost
+transverse pole. -/
+theorem exists_dyadicSharpNegativePartLandauCoefficient_summable_left_of_boundary
+    (hne : Nonempty XiRightZeroCopy)
+    (henergy : DyadicSharpPrimeSourceNegativePartEnergy) :
+    ∃ beta sigma : ℝ,
+      0 < beta ∧
+      1 + beta < sigma ∧
+      sigma < 1 + xiRightTransverseSup ∧
+      LSeriesSummable
+        (fun n => ((dyadicSharpNegativePartLandauCoefficient n : ℝ) : ℂ))
+        (sigma : ℂ) := by
+  have hdelta : 0 < xiRightTransverseSup := xiRightTransverseSup_pos hne
+  have hbeta0 : 0 < xiRightTransverseSup / 4 := by linarith
+  obtain ⟨sigma, h1, h2, h3⟩ :=
+    exists_dyadicSharpNegativePartLandauCoefficient_summable_left_of_boundary_of_one_abscissa
+      (xiRightTransverseSup / 4) hne (by linarith) (henergy _ hbeta0)
+  exact ⟨xiRightTransverseSup / 4, sigma, hbeta0, h1, h2, h3⟩
 /-- **Positive-excess energy criterion.**  Dirichlet summability of only the negative sharp
 source values at every abscissa `1 + epsilon` proves RH. -/
 theorem riemannHypothesis_of_dyadicSharpPrimeSourceNegativePartEnergy

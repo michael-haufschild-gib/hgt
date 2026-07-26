@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven
 - **Type:** ABSTRACT SOURCE THEOREM / SPECIALIZATION GATE
 - **Parent:** `deninger-mw-gamma-brst-complex`
-- **Lean status:** pending
+- **Lean status:** direct check passes in `DeningerArithmeticPolarizedTransfer.lean`
 
 ## Statement
 
@@ -127,4 +127,3 @@ Those are separate construction theorems.
 The projection formula and degree formula are standard.  New content is the exact extraction
 showing that Deninger's half shift follows from their Gamma-polarized combination and that the
 only quadratic obstruction is the explicit rank-collapse law `(7)`.
-

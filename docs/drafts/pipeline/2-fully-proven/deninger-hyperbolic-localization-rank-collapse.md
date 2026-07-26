@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven
 - **Type:** NEW POSITIVE SURVIVOR / SOURCE GAMMA REALIZATION
 - **Parent:** `deninger-gamma-rank-character-rigidity`
-- **Lean status:** drafted in `DeningerArithmeticHyperbolicLocalization.lean`; direct check pending
+- **Lean status:** direct check passes in `DeningerArithmeticHyperbolicLocalization.lean`
 
 ## Statement
 
@@ -137,4 +137,3 @@ rigidity from uniqueness to a canonical algebraic realization.
   theory; positivity and flow naturality remain separate.
 - If the localized comparison is defined using Xi zeros or assumes centered spectrum real, RH
   has been inserted.
-
