@@ -105,6 +105,25 @@ theorem bourgainParabolaFiberMass_sq_le
   simpa only [hsum, Complex.norm_real, Real.norm_eq_abs,
     abs_of_nonneg (hw _)] using hcomplex
 
+/-- Exact parabola-moment pair energy has the same sharp subpower bound. -/
+theorem bourgainMomentPairEnergy_subpower
+    {ε : ℝ} (hε : 0 < ε) :
+    ∃ C : ℝ, 0 < C ∧
+      ∀ (H : ℕ) (w : (Fin 3 → Fin H) → ℝ),
+        (∀ h, 0 ≤ w h) →
+        (∑ h : Fin 3 → Fin H, ∑ h' : Fin 3 → Fin H,
+          if bourgainParabolaTripleMoment h =
+              bourgainParabolaTripleMoment h'
+          then w h * w h' else 0) ≤
+            C * (H : ℝ) ^ ε *
+              ∑ h : Fin 3 → Fin H, w h ^ (2 : ℕ) := by
+  obtain ⟨C, hC, hfiber⟩ :=
+    card_bourgainParabolaTripleMoment_fiber_subpower hε
+  refine ⟨C, hC, ?_⟩
+  intro H w hw
+  rw [bourgainMomentPairEnergy_eq_fiberMass]
+  exact bourgainParabolaFiberMass_sq_le w hw (hfiber H)
+
 /-- Sharp `H^ε` near-energy estimate for the quadratic square-root model. -/
 theorem bourgainQuadraticSample_nearEnergy_subpower
     {ε : ℝ} (hε : 0 < ε) :

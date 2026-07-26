@@ -9832,3 +9832,68 @@ STAYING NON-HYPERBOLIC? Equivalently, DEFINE THE CRITICAL WEIGHT: the sequence c
 BOUNDARY. THE CRITICAL WEIGHT IS A WELL-DEFINED OBJECT DETERMINED BY M ALONE, AND COMPARING IT WITH
 1/(2j)! IS A STATEMENT WITH NO DETERMINANTS, NO ASYMPTOTICS, AND NO ORDER PARAMETER. THAT IS A GENUINE
 CHANGE OF REPRESENTATION AND IT IS WHERE THE NEXT CYCLE MUST GO.
+
+---
+
+## Cycle 161 — THE WEIGHT SITS EXACTLY AT THE THRESHOLD OF THE MITTAG-LEFFLER FAMILY
+
+### Phase 4 first: "the critical weight" is not well defined
+Cycle 160 asked for THE critical weight. The absorbing set A(M) = {c : sum c_j M_j w^j in LP} is
+UPWARD CLOSED under multiplication by multiplier sequences, but that order is not a lattice, so an
+up-closed set need not have a unique minimal element. THERE IS NO CANONICAL "CRITICAL WEIGHT".
+THE QUESTION HAD TO BE REPLACED, AND THE RIGHT REPLACEMENT IS A ONE-PARAMETER FAMILY.
+
+### Phase 2: THE FAMILY IS MITTAG-LEFFLER, AND THE THRESHOLD IS ALPHA = 2
+c_j^(alpha) = 1/Gamma(alpha j + 1), generating function E_alpha(w) = sum w^j/Gamma(alpha j + 1).
+  alpha = 1: e^w.
+  alpha = 2: cosh(sqrt w), zeros -pi^2(k+1/2)^2 — REAL, NEGATIVE, SIMPLE.
+CLASSICAL (Wiman; Polya; Ostrovskii-Peresyolkova, confirmed by literature search this cycle):
+ALL ZEROS OF E_alpha ARE REAL, NEGATIVE AND SIMPLE EXACTLY FROM alpha = 2 ONWARDS; for 1 < alpha < 2
+they are not (only an odd number of negative real zeros).
+
+    ==> ALPHA = 2 IS THE THRESHOLD OF THE FAMILY, AND OUR WEIGHT 1/(2j)! = 1/Gamma(2j+1) IS E_2.
+
+CORRECTION TO MY FIRST GUESS THIS CYCLE: I initially expected alpha = 2 to be the TOP of the
+admissible range. IT IS THE BOTTOM. Recorded because the corrected direction is what makes the entry
+sharp.
+
+### NINETY-FIFTH ATLAS ENTRY
+THE ARITHMETIC SUPPLIES THE THRESHOLD MEMBER, AND IT IS NOT A CHOICE: expanding xi(1/2+iz) in the
+squared variable produces (2j)! and nothing else. NEITHER DIRECTION HAS SLACK:
+
+    alpha < 2:  a STRONGER demand, but NOT A LEGAL MULTIPLIER (E_alpha leaves the class).
+    alpha > 2:  LEGAL and gives MORE HELP, but a stronger multiplier applied to a Polya frequency
+                sequence yields only a NECESSARY condition — a WEAKER statement, not a route.
+
+    ==> THE HYPOTHESIS IS POSED AT THE EXACT THRESHOLD OF THE ONLY NATURAL FAMILY OF WEIGHTS, WITH NO
+        SLACK IN EITHER DIRECTION: BELOW THE THRESHOLD THE TOOL IS ILLEGAL, ABOVE IT THE CONCLUSION
+        IS WEAKER.
+
+AND THE NUMBERS CROSS-CHECK. The relaxation factor of E_alpha at the bottom is
+Gamma(2 alpha + 1)/Gamma(alpha+1)^2 = C(2 alpha, alpha): 2 at alpha = 1, SIX AT alpha = 2, 20 at
+alpha = 3. THE VALUE SIX AT THE THRESHOLD IS EXACTLY THE FACTOR FOUND IN ENTRY 93 BY A DISCRIMINANT
+COMPUTATION (formalised as an equality between the two derivations). THREE INDEPENDENT ROUTES —
+determinant window (89), discriminant threshold (93), Mittag-Leffler family (95) — NOW AGREE ON THE
+SAME CONSTANT.
+
+Machine-verified: `RHTower/WeightSitsAtTheMittagLefflerThreshold.lean` (the central-binomial identity
+C(2a,a) a! a! = (2a)!, the values 2, 6, 20 at alpha = 1,2,3, the equality of the threshold value with
+weightRatio 0 from the discriminant derivation, strict growth across the first three weights, and
+1 <= C(2a,a); standard axioms only, wired into RHTower).
+
+### STATE AT CYCLE 161
+Ninety-five entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+### Cycle 162 target
+ENTRY 95 SAYS THE PROBLEM IS POSED AT A THRESHOLD. THRESHOLDS ARE WHERE ONE LOOKS FOR A VARIATIONAL
+CHARACTERISATION. THE QUESTION FOR NEXT CYCLE: IS THERE A FUNCTIONAL ON THE MOMENT SEQUENCE WHOSE
+EULER-LAGRANGE EQUATION IS alpha = 2? Concretely: the relaxation available at exponent alpha is
+C(2 alpha, alpha) ~ 4^alpha/sqrt(pi alpha), GROWING; the demand at exponent alpha is that
+sum M_j w^j/Gamma(alpha j + 1) be in LP, WHICH GETS HARDER AS alpha DECREASES because the weight
+decays more slowly. THE TWO CROSS SOMEWHERE. IF THE CROSSING POINT CAN BE COMPUTED FROM THE GROWTH OF
+M ALONE — and M's growth is governed by the theta remainder, hence by ELEMENTARY FUNCTIONS — THEN THE
+CROSSING POINT IS A COMPUTABLE NUMBER, AND RH IS THE STATEMENT THAT IT IS AT MOST 2. THAT WOULD BE A
+REDUCTION OF RH TO AN INEQUALITY BETWEEN TWO EXPLICIT GROWTH EXPONENTS, WITH NO ZEROS, NO
+DETERMINANTS, AND NO ORDER PARAMETER. COMPUTE THE GROWTH OF M_j EXACTLY FIRST: M_j = int_0^inf
+Phi(t) t^{2j} dt WITH Phi THE THETA REMAINDER, AND THE SADDLE POINT OF THAT INTEGRAL IS ALREADY IN
+THE ATLAS (entries 74-81). USE IT.
