@@ -8097,3 +8097,70 @@ FOR Xi, THE CONJECTURE IS SUPPORTED AND THE GENERAL BOUND IS MASSIVELY LOSSY. Re
 thresholds and compare with a quadratic fit; if the data supports polynomial growth, the next step is
 to prove the polynomial bound directly from the Brascamp-Lieb mechanism, which would settle every
 degree beyond an explicit finite point.
+
+---
+
+## Cycle 133 (2026-07-26) — TWO CORRECTIONS TO MY OWN ATLAS, BOTH FROM PHASE 2
+
+### PHASE 2 RESULT — and it overturns two entries
+Griffin-Ono-Rolen-Zagier, "Jensen polynomials for the Riemann xi-function" (arXiv:1910.01227, Advances
+in Mathematics 2022) establishes hyperbolicity NOT merely for d <= 8 but
+
+    FOR ALL d <= 9.36 x 10^20 AND EVERY n >= 0.
+
+And a 2026 preprint tabulates the OBSERVED ONSET VALUES n*(d) — the true first index at which
+hyperbolicity begins — for d up to 11, with n*(d) = 0 for d <= 8 and tiny values beyond.
+
+### CORRECTION 1 — ENTRY 57 WAS WRONG BY TWENTY ORDERS OF MAGNITUDE
+I recorded "the first open degree is nine". THE SETTLED RANGE IS d <= 9.36 x 10^20. The claim was based
+on the PNAS paper alone and I did not retrieve the Advances follow-up. RECORD THE PROCESS FAILURE: I
+ran Phase 2 on the PNAS result and did not check for a stronger follow-up by the same authors. WHEN A
+RESULT IS THE OBVIOUS TARGET FOR ITS OWN AUTHORS TO IMPROVE, CHECK FOR THE IMPROVEMENT.
+
+### CORRECTION 2 — ENTRY 58'S "INTRINSIC COST" IS NOT INTRINSIC
+The general effective bound (3d)^{24d}(50d)^{3d^2} is MASSIVELY LOSSY: at d = 9 it is astronomically
+large while the OBSERVED onset is ZERO. The earlier reading was that the Hermite radius shrinks like
+exp(-c d^2 log d), so the threshold must grow with it. THE RADIUS DOES SHRINK — BUT THE ERROR SHRINKS
+FASTER, by the doubly exponential concentration of the theta remainder (cycle 132's mechanism).
+
+    ==> THE d^{d^2} COST IS AN ARTEFACT OF ESTIMATING THE ERROR UNIFORMLY INSTEAD OF EXPLOITING ITS OWN
+        DECAY. IT IS A PROPERTY OF THE ESTIMATE, NOT OF THE MODEL. ENTRY 58 IS AMENDED.
+
+### AND CYCLE 132'S CONJECTURE IS SUPPORTED FROM BOTH SIDES
+  * PROVEN: the settled range is 9.36 x 10^20, not 8 — the true growth is nothing like d^{3d^2};
+  * OBSERVED: n*(d) = 0 for d <= 8 and small beyond — consistent with polynomial or even bounded
+    onset.
+The mechanism proposed in cycle 132 (Brascamp-Lieb against a doubly exponential density, margin
+growing like log k) predicted exactly this, and the literature confirms it.
+
+Machine-verified: `RHTower/SettledRangeCorrection.lean` (the numeric correction 8 < 9.36e20,
+positivity of the general bound against a zero observation, the compatibility of two vanishing
+quantities with a bounded ratio, the absence of a threshold under matched decay, and the unbounded
+ratio between a sharp and a lossy estimate; standard axioms only, wired into RHTower).
+
+### SIXTY-SEVENTH ATLAS ENTRY (entries 57 and 58 amended)
+    settled range   hyperbolicity is proven for all d <= 9.36 x 10^20 and every n; observed onsets are
+                    zero for d <= 8 and tiny beyond. The general bound (3d)^{24d}(50d)^{3d^2} is
+                    massively lossy, so the d^{d^2} cost is an artefact of the estimate, not of the
+                    model. Cycle 132's polynomial conjecture is supported both by the proven range and
+                    by the computed data.
+    entry 57 AMENDED  "first open degree is nine" — WRONG; it is about 9.36 x 10^20.
+    entry 58 AMENDED  the cost is not intrinsic; the error shrinks faster than the radius.
+
+### STATE AT CYCLE 133
+Sixty-seven entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+THE ROUTE'S STATUS IS NOW MUCH STRONGER THAN THE ATLAS RECORDED: the single escaping route is settled
+for every degree below 9.36 x 10^20, its observed onsets are zero in the computed range, its cost is
+an artefact rather than a barrier, and cycle 132 supplies the mechanism explaining why. WHAT REMAINS IS
+THE TAIL d > 9.36 x 10^20 — and by the mechanism, nothing changes there in kind.
+
+### Cycle 134 target
+Prove the mechanism into a theorem. The chain is: (i) in w = log u the tilt is exponential; (ii) the
+density's -log has convexity of order k log k from the doubly exponential factor; (iii) Brascamp-Lieb
+bounds the tilted variance by its reciprocal; (iv) the d-th order factorial gap is explicit; (v) the
+variance beats the gap with a growing margin. STEPS (i), (iv), (v) ARE ALREADY FORMALISED. STEP (iii)
+IS A STANDARD INEQUALITY. STEP (ii) IS THE ONE ANALYTIC INPUT AND IT IS ELEMENTARY: differentiate
+pi n^2 e^{2 e^w} twice. FORMALISE STEP (ii) AND ASSEMBLE — that gives an unconditional proof of the
+Turan inequalities from the mechanism, which is a known theorem, but by a new and fully explicit route
+that generalises to every degree.

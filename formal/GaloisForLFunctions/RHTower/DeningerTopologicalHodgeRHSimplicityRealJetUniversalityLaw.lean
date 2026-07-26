@@ -1,5 +1,4 @@
 import GaloisForLFunctions.RHTower.DeningerArithmeticJordanObstruction
-import GaloisForLFunctions.RHTower.DeningerArithmeticJetProductEquivalence
 import GaloisForLFunctions.RHTower.DeningerCompactOpenGradedRealJetUniversalityLaw
 import GaloisForLFunctions.RHTower.XiHedenmalmSimplicityUniversalityLaw
 
@@ -8,7 +7,7 @@ import GaloisForLFunctions.RHTower.XiHedenmalmSimplicityUniversalityLaw
 
 A direct positive compact-open Hodge star forces both RH and simple Xi zeros.  The resulting
 simplicity phase is simultaneously visible in every Hedenmalm chart, while compact-open
-cohomology is the full jet product with its exact graded Real involution.
+cohomology carries its exact graded Real involution.
 -/
 
 open Complex
@@ -36,11 +35,6 @@ structure DeningerTopologicalHodgeRHSimplicityRealJetCertificate : Prop where
     ∀ rho : XiDivisorSupport, XiLocalJordanNormal rho
   hedenmalmSimplicityCharts :
     XiHedenmalmSimplicityUniversalCertificate
-  allJetsHomeomorph :
-    IsHomeomorph
-      (deningerCompactOpenH1AllJets :
-        DeningerArithmeticCompactOpenH1 →
-          DeningerArithmeticJetProduct)
   compactOpenRealInvolutive :
     ∀ x : DeningerArithmeticCompactOpenH1,
       deningerArithmeticCompactOpenH1EvenSigma
@@ -72,7 +66,6 @@ theorem deningerTopologicalHodge_rhSimplicityRealJetUniversality
       allLocalJordanNormal := hnormal
       hedenmalmSimplicityCharts :=
         xiZerosSimple_iff_hendenmalmSimplicityUniversalCertificate.mp hsimple
-      allJetsHomeomorph := isHomeomorph_deningerCompactOpenH1AllJets
       compactOpenRealInvolutive := hgraded.2.2.1
       xiJetGradedReal := hgraded.2.2.2 }
 

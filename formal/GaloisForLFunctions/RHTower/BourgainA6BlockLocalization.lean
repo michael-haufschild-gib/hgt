@@ -61,9 +61,11 @@ theorem bourgainA6NormalizedCurveSum_mul_eq_sum_blocks
   rw [one_mul]
   congr 2
   congr 1
-  simp only [finProdFinEquiv, bourgainIndex]
-  push_cast
-  ring
+  unfold bourgainIndex
+  norm_cast
+  rw [finProdFinEquiv_apply_val]
+  simp only
+  omega
 
 /-- Block partition with every block rewritten as the exact local sum used by
 the osculating-cell theorem. -/
