@@ -32,7 +32,7 @@ theorem soninLogFourierScattering_physicalState_iff_fidelitySaturated_nonnegativ
     have hcomplement :
         (1 - soninLogFourierInvariantAverage) ψ = 0 := by
       simpa only [ContinuousLinearMap.sub_apply, ContinuousLinearMap.one_apply,
-        sub_eq_zero] using hfixed
+        sub_eq_zero] using hfixed.symm
     constructor
     · rw [soninLogFourierScattering_homogeneousFidelityDeficit_eq_four_mul_sectorWeights,
         hcomplement, norm_zero]
@@ -40,7 +40,10 @@ theorem soninLogFourierScattering_physicalState_iff_fidelitySaturated_nonnegativ
     · have hoverlap :=
         congrArg Complex.re (inner_soninLogFourierScattering_eq_sectorNormSq_sub ψ)
       rw [hfixed, hcomplement, norm_zero] at hoverlap
-      simpa using hoverlap.ge
+      rw [hoverlap]
+      norm_num
+      rw [← Complex.ofReal_pow, Complex.ofReal_re]
+      exact sq_nonneg ‖ψ‖
   · rintro ⟨hdeficit, hoverlapNonneg⟩
     have hsectorProduct :
         ‖soninLogFourierInvariantAverage ψ‖ ^ 2 *
@@ -68,8 +71,11 @@ theorem soninLogFourierScattering_physicalState_iff_fidelitySaturated_nonnegativ
       norm_eq_zero.mp hcomplementNorm
     apply
       (physicalState_soninLogFourierScattering_iff_invariantAverage_fixed ψ).2
-    simpa only [ContinuousLinearMap.sub_apply, ContinuousLinearMap.one_apply,
-      sub_eq_zero] using hcomplement
+    have hsub :
+        ψ - soninLogFourierInvariantAverage ψ = 0 := by
+      simpa only [ContinuousLinearMap.sub_apply,
+        ContinuousLinearMap.one_apply] using hcomplement
+    exact (sub_eq_zero.mp hsub).symm
 
 end
 

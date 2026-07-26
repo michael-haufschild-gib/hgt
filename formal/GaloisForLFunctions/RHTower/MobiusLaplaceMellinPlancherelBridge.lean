@@ -1315,6 +1315,51 @@ theorem mobiusLaplaceCofinalFiniteSectionEnergyBounded_of_gammaHankelOffDiagonal
     exact hC N
   · positivity
 
+/-- The exact finite-section `L²` identity also recovers the signed arithmetic ceiling.
+Consequently the analytic finite-section interface does not retain any information beyond the
+Gamma--Hankel quadratic forms. -/
+theorem mobiusLaplaceCofinalGammaHankelOffDiagonalUpperBounded_of_finiteSectionEnergy
+    (hfinite : MobiusLaplaceCofinalFiniteSectionEnergyBounded) :
+    MobiusLaplaceCofinalGammaHankelOffDiagonalUpperBounded := by
+  intro ε hε
+  obtain ⟨sigma, C, hsigmaHalf, hsigmaUpper, hCtop, hbound⟩ := hfinite ε hε
+  have hsigma : 0 < sigma := by linarith
+  have hr : 1 < 2 * sigma := by linarith
+  refine ⟨sigma, hsigmaHalf, hsigmaUpper, ?_⟩
+  apply (mobiusGammaHankelEnergyUniformlyBounded_iff_offDiagonalUpperBounded hr).1
+  refine ⟨C.toReal ^ 2, fun N => ?_⟩
+  let E : ℝ :=
+    ∫ u : ℝ, ‖mobiusLaplaceFiniteSectionLogMellinLineSource N sigma u‖ ^ 2
+  have hE0 : 0 ≤ E := integral_nonneg fun _ => sq_nonneg _
+  have hmem :=
+    mobiusLaplaceFiniteSectionLogMellinLineSource_memLp_two N hsigma
+  have hN := hbound N
+  rw [hmem.eLpNorm_eq_integral_rpow_norm two_ne_zero ENNReal.ofNat_ne_top] at hN
+  simp only [ENNReal.toReal_ofNat, Real.rpow_two] at hN
+  have hroot : E ^ (2 : ℝ)⁻¹ ≤ C.toReal := by
+    have hreal :=
+      (ENNReal.toReal_le_toReal ENNReal.ofReal_ne_top hCtop).2 hN
+    simpa [E, ENNReal.toReal_ofReal (Real.rpow_nonneg hE0 _)] using hreal
+  calc
+    finiteMobiusGammaHankelEnergy N (2 * sigma) = E := by
+      exact
+        (integral_norm_sq_mobiusLaplaceFiniteSectionLogMellinLineSource N hsigma).symm
+    _ = (E ^ (2 : ℝ)⁻¹) ^ 2 := by
+      exact (Real.rpow_inv_natCast_pow hE0 (by norm_num : (2 : ℕ) ≠ 0)).symm
+    _ ≤ C.toReal ^ 2 := by
+      have hroot0 : 0 ≤ E ^ (2 : ℝ)⁻¹ := Real.rpow_nonneg hE0 _
+      have hC0 : 0 ≤ C.toReal := ENNReal.toReal_nonneg
+      nlinarith
+
+/-- Cofinal finite logarithmic `L²` ceilings are exactly cofinal one-sided upper ceilings on
+signed Möbius Gamma--Hankel covariance. -/
+theorem
+    mobiusLaplaceCofinalFiniteSectionEnergyBounded_iff_gammaHankelOffDiagonalUpperBounded :
+    MobiusLaplaceCofinalFiniteSectionEnergyBounded ↔
+      MobiusLaplaceCofinalGammaHankelOffDiagonalUpperBounded :=
+  ⟨mobiusLaplaceCofinalGammaHankelOffDiagonalUpperBounded_of_finiteSectionEnergy,
+    mobiusLaplaceCofinalFiniteSectionEnergyBounded_of_gammaHankelOffDiagonal⟩
+
 /-- Weaker bounded-return frontier.  Instead of a ceiling at every aperture, it asks only that
 off-diagonal covariance return below one finite ceiling at arbitrarily large apertures. -/
 def MobiusLaplaceCofinalGammaHankelOffDiagonalFrequentlyUpperBounded : Prop :=

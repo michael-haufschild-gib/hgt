@@ -80,6 +80,48 @@ theorem no_proper_length_two_loop_four (m : ℤ) (hm : m ≠ 0) : (1 + 4 * m).na
   have := Int.natAbs_eq_iff.mp h
   omega
 
+/-!
+### The obstruction at conductor four and above
+
+Along a chain the data are a denominator `D` with `g = gcd D Q`, `Q = g * m`, `D = g * e`, and a chosen
+representative `B` of the numerator's residue class; the next denominator is `m * |B|` and the next
+numerator has absolute value `e`.  Properness of the chain forces `D ≤ 2|B|`.  Three inequalities then
+show the chain can never return to denominator `1` once `4 ≤ Q`.
+-/
+
+/-- **The half-size invariant is preserved.**  If the numerator is at most half the denominator and the
+shift is non-trivial, the same holds one step later, provided `4 ≤ Q`. -/
+theorem proper_half_invariant (Q D b g m e : ℕ) (hQ : Q = g * m) (hD : D = g * e)
+    (hQ4 : 4 ≤ Q) (hb : D ≤ 2 * b) : 2 * e ≤ m * b := by
+  have h1 : 4 * e ≤ Q * e := Nat.mul_le_mul_right e hQ4
+  have h2 : Q * e = m * D := by rw [hQ, hD]; ring
+  have h3 : m * D ≤ m * (2 * b) := Nat.mul_le_mul_left m hb
+  have h4 : m * (2 * b) = 2 * (m * b) := by ring
+  omega
+
+/-- **A proper step never terminates.**  Terminating means `m * |B| = 1`, which forces `m = 1`, hence
+`Q ∣ D`, hence `4 ≤ D`; but `|B| = 1` and the half-size bound give `D ≤ 2`. -/
+theorem proper_not_terminal (Q D b m : ℕ) (hQ4 : 4 ≤ Q) (hD0 : 0 < D) (hb0 : 0 < b) (hm0 : 0 < m)
+    (hb : D ≤ 2 * b) (hdvd : m = 1 → Q ∣ D) : 2 ≤ m * b := by
+  by_contra hcon
+  have hpos : 0 < m * b := Nat.mul_pos hm0 hb0
+  have hmb : m * b = 1 := by omega
+  have hm1 : m = 1 := Nat.eq_one_of_mul_eq_one_right (by rwa [mul_comm] at hmb)
+  have hb1 : b = 1 := Nat.eq_one_of_mul_eq_one_left (by rwa [mul_comm] at hmb)
+  have hQD : Q ≤ D := Nat.le_of_dvd hD0 (hdvd hm1)
+  omega
+
+/-- **Two proper steps grow the denominator by the factor `Q / 4`.**  With `4 ≤ Q` the denominators are
+non-decreasing along a proper chain, so a chain starting at a denominator `≥ 2` never returns to `1`:
+there is no proper loop at conductor `4` or above. -/
+theorem proper_two_step_growth (Q D b b' g m : ℕ) (hQ : Q = g * m)
+    (hb : D ≤ 2 * b) (hb' : m * b ≤ 2 * b') : Q * D ≤ 4 * (g * b') := by
+  have h1 : Q * D ≤ Q * (2 * b) := Nat.mul_le_mul_left Q hb
+  have h2 : Q * (2 * b) = 2 * (g * (m * b)) := by rw [hQ]; ring
+  have h3 : g * (m * b) ≤ g * (2 * b') := Nat.mul_le_mul_left g hb'
+  have h4 : g * (2 * b') = 2 * (g * b') := by ring
+  omega
+
 /-- At conductor two the same criterion **is** solvable with a non-zero shift. -/
 theorem proper_length_two_loop_two : ((1 : ℤ) + 2 * (-1)).natAbs = 1 := by decide
 

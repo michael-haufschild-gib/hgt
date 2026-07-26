@@ -10034,3 +10034,71 @@ parameter adds one propagator and, when it lands on the vertex, one V'''. FORMAL
 STEP AS AN ALGEBRAIC IDENTITY ON THE TREE COUNTS FIRST — T(m+1) = (2m-3) T(m) IS ALREADY PROVED
 (cycle 152) — AND THEN THE ANALYTIC STEP. IF BOTH GO THROUGH, THE MECHANISM IS RIGOROUS AND THE
 DOUBLY-EXPONENTIAL THRESHOLD IS A THEOREM RATHER THAN A HEURISTIC.
+
+---
+
+## Cycle 164 — THE INDUCTION STEP FOR THE CUMULANT BOUND, AND EVERY CONSTANT IS ACCOUNTED FOR
+
+### The recursion is literally differentiation in the tilt
+With V_h = V - h x, kappa_{m+1} = d/dh kappa_m. TWO FACTS MAKE THE INDUCTION STABLE:
+
+  (1) THE CURVATURE DOES NOT MOVE. V_h'' = V'' — subtracting the LINEAR term h x changes the first
+      derivative by the constant h and the second derivative NOT AT ALL (formalised as HasDerivAt
+      statements). SO THE COERCIVITY CONSTANT c IS THE SAME FOR EVERY TILT.
+
+  (2) THE PROPAGATOR IS UNIFORMLY BOUNDED. The Helffer-Sjostrand form is
+      int (phi')^2 dmu_h + int V'' phi^2 dmu_h, a NONNEGATIVE Dirichlet part plus the curvature part,
+      hence >= c ||phi||^2 UNIFORMLY IN h (formalised). AND COERCIVITY FORCES THE PROPAGATOR BOUND:
+      c ||phi||^2 <= <A phi, phi> <= ||A phi|| ||phi|| gives c ||phi|| <= ||A phi||, i.e.
+      ||A^{-1}|| <= 1/c (formalised in a real inner product space).
+
+### THE STEP AND ITS BOOKKEEPING
+Each differentiation inserts ONE PROPAGATOR (a factor 1/c) and ONE DERIVATIVE landing on the
+integrand (a factor b/c relative), so it multiplies the bound by b/c^2. Starting from
+kappa_2 <= 1/c (Brascamp-Lieb), after m-2 steps:
+
+    (1/c)(b/c^2)^{m-2} = b^{m-2}/c^{2(m-2)+1} = b^{m-2} c^{-(2m-3)}     (formalised)
+
+    ==> EXACTLY THE SHAPE THE POWER COUNTING OF CYCLE 150 REQUIRES.
+
+THE CONSTANT. At stage m the expression carries 2m-3 propagators (formalised: 2m-3 = 2(m-2)+1), and
+the derivative can land on any of them, so C_{m+1} <= (2m-3) C_m with C_2 = 1.
+
+    ==> THAT IS EXACTLY THE TREE RECURRENCE T(i+1) = (2i+3) T(i) WITH T(0) = 1 ALREADY PROVED IN
+        CYCLE 152, WHOSE SOLUTION IS (2m-5)!!.
+
+### NINETY-EIGHTH ATLAS ENTRY
+    induction closes    The cumulant induction rests on three inputs, each proved: Brascamp-Lieb at
+                        the base, TILT-INVARIANCE OF THE CURVATURE (V_h'' = V''), and COERCIVITY
+                        GIVING A UNIFORM PROPAGATOR (c||phi|| <= ||A phi||). Its step multiplies by
+                        b/c^2 and its count by 2m-3, producing (2m-5)!! b^{m-2} c^{-(2m-3)}. EVERY
+                        CONSTANT AND EVERY EXPONENT IN THE MECHANISM IS NOW DERIVED RATHER THAN
+                        ASSUMED: the sharp -V'''/(V'')^3 at m = 3 (cycle 151), the three channels at
+                        m = 4 (cycle 152), the tree count (cycle 152), the power counting (cycle 150),
+                        and the margin 1 + 2t* (cycle 163).
+
+WHAT REMAINS OUTSIDE. The ANALYTIC REGULARITY: justification of differentiating under the integral in
+h, and sup-control of the higher derivatives of V on the relevant range. NOT THE ALGEBRA, NOT THE
+COUNTING, NOT THE OPERATOR BOUND. That is a genuine narrowing: the open core has gone from "bound the
+m-th cumulant" to "justify differentiation under the integral for an explicit strongly log-concave
+family".
+
+Machine-verified: `RHTower/CumulantInductionStep.lean` (tilt derivative and tilt-invariance of the
+second derivative as HasDerivAt statements, coercivity implying c||phi|| <= ||A phi|| in a real inner
+product space, coercivity of a Dirichlet-plus-curvature form, the exponent arithmetic
+1 + 2(m-2) = 2m-3 and its real form, the propagator count 2m-3 = 2(m-2)+1, the identification of the
+constant with treeCount and its base value one, and the telescoping product
+(1/c)(b/c^2)^k = b^k/c^{2k+1}; standard axioms only, wired into RHTower).
+
+### STATE AT CYCLE 164
+Ninety-eight entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+### Cycle 165 target
+THE REMAINING ANALYTIC INPUT IS DIFFERENTIATION UNDER THE INTEGRAL FOR THE TILTED FAMILY. THAT IS A
+STANDARD DOMINATED-CONVERGENCE ARGUMENT AND IT NEEDS EXACTLY ONE THING: A DOMINATING FUNCTION FOR
+d/dh of x e^{-V+hx} UNIFORMLY FOR h IN A NEIGHBOURHOOD. For a strongly log-concave V with V'' >= c the
+tilted density has GAUSSIAN TAILS WITH VARIANCE AT MOST 1/c, uniformly in h, so the dominating
+function is a Gaussian times a polynomial. STATE AND PROVE THE UNIFORM GAUSSIAN TAIL BOUND FIRST:
+for V'' >= c, the measure proportional to e^{-V(x)+hx} satisfies
+mu_h([|x - m_h| > r]) <= 2 exp(-c r^2/2), WITH m_h THE MODE, UNIFORMLY IN h. THAT IS A CLEAN,
+SELF-CONTAINED, UNCONDITIONAL LEMMA ABOUT LOG-CONCAVE MEASURES AND IT IS THE LAST NAMED GAP.

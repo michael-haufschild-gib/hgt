@@ -359,6 +359,169 @@ theorem deningerArchimedeanLefschetzDistribution_apply
   exact deningerRegularTimeDistribution_apply
     deningerArchimedeanLefschetzDensity_locallyIntegrableOn φ
 
+/-- Natural-number indices `n ≥ 2` for the von-Mangoldt prime-power comb. -/
+abbrev DeningerPrimePowerIndex :=
+  {n : ℕ // 2 ≤ n}
+
+/-- Positive time attached to `n`; von Mangoldt makes the non-prime-power coefficients vanish. -/
+def deningerPrimePowerTime (n : DeningerPrimePowerIndex) : ℝ :=
+  Real.log (n : ℕ)
+
+/-- Von-Mangoldt coefficient of one positive-time atom. -/
+def deningerPrimePowerWeight (n : DeningerPrimePowerIndex) : ℝ :=
+  ArithmeticFunction.vonMangoldt (n : ℕ)
+
+theorem deningerPrimePowerTime_pos (n : DeningerPrimePowerIndex) :
+    0 < deningerPrimePowerTime n := by
+  rw [deningerPrimePowerTime]
+  apply Real.log_pos
+  exact_mod_cast lt_of_lt_of_le Nat.one_lt_two n.property
+
+/-- Prime-power indices whose time lies in a fixed compact set. -/
+def deningerPrimeActiveSet (K : Compacts ℝ) :
+    Set DeningerPrimePowerIndex :=
+  {n | deningerPrimePowerTime n ∈ (K : Set ℝ)}
+
+/--
+Only finitely many positive-integer logarithms meet a compact time set.
+
+This is the local-finiteness mechanism behind the prime-power Dirac comb; it uses no estimate on
+primes and no spectral information.
+-/
+theorem deningerPrimeActiveSet_finite (K : Compacts ℝ) :
+    (deningerPrimeActiveSet K).Finite := by
+  rcases K.isCompact.bddAbove with ⟨B, hB⟩
+  let N : ℕ := ⌈Real.exp B⌉₊
+  refine ((Set.finite_Iic N).preimage
+    (Set.injOn_of_injective Subtype.val_injective)).subset ?_
+  intro n hn
+  change (n : ℕ) ≤ N
+  have hlog :
+      Real.log ((n : ℕ) : ℝ) ≤ B :=
+    hB hn
+  have hnposNat : 0 < (n : ℕ) :=
+    lt_of_lt_of_le Nat.zero_lt_two n.property
+  have hnposReal : 0 < ((n : ℕ) : ℝ) := by
+    exact_mod_cast hnposNat
+  have hnexp : ((n : ℕ) : ℝ) ≤ Real.exp B := by
+    rw [← Real.exp_log hnposReal]
+    exact Real.exp_le_exp.mpr hlog
+  have hnceil :
+      ((n : ℕ) : ℝ) ≤ (N : ℝ) :=
+    hnexp.trans (Nat.le_ceil (Real.exp B))
+  exact_mod_cast hnceil
+
+/-- Finite active prime-power index set on a compact time set. -/
+noncomputable def deningerPrimeActiveFinset (K : Compacts ℝ) :
+    Finset DeningerPrimePowerIndex :=
+  (deningerPrimeActiveSet_finite K).toFinset
+
+@[simp]
+theorem mem_deningerPrimeActiveFinset
+    (K : Compacts ℝ) (n : DeningerPrimePowerIndex) :
+    n ∈ deningerPrimeActiveFinset K ↔
+      deningerPrimePowerTime n ∈ (K : Set ℝ) := by
+  simp [deningerPrimeActiveFinset, deningerPrimeActiveSet]
+
+/-- Evaluation on a fixed-support smooth function, bundled continuously. -/
+noncomputable def deningerSupportedTimeEval
+    (K : Compacts ℝ) (t : ℝ) :
+    𝓓_{K}(ℝ, ℝ) →L[ℝ] ℝ :=
+  (BoundedContinuousFunction.evalCLM ℝ t).comp
+    (ContDiffMapSupportedIn.toBoundedContinuousFunctionCLM ℝ)
+
+@[simp]
+theorem deningerSupportedTimeEval_apply
+    (K : Compacts ℝ) (t : ℝ) (φ : 𝓓_{K}(ℝ, ℝ)) :
+    deningerSupportedTimeEval K t φ = φ t :=
+  rfl
+
+/-- Finite prime-power functional on functions supported in `K`. -/
+noncomputable def deningerPrimeLocalCLM
+    (K : Compacts ℝ) :
+    𝓓_{K}(ℝ, ℝ) →L[ℝ] ℂ :=
+  ∑ n ∈ deningerPrimeActiveFinset K,
+    deningerPrimePowerWeight n •
+      Complex.ofRealCLM.comp
+        (deningerSupportedTimeEval K
+          (deningerPrimePowerTime n))
+
+theorem deningerPrimeLocalCLM_apply
+    (K : Compacts ℝ) (φ : 𝓓_{K}(ℝ, ℝ)) :
+    deningerPrimeLocalCLM K φ =
+      ∑ n ∈ deningerPrimeActiveFinset K,
+        (deningerPrimePowerWeight n : ℂ) *
+          (φ (deningerPrimePowerTime n) : ℂ) := by
+  simp [deningerPrimeLocalCLM, deningerPrimePowerWeight,
+    deningerSupportedTimeEval]
+
+/-- Algebraic action of the locally finite von-Mangoldt Dirac comb. -/
+def deningerPrimeLefschetzFunctional
+    (φ : DeningerTimeTestFunction) : ℂ :=
+  ∑' n : DeningerPrimePowerIndex,
+    (deningerPrimePowerWeight n : ℂ) *
+      (φ (deningerPrimePowerTime n) : ℂ)
+
+theorem deningerPrimeLefschetzFunctional_ofSupportedIn
+    (K : Compacts ℝ)
+    (K_sub : (K : Set ℝ) ⊆ (deningerTimeDomain : Set ℝ))
+    (φ : 𝓓_{K}(ℝ, ℝ)) :
+    deningerPrimeLefschetzFunctional
+        (TestFunction.ofSupportedIn K_sub φ) =
+      deningerPrimeLocalCLM K φ := by
+  rw [deningerPrimeLefschetzFunctional,
+    tsum_eq_sum (s := deningerPrimeActiveFinset K)]
+  · simpa using (deningerPrimeLocalCLM_apply K φ).symm
+  · intro n hn
+    have htime :
+        deningerPrimePowerTime n ∉ (K : Set ℝ) := by
+      simpa using hn
+    have hzero :
+        φ (deningerPrimePowerTime n) = 0 :=
+      φ.zero_on_compl htime
+    simp [hzero]
+
+/--
+Independent finite-place Lefschetz distribution
+
+`Σ_{n≥2} Λ(n) δ_{log n}`.
+
+Compact support makes the action a finite sum on every fixed-support Fréchet stage, so
+`TestFunction.limitCLM` supplies continuity on the LF test-function space.
+-/
+noncomputable def deningerPrimeLefschetzDistribution :
+    DeningerTimeDistribution :=
+  TestFunction.limitCLM ℝ
+    deningerPrimeLefschetzFunctional
+    (fun K _K_sub => deningerPrimeLocalCLM K)
+    deningerPrimeLefschetzFunctional_ofSupportedIn
+
+@[simp]
+theorem deningerPrimeLefschetzDistribution_apply
+    (φ : DeningerTimeTestFunction) :
+    deningerPrimeLefschetzDistribution φ =
+      ∑' n : DeningerPrimePowerIndex,
+        (deningerPrimePowerWeight n : ℂ) *
+          (φ (deningerPrimePowerTime n) : ℂ) :=
+  by
+    rw [deningerPrimeLefschetzDistribution]
+    change
+      (TestFunction.limitCLM ℝ
+        deningerPrimeLefschetzFunctional
+        (fun K _K_sub => deningerPrimeLocalCLM K)
+        deningerPrimeLefschetzFunctional_ofSupportedIn) φ =
+          deningerPrimeLefschetzFunctional φ
+    exact TestFunction.limitCLM_apply ℝ
+      deningerPrimeLefschetzFunctional
+      (fun K _K_sub => deningerPrimeLocalCLM K)
+      deningerPrimeLefschetzFunctional_ofSupportedIn φ
+
+/-- Complete independently constructed prime-plus-archimedean local trace distribution. -/
+noncomputable def deningerPrimeArchimedeanLefschetzDistribution :
+    DeningerTimeDistribution :=
+  deningerPrimeLefschetzDistribution +
+    deningerArchimedeanLefschetzDistribution
+
 end
 
 end RHTower
