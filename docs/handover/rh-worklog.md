@@ -8814,3 +8814,52 @@ extends analytically because its defining series converges locally uniformly the
 THEREFORE LEGITIMATE PROVIDED THE ARCS AT ZERO AND INFINITY VANISH: at infinity by the doubly
 exponential decay, at zero by the integrability of t^{Re s} for Re s > -1. STATE BOTH ARC ESTIMATES AND
 CHECK THEM. That closes the deformation and leaves only the tail constant.
+
+---
+
+## Cycle 145 — THE DEFORMATION IS CONSTRAINED: THE DECAY IS DIRECTIONAL
+
+### What limits the contour
+The theta remainder carries exp(-pi e^{2t}). ALONG THE REAL DIRECTION that is doubly exponentially
+small (formalised). ALONG THE IMAGINARY DIRECTION IT IS NOT: for t = i y,
+
+    || exp(-pi e^{2iy}) ||  =  exp( -pi cos 2y ),        [FORMALISED]
+
+which is bounded but NOT SMALL, and AT y = pi/2 EQUALS e^{pi} > 1 (formalised).
+
+    ==> THE DOUBLY EXPONENTIAL DECAY IS A STATEMENT ABOUT THE REAL DIRECTION ALONE. THE
+        STEEPEST-DESCENT CONTOUR MUST REMAIN IN A SECTOR ABOUT THE POSITIVE REAL AXIS, AND THAT
+        CONSTRAINT — NOT THE TAIL CONSTANT — IS WHAT FIXES THE HORN'S WIDTH.
+
+### THIRD INDEPENDENT APPEARANCE OF THE SAME HORN
+  1. the saddle-point validity region (entry 76);
+  2. the region where the tail is beaten by the saddle (entry 78);
+  3. the sector in which the contour may be deformed at all (this cycle).
+THE THREE AGREE. That is why the mechanism is coherent, and it means THE HORN IS INTRINSIC TO THE
+METHOD RATHER THAN AN ARTEFACT OF ANY ONE ESTIMATE. It also matches the pattern recorded much earlier
+for log T (five appearances, entry 36) and for the pole scale (four derivations, entries 81/83/99/100
+of the old numbering): WHEN A QUANTITY IN THIS SUBJECT IS REAL, IT SHOWS UP SEVERAL WAYS.
+
+Machine-verified: `RHTower/DecayIsDirectional.lean` (the modulus of the doubly exponential factor along
+the imaginary direction, its excess over one at a quarter turn, the doubly exponential decay along the
+real direction, and the sector-confinement monotonicity; standard axioms only, wired into RHTower).
+
+### SEVENTY-NINTH ATLAS ENTRY
+    directional decay   ||exp(-pi e^{2iy})|| = exp(-pi cos 2y), bounded and exceeding one at y = pi/2,
+                        so the theta remainder's doubly exponential decay is real-directional only. The
+                        contour is confined to a sector about the positive real axis, and that — not
+                        the tail constant — fixes the horn. Third independent appearance of the same
+                        horn.
+
+### STATE AT CYCLE 145
+Seventy-nine entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+### Cycle 146 target
+The horn is intrinsic and appears three ways. THE QUESTION IS THEREFORE WHETHER THE HORN SUFFICES —
+that is, whether the Jensen mechanism needs zero-freeness OUTSIDE the horn. Recall the chain: the
+mechanism needs cumulant bounds; those need the Cauchy radius; the Cauchy radius needs a zero-free disc
+about s = 2k OF RADIUS sqrt(k / log k). THE DISC IS CENTRED ON THE REAL AXIS AND ITS RADIUS IS THE HORN
+WIDTH AT THAT POINT — SO THE DISC IS INSIDE THE HORN BY CONSTRUCTION. VERIFY THAT CONTAINMENT
+EXPLICITLY: if the disc of radius sqrt(k/log k) about 2k lies within the sector where the contour may be
+deformed, then the three appearances of the horn are not merely consistent but EXACTLY MATCHED, and
+level one closes modulo the tail constant alone.
