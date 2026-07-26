@@ -1413,3 +1413,31 @@ and of `f'` at the finitely many pole representatives -- no relation between the
 because the count only needs the total pole order of the monomials to grow linearly in `N`.  Mathlib
 supplies `MeromorphicAt.deriv`, so `f'` is meromorphic wherever `f` is, and the pole set of `f'` is
 contained in that of `f`.
+
+#### Assembly steps (b) and (c): the coefficient-to-data map and the count
+
+`GaloisForLFunctions/HTGeometry/EllipticJetValueMap.lean` (axiom-clean, build green,
+umbrella-registered).
+
+- `diffMonomial f i j` — the monomial `f^i (f')^j`;
+- **`jetValueMap f S d N z_0`** — the linear map sending a coefficient vector indexed by
+  `Fin (N+1) x Fin (N+1)` to the principal-part coefficients of the corresponding combination at each
+  pole representative, together with its value at `z_0`;
+- `card_jetValueSource` and `card_jetValueTarget` — dimensions `(N+1)^2` and `|S| d + 1`;
+- **`exists_degree_gt`** — at `N = 2|S|m + 1` the source outgrows the target;
+- **`exists_ne_zero_jetValueMap_eq_zero`** — hence a *nonzero* coefficient vector whose entire data
+  vector vanishes.
+
+**Two design choices that removed work.**  First, the map is defined as the *combination of the
+jets*, not the *jet of the combination*; that makes it linear with no analytic hypotheses at all, and
+`principalJet_finset_sum` identifies the two later, once, exactly where the pole orders have been
+cleared.  Second, the index set is the full square `i, j <= N` rather than the triangle `i + j <= N`:
+the monomials then have pole order at most `m(i+j) <= 2mN`, the source has `(N+1)^2` coordinates
+against `|S| 2mN + 1`, and the winning degree is the explicit `N = 2|S|m + 1` -- no triangular-number
+arithmetic anywhere.
+
+What is left is the interpretation of that kernel vector: identify the vanishing data with the
+principal parts of the combination itself (`principalJet_finset_sum`, using
+`order_monomial_ge_of_le` and `nonneg_order_poleFactor` to supply the cleared-order hypotheses),
+conclude via `exists_const_sub_of_lattice_periodic` that the combination vanishes off the poles, and
+multiply by the value slot `y_0`.
