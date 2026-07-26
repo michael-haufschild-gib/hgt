@@ -9698,3 +9698,60 @@ NON-HYPERBOLIC TO HYPERBOLIC? Its boundary is a conic in the ratio b^2/(ac), and
 at order m gives a hypersurface. THE SEQUENCE M SITS SOMEWHERE RELATIVE TO THAT HYPERSURFACE, AND
 RH IS THE STATEMENT THAT IT SITS INSIDE. THAT IS A GEOMETRIC FORMULATION WITH NO ASYMPTOTICS AND NO
 DETERMINANT COMPARISON, AND THE ATLAS HAS NEVER TRIED IT.
+
+---
+
+## Cycle 159 — THE HELP THE WEIGHT GIVES IS EXACTLY ITS OWN LOG-CONCAVITY, AND IT VANISHES
+
+### The threshold law — NINETY-THIRD ATLAS ENTRY
+For positive a, c the quadratic a + bX + cX^2 is hyperbolic iff b^2 >= 4ac. Weighting the
+coefficients by w_0, w_1, w_2 > 0 makes it hyperbolic iff
+
+    b^2 >= (4 w_0 w_2 / w_1^2) * a c.
+
+    ==> THE FACTOR BY WHICH A WEIGHT RELAXES THE HYPERBOLICITY THRESHOLD IS PRECISELY
+        w_1^2/(w_0 w_2), THE WEIGHT'S OWN LOG-CONCAVITY RATIO AT THAT PLACE.
+
+FOR THE FACTORIAL WEIGHT w_j = 1/(2j)! centred at index j that ratio is
+
+    (2j+3)(2j+4) / ((2j+1)(2j+2)),
+
+WHICH IS SIX AT j = 0 AND TENDS TO ONE. IT IS EXACTLY THE RECIPROCAL OF THE WINDOW RATIO OF ENTRY 89
+(formalised: weightRatio j = 1/windowRatio(2j)), SO THE TWO INDEPENDENT COMPUTATIONS AGREE TERM BY
+TERM. That is a strong internal consistency check on cycles 155-159.
+
+### THE CREATION ZONE
+Writing tau = b^2/(ac), the weight moves a quadratic from non-hyperbolic to hyperbolic exactly when
+
+    tau in [ 4 (2j+1)(2j+2)/((2j+3)(2j+4)) , 4 ),
+
+an interval of length 4(1 - windowRatio(2j)). AT THE BOTTOM IT IS [2/3, 4), OF LENGTH 10/3. IT
+SHRINKS LIKE 1/j.
+
+    ==> THE WEIGHT'S HELP IS LARGE WHERE THE INDEX IS SMALL AND VANISHES AT INFINITY. THE HYPOTHESIS
+        NEEDS THE HELP AT EVERY INDEX, AND THE HELP AVAILABLE IS 1 + O(1/j).
+
+THIS EXPLAINS, IN ONE SENTENCE, THE WHOLE SHAPE OF THE JENSEN PROGRAMME: low degree and low shift are
+easy because the weight supplies a factor SIX of slack there; the difficulty is entirely asymptotic
+because the slack decays to one. It also re-derives entry 89's window from a completely different
+starting point (a discriminant threshold rather than a determinant comparison), and the two agree.
+
+Machine-verified: `RHTower/WeightHelpIsItsLogConcavity.lean` (the weighted threshold law as an iff,
+the relaxation factor, its value 6 at j = 0, positivity, 1 < weightRatio at every j, the identity
+weightRatio j = 1/windowRatio(2j), the creation zone's lower end below 4, its nonemptiness, its value
+[2/3,4) at the bottom, and the length identity 4 - 4/weightRatio = 4(1 - windowRatio); standard
+axioms only, wired into RHTower).
+
+### STATE AT CYCLE 159
+Ninety-three entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+### Cycle 160 target
+THE LAW OF ENTRY 93 IS STATED FOR THE QUADRATIC — THE m = 2 CASE. GENERALISE IT. For a weighted
+polynomial of degree m, the analogue of "the relaxation factor is the weight's log-concavity ratio"
+should be: THE WEIGHT RELAXES THE ORDER-m HYPERBOLICITY CONDITION BY THE WEIGHT'S OWN ORDER-m
+TOEPLITZ MINOR. If that is right, then the total help available at order m is the order-m Toeplitz
+minor of the sequence 1/(2j)! ITSELF, WHICH IS A PURE FACTORIAL QUANTITY WITH NO ZETA IN IT AND CAN
+BE COMPUTED EXACTLY. COMPUTE IT AT m = 2 (must be (2j+3)(2j+4)/((2j+1)(2j+2)) - 1 up to
+normalisation) AND AT m = 3, AND SEE WHETHER IT DECAYS LIKE 1/j OR FASTER. IF IT DECAYS FASTER THAN
+THE 1/j THAT ORDER TWO ENJOYS, THAT IS A QUANTITATIVE OBSTRUCTION AT HIGHER ORDER WITH AN EXACT
+CONSTANT, AND IT WOULD BE THE FIRST TIME THE ATLAS HAS AN EXACT FACTORIAL FORMULA FOR THE DIFFICULTY.
