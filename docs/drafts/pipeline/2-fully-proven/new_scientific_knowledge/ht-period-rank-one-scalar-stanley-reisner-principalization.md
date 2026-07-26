@@ -853,3 +853,26 @@ The half of that input concerning `℘` itself is already proved
 that every lattice-periodic meromorphic function lies in `C(℘, ℘')`.  So the card's chain
 `(8) -> (17) -> period rank -> (6)` is now formalized end to end except for that one classical
 statement, which is named, isolated, and consumed at a single point.
+
+## Lean progress — `(6)` UNCONDITIONAL for entire realizations
+
+`GaloisForLFunctions/HTGeometry/EllipticLiouvilleFacetCodimension.lean` (axiom-clean, build green,
+umbrella-registered) removes the named analytic input for the realizations that actually arise.
+
+The alternative left open by `facetComplement_rankOne_or_lattice` is a facet carrier that is
+hypertranscendental and invariant under a full lattice.  For a general meromorphic carrier, excluding
+that is the elliptic structure theorem.  For an **entire** carrier it is Liouville's theorem — and the
+periodic-pencil realization theorem of the parent card produces precisely *entire* systems ("there are
+an entire function `F` on `C^d`, translations ...").
+
+- `const_of_lattice_periodic_differentiable` — **elliptic Liouville**: a lattice-periodic entire
+  function is constant.  Mathlib supplies both halves: `IsZLattice.isCompact_range_of_periodic` makes
+  the range compact, and `Differentiable.apply_eq_apply_of_bounded` is Liouville.
+- `not_hypertranscendental_of_lattice_periodic_differentiable` — hence such a function is
+  differentially algebraic.
+- **`facetComplementRankOne_of_entire`** — for a one-variable realization with entire carriers, every
+  facet omits at most one ambient vertex.  **Unconditional**: no `EllipticHypertranscendenceFree`, no
+  Weierstrass structure theory.
+
+So the facet-codimension theorem `(6)` is now fully unconditional in Lean for entire realizations, and
+the named input `EllipticHypertranscendenceFree` is needed only if one insists on carriers with poles.

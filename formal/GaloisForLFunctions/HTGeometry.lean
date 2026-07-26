@@ -2218,3 +2218,4 @@ import GaloisForLFunctions.HTGeometry.PeriodRatioWitnesses
 import GaloisForLFunctions.HTGeometry.SignedBaseJetWitnesses
 import GaloisForLFunctions.HTGeometry.ProjectiveBoundaryWitnesses
 import GaloisForLFunctions.HTGeometry.EllipticFreeFacetCodimension
+import GaloisForLFunctions.HTGeometry.EllipticLiouvilleFacetCodimension
