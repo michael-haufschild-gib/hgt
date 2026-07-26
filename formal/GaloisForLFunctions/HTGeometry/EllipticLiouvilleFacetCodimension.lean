@@ -14,9 +14,10 @@ input entirely for the realizations that actually arise:
 
 * `const_of_lattice_periodic_differentiable` — elliptic Liouville, from mathlib's
   `IsZLattice.isCompact_range_of_periodic` and `Differentiable.apply_eq_apply_of_bounded`;
-* `not_hypertranscendental_of_lattice_periodic_differentiable`;
-* **`facetComplementRankOne_of_entire`** — for a one-variable realization with entire carriers, every
-  facet omits at most one ambient vertex.  Unconditional: no named analytic input.
+* `not_hypertranscendental_of_lattice_periodic_differentiable`.
+
+The codimension law itself is stated once, at the level of the analytic datum, in
+`EntireFacetRealizationCodimension`.
 -/
 
 open Finset
@@ -40,49 +41,5 @@ theorem not_hypertranscendental_of_lattice_periodic_differentiable (L : PeriodPa
     (hdiff : Differentiable ℂ f) (hper : ∀ p ∈ L.lattice, Function.Periodic f p) :
     ¬ Hypertranscendental f :=
   not_hypertranscendental_of_const (const_of_lattice_periodic_differentiable L hdiff hper)
-
-/-- **The facet-codimension law for entire realizations.**  A one-variable realization whose carriers
-are entire forces every facet to omit at most one ambient vertex.  The rank-three and real-dependent
-rank-two cases are excluded by period rigidity as before; the remaining lattice case is excluded by
-Liouville's theorem, so no elliptic structure theory is needed. -/
-theorem facetComplementRankOne_of_entire {facets : Finset (Finset α)}
-    (hanti : FacetAntichain (↑facets : Set (Finset α))) (R : ScalarSRRealization facets)
-    (hentire : ∀ q, Differentiable ℂ (R.carrier q))
-    {V : Finset α} (hsub : ∀ F ∈ facets, F ⊆ V) :
-    FacetComplementRankOne V (↑facets : Set (Finset α)) := by
-  intro F hF
-  refine ⟨hsub F (Finset.mem_coe.mp hF), ?_⟩
-  rcases facetComplement_rankOne_or_lattice hanti R (Finset.mem_coe.mp hF) (V := V) with h | h
-  · exact h
-  · exfalso
-    obtain ⟨a, b, hab, hs, hindep⟩ := h
-    have hindep' : LinearIndependent ℝ ![R.ω a, R.ω b] := by
-      rwa [comp_cons_two] at hindep
-    have haV : a ∈ V \ F := by rw [hs]; simp
-    have hbV : b ∈ V \ F := by rw [hs]; simp
-    have haF : a ∉ F := (Finset.mem_sdiff.mp haV).2
-    have hbF : b ∉ F := (Finset.mem_sdiff.mp hbV).2
-    set L : PeriodPair := ⟨R.ω a, R.ω b, hindep'⟩ with hL
-    set q := ∏ w ∈ F, srVertexX ℂ facets w with hq
-    have hqne : q ≠ 0 := srProd_facet_ne_zero facets (Finset.mem_coe.mp hF)
-    have hpera : Function.Periodic (R.carrier q) (R.ω a) :=
-      periodic_carrier_of_mul_eq_zero R
-        (srVertexX_mul_srProd_facet_eq_zero facets hanti (Finset.mem_coe.mp hF) haF)
-    have hperb : Function.Periodic (R.carrier q) (R.ω b) :=
-      periodic_carrier_of_mul_eq_zero R
-        (srVertexX_mul_srProd_facet_eq_zero facets hanti (Finset.mem_coe.mp hF) hbF)
-    have hspan : ∀ p ∈ Submodule.span ℤ (Set.range ![R.ω a, R.ω b]),
-        Function.Periodic (R.carrier q) p := by
-      refine periodic_of_mem_span_range ![R.ω a, R.ω b] (fun i => ?_)
-      fin_cases i
-      · exact hpera
-      · exact hperb
-    have hlat : ∀ p ∈ L.lattice, Function.Periodic (R.carrier q) p := by
-      intro p hp
-      refine hspan p ?_
-      rw [range_cons_two]
-      exact hp
-    exact not_hypertranscendental_of_lattice_periodic_differentiable L (hentire q) hlat
-      (R.carrier_ht q hqne)
 
 end GaloisForLFunctions.HTGeometry

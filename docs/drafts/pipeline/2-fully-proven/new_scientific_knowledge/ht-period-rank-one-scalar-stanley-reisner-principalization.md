@@ -897,3 +897,30 @@ and `(14)`, transport of annihilation to periods `(17)`, period-rank exclusion a
 real-dependent rank two, Liouville at the lattice, the classification `facets = {V}` or a deletion
 family, and the principal ideal.  Nothing in it now depends on `EllipticHypertranscendenceFree`, which
 is needed only for carriers with poles.
+
+## Lean progress — the codimension law at the analytic datum, and channel stability
+
+`GaloisForLFunctions/HTGeometry/EntireFacetRealizationCodimension.lean` and
+`GaloisForLFunctions/HTGeometry/ChannelSRRealization.lean` (both axiom-clean, build green,
+umbrella-registered).
+
+- **`no_scalarFacetRealization_of_two_omitted_entire`** — for an entire facet carrier, *two* omitted
+  vertices are already impossible: if the two steps are `R`-dependent the period group is not
+  discrete, and if they are `R`-independent they form a `PeriodPair` and Liouville applies.  One
+  statement covers both cases.
+- **`facetComplementRankOne_of_facetRealization_entire`** — the codimension law stated directly for
+  the analytic datum `ScalarFacetRealization`, which is its most general form.
+  `facetComplementRankOne_of_entire` (ring-level) is now a one-line corollary of it, so the law is
+  proved once rather than twice.
+
+Componentwise-channel stability `(21)`--`(23)` is formalized as a reduction rather than a repetition:
+
+- `ChannelSRRealization` — an arbitrary family `iota` of channels translated componentwise by the same
+  steps, with *some* component hypertranscendental on each nonzero class (the vector form of
+  full-matroid faithfulness);
+- `channel_periodic_of_mul_eq_zero` — annihilation becomes componentwise periodicity;
+- **`ChannelSRRealization.toScalarFacetRealization`** — choosing one hypertranscendental component per
+  facet turns a channel realization into an ordinary analytic datum, so *every* scalar result applies
+  verbatim;
+- **`channel_facetComplementRankOne_of_entire`** — for entire channels every facet omits at most one
+  ambient vertex.  Vectorization supplies no extra analytic direction, exactly as the card asserts.

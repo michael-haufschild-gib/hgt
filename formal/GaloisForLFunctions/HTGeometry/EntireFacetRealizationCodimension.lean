@@ -64,4 +64,15 @@ theorem facetComplementRankOne_of_facetRealization_entire {V : Finset α}
   obtain ⟨a, ha, b, hb, hab⟩ := Finset.one_lt_card.mp h2
   exact no_scalarFacetRealization_of_two_omitted_entire R hentire hF ha hb hab
 
+/-- **The facet-codimension law for an entire ring-level realization.**  A one-variable realization
+whose carriers are entire forces every facet to omit at most one ambient vertex.  This is the datum
+level statement applied to the facet carriers produced by the separator. -/
+theorem facetComplementRankOne_of_entire {facets : Finset (Finset α)}
+    (hanti : FacetAntichain (↑facets : Set (Finset α))) (R : ScalarSRRealization facets)
+    (hentire : ∀ q, Differentiable ℂ (R.carrier q))
+    {V : Finset α} (hsub : ∀ F ∈ facets, F ⊆ V) :
+    FacetComplementRankOne V (↑facets : Set (Finset α)) :=
+  facetComplementRankOne_of_facetRealization_entire (toScalarFacetRealization R hanti V)
+    (fun _ _ => hentire _) (fun F hF => hsub F (Finset.mem_coe.mp hF))
+
 end GaloisForLFunctions.HTGeometry

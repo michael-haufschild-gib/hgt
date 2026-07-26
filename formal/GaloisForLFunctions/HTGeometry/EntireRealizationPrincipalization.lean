@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.EllipticLiouvilleFacetCodimension
+import GaloisForLFunctions.HTGeometry.EntireFacetRealizationCodimension
 import GaloisForLFunctions.HTGeometry.StanleyReisnerFacetIdeal
 
 /-!
