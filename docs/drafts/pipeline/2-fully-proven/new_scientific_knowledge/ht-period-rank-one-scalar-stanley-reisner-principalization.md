@@ -978,3 +978,29 @@ machinery in abstract differential-field form —
 `HTGeometry/DifferentialIndependence.lean` — so the missing piece is a bridge from the function-level
 predicate `DifferentiallyAlgebraic (f : C -> C)` into that framework, not the transitivity theorem
 itself.
+
+## Lean progress — the nonvanishing hypothesis removed in the real-dependent case
+
+Same module, second pass.  The quasi-period law above assumed the carrier nowhere zero, so that
+`logDeriv f` is entire.  When the two steps are `R`-dependent that hypothesis is **automatic**.
+
+- **`eq_zero_iff_of_mem_span_range`** — a nonzero multiplier can neither create nor destroy a zero,
+  and the property `f(z+p) = 0 <-> f(z) = 0` is stable under sums, negation and integer multiples;
+  so the zero set of a quasi-periodic function is invariant under the whole integer span of the
+  steps.  (The multiplicative analogue of `periodic_of_mem_span_range`; the `zsmul` branch runs by
+  `Int.induction_on` through the additive and negation branches.)
+- **`ne_zero_of_quasiperiods_realDependent`** — for `R`-dependent steps the span is not discrete
+  (`exists_small_rankTwo_realDependent_periods`), so a single zero `z_0` would be an accumulation
+  point of zeros `z_0 + p_n`, and the identity theorem
+  (`AnalyticOnNhd.eqOn_zero_of_preconnected_of_frequently_eq_zero`) would force `f = 0` identically.
+  Hence a not-identically-zero entire quasi-periodic carrier with `R`-dependent steps has **no zeros
+  at all**.
+- **`differentiallyAlgebraic_of_quasiperiods_realDependent`** and
+  `not_hypertranscendental_of_quasiperiods_realDependent` — the law with *no* nonvanishing
+  hypothesis: either `f` vanishes identically, and is constant, or it has no zeros and the general
+  law applies.
+
+So on the `R`-dependent branch `(24)`--`(26)` is now proved in the same generality as the paper
+states it, for entire carriers.  The nonvanishing hypothesis survives only on the lattice branch,
+where it is genuinely needed: there `logDeriv f` would be elliptic rather than entire, which is the
+same `EllipticHypertranscendenceFree` boundary that bounds every other analytic step of this card.

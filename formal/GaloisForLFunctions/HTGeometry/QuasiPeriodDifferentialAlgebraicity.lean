@@ -17,6 +17,10 @@ constant, whether the two steps are `ℝ`-dependent (non-discrete period group) 
 
 * `periodic_logDeriv_of_quasiperiodic` — a quasi-period of `f` is a period of `logDeriv f`;
 * **`differentiallyAlgebraic_of_quasiperiods`** — the quasi-period rank law;
+* `eq_zero_iff_of_mem_span_range`, `ne_zero_of_quasiperiods_realDependent` and
+  **`differentiallyAlgebraic_of_quasiperiods_realDependent`** — when the two steps are `ℝ`-dependent
+  the nonvanishing hypothesis is automatic: the zero set is invariant under a non-discrete group, so
+  one zero would be an accumulation point of zeros and the identity theorem would kill the function;
 * `QuasiPeriodFacetRealization` and **`facetComplementRankOne_of_quasiPeriodRealization`** — the
   facet-codimension law for constant-multiplier data: every facet still omits at most one ambient
   vertex, so scalar quasiperiodicity is no escape from the principalization theorem.
@@ -89,6 +93,103 @@ theorem not_hypertranscendental_of_quasiperiods {f : ℂ → ℂ} (hd : Differen
     (h₁ : ∀ z, f (z + w₁) = a * f z) (h₂ : ∀ z, f (z + w₂) = b * f z) :
     ¬ Hypertranscendental f :=
   fun hf => hf (differentiallyAlgebraic_of_quasiperiods hd hne hindep ha hb h₁ h₂)
+
+/-! ### Real-dependent steps make the nonvanishing hypothesis automatic -/
+
+/-- **The zero set is invariant under the whole integer span of the steps.**  A nonzero multiplier
+cannot create or destroy a zero, and the property is stable under sums and integer multiples. -/
+theorem eq_zero_iff_of_mem_span_range {ι : Type*} {f : ℂ → ℂ} (w : ι → ℂ)
+    (h : ∀ i, ∃ c : ℂ, c ≠ 0 ∧ ∀ z, f (z + w i) = c * f z) :
+    ∀ p ∈ Submodule.span ℤ (Set.range w), ∀ z, (f (z + p) = 0 ↔ f z = 0) := by
+  have hadd : ∀ q r : ℂ, (∀ z, f (z + q) = 0 ↔ f z = 0) → (∀ z, f (z + r) = 0 ↔ f z = 0) →
+      ∀ z, (f (z + (q + r)) = 0 ↔ f z = 0) := by
+    intro q r hq hr z
+    have hz : z + (q + r) = (z + r) + q := by ring
+    rw [hz, hq (z + r), hr z]
+  have hneg : ∀ q : ℂ, (∀ z, f (z + q) = 0 ↔ f z = 0) → ∀ z, (f (z + -q) = 0 ↔ f z = 0) := by
+    intro q hq z
+    have hz : (z + -q) + q = z := by ring
+    have hshift := hq (z + -q)
+    rw [hz] at hshift
+    exact hshift.symm
+  have hzsmul : ∀ (a : ℤ) (q : ℂ), (∀ z, f (z + q) = 0 ↔ f z = 0) →
+      ∀ z, (f (z + a • q) = 0 ↔ f z = 0) := by
+    intro a q hq
+    induction a using Int.induction_on with
+    | zero => intro z; simp
+    | succ n ih =>
+        intro z
+        have hs : ((n : ℤ) + 1) • q = (n : ℤ) • q + q := by rw [add_smul, one_smul]
+        rw [hs]
+        exact hadd _ _ ih hq z
+    | pred n ih =>
+        intro z
+        have hs : (-(n : ℤ) - 1) • q = (-(n : ℤ)) • q + -q := by rw [sub_smul, one_smul]; ring
+        rw [hs]
+        exact hadd _ _ ih (hneg q hq) z
+  intro p hp
+  induction hp using Submodule.span_induction with
+  | mem x hx =>
+      obtain ⟨i, rfl⟩ := hx
+      obtain ⟨c, hc, hcw⟩ := h i
+      intro z
+      rw [hcw z]
+      simp [hc]
+  | zero => intro z; simp
+  | add x y _ _ hx hy => exact hadd x y hx hy
+  | smul a x _ hx => exact hzsmul a x hx
+
+/-- **An entire quasi-periodic function with `ℝ`-dependent steps has no zeros at all.**  The zero set
+is invariant under the integer span of the two steps, which is not discrete, so a single zero would
+be an accumulation point of zeros and the identity theorem would make the function vanish
+identically. -/
+theorem ne_zero_of_quasiperiods_realDependent {f : ℂ → ℂ} (hd : Differentiable ℂ f)
+    {w₁ w₂ a b : ℂ} (hindep : LinearIndependent ℚ ![w₁, w₂])
+    (hdep : ¬ LinearIndependent ℝ ![w₁, w₂]) (ha : a ≠ 0) (hb : b ≠ 0)
+    (h₁ : ∀ z, f (z + w₁) = a * f z) (h₂ : ∀ z, f (z + w₂) = b * f z)
+    {z₁ : ℂ} (hz₁ : f z₁ ≠ 0) : ∀ z, f z ≠ 0 := by
+  intro z₀ hz₀
+  obtain ⟨p, hp_mem, hp_ne, hp_zero⟩ := exists_small_rankTwo_realDependent_periods ![w₁, w₂]
+    hindep hdep
+  have hspan := eq_zero_iff_of_mem_span_range ![w₁, w₂] (fun i => by
+    fin_cases i
+    · exact ⟨a, ha, h₁⟩
+    · exact ⟨b, hb, h₂⟩)
+  have hzero : ∀ n, f (z₀ + p n) = 0 := fun n => (hspan (p n) (hp_mem n) z₀).mpr hz₀
+  have hpz : Filter.Tendsto (fun n => z₀ + p n) Filter.atTop (nhdsWithin z₀ {z₀}ᶜ) := by
+    rw [tendsto_nhdsWithin_iff]
+    refine ⟨by simpa using (tendsto_const_nhds.add hp_zero :
+      Filter.Tendsto (fun n => z₀ + p n) Filter.atTop (nhds (z₀ + 0))), ?_⟩
+    exact Filter.Eventually.of_forall fun n => by simp [hp_ne n]
+  have hfreq : ∃ᶠ z in nhdsWithin z₀ {z₀}ᶜ, f z = 0 :=
+    hpz.frequently (Filter.Eventually.of_forall hzero).frequently
+  have han : AnalyticOnNhd ℂ f Set.univ := fun z _ => hd.analyticAt z
+  have hall := han.eqOn_zero_of_preconnected_of_frequently_eq_zero isPreconnected_univ
+    (Set.mem_univ z₀) hfreq
+  exact hz₁ (hall (Set.mem_univ z₁))
+
+/-- **The quasi-period rank law with `ℝ`-dependent steps needs no nonvanishing hypothesis.**  Either
+the function vanishes identically — and is constant — or it has no zeros at all, and the general
+law applies. -/
+theorem differentiallyAlgebraic_of_quasiperiods_realDependent {f : ℂ → ℂ}
+    (hd : Differentiable ℂ f) {w₁ w₂ a b : ℂ} (hindep : LinearIndependent ℚ ![w₁, w₂])
+    (hdep : ¬ LinearIndependent ℝ ![w₁, w₂]) (ha : a ≠ 0) (hb : b ≠ 0)
+    (h₁ : ∀ z, f (z + w₁) = a * f z) (h₂ : ∀ z, f (z + w₂) = b * f z) :
+    DifferentiallyAlgebraic f := by
+  by_cases hf0 : ∀ z, f z = 0
+  · exact differentiallyAlgebraic_of_const (fun x y => by rw [hf0 x, hf0 y])
+  · obtain ⟨z₁, hz₁⟩ := not_forall.mp hf0
+    exact differentiallyAlgebraic_of_quasiperiods hd
+      (ne_zero_of_quasiperiods_realDependent hd hindep hdep ha hb h₁ h₂ hz₁) hindep ha hb h₁ h₂
+
+/-- An entire function with two `ℚ`-independent, `ℝ`-dependent constant-multiplier quasi-periods is
+not hypertranscendental — no nonvanishing hypothesis needed. -/
+theorem not_hypertranscendental_of_quasiperiods_realDependent {f : ℂ → ℂ}
+    (hd : Differentiable ℂ f) {w₁ w₂ a b : ℂ} (hindep : LinearIndependent ℚ ![w₁, w₂])
+    (hdep : ¬ LinearIndependent ℝ ![w₁, w₂]) (ha : a ≠ 0) (hb : b ≠ 0)
+    (h₁ : ∀ z, f (z + w₁) = a * f z) (h₂ : ∀ z, f (z + w₂) = b * f z) :
+    ¬ Hypertranscendental f :=
+  fun hf => hf (differentiallyAlgebraic_of_quasiperiods_realDependent hd hindep hdep ha hb h₁ h₂)
 
 /-! ### The facet-codimension law for constant-multiplier data -/
 
