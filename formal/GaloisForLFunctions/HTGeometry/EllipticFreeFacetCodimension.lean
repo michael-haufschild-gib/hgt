@@ -25,9 +25,10 @@ namespace GaloisForLFunctions.HTGeometry
 
 variable {α : Type*} [DecidableEq α]
 
-/-- **The single analytic input still missing from the period-rank law.**  No hypertranscendental
-meromorphic function is invariant under a full lattice; equivalently, every elliptic function is
-differentially algebraic. -/
+/-- **The elliptic input of the period-rank law.**  No hypertranscendental meromorphic function is
+invariant under a full lattice; equivalently, every elliptic function is differentially algebraic.
+It is proved in `EllipticHypertranscendenceFreeProof`, so every result stated relative to it is
+unconditional. -/
 def EllipticHypertranscendenceFree : Prop :=
   ∀ (L : PeriodPair) (f : ℂ → ℂ), MeromorphicNFOn f Set.univ →
     (∀ p ∈ L.lattice, Function.Periodic f p) → ¬ Hypertranscendental f

@@ -1638,3 +1638,27 @@ functions, or the Weierstrass structure theorem for elliptic functions.
 - [x] complete unconditional Lean formalization of the analytic chain `(8)`--`(20)`, for meromorphic
       carriers
 - [ ] independent specialist proof and novelty audit
+
+## Lean progress — the datum-level law and the channel corollary lose the entirety hypothesis
+
+`formal/GaloisForLFunctions/HTGeometry/MeromorphicFacetCodimension.lean`.  With
+`ellipticHypertranscendenceFree` proved, the two earlier statements that had been stated relative to
+it, or proved only for entire carriers, become unconditional theorems about a **meromorphic**
+analytic datum:
+
+- **`no_scalarFacetRealization_of_two_omitted`** — a `ScalarFacetRealization` cannot have a facet
+  omitting two distinct ambient vertices.  The two omitted steps `omega a`, `omega b` are periods of the
+  carrier, and both configurations die: if they are `RR`-dependent the period group of a
+  hypertranscendental function fails to be discrete
+  (`no_scalarFacetRealization_of_two_omitted_realDependent`); if they are `RR`-independent the carrier
+  is a lattice-periodic meromorphic function, hence differentially algebraic by
+  `differentiallyAlgebraic_of_lattice_periodic_meromorphicNF`, contradicting hypertranscendence.
+- **`facetComplementRankOne_of_facetRealization`** — hence `(6)` for the bare analytic datum, with no
+  antichain, simplicial, or entirety hypothesis: `card (V \ F) <= 1` for every facet.
+- **`channel_facetComplementRankOne`** — hence for an arbitrary nonempty family of meromorphic
+  channels under componentwise translations (`ChannelSRRealization`), by selecting one
+  hypertranscendental component per facet.
+
+This is the last place where the entirety hypothesis survived: the analytic chain `(8)`--`(20)` and
+its `(6)` consequence now hold for meromorphic carriers at every level of the tower — datum, scalar
+Stanley--Reisner realization, and channel family.
