@@ -156,6 +156,7 @@ import GaloisForLFunctions.RHTower.DeningerArithmeticJetProduct
 import GaloisForLFunctions.RHTower.DeningerArithmeticGlobalDivision
 import GaloisForLFunctions.RHTower.DeningerArithmeticDenseJets
 import GaloisForLFunctions.RHTower.DeningerArithmeticTopologicalCohomology
+import GaloisForLFunctions.RHTower.DeningerArithmeticGelfandTriple
 import GaloisForLFunctions.RHTower.KRealClosedCokernel
 import GaloisForLFunctions.RHTower.KRealMoritaParityShift
 import GaloisForLFunctions.RHTower.CCMRationalQuaternionicMoritaFiber
@@ -2936,3 +2937,4 @@ import GaloisForLFunctions.RHTower.DensityNotNormSimilitude
 import GaloisForLFunctions.RHTower.WholeLineCollapse
 import GaloisForLFunctions.RHTower.DilationFrobeniusShift
 import GaloisForLFunctions.RHTower.ScaleInvariantAbscissaRatio
+import GaloisForLFunctions.RHTower.WitnessTestForArguments

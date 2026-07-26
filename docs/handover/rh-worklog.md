@@ -5846,3 +5846,72 @@ degree-one Euler factors are what identifies them. TEST THE CONJECTURE ON DEGREE
 (modular L-functions, where the convergence abscissa is 1 and the critical line is 1/2 in the analytic
 normalisation) — if the ratio still equals 1/2 there, the conjecture is false and the coincidence is
 an artefact of normalisation; if it differs, the coincidence is structural and is a new invariant.
+
+---
+
+## Cycle 98 (2026-07-26) — THE WITNESS TEST. CYCLE 97'S CONJECTURE REFUTED; THE CORPUS ALREADY HAD THE
+## COUNTEREXAMPLE.
+
+### Phase 1 save — THE FOURTH TIME THE OBJECT-LEVEL RULE HAS PAID
+Planned: test whether the ratio 1/2 characterises degree-one Euler factors, using a
+Davenport-Heilbronn-style counterexample. Search for "Davenport / Heilbronn / functional equation off
+line" returned TWO EXISTING CORPUS THEOREMS, both stronger and constructive:
+  * `LambdaPositiveFunctionalEquationOffLine.lambdaPositive_functionalEquation_not_criticalLine` —
+    Lambda >= 0 PLUS the Riemann functional equation does NOT force the critical line; for EVERY
+    prescribed off-critical abscissa beta in (1/2,1) and ordinate gamma there is such a system with a
+    zero there;
+  * `EntireFunctionalEquationOffLine.lambdaPositive_entire_functionalEquation_not_criticalLine` — the
+    entire version.
+MY PLANNED CYCLE WAS A DUPLICATE. Do not rebuild. (Search the OBJECT — "functional equation off line"
+— not the tool — "Davenport-Heilbronn".)
+
+### Cycle 97's conjecture: REFUTED, and by normalisation
+The conjecture was that the ratio (critical)/(convergence) = 1/2 characterises degree-one Euler
+factors. FALSE: in the analytic normalisation EVERY Selberg-class L-function has convergence abscissa
+1 and functional equation s <-> 1-s BY AXIOM, so the ratio is 1/2 by fiat, degree two included
+(modular L-functions). The coincidence of cycle 97 is an ARTEFACT OF NORMALISATION, not a structural
+invariant.
+
+### THE REPLACEMENT: THE WITNESS TEST
+The corpus witnesses satisfy the functional equation and the convergence normalisation, hence the
+ratio 1/2, AND have zeros off the critical line. Therefore:
+
+    ==> ANY ARGUMENT APPEALING ONLY TO THE FUNCTIONAL EQUATION, THE CONVERGENCE ABSCISSA, AND THEIR
+        SCALING BEHAVIOUR IS REFUTED IN ADVANCE. THE EULER PRODUCT IS NOT A CONVENIENCE IN THIS
+        PROBLEM; IT IS THE ONLY INGREDIENT THAT DISTINGUISHES ZETA FROM THE COUNTEREXAMPLES.
+
+This gives the programme a CHECKABLE INSTRUMENT: every proposed argument must FAIL on the witnesses.
+
+### CLASSIFICATION OF THE ATLAS BY THE WITNESS TEST
+  * entries 17-21 (explicit formula): involve the prime side — NOT refuted.
+  * entries 22-29 (operator/approximation): involve the compressed prime operator 𝒫 — NOT refuted.
+  * entries 30-31 (dilation, scale invariance): use only the functional equation and the convergence
+    abscissa — REFUTED BY THE WITNESSES. The scaling lane cannot force the critical line, whatever is
+    done with it. This is now proved, not suspected.
+
+Machine-verified: `RHTower/WitnessTestForArguments.lean` (the insufficiency principle, its
+contrapositive, the fact that the witnesses realise the same ratio, that the ratio therefore does not
+separate, and the isolation statement showing a forcing property must fail on the witnesses hence must
+involve the Euler product; standard axioms only, wired into RHTower).
+
+### THIRTY-SECOND ATLAS ENTRY
+    witness test   the corpus's Lambda-positive functional-equation systems have off-line zeros while
+                   satisfying the functional equation, the convergence normalisation, and the ratio
+                   1/2. Any argument using only those is refuted in advance; the Euler product is the
+                   only separating ingredient. Entries 30-31 fail the test; entries 17-29 pass.
+
+### STATE AT CYCLE 98
+Thirty-two entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+### Cycle 99 target
+The witness test says the Euler product is the ONLY separating ingredient, and the atlas says every
+lane that uses it terminates in circularity. THOSE TWO FACTS TOGETHER ARE THE SHARPEST STATEMENT THE
+PROGRAMME HAS. So attack the Euler product directly: what property of it, beyond multiplicativity,
+fails for the witnesses? The witnesses have Lambda >= 0 and a functional equation but NO Euler
+product — meaning their generalized von Mangoldt measure is not supported on prime powers with the
+multiplicative structure. THE CANDIDATE SEPARATING PROPERTY IS THE SUPPORT: zeta's log-derivative
+measure is supported on {log p^k} — a set with MULTIPLICATIVE STRUCTURE and, crucially, LINEAR
+INDEPENDENCE OVER Q of the log p. The corpus has `LogIndependence.lean` and `PrimeSymbolDecoupling`.
+TEST WHETHER LINEAR INDEPENDENCE OF THE PRIME LOGARITHMS IS THE PROPERTY THE WITNESSES FAIL — if the
+witnesses necessarily have Q-linearly dependent support, then linear independence is the separating
+ingredient, and it is a property no existing lane has used.

@@ -229,7 +229,12 @@ theorem bessel_of_almost_orthogonal (B : V → V → ℂ)
   have hre : (B u u - (lam : ℂ) * ((S : ℝ) : ℂ) - (lam : ℂ) * ((S : ℝ) : ℂ)
       + (lam : ℂ) ^ 2 * (((A : ℂ)) * ((S : ℝ) : ℂ) + R)).re
       = (B u u).re - 2 * (lam * S) + lam ^ 2 * (A * S + R.re) := by
-    simp [Complex.add_re, Complex.sub_re, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im]
+    have hre2 : ((lam : ℂ) ^ 2).re = lam ^ 2 := by
+      rw [← Complex.ofReal_pow, Complex.ofReal_re]
+    have him2 : ((lam : ℂ) ^ 2).im = 0 := by
+      rw [← Complex.ofReal_pow, Complex.ofReal_im]
+    simp [Complex.add_re, Complex.sub_re, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
+      hre2, him2]
     ring
   rw [hre] at hnn
   have hReR : R.re ≤ ε * (Fintype.card ι * S) := le_trans (Complex.re_le_norm R) hRbound

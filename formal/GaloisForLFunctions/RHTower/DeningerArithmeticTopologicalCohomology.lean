@@ -16,9 +16,10 @@ weight-one derivation law.
 
 The removable Xi divided chains descend directly to this topological quotient and give a genuine
 Frobenius eigenvector for every Xi divisor point.  Consequently a continuous conjugate-linear
-positive Hodge isomorphism from `H¹` to its strong dual proves RH.  This is an unconditional
-implication theorem: the Hodge isomorphism is isolated as the remaining construction, never
-assumed in the cohomology or spectrum definitions.
+positive comparison from this full distribution space to its strong dual would prove RH.  This
+direct comparison is deliberately retained as an overstrong diagnostic implication.  Deninger's
+actual Hilbert completion lies between the strong dual and this quotient and is formalized in
+`DeningerArithmeticGelfandTriple`.
 -/
 
 open Complex
@@ -308,10 +309,11 @@ theorem exists_deningerCompactOpenTheta_eigenvector
   simp
 
 /--
-Topologically correct source Hodge-star obligation.
+Direct strong-dual Hodge comparison.
 
 The target is the strong continuous dual, and `star` itself is continuous for that strong-dual
-topology.  Positivity is imposed only here, after construction of the cohomology and spectrum.
+topology.  This is stronger than Deninger's intended intermediate Hilbert completion; it is kept
+as a diagnostic implication, not declared as the final arithmetic Hodge object.
 -/
 structure DeningerArithmeticTopologicalHodgeStar where
   star :
