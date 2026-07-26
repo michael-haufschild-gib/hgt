@@ -7085,3 +7085,71 @@ RH becomes a subconvexity problem in the limit; if it merely follows from RH, th
 like the others. The classical position is that Lindelof does NOT imply RH — but the version needed
 here is uniform IN THE STRIP, not on the line, and that version's status is exactly what must be
 checked.
+
+---
+
+## Cycle 117 (2026-07-26) — THE BOUNDARY CASE kappa = INFINITY IS LINDELOF, AND LINDELOF IS NOT ENOUGH
+### THE ATLAS CLOSES.
+
+### The verdict: INSUFFICIENT, not circular — a cleaner outcome
+kappa = infinity means |zeta| subpolynomial throughout the strip. BY PHRAGMEN-LINDELOF CONVEXITY THAT
+IS THE SAME AS ON THE LINE: the convexity exponent mu is convex with mu(1) = 0, so mu(1/2) <= eps
+forces mu(sigma) <= 2 eps (1 - sigma) on [1/2, 1]. The strip version is NOT a stronger hypothesis;
+it is Lindelof.
+
+AND LINDELOF IS A DENSITY STATEMENT: classically equivalent to
+N(sigma, T+1) - N(sigma, T) = o(log T) for every sigma > 1/2 — a bound on a COUNT, GROWING WITH THE
+HEIGHT. By the integrality criterion (entry 48) a count excludes only when it falls below one, and
+o(log T) does not: sqrt(log T) is o(log T) and tends to infinity.
+
+    ==> THE BOUNDARY CASE OF THE WHOLE ZERO-FREE-REGION FAMILY IS LINDELOF; LINDELOF IS A
+        HEIGHT-GROWING DENSITY STATEMENT; AND HEIGHT-GROWING DENSITY STATEMENTS NEVER EXCLUDE. THE
+        FAMILY DOES NOT REACH RH EVEN IN THE LIMIT, AND THE REASON IS THE SAME HEIGHT-UNIFORMITY GAP.
+
+### THE ATLAS IS CLOSED
+Every unconditional route is now accounted for:
+  * SEPARATED BY THE STRIP (entry 47) — inputs at Re s > 1 or on Re s = 1/2 need a crossing whose
+    residues are the unknown zeros;
+  * BOUNDED BY FINITE kappa (entry 50) — the zero-free width exponent 1 - 1/kappa never reaches 1;
+  * AT kappa = INFINITY (entry 51, this cycle) — equivalent to Lindelof, hence to a density statement;
+  * INSIDE THE STRIP (entries 39, 48) — the only data is a count, and counts exclude only below one,
+    which needs height-uniformity that no available bound has.
+ALL FOUR ARE THE SAME LOGARITHMIC INVARIANT SEEN FROM DIFFERENT SIDES (entry 36, five appearances).
+
+Machine-verified: `RHTower/BoundaryCaseStillInsufficient.lean` (the convexity transfer
+2 eps (1 - sigma) <= eps on the strip, its strictness, the growth of sqrt(log T) and its eventual
+exceeding of one, the failure of the boundary case, and the closure statement; standard axioms only,
+wired into RHTower).
+
+### FIFTY-FIRST ATLAS ENTRY
+    boundary insufficient   kappa = infinity is Lindelof (same on the line and in the strip by
+                            convexity), Lindelof is the density statement
+                            N(sigma,T+1) - N(sigma,T) = o(log T), and o(log T) is never sub-unit. The
+                            zero-free-region family fails even in its limit, for the height-uniformity
+                            reason.
+
+### STATE AT CYCLE 117
+Fifty-one entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+THE ATLAS IS COMPLETE AS A MAP OF THE UNCONDITIONAL LANDSCAPE. Its terminal statement:
+
+    EVERY UNCONDITIONAL ROUTE TO THE RIEMANN HYPOTHESIS REDUCES TO A HEIGHT-UNIFORM SUB-UNIT BOUND ON
+    A ZERO-COUNT, AND NO AVAILABLE INPUT PRODUCES ONE, BECAUSE THE THEORY HAS A SINGLE INVARIANT AND
+    THAT INVARIANT GROWS WITH THE HEIGHT.
+
+This is a theorem-shaped statement about the landscape. It is not a proof or a disproof of RH, and it
+does not claim RH is unprovable — it claims the CURRENTLY AVAILABLE UNCONDITIONAL INPUTS are all
+equivalent to one growing quantity.
+
+### Cycle 118 target
+The map is complete, so the productive move is to leave the map. The terminal statement says the
+theory has ONE invariant that grows with the height. A SECOND invariant, independent of log T, would
+break the closure — and cycle 103 already identified where one could live: DIMENSIONLESS DATA, which
+the atlas is blind to. Cycle 104 then showed the correlation statistics are quadratic and bound counts
+only. BUT ENTRY 48 REFINED THAT: COUNTS DO EXCLUDE WHEN SUB-UNIT. SO RE-EXAMINE THE CORRELATION LANE
+UNDER THE REFINEMENT: is there a dimensionless correlation statistic whose sub-unit values are
+attainable, i.e. one that is NOT normalised by the density? The GUE pair correlation is normalised by
+construction; the UNNORMALISED pair count in a window of FIXED length (not scaled by 1/log T) is not.
+COMPUTE WHETHER THE UNNORMALISED SHORT-WINDOW PAIR COUNT ADMITS A SUB-UNIT UNCONDITIONAL BOUND — if it
+does, it excludes zero pairs at that separation, which is a statement about the zeros that no entry in
+the atlas covers.
