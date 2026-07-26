@@ -7913,3 +7913,67 @@ TEST WHETHER Phi'S REGULARITY AT THE RELEVANT POINT IS STRONG ENOUGH TO GIVE exp
 is analytic there with a quantified radius, Laplace's method yields factorially small errors, and
 factorial decay beats exp(-c d^2 log d) for large d — WHICH WOULD SETTLE ALL SUFFICIENTLY LARGE
 DEGREES AND LEAVE ONLY A FINITE, EXPLICIT RANGE.
+
+---
+
+## Cycle 130 (2026-07-26) — THE EXPANSION'S PARAMETER IS THE SHIFT; THE DEMAND IS IN THE DEGREE
+
+### Cycle 129's target: REFUTED, and the refutation is structural
+The central derivatives are MOMENTS of the theta remainder against u^{2n}, so the asymptotic parameter
+is n — THE SHIFT. Laplace's method gives an asymptotic series in n, with error exponentially small in
+n at optimal truncation. THE DEGREE d IS NOT THE ASYMPTOTIC PARAMETER; it is the number of
+coefficients combined into a Jensen polynomial.
+
+AND THE QUANTIFIER ORDER PROVES THE INDEPENDENCE. The available theorem has the shape
+"FOR EACH d, FOR ALL SUFFICIENTLY LARGE n". An error E(n,d) = d/n satisfies exactly that — it tends to
+zero in n for every fixed d — WHILE FOR EVERY FIXED n IT TENDS TO INFINITY IN d. So the shape of the
+available statement is COMPATIBLE WITH ARBITRARILY BAD BEHAVIOUR IN THE DEGREE.
+
+    ==> NO SHARPENING OF THE SHIFT-ASYMPTOTICS CAN PRODUCE DECAY IN THE DEGREE. THE TWO DIRECTIONS ARE
+        INDEPENDENT, AND THE "EACH d, LARGE n" SHAPE OF THE THEOREM IS EXACTLY THAT ASYMMETRY.
+
+This also explains WHY the threshold N(d) grows: more inequalities at higher degree need a larger
+shift before the same expansion is good enough. The growth is not a defect of the estimate; it is the
+quantifier order.
+
+    ==> THE SINGLE ANALYTIC INPUT CANNOT BE SUPPLIED BY IMPROVING THE EXPANSION. IT REQUIRES A
+        GENUINELY DEGREE-UNIFORM STATEMENT, WHICH THE EXPANSION'S STRUCTURE DOES NOT PROVIDE.
+
+Machine-verified: `RHTower/ExpansionParameterIsTheShift.lean` (the witness error d/n, its decay in the
+shift for every degree, its divergence in the degree for every shift, their conjunction as an explicit
+independence witness, the non-interchangeability of the quantifiers, and the degree-dependence of the
+threshold; standard axioms only, wired into RHTower).
+
+### SIXTY-FOURTH ATLAS ENTRY
+    shift versus degree   the central-derivative expansion is asymptotic in the SHIFT n, while the
+                          Jensen route needs decay in the DEGREE d. The witness d/n satisfies "for each
+                          d, small for large n" and diverges in d for each n, so the available
+                          statement's shape is compatible with arbitrarily bad degree behaviour.
+                          Improving the expansion cannot help; the threshold's growth IS the quantifier
+                          order.
+
+### STATE AT CYCLE 130
+Sixty-four entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+THE PROGRAMME'S POSITION AFTER 130 CYCLES, STATED ONCE AND PLAINLY:
+  * The unconditional landscape organised by log T is CLOSED, with a single root cause: RH is a
+    codimension-one constraint and every tool there measures two-dimensional content.
+  * EXACTLY ONE ROUTE ESCAPES — Jensen polynomials with the discriminant. It is reality-sensitive,
+    codimension-sensitive, indexed by a second invariant (the degree), has an intrinsic
+    super-exponential cost, and admits no structural shortcut.
+  * Its single analytic input is a degree-uniform statement about the central-derivative expansion, and
+    THE EXPANSION IS ASYMPTOTIC IN THE WRONG VARIABLE. No sharpening supplies it.
+  * Refutation remains finite and concrete in three equivalent forms and has never fired.
+WHAT IS MISSING IS NOW A SINGLE, PRECISELY-SHAPED ANALYTIC STATEMENT THAT NO EXISTING METHOD PRODUCES.
+
+### Cycle 131 target
+A degree-uniform statement about a family of moments is a statement about the MEASURE, not about any
+one moment. The Taylor coefficients gamma_k are the moments of the measure Phi(u) du against u^{2k};
+degree-uniformity in the Jensen sense is a statement about the whole moment SEQUENCE, i.e. about
+Phi ITSELF. THE CANONICAL DEGREE-UNIFORM STATEMENTS ABOUT A MOMENT SEQUENCE ARE THE HAMBURGER/STIELTJES
+POSITIVITY CONDITIONS AND, SHARPER, TOTAL POSITIVITY OF THE HANKEL MINORS. TEST WHETHER Phi's MOMENT
+SEQUENCE IS TOTALLY POSITIVE: total positivity of the Hankel matrices is exactly a degree-uniform
+statement, it implies all the Turan-type inequalities at once, AND IT IS A PROPERTY OF THE MEASURE Phi
+— which is explicit, positive, and analytic. That is the first candidate in 130 cycles for a
+degree-uniform input, and the corpus has Hankel machinery (XiCentralHankelDeterminantCriterion,
+MomentInnerProduct) that Phase 1 must audit first.

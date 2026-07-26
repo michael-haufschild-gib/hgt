@@ -23,8 +23,8 @@ def bourgainA6PhysicalExponentialSum
 /-- Twelfth moment on the physical box
 `[0,H]×[0,H²]×[-H²,H²]×[-H,H]`. -/
 def bourgainA6PhysicalMoment (H : ℕ) : ℝ :=
-  ∫ y₄ in (-(H : ℝ))..(H : ℝ),
-    ∫ y₃ in (-((H : ℝ) ^ (2 : ℕ)))..((H : ℝ) ^ (2 : ℕ)),
+  ∫ y₃ in (-((H : ℝ) ^ (2 : ℕ)))..((H : ℝ) ^ (2 : ℕ)),
+    ∫ y₄ in (-(H : ℝ))..(H : ℝ),
       ∫ y₂ in (0 : ℝ)..((H : ℝ) ^ (2 : ℕ)),
         ∫ y₁ in (0 : ℝ)..(H : ℝ),
           ‖bourgainA6PhysicalExponentialSum H y₁ y₂ y₃ y₄‖ ^
@@ -54,7 +54,7 @@ theorem bourgainA6PhysicalMoment_eq
               (y₂ / (H : ℝ) ^ (2 : ℕ))
               (y₃ / (H : ℝ) ^ (2 : ℕ))
               (y₄ / (H : ℝ)) := by
-    simpa using
+    simpa only [zero_div, div_self hH0] using
       (intervalIntegral.integral_comp_div
         (fun x₁ : ℝ =>
           F x₁
@@ -88,67 +88,69 @@ theorem bourgainA6PhysicalMoment_eq
     rw [hchange]
     simp only [zero_div, div_self hH20]
     ring
-  have hy₃ (y₄ : ℝ) :
-      (∫ y₃ in (-((H : ℝ) ^ (2 : ℕ)))..((H : ℝ) ^ (2 : ℕ)),
+  have hy₄ (y₃ : ℝ) :
+      (∫ y₄ in (-(H : ℝ))..(H : ℝ),
           ∫ y₂ in (0 : ℝ)..((H : ℝ) ^ (2 : ℕ)),
             ∫ y₁ in (0 : ℝ)..(H : ℝ),
               F (y₁ / (H : ℝ))
                 (y₂ / (H : ℝ) ^ (2 : ℕ))
                 (y₃ / (H : ℝ) ^ (2 : ℕ))
                 (y₄ / (H : ℝ))) =
-        (H : ℝ) ^ (5 : ℕ) *
-          ∫ x₃ in (-1 : ℝ)..1,
+        (H : ℝ) ^ (4 : ℕ) *
+          ∫ x₄ in (-1 : ℝ)..1,
             ∫ x₂ in (0 : ℝ)..1,
               ∫ x₁ in (0 : ℝ)..1,
-                F x₁ x₂ x₃ (y₄ / (H : ℝ)) := by
+                F x₁ x₂ (y₃ / (H : ℝ) ^ (2 : ℕ)) x₄ := by
     simp_rw [hy₂]
     rw [intervalIntegral.integral_const_mul]
     have hchange :=
       intervalIntegral.integral_comp_div
-        (fun x₃ : ℝ =>
+        (fun x₄ : ℝ =>
           ∫ x₂ in (0 : ℝ)..1,
             ∫ x₁ in (0 : ℝ)..1,
-              F x₁ x₂ x₃ (y₄ / (H : ℝ)))
-        hH20
-        (a := (-((H : ℝ) ^ (2 : ℕ))))
-        (b := ((H : ℝ) ^ (2 : ℕ)))
+              F x₁ x₂ (y₃ / (H : ℝ) ^ (2 : ℕ)) x₄)
+        hH0
+        (a := (-(H : ℝ)))
+        (b := (H : ℝ))
     rw [hchange]
-    simp only [neg_div, div_self hH20]
+    simp only [neg_div, div_self hH0]
     ring
   unfold bourgainA6PhysicalMoment bourgainA6PhysicalExponentialSum
   change
-    (∫ y₄ in (-(H : ℝ))..(H : ℝ),
-      ∫ y₃ in (-((H : ℝ) ^ (2 : ℕ)))..((H : ℝ) ^ (2 : ℕ)),
+    (∫ y₃ in (-((H : ℝ) ^ (2 : ℕ)))..((H : ℝ) ^ (2 : ℕ)),
+      ∫ y₄ in (-(H : ℝ))..(H : ℝ),
         ∫ y₂ in (0 : ℝ)..((H : ℝ) ^ (2 : ℕ)),
           ∫ y₁ in (0 : ℝ)..(H : ℝ),
             F (y₁ / (H : ℝ))
               (y₂ / (H : ℝ) ^ (2 : ℕ))
               (y₃ / (H : ℝ) ^ (2 : ℕ))
               (y₄ / (H : ℝ))) = _
-  simp_rw [hy₃]
+  simp_rw [hy₄]
   rw [intervalIntegral.integral_const_mul]
   have hchange :=
     intervalIntegral.integral_comp_div
-      (fun x₄ : ℝ =>
-        ∫ x₃ in (-1 : ℝ)..1,
+      (fun x₃ : ℝ =>
+        ∫ x₄ in (-1 : ℝ)..1,
           ∫ x₂ in (0 : ℝ)..1,
             ∫ x₁ in (0 : ℝ)..1,
               F x₁ x₂ x₃ x₄)
-      hH0 (a := (-(H : ℝ))) (b := (H : ℝ))
+      hH20
+      (a := (-((H : ℝ) ^ (2 : ℕ))))
+      (b := ((H : ℝ) ^ (2 : ℕ)))
   rw [hchange]
-  simp only [neg_div, div_self hH0]
+  simp only [neg_div, div_self hH20]
   change
-    (H : ℝ) ^ (5 : ℕ) *
-        ((H : ℝ) *
-          ∫ x₄ in (-1 : ℝ)..1,
-            ∫ x₃ in (-1 : ℝ)..1,
+    (H : ℝ) ^ (4 : ℕ) *
+        ((H : ℝ) ^ (2 : ℕ) *
+          ∫ x₃ in (-1 : ℝ)..1,
+            ∫ x₄ in (-1 : ℝ)..1,
               ∫ x₂ in (0 : ℝ)..1,
                 ∫ x₁ in (0 : ℝ)..1,
                   F x₁ x₂ x₃ x₄) =
       (H : ℝ) ^ (6 : ℕ) * bourgainA6LiteralMoment H
   change
-    (H : ℝ) ^ (5 : ℕ) *
-        ((H : ℝ) * bourgainA6LiteralMoment H) =
+    (H : ℝ) ^ (4 : ℕ) *
+        ((H : ℝ) ^ (2 : ℕ) * bourgainA6LiteralMoment H) =
       (H : ℝ) ^ (6 : ℕ) * bourgainA6LiteralMoment H
   ring
 
@@ -159,8 +161,9 @@ theorem bourgainA6PhysicalMoment_le_iff
     bourgainA6PhysicalMoment H ≤ (H : ℝ) ^ (6 : ℕ) * B ↔
       bourgainA6LiteralMoment H ≤ B := by
   rw [bourgainA6PhysicalMoment_eq H hH]
-  exact mul_le_mul_left
-    (show (0 : ℝ) < (H : ℝ) ^ (6 : ℕ) by positivity)
+  have hscale : (0 : ℝ) < (H : ℝ) ^ (6 : ℕ) := by
+    positivity
+  constructor <;> intro h <;> nlinarith
 
 end
 

@@ -3010,3 +3010,4 @@ import GaloisForLFunctions.RHTower.CompatibilityIsTuran
 import GaloisForLFunctions.RHTower.ValueDistributionIsZeroBlind
 import GaloisForLFunctions.RHTower.BarrierIsTheExpansion
 import GaloisForLFunctions.RHTower.UniformityIsTheWrongShape
+import GaloisForLFunctions.RHTower.ExpansionParameterIsTheShift
