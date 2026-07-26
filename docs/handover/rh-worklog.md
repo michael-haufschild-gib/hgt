@@ -4894,3 +4894,82 @@ SCALE-FREE extremal problem with no primes and no zeros, decidable by classical 
 the exact archimedean budget of the Riemann hypothesis, a single real constant. NAME IT AND COMPUTE
 IT. If it is less than 1, then RH reduces to  Err(g) <= (1 - budget) g(0)  with a POSITIVE margin —
 and the margin is the first genuinely quantitative handle the programme has produced.
+
+---
+
+## Cycle 84 (2026-07-26) — THE ARCHIMEDEAN BUDGET IS 3 log 2 + pi/2 - 3, AND IT IS BELOW ONE
+### The Weil functional carries a strictly positive margin. Closed form. First quantitative handle.
+
+### The setup from entry 17
+After the three-way cancellation,  W(g) = g(0) - T(g) - 2 E(g),  where E is the smoothed prime error
+and T is the ARCHIMEDEAN TAIL — the collapsed archimedean integral with its first mode removed. Using
+1/(1-e^{-t}) = 1 + e^{-t}/(1-e^{-t}),
+
+    T(g) = - int_0^inf ( g(0) e^{-t} - g(t/2) e^{-t/4} ) * e^{-t}/(1-e^{-t}) dt.
+
+### THE BUDGET, IN CLOSED FORM
+ghat >= 0 forces |g| <= g(0), so T(g)/g(0) is largest at g == g(0):
+
+    beta := sup_g T(g)/g(0) = int_0^inf e^{-t}(e^{-t/4} - e^{-t})/(1 - e^{-t}) dt
+                            = int_0^1 (x^{1/4} - x)/(1 - x) dx          [ x = e^{-t} ]
+                            = psi(2) - psi(5/4)                         [ Gauss's integral ]
+                            = 3 log 2 + pi/2 - 3
+                            = 0.65023...
+
+using psi(2) = 1 - gamma and psi(5/4) = psi(1/4) + 4 = 4 - gamma - pi/2 - 3 log 2. The supremum is
+APPROACHED IN THE WIDE-WINDOW LIMIT, where g/g(0) -> 1 on compacts, so it is sharp.
+
+    ==> THE ARCHIMEDEAN BUDGET OF THE RIEMANN HYPOTHESIS IS  3 log 2 + pi/2 - 3 < 1,
+        AND THE WEIL FUNCTIONAL CARRIES A STRICTLY POSITIVE MARGIN:
+
+            W(g)  >=  ( 4 - 3 log 2 - pi/2 ) g(0)  -  2 E(g),     4 - 3 log 2 - pi/2 = 0.34976...
+
+### AN ELEMENTARY ROUTE, INDEPENDENT OF THE DIGAMMA EVALUATION
+Expanding 1/(1-x) = sum x^k termwise gives beta = sum_{k>=0} [ 1/(k+5/4) - 1/(k+2) ], whose k-th term
+is (3/4)/((k+5/4)(k+2)) <= (3/4)(1/(k+1) - 1/(k+2)). THE RIGHT SIDE TELESCOPES TO 3/4. So
+
+    beta <= 3/4,        margin >= 1/4,
+
+WITH NO SPECIAL-FUNCTION INPUT AT ALL. This is the version formalised; the closed form is the sharp
+value and its position below 1 is also formalised (via log 2 < 0.6931471808 and pi < 3.15).
+
+### WHY THIS MATTERS
+Entry 17 said RH is an inequality between two O(g(0)) quantities but did not say WHICH WAY IT LEANS.
+It leans the RIGHT WAY, by a definite amount:
+
+    RH FOLLOWS FROM     E(g) <= (1/2)( 4 - 3 log 2 - pi/2 ) g(0)  for all positive-type g,
+                        i.e.  E(g) <= 0.17488... g(0).
+
+This is the first genuinely QUANTITATIVE reduction the programme has produced: a single explicit
+constant separating the hypothesis from the smoothed prime error. It is not a proof — E(g) is the
+zero sum (cycle 83's circularity verdict) — but it fixes the exact size of the target, and it shows
+the archimedean side is NOT the obstruction: it supplies a surplus of 0.3498 g(0), not a deficit.
+
+Machine-verified: `RHTower/ArchimedeanBudgetConstant.lean` (the closed-form constant as a definition,
+the termwise domination of the budget series by a telescoping series, the telescoping evaluation
+1 - 1/(N+1), the resulting bound beta <= 3/4 on every partial sum, nonnegativity of the terms, the
+quarter-margin theorem, the closed form's position strictly below one, positivity of
+4 - 3 log 2 - pi/2, and the closed-form margin theorem; standard axioms only, wired into RHTower).
+
+### EIGHTEENTH ATLAS ENTRY
+    archimedean budget   sup_g T(g)/g(0) = 3 log 2 + pi/2 - 3 = 0.65023 < 1, sharp in the
+                         wide-window limit; margin 4 - 3 log 2 - pi/2 = 0.34976 > 0. Elementary
+                         bound beta <= 3/4 by telescoping.
+
+The first entry that is a POSITIVE quantity rather than a wall or a test.
+
+### STATE AT CYCLE 84
+Eighteen entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+### Cycle 85 target
+The margin is a surplus of 0.34976 g(0) available to absorb the smoothed error. The error is the zero
+sum, so bounding it is circular — BUT THE MARGIN IS NOT THE ONLY SURPLUS. The bound |g| <= g(0) used
+to compute beta is CRUDE: it ignores that g is positive-definite, hence g(u)/g(0) is itself a
+normalised positive-definite function and must DECAY in a controlled way. Sharpen beta by replacing
+|g| <= g(0) with the true constraint. Specifically: for ghat >= 0 with g(0)=1, the function g is the
+characteristic function of a probability measure, so by Polya/Bochner g(u) >= 1 - (u^2/2) * m_2 with
+m_2 the second moment, and more usefully  1 - g(u) >= (1 - g(2u))/4  (the classical characteristic
+function inequality). USE THE CHARACTERISTIC-FUNCTION STRUCTURE TO GET A STRICTLY SMALLER beta, hence
+a strictly larger margin. Every improvement of the margin is an unconditional improvement of the
+constant in the RH-equivalent inequality, and the sequence of such improvements is a genuinely new
+quantitative programme with no wall recorded against it.
