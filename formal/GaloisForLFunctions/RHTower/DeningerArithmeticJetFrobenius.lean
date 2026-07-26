@@ -516,7 +516,7 @@ theorem deningerCompactOpenH1AllJets_eigen_off_support
                 deningerArithmeticJetThetaEigen rho) *
               deningerCompactOpenH1AllJets x tau
                 (⟨0, hn⟩ : Fin m) = 0 := by
-          simp only [Nat.cast_zero, zero_mul, zero_add] at hc
+          simp only [Nat.cast_zero, zero_mul] at hc
           linear_combination hc
         exact (mul_eq_zero.mp hmul).resolve_left
           (sub_ne_zero.mpr hne)
@@ -615,6 +615,117 @@ theorem deningerCompactOpenH1AllJets_eigen_eq_top_basis
   · rw [deningerCompactOpenH1AllJets_eigen_off_support
       hx htr k]
     simp [deningerArithmeticJetBasisVector, piBasisVector, htr]
+
+/-- Canonical square-summable lift of the chosen source Frobenius eigenclass. -/
+def deningerArithmeticJetSourceEigenvector
+    (rho : XiDivisorSupport) :
+    DeningerArithmeticJetHilbert :=
+  lp.single 2
+    (⟨rho, deningerArithmeticJetIndexTop rho⟩ :
+      DeningerArithmeticJetCoordinate)
+    (deningerCompactOpenH1AllJets
+      (deningerCompactOpenThetaEigenvector rho) rho
+      (deningerArithmeticJetIndexTop rho))
+
+/-- The canonical square-summable eigenvector maps exactly to its chosen source eigenclass. -/
+theorem deningerArithmeticJetSourceEigenvector_maps
+    (rho : XiDivisorSupport) :
+    deningerArithmeticJetHilbertToH1
+        (deningerArithmeticJetSourceEigenvector rho) =
+      deningerCompactOpenThetaEigenvector rho := by
+  apply deningerCompactOpenH1AllJets_injective
+  rw [deningerCompactOpenH1AllJets_eigen_eq_top_basis
+    (deningerCompactOpenThetaEigenvector_eigen rho)]
+  funext tau k
+  rw [deningerCompactOpenH1AllJets_apply,
+    deningerCompactOpenH1Jet_jetHilbertToH1
+      (⟨tau, k⟩ : DeningerArithmeticJetCoordinate)
+      (deningerArithmeticJetSourceEigenvector rho)]
+  classical
+  by_cases htr : tau = rho
+  · subst tau
+    by_cases hk : k = deningerArithmeticJetIndexTop rho
+    · subst k
+      simp [deningerArithmeticJetSourceEigenvector,
+        deningerArithmeticJetBasisVector, piBasisVector,
+        lp.single_apply]
+    · have hcoord :
+          (⟨rho, k⟩ : DeningerArithmeticJetCoordinate) ≠
+            ⟨rho, deningerArithmeticJetIndexTop rho⟩ := by
+        intro h
+        apply hk
+        apply Fin.ext
+        exact congrArg
+          (fun idx : DeningerArithmeticJetCoordinate =>
+            idx.2.val) h
+      simp [deningerArithmeticJetSourceEigenvector,
+        deningerArithmeticJetBasisVector, piBasisVector,
+        lp.single_apply, hk, hcoord]
+  · have hcoord :
+        (⟨tau, k⟩ : DeningerArithmeticJetCoordinate) ≠
+          ⟨rho, deningerArithmeticJetIndexTop rho⟩ := by
+      intro h
+      exact htr
+        (congrArg
+          (fun idx : DeningerArithmeticJetCoordinate => idx.1) h)
+    simp [deningerArithmeticJetSourceEigenvector,
+      deningerArithmeticJetBasisVector, piBasisVector,
+      lp.single_apply, htr, hcoord]
+
+/-- The canonical square-summable lift is nonzero. -/
+theorem deningerArithmeticJetSourceEigenvector_ne_zero
+    (rho : XiDivisorSupport) :
+    deningerArithmeticJetSourceEigenvector rho ≠ 0 := by
+  intro hzero
+  have hmap := deningerArithmeticJetSourceEigenvector_maps rho
+  rw [hzero, map_zero] at hmap
+  exact deningerCompactOpenThetaEigenvector_ne_zero rho hmap.symm
+
+/-- The canonical lift belongs to the maximal closed source Frobenius domain. -/
+theorem deningerArithmeticJetSourceEigenvector_mem_thetaDomain
+    (rho : XiDivisorSupport) :
+    deningerArithmeticJetSourceEigenvector rho ∈
+      deningerArithmeticJetClosedTheta.domain := by
+  unfold deningerArithmeticJetSourceEigenvector
+  have hb :=
+    deningerArithmeticJetClosedTheta.domain.smul_mem
+      (deningerCompactOpenH1AllJets
+        (deningerCompactOpenThetaEigenvector rho) rho
+        (deningerArithmeticJetIndexTop rho))
+      (deningerArithmeticJetBasis_mem_thetaDomain
+        (⟨rho, deningerArithmeticJetIndexTop rho⟩ :
+          DeningerArithmeticJetCoordinate))
+  simpa only [← lp.single_smul, smul_eq_mul, mul_one] using hb
+
+/-- Canonical source eigenclass as an element of the closed Frobenius domain. -/
+def deningerArithmeticJetClosedThetaEigenvector
+    (rho : XiDivisorSupport) :
+    deningerArithmeticJetClosedTheta.domain :=
+  ⟨deningerArithmeticJetSourceEigenvector rho,
+    deningerArithmeticJetSourceEigenvector_mem_thetaDomain rho⟩
+
+/-- Every source Xi divisor point survives as a genuine eigenvector of the closed jet generator. -/
+theorem deningerArithmeticJetClosedTheta_eigenvector
+    (rho : XiDivisorSupport) :
+    deningerArithmeticJetClosedTheta
+        (deningerArithmeticJetClosedThetaEigenvector rho) =
+      deningerArithmeticJetThetaEigen rho •
+        (deningerArithmeticJetClosedThetaEigenvector rho :
+          DeningerArithmeticJetHilbert) := by
+  apply deningerArithmeticJetHilbertToH1_injective
+  rw [deningerArithmeticJetClosedTheta_distribution]
+  change
+    deningerCompactOpenTheta
+        (deningerArithmeticJetHilbertToH1
+          (deningerArithmeticJetSourceEigenvector rho)) =
+      deningerArithmeticJetHilbertToH1
+        (deningerArithmeticJetThetaEigen rho •
+          deningerArithmeticJetSourceEigenvector rho)
+  rw [deningerArithmeticJetSourceEigenvector_maps,
+    deningerCompactOpenThetaEigenvector_eigen,
+    map_smul,
+    deningerArithmeticJetSourceEigenvector_maps]
+  rfl
 
 end
 

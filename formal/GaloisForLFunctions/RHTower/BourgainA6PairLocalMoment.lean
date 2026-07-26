@@ -34,6 +34,27 @@ theorem bourgainA6PairLowStart_mul_lower
   exact hstart.trans
     (Nat.mul_le_mul_left Λ (bourgainA6PairLowStart_ge i j))
 
+/-- Reordering a block pair to its low/high starts preserves the bilinear
+integrand. -/
+theorem bourgainA6PhysicalBlockPair_eq_lowHigh
+    (N K M q₀ : ℕ) (i j : Fin K) (x : BourgainPhaseSpace) :
+    ‖bourgainA6PhysicalBlockSum N M (q₀ + M * i.1)
+        (fun _ => 1) x‖ ^ (6 : ℕ) *
+      ‖bourgainA6PhysicalBlockSum N M (q₀ + M * j.1)
+        (fun _ => 1) x‖ ^ (6 : ℕ) =
+    ‖bourgainA6PhysicalBlockSum N M
+        (bourgainA6PairLowStart M q₀ i j)
+        (fun _ => 1) x‖ ^ (6 : ℕ) *
+      ‖bourgainA6PhysicalBlockSum N M
+        (bourgainA6PairHighStart M q₀ i j)
+        (fun _ => 1) x‖ ^ (6 : ℕ) := by
+  rcases le_total i.1 j.1 with hij | hji
+  · rw [bourgainA6PairLowStart, bourgainA6PairHighStart,
+      Nat.min_eq_left hij, Nat.max_eq_right hij]
+  · rw [bourgainA6PairLowStart, bourgainA6PairHighStart,
+      Nat.min_eq_right hji, Nat.max_eq_left hji]
+    ring
+
 /-- Uniform clean local moment for every off-diagonal color pair. -/
 theorem setLIntegral_bourgainA6PairLowHigh_localBall_power_of_color
     {ε : ℝ} (hε : 0 < ε) :
@@ -77,6 +98,46 @@ theorem setLIntegral_bourgainA6PairLowHigh_localBall_power_of_color
     (bourgainA6PairLowStart_add_le_highStart hsep)
     (bourgainA6PairHighStart_le hinside)
     (bourgainA6PairLowStart_mul_lower hstart i j) y
+
+/-- Ordered-pair form used directly by the three-color majorant. -/
+theorem setLIntegral_bourgainA6ColorPair_localBall_power
+    {ε : ℝ} (hε : 0 < ε) :
+    ∀ Λ : ℕ, 0 < Λ →
+    ∃ C : ℝ, 0 < C ∧
+      ∀ (N K M q₀ : ℕ), (hN : 0 < N) → (hM : 0 < M) →
+        (hMN : M ≤ N) → (hM2N : M ^ (2 : ℕ) ≤ N) →
+        (hq₀ : 0 < q₀) → (hinside : q₀ + M * K ≤ N) →
+        (hstart : N ≤ Λ * q₀) →
+      ∀ {c : Fin 3} {i j : Fin K},
+        i ∈ bourgainColorBlockFinset K c →
+        j ∈ (bourgainColorBlockFinset K c).filter (fun j => j ≠ i) →
+      ∀ y : BourgainPhaseSpace,
+      (∫⁻ x in
+        {x : BourgainPhaseSpace |
+          ‖x‖ ≤
+            bourgainA6LocalRadius (1 / Real.sqrt (Λ : ℝ)) M},
+        ENNReal.ofReal
+          (‖bourgainA6PhysicalBlockSum N M (q₀ + M * i.1)
+                (fun _ => 1) (x + y)‖ ^ (6 : ℕ) *
+            ‖bourgainA6PhysicalBlockSum N M (q₀ + M * j.1)
+                (fun _ => 1) (x + y)‖ ^ (6 : ℕ))) ≤
+        ENNReal.ofReal
+          (C * (N : ℝ) ^ (10 : ℕ) * (M : ℝ) ^ (4 + ε)) := by
+  intro Λ hΛ
+  obtain ⟨C, hC, hpair⟩ :=
+    setLIntegral_bourgainA6PairLowHigh_localBall_power_of_color
+      hε Λ hΛ
+  refine ⟨C, hC, ?_⟩
+  intro N K M q₀ hN hM hMN hM2N hq₀ hinside hstart
+    c i j hi hj y
+  have hbound :=
+    hpair N K M q₀ hN hM hMN hM2N hq₀ hinside hstart hi hj y
+  convert hbound using 1
+  apply lintegral_congr
+  intro x
+  congr 1
+  exact bourgainA6PhysicalBlockPair_eq_lowHigh
+    N K M q₀ i j (x + y)
 
 end
 

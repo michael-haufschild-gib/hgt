@@ -9284,3 +9284,81 @@ result giving hyperbolicity for a range of d growing with the shift, which is wh
 log k >~ (3/2)^d permits: d <= C log log k. THE SECOND IS THE SHARPEST QUESTION: the mechanism as now
 corrected proves hyperbolicity of J^{d,n} for d <= C log log n, and it must be checked against what is
 already known unconditionally in that regime.
+
+---
+
+## Cycle 153 — PHASE 2. THE MECHANISM IS STRICTLY WEAKER THAN THE LITERATURE, AND THE JENSEN ROUTE IS TIED TO NUMERICAL VERIFICATION
+
+### Phase 2 findings (arXiv/journal, July 2026)
+Searched: GORZ effective (arXiv:1910.01227, Adv. Math. 2022), GORZ PNAS (arXiv:1902.07321), the
+Jensen-Polya program for L-functions (arXiv:1905.11269), Chasse, Appell-polynomial hyperbolicity
+(arXiv:2002.09906).
+
+THREE FACTS THAT CHANGE THE PLAN:
+
+1. THE EFFECTIVE THRESHOLD'S SHAPE. GORZ-effective gives N(d) with log N(d) of order d^2 log d
+   (from (3d)^{24d}(50d)^{3d^2}). THAT IS SINGLY EXPONENTIAL IN d^2 log d, NOT DOUBLY EXPONENTIAL.
+
+2. THE MECHANISM'S THRESHOLD IS FAR WORSE. Cycle 152 established log k >~ (3/2)^{d-3} for the
+   cumulant/tree route.
+
+       ==> log N_mechanism ~ (3/2)^d   VERSUS   log N_literature ~ d^2 log d.
+       ==> THE CUMULANT MECHANISM IS EXPONENTIALLY WEAKER THAN THE PUBLISHED UNCONDITIONAL RESULT.
+
+   HONEST VERDICT ON CYCLES 134-152: the mechanism is CORRECT but SUPERSEDED. It reproduces a
+   qualitatively known theorem (hyperbolicity for each fixed d and large shift) with a much worse
+   threshold. ENTRY 86 IS DEMOTED: the tree count explains the cost of THIS route, not the cost of
+   the literature's route, and it is not an explanation of the known thresholds.
+
+3. THE SETTLED RANGE IS THE VERIFICATION HEIGHT SQUARED. The conditional theorem in the literature
+   reads: IF RH_m(T) HOLDS AND d <= floor(T)^2, THEN J^{d,n} IS HYPERBOLIC FOR ALL n >= m. The
+   headline ranges (d <= 9e24 in GORZ-effective; d <= 2e17 in Chasse) ARE THIS QUADRATIC TRADE
+   APPLIED TO NUMERICAL VERIFICATION HEIGHTS. (Cycle 133's recorded 9.36e20 is superseded; the
+   several published figures differ because they use different verified heights and derivative
+   orders. RECORD THE SHAPE, NOT THE NUMBER.)
+
+### THE STRUCTURAL CONSEQUENCE — EIGHTY-SEVENTH ATLAS ENTRY
+RH needs hyperbolicity of J^{d,n} for EVERY pair (d,n). Two theorem families supply it:
+
+    REGION A (unconditional): n >= N(d)  — any degree, large shift.
+    REGION B (verification):  d <= T^2   — any shift, small degree.
+
+THEIR UNION IS NOT EVERYTHING. The pair (d, 0) with d > T^2 and N(d) > 0 lies in neither. And
+COVERING THE LATTICE IS EQUIVALENT TO N(d) = 0 FOR ALL d > T^2 (formalised, both directions) — that
+is, to the unconditional threshold becoming VACUOUS exactly where verification stops. There is no
+intermediate improvement that closes the corner: any N that is anywhere positive past the verified
+range leaves an uncovered pair, and such degrees exist beyond every bound (formalised).
+
+    ==> THE JENSEN ROUTE IS NOT AN ESCAPE FROM FINITE VERIFICATION. Its uniform-in-n reach IS the
+        verification height, SQUARED. Region B converts verified height into settled degree
+        quadratically; region A converts degree into a required shift. THE LOW-SHIFT HIGH-DEGREE
+        CORNER IS UNTOUCHED BY BOTH, AND FILLING IT IS THE HYPOTHESIS.
+
+THIS CLOSES ENTRY 56. Entry 56 named the Jensen/discriminant route as the ONE tool escaping the
+codimension-versus-area dichotomy. IT DOES ESCAPE THAT DICHOTOMY — it is reality-sensitive — BUT IT
+LANDS IN A SECOND ONE: its unconditional half is non-uniform in the degree and its uniform half is
+finite verification. THE ATLAS NOW HAS NO ROUTE WHOSE UNCONDITIONAL REACH IS UNIFORM IN BOTH INDICES.
+
+Machine-verified: `RHTower/CoverageLatticeHasACorner.lean` (the two regions, the corner witness at
+(d,0), full coverage forcing N(d)=0 past T^2, its converse, the equivalence, the quadratic trade
+(cT)^2 = c^2 T^2, and the persistence of the corner beyond every bound; standard axioms only, wired
+into RHTower).
+
+### STATE AT CYCLE 153
+Eighty-seven entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+CORRECTION LOG: entry 57's "settled range 9.36e20" is REPLACED by "settled range = verified height
+squared, several published figures". Entry 86 is DEMOTED from "explains the known double exponential"
+to "the cost of the cumulant route only". Cycles 134-152's mechanism is CORRECT BUT SUPERSEDED.
+
+### Cycle 154 target
+THE CORNER IS THE TARGET AND IT IS SHARPLY STATED: hyperbolicity of J^{d,n} FOR SMALL n AND LARGE d.
+At n = 0 this is hyperbolicity of the degree-d Jensen polynomial built from the LEADING Taylor
+coefficients of Xi, i.e. from gamma_0, ..., gamma_d. THE QUESTION IS WHETHER THE FIRST d+1 TAYLOR
+COEFFICIENTS OF Xi ALONE FORCE d REAL ROOTS. Every asymptotic tool (Hermite approximation, saddle
+point, cumulants) is USELESS at n = 0 because it needs the shift to be large. ASK THE OPPOSITE
+QUESTION: is there a FINITE, EXACT relation among gamma_0..gamma_d — a determinantal or
+discriminantal identity — that is positive for all d? The Hankel/Hurwitz determinant of the
+Jensen polynomial is the natural object, and its positivity for all d at n = 0 is a statement about
+the Taylor coefficients of Xi with NO ASYMPTOTICS IN IT. THAT IS THE ONE PLACE THE ATLAS HAS NEVER
+LOOKED.

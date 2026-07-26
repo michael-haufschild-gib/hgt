@@ -610,6 +610,7 @@ import GaloisForLFunctions.RHTower.BourgainA6LocalBallPowerBound
 import GaloisForLFunctions.RHTower.BourgainA6LocalBallGrid
 import GaloisForLFunctions.RHTower.BourgainA6LocalBallGeneral
 import GaloisForLFunctions.RHTower.BourgainA6PairLocalMoment
+import GaloisForLFunctions.RHTower.BourgainA6LocalMajorant
 import GaloisForLFunctions.RHTower.BourgainA6Rescaling
 import GaloisForLFunctions.RHTower.BourgainFejerSpacing
 import GaloisForLFunctions.RHTower.BourgainFejerMomentTransfer
@@ -3070,3 +3071,4 @@ import GaloisForLFunctions.RHTower.RealVariableRouteIsInsufficient
 import GaloisForLFunctions.RHTower.DiagrammaticPowerCounting
 import GaloisForLFunctions.RHTower.ThirdCumulantConstantIsSharp
 import GaloisForLFunctions.RHTower.TreeCountBeatsFactorial
+import GaloisForLFunctions.RHTower.CoverageLatticeHasACorner

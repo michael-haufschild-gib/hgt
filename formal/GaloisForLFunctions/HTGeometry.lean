@@ -2113,6 +2113,8 @@ import GaloisForLFunctions.HTGeometry.ExceptionalSetResidual
 import GaloisForLFunctions.HTGeometry.MomentSlopeIdentity
 import GaloisForLFunctions.HTGeometry.MomentOrderTarget
 import GaloisForLFunctions.HTGeometry.MethodFloorVsTrueSlope
+import GaloisForLFunctions.HTGeometry.PowerProductFloor
+import GaloisForLFunctions.HTGeometry.CoveredBlockFraction
 import GaloisForLFunctions.HTGeometry.LogPhaseDensity
 import GaloisForLFunctions.HTGeometry.SquareIndexMultiplicative
 import GaloisForLFunctions.HTGeometry.SatakeEnergyBound
