@@ -118,4 +118,69 @@ theorem principalJet_smul {g : ℂ → ℂ} {p : ℂ} {d k : ℕ} (c : ℂ)
   rw [principalJet, hjet, principalJet]
   exact iteratedDeriv_const_mul_field c (poleClear g p d)
 
+
+/-! ### Finite linear combinations -/
+
+/-- A finite sum of functions analytic at a point is analytic there, in applied form. -/
+theorem analyticAt_finset_sum_apply {ι : Type*} (s : Finset ι) (F : ι → ℂ → ℂ) (x : ℂ)
+    (h : ∀ i ∈ s, AnalyticAt ℂ (F i) x) : AnalyticAt ℂ (fun z => ∑ i ∈ s, F i z) x := by
+  have hsum := Finset.analyticAt_sum s h
+  have hfun : (∑ i ∈ s, F i) = fun z => ∑ i ∈ s, F i z := by
+    funext z; simp
+  rwa [hfun] at hsum
+
+/-- Jets of a finite sum of functions analytic at the point. -/
+theorem iteratedDeriv_finset_sum {ι : Type*} (s : Finset ι) (F : ι → ℂ → ℂ) (x : ℂ) (k : ℕ)
+    (h : ∀ i ∈ s, AnalyticAt ℂ (F i) x) :
+    iteratedDeriv k (fun z => ∑ i ∈ s, F i z) x = ∑ i ∈ s, iteratedDeriv k (F i) x := by
+  classical
+  induction s using Finset.induction with
+  | empty => simp
+  | insert a t ha ih =>
+      have hA : AnalyticAt ℂ (F a) x := h a (Finset.mem_insert_self a t)
+      have hT : ∀ i ∈ t, AnalyticAt ℂ (F i) x := fun i hi =>
+        h i (Finset.mem_insert_of_mem hi)
+      have hTsum : AnalyticAt ℂ (fun z => ∑ i ∈ t, F i z) x := analyticAt_finset_sum_apply t F x hT
+      have hsplit : (fun z => ∑ i ∈ insert a t, F i z)
+          = fun z => F a z + ∑ i ∈ t, F i z := by
+        funext z
+        rw [Finset.sum_insert ha]
+      have hpi : (fun z => F a z + ∑ i ∈ t, F i z) = F a + fun z => ∑ i ∈ t, F i z := rfl
+      rw [hsplit, hpi, iteratedDeriv_add (hA.contDiffAt.of_le le_top)
+        (hTsum.contDiffAt.of_le le_top), ih hT, Finset.sum_insert ha]
+
+/-- **The principal jets are linear in finite combinations.** -/
+theorem principalJet_finset_sum {ι : Type*} (s : Finset ι) (g : ι → (ℂ → ℂ)) (c : ι → ℂ)
+    {p : ℂ} {d k : ℕ}
+    (hmer : ∀ i ∈ s, MeromorphicOn (fun z => (z - p) ^ d * g i z) Set.univ)
+    (hord : ∀ i ∈ s, 0 ≤ meromorphicOrderAt (fun z => (z - p) ^ d * g i z) p)
+    (hmerS : MeromorphicOn (fun z => (z - p) ^ d * ∑ i ∈ s, c i * g i z) Set.univ)
+    (hordS : 0 ≤ meromorphicOrderAt (fun z => (z - p) ^ d * ∑ i ∈ s, c i * g i z) p) :
+    principalJet (fun z => ∑ i ∈ s, c i * g i z) p d k
+      = ∑ i ∈ s, c i * principalJet (g i) p d k := by
+  classical
+  have hAi : ∀ i ∈ s, AnalyticAt ℂ (poleClear (g i) p d) p := fun i hi =>
+    analyticAt_poleClear (hmer i hi) (hord i hi)
+  have hAS : AnalyticAt ℂ (poleClear (fun z => ∑ i ∈ s, c i * g i z) p d) p :=
+    analyticAt_poleClear hmerS hordS
+  have hAcomb : AnalyticAt ℂ (fun z => ∑ i ∈ s, c i * poleClear (g i) p d z) p :=
+    analyticAt_finset_sum_apply s (fun i z => c i * poleClear (g i) p d z) p
+      (fun i hi => analyticAt_const.mul (hAi i hi))
+  have hall : ∀ᶠ z in 𝓝[≠] p, ∀ i ∈ s, poleClear (g i) p d z = (z - p) ^ d * g i z := by
+    rw [Finset.eventually_all]
+    exact fun i hi => poleClear_eventuallyEq_nhdsNE (hmer i hi) p
+  have heq : poleClear (fun z => ∑ i ∈ s, c i * g i z) p d
+      =ᶠ[𝓝[≠] p] fun z => ∑ i ∈ s, c i * poleClear (g i) p d z := by
+    filter_upwards [poleClear_eventuallyEq_nhdsNE hmerS p, hall] with z hz hi
+    rw [hz, Finset.mul_sum]
+    refine Finset.sum_congr rfl (fun i his => ?_)
+    rw [hi i his]
+    ring
+  have hjet := iteratedDeriv_congr_of_eventuallyEq_nhdsNE k heq hAS.continuousAt
+    hAcomb.continuousAt
+  rw [principalJet, hjet,
+    iteratedDeriv_finset_sum s (fun i z => c i * poleClear (g i) p d z) p k
+      (fun i hi => analyticAt_const.mul (hAi i hi))]
+  exact Finset.sum_congr rfl (fun i _ => iteratedDeriv_const_mul_field (c i) (poleClear (g i) p d))
+
 end GaloisForLFunctions.HTGeometry

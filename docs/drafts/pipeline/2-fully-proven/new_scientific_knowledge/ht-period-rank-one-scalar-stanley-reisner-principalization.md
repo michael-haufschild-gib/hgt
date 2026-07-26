@@ -1324,3 +1324,26 @@ so this module carries no order arithmetic; that is done where the concrete carr
 What remains for the last gap: the pole-bounded space as a `Submodule` with the jet map as a
 `LinearMap` into a finite-dimensional target, the dimension bound `dim <= 1 + total pole order` from
 `exists_const_sub_of_lattice_periodic`, and the monomial count.
+
+The jets are also linear in *finite combinations*, which is what the counting argument consumes:
+
+- `analyticAt_finset_sum_apply` and `iteratedDeriv_finset_sum` — a finite sum of functions analytic
+  at a point is analytic there, and its jets are the sum of the jets;
+- **`principalJet_finset_sum`** — `principalJet (sum_i c_i g_i) p d k = sum_i c_i principalJet (g_i) p d k`.
+
+**Why linearity in the coefficient vector is the right form.**  The counting step does not need a
+subspace of *functions* at all — which is fortunate, since two meromorphic functions agreeing off
+their poles need not be equal, so `Submodule`s of `C -> C` do not see the right identifications.
+Instead the linear algebra happens in coordinates: for the monomials `f^i (f')^j` with `i + j <= N`,
+the map
+
+```text
+C^{monomials} -> C^{jets} (+) C,
+  (c_ij) |-> (principal jets of the combination at each pole representative, value at one regular point)
+```
+
+is linear by `principalJet_finset_sum`, its source has dimension `~N^2/2` and its target `~N`, so for
+large `N` it has a nonzero kernel.  A kernel vector gives a combination with no principal part and
+value zero at a regular point, hence — by `exists_const_sub_of_lattice_periodic` — identically zero
+off the poles.  Multiplying the resulting differential polynomial by the value slot `y_0` absorbs the
+poles, exactly as `weierstrassPRelation` does, giving a relation valid at *every* point.
