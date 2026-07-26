@@ -4973,3 +4973,73 @@ function inequality). USE THE CHARACTERISTIC-FUNCTION STRUCTURE TO GET A STRICTL
 a strictly larger margin. Every improvement of the margin is an unconditional improvement of the
 constant in the RH-equivalent inequality, and the sequence of such improvements is a genuinely new
 quantitative programme with no wall recorded against it.
+
+---
+
+## Cycle 85 (2026-07-26) — THE BUDGET IS SHARP; THE MARGIN DOES NOT DEGRADE
+### Cycle 84's target REFUTED (the bound cannot be improved) — and the refutation is the result.
+
+### PHASE 4 KILL OF MY OWN CYCLE-85 PLAN
+I proposed sharpening beta by replacing |g| <= g(0) with the true characteristic-function constraint.
+REFUTED. The supremum is over ALL widths, and the tent of width L has g/g(0) = 1 - |u|/L -> 1
+pointwise, so the crude bound is ATTAINED IN THE LIMIT.
+
+    ==> beta = 3 log 2 + pi/2 - 3 IS SHARP. THE POSITIVE-DEFINITE STRUCTURE CANNOT IMPROVE IT.
+
+Record this: the constant 0.65023 is not an artefact of a lazy estimate. It is the exact value.
+
+### WHAT THE REFUTATION BUYS
+At FINITE width the bound IS improvable, for a concrete reason: g == 1 on [-L,L] is not positive
+definite, because its transform 2 sin(rL)/r is NEGATIVE for rL in (pi, 2pi) — at rL = 3pi/2 the
+numerator is -2. So beta(L) < beta strictly at every finite width.
+
+Shape of beta(L): substituting u = t/2,
+    T(g) = int_0^inf ( g(u) e^{-u/2} - g(0) e^{-2u} ) * 2 e^{-2u}/(1 - e^{-2u}) du,
+a LINEAR functional with positive kernel kappa(u) = 2 e^{-5u/2}/(1 - e^{-2u}). Expanding the
+denominator, kappa is a sum of exponentials 2 e^{-s_n u} with s_n = 2n + 5/2, whose transforms are
+POISSON KERNELS 4 s_n/(s_n^2 + r^2). Substituting g = phi * phi~ makes T a quadratic form, so
+
+    beta(L) = lambda_max ( compression to PW_{L/2} of the Toeplitz operator with symbol
+                           sum_n 4 s_n / (s_n^2 + r^2) ),
+
+increasing to the symbol's supremum as L -> infinity (Szego-Widom). Each Poisson kernel peaks at
+r = 0 with value 4/s_n, and the divergence of sum 4/s_n is exactly the logarithmic divergence at
+u = 0 that the subtraction of g(0) e^{-2u} removes.
+
+### THE CONSEQUENCE — NO ARCHIMEDEAN DEGRADATION
+    beta(L) increases to beta < 1, so the margin m(L) = 1 - beta(L) DECREASES to
+    4 - 3 log 2 - pi/2 = 0.34976 > 0.
+
+    ==> THE ARCHIMEDEAN MARGIN DOES NOT DEGRADE TO ZERO. The rungs of the ladder get harder
+        monotonically but converge to a STRICTLY POSITIVE budget, UNIFORM IN THE WIDTH.
+
+This contradicts the expectation set by the degradation entries of the atlas (universal height
+degradation, degradation-rate ranking). Those were all about criteria whose ARCHIMEDEAN side was
+assumed to weaken. IT DOES NOT. EVERY DEGRADATION IN THE PROBLEM LIVES IN THE ERROR TERM — that is,
+IN THE ZEROS — AND NONE OF IT IS ARCHIMEDEAN.
+
+Machine-verified: `RHTower/BudgetSharpAndMarginUniform.lean` (sin(pi + pi/2) = -1 and the resulting
+negativity of the constant's transform, the mode rates, the Poisson kernels with positivity, their
+maxima 4/s at r = 0, the harmonic lower bound on the maxima, the uniform margin bound, its explicit
+numeric form 0.34 < m(L), and strictness at finite width; standard axioms only, wired into RHTower).
+
+### NINETEENTH ATLAS ENTRY
+    margin uniformity   beta(L) increases to 3 log 2 + pi/2 - 3 < 1, so the archimedean margin
+                        decreases to 0.34976 > 0 and never vanishes. All degradation is in the zeros.
+
+### STATE AT CYCLE 85
+Nineteen entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+### Cycle 86 target
+Entry 19 says the archimedean side supplies a uniform surplus. Entry 15 says RH is a ladder of finite
+rungs. Together: RH <=> for every L, the smoothed error against every positive-type test of width L
+is below 0.17488 g(0). The error is the zero sum, so this is Weil's criterion — BUT NOW WITH AN
+EXPLICIT CONSTANT AND NO EXPONENTIAL TERMS. THE NEW QUESTION: the constant 0.17488 is what the
+ARCHIMEDEAN side gives. What does the PRIME side give BACK? The rung at width L also contains the
+prime terms with n <= e^L, and cycle 82 showed the main term is already cancelled — so what remains
+on the prime side is sum_{n<=e^L} Lambda(n) n^{-1/2} g(log n) - int, i.e. the DISCRETE-MINUS-
+CONTINUOUS defect. That defect is an EULER-MACLAURIN quantity, not a zero sum, for the smooth part.
+SPLIT THE ERROR INTO ITS EULER-MACLAURIN PART (elementary, boundable unconditionally) AND ITS
+GENUINELY ARITHMETIC PART. If the elementary part alone can exceed 0.17488, the margin is already
+consumed and the ladder is tight; if it is provably far below, the surplus available for the
+arithmetic part is quantified for the first time.

@@ -2907,3 +2907,4 @@ import GaloisForLFunctions.RHTower.PoleKreinNyquistTrace
 import GaloisForLFunctions.RHTower.PoleMinusPrimeMainIsLaplace
 import GaloisForLFunctions.RHTower.ThreeWayCancellation
 import GaloisForLFunctions.RHTower.ArchimedeanBudgetConstant
+import GaloisForLFunctions.RHTower.BudgetSharpAndMarginUniform

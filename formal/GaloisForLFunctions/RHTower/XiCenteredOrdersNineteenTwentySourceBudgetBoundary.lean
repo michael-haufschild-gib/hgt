@@ -97,38 +97,29 @@ theorem orderTwentyReciprocalPower_re_pos_of_sectorRatio
 
 theorem xiCenteredOrderTwentySectorRatio_of_offLine_inner
     (q : XiZeroCopy) (hoff : (q.1 : ℂ).re ≠ 1 / 2)
-    (hinner : ((q.1 : ℂ).re - 1 / 2) ^ 2 ≤ (261 / 2000 : ℝ)) :
+    (hinner : ((q.1 : ℂ).re - 1 / 2) ^ 2 ≤ (2365 / 10464 : ℝ)) :
     163 * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ 2 <
       ((q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2) ^ 2 := by
   let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ 2
   let v : ℝ := (q.1 : ℂ).im ^ 2
-  let A : ℝ := v - u
   let B : ℝ := 2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im
-  have hu : u ≤ 261 / 2000 := by simpa only [u] using hinner
-  have hv : 39537 / 463 < v := by
-    simpa only [v] using
-      xiZeroCopy_offLine_39537_over_463_lt_im_sq q hoff
-  have hA : 4263 / 50 < A := by dsimp only [A]; nlinarith
+  have hu : u ≤ 2365 / 10464 := by simpa only [u] using hinner
+  have hu0 : 0 < u := by
+    dsimp only [u]
+    exact sq_pos_of_ne_zero (sub_ne_zero.mpr hoff)
+  have hv : (2365 / 16 : ℝ) ≤ v := by
+    apply le_of_not_gt
+    intro hvlt
+    exact hoff (xiZeroCopy_re_eq_half_of_im_sq_lt_2365_over_16 q (by
+      simpa only [v] using hvlt))
+  have hv0 : 0 < v := by nlinarith
+  have h654 : 654 * u ≤ v := by nlinarith
+  have hprod : 0 ≤ v * (v - 654 * u) :=
+    mul_nonneg hv0.le (sub_nonneg.mpr h654)
   have hB : B ^ 2 = 4 * u * v := by dsimp only [B, u, v]; ring
-  have hBbound : 163 * B ^ 2 ≤ (42543 / 500 : ℝ) * v := by
-    rw [hB]
-    nlinarith
-  have hvA : v ≤ A + 261 / 2000 := by dsimp only [A]; nlinarith
-  have hbase :
-      (42543 / 500 : ℝ) * (4263 / 50 + 261 / 2000) <
-        (4263 / 50 : ℝ) ^ 2 := by
-    norm_num
-  have hprod :
-      0 < (A - 4263 / 50) *
-        (A + 4263 / 50 - 42543 / 500) := by
-    apply mul_pos
-    · nlinarith
-    · nlinarith
-  have hpoly :
-      (42543 / 500 : ℝ) * (A + 261 / 2000) < A ^ 2 := by
-    nlinarith
-  change 163 * B ^ 2 < A ^ 2
-  nlinarith
+  change 163 * B ^ 2 < (v - u) ^ 2
+  rw [hB]
+  nlinarith [sq_pos_of_pos hu0]
 
 theorem xiCenteredOrderTwentySectorRatio_of_threeHundredTwentySevenHalves_le_im_sq
     (q : XiZeroCopy) (hhigh : 327 / 2 ≤ (q.1 : ℂ).im ^ 2) :
@@ -159,7 +150,7 @@ theorem xiCenteredOrderTwentySectorRatio_of_threeHundredTwentySevenHalves_le_im_
 
 def XiCenteredOrderTwentyResidualAnnulus (q : XiZeroCopy) : Prop :=
   (q.1 : ℂ).re ≠ 1 / 2 ∧
-    (261 / 2000 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ 2 ∧
+    (2365 / 10464 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ 2 ∧
       ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4 ∧
         2365 / 16 ≤ (q.1 : ℂ).im ^ 2 ∧
           (q.1 : ℂ).im ^ 2 < 327 / 2
@@ -170,7 +161,7 @@ theorem xiCenteredOrderTwentySectorFailure_mem_residualAnnulus
       ((q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2) ^ 2 ≤
         163 * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ 2) :
     XiCenteredOrderTwentyResidualAnnulus q := by
-  have hedge : (261 / 2000 : ℝ) <
+  have hedge : (2365 / 10464 : ℝ) <
       ((q.1 : ℂ).re - 1 / 2) ^ 2 := by
     by_contra h
     linarith [xiCenteredOrderTwentySectorRatio_of_offLine_inner
@@ -323,37 +314,29 @@ theorem orderTwentyOneReciprocalPower_re_pos_of_sectorRatio
 
 theorem xiCenteredOrderTwentyOneSectorRatio_of_offLine_inner
     (q : XiZeroCopy) (hoff : (q.1 : ℂ).re ≠ 1 / 2)
-    (hinner : ((q.1 : ℂ).re - 1 / 2) ^ 2 ≤ (591 / 5000 : ℝ)) :
+    (hinner : ((q.1 : ℂ).re - 1 / 2) ^ 2 ≤ (2365 / 11552 : ℝ)) :
     180 * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ 2 <
       ((q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2) ^ 2 := by
   let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ 2
   let v : ℝ := (q.1 : ℂ).im ^ 2
-  let A : ℝ := v - u
   let B : ℝ := 2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im
-  have hu : u ≤ 591 / 5000 := by simpa only [u] using hinner
-  have hv : 39537 / 463 < v := by
-    simpa only [v] using
-      xiZeroCopy_offLine_39537_over_463_lt_im_sq q hoff
-  have hA : 8527 / 100 < A := by dsimp only [A]; nlinarith
+  have hu : u ≤ 2365 / 11552 := by simpa only [u] using hinner
+  have hu0 : 0 < u := by
+    dsimp only [u]
+    exact sq_pos_of_ne_zero (sub_ne_zero.mpr hoff)
+  have hv : (2365 / 16 : ℝ) ≤ v := by
+    apply le_of_not_gt
+    intro hvlt
+    exact hoff (xiZeroCopy_re_eq_half_of_im_sq_lt_2365_over_16 q (by
+      simpa only [v] using hvlt))
+  have hv0 : 0 < v := by nlinarith
+  have h722 : 722 * u ≤ v := by nlinarith
+  have hprod : 0 ≤ v * (v - 722 * u) :=
+    mul_nonneg hv0.le (sub_nonneg.mpr h722)
   have hB : B ^ 2 = 4 * u * v := by dsimp only [B, u, v]; ring
-  have hBbound : 180 * B ^ 2 ≤ (10638 / 125 : ℝ) * v := by
-    rw [hB]
-    nlinarith
-  have hvA : v ≤ A + 591 / 5000 := by dsimp only [A]; nlinarith
-  have hbase :
-      (10638 / 125 : ℝ) * (8527 / 100 + 591 / 5000) <
-        (8527 / 100 : ℝ) ^ 2 := by
-    norm_num
-  have hprod :
-      0 < (A - 8527 / 100) * (A + 8527 / 100 - 10638 / 125) := by
-    apply mul_pos
-    · nlinarith
-    · nlinarith
-  have hpoly :
-      (10638 / 125 : ℝ) * (A + 591 / 5000) < A ^ 2 := by
-    nlinarith
-  change 180 * B ^ 2 < A ^ 2
-  nlinarith
+  change 180 * B ^ 2 < (v - u) ^ 2
+  rw [hB]
+  nlinarith [sq_pos_of_pos hu0]
 
 theorem xiCenteredOrderTwentyOneSectorRatio_of_threeHundredSixtyOneHalves_le_im_sq
     (q : XiZeroCopy) (hhigh : 361 / 2 ≤ (q.1 : ℂ).im ^ 2) :
@@ -384,7 +367,7 @@ theorem xiCenteredOrderTwentyOneSectorRatio_of_threeHundredSixtyOneHalves_le_im_
 
 def XiCenteredOrderTwentyOneResidualAnnulus (q : XiZeroCopy) : Prop :=
   (q.1 : ℂ).re ≠ 1 / 2 ∧
-    (591 / 5000 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ 2 ∧
+    (2365 / 11552 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ 2 ∧
       ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4 ∧
         2365 / 16 ≤ (q.1 : ℂ).im ^ 2 ∧
           (q.1 : ℂ).im ^ 2 < 361 / 2
@@ -395,7 +378,7 @@ theorem xiCenteredOrderTwentyOneSectorFailure_mem_residualAnnulus
       ((q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2) ^ 2 ≤
         180 * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ 2) :
     XiCenteredOrderTwentyOneResidualAnnulus q := by
-  have hedge : (591 / 5000 : ℝ) <
+  have hedge : (2365 / 11552 : ℝ) <
       ((q.1 : ℂ).re - 1 / 2) ^ 2 := by
     by_contra h
     linarith [xiCenteredOrderTwentyOneSectorRatio_of_offLine_inner
