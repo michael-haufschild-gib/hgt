@@ -5632,3 +5632,79 @@ behaviour at Re s = 1/2 is the object of the hypothesis — but the ORDER RELATI
 regularisation even where the symbol does not converge pointwise. TEST WHETHER 𝒫 <= Q IS STABLE UNDER
 ABEL REGULARISATION: if the regularised inequality is equivalent to the compressed one, the whole-line
 setting is available and the edge obstruction disappears.
+
+---
+
+## Cycle 95 (2026-07-26) — THE OPERATOR LANE IS CLOSED AT BOTH ENDS
+### Walled under compression (entries 25, 28); DEGENERATE without it.
+
+### The whole-line computation
+On L^2(R) the archimedean form Q is a Fourier multiplier. Its symbol is 1 plus the REGULARISED sum of
+Poisson kernels
+    sum_n ( 4 s_n/(s_n^2 + r^2) - 4/s_n )  =  - sum_n 4 r^2 / ( s_n (s_n^2 + r^2) ),   s_n = 2n + 5/2,
+which CONVERGES (terms ~ 4r^2/s_n^3), is NEGATIVE, and has size -2 log|r| — exactly matching the
+archimedean weight Omega(r) ~ log|r|. INDEPENDENT CONFIRMATION of the cycle-84/85 analysis from the
+whole-line side. The Abel-regularised prime form 𝒫_eps is also a multiplier, with symbol
+-2 Re (zeta'/zeta)(1/2 + eps + i r).
+
+### THE COLLAPSE
+TWO MULTIPLIERS COMMUTE and are simultaneously diagonalised by the Fourier transform. Hence
+
+    ==> THE OPERATOR INEQUALITY  𝒫_eps <= Q  IS EXACTLY THE POINTWISE INEQUALITY OF THEIR SYMBOLS.
+        NO SPECTRAL THEORY SURVIVES THE PASSAGE TO THE WHOLE LINE: the entire content is a bound
+        between two real functions of one variable.
+
+And that bound is LAGARIAS' CRITERION: by the partial-fraction expansion the symbol of 𝒫_eps is a sum
+over zeros of (1/2 + eps - beta)/((1/2 + eps - beta)^2 + (r - gam)^2) plus an explicit archimedean
+part. Under RH every beta = 1/2, every term has numerator eps > 0 and the inequality is preserved;
+if some beta = 1/2 + a > 1/2 then at r = gam and eps < a the term is 1/(eps - a), NEGATIVE AND
+UNBOUNDED as eps rises to a. PHASE-4 VERDICT: REDISCOVERED (Lagarias); the corpus already has
+`KreinChamberIsLagarias`.
+
+### THE DIAGNOSTIC — this is what the cycle is worth
+The compression wall of entries 25 and 28 is an ARTEFACT OF THE FINITE-WIDTH FORMULATION, not
+intrinsic to the operator approach: on the whole line there is no edge and translations are exact
+isometries. BUT THE WALL-FREE FORMULATION IS THE POINTWISE ONE, IN WHICH NO SIMILITUDE AND NO
+SELF-ADJOINTNESS CAN HELP, BECAUSE EVERYTHING ALREADY COMMUTES.
+
+    ==> THE OPERATOR LANE IS CLOSED AT BOTH ENDS: WALLED UNDER COMPRESSION, DEGENERATE WITHOUT IT.
+        A NONCOMMUTATIVE STRUCTURE IS NECESSARY, AND COMPRESSION IS THE ONLY SOURCE OF
+        NONCOMMUTATIVITY AVAILABLE — AND IT IS EXACTLY WHAT ENTRIES 25 AND 28 KILL.
+
+That is a genuine dichotomy and it explains the whole shape of the operator-theoretic literature on
+RH: constructions are either commutative (and give back Lagarias) or compressed (and lose the extreme
+eigenvalues to the edge).
+
+Machine-verified: `RHTower/WholeLineCollapse.lean` (the reduction of a multiplier inequality to a
+pointwise one in both directions, positivity of the zero term on the critical line, its reversal off
+the line, the closed form 1/(eps - a) at the ordinate, and the quantitative blow-up as eps rises to
+a; standard axioms only, wired into RHTower).
+
+### TWENTY-NINTH ATLAS ENTRY
+    whole-line collapse   on L^2(R) both forms are Fourier multipliers, so they commute and the
+                          operator inequality is pointwise — Lagarias' criterion. The operator lane
+                          is walled under compression and degenerate without it; noncommutativity is
+                          necessary and unavailable.
+
+### STATE AT CYCLE 95
+Twenty-nine entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+THREE LANES ARE NOW CHARACTERISED:
+  * explicit formula (17-21): every non-arithmetic term cancels or decays; residue is the zero sum;
+    every handle circular or capped.
+  * approximation/operator (22-28): criterion localizes and relaxes, but zero-freeness must be
+    structural; compression retains full defect norm; density is not norm.
+  * whole-line/commutative (29): no wall, but no content beyond Lagarias.
+EVERY LANE TERMINATES IN THE SAME PLACE. The missing ingredient is a NONCOMMUTATIVE structure whose
+noncommutativity does not come from compression.
+
+### Cycle 96 target
+Noncommutativity not from compression. The only such source attached to zeta in the literature is the
+ADELIC one: the action of the idele class group on the adele class space, where noncommutativity comes
+from the GROUP, not from truncation. The corpus has CCM (Connes-Consani-Marcolli) files
+(`CCMRationalAdelicBruhatSimpleTensorTraceClass`, `CCMFirstClockVolterra`, `CCMComplexMellinColligation`,
+`CCMSourceResponseDeterminantDichotomy`). AUDIT WHETHER ANY OF THEM SUPPLIES A GROUP-THEORETIC
+NONCOMMUTATIVITY — specifically an action of a nonabelian group by isometries of a definite pairing —
+rather than a compression. Per entries 26-27 the pairing exists (Q, definiteness 0.34976); per entry
+29 what is needed is a nonabelian isometry group of it. THAT IS NOW A COMPLETELY EXPLICIT TARGET:
+find a nonabelian group acting on L^2 by Q-isometries.

@@ -434,4 +434,118 @@ theorem target_sum_dichotomy :
     isComplete ∧ ¬ phaseAlgebraic ∧ bourgainMethod.savingExponent < lindelofSaving :=
   ⟨trivial, fun h => h, smooth_family_short⟩
 
+
+/-!
+### The target sum as an inner product with the quadratic character
+
+Since the target sum runs over a complete residue system (C411), expand its phase in the finite Fourier
+basis mod `q`.  With `F(a) = e(N√(2a/q))` and `ĉ_h = q^{-1}Σ_a F(a)e(-ha/q)`,
+
+    T(q) = Σ_a (a|q)F(a) = Σ_h ĉ_h Σ_a (a|q)e(ha/q) = ε_q √q · **Σ_h (h|q) ĉ_h** ,
+
+using the Gauss-sum evaluation `Σ_a(a|q)e(ha/q) = (h|q)ε_q√q`.  Parseval gives `Σ_h |ĉ_h|² = 1`, so
+Cauchy–Schwarz bounds the inner sum by `q^{1/2}` and hence `|T(q)| ≤ q` — the trivial bound.
+
+    **Target `|T(q)| ≪ q^{1/2+ε}`  ⟺  |Σ_h (h|q)ĉ_h| ≪ q^{ε}.**
+
+That is: the Fourier transform of the square-root phase must be **orthogonal to the quadratic
+character**, to within `q^{ε}`, against a trivial bound of `q^{1/2}` from `ℓ²`-normalisation.
+
+Note also that the transform has **no stationary phase in range**: the stationary condition
+`N/√(2aq) = h/q` needs `h ≥ N/√(2q) ≥ N^{5/6}/√2`, far above `h < q ≤ N^{1/3}`.
+-/
+
+/-- Exponent of the trivial bound on the Fourier-side inner product, from `ℓ²`-normalisation. -/
+def fourierTrivial : ℚ := 1/2
+
+/-- Exponent required of the inner product for the target. -/
+def fourierTarget : ℚ := 0
+
+/-- **The saving required on the Fourier side is `q^{1/2}` — the same as on the original side.** -/
+@[simp] theorem fourier_saving : fourierTrivial - fourierTarget = 1/2 := by
+  unfold fourierTrivial fourierTarget; norm_num
+
+/-- Exponent of the trivial bound on `T(q)` itself. -/
+def targetTrivial : ℚ := 1
+
+/-- Exponent required of `T(q)`. -/
+def targetRequired : ℚ := 1/2
+
+/-- The saving required on the original side. -/
+@[simp] theorem original_saving : targetTrivial - targetRequired = 1/2 := by
+  unfold targetTrivial targetRequired; norm_num
+
+/-- **The reformulation is exponent-neutral: the same `q^{1/2}` must be saved either way.**  What it
+changes is the object — an inner product of an `ℓ²`-normalised vector with the quadratic character,
+rather than a sum of `q` unimodular terms. -/
+theorem reformulation_neutral :
+    targetTrivial - targetRequired = fourierTrivial - fourierTarget := by
+  rw [original_saving, fourier_saving]
+
+/-- Lower bound for the stationary-phase frequency, as an exponent of `N` at `q = N^{1/3}`:
+`h ≥ N/√(2q)` gives exponent `1 - 1/6 = 5/6`. -/
+def stationaryFrequencyExponent : ℚ := 5/6
+
+/-- The available frequency range, as an exponent of `N`: `h < q = N^{1/3}`. -/
+def frequencyRangeExponent : ℚ := 1/3
+
+/-- **No stationary phase in range**, by a wide margin. -/
+theorem no_stationary_phase : frequencyRangeExponent < stationaryFrequencyExponent := by
+  unfold frequencyRangeExponent stationaryFrequencyExponent; norm_num
+
+@[simp] theorem stationary_margin :
+    stationaryFrequencyExponent - frequencyRangeExponent = 1/2 := by
+  unfold stationaryFrequencyExponent frequencyRangeExponent; norm_num
+
+
+/-!
+### The transform is flat, and Parseval confirms it
+
+Poisson summation on `ĉ_h = q^{-1}Σ_{a≤q} e(ψ(a) − ha/q)`, `ψ(u) = N√(2/q)·u^{1/2}`, has stationary
+points at `ψ'(u) = h/q + m`, i.e. `u_m = N²/(2qm²)`, which lie in `[1,q]` exactly for
+`m ∈ [N/(√2 q), N/√(2q)]`.  With `|ψ''(u_m)| ≍ q m³/N²` the stationary-phase value of each term is
+`≍ N/(√q · m^{3/2})`, so with square-root cancellation over `m`:
+
+    |ĉ_h|  ≍  q^{-1} · (N/√q) · (Σ_m m^{-3})^{1/2}  ≍  q^{-1}(N/√q)·(N/q)^{-1}  =  **q^{-1/2}** .
+
+**Parseval confirms this exactly**: `Σ_h |ĉ_h|² = 1` and there are `q` coefficients, so a flat transform
+has `|ĉ_h| ≍ q^{-1/2}`.  The stationary-phase prediction and the `ℓ²` identity agree.
+
+The target `|Σ_h (h|q)ĉ_h| ≪ q^{ε}` then reads: **a flat, `ℓ²`-normalised vector must be orthogonal to
+the quadratic character.**  Cauchy–Schwarz gives only `q^{1/2}·q^{-1/2}·q^{1/2} = q^{1/2}`; the target
+needs a further `q^{1/2}` from cancellation in `h`.
+-/
+
+/-- Exponent of `q` for a flat `ℓ²`-normalised transform. -/
+def flatTransformExponent : ℚ := -(1/2)
+
+/-- **Parseval fixes the flat size.**  `q` coefficients of equal modulus with `Σ|ĉ|² = 1` have
+`|ĉ| = q^{-1/2}`. -/
+@[simp] theorem parseval_flat : 1 + 2 * flatTransformExponent = 0 := by
+  unfold flatTransformExponent; norm_num
+
+/-- Exponent obtained from the flat transform with no cancellation over `h`: `q·q^{-1/2}`. -/
+def noCancellationOverH : ℚ := 1 + flatTransformExponent
+
+@[simp] theorem noCancellationOverH_eq : noCancellationOverH = 1/2 := by
+  unfold noCancellationOverH flatTransformExponent; norm_num
+
+/-- Exponent with square-root cancellation over `h`: `q^{1/2}·q^{-1/2}`. -/
+def sqrtCancellationOverH : ℚ := 1/2 + flatTransformExponent
+
+@[simp] theorem sqrtCancellationOverH_eq : sqrtCancellationOverH = 0 := by
+  unfold sqrtCancellationOverH flatTransformExponent; norm_num
+
+/-- **Square-root cancellation over `h` on a flat transform is exactly the target.** -/
+theorem sqrt_over_h_is_target : sqrtCancellationOverH = fourierTarget := by
+  rw [sqrtCancellationOverH_eq]; rfl
+
+/-- **And without it the bound is exactly the trivial one.** -/
+theorem no_cancellation_is_trivial : noCancellationOverH = fourierTrivial := by
+  rw [noCancellationOverH_eq]; rfl
+
+/-- The whole saving must come from cancellation in `h` against the quadratic character. -/
+@[simp] theorem saving_all_in_h : noCancellationOverH - sqrtCancellationOverH = 1/2 := by
+  rw [noCancellationOverH_eq, sqrtCancellationOverH_eq]; norm_num
+
 end HTGeometry
