@@ -10,6 +10,7 @@ import GaloisForLFunctions.RHTower.BourgainParabolaFundamentalCell
 import GaloisForLFunctions.RHTower.BourgainA6FirstSpacingBridge
 import GaloisForLFunctions.RHTower.BourgainAnisotropicPlanarTransfer
 import GaloisForLFunctions.RHTower.BourgainExactLocalMomentTransfer
+import GaloisForLFunctions.RHTower.BourgainExactLocalTranslation
 
 open MeasureTheory
 
@@ -283,6 +284,28 @@ def bourgainOsculatingFundamentalCell
     (H : ℕ) (scale a b : ℝ) : Set BourgainPhaseSpace :=
   bourgainScaledOsculatingPhaseCoordinates scale a b ⁻¹'
     bourgainParabolaFundamentalCell H
+
+/-- Translation of one pulled-back anisotropic fundamental cell. -/
+def bourgainTranslatedOsculatingFundamentalCell
+    (H : ℕ) (scale a b : ℝ) (y : BourgainPhaseSpace) :
+    Set BourgainPhaseSpace :=
+  (fun x => x + y) ''
+    bourgainOsculatingFundamentalCell H scale a b
+
+/-- Translation invariance of a set integral over an osculating period
+cell. -/
+theorem setLIntegral_bourgainTranslatedOsculatingFundamentalCell
+    (H : ℕ) (scale a b : ℝ) (y : BourgainPhaseSpace)
+    (f : BourgainPhaseSpace → ENNReal) :
+    (∫⁻ z in bourgainTranslatedOsculatingFundamentalCell
+        H scale a b y, f z) =
+      ∫⁻ x in bourgainOsculatingFundamentalCell H scale a b,
+        f (x + y) := by
+  symm
+  exact
+    (measurePreserving_add_right volume y).setLIntegral_comp_emb
+      (Homeomorph.addRight y).isClosedEmbedding.measurableEmbedding
+      f (bourgainOsculatingFundamentalCell H scale a b)
 
 /-- Uniform norm radius of a pulled-back period cell, expressed through the
 two exact inverse operator norms. -/
@@ -773,6 +796,7 @@ theorem setLIntegral_bourgainSquareRootExactLocalSum_fundamentalCell_subpower
     funext x
     unfold Q P
     rw [quadraticLocalSum_bilinearIntegrand_eq H hH hD.ne']
+    rfl
   have hRhsMeas :
       Measurable fun x => ENNReal.ofReal (1024 * (Q x + K)) := by
     have heq :

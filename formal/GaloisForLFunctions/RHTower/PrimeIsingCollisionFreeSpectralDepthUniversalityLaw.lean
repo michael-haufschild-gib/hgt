@@ -56,7 +56,8 @@ theorem balancedPrimeIsingTreeSpectralPacket_amplitudeVector_ne_zero
     change primeIsingSpectralPacketEval packet 0 = 0
     rw [← hphase]
     exact hphaseZero
-  simpa using hbalancedZero
+  rw [balancedPrimeIsingTreePartition_zero] at hbalancedZero
+  exact one_ne_zero hbalancedZero
 
 /-- A collision-free balanced prime-Ising packet has a nonzero derivative below packet cardinality
 at every base point. -/

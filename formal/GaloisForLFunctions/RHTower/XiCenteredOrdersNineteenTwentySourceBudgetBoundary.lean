@@ -219,6 +219,13 @@ theorem xiZeroCopyReciprocalSquare_pow_twenty_re_pos_of_not_mem_residualAnnulus
 def XiCenteredOrderTwentyResidualAnnulusEmpty : Prop :=
   ¬ ∃ q : XiZeroCopy, XiCenteredOrderTwentyResidualAnnulus q
 
+/-- RH excludes the order-twenty residual annulus because every Xi divisor point is centered. -/
+theorem xiCenteredOrderTwentyResidualAnnulusEmpty_of_riemannHypothesis
+    (hRH : RiemannHypothesis) :
+    XiCenteredOrderTwentyResidualAnnulusEmpty := by
+  rintro ⟨q, hq⟩
+  exact hq.1 (xi_divisor_support_re_eq_half_of_rh hRH q.1)
+
 theorem xiZeroCopyReciprocalSquare_pow_twenty_re_pos_of_residualAnnulusEmpty
     (h : XiCenteredOrderTwentyResidualAnnulusEmpty) (q : XiZeroCopy) :
     0 < (xiZeroCopyReciprocalSquare q ^ 20).re := by
@@ -436,6 +443,13 @@ theorem xiZeroCopyReciprocalSquare_pow_twentyOne_re_pos_of_not_mem_residualAnnul
 def XiCenteredOrderTwentyOneResidualAnnulusEmpty : Prop :=
   ¬ ∃ q : XiZeroCopy, XiCenteredOrderTwentyOneResidualAnnulus q
 
+/-- RH excludes the order-twenty-one residual annulus for the same centered-divisor reason. -/
+theorem xiCenteredOrderTwentyOneResidualAnnulusEmpty_of_riemannHypothesis
+    (hRH : RiemannHypothesis) :
+    XiCenteredOrderTwentyOneResidualAnnulusEmpty := by
+  rintro ⟨q, hq⟩
+  exact hq.1 (xi_divisor_support_re_eq_half_of_rh hRH q.1)
+
 theorem xiZeroCopyReciprocalSquare_pow_twentyOne_re_pos_of_residualAnnulusEmpty
     (h : XiCenteredOrderTwentyOneResidualAnnulusEmpty) (q : XiZeroCopy) :
     0 < (xiZeroCopyReciprocalSquare q ^ 21).re := by
@@ -454,6 +468,13 @@ def XiCenteredDegreeTenResidualAnnuliEmpty : Prop :=
   XiCenteredOrderTwentyResidualAnnulusEmpty ∧
     XiCenteredOrderTwentyOneResidualAnnulusEmpty
 
+/-- RH simultaneously discharges both residual-annulus interfaces at degree ten. -/
+theorem xiCenteredDegreeTenResidualAnnuliEmpty_of_riemannHypothesis
+    (hRH : RiemannHypothesis) :
+    XiCenteredDegreeTenResidualAnnuliEmpty :=
+  ⟨xiCenteredOrderTwentyResidualAnnulusEmpty_of_riemannHypothesis hRH,
+    xiCenteredOrderTwentyOneResidualAnnulusEmpty_of_riemannHypothesis hRH⟩
+
 theorem normalizedPrimeArchMoment_nineteen_pos_of_degreeTenResidualAnnuliEmpty
     (h : XiCenteredDegreeTenResidualAnnuliEmpty) :
     0 < normalizedPrimeArchMoment 19 :=
@@ -463,6 +484,22 @@ theorem normalizedPrimeArchMoment_twenty_pos_of_degreeTenResidualAnnuliEmpty
     (h : XiCenteredDegreeTenResidualAnnuliEmpty) :
     0 < normalizedPrimeArchMoment 20 :=
   normalizedPrimeArchMoment_twenty_pos_of_centeredOrderTwentyOneResidualAnnulusEmpty h.2
+
+/-- Degree-nineteen source-moment positivity no longer needs a residual-annulus premise once RH
+is in scope. -/
+theorem normalizedPrimeArchMoment_nineteen_pos_of_riemannHypothesis
+    (hRH : RiemannHypothesis) :
+    0 < normalizedPrimeArchMoment 19 :=
+  normalizedPrimeArchMoment_nineteen_pos_of_degreeTenResidualAnnuliEmpty
+    (xiCenteredDegreeTenResidualAnnuliEmpty_of_riemannHypothesis hRH)
+
+/-- Degree-twenty source-moment positivity no longer needs a residual-annulus premise once RH is
+in scope. -/
+theorem normalizedPrimeArchMoment_twenty_pos_of_riemannHypothesis
+    (hRH : RiemannHypothesis) :
+    0 < normalizedPrimeArchMoment 20 :=
+  normalizedPrimeArchMoment_twenty_pos_of_degreeTenResidualAnnuliEmpty
+    (xiCenteredDegreeTenResidualAnnuliEmpty_of_riemannHypothesis hRH)
 
 end
 

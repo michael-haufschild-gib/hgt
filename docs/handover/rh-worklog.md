@@ -7594,3 +7594,65 @@ three-term recurrence in d inherited from the Taylor coefficients; a recurrence 
 pattern forces real-rootedness by the classical Favard/orthogonal-polynomial criterion — WITHOUT ANY
 ASYMPTOTICS. TEST WHETHER THE Xi JENSEN FAMILY IS ORTHOGONAL: if the coefficients satisfy the Favard
 positivity condition, all degrees are hyperbolic at once and the cost vanishes entirely.
+
+---
+
+## Cycle 125 (2026-07-26) — THE JENSEN FAMILY OBEYS PASCAL, NOT FAVARD
+### Hyperbolicity reduces to an INTERLACING question, with no threshold and no cost.
+
+### Cycle 124's target: settled, in the negative, with the right structure found
+The Jensen family is NOT orthogonal and Favard does not apply. What it satisfies is PASCAL'S RULE:
+with J^{d,n}(X) = sum_{j<=d} C(d,j) gamma_{n+j} X^j and C(d+1,j) = C(d,j) + C(d,j-1),
+
+    J^{d+1,n}(X)  =  J^{d,n}(X)  +  X * J^{d,n+1}(X).                    [FORMALISED]
+
+This is a TWO-TERM recurrence COUPLING THE DEGREE TO THE SHIFT, not a three-term recurrence in the
+degree alone. Favard's criterion needs the latter; it does not apply, and the family is not
+orthogonal.
+
+### WHAT THE RECURRENCE GIVES INSTEAD — and it is better than what I was looking for
+Real-rootedness propagates along the recurrence whenever the two polynomials on the right are
+COMPATIBLE — the classical situation in which a combination of interlacing polynomials stays
+real-rooted. Since J^{0,n} = gamma_n is trivially real-rooted (formalised),
+
+    ==> AN INTERLACING PROPERTY BETWEEN CONSECUTIVE SHIFTS WOULD GIVE HYPERBOLICITY IN EVERY DEGREE BY
+        INDUCTION ALONG PASCAL'S RECURRENCE — WITH NO THRESHOLD, NO ASYMPTOTICS, AND NO d^{d^2} COST.
+
+THE ASYMPTOTIC THRESHOLD IS REPLACED BY A STRUCTURAL QUESTION: do the Jensen polynomials of Xi at
+consecutive shifts interlace?
+
+### The open point, stated precisely and honestly
+The compatibility lemma is NOT the standard one. `p + t q` real-rooted for all constant t is exactly
+interlacing; but here the coefficient is the VARIABLE X, not a constant, so the classical criterion
+does not apply verbatim. The precise hypothesis under which `p + X q` is real-rooted for real-rooted
+p, q of equal degree MUST BE IDENTIFIED. THAT IS A QUESTION ABOUT POLYNOMIALS, NOT ABOUT ZETA — the
+first time in 125 cycles that the residual open point has left number theory entirely.
+
+Machine-verified: `RHTower/JensenPascalRecurrence.lean` (the Jensen value as an explicit finite sum,
+the degree-zero base case, PASCAL'S RECURRENCE J^{d+1,n} = J^{d,n} + X J^{d,n+1} proved from
+Nat.choose_succ_succ with the vanishing top term C(d,d+1) = 0 handled explicitly, and the absence of a
+three-term structure; standard axioms only, wired into RHTower).
+
+### FIFTY-NINTH ATLAS ENTRY
+    Pascal not Favard   the Jensen family satisfies J^{d+1,n} = J^{d,n} + X J^{d,n+1}, a two-term
+                        degree-shift recurrence; Favard does not apply and the family is not
+                        orthogonal. But real-rootedness propagates along it under a compatibility
+                        hypothesis, so hyperbolicity in all degrees reduces to interlacing of
+                        consecutive shifts — no threshold, no cost. The compatibility lemma for
+                        p + X q is the open point, and it is a question about polynomials.
+
+### STATE AT CYCLE 125
+Fifty-nine entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+THE RESIDUAL OPEN POINT HAS LEFT NUMBER THEORY. After 125 cycles the programme's single unclosed route
+terminates in: (i) a compatibility lemma for p + X q with p, q real-rooted of equal degree, and
+(ii) an interlacing property of the Xi Jensen polynomials at consecutive shifts. Neither mentions
+primes, zeros, contours, or heights.
+
+### Cycle 126 target
+Settle (i) — it is elementary and self-contained. TEST: for p, q real-rooted of equal degree d with
+positive leading coefficients, when is p + X q real-rooted? Note deg(p + Xq) = d+1 and its leading
+coefficient is q's. TRY SMALL CASES SYMBOLICALLY (not numerically): d = 1 with p = X - a, q = X - b
+gives X^2 + (1 - ... ) — compute the discriminant in a and b and read off the exact condition. The
+answer for d = 1 will reveal whether the needed hypothesis is interlacing, a sign condition, or
+something else, and that determines what must be proved about the Xi coefficients.
