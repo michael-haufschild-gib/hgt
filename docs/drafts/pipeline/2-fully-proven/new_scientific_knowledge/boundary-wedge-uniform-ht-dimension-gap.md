@@ -263,3 +263,38 @@ matroid, gain-graph, and subspace-representation invariants.
 - [x] complete paper proof
 - [x] preliminary parent-theory audit
 - [ ] complete unconditional Lean formalization before stage 3
+
+## Lean progress — exact facet combinatorics and the exclusion of one-variable period codimension
+
+`GaloisForLFunctions/HTGeometry/BoundaryWedgeFacetComplement.lean` (axiom-clean
+`[propext, Classical.choice, Quot.sound]`, build green, umbrella-registered) formalizes the
+combinatorial layer that the `htDim` lower bound rests on, uniformly in `r, s ≥ 2`, on the same
+vertex type `BoundaryWedgeVertex r s` used by the faithful-separation layer.
+
+- `leftBlock`, `rightBlock` with `mem_leftBlock`, `mem_rightBlock` (agreeing with the predicates
+  `boundaryWedgeLeft`, `boundaryWedgeRight` of `WedgeFacetLowerBound`), and cardinalities
+  `card_leftBlock = r+1`, `card_rightBlock = s+1`, `card_vertex = r+s+1`.
+- `boundaryWedgeFacets` — the facet family of (2): delete one vertex from one block.
+  `mem_leftFacet_iff` and `mem_rightFacet_iff` identify its facets with the incidence predicates
+  `boundaryWedgeLeftFacetMember` / `boundaryWedgeRightFacetMember` already used for `ffsDim`, so the
+  three Lean layers of this card are about the *same* family.
+- `card_leftFacet = r`, `card_rightFacet = s`; hence the exact nonpurity criterion of the statement:
+  `pureOfCard_of_eq` (pure when `r = s`) and `not_pureOfCard_of_ne` (for `r ≠ s` no `d` makes the
+  family pure).
+- `facetAntichain` — the family is an inclusion antichain, so the corpus classification
+  `facetAntichain_eq_singleton_or_deletionFacets` applies to it.
+- `card_sdiff_leftFacet = s+1`, `card_sdiff_rightFacet = r+1` — a facet complement **in the full
+  vertex set** omits the entire opposite block together with the deleted vertex.
+- **`not_facetComplementRankOne`** — consequently the family never satisfies
+  `FacetComplementRankOne` (every facet complement of cardinality `≤ 1`), which
+  `SimplicialConstraintTower` records as *the exact combinatorial output of the HT period-rank
+  argument*.  This is the combinatorial content of `(8)`: the complements have cardinality at least
+  three, so the scalar purity/facet-period obstruction is violated for every `r, s ≥ 2`.
+
+**What remains for the last gate.**  The step still missing in Lean is the *analytic* implication
+behind `(8)` — that an exact one-variable hypertranscendental realization forces
+`FacetComplementRankOne` — together with the definition of the intrinsic `htDim` functional itself.
+With that implication, `not_facetComplementRankOne` gives `htDim ≥ 2` and the already formalized
+periodic pencil (`boundaryWedge_ppDim_eq_two`) gives `htDim ≤ 2`, closing `htDim = ppDim = 2`.  The
+combinatorial half is now unconditional and uniform; the remaining half is the analytic bridge the
+card already flagged.
