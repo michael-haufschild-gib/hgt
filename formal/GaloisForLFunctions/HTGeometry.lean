@@ -2082,4 +2082,5 @@ import GaloisForLFunctions.HTGeometry.SpacingWindowGeometry
 import GaloisForLFunctions.HTGeometry.SectionFourCoveringFloor
 import GaloisForLFunctions.HTGeometry.CoveringFunctionalNonstationarity
 import GaloisForLFunctions.HTGeometry.LowRangeSlackAndHuxleyNecessity
+import GaloisForLFunctions.HTGeometry.LengthReflectionLaw
 import GaloisForLFunctions.HTGeometry.LogPhaseDensity

@@ -9,6 +9,7 @@ sharp cell volume are retained exactly.
 import GaloisForLFunctions.RHTower.BourgainParabolaFundamentalCell
 import GaloisForLFunctions.RHTower.BourgainA6FirstSpacingBridge
 import GaloisForLFunctions.RHTower.BourgainAnisotropicPlanarTransfer
+import GaloisForLFunctions.RHTower.BourgainExactLocalMomentTransfer
 
 open MeasureTheory
 
@@ -63,7 +64,7 @@ theorem norm_le_sq_half_of_mem_bourgainParabolaFundamentalCell
       y j ∈ Set.Ioc
       (-(bourgainParabolaFundamentalHalfWidth H j))
         (bourgainParabolaFundamentalHalfWidth H j) := by
-    exact hy (Set.mem_univ j)
+    exact hy j (Set.mem_univ j)
   have habs :
       |y j| ≤ bourgainParabolaFundamentalHalfWidth H j :=
     abs_le.2 ⟨hyj.1.le, hyj.2⟩
@@ -610,6 +611,234 @@ theorem setLIntegral_bourgainSquareRootQuadraticLocalSum_fundamentalCell_subpowe
       (div_ne_zero (Nat.cast_ne_zero.mpr hH.ne') hD)
       ha hab c₁ c₂] at hb
   exact hb
+
+/-- On one sharp pulled-back cell, the exact square-root curve is bounded by
+its quadratic model with the full cubic Taylor error evaluated at the exact
+inverse-distortion radius. -/
+theorem exactLocalSum_bilinearIntegrand_le_quadratic_add_error_on_fundamentalCell
+    {H : ℕ} (hH : 0 < H) {D a b : ℝ}
+    (hD : 0 < D) (ha : 0 < a) (hab : a < b)
+    (c₁ c₂ : Fin H → ℂ) {x : BourgainPhaseSpace}
+    (hx : x ∈ bourgainOsculatingFundamentalCell
+      H ((H : ℝ) / D) a b) :
+    ‖bourgainSquareRootExactLocalSum H D a c₁ x‖ ^ (6 : ℕ) *
+        ‖bourgainSquareRootExactLocalSum H D b c₂ x‖ ^ (6 : ℕ) ≤
+      1024 *
+        (‖bourgainSquareRootQuadraticLocalSum H D a c₁ x‖ ^ (6 : ℕ) *
+            ‖bourgainSquareRootQuadraticLocalSum H D b c₂ x‖ ^
+              (6 : ℕ) +
+          bourgainSquareRootBilinearTaylorError
+            (‖((bourgainSquareRootPhaseCoordinateContinuousLinearEquiv
+                ha hab).symm :
+                BourgainPhaseSpace →L[ℝ] BourgainPhaseSpace)‖ *
+              (‖((bourgainParabolaPhaseScaleContinuousLinearEquiv
+                  (div_ne_zero (Nat.cast_ne_zero.mpr hH.ne') hD.ne')).symm :
+                  BourgainPhaseSpace →L[ℝ] BourgainPhaseSpace)‖ *
+                ((H : ℝ) ^ (2 : ℕ) / 2)))
+            a b ((H : ℝ) / D) c₁ c₂) := by
+  let R : ℝ :=
+    ‖((bourgainSquareRootPhaseCoordinateContinuousLinearEquiv
+        ha hab).symm :
+        BourgainPhaseSpace →L[ℝ] BourgainPhaseSpace)‖ *
+      (‖((bourgainParabolaPhaseScaleContinuousLinearEquiv
+          (div_ne_zero (Nat.cast_ne_zero.mpr hH.ne') hD.ne')).symm :
+          BourgainPhaseSpace →L[ℝ] BourgainPhaseSpace)‖ *
+        ((H : ℝ) ^ (2 : ℕ) / 2))
+  have hb : 0 < b := ha.trans hab
+  have hscale : (H : ℝ) / D ≠ 0 :=
+    div_ne_zero (Nat.cast_ne_zero.mpr hH.ne') hD.ne'
+  have hR : 0 ≤ R := by
+    unfold R
+    positivity
+  have hxR : ‖x‖ ≤ R := by
+    exact norm_le_of_mem_bourgainOsculatingFundamentalCell
+      hH hscale ha hab hx
+  have hδ : 0 < (H : ℝ) / D :=
+    div_pos (Nat.cast_pos.mpr hH) hD
+  simpa [R] using
+    (exactLocalSum_bilinearIntegrand_le_quadratic_add_error
+      H ha hb hδ hR c₁ c₂ x hxR
+        (bourgainSquareRootLocalSample_mem hD)
+        (bourgainSquareRootLocalSample_mem hD))
+
+/-- Integrated exact-curve estimate on one sharp anisotropic cell.  Main
+term has physical volume `H⁶`; Taylor remainder is multiplied by the exact
+pulled-back cell volume. -/
+theorem setLIntegral_bourgainSquareRootExactLocalSum_fundamentalCell_subpower
+    {ε : ℝ} (hε : 0 < ε) :
+    ∃ C : ℝ, 0 < C ∧
+      ∀ (H : ℕ), (hH : 0 < H) →
+      ∀ {D a b : ℝ}, (hD : 0 < D) →
+        (ha : 0 < a) → (hab : a < b) →
+      ∀ (c₁ c₂ : Fin H → ℂ),
+      let hscale : (H : ℝ) / D ≠ 0 :=
+        div_ne_zero (Nat.cast_ne_zero.mpr hH.ne') hD.ne'
+      let R : ℝ :=
+        ‖((bourgainSquareRootPhaseCoordinateContinuousLinearEquiv
+            ha hab).symm :
+            BourgainPhaseSpace →L[ℝ] BourgainPhaseSpace)‖ *
+          (‖((bourgainParabolaPhaseScaleContinuousLinearEquiv hscale).symm :
+              BourgainPhaseSpace →L[ℝ] BourgainPhaseSpace)‖ *
+            ((H : ℝ) ^ (2 : ℕ) / 2))
+      let J : ENNReal :=
+        ENNReal.ofReal
+          |((((H : ℝ) / D) ^ (6 : ℕ)) *
+            (3 * (b - a) ^ (4 : ℕ) /
+              (32 * a ^ (3 : ℕ) * b ^ (3 : ℕ))))⁻¹|
+      let B : ℝ :=
+        ((H : ℝ) ^ (3 : ℕ) *
+          (C * (H : ℝ) ^ (ε / 2) *
+            (∑ n : Fin H, ‖c₁ n‖ ^ (2 : ℕ)) ^ (3 : ℕ))) *
+        ((H : ℝ) ^ (3 : ℕ) *
+          (C * (H : ℝ) ^ (ε / 2) *
+            (∑ n : Fin H, ‖c₂ n‖ ^ (2 : ℕ)) ^ (3 : ℕ)))
+      (∫⁻ x in bourgainOsculatingFundamentalCell
+          H ((H : ℝ) / D) a b,
+        ENNReal.ofReal
+          (‖bourgainSquareRootExactLocalSum H D a c₁ x‖ ^ (6 : ℕ) *
+            ‖bourgainSquareRootExactLocalSum H D b c₂ x‖ ^
+              (6 : ℕ))) ≤
+        (1024 : ENNReal) *
+          (J * ENNReal.ofReal B +
+            ENNReal.ofReal
+                (bourgainSquareRootBilinearTaylorError
+                  R a b ((H : ℝ) / D) c₁ c₂) *
+              (J * ENNReal.ofReal ((H : ℝ) ^ (6 : ℕ)))) := by
+  obtain ⟨C, hC, hquad⟩ :=
+    setLIntegral_bourgainSquareRootQuadraticLocalSum_fundamentalCell_subpower
+      hε
+  refine ⟨C, hC, ?_⟩
+  intro H hH D a b hD ha hab c₁ c₂
+  dsimp only
+  let hscale : (H : ℝ) / D ≠ 0 :=
+    div_ne_zero (Nat.cast_ne_zero.mpr hH.ne') hD.ne'
+  let R : ℝ :=
+    ‖((bourgainSquareRootPhaseCoordinateContinuousLinearEquiv
+        ha hab).symm :
+        BourgainPhaseSpace →L[ℝ] BourgainPhaseSpace)‖ *
+      (‖((bourgainParabolaPhaseScaleContinuousLinearEquiv hscale).symm :
+          BourgainPhaseSpace →L[ℝ] BourgainPhaseSpace)‖ *
+        ((H : ℝ) ^ (2 : ℕ) / 2))
+  let J : ENNReal :=
+    ENNReal.ofReal
+      |((((H : ℝ) / D) ^ (6 : ℕ)) *
+        (3 * (b - a) ^ (4 : ℕ) /
+          (32 * a ^ (3 : ℕ) * b ^ (3 : ℕ))))⁻¹|
+  let B : ℝ :=
+    ((H : ℝ) ^ (3 : ℕ) *
+      (C * (H : ℝ) ^ (ε / 2) *
+        (∑ n : Fin H, ‖c₁ n‖ ^ (2 : ℕ)) ^ (3 : ℕ))) *
+    ((H : ℝ) ^ (3 : ℕ) *
+      (C * (H : ℝ) ^ (ε / 2) *
+        (∑ n : Fin H, ‖c₂ n‖ ^ (2 : ℕ)) ^ (3 : ℕ)))
+  let Q : BourgainPhaseSpace → ℝ := fun x =>
+    ‖bourgainSquareRootQuadraticLocalSum H D a c₁ x‖ ^ (6 : ℕ) *
+      ‖bourgainSquareRootQuadraticLocalSum H D b c₂ x‖ ^ (6 : ℕ)
+  let K : ℝ :=
+    bourgainSquareRootBilinearTaylorError
+      R a b ((H : ℝ) / D) c₁ c₂
+  let S : Set BourgainPhaseSpace :=
+    bourgainOsculatingFundamentalCell H ((H : ℝ) / D) a b
+  have hb : 0 < b := ha.trans hab
+  have hR : 0 ≤ R := by
+    unfold R
+    positivity
+  have hδ : 0 < (H : ℝ) / D :=
+    div_pos (Nat.cast_pos.mpr hH) hD
+  have hK : 0 ≤ K := by
+    unfold K
+    exact bourgainSquareRootBilinearTaylorError_nonneg
+      hR ha hb hδ.le c₁ c₂
+  have hQ0 (x : BourgainPhaseSpace) : 0 ≤ Q x := by
+    unfold Q
+    positivity
+  have hQmeas : Measurable fun x => ENNReal.ofReal (Q x) := by
+    let P : BourgainPhaseSpace → ENNReal := fun y =>
+      ENNReal.ofReal
+        (bourgainScaledIndependentPlanarBilinearIntegrand H c₁ c₂ y)
+    have hP : Measurable P :=
+      measurable_ofReal_bourgainScaledIndependentPlanarBilinearIntegrand
+        H c₁ c₂
+    have hcomp :
+        Measurable fun x =>
+          P (bourgainScaledOsculatingPhaseCoordinates
+            ((H : ℝ) / D) a b x) := by
+      apply hP.comp
+      unfold bourgainScaledOsculatingPhaseCoordinates
+        bourgainParabolaPhaseScale
+        bourgainSquareRootPhaseCoordinates
+        bourgainSquareRootPhaseCoordinateMatrix
+      fun_prop
+    convert hcomp using 1
+    funext x
+    unfold Q P
+    rw [quadraticLocalSum_bilinearIntegrand_eq H hH hD.ne']
+  have hRhsMeas :
+      Measurable fun x => ENNReal.ofReal (1024 * (Q x + K)) := by
+    have heq :
+        (fun x => ENNReal.ofReal (1024 * (Q x + K))) =
+          fun x => (1024 : ENNReal) *
+            (ENNReal.ofReal (Q x) + ENNReal.ofReal K) := by
+      funext x
+      rw [ENNReal.ofReal_mul (show (0 : ℝ) ≤ 1024 by norm_num),
+        ENNReal.ofReal_add (hQ0 x) hK]
+      norm_num
+    rw [heq]
+    fun_prop
+  have hpoint (x : BourgainPhaseSpace) (hx : x ∈ S) :
+      ‖bourgainSquareRootExactLocalSum H D a c₁ x‖ ^ (6 : ℕ) *
+          ‖bourgainSquareRootExactLocalSum H D b c₂ x‖ ^ (6 : ℕ) ≤
+        1024 * (Q x + K) := by
+    simpa [S, Q, K, R, hscale] using
+      (exactLocalSum_bilinearIntegrand_le_quadratic_add_error_on_fundamentalCell
+        hH hD ha hab c₁ c₂ hx)
+  have hquadBound :
+      (∫⁻ x in S, ENNReal.ofReal (Q x)) ≤
+        J * ENNReal.ofReal B := by
+    simpa [S, Q, J, B] using
+      (hquad H hH hD.ne' ha hab c₁ c₂)
+  have hvolume :
+      volume S = J * ENNReal.ofReal ((H : ℝ) ^ (6 : ℕ)) := by
+    simpa [S, J] using
+      (volume_bourgainOsculatingFundamentalCell
+        H hscale ha hab)
+  calc
+    (∫⁻ x in S,
+        ENNReal.ofReal
+          (‖bourgainSquareRootExactLocalSum H D a c₁ x‖ ^ (6 : ℕ) *
+            ‖bourgainSquareRootExactLocalSum H D b c₂ x‖ ^
+              (6 : ℕ))) ≤
+        ∫⁻ x in S, ENNReal.ofReal (1024 * (Q x + K)) := by
+      apply setLIntegral_mono hRhsMeas
+      intro x hx
+      exact ENNReal.ofReal_le_ofReal (hpoint x hx)
+    _ =
+        (1024 : ENNReal) *
+          ((∫⁻ x in S, ENNReal.ofReal (Q x)) +
+            ENNReal.ofReal K * volume S) := by
+      have hformula :
+          (fun x : BourgainPhaseSpace =>
+            ENNReal.ofReal (1024 * (Q x + K))) =
+          fun x => (1024 : ENNReal) *
+            (ENNReal.ofReal (Q x) + ENNReal.ofReal K) := by
+        funext x
+        rw [ENNReal.ofReal_mul (show (0 : ℝ) ≤ 1024 by norm_num),
+          ENNReal.ofReal_add (hQ0 x) hK]
+        norm_num
+      have hsummeas :
+          Measurable fun x => ENNReal.ofReal (Q x) + ENNReal.ofReal K :=
+        hQmeas.add measurable_const
+      rw [hformula, lintegral_const_mul _ hsummeas,
+        lintegral_add_left hQmeas, setLIntegral_const]
+    _ ≤
+        (1024 : ENNReal) *
+          (J * ENNReal.ofReal B +
+            ENNReal.ofReal K *
+              (J * ENNReal.ofReal ((H : ℝ) ^ (6 : ℕ)))) := by
+      rw [hvolume]
+      exact mul_le_mul_right
+        (add_le_add hquadBound le_rfl) _
+    _ = _ := by rfl
 
 end
 

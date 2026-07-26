@@ -59,12 +59,13 @@ theorem signedDigammaBooleanCompletion_verticalHeightMonotone_of_herglotz
     simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.I_re,
       Complex.I_im, Complex.ofReal_im, zero_mul, mul_zero, sub_zero, Complex.natCast_re,
       Complex.neg_re] at hre
+    norm_num at hre
     have hn : 0 ≤ (n : ℝ) := Nat.cast_nonneg n
     linarith
   rw [signedDigammaBooleanCompletion_allPositive_eq_explicitDigammaHerglotzSource (hoff y),
     signedDigammaBooleanCompletion_allPositive_eq_explicitDigammaHerglotzSource (hoff z)]
   have hmono :=
-    re_digamma_mono_of_abs_le (a := a + 1 / 2) ha' hyz
+    _root_.RHTower.re_digamma_mono_of_abs_le (a := a + 1 / 2) ha' hyz
   have hargY :
       ((a : ℂ) + (y : ℂ) * Complex.I) + (1 / 2 : ℂ) =
         (((a + 1 / 2 : ℝ) : ℂ) + (y : ℂ) * Complex.I) := by
@@ -77,7 +78,7 @@ theorem signedDigammaBooleanCompletion_verticalHeightMonotone_of_herglotz
     ring
   rw [explicitDigammaHerglotzSource, explicitDigammaHerglotzSource, hargY, hargZ]
   simpa only [Complex.add_re, Complex.ofReal_re] using
-    (add_le_add_right hmono Real.eulerMascheroniConstant)
+    (add_le_add_left hmono Real.eulerMascheroniConstant)
 
 /-- **Digamma-orientation vertical-rigidity universality law.**  The unique Herglotz orientation,
 its exact closed form, and its vertical-height rigidity are one simultaneous certificate. -/

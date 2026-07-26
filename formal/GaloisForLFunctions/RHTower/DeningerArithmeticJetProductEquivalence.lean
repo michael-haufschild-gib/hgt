@@ -21,16 +21,19 @@ namespace RHTower
 
 noncomputable section
 
-/-! Match the quotient relation's pinned subtype negation from `DeningerArithmeticCompactOpen`. -/
-local instance deningerCompactOpenCompatibleNegForJetCompleteness :
-    Neg DeningerCompactOpenEntire :=
-  (inferInstance :
-    SubtractionMonoid DeningerCompactOpenEntire).toSubNegMonoid.toNeg
-
 /- The descended all-jets observation is onto the full multiplicity-bounded Xi-jet product. -/
-set_option maxHeartbeats 600000 in
 theorem deningerCompactOpenH1AllJets_surjective :
     Function.Surjective deningerCompactOpenH1AllJets := by
+  letI :
+      FirstCountableTopology DeningerCompactOpenEntire :=
+    inferInstance
+  letI :
+      UniformSpace
+        (DeningerCompactOpenEntire ⧸
+          deningerCompactOpenXiRange.toAddSubgroup) :=
+    IsTopologicalAddGroup.rightUniformSpace
+      (DeningerCompactOpenEntire ⧸
+        deningerCompactOpenXiRange.toAddSubgroup)
   letI : IsUniformAddGroup C(ℂ, ℂ) := by
     let phi :
         C(ℂ, ℂ) →+
@@ -49,18 +52,16 @@ theorem deningerCompactOpenH1AllJets_surjective :
       isUniformEmbedding_subtype_val.isUniformAddGroup
         deningerCompactOpenEntireSubmodule.subtype.toAddMonoidHom
   letI :
-      FirstCountableTopology DeningerCompactOpenEntire :=
-    inferInstance
-  letI :
-      UniformSpace DeningerArithmeticCompactOpenH1 :=
-    IsTopologicalAddGroup.rightUniformSpace
-      DeningerArithmeticCompactOpenH1
-  letI : CompleteSpace DeningerArithmeticCompactOpenH1 :=
+      CompleteSpace
+        (DeningerCompactOpenEntire ⧸
+          deningerCompactOpenXiRange.toAddSubgroup) :=
     QuotientAddGroup.completeSpace_right
       DeningerCompactOpenEntire
       deningerCompactOpenXiRange.toAddSubgroup
   letI :
-      IsUniformAddGroup DeningerArithmeticCompactOpenH1 :=
+      IsUniformAddGroup
+        (DeningerCompactOpenEntire ⧸
+          deningerCompactOpenXiRange.toAddSubgroup) :=
     isUniformAddGroup_of_addCommGroup
   have huniform :
       IsUniformEmbedding

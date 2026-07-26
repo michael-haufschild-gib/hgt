@@ -7532,3 +7532,65 @@ ROOT SEPARATION AT THE SAME DEGREE — Hermite roots spread like sqrt(d) with sp
 bulk, so the separation is SMALL exactly where the error must be beaten. IF A MODEL WITH SEPARATION
 BOUNDED BELOW EXISTS, THE THRESHOLD DROPS FROM d^{3d^2} TO SOMETHING TAME, AND THE ROUTE BECOMES
 EFFECTIVE. That is a concrete question in orthogonal-polynomial asymptotics, not in number theory.
+
+---
+
+## Cycle 124 (2026-07-26) — THE SUPER-EXPONENTIAL COST IS INTRINSIC TO THE HERMITE MODEL
+
+### Cycle 123's target: REFUTED, twice over
+(a) THE MODEL IS NOT A CHOICE. The normalised Jensen polynomials converge to Hermite polynomials
+BECAUSE THAT IS WHAT THE ASYMPTOTICS OF THE TAYLOR COEFFICIENTS OF Xi PRODUCE; one cannot substitute a
+family with larger root separation.
+(b) RESCALING DOES NOT HELP. The error and the separation scale together, so their ratio — which is
+what the threshold measures — is INVARIANT. Formalised.
+
+### And a different stability criterion changes only the constant
+Root-by-root tracking is not required: hyperbolicity is the positivity of a SINGLE polynomial, the
+discriminant, whose stability radius is governed by its size rather than by the minimal gap. For
+Hermite polynomials that size is explicitly known,
+
+    disc(H_d) = 2^{3d(d-1)/2} prod_{k=1}^{d} k^k,      so    log disc(H_d) ~ (1/2) d^2 log d,
+
+while log N(d) ~ 3 d^2 log d. THE TWO HAVE THE SAME SHAPE.
+
+    ==> CHANGING THE STABILITY CRITERION CHANGES THE CONSTANT IN THE EXPONENT, NOT THE EXPONENT
+        ITSELF. THE COST d^{d^2} IS A PROPERTY OF THE HERMITE MODEL, NOT OF THE CRITERION USED TO
+        EXPLOIT IT.
+
+So the escape from the closure is real and its price is INTRINSIC. The second invariant is available
+and expensive, and the expense cannot be argued away by a better criterion, a better normalisation, or
+a better model.
+
+Machine-verified: `RHTower/CostIsIntrinsic.lean` (the d^2 log d lower bound for the discriminant's
+logarithm via the terms with k >= d/2, the agreement of the two shapes up to a constant ratio, the
+scale invariance of the error-to-separation ratio, and the persistence of the super-exponential shape
+under a constant factor; standard axioms only, wired into RHTower).
+
+### FIFTY-EIGHTH ATLAS ENTRY
+    intrinsic cost   the Hermite model is forced by the Taylor asymptotics of Xi; rescaling leaves the
+                     error-to-separation ratio invariant; and the discriminant criterion has
+                     log disc(H_d) ~ (1/2) d^2 log d against log N(d) ~ 3 d^2 log d — the same shape.
+                     The cost d^{d^2} is intrinsic to the model, not to the criterion.
+
+### STATE AT CYCLE 124
+Fifty-eight entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+THE ATLAS'S FINAL SHAPE AFTER 124 CYCLES:
+  * The closure built on the single logarithmic invariant is complete and has one root cause
+    (entry 52: RH is a codimension constraint, every unconditional tool measures area).
+  * ONE ROUTE ESCAPES IT — Jensen polynomials with the discriminant as the reality-sensitive,
+    codimension-sensitive tool, indexed by a second invariant (the degree) independent of log T.
+  * THAT ROUTE'S PRICE IS INTRINSIC: d^{d^2}, a property of the Hermite model itself.
+  * Degrees up to eight are settled for every index. The first open degree is nine.
+The programme's position is therefore: ONE unclosed route, with an explicit and intrinsic
+super-exponential cost, and an explicit first open case.
+
+### Cycle 125 target
+The first open case is degree nine. GORZ settled d <= 8 by explicit computation of the relevant
+Taylor-coefficient inequalities. THE PROGRAMME CANNOT RUN COMPUTATIONS, so the route forward is
+STRUCTURAL: find a proof of hyperbolicity at degree d that does NOT go through the Hermite
+approximation, and therefore does not pay d^{d^2}. CANDIDATE: the Jensen polynomials of Xi satisfy a
+three-term recurrence in d inherited from the Taylor coefficients; a recurrence with the right sign
+pattern forces real-rootedness by the classical Favard/orthogonal-polynomial criterion — WITHOUT ANY
+ASYMPTOTICS. TEST WHETHER THE Xi JENSEN FAMILY IS ORTHOGONAL: if the coefficients satisfy the Favard
+positivity condition, all degrees are hyperbolic at once and the cost vanishes entirely.

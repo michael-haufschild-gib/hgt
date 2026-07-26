@@ -146,6 +146,15 @@ theorem
   exact xiUnitHorizontalWindingBosonicFingerprint_iff_xiZerosSimple.trans
     xiZerosSimple_iff_hendenmalmSimplicityUniversalCertificate
 
+/-- Replacing Xi simplicity by its local winding/bosonic fingerprint leaves the complete
+RH-and-simplicity Hedenmalm certificate unchanged. -/
+theorem
+    riemannHypothesis_and_xiUnitHorizontalWindingBosonicFingerprint_iff_hendenmalmUniversalCertificate :
+    (RiemannHypothesis ∧ XiUnitHorizontalWindingBosonicFingerprint) ↔
+      XiHedenmalmRHSimplicityUniversalCertificate := by
+  rw [xiUnitHorizontalWindingBosonicFingerprint_iff_xiZerosSimple,
+    riemannHypothesis_and_xiZerosSimple_iff_hendenmalmUniversalCertificate]
+
 /-- Horizontal multiplicity one is the complete RH-and-simplicity Hedenmalm certificate. -/
 theorem
     xiHorizontalFibersMultiplicityOne_iff_hendenmalmRHSimplicityUniversalCertificate :
