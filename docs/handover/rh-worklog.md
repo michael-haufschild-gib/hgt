@@ -6118,3 +6118,69 @@ QUESTION IS WHETHER ZETA LIES IN THE SUPPORT OF ITS OWN LIMIT MEASURE — a meas
 about a concrete random object, not about zeta's zeros. TEST WHETHER THE SUPPORT CONDITION CAN BE
 DECIDED FROM THE MOMENTS OF THE LIMIT MEASURE, which are computable Euler products. If the moments
 determine membership in the support, the circularity is broken, because moments are unconditional.
+
+---
+
+## Cycle 102 (2026-07-26) — THE CRITICAL SCALE 1/log T, A FIFTH TIME
+
+### Phase 4 verdict on the support question: CIRCULAR
+Bagchi's support of the limit measure of the random Euler product IS the set of non-vanishing
+analytic functions. So "zeta lies in the support of its own limit measure" is literally "zeta is
+non-vanishing there" — THE CONCLUSION. Moments determine the measure, and the measure determines the
+support, but the support characterisation is already the hypothesis; no unconditional route through
+it. DEAD END as a proof route; the moments remain unconditional and are used below.
+
+### What the moments say
+For the random Euler product zeta(s,omega) = prod_p (1 - omega(p) p^{-s})^{-1}, log zeta is a sum of
+INDEPENDENT contributions — precisely the multiplicative-independence ingredient — with variance at
+abscissa sigma of size sum_p p^{-2 sigma} ~ (1/2) log( 1/(2 sigma - 1) ) as sigma decreases to 1/2.
+IT DIVERGES LOGARITHMICALLY AT THE CRITICAL ABSCISSA AND NOWHERE ELSE.
+
+On the critical line the UNCONDITIONAL Selberg central limit theorem gives variance ~ (1/2) log log T.
+Equating the two profiles identifies
+
+    1/(2 sigma - 1)  <->  log T,      i.e.      sigma - 1/2  <->  1/(2 log T).
+
+    ==> THE RANDOM MODEL'S APPROACH TO THE CRITICAL LINE AND THE TRUE FLUCTUATION OF log ZETA ON IT
+        AGREE EXACTLY WHEN DISTANCE FROM THE LINE IS MEASURED IN UNITS OF 1/log T.
+
+### FIFTH APPEARANCE OF THE SAME SCALE
+  1. cycle 73/78 — detection cost: width L ~ log(a log T)/a, critical at a ~ 1/log T;
+  2. cycle 79 — Nyquist crossover: branches exchange at a ~ 1/log T (formalised constant 3);
+  3. cycle 79 — the mean zero spacing 2 pi/log T;
+  4. cycles 81/83/99/100 — the pole's logarithmic weight (four derivations);
+  5. cycle 102 — the variance matching sigma - 1/2 ~ 1/(2 log T).
+AS WITH THE FOUR DERIVATIONS OF THE POLE, THIS IS STRUCTURAL COHERENCE, NOT NEW LEVERAGE: one object
+seen from several sides. The constants differ (3 versus 1/2), so the appearances are of the same
+scale but not the same statement.
+
+Machine-verified: `RHTower/CriticalScaleMatching.lean` (unboundedness of the variance profile
+1/(2 sigma - 1) at the critical abscissa, the exact scale identification
+1/(2 sigma - 1) = L iff sigma - 1/2 = 1/(2L), the common c/log T form of the Nyquist crossover and the
+variance scale, and the distinctness of their constants; standard axioms only, wired into RHTower).
+
+### THIRTY-SIXTH ATLAS ENTRY
+    critical scale   the random-model variance diverges as (1/2) log(1/(2 sigma - 1)) and matches
+                     Selberg's (1/2) log log T exactly under sigma - 1/2 <-> 1/(2 log T). Fifth
+                     independent appearance of the scale 1/log T; coherence, not leverage.
+
+### STATE AT CYCLE 102
+Thirty-six entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+A META-OBSERVATION WORTH RECORDING AFTER 102 CYCLES. The programme has now produced TWO families of
+repeated coincidences — four derivations of the pole scale and five appearances of 1/log T — and in
+BOTH cases the repetition was structural coherence rather than independent information. THAT IS
+ITSELF A FINDING: the explicit-formula/operator world has ONE logarithmic invariant, and every
+computation in it returns that invariant. A proof cannot come from within a world with a single
+invariant, because every quantity is a function of it. THIS IS THE STRONGEST FORM OF THE CLOSURE
+RESULT: the four closed lanes are closed because they all measure the same thing.
+
+### Cycle 103 target
+Given the meta-observation, the productive move is to find a SECOND invariant — a quantity in the
+theory that is NOT a function of log T. Candidates that are not obviously reducible: (a) the ZERO
+SPACING DISTRIBUTION (GUE) — a dimensionless law, scale-free after unfolding, hence NOT a function of
+log T; (b) the CLASS NUMBER / discriminant data of the associated number fields; (c) the LOW-LYING
+zeros' one-level density, again dimensionless after unfolding. TEST (a): the unfolded pair
+correlation is a dimensionless function; does ANY statement in the atlas constrain it? If the atlas is
+blind to dimensionless data, then the closure results say nothing about GUE-type arguments, and the
+pair-correlation lane is genuinely open rather than merely unexplored.

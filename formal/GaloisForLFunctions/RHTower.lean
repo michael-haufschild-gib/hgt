@@ -2946,3 +2946,4 @@ import GaloisForLFunctions.RHTower.WitnessTestForArguments
 import GaloisForLFunctions.RHTower.SymbolAsymmetryIsPole
 import GaloisForLFunctions.RHTower.ReflectionSplitsOddEven
 import GaloisForLFunctions.RHTower.RecurrenceZeroDensity
+import GaloisForLFunctions.RHTower.CriticalScaleMatching

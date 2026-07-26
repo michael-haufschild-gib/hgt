@@ -16,6 +16,7 @@ approaches the record without reaching it; the shortfall at `A = 15` is `≈ 0.0
 -/
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Ring
 
 namespace HTGeometry
 
@@ -187,5 +188,56 @@ theorem observed_decreasing : observedRatio2 < observedRatio1 := by
 /-- The shortfall in the decay rate. -/
 theorem ratio_shortfall : (7:ℚ)/100 < requiredRatioRatios - observedRatio2 := by
   unfold requiredRatioRatios requiredRatio observedRatio2; norm_num
+
+
+/-!
+### Transporting a moment bound to a single point
+
+Heath-Brown's argument bounds `R·V^{12} ≪ T²` where `V` is a large-value level and `R` the number of
+well-spaced points attaining it.  Setting `R = 1` — a single point — gives `V ≪ T^{1/6}`: **Weyl's
+exponent, recovered from a moment argument.**
+
+In general a moment bound `∫|ζ|^{2k} ≪ T^{m(k)}` gives, at a single point, `V^{2k} ≪ T^{m(k)}`, i.e.
+
+    **μ(1/2) ≤ m(k)/(2k)** ,
+
+which is exactly the campaign's neutrality law.  So the transport of a mean-value bound to the
+pointwise setting *exists* and is the law already in hand; it is not a new bridge.
+
+Checks: `m(2) = 1` gives `1/4` (convexity); `m(6) = 2` gives `1/6` (Weyl).
+-/
+
+/-- The pointwise bound obtained by transporting a `2k`-th moment bound `m` to a single point. -/
+def neutralityTransport (m k : ℚ) : ℚ := m / (2 * k)
+
+/-- **The fourth moment transports to the convexity bound.** -/
+@[simp] theorem transport_fourth : neutralityTransport 1 2 = 1/4 := by
+  unfold neutralityTransport; norm_num
+
+/-- **Heath-Brown's twelfth moment transports to Weyl's exponent.** -/
+@[simp] theorem transport_twelfth : neutralityTransport 2 6 = 1/6 := by
+  unfold neutralityTransport; norm_num
+
+/-- The twelfth moment is a strict improvement on the fourth, under transport. -/
+theorem twelfth_beats_fourth : neutralityTransport 2 6 < neutralityTransport 1 2 := by
+  rw [transport_twelfth, transport_fourth]; norm_num
+
+/-- **But neither reaches the record.** -/
+theorem transports_miss_record :
+    (13/84 : ℚ) < neutralityTransport 2 6 ∧ (13/84 : ℚ) < neutralityTransport 1 2 := by
+  rw [transport_twelfth, transport_fourth]
+  constructor <;> norm_num
+
+/-- The transport of Trudgian–Yang's `M(15) ≤ 2.4137` (i.e. `k = 15/2`). -/
+theorem transport_ty15 : neutralityTransport tyM15 (15/2) = tyM15 / 15 := by
+  unfold neutralityTransport
+  norm_num
+
+/-- **The transport is the neutrality law**: `μ ≤ m/(2k) = M(A)/A` with `A = 2k`. -/
+theorem transport_is_neutrality (M A : ℚ) :
+    neutralityTransport M (A/2) = M / A := by
+  unfold neutralityTransport
+  congr 1
+  ring
 
 end HTGeometry
