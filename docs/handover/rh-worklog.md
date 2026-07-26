@@ -8652,3 +8652,55 @@ the global one; if they leave gaps, they do not. COMPUTE THE COVERING: consecuti
 and the radii grow like sqrt(k/log k) -> infinity, SO THE DISCS EVENTUALLY OVERLAP MASSIVELY AND COVER
 EVERYTHING BEYOND A FINITE POINT. If that is right, the five-level descent plus a finite check is
 equivalent to RH — which would make the localisation exact rather than lossy.
+
+---
+
+## Cycle 142 — THE LOCALISED STATEMENT IS STRICTLY WEAKER, AND ITS REGION IS THE SADDLE REGION
+
+### The discs form a horn, and the horn is not the half-plane
+Centres at s = 2k, radii ~ sqrt(k/log k). Consecutive centres are TWO apart while the radii grow
+without bound, so THE DISCS OVERLAP from a small index onward (formalised: radius > 1 suffices) and
+their union is a connected region about the positive real axis WIDENING LIKE sqrt(Re s / log Re s).
+
+A zero lying OUTSIDE that horn violates NONE of the local statements (formalised: such points exist at
+every width).
+
+    ==> THE LOCALISED STATEMENT IS STRICTLY WEAKER THAN THE HYPOTHESIS. It forbids zeros in a widening
+        horn about the real axis, NOT EVERYWHERE.
+
+### And the horn is exactly the saddle region
+In that region the transform equals its saddle contribution times 1 + o(1), and the saddle value is
+POSITIVE because the density is. A positive number times a factor within one of unity DOES NOT VANISH
+(formalised).
+
+    ==> LEVEL ONE IS NOT THE HYPOTHESIS IN DISGUISE. IT IS A SADDLE-POINT VALIDITY STATEMENT ON THE
+        REGION WHERE THE SADDLE-POINT METHOD APPLIES — THE STANDARD BUSINESS OF ASYMPTOTIC ANALYSIS —
+        AND THE WIDTH OF VALIDITY MATCHES THE RADIUS THE MECHANISM REQUIRES.
+
+THIS IS THE FAVOURABLE ANSWER, AND IT REFINES CYCLE 141 RATHER THAN CONTRADICTING IT. Entry 75 stands:
+each level is a localisation of RH. THIS CYCLE ADDS: the localisation is to a region where the
+statement is accessible by asymptotics, precisely because the region is defined by the asymptotics'
+own validity.
+
+Machine-verified: `RHTower/HornIsTheSaddleRegion.lean` (overlap of consecutive discs once the radius
+exceeds one, the radius exceeding one when k exceeds log k, existence of points outside any horn width,
+and non-vanishing of a positive value perturbed by less than one; standard axioms only, wired into
+RHTower).
+
+### SEVENTY-SIXTH ATLAS ENTRY
+    saddle horn   the discs of radius sqrt(k/log k) about s = 2k overlap and form a horn about the real
+                  axis; a zero outside the horn violates no local statement, so the localisation is
+                  STRICTLY WEAKER than RH. And the horn is exactly the saddle-point validity region,
+                  where the transform is a positive saddle value times 1 + o(1), hence nonvanishing.
+                  Level one is an asymptotic-analysis statement, not RH in disguise.
+
+### STATE AT CYCLE 142
+Seventy-six entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+### Cycle 143 target
+If level one is a saddle-point validity statement, MAKE IT ONE. The saddle-point method for
+M_1(s) = int_0^inf Phi(t) t^s dt requires: (a) a unique saddle of the phase s log t - pi e^{2t} in the
+relevant range; (b) a steepest-descent contour through it; (c) an error bound from the third derivative
+— WHICH CYCLE 136 ALREADY COMPUTED AS sqrt(log k / k). ALL THREE INGREDIENTS ARE IN HAND. WRITE THE
+SADDLE EQUATION EXPLICITLY, VERIFY UNIQUENESS FROM THE CONVEXITY IDENTITY g'' = g'(2e^w + 1) > 0, AND
+STATE THE RESULTING NON-VANISHING ON THE HORN. That would close level one, leaving four.

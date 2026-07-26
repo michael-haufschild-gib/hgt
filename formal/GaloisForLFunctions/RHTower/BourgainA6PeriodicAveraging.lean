@@ -101,6 +101,96 @@ theorem integral_two_linear_translates_bourgainA6PhysicalBlockProduct_eq
     integral_norm_bourgainA6PhysicalBlockCoordinateSum_pow_six_first_translate
       N M q₂ hN c₂ x₁ x₂ x₃ x₄]
 
+/-- The sixth power of one block norm inherits physical period `N²` in the
+quadratic coordinate. -/
+theorem periodic_norm_bourgainA6PhysicalBlockCoordinateSum_pow_six_second
+    (N M q : ℕ) (hN : 0 < N) (c : Fin M → ℂ)
+    (x₁ x₃ x₄ : ℝ) :
+    Function.Periodic
+      (fun x₂ =>
+        ‖bourgainA6PhysicalBlockCoordinateSum
+            N M q c x₁ x₂ x₃ x₄‖ ^ (6 : ℕ))
+      ((N : ℝ) ^ (2 : ℕ)) := by
+  intro x₂
+  change
+    ‖bourgainA6PhysicalBlockCoordinateSum
+        N M q c x₁ (x₂ + (N : ℝ) ^ (2 : ℕ)) x₃ x₄‖ ^ (6 : ℕ) =
+      ‖bourgainA6PhysicalBlockCoordinateSum
+        N M q c x₁ x₂ x₃ x₄‖ ^ (6 : ℕ)
+  have hphase :=
+    periodic_bourgainA6PhysicalBlockCoordinateSum_second
+      N M q hN c x₁ x₃ x₄ x₂
+  change
+    bourgainA6PhysicalBlockCoordinateSum
+        N M q c x₁ (x₂ + (N : ℝ) ^ (2 : ℕ)) x₃ x₄ =
+      bourgainA6PhysicalBlockCoordinateSum
+        N M q c x₁ x₂ x₃ x₄ at hphase
+  rw [hphase]
+
+/-- Translating a block before averaging over a full physical quadratic
+period does not change its sixth moment. -/
+theorem integral_norm_bourgainA6PhysicalBlockCoordinateSum_pow_six_second_translate
+    (N M q : ℕ) (hN : 0 < N) (c : Fin M → ℂ)
+    (x₁ x₂ x₃ x₄ : ℝ) :
+    (∫ z in (0 : ℝ)..((N : ℝ) ^ (2 : ℕ)),
+      ‖bourgainA6PhysicalBlockCoordinateSum
+          N M q c x₁ (x₂ + z) x₃ x₄‖ ^ (6 : ℕ)) =
+      ∫ z in (0 : ℝ)..((N : ℝ) ^ (2 : ℕ)),
+        ‖bourgainA6PhysicalBlockCoordinateSum
+            N M q c x₁ z x₃ x₄‖ ^ (6 : ℕ) := by
+  let F : ℝ → ℝ := fun z =>
+    ‖bourgainA6PhysicalBlockCoordinateSum
+        N M q c x₁ z x₃ x₄‖ ^ (6 : ℕ)
+  have hp : Function.Periodic F ((N : ℝ) ^ (2 : ℕ)) :=
+    periodic_norm_bourgainA6PhysicalBlockCoordinateSum_pow_six_second
+      N M q hN c x₁ x₃ x₄
+  rw [show
+      (∫ z in (0 : ℝ)..((N : ℝ) ^ (2 : ℕ)),
+        ‖bourgainA6PhysicalBlockCoordinateSum
+            N M q c x₁ (x₂ + z) x₃ x₄‖ ^ (6 : ℕ)) =
+        ∫ z in (0 : ℝ)..((N : ℝ) ^ (2 : ℕ)), F (z + x₂) by
+      apply intervalIntegral.integral_congr
+      intro z hz
+      simp only [F, add_comm]]
+  rw [intervalIntegral.integral_comp_add_right]
+  simpa only [F, zero_add, add_zero,
+      add_comm x₂ ((N : ℝ) ^ (2 : ℕ))] using
+    hp.intervalIntegral_add_eq x₂ 0
+
+/-- Two independent full quadratic-period translations separate the two
+block sixth moments exactly. -/
+theorem integral_two_quadratic_translates_bourgainA6PhysicalBlockProduct_eq
+    (N M q₁ q₂ : ℕ) (hN : 0 < N)
+    (c₁ c₂ : Fin M → ℂ) (x₁ x₂ x₃ x₄ : ℝ) :
+    (∫ z₂ in (0 : ℝ)..((N : ℝ) ^ (2 : ℕ)),
+      ∫ z₁ in (0 : ℝ)..((N : ℝ) ^ (2 : ℕ)),
+        ‖bourgainA6PhysicalBlockCoordinateSum
+            N M q₁ c₁ x₁ (x₂ + z₁) x₃ x₄‖ ^ (6 : ℕ) *
+          ‖bourgainA6PhysicalBlockCoordinateSum
+            N M q₂ c₂ x₁ (x₂ + z₂) x₃ x₄‖ ^ (6 : ℕ)) =
+      (∫ z₁ in (0 : ℝ)..((N : ℝ) ^ (2 : ℕ)),
+        ‖bourgainA6PhysicalBlockCoordinateSum
+            N M q₁ c₁ x₁ z₁ x₃ x₄‖ ^ (6 : ℕ)) *
+      (∫ z₂ in (0 : ℝ)..((N : ℝ) ^ (2 : ℕ)),
+        ‖bourgainA6PhysicalBlockCoordinateSum
+            N M q₂ c₂ x₁ z₂ x₃ x₄‖ ^ (6 : ℕ)) := by
+  let A : ℝ :=
+    ∫ z₁ in (0 : ℝ)..((N : ℝ) ^ (2 : ℕ)),
+      ‖bourgainA6PhysicalBlockCoordinateSum
+          N M q₁ c₁ x₁ z₁ x₃ x₄‖ ^ (6 : ℕ)
+  have h₁ :
+      (∫ z₁ in (0 : ℝ)..((N : ℝ) ^ (2 : ℕ)),
+        ‖bourgainA6PhysicalBlockCoordinateSum
+            N M q₁ c₁ x₁ (x₂ + z₁) x₃ x₄‖ ^ (6 : ℕ)) = A := by
+    exact
+      integral_norm_bourgainA6PhysicalBlockCoordinateSum_pow_six_second_translate
+        N M q₁ hN c₁ x₁ x₂ x₃ x₄
+  simp_rw [intervalIntegral.integral_mul_const, h₁]
+  rw [intervalIntegral.integral_const_mul]
+  rw [
+    integral_norm_bourgainA6PhysicalBlockCoordinateSum_pow_six_second_translate
+      N M q₂ hN c₂ x₁ x₂ x₃ x₄]
+
 end
 
 end RHTower
