@@ -335,3 +335,18 @@ isolation of a differentially transcendental facet carrier with the omitted peri
 intrinsic `htDim` functional itself.  Those two steps are shared with the parent card and are what
 its own last gate is about; the analytic obstruction they feed is now closed for this family, and it
 is closed using only the rank-three boundary, not the elliptic rank-two theory.
+
+## Lean progress — the two-vertex sharpening of the obstruction
+
+`GaloisForLFunctions/HTGeometry/RankTwoRealDependentPeriods.lean` (axiom-clean, build green) also
+sharpens the facet obstruction below the three-vertex threshold used above:
+
+- **`no_scalarFacetRealization_of_two_omitted_realDependent`** — a facet omitting only *two* vertices
+  already kills a one-variable realization as soon as the two omitted translation steps are
+  `R`-linearly dependent, since two `Q`-independent `R`-dependent periods force the carrier constant.
+
+So for this family the analytic obstruction is available at both thresholds: unconditionally at three
+omitted vertices (which is what the boundary wedge always provides), and at two omitted vertices
+whenever the omitted steps happen to be real-dependent.  Only the genuinely elliptic configuration —
+two omitted vertices with `R`-independent steps — still needs Weierstrass theory, and the boundary
+wedge never reaches it.
