@@ -2049,3 +2049,32 @@ Together with `hochster_multidegree_boundary_iff` (level one) and the chain-map 
 `koszulUpperTri_srKoszulBoundary3_strandThree`, the squarefree Koszul strand and the reduced cochain
 complex of the induced subcomplex now agree at levels one and two — the card's "general finite-complex
 bridge" gate, built from scratch (mathlib has no Koszul complex and no simplicial cochain complex).
+
+### Lean progress — the degree-uniform iterated incidence sign and its alternation
+
+`KoszulTupleSign.lean` (axiom-clean, build green) supplies the degree-uniform weight behind the
+Hochster strand maps at **every** Koszul degree, replacing the hand-made degree-three signs
+`faceSign3_antisym12/23`.
+
+- `tupleSign F σ v` — the iterated incidence sign of a tuple, defined by the natural recursion (peel
+  the head, erase it from `σ`, continue), with `tupleSign_zero` and `tupleSign_succ`.
+- `tupleSign_swap_head` — swapping the first two entries flips the sign: exactly
+  `faceSign_mul_faceSign_erase_antisymm` on the two peeled vertices, the deeper factors unchanged
+  because the two erasures commute.
+- `tail_comp_swap_succ`, `head_comp_swap_succ` — a swap at positions `≥ 1` fixes the head and is a
+  swap of the tail.
+- `tupleSign_swap_adjacent` — swapping adjacent entries flips the sign, by induction on the degree
+  (`t = 0` is the head swap; `t ≥ 1` reduces to the tail).  Formulating alternation through
+  **adjacent** transpositions is what avoids dependent-type surgery on `Fin`: the head case types as
+  `Fin (q+2)` on the nose.
+- **`tupleSign_comp_perm`** — the general transformation law
+  `tupleSign σ (v ∘ π) = sign π • tupleSign σ v`, obtained from the adjacent case by monoid-closure
+  induction, since adjacent transpositions generate the symmetric group
+  (`Equiv.Perm.mclosure_swap_castSucc_succ`).
+- `tupleSign_swap` — the transposition form, which is exactly the `swap_neg` field of the corpus's
+  `IsAltTensor`.
+
+This is the missing degree-uniform ingredient for the general-degree strand equivalence: the strand
+map at Koszul degree `p` is `tupleSign`-weighted, so `tupleSign_swap` is what makes it land in the
+alternating Koszul complex `koszulAltTensors` on which `koszulCycles`, `koszulBoundaries` and
+`koszulTor` are defined (`GeneralKoszulComplex`).
