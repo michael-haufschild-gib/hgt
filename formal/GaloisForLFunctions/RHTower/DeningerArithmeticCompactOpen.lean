@@ -217,7 +217,7 @@ complex submodule.
 -/
 def DeningerCompactOpenQuotient
     (S : Submodule ℂ DeningerCompactOpenEntire) :=
-  Quotient (deningerCompactOpenQuotientRel S)
+  DeningerCompactOpenEntire ⧸ S.toAddSubgroup
 
 namespace DeningerCompactOpenQuotient
 
@@ -437,16 +437,27 @@ theorem liftL_mk
   rfl
 
 /-- Canonical right uniformity on the compact-open additive quotient. -/
-noncomputable instance instUniformSpace :
+@[implicit_reducible]
+noncomputable def uniformSpace :
     UniformSpace (DeningerCompactOpenQuotient S) :=
   IsTopologicalAddGroup.rightUniformSpace
     (DeningerCompactOpenQuotient S)
 
+noncomputable instance instUniformSpace :
+    UniformSpace (DeningerCompactOpenQuotient S) :=
+  uniformSpace S
+
 /-- Compact-open quotients are complete for their canonical additive uniformity. -/
 noncomputable instance instCompleteSpace :
-    CompleteSpace (DeningerCompactOpenQuotient S) :=
-  QuotientAddGroup.completeSpace_right
-    DeningerCompactOpenEntire S.toAddSubgroup
+    CompleteSpace (DeningerCompactOpenQuotient S) := by
+  change
+    @CompleteSpace
+      (DeningerCompactOpenQuotient S)
+      (uniformSpace S)
+  rw [uniformSpace]
+  exact
+    QuotientAddGroup.completeSpace_right
+      DeningerCompactOpenEntire S.toAddSubgroup
 
 /-- The canonical quotient uniformity is translation invariant. -/
 instance instIsUniformAddGroup :

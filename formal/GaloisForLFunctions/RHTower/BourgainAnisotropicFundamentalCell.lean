@@ -11,6 +11,7 @@ import GaloisForLFunctions.RHTower.BourgainA6FirstSpacingBridge
 import GaloisForLFunctions.RHTower.BourgainAnisotropicPlanarTransfer
 import GaloisForLFunctions.RHTower.BourgainExactLocalMomentTransfer
 import GaloisForLFunctions.RHTower.BourgainExactLocalTranslation
+import GaloisForLFunctions.RHTower.BourgainFiniteCubeCover
 
 open MeasureTheory
 
@@ -306,6 +307,30 @@ theorem setLIntegral_bourgainTranslatedOsculatingFundamentalCell
     (measurePreserving_add_right volume y).setLIntegral_comp_emb
       (Homeomorph.addRight y).isClosedEmbedding.measurableEmbedding
       f (bourgainOsculatingFundamentalCell H scale a b)
+
+/-- Finite-cover summation for translated pulled-back period cells. -/
+theorem setLIntegral_le_card_mul_of_osculatingFundamentalCell_cover
+    {ι : Type*} [Fintype ι]
+    (A : Set BourgainPhaseSpace)
+    (H : ℕ) (scale a b : ℝ)
+    (center : ι → BourgainPhaseSpace)
+    (f : BourgainPhaseSpace → ENNReal)
+    (hcover :
+      A ⊆ ⋃ i,
+        bourgainTranslatedOsculatingFundamentalCell
+          H scale a b (center i))
+    {B : ENNReal}
+    (hlocal :
+      ∀ i,
+        (∫⁻ x in bourgainTranslatedOsculatingFundamentalCell
+          H scale a b (center i), f x) ≤ B) :
+    (∫⁻ x in A, f x) ≤ (Fintype.card ι : ENNReal) * B := by
+  exact setLIntegral_le_card_mul_of_finite_cover
+    A
+    (fun i =>
+      bourgainTranslatedOsculatingFundamentalCell
+        H scale a b (center i))
+    f hcover hlocal
 
 /-- Uniform norm radius of a pulled-back period cell, expressed through the
 two exact inverse operator norms. -/
@@ -863,6 +888,102 @@ theorem setLIntegral_bourgainSquareRootExactLocalSum_fundamentalCell_subpower
       exact mul_le_mul_right
         (add_le_add hquadBound le_rfl) _
     _ = _ := by rfl
+
+/-- Translating a sharp anisotropic cell is exactly coefficient twisting for
+both local curve sums. -/
+theorem setLIntegral_bourgainSquareRootExactLocalSum_translatedFundamentalCell_eq
+    (H : ℕ) (D a b scale : ℝ) (c₁ c₂ : Fin H → ℂ)
+    (y : BourgainPhaseSpace) :
+    (∫⁻ z in bourgainTranslatedOsculatingFundamentalCell
+        H scale a b y,
+      ENNReal.ofReal
+        (‖bourgainSquareRootExactLocalSum H D a c₁ z‖ ^ (6 : ℕ) *
+          ‖bourgainSquareRootExactLocalSum H D b c₂ z‖ ^
+            (6 : ℕ))) =
+      ∫⁻ x in bourgainOsculatingFundamentalCell H scale a b,
+        ENNReal.ofReal
+          (‖bourgainSquareRootExactLocalSum H D a
+                (bourgainSquareRootExactLocalTranslateCoefficients
+                  H D a c₁ y) x‖ ^ (6 : ℕ) *
+            ‖bourgainSquareRootExactLocalSum H D b
+                (bourgainSquareRootExactLocalTranslateCoefficients
+                  H D b c₂ y) x‖ ^ (6 : ℕ)) := by
+  rw [setLIntegral_bourgainTranslatedOsculatingFundamentalCell]
+  apply lintegral_congr
+  intro x
+  rw [bourgainSquareRootExactLocalSum_add,
+    bourgainSquareRootExactLocalSum_add]
+
+/-- The coefficient `ℓ²` mass is unchanged by a phase-space translation. -/
+theorem sum_norm_sq_bourgainSquareRootExactLocalTranslateCoefficients
+    (H : ℕ) (D a : ℝ) (c : Fin H → ℂ)
+    (y : BourgainPhaseSpace) :
+    (∑ n : Fin H,
+      ‖bourgainSquareRootExactLocalTranslateCoefficients
+        H D a c y n‖ ^ (2 : ℕ)) =
+      ∑ n : Fin H, ‖c n‖ ^ (2 : ℕ) := by
+  apply Fintype.sum_congr
+  intro n
+  rw [norm_bourgainSquareRootExactLocalTranslateCoefficients]
+
+/-- Uniform version of the exact sharp-cell estimate over every translated
+cell. -/
+theorem setLIntegral_bourgainSquareRootExactLocalSum_translatedFundamentalCell_subpower
+    {ε : ℝ} (hε : 0 < ε) :
+    ∃ C : ℝ, 0 < C ∧
+      ∀ (H : ℕ), (hH : 0 < H) →
+      ∀ {D a b : ℝ}, (hD : 0 < D) →
+        (ha : 0 < a) → (hab : a < b) →
+      ∀ (c₁ c₂ : Fin H → ℂ) (y : BourgainPhaseSpace),
+      let hscale : (H : ℝ) / D ≠ 0 :=
+        div_ne_zero (Nat.cast_ne_zero.mpr hH.ne') hD.ne'
+      let R : ℝ :=
+        ‖((bourgainSquareRootPhaseCoordinateContinuousLinearEquiv
+            ha hab).symm :
+            BourgainPhaseSpace →L[ℝ] BourgainPhaseSpace)‖ *
+          (‖((bourgainParabolaPhaseScaleContinuousLinearEquiv hscale).symm :
+              BourgainPhaseSpace →L[ℝ] BourgainPhaseSpace)‖ *
+            ((H : ℝ) ^ (2 : ℕ) / 2))
+      let J : ENNReal :=
+        ENNReal.ofReal
+          |((((H : ℝ) / D) ^ (6 : ℕ)) *
+            (3 * (b - a) ^ (4 : ℕ) /
+              (32 * a ^ (3 : ℕ) * b ^ (3 : ℕ))))⁻¹|
+      let B : ℝ :=
+        ((H : ℝ) ^ (3 : ℕ) *
+          (C * (H : ℝ) ^ (ε / 2) *
+            (∑ n : Fin H, ‖c₁ n‖ ^ (2 : ℕ)) ^ (3 : ℕ))) *
+        ((H : ℝ) ^ (3 : ℕ) *
+          (C * (H : ℝ) ^ (ε / 2) *
+            (∑ n : Fin H, ‖c₂ n‖ ^ (2 : ℕ)) ^ (3 : ℕ)))
+      (∫⁻ z in bourgainTranslatedOsculatingFundamentalCell
+          H ((H : ℝ) / D) a b y,
+        ENNReal.ofReal
+          (‖bourgainSquareRootExactLocalSum H D a c₁ z‖ ^ (6 : ℕ) *
+            ‖bourgainSquareRootExactLocalSum H D b c₂ z‖ ^
+              (6 : ℕ))) ≤
+        (1024 : ENNReal) *
+          (J * ENNReal.ofReal B +
+            ENNReal.ofReal
+                (bourgainSquareRootBilinearTaylorError
+                  R a b ((H : ℝ) / D) c₁ c₂) *
+              (J * ENNReal.ofReal ((H : ℝ) ^ (6 : ℕ)))) := by
+  obtain ⟨C, hC, hbase⟩ :=
+    setLIntegral_bourgainSquareRootExactLocalSum_fundamentalCell_subpower
+      hε
+  refine ⟨C, hC, ?_⟩
+  intro H hH D a b hD ha hab c₁ c₂ y
+  dsimp only
+  rw [
+    setLIntegral_bourgainSquareRootExactLocalSum_translatedFundamentalCell_eq]
+  let c₁' :=
+    bourgainSquareRootExactLocalTranslateCoefficients H D a c₁ y
+  let c₂' :=
+    bourgainSquareRootExactLocalTranslateCoefficients H D b c₂ y
+  have hb := hbase H hH hD ha hab c₁' c₂'
+  simpa [c₁', c₂',
+    sum_norm_sq_bourgainSquareRootExactLocalTranslateCoefficients,
+    bourgainSquareRootBilinearTaylorError_translateCoefficients] using hb
 
 end
 

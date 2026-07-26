@@ -352,4 +352,29 @@ theorem energy_near_int_of_almost_orthonormal (B : V → V → ℂ)
       ≤ ‖∑ i, ∑ j, (m i : ℂ) * (m j : ℂ) * D i j‖ := this
     _ ≤ ε * (∑ i, |(m i : ℝ)|) ^ 2 := hbound
 
+
+/-- **Integral Bessel.**  If the coefficients of `u` against an orthonormal family are rational
+integers, then the sum of their squares is a non-negative integer bounded by the energy of `u`.
+
+For the logarithmic prime form and the family of degree-one elements of the Selberg class — whose
+coefficient vectors `p ↦ χ(p)p^(-iθ)` are orthonormal, and whose pairings against any `F` are the
+integers `-ord_{1+iθ} F^{conj χ}` — this says that the prime energy dominates the total divisor mass
+of all Dirichlet twists of `F` on the line `Re s = 1`, counted with multiplicity squared. -/
+theorem integral_bessel_of_orthonormal (B : V → V → ℂ)
+    (hadd₁ : ∀ x y z, B (x + y) z = B x z + B y z)
+    (hsmul₁ : ∀ (c : ℂ) (x y : V), B (c • x) y = c * B x y)
+    (hconj : ∀ x y, B y x = (starRingEnd ℂ) (B x y))
+    (hpsd : ∀ x, 0 ≤ (B x x).re)
+    {ι : Type*} [Fintype ι] [DecidableEq ι] (e : ι → V) (u : V) (m : ι → ℤ)
+    (horth : ∀ i j, B (e i) (e j) = if i = j then 1 else 0)
+    (hint : ∀ i, B u (e i) = ((m i : ℤ) : ℂ)) :
+    ∑ i, ((m i : ℝ)) ^ 2 ≤ (B u u).re := by
+  have hb := bessel_of_orthonormal B hadd₁ hsmul₁ hconj hpsd e u horth
+  refine le_trans (le_of_eq ?_) hb
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [hint i]
+  rw [show ‖((m i : ℤ) : ℂ)‖ = |(m i : ℝ)| from by
+    rw [← Complex.ofReal_intCast, Complex.norm_real, Real.norm_eq_abs]]
+  rw [sq_abs]
+
 end HTGeometry

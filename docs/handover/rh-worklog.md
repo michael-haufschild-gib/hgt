@@ -7656,3 +7656,74 @@ coefficient is q's. TRY SMALL CASES SYMBOLICALLY (not numerically): d = 1 with p
 gives X^2 + (1 - ... ) — compute the discriminant in a and b and read off the exact condition. The
 answer for d = 1 will reveal whether the needed hypothesis is interlacing, a sign condition, or
 something else, and that determines what must be proved about the Xi coefficients.
+
+---
+
+## Cycle 126 (2026-07-26) — THE PASCAL COMPATIBILITY CONDITION IS THE HYPERBOLICITY BEING PROVED
+### The last shortcut closes. The escaping route is now fully characterised.
+
+### INTERLACING IS NOT SUFFICIENT — explicit counterexample
+For p = X + 1 and q = X - 1, both real-rooted of equal degree with positive leading coefficients,
+
+    p + X q  =  (X + 1) + X(X - 1)  =  X^2 + 1,
+
+WHICH HAS NO REAL ROOT. So no interlacing hypothesis alone can make p + X q real-rooted: the VARIABLE
+coefficient X is not covered by the classical constant-coefficient criterion (p + t q real-rooted for
+all constant t IS interlacing; that theorem does not transfer). FORMALISED.
+
+### WHAT THE CONDITION ACTUALLY IS
+At the first nontrivial level Pascal gives J^{2,n} = gamma_n + 2 gamma_{n+1} X + gamma_{n+2} X^2, with
+discriminant 4(gamma_{n+1}^2 - gamma_n gamma_{n+2}). So
+
+    J^{2,n} REAL-ROOTED  <=>  gamma_{n+1}^2 >= gamma_n gamma_{n+2}   — THE TURAN INEQUALITY.
+
+    ==> THE COMPATIBILITY CONDITION AT EACH STEP OF THE PASCAL INDUCTION IS EXACTLY THE HYPERBOLICITY
+        AT THE NEXT DEGREE. THE STRUCTURAL ROUTE IS CIRCULAR: IT DOES NOT AVOID THE ASYMPTOTIC
+        THRESHOLD, IT RENAMES IT.
+
+### THE ESCAPING ROUTE, FULLY CHARACTERISED
+After 126 cycles the one route that escapes the closure is completely described:
+  * REAL — the discriminant is reality-sensitive, codimension-sensitive, polynomial, contour-free and
+    spectrum-free (entry 56);
+  * INDEXED BY A SECOND INVARIANT — the Jensen degree, independent of log T (entry 57);
+  * SUPER-EXPONENTIALLY EXPENSIVE — N(d) <= (3d)^{24d}(50d)^{3d^2}, and the cost is INTRINSIC to the
+    Hermite model, not to the criterion (entry 58);
+  * WITH NO STRUCTURAL SHORTCUT — the Pascal recurrence's compatibility condition is the conclusion
+    (this cycle).
+Degrees up to eight are settled for every index; the first open degree is nine.
+
+Machine-verified: `RHTower/CompatibilityIsTuran.lean` (the counterexample (X+1) + X(X-1) = X^2 + 1 and
+its rootlessness, the closed form of the second Jensen polynomial from the recurrence, its
+discriminant as the Turan expression, the derivation of the Turan inequality from the existence of a
+real root, and the circularity statement; standard axioms only, wired into RHTower).
+
+### SIXTIETH ATLAS ENTRY
+    compatibility circular   interlacing does not suffice for p + X q ((X+1) + X(X-1) = X^2 + 1); the
+                             actual condition at degree two is the Turan inequality, i.e. the
+                             hyperbolicity being proved. The Pascal induction renames the threshold
+                             rather than avoiding it. No structural shortcut exists.
+
+### STATE AT CYCLE 126
+Sixty entries. RH IS NEITHER PROVEN NOR DISPROVEN.
+
+SIXTY ENTRIES AND A COMPLETE MAP. The programme's terminal position:
+  (A) The unconditional landscape built on log T is CLOSED, with one root cause: RH is a
+      codimension-one constraint and every tool there measures two-dimensional content (entry 52).
+  (B) EXACTLY ONE ROUTE ESCAPES — Jensen/discriminant — and it is fully characterised (above), with an
+      intrinsic super-exponential cost and no shortcut.
+  (C) Refutation is finite and concrete in both formulations: a negative symmetric function of a Weil
+      Gram matrix (entry 45), or a missing sign change of Hardy's Z (entry 54), or a negative Jensen
+      discriminant (entry 56). NONE HAS EVER FIRED.
+  (D) One of the four break-the-closure targets remains open: an arithmetic input INSIDE the strip
+      that is not a count.
+
+### Cycle 127 target
+Target (D) is the last one standing. "Inside the strip and not a count" — the only quantities defined
+strictly inside the strip that are not counts are VALUES of zeta and its derivatives, and MOMENTS of
+those values. Moments on interior lines Re s = sigma in (1/2, 1) ARE unconditional and ARE NOT counts.
+THE CLASSICAL FACT IS THAT THE 2k-TH MOMENT ON THE LINE sigma DETERMINES THE ZERO DENSITY N(sigma,T) BY
+A JENSEN/LITTLEWOOD ARGUMENT — which converts them back into counts. TEST WHETHER ANY MOMENT-DERIVED
+QUANTITY ESCAPES THAT CONVERSION: specifically, whether the DISTRIBUTION of log|zeta| on an interior
+line — not its moments — carries information the count does not. The distribution is a measure on R,
+infinitely many parameters, while the count is one number; if the conversion loses information, the
+lost part is exactly what target (D) asks for.

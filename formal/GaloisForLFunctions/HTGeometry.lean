@@ -2084,4 +2084,5 @@ import GaloisForLFunctions.HTGeometry.CoveringFunctionalNonstationarity
 import GaloisForLFunctions.HTGeometry.LowRangeSlackAndHuxleyNecessity
 import GaloisForLFunctions.HTGeometry.LengthReflectionLaw
 import GaloisForLFunctions.HTGeometry.CriticalLengthEigenspace
+import GaloisForLFunctions.HTGeometry.CoveringBuysNothing
 import GaloisForLFunctions.HTGeometry.LogPhaseDensity
