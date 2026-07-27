@@ -1307,3 +1307,24 @@ registered) carries out the free-block replication count and closes the bottom l
 The bottom layer of the card (14) is therefore formalized unconditionally: no analytic input beyond
 the order-one atomic theorem already in the corpus is needed, and the earlier reading of (BL) as an
 analytic frontier was wrong — it is a matroid rank count.
+
+## Lean progress — the bottom face is a translated order-one elliptic gamma
+
+`formal/GaloisForLFunctions/HTGeometry/MultipleEllipticGammaBottomFace.lean` (axiom-clean, umbrella
+registered) supplies the bridge between the hierarchy and the order-one theory.
+
+- `multipleEllipticGammaLogDerivMero_congr` — parameter congruence for the all-order coordinate;
+- `bottomFaceEquiv` — the indexing equivalence `Fin 2 ≃ {i // i ∉ J}` for a face with exactly two
+  surviving parameters;
+- **`multipleEllipticGammaLogDerivFaceMero_two_surviving`** — for such a face,
+  `F_J = sigma_(-(1+tau_b)/2) Psi_1(z; tau_a, tau_b)`, i.e. the face coordinate is a fixed translate
+  of the genuine elliptic-gamma logarithmic derivative (via `multipleEllipticGammaLogDerivMero_reindex`
+  and the two-period normalization `multipleEllipticGammaLogDerivMero_fin_two`).
+
+With the unconditional order-one packet theorem this reduces the bottom-layer atomicity
+`DiffIndepOn D (O_J)`, `|J| = n-2`, to two purely arithmetic facts about the shift set
+`faceShiftLattice tau J - (1 + tau_b)/2`: every element is nonresonant, and distinct elements have
+nonresonant differences.  Both follow from `Q`-independence of `1, tau_0, ..., tau_r` — the half
+period `(1 + tau_b)/2` in fact *helps*, since its rational part `1/2` is not an integer — and the
+passage from the infinite lattice to finite subsets is the finite-character property of
+`DiffIndepOn`.  That arithmetic is the next Lean step.
