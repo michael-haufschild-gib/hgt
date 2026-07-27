@@ -102,37 +102,29 @@ theorem restrictAnalytic_analyticFunctionElement {V : Set ℂ} (hV : V ⊆ (Set.
 /-! ## The theorem -/
 
 set_option maxHeartbeats 1000000 in
-/-- **A meromorphic germ fixed by two `ℝ`-independent translations is differentially algebraic.** -/
-theorem differentialAlgebraicOver_of_translation_fixed
-    {α β : ℂ} (hindep : LinearIndependent ℝ ![α, β])
-    {x : meroField (Set.univ : Set ℂ)}
-    (hα : addTranslationMeroEquiv α x = x) (hβ : addTranslationMeroEquiv β x = x) :
-    DifferentialAlgebraicOver (RatFunc ℂ) x := by
-  obtain ⟨a, b, hb, rfl⟩ := IsFractionRing.div_surjective (analyticSubring Set.univ) x
-  have hb0 : b ≠ 0 := nonZeroDivisors.ne_zero hb
-  obtain ⟨A, hA, hAa⟩ := a.2
-  obtain ⟨B, hB, hBb⟩ := b.2
+/-- **Descending a normal-form relation into the field.**  If the canonical normal form of a
+fraction of entire representatives satisfies an algebraic differential equation, then the fraction
+is differentially algebraic as an element of the global meromorphic differential field.  The
+relation is transported through a disc on which the denominator does not vanish, where the fraction
+is analytic and the jet bridge applies, and pulled back along the injective restriction
+embedding. -/
+theorem differentialAlgebraicOver_of_differentiallyAlgebraic_toMeromorphicNFOn
+    {a b : analyticSubring (Set.univ : Set ℂ)} (hb0 : b ≠ 0)
+    {A B : ℂ → ℂ} (hA : AnalyticOnNhd ℂ A (Set.univ : Set ℂ))
+    (hB : AnalyticOnNhd ℂ B (Set.univ : Set ℂ))
+    (hAa : Germ.coeRingHom (𝓟 (Set.univ : Set ℂ)) A = (a : Germ (𝓟 Set.univ) ℂ))
+    (hBb : Germ.coeRingHom (𝓟 (Set.univ : Set ℂ)) B = (b : Germ (𝓟 Set.univ) ℂ))
+    (hDA : DifferentiallyAlgebraic
+      (toMeromorphicNFOn (fun z => A z / B z) (Set.univ : Set ℂ))) :
+    DifferentialAlgebraicOver (RatFunc ℂ)
+      (algebraMap (analyticSubring (Set.univ : Set ℂ)) (meroField Set.univ) a /
+        algebraMap (analyticSubring (Set.univ : Set ℂ)) (meroField Set.univ) b) := by
   set H : ℂ → ℂ := fun z => A z / B z with hHdef
   have hHmer : MeromorphicOn H (Set.univ : Set ℂ) :=
     hA.meromorphicOn.div hB.meromorphicOn
   set F : ℂ → ℂ := toMeromorphicNFOn H (Set.univ : Set ℂ) with hFdef
   have hNF : MeromorphicNFOn F (Set.univ : Set ℂ) := meromorphicNFOn_toMeromorphicNFOn _ _
-  have hperα : Function.Periodic F α :=
-    periodic_toMeromorphicNFOn_of_eventually_punctured_meromorphic hHmer α
-      (fun z => fraction_eventually_periodic_of_addTranslationMeroEquiv_fixed α hb0 hB hAa hBb hα z)
-  have hperβ : Function.Periodic F β :=
-    periodic_toMeromorphicNFOn_of_eventually_punctured_meromorphic hHmer β
-      (fun z => fraction_eventually_periodic_of_addTranslationMeroEquiv_fixed β hb0 hB hAa hBb hβ z)
-  have hlat : ∀ p ∈ (⟨α, β, hindep⟩ : PeriodPair).lattice, Function.Periodic F p := by
-    intro p hp
-    refine periodic_of_mem_span_range ![α, β] (fun i => ?_) p ?_
-    · fin_cases i
-      · exact hperα
-      · exact hperβ
-    · rw [range_cons_two]
-      exact hp
-  obtain ⟨n, P, hP0, hPrel⟩ :=
-    differentiallyAlgebraic_of_lattice_periodic_meromorphicNF ⟨α, β, hindep⟩ hNF hlat
+  obtain ⟨n, P, hP0, hPrel⟩ := hDA
   obtain ⟨z₀, r, hr, hBne⟩ := exists_ball_ne_zero_of_ne_zero hb0 hB hBb
   set V : Set ℂ := Metric.ball z₀ r with hVdef
   have hVo : IsOpen V := Metric.isOpen_ball
@@ -220,6 +212,39 @@ theorem differentialAlgebraicOver_of_translation_fixed
     isPreconnected_univ Set.univ_nonempty Set.infinite_univ hVo hVc hVne hVinf _ hxnot
   rw [← hρdef, hρx] at hHTρ
   exact hHTρ hDAV
+
+/-- **A meromorphic germ fixed by two `ℝ`-independent translations is differentially algebraic.** -/
+theorem differentialAlgebraicOver_of_translation_fixed
+    {α β : ℂ} (hindep : LinearIndependent ℝ ![α, β])
+    {x : meroField (Set.univ : Set ℂ)}
+    (hα : addTranslationMeroEquiv α x = x) (hβ : addTranslationMeroEquiv β x = x) :
+    DifferentialAlgebraicOver (RatFunc ℂ) x := by
+  obtain ⟨a, b, hb, rfl⟩ := IsFractionRing.div_surjective (analyticSubring Set.univ) x
+  have hb0 : b ≠ 0 := nonZeroDivisors.ne_zero hb
+  obtain ⟨A, hA, hAa⟩ := a.2
+  obtain ⟨B, hB, hBb⟩ := b.2
+  refine differentialAlgebraicOver_of_differentiallyAlgebraic_toMeromorphicNFOn
+    hb0 hA hB hAa hBb ?_
+  set H : ℂ → ℂ := fun z => A z / B z with hHdef
+  have hHmer : MeromorphicOn H (Set.univ : Set ℂ) :=
+    hA.meromorphicOn.div hB.meromorphicOn
+  set F : ℂ → ℂ := toMeromorphicNFOn H (Set.univ : Set ℂ) with hFdef
+  have hNF : MeromorphicNFOn F (Set.univ : Set ℂ) := meromorphicNFOn_toMeromorphicNFOn _ _
+  have hperα : Function.Periodic F α :=
+    periodic_toMeromorphicNFOn_of_eventually_punctured_meromorphic hHmer α
+      (fun z => fraction_eventually_periodic_of_addTranslationMeroEquiv_fixed α hb0 hB hAa hBb hα z)
+  have hperβ : Function.Periodic F β :=
+    periodic_toMeromorphicNFOn_of_eventually_punctured_meromorphic hHmer β
+      (fun z => fraction_eventually_periodic_of_addTranslationMeroEquiv_fixed β hb0 hB hAa hBb hβ z)
+  have hlat : ∀ p ∈ (⟨α, β, hindep⟩ : PeriodPair).lattice, Function.Periodic F p := by
+    intro p hp
+    refine periodic_of_mem_span_range ![α, β] (fun i => ?_) p ?_
+    · fin_cases i
+      · exact hperα
+      · exact hperβ
+    · rw [range_cons_two]
+      exact hp
+  exact differentiallyAlgebraic_of_lattice_periodic_meromorphicNF ⟨α, β, hindep⟩ hNF hlat
 
 /-- **The elliptic meromorphic field is differentially algebraic.**  If `1` and `τ` are
 `ℝ`-independent, every germ fixed by both translations satisfies an algebraic differential equation

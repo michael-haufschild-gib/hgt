@@ -1791,3 +1791,35 @@ Scope note: the shifts are assumed `R`-independent, which is what the elliptic b
 `R`-dependent but `Q`-independent branch is proved at the level of functions in the corpus (the
 non-discrete period-group argument) and still has to be transported into the field to widen `(C4)`
 from `R`-independence to the card's `Q`-independence.
+
+## Lean progress — `(C4)` at full `Q`-independence: the non-discrete branch closed
+
+`formal/GaloisForLFunctions/HTGeometry/NonDiscreteTranslationDifferentialAlgebraicity.lean`
+(axiom-clean, umbrella registered), plus a refactor of the elliptic module and the widening of the
+`(C4)` module.  The `R`-independence restriction noted in the previous entry is now removed, so
+`(C4)` holds exactly as the card states it, for `Q`-independent shifts.
+
+- **`analyticAt_of_meromorphicNFOn_periodic_of_not_discrete`** — a normal-form meromorphic function
+  whose period group is not discrete has **no poles at all**.  A pole is reproduced at every period
+  (`meromorphicOrderAt_add_eq_of_eventually_periodic`), a non-discrete integer submodule of `C` has
+  nonzero elements arbitrarily close to `0`
+  (`exists_small_nonzero_of_not_discrete_intSubmodule`), and a meromorphic function is analytic on a
+  punctured neighbourhood of every point (`MeromorphicAt.eventually_analyticAt`) — so a pole would
+  have to sit inside its own punctured regular neighbourhood.
+- **`differentiallyAlgebraic_of_meromorphicNFOn_periodic_of_not_discrete`** — hence such a function
+  is entire, and the corpus's small-translation law
+  (`differentiallyAlgebraic_of_quasiperiods_of_not_discrete`, multipliers all `1`) makes it
+  differentially algebraic.
+- **`differentialAlgebraicOver_of_translation_fixed_realDependent`** and
+  **`differentialAlgebraicOver_of_translation_fixed_rat`** — the two-shift law in the global
+  meromorphic differential field for `Q`-independent shifts: `R`-independent shifts give the
+  elliptic branch, `R`-dependent ones the non-discrete branch.
+- The descent half of the elliptic proof was factored out as
+  **`differentialAlgebraicOver_of_differentiallyAlgebraic_toMeromorphicNFOn`** (disc + jet bridge +
+  restriction embedding), so both branches share it; and
+  `differentialAlgebraicOver_iff_daConstantFlat`,
+  `hypertranscendentalOver_iff_not_daConstantFlat` now assume only `LinearIndependent Q ![alpha, beta]`.
+
+`(C1)`--`(C5)` are therefore fully formalized and unconditional.  The only remaining card item is the
+Schaefke--Singer rational gauge reduction, labelled `[SEARCH]` by the card itself, and the gate
+"independent specialist proof and novelty audit".

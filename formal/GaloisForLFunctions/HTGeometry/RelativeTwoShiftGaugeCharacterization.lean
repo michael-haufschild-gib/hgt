@@ -1,10 +1,10 @@
-import GaloisForLFunctions.HTGeometry.EllipticMeroFieldDifferentialAlgebraicity
+import GaloisForLFunctions.HTGeometry.NonDiscreteTranslationDifferentialAlgebraicity
 import GaloisForLFunctions.HTGeometry.SourceLogarithmicBoundary
 
 /-!
 # Hypertranscendence as a relative two-shift gauge obstruction
 
-Fix two `ℝ`-independent shifts `α, β` and let `x` be a nonzero element of the global meromorphic
+Fix two `ℚ`-independent shifts `α, β` and let `x` be a nonzero element of the global meromorphic
 differential field.  Its multiplicative translation cocycle is `σ_q x / x`.  Call the cocycle
 *`DA`-constant-flat* when it is the cocycle of a differentially algebraic gauge times a constant
 character:
@@ -147,7 +147,7 @@ theorem addTranslationMeroEquiv_logDeriv_eq {q : ℂ} {c : ℂ} (hc : c ≠ 0)
 
 /-- **A germ with a `DA`-constant-flat two-shift cocycle is differentially algebraic.** -/
 theorem differentialAlgebraicOver_of_daConstantFlat {α β : ℂ}
-    (hindep : LinearIndependent ℝ ![α, β]) {x : meroField (Set.univ : Set ℂ)} (hx : x ≠ 0)
+    (hindep : LinearIndependent ℚ ![α, β]) {x : meroField (Set.univ : Set ℂ)} (hx : x ≠ 0)
     (hflat : DAConstantFlat α β x) :
     DifferentialAlgebraicOver (RatFunc ℂ) x := by
   obtain ⟨b, hb0, hbDA, c₁, c₂, hc₁, hc₂, hαx, hβx⟩ := hflat
@@ -155,7 +155,7 @@ theorem differentialAlgebraicOver_of_daConstantFlat {α β : ℂ}
   have hgα := addTranslationMeroEquiv_div_eq_const_mul hx hb0 hαx
   have hgβ := addTranslationMeroEquiv_div_eq_const_mul hx hb0 hβx
   have hlogDA : DifferentialAlgebraicOver (RatFunc ℂ) (g′ / g) :=
-    differentialAlgebraicOver_of_translation_fixed hindep
+    differentialAlgebraicOver_of_translation_fixed_rat hindep
       (addTranslationMeroEquiv_logDeriv_eq hc₁ hgα)
       (addTranslationMeroEquiv_logDeriv_eq hc₂ hgβ)
   have hgDA : DifferentialAlgebraicOver (RatFunc ℂ) g :=
@@ -171,7 +171,7 @@ differentially algebraic over the rational coordinate field precisely when its t
 multiplicative translation cocycle can be reduced to a constant character by a differentially
 algebraic gauge. -/
 theorem differentialAlgebraicOver_iff_daConstantFlat {α β : ℂ}
-    (hindep : LinearIndependent ℝ ![α, β]) {x : meroField (Set.univ : Set ℂ)} (hx : x ≠ 0) :
+    (hindep : LinearIndependent ℚ ![α, β]) {x : meroField (Set.univ : Set ℂ)} (hx : x ≠ 0) :
     DifferentialAlgebraicOver (RatFunc ℂ) x ↔ DAConstantFlat α β x :=
   ⟨daConstantFlat_of_differentialAlgebraicOver α β hx,
     differentialAlgebraicOver_of_daConstantFlat hindep hx⟩
@@ -179,7 +179,7 @@ theorem differentialAlgebraicOver_iff_daConstantFlat {α β : ℂ}
 /-- **The hypertranscendental form.**  A nonzero germ is hypertranscendental over the rational
 coordinate field exactly when its two-shift cocycle is not `DA`-constant-flat. -/
 theorem hypertranscendentalOver_iff_not_daConstantFlat {α β : ℂ}
-    (hindep : LinearIndependent ℝ ![α, β]) {x : meroField (Set.univ : Set ℂ)} (hx : x ≠ 0) :
+    (hindep : LinearIndependent ℚ ![α, β]) {x : meroField (Set.univ : Set ℂ)} (hx : x ≠ 0) :
     HypertranscendentalOver (RatFunc ℂ) x ↔ ¬ DAConstantFlat α β x :=
   not_congr (differentialAlgebraicOver_iff_daConstantFlat hindep hx)
 
