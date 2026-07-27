@@ -1576,3 +1576,16 @@ Indeed `q in {a,b}` makes `n tau_q` resonant for the pair `(tau_a, tau_b)` (witn
 content of `hOffDA`; what the engine additionally needs is only the bookkeeping step
 `sigma_(n tau_q) y = y + (DA element)` with `y` in the generated field, which is
 `hypertranscendentalOver_add_differentialAlgebraic_iff`.
+
+**`differentialAlgebraicOver_offStar_translate_bottom`** (axiom-clean) completes `hOffDA` at the
+bottom layer: for a packet element `y` of an off-star face lying in a set `t`, every translate
+`sigma_(n tau_q) y` is differentially algebraic over `C<t>_delta`.  The displacement is DA over the
+constants by the previous lemma, hence over the larger base
+(`DifferentialIndependent.restrictScalarsTower`), `y` itself is DA over that base because it lies in
+it, and `differentialAlgebraicOver_add` adds the two.
+
+All three hypotheses of `multipleEllipticGammaFaceStar_diffIndepOn` are therefore available at the
+bottom layer: atomicity (`multipleEllipticGammaFacePacket_diffIndepOn_bottom`), star nonresonance
+(same-face and cross-face lemmas with `exists_separating_parameter_of_ne`), and off-star differential
+algebraicity (this lemma).  Assembling them into the joint independence of the whole bottom layer is
+now a pure instantiation.

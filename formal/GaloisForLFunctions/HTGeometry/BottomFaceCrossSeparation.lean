@@ -166,6 +166,37 @@ theorem differentialAlgebraicOver_offStar_displacement_bottom
     · exact ⟨0, n, 0, by push_cast; ring⟩
   exact differentialAlgebraicOver_translate_resonant_defect (hτ a) (hτ b) hperiods hres
 
+set_option maxHeartbeats 1000000 in
+set_option synthInstance.maxHeartbeats 800000 in
+/-- **Off-star translates are differentially algebraic over any generated field containing the
+point.**  This is the off-star hypothesis of the gluing engine at the bottom layer. -/
+theorem differentialAlgebraicOver_offStar_translate_bottom
+    (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im) (J : Finset ι) {a b : ι}
+    (haJ : a ∉ J) (hbJ : b ∉ J) (hab : a ≠ b) (hJ : ∀ i, i ∉ J → i = a ∨ i = b)
+    (hperiods : LinearIndependent ℚ (ellipticGammaSourcePeriods (τ a) (τ b)))
+    {q : ι} (hq : q ∉ J) (n : ℤ) {t : Set (meroField (Set.univ : Set ℂ))}
+    {y : meroField (Set.univ : Set ℂ)} (hy : y ∈ multipleEllipticGammaFacePacket τ hτ J)
+    (hyt : y ∈ t) :
+    DifferentialAlgebraicOver ↥(differentialAdjoin ℂ t)
+      (addTranslationMeroEquiv ((n : ℂ) * τ q) y) := by
+  classical
+  haveI : DifferentialAlgebra ↥(differentialAdjoin ℂ t) (meroField (Set.univ : Set ℂ)) :=
+    ⟨fun x => derivationClosedDifferential_apply _
+      (derivationClosed_differentialAdjoin ℂ t) x⟩
+  have hdC := differentialAlgebraicOver_offStar_displacement_bottom τ hτ J haJ hbJ hab hJ
+    hperiods hq n hy
+  have hd : DifferentialAlgebraicOver ↥(differentialAdjoin ℂ t)
+      (addTranslationMeroEquiv ((n : ℂ) * τ q) y - y) := by
+    intro hind
+    exact hdC (HTGeometry.DifferentialIndependent.restrictScalarsTower hind)
+  have hyD : DifferentialAlgebraicOver ↥(differentialAdjoin ℂ t) y := by
+    have := HTGeometry.differentialAlgebraicOver_algebraMap
+      (E := meroField (Set.univ : Set ℂ))
+      (⟨y, subset_differentialAdjoin ℂ t hyt⟩ : ↥(differentialAdjoin ℂ t))
+    simpa using this
+  have hsum := differentialAlgebraicOver_add hd hyD
+  simpa using hsum
+
 omit [Fintype ι] [DecidableEq ι] in
 /-- Distinct faces admit a parameter surviving on one and deleted on the other. -/
 theorem exists_separating_parameter_of_ne {J J' : Finset ι} (h : J ≠ J') :
