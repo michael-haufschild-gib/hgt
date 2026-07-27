@@ -954,3 +954,27 @@ as a differential subfield (its ingredients are `facePacket_translate_mem` and
 `facePacket_translate_sub_mem`), and `1`-periodicity of the multiple elliptic-gamma face
 coordinates, i.e. `sigma_1 F_J = F_J` — true because the kernel is built from the `1`-periodic
 exponential coordinate, but not yet stated for `multipleEllipticGammaLogDerivMero`.
+
+## Lean progress — the unit period of the whole hierarchy
+
+`formal/GaloisForLFunctions/HTGeometry/MultipleEllipticGammaUnitPeriod.lean` (axiom-clean, umbrella
+registered) supplies the first of the two prerequisites recorded above.
+
+Every factor of the all-order products depends on the point only through the exponential coordinate
+`exp(2 pi i z)`, and `multipleEllipticGammaCoordinate_add_one` says that coordinate is unchanged by
+`z -> z + 1`.  Hence:
+
+- `multipleEllipticGammaForwardProduct_add_one`, `..._Backward..._add_one` — both entire products
+  are `1`-periodic pointwise;
+- `addTranslationAnalyticEquiv_one_...Analytic` — hence both germs are fixed by the unit
+  translation;
+- **`addTranslationMeroEquiv_one_multipleEllipticGammaMero`** — so is the meromorphic element, in
+  both parity branches;
+- **`addTranslationMeroEquiv_one_multipleEllipticGammaLogDerivMero`** and
+  **`addTranslationMeroEquiv_one_multipleEllipticGammaLogDerivFaceMero`** — and therefore its
+  logarithmic derivative and *every face coordinate* of the hierarchy.
+
+This is exactly the statement the face-lifting argument needs to run with three directions
+`1, tau_q, tau_u`: the unit translation acts trivially on the whole block, so it contributes the
+zero displacement to the simultaneous system while completing the rank-three period triple whose
+joint fixed field is `C`.
