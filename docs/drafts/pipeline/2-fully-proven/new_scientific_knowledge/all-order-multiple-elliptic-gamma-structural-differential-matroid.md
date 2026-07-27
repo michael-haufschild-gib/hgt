@@ -1353,3 +1353,25 @@ Both feed `ellipticGammaTranslatePacket_diffIndepOn_daExtension_of_separated` th
 `multipleEllipticGammaLogDerivFaceMero_two_surviving`, and the infinite lattice reduces to finite
 shift sets by the finite-character property of `DiffIndepOn`
 (`DifferentialMatroidFoundations`).
+
+## Lean progress — the lattice arithmetic
+
+`formal/GaloisForLFunctions/HTGeometry/FaceShiftLatticeNonresonance.lean` (axiom-clean, umbrella
+registered) proves the two arithmetic facts, using integer coefficients only.
+
+- `PeriodsIntegrallyIndependent tau` — the standing genericity hypothesis of the card
+  (`1, tau_0, ..., tau_r` rationally independent), written without rational casts;
+- **`thetaTranslationNonresonant_faceShiftLattice_add_half`** — every half-shifted external lattice
+  point `g - (1 + tau_b)/2` is nonresonant for the pair `(tau_b, tau_a)`.  Doubling the putative
+  resonance clears the half period and leaves an integral relation whose coefficient of `1` is
+  `-(2p+1)`, odd hence nonzero;
+- **`thetaTranslationNonresonant_faceShiftLattice_sub`** — distinct external lattice points have
+  nonresonant difference: the `tau_a` and `tau_b` indicators vanish on `J`, so the integral relation
+  forces every coefficient `n_i - n'_i` to vanish and the two points to coincide.
+
+These are exactly the `hnonres` and `hsep` hypotheses of
+`ellipticGammaTranslatePacket_diffIndepOn_daExtension_of_separated`, applied through
+`multipleEllipticGammaLogDerivFaceMero_two_surviving` with the shift set
+`faceShiftLattice tau J - (1 + tau_b)/2`.  What remains for the bottom layer is pure bookkeeping:
+pass from the infinite lattice to finite shift sets by the finite-character property of
+`DiffIndepOn`, choosing for each element of a finite subpacket a lattice representative.
