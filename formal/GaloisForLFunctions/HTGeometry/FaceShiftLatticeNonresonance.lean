@@ -185,6 +185,41 @@ theorem multipleEllipticGammaFacePacket_diffIndepOn_bottom
   · exact Finset.mem_image.mpr ⟨y, hTfin.mem_toFinset.mpr hy, rfl⟩
   · exact (hshift y hy).2
 
+/-- **A period different from both members of a pair is nonresonant for that pair.**  This is the
+arithmetic input of the cross-face separation: a parameter surviving on one bottom face is external
+for any face whose surviving pair avoids it. -/
+theorem thetaTranslationNonresonant_period_of_ne
+    (τ : ι → ℂ) (hQ : PeriodsIntegrallyIndependent τ) {i a b : ι}
+    (hia : i ≠ a) (hib : i ≠ b) :
+    ThetaTranslationNonresonant (τ b) (τ a) (τ i) := by
+  classical
+  rintro ⟨p, q, r, hpqr⟩
+  have hterm : ∀ j : ι,
+      (((if j = i then 1 else 0) - (if j = b then q else 0) -
+        (if j = a then r else 0) : ℤ) : ℂ) * τ j =
+        (if j = i then τ j else 0) - (if j = b then (q : ℂ) * τ j else 0) -
+          (if j = a then (r : ℂ) * τ j else 0) := by
+    intro j
+    split_ifs <;> push_cast <;> ring
+  have hsum : ∑ j, (((if j = i then 1 else 0) - (if j = b then q else 0) -
+        (if j = a then r else 0) : ℤ) : ℂ) * τ j =
+      τ i - (q : ℂ) * τ b - (r : ℂ) * τ a := by
+    rw [Finset.sum_congr rfl fun j _ => hterm j, Finset.sum_sub_distrib,
+      Finset.sum_sub_distrib, Finset.sum_ite_eq' Finset.univ i fun j => τ j,
+      Finset.sum_ite_eq' Finset.univ b fun j => (q : ℂ) * τ j,
+      Finset.sum_ite_eq' Finset.univ a fun j => (r : ℂ) * τ j]
+    simp
+  have hrel : ((-p : ℤ) : ℂ) +
+      ∑ j, (((if j = i then 1 else 0) - (if j = b then q else 0) -
+        (if j = a then r else 0) : ℤ) : ℂ) * τ j = 0 := by
+    rw [hsum]
+    push_cast
+    linear_combination hpqr
+  obtain ⟨-, hc⟩ := hQ _ _ hrel
+  have hci := hc i
+  rw [if_pos rfl, if_neg hib, if_neg hia] at hci
+  omega
+
 /-! ## Faithful labelling of the bottom packet -/
 
 set_option maxHeartbeats 800000 in

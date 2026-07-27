@@ -1478,3 +1478,10 @@ constants because differential algebraicity only weakens along a base extension
 (`DifferentialIndependent.restrictScalarsTower`).  Both sides are then moved by the common
 translation with `HTGeometry.DifferentialAlgEquiv.differentialAlgebraicOver_map_iff` and
 `..._hypertranscendentalOver_map_iff`.
+
+**`thetaTranslationNonresonant_period_of_ne`** (axiom-clean, same file) supplies the arithmetic half
+of the cross-face separation: a period `tau_i` with `i` different from both members of a pair is
+nonresonant for that pair.  The integral relation has coefficient `1` at `i` and the two indicator
+terms vanish there, so rational independence is contradicted.  Applied with `i = a` and the pair
+`(tau_(b'), tau_(a'))` of a second bottom face, this is exactly the hypothesis under which the
+external increment on the right-hand side of the cross-face equation is hypertranscendental.
