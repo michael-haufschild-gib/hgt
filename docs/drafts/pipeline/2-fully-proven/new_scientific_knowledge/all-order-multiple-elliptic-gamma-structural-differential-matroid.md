@@ -932,3 +932,25 @@ translations.  With the palette and the transported one-slice obstruction of the
 face-lifting step now has all of its structural inputs; what remains is the simultaneous-telescoping
 argument itself, whose two ingredients are the corpus's automorphism-family Ostrowski criterion and
 the rank-three fixed-field theorem `rankThree_generator_jointFixed_iff_constant`.
+
+### Face-lifting assembly plan (recorded)
+
+The face-lifting lemma is an instantiation of the corpus's noncommutative-family criterion
+`automorphismFamily_differentialIndependent_of_no_constant_simultaneous_jet_telescoping`
+(`AutomorphismFamilyOstrowski.lean`) with
+
+- `L = meroField univ`, `C = C`, and `K = K_(s+1)` the deeper field `(18)`;
+- index set `I = {1, tau_q, tau_u}` — **three** directions, not two: `hfixed` needs the joint fixed
+  field to be `C`, which is the corpus's `rankThree_generator_jointFixed_iff_constant` for the
+  `Q`-independent triple `1, tau_q, tau_u`;
+- `x` the block `(19)`, and `b i k` the displacement, supplied by `facePacket_coface`:
+  `(T_q - 1)(T^g F_J) = T^g F_(J cup {q})`, which lies in `K_(s+1)` by
+  `facePacket_translate_sub_mem`;
+- `hnot` — the simultaneous-telescoping exclusion, which is where
+  `facePacket_oneSlice_ne_coboundary` enters.
+
+Two concrete prerequisites are visible and not yet in the corpus: translation stability of `K_(s+1)`
+as a differential subfield (its ingredients are `facePacket_translate_mem` and
+`facePacket_translate_sub_mem`), and `1`-periodicity of the multiple elliptic-gamma face
+coordinates, i.e. `sigma_1 F_J = F_J` — true because the kernel is built from the `1`-periodic
+exponential coordinate, but not yet stated for `multipleEllipticGammaLogDerivMero`.
