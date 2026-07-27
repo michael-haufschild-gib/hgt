@@ -1917,3 +1917,31 @@ registered).  This is the transport the previous entry named as the remaining ga
   finite family of meromorphic germs reproduced by two `Q`-independent translations up to constant
   matrices consists of differentially algebraic germs.  This is the meromorphic-carrier counterpart
   of the corpus's entire-carrier `differentiallyAlgebraic_component_of_matrix_monodromy_two`.
+
+## Lean progress — the gauge curvature law for MEROMORPHIC gauges: the last scope item is closed
+
+`formal/GaloisForLFunctions/HTGeometry/MeroGaugeCurvatureNecessity.lean` (axiom-clean, umbrella
+registered).  The scope item flagged in the hostile self-audit above — the rational-transport case
+`(42)`--`(44)`, whose Schaefke--Singer gauge `B in GL_m(C(z))` has poles and therefore did not fit
+the entire-gauge datum — is now closed, in the strongest available form: the gauge is allowed to be
+an arbitrary **differentially algebraic meromorphic** matrix.
+
+- `differentialAlgebraicOver_finset_sum`, `differentialAlgebraicOver_mulVec` — the field-level ring
+  closure in matrix shape;
+- **`differentialAlgebraicOver_of_gauged_constant_monodromy`** — if two `Q`-independent translations
+  reproduce a vector of meromorphic germs up to `B(z + omega) C B(z)^(-1)` with constant `C` and a
+  differentially algebraic invertible gauge `B`, then every component is differentially algebraic.
+  Proof: `B^(-1)` conjugates the transport to the constant `C` — the computation is
+  `B^(-1)(z+omega) B(z+omega) = (B^(-1) B)(z+omega) = 1` after `Matrix.map_mul`/`Matrix.map_one`,
+  since translation is a ring homomorphism — the vector two-shift law
+  `differentialAlgebraicOver_of_constant_matrix_monodromy` applies to the conjugated vector, and
+  multiplying back by `B` preserves differential algebraicity;
+- `MeroGaugeFacetRealization`, **`no_meroGaugeFacetRealization_of_two_omitted`**,
+  **`meroGauge_facetComplementRankOne`** — hence the facet-codimension law for a meromorphic
+  gauge-flat finite-state datum.
+
+Contrapositive, and this is the sharpest form of the card's law `(40)`: a nonpure one-variable
+finite-state HT geometry has an internal cocycle that is not gauge-equivalent to a constant
+representation by **any** differentially algebraic meromorphic gauge — rational gauges included.  So
+the Schaefke--Singer input `(44)`, which is `[SEARCH]`-labelled and cited rather than claimed, now
+lands inside a formalized law rather than outside it.
