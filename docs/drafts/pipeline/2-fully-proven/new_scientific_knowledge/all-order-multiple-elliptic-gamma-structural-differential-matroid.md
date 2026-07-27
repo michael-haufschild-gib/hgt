@@ -1465,3 +1465,16 @@ Apply the structural difference operator `T_(tau_a) - 1` to both sides:
 The two sides would then be simultaneously DA and HT — impossible.  So distinct bottom faces have no
 common translate, and the cross-face case of `hStarInj` holds vacuously.  This is the next Lean
 target; every ingredient it names is already in the corpus.
+
+Signatures verified for that plan: the resonant side is
+`differentialAlgebraicOver_ratFunc_ellipticGammaExternalLogDerivDefectMero_of_resonant`
+(stated over `RatFunc C`, with `hres : exists a b n : Z, h = a + b tau + n sigma`, so the structural
+shift `h = sigma` is covered by `⟨0, 0, 1, by ring⟩`), transferred to the embedded coordinate field
+by `differentialAlgebraicOver_rationalCoordinateField_of_ratFunc` and then to the constants by
+`differentialAlgebraicOver_meromorphicRationalCoordinateField_iff`.  The nonresonant side is
+`hypertranscendentalOver_ellipticGammaExternalLogDerivDefectMero_iff_nonresonant`, stated over the
+paired compositum; hypertranscendence over the compositum implies hypertranscendence over the
+constants because differential algebraicity only weakens along a base extension
+(`DifferentialIndependent.restrictScalarsTower`).  Both sides are then moved by the common
+translation with `HTGeometry.DifferentialAlgEquiv.differentialAlgebraicOver_map_iff` and
+`..._hypertranscendentalOver_map_iff`.
