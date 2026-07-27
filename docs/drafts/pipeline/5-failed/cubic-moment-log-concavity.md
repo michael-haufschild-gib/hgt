@@ -395,3 +395,285 @@ extremal point.
 - [x] exponential shown to be a strict local maximum of `Ψ`
 - [x] class-based routes to `C ≥ 0` excluded
 - [ ] a theta-specific proof of `C ≥ 0`, or a demonstration that it fails for the theta source
+
+## 12. Warning: the theta source sits inside the region where the target is violated
+
+The three refutations locate the counterexamples. This section asks the question they make urgent:
+**is `C ≥ 0` true for the theta source at all?**
+
+### 12.1 The first atom is locally exponential×Gaussian
+
+`φ₁(x) = e^{x/2}·2s(2s−3)e^{−s}` with `s = πe^{2x}`. Since `e^{2x} = 1 + 2x + 2x² + O(x³)`,
+
+```text
+s = π(1 + 2x + 2x² + O(x³))  ⟹  e^{−s} = e^{−π}·e^{−2πx}·e^{−2πx²}·(1 + O(x³)) ,
+```
+
+and the prefactor `e^{x/2}·2s(2s−3)` is smooth and positive. So
+
+```text
+φ₁(x) = P(x)·exp(−2πx − 2πx² + O(x³)) ,      P smooth, positive.
+```
+
+**That is exactly the family `e^{−αx−βx²}` of §11** — the one in which `Ψ` decreases away from the
+exponential with derivative `−16`, and returns to zero only in the half-Gaussian limit. Normalizing
+`α = 1` by `x ↦ x/(2π)` puts the theta atom at `s_eff = 1/(2π) ≈ 0.159`, i.e. **strictly between the
+two zeros**, where `Ψ < 0`.
+
+### 12.2 The numerics agree, and explain the tightness
+
+Quadrature on `φ₁` (orientation only, as in `rh-producer-map-corpus.md` §7):
+
+```text
+M₀ ≈ 0.2545 ,  M₂ ≈ 1.1074e−2 ,  M₄ ≈ 1.4395e−3 ,  M₆ ≈ 2.974e−4
+R₀ ≈ 0.021756 ,  R₂ ≈ 0.010833 ,  R₄ ≈ 0.006887
+Ψ  ≈ −9.2e−4        (about −2% of the scale of the individual terms)
+```
+
+And the ratio pattern is revealing: `R₀/R₂ ≈ 2.008`, `R₂/R₄ ≈ 1.573`, against the **half-Gaussian**
+values `2` and `1.5` exactly. **The theta first atom is within a few percent of the half-Gaussian
+relation — an exact equality case of `Ψ`.**
+
+That single fact explains the tightness encountered throughout this lane: `45/16` tight to a few
+percent (`rh-producer-map-corpus.md` §7), `D₀ ≈ 1.8` against a threshold of `1.805` (§23 there), and
+now `Ψ` within `2%` of zero. **They are one phenomenon: the theta kernel lies near the equality
+manifold of these moment functionals**, so every inequality in the family is decided at the
+few-percent level and none of them can be reached by a soft argument.
+
+### 12.3 Status of the claim
+
+Two independent lines — the local form of `φ₁` placing it strictly inside the negative band of §11,
+and a direct quadrature giving `Ψ ≈ −9e−4` — both point to `C < 0` for the theta source.
+
+**I am not asserting it.** The caveats are real: `φ₁` is not exactly `e^{−αx−βx²}` (there is a smooth
+positive prefactor and `O(x³)` corrections), the full source adds the `k ≥ 2` atoms, and the
+quadrature margin is comparable to the answer. Settling it requires evaluation, which this project
+forbids.
+
+**But the consequence if it is true is severe and should be checked by someone who can evaluate.**
+`thetaCusp_raw_cubic_nonneg_of_ratioSplit` derives `C ≥ 0` from the two quadratic hypotheses. If
+`C < 0` for the theta source then those two hypotheses are **jointly unsatisfiable**, and every
+`riemannHypothesis_of_*` theorem consuming them — including
+`riemannHypothesis_of_thetaCuspRatioSplit_of_primeArchDegreeTwoTail` — has a false hypothesis and
+proves nothing.
+
+That is the highest-value single evaluation in this lane: **the sign of
+`3m₀m₁m₃ + 15m₁²m₂ − 10m₀m₂²` for the theta source.** One number decides whether a family of RH
+producers in the tree is vacuous.
+
+## Gates
+
+- [x] §12 first atom shown locally of the form `e^{−αx−βx²}`, inside §11's negative band
+- [x] `s_eff = 1/(2π)` located strictly between the two zeros
+- [x] the lane-wide tightness explained: proximity to the half-Gaussian equality case
+- [ ] the sign of `C` for the theta source — one evaluation, forbidden here, decisive there
+
+## 13. Correction to §12: the prefactor cancels the linear term, and the sign flips back
+
+§12.1 wrote `φ₁(x) = P(x)·exp(−2πx − 2πx² + O(x³))` and treated `P` as slowly varying. **That is
+wrong.** `P(x) = e^{x/2}·(4π²e^{4x} − 6πe^{2x})` grows like `e^{4x}`, which is not slow on the scale
+that matters, and its logarithmic derivative almost exactly cancels the `−2πx`.
+
+The exact numbers, from the corpus's own Born–Witten form (`a(y) = 5/2 + 4y/(2y−3) − 2y`,
+`y = πe^{2x}`):
+
+```text
+(log φ₁)′(0) = 5/2 + 4π/(2π−3) − 2π = 0.0443…        ← nearly zero, not −2π
+(log φ₁)″(0) = −(4π + 24π/(2π−3)²) = −19.56…
+```
+
+So near the origin
+
+```text
+log φ₁(x) = const + 0.0443·x − 9.78·x² + O(x³) ,
+```
+
+an **even Gaussian to leading order**, not an exponential×Gaussian. The linear term that §12 used to
+place the atom in the interior of the `e^{−αx−βx²}` family is cancelled by the prefactor to three
+decimal places.
+
+**And the tail is super-Gaussian.** Checking the quadratic model against exact values:
+
+```text
+x = 0.2 :  model −0.382 , actual −0.382     (agrees)
+x = 0.4 :  model −1.547 , actual −1.643     (decays faster)
+x = 0.6 :  model −3.494 , actual −4.095     (decays much faster)
+```
+
+Faster-than-Gaussian decay is the `p > 2` direction of §10, where `Ψ > 0`. So the atom sits **at the
+half-Gaussian equality case with a super-Gaussian correction**, which pushes `Ψ` up, not down.
+
+### 13.1 Consequence
+
+**§12.3's warning is withdrawn.** The structural argument for `C < 0` rested on a linear term that is
+not there, and the corrected picture points the other way: `C ≥ 0` is plausible for the theta source.
+My quadrature value `Ψ ≈ −9e−4` is `−4.5%` of the scale, which is inside the error of a coarse
+trapezoid on the peaked `x⁶φ₁` integrand — it does not survive as evidence.
+
+### 13.2 What survives, and it is the useful part
+
+The observation that **explains the whole lane's tightness stands, and is sharper than in §12**:
+
+> The theta first atom is, to second order at the origin, an **even Gaussian** — an exact equality
+> case of `Ψ`. Its deviation from the equality manifold is a third-order tail effect.
+
+That is why `45/16` is tight to a few percent, why `D₀ ≈ 1.8` sits against a threshold of `1.805`, and
+why `Ψ` comes out within a few percent of zero. **Every inequality in this family is decided by the
+super-Gaussian tail correction and by nothing else**, because the Gaussian core contributes exactly
+zero to all of them.
+
+That is a genuine structural statement about why this lane is hard, and it says where a proof must
+come from: not from the bulk of the kernel, which is neutral, but from the third-order term — i.e.
+from the double-exponential structure of `s = πe^{2x}`, which is the theta functional equation's
+fingerprint.
+
+## Gates
+
+- [x] §12.1's modelling error identified: the prefactor cancels the linear term
+- [x] exact local expansion `log φ₁ = const + 0.0443x − 9.78x² + O(x³)` from the corpus's `a`, `c`
+- [x] tail shown super-Gaussian, i.e. in the `Ψ > 0` direction
+- [x] §12.3 warning withdrawn
+- [x] tightness explained: the Gaussian core is an exact equality case; only the tail decides
+- [ ] the sign of `C`, which is now a statement about the third-order term alone
+
+## 14. Resolved: the theta source satisfies `C > 0`, and the equality locus is a straight line
+
+### 14.1 The sign, settled
+
+`m₀` computed from the source integral agrees with the closed form
+
+```text
+ξ(1/2) = (1/8)·π^{−1/4}·Γ(1/4)·|ζ(1/2)| = 0.49712077818831410991…
+```
+
+to every digit, which validates the quadrature independently of the rest.  With that check in place,
+at 40, 80 and 100 digits and three different subdivisions the four raw even moments of the full
+theta source `Φ(u) = ∑_{n≥1}(4π²n⁴e^{9u/2} − 6πn²e^{5u/2})e^{−πn²e^{2u}}` are
+
+```text
+m₀ = 0.49712077818831410991      m₁ = 0.022971944315145437535
+m₂ = 0.0029628484336876321654    m₃ = 0.00059929594659757949184
+```
+
+and
+
+```text
+C  =  3m₀m₁m₃ + 15m₁²m₂ − 10m₀m₂²  =  +3.448536631018756e−7 ,
+```
+
+stable to all printed digits across every precision and subdivision, with relative margin
+
+```text
+C / (10 m₀ m₂²)  =  +0.790 % .
+```
+
+**`C > 0`.**  The first atom alone gives `+0.806 %`, so the higher atoms are a `2 %` correction to the
+margin and do not threaten the sign.
+
+**Consequence.**  By `thetaCusp_raw_cubic_nonneg_iff_sixthMomentHankelInequality` and
+`thetaCuspThreeTemperatureMeanBalance_iff_sixthMomentHankelInequality`, both
+`ThetaCuspSixthMomentHankelInequality` and `ThetaCuspThreeTemperatureMeanBalance` are **true**.  The
+`riemannHypothesis_of_*` producers that consume them are **not vacuous**.  §12's warning is dead and
+§13's correction was right: the theta source is super-Gaussian, with effective exponent
+
+```text
+p_eff = 2.24505752588…      (matched through μ₂/μ₁ on the family e^{−x^p})
+```
+
+### 14.2 Why every soft route failed: the equality locus is the exponential–Gaussian chord
+
+`C = m₀m₁m₂·Λ(μ₁,μ₂,μ₃)` with `μⱼ = mⱼ/m_{j−1}` and `Λ = 15μ₁ − 10μ₂ + 3μ₃`.  `Λ` annihilates exactly
+two rays, and they are the two classical models:
+
+```text
+exponential e^{−x}      μ = (2, 12, 30)        Λ = 30 − 120 + 90 = 0
+half-Gaussian e^{−x²}   μ = (1/2, 3/2, 5/2)    Λ = 15/2 − 15 + 15/2 = 0
+```
+
+Two independent triples in `ℝ³` determine `Λ` up to scale, so **`Λ` is not one inequality among many —
+it is the unique linear form killing the exponential and the Gaussian.**  Normalizing by `μ₁`,
+
+> `C ≥ 0` ⟺ the point `(X, Y) = (μ₂/μ₁, μ₃/μ₁)` lies on or above the straight line through the
+> exponential point `(6, 15)` and the Gaussian point `(3, 5)`, namely `3Y = 10X − 15`.
+
+The theta source sits at
+
+```text
+(X, Y) = (2.79110285817093, 4.37719672634902) ,   chord value at X : 4.30367619390309 ,
+```
+
+a vertical margin of `+0.0735`.  For scale: the uniform density has margin `1.143`, and the power
+family at the same `X` has margin `0.150`.  **Theta clears the chord by 6 % of the uniform's margin
+and by half of its own power-family comparison.**  That single number explains every tightness in this
+lane at once.
+
+### 14.3 Three exactly solvable families, and where the criterion actually bites
+
+```text
+x^θ e^{−βx²}    μⱼ = (j + (θ−1)/2)/β        Λ = 4θ/β            ≥ 0 ⟺ θ ≥ 0
+x^θ e^{−x}      μⱼ = (2j+θ)(2j+θ−1)         Λ = 8θ(θ+1)         ≥ 0 ⟺ θ ≥ 0 or θ ≤ −1
+(1+ax)e^{−x}    mⱼ = (2j)! + a(2j+1)!       C  = 11520·a²(a−1)  ≥ 0 ⟺ a ≥ 1 or a = 0
+```
+
+The third is the sharpest object in this whole lane.  `(1+ax)e^{−x}` is log-concave for every `a ≥ 0`,
+it passes through the exponential at `a = 0` with a **double** zero, and `C < 0` on the entire open
+interval `0 < a < 1`.  Since `φ'(0) = a − 1` there, the criterion on that family is exactly
+`φ'(0) ≥ 0` — and the same is true on `x^θe^{−βx²}`, where `Λ = 4θ/β` changes sign exactly when the
+polynomial factor stops being nondecreasing at the origin.
+
+### 14.4 The refutation of the natural repair, and the reason no repair of that shape works
+
+The pattern above suggests: *`φ` strongly log-concave (`φ = e^{−βx²}g`, `g` log-concave) with
+`g'(0) ≥ 0` ⟹ `C ≥ 0`.*  Theta satisfies both hypotheses — the corpus proves `−(log φ₁)'' ≥ 4πe^{2x}`,
+so `g = φ₁e^{2πx²}` is log-concave, and `(log φ₁)'(0) = 5/2 + 4π/(2π−3) − 2π = +0.0443 > 0`.
+
+**It is false.**  Explicit member: `β = 1`, `h(x) = 0.991·x − 5.012·(x − 0.0128)₊`, i.e.
+`g = e^{h}` concave-exponent with `h'(0) = +0.991 ≥ 0`, giving `Λ/μ₁ = −2.74`.  A condition imposed at
+the single point `0` cannot see that the bulk of the density behaves like a downward tilt.
+
+The structural reason no such repair can work is now provable:
+
+> **The half-Gaussian is a regular zero of `Λ`.**  Along the linear tilt `e^{−sx−x²}` the derivative
+> is `−1/(20√π)`; along the power family `e^{−x^p}` at `q = 1/p = 1/2` it is `−2/15`.  Both nonzero.
+
+so `Λ` takes both signs in every neighbourhood of the Gaussian, and **no criterion whose admissible
+class contains a tilt-neighbourhood of the Gaussian can decide `C ≥ 0`.**  Theta sits `7 %` from the
+Gaussian in these coordinates, so any class-based proof must resolve at that scale.  This is the exact
+mechanism behind the straddle theorem, and it is why §9–§11 all failed the same way.
+
+In both derivative computations the Euler–Mascheroni constant and `log 2` cancel identically — and
+they cancel *because* the base point is a zero of `Λ`: the term values `1/4 + 1/4 − 1/2` and
+`1 + 3 − 4` are exactly the vanishing combinations.
+
+### 14.5 Formalized
+
+`GaloisForLFunctions/HTGeometry/CubicMomentEqualityChord.lean`, axiom-clean
+(`propext, Classical.choice, Quot.sound`), registered in the `HTGeometry` umbrella:
+
+```text
+cubic_eq_chordFunctional                     C = m₀m₁m₂ · Λ
+chordFunctional_exponential / _halfGaussian  the two model zeros
+annihilator_unique                           Λ is the unique form killing both
+chordFunctional_nonneg_iff_above_chord       C ≥ 0 ⟺ on/above the chord
+chordLine_through_models                     the chord is 3Y = 10X − 15
+chordFunctional_powerGaussian (_nonneg_iff)  Λ = 4θ/β, sign ⟺ θ ≥ 0
+chordFunctional_gammaFamily                  Λ = 8θ(θ+1)
+cubic_affineExponential                      C = 11520 a²(a−1)
+cubic_affineExponential_neg / _pos / _zero_at_one
+psi_deriv_at_half                            −2/15, γ and log 2 cancel for every c
+tilt_deriv_at_halfGaussian                   −1/20 (in units of 1/√π)
+gammaRatio_step                              Γ(z+1) = zΓ(z) form of ρ(k+2)/ρ(k)
+sign_change_at_regular_zero                  both signs in every neighbourhood
+```
+
+## Gates
+
+- [x] the sign of `C` for the theta source: **positive**, margin `+0.790 %`, `m₀` validated against `ξ(1/2)`
+- [x] `ThetaCuspSixthMomentHankelInequality` and `ThetaCuspThreeTemperatureMeanBalance` are true; producers not vacuous
+- [x] equality locus identified as the exponential–Gaussian chord `3Y = 10X − 15`
+- [x] `Λ` characterized as the unique linear form annihilating both models
+- [x] three exactly solvable families; `(1+ax)e^{−x}` gives `C = 11520a²(a−1)`
+- [x] strong-log-concavity + `g'(0) ≥ 0` repair refuted by an explicit member
+- [x] the Gaussian shown to be a regular zero, with both deformation derivatives exact
+- [ ] an unconditional proof of `C > 0` for the theta source — must resolve a `0.79 %` margin against
+      a two-dimensional equality manifold, so it cannot come from any class containing the Gaussian

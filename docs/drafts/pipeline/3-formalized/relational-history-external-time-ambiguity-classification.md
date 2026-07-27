@@ -60,6 +60,9 @@ Then:
 4. every origin-invariant reporter factors through `R_a`;
 5. no reporter into `G` can be both origin-invariant and origin-covariant unless `G` is trivial.
 
+The last statement is an if-and-only-if: such a reporter exists exactly when `G` is a
+subsingleton. Thus no nontrivial clock theory admits an internally observable external clock.
+
 No finiteness, commutativity, topology, differentiability, or quantum hypothesis is used. In
 particular, adding infinitely many internal clocks never supplies the missing common origin.
 
@@ -112,6 +115,10 @@ Conversely, global stationarity under every `g` implies the relational-history l
 conditioning a stationary global history at an internal clock reading and ordinary covariant
 state evolution contain exactly the same data. This holds for finite, compact, discrete,
 continuous, and noncommutative clock groups whenever the relevant action exists.
+
+When the state space is normed and the clock group acts isometrically—in particular for a unitary
+quantum representation—every conditional history component has exactly the seed-state norm. No
+renormalization or probability leakage is hidden in the equivalence.
 
 ### Proof
 
@@ -189,9 +196,41 @@ Thus the missing external mode is not recoverable by any algebraic differential 
 the complete pairwise relational field. This is the exact infinite-family theorem already
 formalized in `DifferentialPairwiseCommonMode.lean`; no new claim is made for it here.
 
+## Theorem E: exact infinite-state cost of restoring the missing mode
+
+Under Theorem D's hypotheses, let
+
+```text
+R=F< x_i-x_j | i,j in I >_d.
+```
+
+The anchor `x_a` is not an observable of any finite algebraic state model over `R`. More strongly,
+if `S/R` is any derivation-closed state field containing `x_a`, then
+
+```text
+aleph_0 <= trdeg_R S.                                      (E1)
+```
+
+Thus restoring the erased common mode requires at least countably infinite algebraic state
+capacity. This statement permits arbitrary index sets `I`; adding infinitely many internal clocks
+does not weaken the bound.
+
+### Proof
+
+Theorem D gives that `x_a` is hypertranscendental over `R`, so its complete jet family
+
+```text
+x_a, delta x_a, delta^2 x_a, ...
+```
+
+is algebraically independent over `R`. Every derivation-closed field containing `x_a` contains
+this entire jet family. Its transcendence degree over `R` is therefore at least `aleph_0`.
+Consequently no derivation-closed state field of finite transcendence degree can contain `x_a`.
+∎
+
 ## Combined interpretation
 
-Theorems A--D separate three questions:
+Theorems A--E separate four questions:
 
 ```text
 global stationary constraint:
@@ -199,6 +238,9 @@ global stationary constraint:
 
 outside clock origin:
   absent from every complete internal relational reporter (Theorems A and D);
+
+state cost of adjoining that origin:
+  at least countably infinite over all relational data (Theorem E);
 
 physical evolution law:
   fixed by labelled observable action modulo its exact commutant (Theorem C).
@@ -218,15 +260,17 @@ all conditional correlations remain fully specified.
    outside the labelled commutant would refute Theorem C.
 4. A differentially independent clock family whose anchor is differentially algebraic over all
    pairwise differences would refute Theorem D.
-5. **Parent-theory kill:** Theorems A and B are torsor/action identities; Theorem C is the
+5. A finite-transcendence derivation-closed state field containing a Theorem-D anchor would refute
+   Theorem E.
+6. **Parent-theory kill:** Theorems A and B are torsor/action identities; Theorem C is the
    commutant identity underlying inner derivations. If external review finds no new theorem
    beyond their composition, this card is infrastructure, not a Nature paper.
-6. **Physics kill:** The abstract action `G ↷ X` is not yet a Page--Wootters Hilbert-space clock
+7. **Physics kill:** The abstract action `G ↷ X` is not yet a Page--Wootters Hilbert-space clock
    subsystem, conditional probability rule, or QFT observable net. No claim about reality is
    permitted until one physical construction instantiates every term.
-7. **Cosmology kill:** The result cannot claim a chronological era “before the Big Bang,” a
+8. **Cosmology kill:** The result cannot claim a chronological era “before the Big Bang,” a
    multiverse, quantum gravity dynamics, or an experimental prediction.
-8. **Headline kill:** “Even infinitely many clocks cannot observe outside time” is acceptable
+9. **Headline kill:** “Even infinitely many clocks cannot observe outside time” is acceptable
    only as an explanation of the exact theorem, never as evidence that an external time exists.
 
 ## Required scientific increment
@@ -253,3 +297,15 @@ not.
   `DifferentialPairwiseCommonMode.lean`.
 - 2026-07-27 — added complete finite-matrix specialization: equality of all labelled Heisenberg
   laws is equivalent to a scalar Hamiltonian difference. Direct foreground check passed.
+- 2026-07-27 — closed the external-clock direction to an iff: a relationally invariant,
+  origin-covariant reporter exists exactly for a trivial clock group. Direct check passed.
+- 2026-07-27 — added norm preservation for every isometric/unitary relational history component.
+  Direct check passed.
+- 2026-07-27 — proved the infinite-state restoration boundary: the missing common mode lies in no
+  finite algebraic state model over the complete relational field, and every derivation-closed
+  state field containing it has transcendence degree at least `aleph_0`. Direct foreground
+  `lake env lean` check passed.
+- 2026-07-27 — theorem-specific axiom audit passed with only Lean/mathlib standard logical
+  principles (`propext`, `Classical.choice`, `Quot.sound`). Repository lint reached an unrelated
+  pre-existing RHTower umbrella failure: three owned modules are not imported by
+  `GaloisForLFunctions.RHTower`.

@@ -319,6 +319,38 @@ A chiral half chosen after inserting a zero would merely restate the target and 
 The remaining source must polarize the two halves before divisor insertion, or produce an infinite
 charge boundary not reducible to finite Gamma identities.
 
+### Positive survivor: the Gamma--Meixner boundary polarizes before divisor insertion
+
+The successor
+
+```text
+gamma-meixner-alien-charge-polarization-flow.md
+```
+
+identifies an existing positive source which canonically chooses the two halves. The time-`theta`
+Gamma--Meixner density has pole-oriented factors
+
+```text
+Gamma(theta/4+lambda s), Gamma(theta/4-lambda s).
+```
+
+At lattice frequency `k lambda`, their symmetric and chiral charges are
+
+```text
+-2 i lambda sin(pi k theta/2),
+ 2   lambda cos(pi k theta/2).
+```
+
+After division by the affine scale `2 lambda`, these form an exact unit vector. At the singular
+time-zero endpoint the symmetric component is zero and the chiral component is one. Scaling by
+`lambda_p=i log(p)/(2 pi)` gives the two Euler Gamma halves, with the second converted to
+`Gamma(1-lambda_p s)` by recurrence.
+
+Thus “chiral polarization” and “genuinely cofinal limit” are not separate escape clauses: the
+positive convolution-root family canonically produces the chiral Euler phase at its cofinal
+boundary. This still does not prove RH. The remaining weld is the phase-sensitive map from that
+source endpoint to the FE/Schwarz relative Xi fibre.
+
 ## 8. Lean status
 
 `[LEAN-PROVED ALGEBRAIC CORE]`
@@ -341,7 +373,10 @@ proves unconditionally:
 7. root-of-unity orthogonality for every positive Gauss multiplication degree;
 8. exact Gauss-multiplication invariance on the old lattice and zero expanded charge off it;
 9. exact charge-neutrality of every local reciprocal-Gamma Euler pair and every finite semilocal
-   family of such pairs.
+   family of such pairs;
+10. exact doubled nonzero reflection-odd charge on every Euler slope lattice;
+11. individual detection of every factor in a finite pairwise noncommensurate odd-polarized
+    family.
 
 Existing modules formalize the abstract shift-word assembly and real-slope analytic Gamma
 superselection, with ADH and Borel selectors kept as explicit hypotheses where applicable:
@@ -374,5 +409,6 @@ theorem.
 - [ ] full priority audit
 - [x] unconditional Lean formalization of lattice separation, reflection invariance, and
   Vandermonde completeness
-- [ ] unconditional Lean formalization of multiplication invariance and DA normal-form assembly
+- [x] unconditional Lean formalization of multiplication invariance
+- [ ] unconditional Lean formalization of DA normal-form assembly
 - [ ] non-target-fed RH source weld
