@@ -720,3 +720,28 @@ remains is the concrete discharge of the four simplicial-star hypotheses of
 available at the bottom layer), the rank-automorphism property, free translates via the integer
 orbit-height law, and cross-neutrality off the star — followed by the hierarchy-to-row
 identification and the capstone.
+
+## Lean progress — the orbit-height realization, abstract and for the actual translations
+
+`formal/GaloisForLFunctions/HTGeometry/OrbitHeightFreeTranslates.lean` (axiom-clean, umbrella
+registered) discharges the second of the four simplicial-star hypotheses of
+`Rank.uniformFace_nestedStar_indep` — free translates — down to a single concrete input.
+
+- `orbitUnion sigma base` — the union of the full `sigma`-orbits of a base set;
+- **`hasFreeTranslates_orbitUnion`** — an orbit union whose exponent is *recoverable* (distinct
+  exponents give distinct elements) has free translates.  The `ZZ`-valued height required by
+  `Rank.hasFreeTranslates_of_intHeight` is constructed from the parametrization itself: the
+  exponent is well defined by injectivity, extended by `0` off the packet;
+- **`hasFreeTranslates_orbit_of_aperiodic`** — the single-orbit criterion: it is enough that no
+  nonzero power of the direction fixes the base point;
+- `meroTranslationPerm q`, `meroTranslationPerm_zpow_apply` — the actual additive translation of the
+  global meromorphic field as a permutation, with `sigma_q^n = sigma_(n q)` for every integer `n`;
+- **`hasFreeTranslates_meroOrbit_of_aperiodic`** — hence, for a genuine meromorphic germ `x` and a
+  shift `q`, the whole translation orbit of `x` has free translates as soon as
+  `sigma_(n q) x != x` for every nonzero integer `n`.
+
+So the "orbit-height realization" listed as remaining is now reduced to *aperiodicity of the
+structural translate*, which for the elliptic-gamma packets is exactly nonresonance of the shift —
+already available in the exact-spectrum theorems.  What remains of the four hypotheses is the
+concrete packet definition for the higher faces (with its atomicity, the bottom layer being done),
+the rank-automorphism property, and cross-neutrality off the star.
