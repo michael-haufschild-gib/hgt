@@ -32,17 +32,18 @@ variable {ι : Type} [Fintype ι] [DecidableEq ι]
 
 /-- A translate of a resonant defect is differentially algebraic over the constants. -/
 theorem differentialAlgebraicOver_translate_resonant_defect
-    {sigma tau w : ℂ} (hsigma : 0 < sigma.im) (htau : 0 < tau.im)
-    (hperiods : LinearIndependent ℚ (ellipticGammaSourcePeriods sigma tau)) :
+    {h sigma tau w : ℂ} (hsigma : 0 < sigma.im) (htau : 0 < tau.im)
+    (hperiods : LinearIndependent ℚ (ellipticGammaSourcePeriods sigma tau))
+    (hres : ∃ p q r : ℤ, h = p + q * tau + r * sigma) :
     DifferentialAlgebraicOver ℂ
       (addTranslationMeroEquiv w
-        (ellipticGammaExternalLogDerivDefectMero sigma sigma tau hsigma htau)) := by
+        (ellipticGammaExternalLogDerivDefectMero h sigma tau hsigma htau)) := by
   have hbase : DifferentialAlgebraicOver ℂ
-      (ellipticGammaExternalLogDerivDefectMero sigma sigma tau hsigma htau) :=
+      (ellipticGammaExternalLogDerivDefectMero h sigma tau hsigma htau) :=
     differentialAlgebraicOver_meromorphicRationalCoordinateField_iff.mp
       (differentialAlgebraicOver_rationalCoordinateField_of_ratFunc
         (differentialAlgebraicOver_ratFunc_ellipticGammaExternalLogDerivDefectMero_of_resonant
-          sigma sigma tau hsigma htau hperiods ⟨0, 0, 1, by push_cast; ring⟩))
+          h sigma tau hsigma htau hperiods hres))
   exact (HTGeometry.DifferentialAlgEquiv.differentialAlgebraicOver_map_iff
     (addTranslationMeroDifferentialAlgEquiv w) _).mpr hbase
 
@@ -97,7 +98,8 @@ theorem multipleEllipticGammaFace_translate_ne_bottom
     rw [ellipticGammaExternalLogDerivDefectMero, ellipticGammaExternalLogDerivDefectMero,
       hform, hform, heq]
   have hDA := differentialAlgebraicOver_translate_resonant_defect
-    (sigma := τ a) (tau := τ b) (w := w) (hτ a) (hτ b) hperiods
+    (h := τ a) (sigma := τ a) (tau := τ b) (w := w) (hτ a) (hτ b) hperiods
+    ⟨0, 0, 1, by push_cast; ring⟩
   have hnr : ThetaTranslationNonresonant (τ b') (τ a') (τ a) :=
     thetaTranslationNonresonant_period_of_ne τ hQ haa' hab''
   have hHT := hypertranscendentalOver_translate_nonresonant_defect

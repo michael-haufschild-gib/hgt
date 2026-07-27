@@ -1542,3 +1542,8 @@ So the bottom-layer instance of the gluing engine needs only: (i) the resonance-
 generalization of the translate lemma, and (ii) the closure of differential algebraicity under
 adding an element of the base field.  Both are routine, and with them the whole bottom layer (14)
 follows from `multipleEllipticGammaFaceStar_diffIndepOn`.
+
+`differentialAlgebraicOver_translate_resonant_defect` is now stated for an arbitrary resonant shift
+(`hres : exists p q r : Z, h = p + q tau + r sigma`) rather than the structural shift alone, which is
+the form `hOffDA` needs: for an off-star face the shift is `n tau_q` with `q` a surviving parameter,
+witnessed by `⟨0, 0, n⟩` or `⟨0, n, 0⟩`.
