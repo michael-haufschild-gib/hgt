@@ -745,3 +745,30 @@ structural translate*, which for the elliptic-gamma packets is exactly nonresona
 already available in the exact-spectrum theorems.  What remains of the four hypotheses is the
 concrete packet definition for the higher faces (with its atomicity, the bottom layer being done),
 the rank-automorphism property, and cross-neutrality off the star.
+
+## Lean progress — the all-order gluing theorem in genuine differential form
+
+`formal/GaloisForLFunctions/HTGeometry/DifferentialUniformFaceGluing.lean` (axiom-clean, umbrella
+registered).  The corpus already carried the order-three six-face gluing theorem specialized to the
+genuine differential matroid (`differentialRank_orderThree_sixFace_diffIndepOn`).  This file does the
+same at **all orders**, so the abstract engine no longer stands between the card and its concrete
+inputs.
+
+- **`differentialRank_uniformFace_nestedStar_diffIndepOn`** — for a uniform face family, a total
+  star is jointly differentially independent over `F` provided: each face packet is differentially
+  independent (atomicity), each star direction is stable with an integer height increasing by `n`
+  under `sigma^n`, and every off-star translated finite packet is differentially algebraic over the
+  packet it came from.  The three abstract hypotheses of `Rank.uniformFace_nestedStar_indep` are
+  discharged internally: rank-automorphism by
+  `HTGeometry.DifferentialAlgEquiv.mem_differentialRank_rankAutSubgroup`, free translates by
+  `Rank.hasFreeTranslates_of_intHeight`, cross-neutrality by
+  `differentialRank_crossNeutral_of_image_differentialAlgebraic`.
+- **`differentialRank_uniformFace_nestedStar_diffIndepOn_of_orbit`** — the same conclusion with the
+  height replaced by an orbit presentation of each star: each star is the union of full orbits of a
+  base set on which distinct exponents give distinct elements.  This is the form the structural
+  translates of the hierarchy take, via `orbitUnion` and `hasFreeTranslates_orbitUnion`.
+
+Remaining for the capstone: the concrete packets `O_J` of the multiple elliptic-gamma faces with
+their atomicity at every layer (the bottom layer `|J| = n-2` is done), the orbit presentation of each
+star (reduced to nonresonance by `hasFreeTranslates_meroOrbit_of_aperiodic`), the off-star DA
+statements, and then the hierarchy-to-row identification.
