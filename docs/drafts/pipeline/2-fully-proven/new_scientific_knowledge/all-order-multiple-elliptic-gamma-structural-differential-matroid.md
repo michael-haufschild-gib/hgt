@@ -1406,3 +1406,18 @@ formalized with no remaining hypotheses beyond the card's own genericity assumpt
 inputs of the all-order chain are the star nonresonance (`hStarInj`) and off-star differential
 algebraicity (`hOffDA`) of the gluing engine, and the per-face freeness data of the descending
 induction.
+
+## Lean progress — faithful labelling of the bottom packet
+
+**`faceShiftLattice_translate_injective_bottom`** (same file, axiom-clean): distinct external
+lattice shifts give distinct translates of a bottom-face coordinate.  A coincidence would make the
+defect `Delta_(g-g') Psi_1` vanish, while that defect is hypertranscendental because `g - g'` is
+nonresonant (`hypertranscendentalOver_ellipticGammaExternalLogDerivDefectMero_iff_nonresonant`), and
+`0` is differentially algebraic.
+
+This is the same-face half of the star nonresonance hypothesis `hStarInj` of the gluing engine: for
+`y = T_J^a F_J` and `z = T_J^(a') F_J` in one slice, `sigma_(m tau_q) y = sigma_(n tau_q) z` forces
+the shift `(m - n) tau_q + (a - a')` to vanish, hence `m = n` by rational independence.  What is
+left of `hStarInj` is the cross-face case `J != J'`, where two *different* order-one coordinates
+would have to agree up to translation; that is the next target, together with the off-star
+differential algebraicity `hOffDA`.

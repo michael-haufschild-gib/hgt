@@ -185,6 +185,49 @@ theorem multipleEllipticGammaFacePacket_diffIndepOn_bottom
   · exact Finset.mem_image.mpr ⟨y, hTfin.mem_toFinset.mpr hy, rfl⟩
   · exact (hshift y hy).2
 
+/-! ## Faithful labelling of the bottom packet -/
+
+set_option maxHeartbeats 800000 in
+/-- **Distinct external lattice shifts give distinct bottom-face translates.**  A coincidence would
+make a nonresonant defect of the order-one elliptic gamma vanish, but that defect is
+hypertranscendental. -/
+theorem faceShiftLattice_translate_injective_bottom
+    (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im) (hQ : PeriodsIntegrallyIndependent τ)
+    (J : Finset ι) {a b : ι} (haJ : a ∉ J) (hbJ : b ∉ J) (hab : a ≠ b)
+    (hJ : ∀ i, i ∉ J → i = a ∨ i = b)
+    (hperiods : LinearIndependent ℚ (ellipticGammaSourcePeriods (τ a) (τ b)))
+    {g g' : ℂ} (hg : g ∈ faceShiftLattice τ J) (hg' : g' ∈ faceShiftLattice τ J)
+    (heq : addTranslationMeroEquiv g (multipleEllipticGammaLogDerivFaceMero τ hτ J) =
+      addTranslationMeroEquiv g' (multipleEllipticGammaLogDerivFaceMero τ hτ J)) :
+    g = g' := by
+  classical
+  by_contra hne
+  have hnr := thetaTranslationNonresonant_faceShiftLattice_sub τ hQ J haJ hbJ hg hg' hne
+  set Ψ := ellipticGammaLogDerivMero (τ a) (τ b) (hτ a) (hτ b) with hΨdef
+  set c : ℂ := -(1 + τ b) / 2 with hcdef
+  have hbridge : ∀ u : ℂ,
+      addTranslationMeroEquiv u (multipleEllipticGammaLogDerivFaceMero τ hτ J) =
+        addTranslationMeroEquiv (u + c) Ψ := by
+    intro u
+    rw [multipleEllipticGammaLogDerivFaceMero_two_surviving τ hτ J haJ hbJ hab hJ,
+      addTranslationMeroEquiv_add]
+  rw [hbridge g, hbridge g'] at heq
+  have hshift := congrArg (addTranslationMeroEquiv (-(g' + c))) heq
+  rw [addTranslationMeroEquiv_add, addTranslationMeroEquiv_add] at hshift
+  have harg1 : -(g' + c) + (g + c) = g - g' := by ring
+  have harg2 : -(g' + c) + (g' + c) = 0 := by ring
+  rw [harg1, harg2, addTranslationMeroEquiv_zero_apply] at hshift
+  have hzero : ellipticGammaExternalLogDerivDefectMero (g - g') (τ a) (τ b) (hτ a) (hτ b) = 0 := by
+    rw [ellipticGammaExternalLogDerivDefectMero, hshift, sub_self]
+  have hHT := (hypertranscendentalOver_ellipticGammaExternalLogDerivDefectMero_iff_nonresonant
+    (g - g') (τ a) (τ b) (hτ a) (hτ b) hperiods).mpr hnr
+  rw [hzero] at hHT
+  exact hHT (by
+    simpa using
+      HTGeometry.differentialAlgebraicOver_algebraMap
+        (F := ↥(meromorphicEllipticCompositum (τ a) (τ b)))
+        (E := meroField (Set.univ : Set ℂ)) 0)
+
 end
 
 end GaloisForLFunctions
