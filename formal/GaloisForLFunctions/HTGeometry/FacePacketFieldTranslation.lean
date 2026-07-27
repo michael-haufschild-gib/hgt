@@ -74,7 +74,7 @@ theorem differentialAdjoin_translate_stable_of_generators
 /-- **The inverse translation also moves the generators inside the generated field.**  Reading the
 coface equation backwards expresses `sigma_(-tau_q) y` as `y` minus a member of the next packet. -/
 theorem facePacketUnion_neg_translate_mem (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im)
-    {S : Set (Finset ι)} (hS : ∀ L ∈ S, ∀ q : ι, q ∉ L → insert q L ∈ S) (q : ι)
+    {S : Set (Finset ι)} (q : ι) (hS : ∀ L ∈ S, q ∉ L → insert q L ∈ S)
     {y : meroField (Set.univ : Set ℂ)} (hy : y ∈ facePacketUnion τ hτ S) :
     addTranslationMeroEquiv (-τ q) y ∈ differentialAdjoin ℂ (facePacketUnion τ hτ S) := by
   obtain ⟨L, hL, hyL⟩ := Set.mem_iUnion₂.mp hy
@@ -105,7 +105,7 @@ theorem facePacketUnion_neg_translate_mem (τ : ι → ℂ) (hτ : ∀ i, 0 < (�
         (multipleEllipticGammaLogDerivFaceMero τ hτ (insert q L)) ∈
         differentialAdjoin ℂ (facePacketUnion τ hτ S) :=
       subset_differentialAdjoin ℂ _
-        (Set.mem_iUnion₂.mpr ⟨insert q L, hS L hL q hqL, ⟨-τ q + g, hlat, rfl⟩⟩)
+        (Set.mem_iUnion₂.mpr ⟨insert q L, hS L hL hqL, ⟨-τ q + g, hlat, rfl⟩⟩)
     have hy' : addTranslationMeroEquiv g
         (multipleEllipticGammaLogDerivFaceMero τ hτ L) ∈
         differentialAdjoin ℂ (facePacketUnion τ hτ S) :=
@@ -128,23 +128,23 @@ theorem facePacketUnion_neg_translate_mem (τ : ι → ℂ) (hτ : ∀ i, 0 < (�
 
 /-- **The deeper face field is stable under the inverse translation.** -/
 theorem differentialAdjoin_facePacketUnion_neg_translate_stable (τ : ι → ℂ)
-    (hτ : ∀ i, 0 < (τ i).im) {S : Set (Finset ι)}
-    (hS : ∀ L ∈ S, ∀ q : ι, q ∉ L → insert q L ∈ S) (q : ι)
+    (hτ : ∀ i, 0 < (τ i).im) {S : Set (Finset ι)} (q : ι)
+    (hS : ∀ L ∈ S, q ∉ L → insert q L ∈ S)
     {x : meroField (Set.univ : Set ℂ)}
     (hx : x ∈ differentialAdjoin ℂ (facePacketUnion τ hτ S)) :
     addTranslationMeroEquiv (-τ q) x ∈ differentialAdjoin ℂ (facePacketUnion τ hτ S) :=
   differentialAdjoin_translate_stable_of_generators (-τ q) _
-    (fun _y hy => facePacketUnion_neg_translate_mem τ hτ hS q hy) hx
+    (fun _y hy => facePacketUnion_neg_translate_mem τ hτ q hS hy) hx
 
 /-- **The structural translation as an automorphism of the deeper face field.** -/
 def facePacketFieldTranslation (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im) {S : Set (Finset ι)}
-    (hS : ∀ L ∈ S, ∀ q : ι, q ∉ L → insert q L ∈ S) (q : ι) :
+    (q : ι) (hS : ∀ L ∈ S, q ∉ L → insert q L ∈ S) :
     differentialAdjoin ℂ (facePacketUnion τ hτ S) ≃+*
       differentialAdjoin ℂ (facePacketUnion τ hτ S) where
   toFun x := ⟨addTranslationMeroEquiv (τ q) (x : meroField (Set.univ : Set ℂ)),
-    differentialAdjoin_facePacketUnion_translate_stable τ hτ hS q x.2⟩
+    differentialAdjoin_facePacketUnion_translate_stable τ hτ q hS x.2⟩
   invFun x := ⟨addTranslationMeroEquiv (-τ q) (x : meroField (Set.univ : Set ℂ)),
-    differentialAdjoin_facePacketUnion_neg_translate_stable τ hτ hS q x.2⟩
+    differentialAdjoin_facePacketUnion_neg_translate_stable τ hτ q hS x.2⟩
   left_inv x := by
     apply Subtype.ext
     show addTranslationMeroEquiv (-τ q)
@@ -170,9 +170,9 @@ def facePacketFieldTranslation (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im) {S
 
 @[simp]
 theorem facePacketFieldTranslation_coe (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im)
-    {S : Set (Finset ι)} (hS : ∀ L ∈ S, ∀ q : ι, q ∉ L → insert q L ∈ S) (q : ι)
+    {S : Set (Finset ι)} (q : ι) (hS : ∀ L ∈ S, q ∉ L → insert q L ∈ S)
     (x : differentialAdjoin ℂ (facePacketUnion τ hτ S)) :
-    ((facePacketFieldTranslation τ hτ hS q x : differentialAdjoin ℂ (facePacketUnion τ hτ S)) :
+    ((facePacketFieldTranslation τ hτ q hS x : differentialAdjoin ℂ (facePacketUnion τ hτ S)) :
         meroField (Set.univ : Set ℂ)) =
       addTranslationMeroEquiv (τ q) (x : meroField (Set.univ : Set ℂ)) := rfl
 

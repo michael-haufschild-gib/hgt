@@ -181,8 +181,10 @@ theorem facePacketUnion_period_translate_stable (τ : ι → ℂ) (hτ : ∀ i, 
   · rw [show facePacketPeriods τ q u ⟨0, by omega⟩ = 1 from rfl,
       differentialAdjoin_facePacketUnion_one_fixed τ hτ S hx]
     exact hx
-  · exact differentialAdjoin_facePacketUnion_translate_stable τ hτ hS q hx
-  · exact differentialAdjoin_facePacketUnion_translate_stable τ hτ hS u hx
+  · exact differentialAdjoin_facePacketUnion_translate_stable τ hτ q
+      (fun L hL hq => hS L hL q hq) hx
+  · exact differentialAdjoin_facePacketUnion_translate_stable τ hτ u
+      (fun L hL hu => hS L hL u hu) hx
 
 theorem facePacketUnion_period_neg_translate_stable (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im)
     {S : Set (Finset ι)} (hS : ∀ L ∈ S, ∀ p : ι, p ∉ L → insert p L ∈ S) (q u : ι) (i : Fin 3)
@@ -194,8 +196,10 @@ theorem facePacketUnion_period_neg_translate_stable (τ : ι → ℂ) (hτ : ∀
   · rw [show -facePacketPeriods τ q u ⟨0, by omega⟩ = -1 from rfl,
       differentialAdjoin_facePacketUnion_neg_one_fixed τ hτ S hx]
     exact hx
-  · exact differentialAdjoin_facePacketUnion_neg_translate_stable τ hτ hS q hx
-  · exact differentialAdjoin_facePacketUnion_neg_translate_stable τ hτ hS u hx
+  · exact differentialAdjoin_facePacketUnion_neg_translate_stable τ hτ q
+      (fun L hL hq => hS L hL q hq) hx
+  · exact differentialAdjoin_facePacketUnion_neg_translate_stable τ hτ u
+      (fun L hL hu => hS L hL u hu) hx
 
 /-- **The three structural translations as a difference-differential structure on the deeper face
 field.** -/

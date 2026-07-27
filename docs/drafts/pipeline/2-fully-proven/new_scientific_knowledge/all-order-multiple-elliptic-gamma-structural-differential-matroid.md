@@ -1067,3 +1067,33 @@ registered) transports it to any ambient realization:
 - **`oneSlice_ne_coboundary_of_twisted_ambient_shift`** — hence no nonzero finite `F`-linear form in
   the jets of the zero slice is a coboundary for `Psi`.  This is the exact statement the descending
   face-lifting lemma needs, with `F = K_0` and `Psi = T_q`.
+
+## Lean progress — the rank-three difference system of a face packet
+
+`formal/GaloisForLFunctions/HTGeometry/FacePacketDifferenceSystem.lean` (axiom-clean, umbrella
+registered) assembles the three structural directions into the exact input shape of the corpus's
+several-automorphism Ostrowski criterion.
+
+- `meroTranslationRestrict` — a translation stabilizing an intermediate field in both directions
+  restricts to a ring automorphism of it (the stability lemmas of the two previous files are now
+  stated per direction, which is all they ever used);
+- `differentialAdjoin_fixed_of_generators`, **`differentialAdjoin_facePacketUnion_one_fixed`** — the
+  unit translation fixes every packet element (`sigma_1 sigma_g F_L = sigma_g sigma_1 F_L`), hence
+  fixes the whole deeper face field pointwise; the same holds for `sigma_(-1)`;
+- `facePacketPeriods tau q u = ![1, tau_q, tau_u]` — the three structural periods;
+- **`facePacketDifferenceSystem`** — the three restricted translations as a
+  `CommutingDifferenceDifferentialField (Fin 3) C K_(s+1)`: they commute, they commute with the
+  derivation, and they fix the constants;
+- **`facePacketBlock`** — the translation block of the face `J`, indexed by its own packet;
+- **`facePacketDisplacement`** — its displacements, which lie in the deeper face field: the unit
+  direction contributes `0`, and each surviving direction contributes the coface element
+  `T_J^a F_(J union {q})`;
+- **`facePacket_differentialIndependent_of_no_telescoping`** — the descending face-lifting lemma:
+  with `1, tau_q, tau_u` rationally independent, the block is differentially algebraically
+  independent over `K_(s+1)` as soon as no nonzero finite constant-coefficient jet form of the
+  displacements is a simultaneous coboundary there.  The joint fixed field is supplied by
+  `rankThree_generator_jointFixed_iff_constant`.
+
+The lemma is therefore now reduced to a single remaining implication: the exclusion of a
+simultaneous jet telescoper, which is what the twisted one-slice obstruction of the previous section
+is for.
