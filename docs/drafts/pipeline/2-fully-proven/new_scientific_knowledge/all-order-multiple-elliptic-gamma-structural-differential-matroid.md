@@ -1514,3 +1514,8 @@ a parameter that survives on the first and is deleted on the second, the star-ex
 holds vacuously, because the translated equality is impossible.  Combined with the same-face lemma,
 `hStarInj` is available for every pair of bottom faces once a separating parameter is exhibited —
 which for faces of equal size is just the statement that their complements differ.
+
+`exists_separating_parameter_of_ne` (same file, axiom-clean) supplies the missing combinatorial
+step: distinct faces always admit a parameter surviving on one and deleted on the other.  Feeding it
+into the cross-face exponent lemma (in either orientation) covers every pair of distinct bottom
+faces, so `hStarInj` is fully available at the bottom layer.

@@ -132,6 +132,18 @@ theorem multipleEllipticGammaFacePacketSlice_exponent_eq_bottom_cross
   exact multipleEllipticGammaFace_translate_ne_bottom τ hτ hQ J J' haJ hbJ hab hJ
     haJ' hbJ' hab' hJ' hperiods hperiods' haa' hab'' _ _ heq
 
+omit [Fintype ι] [DecidableEq ι] in
+/-- Distinct faces admit a parameter surviving on one and deleted on the other. -/
+theorem exists_separating_parameter_of_ne {J J' : Finset ι} (h : J ≠ J') :
+    (∃ x, x ∉ J ∧ x ∈ J') ∨ (∃ x, x ∉ J' ∧ x ∈ J) := by
+  classical
+  rw [Ne, Finset.ext_iff] at h
+  push Not at h
+  obtain ⟨x, hx⟩ := h
+  rcases hx with ⟨hxJ, hxJ'⟩ | ⟨hxJ, hxJ'⟩
+  · exact Or.inr ⟨x, hxJ', hxJ⟩
+  · exact Or.inl ⟨x, hxJ, hxJ'⟩
+
 end
 
 end GaloisForLFunctions
