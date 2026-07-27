@@ -683,3 +683,40 @@ the formal lint passes, and `#print axioms` reports only Lean's standard logical
   translation differential matroid in `all-depth-compatible-pair-face-differential-matroid`.
   The universal module splits over full-lattice cosets into Stanley--Reisner blocks, and the
   arbitrary-label face-lifting proof makes all blocks jointly free.
+
+## Lean progress — the bottom layer `(13)`--`(14)` over the differentially algebraic extension
+
+`formal/GaloisForLFunctions/HTGeometry/EllipticGammaAtomicOverDAExtension.lean` (axiom-clean,
+umbrella registered).
+
+The bottom-layer section of this card asserts: *"The order-one atomic theorem and its full-orbit
+consequence therefore make every `O_J` differentially independent over `C(z)`, hence over the DA
+extension `D`."*  Both steps are now Lean theorems.
+
+- **`differentialIndependent_differentialAdjoin_of_rationalBase`** — differential independence over
+  the embedded rational coordinate field survives adjunction of *any* set of germs differentially
+  algebraic over the constants.  This is the "hence over `D`" step, and it is unconditional: it
+  combines `differentialIndependent_meromorphicRationalCoordinateField_iff` (proved in
+  `EllipticCompositumMatroidTransport`) with the corpus's arbitrary base-change law
+  `DifferentialIndependent.extendScalarsDifferentialAdjoin`.
+- **`ellipticGammaExternalDefectFamily_differentialIndependent_daExtension`** — hence every
+  separated order-one external-defect packet is differentially independent over every such
+  extension `D`.  The `C(z)` input is the already formalized
+  `ellipticGammaExternalDefectFamily_differentialIndependent_rationalBase`.
+- **`ellipticGammaExternalDefectFamily_differentialIndependent_ellipticCompositum'`** — the
+  concrete instance for a paired elliptic compositum as the extension.
+
+The prerequisite that made this unconditional is the elliptic-field bridge proved for the rank-three
+card: every element of a paired elliptic compositum — indeed every doubly periodic meromorphic germ —
+is differentially algebraic over the constants, with no Weierstrass generation theorem.
+
+Note on the dependency chain above: items 3 and 4 of the "Unconditional Lean status" list are stale.
+The rank-three fixed-field packaging exists (`rankThree_generator_jointFixed_iff_constant`,
+`exists_complex_of_ellipticMeroField_translation_fixed`), and the all-order hierarchy itself is built
+(`FinitePiProductSummability`, `MultipleEllipticGammaLogKernel`, `MeromorphicMultipleEllipticGamma`,
+`MultipleEllipticGammaFieldHierarchy`, `MultipleEllipticGammaAdditiveHierarchy`).  What genuinely
+remains is the concrete discharge of the four simplicial-star hypotheses of
+`Rank.uniformFace_nestedStar_indep` for the multiple elliptic-gamma packets — atomicity (now
+available at the bottom layer), the rank-automorphism property, free translates via the integer
+orbit-height law, and cross-neutrality off the star — followed by the hierarchy-to-row
+identification and the capstone.
