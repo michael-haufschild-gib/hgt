@@ -1144,6 +1144,70 @@ theorem abs_thetaCuspTailDerivative_le_nat_exp_neg
       simp [thetaCuspTailDerivativeNatExpConstant, B, P, g]
       ring
 
+/-- The tail-derivative exponential constant is nonnegative. -/
+private theorem thetaCuspTailDerivativeNatExpConstant_nonneg (ell m : ℕ) :
+    0 ≤ thetaCuspTailDerivativeNatExpConstant ell m := by
+  have hbound := abs_thetaCuspTailDerivative_le_nat_exp_neg ell m
+    (x := 0) (by norm_num : (0 : ℝ) ≤ 0)
+  have hbound' : |thetaCuspTailDerivative ell 0| ≤
+      thetaCuspTailDerivativeNatExpConstant ell m := by
+    simpa only [mul_zero, neg_zero, Real.exp_zero, mul_one] using hbound
+  exact (abs_nonneg _).trans hbound'
+
+/-- The shifted factorial envelope integrand is measurable on the half line. -/
+private theorem aestronglyMeasurable_absTailDerivative_mul_envelope
+    (ell N r : ℕ) (a : ℝ) :
+    AEStronglyMeasurable
+      (fun x : ℝ => |thetaCuspTailDerivative ell x| *
+        ((((r : ℝ) * (x + a)) ^ N / N.factorial) *
+          Real.exp ((r : ℝ) * (x + a))))
+      (volume.restrict (Ioi 0)) :=
+  (((differentiable_thetaCuspTailDerivative ell).continuous.abs).mul
+    (((continuous_const.mul (continuous_id.add continuous_const)).pow N).div_const _ |>.mul
+      (Real.continuous_exp.comp
+        (continuous_const.mul
+          (continuous_id.add continuous_const))))).aestronglyMeasurable.restrict
+
+/-- **Pointwise domination of the shifted factorial envelope.**  The tail derivative decays like
+`e^{-(p+r)x}`, which absorbs the `e^{r(x+a)}` of the envelope and leaves `e^{ra} e^{-px}`. -/
+private theorem absTailDerivative_mul_envelope_le (ell N p r : ℕ) {a : ℝ} (ha : 0 ≤ a)
+    (x : ℝ) (hx0 : 0 ≤ x) :
+    |thetaCuspTailDerivative ell x| *
+        ((((r : ℝ) * (x + a)) ^ N / N.factorial) *
+          Real.exp ((r : ℝ) * (x + a))) ≤
+      (thetaCuspTailDerivativeNatExpConstant ell (p + r) *
+          ((r : ℝ) ^ N / N.factorial) * Real.exp ((r : ℝ) * a)) *
+        ((x + a) ^ N * Real.exp (-(p : ℝ) * x)) := by
+  have htail := abs_thetaCuspTailDerivative_le_nat_exp_neg ell (p + r) hx0
+  have hexpcombine :
+      Real.exp (-((p + r : ℕ) : ℝ) * x) *
+          Real.exp ((r : ℝ) * (x + a)) =
+        Real.exp ((r : ℝ) * a) * Real.exp (-(p : ℝ) * x) := by
+    rw [← Real.exp_add, ← Real.exp_add]
+    congr 1
+    push_cast
+    ring
+  calc
+    |thetaCuspTailDerivative ell x| *
+        ((((r : ℝ) * (x + a)) ^ N / N.factorial) *
+          Real.exp ((r : ℝ) * (x + a))) ≤
+      (thetaCuspTailDerivativeNatExpConstant ell (p + r) *
+          Real.exp (-((p + r : ℕ) : ℝ) * x)) *
+        ((((r : ℝ) * (x + a)) ^ N / N.factorial) *
+          Real.exp ((r : ℝ) * (x + a))) := by
+      have hxa : 0 ≤ x + a := add_nonneg hx0 ha
+      gcongr
+    _ = (thetaCuspTailDerivativeNatExpConstant ell (p + r) *
+          ((r : ℝ) ^ N / N.factorial) * Real.exp ((r : ℝ) * a)) *
+        ((x + a) ^ N * Real.exp (-(p : ℝ) * x)) := by
+      rw [mul_pow]
+      calc
+        _ = thetaCuspTailDerivativeNatExpConstant ell (p + r) *
+            ((r : ℝ) ^ N / N.factorial) * (x + a) ^ N *
+            (Real.exp (-((p + r : ℕ) : ℝ) * x) *
+              Real.exp ((r : ℝ) * (x + a))) := by ring
+        _ = _ := by rw [hexpcombine]; ring
+
 /-- The exact shifted gamma moment absorbs both the finite Taylor factorial and a nonnegative
 translation.  This is the source-integrated envelope used for finite phase-translation edges. -/
 theorem integral_abs_thetaCuspTailDerivative_mul_shiftedFactorialEnvelope_le
@@ -1157,55 +1221,13 @@ theorem integral_abs_thetaCuspTailDerivative_mul_shiftedFactorialEnvelope_le
           Real.exp (((p + r : ℕ) : ℝ) * a) := by
   let C : ℝ := thetaCuspTailDerivativeNatExpConstant ell (p + r)
   have hfac : (0 : ℝ) < N.factorial := by positivity
-  have hC : 0 ≤ C := by
-    have hbound := abs_thetaCuspTailDerivative_le_nat_exp_neg ell (p + r)
-      (x := 0) (by norm_num : (0 : ℝ) ≤ 0)
-    have hbound' : |thetaCuspTailDerivative ell 0| ≤ C := by
-      simpa only [C, mul_zero, neg_zero, Real.exp_zero, mul_one] using hbound
-    exact (abs_nonneg _).trans hbound'
+  have hC : 0 ≤ C := thetaCuspTailDerivativeNatExpConstant_nonneg ell (p + r)
   have hmajorInt : IntegrableOn (fun x : ℝ =>
       (C * ((r : ℝ) ^ N / N.factorial) * Real.exp ((r : ℝ) * a)) *
         ((x + a) ^ N * Real.exp (-(p : ℝ) * x))) (Ioi 0) :=
     (integrableOn_add_pow_mul_exp_nat_neg N p hp a).const_mul _
-  have hminorMeas : AEStronglyMeasurable
-      (fun x : ℝ => |thetaCuspTailDerivative ell x| *
-        ((((r : ℝ) * (x + a)) ^ N / N.factorial) *
-          Real.exp ((r : ℝ) * (x + a))))
-      (volume.restrict (Ioi 0)) := by
-    exact (((differentiable_thetaCuspTailDerivative ell).continuous.abs).mul
-      (((continuous_const.mul (continuous_id.add continuous_const)).pow N).div_const _ |>.mul
-        (Real.continuous_exp.comp
-          (continuous_const.mul (continuous_id.add continuous_const))))).aestronglyMeasurable.restrict
-  have hpoint (x : ℝ) (hx0 : 0 ≤ x) :
-      |thetaCuspTailDerivative ell x| *
-          ((((r : ℝ) * (x + a)) ^ N / N.factorial) *
-            Real.exp ((r : ℝ) * (x + a))) ≤
-        (C * ((r : ℝ) ^ N / N.factorial) * Real.exp ((r : ℝ) * a)) *
-          ((x + a) ^ N * Real.exp (-(p : ℝ) * x)) := by
-    have htail := abs_thetaCuspTailDerivative_le_nat_exp_neg ell (p + r) hx0
-    have hexpcombine :
-        Real.exp (-((p + r : ℕ) : ℝ) * x) *
-            Real.exp ((r : ℝ) * (x + a)) =
-          Real.exp ((r : ℝ) * a) * Real.exp (-(p : ℝ) * x) := by
-      rw [← Real.exp_add, ← Real.exp_add]
-      congr 1
-      push_cast
-      ring
-    calc
-      |thetaCuspTailDerivative ell x| *
-          ((((r : ℝ) * (x + a)) ^ N / N.factorial) *
-            Real.exp ((r : ℝ) * (x + a))) ≤
-        (C * Real.exp (-((p + r : ℕ) : ℝ) * x)) *
-          ((((r : ℝ) * (x + a)) ^ N / N.factorial) *
-            Real.exp ((r : ℝ) * (x + a))) := by gcongr
-      _ = (C * ((r : ℝ) ^ N / N.factorial) * Real.exp ((r : ℝ) * a)) *
-          ((x + a) ^ N * Real.exp (-(p : ℝ) * x)) := by
-        rw [mul_pow]
-        calc
-          _ = C * ((r : ℝ) ^ N / N.factorial) * (x + a) ^ N *
-              (Real.exp (-((p + r : ℕ) : ℝ) * x) *
-                Real.exp ((r : ℝ) * (x + a))) := by ring
-          _ = _ := by rw [hexpcombine]; ring
+  have hminorMeas := aestronglyMeasurable_absTailDerivative_mul_envelope ell N r a
+  have hpoint := absTailDerivative_mul_envelope_le ell N p r ha
   have hminorInt : IntegrableOn
       (fun x : ℝ => |thetaCuspTailDerivative ell x| *
         ((((r : ℝ) * (x + a)) ^ N / N.factorial) *
@@ -1267,64 +1289,21 @@ theorem integrableOn_abs_thetaCuspTailDerivative_mul_shiftedFactorialEnvelope
         ((((r : ℝ) * (x + a)) ^ N / N.factorial) *
           Real.exp ((r : ℝ) * (x + a)))) (Ioi 0) := by
   let C : ℝ := thetaCuspTailDerivativeNatExpConstant ell (p + r)
-  have hC : 0 ≤ C := by
-    have hbound := abs_thetaCuspTailDerivative_le_nat_exp_neg ell (p + r)
-      (x := 0) (by norm_num : (0 : ℝ) ≤ 0)
-    have hbound' : |thetaCuspTailDerivative ell 0| ≤ C := by
-      simpa only [C, mul_zero, neg_zero, Real.exp_zero, mul_one] using hbound
-    exact (abs_nonneg _).trans hbound'
+  have hC : 0 ≤ C := thetaCuspTailDerivativeNatExpConstant_nonneg ell (p + r)
   have hmajorInt : IntegrableOn (fun x : ℝ =>
       (C * ((r : ℝ) ^ N / N.factorial) * Real.exp ((r : ℝ) * a)) *
         ((x + a) ^ N * Real.exp (-(p : ℝ) * x))) (Ioi 0) :=
     (integrableOn_add_pow_mul_exp_nat_neg N p hp a).const_mul _
-  have hminorMeas : AEStronglyMeasurable
-      (fun x : ℝ => |thetaCuspTailDerivative ell x| *
-        ((((r : ℝ) * (x + a)) ^ N / N.factorial) *
-          Real.exp ((r : ℝ) * (x + a))))
-      (volume.restrict (Ioi 0)) := by
-    exact (((differentiable_thetaCuspTailDerivative ell).continuous.abs).mul
-      (((continuous_const.mul (continuous_id.add continuous_const)).pow N).div_const _ |>.mul
-        (Real.continuous_exp.comp
-          (continuous_const.mul (continuous_id.add continuous_const))))).aestronglyMeasurable.restrict
+  have hminorMeas := aestronglyMeasurable_absTailDerivative_mul_envelope ell N r a
   apply hmajorInt.mono' hminorMeas
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
   have hx0 : 0 ≤ x := hx.le
   have hxa : 0 ≤ x + a := add_nonneg hx0 ha
-  have htail := abs_thetaCuspTailDerivative_le_nat_exp_neg ell (p + r) hx0
-  have hexpcombine :
-      Real.exp (-((p + r : ℕ) : ℝ) * x) *
-          Real.exp ((r : ℝ) * (x + a)) =
-        Real.exp ((r : ℝ) * a) * Real.exp (-(p : ℝ) * x) := by
-    rw [← Real.exp_add, ← Real.exp_add]
-    congr 1
-    push_cast
-    ring
-  have hpoint :
-      |thetaCuspTailDerivative ell x| *
-          ((((r : ℝ) * (x + a)) ^ N / N.factorial) *
-            Real.exp ((r : ℝ) * (x + a))) ≤
-        (C * ((r : ℝ) ^ N / N.factorial) * Real.exp ((r : ℝ) * a)) *
-          ((x + a) ^ N * Real.exp (-(p : ℝ) * x)) := by
-    calc
-      |thetaCuspTailDerivative ell x| *
-          ((((r : ℝ) * (x + a)) ^ N / N.factorial) *
-            Real.exp ((r : ℝ) * (x + a))) ≤
-        (C * Real.exp (-((p + r : ℕ) : ℝ) * x)) *
-          ((((r : ℝ) * (x + a)) ^ N / N.factorial) *
-            Real.exp ((r : ℝ) * (x + a))) := by gcongr
-      _ = (C * ((r : ℝ) ^ N / N.factorial) * Real.exp ((r : ℝ) * a)) *
-          ((x + a) ^ N * Real.exp (-(p : ℝ) * x)) := by
-        rw [mul_pow]
-        calc
-          _ = C * ((r : ℝ) ^ N / N.factorial) * (x + a) ^ N *
-              (Real.exp (-((p + r : ℕ) : ℝ) * x) *
-                Real.exp ((r : ℝ) * (x + a))) := by ring
-          _ = _ := by rw [hexpcombine]; ring
   have hminor0 : 0 ≤ |thetaCuspTailDerivative ell x| *
       ((((r : ℝ) * (x + a)) ^ N / N.factorial) *
         Real.exp ((r : ℝ) * (x + a))) := by positivity
   rw [Real.norm_eq_abs, abs_of_nonneg hminor0]
-  exact hpoint
+  exact absTailDerivative_mul_envelope_le ell N p r ha x hx0
 
 /-- The signed value edge remains geometrically small after integration against `rho = 4 T''`. -/
 theorem integral_abs_thetaCuspTailSecondDensity_mul_phaseTranslationTopEdge_norm_le_abs

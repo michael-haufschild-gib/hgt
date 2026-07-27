@@ -42,11 +42,10 @@ theorem exists_line_lower_bound (χ : DirichletCharacter ℂ N) :
     rcases eq_or_ne n 0 with rfl | hn0
     · simp [hT, LSeries.term_zero]
     rcases eq_or_ne n 1 with rfl | hn1
-    · have : T 1 = 0 := by
+    · have hT1 : T 1 = 0 := by
         rw [hT]
-        simp only [if_pos rfl, LSeries.term_of_ne_zero one_ne_zero]
-        norm_num
-      rw [this, norm_zero]
+        simp
+      rw [hT1, norm_zero]
       positivity
     · have hn2 : 2 ≤ n := by omega
       have hn2R : (2 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn2
@@ -115,8 +114,9 @@ theorem exists_line_lower_bound (χ : DirichletCharacter ℂ N) :
       rw [le_div_iff₀ hpos, ← Real.exp_log hpos]
       rw [← Real.exp_add]
       refine Real.exp_le_one_iff.mpr ?_
-      rw [div_le_iff₀ hlog2] at hσbig
-      nlinarith [hσbig, hlog2]
+      have hsub : Real.log (2 * (S + 1)) / Real.log 2 ≤ s.re - 2 := by linarith
+      rw [div_le_iff₀ hlog2] at hsub
+      nlinarith [hsub, hlog2]
     have hSp : (0 : ℝ) < 2 * (S + 1) := by linarith
     calc (2 : ℝ) ^ (2 - s.re) * S ≤ 1 / (2 * (S + 1)) * S :=
           mul_le_mul_of_nonneg_right hexp hSnn

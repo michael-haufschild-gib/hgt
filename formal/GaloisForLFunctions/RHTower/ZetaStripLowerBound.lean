@@ -39,15 +39,7 @@ theorem pow_four_norm_riemannZeta_ge_strip {σ t : ℝ} (ht : 9 ≤ |t|)
       ≤ ‖riemannZeta (↑σ + ↑t * Complex.I)‖ ^ 4 := by
   have ht0 : (0 : ℝ) < |t| := by linarith
   -- `log|t| > 2`
-  have hexp2 : Real.exp 2 < 8 := by
-    have h1 := Real.exp_one_lt_d9
-    have h2 : Real.exp 2 = Real.exp 1 * Real.exp 1 := by
-      rw [← Real.exp_add]
-      norm_num
-    have h3 : Real.exp 1 * Real.exp 1 < 2.7182818286 * 2.7182818286 := by
-      nlinarith [Real.exp_pos 1]
-    rw [h2]
-    nlinarith [h3]
+  have hexp2 := exp_two_lt_eight
   have hlogt2 : 2 < Real.log |t| := by
     have h1 : Real.log (Real.exp 2) < Real.log |t| :=
       Real.log_lt_log (Real.exp_pos 2) (by linarith)

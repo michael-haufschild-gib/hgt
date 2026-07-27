@@ -110,57 +110,56 @@ theorem ofReal_tsum_squarefreeMobiusBoundaryLayerTerm
   rw [tsum_squarefreeMobiusBoundaryLayerTerm sigma u,
     squarefreeMobiusBoundaryLayerLaplace, Complex.ofReal_div]
 
+/-- Real-to-complex coercion converges to `1` along the right-hand approach to the critical line. -/
+theorem tendsto_ofReal_nhdsGT_one :
+    Tendsto (fun sigma : ℝ => (sigma : ℂ)) (𝓝[>] (1 : ℝ)) (𝓝 (1 : ℂ)) :=
+  Complex.continuous_ofReal.continuousAt.tendsto.mono_left inf_le_left
+
+/-- The critical boundary parameter also converges to `1`. -/
+private theorem tendsto_mobiusCriticalBoundaryParameter_ofReal (u : ℝ) :
+    Tendsto (fun sigma : ℝ => ((mobiusCriticalBoundaryParameter sigma u : ℝ) : ℂ))
+      (𝓝[>] (1 : ℝ)) (𝓝 (1 : ℂ)) := by
+  have hcont : ContinuousAt
+      (fun sigma : ℝ => mobiusCriticalBoundaryParameter sigma u) 1 := by
+    unfold mobiusCriticalBoundaryParameter
+    fun_prop
+  exact Complex.continuous_ofReal.continuousAt.tendsto.comp
+    (by simpa [mobiusCriticalBoundaryParameter] using hcont.tendsto.mono_left inf_le_left)
+
+/-- Zeta composed with twice any approach converges, provided the doubled limit avoids the pole. -/
+theorem tendsto_riemannZeta_two_mul_comp {f : ℝ → ℂ} {Lim : ℂ} (hLim : 2 * Lim ≠ 1)
+    (hf : Tendsto f (𝓝[>] (1 : ℝ)) (𝓝 Lim)) :
+    Tendsto (fun sigma : ℝ => riemannZeta (2 * f sigma))
+      (𝓝[>] (1 : ℝ)) (𝓝 (riemannZeta (2 * Lim))) := by
+  have htwo : Tendsto (fun sigma : ℝ => 2 * f sigma) (𝓝[>] (1 : ℝ)) (𝓝 (2 * Lim)) :=
+    tendsto_const_nhds.mul hf
+  exact (differentiableAt_riemannZeta hLim).continuousAt.tendsto.comp htwo
+
+/-- The zeta residue unit at any approach to `1` converges to `1`. -/
+private theorem tendsto_zetaResidueUnit_comp {f : ℝ → ℂ}
+    (hf : Tendsto f (𝓝[>] (1 : ℝ)) (𝓝 (1 : ℂ))) :
+    Tendsto (fun sigma : ℝ => zetaResidueUnit (f sigma)) (𝓝[>] (1 : ℝ)) (𝓝 (1 : ℂ)) := by
+  simpa using zetaResidueUnit_analyticAt.continuousAt.tendsto.comp hf
+
+
 /-- The rescaled logarithmic coordinate of the positive squarefree channel has the mean-one
 exponential Laplace transform `(1 + u)⁻¹` at criticality. -/
 theorem tendsto_squarefreeMobiusBoundaryLayerLaplace
     {u : ℝ} (hu : 0 ≤ u) :
     Tendsto (fun sigma : ℝ => squarefreeMobiusBoundaryLayerLaplace sigma u)
       (𝓝[>] (1 : ℝ)) (𝓝 ((((1 + u : ℝ) : ℂ))⁻¹)) := by
-  have hsigma : Tendsto (fun sigma : ℝ => (sigma : ℂ))
-      (𝓝[>] (1 : ℝ)) (𝓝 (1 : ℂ)) :=
-    Complex.continuous_ofReal.continuousAt.tendsto.mono_left inf_le_left
-  have hparamReal : Tendsto (fun sigma : ℝ => mobiusCriticalBoundaryParameter sigma u)
-      (𝓝[>] (1 : ℝ)) (𝓝 (1 : ℝ)) := by
-    have hcont : ContinuousAt
-        (fun sigma : ℝ => mobiusCriticalBoundaryParameter sigma u) 1 := by
-      unfold mobiusCriticalBoundaryParameter
-      fun_prop
-    simpa [mobiusCriticalBoundaryParameter] using
-      hcont.tendsto.mono_left inf_le_left
-  have hparam : Tendsto
-      (fun sigma : ℝ => ((mobiusCriticalBoundaryParameter sigma u : ℝ) : ℂ))
-      (𝓝[>] (1 : ℝ)) (𝓝 (1 : ℂ)) :=
-    Complex.continuous_ofReal.continuousAt.tendsto.comp hparamReal
-  have htwoArg : Tendsto (fun sigma : ℝ => 2 * (sigma : ℂ))
-      (𝓝[>] (1 : ℝ)) (𝓝 (2 : ℂ)) := by
-    simpa using (tendsto_const_nhds.mul hsigma :
-      Tendsto (fun sigma : ℝ => (2 : ℂ) * (sigma : ℂ))
-        (𝓝[>] (1 : ℝ)) (𝓝 ((2 : ℂ) * 1)))
-  have htwoParamArg : Tendsto
-      (fun sigma : ℝ => 2 * ((mobiusCriticalBoundaryParameter sigma u : ℝ) : ℂ))
-      (𝓝[>] (1 : ℝ)) (𝓝 (2 : ℂ)) := by
-    simpa using (tendsto_const_nhds.mul hparam :
-      Tendsto
-        (fun sigma : ℝ => (2 : ℂ) *
-          ((mobiusCriticalBoundaryParameter sigma u : ℝ) : ℂ))
-        (𝓝[>] (1 : ℝ)) (𝓝 ((2 : ℂ) * 1)))
+  have hparam := tendsto_mobiusCriticalBoundaryParameter_ofReal u
   have hnum : Tendsto (fun sigma : ℝ => riemannZeta (2 * (sigma : ℂ)))
-      (𝓝[>] (1 : ℝ)) (𝓝 (riemannZeta (2 : ℂ))) :=
-    (differentiableAt_riemannZeta (by norm_num : (2 : ℂ) ≠ 1)).continuousAt.tendsto.comp htwoArg
+      (𝓝[>] (1 : ℝ)) (𝓝 (riemannZeta (2 : ℂ))) := by
+    simpa using tendsto_riemannZeta_two_mul_comp (by norm_num : (2 : ℂ) * 1 ≠ 1)
+      tendsto_ofReal_nhdsGT_one
   have hparamNum : Tendsto
       (fun sigma : ℝ =>
         riemannZeta (2 * ((mobiusCriticalBoundaryParameter sigma u : ℝ) : ℂ)))
-      (𝓝[>] (1 : ℝ)) (𝓝 (riemannZeta (2 : ℂ))) :=
-    (differentiableAt_riemannZeta (by norm_num : (2 : ℂ) ≠ 1)).continuousAt.tendsto.comp
-      htwoParamArg
-  have hunit : Tendsto (fun sigma : ℝ => zetaResidueUnit (sigma : ℂ))
-      (𝓝[>] (1 : ℝ)) (𝓝 (1 : ℂ)) := by
-    simpa using zetaResidueUnit_analyticAt.continuousAt.tendsto.comp hsigma
-  have hparamUnit : Tendsto
-      (fun sigma : ℝ => zetaResidueUnit
-        ((mobiusCriticalBoundaryParameter sigma u : ℝ) : ℂ))
-      (𝓝[>] (1 : ℝ)) (𝓝 (1 : ℂ)) := by
-    simpa using zetaResidueUnit_analyticAt.continuousAt.tendsto.comp hparam
+      (𝓝[>] (1 : ℝ)) (𝓝 (riemannZeta (2 : ℂ))) := by
+    simpa using tendsto_riemannZeta_two_mul_comp (by norm_num : (2 : ℂ) * 1 ≠ 1) hparam
+  have hunit := tendsto_zetaResidueUnit_comp tendsto_ofReal_nhdsGT_one
+  have hparamUnit := tendsto_zetaResidueUnit_comp hparam
   have huOne : 1 + u ≠ 0 := by nlinarith
   have hzetaTwo : riemannZeta (2 : ℂ) ≠ 0 :=
     riemannZeta_ne_zero_of_one_lt_re (by norm_num)
@@ -238,37 +237,13 @@ theorem tendsto_infiniteMobiusLaplaceMultiplier_moving_boundary
             (mobiusCriticalBoundaryRate sigma u) / (sigma - 1) ^ 2)
       (𝓝[>] (1 : ℝ))
       (𝓝 (riemannZeta (2 : ℂ) * ((1 + u : ℝ) : ℂ))) := by
-  have hsigma : Tendsto (fun sigma : ℝ => (sigma : ℂ))
-      (𝓝[>] (1 : ℝ)) (𝓝 (1 : ℂ)) :=
-    Complex.continuous_ofReal.continuousAt.tendsto.mono_left inf_le_left
-  have hparamReal : Tendsto (fun sigma : ℝ => mobiusCriticalBoundaryParameter sigma u)
-      (𝓝[>] (1 : ℝ)) (𝓝 (1 : ℝ)) := by
-    have hcont : ContinuousAt
-        (fun sigma : ℝ => mobiusCriticalBoundaryParameter sigma u) 1 := by
-      unfold mobiusCriticalBoundaryParameter
-      fun_prop
-    simpa [mobiusCriticalBoundaryParameter] using
-      hcont.tendsto.mono_left inf_le_left
-  have hparam : Tendsto
-      (fun sigma : ℝ => ((mobiusCriticalBoundaryParameter sigma u : ℝ) : ℂ))
-      (𝓝[>] (1 : ℝ)) (𝓝 (1 : ℂ)) :=
-    Complex.continuous_ofReal.continuousAt.tendsto.comp hparamReal
-  have htwoArg : Tendsto (fun sigma : ℝ => 2 * (sigma : ℂ))
-      (𝓝[>] (1 : ℝ)) (𝓝 (2 : ℂ)) := by
-    simpa using (tendsto_const_nhds.mul hsigma :
-      Tendsto (fun sigma : ℝ => (2 : ℂ) * (sigma : ℂ))
-        (𝓝[>] (1 : ℝ)) (𝓝 ((2 : ℂ) * 1)))
+  have hparam := tendsto_mobiusCriticalBoundaryParameter_ofReal u
   have hnum : Tendsto (fun sigma : ℝ => riemannZeta (2 * (sigma : ℂ)))
-      (𝓝[>] (1 : ℝ)) (𝓝 (riemannZeta (2 : ℂ))) :=
-    (differentiableAt_riemannZeta (by norm_num : (2 : ℂ) ≠ 1)).continuousAt.tendsto.comp htwoArg
-  have hunit : Tendsto (fun sigma : ℝ => zetaResidueUnit (sigma : ℂ))
-      (𝓝[>] (1 : ℝ)) (𝓝 (1 : ℂ)) := by
-    simpa using zetaResidueUnit_analyticAt.continuousAt.tendsto.comp hsigma
-  have hparamUnit : Tendsto
-      (fun sigma : ℝ => zetaResidueUnit
-        ((mobiusCriticalBoundaryParameter sigma u : ℝ) : ℂ))
-      (𝓝[>] (1 : ℝ)) (𝓝 (1 : ℂ)) := by
-    simpa using zetaResidueUnit_analyticAt.continuousAt.tendsto.comp hparam
+      (𝓝[>] (1 : ℝ)) (𝓝 (riemannZeta (2 : ℂ))) := by
+    simpa using tendsto_riemannZeta_two_mul_comp (by norm_num : (2 : ℂ) * 1 ≠ 1)
+      tendsto_ofReal_nhdsGT_one
+  have hunit := tendsto_zetaResidueUnit_comp tendsto_ofReal_nhdsGT_one
+  have hparamUnit := tendsto_zetaResidueUnit_comp hparam
   have hlimit := (hnum.mul_const (((1 + u : ℝ) : ℂ))).div
     (hunit.mul hparamUnit) (by norm_num : (1 : ℂ) * 1 ≠ 0)
   have hlimit' : Tendsto

@@ -2475,10 +2475,10 @@ New law `norm_eval_polynomialPatternWeightPoly_le_of_bounds` takes the count bou
 radius `W`, and the per-assignment product bound as hypotheses, and concludes
 `‖eval q‖ ≤ mass(Q) · Acard · (q + W)^H`. Both consumers are now five lines. 4783 → 4728 lines.
 
-*Status: applied, verification pending* — the concurrent full-corpus audit invalidated the
-`GammaDifferentialFE` olean while rebuilding, so `lake env lean` could not resolve this file's
-imports at the time of writing. Verify with
-`lake build GaloisForLFunctions.HTGeometry` once the audit settles.
+Audit: verified by the `lake build GaloisForLFunctions.HTGeometry` area build, which rebuilt this
+module and the whole cone below it (`PolynomialPatternRectangularization`,
+`PolynomialCoefficientDifferentialFreeness`, `UpperEndDifferentialIndependence`, …); every
+downstream module compiled against the new `…_le_of_bounds` law.
 
 ### B69 — Bounded vertical clock transfer: the local dichotomy subsumes the global one
 
@@ -2658,7 +2658,7 @@ le_of_expSum_norm_le_exp s J m hm hinj B hB (by simpa using hbound)
 
 271 → 204 lines.
 
-### B76 — Digamma jet reflection at every order (new general law) — *verification pending*
+### B76 — Digamma jet reflection at every order (new general law)
 
 `GammaFactorialSecondJetHarmonicResidue` and `GammaFactorialThirdJetHarmonicResidue` are a parallel
 development at jet orders 1 and 2: `shiftedHarmonicSquareSum` / `shiftedHarmonicCubeSum`,
@@ -2705,3 +2705,556 @@ be solved" — supply the fact as a `have` and let `gcongr` find it. (ii) `simpa
 `show (2:ℝ)^2 = 4` rewrite or `linear_combination`. (iii) `push_cast at h` without `⊢` leaves the
 goal's `↑(j+1)` unmatched against the hypothesis's `↑j + 1`, and `ring` then fails on two sums that
 are visibly identical — always push casts on both sides.
+
+### B77 — Clock Volterra superposition: the central value is the only variable
+
+`ccmFirstClockGammaCancellationKernel_superposition` (113 lines) and
+`..._eq_zero_of_lt` (102 lines) in `CCMFirstClockVolterra` share the whole kernel decomposition:
+the Gamma-cancellation kernel splits as `A · autocorr(·,·,0) + B · autocorr(·,·,s/2)` with
+`A = e^{-s}/(1-e^{-s})`, `B = -e^{-s/4}/(1-e^{-s})`; the lag-`0` superposition always vanishes; and
+the integral splitting is identical. They differ only in the value of the lag-`s/2` superposition —
+`-sin(ξ s/2)` when `s/2 ≤ L`, and `0` when `L < s/2`.
+
+New private law `ccmFirstClockGammaCancellationKernel_superposition_of_central` takes that value `c`
+as a hypothesis and concludes `= B c / 2`. Notably it does *not* need `s/2 ≤ L`: that hypothesis was
+only ever used to obtain the central value, which is now supplied by the caller. The vanishing case
+is three lines; the general case is seven. 2297 → 2227 lines.
+
+Audit: `lake env lean GaloisForLFunctions/RHTower/CCMFirstClockVolterra.lean` — clean.
+
+### B78 — Xi flux coboundary: name the witness, and the polynomial case is the entire case
+
+`entireFluxCoboundary_of_entireHermitianDiagonalLaw` (80 lines) and
+`polynomialFluxCoboundary_of_hermitianDiagonalLaw` (82 lines) in
+`XiFiniteLocalSpectralFrameObstruction` share ~60 lines — the vanishing of the Wronskian-type
+combination on the whole plane from its vanishing on the reals, and the logarithmic-derivative
+identity that follows — differing only by `Q b` versus `Q.eval b`.
+
+What blocked reuse was not the mathematics but the *shape of the conclusion*: the entire theorem
+hides its witness behind `∃ E`, so the polynomial theorem could not name it. Strengthened it to
+
+```
+entireFluxCoboundary_of_entireHermitianDiagonalLaw_explicit :
+  XiEntireFluxCoboundary (2 * a) (fun z => -Q (-I * (z - (1/2 + a))))
+```
+
+after which the existential version is one line, and the polynomial version is the same witness read
+as `-(Q.comp (C (-I) * (X - C (1/2 + a))))`: `XiPolynomialHermitianDiagonalLaw a Q` is exactly
+`XiEntireHermitianDiagonalLaw a (Q.eval ·)` minus the differentiability conjunct, which
+`Q.differentiable` supplies. 389 → 327 lines.
+
+General lesson: an `∃`-wrapped conclusion is a reuse barrier. When two proofs construct the *same*
+witness, expose it and let the existential be the corollary.
+
+Audit: `lake env lean GaloisForLFunctions/RHTower/XiFiniteLocalSpectralFrameObstruction.lean` —
+clean. (B77 is still queued behind the HTGeometry area build; `CCMFirstClockVolterra` resolves
+through `BoundedGaugeGenericity`, one of the last modules still compiling.)
+
+Note on the shared tree: the lint gate currently reports 29 "owned module unreachable from
+umbrella" errors. Twenty-seven are `Deninger*`, plus two brand-new untracked files
+(`HTGeometry/CompExpDescent.lean`, `RHTower/FieldOneFiniteAdeleCompactOpenBasis.lean`) that another
+agent has created but not yet registered. None are from this audit — no module was added or removed
+in B53–B78 apart from the five deletions recorded earlier.
+
+### B79 — Möbius critical boundary layer: composition lemmas instead of repeated limits
+
+`tendsto_squarefreeMobiusBoundaryLayerLaplace` (115 lines) and
+`tendsto_infiniteMobiusLaplaceMultiplier_moving_boundary` (95) in
+`InfiniteMobiusCriticalBoundaryLayer` open with ~40 identical lines establishing the same limits
+along `𝓝[>] 1`, once at `σ` and once at the boundary parameter — eight `have`s that are really two
+facts applied twice.
+
+Replaced by four private lemmas, two of them *composition* lemmas parameterised by the approach:
+
+- `tendsto_ofReal_nhdsGT_one`, `tendsto_mobiusCriticalBoundaryParameter_ofReal`;
+- `tendsto_riemannZeta_two_mul_comp (hf : f → 1) : ζ(2f) → ζ(2)`;
+- `tendsto_zetaResidueUnit_comp (hf : f → 1) : zetaResidueUnit ∘ f → 1`.
+
+Each theorem's setup drops to four or five lines, and the doubling at `σ`/parameter disappears
+because the composition lemmas take the approach as an argument. 428 → 366 lines.
+
+Audit: `lake env lean GaloisForLFunctions/RHTower/InfiniteMobiusCriticalBoundaryLayer.lean` — clean.
+
+### B80 — Landau oscillation: the abstract law was already there, inlined next door
+
+`MobiusLaplaceLandauOscillation` contains both
+`no_analytic_gamma_div_zeta_continuation_below_half` — an already-abstract statement: *no function
+analytic on `Re s > b` for some `0 < b < 1/2` can agree with `Γ/ζ` on `Re s > 1`* — and
+`not_mobiusLaplaceComparisonCutoffNonnegative`, which re-derives that same contradiction inline from
+its own reconstructed Mellin transform.
+
+The specialised theorem keeps only its genuine content — constructing `b = (a + 1/2)/2`, the radius
+`R`, the interior-of-integrability input, and the analyticity of the reconstructed transform — and
+then calls the abstract law with `mobiusLaplaceReconstructedMellin_eq_gamma_div_zeta` as the
+classical-region agreement. Moved below the abstract law (B72 direction rule). 1148 → 1093 lines.
+
+This is the cheapest kind of find: the general law had already been written and named, and the
+duplication was simply that nobody went back to use it.
+
+Audit: `lake env lean GaloisForLFunctions/RHTower/MobiusLaplaceLandauOscillation.lean` — clean.
+
+### HilbertMetric — audited, substantially clean
+
+The third area in the remit. 48 files. Scanned for proof-body duplication at the same thresholds
+used for HTGeometry and RHTower; nothing in it appears in the cross-file ranking at all, and its
+largest *within-file* clone is 29 lines:
+
+| proof lines | file | pair |
+|---|---|---|
+| 29 | `DegreeFiveCollisionGraphJet` | `degreeFiveTop_valueJet` ~ `degreeFiveTop_firstJet` |
+| 28 | `SixthJetRaywiseCoalescedCone` | `iteratedDeriv_six_…_zero` ~ `…_zero_of_lt_six` |
+| 26 | `DegreeFiveGaussianCurvature` | `degreeFive_valueJet` ~ `degreeFive_firstJet` |
+| 23/21 | `DegreeFiveCollisionGraphJet` | the `recombined_{value,first,second}Polynomial_top_five` triple |
+| 23 | `GaussianJetPositivity` | `…_of_coordinate_injective` ~ `…_of_linearForm_injective` |
+
+For comparison, HTGeometry and RHTower each opened this audit with clones of 64–174 lines. The only
+structurally interesting item is the `recombined_*Polynomial_top_five` triple: three 54-line proofs
+running the same Fubini rearrangement
+`Σᵢ Σⱼ c_a(i) c_b(j) Σ_{n∈S} w(n) G(i,j)^{p(n)} = Σ_{n∈S} w(n) Σᵢ Σⱼ c_a(i) c_b(j) G(i,j)^{p(n)}`
+over `range 6` with exponent `n` and over `range 5` with exponent `k+1`, then their own orthogonality
+evaluation. Extracting the rearrangement as one lemma over an arbitrary index finset, weight and
+exponent would save ~60 lines across the three.
+
+Recorded rather than done: at 21–29 shared lines these sit below everything still outstanding in the
+other two areas, and the area does not have a duplication problem.
+
+### B81 — Returned theta density: one dominated-convergence law for every weight
+
+`thetaCuspTailSecondDensityReturnedValue_scaled_tendsto_zero` (87 lines) and
+`...ReturnedDerivative_scaled_tendsto_zero` (86) in
+`XiCTaylorThetaTailPhaseAdaptedProuhetHalfLine` run the same dominated-convergence argument against
+the majorant `C · xᵖ e^{-(1-Im z)x}`, differing only in the weight inside the integrand — `1` for the
+value, `x·i` for the derivative — and correspondingly `p = 0` versus `p = 1`.
+
+New private law `thetaCuspTailSecondDensityReturned_scaled_tendsto_zero_of_weight` takes
+`w : ℝ → ℂ` continuous with `‖w x‖ = xᵖ` on the half line. Both theorems are four lines. 2627 → 2566.
+
+Four compiler-found adjustments, all of the same species — *places where the concrete `p = 1` leaked
+into the shared text*: the majorant's `x` in the exponent rearrangement, `mul_nonneg hx0` needing
+`pow_nonneg hx0 p`, the limit step still naming `(x : ℂ) * I` instead of `w x`, and `fun_prop`
+failing on an abstract `w` (fixed by carrying `Continuous w` as a hypothesis rather than hoping
+automation would find it).
+
+Audit: `lake env lean GaloisForLFunctions/RHTower/XiCTaylorThetaTailPhaseAdaptedProuhetHalfLine.lean`
+— clean.
+
+### B82 — The zeta-limit plumbing, promoted across files
+
+The `𝓝[>] 1` limit boilerplate factored out in B79 turned out to recur verbatim in
+`SquarefreeHeightReesBlowup`, which already imports `InfiniteMobiusCriticalBoundaryLayer`. Rather
+than duplicate it, the two generic lemmas were made public and one of them generalised:
+
+```
+theorem tendsto_riemannZeta_two_mul_comp {f : ℝ → ℂ} {Lim : ℂ} (hLim : 2 * Lim ≠ 1)
+    (hf : Tendsto f (𝓝[>] 1) (𝓝 Lim)) :
+    Tendsto (fun σ => riemannZeta (2 * f σ)) (𝓝[>] 1) (𝓝 (riemannZeta (2 * Lim)))
+```
+
+The B79 version fixed `Lim = 1`; the Rees-blowup macroscopic theorem needs `Lim = 1 + γi`, so the
+limit point became a parameter with the pole condition `2·Lim ≠ 1` as its hypothesis. Both
+`tendsto_squarefreeMicroscopicHeightOverlap` and `..._Macroscopic...` now drop their
+`htwoSigma`/`htwoParam`/`hzeta*` chains. `SquarefreeHeightReesBlowup` 335 → 306 lines.
+
+Cost of the generalisation: the conclusion now reads `riemannZeta (2 * Lim)` rather than
+`riemannZeta 2`, so each `Lim = 1` call site needs `simpa` to fold `2 * 1`. That is the right
+trade — one lemma serving two limit regimes beats two lemmas with prettier statements.
+
+Audit: `lake build GaloisForLFunctions.RHTower.InfiniteMobiusCriticalBoundaryLayer` — 8618 jobs,
+exit 0; `lake env lean GaloisForLFunctions/RHTower/SquarefreeHeightReesBlowup.lean` — clean.
+
+### Remaining in-remit duplication and why it is a different kind of job
+
+After B82 the only in-remit clones above ~50 proof lines are:
+
+| lines | file | pair |
+|---|---|---|
+| 161 | `HTGeometry/PolynomialPowerADEResonance` | declined in B64 — incomparable hypotheses |
+| 69 | `RHTower/ThetaCuspShellIncompleteGammaCoordinate` | fourth- vs fifth-order boundary identity |
+| 57 | `RHTower/ThetaCuspShellIncompleteGammaCoordinate` | fourth- vs fifth-order root phase |
+
+The two `ThetaCuspShell` pairs are consecutive rungs of one integration-by-parts ladder: order `k`
+uses `u = c·f_{k-1} + x·f_k`, `v = sin` or `cos` alternating, and produces the order-`k+1` identity.
+Merging them is not a hypothesis generalisation — it requires first replacing the hand-rolled
+per-order families
+
+```
+thetaCuspTiltedWardDensity{,Fourth,Fifth}Derivative
+integrableOn_thetaCuspTiltedWardDensity{Second,Third,Fourth,Fifth}Derivative
+hasDerivAt_thetaCuspTiltedWardDensity{…}Derivative
+```
+
+with a single `k`-indexed family plus `k`-indexed decay and integrability, and then stating one
+IBP-rung law. The corpus has no such indexed family today — I checked. That is the same shape as the
+`shiftedHarmonicSquareSum`/`CubeSum` situation resolved in B76, but an order of magnitude larger: it
+touches a 9772-line module and every `hasDerivAt_` lemma in it.
+
+Recorded as the next unit of work rather than begun mid-session, because a half-finished index
+rewrite of that module would leave the tree worse than it is now. The B76 pattern is the template:
+introduce the indexed definition, prove the indexed reflection/decay laws, then make each concrete
+order a one-line corollary — in that order, verifying at each step.
+
+### B83 — The order-indexed Ward derivative family (foundation for the ladder)
+
+The blocker recorded above was that `ThetaCuspShellIncompleteGammaCoordinate` had no `k`-indexed
+derivative family, only hand-rolled `Fourth`/`Fifth` definitions with per-order `hasDerivAt_` and
+`integrableOn_` lemmas. Building the family turned out to be nearly free, because the corpus already
+had both one-step laws:
+
+- `hasDerivAt_exp_mul_thetaCuspPolynomialAtom a P n x` — differentiating `e^{ax}·atom(P)` replaces
+  the symbol `P` by `thetaCuspTiltedLogDerivativeStep a P`;
+- `integrableOn_exp_mul_thetaCuspPolynomialAtom_of_lt_one P hn ha`.
+
+So the family is the iterate of that one step:
+
+```
+def thetaCuspTiltedWardDensityDeriv (k : ℕ) (a : ℝ) (n : ℕ) (x : ℝ) : ℝ :=
+  Real.exp (a * x) *
+    thetaCuspPolynomialAtom ((thetaCuspTiltedLogDerivativeStep a)^[k] (X ^ 2)) n x
+
+theorem hasDerivAt_thetaCuspTiltedWardDensityDeriv (k) :
+    HasDerivAt (…Deriv k a n) (…Deriv (k + 1) a n x) x
+theorem integrableOn_thetaCuspTiltedWardDensityDeriv (k) (ha : a < 1) (hn : 0 < n) :
+    IntegrableOn (…Deriv k a n) (Ioi 0)
+```
+
+**The hand-written orders are definitionally the indexed ones** — both bridge lemmas are `rfl`.
+That is not an accident: `Function.iterate` unfolds as `f^[n+1] x = f^[n] (f x)`, which reduces
+`(step a)^[4] (X²)` to exactly the four nested `step` applications the concrete definition spells
+out. Their `hasDerivAt_` and `integrableOn_` lemmas now delegate to the indexed ones.
+
+Two further indexed laws complete the toolkit, both again free from existing one-step lemmas:
+
+```
+tendsto_thetaCuspTiltedWardDensityDeriv_atTop_zero (k) (ha : a < 1) (hn : 0 < n) :
+  Tendsto (…Deriv k a n) atTop (𝓝 0)
+integrableOn_id_mul_thetaCuspTiltedWardDensityDeriv (k) (ha) (hn) :
+  IntegrableOn (fun x => x * …Deriv k a n x) (Ioi 0)
+```
+
+So the indexed family now carries everything an integration-by-parts rung consumes: the derivative
+step, integrability, the linear-weight integrability, and decay at infinity. This is deliberately a
+*foundation* commit rather than a deduplication — it is the piece the corpus lacked. The remaining
+step for the 69- and 57-line ladder clones is a single rung law taking the index and the
+`sin`/`cos` parity, after which each concrete rung is a corollary.
+
+Placement note: both additions had to be positioned after the general lemmas they call
+(`integrableOn_id_mul_exp_mul_thetaCuspPolynomialAtom_of_lt_one` sits ~200 lines below the
+integrability block), the same dependency-order constraint recorded in B72.
+
+Audit: `lake build GaloisForLFunctions.RHTower.ThetaCuspShellIncompleteGammaCoordinate` — 8942
+jobs, exit 0. That build also covers B73 and, through its dependency cone, the HTGeometry edits
+B65–B68 and B74–B76.
+
+### B84 — The two ladder rungs, and the fifth-order identity as one of them
+
+With the indexed family in place (B83), the ladder itself reduces to two half-line
+integration-by-parts identities, stated for an arbitrary differentiable `u` that is integrable
+together with `u'` and vanishes at infinity:
+
+```
+integral_mul_sin_rung : b ∫₀^∞ u sin(bx) = u 0 + ∫₀^∞ u' cos(bx)
+integral_mul_cos_rung : b ∫₀^∞ u cos(bx) = -∫₀^∞ u' sin(bx)
+```
+
+The asymmetry is the content: against `sin` the antiderivative `-cos` is `-1` at the origin, so the
+boundary term survives; against `cos` the antiderivative `sin` vanishes there and both ends die.
+A shared helper `integrableOn_bdd_mul_of_integrableOn` supplies the four integrability side
+conditions from boundedness of the trigonometric factor.
+
+`..._fifthOrderBoundary_identity` is now literally the fourth-order identity plus one sine rung
+applied to `u = 4f₃ + x f₄`: the rung's `u 0` is `4·(third·density)(0)` because `x f₄` vanishes at
+the origin, and its `u'` is `5f₄ + x f₅` by the product rule — exactly the fifth-order statement.
+57 lines of hand-rolled integration by parts deleted from that proof.
+
+The **fourth**-order identity was then converted the same way. Its IBP core — the
+`integral_Ioi_mul_deriv_eq_deriv_mul` call plus the `u·v'` normalisation — is exactly the cosine
+rung at `u = x f₃`, and every side condition it needs (`hxf₃Int`, `hf₃Int`, `hxf₄Int`, `huZero`) was
+already present in the proof. With the rung in place, the scaffolding it existed to feed —
+`v`, `v'`, `hv`, `huv'`, `hu'v`, `hzero`, `hinfty` — became dead and was removed: 46 further lines.
+
+Net for the file: 9772 → 9864 lines. B83/B84 add ~250 lines of reusable indexed laws and rungs and
+remove ~160 of duplication, so this thread is still net positive on count — the return arrives as
+further rungs are added, each now a dozen lines instead of two hundred. Both existing rungs are now
+consumers of the general laws, so nothing added here is dead code.
+
+Audit: `lake build GaloisForLFunctions.RHTower.ThetaCuspShellIncompleteGammaCoordinate` — 8942 jobs,
+exit 0.
+
+### B85 — Root-phase positivity: the shared step was pure algebra
+
+`deriv_thetaCuspGroundFourthOrderRootPhase_pos` and `…FifthOrderRootPhase_pos` end with the same
+twenty-line rearrangement: the derivative of a root phase `2x + k·(P/Q)`, where the shift
+polynomials differentiate to `2s P'` and `2s Q'`, becomes
+
+```
+2 + k((2sP')Q − P(2sQ'))/Q² = 2(Q² + k s (P'Q − PQ'))/Q²
+```
+
+and is positive because the Wronskian bracket is. Nothing in that step mentions the order — the
+order-specific content is entirely in *which* shift polynomials and Wronskian lemma get passed in.
+
+Extracted as `two_add_div_pos_of_wronskian_pos`, a statement in six real variables with no theta
+content at all. Both proofs now end in a single `exact`. 40 lines removed; the module is 9838 lines.
+
+That closes the last identified in-remit clone above 50 proof lines outside the declined B64 pair.
+
+Audit: `lake build GaloisForLFunctions.RHTower.ThetaCuspShellIncompleteGammaCoordinate` — 8942 jobs,
+exit 0.
+
+### B86 — Root phase, finished: derivative law and ground-coordinate data
+
+B85 removed the shared *positivity* step from the two root-phase proofs; the scanner still reported
+50 shared lines, and inspecting them showed it was not noise. Two more coherent shared blocks:
+
+- the derivative construction — `y ↦ 2y + k·(p y / q y)` differentiates to
+  `2 + k(p'q − pq')/q²`, order-independent given the two coefficient derivatives. Extracted as
+  `hasDerivAt_two_add_const_mul_div`.
+- the **ground coordinate setup** — for `0 < a < 1/2` and `x ≥ 0`: `c = a + 5/2 ∈ (5/2, 3)`,
+  `r = 2π e^{2x} − c > 3`, and `HasDerivAt rfun (2(r+c)) x`. Twenty-odd lines opening *both* proofs,
+  now `thetaCuspGroundCoordinate_data`, destructured in five lines each.
+
+40 further lines removed. The pair has dropped out of the ranking at threshold 40, and the module
+stands at 9829 lines — below the 9845 it had before this whole ladder thread began, now carrying the
+indexed derivative family, both IBP rungs, and three reusable algebraic laws that were not there
+before.
+
+Audit: `lake build GaloisForLFunctions.RHTower.ThetaCuspShellIncompleteGammaCoordinate` — 8942 jobs,
+exit 0.
+
+### Status: every in-remit clone above 50 proof lines is resolved or documented
+
+| lines | file | outcome |
+|---|---|---|
+| 161 | `HTGeometry/PolynomialPowerADEResonance` | declined, B64 — incomparable hypotheses, reasons recorded |
+| all others ≥50 | HTGeometry / HilbertMetric / RHTower | resolved, B53–B86 |
+
+HilbertMetric was surveyed separately and has no clone above 29 lines. The largest proof clones
+remaining anywhere in the corpus are in `Bottcher` — 313, 262 and 199 lines — which is outside this
+audit's remit.
+
+### B87 — The same weight law again, for the even remainder
+
+`thetaCuspTailSecondEvenRemainderReturnedValue_tendsto_atTop_zero` (74 lines) and
+`...ReturnedDerivative_...` (77) in `XiCTaylorThetaTailPhaseAdaptedProuhetHalfLine` are the B81
+situation repeated one family over: the same dominated-convergence argument against
+`C · xᵖ e^{-(1/2 − Im z)x}`, weight `1` versus `x·i`.
+
+`thetaCuspTailSecondEvenRemainderReturned_tendsto_atTop_zero_of_weight` mirrors the B81 law for the
+even-remainder family. Both consumers are four lines. 2566 → 2516.
+
+Worth noting for its own sake: this one compiled on the **first attempt**. B81 needed four fixes,
+all of them places where the concrete `p = 1` had leaked into the shared text; knowing the failure
+modes in advance — the exponent in the majorant rearrangement, `pow_nonneg` in place of the bare
+nonnegativity, the limit step still naming the concrete weight, and `fun_prop` needing `Continuous w`
+as a hypothesis — made the second instance mechanical.
+
+### B88 — Scaled polygamma: indexed definition landed, unified limit deferred with a correction
+
+Continuing the B76 tower. `gammaFactorialScaledTrigamma` and `gammaFactorialScaledSecondPolygamma`
+are the orders `1` and `2` of
+
+```
+def gammaFactorialScaledPolygamma (k n : ℕ) (x : ℂ) : ℂ :=
+  reciprocalGammaFactorialScale n ^ (k + 1) *
+    iteratedDeriv k Complex.digamma (-(n : ℂ) + reciprocalGammaFactorialScale n * x)
+```
+
+and both bridges are `rfl`, as in B83. That much is in and verified.
+
+**The unified second-harmonic limit is not, and the attempt found a real error in my design.** I had
+predicted the statement
+
+`(scaledPolygamma k n x − (-1)^{k+1} k! x^{-(k+1)}) / harmonicScale n ² → 0`
+
+with the same internal shape at every order. Compiling it exposed that the internal identity is
+
+```
+(scaledPolygamma k n x − pole) / (s H)²  =  s^{k-1} · H^{-2} · (ψ⁽ᵏ⁾(1+z) + k! Σ)
+```
+
+— the scale exponent is `k − 1`, not `k`. That is why the two existing proofs differ in a way I had
+read as incidental: the trigamma proof carries **no** `s` factor (`k = 1`, `s⁰ = 1`) while the
+order-two proof carries exactly one. The correct general statement indexes by `m` with `k = m + 1`
+and uses `s^m`, and its `hsdivH2` step cannot be `hs.pow m` — at `m = 0` that tends to `1`, not `0`
+— so it needs a boundedness argument instead.
+
+The remaining obstacle after that is the pole cancellation `s^{k+1} · (s x)^{-(k+1)} = x^{-(k+1)}`,
+which is true but needs `mul_inv`/`mul_pow` by hand: `field_simp`/`ring` do not close symbolic
+exponents.
+
+**Resolved on the corrected statement.** Indexing by `m` with `k = m + 1` and using `s^m`:
+
+```
+tendsto_gammaFactorialScaledPolygamma_second_harmonic (m : ℕ) (hx : x ≠ 0) :
+  Tendsto (fun n => (gammaFactorialScaledPolygamma (m+1) n x
+      - (-1)^(m+2) * (m+1)! * x⁻¹^(m+2)) / gammaHarmonicMicroscopeScale n ^ 2) atTop (𝓝 0)
+```
+
+Two supporting lemmas made it go through, both of which are the pieces the naive design lacked:
+
+- `scale_pow_mul_inv_pow (hs : s ≠ 0) (j) : s^j * (s x)⁻¹^j = x⁻¹^j` — the pole cancellation, by
+  `mul_inv`/`mul_pow`/`mul_inv_cancel₀`, since `field_simp` and `ring` cannot close symbolic
+  exponents;
+- `tendsto_scale_pow_mul_inv_harmonic_pow (m) (hj : 0 < j) : s^m · H⁻ʲ → 0` — proved by squeezing
+  against `‖H⁻ʲ‖` using `‖s‖ ≤ 1` eventually, rather than by `hs.pow m`, which fails at `m = 0`.
+
+Both concrete theorems are now two lines each — 86 and 93 proof lines replaced. The file is 423
+lines, down from 480 when this tower began in B76, and now carries `shiftedHarmonicPowerSum`, the
+indexed reflection, the indexed norm bound, the indexed scaled polygamma, and the indexed
+second-harmonic limit where before it had two hand-written orders of each.
+
+Audit: `lake build GaloisForLFunctions.HTGeometry.GammaFactorialThirdJetHarmonicResidue` — 8508
+jobs, exit 0.
+
+### B89 — Thermal cubic charge: the sharp constant implies the round one
+
+`xiThermalOrientationTerm_le_endpointCrossCharge_cube` bounds the orientation term by
+`(86/85)³ · crossCharge³`; `..._le_exactEndpointCrossCharge_cube` proves the same with the sharp
+constant `(4/(4 − C))³`, where `C = xiEndpointCompletedCurvature`. Both run the same 50-line
+case split and inverse estimate.
+
+They are not independent: `C < 2/43` gives `4/(4 − C) < 4/(4 − 2/43) = 86/85` exactly, so the sharp
+version implies the round one. The round theorem is now nine lines — the constant comparison
+`4/(4−C) ≤ 86/85 ⟺ 86C ≤ 4` plus one `pow_le_pow_left₀`. Moved below the sharp version per the B72
+direction rule. 418 → 375 lines.
+
+The `86/85` in the statement is exactly the sharp constant evaluated at the endpoint of the known
+curvature bound; recording that here because it is not visible from either statement alone.
+
+Audit: `lake build GaloisForLFunctions.RHTower.XiThermalQuartetCubicChargeBound` — exit 0.
+
+### Examined, not done — three pairs where the shared part resists clean extraction
+
+**`XiCTaylorThetaTailFullDensityMonotoneCurrent` (49 lines).** The two directions of the
+density-current criterion. Their shared block is *setup* — the schedule, the `filter_upwards`, and
+the local names `z`, `F`, `T`, `P` — not shared reasoning: the forward direction bounds
+`orientedCurrent ≤ 2/z.im · normSq + normSq F · transferCurrent` and the reverse uses the opposite
+frontier inequality. Packaging the setup means the same wide dependent interface that made B64 not
+worth doing. The better restructure, if it is ever wanted, is a predicate-level equivalence
+`FullDensityTransferCurrentSublinearUpper D ↔ AnisotropicOrientedCoefficientSublinearUpper D`,
+after which both RH directions compose with the known coefficient-level equivalence in two lines
+each. That is a genuine piece of work, not a factorisation.
+
+**`XiCTaylorThetaTailFiniteTranslationBounds` (47 lines) — resolved, see B90 below.**
+
+**`EllipticGammaMixedFace` (50 lines).** The σ- and τ-face proofs are parallel, but the τ side
+carries an extra translation `(τ−σ)/2` threaded through the analytic-subring algebra, so the
+generalisation has to abstract the shift *and* the theta factor together. Left for a session that
+can give it a clean run.
+
+### B90 — Shifted factorial envelope: three shared blocks, transcribed by hand
+
+`integral_abs_thetaCuspTailDerivative_mul_shiftedFactorialEnvelope_le` (112 lines) and
+`integrableOn_abs_…` (65) share three blocks, now private lemmas:
+
+- `thetaCuspTailDerivativeNatExpConstant_nonneg` — evaluate the tail bound at `x = 0`;
+- `aestronglyMeasurable_absTailDerivative_mul_envelope` — the integrand is measurable;
+- `absTailDerivative_mul_envelope_le` — the pointwise domination, whose content is that the tail
+  decay `e^{-(p+r)x}` absorbs the envelope's `e^{r(x+a)}` and leaves `e^{ra} e^{-px}`.
+
+75 lines removed; module 1640 → 1565, build 8779 jobs, exit 0.
+
+**On the earlier failed attempt.** I first tried to lift these blocks by slicing the proof text at
+computed line offsets, and produced bodies that were cut in the wrong places. Transcribing the three
+blocks by hand worked on the second try, with two small adjustments the extraction itself forced:
+the pointwise lemma needs `0 ≤ a` as an explicit hypothesis (inside the original theorem it came
+from the enclosing binder, and `gcongr` silently used it for `0 ≤ x + a`), and once that hypothesis
+is present `gcongr` discharges the side goal without the `positivity` I had added.
+
+The general lesson, recorded because it cost a revert: **offset-based slicing is fine for moving a
+whole declaration and unreliable for lifting a block out of the middle of a proof.** Whole
+declarations have unambiguous boundaries; interior blocks do not.
+
+### B91 — Inner Mellin piece: same bound/integrability split as B90
+
+`inner_mellin_piece_le` and `inner_integrand_integrableOn` in `XiThetaExplicitBounds` are the B90
+shape again: an integral bound and an integrability statement built on the same majorant and the
+same pointwise domination. Extracted as
+
+- `integrableOn_inner_majorant` — `72/π⁴ · t^{7/4}` is integrable on `(0,1)`;
+- `inner_integrand_le_majorant` — on `(0,1)`, `t^{u-1}‖f_modif t‖ ≤ 72/π⁴ · t^{7/4}`, whose content
+  is the kernel bound `3t^{-1/2}e^{-π/t}` meeting `e^{-π/t} ≤ 24t⁴/π⁴`, with `t^{u-3/2} ≤ t^{-9/4}`
+  for `u ≥ -3/4`.
+
+103 lines removed across the two consumers; module 998 → 895, build 2900 jobs, exit 0. The
+integrability proof now ends by rewriting `‖·‖` on a nonnegative product and applying the domination
+directly, rather than restating it.
+
+The B90 boundary lesson applied cleanly here: I located the block by its `have hle :` header and its
+first following line at outer indentation, rather than by computed offsets, and it lifted first try.
+
+### B92 — Pattern-driven search, and the Landau cosine split
+
+Having hit the bound/integrability shape three times (B81/B87 weights, B90, B91), I stopped waiting
+for the generic scanner and searched for it by name: pairs where one declaration mentions
+`integrab` and the other does not, *filtered by ≥28 shared proof-body lines*. The name pattern alone
+gives 289 hits across the three areas and is worthless — `integral_X` beside `integrableOn_X` is
+ordinary API. Combined with real overlap it gives **eight**, which is a usable worklist.
+
+First of them (excluding the four `Deninger*` files another agent is editing):
+`CCMFirstClockLandauTransform`, `integrableOn_sq_cexp_cos` ~ `integral_sq_cexp_cos`, 40 shared lines.
+Two extractions:
+
+- `re_pos_shifted_abscissa` — both shifted abscissas `s ∓ i z u` stay in the right half plane when
+  `|Im z| < Re s` and `u ∈ [0,1]`;
+- `sq_cexp_cos_eq_half_add` — writing `cos` as a half-sum of exponentials turns
+  `e^{-sL} L² cos(Lzu)` into the mean of two pure squared-exponential integrands. **This is an
+  identity of functions with no hypotheses at all**, which is why both proofs could carry it: the
+  integrability proof used it through `congr_fun`, the integral proof through `funext`.
+
+Both consumers are now four and six lines; module 562 → 429.
+
+Remaining from the filtered worklist: four `Deninger*` pairs (45, 37, 36, 29 — left alone while that
+area is under active edit), `SmoothAFEZetaDualContourLimit` (36),
+`BourgainBilinearLocalization` (35), `XiCTaylorThetaTailCompletedDensityReflection` (29).
+
+### B93 — Bourgain localization: one indicator lemma, three call sites
+
+Second entry from the B92 worklist. `integrable_bourgainBilinearIntegrand` and
+`integral_bourgainBilinearIntegrand` both carried the same twenty-line argument that a constant
+multiple of the localized box character is integrable — factor the constant out of the indicator,
+apply `integrable_bourgainLocalBoxCharacter`, `const_mul`. Extracted as
+`integrable_const_mul_bourgainLocalBoxCharacter`, with the constant a parameter.
+
+The sweep found **three** occurrences, not two: the same block also appears as a side condition of
+`integral_finsetSum` further down the file. All three are now one line. Module 292 → 229.
+
+One wrinkle worth noting: the statement's `if z ∈ bourgainLocalBox …` needs decidability, which the
+consumers got from a `classical` tactic inside their proofs. A lifted lemma cannot — its *statement*
+needs it — so it carries `open Classical in`. That has to sit **before** the docstring, not between
+docstring and declaration, or the docstring detaches and Lean reports an unhelpful
+`unexpected token 'open'`.
+
+### B94 — A better instrument: repeated *blocks*, not clone pairs
+
+B93 turned up a third copy of an argument that no pair of declarations exposed, which means the
+pairwise scanner systematically under-counts. Wrote `blockrep.py`: slide an 8-line window over every
+tactic proof body in the three areas, hash the windows, report those occurring three or more times.
+It stays inside one declaration, skips windows that are mostly generic tactics (`ring`, `simp`,
+`linarith`, …), and skips runs of repeated lines.
+
+It reports **1110 blocks repeated ≥ 3 times** — a duplication surface an order of magnitude larger
+than anything the clone-pair scanner saw, and of a completely different kind: not near-identical
+theorems, but the *same small argument written out repeatedly in unrelated proofs*.
+
+The clearest instance, and the first fixed:
+
+```
+theorem exp_two_lt_eight : Real.exp 2 < 8
+```
+
+— an eight-line derivation from `Real.exp_one_lt_d9`, written out **seven times** across
+`ZetaVerticalGrowth`, `ZetaStripLowerBound`, `ZetaLowerBound`, `ZetaDerivGrowth`,
+`ZetaZeroFreeRegion` and `ZetaLogDerivBound` (twice). Placed in `ZetaVerticalGrowth`, the most
+upstream of the six — verified by import-closure that the other five all reach it — and all seven
+call sites are now `have hexp2 := exp_two_lt_eight`. 49 lines removed for a 10-line lemma.
+
+Method note: my first choice of home, `ZetaSawtoothTail`, was a genuine common ancestor by
+import closure but could not see `Real.exp_one_lt_d9` — narrower mathlib imports. Import-closure
+membership is necessary but not sufficient for a home; the ancestor must also carry the mathlib
+surface the proof uses.
+
+Top repeated blocks still outstanding: a `let u/v/A/B` sector-coordinate preamble (×12, across the
+`XiOrder*EdgeCorner` and `XiCenteredOrders*` families), the
+`continuedPrimeArchSourceRelativeTrace` half-plane preamble (×11), a bend-pair
+`Finset.single_le_sum` step (×8), and a `xiZeroCopyReciprocalSquare ^ 2` real-part formula (×7).

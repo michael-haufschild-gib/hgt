@@ -913,3 +913,359 @@ identity as `iteratedDeriv k f z = expJetLinear a n Y k` (extending the `range (
 `Fin (n+1)` by triangularity), substitute `Yⱼ ↦ X₀ʲ · X_{j+1}` — injective by evaluating at `w = 1`,
 the same trick — and multiply by `X₀` so the relation also holds at the one point `w = 0` that the
 exponential misses.
+
+## The open case is inhabited: the period layer is closed
+
+Two modules complete the programme.
+
+`HTGeometry/CompExpDescent.lean` — **`differentiallyAlgebraic_of_comp_exp`**: for entire `g` and
+`a ≠ 0`, if `g (exp (a z))` is differentially algebraic then so is `g`; contrapositive
+**`hypertranscendental_comp_exp`**.  The naive argument fails because a relation for the composite may
+involve the point `z = log w / a`, which is not algebraic over `ℂ(w)`.  Periodicity removes that in
+advance: the composite has period `2πi/a`, so the autonomy descent replaces the relation by one with
+no point slot, after which substituting the jet transfer is purely polynomial.  Nonzeroness survives
+by `bind₁_expJetSubst_ne_zero`, then by the monomial substitution `Yⱼ ↦ X₀ʲ X_{j+1}` (injective by
+evaluating at `w = 1`), and multiplying by `X₀` covers the single point `w = 0` the exponential
+misses.
+
+`HTGeometry/PeriodicHypertranscendentalWitness.lean` — `periodicWitness z :=
+dyadicLayerEntireFunction (exp (2πi z))` is entire, has period one, and is hypertranscendental.
+**`exists_periodic_hypertranscendental`** packages it: there is a meromorphic normal-form function on
+`ℂ` with a nonzero period, satisfying no algebraic differential equation, hence none autonomous, whose
+period group is infinite cyclic.
+
+So the dichotomy `autonomous_or_cyclic_hypertranscendental` is **inhabited on both sides**, and the
+question left open by the period-subgroup classification is answered: a hypertranscendental
+meromorphic function *can* have a nonzero period, and the rank bound `ℚ`-rank ≤ 1 is attained.
+
+The chain, all unconditional: an explicit infinite geometric layer tower gives an explicit entire
+hypertranscendental function; the autonomy descent turns periodicity into a point-free relation; the
+exponential jet transfer with its triangular unit-diagonal matrix moves that relation across the
+composition; and the composite is the witness.  `#print axioms` on every capstone:
+`[propext, Classical.choice, Quot.sound]`.
+
+## Re-audit, 2026-07-27 (later): one new row, one more collision
+
+**`Prop` interfaces.**  Re-measured over 63 954 project theorems and 1 249 project `Prop`
+definitions.  The loose fixpoint gives the usual 2 `.below` recursor artifacts; the **strict**
+`↔`-aware fixpoint gives 3 — one genuinely new interface, added by another lane since the previous
+measurement:
+
+| interface | defining module | resolution |
+|---|---|---|
+| `RHTower.SignedDigammaBooleanHerglotz` | `RHTower.DigammaOrientationVerticalRigidityUniversalityLaw` | discharged — `RHTower/SignedDigammaHerglotzWitness.lean` |
+
+It was grounded only through `signedDigammaBooleanCompletion_nonneg_iff_allPositive`, a
+characterization (`Herglotz ε ↔ ε = fun _ => false`), which transfers the property without producing
+it — precisely the blind spot the strict fixpoint was built to see.  The all-positive orientation is
+the witness (`signedDigammaBooleanHerglotz_allPositive`), and by the same characterization it is the
+*only* one; the layer's conclusions — the exact closed form and vertical height monotonicity — now
+hold with no Herglotz premise.
+
+**A second umbrella collision, fixed.**  The audit again failed to import, this time because
+`RHTower.norm_inv_riemannZeta_le` was declared with different statements in `GammaDampedVerticalBound`
+(hypothesis `2 ≤ s.re`, bound `2`) and in `ZetaLogDerivBound` (hypotheses on `|t|` and `σ`), both
+registered in the `RHTower` umbrella.  The newer module's name is used nowhere outside it, so it was
+renamed to `norm_inv_riemannZeta_le_of_two_le_re`; the module builds and the two now co-import.  This
+is the second collision from the same lane in one session — both were found only because the audit
+imports the whole area at once, which no ordinary build does.
+
+**General corollary added.**  `periodic_comp_exp` and `periodic_and_hypertranscendental_comp_exp` in
+`CompExpDescent.lean` state the construction once for every entire hypertranscendental `g` and every
+`a ≠ 0`, rather than only for the particular witness.
+
+## The witness's period group, computed exactly
+
+The dichotomy says a hypertranscendental meromorphic function has infinite cyclic period group; for
+the explicit witness the generator can be identified.  `HTGeometry/PeriodicWitnessPeriodGroup.lean`:
+
+- `rotation_of_periodic_comp_exp` — a period `c` of `g (exp (a z))` makes `g` invariant under
+  multiplication by `λ = exp (a c)` off the origin, hence everywhere, the two continuous functions
+  agreeing on the dense punctured plane;
+- **`mem_zmultiples_of_periodic_comp_exp`** — differentiating that invariance at the origin gives
+  `λ · g'(0) = g'(0)`, so `λ = 1` whenever `g'(0) ≠ 0`, and then `a c ∈ 2πi ℤ`;
+- `deriv_dyadicLayerEntireFunction_zero_ne_zero` — the layer-tower function has every Taylor
+  coefficient nonzero (their moduli are `exp (−tail₀ n) > 0`), in particular the first;
+- **`periodSubgroup_periodicWitness : periodSubgroup periodicWitness = AddSubgroup.zmultiples 1`.**
+
+So the witness is not merely *some* function with infinite cyclic period group: its period group is
+exactly `ℤ`.  The dichotomy's second case is inhabited by an object whose period data is completely
+determined.
+
+`#print axioms` on all three: `[propext, Classical.choice, Quot.sound]`.
+
+## Data-hypothesis re-audit
+
+Re-measured alongside: 197 project data structures, 76 consumed as hypotheses in the three areas, 13
+not directly constructed — identical to the previous measurement, every row classified, and only
+`ClassicalAnalyticNevanlinnaCarrierFamily` with its sub-bundle genuinely open.  No new data debt has
+appeared from the concurrent lanes.
+
+## Fifth instrument: joint realization of premise *pairs*
+
+The previous joint-realization pass only looked at theorems with three or more project-`Prop`
+hypotheses.  Lowering the threshold to two, on the current audit data, gives 261 multi-premise
+theorems in the three areas across 112 distinct premise sets.  The crude detector ("some single
+theorem's conclusion mentions all of them") flags 83, but most are the known false positive: a joint
+witness is normally a *specialization*, whose conclusion does not mention the premise names at all.
+The rows worth reading are the ones where no such specialization exists either.
+
+The largest such row, checked by hand and discharged:
+
+| consumers | premise pair | resolution |
+|---:|---|---|
+| 10 | `HypertranscendentalOver`, `HasScalarDifferentialOrder` | `HTGeometry/ScalarDifferentialOrderWitness.lean` |
+
+`HasScalarDifferentialOrder F x z n` says `z` is visible at jet resolution `n + 1` but not at `n`,
+and the layer consumes it together with hypertranscendence of the clock `x`.  Neither was exhibited
+on a common object.  Exact jet visibility — `differentialJet_mem_jetObservableField_iff_lt`, already
+in the corpus — gives both halves at once: for a hypertranscendental clock the `n`-th jet is visible
+at resolution `N` exactly when `n < N`, so **the `n`-th jet has scalar differential order exactly
+`n`** (`hasScalarDifferentialOrder_differentialJet`), the clock itself has order zero, and the pair
+is jointly realized in every order.
+
+`#print axioms` on all three: `[propext, Classical.choice, Quot.sound]`.
+
+Remaining flagged pairs worth a hand check, in consumer order: `IsCCRCompletion` with
+`IsCommutingCCRCompression` (17, `HilbertMetric` — the card records a joint witness for the
+three-premise `fullCCR` family, which should cover this), `ThetaTranslationNonresonant` with
+`ThetaTranslationNontorsion` (13), `PrimeProfileClockIndependent` with
+`PrimeProfileSupportedOnPositivePrimePowers` (8), and
+`MatrixCoefficientPrincipalSymbolFlat` with `MatrixPrincipalLowerLaw` (8).
+
+### Second pair discharged: the theta translation conditions
+
+| consumers | premise pair | resolution |
+|---:|---|---|
+| 13 | `ThetaTranslationNontorsion`, `ThetaTranslationNonresonant` | `HTGeometry/ThetaTranslationWitness.lean` |
+
+The theta orbit obstruction consumes both — no nonzero integer multiple of `q` in `ℤ + ℤτ`, and the
+shift `h` outside `ℤ + ℤτ + ℤq` — and neither was exhibited anywhere.
+
+The witness is elementary: `τ = i`, `q = √2`, `h = (1/2)·i`.  Nontorsion compares imaginary parts to
+force the `τ`-coefficient to vanish, leaving `n√2 = a`, which irrationality of `√2` kills for
+`n ≠ 0`.  Nonresonance never touches the real part at all: the imaginary part of `h` is `1/2`, and
+`2b = 1` has no integer solution.
+
+`#print axioms` on all three: `[propext, Classical.choice, Quot.sound]`.
+
+### Third pair discharged: commuting compression with a CCR completion
+
+| consumers | premise pair | resolution |
+|---:|---|---|
+| 17 | `IsCommutingCCRCompression`, `IsCCRCompletion` | `HilbertMetric/CCRCompletionWitness.lean` |
+
+This was the largest flagged pair.  The corpus proves `IsCCRCompletion` on the *zero* compression
+(via the mode-indexed unit leakage) and separately proves a commutation statement about the assembled
+block tuple (`IsCommutingFullTuple (blockCCRTuple 0 B)`) — a different predicate — so the two
+premises of the seventeen consumers were never satisfied together.
+
+Scalar compressions do both, and nondegenerately: for any weights `c`, the family `A i = c i • 1`
+commutes, and the two correction terms of the completion identity coincide,
+`(c j • 1)ᵀ (c i • 1) = (c i • 1) (c j • 1)ᵀ = (c i c j) • 1`, so they cancel and the identity reduces
+to exactly the one the unit leakage already satisfies.  The compression is therefore not forced to be
+zero.
+
+`#print axioms` on all three: `[propext, Classical.choice, Quot.sound]`.
+
+Two flagged pairs remain for hand-checking: `PrimeProfileClockIndependent` with
+`PrimeProfileSupportedOnPositivePrimePowers` (8) and `MatrixCoefficientPrincipalSymbolFlat` with
+`MatrixPrincipalLowerLaw` (8).
+
+### Fourth pair: already true, but unnameable
+
+| consumers | premise pair | resolution |
+|---:|---|---|
+| 8 | `PrimeProfileClockIndependent`, `PrimeProfileSupportedOnPositivePrimePowers` | `HTGeometry/PrimeProfileClockPairWitness.lean` |
+
+This row is a different failure mode from the previous three.  Both properties *do* hold for the
+explicit unit source, and the corpus proves the prime-power support as a named theorem — but the
+clock-independence half exists only as an anonymous `show` inside the proof of the Kolchin fracture.
+Nothing states it, so nothing else can use it, and the audit cannot see it.
+
+`primeClockUnitSource_clockIndependent` extracts it verbatim (the polynomial clock orbit is linearly
+independent, and over a one-element index the jet family is that orbit reindexed), and
+`exists_clockIndependent_supportedOnPositivePrimePowers` records the pair.  No new mathematics — the
+content was already there — but it is now on the record and reusable.
+
+`#print axioms` on both: `[propext, Classical.choice, Quot.sound]`.
+
+That leaves one flagged pair: `MatrixCoefficientPrincipalSymbolFlat` with `MatrixPrincipalLowerLaw`
+(8 consumers).
+
+### Fifth pair discharged: the flagged pair list is clear
+
+| consumers | premise pair | resolution |
+|---:|---|---|
+| 8 | `MatrixCoefficientPrincipalSymbolFlat`, `MatrixPrincipalLowerLaw` | `HTGeometry/MatrixCoefficientFlatPairWitness.lean` |
+
+A near-miss of the kind the audit is good at.  `MatrixPrincipalSymbolWitnesses` realizes
+`MatrixPrincipalSymbolFlat` — the identity `symbol (n+1) A · symbol n B = symbol (n+1) B · symbol n A`
+— by direction-independent symbols, and realizes the lower principal law with vanishing remainder.
+But the layer consuming both premises uses the *other order*,
+`MatrixCoefficientPrincipalSymbolFlat` (`symbol n B · symbol (n+1) A = symbol n A · symbol (n+1) B`),
+which is a different definition and which nothing realized.
+
+The same witness serves both, since a direction-independent symbol makes either identity literally
+the same product on each side; pairing it with the block-diagonal action gives the two premises on
+one symbol.  Zero and scalar instances are recorded as well.
+
+**All five flagged premise pairs from the pair-level audit are now closed** — 17, 13, 10, 8 and 8
+consumers.  Three needed genuine joint witnesses, one needed an inline proof extracted and named, and
+this one needed the near-duplicate definition noticed.
+
+`#print axioms`: `[propext, Quot.sound]` for the two flatness instances, `[propext,
+Classical.choice, Quot.sound]` for the joint statement.
+
+### Sixth pair: unitary phases and their reflected values
+
+| consumers | premise pair | resolution |
+|---:|---|---|
+| 6 | `IsUnitaryPhase`, `IsPhaseReflected` | `HTGeometry/UnitaryPhaseReflectedWitness.lean` |
+
+`IsUnitaryPhase w` is `conj w · w = 1` and `IsPhaseReflected w z` is `w² · conj z = z`; neither was
+exhibited on a common pair.  They fit together for a structural reason worth recording rather than
+just witnessing: **the reflected values of a unitary phase are exactly its real multiples**, since
+`w² · conj (t w) = t w (w · conj w) = t w` for real `t`.  So every unitary phase carries a whole real
+line of reflected values (`isPhaseReflected_real_mul`), and the pair holds on `(w, t w)` — realized
+concretely at `w = i`, `z = i`.
+
+`#print axioms` on all three: `[propext, Classical.choice, Quot.sound]`.
+
+### Seventh pair: the odd sector was empty
+
+| consumers | premise pair | resolution |
+|---:|---|---|
+| 5 | `IsGradingEven`, `IsGradingOdd` | `RHTower/GradingSectorWitness.lean` |
+
+The graded-adjoint layer proves the unit is even but exhibits **no odd element anywhere**, so its
+mixed statements — even times odd is odd, commutators of odds, the parity of a quantized form — had
+never been applied to an actual odd element.
+
+Both sectors get a criterion rather than a bare witness: conjugation by an involution fixes what
+commutes with it (`isGradingEven_of_comm`) and negates what anticommutes with it
+(`isGradingOdd_of_anticomm`).  The sign involution `diag(1, −1)` on `2 × 2` real matrices then
+occupies both, with the coordinate flip as an explicit nonzero odd element — the smallest place where
+a grading is not concentrated in its even part.
+
+`#print axioms`: the even criterion needs none at all, the odd one only `propext`, and the concrete
+witness `[propext, Classical.choice, Quot.sound]`.
+
+## Re-audit after seven pair discharges
+
+Both instruments re-run on the current corpus (64 178 theorems, 1 249 project `Prop` definitions,
+5 493 modules in the buildable closure).
+
+**`Prop` interfaces.**  The loose and strict fixpoints now **agree**: 432 grounded, 2 rows, both
+`.below` recursor artifacts.  The `SignedDigammaBooleanHerglotz` row is gone.  The strict instrument
+no longer sees anything the loose one misses, which is the first time that has happened.
+
+**Pairs.**  264 multi-premise theorems in 114 premise sets.  All seven previously discharged rows
+have dropped out.  The new head of the list is:
+
+| consumers | premise pair | resolution |
+|---:|---|---|
+| 6 | `MembraneLocalPrincipalBrackets`, `MembraneValenceAtMost` | `HTGeometry/MembraneValencePairWitness.lean` |
+
+Locality had realizations in the corpus, but the valence bound existed only as an anonymous `by simp`
+inside the three-scale certificate, so the pair was nowhere on record.  The two premises pull against
+each other — locality wants large membranes, the valence bound wants small ones — so both ends of the
+trade-off are recorded rather than one arbitrary point:
+
+- total membranes cover every law pair, making locality free at valence exactly the ambient
+  cardinality (`membraneLocality_and_valence_univ`);
+- a symbol with vanishing principal brackets is local for *every* support, so locality costs nothing
+  at valence `0` (`membraneLocality_and_valence_zero`).
+
+The pair is therefore satisfiable at both extremes of the valence scale, and the layer's content is
+what happens in between.
+
+`#print axioms` on both: `[propext, Classical.choice, Quot.sound]`.
+
+### Ninth pair: consistency only, and said so
+
+| consumers | premise pair | resolution |
+|---:|---|---|
+| 4 | `CofinitePrimeProfileJetPacket`, `PrimeProfileSupportedOnPositivePrimePowers` | `HTGeometry/CofinitePacketConsistency.lean` |
+
+`CofinitePrimeProfileJetPacket g` asks, for every jet order and every finite set of forbidden primes,
+for a separated packet avoiding them whose jet matrix is nonsingular.  Nothing exhibits such a family:
+the corpus criterion `cofinitePrimeProfileJetPacket_iff_rayTailIndependent` is a characterization,
+which transfers the property without producing it — the same pattern as the digamma Herglotz row.
+
+Over the empty index the packet matrix is the empty matrix, whose determinant is `1`, so the bundle
+is consistent and the pair is jointly satisfiable.  **This is a consistency statement at the
+degenerate end and nothing more.**  A packet over a nonempty index needs the jet matrix to be
+genuinely nonsingular for cofinitely many prime choices — a Vandermonde-type non-vanishing in the
+prime logarithms — and that is the substantive content of the layer, still unwitnessed.  It is
+recorded here as the honest state rather than left looking discharged.
+
+`#print axioms` on both: `[propext, Classical.choice, Quot.sound]`.
+
+### The cofinite packet, nondegenerately
+
+The consistency-only status recorded above is superseded: `HTGeometry/CofinitePacketVandermonde.lean`
+builds a packet over a **nonempty** index.
+
+Writing the entry out settles it.  With all exponents zero,
+
+`primeDeriv p (jetₖ f) (p⁰) = (0+1) · (i · log p)ᵏ · f p`,
+
+so for the profile that is `1` at every prime the packet matrix is *exactly*
+`vandermonde (fun r => i · log qᵣ)`.  Its determinant is the product of node differences, nonzero
+because `log` separates distinct primes, and the nodes can avoid any prescribed finite set because
+there are infinitely many primes (`exists_injective_primes_avoiding`, from
+`Set.Finite.infinite_compl` and `Set.Infinite.exists_subset_card_eq`).
+
+So `cofinitePrimeProfileJetPacket_primeIndicator` holds, and with
+`primeIndicatorProfile_supported` the pair of premises is realized on a one-element index — the
+substantive version of the row, not the empty-index consistency check.
+
+The Vandermonde structure was hiding in plain sight: the jet index is the exponent of the rotated
+logarithm, so the packet matrix of *any* profile is a Vandermonde matrix scaled row-wise by
+`(e+1) · g(p^{e+1})`.  Only the nonvanishing of those scalars and the separation of the nodes matter,
+which is why the prime indicator suffices.
+
+`#print axioms` on all four: `[propext, Classical.choice, Quot.sound]`.
+
+### The packet condition, reduced to a support statement
+
+`HTGeometry/CofinitePacketCriterion.lean` promotes the Vandermonde observation from a witness to a
+criterion.
+
+`primeProfileJetPacketMatrix_unit_apply`: at exponent zero the packet matrix of **any** profile is
+
+`g(qᵣ) · (i · log qᵣ)^{jet order}`,
+
+that is `diagonal (g ∘ q) * vandermonde (i · log ∘ q)`.  Its determinant is `∏ᵣ g(qᵣ)` times the
+Vandermonde product, so exactly two things can obstruct a packet: a profile value vanishing at a
+chosen prime, or two nodes coinciding — and distinct primes never have equal logarithms.
+
+Hence **`cofinitePrimeProfileJetPacket_of_infinite_prime_support`**: a profile nonzero at infinitely
+many primes has a cofinite jet packet.  The existential analytic condition — for every order and every
+finite forbidden set, a separated nonsingular packet — becomes a statement about the profile's support
+alone, checkable for any concrete profile.  The prime indicator of the previous entry is the special
+case where the support is all of the primes, and is rederived from the criterion.
+
+`#print axioms` on all three: `[propext, Classical.choice, Quot.sound]`.
+
+## Iteration: the criterion applied to the corpus's own source
+
+`HTGeometry/PrimeClockUnitSourcePacket.lean` (built, axioms clean, registered).
+
+The support criterion proved last iteration is checkable by inspection, and the corpus's explicit
+source passes. `primeClockUnitValuationProfile = fun _ => 1`, so
+`primeClockUnitSource n = if IsPrimePow n then 1 else 0` — the prime-power index the replication
+looks up is irrelevant, and the value at *every* prime is `1`:
+
+* `primeClockUnitSource_apply_of_isPrimePow : IsPrimePow n → primeClockUnitSource n = 1`
+  (one `dif_pos` and `rfl`; no `prodNatEquiv` computation needed);
+* `cofinitePrimeProfileJetPacket_primeClockUnitSource` — the prime support is `Set.univ`, hence
+  infinite, hence the packet.
+
+**All three prime-profile interfaces now hold on one named object**
+(`primeClockUnitSource_packet_clock_support`): cofinite jet packet, clock independence
+(`primeClockUnitSource_clockIndependent`, extracted earlier this audit from an anonymous `show`
+inside the Kolchin fracture proof), and prime-power support (already in the corpus). The layer's
+premise triple is therefore jointly realized by the object the corpus itself uses downstream, not
+just by an auxiliary indicator profile.

@@ -2,7 +2,7 @@
 
 - **ID:** `deninger-poisson-relevant-complex-comparison`
 - **Stage:** 1-in-progress
-- **Type:** CONJECTURE with exact construction target and falsifiers
+- **Type:** COMPLEX COMPARISON THEOREM WITH CUP/HODGE CONJECTURE
 - **Label:** `DAC_DENINGER_POISSON_RELEVANT_COMPLEX_COMPARISON`
 - **Parent:** `deninger-poisson-zeta-three-term-cohomology`
 - **Statement:** the Poisson--zeta analytic complex is the relative
@@ -65,6 +65,13 @@ There is a flow-equivariant filtered quasi-isomorphism
 \]
 with the following source-level construction.
 
+The underlying complex, topology, flow, and endpoint comparison in
+`(2)` are proved by
+`DAC_DENINGER_POISSON_RELEVANT_COMPLEX_AMALGAMATION`.  The remaining
+content under this broader label is clauses 6 and 8 as
+source-geometric cup/parity statements, plus their Hodge and Lefschetz
+consequences.
+
 1. **Generic Schwartz collar.**  The suspended generic stratum has the
    canonical dense Hilbert--Kummer refinement
    \[
@@ -88,11 +95,32 @@ with the following source-level construction.
    contractible.  Thus modulus-angular ordinary cohomology is already
    reduced to the radial factor; the unitary phase remains the
    Tate--Milnor coefficient.
+   On the positive-radius suspension,
+   `DAC_DENINGER_HILBERT_KUMMER_KAHLER_ORBIT_COLLAR` upgrades this
+   radial factor canonically to
+   \[
+     x^{-1}(1)\times\mathbb C^\times
+   \]
+   by adjoining the half-density circle
+   \(\{(p,z):|z|^2=x(p)\}\).  Its complex leaves have weight-one
+   Kähler area, local positive \(J=*c\), the critical radial measure, and
+   the same discrete Poisson flow pullbacks.  This circle is not being
+   identified with the unitary-character phase.  The resulting closed
+   orbit leaves have tangent flow; they are the forced collar model,
+   not the still-missing dense arithmetic foliation.
 
-2. **Poisson domain.**  The even real Betti--Fourier realization of the
-   generic coefficient has the closed codimension-two domain
-   \(H_\cap\), characterized by vanishing of the two endpoint
-   functionals \(f(0)\) and \(\mathcal Ff(0)\).
+2. **Poisson domain.**  The closed codimension-two domain
+   \(H_\cap\) now has an exact source-geometric identification.
+   `DAC_RADIAL_KAHLER_ENDPOINT_FOURIER_TRACE` proves that for the
+   radial lift \(Rf(z)=f(|z|^2)\),
+   \[
+     Rf(0)=f(0),\qquad
+     \int_{\mathbb C}Rf\,\omega
+       =\frac{\pi}{2}\mathcal Ff(0).
+   \]
+   Hence \(H_\cap\) is precisely the common kernel of cone-apex
+   restriction and leafwise top-degree Kähler trace.  The second
+   functional is not a conjectural second boundary point.
 
 3. **Arithmetic differential.**  The derived comparison differential
    is the convergent sum of discrete positive-time flow pullbacks
@@ -114,8 +142,11 @@ with the following source-level construction.
    =(x\mapsto f(nx))\circ x.
    \]
    Thus the individual Poisson summands are source-proved scalar flow
-   pullbacks.  The open content is their derived domain, strict
-   infinite sum, and angular acyclicity.
+   pullbacks.
+   `DAC_MEYER_NUCLEAR_RADIAL_STRICTNESS` supplies the derived radial
+   domain and strict infinite sum, while
+   `DAC_HILBERT_KUMMER_STRICT_ANGULAR_COSHEAF_CONTRACTION` proves
+   angular acyclicity after retaining the Tate--Milnor phase.
 
 4. **Poisson gluing.**  Real Betti duality identifies the two
    asymptotic collars by
@@ -137,6 +168,8 @@ with the following source-level construction.
 7. **Topology.**  The transported differential is strict with closed
    range.  The resulting quotient topology is Meyer's nuclear Frechet
    topology, not a Hilbert topology chosen from the zero divisor.
+   This clause is proved before the remaining arithmetic gluing by
+   `DAC_MEYER_NUCLEAR_RADIAL_STRICTNESS`.
 
 8. **Coefficient parity.**  On the cover, the generic complex
    coefficient is positive Hermitian and degree-one cohomology has an
@@ -166,22 +199,22 @@ The comparison is therefore falsifiable independently of RH.
 
 ## Construction program
 
-1. Sheafify the Hilbert--Kummer bounded character refinement and its
-   global radial coordinate; retain mixed \(L^1/L^2\), nuclear, and
-   residue graph topologies.
-2. Extend the discrete flow pullbacks to the radial graph topology and
-   prove normal convergence of their sum on the right-decaying domain.
-3. Prove that real Betti realization produces additive Fourier
-   transform and that the two boundary maps are exactly \(f(0)\) and
-   \(\mathcal Ff(0)\).
-4. Use Poisson summation to identify the intersection of generic and
-   real-boundary domains with \(H_\cap\).
-5. Prove that the angular and unitary-locus derived summands are
-   acyclic in the relative middle complex.
-6. Compare finite logarithmic residues with the Euler factors
-   \(1-F_p^{-1}\).
-7. Prove strictness and the quasi-isomorphism `(2)`.
-8. Transport cup, trace, conjugation, and the flow through `(2)`.
+1. **Completed:** form the Hilbert--Kummer fine source, its radial
+   nuclear cosheaf, mixed \(L^1/L^2\) and residue-graph maps.
+2. **Completed:** identify the discrete flow sum with Meyer's strict
+   closed Poisson embedding.
+3. **Completed:** contract the modulus angle by a continuous cosheaf
+   chain homotopy while retaining phase, apex, and both endpoint maps.
+4. **Completed:** use augmented square-zero homotopy pullback to glue
+   the radial relative domain to the Tate--Milnor/Arakelov
+   totalization without a raw tensor cross term.
+5. **Completed at correspondence level:** the same \(F_p\) defines
+   the Euler factor \(1-F_p^{-1}\) and the \(p\)-Kummer endpoint;
+   packetwise fixed-orbit trace remains separate.
+6. **Completed:** obtain the strict arithmetic gluing
+   quasi-isomorphism `(2)`.
+7. Transport source cup, trace, and odd coefficient parity through
+   `(2)`.
 
 ## Falsifiers
 
@@ -215,21 +248,31 @@ Proved independently of `(2)`:
   infinite-dimensional modulus sphere;
 - exact identification of every Poisson dilation with a discrete
   positive-time flow pullback;
+- canonical global trivialization of the positive-radius flow and its
+  complex Kähler half-density leaves;
+- exact identification of \(f(0)\) with cone-apex restriction and
+  \(\mathcal Ff(0)\) with normalized leafwise Kähler trace;
 - its \(H^0/H^1/H^2\);
 - zero spectrum with multiplicity;
 - Weil character;
 - symplectic Poincare pairing.
+- nuclearity and strict closed range of the radial Poisson complex;
+- strict completed tensor transport through the phase, mixed, residue,
+  and endpoint topologies;
+- strict angular cosheaf contraction with phase and unitary apex
+  retained.
+- augmented square-zero relevant-coefficient gluing and the strict
+  quasi-isomorphism `(2)`;
+- identification of intrinsic arithmetic \(H^1\) with \(M_\zeta\).
 
 Open:
 
-- sheaf/cosheaf derived pushforward from the Hilbert--Kummer refinement;
-- compatibility of radial operator-norm, nuclear, mixed, and residue
-  topologies;
-- strict nuclear angular contraction after tensoring with the phase
-  coefficient, and correct treatment of the unitary boundary;
-- quasi-isomorphism `(2)`;
+- source-geometric cup/trace comparison with Paugam's pairing;
+- source construction of the odd coefficient parity before spectral
+  decomposition;
 - packetwise geometric Lefschetz identification;
-- positive Hodge realization.
+- endpoint-extended positive Hodge comparison and faithfulness on
+  generalized spectral jets.
 
 No CCM object appears in this dependency chain.
 

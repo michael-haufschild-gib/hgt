@@ -10,11 +10,20 @@
 
 ## Exact purpose
 
-Construct the missing coefficient complex \(R\alpha_*\mathscr G\) on Deninger's rational-Witt
-flow space from quantized arithmetic incidence.  Milnor--Witt/\(\mathrm{ko}\) supplies the
-Steinberg boundary and indefinite Poincare transfer; Gamma and rectangular prime atoms supply a
-fixed positive chain metric.  Harmonic cohomology, not the bare transfer form, supplies the
-positive Hodge realization.
+Historical candidate for constructing \(R\alpha_*\mathscr G\) from a
+power-bar complex with a positive regular coefficient.  The corrected
+source-native construction now defines Deninger's coefficient as the
+degreewise invariant Tate--Milnor sheaf and realizes its middle
+differential by Hilbert--Kummer radial flow.  This card remains only as
+an auxiliary finite correspondence/Hodge packet program.
+
+`deninger-gamma-rank-regular-bar-as-arithmetic-h1` proves that the
+standard reduced \(\ell^2\) cofinal bar completion cannot be arithmetic
+\(H^1\): \(\mathbb Q_{>0}^{\times}\) is infinite amenable, so its
+regular reduced \(L^2\)-cohomology vanishes.  Any surviving use would
+need a separately constructed nonstandard arithmetic incidence
+topology and a comparison to the actual invariant-sheaf/Poisson
+complex.
 
 ## Prior-route constraints
 
@@ -220,11 +229,13 @@ comparison theorems, not construction inputs.
   \(\ker Q^2\).
 - `[PROJECT-PROVED]` Source H0/H1/H2 algebraic complex, source prime--Gamma Poincare pairing,
   rectangular quaternionic atom, BRST--Hodge operator algebra, determinant/Lefschetz consumers.
-- `[OPEN CORE]` Construct the MW/\(\mathrm{ko}\) coefficient packet and coherently framed
+- `[AUXILIARY OPEN CORE]` Construct the MW/\(\mathrm{ko}\) coefficient packet and coherently framed
   transfer action; prove the MW/Steinberg relation subspace is closed and stable under the
   constructed Gamma Hodge operator; prove moving-Hodge naturality; then construct the cofinal
-  analytic limit.
-- `[NO RH CLAIM]` Clause 6 is still open and is the decisive purity theorem.
+  analytic limit only if it is first shown not to be the vanishing
+  standard regular bar completion.
+- `[NO RH CLAIM]` This auxiliary route is no longer on the
+  Deninger-to-RH critical path.
 
 ## Log
 

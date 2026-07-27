@@ -148,6 +148,39 @@ theorem abs_im_gammaDampedSymbol_scaled_le {σ x : ℝ} (hσ1 : 1 < σ) (hσ2 : 
       ≤ 12 / (σ - 1) * (Real.log (2 * |x|) + Real.log (2 * Real.pi) + 6) := h
     _ = 12 / (σ - 1) * (Real.log (2 * |x|) + (6 + Real.log (2 * Real.pi))) := by ring
 
+/-- The far-field energy integrand is integrable. -/
+theorem integrableOn_farEnergy {σ : ℝ} (hσ1 : 1 < σ) (hσ2 : σ ≤ 2)
+    (hm0 : 0 ≤ squarefreeMobiusLogMoment 1 σ)
+    (hm : squarefreeMobiusLogMoment 1 σ ≤ 2 / (σ - 1)) :
+    IntegrableOn (fun x : ℝ =>
+      ((gammaDampedSymbol σ (2 * Real.pi * x)).im) ^ 2 * HTGeometry.gammaCyclicDensity x)
+      {x : ℝ | 3 ≤ |x|} := by
+  have hmeas : MeasurableSet {x : ℝ | 3 ≤ |x|} :=
+    measurableSet_le measurable_const continuous_abs.measurable
+  have htail := HTGeometry.integrableOn_log_sq_mul_gammaCyclicDensity
+    (6 + Real.log (2 * Real.pi))
+  refine Integrable.mono' (htail.const_mul ((12 / (σ - 1)) ^ 2)) ?_ ?_
+  · refine (Measurable.aestronglyMeasurable ?_)
+    refine Measurable.mul ?_ HTGeometry.continuous_gammaCyclicDensity.measurable
+    have hc : Continuous fun x : ℝ => (gammaDampedSymbol σ (2 * Real.pi * x)).im :=
+      Complex.continuous_im.comp ((continuous_gammaDampedSymbol hσ1).comp (by fun_prop))
+    exact (hc.measurable).pow measurable_const
+  · filter_upwards [ae_restrict_mem hmeas] with x hx
+    have hx3 : 3 ≤ |x| := hx
+    have hpt := abs_im_gammaDampedSymbol_scaled_le hσ1 hσ2 hm0 hm hx3
+    have hρ : (0 : ℝ) ≤ HTGeometry.gammaCyclicDensity x := HTGeometry.gammaCyclicDensity_nonneg x
+    have hsq : ((gammaDampedSymbol σ (2 * Real.pi * x)).im) ^ 2
+        ≤ (12 / (σ - 1)) ^ 2 * (Real.log (2 * |x|) + (6 + Real.log (2 * Real.pi))) ^ 2 := by
+      have hnn : (0 : ℝ) ≤ 12 / (σ - 1) * (Real.log (2 * |x|) + (6 + Real.log (2 * Real.pi))) :=
+        le_trans (abs_nonneg _) hpt
+      have hsq' := mul_self_le_mul_self (abs_nonneg _) hpt
+      rw [← sq_abs, ← mul_pow]
+      nlinarith [hsq', sq_abs ((gammaDampedSymbol σ (2 * Real.pi * x)).im)]
+    have hnn : (0 : ℝ) ≤ ((gammaDampedSymbol σ (2 * Real.pi * x)).im) ^ 2 *
+        HTGeometry.gammaCyclicDensity x := by positivity
+    rw [Real.norm_eq_abs, abs_of_nonneg hnn]
+    nlinarith [hsq, hρ]
+
 /-- **The far-field energy is `O(1/(σ-1)²)`.** -/
 theorem gammaDampedFarEnergy_le {σ : ℝ} (hσ1 : 1 < σ) (hσ2 : σ ≤ 2)
     (hm0 : 0 ≤ squarefreeMobiusLogMoment 1 σ)
@@ -178,22 +211,7 @@ theorem gammaDampedFarEnergy_le {σ : ℝ} (hσ1 : 1 < σ) (hσ2 : σ ≤ 2)
       rw [← sq_abs, ← mul_pow]
       nlinarith [hsq', sq_abs ((gammaDampedSymbol σ (2 * Real.pi * x)).im)]
     nlinarith [hsq, hρ]
-  have hint : IntegrableOn (fun x : ℝ =>
-      ((gammaDampedSymbol σ (2 * Real.pi * x)).im) ^ 2 * HTGeometry.gammaCyclicDensity x)
-      {x : ℝ | 3 ≤ |x|} := by
-    refine Integrable.mono' (htail.const_mul ((12 / (σ - 1)) ^ 2)) ?_ ?_
-    · refine (Measurable.aestronglyMeasurable ?_)
-      refine Measurable.mul ?_ HTGeometry.continuous_gammaCyclicDensity.measurable
-      have hc : Continuous fun x : ℝ => (gammaDampedSymbol σ (2 * Real.pi * x)).im :=
-        Complex.continuous_im.comp ((continuous_gammaDampedSymbol hσ1).comp (by fun_prop))
-      exact (hc.measurable).pow measurable_const
-    · filter_upwards [ae_restrict_mem hmeas] with x hx
-      have hnn : (0 : ℝ) ≤ ((gammaDampedSymbol σ (2 * Real.pi * x)).im) ^ 2 *
-          HTGeometry.gammaCyclicDensity x := by
-        have := HTGeometry.gammaCyclicDensity_nonneg x
-        positivity
-      rw [Real.norm_eq_abs, abs_of_nonneg hnn]
-      exact hbound x hx
+  have hint := integrableOn_farEnergy hσ1 hσ2 hm0 hm
   rw [← MeasureTheory.integral_const_mul]
   exact setIntegral_mono_on hint (htail.const_mul _) hmeas hbound
 

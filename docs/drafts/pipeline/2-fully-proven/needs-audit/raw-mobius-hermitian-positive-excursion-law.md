@@ -963,3 +963,289 @@ paper-level.  No duplicate Lean wrapper is warranted.
   Next: instantiate at `c = 2 + it` with `r = 2 - (Theta_chi + eps)`, `R = 2 - (Theta_chi + eps/2)`,
   using `bound_LFunction_strip` for `M` and `eventually_half_le_norm_LSeries` for `m`, to get
   `1/L(s,chi)` polynomially bounded right of `Theta_chi`.  Then Perron.
+- 2026-07-27 — **Uniform lower bound on a vertical line.**  New module
+  `RHTower/DirichletLLineLowerBound.lean`, axiom-clean: `exists_line_lower_bound` — there is an
+  explicit abscissa `sigma_0 >= 2` with `‖L(s,chi)‖ >= 1/2` for **every** `s` with
+  `Re s >= sigma_0`, uniformly in `Im s`.
+  Uniformity in the imaginary part is the whole point: this supplies the value at the *centre* of
+  the Borel-Caratheodory disc, and that centre travels up the vertical line, so the earlier
+  `eventually_half_le_norm_LSeries` (valid only along the real ray) is not usable here.
+  The proof splits `n = 1` off the Dirichlet series and compares the remainder with
+  `2^{2-sigma} sum n^{-2}`, using `n^{-sigma} = n^{-2} n^{2-sigma} <= n^{-2} 2^{2-sigma}` for
+  `n >= 2`.  The threshold is `sigma_0 = max 2 (2 + log(2(S+1))/log 2)` with `S = sum n^{-2}`
+  — explicit, and with no numerical estimate: the tail is compared against itself at exponent `2`
+  rather than evaluated.  (Comparing at `Re s = 2` directly would have required knowing
+  `zeta(2) - 1 < 1`, i.e. a numeric bound, which the card's rules forbid.)
+  Next: instantiate `norm_lower_bound_of_ball` at `c = sigma_0 + it` with
+  `r = sigma_0 - (Theta_chi + eps)`, `R = sigma_0 - (Theta_chi + eps/2)`, taking `M` from
+  `bound_LFunction_strip` together with the right-edge bound, and `m = 1/2` from here.
+- 2026-07-27 — **Polynomial lower bound for `L` right of the zero abscissa.**  New module
+  `RHTower/DirichletLInverseBound.lean`, axiom-clean: `exists_lower_bound_right_of_abscissa` — for
+  every `eps` in `(0,1)` there are `sigma_0 >= 2`, `K > 0`, `A >= 0` with
+  `K exp(-A log(2+|Im s|)) <= ‖L(s,chi)‖` for all `s` with
+  `Theta_chi + eps <= Re s <= sigma_0`.  Equivalently `1/L(s,chi)` is `O((2+|t|)^A)` there.
+  This is the sign flip the whole Phragmen-Lindelof chain existed to produce.  The disc is centred
+  at `sigma_0 + it` with outer radius `sigma_0 - (Theta_chi + eps/2)` — chosen so the closed outer
+  disc stays inside the zero-free half-plane — and inner radius `sigma_0 - (Theta_chi + eps)`, so
+  `R - r = eps/2` and the exponent comes out proportional to `1/eps`.  The upper bound `M` on the
+  disc is assembled from the two regimes: the right-edge bound where `Re z >= 2`, the
+  Phragmen-Lindelof cubic where `Re z <= 3`.
+  One Lean-level obstacle worth recording: `set Theta := zeroAbscissa chi` makes `Theta` a
+  let-binding, and every `nlinarith`/`positivity` call downstream then tries to unfold it through
+  `sSup` and dies on heartbeats.  Introducing the abscissa opaquely
+  (`obtain ⟨Theta, hTheta⟩ : ∃ T, zeroAbscissa chi = T := ⟨_, rfl⟩`) and calling `clear_value` on the
+  remaining `set` variables fixed it.
+  Remaining for the card: Perron's formula, turning this into
+  `M_chi(N) = O(N^{Theta_chi + eps})`, which discharges `TwistedMertensSubpowerBound` and with it
+  the upper half of `(R15)`.
+- 2026-07-27 — **Route analysis for the last step (Perron), two cheap routes ruled out.**  No new
+  Lean this entry; the deliverable is that the remaining construction is now pinned down and two
+  plausible shortcuts are eliminated by computation rather than left to be discovered later.
+  - *Ruled out: Riesz / Cesaro means.*  Mathlib's `mellinInv_mellin_eq` makes the order-1 kernel
+    free — `(1-x)_+` has Mellin transform `1/(s(s+1))`, which is vertically integrable, so the
+    absolutely convergent Perron formula for `R(N) = sum_{n<=N}(N-n)a_n` needs no contour work at
+    all, and the shift gives `R(N) = O(N^{1+Theta+eps})` with no residues (the kernel's poles at
+    `s = 0,-1` lie left of `Theta`, and `1/L` is analytic right of it).  But recovering `M(N)`
+    costs too much: `h M(N) = R(N+h) - R(N) - sum_{N<n<=N+h}(N+h-n)a_n`, the last sum is only
+    `O(h^2)` under `|a_n| <= 1`, and optimizing `h` gives `M(N) = O(N^{(1+Theta)/2 + eps})`.  Since
+    `(1+Theta)/2 > Theta` for every `Theta < 1`, this is strictly lossy — at `Theta = 1/2` it gives
+    `3/4` instead of `1/2`.  Higher-order Riesz means are worse: the exponent
+    `(k+Theta)/(k+1)` increases to `1`.  Bootstrapping fails too: re-substituting the improved bound
+    into the boundary sum reproduces the same term.
+  - *Ruled out: coefficients from the radial bound.*  For a nonnegative coefficient sequence,
+    `sum b_N r^N <= B(1-r)^{-beta}` gives `b_N = O(N^beta)` by taking `r = 1 - 1/N`.  That is
+    unavailable here: `C_{chi,k}(N)` is a Hermitian mixed convolution, nonnegative only in the
+    aggregate (`sum C r^N = |G(r)|^{2k}`), not termwise, and the positive parts appearing in
+    `Psi^C` are not controlled by the generating function.
+  - *The route that works: Perron with a smooth weight.*  Take `w` smooth, `1` on `(-inf,N]`, `0`
+    on `[N+H,inf)`, with `w^{(j)} = O(H^{-j})`.  Its Mellin transform decays in `|t|` like
+    `(1+|t|H/N)^{-j}` by `j`-fold integration by parts, so the vertical integral converges
+    absolutely, the line shift from `Re s = c > 1` to `Re s = Theta+eps` is a rectangle contour with
+    vanishing horizontal sides, and `sum a_n w(n) = O(N^{Theta+eps})`.  Finally
+    `|M(N) - sum a_n w(n)| <= H` since `|a_n| <= 1`, and `H = N^{Theta+eps}` makes both terms the
+    same size — **sharp**, and with no truncated-kernel estimate anywhere.
+  Build order for the next sessions: (P1) the smooth weight and its derivative bounds; (P2) the
+  Mellin decay by integration by parts; (P3) `sum a_n w(n) = (1/2pi i) int F(s) W(s) ds` by Fubini;
+  (P4) the line shift via `integral_boundary_rect_eq_zero_of_differentiable_on_off_countable`;
+  (P5) the shifted estimate; (P6) the trivial comparison with `M(N)`.
+- 2026-07-27 — **(P1) done: the smooth weight with scaled derivative bounds.**  New module
+  `HTGeometry/SmoothWeight.lean`, axiom-clean.
+  - `exists_bound_iteratedDeriv_smoothTransition` : every iterated derivative of
+    `Real.smoothTransition` is globally bounded.  For `j >= 1` it vanishes off `[0,1]` — the
+    transition is locally constant on either side, so `Filter.EventuallyEq.iteratedDeriv_eq`
+    together with `iteratedDeriv_const` kills it there — and on `[0,1]` continuity plus compactness
+    finish.
+  - `smoothWeight N H x = 1 - smoothTransition (H⁻¹ (x + -N))`, with `smoothWeight_contDiff`,
+    `smoothWeight_eq_one` (on `x <= N`), `smoothWeight_eq_zero` (on `N+H <= x`),
+    `smoothWeight_nonneg`, `smoothWeight_le_one`.
+  - `exists_bound_iteratedDeriv_smoothWeight` : **`|w^(j)(x)| <= C_j / H^j`**, the property the
+    whole construction exists for.  Writing the argument as `H⁻¹ * (x + -N)` rather than
+    `(x - N)/H` lets `iteratedDeriv_comp_const_mul` and `iteratedDeriv_comp_add_const` apply
+    directly, so the scaling is exact rather than estimated.
+  This is the first of the six steps of the smoothed-Perron plan.  Next: (P2) the Mellin transform
+  of the weight and its `(1 + |t| H/N)^{-j}` decay by `j`-fold integration by parts.
+- 2026-07-27 — **(P2) started: convergence of the cutoff's Mellin transform.**  New module
+  `HTGeometry/SmoothWeightMellin.lean`, axiom-clean.
+  - `continuousOn_mellin_smoothWeight` : the integrand `x^{s-1} w(x)` is continuous on `(0,∞)`.
+  - `mellin_smoothWeight_eq_zero_of_le` : it vanishes from `N+H` on.
+  - `integrableOn_mellin_smoothWeight` : **the Mellin transform converges for every `Re s > 0`.**
+    Split `(0,∞) = (0,N+H] ∪ (N+H,∞)`; on the tail the integrand is identically zero, and on the
+    head it is dominated by `x^{sigma-1}`, integrable near the origin exactly because
+    `sigma > 0` (`intervalIntegral.intervalIntegrable_rpow'`).
+  - `mellin_smoothWeight_eq` : the transform written as an explicit integral (`smul` to `mul`).
+  Convergence on the *whole* half-plane `Re s > 0` is the point: the contour shift in the smoothed
+  Perron formula moves the line from `c > 1` down to `Theta_chi + eps`, which is in `(1/2, 1)`, and
+  both lines must be inside the region of convergence for the shift to say anything.
+  Next in (P2): the `j`-fold integration by parts giving
+  `W(s) = (-1)^j (s(s+1)...(s+j-1))^{-1} int w^{(j)}(x) x^{s+j-1} dx`, and with the `H^{-j}`
+  derivative bounds the decay `|W(sigma+it)| = O(N^sigma (N/(H|t|))^{j-1}/|t|)`.
+- 2026-07-27 — **(P2) integration by parts, finite-interval form.**  Appended to
+  `HTGeometry/SmoothWeightMellin.lean`, axiom-clean:
+  `intervalIntegral_mellin_smoothWeight_byParts` —
+  `int_delta^{N+H} x^{s-1} w(x) dx = -delta^s/s - int_delta^{N+H} w'(x) x^s/s dx` for `s != 0`,
+  `0 < delta <= N`.
+  Both boundary terms are exact rather than estimated: at `N+H` the cutoff is zero
+  (`smoothWeight_eq_zero`), at `delta` it is still one (`smoothWeight_eq_one`), so the term is
+  `delta^s/s` with no error.  The analytic input is mathlib's `hasDerivAt_ofReal_cpow_const'` at
+  exponent `r = s-1`, whose side condition `r != -1` is exactly `s != 0`; the cutoff side uses
+  `HasDerivAt.ofReal_comp` on the real derivative.
+  Cutting at a positive `delta` rather than at `0` is deliberate: on `[delta, N+H]` the factor
+  `x^{s-1}` is continuous even when `Re s < 1`, so no improper endpoint enters, and the boundary
+  term `delta^s/s` will simply vanish as `delta -> 0` for every `Re s > 0` — which is the whole
+  half-plane the contour shift moves through.
+  Next: the `delta -> 0` limit, then iterate to `j` derivatives, then the resulting decay estimate.
+- 2026-07-27 — **(P2) the pieces for the `delta -> 0` passage.**  Appended to
+  `HTGeometry/SmoothWeightMellin.lean`, axiom-clean:
+  - `norm_integral_Ioc_zero_le` : `‖int_{(0,delta]} x^{s-1} w(x) dx‖ <= delta^sigma / sigma`.  The
+    majorant `x^{sigma-1}` is integrated exactly (`integral_rpow`, using `0^sigma = 0` for
+    `sigma > 0`), so the near-origin contribution is explicit rather than an unquantified `o(1)`.
+  - `integral_Ioi_split` : `int_{(0,inf)} = int_{(0,delta]} + int_{(delta,N+H]}`, assembled from
+    `Ioc_union_Ioi_eq_Ioi` (the tail integrand vanishes) and `Ioc_union_Ioc_eq_Ioc`.
+  With these two the `delta -> 0` limit of the integration-by-parts identity is a bounded
+  computation rather than an abstract convergence argument: every term on the right is either
+  independent of `delta` or explicitly `O(delta^sigma)`, so the identity on `(0,inf)` follows by
+  letting the explicit bound go to zero.
+  Next: that passage, then the iteration to `j` derivatives.
+- 2026-07-27 — **(P2) the derivative side: support and continuity.**  Appended to
+  `HTGeometry/SmoothWeightMellin.lean`, axiom-clean:
+  `deriv_smoothWeight_eq_zero_of_lt`, `deriv_smoothWeight_eq_zero_of_gt` (the cutoff's derivative
+  vanishes on `x < N` and on `x > N+H`, since the cutoff is locally constant there),
+  `continuousOn_deriv_integrand`, and the two integrand-vanishing corollaries.
+  This settles a point that was not obvious in advance and simplifies the rest: `w'` is supported
+  in `[N, N+H]`, a compact interval *bounded away from the origin*.  So the integral
+  `int_{(0,inf)} w'(x) x^s/s dx` has no singular endpoint at all — unlike the `x^{s-1} w(x)` side,
+  where the origin is genuinely improper for `Re s < 1`.  In particular
+  `int_{(0,delta]} w'(x) x^s/s dx = 0` outright for `delta < N`, so in the `delta -> 0` passage the
+  derivative term does not move: only the `x^{s-1} w` term and the boundary term `delta^s/s` do,
+  and both are already bounded explicitly by `O(delta^sigma)`.
+  Next: assemble those into the identity on `(0,inf)`, then iterate to `j` derivatives.
+- 2026-07-27 — **(P2) integration by parts on `(0,inf)` — done.**  Appended to
+  `HTGeometry/SmoothWeightMellin.lean`, axiom-clean:
+  - `integrableOn_deriv_integrand`, `integral_deriv_integrand_eq` : the derivative integrand is
+    integrable on the ray and its integral is just the one over `(delta, N+H]` for any
+    `delta < N`.
+  - `mellin_smoothWeight_byParts` : **`int_{(0,inf)} x^{s-1} w(x) dx =
+    - int_{(0,inf)} w'(x) x^s/s dx` for every `Re s > 0`.**
+  The boundary term at the origin is killed without any convergence machinery: for each
+  `0 < delta < N` the exact identity reads
+  `F + G = int_{(0,delta]} x^{s-1} w - delta^s/s`, whose norm is at most
+  `delta^sigma (1/sigma + 1/‖s‖)` by the explicit bound proved earlier.  Choosing
+  `delta = min(N/2, (eps/C)^{1/sigma})` makes that at most `eps`, so `‖F+G‖ <= 0` by
+  `le_of_forall_pos_le_add`.  No filter limits, no dominated convergence — the whole passage is a
+  single explicit estimate.
+  Next: iterate this identity `j` times (the same lemma applies to `w'` in place of `w` after
+  shifting `s`), then combine with the `H^{-j}` derivative bounds for the decay
+  `|W(sigma+it)| = O(N^sigma (N/(H|t|))^{j-1}/|t|)`.
+- 2026-07-27 — **(P2) the iteration step.**  Appended to `HTGeometry/SmoothWeightMellin.lean`,
+  axiom-clean: `intervalIntegral_byParts_of_vanishing` — for `v` of class `C^2` on `[a,b]` with
+  `0 < a` and `v a = v b = 0`,
+  `int_a^b v(x) x^{s-1} dx = - int_a^b v'(x) x^s/s dx`, with **no boundary terms at all**.
+  This is what makes the iteration uniform.  The first integration by parts (already proved) is
+  special: `w` equals `1` near the origin, so it leaves the term `-delta^s/s`, which needed the
+  explicit `delta -> 0` estimate.  Every subsequent step acts on `w'`, `w''`, ... , all of which
+  vanish at both ends of any interval containing `[N, N+H]` — so from the second step on the
+  identity is exact with no limit and no error term.  Choosing the right endpoint strictly beyond
+  `N+H` (rather than at `N+H`) also sidesteps the one-sided-derivative edge case at the support
+  boundary.
+  Applying it once more to `w'` on `[N/2, N+H+1]` at exponent `s+1` gives
+  `W(s) = (s(s+1))^{-1} int w''(x) x^{s+1} dx`, hence `|W(sigma+it)| = O(|t|^{-2})` — already enough
+  for absolute convergence of a vertical integral against a bounded factor.  For `1/L`, which grows
+  like `|t|^A`, the same step is iterated `j > A+1` times.
+  Next: the general `j`-fold form and the resulting decay estimate, completing (P2).
+- 2026-07-27 — **(P2) the `j`-fold integration by parts — done.**  Appended to
+  `HTGeometry/SmoothWeightMellin.lean`, axiom-clean:
+  - `contDiff_top_iteratedDeriv` : iterated derivatives of a smooth function are smooth
+    (induction on `iteratedDeriv_succ` plus `ContDiff.deriv'`; mathlib has no direct lemma).
+  - `intervalIntegral_byParts_iterate` : **for `v` smooth with all derivatives vanishing at both
+    endpoints and `0 < a`,
+    `int_a^b v(x) x^{s-1} dx = (-1)^j (prod_{i<j} (s+i))^{-1} int_a^b v^{(j)}(x) x^{s+j-1} dx`**
+    for every `j`, by induction on the boundary-free step proved last turn.
+  The product `prod_{i<j}(s+i)` is exactly the factor that supplies the decay: on the line
+  `Re s = sigma` its modulus is at least `|t|^j`, so combined with the `H^{-j}` bounds on `v^{(j)}`
+  the Mellin transform of the cutoff decays like `(N/(H|t|))^{j}` — arbitrarily fast in `|t|` at the
+  cost of powers of `N/H`.  Each factor `s+i` is nonzero because `Re s > 0` and `i >= 0`, so no
+  case analysis on `j` is needed.
+  This completes the analytic core of (P2).  What remains there is only to package the bound:
+  combine with `exists_bound_iteratedDeriv_smoothWeight` and estimate the finite integral.
+- 2026-07-27 — **(P2) the hypotheses of the `j`-fold identity, discharged for the cutoff.**
+  Appended to `HTGeometry/SmoothWeightMellin.lean`, axiom-clean:
+  `iteratedDeriv_smoothWeight_eq_zero_of_lt` and `..._of_gt` (every derivative of positive order
+  vanishes off `[N, N+H]`), `iteratedDeriv_deriv_smoothWeight_vanishing` (via `iteratedDeriv_succ'`,
+  all derivatives of `w'` vanish at any endpoints straddling the support — the `i = 0` case included,
+  which is why the iteration is applied to `w'` and not to `w`), and `contDiff_deriv_smoothWeight`.
+  With these, `intervalIntegral_byParts_iterate` applies to `v = w'` on `[N/2, N+H+1]` with no
+  further conditions.  Note the choice of interval: the left end is strictly inside `x < N` and the
+  right end strictly beyond `N+H`, so both endpoint conditions hold on the nose and the
+  one-sided-derivative questions at the exact support boundary never arise.
+  What is left in (P2) is arithmetic packaging: chain
+  `mellin_smoothWeight_byParts` -> `integral_deriv_integrand_eq` -> `intervalIntegral_byParts_iterate`,
+  bound the finite integral by `(b-a) sup|w^{(j+1)}| b^{sigma+j}`, and feed in
+  `exists_bound_iteratedDeriv_smoothWeight` to get
+  `‖s‖ prod_{i<j} ‖s+1+i‖ ‖W(s)‖ <= C(j,N,H,sigma_max)`.
+- 2026-07-27 — **(P2) the `j`-fold form of the cutoff's Mellin transform.**  Appended to
+  `HTGeometry/SmoothWeightMellin.lean`, axiom-clean:
+  - `integral_deriv_integrand_eq'` : the derivative integral over `(0,inf)` equals the one over any
+    interval `[N/2, b]` with `b > N+H`.
+  - `norm_mellin_smoothWeight_mul_eq` : **`‖s‖ (prod_{i<j} ‖s+1+i‖) ‖W(s)‖ =
+    ‖int_{N/2}^{N+H+1} w^{(j+1)}(x) x^{s+j} dx‖`** for every `Re s > 0` and every `j`.
+  An equality, not an estimate: the chain
+  `mellin_smoothWeight_byParts` -> `integral_deriv_integrand_eq'` -> `intervalIntegral_byParts_iterate`
+  produces exactly the factor `s prod_{i<j}(s+1+i)`, and taking norms turns the division into the
+  stated identity.  Each factor is nonzero because `Re s > 0`.
+  Only the last arithmetic step of (P2) is now left: bound the right-hand side by
+  `(b-a) sup|w^{(j+1)}| b^{sigma+j}` and substitute
+  `exists_bound_iteratedDeriv_smoothWeight` (`sup|w^{(j+1)}| <= C_{j+1}/H^{j+1}`), giving
+  `‖W(sigma+it)‖ = O((N/(H|t|))^{j})` — the decay the contour shift needs.
+- 2026-07-27 — **(P2) complete.**  Appended to `HTGeometry/SmoothWeightMellin.lean`, axiom-clean:
+  `exists_bound_mellin_smoothWeight` — for every order `j` and every `sigma_max` there is a
+  constant `C` with
+  `‖s‖ (prod_{i<j} ‖s+1+i‖) ‖W(s)‖ <= C` on the strip `0 < Re s <= sigma_max`,
+  where `C = (N+H+1-N/2) (C_{j+1}/H^{j+1}) (N+H+1)^{sigma_max+j}`.
+  Since each `‖s+1+i‖ >= |Im s|`, the left side is at least `|t|^{j+1} ‖W(s)‖`, so this is decay of
+  order `j+1` in `|t|` with the constant scaling as `H^{-(j+1)}` — exactly the tradeoff the plan
+  called for: **arbitrarily fast decay in `|t|`, bought with powers of `1/H`.**
+  That closes step (P2) of the smoothed-Perron programme.  Steps (P1) and (P2) are now done:
+  the cutoff exists with the right derivative scaling, and its Mellin transform converges on
+  `Re s > 0` and decays faster than any fixed power of `|t|`.
+  Remaining: (P3) `sum_n a_n w(n) = (1/2 pi i) int F(s) W(s) ds` by Fubini; (P4) the line shift from
+  `Re s = c > 1` to `Re s = Theta_chi + eps` via
+  `integral_boundary_rect_eq_zero_of_differentiable_on_off_countable`; (P5) the shifted estimate;
+  (P6) `|M_chi(N) - sum a_n w(n)| <= H` and the choice `H = N^{Theta+eps}`.
+- 2026-07-27 — **(P6) done.**  New module `HTGeometry/SmoothWeightSum.lean`, axiom-clean, wired
+  into the umbrella:
+  `norm_weighted_sub_partialSum_le` — for unit-bounded coefficients `a`,
+  `‖sum_{n<m} a_n w(n) - sum_{n<=K} a_n‖ <= H + 1` whenever `K + H <= m`.
+  Proof: the two sums agree term by term on `n <= K` (`smoothWeight_eq_one`), the tail terms
+  vanish once `n >= K + 1 + ceil H` (`smoothWeight_eq_zero`), and the surviving block has at most
+  `ceil H < H + 1` terms, each of norm `<= 1`.
+  So the **elementary half of the smoothed-Perron argument is complete**: replacing the sharp
+  cutoff by the smooth one costs `O(H)`.  Combined with (P2), choosing `H = N^{Theta+eps}` balances
+  the smoothing error against the analytic one.
+  Status of the programme: (P1) cutoff ✓, (P2) Mellin decay ✓, (P6) smoothing error ✓.
+  Left: (P3) Fubini, (P4) contour shift, (P5) the shifted estimate.
+- 2026-07-27 — **Mellin inversion for the cutoff — the pivot of the whole Perron route.**
+  New module `HTGeometry/SmoothWeightInversion.lean`, axiom-clean, wired into the umbrella.
+  Mathlib has `mellinInv_mellin_eq` (inversion via Fourier inversion); its one hard hypothesis is
+  absolute convergence of the vertical integral, and **that is precisely what (P2) supplies**:
+  - `exists_bound_mellin_smoothWeight_line` : on `Re s = sigma > 0`, taking `j = 1` in the
+    integration-by-parts bound gives `‖s‖ ‖s+1‖ ‖W(s)‖ <= C`, and since `‖s+1‖ >= ‖s‖` and
+    `‖s‖^2 = sigma^2 + y^2`, this is **`‖W(sigma+iy)‖ <= C/(sigma^2+y^2) <= (C/m)(1+y^2)^{-1}`**
+    with `m = min(sigma^2, 1)`.
+  - `verticalIntegrable_mellin_smoothWeight` : hence `VerticalIntegrable (mellin w) sigma`,
+    dominating by `integrable_inv_one_add_sq`.
+  - `differentiableAt_mellin_smoothWeight` / `continuous_mellin_smoothWeight_line` : holomorphy of
+    `W` on `Re s > 0` via `mellin_differentiableAt_of_isBigO_rpow`, with the two `IsBigO` inputs
+    supplied by `smoothWeight_eq_zero` (at infinity) and `smoothWeight_le_one` (at the origin).
+  - **`mellinInv_mellin_smoothWeight`** : `mellinInv sigma (mellin w) x = w x` for all `x > 0` and
+    all `sigma > 0`.
+  This is the inversion formula the Perron argument runs on: `w(n) = (1/2 pi) int x^{-(sigma+iy)}
+  W(sigma+iy) dy`.  With it, (P3) reduces to a Fubini interchange between the `n`-sum and the
+  `y`-integral, both now known to converge absolutely.
+- 2026-07-27 — **(P3) done: the smoothed Perron formula.**  New module
+  `HTGeometry/SmoothWeightPerron.lean`, axiom-clean, wired into the umbrella:
+  **`tsum_mul_smoothWeight_eq_integral`** — for `‖a_n‖ <= 1`, `a_0 = 0` and any `sigma > 1`,
+  `2 pi * sum_n a_n w(n) = int_R (sum_n a_n n^{-(sigma+iy)}) W(sigma+iy) dy`.
+  Supporting: `norm_natCast_cpow_neg_line`, `integrable_perron_term` (each term dominated by
+  `n^{-sigma} C (1+y^2)^{-1}`), `integral_perron_term` (each term integrates to `2 pi a_n w(n)`,
+  i.e. Mellin inversion evaluated at `x = n`).
+  The interchange is `hasSum_integral_of_summable_integral_norm`, justified by
+  `sum_n int ‖a_n n^{-(sigma+iy)} W‖ <= (sum_n n^{-sigma}) int ‖W‖ < inf`, which needs exactly
+  `sigma > 1` on the left factor and the quadratic decay of `W` on the right.
+  Programme status: (P1) ✓, (P2) ✓, (P3) ✓, (P6) ✓.  Left: (P4) the contour shift from
+  `Re s = sigma > 1` to `Re s = Theta_chi + eps`, and (P5) the estimate on the shifted line.
+- 2026-07-27 — **(P4) engine built.**  New module `HTGeometry/VerticalContourShift.lean`,
+  axiom-clean, wired into the umbrella.  The corpus only had an AFE-zeta-specific contour shift
+  (`smoothAFEZetaMellin_infinite_contour_shift_line_of_horizontal_tendsto`); this is the general,
+  function-agnostic version:
+  - `verticalStrip c d`, `mem_verticalStrip`, `rect_subset_verticalStrip`.
+  - **`integral_vertical_line_eq_of_horizontal_tendsto`** — if `G` is holomorphic on the closed
+    strip `c <= Re s <= d`, integrable on both edges, and the two horizontal edge integrals over
+    `[c,d]` tend to `0` as the height goes to infinity, then
+    `int_R G(d+iy) dy = int_R G(c+iy) dy`.
+  Proof: `Complex.integral_boundary_rect_eq_zero_of_differentiableOn` on `[c,d] x [-T,T]`, then
+  `T -> inf`; the vertical sides converge by `intervalIntegral_tendsto_integral` and the horizontal
+  ones vanish by hypothesis, leaving `I (A - B) = 0`.
+  This is reusable infrastructure for every Perron/Mellin shift in the corpus, not just this card.
+  What remains for the card's (P4) is the three inputs at `G = F W`: holomorphy on
+  `Theta_chi + eps <= Re s <= sigma` (from `LFunction_ne_zero_of_zeroAbscissa_lt`), edge
+  integrability, and horizontal decay.

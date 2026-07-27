@@ -183,15 +183,19 @@ There is a unique contractible-choice class of
   \([0,1]\)-amplitude: paper-proved in
   `DAC_CHARACTER_SHAPE_FORMALITY` and
   `DAC_ALGEBRAIC_CYCLOTOMIC_MILNOR_AMPLITUDE`.
-- Transfer of this computation to coarse-suspension derived sections:
-  open in `DAC_SHEAFIFIED_UNIT_AMALGAMATION_COMPARISON`; no stalkwise
-  amplitude is claimed.
-- Global arithmetic sheafification, localization, real gluing,
-  reduced analytic comparison, and non-scalar middle cohomology:
-  open.
+- Relevant-coefficient realization: the pro-Stein refinement defines
+  \(R\alpha_{\mathrm{PS},*}\mathcal G\) on Deninger's approximation;
+  transfer to ordinary raw coarse-sheaf hypercohomology is optional.
+- Global arithmetic direct image, finite and real localization,
+  strict completed gluing, amplitude \([0,2]\), endpoints, operations,
+  and intrinsic non-scalar middle cohomology: paper-proved in
+  `DAC_DERIVED_STRATUM_KUMMER_ARITHMETIC_COEFFICIENT`.
+- Reduced Poisson comparison, Kähler leafwise Hodge realization,
+  Lefschetz trace transport, and determinant transport: open.
 
-**Verdict:** `ACTIVE SOURCE OBJECT; COVER SHEAF CONSTRUCTED,
-SHEAFIFIED SECTION COMPARISON AND ARITHMETIC GLUING OPEN`.
+**Verdict:** `ARITHMETIC RELEVANT COEFFICIENT AND THREE-TERM
+COHOMOLOGY CONSTRUCTED ON PRO-STEIN DIRECT IMAGE; POISSON/HODGE/TRACE
+COMPARISONS OPEN`.
 
 ## References
 

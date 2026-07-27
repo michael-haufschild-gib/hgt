@@ -1050,33 +1050,33 @@ theorem ccmFirstClockPrimeAutocorrelation_superposition
       rw [hweight]
       ring
 
-/-- **First-clock Gamma singularity cancellation.**  In the sine-synthesized central family,
-the lag-zero Gamma numerator cancels identically.  What survives is exactly the published
-archimedean sine density before the change of variables `s = 2h`. -/
-theorem ccmFirstClockGammaCancellationKernel_superposition
-    {L xi s : ℝ} (hL : 0 < L) (hxi : xi ≠ 0)
-    (hperiod : xi * L = 2 * Real.pi)
-    (hs : 0 < s) (hsL : s / 2 ≤ L) :
+/-- **Gamma-cancellation superposition from the central autocorrelation value.**  The clock kernel
+splits as `A · (lag-0 autocorrelation) + B · (lag-`s/2` autocorrelation)` with
+`A = e^{-s}/(1-e^{-s})` and `B = -e^{-s/4}/(1-e^{-s})`.  The lag-`0` superposition always vanishes,
+so whatever value `c` the lag-`s/2` superposition takes, the kernel superposition is `B c / 2`. -/
+private theorem ccmFirstClockGammaCancellationKernel_superposition_of_central
+    {L xi s c : ℝ} (hL : 0 < L) (hxi : xi ≠ 0)
+    (hperiod : xi * L = 2 * Real.pi) (hs : 0 < s)
+    (hcombH : xi * rectangularTwoEdgeAutocorrelation (L / 2) (L / 2) (s / 2) +
+        xi ^ 2 * ∫ t : ℝ in (0 : ℝ)..L,
+          Real.sin (xi * t) *
+            rectangularTwoEdgeAutocorrelation (t / 2) (t / 2) (s / 2) = c) :
     xi / 2 * rectangularGammaCancellationKernel (L / 2) (L / 2) s +
         xi ^ 2 / 2 * ∫ t : ℝ in (0 : ℝ)..L,
           Real.sin (xi * t) *
             rectangularGammaCancellationKernel (t / 2) (t / 2) s =
-      Real.exp (-(s / 4)) / (2 * (1 - Real.exp (-s))) *
-        Real.sin (xi * (s / 2)) := by
+      (-Real.exp (-(s / 4)) / (1 - Real.exp (-s))) / 2 * c := by
+
   let h : ℝ := s / 2
   let A : ℝ := Real.exp (-s) / (1 - Real.exp (-s))
   let B : ℝ := -Real.exp (-(s / 4)) / (1 - Real.exp (-s))
   have hh : 0 ≤ h := by dsimp only [h]; linarith
-  have hhL : h ≤ L := by simpa only [h] using hsL
   have hden : 1 - Real.exp (-s) ≠ 0 := by
     have : Real.exp (-s) < 1 := Real.exp_lt_one_iff.mpr (by linarith)
     linarith
   have hsynth0 :=
     ccmPhysicalSine_eq_centralRectangularAutocorrelationVolterra_zeroStart
       hL.le (le_refl 0) hL.le hxi hperiod
-  have hsynthH :=
-    ccmPhysicalSine_eq_centralRectangularAutocorrelationVolterra_zeroStart
-      hL.le hh hhL hxi hperiod
   have hcomb0 :
       xi * rectangularTwoEdgeAutocorrelation (L / 2) (L / 2) 0 +
         xi ^ 2 * ∫ t : ℝ in (0 : ℝ)..L,
@@ -1089,13 +1089,12 @@ theorem ccmFirstClockGammaCancellationKernel_superposition
               rectangularTwoEdgeAutocorrelation (t / 2) (t / 2) 0 := by
       simpa using hsynth0
     linarith [hsynth0']
-  have hcombH :
+  have hcombH' :
       xi * rectangularTwoEdgeAutocorrelation (L / 2) (L / 2) h +
         xi ^ 2 * ∫ t : ℝ in (0 : ℝ)..L,
           Real.sin (xi * t) *
-            rectangularTwoEdgeAutocorrelation (t / 2) (t / 2) h =
-        -Real.sin (xi * h) := by
-    linarith [hsynthH]
+            rectangularTwoEdgeAutocorrelation (t / 2) (t / 2) h = c := by
+    simpa only [h] using hcombH
   have hK (t : ℝ) :
       rectangularGammaCancellationKernel (t / 2) (t / 2) s =
         A * rectangularTwoEdgeAutocorrelation (t / 2) (t / 2) 0 +
@@ -1163,9 +1162,31 @@ theorem ccmFirstClockGammaCancellationKernel_superposition
         rw [hK, hIntK]
         ring
     _ = _ := by
-      rw [hcomb0, hcombH, mul_zero, zero_add]
-      dsimp only [B, h]
-      field_simp [hden]
+      rw [hcomb0, hcombH', mul_zero, zero_add]
+
+/-- **First-clock Gamma singularity cancellation.**  In the sine-synthesized central family,
+the lag-zero Gamma numerator cancels identically.  What survives is exactly the published
+archimedean sine density before the change of variables `s = 2h`. -/
+theorem ccmFirstClockGammaCancellationKernel_superposition
+    {L xi s : ℝ} (hL : 0 < L) (hxi : xi ≠ 0)
+    (hperiod : xi * L = 2 * Real.pi)
+    (hs : 0 < s) (hsL : s / 2 ≤ L) :
+    xi / 2 * rectangularGammaCancellationKernel (L / 2) (L / 2) s +
+        xi ^ 2 / 2 * ∫ t : ℝ in (0 : ℝ)..L,
+          Real.sin (xi * t) *
+            rectangularGammaCancellationKernel (t / 2) (t / 2) s =
+      Real.exp (-(s / 4)) / (2 * (1 - Real.exp (-s))) *
+        Real.sin (xi * (s / 2)) := by
+  have hh : (0 : ℝ) ≤ s / 2 := by linarith
+  have hsynthH :=
+    ccmPhysicalSine_eq_centralRectangularAutocorrelationVolterra_zeroStart
+      hL.le hh hsL hxi hperiod
+  have hden : 1 - Real.exp (-s) ≠ 0 := by
+    have : Real.exp (-s) < 1 := Real.exp_lt_one_iff.mpr (by linarith)
+    linarith
+  rw [ccmFirstClockGammaCancellationKernel_superposition_of_central hL hxi hperiod hs
+    (c := -Real.sin (xi * (s / 2))) (by linarith [hsynthH])]
+  field_simp
 
 /-- A lag beyond the terminal aperture is annihilated by every central triangle in the
 first-clock superposition. -/
@@ -1211,101 +1232,9 @@ theorem ccmFirstClockGammaCancellationKernel_superposition_eq_zero_of_lt
         xi ^ 2 / 2 * ∫ t : ℝ in (0 : ℝ)..L,
           Real.sin (xi * t) *
             rectangularGammaCancellationKernel (t / 2) (t / 2) s = 0 := by
-  let h : ℝ := s / 2
-  let A : ℝ := Real.exp (-s) / (1 - Real.exp (-s))
-  let B : ℝ := -Real.exp (-(s / 4)) / (1 - Real.exp (-s))
-  have hh : 0 ≤ h := by dsimp only [h]; linarith
-  have hden : 1 - Real.exp (-s) ≠ 0 := by
-    have : Real.exp (-s) < 1 := Real.exp_lt_one_iff.mpr (by linarith)
-    linarith
-  have hsynth0 :=
-    ccmPhysicalSine_eq_centralRectangularAutocorrelationVolterra_zeroStart
-      hL.le (le_refl 0) hL.le hxi hperiod
-  have hcomb0 :
-      xi * rectangularTwoEdgeAutocorrelation (L / 2) (L / 2) 0 +
-        xi ^ 2 * ∫ t : ℝ in (0 : ℝ)..L,
-          Real.sin (xi * t) *
-            rectangularTwoEdgeAutocorrelation (t / 2) (t / 2) 0 = 0 := by
-    have hsynth0' :
-        0 = -xi * rectangularTwoEdgeAutocorrelation (L / 2) (L / 2) 0 -
-          xi ^ 2 * ∫ t : ℝ in (0 : ℝ)..L,
-            Real.sin (xi * t) *
-              rectangularTwoEdgeAutocorrelation (t / 2) (t / 2) 0 := by
-      simpa using hsynth0
-    linarith [hsynth0']
-  have hcombH :
-      xi * rectangularTwoEdgeAutocorrelation (L / 2) (L / 2) h +
-        xi ^ 2 * ∫ t : ℝ in (0 : ℝ)..L,
-          Real.sin (xi * t) *
-            rectangularTwoEdgeAutocorrelation (t / 2) (t / 2) h = 0 :=
-    ccmFirstClockCentralAutocorrelation_superposition_eq_zero_of_lt
-      hL (by simpa only [h] using hLs)
-  have hK (t : ℝ) :
-      rectangularGammaCancellationKernel (t / 2) (t / 2) s =
-        A * rectangularTwoEdgeAutocorrelation (t / 2) (t / 2) 0 +
-          B * rectangularTwoEdgeAutocorrelation (t / 2) (t / 2) h := by
-    unfold rectangularGammaCancellationKernel
-      rectangularGammaCancellationNumerator
-    dsimp only [A, B, h]
-    field_simp [hden]
-    ring
-  have hInt0 :=
-    intervalIntegrable_sin_mul_centralRectangularAutocorrelation
-      (xi := xi) hL.le (le_refl 0)
-  have hIntH :=
-    intervalIntegrable_sin_mul_centralRectangularAutocorrelation
-      (xi := xi) hL.le hh
-  have hIntK :
-      (∫ t : ℝ in (0 : ℝ)..L,
-        Real.sin (xi * t) *
-          rectangularGammaCancellationKernel (t / 2) (t / 2) s) =
-        A * (∫ t : ℝ in (0 : ℝ)..L,
-          Real.sin (xi * t) *
-            rectangularTwoEdgeAutocorrelation (t / 2) (t / 2) 0) +
-        B * (∫ t : ℝ in (0 : ℝ)..L,
-          Real.sin (xi * t) *
-            rectangularTwoEdgeAutocorrelation (t / 2) (t / 2) h) := by
-    calc
-      _ = ∫ t : ℝ in (0 : ℝ)..L,
-          (A * (Real.sin (xi * t) *
-            rectangularTwoEdgeAutocorrelation (t / 2) (t / 2) 0) +
-          B * (Real.sin (xi * t) *
-            rectangularTwoEdgeAutocorrelation (t / 2) (t / 2) h)) := by
-        apply intervalIntegral.integral_congr
-        intro t _ht
-        change Real.sin (xi * t) *
-            rectangularGammaCancellationKernel (t / 2) (t / 2) s =
-          A * (Real.sin (xi * t) *
-            rectangularTwoEdgeAutocorrelation (t / 2) (t / 2) 0) +
-          B * (Real.sin (xi * t) *
-            rectangularTwoEdgeAutocorrelation (t / 2) (t / 2) h)
-        rw [hK]
-        ring
-      _ = _ := by
-        rw [intervalIntegral.integral_add
-          (hInt0.const_mul A) (hIntH.const_mul B),
-          intervalIntegral.integral_const_mul,
-          intervalIntegral.integral_const_mul]
-  calc
-    xi / 2 * rectangularGammaCancellationKernel (L / 2) (L / 2) s +
-        xi ^ 2 / 2 * ∫ t : ℝ in (0 : ℝ)..L,
-          Real.sin (xi * t) *
-            rectangularGammaCancellationKernel (t / 2) (t / 2) s =
-      A / 2 * (xi *
-        rectangularTwoEdgeAutocorrelation (L / 2) (L / 2) 0 +
-          xi ^ 2 * ∫ t : ℝ in (0 : ℝ)..L,
-            Real.sin (xi * t) *
-              rectangularTwoEdgeAutocorrelation (t / 2) (t / 2) 0) +
-      B / 2 * (xi *
-        rectangularTwoEdgeAutocorrelation (L / 2) (L / 2) h +
-          xi ^ 2 * ∫ t : ℝ in (0 : ℝ)..L,
-            Real.sin (xi * t) *
-              rectangularTwoEdgeAutocorrelation (t / 2) (t / 2) h) := by
-        rw [hK, hIntK]
-        ring
-    _ = 0 := by
-      rw [hcomb0, hcombH]
-      ring
+  rw [ccmFirstClockGammaCancellationKernel_superposition_of_central hL hxi hperiod hs
+    (c := 0) (ccmFirstClockCentralAutocorrelation_superposition_eq_zero_of_lt hL hLs)]
+  ring
 
 /-- Global pointwise Gamma synthesis: published density inside the aperture and exact zero
 outside it. -/

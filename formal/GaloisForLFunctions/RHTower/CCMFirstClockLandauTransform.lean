@@ -100,41 +100,32 @@ private theorem integral_sq_mul_cexp_neg
   dsimp only [A, P]
   simp
 
-private theorem integrableOn_sq_cexp_cos
-    {s z : ℂ} {u : ℝ} (hs : |z.im| < s.re)
+/-- Both shifted abscissas stay in the right half plane when `|Im z| < Re s` and `u ∈ [0,1]`. -/
+private theorem re_pos_shifted_abscissa {s z : ℂ} {u : ℝ} (hs : |z.im| < s.re)
     (hu : u ∈ Set.Icc (0 : ℝ) 1) :
-    IntegrableOn (fun L : ℝ =>
-      Complex.exp (-s * (L : ℂ)) * (L : ℂ) ^ 2 *
-        Complex.cos ((L : ℂ) * z * (u : ℂ))) (Ioi 0) := by
-  let aMinus : ℂ := s - I * z * (u : ℂ)
-  let aPlus : ℂ := s + I * z * (u : ℂ)
-  have hMinus : 0 < aMinus.re := by
-    dsimp only [aMinus]
-    simp only [sub_re, mul_re, I_re, zero_mul, I_im, one_mul,
+    0 < (s - I * z * (u : ℂ)).re ∧ 0 < (s + I * z * (u : ℂ)).re := by
+  have huabs : |u| ≤ 1 := abs_le.mpr ⟨by linarith [hu.1], hu.2⟩
+  have hprod : |z.im * u| ≤ |z.im| := by
+    rw [abs_mul]
+    nlinarith [abs_nonneg z.im]
+  constructor
+  · simp only [sub_re, mul_re, I_re, zero_mul, I_im, one_mul,
       Complex.ofReal_re, Complex.ofReal_im, mul_zero, sub_zero, zero_sub]
-    have huabs : |u| ≤ 1 := abs_le.mpr ⟨by linarith [hu.1], hu.2⟩
-    have hprod : |z.im * u| ≤ |z.im| := by
-      rw [abs_mul]
-      nlinarith [abs_nonneg z.im]
     linarith [neg_abs_le (z.im * u)]
-  have hPlus : 0 < aPlus.re := by
-    dsimp only [aPlus]
-    simp only [add_re, mul_re, I_re, zero_mul, I_im, one_mul,
+  · simp only [add_re, mul_re, I_re, zero_mul, I_im, one_mul,
       Complex.ofReal_re, Complex.ofReal_im, mul_zero, sub_zero, zero_sub]
-    have huabs : |u| ≤ 1 := abs_le.mpr ⟨by linarith [hu.1], hu.2⟩
-    have hprod : |z.im * u| ≤ |z.im| := by
-      rw [abs_mul]
-      nlinarith [abs_nonneg z.im]
     linarith [le_abs_self (z.im * u)]
-  have hM := integrableOn_sq_mul_cexp_neg hMinus
-  have hP := integrableOn_sq_mul_cexp_neg hPlus
-  have hsum : IntegrableOn (fun L : ℝ =>
-      ((L : ℂ) ^ 2 * Complex.exp (-aMinus * (L : ℂ)) +
-        (L : ℂ) ^ 2 * Complex.exp (-aPlus * (L : ℂ))) / 2) (Ioi 0) :=
-    (hM.add hP).div_const 2
-  apply hsum.congr_fun _ measurableSet_Ioi
-  intro L hL
-  dsimp only [aMinus, aPlus]
+
+/-- **Cosine split of the squared Landau integrand.**  Writing `cos` as a half-sum of exponentials
+turns `e^{-sL} L² cos(Lzu)` into the mean of two pure squared-exponential integrands at the shifted
+abscissas `s ∓ i z u`.  This is an identity of functions, with no hypotheses. -/
+private theorem sq_cexp_cos_eq_half_add (s z : ℂ) (u : ℝ) :
+    (fun L : ℝ => Complex.exp (-s * (L : ℂ)) * (L : ℂ) ^ 2 *
+        Complex.cos ((L : ℂ) * z * (u : ℂ))) =
+      fun L : ℝ =>
+        ((L : ℂ) ^ 2 * Complex.exp (-(s - I * z * (u : ℂ)) * (L : ℂ)) +
+          (L : ℂ) ^ 2 * Complex.exp (-(s + I * z * (u : ℂ)) * (L : ℂ))) / 2 := by
+  funext L
   rw [Complex.cos]
   have hleft :
       Complex.exp (-s * (L : ℂ)) *
@@ -150,7 +141,6 @@ private theorem integrableOn_sq_cexp_cos
     rw [← Complex.exp_add]
     congr 1
     ring
-  symm
   calc
     Complex.exp (-s * (L : ℂ)) * (L : ℂ) ^ 2 *
         ((Complex.exp ((L : ℂ) * z * (u : ℂ) * I) +
@@ -164,6 +154,17 @@ private theorem integrableOn_sq_cexp_cos
         ring
     _ = _ := by rw [hleft, hright]
 
+private theorem integrableOn_sq_cexp_cos
+    {s z : ℂ} {u : ℝ} (hs : |z.im| < s.re)
+    (hu : u ∈ Set.Icc (0 : ℝ) 1) :
+    IntegrableOn (fun L : ℝ =>
+      Complex.exp (-s * (L : ℂ)) * (L : ℂ) ^ 2 *
+        Complex.cos ((L : ℂ) * z * (u : ℂ))) (Ioi 0) := by
+  obtain ⟨hMinus, hPlus⟩ := re_pos_shifted_abscissa hs hu
+  rw [sq_cexp_cos_eq_half_add]
+  exact ((integrableOn_sq_mul_cexp_neg hMinus).add
+    (integrableOn_sq_mul_cexp_neg hPlus)).div_const 2
+
 private theorem integral_sq_cexp_cos
     {s z : ℂ} {u : ℝ} (hs : |z.im| < s.re)
     (hu : u ∈ Set.Icc (0 : ℝ) 1) :
@@ -172,67 +173,11 @@ private theorem integral_sq_cexp_cos
         Complex.cos ((L : ℂ) * z * (u : ℂ))) =
       1 / (s - I * z * (u : ℂ)) ^ 3 +
         1 / (s + I * z * (u : ℂ)) ^ 3 := by
-  let aMinus : ℂ := s - I * z * (u : ℂ)
-  let aPlus : ℂ := s + I * z * (u : ℂ)
-  have hMinus : 0 < aMinus.re := by
-    dsimp only [aMinus]
-    simp only [sub_re, mul_re, I_re, zero_mul, I_im, one_mul,
-      Complex.ofReal_re, Complex.ofReal_im, mul_zero, sub_zero, zero_sub]
-    have huabs : |u| ≤ 1 := abs_le.mpr ⟨by linarith [hu.1], hu.2⟩
-    have hprod : |z.im * u| ≤ |z.im| := by
-      rw [abs_mul]
-      nlinarith [abs_nonneg z.im]
-    linarith [neg_abs_le (z.im * u)]
-  have hPlus : 0 < aPlus.re := by
-    dsimp only [aPlus]
-    simp only [add_re, mul_re, I_re, zero_mul, I_im, one_mul,
-      Complex.ofReal_re, Complex.ofReal_im, mul_zero, sub_zero, zero_sub]
-    have huabs : |u| ≤ 1 := abs_le.mpr ⟨by linarith [hu.1], hu.2⟩
-    have hprod : |z.im * u| ≤ |z.im| := by
-      rw [abs_mul]
-      nlinarith [abs_nonneg z.im]
-    linarith [le_abs_self (z.im * u)]
+  obtain ⟨hMinus, hPlus⟩ := re_pos_shifted_abscissa hs hu
   have hM := integrableOn_sq_mul_cexp_neg hMinus
   have hP := integrableOn_sq_mul_cexp_neg hPlus
-  have hfun :
-      (fun L : ℝ =>
-        Complex.exp (-s * (L : ℂ)) * (L : ℂ) ^ 2 *
-          Complex.cos ((L : ℂ) * z * (u : ℂ))) =
-      fun L : ℝ =>
-        ((L : ℂ) ^ 2 * Complex.exp (-aMinus * (L : ℂ)) +
-          (L : ℂ) ^ 2 * Complex.exp (-aPlus * (L : ℂ))) / 2 := by
-    funext L
-    dsimp only [aMinus, aPlus]
-    rw [Complex.cos]
-    have hleft :
-        Complex.exp (-s * (L : ℂ)) *
-            Complex.exp ((L : ℂ) * (z * (u : ℂ)) * I) =
-          Complex.exp (-(s - I * z * (u : ℂ)) * (L : ℂ)) := by
-      rw [← Complex.exp_add]
-      congr 1
-      ring
-    have hright :
-        Complex.exp (-s * (L : ℂ)) *
-            Complex.exp (-((L : ℂ) * (z * (u : ℂ))) * I) =
-          Complex.exp (-(s + I * z * (u : ℂ)) * (L : ℂ)) := by
-      rw [← Complex.exp_add]
-      congr 1
-      ring
-    calc
-      Complex.exp (-s * (L : ℂ)) * (L : ℂ) ^ 2 *
-          ((Complex.exp ((L : ℂ) * z * (u : ℂ) * I) +
-            Complex.exp (-((L : ℂ) * z * (u : ℂ)) * I)) / 2) =
-        (((L : ℂ) ^ 2 *
-            (Complex.exp (-s * (L : ℂ)) *
-              Complex.exp ((L : ℂ) * (z * (u : ℂ)) * I))) +
-          (L : ℂ) ^ 2 *
-            (Complex.exp (-s * (L : ℂ)) *
-              Complex.exp (-((L : ℂ) * (z * (u : ℂ))) * I))) / 2 := by
-          ring
-      _ = _ := by rw [hleft, hright]
-  rw [hfun, integral_div, integral_add hM hP,
+  rw [sq_cexp_cos_eq_half_add, integral_div, integral_add hM hP,
     integral_sq_mul_cexp_neg hMinus, integral_sq_mul_cexp_neg hPlus]
-  dsimp only [aMinus, aPlus]
   ring
 
 /-- Uniform complex cosine bound along a real contraction of a spectral segment. -/

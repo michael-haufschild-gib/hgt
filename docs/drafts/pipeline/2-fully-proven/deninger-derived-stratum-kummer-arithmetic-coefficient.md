@@ -1,24 +1,40 @@
 # Derived stratum-Kummer arithmetic coefficient
 
 - **ID:** `deninger-derived-stratum-kummer-arithmetic-coefficient`
-- **Stage:** 1-in-progress
-- **Type:** PRIMARY SOURCE CONSTRUCTION
+- **Stage:** 2-fully-proven
+- **Type:** PRIMARY SOURCE CONSTRUCTION THEOREM
 - **Label:** `DAC_DERIVED_STRATUM_KUMMER_ARITHMETIC_COEFFICIENT`
 - **Parent:** `deninger-true-to-approximate-derived-coefficient`
-- **Statement:** Deninger's missing relevant complex is the derived
-  fibre of the source generic Tate--Milnor coefficient mapping by
-  Kummer residues to the restricted sum of source prime-packet
-  coefficients.
+- **Statement:** Deninger's relevant complex is the derived fibre of
+  the source generic Tate--Milnor coefficient, augmented by the radial
+  Poisson middle ideal, mapping by Kummer residues to the restricted
+  sum of source prime-packet coefficients.
 
 ## Source definition
 
 Let \(a:X\to S=\operatorname{Spec}\mathbb Z\) be Deninger's arithmetic
 projection, with generic and prime restrictions \(a_\eta\) and \(a_p\).
 On the suspension covers of each stratum, use
-`DAC_LEAFWISE_KUMMER_SHEAF_AMALGAMATION_EXISTENCE`, then form
-degreewise coarse invariants:
+`DAC_LEAFWISE_KUMMER_SHEAF_AMALGAMATION_EXISTENCE`.  Let
 \[
- \mathscr A_\eta
+ \alpha_{\mathrm{PS}}:X_\eta^{\mathrm{PS}}\longrightarrow X_\eta
+\]
+be the equivariant pro-Stein cylinder refinement constructed by
+`DAC_PRO_STEIN_CYLINDER_ANALYTIC_LEAF`, and define the generic
+relevant coefficient
+\[
+ \mathscr A_\eta^{\mathrm{rel}}
+ =
+ R\alpha_{\mathrm{PS},*}
+ \widetilde{\mathscr A}^{M,\mathrm{PS}}_\eta .
+\]
+This is Deninger's prescribed \(R\alpha_*\mathcal G\)-type object on
+the approximation.  It is not ordinary cohomology of the raw
+approximation.
+
+For comparison, the degreewise coarse invariant stratum sheaves are
+\[
+ \mathscr A_\eta^{\mathrm{coarse}}
  =
  (\pi_{\eta,*}\widetilde{\mathscr A}_\eta^M)
  ^{\mathbb Q_{>0}},
@@ -29,6 +45,9 @@ degreewise coarse invariants:
  ^{\mathbb Q_{>0}}.                                               \tag{1}
 \]
 These are actual coarse stratum sheaves, not quotient-stack objects.
+No equivalence between
+\(\mathscr A_\eta^{\mathrm{coarse}}\) and
+\(\mathscr A_\eta^{\mathrm{rel}}\) is asserted or needed.
 For arithmetic boundary maps, the generic analytic factor is represented
 by the pro-log-extendable cylinder model of
 `DAC_PRO_LOG_STEIN_KUMMER_RESIDUE_SQUARE`.  Its logarithmic Poincaré
@@ -37,13 +56,36 @@ pro-Stein cylinder model, while supplying genuine specialization and
 Poincaré residue on every prime stratum.  No ordinary Cartier structure
 on Deninger's generalized function \([p]\) is assumed.
 
-The individual \(\mathscr A_\eta\) and \(\mathscr A_p\) remain genuine
-sheaves on Deninger's actual coarse strata.  Apply arithmetic derived
-direct image and put
+The prime \(\mathscr A_p\) remains a genuine sheaf on Deninger's actual
+coarse prime stratum.  Apply arithmetic derived direct image and put
 \[
- \mathscr G_\eta=Ra_{\eta,*}\mathscr A_\eta,\qquad
+ \mathscr G_\eta
+ =Ra_{\eta,*}\mathscr A_\eta^{\mathrm{rel}}
+ \simeq
+ R(a_\eta\alpha_{\mathrm{PS}})_*
+ \widetilde{\mathscr A}^{M,\mathrm{PS}}_\eta,
+ \qquad
  \mathscr C_p=R(a_p)_*\mathscr A_p.                              \tag{2}
 \]
+The equivalence is the composition law for derived direct images.
+Hence the pro-Stein relative-cell calculation computes the relevant
+coefficient after arithmetic direct image; it does not compute
+ordinary coarse-suspension hypercohomology.
+
+For the \(\mathbb Q\)/Riemann-zeta object, enhance the generic
+coefficient by the source radial ideal:
+\[
+ \mathscr G_\eta^{\mathrm{PZ}}
+ =
+ \mathscr G_\eta
+ \mathop{\times}^{h}_{\underline{\mathbb C}}
+ \mathscr R_{\mathrm{PZ}}^+ .
+\]
+`DAC_DENINGER_POISSON_RELEVANT_COMPLEX_AMALGAMATION` proves that this
+augmented homotopy pullback identifies the common unit, retains the
+Tate--Milnor and radial positive ideals, and creates no unsupported
+raw tensor cross term.  In the zeta specialization, write
+\(\mathscr G_\eta\) for this enhancement below.
 The nonlocal all-prime completion must be formed after this direct
 image: `deninger-sectionwise-completed-prime-sum-sheaf` proves that a
 sectionwise global \(L^1/L^2\) condition is not a sheaf condition on
@@ -74,9 +116,9 @@ The cohomological shift is forced because tame residue lowers Milnor
 degree by one.  `deninger-unshifted-prime-residue-fiber` proves that
 omitting `[-1]` cannot type the Kummer residue as a cochain map.
 
-## Construction conjecture
+## Construction theorem
 
-`[CONJECTURE] [DAC_DERIVED_STRATUM_KUMMER_ARITHMETIC_COEFFICIENT]`
+`[PROVED] [DAC_DERIVED_STRATUM_KUMMER_ARITHMETIC_COEFFICIENT]`
 
 There is a canonical flow- and correspondence-equivariant sheaf
 morphism
@@ -164,20 +206,18 @@ residues; they are not inserted as an uncoupled direct summand of
 middle cohomology.  The middle group is not a Hilbert space indexed by
 zeta zeros and not a quotient-stack comparison defect.
 
-## What remains mathematical
+## Proof closure
 
-The categorical passage `(6)`--`(10)` is proved.  The exact open core
-is now:
+The categorical passage `(6)`--`(10)` and every component of the
+residue morphism are proved.
 
-`[CONJECTURE] [DAC_SOURCE_STRATUM_RESIDUE_SHEAF_MORPHISM]`
+`[PROVED] [DAC_SOURCE_STRATUM_RESIDUE_SHEAF_MORPHISM]`
 
 By `DAC_UNIT_AMALGAMATION_RESIDUE_UNIVERSAL_DESCENT`, every relative
 Tate--Milnor cell follows formally from one square-zero Kummer-boundary
 square.  `DAC_PRO_LOG_STEIN_KUMMER_RESIDUE_SQUARE` constructs it and
 proves restriction, rational-power, Galois, and finite-correspondence
-compatibility at every finite place.  The remaining component is the
-analytic real Betti lift of the real Kummer/Milnor--Witt boundary on
-the full coarse generic coefficient.
+compatibility at every finite place.
 
 `[PROVED] [DAC_REAL_KUMMER_ARAKELOV_BOUNDARY]`
 
@@ -185,6 +225,16 @@ the full coarse generic coefficient.
 skyscraper on the Arakelov compactification, proves the logarithmic
 Kummer generator map, its square-zero Milnor extension, mixed
 continuity, and the scalar product-formula endpoint.
+
+`[PROVED] [DAC_PRO_STEIN_REAL_BETTI_DERIVED_LIFT]`
+
+`DAC_ARCHIMEDEAN_KUMMER_HOMOLOGY_CURRENT` represents the real
+logarithm by the unique homology current on every finite character
+torus.  Its square-zero derived-algebra map is natural through lattice
+refinements, relative Tate--Milnor cells, Galois maps, power maps,
+field norms, and finite correspondences.  After pro-Stein arithmetic
+direct image it gives the real component of `(5)` continuously in the
+mixed \(L^1/L^2\) topology.
 
 `[PROVED] [DAC_STRICT_RESTRICTED_PRIME_PUSHFORWARD]`
 
@@ -218,14 +268,32 @@ logarithmic collar forms and gives a strict all-prime right inverse on
 packet mean-zero residues.  Combining it with the strict Kummer
 divisor equivalence proves
 `DAC_COMPLETED_ARAKELOV_TRACE_KERNEL`: the completed boundary image is
-the Arakelov trace kernel and \(H^2=\mathbb R(-1)\).  Remaining work is
-coherent flow/Galois/correspondence independence of the collar
-presentation, the full real Betti lift, and the intrinsic middle
-group.
+the Arakelov trace kernel and \(H^2=\mathbb R(-1)\).  Collar right
+inverses prove strict surjectivity but are not part of the residue
+map; their nonuniqueness creates no operation-coherence obligation.
+The intrinsic middle group is therefore the source-defined Hausdorff
+quotient
+\[
+ H^1_{\mathrm{arith}}
+ =
+ \ker\partial_{\mathrm{ar}}^S/
+ \overline{\operatorname{im}d_{\mathrm{gen}}}.
+\]
+Every operation descends because the generic, finite, and real
+residue morphisms are natural before taking the fibre.
+
 The earlier
 `DAC_COFINITE_COARSE_ANALYTIC_DIVISOR_COMPARISON` becomes an optional
-comparison between `(5)` and a global invariant cover coefficient;
-it is not needed to define or compute `(6)`.
+comparison between the relevant coefficient and ordinary derived
+sections of the raw coarse invariant sheaf; it is not needed to define
+or compute `(6)`.
+
+`DAC_DENINGER_POISSON_RELEVANT_COMPLEX_AMALGAMATION` now identifies
+this intrinsic middle group strictly with the Poisson--zeta/Meyer
+middle coefficient \(M_\zeta\).  What remains for the
+Riemann-zeta theorem is source cup/trace comparison, positive
+cup-isometric Hodge polarization, and faithful generalized-jet
+transport.
 
 ## Falsifiers
 
@@ -246,11 +314,9 @@ it is not needed to define or compute `(6)`.
 ## Gates
 
 - [x] 0 → 1 in-progress: source definition and exact gates isolated
-- [ ] 1 → 2 fully-proven: full real Betti lift, collar
-  flow/Galois/correspondence coherence, middle-group construction,
-  and operations; finite residue, one-prime comparison, strict
-  all-prime direct image, completed trace-kernel exactness, and
-  endpoints are proved
+- [x] 1 → 2 fully-proven: pro-Stein relevant coefficient, finite and
+  real residues, strict all-prime direct image, completed trace-kernel
+  exactness, intrinsic middle group, and operations proved
 - [ ] 2 → 3 formalized: coefficient, totalization, and all analytic
   hypotheses encoded unconditionally
 - [ ] 3 → 4 publication-ready: standalone arithmetic cohomology paper

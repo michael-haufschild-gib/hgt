@@ -348,11 +348,107 @@ excluded as an equivalence, so Clause 1 must be a loss-aware zigzag.
   this with the swapped open-positive product measure and continuous representatives to prove
   injectivity. `FieldOneSemilocalBruhatHilbertCompletion.lean` pulls back the product-\(L^2\)
   inner product, identifies the abstract completion with the closed algebraic image, and extends
-  the Weyl action unitarily with exact intertwining. Full-product density, independent factorwise
-  completed-tensor comparison, and sheaf compatibility remain open.
+  the Weyl action unitarily with exact intertwining.
+  `L2SeparatedProductDensity.lean` and
+  `FieldOneSemilocalBruhatL2Density.lean` now prove full-product density,
+  identify the abstract completion canonically with all semilocal product
+  \(L^2\), and prove completed and ambient Weyl faithfulness.
+  `L2HilbertTensorProduct.lean` and
+  `FieldOneSemilocalFactorwiseHilbertTensor.lean` construct the independent
+  factorwise Hilbert completion, identify it canonically with the semilocal
+  Bruhat completion, and prove pure-tensor compatibility. Sheaf compatibility
+  remains open.
 - **Card:** `docs/drafts/pipeline/2-fully-proven/field-one-spherical-weyl-multiplier-bridge.md`.
 - **New insight:** the Frobenius-faithful RP0 target is the multiplier/endomorphism sheaf of the
   analytic coefficients, not the coefficient sheaf itself.
+
+### C9. Full semilocal `L²` completion automatically supplies relative Picard cohomology
+
+- **Status:** `[FALSIFIED AS AN INFERENCE]`
+- **Attack:** combine the primary-source sheaf
+  \(\mathscr O\rtimes\mathbf G_m\) on
+  \(\operatorname{Spec}\mathbb Z\) with the now-proved equivalence between
+  the semilocal Bruhat Hilbert completion and full product-Haar \(L^2\), then
+  regard the result as the desired Hilbert coefficient sheaf on
+  \(\widetilde{\operatorname{Pic}}\).
+- **Killing mechanism:** the crossed-product sheaf is algebraic and lives on
+  \(\operatorname{Spec}\mathbb Z\); the Hilbert completion is one analytic
+  fiber and does not by itself define restriction maps, an archimedean
+  extension, a derived pullback, or a derived Abel--Jacobi pushforward.
+  Connes--Consani's 2026 Jacobian paper says the Picard-pair cohomology is
+  suggested by the trace geometry, not constructed. Their Riemann--Roch
+  strategy also records the characteristic-one \(H^1\) problem as open,
+  with null elements obstructing the available Čech construction.
+- **Strongest positive survivor:** the full semilocal product-Haar \(L^2\)
+  space, its dense Bruhat core, and its faithful Weyl action are canonical
+  boundary data for the global additive adelic fiber. They are not yet the
+  finite-\(S\) quotient Hilbert spaces of the trace formula. Any proposed
+  \(\mathscr A_{\mathrm{ar}}\) must construct an explicit comparison rather
+  than identify these types by notation.
+- **New insight:** RP0 now contains a falsifiable normed-sheaf comparison
+  gate: sheaf compatibility must be constructed, not inferred from
+  fiberwise density or completion.
+
+### C10. The completed archimedean--finite carrier is the finite-\(S\) trace fiber
+
+- **Status:** `[FALSIFIED BY TYPE COMPARISON]`
+- **Attack:** use the proved completion of
+  \(\mathcal S(\mathbb R)\otimes C_c^{\mathrm{lc}}(\mathbb A_f)\) as
+  \(L^2(\mathbb Z_S^\times\backslash\mathbb A_S)\) in the semilocal sheaf.
+- **Killing mechanism:** `FieldOneGlobalAdeleComparison.lean` proves
+  \(\mathbb R\times\mathbb A_f\cong\mathbb A_{\mathbb Q}\) as a ring and
+  topological space. This is the full additive adele ring. The source trace
+  fiber for finite \(S\ni\infty\) is the quotient
+  \(L^2(\mathbb Z_S^\times\backslash\mathbb A_S)\), and its action is
+  multiplicative scaling by
+  \(C_{\mathbb Q,S}=\mathbb Z_S^\times\backslash\mathbb A_S^\times\).
+  The formalized action is instead an additive-character multiplier action
+  on unquotiented global adelic \(L^2\).
+- **Strongest positive survivor:** the new Lean comparison transports the
+  standard additive character to mathlib's rational adele ring, proves it
+  nontrivial, and proves global additive reciprocity: it vanishes on every
+  principal rational adele.
+- **New gate:** C11 constructs finite-\(S\) products, orbit quotients, and
+  multiplicative scaling. Quotient measure, its Hilbert representation, and
+  compatible restriction maps remain prerequisites for sectionwise
+  completion or derived Picard transport.
+
+### C11. Direct finite-stage class space and idele-class action
+
+- **Status:** `[FORMALIZED ALGEBRAICALLY AND TOPOLOGICALLY]`
+- **Attack:** construct
+  \(\mathbb A_S=\mathbb R\times\prod_{v\in S_f}\mathbb Q_v\), present
+  rational \(S\)-units by \(-1\) and primes in \(S_f\), embed them
+  diagonally, and descend coordinatewise idele scaling through their orbit
+  quotient.
+- **Proof:** `FieldOneFiniteStageClassSpace.lean` proves the diagonal map
+  injective, constructs
+  \(\mathbb Z_S^\times\backslash\mathbb A_S\) and
+  \(C_{\mathbb Q,S}\), proves the \(S\)-unit image acts trivially on the
+  orbit quotient, and factors the action through \(C_{\mathbb Q,S}\).
+  `FieldOneFiniteStageClassTopology.lean` proves the orbit projection is an
+  open quotient map and every idele class acts by a homeomorphism.
+- **Axiom audit:** only `propext`, `Classical.choice`, and `Quot.sound`.
+- **Boundary:** no measure, `L²`, crossed product, restriction map, sheaf,
+  trace, positivity, or RH theorem is inferred.
+
+### C12. Quotient topology automatically determines the trace measure
+
+- **Status:** `[FALSIFIED AS AN AUTOMATIC INFERENCE]`
+- **Attack:** push product additive Haar measure along the open orbit
+  projection.
+- **Killing mechanism:** topological quotient data do not select the
+  fundamental-domain/disintegration measure. Direct pushforward uses full
+  saturated preimages and is not automatically the trace measure.
+  `S`-unit invariance itself requires the local Haar modulus and rational
+  product formula
+  \(|u|_\infty\prod_{v\in S_f}|u|_v=1\).
+- **Strongest positive survivor:** continuous idele-class homeomorphisms are
+  complete. Next analytic theorem is exactly the invariant product measure
+  plus measurable quotient construction.
+- **New gate:** prove local Haar scaling, product-formula invariance on the
+  generated \(S\)-unit subgroup, then construct quotient measure by an
+  audited fundamental-domain or disintegration theorem.
 
 ## Ranked open cores
 
@@ -369,9 +465,16 @@ Ranking is by logical dependency, not preferred method or effort.
    finite-adele Haar-\(L^2\) unitarity, and product-Haar semilocal \(L^2\) unitarity are
    Lean-proved. The canonical algebraic-tensor map into product-Haar \(L^2\) and its exact Weyl
    equivariance and injectivity are also Lean-proved. Its induced Hilbert completion is
-   Lean-proved isometric to the closed algebraic image, with completed unitary Weyl
-   intertwining. Full-product density, independent factorwise completed-tensor identification,
-   sheaf-restriction compatibility, and compactified extension remain open.
+   Lean-proved canonically equivalent to the full product-Haar \(L^2\), with
+   completed unitary Weyl intertwining and faithful completed/ambient actions.
+   Independent factorwise Hilbert-tensor identification is also Lean-proved,
+   with exact pure-tensor compatibility. The ambient product is now
+   Lean-identified with the full rational adele ring, not a finite-\(S\)
+   quotient. Finite-\(S\) orbit quotient, semilocal idele class group,
+   factored multiplicative scaling, open quotient topology, and scaling
+   homeomorphisms are now Lean-proved. Finite-\(S\) invariant quotient
+   measure, its `L²` representation, sheaf-restriction compatibility, and
+   compactified extension remain open.
 2. `[OPEN CORE RP1 — COEFFICIENT TYPE]` Construct
    \(\mathscr A_{\mathrm{ar}}\) and the \(C_{\mathbb Q}\)-equivariant
    pull--push object \(\mathscr B\).  This is not itself RH-equivalent.
@@ -465,3 +568,9 @@ proof exists.
 - 2026-07-26 — Analytic type audit killed C8 as a coefficient-valued map and repaired it as a
   faithful unitary multiplier representation. Fixed-stage preservation, \(p\)-perfection, and
   scaling covariance are paper-proved; sheaf compatibility remains RP0.
+- 2026-07-27 — Type correction C10 led to a direct finite-stage construction.
+  Lean now contains \(\mathbb A_S\), generated rational \(S\)-units, their
+  diagonal orbit quotient, semilocal idele class group, exact factored
+  scaling, open quotient topology, and scaling homeomorphisms. C12 killed
+  automatic measure descent; local Haar modulus/product-formula invariance
+  and a genuine measurable quotient are next.

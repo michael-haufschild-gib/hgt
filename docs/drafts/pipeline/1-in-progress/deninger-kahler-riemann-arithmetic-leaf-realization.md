@@ -30,6 +30,49 @@ leaves are not known to be closed two-dimensional Riemannian leaves.  A
 geometric refinement, or an equivalent sheaf-theoretic Hilbert complex,
 is required.
 
+The positive-radius refinement is now constructed globally.
+`DAC_DENINGER_HILBERT_KUMMER_RADIAL_SUSPENSION` constructs the
+source-defined radius
+\[
+ x([P,u])=u\|\ell_P\|.
+\]
+`DAC_EQUIVARIANT_RADIUS_ORBIT_TRIVIALIZATION` proves that every
+positive equivariant radius globally splits its flow space as
+\(x^{-1}(1)\times\mathbb R_{>0}\).  Its canonical half-density circle
+refinement
+\[
+ \{(p,z):|z|^2=x(p)\}
+ \cong x^{-1}(1)\times\mathbb C^\times
+\]
+has complex leaves, flow \(z\mapsto e^{t/2}z\), Kähler form scaling by
+\(e^t\), Meyer's exact critical radial measure, and positive
+degree-one Hodge star of square \(-1\).  No identification with the
+unitary-character phase or Gamma-rank regular representation is used.
+That orbit collar has tangent flow and is only a local metric model.
+
+`DAC_HILBERT_KUMMER_AFFINE_LEAF_DISTRIBUTION` now constructs the
+generic arithmetic foliation itself.  Its leaf frame is the modulus
+Euler field \(A\) and Kummer--Kronecker phase field \(K\), with
+\([A,K]=K\).  Deninger's flow changes suspension height, is transverse
+to these leaves, and scales their Kähler form by \(e^t\).
+`DAC_RESIDUAL_DENSE_KUMMER_LEAVES` proves that a dense \(G_\delta\) of
+Kummer directions has dense phase leaves by Baire category and
+Pontryagin duality.  Thus generic leaf dimension, transverse flow,
+residual density, local Hodge positivity, and critical radial measure
+are source-proved.  `DAC_PRO_LOG_KUMMER_CUSP_HODGE_EXTENSION`
+continues the conformal star over every prime log collar, and
+`DAC_REAL_ORIENTATION_TWISTED_HODGE_APEX` supplies the forced
+orientation-sign descent at infinity.
+`DAC_AFFINE_PRO_LOG_PRIME_HODGE_OVERLAP` closes mixed
+generic/prime oriented-conformal gluing.  Global closed-complex
+gluing must use a relative/rigged domain.
+`DAC_ARITHMETIC_EXTENDED_CUSP_HODGE_BOUNDARY` now constructs the
+prime extended-\(L^2\) domain retaining \(d\log z\), while
+`DAC_KUMMER_RELATIVE_CALDERON_POISSON_DOMAIN` constructs the exact
+relative Calderón domain at the unitary face.  Their global
+Tate--Milnor incidence closure, Green supertrace comparison, and
+harmonic faithfulness remain.
+
 Deninger's no-real-coefficients theorem adds a non-negotiable
 full-theory constraint: ordinary complexified real leafwise cohomology
 cannot be the arithmetic \(H^1\) functorially for all number fields.
@@ -160,14 +203,21 @@ gate; it does not by itself identify the spectrum with zeta zeros.
 
 ## Construction program
 
-1. Refine each finite pro-Stein character chart by a one-complex-dimensional
-   leaf chart carrying the logarithmic Kummer differential.
-2. Glue charts through rational-Witt finite correspondences and twisted MW
-   residue maps, with genuinely quaternionic coefficient transitions.
-3. Construct a bundle-like metric whose leafwise area form represents the
-   Tate orientation and whose Kummer restriction is the adelic
-   \(L^2\) energy form, while the accompanying \(L^1\) topology retains
-   the product-formula boundary.
+1. **Completed on the generic nonunitary locus:** sheafify the
+   Hilbert--Kummer polar splitting and apply
+   `DAC_HILBERT_KUMMER_AFFINE_LEAF_DISTRIBUTION`.  The affine
+   Euler--Kronecker leaves have transverse flow, residual phase
+   density, weight-one Kähler metric, and critical radial measure.
+2. Attach the source cone apex \(z=0\) and sheafify the leafwise
+   Kähler trace.  `DAC_RADIAL_KAHLER_ENDPOINT_FOURIER_TRACE` already
+   proves on radial Schwartz data that these maps are
+   \(f(0)\) and \((\pi/2)\mathcal Ff(0)\).  No second Fourier boundary
+   point is required; do not identify the uncompactified unitary locus
+   with a flow limit.
+3. Extend the half-density leaf complex through unit amalgamation, rational-Witt finite
+   correspondences, twisted MW residue maps, and the real boundary.
+   Its fiber metric is the proved Hermitian radial-line metric; the
+   accompanying \(L^1\) topology retains the product-formula boundary.
 4. Prove transition maps are leafwise holomorphic and preserve the metric
    up to the Frobenius scale.
 5. Establish `(1)` only after the quotient-adapted hypercover,
@@ -214,10 +264,32 @@ gate; it does not by itself identify the spectrum with zeta zeros.
   `DAC_TWISTED_KAHLER_RIEMANN_FLOW_PURITY`.
 - Abstract three-term purity implication: paper-proved; Lean written,
   direct check deferred during external build saturation.
-- Arithmetic leaf refinement, coefficient pushforward comparison,
-  odd coefficient descent, mixed \(L^1/L^2\)
-  coefficient pushforward comparison, bundle-like conformal metric,
-  and reduced limit theorem: open.  Genuine no-real \(Q_8\)/Steinberg
+- Positive-radius Kähler orbit collar and the actual generic
+  transverse-flow affine foliation, conformal metric, residual dense
+  leaves, critical radial measure, and local
+  \(\mathbb Q\)-operator \(J=*c\): paper-proved in
+  `DAC_DENINGER_HILBERT_KUMMER_KAHLER_ORBIT_COLLAR` and
+  `DAC_HILBERT_KUMMER_AFFINE_LEAF_DISTRIBUTION`.
+- Local prime/real Hodge atoms: paper-proved by the complete
+  logarithmic cusp in `DAC_PRO_LOG_KUMMER_CUSP_HODGE_EXTENSION` and
+  the real orientation-sign apex in
+  `DAC_REAL_ORIENTATION_TWISTED_HODGE_APEX`.
+- Apex/trace topology and relevant-coefficient pushforward comparison:
+  paper-proved in `DAC_MEYER_NUCLEAR_RADIAL_STRICTNESS` and
+  `DAC_DENINGER_POISSON_RELEVANT_COMPLEX_AMALGAMATION`.
+- Local relative/rigged domains are now closed: prime logarithmic
+  residues are extended \(L^2\) Lagrangian boundary data, and unitary
+  Kummer modes form the positive relative Calderón boundary defect.
+  Their global Tate--Milnor incidence closure over the complete-cusp
+  pro-system, post-nuclear-cohomology harmonic realization, Green
+  supertrace/cup isometry, and order-zero Riesz spectral faithfulness
+  (then higher-jet faithfulness) remain open under
+  `DAC_ARITHMETIC_CALDERON_GREEN_INTERMEDIATE_EXTENSION`.  Compact
+  Benameur--Heitsch regularity does not automatically supply this
+  global arithmetic gluing, and
+  `DAC_FINITE_RANK_TWISTED_CRITICAL_L2_NO_GO` rules out their ordinary
+  finite-rank critical-\(L^2\) cokernel as the middle theory.
+  Genuine no-real \(Q_8\)/Steinberg
   descent remains open for the all-number-fields extension, but is not
   on the \(\zeta_{\mathbb Q}\)-to-RH critical path.
 
@@ -244,3 +316,16 @@ CONSTRUCTION GATE`.
   Genuine no-real descent is required for functoriality over all number
   fields; the \(\mathbb Q\) RH stage requires odd \(K_{\mathbb R}\)
   parity but may carry an additional real form.
+- 2026-07-27 — Replaced the unspecified local leaf search by the
+  source-forced Hermitian radial line with squared norm and
+  half-density flow.
+- 2026-07-27 — Globalized the positive-radius source without a phase
+  conjecture: the equivariant radius canonically trivializes the flow
+  and its half-density circle refinement as
+  \(x^{-1}(1)\times\mathbb C^\times\).  Remaining geometric work starts
+  at endpoint attachment and strict derived comparison.
+- 2026-07-27 — Closed local arithmetic-boundary Hodge descent:
+  complete logarithmic cusps at finite primes and the forced
+  orientation-sign local system at the real apex.  Isolated the
+  remaining analytic gate as compatible harmonic projection on the
+  noncompact cusp pro-system.

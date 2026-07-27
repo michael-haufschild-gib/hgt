@@ -91,10 +91,14 @@ The scalar action on \(\mathcal K_\Gamma\) is therefore the canonical rank actio
 maps exactly to `(3)`.  The signature sector is killed algebraically; no indefinite quadratic
 form enters the Hilbert metric.
 
-The regular representation is also the Fourier model of the compact Pontryagin dual
-\(\widehat G\).  In that picture \(U_a\) is pullback by the corresponding power automorphism.
-This is the Hilbert coefficient naturally associated with inverting all Frobenii in Deninger's
-\(\mathbb Q_{>0}\)-suspension.
+Fourier transform identifies the regular representation with
+\(L^2(\widehat G)\).  In that picture \(U_a\) is multiplication by the
+tautological character \(\chi\mapsto\chi(a)\), not pullback by a power
+map.  Indeed multiplication sends \(e_q\) to \(e_{aq}\), whereas
+pullback by \(\chi\mapsto\chi^a\) sends \(e_q\) to \(e_{q^a}\).
+Thus this module is the regular local-system channel of the
+\(\mathbb Q_{>0}\)-deck group.  It is neither Deninger's
+unitary-character phase Frobenius nor the Hilbert--Kummer radial flow.
 
 ## Consequence for the finite bar complex
 
@@ -158,13 +162,29 @@ relation subspace.
 - The regular representation alone has the wrong, highly non-discrete spectral behavior.  The
   arithmetic spectrum must arise after the MW incidence differential and cofinal harmonic
   reduction; it may not be attributed to the coefficient module itself.
+- Its standard reduced \(\ell^2\) bar completion contributes no
+  harmonic group cohomology: \(G=\mathbb Q_{>0}^{\times}\) is infinite
+  amenable, so Cheeger--Gromov vanishing applies.  A different
+  arithmetic incidence topology would require an independent
+  construction and comparison; finite cutoffs do not establish it.
 - Formula `(9)` is genuine source positivity, but it proves RH only after the determinant,
   Lefschetz, and comparison gates identify the harmonic generator with arithmetic \(\Theta\).
 - Choosing a phase twist indexed by Xi zeros is forbidden.  Only the untwisted rational power
   action appears here.
 
+For the reduced \(\ell^2\)-cohomology statement, use the
+Cheeger--Gromov theorem that reduced \(L^2\)-cohomology of an infinite
+countable amenable group vanishes in every degree; a modern primary
+reference and locally compact extension is Henrik Densing Petersen,
+*L2-Betti Numbers of Locally Compact Groups*,
+arXiv:1104.3294.
+
 ## Novelty audit
 
 Regular representations and quaternionic doubles are standard.  New content is their exact
-assembly with hyperbolic localization and Milnor--Witt push--pull degree to construct the positive
-Gamma-rank coefficient demanded by the Deninger source complex.
+assembly with hyperbolic localization and Milnor--Witt push--pull
+degree as a positive regular local-system coefficient.  Later source
+analysis identifies Deninger's arithmetic coefficient instead with
+the degreewise invariant Tate--Milnor sheaf and its
+Hilbert--Kummer/Poisson pushforward; the regular module is auxiliary,
+not a definition of arithmetic cohomology.

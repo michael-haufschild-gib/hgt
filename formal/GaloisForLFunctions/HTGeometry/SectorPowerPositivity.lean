@@ -215,6 +215,57 @@ theorem re_inv_sub_mul_I_pow_pos {A B t : ℝ} (hA : 0 < A) (hB : |B| < t * A) {
     rw [abs_mul, abs_of_nonneg hmpos.le]
     exact lt_of_lt_of_le (mul_lt_mul_of_pos_left harg hmpos) hangle
 
+/-- **Sector ratio from a single corner check.**  Write `u = a ^ 2` for a horizontal square and
+`v = b ^ 2` for a vertical square.  The gap `(v - u + y) ^ 2 - N (2 a b) ^ 2` decreases in `u` and,
+as soon as `(2 N + 1) u₀ ≤ v₀ + y₀`, increases in `v` and in `y`.  A strict inequality at the
+corner `(u₀, v₀, y₀)` therefore propagates over the whole region `u ≤ u₀`, `v₀ ≤ v`, `y₀ ≤ y`.
+The chain is `4 N a² b² ≤ 4 N u₀ b² = 4 N u₀ v₀ + 4 N u₀ t ≤ D² + 2 D t ≤ (v - u + y)²`, writing
+`D = v₀ - u₀ + y₀` and `t = b² - v₀`. -/
+theorem sector_ratio_of_corner {a b y u₀ v₀ y₀ N : ℝ}
+    (hN : 0 ≤ N) (hy : y₀ ≤ y) (hu : a ^ 2 ≤ u₀) (hv : v₀ ≤ b ^ 2)
+    (hmono : (2 * N + 1) * u₀ ≤ v₀ + y₀)
+    (hcorner : 4 * N * u₀ * v₀ < (v₀ - u₀ + y₀) ^ 2) :
+    N * (2 * a * b) ^ 2 < (b ^ 2 - a ^ 2 + y) ^ 2 := by
+  have hasq : (0 : ℝ) ≤ a ^ 2 := sq_nonneg a
+  have hbsq : (0 : ℝ) ≤ b ^ 2 := sq_nonneg b
+  have hu₀ : (0 : ℝ) ≤ u₀ := hasq.trans hu
+  have hDlow : 2 * N * u₀ ≤ v₀ - u₀ + y₀ := by nlinarith
+  have hD0 : (0 : ℝ) ≤ v₀ - u₀ + y₀ :=
+    (mul_nonneg (by linarith) hu₀).trans hDlow
+  have ht : (0 : ℝ) ≤ b ^ 2 - v₀ := by linarith
+  have hXD : (v₀ - u₀ + y₀) + (b ^ 2 - v₀) ≤ b ^ 2 - a ^ 2 + y := by linarith
+  calc N * (2 * a * b) ^ 2 = 4 * N * a ^ 2 * b ^ 2 := by ring
+    _ ≤ 4 * N * u₀ * v₀ + 4 * N * u₀ * (b ^ 2 - v₀) := by
+        nlinarith [mul_nonneg (mul_nonneg (by linarith : (0 : ℝ) ≤ 4 * N)
+          (by linarith : (0 : ℝ) ≤ u₀ - a ^ 2)) hbsq]
+    _ < (v₀ - u₀ + y₀) ^ 2 + 2 * (v₀ - u₀ + y₀) * (b ^ 2 - v₀) := by
+        nlinarith [mul_le_mul_of_nonneg_right hDlow ht]
+    _ ≤ (b ^ 2 - a ^ 2 + y) ^ 2 := by
+        nlinarith [hXD, hD0, ht, mul_nonneg hD0 ht]
+
+/-- **Sector ratio when the corner check is only an equality.**  A strict width bound
+`a ^ 2 < u₀` at a positive corner offset supplies the strictness that
+`sector_ratio_of_corner` takes from the corner inequality. -/
+theorem sector_ratio_of_corner_of_lt_width {a b y u₀ v₀ y₀ N : ℝ}
+    (hN : 0 ≤ N) (hy : y₀ ≤ y) (hu : a ^ 2 < u₀) (hv : v₀ ≤ b ^ 2)
+    (hmono : (2 * N + 1) * u₀ ≤ v₀ + y₀) (hD0 : 0 < v₀ - u₀ + y₀)
+    (hcorner : 4 * N * u₀ * v₀ ≤ (v₀ - u₀ + y₀) ^ 2) :
+    N * (2 * a * b) ^ 2 < (b ^ 2 - a ^ 2 + y) ^ 2 := by
+  have hasq : (0 : ℝ) ≤ a ^ 2 := sq_nonneg a
+  have hbsq : (0 : ℝ) ≤ b ^ 2 := sq_nonneg b
+  have hu₀ : (0 : ℝ) ≤ u₀ := hasq.trans hu.le
+  have hDlow : 2 * N * u₀ ≤ v₀ - u₀ + y₀ := by nlinarith
+  have ht : (0 : ℝ) ≤ b ^ 2 - v₀ := by linarith
+  have hXD : (v₀ - u₀ + y₀) + (b ^ 2 - v₀) < b ^ 2 - a ^ 2 + y := by linarith
+  calc N * (2 * a * b) ^ 2 = 4 * N * a ^ 2 * b ^ 2 := by ring
+    _ ≤ 4 * N * u₀ * v₀ + 4 * N * u₀ * (b ^ 2 - v₀) := by
+        nlinarith [mul_nonneg (mul_nonneg (by linarith : (0 : ℝ) ≤ 4 * N)
+          (by linarith : (0 : ℝ) ≤ u₀ - a ^ 2)) hbsq]
+    _ ≤ ((v₀ - u₀ + y₀) + (b ^ 2 - v₀)) ^ 2 := by
+        nlinarith [mul_le_mul_of_nonneg_right hDlow ht]
+    _ < (b ^ 2 - a ^ 2 + y) ^ 2 := by
+        nlinarith [hXD, hD0, ht]
+
 end GaloisForLFunctions.HTGeometry
 
 end

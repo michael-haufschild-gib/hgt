@@ -9,13 +9,18 @@
   invariant sheaf to the arithmetic curve has two analytic rows, each
   resolved by the length-one Rost--Schmid complex; the real signature
   adds the unique degree-two orientation.
+- **Critical-path status:** optional comparison theorem for ordinary
+  hypercohomology of the raw coarse invariant sheaf.  Deninger's
+  required relevant coefficient \(R\alpha_*\mathcal G\) and its
+  arithmetic cohomology are constructed independently by
+  `DAC_DERIVED_STRATUM_KUMMER_ARITHMETIC_COEFFICIENT`.
 
 ## Goal
 
-Replace broad analytic-realization and quotient-stack comparisons by
-one source-native theorem on Deninger's actual coarse coefficient.
-Together with `DAC_TWO_COLUMN_HYPERCOHOMOLOGY_AMPLITUDE`, this theorem
-constructs the three-term arithmetic cohomology required by
+Determine whether ordinary derived sections of Deninger's raw coarse
+invariant sheaf recover the already-constructed pro-Stein relevant
+coefficient.  This comparison is mathematically meaningful but is not
+needed for the three-term arithmetic cohomology required by
 `docs/Deninger program.md`.
 
 ## Source objects
@@ -203,10 +208,9 @@ Deninger's space, and rational-power scaling is cancelled by the Tate
 twist.  Proposition 11.7 identifies their supports with
 \(\operatorname{div}[p]\).
 
-The remaining comparison decomposes into one local analytic purity
-statement and one coarse-section statement.
+The local analytic-purity part of the comparison is closed.
 
-`[CONJECTURE] [DAC_GENERALIZED_LOG_PRIME_ANALYTIC_PURITY]`
+`[PROVED] [DAC_GENERALIZED_LOG_PRIME_ANALYTIC_PURITY]`
 
 The Tate--Milnor analytic coefficient satisfies purity for the
 pulled-back pro-log divisor: the localization boundary of the Kummer
@@ -215,7 +219,9 @@ class of \(p\) is the unit generator in
 correspondences, and rational powers.  This asserts compatibility of
 the analytic coefficient with an already constructed generalized-log
 normal line; it does not turn \([p]\) into an ordinary analytic
-function.
+function.  This is
+`DAC_PRO_LOG_STEIN_KUMMER_RESIDUE_SQUARE` and
+`DAC_SOURCE_STRATUM_RESIDUE_SHEAF_MORPHISM_FINITE`.
 
 `DAC_SPECZ_COFINITE_RECOLLEMENT_BASIS` removes the need for an
 auxiliary prime-star analytic site.  The actual topology of
@@ -245,30 +251,49 @@ source sheaves and finite localization triangles.  Treating chartwise
 global cochains as the coefficient would repeat the retired
 `deninger-chart-cochains-as-coefficient-sheaf` type error.
 
+Items 1--3 are proved after passing to the chosen pro-Stein relevant
+coefficient by `DAC_PRO_STEIN_RELATIVE_CELL_GLOBAL_SECTIONS`,
+`DAC_SOURCE_STRATUM_RESIDUE_SHEAF_MORPHISM_FINITE`,
+`DAC_STRICT_RESTRICTED_PRIME_PUSHFORWARD`, and
+`DAC_STRICT_PRO_LOG_COLLAR_SECTION`.  Item 4 and comparison back to
+ordinary raw coarse-sheaf sections are the only content still open on
+this optional route.
+
 ### B. Milnor row identification
 
-`[CONJECTURE] [DAC_COARSE_MILNOR_ROW_IDENTIFICATION]`
+`[OPTIONAL COARSE COMPARISON CONJECTURE]
+[DAC_COARSE_MILNOR_ROW_IDENTIFICATION]`
 
 The two sheaves left by A are the realizations of the degree-zero and
 degree-one real Milnor homotopy-module rows, including every relative
 Steinberg cell.  This is a sheaf statement, not a stalk-amplitude
-claim.
+claim.  The corresponding identification on the pro-Stein relevant
+coefficient is proved by
+`DAC_PRO_STEIN_RELATIVE_CELL_GLOBAL_SECTIONS`.
 
 ### C. Strict Rost--Schmid realization
 
-`[CONJECTURE] [DAC_STRICT_ROST_SCHMID_ANALYTIC_REALIZATION]`
+`[PROVED ON THE RELEVANT COEFFICIENT]
+[DAC_STRICT_ROST_SCHMID_ANALYTIC_REALIZATION]`
 
 Milnor residues realize as `(4)`, and the mixed \(L^1/L^2\)
-completion preserves exactness, acyclicity, and closed range.
+completion preserves exactness, acyclicity, and closed range.  This is
+`DAC_STRICT_RESTRICTED_PRIME_PUSHFORWARD` together with
+`DAC_COMPLETED_ARAKELOV_TRACE_KERNEL`.
 
 ### D. Real signature comparison
 
-`[CONJECTURE] [DAC_REAL_SIGNATURE_SKYSCRAPER_COMPARISON]`
+`[PROVED ON THE RELEVANT COEFFICIENT]
+[DAC_REAL_SIGNATURE_SKYSCRAPER_COMPARISON]`
 
 The framed real Gysin line realizes as the unique skyscraper in
-clause 6 and satisfies finite-plus-infinite reciprocity.
+clause 6 and satisfies finite-plus-infinite reciprocity.  This is
+`DAC_REAL_KUMMER_ARAKELOV_BOUNDARY` and
+`DAC_PRO_STEIN_REAL_BETTI_DERIVED_LIFT`.
 
-A--D imply the main conjecture.
+A--D imply the optional ordinary-coarse comparison.  They are not
+prerequisites for arithmetic cohomology based on
+\(R\alpha_{\mathrm{PS},*}\mathcal G\).
 
 ## Attack
 
@@ -347,8 +372,11 @@ A--D imply the main conjecture.
 
 ## Gates
 
-- [x] 0 → 1 in-progress: source-pure, decomposed, falsifiable
-- [ ] 1 → 2 fully-proven: A--D proved with strict topology
+- [x] 0 → 1 in-progress: optional ordinary-coarse comparison isolated
+- [ ] 1 → 2 fully-proven: ordinary coarse/pro-Stein comparison and
+  vanishing of its derived-limit defect; local purity, strict
+  all-prime passage, real signature, and arithmetic cohomology itself
+  are already proved
 - [ ] 2 → 3 formalized: source sheaf, rows, exact resolution, and
   consequence formalized in Lean
 - [ ] 3 → 4 publication-ready: standalone construction and audit

@@ -24,15 +24,7 @@ theorem norm_inv_riemannZeta_le {σ t : ℝ} (ht : 9 ≤ |t|)
     ‖(riemannZeta (↑σ + ↑t * Complex.I))⁻¹‖
       ≤ 20 / zetaLowerA * Real.log |t| ^ 7 := by
   have ht0 : (0 : ℝ) < |t| := by linarith
-  have hexp2 : Real.exp 2 < 8 := by
-    have h1 := Real.exp_one_lt_d9
-    have h2 : Real.exp 2 = Real.exp 1 * Real.exp 1 := by
-      rw [← Real.exp_add]
-      norm_num
-    have h3 : Real.exp 1 * Real.exp 1 < 2.7182818286 * 2.7182818286 := by
-      nlinarith [Real.exp_pos 1]
-    rw [h2]
-    nlinarith [h3]
+  have hexp2 := exp_two_lt_eight
   have hlogt2 : 2 < Real.log |t| := by
     have h1 : Real.log (Real.exp 2) < Real.log |t| :=
       Real.log_lt_log (Real.exp_pos 2) (by linarith)
@@ -89,15 +81,7 @@ theorem norm_deriv_div_riemannZeta_le {σ t : ℝ} (ht : 9 ≤ |t|)
         / riemannZeta (↑σ + ↑t * Complex.I)‖
       ≤ 2240 / zetaLowerA * Real.log |t| ^ 9 := by
   have ht0 : (0 : ℝ) < |t| := by linarith
-  have hexp2 : Real.exp 2 < 8 := by
-    have h1 := Real.exp_one_lt_d9
-    have h2 : Real.exp 2 = Real.exp 1 * Real.exp 1 := by
-      rw [← Real.exp_add]
-      norm_num
-    have h3 : Real.exp 1 * Real.exp 1 < 2.7182818286 * 2.7182818286 := by
-      nlinarith [Real.exp_pos 1]
-    rw [h2]
-    nlinarith [h3]
+  have hexp2 := exp_two_lt_eight
   have hlogt2 : 2 < Real.log |t| := by
     have h1 : Real.log (Real.exp 2) < Real.log |t| :=
       Real.log_lt_log (Real.exp_pos 2) (by linarith)

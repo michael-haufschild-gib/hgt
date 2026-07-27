@@ -411,6 +411,76 @@ theorem integral_Ioo_rpow_seven_quarters :
   rw [Real.one_rpow, Real.zero_rpow (by norm_num : (7:ℝ)/4 + 1 ≠ 0)]
   norm_num
 
+/-- The inner-piece majorant `72/π⁴ · t^{7/4}` is integrable on `(0,1)`. -/
+private theorem integrableOn_inner_majorant :
+    MeasureTheory.IntegrableOn
+      (fun t : ℝ => 72 / π ^ 4 * t ^ ((7 : ℝ) / 4)) (Set.Ioo 0 1) := by
+  have h' : MeasureTheory.IntegrableOn
+      (fun t : ℝ => t ^ ((7 : ℝ) / 4)) (Set.Ioo 0 1) :=
+    ((intervalIntegral.intervalIntegrable_rpow'
+      (a := 0) (b := 1) (r := 7 / 4) (by norm_num)).1).mono_set
+      Set.Ioo_subset_Ioc_self
+  exact h'.const_mul _
+
+/-- **Inner-piece domination.**  On `(0,1)` the weighted modified-theta norm is at most
+`72/π⁴ · t^{7/4}`: the kernel bound `3 t^{-1/2} e^{-π/t}` meets `e^{-π/t} ≤ 24 t⁴/π⁴`, and
+`t^{u-3/2} ≤ t^{-9/4}` for `u ≥ -3/4`. -/
+private theorem inner_integrand_le_majorant {u : ℝ} (hu : -(3 / 4) ≤ u) :
+    ∀ t ∈ Set.Ioo (0 : ℝ) 1,
+      t ^ (u - 1) * ‖(hurwitzEvenFEPair 0).f_modif t‖ ≤
+        72 / π ^ 4 * t ^ ((7 : ℝ) / 4) := by
+  have hπ := Real.pi_pos
+
+  intro t ht
+  have ht0 : (0 : ℝ) < t := ht.1
+  have ht1 : t < 1 := ht.2
+  have hker := norm_f_modif_le_of_lt_one ht0 ht1
+  have hpow0 : (0 : ℝ) ≤ t ^ (u - 1) := Real.rpow_nonneg ht0.le _
+  have step1 : t ^ (u - 1) * ‖(hurwitzEvenFEPair 0).f_modif t‖ ≤
+      t ^ (u - 1) * (3 * t ^ (-(1 / 2) : ℝ) * Real.exp (-π / t)) :=
+    mul_le_mul_of_nonneg_left hker hpow0
+  have hcollect : t ^ (u - 1) *
+      (3 * t ^ (-(1 / 2) : ℝ) * Real.exp (-π / t)) =
+      3 * t ^ (u - 3 / 2) * Real.exp (-π / t) := by
+    rw [show t ^ (u - 1) * (3 * t ^ (-(1 / 2) : ℝ) *
+        Real.exp (-π / t)) =
+        3 * (t ^ (u - 1) * t ^ (-(1 / 2) : ℝ)) *
+          Real.exp (-π / t) from by ring,
+      ← Real.rpow_add ht0,
+      show (u - 1) + (-(1 / 2) : ℝ) = u - 3 / 2 from by ring]
+  have hexp4 : Real.exp (-π / t) ≤ 24 * t ^ (4 : ℝ) / π ^ 4 := by
+    have hx : (0 : ℝ) < π / t := by positivity
+    have h := exp_neg_le_24_div_pow_four hx
+    have harg : -(π / t) = -π / t := by ring
+    rw [harg] at h
+    calc Real.exp (-π / t) ≤ 24 / (π / t) ^ 4 := h
+      _ = 24 * t ^ (4 : ℝ) / π ^ 4 := by
+          rw [show ((4 : ℝ)) = ((4 : ℕ) : ℝ) from by norm_num,
+            Real.rpow_natCast]
+          field_simp
+  have step2 : 3 * t ^ (u - 3 / 2) * Real.exp (-π / t) ≤
+      3 * t ^ (-(9 / 4) : ℝ) * (24 * t ^ (4 : ℝ) / π ^ 4) := by
+    apply mul_le_mul
+    · apply mul_le_mul_of_nonneg_left ?_ (by norm_num : (0:ℝ) ≤ 3)
+      exact Real.rpow_le_rpow_of_exponent_ge ht0 ht1.le
+        (by linarith)
+    · exact hexp4
+    · positivity
+    · positivity
+  have hfinal : 3 * t ^ (-(9 / 4) : ℝ) * (24 * t ^ (4 : ℝ) / π ^ 4) =
+      72 / π ^ 4 * t ^ ((7 : ℝ) / 4) := by
+    rw [show (3 : ℝ) * t ^ (-(9 / 4) : ℝ) *
+        (24 * t ^ (4 : ℝ) / π ^ 4) =
+        72 / π ^ 4 * (t ^ (-(9 / 4) : ℝ) * t ^ (4 : ℝ)) from by ring,
+      ← Real.rpow_add ht0]
+    norm_num
+  calc t ^ (u - 1) * ‖(hurwitzEvenFEPair 0).f_modif t‖
+      ≤ t ^ (u - 1) * (3 * t ^ (-(1 / 2) : ℝ) * Real.exp (-π / t)) :=
+        step1
+    _ = 3 * t ^ (u - 3 / 2) * Real.exp (-π / t) := hcollect
+    _ ≤ 3 * t ^ (-(9 / 4) : ℝ) * (24 * t ^ (4 : ℝ) / π ^ 4) := step2
+    _ = 72 / π ^ 4 * t ^ ((7 : ℝ) / 4) := hfinal
+
 /-- Inner Mellin piece: for exponents `u ≥ −3/4` the weighted modified
 kernel integrates over `(0,1)` to at most `(72/π⁴)·(4/11)`. -/
 theorem inner_mellin_piece_le {u : ℝ} (hu : -(3 / 4) ≤ u) :
@@ -418,66 +488,8 @@ theorem inner_mellin_piece_le {u : ℝ} (hu : -(3 / 4) ≤ u) :
       t ^ (u - 1) * ‖(hurwitzEvenFEPair 0).f_modif t‖ ≤
       72 / π ^ 4 * (4 / 11) := by
   have hπ := Real.pi_pos
-  have hgint : MeasureTheory.IntegrableOn
-      (fun t : ℝ => 72 / π ^ 4 * t ^ ((7 : ℝ) / 4)) (Set.Ioo 0 1) := by
-    have h' : MeasureTheory.IntegrableOn
-        (fun t : ℝ => t ^ ((7 : ℝ) / 4)) (Set.Ioo 0 1) :=
-      ((intervalIntegral.intervalIntegrable_rpow'
-        (a := 0) (b := 1) (r := 7 / 4) (by norm_num)).1).mono_set
-        Set.Ioo_subset_Ioc_self
-    exact h'.const_mul _
-  have hle : ∀ t ∈ Set.Ioo (0 : ℝ) 1,
-      t ^ (u - 1) * ‖(hurwitzEvenFEPair 0).f_modif t‖ ≤
-        72 / π ^ 4 * t ^ ((7 : ℝ) / 4) := by
-    intro t ht
-    have ht0 : (0 : ℝ) < t := ht.1
-    have ht1 : t < 1 := ht.2
-    have hker := norm_f_modif_le_of_lt_one ht0 ht1
-    have hpow0 : (0 : ℝ) ≤ t ^ (u - 1) := Real.rpow_nonneg ht0.le _
-    have step1 : t ^ (u - 1) * ‖(hurwitzEvenFEPair 0).f_modif t‖ ≤
-        t ^ (u - 1) * (3 * t ^ (-(1 / 2) : ℝ) * Real.exp (-π / t)) :=
-      mul_le_mul_of_nonneg_left hker hpow0
-    have hcollect : t ^ (u - 1) *
-        (3 * t ^ (-(1 / 2) : ℝ) * Real.exp (-π / t)) =
-        3 * t ^ (u - 3 / 2) * Real.exp (-π / t) := by
-      rw [show t ^ (u - 1) * (3 * t ^ (-(1 / 2) : ℝ) *
-          Real.exp (-π / t)) =
-          3 * (t ^ (u - 1) * t ^ (-(1 / 2) : ℝ)) *
-            Real.exp (-π / t) from by ring,
-        ← Real.rpow_add ht0,
-        show (u - 1) + (-(1 / 2) : ℝ) = u - 3 / 2 from by ring]
-    have hexp4 : Real.exp (-π / t) ≤ 24 * t ^ (4 : ℝ) / π ^ 4 := by
-      have hx : (0 : ℝ) < π / t := by positivity
-      have h := exp_neg_le_24_div_pow_four hx
-      have harg : -(π / t) = -π / t := by ring
-      rw [harg] at h
-      calc Real.exp (-π / t) ≤ 24 / (π / t) ^ 4 := h
-        _ = 24 * t ^ (4 : ℝ) / π ^ 4 := by
-            rw [show ((4 : ℝ)) = ((4 : ℕ) : ℝ) from by norm_num,
-              Real.rpow_natCast]
-            field_simp
-    have step2 : 3 * t ^ (u - 3 / 2) * Real.exp (-π / t) ≤
-        3 * t ^ (-(9 / 4) : ℝ) * (24 * t ^ (4 : ℝ) / π ^ 4) := by
-      apply mul_le_mul
-      · apply mul_le_mul_of_nonneg_left ?_ (by norm_num : (0:ℝ) ≤ 3)
-        exact Real.rpow_le_rpow_of_exponent_ge ht0 ht1.le
-          (by linarith)
-      · exact hexp4
-      · positivity
-      · positivity
-    have hfinal : 3 * t ^ (-(9 / 4) : ℝ) * (24 * t ^ (4 : ℝ) / π ^ 4) =
-        72 / π ^ 4 * t ^ ((7 : ℝ) / 4) := by
-      rw [show (3 : ℝ) * t ^ (-(9 / 4) : ℝ) *
-          (24 * t ^ (4 : ℝ) / π ^ 4) =
-          72 / π ^ 4 * (t ^ (-(9 / 4) : ℝ) * t ^ (4 : ℝ)) from by ring,
-        ← Real.rpow_add ht0]
-      norm_num
-    calc t ^ (u - 1) * ‖(hurwitzEvenFEPair 0).f_modif t‖
-        ≤ t ^ (u - 1) * (3 * t ^ (-(1 / 2) : ℝ) * Real.exp (-π / t)) :=
-          step1
-      _ = 3 * t ^ (u - 3 / 2) * Real.exp (-π / t) := hcollect
-      _ ≤ 3 * t ^ (-(9 / 4) : ℝ) * (24 * t ^ (4 : ℝ) / π ^ 4) := step2
-      _ = 72 / π ^ 4 * t ^ ((7 : ℝ) / 4) := hfinal
+  have hgint := integrableOn_inner_majorant
+  have hle := inner_integrand_le_majorant hu
   have hmono := MeasureTheory.integral_mono_of_nonneg
     (f := fun t : ℝ =>
       t ^ (u - 1) * ‖(hurwitzEvenFEPair 0).f_modif t‖)
@@ -525,61 +537,16 @@ theorem inner_integrand_integrableOn {u : ℝ} (hu : -(3 / 4) ≤ u) :
     exact (h2.aestronglyMeasurable measurableSet_Ioo).mul h1.norm
   apply MeasureTheory.Integrable.mono'
     (g := fun t : ℝ => 72 / π ^ 4 * t ^ ((7 : ℝ) / 4))
-    (by
-      have h' : MeasureTheory.IntegrableOn
-          (fun t : ℝ => t ^ ((7 : ℝ) / 4)) (Set.Ioo 0 1) :=
-        ((intervalIntegral.intervalIntegrable_rpow'
-          (a := 0) (b := 1) (r := 7 / 4) (by norm_num)).1).mono_set
-          Set.Ioo_subset_Ioc_self
-      exact h'.const_mul _)
-    hmeas
+    integrableOn_inner_majorant hmeas
   apply (MeasureTheory.ae_restrict_iff' measurableSet_Ioo).mpr
   filter_upwards with t
   intro ht
-  have ht0 : (0 : ℝ) < t := ht.1
-  rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
-  -- reuse the pointwise chain from the piece bound
-  have hker := norm_f_modif_le_of_lt_one ht0 ht.2
-  have hpow0 : (0 : ℝ) ≤ t ^ (u - 1) := Real.rpow_nonneg ht0.le _
-  have step1 : t ^ (u - 1) * ‖(hurwitzEvenFEPair 0).f_modif t‖ ≤
-      t ^ (u - 1) * (3 * t ^ (-(1 / 2) : ℝ) * Real.exp (-π / t)) :=
-    mul_le_mul_of_nonneg_left hker hpow0
-  have hcollect : t ^ (u - 1) *
-      (3 * t ^ (-(1 / 2) : ℝ) * Real.exp (-π / t)) =
-      3 * t ^ (u - 3 / 2) * Real.exp (-π / t) := by
-    rw [show t ^ (u - 1) * (3 * t ^ (-(1 / 2) : ℝ) *
-        Real.exp (-π / t)) =
-        3 * (t ^ (u - 1) * t ^ (-(1 / 2) : ℝ)) *
-          Real.exp (-π / t) from by ring,
-      ← Real.rpow_add ht0,
-      show (u - 1) + (-(1 / 2) : ℝ) = u - 3 / 2 from by ring]
-  have hexp4 : Real.exp (-π / t) ≤ 24 * t ^ (4 : ℝ) / π ^ 4 := by
-    have hx : (0 : ℝ) < π / t := by positivity
-    have h := exp_neg_le_24_div_pow_four hx
-    have harg : -(π / t) = -π / t := by ring
-    rw [harg] at h
-    calc Real.exp (-π / t) ≤ 24 / (π / t) ^ 4 := h
-      _ = 24 * t ^ (4 : ℝ) / π ^ 4 := by
-          rw [show ((4 : ℝ)) = ((4 : ℕ) : ℝ) from by norm_num,
-            Real.rpow_natCast]
-          field_simp
-  have step2 : 3 * t ^ (u - 3 / 2) * Real.exp (-π / t) ≤
-      3 * t ^ (-(9 / 4) : ℝ) * (24 * t ^ (4 : ℝ) / π ^ 4) := by
-    apply mul_le_mul
-    · apply mul_le_mul_of_nonneg_left ?_ (by norm_num : (0:ℝ) ≤ 3)
-      exact Real.rpow_le_rpow_of_exponent_ge ht0 ht.2.le (by linarith)
-    · exact hexp4
-    · positivity
-    · positivity
-  have hfinal : 3 * t ^ (-(9 / 4) : ℝ) * (24 * t ^ (4 : ℝ) / π ^ 4) =
-      72 / π ^ 4 * t ^ ((7 : ℝ) / 4) := by
-    rw [show (3 : ℝ) * t ^ (-(9 / 4) : ℝ) *
-        (24 * t ^ (4 : ℝ) / π ^ 4) =
-        72 / π ^ 4 * (t ^ (-(9 / 4) : ℝ) * t ^ (4 : ℝ)) from by ring,
-      ← Real.rpow_add ht0]
-    norm_num
-  linarith [step1, step2, hcollect ▸ step1, hfinal ▸ step2]
-
+  have hnorm : ‖t ^ (u - 1) * ‖(hurwitzEvenFEPair 0).f_modif t‖‖ =
+      t ^ (u - 1) * ‖(hurwitzEvenFEPair 0).f_modif t‖ := by
+    rw [Real.norm_eq_abs, abs_of_nonneg]
+    exact mul_nonneg (Real.rpow_nonneg ht.1.le _) (norm_nonneg _)
+  rw [hnorm]
+  exact inner_integrand_le_majorant hu t ht
 /-- The weighted norm integrand is integrable on the outer piece. -/
 theorem outer_integrand_integrableOn {u : ℝ} (hu : u ≤ 5 / 4) :
     MeasureTheory.IntegrableOn (fun t : ℝ =>

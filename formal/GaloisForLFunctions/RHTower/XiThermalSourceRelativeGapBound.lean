@@ -103,6 +103,22 @@ theorem xiZeroCopyReciprocalSquare_im_formula (q : XiZeroCopy) :
   field_simp [hden]
   ring
 
+/-- Real part of the *square* of the centered reciprocal-square coordinate.  Writing `z ^ 2` as
+`z * z` and substituting the two coordinate formulas gives a quartic numerator in the horizontal
+and vertical squares `u = (re - 1/2)^2`, `v = im^2`, over the fourth power of `u + v`. -/
+theorem xiZeroCopyReciprocalSquare_sq_re_formula (q : XiZeroCopy) :
+    (xiZeroCopyReciprocalSquare q ^ 2).re =
+      (((q.1 : ℂ).im ^ 2) ^ 2 -
+          6 * ((q.1 : ℂ).re - 1 / 2) ^ 2 * (q.1 : ℂ).im ^ 2 +
+          (((q.1 : ℂ).re - 1 / 2) ^ 2) ^ 2) /
+        (((q.1 : ℂ).re - 1 / 2) ^ 2 + (q.1 : ℂ).im ^ 2) ^ 4 := by
+  rw [pow_two, Complex.mul_re, xiZeroCopyReciprocalSquare_re_formula,
+    xiZeroCopyReciprocalSquare_im_formula]
+  have hden : ((q.1 : ℂ).re - 1 / 2) ^ 2 + (q.1 : ℂ).im ^ 2 ≠ 0 := by
+    nlinarith [sq_pos_of_ne_zero (xi_divisor_support_im_ne_zero q.1)]
+  field_simp [hden]
+  ring
+
 /-- **Atomwise relative orientation bound.**  At every Xi zero, the squared transverse part of
 the reciprocal-square coordinate is at most `32/49` of the squared positive thermal node. -/
 theorem xiThermalOrientationTerm_le_thirtyTwo_over_fortyNine_node_sq
@@ -700,12 +716,8 @@ theorem nine_over_twoHundredThousand_lt_xiFourthReciprocalTraceAtom_below_2365_o
   have hformula :
       (xiZeroCopyReciprocalSquare q ^ 2).re =
         (v ^ 2 - 6 * u * v + u ^ 2) / w ^ 4 := by
-    rw [pow_two, Complex.mul_re, xiZeroCopyReciprocalSquare_re_formula,
-      xiZeroCopyReciprocalSquare_im_formula]
     simp only [u, v, w]
-    have hden : u + v ≠ 0 := by positivity
-    field_simp [hden]
-    ring
+    exact xiZeroCopyReciprocalSquare_sq_re_formula q
   rw [hformula]
   rw [div_lt_div_iff₀ (by norm_num : (0 : ℝ) < 200000) (pow_pos hw0 4)]
   nlinarith

@@ -156,10 +156,23 @@ theorem norm_shiftedHarmonicSquareSum_le {z : ℂ}
     show ((2 : ℝ)) ^ 2 = 4 from by norm_num] using
     norm_shiftedHarmonicPowerSum_le hz (p := 2) (by norm_num) n
 
+/-- **Order-indexed scaled polygamma.**  The `k`-th digamma jet in the factorial microscope
+coordinate, scaled by the `(k+1)`-st power of the reciprocal factorial scale. -/
+def gammaFactorialScaledPolygamma (k n : ℕ) (x : ℂ) : ℂ :=
+  reciprocalGammaFactorialScale n ^ (k + 1) *
+    iteratedDeriv k Complex.digamma
+      (-(n : ℂ) + reciprocalGammaFactorialScale n * x)
+
+
 def gammaFactorialScaledTrigamma (n : ℕ) (x : ℂ) : ℂ :=
   reciprocalGammaFactorialScale n ^ 2 *
     iteratedDeriv 1 Complex.digamma
       (-(n : ℂ) + reciprocalGammaFactorialScale n * x)
+
+
+/-- The trigamma scaling is the order-`1` member of the indexed family. -/
+theorem gammaFactorialScaledTrigamma_eq_polygamma (n : ℕ) (x : ℂ) :
+    gammaFactorialScaledTrigamma n x = gammaFactorialScaledPolygamma 1 n x := rfl
 
 theorem tendsto_gammaFactorialScaledTrigamma_first_harmonic
     {x : ℂ} (hx : x ≠ 0) :

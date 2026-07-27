@@ -208,3 +208,65 @@ selection.
 - [ ] prove its four-unit calibration
 - [ ] independent specialist literature audit
 - [ ] RH
+
+## Formalization (in progress)
+
+**Working state — a session picking up this card should continue here, not restart.**
+
+`[LEAN-PROVED]` **`(7)`, the critical Laurent behaviour of the reciprocal zeta factor**, in
+`formal/GaloisForLFunctions/RHTower/InvZetaCriticalLaurent.lean` (imported by
+`GaloisForLFunctions.RHTower`; builds clean; axiom-clean).
+
+| Card item | Lean name |
+|---|---|
+| `2ω ζ(1+2ω) → 1` | `RHTower.tendsto_two_mul_riemannZeta_one_add_two_mul` |
+| **`(7)`** `r(ω)/ω = 1/(ω ζ(1+2ω)) → 2` | `RHTower.tendsto_inv_riemannZeta_one_add_two_mul_div` |
+
+### Corpus assets already available for this card
+
+* the causal Laplace pairing and the Möbius shift multiplier: `RHTower.causalLaplacePairing`,
+  `RHTower.infiniteMobiusLaplaceMultiplier`, `RHTower.infiniteMobiusLaplaceMultiplier_eq_zetaRatio`;
+* the squarefree pole scaling `(σ-1)Z(σ) → 1/ζ(2)`:
+  `RHTower.tendsto_sub_one_mul_squarefreeMobiusTotal`;
+* **the boundary majorant of `(8)`** is now available in the corpus: the uniform vertical-line bound
+  `‖ζ(σ+it)‖ ≤ log|t| + 5` for `1 ≤ σ ≤ 2`, `|t| ≥ 2`
+  (`RHTower.norm_riemannZeta_le_log_add`), together with `‖1/ζ(s)‖ ≤ 2` on `re s ≥ 2`
+  (`RHTower.norm_inv_riemannZeta_le`) and the log-derivative bounds of
+  `RHTower.ZetaLogDerivBound`.
+
+`[LEAN-PROVED]` **`(2)` and the removable singularity**, in
+`formal/GaloisForLFunctions/RHTower/MobiusCausalMultiplier.lean` (imported by
+`GaloisForLFunctions.RHTower`; builds clean; axiom-clean).
+
+| Card item | Lean name |
+|---|---|
+| **`(2)`** the coupled causal multiplier `M_ω` | `RHTower.mobiusCausalMultiplier` |
+| the pole gap `G_ω(z) = 1/[Γℝ(1+z)(1+ω+z)ζ(1+2ω+z)] - 1/[(1+ω)ζ(1+2ω)]` | `RHTower.mobiusCausalGap` |
+| `G_ω(0) = 0` (this is where `Γℝ(1) = 1` enters) | `RHTower.mobiusCausalGap_zero` |
+| the side conditions `ζ(1+2ω+z) ≠ 0`, `1+ω+z ≠ 0`, `Γℝ(1+z) ≠ 0` on `re z ≥ 0` | `RHTower.riemannZeta_one_add_two_mul_add_ne_zero`, `RHTower.one_add_ofReal_add_ne_zero`, `RHTower.gammaR_one_add_ne_zero` |
+| **the removable-singularity form** `M_ω(z) = A(1+z)/[(1+ω+z)ζ(1+2ω+z)] + G_ω(z)/z` | `RHTower.mobiusCausalMultiplier_eq` |
+
+The pole subtraction reuses the entire pole-free zeta `A = ζ(s) - 1/((s-1)Γℝ(s))` already proved for
+the Gamma-damped card (`RHTower.zetaPoleFree`, `RHTower.differentiable_zetaPoleFree`), so the only
+new content is the algebraic identity and the vanishing of the gap at the origin.
+
+`[LEAN-PROVED]` **`(5)`--`(6)`, the parameter derivative of `M_ω` for `ω > 0`**, in
+`formal/GaloisForLFunctions/RHTower/MobiusCausalMultiplierDeriv.lean` (imported by
+`GaloisForLFunctions.RHTower`; builds clean; axiom-clean).
+
+| Card item | Lean name |
+|---|---|
+| `w ↦ ζ(1+2w+z)` is differentiable with derivative `2ζ'(1+2w+z)` | `RHTower.hasDerivAt_zeta_shift` |
+| **`(5)`--`(6)`** `∂_ω M_ω(z) = M_ω-term·[-1/(1+ω+z) - 2ζ'/ζ] + (1/z)[ζ(1+2ω)+2(1+ω)ζ'(1+2ω)]/[(1+ω)ζ(1+2ω)]²` | `RHTower.mobiusCausalMultiplierDeriv`, `RHTower.hasDerivAt_mobiusCausalMultiplier` |
+
+The derivative is proved for every `ω > 0` and every `z ≠ 0` with `re z ≥ 0`, i.e. on the closed
+half plane minus the origin, which is where the card differentiates `(2)`.
+
+### Next steps
+
+1. Take the `ω → 0+` limit of `RHTower.mobiusCausalMultiplierDeriv` using `(7)`
+   (`RHTower.tendsto_inv_riemannZeta_one_add_two_mul_div`) to obtain the pointwise formula `(4)`,
+   including the cancellation of the two `2/z` terms.
+2. Upgrade to `H²`-valued right differentiability using the boundary majorant `(8)` and dominated
+   convergence, then transfer to `L²(0,∞)` by the Laplace isometry to obtain `(9)`--`(11)`.
+

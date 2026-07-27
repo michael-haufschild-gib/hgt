@@ -155,8 +155,12 @@ On the Allcock--Vaaler place space:
   strict section on packet mean-zero residues; together with the real
   Kummer boundary, the completed residue image is the Arakelov trace
   kernel.
-- **Open:** full coarse analytic real Betti lift and coherent
-  flow/Galois/correspondence independence of the collar presentation.
+- **Proved real lift:** `DAC_ARCHIMEDEAN_KUMMER_HOMOLOGY_CURRENT` and
+  `DAC_PRO_STEIN_REAL_BETTI_DERIVED_LIFT` construct the analytic real
+  boundary on the relevant pro-Stein coefficient, naturally for
+  powers, Galois maps, norms, finite correspondences, and the mixed
+  completion.  Collar right inverses are noncanonical proof devices;
+  residue and trace-kernel are canonical.
 - **Cards:** `DAC_ADELIC_PLACE_AVERAGE_RESIDUE`,
   `DAC_ADELIC_KUMMER_GELFAND_TRIPLE`,
   `DAC_ADELIC_KUMMER_NUCLEAR_TEST_SCALE`,
@@ -210,13 +214,97 @@ has generic and closed-point columns.
   infinite-dimensional sphere is contractible.  Hence it contributes
   no ordinary modulus-angular derived class; unitary phase remains the
   Tate--Milnor coefficient and radius zero remains the real boundary.
+  `DAC_HILBERT_KUMMER_STRICT_ANGULAR_COSHEAF_CONTRACTION` upgrades
+  this to a continuous chain homotopy after every completed source
+  topology.
+- **Proved global positive-radius Kähler orbit collar:** every positive
+  equivariant radius trivializes its flow space as
+  \(x^{-1}(1)\times\mathbb R_{>0}\).  For the Hilbert--Kummer radius,
+  the canonical half-density circle
+  \[
+    \{(p,z):|z|^2=x(p)\}
+      \cong x^{-1}(1)\times\mathbb C^\times
+  \]
+  supplies complex orbit leaves with \(z\mapsto e^{t/2}z\), Kähler area of
+  weight one, positive one-form Hodge star, exact Poisson pullbacks,
+  and Meyer's critical radial measure.  No conjectural identification
+  with the unitary-character phase or Gamma-rank coefficient is used.
+  These leaves are closed and the flow is tangent, so this collar is
+  only the local metric model.
+- **Proved generic arithmetic foliation:**
+  `DAC_HILBERT_KUMMER_AFFINE_LEAF_DISTRIBUTION` uses the modulus Euler
+  field and Kummer--Kronecker phase field.  Their bracket is
+  \([A,K]=K\); Deninger's flow is transverse and scales the leaf
+  Kähler form with weight one.
+  `DAC_RESIDUAL_DENSE_KUMMER_LEAVES` proves a dense \(G_\delta\) of
+  leaves is dense in the unitary phase direction.
+- **Proved local arithmetic-boundary Hodge atoms:**
+  `DAC_PRO_LOG_KUMMER_CUSP_HODGE_EXTENSION` extends the oriented
+  conformal leaf and degree-one star over every finite/pro-log prime
+  collar as a complete cusp, with exact deck, flow, and residue
+  compatibility.  `DAC_REAL_ORIENTATION_TWISTED_HODGE_APEX` extends
+  it over the real quotient; orientation reversal forces the sign
+  local system and gives the positive odd \(J=*c\).
+  `DAC_AFFINE_PRO_LOG_PRIME_HODGE_OVERLAP` proves the generic affine
+  planes converge to these prime-normal atoms on the actual residue
+  locus.
+- **Proved local arithmetic Hodge domains:**
+  `DAC_STANDARD_CHEEGER_MIDDLE_EXTENSION_ARITHMETIC_NO_GO` proves that
+  ordinary Cheeger \(L^2\), although canonical because the normal
+  links are Witt circles, deletes every nonzero logarithmic residue.
+  `DAC_ARITHMETIC_EXTENDED_CUSP_HODGE_BOUNDARY` replaces it by the
+  exact extended-\(L^2\) prime domain, and
+  `DAC_KUMMER_RELATIVE_CALDERON_POISSON_DOMAIN` constructs the
+  unitary-face relative trace quotient, Dirichlet decomposition,
+  positive Hodge defect, and Lagrangian Calderón graph.
+- **Proved finite derived Hodge compatibility:**
+  `DAC_POSITIVE_GRAPH_CONORMAL_TRANSVERSALITY` shows that a positive
+  Calderón graph meets every finite linear Milnor conormal
+  transversely, and `DAC_POSITIVE_HODGE_KOSZUL_CONTRACTION` gives the
+  explicit Euler contraction of its full finite derived critical
+  cdga.  Thus no finite chart contributes spurious
+  position--momentum cohomology; nonuniform nuclear/coarse descent is
+  load-bearing.
+- **Proved source Green transgression:**
+  `DAC_MEYER_TOEPLITZ_GREEN_TRANSGRESSION` identifies Meyer's cutoff
+  commutator trace with the multiplicative Green cocycle and isolates
+  the \(Z\)- and Fourier-conjugated correction operators that generate
+  global cross-ray incidence.
+  `DAC_MEYER_POISSON_NUCLEAR_POLARIZATION_PAIR` proves the source
+  positive leg need only be almost-complemented modulo the nuclear
+  trace ideal; exact projectors are deferred to positive Hodge
+  completion.
+- **Proved geometric endpoints:** for the radial lift
+  \(Rf(z)=f(|z|^2)\),
+  \[
+    Rf(0)=f(0),\qquad
+    \int_{\mathbb C}Rf\,\omega=(\pi/2)\mathcal Ff(0).
+  \]
+  Hence Meyer's \(H_\cap\) is exactly the common kernel of cone-apex
+  restriction and leafwise top-degree Kähler trace.  The second
+  condition is not an extra Fourier boundary point.
 - **Proved assembled endpoint/middle complex:**
   `DAC_POISSON_ZETA_THREE_TERM_COHOMOLOGY` gives
   \(H^0=\mathbb C\), \(H^1=M_\zeta\), and
   \(H^2=\mathbb C(-1)\), with ordinary and reduced cohomology equal.
-- **Open:** geometric comparison with \(R\alpha_*\mathcal G\), full
-  generalized-jet continuity of cup/trace, and source Hodge
-  polarization.
+- **Proved relevant-complex comparison:**
+  `DAC_DENINGER_POISSON_RELEVANT_COMPLEX_AMALGAMATION` identifies the
+  pro-Stein \(R\alpha_*\mathcal G\) totalization strictly with the
+  assembled Poisson--zeta complex.
+- **Open:** `DAC_ARITHMETIC_CALDERON_GREEN_INTERMEDIATE_EXTENSION`:
+  glue the proved local domains through every Tate--Milnor relative
+  cell into a closed global Lagrangian Cauchy relation, identify its
+  Green supertrace with Paugam's cup form, and prove generalized-jet
+  faithfulness.  For RH this now means the exact condition
+  `DAC_RIESZ_EIGENFUNCTIONAL_HODGE_PURITY`: every order-zero Meyer
+  functional must be Hodge-bounded with a Riesz representative in the
+  generator domain.  Higher jets are the stronger block-multiplicity
+  target.  Its exact RH-bearing polarization statement is
+  `DAC_ARITHMETIC_CALDERON_PAUGAM_HARDY_COMPARISON`: source Calderón
+  relations must reproduce Meyer's nuclear relative trace and become
+  Paugam's upper/lower splitting only after positive Hodge completion.
+  Ordinary finite-rank critical-\(L^2\) reduction is excluded by
+  `DAC_FINITE_RANK_TWISTED_CRITICAL_L2_NO_GO`.
 - **Cards:** `DAC_ALGEBRAIC_CYCLOTOMIC_MILNOR_AMPLITUDE`,
   `DAC_TWO_COLUMN_HYPERCOHOMOLOGY_AMPLITUDE`,
   `DAC_TWO_COLUMN_CUP_TRACE_TOTALIZATION`,
@@ -226,7 +314,8 @@ has generic and closed-point columns.
   `DAC_SCALAR_SUSPENSION_POISSON_TRANSFER_NO_GO`,
   `DAC_DENINGER_HILBERT_KUMMER_RADIAL_SUSPENSION`,
   `DAC_DENINGER_FLOW_POISSON_DILATION`,
-  `DAC_DENINGER_HILBERT_KUMMER_POLAR_ANGULAR_CONTRACTION`.
+  `DAC_DENINGER_HILBERT_KUMMER_POLAR_ANGULAR_CONTRACTION`,
+  `DAC_DENINGER_HERMITIAN_RADIAL_LINE_POISSON_HODGE`.
 
 ### 6. Source middle hypercohomology
 
@@ -263,24 +352,20 @@ projection and
   of \(\operatorname{Spec}\mathbb Z\) is the cofinite
   generic-prime star, and every finite prime boundary gives an actual
   open--closed recollement.
-- **Exact open conjecture:**
+- **Optional raw-coarse comparison:**
   `DAC_ARITHMETIC_PROJECTION_LERAY_ROST_SCHMID_RESOLUTION`.
-  It asserts that \(Ra_*\mathscr E_{\mathrm{Den}}\) has two analytic
-  rows and that each row has the length-one arithmetic-curve
-  Rost--Schmid resolution, with one real orientation skyscraper.
-- **Open geometric core:** the analytic Tate--Milnor coefficient must
-  satisfy purity for the already constructed pulled-back generalized
-  log divisor, followed by strict passage through the filtered system
-  of actual finite recollements, with no derived-limit defect.  The
-  retired stronger claim that \([p]\) itself is an ordinary analytic
-  Cartier function is unnecessary and unsupported.
+  It asks whether ordinary hypercohomology of the raw nonproper coarse
+  invariant sheaf agrees with the relevant pro-Stein coefficient.
+  Generalized-log analytic purity and strict all-prime passage are
+  proved; only the ordinary coarse comparison and its possible
+  derived-limit defect remain.  Neither is construction-critical.
 - **Construction correction:** the global raw-coefficient comparison
   is now optional.  The construction-critical source is
   `DAC_DERIVED_STRATUM_KUMMER_ARITHMETIC_COEFFICIENT`, which glues the
-  actual coarse generic and prime stratum coefficients by their
-  derived residue fibre.  Its categorical global-section and
-  three-term amplitude theorem is proved; residue construction,
-  strict boundary pushforward, and local packet analysis remain.
+  pro-Stein relevant generic coefficient and actual prime stratum
+  coefficients by their derived residue fibre.  Finite and real
+  residues, strict boundary pushforward, local packet analysis,
+  three-term amplitude, operations, and endpoint exactness are proved.
 - **Consequence:** the resulting source hypercohomology has degrees
   \(0,1,2\).  Its middle group is defined intrinsically as
   \(H^1_{\mathrm{arith}}(X_W,\mathscr E_{\mathrm{Den}})\), not as a
@@ -321,18 +406,63 @@ Deninger--Singhof prove for a dense-leaf Kähler--Riemann foliation with
   spectral inclusion.  Paugam supplies the unconditional alternating
   middle pairing and odd sign--conjugation \(K_{\mathbb R}\)-operator
   \(C^2=-1\) on the nonreal Connes--Meyer spectral suspension.
-- **Open:** arithmetic pro-laminated/virtual leaf realization,
-  pushforward comparison with the full Rost--Schmid plus real-boundary
-  totalization, odd \(K_{\mathbb R}\) degree-one operator, reduced
-  comparison, conformal metric, and positive
-  Hodge form on \(M_\zeta\).  Paugam's displayed positive Hermitian sum
+- **Proved generic geometry:** affine Kummer leaves, residual phase
+  density, transverse conformal flow, local positive star, and
+  relevant-complex pushforward.
+- **Proved local boundary geometry:** complete pro-log prime cusps,
+  logarithmic residue/Hodge compatibility, and the real
+  orientation-sign odd \(K_{\mathbb R}\) apex.
+- **Proved finite-stage Green data:**
+  `DAC_KUMMER_PHASE_POISSON_GREEN_BOUNDARY` constructs the phase
+  Poisson semigroup \(e^{-r|D_\ell|}\), positive
+  Dirichlet-to-Neumann energy, odd chirality
+  \(i\operatorname{sgn}(D_\ell)\), and centered-unitary power action.
+  `DAC_KUMMER_RELATIVE_CALDERON_POISSON_DOMAIN` proves its exact trace
+  quotient and Lagrangian Calderón graph.
+- **Proved finite derived and source-trace data:**
+  `DAC_POSITIVE_HODGE_KOSZUL_CONTRACTION` contracts the finite
+  graph--conormal derived fibre, while
+  `DAC_MEYER_TOEPLITZ_GREEN_TRANSGRESSION` identifies the common
+  multiplicative cutoff transgression and its arithmetic
+  Poisson/Fourier corrections.
+- **Proved trace-stratum separation:**
+  `DAC_FINITE_PRIME_PRESERVED_STRATUM_CONFLATION_NO_GO` shows that
+  finite-prime residue strata cannot be used as preserved-leaf
+  conormal support.  Finite primes remain periodic-orbit packets in
+  the open flow; conormal/dual-conormal support belongs to a
+  conjectural archimedean compactification.  The two localizations
+  must be compared, not identified.
+- **Primary-source archimedean trace-domain candidate:**
+  `DAC_ARCHIMEDEAN_CONORMAL_DUAL_CONORMAL_TRACE_DOMAIN` retains the
+  full supported normal-Dirac jet tower at the real stationary
+  component, with Deninger's transverse exponent \(-2\), and pairs it
+  with the strong dual-conormal tower. It is a trace-domain conjecture
+  for the generalized Deninger source, not an application of the
+  compact smooth foliated-flow theorem and not a substitute for Hodge
+  polarization on \(M_\zeta\).
+- **Open Hodge gate:** global arithmetic Calderón incidence relation
+  and `DAC_ARITHMETIC_CALDERON_PAUGAM_HARDY_COMPARISON`: glue strict
+  finite Hardy projectors into Meyer's nuclear almost-polarization,
+  construct exact projectors after Hodge completion, identify the
+  hereditary relative trace with Paugam's cup form, prove
+  order-zero Riesz spectral faithfulness (then higher-jet
+  faithfulness), and obtain the positive Hodge form on \(M_\zeta\).
+  **Open trace gate:** construction of the archimedean compactification
+  and global Rees jet coefficient.  Paugam's displayed positive Hermitian sum
   is only a semisimple critical-line statement; it does not prove
   positivity on generalized zero jets.  Comparison with the raw local
   two-term coefficient is explicitly excluded.
+- **No-go boundary:** finite-rank critical-\(L^2\) twists have dense
+  multiplier range; bare Kummer-mode \(\ell^2\) has no strongly
+  continuous real-flow extension; and unweighted infinite-ray Hilbert
+  augmentation has zero quotient seminorm.  Smooth suspension and
+  unit augmentation must therefore precede Hilbert completion.
 - **Cards:** `DAC_KAHLER_RIEMANN_FLOW_PURITY`,
   `DAC_KAHLER_RIEMANN_ARITHMETIC_LEAF_REALIZATION`,
   `DAC_DERIVED_COEFFICIENT_HILBERT_HODGE_DESCENT`,
-  `DAC_POISSON_GEOMETRIC_HODGE_POLARIZATION`.
+  `DAC_POISSON_GEOMETRIC_HODGE_POLARIZATION`,
+  `DAC_ARITHMETIC_CALDERON_GREEN_INTERMEDIATE_EXTENSION`,
+  `DAC_ARITHMETIC_CALDERON_PAUGAM_HARDY_COMPARISON`.
 
 ### 8. Lefschetz trace
 
@@ -340,18 +470,25 @@ Deninger--Singhof prove for a dense-leaf Kähler--Riemann foliation with
   representation gives the raw Weil distribution as the alternating
   character of the Poisson--zeta complex, including the exact
   prime-power and archimedean distributions.
-- **Proved:** complex-line prime return has positive real determinant;
-  primitive orbit length \(\log p\) gives the exact coefficient;
-  trace-norm limits preserve traces; compact test support sees only
-  finitely many prime powers.
+- **Proved:** any nondegenerate complex-linear return has positive
+  real determinant; primitive orbit length \(\log p\) gives the exact
+  coefficient; trace-norm limits preserve traces; compact test
+  support sees only finitely many prime powers.  The actual Kummer map
+  \(z\mapsto z^p\) cannot be an ordinary smooth nondegenerate return
+  germ at \(z=0\), by
+  `DAC_ORDINARY_SMOOTH_PRIME_RETURN_GERM_NO_GO`.
 - **Open:** identify Meyer's prime terms packetwise with source
-  fixed-orbit distributions; construct source holomorphic prime return
-  maps, real stationary
-  packet with exponent \(-2\), finite-stage Kähler tower, uniform
-  smoothing/trace-norm estimates, and archimedean convergence.
+  finite-correspondence periodic-orbit packets; separately construct
+  the real stationary compactification with exponent \(-2\), prove
+  that its full conormal/dual-conormal normal-jet character is the
+  \(\Gamma_{\mathbb R}\) distribution, and establish uniform
+  smoothing/trace-norm estimates and archimedean convergence.  Prime
+  residue comparison is a sheaf-to-orbit comparison, not a
+  fixed-stratum identification.
 - **Cards:** `DAC_COMPLEX_LEAF_PRIME_ORBIT_SIGN`,
   `DAC_REAL_PLACE_FIXED_POINT_LINEARIZATION`,
-  `DAC_PRO_NUCLEAR_KAHLER_TRACE_TOWER`.
+  `DAC_PRO_NUCLEAR_KAHLER_TRACE_TOWER`,
+  `DAC_ARCHIMEDEAN_CONORMAL_DUAL_CONORMAL_TRACE_DOMAIN`.
 
 ### 9. Determinant and spectral divisor
 
@@ -385,64 +522,67 @@ three-term theorem gives
 \]
 
 - **Lean source:** `DeningerArithmeticThreeTermHodgePurity.lean`.
-- **Status:** implication written; source existence and spectral
-  comparison gates above remain open.  RH is not proved.
+- **Status:** arithmetic-cohomology source and endpoints constructed.
+  Poisson middle comparison, geometric Hodge polarization,
+  generalized-jet faithfulness, and source Lefschetz/determinant
+  transport remain open.  RH is not proved.
 
 ## Exact active critical path
 
-1. Complete Galois, residue, finite-correspondence, and power coherence
-   in `DAC_SHEAFIFIED_UNIT_AMALGAMATION_COMPARISON`; its pro-Stein
-   derived-section clause is already paper-proved.  Sheafify the
-   Hilbert--Kummer refinement and its global radial Schwartz cosheaf.
-   Use the proved discrete-flow realization of every Poisson dilation;
-   scalar deck pullback remains ruled out by
-   `DAC_SCALAR_SUSPENSION_POISSON_TRANSFER_NO_GO`.
-2. Use `DAC_COARSE_INVARIANT_SHEAF_EXISTENCE` separately on the actual
-   generic and prime strata.
-3. Apply the proved `DAC_PRO_LOG_STEIN_KUMMER_RESIDUE_SQUARE` and
-   `DAC_UNIT_AMALGAMATION_RESIDUE_UNIVERSAL_DESCENT`: the analytic
-   Kummer generator square and every finite Steinberg/higher
-   Tate--Milnor residue cell are constructed.  Apply the proved real
-   Kummer boundary; construct its full analytic real Betti lift and
-   operation coherence.
-4. Apply the proved
-   `DAC_PRIME_PACKET_PRO_STEIN_KUMMER_COMPARISON`: each individual
-   packet is profinite-times-circle, its prime coefficient is fine
-   with amplitude \([0,0]\), and the valuation line is a strict scalar
-   summand of the full packet modes.
-5. Apply proved `DAC_STRICT_RESTRICTED_PRIME_PUSHFORWARD`: individual
-   packet sheaves are first arithmetic-derived-pushed to
-   \(\operatorname{Spec}\mathbb Z\), where the mixed restricted sum is
-   a flasque cofinite sheaf and derived global sections are the strict
-   packet sum.  Sectionwise global summability on arbitrary Deninger
-   opens is retired.
-6. Form the shifted
-   `DAC_DERIVED_STRATUM_KUMMER_ARITHMETIC_COEFFICIENT`; apply the
-   proved shifted-fibre global-section theorem.
-7. Apply `DAC_STRICT_PRO_LOG_COLLAR_SECTION` and
-   `DAC_COMPLETED_ARAKELOV_TRACE_KERNEL` to obtain
-   real endpoint forms \(H^0_{\mathbb R}=\mathbb R\),
-   \(H^2_{\mathbb R}=\mathbb R(-1)\), then complexify them to the even
-   \(K_{\mathbb R}\)-objects \(\mathbb C\) and \(\mathbb C(-1)\);
-   prove the multiplicative signature window and operation-compatible
-   reduced comparison.
-8. Prove `DAC_DENINGER_POISSON_RELEVANT_COMPLEX_COMPARISON`; this
-   identifies intrinsic reduced \(H^1\) with Meyer's nuclear Frechet
-   quotient \(M_\zeta\), already known to be nonzero,
-   infinite-dimensional, and multiplicity-exact.
-9. Transport Paugam's cup/trace pairing and audit continuity and
-   nondegeneracy on the full generalized-jet topology.
-10. Construct the complex Kähler arithmetic leaf realization, with odd
-    \(K_{\mathbb R}\) degree-one operator, and its positive
-    flow-natural Hodge polarization.  For the \(\mathbb Q\) object an
-    additional real form is allowed.  Construct genuinely no-real
-    quaternionic transition data separately for functorial extension
-    to all number fields.
-11. Identify Meyer's analytic prime/archimedean character packetwise
-    with the geometric Lefschetz distribution.
-12. Transport the already-proved Poisson--zeta regularized determinant
+1. **Completed:** construct
+   `DAC_DERIVED_STRATUM_KUMMER_ARITHMETIC_COEFFICIENT` from the
+   pro-Stein \(R\alpha_*\mathcal G\), finite generalized-log residues,
+   archimedean homology current, strict all-prime pushforward, and
+   completed Arakelov trace kernel.  This gives intrinsic
+   \(H^0=\mathbb R\), \(H^1\), and \(H^2=\mathbb R(-1)\).
+2. **Completed:** sheafify the Hilbert--Kummer fine source and radial
+   Schwartz cosheaf; prove strict compatibility among nuclear, mixed
+   \(L^1/L^2\), residue-graph, and endpoint topologies in
+   `DAC_MEYER_NUCLEAR_RADIAL_STRICTNESS`.
+3. **Completed:** prove strict nuclear angular cosheaf contraction,
+   including retained unitary phase and radius-zero boundary, in
+   `DAC_HILBERT_KUMMER_STRICT_ANGULAR_COSHEAF_CONTRACTION`.
+4. **Completed at complex/flow/topology level:** apply
+   `DAC_DENINGER_POISSON_RELEVANT_COMPLEX_AMALGAMATION` to identify
+   intrinsic reduced \(H^1\) with Meyer's nuclear Fréchet quotient
+   \(M_\zeta\), already known to be nonzero, infinite-dimensional, and
+   multiplicity-exact.  Source cup/Hodge comparison remains separate.
+5. Transport Paugam's cup/trace pairing and audit continuity and
+   nondegeneracy on the full generalized-jet topology via
+   `DAC_ARITHMETIC_CALDERON_PAUGAM_HARDY_COMPARISON`; Meyer's source
+   nuclear almost-polarization and the positive completed Calderón
+   projectors, not a zero-indexed splitting, must define the
+   upper/lower trace sectors.
+6. **Oriented-conformal geometry completed, including arithmetic
+   boundaries:** construct
+   affine complex Kähler leaves with transverse flow and residual
+   density; extend their star through prime cusps and the
+   orientation-twisted real apex, with mixed generic/prime overlap
+   proved.  Prime extended-\(L^2\) and unitary relative Calderón
+   domains are also proved.  Now prove
+   `DAC_ARITHMETIC_CALDERON_GREEN_INTERMEDIATE_EXTENSION`: attach every
+   Tate--Milnor relative cell before completion, close the global
+   Lagrangian Cauchy relation, use Meyer's proved Toeplitz
+   transgression and nuclear polarization pair for its
+   \(Z\)/Fourier cross terms, identify its completed Hardy relative
+   trace with Paugam's cup form, and prove faithful positive
+   flow-natural Hodge polarization.  For RH, prove Hodge-norm
+   boundedness and generator-domain Riesz representation of every
+   order-zero Meyer functional; retain all higher jets for the full
+   generalized-block theory.
+   Build the archimedean conormal/dual-conormal trace domain from the
+   real Rees jet tower; do not place finite-prime residue packets in
+   its preserved support.
+   Construct genuinely no-real quaternionic transition data
+   separately for functorial extension to all number fields.
+7. Identify Meyer's analytic character with the geometric Lefschetz
+   distribution in two separated comparisons: finite-prime
+   periodic-orbit packets in the open \(J/J'\) sector, and the
+   archimedean \(\Gamma_{\mathbb R}\) distribution from the full
+   supported/dual-supported jet towers.
+8. Transport the already-proved Poisson--zeta regularized determinant
     to source cohomology.
-13. Apply the formal Hodge-purity RH theorem; if the polarization is on
+9. Apply the formal Hodge-purity RH theorem; if the polarization is on
     the full jet topology, also apply the Jordan obstruction to obtain
     zero simplicity.
 

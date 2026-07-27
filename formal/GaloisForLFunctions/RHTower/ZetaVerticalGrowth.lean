@@ -15,6 +15,19 @@ noncomputable section
 
 namespace RHTower
 
+/-- `e² < 8`, from the nine-digit lower bound on `e`.  Several zeta growth and lower-bound proofs
+open with this numeric fact; it is stated once here. -/
+theorem exp_two_lt_eight : Real.exp 2 < 8 := by
+  have h1 := Real.exp_one_lt_d9
+  have h2 : Real.exp 2 = Real.exp 1 * Real.exp 1 := by
+    rw [← Real.exp_add]
+    norm_num
+  have h3 : Real.exp 1 * Real.exp 1 < 2.7182818286 * 2.7182818286 := by
+    nlinarith [Real.exp_pos 1]
+  rw [h2]
+  nlinarith [h3]
+
+
 open Set Filter
 
 set_option maxHeartbeats 1600000 in
@@ -26,15 +39,7 @@ theorem abs_riemannZeta_le_log {σ t : ℝ} (ht : 8 ≤ |t|)
   have ht0 : (0 : ℝ) < |t| := by linarith
   have ht1 : (1 : ℝ) ≤ |t| := by linarith
   -- `log|t| > 2`
-  have hexp2 : Real.exp 2 < 8 := by
-    have h1 := Real.exp_one_lt_d9
-    have h2 : Real.exp 2 = Real.exp 1 * Real.exp 1 := by
-      rw [← Real.exp_add]
-      norm_num
-    have h3 : Real.exp 1 * Real.exp 1 < 2.7182818286 * 2.7182818286 := by
-      nlinarith [Real.exp_pos 1]
-    rw [h2]
-    nlinarith [h3]
+  have hexp2 := exp_two_lt_eight
   have hlogt2 : 2 < Real.log |t| := by
     have h1 : Real.log (Real.exp 2) < Real.log |t| :=
       Real.log_lt_log (Real.exp_pos 2) (lt_of_lt_of_le hexp2 ht)

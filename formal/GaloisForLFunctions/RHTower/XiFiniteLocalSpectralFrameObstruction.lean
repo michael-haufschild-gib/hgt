@@ -195,11 +195,14 @@ theorem no_XiPolynomialFluxCoboundary_of_pos {h : ℝ} (hh : 0 < h) :
   exact no_XiEntireFluxCoboundary_of_pos hh
     ⟨fun z => P.eval z, P.differentiable, hrel⟩
 
-/-- An entire Hermitian-diagonal law analytically continues to an entire coboundary for the
-completed logarithmic flux under the transverse shift `2a`. -/
-theorem entireFluxCoboundary_of_entireHermitianDiagonalLaw
+/-- **Explicit flux coboundary from an entire Hermitian diagonal law.**  The diagonal law forces the
+Wronskian-type combination to vanish identically, and the resulting logarithmic-derivative identity
+exhibits the seam flux as the coboundary of the explicit function `z ↦ -Q(-i(z - 1/2 - a))`. -/
+theorem entireFluxCoboundary_of_entireHermitianDiagonalLaw_explicit
     {a : ℝ} {Q : ℂ → ℂ} (hlaw : XiEntireHermitianDiagonalLaw a Q) :
-    ∃ E : ℂ → ℂ, XiEntireFluxCoboundary (2 * a) E := by
+    XiEntireFluxCoboundary (2 * a)
+      (fun z => -Q (-I * (z - ((1 : ℂ) / 2 + (a : ℂ))))) := by
+
   let c : ℂ := (1 : ℂ) / 2 + (a : ℂ)
   let H : ℂ → ℂ := fun b =>
     deriv xi (c + b * I) * xi (c - b * I) +
@@ -231,7 +234,7 @@ theorem entireFluxCoboundary_of_entireHermitianDiagonalLaw
   have hHzero : ∀ b : ℂ, H b = 0 :=
     entire_eq_zero_of_zero_on_real_tail H 0 hHan (fun x _hx => hHreal x)
   let E : ℂ → ℂ := fun z => -Q (-I * (z - c))
-  refine ⟨E, ?_, ?_⟩
+  refine ⟨?_, ?_⟩
   · dsimp only [E]
     have hinner : Differentiable ℂ (fun z : ℂ => -I * (z - c)) := by fun_prop
     exact (hlaw.1.comp hinner).neg
@@ -278,6 +281,13 @@ theorem entireFluxCoboundary_of_entireHermitianDiagonalLaw
     rw [hEval]
     linear_combination -hlog'
 
+/-- An entire Hermitian-diagonal law analytically continues to an entire coboundary for the
+completed logarithmic flux under the transverse shift `2a`. -/
+theorem entireFluxCoboundary_of_entireHermitianDiagonalLaw
+    {a : ℝ} {Q : ℂ → ℂ} (hlaw : XiEntireHermitianDiagonalLaw a Q) :
+    ∃ E : ℂ → ℂ, XiEntireFluxCoboundary (2 * a) E :=
+  ⟨_, entireFluxCoboundary_of_entireHermitianDiagonalLaw_explicit hlaw⟩
+
 /-- No positive aperture admits an entire Hermitian-diagonal multiplier law. -/
 theorem no_XiEntireHermitianDiagonalLaw_of_pos {a : ℝ} (ha : 0 < a) :
     ¬ ∃ Q : ℂ → ℂ, XiEntireHermitianDiagonalLaw a Q := by
@@ -290,85 +300,13 @@ completed logarithmic flux under the transverse shift `2a`. -/
 theorem polynomialFluxCoboundary_of_hermitianDiagonalLaw
     {a : ℝ} {Q : Polynomial ℂ} (hlaw : XiPolynomialHermitianDiagonalLaw a Q) :
     ∃ P : Polynomial ℂ, XiPolynomialFluxCoboundary (2 * a) P := by
-  let c : ℂ := (1 : ℂ) / 2 + (a : ℂ)
-  let H : ℂ → ℂ := fun b =>
-    deriv xi (c + b * I) * xi (c - b * I) +
-      xi (c + b * I) * deriv xi (c - b * I) -
-        Q.eval b * xi (c + b * I) * xi (c - b * I)
-  have hderivXi : Differentiable ℂ (deriv xi) :=
-    analyticOnNhd_univ_iff_differentiable.mp xi_analyticOnNhd_univ.deriv
-  have hplus : Differentiable ℂ (fun b : ℂ => c + b * I) := by fun_prop
-  have hminus : Differentiable ℂ (fun b : ℂ => c - b * I) := by fun_prop
-  have hHdiff : Differentiable ℂ H := by
-    dsimp only [H]
-    have hxiPlus : Differentiable ℂ (fun b : ℂ => xi (c + b * I)) :=
-      xi_differentiable.comp hplus
-    have hxiMinus : Differentiable ℂ (fun b : ℂ => xi (c - b * I)) :=
-      xi_differentiable.comp hminus
-    have hdPlus : Differentiable ℂ (fun b : ℂ => deriv xi (c + b * I)) :=
-      hderivXi.comp hplus
-    have hdMinus : Differentiable ℂ (fun b : ℂ => deriv xi (c - b * I)) :=
-      hderivXi.comp hminus
-    exact (hdPlus.mul hxiMinus).add (hxiPlus.mul hdMinus) |>.sub
-      ((Q.differentiable.mul hxiPlus).mul hxiMinus)
-  have hHan : AnalyticOnNhd ℂ H Set.univ :=
-    analyticOnNhd_univ_iff_differentiable.mpr hHdiff
-  have hHreal : ∀ b : ℝ, H (b : ℂ) = 0 := by
-    intro b
-    have hb := hlaw b
-    dsimp only [H, c]
-    linear_combination hb
-  have hHzero : ∀ b : ℂ, H b = 0 :=
-    entire_eq_zero_of_zero_on_real_tail H 0 hHan (fun x _hx => hHreal x)
-  let B : Polynomial ℂ := Polynomial.C (-I) *
-    (Polynomial.X - Polynomial.C c)
-  let P : Polynomial ℂ := -(Q.comp B)
-  refine ⟨P, ?_⟩
+  refine ⟨-(Q.comp (Polynomial.C (-I) *
+    (Polynomial.X - Polynomial.C ((1 : ℂ) / 2 + (a : ℂ))))), ?_⟩
   intro z hz hzshift
-  let b : ℂ := -I * (z - c)
-  have hbplus : c + b * I = z := by
-    dsimp only [b]
-    calc
-      c + -I * (z - c) * I = c + ((-I) * I) * (z - c) := by ring
-      _ = z := by rw [show (-I) * I = (1 : ℂ) by rw [neg_mul, I_mul_I]; ring]; ring
-  have hbminus : c - b * I = 1 - (z - ((2 * a : ℝ) : ℂ)) := by
-    dsimp only [b, c]
-    push_cast
-    calc
-      1 / 2 + (a : ℂ) - (-I * (z - (1 / 2 + (a : ℂ)))) * I =
-          1 / 2 + (a : ℂ) - ((-I) * I) * (z - (1 / 2 + (a : ℂ))) := by ring
-      _ = 1 - (z - 2 * (a : ℂ)) := by
-        rw [show (-I) * I = (1 : ℂ) by rw [neg_mul, I_mul_I]; ring]
-        ring
-  have htne : xi (c - b * I) ≠ 0 := by
-    rw [hbminus, xi_one_sub]
-    exact hzshift
-  have hHb := hHzero b
-  have hlog : logDeriv xi z + logDeriv xi (c - b * I) = Q.eval b := by
-    rw [logDeriv_apply, logDeriv_apply, ← hbplus]
-    dsimp only [H] at hHb
-    have hzplus : xi (c + b * I) ≠ 0 := by simpa [hbplus] using hz
-    calc
-      deriv xi (c + b * I) / xi (c + b * I) +
-          deriv xi (c - b * I) / xi (c - b * I) =
-          (deriv xi (c + b * I) * xi (c - b * I) +
-            xi (c + b * I) * deriv xi (c - b * I)) /
-              (xi (c + b * I) * xi (c - b * I)) := by
-            field_simp [hzplus, htne]
-      _ = Q.eval b := by
-        apply (div_eq_iff (mul_ne_zero hzplus htne)).2
-        linear_combination hHb
-  have hlog' : logDeriv xi z -
-      logDeriv xi (z - (((2 * a : ℝ)) : ℂ)) = Q.eval b := by
-    rw [hbminus, logDeriv_xi_reciprocity] at hlog
-    exact hlog
-  change -logDeriv xi z - -logDeriv xi (z - (((2 * a : ℝ)) : ℂ)) = P.eval z
-  have hPeval : P.eval z = -Q.eval b := by
-    dsimp only [P, B, b]
-    rw [Polynomial.eval_neg, Polynomial.eval_comp, Polynomial.eval_mul,
-      Polynomial.eval_C, Polynomial.eval_sub, Polynomial.eval_X, Polynomial.eval_C]
-  rw [hPeval]
-  linear_combination -hlog'
+  have h := (entireFluxCoboundary_of_entireHermitianDiagonalLaw_explicit
+    (Q := fun w => Q.eval w) ⟨Q.differentiable, hlaw⟩).2 z hz hzshift
+  rw [h, Polynomial.eval_neg, Polynomial.eval_comp, Polynomial.eval_mul,
+    Polynomial.eval_C, Polynomial.eval_sub, Polynomial.eval_X, Polynomial.eval_C]
 
 /-- No positive critical aperture admits a polynomial Hermitian-diagonal law. -/
 theorem no_XiPolynomialHermitianDiagonalLaw_of_pos {a : ℝ} (ha : 0 < a) :

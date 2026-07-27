@@ -848,99 +848,29 @@ def thetaCuspTailSecondEvenRemainderReturnedDerivative (a : ℝ) (z : ℂ) : ℂ
     (thetaCuspTailSecondEvenRemainder (x + a) : ℂ) *
       ((x : ℂ) * I * spectralTranslationPhase (-x) z)
 
-/-- The returned boundary value vanishes as the translation depth tends to infinity. -/
-theorem thetaCuspTailSecondEvenRemainderReturnedValue_tendsto_atTop_zero
-    {z : ℂ} (hz : z.im < 1 / 2) :
+/-- **Even-remainder returned integral vanishes for any polynomially bounded weight.**  If
+`‖w x‖ = x^p` on the half line, the returned integral of the second even remainder against
+`w · phase` tends to `0` as the shift grows.  Dominated convergence against
+`C · x^p e^{-(1/2 - Im z)x}`. -/
+private theorem thetaCuspTailSecondEvenRemainderReturned_tendsto_atTop_zero_of_weight
+    {z : ℂ} (hz : z.im < 1 / 2) (p : ℕ) (w : ℝ → ℂ) (hwc : Continuous w)
+    (hw : ∀ x : ℝ, 0 ≤ x → ‖w x‖ = x ^ p) :
     Tendsto (fun a : ℝ =>
-      thetaCuspTailSecondEvenRemainderReturnedValue a z) atTop (nhds 0) := by
-  let C := thetaCuspTailSecondEvenRemainderExpHalfConstant
-  let c := (1 / 2 : ℝ) - z.im
-  let F : ℝ → ℝ → ℂ := fun a x =>
-    (thetaCuspTailSecondEvenRemainder (x + a) : ℂ) *
-      spectralTranslationPhase (-x) z
-  let bound : ℝ → ℝ := fun x => C * Real.exp (-c * x)
-  have hc : 0 < c := by dsimp only [c]; linarith
-  have hboundInt : Integrable bound (volume.restrict (Ioi 0)) := by
-    change IntegrableOn (fun x : ℝ => C * Real.exp (-c * x)) (Ioi 0)
-    simpa only [pow_zero, one_mul] using
-      (integrableOn_pow_mul_exp_neg_real 0 hc).const_mul C
-  have hFmeas : ∀ᶠ a : ℝ in atTop,
-      AEStronglyMeasurable (F a) (volume.restrict (Ioi 0)) := by
-    exact Eventually.of_forall fun a => by
-      have hg : Continuous (fun x : ℝ =>
-          thetaCuspTailSecondEvenRemainder (x + a)) :=
-        continuous_thetaCuspTailSecondEvenRemainder.comp
-          (continuous_id.add continuous_const)
-      have hp : Continuous (fun x : ℝ => spectralTranslationPhase (-x) z) := by
-        unfold spectralTranslationPhase
-        fun_prop
-      exact ((Complex.continuous_ofReal.comp hg).mul hp).aestronglyMeasurable.restrict
-  have hbound : ∀ᶠ a : ℝ in atTop,
-      ∀ᵐ x : ℝ ∂(volume.restrict (Ioi 0)), ‖F a x‖ ≤ bound x := by
-    filter_upwards [eventually_ge_atTop (0 : ℝ)] with a ha
-    filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
-    have hx0 : 0 ≤ x := hx.le
-    have hxa : 0 ≤ x + a := add_nonneg hx0 ha
-    have hg := abs_thetaCuspTailSecondEvenRemainder_le_exp_neg_half hxa
-    have hexpShift : Real.exp (-(x + a) / 2) ≤ Real.exp (-x / 2) :=
-      Real.exp_le_exp.mpr (by linarith)
-    dsimp only [F, bound, C, c]
-    rw [norm_mul, Complex.norm_real, Real.norm_eq_abs,
-      norm_spectralTranslationPhase_neg_eq_exp_mul_im]
-    calc
-      |thetaCuspTailSecondEvenRemainder (x + a)| * Real.exp (x * z.im) ≤
-          (thetaCuspTailSecondEvenRemainderExpHalfConstant *
-            Real.exp (-(x + a) / 2)) * Real.exp (x * z.im) := by gcongr
-      _ ≤ (thetaCuspTailSecondEvenRemainderExpHalfConstant *
-            Real.exp (-x / 2)) * Real.exp (x * z.im) := by
-        exact mul_le_mul_of_nonneg_right
-          (mul_le_mul_of_nonneg_left hexpShift
-            thetaCuspTailSecondEvenRemainderExpHalfConstant_nonneg)
-          (Real.exp_pos _).le
-      _ = thetaCuspTailSecondEvenRemainderExpHalfConstant *
-          Real.exp (-((1 / 2 : ℝ) - z.im) * x) := by
-        rw [show (thetaCuspTailSecondEvenRemainderExpHalfConstant *
-              Real.exp (-x / 2)) * Real.exp (x * z.im) =
-            thetaCuspTailSecondEvenRemainderExpHalfConstant *
-              (Real.exp (-x / 2) * Real.exp (x * z.im)) by ring,
-          ← Real.exp_add]
-        congr 2
-        ring
-  have hlim : ∀ᵐ x : ℝ ∂(volume.restrict (Ioi 0)),
-      Tendsto (fun a : ℝ => F a x) atTop (nhds (0 : ℂ)) := by
-    filter_upwards with x
-    have hshift : Tendsto (fun a : ℝ => x + a) atTop atTop :=
-      tendsto_const_nhds.add_atTop tendsto_id
-    have hgReal : Tendsto (fun a : ℝ =>
-        thetaCuspTailSecondEvenRemainder (x + a)) atTop (nhds 0) :=
-      thetaCuspTailSecondEvenRemainder_tendsto_atTop_zero.comp hshift
-    have hg : Tendsto (fun a : ℝ =>
-        (thetaCuspTailSecondEvenRemainder (x + a) : ℂ)) atTop (nhds 0) := by
-      simpa using Complex.continuous_ofReal.continuousAt.tendsto.comp hgReal
-    simpa only [F, zero_mul] using
-      hg.mul_const (spectralTranslationPhase (-x) z)
-  have hDCT := tendsto_integral_filter_of_dominated_convergence
-    bound hFmeas hbound hboundInt hlim
-  simpa only [thetaCuspTailSecondEvenRemainderReturnedValue, F,
-    MeasureTheory.integral_zero] using hDCT
+      ∫ x : ℝ in Ioi 0,
+        (thetaCuspTailSecondEvenRemainder (x + a) : ℂ) *
+          (w x * spectralTranslationPhase (-x) z)) atTop (nhds 0) := by
 
-/-- The returned spectral derivative also vanishes; the extra factor `x` remains integrable
-because the strict strip gap is positive. -/
-theorem thetaCuspTailSecondEvenRemainderReturnedDerivative_tendsto_atTop_zero
-    {z : ℂ} (hz : z.im < 1 / 2) :
-    Tendsto (fun a : ℝ =>
-      thetaCuspTailSecondEvenRemainderReturnedDerivative a z) atTop (nhds 0) := by
   let C := thetaCuspTailSecondEvenRemainderExpHalfConstant
   let c := (1 / 2 : ℝ) - z.im
   let F : ℝ → ℝ → ℂ := fun a x =>
     (thetaCuspTailSecondEvenRemainder (x + a) : ℂ) *
-      ((x : ℂ) * I * spectralTranslationPhase (-x) z)
-  let bound : ℝ → ℝ := fun x => C * (x ^ 1 * Real.exp (-c * x))
+      (w x * spectralTranslationPhase (-x) z)
+  let bound : ℝ → ℝ := fun x => C * (x ^ p * Real.exp (-c * x))
   have hc : 0 < c := by dsimp only [c]; linarith
   have hboundInt : Integrable bound (volume.restrict (Ioi 0)) := by
     change IntegrableOn
-      (fun x : ℝ => C * (x ^ 1 * Real.exp (-c * x))) (Ioi 0)
-    exact (integrableOn_pow_mul_exp_neg_real 1 hc).const_mul C
+      (fun x : ℝ => C * (x ^ p * Real.exp (-c * x))) (Ioi 0)
+    exact (integrableOn_pow_mul_exp_neg_real p hc).const_mul C
   have hFmeas : ∀ᶠ a : ℝ in atTop,
       AEStronglyMeasurable (F a) (volume.restrict (Ioi 0)) := by
     exact Eventually.of_forall fun a => by
@@ -949,7 +879,8 @@ theorem thetaCuspTailSecondEvenRemainderReturnedDerivative_tendsto_atTop_zero
         continuous_thetaCuspTailSecondEvenRemainder.comp
           (continuous_id.add continuous_const)
       have hp : Continuous (fun x : ℝ =>
-          (x : ℂ) * I * spectralTranslationPhase (-x) z) := by
+          w x * spectralTranslationPhase (-x) z) := by
+        refine hwc.mul ?_
         unfold spectralTranslationPhase
         fun_prop
       exact ((Complex.continuous_ofReal.comp hg).mul hp).aestronglyMeasurable.restrict
@@ -963,26 +894,25 @@ theorem thetaCuspTailSecondEvenRemainderReturnedDerivative_tendsto_atTop_zero
     have hexpShift : Real.exp (-(x + a) / 2) ≤ Real.exp (-x / 2) :=
       Real.exp_le_exp.mpr (by linarith)
     dsimp only [F, bound, C, c]
-    rw [norm_mul, norm_mul, norm_mul, Complex.norm_real, Real.norm_eq_abs,
-      norm_I, mul_one, norm_spectralTranslationPhase_neg_eq_exp_mul_im]
-    simp only [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hx0, pow_one]
+    rw [norm_mul, norm_mul, Complex.norm_real, Real.norm_eq_abs,
+      hw x hx0, norm_spectralTranslationPhase_neg_eq_exp_mul_im]
     calc
       |thetaCuspTailSecondEvenRemainder (x + a)| *
-          (x * Real.exp (x * z.im)) ≤
+          (x ^ p * Real.exp (x * z.im)) ≤
           (thetaCuspTailSecondEvenRemainderExpHalfConstant *
-            Real.exp (-(x + a) / 2)) * (x * Real.exp (x * z.im)) := by gcongr
+            Real.exp (-(x + a) / 2)) * (x ^ p * Real.exp (x * z.im)) := by gcongr
       _ ≤ (thetaCuspTailSecondEvenRemainderExpHalfConstant *
-            Real.exp (-x / 2)) * (x * Real.exp (x * z.im)) := by
+            Real.exp (-x / 2)) * (x ^ p * Real.exp (x * z.im)) := by
         exact mul_le_mul_of_nonneg_right
           (mul_le_mul_of_nonneg_left hexpShift
             thetaCuspTailSecondEvenRemainderExpHalfConstant_nonneg)
-          (mul_nonneg hx0 (Real.exp_pos _).le)
+          (mul_nonneg (pow_nonneg hx0 p) (Real.exp_pos _).le)
       _ = thetaCuspTailSecondEvenRemainderExpHalfConstant *
-          (x * Real.exp (-((1 / 2 : ℝ) - z.im) * x)) := by
+          (x ^ p * Real.exp (-((1 / 2 : ℝ) - z.im) * x)) := by
         rw [show (thetaCuspTailSecondEvenRemainderExpHalfConstant *
-              Real.exp (-x / 2)) * (x * Real.exp (x * z.im)) =
+              Real.exp (-x / 2)) * (x ^ p * Real.exp (x * z.im)) =
             thetaCuspTailSecondEvenRemainderExpHalfConstant *
-              (x * (Real.exp (-x / 2) * Real.exp (x * z.im))) by ring,
+              (x ^ p * (Real.exp (-x / 2) * Real.exp (x * z.im))) by ring,
           ← Real.exp_add]
         congr 3
         ring
@@ -998,11 +928,31 @@ theorem thetaCuspTailSecondEvenRemainderReturnedDerivative_tendsto_atTop_zero
         (thetaCuspTailSecondEvenRemainder (x + a) : ℂ)) atTop (nhds 0) := by
       simpa using Complex.continuous_ofReal.continuousAt.tendsto.comp hgReal
     simpa only [F, zero_mul] using
-      hg.mul_const (((x : ℂ) * I) * spectralTranslationPhase (-x) z)
+      hg.mul_const (w x * spectralTranslationPhase (-x) z)
   have hDCT := tendsto_integral_filter_of_dominated_convergence
     bound hFmeas hbound hboundInt hlim
-  simpa only [thetaCuspTailSecondEvenRemainderReturnedDerivative, F,
-    MeasureTheory.integral_zero] using hDCT
+  simpa only [F, MeasureTheory.integral_zero] using hDCT
+
+/-- The returned boundary value vanishes as the translation depth tends to infinity. -/
+theorem thetaCuspTailSecondEvenRemainderReturnedValue_tendsto_atTop_zero
+    {z : ℂ} (hz : z.im < 1 / 2) :
+    Tendsto (fun a : ℝ =>
+      thetaCuspTailSecondEvenRemainderReturnedValue a z) atTop (nhds 0) := by
+  have h := thetaCuspTailSecondEvenRemainderReturned_tendsto_atTop_zero_of_weight hz 0
+    (fun _ => 1) continuous_const (fun x _ => by simp)
+  simpa [thetaCuspTailSecondEvenRemainderReturnedValue] using h
+
+/-- The returned spectral derivative also vanishes; the extra factor `x` remains integrable
+because the strict strip gap is positive. -/
+theorem thetaCuspTailSecondEvenRemainderReturnedDerivative_tendsto_atTop_zero
+    {z : ℂ} (hz : z.im < 1 / 2) :
+    Tendsto (fun a : ℝ =>
+      thetaCuspTailSecondEvenRemainderReturnedDerivative a z) atTop (nhds 0) := by
+  have h := thetaCuspTailSecondEvenRemainderReturned_tendsto_atTop_zero_of_weight hz 1
+    (fun x => (x : ℂ) * I) (Complex.continuous_ofReal.mul continuous_const) (fun x hx => by
+      rw [norm_mul, norm_I, mul_one, Complex.norm_real, Real.norm_eq_abs,
+        abs_of_nonneg hx, pow_one])
+  simpa [thetaCuspTailSecondEvenRemainderReturnedDerivative] using h
 
 /-! ## Exact canonical instantiation of the fixed-half-line translation formulas -/
 
@@ -1535,107 +1485,27 @@ theorem exp_half_mul_thetaCuspTailSecondDensity_shift_tendsto_zero (x : ℝ) :
         Real.exp_add]
       ring
 
-theorem thetaCuspTailSecondDensityReturnedValue_scaled_tendsto_zero
-    {z : ℂ} (hz : z.im < 1 / 2) :
+/-- **Scaled returned second density vanishes for any polynomially bounded weight.**  If the
+weight `w` has `‖w x‖ = x^p` on the half line, the `e^{a/2}`-scaled returned integral tends to `0` as
+the shift `a → ∞`.  Dominated convergence against `C · x^p e^{-(1-Im z)x}`: the density decays like
+`e^{-(x+a)}`, so the `e^{a/2}` prefactor leaves `e^{-a/2}` to kill the bound. -/
+private theorem thetaCuspTailSecondDensityReturned_scaled_tendsto_zero_of_weight
+    {z : ℂ} (hz : z.im < 1 / 2) (p : ℕ) (w : ℝ → ℂ) (hwc : Continuous w)
+    (hw : ∀ x : ℝ, 0 ≤ x → ‖w x‖ = x ^ p) :
     Tendsto (fun a : ℝ =>
       (Real.exp (a / 2) : ℂ) *
-        thetaCuspTailSecondDensityReturnedValue a z) atTop (nhds 0) := by
-  let C := thetaCuspTailSecondDensityExpOneConstant
-  let c := (1 : ℝ) - z.im
-  let F : ℝ → ℝ → ℂ := fun a x =>
-    ((Real.exp (a / 2) * thetaCuspTailSecondDensity (x + a) : ℝ) : ℂ) *
-      spectralTranslationPhase (-x) z
-  let bound : ℝ → ℝ := fun x => C * Real.exp (-c * x)
-  have hc : 0 < c := by dsimp only [c]; linarith
-  have hboundInt : Integrable bound (volume.restrict (Ioi 0)) := by
-    change IntegrableOn (fun x : ℝ => C * Real.exp (-c * x)) (Ioi 0)
-    simpa only [pow_zero, one_mul] using
-      (integrableOn_pow_mul_exp_neg_real 0 hc).const_mul C
-  have hFmeas : ∀ᶠ a : ℝ in atTop,
-      AEStronglyMeasurable (F a) (volume.restrict (Ioi 0)) := by
-    exact Eventually.of_forall fun a => by
-      have hrho : Continuous (fun x : ℝ =>
-          Real.exp (a / 2) * thetaCuspTailSecondDensity (x + a)) := by
-        unfold thetaCuspTailSecondDensity
-        exact continuous_const.mul (continuous_const.mul
-          ((differentiable_thetaCuspTailDerivative 2).continuous.comp
-            (continuous_id.add continuous_const)))
-      exact ((Complex.continuous_ofReal.comp hrho).mul
-        (by unfold spectralTranslationPhase; fun_prop)).aestronglyMeasurable.restrict
-  have hbound : ∀ᶠ a : ℝ in atTop,
-      ∀ᵐ x : ℝ ∂(volume.restrict (Ioi 0)), ‖F a x‖ ≤ bound x := by
-    filter_upwards [eventually_ge_atTop (0 : ℝ)] with a ha
-    filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
-    have hx0 : 0 ≤ x := hx.le
-    have hxa : 0 ≤ x + a := add_nonneg hx0 ha
-    have hrho := abs_thetaCuspTailSecondDensity_le_exp_neg_one hxa
-    have hea : Real.exp (-a / 2) ≤ 1 := by
-      rw [← Real.exp_zero]
-      exact Real.exp_le_exp.mpr (by linarith)
-    dsimp only [F, bound, C, c]
-    rw [norm_mul, Complex.norm_real, Real.norm_eq_abs,
-      abs_mul, abs_of_pos (Real.exp_pos _),
-      norm_spectralTranslationPhase_neg_eq_exp_mul_im]
-    calc
-      Real.exp (a / 2) * |thetaCuspTailSecondDensity (x + a)| *
-          Real.exp (x * z.im) ≤
-        Real.exp (a / 2) *
-            (thetaCuspTailSecondDensityExpOneConstant * Real.exp (-(x + a))) *
-          Real.exp (x * z.im) := by gcongr
-      _ = Real.exp (-a / 2) *
-          (thetaCuspTailSecondDensityExpOneConstant *
-            Real.exp (-((1 : ℝ) - z.im) * x)) := by
-        rw [show Real.exp (a / 2) *
-              (thetaCuspTailSecondDensityExpOneConstant * Real.exp (-(x + a))) *
-              Real.exp (x * z.im) =
-            thetaCuspTailSecondDensityExpOneConstant *
-              (Real.exp (a / 2) * Real.exp (-(x + a)) *
-                Real.exp (x * z.im)) by ring,
-          ← Real.exp_add, ← Real.exp_add]
-        rw [show a / 2 + -(x + a) + x * z.im =
-          -a / 2 + -((1 : ℝ) - z.im) * x by ring,
-          Real.exp_add]
-        ring
-      _ ≤ thetaCuspTailSecondDensityExpOneConstant *
-          Real.exp (-((1 : ℝ) - z.im) * x) := by
-        exact mul_le_of_le_one_left
-          (mul_nonneg thetaCuspTailSecondDensityExpOneConstant_nonneg
-            (Real.exp_pos _).le) hea
-  have hlim : ∀ᵐ x : ℝ ∂(volume.restrict (Ioi 0)),
-      Tendsto (fun a : ℝ => F a x) atTop (nhds (0 : ℂ)) := by
-    filter_upwards with x
-    have hreal := exp_half_mul_thetaCuspTailSecondDensity_shift_tendsto_zero x
-    have hcplx : Tendsto (fun a : ℝ =>
-        ((Real.exp (a / 2) * thetaCuspTailSecondDensity (x + a) : ℝ) : ℂ))
-        atTop (nhds 0) := by
-      simpa only [Function.comp_apply] using
-        Complex.continuous_ofReal.continuousAt.tendsto.comp hreal
-    simpa only [F, zero_mul] using hcplx.mul_const (spectralTranslationPhase (-x) z)
-  have hDCT := tendsto_integral_filter_of_dominated_convergence
-    bound hFmeas hbound hboundInt hlim
-  convert hDCT using 1
-  · funext a
-    unfold F thetaCuspTailSecondDensityReturnedValue
-    rw [← MeasureTheory.integral_const_mul]
-    apply MeasureTheory.integral_congr_ae
-    filter_upwards with x
-    push_cast
-    ring
-  · simp
+        ∫ x : ℝ in Ioi 0,
+          (thetaCuspTailSecondDensity (x + a) : ℂ) *
+            (w x * spectralTranslationPhase (-x) z)) atTop (nhds 0) := by
 
-theorem thetaCuspTailSecondDensityReturnedDerivative_scaled_tendsto_zero
-    {z : ℂ} (hz : z.im < 1 / 2) :
-    Tendsto (fun a : ℝ =>
-      (Real.exp (a / 2) : ℂ) *
-        thetaCuspTailSecondDensityReturnedDerivative a z) atTop (nhds 0) := by
   let F : ℝ → ℝ → ℂ := fun a x =>
     ((Real.exp (a / 2) * thetaCuspTailSecondDensity (x + a) : ℝ) : ℂ) *
-      ((x : ℂ) * I * spectralTranslationPhase (-x) z)
+      (w x * spectralTranslationPhase (-x) z)
   let bound : ℝ → ℝ := fun x => thetaCuspTailSecondDensityExpOneConstant *
-    (x ^ 1 * Real.exp (-((1 : ℝ) - z.im) * x))
+    (x ^ p * Real.exp (-((1 : ℝ) - z.im) * x))
   have hc : 0 < (1 : ℝ) - z.im := by linarith
   have hboundInt : Integrable bound (volume.restrict (Ioi 0)) :=
-    (integrableOn_pow_mul_exp_neg_real 1 hc).const_mul _
+    (integrableOn_pow_mul_exp_neg_real p hc).const_mul _
   have hFmeas : ∀ᶠ a : ℝ in atTop,
       AEStronglyMeasurable (F a) (volume.restrict (Ioi 0)) := by
     exact Eventually.of_forall fun a => by
@@ -1658,23 +1528,22 @@ theorem thetaCuspTailSecondDensityReturnedDerivative_scaled_tendsto_zero
       rw [← Real.exp_zero]
       exact Real.exp_le_exp.mpr (by linarith)
     dsimp only [F, bound]
-    rw [norm_mul, norm_mul, norm_mul, Complex.norm_real, Real.norm_eq_abs,
-      norm_I, mul_one, abs_mul, abs_of_pos (Real.exp_pos _),
+    rw [norm_mul, norm_mul, Complex.norm_real, Real.norm_eq_abs,
+      abs_mul, abs_of_pos (Real.exp_pos _), hw x hx0,
       norm_spectralTranslationPhase_neg_eq_exp_mul_im]
-    simp only [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hx0, pow_one]
     calc
       Real.exp (a / 2) * |thetaCuspTailSecondDensity (x + a)| *
-          (x * Real.exp (x * z.im)) ≤
+          (x ^ p * Real.exp (x * z.im)) ≤
         Real.exp (a / 2) *
             (thetaCuspTailSecondDensityExpOneConstant * Real.exp (-(x + a))) *
-          (x * Real.exp (x * z.im)) := by gcongr
+          (x ^ p * Real.exp (x * z.im)) := by gcongr
       _ = Real.exp (-a / 2) *
           (thetaCuspTailSecondDensityExpOneConstant *
-            (x * Real.exp (-((1 : ℝ) - z.im) * x))) := by
+            (x ^ p * Real.exp (-((1 : ℝ) - z.im) * x))) := by
         rw [show Real.exp (a / 2) *
               (thetaCuspTailSecondDensityExpOneConstant * Real.exp (-(x + a))) *
-              (x * Real.exp (x * z.im)) =
-            thetaCuspTailSecondDensityExpOneConstant * x *
+              (x ^ p * Real.exp (x * z.im)) =
+            thetaCuspTailSecondDensityExpOneConstant * x ^ p *
               (Real.exp (a / 2) * Real.exp (-(x + a)) *
                 Real.exp (x * z.im)) by ring,
           ← Real.exp_add, ← Real.exp_add]
@@ -1683,10 +1552,10 @@ theorem thetaCuspTailSecondDensityReturnedDerivative_scaled_tendsto_zero
           Real.exp_add]
         ring
       _ ≤ thetaCuspTailSecondDensityExpOneConstant *
-          (x * Real.exp (-((1 : ℝ) - z.im) * x)) := by
+          (x ^ p * Real.exp (-((1 : ℝ) - z.im) * x)) := by
         exact mul_le_of_le_one_left
           (mul_nonneg thetaCuspTailSecondDensityExpOneConstant_nonneg
-            (mul_nonneg hx0 (Real.exp_pos _).le)) hea
+            (mul_nonneg (pow_nonneg hx0 p) (Real.exp_pos _).le)) hea
   have hlim : ∀ᵐ x : ℝ ∂(volume.restrict (Ioi 0)),
       Tendsto (fun a : ℝ => F a x) atTop (nhds (0 : ℂ)) := by
     filter_upwards with x
@@ -1697,18 +1566,38 @@ theorem thetaCuspTailSecondDensityReturnedDerivative_scaled_tendsto_zero
       simpa only [Function.comp_apply] using
         Complex.continuous_ofReal.continuousAt.tendsto.comp hreal
     simpa only [F, zero_mul] using
-      hcplx.mul_const (((x : ℂ) * I) * spectralTranslationPhase (-x) z)
+      hcplx.mul_const (w x * spectralTranslationPhase (-x) z)
   have hDCT := tendsto_integral_filter_of_dominated_convergence
     bound hFmeas hbound hboundInt hlim
   convert hDCT using 1
   · funext a
-    unfold F thetaCuspTailSecondDensityReturnedDerivative
+    unfold F
     rw [← MeasureTheory.integral_const_mul]
     apply MeasureTheory.integral_congr_ae
     filter_upwards with x
     push_cast
     ring
   · simp
+
+theorem thetaCuspTailSecondDensityReturnedValue_scaled_tendsto_zero
+    {z : ℂ} (hz : z.im < 1 / 2) :
+    Tendsto (fun a : ℝ =>
+      (Real.exp (a / 2) : ℂ) *
+        thetaCuspTailSecondDensityReturnedValue a z) atTop (nhds 0) := by
+  have h := thetaCuspTailSecondDensityReturned_scaled_tendsto_zero_of_weight hz 0
+    (fun _ => 1) continuous_const (fun x _ => by simp)
+  simpa [thetaCuspTailSecondDensityReturnedValue] using h
+
+theorem thetaCuspTailSecondDensityReturnedDerivative_scaled_tendsto_zero
+    {z : ℂ} (hz : z.im < 1 / 2) :
+    Tendsto (fun a : ℝ =>
+      (Real.exp (a / 2) : ℂ) *
+        thetaCuspTailSecondDensityReturnedDerivative a z) atTop (nhds 0) := by
+  have h := thetaCuspTailSecondDensityReturned_scaled_tendsto_zero_of_weight hz 1
+    (fun x => (x : ℂ) * I) (Complex.continuous_ofReal.mul continuous_const) (fun x hx => by
+      rw [norm_mul, norm_I, mul_one, Complex.norm_real, Real.norm_eq_abs,
+        abs_of_nonneg hx, pow_one])
+  simpa [thetaCuspTailSecondDensityReturnedDerivative] using h
 
 theorem thetaCuspTailSecondEvenRemainderReturnedValue_eq_density_sub_completion
     {a : ℝ} (ha : 0 ≤ a) {z : ℂ} (hz : z.im < 1 / 2) :

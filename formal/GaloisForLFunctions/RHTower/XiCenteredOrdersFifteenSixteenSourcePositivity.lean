@@ -110,12 +110,8 @@ theorem one_over_twentyThousand_lt_xiFourthReciprocalTraceAtom_of_centered_order
   have hformula :
       (xiZeroCopyReciprocalSquare q ^ 2).re =
         (v ^ 2 - 6 * u * v + u ^ 2) / w ^ 4 := by
-    rw [pow_two, Complex.mul_re, xiZeroCopyReciprocalSquare_re_formula,
-      xiZeroCopyReciprocalSquare_im_formula]
     simp only [u, v, w]
-    have hden : u + v ≠ 0 := by positivity
-    field_simp [hden]
-    ring
+    exact xiZeroCopyReciprocalSquare_sq_re_formula q
   rw [hformula]
   rw [div_lt_div_iff₀ (by norm_num : (0 : ℝ) < 20000) (pow_pos hw0 4)]
   nlinarith

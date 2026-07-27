@@ -2220,3 +2220,40 @@ exactly under RH.  CCM is not part of this comparison.
   hypercohomology.  No derived rational-power invariants, bar
   contraction, quotient-stack endpoint, CCM object, Xi zero, or RH
   premise defines it.
+
+- 2026-07-27 — `[TWENTY-FIRST KÄHLER SOURCE CORRECTION]`
+  `[DAC_EQUIVARIANT_RADIUS_ORBIT_TRIVIALIZATION]`,
+  `[DAC_DENINGER_HILBERT_KUMMER_KAHLER_ORBIT_COLLAR]`.
+  No Gamma-rank, bar, or conjectural unitary-phase identification is
+  needed to construct the positive-radius Kähler orbit collar.
+  The canonical radius satisfies
+  \(x(\phi^t p)=e^t x(p)\), hence globally trivializes the nonunitary
+  flow space:
+  \[
+    X_{\rm HK}^{\times}
+      \cong x^{-1}(1)\times\mathbb R_{>0}.
+  \]
+  Its canonical half-density circle refinement is
+  \[
+    \{(p,z):|z|^2=x(p)\}
+      \cong x^{-1}(1)\times\mathbb C^\times .
+  \]
+  The complex leaves carry standard Kähler form, flow
+  \(z\mapsto e^{t/2}z\), positive \(J=*c\), exact Poisson dilations,
+  and Meyer's critical radial \(L^2(dx)\) measure.
+
+  This closes the radial collar and local Hodge calculation for the
+  isolated \(\mathbb Q\) object.  Its flow is tangent to closed orbit
+  leaves, so it is not yet Deninger's dense arithmetic foliation and
+  no purity theorem is applied.  It does not identify the
+  uncompactified unitary locus \(r(P)=0\) with the flow limit
+  \(u\to0\).
+
+  `[DAC_RADIAL_KAHLER_ENDPOINT_FOURIER_TRACE]` further proves that
+  cone-apex restriction is \(f(0)\), while leafwise Kähler trace is
+  \((\pi/2)\mathcal Ff(0)\).  Thus \(H_\cap\) is geometrically the
+  common relative kernel; no second Fourier boundary point is needed.
+  Exact next gates are strict apex/trace sheafification, mixed
+  \(L^1/L^2\)-nuclear pushforward to the Poisson complex, cup-isometric
+  harmonic comparison, and faithfulness on every Meyer generalized
+  jet.

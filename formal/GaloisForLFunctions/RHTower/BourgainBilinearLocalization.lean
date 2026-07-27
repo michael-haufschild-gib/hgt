@@ -104,6 +104,31 @@ theorem integral_bourgainLocalBoxCharacterTerm
   rw [mul_assoc,
     bourgain_recover_character_from_localBox hY hL hy]
 
+open Classical in
+/-- A constant multiple of the localized box character is integrable: the constant factors out of
+the indicator. -/
+private theorem integrable_const_mul_bourgainLocalBoxCharacter
+    (Y L xi yj : BourgainPhaseSpace) (c : ℂ) :
+    Integrable (fun z =>
+      if z ∈ bourgainLocalBox Y L xi
+      then c * bourgainAdditiveCharacter (bourgainCoordinateScale L z) yj
+      else 0) := by
+  have hbase := integrable_bourgainLocalBoxCharacter Y L xi yj
+  have hc :
+      (fun z =>
+        if z ∈ bourgainLocalBox Y L xi
+        then c * bourgainAdditiveCharacter (bourgainCoordinateScale L z) yj
+        else 0) =
+      fun z => c *
+        (if z ∈ bourgainLocalBox Y L xi
+         then bourgainAdditiveCharacter (bourgainCoordinateScale L z) yj
+         else 0) := by
+    funext z
+    split_ifs <;> ring
+  rw [hc]
+  exact hbase.const_mul _
+
+
 theorem integrable_bourgainBilinearIntegrand
     {ι κ : Type*} [Fintype ι] [Fintype κ]
     (Y L : BourgainPhaseSpace)
@@ -142,25 +167,7 @@ theorem integrable_bourgainBilinearIntegrand
   intro i hi
   apply integrable_finsetSum
   intro j hj
-  have hbase :=
-    integrable_bourgainLocalBoxCharacter Y L (x i) (y j)
-  have hc :
-      (fun z =>
-        if z ∈ bourgainLocalBox Y L (x i)
-        then a i * bourgainLocalizedFourierWeight Y L y b j *
-          bourgainAdditiveCharacter
-            (bourgainCoordinateScale L z) (y j)
-        else 0) =
-      fun z =>
-        (a i * bourgainLocalizedFourierWeight Y L y b j) *
-          (if z ∈ bourgainLocalBox Y L (x i)
-           then bourgainAdditiveCharacter
-             (bourgainCoordinateScale L z) (y j)
-           else 0) := by
-    funext z
-    split_ifs <;> ring
-  rw [hc]
-  exact hbase.const_mul _
+  exact integrable_const_mul_bourgainLocalBoxCharacter Y L (x i) (y j) _
 
 /-- Exact bilinear integral representation. -/
 theorem integral_bourgainBilinearIntegrand
@@ -211,51 +218,11 @@ theorem integral_bourgainBilinearIntegrand
       exact integral_bourgainLocalBoxCharacterTerm
         (a i * b j) hY hL (hy j)
     · intro j hj
-      have hbase :=
-        integrable_bourgainLocalBoxCharacter Y L (x i) (y j)
-      have hc :
-          (fun z =>
-            if z ∈ bourgainLocalBox Y L (x i)
-            then a i * b j *
-              bourgainProductLocalizationMultiplier Y L (y j) *
-              bourgainAdditiveCharacter
-                (bourgainCoordinateScale L z) (y j)
-            else 0) =
-          fun z =>
-            (a i * b j *
-              bourgainProductLocalizationMultiplier Y L (y j)) *
-            (if z ∈ bourgainLocalBox Y L (x i)
-             then bourgainAdditiveCharacter
-               (bourgainCoordinateScale L z) (y j)
-             else 0) := by
-        funext z
-        split_ifs <;> ring
-      rw [hc]
-      exact hbase.const_mul _
+      exact integrable_const_mul_bourgainLocalBoxCharacter Y L (x i) (y j) _
   · intro i hi
     apply integrable_finsetSum
     intro j hj
-    have hbase :=
-      integrable_bourgainLocalBoxCharacter Y L (x i) (y j)
-    have hc :
-        (fun z =>
-          if z ∈ bourgainLocalBox Y L (x i)
-          then a i * b j *
-            bourgainProductLocalizationMultiplier Y L (y j) *
-            bourgainAdditiveCharacter
-              (bourgainCoordinateScale L z) (y j)
-          else 0) =
-        fun z =>
-          (a i * b j *
-            bourgainProductLocalizationMultiplier Y L (y j)) *
-          (if z ∈ bourgainLocalBox Y L (x i)
-           then bourgainAdditiveCharacter
-             (bourgainCoordinateScale L z) (y j)
-           else 0) := by
-      funext z
-      split_ifs <;> ring
-    rw [hc]
-    exact hbase.const_mul _
+    exact integrable_const_mul_bourgainLocalBoxCharacter Y L (x i) (y j) _
 
 end
 

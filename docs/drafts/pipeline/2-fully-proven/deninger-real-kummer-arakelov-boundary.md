@@ -159,10 +159,16 @@ realified Milnor algebra.
 
 By `DAC_UNIT_AMALGAMATION_RESIDUE_UNIVERSAL_DESCENT`, any analytic
 Kummer-boundary lift agreeing with `(3)` extends through every
-relative Tate--Milnor cell.  The remaining source gate is not the
-Milnor relation.  It is construction of that analytic real Betti
-lift on Deninger's coarse generic coefficient and proof of its
-flow/correspondence compatibility.
+relative Tate--Milnor cell.
+`DAC_ARCHIMEDEAN_KUMMER_HOMOLOGY_CURRENT` constructs such a lift as
+the unique homology-current functional on every finite character
+torus.  `DAC_PRO_STEIN_REAL_BETTI_DERIVED_LIFT` proves its
+compatibility with lattice refinements, powers, Galois maps, field
+norms, finite correspondences, and the mixed \(L^1/L^2\) completion.
+Thus the real Betti boundary is complete on Deninger's prescribed
+pro-Stein relevant coefficient \(R\alpha_{\mathrm{PS},*}\mathcal G\).
+Comparison with ordinary hypercohomology of the raw nonproper coarse
+invariant sheaf is optional and remains separate.
 
 ## Strict completed endpoint
 
@@ -192,10 +198,11 @@ If `(14)` holds, `(8)` upgrades to the full boundary space.
 
 - The Kummer generator, real sheaf, continuity, product formula, and
   scalar endpoint are complete.
-- The analytic real Betti lift on the entire coarse generic
-  coefficient is not yet constructed.
-- Strict completed surjectivity onto packet mean-zero modes is `(14)`,
-  not a consequence of scalar unique factorization.
+- The analytic real Betti lift on the pro-Stein relevant coefficient
+  is complete; no ordinary coarse-sheaf equivalence is asserted.
+- `DAC_STRICT_PRO_LOG_COLLAR_SECTION` proves strict completed
+  surjectivity onto packet mean-zero modes in `(14)` using actual
+  logarithmic collar forms, not scalar unique factorization.
 - The real orientation does not provide Hodge positivity or the
   archimedean fixed-point exponent.
 
@@ -209,6 +216,6 @@ If `(14)` holds, `(8)` upgrades to the full boundary space.
 - `DAC_UNIT_AMALGAMATION_RESIDUE_UNIVERSAL_DESCENT`
 - `DAC_PRO_LOG_STEIN_KUMMER_RESIDUE_SQUARE`
 
-**Verdict:** `FULLY PROVEN ON PAPER FOR THE REAL KUMMER BOUNDARY AND
-SCALAR ARAKELOV ENDPOINT; FULL ANALYTIC REAL-BETTI LIFT AND STRICT
-MEAN-ZERO SURJECTIVITY REMAIN OPEN`.
+**Verdict:** `FULLY PROVEN ON PAPER FOR THE REAL KUMMER BOUNDARY,
+PRO-STEIN ANALYTIC REAL-BETTI LIFT, AND STRICT COMPLETED ARAKELOV
+ENDPOINT; HODGE POSITIVITY IS SEPARATE`.

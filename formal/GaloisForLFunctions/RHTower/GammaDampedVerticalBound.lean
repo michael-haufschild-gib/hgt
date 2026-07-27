@@ -65,7 +65,7 @@ theorem norm_term_le_inv_sq {f : ℕ → ℂ} {s : ℂ} (hs : 2 ≤ s.re) (hf : 
 
 /-! ### The two auxiliary series -/
 
-theorem norm_inv_riemannZeta_le {s : ℂ} (hs : 2 ≤ s.re) : ‖(riemannZeta s)⁻¹‖ ≤ 2 := by
+theorem norm_inv_riemannZeta_le_of_two_le_re {s : ℂ} (hs : 2 ≤ s.re) : ‖(riemannZeta s)⁻¹‖ ≤ 2 := by
   have hs1 : 1 < s.re := by linarith
   rw [← LSeries_moebius_eq_inv_riemannZeta hs1]
   refine le_trans (norm_lSeries_le_of_term_bound summable_inv_natCast_sq ?_)
@@ -119,7 +119,7 @@ theorem norm_lSeries_gammaDampedCoeff_le {z : ℂ} (h1 : 1 < z.re) (h2 : z.re �
   have h2z : (2 : ℝ) ≤ (2 * z).re := by
     rw [re_two_mul]
     linarith
-  have hinv : ‖(riemannZeta (2 * z))⁻¹‖ ≤ 2 := norm_inv_riemannZeta_le h2z
+  have hinv : ‖(riemannZeta (2 * z))⁻¹‖ ≤ 2 := norm_inv_riemannZeta_le_of_two_le_re h2z
   have hH : ‖gammaDampedCorrectionLSeries z‖ ≤ 1 / 2 :=
     norm_gammaDampedCorrectionLSeries_le (by linarith)
   rw [lSeries_gammaDampedCoeff h1]

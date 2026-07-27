@@ -587,104 +587,6 @@ theorem mobiusLaplaceReconstructedMellin_eq_gamma_div_zeta
   rw [harg, (mellin_mobiusLaplaceComparisonCutoff ha hd hs).2]
   ring
 
-/-- **Subcritical Landau oscillation obstruction.**  No cutoff comparison carrier with exponent
-`0 < a < 1/2` can be nonnegative on the positive axis.  The proof is unconditional: Landau
-transfer analytically reconstructs `Gamma/zeta` across a half-plane containing the critical
-line, while unconditional Xi-zero existence supplies a pole there. -/
-theorem not_mobiusLaplaceComparisonCutoffNonnegative
-    {a K d : ℝ} (ha0 : 0 < a) (hahalf : a < 1 / 2)
-    (hd : 0 < d) (hd1 : d ≤ 1) :
-    ¬ MobiusLaplaceComparisonCutoffNonnegative a K d := by
-  intro hnonneg
-  have ha : a < 1 := hahalf.trans (by norm_num)
-  let b : ℝ := (a + 1 / 2) / 2
-  have hab : a < b := by
-    dsimp [b]
-    linarith
-  have hbhalf : b < 1 / 2 := by
-    dsimp [b]
-    linarith
-  have hb0 : 0 < b := ha0.trans hab
-  have hR0 : 0 ≤ mobiusLaplaceLandauCenter - b := by
-    rw [mobiusLaplaceLandauCenter]
-    linarith
-  let R : NNReal := ⟨mobiusLaplaceLandauCenter - b, hR0⟩
-  have hleft : a < mobiusLaplaceLandauCenter - (R : ℝ) := by
-    change a < mobiusLaplaceLandauCenter - (mobiusLaplaceLandauCenter - b)
-    linarith
-  have hR4 : (R : ℝ) ≤ 4 := by
-    change mobiusLaplaceLandauCenter - b ≤ 4
-    rw [mobiusLaplaceLandauCenter]
-    linarith
-  have hinter := Iio_subset_interior_integrableExpSet_mobiusLaplaceLandauLog
-    ha ha0 hd hd1 hnonneg hleft hR4
-  let U : Set ℂ := {s : ℂ | b < s.re}
-  let H : ℂ → ℂ := mobiusLaplaceReconstructedMellin a K d
-  have hH : AnalyticOnNhd ℂ H U := by
-    simpa [H, U] using analyticOnNhd_mobiusLaplaceReconstructedMellin
-      (a := a) (K := K) (d := d) (b := b) (R := (R : ℝ))
-      ha hd hab rfl hinter
-  have hleftAn : AnalyticOnNhd ℂ (fun s => H s * zetaResidueUnit s) U := by
-    intro s hs
-    exact (hH s hs).mul (RHTower.analyticAt_zetaResidueUnit s)
-  have hrightAn : AnalyticOnNhd ℂ (fun s => Complex.Gamma s * (s - 1)) U := by
-    intro s hs
-    have hsre : b < s.re := hs
-    exact (HTGeometry.analyticAt_Gamma_of_re_pos (hb0.trans hsre)).mul
-      (analyticAt_id.sub analyticAt_const)
-  have hevent : (fun s => H s * zetaResidueUnit s) =ᶠ[𝓝 (2 : ℂ)]
-      (fun s => Complex.Gamma s * (s - 1)) := by
-    have hgt : ∀ᶠ s : ℂ in 𝓝 (2 : ℂ), 1 < s.re :=
-      (isOpen_lt continuous_const Complex.continuous_re).mem_nhds (by norm_num)
-    filter_upwards [hgt] with s hs
-    have hs1 : s ≠ 1 := by
-      intro h
-      subst s
-      norm_num at hs
-    have hzeta : riemannZeta s ≠ 0 := riemannZeta_ne_zero_of_one_lt_re hs
-    rw [show H s = Complex.Gamma s * (riemannZeta s)⁻¹ by
-      simpa [H] using mobiusLaplaceReconstructedMellin_eq_gamma_div_zeta
-        ha hd hnonneg hs]
-    simp only [zetaResidueUnit, Function.update_of_ne hs1]
-    field_simp [sub_ne_zero.mpr hs1]
-  have h2 : (2 : ℂ) ∈ U := by
-    change b < (2 : ℂ).re
-    norm_num
-    linarith
-  have hidentity : Set.EqOn (fun s => H s * zetaResidueUnit s)
-      (fun s => Complex.Gamma s * (s - 1)) U :=
-    hleftAn.eqOn_of_preconnected_of_eventuallyEq hrightAn
-      (convex_halfSpace_re_gt b).isPreconnected h2 hevent
-  have hcontr (rho : ℂ) (hrho0 : xi rho = 0) (hrhore : 1 / 2 ≤ rho.re) : False := by
-    have hrhoU : rho ∈ U := by
-      change b < rho.re
-      exact hbhalf.trans_le hrhore
-    have hrhopos : 0 < rho.re := lt_of_lt_of_le (by norm_num) hrhore
-    have hrho1 : rho ≠ 1 := by
-      intro h
-      subst rho
-      rw [xi_one] at hrho0
-      norm_num at hrho0
-    have hzeta : riemannZeta rho = 0 := (xi_eq_zero_iff hrhopos hrho1).mp hrho0
-    have hunit : zetaResidueUnit rho = 0 := by
-      simp [zetaResidueUnit, hrho1, hzeta]
-    have hid := hidentity hrhoU
-    change H rho * zetaResidueUnit rho = Complex.Gamma rho * (rho - 1) at hid
-    rw [hunit, mul_zero] at hid
-    exact (mul_ne_zero (Complex.Gamma_ne_zero_of_re_pos hrhopos)
-      (sub_ne_zero.mpr hrho1)) hid.symm
-  obtain ⟨z, hz⟩ := xiDivisorSupport_infinite.nonempty
-  let q : XiDivisorSupport := ⟨z, hz⟩
-  have hz0 : xi z = 0 := by
-    simpa [q] using xi_eq_zero_of_mem_divisor_support q
-  by_cases hzright : 1 / 2 ≤ z.re
-  · exact hcontr z hz0 hzright
-  · apply hcontr (1 - z)
-    · rw [xi_one_sub]
-      exact hz0
-    · simp only [sub_re, one_re]
-      linarith
-
 /-- No analytic function on a half-plane crossing the critical line can agree with
 `Gamma(s)/zeta(s)` on `Re s > 1`.  This is the abstract zero-collision endpoint used by both
 signs of the Landau argument. -/
@@ -752,6 +654,48 @@ theorem no_analytic_gamma_div_zeta_continuation_below_half
       exact hz0
     · simp only [sub_re, one_re]
       linarith
+
+/-- **Subcritical Landau oscillation obstruction.**  No cutoff comparison carrier with exponent
+`0 < a < 1/2` can be nonnegative on the positive axis.  The proof is unconditional: Landau
+transfer analytically reconstructs `Gamma/zeta` across a half-plane containing the critical
+line, while unconditional Xi-zero existence supplies a pole there. -/
+theorem not_mobiusLaplaceComparisonCutoffNonnegative
+    {a K d : ℝ} (ha0 : 0 < a) (hahalf : a < 1 / 2)
+    (hd : 0 < d) (hd1 : d ≤ 1) :
+    ¬ MobiusLaplaceComparisonCutoffNonnegative a K d := by
+  intro hnonneg
+  have ha : a < 1 := hahalf.trans (by norm_num)
+  let b : ℝ := (a + 1 / 2) / 2
+  have hab : a < b := by
+    dsimp [b]
+    linarith
+  have hbhalf : b < 1 / 2 := by
+    dsimp [b]
+    linarith
+  have hb0 : 0 < b := ha0.trans hab
+  have hR0 : 0 ≤ mobiusLaplaceLandauCenter - b := by
+    rw [mobiusLaplaceLandauCenter]
+    linarith
+  let R : NNReal := ⟨mobiusLaplaceLandauCenter - b, hR0⟩
+  have hleft : a < mobiusLaplaceLandauCenter - (R : ℝ) := by
+    change a < mobiusLaplaceLandauCenter - (mobiusLaplaceLandauCenter - b)
+    linarith
+  have hR4 : (R : ℝ) ≤ 4 := by
+    change mobiusLaplaceLandauCenter - b ≤ 4
+    rw [mobiusLaplaceLandauCenter]
+    linarith
+  have hinter := Iio_subset_interior_integrableExpSet_mobiusLaplaceLandauLog
+    ha ha0 hd hd1 hnonneg hleft hR4
+  let U : Set ℂ := {s : ℂ | b < s.re}
+  let H : ℂ → ℂ := mobiusLaplaceReconstructedMellin a K d
+  have hH : AnalyticOnNhd ℂ H U := by
+    simpa [H, U] using analyticOnNhd_mobiusLaplaceReconstructedMellin
+      (a := a) (K := K) (d := d) (b := b) (R := (R : ℝ))
+      ha hd hab rfl hinter
+  exact no_analytic_gamma_div_zeta_continuation_below_half hb0 hbhalf hH
+    (fun s hs => by
+      simpa [H] using mobiusLaplaceReconstructedMellin_eq_gamma_div_zeta
+        ha hd hnonneg hs)
 
 /-! ## Opposite sign -/
 

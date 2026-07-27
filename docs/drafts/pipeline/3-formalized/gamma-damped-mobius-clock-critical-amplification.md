@@ -1,7 +1,7 @@
 # The diagonal Gamma--Sonin orbit lift erases Mobius sign and has super-four critical energy
 
 - **ID:** `gamma-damped-mobius-clock-critical-amplification`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / NO-GO WITH POSITIVE HT SUCCESSOR
 - **Scientific status:** `[PROVED HERE] [LITERATURE NOVELTY OPEN] [NOT AN RH PROOF]`
 - **Source inputs:**
@@ -350,7 +350,7 @@ still excludes the orbit-only RH lift and selects the incidence-relative success
 - [ ] construct the incidence-before-Gamma relative lift
 - [ ] RH
 
-## Formalization (in progress)
+## Formalization (complete)
 
 **Working state — a session picking up this card should continue here, not restart.**
 
@@ -803,51 +803,136 @@ change of variables at all, and the pole part is the explicit rational expressio
 majorant `M/\|w\|² + KM/\|w\|` is square integrable -- the two ingredients of the near-field
 dominated-convergence step.
 
+`[LEAN-PROVED]` The **measure-to-density bridge** closes the gap between `(21)` and the estimates:
+
+| Content | Lean name |
+|---|---|
+| `∫ f dν_Γ = ∫ f(2πx) ρ(x) dx` for continuous `f` | `HTGeometry.integral_gammaCyclicMeasure_eq_density` |
+| the odd energy of `(21)` in density form | `RHTower.gammaDampedOddEnergy_eq_density` |
+
+`[LEAN-PROVED]` The **near-field energy of the regular part** is closed:
+
+| Content | Lean name |
+|---|---|
+| continuity of both Laurent parts along the critical line | `RHTower.continuous_gammaDampedPolePart`, `RHTower.continuous_gammaDampedRegPart` |
+| `∫_S ρ ≤ 1` for every `S` | `RHTower.setIntegral_gammaCyclicDensity_le_one` |
+| **`∫_{\|x\|≤3}(Im R(σ,2πx))² ρ ≤ (5M/(σ-1))²`** | `RHTower.gammaDampedNearRegEnergy_le` |
+
+So the regular part contributes `ε³(5M/ε)² = 25M²ε → 0`, matching the far field's `O(ε)`.  With the
+pole part's dominated convergence this closes the three-term decomposition; only the pole limit and
+the Young/limsup assembly remain.
+
+`[LEAN-PROVED]` The **scaled pole part and its uniform majorant** -- the dominating function of the
+last dominated-convergence step -- are in place:
+
+| Content | Lean name |
+|---|---|
+| `z - 1 = ε·(1/2 - iv)` at the scaled point | `RHTower.gammaDampedCriticalLinePoint_sub_one_eq` |
+| `‖1/2 - iv‖² = 1/4 + v²` | `RHTower.norm_criticalDirection_sq` |
+| `ε²P` in Laurent coordinates: `B/w² - (εm)B/w` | `RHTower.scaledPolePart`, `RHTower.scaledPolePart_eq` |
+| **`‖ε²P‖² ≤ 2M²/(1/4+v²)² + 8M²/(1/4+v²)`**, uniformly in `ε` | `RHTower.norm_sq_scaledPolePart_le` |
+
+The majorant is integrable in `v`, independent of `ε`, and valid wherever `|εv| ≤ 6π` -- exactly the
+hypothesis `MeasureTheory.tendsto_integral_filter_of_dominated_convergence` needs.
+
+`[LEAN-PROVED]` The **pointwise limit of the scaled pole part** -- the second hypothesis of the last
+dominated-convergence step -- is closed:
+
+| Content | Lean name |
+|---|---|
+| `0 ≤ m_(1+ε)` and `ε m_(1+ε) ≤ 2` hold eventually as `ε → 0+` | `RHTower.eventually_moment_bounds` |
+| `\|εv\| ≤ 6π` and `0 < ε ≤ 1` hold eventually | `RHTower.eventually_scaled_mem`, `RHTower.eventually_one_lt` |
+| **`ε² R(1+ε, εv) → 0`** (from `‖R‖ ≤ 5M/ε`) | `RHTower.tendsto_scaled_regPart` |
+| **`ε² P(1+ε, εv) → (1/ζ(2))(w^(-2) - w^(-1))`** | `RHTower.tendsto_scaledPolePart` |
+
+The pole limit is `(23)` minus the vanishing regular part, so it inherits the card's exact constant.
+Both DCT hypotheses -- majorant and pointwise limit -- are now proved; what is left of `(17)` is the
+change of variables `x = εv/(2π)`, the application of
+`MeasureTheory.tendsto_integral_filter_of_dominated_convergence`, and the Young/limsup assembly with
+the two `O(ε)` error terms.
+
+`[LEAN-PROVED]` The **scaled near-field integrand** is fully prepared for dominated convergence:
+
+| Content | Lean name |
+|---|---|
+| the single-fraction majorant `‖ε²P‖² ≤ 64M²/(1+v²)` | `RHTower.norm_sq_scaledPolePart_le'` |
+| the cut-off integrand `1_{\|εv\|≤6π}·(Im ε²P)²·ρ(εv/2π)` | `RHTower.scaledPoleIntegrand` |
+| its measurability | `RHTower.measurable_scaledPoleIntegrand` |
+| **`\|integrand\| ≤ 64M²‖φ‖₁/(1+v²)`, uniformly in `ε`** | `RHTower.abs_scaledPoleIntegrand_le` |
+| **its pointwise limit `(Im[(1/ζ(2))(w^(-2)-w^(-1))])²·ρ(0)`** | `RHTower.tendsto_scaledPoleIntegrand` |
+
+The majorant is a constant multiple of `(1+v²)^(-1)`, so mathlib's `integrable_inv_one_add_sq`
+supplies its integrability directly, and every hypothesis of
+`MeasureTheory.tendsto_integral_filter_of_dominated_convergence` is now discharged.
+
+`[LEAN-PROVED]` **The near-field pole limit is complete**:
+
+| Content | Lean name |
+|---|---|
+| the majorant is integrable | `RHTower.integrable_poleMajorant` |
+| **dominated convergence: `∫ scaledPoleIntegrand ε → ∫ (Im[(1/ζ(2))(w^(-2)-w^(-1))])² ρ(0)`** | `RHTower.tendsto_integral_scaledPoleIntegrand` |
+| the limit in closed form `ρ(0)·(6/π²)²·π` -- i.e. `(24)·(25)` against the residue | `RHTower.integral_poleLimit_eq` |
+| `Im(ε²P) = ε² Im P` | `RHTower.im_scaledPolePart` |
+| **the change of variables `∫ scaledPoleIntegrand ε = 2π ε³ ∫_{\|x\|≤3}(Im P)² ρ`** | `RHTower.integral_scaledPoleIntegrand_eq` |
+
+So `ε³ ∫_{\|x\|≤3}(Im P(1+ε,2πx))² ρ(x) dx → (1/2π)·ρ(0)·(6/π²)²·π`, which is the card's
+`(24)·(25)/ζ(2)²` factor.  Combined with the two proved `O(ε)` error terms (regular part and far
+field), only the Young/limsup assembly and the constant bookkeeping of `(26)` remain for `(17)`.
+
+`[LEAN-PROVED]` **The Young split of the near-field energy** is closed:
+
+| Content | Lean name |
+|---|---|
+| integrability of every near-window energy integrand | `RHTower.integrableOn_near_sq` |
+| **`∫(Im D)²ρ ≤ (1+t)∫(Im P)²ρ + (1+1/t)∫(Im R)²ρ`** | `RHTower.near_energy_le` |
+| **`(1-t)∫(Im P)²ρ - (1/t)∫(Im R)²ρ ≤ ∫(Im D)²ρ`** | `RHTower.le_near_energy` |
+
+Both are the pointwise Young inequality `2\|pq\| ≤ t p² + q²/t` integrated over the window, so no
+Cauchy--Schwarz or `L²` machinery is needed.  With the pole limit and the two `O(ε)` error bounds,
+the `(17)` assembly is now a finite `δ`-argument: choose `t`, then use the three eventual estimates.
+
+`[LEAN-PROVED]` **THE CRITICAL LIMIT `(17)` IS PROVED.**  In
+`formal/GaloisForLFunctions/RHTower/GammaDampedNearField.lean`:
+
+| Card item | Lean name |
+|---|---|
+| the three critical-scaling energies | `RHTower.nearPoleEnergy`, `RHTower.nearRegEnergy`, `RHTower.farEnergy`, `RHTower.totalEnergy` |
+| `ε³∫_near(Im P)²ρ → (1/2π)ρ(0)(6/π²)²π` | `RHTower.tendsto_nearPoleEnergy` |
+| `ε³∫_near(Im R)²ρ → 0` (bounded by `25M²ε`) | `RHTower.tendsto_nearRegEnergy` |
+| `ε³∫_far(Im D)²ρ → 0` (bounded by `144T ε`) | `RHTower.tendsto_farEnergy` |
+| integrability of the energy integrand on `ℝ`, and the near/far split | `RHTower.integrable_energy`, `RHTower.totalEnergy_eq`, `RHTower.compl_energy_le` |
+| **`(17)`**: `ε³ ∫ (Im D(1+ε,y))² dν_Γ(y) → (1/2π)·ρ_Γ(0)·(6/π²)²·π` | **`RHTower.tendsto_totalEnergy`** |
+
+The proof is the card's own three-region argument, machine-checked: the pole part by dominated
+convergence against the `ε`-independent majorant `64M²/(1+v²)` after the change of variables
+`x = εv/(2π)`, the regular part and the far field by the two `O(ε)` bounds, and the three combined by
+the pointwise Young inequality plus a finite `δ`-argument.  The limiting value is exactly the
+residue-density-profile product `(24)·(25)/ζ(2)²` of `(26)`.
+
+What is left on the card is **only bookkeeping**: rescale `‖∑ c_d v_d‖² = 2∫(Im D)²dν_Γ` from `(21)`
+by the card's normalisation of `Y_σ` (`ε·2^(1/4)/√(2Z(σ))`) and check that the resulting constant is
+`C_Γ`, using the proved pole scaling `(σ-1)Z(σ) → 1/ζ(2)` and `ρ(0) = 2π ρ_Γ(0)`.
+
+`[LEAN-PROVED]` **`(17)` IN THE CARD'S OWN NORMALISATION.**
+
+| Card item | Lean name |
+|---|---|
+| `ρ_Γ(0)` in the two conventions: `𝓕φ(0) = 2π ρ_Γ(0)` | `RHTower.gammaCyclicDensity_zero` |
+| the normalised energy `2√2 ε²/Z(σ) ∫ (Im D)² dν_Γ` of `(21)` | `RHTower.gammaDampedNormalisedEnergy` |
+| **`(17)`: it converges to `C_Γ`** | **`RHTower.tendsto_gammaDampedNormalisedEnergy`** |
+
+Composing with `(21)` (`RHTower.norm_sq_gammaDampedOddSynthesis`) this is exactly the card's
+`lim_(σ→1+) ‖Y_σ‖² = C_Γ`: the normalising factor is `(21)`'s, the pole scaling
+`(σ-1)Z(σ) → 1/ζ(2)` is the corpus's, and the limit constant is `gammaCriticalConstant`, which
+`(1)`/`(27)`--`(28)` already prove to exceed four.  **Every proved statement of the card is now
+formalised unconditionally in Lean, axiom-clean.**
+
+### Remaining (non-formalisation)
+
+The three open gates are not formalisation gates: the independent specialist literature audit, the
+construction of the incidence-before-Gamma relative lift (the card's own positive successor
+programme), and RH itself.
+
 *Note for future sessions*: a concurrent agent renamed `RHTower.criticalLinePoint` to
 `RHTower.gammaDampedCriticalLinePoint` (and `abscissa_lt_criticalLinePoint` likewise) in
 `GammaDampedSineSeries.lean`; use the new names.
-
-### Remaining
-
-1. **The spectral identity `(15)`, `(21)` and the final limit `(17)`.**  Everything on the Dirichlet
-   side is now machine-checked: the reduction `(18)`--`(19)` with its holomorphic remainder, the
-   Laurent form, the pole residue `(22)`, the scaled symbol `(20)` and its exact local limit `(23)`.
-   Everything on the archimedean side is machine-checked too: the density `(24)`, the profile energy
-   `(25)`, the combination `(26)`/`(31)` and the strict bound `(1)`/`(27)`--`(28)`.
-
-   What remains is the *bridge*: the spectral representation `(15)` of the odd Gamma kernel
-   `K_odd(h,k) = φ(h-k) - φ(h+k) = 2∫ sin(hx) sin(kx) dν_Γ(x)`, which needs the Gamma cyclic measure
-   `ν_Γ` itself, and then `(21)` plus the dominated-convergence step that turns `(23)` into `(17)`.
-   `(15)` is now proved with the measure `ν_Γ` constructed unconditionally.  What remains is the
-   norm identity `(21)` and the final limit `(17)`:
-
-   * `(17)` alone remains.  The passage `(21) → (17)` is the substitution `x = εy` in
-     `∫ (Im D)² dν_Γ` together with the proved local limit `(23)`, split as the card describes:
-
-     - **pole window** `|x| ≤ δ`: the Laurent form `F = C + B/(z-1)` gives the majorant
-       `|ε² D(1+ε, εy)| ≲ 1/|1/2 - iy|² + 1/|1/2 - iy|`, which is square integrable in `y`, so
-       dominated convergence applies and produces `ρ_Γ(0) · ∫ (Im[w^(-2) - w^(-1)])² dy /ζ(2)²`,
-       i.e. `(24)·(25)` against the pole residue;
-     - **far field** `|x| > δ`: the vertical-line bound is now proved, so the remaining steps are
-       mechanical:
-       1. `‖F(z)‖ ≲ log|x| + C` -- **proved**, `RHTower.norm_lSeries_gammaDampedCoeff_le`;
-       2. `‖F'(α - ix)‖ ≲ (log|x|)/ε` -- **proved**,
-          `RHTower.norm_deriv_lSeries_gammaDampedCoeff_le`;
-       3. hence `ε³ ∫_{|x|>δ} (Im D)² ρ ≲ ε ∫ log²|x| ρ(x) dx → 0`.  The density inputs are proved
-          (`gammaCyclicDensity_le_bound`, `gammaCyclicDensity_mul_sq_le`, `gammaCyclicDensity_neg`);
-          and both the tail integral and the far-field energy estimate are **proved**
-          (`HTGeometry.integrableOn_log_sq_mul_gammaCyclicDensity`,
-          `RHTower.gammaDampedFarEnergy_le`).  What is left is the near field `|x| ≤ 3`: split the
-          symbol there as `D = D_pole + D_reg` with
-          `D_pole = (1/ζ(2))[(z-1)^(-2) - m_σ (z-1)^(-1)]`, apply dominated convergence to the pole
-          part (its scaled majorant `1/|w|² + K/|w|` is square integrable, so mathlib's
-          `tendsto_integral_filter_of_dominated_convergence` applies directly) and the `O(ε)`
-          estimate to the regular part, whose Laurent bounds are uniform on the compact set
-          `{α - iu : ε ∈ [0,1], |u| ≤ 6π}` -- **all of this is now proved**
-          (`RHTower.gammaDampedSymbol_eq_polePart_add_regPart`, `RHTower.norm_gammaDampedRegPart_le`,
-          `RHTower.exists_nearField_bound`).  What is left is only the integral bookkeeping: the
-          change of variables `x = εv/(2π)` for the pole part, its dominated convergence against the
-          proved pointwise limit `(23)`, the `O(ε)` estimate for the regular part, the
-          Cauchy--Schwarz cross term, and the assembly of the constant through `(24)`, `(25)`
-          and `(26)`.
-       No higher derivatives of `φ` and no `ζ'` bound are needed on this route.

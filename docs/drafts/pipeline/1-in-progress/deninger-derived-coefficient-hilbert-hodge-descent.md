@@ -332,13 +332,20 @@ is a decisive falsifier.
 - No spectral claim occurs in clauses 1--6.  Identifying the spectrum of \(\Theta\) with zeta
   zeros is a later Lefschetz/determinant comparison, not an input here.
 
-**Verdict:** `SURVIVES AFTER RELATIVE-MIDDLE CORRECTION`.  Abstract Hodge decomposition
-and unitary descent are not the open mathematics.  Exact open core is the
-mixed \(L^1/L^2\), realified, cohomologically faithful regulator of the
-true-to-approximate relative middle coefficient; closedness of its
-differential; positivity of the full relative cone; and direct
-construction of a positive boundary \(J\) compatible with residues and
-power maps.  No CCM/Gamma Hodge model is a dependency.
+**Verdict:** `SURVIVES AFTER RELATIVE-MIDDLE AND EXTENDED-DOMAIN
+CORRECTIONS`.  Abstract Hodge decomposition and local boundary domains
+are not the open mathematics.  Ordinary Cheeger \(L^2\) is
+residue-killing by
+`DAC_STANDARD_CHEEGER_MIDDLE_EXTENSION_ARITHMETIC_NO_GO`; the prime
+extended-\(L^2\) and unitary relative Calderón domains are proved by
+`DAC_ARITHMETIC_EXTENDED_CUSP_HODGE_BOUNDARY` and
+`DAC_KUMMER_RELATIVE_CALDERON_POISSON_DOMAIN`.  Exact open core is their
+global Tate--Milnor incidence Lagrangian, the mixed \(L^1/L^2\)
+cohomologically faithful regulator, Green supertrace/cup identity, and
+Hodge-norm/domain Riesz faithfulness for Meyer eigenfunctionals (and
+then higher jets), as stated in
+`DAC_ARITHMETIC_CALDERON_GREEN_INTERMEDIATE_EXTENSION`.  No CCM/Gamma
+Hodge model is a dependency.
 
 ## References
 

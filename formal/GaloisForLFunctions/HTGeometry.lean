@@ -82,7 +82,9 @@ import GaloisForLFunctions.HTGeometry.LogOrderLimsupLower
 import GaloisForLFunctions.HTGeometry.GammaVerticalModulus
 import GaloisForLFunctions.HTGeometry.BallLogarithm
 import GaloisForLFunctions.HTGeometry.SmoothWeight
+import GaloisForLFunctions.HTGeometry.VerticalContourShift
 import GaloisForLFunctions.HTGeometry.SmoothWeightMellin
+import GaloisForLFunctions.HTGeometry.SmoothWeightPerron
 import GaloisForLFunctions.HTGeometry.SmoothWeightInversion
 import GaloisForLFunctions.HTGeometry.SmoothWeightSum
 import GaloisForLFunctions.HTGeometry.JensenCountingLowerBound
@@ -2364,3 +2366,5 @@ import GaloisForLFunctions.HTGeometry.UnitaryPhaseReflectedWitness
 import GaloisForLFunctions.HTGeometry.MembraneValencePairWitness
 import GaloisForLFunctions.HTGeometry.CofinitePacketConsistency
 import GaloisForLFunctions.HTGeometry.CofinitePacketVandermonde
+import GaloisForLFunctions.HTGeometry.CofinitePacketCriterion
+import GaloisForLFunctions.HTGeometry.PrimeClockUnitSourcePacket

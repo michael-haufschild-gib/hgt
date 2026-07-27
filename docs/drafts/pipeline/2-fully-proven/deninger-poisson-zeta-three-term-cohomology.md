@@ -478,7 +478,9 @@ Not used:
 - [x] unconditional symplectic Poincare pairing
 - [x] cochain cup product and trace
 - [ ] continuity/nondegeneracy audit on the full generalized-jet topology
-- [ ] geometric \(R\alpha_*\mathcal G\) comparison
+- [x] source relevant-coefficient \(R\alpha_*\mathcal G\) comparison
+  as a strict complex with flow and endpoints
+- [ ] source-geometric cup/Hodge comparison
 - [ ] packetwise fixed-orbit identification on Deninger's space
 - [ ] source-positive Hodge operator
 - [ ] Lean formalization of the algebraic assembly

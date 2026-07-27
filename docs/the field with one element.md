@@ -1138,9 +1138,10 @@ Bruhat--Schwartz space. It satisfies
 and is unitary on \(L^2(\mathbb A_S)\). Thus it retains spherical exponent,
 \(p\)-perfection, and scaling data without ordinary scalar extension.
 
-This closes RP0 at each fixed semilocal stage. Compatibility with all sheaf
-restriction maps, compactified extension, and derived Picard transport remain
-open. Paper card:
+This closes only the exponent-retention **multiplier subgate** of RP0 at each
+fixed semilocal stage. It does not construct the finite-\(S\) quotient
+Hilbert space or a normed sheaf. Compatibility with all sheaf restriction
+maps, compactified extension, and derived Picard transport remain open. Paper card:
 `docs/drafts/pipeline/2-fully-proven/field-one-spherical-weyl-multiplier-bridge.md`.
 
 `[LEAN-PROVED]` Algebraic character/root/faithfulness laws are in
@@ -1215,9 +1216,164 @@ Schwartz--Bruhat-to-\(L^2\) map injective.
 completion isometrically with the closure of the algebraic image, extends
 every algebraic Weyl automorphism to a unitary, and proves exact completed
 intertwining and the additive action law. This is a completed comparison to
-the generated closed subspace, not a proof that the subspace is all product
-\(L^2\). Full-product density and sheaf-restriction compatibility remain
-open.
+the generated closed subspace. `FieldOneFiniteAdeleSigmaCompact.lean` clears all nonintegral
+coordinates by one nonzero integer, covers \(\mathbb A_f\) by countably many
+compact denominator dilates of \(\widehat{\mathbb Z}\), and installs
+sigma-finiteness of finite-adele Haar measure.
+`FieldOneFiniteAdeleCompactOpenBasis.lean` proves that compact-open sets form
+a basis and interpolate between compact subsets and open neighborhoods.
+`FieldOneFiniteBruhatL2Density.lean` combines Haar regularity with that basis
+to approximate every finite-measure indicator by compact-open indicators and
+proves, unconditionally, that
+\[
+  C_c^{\mathrm{lc}}(\mathbb A_f)
+  \longrightarrow L^2(\mathbb A_f)
+\]
+has dense range. This closes finite-place density. Separated-product density
+in full product \(L^2\) is now also closed:
+`L2SeparatedProductDensity.lean` proves the exact separated-product norm law,
+finite-measure rectangle generation and symmetric-difference approximation,
+density of the algebraic \(L^2\) tensor image, and preservation of density
+under arbitrary dense factor maps. `FieldOneSemilocalBruhatL2Density.lean`
+proves that swap-transported semilocal Haar equals direct product Haar,
+identifies the resulting dense-factor tensor map with the pre-existing
+Schwartz--Bruhat realization, proves that realization dense in
+\(L^2(\mathbb R\times\mathbb A_f)\), and upgrades the abstract Hilbert
+completion to a canonical linear isometric equivalence with the full
+semilocal \(L^2\) space. Both completed and ambient product-\(L^2\) Weyl
+representations are also Lean-proved faithful.
+`L2HilbertTensorProduct.lean` constructs the independent Hilbert completion
+of the algebraic tensor of the two \(L^2\) factors and proves it canonically
+linearly isometric to product \(L^2\).
+`FieldOneSemilocalFactorwiseHilbertTensor.lean` identifies the semilocal
+Bruhat completion with that factorwise Hilbert tensor and proves exact
+agreement on pure Schwartz--Bruhat tensors. Sheaf-restriction compatibility
+remains open.
+
+### C17. Full semilocal `L²` completion is already the relative Picard Hodge sheaf
+
+- Initial status: `[CONJECTURE]`
+- Attack: combine primary-source crossed-product sheaf on
+  \(\operatorname{Spec}\mathbb Z\) with the new full-product \(L^2\)
+  completion and regard it as the required coefficient object on
+  \(\widetilde{\operatorname{Pic}}\).
+- Result: `[FALSIFIED AS AN INFERENCE]`
+- Killing mechanism: one canonical Hilbert fiber does not construct sheaf
+  restrictions, archimedean extension, equivariant derived pullback, or
+  Abel--Jacobi derived pushforward. The 2026 Jacobian paper constructs the
+  semilocal algebra sheaf on \(\operatorname{Spec}\mathbb Z\) and suggests
+  cohomology of the Picard/generic pair; it does not construct that
+  cohomology. The characteristic-one Riemann--Roch program separately records
+  \(H^1\) as open because null elements obstruct the available Čech
+  construction.
+- Positive survivor: product-Haar \(L^2\), its dense Bruhat core, and its
+  faithful Weyl action give exact boundary data for the **global additive**
+  adelic coefficient fiber. They are not yet the semilocal quotient Hilbert
+  spaces of the trace formula, so a valid compactified normed sheaf must
+  compare to them rather than being definitionally identified with them.
+- New gate: construct a \(C_{\mathbb Q}\)-equivariant normed-sheaf comparison
+  whose source-open restrictions intertwine these Weyl actions isometrically.
+
+### C18. The completed archimedean--finite carrier is the semilocal trace Hilbert space
+
+- Initial status: `[CONJECTURE]`
+- Attack: identify the completed carrier
+  \(L^2(\mathbb R\times\mathbb A_f)\) with the Hilbert spaces used in the
+  Connes--Consani semilocal trace formula and use it sectionwise over
+  \(\operatorname{Spec}\mathbb Z\).
+- Result: `[FALSIFIED BY TYPE COMPARISON]`
+- Killing mechanism: these are three different structures.
+  `FieldOneGlobalAdeleComparison.lean` proves unconditionally that
+  \[
+    \mathbb R\times\mathbb A_f
+      \cong \mathbb A_{\mathbb Q}
+      =\operatorname{AdeleRing}(\mathbb Z,\mathbb Q)
+  \]
+  as both a topological space and a ring. Thus the completed carrier is
+  **global additive adelic**. For finite \(S\ni\infty\), the primary-source
+  semilocal trace space is instead
+  \[
+    L^2(\mathbb Z_S^\times\backslash\mathbb A_S),
+  \]
+  where \(\mathbb A_S\) is a finite product of local fields. It is a quotient
+  by \(S\)-units, not unquotiented \(L^2(\mathbb A_{\mathbb Q})\). Moreover,
+  the formalized Weyl action consists of additive-character multipliers
+  parametrized by \(\mathbb A_{\mathbb Q}\), whereas the trace formula uses
+  multiplicative scaling by
+  \(C_{\mathbb Q,S}=\mathbb Z_S^\times\backslash\mathbb A_S^\times\).
+- Positive survivor: the same Lean module transports the canonical standard
+  additive character to mathlib's rational adele ring, proves it nontrivial,
+  and proves that it vanishes on every principal rational adele. This is
+  exact global Poisson/reciprocity input, but not the quotient or scaling
+  representation.
+- New gate: C19 below constructs finite-\(S\) products, orbit quotients, and
+  multiplicative idele-class scaling. The remaining gate is the
+  \(\mathbb Z_S^\times\)-invariant quotient measure, its Hilbert
+  representation, and restriction maps as \(S\) varies; only then compare
+  those completions with the algebra sheaf and the global additive stalk.
+
+### C19. Finite-stage class spaces and idele-class scaling can be constructed directly
+
+- Initial status: `[CONJECTURE]`
+- Attack: for a finite set \(S_f\) of finite places, define
+  \[
+    \mathbb A_S=\mathbb R\times\prod_{v\in S_f}\mathbb Q_v,
+    \qquad
+    \mathbb A_S^\times
+      =\mathbb R^\times\times
+        \prod_{v\in S_f}\mathbb Q_v^\times,
+  \]
+  present \(\mathbb Z_S^\times\subset\mathbb Q^\times\) by the generators
+  \(-1\) and the primes in \(S_f\), embed it diagonally, and quotient both
+  the additive carrier and the idele group by that image.
+- Result: `[FORMALIZED ALGEBRAICALLY AND TOPOLOGICALLY]`
+- Proof: `FieldOneFiniteStageClassSpace.lean` constructs the diagonal
+  \(S\)-unit subgroup, proves its diagonal map injective, constructs
+  \(\mathbb Z_S^\times\backslash\mathbb A_S\), proves the full idele action
+  preserves its orbit relation, proves the \(S\)-unit image lies in the
+  action kernel, and factors scaling through
+  \[
+    C_{\mathbb Q,S}
+      =\mathbb Z_S^\times\backslash\mathbb A_S^\times.
+  \]
+  `FieldOneFiniteStageClassTopology.lean` proves fixed-idele scaling
+  continuous, proves the orbit projection an open quotient map, and proves
+  every idele and idele class acts on the class space by a homeomorphism.
+  Direct cached Lean checks pass; axiom audit reports only `propext`,
+  `Classical.choice`, and `Quot.sound`.
+- Positive survivor: the semilocal multiplicative carrier and its exact
+  scaling action now exist independently of the previously constructed
+  global additive Weyl representation.
+- Remaining gate: construct the invariant quotient measure, its
+  \(L^2\)-representation, the crossed-product action, and restriction maps
+  for inclusions of finite place sets.
+
+### C20. Open quotient topology automatically supplies the trace measure
+
+- Initial status: `[CONJECTURE]`
+- Attack: push product additive Haar measure through the open orbit
+  projection and declare the result to be the trace measure on
+  \(\mathbb Z_S^\times\backslash\mathbb A_S\).
+- Result: `[FALSIFIED AS AN AUTOMATIC INFERENCE]`
+- Killing mechanism: an open quotient map supplies topology, not a canonical
+  quotient measure. The direct pushforward measures a quotient set by the
+  measure of its full orbit-saturated preimage and need not be the
+  fundamental-domain/disintegration measure used by the trace formula.
+  Moreover, multiplication by a general idele rescales additive Haar
+  measure. Invariance under the diagonal \(S\)-unit subgroup requires the
+  rational product formula
+  \[
+    |u|_\infty\prod_{v\in S_f}|u|_v=1
+    \qquad (u\in\mathbb Z_S^\times),
+  \]
+  followed by a genuine measurable quotient construction.
+- Positive survivor: all scaling maps are already homeomorphisms, so the
+  missing analytic theorem is sharply isolated: prove the local Haar
+  modulus/product formula, install an \(S\)-unit-invariant product measure,
+  and construct its quotient by a fundamental-domain or disintegration
+  theorem.
+- Status: `[OPEN MEASURE GATE]`; no \(L^2\), trace, or unitarity claim is
+  made before that theorem.
 
 ## 18. Step-by-step non-circular construction target
 
@@ -1252,8 +1408,11 @@ steps are required. All derived operations must be
    Therefore any Frobenius-faithful branch must retain exponent data in a
    separate object and prove its comparison independently. At each fixed
    semilocal stage, the faithful Weyl-multiplier representation of C16 supplies
-   such a branch. Prove its compatibility with sheaf restrictions and its
-   extension to the compactified coefficient diagram.
+   one additive branch. C19 now separately supplies the finite-stage
+   multiplicative class space and continuous idele-class scaling branch.
+   Construct its invariant quotient measure, then prove both branches'
+   compatibility with sheaf restrictions and extension to the compactified
+   coefficient diagram.
 2. **Coefficient transport.** Construct an archimedean derived extension
    \(\mathscr A_{\mathrm{ar}}\) of \(\mathscr A_{\mathrm{src}}\), with local
    boundary equal to the Gamma term. Then construct
@@ -1341,9 +1500,29 @@ The algebraic Schwartz--Bruhat tensor now maps canonically into that product
 \(L^2\); the map is injective and exactly intertwines both Weyl actions.
 Its pulled-back pre-Hilbert completion is Lean-proved canonically isometric
 to the closed algebraic image, and the Weyl action extends unitarily with
-exact ambient intertwining. Equality of that closed image with all product
-\(L^2\), comparison with any independently defined factorwise completed
-Hilbert tensor product, and sheaf compatibility remain open.
+exact ambient intertwining. Rational finite adeles are Lean-proved
+sigma-compact with sigma-finite Haar measure; compact-open sets form a
+Lean-proved basis; and finite-adele Bruhat--Schwartz functions are
+Lean-proved dense in finite-adele Haar \(L^2\). Generic separated products
+are Lean-proved dense in product \(L^2\), the semilocal closed image is
+Lean-proved equal to all product \(L^2\), and the abstract semilocal Bruhat
+Hilbert completion is Lean-proved canonically linearly isometric to that full
+space; its completed and ambient product-\(L^2\) Weyl actions are Lean-proved
+faithful. Its independently completed factorwise Hilbert tensor is Lean-proved
+canonically linearly isometric to the semilocal Bruhat completion, with exact
+pure-tensor compatibility. Here “semilocal” is retained only in historical
+module names: `FieldOneGlobalAdeleComparison.lean` proves that the ambient
+ring \(\mathbb R\times\mathbb A_f\) is mathlib's full rational adele ring
+\(\mathbb A_{\mathbb Q}\), as a ring and topological space. It also gives a
+nontrivial global additive character trivial on principal rationals.
+This full additive \(L^2\) space is not
+\(L^2(\mathbb Z_S^\times\backslash\mathbb A_S)\).
+`FieldOneFiniteStageClassSpace.lean` now constructs the finite-\(S\)
+additive orbit quotient, semilocal idele class group, and exact factored
+multiplicative scaling. `FieldOneFiniteStageClassTopology.lean` proves the
+orbit projection is open quotient and every idele class scales it by a
+homeomorphism. Quotient measure, \(L^2\) trace representation, restriction
+maps, and sheaf compatibility remain open.
 
 `[LEAN-PROVED]` Multiple exact implications and equivalences from faithful
 positivity/Hodge naturality to RH are present in repository.
@@ -1391,6 +1570,10 @@ formalizes those proofs unconditionally, and invokes an existing RH consumer.
   [*The Arithmetic Site*](https://arxiv.org/abs/1405.4527).
 - Alain Connes and Caterina Consani,
   [*Geometry of the Scaling Site*](https://arxiv.org/abs/1603.03191).
+- Alain Connes and Caterina Consani,
+  [*The Riemann--Roch strategy, Complex lift of the Scaling Site*](https://arxiv.org/abs/1805.10501).
+- Alain Connes and Caterina Consani,
+  [*The Scaling Hamiltonian*](https://arxiv.org/abs/1910.14368).
 - Alain Connes and Caterina Consani,
   [*On the Jacobian of \(\overline{\operatorname{Spec}\mathbb Z}\)*](https://arxiv.org/abs/2602.15941).
 - Alain Connes and Caterina Consani,

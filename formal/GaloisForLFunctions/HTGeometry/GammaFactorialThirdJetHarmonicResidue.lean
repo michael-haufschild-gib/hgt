@@ -19,98 +19,6 @@ open Complex Filter Topology
 
 noncomputable section
 
-/-- The scaled trigamma has no correction at quadratic harmonic order. -/
-theorem tendsto_gammaFactorialScaledTrigamma_second_harmonic
-    {x : ℂ} (hx : x ≠ 0) :
-    Tendsto (fun n : ℕ =>
-      (gammaFactorialScaledTrigamma n x - x⁻¹ ^ 2) /
-        gammaHarmonicMicroscopeScale n ^ 2) atTop (𝓝 0) := by
-  let s : ℕ → ℂ := reciprocalGammaFactorialScale
-  let z : ℕ → ℂ := fun n => s n * x
-  have hz : Tendsto z atTop (𝓝 0) := by
-    simpa [z, s] using tendsto_reciprocalGammaFactorialScale_zero.mul_const x
-  have hinput : Tendsto (fun n => 1 + z n) atTop (𝓝 1) := by
-    simpa using (tendsto_const_nhds.add hz :
-      Tendsto (fun n => 1 + z n) atTop (𝓝 (1 + 0)))
-  have hOff1 : ∀ k : ℕ, (1 : ℂ) ≠ -(k : ℂ) := by
-    intro k hk
-    have hre := congrArg Complex.re hk
-    simp only [Complex.one_re, Complex.neg_re, Complex.natCast_re] at hre
-    linarith [Nat.cast_nonneg (α := ℝ) k]
-  have hpsi : Tendsto (fun n => iteratedDeriv 1 Complex.digamma (1 + z n))
-      atTop (𝓝 (iteratedDeriv 1 Complex.digamma 1)) :=
-    (analyticAt_iteratedDeriv_of_analyticAt (analyticAt_digamma_of_offPoles hOff1) 1).continuousAt.tendsto.comp
-      hinput
-  have hH2 : Tendsto (fun n => (harmonic n : ℂ)⁻¹ ^ 2) atTop (𝓝 0) := by
-    simpa using tendsto_inv_harmonic_cast_complex_zero.pow 2
-  have hlocal : Tendsto (fun n =>
-      (harmonic n : ℂ)⁻¹ ^ 2 * iteratedDeriv 1 Complex.digamma (1 + z n))
-      atTop (𝓝 0) := by
-    simpa using hH2.mul hpsi
-  have hsmall : ∀ᶠ n : ℕ in atTop, ‖z n‖ ≤ 1 / 2 :=
-    (hz.norm.eventually_lt_const (by norm_num)).mono fun _ h => h.le
-  have hsum : Tendsto (fun n =>
-      (harmonic n : ℂ)⁻¹ ^ 2 * shiftedHarmonicSquareSum n (z n))
-      atTop (𝓝 0) := by
-    rw [tendsto_zero_iff_norm_tendsto_zero]
-    have hmajor : Tendsto (fun n => 4 * ‖(harmonic n : ℂ)⁻¹‖)
-        atTop (𝓝 0) := by
-      simpa using tendsto_inv_harmonic_cast_complex_zero.norm.const_mul 4
-    apply squeeze_zero' (Filter.Eventually.of_forall fun n => norm_nonneg _) _ hmajor
-    filter_upwards [hsmall, Filter.eventually_atTop.2 ⟨1, fun n hn => hn⟩]
-      with n hzn hn
-    have hHreal : 0 < (harmonic n : ℝ) := by
-      exact_mod_cast harmonic_pos (by omega : n ≠ 0)
-    have hbound := norm_shiftedHarmonicSquareSum_le hzn n
-    have hnormH : ‖(harmonic n : ℂ)‖ = (harmonic n : ℝ) := by
-      rw [show (harmonic n : ℂ) = ((harmonic n : ℝ) : ℂ) by norm_cast]
-      rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos hHreal]
-    rw [norm_mul, norm_pow]
-    have hinvnorm : ‖(harmonic n : ℂ)⁻¹‖ = (harmonic n : ℝ)⁻¹ := by
-      rw [norm_inv, hnormH]
-    rw [hinvnorm]
-    calc
-      (harmonic n : ℝ)⁻¹ ^ 2 * ‖shiftedHarmonicSquareSum n (z n)‖ ≤
-          (harmonic n : ℝ)⁻¹ ^ 2 * (4 * (harmonic n : ℝ)) := by gcongr
-      _ = 4 * (harmonic n : ℝ)⁻¹ := by field_simp [hHreal.ne']
-  have hlimit := hlocal.add hsum
-  have hregular : ∀ᶠ n : ℕ in atTop, ∀ k : ℤ, z n ≠ (k : ℂ) := by
-    have hlt : ∀ᶠ n : ℕ in atTop, ‖z n‖ < 1 :=
-      hz.norm.eventually_lt_const (by norm_num)
-    filter_upwards [hlt] with n hzn k
-    have hsn : s n ≠ 0 := by
-      dsimp [s]
-      exact div_ne_zero (pow_ne_zero _ (by norm_num))
-        (by exact_mod_cast Nat.factorial_ne_zero n)
-    exact ne_intCast_of_ne_zero_of_norm_lt_one (mul_ne_zero hsn hx) hzn k
-  have heq : ∀ᶠ n : ℕ in atTop,
-      (gammaFactorialScaledTrigamma n x - x⁻¹ ^ 2) /
-          gammaHarmonicMicroscopeScale n ^ 2 =
-        (harmonic n : ℂ)⁻¹ ^ 2 *
-          (iteratedDeriv 1 Complex.digamma (1 + z n) +
-            shiftedHarmonicSquareSum n (z n)) := by
-    filter_upwards [hregular, Filter.eventually_atTop.2 ⟨1, fun n hn => hn⟩]
-      with n hzn hn
-    have hsn : s n ≠ 0 := by
-      dsimp [s]
-      exact div_ne_zero (pow_ne_zero _ (by norm_num))
-        (by exact_mod_cast Nat.factorial_ne_zero n)
-    have hH : (harmonic n : ℂ) ≠ 0 := by
-      exact_mod_cast (harmonic_pos (by omega : n ≠ 0)).ne'
-    have hformula := iteratedDeriv_one_digamma_neg_nat_add_of_ne_int (z n) hzn n
-    rw [gammaFactorialScaledTrigamma, gammaHarmonicMicroscopeScale]
-    change (s n ^ 2 * iteratedDeriv 1 Complex.digamma (-↑n + z n) - x⁻¹ ^ 2) /
-      (s n * (harmonic n : ℂ)) ^ 2 = _
-    rw [hformula]
-    dsimp [z]
-    field_simp [hsn, hH, hx]
-    ring
-  have hcombined : Tendsto (fun n =>
-      (harmonic n : ℂ)⁻¹ ^ 2 *
-        (iteratedDeriv 1 Complex.digamma (1 + z n) +
-          shiftedHarmonicSquareSum n (z n))) atTop (𝓝 0) := by
-    convert hlimit using 1 <;> ring
-  exact hcombined.congr' (heq.mono fun _ h => h.symm)
 
 /-- Cubic shifted harmonic tail arising from the order-two differentiated digamma recurrence. -/
 def shiftedHarmonicCubeSum (n : ℕ) (z : ℂ) : ℂ :=
@@ -139,83 +47,119 @@ def gammaFactorialScaledSecondPolygamma (n : ℕ) (x : ℂ) : ℂ :=
     iteratedDeriv 2 Complex.digamma
       (-(n : ℂ) + reciprocalGammaFactorialScale n * x)
 
-/-- The scaled order-two polygamma has no correction at quadratic harmonic order. -/
-theorem tendsto_gammaFactorialScaledSecondPolygamma_second_harmonic
-    {x : ℂ} (hx : x ≠ 0) :
+
+/-- The order-two polygamma scaling is the order-`2` member of the indexed family. -/
+theorem gammaFactorialScaledSecondPolygamma_eq_polygamma (n : ℕ) (x : ℂ) :
+    gammaFactorialScaledSecondPolygamma n x = gammaFactorialScaledPolygamma 2 n x := rfl
+
+/-- The scale power exactly cancels the scaled pole: `sʲ (s x)^{-j} = x^{-j}`. -/
+private theorem scale_pow_mul_inv_pow {s x : ℂ} (hs : s ≠ 0) (j : ℕ) :
+    s ^ j * (s * x)⁻¹ ^ j = x⁻¹ ^ j := by
+  rw [mul_inv, mul_pow, ← mul_assoc, ← mul_pow, mul_inv_cancel₀ hs, one_pow, one_mul]
+
+/-- A power of the reciprocal factorial scale times the squared inverse harmonic number vanishes,
+for every exponent — including `0`, where the scale factor is `1` and the harmonic factor does all
+the work. -/
+private theorem tendsto_scale_pow_mul_inv_harmonic_pow (m : ℕ) {j : ℕ} (hj : 0 < j) :
     Tendsto (fun n : ℕ =>
-      (gammaFactorialScaledSecondPolygamma n x - 2 * (-x)⁻¹ ^ 3) /
+      reciprocalGammaFactorialScale n ^ m * (harmonic n : ℂ)⁻¹ ^ j) atTop (𝓝 0) := by
+  rw [tendsto_zero_iff_norm_tendsto_zero]
+  have hmaj : Tendsto (fun n : ℕ => ‖(harmonic n : ℂ)⁻¹ ^ j‖) atTop (𝓝 0) := by
+    simpa [zero_pow hj.ne'] using (tendsto_inv_harmonic_cast_complex_zero.pow j).norm
+  have hsnorm : Tendsto (fun n : ℕ => ‖reciprocalGammaFactorialScale n‖) atTop (𝓝 0) := by
+    simpa using tendsto_reciprocalGammaFactorialScale_zero.norm
+  have hsb : ∀ᶠ n : ℕ in atTop, ‖reciprocalGammaFactorialScale n‖ ≤ 1 :=
+    hsnorm.eventually_le_const (by norm_num : (0 : ℝ) < 1)
+  apply squeeze_zero' (Filter.Eventually.of_forall fun n => norm_nonneg _) _ hmaj
+  filter_upwards [hsb] with n hn
+  rw [norm_mul, norm_pow]
+  exact mul_le_of_le_one_left (norm_nonneg _) (pow_le_one₀ (norm_nonneg _) hn)
+
+
+/-- **Order-indexed second-harmonic vanishing.**  After subtracting its principal pole term
+`(-1)^{m+2} (m+1)! x^{-(m+2)}`, the scaled order-`(m+1)` polygamma has no correction at quadratic
+harmonic order.  The pole cancels exactly because `z = s x` gives `s^{m+2} z^{-(m+2)} = x^{-(m+2)}`,
+and what remains carries `s^m` — the scale exponent is one less than the jet order, which is why the
+trigamma case (`m = 0`) shows no scale factor at all. -/
+theorem tendsto_gammaFactorialScaledPolygamma_second_harmonic (m : ℕ) {x : ℂ} (hx : x ≠ 0) :
+    Tendsto (fun n : ℕ =>
+      (gammaFactorialScaledPolygamma (m + 1) n x -
+          (-1) ^ (m + 2) * (((m + 1).factorial : ℕ) : ℂ) * x⁻¹ ^ (m + 2)) /
         gammaHarmonicMicroscopeScale n ^ 2) atTop (𝓝 0) := by
   let s : ℕ → ℂ := reciprocalGammaFactorialScale
   let z : ℕ → ℂ := fun n => s n * x
-  have hs : Tendsto s atTop (𝓝 0) :=
-    tendsto_reciprocalGammaFactorialScale_zero
-  have hz : Tendsto z atTop (𝓝 0) := by
-    simpa [z] using hs.mul_const x
+  have hs : Tendsto s atTop (𝓝 0) := tendsto_reciprocalGammaFactorialScale_zero
+  have hz : Tendsto z atTop (𝓝 0) := by simpa [z] using hs.mul_const x
   have hinput : Tendsto (fun n => 1 + z n) atTop (𝓝 1) := by
     simpa using (tendsto_const_nhds.add hz :
       Tendsto (fun n => 1 + z n) atTop (𝓝 (1 + 0)))
-  have hOff1 : ∀ k : ℕ, (1 : ℂ) ≠ -(k : ℂ) := by
-    intro k hk
-    have hre := congrArg Complex.re hk
+  have hOff1 : ∀ j : ℕ, (1 : ℂ) ≠ -(j : ℂ) := by
+    intro j hj
+    have hre := congrArg Complex.re hj
     simp only [Complex.one_re, Complex.neg_re, Complex.natCast_re] at hre
-    linarith [Nat.cast_nonneg (α := ℝ) k]
-  have hpsi : Tendsto (fun n => iteratedDeriv 2 Complex.digamma (1 + z n))
-      atTop (𝓝 (iteratedDeriv 2 Complex.digamma 1)) :=
-    (analyticAt_iteratedDeriv_of_analyticAt (analyticAt_digamma_of_offPoles hOff1) 2).continuousAt.tendsto.comp
-      hinput
-  have hsdivH2 : Tendsto (fun n =>
-      s n * (harmonic n : ℂ)⁻¹ ^ 2) atTop (𝓝 0) := by
-    simpa using hs.mul (tendsto_inv_harmonic_cast_complex_zero.pow 2)
-  have hlocal : Tendsto (fun n =>
-      (s n * (harmonic n : ℂ)⁻¹ ^ 2) *
-        iteratedDeriv 2 Complex.digamma (1 + z n)) atTop (𝓝 0) := by
-    simpa using hsdivH2.mul hpsi
+    linarith [Nat.cast_nonneg (α := ℝ) j]
+  have hpsi : Tendsto (fun n => iteratedDeriv (m + 1) Complex.digamma (1 + z n))
+      atTop (𝓝 (iteratedDeriv (m + 1) Complex.digamma 1)) :=
+    (analyticAt_iteratedDeriv_of_analyticAt (analyticAt_digamma_of_offPoles hOff1)
+      (m + 1)).continuousAt.tendsto.comp hinput
+  have hlocal : Tendsto (fun n : ℕ =>
+      (s n ^ m * (harmonic n : ℂ)⁻¹ ^ 2) *
+        iteratedDeriv (m + 1) Complex.digamma (1 + z n)) atTop (𝓝 0) := by
+    simpa using
+      (tendsto_scale_pow_mul_inv_harmonic_pow m (by norm_num : 0 < 2)).mul hpsi
   have hsmall : ∀ᶠ n : ℕ in atTop, ‖z n‖ ≤ 1 / 2 :=
     (hz.norm.eventually_lt_const (by norm_num)).mono fun _ h => h.le
-  have hsum : Tendsto (fun n =>
-      (s n * (harmonic n : ℂ)⁻¹ ^ 2) *
-        (2 * shiftedHarmonicCubeSum n (z n))) atTop (𝓝 0) := by
+  have hsum : Tendsto (fun n : ℕ =>
+      (s n ^ m * (harmonic n : ℂ)⁻¹ ^ 2) *
+        ((((m + 1).factorial : ℕ) : ℂ) *
+          shiftedHarmonicPowerSum (m + 2) n (z n))) atTop (𝓝 0) := by
     rw [tendsto_zero_iff_norm_tendsto_zero]
-    have hmajor : Tendsto (fun n =>
-        16 * (‖s n‖ * ‖(harmonic n : ℂ)⁻¹‖)) atTop (𝓝 0) := by
-      simpa using (hs.norm.mul tendsto_inv_harmonic_cast_complex_zero.norm).const_mul 16
+    have hmajor : Tendsto (fun n : ℕ =>
+        ((((m + 1).factorial : ℕ) : ℝ) * 2 ^ (m + 2)) *
+          ‖s n ^ m * (harmonic n : ℂ)⁻¹ ^ 1‖) atTop (𝓝 0) := by
+      simpa using
+        ((tendsto_scale_pow_mul_inv_harmonic_pow m (by norm_num : 0 < 1)).norm.const_mul
+          ((((m + 1).factorial : ℕ) : ℝ) * 2 ^ (m + 2)))
     apply squeeze_zero' (Filter.Eventually.of_forall fun n => norm_nonneg _) _ hmajor
-    filter_upwards [hsmall, Filter.eventually_atTop.2 ⟨1, fun n hn => hn⟩]
-      with n hzn hn
+    filter_upwards [hsmall, Filter.eventually_atTop.2 ⟨1, fun n hn => hn⟩] with n hzn hn
     have hHreal : 0 < (harmonic n : ℝ) := by
       exact_mod_cast harmonic_pos (by omega : n ≠ 0)
-    have hbound := norm_shiftedHarmonicCubeSum_le hzn n
+    have hbound := norm_shiftedHarmonicPowerSum_le hzn (p := m + 2) (by omega) n
     have hnormH : ‖(harmonic n : ℂ)‖ = (harmonic n : ℝ) := by
       rw [show (harmonic n : ℂ) = ((harmonic n : ℝ) : ℂ) by norm_cast]
       rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos hHreal]
     have hinvnorm : ‖(harmonic n : ℂ)⁻¹‖ = (harmonic n : ℝ)⁻¹ := by
       rw [norm_inv, hnormH]
-    rw [norm_mul, norm_mul, norm_pow, hinvnorm, norm_mul]
-    norm_num
+    rw [norm_mul, norm_mul, norm_mul, norm_pow, norm_pow, hinvnorm]
+    simp only [Complex.norm_natCast]
     calc
-      ‖s n‖ * ((harmonic n : ℝ) ^ 2)⁻¹ *
-          (2 * ‖shiftedHarmonicCubeSum n (z n)‖) ≤
-        ‖s n‖ * ((harmonic n : ℝ) ^ 2)⁻¹ *
-          (2 * (8 * (harmonic n : ℝ))) := by gcongr
-      _ = 16 * (‖s n‖ * (harmonic n : ℝ)⁻¹) := by
-        field_simp [hHreal.ne']
-        ring
-  have hlimit := hlocal.add hsum
-  have hregular : ∀ᶠ n : ℕ in atTop, ∀ k : ℤ, z n ≠ (k : ℂ) := by
+      ‖s n‖ ^ m * ((harmonic n : ℝ)⁻¹) ^ 2 *
+          ((((m + 1).factorial : ℕ) : ℝ) *
+            ‖shiftedHarmonicPowerSum (m + 2) n (z n)‖) ≤
+        ‖s n‖ ^ m * ((harmonic n : ℝ)⁻¹) ^ 2 *
+          ((((m + 1).factorial : ℕ) : ℝ) *
+            (2 ^ (m + 2) * (harmonic n : ℝ))) := by gcongr
+      _ = ((((m + 1).factorial : ℕ) : ℝ) * 2 ^ (m + 2)) *
+            ‖s n ^ m * (harmonic n : ℂ)⁻¹ ^ 1‖ := by
+        rw [norm_mul, norm_pow, norm_pow, hinvnorm]
+        field_simp
+  have hregular : ∀ᶠ n : ℕ in atTop, ∀ j : ℤ, z n ≠ (j : ℂ) := by
     have hlt : ∀ᶠ n : ℕ in atTop, ‖z n‖ < 1 :=
       hz.norm.eventually_lt_const (by norm_num)
-    filter_upwards [hlt] with n hzn k
+    filter_upwards [hlt] with n hzn j
     have hsn : s n ≠ 0 := by
       dsimp [s]
       exact div_ne_zero (pow_ne_zero _ (by norm_num))
         (by exact_mod_cast Nat.factorial_ne_zero n)
-    exact ne_intCast_of_ne_zero_of_norm_lt_one (mul_ne_zero hsn hx) hzn k
+    exact ne_intCast_of_ne_zero_of_norm_lt_one (mul_ne_zero hsn hx) hzn j
   have heq : ∀ᶠ n : ℕ in atTop,
-      (gammaFactorialScaledSecondPolygamma n x - 2 * (-x)⁻¹ ^ 3) /
+      (gammaFactorialScaledPolygamma (m + 1) n x -
+            (-1) ^ (m + 2) * (((m + 1).factorial : ℕ) : ℂ) * x⁻¹ ^ (m + 2)) /
           gammaHarmonicMicroscopeScale n ^ 2 =
-        (s n * (harmonic n : ℂ)⁻¹ ^ 2) *
-          (iteratedDeriv 2 Complex.digamma (1 + z n) +
-            2 * shiftedHarmonicCubeSum n (z n)) := by
+        (s n ^ m * (harmonic n : ℂ)⁻¹ ^ 2) *
+          (iteratedDeriv (m + 1) Complex.digamma (1 + z n) +
+            (((m + 1).factorial : ℕ) : ℂ) *
+              shiftedHarmonicPowerSum (m + 2) n (z n)) := by
     filter_upwards [hregular, Filter.eventually_atTop.2 ⟨1, fun n hn => hn⟩]
       with n hzn hn
     have hsn : s n ≠ 0 := by
@@ -224,20 +168,77 @@ theorem tendsto_gammaFactorialScaledSecondPolygamma_second_harmonic
         (by exact_mod_cast Nat.factorial_ne_zero n)
     have hH : (harmonic n : ℂ) ≠ 0 := by
       exact_mod_cast (harmonic_pos (by omega : n ≠ 0)).ne'
-    have hformula := iteratedDeriv_two_digamma_neg_nat_add_of_ne_int (z n) hzn n
-    rw [gammaFactorialScaledSecondPolygamma, gammaHarmonicMicroscopeScale]
-    change (s n ^ 3 * iteratedDeriv 2 Complex.digamma (-↑n + z n) -
-        2 * (-x)⁻¹ ^ 3) / (s n * (harmonic n : ℂ)) ^ 2 = _
+    have hformula := iteratedDeriv_digamma_neg_nat_add_of_ne_int (m + 1) (z n) hzn n
+    have hcancel : s n ^ (m + 2) *
+        ((-1) ^ (m + 2) * (((m + 1).factorial : ℕ) : ℂ) * (z n)⁻¹ ^ (m + 2)) =
+        (-1) ^ (m + 2) * (((m + 1).factorial : ℕ) : ℂ) * x⁻¹ ^ (m + 2) := by
+      have hpow := scale_pow_mul_inv_pow (s := s n) (x := x) hsn (m + 2)
+      calc
+        s n ^ (m + 2) *
+            ((-1) ^ (m + 2) * (((m + 1).factorial : ℕ) : ℂ) * (z n)⁻¹ ^ (m + 2)) =
+            (-1) ^ (m + 2) * (((m + 1).factorial : ℕ) : ℂ) *
+              (s n ^ (m + 2) * (s n * x)⁻¹ ^ (m + 2)) := by
+          dsimp only [z]
+          ring
+        _ = (-1) ^ (m + 2) * (((m + 1).factorial : ℕ) : ℂ) * x⁻¹ ^ (m + 2) := by
+          rw [hpow]
+    rw [gammaFactorialScaledPolygamma, gammaHarmonicMicroscopeScale]
+    change (s n ^ (m + 1 + 1) *
+        iteratedDeriv (m + 1) Complex.digamma (-(n : ℂ) + z n) -
+        (-1) ^ (m + 2) * (((m + 1).factorial : ℕ) : ℂ) * x⁻¹ ^ (m + 2)) /
+          (s n * (harmonic n : ℂ)) ^ 2 = _
     rw [hformula]
-    dsimp [z]
-    field_simp [hsn, hH, hx]
-    ring
-  have hcombined : Tendsto (fun n =>
-      (s n * (harmonic n : ℂ)⁻¹ ^ 2) *
-        (iteratedDeriv 2 Complex.digamma (1 + z n) +
-          2 * shiftedHarmonicCubeSum n (z n))) atTop (𝓝 0) := by
-    convert hlimit using 1 <;> ring
+    have hnum : s n ^ (m + 1 + 1) *
+          (iteratedDeriv (m + 1) Complex.digamma (1 + z n) +
+              (-1) ^ (m + 1 + 1) * (((m + 1).factorial : ℕ) : ℂ) *
+                (z n)⁻¹ ^ (m + 1 + 1) +
+            (((m + 1).factorial : ℕ) : ℂ) *
+              shiftedHarmonicPowerSum (m + 1 + 1) n (z n)) -
+          (-1) ^ (m + 2) * (((m + 1).factorial : ℕ) : ℂ) * x⁻¹ ^ (m + 2) =
+        s n ^ (m + 2) *
+          (iteratedDeriv (m + 1) Complex.digamma (1 + z n) +
+            (((m + 1).factorial : ℕ) : ℂ) *
+              shiftedHarmonicPowerSum (m + 2) n (z n)) := by
+      have h2 : m + 1 + 1 = m + 2 := rfl
+      rw [h2]
+      linear_combination hcancel
+    rw [hnum, pow_add]
+    field_simp
+  have hcombined : Tendsto (fun n : ℕ =>
+      (s n ^ m * (harmonic n : ℂ)⁻¹ ^ 2) *
+        (iteratedDeriv (m + 1) Complex.digamma (1 + z n) +
+          (((m + 1).factorial : ℕ) : ℂ) *
+            shiftedHarmonicPowerSum (m + 2) n (z n))) atTop (𝓝 0) := by
+    have h : Tendsto (fun n : ℕ =>
+        (s n ^ m * (harmonic n : ℂ)⁻¹ ^ 2) *
+            iteratedDeriv (m + 1) Complex.digamma (1 + z n) +
+          (s n ^ m * (harmonic n : ℂ)⁻¹ ^ 2) *
+            ((((m + 1).factorial : ℕ) : ℂ) *
+              shiftedHarmonicPowerSum (m + 2) n (z n))) atTop (𝓝 0) := by
+      simpa using hlocal.add hsum
+    exact h.congr fun n => by ring
   exact hcombined.congr' (heq.mono fun _ h => h.symm)
+
+/-- The scaled trigamma has no correction at quadratic harmonic order. -/
+theorem tendsto_gammaFactorialScaledTrigamma_second_harmonic
+    {x : ℂ} (hx : x ≠ 0) :
+    Tendsto (fun n : ℕ =>
+      (gammaFactorialScaledTrigamma n x - x⁻¹ ^ 2) /
+        gammaHarmonicMicroscopeScale n ^ 2) atTop (𝓝 0) := by
+  have h := tendsto_gammaFactorialScaledPolygamma_second_harmonic 0 hx
+  simpa [gammaFactorialScaledTrigamma_eq_polygamma] using h
+
+/-- The scaled order-two polygamma has no correction at quadratic harmonic order. -/
+theorem tendsto_gammaFactorialScaledSecondPolygamma_second_harmonic
+    {x : ℂ} (hx : x ≠ 0) :
+    Tendsto (fun n : ℕ =>
+      (gammaFactorialScaledSecondPolygamma n x - 2 * (-x)⁻¹ ^ 3) /
+        gammaHarmonicMicroscopeScale n ^ 2) atTop (𝓝 0) := by
+  have h := tendsto_gammaFactorialScaledPolygamma_second_harmonic 1 hx
+  refine h.congr fun n => ?_
+  rw [gammaFactorialScaledSecondPolygamma_eq_polygamma, inv_neg]
+  norm_num
+  ring
 
 /-- The translation-invariant Schwarzian numerator of the factorial Gamma zoom. -/
 def gammaFactorialThirdJetProjectiveDefect (n : ℕ) (x : ℂ) : ℂ :=

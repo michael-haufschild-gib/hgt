@@ -25,72 +25,6 @@ def xiThermalExactCubicEndpointBudget : ℝ :=
   4 * (xiEndpointCompletedCurvature /
     (4 - xiEndpointCompletedCurvature)) ^ 3
 
-/-- **Atomwise cubic endpoint-charge law.**  The transverse reciprocal-square energy of every
-Xi copy is controlled by the cube of its endpoint cross charge.  On-line copies vanish.  For an
-off-line copy, the quartet height floor gives `v > 85`; then
-`e ≤ v⁻³ ≤ (86/85)^3 w^3`. -/
-theorem xiThermalOrientationTerm_le_endpointCrossCharge_cube (q : XiZeroCopy) :
-    (xiZeroCopyReciprocalSquare q).im ^ 2 ≤
-      (86 / 85 : ℝ) ^ 3 * xiEndpointCrossCharge q ^ 3 := by
-  by_cases hon : (q.1 : ℂ).re = 1 / 2
-  · have him : (xiZeroCopyReciprocalSquare q).im = 0 := by
-      rw [xiZeroCopyReciprocalSquare_im_formula, hon]
-      norm_num
-    have hK : 0 ≤ (86 / 85 : ℝ) ^ 3 := by norm_num
-    have hw : 0 ≤ xiEndpointCrossCharge q := by
-      simpa only [xiEndpointCrossCharge] using endpoint_cross_term_re_nonneg q
-    rw [him, zero_pow (by norm_num : (2 : ℕ) ≠ 0)]
-    exact mul_nonneg hK (pow_nonneg hw 3)
-  · let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ 2
-    let v : ℝ := (q.1 : ℂ).im ^ 2
-    have hu0 : 0 ≤ u := by dsimp [u]; positivity
-    have hu : u ≤ 1 / 4 := by
-      have hstrip := xi_divisor_support_re_mem_open_unit q.1
-      dsimp [u]
-      nlinarith [mul_pos hstrip.1 (sub_pos.mpr hstrip.2)]
-    have hv : 85 < v := by
-      simpa only [v] using xiZeroCopy_offLine_eightyFive_lt_im_sq q hon
-    have hv0 : 0 < v := by linarith
-    have huv0 : 0 < u + v := add_pos_of_nonneg_of_pos hu0 hv0
-    have hcore : 4 * u * v ^ 4 ≤ (u + v) ^ 4 := by
-      have hcoef : 4 * u ≤ 1 := by linarith
-      have hleft : 4 * u * v ^ 4 ≤ v ^ 4 := by
-        calc
-          4 * u * v ^ 4 ≤ 1 * v ^ 4 :=
-            mul_le_mul_of_nonneg_right hcoef (pow_nonneg hv0.le 4)
-          _ = v ^ 4 := one_mul _
-      have hright : v ^ 4 ≤ (u + v) ^ 4 := by
-        exact pow_le_pow_left₀ hv0.le (by linarith) 4
-      exact hleft.trans hright
-    have heInv :
-        (xiZeroCopyReciprocalSquare q).im ^ 2 ≤ 1 / v ^ 3 := by
-      rw [xiZeroCopyReciprocalSquare_im_formula]
-      rw [show ((q.1 : ℂ).re - 1 / 2) ^ 2 = u by rfl,
-        show (q.1 : ℂ).im ^ 2 = v by rfl, div_pow]
-      rw [show (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ 2 =
-          4 * u * v by dsimp [u, v]; ring,
-        show ((u + v) ^ 2) ^ 2 = (u + v) ^ 4 by ring]
-      rw [div_le_div_iff₀ (pow_pos huv0 4) (pow_pos hv0 3)]
-      ring_nf at hcore ⊢
-      exact hcore
-    have hcross : 1 / (v + 1) ≤ xiEndpointCrossCharge q := by
-      simpa only [v, xiEndpointCrossCharge] using
-        endpoint_cross_term_re_ge_inv_one_add_im_sq q
-    have hbase : 1 / v ≤ (86 / 85 : ℝ) * (1 / (v + 1)) := by
-      rw [show (86 / 85 : ℝ) * (1 / (v + 1)) =
-          (86 / 85 : ℝ) / (v + 1) by ring]
-      rw [div_le_div_iff₀ hv0 (by linarith : 0 < v + 1)]
-      nlinarith
-    have hInvCharge : 1 / v ≤
-        (86 / 85 : ℝ) * xiEndpointCrossCharge q :=
-      hbase.trans (mul_le_mul_of_nonneg_left hcross (by positivity))
-    have hpow := pow_le_pow_left₀ (by positivity : 0 ≤ 1 / v) hInvCharge 3
-    calc
-      (xiZeroCopyReciprocalSquare q).im ^ 2 ≤ 1 / v ^ 3 := heInv
-      _ = (1 / v) ^ 3 := by
-        simpa only [one_div] using (inv_pow v 3).symm
-      _ ≤ ((86 / 85 : ℝ) * xiEndpointCrossCharge q) ^ 3 := hpow
-      _ = (86 / 85 : ℝ) ^ 3 * xiEndpointCrossCharge q ^ 3 := by rw [mul_pow]
 
 /-- **Exact atomwise cubic endpoint-charge law.**  Keeping the source curvature in the quartet
 height floor replaces the rational factor `86 / 85` by the strictly sharper factor
@@ -171,6 +105,25 @@ theorem xiThermalOrientationTerm_le_exactEndpointCrossCharge_cube (q : XiZeroCop
           xiEndpointCrossCharge q) ^ 3 := hpow
       _ = (4 / (4 - xiEndpointCompletedCurvature)) ^ 3 *
           xiEndpointCrossCharge q ^ 3 := by rw [mul_pow]
+
+/-- **Atomwise cubic endpoint-charge law.**  The transverse reciprocal-square energy of every
+Xi copy is controlled by the cube of its endpoint cross charge.  On-line copies vanish.  For an
+off-line copy, the quartet height floor gives `v > 85`; then
+`e ≤ v⁻³ ≤ (86/85)^3 w^3`. -/
+theorem xiThermalOrientationTerm_le_endpointCrossCharge_cube (q : XiZeroCopy) :
+    (xiZeroCopyReciprocalSquare q).im ^ 2 ≤
+      (86 / 85 : ℝ) ^ 3 * xiEndpointCrossCharge q ^ 3 := by
+  refine (xiThermalOrientationTerm_le_exactEndpointCrossCharge_cube q).trans ?_
+  have hC0 : 0 < xiEndpointCompletedCurvature := xiEndpointCompletedCurvature_pos
+  have hCsmall := xiEndpointCompletedCurvature_lt_two_over_fortyThree
+  have hden : 0 < 4 - xiEndpointCompletedCurvature := by nlinarith
+  have hw : 0 ≤ xiEndpointCrossCharge q := by
+    simpa only [xiEndpointCrossCharge] using endpoint_cross_term_re_nonneg q
+  have hconst : 4 / (4 - xiEndpointCompletedCurvature) ≤ (86 / 85 : ℝ) := by
+    rw [div_le_iff₀ hden]
+    nlinarith
+  exact mul_le_mul_of_nonneg_right
+    (pow_le_pow_left₀ (by positivity) hconst 3) (pow_nonneg hw 3)
 
 /-- The endpoint cross charges form an absolutely summable positive sequence. -/
 theorem summable_xiEndpointCrossCharge : Summable xiEndpointCrossCharge := by
