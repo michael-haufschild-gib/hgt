@@ -1763,3 +1763,31 @@ constant-multiplier `g` the logarithmic derivative `g'/g` is translation-invaria
 hence DA by the theorem above; `g` is then DA over `C(z)<g'/g>` by the order-one relation
 `y_1 - (g'/g) y_0 = 0`, hence DA over `C(z)` by the corpus's differential transitivity; and
 `f = g b` is DA by `differentialAlgebraicOver_mul`.
+
+## Lean progress — `(C4)` IS PROVED: hypertranscendence as a relative gauge obstruction
+
+`formal/GaloisForLFunctions/HTGeometry/RelativeTwoShiftGaugeCharacterization.lean`
+(axiom-clean, umbrella registered).  The card's `(C1)`--`(C4)` are now Lean theorems in the genuine
+global meromorphic differential field, for `R`-independent shifts:
+
+- `translationCocycle q x = sigma_q x / x` — the multiplicative translation cocycle `(C2)`;
+- `DAConstantFlat alpha beta x` — the cocycle is the cocycle of a nonzero differentially algebraic
+  gauge `b` times a constant character `(C3)`, imposed at the two generators;
+- **`differentialAlgebraicOver_iff_daConstantFlat`** — `(C4)`: a nonzero meromorphic germ is
+  differentially algebraic over `C(z)` **iff** its two-shift cocycle is `DA`-constant-flat;
+- **`hypertranscendentalOver_iff_not_daConstantFlat`** — hence hypertranscendence is *exactly* the
+  failure of the cocycle to be reducible to a constant character by a differentially algebraic
+  gauge: a relative gauge obstruction, as the card states.
+
+Proof, as on paper.  Forward: take `b = x`, trivial character.  Converse: `g = x/b` satisfies
+`sigma_q g = c_q g` (`addTranslationMeroEquiv_div_eq_const_mul`); the constants are differential
+constants (`deriv_algebraMap_complex`), so `g'/g` is fixed by both translations
+(`addTranslationMeroEquiv_logDeriv_eq`); the elliptic theorem
+`differentialAlgebraicOver_of_translation_fixed` makes `g'/g` differentially algebraic; the corpus's
+`differentialAlgebraicOver_deriv_div_self_iff` lifts that to `g`; and `x = g b` is differentially
+algebraic by `differentialAlgebraicOver_mul`.
+
+Scope note: the shifts are assumed `R`-independent, which is what the elliptic branch needs.  The
+`R`-dependent but `Q`-independent branch is proved at the level of functions in the corpus (the
+non-discrete period-group argument) and still has to be transported into the field to widen `(C4)`
+from `R`-independence to the card's `Q`-independence.
