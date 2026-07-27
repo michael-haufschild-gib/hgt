@@ -892,3 +892,24 @@ This was the missing connector: the one-slice obstruction had no users in the co
 phrased for the abstract shift.  It is now in the form the descending face-lifting lemma needs — the
 face packets are orbit unions, so their bilateral parametrisation `x (a, m) = sigma^m (base a)`
 satisfies the hypothesis of the identification by construction.
+
+## Lean progress — the face packet as a bilateral palette
+
+`formal/GaloisForLFunctions/HTGeometry/MultipleEllipticGammaFacePalette.lean` (axiom-clean, umbrella
+registered) closes the gap between the packet construction and the nonsummability obstruction.
+
+- `facePalette tau htau J q` — the bilateral palette `x (a, m) = sigma_(m tau_q) a` of the packet of
+  the deleted face `J` in the deleted direction `q`, indexed by the zero-exponent slice and by `Z`;
+- **`facePalette_shift`** — the genuine additive translation by `tau q` moves the palette exactly one
+  slice, which is the hypothesis of the transport identification;
+- **`range_facePalette`** — the palette enumerates the packet (immediate from
+  `multipleEllipticGammaFacePacket_eq_orbitUnion`);
+- **`facePacket_oneSlice_ne_coboundary`** — hence, as soon as the palette is differentially
+  independent over the constants, no nonzero finite constant-coefficient linear form in the jets of
+  its zero slice is a coboundary **for the actual translation**.
+
+Together with the telescope `multipleEllipticGammaLogDerivFaceMero_translate_sub_eq_sum`, this is
+the complete machinery of the descending face-lifting step: a putative differential relation among
+the higher-face packet is telescoped into a one-slice form, and the obstruction above forbids it.
+What is still needed to run the induction is the identification of the telescoped displacement with
+a one-slice jet form of the lower-face palette — i.e. the concrete hierarchy-to-row dictionary.
