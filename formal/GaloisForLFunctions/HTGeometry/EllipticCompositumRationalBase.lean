@@ -3,6 +3,7 @@ import GaloisForLFunctions.HTGeometry.MeromorphicEllipticRationalCompositum
 import GaloisForLFunctions.HTGeometry.DifferentialMatroid
 import GaloisForLFunctions.HTGeometry.FormalMahlerIntegerNormalization
 import GaloisForLFunctions.HTGeometry.EllipticGammaQuotientPeriodCosetMatroid
+import GaloisForLFunctions.HTGeometry.EllipticGammaRationalBaseMatroid
 
 /-!
 # The paired elliptic compositum is differentially algebraic over `ℂ(z)`
@@ -241,6 +242,71 @@ theorem differentialAlgebraicOver_ratFunc_ellipticGammaExternalQuotientMero_of_r
   differentialAlgebraicOver_ratFunc_of_differentialAlgebraicOver_compositum hsigma htau
     ((differentialAlgebraicOver_ellipticGammaExternalQuotientMero_iff_resonant
       h sigma tau hsigma htau hindependent).mpr hres)
+
+/-! ## Transfer to the embedded rational coordinate field and to the constants -/
+
+/-- The embedded rational coordinate field, as the target of the coordinate embedding. -/
+def ratFuncToRationalCoordinateField :
+    RatFunc ℂ →+* meromorphicRationalCoordinateField where
+  toFun := fun r => ⟨algebraMap (RatFunc ℂ) (meroField (Set.univ : Set ℂ)) r, ⟨r, rfl⟩⟩
+  map_one' := by apply Subtype.ext; simp
+  map_mul' := fun a b => by apply Subtype.ext; simp
+  map_zero' := by apply Subtype.ext; simp
+  map_add' := fun a b => by apply Subtype.ext; simp
+
+theorem ratFuncToRationalCoordinateField_injective :
+    Function.Injective ratFuncToRationalCoordinateField := by
+  intro a b hab
+  have h := congrArg (Subtype.val) hab
+  exact (algebraMap (RatFunc ℂ) (meroField (Set.univ : Set ℂ))).injective h
+
+/-- Differential algebraicity over the abstract rational function field transfers to the embedded
+rational coordinate field. -/
+theorem differentialAlgebraicOver_rationalCoordinateField_of_ratFunc
+    {x : meroField (Set.univ : Set ℂ)} (hx : DifferentialAlgebraicOver (RatFunc ℂ) x) :
+    DifferentialAlgebraicOver meromorphicRationalCoordinateField x := by
+  obtain ⟨n, Q, hQ0, hQ⟩ := exists_jet_relation_of_differentialAlgebraicOver hx
+  refine differentialAlgebraicOver_of_finiteJetRelation
+    (Q := MvPolynomial.map ratFuncToRationalCoordinateField Q) ?_ ?_
+  · intro hzero
+    exact hQ0 (MvPolynomial.map_injective _ ratFuncToRationalCoordinateField_injective
+      (by simpa using hzero))
+  · have hmap : MvPolynomial.map
+        (algebraMap meromorphicRationalCoordinateField (meroField (Set.univ : Set ℂ)))
+        (MvPolynomial.map ratFuncToRationalCoordinateField Q) =
+        MvPolynomial.map (algebraMap (RatFunc ℂ) (meroField (Set.univ : Set ℂ))) Q := by
+      rw [MvPolynomial.map_map]
+      rfl
+    have h1 : MvPolynomial.aeval (fun j : Fin (n + 1) => differentialJet (j : ℕ) x)
+        (MvPolynomial.map ratFuncToRationalCoordinateField Q) =
+        MvPolynomial.eval (fun j : Fin (n + 1) => differentialJet (j : ℕ) x)
+          (MvPolynomial.map
+            (algebraMap meromorphicRationalCoordinateField (meroField (Set.univ : Set ℂ)))
+            (MvPolynomial.map ratFuncToRationalCoordinateField Q)) := by
+      rw [MvPolynomial.eval_map, MvPolynomial.aeval_def]
+    have h2 : MvPolynomial.aeval (fun j : Fin (n + 1) => differentialJet (j : ℕ) x) Q =
+        MvPolynomial.eval (fun j : Fin (n + 1) => differentialJet (j : ℕ) x)
+          (MvPolynomial.map (algebraMap (RatFunc ℂ) (meroField (Set.univ : Set ℂ))) Q) := by
+      rw [MvPolynomial.eval_map, MvPolynomial.aeval_def]
+    rw [h1, hmap, ← h2, hQ]
+
+/-- **Differential algebraicity over the constants.**  For a global meromorphic germ, the rational
+coordinate is a differentially algebraic coefficient extension, so the two statements agree. -/
+theorem differentialAlgebraicOver_complex_of_ratFunc
+    {x : meroField (Set.univ : Set ℂ)} (hx : DifferentialAlgebraicOver (RatFunc ℂ) x) :
+    DifferentialAlgebraicOver ℂ x :=
+  differentialAlgebraicOver_meromorphicRationalCoordinateField_iff.mp
+    (differentialAlgebraicOver_rationalCoordinateField_of_ratFunc hx)
+
+/-- **Every element of the paired elliptic compositum is differentially algebraic over the
+constants.**  This is the exact statement the classical generation theorem `C(P, P')` is invoked
+for, proved here without it. -/
+theorem differentialAlgebraicOver_complex_of_mem_meromorphicEllipticCompositum {σ τ : ℂ}
+    (hσ : 0 < σ.im) (hτ : 0 < τ.im) {x : meroField (Set.univ : Set ℂ)}
+    (hx : x ∈ meromorphicEllipticCompositum σ τ) :
+    DifferentialAlgebraicOver ℂ x :=
+  differentialAlgebraicOver_complex_of_ratFunc
+    (differentialAlgebraicOver_ratFunc_of_mem_meromorphicEllipticCompositum hσ hτ hx)
 
 end
 

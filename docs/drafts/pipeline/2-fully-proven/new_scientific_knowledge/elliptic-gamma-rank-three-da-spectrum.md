@@ -610,3 +610,36 @@ offered by the corpus.  The card therefore remains in Stage 2.
   kernel meromorphic on `C*`; its aligned additive pullback is meromorphic on `C`. The comparison
   with analytic Jacobi theta is therefore a genuine globally meromorphic discrepancy, and its
   vanishing normalized principal part gives nonnegative meromorphic order at the half-period.
+
+## Lean progress — the singular remaining gap is closed
+
+The card states the remaining headline gap as: *"transport the exact additive and multiplicative
+pointed partition matroids from `K` to `C(z)` by formalizing that every element of the concrete
+elliptic compositum is differentially algebraic over the rational coordinate field.  That requires a
+genuine formal elliptic-function-field/Weierstrass DA foundation not presently offered by the
+corpus."*
+
+That statement is now formalized, and **without** the Weierstrass foundation:
+`formal/GaloisForLFunctions/HTGeometry/EllipticCompositumRationalBase.lean` (axiom-clean, umbrella
+registered).
+
+- **`meromorphicEllipticCompositum_le_daOverRatFuncField`** — every element of
+  `meromorphicEllipticCompositum sigma tau` is differentially algebraic over `C(z)`, for
+  `Im sigma > 0` and `Im tau > 0`.
+- **`differentialAlgebraicOver_complex_of_mem_meromorphicEllipticCompositum`** — equivalently, over
+  the constants, transported through the corpus's exact rational-base interface
+  `differentialAlgebraicOver_meromorphicRationalCoordinateField_iff`.
+- **`differentialAlgebraicOver_ratFunc_of_differentialAlgebraicOver_compositum`** — the base-change
+  law itself: every differential-algebraicity statement over the natural elliptic base upgrades to
+  the rational base.  It rests on the general tower law
+  `differentialAlgebraicOver_of_base_differentialAlgebraic`.
+- **`differentialAlgebraicOver_ratFunc_ellipticGammaExternalLogDerivDefectMero_of_resonant`** and
+  **`differentialAlgebraicOver_ratFunc_ellipticGammaExternalQuotientMero_of_resonant`** — the
+  resonant (zero-coset) half of the additive and multiplicative spectra over `C(z)`.
+
+The analytic input replacing the generation theorem is the unconditional elliptic
+differential-algebraicity theorem of the period-rank card: a doubly periodic meromorphic germ is
+differentially algebraic (`EllipticMeroFieldDifferentialAlgebraicity`), proved with no theta
+functions, no Weierstrass structure theorem and no contour integration.  What is still *not* claimed
+is the generation statement `C(P, P')` itself, nor transcendence degree one for the elliptic field —
+the matroid transport needs only differential algebraicity.
