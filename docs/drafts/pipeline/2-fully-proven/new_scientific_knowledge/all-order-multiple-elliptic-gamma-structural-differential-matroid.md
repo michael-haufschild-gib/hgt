@@ -1439,3 +1439,29 @@ bottom faces `J != J'` whose order-one coordinates would have to agree up to tra
 two faces have different surviving parameter pairs, the natural separation is by the structural
 difference operator of a parameter surviving on one side and deleted on the other; that, and the
 off-star differential algebraicity `hOffDA`, are what remain of the all-order chain.
+
+### Cross-face star separation — proof plan
+
+The cross-face case of `hStarInj` at the bottom layer is *not* a new analytic problem either: it is
+the resonant/nonresonant dichotomy of the parent card, applied to a parameter that is structural on
+one face and external on the other.
+
+Let `J != J'` be two bottom faces (both of size `n-2`, both containing the star direction `q`), with
+surviving pairs `{a,b}` and `{a',b'}`.  Since the faces differ, the pairs differ; pick
+`a in {a,b} \ {a',b'}`.  Suppose `sigma_u F_J = sigma_v F_(J')` for external lattice points `u, v`.
+Apply the structural difference operator `T_(tau_a) - 1` to both sides:
+
+- on the left `tau_a` is a *structural* period of `Psi^(J)`, so the increment is the resonant defect
+  `Delta_(tau_a) Psi^(J)`, which is **differentially algebraic** over `C(z)`
+  (`differentialAlgebraicOver_ratFunc_ellipticGammaExternalLogDerivDefectMero_of_resonant`);
+- on the right `tau_a` is *external* for `Psi^(J')` — because `a` is deleted in `J'` — and is
+  nonresonant for the pair `(tau_(b'), tau_(a'))` by rational independence, so the increment is
+  **hypertranscendental**
+  (`hypertranscendentalOver_ellipticGammaExternalLogDerivDefectMero_iff_nonresonant`);
+- translation preserves both properties over the constants
+  (`HTGeometry.DifferentialAlgEquiv.differentialAlgebraicOver_map_iff`), and DA over `C` and over
+  `C(z)` agree (`differentialAlgebraicOver_meromorphicRationalCoordinateField_iff`).
+
+The two sides would then be simultaneously DA and HT — impossible.  So distinct bottom faces have no
+common translate, and the cross-face case of `hStarInj` holds vacuously.  This is the next Lean
+target; every ingredient it names is already in the corpus.
