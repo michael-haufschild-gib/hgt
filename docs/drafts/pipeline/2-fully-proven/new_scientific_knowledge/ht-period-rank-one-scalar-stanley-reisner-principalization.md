@@ -1850,3 +1850,24 @@ nonpure Stanley--Reisner geometry has an internal translation cocycle whose clas
 `H^1(<T_v>, GL_m(D_DA))` lies outside the constant-representation locus.  Before the ring closure
 this reduction was not available in Lean at all; the corpus could only move a *polynomial* factor
 through `DifferentiallyAlgebraic`.
+
+### Precise remaining Lean scope (hostile self-audit, 2026-07-27)
+
+Every `[PROVED HERE]` section of this card now has an unconditional axiom-clean Lean counterpart:
+`(6)` facet-codimension (scalar entire, scalar **meromorphic** datum, channel, finite-state, and now
+DA-gauge-flat), `(18)`--`(20)` principalization, `(21)`--`(23)` channel stability, `(24)`--`(33)`
+constant-multiplier and finite-state stability, `(35)`--`(40)` DA-gauge curvature necessity,
+`(C1)`--`(C5)` the relative two-shift gauge characterization at full `Q`-independence.
+
+One scope item is genuinely still open, and it is worth stating exactly rather than hiding: the
+*rational*-transport specialization of the Cocycle transcendence requirement `(42)`--`(44)`.  Its
+external input is Schaefke--Singer (`[SEARCH]`, cited, not claimed as new), but even granting that
+input the conclusion `(44)` produces a **rational** gauge `B in GL_m(C(z))`, which has poles, while
+`DAGaugeFlatFacetRealization` currently demands an *entire* gauge.  Closing this needs the DA-gauge
+curvature law for **meromorphic** gauges.  The natural route is now available in outline: state the
+gauge law inside `meroField univ`, where differential algebraicity is already closed under the field
+operations (`differentialAlgebraicOver_{add,mul,inv,div}`) and translations act by
+`addTranslationMeroEquiv`; the missing transport is the finite-state constant-monodromy theorem
+`differentiallyAlgebraic_component_of_matrix_monodromy_two`, which is currently stated for entire
+vector carriers and has to be moved into the field the same way
+`differentialAlgebraicOver_of_translation_fixed` moved the scalar lattice law.
