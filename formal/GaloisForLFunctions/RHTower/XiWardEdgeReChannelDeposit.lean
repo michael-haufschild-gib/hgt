@@ -339,52 +339,6 @@ theorem integrable_sq_re_xiAntiCausalWardSchwarzPairResponse_eulerEdge
   rw [re_xiAntiCausalWardSchwarzPairResponse_eulerEdge_eq]
   ring
 
-/-- Over any finite family of strict-right pairs the sum of squared edge
-real parts is dominated by the squared edge modulus of the continued
-response. -/
-theorem sum_sq_re_xiAntiCausalWardSchwarzPairResponse_le_normSq
-    (F : Finset XiRightUpperZeroCopy) (t : ℝ) :
-    ∑ q ∈ F, ((xiAntiCausalWardSchwarzPairResponse q
-        ((1 / 2 : ℂ) + I * (t : ℂ))).re) ^ 2 ≤
-      Complex.normSq (continuedXiAntiCausalWardResponse
-        ((1 / 2 : ℂ) + I * (t : ℂ))) := by
-  have hw : (0 : ℝ) < ((1 / 2 : ℂ) + I * (t : ℂ)).re := by
-    norm_num [Complex.add_re, Complex.mul_re]
-  have hsum := summable_xiAntiCausalWardSchwarzPairResponse hw
-  have hsumre : Summable fun p : XiRightUpperZeroCopy =>
-      (xiAntiCausalWardSchwarzPairResponse p
-        ((1 / 2 : ℂ) + I * (t : ℂ))).re :=
-    (Complex.hasSum_re hsum.hasSum).summable
-  have h2 : ∑ q ∈ F, ((xiAntiCausalWardSchwarzPairResponse q
-        ((1 / 2 : ℂ) + I * (t : ℂ))).re) ^ 2 ≤
-      (∑ q ∈ F, (xiAntiCausalWardSchwarzPairResponse q
-        ((1 / 2 : ℂ) + I * (t : ℂ))).re) ^ 2 :=
-    Finset.sum_sq_le_sq_sum_of_nonneg fun q _ =>
-      (re_xiAntiCausalWardSchwarzPairResponse_pos q hw).le
-  have h3 : (∑ q ∈ F, (xiAntiCausalWardSchwarzPairResponse q
-        ((1 / 2 : ℂ) + I * (t : ℂ))).re) ≤
-      (continuedXiAntiCausalWardResponse
-        ((1 / 2 : ℂ) + I * (t : ℂ))).re := by
-    rw [continuedXiAntiCausalWardResponse_eq_tsum_schwarzPairs hw,
-      Complex.re_tsum hsum]
-    exact hsumre.sum_le_tsum F fun q _ =>
-      (re_xiAntiCausalWardSchwarzPairResponse_pos q hw).le
-  have h3' : (∑ q ∈ F, (xiAntiCausalWardSchwarzPairResponse q
-        ((1 / 2 : ℂ) + I * (t : ℂ))).re) ^ 2 ≤
-      ((continuedXiAntiCausalWardResponse
-        ((1 / 2 : ℂ) + I * (t : ℂ))).re) ^ 2 :=
-    pow_le_pow_left₀
-      (Finset.sum_nonneg fun q _ =>
-        (re_xiAntiCausalWardSchwarzPairResponse_pos q hw).le) h3 2
-  have h4 : ((continuedXiAntiCausalWardResponse
-        ((1 / 2 : ℂ) + I * (t : ℂ))).re) ^ 2 ≤
-      Complex.normSq (continuedXiAntiCausalWardResponse
-        ((1 / 2 : ℂ) + I * (t : ℂ))) := by
-    rw [Complex.normSq_apply]
-    nlinarith [sq_nonneg (continuedXiAntiCausalWardResponse
-      ((1 / 2 : ℂ) + I * (t : ℂ))).im]
-  linarith
-
 /-- **Graded counting law**: every finite family of strict-right pairs
 deposits its full position-graded real-channel masses into the edge
 quadratic energy. -/
@@ -764,139 +718,16 @@ theorem integral_mul_re_xiPairs (q q' : XiRightUpperZeroCopy) :
   have hre' := xiRightCenteredZero_re_pos q'.1
   have hx : 0 < (xiRightCenteredZero q.1).re + 1 / 2 := by linarith
   have hx' : 0 < (xiRightCenteredZero q'.1).re + 1 / 2 := by linarith
-  have h11 : Integrable (fun t : ℝ =>
-      4 * ((((xiRightCenteredZero q.1).re + 1 / 2) /
-          ((((xiRightCenteredZero q.1).re + 1 / 2)) ^ 2 +
-            (t + (xiRightCenteredZero q.1).im) ^ 2)) *
-        ((((xiRightCenteredZero q'.1).re + 1 / 2)) /
-          ((((xiRightCenteredZero q'.1).re + 1 / 2)) ^ 2 +
-            (t + (xiRightCenteredZero q'.1).im) ^ 2)))) volume :=
-    (integrable_mul_lorentzianHalves_general hx hx'
-      ((xiRightCenteredZero q.1).im)
-      ((xiRightCenteredZero q'.1).im)).const_mul 4
-  have h12 : Integrable (fun t : ℝ =>
-      4 * ((((xiRightCenteredZero q.1).re + 1 / 2) /
-          ((((xiRightCenteredZero q.1).re + 1 / 2)) ^ 2 +
-            (t + (xiRightCenteredZero q.1).im) ^ 2)) *
-        ((((xiRightCenteredZero q'.1).re + 1 / 2)) /
-          ((((xiRightCenteredZero q'.1).re + 1 / 2)) ^ 2 +
-            (t + -(xiRightCenteredZero q'.1).im) ^ 2)))) volume :=
-    (integrable_mul_lorentzianHalves_general hx hx'
-      ((xiRightCenteredZero q.1).im)
-      (-(xiRightCenteredZero q'.1).im)).const_mul 4
-  have h21 : Integrable (fun t : ℝ =>
-      4 * ((((xiRightCenteredZero q.1).re + 1 / 2) /
-          ((((xiRightCenteredZero q.1).re + 1 / 2)) ^ 2 +
-            (t + -(xiRightCenteredZero q.1).im) ^ 2)) *
-        ((((xiRightCenteredZero q'.1).re + 1 / 2)) /
-          ((((xiRightCenteredZero q'.1).re + 1 / 2)) ^ 2 +
-            (t + (xiRightCenteredZero q'.1).im) ^ 2)))) volume :=
-    (integrable_mul_lorentzianHalves_general hx hx'
-      (-(xiRightCenteredZero q.1).im)
-      ((xiRightCenteredZero q'.1).im)).const_mul 4
-  have h22 : Integrable (fun t : ℝ =>
-      4 * ((((xiRightCenteredZero q.1).re + 1 / 2) /
-          ((((xiRightCenteredZero q.1).re + 1 / 2)) ^ 2 +
-            (t + -(xiRightCenteredZero q.1).im) ^ 2)) *
-        ((((xiRightCenteredZero q'.1).re + 1 / 2)) /
-          ((((xiRightCenteredZero q'.1).re + 1 / 2)) ^ 2 +
-            (t + -(xiRightCenteredZero q'.1).im) ^ 2)))) volume :=
-    (integrable_mul_lorentzianHalves_general hx hx'
-      (-(xiRightCenteredZero q.1).im)
-      (-(xiRightCenteredZero q'.1).im)).const_mul 4
-  have h1122 : Integrable (fun t : ℝ =>
-      (4 * ((((xiRightCenteredZero q.1).re + 1 / 2) /
-          ((((xiRightCenteredZero q.1).re + 1 / 2)) ^ 2 +
-            (t + (xiRightCenteredZero q.1).im) ^ 2)) *
-        ((((xiRightCenteredZero q'.1).re + 1 / 2)) /
-          ((((xiRightCenteredZero q'.1).re + 1 / 2)) ^ 2 +
-            (t + (xiRightCenteredZero q'.1).im) ^ 2))) +
-       4 * ((((xiRightCenteredZero q.1).re + 1 / 2) /
-          ((((xiRightCenteredZero q.1).re + 1 / 2)) ^ 2 +
-            (t + (xiRightCenteredZero q.1).im) ^ 2)) *
-        ((((xiRightCenteredZero q'.1).re + 1 / 2)) /
-          ((((xiRightCenteredZero q'.1).re + 1 / 2)) ^ 2 +
-            (t + -(xiRightCenteredZero q'.1).im) ^ 2))))) volume :=
-    h11.add h12
-  have h2122 : Integrable (fun t : ℝ =>
-      (4 * ((((xiRightCenteredZero q.1).re + 1 / 2) /
-          ((((xiRightCenteredZero q.1).re + 1 / 2)) ^ 2 +
-            (t + -(xiRightCenteredZero q.1).im) ^ 2)) *
-        ((((xiRightCenteredZero q'.1).re + 1 / 2)) /
-          ((((xiRightCenteredZero q'.1).re + 1 / 2)) ^ 2 +
-            (t + (xiRightCenteredZero q'.1).im) ^ 2))) +
-       4 * ((((xiRightCenteredZero q.1).re + 1 / 2) /
-          ((((xiRightCenteredZero q.1).re + 1 / 2)) ^ 2 +
-            (t + -(xiRightCenteredZero q.1).im) ^ 2)) *
-        ((((xiRightCenteredZero q'.1).re + 1 / 2)) /
-          ((((xiRightCenteredZero q'.1).re + 1 / 2)) ^ 2 +
-            (t + -(xiRightCenteredZero q'.1).im) ^ 2))))) volume :=
-    h21.add h22
-  rw [show (fun t : ℝ => ((xiAntiCausalWardSchwarzPairResponse q
-      ((1 / 2 : ℂ) + I * (t : ℂ))).re) *
-      ((xiAntiCausalWardSchwarzPairResponse q'
-        ((1 / 2 : ℂ) + I * (t : ℂ))).re)) =
-      fun t : ℝ =>
-        ((4 * ((((xiRightCenteredZero q.1).re + 1 / 2) /
-          ((((xiRightCenteredZero q.1).re + 1 / 2)) ^ 2 +
-            (t + (xiRightCenteredZero q.1).im) ^ 2)) *
-        ((((xiRightCenteredZero q'.1).re + 1 / 2)) /
-          ((((xiRightCenteredZero q'.1).re + 1 / 2)) ^ 2 +
-            (t + (xiRightCenteredZero q'.1).im) ^ 2))) +
-       4 * ((((xiRightCenteredZero q.1).re + 1 / 2) /
-          ((((xiRightCenteredZero q.1).re + 1 / 2)) ^ 2 +
-            (t + (xiRightCenteredZero q.1).im) ^ 2)) *
-        ((((xiRightCenteredZero q'.1).re + 1 / 2)) /
-          ((((xiRightCenteredZero q'.1).re + 1 / 2)) ^ 2 +
-            (t + -(xiRightCenteredZero q'.1).im) ^ 2))))) +
-        ((4 * ((((xiRightCenteredZero q.1).re + 1 / 2) /
-          ((((xiRightCenteredZero q.1).re + 1 / 2)) ^ 2 +
-            (t + -(xiRightCenteredZero q.1).im) ^ 2)) *
-        ((((xiRightCenteredZero q'.1).re + 1 / 2)) /
-          ((((xiRightCenteredZero q'.1).re + 1 / 2)) ^ 2 +
-            (t + (xiRightCenteredZero q'.1).im) ^ 2))) +
-       4 * ((((xiRightCenteredZero q.1).re + 1 / 2) /
-          ((((xiRightCenteredZero q.1).re + 1 / 2)) ^ 2 +
-            (t + -(xiRightCenteredZero q.1).im) ^ 2)) *
-        ((((xiRightCenteredZero q'.1).re + 1 / 2)) /
-          ((((xiRightCenteredZero q'.1).re + 1 / 2)) ^ 2 +
-            (t + -(xiRightCenteredZero q'.1).im) ^ 2))))) from
-    funext fun t => by
-      rw [re_xiAntiCausalWardSchwarzPairResponse_eulerEdge_eq,
-        re_xiAntiCausalWardSchwarzPairResponse_eulerEdge_eq]
-      ring]
-  rw [MeasureTheory.integral_add h1122 h2122,
-    MeasureTheory.integral_add h11 h12,
-    MeasureTheory.integral_add h21 h22,
-    MeasureTheory.integral_const_mul, MeasureTheory.integral_const_mul,
-    MeasureTheory.integral_const_mul, MeasureTheory.integral_const_mul,
-    integral_mul_lorentzianHalves_general hx hx'
-      ((xiRightCenteredZero q.1).im) ((xiRightCenteredZero q'.1).im),
-    integral_mul_lorentzianHalves_general hx hx'
-      ((xiRightCenteredZero q.1).im) (-(xiRightCenteredZero q'.1).im),
-    integral_mul_lorentzianHalves_general hx hx'
-      (-(xiRightCenteredZero q.1).im) ((xiRightCenteredZero q'.1).im),
-    integral_mul_lorentzianHalves_general hx hx'
-      (-(xiRightCenteredZero q.1).im) (-(xiRightCenteredZero q'.1).im)]
-  have hxx : (0 : ℝ) < ((xiRightCenteredZero q.1).re + 1 / 2) +
-      ((xiRightCenteredZero q'.1).re + 1 / 2) := by linarith
-  have hA : (0 : ℝ) < (((xiRightCenteredZero q.1).re + 1 / 2) +
-      ((xiRightCenteredZero q'.1).re + 1 / 2)) ^ 2 +
-      ((xiRightCenteredZero q.1).im - (xiRightCenteredZero q'.1).im) ^ 2 :=
-    by positivity
-  have hB : (0 : ℝ) < (((xiRightCenteredZero q.1).re + 1 / 2) +
-      ((xiRightCenteredZero q'.1).re + 1 / 2)) ^ 2 +
-      ((xiRightCenteredZero q.1).im + (xiRightCenteredZero q'.1).im) ^ 2 :=
-    by positivity
-  have hC : (0 : ℝ) < (((xiRightCenteredZero q.1).re + 1 / 2) +
-      ((xiRightCenteredZero q'.1).re + 1 / 2)) ^ 2 +
-      (-(xiRightCenteredZero q.1).im - (xiRightCenteredZero q'.1).im) ^ 2 :=
-    by positivity
-  have hD : (0 : ℝ) < (((xiRightCenteredZero q.1).re + 1 / 2) +
-      ((xiRightCenteredZero q'.1).re + 1 / 2)) ^ 2 +
-      (-(xiRightCenteredZero q.1).im - -(xiRightCenteredZero q'.1).im) ^ 2 :=
-    by positivity
-  field_simp
+  have h := integral_mul_mirroredKernelPair
+    (k := fun x β t => x / (x ^ 2 + (t + β) ^ 2)) hx hx'
+    (integrable_mul_lorentzianHalves_general hx hx')
+    (integral_mul_lorentzianHalves_general hx hx')
+    2 2 ((xiRightCenteredZero q.1).im) ((xiRightCenteredZero q'.1).im)
+    (f := fun t => (xiAntiCausalWardSchwarzPairResponse q ((1 / 2 : ℂ) + I * (t : ℂ))).re)
+    (f' := fun t => (xiAntiCausalWardSchwarzPairResponse q' ((1 / 2 : ℂ) + I * (t : ℂ))).re)
+    (fun t => by dsimp only; rw [re_xiAntiCausalWardSchwarzPairResponse_eulerEdge_eq]; ring)
+    (fun t => by dsimp only; rw [re_xiAntiCausalWardSchwarzPairResponse_eulerEdge_eq]; ring)
+  rw [h]
   ring
 
 /-- **Quadratic explicit formula, real channel**: the edge quadratic energy

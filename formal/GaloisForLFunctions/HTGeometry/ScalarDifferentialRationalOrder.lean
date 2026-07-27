@@ -351,16 +351,21 @@ theorem HasScalarDifferentialOrder.algHom_pow
       rw [hvalue, horder]
       exact hnext
 
-/-- A differential automorphism of a scalar free differential field sends its generator, and the
-inverse sends the generator, by exact order-zero differential rational functions. -/
-theorem differentialAlgEquiv_generator_order_zero
+/-- **An automorphism moves a free generator by scalar differential order zero.**  Let `y` be
+hypertranscendental with `differentialAdjoin C {y} = ⊤`, and let `σ` be an algebra automorphism whose
+covariance transports the order of `σ.symm y` over `y` to an order of `y` over `σ y`.  Then both
+`σ y` and `σ.symm y` have scalar differential order zero over `y`.  The two orders compose to the
+order of `y` over itself, which is zero, and orders are natural numbers. -/
+theorem algEquiv_generator_order_zero
     {C E : Type*} [Field C] [Field E] [CharZero E]
     [Differential C] [Differential E] [Algebra C E] [DifferentialAlgebra C E]
     (σ : E ≃ₐ[C] E) {y : E} (hy : HypertranscendentalOver C y)
     (hytop : differentialAdjoin C ({y} : Set E) = ⊤)
-    (hderiv : ∀ w : E, σ w′ = (σ w)′) :
+    (hmap : ∀ m : ℕ, HasScalarDifferentialOrder C y (σ.symm y) m →
+      HasScalarDifferentialOrder C (σ y) y m) :
     HasScalarDifferentialOrder C y (σ y) 0 ∧
       HasScalarDifferentialOrder C y (σ.symm y) 0 := by
+
   have hty : Transcendental C y := by
     simpa using hypertranscendentalOver_jet_transcendental hy 0
   have hyC : y ∉ (⊥ : IntermediateField C E) := by
@@ -395,8 +400,7 @@ theorem differentialAlgEquiv_generator_order_zero
     trivial
   obtain ⟨r, hr, -⟩ := existsUnique_hasScalarDifferentialOrder hσmem hσC
   obtain ⟨m, hm, -⟩ := existsUnique_hasScalarDifferentialOrder hσinvmem hσinvC
-  have hmapped : HasScalarDifferentialOrder C (σ y) y m := by
-    simpa using hm.map σ.toAlgHom hderiv
+  have hmapped : HasScalarDifferentialOrder C (σ y) y m := hmap m hm
   have hsum : HasScalarDifferentialOrder C y y (m + r) :=
     HasScalarDifferentialOrder.comp hy hr hmapped
   have hyzero : HasScalarDifferentialOrder C y y 0 := by
@@ -406,6 +410,19 @@ theorem differentialAlgEquiv_generator_order_zero
   have hm0 : m = 0 := by omega
   have hr0 : r = 0 := by omega
   exact ⟨hr0 ▸ hr, hm0 ▸ hm⟩
+
+/-- A differential automorphism of a scalar free differential field sends its generator, and the
+inverse sends the generator, by exact order-zero differential rational functions. -/
+theorem differentialAlgEquiv_generator_order_zero
+    {C E : Type*} [Field C] [Field E] [CharZero E]
+    [Differential C] [Differential E] [Algebra C E] [DifferentialAlgebra C E]
+    (σ : E ≃ₐ[C] E) {y : E} (hy : HypertranscendentalOver C y)
+    (hytop : differentialAdjoin C ({y} : Set E) = ⊤)
+    (hderiv : ∀ w : E, σ w′ = (σ w)′) :
+    HasScalarDifferentialOrder C y (σ y) 0 ∧
+      HasScalarDifferentialOrder C y (σ.symm y) 0 := by
+  refine algEquiv_generator_order_zero σ hy hytop (fun m hm => ?_)
+  simpa using hm.map σ.toAlgHom hderiv
 
 /-- Membership form of `differentialAlgEquiv_generator_order_zero`: every differential
 automorphism of a scalar free differential field preserves its ordinary generator field in both

@@ -101,6 +101,91 @@ def upperEndFaceStructuralOutput
     (upperEndFaceStructuralSource u facets J) Unit.unit
 
 set_option maxHeartbeats 800000 in
+/-- **Structural face output vanishes exactly on nonfaces.**  Let `source` be any family indexed by
+the Stanley–Reisner Laurent rows of `J` whose applied rows are differentially independent exactly
+when the face family is linearly independent.  Then the structural output — the single row sum at
+`Unit.unit` — vanishes precisely when `J` is not a face of `facets`.  Forward: a face gives a
+nonzero Stanley–Reisner class, hence a linearly independent family, hence a differentially
+independent one, whose members are nonzero. Backward: a nonface makes every Laurent row vanish, so
+the sum is zero termwise. -/
+theorem structuralFaceOutput_eq_zero_iff_nonface
+    {α : Type*} [Fintype α] [DecidableEq α]
+    (facets : Finset (Finset α)) (J : Finset α)
+    (source : FiniteFinsuppRowIndex
+        (stanleyReisnerLaurentRows (1 : translationSubmonoid (Polynomial ℂ) α) facets
+          (stanleyReisnerFaceFamily facets J)) → upperEndMeroField)
+    (hmat :
+      letI := isDomain_upperEndAnalyticSubring
+      letI : Algebra ℂ upperEndMeroField := upperEndComplexToMero.toAlgebra
+      letI := upperEndMeroFieldDifferential
+      DifferentialIndependent ℂ
+          (differentialOperatorRowApply
+            (finiteFinsuppOperatorRows
+              (stanleyReisnerLaurentRows (1 : translationSubmonoid (Polynomial ℂ) α) facets
+                (stanleyReisnerFaceFamily facets J))) source) ↔
+        LinearIndependent (Polynomial ℂ)
+          (stanleyReisnerFaceFamily (R := Polynomial ℂ) facets J)) :
+    letI := isDomain_upperEndAnalyticSubring
+    letI : Algebra ℂ upperEndMeroField := upperEndComplexToMero.toAlgebra
+    letI := upperEndMeroFieldDifferential
+    differentialOperatorRowApply
+        (finiteFinsuppOperatorRows
+          (stanleyReisnerLaurentRows (1 : translationSubmonoid (Polynomial ℂ) α) facets
+            (stanleyReisnerFaceFamily facets J))) source Unit.unit = 0 ↔
+      ¬ IsFaceOf (↑facets : Set (Finset α)) J := by
+
+  classical
+  letI := isDomain_upperEndAnalyticSubring
+  letI : Algebra ℂ upperEndMeroField := upperEndComplexToMero.toAlgebra
+  letI := upperEndMeroFieldDifferential
+  let N := stanleyReisnerFaceFamily (R := Polynomial ℂ) facets J
+  let d : translationSubmonoid (Polynomial ℂ) α := 1
+  constructor
+  · intro hout
+    by_contra hface
+    have hclass : stanleyReisnerFaceClass (R := Polynomial ℂ) facets J ≠ 0 := by
+      intro hzero
+      exact (quotient_indicatorMonomial_eq_zero_iff_nonface
+        (R := Polynomial ℂ) facets J).mp hzero hface
+    have hN : LinearIndependent (Polynomial ℂ) N := by
+      exact (linearIndependent_unit_stanleyReisner_iff facets _).mpr hclass
+    have hDI : DifferentialIndependent ℂ
+        (differentialOperatorRowApply
+          (finiteFinsuppOperatorRows (stanleyReisnerLaurentRows d facets N)) source) :=
+      hmat.mpr hN
+    have hn := hDI.algebraicIndependent.linearIndependent.ne_zero Unit.unit
+    apply hn
+    simpa [d, N] using hout
+  · intro hnonface
+    have hclass : stanleyReisnerFaceClass (R := Polynomial ℂ) facets J = 0 :=
+      (quotient_indicatorMonomial_eq_zero_iff_nonface
+        (R := Polynomial ℂ) facets J).mpr hnonface
+    let Q := stanleyReisnerLaurentRows
+      (1 : translationSubmonoid (Polynomial ℂ) α) facets
+      (stanleyReisnerFaceFamily facets J)
+    have hQzero : Q = 0 := by
+      apply _root_.funext
+      intro i
+      apply _root_.funext
+      intro F
+      apply Finsupp.ext
+      intro g
+      simp [Q, stanleyReisnerLaurentRows, stanleyReisnerFaceFamily, hclass]
+    change differentialOperatorRowApply (finiteFinsuppOperatorRows Q)
+      source Unit.unit = 0
+    unfold differentialOperatorRowApply
+    apply Finset.sum_eq_zero
+    intro q hq
+    have hc : finiteFinsuppOperatorRows Q Unit.unit q = 0 := by
+      change Q Unit.unit q.1.1 q.1.2 = 0
+      have hc0 := congrArg
+        (fun rows : Unit → (F : facets) → (α → ℤ) →₀ Polynomial ℂ =>
+          rows Unit.unit q.1.1 q.1.2) hQzero
+      simpa using hc0
+    rw [hc]
+    simp [differentialOperatorApply]
+
+set_option maxHeartbeats 800000 in
 /-- **Exact analytic compatible-relation law.**  For a source with free complete facet orbit, the
 structural face output is zero exactly when the vertex set is a nonface. -/
 theorem upperEndFaceStructuralOutput_eq_zero_iff_nonface
@@ -119,59 +204,13 @@ theorem upperEndFaceStructuralOutput_eq_zero_iff_nonface
     letI := upperEndMeroFieldDifferential
     upperEndFaceStructuralOutput u facets J = 0 ↔
       ¬ IsFaceOf (↑facets : Set (Finset α)) J := by
-  classical
   letI := isDomain_upperEndAnalyticSubring
   letI : Algebra ℂ upperEndMeroField := upperEndComplexToMero.toAlgebra
   letI := upperEndMeroFieldDifferential
-  let N := stanleyReisnerFaceFamily (R := Polynomial ℂ) facets J
-  let d : translationSubmonoid (Polynomial ℂ) α := 1
-  let source := upperEndFaceStructuralSource u facets J
-  have hmat := upperEnd_stanleyReisnerLaurentDifferentialMatroid
-    u facets hu d N
-  constructor
-  · intro hout
-    by_contra hface
-    have hclass : stanleyReisnerFaceClass (R := Polynomial ℂ) facets J ≠ 0 := by
-      intro hzero
-      exact (quotient_indicatorMonomial_eq_zero_iff_nonface
-        (R := Polynomial ℂ) facets J).mp hzero hface
-    have hN : LinearIndependent (Polynomial ℂ) N := by
-      exact (linearIndependent_unit_stanleyReisner_iff facets _).mpr hclass
-    have hDI : DifferentialIndependent ℂ
-        (differentialOperatorRowApply
-          (finiteFinsuppOperatorRows (stanleyReisnerLaurentRows d facets N)) source) :=
-      hmat.mpr hN
-    have hn := hDI.algebraicIndependent.linearIndependent.ne_zero Unit.unit
-    apply hn
-    simpa [upperEndFaceStructuralOutput, source, d, N] using hout
-  · intro hnonface
-    have hclass : stanleyReisnerFaceClass (R := Polynomial ℂ) facets J = 0 :=
-      (quotient_indicatorMonomial_eq_zero_iff_nonface
-        (R := Polynomial ℂ) facets J).mpr hnonface
-    let Q := stanleyReisnerLaurentRows
-      (1 : translationSubmonoid (Polynomial ℂ) α) facets
-      (stanleyReisnerFaceFamily facets J)
-    have hQzero : Q = 0 := by
-      apply _root_.funext
-      intro i
-      apply _root_.funext
-      intro F
-      apply Finsupp.ext
-      intro g
-      simp [Q, stanleyReisnerLaurentRows, stanleyReisnerFaceFamily, hclass]
-    change differentialOperatorRowApply (finiteFinsuppOperatorRows Q)
-      (upperEndFaceStructuralSource u facets J) Unit.unit = 0
-    unfold differentialOperatorRowApply
-    apply Finset.sum_eq_zero
-    intro q hq
-    have hc : finiteFinsuppOperatorRows Q Unit.unit q = 0 := by
-      change Q Unit.unit q.1.1 q.1.2 = 0
-      have hc0 := congrArg
-        (fun rows : Unit → (F : facets) → (α → ℤ) →₀ Polynomial ℂ =>
-          rows Unit.unit q.1.1 q.1.2) hQzero
-      simpa using hc0
-    rw [hc]
-    simp [differentialOperatorApply]
+  exact structuralFaceOutput_eq_zero_iff_nonface facets J
+    (upperEndFaceStructuralSource u facets J)
+    (upperEnd_stanleyReisnerLaurentDifferentialMatroid u facets hu 1
+      (stanleyReisnerFaceFamily facets J))
 
 /-- Complete combinatorial and quotient-relation certificate for the nonpure two-thick wedge. -/
 def WedgeFacetSewnGeometry : Prop :=

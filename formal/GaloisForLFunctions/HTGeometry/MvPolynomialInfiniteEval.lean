@@ -19,10 +19,13 @@ open MvPolynomial Polynomial
 
 namespace GaloisForLFunctions
 
-/-- A nonzero integer univariate polynomial has a non-root in any infinite set of integers. -/
-theorem exists_mem_eval_ne_zero_of_infinite (p : Polynomial ℤ) (hp : p ≠ 0) {S : Set ℤ}
+/-- A nonzero univariate polynomial over an integral domain has a non-root in any infinite set:
+its root set is finite. -/
+theorem exists_mem_eval_ne_zero_of_infinite_domain {R : Type*} [CommRing R] [IsDomain R]
+    (p : Polynomial R) (hp : p ≠ 0) {S : Set R}
     (hS : S.Infinite) : ∃ x ∈ S, p.eval x ≠ 0 := by
-  have hfin : {x : ℤ | p.eval x = 0}.Finite := by
+  classical
+  have hfin : {x : R | p.eval x = 0}.Finite := by
     apply Set.Finite.subset (p.roots.toFinset.finite_toSet)
     intro x hx
     rw [Finset.mem_coe, Multiset.mem_toFinset, Polynomial.mem_roots']
@@ -30,11 +33,15 @@ theorem exists_mem_eval_ne_zero_of_infinite (p : Polynomial ℤ) (hp : p ≠ 0) 
   obtain ⟨x, hxS, hx⟩ := (hS.diff hfin).nonempty
   exact ⟨x, hxS, hx⟩
 
-/-- **Infinite-grid nonvanishing.**  A nonzero `MvPolynomial (Fin r) ℤ` is nonzero at some
-injective tuple valued in any infinite integer set. -/
-theorem exists_injective_eval_ne_zero :
-    ∀ {r : ℕ} (P : MvPolynomial (Fin r) ℤ), P ≠ 0 → ∀ {T : Set ℤ}, T.Infinite →
-      ∃ a : Fin r → ℤ, Function.Injective a ∧ (∀ i, a i ∈ T) ∧ MvPolynomial.eval a P ≠ 0 := by
+/-- **Injective non-vanishing evaluation over an integral domain.**  A nonzero
+`P : MvPolynomial (Fin r) R` has an injective evaluation point with every coordinate in a
+prescribed infinite `T ⊆ R` at which `P` does not vanish.  Variable peeling: view `P` as a
+univariate polynomial in the first coordinate, fix the last `r` coordinates by induction so one
+coefficient survives, then pick the first coordinate in `T` minus the finitely many already used
+coordinates and the finitely many roots of the resulting univariate polynomial. -/
+theorem exists_injective_eval_ne_zero_domain {R : Type*} [CommRing R] [IsDomain R] :
+    ∀ {r : ℕ} (P : MvPolynomial (Fin r) R), P ≠ 0 → ∀ {T : Set R}, T.Infinite →
+      ∃ a : Fin r → R, Function.Injective a ∧ (∀ i, a i ∈ T) ∧ MvPolynomial.eval a P ≠ 0 := by
   intro r
   induction r with
   | zero =>
@@ -47,8 +54,8 @@ theorem exists_injective_eval_ne_zero :
     rw [hcontra, map_zero]
   | succ r IH =>
     intro P hP T hT
-    set Q := (MvPolynomial.finSuccEquiv ℤ r) P with hQdef
-    have hQ : Q ≠ 0 := (map_ne_zero_iff _ (MvPolynomial.finSuccEquiv ℤ r).injective).mpr hP
+    set Q := (MvPolynomial.finSuccEquiv R r) P with hQdef
+    have hQ : Q ≠ 0 := (map_ne_zero_iff _ (MvPolynomial.finSuccEquiv R r).injective).mpr hP
     obtain ⟨k, hk⟩ : ∃ n, Q.coeff n ≠ 0 := by
       by_contra h
       push Not at h
@@ -61,7 +68,7 @@ theorem exists_injective_eval_ne_zero :
     have hQ' : Q' ≠ 0 := fun h => hQ'k (by rw [h]; simp)
     -- choose the first coordinate in T avoiding the used values and the roots
     have hTinf : (T \ Set.range a').Infinite := hT.diff (Set.finite_range a')
-    obtain ⟨y, hyT, hyne⟩ := exists_mem_eval_ne_zero_of_infinite Q' hQ' hTinf
+    obtain ⟨y, hyT, hyne⟩ := exists_mem_eval_ne_zero_of_infinite_domain Q' hQ' hTinf
     refine ⟨Fin.cons y a', ?_, ?_, ?_⟩
     · intro i j hij
       rcases Fin.eq_zero_or_eq_succ i with rfl | ⟨i', rfl⟩ <;>
@@ -79,5 +86,17 @@ theorem exists_injective_eval_ne_zero :
       · rw [Fin.cons_succ]; exact ha'T i'
     · rw [MvPolynomial.eval_eq_eval_mv_eval', ← hQdef, ← hQ'def]
       exact hyne
+
+/-- A nonzero integer univariate polynomial has a non-root in any infinite set of integers. -/
+theorem exists_mem_eval_ne_zero_of_infinite (p : Polynomial ℤ) (hp : p ≠ 0) {S : Set ℤ}
+    (hS : S.Infinite) : ∃ x ∈ S, p.eval x ≠ 0 :=
+  exists_mem_eval_ne_zero_of_infinite_domain p hp hS
+
+/-- **Infinite-grid nonvanishing.**  A nonzero `MvPolynomial (Fin r) ℤ` is nonzero at some
+injective tuple valued in any infinite integer set. -/
+theorem exists_injective_eval_ne_zero :
+    ∀ {r : ℕ} (P : MvPolynomial (Fin r) ℤ), P ≠ 0 → ∀ {T : Set ℤ}, T.Infinite →
+      ∃ a : Fin r → ℤ, Function.Injective a ∧ (∀ i, a i ∈ T) ∧ MvPolynomial.eval a P ≠ 0 :=
+  fun {_r} P hP {_T} hT => exists_injective_eval_ne_zero_domain P hP hT
 
 end GaloisForLFunctions

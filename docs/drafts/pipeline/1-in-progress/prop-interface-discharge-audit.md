@@ -380,3 +380,536 @@ recursor artifacts.  The three genuinely new rows are now resolved:
   no Weierstrass ℘ theory, so this needs that development first; it joins Lindemann–Weierstrass (for
   Schanuel stage one) and the differential-algebraic closure as an `IntermediateField` (for the
   meromorphic exponential gauge) on the list of external constructions this audit has isolated.
+
+## Re-measurement, 2026-07-27 (all three areas)
+
+The instrument was re-run on the current environment over `HilbertMetric`, `HTGeometry` and the
+2 974 of 3 363 `RHTower` modules whose object files are present (the remaining 389 are excluded only
+because a module in their import closure is mid-edit, so they carry no audited interfaces).  Scope:
+**65 075** project theorems, **1 257** project `Prop` definitions.
+
+The grounding fixpoint terminates in 3 rounds with 446 grounded and **2** consumed-but-ungrounded
+rows, both of them `.below` recursor artifacts (`FiniteGeometricLayerTower.below`,
+`FiniteDifferentialCircuit.below`) — recursor fields, not premises.  Restricting the same run to
+`HTGeometry` + `HilbertMetric` alone gives 6 rows: the same 2 artifacts plus 4 interfaces
+(`RHTower.IsActionStable`, `IsMixedPrimeWord`, `RHTower.PrimeLogExpansion`,
+`RHTower.PrimeIndexedLogExpansion`) whose witnesses live in `RHTower` and are therefore invisible to
+a run that does not import it.
+
+**No undischarged `Prop` interface remains in the three areas.**
+
+Two card entries were stale and are corrected here:
+
+- `HTGeometry.EllipticHypertranscendenceFree` is no longer a named open construction.  Mathlib now
+  carries Weierstrass `℘` with `derivWeierstrassP_sq`, and the corpus proves the structure-free
+  counting form of Weierstrass's theorem in
+  `HTGeometry/EllipticHypertranscendenceFreeProof.lean`
+  (`differentiallyAlgebraic_of_lattice_periodic_meromorphicNF`, `ellipticHypertranscendenceFree`),
+  so the scalar facet-codimension law is unconditional.
+- the joint realization of `clockOrderEscapes_of_stagewiseDA_not_inverseLimitDA` is **not** open: the
+  explicit prime-supported unit source realizes all three premises simultaneously in
+  `primeClockUnitSource_tail_clockOrderEscapes`.
+
+Remaining named external inputs, unchanged: Lindemann–Weierstrass (Schanuel stage one) and the
+differential-algebraic closure as an `IntermediateField` (the meromorphic exponential gauge).
+
+### Universal law added
+
+With the elliptic case closed, the two halves of the period-rank analysis compose into one
+statement, formalized in `HTGeometry/PeriodRankUniversalLaw.lean`:
+
+- `differentiallyAlgebraic_of_rankTwo_periods` — a meromorphic normal-form function invariant under
+  the integer span of two `ℚ`-independent complex numbers is differentially algebraic.  The
+  `ℝ`-dependent branch is non-discreteness of the period group
+  (`meromorphicNF_constant_of_rankTwo_realDependent_periods`), the `ℝ`-independent branch is the
+  elliptic theorem.
+- `differentiallyAlgebraic_of_two_periods`, `differentiallyAlgebraic_of_two_independent_periods` —
+  the pair and arbitrary-index forms; the latter subsumes the rank-three rigidity
+  `meromorphicNF_constant_of_rankThree_periods`, which is the case of a rationally independent
+  triple.
+- `rat_dependent_periods_of_hypertranscendental` and
+  `not_linearIndependent_periods_of_hypertranscendental` — the sharp contrapositive: **the period
+  group of a hypertranscendental meromorphic function on `ℂ` has `ℚ`-rank at most one.**
+
+`#print axioms` on all five: `[propext, Classical.choice, Quot.sound]`.
+
+## Third instrument, 2026-07-27: what the `Prop` scan cannot see
+
+Two blind spots of the previous instrument were closed.
+
+### (a) An `↔` transfers groundedness, it does not create it
+
+The fixpoint counted any theorem mentioning `P` in its conclusion as a producer, so a
+characterization `P x ↔ Q x` grounded `P` even when `Q` was itself unwitnessed.  The instrument now
+records, for each theorem whose conclusion is an `Iff`, the project constants of the two sides
+separately, and the fixpoint grounds one side only when the other is already grounded.
+
+On the current corpus (62 362 theorems, 1 165 project `Prop` definitions) the loose fixpoint gives 2
+ungrounded rows and the strict one gives 4.  The two extra rows are real:
+
+| interface | defining module | resolution |
+|---|---|---|
+| `isBoundedSmooth` | `RHTower.SmoothNumbers` | discharged — `RHTower/BoundedSmoothWitnesses.lean` |
+| `supportedBounded` | `RHTower.SmoothNumbers` | discharged — same |
+
+They were grounded only through each other and through `primeProduct_isBoundedSmooth_iff`, so no
+bounded smooth frequency was ever exhibited.  Now: `isBoundedSmooth_one`, `supportedBounded_zero`,
+`supportedBounded_single` and `isBoundedSmooth_prime_pow` (every `p ^ k` with `p ∈ S`, `k ≤ N`),
+monotonicity in `S` and `N`, and the exact count
+
+`card_isBoundedSmooth : Nat.card {n // isBoundedSmooth S N n} = (N + 1) ^ S.card`,
+
+obtained from the coordinate bijection `boundedVectorEquivFun` between bounded exponent vectors and
+functions `S → Fin (N+1)`, composed with the unique-factorization equivalence already in the module.
+That is the number of Dirichlet frequencies a finite auxiliary form supported on `S` with exponents
+at most `N` produces — the count the module's own docstring promises.
+
+### (b) Bundled *data* hypotheses were never audited at all
+
+Every audit so far looked at `Prop`-valued definitions.  A theorem whose hypothesis is a bundled
+datum — a `structure` in `Type` — is equally vacuous if no such datum exists, and 113 project data
+structures are consumed as hypotheses in the three areas.  A new pass records, for every project
+constant, the head of its conclusion (unwrapping `Nonempty` and `∃`), and counts a structure as
+constructed only when some declaration's conclusion *is* it.  Excluding the structure's own
+projections and auto-generated lemmas from the consumer side leaves **28** data structures consumed
+as a hypothesis in the three areas and constructed nowhere.
+
+| consumers | structure | defining module |
+|---:|---|---|
+| 28 | `GaloisForLFunctions.HTGeometry.QuantumLawPair` | `GaloisForLFunctions.HTGeometry.QuantumTorusPrincipalSymbol` |
+| 24 | `GaloisForLFunctions.RHTower.PrimeIsingBondTree` | `GaloisForLFunctions.RHTower.PrimeIsingTreeFKExpansion` |
+| 16 | `GaloisForLFunctions.RHTower.PrimeIsingBondForest` | `GaloisForLFunctions.RHTower.PrimeIsingTreeFKExpansion` |
+| 14 | `GaloisForLFunctions.HTGeometry.ScalarSRRealization` | `GaloisForLFunctions.HTGeometry.ScalarSRRealizationBridge` |
+| 10 | `GaloisForLFunctions.HTGeometry.ParabolicSphereSignature` | `GaloisForLFunctions.HTGeometry.ParabolicOrbifoldTwelveCharge` |
+| 8 | `GaloisForLFunctions.HTGeometry.ClassicalAnalyticNevanlinnaCarrierFamily.MaximalTranslationInputs` | `GaloisForLFunctions.HTGeometry.NevanlinnaBoundaryFaceMaximalTranslation` |
+| 5 | `GaloisForLFunctions.FunctionFieldDegreeData` | `GaloisForLFunctions.RHTower.FunctionFieldDegeneration` |
+| 5 | `GaloisForLFunctions.RHTower.PrimeIndexedLogCochainFormula` | `GaloisForLFunctions.RHTower.OmegaObstruction` |
+| 4 | `GaloisForLFunctions.HTGeometry.ChannelSRRealization` | `GaloisForLFunctions.HTGeometry.ChannelSRRealization` |
+| 4 | `GaloisForLFunctions.HTGeometry.NormalCrossingKoszulGradeInput` | `GaloisForLFunctions.HTGeometry.NormalCrossingCriticalDerivedPhase` |
+| 3 | `GaloisForLFunctions.HTGeometry.FiniteMultivariateAffineJetPattern` | `GaloisForLFunctions.HTGeometry.CountableMultivariateAffineJetPattern` |
+| 3 | `GaloisForLFunctions.HTGeometry.SingularKolchinFrequencyInput` | `GaloisForLFunctions.HTGeometry.KolchinFrequencyBudgetPhase` |
+| 2 | `GaloisForLFunctions.HTGeometry.AffineJetPacketCollisionInput` | `GaloisForLFunctions.HTGeometry.AffineJetPacketCollisionCompletion` |
+| 2 | `GaloisForLFunctions.HTGeometry.DAGaugeFlatFacetRealization` | `GaloisForLFunctions.HTGeometry.DAGaugeCurvatureNecessity` |
+| 2 | `GaloisForLFunctions.HTGeometry.LinearWidthDetectorIndex` | `GaloisForLFunctions.HTGeometry.LinearWidthThreeStepDetector` |
+| 2 | `GaloisForLFunctions.HTGeometry.NormalCrossingExteriorCoherenceWitness` | `GaloisForLFunctions.HTGeometry.NormalCrossingCriticalDerivedPhase` |
+| 2 | `GaloisForLFunctions.InfiniteGeometricLayerTower` | `GaloisForLFunctions.HTGeometry.FiniteGeometricLayerDAResonance` |
+| 2 | `GaloisForLFunctions.RHTower.CCMRationalScaling` | `GaloisForLFunctions.RHTower.CCMRationalRealCrossedProduct` |
+| 2 | `GaloisForLFunctions.RHTower.IsingBondState` | `GaloisForLFunctions.RHTower.PrimeIsingTreeFKExpansion` |
+| 1 | `GaloisForLFunctions.HTGeometry.BarnesReflectionAnalyticThresholdInput` | `GaloisForLFunctions.HTGeometry.GammaPhaseCompletion` |
+| 1 | `GaloisForLFunctions.HTGeometry.FieldOneCore.CertifiedProjectivePointFunctor` | `GaloisForLFunctions.HTGeometry.FieldOneDoctrineAtlas` |
+| 1 | `GaloisForLFunctions.HTGeometry.FieldOneCore.ComparisonFacet` | `GaloisForLFunctions.HTGeometry.FieldOneDoctrineAtlas` |
+| 1 | `GaloisForLFunctions.HTGeometry.GaussChannelSchattenEndpointInput` | `GaloisForLFunctions.HTGeometry.KolchinFrequencyBudgetPhase` |
+| 1 | `GaloisForLFunctions.HTGeometry.HurwitzProjectiveSurvivalWitness` | `GaloisForLFunctions.HTGeometry.ProjectiveConstraintTopologicalCapacityPhase` |
+| 1 | `GaloisForLFunctions.HTGeometry.ModularProjectiveSurvivalWitness` | `GaloisForLFunctions.HTGeometry.ProjectiveConstraintTopologicalCapacityPhase` |
+| 1 | `GaloisForLFunctions.HTGeometry.NormalCrossingFamilyCriticalizationInput` | `GaloisForLFunctions.HTGeometry.NormalCrossingCriticalDerivedPhase` |
+| 1 | `GaloisForLFunctions.HTGeometry.QuadraticQuantumDetectorIndex` | `GaloisForLFunctions.HTGeometry.QuadraticQuantumDetectorRepresentation` |
+| 1 | `GaloisForLFunctions.HTGeometry.QuasiAbelianFacetPaletteInput` | `GaloisForLFunctions.HTGeometry.QuasiAbelianFacetPaletteCompletion` |
+
+Caveat, verified by hand: `PrimeIsingBondTree`, `PrimeIsingBondForest`, `IsingBondState` and
+`ParabolicSphereSignature` are inductive data types realized by their own constructors, which a
+conclusion-head scan never sees; they are not debt.
+
+Discharged in this pass:
+
+- `HTGeometry/DataInputWitnesses.lean`
+  - `QuantumLawPair` (28 consumers): every strict inequality is one (`quantumLawPair_of_lt`), two
+    coordinates already carry one, and the consecutive pairs `(k, k+1)` give
+    `infinite_quantumLawPair_nat` — the quantum-torus symbol layer indexes an infinite set;
+  - `SingularKolchinFrequencyInput`: the diagonal input `⟨2c, 2c, c⟩` shows the budget
+    `frequencyRank ≤ 2 · kolchinCapacity` is **attained**, so
+    `singularKolchin_frequencyRank_le` is sharp;
+  - `NormalCrossingKoszulGradeInput r`: homology concentrated in the single degree `(r+1)−2`;
+  - `NormalCrossingExteriorCoherenceWitness`: the coordinate basis of the function space on the
+    truncated face index, whose independence is `Pi.basisFun`;
+  - `BarnesReflectionAnalyticThresholdInput`: the predicate `2 ≤ N` is its own threshold datum;
+  - `GaussChannelSchattenEndpointInput`: the strict inequality `2m < q` is its own Schatten
+    membership, with weak endpoint `True` and strong endpoint `False`.
+- `RHTower/FunctionFieldDegreeWitnesses.lean` — `FunctionFieldDegreeData`: the one-place datum, the
+  rational model (countably many degree-one places), and a datum carrying a place of every positive
+  degree, so `ffRelationLattice_corank_eq_one` holds on objects and does not secretly assume all
+  places rational; in the rational model the relation lattice is exactly the degree-zero divisors.
+
+`#print axioms` on every new capstone: `[propext, Classical.choice, Quot.sound]` or fewer (two need
+none).
+
+Remaining on this worklist: 20 structures, the substantial ones being `ScalarSRRealization` and
+`ChannelSRRealization` (a realization needs a hypertranscendental carrier system),
+`ClassicalAnalyticNevanlinnaCarrierFamily.MaximalTranslationInputs`, `DAGaugeFlatFacetRealization`,
+and `InfiniteGeometricLayerTower` (an infinite tower needs a convergent layer series with strictly
+decreasing ratios, e.g. amplitudes `4^{-j}` and ratios `1 + 2^{-j}`).
+
+### `InfiniteGeometricLayerTower`, and the first function it produces
+
+`HTGeometry/InfiniteGeometricLayerTowerWitness.lean`.  The infinite tower was the analytic datum of
+`hypertranscendental_of_infiniteGeometricLayerTower`, and no tower existed, so that law had never
+produced a single function.
+
+Amplitudes `4⁻ⁱ`, ratios `1 + 2⁻ⁱ`.  The ratios are strictly decreasing, hence pairwise distinct —
+the injectivity the law consumes — and never exceed `2`, so the depth-`i` tail
+`tailᵢ(n) = ∑_{j ≥ i} 4⁻ʲ (1 + 2⁻ʲ)ⁿ` is dominated by `2ⁿ` times a geometric series and converges for
+every `n`.  Splitting off the first summand is `split`; the bound
+`tail_{i+1}(n) ≤ (∑_{j>i} 4⁻ʲ)(1 + 2⁻⁽ⁱ⁺¹⁾)ⁿ` composed with `1 + 2⁻⁽ⁱ⁺¹⁾ < 1 + 2⁻ⁱ` is `small`.
+
+Composing with the corpus's entire-series builder — the profile dominates `2ⁿ`, hence grows
+superlinearly, hence the exponential series has infinite radius — gives
+
+**`hypertranscendental_dyadicLayerEntireFunction`**: the entire function
+`F(z) = ∑ₙ exp(−∑_{j} 4⁻ʲ (1 + 2⁻ʲ)ⁿ) zⁿ` satisfies no algebraic differential equation.
+
+This is the first explicit function the infinite-tower law yields; `#print axioms` gives
+`[propext, Classical.choice, Quot.sound]`.
+
+### Further inhabitants, and two detector false positives
+
+- `HTGeometry/DetectorAndPacketWitnesses.lean`
+  - `LinearWidthDetectorIndex` and `QuadraticQuantumDetectorIndex` are inductive types with a nullary
+    grade (the membrane point, the vacuum root), so they are inhabited in every rank; the instances
+    record it.  Like the Ising bond types they were never real debt — the scan skips constructors.
+  - `AffineJetPacketCollisionInput`: realized with empty defect sets, where every source avoids all
+    defects and therefore has the generic orbit rank `|frame(E)|` and satisfies the operator rank
+    law.
+  - `QuasiAbelianFacetPaletteInput`: realized on the empty facet family, where both fields quantify
+    over an empty index — the degenerate end of the palette, recorded as a consistency witness only.
+- `RHTower/PrimeIndexedLogCochainWitnesses.lean` — `PrimeIndexedLogCochainFormula` is free: every
+  prime-indexed integer coefficient family is a formula for the cochain it evaluates to
+  (`primeIndexedLogCochainFormula_ofCoeff`), so the layer's integrality conclusion holds on an
+  explicit family, and on the constant cochain `log p` in particular.
+
+`CCMRationalScaling` is a **detector false positive**: it is a one-field wrapper of `ℚˣ` carrying a
+`Group` instance, so `1` inhabits it, but the producer is an instance whose conclusion head is
+`Group CCMRationalScaling` rather than the structure itself.  Instance-valued producers are the
+remaining known blind spot of the data-hypothesis scan.
+
+### The scalar and channel realization data are consistent
+
+`HTGeometry/ScalarSRRealizationConsistency.lean`.  `ScalarSRRealization` (14 consumers) and
+`ChannelSRRealization` (4) are the analytic inputs of the whole scalar Stanley–Reisner layer and
+neither was exhibited, so a priori every theorem consuming one could be vacuous.
+
+Over the empty vertex type with the single facet `∅` the Stanley–Reisner ring has no vertex
+coordinates, so the difference relation `carrier (x_v · q) = (T_v − 1) carrier q` is vacuous and the
+only remaining requirement is a hypertranscendental meromorphic function to carry every nonzero
+class.  The explicit entire function built above supplies it, giving `emptyScalarSRRealization` and,
+reading the same carrier on every channel, `emptyChannelSRRealization`.  Both are unconditional.
+
+This is a consistency proof at the degenerate end, and nothing more.  **The sharp open question it
+isolates**: a realization over a *nonempty* vertex set whose coordinate is killed in the
+Stanley–Reisner ring forces every carrier to be invariant under that vertex step, so such a
+realization exists exactly when some hypertranscendental meromorphic function has a nonzero period.
+By `rat_dependent_periods_of_hypertranscendental` its period group would then have `ℚ`-rank exactly
+one — the extreme case the period-rank law permits, and the case whose attainment is not settled in
+the corpus.
+
+Two remarks on why this is not reachable from the present machinery.  The Taylor-magnitude criteria
+(layer towers, superlacunary and stretched-exponential profiles) all force order-zero growth, and a
+nonconstant periodic entire function has order at least one, so no magnitude criterion can produce a
+periodic example.  The natural candidate is `Γ ∘ exp`, which is periodic and meromorphic on `ℂ`; a
+proof that it is hypertranscendental needs differential algebraicity to descend through a
+composition with `exp`, and the corpus currently has that only for affine changes of variable
+(`DifferentiallyAlgebraic.comp_const_mul_uncond`, `differentiallyAlgebraicOfOrder_comp_add_const_iff`).
+That composition law is the named next target.
+
+## Fourth instrument, 2026-07-27: classifying the data hypotheses
+
+The data-hypothesis scan was refined to record, for every declaration, the conclusion head (with
+`Nonempty` and `∃` unwrapped), the project constants of the conclusion, and the heads of the non-`Prop`
+binders.  That single table separates four cases the first pass conflated, and cuts the list of
+structures consumed in the three areas but not directly constructed from 28 to **19**:
+
+- **multi-constructor inductives** — realized by their own constructors, which a conclusion-head scan
+  never sees: `PrimeIsingBondTree`, `PrimeIsingBondForest`, `IsingBondState`,
+  `ParabolicSphereSignature`, and the three `FieldOneCore` enumerations;
+- **class-inhabited** — an instance supplies the element, but its conclusion head is the class, not
+  the structure: `CCMRationalScaling` (via `Group`), `FieldOneCore.CertifiedProjectivePointFunctor`,
+  `ComparisonFacet`, `AtlasLoss` (via `Fintype`);
+- **refutation bundles** — consumed by a theorem concluding `False`, so never constructing one is
+  exactly the theorem: `MeroGaugeFacetRealization`, `DAGaugeFlatFacetRealization`.  The same holds
+  for `GelfondSchneiderProof.Setup`, whose 214 consumers are all internal to the proof by
+  contradiction that `gelfondSchneider_holds` completes — a `Setup` provably does not exist;
+- **genuine debt** — the rest.
+
+### Genuine debt, discharged
+
+`HTGeometry/PhaseInputWitnesses.lean`:
+
+- `FiniteMultivariateAffineJetPattern` (9 consumers): the empty pattern over every alphabet, and a
+  one-frame one-monomial pattern over a nonempty one, both injectivity conditions automatic on
+  `Fin 0` and `Fin 1`;
+- `FinitePickDefectPhaseInput`: **both** phases are realized, at defect `0` and defect `1`
+  (`finitePickDefect_both_phases_occur`), so the singular/free dichotomy is non-vacuous on either
+  side;
+- `GeometricPeriodicLevelInput`: the zero level polynomial along the identity subsequence — and by
+  `geometricPeriodic_everyLevelPolynomial_eq_zero` no other level polynomial is possible, so this
+  witness is canonical rather than merely available;
+- `GeometricTLULockedFaceInput`: for the explicit hypertranscendental entire function both
+  differential-algebraicity implications are vacuous;
+- `HurwitzProjectiveSurvivalWitness` and `ModularProjectiveSurvivalWitness`: the genus family
+  `g i = i` on `ℕ` with exact storage `42(2g − 2)`, resp. `6(2g + s − 2)` at one cusp, whose degrees
+  are unbounded above.
+
+`#print axioms` on all seven: `[propext, Classical.choice, Quot.sound]` or fewer.
+
+Still open on this list: `ClassicalAnalyticNevanlinnaCarrierFamily.MaximalTranslationInputs` (8
+consumers), `NormalCrossingFamilyCriticalizationInput`, and `RHTower.PrimeIsingSpectralLine` (a
+two-field record of complex numbers, inhabited by `⟨0, 0⟩` — trivial, not yet written down).
+
+### The criticalization input, and a third detector class
+
+`HTGeometry/CriticalizationInputWitness.lean` — `NormalCrossingFamilyCriticalizationInput` carries no
+freedom: every ideal field is pinned by its own equation (the Barnes annihilator is the span of the
+normal-crossing polynomial, the sine, elliptic-gamma and cotangent-Fitting ideals are all the
+Veronese ideal) and the two ranks are the quotient rank.  `normalCrossingFamilyCriticalizationInput_canonical`
+is therefore the input, one per rank function, and specializing the criticalization theorem to it
+gives the premise-free identity
+
+`veroneseIdeal F (Fin (r+1)) r = derivationalCriticalIdeal (normalCrossingPolynomial r)`.
+
+`RHTower.PrimeIsingSpectralLine` is a **detector false positive of a third kind**:
+`PrimeIsingSpectralLine.onePacket = [⟨1, 0⟩]` builds a line, but its conclusion head is
+`List PrimeIsingSpectralLine`, not the structure.  Producers whose conclusion is a *container* of the
+structure — `List S`, `Finset S`, `Set S`, a function into `S` — join instance-valued producers and
+constructors as the scan's known blind spots.  All three are recognizable by hand from the flagged
+module, so the instrument stays useful as a ranked worklist rather than a verdict.
+
+### The one remaining construction on this list
+
+`ClassicalAnalyticNevanlinnaCarrierFamily s` (and with it its sub-bundle
+`MaximalTranslationInputs`, 8 consumers) is genuine and **not** cheap.  It demands a
+`ClassicalNevanlinnaExtremalFamily` together with entire `a, b, c, d` of determinant identically one
+whose boundary values are the family's matrix and whose Cauchy transforms satisfy
+`∫ (x − z)⁻¹ dleaf(τ) = (a z · τ + b z)/(c z · τ + d z)` for every real `τ` and every `z` in the upper
+half plane.  The trivial choice `a = d = 1`, `b = c = 0` is impossible: it would force the Cauchy
+transform of a probability measure to equal the real number `τ`, while for `Im z > 0` that transform
+has strictly negative imaginary part.  A witness therefore requires an honest Nevanlinna family — the
+named next construction for this worklist, alongside the composition law recorded above.
+
+### Herglotz positivity, and what it forces on the Nevanlinna bundle
+
+`HTGeometry/CauchyTransformHalfPlane.lean`.  Working out what a
+`ClassicalAnalyticNevanlinnaCarrierFamily` would have to satisfy turned up a gap in the corpus: the
+Cauchy transform's half-plane property is used implicitly throughout the Nevanlinna layer but proved
+nowhere.  `LeafCauchyTransform` has integrability and a modulus bound, nothing about the sign.
+
+**`im_cauchyTransform_pos`** supplies it: the kernel has imaginary part `Im z / |x − z|²` at every
+real `x`, strictly positive above the axis, so its integral against a probability measure has
+strictly positive imaginary part.  Three structural consequences for the bundle follow, each
+unconditional:
+
+- `im_infinityCauchy_pos` — `a z / c z` lies in the open upper half plane, being the transform of the
+  leaf at infinity; hence `a_ne_zero_of_c_ne_zero`: **`a` cannot vanish where `c` does not**;
+- `im_finiteCauchy_pos` — `(a z · τ + b z)/(c z · τ + d z)` lies in the open upper half plane for
+  every real `τ`; hence **`mobiusDenominator_ne_zero`**: the Möbius denominator `c z · τ + d z` never
+  vanishes above the real axis.
+
+These are necessary conditions any future witness must meet, and they already kill the obvious
+candidates.  With `leaf τ = δ_τ` the finite identity forces `(a, b, c, d) = (0, i, i, −iz)` up to the
+projective scaling that fixes the determinant, and then `a/c = 0`, whose imaginary part is zero —
+excluded by `a_ne_zero_of_c_ne_zero`.  With `leaf τ = δ_{−1/τ}` the identity forces
+`(a, b, c, d) = (i, 0, −iz, −i)`, whose value at `τ = 0` is `b/d = 0` — excluded by
+`im_finiteCauchy_pos`.  Both failures are the same phenomenon: a Möbius image of `ℝ ∪ {∞}` is a
+circle, and a circle through `0` cannot lie in the open upper half plane, so the leaf family cannot be
+a single Dirac orbit.  A witness needs the boundary circle of a genuine Weyl disk, i.e. an
+**indeterminate** Hamburger moment problem with its Nevanlinna parametrization — the classical
+Stieltjes–Wigert example.  Mathlib has no moment-problem theory, so this is a development, not a
+witness; it stays on the list as the one remaining construction, now with its obstruction made
+precise.
+
+## Closing measurement, 2026-07-27
+
+Both instruments re-run on the current corpus (64 334 project theorems, 1 171 project `Prop`
+definitions, 197 project data structures, 5 300+ modules in the buildable closure).
+
+**`Prop` interfaces.**  The strict, `↔`-aware grounding fixpoint and the loose one now agree: 448
+grounded, and exactly **2** consumed-but-ungrounded rows in the three areas, both `.below` recursor
+artifacts.  The two rows that only the strict fixpoint saw (`isBoundedSmooth`, `supportedBounded`)
+are closed.  No new ungrounded interface has appeared despite the corpus growing by several hundred
+modules.
+
+**Data hypotheses.**  Down from 28 → 19 → **13**, and every remaining row is classified:
+
+| class | rows |
+|---|---|
+| constructor-realized inductives | `PrimeIsingBondTree`, `PrimeIsingBondForest`, `IsingBondState`, `ParabolicSphereSignature` |
+| class-inhabited | `FieldOneCore.CertifiedProjectivePointFunctor`, `ComparisonFacet`, `AtlasLoss`, `CCMRationalScaling` |
+| refutation bundles | `MeroGaugeFacetRealization`, `DAGaugeFlatFacetRealization` |
+| container-valued producer | `PrimeIsingSpectralLine` |
+| **genuine** | `ClassicalAnalyticNevanlinnaCarrierFamily` and its sub-bundle `MaximalTranslationInputs` |
+
+So the audit is complete except for one named external development — the indeterminate Hamburger
+moment problem with its Nevanlinna parametrization — whose obstruction is recorded above.  The other
+named target isolated by this card is the composition law letting differential algebraicity descend
+through `exp`, which would decide whether a hypertranscendental meromorphic function can have a
+nonzero period.
+
+## Defect found and fixed while auditing
+
+Two `RHTower` modules registered in the same area umbrella declared
+`GaloisForLFunctions.RHTower.criticalLinePoint` and `…criticalLinePoint_re` with **different**
+statements — `(σ x : ℝ)` with real part `(σ+1)/2` in `GammaDampedSineSeries`, and `(τ : ℝ)` with real
+part `1/2` in `FiniteDivisorPrefixNonselection` — so the two could not be imported together and the
+`RHTower` umbrella could not build.  The audit hit it as an import failure.  The newer module's names
+are used nowhere outside it, so they were renamed to `gammaDampedCriticalLinePoint`,
+`gammaDampedCriticalLinePoint_re` and `abscissa_lt_gammaDampedCriticalLinePoint`; the module builds
+and the two now co-import.
+
+## The period layer, subsumed
+
+`HTGeometry/PeriodSubgroupCyclic.lean` replaces the whole family of period no-gos by one positive
+classification.
+
+`periodSubgroup f` is the set of periods of `f` as an additive subgroup of `ℂ`.  For a
+hypertranscendental meromorphic normal-form function:
+
+- `exists_real_smul_of_mem_periodSubgroup` — every period is a rational, hence real, multiple of any
+  fixed nonzero period.  This is the period-rank law, applied to the pair;
+- `not_dense_periodCoeffSubgroup` — the group of real coefficients relative to that direction is not
+  dense: density would supply nonzero coefficients tending to zero, hence nonzero periods tending to
+  zero, and `meromorphicNF_constant_of_small_periods` would make `f` constant;
+- **`exists_periodSubgroup_eq_closure_singleton`** and **`periodSubgroup_eq_zmultiples`** — a subgroup
+  of `ℝ` is dense or cyclic, so the coefficient group is cyclic and
+
+  **`periodSubgroup f = AddSubgroup.zmultiples ω` for some `ω`: the period group of a
+  hypertranscendental meromorphic function on `ℂ` is trivial or infinite cyclic.**
+
+The earlier results are the cases this excludes: a rank-two lattice (the elliptic theorem), a
+rank-two `ℝ`-dependent pair and a rank-three triple (non-discreteness), and the entire case
+(Liouville).  Each of those says a configuration of periods is impossible; this says exactly which
+configuration survives, and it is the sharp one — whether the surviving cyclic case is *attained*
+is precisely the open question recorded above about a periodic hypertranscendental function.
+
+`#print axioms` on all four: `[propext, Classical.choice, Quot.sound]`.
+
+## The hard direction of autonomy, for periodic functions
+
+`HTGeometry/PeriodicAutonomousDescent.lean`.  The corpus had only the easy direction
+(`differentiallyAlgebraic_of_autonomous`: a nonzero autonomous annihilator makes a function
+differentially algebraic).  The converse is false in general — `z` satisfies only equations
+mentioning the point slot — but it holds for periodic functions, and that is the direction the period
+layer needs.
+
+The mechanism is elimination of the point slot along the period.  Split a differential polynomial
+`P ∈ MvPolynomial (Fin (n+2)) ℂ` as a polynomial in the point variable with coefficients in the jet
+variables (`finSuccEquiv`).  All jets of a periodic function are periodic
+(`periodic_iteratedDeriv`), so the jet vector at `z + k·c` equals the one at `z`, and the relation
+says the univariate polynomial obtained by evaluating those coefficients on the jet vector vanishes
+at `z + k·c` for **every** integer `k`.  Infinitely many roots force it to be the zero polynomial, so
+every coefficient vanishes on the jets; the leading coefficient is nonzero, giving a nonzero
+autonomous relation.
+
+* **`exists_autonomousJet_of_periodic`** — the descent;
+* `differentiallyAlgebraic_of_autonomousJet` — the converse, by adjoining and forgetting the point
+  slot;
+* **`differentiallyAlgebraic_iff_autonomousJet_of_periodic`** — for a periodic function,
+  differential algebraicity *is* autonomous differential algebraicity;
+* **`hypertranscendental_iff_no_autonomousJet_of_periodic`** — hence hypertranscendence of a periodic
+  function is exactly the absence of an autonomous equation.
+
+This sharpens the open question left by the period-subgroup classification.  To decide whether the
+surviving infinite-cyclic case is attained — whether some hypertranscendental meromorphic function
+has a nonzero period — it now suffices to exclude **autonomous** algebraic differential equations for
+a candidate, a strictly smaller class than all differential equations.
+
+`#print axioms` on all five: `[propext, Classical.choice, Quot.sound]`.
+
+## What a nonzero period decides
+
+`HTGeometry/PeriodAutonomyDichotomy.lean` closes the period layer with a single statement.  For a
+meromorphic normal-form `f` with `periodSubgroup f ≠ ⊥`, exactly one of:
+
+- **`f` satisfies a nonzero autonomous algebraic differential equation**; or
+- **`f` is hypertranscendental, its period group is `AddSubgroup.zmultiples ω` for a nonzero `ω`, and
+  `f` satisfies no autonomous equation at all.**
+
+(`autonomous_or_cyclic_hypertranscendental`, with exclusivity in
+`not_and_autonomous_hypertranscendental`.)  The first case is the descent applied to differential
+algebraicity; the second is the period-subgroup classification applied to hypertranscendence.
+
+Two corpus theorems are strengthened on the way, each from "differentially algebraic" to
+"*autonomously* differentially algebraic":
+
+- `exists_autonomousJet_of_rankTwo_periods` — two rationally independent periods;
+- `exists_autonomousJet_of_lattice_periodic` — an elliptic function, of which
+  `℘'² = 4℘³ − g₂℘ − g₃` is the order-one instance.
+
+`#print axioms` on all four: `[propext, Classical.choice, Quot.sound]`.
+
+The open question is now stated in its smallest form: **is the second case of the dichotomy
+inhabited?**  Equivalently, is there a meromorphic function on `ℂ` with a nonzero period satisfying
+no autonomous algebraic differential equation?  Everything the corpus knows about periods is a
+consequence of the dichotomy, and this is the only thing it does not decide.
+
+## Toward inhabiting the second case: jet transfer along an exponential
+
+The dichotomy's open case asks for a meromorphic function with a nonzero period and no autonomous
+algebraic differential equation.  The route is composition: if `g` is entire and hypertranscendental
+then `g ∘ exp` is entire, periodic, and — provided differential algebraicity descends through the
+composition — hypertranscendental.  The corpus already supplies an explicit entire hypertranscendental
+`g` (`dyadicLayerEntireFunction`), so the whole question reduces to that descent.
+
+The autonomy descent proved above removes the hardest-looking obstacle in advance.  A relation for
+`g ∘ exp` may a priori involve the point slot, and eliminating `z = log w` is what makes the naive
+argument fail; but for a *periodic* function the relation can be taken autonomous, and substituting
+the chain rule into an autonomous relation produces a genuine polynomial relation for `g` over
+`ℂ[w]`, with no logarithm anywhere.  What remains is the substitution itself and its injectivity.
+
+`HTGeometry/ExpJetTransfer.lean` builds the substitution's coefficient theory:
+
+- `expJetCoeff a k j` — the coefficients of `g⁽ᵏ⁾(exp(az))`-expansion, defined by the recursion
+  `c_{k+1,j+1} = a ((j+1) c_{k,j+1} + c_{k,j})`, `c_{k+1,0} = 0`;
+- `expJetCoeff_eq_zero_of_lt` — triangularity, `c_{k,j} = 0` for `j > k`;
+- **`expJetCoeff_diag`** — the diagonal is `a ^ k`, a unit for `a ≠ 0`, which is what will make the
+  substitution invertible;
+- **`deriv_expTerm`** — the chain rule for one term: differentiating
+  `exp(az)^j · g⁽ʲ⁾(exp(az))` gives exactly `a · (j ·` itself `+` the next term `)`.  This *is* the
+  recursion, and it is the induction step of the transfer identity.
+
+Remaining for the transfer identity `iteratedDeriv k (g ∘ exp a·) = ∑_{j ≤ k} c_{k,j} exp(az)^j
+g⁽ʲ⁾(exp(az))`: the summation assembly (differentiate the sum termwise, then reindex the shifted sum
+against the recursion).  After that, injectivity of the substitution — a triangular change of
+variables with unit diagonal over `ℂ[w, w⁻¹]` — and Hölder's theorem finish the argument.
+
+### The transfer identity is proved
+
+`iteratedDeriv_comp_exp` now holds unconditionally: for entire `g` and any `a`,
+
+`g(exp(a·))⁽ᵏ⁾(z) = ∑_{j ≤ k} expJetCoeff a k j · exp(az)ʲ · g⁽ʲ⁾(exp(az))`.
+
+The induction step is `deriv_expTerm` (differentiate one term) followed by `sum_transfer_step`, an
+algebraic reindexing lemma stated for arbitrary coefficients obeying the recursion: the shifted sum
+`∑_j c_{k,j} E^{j+1} D_{j+1}` supplies the `c_{k,j}` half of `c_{k+1,j+1}` and the weighted sum
+`∑_j j c_{k,j} E^j D_j` supplies the `(j+1) c_{k,j+1}` half, with the boundary terms vanishing by
+`c_{k+1,0} = 0` and triangularity `c_{k,k+1} = 0`.
+
+`#print axioms` on both: `[propext, Classical.choice, Quot.sound]`.
+
+Two steps remain to inhabit the dichotomy's open case: injectivity of the induced substitution on
+differential polynomials — a triangular change of variables with diagonal `a^k w^k`, invertible over
+`ℂ[w, w⁻¹]` — and then Hölder's theorem, already in the corpus as `hypertranscendental_gamma`, or the
+corpus's own `hypertranscendental_dyadicLayerEntireFunction` for the entire route.
+
+### The transfer substitution is injective
+
+`HTGeometry/ExpJetSubstitution.lean`.  In the variables `Yⱼ = exp(az)ʲ · g⁽ʲ⁾(exp(az))` the transfer
+is a linear change of variables with **constant** coefficients, `f⁽ᵏ⁾ = ∑ⱼ c_{k,j} Yⱼ` — no Laurent
+polynomials, because the powers of `w` are absorbed into the variables.  That is what makes the
+injectivity elementary.
+
+- `expJetLinear` — the transfer matrix on the jet space;
+- **`expJetLinear_injective`** — triangular back-substitution: everything above the diagonal vanishes
+  and the diagonal entries are the units `aᵏ`, so the kernel is trivial for `a ≠ 0`;
+- `expJetLinear_surjective` — hence surjective, the space being finite-dimensional;
+- **`bind₁_expJetSubst_ne_zero`** — the induced substitution on differential polynomials preserves
+  nonzeroness.
+
+The last step avoids constructing the inverse matrix: if the substituted polynomial vanishes
+identically then, since every evaluation point of the source is in the image of the linear map, the
+original vanishes at *every* point, and a polynomial over an infinite domain that vanishes everywhere
+is zero (`MvPolynomial.funext`).
+
+`#print axioms` on all three: `[propext, Classical.choice, Quot.sound]`.
+
+What remains for the composition theorem is bookkeeping of the same kind: re-express the transfer
+identity as `iteratedDeriv k f z = expJetLinear a n Y k` (extending the `range (k+1)` sum to all of
+`Fin (n+1)` by triangularity), substitute `Yⱼ ↦ X₀ʲ · X_{j+1}` — injective by evaluating at `w = 1`,
+the same trick — and multiply by `X₀` so the relation also holds at the one point `w = 0` that the
+exponential misses.

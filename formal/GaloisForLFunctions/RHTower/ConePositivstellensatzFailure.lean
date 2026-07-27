@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.ReflectionConeCertificate
+import GaloisForLFunctions.RHTower.CothInfra
 
 /-!
 # Λ-positivity is not semidefinite representable
@@ -82,13 +83,6 @@ theorem cylinderLift_zero_phase (s : ℝ) :
   nlinarith [h, hs]
 
 /-! ## Nonnegativity of the witness -/
-
-theorem cosh_one_lt_two : Real.cosh 1 < 2 := by
-  have h1 : Real.exp 1 < 2.7182818286 := Real.exp_one_lt_d9
-  have h2 : Real.exp (-1) < 1 := by
-    rw [Real.exp_lt_one_iff]; norm_num
-  rw [Real.cosh_eq]
-  linarith
 
 theorem three_lt_cosh_two : 3 < Real.cosh 2 := by
   have h1 : (2.7182818283 : ℝ) < Real.exp 1 := Real.exp_one_gt_d9

@@ -227,32 +227,45 @@ lemma tupleEnergy_smoothTuple_lt {D : ℕ} (s : Fin D → ℕ) {lo hi : Fin D}
 def tupleStretchedValuation (α : ℝ) {D : ℕ} (s : Fin D → ℕ) : ℝ :=
   ∑ i, stretchedExp α (s i)
 
+/-- **Convex smoothing lowers the valuation, for any increment-record weight.**  Moving one unit
+from a high coordinate to a low one strictly decreases `∑ g (s i)` as soon as the increments of `g`
+are strictly increasing from `Q` on.  Both the polynomial-power and the stretched-exponential
+weights are instances. -/
+lemma sum_comp_smoothTuple_lt {D Q : ℕ} (g : ℕ → ℝ)
+    (hrecord : ∀ a b : ℕ, Q ≤ b → a < b → g (a + 1) - g a < g (b + 1) - g b)
+    (s : Fin D → ℕ) {lo hi : Fin D} (hne : lo ≠ hi)
+    (hQ : Q ≤ s hi - 1) (hgap : s lo + 1 < s hi) :
+    ∑ i, g (smoothTuple s lo hi i) < ∑ i, g (s i) := by
+  classical
+  rw [sum_comp_smoothTuple s hne g, sum_eq_two_add_rest (fun i => g (s i)) hne]
+  have hhi : 0 < s hi := by omega
+  have hinc := hrecord (s lo) (s hi - 1) hQ (by omega)
+  have hsub : (s hi - 1 : ℕ) + 1 = s hi := Nat.sub_add_cancel hhi
+  rw [hsub] at hinc
+  linarith
+
 lemma tupleStretchedValuation_smoothTuple_lt {α : ℝ} {D Q : ℕ}
     (hrecord : ∀ a b : ℕ, Q ≤ b → a < b →
       stretchedIncrement α a < stretchedIncrement α b)
     (s : Fin D → ℕ) {lo hi : Fin D} (hne : lo ≠ hi)
     (hQ : Q ≤ s hi - 1) (hgap : s lo + 1 < s hi) :
-    tupleStretchedValuation α (smoothTuple s lo hi) < tupleStretchedValuation α s := by
-  classical
-  rw [tupleStretchedValuation, tupleStretchedValuation]
-  rw [sum_comp_smoothTuple s hne (fun n => stretchedExp α n),
-    sum_eq_two_add_rest (fun i => stretchedExp α (s i)) hne]
-  have hhi : 0 < s hi := by omega
-  have hinc := hrecord (s lo) (s hi - 1) hQ (by omega)
-  dsimp [stretchedIncrement] at hinc
-  push_cast at hinc ⊢
-  have hsub : (s hi - 1 : ℕ) + 1 = s hi := Nat.sub_add_cancel hhi
-  have hcast : ((s hi - 1 : ℕ) : ℝ) + 1 = (s hi : ℝ) := by exact_mod_cast hsub
-  rw [hcast] at hinc
-  linarith
+    tupleStretchedValuation α (smoothTuple s lo hi) < tupleStretchedValuation α s :=
+  sum_comp_smoothTuple_lt (fun n => stretchedExp α n)
+    (fun a b hQb hab => by
+      have h := hrecord a b hQb hab
+      dsimp [stretchedIncrement] at h
+      push_cast
+      linarith [h])
+    s hne hQ hgap
 
 def tupleInWindow (q K : ℕ) {D : ℕ} (s : Fin D → ℕ) : Prop :=
   ∀ i, q ≤ s i + K ∧ s i ≤ q + K
 
-lemma exists_boundaryShell_of_sum_bounds {α : ℝ} {D q K C Q : ℕ}
-    (hD : 0 < D) (hKC : C < K) (hqQ : Q + 1 ≤ q)
-    (hrecord : ∀ a b : ℕ, Q ≤ b → a < b →
-      stretchedIncrement α a < stretchedIncrement α b)
+theorem exists_boundaryShell_of_sum_bounds_of_smoothing
+    {D q K C : ℕ} (hD : 0 < D) (hKC : C < K)
+    (V : (Fin D → ℕ) → ℝ)
+    (hsmooth : ∀ (s : Fin D → ℕ) (lo hi : Fin D), lo ≠ hi →
+      q ≤ s hi → s lo + 1 < s hi → V (smoothTuple s lo hi) ≤ V s)
     (s : Fin D → ℕ)
     (hsumLower : D * q ≤ ∑ i, s i)
     (hsumUpper : ∑ i, s i ≤ D * q + C)
@@ -261,7 +274,7 @@ lemma exists_boundaryShell_of_sum_bounds {α : ℝ} {D q K C Q : ℕ}
       ∑ i, t i = ∑ i, s i ∧
       tupleInWindow q (K + 1) t ∧
       ¬ tupleInWindow q K t ∧
-      tupleStretchedValuation α t ≤ tupleStretchedValuation α s := by
+      V t ≤ V s := by
   classical
   induction hE : tupleEnergy s using Nat.strong_induction_on generalizing s with
   | h E ih =>
@@ -290,10 +303,9 @@ lemma exists_boundaryShell_of_sum_bounds {α : ℝ} {D q K C Q : ℕ}
             omega
           let s' := smoothTuple s i j
           have hjpos : 0 < s j := by omega
-          have hsum : ∑ k, s' k = ∑ k, s k := by
-            exact sum_smoothTuple s hne hjpos
+          have hsum : ∑ k, s' k = ∑ k, s k :=
+            sum_smoothTuple s hne hjpos
           have hgap : s i + 1 < s j := by omega
-          have hQj : Q ≤ s j - 1 := by omega
           have henergy : tupleEnergy s' < E := by
             rw [← hE]
             exact tupleEnergy_smoothTuple_lt s hne hgap
@@ -303,14 +315,12 @@ lemma exists_boundaryShell_of_sum_bounds {α : ℝ} {D q K C Q : ℕ}
             change q ≤ smoothTuple s i j i + K at hlo
             rw [smoothTuple_apply_lo s] at hlo
             omega
-          have hval : tupleStretchedValuation α s' < tupleStretchedValuation α s := by
-            exact tupleStretchedValuation_smoothTuple_lt hrecord s hne hQj hgap
           obtain ⟨t, htsum, htwide, htout, htval⟩ :=
             ih (tupleEnergy s') henergy s'
               (by rw [hsum]; exact hsumLower)
               (by rw [hsum]; exact hsumUpper) hout' rfl
-          exact ⟨t, htsum.trans hsum, htwide, htout, htval.trans hval.le⟩
-
+          exact ⟨t, htsum.trans hsum, htwide, htout,
+            htval.trans (hsmooth s i j hne hj hgap)⟩
         · have huniv : (Finset.univ : Finset (Fin D)).Nonempty := by
             obtain ⟨i₀⟩ := Fin.pos_iff_nonempty.mp hD
             exact ⟨i₀, Finset.mem_univ i₀⟩
@@ -326,10 +336,9 @@ lemma exists_boundaryShell_of_sum_bounds {α : ℝ} {D q K C Q : ℕ}
             omega
           let s' := smoothTuple s j i
           have hipos : 0 < s i := by omega
-          have hsum : ∑ k, s' k = ∑ k, s k := by
-            exact sum_smoothTuple s hne hipos
+          have hsum : ∑ k, s' k = ∑ k, s k :=
+            sum_smoothTuple s hne hipos
           have hgap : s j + 1 < s i := by omega
-          have hQi : Q ≤ s i - 1 := by omega
           have henergy : tupleEnergy s' < E := by
             rw [← hE]
             exact tupleEnergy_smoothTuple_lt s hne hgap
@@ -339,13 +348,56 @@ lemma exists_boundaryShell_of_sum_bounds {α : ℝ} {D q K C Q : ℕ}
             change smoothTuple s j i i ≤ q + K at hhi
             rw [smoothTuple_apply_hi s hne] at hhi
             omega
-          have hval : tupleStretchedValuation α s' < tupleStretchedValuation α s := by
-            exact tupleStretchedValuation_smoothTuple_lt hrecord s hne hQi hgap
           obtain ⟨t, htsum, htwide, htout, htval⟩ :=
             ih (tupleEnergy s') henergy s'
               (by rw [hsum]; exact hsumLower)
               (by rw [hsum]; exact hsumUpper) hout' rfl
-          exact ⟨t, htsum.trans hsum, htwide, htout, htval.trans hval.le⟩
+          exact ⟨t, htsum.trans hsum, htwide, htout,
+            htval.trans (hsmooth s j i hne (by omega) hgap)⟩
+
+/-- **Boundary-shell smoothing for any increment-record weight.**  A tuple whose coordinate sum is
+pinned to `[D q, D q + C]` but which leaves the window `q ± K` can be smoothed, without changing the
+sum, to one that sits exactly on the shell `q ± (K+1)` and has no larger weight `∑ g`.  The only
+property of `g` used is that its increments strictly increase from `Q` on. -/
+lemma exists_boundaryShell_of_sum_bounds_of_record {D q K C Q : ℕ} (g : ℕ → ℝ)
+    (hD : 0 < D) (hKC : C < K) (hqQ : Q + 1 ≤ q)
+    (hrecord : ∀ a b : ℕ, Q ≤ b → a < b → g (a + 1) - g a < g (b + 1) - g b)
+    (s : Fin D → ℕ)
+    (hsumLower : D * q ≤ ∑ i, s i)
+    (hsumUpper : ∑ i, s i ≤ D * q + C)
+    (hout : ¬ tupleInWindow q K s) :
+    ∃ t : Fin D → ℕ,
+      ∑ i, t i = ∑ i, s i ∧
+      tupleInWindow q (K + 1) t ∧
+      ¬ tupleInWindow q K t ∧
+      ∑ i, g (t i) ≤ ∑ i, g (s i) :=
+  exists_boundaryShell_of_sum_bounds_of_smoothing hD hKC (fun u => ∑ i, g (u i))
+    (fun s lo hi hne hq hgap =>
+      (sum_comp_smoothTuple_lt g hrecord s hne (by omega) hgap).le)
+    s hsumLower hsumUpper hout
+
+lemma exists_boundaryShell_of_sum_bounds {α : ℝ} {D q K C Q : ℕ}
+    (hD : 0 < D) (hKC : C < K) (hqQ : Q + 1 ≤ q)
+    (hrecord : ∀ a b : ℕ, Q ≤ b → a < b →
+      stretchedIncrement α a < stretchedIncrement α b)
+    (s : Fin D → ℕ)
+    (hsumLower : D * q ≤ ∑ i, s i)
+    (hsumUpper : ∑ i, s i ≤ D * q + C)
+    (hout : ¬ tupleInWindow q K s) :
+    ∃ t : Fin D → ℕ,
+      ∑ i, t i = ∑ i, s i ∧
+      tupleInWindow q (K + 1) t ∧
+      ¬ tupleInWindow q K t ∧
+      tupleStretchedValuation α t ≤ tupleStretchedValuation α s := by
+  obtain ⟨t, hsum, hshell, hout', hval⟩ :=
+    exists_boundaryShell_of_sum_bounds_of_record (fun n => stretchedExp α n) hD hKC hqQ
+      (fun a b hQb hab => by
+        have h := hrecord a b hQb hab
+        dsimp [stretchedIncrement] at h
+        push_cast
+        linarith [h])
+      s hsumLower hsumUpper hout
+  exact ⟨t, hsum, hshell, hout', hval⟩
 
 def tupleDifference {D : ℕ} (u v : Fin D → ℕ) : ℕ →₀ ℝ :=
   (∑ i, Finsupp.single (u i) 1) - ∑ i, Finsupp.single (v i) 1

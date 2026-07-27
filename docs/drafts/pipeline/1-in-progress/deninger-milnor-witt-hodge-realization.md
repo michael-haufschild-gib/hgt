@@ -8,8 +8,8 @@
   Kucharczyk--Scholze Question 1.10 · Kolderup--Röndigs--Østvær 2025 · Shin 2026
 - **Statement:** The missing derived coefficient complex on Deninger's rational-Witt dynamical
   approximation is a polarized flow realization of integral Milnor--Witt motivic cohomology and
-  very effective hermitian \(K\)-theory over \(\mathbb Z\), completed by the prime--Gamma source
-  norm.
+  very effective hermitian \(K\)-theory over \(\mathbb Z\), completed in
+  the logarithmic Poisson/real-boundary topology.
 
 ## Goal
 
@@ -123,8 +123,8 @@ with the following properties.
    period \(\log p\).
 4. The unpolarized degree-\(p\) transfer retains its canonical indefinite class \(p_\epsilon\);
    its rank \(p\) determines centered half-density.  No positivity claim is made at this layer.
-5. The archimedean Gamma boundary constructs an additional polarization \(J_\infty\) on odd
-   realized cohomology:
+5. The archimedean real Betti--Poisson boundary constructs an additional
+   polarization \(J_\infty\) on odd realized cohomology:
    \[
      J_\infty^2=-1,\qquad
      \langle x,y\rangle_H=\operatorname{tr}(x\smile J_\infty y),
@@ -132,22 +132,36 @@ with the following properties.
    and proves \(\langle x,x\rangle_H>0\) for \(x\ne0\).  Centered power transfers commute with
    \(J_\infty\) and are unitary.  Locally this agrees with
    `deninger-rectangular-quaternionic-hodge`.
-6. Prime--Gamma completion of `(1)` is determined by the source divided-difference cup kernel.
-   Its reduced hypercohomology is concentrated in degrees \(0,1,2\), with
+6. Logarithmic Poisson completion of `(1)` is determined by the
+   source sum of inverse power correspondences
+   \(Z=\sum_{n\ge1}F_n^{-1}\), the two real endpoint functionals, and
+   the strict Milnor--Arakelov boundary.  Its reduced
+   hypercohomology is concentrated in degrees \(0,1,2\), with
    \[
      H^0_{\mathrm{arith}}\simeq\mathbb C,\qquad
      H^2_{\mathrm{arith}}\simeq\mathbb C(-1).
    \]
-7. Milnor--Witt/hermitian transfer gives chain cup product and Poincare duality; the independent
-   Gamma polarization gives the positive Hodge metric.  Centered flow commutes with Hodge before
+7. Milnor--Witt/hermitian transfer gives chain cup product and Poincare
+   duality; the independent real-boundary polarization gives the
+   positive Hodge metric.  Centered flow commutes with Hodge before
    spectral comparison.
-8. There is a source-constructed dense flow-equivariant comparison from
-   \(\overline{\mathbb H}^1(X_W,\mathscr A_{\mathrm{arith}})\) to the already formalized
-   completed arithmetic \(H^1\), preserving cup and Green operators.  Xi-divisor coordinates
-   may occur only after this map has been defined and proved isometric.
+8. There is a source-constructed strict flow-equivariant
+   quasi-isomorphism
+   \[
+     R\Gamma_c(X_W,\mathscr A_{\mathrm{arith}})
+       \simeq C^\bullet_{\mathrm{PZ}},
+   \]
+   preserving cup and trace and inducing
+   \(\overline{\mathbb H}^1\simeq
+     M_\zeta=H_-/Z(H_\cap)\).
+   Mellin spectral decomposition and Xi-divisor coordinates may occur
+   only after this map has been defined and proved.
 
-Properties 6--8 would close `[DAC_SOURCE_GREEN_PURITY]`; existing determinant, Lefschetz,
-oriented-Hodge, and closed-generator theorems would then derive RH.
+Properties 6--8 would close
+`DAC_DENINGER_POISSON_RELEVANT_COMPLEX_COMPARISON` and
+`DAC_POISSON_GEOMETRIC_HODGE_POLARIZATION`; Meyer's character and
+Deninger's determinant, followed by the existing three-term
+Hodge-purity theorem, would then derive RH.
 
 ## Why Milnor--Witt rather than ordinary Milnor or metaplectic data
 
@@ -171,7 +185,8 @@ oriented-Hodge, and closed-generator theorems would then derive RH.
    Frobenius/Verschiebung identities and dualizing-twist laws.
 3. Construct `(1)` and identify its underlying ordinary realization with
    \(X_W\).
-4. Construct \(J_\infty\) from the Gamma boundary and prove positivity and centered-transfer
+4. Construct \(J_\infty\) from the real Betti--Poisson boundary and
+   prove positivity and centered-transfer
    unitarity.  `deninger-gamma-rank-character-rigidity` shows that strict positivity on the
    hyperbolic class forces the scalar character to be rank and hence forces
    \(n_\epsilon\mapsto n\).  `deninger-hyperbolic-localization-rank-collapse` constructs that
@@ -179,10 +194,12 @@ oriented-Hodge, and closed-generator theorems would then derive RH.
    push--pull degree is automatic after base change.  Construction of its positive odd Hilbert
    realization and compatibility with the incidence differential remain mandatory.  A Witt
    class alone cannot discharge this obligation.
-5. Build the prime--Gamma analytic completion and prove closedness, density, and discreteness
-   properties needed for the determinant.
-6. Prove chain-level comparison with the source packet quotient and with the determinant/Lefschetz
-   carrier.
+5. Build the logarithmic Poisson analytic completion and prove
+   closedness and the exact differential
+   \(Z=\sum_{n\ge1}F_n^{-1}\).
+6. Prove chain-level comparison with \(C^\bullet_{\mathrm{PZ}}\);
+   transport Meyer's already-proved character and determinant rather
+   than introducing another analytic carrier.
 7. Prove Hodge-flow naturality without using Xi-zero location, Weil positivity, or an
    RH-equivalent faithful comparison assumption.
 8. Realize the finite and cofinal construction in `deninger-mw-gamma-brst-complex`; generic
@@ -206,8 +223,9 @@ oriented-Hodge, and closed-generator theorems would then derive RH.
   source Poincare form into a positive metric and makes centered transfer unitary.
 - `[OBJECTION]` Ordinary real Betti realization of \(\mathrm{ko}\) lands in connective
   \(L(\mathbb R)\), not an automatically positive Hilbert theory.
-  **Required answer:** Gamma/rectangular polarization must be constructed as additional boundary
-  data and related to Betti \(L\)-theory by a proved comparison.
+  **Required answer:** Poisson-real-boundary/rectangular polarization
+  must be constructed as additional boundary data and related to Betti
+  \(L\)-theory by a proved comparison.
 - `[OBJECTION]` Motivic cohomology does not automatically contain the zeta-zero spectrum.
   **Required answer:** the flow suspension, prime--Gamma completion, determinant, and Lefschetz
   comparison are independent mandatory gates.
@@ -219,7 +237,9 @@ oriented-Hodge, and closed-generator theorems would then derive RH.
 
 `STRENGTHENED SURVIVOR`.  Integral MW/\(\mathrm{ko}\) source existence is literature-covered;
 bare-transfer positivity is false.  Surviving open core is a polarized Deninger flow realization
-whose Gamma boundary supplies positivity without divisor input.  No realization, comparison,
+whose real Betti--Poisson boundary supplies positivity without divisor
+input and whose analytic comparison target is \(C^\bullet_{\mathrm{PZ}}\).
+No realization, comparison,
 positivity, or RH claim is yet proved.
 
 ## Log
@@ -236,6 +256,9 @@ positivity, or RH claim is yet proved.
 - 2026-07-26 — hyperbolic localization \(GW[h^{-1}]\) constructed as the canonical rank channel;
   it forces \(p_\epsilon=p\) algebraically.  Remaining existence problem is now the positive
   Hilbert/Hodge realization, not the scalar coefficient algebra.
+- 2026-07-27 — Replaced prime--Gamma/divisor-indexed completion by the
+  logarithmic Poisson--zeta complex.  Exact comparison target is now
+  \(C^\bullet_{\mathrm{PZ}}\) and \(M_\zeta\), defined before zeros.
 
 ## References
 

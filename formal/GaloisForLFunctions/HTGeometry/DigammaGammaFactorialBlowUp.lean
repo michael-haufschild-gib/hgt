@@ -792,11 +792,13 @@ theorem differentialJetMonomial_factorialBlowUpZoom {r : ℕ}
     exact iteratedDeriv_factorialBlowUpZoom h n (j : ℕ) x
   rw [hvec, differentialJetMonomial_scale]
 
-theorem factorialInitialRelation_of_differentialAnnihilator {r : ℕ}
+theorem factorialInitialRelation_of_relation_at {r : ℕ}
     (h : ℂ → ℂ) (P : MvPolynomial (Fin (r + 2)) ℂ)
-    (hP : ∀ z : ℂ, MvPolynomial.eval
-      (Fin.cons z (fun j : Fin (r + 1) => iteratedDeriv (j : ℕ) h z)) P = 0)
-    (n : ℕ) (x : ℂ) :
+    (n : ℕ) (x : ℂ)
+    (hP : MvPolynomial.eval
+      (Fin.cons (-(n : ℂ) + reciprocalGammaFactorialScale n * x)
+        (fun j : Fin (r + 1) => iteratedDeriv (j : ℕ) h
+          (-(n : ℂ) + reciprocalGammaFactorialScale n * x))) P = 0) :
     ∑ α ∈ P.support,
       factorialInitialCoefficient P α n x *
         differentialJetMonomial
@@ -852,7 +854,20 @@ theorem factorialInitialRelation_of_differentialAnnihilator {r : ℕ}
           (((n + 1 : ℕ) : ℂ) ^ differentialPolynomialTopPointDegree P) *
         MvPolynomial.eval (Fin.cons point originalJet) P := by
       rw [eval_differentialPolynomial_as_sum]
-    _ = 0 := by rw [hP point, mul_zero]
+    _ = 0 := by
+      rw [show MvPolynomial.eval (Fin.cons point originalJet) P = 0 by
+        simpa [point, originalJet] using hP, mul_zero]
+
+theorem factorialInitialRelation_of_differentialAnnihilator {r : ℕ}
+    (h : ℂ → ℂ) (P : MvPolynomial (Fin (r + 2)) ℂ)
+    (hP : ∀ z : ℂ, MvPolynomial.eval
+      (Fin.cons z (fun j : Fin (r + 1) => iteratedDeriv (j : ℕ) h z)) P = 0)
+    (n : ℕ) (x : ℂ) :
+    ∑ α ∈ P.support,
+      factorialInitialCoefficient P α n x *
+        differentialJetMonomial
+          (fun j : Fin (r + 1) => iteratedDeriv (j : ℕ) (factorialBlowUpZoom h n) x) α = 0 :=
+  factorialInitialRelation_of_relation_at h P n x (hP _)
 
 theorem exists_nonzero_factorialInitialForm_of_differentiallyAlgebraic
     {h f : ℂ → ℂ} {U : Set ℂ}

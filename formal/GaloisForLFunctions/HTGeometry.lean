@@ -18,6 +18,7 @@ import GaloisForLFunctions.HTGeometry.OrbitDiagonalReflectionIntertwiner
 import GaloisForLFunctions.HTGeometry.CoshFourierTransform
 import GaloisForLFunctions.HTGeometry.CoshFourierInversion
 import GaloisForLFunctions.HTGeometry.GammaCyclicSpectralMeasure
+import GaloisForLFunctions.HTGeometry.GammaCyclicDensityTail
 import GaloisForLFunctions.HTGeometry.OddSpectralSynthesis
 import GaloisForLFunctions.HTGeometry.CentredPoleProfileIntegral
 import GaloisForLFunctions.HTGeometry.CoshHalfPowerLowerBound
@@ -79,6 +80,7 @@ import GaloisForLFunctions.HTGeometry.OrderOneEnvelope
 import GaloisForLFunctions.HTGeometry.MellinConjugate
 import GaloisForLFunctions.HTGeometry.LogOrderLimsupLower
 import GaloisForLFunctions.HTGeometry.GammaVerticalModulus
+import GaloisForLFunctions.HTGeometry.BallLogarithm
 import GaloisForLFunctions.HTGeometry.JensenCountingLowerBound
 import GaloisForLFunctions.HTGeometry.TangentPhaseWrapObstruction
 import GaloisForLFunctions.HTGeometry.BoundedGaugeContinuity
@@ -2333,3 +2335,5 @@ import GaloisForLFunctions.HTGeometry.FacePacketFieldTranslation
 import GaloisForLFunctions.HTGeometry.PeriodSubgroupCyclic
 import GaloisForLFunctions.HTGeometry.PeriodicAutonomousDescent
 import GaloisForLFunctions.HTGeometry.PeriodAutonomyDichotomy
+import GaloisForLFunctions.HTGeometry.ExpJetTransfer
+import GaloisForLFunctions.HTGeometry.ExpJetSubstitution

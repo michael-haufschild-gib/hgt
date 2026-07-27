@@ -6,6 +6,8 @@
 - **Primary target:** `docs/Deninger program.md`
 - **Rule:** construct from Deninger's rational-Witt dynamical space with the derived
   Milnor--Witt coefficient complex.  Euler--Gamma/Xi objects are comparison targets only.
+- **Active concise ledger:**
+  `deninger-source-native-arithmetic-cohomology-roadmap.md`.
 
 ## Scope correction
 
@@ -39,6 +41,61 @@ Deninger's properties 2.1--2.7 require:
 
 The 2022 no-real-coefficients theorem rules out an ordinary functorial real-valued Weil theory.
 Odd degree must instead carry quaternionic parity in \(K_{\mathbb R}\); degrees \(0,2\) are even.
+
+## Active Deninger source coefficient
+
+The active middle coefficient is no longer the entire Xi quotient described
+later in this historical card.  It is Meyer's source-defined
+Poisson--zeta quotient
+\[
+ H_\cap
+ =
+ \{f\in\mathcal S(\mathbb R)^{\mathrm{even}}:
+       f(0)=\mathcal Ff(0)=0\},
+ \qquad
+ M_\zeta
+ =
+ H_-\Big/\left\{x\mapsto\sum_{n\ge1}f(nx):f\in H_\cap\right\}.       \tag{A}
+\]
+The differential in `(A)` is the sum of Deninger's discrete
+positive-time flow pullbacks on the canonical Hilbert--Kummer
+suspension radius:
+\[
+ [F_nP,u]=[P,nu]=\phi^{\log n}[P,u].
+\]
+It is defined without a zero divisor.  Poisson summation supplies its
+real-place gluing; its Euler factorization supplies the finite-prime
+maps.
+
+Joining `(A)` to the proved strict Milnor--Arakelov endpoint gives a
+source-defined three-term complex with
+\[
+ H^0=\mathbb C,\qquad H^1=M_\zeta,\qquad H^2=\mathbb C(-1).
+\]
+Meyer's theorems give the exact zero spectrum with multiplicity and the
+prime-plus-archimedean Weil character.  Deninger's regularized-product
+theorem gives the completed-zeta determinant.  Paugam gives the
+unconditional alternating spectral pairing and, through upper/lower
+sign--conjugation, the odd spectral \(K_{\mathbb R}\)-operator with
+square \(-1\).  Positivity of the resulting sesquilinear form remains
+the RH-bearing gate.  These statements are
+recorded, with topology caveats, in
+`DAC_POISSON_ZETA_THREE_TERM_COHOMOLOGY`.
+
+The two exact open source gates are:
+
+1. `DAC_DENINGER_POISSON_RELEVANT_COMPLEX_COMPARISON`: construct the
+   logarithmic Schwartz collar on Deninger's rational-Witt suspension
+   and identify \(R\Gamma_c(X_{\mathrm{Den}},R\alpha_*\mathcal G)\)
+   with the Poisson--zeta complex.
+2. Construct a positive flow-natural Hodge polarization on the resulting
+   \(M_\zeta\), including its generalized-jet topology.  This is the
+   RH-bearing theorem and may not be replaced by a metric declared from
+   the zero divisor.
+
+All Xi-divisor, Euler--Gamma, and Hilbert completions below are frozen
+comparison targets and obstruction tests.  They do not define arithmetic
+cohomology.
 
 ## Frozen analytic comparison target
 
@@ -583,6 +640,8 @@ exactly under RH.  CCM is not part of this comparison.
 - [x] Prime-indexed diagonal descent retired: its factor-order relations
       have higher Koszul syzygies and it is not Deninger's source
       invariant-sheaf construction
+- [x] Universal local scalar-Frobenius homotopy defect and multiplicative
+      cocycle law proved on paper; Lean source written
 - [ ] Optional: construct basis-independent coherent Baumslag pro-realization
       \(\alpha_F:X_F^M\to X_F\), twisted Eilenberg--Moore comparison,
       effective pro-cover descent, then integral/profinite enhancement
@@ -592,6 +651,12 @@ exactly under RH.  CCM is not part of this comparison.
       degreewise invariant coarse sheaf, prove internal amplitude
       \([0,1]\), and prove its sheaf-level generic/prime localization
       triangle
+- [ ] Construct `DAC_FINITE_CORRESPONDENCE_ANALYTIC_REALIZATION`; transfer the
+      length-one Rost--Schmid complex on the arithmetic curve to
+      Deninger's coarse invariant analytic sheaf
+- [ ] Construct `DAC_FROBENIUS_COHERENCE_DEFECT_SPECTRUM`; prove local
+      scalar homotopies exist, their obstruction classes descend, and
+      their span supplies the non-scalar reduced \(H^1\)
 - [ ] Construct multiplicative arithmetic-curve signature window: one real orientation in
       degree two and no higher MW signature tower
 - [ ] Construct two-level Rost--Schmid derived-section localization equivalence on the
@@ -1905,3 +1970,253 @@ exactly under RH.  CCM is not part of this comparison.
   gate is now exact: prove generic and prime-packet internal amplitude
   \([0,1]\), their localization triangle, closed reduced differentials,
   and the local \(\log p\) trace.
+
+- 2026-07-26 — `[TWELFTH SOURCE CORRECTION]`
+  `[DAC_NAIVE_ADELIC_L2_KUMMER_COMPLETION_NO_GO]`,
+  `[DAC_ADELIC_L1_L2_ROST_SCHMID_HODGE_COEFFICIENT]`.
+  Allcock--Vaaler's place-space realization gives a canonical source
+  form on logarithmic Kummer classes,
+  \[
+    B_2(\alpha,\beta)
+      =\int_Y\log\|\alpha\|_y\log\|\beta\|_y\,d\lambda .
+  \]
+  It is positive and field-independent.  Under Deninger's
+  \(\mathbb R(s)\)-twist the power map scales this metric by
+  \(n^{2-2s}\), so \(s=\tfrac12\) is the unique weight-one
+  normalization.  Its centered action is nevertheless the identity.
+
+  Bare \(L^2\) is not the arithmetic coefficient: Allcock--Vaaler prove
+  that the product-formula Kummer functions are dense in \(L^2(Y)\).
+  Hence the product-formula integral has no nonzero continuous
+  extension to the \(L^2\)-completion.  The corrected coefficient uses
+  the mixed topology
+  \[
+    E_{\mathrm{Kum}}
+      =\overline{\mathcal F}^{\,\|\cdot\|_1+\|\cdot\|_2}
+      \subset L^1(Y)\cap L^2(Y).
+  \]
+  Its \(L^1\) channel retains product formula, real boundary, and
+  Rost--Schmid residues; its \(L^2\) channel supplies local positive
+  energy.  Nontrivial centered spectrum must lie in the descended
+  Frobenius coherence-defect quotient.  Exact next gate is sheafifying
+  this mixed coefficient on the standard finite-correspondence category and
+  proving MW residue, norm, reduced-cohomology, and Kähler-Hodge
+  compatibility.  No CCM/Gamma object occurs in this route.
+
+- 2026-07-26 — `[THIRTEENTH SOURCE CORRECTION]`
+  `[DAC_WRAT_CORRESPONDENCE_TOPOS_REALIZATION_NO_GO]`,
+  `[DAC_FINITE_CORRESPONDENCE_ANALYTIC_REALIZATION]`.
+  Deninger's 2025 Theorem 5.1 proves
+  \[
+    W_{\mathrm{rat}}(\mathcal O(X))
+      \cong
+    \underline{\operatorname{Corr}}(X,\mathbb A^1)
+  \]
+  on normal Noetherian affine schemes.  Proposition 5.2 identifies
+  \(F_n,V_n\) with pushforward and pullback along \(x\mapsto x^n\).
+  This represents one coefficient in the standard
+  Suslin--Voevodsky finite-correspondence category; it does not define
+  a new Witt correspondence category, topology, or dimension-one
+  topos.  That earlier language is retired.
+
+  The corrected realization gate starts with
+  \(\mathbb Z_{\mathrm{tr}}(\mathbb A^1)/
+    \mathbb Z_{\mathrm{tr}}(0)\) in the standard correspondence
+  category over the regular arithmetic curve.  Arithmetic dimension
+  one comes from the base Rost--Schmid complex.  Exact open work is:
+  lift ordinary correspondences to the framed/MW determinant
+  orientation, construct the character-evaluation analytic
+  realization on Deninger's coarse invariant sheaf, and prove mixed
+  \(L^1/L^2\), residue, derived-section, amplitude, and regulator
+  compatibility.
+
+- 2026-07-26 — `[FOURTEENTH SOURCE CONSTRUCTION]`
+  `[DAC_ADELIC_PLACE_AVERAGE_RESIDUE]`,
+  `[DAC_ADELIC_KUMMER_GELFAND_TRIPLE]`,
+  `[DAC_ADELIC_KUMMER_NUCLEAR_TEST_SCALE]`.
+  On the Allcock--Vaaler place space, integration over \(Y(K,v)\)
+  recovers the exact normalized \(K_1\) residue:
+  \[
+    \int_{Y(K,v)}\log\|\alpha\|_y\,d\lambda
+      =-\frac{\operatorname{ord}_v(\alpha)}
+              {[K:\mathbb Q]}\log Nv.
+  \]
+  Fili--Miner's normalized field norms are contractions in \(L^1\)
+  and \(L^2\).  The mixed completion therefore gives the canonical
+  rigged Hilbert triple
+  \[
+    E_{\mathrm{Kum}}\hookrightarrow L^2(Y,\lambda)
+      \hookrightarrow E_{\mathrm{Kum}}'.
+  \]
+  Closing the real Kummer span inside
+  \(C_c^{\mathrm{lc}}(Y)\) adds a complete nuclear LF test layer and
+  yields the source scale
+  \[
+    \mathcal S_{\mathrm{Kum}}\subset E_{\mathrm{Kum}}\subset L^2
+      \subset E_{\mathrm{Kum}}'\subset\mathcal S_{\mathrm{Kum}}'.
+  \]
+  This constructs local residue, product-formula, positive-energy, and
+  distribution topologies without CCM or zeta zeros.  Remaining gates
+  are extension to the full Tate--Milnor/MW sheaf, global
+  invariant-sheaf localization, Kähler positivity on the defect
+  quotient, and trace-class estimates for the flow.
+
+- 2026-07-26 — `[FIFTEENTH SOURCE CONSTRUCTION]`
+  `[DAC_REAL_ARAKELOV_DIVISOR_ENDPOINT]`.
+  Product formula, finiteness of the ideal class group, and Dirichlet's
+  unit theorem give the exact real-linearized Arakelov divisor row
+  \[
+    0\to(K^\times/\mu_K)\otimes\mathbb R
+      \to\operatorname{Div}_{\mathrm{Ar}}(K)_{\mathbb R}
+      \xrightarrow{\deg}\mathbb R\to0.
+  \]
+  For \(K=\mathbb Q\), the finite coordinate space is the real
+  finitely supported prime divisor space, the archimedean coordinate
+  compensates \(\sum_p d_p\log p\), and kernel equals principal range.
+  The abstract coordinate exactness is written unconditionally in
+  Lean.  This constructs the algebraic \(\mathbb R(-1)\) endpoint; the
+  remaining endpoint gate is analytic comparison with Deninger's
+  invariant-sheaf totalization.
+
+- 2026-07-26 — `[SIXTEENTH SOURCE CORRECTION]`
+  `[DAC_COARSE_STACK_EXACTNESS_SCALAR_SPECTRUM_NO_GO]`,
+  `[DAC_COARSE_STACK_COMPARISON_DEFECT]`.
+  For the quotient-stack-to-coarse-space map
+  \(c:[\widetilde X/\mathbb Q_{>0}]\to X\), Deninger's coefficient is
+  the underived invariant sheaf
+  \(c_*\widetilde{\mathscr A}\).  If the canonical comparison
+  \[
+    c_*\widetilde{\mathscr A}\to Rc_*\widetilde{\mathscr A}
+  \]
+  were a quasi-isomorphism, locally scalar Tate cohomology would
+  remain scalar after coarse descent and could not realize the zeta
+  spectrum.  Hence the canonical comparison cone
+  \[
+    \mathscr D_c
+      =\operatorname{Cone}(c_*\widetilde{\mathscr A}
+          \to Rc_*\widetilde{\mathscr A})[-1]
+  \]
+  is a mandatory nonzero source object.  The universal Frobenius
+  homotopy cocycles now have a precise target: their open task is to
+  map into \(\mathbb H^1(X,\mathscr D_c)\), survive Rost--Schmid
+  localization and mixed completion, generate the non-scalar harmonic
+  complement, and produce the prime-power trace.
+
+- 2026-07-26 — `[SEVENTEENTH SOURCE TYPE CORRECTION]`
+  `[DAC_KAHLER_RIEMANN_ARITHMETIC_LEAF_REALIZATION]`.
+  A real two-dimensional leafwise de Rham complex cannot be compared
+  directly with the raw local two-term Tate--Milnor coefficient.  Its
+  correct target is the full sheaf-level arithmetic object obtained
+  only after generic/prime Rost--Schmid localization and adjoining the
+  real orientation boundary:
+  \[
+    R\alpha_*\mathbb R_{\mathcal F}
+      \simeq\mathscr A_{\mathrm{arith}}^\bullet.
+  \]
+  This prevents both loss and double counting of degree two.  The
+  Kähler realization is therefore downstream of the localization
+  triangle, not a construction of the raw coefficient.
+
+- 2026-07-26 — `[EIGHTEENTH SOURCE COEFFICIENT CORRECTION]`
+  `[DAC_TRUE_TO_APPROXIMATE_DERIVED_COEFFICIENT]`,
+  `[DAC_GENERIC_RATIONAL_STEINBERG_POSTNIKOV_CORRECTION]`.
+  Deninger's primary source does not identify the raw invariant sheaf
+  with the missing arithmetic coefficient.  It distinguishes the
+  rational-Witt approximation from the true space and explicitly says
+  that the relevant object on the approximation is
+  \(R\alpha_*\mathcal G\).  Kucharczyk--Scholze compute the exact
+  generic defect: raw rational-Witt cohomology is an exterior algebra
+  and its degree-two products violate the Steinberg relation.
+
+  On the algebraic generic fibre the correction is now constructed
+  canonically, without a basis or a point-set true space:
+  \[
+    A_{\mathrm{St}}
+      =\tau_{\le1}^{E_\infty}
+        R\Gamma(X_{\overline{\mathbb Q}},\mathbb Q).
+  \]
+  Borel--motivic vanishing for algebraic extensions of \(\mathbb Q\)
+  gives \(K_n^M\otimes\mathbb Q=0\) for \(n\ge2\), so the induced
+  cohomology map is exactly the rational Steinberg quotient.  Exact
+  rational Galois descent yields degrees
+  \(\mathbb Q\), \(\mathbb Q^\times\otimes\mathbb Q\), and zero above
+  one.
+
+  This supersedes the MW-first and coarse-stack-first source wording.
+  Core generic coefficient is Milnor/Steinberg; Milnor--Witt is a
+  separate real-orientation enhancement.  The coarse/stack cone is a
+  possible middle-defect summand, not the definition and not known to
+  be exhaustive.  Exact next gate is sheafifying the canonical
+  Postnikov correction over Deninger's quotient-adapted charts,
+  adjoining finite residues and the real Arakelov boundary, and proving
+  reduced leafwise comparison.  The concise authoritative dependency
+  ledger is `deninger-source-native-arithmetic-cohomology-roadmap`.
+
+- 2026-07-27 — `[NINETEENTH SOURCE SHEAF CORRECTION]`
+  `[DAC_LEAFWISE_KUMMER_SHEAF_AMALGAMATION_EXISTENCE]`,
+  `[DAC_SHEAFIFIED_UNIT_AMALGAMATION_COMPARISON]`,
+  `[DAC_KUMMER_SHEAF_STALK_TOR_OBSTRUCTION]`.
+  The eighteenth correction correctly identified the Steinberg defect
+  but made a source type error: a Postnikov truncation of
+  \(R\Gamma(X_{\overline{\mathbb Q}},\mathbb Q)\) is a global
+  \(E_\infty\)-algebra, not a sheaf on Deninger's approximation.
+  It has no restriction, residue, Gysin, or power-descent data.
+
+  The source is instead the already constructed equivariant
+  Tate-graded leafwise sheaf
+  \[
+    \widetilde{\mathscr A}^M_{F,\mathrm{geom}}
+    =
+    \mathscr T_{\widetilde X_F}
+    \mathop{\otimes}^{\mathbb L}_{\mathscr P_F}
+    \underline{\mathcal K}^{M}_{F,\mathbb R}.
+  \]
+  Its chartwise derived-section algebra is computed by character-shape
+  formality and algebraic cyclotomic Milnor amplitude.  That
+  calculation is a comparison target, not the source definition.
+  Moreover, the stalk Tor class
+  \[
+    \operatorname{Tor}_1^{\Lambda(V)}
+      (\mathbb R,\mathbb R\oplus V)\cong\Lambda^2V
+  \]
+  proves that chartwise two-term amplitude cannot be promoted to
+  stalkwise two-term amplitude.
+
+  Exact next gate is therefore the sheafified
+  unit-amalgamation/derived-section comparison, followed by
+  degreewise coarse power descent, arithmetic generic/prime
+  localization, and the real signature window.  The global-Postnikov
+  route is retired in
+  `deninger-global-postnikov-cochains-as-source-coefficient`.
+
+- 2026-07-27 — `[TWENTIETH SOURCE-ONLY CORRECTION]`
+  `[DAC_COARSE_INVARIANT_SHEAF_EXISTENCE]`,
+  `[DAC_ARITHMETIC_PROJECTION_LERAY_ROST_SCHMID_RESOLUTION]`.
+  The quotient-stack endpoint and coarse-to-derived fiber were
+  promoted too far.  They are auxiliary diagnostics, not Deninger's
+  source and not dependencies of arithmetic cohomology.
+
+  For the corrected equivariant Tate--Milnor cover sheaf, Deninger's
+  coefficient is exactly the degreewise invariant sheaf
+  \[
+    \mathscr E_{\mathrm{Den}}^\bullet
+    =
+    (\pi_*\widetilde{\mathscr A}^{\bullet})^{\mathbb Q_{>0}}.
+  \]
+  This is a genuine dg-algebra sheaf: direct image is a right adjoint,
+  fixed points are a limit, and all commuting differentials,
+  products, flows, correspondences, residues, and traces restrict.
+  Fixed points are only left exact, so none of this commutes
+  invariants with cohomology.
+
+  Exact open core is now source-native.  Push
+  \(\mathscr E_{\mathrm{Den}}\) along Deninger's arithmetic projection
+  to \(\operatorname{Spec}\mathbb Z\); prove that its derived
+  pushforward has two analytic rows; identify both as real Milnor
+  homotopy-module rows with length-one Rost--Schmid resolutions; prove
+  strictness in the mixed \(L^1/L^2\) topology; then adjoin the unique
+  real signature skyscraper.  The existing two-column theorem gives
+  degrees \(0,1,2\), and the middle degree is intrinsic source
+  hypercohomology.  No derived rational-power invariants, bar
+  contraction, quotient-stack endpoint, CCM object, Xi zero, or RH
+  premise defines it.

@@ -14,67 +14,6 @@ namespace Sublevel
 
 open MeasureTheory
 
-theorem inv_sqrt_average' {D c' : ℂ} {M K sstar : ℝ} {f : ℝ → ENNReal}
-    (hD : D ≠ 0) (hK : 0 ≤ K) (hs : 0 < sstar)
-    (hs2 : 2 * sstar ≤ ‖D‖)
-    (hfM : ∀ η ∈ Set.Icc (0 : ℝ) (2 * Real.pi), f η ≤ ENNReal.ofReal M)
-    (hfK : ∀ η ∈ Set.Icc (0 : ℝ) (2 * Real.pi),
-      sstar ≤ ‖c' + D * Complex.exp ((η : ℂ) * Complex.I)‖ →
-      f η ≤ ENNReal.ofReal
-        (K / Real.sqrt ‖c' + D * Complex.exp ((η : ℂ) * Complex.I)‖)) :
-    ∫⁻ η in Set.Icc (0 : ℝ) (2 * Real.pi), f η
-      ≤ ENNReal.ofReal M * ENNReal.ofReal (8 * Real.pi * sstar / ‖D‖)
-        + ENNReal.ofReal (K / Real.sqrt sstar)
-          * ENNReal.ofReal (2 * Real.pi) := by
-  classical
-  have hcont : Continuous fun η : ℝ =>
-      ‖c' + D * Complex.exp ((η : ℂ) * Complex.I)‖ :=
-    (continuous_const.add (continuous_const.mul (Complex.continuous_exp.comp
-      (Complex.continuous_ofReal.mul continuous_const)))).norm
-  set E1 : Set ℝ := {η : ℝ | η ∈ Set.Icc 0 (2 * Real.pi) ∧
-      ‖c' + D * Complex.exp ((η : ℂ) * Complex.I)‖ ≤ sstar} with hE1
-  set E2 : Set ℝ := {η : ℝ | η ∈ Set.Icc 0 (2 * Real.pi) ∧
-      sstar ≤ ‖c' + D * Complex.exp ((η : ℂ) * Complex.I)‖} with hE2
-  have hE1m : MeasurableSet E1 := by
-    apply IsClosed.measurableSet
-    exact isClosed_Icc.inter (isClosed_le hcont continuous_const)
-  have hE2m : MeasurableSet E2 := by
-    apply IsClosed.measurableSet
-    exact isClosed_Icc.inter (isClosed_le continuous_const hcont)
-  have hpt : ∀ η ∈ Set.Icc (0 : ℝ) (2 * Real.pi),
-      f η ≤ E1.indicator (fun _ => ENNReal.ofReal M) η
-        + E2.indicator (fun _ => ENNReal.ofReal (K / Real.sqrt sstar)) η := by
-    intro η hη
-    rcases le_total ‖c' + D * Complex.exp ((η : ℂ) * Complex.I)‖ sstar
-      with hle | hge
-    · refine le_trans (hfM η hη) ?_
-      refine le_trans (le_of_eq (Set.indicator_of_mem
-        (show η ∈ E1 from ⟨hη, hle⟩) (fun _ => ENNReal.ofReal M)).symm) ?_
-      exact le_self_add
-    · refine le_trans (hfK η hη hge) ?_
-      have hmono : K / Real.sqrt ‖c' + D * Complex.exp ((η : ℂ)
-            * Complex.I)‖ ≤ K / Real.sqrt sstar := by
-        apply div_le_div_of_nonneg_left hK (Real.sqrt_pos.mpr hs)
-        exact Real.sqrt_le_sqrt hge
-      refine le_trans (ENNReal.ofReal_le_ofReal hmono) ?_
-      refine le_trans (le_of_eq (Set.indicator_of_mem
-        (show η ∈ E2 from ⟨hη, hge⟩)
-        (fun _ => ENNReal.ofReal (K / Real.sqrt sstar))).symm) ?_
-      exact le_add_self
-  refine le_trans (setLIntegral_mono' measurableSet_Icc hpt) ?_
-  refine le_trans (setLIntegral_le_lintegral _ _) ?_
-  rw [lintegral_add_left (measurable_const.indicator hE1m),
-    lintegral_indicator hE1m, lintegral_indicator hE2m,
-    setLIntegral_const, setLIntegral_const]
-  have hv1 : volume E1 ≤ ENNReal.ofReal (8 * Real.pi * sstar / ‖D‖) :=
-    one_phase_smallball_uniform hD hs.le hs2
-  have hv2 : volume E2 ≤ ENNReal.ofReal (2 * Real.pi) := by
-    refine le_trans (measure_mono (fun η h => h.1)) ?_
-    rw [Real.volume_Icc]
-    apply ENNReal.ofReal_le_ofReal
-    linarith [Real.pi_pos]
-  exact add_le_add (mul_le_mul_right hv1 _) (mul_le_mul_right hv2 _)
-
 end Sublevel
 end RHTower
 

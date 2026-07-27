@@ -121,75 +121,17 @@ theorem iteratedDeriv_two_digamma_neg_nat_add_of_ne_int (z : ℂ)
     iteratedDeriv 2 Complex.digamma (-(n : ℂ) + z) =
       iteratedDeriv 2 Complex.digamma (1 + z) - 2 * z⁻¹ ^ 3 +
         2 * shiftedHarmonicCubeSum n z := by
-  induction n with
-  | zero =>
-      have hzOff : ∀ k : ℕ, z ≠ -(k : ℂ) := by
-        intro k
-        simpa using hz (-(k : ℤ))
-      have hstep := digammaJet_shift 2 hzOff
-      simp only [Nat.cast_zero, neg_zero, zero_add, shiftedHarmonicCubeSum,
-        Finset.range_zero, Finset.sum_empty, mul_zero, add_zero]
-      rw [show (1 + z : ℂ) = z + 1 by ring, hstep]
-      have hz0 : z ≠ 0 := by simpa using hz 0
-      norm_num
-      field_simp [hz0]
-      ring
-  | succ n ih =>
-      let w : ℂ := -((n + 1 : ℕ) : ℂ) + z
-      have hw : ∀ k : ℕ, w ≠ -(k : ℂ) := by
-        intro k hwk
-        apply hz ((n : ℤ) + 1 - (k : ℤ))
-        dsimp [w] at hwk
-        norm_num [Int.cast_sub, Int.cast_add]
-        push_cast at hwk ⊢
-        linear_combination hwk
-      have hstep := digammaJet_shift 2 hw
-      have hwadd : w + 1 = -(n : ℂ) + z := by
-        dsimp [w]
-        push_cast
-        ring
-      have hwcube : w ^ 3 = -((((n + 1 : ℕ) : ℂ) - z) ^ 3) := by
-        dsimp [w]
-        ring
-      change iteratedDeriv 2 Complex.digamma w = _
-      have hsolve : iteratedDeriv 2 Complex.digamma w =
-          iteratedDeriv 2 Complex.digamma (w + 1) - 2 * (w ^ 3)⁻¹ := by
-        rw [hstep]
-        norm_num
-        ring
-      rw [hsolve, hwadd, ih]
-      simp only [shiftedHarmonicCubeSum, Finset.sum_range_succ, hwcube, inv_neg]
-      ring
+  have h := iteratedDeriv_digamma_neg_nat_add_of_ne_int 2 z hz n
+  simp only [shiftedHarmonicCubeSum, shiftedHarmonicPowerSum, Nat.factorial, inv_pow] at h ⊢
+  push_cast at h ⊢
+  linear_combination h
 
 theorem norm_shiftedHarmonicCubeSum_le {z : ℂ}
     (hz : ‖z‖ ≤ 1 / 2) (n : ℕ) :
     ‖shiftedHarmonicCubeSum n z‖ ≤ 8 * (harmonic n : ℝ) := by
-  rw [shiftedHarmonicCubeSum]
-  calc
-    ‖∑ j ∈ Finset.range n, ((((j + 1 : ℕ) : ℂ) - z) ^ 3)⁻¹‖ ≤
-        ∑ j ∈ Finset.range n, ‖((((j + 1 : ℕ) : ℂ) - z) ^ 3)⁻¹‖ :=
-      norm_sum_le _ _
-    _ ≤ ∑ j ∈ Finset.range n, 8 / ((j + 1 : ℕ) : ℝ) := by
-      apply Finset.sum_le_sum
-      intro j hj
-      rw [← inv_pow, norm_pow]
-      have h := norm_shiftedInverse_le hz j
-      have hk : 1 ≤ ((j + 1 : ℕ) : ℝ) := by exact_mod_cast Nat.succ_le_succ (Nat.zero_le j)
-      have hnon : 0 ≤ ‖(((j + 1 : ℕ) : ℂ) - z)⁻¹‖ := norm_nonneg _
-      calc
-        ‖(↑(j + 1) - z)⁻¹‖ ^ 3 ≤ (2 / ((j + 1 : ℕ) : ℝ)) ^ 3 := by
-          gcongr
-        _ ≤ 8 / ((j + 1 : ℕ) : ℝ) := by
-          have hkpos : 0 < ((j + 1 : ℕ) : ℝ) := lt_of_lt_of_le zero_lt_one hk
-          field_simp [hkpos.ne']
-          nlinarith
-    _ = 8 * (harmonic n : ℝ) := by
-      rw [harmonic]
-      push_cast
-      rw [Finset.mul_sum]
-      apply Finset.sum_congr rfl
-      intro j hj
-      field_simp
+  simpa [shiftedHarmonicCubeSum, shiftedHarmonicPowerSum,
+    show ((2 : ℝ)) ^ 3 = 8 from by norm_num] using
+    norm_shiftedHarmonicPowerSum_le hz (p := 3) (by norm_num) n
 
 /-- The order-two polygamma in the factorial microscope coordinates. -/
 def gammaFactorialScaledSecondPolygamma (n : ℕ) (x : ℂ) : ℂ :=

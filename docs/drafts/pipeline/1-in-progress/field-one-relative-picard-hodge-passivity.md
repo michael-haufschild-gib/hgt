@@ -328,7 +328,28 @@ excluded as an equivalence, so Clause 1 must be a loss-aware zigzag.
   real character on every \(\mathbb Z[1/p]\), exactly the exponent group of a fixed-prime
   perfection stage. `FieldOneRationalPrimaryReciprocity.lean` uses pairwise-coprime
   prime-power factorization and Bézout coefficients to prove the full rational diagonal law.
-  Finite-place \(L^2\) and semilocal tensor assembly remain open.
+  `FieldOneSemilocalBruhatWeylTensor.lean` formalizes the algebraic
+  \(\mathcal S(\mathbb R)\otimes C_c^{\mathrm{lc}}(\mathbb A_f)\) carrier and its normalized
+  real--finite Weyl automorphisms.
+  `FieldOneFiniteAdeleIntegralBruhatTest.lean` proves the integral finite adeles compact open,
+  constructs their nonzero characteristic Bruhat test, and formalizes finite-zero contraction.
+  `FieldOneSemilocalArchimedeanFaithfulness.lean` proves that semilocal operator equality forces
+  equality of real coordinates and hence that the rational diagonal action is faithful.
+  `UnitModulusL2Multiplier.lean` supplies a general unit-modulus \(L^2\) unitary, while
+  `FieldOneFiniteAdeleL2WeylMultiplier.lean` instantiates finite-adele Borel Haar \(L^2\),
+  proves unitarity, embeds Bruhat tests, and proves exact extension compatibility.
+  `FieldOneSemilocalL2WeylMultiplier.lean` proves the full product-Haar semilocal unitary action.
+  `FieldOneFiniteAdeleSelfDuality.lean` proves finite-character primitivity and faithful finite
+  Bruhat action; `FieldOneSemilocalFullFaithfulness.lean` proves full algebraic semilocal
+  faithfulness by the two zero-contractions. `FieldOneSemilocalBruhatToL2.lean` constructs the
+  canonical algebraic Schwartz--Bruhat-to-product-\(L^2\) map and proves exact Weyl equivariance
+  without a finite-adele sigma-finiteness premise. `FunctionTensorProduct.lean` proves uniqueness
+  of algebraic separated-function tensors, and `FieldOneSemilocalBruhatL2Embedding.lean` combines
+  this with the swapped open-positive product measure and continuous representatives to prove
+  injectivity. `FieldOneSemilocalBruhatHilbertCompletion.lean` pulls back the product-\(L^2\)
+  inner product, identifies the abstract completion with the closed algebraic image, and extends
+  the Weyl action unitarily with exact intertwining. Full-product density, independent factorwise
+  completed-tensor comparison, and sheaf compatibility remain open.
 - **Card:** `docs/drafts/pipeline/2-fully-proven/field-one-spherical-weyl-multiplier-bridge.md`.
 - **New insight:** the Frobenius-faithful RP0 target is the multiplier/endomorphism sheaf of the
   analytic coefficients, not the coefficient sheaf itself.
@@ -344,7 +365,13 @@ Ranking is by logical dependency, not preferred method or effort.
    Frobenius-faithful branch does not factor solely through that edge, and prove separately which
    products, exponent data, prime Frobenius, and archimedean boundary survive. A faithful,
    \(p\)-perfect, scaling-covariant multiplier representation is now paper-proved at each fixed
-   semilocal stage; sheaf-restriction compatibility and compactified extension remain open.
+   semilocal stage. Algebraic real--finite tensor assembly, full semilocal faithfulness,
+   finite-adele Haar-\(L^2\) unitarity, and product-Haar semilocal \(L^2\) unitarity are
+   Lean-proved. The canonical algebraic-tensor map into product-Haar \(L^2\) and its exact Weyl
+   equivariance and injectivity are also Lean-proved. Its induced Hilbert completion is
+   Lean-proved isometric to the closed algebraic image, with completed unitary Weyl
+   intertwining. Full-product density, independent factorwise completed-tensor identification,
+   sheaf-restriction compatibility, and compactified extension remain open.
 2. `[OPEN CORE RP1 — COEFFICIENT TYPE]` Construct
    \(\mathscr A_{\mathrm{ar}}\) and the \(C_{\mathbb Q}\)-equivariant
    pull--push object \(\mathscr B\).  This is not itself RH-equivalent.

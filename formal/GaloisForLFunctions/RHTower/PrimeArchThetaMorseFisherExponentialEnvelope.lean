@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.PrimeArchThetaQuadraticVirialMorseReduction
+import GaloisForLFunctions.RHTower.SpurRescale
 
 /-!
 # Exponentially sharpened Morse--Fisher envelope
@@ -29,24 +30,6 @@ def thetaCuspFirstAtomMorseFisherExponentialEnvelope (x : ℝ) : ℝ :=
 /-- The quadratic upper Taylor section used after the exact exponential decay extraction. -/
 def thetaCuspFirstAtomMorseFisherQuadraticEnvelope (x : ℝ) : ℝ :=
   1 + thetaCuspFirstAtomMorseFisherDecayFactor * (1 - 2 * x + 2 * x ^ 2)
-
-/-- Global second-order upper Taylor bound for a negative exponential. -/
-theorem exp_neg_le_quadratic {u : ℝ} (hu : 0 ≤ u) :
-    Real.exp (-u) ≤ 1 - u + u ^ 2 / 2 := by
-  have hsum := Real.sum_le_exp_of_nonneg hu 3
-  have hpoly : 1 + u + u ^ 2 / 2 ≤ Real.exp u := by
-    norm_num [Finset.sum_range_succ] at hsum ⊢
-    nlinarith
-  have hden : 0 < 1 + u + u ^ 2 / 2 := by
-    nlinarith [sq_nonneg u]
-  have hinv : (Real.exp u)⁻¹ ≤ (1 + u + u ^ 2 / 2)⁻¹ :=
-    inv_anti₀ hden hpoly
-  rw [← Real.exp_neg] at hinv
-  calc
-    Real.exp (-u) ≤ (1 + u + u ^ 2 / 2)⁻¹ := hinv
-    _ ≤ 1 - u + u ^ 2 / 2 := by
-      rw [inv_le_iff_one_le_mul₀ hden]
-      nlinarith [sq_nonneg (u ^ 2)]
 
 /-- The first Morse weight retains the full `exp (2x)` growth of its endpoint gap. -/
 theorem thetaCuspFirstAtom_morseWeight_exponential_floor
@@ -160,7 +143,7 @@ theorem thetaCuspFirstAtom_morseScale_div_weight_le_quadratic
     thetaCuspMorseScale 1 x / thetaCuspBornWittenWeight 1 x ≤
       thetaCuspFirstAtomMorseFisherQuadraticEnvelope x := by
   have hdecay := thetaCuspFirstAtom_morseScale_div_weight_le_exponential hx
-  have hTaylor := exp_neg_le_quadratic (u := 2 * x) (by positivity)
+  have hTaylor := exp_neg_le_quadratic (x := 2 * x) (by positivity)
   have hfactor := mul_le_mul_of_nonneg_left hTaylor
     thetaCuspFirstAtomMorseFisherDecayFactor_pos.le
   calc

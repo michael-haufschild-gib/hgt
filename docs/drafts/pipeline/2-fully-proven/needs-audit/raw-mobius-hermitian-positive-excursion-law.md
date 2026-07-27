@@ -564,3 +564,402 @@ paper-level.  No duplicate Lean wrapper is warranted.
   card states its theorem for an arbitrary primitive Dirichlet character `chi`, and the corpus has no
   `L(s,chi)` zero infrastructure to instantiate the Mellin obstruction with.  Everything else the
   card asserts is formalized and unconditional.
+- 2026-07-27 — **`(R9)` at arbitrary conductor.**  New module `RHTower/TwistedMobiusMellin.lean`
+  (unconditional, axioms `[propext, Classical.choice, Quot.sound]`).  First step of the
+  general-character case.
+  * `twistedMobiusLaplaceTransform chi` — the source `sum chi(n) mu(n) e^{-n x}`, with absolute
+    convergence at every positive scale (`|chi(n) mu(n)| <= 1`).
+  * `twistedMobiusMellin_weight_summable` — the Mellin interchange weight is summable on `Re s > 1`,
+    from mathlib's `DirichletCharacter.LSeriesSummable_mul` applied to the Möbius series.
+  * `mellin_twistedMobiusLaplaceTransform_eq_gamma_mul_LSeries` — `mellin A_chi s = Gamma s * L(chi mu) s`,
+    by `hasSum_mellin`, mirroring the corpus's conductor-one proof.
+  * `mellin_twistedMobiusLaplaceTransform_eq_gamma_div_LSeries` — **`(R9)`**:
+    `mellin A_chi s = Gamma s / L(s, chi)`, using mathlib's `DirichletCharacter.LSeries.mul_mu_eq_one`.
+
+  Corpus/mathlib audit for the general case: mathlib carries the pieces this step needs — the
+  twisted convolution identity `chi * (chi mu) = delta`, the inverse relation, nonvanishing on
+  `Re s > 1`, and the functional equation `IsPrimitive.completedLFunction_one_sub`.  What it does
+  **not** carry, and what the corpus supplies only for `zeta`, is the existence of nontrivial zeros
+  of `L(s, chi)`.  The corpus's `xiDivisorSupport_infinite` is a bespoke growth argument for `xi`
+  (`xiFinitePolynomial`), not a general order-one mechanism, so it does not transfer as it stands.
+
+  That single missing input — a zero of `L(s, chi)` in the strip — is now the only obstacle to
+  running the whole conductor-one chain at arbitrary conductor.  Gate stays unchecked.
+- 2026-07-27 — **Twisted analytic groundwork.**  Appended to `RHTower/TwistedMobiusMellin.lean`
+  (unconditional, axioms `[propext, Classical.choice, Quot.sound]`).  The estimates the Mellin
+  analyticity criterion consumes depend only on `‖chi(n) mu(n)‖ <= 1`, so they transfer from the
+  untwisted development with the coefficient bound swapped:
+  * `continuousOn_twistedMobiusLaplaceTransform`,
+    `twistedMobiusLaplaceTransform_locallyIntegrableOn` — continuity on `(0, infinity)` by uniform
+    majorant on `[x/2, infinity)`, hence local integrability.
+  * `norm_twistedMobiusLaplaceTransform_le_exp_neg`,
+    `twistedMobiusLaplaceTransform_isBigO_exp_neg` — the exponential tail past scale one.
+  * `TwistedMobiusLaplaceDecay chi b` and its `isBigO` — the decay predicate at arbitrary exponent.
+  * `analyticOnNhd_mellin_of_twistedMobiusLaplaceDecay` — **the twisted Mellin transform is analytic
+    on `Re s > b`**.
+
+  The general-conductor chain now matches the conductor-one one as far as analyticity:
+  `(R9)` (previous entry) and Mellin analyticity from decay are both in place for arbitrary `chi`.
+  Still missing, and still the only obstacle: existence of a zero of `L(s, chi)` in the strip, plus
+  the `(R8)`/`(R11)` coefficient side for the twisted sequence (which is generic in the coefficient
+  sequence and so should specialize without new analysis).  Gate stays unchecked.
+- 2026-07-27 — **General conductor: `(R9)`, analytic groundwork, coefficient side, and the
+  obstruction.**  New modules `RHTower/TwistedMobiusMellin.lean` and
+  `RHTower/TwistedMobiusZeroObstruction.lean` (unconditional, axioms
+  `[propext, Classical.choice, Quot.sound]`).
+  * `twistedMobiusLaplaceTransform chi` and `mellin_..._eq_gamma_div_LSeries` — `(R9)` at arbitrary
+    conductor, `mellin A_chi s = Gamma s / L(s, chi)` on `Re s > 1`, from mathlib's `hasSum_mellin`
+    and `DirichletCharacter.LSeries.mul_mu_eq_one`.
+  * `continuousOn_...`, `..._locallyIntegrableOn`, `..._isBigO_exp_neg`,
+    `TwistedMobiusLaplaceDecay chi b`, `analyticOnNhd_mellin_of_twistedMobiusLaplaceDecay` — the
+    analytic groundwork; these use only `‖chi(n) mu(n)‖ <= 1` and so transfer from the untwisted
+    development.
+  * `twistedMobiusLaplaceDecay_of_subpower` — the coefficient side.  No new analysis was needed:
+    the radial bound in `MixedConvolutionSubpowerAbelBound` is generic in the coefficient sequence
+    and specializes directly.
+  * `not_twistedMobiusLaplaceDecay_of_LFunction_eq_zero` and
+    `not_twistedMixedSubpower_of_LFunction_eq_zero` — **the obstruction at arbitrary conductor**.
+    For `chi != 1` the L-function is entire, so this is shorter than the conductor-one argument: no
+    regularizing factor `(s-1)` is needed, and `G = mellin A_chi . L(.,chi)` is compared directly
+    with `Gamma`.
+
+  The general-conductor chain therefore matches conductor one at every step except the endpoint.
+  The single remaining input is existence of a zero of `L(s, chi)` in the strip: mathlib supplies
+  the functional equation (`IsPrimitive.completedLFunction_one_sub`) but not zero existence, and the
+  corpus's `xiDivisorSupport_infinite` is a bespoke growth argument for `xi` that does not transfer.
+  Gate stays unchecked.
+- 2026-07-27 — **`(R4)` proved unconditionally at arbitrary primitive conductor.**  The only
+  remaining input was the existence of an `L(s,chi)` zero with `Re > 0`; that is now formalized from
+  scratch.  Seven new modules, all axiom-clean `[propext, Classical.choice, Quot.sound]`:
+  - `HTGeometry/OrderOneEnvelope.lean` — the growth class `OrderOneEnvelope f`
+    (`‖f s‖ ≤ exp(C(1+‖s‖)log(2+‖s‖))`) with closure under sums, products, constants, finite sums,
+    affine substitution and the factors `n^(-s)`, plus `OrderOneEnvelope.subquadratic` converting it
+    to the `exp(C(1+‖s‖)^(3/2))` shape consumed by `exists_zero_of_superlinear_ray_growth`.
+  - `RHTower/MellinOrderOneEnvelope.lean` — `mellin_orderOneEnvelope_of_decay` (a kernel with
+    exponential decay at both ends has an order-one Mellin transform), `rpow_mul_exp_neg_le`
+    (`u^m e^{-cu} ≤ e^{m²/c}` on `[1,∞)`), `head_bound_absorb`, and the two-sided decay estimates
+    `weakFEPair_f_modif_decay` / `weakFEPair_f_decay` for an abstract `WeakFEPair`.
+  - `RHTower/HurwitzZetaOrderOne.lean` — `completedHurwitzZetaEven₀_orderOneEnvelope` and
+    `completedHurwitzZetaOdd_orderOneEnvelope` for *every* shift `a`, from the mathlib theta bounds
+    `isBigO_atTop_{even,cos,odd,sin}Kernel*` globalized by `global_exp_bound`.
+  - `RHTower/DirichletCompletedLOrderOne.lean` — `completedLFunction_orderOneEnvelope`.  For
+    `chi ≠ 1` both rational correction terms of `ZMod.completedLFunction_eq` vanish, so the completed
+    L-function *is* the entire `completedLFunction₀`.
+  - `RHTower/DirichletCompletedLRayGrowth.lean` — `norm_Gammaℝ_ofReal`, `Gammaℝ_ofReal_ne_zero`,
+    `log_norm_Gammaℝ_ofReal`, `exists_Gammaℝ_ray_growth` and `completedLFunction_ray_growth`.
+    Evaluating at `sigma = 2(m+1) - d` (`d = 0/1` by parity) turns the Archimedean factor into
+    `pi^{-(m+1)} m!`.
+  - `RHTower/DirichletLZeroExistence.lean` — `exists_completedLFunction_eq_zero` (Hadamard) and
+    `exists_LFunction_eq_zero_pos_re`.  Side result `rootNumber_ne_zero` for primitive `chi`, proved
+    from the functional equation plus nonvanishing of the completion on the real ray — mathlib has no
+    such lemma.
+  - `RHTower/TwistedMobiusPositiveExcursion.lean` —
+    `exists_notMem_pos_twistedMixedAdditiveConvolutionPower` and
+    `infinite_pos_twistedMixedAdditiveConvolutionPower`: **`(R4)` for every nontrivial primitive
+    Dirichlet character**, at every order `k >= 1`.
+  Reuse: `intbound_of_decay` and `global_exp_bound` (previously `private` in `CompletedZetaGrowth`)
+  were the whole analytic engine and are now public; `norm_le_rpow_of_norm_pow_sq_le` likewise.
+  Corpus search first ruled out re-deriving the Mellin modulus estimate.
+  Still open on this card: `Theta_chi >= 1/2` at general conductor (needs the conjugation
+  `L(conj s, chi⁻¹) = conj L(s,chi)` to reflect zeros across `Re = 1/2`), hence the twisted `(R5)`.
+- 2026-07-27 — **`Theta_chi >= 1/2` and the twisted `(R5)` proved.**  Five further modules, all
+  axiom-clean:
+  - `HTGeometry/MellinConjugate.lean` — `mellin_conj` (conjugation passes through a Mellin
+    transform after conjugating the parameter, since the kernel has positive real base),
+    `mellin_conj_of_conj_invariant` (the reflection principle for a real kernel), `conj_indicator`,
+    `conj_natCast_cpow_neg`.
+  - `RHTower/DirichletCompletedLConjugate.lean` — `conj_f_modif` (the modified kernel of a
+    functional-equation pair with real data is real), `conj_completedHurwitzZetaEven₀`,
+    `conj_completedHurwitzZetaOdd`, `norm_dirichletCharacter_apply` (unit modulus on units, from
+    `MulChar.pow_card_eq_one`), `conj_dirichletCharacter_apply` (`conj (chi j) = chi⁻¹ j`), and the
+    headline `conj_completedLFunction`: `conj Lambda(s,chi) = Lambda(conj s, chi⁻¹)`.  Mathlib has
+    none of these.
+  - `RHTower/DirichletLZeroHalfPlane.lean` — `completedLFunction_eq_zero_reflect`: conjugation
+    followed by the functional equation is the reflection `rho -> 1 - conj rho` in the critical
+    line, so the completed zero divisor is symmetric about `Re = 1/2`.  Hence
+    `exists_LFunction_eq_zero_half_le_re` (**`Theta_chi >= 1/2`**) and
+    `not_twistedMixedSubpower_of_lt_sub_one` (no subpower bound of exponent below `k-1`).
+  - `HTGeometry/LogOrderLimsupLower.lean` — `isBoundedUnder_log_one_add_div_log` and
+    `le_limsup_log_one_add_div_log`, the lower-bound companions of the existing
+    `limsup_log_one_add_div_log_le`.
+  - `RHTower/TwistedMobiusOrderLowerBound.lean` — `exists_global_subpower` (a subpower bound valid
+    off a finite set globalizes), `frequently_lt_re_twistedMixedAdditiveConvolutionPower`
+    (**`(R5)` in the literal omega-plus form**: for every `alpha < k-1` and every `C`,
+    `C (M+1)^alpha < Re R_{chi,k}(M)` infinitely often) and
+    `sub_one_le_limsup_twistedMixedAdditiveConvolutionPower` (**the lower half `k-1 <= Psi_{chi,k}`
+    of the order law `(R3)`**, in the same `limsup log(1+max(Re R,0))/log(N+1)` exponent used by the
+    already-formalized upper half `Psi <= 2k-1`).
+  With this, `(R1)`-`(R15)` are formalized for every nontrivial primitive Dirichlet character:
+  `(R3)` both halves, `(R4)`, `(R5)`, `(R6)` at conductor one, `(R7)`-`(R14)` for an arbitrary
+  coefficient sequence.  Primitivity is the hypothesis the functional equation needs; it is not a
+  weakening of the card, whose zero-frontier quantity `Theta_chi` is a primitive-character notion.
+- 2026-07-27 — **`(R3)` lower half generalized to the true zero frontier**, correcting the previous
+  entry, which had only recorded the `Theta_chi = 1/2` specialization.  In
+  `RHTower/TwistedMobiusOrderLowerBound.lean`, the argument is now factored as
+  `frequently_lt_of_no_subpower` (no subpower bound at exponent `alpha` implies recurrence of large
+  values) and `le_limsup_of_no_subpower_below` (no subpower bound below `theta` implies
+  `theta <= Psi`), so the `L`-zero enters only through the threshold.  The headline is
+  `two_mul_re_sub_one_le_limsup_twistedMixedAdditiveConvolutionPower`: **every** `L`-zero `rho`
+  gives `2k·Re rho - 1 <= Psi_{chi,k}`, which is `(R3)` as stated.  The earlier
+  `sub_one_le_limsup_...` (`k-1 <= Psi`) is now a two-line corollary via
+  `exists_LFunction_eq_zero_half_le_re`.
+- 2026-07-27 — **Gate audit: the Lean gate stays unchecked, and the reason is `(R15)`.**  Going
+  statement by statement, `(R1)`, `(R2)`, `(R3)` (both halves), `(R4)`, `(R5)`, `(R7)`-`(R14)` are
+  formalized, and `(R6)` at conductor one.  `(R15)` — the exact companion
+  `limsup log(1+[C_{chi,k}(N)]_+)/log(N+1) = 2k(1+Theta_chi)-1` for the mixed convolution of the
+  partial sums `M_chi` — is not.  Its lower half should follow from the already-formalized `(R14)`
+  binomial integration law plus the `(R3)` machinery above; its upper half is the part the card
+  itself flags as resting on the classical twisted Littlewood theorem, i.e. it needs
+  `M_chi(N) = O(N^{Theta_chi + epsilon})`.  That is a Perron/contour estimate on `1/L(s,chi)` in
+  `Re s > Theta_chi` and has no mathlib counterpart, so it is the next build.  Note this is the
+  hard direction: the corpus route so far has produced lower spectral edges from zeros, and the
+  matching upper edge is a genuinely different argument, not a rearrangement of what exists.
+- 2026-07-27 — **`(R15)` lower half proved; `(R3)` and `(R15)` restated at the zero frontier.**
+  Four new modules plus one extension, all axiom-clean:
+  - `RHTower/TwistedMertensOrderLowerBound.lean` — the partial-sum source.  `norm_partialSumSeq_le`,
+    `summable_norm_partialSumSeq_mul_pow`, and `tsum_partialSumSeq_mul_pow`
+    (`(1-q)·sum M(n)q^n = sum a(n)q^n`, by Cauchy product against the geometric series).  The key
+    step is `twistedMobiusLaplaceDecay_of_mertensSubpower`: on the ray `z = e^{-x}` the factor
+    `1 - e^{-x} <= x` converts a subpower bound of exponent `alpha` on the Hermitian mixed
+    convolution of `M_chi` into decay of the *raw* source at the shifted exponent
+    `(alpha+1)/(2k) - 1`.  Hence `not_mertensSubpower_of_LFunction_eq_zero` and
+    `two_mul_one_add_re_sub_one_le_limsup_mertens`: an `L`-zero at `rho` gives
+    `2k(1 + Re rho) - 1 <= Psi^C_{chi,k}`.
+  - `RHTower/DirichletZeroAbscissa.lean` — `zeroAbscissa chi` (= `Theta_chi`), well defined because
+    the zero set is nonempty (this programme's Hadamard argument) and bounded above by `1`
+    (mathlib's nonvanishing on `Re >= 1`).  With `half_le_zeroAbscissa`, `zeroAbscissa_le_one`,
+    `LFunction_ne_zero_of_zeroAbscissa_lt` and `exists_zero_lt_re`.
+  - `RHTower/TwistedOrderLawTheta.lean` — the order laws in the card's own form:
+    `two_mul_zeroAbscissa_sub_one_le_limsup` is **`(R3)` lower, `2k Theta_chi - 1 <= Psi_{chi,k}`**,
+    and `two_mul_one_add_zeroAbscissa_sub_one_le_limsup_mertens` is **`(R15)` lower,
+    `2k(1 + Theta_chi) - 1 <= Psi^C_{chi,k}`**.  Both use `exists_zero_lt_re` to approach the
+    frontier, so they are sup statements, not single-zero statements.
+  - `HTGeometry/LogOrderLimsupLower.lean` gained `limsup_log_one_add_div_log_le_rpow`, the
+    real-exponent form of the order upper bound.
+  - `TwistedMobiusOrderLowerBound.lean` was refactored so `frequently_lt_of_no_subpower` and
+    `le_limsup_of_no_subpower_below` apply to an arbitrary coefficient sequence with a polynomial
+    bound; the `chi` and the partial-sum instances now share one proof.
+  **Remaining for `(R15)`: only its upper half**, and it is isolated exactly.
+  `norm_mixedAdditiveConvolutionPower_le_of_subpower` plus
+  `limsup_mertens_le_of_subpowerBound` prove unconditionally that the interface
+  `TwistedMertensSubpowerBound chi theta` (`M_chi(N) = O(N^{theta+eps})` for every `eps > 0`) caps
+  the companion exponent at `2k(1+theta) - 1`, and `limsup_mertens_eq_of_subpowerBound` then gives
+  `(R15)` as an equality.  So the entire remaining debt on this card is the classical Littlewood
+  estimate at `theta = Theta_chi`: a Perron/contour argument needing (a) polynomial growth of
+  `1/L(s,chi)` in `Re s >= Theta_chi + eps` and (b) Perron's formula, neither in mathlib.  That is
+  the next build; nothing else on `(R1)`-`(R15)` is open.
+- 2026-07-27 — **Started the Littlewood build: exact Gamma modulus on vertical lines.**  New module
+  `HTGeometry/GammaVerticalModulus.lean`, axiom-clean.  The reduction of the remaining debt in the
+  previous entry needs `1/L(s,chi)` polynomially bounded right of `Theta_chi`, which classically
+  routes through Phragmen-Lindelof between two vertical lines, and that needs two-sided control of
+  the Archimedean factor.  Mathlib has `PhragmenLindelof.vertical_strip` but **no Stirling estimate
+  for the complex Gamma function**, so the usual route is blocked.
+  Route taken instead: on the lines `Re z = 1/2` and `Re z = 1` the reflected point `1 - z` is the
+  complex conjugate of `z`, so `Gamma(z) Gamma(1-z) = pi / sin(pi z)` computes the modulus
+  **exactly**, with no asymptotics:
+  - `norm_Gamma_half_add_I_sq` : `‖Gamma(1/2 + it)‖^2 = pi / cosh(pi t)`;
+  - `norm_Gamma_one_add_I_sq` : `‖Gamma(1 + it)‖^2 = pi |t| / |sinh(pi t)|` (via
+    `Gamma(1+it) = it Gamma(it)`);
+  - `norm_Gamma_add_one` : `‖Gamma(z+1)‖ = ‖z‖ ‖Gamma(z)‖`, which propagates both to every line
+    `Re z` in `(1/2)Z`;
+  - `norm_Gamma_half_add_I_bounds` : `sqrt(pi) e^{-pi|t|/2} <= ‖Gamma(1/2+it)‖ <=
+    sqrt(2 pi) e^{-pi|t|/2}`, from `e^{|x|}/2 <= cosh x <= e^{|x|}`.
+  Both base lines are needed, not just one: the functional equation puts the two Gamma arguments at
+  `(sigma+delta)/2` and `(1-sigma+delta)/2`, whose parities are opposite, so one always lands on a
+  half-integer line and the other on an integer line.
+  Next: the `Re z = 1` two-sided bound, the recursion to a general line, then the strip bound for
+  `L(s,chi)` and Borel-Caratheodory for `log L`.
+- 2026-07-27 — **Gamma vertical-line infrastructure completed** (same module, all axiom-clean):
+  - `norm_Gamma_le_Gamma_re` : `‖Gamma s‖ <= Gamma (Re s)` for `Re s > 0`, straight from the
+    integral representation (`Gamma_eq_integral` + `GammaIntegral_eq_mellin`).  This is the cheap
+    upper bound on Gamma in any right half-plane, needed in the strip argument.
+  - `norm_Gamma_add_nat` : `‖Gamma (z+m)‖ = (prod_{i<m} ‖z+i‖) ‖Gamma z‖`.
+  - `norm_Gamma_shift_bounds` : transports a two-sided bound on the line `Re z = sigma` to
+    `Re z = sigma + m`, each factor `‖z+i‖` lying between `|t|` and `(sigma+m+1)|t|`, so the
+    polynomial factor is `|t|^m` on both sides and the exponential factor is untouched.
+  - `norm_Gamma_one_add_I_bounds` : `sqrt(2 pi |t|) e^{-pi|t|/2} <= ‖Gamma(1+it)‖ <=
+    sqrt(2 pi |t|/(1-e^{-2})) e^{-pi|t|/2}` for `|t| >= 1`, from
+    `(1-e^{-2}) e^x/2 <= sinh x <= e^x/2`.
+  - `norm_Gamma_half_add_nat_bounds`, `norm_Gamma_one_add_nat_bounds` : the two families on the
+    lines `Re z = 1/2 + m` and `Re z = 1 + m`, covering every line in `(1/2)Z` to the right of the
+    base lines.
+  Both families carry the same exponential factor `e^{-pi|t|/2}`, which is why the argument works:
+  in the functional equation the two Gamma factors sit at `(sigma+delta)/2` and
+  `(1-sigma+delta)/2`, both with imaginary part of modulus `|t|/2`, so the exponentials cancel and
+  the ratio is polynomial in `|t|`.  That is the estimate the left edge of the
+  Phragmen-Lindelof strip needs.
+  Next: the left/right edge bounds for `L(s,chi)` on `Re s = -2` and `Re s = 3`, then
+  `PhragmenLindelof.vertical_strip` for polynomial growth of `L` throughout, then
+  Borel-Caratheodory on `log L` in the zero-free half-plane for `1/L`, then Perron.
+- 2026-07-27 — **Right edge of the Phragmen-Lindelof strip, and the compact Gamma bound.**  New
+  module `RHTower/DirichletLStripBounds.lean`, axiom-clean:
+  - `norm_dirichletCharacter_le_one` : `‖chi a‖ <= 1` everywhere (unit modulus on units, zero
+    elsewhere), from `norm_dirichletCharacter_apply`.
+  - `exists_bound_LFunction_of_two_le_re` : `‖L(s,chi)‖` is bounded by a single constant on the
+    whole half-plane `Re s >= 2`, by comparison of the Dirichlet series with `sum n^{-2}`
+    (`Real.summable_nat_rpow_inv`).  This is the right edge of the strip.
+  - `exists_bound_Gamma_Icc` / `exists_bound_norm_Gamma_strip` : `‖Gamma v‖ <= B` uniformly on any
+    vertical strip `a <= Re v <= b` with `a > 0`, combining `norm_Gamma_le_Gamma_re` with
+    continuity of the real `Gamma` on a compact interval (`Real.differentiableAt_Gamma`, which
+    applies since every point of the interval is positive hence not a pole).
+  Remaining chain to the Littlewood estimate, in order: the left edge on `Re s = -2` via the
+  functional equation and the Gamma-line bounds (the exponential factors `e^{-pi|t|/2}` cancel
+  between the two Gamma factors, leaving a polynomial ratio); `PhragmenLindelof.vertical_strip`
+  for polynomial growth of `L` throughout `-2 <= Re s <= 3`; Borel-Caratheodory on `log L` in the
+  zero-free half-plane to invert that into polynomial growth of `1/L`; then Perron.
+- 2026-07-27 — **Left-edge ingredients: leftward Gamma lower bounds and the parity bookkeeping.**
+  All axiom-clean.  In `HTGeometry/GammaVerticalModulus.lean`:
+  - `norm_Gamma_lower_of_shift` : the recursion run backwards.  A lower bound at `Re z = a + m`
+    yields `c e^{-pi|t|/2} <= ((|a|+m+1)|t|)^m ‖Gamma(a+it)‖`, i.e. a lower bound on lines *left* of
+    the base lines.  This is what the denominator of the functional-equation ratio needs: at
+    `Re w = -2` the Gamma arguments sit at `Re = -1` and `Re = -1/2`, two and one steps left of the
+    base lines `Re = 1` and `Re = 1/2`.
+  - `norm_Gammaℝ` : `‖Gammaℝ z‖ = pi^{-Re z/2} ‖Gamma(z/2)‖` at an arbitrary complex point
+    (the earlier version was only for real argument).
+  In `RHTower/DirichletLStripBounds.lean`:
+  - `inv_even_iff`, `gammaFactor_inv` : `chi` and `chi⁻¹` have the same parity, so the same
+    Archimedean factor.  Needed because the functional equation swaps the character, and the two
+    Gamma factors must carry the same shift `delta` for their exponentials to cancel.
+  - `gammaFactor_eq_Gammaℝ` : the factor is `Gammaℝ(s + delta)` with `delta` in `{0,1}`, packaged so
+    the parity split happens once.
+  With the right edge already bounded, the left edge is now a bookkeeping assembly: at `Re w = -2`
+  and `s = 1 - w` (so `Re s = 3`), the ratio `‖Gammaℝ(s+delta)‖/‖Gammaℝ(w+delta)‖` has both Gamma
+  arguments at imaginary part of modulus `|t|/2`, so the `e^{-pi|t|/2}` factors cancel and only the
+  polynomial factors survive.  Then Phragmen-Lindelof, Borel-Caratheodory, Perron.
+- 2026-07-27 — **The Archimedean ratio across the functional equation is polynomial.**  New module
+  `RHTower/DirichletLGammaRatio.lean`, axiom-clean.  This is the step the whole
+  Phragmen-Lindelof route hangs on.
+  - `ratio_bound_of_exp_cancel` : an upper bound `X <= U E` and a lower bound `c E <= P Y` sharing
+    the same exponential `E` give `c X <= U P Y`, with `E` gone.
+  - `gammaArg_even_num` / `gammaArg_odd_num` / `gammaArg_even_den` / `gammaArg_odd_den` and the two
+    `_shift` variants: the four points of the ratio, identified with the base lines.  At
+    `Re w = -2`, `s = 1 - w`, the arguments are `(3+delta)/2 - (t/2)i` and `(-2+delta)/2 + (t/2)i`.
+    For `delta = 0` they sit one step right of `Re = 1/2` and two steps left of `Re = 1`; for
+    `delta = 1`, one step right of `Re = 1` and one step left of `Re = 1/2`.
+  - `norm_Gamma_ratio_even` : for `|t| >= 2`,
+    `‖Gamma((3 - it)/2)‖ <= 40 |t/2|^3 ‖Gamma((-2 + it)/2)‖`.
+  - `exists_norm_Gamma_ratio_odd` : the same with the odd shift and constant
+    `sqrt(2 pi/(1-e^{-2})) (15/2)/sqrt(pi)`.
+  Both imaginary parts have modulus `|t|/2`, so the factor `e^{-pi|t|/4}` cancels exactly between
+  numerator and denominator and only the polynomial factors of the vertical bounds survive.  This
+  is the reason the Stirling-free route works at all: the two-sided bounds proved earlier are sharp
+  in the exponential, and sharpness is exactly what makes the cancellation exact.
+  Next: combine with the functional equation and the right-edge bound to get the left edge
+  `‖L(w,chi)‖ = O(|t|^A)` on `Re w = -2`, then `PhragmenLindelof.vertical_strip`.
+- 2026-07-27 — **Left edge of the strip proved.**  New module `RHTower/DirichletLLeftEdge.lean`,
+  axiom-clean: `exists_bound_LFunction_left_edge` — for a primitive character,
+  `‖L(-2 + it, chi)‖ <= A |t|^3` for `|t| >= 2`.
+  The assembly runs the functional equation `Lambda(chi, 1-s) = N^{s-1/2} eps(chi) Lambda(chi⁻¹, s)`
+  at `s = 3 - it`, clears both completions into `L * gammaFactor` (both Archimedean factors are
+  nonzero there: at `Re = 3+delta` by positivity of the real part, at `Re = -2+delta` because
+  `Gammaℝ` vanishes only at even negative *reals* while the argument has imaginary part `t != 0`),
+  passes to norms, and applies the right-edge bound to `L(chi⁻¹, 3-it)` and the Gamma-ratio bound
+  to the Archimedean quotient.  The constants `N^{5/2}`, `‖eps(chi)‖` and the two `pi`-powers
+  `pi^{-(3+delta)/2}`, `pi^{-(-2+delta)/2}` are absorbed.
+  Note the hypothesis `chi != 1` turned out to be unnecessary and was dropped: only primitivity is
+  used, and the pole of the principal character sits at `s = 1`, away from both edges.
+  Both strip edges are now bounded.  Next: `PhragmenLindelof.vertical_strip` needs, besides the two
+  edge bounds, a growth condition inside `-2 <= Re s <= 3`; that comes from the order-one envelope
+  of `Lambda` together with an upper bound for `1/Gamma` in the strip (via the reflection formula,
+  `‖1/Gamma(z)‖ = ‖Gamma(1-z)‖ ‖sin(pi z)‖/pi`, both factors elementary there).  Then
+  Borel-Caratheodory and Perron.
+- 2026-07-27 — **Reciprocal Gamma bound in the strip** (appended to `RHTower/DirichletLStripBounds.lean`),
+  axiom-clean.  This is the interior growth ingredient the Phragmen-Lindelof hypothesis needs.
+  - `norm_sin_le` : `‖sin z‖ <= e^{|Im z|}`, from the exponential form of `sin` (no such bound in
+    mathlib).
+  - `exists_bound_norm_Gamma_strip_off_axis` : `‖Gamma v‖ <= B` on any vertical strip, with no
+    positivity requirement on the real parts, provided `|Im v| >= 1`.  Shifting right past the poles
+    is free: each shift factor `v+i` has modulus at least `|Im v| >= 1`, so the product in
+    `norm_Gamma_add_nat` only helps.
+  - `exists_lower_bound_norm_Gamma_strip` : `pi <= B e^{pi|Im z|} ‖Gamma z‖`, i.e. a *lower* bound on
+    `‖Gamma z‖` in the strip.  Proof: clear the reflection formula to
+    `Gamma(z) Gamma(1-z) sin(pi z) = pi` (legitimate since `sin(pi z) != 0` when `Im z != 0`), take
+    norms, and bound the last two factors.  Stated multiplicatively so no division is needed.
+  With this, `‖L(s,chi)‖ = ‖Lambda(s,chi)‖ · ‖1/gammaFactor‖` is bounded in the strip by
+  `exp(C(1+‖s‖)log(2+‖s‖)) · B' e^{pi|Im s|/2}`, which is far inside the
+  `exp(A exp(c|Im z|))` allowance of `PhragmenLindelof.vertical_strip` for any `c > 0`.
+  Remaining: assemble that growth statement, apply Phragmen-Lindelof to
+  `L(s,chi)/(s-4)^3` (whose two edge bounds are then both uniform: on `Re s = 3` because
+  `|s-4| >= 1`, on `Re s = -2` because `|s-4| >= |t|` absorbs the cubic), then Borel-Caratheodory
+  and Perron.
+- 2026-07-27 — **Interior growth of `L` in the strip.**  New module
+  `RHTower/DirichletLStripGrowth.lean`, axiom-clean: `exists_growth_LFunction_strip` — for
+  `chi != 1`, on `-2 <= Re s <= 3` with `|Im s| >= 2`,
+  `‖L(s,chi)‖ <= exp(B (1+‖s‖) log(2+‖s‖))`.
+  The point is that the *same* order-one shape absorbs everything.  Writing
+  `L = Lambda / gammaFactor`, the numerator has the order-one envelope
+  (`completedLFunction_orderOneEnvelope`), and the denominator is bounded below by
+  `kappa e^{-pi|t|/2}` — from `exists_lower_bound_norm_Gamma_strip` for the Gamma factor and
+  `pi^{-(Re s+delta)/2} >= pi^{-2}` for the power of `pi`, the latter uniform because the strip is
+  bounded.  The resulting `e^{pi|t|/2}` is then itself dominated by the order-one shape, since
+  `pi|t|/2 <= (pi/(2 log 2)) (1+‖s‖) log(2+‖s‖)`.  So no new growth class is needed.
+  This is well inside the `exp(A exp(c |Im z|))` allowance of `PhragmenLindelof.vertical_strip`
+  for every `c > 0`, so the last hypothesis of Phragmen-Lindelof is now available.
+  Note the module is slow to elaborate (about five minutes) because of the nonlinear arithmetic;
+  one `nlinarith` had to be replaced by an explicit chain after hitting the heartbeat limit.
+  Remaining: apply Phragmen-Lindelof to `L(s,chi)/(s-4)^3`, then Borel-Caratheodory for `1/L`,
+  then Perron.
+- 2026-07-27 — **Uniform edge bounds for the regularized L-function.**  New module
+  `RHTower/DirichletLRegularizedEdges.lean`, axiom-clean.
+  Phragmen-Lindelof compares against a *single* constant on both edges, but the two edge bounds
+  have different strength: bounded on `Re s = 3`, `O(|t|^3)` on `Re s = -2`.  Dividing by `(s-4)^3`
+  equalizes them — on the right edge the divisor has modulus at least `1` so nothing is lost, on
+  the left edge at least `|t|`, which absorbs the cubic exactly.
+  - `exists_bound_LFunction_segment` : `L(chi, a + it)` is bounded for `|t| <= T`, by continuity of
+    the entire L-function on a compact segment.  This patches the gap near the real axis, where the
+    polynomial left-edge bound (proved only for `|t| >= 2`) says nothing.
+  - `exists_bound_regularized_edges` : one constant `C` with
+    `‖L(z,chi)/(z-4)^3‖ <= C` on both `Re z = 3` and `Re z = -2`, for all `z` on those lines.
+  All four Phragmen-Lindelof hypotheses are now in hand: the two uniform edge bounds here, the
+  interior growth from `exists_growth_LFunction_strip`, and differentiability of
+  `L(.,chi)/(s-4)^3` on the closed strip (the pole at `4` sits outside `Re s <= 3`).
+  Next: convert the interior growth into the `IsBigO` shape
+  `f =O[|im| -> infinity within the strip] exp(B exp(c|im z|))` and apply
+  `PhragmenLindelof.vertical_strip`.
+- 2026-07-27 — **Phragmen-Lindelof applied: `L(s,chi)` grows polynomially across the strip.**
+  New module `RHTower/DirichletLPhragmenInputs.lean`, axiom-clean.
+  - `eventually_sq_le_exp` : `(c+u)^2 <= exp(b u)` eventually, for any `b > 0`.  Proved from the
+    cubic term of the exponential series (`Real.sum_le_exp_of_nonneg` at `n = 4`) rather than from
+    asymptotic machinery, so the threshold is explicit: `u >= max(|c|, 24/b^3, 1)`.
+  - `differentiableAt_regularized`, `diffContOnCl_regularized` : the regularized function is
+    holomorphic on the open strip and continuous on its closure — the pole at `4` is outside
+    `Re s <= 3`, and `closure (re ⁻¹' Ioo a b) ⊆ re ⁻¹' Icc a b` by `closure_minimal`.
+  - `isBigO_regularized` : the growth hypothesis, with rate `c = 1/3`.  The requirement is
+    `c < pi/(b-a) = pi/5`, and `1/3 < pi/5` follows from `2 <= pi` alone — no sharper numeric bound
+    on `pi` is needed, which matters because mathlib has no `pi_gt_three`.
+  - `bound_LFunction_strip` : **`‖L(z,chi)‖ <= C ‖z-4‖^3` on the whole closed strip
+    `-2 <= Re z <= 3`.**
+  This closes the Phragmen-Lindelof stage.  The chain from here: Borel-Caratheodory on `log L` in
+  the zero-free half-plane `Re s > Theta_chi` converts this upper bound into a *lower* bound
+  `1/L(s,chi) = O(|t|^eps)`, and then Perron's formula turns that into the Littlewood estimate
+  `M_chi(N) = O(N^{Theta_chi + eps})`, which is the single remaining input for `(R15)`.
+- 2026-07-27 — **Holomorphic logarithm on a disc.**  New module `HTGeometry/BallLogarithm.lean`,
+  axiom-clean: `exists_log_on_ball` — a nonvanishing holomorphic `f` on `ball c r` equals
+  `f c · exp(g)` for a holomorphic `g` on the disc with `g c = 0`.
+  This is the disc analogue of the earlier `exists_entire_log_of_ne_zero`, and it is the gate for
+  Borel-Caratheodory: the whole point of the next step is to convert the *upper* bound
+  `‖L‖ <= C‖z-4‖^3` into a *lower* bound on `‖L‖`, and Borel-Caratheodory does that by bounding
+  `|log L|` in terms of `sup Re log L = sup log|L|` — which requires a genuine holomorphic branch of
+  `log L` on the disc, not just the principal value.
+  Mathlib supplies the missing analytic input: `DifferentiableOn.isExactOn_ball` (Morera for a
+  disc) gives a primitive of `f'/f` there, and `Convex.is_const_of_fderivWithin_eq_zero` then makes
+  `f · exp(-g)` constant.  Neither the entire version nor this one exists in mathlib.
+  Next: apply `Complex.borelCaratheodory_zero` on the disc centred at `2 + it` with radii chosen
+  inside the zero-free half-plane `Re s > Theta_chi`, to get `1/L(s,chi)` polynomially bounded;
+  then Perron.
+- 2026-07-27 — **Borel-Caratheodory lower bound.**  Appended to `HTGeometry/BallLogarithm.lean`,
+  axiom-clean: `norm_lower_bound_of_ball` — a nonvanishing holomorphic `f` on `ball c R`, bounded
+  above by `M` there and below by `m` at the centre, satisfies
+  `m exp(-2 (log(M/m)+1) r/(R-r)) <= ‖f z‖` for `‖z - c‖ <= r < R`.
+  This is the sign reversal the whole Phragmen-Lindelof chain was built for: an *upper* bound on
+  `‖f‖` becomes a *lower* bound, at the cost of an exponential in `log(M/m)` — i.e. of turning a
+  polynomial upper bound into a polynomial lower bound with a worse exponent, which is exactly what
+  Perron tolerates.
+  Mechanism: `exists_log_on_ball` gives `g` with `f = f c exp g` and `g c = 0`; then
+  `Re g = log(‖f‖/‖f c‖) <= log(M/m)`, mathlib's `Complex.borelCaratheodory_zero` (translated to
+  the origin) bounds `‖g‖` on the inner disc, and `‖f‖ = ‖f c‖ exp(Re g) >= m exp(-‖g‖)`.
+  The `+1` in the constant is not slack for its own sake: Borel-Caratheodory requires a *strictly*
+  positive bound on `Re g`, and `log(M/m)` can be zero.
+  Next: instantiate at `c = 2 + it` with `r = 2 - (Theta_chi + eps)`, `R = 2 - (Theta_chi + eps/2)`,
+  using `bound_LFunction_strip` for `M` and `eventually_half_le_norm_LSeries` for `m`, to get
+  `1/L(s,chi)` polynomially bounded right of `Theta_chi`.  Then Perron.

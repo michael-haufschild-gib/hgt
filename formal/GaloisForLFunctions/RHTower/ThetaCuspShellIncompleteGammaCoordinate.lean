@@ -7462,62 +7462,53 @@ theorem integrableOn_thetaCuspTiltedWardDerivativeRotationDensity
   unfold thetaCuspTiltedWardDerivativeRotationDensity
   exact (hf.add hxf').neg
 
-/-- Exact positive-kernel reduction of the real spectral-derivative direction.  The conjectural
-sign is now a competition between a unique negative boundary layer and a positive tail. -/
-theorem integral_thetaCuspTiltedWardDerivativeRotationDensity_mul_one_sub_cos
-    {a b : ℝ} (ha : a < 1) {n : ℕ} (hn : 0 < n) :
-    b * (∫ x : ℝ in Ioi 0,
-      x * thetaCuspTiltedWardDensity a n x *
-        Real.sin (b * x)) =
-      ∫ x : ℝ in Ioi 0,
-        thetaCuspTiltedWardDerivativeRotationDensity a n x *
-          (1 - Real.cos (b * x)) := by
+/-- Multiplying an integrable function by the bounded factor `1 - cos (b x)` keeps it integrable on
+the half line. -/
+private theorem integrableOn_mul_one_sub_cos {b : ℝ} {f : ℝ → ℝ}
+    (hf : IntegrableOn f (Ioi 0)) :
+    IntegrableOn (fun x => f x * (1 - Real.cos (b * x))) (Ioi 0) := by
+  have hcos : IntegrableOn (fun x => Real.cos (b * x) * f x) (Ioi 0) := by
+    apply Integrable.bdd_mul hf
+    · exact (by
+        fun_prop :
+        Continuous
+          (fun x : ℝ => Real.cos (b * x))).aestronglyMeasurable.restrict
+    · filter_upwards with x
+      rw [Real.norm_eq_abs]
+      exact abs_cos_le_one _
+  rw [show (fun x : ℝ => f x * (1 - Real.cos (b * x))) =
+      f - (fun x => Real.cos (b * x) * f x) by
+    funext x
+    dsimp only [Pi.sub_apply]
+    ring]
+  exact hf.sub hcos
+
+/-- **Half-line integration by parts against `1 - cos`.**  For a differentiable `v` with `v` and `v'`
+integrable on `(0, ∞)` and `v → 0` at infinity,
+`b ∫₀^∞ v(x) sin(bx) dx = -∫₀^∞ v'(x) (1 - cos(bx)) dx`.
+Both boundary terms vanish: `1 - cos (b x)` at the origin, and `v` at infinity. -/
+private theorem integral_mul_sin_eq_neg_integral_deriv_mul_one_sub_cos
+    {b : ℝ} {v v' : ℝ → ℝ}
+    (hv : ∀ x, HasDerivAt v (v' x) x)
+    (hvInt : IntegrableOn v (Ioi 0))
+    (hv'Int : IntegrableOn v' (Ioi 0))
+    (hv0 : Tendsto v atTop (𝓝 0)) :
+    b * ∫ x : ℝ in Ioi 0, v x * Real.sin (b * x)
+      = - ∫ x : ℝ in Ioi 0, v' x * (1 - Real.cos (b * x)) := by
   let u : ℝ → ℝ := fun x => 1 - Real.cos (b * x)
   let u' : ℝ → ℝ := fun x => b * Real.sin (b * x)
-  let v : ℝ → ℝ := fun x =>
-    x * thetaCuspTiltedWardDensity a n x
-  let v' : ℝ → ℝ := fun x =>
-    thetaCuspTiltedWardDensity a n x +
-      x * (thetaCuspTiltedWardScore a n x *
-        thetaCuspTiltedWardDensity a n x)
+
   have hu (x : ℝ) : HasDerivAt u (u' x) x := by
     dsimp only [u, u']
     convert (Real.hasDerivAt_cos (b * x)).comp x
       ((hasDerivAt_id x).const_mul b) |>.neg.const_add 1 using 1
     ring
-  have hv (x : ℝ) : HasDerivAt v (v' x) x := by
-    dsimp only [v, v']
-    convert (hasDerivAt_id x).mul
-      (hasDerivAt_thetaCuspTiltedWardDensity a n x) using 1
-    simp only [id_eq]
-    ring
-  have hvInt : IntegrableOn v (Ioi 0) := by
-    simpa only [v] using
-      integrableOn_id_mul_thetaCuspTiltedWardDensity ha hn
-  have hv'Int : IntegrableOn v' (Ioi 0) := by
-    have hf :=
-      integrableOn_thetaCuspTiltedWardDensity ha hn
-    have hxf' :=
-      integrableOn_id_mul_thetaCuspTiltedWardDensityDerivative
-        ha hn
-    simpa only [v'] using hf.add hxf'
   have huv' : IntegrableOn (u * v') (Ioi 0) := by
-    have hcos : IntegrableOn
-        (fun x => Real.cos (b * x) * v' x) (Ioi 0) := by
-      apply Integrable.bdd_mul hv'Int
-      · exact (by
-          fun_prop :
-          Continuous
-            (fun x : ℝ => Real.cos (b * x))).aestronglyMeasurable.restrict
-      · filter_upwards with x
-        rw [Real.norm_eq_abs]
-        exact abs_cos_le_one _
-    rw [show (u * v') = v' -
-        (fun x => Real.cos (b * x) * v' x) by
-      funext x
-      dsimp only [u, Pi.mul_apply, Pi.sub_apply]
-      ring]
-    exact hv'Int.sub hcos
+    have h := integrableOn_mul_one_sub_cos (b := b) hv'Int
+    apply h.congr
+    filter_upwards with x
+    dsimp only [u, Pi.mul_apply]
+    ring
   have hu'v : IntegrableOn (u' * v) (Ioi 0) := by
     have hsin : IntegrableOn
         (fun x => Real.sin (b * x) * v x) (Ioi 0) := by
@@ -7544,14 +7535,10 @@ theorem integral_thetaCuspTiltedWardDerivativeRotationDensity_mul_one_sub_cos
       exact
         (continuous_const.sub (Real.continuous_cos.comp
           (continuous_const.mul continuous_id))).mul hvcont
-    simpa [u, v] using
+    simpa [u] using
       (hcont.continuousAt :
         Tendsto (u * v) (𝓝 (0 : ℝ)) _).mono_left inf_le_left
   have hinfty : Tendsto (u * v) atTop (𝓝 0) := by
-    have hv0 : Tendsto v atTop (𝓝 0) := by
-      simpa only [v] using
-        tendsto_id_mul_thetaCuspTiltedWardDensity_atTop_zero
-          ha hn
     have hcos0 :
         Tendsto (fun x => Real.cos (b * x) * v x)
           atTop (𝓝 0) := by
@@ -7576,32 +7563,55 @@ theorem integral_thetaCuspTiltedWardDerivativeRotationDensity_mul_one_sub_cos
     huv' hu'v hzero hinfty
   rw [show
       (fun x : ℝ => u' x * v x) =
-        fun x => b *
-          (x * thetaCuspTiltedWardDensity a n x *
-            Real.sin (b * x)) by
+        fun x => b * (v x * Real.sin (b * x)) by
     funext x
-    dsimp only [u', v]
+    dsimp only [u']
     ring,
     integral_const_mul] at hibp
   rw [show
       (fun x : ℝ => u x * v' x) =
-        fun x =>
-          -thetaCuspTiltedWardDerivativeRotationDensity a n x *
-            (1 - Real.cos (b * x)) by
+        fun x => v' x * (1 - Real.cos (b * x)) by
     funext x
-    dsimp only [u, v']
+    dsimp only [u]
+    ring] at hibp
+  linarith
+
+/-- Exact positive-kernel reduction of the real spectral-derivative direction.  The conjectural
+sign is now a competition between a unique negative boundary layer and a positive tail. -/
+theorem integral_thetaCuspTiltedWardDerivativeRotationDensity_mul_one_sub_cos
+    {a b : ℝ} (ha : a < 1) {n : ℕ} (hn : 0 < n) :
+    b * (∫ x : ℝ in Ioi 0,
+      x * thetaCuspTiltedWardDensity a n x *
+        Real.sin (b * x)) =
+      ∫ x : ℝ in Ioi 0,
+        thetaCuspTiltedWardDerivativeRotationDensity a n x *
+          (1 - Real.cos (b * x)) := by
+  have hv : ∀ x : ℝ, HasDerivAt (fun y : ℝ => y * thetaCuspTiltedWardDensity a n y)
+      (thetaCuspTiltedWardDensity a n x +
+        x * (thetaCuspTiltedWardScore a n x *
+          thetaCuspTiltedWardDensity a n x)) x := by
+    intro x
+    convert (hasDerivAt_id x).mul
+      (hasDerivAt_thetaCuspTiltedWardDensity a n x) using 1
+    simp only [id_eq]
+    ring
+  have hkey := integral_mul_sin_eq_neg_integral_deriv_mul_one_sub_cos (b := b) hv
+    (integrableOn_id_mul_thetaCuspTiltedWardDensity ha hn)
+    ((integrableOn_thetaCuspTiltedWardDensity ha hn).add
+      (integrableOn_id_mul_thetaCuspTiltedWardDensityDerivative ha hn))
+    (tendsto_id_mul_thetaCuspTiltedWardDensity_atTop_zero ha hn)
+  rw [show
+      (fun x : ℝ => (thetaCuspTiltedWardDensity a n x +
+          x * (thetaCuspTiltedWardScore a n x *
+            thetaCuspTiltedWardDensity a n x)) *
+        (1 - Real.cos (b * x))) =
+      fun x =>
+        -(thetaCuspTiltedWardDerivativeRotationDensity a n x *
+          (1 - Real.cos (b * x))) by
+    funext x
     unfold thetaCuspTiltedWardDerivativeRotationDensity
     ring,
-    show
-      (fun x : ℝ =>
-        -thetaCuspTiltedWardDerivativeRotationDensity a n x *
-          (1 - Real.cos (b * x))) =
-      (fun x =>
-        -(thetaCuspTiltedWardDerivativeRotationDensity a n x *
-          (1 - Real.cos (b * x)))) by
-        funext x
-        ring,
-    integral_neg] at hibp
+    integral_neg] at hkey
   linarith
 
 /-- The universal tail beyond `x = 1/3` contributes strictly positively to the derivative
@@ -7770,17 +7780,10 @@ theorem integral_thetaCuspTiltedWardDensity_mul_sin_pos
     0 < ∫ x : ℝ in Ioi 0,
       thetaCuspTiltedWardDensity a n x *
         Real.sin (b * x) := by
-  let u : ℝ → ℝ := fun x => 1 - Real.cos (b * x)
-  let u' : ℝ → ℝ := fun x => b * Real.sin (b * x)
   let v : ℝ → ℝ := thetaCuspTiltedWardDensity a n
   let v' : ℝ → ℝ := fun x =>
     thetaCuspTiltedWardScore a n x *
       thetaCuspTiltedWardDensity a n x
-  have hu (x : ℝ) : HasDerivAt u (u' x) x := by
-    dsimp only [u, u']
-    convert (Real.hasDerivAt_cos (b * x)).comp x
-      ((hasDerivAt_id x).const_mul b) |>.neg.const_add 1 using 1
-    ring
   have hv (x : ℝ) : HasDerivAt v (v' x) x := by
     simpa only [v, v'] using
       hasDerivAt_thetaCuspTiltedWardDensity a n x
@@ -7790,85 +7793,18 @@ theorem integral_thetaCuspTiltedWardDensity_mul_sin_pos
   have hv'Int : IntegrableOn v' (Ioi 0) :=
     integrableOn_thetaCuspTiltedWardDensityDerivative
       (by linarith) hn
-  have huv' : IntegrableOn (u * v') (Ioi 0) := by
-    have hcos : IntegrableOn
-        (fun x => Real.cos (b * x) * v' x) (Ioi 0) := by
-      apply Integrable.bdd_mul hv'Int
-      · exact (by
-          fun_prop :
-          Continuous
-            (fun x : ℝ => Real.cos (b * x))).aestronglyMeasurable.restrict
-      · filter_upwards with x
-        rw [Real.norm_eq_abs]
-        exact abs_cos_le_one _
-    rw [show (u * v') = v' -
-        (fun x => Real.cos (b * x) * v' x) by
-      funext x
-      dsimp only [u, Pi.mul_apply, Pi.sub_apply]
-      ring]
-    exact hv'Int.sub hcos
-  have hu'v : IntegrableOn (u' * v) (Ioi 0) := by
-    have hsin : IntegrableOn
-        (fun x => Real.sin (b * x) * v x) (Ioi 0) := by
-      apply Integrable.bdd_mul hvInt
-      · exact (by
-          fun_prop :
-          Continuous
-            (fun x : ℝ => Real.sin (b * x))).aestronglyMeasurable.restrict
-      · filter_upwards with x
-        rw [Real.norm_eq_abs]
-        exact abs_sin_le_one _
-    rw [show (u' * v) =
-        fun x => b * (Real.sin (b * x) * v x) by
-      funext x
-      dsimp only [u', Pi.mul_apply]
-      ring]
-    exact hsin.const_mul b
-  have hzero : Tendsto (u * v) (𝓝[>] 0) (𝓝 0) := by
-    have hcont : Continuous (u * v) := by
-      have hvcont : Continuous v :=
-        continuous_iff_continuousAt.mpr fun x =>
-          (hv x).continuousAt
-      dsimp only [u]
-      exact
-        (continuous_const.sub (Real.continuous_cos.comp
-          (continuous_const.mul continuous_id))).mul hvcont
-    simpa [u, v] using
-      (hcont.continuousAt :
-        Tendsto (u * v) (𝓝 (0 : ℝ)) _).mono_left inf_le_left
-  have hinfty : Tendsto (u * v) atTop (𝓝 0) := by
-    have hv0 : Tendsto v atTop (𝓝 0) := by
-      simpa only [v] using
-        tendsto_thetaCuspTiltedWardDensity_atTop_zero
-          (by linarith) hn
-    have hcos0 :
-        Tendsto (fun x => Real.cos (b * x) * v x)
-          atTop (𝓝 0) := by
-      rw [tendsto_zero_iff_norm_tendsto_zero]
-      have hle : ∀ᶠ x : ℝ in atTop,
-          ‖Real.cos (b * x) * v x‖ ≤ ‖v x‖ :=
-        Eventually.of_forall fun x => by
-          rw [norm_mul]
-          exact mul_le_of_le_one_left (norm_nonneg _)
-            (by simpa using abs_cos_le_one (b * x))
-      exact squeeze_zero'
-        (Eventually.of_forall fun x => norm_nonneg _) hle
-        (by simpa using hv0.norm)
-    simpa only [sub_zero] using hv0.sub hcos0
-      |>.congr' (Eventually.of_forall fun x => by
-        dsimp only [u, Pi.mul_apply]
-        ring)
-  have hibp := integral_Ioi_mul_deriv_eq_deriv_mul
-    (a := (0 : ℝ)) (u := u) (u' := u')
-    (v := v) (v' := v')
-    (fun x _ => hu x) (fun x _ => hv x)
-    huv' hu'v hzero hinfty
+  have hv0 : Tendsto v atTop (𝓝 0) := by
+    simpa only [v] using
+      tendsto_thetaCuspTiltedWardDensity_atTop_zero
+        (by linarith) hn
+  have hkey := integral_mul_sin_eq_neg_integral_deriv_mul_one_sub_cos
+    (b := b) hv hvInt hv'Int hv0
   let h : ℝ → ℝ := fun x =>
     (-v' x) * (1 - Real.cos (b * x))
   have hhInt : IntegrableOn h (Ioi 0) := by
-    apply huv'.neg.congr
+    apply (integrableOn_mul_one_sub_cos (b := b) hv'Int).neg.congr
     filter_upwards with x
-    dsimp only [h, u, Pi.mul_apply, Pi.neg_apply]
+    dsimp only [h, Pi.neg_apply]
     ring
   have hidentity :
       b * (∫ x : ℝ in Ioi 0,
@@ -7876,22 +7812,13 @@ theorem integral_thetaCuspTiltedWardDensity_mul_sin_pos
           Real.sin (b * x)) =
       ∫ x : ℝ in Ioi 0, h x := by
     rw [show
-      (fun x : ℝ => u' x * v x) =
-        fun x => b *
-          (thetaCuspTiltedWardDensity a n x *
-            Real.sin (b * x)) by
+      (fun x : ℝ => h x) =
+        fun x => -(v' x * (1 - Real.cos (b * x))) by
       funext x
-      dsimp only [u', v]
+      dsimp only [h]
       ring,
-      integral_const_mul] at hibp
-    rw [show
-      (fun x : ℝ => u x * v' x) =
-        fun x => -h x by
-      funext x
-      dsimp only [u, h]
-      ring,
-      integral_neg] at hibp
-    linarith
+      integral_neg]
+    simpa only [v] using hkey
   have hhnn : ∀ᵐ x ∂(volume.restrict (Ioi 0)),
       0 ≤ h x := by
     filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx

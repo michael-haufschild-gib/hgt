@@ -32,92 +32,9 @@ theorem nine_over_twoHundredThousand_lt_xiFourthReciprocalTraceAtom_of_centered_
     (huUpper : ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4)
     (hvLower : 85 < (q.1 : ℂ).im ^ 2)
     (hvUpper : (q.1 : ℂ).im ^ 2 < 295 / 2) :
-    (9 / 200000 : ℝ) < (xiZeroCopyReciprocalSquare q ^ 2).re := by
-  let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ 2
-  let v : ℝ := (q.1 : ℂ).im ^ 2
-  let w : ℝ := u + v
-  let W : ℝ := 591 / 4
-  have hu0 : 0 < u := by simpa only [u] using huLower
-  have hv0 : 0 < v := by linarith
-  have huU : u < 1 / 4 := by simpa only [u] using huUpper
-  have hvU : v < 295 / 2 := by simpa only [v] using hvUpper
-  have hw0 : 0 < w := by dsimp only [w]; positivity
-  have hwLower : 85 < w := by dsimp only [w]; linarith
-  have hwUpper : w < W := by dsimp only [w, W]; linarith
-  have hW0 : 0 < W := by dsimp only [W]; norm_num
-  have hw2Lower : (85 : ℝ) ^ 2 < w ^ 2 :=
-    pow_lt_pow_left₀ hwLower (by norm_num) (by norm_num)
-  have hw2Upper : w ^ 2 < W ^ 2 :=
-    pow_lt_pow_left₀ hwUpper hw0.le (by norm_num)
-  have huv : u * v < 295 / 8 := by
-    calc
-      u * v < (1 / 4 : ℝ) * v :=
-        mul_lt_mul_of_pos_right huU hv0
-      _ < (1 / 4 : ℝ) * (295 / 2) :=
-        mul_lt_mul_of_pos_left hvU (by norm_num)
-      _ = 295 / 8 := by ring
-  have hshape :
-      (1600000 : ℝ) * (295 / 8) <
-        200000 * w ^ 2 - 9 * w ^ 4 := by
-    by_cases hmid : w ^ 2 ≤ 10000
-    · have hfactor : 0 < 200000 - 9 * (w ^ 2 + 7225) := by
-        nlinarith
-      have hprod :
-          0 < (w ^ 2 - 7225) *
-            (200000 - 9 * (w ^ 2 + 7225)) :=
-        mul_pos (sub_pos.mpr (by
-          norm_num at hw2Lower ⊢
-          exact hw2Lower)) hfactor
-      have hid :
-          (200000 * w ^ 2 - 9 * w ^ 4) -
-              (200000 * 7225 - 9 * 7225 ^ 2) =
-            (w ^ 2 - 7225) *
-              (200000 - 9 * (w ^ 2 + 7225)) := by
-        ring
-      have hend :
-          (1600000 : ℝ) * (295 / 8) <
-            200000 * 7225 - 9 * 7225 ^ 2 := by
-        norm_num
-      nlinarith
-    · have hmid' : 10000 < w ^ 2 := lt_of_not_ge hmid
-      have hfactor : 0 < 9 * (W ^ 2 + w ^ 2) - 200000 := by
-        dsimp only [W]
-        nlinarith
-      have hprod :
-          0 < (W ^ 2 - w ^ 2) *
-            (9 * (W ^ 2 + w ^ 2) - 200000) :=
-        mul_pos (sub_pos.mpr hw2Upper) hfactor
-      have hid :
-          (200000 * w ^ 2 - 9 * w ^ 4) -
-              (200000 * W ^ 2 - 9 * W ^ 4) =
-            (W ^ 2 - w ^ 2) *
-              (9 * (W ^ 2 + w ^ 2) - 200000) := by
-        ring
-      have hend :
-          (1600000 : ℝ) * (295 / 8) <
-            200000 * W ^ 2 - 9 * W ^ 4 := by
-        norm_num [W]
-      rw [← hid] at hprod
-      exact hend.trans (sub_pos.mp hprod)
-  have hG :
-      0 < 200000 * (v ^ 2 - 6 * u * v + u ^ 2) - 9 * w ^ 4 := by
-    have hN : v ^ 2 - 6 * u * v + u ^ 2 = w ^ 2 - 8 * u * v := by
-      dsimp only [w]
-      ring
-    rw [hN]
-    nlinarith
-  have hformula :
-      (xiZeroCopyReciprocalSquare q ^ 2).re =
-        (v ^ 2 - 6 * u * v + u ^ 2) / w ^ 4 := by
-    rw [pow_two, Complex.mul_re, xiZeroCopyReciprocalSquare_re_formula,
-      xiZeroCopyReciprocalSquare_im_formula]
-    simp only [u, v, w]
-    have hden : u + v ≠ 0 := by positivity
-    field_simp [hden]
-    ring
-  rw [hformula]
-  rw [div_lt_div_iff₀ (by norm_num : (0 : ℝ) < 200000) (pow_pos hw0 4)]
-  nlinarith
+    (9 / 200000 : ℝ) < (xiZeroCopyReciprocalSquare q ^ 2).re :=
+  nine_over_twoHundredThousand_lt_xiFourthReciprocalTraceAtom_below_2365_over_16 q
+    huLower huUpper hvLower (by linarith)
 
 theorem not_exists_xiZeroCopy_mem_centeredOrderNineteen_sourceCorner :
     ¬ ∃ q : XiZeroCopy,

@@ -268,139 +268,16 @@ theorem integral_mul_im_xiPairs (q q' : XiRightUpperZeroCopy) :
   have hre' := xiRightCenteredZero_re_pos q'.1
   have hx : 0 < (xiRightCenteredZero q.1).re + 1 / 2 := by linarith
   have hx' : 0 < (xiRightCenteredZero q'.1).re + 1 / 2 := by linarith
-  have h11 : Integrable (fun t : ℝ =>
-      4 * (((t + (xiRightCenteredZero q.1).im) /
-          ((((xiRightCenteredZero q.1).re + 1 / 2)) ^ 2 +
-            (t + (xiRightCenteredZero q.1).im) ^ 2)) *
-        ((t + (xiRightCenteredZero q'.1).im) /
-          ((((xiRightCenteredZero q'.1).re + 1 / 2)) ^ 2 +
-            (t + (xiRightCenteredZero q'.1).im) ^ 2)))) volume :=
-    (integrable_mul_oddKernels_general hx hx'
-      ((xiRightCenteredZero q.1).im)
-      ((xiRightCenteredZero q'.1).im)).const_mul 4
-  have h12 : Integrable (fun t : ℝ =>
-      4 * (((t + (xiRightCenteredZero q.1).im) /
-          ((((xiRightCenteredZero q.1).re + 1 / 2)) ^ 2 +
-            (t + (xiRightCenteredZero q.1).im) ^ 2)) *
-        ((t + -(xiRightCenteredZero q'.1).im) /
-          ((((xiRightCenteredZero q'.1).re + 1 / 2)) ^ 2 +
-            (t + -(xiRightCenteredZero q'.1).im) ^ 2)))) volume :=
-    (integrable_mul_oddKernels_general hx hx'
-      ((xiRightCenteredZero q.1).im)
-      (-(xiRightCenteredZero q'.1).im)).const_mul 4
-  have h21 : Integrable (fun t : ℝ =>
-      4 * (((t + -(xiRightCenteredZero q.1).im) /
-          ((((xiRightCenteredZero q.1).re + 1 / 2)) ^ 2 +
-            (t + -(xiRightCenteredZero q.1).im) ^ 2)) *
-        ((t + (xiRightCenteredZero q'.1).im) /
-          ((((xiRightCenteredZero q'.1).re + 1 / 2)) ^ 2 +
-            (t + (xiRightCenteredZero q'.1).im) ^ 2)))) volume :=
-    (integrable_mul_oddKernels_general hx hx'
-      (-(xiRightCenteredZero q.1).im)
-      ((xiRightCenteredZero q'.1).im)).const_mul 4
-  have h22 : Integrable (fun t : ℝ =>
-      4 * (((t + -(xiRightCenteredZero q.1).im) /
-          ((((xiRightCenteredZero q.1).re + 1 / 2)) ^ 2 +
-            (t + -(xiRightCenteredZero q.1).im) ^ 2)) *
-        ((t + -(xiRightCenteredZero q'.1).im) /
-          ((((xiRightCenteredZero q'.1).re + 1 / 2)) ^ 2 +
-            (t + -(xiRightCenteredZero q'.1).im) ^ 2)))) volume :=
-    (integrable_mul_oddKernels_general hx hx'
-      (-(xiRightCenteredZero q.1).im)
-      (-(xiRightCenteredZero q'.1).im)).const_mul 4
-  have h1122 : Integrable (fun t : ℝ =>
-      (4 * (((t + (xiRightCenteredZero q.1).im) /
-          ((((xiRightCenteredZero q.1).re + 1 / 2)) ^ 2 +
-            (t + (xiRightCenteredZero q.1).im) ^ 2)) *
-        ((t + (xiRightCenteredZero q'.1).im) /
-          ((((xiRightCenteredZero q'.1).re + 1 / 2)) ^ 2 +
-            (t + (xiRightCenteredZero q'.1).im) ^ 2)))) +
-      (4 * (((t + (xiRightCenteredZero q.1).im) /
-          ((((xiRightCenteredZero q.1).re + 1 / 2)) ^ 2 +
-            (t + (xiRightCenteredZero q.1).im) ^ 2)) *
-        ((t + -(xiRightCenteredZero q'.1).im) /
-          ((((xiRightCenteredZero q'.1).re + 1 / 2)) ^ 2 +
-            (t + -(xiRightCenteredZero q'.1).im) ^ 2))))) volume :=
-    h11.add h12
-  have h2122 : Integrable (fun t : ℝ =>
-      (4 * (((t + -(xiRightCenteredZero q.1).im) /
-          ((((xiRightCenteredZero q.1).re + 1 / 2)) ^ 2 +
-            (t + -(xiRightCenteredZero q.1).im) ^ 2)) *
-        ((t + (xiRightCenteredZero q'.1).im) /
-          ((((xiRightCenteredZero q'.1).re + 1 / 2)) ^ 2 +
-            (t + (xiRightCenteredZero q'.1).im) ^ 2)))) +
-      (4 * (((t + -(xiRightCenteredZero q.1).im) /
-          ((((xiRightCenteredZero q.1).re + 1 / 2)) ^ 2 +
-            (t + -(xiRightCenteredZero q.1).im) ^ 2)) *
-        ((t + -(xiRightCenteredZero q'.1).im) /
-          ((((xiRightCenteredZero q'.1).re + 1 / 2)) ^ 2 +
-            (t + -(xiRightCenteredZero q'.1).im) ^ 2))))) volume :=
-    h21.add h22
-  rw [show (fun t : ℝ => ((xiAntiCausalWardSchwarzPairResponse q
-      ((1 / 2 : ℂ) + I * (t : ℂ))).im) *
-      ((xiAntiCausalWardSchwarzPairResponse q'
-        ((1 / 2 : ℂ) + I * (t : ℂ))).im)) =
-      fun t : ℝ =>
-        ((4 * (((t + (xiRightCenteredZero q.1).im) /
-          ((((xiRightCenteredZero q.1).re + 1 / 2)) ^ 2 +
-            (t + (xiRightCenteredZero q.1).im) ^ 2)) *
-        ((t + (xiRightCenteredZero q'.1).im) /
-          ((((xiRightCenteredZero q'.1).re + 1 / 2)) ^ 2 +
-            (t + (xiRightCenteredZero q'.1).im) ^ 2)))) +
-        (4 * (((t + (xiRightCenteredZero q.1).im) /
-          ((((xiRightCenteredZero q.1).re + 1 / 2)) ^ 2 +
-            (t + (xiRightCenteredZero q.1).im) ^ 2)) *
-        ((t + -(xiRightCenteredZero q'.1).im) /
-          ((((xiRightCenteredZero q'.1).re + 1 / 2)) ^ 2 +
-            (t + -(xiRightCenteredZero q'.1).im) ^ 2))))) +
-        ((4 * (((t + -(xiRightCenteredZero q.1).im) /
-          ((((xiRightCenteredZero q.1).re + 1 / 2)) ^ 2 +
-            (t + -(xiRightCenteredZero q.1).im) ^ 2)) *
-        ((t + (xiRightCenteredZero q'.1).im) /
-          ((((xiRightCenteredZero q'.1).re + 1 / 2)) ^ 2 +
-            (t + (xiRightCenteredZero q'.1).im) ^ 2)))) +
-        (4 * (((t + -(xiRightCenteredZero q.1).im) /
-          ((((xiRightCenteredZero q.1).re + 1 / 2)) ^ 2 +
-            (t + -(xiRightCenteredZero q.1).im) ^ 2)) *
-        ((t + -(xiRightCenteredZero q'.1).im) /
-          ((((xiRightCenteredZero q'.1).re + 1 / 2)) ^ 2 +
-            (t + -(xiRightCenteredZero q'.1).im) ^ 2))))) from
-    funext fun t => by
-      rw [im_xiAntiCausalWardSchwarzPairResponse_eulerEdge_eq,
-        im_xiAntiCausalWardSchwarzPairResponse_eulerEdge_eq]
-      ring]
-  rw [MeasureTheory.integral_add h1122 h2122,
-    MeasureTheory.integral_add h11 h12,
-    MeasureTheory.integral_add h21 h22,
-    MeasureTheory.integral_const_mul, MeasureTheory.integral_const_mul,
-    MeasureTheory.integral_const_mul, MeasureTheory.integral_const_mul,
-    integral_mul_oddKernels_general hx hx'
-      ((xiRightCenteredZero q.1).im) ((xiRightCenteredZero q'.1).im),
-    integral_mul_oddKernels_general hx hx'
-      ((xiRightCenteredZero q.1).im) (-(xiRightCenteredZero q'.1).im),
-    integral_mul_oddKernels_general hx hx'
-      (-(xiRightCenteredZero q.1).im) ((xiRightCenteredZero q'.1).im),
-    integral_mul_oddKernels_general hx hx'
-      (-(xiRightCenteredZero q.1).im) (-(xiRightCenteredZero q'.1).im)]
-  have hxx : (0 : ℝ) < ((xiRightCenteredZero q.1).re + 1 / 2) +
-      ((xiRightCenteredZero q'.1).re + 1 / 2) := by linarith
-  have hA : (0 : ℝ) < (((xiRightCenteredZero q.1).re + 1 / 2) +
-      ((xiRightCenteredZero q'.1).re + 1 / 2)) ^ 2 +
-      ((xiRightCenteredZero q.1).im - (xiRightCenteredZero q'.1).im) ^ 2 :=
-    by positivity
-  have hB : (0 : ℝ) < (((xiRightCenteredZero q.1).re + 1 / 2) +
-      ((xiRightCenteredZero q'.1).re + 1 / 2)) ^ 2 +
-      ((xiRightCenteredZero q.1).im + (xiRightCenteredZero q'.1).im) ^ 2 :=
-    by positivity
-  have hC : (0 : ℝ) < (((xiRightCenteredZero q.1).re + 1 / 2) +
-      ((xiRightCenteredZero q'.1).re + 1 / 2)) ^ 2 +
-      (-(xiRightCenteredZero q.1).im - (xiRightCenteredZero q'.1).im) ^ 2 :=
-    by positivity
-  have hD : (0 : ℝ) < (((xiRightCenteredZero q.1).re + 1 / 2) +
-      ((xiRightCenteredZero q'.1).re + 1 / 2)) ^ 2 +
-      (-(xiRightCenteredZero q.1).im - -(xiRightCenteredZero q'.1).im) ^ 2 :=
-    by positivity
-  field_simp
+  have h := integral_mul_mirroredKernelPair
+    (k := fun x β t => (t + β) / (x ^ 2 + (t + β) ^ 2)) hx hx'
+    (integrable_mul_oddKernels_general hx hx')
+    (integral_mul_oddKernels_general hx hx')
+    (-2) (-2) ((xiRightCenteredZero q.1).im) ((xiRightCenteredZero q'.1).im)
+    (f := fun t => (xiAntiCausalWardSchwarzPairResponse q ((1 / 2 : ℂ) + I * (t : ℂ))).im)
+    (f' := fun t => (xiAntiCausalWardSchwarzPairResponse q' ((1 / 2 : ℂ) + I * (t : ℂ))).im)
+    (fun t => by dsimp only; rw [im_xiAntiCausalWardSchwarzPairResponse_eulerEdge_eq]; ring)
+    (fun t => by dsimp only; rw [im_xiAntiCausalWardSchwarzPairResponse_eulerEdge_eq]; ring)
+  rw [h]
   ring
 
 /-- **Pairwise channel equipartition**: every pair-pair imaginary deposit

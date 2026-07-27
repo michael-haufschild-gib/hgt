@@ -135,18 +135,14 @@ namespace Sublevel
 
 open MeasureTheory
 
-/-- **The fourth-phase averaging of an inverse-√ singularity.**  Any
-integrand dominated both by a constant `M` and by `K/√‖c' + De^{iη}‖`
-integrates over the circle to at most `M·(8πs*/‖D‖) + (K/√s*)·2π` for any
-split height `s*` with `2s* ≤ ‖D‖`: the singular region pays the constant
-against the center-uniform one-phase law, the bulk pays the capped
-singularity against the full circle. -/
-theorem inv_sqrt_average {D c' : ℂ} {M K sstar : ℝ} {f : ℝ → ENNReal}
+theorem inv_sqrt_average' {D c' : ℂ} {M K sstar : ℝ} {f : ℝ → ENNReal}
     (hD : D ≠ 0) (hK : 0 ≤ K) (hs : 0 < sstar)
     (hs2 : 2 * sstar ≤ ‖D‖)
     (hfM : ∀ η ∈ Set.Icc (0 : ℝ) (2 * Real.pi), f η ≤ ENNReal.ofReal M)
-    (hfK : ∀ η ∈ Set.Icc (0 : ℝ) (2 * Real.pi), f η ≤ ENNReal.ofReal
-      (K / Real.sqrt ‖c' + D * Complex.exp ((η : ℂ) * Complex.I)‖)) :
+    (hfK : ∀ η ∈ Set.Icc (0 : ℝ) (2 * Real.pi),
+      sstar ≤ ‖c' + D * Complex.exp ((η : ℂ) * Complex.I)‖ →
+      f η ≤ ENNReal.ofReal
+        (K / Real.sqrt ‖c' + D * Complex.exp ((η : ℂ) * Complex.I)‖)) :
     ∫⁻ η in Set.Icc (0 : ℝ) (2 * Real.pi), f η
       ≤ ENNReal.ofReal M * ENNReal.ofReal (8 * Real.pi * sstar / ‖D‖)
         + ENNReal.ofReal (K / Real.sqrt sstar)
@@ -176,7 +172,7 @@ theorem inv_sqrt_average {D c' : ℂ} {M K sstar : ℝ} {f : ℝ → ENNReal}
       refine le_trans (le_of_eq (Set.indicator_of_mem
         (show η ∈ E1 from ⟨hη, hle⟩) (fun _ => ENNReal.ofReal M)).symm) ?_
       exact le_self_add
-    · refine le_trans (hfK η hη) ?_
+    · refine le_trans (hfK η hη hge) ?_
       have hmono : K / Real.sqrt ‖c' + D * Complex.exp ((η : ℂ)
             * Complex.I)‖ ≤ K / Real.sqrt sstar := by
         apply div_le_div_of_nonneg_left hK (Real.sqrt_pos.mpr hs)
@@ -199,6 +195,24 @@ theorem inv_sqrt_average {D c' : ℂ} {M K sstar : ℝ} {f : ℝ → ENNReal}
     apply ENNReal.ofReal_le_ofReal
     linarith [Real.pi_pos]
   exact add_le_add (mul_le_mul_right hv1 _) (mul_le_mul_right hv2 _)
+
+/-- **The fourth-phase averaging of an inverse-√ singularity.**  Any
+integrand dominated both by a constant `M` and by `K/√‖c' + De^{iη}‖`
+integrates over the circle to at most `M·(8πs*/‖D‖) + (K/√s*)·2π` for any
+split height `s*` with `2s* ≤ ‖D‖`: the singular region pays the constant
+against the center-uniform one-phase law, the bulk pays the capped
+singularity against the full circle. -/
+theorem inv_sqrt_average {D c' : ℂ} {M K sstar : ℝ} {f : ℝ → ENNReal}
+    (hD : D ≠ 0) (hK : 0 ≤ K) (hs : 0 < sstar)
+    (hs2 : 2 * sstar ≤ ‖D‖)
+    (hfM : ∀ η ∈ Set.Icc (0 : ℝ) (2 * Real.pi), f η ≤ ENNReal.ofReal M)
+    (hfK : ∀ η ∈ Set.Icc (0 : ℝ) (2 * Real.pi), f η ≤ ENNReal.ofReal
+      (K / Real.sqrt ‖c' + D * Complex.exp ((η : ℂ) * Complex.I)‖)) :
+    ∫⁻ η in Set.Icc (0 : ℝ) (2 * Real.pi), f η
+      ≤ ENNReal.ofReal M * ENNReal.ofReal (8 * Real.pi * sstar / ‖D‖)
+        + ENNReal.ofReal (K / Real.sqrt sstar)
+          * ENNReal.ofReal (2 * Real.pi) :=
+  inv_sqrt_average' hD hK hs hs2 hfM (fun η hη _ => hfK η hη)
 
 end Sublevel
 end RHTower

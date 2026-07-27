@@ -126,7 +126,13 @@ its \(L^2\) completion. The multiplier/endomorphism target is therefore forced, 
       all-depth conductor-\(\mathbb Z_p\) characters, and finite restricted-product character
       assembly are formalized; diagonal-product compatibility is formalized on every fixed-prime
       lattice \(\mathbb Z[1/p]\) and then on all of \(\mathbb Q\) by primary decomposition;
-      semilocal faithfulness and full \(L^2\) assembly remain
+      algebraic real--finite tensor assembly, full semilocal faithfulness, finite-adele
+      Haar-\(L^2\) unitarity, and product-Haar semilocal \(L^2\) unitarity are formalized;
+      the canonical algebraic Bruhat-tensor map into product-Haar \(L^2\) and exact Weyl
+      equivariance and injectivity are formalized; its pulled-back Hilbert completion,
+      identification with the closed algebraic image, and completed Weyl action are formalized;
+      full-product density, an independent factorwise completed-tensor comparison, and sheaf
+      compatibility remain
 - [ ] 3 → 4: publication-ready integration
 
 ## Formalization decomposition
@@ -156,8 +162,32 @@ its \(L^2\) completion. The multiplier/endomorphism target is therefore forced, 
    `GaloisForLFunctions.RHTower.FieldOneFiniteAdeleDiagonalReciprocity`.
 7. [x] Arbitrary-denominator reciprocity by pairwise-coprime prime-power decomposition:
    `GaloisForLFunctions.RHTower.FieldOneRationalPrimaryReciprocity`.
-8. [ ] Finite-product tensor assembly for \(\mathbb A_S\).
-9. [ ] Finite-place/semilocal \(L^2\) unitarity and semilocal faithfulness.
+8. [x] Algebraic real--finite Bruhat tensor assembly, inverse/additive laws, compact-open
+   integral finite Bruhat test, finite-zero contraction, and rational diagonal faithfulness:
+   `GaloisForLFunctions.RHTower.FieldOneSemilocalBruhatWeylTensor`,
+   `GaloisForLFunctions.RHTower.FieldOneFiniteAdeleIntegralBruhatTest`,
+   `GaloisForLFunctions.RHTower.FieldOneSemilocalArchimedeanFaithfulness`.
+9. [x] Measure-independent unit-modulus \(L^2\) multiplier and finite-adele Borel Haar
+   specialization, including exact compatibility with embedded Bruhat tests:
+   `GaloisForLFunctions.RHTower.UnitModulusL2Multiplier`,
+   `GaloisForLFunctions.RHTower.FieldOneFiniteAdeleL2WeylMultiplier`.
+10. [x] Product-Haar semilocal \(L^2\) unitary action, finite-character primitivity,
+    faithful finite Bruhat action, and full algebraic semilocal faithfulness:
+    `GaloisForLFunctions.RHTower.FieldOneSemilocalL2WeylMultiplier`,
+    `GaloisForLFunctions.RHTower.FieldOneFiniteAdeleSelfDuality`,
+    `GaloisForLFunctions.RHTower.FieldOneSemilocalFullFaithfulness`.
+11. [x] Canonical algebraic Schwartz--Bruhat realization in product-Haar \(L^2\), including
+    exact Weyl equivariance:
+    `GaloisForLFunctions.RHTower.FieldOneSemilocalBruhatToL2`.
+12. [x] Algebraic uniqueness of separated-function tensors, open-positive swapped product
+    measure, continuous representative, and injectivity:
+    `GaloisForLFunctions.RHTower.FunctionTensorProduct`,
+    `GaloisForLFunctions.RHTower.FieldOneSemilocalBruhatL2Embedding`.
+13. [x] Pulled-back Hilbert completion, isometric identification with the closed algebraic
+    \(L^2\) image, and completed Weyl intertwining:
+    `GaloisForLFunctions.RHTower.FieldOneSemilocalBruhatHilbertCompletion`.
+14. [ ] Full-product density, independent factorwise completed-tensor comparison, and
+    restriction-compatible sheaf assembly.
 
 ## Log
 
@@ -179,4 +209,28 @@ its \(L^2\) completion. The multiplier/endomorphism target is therefore forced, 
   The diagonal-reciprocity module then proves, without a product-formula premise, that this
   character cancels the negative real character on every \(\mathbb Z[1/p]\). The rational
   primary-decomposition module derives the same law for every rational denominator using
-  pairwise coprimality and Bézout coefficients. Semilocal tensor and \(L^2\) assembly remain.
+  pairwise coprimality and Bézout coefficients.
+- 2026-07-26 — Lean assembled the algebraic real--finite Schwartz--Bruhat tensor with exact
+  additive and inverse laws. Compactness of integral finite adeles produced a canonical nonzero
+  finite Bruhat test and finite-zero contraction; this proves rational diagonal faithfulness
+  without assuming full finite-adele self-duality. A general unit-modulus \(L^2\) construction
+  and its finite-adele Borel Haar specialization prove finite-place unitarity and exact
+  compatibility with embedded Bruhat tests.
+- 2026-07-26 — Lean proved product-Haar semilocal \(L^2\) unitarity. A one-coordinate
+  inverse-principal-part argument proves the finite standard character primitive; translated
+  compact-open tests make the finite Bruhat action faithful. Archimedean-zero contraction
+  against the Gaussian combines this with finite-zero contraction to prove full algebraic
+  semilocal faithfulness.
+- 2026-07-26 — Lean constructed the canonical algebraic Schwartz--Bruhat map into
+  product-Haar \(L^2\), proving square-integrability without sigma-finite Haar and exact
+  intertwining of the algebraic and analytic Weyl actions.
+- 2026-07-26 — Lean proved injectivity. A general Hamel-coordinate theorem gives uniqueness of
+  algebraic separated-function tensors. Forming product measure with the real factor on
+  `Measure.prod`'s sigma-finite side and transporting by swap gives open positivity without a
+  finite-adele sigma-finiteness theorem; continuous representatives then upgrade \(L^2\)
+  equality to pointwise equality.
+- 2026-07-26 — Lean constructed the induced pre-Hilbert structure and proved its abstract
+  completion canonically isometric to the closure of the algebraic product-\(L^2\) image.
+  Algebraic Weyl automorphisms extend to completed unitaries with exact ambient intertwining and
+  additive law. Full-product density, independent factorwise completed-tensor comparison, and
+  sheaf compatibility remain.

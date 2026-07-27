@@ -1037,85 +1037,19 @@ theorem inverseTiltedDyadicMellin_ne_zero_at_xiPole
     (lt_trans (by norm_num : (0 : ℝ) < 1 / 2)
       (inverseTiltedXiPole_re_gt_half rho))
 
-theorem meromorphicOrderAt_inverseTiltedDyadicContinuedSource_eq_neg_one
+/-- **Pole data of the inverse-tilted dyadic continued source.**  At each shifted Xi pole the
+source is a simple pole whose trailing coefficient is twice the dyadic Mellin factor times the
+multiplicity.  Both readings come from the same splitting into a singular product and a
+higher-order correction, so they are proved together. -/
+theorem meromorphicOrderAt_and_trailingCoeffAt_inverseTiltedDyadicContinuedSource
     (rho : XiDivisorSupport) :
     meromorphicOrderAt inverseTiltedDyadicContinuedSource
-        (inverseTiltedXiPole rho) = ((-1 : ℤ) : WithTop ℤ) := by
-  let p : ℂ := inverseTiltedXiPole rho
-  let shiftedLog : ℂ → ℂ := fun z =>
-    logDeriv regularizedRiemannZeta (z - 1 / 2)
-  let fac : ℂ → ℂ := fun z => 2 * inverseTiltedDyadicMellin z
-  let singular : ℂ → ℂ := fun z => fac z * shiftedLog z
-  let correction : ℂ → ℂ := fun z =>
-    dslope inverseTiltedDyadicPoleNumerator (3 / 2) z -
-      2 * inverseTiltedDyadicErrorSeries z
-  have hpHalf : 1 / 2 < p.re := by
-    simpa only [p] using inverseTiltedXiPole_re_gt_half rho
-  have hM : AnalyticAt ℂ inverseTiltedDyadicMellin p :=
-    (differentiable_inverseTiltedDyadicMellin.differentiableOn.analyticOnNhd
-      isOpen_univ) p (Set.mem_univ p)
-  have hfac : AnalyticAt ℂ fac p := by
-    dsimp only [fac]
-    exact analyticAt_const.mul hM
-  have hfac0 : fac p ≠ 0 := by
-    dsimp only [fac, p]
-    exact mul_ne_zero (by norm_num)
-      (inverseTiltedDyadicMellin_ne_zero_at_xiPole rho)
-  have hshiftedLog : MeromorphicAt shiftedLog p := by
-    let shift : ℂ → ℂ := fun z => z - 1 / 2
-    have hshiftAnalytic : AnalyticAt ℂ shift p := by
-      dsimp only [shift]
-      fun_prop
-    have hbase : MeromorphicAt (logDeriv regularizedRiemannZeta) (shift p) :=
-      meromorphicAt_logDeriv_regularizedRiemannZeta (shift p)
-    have hcomp := MeromorphicAt.comp_analyticAt
-      (f := logDeriv regularizedRiemannZeta) (g := shift)
-      hbase hshiftAnalytic
-    simpa only [shiftedLog, shift, Function.comp_apply] using hcomp
-  have hshiftedLogOrder : meromorphicOrderAt shiftedLog p =
-      ((-1 : ℤ) : WithTop ℤ) := by
-    simpa only [shiftedLog, p] using
-      meromorphicOrderAt_inverseTilted_shiftedLogDeriv_eq_neg_one rho
-  have hfacOrder : meromorphicOrderAt fac p = 0 := by
-    rw [hfac.meromorphicOrderAt_eq,
-      hfac.analyticOrderAt_eq_zero.mpr hfac0]
-    simp
-  have hsingularOrder : meromorphicOrderAt singular p =
-      ((-1 : ℤ) : WithTop ℤ) := by
-    dsimp only [singular]
-    rw [fun_meromorphicOrderAt_mul hfac.meromorphicAt hshiftedLog,
-      hfacOrder, hshiftedLogOrder]
-    norm_num
-  have hdiv : AnalyticAt ℂ
-      (dslope inverseTiltedDyadicPoleNumerator (3 / 2)) p :=
-    (differentiable_inverseTiltedDyadicPoleDividedDifference.differentiableOn.analyticOnNhd
-      isOpen_univ) p (Set.mem_univ p)
-  have herr : AnalyticAt ℂ inverseTiltedDyadicErrorSeries p :=
-    (differentiableOn_inverseTiltedDyadicErrorSeries_rightHalf.analyticOnNhd
-      (isOpen_lt continuous_const Complex.continuous_re)) p hpHalf
-  have hcorrection : AnalyticAt ℂ correction p := by
-    dsimp only [correction]
-    exact hdiv.sub (analyticAt_const.mul herr)
-  have hlt : meromorphicOrderAt singular p <
-      meromorphicOrderAt correction p := by
-    rw [hsingularOrder]
-    exact lt_of_lt_of_le
-      (by exact_mod_cast (show (-1 : ℤ) < 0 by omega))
-      hcorrection.meromorphicOrderAt_nonneg
-  have hfun : inverseTiltedDyadicContinuedSource = singular + correction := by
-    funext z
-    simp only [inverseTiltedDyadicContinuedSource, singular, fac, shiftedLog,
-      correction, Pi.add_apply]
-    ring
-  rw [hfun, meromorphicOrderAt_add_eq_left_of_lt hcorrection.meromorphicAt hlt,
-    hsingularOrder]
+        (inverseTiltedXiPole rho) = ((-1 : ℤ) : WithTop ℤ) ∧
+      meromorphicTrailingCoeffAt inverseTiltedDyadicContinuedSource
+          (inverseTiltedXiPole rho) =
+        2 * inverseTiltedDyadicMellin (inverseTiltedXiPole rho) *
+          (inverseTiltedXiMultiplicity rho : ℂ) := by
 
-theorem meromorphicTrailingCoeffAt_inverseTiltedDyadicContinuedSource
-    (rho : XiDivisorSupport) :
-    meromorphicTrailingCoeffAt inverseTiltedDyadicContinuedSource
-        (inverseTiltedXiPole rho) =
-      2 * inverseTiltedDyadicMellin (inverseTiltedXiPole rho) *
-        (inverseTiltedXiMultiplicity rho : ℂ) := by
   let p : ℂ := inverseTiltedXiPole rho
   let shiftedLog : ℂ → ℂ := fun z =>
     logDeriv regularizedRiemannZeta (z - 1 / 2)
@@ -1185,6 +1119,9 @@ theorem meromorphicTrailingCoeffAt_inverseTiltedDyadicContinuedSource
     simp only [inverseTiltedDyadicContinuedSource, singular, fac, shiftedLog,
       correction, Pi.add_apply]
     ring
+  refine ⟨by
+      rw [hfun, meromorphicOrderAt_add_eq_left_of_lt hcorrection.meromorphicAt hlt,
+        hsingularOrder], ?_⟩
   rw [hfun]
   change meromorphicTrailingCoeffAt (fun z => singular z + correction z) p =
     fac p * (inverseTiltedXiMultiplicity rho : ℂ)
@@ -1195,6 +1132,20 @@ theorem meromorphicTrailingCoeffAt_inverseTiltedDyadicContinuedSource
   have hlogTrail :=
     meromorphicTrailingCoeffAt_inverseTilted_shiftedLogDeriv rho
   rw [hlogTrail]
+
+theorem meromorphicOrderAt_inverseTiltedDyadicContinuedSource_eq_neg_one
+    (rho : XiDivisorSupport) :
+    meromorphicOrderAt inverseTiltedDyadicContinuedSource
+        (inverseTiltedXiPole rho) = ((-1 : ℤ) : WithTop ℤ) :=
+  (meromorphicOrderAt_and_trailingCoeffAt_inverseTiltedDyadicContinuedSource rho).1
+
+theorem meromorphicTrailingCoeffAt_inverseTiltedDyadicContinuedSource
+    (rho : XiDivisorSupport) :
+    meromorphicTrailingCoeffAt inverseTiltedDyadicContinuedSource
+        (inverseTiltedXiPole rho) =
+      2 * inverseTiltedDyadicMellin (inverseTiltedXiPole rho) *
+        (inverseTiltedXiMultiplicity rho : ℂ) :=
+  (meromorphicOrderAt_and_trailingCoeffAt_inverseTiltedDyadicContinuedSource rho).2
 
 theorem exists_xiDivisorSupport_of_inverseTilted_regularizedZeta_zero
     {s : ℂ} (hs : 1 / 2 < s.re)

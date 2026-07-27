@@ -15,7 +15,7 @@ this is the recurrence of positive values of the binary additive Möbius self-co
 namespace RHTower
 
 /-- Taking the `2k`-th root of a bound on `‖z^k‖²`. -/
-private theorem norm_le_rpow_of_norm_pow_sq_le {z : ℂ} {M : ℝ} {k : ℕ} (hk : 0 < k)
+theorem norm_le_rpow_of_norm_pow_sq_le {z : ℂ} {M : ℝ} {k : ℕ} (hk : 0 < k)
     (h : ‖z ^ k‖ ^ 2 ≤ M) :
     ‖z‖ ≤ M ^ ((2 * (k : ℝ))⁻¹) := by
   have hkR : (0 : ℝ) < 2 * (k : ℝ) := by

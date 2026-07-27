@@ -292,61 +292,6 @@ theorem iteratedDeriv_outerGamma_factorialBlowUp_tendsto_local
     (tendsto_outer_Gamma_factorialBlowUp_locallyUniformlyOn_local u hu).mono hVU
   exact iteratedDeriv_tendsto_of_locallyUniform hVopen hconv hdiff j hxV
 
-theorem iteratedDeriv_outerReciprocalLimit_neg_inv_eq_mobiusJetExpansion_local
-    {u : ℂ → ℂ} {Ω : Set ℂ} (hΩ : IsOpen Ω)
-    (hu : ∀ z ∈ Ω, AnalyticAt ℂ u z) :
-    ∀ (j : ℕ) (z : ℂ), z ∈ Ω → z ≠ 0 →
-      iteratedDeriv j (outerReciprocalLimit u) (-z⁻¹) =
-        mobiusJetExpansion u j z := by
-  intro j
-  induction j with
-  | zero =>
-      intro z hz hz0
-      simp [mobiusJetExpansion, mobiusJetCoeff, iteratedDeriv_zero,
-        outerReciprocalLimit]
-  | succ j ih =>
-      intro z hz hz0
-      let x : ℂ := -z⁻¹
-      have hFan : AnalyticAt ℂ (outerReciprocalLimit u) x := by
-        simpa [x] using analyticAt_outerReciprocalLimit_neg_inv u (hu z hz) hz0
-      have hFj : AnalyticAt ℂ (iteratedDeriv j (outerReciprocalLimit u)) x :=
-        analyticAt_iteratedDeriv_of_analyticAt hFan j
-      have hFderiv : HasDerivAt (iteratedDeriv j (outerReciprocalLimit u))
-          (iteratedDeriv (j + 1) (outerReciprocalLimit u) x) x := by
-        simpa [iteratedDeriv_succ] using hFj.differentiableAt.hasDerivAt
-      have hphi : HasDerivAt (fun w : ℂ => -w⁻¹) (z⁻¹ ^ 2) z := by
-        simpa [inv_pow] using (hasDerivAt_inv hz0).neg
-      have hcomp : HasDerivAt
-          (fun w : ℂ => iteratedDeriv j (outerReciprocalLimit u) (-w⁻¹))
-          (iteratedDeriv (j + 1) (outerReciprocalLimit u) x * z⁻¹ ^ 2) z := by
-        simpa [x, Function.comp_def] using hFderiv.comp z hphi
-      have hexp : HasDerivAt (mobiusJetExpansion u j)
-          (z⁻¹ ^ 2 * mobiusJetExpansion u (j + 1) z) z :=
-        hasDerivAt_mobiusJetExpansion hu hz hz0 j
-      have hzeroNhd : {w : ℂ | w ≠ 0} ∈ 𝓝 z :=
-        isOpen_compl_singleton.mem_nhds (Set.mem_compl_singleton_iff.mpr hz0)
-      have hev :
-          (fun w : ℂ => iteratedDeriv j (outerReciprocalLimit u) (-w⁻¹)) =ᶠ[𝓝 z]
-            mobiusJetExpansion u j := by
-        filter_upwards [hΩ.mem_nhds hz, hzeroNhd] with w hwΩ hw0
-        exact ih w hwΩ hw0
-      have heqderiv :
-          iteratedDeriv (j + 1) (outerReciprocalLimit u) x * z⁻¹ ^ 2 =
-            z⁻¹ ^ 2 * mobiusJetExpansion u (j + 1) z := by
-        calc
-          _ = deriv
-              (fun w : ℂ => iteratedDeriv j (outerReciprocalLimit u) (-w⁻¹)) z :=
-                hcomp.deriv.symm
-          _ = deriv (mobiusJetExpansion u j) z := hev.deriv_eq
-          _ = _ := hexp.deriv
-      have hzInv2 : z⁻¹ ^ 2 ≠ 0 := pow_ne_zero 2 (inv_ne_zero hz0)
-      have hcancel :
-          z⁻¹ ^ 2 * iteratedDeriv (j + 1) (outerReciprocalLimit u) x =
-            z⁻¹ ^ 2 * mobiusJetExpansion u (j + 1) z := by
-        simpa [mul_comm] using heqderiv
-      have hfinal := mul_left_cancel₀ hzInv2 hcancel
-      simpa [x] using hfinal
-
 theorem mobiusJetValue_outer_eq_limitJet_local
     {u : ℂ → ℂ} {Ω : Set ℂ} (hΩ : IsOpen Ω)
     (hu : ∀ z ∈ Ω, AnalyticAt ℂ u z)

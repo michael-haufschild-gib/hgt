@@ -21,51 +21,73 @@ noncomputable section
 def shiftedHarmonicSquareSum (n : ℕ) (z : ℂ) : ℂ :=
   ∑ j ∈ Finset.range n, ((((j + 1 : ℕ) : ℂ) - z) ^ 2)⁻¹
 
+/-- The shifted inverse `p`-th power sum over the first `n` positive integers. -/
+def shiftedHarmonicPowerSum (p n : ℕ) (z : ℂ) : ℂ :=
+  ∑ j ∈ Finset.range n, ((((j + 1 : ℕ) : ℂ) - z) ^ p)⁻¹
+
+/-- **Digamma jet reflection across the negative integers.**  Moving the argument of the `k`-th
+digamma jet from `1 + z` down to `-n + z` costs the pole term at the origin plus one shifted
+inverse power for each integer crossed:
+
+`ψ⁽ᵏ⁾(-n + z) = ψ⁽ᵏ⁾(1 + z) + (-1)^{k+1} k! z^{-(k+1)} + k! · Σ_{j<n} ((j+1) - z)^{-(k+1)}`.
+
+Induction on `n` using `digammaJet_shift`; the sign `(-1)^{k+1}` of the origin term is absorbed into
+the sum terms because `((j+1) - z)^{k+1} = (-1)^{k+1} (z - (j+1))^{k+1}`. -/
+theorem iteratedDeriv_digamma_neg_nat_add_of_ne_int (k : ℕ) (z : ℂ)
+    (hz : ∀ m : ℤ, z ≠ (m : ℂ)) (n : ℕ) :
+    iteratedDeriv k Complex.digamma (-(n : ℂ) + z) =
+      iteratedDeriv k Complex.digamma (1 + z) +
+        (-1) ^ (k + 1) * (k.factorial : ℂ) * z⁻¹ ^ (k + 1) +
+        (k.factorial : ℂ) * shiftedHarmonicPowerSum (k + 1) n z := by
+  have hsignsq : ((-1 : ℂ)) ^ (k + 1) * ((-1 : ℂ)) ^ (k + 1) = 1 := by
+    rw [← mul_pow]
+    norm_num
+  induction n with
+  | zero =>
+      have hzOff : ∀ m : ℕ, z ≠ -(m : ℂ) := fun m => by simpa using hz (-(m : ℤ))
+      have hstep := digammaJet_shift k hzOff
+      simp only [Nat.cast_zero, neg_zero, zero_add, shiftedHarmonicPowerSum,
+        Finset.range_zero, Finset.sum_empty, mul_zero, add_zero]
+      rw [show (1 + z : ℂ) = z + 1 by ring, hstep, inv_pow, pow_succ (-1 : ℂ) k,
+        div_eq_mul_inv]
+      ring
+  | succ n ih =>
+      set w : ℂ := -((n + 1 : ℕ) : ℂ) + z with hwdef
+      have hw : ∀ m : ℕ, w ≠ -(m : ℂ) := by
+        intro m hwm
+        apply hz ((n : ℤ) + 1 - (m : ℤ))
+        rw [hwdef] at hwm
+        push_cast at hwm ⊢
+        linear_combination hwm
+      have hstep := digammaJet_shift k hw
+      have hwadd : w + 1 = -(n : ℂ) + z := by
+        rw [hwdef]
+        push_cast
+        ring
+      have hneg : ((((n + 1 : ℕ) : ℂ) - z)) = -w := by
+        rw [hwdef]
+        push_cast
+        ring
+      have hsolve : iteratedDeriv k Complex.digamma w =
+          iteratedDeriv k Complex.digamma (w + 1) -
+            (-1) ^ k * (k.factorial : ℂ) / w ^ (k + 1) := by
+        rw [hstep]
+        ring
+      have hterm : (((((n + 1 : ℕ) : ℂ) - z)) ^ (k + 1))⁻¹ =
+          ((-1 : ℂ)) ^ (k + 1) * (w ^ (k + 1))⁻¹ := by
+        rw [hneg, neg_pow, mul_inv, inv_eq_of_mul_eq_one_right hsignsq]
+      rw [hsolve, hwadd, ih]
+      simp only [shiftedHarmonicPowerSum, Finset.sum_range_succ, mul_add, hterm]
+      rw [pow_succ (-1 : ℂ) k]
+      ring
+
+
 theorem iteratedDeriv_one_digamma_neg_nat_add_of_ne_int (z : ℂ)
     (hz : ∀ k : ℤ, z ≠ (k : ℂ)) (n : ℕ) :
     iteratedDeriv 1 Complex.digamma (-(n : ℂ) + z) =
       iteratedDeriv 1 Complex.digamma (1 + z) + z⁻¹ ^ 2 +
         shiftedHarmonicSquareSum n z := by
-  induction n with
-  | zero =>
-      have hzOff : ∀ k : ℕ, z ≠ -(k : ℂ) := by
-        intro k
-        simpa using hz (-(k : ℤ))
-      have hstep := digammaJet_shift 1 hzOff
-      simp only [Nat.cast_zero, neg_zero, zero_add, shiftedHarmonicSquareSum,
-        Finset.range_zero, Finset.sum_empty, add_zero]
-      rw [show (1 + z : ℂ) = z + 1 by ring, hstep]
-      have hz0 : z ≠ 0 := by simpa using hz 0
-      norm_num
-      field_simp [hz0]
-      ring
-  | succ n ih =>
-      let w : ℂ := -((n + 1 : ℕ) : ℂ) + z
-      have hw : ∀ k : ℕ, w ≠ -(k : ℂ) := by
-        intro k hwk
-        apply hz ((n : ℤ) + 1 - (k : ℤ))
-        dsimp [w] at hwk
-        norm_num [Int.cast_sub, Int.cast_add]
-        push_cast at hwk ⊢
-        linear_combination hwk
-      have hstep := digammaJet_shift 1 hw
-      have hwadd : w + 1 = -(n : ℂ) + z := by
-        dsimp [w]
-        push_cast
-        ring
-      have hwpow : w ^ 2 = (((n + 1 : ℕ) : ℂ) - z) ^ 2 := by
-        dsimp [w]
-        ring
-      change iteratedDeriv 1 Complex.digamma w = _
-      have hsolve : iteratedDeriv 1 Complex.digamma w =
-          iteratedDeriv 1 Complex.digamma (w + 1) + (w ^ 2)⁻¹ := by
-        simp only [iteratedDeriv_one] at hstep ⊢
-        rw [hstep]
-        norm_num
-        ring
-      rw [hsolve, hwadd, ih]
-      simp only [shiftedHarmonicSquareSum, Finset.sum_range_succ, hwpow]
-      ring
+  simpa using iteratedDeriv_digamma_neg_nat_add_of_ne_int 1 z hz n
 
 theorem norm_shiftedInverse_le {z : ℂ} (hz : ‖z‖ ≤ 1 / 2) (j : ℕ) :
     ‖(((j + 1 : ℕ) : ℂ) - z)⁻¹‖ ≤ 2 / ((j + 1 : ℕ) : ℝ) := by
@@ -89,35 +111,50 @@ theorem norm_shiftedInverse_le {z : ℂ} (hz : ‖z‖ ≤ 1 / 2) (j : ℕ) :
       (inv_le_inv₀ hden (half_pos hkpos)).2 hhalf
     _ = 2 / k := by field_simp
 
-theorem norm_shiftedHarmonicSquareSum_le {z : ℂ}
-    (hz : ‖z‖ ≤ 1 / 2) (n : ℕ) :
-    ‖shiftedHarmonicSquareSum n z‖ ≤ 4 * (harmonic n : ℝ) := by
-  rw [shiftedHarmonicSquareSum]
+/-- **Uniform bound on the shifted inverse power sums.**  For `‖z‖ ≤ 1/2` and any exponent `p ≥ 1`,
+`‖Σ_{j<n} ((j+1) - z)^{-p}‖ ≤ 2^p · Hₙ`.  Each shifted inverse is at most `2/(j+1)`, so its `p`-th
+power is at most `2^p/(j+1)^p ≤ 2^p/(j+1)`, and the harmonic sum collects the result. -/
+theorem norm_shiftedHarmonicPowerSum_le {z : ℂ} (hz : ‖z‖ ≤ 1 / 2)
+    {p : ℕ} (hp : 1 ≤ p) (n : ℕ) :
+    ‖shiftedHarmonicPowerSum p n z‖ ≤ 2 ^ p * (harmonic n : ℝ) := by
+  rw [shiftedHarmonicPowerSum]
   calc
-    ‖∑ j ∈ Finset.range n, ((((j + 1 : ℕ) : ℂ) - z) ^ 2)⁻¹‖ ≤
-        ∑ j ∈ Finset.range n, ‖((((j + 1 : ℕ) : ℂ) - z) ^ 2)⁻¹‖ :=
+    ‖∑ j ∈ Finset.range n, ((((j + 1 : ℕ) : ℂ) - z) ^ p)⁻¹‖ ≤
+        ∑ j ∈ Finset.range n, ‖((((j + 1 : ℕ) : ℂ) - z) ^ p)⁻¹‖ :=
       norm_sum_le _ _
-    _ ≤ ∑ j ∈ Finset.range n, 4 / ((j + 1 : ℕ) : ℝ) := by
+    _ ≤ ∑ j ∈ Finset.range n, 2 ^ p / ((j + 1 : ℕ) : ℝ) := by
       apply Finset.sum_le_sum
-      intro j hj
+      intro j _hj
       rw [← inv_pow, norm_pow]
       have h := norm_shiftedInverse_le hz j
-      have hk : 1 ≤ ((j + 1 : ℕ) : ℝ) := by exact_mod_cast Nat.succ_le_succ (Nat.zero_le j)
-      have hnon : 0 ≤ ‖(((j + 1 : ℕ) : ℂ) - z)⁻¹‖ := norm_nonneg _
+      have hk : 1 ≤ ((j + 1 : ℕ) : ℝ) := by
+        exact_mod_cast Nat.succ_le_succ (Nat.zero_le j)
+      have hkpos : 0 < ((j + 1 : ℕ) : ℝ) := lt_of_lt_of_le zero_lt_one hk
+      have hpow : ((j + 1 : ℕ) : ℝ) ≤ ((j + 1 : ℕ) : ℝ) ^ p := by
+        calc
+          ((j + 1 : ℕ) : ℝ) = ((j + 1 : ℕ) : ℝ) ^ 1 := (pow_one _).symm
+          _ ≤ ((j + 1 : ℕ) : ℝ) ^ p := pow_le_pow_right₀ hk hp
       calc
-        ‖(↑(j + 1) - z)⁻¹‖ ^ 2 ≤ (2 / ((j + 1 : ℕ) : ℝ)) ^ 2 :=
-          (sq_le_sq₀ hnon (by positivity)).2 h
-        _ ≤ 4 / ((j + 1 : ℕ) : ℝ) := by
-          have hkpos : 0 < ((j + 1 : ℕ) : ℝ) := lt_of_lt_of_le zero_lt_one hk
-          field_simp [hkpos.ne']
-          nlinarith
-    _ = 4 * (harmonic n : ℝ) := by
+        ‖(((j + 1 : ℕ) : ℂ) - z)⁻¹‖ ^ p ≤ (2 / ((j + 1 : ℕ) : ℝ)) ^ p := by
+          gcongr
+        _ = 2 ^ p / ((j + 1 : ℕ) : ℝ) ^ p := div_pow _ _ _
+        _ ≤ 2 ^ p / ((j + 1 : ℕ) : ℝ) := by
+          gcongr
+    _ = 2 ^ p * (harmonic n : ℝ) := by
       rw [harmonic]
       push_cast
       rw [Finset.mul_sum]
       apply Finset.sum_congr rfl
-      intro j hj
+      intro j _hj
       field_simp
+
+
+theorem norm_shiftedHarmonicSquareSum_le {z : ℂ}
+    (hz : ‖z‖ ≤ 1 / 2) (n : ℕ) :
+    ‖shiftedHarmonicSquareSum n z‖ ≤ 4 * (harmonic n : ℝ) := by
+  simpa [shiftedHarmonicSquareSum, shiftedHarmonicPowerSum,
+    show ((2 : ℝ)) ^ 2 = 4 from by norm_num] using
+    norm_shiftedHarmonicPowerSum_le hz (p := 2) (by norm_num) n
 
 def gammaFactorialScaledTrigamma (n : ℕ) (x : ℂ) : ℂ :=
   reciprocalGammaFactorialScale n ^ 2 *

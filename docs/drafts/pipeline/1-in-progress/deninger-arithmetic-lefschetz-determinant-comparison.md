@@ -85,9 +85,13 @@ coefficient complex.
       D_1(s_0)=\xi(s_0).                                                 \tag{5}
    \]
 
-5. **Spectral divisor.** The zero divisor of \(D_1\), with algebraic multiplicities, is the
-   discrete spectrum of \(\Theta_1\).  There is no residual determinant divisor invisible
-   to the operator spectrum.
+5. **Spectral divisor.** Source Hodge unitarity and clause 1 imply
+   `DAC_TRACE_CLASS_UNITARY_FLOW_DISCRETE_SPECTRUM`: \(\Theta_1\) has
+   discrete finite-multiplicity spectrum, compact resolvent, and a
+   faithful trace character.  Construct \(D_1\) as the canonical
+   regularized spectral determinant of that operator.  Its zero
+   divisor, with algebraic multiplicities, is then the spectrum of
+   \(\Theta_1\); no separate invisible divisor is allowed.
 
 ## Dependency-closed determinant uniqueness
 
@@ -106,7 +110,7 @@ If both functions extend to entire functions, the identity theorem gives
 \]
 Mathlib's `logDeriv_eqOn_iff` already packages the connected-domain constant-multiple step.
 
-Consequently clauses 1--4 imply
+Consequently clauses 1--4, together with source Hodge unitarity, imply
 \[
  2\,\frac{D_1(s)}{D_0(s)D_2(s)}
    =\widehat\zeta(s),                                                    \tag{7}
@@ -123,31 +127,46 @@ function identity into the required spectrum--zero identification.
    lamination is ruled out.
 3. Use bounded-geometry smoothing estimates for the leafwise Dirac/Hodge operator and the
    transverse flow to extend the limit operator as trace class.
-4. Derive fixed-orbit terms at a single prime-power orbit from the oriented power
-   correspondence; then prove locally finite summation in test-function support.
-5. Derive the real contribution from the regulator boundary, not from a preloaded Gamma
-   factor.
+4. Prove the rational-Witt prime return map satisfies the four geometric
+   hypotheses of `DAC_COMPLEX_LEAF_PRIME_ORBIT_SIGN`.  The theorem then
+   gives positive orientation and the exact \(\log p\) coefficient;
+   prove locally finite summation in test-function support.
+5. Construct `DAC_REAL_PLACE_FIXED_POINT_LINEARIZATION`.  Its conditional
+   fixed-point theorem gives \((1-e^{-2t})^{-1}\) from the source
+   signature boundary, not from a preloaded Gamma factor.
 6. Match `(3)` to the already formalized analytic distribution `(1)`.
 7. Construct \(D_1\) from heat/resolvent regularization and prove its logarithmic derivative
    law.
-8. Apply determinant uniqueness `(6)`, then prove the spectral-divisor clause.
+8. Apply `DAC_TRACE_CLASS_UNITARY_FLOW_DISCRETE_SPECTRUM`, construct
+   the canonical compact-resolvent determinant, and then apply
+   determinant uniqueness `(6)`.
 
 ## Hostile audit and falsifiers
 
 - Equality `(1)` alone is not a cohomological Lefschetz theorem.  Clause 2 requires a kernel
   localization proof from the arithmetic complex.
-- A measured trace can miss finite or density-zero spectral defects.  Clause 5 is mandatory;
-  determinant equality without a faithful spectral-divisor theorem does not prove RH.
+- An arbitrary measured trace can miss finite or density-zero spectral
+  defects.  Here faithfulness must be derived from source Hodge
+  unitarity plus trace-class smoothing by
+  `DAC_TRACE_CLASS_UNITARY_FLOW_DISCRETE_SPECTRUM`; it cannot be
+  stipulated for a separately defined determinant.
 - Equality of logarithmic derivatives determines a function only up to a nonzero constant.
   Normalization `(5)` is mandatory.
 - Trace class for each finite prime packet does not imply trace class after summing all primes.
   Uniform locally finite estimates in the test topology are mandatory.
+- Prime support alone is insufficient.  Holomorphic nondegeneracy,
+  primitive length \(\log p\), and agreement of complex/MW orientations
+  must be proved on the source return map.
+- The real-place exponent \(-2\) must be computed from the quadratic
+  signature normal line; copying it from \(\Gamma(s/2)\) is circular.
 - No positivity or critical-line information is assumed here.  Those come from the
   source Hodge theorem after the spectrum comparison is proved.
 
 **Verdict:** `SURVIVES PRELIMINARY ATTACK`.  Existing analytic Lean closes the target side.
-Open core is source trace-class localization, real-boundary contribution, determinant
-construction, and faithful spectral-divisor identification.
+Open core is source trace-class localization, real-boundary
+contribution, and canonical compact-resolvent determinant construction.
+Faithful discrete spectrum is a proved consequence once trace class and
+Hodge unitarity exist.
 
 ## References
 

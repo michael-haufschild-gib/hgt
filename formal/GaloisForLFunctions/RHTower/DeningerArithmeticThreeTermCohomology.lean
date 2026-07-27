@@ -115,10 +115,10 @@ def thetaH0 : Module.End R F.complex.H0 where
     exact hcomm⟩
   map_add' x y := by
     apply Subtype.ext
-    exact map_add F.theta0 x y
+    exact map_add F.theta0 x.1 y.1
   map_smul' c x := by
     apply Subtype.ext
-    exact map_smul F.theta0 c x
+    exact map_smul F.theta0 c x.1
 
 /-- `Theta` preserves degree-one cocycles. -/
 def thetaCycles1 :
@@ -132,10 +132,10 @@ def thetaCycles1 :
     exact hcomm⟩
   map_add' x y := by
     apply Subtype.ext
-    exact map_add F.theta1 x y
+    exact map_add F.theta1 x.1 y.1
   map_smul' c x := by
     apply Subtype.ext
-    exact map_smul F.theta1 c x
+    exact map_smul F.theta1 c x.1
 
 /-- `Theta` preserves the degree-one boundary submodule inside the cocycles. -/
 theorem thetaCycles1_mem_boundaries

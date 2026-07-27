@@ -36,8 +36,12 @@ formalized source quotient.  No Xi zero or divisor coordinate may enter the cons
   explicitly asks for descent stronger than Galois descent to recover more additive structure.
 - `[LITERATURE]` Arithmetic degree-one cohomology cannot have a functorial real structure.  It must
   use twisted complex leafwise cohomology valued in Deninger's \(K_{\mathbb R}\) category.
-- `[LOCAL-RESEARCH]` `DeningerArithmeticSourceGreen` constructs the exact source Green transport.
-  The remaining factor is flow-natural Riesz/Hodge identification.
+- `[LOCAL-RESEARCH]` `DAC_POISSON_ZETA_THREE_TERM_COHOMOLOGY`
+  constructs the exact source-defined analytic target
+  \(C^\bullet_{\mathrm{PZ}}\), with middle quotient
+  \(M_\zeta=H_-/Z(H_\cap)\).  The remaining factors are the
+  rational-Witt relevant-complex comparison and source-positive Hodge
+  identification.
 - `[LOCAL-RESEARCH]` `deninger-rectangular-quaternionic-hodge` proves that every moving rectangular
   prime germ already has a positive anti-linear \(\star^2=-1\) Hodge atom, and its
   half-density-centered action is unitary.  Global twisted descent, not local positivity, is now
@@ -56,6 +60,17 @@ formalized source quotient.  No Xi zero or divisor coordinate may enter the cons
    contain norm-\(p\) elements for every prime.
 4. `[PAPER-PROVED] [BRIDGE]` Moving the rectangular modulus \(r\mapsto pr\) repairs the local
    degree and weight simultaneously; see `deninger-rectangular-isogeny-half-density`.
+5. `[FALSIFIED]` The compact adelic two-solenoid
+   \(S=(\mathbb A_\mathbb Q/\mathbb Q)^2\), with
+   \(A_q=\operatorname{diag}(q,1)\), globalizes every rectangular
+   tangent map.  It does not give the required suspension.  For
+   \(K=S\times[1,2]\), every rational
+   \(q\in[1/2,2]\) has \(Kq\cap K\ne\varnothing\); there are infinitely
+   many such \(q\).  Hence the diagonal \(\mathbb Q_{>0}\)-action is not
+   proper and the quotient is not the required Hausdorff lamination.
+   The invariant second coordinate also leaves a clean, degenerate
+   return direction.  The noncompact rational-Witt transversal is
+   therefore load-bearing.
 
 ## Conjecture
 
@@ -76,8 +91,11 @@ three-dimensional laminated realization \(Y_{\mathbb Z}\) such that:
    \(W_{\mathrm{rat}}\), restores the Steinberg relation and has no functorial real form; its odd
    cohomology carries the descended local rectangular anti-linear Hodge operator squaring to
    \(-1\);
-6. reduced twisted leafwise cohomology admits a dense cup-isometric, flow-equivariant comparison
-   with `DeningerArithmeticCompletedCohomology`, constructed before divisor evaluation.
+6. reduced twisted leafwise cohomology admits a strict cup-isometric,
+   flow-equivariant comparison with the source-defined Poisson--zeta
+   complex \(C^\bullet_{\mathrm{PZ}}\), inducing
+   \(H^1\simeq M_\zeta\), constructed before Mellin spectral
+   decomposition or divisor evaluation.
 
 ## Hostile verdict
 
@@ -85,8 +103,9 @@ three-dimensional laminated realization \(Y_{\mathbb Z}\) such that:
 prime-side.  Condition 5 is forced by Deninger's real-coefficient obstruction.  Condition 6 is the
 first point at which circularity can enter: merely declaring the comparison cup-isometric is
 equivalent to importing the missing Hodge theorem.  A valid proof must construct
-\(\mathscr K_{\mathrm{arith}}\), its chain pairing, and the comparison map from rational-Witt
-correspondences; divisor coordinates are forbidden.
+\(\mathscr K_{\mathrm{arith}}\), its chain pairing, and the comparison
+map to \(C^\bullet_{\mathrm{PZ}}\) from rational-Witt correspondences;
+divisor coordinates are forbidden.
 
 `[OPEN CORE]`: construct the additive/Steinberg descent complex
 \(\mathscr K_{\mathrm{arith}}\) on the prime-holonomy groupoid and prove that the already
@@ -110,7 +129,9 @@ pushout; it is not the arithmetic-cohomology construction.
   complexified tangent plane carries the required positive local quaternionic Hodge operator.
 - **New insight:** finite-dimensionality must be local leaf dimension, not a homogeneous global
   endomorphism algebra.  Arithmetic complexity belongs in the totally disconnected holonomy
-  transversal and twisted coefficient complex.
+  transversal and twisted coefficient complex.  Compactifying that
+  transversal before taking the dense rational suspension destroys
+  properness.
 - **Status:** local atom paper-proved; global groupoid and coefficient complex conjectural.
 
 ## Log
@@ -123,3 +144,7 @@ pushout; it is not the arithmetic-cohomology construction.
   finite-correspondence theorem isolate the coefficient problem.  Primary active conjecture
   switched from a metaplectic extension to arithmetic finite Milnor--Witt realization, which
   retains Steinberg and quadratic data before analytic completion.
+- 2026-07-27 — Replaced the stale divisor-indexed comparison target by
+  the source-defined Poisson--zeta complex and Meyer quotient.
+- 2026-07-27 — Retired the compact adelic two-solenoid globalization:
+  dense rational suspension is nonproper on any compact transversal.

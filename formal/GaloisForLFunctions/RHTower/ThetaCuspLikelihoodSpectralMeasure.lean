@@ -61,16 +61,17 @@ theorem thetaCuspSourceTerm_eq_scaleForm (n : ℕ) (x : ℝ) :
   unfold thetaCuspSourceTerm thetaCuspSeed
   ring
 
-private theorem thetaCuspAtomLikelihoodRatio_eq_scaleForm
-    {n : ℕ} (hn : 0 < n) {x : ℝ} (hx : 0 < x) :
+
+/-- **Exact atom spectral law.**  In the canonical `B` coordinate, a theta-atom likelihood ratio
+is an exponential atom plus an exponential ray transform. -/
+
+private theorem atomRatio_scale
+    {n : ℕ} {x : ℝ} (hB : 0 < thetaCuspLikelihoodCoordinate x) :
     thetaCuspAtomLikelihoodRatio n x =
       (n : ℝ) ^ 2 *
         (2 * (Real.pi * Real.exp x ^ 2) * (n : ℝ) ^ 2 - 3) /
           (2 * (Real.pi * Real.exp x ^ 2) - 3) *
         Real.exp (-(Real.pi * Real.exp x ^ 2) * thetaCuspLikelihoodGap n) := by
-  have hfirst := thetaCuspSourceTerm_pos_of_pos_of_nat_pos
-    (n := 1) hx (by norm_num)
-  have hB := thetaCuspLikelihoodCoordinate_pos hx.le
   have hden : 2 * (Real.pi * Real.exp x ^ 2) - 3 ≠ 0 := by
     unfold thetaCuspLikelihoodCoordinate at hB
     linarith
@@ -82,21 +83,18 @@ private theorem thetaCuspAtomLikelihoodRatio_eq_scaleForm
           Real.exp (-(Real.pi * Real.exp x ^ 2)) := by
     rw [← Real.exp_add]
     unfold thetaCuspLikelihoodGap
-    congr 1
+    apply congrArg Real.exp
     ring
   rw [thetaCuspAtomLikelihoodRatio, thetaCuspSourceTerm_eq_scaleForm,
     thetaCuspSourceTerm_eq_scaleForm, hexp]
   norm_num
   field_simp [hcommon, hden, Real.exp_ne_zero]
 
-/-- **Exact atom spectral law.**  In the canonical `B` coordinate, a theta-atom likelihood ratio
-is an exponential atom plus an exponential ray transform. -/
-
-theorem thetaCuspAtomLikelihoodRatio_eq_spectralTerm
-    {n : ℕ} (hn : 0 < n) {x : ℝ} (hx : 0 < x) :
+/-- The atomwise spectral identity needs only positivity of the intrinsic coordinate. -/
+theorem thetaCuspAtomLikelihoodRatio_eq_spectralTerm_of_coordinate_pos
+    {n : ℕ} {x : ℝ} (hB : 0 < thetaCuspLikelihoodCoordinate x) :
     thetaCuspAtomLikelihoodRatio n x =
       thetaCuspAtomLikelihoodSpectralTerm n (thetaCuspLikelihoodCoordinate x) := by
-  have hB := thetaCuspLikelihoodCoordinate_pos hx.le
   have hden : 2 * (Real.pi * Real.exp x ^ 2) - 3 ≠ 0 := by
     unfold thetaCuspLikelihoodCoordinate at hB
     linarith
@@ -133,13 +131,10 @@ theorem thetaCuspAtomLikelihoodRatio_eq_spectralTerm
       rw [mul_inv_cancel₀ hhalf]
       exact hprod.symm
     simp only [div_eq_mul_inv]
-    rw [show (2 * (Real.pi * Real.exp x ^ 2) - 3)⁻¹ =
-        (-3 + Real.pi * Real.exp x ^ 2 * 2)⁻¹ by congr 1 <;> ring]
-    rw [show (Real.pi * Real.exp x ^ 2 - 3 * (2 : ℝ)⁻¹)⁻¹ =
-        (-3 / 2 + Real.pi * Real.exp x ^ 2)⁻¹ by
-      congr 1
-      norm_num
-      ring]
+    rw [show 2 * (Real.pi * Real.exp x ^ 2) - 3 =
+        -3 + Real.pi * Real.exp x ^ 2 * 2 by ring]
+    rw [show Real.pi * Real.exp x ^ 2 - 3 * (2 : ℝ)⁻¹ =
+        -3 / 2 + Real.pi * Real.exp x ^ 2 by ring_nf]
     rw [hinv]
     linear_combination (n : ℝ) ^ 4 * hcancel
   have hexp :
@@ -148,11 +143,18 @@ theorem thetaCuspAtomLikelihoodRatio_eq_spectralTerm
           Real.exp (-thetaCuspLikelihoodCoordinate x * thetaCuspLikelihoodGap n) := by
     rw [← Real.exp_add]
     unfold thetaCuspLikelihoodCoordinate
-    congr 1
+    apply congrArg Real.exp
     ring
-  rw [thetaCuspAtomLikelihoodRatio_eq_scaleForm hn hx, hcoeff, hexp]
+  rw [atomRatio_scale hB, hcoeff, hexp]
   unfold thetaCuspAtomLikelihoodSpectralTerm
   ring
+
+theorem thetaCuspAtomLikelihoodRatio_eq_spectralTerm
+    {n : ℕ} {x : ℝ} (hx : 0 < x) :
+    thetaCuspAtomLikelihoodRatio n x =
+      thetaCuspAtomLikelihoodSpectralTerm n (thetaCuspLikelihoodCoordinate x) :=
+  thetaCuspAtomLikelihoodRatio_eq_spectralTerm_of_coordinate_pos
+    (thetaCuspLikelihoodCoordinate_pos hx.le)
 
 /-! ### The exact mixed spectral measure -/
 
@@ -345,7 +347,7 @@ theorem thetaCuspHigherLikelihoodSpectralResponse_coordinate
   rw [thetaCuspHigherToFirstAtomLikelihoodRatio_eq_tsum]
   unfold thetaCuspHigherLikelihoodSpectralResponse
   refine tsum_congr fun k => ?_
-  exact (thetaCuspAtomLikelihoodRatio_eq_spectralTerm (by omega) hx).symm
+  exact (thetaCuspAtomLikelihoodRatio_eq_spectralTerm hx).symm
 
 /-- **Riemann-theta source factorization.**  The complete cusp source is the first atom multiplied
 by one plus the Laplace transform of the canonical higher-tail spectral measure. -/

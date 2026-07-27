@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.ThetaCuspTiltedSchwartz
 import Mathlib
+import GaloisForLFunctions.RHTower.RadialInteractionBound
 
 /-!
 # Differentiation of the tilted theta transform in the tilt parameter
@@ -48,14 +49,6 @@ theorem hasDerivAt_integral_exp_tilt (F : ℝ → ℂ) {a : ℝ} {S : Set ℝ} (
     ring
   exact (hasDerivAt_integral_of_dominated_loc_of_deriv_le hS
     (Filter.Eventually.of_forall hmeas) hint hmeas' hbound hbint hderiv).2
-
-/-- The unimodular phase used by the center-mixed transform. -/
-theorem norm_exp_neg_I_mul_ofReal (r x : ℝ) :
-    ‖Complex.exp (-Complex.I * (r : ℂ) * (x : ℂ))‖ = 1 := by
-  rw [Complex.norm_exp]
-  have : (-Complex.I * (r : ℂ) * (x : ℂ)).re = 0 := by
-    simp [Complex.mul_re]
-  rw [this, Real.exp_zero]
 
 /-- The first moment of a tilted theta source is integrable inside the strip. -/
 theorem integrable_abs_mul_thetaCuspTiltedSource {c : ℝ} (hc : |c| < 1) :

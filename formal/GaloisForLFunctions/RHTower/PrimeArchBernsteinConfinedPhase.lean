@@ -277,11 +277,13 @@ theorem abs_bernsteinCoefficient_endpoint_le_divisorEnvelope
   rw [norm_mul]
   rfl
 
-/-- **Unconditional source total-variation estimate.** The endpoint Bernstein coefficient vector
-has amplitude growth bounded by the explicit base `B_* < 3/2`. -/
-theorem primeArchEndpointBernsteinTotalVariation_le_confinedPhase (n : ℕ) :
+/-- General transport of a uniform atom-ellipse bound through the complete divisor envelope. -/
+theorem primeArchEndpointBernsteinTotalVariation_le_of_atomAmplitudeBase
+    (B : ℝ)
+    (hB : ∀ q : XiZeroCopy, xiEndpointBernsteinAtomAmplitudeBase q ≤ B)
+    (n : ℕ) :
     primeArchEndpointBernsteinTotalVariation n ≤
-      xiReciprocalSquareAbsoluteMass * xiUniversalBernsteinAmplitudeBase ^ n := by
+      xiReciprocalSquareAbsoluteMass * B ^ n := by
   rw [primeArchEndpointBernsteinTotalVariation, bernsteinCoefficientL1]
   calc
     (∑ i ∈ Finset.range (n + 1),
@@ -315,14 +317,13 @@ theorem primeArchEndpointBernsteinTotalVariation_le_confinedPhase (n : ℕ) :
           sum_norm_evalRealPolynomial_bernsteinPolynomial]
         rfl
     _ ≤ ∑' q : XiZeroCopy,
-        ‖xiZeroCopyReciprocalSquare q‖ *
-          xiUniversalBernsteinAmplitudeBase ^ n := by
+        ‖xiZeroCopyReciprocalSquare q‖ * B ^ n := by
         apply Summable.tsum_le_tsum
         · intro q
           exact mul_le_mul_of_nonneg_left
             (pow_le_pow_left₀
               (by exact add_nonneg (norm_nonneg _) (norm_nonneg _))
-              (xiEndpointBernsteinAtomAmplitudeBase_le_universal q) n)
+              (hB q) n)
             (norm_nonneg _)
         · exact Summable.of_nonneg_of_le
             (fun q => mul_nonneg (norm_nonneg _) (pow_nonneg
@@ -330,15 +331,20 @@ theorem primeArchEndpointBernsteinTotalVariation_le_confinedPhase (n : ℕ) :
             (fun q => mul_le_mul_of_nonneg_left
               (pow_le_pow_left₀
                 (by exact add_nonneg (norm_nonneg _) (norm_nonneg _))
-                (xiEndpointBernsteinAtomAmplitudeBase_le_universal q) n)
+                (hB q) n)
               (norm_nonneg _))
-            (summable_xiZeroCopyReciprocalSquare.norm.mul_right
-              (xiUniversalBernsteinAmplitudeBase ^ n))
-        · exact summable_xiZeroCopyReciprocalSquare.norm.mul_right
-            (xiUniversalBernsteinAmplitudeBase ^ n)
-    _ = xiReciprocalSquareAbsoluteMass *
-        xiUniversalBernsteinAmplitudeBase ^ n := by
+            (summable_xiZeroCopyReciprocalSquare.norm.mul_right (B ^ n))
+        · exact summable_xiZeroCopyReciprocalSquare.norm.mul_right (B ^ n)
+    _ = xiReciprocalSquareAbsoluteMass * B ^ n := by
       rw [xiReciprocalSquareAbsoluteMass, tsum_mul_right]
+
+/-- **Unconditional source total-variation estimate.** The endpoint Bernstein coefficient vector
+has amplitude growth bounded by the explicit base `B_* < 3/2`. -/
+theorem primeArchEndpointBernsteinTotalVariation_le_confinedPhase (n : ℕ) :
+    primeArchEndpointBernsteinTotalVariation n ≤
+      xiReciprocalSquareAbsoluteMass * xiUniversalBernsteinAmplitudeBase ^ n :=
+  primeArchEndpointBernsteinTotalVariation_le_of_atomAmplitudeBase _
+    xiEndpointBernsteinAtomAmplitudeBase_le_universal n
 
 /-- The positive Loschmidt purity inherits the square of the confined amplitude estimate. -/
 theorem primeArchEndpointBernsteinPurity_le_confinedPhase (n : ℕ) :

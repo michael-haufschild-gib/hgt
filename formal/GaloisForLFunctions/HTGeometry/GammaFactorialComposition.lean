@@ -161,26 +161,25 @@ theorem analyticAt_outerReciprocalLimit_neg_inv
   change AnalyticAt ℂ (fun x : ℂ => u ((-x)⁻¹)) (-z⁻¹)
   simpa only [Function.comp_def] using hcomp
 
-theorem iteratedDeriv_outerReciprocalLimit_neg_inv_eq_mobiusJetExpansion
-    (u : ℂ → ℂ) (hu : ∀ z ∈ rightHalfPlane, AnalyticAt ℂ u z) :
-    ∀ (j : ℕ) (z : ℂ), z ∈ rightHalfPlane →
-      iteratedDeriv j (outerReciprocalLimit u) (-z⁻¹) = mobiusJetExpansion u j z := by
+/-- **Jets of the reciprocal outer limit are the Möbius jet expansion.**  On any open set of
+analyticity, the `j`-th derivative of `outerReciprocalLimit u` at `-z⁻¹` is `mobiusJetExpansion u j`
+at `z`.  Induction on `j`: the chain rule through `w ↦ -w⁻¹` turns the derivative of the left side
+into the next jet times `z⁻²`, `hasDerivAt_mobiusJetExpansion` does the same on the right, and the
+induction hypothesis makes the two functions agree near `z`, so their derivatives agree. -/
+theorem iteratedDeriv_outerReciprocalLimit_neg_inv_eq_mobiusJetExpansion_local
+    {u : ℂ → ℂ} {Ω : Set ℂ} (hΩ : IsOpen Ω)
+    (hu : ∀ z ∈ Ω, AnalyticAt ℂ u z) :
+    ∀ (j : ℕ) (z : ℂ), z ∈ Ω → z ≠ 0 →
+      iteratedDeriv j (outerReciprocalLimit u) (-z⁻¹) =
+        mobiusJetExpansion u j z := by
   intro j
   induction j with
   | zero =>
-      intro z hz
-      have hz0 : z ≠ 0 := by
-        intro hzero
-        subst z
-        simp [rightHalfPlane] at hz
+      intro z hz hz0
       simp [mobiusJetExpansion, mobiusJetCoeff, iteratedDeriv_zero,
         outerReciprocalLimit]
   | succ j ih =>
-      intro z hz
-      have hz0 : z ≠ 0 := by
-        intro hzero
-        subst z
-        simp [rightHalfPlane] at hz
+      intro z hz hz0
       let x : ℂ := -z⁻¹
       have hFan : AnalyticAt ℂ (outerReciprocalLimit u) x := by
         simpa [x] using analyticAt_outerReciprocalLimit_neg_inv u (hu z hz) hz0
@@ -198,11 +197,13 @@ theorem iteratedDeriv_outerReciprocalLimit_neg_inv_eq_mobiusJetExpansion
       have hexp : HasDerivAt (mobiusJetExpansion u j)
           (z⁻¹ ^ 2 * mobiusJetExpansion u (j + 1) z) z :=
         hasDerivAt_mobiusJetExpansion hu hz hz0 j
+      have hzeroNhd : {w : ℂ | w ≠ 0} ∈ 𝓝 z :=
+        isOpen_compl_singleton.mem_nhds (Set.mem_compl_singleton_iff.mpr hz0)
       have hev :
           (fun w : ℂ => iteratedDeriv j (outerReciprocalLimit u) (-w⁻¹)) =ᶠ[𝓝 z]
             mobiusJetExpansion u j := by
-        filter_upwards [isOpen_rightHalfPlane.mem_nhds hz] with w hw
-        exact ih w hw
+        filter_upwards [hΩ.mem_nhds hz, hzeroNhd] with w hwΩ hw0
+        exact ih w hwΩ hw0
       have heqderiv :
           iteratedDeriv (j + 1) (outerReciprocalLimit u) x * z⁻¹ ^ 2 =
             z⁻¹ ^ 2 * mobiusJetExpansion u (j + 1) z := by
@@ -219,6 +220,17 @@ theorem iteratedDeriv_outerReciprocalLimit_neg_inv_eq_mobiusJetExpansion
         simpa [mul_comm] using heqderiv
       have hfinal := mul_left_cancel₀ hzInv2 hcancel
       simpa [x] using hfinal
+
+theorem iteratedDeriv_outerReciprocalLimit_neg_inv_eq_mobiusJetExpansion
+    (u : ℂ → ℂ) (hu : ∀ z ∈ rightHalfPlane, AnalyticAt ℂ u z) :
+    ∀ (j : ℕ) (z : ℂ), z ∈ rightHalfPlane →
+      iteratedDeriv j (outerReciprocalLimit u) (-z⁻¹) = mobiusJetExpansion u j z := by
+  intro j z hz
+  refine iteratedDeriv_outerReciprocalLimit_neg_inv_eq_mobiusJetExpansion_local
+    isOpen_rightHalfPlane hu j z hz ?_
+  intro hzero
+  subst hzero
+  simp [rightHalfPlane] at hz
 
 theorem mobiusJetValue_outer_eq_limitJet
     (u : ℂ → ℂ) (hu : ∀ z ∈ rightHalfPlane, AnalyticAt ℂ u z)

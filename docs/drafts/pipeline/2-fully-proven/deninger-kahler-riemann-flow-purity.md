@@ -91,6 +91,80 @@ Equivalently, without invoking the infinitesimal generator, if
 \]
 for every \(t\), so \(\operatorname{Re}\lambda=n/2\).
 
+## Twisted degree-one extension
+
+`[PROVED HERE] [DAC_TWISTED_KAHLER_RIEMANN_FLOW_PURITY]`
+
+Let \(E\) be a leafwise flat complex coefficient with a positive
+Hermitian metric preserved by its flat connection.  Assume:
+
+1. the Benameur--Heitsch harmonic projection is transversely smooth, so
+   harmonic \(E\)-valued one-forms identify with reduced leafwise
+   \(L^2\)-cohomology;
+2. the flow lifts unitarily to \(E\) and preserves the harmonic domain;
+3. the induced cup--trace pairing has weight one,
+   \[
+     \operatorname{tr}(\phi^{t*}x\cup\phi^{t*}y)
+       =e^t\operatorname{tr}(x\cup y);
+   \]
+4. the degree-one Hodge operator commutes with pullback.
+
+Then the positive harmonic form
+\[
+ h(x,y)=\operatorname{tr}(x\cup\star y)
+\]
+satisfies
+\[
+ h(\phi^{t*}x,\phi^{t*}y)=e^t h(x,y).
+\]
+Consequently \(e^{-t/2}\phi^{t*}\) is unitary and its strongly
+continuous generator has the form
+\[
+ \Theta_1=\frac12+S,\qquad S^*=-S.
+\]
+
+Indeed, clauses 3--4 give the displayed scaling identity directly.
+Positivity comes from the unitary twisted harmonic metric, and the
+generator statement follows from Stone's theorem exactly as above.
+Benameur--Heitsch proves clause 1 automatically at each compact
+Riemannian stage because positive unitary parallel transport is
+bounded.  The theorem does not construct clauses 2--4 on Deninger's
+arithmetic space.
+
+## Odd Hodge operator on the \(\mathbb Q\) leaf source
+
+For an oriented real two-dimensional leaf, the real Hodge operator on
+one-forms satisfies \(*^2=-1\).  Let \(c\) be coefficient conjugation on
+the complexified real leafwise complex and put
+\[
+ J=*c.
+\]
+Because \(*\) is real, it commutes with \(c\).  Hence \(J\) is
+anti-linear and
+\[
+ J^2=*c*c=*^2c^2=-1.                                                \tag{5}
+\]
+For a complex leafwise one-form \(\alpha=u+iv\), with \(u,v\) real,
+graded commutativity and the real Hodge identity give
+\[
+\begin{aligned}
+ \operatorname{tr}(\alpha\cup J\alpha)
+ &=\operatorname{tr}\bigl((u+iv)\wedge(*u-i*v)\bigr)\\
+ &=\|u\|_{L^2}^2+\|v\|_{L^2}^2>0
+\end{aligned}
+\]
+unless \(\alpha=0\); the mixed terms cancel after integration.  Thus
+complexified real Kähler leaf cohomology already carries the odd
+\(K_{\mathbb R}\) polarization required for the
+\(\mathbb Q\)/Riemann-zeta object.
+
+Deninger's no-real theorem does not invalidate `(5)` for this isolated
+object.  It says that the additional real structure \(c\) cannot extend
+to a real-valued theory functorial over all number fields.  The
+all-number-fields extension therefore needs twisted quaternionic
+descent, while the \(\mathbb Q\)-to-RH gate is exactly comparison of
+this positive leafwise \(J\) with the Poisson--zeta middle cohomology.
+
 ## Arithmetic consequence and exact limit
 
 If reduced arithmetic cohomology is realized by this leafwise theory in
@@ -103,10 +177,14 @@ turns Hodge positivity from an independent analytic axiom into a
 consequence of one geometric construction gate:
 `DAC_KAHLER_RIEMANN_ARITHMETIC_LEAF_REALIZATION`.
 
-**Verdict:** `FULLY PROVEN; SOURCE HODGE/PURITY IMPLICATION CLOSED`.
+**Verdict:** `FULLY PROVEN; UNTWINSTED AND POSITIVE-UNITARY TWISTED
+SOURCE HODGE/PURITY IMPLICATIONS CLOSED`.
 
 ## Log
 
 - 2026-07-26 — Extracted the exact continuous-flow corollary from
   Deninger--Singhof Section 4.  No Xi space, zero-defined norm, RH
   premise, CCM object, or numerical computation occurs.
+- 2026-07-27 — Added the positive-unitary twisted degree-one extension
+  using the Benameur--Heitsch reduced harmonic identification plus the
+  weight-one cup/trace calculation.

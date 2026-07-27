@@ -3,10 +3,10 @@
 - **ID:** `deninger-derived-coefficient-hilbert-hodge-descent`
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURE with dependency-closed analytic core
-- **Parent:** `deninger-derived-mw-rational-witt-coefficient`
-- **Statement:** After realification and removal of its regulator-null acyclic part, Deninger's
-  unit-amalgamated derived Milnor coefficient sheaf, with its
-  Milnor--Witt residue/signature descent on the rational-Witt space, admits a
+- **Parent:** `deninger-true-to-approximate-derived-coefficient`
+- **Statement:** After realification and removal of its algebraic
+  endpoint core and regulator-null acyclic part, Deninger's
+  true-to-approximate derived coefficient admits a
   cohomologically faithful real-place regulator into a closed Hilbert complex whose harmonic
   degree-one realization carries the descended local quaternionic Hodge operator and centered
   unitary Frobenius flow.
@@ -53,6 +53,39 @@ construction must prove one of:
 
 This card uses route 2.  Route 1 remains an optional geometric strengthening.
 
+## Source-proved adelic Kummer boundary
+
+The logarithmic Kummer coefficient has a canonical positive local form:
+Allcock--Vaaler embed algebraic numbers modulo torsion into
+\(L^2(Y,\lambda)\) by
+\(f_\alpha(y)=\log\|\alpha\|_y\), with
+\[
+ \langle f_\alpha,f_\beta\rangle_2
+ =\int_Y f_\alpha f_\beta\,d\lambda .
+\]
+This does not by itself solve clause 1.  Their same theorem proves that
+the product-formula Kummer functions are dense in \(L^2\), so bare
+Hilbert completion erases the product-formula hyperplane.  Moreover the
+half-Tate centered power action on this sector is the identity.  See
+`DAC_NAIVE_ADELIC_L2_KUMMER_COMPLETION_NO_GO`.
+
+The corrected Kummer topology is
+`DAC_ADELIC_L1_L2_ROST_SCHMID_HODGE_COEFFICIENT`: its \(L^1\) channel
+retains the product formula, real boundary, and residue topology, while
+its \(L^2\) channel supplies positive Kummer energy.  Clause 1 below
+must be constructed on the relative middle cone of
+`DAC_ARITHMETIC_ENDPOINT_RELATIVE_MIDDLE_REDUCTION`, not from bare
+\(L^2\).  Frobenius-coherence and coarse/stack defects are candidate
+summands of this cone only.
+Its local Kummer carrier is already paper-proved to form the rigged
+Hilbert triple
+\[
+ E_{\mathrm{Kum}}\hookrightarrow L^2(Y,\lambda)
+ \hookrightarrow E_{\mathrm{Kum}}'
+\]
+of `DAC_ADELIC_KUMMER_GELFAND_TRIPLE`.  Open work is extension to the
+full derived coefficient and descent to reduced arithmetic cohomology.
+
 ## Dependency-closed analytic core
 
 `[PROVED HERE] [DAC_ABSTRACT_REDUCED_HODGE_DECOMPOSITION]`
@@ -96,31 +129,30 @@ compatibility.
 
 `[CONJECTURE] [DAC_DERIVED_COEFFICIENT_HILBERT_HODGE_DESCENT]`
 
-Let
-\[
- \mathscr A_{F,\mathbb R}^{\mathrm{geom}}
- =
- \mathcal R_{X_F}
- \mathop{\otimes}^{\mathbb L}_{\mathscr P_F}
- \underline{\mathcal K}^M_{F,\mathbb R}
-\]
-be the primary local derived sheaf coefficient of
-`DAC_LEAFWISE_KUMMER_SHEAF_AMALGAMATION_EXISTENCE`.  An optional Milnor
-character realization may later identify it with
-\(R\alpha_{F,*}\mathbb R\), but no clause below depends on that
-geometrization.  Let
-\(\mathscr A_{\mathrm{flow}}\) be its twisted
-Rost--Schmid/Galois/power descent.  Full
-\(\mathbb A^1\)-localization is excluded by
-`deninger-a1-localized-rational-witt-coefficient`.  Let
-\(\mathscr A_{\mathrm{arith}}\) and
+Let \(\mathscr E_{\mathrm{Den}}\) be
+`DAC_TRUE_TO_APPROXIMATE_DERIVED_COEFFICIENT`, with its equivariant
+cover sheaf constructed by
+`DAC_LEAFWISE_KUMMER_SHEAF_AMALGAMATION_EXISTENCE` and its chartwise
+comparison governed by
+`DAC_SHEAFIFIED_UNIT_AMALGAMATION_COMPARISON`.  Let
+\(\mathscr E_{\mathrm{arith}}\) be its
+Rost--Schmid/real-boundary totalization, and let
 \[
  C^\bullet_{\mathrm{arith}}
- =R\Gamma(\overline X_W,\mathscr A_{\mathrm{arith}})_{\mathrm{red}}
+ =R\Gamma_c(\overline X_W,\mathscr E_{\mathrm{arith}})_{\mathrm{red}}.
 \]
-be the power-localized, descended, unital Betti--Deligne gluing `(A)`--`(C)` of
-`DAC_ROST_SCHMID_FLOW_REALIZATION`.  Its completed real realization has the following
-properties.
+The endpoint map of
+`DAC_ARITHMETIC_ENDPOINT_RELATIVE_MIDDLE_REDUCTION` defines
+\[
+ C^\bullet_{\mathrm{mid}}
+ =\operatorname{Cone}\!\left(
+   C^\bullet_{\mathrm{end}}\to C^\bullet_{\mathrm{arith}}
+ \right),
+\]
+whose only cohomology is the sought degree-one group.  The completed
+real realization of the full arithmetic complex has the following
+properties, and its non-endpoint harmonic part realizes this relative
+cone.
 
 1. **Cohomologically faithful completed regulator.** There is a multiplicative,
    residue-compatible chain map
@@ -132,9 +164,13 @@ properties.
    \]
    with dense image.  Its kernel is the closure of a specified regulator-null acyclic
    subcomplex, and it induces an isometric isomorphism on reduced cohomology after quotienting
-   that subcomplex and completing.  Here \(E^\bullet\) is concentrated in leafwise degrees
-   \(0,1,2\).  Integral torsion is allowed to vanish under realification and is not part of
-   this faithfulness claim.
+   that subcomplex and completing.  The endpoint subcomplex maps to
+   the harmonic \(H^0\) and \(H^2\) lines, while the induced map from
+   \(C^\bullet_{\mathrm{mid}}\) identifies its degree-one cohomology
+   with the orthogonal harmonic complement.  Here \(E^\bullet\) is
+   concentrated in leafwise degrees \(0,1,2\).  Integral torsion is
+   allowed to vanish under realification and is not part of this
+   faithfulness claim.
 
 2. **Closed Hilbert differential.** \(Q\) is closed and densely defined, \(Q^2=0\), and its
    graph topology contains the completed Rost--Schmid residue topology.  Consequently `(2)`
@@ -146,13 +182,14 @@ properties.
      \qquad \Delta=QQ^\dagger+Q^\dagger Q.                              \tag{4}
    \]
 
-3. **Cup, trace, and degree-two Poincaré duality.** The MW product and arithmetic
-   Grothendieck--Witt trace extend continuously to \(E^\bullet\).  Their degree-two pairing
+3. **Cup, trace, and degree-two Poincaré duality.** The product and
+   arithmetic trace, with the Milnor--Witt signature confined to the
+   real boundary, extend continuously to \(E^\bullet\).  Their degree-two pairing
    is perfect on reduced cohomology and satisfies the differential and Frobenius adjunction
    laws required by the complementary Weil--Arakelov fiber pairing.
 
 4. **Admissible global Hodge operator.** The real Betti--Deligne boundary,
-   its complex-conjugation involution, and MW determinant orientation
+   its complex-conjugation involution, and real determinant orientation
    construct a closed anti-unitary
    \[
       J:\mathcal H^1\longrightarrow\mathcal H^1,\qquad J^2=-1.           \tag{5}
@@ -190,7 +227,11 @@ properties.
    and the pairing from clause 3 induces weight-complementary duality
    \(n\leftrightarrow1-n\) in total degree \(3\).
 
-## Regulator factorization forced by the MW pullback
+## Optional real-boundary MW refinement
+
+The following MW pullback is an optional construction of the real
+orientation channel.  It is not the generic source coefficient, which
+is already fixed by the sheaf-level Milnor unit-amalgamation.
 
 The real-place map should not be invented as one unexplained functional.  Use the homotopy
 pullback
@@ -244,24 +285,33 @@ is a decisive falsifier.
 
 1. Construct the ordinary and signature/real-étale regulator channels on
    the leafwise sheaf and diagonal motivic symbol algebras.
-2. Prove agreement on \(\mathcal P_F\), mod-\(2\) compatibility, and compatibility with the
+2. Construct the mixed \(L^1/L^2\) adelic Kummer coefficient; identify
+   normalized valuation residues with its place-component averages and
+   prove field-norm compatibility.
+3. Prove agreement on \(\mathcal P_F\), mod-\(2\) compatibility, and compatibility with the
    full relative motivic cell presentation.
-3. Use the pushout universal property to obtain a regulator on the
-   leafwise unit-amalgamated coefficient; prove every Steinberg and
-   higher-syzygy cell maps to a \(Q\)-boundary.
-4. Construct the unital comparison from descended ordinary rank realization to the
+4. Use the generic Postnikov quotient to obtain the Milnor regulator;
+   prove every Steinberg and higher-syzygy class maps to a
+   \(Q\)-boundary.  Use the optional pushout only for comparison with
+   the real MW boundary.
+5. Construct the unital comparison from descended ordinary rank realization to the
    complexified real-signature realization; prove its homotopy pullback has \(H^0=\mathbb R\)
    and retains the twisted MW residue pairing.
-5. Prove power-localized descent and compatibility with the unital Betti--Deligne gluing.
-6. Prove residue estimates in the graph norm, then close \(Q\).  Do not assume closed range;
+6. Prove power-localized descent and compatibility with the unital Betti--Deligne gluing.
+7. Prove residue estimates in the mixed \(L^1/L^2\) graph topology,
+   then close \(Q\).  Do not assume closed range;
    reduced cohomology uses \(\overline{\operatorname{im}Q}\).
-7. Construct the boundary conjugation/orientation operator on the
+8. Construct the boundary conjugation/orientation operator on the
    three-term arithmetic complex.  Prove \(J^2=-1\), residue compatibility,
    power naturality, and positivity directly from the real regulator.
-8. Extend centered power maps from the dense regulator image by isometry.  Use the abstract
+9. Prove that the scalar Kummer sector contributes no nontrivial
+   centered spectrum and that the full relative middle cone is the
+   harmonic complement.  Compare descended coherence defects without
+   assuming they generate it.
+10. Extend centered power maps from the dense regulator image by isometry.  Use the abstract
    unitary BRST--Hodge theorem to descend them to `(4)`.
-9. Establish strong continuity of the suspended action and identify its generator.
-10. Feed the resulting three-term complex, pairing, and \(\Theta\) into `(7)`.
+11. Establish strong continuity of the suspended action and identify its generator.
+12. Feed the resulting three-term complex, pairing, and \(\Theta\) into `(7)`.
 
 ## Hostile audit and falsifiers
 
@@ -282,13 +332,13 @@ is a decisive falsifier.
 - No spectral claim occurs in clauses 1--6.  Identifying the spectrum of \(\Theta\) with zeta
   zeros is a later Lefschetz/determinant comparison, not an input here.
 
-**Verdict:** `SURVIVES SOURCE CORRECTION`.  Abstract Hodge decomposition
+**Verdict:** `SURVIVES AFTER RELATIVE-MIDDLE CORRECTION`.  Abstract Hodge decomposition
 and unitary descent are not the open mathematics.  Exact open core is the
-realified, cohomologically faithful regulator of the leafwise
-unit-amalgamated derived coefficient, closedness of its differential, and direct
-construction of a positive boundary \(J\) compatible with
-unit-amalgamation, residues, and power maps.  No CCM/Gamma Hodge model is a
-dependency.
+mixed \(L^1/L^2\), realified, cohomologically faithful regulator of the
+true-to-approximate relative middle coefficient; closedness of its
+differential; positivity of the full relative cone; and direct
+construction of a positive boundary \(J\) compatible with residues and
+power maps.  No CCM/Gamma Hodge model is a dependency.
 
 ## References
 
@@ -310,5 +360,7 @@ dependency.
   https://arxiv.org/abs/1608.08855
 - Andreas Holmström, Jakob Scholbach, *Arakelov motivic cohomology I*:
   https://arxiv.org/abs/1012.2523
+- Daniel Allcock, Jeffrey D. Vaaler, *A Banach space determined by the
+  Weil height*: https://arxiv.org/abs/0808.1038
 - Jacob Lurie, *Higher Algebra*:
   https://www.math.ias.edu/~lurie/papers/HA.pdf

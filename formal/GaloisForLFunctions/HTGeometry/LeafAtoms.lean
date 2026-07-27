@@ -67,15 +67,25 @@ theorem exists_leaf_approx (h : PositiveMomentForm s) (h0b : BoundedKernel s 0) 
     exact hopen (interior L) isOpen_interior
   exact le_antisymm (le_trans (measure_mono hKL) (le_of_eq hint)) zero_le
 
-/-- **The atom of the leaf at a fiber point is at least the Christoffel limit.** -/
-theorem ofReal_christoffelLimit_le_leaf_singleton (h : PositiveMomentForm s)
-    (h0b : BoundedKernel s 0) (h0 : s 0 = 1) {tau : ℝ} {μ : ProbabilityMeasure ℝ} {φ : ℕ → ℕ}
-    (hφ : StrictMono φ)
-    (hlim : Tendsto (fun i => quasiProbMeasure h (goodLevel h tau (φ i)) (leafParam h tau (φ i)))
-      atTop (nhds μ))
-    {ξ : ℝ} (hξ : nevBrealInf s ξ * tau - nevDrealInf s ξ = 0) :
+/-- **Atoms of a convergent quasi-level family.**  Let `lvl` be a level map growing past its index
+and `par` the associated leaf parameters.  If every sufficiently small neighbourhood of `ξ`
+eventually contains a quasi-node of level `lvl i` with parameter `par i`, and the leaf measures
+along a strictly monotone subsequence converge to `μ`, then `μ` charges `{ξ}` at least by the
+Christoffel limit at `ξ`.  Continuity of the Christoffel limit turns each node into a lower bound on
+a shrinking interval, the portmanteau inequality transports that bound to `μ`, and letting the
+interval shrink isolates the atom. -/
+theorem ofReal_christoffelLimit_le_leaf_singleton_of_eventually_node
+    (h : PositiveMomentForm s) (h0b : BoundedKernel s 0) (h0 : s 0 = 1)
+    {lvl : ℕ → ℕ} {par : ℕ → ℝ} (hlvl : ∀ n, n + 1 ≤ lvl n)
+    {μ : ProbabilityMeasure ℝ} {φ : ℕ → ℕ} (hφ : StrictMono φ)
+    (hlim : Tendsto (fun i => quasiProbMeasure h (lvl (φ i)) (par (φ i))) atTop (nhds μ))
+    {ξ : ℝ}
+    (hnode : ∃ η > 0, ∀ δ : ℝ, 0 < δ → δ < η →
+      ∀ᶠ n in atTop, ∀ i : ℕ, n = lvl i →
+        ∃ x ∈ quasiNodes s n (par i), |x - ξ| ≤ δ) :
     ENNReal.ofReal (christoffelLimit s ξ) ≤ (μ : Measure ℝ) {ξ} := by
-  obtain ⟨η₁, hη₁, hnode⟩ := eventually_exists_quasiNode_near h h0b hξ
+
+  obtain ⟨η₁, hη₁, hnode⟩ := hnode
   have hle : ∀ ε : ℝ, 0 < ε → christoffelLimit s ξ - ε ≤ ((μ : Measure ℝ) {ξ}).toReal := by
     intro ε hε
     -- continuity of λ gives an interval on which λ stays above λ(ξ) − ε
@@ -93,14 +103,14 @@ theorem ofReal_christoffelLimit_le_leaf_singleton (h : PositiveMomentForm s)
       have hδ2 : δ < η₂ := lt_of_lt_of_le hδη (min_le_right _ _)
       obtain ⟨N, hN⟩ := Filter.eventually_atTop.mp (hnode δ hδ hδ1)
       have hbelow : ∀ᶠ i in atTop, ENNReal.ofReal (christoffelLimit s ξ - ε)
-          ≤ quasiProb s (goodLevel h tau (φ i)) (leafParam h tau (φ i)) (Icc (ξ - δ) (ξ + δ)) := by
+          ≤ quasiProb s (lvl (φ i)) (par (φ i)) (Icc (ξ - δ) (ξ + δ)) := by
         refine Filter.eventually_atTop.mpr ⟨N, fun i hi => ?_⟩
-        have hgrow : N ≤ goodLevel h tau (φ i) := by
+        have hgrow : N ≤ lvl (φ i) := by
           have h1 : i ≤ φ i := hφ.le_apply
-          have h2 : φ i + 1 ≤ goodLevel h tau (φ i) := goodLevel_ge h tau (φ i)
+          have h2 : φ i + 1 ≤ lvl (φ i) := hlvl (φ i)
           omega
         obtain ⟨x, hxmem, hxδ⟩ :=
-          hN (goodLevel h tau (φ i)) hgrow (goodLevel_nevAlpha_ne_zero h tau (φ i))
+          hN (lvl (φ i)) hgrow (φ i) rfl
         have hxA : x ∈ Icc (ξ - δ) (ξ + δ) := by
           rw [mem_Icc]
           rw [abs_le] at hxδ
@@ -128,6 +138,22 @@ theorem ofReal_christoffelLimit_le_leaf_singleton (h : PositiveMomentForm s)
   calc ENNReal.ofReal (christoffelLimit s ξ)
       ≤ ENNReal.ofReal (((μ : Measure ℝ) {ξ}).toReal) := ENNReal.ofReal_le_ofReal hfinal
     _ = (μ : Measure ℝ) {ξ} := ENNReal.ofReal_toReal (measure_ne_top _ _)
+
+/-- **The atom of the leaf at a fiber point is at least the Christoffel limit.** -/
+theorem ofReal_christoffelLimit_le_leaf_singleton (h : PositiveMomentForm s)
+    (h0b : BoundedKernel s 0) (h0 : s 0 = 1) {tau : ℝ} {μ : ProbabilityMeasure ℝ} {φ : ℕ → ℕ}
+    (hφ : StrictMono φ)
+    (hlim : Tendsto (fun i => quasiProbMeasure h (goodLevel h tau (φ i)) (leafParam h tau (φ i)))
+      atTop (nhds μ))
+    {ξ : ℝ} (hξ : nevBrealInf s ξ * tau - nevDrealInf s ξ = 0) :
+    ENNReal.ofReal (christoffelLimit s ξ) ≤ (μ : Measure ℝ) {ξ} := by
+  refine ofReal_christoffelLimit_le_leaf_singleton_of_eventually_node h h0b h0
+    (lvl := goodLevel h tau) (par := leafParam h tau) (goodLevel_ge h tau) hφ hlim ?_
+  obtain ⟨η, hη, hnode⟩ := eventually_exists_quasiNode_near h h0b hξ
+  refine ⟨η, hη, fun δ hδ hδη => ?_⟩
+  filter_upwards [hnode δ hδ hδη] with n hn i hi
+  subst hi
+  exact hn (goodLevel_nevAlpha_ne_zero h tau i)
 
 /-- **The N-extremal leaf, with its weights identified.**  For a normalised moment sequence and any
 finite parameter there is a probability measure representing the sequence, carried by the denominator

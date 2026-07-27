@@ -79,4 +79,20 @@ theorem eventually_lt_log_factorial (C : ℝ) :
   rw [lt_div_iff₀ hn0] at hn
   linarith
 
+/-- **Super-linear growth along the real ray.**  For every slope `A` the Gamma function exceeds
+`exp (A σ)` at some real `σ ≥ 1`.  This is the hypothesis shape consumed by the zero-existence
+criterion `exists_zero_of_superlinear_ray_growth`. -/
+theorem exists_one_le_lt_log_Gamma (A : ℝ) :
+    ∃ σ : ℝ, 1 ≤ σ ∧ A * σ < Real.log (Real.Gamma σ) := by
+  obtain ⟨n, hfact, hbig⟩ :=
+    ((eventually_lt_log_factorial (A + 1)).and (eventually_gt_atTop ⌈|A|⌉₊)).exists
+  have hnA : |A| < (n : ℝ) := by
+    have h1 : (⌈|A|⌉₊ : ℝ) < (n : ℝ) := by exact_mod_cast hbig
+    exact lt_of_le_of_lt (Nat.le_ceil _) h1
+  have hAle : A ≤ (n : ℝ) := le_trans (le_abs_self A) hnA.le
+  refine ⟨(n : ℝ) + 1, by linarith [Nat.cast_nonneg (α := ℝ) n], ?_⟩
+  have hGamma : Real.Gamma ((n : ℝ) + 1) = (n.factorial : ℝ) := Real.Gamma_nat_eq_factorial n
+  rw [hGamma]
+  nlinarith [hfact, hAle]
+
 end GaloisForLFunctions.HTGeometry

@@ -1014,52 +1014,58 @@ theorem integral_thetaCuspFirstRadialCenteredQuadratic_sq :
       simp only [thetaCuspBornWittenRadialPowerMoment, J0, J1]
       ring
 
-/-- Quadratic-field Robertson uncertainty for the exact first radial theta state. -/
-theorem thetaCuspFirstRadialQuadraticSteinRobertson
-    : (thetaCuspBornWittenRadialPowerMoment 0 1 1 *
-        thetaCuspFirstRadialQuadraticSteinCoupling) ^ 2 ≤
+/-- **Stein–Robertson bound for an arbitrary radial score.**  Cauchy–Schwarz against the
+Born–Witten radial amplitude: for any measurable score `ψ` whose amplitude-weighted square is
+integrable, the squared coupling of `ψ` with the centred quadratic is bounded by the centred
+quadratic's own weighted variance times the energy of `ψ`.  Only the score varies between
+applications; the left factor is the fixed moment combination `m₀²m₄ − m₀m₂²`. -/
+theorem thetaCuspFirstRadialSteinRobertson_of_score
+    {ψ : ℝ → ℝ} (hψMeas : Measurable ψ)
+    (hψSq : Integrable (fun x => ψ x ^ 2 *
+        thetaCuspBornWittenRadialAmplitude 1 1 x ^ 2) (volume.restrict (Ioi 0)))
+    {coupling energy : ℝ}
+    (hcoupling : (∫ x, thetaCuspFirstRadialCenteredQuadratic x * ψ x *
+        thetaCuspBornWittenRadialAmplitude 1 1 x ^ 2 ∂(volume.restrict (Ioi 0))) =
+      thetaCuspBornWittenRadialPowerMoment 0 1 1 * coupling)
+    (henergy : (∫ x, ψ x ^ 2 *
+        thetaCuspBornWittenRadialAmplitude 1 1 x ^ 2 ∂(volume.restrict (Ioi 0))) = energy) :
+    (thetaCuspBornWittenRadialPowerMoment 0 1 1 * coupling) ^ 2 ≤
       (thetaCuspBornWittenRadialPowerMoment 0 1 1 ^ 2 *
           thetaCuspBornWittenRadialPowerMoment 4 1 1 -
         thetaCuspBornWittenRadialPowerMoment 0 1 1 *
-          thetaCuspBornWittenRadialPowerMoment 2 1 1 ^ 2) *
-        thetaCuspFirstRadialQuadraticSteinEnergy := by
-  let hEnergyInt := integrableOn_thetaCuspFirstRadialQuadraticSteinEnergy
+          thetaCuspBornWittenRadialPowerMoment 2 1 1 ^ 2) * energy := by
   let μ : Measure ℝ := volume.restrict (Ioi 0)
   let f : ℝ → ℝ := fun x => thetaCuspFirstRadialCenteredQuadratic x *
     thetaCuspBornWittenRadialAmplitude 1 1 x
-  let g : ℝ → ℝ := fun x => thetaCuspFirstRadialQuadraticSteinScore x *
-    thetaCuspBornWittenRadialAmplitude 1 1 x
+  let g : ℝ → ℝ := fun x => ψ x * thetaCuspBornWittenRadialAmplitude 1 1 x
   have hfMeas : AEStronglyMeasurable f μ := by
     exact (((by
       unfold thetaCuspFirstRadialCenteredQuadratic
       fun_prop : Continuous thetaCuspFirstRadialCenteredQuadratic)).measurable.mul
         measurable_thetaCuspFirstRadialAmplitude).aestronglyMeasurable
-  have hgMeas : AEStronglyMeasurable g μ := by
-    exact (measurable_thetaCuspFirstRadialQuadraticSteinScore.mul
-      measurable_thetaCuspFirstRadialAmplitude).aestronglyMeasurable
+  have hgMeas : AEStronglyMeasurable g μ :=
+    (hψMeas.mul measurable_thetaCuspFirstRadialAmplitude).aestronglyMeasurable
   have hfSq : Integrable (fun x => f x ^ 2) μ := by
     apply integrableOn_thetaCuspFirstRadialCenteredQuadratic_sq.congr
     filter_upwards [] with x
     simp only [f]
     ring
   have hgSq : Integrable (fun x => g x ^ 2) μ := by
-    apply hEnergyInt.congr
+    apply hψSq.congr
     filter_upwards [] with x
     simp only [g]
     ring
   have hcs := HTGeometry.sq_integral_mul_le_integral_sq_mul_integral_sq
     hfMeas hgMeas hfSq hgSq
   have hfg : (∫ x, f x * g x ∂μ) =
-      thetaCuspBornWittenRadialPowerMoment 0 1 1 *
-        thetaCuspFirstRadialQuadraticSteinCoupling := by
+      thetaCuspBornWittenRadialPowerMoment 0 1 1 * coupling := by
     rw [show (fun x => f x * g x) = fun x =>
-        thetaCuspFirstRadialCenteredQuadratic x *
-          thetaCuspFirstRadialQuadraticSteinScore x *
-            thetaCuspBornWittenRadialAmplitude 1 1 x ^ 2 by
+        thetaCuspFirstRadialCenteredQuadratic x * ψ x *
+          thetaCuspBornWittenRadialAmplitude 1 1 x ^ 2 by
       funext x
       simp only [f, g]
       ring]
-    exact integral_thetaCuspFirstRadialCentered_mul_quadraticSteinScore
+    exact hcoupling
   have hf2 : (∫ x, f x ^ 2 ∂μ) =
       thetaCuspBornWittenRadialPowerMoment 0 1 1 ^ 2 *
           thetaCuspBornWittenRadialPowerMoment 4 1 1 -
@@ -1072,14 +1078,30 @@ theorem thetaCuspFirstRadialQuadraticSteinRobertson
       simp only [f]
       ring]
     exact integral_thetaCuspFirstRadialCenteredQuadratic_sq
-  have hg2 : (∫ x, g x ^ 2 ∂μ) =
-      thetaCuspFirstRadialQuadraticSteinEnergy := by
-    rw [thetaCuspFirstRadialQuadraticSteinEnergy]
-    apply integral_congr_ae
-    filter_upwards [] with x
-    simp only [g]
-    ring
+  have hg2 : (∫ x, g x ^ 2 ∂μ) = energy := by
+    rw [show (fun x => g x ^ 2) = fun x => ψ x ^ 2 *
+        thetaCuspBornWittenRadialAmplitude 1 1 x ^ 2 by
+      funext x
+      simp only [g]
+      ring]
+    exact henergy
   rwa [hfg, hf2, hg2] at hcs
+
+
+/-- Quadratic-field Robertson uncertainty for the exact first radial theta state. -/
+theorem thetaCuspFirstRadialQuadraticSteinRobertson
+    : (thetaCuspBornWittenRadialPowerMoment 0 1 1 *
+        thetaCuspFirstRadialQuadraticSteinCoupling) ^ 2 ≤
+      (thetaCuspBornWittenRadialPowerMoment 0 1 1 ^ 2 *
+          thetaCuspBornWittenRadialPowerMoment 4 1 1 -
+        thetaCuspBornWittenRadialPowerMoment 0 1 1 *
+          thetaCuspBornWittenRadialPowerMoment 2 1 1 ^ 2) *
+        thetaCuspFirstRadialQuadraticSteinEnergy := by
+  refine thetaCuspFirstRadialSteinRobertson_of_score
+    measurable_thetaCuspFirstRadialQuadraticSteinScore ?_
+    integral_thetaCuspFirstRadialCentered_mul_quadraticSteinScore ?_
+  · exact integrableOn_thetaCuspFirstRadialQuadraticSteinEnergy
+  · rw [thetaCuspFirstRadialQuadraticSteinEnergy]
 
 end
 

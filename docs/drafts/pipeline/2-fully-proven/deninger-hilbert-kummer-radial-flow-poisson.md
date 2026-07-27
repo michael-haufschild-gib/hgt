@@ -1,0 +1,266 @@
+# Hilbert--Kummer radial suspension realizes the Poisson dilations
+
+- **ID:** `deninger-hilbert-kummer-radial-flow-poisson`
+- **Stage:** 2-fully-proven
+- **Type:** THEOREM (paper)
+- **Labels:** `DAC_DENINGER_HILBERT_KUMMER_RADIAL_SUSPENSION`,
+  `DAC_DENINGER_FLOW_POISSON_DILATION`
+- **Parent:** `deninger-poisson-relevant-complex-comparison`
+- **Statement:** the Hilbert-bounded modulus characters in Deninger's
+  generic rational-Witt character space form a canonical dense,
+  Frobenius-stable refinement on whose suspension the norm of the
+  logarithmic Kummer character is a global radial coordinate; discrete
+  flow pullbacks are exactly Meyer's dilations.
+- **Lean status:** the elementary power, suspension, and flow identities
+  are drafted in `DeningerArithmeticPoissonTransfer.lean`; direct check
+  is deferred while unrelated Lean processes saturate the shared machine.
+
+## Source Hilbert space
+
+Let
+\[
+ \mathcal G=\overline{\mathbb Q}^{\times}/\mu_\infty
+\]
+and let \(Y\) be the Allcock--Vaaler place space.  For
+\(\alpha\in\overline{\mathbb Q}^{\times}\), put
+\[
+ f_\alpha(y)=\log\lVert\alpha\rVert_y,\qquad
+ H_{\rm Kum}=L^2(Y,\lambda).
+                                                               \tag{1}
+\]
+The map
+\[
+ \iota:\mathcal G\otimes_{\mathbb Z}\mathbb Q
+       \longrightarrow H_{\rm Kum},\qquad
+ [\alpha]\longmapsto f_\alpha                                  \tag{2}
+\]
+is injective and has dense real span.  Injectivity follows from the
+height-zero theorem; density is the \(p=2\) theorem of
+Allcock--Vaaler.
+
+A generic Deninger point is represented by a multiplicative character
+\[
+ P:\overline{\mathbb Q}^{\times}\longrightarrow\mathbb C^\times .
+\]
+Its logarithmic modulus
+\[
+ L_P([\alpha])=\log|P(\alpha)|                                  \tag{3}
+\]
+is a well-defined \(\mathbb Q\)-linear functional on
+\(\mathcal G\otimes\mathbb Q\).  Call \(P\)
+**Hilbert--Kummer bounded** if
+\[
+ |L_P([\alpha])|\le C\lVert f_\alpha\rVert_2                    \tag{4}
+\]
+for some \(C\) and every \(\alpha\).  In that case `(2)`--`(4)` give
+a unique bounded functional
+\[
+ \ell_P\in H_{\rm Kum}',\qquad
+ \ell_P(f_\alpha)=L_P([\alpha]),                                \tag{5}
+\]
+and define the canonical radius
+\[
+ r(P)=\lVert\ell_P\rVert_{H_{\rm Kum}'}\ge0.                    \tag{6}
+\]
+
+## Hilbert--Kummer refinement theorem
+
+`[PROVED HERE] [DAC_DENINGER_HILBERT_KUMMER_RADIAL_SUSPENSION]`
+
+Let \(\check X_{\rm HK}\) be the Hilbert--Kummer bounded generic
+character locus, equipped with the operator-norm topology on `(5)`
+together with pointwise topology on the unitary part.
+
+1. \(\check X_{\rm HK}\) is stable under Deninger's Galois and positive
+   rational Frobenius actions.
+2. Its map
+   \[
+   \alpha_{\rm HK}:\check X_{\rm HK}\longrightarrow
+   \check X_{\rm Den}(\mathbb C)_\eta                         \tag{7}
+   \]
+   to the pointwise-topologized generic rational-Witt character space
+   is continuous and has dense image.
+3. For every \(q\in\mathbb Q_{>0}\),
+   \[
+   r(F_qP)=q\,r(P),                                             \tag{8}
+   \]
+   and \(r(P^\sigma)=r(P)\) after the corresponding unitary Galois
+   transport on \(H_{\rm Kum}\).
+4. On the suspension
+   \[
+   X_{\rm HK}
+   =\check X_{\rm HK}\times_{\mathbb Q_{>0}}\mathbb R_{>0},
+   \]
+   the formula
+   \[
+   x([P,u])=u\,r(P)                                             \tag{9}
+   \]
+   is a well-defined continuous function.  It is positive precisely
+   off the unitary locus \(r(P)=0\).
+
+### Proof
+
+For Frobenius, Deninger's exact character formula is
+\[
+ F_qP=P\circ(\,\cdot\,)^q.
+\]
+Therefore
+\[
+ L_{F_qP}([\alpha])
+ =\log|P(\alpha^q)|
+ =qL_P([\alpha]).
+\]
+This proves boundedness and `(8)`.  Galois permutes \(Y\) and preserves
+\(\lambda\), hence acts unitarily on \(H_{\rm Kum}\); `(5)` then proves
+Galois stability and invariance of the norm.
+
+The refined topology makes every evaluation
+\(\ell\mapsto\ell(f_\alpha)\) continuous, so `(7)` is continuous.
+For density, fix a character \(P\) and finitely many
+\(\alpha_1,\ldots,\alpha_m\).  The restriction of \(L_P\) to
+\[
+ W=\operatorname{span}_{\mathbb R}
+   \{f_{\alpha_1},\ldots,f_{\alpha_m}\}
+\]
+is a linear functional.  Finite-dimensional Riesz representation and
+orthogonal extension give a bounded
+\(\ell_W\in H_{\rm Kum}'\) with
+\(\ell_W(f_{\alpha_j})=L_P([\alpha_j])\) for all \(j\).
+Keep the unitary character \(P/|P|\) and replace only its modulus by
+\(\exp(\ell_W(f_\alpha))\).  The resulting Hilbert--Kummer bounded
+character agrees with \(P\) on the prescribed finite set.  This proves
+pointwise density.  The replacement does not alter the character on
+roots of unity, so it preserves Deninger's admissibility condition on
+the torsion kernel.
+
+Deninger's deck relation is
+\[
+ (P,u)\cdot q=(F_qP,q^{-1}u).                                   \tag{10}
+\]
+Equations `(8)` and `(10)` give
+\[
+ (q^{-1}u)r(F_qP)=q^{-1}u\cdot qr(P)=ur(P),
+\]
+proving descent of `(9)`.  Continuity holds in the refined topology by
+construction.
+
+## Exact Poisson-flow theorem
+
+`[PROVED HERE] [DAC_DENINGER_FLOW_POISSON_DILATION]`
+
+Deninger's flow is
+\[
+ \phi^t[P,u]=[P,e^tu].
+\]
+Consequently
+\[
+ x(\phi^t[P,u])=e^t x([P,u]).                                   \tag{11}
+\]
+At the discrete time \(t=\log n\),
+\[
+ [F_nP,u]=[P,nu]=\phi^{\log n}[P,u],                             \tag{12}
+\]
+because applying the deck transformation \(n\) to \((P,nu)\) gives
+\((F_nP,u)\).
+
+For any function \(f:\mathbb R_{>0}\to\mathbb C\), set
+\[
+ A_f=f\circ x
+\]
+on the nonunitary locus.  Pullback along `(12)` is
+\[
+ (\phi^{\log n})^*A_f
+ =A_{D_nf},\qquad
+ (D_nf)(x)=f(nx).                                                \tag{13}
+\]
+Hence, on Meyer's right-decaying Schwartz domain where his sum
+converges in \(H_-\),
+\[
+ \sum_{n\ge1}(\phi^{\log n})^*A_f
+ =A_{Zf},\qquad
+ (Zf)(x)=\sum_{n\ge1}f(nx).                                     \tag{14}
+\]
+
+Thus every summand of Meyer's Poisson--zeta differential is an
+ordinary scalar **flow pullback** on the Hilbert--Kummer radial
+suspension.  It is not a pullback by the deck map `(10)`: deck
+pullback is the identity on descended functions.
+
+## Relation to local Kummer coordinates
+
+For one algebraic Kummer coordinate \(a\), put
+\[
+ r_a(P)=-\log|P(a)|.
+\]
+The exact identities
+\[
+ r_a(F_nP)=nr_a(P),\qquad
+ r_{ab}=r_a+r_b,\qquad
+ r_{a^m}=mr_a,\qquad
+ r_\zeta=0\quad(\zeta\in\mu_\infty)                              \tag{15}
+\]
+show that the local logarithmic collar is the evaluation of the global
+functional `(5)` at \(f_a\).  Formula `(6)` removes the noncanonical
+choice of \(a\): it is the operator norm of the entire Kummer
+functional, not one coordinate.
+
+The earlier punctured-disk identity
+\[
+ -\log|z^n|=n(-\log|z|)
+\]
+is the one-coordinate restriction of `(8)`.
+
+## Exact consequence for the relevant complex
+
+The individual Poisson terms no longer require a conjectural
+coefficient-valued transfer.  The remaining comparison work is:
+
+1. sheafify the Hilbert--Kummer refinement `(7)` and compute
+   \(R\alpha_{\rm HK,*}\) on the coarse Deninger suspension;
+2. prove that the radial Schwartz domain is exactly Meyer's
+   \(H_\cap\), including the two real endpoint conditions;
+3. prove normal convergence and strict closed range of `(14)` in the
+   global nuclear topology;
+4. show that angular/nonradial derived directions are acyclic in the
+   relative middle summand;
+5. transport cup, trace, flow, and the Kähler/Hodge operator through
+   the resulting quasi-isomorphism.
+
+The topology refinement is essential.  The norm `(6)` need not be
+continuous for Deninger's coarse pointwise topology.  It is continuous
+on \(\check X_{\rm HK}\), and `(7)` is precisely the kind of
+true-to-approximate map for which Deninger proposed a relevant complex
+\(R\alpha_*\mathcal G\).
+
+## Hostile audit
+
+- No zeta zero, RH, CCM object, or numerical computation enters the
+  construction.
+- `(14)` uses flow pullback, not deck pullback.
+- Density of `(7)` does not imply that its derived pushforward is
+  trivial or that nonradial directions are acyclic.
+- The bare \(L^2\) completion is not declared arithmetic cohomology;
+  the mixed \(L^1/L^2\), nuclear, residue, and endpoint structures
+  remain necessary.
+- Positivity on the Kummer Hilbert source is not yet positivity on
+  Meyer's generalized-zero quotient; that requires the Hodge
+  comparison.
+
+## References
+
+- Christopher Deninger, *Dynamical systems for arithmetic schemes*,
+  the character formula for \(F_q\), the suspension relation, and the
+  flow in §6:
+  https://arxiv.org/abs/1807.06400
+- Daniel Allcock and Jeffrey D. Vaaler,
+  *A Banach space determined by the Weil height*:
+  https://arxiv.org/abs/0808.1038
+- Ralf Meyer, *A spectral interpretation for the zeros of the Riemann
+  zeta function*, Definition 3.1 and Theorem 3.3:
+  https://arxiv.org/abs/math/0412277
+
+## Log
+
+- 2026-07-27 — Constructed the canonical dense Hilbert--Kummer
+  refinement and proved that Deninger's discrete flow pullbacks are
+  exactly the Poisson dilation semigroup.

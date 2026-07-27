@@ -80,8 +80,9 @@ the finite-correspondence realization of the corrected rational-Witt prime-holon
    summation;
 5. an associated complex quaternionic coefficient bundle
    \(\mathscr S_{\mathrm{arith}}\) whose local model is
-   `deninger-rectangular-quaternionic-hodge`, whose Hodge operator squares to \(-1\), and which has
-   no functorial real reduction;
+   `deninger-rectangular-quaternionic-hodge`, whose transition model is
+   `deninger-quaternionic-transition-no-real-atom`, whose Hodge operator squares to \(-1\), and
+   which has no functorial real reduction;
 6. a twisted leafwise de Rham complex
    \[
      \mathscr K_{\mathrm{arith}}
@@ -90,7 +91,8 @@ the finite-correspondence realization of the corrected rational-Witt prime-holon
    \]
    whose Green projection is positive and whose flow commutes with Hodge after centering;
 7. a dense cup-isometric, flow-equivariant comparison from its reduced degree-one cohomology to
-   `DeningerArithmeticCompletedCohomology`, constructed before Xi divisor evaluation.
+   the Poisson--zeta quotient \(M_\zeta=H_-/Z(H_\cap)\), constructed
+   before zeta-divisor evaluation and without multiplicity doubling.
 
 The existing determinant/Lefschetz and oriented-Hodge equivalence would then derive RH.
 
@@ -136,11 +138,11 @@ The existing determinant/Lefschetz and oriented-Hodge equivalence would then der
 
 ## Verdict
 
-`SECONDARY REALIZATION CANDIDATE`, not the active arithmetic-cohomology construction.  A
-metaplectic pushout may explain the half-density/quaternionic representation only after the
-source category has retained the full Steinberg and quadratic transfer data.  The active source
-conjecture is `deninger-milnor-witt-hodge-realization`.  Falling back to scalar theta convolution
-retires this candidate immediately.
+`SECONDARY REALIZATION OF THE ACTIVE COEFFICIENT-DESCENT CONJECTURE`.
+A metaplectic pushout may explain the half-density/quaternionic representation only after the
+source category has retained the full Steinberg and quadratic transfer data.  The sharper active
+formulation is `deninger-steinberg-quaternionic-poisson-descent`.
+Falling back to scalar theta convolution retires this candidate immediately.
 
 ## Log
 
@@ -148,3 +150,7 @@ retires this candidate immediately.
   rational-Witt sheafification audit.
 - 2026-07-26 — downgraded to secondary real-realization candidate after identifying arithmetic
   finite Milnor--Witt correspondences as the direct \(R\alpha_*\mathscr G\) source candidate.
+- 2026-07-27 — Rewired the comparison target to the Poisson--zeta
+  quotient, inserted the proved \(Q_8\) no-real transition atom, and
+  delegated the exact active formulation to
+  `deninger-steinberg-quaternionic-poisson-descent`.

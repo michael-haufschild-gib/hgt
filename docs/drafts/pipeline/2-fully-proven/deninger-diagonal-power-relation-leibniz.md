@@ -8,6 +8,14 @@
 - **Statement:** every composite diagonal suspension relation is generated
   by its factor relations.
 
+## Gates
+
+- [x] Paper proof
+- [x] Lean source written:
+  `RHTower/DeningerArithmeticDiagonalPowerRelation.lean`
+- [ ] Direct `lake env lean` check after external build saturation clears
+- [ ] Final module build and formal-pipeline lint
+
 ## Statement
 
 Let \(A\) be an associative algebra and let

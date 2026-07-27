@@ -118,141 +118,6 @@ private theorem real_exp_eq_tsum (x : ℝ) :
     Real.exp x = ∑' k : ℕ, x ^ k / (k.factorial : ℝ) := by
   rw [Real.exp_eq_exp_ℝ, NormedSpace.exp_eq_tsum_div]
 
-/-- **Landau's summability transfer.**  A Dirichlet series with nonnegative real coefficients,
-convergent at the real point `σ₁` and continued by a function analytic on the closed ball of
-radius `R` around `σ₂ = σ₁ + 1` (agreeing with the series on `Re s > σ₁`), converges at
-every real `σ > σ₂ − R`.  The Taylor coefficients of the continuation at `σ₂` are signs times
-nonnegative values with no interior cancellation, so Tonelli regroups `Σ_k |c_k| ρ^k` by `n`
-and reassembles `Σ aₙ n^{−(σ₂−ρ)}`. -/
-theorem landau_summability_transfer {a : ℕ → ℝ} (ha : ∀ n, 0 ≤ a n) {σ₁ : ℝ}
-    (hsum : LSeriesSummable (fun n => (a n : ℂ)) (σ₁ : ℂ))
-    {R : NNReal} {G : ℂ → ℂ}
-    (hGd : DifferentiableOn ℂ G (Metric.closedBall ((σ₁ + 1 : ℝ) : ℂ) (R : ℝ)))
-    (hagree : ∀ s : ℂ, σ₁ < s.re → G s = LSeries (fun n => (a n : ℂ)) s)
-    {σ : ℝ} (hσ : σ₁ + 1 - (R : ℝ) < σ) :
-    LSeriesSummable (fun n => (a n : ℂ)) (σ : ℂ) := by
-  by_cases hσbig : σ₁ ≤ σ
-  · exact hsum.of_re_le_re (by simpa using hσbig)
-  push Not at hσbig
-  -- abscissa control at the centre σ₂ = σ₁ + 1
-  have habs : abscissaOfAbsConv (fun n => (a n : ℂ)) ≤ (σ₁ : EReal) :=
-    abscissaOfAbsConv_le_of_forall_lt_LSeriesSummable fun y hy =>
-      hsum.of_re_le_re (by simpa using hy.le)
-  have habs₂ : abscissaOfAbsConv (fun n => (a n : ℂ)) < (((σ₁ + 1 : ℝ) : ℂ).re : EReal) := by
-    refine lt_of_le_of_lt habs ?_
-    rw [Complex.ofReal_re]
-    exact_mod_cast (by linarith : σ₁ < σ₁ + 1)
-  -- derivatives of G at the centre, from the series
-  have hEvEq : G =ᶠ[nhds ((σ₁ + 1 : ℝ) : ℂ)] LSeries (fun n => (a n : ℂ)) := by
-    have hopen : IsOpen {s : ℂ | σ₁ < s.re} := isOpen_lt continuous_const Complex.continuous_re
-    refine Filter.eventuallyEq_of_mem (hopen.mem_nhds ?_) fun s hs => hagree s hs
-    simp only [Set.mem_setOf_eq, Complex.ofReal_re]
-    linarith
-  have hiter : ∀ k, iteratedDeriv k G ((σ₁ + 1 : ℝ) : ℂ)
-      = (-1) ^ k * ((∑' n, landauTerm a (σ₁ + 1) k n : ℝ) : ℂ) := fun k => by
-    rw [hEvEq.iteratedDeriv_eq k, LSeries_iteratedDeriv k habs₂,
-      LSeries_logMul_iterate_eq ha hsum k]
-  -- the power series of G on the ball
-  have hR0 : (0 : NNReal) < R := by
-    have h : (0 : ℝ) < (R : ℝ) := by linarith
-    exact_mod_cast h
-  obtain ⟨p, hball⟩ : ∃ p, HasFPowerSeriesOnBall G p ((σ₁ + 1 : ℝ) : ℂ) R :=
-    ⟨_, hGd.hasFPowerSeriesOnBall hR0⟩
-  have hcoeff : ∀ k, (k.factorial : ℂ) * p.coeff k = iteratedDeriv k G ((σ₁ + 1 : ℝ) : ℂ) := by
-    intro k
-    have h1 := hball.factorial_smul (1 : ℂ) k
-    rw [iteratedDeriv_eq_iteratedFDeriv, ← h1, nsmul_eq_mul]
-    rfl
-  have htsum_nonneg : ∀ k, 0 ≤ ∑' n, landauTerm a (σ₁ + 1) k n := fun k =>
-    tsum_nonneg fun n => landauTerm_nonneg ha (σ₁ + 1) k n
-  have hcoeff_norm : ∀ k, ‖p.coeff k‖
-      = (∑' n, landauTerm a (σ₁ + 1) k n) / (k.factorial : ℝ) := by
-    intro k
-    have h2 : (k.factorial : ℂ) * p.coeff k
-        = (-1) ^ k * ((∑' n, landauTerm a (σ₁ + 1) k n : ℝ) : ℂ) := by
-      rw [hcoeff k, hiter k]
-    have h3 := congrArg norm h2
-    rw [norm_mul, norm_mul, norm_pow, norm_neg, norm_one, one_pow, one_mul,
-      Complex.norm_natCast, Complex.norm_real,
-      Real.norm_of_nonneg (htsum_nonneg k)] at h3
-    have hkpos : (0 : ℝ) < (k.factorial : ℝ) := by exact_mod_cast k.factorial_pos
-    rw [eq_div_iff (ne_of_gt hkpos), mul_comm]
-    exact h3
-  -- coefficient-norm summability at radius ρ = σ₂ − σ
-  set ρ : ℝ := σ₁ + 1 - σ with hρdef
-  have hρpos : 0 < ρ := by rw [hρdef]; linarith
-  have hρR : ρ < (R : ℝ) := by rw [hρdef]; linarith
-  set ρ' : NNReal := ⟨ρ, hρpos.le⟩ with hρ'
-  have hsum_coeff : Summable fun k => ‖p k‖ * (ρ' : ℝ) ^ k := by
-    refine p.summable_norm_mul_pow ?_
-    calc (ρ' : ENNReal) < (R : ENNReal) := by exact_mod_cast hρR
-      _ ≤ p.radius := hball.r_le
-  have hsum_coeff' : Summable fun k =>
-      (∑' n, landauTerm a (σ₁ + 1) k n) * (ρ ^ k / (k.factorial : ℝ)) := by
-    refine hsum_coeff.congr fun k => ?_
-    rw [FormalMultilinearSeries.norm_apply_eq_norm_coef, hcoeff_norm k,
-      show (ρ' : ℝ) = ρ from rfl]
-    ring
-  -- Tonelli on the nonnegative double array
-  set F2 : ℕ × ℕ → ℝ := fun kn =>
-    landauTerm a (σ₁ + 1) kn.1 kn.2 * (ρ ^ kn.1 / (kn.1.factorial : ℝ)) with hF2
-  have hF2nonneg : ∀ kn, 0 ≤ F2 kn := by
-    intro kn
-    have h := landauTerm_nonneg ha (σ₁ + 1) kn.1 kn.2
-    simp only [hF2]
-    positivity
-  have hprod : Summable F2 := by
-    refine (summable_prod_of_nonneg hF2nonneg).mpr ⟨fun k => ?_, ?_⟩
-    · refine ((summable_landauTerm ha hsum k).mul_right
-        (ρ ^ k / (k.factorial : ℝ))).congr fun n => ?_
-      simp only [hF2]
-    · refine hsum_coeff'.congr fun k => ?_
-      simp only [hF2]
-      exact tsum_mul_right.symm
-  have hswap : Summable fun nk : ℕ × ℕ => F2 (nk.2, nk.1) :=
-    ((Equiv.prodComm ℕ ℕ).summable_iff.mpr hprod).congr fun nk => rfl
-  have hcols : Summable fun n => ∑' k, F2 (k, n) :=
-    ((summable_prod_of_nonneg fun nk => hF2nonneg (nk.2, nk.1)).mp hswap).2
-  -- reassemble the exponential per column
-  have hcol_val : ∀ n : ℕ, n ≠ 0 → a n / (n : ℝ) ^ σ ≤ ∑' k, F2 (k, n) := by
-    intro n hn
-    have hnR : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast (by omega : 1 ≤ n)
-    have hn0 : (0 : ℝ) < (n : ℝ) := by linarith
-    have hexp : ∑' k : ℕ, (ρ * Real.log n) ^ k / (k.factorial : ℝ) = (n : ℝ) ^ ρ := by
-      rw [← real_exp_eq_tsum, Real.rpow_def_of_pos hn0, mul_comm ρ (Real.log n)]
-    have hval : ∑' k, F2 (k, n)
-        = (a n / (n : ℝ) ^ (σ₁ + 1)) * ∑' k : ℕ, (ρ * Real.log n) ^ k / (k.factorial : ℝ) := by
-      rw [← tsum_mul_left]
-      refine tsum_congr fun k => ?_
-      simp only [hF2, landauTerm, if_neg hn]
-      rw [mul_pow]
-      ring
-    have hsplit : (n : ℝ) ^ (σ₁ + 1) = (n : ℝ) ^ σ * (n : ℝ) ^ ρ := by
-      rw [← Real.rpow_add hn0]
-      congr 1
-      rw [hρdef]; ring
-    have hfin : a n / (n : ℝ) ^ (σ₁ + 1) * (n : ℝ) ^ ρ = a n / (n : ℝ) ^ σ := by
-      have h1 : (n : ℝ) ^ σ ≠ 0 := by positivity
-      have h2 : (n : ℝ) ^ ρ ≠ 0 := by positivity
-      rw [hsplit]
-      field_simp
-    rw [hval, hexp, hfin]
-  -- conclude: comparison against the regrouped sum at exponent σ
-  have htarget : Summable (landauTerm a σ 0) := by
-    refine Summable.of_nonneg_of_le (landauTerm_nonneg ha σ 0) (fun n => ?_) hcols
-    rcases eq_or_ne n 0 with rfl | hn
-    · simpa [landauTerm] using tsum_nonneg fun k => hF2nonneg (k, 0)
-    · calc landauTerm a σ 0 n = a n / (n : ℝ) ^ σ := by
-            simp [landauTerm, if_neg hn]
-        _ ≤ ∑' k, F2 (k, n) := hcol_val n hn
-  have hfinal : Summable (fun n => ((landauTerm a σ 0 n : ℝ) : ℂ)) := by
-    refine Summable.of_norm (htarget.congr fun n => ?_)
-    rw [Complex.norm_real, Real.norm_of_nonneg (landauTerm_nonneg ha σ 0 n)]
-  show Summable fun n => LSeries.term (fun m => (a m : ℂ)) (σ : ℂ) n
-  refine hfinal.congr fun n => ?_
-  exact (by simpa using term_logMul_iterate_eq a σ 0 n : LSeries.term _ (σ : ℂ) n
-    = ((landauTerm a σ 0 n : ℝ) : ℂ)).symm
-
 /-- Summability of every logarithmic twist at an arbitrary real point strictly
 right of the abscissa of absolute convergence. -/
 private theorem summable_landauTerm_of_abscissa_lt
@@ -443,6 +308,21 @@ theorem landau_local_summability_transfer
   exact (by simpa using term_logMul_iterate_eq a σ 0 n :
     LSeries.term _ (σ : ℂ) n =
       ((landauTerm a σ 0 n : ℝ) : ℂ)).symm
+
+/-- **Landau's summability transfer.**  A Dirichlet series with nonnegative real coefficients,
+convergent at the real point `σ₁` and continued by a function analytic on the closed ball of
+radius `R` around `σ₂ = σ₁ + 1` (agreeing with the series on `Re s > σ₁`), converges at
+every real `σ > σ₂ − R`.  The Taylor coefficients of the continuation at `σ₂` are signs times
+nonnegative values with no interior cancellation, so Tonelli regroups `Σ_k |c_k| ρ^k` by `n`
+and reassembles `Σ aₙ n^{−(σ₂−ρ)}`. -/
+theorem landau_summability_transfer {a : ℕ → ℝ} (ha : ∀ n, 0 ≤ a n) {σ₁ : ℝ}
+    (hsum : LSeriesSummable (fun n => (a n : ℂ)) (σ₁ : ℂ))
+    {R : NNReal} {G : ℂ → ℂ}
+    (hGd : DifferentiableOn ℂ G (Metric.closedBall ((σ₁ + 1 : ℝ) : ℂ) (R : ℝ)))
+    (hagree : ∀ s : ℂ, σ₁ < s.re → G s = LSeries (fun n => (a n : ℂ)) s)
+    {σ : ℝ} (hσ : σ₁ + 1 - (R : ℝ) < σ) :
+    LSeriesSummable (fun n => (a n : ℂ)) (σ : ℂ) :=
+  landau_local_summability_transfer ha zero_lt_one hsum hGd hagree hσ
 
 /-- **Landau for entire continuations.**  A Dirichlet series with nonnegative real coefficients
 and an entire continuation converges at every real point: no real abscissa survives.

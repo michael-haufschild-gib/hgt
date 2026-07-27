@@ -554,19 +554,18 @@ theorem cos_band_subset {u₁ u₂ : ℝ} (h1 : -1 ≤ u₁) (h12 : u₁ ≤ u�
       linarith
     exact ⟨by linarith, by linarith⟩
 
-/-- **The shifted cosine-band measure bound.**  For a phase shift
-`ψ ∈ [0, 2π)`, the band set is covered by FOUR arccos intervals (the two
-arcs, each possibly wrapped once by the window), giving the √-law with
-constant `2π`. -/
-theorem cos_band_measure_shifted {u₁ u₂ ψ : ℝ} (h1 : -1 ≤ u₁)
+/-- **The shifted-band covering step, isolated.**  For `ψ ∈ [0, 2π)` the
+band set is covered by four arccos intervals, so its measure is at most
+`4·(arccos u₁ − arccos u₂)` — the raw gap form that both the √-law and the
+transversal linear law specialize. -/
+theorem cos_band_measure_shifted_gap {u₁ u₂ ψ : ℝ} (h1 : -1 ≤ u₁)
     (h12 : u₁ ≤ u₂) (h2 : u₂ ≤ 1) (hψ0 : 0 ≤ ψ) (hψ2 : ψ < 2 * Real.pi) :
     volume {φ : ℝ | φ ∈ Set.Icc 0 (2 * Real.pi) ∧
         Real.cos (φ - ψ) ∈ Set.Icc u₁ u₂}
-      ≤ ENNReal.ofReal (2 * Real.pi * Real.sqrt (2 * (u₂ - u₁))) := by
+      ≤ ENNReal.ofReal (4 * (Real.arccos u₁ - Real.arccos u₂)) := by
   set θ₁ := Real.arccos u₂ with hθ₁
   set θ₂ := Real.arccos u₁ with hθ₂
   set L := θ₂ - θ₁ with hLdef
-  have hπ : (0 : ℝ) < Real.pi := Real.pi_pos
   have hcover : {φ : ℝ | φ ∈ Set.Icc 0 (2 * Real.pi) ∧
         Real.cos (φ - ψ) ∈ Set.Icc u₁ u₂}
       ⊆ Set.Icc (θ₁ + ψ) (θ₂ + ψ)
@@ -590,7 +589,6 @@ theorem cos_band_measure_shifted {u₁ u₂ ψ : ℝ} (h1 : -1 ≤ u₁)
       rcases cos_band_subset h1 h12 h2 hmem with hI | hI
       · exact Or.inl (Or.inr ⟨by linarith [hI.1], by linarith [hI.2]⟩)
       · exact Or.inr ⟨by linarith [hI.1], by linarith [hI.2]⟩
-  have hgapL := arccos_gap_le h1 h12 h2
   have hL0 : 0 ≤ L := by
     by_contra hlt
     push Not at hlt
@@ -634,14 +632,25 @@ theorem cos_band_measure_shifted {u₁ u₂ ψ : ℝ} (h1 : -1 ≤ u₁)
         have e4 : -θ₁ + ψ - (-θ₂ + ψ) = θ₂ - θ₁ := by ring
         rw [Real.volume_Icc, Real.volume_Icc, Real.volume_Icc, Real.volume_Icc,
           e1, e2, e3, e4]
-    _ ≤ ENNReal.ofReal (2 * Real.pi * Real.sqrt (2 * (u₂ - u₁))) := by
+    _ = ENNReal.ofReal (4 * L) := by
         rw [← ENNReal.ofReal_add hL0 hL0, ← ENNReal.ofReal_add (by linarith) hL0,
           ← ENNReal.ofReal_add (by linarith) hL0]
-        apply ENNReal.ofReal_le_ofReal
-        have : L + L + L + L = 2 * (2 * L) := by ring
-        rw [this]
-        have h2L : 2 * L ≤ Real.pi * Real.sqrt (2 * (u₂ - u₁)) := hgapL
-        nlinarith [Real.sqrt_nonneg (2 * (u₂ - u₁)), hπ, h2L]
+        congr 1
+        ring
+
+/-- **The shifted cosine-band measure bound.**  For a phase shift
+`ψ ∈ [0, 2π)`, the band set is covered by FOUR arccos intervals (the two
+arcs, each possibly wrapped once by the window), giving the √-law with
+constant `2π`. -/
+theorem cos_band_measure_shifted {u₁ u₂ ψ : ℝ} (h1 : -1 ≤ u₁)
+    (h12 : u₁ ≤ u₂) (h2 : u₂ ≤ 1) (hψ0 : 0 ≤ ψ) (hψ2 : ψ < 2 * Real.pi) :
+    volume {φ : ℝ | φ ∈ Set.Icc 0 (2 * Real.pi) ∧
+        Real.cos (φ - ψ) ∈ Set.Icc u₁ u₂}
+      ≤ ENNReal.ofReal (2 * Real.pi * Real.sqrt (2 * (u₂ - u₁))) := by
+  refine (cos_band_measure_shifted_gap h1 h12 h2 hψ0 hψ2).trans
+    (ENNReal.ofReal_le_ofReal ?_)
+  have hgapL := arccos_gap_le h1 h12 h2
+  linarith [hgapL]
 
 end Sublevel
 end RHTower

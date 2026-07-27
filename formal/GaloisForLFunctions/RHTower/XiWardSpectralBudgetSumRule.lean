@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.XiWardInteriorTraceSplit
 import GaloisForLFunctions.RHTower.XiWeilPolarization
+import GaloisForLFunctions.RHTower.XiGuinandWeilSymmetricContour
 
 /-!
 # The linear spectral-budget sum rule and the unconditional off-line height floor
@@ -225,20 +226,6 @@ theorem XiC_xiBudgetProbe_ne_zero : XiC xiBudgetProbe ≠ 0 := by
 theorem XiC_neg_xiBudgetProbe_ne_zero : XiC (-xiBudgetProbe) ≠ 0 := by
   rw [XiC_even]
   exact XiC_xiBudgetProbe_ne_zero
-
-/-- The centered Xi logarithmic derivative is odd. -/
-theorem logDeriv_XiC_neg (z : ℂ) : logDeriv XiC (-z) = -logDeriv XiC z := by
-  have hdf : DifferentiableAt ℂ XiC (-z) :=
-    (XiC_analytic (-z) (Set.mem_univ _)).differentiableAt
-  have hdg : DifferentiableAt ℂ (fun w : ℂ => -w) z :=
-    differentiableAt_id.neg
-  have hcomp := logDeriv_comp (f := XiC) (g := fun w : ℂ => -w)
-    (x := z) hdf hdg
-  have hfun : (XiC ∘ fun w : ℂ => -w) = XiC := funext fun w => XiC_even w
-  rw [hfun] at hcomp
-  have hd : deriv (fun w : ℂ => -w) z = -1 := ((hasDerivAt_id z).neg).deriv
-  rw [hd] at hcomp
-  linear_combination hcomp
 
 /-- The rotated logarithmic derivative: `logDeriv XiC z₄ = i·logDeriv xi 4`. -/
 theorem logDeriv_XiC_probe_eq : logDeriv XiC xiBudgetProbe =

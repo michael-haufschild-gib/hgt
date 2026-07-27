@@ -59,8 +59,11 @@ quotient map \(\mathbb Q\to\mathbb R/\mathbb Z\), using the already-formalized p
   factorization, pairwise coprimality, and Bézout coefficients.
 - **No computation:** no prime enumeration or numerical verification occurs.
 - **Closed boundary:** arbitrary rational denominators are now covered.
-- **Still open:** finite-real Bruhat tensor assembly, semilocal faithfulness on that carrier,
-  finite-place/semilocal \(L^2\) unitarity, and global Hodge positivity.
+- **Subsequently closed:** algebraic finite--real Bruhat tensor assembly, rational diagonal
+  and full semilocal faithfulness on that carrier, finite-adele Haar-\(L^2\) unitarity, and
+  product-Haar semilocal \(L^2\) unitarity.
+- **Still open:** completed tensor comparison, sheaf restriction compatibility, and global
+  Hodge positivity.
 
 ## Gates
 

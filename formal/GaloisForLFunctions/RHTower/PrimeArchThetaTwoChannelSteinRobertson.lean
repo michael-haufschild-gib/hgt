@@ -451,62 +451,11 @@ theorem thetaCuspFirstRadialTwoChannelSteinRobertson (a b : ℝ) :
         thetaCuspBornWittenRadialPowerMoment 0 1 1 *
           thetaCuspBornWittenRadialPowerMoment 2 1 1 ^ 2) *
         thetaCuspFirstRadialTwoChannelSteinEnergy a b := by
-  let μ : Measure ℝ := volume.restrict (Ioi 0)
-  let f : ℝ → ℝ := fun x => thetaCuspFirstRadialCenteredQuadratic x *
-    thetaCuspBornWittenRadialAmplitude 1 1 x
-  let g : ℝ → ℝ := fun x => thetaCuspFirstRadialTwoChannelSteinScore a b x *
-    thetaCuspBornWittenRadialAmplitude 1 1 x
-  have hfMeas : AEStronglyMeasurable f μ := by
-    exact (((by
-      unfold thetaCuspFirstRadialCenteredQuadratic
-      fun_prop : Continuous thetaCuspFirstRadialCenteredQuadratic)).measurable.mul
-        measurable_thetaCuspFirstRadialAmplitude).aestronglyMeasurable
-  have hgMeas : AEStronglyMeasurable g μ := by
-    exact ((measurable_thetaCuspFirstRadialTwoChannelSteinScore a b).mul
-      measurable_thetaCuspFirstRadialAmplitude).aestronglyMeasurable
-  have hfSq : Integrable (fun x => f x ^ 2) μ := by
-    apply integrableOn_thetaCuspFirstRadialCenteredQuadratic_sq.congr
-    filter_upwards [] with x
-    simp only [f]
-    ring
-  have hgSq : Integrable (fun x => g x ^ 2) μ := by
-    apply (integrableOn_thetaCuspFirstRadialTwoChannelSteinEnergy a b).congr
-    filter_upwards [] with x
-    simp only [g]
-    ring
-  have hcs := HTGeometry.sq_integral_mul_le_integral_sq_mul_integral_sq
-    hfMeas hgMeas hfSq hgSq
-  have hfg : (∫ x, f x * g x ∂μ) =
-      thetaCuspBornWittenRadialPowerMoment 0 1 1 *
-        thetaCuspFirstRadialTwoChannelSteinCoupling a b := by
-    rw [show (fun x => f x * g x) = fun x =>
-        thetaCuspFirstRadialCenteredQuadratic x *
-          thetaCuspFirstRadialTwoChannelSteinScore a b x *
-            thetaCuspBornWittenRadialAmplitude 1 1 x ^ 2 by
-      funext x
-      simp only [f, g]
-      ring]
-    exact integral_thetaCuspFirstRadialCentered_mul_twoChannelSteinScore a b
-  have hf2 : (∫ x, f x ^ 2 ∂μ) =
-      thetaCuspBornWittenRadialPowerMoment 0 1 1 ^ 2 *
-          thetaCuspBornWittenRadialPowerMoment 4 1 1 -
-        thetaCuspBornWittenRadialPowerMoment 0 1 1 *
-          thetaCuspBornWittenRadialPowerMoment 2 1 1 ^ 2 := by
-    rw [show (fun x => f x ^ 2) = fun x =>
-        thetaCuspFirstRadialCenteredQuadratic x ^ 2 *
-          thetaCuspBornWittenRadialAmplitude 1 1 x ^ 2 by
-      funext x
-      simp only [f]
-      ring]
-    exact integral_thetaCuspFirstRadialCenteredQuadratic_sq
-  have hg2 : (∫ x, g x ^ 2 ∂μ) =
-      thetaCuspFirstRadialTwoChannelSteinEnergy a b := by
-    rw [thetaCuspFirstRadialTwoChannelSteinEnergy]
-    apply integral_congr_ae
-    filter_upwards [] with x
-    simp only [g]
-    ring
-  rwa [hfg, hf2, hg2] at hcs
+  refine thetaCuspFirstRadialSteinRobertson_of_score
+    (measurable_thetaCuspFirstRadialTwoChannelSteinScore a b) ?_
+    (integral_thetaCuspFirstRadialCentered_mul_twoChannelSteinScore a b) ?_
+  · exact integrableOn_thetaCuspFirstRadialTwoChannelSteinEnergy a b
+  · rw [thetaCuspFirstRadialTwoChannelSteinEnergy]
 
 /-- Source-specific three-vector Gram determinant.  Unlike a fixed-field
 Robertson estimate, this relation retains the mixed energy and both response

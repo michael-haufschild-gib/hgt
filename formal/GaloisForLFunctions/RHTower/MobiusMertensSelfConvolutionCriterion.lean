@@ -276,25 +276,20 @@ def MobiusMertensAllStrictHalfPowerBound : Prop :=
   ∀ δ : ℝ, 0 < δ → ∃ C : ℝ, 0 ≤ C ∧ ∀ N : ℕ,
     ‖mobiusMertensPartialSum N‖ ≤ C * ((N : ℝ) + 1) ^ ((1 / 2 : ℝ) + δ)
 
-/-- The classical Mertens half-power family gives the second-Cesàro source family by the exact
-self-convolution identity. -/
-theorem mobiusMertensAllStrictHalfPowerBound_implies_secondCesaroSubpowerUpperBound
-    (hMertens : MobiusMertensAllStrictHalfPowerBound) :
-    MobiusAdditiveTriangleSecondCesaroSubpowerUpperBound := by
-  intro ε hε
-  let δ : ℝ := ε / 2
-  have hδ : 0 < δ := by dsimp [δ]; linarith
-  obtain ⟨C, hC, hM⟩ := hMertens δ hδ
-  refine ⟨C ^ 2, sq_nonneg C, ?_⟩
-  intro N
+/-- A pointwise Mertens half-power estimate bounds the norm of the second-Cesaro sequence. -/
+theorem norm_mobiusAdditiveTriangleSecondCesaro_le_of_mertensBound
+    {δ C : ℝ} (hδ : 0 < δ) (hC : 0 ≤ C)
+    (hM : ∀ N : ℕ, ‖mobiusMertensPartialSum N‖ ≤
+      C * ((N : ℝ) + 1) ^ ((1 / 2 : ℝ) + δ))
+    (N : ℕ) :
+    ‖mobiusAdditiveTriangleSecondCesaro N‖ ≤
+      C ^ 2 * ((N : ℝ) + 1) ^ (2 + 2 * δ) := by
   let X : ℝ := (N : ℝ) + 1
   have hX : 0 < X := by dsimp [X]; positivity
   have hθ : 0 ≤ (1 / 2 : ℝ) + δ := by linarith
   rw [mobiusAdditiveTriangleSecondCesaro_eq_mobiusMertensSelfConvolution]
   calc
-    (mobiusMertensSelfConvolution N).re ≤ ‖mobiusMertensSelfConvolution N‖ :=
-      Complex.re_le_norm _
-    _ ≤ ∑ ab ∈ Finset.antidiagonal N,
+    ‖mobiusMertensSelfConvolution N‖ ≤ ∑ ab ∈ Finset.antidiagonal N,
         ‖mobiusMertensPartialSum ab.1 * mobiusMertensPartialSum ab.2‖ := by
       rw [mobiusMertensSelfConvolution]
       exact norm_sum_le _ _
@@ -317,14 +312,13 @@ theorem mobiusMertensAllStrictHalfPowerBound_implies_secondCesaroSubpowerUpperBo
       have hbPow : ((ab.2 : ℝ) + 1) ^ ((1 / 2 : ℝ) + δ) ≤
           X ^ ((1 / 2 : ℝ) + δ) :=
         Real.rpow_le_rpow (by positivity) hbBase hθ
-      have ha := hM ab.1
-      have hb := hM ab.2
       rw [norm_mul]
       calc
         ‖mobiusMertensPartialSum ab.1‖ * ‖mobiusMertensPartialSum ab.2‖ ≤
             (C * ((ab.1 : ℝ) + 1) ^ ((1 / 2 : ℝ) + δ)) *
               (C * ((ab.2 : ℝ) + 1) ^ ((1 / 2 : ℝ) + δ)) :=
-          mul_le_mul ha hb (norm_nonneg _) (mul_nonneg hC (Real.rpow_nonneg (by positivity) _))
+          mul_le_mul (hM ab.1) (hM ab.2) (norm_nonneg _)
+            (mul_nonneg hC (Real.rpow_nonneg (by positivity) _))
         _ ≤ (C * X ^ ((1 / 2 : ℝ) + δ)) *
               (C * X ^ ((1 / 2 : ℝ) + δ)) := by
           gcongr
@@ -339,16 +333,31 @@ theorem mobiusMertensAllStrictHalfPowerBound_implies_secondCesaroSubpowerUpperBo
     _ = ((N : ℝ) + 1) * (C ^ 2 * X ^ (1 + 2 * δ)) := by
       rw [Finset.sum_const, Finset.Nat.card_antidiagonal, nsmul_eq_mul]
       norm_cast
-    _ = C ^ 2 * ((N : ℝ) + 1) ^ (2 + ε) := by
-      have hδeq : 2 * δ = ε := by dsimp [δ]; ring
-      rw [show (N : ℝ) + 1 = X by rfl, hδeq]
+    _ = C ^ 2 * ((N : ℝ) + 1) ^ (2 + 2 * δ) := by
+      rw [show (N : ℝ) + 1 = X by rfl]
       calc
-        X * (C ^ 2 * X ^ (1 + ε)) = C ^ 2 * (X * X ^ (1 + ε)) := by ring
-        _ = C ^ 2 * (X ^ (1 : ℝ) * X ^ (1 + ε)) := by rw [Real.rpow_one]
-        _ = C ^ 2 * X ^ ((1 : ℝ) + (1 + ε)) := by
+        X * (C ^ 2 * X ^ (1 + 2 * δ)) = C ^ 2 * (X * X ^ (1 + 2 * δ)) := by
+          ring
+        _ = C ^ 2 * (X ^ (1 : ℝ) * X ^ (1 + 2 * δ)) := by rw [Real.rpow_one]
+        _ = C ^ 2 * X ^ ((1 : ℝ) + (1 + 2 * δ)) := by
           congr 1
           exact (Real.rpow_add hX _ _).symm
-        _ = C ^ 2 * X ^ (2 + ε) := by ring
+        _ = C ^ 2 * X ^ (2 + 2 * δ) := by ring
+
+/-- The classical Mertens half-power family gives the second-Cesàro source family by the exact
+self-convolution identity. -/
+theorem mobiusMertensAllStrictHalfPowerBound_implies_secondCesaroSubpowerUpperBound
+    (hMertens : MobiusMertensAllStrictHalfPowerBound) :
+    MobiusAdditiveTriangleSecondCesaroSubpowerUpperBound := by
+  intro ε hε
+  let δ : ℝ := ε / 2
+  have hδ : 0 < δ := by dsimp [δ]; linarith
+  obtain ⟨C, hC, hM⟩ := hMertens δ hδ
+  refine ⟨C ^ 2, sq_nonneg C, fun N => ?_⟩
+  have hbound := norm_mobiusAdditiveTriangleSecondCesaro_le_of_mertensBound hδ hC hM N
+  have hδeq : (2 : ℝ) + 2 * δ = 2 + ε := by dsimp [δ]; ring
+  rw [hδeq] at hbound
+  exact (Complex.re_le_norm _).trans hbound
 
 /-- Explicit Gamma constant for the second-Cesàro subpower Abel estimate. -/
 def mobiusAdditiveTriangleSecondCesaroSubpowerAbelConstant (ε : ℝ) : ℝ :=
@@ -480,51 +489,13 @@ theorem mobiusAdditiveTriangleSecondCesaroSubpowerUpperBound_implies_allStrictHa
     (hupper : MobiusAdditiveTriangleSecondCesaroSubpowerUpperBound) :
     MobiusDiscreteLaplaceAllStrictHalfPowerDecay := by
   intro b hb
-  let ε : ℝ := 2 * b - 1
-  have hε : 0 < ε := by dsimp [ε]; linarith
-  obtain ⟨C, hC, hsource⟩ := hupper ε hε
-  let S : ℝ := C * mobiusAdditiveTriangleSecondCesaroSubpowerAbelConstant ε
-  let D : ℝ := S + 1
-  have hS : 0 ≤ S := mul_nonneg hC
-    (mobiusAdditiveTriangleSecondCesaroSubpowerAbelConstant_nonneg hε)
-  rw [isBigO_iff]
-  refine ⟨D, ?_⟩
-  have hOneNhds : ∀ᶠ x : ℝ in nhds 0, x < 1 := Iio_mem_nhds (by norm_num)
-  have hOne : ∀ᶠ x : ℝ in nhdsWithin 0 (Ioi 0), x < 1 :=
-    Filter.Eventually.filter_mono inf_le_left hOneNhds
-  filter_upwards [self_mem_nhdsWithin, hOne] with x hx hxOne
-  change 0 < x at hx
-  change x < 1 at hxOne
-  have hsq := norm_sq_mobiusDiscreteLaplaceTransform_le_of_secondCesaroSubpowerUpperBound
-    hε hC hsource hx hxOne.le
-  have hrpowSq : (x ^ (-b)) ^ 2 = x ^ (-(1 + ε)) := by
-    calc
-      (x ^ (-b)) ^ 2 = (x ^ (-b)) ^ (2 : ℝ) :=
-        (Real.rpow_natCast (x ^ (-b)) 2).symm
-      _ = x ^ ((-b) * 2) := (Real.rpow_mul hx.le (-b) 2).symm
-      _ = x ^ (-(1 + ε)) := by
-        have hExp : (-b) * 2 = -(1 + ε) := by
-          dsimp [ε]
-          ring
-        rw [hExp]
-  rw [← hrpowSq] at hsq
-  have hSle : S ≤ D ^ 2 := by
-    dsimp [D]
-    nlinarith [sq_nonneg S]
-  have hpowPos : 0 < x ^ (-b) := Real.rpow_pos_of_pos hx _
-  have htargetSq : ‖mobiusDiscreteLaplaceTransform x‖ ^ 2 ≤
-      (D * x ^ (-b)) ^ 2 := by
-    calc
-      ‖mobiusDiscreteLaplaceTransform x‖ ^ 2 ≤ S * (x ^ (-b)) ^ 2 := by
-        simpa only [S] using hsq
-      _ ≤ D ^ 2 * (x ^ (-b)) ^ 2 :=
-        mul_le_mul_of_nonneg_right hSle (sq_nonneg _)
-      _ = (D * x ^ (-b)) ^ 2 := by ring
-  have hnorm := norm_nonneg (mobiusDiscreteLaplaceTransform x)
-  have hD : 0 ≤ D := by dsimp [D]; linarith
-  have hright : 0 ≤ D * x ^ (-b) := mul_nonneg hD hpowPos.le
-  rw [Real.norm_eq_abs, abs_of_pos hpowPos]
-  nlinarith
+  have hε : (0 : ℝ) < 2 * b - 1 := by linarith
+  obtain ⟨C, hC, hsource⟩ := hupper (2 * b - 1) hε
+  refine isBigO_mobiusDiscreteLaplaceTransform_of_norm_sq_le
+    (mul_nonneg hC (mobiusAdditiveTriangleSecondCesaroSubpowerAbelConstant_nonneg hε)) ?_
+  intro x hx hxOne
+  have hbound := norm_sq_mobiusDiscreteLaplaceTransform_le_of_secondCesaroSubpowerUpperBound hε hC hsource hx hxOne
+  rwa [show -(1 + (2 * b - 1)) = -(2 * b) by ring] at hbound
 
 /-- **Second-Cesàro Möbius criterion for RH.** -/
 theorem mobiusAdditiveTriangleSecondCesaroSubpowerUpperBound_implies_riemannHypothesis

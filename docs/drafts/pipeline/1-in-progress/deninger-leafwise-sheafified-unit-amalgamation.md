@@ -167,9 +167,11 @@ The sheaf construction satisfies:
    No stalkwise amplitude assertion is included.
 
    `DAC_PRO_STEIN_RELATIVE_CELL_GLOBAL_SECTIONS` proves this clause for
-   the pro-Stein cylinder-analytic refinement.  The remaining comparison
-   is from those pro-Ind analytic sections to ordinary coarse-suspension
-   derived sections.
+   the pro-Stein cylinder-analytic refinement.  This refinement is the
+   chosen leafwise analytic coefficient suggested by Deninger's §12.
+   No equivalence with ordinary coarse-suspension derived sections is
+   asserted: the nonproper coarse hypercohomology remains to be computed
+   by `DAC_ARITHMETIC_PROJECTION_LERAY_ROST_SCHMID_RESOLUTION`.
 
 2. **Geometric MW collapse.**
    The map from the MW object to the ordinary object in `(8)`--`(9)` is
@@ -207,19 +209,36 @@ The sheaf construction satisfies:
 
 Derived global sections do not generally preserve homotopy pushouts of
 commutative algebra sheaves.  The finite-stage pro-Stein construction
-establishes the relative-cell comparison using Cartan theorem B.  To pass
-to Deninger's coarse suspension one must establish one of:
+establishes the relative-cell comparison using Cartan theorem B and
+therefore closes `(10)` in the selected leafwise analytic category.
 
-1. the relevant \(\mathscr P_F\)-modules are dualizable and the projection
-   formula applies;
-2. `(8)` has a relative cellular presentation whose cells are
-   \(\Gamma\)-acyclic, so global sections commute with its geometric
-   realization;
-3. a monoidal Čech/hypercover descent theorem identifies both sides.
+Passing to Deninger's coarse suspension is a different operation.  One
+must first form
+\[
+ c_*\widetilde{\mathscr A}
+ =
+ (\pi_*\widetilde{\mathscr A})^{\mathbb Q_{>0}}
+\]
+degreewise and then take derived sections.  The canonical comparison
+\[
+ c_*\widetilde{\mathscr A}\longrightarrow
+ Rc_*\widetilde{\mathscr A}
+\]
+must not be declared an equivalence: exactness would remove the
+non-scalar middle cohomology.
 
-Shape formality of the already-global cochain algebra proves neither
-the sheaf comparison `(10)`, diagonal localization descent, nor the optional
-pushforward comparison `(11)`.
+`DAC_COARSE_INVARIANT_SHEAF_EXISTENCE` proves that the degreewise
+fixed-section object is a genuine dg-algebra sheaf and that all
+commuting source operations descend.  The remaining gates are:
+
+1. prove `DAC_ARITHMETIC_PROJECTION_LERAY_ROST_SCHMID_RESOLUTION`;
+2. deduce amplitude \([0,2]\) for the coarse invariant-sheaf complex;
+3. identify its endpoints, cup/trace, reduced middle cohomology, and
+   flow intrinsically.  No derived quotient endpoint is required.
+
+Shape formality of the already-global chart algebra proves none of
+these coarse/derived statements or the optional pushforward comparison
+`(11)`.
 
 ## Step-by-step proof program
 
@@ -231,8 +250,10 @@ pushforward comparison `(11)`.
    every higher syzygy cell.
 4. Prove restriction and Galois compatibility cell by cell.
 5. Apply `DAC_PRO_STEIN_RELATIVE_CELL_GLOBAL_SECTIONS` to obtain `(10)` on
-   the analytic refinement; prove comparison to the coarse suspension.
-6. Construct `DAC_COARSE_INVARIANT_SHEAF_ROST_SCHMID_DESCENT` and compare
+   the analytic refinement; retain rather than exactify the
+   coarse-to-derived comparison.
+6. Apply `DAC_COARSE_INVARIANT_SHEAF_EXISTENCE`, construct
+   `DAC_ARITHMETIC_PROJECTION_LERAY_ROST_SCHMID_RESOLUTION`, and compare
    its degree-one regulator edge with Deninger's source target.
 7. Apply the proved global shape formality theorem only after `(10)`.
 8. Transport twisted MW residue/Gysin operations before invoking geometric
@@ -260,10 +281,11 @@ pushforward comparison `(11)`.
   two-column acyclicity, signature window, cup duality, Hodge positivity, or
   Lefschetz formula.
 
-**Verdict:** `EQUIVARIANT TATE-GRADED COVER SHEAF EXISTENCE PAPER-PROVED;
-GLOBAL-SECTION, EXACT-WEIGHT COARSE DESCENT, AND ARITHMETIC-OPERATION
-COMPARISONS OPEN; OPTIONAL GEOMETRIC PUSHFORWARD OPEN; STALK AMPLITUDE
-FALSIFIED`.
+**Verdict:** `EQUIVARIANT TATE-GRADED COVER SHEAF, PRO-STEIN
+GLOBAL-SECTION COMPARISON, AND COARSE INVARIANT-SHEAF EXISTENCE
+PAPER-PROVED; SOURCE LERAY--ROST--SCHMID RESOLUTION AND
+ARITHMETIC-OPERATION COMPARISONS OPEN; OPTIONAL GEOMETRIC PUSHFORWARD
+OPEN; STALK AMPLITUDE FALSIFIED`.
 
 ## References
 

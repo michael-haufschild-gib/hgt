@@ -21,12 +21,148 @@ theorem flatOrder_le_jetBound {n : ℕ} (e : Fin (n + 1) → ℕ)
     (((Fintype.equivFinOfCardEq (by rw [Fintype.card_sigma]; simp :
       Fintype.card (Σ j : Fin (n + 1), Fin (e j)) = ∑ j, e j)).symm t).1.isLt)
 
-/-- Every positive-jet-degree support monomial generates nonzero grouped weights on an eventual
-injective balanced family of source tuples. -/
-theorem exists_eventually_balanced_nonzero_aevalWeight {n : ℕ}
+/-- A nonzero multivariate polynomial has a nonzero evaluation at an injective
+natural tuple whose coordinate sum lies in any prescribed residue class. -/
+theorem exists_injective_nat_eval_ne_zero_modSum {D : ℕ} (hD : 0 < D)
+    (W : MvPolynomial (Fin D) ℂ) (hW : W ≠ 0) (ρ : ℕ) :
+    ∃ k : Fin D → ℕ, Function.Injective k ∧
+      Nat.ModEq D (∑ i, k i) ρ ∧
+      MvPolynomial.eval (fun i => (k i : ℂ)) W ≠ 0 := by
+  classical
+  by_contra hcon
+  push Not at hcon
+  apply hW
+  let A := D ^ 2
+  let i0 : Fin D := ⟨0, hD⟩
+  let b : Fin D → ℕ := fun i => if i = i0 then ρ % D else D * (i : ℕ)
+  let S : Fin D → Set ℂ := fun i =>
+    Set.range (fun a : ℕ => ((A * a + b i : ℕ) : ℂ))
+  apply MvPolynomial.funext_set (p := W) (q := 0) S
+  · intro i
+    apply Set.infinite_range_of_injective
+    intro a c hac
+    change ((A * a + b i : ℕ) : ℂ) = ((A * c + b i : ℕ) : ℂ) at hac
+    have hacNat : A * a + b i = A * c + b i := by exact_mod_cast hac
+    have hmul : A * a = A * c := Nat.add_right_cancel hacNat
+    exact Nat.eq_of_mul_eq_mul_left (by dsimp [A]; positivity) hmul
+  · intro x hx
+    choose a ha using fun i => hx i (Set.mem_univ i)
+    let k : Fin D → ℕ := fun i => A * a i + b i
+    have hb_lt : ∀ i, b i < A := by
+      intro i
+      by_cases hi : i = i0
+      · subst i
+        simp only [b, ↓reduceIte]
+        have hr : ρ % D < D := Nat.mod_lt _ hD
+        dsimp [A]
+        nlinarith
+      · simp only [b, hi]
+        have hiD : (i : ℕ) < D := i.isLt
+        dsimp [A]
+        nlinarith
+    have hb_inj : Function.Injective b := by
+      intro i j hij
+      by_cases hi : i = i0
+      · subst i
+        by_cases hj : j = i0
+        · exact hj.symm
+        · have hr : ρ % D < D := Nat.mod_lt _ hD
+          have hjpos : 0 < (j : ℕ) := by
+            apply Nat.pos_of_ne_zero
+            intro h
+            apply hj
+            apply Fin.ext
+            simpa [i0] using h
+          simp only [b, ↓reduceIte, hj] at hij
+          nlinarith
+      · by_cases hj : j = i0
+        · subst j
+          have hr : ρ % D < D := Nat.mod_lt _ hD
+          have hipos : 0 < (i : ℕ) := by
+            apply Nat.pos_of_ne_zero
+            intro h
+            apply hi
+            apply Fin.ext
+            simpa [i0] using h
+          simp only [b, hi, ↓reduceIte] at hij
+          nlinarith
+        · simp only [b, hi, hj] at hij
+          apply Fin.ext
+          exact Nat.eq_of_mul_eq_mul_left hD hij
+    have hk : Function.Injective k := by
+      intro i j hij
+      have hmod := congrArg (fun n : ℕ => n % A) hij
+      have hApos : 0 < A := by dsimp [A]; positivity
+      have hbi := hb_lt i
+      have hbj := hb_lt j
+      have hAi : (A * a i + b i) % A = b i := by
+        rw [Nat.add_mod, Nat.mul_mod, Nat.mod_self, zero_mul, Nat.zero_mod, zero_add,
+          Nat.mod_eq_of_lt hbi]
+        exact Nat.mod_eq_of_lt hbi
+      have hAj : (A * a j + b j) % A = b j := by
+        rw [Nat.add_mod, Nat.mul_mod, Nat.mod_self, zero_mul, Nat.zero_mod, zero_add,
+          Nat.mod_eq_of_lt hbj]
+        exact Nat.mod_eq_of_lt hbj
+      have hmod' : (A * a i + b i) % A = (A * a j + b j) % A := by
+        simpa only [k] using hmod
+      rw [hAi, hAj] at hmod'
+      exact hb_inj hmod'
+    have hkmod : Nat.ModEq D (∑ i, k i) ρ := by
+      have hi0 : Nat.ModEq D (k i0) ρ := by
+        have hshape : k i0 = D * (D * a i0) + ρ % D := by
+          simp [k, A, b, i0, pow_two, mul_assoc]
+        rw [hshape]
+        exact (Nat.ModEq.modulus_mul_add (m := D) (a := D * a i0) (b := ρ % D)).trans
+          (Nat.mod_modEq ρ D)
+      have hother : ∀ i ∈ Finset.univ, i ≠ i0 → Nat.ModEq D (k i) 0 := by
+        intro i _ hi
+        rw [Nat.modEq_zero_iff_dvd]
+        refine ⟨(i : ℕ) + D * a i, ?_⟩
+        simp [k, A, b, hi, pow_two]
+        ring
+      exact (Nat.sum_modEq_single (s := Finset.univ) (a := i0)
+        (f := k) (by simp) hother).trans hi0
+    have hxk : x = fun i => (k i : ℂ) := by
+      funext i
+      exact (ha i).symm
+    rw [map_zero, hxk]
+    exact hcon k hk hkmod
+
+/-- Prescribed-residue balanced diagonal nonvanishing.  The offset sum can be
+chosen in any residue class modulo the positive arity while retaining pairwise
+distinct offsets and eventual nonvanishing along the whole diagonal. -/
+theorem exists_injective_balanced_diagonal_ne_zero_modSum {D : ℕ} (hD : 0 < D)
+    (W : MvPolynomial (Fin D) ℂ) (hW : W ≠ 0) (ρ : ℕ) :
+    ∃ δ : Fin D → ℕ, Function.Injective δ ∧
+      Nat.ModEq D (∑ i, δ i) ρ ∧ ∃ Q₀ : ℕ,
+      ∀ q ≥ Q₀, MvPolynomial.eval (fun i => ((q + δ i : ℕ) : ℂ)) W ≠ 0 := by
+  obtain ⟨δ, hδinj, hδmod, hδ⟩ :=
+    exists_injective_nat_eval_ne_zero_modSum hD W hW ρ
+  have hp0 : diagPoly W δ ≠ 0 := by
+    intro h0
+    apply hδ
+    have h := diagPoly_eval W δ 0
+    rw [h0, Polynomial.eval_zero] at h
+    simpa using h.symm
+  obtain ⟨Q₀, hQ₀⟩ := poly_eventually_ne_zero_nat (diagPoly W δ) hp0
+  refine ⟨δ, hδinj, hδmod, Q₀, fun q hq hev => ?_⟩
+  have hd := diagPoly_eval W δ (q : ℂ)
+  have hcast : (fun i => (q : ℂ) + (δ i : ℂ)) =
+      (fun i => ((q + δ i : ℕ) : ℂ)) := by
+    funext i
+    push_cast
+    ring
+  rw [hcast, hev] at hd
+  exact hQ₀ q hq hd
+
+/-- Every positive-jet-degree support monomial generates eventual balanced
+nonzero grouped weights with the offset sum in an arbitrarily prescribed
+residue class. -/
+theorem exists_eventually_balanced_nonzero_aevalWeight_modSum {n : ℕ}
     {Q : MvPolynomial (Fin (n + 2)) ℂ} {anchor : Fin (n + 2) →₀ ℕ}
-    (ha : anchor ∈ Q.support) (hD : 0 < jetMonomialDegree n anchor) :
+    (ha : anchor ∈ Q.support) (hD : 0 < jetMonomialDegree n anchor) (ρ : ℕ) :
     ∃ (δ : Fin (jetMonomialDegree n anchor) → ℕ), Function.Injective δ ∧
+      Nat.ModEq (jetMonomialDegree n anchor) (∑ i, δ i) ρ ∧
       ∃ Q₀ : ℕ, ∀ q ≥ Q₀,
         let s : Fin (jetMonomialDegree n anchor) → ℕ := fun i => q + δ i
         let N := (∑ i, s i) + anchor 0 - jetMonomialOrder n anchor
@@ -37,10 +173,11 @@ theorem exists_eventually_balanced_nonzero_aevalWeight {n : ℕ}
   classical
   let W := topShiftJetSymbol n Q anchor
   have hW : W ≠ 0 := topShiftJetSymbol_ne_zero ha
-  obtain ⟨δ, hδinj, Qd, hQd⟩ := exists_injective_balanced_diagonal_ne_zero W hW
+  obtain ⟨δ, hδinj, hδmod, Qd, hQd⟩ :=
+    exists_injective_balanced_diagonal_ne_zero_modSum hD W hW ρ
   let Zmax := Q.support.sup fun m => m 0
   let Q₀ := max Qd (max n (Zmax + jetMonomialOrder n anchor))
-  refine ⟨δ, hδinj, Q₀, fun q hq => ?_⟩
+  refine ⟨δ, hδinj, hδmod, Q₀, fun q hq => ?_⟩
   let s : Fin (jetMonomialDegree n anchor) → ℕ := fun i => q + δ i
   let N := (∑ i, s i) + anchor 0 - jetMonomialOrder n anchor
   have hqQd : Qd ≤ q := le_trans (le_max_left _ _) hq
@@ -115,7 +252,23 @@ theorem exists_eventually_balanced_nonzero_aevalWeight {n : ℕ}
   rw [← hxkey]
   exact Finset.mem_image_of_mem _ hxsigma
 
+/-- Every positive-jet-degree support monomial generates nonzero grouped weights on an eventual
+injective balanced family of source tuples. -/
+theorem exists_eventually_balanced_nonzero_aevalWeight {n : ℕ}
+    {Q : MvPolynomial (Fin (n + 2)) ℂ} {anchor : Fin (n + 2) →₀ ℕ}
+    (ha : anchor ∈ Q.support) (hD : 0 < jetMonomialDegree n anchor) :
+    ∃ (δ : Fin (jetMonomialDegree n anchor) → ℕ), Function.Injective δ ∧
+      ∃ Q₀ : ℕ, ∀ q ≥ Q₀,
+        let s : Fin (jetMonomialDegree n anchor) → ℕ := fun i => q + δ i
+        let N := (∑ i, s i) + anchor 0 - jetMonomialOrder n anchor
+        key s ∈ (sigmaIdx n N Q).image (atomKeyOf n) ∧
+          aevalWeight n N Q (key s) ≠ 0 ∧
+          balancedJetGroup n N (jetMonomialDegree n anchor) Q s =
+            topShiftJetGroup n Q anchor := by
+  obtain ⟨δ, hδinj, -, Q₀, hQ₀⟩ :=
+    exists_eventually_balanced_nonzero_aevalWeight_modSum ha hD 0
+  exact ⟨δ, hδinj, Q₀, hQ₀⟩
+
 end
 
 end GaloisForLFunctions
-

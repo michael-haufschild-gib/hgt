@@ -71,58 +71,13 @@ theorem ofReal_christoffelLimit_le_leaf_infinity_singleton (h : PositiveMomentFo
       atTop (nhds μ))
     {ξ : ℝ} (hξ : nevBrealInf s ξ = 0) :
     ENNReal.ofReal (christoffelLimit s ξ) ≤ (μ : Measure ℝ) {ξ} := by
-  obtain ⟨η₁, hη₁, hnode⟩ := eventually_exists_quasiNode_near_inf h h0b hξ
-  have hle : ∀ ε : ℝ, 0 < ε → christoffelLimit s ξ - ε ≤ ((μ : Measure ℝ) {ξ}).toReal := by
-    intro ε hε
-    have hcont := (continuous_christoffelLimit h h0b).continuousAt (x := ξ)
-    have hev : ∀ᶠ x in nhds ξ, christoffelLimit s ξ - ε < christoffelLimit s x :=
-      hcont.eventually_const_lt (by linarith)
-    rw [Metric.eventually_nhds_iff] at hev
-    obtain ⟨η₂, hη₂, hall₂⟩ := hev
-    set η : ℝ := min η₁ η₂ with hηdef
-    have hη : 0 < η := lt_min hη₁ hη₂
-    have hIcc : ∀ δ : ℝ, 0 < δ → δ < η →
-        ENNReal.ofReal (christoffelLimit s ξ - ε) ≤ (μ : Measure ℝ) (Icc (ξ - δ) (ξ + δ)) := by
-      intro δ hδ hδη
-      have hδ1 : δ < η₁ := lt_of_lt_of_le hδη (min_le_left _ _)
-      have hδ2 : δ < η₂ := lt_of_lt_of_le hδη (min_le_right _ _)
-      obtain ⟨N, hN⟩ := Filter.eventually_atTop.mp (hnode δ hδ hδ1)
-      have hbelow : ∀ᶠ i in atTop, ENNReal.ofReal (christoffelLimit s ξ - ε)
-          ≤ quasiProb s (goodLevelInf h (φ i)) (leafParamInf h (φ i)) (Icc (ξ - δ) (ξ + δ)) := by
-        refine Filter.eventually_atTop.mpr ⟨N, fun i hi => ?_⟩
-        have hgrow : N ≤ goodLevelInf h (φ i) := by
-          have h1 : i ≤ φ i := hφ.le_apply
-          have h2 : φ i + 1 ≤ goodLevelInf h (φ i) := goodLevelInf_ge h (φ i)
-          omega
-        obtain ⟨x, hxmem, hxδ⟩ :=
-          hN (goodLevelInf h (φ i)) hgrow (goodLevelInf_nevAlphaInf_ne_zero h (φ i))
-        have hxA : x ∈ Icc (ξ - δ) (ξ + δ) := by
-          rw [mem_Icc]
-          rw [abs_le] at hxδ
-          exact ⟨by linarith [hxδ.1], by linarith [hxδ.2]⟩
-        have hlamx : christoffelLimit s ξ - ε < christoffelLimit s x := by
-          have hdist : dist x ξ < η₂ := by
-            rw [Real.dist_eq]
-            exact lt_of_le_of_lt hxδ hδ2
-          exact hall₂ hdist
-        refine le_trans (ENNReal.ofReal_le_ofReal hlamx.le) ?_
-        exact quasiProb_ge_ofReal_christoffelLimit h h0 _ _ measurableSet_Icc hxmem hxA
-      have hport := ProbabilityMeasure.limsup_measure_closed_le_of_tendsto hlim
-        (F := Icc (ξ - δ) (ξ + δ)) isClosed_Icc
-      refine le_trans ?_ hport
-      exact le_limsup_of_frequently_le hbelow.frequently
-    have hsing := le_measure_singleton_of_forall_Icc (μ : Measure ℝ) ξ hη hIcc
-    have htop : (μ : Measure ℝ) {ξ} ≠ ⊤ := measure_ne_top _ _
-    have h2 : ENNReal.ofReal (christoffelLimit s ξ - ε)
-        ≤ ENNReal.ofReal (((μ : Measure ℝ) {ξ}).toReal) := by
-      rwa [ENNReal.ofReal_toReal htop]
-    exact (ENNReal.ofReal_le_ofReal_iff ENNReal.toReal_nonneg).mp h2
-  have hfinal : christoffelLimit s ξ ≤ ((μ : Measure ℝ) {ξ}).toReal := by
-    refine le_of_forall_pos_le_add fun ε hε => ?_
-    linarith [hle ε hε]
-  calc ENNReal.ofReal (christoffelLimit s ξ)
-      ≤ ENNReal.ofReal (((μ : Measure ℝ) {ξ}).toReal) := ENNReal.ofReal_le_ofReal hfinal
-    _ = (μ : Measure ℝ) {ξ} := ENNReal.ofReal_toReal (measure_ne_top _ _)
+  refine ofReal_christoffelLimit_le_leaf_singleton_of_eventually_node h h0b h0
+    (lvl := goodLevelInf h) (par := leafParamInf h) (goodLevelInf_ge h) hφ hlim ?_
+  obtain ⟨η, hη, hnode⟩ := eventually_exists_quasiNode_near_inf h h0b hξ
+  refine ⟨η, hη, fun δ hδ hδη => ?_⟩
+  filter_upwards [hnode δ hδ hδη] with n hn i hi
+  subst hi
+  exact hn (goodLevelInf_nevAlphaInf_ne_zero h i)
 
 /-- **The leaf at infinity, with its weights identified.** -/
 theorem exists_leaf_infinity_atoms (h : PositiveMomentForm s) (h0b : BoundedKernel s 0)

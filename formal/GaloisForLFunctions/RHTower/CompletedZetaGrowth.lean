@@ -239,7 +239,11 @@ private theorem exp_tail_val (p : ℝ) (hp : 0 < p) :
   rw [integral_exp_mul_Ioi (a := -(p/2)) (by linarith) 1, mul_one, neg_div_neg_eq]; field_simp
 
 -- === main: IntBound from kernel decay ===
-private theorem intbound_of_decay (F : ℝ → ℂ) (C₀ p : ℝ) (hp : 0 < p) (hC₀ : 0 ≤ C₀)
+/-- **Order-one envelope for the Mellin modulus integral.**  If `F` decays like `C₀ e^{-p t}` at
+infinity and like `C₀ t^{-1/2} e^{-p/t}` at the origin, then `∫₀^∞ t^{σ-1} ‖F t‖ dt` obeys a global
+order-one bound `exp (C (1+|σ|) log (2+|σ|))`.  Splitting at `t = 1`, the head is estimated by the
+`e^{-p/t}` factor and the tail by the peak of `t^{σ-1} e^{-pt}`, whose logarithm is `O(σ log σ)`. -/
+theorem intbound_of_decay (F : ℝ → ℂ) (C₀ p : ℝ) (hp : 0 < p) (hC₀ : 0 ≤ C₀)
     (hdtop : ∀ t : ℝ, 1 ≤ t → ‖F t‖ ≤ C₀ * Real.exp (-(p*t)))
     (hdhead : ∀ t : ℝ, 0 < t → t ≤ 1 → ‖F t‖ ≤ C₀ * t ^ (-(1:ℝ)/2) * Real.exp (-(p/t))) :
     ∃ C : ℝ, 0 < C ∧ ∀ σ : ℝ,
@@ -387,7 +391,11 @@ private theorem intbound_of_decay (F : ℝ → ℂ) (C₀ p : ℝ) (hp : 0 < p) 
     _ ≤ Real.exp (C * E) := hfinal
     _ = Real.exp (C * (1 + |σ|) * Real.log (2 + |σ|)) := by rw [hEdef]; ring_nf
 
-private theorem global_exp_bound (g : ℝ → ℝ) (L p : ℝ)
+/-- **Globalisation of an exponential decay estimate.**  A function continuous on `(0,∞)` whose
+distance to its limit is `O(e^{-p t})` at infinity satisfies a pointwise bound `C e^{-p t}` on all
+of `[1,∞)`: the asymptotic bound covers a final segment and compactness of the intervening closed
+interval supplies the rest. -/
+theorem global_exp_bound (g : ℝ → ℝ) (L p : ℝ)
     (hcont : ContinuousOn g (Ioi 0))
     (hO : (fun t => g t - L) =O[atTop] (fun t => Real.exp (-p * t))) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ t : ℝ, 1 ≤ t → |g t - L| ≤ C * Real.exp (-p * t) := by

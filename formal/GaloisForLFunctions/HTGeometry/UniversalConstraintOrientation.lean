@@ -348,60 +348,13 @@ theorem universalSurgeryFaceStructuralOutput_eq_zero_iff_nonface
     letI := upperEndMeroFieldDifferential
     universalSurgeryFaceStructuralOutput a facets J = 0 ↔
       ¬ IsFaceOf (↑facets : Set (Finset α)) J := by
-  classical
   letI := isDomain_upperEndAnalyticSubring
   letI : Algebra ℂ upperEndMeroField := upperEndComplexToMero.toAlgebra
   letI := upperEndMeroFieldDifferential
-  let N := stanleyReisnerFaceFamily (R := Polynomial ℂ) facets J
-  let d : translationSubmonoid (Polynomial ℂ) α := 1
-  let source := universalSurgeryFaceStructuralSource a facets J
-  have hmat := universalFacetOrbitSurgery_stanleyReisnerLaurentDifferentialMatroid
-    a d facets N
-  constructor
-  · intro hout
-    by_contra hface
-    have hclass : stanleyReisnerFaceClass (R := Polynomial ℂ) facets J ≠ 0 := by
-      intro hzero
-      exact (quotient_indicatorMonomial_eq_zero_iff_nonface
-        (R := Polynomial ℂ) facets J).mp hzero hface
-    have hN : LinearIndependent (Polynomial ℂ) N :=
-      (linearIndependent_unit_stanleyReisner_iff facets _).mpr hclass
-    have hDI : DifferentialIndependent ℂ
-        (differentialOperatorRowApply
-          (finiteFinsuppOperatorRows (stanleyReisnerLaurentRows d facets N)) source) :=
-      hmat.mpr hN
-    have hn := hDI.algebraicIndependent.linearIndependent.ne_zero Unit.unit
-    apply hn
-    simpa [universalSurgeryFaceStructuralOutput, source, d, N,
-      universalSurgeryFaceStructuralSource] using hout
-  · intro hnonface
-    have hclass : stanleyReisnerFaceClass (R := Polynomial ℂ) facets J = 0 :=
-      (quotient_indicatorMonomial_eq_zero_iff_nonface
-        (R := Polynomial ℂ) facets J).mpr hnonface
-    let Q := stanleyReisnerLaurentRows
-      (1 : translationSubmonoid (Polynomial ℂ) α) facets
-      (stanleyReisnerFaceFamily facets J)
-    have hQzero : Q = 0 := by
-      apply _root_.funext
-      intro i
-      apply _root_.funext
-      intro F
-      apply Finsupp.ext
-      intro g
-      simp [Q, stanleyReisnerLaurentRows, stanleyReisnerFaceFamily, hclass]
-    change differentialOperatorRowApply (finiteFinsuppOperatorRows Q)
-      (universalSurgeryFaceStructuralSource a facets J) Unit.unit = 0
-    unfold differentialOperatorRowApply
-    apply Finset.sum_eq_zero
-    intro q hq
-    have hc : finiteFinsuppOperatorRows Q Unit.unit q = 0 := by
-      change Q Unit.unit q.1.1 q.1.2 = 0
-      have hc0 := congrArg
-        (fun rows : Unit → (F : facets) → (α → ℤ) →₀ Polynomial ℂ =>
-          rows Unit.unit q.1.1 q.1.2) hQzero
-      simpa using hc0
-    rw [hc]
-    simp [differentialOperatorApply]
+  exact structuralFaceOutput_eq_zero_iff_nonface facets J
+    (universalSurgeryFaceStructuralSource a facets J)
+    (universalFacetOrbitSurgery_stanleyReisnerLaurentDifferentialMatroid a 1 facets
+      (stanleyReisnerFaceFamily facets J))
 
 /-- At every finite orientation index, the zero pattern of the one-field structural outputs is an
 arbitrary prescribed finite simplicial complex. -/

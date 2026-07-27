@@ -38,6 +38,97 @@ lemma inv_sq_mul_sqrt_rectangular {x : ℝ} (hx : 0 < x) :
   field_simp
   nlinarith
 
+/-- Only finitely many rectangular zero copies have spectral point of norm below a given bound. -/
+private theorem eventually_cofinite_le_norm_xiSpectralPoint (S : ℝ) (hS : 0 < S) :
+    ∀ᶠ q : XiRightZeroCopy in Filter.cofinite, S ≤ ‖xiSpectralPoint q.1‖ := by
+  have hbase : Summable (fun q : XiRightZeroCopy =>
+      1 / ‖xiSpectralPoint q.1‖ ^ 2) :=
+    xiSpectralPoint_inv_sq_summable.subtype _
+  have htend := hbase.tendsto_cofinite_zero
+  have hlt : ∀ᶠ q : XiRightZeroCopy in Filter.cofinite,
+      1 / ‖xiSpectralPoint q.1‖ ^ 2 < 1 / S ^ 2 :=
+    htend.eventually_lt_const (by positivity)
+  filter_upwards [hlt] with q hq
+  have hqpos : 0 < ‖xiSpectralPoint q.1‖ :=
+    norm_pos_iff.mpr (xiSpectralPoint_ne_zero q.1)
+  have hsq : S ^ 2 < ‖xiSpectralPoint q.1‖ ^ 2 :=
+    lt_of_one_div_lt_one_div (pow_pos hqpos 2) hq
+  exact le_of_lt (lt_of_pow_lt_pow_left₀ 2 (norm_nonneg _) hsq)
+
+/-- **Uniform tail estimate for one shifted rectangular zeta term.**  For `s` in a ball of radius
+`R₀` and a zero copy whose spectral point satisfies `2(R₀+2) ≤ ‖γ‖`, the point `s` is not the shifted
+pole and the coefficient times the shifted zeta value is at most `10 C₀ ‖γ‖^{-3/2}`.  The separation
+puts `s - γ` at distance at least one from the zeta pole, and `‖s - γ‖ + 2 ≤ 4‖γ‖` turns the
+square-root growth bound into `2√‖γ‖`. -/
+private theorem norm_xiRectangularRightCoefficient_mul_riemannZeta_le
+    (L : ℝ) {R0 : ℝ} {q : XiRightZeroCopy} {s : ℂ} (hsre : 1 < s.re)
+    (hsNorm : ‖s‖ ≤ R0)
+    (hqLarge : 2 * (R0 + 2) ≤ ‖xiSpectralPoint q.1‖) :
+    s ≠ xiRightShiftedPole q ∧
+      ‖xiRectangularRightCoefficient L q‖ *
+          ‖riemannZeta (s - xiRightCenteredZero q)‖ ≤
+        (10 * (1 + Real.exp (|L| / 2)) ^ 2) *
+          (1 / (‖xiSpectralPoint q.1‖ * Real.sqrt ‖xiSpectralPoint q.1‖)) := by
+  have hR0nonneg : 0 ≤ R0 := (norm_nonneg s).trans hsNorm
+  set C0 : ℝ := (1 + Real.exp (|L| / 2)) ^ 2 with hC0
+  set w : ℂ := xiRightCenteredZero q with hw
+  have hwNorm : ‖w‖ = ‖xiSpectralPoint q.1‖ := by
+    simp [hw, xiRightCenteredZero]
+  have hwLarge : 2 * (R0 + 2) ≤ ‖w‖ := by rw [hwNorm]; exact hqLarge
+  have hwpos : 0 < ‖w‖ := norm_pos_iff.mpr (xiRightCenteredZero_ne_zero q)
+  have hshiftRe : 1 / 2 ≤ (s - w).re := by
+    rw [Complex.sub_re]
+    have hwre := abs_xiRightCenteredZero_re_lt_half q
+    rw [hw]
+    linarith [(abs_lt.mp hwre).1, (abs_lt.mp hwre).2]
+  have hsOneNorm : ‖s - 1‖ ≤ R0 + 1 := by
+    calc
+      ‖s - 1‖ ≤ ‖s‖ + ‖(1 : ℂ)‖ := norm_sub_le _ _
+      _ = ‖s‖ + 1 := by norm_num
+      _ ≤ R0 + 1 := by linarith
+  have hsep : 1 ≤ ‖(s - w) - 1‖ := by
+    have hrev : ‖w‖ - ‖s - 1‖ ≤ ‖w - (s - 1)‖ := norm_sub_norm_le _ _
+    have hcoord : ‖w - (s - 1)‖ = ‖(s - w) - 1‖ := by
+      rw [show w - (s - 1) = -((s - w) - 1) by ring, norm_neg]
+    rw [hcoord] at hrev
+    linarith
+  have hnotPole : s ≠ xiRightShiftedPole q := by
+    intro heq
+    have hzero : (s - w) - 1 = 0 := by
+      rw [heq, xiRightShiftedPole, hw]
+      ring
+    rw [hzero, norm_zero] at hsep
+    norm_num at hsep
+  refine ⟨hnotPole, ?_⟩
+  have hzeta := norm_riemannZeta_le_sqrt_norm_add_two_half
+    hshiftRe (by norm_num : (0 : ℝ) < 1) hsep
+  have harg : ‖s - w‖ + 2 ≤ 4 * ‖w‖ := by
+    have hsub : ‖s - w‖ ≤ ‖s‖ + ‖w‖ := norm_sub_le _ _
+    linarith
+  have hsqrt : Real.sqrt (‖s - w‖ + 2) ≤ 2 * Real.sqrt ‖w‖ :=
+    sqrt_le_two_mul_sqrt_rectangular (norm_nonneg w) (by positivity) harg
+  have hzeta' : ‖riemannZeta (s - w)‖ ≤ 10 * Real.sqrt ‖w‖ := by
+    calc
+      ‖riemannZeta (s - w)‖ ≤
+          (2 + 1 / (1 : ℝ) + 2) * Real.sqrt (‖s - w‖ + 2) := hzeta
+      _ ≤ 5 * (2 * Real.sqrt ‖w‖) := by
+        norm_num only [div_one, OfNat.ofNat]
+        gcongr
+      _ = 10 * Real.sqrt ‖w‖ := by ring
+  have hcoeff := norm_xiRectangularRightCoefficient_le L q
+  calc
+    ‖xiRectangularRightCoefficient L q‖ * ‖riemannZeta (s - w)‖ ≤
+        (C0 / ‖xiSpectralPoint q.1‖ ^ 2) * (10 * Real.sqrt ‖w‖) := by
+          gcongr
+    _ = (10 * C0) *
+        ((1 / ‖xiSpectralPoint q.1‖ ^ 2) * Real.sqrt ‖xiSpectralPoint q.1‖) := by
+      rw [hwNorm]
+      ring
+    _ = (10 * C0) *
+        (1 / (‖xiSpectralPoint q.1‖ * Real.sqrt ‖xiSpectralPoint q.1‖)) := by
+      rw [inv_sq_mul_sqrt_rectangular
+        (norm_pos_iff.mpr (xiSpectralPoint_ne_zero q.1))]
+
 /-- The cancelled rectangular carrier converges locally normally on the
 connected half-plane `Re s > 1`. -/
 theorem summableLocallyUniformlyOn_xiRectangularCancelledTerm_rightOne :
@@ -54,10 +145,6 @@ theorem summableLocallyUniformlyOn_xiRectangularCancelledTerm_rightOne :
   let C0 : ℝ := (1 + Real.exp (|L| / 2)) ^ 2
   let R0 : ℝ := max R 0
   let M0 : ℝ := max M 0
-  let S : ℝ := 2 * (R0 + 2)
-  have hR0 : 0 ≤ R0 := le_max_right _ _
-  have hM0 : 0 ≤ M0 := le_max_right _ _
-  have hS : 0 < S := by dsimp only [S]; positivity
   have hthree : Summable (fun q : XiRightZeroCopy =>
       1 / (‖xiSpectralPoint q.1‖ * Real.sqrt ‖xiSpectralPoint q.1‖)) :=
     xiSpectralPoint_inv_three_halves_summable.subtype _
@@ -65,106 +152,26 @@ theorem summableLocallyUniformlyOn_xiRectangularCancelledTerm_rightOne :
       (10 * C0 * M0) *
         (1 / (‖xiSpectralPoint q.1‖ * Real.sqrt ‖xiSpectralPoint q.1‖)),
     hthree.mul_left (10 * C0 * M0), ?_⟩
-  have hbase : Summable (fun q : XiRightZeroCopy =>
-      1 / ‖xiSpectralPoint q.1‖ ^ 2) :=
-    xiSpectralPoint_inv_sq_summable.subtype _
-  have hlarge : ∀ᶠ q : XiRightZeroCopy in Filter.cofinite,
-      S ≤ ‖xiSpectralPoint q.1‖ := by
-    have htend := hbase.tendsto_cofinite_zero
-    have hlt : ∀ᶠ q : XiRightZeroCopy in Filter.cofinite,
-        1 / ‖xiSpectralPoint q.1‖ ^ 2 < 1 / S ^ 2 :=
-      htend.eventually_lt_const (by positivity)
-    filter_upwards [hlt] with q hq
-    have hqpos : 0 < ‖xiSpectralPoint q.1‖ :=
-      norm_pos_iff.mpr (xiSpectralPoint_ne_zero q.1)
-    have hsq : S ^ 2 < ‖xiSpectralPoint q.1‖ ^ 2 :=
-      lt_of_one_div_lt_one_div (pow_pos hqpos 2) hq
-    exact le_of_lt (lt_of_pow_lt_pow_left₀ 2 (norm_nonneg _) hsq)
-  filter_upwards [hlarge] with q hqLarge
+  filter_upwards [eventually_cofinite_le_norm_xiSpectralPoint (2 * (R0 + 2))
+    (by dsimp only [R0]; positivity)] with q hqLarge
   intro s hs
   have hsright : 1 < s.re := hKsub hs
   have hsNorm : ‖s‖ ≤ R0 := (hR s hs).trans (le_max_left _ _)
-  have hxiNorm : ‖xi (s - 1 / 2)‖ ≤ M0 :=
-    (hM s hs).trans (le_max_left _ _)
-  let w : ℂ := xiRightCenteredZero q
-  have hwNorm : ‖w‖ = ‖xiSpectralPoint q.1‖ := by
-    simp [w, xiRightCenteredZero]
-  have hwLarge : S ≤ ‖w‖ := by simpa only [hwNorm] using hqLarge
-  have hwpos : 0 < ‖w‖ := norm_pos_iff.mpr (xiRightCenteredZero_ne_zero q)
-  have hshiftRe : 1 / 2 ≤ (s - w).re := by
-    rw [Complex.sub_re]
-    have hwre := abs_xiRightCenteredZero_re_lt_half q
-    dsimp only [w]
-    linarith [abs_lt.mp hwre]
-  have hsOneNorm : ‖s - 1‖ ≤ R0 + 1 := by
-    calc
-      ‖s - 1‖ ≤ ‖s‖ + ‖(1 : ℂ)‖ := norm_sub_le _ _
-      _ = ‖s‖ + 1 := by norm_num
-      _ ≤ R0 + 1 := by linarith
-  have hsep : 1 ≤ ‖(s - w) - 1‖ := by
-    have hrev : ‖w‖ - ‖s - 1‖ ≤ ‖w - (s - 1)‖ :=
-      norm_sub_norm_le _ _
-    have hcoord : ‖w - (s - 1)‖ = ‖(s - w) - 1‖ := by
-      rw [show w - (s - 1) = -((s - w) - 1) by ring, norm_neg]
-    rw [hcoord] at hrev
-    dsimp only [S] at hwLarge
-    linarith
-  have hnotPole : s ≠ xiRightShiftedPole q := by
-    intro heq
-    have : (s - w) - 1 = 0 := by
-      rw [heq, xiRightShiftedPole]
-      dsimp only [w]
-      ring
-    rw [this, norm_zero] at hsep
-    norm_num at hsep
-  have hzeta := norm_riemannZeta_le_sqrt_norm_add_two_half
-    hshiftRe (by norm_num : (0 : ℝ) < 1) hsep
-  have harg : ‖s - w‖ + 2 ≤ 4 * ‖w‖ := by
-    have hsub : ‖s - w‖ ≤ ‖s‖ + ‖w‖ := norm_sub_le _ _
-    dsimp only [S] at hwLarge
-    linarith
-  have hsqrt : Real.sqrt (‖s - w‖ + 2) ≤
-      2 * Real.sqrt ‖w‖ := by
-    exact sqrt_le_two_mul_sqrt_rectangular (norm_nonneg w)
-      (by positivity) harg
-  have hcoeff := norm_xiRectangularRightCoefficient_le L q
+  have hxiNorm : ‖xi (s - 1 / 2)‖ ≤ M0 := (hM s hs).trans (le_max_left _ _)
+  obtain ⟨hnotPole, hbound⟩ :=
+    norm_xiRectangularRightCoefficient_mul_riemannZeta_le L hsright hsNorm hqLarge
   rw [xiRectangularCancelledTerm, xiShiftedZetaCancelledTerm,
     Function.update_of_ne hnotPole, norm_mul, norm_mul]
-  have hzeta' : ‖riemannZeta (s - w)‖ ≤
-      10 * Real.sqrt ‖w‖ := by
-    calc
-      ‖riemannZeta (s - w)‖ ≤
-          (2 + 1 / (1 : ℝ) + 2) * Real.sqrt (‖s - w‖ + 2) := hzeta
-      _ ≤ 5 * (2 * Real.sqrt ‖w‖) := by
-        norm_num only [div_one, OfNat.ofNat]
-        gcongr
-      _ = 10 * Real.sqrt ‖w‖ := by ring
   calc
     ‖xiRectangularRightCoefficient L q‖ *
-        (‖xi (s - 1 / 2)‖ * ‖riemannZeta (s - w)‖) ≤
-      ((C0 / ‖xiSpectralPoint q.1‖ ^ 2) *
-        (10 * Real.sqrt ‖w‖)) * ‖xi (s - 1 / 2)‖ := by
-          rw [mul_assoc, mul_comm ‖xi (s - 1 / 2)‖]
-          gcongr
-    _ = (10 * C0) *
-        ((1 / ‖xiSpectralPoint q.1‖ ^ 2) *
-          Real.sqrt ‖xiSpectralPoint q.1‖) *
-          ‖xi (s - 1 / 2)‖ := by
-      rw [hwNorm]
-      ring
-    _ = (10 * C0) *
-        (1 / (‖xiSpectralPoint q.1‖ *
-          Real.sqrt ‖xiSpectralPoint q.1‖)) *
-          ‖xi (s - 1 / 2)‖ := by
-      rw [inv_sq_mul_sqrt_rectangular
-        (norm_pos_iff.mpr (xiSpectralPoint_ne_zero q.1))]
-    _ ≤ (10 * C0) *
-        (1 / (‖xiSpectralPoint q.1‖ *
-          Real.sqrt ‖xiSpectralPoint q.1‖)) * M0 := by
-      gcongr
+        (‖xi (s - 1 / 2)‖ * ‖riemannZeta (s - xiRightCenteredZero q)‖) =
+      (‖xiRectangularRightCoefficient L q‖ *
+        ‖riemannZeta (s - xiRightCenteredZero q)‖) * ‖xi (s - 1 / 2)‖ := by ring
+    _ ≤ ((10 * C0) *
+        (1 / (‖xiSpectralPoint q.1‖ * Real.sqrt ‖xiSpectralPoint q.1‖))) * M0 :=
+      mul_le_mul hbound hxiNorm (norm_nonneg _) (by dsimp only [C0]; positivity)
     _ = (10 * C0 * M0) *
-        (1 / (‖xiSpectralPoint q.1‖ *
-          Real.sqrt ‖xiSpectralPoint q.1‖)) := by ring
+        (1 / (‖xiSpectralPoint q.1‖ * Real.sqrt ‖xiSpectralPoint q.1‖)) := by ring
 
 /-- The locally normal cancelled carrier is holomorphic on `Re s > 1`. -/
 theorem differentiableOn_xiRectangularCancelledSeries_rightOne (L : ℝ) :
@@ -215,8 +222,6 @@ theorem summableLocallyUniformlyOn_xiRectangularRawShiftedTerm_rightOne
   obtain ⟨R, hR⟩ := hK.isBounded.exists_norm_le
   let C0 : ℝ := (1 + Real.exp (|L| / 2)) ^ 2
   let R0 : ℝ := max R 0
-  let S : ℝ := 2 * (R0 + 2)
-  have hS : 0 < S := by dsimp only [S]; positivity
   have hthree : Summable (fun q : XiRightZeroCopy =>
       1 / (‖xiSpectralPoint q.1‖ * Real.sqrt ‖xiSpectralPoint q.1‖)) :=
     xiSpectralPoint_inv_three_halves_summable.subtype _
@@ -224,84 +229,13 @@ theorem summableLocallyUniformlyOn_xiRectangularRawShiftedTerm_rightOne
       (10 * C0) *
         (1 / (‖xiSpectralPoint q.1‖ * Real.sqrt ‖xiSpectralPoint q.1‖)),
     hthree.mul_left (10 * C0), ?_⟩
-  have hbase : Summable (fun q : XiRightZeroCopy =>
-      1 / ‖xiSpectralPoint q.1‖ ^ 2) :=
-    xiSpectralPoint_inv_sq_summable.subtype _
-  have hlarge : ∀ᶠ q : XiRightZeroCopy in Filter.cofinite,
-      S ≤ ‖xiSpectralPoint q.1‖ := by
-    have htend := hbase.tendsto_cofinite_zero
-    have hlt : ∀ᶠ q : XiRightZeroCopy in Filter.cofinite,
-        1 / ‖xiSpectralPoint q.1‖ ^ 2 < 1 / S ^ 2 :=
-      htend.eventually_lt_const (by positivity)
-    filter_upwards [hlt] with q hq
-    have hqpos : 0 < ‖xiSpectralPoint q.1‖ :=
-      norm_pos_iff.mpr (xiSpectralPoint_ne_zero q.1)
-    have hsq : S ^ 2 < ‖xiSpectralPoint q.1‖ ^ 2 :=
-      lt_of_one_div_lt_one_div (pow_pos hqpos 2) hq
-    exact le_of_lt (lt_of_pow_lt_pow_left₀ 2 (norm_nonneg _) hsq)
-  filter_upwards [hlarge] with q hqLarge
+  filter_upwards [eventually_cofinite_le_norm_xiSpectralPoint (2 * (R0 + 2))
+    (by dsimp only [R0]; positivity)] with q hqLarge
   intro s hs
   have hsright : 1 < s.re := hKsub hs
   have hsNorm : ‖s‖ ≤ R0 := (hR s hs).trans (le_max_left _ _)
-  let w : ℂ := xiRightCenteredZero q
-  have hwNorm : ‖w‖ = ‖xiSpectralPoint q.1‖ := by
-    simp [w, xiRightCenteredZero]
-  have hwLarge : S ≤ ‖w‖ := by simpa only [hwNorm] using hqLarge
-  have hshiftRe : 1 / 2 ≤ (s - w).re := by
-    rw [Complex.sub_re]
-    have hwre := abs_xiRightCenteredZero_re_lt_half q
-    dsimp only [w]
-    linarith [abs_lt.mp hwre]
-  have hsOneNorm : ‖s - 1‖ ≤ R0 + 1 := by
-    calc
-      ‖s - 1‖ ≤ ‖s‖ + ‖(1 : ℂ)‖ := norm_sub_le _ _
-      _ = ‖s‖ + 1 := by norm_num
-      _ ≤ R0 + 1 := by linarith
-  have hsep : 1 ≤ ‖(s - w) - 1‖ := by
-    have hrev : ‖w‖ - ‖s - 1‖ ≤ ‖w - (s - 1)‖ :=
-      norm_sub_norm_le _ _
-    have hcoord : ‖w - (s - 1)‖ = ‖(s - w) - 1‖ := by
-      rw [show w - (s - 1) = -((s - w) - 1) by ring, norm_neg]
-    rw [hcoord] at hrev
-    dsimp only [S] at hwLarge
-    linarith
-  have hzeta := norm_riemannZeta_le_sqrt_norm_add_two_half
-    hshiftRe (by norm_num : (0 : ℝ) < 1) hsep
-  have harg : ‖s - w‖ + 2 ≤ 4 * ‖w‖ := by
-    have hsub : ‖s - w‖ ≤ ‖s‖ + ‖w‖ := norm_sub_le _ _
-    dsimp only [S] at hwLarge
-    linarith
-  have hsqrt : Real.sqrt (‖s - w‖ + 2) ≤
-      2 * Real.sqrt ‖w‖ := by
-    exact sqrt_le_two_mul_sqrt_rectangular (norm_nonneg w)
-      (by positivity) harg
-  have hcoeff := norm_xiRectangularRightCoefficient_le L q
   rw [norm_mul]
-  have hzeta' : ‖riemannZeta (s - w)‖ ≤
-      10 * Real.sqrt ‖w‖ := by
-    calc
-      ‖riemannZeta (s - w)‖ ≤
-          (2 + 1 / (1 : ℝ) + 2) * Real.sqrt (‖s - w‖ + 2) := hzeta
-      _ ≤ 5 * (2 * Real.sqrt ‖w‖) := by
-        norm_num only [div_one, OfNat.ofNat]
-        gcongr
-      _ = 10 * Real.sqrt ‖w‖ := by ring
-  calc
-    ‖xiRectangularRightCoefficient L q‖ *
-        ‖riemannZeta (s - w)‖ ≤
-      (C0 / ‖xiSpectralPoint q.1‖ ^ 2) *
-        (10 * Real.sqrt ‖w‖) := by
-      gcongr
-    _ = (10 * C0) *
-        ((1 / ‖xiSpectralPoint q.1‖ ^ 2) *
-          Real.sqrt ‖xiSpectralPoint q.1‖) := by
-      rw [hwNorm]
-      ring
-    _ = (10 * C0) *
-        (1 / (‖xiSpectralPoint q.1‖ *
-          Real.sqrt ‖xiSpectralPoint q.1‖)) := by
-      rw [inv_sq_mul_sqrt_rectangular
-        (norm_pos_iff.mpr (xiSpectralPoint_ne_zero q.1))]
+  exact (norm_xiRectangularRightCoefficient_mul_riemannZeta_le L hsright hsNorm hqLarge).2
 
 /-- On the common right half-plane, the locally normal cancelled carrier is
 exactly the completed Xi factor times the raw shifted-zeta carrier. -/

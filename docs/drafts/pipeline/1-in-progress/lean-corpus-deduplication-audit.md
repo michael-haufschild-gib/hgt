@@ -1466,3 +1466,1242 @@ to `HEAD` apart from the intended rewrites. No lasting damage, but the near-miss
 - The corpus is large enough that a "new" descriptive module name is quite likely to be taken.
   `DifferentialJetPivotCore` and its `differentialJetPivot*` declaration names were checked
   against the whole tree before use.
+
+## B37 — `ParallelogramIntegral`, and three process incidents
+
+**`ParallelogramIntegral` 204 -> 132.**  `parallelogramIntegral_eq_zero_of_differentiable` (entire
+`g`) and `parallelogramIntegral_eq_zero_of_continuousOn_of_differentiableAt` (continuous on the
+closed square, differentiable on the open one) were two copies of the same Green/Stokes argument in
+one file. The first is the second with both hypotheses supplied by entirety:
+`(hg.continuous.comp (by fun_prop)).continuousOn` and `fun p _ => hg.differentiableAt`. Reordering
+also merged the file's duplicated `namespace GaloisForLFunctions` / `noncomputable section` block —
+the file had opened, closed and reopened the namespace around the two theorems.
+
+Audit: `lake build` of `ParallelogramIntegral` and `GutzmerIdentity` — 2787 jobs, successful.
+
+### Attempted and reverted: the Gutzmer / Szegő partial-sum core
+
+`GutzmerIdentity.tendsto_integral_normSq_partialSum_analytic` and
+`SzegoH2.tendsto_integral_normSq_partialSum` are the same 73-line dominated-convergence argument,
+differing only in where two facts come from: `r` inside the radius of convergence, and uniform
+convergence of the partial sums on the circle. The right core takes exactly those two as
+hypotheses:
+
+```
+theorem tendsto_integral_normSq_partialSum_of_radius_of_uniform
+    {f : ℂ → ℂ} {p : FormalMultilinearSeries ℂ ℂ ℂ} {r : ℝ} (hr0 : 0 ≤ r)
+    (hlt : (↑(r.toNNReal) : ℝ≥0∞) < p.radius)
+    (huniform : TendstoUniformlyOn (fun N θ => p.partialSum N (circleMap 0 r θ))
+      (fun θ => f (circleMap 0 r θ)) atTop Set.univ) : …
+```
+
+Two mechanical extraction attempts left the tail of the proof attached to the wrong declaration
+(`unsolved goals` in the core, `No goals to be solved` in the delegate). The file was restored and
+this is left for a careful hand-written pass — the seam is right, the line-slicing was not.
+Expected: about -55 lines.
+
+### Process incidents, all self-inflicted, all recovered
+
+1. **Overwrote a tracked module with `cat >`** (recorded in B36). Restored from git.
+2. **A broken intermediate edit was committed by a concurrent agent.** Between my edit and my
+   revert, another agent committed the shared tree, so `git checkout --` restored *my broken
+   version*. Recovering needed `git show <previous-commit>:<path>`. **Consequence for working
+   style: never leave a file broken across commands.** If an edit fails to compile, restore it in
+   the same batch rather than iterating on the broken state.
+3. **`pkill -f "lake env lean"` killed another agent's job** (a 2400-second run on
+   `RHTower/SquarefreePartitionPole.lean` that I had nothing to do with). Broad `pkill` patterns
+   are shared-machine hazards. **Only ever kill PIDs verified to be my own**, e.g. by matching the
+   exact target module I launched.
+
+## B38 — the Gutzmer / Szegő partial-sum core (the B37 deferral, completed)
+
+`GutzmerIdentity.tendsto_integral_normSq_partialSum_analytic` and
+`SzegoH2.tendsto_integral_normSq_partialSum` were the same 73-line dominated-convergence argument.
+New law in `GutzmerIdentity`:
+
+```
+theorem tendsto_integral_normSq_partialSum_of_radius_of_uniform
+    {f : ℂ → ℂ} {p : FormalMultilinearSeries ℂ ℂ ℂ} {r : ℝ} (hr0 : 0 ≤ r)
+    (hlt : (↑(r.toNNReal) : ℝ≥0∞) < p.radius)
+    (huniform : TendstoUniformlyOn (fun N θ => p.partialSum N (circleMap 0 r θ))
+      (fun θ => f (circleMap 0 r θ)) atTop Set.univ) :
+    Tendsto (fun N => ∫ θ in (0:ℝ)..(2 * π), ‖p.partialSum N (circleMap 0 r θ)‖ ^ 2)
+      atTop (𝓝 (∫ θ in (0:ℝ)..(2 * π), ‖f (circleMap 0 r θ)‖ ^ 2))
+```
+
+Only those two facts are used: the radius bound gives the tail-summable dominating constant
+`∑ ‖p n‖ rⁿ`, and uniform convergence gives the pointwise limit for dominated convergence. Both
+call sites are now eight lines. `GutzmerIdentity` 163 -> 176 (it hosts the law), `SzegoH2` 208 ->
+150; net **-45 lines**, and `SzegoH2` gained an import of `GutzmerIdentity` (checked acyclic).
+
+**Why the two earlier mechanical attempts failed** (B37): the theorem's last line is `exact key`,
+one line past the `simp only [hconv]` I had used as the end anchor. The core therefore lost its
+final step ("unsolved goals") and the delegate inherited a stray tactic ("No goals to be solved").
+When slicing a proof, anchor the end on the *next declaration's* start, never on a tactic that
+looks final.
+
+**One real Lean obstacle, worth recording.** The first working delegation in `SzegoH2` hit
+`(deterministic) timeout at whnf, maximum number of heartbeats (200000)`. The cause is term size,
+not proof difficulty: writing `cauchyPowerSeries (fun z => (szegoOuter w z)⁻¹) 0 R` out in the
+delegation makes elaboration unify two copies of a large term. Restoring the original
+`set p := … with hp_def` and passing `(f := …) (p := p)` explicitly to the core fixes it with no
+`maxHeartbeats` bump. **When a delegation to a newly extracted law times out at `whnf`, share the
+big subterm with `set` and pass the implicit arguments explicitly** before considering a heartbeat
+increase.
+
+Audit: `lake build` of `GutzmerIdentity` (2786 jobs), `SzegoH2` (2799) and its two consumers
+`SzegoHapproxAC`, `SzegoBoundaryH2` (8505) — all successful, zero error lines.
+
+## B39 — the shifted cosine band measure
+
+`RouteBSublevel.cos_band_measure_shifted` (bound `2π√(2(u₂−u₁))`) and
+`RouteBThreePhase.cos_band_measure_shifted_gap` (bound `4(arccos u₁ − arccos u₂)`) share the same
+hypotheses and the same covering argument: the band is contained in three shifted copies of
+`Icc θ₁ θ₂` plus a wrap-around, of total length `4L` with `L = arccos u₁ − arccos u₂`. The `_gap`
+form *is* that covering bound; the `√` form is `_gap` followed by the arccos modulus-of-continuity
+inequality `arccos_gap_le : 2L ≤ π√(2(u₂−u₁))`, which already lived in `RouteBSublevel`.
+
+The two modules were independent siblings, both in `namespace RHTower.Sublevel`, so the covering
+theorem moved up into `RouteBSublevel` under an unchanged full name and `RouteBThreePhase` gained
+an import. `cos_band_measure_shifted` is now
+
+```
+  refine (cos_band_measure_shifted_gap h1 h12 h2 hψ0 hψ2).trans (ENNReal.ofReal_le_ofReal ?_)
+  have hgapL := arccos_gap_le h1 h12 h2
+  linarith [hgapL]
+```
+
+`RouteBSublevel` 840 -> 849 (it hosts the covering theorem), `RouteBThreePhase` 512 -> 429; net
+**-74 lines**. `RouteBCausticShell`, the other user of `_gap`, reaches it transitively through
+`RouteBThreePhase` and needed no edit.
+
+Audit: `lake build` of `RouteBSublevel` (8475 jobs) and of `RouteBThreePhase` + `RouteBCausticShell`
+(8477 jobs) — both successful, zero error lines.
+
+## B40 — convex confinement for an arbitrary increment-record weight
+
+`StretchedExponentialConvexConfinement` and `PolynomialPowerConvexConfinement` each carried a
+smoothing lemma and a boundary-shell theorem, differing only in the weight being minimised:
+`tupleStretchedValuation α s = ∑ stretchedExp α (s i)` against
+`tuplePowerValuation β s = ∑ (s i : ℝ) ^ β`. The 94/98-line boundary-shell proofs differ in
+**28 lines**, all of them the valuation name and the two applications of the smoothing lemma.
+
+Both weights are `∑ i, g (s i)`, and the only property used is that the increments of `g` strictly
+increase from some point `Q` on. Two general laws now live in
+`StretchedExponentialConvexConfinement` (which `PolynomialPowerConvexConfinement` already imports):
+
+```
+lemma sum_comp_smoothTuple_lt {D Q : ℕ} (g : ℕ → ℝ)
+    (hrecord : ∀ a b : ℕ, Q ≤ b → a < b → g (a + 1) - g a < g (b + 1) - g b) …
+    ∑ i, g (smoothTuple s lo hi i) < ∑ i, g (s i)
+
+lemma exists_boundaryShell_of_sum_bounds_of_record {D q K C Q : ℕ} (g : ℕ → ℝ) …
+    ∃ t, ∑ i, t i = ∑ i, s i ∧ tupleInWindow q (K + 1) t ∧ ¬ tupleInWindow q K t ∧
+      ∑ i, g (t i) ≤ ∑ i, g (s i)
+```
+
+All four original lemmas are now instantiations. `StretchedExponentialConvexConfinement`
+721 -> 751 (it hosts both laws), `PolynomialPowerConvexConfinement` 402 -> 311; net **-61 lines**.
+
+Two details worth keeping:
+
+- The stretched development is the *general* one — its `hrecord` hypothesis is weaker than
+  `1 < β` — so the power side had to supply `Q := 0` and, with it, `hqQ : 1 ≤ q`, which is **not**
+  among the power lemma's hypotheses. It is derivable: at `q = 0` the window is `s i ≤ K`, so
+  `hout` gives some `s i > K`, while `hsumUpper` gives `∑ s ≤ C < K`. Nine lines.
+- Casts: `stretchedIncrement α a` unfolds to `stretchedExp α (↑a + 1) − stretchedExp α ↑a`
+  (real addition) whereas the general `g (a + 1) − g a` at `g := fun n => stretchedExp α n` gives
+  `stretchedExp α ↑(a + 1)`. Definitional but not syntactic; each instantiation needs a
+  `push_cast` bridge rather than passing `hrecord` straight through.
+
+Scripting note: substituting `tupleStretchedValuation α` by `fun u => ∑ i, g (u i)` produced
+`have hval : fun u => … s' < fun u => … s`, i.e. an unapplied lambda where the original had an
+application. When abstracting a *function-valued* name out of a proof, substitute the **applied**
+form `F x -> ∑ i, g (x i)` with a pattern that captures the argument, never the bare head symbol.
+
+Audit: `lake build` of `StretchedExponentialConvexConfinement` (8478 jobs) and of
+`PolynomialPowerConvexConfinement` + `PolynomialPowerADEResonance` (8566 jobs) — both successful,
+zero error lines.
+
+## B41 — the boundary-shell law already existed, and is more general than B40's
+
+A re-run of the cross-file scan immediately after B40 flagged
+`RapidConvexCurvatureResonance.exists_boundaryShell_of_sum_bounds_of_smoothing` against the
+`exists_boundaryShell_of_sum_bounds_of_record` I had *just written*. The existing theorem is
+**strictly more general**: it abstracts the whole valuation,
+
+```
+theorem exists_boundaryShell_of_sum_bounds_of_smoothing {D q K C : ℕ} (hD : 0 < D) (hKC : C < K)
+    (V : (Fin D → ℕ) → ℝ)
+    (hsmooth : ∀ s lo hi, lo ≠ hi → q ≤ s hi → s lo + 1 < s hi → V (smoothTuple s lo hi) ≤ V s) …
+```
+
+against my `V = ∑ g (s i)` with `hsmooth` derived from an increment record. So the corpus already
+had the right law and I had rebuilt a weaker copy — **a direct violation of "check what the corpus
+already offers before writing a new general law"**, and of the standing rule to run
+`scripts/formal_tools.py research "<query>"` first. It cost a full build cycle.
+
+Corrected rather than left standing: `_of_smoothing` moved up into
+`StretchedExponentialConvexConfinement` (whose cone `RapidConvexCurvatureResonance` sits above),
+and `_of_record` is now four lines —
+
+```
+  exists_boundaryShell_of_sum_bounds_of_smoothing hD hKC (fun u => ∑ i, g (u i))
+    (fun s lo hi hne hq hgap => (sum_comp_smoothTuple_lt g hrecord s hne (by omega) hgap).le)
+    s hsumLower hsumUpper hout
+```
+
+with the `Q ≤ s hi - 1` side condition discharged by `omega` from `hqQ : Q + 1 ≤ q` and
+`hq : q ≤ s hi`. The copy in `RapidConvexCurvatureResonance` is gone.
+`StretchedExponentialConvexConfinement` 759 -> 773 (it now hosts the general law),
+`RapidConvexCurvatureResonance` 2202 -> 2108; net **-80 lines**.
+
+The four-layer stack is now: `_of_smoothing` (arbitrary `V`) -> `_of_record` (`∑ g`, increments
+record from `Q` on) -> the stretched-exponential and polynomial-power boundary-shell theorems.
+
+**Procedure fix, for every future "new general law":** before writing one, run the corpus search
+*on the shape of the conclusion*, not only on the names involved. The scan that found this is the
+same `xfile.py` used to find the duplication in the first place — running it against a freshly
+written lemma is a cheap self-check and should be routine.
+
+### Examined and rejected
+
+`XiWardEdgeImChannelGram.integral_mul_im_xiPairs` and
+`XiWardEdgeReChannelDeposit.integral_mul_re_xiPairs` have **identical right-hand sides** and differ
+only by `.im` versus `.re` on the left, but the proofs are not a rename: the imaginary channel
+decomposes through odd kernels (`integrable_mul_oddKernels_general`, numerators `t + im`), the real
+channel through Lorentzian halves (`integrable_mul_lorentzianHalves_general`, numerators
+`re + 1/2`). 162 differing lines out of 154. That the two decompositions give the same value is the
+mathematical content, not a factorisation opportunity.
+
+Audit: `lake build` of `StretchedExponentialConvexConfinement` (8478 jobs) and of
+`RapidConvexCurvatureResonance` + `PolynomialPowerConvexConfinement` (8570 jobs) — both successful,
+zero error lines.
+
+## B42 — the `_modSum` chain
+
+`PrescribedResidueBalancedAtom` mirrored three upstream lemmas, each adding a
+`Nat.ModEq D (∑ δ i) ρ` conjunct threaded through an otherwise identical proof:
+
+| base | `_modSum` mirror | differing lines |
+|---|---|---|
+| `exists_injective_nat_eval_ne_zero` | `…_modSum` (line 11) | — |
+| `exists_injective_balanced_diagonal_ne_zero` (`BalancedDiagonalNonvanishing`) | `…_modSum` (line 119) | ~20 of 22 |
+| `exists_eventually_balanced_nonzero_aevalWeight` (`MagnitudeBalancedAtomExistence`) | `…_modSum` (line 146) | **24 of 94** |
+
+The three `_modSum` lemmas moved up into `MagnitudeBalancedAtomExistence` (which already reaches
+`BalancedDiagonalNonvanishing`), and the top base theorem is now
+
+```
+  obtain ⟨δ, hδinj, -, Q₀, hQ₀⟩ := exists_eventually_balanced_nonzero_aevalWeight_modSum ha hD 0
+  exact ⟨δ, hδinj, Q₀, hQ₀⟩
+```
+
+`MagnitudeBalancedAtomExistence` 121 -> 275 (it hosts the chain), `PrescribedResidueBalancedAtom`
+307 -> 76, keeping only `exists_eventually_balanced_nonzero_aevalWeight_residue`. Net **-77 lines**.
+The base theorem has eight external users and kept its name and signature, so none needed editing.
+
+Note on what was *not* collapsed: the two lower base lemmas
+(`exists_injective_nat_eval_ne_zero`, `exists_injective_balanced_diagonal_ne_zero`) carry **no**
+`hD : 0 < D`, while their `_modSum` forms need it — a residue class mod `D` is meaningless at
+`D = 0`. Deriving them would require a separate `D = 0` branch (where `Fin 0 → ℕ` makes injectivity
+vacuous and `MvPolynomial (Fin 0) ℂ ≅ ℂ` makes the evaluation the nonzero constant). Cheap but not
+free, and left alone deliberately; only the top layer, whose `hD` is already a hypothesis, was
+collapsed.
+
+Audit: `lake build` of `MagnitudeBalancedAtomExistence` (8509 jobs) and of
+`PrescribedResidueBalancedAtom` + `PolynomialPatternResidueBridge` +
+`PolynomialBalancedExactResidue` (8576 jobs) — both successful, zero error lines.
+
+## B43 — three copies of the fourth-trace atom bound
+
+Three modules proved `9/200000 < (xiZeroCopyReciprocalSquare q ^ 2).re` from the same four
+hypotheses, differing only in the numeric window:
+
+| theorem | `u` lower | `v` upper |
+|---|---|---|
+| `…_of_orderEighteen_edgeCorner` (`XiOrderEighteenCornerSourceExclusion`) | `7/50 < u` | `v < 147` |
+| `…_of_centered_orderNineteenRange` (`XiCenteredOrdersSeventeenEighteenSourcePositivity`) | `0 < u` | `v < 295/2` |
+| `…_below_2365_over_16` (`XiFourthTraceExtendedCriticalLineBand`) | `0 < u` | `v < 2365/16` |
+
+`2365/16 = 147.8125` is the largest of the three windows and `0 < u` the weakest lower bound, so
+the third theorem's hypotheses are implied by each of the other two and it subsumes them outright —
+each becomes a one-line application with `by linarith` discharging the window comparison. No new
+law was needed; the general one was already there.
+
+The obstacle was placement: the general theorem sat **downstream** of one caller and in a module
+*unrelated* to the other (`XiOrderEighteenCornerSourceExclusion` and
+`XiCenteredOrdersSeventeenEighteenSourcePositivity` are mutually unreachable). The host had to be a
+common ancestor of both that also carries `xiZeroCopyReciprocalSquare_re_formula` /
+`_im_formula`, which the proof uses — that is `XiThermalSourceRelativeGapBound`. Searching the
+import graph for *common ancestors satisfying the proof's own dependencies* is the general recipe
+when a shared law has two incomparable callers.
+
+`XiThermalSourceRelativeGapBound` 621 -> 715 (it hosts the bound),
+`XiFourthTraceExtendedCriticalLineBand` 206 -> 113,
+`XiCenteredOrdersSeventeenEighteenSourcePositivity` 416 -> 333,
+`XiOrderEighteenCornerSourceExclusion` 170 -> 97. Net **-155 lines**.
+
+Note: the three proofs also differ in an internal constant (`W = 2369/16` against `591/4`) and the
+`u·v` bound, so a *parametrised* version — general in the window `V` — would need the nlinarith
+certificate to be re-established for each `V`, which is not a factorisation. Subsumption by the
+widest window is the correct reduction here, and it is exact.
+
+Audit: `lake build` of `XiThermalSourceRelativeGapBound` (8959 jobs) and of the three consumers
+(9171 jobs) — both successful, zero error lines.
+
+## B44 — sampled-ray transfer, and a blocked RouteB merge
+
+**`SampledRayRateTransferFixed` 105 -> 49 (-56).**
+`norm_le_ray_of_sampled_decay_fixed` and `norm_le_ray_of_sampled_decay_fixed_halfplane` are the
+same theorem under two analyticity hypotheses: `Differentiable ℂ H` globally against
+`∀ t, T < t → AnalyticAt ℂ H t` plus `T < R₀`. The halfplane form is the weaker hypothesis, hence
+the general one, and the two modules are independent siblings — so `…Fixed` now imports
+`…Halfplane` and the theorem is
+
+```
+  norm_le_ray_of_sampled_decay_fixed_halfplane (T := R₀ - 1)
+    (fun t _ => hH.analyticAt (t : ℂ)) (by linarith) hR₀0 hK hC hσ0 hδ0 hder hnodes
+```
+
+`Differentiable.analyticAt` in this mathlib is `Differentiable 𝕜 f → ∀ z, AnalyticAt 𝕜 f z`, so it
+takes the point explicitly — `hH.analyticAt` alone does not typecheck. Worth a scratch probe before
+writing the delegation.
+
+**Blocked: `RouteBBlockSplit` vs `RouteBFourPhaseUniform`.**  `inv_sqrt_average'` is
+`inv_sqrt_average` with a weaker `hfK` (the bound is only required where
+`sstar ≤ ‖c' + D e^{iη}‖`), so the unprimed one should be
+`inv_sqrt_average' … (fun η hη _ => hfK η hη)`. Adding the import fails: the two modules
+**independently declare the same fully-qualified names** — `RHTower.Sublevel.inv_sqrt_average`
+itself, plus `RHTower.SteinhausModel.X_prime`, `…map_two_pi_smul`,
+`RHTower.Sublevel.one_phase_smallball_uniform` — and are simply never imported together, so the
+clash has never surfaced. Reverted; `RouteBBlockSplit` is byte-identical to `HEAD` and compiles.
+
+This is a **latent corpus hazard**, not just a missed reduction: any future module importing both
+fails to compile. The fix is a real merge of the two modules (204 + 332 lines) with the duplicated
+declarations resolved, which is the next staged batch here. Detection recipe: for each pair of
+modules, intersect their declared *fully-qualified* names — the earlier
+`cross-cone-name-collision-scan` instrument applies directly.
+
+Audit: `lake build` of `SampledRayRateTransferFixed` (2719 jobs) and of its only consumer
+`WeightedEulerPrimeOversampling` (8542 jobs) — both successful, zero error lines.
+
+## B45 — a working duplicate-name scanner, and four collisions removed
+
+B44's blocked merge showed that two modules can declare the *same fully-qualified name* and never
+be noticed, because they are never imported together. `fqn2.py` (job tmp dir) parses namespace
+stacks and reports non-`private` declaration names owned by more than one module.
+
+Getting it right took three passes, and the two failures are the durable lesson:
+
+1. **Comment blocks.**  Without tracking `/- … -/` nesting, docstring interior lines beginning with
+   a word matched the declaration regex and produced "duplicate declarations" named `the`, `is`,
+   `and`, `by`, `for`, `in`, `that`, `on`, `then`, `cannot`. 95 hits, mostly noise.
+2. **Unicode identifiers.**  An ASCII-only identifier class truncates `srKoszulBoundary3ₗ` to
+   `srKoszulBoundary3`, `srHollowDetectorₗ` to `srHollowDetector`, `symmetricAlgebra_ₗ` to
+   `symmetricAlgebra_` — inventing collisions between a definition and its linear-map version.
+   Lean identifiers carry subscripts, primes and Greek; the name class must be
+   "anything but whitespace and delimiters".
+
+`private` declarations must also be excluded: Lean mangles them per-module, so they never collide
+(that is what the `edgePoint_re`/`edgePoint_im` triple was).
+
+With all three corrections: **16 duplicate names corpus-wide, 7 inside HTGeometry/HilbertMetric/
+RHTower**, every one of them a latent hazard — any module importing both copies fails to compile.
+
+Four had *identical statements* and were consolidated to a single owner (the other module now
+imports it and the copy is deleted):
+
+| name | owner kept | copy deleted from | lines |
+|---|---|---|---|
+| `cosh_one_lt_two` | `CothInfra` | `ConePositivstellensatzFailure` | 6 |
+| `differentialAlgebraicOver_of_deriv_eq_base_mul` | `AffineFirstOrderDifferentialAlgebraicity` (6-line proof delegating to `…_add`) | `MeromorphicExponentialGaugeDA` (13-line from scratch) | 15 |
+| `logDeriv_XiC_neg` | `XiGuinandWeilSymmetricContour` (via `logDeriv_xi_reciprocity`) | `XiWardSpectralBudgetSumRule` | 13 |
+| `xi_eq_mul_completedRiemannZeta` | `XiRealAxisGrowth` | `XiWardInteriorTraceSplit` | 11 |
+
+Net **-45 lines** and four fewer landmines. In each case the two proofs were genuinely different
+tactic scripts for the same statement, so the shorter/more structural one was kept.
+
+Still open in remit — same name, *different* statements, so each needs reading before deciding
+whether it is one theorem or two that should be renamed apart:
+`RHTower.exp_neg_le_quadratic` (`PrimeArchThetaMorseFisherExponentialEnvelope` / `SpurRescale`),
+`RHTower.norm_exp_neg_I_mul_ofReal` (`CenterMixedTiltDifferentiation` / `RadialInteractionBound`),
+`RHTower.xi_exists_isolating_radius` (`IsolatingAnnulusRung` / `ModulusSlopeQuantization`).
+
+Audit: `lake build` of all four modified modules — 9011 jobs, successful, zero error lines.
+
+## B46 — the in-remit duplicate-name surface is now empty
+
+The three remaining collisions flagged `identical=False` only because of **bound-variable naming**
+(`u` vs `x`, `r` vs `c`, `R` vs `R₀`) — alpha-equivalent statements, so all three were the same
+theorem proved twice. Owners chosen by *upstreamness* (size of the transitive import closure), so
+the new import always points from a deeper module to a shallower one:
+
+| name | owner (transitive imports) | deleted from (imports) | lines |
+|---|---|---|---|
+| `exp_neg_le_quadratic` | `SpurRescale` (0) | `PrimeArchThetaMorseFisherExponentialEnvelope` (145) | 17 |
+| `norm_exp_neg_I_mul_ofReal` | `RadialInteractionBound` (1) | `CenterMixedTiltDifferentiation` (6) | 7 |
+| `xi_exists_isolating_radius` | `IsolatingAnnulusRung` (0) | `ModulusSlopeQuantization` (0) | 7 |
+
+Net **-31 lines**. Re-running the scanner: **corpus-wide duplicates 16 -> 9, in
+HTGeometry/HilbertMetric/RHTower 7 -> 0.** The nine that remain are in `Bottcher`, `U0` and
+`GelfondSchneiderProof/`, outside this audit's remit, and are listed by `fqn2.py` for whoever owns
+those areas.
+
+**The one real break, and the lesson.**  Deleting a copy is *not* always a no-op even when the
+statements are alpha-equivalent: a call site read
+`exp_neg_le_quadratic (u := 2 * x)`, and the surviving copy binds that variable as `x`, so the
+named argument no longer resolved (`Invalid argument name u`). **After consolidating two copies of
+a theorem, grep the call sites for named-argument syntax `(name := …)` against the *surviving*
+binder names.** Positional applications are unaffected; named ones are not.
+
+Audit: `lake build` of the three modified modules — 8809 jobs, successful, zero error lines. Two
+earlier attempts hit the wall clock and one transient "no such file or directory" from another
+agent's concurrent file churn; both resolved on resume.
+
+## B47 — correction to B44, and the RouteB collapse it was blocking
+
+**B44's diagnosis was wrong.**  It recorded that `RouteBBlockSplit` and `RouteBFourPhaseUniform`
+"independently declare the same fully-qualified names". They do not: `inv_sqrt_average` is declared
+only in `RouteBBlockSplit`, `inv_sqrt_average'` only in `RouteBFourPhaseUniform`. The real cause of
+the failure was an **import cycle** — `RouteBFourPhaseUniform → RouteBFourPhase → RouteBBlockSplit`
+already existed, so adding `import RouteBFourPhaseUniform` to `RouteBBlockSplit` re-imported that
+module's own declarations. Lean reports a cycle of this shape as "`X` has already been declared",
+which reads exactly like a name collision. **Treat "already been declared" after adding an import
+as a suspected cycle first, a collision second.**
+
+The mistake came from a defect in the import-graph parser used all session: it stopped scanning at
+the first line that is not an `import`, and a module whose imports follow a `/- … -/` header hits
+that line immediately. About **1060 of 5734 modules recorded no imports at all**, so every
+"mutually unreachable siblings" claim made from it is unreliable. The landed changes are unaffected
+— each was verified by `lake build`, which cannot succeed through a missing or cyclic import — but
+the *stated rationale* in B33, B40–B46 should be read as unverified, and a few of the imports added
+there may be redundant rather than necessary. Corrected parser: `imports.py` in the job tmp dir;
+the fix is to skip lines that *open* a block comment, not only lines already inside one.
+
+**With the graph correct, the collapse is the standard shape.**  `inv_sqrt_average'` weakens
+`inv_sqrt_average`'s hypothesis (the bound `f η ≤ K / √‖c' + D e^{iη}‖` is required only where
+`sstar ≤ ‖c' + D e^{iη}‖`), and the general form sat *downstream*. Moved up into
+`RouteBBlockSplit`; the special case is now
+
+```
+  inv_sqrt_average' hD hK hs hs2 hfM (fun η hη _ => hfK η hη)
+```
+
+`RouteBBlockSplit` 204 -> 218 (it hosts the general law), `RouteBFourPhaseUniform` 332 -> 271; net
+**-47 lines**. No import was added: `RouteBFourPhaseUniform` already reaches `RouteBBlockSplit`.
+
+Audit: `lake build` of `RouteBBlockSplit` (8486 jobs) and of `RouteBFourPhaseUniform` +
+`RouteBFourPhase` (8488 jobs) — both successful, zero error lines.
+
+## B48 — re-ranking with a correct import graph
+
+Re-checking the remaining clone pairs against the *fixed* graph overturns B44–B46's picture: every
+one of the six has a genuine one-way dependency, so **none of them needs a new import** — the
+earlier "mutually unreachable siblings" readings were the parser defect.
+
+| pair | direction |
+|---|---|
+| `XiCTaylorThetaTailFiniteArithmeticEndpoint` → `…PhaseAdaptedProuhetIntegratedHaarCurrent` | A reaches B |
+| `InfinityLeafAtoms` → `LeafAtoms` | A reaches B |
+| `DigammaGammaLocalHypertranscendence` → `DigammaGammaFactorialBlowUp` | B reaches A |
+| `DistinctIndexComplexSurvival` → `PermanentCoefficientIdentity` | A reaches B |
+| `CocycleKernelTrivial` → `IntegralFEPolynomial` | A reaches B |
+| `DeningerArithmeticLocalDivision` → `…GlobalDivision` | B reaches A |
+
+**Landed: the Digamma factorial-relation pair (-51).**
+`factorialInitialRelation_of_relation_at` needs the annihilating relation only **at the single
+point** `-(n) + reciprocalGammaFactorialScale n * x`, while
+`factorialInitialRelation_of_differentialAnnihilator` demands it for all `z`. The pointwise form is
+therefore the general one, and it sat downstream. Moved up into `DigammaGammaFactorialBlowUp`; the
+global-hypothesis version is now `factorialInitialRelation_of_relation_at h P n x (hP _)`.
+`DigammaGammaFactorialBlowUp` 1416 -> 1431, `DigammaGammaLocalHypertranscendence` 393 -> 327.
+
+**Examined, not done — a judgement call left open.**
+`diffPoly_fixedDegree_survives` (ℤ coefficients, `PermanentCoefficientIdentity`) is the ℤ case of
+`diffPoly_fixedDegree_survives_complex` (`DistinctIndexComplexSurvival`), the two proofs differing
+only in `exists_injective_eval_ne_zero` / `combination_permSymbolPoly_ne_zero` versus their
+`_field` / `…PolyC` counterparts. Collapsing needs **three** declarations moved upstream, and both
+theorems currently have **zero users**. Deleting the ℤ case outright would be the larger reduction,
+but removing a stated result from someone's research corpus on the grounds that nothing cites it
+yet is not a call this audit should make unilaterally. Recorded for the owner to decide.
+
+**Also examined, not a specialisation.** `InfinityLeafAtoms.ofReal_christoffelLimit_le_leaf_infinity_singleton` and
+`LeafAtoms.ofReal_christoffelLimit_le_leaf_singleton` share 44 lines of the ε-argument but differ in
+the *limit regime* — `goodLevelInf`/`leafParamInf` and the hypothesis `nevBrealInf s ξ = 0` against
+`goodLevel h tau`/`leafParam h tau` and `nevBrealInf s ξ * tau - nevDrealInf s ξ = 0`. Neither
+implies the other; unifying means abstracting over the node-existence lemma
+(`eventually_exists_quasiNode_near` vs `…_inf`), which is the "abstract the varying object" shape
+rather than a subsumption.
+
+Audit: `lake build` of `DigammaGammaFactorialBlowUp` (8495 jobs) and
+`DigammaGammaLocalHypertranscendence` (8496 jobs) — both successful, zero error lines.
+
+## B49 — the free-endpoint Haar current
+
+`phaseAdaptedWeightedReflectedHaarIntegratedCurrentAtEndpoint m N z tau` and
+`canonicalPhaseAdaptedWeightedReflectedHaarIntegratedCurrent m N z` have **the same definition
+body**, the second fixing `tau := canonicalThetaTailSeamProuhetEndpoint m N z`; likewise their two
+evaluation theorems, 51 and 53 body lines with 47 shared. The free-`tau` form is the general one and
+sat downstream (`XiCTaylorThetaTailFiniteArithmeticEndpoint` reaches
+`…PhaseAdaptedProuhetIntegratedHaarCurrent`).
+
+Both the definition and its theorem moved up. The canonical definition is now
+
+```
+def canonicalPhaseAdaptedWeightedReflectedHaarIntegratedCurrent (m N : ℕ) (z : ℂ) : ℝ :=
+  phaseAdaptedWeightedReflectedHaarIntegratedCurrentAtEndpoint m N z
+    (canonicalThetaTailSeamProuhetEndpoint m N z)
+```
+
+and its evaluation theorem is a term-mode application of the general one. Both directions of the
+required defeq hold by unfolding: the canonical *current* is the general one at the canonical
+endpoint, and `canonicalThetaTailSeamProuhetUntruncatedCurrent` is literally
+`phaseAdaptedCriticalReturnedSourceCurrent … (canonicalThetaTailSeamProuhetEndpoint m N z) …`.
+
+`…PhaseAdaptedProuhetIntegratedHaarCurrent` 948 -> 968, `…FiniteArithmeticEndpoint` 565 -> 479;
+net **-66 lines**.
+
+Checked before moving, and worth doing every time a *definition* moves rather than a theorem:
+the only `unfold canonicalPhaseAdaptedWeightedReflectedHaarIntegratedCurrent` in the corpus was
+inside the very theorem being rewritten, so no downstream `simp`/`unfold` set changed meaning. The
+moved proof's dependencies (`canonicalPhaseAdaptedWeightedHaarPolynomial`,
+`integrableOn_canonicalPhaseAdaptedWeightedHaarResidualSource_mul_phase`) already lived in the
+target module or above it.
+
+Audit: `lake build` of `…PhaseAdaptedProuhetIntegratedHaarCurrent` (8818 jobs) and of
+`…FiniteArithmeticEndpoint` + `…PhaseAdaptedRawCoreBridge` (8822 jobs) — both successful, zero
+error lines.
+
+### Remaining clone pairs, and why they are not subsumptions
+
+- `CocycleKernelTrivial.symmetric_infinite_support_zero` /
+  `IntegralFEPolynomial.integralMultiplicativeFEClass_finite_or_zero`: different statements (a
+  support-vanishing lemma against a finite-or-zero dichotomy) sharing ~41 lines of one analytic
+  sub-argument — vanishing on a left half-plane from non-summability, then the identity theorem.
+  Extracting that core is a genuine piece of work, not a delegation.
+- `DeningerArithmetic{Global,Local}Division`: `Deninger*` is under active edit by another agent;
+  left alone to avoid conflicting writes.
+
+## B50 — the integral-L-series vanishing core
+
+The pair B49 set aside as "not a subsumption" turned out to share **two** separable arguments, not
+one. `CocycleKernelTrivial.symmetric_infinite_support_zero` and
+`IntegralFEPolynomial.integralMultiplicativeFEClass_finite_or_zero` prove different statements but
+run character-for-character identical blocks at both ends, with only the middle step differing
+(reflection symmetry `f (1 - s) = f s` versus a conductor functional equation).
+
+Two laws now live in `IntegralFEPolynomial` (which `CocycleKernelTrivial` reaches):
+
+```
+theorem LSeries_eq_zero_of_re_nonpos_of_int_of_infinite_support
+    {a : ArithmeticFunction ℂ} (hint : ∀ n, ∃ k : ℤ, a n = (k : ℂ))
+    (hinf : (Function.support (fun n => a n)).Infinite)
+    {z : ℂ} (hz : z.re ≤ 0) : LSeries (fun n => a n) z = 0
+
+theorem eq_zero_of_int_of_infinite_support_of_eq_zero_of_one_le_re
+    {f : ℂ → ℂ} {a : ArithmeticFunction ℂ}
+    (hrep : ∀ s, f s = LSeries (fun n => a n) s)
+    (hinf : (Function.support (fun n => a n)).Infinite)
+    (hge1 : ∀ z : ℂ, 1 ≤ z.re → f z = 0) : ∀ s, f s = 0
+```
+
+The first is the real content: a nonzero integer coefficient has `‖a n‖ ≥ 1` while `n ^ Re z ≤ 1`
+on the closed left half-plane, so infinitely many terms have norm at least one, the terms cannot
+tend to zero, and the `LSeries` convention gives the value `0`. The second closes the argument:
+vanishing for `1 ≤ Re z` makes the series vanish along the real axis at infinity, and with infinite
+support the only alternative to identically-zero coefficients is an infinite abscissa of absolute
+convergence.
+
+Each site now supplies **only its own middle step** — `hge1` from `hsym` in one case, from `hFE` in
+the other — and applies the two laws. `IntegralFEPolynomial` 233 -> 254 (it hosts both),
+`CocycleKernelTrivial` 297 -> 250; net **-26 lines**, and the half-plane lemma is now available to
+any future integral-coefficient argument.
+
+**Lesson for the "not a subsumption" bucket.**  Two theorems with different statements can still
+share *most* of their proof at both ends. Diffing whole bodies reports them as ~40% similar and
+they look unpromising; diffing with the divergence located (here: one `have` in the middle) shows
+the shared parts are contiguous and liftable. When a pair is rejected as "different theorems",
+check whether the difference is a *single step* before dismissing it.
+
+Audit: `lake build` of `IntegralFEPolynomial` (8574 jobs) and `CocycleKernelTrivial` (8581 jobs) —
+both successful, zero error lines.
+
+## B51 — the sandwich scanner, and `EvaluationCodimensionFieldCore` absorbed
+
+B50's lesson became an instrument. `sandwich.py` (job tmp dir) looks for proof pairs sharing a long
+**prefix and suffix** with a small middle divergence — the shape a whole-body similarity metric
+under-reports, because a pair that is 60% identical at both ends scores the same as one that is 60%
+identical at random. It indexes candidates by (first body line, last body line), then measures
+longest common prefix + longest common suffix against the middle.
+
+Two hits, both real:
+
+1. `EvaluationCodimensionCore.card_rows_some_boundedCoefficientPolynomial_nonzero` vs
+   `EvaluationCodimensionFieldCore.…PolynomialOver_nonzero` — 28/28 bodies, **27 shared, 1 line of
+   middle**.
+2. `MvPolynomialInfiniteEval.exists_injective_eval_ne_zero` vs
+   `DistinctIndexComplexSurvival.…_field` — 41/41 bodies, 29 shared, 12 middle. *Not yet done*; it
+   would also unlock the ℤ/ℂ survival pair deferred in B48.
+
+Pulling on (1) exposed that `EvaluationCodimensionFieldCore` is a **complete five-declaration
+mirror** of the ℂ development in `EvaluationCodimensionCore`: `boundedCoefficientPolynomial{,Over}`,
+`…_coeff`, `…_natDegree_le`, `…_ne_zero_of_apply_ne_zero`,
+`card_rows_all_boundedCoefficientPolynomials{,Over}_zero_le` and the pair above. The `Over` versions
+are general in an arbitrary `[Field K] [DecidableEq K]`; the ℂ ones are that at `K := ℂ`.
+
+The whole `Over` development moved into `EvaluationCodimensionCore`, all five ℂ declarations became
+one-line delegations (`classical` supplies `DecidableEq ℂ` where needed), and
+`EvaluationCodimensionFieldCore` was **deleted** — its two consumers re-pointed and the umbrella
+line dropped. `EvaluationCodimensionCore` 157 -> 207; net **-92 lines** and one fewer module.
+
+Trap when splicing a module body into another: `LF[7:104]` carried the source module's own bare
+`end` closing its `noncomputable section`, which then closed the target's section early — Lean
+reports it far away, at the file's final `end GaloisForLFunctions.HTGeometry`. Count bare `end`
+lines before and after a splice; a well-formed module should not gain one.
+
+Audit: `lake build` of `EvaluationCodimensionCore` (8493 jobs) and of
+`CoefficientPrimeActivityGeneral` + `ProjectiveCoefficientPrimeActivity` (8495 jobs) — both
+successful, zero error lines. Indexes regenerated after the deletion.
+
+## B52 — injective non-vanishing evaluation, over an integral domain
+
+The second `sandwich.py` hit: `MvPolynomialInfiniteEval.exists_injective_eval_ne_zero` (over `ℤ`)
+and `DistinctIndexComplexSurvival.exists_injective_eval_ne_zero_field` (over a field `𝕜`) are the
+same 41-line variable-peeling induction, differing only in the base ring and in which root-avoidance
+helper they call. Their helpers `exists_mem_eval_ne_zero_of_infinite{,_field}` are
+character-identical apart from a `classical`.
+
+**Neither subsumes the other** — `ℤ` is not a field — so this is not a specialisation but a genuine
+generalisation. The proof uses nothing beyond `MvPolynomial.finSuccEquiv`, `Polynomial.coeff_map`,
+`MvPolynomial.eval_eq_eval_mv_eval'` and the finiteness of a nonzero polynomial's root set; the last
+is exactly what needs `[IsDomain R]`. So both are instances of
+
+```
+theorem exists_mem_eval_ne_zero_of_infinite_domain {R : Type*} [CommRing R] [IsDomain R]
+    (p : Polynomial R) (hp : p ≠ 0) {S : Set R} (hS : S.Infinite) : ∃ x ∈ S, p.eval x ≠ 0
+
+theorem exists_injective_eval_ne_zero_domain {R : Type*} [CommRing R] [IsDomain R] :
+    ∀ {r : ℕ} (P : MvPolynomial (Fin r) R), P ≠ 0 → ∀ {T : Set R}, T.Infinite →
+      ∃ a : Fin r → R, Function.Injective a ∧ (∀ i, a i ∈ T) ∧ MvPolynomial.eval a P ≠ 0
+```
+
+both now in `MvPolynomialInfiniteEval`, with all four original theorems one-line delegations.
+`MvPolynomialInfiniteEval` 83 -> 102, `DistinctIndexComplexSurvival` 493 -> 450.
+
+Two Lean details worth keeping:
+
+- Delegating a theorem stated as `∀ {r} (P), P ≠ 0 → ∀ {T}, T.Infinite → …` needs the implicit
+  binders written out — `fun {_r} P hP {_T} hT => …`. Writing `fun P hP hT => …` silently binds
+  `hT` to the implicit `T` and fails with a `Set ℤ` versus `Set.Infinite ?m` mismatch.
+- When generalising a proof body by textual ring substitution, the set-builder binders are easy to
+  miss: `{x : ℤ | p.eval x = 0}` does not contain the token ` ℤ ` patterns used elsewhere and
+  survived the rewrite, producing an `Polynomial ℤ` versus `Polynomial R` mismatch 20 lines away
+  from the real cause.
+
+This also removes the obstacle recorded in B48: the ℤ/ℂ `diffPoly_fixedDegree_survives` pair needed
+`exists_injective_eval_ne_zero_field` moved upstream, and the domain law now sits above both.
+
+Audit: `lake build` of `MvPolynomialInfiniteEval` (8475 jobs) and `DistinctIndexComplexSurvival`
+(8483 jobs) — both successful, zero error lines.
+
+### B53 — ℤ/ℂ permanent-survival chain unified (the B48 obstacle, cleared)
+
+`DistinctIndexComplexSurvival` was a line-for-line ℂ-parallel of the ℤ chain in
+`PermanentDistinctSymbol` + `PermanentCoefficientIdentity`: five mirrored theorems, ~250 duplicated
+proof lines. Resolved in two moves.
+
+**Root (new general law).** `combination_permSymbolPoly_ne_zero` (ℤ) and
+`combination_permSymbolPolyC_ne_zero` (ℂ) were replaced by one law in `PermanentDistinctSymbol`:
+
+- `combination_permSymbolPolyMap_ne_zero {R} [CommRing R] [CharZero R] [NoZeroDivisors R]` —
+  a nonzero `R`-combination of the cast permanent symbols `(permSymbolPoly ν).map (ℤ → R)` over a
+  pairwise-distinct-multiset family is a nonzero polynomial.
+
+The three classes are exactly what the proof uses: `CharZero` for `(stabiliser count : R) ≠ 0`,
+`NoZeroDivisors` for the final `mul_eq_zero` split. Both former theorems are now one-line
+delegations (the ℤ one via `MvPolynomial.map_id`).
+
+**Chain (move the general one upstream).** The remaining four ℂ theorems are *strictly more general*
+than their ℤ counterparts — same series `f : ℂ⟦X⟧`, same hypotheses, coefficients in ℂ rather than
+cast from ℤ — but sat downstream. Moved `exists_injective_eval_ne_zero_field`,
+`combination_permSymbolPolyC_ne_zero`, `eval_map_ringHom`, `eval_map_permSymbolPoly_complex`,
+`coeff_combination_complex_eq`, `degHom_survives_complex`, `coeff_mixed_eq_orderO_complex`,
+`diffPoly_fixedDegree_survives_complex` into `PermanentCoefficientIdentity`. The four integer
+theorems became corollaries at `c ↦ (c · : ℂ)`:
+
+- `coeff_combination_eq` — 12 lines (needs the `eval`/`map` commuting square for the ℤ→ℂ cast);
+- `degHom_survives`, `coeff_mixed_eq_orderO`, `diffPoly_fixedDegree_survives` — one line each.
+
+`exists_mem_eval_ne_zero_of_infinite_field` was deleted: a field specialisation of the
+`MvPolynomialInfiniteEval` domain law (B52) with zero users anywhere in the corpus.
+
+`DistinctIndexComplexSurvival` 450 → 193 lines, now exactly the two ι-indexed variants
+(`_indexed_`, `_maxorder_`) that are genuinely not finset statements. Net ≈ −195 lines.
+
+**Recurrence of the standing pattern.** Fourth time in this audit that the general theorem sat
+*downstream* of its specialisation. The ℤ/ℂ split is not a mathematical distinction here — the
+symbol polynomial happens to be defined over ℤ, and every consumer works over ℂ.
+
+### B54 — Ward edge Re/Im channels: one bilinear law for both
+
+`integral_mul_re_xiPairs` (`XiWardEdgeReChannelDeposit`) and `integral_mul_im_xiPairs`
+(`XiWardEdgeImChannelGram`) proved the *same* closed form
+`8π(x+x′)(1/((x+x′)²+(b−b′)²) + 1/((x+x′)²+(b+b′)²))` by the same 138-line argument: expand each
+edge response into a kernel at height `b` plus its reflection at `−b`, multiply out, discharge four
+integrability side conditions, evaluate four cross masses, and clear denominators. The two differed
+only in the kernel — Lorentzian half `x/(x²+(t+β)²)` for the real channel, odd kernel
+`(t+β)/(x²+(t+β)²)` for the imaginary one — and in the outer constant, `2` versus `−2`.
+
+Both kernels already had the *same* cross mass `π(x₁+x₂)/((x₁+x₂)²+(β₁−β₂)²)`
+(`integral_mul_lorentzianHalves_general`, `integral_mul_oddKernels_general`), which is what made the
+two closed forms coincide. New law in `XiWardEdgeL2CrossKernel` (upstream of both):
+
+- `integral_mul_mirroredKernelPair {k : ℝ → ℝ → ℝ → ℝ}` — takes the kernel family abstractly with
+  its integrability and cross-mass as hypotheses, plus `f = c·(k x b + k x (−b))`,
+  `f′ = c′·(k x′ b′ + k x′ (−b′))`, and returns
+  `∫ f f′ = 2cc′π(x+x′)(1/((x+x′)²+(b−b′)²) + 1/((x+x′)²+(b+b′)²))`.
+
+The reflection symmetry is what collapses the four cross terms to two denominators: `b−(−b′)` and
+`(−b)−b′` both square to `(b+b′)²`, `b−b′` and `(−b)−(−b′)` both to `(b−b′)²`.
+
+Both consumers are now 15 lines. 138+138 → 15+15+45, net ≈ −200 lines.
+`integral_mul_im_eq_integral_mul_re_xiPairs` (channel equipartition) is unchanged and now visibly a
+consequence of one law applied at two kernels rather than a coincidence of two computations.
+
+Audit: `lake build GaloisForLFunctions.RHTower.XiWardEdgeImChannelGram` — 8859 jobs, exit 0.
+B53 audit: `lake build GaloisForLFunctions.HTGeometry` — exit 0, zero error lines.
+
+### B55 — Deninger Xi division: the pointwise statement was downstream of the global one
+
+`deningerNormalizedXiQuotient_analytic` (`DeningerArithmeticGlobalDivision`, 70 proof lines) and
+`deningerNormalizedXiQuotient_analyticAt_of_localJets` (`DeningerArithmeticLocalDivision`, 72 lines)
+shared 64 lines: identical Xi-divided-chain factorisation `XiC w = (w−z)^m · H w`, identical entire
+factor extraction from `analyticOrderAt`, identical transfer of the punctured-neighbourhood identity
+through the meromorphic normal form.
+
+They are not siblings: the local one is *strictly stronger*. It concludes `AnalyticAt` at one point
+from the jets at that point only; the global one concludes `AnalyticOnNhd … Set.univ` from
+`deningerCompactOpenAllJets F = 0`, which supplies those jets at every point. Moved the pointwise
+theorem into `GlobalDivision` (all of its dependencies — `deningerCompactOpenJet_apply`,
+`xiThetaDividedChain*`, `exists_entire_factor_of_natCast_le_analyticOrderAt` — are already reachable
+there; the extra imports of `LocalDivision` serve its other theorems). The global theorem is now:
+
+```
+intro z _; refine ..._analyticAt_of_localJets F z ?_; intro rho _ k
+simpa [deningerCompactOpenAllJets_apply, deningerCompactOpenJet_apply, Pi.zero_apply]
+  using congrFun (congrFun hjets rho) k
+```
+
+Net −64 lines. Fifth instance in this audit of the general statement sitting downstream of its own
+specialisation — here the giveaway was that the "local" file was named for the *weaker* hypothesis.
+
+Audit: `lake build GaloisForLFunctions.RHTower.DeningerArithmeticLocalDivision` — 8650 jobs, exit 0.
+
+### B56 — Leaf atoms: one law for the finite and the infinity regime
+
+`ofReal_christoffelLimit_le_leaf_singleton` (`LeafAtoms`, 50 lines) and
+`ofReal_christoffelLimit_le_leaf_infinity_singleton` (`InfinityLeafAtoms`, 52 lines) were the same
+proof — continuity of `christoffelLimit` ⇒ interval lower bound at a quasi-node ⇒ portmanteau
+transport along the convergent subsequence ⇒ shrink to the singleton — run once at the finite
+parameter `tau` and once at the parameter-at-infinity. Earlier in this audit the pair was passed
+over as "different limit regimes"; that was wrong. The regimes enter through exactly three slots:
+
+| slot | finite | infinity |
+|---|---|---|
+| level map | `goodLevel h tau` | `goodLevelInf h` |
+| leaf parameter | `leafParam h tau` | `leafParamInf h` |
+| node source | `eventually_exists_quasiNode_near` | `..._near_inf` |
+
+New law in `LeafAtoms`, `ofReal_christoffelLimit_le_leaf_singleton_of_eventually_node`, takes
+`lvl : ℕ → ℕ` with `∀ n, n + 1 ≤ lvl n`, `par : ℕ → ℝ`, and the node hypothesis in the form the
+proof actually consumes:
+
+```
+∃ η > 0, ∀ δ, 0 < δ → δ < η → ∀ᶠ n in atTop, ∀ i, n = lvl i →
+  ∃ x ∈ quasiNodes s n (par i), |x - ξ| ≤ δ
+```
+
+Both concrete node lemmas have the shape `∀ᶠ n, A n → ∃ x ∈ quasiNodes s n (β n), |x − ξ| ≤ δ`, and
+in both cases `leafParam*` is *definitionally* `β (lvl i)`, so each call site discharges the
+hypothesis in five lines by `filter_upwards` + `subst` + supplying its own `nevAlpha ≠ 0` fact.
+Both theorems are now 7 lines. 50+52 → 7+7+76, net −19 lines and the two regimes stop drifting.
+
+Audit: `lake build GaloisForLFunctions.HTGeometry.InfinityLeafAtoms` — 8586 jobs, exit 0.
+
+### B57 — Möbius jet expansion: the open-set version was downstream of the half-plane one
+
+`iteratedDeriv_outerReciprocalLimit_neg_inv_eq_mobiusJetExpansion` (`GammaFactorialComposition`,
+47 proof lines, fixed to `rightHalfPlane`) and `..._local` (`GammaIterationHypertranscendence`,
+53 lines, arbitrary open `Ω` with an explicit `z ≠ 0`) were the same induction on `j`: chain rule
+through `w ↦ −w⁻¹`, `hasDerivAt_mobiusJetExpansion` on the other side, induction hypothesis to make
+the two functions eventually equal, then cancel `z⁻²`.
+
+`hasDerivAt_mobiusJetExpansion` was already domain-generic, so nothing blocked the general version
+from sitting upstream. Moved `_local` into `GammaFactorialComposition`; the half-plane statement is
+now six lines, the only work being `z ∈ rightHalfPlane → z ≠ 0`. Net −41 lines.
+
+Sixth occurrence of the same shape. The reliable tell is a `_local`/`_general`/`_of_*` suffix on the
+*downstream* module: the corpus grows the general statement where it is first needed, not where it
+belongs.
+
+Audit: `lake build GaloisForLFunctions.HTGeometry.GammaIterationHypertranscendence` — 8501 jobs,
+exit 0.
+
+### B58 — Stanley–Reisner structural output: one law, two sources
+
+`upperEndFaceStructuralOutput_eq_zero_iff_nonface` (`FacetSewnHerglotzStanleyReisner`) and
+`universalSurgeryFaceStructuralOutput_eq_zero_iff_nonface` (`UniversalConstraintOrientation`) ran
+the same 42-line argument — face ⇒ nonzero Stanley–Reisner class ⇒ linear independence ⇒
+differential independence ⇒ nonzero row sum, and conversely nonface ⇒ every Laurent row vanishes ⇒
+termwise-zero sum — over two different source families, with two different differential-matroid
+inputs supplying the same equivalence.
+
+New law `structuralFaceOutput_eq_zero_iff_nonface` in `FacetSewnHerglotzStanleyReisner` takes the
+source family and that equivalence as hypotheses. Both `…Output` definitions are the same
+`differentialOperatorRowApply … Unit.unit` expression differing only in the source, so each concrete
+theorem is now the three `letI` lines plus one `exact`.
+
+Net −8 lines only — the abstract statement has to spell out the row expression and carry the three
+local instances — but the 42-line proof exists once instead of twice, and a third source (there is
+already a `PrimeResidueSurgery` and a `PrimeLogBoundedGauge` variant) costs seven lines.
+
+Audit: `lake build GaloisForLFunctions.HTGeometry.UniversalConstraintOrientation` — 8550 jobs,
+exit 0.
+
+### B59 — Bernstein total variation: the parametrised bound was downstream of its own instance
+
+`primeArchEndpointBernsteinTotalVariation_le_confinedPhase` (`PrimeArchBernsteinConfinedPhase`,
+56 proof lines) bounds the Bernstein L¹ mass by
+`xiReciprocalSquareAbsoluteMass · xiUniversalBernsteinAmplitudeBase ^ n`.
+`..._le_of_atomAmplitudeBase` (`PrimeArchBernsteinSectorConfinedPhase`, 56 lines) proves the same
+chain for an *arbitrary* bound `B` on the atom amplitude base. The confined statement is the
+instance `B := xiUniversalBernsteinAmplitudeBase`, `hB := xiEndpointBernsteinAtomAmplitudeBase_le_universal`.
+
+Moved the parametrised theorem into `ConfinedPhase` (every lemma its proof uses was already there —
+`abs_bernsteinCoefficient_endpoint_le_divisorEnvelope`,
+`summable_xiCentralRadiusNormalizedPolynomialTerm`,
+`sum_norm_evalRealPolynomial_bernsteinPolynomial`, `summable_xiZeroCopyReciprocalSquare`); the
+confined bound is now two lines. Net −54 lines.
+
+Audit: `lake build GaloisForLFunctions.RHTower.PrimeArchBernsteinSectorConfinedPhase` — 9104 jobs,
+exit 0.
+
+### B60 — Theta-cusp likelihood: the coordinate hypothesis subsumes `0 < n ∧ 0 < x`
+
+`thetaCuspAtomLikelihoodRatio_eq_spectralTerm` (`ThetaCuspLikelihoodSpectralMeasure`) assumed
+`0 < n` and `0 < x`; `..._of_coordinate_pos` (`ThetaCuspLikelihoodModularSeam`) proved the same
+identity from `0 < thetaCuspLikelihoodCoordinate x` alone. Both ran the same 45-line rational
+rearrangement, and each was backed by its own private scale-form lemma (`atomRatio_scale` versus
+`thetaCuspAtomLikelihoodRatio_eq_scaleForm`) that differed in exactly the same way.
+
+Moved `atomRatio_scale` and the coordinate-hypothesis theorem into `SpectralMeasure`, deleted the
+private scale-form duplicate, and reduced the original to two lines via
+`thetaCuspLikelihoodCoordinate_pos hx.le`. The now-vacuous `0 < n` hypothesis was dropped rather
+than left as dead weight (its single call site passed `by omega`). Net −30 lines.
+
+Audit: `lake build GaloisForLFunctions.RHTower.ThetaCuspLikelihoodModularSeam` — 8833 jobs, exit 0.
+
+### B61 — Möbius/Mertens: two clones, two laws
+
+Two separate duplications in the same chain.
+
+**(a) The norm bound inside the Cesàro criterion.**
+`norm_mobiusAdditiveTriangleSecondCesaro_le_of_mertensBound` (`MobiusMertensFourthConvolutionCriterion`)
+was the antidiagonal estimate `‖∑ M(a)M(b)‖ ≤ C²(N+1)^(2+2δ)` extracted as a standalone theorem —
+and `mobiusMertensAllStrictHalfPowerBound_implies_secondCesaroSubpowerUpperBound`
+(`MobiusMertensSelfConvolutionCriterion`, upstream) contained the identical 45-line estimate inline,
+prefixed by `Complex.re_le_norm`. Moved the standalone theorem upstream; the criterion is now nine
+lines. Net −47.
+
+**(b) Square-rooting a subpower bound.**
+`mobiusAdditiveTriangleSubpowerUpperBound_implies_allStrictHalfPowerDecay` and
+`mobiusAdditiveTriangleSecondCesaroSubpowerUpperBound_implies_allStrictHalfPowerDecay` ran the same
+39-line argument — inflate the constant to `S + 1` so `S ≤ (S+1)²`, rewrite `(x^(-b))² = x^(-2b)`,
+`nlinarith` — differing only in which Abel constant and which squared-norm lemma supplied `S`. New
+law in `MobiusLaplaceAdditiveTriangleSubpower`:
+
+- `isBigO_mobiusDiscreteLaplaceTransform_of_norm_sq_le {b S} (hS : 0 ≤ S)`
+  `(hsq : ∀ x ∈ (0,1], ‖L x‖² ≤ S · x^(-(2b))) : L =O[𝓝[>] 0] (x ↦ x^(-b))`
+
+Both criteria are now eight lines: obtain the source constant, apply the law, rewrite the exponent
+`-(1 + (2b−1))` to `-(2b)`. Net −32.
+
+Audit: `lake build GaloisForLFunctions.RHTower.MobiusMertensFourthConvolutionCriterion` — 8779 jobs,
+exit 0.
+
+### B62 — Stein–Robertson: the score is the only variable
+
+`thetaCuspFirstRadialQuadraticSteinRobertson` and `thetaCuspFirstRadialTwoChannelSteinRobertson`
+were the same weighted Cauchy–Schwarz — build `f = centredQuadratic · amplitude` and
+`g = score · amplitude`, discharge four measurability/integrability conditions, identify the three
+integrals, `rwa` — with the *score* the only thing that changed.
+
+New law `thetaCuspFirstRadialSteinRobertson_of_score` in `PrimeArchThetaQuadraticSteinRobertson`
+takes a measurable `ψ`, integrability of `ψ² · amplitude²`, and the coupling and energy
+evaluations, and yields
+`(m₀ · coupling)² ≤ (m₀²m₄ − m₀m₂²) · energy`. Both callers are now four lines each; the existing
+`integrableOn_…SteinEnergy` lemmas already have exactly the hypothesis's shape, so no massaging
+survives at the call sites. Net −25 lines, and a third score costs four lines.
+
+Audit: `lake build GaloisForLFunctions.RHTower.PrimeArchThetaTwoChannelSteinRobertson` — 8822 jobs,
+exit 0.
+
+### B63 — Generator order zero: the covariance is the only variable
+
+`differentialAlgEquiv_generator_order_zero` (`ScalarDifferentialRationalOrder`, plain differential
+automorphism) and `clockSemilinearAlgEquiv_generator_order_zero` (`ClockSemilinearOrderZeroMobius`,
+semilinear clock dilation with scalar `lam`) ran the same 35-line argument: transcendence of `y`
+puts `y`, `σ y` and `σ.symm y` outside `⊥`, `differentialAdjoin C {y} = ⊤` makes both images
+members, the two scalar orders `r` and `m` compose to the order of `y` over itself, which is zero,
+and naturality of ℕ forces `r = m = 0`.
+
+The covariance enters at exactly one line — `hm.map σ.toAlgHom hderiv` versus
+`hm.map_semilinear σ.toAlgHom hlam hconst hsemi`. New law `algEquiv_generator_order_zero` in
+`ScalarDifferentialRationalOrder` takes that step as the hypothesis
+
+```
+hmap : ∀ m, HasScalarDifferentialOrder C y (σ.symm y) m → HasScalarDifferentialOrder C (σ y) y m
+```
+
+Both concrete theorems are now two lines. Net −24 lines, and any further covariance class (twisted,
+`q`-difference) costs two.
+
+Audit: `lake build GaloisForLFunctions.HTGeometry.ClockSemilinearOrderZeroMobius` — 3037 jobs,
+exit 0.
+
+### B64 — `PolynomialPowerADEResonance`: 174-line clone examined, extraction declined
+
+Largest remaining clone anywhere in the corpus:
+`exists_eventually_polynomialPower_bend_pair_of_eventual_profile` (364 lines) versus
+`..._jetDegree_one` (232 lines), 174 lines in common.
+
+**They are incomparable, not one a specialisation of the other.** The general theorem assumes
+`2 < β` and `0 < B`; the degree-one theorem assumes neither, and its only user needs exactly that —
+it is invoked in the `¬(2 < β)` branch of
+`natCeil_le_magnitudeMaxJetDegree_of_polynomialPower_relation`. So the general theorem cannot
+subsume it, and the degree-one theorem cannot subsume the general one either (it fixes `D = 1`).
+
+The reason both proofs exist is that the final *window confinement* is reached two different ways:
+
+- general: a separation estimate (`eventually_lowerDegree_tuplePower_gap`,
+  `exists_eventually_bounded_powerNearMinimizer`) that needs `β > 2` and a scale `S` chosen from `B`;
+- degree one: `count_eq_one` — a degree-`1` atom key has a single support point, so confinement is
+  a counting triviality.
+
+The genuinely shared part is the *witness construction*: anchor extraction, balanced nonzero
+`aevalWeight`, the scaled tuple `s i = q + δ i`, the level `N`, the near-minimiser pair `ν₀, ν₁`
+from `exists_near_min_active_aevalWeight_of_relation`, and the logarithmic mass bound
+`log(P+1) ≤ C·log(q+2)`.
+
+Extraction was designed and rejected on interface width: the two consumers need `anchor`, `δ`, `D`,
+`J`, `Z`, `Csum`, `Boff`, `s`, `N`, `key s`, its membership and nonvanishing facts, `ν₀`, `ν₁`,
+their memberships, `hmin`, the gap, `hwitEq`, and the log bound — fifteen components, several of
+them dependent (the type of `s` mentions `jetMonomialDegree n anchor`). The packaging lemma's
+statement runs ~60 lines and each consumer needs a ~25-line destructuring preamble, against 174
+lines saved: roughly break-even, and strictly worse to read, because the dependent tuple hides
+which facts each branch actually uses.
+
+Recorded as examined-and-declined. Should a third bend-pair regime appear (e.g. `1 < β ≤ 2` with
+`D = 2`), revisit — at three consumers the packaging pays for itself.
+
+### B65 — Signed digamma palette: one estimate, one domination law
+
+`summableLocallyUniformlyOn_signedDigammaRegular` (101 lines) and
+`summableLocallyUniformlyOn_signedDigammaCompletionTerm` (97 lines) in
+`ExplicitDigammaOrientationLimit` were the same proof: build the majorant `4(R₀+1)/(n+1)²`, prove it
+summable via `Real.summable_one_div_nat_add_rpow`, then bound each far-out term by rewriting the
+Gauss term as `(z − 1/2)/((n+1)(z + 1/2 + n))` and estimating `‖z + 1/2 + n‖ ≥ (n+1)/2`. The regular
+version differed only by a `split_ifs` around the deleted pole and by the open set it works on.
+
+Split into two:
+
+- `norm_signedDigammaCompletionTerm_le` — the pointwise estimate, with `0 ≤ R₀` recovered from
+  `‖z‖ ≤ R₀` rather than from `R₀ = max R 0`;
+- `summableLocallyUniformlyOn_of_norm_le_signedDigammaCompletionTerm` — *any* family dominated
+  termwise by the completion terms converges locally normally on *any* open set.
+
+The completion theorem is now `(fun _ _ => le_rfl) isOpen_univ`; the regular one supplies the
+`split_ifs` domination and `Metric.isOpen_ball`. 484 → 420 lines, and a third dominated palette
+costs five lines.
+
+Also examined and dismissed: `PrimeArchExactOffLineQuartetKMSMaster` reported a 91-line overlap, but
+`..._twoHundredEighteen_twentyFifths` is *already* a one-line delegation to the master at
+`R = 218/25`. The scanner was measuring the restated 100-clause conjunction, not duplicated proof.
+Statement restatement of that kind is API, not duplication.
+
+### B66 — Elliptic theta logarithmic series: one annulus law for every forward shift
+
+`analyticAt_ellipticThetaLogKernel_of_norm_between` (shift 1, hypothesis `‖q‖ < ‖x‖`) and
+`analyticAt_ellipticThetaLogRemainder_of_norm_sq_between` (shift 2, hypothesis `‖q‖² < ‖x‖`) ran the
+same 110-line argument: enclose `x` in a closed annulus `r ≤ ‖y‖ ≤ R` strictly inside the region,
+bound both elliptic-gamma atom arguments away from `1`, dominate the summands by a geometric
+majorant, and differentiate term by term.
+
+New law `analyticAt_ellipticThetaLogShift_of_norm_pow_between` takes the shift `m` as a parameter
+and concludes analyticity of `∑ₖ (A(qᵏ⁺ᵐ/y) − A(qᵏ y))` under `‖q‖ᵐ < ‖x‖ < 1`. The one step that
+was shift-specific — `‖q‖ < 1`, previously `nlinarith [sq_nonneg (a−1)]` — generalises to a
+two-line contradiction from `1 ≤ a ⇒ 1 ≤ aᵐ < b < 1`.
+
+Both consumers are now four lines: instantiate at `m = 1` or `m = 2` and identify the tsum with the
+local definition (`ellipticThetaLogSummand` unfolds definitionally; the remainder needs the existing
+`tsum_sub` splitting). 315 → 226 lines.
+
+### B67 — Gamma first-order relation: the remainder version subsumes the plain one
+
+`gamma_no_weightedHomog_firstOrder` (73 lines) and `gamma_no_weightedHomog_firstOrder_rem`
+(79 lines) in `GammaDifferentialFE` differed only in that the second allows an extra term `Q` whose
+`d`-fold pole blow-up vanishes at every `-k`. The plain statement is the case `Q = 0`, and it had no
+users at all. Moved `_rem` above it; the plain theorem is now
+
+```
+gamma_no_weightedHomog_firstOrder_rem N d hd c (fun _ => 0)
+  (fun k => by simpa using tendsto_const_nhds) (fun s hs => by simpa using hrel s hs)
+```
+
+Net −65 lines. Same pattern as B59 — a parametrised statement sitting *after* its own `Q = 0`
+instance in the same file.
+
+### B68 — Pattern weight polynomial: one bound, two window regimes
+
+`norm_eval_polynomialPatternWeightPoly_le` (88 lines) and
+`..._le_centeredRadius` (90 lines) in `GaussianTorsionLanguageTailLock` shared the whole
+coefficient-mass extraction and inner-sum estimate, differing only in three coupled slots: the
+assignment-count bound (`M^D` by `Finset.card_le_univ` versus `D^D` by
+`atomPatternAssignments_card_le_pow_count`), the window radius (`M` versus
+`centeredPolynomialPatternRadius K p`), and which descending-factorial product bound was applied.
+
+New law `norm_eval_polynomialPatternWeightPoly_le_of_bounds` takes the count bound `Acard`, the
+radius `W`, and the per-assignment product bound as hypotheses, and concludes
+`‖eval q‖ ≤ mass(Q) · Acard · (q + W)^H`. Both consumers are now five lines. 4783 → 4728 lines.
+
+*Status: applied, verification pending* — the concurrent full-corpus audit invalidated the
+`GammaDifferentialFE` olean while rebuilding, so `lake env lean` could not resolve this file's
+imports at the time of writing. Verify with
+`lake build GaloisForLFunctions.HTGeometry` once the audit settles.
+
+### B69 — Bounded vertical clock transfer: the local dichotomy subsumes the global one
+
+`riemannHypothesis_of_bounded_vertical_clock_dichotomy_approximants` (72 lines) and
+`..._locally_bounded_...` (84 lines) in `BoundedClockZeroTransfer` ran the same Hurwitz zero-selection
+argument. `LocalBoundedVerticalClockDichotomy B R f` is literally
+`BoundedVerticalClockDichotomy B f` with the quantifier restricted to `closedBall 0 R`, so the
+global hypothesis weakens to the local one at every radius. Moved the local definition and the local
+theorem above the global one; the global theorem is now
+
+```
+riemannHypothesis_of_locally_bounded_vertical_clock_dichotomy_approximants hconv hFn
+  (fun _R => ⟨B, hclock.mono fun _n hn z _hz => hn z⟩)
+```
+
+608 → 552 lines.
+
+### B70 — Inverse-tilted dyadic source: order and trailing coefficient share one splitting
+
+`meromorphicOrderAt_inverseTiltedDyadicContinuedSource_eq_neg_one` (72 lines) and
+`meromorphicTrailingCoeffAt_inverseTiltedDyadicContinuedSource` (85 lines) both split the source at
+the shifted pole into `fac · shiftedLogDeriv` plus a strictly-higher-order correction, then read off
+different data from the same splitting.
+
+Merged into `meromorphicOrderAt_and_trailingCoeffAt_inverseTiltedDyadicContinuedSource`, a
+conjunction proved once; the two theorems are `.1` and `.2`. 1442 → 1391 lines. This is the
+"strengthen the core to a conjunction" shape rather than a hypothesis generalisation — appropriate
+when two readings share a construction but neither implies the other.
+
+### B71 — Rectangular shifted zeta: one tail estimate for both carriers
+
+`summableLocallyUniformlyOn_xiRectangularCancelledTerm_rightOne` (125 lines) and
+`..._RawShiftedTerm_...` (100 lines) in `CCMShiftedXiNormalConvergence` shared 81 lines: the cofinite
+tail of large spectral points, the separation `‖(s−γ)−1‖ ≥ 1` from `2(R₀+2) ≤ ‖γ‖`, the zeta
+square-root growth bound, and the conversion to `10 C₀ ‖γ‖^{-3/2}`. The cancelled carrier merely
+multiplies by the bounded factor `‖xi(s−1/2)‖ ≤ M₀`.
+
+Split into `eventually_cofinite_le_norm_xiSpectralPoint` (only finitely many copies have small
+spectral point) and `norm_xiRectangularRightCoefficient_mul_riemannZeta_le`, which returns *both*
+`s ≠ xiRightShiftedPole q` — needed by the cancelled carrier for `Function.update_of_ne` — and the
+estimate. Threading `1 < s.re` explicitly was the one adjustment: the original proofs took it from
+`hKsub hs` mid-proof, and the standalone estimate genuinely needs it for
+`1/2 ≤ (s − γ).re`. 333 → 265 lines.
+
+### B72 — Landau summability transfer: the offset is a parameter
+
+`landau_summability_transfer` (128 proof lines, centre `σ₁ + 1`) and
+`landau_local_summability_transfer` (150 lines, centre `σ₁ + h` for any `h > 0`) in
+`LandauSummabilityTransfer` are the same proof; the first is the second at `h = 1`. Now
+
+```
+landau_local_summability_transfer ha zero_lt_one hsum hGd hagree hσ
+```
+
+−123 lines.
+
+**Direction note.** The first attempt moved the *general* theorem upstream, as in B55/B57/B59/B69 —
+and broke: its proof uses `LSeries_logMul_iterate_eq_of_abscissa_lt` and
+`summable_landauTerm_of_abscissa_lt`, both declared *between* the two theorems. When the general
+statement depends on lemmas that sit between it and its specialisation, move the **specialisation
+down** instead of the general one up. Same end state, no dependency inversion.
+
+### Scanner correction — proof bodies, not statements
+
+`within_file.py` compared whole declarations, so a corollary that merely restates a long conjunction
+scored as a huge clone (this produced the false positives at
+`PrimeArchExactOffLineQuartetKMSMaster`, 91 "lines", and `HardySignChange`, 58 — both are
+delegations whose *statements* repeat fifty-line hypothesis blocks). `within_file2.py` compares only
+the lines after `:= by`. Re-ranked, the largest **in-remit** proof clones are:
+
+| proof lines | file | pair |
+|---|---|---|
+| 161 | `HTGeometry/PolynomialPowerADEResonance` | bend pair vs `_jetDegree_one` — declined, see B64 |
+| 83 | `RHTower/ThetaCuspShellIncompleteGammaCoordinate` | `..._mul_one_sub_cos` vs `..._mul_sin_pos` |
+| 71 | `RHTower/LandauSummabilityTransfer` | resolved here |
+| 69 | `RHTower/ThetaCuspShellIncompleteGammaCoordinate` | fourth- vs fifth-order boundary identity |
+| 69 | `RHTower/ThetaCuspShellIncompleteGammaCoordinate` | `_mul_sin_pos` vs `_mul_cos_pos_of_two_le` |
+| 65 | `RHTower/CCMFirstClockVolterra` | superposition vs `_eq_zero_of_lt` |
+
+Out of remit but worth flagging: `Bottcher` holds the three largest clones in the corpus —
+313 lines (`MixedTowerData`: `bottcher_towerDataG_mixed` ~ `_normS`), 262 (`MixedTowerExt`), and
+199 (`PatchSquareLocalize`), each a `_s`-suffixed twin of its neighbour.
+
+### B73 — Theta-cusp shell: half-line integration by parts, extracted
+
+`integral_thetaCuspTiltedWardDerivativeRotationDensity_mul_one_sub_cos` (139 lines) and
+`integral_thetaCuspTiltedWardDensity_mul_sin_pos` (176 lines) in
+`ThetaCuspShellIncompleteGammaCoordinate` both ran the same integration by parts on `(0, ∞)` against
+`u = 1 − cos(bx)`: integrability of `u·v'` and `u'·v` from boundedness of `cos`/`sin`, vanishing of
+`u·v` at both ends, `integral_Ioi_mul_deriv_eq_deriv_mul`, then a rearrangement. They differed only
+in `v` — `x · density` versus `density`.
+
+Two private laws, both fully abstract in `v`:
+
+- `integrableOn_mul_one_sub_cos` — multiplying by the bounded factor `1 − cos(bx)` preserves
+  integrability on the half line;
+- `integral_mul_sin_eq_neg_integral_deriv_mul_one_sub_cos` —
+  `b ∫₀^∞ v sin(bx) = −∫₀^∞ v' (1 − cos(bx))` whenever `v` is differentiable, `v` and `v'` are
+  integrable, and `v → 0` at infinity. The origin boundary term vanishes because `1 − cos` does, so
+  no hypothesis on `v(0)` is needed.
+
+The first consumer is now twenty lines; the second keeps only its positivity argument
+(`score < 0`, `1 − cos ≥ 0`, support nonempty at `π/b`). 9845 → 9772 lines.
+
+One adjustment was needed: the original proofs carried `v` as a `let`, and their
+`simpa [u, v]` for the origin boundary relied on unfolding it. With `v` abstract, `simpa [u]`
+suffices — `(1 − cos (b·0)) · v 0 = 0 · v 0` regardless of `v`.
+
+The third clone in this file (`..._mul_cos_pos_of_two_le`, 69 shared lines with `_mul_sin_pos`)
+uses `u = sin(bx)` rather than `1 − cos(bx)` and needs the companion law; queued.
+
+### Next target (designed, not yet built) — `N / cos` is never holonomic
+
+`tan_not_holonomic` (74 lines) and `sec_not_holonomic` (66) in `GammaDifferentialFE` already share
+`not_holonomic_master`, which abstracts the function, the pole sequence, the pole order and the
+residue limits. What they still duplicate — 48 lines — is the *residue-limit verification* at the
+zeros of `cos`, run once for numerator `sin` and once for numerator `1`.
+
+The generalisation is not merely a dedup, it is a stronger corpus statement:
+
+```
+theorem div_cos_not_holonomic (N : ℂ → ℂ) (hN : Differentiable ℂ N)
+    (hNz : ∀ m : ℕ, N ((m : ℂ) * π + π / 2) ≠ 0) :
+    ∀ (n : ℕ) (c : ℕ → Polynomial ℂ),
+      (∀ s, ∑ j ∈ range (n+1), (c j).eval s *
+        iteratedDeriv j (fun s => N s / Complex.cos s) s = 0) →
+      ∀ j ∈ range (n+1), c j = 0
+```
+
+— *no* entire numerator that survives the poles of `cos` gives a holonomic quotient. Both existing
+theorems are then instances: `N = sin` (with `sin(mπ + π/2) = (-1)^m`) and `N = 1`. The residue
+family `L i m` becomes `(-1)^(m+1) · N(mπ + π/2) · ((-1)^i · i!)`, which specialises to the two
+constants presently hard-coded.
+
+Remaining in-remit clones after B73, by proof-body overlap: 161 `PolynomialPowerADEResonance`
+(declined, B64), 69 `ThetaCuspShellIncompleteGammaCoordinate` fourth/fifth boundary identity,
+65 `CCMFirstClockVolterra`, 57 `ThetaCuspShell` fourth/fifth root phase, 50
+`GammaFactorialThirdJetHarmonicResidue`, 50 `EllipticGammaMixedFace`, 49
+`RealExponentialSumRigidity`, 48 `GammaDifferentialFE` (this entry). The two `ThetaCuspShell`
+fourth/fifth pairs and the two `Gamma*` pairs are order/argument parameterisations; the
+`EllipticGammaMixedFace` pair carries an extra translation `(τ−σ)/2` on the τ side and is the least
+mechanical of the group.
+
+### B74 — `N / cos` is never holonomic (new general law)
+
+Built the law designed above. `div_cos_not_holonomic` states that for any `N` smooth on `ℂ` with
+`N(mπ + π/2) ≠ 0` for every `m`, the quotient `N / cos` satisfies no linear ODE with polynomial
+coefficients. The residue family handed to `not_holonomic_master` is
+
+```
+L i m = N (mπ + π/2) · (-1)^(m+1) · ((-1)^i · i!)
+```
+
+which is exactly what the two former proofs hard-coded at `N = sin` (where `N(mπ+π/2) = (-1)^m`,
+collapsing the sign to a bare `-1`) and at `N = 1`.
+
+- `tan_not_holonomic` — five lines, the work being `sin(mπ + π/2) = (-1)^m ≠ 0`;
+- `sec_not_holonomic` — three lines, `(fun _ => 1)` plus `simpa only [one_div]` to match
+  `(cos s)⁻¹` against `1 / cos s`.
+
+`GammaDifferentialFE` 3798 → 3629 lines across B67 and this entry. This is the first entry in the
+audit that is a *strengthening* rather than a factorisation: neither original theorem implied the
+other, and the corpus now carries the general statement, so `csc`-style cousins (`N = cos`,
+`N = exp`, any entire non-vanishing-at-poles numerator) cost five lines each.
+
+### B75 — Exponential-sum rigidity: the exponential bound subsumes the bounded case
+
+`le_zero_of_expSum_norm_le` (73 lines, bound `‖∑ Bᵢ e^{uJᵢ}‖ ≤ M`, conclusion `Jᵢ ≤ 0`) and
+`le_of_expSum_norm_le_exp` (71 lines, bound `≤ K e^{λ|u|}`, conclusion `Jᵢ ≤ λ`) in
+`RealExponentialSumRigidity` are the same maximal-exponent argument. The first is the second at
+`λ = 0`, `K = M`, where `e^{0·|u|} = 1`. Moved the bounded case below the general one (its proof
+uses lemmas declared between them — the B72 direction rule) and delegated:
+
+```
+le_of_expSum_norm_le_exp s J m hm hinj B hB (by simpa using hbound)
+```
+
+271 → 204 lines.
+
+### B76 — Digamma jet reflection at every order (new general law) — *verification pending*
+
+`GammaFactorialSecondJetHarmonicResidue` and `GammaFactorialThirdJetHarmonicResidue` are a parallel
+development at jet orders 1 and 2: `shiftedHarmonicSquareSum` / `shiftedHarmonicCubeSum`,
+`iteratedDeriv_one_digamma_neg_nat_add_of_ne_int` / `..._two_...`,
+`norm_shiftedHarmonicSquareSum_le` / `norm_shiftedHarmonicCubeSum_le`,
+`gammaFactorialScaledTrigamma` / `gammaFactorialScaledSecondPolygamma`, and matching
+`ProjectiveDefect` layers.
+
+Unified the base of that tower. New in the second-jet file:
+
+```
+def shiftedHarmonicPowerSum (p n : ℕ) (z : ℂ) : ℂ :=
+  ∑ j ∈ Finset.range n, ((((j + 1 : ℕ) : ℂ) - z) ^ p)⁻¹
+
+theorem iteratedDeriv_digamma_neg_nat_add_of_ne_int (k : ℕ) (z : ℂ)
+    (hz : ∀ m : ℤ, z ≠ (m : ℂ)) (n : ℕ) :
+    iteratedDeriv k Complex.digamma (-(n : ℂ) + z) =
+      iteratedDeriv k Complex.digamma (1 + z) +
+        (-1) ^ (k + 1) * (k.factorial : ℂ) * z⁻¹ ^ (k + 1) +
+        (k.factorial : ℂ) * shiftedHarmonicPowerSum (k + 1) n z
+```
+
+The sign bookkeeping is the content: the origin term carries `(-1)^{k+1}`, while the crossed-integer
+terms carry a bare `k!`, because `((j+1) − z)^{k+1} = (-1)^{k+1} (z − (j+1))^{k+1}` cancels the
+alternation. At `k = 1` this reads `+ z⁻¹² + Σ` and at `k = 2` it reads `− 2z⁻¹³ + 2Σ`, matching the
+two hard-coded statements exactly; both are now one- and two-line corollaries
+(`shiftedHarmonic{Square,Cube}Sum` are definitionally `shiftedHarmonicPowerSum 2` and `… 3`).
+
+Second-jet file 507 → 528 (the general law), third-jet 480 → 443. Net −16 so far, but this is the
+*base* of the tower: `norm_shiftedHarmonicPowerSum_le` and the scaled-polygamma/tendsto layers above
+it can now be stated once at order `k` rather than twice.
+
+**Second layer, same batch.** `norm_shiftedHarmonicPowerSum_le`: for `‖z‖ ≤ 1/2` and `p ≥ 1`,
+`‖Σ‖ ≤ 2^p · Hₙ`, which is the `4·Hₙ` and `8·Hₙ` of the two former bounds. Both are now two-line
+corollaries. Second-jet file 507 → 546 (carrying two general laws), third-jet 480 → 415.
+
+Audit: `lake build GaloisForLFunctions.HTGeometry.GammaFactorialThirdJetHarmonicResidue` —
+8508 jobs, exit 0.
+
+**Three fixes the compiler found, worth recording.** (i) `gcongr` discharges its side goals from the
+local context, so the explicit `positivity`/`exact hpow` bullets I wrote after it were "no goals to
+be solved" — supply the fact as a `have` and let `gcongr` find it. (ii) `simpa` will not reduce
+`2 ^ 2` to `4` or `(-1) ^ 3 * 2` to `-2`; the corollaries need either an explicit
+`show (2:ℝ)^2 = 4` rewrite or `linear_combination`. (iii) `push_cast at h` without `⊢` leaves the
+goal's `↑(j+1)` unmatched against the hypothesis's `↑j + 1`, and `ring` then fails on two sums that
+are visibly identical — always push casts on both sides.

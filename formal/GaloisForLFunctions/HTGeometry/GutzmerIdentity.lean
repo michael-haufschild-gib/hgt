@@ -54,11 +54,10 @@ theorem tendstoUniformlyOn_partialSum_analytic_circleMap {f : ℂ → ℂ}
   intro θ _
   simp [Function.comp, zero_add]
 
-/-- **Dominated passage to the limit for circle `L²` norms of partial sums.**  Only two facts
-about the series are used: that `r` lies inside its radius of convergence — which bounds every
-partial sum on the circle by the tail-summable constant `∑ ‖p n‖ r ⁿ` — and that the partial sums
-converge uniformly to `f` on the circle.  Every concrete source of those two facts gives the same
-conclusion. -/
+/-- **Dominated passage to the limit for circle `L²` norms of partial sums.**  Only two facts about
+the series are used: that `r` lies inside its radius of convergence — which bounds every partial sum
+on the circle by the tail-summable constant `∑ ‖p n‖ rⁿ` — and that the partial sums converge
+uniformly to `f` on the circle.  Any concrete source of those two facts gives the same conclusion. -/
 theorem tendsto_integral_normSq_partialSum_of_radius_of_uniform
     {f : ℂ → ℂ} {p : FormalMultilinearSeries ℂ ℂ ℂ} {r : ℝ} (hr0 : 0 ≤ r)
     (hlt : (↑(r.toNNReal) : ℝ≥0∞) < p.radius)
@@ -122,6 +121,7 @@ theorem tendsto_integral_normSq_partialSum_of_radius_of_uniform
     intervalIntegral.integral_of_le hab
   rw [hconv2]
   simp only [hconv]
+  exact key
 
 /-- Dominated convergence of the partial-sum circle integrals to the integral of `‖f‖²`. -/
 theorem tendsto_integral_normSq_partialSum_analytic {f : ℂ → ℂ}
@@ -142,7 +142,6 @@ theorem tendsto_integral_normSq_partialSum_analytic {f : ℂ → ℂ}
     (tendstoUniformlyOn_partialSum_analytic_circleMap hf hR0 hR1 hr0
       (r' := x.toNNReal) (by rw [Real.coe_toNNReal x hxpos]; exact hrx)
       (NNReal.coe_lt_coe.mp (by rw [Real.coe_toNNReal x hxpos]; exact hxR)))
-  exact key
 
 /-- **Gutzmer's identity (limit form).**  For `f` analytic on the disk and `r < R < 1`, the partial
 coefficient sums `∑_{k<N} ‖bₖ‖² r^{2k}` converge to the circle mean `(2π)⁻¹∫₀²π ‖f(re^{iθ})‖²`. -/

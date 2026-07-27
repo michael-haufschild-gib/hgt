@@ -9,8 +9,9 @@ Global Xi division uses every multiplicity-bounded source jet.  Compact-open inv
 the corresponding local statement: jets vanish only at Xi points in an open region, so the
 normalized meromorphic quotient is holomorphic on that region.
 
-This file proves that local statement directly from the exact Xi divided chain.  On a connected
-region containing one nonzero Xi basepoint, the normalized quotient then satisfies
+This file propagates the pointwise removable-singularity statement of `GlobalDivision` across a
+region.  On a connected region containing one nonzero Xi basepoint, the normalized quotient then
+satisfies
 
 `Q * XiC = F`
 
@@ -23,107 +24,6 @@ open Complex Filter Function Set Topology
 namespace RHTower
 
 noncomputable section
-
-/--
-Local removable-singularity theorem for the normalized Xi quotient.
-
-Only the multiplicity-bounded jets at the selected point are required.  When the point is not an
-Xi zero, the raw quotient is already analytic there.
--/
-theorem deningerNormalizedXiQuotient_analyticAt_of_localJets
-    (F : DeningerCompactOpenEntire) (z : ℂ)
-    (hjets :
-      ∀ (rho : XiDivisorSupport),
-        xiSpectralPointSupport rho = z →
-          ∀ k : DeningerArithmeticJetIndex rho,
-            deningerCompactOpenJet
-                (xiSpectralPointSupport rho) k F = 0) :
-    AnalyticAt ℂ (deningerNormalizedXiQuotient F) z := by
-  have hrawMer := deningerRawXiQuotient_meromorphic F
-  by_cases hXi : XiC z = 0
-  · obtain ⟨q, hq⟩ :=
-      (XiC_eq_zero_iff_exists_xiZeroCopy z).mp hXi
-    have hsupp :
-        xiSpectralPointSupport q.1 = z := by
-      simpa only [xiSpectralPoint_eq_support] using hq
-    let m := xiSupportMultiplicity q.1
-    have hvanish :
-        ∀ k < m, iteratedDeriv k (F : ℂ → ℂ) z = 0 := by
-      intro k hk
-      have hcoord :=
-        hjets q.1 hsupp
-          (⟨k, hk⟩ : DeningerArithmeticJetIndex q.1)
-      simpa only [
-        deningerCompactOpenJet_apply,
-        hsupp] using hcoord
-    have horder :
-        (m : ℕ∞) ≤ analyticOrderAt (F : ℂ → ℂ) z := by
-      exact
-        (natCast_le_analyticOrderAt_iff_iteratedDeriv_eq_zero
-          (F.2.analyticAt z)).mpr hvanish
-    obtain ⟨G, hG, hFG⟩ :=
-      GaloisForLFunctions.RHTower.BakerProof.exists_entire_factor_of_natCast_le_analyticOrderAt
-        (F : ℂ → ℂ) (fun w => F.2.analyticAt w) z m horder
-    let H : ℂ → ℂ :=
-      xiThetaDividedChain
-        (xiSpectralPointSupport q.1) m
-    have hH : AnalyticAt ℂ H z := by
-      simpa only [H, hsupp] using
-        xiThetaDividedChain_analyticAt z m z
-    have hH0 : H z ≠ 0 := by
-      simpa only [H, hsupp, m] using
-        xiThetaDividedChain_nonzero_at_multiplicity q.1
-    have hXiFactor :
-        ∀ w, XiC w = (w - z) ^ m * H w := by
-      intro w
-      simpa only [H, hsupp, m] using
-        xiThetaDividedChain_factorization q.1 w
-    have hGH :
-        AnalyticAt ℂ (fun w => G w / H w) z :=
-      (hG z).div hH hH0
-    have hnormalized_raw :
-        deningerNormalizedXiQuotient F =ᶠ[𝓝[≠] z]
-          deningerRawXiQuotient F :=
-      hrawMer.toMeromorphicNFOn_eq_self_on_nhdsNE
-        (Set.mem_univ z)
-    have hraw_GH :
-        deningerRawXiQuotient F =ᶠ[𝓝[≠] z]
-          fun w => G w / H w := by
-      filter_upwards [self_mem_nhdsWithin] with w hw
-      have hwz : w ≠ z := by
-        simpa only [mem_compl_iff, mem_singleton_iff] using hw
-      have hpow : (w - z) ^ m ≠ 0 :=
-        pow_ne_zero m (sub_ne_zero.mpr hwz)
-      rw [deningerRawXiQuotient, hFG w, hXiFactor w]
-      field_simp [hpow]
-    have hpunct :
-        deningerNormalizedXiQuotient F =ᶠ[𝓝[≠] z]
-          fun w => G w / H w :=
-      hnormalized_raw.trans hraw_GH
-    have hNF :
-        MeromorphicNFAt (deningerNormalizedXiQuotient F) z :=
-      meromorphicNFOn_toMeromorphicNFOn
-        (deningerRawXiQuotient F) Set.univ
-        (Set.mem_univ z)
-    have hnear :
-        deningerNormalizedXiQuotient F =ᶠ[𝓝 z]
-          fun w => G w / H w :=
-      (hNF.eventuallyEq_nhdsNE_iff_eventuallyEq_nhds
-        hGH.meromorphicNFAt).mp hpunct
-    exact hGH.congr hnear.symm
-  · have hrawAn :
-        AnalyticAt ℂ (deningerRawXiQuotient F) z :=
-      (F.2.analyticAt z).div
-        (XiC_analytic z (Set.mem_univ z)) hXi
-    have hlocal :=
-      toMeromorphicNFOn_eq_toMeromorphicNFAt_on_nhds
-        hrawMer (Set.mem_univ z)
-    have heq :
-        toMeromorphicNFAt (deningerRawXiQuotient F) z =
-          deningerRawXiQuotient F :=
-      toMeromorphicNFAt_eq_self.mpr hrawAn.meromorphicNFAt
-    rw [heq] at hlocal
-    exact hrawAn.congr hlocal.symm
 
 /-- Vanishing of the local Xi jets makes the normalized quotient analytic on the whole region. -/
 theorem deningerNormalizedXiQuotient_analyticOnNhd_of_localJets

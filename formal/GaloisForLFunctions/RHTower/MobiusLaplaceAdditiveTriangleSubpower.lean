@@ -260,19 +260,15 @@ theorem norm_sq_mobiusDiscreteLaplaceTransform_le_of_additiveTriangleSubpowerUpp
     _ = C * mobiusAdditiveTriangleSubpowerAbelConstant ε * x ^ (-(1 + ε)) := by
       rfl
 
-/-- Every one-sided additive-triangle subpower estimate gives every strict half-power
-Möbius--Laplace estimate. -/
-theorem mobiusAdditiveTriangleSubpowerUpperBound_implies_allStrictHalfPowerDecay
-    (hupper : MobiusAdditiveTriangleSubpowerUpperBound) :
-    MobiusDiscreteLaplaceAllStrictHalfPowerDecay := by
-  intro b hb
-  let ε : ℝ := 2 * b - 1
-  have hε : 0 < ε := by dsimp [ε]; linarith
-  obtain ⟨C, hC, hsource⟩ := hupper ε hε
-  let S : ℝ := C * mobiusAdditiveTriangleSubpowerAbelConstant ε
+/-- **Square roots of a subpower bound give strict half-power decay.**  If the squared discrete
+Laplace transform is dominated by `S · x^(-2b)` on `(0,1]` with `S ≥ 0`, the transform itself is
+`O(x^(-b))` at `0⁺`.  The constant is inflated to `S + 1`, which is ≥ `√S` because `S ≤ (S+1)²`. -/
+theorem isBigO_mobiusDiscreteLaplaceTransform_of_norm_sq_le
+    {b S : ℝ} (hS : 0 ≤ S)
+    (hsq : ∀ ⦃x : ℝ⦄, 0 < x → x ≤ 1 →
+      ‖mobiusDiscreteLaplaceTransform x‖ ^ 2 ≤ S * x ^ (-(2 * b))) :
+    mobiusDiscreteLaplaceTransform =O[𝓝[>] 0] (fun x : ℝ => x ^ (-b)) := by
   let D : ℝ := S + 1
-  have hS : 0 ≤ S :=
-    mul_nonneg hC (mobiusAdditiveTriangleSubpowerAbelConstant_nonneg hε)
   rw [isBigO_iff]
   refine ⟨D, ?_⟩
   have hOneNhds : ∀ᶠ x : ℝ in nhds 0, x < 1 := Iio_mem_nhds (by norm_num)
@@ -281,20 +277,16 @@ theorem mobiusAdditiveTriangleSubpowerUpperBound_implies_allStrictHalfPowerDecay
   filter_upwards [self_mem_nhdsWithin, hOne] with x hx hxOne
   change 0 < x at hx
   change x < 1 at hxOne
-  have hsq :=
-    norm_sq_mobiusDiscreteLaplaceTransform_le_of_additiveTriangleSubpowerUpperBound
-      hε hC hsource hx hxOne.le
-  have hrpowSq : (x ^ (-b)) ^ 2 = x ^ (-(1 + ε)) := by
+  have hsqx := hsq hx hxOne.le
+  have hrpowSq : (x ^ (-b)) ^ 2 = x ^ (-(2 * b)) := by
     calc
       (x ^ (-b)) ^ 2 = (x ^ (-b)) ^ (2 : ℝ) :=
         (Real.rpow_natCast (x ^ (-b)) 2).symm
       _ = x ^ ((-b) * 2) := (Real.rpow_mul hx.le (-b) 2).symm
-      _ = x ^ (-(1 + ε)) := by
-        have hExp : (-b) * 2 = -(1 + ε) := by
-          dsimp [ε]
-          ring
+      _ = x ^ (-(2 * b)) := by
+        have hExp : (-b) * 2 = -(2 * b) := by ring
         rw [hExp]
-  rw [← hrpowSq] at hsq
+  rw [← hrpowSq] at hsqx
   have hSle : S ≤ D ^ 2 := by
     dsimp [D]
     nlinarith [sq_nonneg S]
@@ -302,8 +294,7 @@ theorem mobiusAdditiveTriangleSubpowerUpperBound_implies_allStrictHalfPowerDecay
   have htargetSq : ‖mobiusDiscreteLaplaceTransform x‖ ^ 2 ≤
       (D * x ^ (-b)) ^ 2 := by
     calc
-      ‖mobiusDiscreteLaplaceTransform x‖ ^ 2 ≤ S * (x ^ (-b)) ^ 2 := by
-        simpa only [S] using hsq
+      ‖mobiusDiscreteLaplaceTransform x‖ ^ 2 ≤ S * (x ^ (-b)) ^ 2 := hsqx
       _ ≤ D ^ 2 * (x ^ (-b)) ^ 2 :=
         mul_le_mul_of_nonneg_right hSle (sq_nonneg _)
       _ = (D * x ^ (-b)) ^ 2 := by ring
@@ -312,6 +303,21 @@ theorem mobiusAdditiveTriangleSubpowerUpperBound_implies_allStrictHalfPowerDecay
   have hright : 0 ≤ D * x ^ (-b) := mul_nonneg hD hpowPos.le
   rw [Real.norm_eq_abs, abs_of_pos hpowPos]
   nlinarith
+
+
+/-- Every one-sided additive-triangle subpower estimate gives every strict half-power
+Möbius--Laplace estimate. -/
+theorem mobiusAdditiveTriangleSubpowerUpperBound_implies_allStrictHalfPowerDecay
+    (hupper : MobiusAdditiveTriangleSubpowerUpperBound) :
+    MobiusDiscreteLaplaceAllStrictHalfPowerDecay := by
+  intro b hb
+  have hε : (0 : ℝ) < 2 * b - 1 := by linarith
+  obtain ⟨C, hC, hsource⟩ := hupper (2 * b - 1) hε
+  refine isBigO_mobiusDiscreteLaplaceTransform_of_norm_sq_le
+    (mul_nonneg hC (mobiusAdditiveTriangleSubpowerAbelConstant_nonneg hε)) ?_
+  intro x hx hxOne
+  have hbound := norm_sq_mobiusDiscreteLaplaceTransform_le_of_additiveTriangleSubpowerUpperBound hε hC hsource hx hxOne
+  rwa [show -(1 + (2 * b - 1)) = -(2 * b) by ring] at hbound
 
 /-- **Subpower additive-triangle criterion for RH.** A one-sided `N^(1+o(1))` upper estimate
 for the cumulative additive Möbius triangle implies the Riemann hypothesis. -/

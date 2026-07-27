@@ -2,6 +2,7 @@ import GaloisForLFunctions.HTGeometry.SzegoOuterAnalytic
 import GaloisForLFunctions.HTGeometry.SzegoOuterBoundary
 import GaloisForLFunctions.HTGeometry.HardySpace
 import Mathlib.MeasureTheory.Integral.DominatedConvergence
+import GaloisForLFunctions.HTGeometry.GutzmerIdentity
 
 /-!
 # The reciprocal outer function lies in `H²`
@@ -45,75 +46,17 @@ theorem tendsto_integral_normSq_partialSum {w : ℝ → ℝ}
       atTop (𝓝 (∫ θ in (0:ℝ)..(2 * π), ‖(szegoOuter w (circleMap 0 r θ))⁻¹‖ ^ 2)) := by
   set p := cauchyPowerSeries (fun z => (szegoOuter w z)⁻¹) 0 R with hp_def
   have hp := hasFPowerSeriesOnBall_inv_szegoOuter hlog hR0 hR1
-  -- `r` lies inside the disk of convergence
   have hlt : (↑(r.toNNReal) : ℝ≥0∞) < p.radius := by
     refine lt_of_lt_of_le ?_ hp.r_le
     rw [ENNReal.coe_lt_coe]
     exact NNReal.coe_lt_coe.mp (by rw [Real.coe_toNNReal r hr0]; exact hrR)
-  have hs_pn : Summable (fun n => ‖p n‖ * r ^ n) := by
-    have h := p.summable_norm_mul_pow hlt
-    rwa [Real.coe_toNNReal r hr0] at h
-  set B : ℝ := ∑' n, ‖p n‖ * r ^ n with hB
-  -- uniform pointwise bound on the partial sums
-  have hnb : ∀ (N : ℕ) (θ : ℝ), ‖p.partialSum N (circleMap 0 r θ)‖ ≤ B := by
-    intro N θ
-    rw [FormalMultilinearSeries.partialSum]
-    calc ‖∑ k ∈ Finset.range N, p k fun _ => circleMap 0 r θ‖
-        ≤ ∑ k ∈ Finset.range N, ‖p k fun _ => circleMap 0 r θ‖ := norm_sum_le _ _
-      _ ≤ ∑ k ∈ Finset.range N, ‖p k‖ * r ^ k := by
-          refine Finset.sum_le_sum (fun k _ => ?_)
-          calc ‖p k fun _ => circleMap 0 r θ‖
-              ≤ ‖p k‖ * ∏ _i : Fin k, ‖circleMap 0 r θ‖ := (p k).le_opNorm _
-            _ = ‖p k‖ * r ^ k := by
-                rw [Finset.prod_const, Finset.card_univ, Fintype.card_fin,
-                  norm_circleMap_zero, abs_of_nonneg hr0]
-      _ ≤ ∑' k, ‖p k‖ * r ^ k := hs_pn.sum_le_tsum _ (fun i _ => by positivity)
-      _ = B := rfl
-  -- continuity of the integrand (for measurability)
-  have hps : ∀ (N : ℕ) (z : ℂ), p.partialSum N z = ∑ k ∈ Finset.range N, p.coeff k * z ^ k := by
-    intro N z
-    rw [FormalMultilinearSeries.partialSum]
-    exact Finset.sum_congr rfl (fun k _ => by
-      rw [p.apply_eq_pow_smul_coeff, smul_eq_mul, mul_comm])
-  have hcont : ∀ N, Continuous (fun θ : ℝ => ‖p.partialSum N (circleMap 0 r θ)‖ ^ 2) := by
-    intro N
-    have heq : (fun θ : ℝ => ‖p.partialSum N (circleMap 0 r θ)‖ ^ 2)
-        = fun θ : ℝ => ‖∑ k ∈ Finset.range N, p.coeff k * (circleMap 0 r θ) ^ k‖ ^ 2 := by
-      funext θ; rw [hps]
-    rw [heq]
-    exact (continuous_finsetSum _ (fun k _ =>
-      continuous_const.mul ((continuous_circleMap 0 r).pow k))).norm.pow 2
-  -- pointwise limit from the banked uniform convergence
   obtain ⟨x, hrx, hxR⟩ := exists_between hrR
   have hxpos : 0 ≤ x := le_of_lt (lt_of_le_of_lt hr0 hrx)
-  have huniform := tendstoUniformlyOn_partialSum_inv_szegoOuter_circleMap hlog hR0 hR1 hr0
-    (r' := x.toNNReal) (by rw [Real.coe_toNNReal x hxpos]; exact hrx)
-    (NNReal.coe_lt_coe.mp (by rw [Real.coe_toNNReal x hxpos]; exact hxR))
-  have hgc : Continuous (fun z : ℂ => ‖z‖ ^ 2) := continuous_norm.pow 2
-  have key := tendsto_integral_of_dominated_convergence
-    (μ := volume.restrict (Set.Ioc (0:ℝ) (2 * π)))
-    (F := fun N θ => ‖p.partialSum N (circleMap 0 r θ)‖ ^ 2)
-    (f := fun θ => ‖(szegoOuter w (circleMap 0 r θ))⁻¹‖ ^ 2)
-    (bound := fun _ => B ^ 2)
-    (fun N => (hcont N).aestronglyMeasurable)
-    (by
-      apply integrableOn_const
-      · rw [Real.volume_Ioc]; exact (ENNReal.ofReal_lt_top).ne
-      · exact enorm_ne_top)
-    (fun N => Eventually.of_forall (fun θ => by
-      rw [Real.norm_of_nonneg (by positivity)]
-      exact pow_le_pow_left₀ (norm_nonneg _) (hnb N θ) 2))
-    (Eventually.of_forall (fun θ => (hgc.tendsto _).comp (huniform.tendsto_at (Set.mem_univ θ))))
-  have hab : (0:ℝ) ≤ 2 * π := by positivity
-  have hconv : ∀ N, (∫ θ in (0:ℝ)..(2 * π), ‖p.partialSum N (circleMap 0 r θ)‖ ^ 2)
-      = ∫ θ, ‖p.partialSum N (circleMap 0 r θ)‖ ^ 2 ∂(volume.restrict (Set.Ioc (0:ℝ) (2 * π))) :=
-    fun N => intervalIntegral.integral_of_le hab
-  have hconv2 : (∫ θ in (0:ℝ)..(2 * π), ‖(szegoOuter w (circleMap 0 r θ))⁻¹‖ ^ 2)
-      = ∫ θ, ‖(szegoOuter w (circleMap 0 r θ))⁻¹‖ ^ 2 ∂(volume.restrict (Set.Ioc (0:ℝ) (2 * π))) :=
-    intervalIntegral.integral_of_le hab
-  rw [hconv2]
-  simp only [hconv]
-  exact key
+  exact tendsto_integral_normSq_partialSum_of_radius_of_uniform
+    (f := fun z => (szegoOuter w z)⁻¹) (p := p) hr0 hlt
+    (tendstoUniformlyOn_partialSum_inv_szegoOuter_circleMap hlog hR0 hR1 hr0
+      (r' := x.toNNReal) (by rw [Real.coe_toNNReal x hxpos]; exact hrx)
+      (NNReal.coe_lt_coe.mp (by rw [Real.coe_toNNReal x hxpos]; exact hxR)))
 
 /-- **Gutzmer inequality at radius `r`.**  For a weight bounded below by `c > 0`, every partial sum
 `∑_{k<N} ‖bₖ‖² r^{2k}` of the reciprocal outer function's coefficients is `≤ c⁻¹`, uniformly in

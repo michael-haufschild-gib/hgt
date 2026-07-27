@@ -38,49 +38,8 @@ theorem clockSemilinearAlgEquiv_generator_order_zero
     (hsemi : ∀ w : E, σ.toAlgHom w′ = algebraMap C E lam * (σ.toAlgHom w)′) :
     HasScalarDifferentialOrder C y (σ y) 0 ∧
       HasScalarDifferentialOrder C y (σ.symm y) 0 := by
-  have hty : Transcendental C y := by
-    simpa using hypertranscendentalOver_jet_transcendental hy 0
-  have hyC : y ∉ (⊥ : IntermediateField C E) := by
-    intro hybot
-    obtain ⟨c, hc⟩ := IntermediateField.mem_bot.mp hybot
-    exact hty (hc ▸ isAlgebraic_algebraMap c)
-  have hσC : σ y ∉ (⊥ : IntermediateField C E) := by
-    intro hσbot
-    apply hyC
-    rw [IntermediateField.mem_bot]
-    obtain ⟨c, hc⟩ := IntermediateField.mem_bot.mp hσbot
-    refine ⟨c, ?_⟩
-    calc
-      algebraMap C E c = σ.symm (algebraMap C E c) := (σ.symm.commutes c).symm
-      _ = σ.symm (σ y) := congrArg σ.symm hc
-      _ = y := σ.symm_apply_apply y
-  have hσinvC : σ.symm y ∉ (⊥ : IntermediateField C E) := by
-    intro hσinvbot
-    apply hyC
-    rw [IntermediateField.mem_bot]
-    obtain ⟨c, hc⟩ := IntermediateField.mem_bot.mp hσinvbot
-    refine ⟨c, ?_⟩
-    calc
-      algebraMap C E c = σ (algebraMap C E c) := (σ.commutes c).symm
-      _ = σ (σ.symm y) := congrArg σ hc
-      _ = y := σ.apply_symm_apply y
-  have hσmem : σ y ∈ differentialAdjoin C ({y} : Set E) := by
-    rw [hytop]; trivial
-  have hσinvmem : σ.symm y ∈ differentialAdjoin C ({y} : Set E) := by
-    rw [hytop]; trivial
-  obtain ⟨r, hr, -⟩ := existsUnique_hasScalarDifferentialOrder hσmem hσC
-  obtain ⟨m, hm, -⟩ := existsUnique_hasScalarDifferentialOrder hσinvmem hσinvC
-  have hmapped : HasScalarDifferentialOrder C (σ y) y m := by
-    simpa using hm.map_semilinear σ.toAlgHom hlam hconst hsemi
-  have hsum : HasScalarDifferentialOrder C y y (m + r) :=
-    HasScalarDifferentialOrder.comp hy hr hmapped
-  have hyzero : HasScalarDifferentialOrder C y y 0 := by
-    rw [hasScalarDifferentialOrder_zero_iff]
-    exact ⟨IntermediateField.subset_adjoin C ({y} : Set E) (Set.mem_singleton y), hyC⟩
-  have hmr : m + r = 0 := hsum.order_eq hyzero
-  have hm0 : m = 0 := by omega
-  have hr0 : r = 0 := by omega
-  exact ⟨hr0 ▸ hr, hm0 ▸ hm⟩
+  refine algEquiv_generator_order_zero σ hy hytop (fun m hm => ?_)
+  simpa using hm.map_semilinear σ.toAlgHom hlam hconst hsemi
 
 /-- **§3(a): the clock is Möbius on the generator.**  A semilinear clock dilation of a scalar free
 differential field acts on its generator by a fractional-linear transform with base-field

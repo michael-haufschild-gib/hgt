@@ -45,19 +45,13 @@ lemma tuplePowerValuation_smoothTuple_lt {β : ℝ} (hβ : 1 < β)
     {D : ℕ} (s : Fin D → ℕ) {lo hi : Fin D} (hne : lo ≠ hi)
     (hgap : s lo + 1 < s hi) :
     tuplePowerValuation β (smoothTuple s lo hi) < tuplePowerValuation β s := by
-  classical
-  rw [tuplePowerValuation, tuplePowerValuation]
-  rw [sum_comp_smoothTuple s hne (fun n => (n : ℝ) ^ β),
-    sum_eq_two_add_rest (fun i => (s i : ℝ) ^ β) hne]
-  have hhi : 0 < s hi := by omega
-  have hinc := powerIncrement_strictMono hβ (show s lo < s hi - 1 by omega)
-  dsimp [powerIncrement] at hinc
-  have hsub : (s hi - 1 : ℕ) + 1 = s hi := Nat.sub_add_cancel hhi
-  have hcast : (((s hi - 1 : ℕ) + 1 : ℕ) : ℝ) = (s hi : ℝ) := by
-    exact_mod_cast hsub
-  rw [hcast] at hinc
-  push_cast at hinc ⊢
-  linarith
+  exact sum_comp_smoothTuple_lt (Q := 0) (fun n => (n : ℝ) ^ β)
+      (fun a b _ hab => by
+        have h := powerIncrement_strictMono hβ hab
+        dsimp [powerIncrement] at h
+        push_cast at h ⊢
+        linarith [h])
+      s hne (Nat.zero_le _) hgap
 
 lemma exists_boundaryShell_of_power_sum_bounds {β : ℝ} {D q K C : ℕ}
     (hβ : 1 < β) (hD : 0 < D) (hKC : C < K)
@@ -70,88 +64,25 @@ lemma exists_boundaryShell_of_power_sum_bounds {β : ℝ} {D q K C : ℕ}
       tupleInWindow q (K + 1) t ∧
       ¬ tupleInWindow q K t ∧
       tuplePowerValuation β t ≤ tuplePowerValuation β s := by
-  classical
-  induction hE : tupleEnergy s using Nat.strong_induction_on generalizing s with
-  | h E ih =>
-      by_cases hshell : tupleInWindow q (K + 1) s
-      · exact ⟨s, rfl, hshell, hout, le_rfl⟩
-      · have hbad : ∃ i, s i + (K + 1) < q ∨ q + (K + 1) < s i := by
-          rw [tupleInWindow] at hshell
-          obtain ⟨i, hi⟩ := not_forall.mp hshell
-          refine ⟨i, ?_⟩
-          by_cases hlo : q ≤ s i + (K + 1)
-          · right
-            have hhi : ¬ s i ≤ q + (K + 1) := fun h => hi ⟨hlo, h⟩
-            omega
-          · left
-            omega
-        obtain ⟨i, hiLow | hiHigh⟩ := hbad
-        · have huniv : (Finset.univ : Finset (Fin D)).Nonempty := by
-            obtain ⟨i₀⟩ := Fin.pos_iff_nonempty.mp hD
-            exact ⟨i₀, Finset.mem_univ i₀⟩
-          have hconst : (∑ _j : Fin D, q) ≤ ∑ j, s j := by
-            simpa using hsumLower
-          obtain ⟨j, _hjmem, hj⟩ := Finset.exists_le_of_sum_le huniv hconst
-          have hne : i ≠ j := by
-            intro hij
-            subst j
-            omega
-          let s' := smoothTuple s i j
-          have hjpos : 0 < s j := by omega
-          have hsum : ∑ k, s' k = ∑ k, s k := by
-            exact sum_smoothTuple s hne hjpos
-          have hgap : s i + 1 < s j := by omega
-          have henergy : tupleEnergy s' < E := by
-            rw [← hE]
-            exact tupleEnergy_smoothTuple_lt s hne hgap
-          have hout' : ¬ tupleInWindow q K s' := by
-            intro hin
-            have hlo := (hin i).1
-            change q ≤ smoothTuple s i j i + K at hlo
-            rw [smoothTuple_apply_lo s] at hlo
-            omega
-          have hval : tuplePowerValuation β s' < tuplePowerValuation β s := by
-            exact tuplePowerValuation_smoothTuple_lt hβ s hne hgap
-          obtain ⟨t, htsum, htwide, htout, htval⟩ :=
-            ih (tupleEnergy s') henergy s'
-              (by rw [hsum]; exact hsumLower)
-              (by rw [hsum]; exact hsumUpper) hout' rfl
-          exact ⟨t, htsum.trans hsum, htwide, htout, htval.trans hval.le⟩
-
-        · have huniv : (Finset.univ : Finset (Fin D)).Nonempty := by
-            obtain ⟨i₀⟩ := Fin.pos_iff_nonempty.mp hD
-            exact ⟨i₀, Finset.mem_univ i₀⟩
-          have hsumConst : (∑ j, s j) ≤ ∑ _j : Fin D, (q + C) := by
-            calc
-              ∑ j, s j ≤ D * q + C := hsumUpper
-              _ ≤ D * (q + C) := by nlinarith
-              _ = ∑ _j : Fin D, (q + C) := by simp [Nat.mul_add]
-          obtain ⟨j, _hjmem, hj⟩ := Finset.exists_le_of_sum_le huniv hsumConst
-          have hne : j ≠ i := by
-            intro hij
-            subst j
-            omega
-          let s' := smoothTuple s j i
-          have hipos : 0 < s i := by omega
-          have hsum : ∑ k, s' k = ∑ k, s k := by
-            exact sum_smoothTuple s hne hipos
-          have hgap : s j + 1 < s i := by omega
-          have henergy : tupleEnergy s' < E := by
-            rw [← hE]
-            exact tupleEnergy_smoothTuple_lt s hne hgap
-          have hout' : ¬ tupleInWindow q K s' := by
-            intro hin
-            have hhi := (hin i).2
-            change smoothTuple s j i i ≤ q + K at hhi
-            rw [smoothTuple_apply_hi s hne] at hhi
-            omega
-          have hval : tuplePowerValuation β s' < tuplePowerValuation β s := by
-            exact tuplePowerValuation_smoothTuple_lt hβ s hne hgap
-          obtain ⟨t, htsum, htwide, htout, htval⟩ :=
-            ih (tupleEnergy s') henergy s'
-              (by rw [hsum]; exact hsumLower)
-              (by rw [hsum]; exact hsumUpper) hout' rfl
-          exact ⟨t, htsum.trans hsum, htwide, htout, htval.trans hval.le⟩
+  have hq1 : 1 ≤ q := by
+    by_contra hq
+    have hq0 : q = 0 := by omega
+    subst hq0
+    apply hout
+    intro i
+    have hle : s i ≤ ∑ j, s j :=
+      Finset.single_le_sum (fun _ _ => Nat.zero_le _) (Finset.mem_univ i)
+    omega
+  obtain ⟨t, hsum, hshell, hout', hval⟩ :=
+    exists_boundaryShell_of_sum_bounds_of_record (Q := 0) (fun n => (n : ℝ) ^ β)
+      hD hKC (by omega)
+      (fun a b _ hab => by
+        have h := powerIncrement_strictMono hβ hab
+        dsimp [powerIncrement] at h
+        push_cast at h ⊢
+        linarith [h])
+      s hsumLower hsumUpper hout
+  exact ⟨t, hsum, hshell, hout', hval⟩
 
 lemma polynomialPowerFiniteDifference_tupleDifference {β x : ℝ} {D : ℕ}
     (u v : Fin D → ℕ) :

@@ -229,22 +229,21 @@ theorem meromorphicTrailingCoeffAt_xiRectangularRightDirichletContinuation
   rw [analyticAt_const.meromorphicAt.meromorphicTrailingCoeffAt_fun_mul hsingle,
     meromorphicTrailingCoeffAt_const, hsingleTrail, mul_one]
 
-/-- The actual observable tail continuation has the same multiplicity-exact residue, with the
-factor two coming from the functional-equation fold. -/
-theorem meromorphicTrailingCoeffAt_xiRectangularWeilTailContinuation
-    {L : ℝ} (hL : 0 < L) {N : ℕ}
-    (hN : ∀ n : ℕ, N ≤ n →
-      1 ≤ n ∧ L ≤ Real.log n / 2)
-    (q : XiRightZeroCopy) :
-    meromorphicTrailingCoeffAt (xiRectangularWeilTailContinuation L N)
-        (xiRightShiftedPole q) =
+/-- **Trailing coefficient of a polar-plus-analytic continuation.**  If a function agrees with
+`2 · xiRectangularRightDirichletContinuation L + correction` and the correction is analytic at the
+shifted pole of `q`, its meromorphic trailing coefficient there is
+`2 · multiplicity q · xiRectangularRightCoefficient L q`.  The polar term has meromorphic order
+`−1`, strictly below the nonnegative order of an analytic function, so the sum inherits the polar
+trailing coefficient. -/
+theorem meromorphicTrailingCoeffAt_of_rightDirichlet_add_analytic
+    {L : ℝ} (hL : 0 < L) (q : XiRightZeroCopy) {F correction : ℂ → ℂ}
+    (hcorrection : AnalyticAt ℂ correction (xiRightShiftedPole q))
+    (heq : F = fun s => 2 * xiRectangularRightDirichletContinuation L s + correction s) :
+    meromorphicTrailingCoeffAt F (xiRightShiftedPole q) =
       2 * (xiRightMultiplicity q : ℂ) * xiRectangularRightCoefficient L q := by
   let p := xiRightShiftedPole q
   let polar : ℂ → ℂ := fun s =>
     2 * xiRectangularRightDirichletContinuation L s
-  let correction : ℂ → ℂ := fun s =>
-    -xiRectangularLandauPrefixSeries L 0 N s +
-      LSeries (xiRectangularWeilRemainderCoefficient L N) s
   have hp : 1 < p.re := by
     dsimp only [p]
     rw [xiRightShiftedPole, Complex.add_re, Complex.one_re]
@@ -252,11 +251,6 @@ theorem meromorphicTrailingCoeffAt_xiRectangularWeilTailContinuation
   have hbase : MeromorphicAt
       (xiRectangularRightDirichletContinuation L) p :=
     meromorphicOn_xiRectangularRightDirichletContinuation_rightOne L p hp
-  have hpolar : MeromorphicAt polar p :=
-    analyticAt_const.meromorphicAt.mul hbase
-  have hcorrection : AnalyticAt ℂ correction p := by
-    dsimp only [correction]
-    exact analyticAt_xiRectangularWeilTailCorrection hN hp
   have hpolarOrder : meromorphicOrderAt polar p =
       ((-1 : ℤ) : WithTop ℤ) := by
     dsimp only [polar, p]
@@ -270,18 +264,33 @@ theorem meromorphicTrailingCoeffAt_xiRectangularWeilTailContinuation
     exact lt_of_lt_of_le
       (by exact_mod_cast (show (-1 : ℤ) < 0 by omega))
       hcorrection.meromorphicOrderAt_nonneg
-  have heq : xiRectangularWeilTailContinuation L N =
-      fun s => polar s + correction s := by
-    funext s
-    simp only [xiRectangularWeilTailContinuation, polar, correction]
-    ring
   rw [heq,
     hcorrection.meromorphicAt.meromorphicTrailingCoeffAt_fun_add_eq_left_of_lt hlt]
-  dsimp only [polar]
   rw [analyticAt_const.meromorphicAt.meromorphicTrailingCoeffAt_fun_mul hbase,
     meromorphicTrailingCoeffAt_const,
     meromorphicTrailingCoeffAt_xiRectangularRightDirichletContinuation hL q]
   ring
+
+
+/-- The actual observable tail continuation has the same multiplicity-exact residue, with the
+factor two coming from the functional-equation fold. -/
+theorem meromorphicTrailingCoeffAt_xiRectangularWeilTailContinuation
+    {L : ℝ} (hL : 0 < L) {N : ℕ}
+    (hN : ∀ n : ℕ, N ≤ n →
+      1 ≤ n ∧ L ≤ Real.log n / 2)
+    (q : XiRightZeroCopy) :
+    meromorphicTrailingCoeffAt (xiRectangularWeilTailContinuation L N)
+        (xiRightShiftedPole q) =
+      2 * (xiRightMultiplicity q : ℂ) * xiRectangularRightCoefficient L q := by
+  refine meromorphicTrailingCoeffAt_of_rightDirichlet_add_analytic hL q
+    (correction := fun s => -xiRectangularLandauPrefixSeries L 0 N s +
+      LSeries (xiRectangularWeilRemainderCoefficient L N) s) ?_ ?_
+  · refine analyticAt_xiRectangularWeilTailCorrection hN ?_
+    rw [xiRightShiftedPole, Complex.add_re, Complex.one_re]
+    linarith [xiRightCenteredZero_re_pos q]
+  · funext s
+    simp only [xiRectangularWeilTailContinuation]
+    ring
 
 /-- Normalizing the observable residue by its nonzero rectangular weight recovers the exact
 analytic multiplicity of the underlying right Xi zero. -/

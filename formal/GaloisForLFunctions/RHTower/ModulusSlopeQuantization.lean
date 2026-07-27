@@ -22,6 +22,7 @@ information.
 -/
 import GaloisForLFunctions.RHTower.ModulusSlopeField
 import GaloisForLFunctions.RHTower.RHLadderTheory
+import GaloisForLFunctions.RHTower.IsolatingAnnulusRung
 
 open Complex Metric
 
@@ -90,14 +91,6 @@ theorem rh_iff_forall_rightHalf_modulusSlope_lt_one :
       (by linarith) (by linarith) (by linarith)
     exact xi_zeroFree_closedBall_of_modulusSlope_lt_one (by linarith) (by linarith) hs ρ
       (mem_closedBall_self (by linarith)) hzero
-
-/-- Around any point there is a radius inside which the center is the only possible ξ-zero. -/
-theorem xi_exists_isolating_radius (ρ : ℂ) :
-    ∃ R₀ > 0, ∀ z ∈ ball ρ R₀, z ≠ ρ → xi z ≠ 0 := by
-  obtain ⟨R₀, hR₀, h, _hhan, hh0, hfact⟩ := xi_peel_ball ρ
-  refine ⟨R₀, hR₀, fun z hz hne => ?_⟩
-  rw [hfact z hz]
-  exact mul_ne_zero (pow_ne_zero _ (sub_ne_zero.mpr hne)) (hh0 z hz)
 
 /-- At an isolating radius the enclosed divisor mass is exactly the central vanishing order. -/
 theorem xiBallOrderSum_eq_order_of_isolated {ρ : ℂ} {r : ℝ} (hr : 0 < r)

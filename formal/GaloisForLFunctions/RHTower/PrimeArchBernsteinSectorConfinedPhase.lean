@@ -151,67 +151,6 @@ theorem xiEndpointBernsteinAtomAmplitudeBase_lt_sectorConfined
     rw [xiEndpointBernsteinAtomAmplitudeBase_eq_one_of_onLine q hline]
     exact one_lt_xiSectorConfinedBernsteinAmplitudeBase
 
-/-- General transport of a uniform atom-ellipse bound through the complete divisor envelope. -/
-theorem primeArchEndpointBernsteinTotalVariation_le_of_atomAmplitudeBase
-    (B : ℝ)
-    (hB : ∀ q : XiZeroCopy, xiEndpointBernsteinAtomAmplitudeBase q ≤ B)
-    (n : ℕ) :
-    primeArchEndpointBernsteinTotalVariation n ≤
-      xiReciprocalSquareAbsoluteMass * B ^ n := by
-  rw [primeArchEndpointBernsteinTotalVariation, bernsteinCoefficientL1]
-  calc
-    (∑ i ∈ Finset.range (n + 1),
-        |bernsteinCoefficient
-          (radiusNormalizedMoment primeArchEndpointHausdorffRadius
-            normalizedPrimeArchMoment) n i|) ≤
-      ∑ i ∈ Finset.range (n + 1),
-        ∑' q : XiZeroCopy,
-          ‖xiZeroCopyReciprocalSquare q‖ *
-            ‖evalRealPolynomial (bernsteinPolynomial ℝ n i)
-              (xiEndpointNormalizedReciprocalSquare q)‖ := by
-        exact Finset.sum_le_sum fun i _ =>
-          abs_bernsteinCoefficient_endpoint_le_divisorEnvelope n i
-    _ = ∑' q : XiZeroCopy,
-        ∑ i ∈ Finset.range (n + 1),
-          (‖xiZeroCopyReciprocalSquare q‖ *
-            ‖evalRealPolynomial (bernsteinPolynomial ℝ n i)
-              (xiEndpointNormalizedReciprocalSquare q)‖) := by
-        rw [Summable.tsum_finsetSum]
-        intro i hi
-        simpa only [norm_mul, Real.norm_eq_abs, abs_norm] using
-          (summable_xiCentralRadiusNormalizedPolynomialTerm
-            primeArchEndpointHausdorffRadius
-            (bernsteinPolynomial ℝ n i)).norm
-    _ = ∑' q : XiZeroCopy,
-        ‖xiZeroCopyReciprocalSquare q‖ *
-          xiEndpointBernsteinAtomAmplitudeBase q ^ n := by
-        apply tsum_congr
-        intro q
-        rw [← Finset.mul_sum,
-          sum_norm_evalRealPolynomial_bernsteinPolynomial]
-        rfl
-    _ ≤ ∑' q : XiZeroCopy,
-        ‖xiZeroCopyReciprocalSquare q‖ * B ^ n := by
-        apply Summable.tsum_le_tsum
-        · intro q
-          exact mul_le_mul_of_nonneg_left
-            (pow_le_pow_left₀
-              (by exact add_nonneg (norm_nonneg _) (norm_nonneg _))
-              (hB q) n)
-            (norm_nonneg _)
-        · exact Summable.of_nonneg_of_le
-            (fun q => mul_nonneg (norm_nonneg _) (pow_nonneg
-              (by exact add_nonneg (norm_nonneg _) (norm_nonneg _)) _))
-            (fun q => mul_le_mul_of_nonneg_left
-              (pow_le_pow_left₀
-                (by exact add_nonneg (norm_nonneg _) (norm_nonneg _))
-                (hB q) n)
-              (norm_nonneg _))
-            (summable_xiZeroCopyReciprocalSquare.norm.mul_right (B ^ n))
-        · exact summable_xiZeroCopyReciprocalSquare.norm.mul_right (B ^ n)
-    _ = xiReciprocalSquareAbsoluteMass * B ^ n := by
-      rw [xiReciprocalSquareAbsoluteMass, tsum_mul_right]
-
 /-- **Sector-confined total variation.** The complete endpoint Bernstein vector has amplitude
 base `501/500`. -/
 theorem primeArchEndpointBernsteinTotalVariation_le_sectorConfined (n : ℕ) :

@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.OrbitDiagonalReflectionIntertwiner
 import GaloisForLFunctions.RHTower.SquarefreeDensityLowerBound
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Analysis.PSeries
 
 /-!
 # The undamped Gamma orbit synthesis leaves the Hilbert domain
@@ -212,6 +213,121 @@ theorem not_summable_gammaOrbit
       have h := Real.sqrt_le_sqrt hlow
       rwa [Real.sqrt_sq (norm_nonneg _)] at h
     exact hnorm
+
+/-! ### The canonical Gamma damping repairs the domain -/
+
+/-- The Gamma sum-frequency damping factor `η_d = (1 + d^(-4))^(-1/4)`. -/
+def gammaDampingFactor (d : ℕ) : ℝ := (1 + (d : ℝ) ^ (-4 : ℝ)) ^ (-(1 : ℝ) / 4)
+
+theorem gammaDampingFactor_pos (d : ℕ) : 0 < gammaDampingFactor d := by
+  rw [gammaDampingFactor]
+  refine Real.rpow_pos_of_pos ?_ _
+  have h : (0 : ℝ) ≤ (d : ℝ) ^ (-4 : ℝ) := Real.rpow_nonneg (Nat.cast_nonneg d) _
+  linarith
+
+theorem gammaDampingFactor_le_one (d : ℕ) : gammaDampingFactor d ≤ 1 := by
+  rw [gammaDampingFactor]
+  refine Real.rpow_le_one_of_one_le_of_nonpos ?_ (by norm_num)
+  have h : (0 : ℝ) ≤ (d : ℝ) ^ (-4 : ℝ) := Real.rpow_nonneg (Nat.cast_nonneg d) _
+  linarith
+
+/-- The canonical time-one Gamma damping `b_d = 2^(1/4) d^(-1/2) η_d`. -/
+def gammaDampingWeight (d : ℕ) : ℝ :=
+  2 ^ ((1 : ℝ) / 4) * (d : ℝ) ^ (-(1 : ℝ) / 2) * gammaDampingFactor d
+
+theorem gammaDampingWeight_nonneg (d : ℕ) : 0 ≤ gammaDampingWeight d := by
+  have h1 : (0 : ℝ) < 2 ^ ((1 : ℝ) / 4) := Real.rpow_pos_of_pos (by norm_num) _
+  have h2 : (0 : ℝ) ≤ (d : ℝ) ^ (-(1 : ℝ) / 2) := Real.rpow_nonneg (Nat.cast_nonneg d) _
+  have h3 := (gammaDampingFactor_pos d).le
+  rw [gammaDampingWeight]
+  positivity
+
+theorem gammaOrbitWeight_nonneg (σ : ℝ) (d : ℕ) : 0 ≤ gammaOrbitWeight σ d := by
+  rw [gammaOrbitWeight]
+  split_ifs
+  · exact Real.rpow_nonneg (Nat.cast_nonneg d) _
+  · exact le_rfl
+
+/-- **The damped orbit weights are absolutely summable above the critical line.**  This is the
+domain repair of the card: after the canonical Gamma damping the orbit coefficients are summable
+for every `σ > 1`, in contrast with the undamped no-go. -/
+theorem summable_gammaDampedWeight {σ : ℝ} (hσ : 1 < σ) :
+    Summable (fun d : ℕ => gammaOrbitWeight σ d * gammaDampingWeight d) := by
+  have hbase : Summable (fun d : ℕ => (1 : ℝ) / (d : ℝ) ^ ((σ + 1) / 2)) :=
+    Real.summable_one_div_nat_rpow.mpr (by linarith)
+  have hneg : Summable (fun d : ℕ => (d : ℝ) ^ (-(σ + 1) / 2)) := by
+    refine hbase.congr fun d => ?_
+    rw [show (-(σ + 1) / 2 : ℝ) = -((σ + 1) / 2) by ring,
+      Real.rpow_neg (Nat.cast_nonneg d), one_div]
+  have hdom : Summable (fun d : ℕ => 2 ^ ((1 : ℝ) / 4) * (d : ℝ) ^ (-(σ + 1) / 2)) :=
+    hneg.mul_left _
+  refine Summable.of_nonneg_of_le (fun d => ?_) (fun d => ?_) hdom
+  · exact mul_nonneg (gammaOrbitWeight_nonneg σ d) (gammaDampingWeight_nonneg d)
+  · rw [gammaOrbitWeight]
+    split_ifs with hsq
+    · have hd0 : d ≠ 0 := by
+        intro h
+        rw [h] at hsq
+        exact not_squarefree_zero hsq
+      have hdpos : (0 : ℝ) < (d : ℝ) := by
+        have : 0 < d := Nat.pos_of_ne_zero hd0
+        exact_mod_cast this
+      have hsplit : (d : ℝ) ^ (-σ / 2) * (d : ℝ) ^ (-(1 : ℝ) / 2)
+          = (d : ℝ) ^ (-(σ + 1) / 2) := by
+        rw [← Real.rpow_add hdpos]
+        congr 1
+        ring
+      have hpow : (0 : ℝ) ≤ (d : ℝ) ^ (-σ / 2) := Real.rpow_nonneg (Nat.cast_nonneg d) _
+      have htwo : (0 : ℝ) < 2 ^ ((1 : ℝ) / 4) := Real.rpow_pos_of_pos (by norm_num) _
+      have hhalf : (0 : ℝ) ≤ (d : ℝ) ^ (-(1 : ℝ) / 2) := Real.rpow_nonneg (Nat.cast_nonneg d) _
+      calc (d : ℝ) ^ (-σ / 2) * gammaDampingWeight d
+          = ((d : ℝ) ^ (-σ / 2) * (d : ℝ) ^ (-(1 : ℝ) / 2)) *
+              (2 ^ ((1 : ℝ) / 4) * gammaDampingFactor d) := by
+            rw [gammaDampingWeight]; ring
+        _ ≤ ((d : ℝ) ^ (-σ / 2) * (d : ℝ) ^ (-(1 : ℝ) / 2)) * (2 ^ ((1 : ℝ) / 4) * 1) := by
+            refine mul_le_mul_of_nonneg_left ?_ (by positivity)
+            exact mul_le_mul_of_nonneg_left (gammaDampingFactor_le_one d) htwo.le
+        _ = 2 ^ ((1 : ℝ) / 4) * (d : ℝ) ^ (-(σ + 1) / 2) := by rw [← hsplit]; ring
+    · have : (0 : ℝ) ≤ 2 ^ ((1 : ℝ) / 4) * (d : ℝ) ^ (-(σ + 1) / 2) := by
+        have h1 : (0 : ℝ) < 2 ^ ((1 : ℝ) / 4) := Real.rpow_pos_of_pos (by norm_num) _
+        have h2 : (0 : ℝ) ≤ (d : ℝ) ^ (-(σ + 1) / 2) := Real.rpow_nonneg (Nat.cast_nonneg d) _
+        positivity
+      simpa using this
+
+/-- The orbit vectors are uniformly bounded: the carrier is pointed at a unit vector. -/
+theorem norm_gammaOrbitVector_le {U : ℝ → K →L[ℂ] K} {xi : K}
+    (hgram : ∀ h k : ℝ, (inner ℂ (U h xi) (U k xi) : ℂ).re = gammaCyclicCovariance (h - k))
+    (d : ℕ) : ‖gammaOrbitVector U xi d‖ ≤ 2 := by
+  have hzero : gammaCyclicCovariance 0 = 1 := by
+    rw [gammaCyclicCovariance, Real.cosh_zero, Real.sqrt_one, inv_one]
+  have hunit : ∀ h : ℝ, ‖U h xi‖ = 1 := by
+    intro h
+    have hsq : ‖U h xi‖ ^ 2 = 1 := by
+      have h1 := hgram h h
+      rw [sub_self, hzero] at h1
+      rw [← inner_self_eq_norm_sq (𝕜 := ℂ) (U h xi)]
+      exact h1
+    nlinarith [norm_nonneg (U h xi), hsq]
+  calc ‖gammaOrbitVector U xi d‖ ≤ ‖U (Real.log d) xi‖ + ‖U (-Real.log d) xi‖ :=
+        norm_add_le _ _
+    _ = 2 := by rw [hunit, hunit]; norm_num
+
+/-- **The damped orbit synthesis is a Hilbert vector.**  Together with `not_summable_gammaOrbit`
+this is the card's domain dichotomy: the undamped synthesis leaves the carrier, the canonically
+damped one does not. -/
+theorem summable_gammaDampedOrbit [CompleteSpace K] {U : ℝ → K →L[ℂ] K} {xi : K}
+    (hgram : ∀ h k : ℝ, (inner ℂ (U h xi) (U k xi) : ℂ).re = gammaCyclicCovariance (h - k))
+    {σ : ℝ} (hσ : 1 < σ) :
+    Summable (fun d : ℕ =>
+      ((gammaOrbitWeight σ d * gammaDampingWeight d : ℝ) : ℂ) • gammaOrbitVector U xi d) := by
+  refine Summable.of_norm_bounded ((summable_gammaDampedWeight hσ).mul_left 2) fun d => ?_
+  have hnn : 0 ≤ gammaOrbitWeight σ d * gammaDampingWeight d :=
+    mul_nonneg (gammaOrbitWeight_nonneg σ d) (gammaDampingWeight_nonneg d)
+  rw [norm_smul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hnn]
+  calc (gammaOrbitWeight σ d * gammaDampingWeight d) * ‖gammaOrbitVector U xi d‖
+      ≤ (gammaOrbitWeight σ d * gammaDampingWeight d) * 2 :=
+        mul_le_mul_of_nonneg_left (norm_gammaOrbitVector_le hgram d) hnn
+    _ = 2 * (gammaOrbitWeight σ d * gammaDampingWeight d) := by ring
 
 end
 

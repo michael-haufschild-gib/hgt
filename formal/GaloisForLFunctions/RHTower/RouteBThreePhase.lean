@@ -27,95 +27,12 @@ the two surfaces it consumes:
 -/
 import Mathlib
 import GaloisForLFunctions.RHTower.RouteBSublevel
+import GaloisForLFunctions.RHTower.RouteBSublevel
 
 namespace RHTower
 namespace Sublevel
 
 open MeasureTheory
-
-/-- **The shifted-band covering step, isolated.**  For `ψ ∈ [0, 2π)` the
-band set is covered by four arccos intervals, so its measure is at most
-`4·(arccos u₁ − arccos u₂)` — the raw gap form that both the √-law and the
-transversal linear law specialize. -/
-theorem cos_band_measure_shifted_gap {u₁ u₂ ψ : ℝ} (h1 : -1 ≤ u₁)
-    (h12 : u₁ ≤ u₂) (h2 : u₂ ≤ 1) (hψ0 : 0 ≤ ψ) (hψ2 : ψ < 2 * Real.pi) :
-    volume {φ : ℝ | φ ∈ Set.Icc 0 (2 * Real.pi) ∧
-        Real.cos (φ - ψ) ∈ Set.Icc u₁ u₂}
-      ≤ ENNReal.ofReal (4 * (Real.arccos u₁ - Real.arccos u₂)) := by
-  set θ₁ := Real.arccos u₂ with hθ₁
-  set θ₂ := Real.arccos u₁ with hθ₂
-  set L := θ₂ - θ₁ with hLdef
-  have hcover : {φ : ℝ | φ ∈ Set.Icc 0 (2 * Real.pi) ∧
-        Real.cos (φ - ψ) ∈ Set.Icc u₁ u₂}
-      ⊆ Set.Icc (θ₁ + ψ) (θ₂ + ψ)
-        ∪ Set.Icc (2 * Real.pi - θ₂ + ψ) (2 * Real.pi - θ₁ + ψ)
-        ∪ Set.Icc (θ₁ + ψ - 2 * Real.pi) (θ₂ + ψ - 2 * Real.pi)
-        ∪ Set.Icc (-θ₂ + ψ) (-θ₁ + ψ) := by
-    rintro φ ⟨⟨hφ0, hφ2π⟩, hband⟩
-    rcases le_or_gt ψ φ with hle | hgt
-    · have hmem : φ - ψ ∈ {θ : ℝ | θ ∈ Set.Icc 0 (2 * Real.pi) ∧
-          Real.cos θ ∈ Set.Icc u₁ u₂} := ⟨⟨by linarith, by linarith⟩, hband⟩
-      rcases cos_band_subset h1 h12 h2 hmem with hI | hI
-      · exact Or.inl (Or.inl (Or.inl ⟨by linarith [hI.1], by linarith [hI.2]⟩))
-      · exact Or.inl (Or.inl (Or.inr ⟨by linarith [hI.1], by linarith [hI.2]⟩))
-    · have hshift : Real.cos (φ - ψ + 2 * Real.pi) = Real.cos (φ - ψ) :=
-        Real.cos_add_two_pi _
-      have hmem : φ - ψ + 2 * Real.pi ∈ {θ : ℝ | θ ∈ Set.Icc 0 (2 * Real.pi) ∧
-          Real.cos θ ∈ Set.Icc u₁ u₂} := by
-        refine ⟨⟨by linarith, by linarith⟩, ?_⟩
-        rw [hshift]
-        exact hband
-      rcases cos_band_subset h1 h12 h2 hmem with hI | hI
-      · exact Or.inl (Or.inr ⟨by linarith [hI.1], by linarith [hI.2]⟩)
-      · exact Or.inr ⟨by linarith [hI.1], by linarith [hI.2]⟩
-  have hL0 : 0 ≤ L := by
-    by_contra hlt
-    push Not at hlt
-    have hlt' : Real.arccos u₁ < Real.arccos u₂ := by
-      have := hLdef
-      linarith
-    have := Real.strictAntiOn_cos
-      ⟨Real.arccos_nonneg u₁, Real.arccos_le_pi u₁⟩
-      ⟨Real.arccos_nonneg u₂, Real.arccos_le_pi u₂⟩ hlt'
-    rw [Real.cos_arccos h1 (by linarith), Real.cos_arccos (by linarith) h2] at this
-    linarith
-  calc volume {φ : ℝ | φ ∈ Set.Icc 0 (2 * Real.pi) ∧
-        Real.cos (φ - ψ) ∈ Set.Icc u₁ u₂}
-      ≤ volume (Set.Icc (θ₁ + ψ) (θ₂ + ψ)
-        ∪ Set.Icc (2 * Real.pi - θ₂ + ψ) (2 * Real.pi - θ₁ + ψ)
-        ∪ Set.Icc (θ₁ + ψ - 2 * Real.pi) (θ₂ + ψ - 2 * Real.pi)
-        ∪ Set.Icc (-θ₂ + ψ) (-θ₁ + ψ)) := measure_mono hcover
-    _ ≤ volume (Set.Icc (θ₁ + ψ) (θ₂ + ψ)
-        ∪ Set.Icc (2 * Real.pi - θ₂ + ψ) (2 * Real.pi - θ₁ + ψ)
-        ∪ Set.Icc (θ₁ + ψ - 2 * Real.pi) (θ₂ + ψ - 2 * Real.pi))
-        + volume (Set.Icc (-θ₂ + ψ) (-θ₁ + ψ)) := measure_union_le _ _
-    _ ≤ (volume (Set.Icc (θ₁ + ψ) (θ₂ + ψ)
-        ∪ Set.Icc (2 * Real.pi - θ₂ + ψ) (2 * Real.pi - θ₁ + ψ))
-        + volume (Set.Icc (θ₁ + ψ - 2 * Real.pi) (θ₂ + ψ - 2 * Real.pi)))
-        + volume (Set.Icc (-θ₂ + ψ) (-θ₁ + ψ)) := by
-        gcongr
-        exact measure_union_le _ _
-    _ ≤ ((volume (Set.Icc (θ₁ + ψ) (θ₂ + ψ))
-        + volume (Set.Icc (2 * Real.pi - θ₂ + ψ) (2 * Real.pi - θ₁ + ψ)))
-        + volume (Set.Icc (θ₁ + ψ - 2 * Real.pi) (θ₂ + ψ - 2 * Real.pi)))
-        + volume (Set.Icc (-θ₂ + ψ) (-θ₁ + ψ)) := by
-        gcongr
-        exact measure_union_le _ _
-    _ = ((ENNReal.ofReal L + ENNReal.ofReal L) + ENNReal.ofReal L)
-        + ENNReal.ofReal L := by
-        have e1 : θ₂ + ψ - (θ₁ + ψ) = θ₂ - θ₁ := by ring
-        have e2 : 2 * Real.pi - θ₁ + ψ - (2 * Real.pi - θ₂ + ψ) = θ₂ - θ₁ := by
-          ring
-        have e3 : θ₂ + ψ - 2 * Real.pi - (θ₁ + ψ - 2 * Real.pi) = θ₂ - θ₁ := by
-          ring
-        have e4 : -θ₁ + ψ - (-θ₂ + ψ) = θ₂ - θ₁ := by ring
-        rw [Real.volume_Icc, Real.volume_Icc, Real.volume_Icc, Real.volume_Icc,
-          e1, e2, e3, e4]
-    _ = ENNReal.ofReal (4 * L) := by
-        rw [← ENNReal.ofReal_add hL0 hL0, ← ENNReal.ofReal_add (by linarith) hL0,
-          ← ENNReal.ofReal_add (by linarith) hL0]
-        congr 1
-        ring
 
 /-- **The transversal arccos-gap inequality** (multiplied, division-free
 form): `(arccos u₁ − arccos u₂)·(√(1−u₁²) + √(1−u₂²)) ≤ π·(u₂ − u₁)`.

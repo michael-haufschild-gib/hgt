@@ -107,10 +107,13 @@ using the positive square-root law.  Every dependency is closed.
 - The anti-linear operator is constructed from local leaf orientation, complex structure, and
   conjugation; no zero of Xi occurs.
 - Positivity is pointwise algebra, not Weil positivity transported from the divisor.
-- Local conjugation does **not** provide the forbidden global real-valued arithmetic cohomology.
-  Deninger's obstruction still forces a nontrivial global \(K_{\mathbb R}\)/Steinberg descent
-  twist.  Globalizing the local atoms with untwisted real coefficients would recreate the
-  no-real-cohomology contradiction.
+- Local conjugation gives an additional real form.  Deninger's theorem
+  does not exclude this on the isolated \(\mathbb Q\) object; it excludes
+  a real-valued theory functorial over all number fields.  The local odd
+  \(K_{\mathbb R}\) operator is therefore admissible for the
+  \(\zeta_{\mathbb Q}\)-to-RH path.  A nontrivial
+  \(K_{\mathbb R}\)/Steinberg descent twist is still required for the
+  all-number-fields extension.
 - Centering is not an assumption: the exponent \(1/2\) is forced by the proved weight-one metric
   law.
 

@@ -63,6 +63,72 @@ private theorem natCast_cpow_neg_pow (n : ℕ) (hn : 1 ≤ n) (s : ℂ) (k : ℕ
   congr 1
   rw [hlognk]; ring
 
+/-- **An integral arithmetic function with infinite support has no summable L-series on the closed
+left half-plane.**  Each nonzero coefficient is a nonzero integer, so `‖a n‖ ≥ 1`, while
+`n ^ Re z ≤ 1` there; infinitely many terms therefore have norm at least one and cannot tend to
+zero.  By the `LSeries` convention the value is `0`. -/
+theorem LSeries_eq_zero_of_re_nonpos_of_int_of_infinite_support
+    {a : ArithmeticFunction ℂ} (hint : ∀ n, ∃ k : ℤ, a n = (k : ℂ))
+    (hinf : (Function.support (fun n => a n)).Infinite)
+    {z : ℂ} (hz : z.re ≤ 0) : LSeries (fun n => a n) z = 0 := by
+  apply LSeries.eq_zero_of_not_LSeriesSummable
+  intro hsum
+  have hbound : ∀ n ∈ Function.support (fun n => a n),
+      (1 : ℝ) ≤ ‖LSeries.term (fun n => a n) z n‖ := by
+    intro n hn
+    have hane : a n ≠ 0 := hn
+    have hn0 : n ≠ 0 := by rintro rfl; exact hane a.map_zero
+    obtain ⟨k, hk⟩ := hint n
+    have hk0 : k ≠ 0 := by rintro rfl; exact hane (by rw [hk]; norm_num)
+    have hanorm : (1 : ℝ) ≤ ‖a n‖ := by
+      rw [hk, Complex.norm_intCast]; exact_mod_cast Int.one_le_abs hk0
+    have hnrepos : (0 : ℝ) < (n : ℝ) ^ z.re :=
+      Real.rpow_pos_of_pos (by exact_mod_cast Nat.pos_of_ne_zero hn0) _
+    have hnre1 : (n : ℝ) ^ z.re ≤ 1 :=
+      Real.rpow_le_one_of_one_le_of_nonpos
+        (by exact_mod_cast Nat.one_le_iff_ne_zero.mpr hn0) hz
+    rw [LSeries.norm_term_eq, if_neg hn0, one_le_div hnrepos]
+    exact hnre1.trans hanorm
+  have htend : Tendsto (LSeries.term (fun n => a n) z) atTop (nhds 0) :=
+    hsum.tendsto_atTop_zero
+  have hev1 : ∀ᶠ n in atTop, ‖LSeries.term (fun n => a n) z n‖ < 1 := by
+    have hmem : ∀ᶠ n in atTop, LSeries.term (fun n => a n) z n ∈ Metric.ball (0 : ℂ) 1 :=
+      htend.eventually_mem (Metric.ball_mem_nhds 0 one_pos)
+    filter_upwards [hmem] with n hn
+    simpa [Metric.mem_ball, dist_zero_right] using hn
+  obtain ⟨M, hM⟩ := eventually_atTop.mp hev1
+  obtain ⟨b, hbS, hMb⟩ := hinf.exists_gt M
+  exact absurd (hbound b hbS) (not_le.mpr (hM b hMb.le))
+
+/-- **From vanishing on the closed right half-plane to vanishing everywhere.**  If `f` is the
+L-series of `a` and vanishes for `1 ≤ Re z`, then the series vanishes along the real axis at
+infinity; with infinite coefficient support the only alternative to identically-zero coefficients
+is an infinite abscissa of absolute convergence, and then `f` vanishes identically. -/
+theorem eq_zero_of_int_of_infinite_support_of_eq_zero_of_one_le_re
+    {f : ℂ → ℂ} {a : ArithmeticFunction ℂ}
+    (hrep : ∀ s, f s = LSeries (fun n => a n) s)
+    (hinf : (Function.support (fun n => a n)).Infinite)
+    (hge1 : ∀ z : ℂ, 1 ≤ z.re → f z = 0) :
+    ∀ s, f s = 0 := by
+have hev : (fun x : ℝ => LSeries (fun n => a n) x) =ᶠ[atTop] 0 := by
+  filter_upwards [eventually_ge_atTop (1 : ℝ)] with x hx
+  simp only [Pi.zero_apply]
+  rw [← hrep (x : ℂ)]
+  exact hge1 (x : ℂ) (by rw [Complex.ofReal_re]; exact hx)
+rcases LSeries_eventually_eq_zero_iff'.mp hev with hall | htop
+· exfalso
+  apply hinf
+  have hsupp : Function.support (fun n => a n) = ∅ := by
+    ext n
+    simp only [Function.mem_support, Set.mem_empty_iff_false, iff_false, not_not]
+    rcases eq_or_ne n 0 with rfl | hn0
+    · exact a.map_zero
+    · exact hall n hn0
+  rw [hsupp]; exact Set.finite_empty
+· intro z
+  rw [hrep z]
+  exact congrFun (LSeries_eq_zero_of_abscissaOfAbsConv_eq_top htop) z
+
 /-- **Integrality forces finite support or collapse.**  A member of the integral multiplicative
 functional-equation class is either identically zero or is the `L`-series of an integer-valued
 multiplicative arithmetic function with **finite** coefficient support.
@@ -84,60 +150,15 @@ theorem integralMultiplicativeFEClass_finite_or_zero {f : ℂ → ℂ}
   · left
     have hinf : (Function.support (fun n => a n)).Infinite := hfin
     -- `f` vanishes on the closed left half-plane `Re s ≤ 0` by non-summability.
-    have hle0 : ∀ z : ℂ, z.re ≤ 0 → f z = 0 := by
-      intro z hz
+    have hle0 : ∀ z : ℂ, z.re ≤ 0 → f z = 0 := fun z hz => by
       rw [hrep z]
-      apply LSeries.eq_zero_of_not_LSeriesSummable
-      intro hsum
-      have hbound : ∀ n ∈ Function.support (fun n => a n),
-          (1 : ℝ) ≤ ‖LSeries.term (fun n => a n) z n‖ := by
-        intro n hn
-        have hane : a n ≠ 0 := hn
-        have hn0 : n ≠ 0 := by rintro rfl; exact hane a.map_zero
-        obtain ⟨k, hk⟩ := hint n
-        have hk0 : k ≠ 0 := by rintro rfl; exact hane (by rw [hk]; norm_num)
-        have hanorm : (1 : ℝ) ≤ ‖a n‖ := by
-          rw [hk, Complex.norm_intCast]; exact_mod_cast Int.one_le_abs hk0
-        have hnrepos : (0 : ℝ) < (n : ℝ) ^ z.re :=
-          Real.rpow_pos_of_pos (by exact_mod_cast Nat.pos_of_ne_zero hn0) _
-        have hnre1 : (n : ℝ) ^ z.re ≤ 1 :=
-          Real.rpow_le_one_of_one_le_of_nonpos
-            (by exact_mod_cast Nat.one_le_iff_ne_zero.mpr hn0) hz
-        rw [LSeries.norm_term_eq, if_neg hn0, one_le_div hnrepos]
-        exact hnre1.trans hanorm
-      have htend : Tendsto (LSeries.term (fun n => a n) z) atTop (nhds 0) :=
-        hsum.tendsto_atTop_zero
-      have hev1 : ∀ᶠ n in atTop, ‖LSeries.term (fun n => a n) z n‖ < 1 := by
-        have hmem : ∀ᶠ n in atTop, LSeries.term (fun n => a n) z n ∈ Metric.ball (0 : ℂ) 1 :=
-          htend.eventually_mem (Metric.ball_mem_nhds 0 one_pos)
-        filter_upwards [hmem] with n hn
-        simpa [Metric.mem_ball, dist_zero_right] using hn
-      obtain ⟨M, hM⟩ := eventually_atTop.mp hev1
-      obtain ⟨b, hbS, hMb⟩ := hinf.exists_gt M
-      exact absurd (hbound b hbS) (not_le.mpr (hM b hMb.le))
+      exact LSeries_eq_zero_of_re_nonpos_of_int_of_infinite_support hint hinf hz
     -- The functional equation transports vanishing to the right half-plane `Re s ≥ 1`.
     have hge1 : ∀ z : ℂ, 1 ≤ z.re → f z = 0 := by
       intro z hz
       rw [hFE z, hle0 (1 - z) (by rw [Complex.sub_re, Complex.one_re]; linarith), mul_zero]
     -- Hence `LSeries a` vanishes for all large real arguments.
-    have hev : (fun x : ℝ => LSeries (fun n => a n) x) =ᶠ[atTop] 0 := by
-      filter_upwards [eventually_ge_atTop (1 : ℝ)] with x hx
-      simp only [Pi.zero_apply]
-      rw [← hrep (x : ℂ)]
-      exact hge1 (x : ℂ) (by rw [Complex.ofReal_re]; exact hx)
-    rcases LSeries_eventually_eq_zero_iff'.mp hev with hall | htop
-    · exfalso
-      apply hinf
-      have hsupp : Function.support (fun n => a n) = ∅ := by
-        ext n
-        simp only [Function.mem_support, Set.mem_empty_iff_false, iff_false, not_not]
-        rcases eq_or_ne n 0 with rfl | hn0
-        · exact a.map_zero
-        · exact hall n hn0
-      rw [hsupp]; exact Set.finite_empty
-    · intro z
-      rw [hrep z]
-      exact congrFun (LSeries_eq_zero_of_abscissaOfAbsConv_eq_top htop) z
+    exact eq_zero_of_int_of_infinite_support_of_eq_zero_of_one_le_re hrep hinf hge1
 
 /-- **Finite-support multiplicative series factor through prime columns.**  If `a` is multiplicative
 with finite coefficient support, then `LSeries a` is of Ostrowski column form: a finite product

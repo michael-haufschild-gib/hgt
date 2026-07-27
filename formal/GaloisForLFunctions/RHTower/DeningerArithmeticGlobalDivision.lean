@@ -11,6 +11,10 @@ At each Xi zero, finite-order jet vanishing removes the numerator zero, while th
 divided chain removes the denominator zero with exactly the same multiplicity.  Meromorphic
 normal-form extension fills all removable values simultaneously.
 
+The removable-singularity step is pointwise and needs only the multiplicity-bounded jets *at the
+point in question*, so it is stated that way (`..._analyticAt_of_localJets`); global divisibility
+is the specialisation at which every jet vanishes.
+
 Consequently the Xi differential range is exactly the kernel of the continuous all-jet map and is
 closed in the compact-open topology.  This proves `[DAC_GLOBAL_JET_DIVISION]` and
 `[DAC_CLOSED_XI_RANGE]` unconditionally; global jet interpolation remains separate.
@@ -40,13 +44,20 @@ def deningerNormalizedXiQuotient
   toMeromorphicNFOn (deningerRawXiQuotient F) Set.univ
 
 /--
-Vanishing of all multiplicity-bounded Xi jets makes the normalized quotient entire.
+Local removable-singularity theorem for the normalized Xi quotient.
+
+Only the multiplicity-bounded jets at the selected point are required.  When the point is not an
+Xi zero, the raw quotient is already analytic there.
 -/
-theorem deningerNormalizedXiQuotient_analytic
-    (F : DeningerCompactOpenEntire)
-    (hjets : deningerCompactOpenAllJets F = 0) :
-    AnalyticOnNhd ℂ (deningerNormalizedXiQuotient F) Set.univ := by
-  intro z hz
+theorem deningerNormalizedXiQuotient_analyticAt_of_localJets
+    (F : DeningerCompactOpenEntire) (z : ℂ)
+    (hjets :
+      ∀ (rho : XiDivisorSupport),
+        xiSpectralPointSupport rho = z →
+          ∀ k : DeningerArithmeticJetIndex rho,
+            deningerCompactOpenJet
+                (xiSpectralPointSupport rho) k F = 0) :
+    AnalyticAt ℂ (deningerNormalizedXiQuotient F) z := by
   have hrawMer := deningerRawXiQuotient_meromorphic F
   by_cases hXi : XiC z = 0
   · obtain ⟨q, hq⟩ :=
@@ -59,10 +70,10 @@ theorem deningerNormalizedXiQuotient_analytic
         ∀ k < m, iteratedDeriv k (F : ℂ → ℂ) z = 0 := by
       intro k hk
       have hcoord :=
-        congrFun (congrFun hjets q.1) (⟨k, hk⟩ : DeningerArithmeticJetIndex q.1)
+        hjets q.1 hsupp
+          (⟨k, hk⟩ : DeningerArithmeticJetIndex q.1)
       simpa only [
-        deningerCompactOpenAllJets_apply,
-        Pi.zero_apply,
+        deningerCompactOpenJet_apply,
         hsupp] using hcoord
     have horder :
         (m : ℕ∞) ≤ analyticOrderAt (F : ℂ → ℂ) z := by
@@ -92,7 +103,8 @@ theorem deningerNormalizedXiQuotient_analytic
     have hnormalized_raw :
         deningerNormalizedXiQuotient F =ᶠ[𝓝[≠] z]
           deningerRawXiQuotient F :=
-      hrawMer.toMeromorphicNFOn_eq_self_on_nhdsNE hz
+      hrawMer.toMeromorphicNFOn_eq_self_on_nhdsNE
+        (Set.mem_univ z)
     have hraw_GH :
         deningerRawXiQuotient F =ᶠ[𝓝[≠] z]
           fun w => G w / H w := by
@@ -110,7 +122,8 @@ theorem deningerNormalizedXiQuotient_analytic
     have hNF :
         MeromorphicNFAt (deningerNormalizedXiQuotient F) z :=
       meromorphicNFOn_toMeromorphicNFOn
-        (deningerRawXiQuotient F) Set.univ hz
+        (deningerRawXiQuotient F) Set.univ
+        (Set.mem_univ z)
     have hnear :
         deningerNormalizedXiQuotient F =ᶠ[𝓝 z]
           fun w => G w / H w :=
@@ -123,13 +136,27 @@ theorem deningerNormalizedXiQuotient_analytic
         (XiC_analytic z (Set.mem_univ z)) hXi
     have hlocal :=
       toMeromorphicNFOn_eq_toMeromorphicNFAt_on_nhds
-        hrawMer hz
+        hrawMer (Set.mem_univ z)
     have heq :
         toMeromorphicNFAt (deningerRawXiQuotient F) z =
           deningerRawXiQuotient F :=
       toMeromorphicNFAt_eq_self.mpr hrawAn.meromorphicNFAt
     rw [heq] at hlocal
     exact hrawAn.congr hlocal.symm
+
+/--
+Vanishing of all multiplicity-bounded Xi jets makes the normalized quotient entire.
+-/
+theorem deningerNormalizedXiQuotient_analytic
+    (F : DeningerCompactOpenEntire)
+    (hjets : deningerCompactOpenAllJets F = 0) :
+    AnalyticOnNhd ℂ (deningerNormalizedXiQuotient F) Set.univ := by
+  intro z _
+  refine deningerNormalizedXiQuotient_analyticAt_of_localJets F z ?_
+  intro rho _ k
+  have hcoord := congrFun (congrFun hjets rho) k
+  simpa only [deningerCompactOpenAllJets_apply, deningerCompactOpenJet_apply, Pi.zero_apply]
+    using hcoord
 
 /-- Exact entire quotient identity after all removable values have been filled. -/
 theorem deningerNormalizedXiQuotient_mul_XiC

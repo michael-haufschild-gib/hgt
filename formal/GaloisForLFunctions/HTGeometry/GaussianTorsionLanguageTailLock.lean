@@ -2237,117 +2237,28 @@ theorem norm_windowShift_descFactorial_prod_le_centeredRadius
         rw [flatOrder_sum]
         exact horder)
 
-/-- Every grouped bounded-pattern weight has a polynomial bound which is uniform over the
-pattern.  The only window dependence is the explicit cardinal factor `M^D`; no coefficient-level
-constant depends on the offsets. -/
-theorem norm_eval_polynomialPatternWeightPoly_le
-    {n D K τ M q H : ℕ} (Q : MvPolynomial (Fin (n + 2)) ℂ)
-    (p : Fin M → Fin (D + 1)) (hKq : K ≤ q) (hq : 1 ≤ q)
-    (horder : ∀ m : ↥(polynomialPatternJetGroup n D K τ Q p),
-      jetMonomialOrder n m.1 ≤ H) :
+/-- **Weight-polynomial evaluation bound from an assignment count and a window radius.**  Given any
+bound `Acard` on the number of atom pattern assignments and any radius `W` for which every
+descending-factorial product is at most `(q + W)^H`, the pattern weight polynomial evaluated at `q`
+is at most `mass(Q) · Acard · (q + W)^H`.  The coefficient mass factors out of the jet group sum and
+each inner sum has at most `Acard` terms. -/
+theorem norm_eval_polynomialPatternWeightPoly_le_of_bounds
+    {n D K τ M q H Acard W : ℕ} (Q : MvPolynomial (Fin (n + 2)) ℂ)
+    (p : Fin M → Fin (D + 1)) (hKq : K ≤ q)
+    (hcard : (atomPatternAssignments p).card ≤ Acard)
+    (hterm : ∀ m : ↥(polynomialPatternJetGroup n D K τ Q p),
+      ∀ g ∈ atomPatternAssignments p,
+        ‖∏ t : Fin (jetMonomialDegree n m.1),
+            ((windowShift q K (g (polynomialPatternJetCast m t) : ℕ)).descFactorial
+              (flatOrder (fun j => m.1 j.succ) t) : ℂ)‖ ≤ (((q + W) ^ H : ℕ) : ℝ)) :
     ‖(polynomialPatternWeightPoly n D K τ Q p).eval (q : ℂ)‖ ≤
-      magnitudeCoefficientMass Q * (((M ^ D : ℕ) : ℝ)) *
-        (((q + M) ^ H : ℕ) : ℝ) := by
-  classical
-  rw [eval_polynomialPatternWeightPoly n D K τ Q p hKq]
-  let A : ℝ := (((M ^ D : ℕ) : ℝ))
-  let X : ℝ := (((q + M) ^ H : ℕ) : ℝ)
-  have hcard : (atomPatternAssignments p).card ≤ M ^ D := by
-    calc
-      (atomPatternAssignments p).card ≤
-          Fintype.card (Fin D → Fin M) := Finset.card_le_univ _
-      _ = M ^ D := by simp
-  have hinner : ∀ m : ↥(polynomialPatternJetGroup n D K τ Q p),
-      ‖∑ g ∈ atomPatternAssignments p,
-          ∏ t : Fin (jetMonomialDegree n m.1),
-            ((windowShift q K (g (polynomialPatternJetCast m t) : ℕ)).descFactorial
-              (flatOrder (fun j => m.1 j.succ) t) : ℂ)‖ ≤ A * X := by
-    intro m
-    calc
-      ‖∑ g ∈ atomPatternAssignments p,
-          ∏ t : Fin (jetMonomialDegree n m.1),
-            ((windowShift q K (g (polynomialPatternJetCast m t) : ℕ)).descFactorial
-              (flatOrder (fun j => m.1 j.succ) t) : ℂ)‖
-          ≤ ∑ g ∈ atomPatternAssignments p,
-              ‖∏ t : Fin (jetMonomialDegree n m.1),
-                ((windowShift q K (g (polynomialPatternJetCast m t) : ℕ)).descFactorial
-                  (flatOrder (fun j => m.1 j.succ) t) : ℂ)‖ := norm_sum_le _ _
-      _ ≤ ∑ _g ∈ atomPatternAssignments p, X := by
-        apply Finset.sum_le_sum
-        intro g _hg
-        exact norm_windowShift_descFactorial_prod_le m g hKq hq (horder m)
-      _ = ((atomPatternAssignments p).card : ℝ) * X := by simp
-      _ ≤ A * X := by
-        have hX : 0 ≤ (((q + M) ^ H : ℕ) : ℝ) := Nat.cast_nonneg _
-        exact mul_le_mul_of_nonneg_right (by
-          dsimp [A]
-          exact_mod_cast hcard) hX
-  have hcoeff :
-      (∑ m ∈ (polynomialPatternJetGroup n D K τ Q p).attach,
-        ‖MvPolynomial.coeff m.1 Q‖) ≤ magnitudeCoefficientMass Q := by
-    calc
-      (∑ m ∈ (polynomialPatternJetGroup n D K τ Q p).attach,
-          ‖MvPolynomial.coeff m.1 Q‖) =
-          ∑ m ∈ polynomialPatternJetGroup n D K τ Q p,
-            ‖MvPolynomial.coeff m Q‖ :=
-        by simpa using
-          (Finset.sum_attach (polynomialPatternJetGroup n D K τ Q p)
-            (fun m => ‖MvPolynomial.coeff m Q‖))
-      _ ≤ ∑ m ∈ Q.support, ‖MvPolynomial.coeff m Q‖ := by
-        apply Finset.sum_le_sum_of_subset_of_nonneg
-        · exact Finset.filter_subset _ _
-        · intro m _hm _hnot
-          positivity
-      _ = magnitudeCoefficientMass Q := by rfl
-  calc
-    ‖∑ m ∈ (polynomialPatternJetGroup n D K τ Q p).attach,
-        MvPolynomial.coeff m.1 Q *
-          ∑ g ∈ atomPatternAssignments p,
-            ∏ t : Fin (jetMonomialDegree n m.1),
-              ((windowShift q K (g (polynomialPatternJetCast m t) : ℕ)).descFactorial
-                (flatOrder (fun j => m.1 j.succ) t) : ℂ)‖
-        ≤ ∑ m ∈ (polynomialPatternJetGroup n D K τ Q p).attach,
-            ‖MvPolynomial.coeff m.1 Q *
-              ∑ g ∈ atomPatternAssignments p,
-                ∏ t : Fin (jetMonomialDegree n m.1),
-                  ((windowShift q K
-                    (g (polynomialPatternJetCast m t) : ℕ)).descFactorial
-                    (flatOrder (fun j => m.1 j.succ) t) : ℂ)‖ := norm_sum_le _ _
-    _ ≤ ∑ m ∈ (polynomialPatternJetGroup n D K τ Q p).attach,
-          ‖MvPolynomial.coeff m.1 Q‖ * (A * X) := by
-      apply Finset.sum_le_sum
-      intro m _hm
-      rw [norm_mul]
-      exact mul_le_mul_of_nonneg_left (hinner m) (norm_nonneg _)
-    _ = (∑ m ∈ (polynomialPatternJetGroup n D K τ Q p).attach,
-          ‖MvPolynomial.coeff m.1 Q‖) * (A * X) := by
-      rw [Finset.sum_mul]
-    _ ≤ magnitudeCoefficientMass Q * (A * X) :=
-      mul_le_mul_of_nonneg_right hcoeff (by dsimp [A, X]; positivity)
-    _ = magnitudeCoefficientMass Q * (((M ^ D : ℕ) : ℝ)) *
-          (((q + M) ^ H : ℕ) : ℝ) := by
-      dsimp [A, X]
-      ring
+      magnitudeCoefficientMass Q * ((Acard : ℕ) : ℝ) *
+        (((q + W) ^ H : ℕ) : ℝ) := by
 
-/-- The grouped weight of a degree-`D` pattern is bounded using only its centered support radius.
-The ambient window cardinality has disappeared: the assignment count is at most `D^D`, because
-every labelled atom must land in the at-most-`D` active support positions. -/
-theorem norm_eval_polynomialPatternWeightPoly_le_centeredRadius
-    {n D K τ M q H : ℕ} (Q : MvPolynomial (Fin (n + 2)) ℂ)
-    (p : Fin M → Fin (D + 1))
-    (hcount : (∑ r, (p r : ℕ)) = D)
-    (hKq : K ≤ q) (hq : 1 ≤ q)
-    (horder : ∀ m : ↥(polynomialPatternJetGroup n D K τ Q p),
-      jetMonomialOrder n m.1 ≤ H) :
-    ‖(polynomialPatternWeightPoly n D K τ Q p).eval (q : ℂ)‖ ≤
-      magnitudeCoefficientMass Q * (((D ^ D : ℕ) : ℝ)) *
-        (((q + centeredPolynomialPatternRadius K p) ^ H : ℕ) : ℝ) := by
   classical
   rw [eval_polynomialPatternWeightPoly n D K τ Q p hKq]
-  let A : ℝ := (((D ^ D : ℕ) : ℝ))
-  let X : ℝ := (((q + centeredPolynomialPatternRadius K p) ^ H : ℕ) : ℝ)
-  have hcard : (atomPatternAssignments p).card ≤ D ^ D :=
-    atomPatternAssignments_card_le_pow_count p hcount
+  let A : ℝ := ((Acard : ℕ) : ℝ)
+  let X : ℝ := (((q + W) ^ H : ℕ) : ℝ)
   have hinner : ∀ m : ↥(polynomialPatternJetGroup n D K τ Q p),
       ‖∑ g ∈ atomPatternAssignments p,
           ∏ t : Fin (jetMonomialDegree n m.1),
@@ -2366,13 +2277,10 @@ theorem norm_eval_polynomialPatternWeightPoly_le_centeredRadius
       _ ≤ ∑ _g ∈ atomPatternAssignments p, X := by
         apply Finset.sum_le_sum
         intro g hg
-        exact norm_windowShift_descFactorial_prod_le_centeredRadius
-          m g hg hKq hq (horder m)
+        exact hterm m g hg
       _ = ((atomPatternAssignments p).card : ℝ) * X := by simp
       _ ≤ A * X := by
-        have hX : 0 ≤
-            (((q + centeredPolynomialPatternRadius K p) ^ H : ℕ) : ℝ) :=
-          Nat.cast_nonneg _
+        have hX : 0 ≤ (((q + W) ^ H : ℕ) : ℝ) := Nat.cast_nonneg _
         exact mul_le_mul_of_nonneg_right (by
           dsimp [A]
           exact_mod_cast hcard) hX
@@ -2418,10 +2326,47 @@ theorem norm_eval_polynomialPatternWeightPoly_le_centeredRadius
       rw [Finset.sum_mul]
     _ ≤ magnitudeCoefficientMass Q * (A * X) :=
       mul_le_mul_of_nonneg_right hcoeff (by dsimp [A, X]; positivity)
-    _ = magnitudeCoefficientMass Q * (((D ^ D : ℕ) : ℝ)) *
-          (((q + centeredPolynomialPatternRadius K p) ^ H : ℕ) : ℝ) := by
+    _ = magnitudeCoefficientMass Q * ((Acard : ℕ) : ℝ) *
+          (((q + W) ^ H : ℕ) : ℝ) := by
       dsimp [A, X]
       ring
+
+/-- Every grouped bounded-pattern weight has a polynomial bound which is uniform over the
+pattern.  The only window dependence is the explicit cardinal factor `M^D`; no coefficient-level
+constant depends on the offsets. -/
+theorem norm_eval_polynomialPatternWeightPoly_le
+    {n D K τ M q H : ℕ} (Q : MvPolynomial (Fin (n + 2)) ℂ)
+    (p : Fin M → Fin (D + 1)) (hKq : K ≤ q) (hq : 1 ≤ q)
+    (horder : ∀ m : ↥(polynomialPatternJetGroup n D K τ Q p),
+      jetMonomialOrder n m.1 ≤ H) :
+    ‖(polynomialPatternWeightPoly n D K τ Q p).eval (q : ℂ)‖ ≤
+      magnitudeCoefficientMass Q * (((M ^ D : ℕ) : ℝ)) *
+        (((q + M) ^ H : ℕ) : ℝ) := by
+  refine norm_eval_polynomialPatternWeightPoly_le_of_bounds (Acard := M ^ D) (W := M)
+    Q p hKq ?_ (fun m g _hg => norm_windowShift_descFactorial_prod_le m g hKq hq (horder m))
+  calc
+    (atomPatternAssignments p).card ≤
+        Fintype.card (Fin D → Fin M) := Finset.card_le_univ _
+    _ = M ^ D := by simp
+
+/-- The grouped weight of a degree-`D` pattern is bounded using only its centered support radius.
+The ambient window cardinality has disappeared: the assignment count is at most `D^D`, because
+every labelled atom must land in the at-most-`D` active support positions. -/
+theorem norm_eval_polynomialPatternWeightPoly_le_centeredRadius
+    {n D K τ M q H : ℕ} (Q : MvPolynomial (Fin (n + 2)) ℂ)
+    (p : Fin M → Fin (D + 1))
+    (hcount : (∑ r, (p r : ℕ)) = D)
+    (hKq : K ≤ q) (hq : 1 ≤ q)
+    (horder : ∀ m : ↥(polynomialPatternJetGroup n D K τ Q p),
+      jetMonomialOrder n m.1 ≤ H) :
+    ‖(polynomialPatternWeightPoly n D K τ Q p).eval (q : ℂ)‖ ≤
+      magnitudeCoefficientMass Q * (((D ^ D : ℕ) : ℝ)) *
+        (((q + centeredPolynomialPatternRadius K p) ^ H : ℕ) : ℝ) := by
+  refine norm_eval_polynomialPatternWeightPoly_le_of_bounds (Acard := D ^ D)
+    (W := centeredPolynomialPatternRadius K p) Q p hKq
+    (atomPatternAssignments_card_le_pow_count p hcount)
+    (fun m g hg =>
+      norm_windowShift_descFactorial_prod_le_centeredRadius m g hg hKq hq (horder m))
 
 /-- The maximal jet order is a valid common coefficient-level degree bound for every grouped
 pattern weight. -/

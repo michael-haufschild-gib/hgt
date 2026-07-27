@@ -254,48 +254,13 @@ theorem meromorphicTrailingCoeffAt_xiRectangularWeilFullContinuation
         (xiRightShiftedPole q) =
       2 * (xiRightMultiplicity q : ℂ) *
         xiRectangularRightCoefficient L q := by
-  let p := xiRightShiftedPole q
-  let polar : ℂ → ℂ := fun s =>
-    2 * xiRectangularRightDirichletContinuation L s
-  let correction : ℂ → ℂ :=
-    LSeries (xiRectangularWeilFullRemainderCoefficient L)
-  have hp : 1 < p.re := by
-    dsimp only [p]
+  refine meromorphicTrailingCoeffAt_of_rightDirichlet_add_analytic hL q
+    (correction := LSeries (xiRectangularWeilFullRemainderCoefficient L)) ?_ ?_
+  · refine analyticAt_LSeries_xiRectangularWeilFullRemainderCoefficient L ?_
     rw [xiRightShiftedPole, Complex.add_re, Complex.one_re]
     linarith [xiRightCenteredZero_re_pos q]
-  have hbase : MeromorphicAt
-      (xiRectangularRightDirichletContinuation L) p :=
-    meromorphicOn_xiRectangularRightDirichletContinuation_rightOne L p hp
-  have hpolar : MeromorphicAt polar p :=
-    analyticAt_const.meromorphicAt.mul hbase
-  have hcorrection : AnalyticAt ℂ correction p := by
-    dsimp only [correction]
-    exact analyticAt_LSeries_xiRectangularWeilFullRemainderCoefficient L hp
-  have hpolarOrder : meromorphicOrderAt polar p =
-      ((-1 : ℤ) : WithTop ℤ) := by
-    dsimp only [polar, p]
-    rw [fun_meromorphicOrderAt_mul analyticAt_const.meromorphicAt hbase,
-      meromorphicOrderAt_const, if_neg (by norm_num : (2 : ℂ) ≠ 0),
-      meromorphicOrderAt_xiRectangularRightDirichletContinuation_eq_neg_one
-        hL q]
-    norm_num
-  have hlt : meromorphicOrderAt polar p <
-      meromorphicOrderAt correction p := by
-    rw [hpolarOrder]
-    exact lt_of_lt_of_le
-      (by exact_mod_cast (show (-1 : ℤ) < 0 by omega))
-      hcorrection.meromorphicOrderAt_nonneg
-  have heq : xiRectangularWeilFullContinuation L =
-      fun s => polar s + correction s := by
-    funext s
-    simp only [xiRectangularWeilFullContinuation, polar, correction]
-  rw [heq,
-    hcorrection.meromorphicAt.meromorphicTrailingCoeffAt_fun_add_eq_left_of_lt hlt]
-  dsimp only [polar]
-  rw [analyticAt_const.meromorphicAt.meromorphicTrailingCoeffAt_fun_mul hbase,
-    meromorphicTrailingCoeffAt_const,
-    meromorphicTrailingCoeffAt_xiRectangularRightDirichletContinuation hL q]
-  ring
+  · funext s
+    simp only [xiRectangularWeilFullContinuation]
 
 /-- The cutoff-free normalized residue is exactly the analytic multiplicity. -/
 theorem normalizedFullObservableResidue_eq_xiRightMultiplicity

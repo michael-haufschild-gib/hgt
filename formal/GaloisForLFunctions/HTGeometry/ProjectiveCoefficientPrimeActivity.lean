@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.EvaluationCodimensionFieldCore
+import GaloisForLFunctions.HTGeometry.EvaluationCodimensionCore
 import Mathlib.RingTheory.Localization.FractionRing
 
 namespace GaloisForLFunctions.HTGeometry

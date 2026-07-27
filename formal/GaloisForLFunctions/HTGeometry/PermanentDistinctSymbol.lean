@@ -276,15 +276,19 @@ theorem coeff_permSymbolPoly_eq_card (ν : Fin r → ℕ) (d : Fin r →₀ ℕ)
     · intro h j; rw [← permMon_apply ν π j]; exact (h j).symm
   simp only [hiff]
 
-/-- **Distinct-multiset permanent symbols are independent.**  For a family `S` of order tuples of a
-common total order, pairwise distinct as multisets, any nonzero integer combination of the permanent
-symbols is a nonzero polynomial: the coefficient of the representative monomial `X^{μ₀}` reads off
-`c μ₀` times the (positive) stabiliser count, since no other tuple in `S` rearranges to `μ₀`. -/
-theorem combination_permSymbolPoly_ne_zero {S : Finset (Fin r → ℕ)} {O : ℕ}
+/-- **Permanent symbol combinations survive in any characteristic-zero ring.**  For coefficients in
+a commutative ring of characteristic zero, a combination `∑_{ν∈S} c ν · permSymbolPoly ν`, pushed
+forward along `ℤ → R` and indexed by tuples of one fixed total order that are pairwise
+non-permutations, is nonzero as soon as one coefficient is.  Reading the coefficient at
+`permMon μ₀ 1` isolates `c μ₀` times the positive stabiliser count, which stays nonzero in `R`
+because the characteristic is zero. -/
+theorem combination_permSymbolPolyMap_ne_zero {R : Type*} [CommRing R] [CharZero R]
+    [NoZeroDivisors R]
+    {S : Finset (Fin r → ℕ)} {O : ℕ}
     (hO : ∀ μ ∈ S, ∑ t, μ t = O)
     (hdistinct : ∀ μ ∈ S, ∀ ν ∈ S, (∃ σ : Equiv.Perm (Fin r), ∀ j, μ j = ν (σ j)) → μ = ν)
-    (c : (Fin r → ℕ) → ℤ) {μ₀ : Fin r → ℕ} (hμ₀ : μ₀ ∈ S) (hc : c μ₀ ≠ 0) :
-    (∑ ν ∈ S, MvPolynomial.C (c ν) * permSymbolPoly ν) ≠ 0 := by
+    (c : (Fin r → ℕ) → R) {μ₀ : Fin r → ℕ} (hμ₀ : μ₀ ∈ S) (hc : c μ₀ ≠ 0) :
+    (∑ ν ∈ S, MvPolynomial.C (c ν) * (permSymbolPoly ν).map (Int.castRingHom R)) ≠ 0 := by
   classical
   intro hzero
   apply hc
@@ -296,28 +300,30 @@ theorem combination_permSymbolPoly_ne_zero {S : Finset (Fin r → ℕ)} {O : ℕ
     rw [Finsupp.mem_support_iff, not_not] at hj
     exact hj
   have hcoeff : MvPolynomial.coeff (permMon μ₀ (1 : Equiv.Perm (Fin r)))
-        (∑ ν ∈ S, MvPolynomial.C (c ν) * permSymbolPoly ν)
+        (∑ ν ∈ S, MvPolynomial.C (c ν) * (permSymbolPoly ν).map (Int.castRingHom R))
       = ∑ ν ∈ S, c ν *
-          ∑ π : Equiv.Perm (Fin r),
-            (if permMon ν π = permMon μ₀ (1 : Equiv.Perm (Fin r)) then (1 : ℤ) else 0) := by
+          (((∑ π : Equiv.Perm (Fin r),
+            (if permMon ν π = permMon μ₀ (1 : Equiv.Perm (Fin r)) then (1 : ℤ) else 0)) : ℤ) : R) := by
     rw [MvPolynomial.coeff_sum]
     apply Finset.sum_congr rfl
     intro ν hν
-    rw [MvPolynomial.coeff_C_mul,
+    rw [MvPolynomial.coeff_C_mul, MvPolynomial.coeff_map,
       coeff_permSymbolPoly_eq_card ν (permMon μ₀ 1) (by rw [hsum1, hO μ₀ hμ₀, hO ν hν])]
+    rfl
   rw [hzero, MvPolynomial.coeff_zero] at hcoeff
   rw [Finset.sum_eq_single μ₀] at hcoeff
-  · -- only `μ₀` contributes; its permutation count is positive
-    have hpos : (0 : ℤ) < ∑ π : Equiv.Perm (Fin r),
+  · have hpos : (0 : ℤ) < ∑ π : Equiv.Perm (Fin r),
         (if permMon μ₀ π = permMon μ₀ (1 : Equiv.Perm (Fin r)) then (1 : ℤ) else 0) := by
       apply Finset.sum_pos'
       · intro π _; positivity
       · exact ⟨1, Finset.mem_univ 1, by rw [if_pos rfl]; norm_num⟩
+    have hcast : (((∑ π : Equiv.Perm (Fin r),
+        (if permMon μ₀ π = permMon μ₀ (1 : Equiv.Perm (Fin r)) then (1 : ℤ) else 0)) : ℤ) : R) ≠ 0 :=
+      Int.cast_ne_zero.mpr (ne_of_gt hpos)
     rcases mul_eq_zero.mp hcoeff.symm with h | h
     · exact h
-    · exact absurd h (ne_of_gt hpos)
-  · -- other tuples: no permutation carries them onto `μ₀`, count is zero
-    intro ν hν hνne
+    · exact absurd h hcast
+  · intro ν hν hνne
     have hzero_count : (∑ π : Equiv.Perm (Fin r),
         (if permMon ν π = permMon μ₀ (1 : Equiv.Perm (Fin r)) then (1 : ℤ) else 0)) = 0 := by
       apply Finset.sum_eq_zero
@@ -328,9 +334,24 @@ theorem combination_permSymbolPoly_ne_zero {S : Finset (Fin r → ℕ)} {O : ℕ
       symm
       apply hdistinct μ₀ hμ₀ ν hν
       refine ⟨π.symm, fun j => ?_⟩
-      have := (permMon_eq_iff ν μ₀ π 1).mp hpm j
-      simpa using this.symm
-    rw [hzero_count, mul_zero]
-  · intro h; exact absurd hμ₀ h
+      have h1 := DFunLike.congr_fun hpm j
+      rw [permMon_apply, permMon_apply] at h1
+      simpa using h1.symm
+    rw [hzero_count]
+    simp
+  · intro h
+    exact absurd hμ₀ h
+
+/-- **Distinct-multiset permanent symbols are independent.**  For a family `S` of order tuples of a
+common total order, pairwise distinct as multisets, any nonzero integer combination of the permanent
+symbols is a nonzero polynomial: the coefficient of the representative monomial `X^{μ₀}` reads off
+`c μ₀` times the (positive) stabiliser count, since no other tuple in `S` rearranges to `μ₀`. -/
+theorem combination_permSymbolPoly_ne_zero {S : Finset (Fin r → ℕ)} {O : ℕ}
+    (hO : ∀ μ ∈ S, ∑ t, μ t = O)
+    (hdistinct : ∀ μ ∈ S, ∀ ν ∈ S, (∃ σ : Equiv.Perm (Fin r), ∀ j, μ j = ν (σ j)) → μ = ν)
+    (c : (Fin r → ℕ) → ℤ) {μ₀ : Fin r → ℕ} (hμ₀ : μ₀ ∈ S) (hc : c μ₀ ≠ 0) :
+    (∑ ν ∈ S, MvPolynomial.C (c ν) * permSymbolPoly ν) ≠ 0 := by
+  have h := combination_permSymbolPolyMap_ne_zero (R := ℤ) hO hdistinct c hμ₀ hc
+  simpa [MvPolynomial.map_id] using h
 
 end GaloisForLFunctions

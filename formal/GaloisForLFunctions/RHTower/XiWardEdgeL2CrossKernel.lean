@@ -1342,13 +1342,13 @@ theorem integral_xiWardPairEdgeQuadMinorant (q : XiRightUpperZeroCopy) :
   field_simp
   ring
 
-/-- Superadditive pointwise floor: over any finite family of strict-right
-pairs, the sum of the pair minorants is dominated by the squared edge
-modulus of the continued Ward response.  Cross terms are dropped, not
-interchanged: no double-series rearrangement enters. -/
-theorem sum_xiWardPairEdgeQuadMinorant_le_normSq
+/-- Over any finite family of strict-right pairs the sum of squared edge
+real parts is dominated by the squared edge modulus of the continued
+response. -/
+theorem sum_sq_re_xiAntiCausalWardSchwarzPairResponse_le_normSq
     (F : Finset XiRightUpperZeroCopy) (t : ℝ) :
-    ∑ q ∈ F, xiWardPairEdgeQuadMinorant q t ≤
+    ∑ q ∈ F, ((xiAntiCausalWardSchwarzPairResponse q
+        ((1 / 2 : ℂ) + I * (t : ℂ))).re) ^ 2 ≤
       Complex.normSq (continuedXiAntiCausalWardResponse
         ((1 / 2 : ℂ) + I * (t : ℂ))) := by
   have hw : (0 : ℝ) < ((1 / 2 : ℂ) + I * (t : ℂ)).re := by
@@ -1358,10 +1358,6 @@ theorem sum_xiWardPairEdgeQuadMinorant_le_normSq
       (xiAntiCausalWardSchwarzPairResponse p
         ((1 / 2 : ℂ) + I * (t : ℂ))).re :=
     (Complex.hasSum_re hsum.hasSum).summable
-  have h1 : ∑ q ∈ F, xiWardPairEdgeQuadMinorant q t ≤
-      ∑ q ∈ F, ((xiAntiCausalWardSchwarzPairResponse q
-        ((1 / 2 : ℂ) + I * (t : ℂ))).re) ^ 2 :=
-    Finset.sum_le_sum fun q _ => xiWardPairEdgeQuadMinorant_le_sq_re q t
   have h2 : ∑ q ∈ F, ((xiAntiCausalWardSchwarzPairResponse q
         ((1 / 2 : ℂ) + I * (t : ℂ))).re) ^ 2 ≤
       (∑ q ∈ F, (xiAntiCausalWardSchwarzPairResponse q
@@ -1391,6 +1387,19 @@ theorem sum_xiWardPairEdgeQuadMinorant_le_normSq
     nlinarith [sq_nonneg (continuedXiAntiCausalWardResponse
       ((1 / 2 : ℂ) + I * (t : ℂ))).im]
   linarith
+
+/-- Superadditive pointwise floor: over any finite family of strict-right
+pairs, the sum of the pair minorants is dominated by the squared edge
+modulus of the continued Ward response.  Cross terms are dropped, not
+interchanged: no double-series rearrangement enters. -/
+theorem sum_xiWardPairEdgeQuadMinorant_le_normSq
+    (F : Finset XiRightUpperZeroCopy) (t : ℝ) :
+    ∑ q ∈ F, xiWardPairEdgeQuadMinorant q t ≤
+      Complex.normSq (continuedXiAntiCausalWardResponse
+        ((1 / 2 : ℂ) + I * (t : ℂ))) := by
+  refine le_trans (Finset.sum_le_sum fun q _ =>
+    xiWardPairEdgeQuadMinorant_le_sq_re q t) ?_
+  exact sum_sq_re_xiAntiCausalWardSchwarzPairResponse_le_normSq F t
 
 /-- Total edge quadratic energy of the continued Ward response. -/
 def xiWardEdgeQuadEnergy : ENNReal :=
@@ -1471,6 +1480,56 @@ theorem finite_xiRightUpperZeroCopy_of_xiWardEdgeQuadEnergy_ne_top
       _ < n * (4 * π) := mul_lt_mul_of_pos_right hn h4
       _ = 4 * π * n := by ring
   linarith
+
+
+/-- **Bilinear expansion of a mirrored kernel pair.**  Let `k x β` be a kernel family whose
+cross products are integrable with the universal mass `π(x+x′)/((x+x′)² + (β−β′)²)`.  If two
+functions are constant multiples of the sum of that kernel at a height and at its reflection,
+their product integrates to
+`2cc′π(x+x′)(1/((x+x′)²+(b−b′)²) + 1/((x+x′)²+(b+b′)²))`.
+The four cross terms pair up: the mixed heights `b−(−b′)` and `(−b)−b′` share the denominator
+`(b+b′)²`, the aligned ones the denominator `(b−b′)²`. -/
+theorem integral_mul_mirroredKernelPair {k : ℝ → ℝ → ℝ → ℝ} {x x' : ℝ}
+    (hx : 0 < x) (hx' : 0 < x')
+    (hint : ∀ β β' : ℝ, Integrable (fun t : ℝ => k x β t * k x' β' t) volume)
+    (hval : ∀ β β' : ℝ, ∫ t : ℝ, k x β t * k x' β' t
+      = π * (x + x') / ((x + x') ^ 2 + (β - β') ^ 2))
+    (c c' b b' : ℝ) {f f' : ℝ → ℝ}
+    (hf : ∀ t, f t = c * (k x b t + k x (-b) t))
+    (hf' : ∀ t, f' t = c' * (k x' b' t + k x' (-b') t)) :
+    ∫ t : ℝ, f t * f' t =
+      2 * (c * c') * π * (x + x') *
+        (1 / ((x + x') ^ 2 + (b - b') ^ 2) + 1 / ((x + x') ^ 2 + (b + b') ^ 2)) := by
+  have hxx : (0 : ℝ) < x + x' := by linarith
+  have hD1 : (0 : ℝ) < (x + x') ^ 2 + (b - b') ^ 2 :=
+    add_pos_of_pos_of_nonneg (pow_pos hxx 2) (sq_nonneg _)
+  have hD2 : (0 : ℝ) < (x + x') ^ 2 + (b + b') ^ 2 :=
+    add_pos_of_pos_of_nonneg (pow_pos hxx 2) (sq_nonneg _)
+  have h11 := (hint b b').const_mul (c * c')
+  have h12 := (hint b (-b')).const_mul (c * c')
+  have h21 := (hint (-b) b').const_mul (c * c')
+  have h22 := (hint (-b) (-b')).const_mul (c * c')
+  have hfun : (fun t : ℝ => f t * f' t) = fun t : ℝ =>
+      ((c * c') * (k x b t * k x' b' t) + (c * c') * (k x b t * k x' (-b') t)) +
+      ((c * c') * (k x (-b) t * k x' b' t) + (c * c') * (k x (-b) t * k x' (-b') t)) := by
+    funext t
+    rw [hf, hf']
+    ring
+  have hA : Integrable (fun t : ℝ =>
+      (c * c') * (k x b t * k x' b' t) + (c * c') * (k x b t * k x' (-b') t)) volume :=
+    h11.add h12
+  have hB : Integrable (fun t : ℝ =>
+      (c * c') * (k x (-b) t * k x' b' t) + (c * c') * (k x (-b) t * k x' (-b') t)) volume :=
+    h21.add h22
+  rw [hfun, integral_add hA hB, integral_add h11 h12,
+    integral_add h21 h22, MeasureTheory.integral_const_mul, MeasureTheory.integral_const_mul,
+    MeasureTheory.integral_const_mul, MeasureTheory.integral_const_mul, hval, hval, hval, hval]
+  have e2 : (x + x') ^ 2 + (b - -b') ^ 2 = (x + x') ^ 2 + (b + b') ^ 2 := by ring
+  have e3 : (x + x') ^ 2 + (-b - b') ^ 2 = (x + x') ^ 2 + (b + b') ^ 2 := by ring
+  have e4 : (x + x') ^ 2 + (-b - -b') ^ 2 = (x + x') ^ 2 + (b - b') ^ 2 := by ring
+  rw [e2, e3, e4]
+  field_simp
+  ring
 
 end
 

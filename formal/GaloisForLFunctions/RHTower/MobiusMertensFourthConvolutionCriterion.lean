@@ -419,74 +419,6 @@ theorem mobiusMertensFourthConvolutionSubpowerUpperBound_implies_riemannHypothes
   mobiusDiscreteLaplaceAllStrictHalfPowerDecay_implies_riemannHypothesis
     (mobiusMertensFourthConvolutionSubpowerUpperBound_implies_allStrictHalfPowerDecay hupper)
 
-/-- A pointwise Mertens half-power estimate bounds the norm of the second-Cesaro sequence. -/
-theorem norm_mobiusAdditiveTriangleSecondCesaro_le_of_mertensBound
-    {δ C : ℝ} (hδ : 0 < δ) (hC : 0 ≤ C)
-    (hM : ∀ N : ℕ, ‖mobiusMertensPartialSum N‖ ≤
-      C * ((N : ℝ) + 1) ^ ((1 / 2 : ℝ) + δ))
-    (N : ℕ) :
-    ‖mobiusAdditiveTriangleSecondCesaro N‖ ≤
-      C ^ 2 * ((N : ℝ) + 1) ^ (2 + 2 * δ) := by
-  let X : ℝ := (N : ℝ) + 1
-  have hX : 0 < X := by dsimp [X]; positivity
-  have hθ : 0 ≤ (1 / 2 : ℝ) + δ := by linarith
-  rw [mobiusAdditiveTriangleSecondCesaro_eq_mobiusMertensSelfConvolution]
-  calc
-    ‖mobiusMertensSelfConvolution N‖ ≤ ∑ ab ∈ Finset.antidiagonal N,
-        ‖mobiusMertensPartialSum ab.1 * mobiusMertensPartialSum ab.2‖ := by
-      rw [mobiusMertensSelfConvolution]
-      exact norm_sum_le _ _
-    _ ≤ ∑ _ab ∈ Finset.antidiagonal N,
-        C ^ 2 * X ^ (1 + 2 * δ) := by
-      apply Finset.sum_le_sum
-      intro ab hab
-      have habSum : ab.1 + ab.2 = N := Finset.mem_antidiagonal.mp hab
-      have haN : ab.1 ≤ N := by omega
-      have hbN : ab.2 ≤ N := by omega
-      have haBase : (ab.1 : ℝ) + 1 ≤ X := by
-        dsimp [X]
-        exact_mod_cast Nat.add_le_add_right haN 1
-      have hbBase : (ab.2 : ℝ) + 1 ≤ X := by
-        dsimp [X]
-        exact_mod_cast Nat.add_le_add_right hbN 1
-      have haPow : ((ab.1 : ℝ) + 1) ^ ((1 / 2 : ℝ) + δ) ≤
-          X ^ ((1 / 2 : ℝ) + δ) :=
-        Real.rpow_le_rpow (by positivity) haBase hθ
-      have hbPow : ((ab.2 : ℝ) + 1) ^ ((1 / 2 : ℝ) + δ) ≤
-          X ^ ((1 / 2 : ℝ) + δ) :=
-        Real.rpow_le_rpow (by positivity) hbBase hθ
-      rw [norm_mul]
-      calc
-        ‖mobiusMertensPartialSum ab.1‖ * ‖mobiusMertensPartialSum ab.2‖ ≤
-            (C * ((ab.1 : ℝ) + 1) ^ ((1 / 2 : ℝ) + δ)) *
-              (C * ((ab.2 : ℝ) + 1) ^ ((1 / 2 : ℝ) + δ)) :=
-          mul_le_mul (hM ab.1) (hM ab.2) (norm_nonneg _)
-            (mul_nonneg hC (Real.rpow_nonneg (by positivity) _))
-        _ ≤ (C * X ^ ((1 / 2 : ℝ) + δ)) *
-              (C * X ^ ((1 / 2 : ℝ) + δ)) := by
-          gcongr
-        _ = C ^ 2 *
-              (X ^ ((1 / 2 : ℝ) + δ) * X ^ ((1 / 2 : ℝ) + δ)) := by ring
-        _ = C ^ 2 * X ^ (((1 / 2 : ℝ) + δ) + ((1 / 2 : ℝ) + δ)) := by
-          apply congrArg (fun y : ℝ => C ^ 2 * y)
-          exact (Real.rpow_add hX _ _).symm
-        _ = C ^ 2 * X ^ (1 + 2 * δ) := by
-          congr 1
-          ring
-    _ = ((N : ℝ) + 1) * (C ^ 2 * X ^ (1 + 2 * δ)) := by
-      rw [Finset.sum_const, Finset.Nat.card_antidiagonal, nsmul_eq_mul]
-      norm_cast
-    _ = C ^ 2 * ((N : ℝ) + 1) ^ (2 + 2 * δ) := by
-      rw [show (N : ℝ) + 1 = X by rfl]
-      calc
-        X * (C ^ 2 * X ^ (1 + 2 * δ)) = C ^ 2 * (X * X ^ (1 + 2 * δ)) := by
-          ring
-        _ = C ^ 2 * (X ^ (1 : ℝ) * X ^ (1 + 2 * δ)) := by rw [Real.rpow_one]
-        _ = C ^ 2 * X ^ ((1 : ℝ) + (1 + 2 * δ)) := by
-          congr 1
-          exact (Real.rpow_add hX _ _).symm
-        _ = C ^ 2 * X ^ (2 + 2 * δ) := by ring
-
 /-- Classical Mertens half-power cancellation supplies the quartic source at exponent
 `5+o(1)`. -/
 theorem mobiusMertensAllStrictHalfPowerBound_implies_fourthConvolutionSubpowerUpperBound
@@ -573,4 +505,3 @@ theorem mobiusMertensFourthConvolutionSubpowerUpperBound_iff_riemannHypothesis_o
 end
 
 end RHTower
-

@@ -1171,7 +1171,53 @@ diagonal \(q\), and therefore cancels the negative archimedean character.
 denominator into pairwise-coprime prime powers, constructs Bézout
 coefficients, and upgrades this to
 \(\psi_f(\Delta_f q)=q\bmod\mathbb Z\) for every \(q\in\mathbb Q\).
-Finite-place \(L^2\) and semilocal tensor assembly remain open.
+`FieldOneSemilocalBruhatWeylTensor.lean` forms the algebraic carrier
+\[
+  \mathcal S(\mathbb R)\otimes_{\mathbb C}
+    C_c^{\mathrm{lc}}(\mathbb A_f),
+\]
+assembles the \(2\pi\)-normalized real and finite multipliers, and proves
+the pure-tensor, additive, identity, inverse, automorphism, and rational
+diagonal laws. `FieldOneFiniteAdeleIntegralBruhatTest.lean` proves
+\(\prod_v\mathbb Z_v\) compact open, constructs its nonzero characteristic
+Bruhat vector, and contracts the finite tensor factor by evaluation at zero.
+`FieldOneSemilocalArchimedeanFaithfulness.lean` uses that contraction to prove
+that semilocal operator equality forces equality of archimedean coordinates;
+in particular, the rational diagonal action is faithful.
+`UnitModulusL2Multiplier.lean` proves the measure-independent theorem that
+every measurable unit-modulus phase acts unitarily on complex \(L^2\).
+`FieldOneFiniteAdeleL2WeylMultiplier.lean` derives finite-adele local
+compactness from the compact-open integral subgroup, installs Borel Haar
+measure, proves finite-adele \(L^2\) unitarity, embeds Bruhat tests into
+\(L^2\), and proves exact compatibility of the algebraic and \(L^2\)
+multipliers. `FieldOneSemilocalL2WeylMultiplier.lean` proves the corresponding
+unitary action on product-Haar
+\(L^2(\mathbb R\times\mathbb A_f)\), including additive and rational diagonal
+laws. `FieldOneFiniteAdeleSelfDuality.lean` proves the standard finite
+character primitive and the finite Bruhat Weyl action faithful.
+`FieldOneSemilocalFullFaithfulness.lean` adds archimedean-zero contraction
+against the Gaussian and proves the full
+\(\mathbb R\times\mathbb A_f\) algebraic Weyl action faithful.
+`FieldOneSemilocalBruhatToL2.lean` sends every algebraic pure tensor to its
+pointwise product in product-Haar \(L^2\), descends this construction
+bilinearly to the full algebraic tensor, and proves exact equivariance with
+the algebraic and \(L^2\) Weyl actions. Its square-integrability proof avoids
+an unavailable finite-adele sigma-finiteness premise.
+`FunctionTensorProduct.lean` proves algebraically that finite sums of
+separated scalar functions have unique tensor coefficients.
+`FieldOneSemilocalBruhatL2Embedding.lean` orients product measure with the
+known sigma-finite real factor on `Measure.prod`'s required side, transports
+by coordinate swap, proves open positivity, and combines continuous
+representatives with function-tensor uniqueness to prove the
+Schwartz--Bruhat-to-\(L^2\) map injective.
+`FieldOneSemilocalBruhatHilbertCompletion.lean` pulls back the ambient
+\(L^2\) norm and inner product, identifies the resulting abstract Hilbert
+completion isometrically with the closure of the algebraic image, extends
+every algebraic Weyl automorphism to a unitary, and proves exact completed
+intertwining and the additive action law. This is a completed comparison to
+the generated closed subspace, not a proof that the subspace is all product
+\(L^2\). Full-product density and sheaf-restriction compatibility remain
+open.
 
 ## 18. Step-by-step non-circular construction target
 
@@ -1285,8 +1331,19 @@ finite-adele Weyl composition law are also Lean-proved. Diagonal-product
 compatibility is Lean-proved on every fixed-prime lattice
 \(\mathbb Z[1/p]\), which is the exponent group required by each perfection
 stage, and a formal primary-decomposition theorem upgrades it to every
-rational denominator. Semilocal tensor assembly and full sheaf compatibility
-remain open.
+rational denominator. Algebraic real--finite tensor assembly, a canonical
+nonzero integral finite Bruhat vector, contraction to the archimedean factor,
+finite-character primitivity, and faithfulness of the full semilocal action
+are Lean-proved. The finite-adele multiplier is Lean-proved unitary on Haar
+\(L^2\), with exact compatibility on embedded Bruhat tests, and the full
+real--finite product phase is Lean-proved unitary on product-Haar \(L^2\).
+The algebraic Schwartz--Bruhat tensor now maps canonically into that product
+\(L^2\); the map is injective and exactly intertwines both Weyl actions.
+Its pulled-back pre-Hilbert completion is Lean-proved canonically isometric
+to the closed algebraic image, and the Weyl action extends unitarily with
+exact ambient intertwining. Equality of that closed image with all product
+\(L^2\), comparison with any independently defined factorwise completed
+Hilbert tensor product, and sheaf compatibility remain open.
 
 `[LEAN-PROVED]` Multiple exact implications and equivalences from faithful
 positivity/Hodge naturality to RH are present in repository.

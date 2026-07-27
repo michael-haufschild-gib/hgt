@@ -812,10 +812,9 @@ theorem
         ring
       rw [hpair]
 
-/-- The actual integrated signed reflected Haar-prefix current at the self-consistent endpoint. -/
-def canonicalPhaseAdaptedWeightedReflectedHaarIntegratedCurrent
-    (m N : ℕ) (z : ℂ) : ℝ :=
-  let tau := canonicalThetaTailSeamProuhetEndpoint m N z
+/-- The literal integrated signed reflected Haar prefix at an arbitrary prescribed endpoint. -/
+def phaseAdaptedWeightedReflectedHaarIntegratedCurrentAtEndpoint
+    (m N : ℕ) (z : ℂ) (tau : ℝ) : ℝ :=
   let P := canonicalPhaseAdaptedWeightedHaarPolynomial m z tau
   ∫ p : ℝ × ℝ,
     phaseAdaptedWeightedReflectedHaarPrefixSource
@@ -825,13 +824,20 @@ def canonicalPhaseAdaptedWeightedReflectedHaarIntegratedCurrent
         (fun x : ℝ => (x : ℂ) * I * spectralTranslationPhase x z) p
       ∂((volume.restrict (Ioi 0)).prod (volume.restrict (Ioi 0)))
 
-/-- **Integrated Haar-current identification.**  The actual signed reflected Haar-prefix current
-is exactly one half of the canonical returned theta-tail/seam cross current. -/
-theorem canonicalPhaseAdaptedWeightedReflectedHaarIntegratedCurrent_eq
-    (m N : ℕ) {z : ℂ} (hz0 : 0 < z.im) (hzHalf : z.im < 1 / 2) :
-    canonicalPhaseAdaptedWeightedReflectedHaarIntegratedCurrent m N z =
-      (1 / 2 : ℝ) * canonicalThetaTailSeamProuhetUntruncatedCurrent m N z := by
-  let tau := canonicalThetaTailSeamProuhetEndpoint m N z
+/-- The arbitrary-endpoint integrated prefix is exactly one half of the corresponding returned
+source current.  No self-consistent choice is used in this identity. -/
+theorem phaseAdaptedWeightedReflectedHaarIntegratedCurrentAtEndpoint_eq
+    (m N : ℕ) {z : ℂ} (hz0 : 0 < z.im) (hzHalf : z.im < 1 / 2)
+    (tau : ℝ) :
+    phaseAdaptedWeightedReflectedHaarIntegratedCurrentAtEndpoint m N z tau =
+      (1 / 2 : ℝ) *
+        phaseAdaptedCriticalReturnedSourceCurrent m N
+          (spectralTranslationPhase (Real.log 2) z)
+          dyadicProuhetGrowthCharacter tau z
+          (thetaCuspTailSecondDensityPhaseValue z)
+          (thetaCuspTailSecondDensityPhaseDerivative z)
+          (thetaHalfExponentialPhaseValue z)
+          (thetaHalfExponentialPhaseDerivative z) := by
   let P := canonicalPhaseAdaptedWeightedHaarPolynomial m z tau
   let A : ℝ → ℝ := phaseAdaptedWeightedHaarResidualSource
     P dyadicProuhetDecayCharacter N
@@ -864,7 +870,7 @@ theorem canonicalPhaseAdaptedWeightedReflectedHaarIntegratedCurrent_eq
     funext p
     rcases p with ⟨x, y⟩
     rw [phaseAdaptedWeightedReflectedHaarPrefixSource_eq_rankTwo]
-  unfold canonicalPhaseAdaptedWeightedReflectedHaarIntegratedCurrent
+  unfold phaseAdaptedWeightedReflectedHaarIntegratedCurrentAtEndpoint
   dsimp only
   change (∫ p : ℝ × ℝ,
       phaseAdaptedWeightedReflectedHaarPrefixSource
@@ -888,10 +894,24 @@ theorem canonicalPhaseAdaptedWeightedReflectedHaarIntegratedCurrent_eq
   change (∫ x : ℝ in Ioi 0, (E x : ℂ) * V x) = _ at hEValue
   change (∫ x : ℝ in Ioi 0, (E x : ℂ) * D x) = _ at hEDerivative
   rw [hAValue, hADerivative, hEValue, hEDerivative]
-  unfold canonicalThetaTailSeamProuhetUntruncatedCurrent
-    phaseAdaptedCriticalReturnedSourceCurrent
-  dsimp only [tau, P]
+  unfold phaseAdaptedCriticalReturnedSourceCurrent
+  dsimp only [P]
   rfl
+
+/-- The actual integrated signed reflected Haar-prefix current at the self-consistent endpoint. -/
+def canonicalPhaseAdaptedWeightedReflectedHaarIntegratedCurrent
+    (m N : ℕ) (z : ℂ) : ℝ :=
+  phaseAdaptedWeightedReflectedHaarIntegratedCurrentAtEndpoint m N z
+    (canonicalThetaTailSeamProuhetEndpoint m N z)
+
+/-- **Integrated Haar-current identification.**  The actual signed reflected Haar-prefix current
+is exactly one half of the canonical returned theta-tail/seam cross current. -/
+theorem canonicalPhaseAdaptedWeightedReflectedHaarIntegratedCurrent_eq
+    (m N : ℕ) {z : ℂ} (hz0 : 0 < z.im) (hzHalf : z.im < 1 / 2) :
+    canonicalPhaseAdaptedWeightedReflectedHaarIntegratedCurrent m N z =
+      (1 / 2 : ℝ) * canonicalThetaTailSeamProuhetUntruncatedCurrent m N z :=
+  phaseAdaptedWeightedReflectedHaarIntegratedCurrentAtEndpoint_eq m N hz0 hzHalf
+    (canonicalThetaTailSeamProuhetEndpoint m N z)
 
 /-- In the canonical strip, a finite signed reflected Haar prefix has exactly zero integrated
 oriented current. -/

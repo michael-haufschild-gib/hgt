@@ -2,6 +2,7 @@ import GaloisForLFunctions.RHTower.XiRelativeResolventTrace
 import GaloisForLFunctions.RHTower.GammaSewnMobiusXiWardHardyTransport
 import GaloisForLFunctions.RHTower.XiWardEdgeCriticalCollapseGram
 import GaloisForLFunctions.RHTower.GammaRealHalfPlane
+import GaloisForLFunctions.RHTower.XiRealAxisGrowth
 
 /-!
 # Interior spectral-trace splitting
@@ -128,18 +129,6 @@ theorem continuedXiAntiCausalWardResponse_eq_logDeriv_XiC_sub
     rw [logDeriv_XiC_eq_quotient_add_trace hz]
     ring
   rw [htrace]
-  ring
-
-/-- Away from `0` and `1` the corpus `xi` is exactly the classical
-completed product `s(s−1)/2·Λ(s)`. -/
-theorem xi_eq_mul_completedRiemannZeta {s : ℂ} (hs0 : s ≠ 0)
-    (hs1 : s ≠ 1) :
-    xi s = s * (s - 1) / 2 * completedRiemannZeta s := by
-  rw [xi, completedRiemannZeta_eq]
-  have h1s : (1 : ℂ) - s ≠ 0 := by
-    intro h
-    exact hs1 (by linear_combination -h)
-  field_simp
   ring
 
 /-- Logarithmic-derivative reflection from the functional equation. -/

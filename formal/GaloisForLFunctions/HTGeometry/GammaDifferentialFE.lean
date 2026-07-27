@@ -223,7 +223,6 @@ theorem contDiffAt_digamma_n (x : ℂ) (hx : ∀ m : ℕ, x ≠ -(m : ℂ)) (n :
     funext s; rw [logDeriv_apply]
   rwa [heq] at h
 
-
 private theorem ball_avoids {k : ℕ} {s : ℂ} (hsb : s ∈ Metric.ball (-(k:ℂ)) (1/2)) (hsne : s ≠ -(k:ℂ)) :
     ∀ m : ℕ, s ≠ -(m:ℂ) := by
   intro m hm
@@ -394,7 +393,6 @@ theorem gammaExtension_apply_neg (k : ℕ) :
     rw [hs]; field_simp
   rw [← tendsto_nhds_unique h1 h2]
 
-
 /-- **The general derivative residue of Γ.**  `(s+k)^{j+1}·Γ⁽ʲ⁾(s) → (−1)^j·j!·((−1)^k/k!)` as
 `s → −k`, for every order `j` and pole `−k`.  This is the full Laurent leading datum of every
 derivative of Γ at its poles — the input the `(k!)`-domination step of Hölder consumes.  Proved by the
@@ -520,7 +518,6 @@ theorem poly_eval_neg_tendsto_zero_imp_zero (p : Polynomial ℂ)
       simpa using (continuous_norm.tendsto (0 : ℂ)).comp h
     exact not_tendsto_nhds_of_tendsto_atTop h1 0 h2
 
-
 /-- **Γ is not D-finite of order 1 (first-order linear Hölder).**  Γ satisfies no linear differential
 relation `c₀(s)·Γ(s) + c₁(s)·Γ′(s) = 0` with polynomial coefficients `c₀, c₁` not both zero —
 equivalently, `Γ′/Γ = digamma` is not a rational function.  Proved directly from the residue calculus:
@@ -604,7 +601,6 @@ theorem gamma_no_linear_relation (c0 c1 : Polynomial ℂ) (hc : c0 ≠ 0 ∨ c1 
   rcases hc with h | h
   · exact h hc0z
   · exact h hc1z
-
 
 /-- **Not-holonomic engine, top step.**  Let `f` have, at each pole `−k`, iterated-derivative residues
 `(s+k)^{i+1}·f⁽ⁱ⁾(s) → L(i,k)` with every `L(i,k) ≠ 0`.  Then any linear relation `∑_{j≤n} c_j·f⁽ʲ⁾ ≡ 0`
@@ -708,7 +704,6 @@ theorem gamma_not_holonomic : ∀ (n : ℕ) (c : ℕ → Polynomial ℂ),
       (div_ne_zero (pow_ne_zero k (by norm_num)) (by exact_mod_cast Nat.factorial_ne_zero k)))
     gamma_iteratedDeriv_residue
 
-
 /-- **Unwinding the digamma functional equation.**  Iterating `ψ(s+1) = ψ(s) + 1/s`
 (`digamma_apply_add_one`) gives `ψ(s+k+1) = ψ(s) + ∑_{j=0}^{k} 1/(s+j)` for `s` off the poles `−ℕ`.
 Equivalently `ψ(s) = ψ(s+k+1) − ∑_{j≤k} 1/(s+j)`: this exhibits the simple pole of `ψ` at `−k` as the
@@ -727,7 +722,6 @@ theorem digamma_unwind (k : ℕ) (s : ℂ) (hs : ∀ m : ℕ, s ≠ -(m:ℂ)) :
         Complex.digamma_apply_add_one _ hne', ih,
         Finset.sum_range_succ (fun j => (s + (j:ℂ))⁻¹) (n+1)]
     push_cast; ring
-
 
 /-- **Derivative residues from a simple-pole factorization.**  If `f = G·(s+k)⁻¹` on an open set `U`
 approaching the pole `−k` (`hfac`, `hUnhds`), with `G` smooth on `U` and at `−k` (`hGU`, `hGk`) and
@@ -791,7 +785,6 @@ theorem iteratedDeriv_residue_of_factor (f G : ℂ → ℂ) (k : ℕ) (U : Set �
     rw [hval] at hterms
     exact hterms
   exact hlim.congr' (hev.mono (fun _ h => h.symm))
-
 
 /-- The analytic extension of the pole of `digamma` at `−k`: `G_ψ(s) = (s+k)·(ψ(s+k+1) − ∑_{j<k}1/(s+j)) − 1`,
 which agrees with `(s+k)·ψ(s)` off the pole (`digamma_factor`) and extends it across `−k` with value `−1`. -/
@@ -878,7 +871,6 @@ theorem digamma_not_holonomic : ∀ (n : ℕ) (c : ℕ → Polynomial ℂ),
     (fun i _ => mul_ne_zero (pow_ne_zero (i+1) (by norm_num))
       (by exact_mod_cast Nat.factorial_ne_zero i))
     digamma_iteratedDeriv_residue
-
 
 /-- `iteratedDeriv i (iteratedDeriv m f) = iteratedDeriv (i+m) f`: iterated derivatives compose additively. -/
 theorem iteratedDeriv_comp_iterate (f : ℂ → ℂ) (i m : ℕ) :
@@ -992,7 +984,6 @@ theorem polygamma_not_holonomic (M : ℕ) : ∀ (n : ℕ) (c : ℕ → Polynomia
   have hpe : i + (M + 1) = (i + M) + 1 := by omega
   rw [hpe]
   exact hd
-
 
 /-- **Master not-holonomic engine, top step.**  Arbitrary pole *locations* `p k` (injective) and pole
 *order* `P`: if each `f⁽ⁱ⁾` has a pole of order `i+P` at every `p k` with nonvanishing leading
@@ -1117,7 +1108,6 @@ theorem shiftedGamma_not_holonomic (a : ℂ) : ∀ (n : ℕ) (c : ℕ → Polyno
   simp only [Function.comp_apply]
   rw [show s - (-a - (k:ℂ)) = (s + a) + (k:ℂ) by ring]
 
-
 /-- **The shifted polygamma family is not holonomic.**  For every order `M` and every complex shift
 `a`, `s ↦ ψ⁽ᴹ⁾(s+a)` satisfies no linear ODE with polynomial coefficients — a two-parameter family
 discharged in one theorem.  An instance of `not_holonomic_master` combining both its generalizations:
@@ -1156,7 +1146,6 @@ theorem shiftedPolygamma_not_holonomic (M : ℕ) (a : ℂ) : ∀ (n : ℕ) (c : 
   refine Tendsto.congr (fun s => ?_) hg
   simp only [Function.comp_apply]
   rw [show s - (-a - (k:ℂ)) = (s + a) + (k:ℂ) by ring, show i + (M + 1) = (i + M) + 1 by omega]
-
 
 /-- **The sine has a simple zero at 0:** `sin w = w·g(w)` near `0` with `g` analytic and `g(0)=1`.  From
 the general analytic-zero factorization, with order `1` forced by `sin'(0)=cos(0)=1 ≠ 0`. -/
@@ -1331,7 +1320,6 @@ theorem csc_not_holonomic : ∀ (n : ℕ) (c : ℕ → Polynomial ℂ),
   filter_upwards with s
   rw [show s + -z₀ = s - z₀ by ring]
 
-
 /-- `cos(nπ) = (−1)^n`. -/
 theorem cos_nat_pi (m : ℕ) : Complex.cos (↑m * ↑Real.pi) = (-1) ^ m := by
   rw [show (↑m * ↑Real.pi : ℂ) = (((m : ℤ) * Real.pi : ℝ) : ℂ) by push_cast; ring,
@@ -1407,7 +1395,6 @@ theorem cot_not_holonomic : ∀ (n : ℕ) (c : ℕ → Polynomial ℂ),
   rw [neg_neg, hGcval, one_mul] at key
   exact key
 
-
 /-- **Reflection of cosine across `nπ+π/2`:** `cos s = (−1)^{n+1}·sin(s − (nπ+π/2))` — cosine's zeros
 mirror sine's, so the `sin` simple-zero factorization drives the poles of `sec`/`tan`. -/
 theorem cos_half_reflect (n : ℕ) (s : ℂ) :
@@ -1422,6 +1409,86 @@ theorem cos_half_reflect (n : ℕ) (s : ℂ) :
     congr 1; ring
   rw [key, Complex.cos_add, hcosp, hsinp]; ring
 
+/-- **No entire numerator over cosine is holonomic.**  If `N` is smooth on `ℂ` and nonzero at every
+zero `mπ + π/2` of `cos`, then `N / cos` satisfies no linear differential equation with polynomial
+coefficients.  At each such point the quotient has a simple pole with residue
+`N(mπ + π/2) · (-1)^(m+1)`, so the `i`th derivative blows up like `(-1)^i i!` times that residue —
+a family of nonzero residues at infinitely many points, which `not_holonomic_master` turns into
+vanishing of every coefficient. -/
+theorem div_cos_not_holonomic (N : ℂ → ℂ) (hN : ∀ (s : ℂ) (m : ℕ), ContDiffAt ℂ m N s)
+    (hNz : ∀ m : ℕ, N ((m : ℂ) * (Real.pi : ℂ) + (Real.pi : ℂ) / 2) ≠ 0) :
+    ∀ (n : ℕ) (c : ℕ → Polynomial ℂ),
+    (∀ s : ℂ, ∑ j ∈ range (n+1),
+      (c j).eval s * iteratedDeriv j (fun s => N s / Complex.cos s) s = 0) →
+    ∀ j ∈ range (n+1), c j = 0 := by
+
+  obtain ⟨g, hg, hg0, hgfac⟩ := sin_factor
+  obtain ⟨r, hr, hrsub⟩ := Metric.mem_nhds_iff.mp
+    (show {w : ℂ | Complex.sin w = w * g w ∧ g w ≠ 0 ∧ ∀ m : ℕ, ContDiffAt ℂ m g w} ∈ 𝓝 (0:ℂ) by
+      filter_upwards [hgfac, hg.continuousAt.eventually_ne (by rw [hg0]; exact one_ne_zero),
+        hg.eventually_analyticAt] with w h1 h2 h3
+      exact ⟨h1, h2, fun m => h3.contDiffAt⟩)
+  have hpi : (Real.pi : ℂ) ≠ 0 := by exact_mod_cast Real.pi_ne_zero
+  apply not_holonomic_master (fun s => N s / Complex.cos s)
+    (fun m => (m : ℂ) * (Real.pi : ℂ) + (Real.pi : ℂ) / 2)
+    (fun x y hxy => by
+      have hx2 : (x : ℂ) * Real.pi = (y : ℂ) * Real.pi := by linear_combination hxy
+      have : (x : ℂ) = y := mul_right_cancel₀ hpi hx2
+      exact_mod_cast this) 1
+    (fun i m => N ((m : ℂ) * (Real.pi : ℂ) + (Real.pi : ℂ) / 2) * (-1)^(m+1) *
+      ((-1)^i * (i.factorial : ℂ)))
+    (fun i m => mul_ne_zero (mul_ne_zero (hNz m) (pow_ne_zero (m+1) (by norm_num)))
+      (mul_ne_zero (pow_ne_zero i (by norm_num)) (by exact_mod_cast Nat.factorial_ne_zero i)))
+  intro i m
+  set z₀ : ℂ := (m : ℂ) * (Real.pi : ℂ) + (Real.pi : ℂ) / 2 with hz₀
+  set Gc : ℂ → ℂ := fun s => N s * ((-1)^(m+1) / g (s - z₀)) with hGc
+  have hsqi : ((-1:ℂ))^(m+1) * ((-1:ℂ))^(m+1) = 1 := by rw [← mul_pow]; norm_num
+  have hGcval : Gc z₀ = N z₀ * (-1)^(m+1) := by
+    simp only [hGc, sub_self]; rw [hg0, div_one]
+  have hUsub : Metric.ball z₀ r \ {z₀} ⊆ {s | Complex.cos s = (-1)^(m+1) * ((s - z₀) * g (s - z₀))
+      ∧ g (s - z₀) ≠ 0 ∧ (∀ mm : ℕ, ContDiffAt ℂ mm g (s - z₀)) ∧ s ≠ z₀} := by
+    intro s hs
+    have hwin : (s - z₀) ∈ Metric.ball (0:ℂ) r := by
+      have hs1 : s ∈ Metric.ball z₀ r := hs.1
+      rw [Metric.mem_ball, Complex.dist_eq] at hs1
+      rw [Metric.mem_ball, Complex.dist_eq, sub_zero]; exact hs1
+    obtain ⟨hsin, hgne, hcd⟩ := hrsub hwin
+    refine ⟨?_, hgne, hcd, fun h => hs.2 (by rw [Set.mem_singleton_iff]; exact h)⟩
+    rw [cos_half_reflect m s, ← hz₀, hsin]
+  have key := iteratedDeriv_residue_of_factor_add (fun s => N s / Complex.cos s) Gc (-z₀)
+    (Metric.ball z₀ r \ {z₀})
+    (fun s hs => by
+      have hne := (hUsub hs).2.2.2; intro h; exact hne (by linear_combination h))
+    (by
+      rw [neg_neg]
+      filter_upwards [eventually_nhdsWithin_of_eventually_nhds (Metric.ball_mem_nhds z₀ hr),
+        self_mem_nhdsWithin] with s hb hne
+      simp only [Set.mem_compl_iff, Set.mem_singleton_iff] at hne
+      exact ⟨hb, hne⟩)
+    (fun s hs mm => by
+      simp only [hGc]
+      exact ContDiffAt.mul (hN s mm)
+        ((contDiffAt_const).div (((hUsub hs).2.2.1 mm).comp s (by fun_prop)) (hUsub hs).2.1))
+    (by
+      rw [neg_neg]; intro mm; simp only [hGc]
+      have hgc : ContDiffAt ℂ mm g (z₀ - z₀) := by rw [sub_self]; exact hg.contDiffAt
+      exact ContDiffAt.mul (hN z₀ mm) ((contDiffAt_const).div
+        (ContDiffAt.comp (f := fun s : ℂ => s - z₀) z₀ hgc (by fun_prop))
+        (by rw [sub_self, hg0]; exact one_ne_zero)))
+    (fun s hs => by
+      refine Filter.eventuallyEq_of_mem
+        ((Metric.isOpen_ball.sdiff isClosed_singleton).mem_nhds hs) (fun t ht => ?_)
+      have hft := hUsub ht
+      show N t / Complex.cos t = Gc t * (t + -z₀)⁻¹
+      simp only [hGc]
+      rw [hft.1, show t + -z₀ = t - z₀ from by ring]
+      simp only [div_eq_mul_inv, mul_inv, inv_eq_of_mul_eq_one_right hsqi]
+      ring) i
+  rw [neg_neg, hGcval] at key
+  refine key.congr' ?_
+  filter_upwards with s
+  rw [show s + -z₀ = s - z₀ by ring]
+
 /-- **The tangent `tan = sin/cos` is not holonomic.**  It satisfies no linear ODE with polynomial
 coefficients — a trigonometric instance of `not_holonomic_master` with poles at `nπ+π/2` (cosine's
 zeros).  Extension `G(s) = sin(s)·(−1)^{n+1}/g(s−(nπ+π/2))` of value `sin(nπ+π/2)·(−1)^{n+1} = −1`,
@@ -1430,77 +1497,11 @@ theorem tan_not_holonomic : ∀ (n : ℕ) (c : ℕ → Polynomial ℂ),
     (∀ s : ℂ, ∑ j ∈ range (n+1),
       (c j).eval s * iteratedDeriv j (fun s => Complex.sin s / Complex.cos s) s = 0) →
     ∀ j ∈ range (n+1), c j = 0 := by
-  obtain ⟨g, hg, hg0, hgfac⟩ := sin_factor
-  obtain ⟨r, hr, hrsub⟩ := Metric.mem_nhds_iff.mp
-    (show {w : ℂ | Complex.sin w = w * g w ∧ g w ≠ 0 ∧ ∀ m : ℕ, ContDiffAt ℂ m g w} ∈ 𝓝 (0:ℂ) by
-      filter_upwards [hgfac, hg.continuousAt.eventually_ne (by rw [hg0]; exact one_ne_zero),
-        hg.eventually_analyticAt] with w h1 h2 h3
-      exact ⟨h1, h2, fun m => h3.contDiffAt⟩)
-  have hpi : (Real.pi : ℂ) ≠ 0 := by exact_mod_cast Real.pi_ne_zero
-  apply not_holonomic_master (fun s => Complex.sin s / Complex.cos s)
-    (fun m => (m : ℂ) * (Real.pi : ℂ) + (Real.pi : ℂ) / 2)
-    (fun x y hxy => by
-      have hx2 : (x : ℂ) * Real.pi = (y : ℂ) * Real.pi := by linear_combination hxy
-      have : (x : ℂ) = y := mul_right_cancel₀ hpi hx2
-      exact_mod_cast this) 1
-    (fun i m => (-1) * ((-1)^i * (i.factorial : ℂ)))
-    (fun i m => mul_ne_zero (by norm_num)
-      (mul_ne_zero (pow_ne_zero i (by norm_num)) (by exact_mod_cast Nat.factorial_ne_zero i)))
-  intro i m
-  set z₀ : ℂ := (m : ℂ) * (Real.pi : ℂ) + (Real.pi : ℂ) / 2 with hz₀
-  set Gc : ℂ → ℂ := fun s => Complex.sin s * ((-1)^(m+1) / g (s - z₀)) with hGc
-  have hsinval : Complex.sin z₀ = (-1)^m := by
-    rw [hz₀, Complex.sin_add, Complex.cos_pi_div_two, Complex.sin_pi_div_two,
-        Complex.sin_nat_mul_pi, cos_nat_pi]; ring
-  have hsq : ((-1:ℂ))^m * ((-1:ℂ))^(m+1) = -1 := by
-    rw [pow_succ, ← mul_assoc, ← mul_pow]; norm_num
-  have hsqi : ((-1:ℂ))^(m+1) * ((-1:ℂ))^(m+1) = 1 := by rw [← mul_pow]; norm_num
-  have hGcval : Gc z₀ = -1 := by
-    simp only [hGc, sub_self]; rw [hg0, hsinval, div_one]; exact hsq
-  have hUsub : Metric.ball z₀ r \ {z₀} ⊆ {s | Complex.cos s = (-1)^(m+1) * ((s - z₀) * g (s - z₀))
-      ∧ g (s - z₀) ≠ 0 ∧ (∀ mm : ℕ, ContDiffAt ℂ mm g (s - z₀)) ∧ s ≠ z₀} := by
-    intro s hs
-    have hwin : (s - z₀) ∈ Metric.ball (0:ℂ) r := by
-      have hs1 : s ∈ Metric.ball z₀ r := hs.1
-      rw [Metric.mem_ball, Complex.dist_eq] at hs1
-      rw [Metric.mem_ball, Complex.dist_eq, sub_zero]; exact hs1
-    obtain ⟨hsin, hgne, hcd⟩ := hrsub hwin
-    refine ⟨?_, hgne, hcd, fun h => hs.2 (by rw [Set.mem_singleton_iff]; exact h)⟩
-    rw [cos_half_reflect m s, ← hz₀, hsin]
-  have key := iteratedDeriv_residue_of_factor_add (fun s => Complex.sin s / Complex.cos s) Gc (-z₀)
-    (Metric.ball z₀ r \ {z₀})
-    (fun s hs => by
-      have hne := (hUsub hs).2.2.2; intro h; exact hne (by linear_combination h))
-    (by
-      rw [neg_neg]
-      filter_upwards [eventually_nhdsWithin_of_eventually_nhds (Metric.ball_mem_nhds z₀ hr),
-        self_mem_nhdsWithin] with s hb hne
-      simp only [Set.mem_compl_iff, Set.mem_singleton_iff] at hne
-      exact ⟨hb, hne⟩)
-    (fun s hs mm => by
-      simp only [hGc]
-      exact ContDiffAt.mul (by fun_prop)
-        ((contDiffAt_const).div (((hUsub hs).2.2.1 mm).comp s (by fun_prop)) (hUsub hs).2.1))
-    (by
-      rw [neg_neg]; intro mm; simp only [hGc]
-      have hgc : ContDiffAt ℂ mm g (z₀ - z₀) := by rw [sub_self]; exact hg.contDiffAt
-      exact ContDiffAt.mul (by fun_prop) ((contDiffAt_const).div
-        (ContDiffAt.comp (f := fun s : ℂ => s - z₀) z₀ hgc (by fun_prop))
-        (by rw [sub_self, hg0]; exact one_ne_zero)))
-    (fun s hs => by
-      refine Filter.eventuallyEq_of_mem
-        ((Metric.isOpen_ball.sdiff isClosed_singleton).mem_nhds hs) (fun t ht => ?_)
-      have hft := hUsub ht
-      show Complex.sin t / Complex.cos t = Gc t * (t + -z₀)⁻¹
-      simp only [hGc]
-      rw [hft.1, show t + -z₀ = t - z₀ from by ring]
-      simp only [div_eq_mul_inv, mul_inv, inv_eq_of_mul_eq_one_right hsqi]
-      ring) i
-  rw [neg_neg, hGcval] at key
-  refine key.congr' ?_
-  filter_upwards with s
-  rw [show s + -z₀ = s - z₀ by ring]
-
+  have h := div_cos_not_holonomic Complex.sin (fun s m => by fun_prop) (fun m => ?_)
+  · exact h
+  · rw [Complex.sin_add, Complex.cos_pi_div_two, Complex.sin_pi_div_two,
+      Complex.sin_nat_mul_pi, cos_nat_pi]
+    simpa using pow_ne_zero m (by norm_num : (-1 : ℂ) ≠ 0)
 
 /-- **The secant `sec = 1/cos` is not holonomic.**  It satisfies no linear ODE with polynomial
 coefficients — the `csc`-analogue for cosine: simple poles at `nπ+π/2` (`cos_half_reflect`), extension
@@ -1509,69 +1510,9 @@ theorem sec_not_holonomic : ∀ (n : ℕ) (c : ℕ → Polynomial ℂ),
     (∀ s : ℂ, ∑ j ∈ range (n+1),
       (c j).eval s * iteratedDeriv j (fun s => (Complex.cos s)⁻¹) s = 0) →
     ∀ j ∈ range (n+1), c j = 0 := by
-  obtain ⟨g, hg, hg0, hgfac⟩ := sin_factor
-  obtain ⟨r, hr, hrsub⟩ := Metric.mem_nhds_iff.mp
-    (show {w : ℂ | Complex.sin w = w * g w ∧ g w ≠ 0 ∧ ∀ m : ℕ, ContDiffAt ℂ m g w} ∈ 𝓝 (0:ℂ) by
-      filter_upwards [hgfac, hg.continuousAt.eventually_ne (by rw [hg0]; exact one_ne_zero),
-        hg.eventually_analyticAt] with w h1 h2 h3
-      exact ⟨h1, h2, fun m => h3.contDiffAt⟩)
-  have hpi : (Real.pi : ℂ) ≠ 0 := by exact_mod_cast Real.pi_ne_zero
-  apply not_holonomic_master (fun s => (Complex.cos s)⁻¹)
-    (fun m => (m : ℂ) * (Real.pi : ℂ) + (Real.pi : ℂ) / 2)
-    (fun x y hxy => by
-      have hx2 : (x : ℂ) * Real.pi = (y : ℂ) * Real.pi := by linear_combination hxy
-      exact_mod_cast mul_right_cancel₀ hpi hx2) 1
-    (fun i m => (-1)^(m+1) * ((-1)^i * (i.factorial : ℂ)))
-    (fun i m => mul_ne_zero (pow_ne_zero (m+1) (by norm_num))
-      (mul_ne_zero (pow_ne_zero i (by norm_num)) (by exact_mod_cast Nat.factorial_ne_zero i)))
-  intro i m
-  set z₀ : ℂ := (m : ℂ) * (Real.pi : ℂ) + (Real.pi : ℂ) / 2 with hz₀
-  set Gc : ℂ → ℂ := fun s => (-1)^(m+1) / g (s - z₀) with hGc
-  have hsqi : ((-1:ℂ))^(m+1) * ((-1:ℂ))^(m+1) = 1 := by rw [← mul_pow]; norm_num
-  have hGcval : Gc z₀ = (-1)^(m+1) := by simp only [hGc, sub_self]; rw [hg0, div_one]
-  have hUsub : Metric.ball z₀ r \ {z₀} ⊆ {s | Complex.cos s = (-1)^(m+1) * ((s - z₀) * g (s - z₀))
-      ∧ g (s - z₀) ≠ 0 ∧ (∀ mm : ℕ, ContDiffAt ℂ mm g (s - z₀)) ∧ s ≠ z₀} := by
-    intro s hs
-    have hwin : (s - z₀) ∈ Metric.ball (0:ℂ) r := by
-      have hs1 : s ∈ Metric.ball z₀ r := hs.1
-      rw [Metric.mem_ball, Complex.dist_eq] at hs1
-      rw [Metric.mem_ball, Complex.dist_eq, sub_zero]; exact hs1
-    obtain ⟨hsin, hgne, hcd⟩ := hrsub hwin
-    refine ⟨?_, hgne, hcd, fun h => hs.2 (by rw [Set.mem_singleton_iff]; exact h)⟩
-    rw [cos_half_reflect m s, ← hz₀, hsin]
-  have key := iteratedDeriv_residue_of_factor_add (fun s => (Complex.cos s)⁻¹) Gc (-z₀)
-    (Metric.ball z₀ r \ {z₀})
-    (fun s hs => by
-      have hne := (hUsub hs).2.2.2; intro h; exact hne (by linear_combination h))
-    (by
-      rw [neg_neg]
-      filter_upwards [eventually_nhdsWithin_of_eventually_nhds (Metric.ball_mem_nhds z₀ hr),
-        self_mem_nhdsWithin] with s hb hne
-      simp only [Set.mem_compl_iff, Set.mem_singleton_iff] at hne
-      exact ⟨hb, hne⟩)
-    (fun s hs mm => by
-      simp only [hGc]
-      exact (contDiffAt_const).div (((hUsub hs).2.2.1 mm).comp s (by fun_prop)) (hUsub hs).2.1)
-    (by
-      rw [neg_neg]; intro mm; simp only [hGc]
-      have hgc : ContDiffAt ℂ mm g (z₀ - z₀) := by rw [sub_self]; exact hg.contDiffAt
-      exact (contDiffAt_const).div
-        (ContDiffAt.comp (f := fun s : ℂ => s - z₀) z₀ hgc (by fun_prop))
-        (by rw [sub_self, hg0]; exact one_ne_zero))
-    (fun s hs => by
-      refine Filter.eventuallyEq_of_mem
-        ((Metric.isOpen_ball.sdiff isClosed_singleton).mem_nhds hs) (fun t ht => ?_)
-      have hft := hUsub ht
-      show (Complex.cos t)⁻¹ = Gc t * (t + -z₀)⁻¹
-      simp only [hGc]
-      rw [hft.1, show t + -z₀ = t - z₀ from by ring]
-      simp only [div_eq_mul_inv, mul_inv, inv_eq_of_mul_eq_one_right hsqi]
-      ring) i
-  rw [neg_neg, hGcval] at key
-  refine key.congr' ?_
-  filter_upwards with s
-  rw [show s + -z₀ = s - z₀ by ring]
-
+  have h := div_cos_not_holonomic (fun _ => (1 : ℂ))
+    (fun _ _ => contDiffAt_const) (fun _ => one_ne_zero)
+  simpa only [one_div] using h
 
 /-- **The hyperbolic sine has a simple zero at 0:** `sinh w = w·g(w)` near `0` with `g` analytic,
 `g(0)=1` (order `1` forced by `sinh'(0)=cosh(0)=1`).  The hyperbolic analogue of `sin_factor`. -/
@@ -1692,7 +1633,6 @@ theorem csch_not_holonomic : ∀ (n : ℕ) (c : ℕ → Polynomial ℂ),
   filter_upwards with s
   rw [show s + -z₀ = s - z₀ by ring]
 
-
 /-- **Simple-pole lattice ⟹ not holonomic (the unifying criterion).**  If `f` factors as
 `f = G_k·(s − p_k)⁻¹` on an open set approaching each point `p_k` of an injective sequence, with `G_k`
 smooth there and at `p_k` and `G_k(p_k) ≠ 0` (i.e. `f` has a genuine simple pole with nonzero residue at
@@ -1732,7 +1672,6 @@ theorem not_holonomic_of_simplePoles (f : ℂ → ℂ) (p : ℕ → ℂ) (hp : F
   refine key.congr' ?_
   filter_upwards with s
   rw [show s + -(p k) = s - p k by ring]
-
 
 /-- **Meromorphic with simple poles at a lattice ⟹ not holonomic (fully general criterion).**  If `f`
 is `MeromorphicAt` each point `p_k` of an injective sequence with `meromorphicOrderAt f (p_k) = −1` (a
@@ -1780,7 +1719,6 @@ theorem not_holonomic_of_meromorphic_simplePoles (f : ℂ → ℂ) (p : ℕ → 
       show f t = g k t * (t - p k)⁻¹
       rw [(hsub k ht).1]; ring)
 
-
 /-- **The Bernoulli generating function `1/(eᶻ−1)` is not holonomic.**  It satisfies no linear ODE with
 polynomial coefficients — a one-shot instance of `not_holonomic_of_meromorphic_simplePoles`, unrelated
 to Γ or the trigonometric functions.  `eᶻ−1` is entire with a simple zero at each `2πik` (`eᶻ−1 = 0`,
@@ -1815,7 +1753,6 @@ theorem bernoulliGF_not_holonomic : ∀ (n : ℕ) (c : ℕ → Polynomial ℂ),
         = ((-1 : ℤ) : WithTop ℤ)
     rw [meromorphicOrderAt_inv, hana.meromorphicOrderAt_eq, hord1]
     rfl
-
 
 /-- **Factorial beats any fixed power:** `kʲ/k! → 0` as `k → ∞`.  Ratio test (ratio `→ 0`). -/
 theorem tendsto_natPow_div_factorial (j : ℕ) :
@@ -1898,7 +1835,6 @@ theorem poly_mul_rk_pow_tendsto (P : Polynomial ℂ) (m : ℕ) (hm : 1 ≤ m) :
   rw [← tendsto_zero_iff_norm_tendsto_zero]
   exact poly_div_factorial_pow_tendsto P m hm
 
-
 /-- **Factorial-Dirichlet domination (the arithmetic core of nonlinear Hölder).**  If a finite
 "factorial-Dirichlet polynomial" `∑_{D∈S} P_D(−k)·((−1)^k/k!)^D` vanishes for every `k`, then every
 coefficient polynomial `P_D ≡ 0`.  Proof: dividing by `((−1)^k/k!)^{D₀}` for `D₀ = min S`, the `D₀`
@@ -1959,89 +1895,6 @@ theorem factorial_dirichlet_vanishing (S : Finset ℕ) (P : ℕ → Polynomial �
       rcases eq_or_ne D D₀ with rfl | hne
       · exact hPD₀
       · exact hrest D (Finset.mem_erase.mpr ⟨hne, hD⟩)
-
-
-/-- **First-order nonlinear Hölder (weighted-homogeneous case).**  Γ satisfies no nontrivial
-weighted-homogeneous first-order algebraic differential relation: if `∑_{b≤N} c_b(s)·Γ(s)^{d−2b}·(Γ'(s))^b`
-vanishes off the poles (with `2N ≤ d`), then every coefficient `c_b ≡ 0`.  This is a genuinely
-*nonlinear* differential-non-existence theorem for Γ — the analytic and arithmetic layers combined: each
-monomial's residue `(s+k)^d·Γ^{d−2b}(Γ')^b → r_k^{d−2b}·(−r_k)^b` comes from `gamma_residue` and
-`gamma_deriv_residue`; the two-variable jet `(Γ,Γ')` has no monomial ties, so the leading Laurent
-coefficient at each pole is a factorial-Dirichlet polynomial, killed by `factorial_dirichlet_vanishing`. -/
-theorem gamma_no_weightedHomog_firstOrder (N d : ℕ) (hd : 2 * N ≤ d) (c : ℕ → Polynomial ℂ)
-    (hrel : ∀ s : ℂ, (∀ m : ℕ, s ≠ -(m:ℂ)) →
-      ∑ b ∈ range (N+1), (c b).eval s * Complex.Gamma s ^ (d - 2*b) * (deriv Complex.Gamma s) ^ b = 0) :
-    ∀ b ∈ range (N+1), c b = 0 := by
-  set P : ℕ → Polynomial ℂ := fun D => (-1)^(d - D) * c (d - D) with hP
-  have hdom : ∀ k : ℕ, ∑ D ∈ (range (N+1)).image (fun b => d - b),
-      (P D).eval (-(k:ℂ)) * ((-1)^k / (k.factorial : ℂ))^D = 0 := by
-    intro k
-    have hev0 : ∀ᶠ s in 𝓝[≠] (-(k:ℂ)), (s + (k:ℂ))^d *
-        ∑ b ∈ range (N+1), (c b).eval s * Complex.Gamma s ^ (d - 2*b) * (deriv Complex.Gamma s) ^ b = 0 := by
-      filter_upwards [eventually_nhdsWithin_of_eventually_nhds
-        (Metric.ball_mem_nhds (-(k:ℂ)) (show (0:ℝ) < 1/2 by norm_num)), self_mem_nhdsWithin]
-        with s hsb hsne
-      simp only [Set.mem_compl_iff, Set.mem_singleton_iff] at hsne
-      rw [hrel s (ball_avoids hsb hsne), mul_zero]
-    have hlim0 : Tendsto (fun s : ℂ => (s + (k:ℂ))^d *
-        ∑ b ∈ range (N+1), (c b).eval s * Complex.Gamma s ^ (d - 2*b) * (deriv Complex.Gamma s) ^ b)
-        (𝓝[≠] (-(k:ℂ))) (𝓝 0) := tendsto_const_nhds.congr' (hev0.mono (fun _ h => h.symm))
-    have hlim1 : Tendsto (fun s : ℂ => (s + (k:ℂ))^d *
-        ∑ b ∈ range (N+1), (c b).eval s * Complex.Gamma s ^ (d - 2*b) * (deriv Complex.Gamma s) ^ b)
-        (𝓝[≠] (-(k:ℂ)))
-        (𝓝 (∑ b ∈ range (N+1), (c b).eval (-(k:ℂ)) *
-          (((-1)^k / (k.factorial : ℂ))^(d - 2*b) * (-((-1)^k / (k.factorial : ℂ)))^b))) := by
-      simp only [Finset.mul_sum]
-      apply tendsto_finsetSum
-      intro b hb
-      rw [mem_range, Nat.lt_succ_iff] at hb
-      have hbd : 2 * b ≤ d := by omega
-      have hcb : Tendsto (fun s : ℂ => (c b).eval s) (𝓝[≠] (-(k:ℂ))) (𝓝 ((c b).eval (-(k:ℂ)))) :=
-        (c b).continuous.continuousAt.continuousWithinAt
-      have hmono := ((gamma_residue k).pow (d - 2*b)).mul ((gamma_deriv_residue k).pow b)
-      have hfun : (fun s : ℂ => (s + (k:ℂ))^d *
-          ((c b).eval s * Complex.Gamma s ^ (d - 2*b) * (deriv Complex.Gamma s) ^ b))
-          = fun s : ℂ => (c b).eval s *
-            (((s + (k:ℂ)) * Complex.Gamma s)^(d - 2*b) * ((s + (k:ℂ))^2 * deriv Complex.Gamma s)^b) := by
-        funext s
-        have he1 : (d - 2*b) + 2*b = d := by omega
-        rw [mul_pow, mul_pow, ← pow_mul,
-          show (s + (k:ℂ))^(d-2*b) * Complex.Gamma s^(d-2*b) * ((s+(k:ℂ))^(2*b) * (deriv Complex.Gamma s)^b)
-            = (s+(k:ℂ))^((d-2*b) + 2*b) * (Complex.Gamma s^(d-2*b) * (deriv Complex.Gamma s)^b) by
-              rw [pow_add]; ring, he1]
-        ring
-      rw [hfun]
-      exact hcb.mul hmono
-    have hval := tendsto_nhds_unique hlim0 hlim1
-    rw [Finset.sum_image (by
-      intro x hx y hy hxy
-      simp only [Finset.mem_coe, mem_range, Nat.lt_succ_iff] at hx hy
-      have hxy' : d - x = d - y := hxy
-      omega)]
-    refine Eq.trans (Finset.sum_congr rfl fun b hb => ?_) hval.symm
-    rw [mem_range, Nat.lt_succ_iff] at hb
-    show (P (d - b)).eval (-(k:ℂ)) * ((-1)^k / (k.factorial : ℂ))^(d - b)
-      = (c b).eval (-(k:ℂ)) *
-        (((-1)^k / (k.factorial : ℂ))^(d - 2*b) * (-((-1)^k / (k.factorial : ℂ)))^b)
-    have he2 : (d - 2*b) + b = d - b := by omega
-    have he3 : d - (d - b) = b := by omega
-    simp only [hP, Polynomial.eval_mul, Polynomial.eval_pow, Polynomial.eval_neg,
-      Polynomial.eval_one, he3]
-    rw [neg_pow]
-    have hpow : ((-1:ℂ)^k / (k.factorial:ℂ))^(d-2*b) * ((-1:ℂ)^k / (k.factorial:ℂ))^b
-        = ((-1:ℂ)^k / (k.factorial:ℂ))^(d-b) := by rw [← pow_add, he2]
-    linear_combination (-((c b).eval (-(k:ℂ)) * (-1:ℂ)^b)) * hpow
-  have hPzero := factorial_dirichlet_vanishing _ P hdom
-  intro b hb
-  rw [mem_range, Nat.lt_succ_iff] at hb
-  have hDmem : d - b ∈ (range (N+1)).image (fun b => d - b) :=
-    Finset.mem_image.mpr ⟨b, mem_range.mpr (by omega), rfl⟩
-  have hb0 := hPzero (d - b) hDmem
-  simp only [hP, show d - (d - b) = b from by omega] at hb0
-  rcases mul_eq_zero.mp hb0 with h | h
-  · exact absurd h (pow_ne_zero b (by norm_num : (-1 : Polynomial ℂ) ≠ 0))
-  · exact h
-
 
 /-- **First-order nonlinear Hölder with a lower-order remainder.**  The remainder-form of
 `gamma_no_weightedHomog_firstOrder`: if the weighted-homogeneous degree-`d` part plus any remainder `Q`
@@ -2129,6 +1982,20 @@ theorem gamma_no_weightedHomog_firstOrder_rem (N d : ℕ) (hd : 2 * N ≤ d) (c 
   · exact absurd h (pow_ne_zero b (by norm_num : (-1 : Polynomial ℂ) ≠ 0))
   · exact h
 
+/-- **First-order nonlinear Hölder (weighted-homogeneous case).**  Γ satisfies no nontrivial
+weighted-homogeneous first-order algebraic differential relation: if `∑_{b≤N} c_b(s)·Γ(s)^{d−2b}·(Γ'(s))^b`
+vanishes off the poles (with `2N ≤ d`), then every coefficient `c_b ≡ 0`.  This is a genuinely
+*nonlinear* differential-non-existence theorem for Γ — the analytic and arithmetic layers combined: each
+monomial's residue `(s+k)^d·Γ^{d−2b}(Γ')^b → r_k^{d−2b}·(−r_k)^b` comes from `gamma_residue` and
+`gamma_deriv_residue`; the two-variable jet `(Γ,Γ')` has no monomial ties, so the leading Laurent
+coefficient at each pole is a factorial-Dirichlet polynomial, killed by `factorial_dirichlet_vanishing`. -/
+theorem gamma_no_weightedHomog_firstOrder (N d : ℕ) (hd : 2 * N ≤ d) (c : ℕ → Polynomial ℂ)
+    (hrel : ∀ s : ℂ, (∀ m : ℕ, s ≠ -(m:ℂ)) →
+      ∑ b ∈ range (N+1), (c b).eval s * Complex.Gamma s ^ (d - 2*b) * (deriv Complex.Gamma s) ^ b = 0) :
+    ∀ b ∈ range (N+1), c b = 0 :=
+  gamma_no_weightedHomog_firstOrder_rem N d hd c (fun _ => 0)
+    (fun k => by simpa using tendsto_const_nhds)
+    (fun s hs => by simpa using hrel s hs)
 
 /-- **A non-homogeneous first-order nonlinear relation is impossible for Γ.**  Γ satisfies no
 `c₀(s)·Γ² + c₁(s)·Γ' + c₂(s)·Γ + c₃(s) = 0` with `(c₀,c₁)` not both zero — a concrete general (mixed
@@ -2177,7 +2044,6 @@ theorem gamma_no_quadratic_firstOrder (c₀ c₁ c₂ c₃ : Polynomial ℂ)
     simpa [hcc] using this
   · have := hmain 1 (mem_range.mpr (by norm_num))
     simpa [hcc] using this
-
 
 /-- **An order-2 nonlinear relation is impossible for Γ (the tie-free `Γ,Γ''` direction).**  Γ satisfies
 no `c₀(s)·Γ³ + c₁(s)·Γ'' = 0` with `(c₀,c₁)` not both zero.  This reaches *second* order: the jet
@@ -2242,7 +2108,6 @@ theorem gamma_no_cubic_GammaSecondDeriv (c₀ c₁ : Polynomial ℂ)
   · exact absurd h (by norm_num)
   · exact h
 
-
 /-- **A two-term nonlinear relation `Γ^{j+1}` vs `Γ^{(j)}` is impossible for Γ, at every order `j ≥ 1`.**
 Γ satisfies no `c₀(s)·Γ^{j+1} + c₁(s)·Γ^{(j)} = 0` with `(c₀,c₁)` not both zero.  The jet `(Γ, Γ^{(j)})`
 has pole orders `1` and `j+1`, and the two monomials `Γ^{j+1}` (total degree `j+1`) and `Γ^{(j)}` (total
@@ -2305,7 +2170,6 @@ theorem gamma_no_twoTerm_GammaJthDeriv (j : ℕ) (hj : 1 ≤ j) (c₀ c₁ : Pol
     exact absurd h (mul_ne_zero (pow_ne_zero j (by norm_num))
       (by exact_mod_cast Nat.factorial_ne_zero j))
   · exact h
-
 
 /-- **The full weighted-homogeneous order-2 Hölder theorem in the tie-free `Γ,Γ''` direction.**  Γ
 satisfies no nontrivial weighted-homogeneous relation `∑_{c≤N} c_c(s)·Γ^{d−3c}·(Γ'')^c = 0` (with
@@ -2399,7 +2263,6 @@ theorem gamma_no_weightedHomog_GammaSecondDeriv (N d : ℕ) (hd : 3 * N ≤ d) (
   rcases mul_eq_zero.mp hb0 with h | h
   · exact absurd h (pow_ne_zero b (by norm_num : (2 : Polynomial ℂ) ≠ 0))
   · exact h
-
 
 /-- **The weighted-homogeneous Hölder theorem for `Γ` and any single derivative, at every order.**
 For each `j ≥ 1`, Γ satisfies no nontrivial weighted-homogeneous relation
@@ -2512,7 +2375,6 @@ theorem gamma_no_weightedHomog_GammaJthDeriv (j N d : ℕ) (hj : 1 ≤ j) (hd : 
       (mul_ne_zero (pow_ne_zero j (by norm_num)) (by exact_mod_cast Nat.factorial_ne_zero j))))
   · exact h
 
-
 /-- **A relation between two derivatives of Γ (excluding Γ itself) is impossible.**  Γ satisfies no
 `c₀(s)·(Γ')³ + c₁(s)·(Γ'')² = 0` with `(c₀,c₁)` not both zero.  Both monomials have weighted degree `6`
 (`(Γ')³`: pole order `2`, cubed; `(Γ'')²`: pole order `3`, squared), but total degrees `3` and `2` —
@@ -2584,7 +2446,6 @@ theorem gamma_no_derivCubicSquare (c₀ c₁ : Polynomial ℂ)
   · rcases mul_eq_zero.mp h2 with h | h
     · exact absurd (Polynomial.C_eq_zero.mp h) (by norm_num)
     · exact h
-
 
 /-- **A two-term relation between any two distinct derivatives of Γ is impossible.**  For any `i < j`,
 Γ satisfies no `c₀(s)·(Γ^{(i)})^{j+1} + c₁(s)·(Γ^{(j)})^{i+1} = 0` with `(c₀,c₁)` not both zero.  Both
@@ -2664,7 +2525,6 @@ theorem gamma_no_twoTerm_GammaDerivs (i j : ℕ) (hij : i < j) (c₀ c₁ : Poly
           (by exact_mod_cast Nat.factorial_ne_zero j)))
     · exact h
 
-
 /-- **The second-derivative log-derivative identity for Γ.**  At any point where `Γ` is twice
 differentiable and nonzero, `Γ''·Γ − (Γ')² = Γ²·(Γ'/Γ)'` — the numerator of the quotient rule for the
 log-derivative `ψ = Γ'/Γ`.  This is the algebraic core connecting Γ's second-order jet to the digamma:
@@ -2704,7 +2564,6 @@ theorem gamma_mixed_reduces_to_digamma (α β : Polynomial ℂ) (s : ℂ) (hs : 
     = (deriv Complex.Gamma s)^2 + (Complex.Gamma s)^2 * deriv (fun z => deriv Complex.Gamma z / Complex.Gamma z) s
     from by linear_combination hid] at key
   linear_combination key
-
 
 /-- **The leading constraint on the mixed three-variable relation.**  If
 `α(s)·(Γ')² + β(s)·(Γ''·Γ) = 0` off the poles, then `α + 2β = 0` as polynomials.  The two monomials
@@ -2779,7 +2638,6 @@ theorem gamma_mixed_leading (α β : Polynomial ℂ)
   intro k
   exact hroot k
 
-
 /-- **The Gamma derivative recurrence.**  Differentiating the functional equation `Γ(s+1) = s·Γ(s)`
 gives `Γ(s) + s·Γ'(s) = Γ'(s+1)` at any `s` off the poles.  Equivalently `s·Γ' + Γ = Γ'∘(·+1)`; dividing
 by `Γ` this is the digamma recurrence `ψ(s+1) = ψ(s) + 1/s`.  This is the functional-equation datum that
@@ -2807,7 +2665,6 @@ theorem gamma_deriv_recurrence (s : ℂ) (hs : ∀ n : ℕ, s ≠ -(n:ℂ)) :
     simpa using this.deriv
   rw [← hmul, ← hcomp, hev.deriv_eq]
 
-
 /-- **Γ' is not identically zero — constant-free.**  At least one of `Γ'(1), Γ'(2)` is nonzero.  If both
 vanished, the recurrence `Γ(1) + 1·Γ'(1) = Γ'(2)` (`gamma_deriv_recurrence` at `s=1`) would give
 `Γ(1) = 0`, contradicting `Γ(1) = 1`.  No transcendental constant (`γ`, `π`) is used — the functional
@@ -2829,15 +2686,12 @@ theorem gamma_deriv_not_all_zero :
   rw [Complex.Gamma_one, h1, show (1:ℂ) + 1 = 2 by norm_num, h2] at hr
   simp at hr
 
-
 /-- **Γ is analytic off the poles.**  At any `x ∉ −ℕ`, `Complex.Gamma` is analytic, obtained as the
 inverse of the entire reciprocal `1/Γ` (nonzero exactly off the poles).  Exposes the analyticity that
 `contDiffAt_Gamma` proves inline, giving `AnalyticAt` of every derivative and hence differentiability of
 `Γ`, `Γ'`, `Γ''`, … at each point off `−ℕ`. -/
 theorem analyticAt_Gamma (x : ℂ) (hx : ∀ n : ℕ, x ≠ -(n:ℂ)) : AnalyticAt ℂ Complex.Gamma x :=
   HTGeometry.analyticAt_Gamma_off_poles hx
-
-
 
 /-- **`Γ·Γ'' − 2(Γ')²` is not identically zero — constant-free.**  If it vanished at every point off the
 poles, the differentiated functional equation (`iteratedDeriv_Gamma_add_one`) would force, from its
@@ -2888,7 +2742,6 @@ theorem gamma_F_not_identically_zero :
   have hb : iteratedDeriv 2 Complex.Gamma 1 = 2 := by rw [ha] at hF1; linear_combination hF1
   rw [r2_2, r1_2, r2_1, r1_1, ha, hb] at hF3
   norm_num at hF3
-
 
 /-- **The domain of Γ (off the poles `−ℕ`) is open.**  The pole set `⋃ₙ {−n}` is locally finite (each
 ball of radius `1` meets only the poles `−n` with `n < ‖z‖+1`), hence closed; its complement is open. -/
@@ -2965,7 +2818,6 @@ theorem gamma_no_mixed_relation (α β : Polynomial ℂ)
     have hmem : {z : ℂ | β.eval z = 0} ∈ 𝓝 z₀ := hβ0
     exact (infinite_of_mem_nhds z₀ hmem).mono (fun z hz => hz)
   exact ⟨by linear_combination hlead - 2 * hβ, hβ⟩
-
 
 /-- **The leading constraint on the four-variable tie.**  If the weighted-homogeneous degree-6
 relation `alpha*(Gamma'')^2 + beta*(Gamma'*Gamma''') + gamma*(Gamma*Gamma^(4)) = 0` holds off the poles,
@@ -3049,7 +2901,6 @@ theorem gamma_leading_order4 (α β γ : Polynomial ℂ)
   apply Set.infinite_of_injective_forall_mem (f := fun k : ℕ => -(k:ℂ)) (fun a b hab => by simpa using hab)
   intro k; exact hroot k
 
-
 /-- **The digamma difference equation.**  For `s` off the poles, `psi(s+1) = psi(s) + 1/s` where
 `psi = Gamma'/Gamma` is the digamma: `deriv Gamma (s+1) / Gamma (s+1) = deriv Gamma s / Gamma s + 1/s`.
 Divide the Gamma derivative recurrence `Gamma(s) + s*Gamma'(s) = Gamma'(s+1)` by `Gamma(s+1) = s*Gamma(s)`.
@@ -3066,7 +2917,6 @@ theorem digamma_recurrence (s : ℂ) (hs : ∀ n : ℕ, s ≠ -(n:ℂ)) :
   rw [hfe, ← hrec]
   field_simp
   ring
-
 
 /-- **Γ is transcendental as a function.**  No nonzero polynomial `P` vanishes on `Γ`: there is no
 `P != 0` with `P(Γ(z)) = 0` for all `z`.  Indeed `Γ(n+2) = (n+1)!`, and the factorials `(n+1)!` are
@@ -3095,7 +2945,6 @@ theorem gamma_transcendental :
     rw [hg] at hr
     exact hr
 
-
 /-- **The telescoped digamma difference equation.**  For `s` off the poles and any `n`,
 `psi(s+n) = psi(s) + sum_{k<n} 1/(s+k)` where `psi = Gamma'/Gamma`:
 `deriv Gamma (s+n)/Gamma(s+n) = deriv Gamma s/Gamma s + sum_{k in range n} 1/(s+k)`.  Iterating
@@ -3116,7 +2965,6 @@ theorem digamma_telescope (s : ℂ) (hs : ∀ p : ℕ, s ≠ -(p:ℂ)) (n : ℕ)
     rw [show s + ((n+1 : ℕ):ℂ) = (s + (n:ℂ)) + 1 by push_cast; ring, hrec, ih,
       Finset.sum_range_succ]
     ring
-
 
 /-- **Digamma is transcendental as a function.**  No nonzero polynomial `P` vanishes on `psi = Gamma'/Gamma`
 off the poles.  By `digamma_telescope` at `s=1`, `psi(n+1) = psi(1) + H_n` with `H_n = sum_{k<n} 1/(1+k)`
@@ -3162,7 +3010,6 @@ theorem digamma_transcendental :
     rw [← htel]
     exact hr
 
-
 /-- **The trigamma difference equation.**  For `s` off the poles, `psi'(s+1) = psi'(s) - 1/s^2` where
 `psi = Gamma'/Gamma`: differentiating the digamma recurrence `psi(s+1) = psi(s) + 1/s`, valid because the
 domain off the poles is open (`offPoles_isOpen`), so the recurrence holds on a whole neighborhood and may
@@ -3200,7 +3047,6 @@ theorem trigamma_recurrence (s : ℂ) (hs : ∀ p : ℕ, s ≠ -(p:ℂ)) :
       (hψd hs).hasDerivAt.add hinv
     rw [hd.deriv]; ring
   rw [← hL, hev.deriv_eq, hR]
-
 
 /-- **Trigamma telescope and transcendence.**  `trigamma_telescope`: `psi'(s+n) = psi'(s) - sum_{k<n}
 1/(s+k)^2`, iterating `trigamma_recurrence`.  `trigamma_transcendental`: `psi' = deriv(Gamma'/Gamma)` is
@@ -3259,7 +3105,6 @@ theorem trigamma_transcendental :
     rw [hcast, ← htel]
     exact hr
 
-
 /-- **The log-derivative of Γ is analytic off the poles**, and so is each of its iterated derivatives.
 `analyticAt_logDeriv_Gamma`: `psi = Gamma'/Gamma` is analytic at every `x` off the poles (quotient of the
 analytic `Gamma'` and `Gamma`, the latter nonzero there).  `analyticAt_iteratedDeriv_logDeriv`: hence
@@ -3278,7 +3123,6 @@ theorem analyticAt_iteratedDeriv_logDeriv (m : ℕ) (x : ℂ) (hx : ∀ p : ℕ,
   | succ m ih =>
     rw [iteratedDeriv_succ]
     exact ih.deriv
-
 
 /-- **The general polygamma difference equation.**  For every order `m` and `s` off the poles,
 `psi^(m)(s+1) - psi^(m)(s) = (-1)^m * m! / s^(m+1)` where `psi = Gamma'/Gamma`.  Proof by induction on `m`:
@@ -3339,7 +3183,6 @@ theorem polygamma_recurrence (m : ℕ) : ∀ s : ℂ, (∀ p : ℕ, s ≠ -(p:�
         = deriv (fun z => iteratedDeriv m ψ (z + 1) - iteratedDeriv m ψ z) s := hLderiv.symm
       _ = deriv (fun z => (-1)^m * (m.factorial : ℂ) / z^(m+1)) s := hev.deriv_eq
       _ = (-1)^(m+1) * ((m+1).factorial : ℂ) / s^(m+2) := hRderiv
-
 
 /-- **Every polygamma is transcendental as a function** (general order).  `polygamma_telescope`:
 `psi^(m)(s+n) = psi^(m)(s) + (-1)^m m! * sum_{k<n} 1/(s+k)^(m+1)`, iterating `polygamma_recurrence`.
@@ -3407,7 +3250,6 @@ theorem polygamma_transcendental (m : ℕ) :
     rw [hcast, hc, ← htel]
     exact hr
 
-
 /-- **`Gamma'' = Gamma * (psi^2 + psi')`** off the poles, for the log-derivative `psi = Gamma'/Gamma`.
 The order-2 Bell identity: the second derivative of `Gamma` equals `Gamma` times a polynomial in the
 `psi`-jet `(psi, psi')`.  Immediate from the log-derivative identity `Gamma''*Gamma - (Gamma')^2 =
@@ -3425,7 +3267,6 @@ theorem iteratedDeriv_two_Gamma_eq_logDeriv (s : ℂ) (hs : ∀ p : ℕ, s ≠ -
   have hid := gamma_secondDeriv_logDeriv_identity s hne h1 h2
   field_simp
   linear_combination hid
-
 
 /-- **`Gamma''' = Gamma * (psi^3 + 3 psi psi' + psi'')`** off the poles -- the order-3 Bell identity.
 Obtained by differentiating the order-2 identity `Gamma'' = Gamma*(psi^2 + psi')` on the open off-poles
@@ -3469,7 +3310,6 @@ theorem iteratedDeriv_three_Gamma_eq_logDeriv (s : ℂ) (hs : ∀ p : ℕ, s ≠
   rw [hkey, hψdef]
   field_simp
   ring
-
 
 /-- **`Gamma^(4) = Gamma * (psi^4 + 6 psi^2 psi' + 3 psi'^2 + 4 psi psi'' + psi''')`** off the poles --
 the order-4 Bell identity, by differentiating the order-3 identity on the open off-poles set
@@ -3518,7 +3358,6 @@ theorem iteratedDeriv_four_Gamma_eq_logDeriv (s : ℂ) (hs : ∀ p : ℕ, s ≠ 
   field_simp
   ring
 
-
 /-- **The reciprocal Gamma `1/Gamma` is transcendental as a function.**  No nonzero polynomial vanishes
 on `z |-> (Gamma z)^{-1}`.  Since `Gamma(n+2) = (n+1)!`, the values `(Gamma(n+2))^{-1} = 1/(n+1)!` are
 infinitely many distinct reciprocals of factorials, so such a `P` would have infinitely many roots.
@@ -3549,7 +3388,6 @@ theorem oneDivGamma_transcendental :
     have hr := hroot ((n:ℂ) + 1 + 1)
     rw [hg] at hr
     exact hr
-
 
 /-- **Chain rule for a multivariate polynomial evaluated along a jet.**  For `Q : MvPolynomial (Fin n) C`
 and differentiable coordinate functions `g_j` with `HasDerivAt (g j) (g' j) x`, the map
@@ -3594,7 +3432,6 @@ theorem hasDerivAt_mvEval_jet {n : ℕ} (Q : MvPolynomial (Fin n) ℂ)
       · simp
       · intro j _ hj; simp [Ne.symm hj]
       · intro h; simp at h
-
 
 /-- **The general Bell chain: every derivative of Gamma is Gamma times a polynomial in the log-derivative
 jet.**  For every `n` there is a polynomial `B : MvPolynomial (Fin n) C` with
@@ -3644,7 +3481,6 @@ theorem exists_gamma_bell (n : ℕ) :
       Fin.val_castSucc, iteratedDeriv_zero, Fin.val_zero]
     ring
 
-
 /-- **The log-derivative-jet form of the Bell chain.**  Off the poles, `Gamma^(n)/Gamma` is a polynomial
 in the log-derivative jet `(psi, psi', ..., psi^(n-1))` with `psi = Gamma'/Gamma`: there is
 `B : MvPolynomial (Fin n) C` with `Gamma^(n)(s)/Gamma(s) = eval (fun j => psi^(j)(s)) B`.  Immediate from
@@ -3660,7 +3496,6 @@ theorem gamma_iteratedDeriv_div_eq_bell (n : ℕ) :
   obtain ⟨B, hB⟩ := exists_gamma_bell n
   refine ⟨B, fun s hs => ?_⟩
   rw [hB s hs, mul_comm, mul_div_assoc, div_self (Complex.Gamma_ne_zero hs), mul_one]
-
 
 /-- **The log-derivative's derivative lies in `C(s)(Gamma-jet)` -- the converse inclusion, first rung.**
 Off the poles, `psi' = eval (fun j => Gamma^(j)) (X_2 X_0 - X_1^2) / Gamma^2`, i.e.
@@ -3685,7 +3520,6 @@ theorem logDeriv_deriv_eq_gammaJet :
     show ((2:Fin 3):ℕ) = 2 from rfl, iteratedDeriv_zero, iteratedDeriv_one]
   rw [eq_div_iff (pow_ne_zero 2 hne)]
   linear_combination -hid
-
 
 /-- **The general converse Bell chain: every log-derivative in `C(s)(Gamma-jet)`.**  For each `k` there is
 `N : MvPolynomial (Fin (k+2)) C` with `psi^(k)(s) = eval (fun j => Gamma^(j)(s)) N / Gamma(s)^(k+1)` off the
@@ -3746,7 +3580,6 @@ theorem exists_logDeriv_bell (k : ℕ) :
     push_cast
     ring
 
-
 /-- **Denominator-free form of the converse Bell chain.**  For each `k`, off the poles,
 `psi^(k)(s) * Gamma(s)^(k+1) = eval (fun j => Gamma^(j)(s)) N` for some `N : MvPolynomial (Fin (k+2)) C` --
 the polynomial identity relating the log-derivative jet to the `Gamma`-jet with no division (clearing the
@@ -3762,7 +3595,6 @@ theorem logDeriv_mul_gammaPow_eq_gammaJet (k : ℕ) :
   obtain ⟨N, hN⟩ := exists_logDeriv_bell k
   refine ⟨N, fun s hs => ?_⟩
   rw [hN s hs, div_mul_cancel₀ _ (pow_ne_zero (k+1) (Complex.Gamma_ne_zero hs))]
-
 
 /-- **The log-derivative of the reciprocal Gamma is minus the digamma.**  Off the poles,
 `(1/Gamma)'/(1/Gamma) = -(Gamma'/Gamma) = -psi`.  Immediate from the derivative of the inverse.  This ties
@@ -3780,7 +3612,6 @@ theorem oneDivGamma_logDeriv_eq_neg_digamma (s : ℂ) (hs : ∀ p : ℕ, s ≠ -
       (-deriv Complex.Gamma s / (Complex.Gamma s)^2) s := hd.hasDerivAt.inv hne
   rw [h.deriv]
   field_simp
-
 
 /-- **The derivative of the reciprocal Gamma.**  Off the poles, `(1/Gamma)'(s) = -Gamma'(s)/Gamma(s)^2`.
 The product-form basis of the reciprocal's Bell structure: iterating this (with `1/Gamma` entire) gives

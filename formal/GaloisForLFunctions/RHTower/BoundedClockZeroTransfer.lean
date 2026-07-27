@@ -283,13 +283,19 @@ def BoundedVerticalClockDichotomy (B : ℝ) (f : ℂ → ℂ) : Prop :=
   ∀ z : ℂ, f z = 0 → z.im = 0 ∨
     ∃ T : ℝ, 0 < T ∧ T ≤ B ∧ ∀ k : ℤ, f (z + (k * T) * Complex.I) = 0
 
-/-- Locally uniform eventually-entire approximants with an eventually uniform bounded vertical
-clock dichotomy force RH. Hurwitz zero selection is internal. -/
-theorem riemannHypothesis_of_bounded_vertical_clock_dichotomy_approximants
-    {Fn : ℕ → ℂ → ℂ} {B : ℝ}
+/-- Compact-local form of the bounded clock dichotomy. -/
+def LocalBoundedVerticalClockDichotomy (B R : ℝ) (f : ℂ → ℂ) : Prop :=
+  ∀ z ∈ closedBall (0 : ℂ) R, f z = 0 → z.im = 0 ∨
+    ∃ T : ℝ, 0 < T ∧ T ≤ B ∧ ∀ k : ℤ, f (z + (k * T) * Complex.I) = 0
+
+/-- Compact-local bounded clock dichotomies suffice for RH; no condition is imposed on spurious
+approximant zeros escaping to infinity. -/
+theorem riemannHypothesis_of_locally_bounded_vertical_clock_dichotomy_approximants
+    {Fn : ℕ → ℂ → ℂ}
     (hconv : TendstoLocallyUniformly Fn XiC atTop)
     (hFn : ∀ᶠ n in atTop, Differentiable ℂ (Fn n))
-    (hclock : ∀ᶠ n in atTop, BoundedVerticalClockDichotomy B (Fn n)) :
+    (hclock : ∀ R : ℝ, ∃ B : ℝ,
+      ∀ᶠ n in atTop, LocalBoundedVerticalClockDichotomy B R (Fn n)) :
     RiemannHypothesis := by
   have hXiCZeroReal : ∀ z : ℂ, XiC z = 0 → z.im = 0 := by
     intro z hz
@@ -297,8 +303,11 @@ theorem riemannHypothesis_of_bounded_vertical_clock_dichotomy_approximants
     obtain ⟨φ, zn, hφmono, hzn, hzeros⟩ :=
       exists_XiC_zero_approximating_subsequence hconv hFn hz
     have hφtends : Tendsto φ atTop atTop := hφmono.tendsto_atTop
-    have hclockφ : ∀ᶠ n in atTop, BoundedVerticalClockDichotomy B (Fn (φ n)) :=
-      hφtends.eventually hclock
+    let R : ℝ := dist z 0 + 1
+    obtain ⟨B, hclockR⟩ := hclock R
+    have hclockφ : ∀ᶠ n in atTop,
+        LocalBoundedVerticalClockDichotomy B R (Fn (φ n)) :=
+      hφtends.eventually hclockR
     have hsmall : ∀ᶠ n in atTop, dist (zn n) z < |z.im| / 2 :=
       eventually_atTop.2 ((Metric.tendsto_atTop.mp hzn) (|z.im| / 2)
         (half_pos (abs_pos.mpr hzim)))
@@ -311,11 +320,19 @@ theorem riemannHypothesis_of_bounded_vertical_clock_dichotomy_approximants
           _ ≤ ‖z - zn n‖ := Complex.abs_im_le_norm _
           _ = dist (zn n) z := by rw [dist_comm, dist_eq_norm]
       nlinarith [abs_pos.mpr hzim]
-    obtain ⟨N, hN⟩ := eventually_atTop.1 (hclockφ.and hznIm)
+    have hnear : ∀ᶠ n in atTop, dist (zn n) z < 1 :=
+      eventually_atTop.2 ((Metric.tendsto_atTop.mp hzn) 1 zero_lt_one)
+    have hznBall : ∀ᶠ n in atTop, zn n ∈ closedBall (0 : ℂ) R := by
+      filter_upwards [hnear] with n hn
+      rw [Metric.mem_closedBall]
+      calc
+        dist (zn n) 0 ≤ dist (zn n) z + dist z 0 := dist_triangle _ _ _
+        _ ≤ R := by dsimp [R]; linarith
+    obtain ⟨N, hN⟩ := eventually_atTop.1 (hclockφ.and (hznIm.and hznBall))
     let ψ : ℕ → ℕ := fun n => φ (n + N)
     let w : ℕ → ℂ := fun n => zn (n + N)
-    have hψtends : Tendsto ψ atTop atTop := by
-      exact hφtends.comp (tendsto_add_atTop_nat N)
+    have hψtends : Tendsto ψ atTop atTop :=
+      hφtends.comp (tendsto_add_atTop_nat N)
     have hconv' : TendstoLocallyUniformly (fun n => Fn (ψ n)) XiC atTop := by
       intro u hu x
       obtain ⟨t, ht, H⟩ := hconv u hu x
@@ -326,8 +343,8 @@ theorem riemannHypothesis_of_bounded_vertical_clock_dichotomy_approximants
         ∀ k : ℤ, Fn (ψ n) (w n + (k * T) * Complex.I) = 0 := by
       intro n
       have hgood := hN (n + N) (by omega)
-      rcases hgood.1 (w n) (hwzero n) with honline | hperiod
-      · exact False.elim (hgood.2 honline)
+      rcases hgood.1 (w n) hgood.2.2 (hwzero n) with honline | hperiod
+      · exact False.elim (hgood.2.1 honline)
       · exact hperiod
     choose Tn hTpos hTle hper using hclockw
     have hnotVertical : ¬ ∀ t : ℝ, XiC (z + (t : ℂ) * Complex.I) = 0 := by
@@ -357,6 +374,17 @@ theorem riemannHypothesis_of_bounded_vertical_clock_dichotomy_approximants
   have hzIm : z.im = 1 / 2 - ρ.re := by simp [z]
   have hre : ρ.re = 1 / 2 := by linarith [him, hzIm]
   exact (ne_of_gt (mem_rightHalf.mp hρ)) hre
+
+/-- Locally uniform eventually-entire approximants with an eventually uniform bounded vertical
+clock dichotomy force RH. Hurwitz zero selection is internal. -/
+theorem riemannHypothesis_of_bounded_vertical_clock_dichotomy_approximants
+    {Fn : ℕ → ℂ → ℂ} {B : ℝ}
+    (hconv : TendstoLocallyUniformly Fn XiC atTop)
+    (hFn : ∀ᶠ n in atTop, Differentiable ℂ (Fn n))
+    (hclock : ∀ᶠ n in atTop, BoundedVerticalClockDichotomy B (Fn n)) :
+    RiemannHypothesis :=
+  riemannHypothesis_of_locally_bounded_vertical_clock_dichotomy_approximants hconv hFn
+    (fun _R => ⟨B, hclock.mono fun _n hn z _hz => hn z⟩)
 
 /-- Under RH every zero of the centered completed zeta function lies on its real axis.  This is the
 coordinate form used to expose the vacuous reverse implication in the bounded-clock criterion. -/
@@ -478,11 +506,6 @@ theorem boundedVerticalClockApproximationCertificate_iff_riemannHypothesis :
     · exact Eventually.of_forall fun _ =>
         boundedVerticalClockDichotomy_XiC_of_riemannHypothesis 1 hRH
 
-/-- Compact-local form of the bounded clock dichotomy. -/
-def LocalBoundedVerticalClockDichotomy (B R : ℝ) (f : ℂ → ℂ) : Prop :=
-  ∀ z ∈ closedBall (0 : ℂ) R, f z = 0 → z.im = 0 ∨
-    ∃ T : ℝ, 0 < T ∧ T ≤ B ∧ ∀ k : ℤ, f (z + (k * T) * Complex.I) = 0
-
 /-- The RH-produced global clock dichotomy restricts to every compact window. -/
 theorem localBoundedVerticalClockDichotomy_XiC_of_riemannHypothesis
     (B R : ℝ) (hRH : RiemannHypothesis) :
@@ -490,93 +513,6 @@ theorem localBoundedVerticalClockDichotomy_XiC_of_riemannHypothesis
   intro z _hball hzero
   exact
     boundedVerticalClockDichotomy_XiC_of_riemannHypothesis B hRH z hzero
-
-/-- Compact-local bounded clock dichotomies suffice for RH; no condition is imposed on spurious
-approximant zeros escaping to infinity. -/
-theorem riemannHypothesis_of_locally_bounded_vertical_clock_dichotomy_approximants
-    {Fn : ℕ → ℂ → ℂ}
-    (hconv : TendstoLocallyUniformly Fn XiC atTop)
-    (hFn : ∀ᶠ n in atTop, Differentiable ℂ (Fn n))
-    (hclock : ∀ R : ℝ, ∃ B : ℝ,
-      ∀ᶠ n in atTop, LocalBoundedVerticalClockDichotomy B R (Fn n)) :
-    RiemannHypothesis := by
-  have hXiCZeroReal : ∀ z : ℂ, XiC z = 0 → z.im = 0 := by
-    intro z hz
-    by_contra hzim
-    obtain ⟨φ, zn, hφmono, hzn, hzeros⟩ :=
-      exists_XiC_zero_approximating_subsequence hconv hFn hz
-    have hφtends : Tendsto φ atTop atTop := hφmono.tendsto_atTop
-    let R : ℝ := dist z 0 + 1
-    obtain ⟨B, hclockR⟩ := hclock R
-    have hclockφ : ∀ᶠ n in atTop,
-        LocalBoundedVerticalClockDichotomy B R (Fn (φ n)) :=
-      hφtends.eventually hclockR
-    have hsmall : ∀ᶠ n in atTop, dist (zn n) z < |z.im| / 2 :=
-      eventually_atTop.2 ((Metric.tendsto_atTop.mp hzn) (|z.im| / 2)
-        (half_pos (abs_pos.mpr hzim)))
-    have hznIm : ∀ᶠ n in atTop, (zn n).im ≠ 0 := by
-      filter_upwards [hsmall] with n hn
-      intro hzeroIm
-      have himdist : |z.im| ≤ dist (zn n) z := by
-        calc
-          |z.im| = |(z - zn n).im| := by simp [hzeroIm]
-          _ ≤ ‖z - zn n‖ := Complex.abs_im_le_norm _
-          _ = dist (zn n) z := by rw [dist_comm, dist_eq_norm]
-      nlinarith [abs_pos.mpr hzim]
-    have hnear : ∀ᶠ n in atTop, dist (zn n) z < 1 :=
-      eventually_atTop.2 ((Metric.tendsto_atTop.mp hzn) 1 zero_lt_one)
-    have hznBall : ∀ᶠ n in atTop, zn n ∈ closedBall (0 : ℂ) R := by
-      filter_upwards [hnear] with n hn
-      rw [Metric.mem_closedBall]
-      calc
-        dist (zn n) 0 ≤ dist (zn n) z + dist z 0 := dist_triangle _ _ _
-        _ ≤ R := by dsimp [R]; linarith
-    obtain ⟨N, hN⟩ := eventually_atTop.1 (hclockφ.and (hznIm.and hznBall))
-    let ψ : ℕ → ℕ := fun n => φ (n + N)
-    let w : ℕ → ℂ := fun n => zn (n + N)
-    have hψtends : Tendsto ψ atTop atTop :=
-      hφtends.comp (tendsto_add_atTop_nat N)
-    have hconv' : TendstoLocallyUniformly (fun n => Fn (ψ n)) XiC atTop := by
-      intro u hu x
-      obtain ⟨t, ht, H⟩ := hconv u hu x
-      exact ⟨t, ht, hψtends.eventually H⟩
-    have hw : Tendsto w atTop (𝓝 z) := hzn.comp (tendsto_add_atTop_nat N)
-    have hwzero : ∀ n, Fn (ψ n) (w n) = 0 := fun n => hzeros (n + N)
-    have hclockw : ∀ n, ∃ T : ℝ, 0 < T ∧ T ≤ B ∧
-        ∀ k : ℤ, Fn (ψ n) (w n + (k * T) * Complex.I) = 0 := by
-      intro n
-      have hgood := hN (n + N) (by omega)
-      rcases hgood.1 (w n) hgood.2.2 (hwzero n) with honline | hperiod
-      · exact False.elim (hgood.2.1 honline)
-      · exact hperiod
-    choose Tn hTpos hTle hper using hclockw
-    have hnotVertical : ¬ ∀ t : ℝ, XiC (z + (t : ℂ) * Complex.I) = 0 := by
-      intro hall
-      exact xiC_no_vertical_zero_progression z zero_lt_one fun k => by
-        simpa using hall (k : ℝ)
-    obtain ⟨T, hTpos', -, hprog⟩ := bounded_periodic_zero_limit
-      (Ω := Set.univ) (fun q _ t => Set.mem_univ (q + (t : ℂ) * Complex.I))
-      (hconv'.tendstoLocallyUniformlyOn) XiC_analytic.continuousOn
-      (Set.mem_univ z) hw (fun _ => Set.mem_univ _) hTpos hTle hper hnotVertical
-    exact xiC_no_vertical_zero_progression z hTpos' hprog
-  rw [rh_iff_xi_ne_zero_right]
-  intro ρ hρ hzero
-  let z : ℂ := (ρ - 1 / 2) * (-Complex.I)
-  have hXiC : XiC z = 0 := by
-    rw [XiC]
-    have harg : (1 : ℂ) / 2 + z * Complex.I = ρ := by
-      dsimp only [z]
-      rw [mul_assoc]
-      have hI : (-Complex.I) * Complex.I = (1 : ℂ) := by
-        rw [neg_mul, Complex.I_mul_I]
-        ring
-      rw [hI, mul_one]
-      ring
-    rw [harg, hzero]
-  have him : z.im = 0 := hXiCZeroReal z hXiC
-  have hzIm : z.im = 1 / 2 - ρ.re := by simp [z]
-  have hre : ρ.re = 1 / 2 := by linarith [him, hzIm]
-  exact (ne_of_gt (mem_rightHalf.mp hρ)) hre
 
 /-- Existence of an eventually-entire locally uniform approximation satisfying a bounded vertical
 clock dichotomy on every fixed compact ball, with the bound allowed to depend on the ball.  This is
@@ -609,6 +545,5 @@ theorem localBoundedVerticalClockApproximationCertificate_iff_riemannHypothesis 
       refine ⟨1, Eventually.of_forall ?_⟩
       intro n z hzR hz
       exact Or.inl (xiC_zero_im_eq_zero_of_riemannHypothesis hRH hz)
-
 
 end RHTower

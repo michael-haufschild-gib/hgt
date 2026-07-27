@@ -46,6 +46,42 @@ def deningerRectangularComplexEnergy (r : ℝ) (v : ℂ × ℂ) : ℝ :=
 def deningerRectangularCenteredScale (a q : ℝ) (v : ℂ × ℂ) : ℂ × ℂ :=
   deningerRectangularRealRescale a (deningerRectangularComplexScale q v)
 
+/-- Coordinatewise conjugation is a real structure on the local rectangular atom. -/
+@[simp]
+theorem deningerRectangularConjugation_sq (v : ℂ × ℂ) :
+    deningerRectangularConjugation (deningerRectangularConjugation v) = v := by
+  rcases v with ⟨z, w⟩
+  ext <;> simp [deningerRectangularConjugation]
+
+/-- Coordinatewise conjugation is anti-linear. -/
+theorem deningerRectangularConjugation_smul
+    (a : ℂ) (v : ℂ × ℂ) :
+    deningerRectangularConjugation (a • v) =
+      (starRingEnd ℂ) a • deningerRectangularConjugation v := by
+  rcases v with ⟨z, w⟩
+  ext <;> simp [deningerRectangularConjugation, map_mul]
+
+/-- Untwisted moving-modulus maps preserve the local real structure. -/
+theorem deningerRectangularComplexScale_intertwines_conjugation
+    (q : ℝ) (v : ℂ × ℂ) :
+    deningerRectangularComplexScale q (deningerRectangularConjugation v) =
+      deningerRectangularConjugation (deningerRectangularComplexScale q v) := by
+  rcases v with ⟨z, w⟩
+  ext <;>
+    simp [deningerRectangularComplexScale, deningerRectangularConjugation,
+      map_mul, Complex.conj_ofReal]
+
+/-- Every real-centered moving-modulus map still preserves the local real structure. -/
+theorem deningerRectangularCenteredScale_intertwines_conjugation
+    (a q : ℝ) (v : ℂ × ℂ) :
+    deningerRectangularCenteredScale a q (deningerRectangularConjugation v) =
+      deningerRectangularConjugation (deningerRectangularCenteredScale a q v) := by
+  rcases v with ⟨z, w⟩
+  ext <;>
+    simp [deningerRectangularCenteredScale, deningerRectangularRealRescale,
+      deningerRectangularComplexScale, deningerRectangularConjugation,
+      map_mul, Complex.conj_ofReal]
+
 /-- The complexified rectangular endomorphism still squares to `-1`. -/
 @[simp]
 theorem deningerRectangularComplexJ_sq

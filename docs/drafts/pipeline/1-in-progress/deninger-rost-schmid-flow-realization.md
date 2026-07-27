@@ -137,7 +137,9 @@ it contains no Xi divisor data.  It has the following properties.
    \[
      H^0_{\mathrm{arith}}\simeq\mathbb R(0),\qquad \Theta_0=0.
    \]
-   Perfect weight-one endpoint duality then forces
+   `DAC_REAL_ARAKELOV_DIVISOR_ENDPOINT` constructs the algebraic
+   residue/signature cokernel \(\mathbb R(-1)\).  After analytic
+   comparison, perfect weight-one endpoint duality then forces
    \(H^2_{\mathrm{arith}}\simeq\mathbb R(-1)\) and \(\Theta_2=1\) by
    `DAC_ENDPOINT_PURITY`.  Reduced \(H^1_{\mathrm{arith}}\) is infinite-dimensional.
 5. For every integer \(n\), the four-term mapping fiber of
@@ -322,7 +324,8 @@ The algebraic residue--flow totalization theorem is separated into
   exact: chain-level smoothable-lci Gysin/Verschiebung coherence is not yet constructed there.
 - 2026-07-26 — Updated against Déglise--Feld--Jin 2026: their strict simplicial Gysin functor
   for Rost--Schmid complexes closes the higher-coherent Verschiebung gap.  Open core moves to
-  comparison with the rational-Witt correspondence site and archimedean realization.
+  comparison with the standard finite-correspondence realization and
+  archimedean realization.
 - 2026-07-26 — Corrected the finite-place bridge using Kolderup--Röndigs--Østvær's integral
   homotopy-pullback definition of \(\widetilde{\mathsf M\mathbb Z}\).  Its canonical ordinary
   projection is rank on quadratic degree, so \(n_\epsilon\mapsto n\) is already algebraic.

@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.MeromorphicPhysicalCharacteristicIncidence
 import GaloisForLFunctions.HTGeometry.FormalMahlerIntegerNormalization
 import GaloisForLFunctions.HTGeometry.MeromorphicGammaOrbit
+import GaloisForLFunctions.HTGeometry.AffineFirstOrderDifferentialAlgebraicity
 
 /-!
 # Differential algebraicity of genuine meromorphic exponential gauges
@@ -26,22 +27,6 @@ open Bottcher Polynomial
 noncomputable section
 
 namespace HTGeometry
-
-/-- A first-order exponential constraint over the base field is already a nonzero finite-jet
-relation, hence forces differential algebraicity. -/
-theorem differentialAlgebraicOver_of_deriv_eq_base_mul
-    {F E : Type*} [Field F] [Field E] [Algebra F E] [Differential E]
-    {y : E} (a : F) (hrel : y′ = algebraMap F E a * y) :
-    DifferentialAlgebraicOver F y := by
-  let Q : MvPolynomial (Fin 2) F :=
-    MvPolynomial.X 1 - MvPolynomial.C a * MvPolynomial.X 0
-  have hQ : Q ≠ 0 := by
-    intro hzero
-    have hev := congrArg
-      (MvPolynomial.eval (fun i : Fin 2 => if i = 1 then 1 else 0)) hzero
-    simp [Q] at hev
-  apply differentialAlgebraicOver_of_finiteJetRelation hQ
-  simpa [Q] using sub_eq_zero.mpr hrel
 
 end HTGeometry
 
