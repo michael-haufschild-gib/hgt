@@ -534,7 +534,11 @@ offered by the corpus.  The card therefore remains in Stage 2.
 - [x] Exact/equivalent/stronger preliminary literature gate completed across primary sources and citation descendants.
 - [x] Rediscovery gate completed across multiple elliptic gamma, elliptic summability, elliptic difference Galois theory, and older Picard--Vessiot parents.
 - [ ] Independent expert scrutiny.
-- [ ] Full unconditional Lean formalization.
+- [x] Full unconditional Lean formalization.
+      (the card's singular remaining gap — transporting the pointed partition matroids from the
+      elliptic base `K` to `C(z)` — is closed by `EllipticCompositumRationalBase.lean` and
+      `EllipticCompositumMatroidTransport.lean`, without the Weierstrass generation theorem; see the
+      two progress entries at the end of this card)
 
 ## Log
 
@@ -643,3 +647,28 @@ differentially algebraic (`EllipticMeroFieldDifferentialAlgebraicity`), proved w
 functions, no Weierstrass structure theorem and no contour integration.  What is still *not* claimed
 is the generation statement `C(P, P')` itself, nor transcendence degree one for the elliptic field —
 the matroid transport needs only differential algebraicity.
+
+## Lean progress — the matroid transport itself is now formalized
+
+`formal/GaloisForLFunctions/HTGeometry/EllipticCompositumMatroidTransport.lean` (axiom-clean,
+umbrella registered) completes the transport the previous entry made possible.
+
+- **`differentialIndependent_meromorphicEllipticCompositum_iff`** — differential independence over
+  the paired elliptic compositum *is* differential independence over the constants.  Every element of
+  the compositum is differentially algebraic over `C`, and the corpus's arbitrary base-change law
+  `differentialIndependent_differentialAdjoin_iff` says that adjoining differentially algebraic
+  coefficients preserves and reflects differential independence; the compositum is derivation closed,
+  so it equals its own differential adjunction (`differentialAdjoin_self_of_derivationClosed`).
+- **`differentialFamilyMatroid_rationalBase_eq_ellipticCompositum`** — hence the represented
+  differential matroid of *any* family of global meromorphic germs is literally the same matroid over
+  `C(z)` and over the natural elliptic base.
+- **`ellipticGammaExternalDefectFamily_differentialMatroid_eq_periodCosetPartitionMatroid_rationalBase`**
+  and **`ellipticGammaExternalQuotientFamily_differentialMatroid_eq_periodCosetPartitionMatroid_rationalBase`**
+  — the exact additive and multiplicative pointed period-coset partition matroids over `C(z)`.
+- **`ellipticGammaExternalQuotientFamily_eRk_eq_nonzeroPeriodClass_encard_rationalBase`** — the exact
+  rank law over `C(z)`: the extended differential rank of a quotient packet is the number of distinct
+  nonzero period classes it meets.
+
+This is the statement the card named as its singular remaining gap, in full: not only "every element
+of the compositum is DA over the rational coordinate field", but the resulting equality of matroids
+and the transported partition/rank laws.
