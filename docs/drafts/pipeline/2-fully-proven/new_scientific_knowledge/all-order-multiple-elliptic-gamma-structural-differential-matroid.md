@@ -823,3 +823,28 @@ discharged by construction; the abstract engine, the rank-automorphism property,
 mechanism, and the packet bookkeeping are all behind us.  What remains of `(14)` is exactly the three
 named analytic inputs — of which atomicity is already available at the bottom layer `|J| = n-2` — and
 after that the hierarchy-to-row identification and the capstone `(1)`.
+
+## Lean progress — the one-direction telescope of a face coordinate
+
+`formal/GaloisForLFunctions/HTGeometry/MultipleEllipticGammaTelescope.lean` (axiom-clean, umbrella
+registered).  Iterating the intrinsic coface equation gives the algebraic shape that the free-shift
+nonsummability and orbit-height arguments consume.
+
+- **`multipleEllipticGammaLogDerivFaceMero_translate_sub_eq_sum`** — for `q notin J` and every `k`,
+
+  ```text
+  sigma_(k tau_q) F_J - F_J = sum_(j<k) sigma_(j tau_q) F_(J cup {q}).
+  ```
+
+  So the total displacement of a face coordinate under `k` structural translations is exactly the
+  telescoped sum of translates of the *next* face.
+- **`sum_translate_eq_zero_of_periodic`** — hence `k`-fold periodicity of `F_J` in the direction
+  `tau_q` forces that telescoped sum to vanish, and **`not_periodic_of_sum_translate_ne_zero`** is
+  the criterion form: nonvanishing of the sum excludes the periodicity.  This is precisely the
+  single-face case of the `hStarInj` hypothesis of `multipleEllipticGammaFaceStar_diffIndepOn`.
+- **`not_periodic_one_of_next_face_ne_zero`** — the first instance needs nothing but nonvanishing of
+  the next face: one translation displaces `F_J` by exactly `F_(J cup {q})`.
+
+The remaining analytic content of `hStarInj` is therefore isolated as a nonvanishing statement about
+telescoped sums of lower-face translates — the free-shift one-slice nonsummability of the card's
+order-three parent, at all orders.
