@@ -1485,3 +1485,25 @@ nonresonant for that pair.  The integral relation has coefficient `1` at `i` and
 terms vanish there, so rational independence is contradicted.  Applied with `i = a` and the pair
 `(tau_(b'), tau_(a'))` of a second bottom face, this is exactly the hypothesis under which the
 external increment on the right-hand side of the cross-face equation is hypertranscendental.
+
+## Lean progress — cross-face separation, and `hStarInj` at the bottom layer
+
+`formal/GaloisForLFunctions/HTGeometry/BottomFaceCrossSeparation.lean` (axiom-clean, umbrella
+registered) executes the plan recorded above.
+
+- `differentialAlgebraicOver_translate_resonant_defect` — every translate of the *structural* defect
+  `Delta_sigma Psi_1(z; sigma, tau)` is differentially algebraic over the constants (resonance
+  witness `⟨0,0,1⟩`, then `RatFunc C -> C(z) -> C`, then translation invariance);
+- `hypertranscendentalOver_translate_nonresonant_defect` — every translate of a nonresonant external
+  defect is hypertranscendental over the constants (compositum spectrum, then base restriction,
+  then translation invariance);
+- **`multipleEllipticGammaFace_translate_ne_bottom`** — hence, for two bottom faces whose surviving
+  pairs differ in the parameter `a`, no translates of their coordinates agree: applying
+  `T_(tau_a) - 1` to the putative equality produces one and the same function, which would be both
+  differentially algebraic and hypertranscendental.
+
+Together with `multipleEllipticGammaFacePacketSlice_exponent_eq_bottom` this discharges the star
+nonresonance hypothesis `hStarInj` of the gluing engine at the bottom layer: the same-face case gives
+equal exponents, and the cross-face case is vacuous.  What remains of the all-order chain is the
+off-star differential algebraicity `hOffDA` and the per-face freeness data carried by the descending
+induction.
