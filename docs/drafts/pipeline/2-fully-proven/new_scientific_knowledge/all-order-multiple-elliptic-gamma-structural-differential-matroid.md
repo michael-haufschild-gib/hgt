@@ -913,3 +913,22 @@ the complete machinery of the descending face-lifting step: a putative different
 the higher-face packet is telescoped into a one-slice form, and the obstruction above forbids it.
 What is still needed to run the induction is the identification of the telescoped displacement with
 a one-slice jet form of the lower-face palette — i.e. the concrete hierarchy-to-row dictionary.
+
+## Lean progress — coface behaviour of the packets (the primitive systems `(20)`)
+
+`formal/GaloisForLFunctions/HTGeometry/MultipleEllipticGammaPacketCoface.lean` (axiom-clean, umbrella
+registered) formalizes the "stability of the deeper field" step of the descending face-lifting lemma.
+
+- `faceShiftLattice_mono` — the external lattice grows with the deleted face;
+- **`facePacket_translate_mem`** — a *deleted* direction `q in J` moves the packet `O_J` inside
+  itself;
+- **`facePacket_translate_sub_mem`** — a *surviving* direction `q notin J` changes a packet element
+  by an element of the next packet `O_(J cup {q})`;
+- **`facePacket_coface`** — explicitly, on a translated block,
+  `(T_q - 1)(T^g F_J) = T^g F_(J cup {q})`, which is the primitive system `(20)` of the card.
+
+Both statements follow from the intrinsic coface equation together with commutativity of the
+translations.  With the palette and the transported one-slice obstruction of the previous entry, the
+face-lifting step now has all of its structural inputs; what remains is the simultaneous-telescoping
+argument itself, whose two ingredients are the corpus's automorphism-family Ostrowski criterion and
+the rank-three fixed-field theorem `rankThree_generator_jointFixed_iff_constant`.
