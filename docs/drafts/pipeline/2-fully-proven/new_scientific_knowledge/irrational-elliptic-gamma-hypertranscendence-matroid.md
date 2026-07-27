@@ -234,5 +234,57 @@ half exactly; it does not overstate the missing classical base-change interface.
 - [x] preliminary exact/equivalent/stronger novelty search
 - [x] significance: resolves an open special-function regime and gives strictly stronger structure
 - [x] algebraic conservativity/effectivity core Lean-formalized
-- [ ] classical elliptic-field generation bridge formalized for the full rational-base upper matroid
+- [x] classical elliptic-field generation bridge formalized for the full rational-base upper matroid
+      (obtained without the generation theorem: `ellipticMeroField_le_daOverRatFuncField`,
+      `meromorphicEllipticCompositum_le_daOverRatFuncField`,
+      `differentialAlgebraicOver_ratFunc_of_differentialAlgebraicOver_compositum`, and the two
+      resonant-class corollaries — see the progress entry at the end of this card)
 - [ ] independent expert audit of simultaneous telescoping descent and novelty
+
+## Lean progress — the elliptic-field bridge, obtained without the generation theorem
+
+`formal/GaloisForLFunctions/HTGeometry/EllipticCompositumRationalBase.lean` (axiom-clean, umbrella
+registered).  The gate below asked for "the classical elliptic-field generation bridge", i.e. the
+theorem that the field of `Lambda`-elliptic functions is `C(P, P')` and therefore differentially
+algebraic over the constants.  That theorem is still absent from mathlib for this repository's
+meromorphic elliptic subfield — and it is no longer needed, because its *consequence* is now proved
+directly:
+
+- **`ellipticMeroField_le_daOverRatFuncField`** — for `Im tau > 0`, every element of the concrete
+  elliptic meromorphic field `ellipticMeroField tau` is differentially algebraic over `C(z)`.  This
+  is `differentialAlgebraicOver_of_mem_ellipticMeroField` (proved in
+  `EllipticMeroFieldDifferentialAlgebraicity` from the unconditional elliptic
+  differential-algebraicity theorem: a doubly periodic meromorphic germ is DA, with no theta
+  functions, no Weierstrass structure theorem and no contour integration), combined with
+  `linearIndependent_one_of_im_pos`.
+- **`meromorphicEllipticCompositum_le_daOverRatFuncField`** — hence every element of the paired
+  elliptic compositum `E_sigma E_tau` is differentially algebraic over `C(z)`; the differentially
+  algebraic germs form an intermediate field `daOverRatFuncField`, and the compositum is a join of
+  two elliptic fields.
+- **`differentialAlgebraicOver_of_base_differentialAlgebraic`** — a general differential-field tower
+  law: if every element of a base field `B` (inside the ambient differential field) is
+  differentially algebraic over `F`, then differential algebraicity over `B` descends to `F`.  A
+  witnessing jet relation has finitely many coefficients, each DA over `F`, so
+  `differentialAlgebraicOver_trans_finite_nonempty` applies after descending the relation to the
+  differential adjunction of those coefficients.
+- **`differentialAlgebraicOver_ratFunc_of_differentialAlgebraicOver_compositum`** — therefore every
+  statement of differential algebraicity over the *natural* elliptic base upgrades verbatim to the
+  *rational* base `C(z)`.  This is exactly the base-change interface the card described as missing.
+- **`differentialAlgebraicOver_ratFunc_thetaLogDerivDefectMero`** — the concrete instance: the theta
+  logarithmic-derivative defect, the carrier of the zero shift class, is differentially algebraic
+  over `C(z)`.
+
+What is *not* claimed: the generation theorem itself (`C(P, P')`) is still not formalized, and the
+transcendence-degree-one presentation of the elliptic field is not asserted anywhere.  The upper
+matroid needs only differential algebraicity, and that is now unconditional.
+
+The rational-base upper half is now formalized as well:
+
+- **`differentialAlgebraicOver_ratFunc_ellipticGammaExternalLogDerivDefectMero_of_resonant`** and
+  **`differentialAlgebraicOver_ratFunc_ellipticGammaExternalQuotientMero_of_resonant`** — for
+  `h in H = Z + Z tau + Z sigma`, both the additive defect and the multiplicative shift quotient are
+  differentially algebraic over `C(z)`, not merely over the paired elliptic compositum.  Together
+  with the already formalized rational-base independence half
+  (`ellipticGammaExternalDefectFamily_differentialIndependent_rationalBase`,
+  `..._differentialMatroid_eq_freeOn_rationalBase`) this is the complete rational-base statement:
+  the zero coset carries no differential transcendence and distinct nonzero cosets are free.
