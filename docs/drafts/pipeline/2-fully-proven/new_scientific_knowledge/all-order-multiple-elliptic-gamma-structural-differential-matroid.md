@@ -1002,3 +1002,68 @@ instantiation of `automorphismFamily_differentialIndependent_of_no_constant_simu
 itself, with the three directions `1, tau_q, tau_u`, the displacement data from `facePacket_coface`,
 the joint fixed field from `rankThree_generator_jointFixed_iff_constant`, and the telescoping
 exclusion from `facePacket_oneSlice_ne_coboundary`.
+
+## Lean progress — the structural translations restrict to automorphisms of the deeper face field
+
+`formal/GaloisForLFunctions/HTGeometry/FacePacketFieldTranslation.lean` (axiom-clean, umbrella
+registered) upgrades stability to invertibility, which is what the Ostrowski criterion actually
+consumes: it takes a *family of ring automorphisms* of the base field, not merely stable maps.
+
+- `differentialAdjoin_translate_stable_of_generators` — a translation that moves the generators of a
+  generated differential field inside it moves the whole field inside it (adjoin induction);
+- **`facePacketUnion_neg_translate_mem`** — the *inverse* translation also moves the generators
+  inside.  Reading the coface equation at the shifted lattice point `-tau_q + g` and cancelling
+  gives `sigma_(-tau_q) y = y - sigma_(-tau_q + g) F_(L union {q})`, and the subtracted term is a
+  member of the next packet, which is in the family because it is upward closed;
+- **`differentialAdjoin_facePacketUnion_neg_translate_stable`** — hence the deeper face field is
+  stable under `sigma_(-tau_q)` too;
+- **`facePacketFieldTranslation`** — therefore the structural translation restricts to a genuine
+  ring automorphism `K_(s+1) ~= K_(s+1)`, with `facePacketFieldTranslation_coe` identifying its
+  underlying map.
+
+## Finding — the one-slice obstruction must survive a *moving* base field
+
+The corpus's free-shift one-slice nonsummability, and its transported form
+`facePacket_oneSlice_ne_coboundary`, are stated for a shift that fixes the coefficient field of the
+free grid pointwise.  The face-lifting lemma cannot use them directly: its base field
+`K_0 = D<all deeper orbits except O_(J union {q})>_delta` is only `T_q`-*stable*, and `T_q` moves it
+(already `D` contains `C(z)`, on which `T_q` is `z -> z + tau_q`).  So the obstruction needed is the
+`K_0`-semilinear one: the shift advances the grid slice by one **and twists the coefficients**.
+
+The corpus's periodic-collapse proof does not survive that twist — after collapsing the shifted
+support back onto the original support the two sides of the cleared identity become
+`p^(phi^N) q - p q^(phi^N)`, which need not vanish.  A different argument is required, and it is in
+fact stronger and shorter.
+
+## Lean progress — twisted one-slice nonsummability
+
+`formal/GaloisForLFunctions/HTGeometry/TwistedFreeShiftNonsummability.lean` (axiom-clean, umbrella
+registered) proves the semilinear obstruction by a two-sided variable-window argument.
+
+- `twistedShiftPolyEquiv phi`, `twistedShiftFieldEquiv phi` — the `phi`-twisted unit shift of the
+  free bilateral jet grid and of its rational function field;
+- `mem_vars_twistedShiftPolyEquiv` — its variables are exactly the shifted variables (the twist is
+  injective on coefficients, so it changes no variable);
+- **`twistedShiftPoly_sub_ne_oneSlice`** — the polynomial case.  If `T P - P` is supported on the
+  slice `0`, then the variable of `P` of largest slice `M` reappears in `T P` at slice `M + 1`,
+  which must be `0`; and the variable of smallest slice `m` must have come from slice `m - 1`,
+  so `m = 0`.  Hence `M = -1 < 0 = m`, impossible; so `P` is constant, and a constant primitive
+  changes by a constant, not by a nonzero one-slice form;
+- **`twistedShiftOneSlice_ne_coboundary`** — the rational case.  A reduced fraction `p / q` of a
+  primitive satisfies `q | T q` (coprimality plus the cleared identity), and comparing the smallest
+  slice of the variables of `q` with those of `T q` forces `q` to be constant, so the primitive is a
+  polynomial;
+- `twistedShiftFieldEquiv_refl` — for the trivial twist this is the canonical free shift, so the
+  new theorem contains the corpus's untwisted one.
+
+`formal/GaloisForLFunctions/HTGeometry/TwistedFreeShiftTransport.lean` (axiom-clean, umbrella
+registered) transports it to any ambient realization:
+
+- **`twistedShift_parametrization_coe`** — if a bilateral palette is differentially independent over
+  a base field `F` and an ambient ring automorphism `Psi` commutes with the derivation, moves the
+  palette one slice, and acts on `F` by `phi`, then the canonical parametrization of the generated
+  differential field intertwines `Psi` with the `phi`-twisted shift (checked on `C` and `X` by
+  polynomial induction, then on fractions);
+- **`oneSlice_ne_coboundary_of_twisted_ambient_shift`** — hence no nonzero finite `F`-linear form in
+  the jets of the zero slice is a coboundary for `Psi`.  This is the exact statement the descending
+  face-lifting lemma needs, with `F = K_0` and `Psi = T_q`.
