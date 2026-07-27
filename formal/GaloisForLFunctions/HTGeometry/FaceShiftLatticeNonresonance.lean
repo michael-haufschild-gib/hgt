@@ -228,6 +228,66 @@ theorem faceShiftLattice_translate_injective_bottom
         (F := ↥(meromorphicEllipticCompositum (τ a) (τ b)))
         (E := meroField (Set.univ : Set ℂ)) 0)
 
+/-! ## Star exponents on one face -/
+
+/-- Two slice points of the external lattice differing by a multiple of the deleted direction have
+equal exponents. -/
+theorem faceShiftLatticeSlice_zsmul_eq
+    (τ : ι → ℂ) (hQ : PeriodsIntegrallyIndependent τ) (J : Finset ι) (q : ι)
+    {m n : ℤ} {g g' : ℂ} (hg : g ∈ faceShiftLatticeSlice τ J q)
+    (hg' : g' ∈ faceShiftLatticeSlice τ J q)
+    (heq : (m : ℂ) * τ q + g = (n : ℂ) * τ q + g') : m = n := by
+  classical
+  obtain ⟨u, -, huq, rfl⟩ := hg
+  obtain ⟨v, -, hvq, rfl⟩ := hg'
+  have hterm : ∀ i : ι,
+      (((u i - v i) + (if i = q then m - n else 0) : ℤ) : ℂ) * τ i =
+        (u i : ℂ) * τ i - (v i : ℂ) * τ i +
+          (if i = q then ((m - n : ℤ) : ℂ) * τ i else 0) := by
+    intro i
+    split_ifs <;> push_cast <;> ring
+  have hsum : ∑ i, (((u i - v i) + (if i = q then m - n else 0) : ℤ) : ℂ) * τ i =
+      (∑ i, (u i : ℂ) * τ i) - (∑ i, (v i : ℂ) * τ i) + ((m - n : ℤ) : ℂ) * τ q := by
+    rw [Finset.sum_congr rfl fun i _ => hterm i, Finset.sum_add_distrib,
+      Finset.sum_sub_distrib,
+      Finset.sum_ite_eq' Finset.univ q fun i => ((m - n : ℤ) : ℂ) * τ i]
+    simp
+  have hrel : ((0 : ℤ) : ℂ) +
+      ∑ i, (((u i - v i) + (if i = q then m - n else 0) : ℤ) : ℂ) * τ i = 0 := by
+    rw [hsum]
+    push_cast
+    linear_combination heq
+  obtain ⟨-, hc⟩ := hQ _ _ hrel
+  have hcq := hc q
+  rw [if_pos rfl, huq, hvq] at hcq
+  omega
+
+set_option maxHeartbeats 800000 in
+/-- **Star exponents are well defined on a single bottom face.**  If two translates of slice points
+of the same face agree, their exponents in the deleted direction agree. -/
+theorem multipleEllipticGammaFacePacketSlice_exponent_eq_bottom
+    (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im) (hQ : PeriodsIntegrallyIndependent τ)
+    (J : Finset ι) {a b : ι} (haJ : a ∉ J) (hbJ : b ∉ J) (hab : a ≠ b)
+    (hJ : ∀ i, i ∉ J → i = a ∨ i = b)
+    (hperiods : LinearIndependent ℚ (ellipticGammaSourcePeriods (τ a) (τ b)))
+    {q : ι} (hq : q ∈ J) {m n : ℤ} {y z : meroField (Set.univ : Set ℂ)}
+    (hy : y ∈ multipleEllipticGammaFacePacketSlice τ hτ J q)
+    (hz : z ∈ multipleEllipticGammaFacePacketSlice τ hτ J q)
+    (heq : addTranslationMeroEquiv ((m : ℂ) * τ q) y =
+      addTranslationMeroEquiv ((n : ℂ) * τ q) z) :
+    m = n := by
+  classical
+  obtain ⟨g, hg, rfl⟩ := hy
+  obtain ⟨g', hg', rfl⟩ := hz
+  rw [addTranslationMeroEquiv_add, addTranslationMeroEquiv_add] at heq
+  have hmem : ((m : ℂ) * τ q + g) ∈ faceShiftLattice τ J :=
+    faceShiftLattice_add_zsmul τ J hq (faceShiftLatticeSlice_subset τ J q hg) m
+  have hmem' : ((n : ℂ) * τ q + g') ∈ faceShiftLattice τ J :=
+    faceShiftLattice_add_zsmul τ J hq (faceShiftLatticeSlice_subset τ J q hg') n
+  have hshift := faceShiftLattice_translate_injective_bottom τ hτ hQ J haJ hbJ hab hJ
+    hperiods hmem hmem' heq
+  exact faceShiftLatticeSlice_zsmul_eq τ hQ J q hg hg' hshift
+
 end
 
 end GaloisForLFunctions

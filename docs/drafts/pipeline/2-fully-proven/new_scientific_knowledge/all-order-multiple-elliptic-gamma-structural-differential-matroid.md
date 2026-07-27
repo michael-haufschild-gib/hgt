@@ -1421,3 +1421,21 @@ the shift `(m - n) tau_q + (a - a')` to vanish, hence `m = n` by rational indepe
 left of `hStarInj` is the cross-face case `J != J'`, where two *different* order-one coordinates
 would have to agree up to translation; that is the next target, together with the off-star
 differential algebraicity `hOffDA`.
+
+## Lean progress — star exponents on a single bottom face
+
+Two further axiom-clean lemmas in the same file complete the single-face half of `hStarInj`.
+
+- **`faceShiftLatticeSlice_zsmul_eq`** — if `m tau_q + g = n tau_q + g'` with `g, g'` in the
+  zero-exponent slice of the external lattice, then `m = n`.  The integral relation has coefficient
+  `m - n` at `q` and `u_i - v_i` elsewhere, so rational independence forces `m = n`;
+- **`multipleEllipticGammaFacePacketSlice_exponent_eq_bottom`** — hence, for slice points of one
+  bottom face, `sigma_(m tau_q) y = sigma_(n tau_q) z` implies `m = n`: the two translates are
+  lattice translates of the same face coordinate (`faceShiftLattice_add_zsmul`), faithful labelling
+  identifies the two lattice points, and the previous lemma reads off the exponents.
+
+The star hypothesis of the gluing engine is therefore reduced to its cross-face case: two *distinct*
+bottom faces `J != J'` whose order-one coordinates would have to agree up to translation.  Since the
+two faces have different surviving parameter pairs, the natural separation is by the structural
+difference operator of a parameter surviving on one side and deleted on the other; that, and the
+off-star differential algebraicity `hOffDA`, are what remain of the all-order chain.
