@@ -166,6 +166,26 @@ theorem differentialAlgebraicOver_of_daConstantFlat {α β : ℂ}
   rw [hxg]
   exact differentialAlgebraicOver_mul hgDA hbDA
 
+/-- **The constant-multiplier two-shift law in the meromorphic field.**  A nonzero germ reproduced
+by each of two `ℚ`-independent translations up to a nonzero constant is differentially algebraic:
+the trivial gauge `b = 1` makes its cocycle `DA`-constant-flat. -/
+theorem differentialAlgebraicOver_of_constant_multipliers {α β : ℂ}
+    (hindep : LinearIndependent ℚ ![α, β]) {x : meroField (Set.univ : Set ℂ)} (hx : x ≠ 0)
+    {c₁ c₂ : ℂ} (hc₁ : c₁ ≠ 0) (hc₂ : c₂ ≠ 0)
+    (hα : addTranslationMeroEquiv α x = algebraMap ℂ (meroField (Set.univ : Set ℂ)) c₁ * x)
+    (hβ : addTranslationMeroEquiv β x = algebraMap ℂ (meroField (Set.univ : Set ℂ)) c₂ * x) :
+    DifferentialAlgebraicOver (RatFunc ℂ) x := by
+  have hone : DifferentialAlgebraicOver (RatFunc ℂ) (1 : meroField (Set.univ : Set ℂ)) := by
+    have := differentialAlgebraicOver_algebraMap (F := RatFunc ℂ)
+      (E := meroField (Set.univ : Set ℂ)) (1 : RatFunc ℂ)
+    simpa using this
+  refine differentialAlgebraicOver_of_daConstantFlat hindep hx
+    ⟨1, one_ne_zero, hone, c₁, c₂, hc₁, hc₂, ?_, ?_⟩
+  · rw [translationCocycle, translationCocycle, map_one, div_one, one_mul, hα,
+      mul_div_assoc, div_self hx, mul_one]
+  · rw [translationCocycle, translationCocycle, map_one, div_one, one_mul, hβ,
+      mul_div_assoc, div_self hx, mul_one]
+
 /-- **Hypertranscendence is exactly a relative gauge obstruction.**  A nonzero meromorphic germ is
 differentially algebraic over the rational coordinate field precisely when its two-shift
 multiplicative translation cocycle can be reduced to a constant character by a differentially

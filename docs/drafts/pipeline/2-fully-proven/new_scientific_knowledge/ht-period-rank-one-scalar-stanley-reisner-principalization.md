@@ -1871,3 +1871,21 @@ operations (`differentialAlgebraicOver_{add,mul,inv,div}`) and translations act 
 `differentiallyAlgebraic_component_of_matrix_monodromy_two`, which is currently stated for entire
 vector carriers and has to be moved into the field the same way
 `differentialAlgebraicOver_of_translation_fixed` moved the scalar lattice law.
+
+### Next step for the meromorphic gauge law (base case landed)
+
+`differentialAlgebraicOver_of_constant_multipliers` (in `RelativeTwoShiftGaugeCharacterization`,
+axiom-clean): a nonzero germ of the global meromorphic field reproduced by each of two
+`Q`-independent translations up to a nonzero **constant** is differentially algebraic.  This is the
+scalar base case of the vector transport named above, and it is the field analogue of the corpus's
+entire-carrier constant-multiplier law `(24)`--`(26)`.
+
+The remaining vector step, for the record, is an induction on `dim_C` of the `C`-span `W` of the
+components inside `meroField univ`: the two translations are commuting `C`-linear automorphisms of
+`W`, so `exists_common_eigenvector` (already in `DerivInvariantSuperspace`) produces `y != 0` with
+`sigma_gamma y = lambda_gamma y` and `lambda_gamma != 0`; `y` is differentially algebraic by the base
+case above; and dividing `W` by `y` — a *field* operation here, so no nonvanishing hypothesis is
+needed, unlike the entire-carrier version which had to know the eigenvector was a nowhere-zero
+exponential — gives a shift-stable space containing `1`, on which the derivative image drops
+dimension.  A finite-dimensional `C`-space closed under the derivation makes every member satisfy a
+constant-coefficient linear ODE, hence differentially algebraic.
