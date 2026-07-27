@@ -1589,3 +1589,8 @@ bottom layer: atomicity (`multipleEllipticGammaFacePacket_diffIndepOn_bottom`), 
 (same-face and cross-face lemmas with `exists_separating_parameter_of_ne`), and off-star differential
 algebraicity (this lemma).  Assembling them into the joint independence of the whole bottom layer is
 now a pure instantiation.
+
+`diffIndepOn_of_diffIndepOn_differentialAdjoin` (axiom-clean) removes the last wrinkle of the
+bottom-layer instantiation: independence over any generated differential field descends to the
+constants, so `multipleEllipticGammaFacePacket_diffIndepOn_bottom` (stated over `C<G>_delta`) feeds
+the constants-based star theorem directly.

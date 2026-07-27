@@ -197,6 +197,12 @@ theorem differentialAlgebraicOver_offStar_translate_bottom
   have hsum := differentialAlgebraicOver_add hd hyD
   simpa using hsum
 
+/-- Independence over a generated differential field descends to the constants. -/
+theorem diffIndepOn_of_diffIndepOn_differentialAdjoin
+    {G S : Set (meroField (Set.univ : Set ℂ))}
+    (h : DiffIndepOn ↥(differentialAdjoin ℂ G) S) : DiffIndepOn ℂ S :=
+  HTGeometry.DifferentialIndependent.restrictScalarsTower h
+
 omit [Fintype ι] [DecidableEq ι] in
 /-- Distinct faces admit a parameter surviving on one and deleted on the other. -/
 theorem exists_separating_parameter_of_ne {J J' : Finset ι} (h : J ≠ J') :
