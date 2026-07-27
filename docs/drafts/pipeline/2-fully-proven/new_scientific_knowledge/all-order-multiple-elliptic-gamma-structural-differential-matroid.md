@@ -978,3 +978,27 @@ This is exactly the statement the face-lifting argument needs to run with three 
 `1, tau_q, tau_u`: the unit translation acts trivially on the whole block, so it contributes the
 zero displacement to the simultaneous system while completing the rank-three period triple whose
 joint fixed field is `C`.
+
+## Lean progress — translation stability of the deeper face field
+
+`formal/GaloisForLFunctions/HTGeometry/FacePacketFieldStability.lean` (axiom-clean, umbrella
+registered) supplies the second prerequisite, i.e. the "stability of the deeper field" claim of the
+face-lifting lemma in the form the Ostrowski criterion consumes.
+
+- `facePacketUnion tau htau S` — the union of the packets of a family `S` of deleted faces;
+- **`facePacketUnion_translate_mem`** — if `S` is **upward closed** (`L in S`, `q notin L` implies
+  `insert q L in S`), every structural translation maps each generator into the generated
+  differential field: a deleted direction preserves the packet, a surviving direction changes the
+  element by a member of the next packet, and the element itself is already there;
+- **`differentialAdjoin_facePacketUnion_translate_stable`** — hence the whole generated differential
+  field `K = C<facePacketUnion>_delta` is stable under every structural translation.  The proof is an
+  `IntermediateField.adjoin` induction: on generators the translation commutes with the jets
+  (`DifferentialAlgEquiv.map_differentialJet`) and `K` is derivation closed, and the field
+  operations are preserved because the translation is a ring homomorphism fixing the constants.
+
+Both prerequisites recorded earlier are now in place — the unit period of the hierarchy and the
+translation stability of `K_(s+1)`.  What remains for the descending face-lifting lemma is the
+instantiation of `automorphismFamily_differentialIndependent_of_no_constant_simultaneous_jet_telescoping`
+itself, with the three directions `1, tau_q, tau_u`, the displacement data from `facePacket_coface`,
+the joint fixed field from `rankThree_generator_jointFixed_iff_constant`, and the telescoping
+exclusion from `facePacket_oneSlice_ne_coboundary`.
