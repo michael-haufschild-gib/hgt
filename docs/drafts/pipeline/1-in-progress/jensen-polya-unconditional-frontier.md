@@ -1566,3 +1566,73 @@ Four items discharged against the actual theta source, none of them an interface
 short of any statement about `Ξ`, and the two remaining estimates in §21.3 are where the `1.42×`
 margin lives — if either is looser than claimed, the log-concavity conclusion fails and the whole
 `κ₂` route with it.
+
+## 22. `REDISCOVERED`: §16–§21 is `ThetaCuspKernelLogConcavity.lean`
+
+The module I have been reconstructing for four sections exists, is unconditional, and is stronger
+than what I built. Its own header:
+
+> *"The first theta atom has a large explicit negative logarithmic curvature. This file keeps the full
+> `x`-dependent Gaussian in the higher-atom comparison and proves that **the score variance of the
+> complete atom mixture cannot exhaust that curvature**. The result is an unconditional,
+> computation-free proof that `thetaCuspFullSource` is **strictly log-concave on the nonnegative
+> half-line**. The proof repairs the missing perturbation step in the 2026 log-concavity preprints.
+> It does not prove RH: order-two total positivity is strictly weaker than the all-order condition."*
+
+"Score variance cannot exhaust the curvature" **is** the mixture identity `−(log Φ)″ = E_w[c] −
+Var_w[a]` of §17. Item by item:
+
+| built in §19–§21 | already in the corpus | verdict |
+|---|---|---|
+| `thetaCuspSourceTerm_le_ratio_bound` | `thetaCuspSourceTerm_le_first_dynamic` | identical — same `2n⁴`, same exponent |
+| `thetaCuspAtomLogCurvature_floor` | `thetaCuspBornWittenLogCurvature_bounds` | identical, and the corpus also has the upper bound |
+| `hasDerivAt_thetaCuspSourceTerm_second` | `iteratedDeriv_two_thetaCuspSourceTerm_eq` | identical |
+| `thetaCuspAtomLogSlope_sub_eq` | `thetaCuspBornWittenSuperpotential_sub_eq_scaleDifference_mul` | identical up to `×(−2)` |
+| `pi_le_thetaCuspMorseScale` | `thetaCuspLogConcavityScale_gt_three` | identical |
+| `mixture_curvature_ge` (truncated) | `thetaCuspLogConcavityNumerator_neg_all` | corpus proves it for the **full series** |
+| — | `strictConcaveOn_thetaCuspLogSource : StrictConcaveOn ℝ Set.univ` | the conclusion, on **all of ℝ** |
+
+And the tail arithmetic of §21.3 that I flagged as the fragile step is
+`ThetaCuspKernelLogConcavity.tsum_thetaCuspLogConcavityTailWeight_{four,six,eight}_le`, with the
+geometric majorants already proved.
+
+**`RHTower/ThetaAtomLogCurvature.lean` is deleted, unregistered, oleans cleaned.**
+
+### 22.1 The corpus is already at order four on the source side
+
+`ThetaCuspFullReflectionFourthTuran.lean` — *"Every estimate is symbolic and unconditional. No zero
+data or Riemann-hypothesis assumption is used"* — proves
+
+```text
+160 < (log Φ)⁗(x) + 4·((log Φ)″(x))²        for x > 0
+```
+
+(`thetaCuspLogSource_fourthTuran_gt_one_hundred_sixty`), plus
+`thetaCuspSourceReflectionFourthHankel_pos`. So the fourth-order source Turán inequality is done,
+unconditionally, and the second-order one (log-concavity) is done for the full series on all of `ℝ`.
+
+### 22.2 What this costs, and what it changes
+
+Five hand derivations in this card reproduced formalized corpus material: the per-atom curvature
+(§17.1), the log-slope gap (§20.1), the atom ratio (§21.1), the tail weights (§21.3), and the mixture
+argument itself (§17). **The corpus-search mandate was followed for the Jensen/Pólya lane and not for
+the theta-kernel lane**, because I reached the kernel from the Jensen side and never searched for it
+under its own name. The search that would have caught it is `research "theta kernel log-concavity"`,
+one call, at the top of §16.
+
+What it changes: the `κ₂` route's *inputs* are not open — they are proved. The corpus's own note says
+why that is not enough, in the same words as §11.4: **order-two total positivity is strictly weaker
+than the all-order condition.** So the open question is not the log-concavity of `Φ`; it is whether
+the corpus's order-four source inequality transfers to hyperbolicity of `J^(4,n)`, which is the
+Jensen-side statement none of the source-side modules makes.
+
+That transfer is the only thing in this card that is neither built nor known, and it is what §14's
+`ε`-reduction and §15's `κ*(b)` were for.
+
+## Gates (revised)
+
+- [x] §16–§21 identified as `ThetaCuspKernelLogConcavity` — duplicate deleted
+- [x] `Φ` strictly log-concave on `ℝ`, full series: **corpus, unconditional**
+- [x] fourth-order source Turán `160 < (log Φ)⁗ + 4((log Φ)″)²`: **corpus, unconditional**
+- [ ] transfer: source-side order-four inequality ⟹ `J^(4,n)` hyperbolic — the actual open step
+- [ ] `κ*(b)` rigorous (§15) — still the algebra that would consume such a transfer

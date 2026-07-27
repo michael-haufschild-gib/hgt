@@ -215,6 +215,43 @@ The only unresolved positive real factors are reduced rationals `p/q` with even 
 `q>1`.  Nonreal exponents remain a separate open core; their logarithmic-spiral divisor has an
 infinite monodromy orbit.
 
+The next Borel-singularity-rank attack also fails, but leaves an exact positive theorem.  For
+the inverse-power Barnes tail
+
+```text
+R_s(x) ~ sum_(k>=1) (-1)^k zeta(-sk)x^(-k),
+```
+
+its order-`s` moment-Borel transform is
+
+```text
+B_s(xi)
+ = sin(pi s/2)/pi
+   sum_(n>=1) (1/n)
+   [xi/(2 pi n)^s]
+   / [1+2cos(pi s/2)xi/(2 pi n)^s+(xi/(2 pi n)^s)^2].
+```
+
+The poles are the two power lattices
+
+```text
+xi_(n,+/-)=-(2 pi n)^s exp(+/- i pi s/2).
+```
+
+After the Newton-compatible ramification
+`xi=-exp(+/- i pi s/2)eta^s`, both become `eta=2 pi n`, with constant residues
+`+/- i/s`.  Thus the apparent infinite rational rank of the unramified pole locations for
+nonintegral rational `s` is coordinate-dependent.  Kamimoto's finite-eigenvalue resurgence
+theorem applies only after precisely this kind of Newton normalization, so it gives no
+contradiction.
+
+Complete proof and literature boundary:
+
+`../2-fully-proven/new_scientific_knowledge/power-canonical-product-exact-moment-borel-lattice-law.md`.
+
+The remaining even-numerator rational family therefore requires a global divisor, monodromy, or
+difference-algebra invariant; Gevrey order and first Borel singular support are exhausted.
+
 ## Candidate creator interface
 
 Let `F_m` denote a completed source realization of the positive coefficient shell and let
@@ -254,3 +291,6 @@ at the seam.
   rational cyclic norm and odd-numerator HT extension survived and were paper-proved separately.
 - 2026-07-27 — Closed the irrational real family: the zeta tail has exact irrational Gevrey
   order, impossible for a divergent formal solution of an analytic ADE by Sibuya--Ramis.
+- 2026-07-27 — Retired the Borel pole-rank shortcut.  Computed the exact moment-Borel transform,
+  its two power lattices, constant ramified residues, and showed Newton ramification turns both
+  into ordinary arithmetic lattices.

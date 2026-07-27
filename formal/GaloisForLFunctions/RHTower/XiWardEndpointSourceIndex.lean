@@ -1,3 +1,4 @@
+import GaloisForLFunctions.RHTower.DeningerDivisorFlow
 import GaloisForLFunctions.RHTower.PrimeArchExactOffLineQuartetAccretivity
 import GaloisForLFunctions.RHTower.XiThermalOffLineChargeSelfCubicBound
 import GaloisForLFunctions.RHTower.XiWardDiagonalQuantumHeightCapUniversalityLaw
@@ -97,6 +98,104 @@ theorem xiEndpointOffLineChargeTerm_quadrupleEmbed
       xiEndpointCrossCharge_lineConj]
     rfl
 
+/-- Multiplicity-exact off-line Xi divisor. -/
+abbrev XiOffLineZeroCopy :=
+  {q : XiZeroCopy // (q.1 : ℂ).re ≠ 1 / 2}
+
+/-- The four quadrant copies of every strict-right upper representative,
+viewed as the complete off-line divisor. -/
+def xiWardQuadrupleEmbedOffLine
+    (p : (Bool × Bool) × XiRightUpperZeroCopy) : XiOffLineZeroCopy :=
+  ⟨xiWardQuadrupleEmbed p, by
+    intro hon
+    have hzero :=
+      xiEndpointOffLineChargeTerm_eq_zero (xiWardQuadrupleEmbed p) hon
+    have hpos : 0 <
+        xiEndpointOffLineChargeTerm (xiWardQuadrupleEmbed p) := by
+      rw [xiEndpointOffLineChargeTerm_quadrupleEmbed]
+      exact xiEndpointWardPairWeight_pos p.2
+    linarith⟩
+
+theorem xiWardQuadrupleEmbedOffLine_injective :
+    Function.Injective xiWardQuadrupleEmbedOffLine := by
+  intro p p' h
+  apply xiWardQuadrupleEmbed_injective
+  exact congrArg Subtype.val h
+
+theorem xiWardQuadrupleEmbedOffLine_surjective :
+    Function.Surjective xiWardQuadrupleEmbedOffLine := by
+  intro r
+  let z : ℂ := I * xiSpectralPoint r.1
+  have hzre : z.re ≠ 0 := by
+    change (I * xiSpectralPoint r.1).re ≠ 0
+    rw [I_mul_xiSpectralPoint]
+    simp only [Complex.sub_re]
+    intro hzero
+    apply r.2
+    norm_num at hzero ⊢
+    linarith
+  by_cases hpos : 0 < z.re
+  · let qr : XiRightZeroCopy := ⟨r.1, hpos⟩
+    cases hpair : xiRightSchwarzPairEquiv.symm qr with
+    | inl q =>
+        refine ⟨((false, false), q), ?_⟩
+        apply Subtype.ext
+        change q.1.1 = r.1
+        have heq := congrArg xiRightSchwarzPairEquiv hpair
+        have hright : q.1 = qr := by simpa using heq.symm
+        exact congrArg Subtype.val hright
+    | inr q =>
+        refine ⟨((true, false), q), ?_⟩
+        apply Subtype.ext
+        change xiZeroCopyConjEquiv q.1.1 = r.1
+        have heq := congrArg xiRightSchwarzPairEquiv hpair
+        have hright : xiRightZeroCopyConjEquiv q.1 = qr := by
+          simpa using heq.symm
+        exact congrArg (fun x : XiRightZeroCopy => x.1) hright
+  · have hneg : z.re < 0 := by
+      have hnonpos := not_lt.mp hpos
+      exact lt_of_le_of_ne hnonpos hzre
+    have hreflect : 0 <
+        (I * xiSpectralPoint (xiZeroCopyReflectEquiv r.1)).re := by
+      rw [xiSpectralPoint_reflect]
+      rw [show I * (-xiSpectralPoint r.1) =
+        -(I * xiSpectralPoint r.1) by ring]
+      rw [Complex.neg_re]
+      exact neg_pos.mpr hneg
+    let qr : XiRightZeroCopy :=
+      ⟨xiZeroCopyReflectEquiv r.1, hreflect⟩
+    cases hpair : xiRightSchwarzPairEquiv.symm qr with
+    | inl q =>
+        refine ⟨((false, true), q), ?_⟩
+        apply Subtype.ext
+        change xiZeroCopyReflectEquiv q.1.1 = r.1
+        have heq := congrArg xiRightSchwarzPairEquiv hpair
+        have hright : q.1 = qr := by simpa using heq.symm
+        have hbase :
+            q.1.1 = xiZeroCopyReflectEquiv r.1 :=
+          congrArg Subtype.val hright
+        rw [hbase, xiZeroCopyReflectEquiv_apply_apply]
+    | inr q =>
+        refine ⟨((true, true), q), ?_⟩
+        apply Subtype.ext
+        change xiZeroCopyLineConjEquiv q.1.1 = r.1
+        have heq := congrArg xiRightSchwarzPairEquiv hpair
+        have hright : xiRightZeroCopyConjEquiv q.1 = qr := by
+          simpa using heq.symm
+        have hbase :
+            xiZeroCopyConjEquiv q.1.1 =
+              xiZeroCopyReflectEquiv r.1 :=
+          congrArg (fun x : XiRightZeroCopy => x.1) hright
+        rw [xiZeroCopyLineConjEquiv, Equiv.trans_apply, hbase,
+          xiZeroCopyReflectEquiv_apply_apply]
+
+/-- Exact quadrant parametrization of the complete off-line Xi divisor. -/
+def xiWardQuadrupleOffLineEquiv :
+    (Bool × Bool) × XiRightUpperZeroCopy ≃ XiOffLineZeroCopy :=
+  Equiv.ofBijective xiWardQuadrupleEmbedOffLine
+    ⟨xiWardQuadrupleEmbedOffLine_injective,
+      xiWardQuadrupleEmbedOffLine_surjective⟩
+
 theorem summable_xiEndpointWardPairWeight :
     Summable xiEndpointWardPairWeight := by
   have hinj : Function.Injective
@@ -104,6 +203,60 @@ theorem summable_xiEndpointWardPairWeight :
     intro a b hab
     exact Subtype.ext (Subtype.ext hab)
   exact summable_xiEndpointCrossCharge.comp_injective hinj
+
+/-- The off-line endpoint charge is the sum over the literal off-line
+multiplicity-copy subtype. -/
+theorem xiEndpointOffLineCharge_eq_tsum_offLine :
+    xiEndpointOffLineCharge =
+      ∑' q : XiOffLineZeroCopy, xiEndpointCrossCharge q.1 := by
+  rw [xiEndpointOffLineCharge, xiEndpointOffLineChargeTerm]
+  change
+    (∑' q : XiZeroCopy,
+      xiEndpointOffLineSet.indicator xiEndpointCrossCharge q) =
+    ∑' q : {q : XiZeroCopy // q ∈ xiEndpointOffLineSet},
+      xiEndpointCrossCharge q.1
+  rw [tsum_subtype]
+
+theorem xiEndpointCrossCharge_quadrupleOffLineEquiv
+    (p : (Bool × Bool) × XiRightUpperZeroCopy) :
+    xiEndpointCrossCharge (xiWardQuadrupleOffLineEquiv p).1 =
+      xiEndpointWardPairWeight p.2 := by
+  have hterm :=
+    xiEndpointOffLineChargeTerm_quadrupleEmbed p
+  rw [xiEndpointOffLineChargeTerm_eq
+    (xiWardQuadrupleEmbed p)
+    (xiWardQuadrupleEmbedOffLine p).2] at hterm
+  exact hterm
+
+/-- **Exact source/index orbit identity.**  The complete off-line endpoint
+charge is four times the source weight carried by the canonical strict-right
+upper representatives. -/
+theorem xiEndpointOffLineCharge_eq_four_mul_rightUpper :
+    xiEndpointOffLineCharge =
+      4 * ∑' q : XiRightUpperZeroCopy, xiEndpointWardPairWeight q := by
+  rw [xiEndpointOffLineCharge_eq_tsum_offLine,
+    ← xiWardQuadrupleOffLineEquiv.tsum_eq
+      (fun q : XiOffLineZeroCopy => xiEndpointCrossCharge q.1)]
+  have hsumProd : Summable
+      (fun p : (Bool × Bool) × XiRightUpperZeroCopy =>
+        xiEndpointWardPairWeight p.2) := by
+    exact (summable_prod_of_nonneg (fun p =>
+      (xiEndpointWardPairWeight_pos p.2).le)).mpr
+      ⟨fun _ => summable_xiEndpointWardPairWeight, Summable.of_finite⟩
+  calc
+    (∑' p : (Bool × Bool) × XiRightUpperZeroCopy,
+        xiEndpointCrossCharge (xiWardQuadrupleOffLineEquiv p).1) =
+        ∑' p : (Bool × Bool) × XiRightUpperZeroCopy,
+          xiEndpointWardPairWeight p.2 := by
+      apply tsum_congr
+      exact xiEndpointCrossCharge_quadrupleOffLineEquiv
+    _ = ∑' i : Bool × Bool,
+          ∑' q : XiRightUpperZeroCopy, xiEndpointWardPairWeight q := by
+      rw [hsumProd.tsum_prod' (fun _ => summable_xiEndpointWardPairWeight)]
+    _ = 4 * ∑' q : XiRightUpperZeroCopy,
+          xiEndpointWardPairWeight q := by
+      rw [tsum_fintype, Finset.sum_const, nsmul_eq_mul]
+      norm_num
 
 /-- Four endpoint-weight copies of every strict-right pair inject into the
 complete off-line endpoint charge. -/
@@ -152,6 +305,109 @@ theorem four_mul_tsum_xiEndpointWardPairWeight_le_offLineCharge :
       hFsummable summable_xiEndpointOffLineChargeTerm
   rw [htsum] at hcomp
   exact hcomp
+
+/-- Global endpoint-weighted Ward index.  Each strict-right quartet contributes
+its endpoint weight times the universal quantum `8π`. -/
+def xiEndpointWeightedWardIndex : ℝ :=
+  (8 * π) * ∑' q : XiRightUpperZeroCopy, xiEndpointWardPairWeight q
+
+/-- **Exact endpoint-source/Ward conversion law.**  The global
+source-weighted `8π` Ward index is exactly `2π` times the complete off-line
+endpoint charge. -/
+theorem xiEndpointWeightedWardIndex_eq_twoPi_offLineCharge :
+    xiEndpointWeightedWardIndex =
+      (2 * π) * xiEndpointOffLineCharge := by
+  rw [xiEndpointWeightedWardIndex,
+    xiEndpointOffLineCharge_eq_four_mul_rightUpper]
+  ring
+
+theorem xiEndpointWeightedWardIndex_nonneg :
+    0 ≤ xiEndpointWeightedWardIndex := by
+  exact mul_nonneg (by positivity) (tsum_nonneg fun q =>
+    (xiEndpointWardPairWeight_pos q).le)
+
+/-- The global weighted Ward index fits inside `2π` times the complete
+off-line endpoint source charge. -/
+theorem xiEndpointWeightedWardIndex_le_offLineCharge :
+    xiEndpointWeightedWardIndex ≤
+      (2 * π) * xiEndpointOffLineCharge := by
+  exact xiEndpointWeightedWardIndex_eq_twoPi_offLineCharge.le
+
+theorem xiEndpointWeightedWardIndex_le_completedCurvature :
+    xiEndpointWeightedWardIndex ≤
+      (2 * π) * xiEndpointCompletedCurvature := by
+  rw [xiEndpointWeightedWardIndex_eq_twoPi_offLineCharge]
+  exact mul_le_mul_of_nonneg_left
+    xiEndpointOffLineCharge_le_curvature (by positivity)
+
+/-- Explicit unconditional cap on the complete source-weighted Ward index. -/
+theorem xiEndpointWeightedWardIndex_lt_ninetyThreePi_over_thousand :
+    xiEndpointWeightedWardIndex < 93 * π / 1000 := by
+  have hC := xiEndpointCompletedCurvature_lt_ninetyThree_over_twoThousand
+  have hle := xiEndpointWeightedWardIndex_le_completedCurvature
+  have hmul := mul_lt_mul_of_pos_left hC (show 0 < 2 * π by positivity)
+  nlinarith
+
+/-- Every off-line quartet forces the global weighted Ward index to pay one
+full `8π` packet after multiplication by its height denominator. -/
+theorem eightPi_le_xiEndpointWeightedWardIndex_mul_one_add_height_sq
+    (q : XiRightUpperZeroCopy) :
+    8 * π ≤ xiEndpointWeightedWardIndex *
+      ((xiRightCenteredZero q.1).im ^ 2 + 1) := by
+  have hqoff := xiRightUpperZeroCopy_offLine q
+  have hfour :=
+    four_le_offLineCharge_mul_one_add_im_sq q.1.1 hqoff
+  have hmul := mul_le_mul_of_nonneg_left hfour
+    (show 0 ≤ 2 * π by positivity)
+  calc
+    8 * π = (2 * π) * 4 := by ring
+    _ ≤ (2 * π) *
+        (xiEndpointOffLineCharge * ((q.1.1.1 : ℂ).im ^ 2 + 1)) := hmul
+    _ = ((2 * π) * xiEndpointOffLineCharge) *
+        ((q.1.1.1 : ℂ).im ^ 2 + 1) := by ring
+    _ = xiEndpointWeightedWardIndex *
+        ((q.1.1.1 : ℂ).im ^ 2 + 1) := by
+      rw [xiEndpointWeightedWardIndex_eq_twoPi_offLineCharge]
+    _ = xiEndpointWeightedWardIndex *
+        ((xiRightCenteredZero q.1).im ^ 2 + 1) := by
+      rw [xiRightCenteredZero, I_mul_xiSpectralPoint]
+      norm_num [Complex.sub_im]
+
+/-- The source-weighted Ward index vanishes exactly on RH. -/
+theorem xiEndpointWeightedWardIndex_eq_zero_iff_rh :
+    xiEndpointWeightedWardIndex = 0 ↔ RiemannHypothesis := by
+  constructor
+  · intro hzero
+    have hsum :
+        ∑' q : XiRightUpperZeroCopy, xiEndpointWardPairWeight q = 0 := by
+      rw [xiEndpointWeightedWardIndex] at hzero
+      nlinarith [pi_pos]
+    by_contra hnot
+    obtain ⟨q⟩ :=
+      nonempty_xiRightUpperZeroCopy_of_not_riemannHypothesis hnot
+    have hle := summable_xiEndpointWardPairWeight.le_tsum q
+      (fun j _ => (xiEndpointWardPairWeight_pos j).le)
+    rw [hsum] at hle
+    linarith [xiEndpointWardPairWeight_pos q]
+  · intro hRH
+    rw [xiEndpointWeightedWardIndex]
+    have hfun : xiEndpointWardPairWeight = fun _ => 0 := by
+      funext q
+      exact False.elim
+        (xiRightUpperZeroCopy_offLine q
+          (xi_divisor_support_re_eq_half_of_rh hRH q.1.1.1))
+    rw [hfun, tsum_zero, mul_zero]
+
+theorem xiEndpointWeightedWardIndex_pos_iff_not_rh :
+    0 < xiEndpointWeightedWardIndex ↔ ¬RiemannHypothesis := by
+  constructor
+  · intro hpos hRH
+    have hzero := xiEndpointWeightedWardIndex_eq_zero_iff_rh.mpr hRH
+    linarith
+  · intro hnot
+    exact lt_of_le_of_ne xiEndpointWeightedWardIndex_nonneg
+      (fun hzero => hnot
+        (xiEndpointWeightedWardIndex_eq_zero_iff_rh.mp hzero.symm))
 
 /-- Source-weighted infinitesimal Julia-defect density of one strict-right
 Schwarz pair. -/
@@ -212,6 +468,99 @@ theorem lintegral_xiEndpointWeightedWardPairDensity
   rw [lintegral_infinitesimalDefect_xiAntiCausalWardSchwarzPair_eulerEdge]
   rw [ENNReal.ofReal_mul (by positivity : (0 : ℝ) ≤ 8 * π)]
   ring
+
+/-- Complete endpoint-weighted Ward density, summed over canonical
+strict-right upper representatives. -/
+def xiEndpointWeightedWardDensity (t : ℝ) : ENNReal :=
+  ∑' q : XiRightUpperZeroCopy,
+    ENNReal.ofReal (xiEndpointWeightedWardPairDensity q t)
+
+/-- **Global weighted Ward integral law.**  The integral of the complete
+source-weighted Julia-defect density is the endpoint-weighted Ward index. -/
+theorem lintegral_xiEndpointWeightedWardDensity :
+    ∫⁻ t : ℝ, xiEndpointWeightedWardDensity t =
+      ENNReal.ofReal xiEndpointWeightedWardIndex := by
+  have hqmeas : ∀ q : XiRightUpperZeroCopy,
+      AEMeasurable (fun t : ℝ =>
+        ENNReal.ofReal (xiEndpointWeightedWardPairDensity q t)) := by
+    intro q
+    apply Measurable.aemeasurable
+    apply ENNReal.continuous_ofReal.measurable.comp
+    have hcont :=
+      (re_xiAntiCausalWardSchwarzPairResponse_eulerEdge_continuous q).const_mul 2
+    exact (hcont.const_mul (xiEndpointWardPairWeight q)).measurable
+  change
+    (∫⁻ t : ℝ, ∑' q : XiRightUpperZeroCopy,
+      ENNReal.ofReal (xiEndpointWeightedWardPairDensity q t)) =
+      ENNReal.ofReal xiEndpointWeightedWardIndex
+  rw [MeasureTheory.lintegral_tsum hqmeas]
+  rw [tsum_congr lintegral_xiEndpointWeightedWardPairDensity]
+  have hnn : ∀ q : XiRightUpperZeroCopy,
+      0 ≤ (8 * π) * xiEndpointWardPairWeight q := by
+    intro q
+    exact mul_nonneg (by positivity) (xiEndpointWardPairWeight_pos q).le
+  have hsum : Summable (fun q : XiRightUpperZeroCopy =>
+      (8 * π) * xiEndpointWardPairWeight q) :=
+    summable_xiEndpointWardPairWeight.mul_left (8 * π)
+  rw [← ENNReal.ofReal_tsum_of_nonneg hnn hsum,
+    tsum_mul_left, xiEndpointWeightedWardIndex]
+
+/-- The off-line endpoint charge can be recovered exactly from the weighted
+Ward index. -/
+theorem xiEndpointOffLineCharge_eq_weightedWardIndex_div_twoPi :
+    xiEndpointOffLineCharge =
+      xiEndpointWeightedWardIndex / (2 * π) := by
+  rw [xiEndpointWeightedWardIndex_eq_twoPi_offLineCharge]
+  field_simp
+
+/-- Cubic thermal budget written solely in the endpoint-weighted Ward
+coordinate. -/
+def xiEndpointWeightedWardCubicBudget : ℝ :=
+  4 *
+    ((xiEndpointWeightedWardIndex / (2 * π)) /
+      (4 - xiEndpointWeightedWardIndex / (2 * π))) ^ 3
+
+/-- The Ward-index cubic budget is exactly the self-localized off-line
+endpoint-charge budget. -/
+theorem xiEndpointWeightedWardCubicBudget_eq_offLineChargeBudget :
+    xiEndpointWeightedWardCubicBudget =
+      xiThermalOffLineChargeCubicBudget := by
+  unfold xiEndpointWeightedWardCubicBudget
+    xiThermalOffLineChargeCubicBudget
+  rw [xiEndpointOffLineCharge_eq_weightedWardIndex_div_twoPi]
+
+/-- **Ward-to-thermal cubic law.**  The full transverse thermal defect is
+controlled by the same source-weighted Ward index that counts every off-line
+quartet with its exact endpoint charge. -/
+theorem xiThermalOrientationEnergy_le_weightedWardCubicBudget :
+    xiThermalOrientationEnergy ≤
+      xiEndpointWeightedWardCubicBudget := by
+  rw [xiEndpointWeightedWardCubicBudget_eq_offLineChargeBudget]
+  exact xiThermalOrientationEnergy_le_offLineChargeCubicBudget
+
+/-- **Ward/source/thermal gap law.**  The positive discrepancy between the
+thermal second moment and the explicit prime--archimedean source is bounded
+cubically by the endpoint-weighted Ward index.  Its zero set is exactly the
+zero set of that index. -/
+theorem xiWardSourceThermalGapLaw :
+    0 ≤ xiThermalSecondMoment - normalizedPrimeArchMoment 1 ∧
+    xiThermalSecondMoment - normalizedPrimeArchMoment 1 ≤
+      xiEndpointWeightedWardCubicBudget ∧
+    (xiThermalSecondMoment = normalizedPrimeArchMoment 1 ↔
+      xiEndpointWeightedWardIndex = 0) := by
+  have hgap :
+      xiThermalSecondMoment - normalizedPrimeArchMoment 1 =
+        xiThermalOrientationEnergy :=
+    xiThermalSecondMoment_sub_source_eq_orientationEnergy
+  constructor
+  · rw [hgap]
+    exact xiThermalOrientationEnergy_nonneg
+  constructor
+  · rw [hgap]
+    exact xiThermalOrientationEnergy_le_weightedWardCubicBudget
+  · rw [← sub_eq_zero, hgap,
+      xiThermalOrientationEnergy_eq_zero_iff_rh,
+      xiEndpointWeightedWardIndex_eq_zero_iff_rh]
 
 /-- Every weighted `8π` packet fits inside `2π` times the complete off-line
 endpoint source charge. -/
@@ -315,6 +664,37 @@ theorem xiWardEndpointSource_atomicLaw
     hb,
     (xiWard_diagonalQuantum_heightCapUniversality q).1,
     xiPairGramTerm_diag_lt_exactQuartetHeightCap q⟩
+
+/-- **Global endpoint-source/Ward law.**  One positive boundary density
+simultaneously records the exact off-line endpoint charge, the RH phase,
+the source-produced height gap, and the cubic thermal/source discrepancy. -/
+theorem xiWardEndpointSource_globalLaw :
+    (∫⁻ t : ℝ, xiEndpointWeightedWardDensity t =
+      ENNReal.ofReal xiEndpointWeightedWardIndex) ∧
+    xiEndpointWeightedWardIndex =
+      (2 * π) * xiEndpointOffLineCharge ∧
+    0 ≤ xiEndpointWeightedWardIndex ∧
+    xiEndpointWeightedWardIndex < 93 * π / 1000 ∧
+    (xiEndpointWeightedWardIndex = 0 ↔ RiemannHypothesis) ∧
+    (xiThermalSecondMoment - normalizedPrimeArchMoment 1 =
+      xiThermalOrientationEnergy) ∧
+    xiThermalOrientationEnergy ≤
+      xiEndpointWeightedWardCubicBudget ∧
+    (xiThermalSecondMoment = normalizedPrimeArchMoment 1 ↔
+      xiEndpointWeightedWardIndex = 0) ∧
+    ∀ q : XiRightUpperZeroCopy,
+      8 * π ≤ xiEndpointWeightedWardIndex *
+        ((xiRightCenteredZero q.1).im ^ 2 + 1) := by
+  exact ⟨
+    lintegral_xiEndpointWeightedWardDensity,
+    xiEndpointWeightedWardIndex_eq_twoPi_offLineCharge,
+    xiEndpointWeightedWardIndex_nonneg,
+    xiEndpointWeightedWardIndex_lt_ninetyThreePi_over_thousand,
+    xiEndpointWeightedWardIndex_eq_zero_iff_rh,
+    xiThermalSecondMoment_sub_source_eq_orientationEnergy,
+    xiThermalOrientationEnergy_le_weightedWardCubicBudget,
+    xiWardSourceThermalGapLaw.2.2,
+    eightPi_le_xiEndpointWeightedWardIndex_mul_one_add_height_sq⟩
 
 end
 

@@ -203,6 +203,29 @@ theorem lintegral_quartetWardInfinitesimalDensity
 
 /-! ## Exact source marking -/
 
+/-- Endpoint source weight of the quartet
+`1 / 2 ± a ± ib`.  It is the cross charge of one orbit representative. -/
+def quartetEndpointSourceWeight (a b : ℝ) : ℝ :=
+  (1 / 4 + b ^ 2 - a ^ 2) /
+    ((((1 / 2 + a) ^ 2 + b ^ 2) *
+      ((1 / 2 - a) ^ 2 + b ^ 2)))
+
+theorem quartetEndpointSourceWeight_pos
+    {a b : ℝ} (ha0 : 0 < a) (ha1 : a < 1 / 2) (hb : 0 < b) :
+    0 < quartetEndpointSourceWeight a b := by
+  unfold quartetEndpointSourceWeight
+  apply div_pos
+  · nlinarith [mul_pos ha0 (sub_pos.mpr ha1), sq_pos_of_pos hb]
+  · positivity
+
+theorem centeredQuartetGauge_zero_eq_endpointDenominator (a b : ℝ) :
+    centeredQuartetGauge a b 0 =
+      (((((1 / 2 + a) ^ 2 + b ^ 2) *
+        ((1 / 2 - a) ^ 2 + b ^ 2) : ℝ)) : ℂ) := by
+  unfold centeredQuartetGauge
+  push_cast
+  ring
+
 theorem centeredQuartetGauge_hasDerivAt_zero (a b : ℝ) :
     HasDerivAt (centeredQuartetGauge a b)
       ((-2 : ℂ) * (1 / 4 + b ^ 2 - a ^ 2)) 0 := by
@@ -232,6 +255,31 @@ theorem centeredQuartetGauge_logDeriv_zero (a b : ℝ) :
       ((-2 : ℂ) * (1 / 4 + b ^ 2 - a ^ 2)) /
         centeredQuartetGauge a b 0 := by
   rw [logDeriv_apply, (centeredQuartetGauge_hasDerivAt_zero a b).deriv]
+
+/-- **Endpoint source/Ward conservation.**  The logarithmic source charge of
+one inserted quartet is exactly minus twice its endpoint weight. -/
+theorem centeredQuartetGauge_logDeriv_zero_eq_neg_two_weight (a b : ℝ) :
+    logDeriv (centeredQuartetGauge a b) 0 =
+      (((-2) * quartetEndpointSourceWeight a b : ℝ) : ℂ) := by
+  rw [centeredQuartetGauge_logDeriv_zero,
+    centeredQuartetGauge_zero_eq_endpointDenominator]
+  unfold quartetEndpointSourceWeight
+  push_cast
+  ring
+
+/-- Source-weighted mass carried by the quartet's universal Ward packet. -/
+def quartetSourceWeightedWardMass (a b : ℝ) : ℝ :=
+  (8 * π) * quartetEndpointSourceWeight a b
+
+/-- The source-weighted `8π` Ward mass is the endpoint logarithmic-source
+response, with the universal normalization `-4π`. -/
+theorem quartetSourceWeightedWardMass_eq_logDeriv (a b : ℝ) :
+    quartetSourceWeightedWardMass a b =
+      -4 * π * (logDeriv (centeredQuartetGauge a b) 0).re := by
+  rw [centeredQuartetGauge_logDeriv_zero_eq_neg_two_weight]
+  simp only [ofReal_re]
+  unfold quartetSourceWeightedWardMass
+  ring
 
 theorem centeredQuartetGauge_logDeriv_zero_ne
     {a b : ℝ} (ha0 : 0 < a) (ha1 : a < 1 / 2) (hb : 0 < b) :

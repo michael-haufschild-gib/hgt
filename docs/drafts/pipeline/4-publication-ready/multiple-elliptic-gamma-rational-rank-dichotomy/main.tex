@@ -1,51 +1,42 @@
-\documentclass[11pt]{article}
+\documentclass[10pt]{article}
 
-\usepackage[margin=1.02in]{geometry}
+\usepackage[margin=0.86in]{geometry}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
 \usepackage{microtype}
 \usepackage{amsmath,amssymb,amsthm,mathtools}
 \usepackage{booktabs}
 \usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{tikz}
 \usepackage[hidelinks]{hyperref}
 
+\usetikzlibrary{arrows.meta,positioning,fit}
 \setlist{nosep,leftmargin=*}
-\setlength{\parindent}{1.2em}
+\setlength{\parindent}{1.1em}
 \setlength{\parskip}{0.12em}
 \setlength{\emergencystretch}{2em}
 \numberwithin{equation}{section}
 
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{proposition}[theorem]{Proposition}
-\newtheorem{lemma}[theorem]{Lemma}
 \newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
 \theoremstyle{definition}
 \newtheorem{definition}[theorem]{Definition}
-\newtheorem{example}[theorem]{Example}
 \theoremstyle{remark}
 \newtheorem{remark}[theorem]{Remark}
 
 \newcommand{\C}{\mathbb C}
-\newcommand{\Q}{\mathbb Q}
 \newcommand{\Z}{\mathbb Z}
-\newcommand{\N}{\mathbb N}
-\newcommand{\HH}{\mathbb H}
-\newcommand{\Fin}{\operatorname{Fin}}
-\newcommand{\Span}{\operatorname{span}}
-\newcommand{\dtrdeg}{\operatorname{dtrdeg}}
-\newcommand{\supp}{\operatorname{supp}}
-\newcommand{\Tr}{\operatorname{Tr}}
-\newcommand{\diag}{\operatorname{diag}}
-\newcommand{\Sp}{\mathcal S}
-\newcommand{\Fock}{\mathcal F}
-\newcommand{\D}{\mathcal D}
-\newcommand{\Zpart}{\mathcal Z}
 \newcommand{\dd}{\mathrm d}
-\newcommand{\T}{\mathsf T}
-\newcommand{\Deltaop}{\mathop{\Delta}}
+\newcommand{\DA}{\mathrm{DA}}
+\newcommand{\HT}{\mathrm{HT}}
+\newcommand{\trdeg}{\operatorname{trdeg}}
+\newcommand{\range}{\operatorname{range}}
 
-\title{\bfseries Universal Arithmetic and Spectral Laws\\
-for the Elliptic-Gamma Hierarchy}
+\title{\bfseries Perfect thermality can hide\\
+an irreducibly infinite quantum clock}
 \author{Michael Haufschild}
 \date{July 27, 2026}
 
@@ -53,1123 +44,668 @@ for the Elliptic-Gamma Hierarchy}
 \maketitle
 
 \begin{abstract}
-We give a complete two-axis classification of multiple elliptic gamma
-functions, from every finite order to actual infinite nome families.
-For a nonempty finite upper-half-plane period tuple $\tau$, let
-$G_\tau$ be Nishizawa's multiple elliptic gamma function and put
-\[
- d_{\Q}(\tau)=
- \dim_{\Q}\Span_{\Q}\bigl(\{1\}\cup\{\tau_a\}\bigr).
-\]
-Then $G_\tau$, and also its logarithmic derivative, is differentially
-algebraic over $\C(z)$ exactly when $d_{\Q}(\tau)=2$, and is
-hypertranscendental exactly when $d_{\Q}(\tau)\ge3$.  For an arbitrary
-period family, with no cardinality restriction, one rank-three pair
-forces every finite section containing it into the
-hypertranscendental phase; in its absence the entire family lies on one
-rational affine line and every finite section is differentially
-algebraic.  This closes the non-rational-period problem for the
-standard hierarchy and identifies all exceptional non-rational tuples.
-
-The analytic axis is independent of arithmetic rank.  Let $A$ be
-arbitrary, let $0<|p_a|<1$, and let
-$\Omega\subset\N^{(A)}$ contain every unit occupation $\delta_a$.
-For every $\sigma>0$,
-\[
- \sum_{\nu\in\Omega}|p^\nu|^\sigma<\infty
- \quad\Longleftrightarrow\quad
- \sum_{a\in A}|p_a|^\sigma<\infty.
-\]
-No factorization, locality, permutation symmetry, countability, or
-finite-capacity hypothesis is imposed on $\Omega$.  Thus all such
-bosonic, fermionic, Gentile, exclusion, and globally constrained
-sectors have exactly the same positive Schatten spectrum and critical
-exponent as the one-particle family.  Equivalently, their canonical
-partition sums have the same Hagedorn inverse-temperature boundary.
-The result is maximal: its lower
-bound is precisely the retained one-particle sector, while its upper
-bound is the full bosonic sector.
-
-For the full bosonic sector we also determine the mass exactly:
-\[
- \sum_{\nu\in\N^{(A)}}|p^\nu|^\sigma
- =\sup_{S\in\Fin(A)}
-   \prod_{a\in S}(1-|p_a|^\sigma)^{-1}.
-\]
-This identity yields an enumeration-free infinite-mode extension of
-the primary-factor block underlying the multiple elliptic gamma
-hierarchy.  At every genus $g$ satisfying
-$\sum_a|p_a|^{g+1}<\infty$, the canonical product
-\[
-\D_{A,g}(x)=
- \prod_{\nu\in\N^{(A)}}\left[
- (1-xp^\nu)
- \exp\!\left(\sum_{m=1}^{g}\frac{(xp^\nu)^m}{m}\right)
- \right]
-\]
-converges locally uniformly on $\C$ and is entire.  It is the
-regularized Fredholm determinant of multiplicative bosonic second
-quantization in the diagonal model.  We prove directed finite-mode
-exhaustion, an exact coface recursion for adjoining any mode, and an
-exact finite-polynomial scheme-change law between every two admissible
-genera.  These statements give a cutoff-independent analytic framework
-for infinite towers of elliptic-gamma partition blocks.  Rational
-relations decide differential complexity; spectral radii decide
-infinite-mode existence and criticality.  Together they settle both
-questions for every nome family in their stated domains.
+A thermal particle spectrum fixes occupation probabilities but not the phase
+that localizes wave packets in time.  We ask whether complete intensity
+information---arbitrarily many channels and all frequency derivatives---can
+nevertheless encode that phase through a finite local dynamical model.  The
+answer is no for the exactly solvable Carlitz--Willey horizon channel.  Its
+intensity is exactly Planckian, whereas its phase slope satisfies no algebraic
+differential equation over the entire, possibly infinite, intensity atlas.
+Every exact derivation-closed algebraic state representation of the clock
+therefore has at least countably infinite transcendence degree.  We also
+derive a sharp time-domain law.  For every channel the Gamma group-delay
+dispersion is strictly positive; in the canonical channel calibration the
+phase slope has exactly one positive zero if and only if
+\(\omega'/\kappa>e^{-\gamma}\), and otherwise has none.  A universal
+Gamma-channel theorem extends the state obstruction to every shift pair,
+every index set and arbitrary elementary calibrations.  Exact thermality can
+thus coexist with irreducibly infinite clock complexity and a rigid
+one-turn phase geometry.
 \end{abstract}
 
-\noindent\textbf{Significance statement.}
-Multiple elliptic gamma functions occur in integrable models,
-supersymmetric indices, and modular partition functions, but two basic
-classification problems have remained separate: which finite-period
-functions can satisfy algebraic differential equations, and when an
-infinite tower of nome modes defines a cutoff-independent determinant.
-The first answer is the augmented rational period rank, including all
-non-rational exceptions.  The second is the one-particle summability
-spectrum, unchanged by every occupation constraint that retains the
-one-particle states.  Hence arithmetic phase, ultraviolet boundary, and
-regularization are governed by distinct exact invariants.  For
-Kaluza--Klein, oscillator, or large-rank towers this reduces every
-constrained many-body convergence test to a one-particle trace; for
-finite blocks it decides whether any algebraic ordinary differential
-equation can exist.  At admissible genus the infinite determinant
-exists without an enumeration, obeys exact mode recursion, and changes
-regularization only by a finite local counterterm.
+\noindent\textbf{One-sentence summary.}
+All thermal intensities and all their local frequency derivatives still
+cannot produce the phase clock of an exact horizon quantum channel from any
+finite algebraic state model.
 
-\medskip
-\noindent\textbf{2020 Mathematics Subject Classification.}
-Primary 33E30, 81Q10; Secondary 12H05, 39A13, 47B10, 82B10.
+\section{Thermality and the missing clock}
 
-\noindent\textbf{Keywords.}
-multiple elliptic gamma function; differential algebraicity;
-hypertranscendence; occupation statistics; bosonic second
-quantization; Schatten class; regularized determinant; Hagedorn
-boundary.
+Hawking-like radiation is most visibly characterized by a Planck spectrum.
+Yet a spectrum records squared amplitudes, while temporal localization of a
+wave packet also uses their relative phases.  This distinction is explicit
+in moving-mirror quantum field theory, where an accelerating boundary gives
+an exactly soluble analogue of horizon particle creation
+\cite{CarlitzWilley1987,GoodAndersonEvans2013}.  The same distinction is
+operational in the Gaussian quantum channel induced by the mirror: the
+channel phase contains the argument of Euler's Gamma function
+\cite{GianfeliciMancini2017}.
 
-\section{Two classification questions}
-
-For a nonempty finite set $I$ and periods
-$\tau=(\tau_i)_{i\in I}\in\HH^I$, put
-\[
- q_i=e^{2\pi i\tau_i},\qquad x=e^{2\pi iz},\qquad
- Q_I=\prod_{i\in I}q_i,
-\]
-and
-\[
- (x;q)_\infty=
- \prod_{\nu\in\N^I}\left(1-x\prod_{i\in I}q_i^{\nu_i}\right).
-\]
-The standard Nishizawa function is
+For the Carlitz--Willey trajectory, the right-moving Bogoliubov coefficient
+may be written
 \begin{equation}
- G_I(z;\tau)=
- (Q_I/x;q)_\infty\,
- (x;q)_\infty^{\,(-1)^{|I|-1}}.
- \label{eq:defG}
+ \beta_{\omega\omega'}^{R}
+ =-\frac{1}{2\pi\kappa}\sqrt{\frac{\omega}{\omega'}}
+   e^{-\pi\omega/(2\kappa)}
+   \left(\frac{\omega'}{\kappa}\right)^{-i\omega/\kappa}
+   \Gamma\!\left(\frac{i\omega}{\kappa}\right),
+ \label{eq:beta}
 \end{equation}
-It is meromorphic on $\C$.  For $|I|=1$ it is a theta
-function; for $|I|=2$ it is the elliptic gamma function.
-
-Equip $\C(z)$ and meromorphic function fields with
-$\partial=\dd/\dd z$.  A meromorphic function is
-\emph{differentially algebraic} over $\C(z)$ if some nonzero polynomial
-over $\C(z)$ vanishes on a finite derivative jet.  Otherwise it is
-\emph{hypertranscendental}.  Define
+with \(\omega,\omega',\kappa>0\).  Its particle-number spectrum is
 \begin{equation}
- d_{\Q}(\tau)=
- \dim_{\Q}\Span_{\Q}\bigl(\{1\}\cup\{\tau_i:i\in I\}\bigr).
- \label{eq:rank}
+ |\beta_{\omega\omega'}^{R}|^2
+ =\frac{1}{2\pi\kappa\omega'}
+   \frac{1}{e^{2\pi\omega/\kappa}-1}.
+ \label{eq:planck}
 \end{equation}
+The intensity is stationary and Planckian, but the coefficient retains the
+phase
+\[
+ -\frac{\omega}{\kappa}\log\frac{\omega'}{\kappa}
+ +\arg\Gamma\!\left(\frac{i\omega}{\kappa}\right)
+ \quad \text{modulo a constant}.
+\]
+Wave-packet constructions use precisely the information absent from the
+unpacketized spectrum to resolve particle creation in time
+\cite{GoodAndersonEvans2013}.
 
-\begin{theorem}[Arithmetic phase law]
-\label{thm:arithmetic}
-For every nonempty finite $I$ and every $\tau\in\HH^I$,
+This exact coefficient also exposes a falsifiable phase geometry.  With
+\(x=\omega/\kappa\) and \(\rho=\omega'/\kappa\), its dimensionless phase
+slope is
+\[
+ \tau_\rho(x)=
+ \frac{\dd}{\dd x}\arg\!\left[
+   e^{-ix\log\rho}\Gamma(ix)\right]
+ =\operatorname{Re}\psi(ix)-\log\rho ,
+\]
+where \(\psi=\Gamma'/\Gamma\).  We prove below that \(\tau_\rho\) is strictly
+increasing at every positive frequency and give its complete zero
+classification.  Thus the result is not only a non-reconstruction theorem:
+it fixes the sign of the group-delay dispersion throughout the spectrum.
+
+Equation~\eqref{eq:planck} alone does not answer a stronger question:
+could the complete intensity functions, pooled across every channel and
+closed under frequency differentiation, encode the phase by a finite local
+state law?  Ordinary non-uniqueness of phase retrieval is too weak to answer
+this.  Additional global hypotheses can sometimes recover phase from
+intensity, for example through a Kramers--Kronig relation under a
+minimum-phase condition \cite{WangLowery2020}.  Our question is instead
+exact and local:
+\begin{quote}
+\emph{Can phase or phase slope belong to any finite algebraic differential
+state model whose coefficient field contains all intensities?}
+\end{quote}
+The answer below is negative, with a positive lower bound on every possible
+state field.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[
+  node distance=8mm and 14mm,
+  box/.style={draw,rounded corners,align=center,inner sep=6pt,
+    minimum height=9mm},
+  arr/.style={-{Latex[length=2mm]},thick},
+  faint/.style={draw=gray!65,text=black}
+]
+\node[box] (amp) {complex horizon amplitude\\
+  elementary gauge \(\times\,\Gamma(i\omega/\kappa)\)};
+\node[box,below left=of amp] (int) {complete intensity atlas\\
+  exact Planck factors};
+\node[box,below right=of amp] (phase) {strictly convex phase slope\\
+  one-turn wave-packet clock};
+\node[box,faint,below=of int] (finite) {every finite algebraic\\
+  differential state model};
+\node[box,below=of phase,draw=red!70!black,text=red!60!black] (inf)
+  {state transcendence degree\\\(\geq\aleph_0\)};
+\draw[arr] (amp) -- node[left,sloped,font=\small]{modulus square} (int);
+\draw[arr] (amp) -- node[right,sloped,font=\small]{orientation} (phase);
+\draw[arr] (int) -- node[left,font=\small]{all derivatives} (finite);
+\draw[arr,dashed,red!70!black] (finite) -- node[above,sloped,font=\small]
+  {cannot contain} (phase);
+\draw[arr] (phase) -- (inf);
+\end{tikzpicture}
+\caption{\textbf{Thermal-spectrum/clock separation and phase rigidity.}
+The intensity channel collapses to an algebraic-differential Planck sector.
+The orientation phase and its logarithmic frequency slope remain outside
+every finite algebraic state field generated from the complete intensity
+atlas.  On the physical frequency ray the phase slope is strictly increasing,
+so any stationary frequency is unique.  The obstruction is exact
+representation, not approximation and not nonlocal phase retrieval.}
+\label{fig:law}
+\end{figure}
+
+\section{Universal intensity--phase separation}
+
+We formulate the result over the differential field \(\C(z)\), with
+derivative \(\partial=\dd/\dd z\).  A meromorphic function is
+\emph{differentially algebraic} (DA) if its finite derivative jet satisfies
+a nonzero polynomial equation over \(\C(z)\); otherwise it is
+\emph{hypertranscendental} (HT).  HT therefore rules out every algebraic
+ordinary differential equation of every finite order, not only closed forms
+or linear equations.
+
+Let \(\iota\) be an arbitrary index set.  For each \(i\in\iota\), choose
+\(a_i,b_i\in\C\) and nonzero DA meromorphic calibrations
+\(g_i,\widetilde g_i\).  Define the two frequency orientations
 \begin{align}
- G_I(\,\cdot\,;\tau)\ \text{is differentially algebraic over }\C(z)
- &\Longleftrightarrow d_{\Q}(\tau)=2,
- \label{eq:da-rank}\\
- G_I(\,\cdot\,;\tau)\ \text{is hypertranscendental over }\C(z)
- &\Longleftrightarrow d_{\Q}(\tau)\ge3.
- \label{eq:ht-rank}
+ A_i(z)&=g_i(z)\frac{\Gamma(z+a_i)}{\Gamma(b_i-z)},&
+ A_i^-(z)&=\widetilde g_i(z)
+   \frac{\Gamma(a_i-z)}{\Gamma(z+b_i)}, \label{eq:orientations}\\
+ I_i(z)&=A_i(z)A_i^-(z),&
+ P_i(z)&=\frac{A_i(z)}{A_i^-(z)},&
+ L_i(z)&=\frac{P_i'(z)}{P_i(z)}. \label{eq:observables}
 \end{align}
-Both equivalences hold with $G_I$ replaced by
-$\partial G_I/G_I$.
+When \(A_i^-\) is the reflected conjugate of \(A_i\) on a physical
+frequency slice, \(I_i\) is the intensity, \(P_i\) is the unit-modulus
+orientation phase, and \(L_i\) is its logarithmic phase slope up to the
+fixed frequency-coordinate factor.  Independent calibrations are retained
+in the theorem because the algebraic separation does not require this
+physical specialization.
 
-More generally, let $A$ be any set and $\tau:A\to\HH$.  Join distinct
-$a,b\in A$ by an edge when $1,\tau_a,\tau_b$ are rationally linearly
-independent.  For every nonempty finite $S\subset A$, the function
-$G_S$ and its logarithmic derivative are differentially algebraic
-exactly when $S$ contains no edge, and hypertranscendental exactly when
-$S$ contains an edge.  Exactly one of the following global alternatives
-occurs:
-\begin{enumerate}
-\item there are $\omega\in\HH$ and
-      $r_a,s_a\in\Q$, $s_a>0$, such that
-      $\tau_a=r_a+s_a\omega$ for every $a$, and every nonempty finite
-      section is differentially algebraic;
-\item one edge $\{a,b\}$ exists, and every finite section containing
-      $\{a,b\}$ is hypertranscendental.
-\end{enumerate}
-\end{theorem}
-
-The theorem answers the non-rational case left open after Kato's
-rational-ray theorem \cite{Kato2021}.  The exceptional locus is larger
-than a rational ray.  For example, the tuple
-$(i,1+i)$ is not contained in one rational ray, but has augmented rank
-two and is therefore differentially algebraic.  Multiplicatively,
-$d_{\Q}(\tau)-1$ is the torsion-free rank of the group generated by the
-nomes $(q_i)$.
-
-We now turn from arithmetic relations among finite period sets to
-decay in an actual infinite nome family.  Let $A$ be an arbitrary set
-and let $p=(p_a)_{a\in A}$ satisfy
-
-Let $A$ be an arbitrary set and let $p=(p_a)_{a\in A}$ be complex
-mode weights with
+The arithmetic collapse condition is
 \begin{equation}
- 0<|p_a|<1\qquad(a\in A).
- \label{eq:nome-domain}
+ \mathcal C(a,b)\quad\Longleftrightarrow\quad
+ b-a\in\Z
+ \quad\text{or}\quad
+ \bigl(1-2a\in\Z\ \text{and}\ 1-2b\in\Z\bigr).
+ \label{eq:collapse}
 \end{equation}
-Write $\N^{(A)}$ for the finitely supported maps
-$\nu:A\to\N$, and put
-\[
- p^\nu=\prod_{a\in A}p_a^{\nu_a}.
-\]
-The elements of $\N^{(A)}$ are occupation configurations.  A choice
-$\Omega\subset\N^{(A)}$ describes an arbitrary occupation rule.  It
-may be the full bosonic sector, the fermionic sector
-$\{\nu:\nu_a\le1\}$, a mode-dependent finite-capacity sector, or a
-sector cut out by nonlocal constraints involving any finite collection
-of modes.
 
-The only structural hypothesis used for the threshold theorem is
-\begin{equation}
- \delta_a\in\Omega\qquad(a\in A),
- \label{eq:one-particle-retention}
-\end{equation}
-where $\delta_a$ has value one at $a$ and zero elsewhere.  Thus every
-one-particle state is retained.  The sector need not contain the
-vacuum, be downward closed, factor over modes, or be invariant under
-any permutation.
-
-For $\sigma>0$, define
-\[
- \Zpart_{\Omega}(\sigma)
- =\sum_{\nu\in\Omega}|p^\nu|^\sigma.
-\]
-All nonnegative sums over arbitrary sets are unordered sums: they are
-the suprema of their finite subsums.  This convention makes the
-question independent of an enumeration and remains meaningful for an
-uncountable $A$.
-
-\begin{theorem}[Universal occupation-spectrum law]
+\begin{theorem}[Universal Gamma spectrum--clock law]
 \label{thm:universal}
-Let $A$, $p$, and $\Omega$ satisfy
-\eqref{eq:nome-domain}--\eqref{eq:one-particle-retention}.  For every
-real $\sigma>0$,
-\begin{align}
- \sum_{\nu\in\N^{(A)}}|p^\nu|^\sigma
- &=
- \sup_{S\in\Fin(A)}
- \prod_{a\in S}(1-|p_a|^\sigma)^{-1},
- \label{eq:exact-mass}\\
- \sum_{a\in A}|p_a|^\sigma
- &\le \Zpart_{\Omega}(\sigma)
- \le \sum_{\nu\in\N^{(A)}}|p^\nu|^\sigma,
- \label{eq:sandwich}\\
- \Zpart_{\Omega}(\sigma)<\infty
- &\Longleftrightarrow
- \sum_{a\in A}|p_a|^\sigma<\infty.
- \label{eq:threshold}
-\end{align}
-Consequently
-\begin{equation}
- \left\{\sigma>0:\Zpart_{\Omega}(\sigma)<\infty\right\}
- =
- \left\{\sigma>0:\sum_{a\in A}|p_a|^\sigma<\infty\right\},
- \label{eq:spectrum-equality}
-\end{equation}
-and this set is upward closed.
+For every index set \(\iota\), every shift family, and every family of
+nonzero DA calibrations:
+\begin{enumerate}
+\item \(I_i\) is DA over \(\C(z)\) if and only if
+      \(\mathcal C(a_i,b_i)\).  Thus the collapse locus is exact and is
+      unchanged by arbitrary independent calibrations.
+\item Suppose \(\mathcal C(a_i,b_i)\) holds for every \(i\), and let
+      \[
+       K_I=\C(z)\langle I_i:i\in\iota\rangle_\partial
+      \]
+      be the differential field generated by the complete intensity atlas.
+      Then \(A_j\), \(P_j\), and \(L_j\) are HT over \(K_I\) for every
+      \(j\in\iota\).
+\item If \(S\) is any derivation-closed intermediate field over \(K_I\)
+      containing \(P_j\) or \(L_j\), then
+      \[
+        \trdeg_{K_I}S\geq\aleph_0.
+      \]
+      In particular, neither observable admits an exact finite algebraic
+      state realization over all intensities.
+\end{enumerate}
+No finiteness, countability, independence, common shift, or common
+calibration assumption is imposed on \(\iota\).
 \end{theorem}
 
-The spectral universality in Theorem~\ref{thm:universal} is literal within its
-stated scope: $A$ and $\Omega$ are arbitrary, and $\sigma$ ranges over
-every positive real number.  The theorem does not say that partition
-functions for different statistics have equal values.  It says that
-their exact convergence set, including its endpoint behavior, is
-identical.
+The quantifier over all index sets matters.  Adding more intensity channels
+cannot evade the obstruction: even an uncountable atlas, with each channel
+independently calibrated, remains a differentially algebraic extension of
+the rational frequency clock.  The conclusion concerns each target phase
+after \emph{all} such data have been pooled.
 
-Define the common critical exponent by
+\section{The exact horizon specialization}
+
+Put \(x=\omega/\kappa\) and \(z=ix\).  Complex conjugation and Euler
+reflection give, for real \(x\neq0\),
 \begin{equation}
- \rho(p)=
- \inf\left\{\sigma>0:
-       \sum_{a\in A}|p_a|^\sigma<\infty\right\},
- \label{eq:critical-exponent}
+ \Gamma(-ix)=\overline{\Gamma(ix)},\qquad
+ \Gamma(ix)\Gamma(-ix)
+   =\frac{\pi}{x\sinh(\pi x)}.
+ \label{eq:imaginary-reflection}
 \end{equation}
-with the usual extended-real convention.  Equation
-\eqref{eq:spectrum-equality} gives the following answer without any
-additional argument.
+Consequently,
+\begin{equation}
+ x e^{-\pi x}\Gamma(ix)\Gamma(-ix)
+ =\frac{2\pi}{e^{2\pi x}-1},
+ \label{eq:thermal-identity}
+\end{equation}
+which is exactly the non-elementary Gamma reduction behind
+Eq.~\eqref{eq:planck}.
 
-\begin{corollary}[Statistics-independent critical exponent]
-\label{cor:critical}
-Every occupation sector satisfying
-\eqref{eq:one-particle-retention} has critical exponent $\rho(p)$.
-Whether convergence holds at $\rho(p)$ is also independent of the
-sector and is decided by
-$\sum_a|p_a|^{\rho(p)}$ whenever $\rho(p)>0$.
+Remove from Eq.~\eqref{eq:beta} only its known real algebraic normalization.
+The remaining frequency-normalized channel is a nonzero DA exponential
+gauge times \(\Gamma(z)\).  Allow an arbitrary family of such gauges and
+their reflected partners:
+\[
+ B_i(z)=g_i(z)\Gamma(z),\qquad
+ B_i^-(z)=\widetilde g_i(z)\Gamma(-z).
+\]
+Let \(\mathcal I_i=B_iB_i^-\),
+\(\mathcal P_i=B_i/B_i^-\), and
+\(\mathcal L_i=\mathcal P_i'/\mathcal P_i\).
+
+\begin{corollary}[Infinite-state horizon phase]
+\label{cor:horizon}
+For every index set and every family of nonzero DA gauges, all
+\(\mathcal I_i\) are DA.  Every \(\mathcal P_j\) and
+\(\mathcal L_j\) is HT over the differential field generated by the entire,
+possibly infinite, atlas \(\{\mathcal I_i\}\).  Every derivation-closed
+algebraic state field over that atlas containing either observable has
+transcendence degree at least \(\aleph_0\).
 \end{corollary}
 
-\begin{corollary}[Statistics-independent Hagedorn boundary]
-\label{cor:hagedorn}
-Put $\varepsilon_a=-\log|p_a|>0$ and
-$E_\nu=\sum_a\nu_a\varepsilon_a$.  Then, for every inverse temperature
-$\beta>0$,
+The phase slope has a second, independent rigidity.  Define it at zero by
+continuous extension,
+\[
+ \tau_\rho(0)=-\gamma-\log\rho .
+\]
+The digamma recurrence gives
+\(\operatorname{Re}\psi(ix)=\operatorname{Re}\psi(1+ix)\) for \(x>0\).
+The vertical trigamma orientation and the high-frequency digamma asymptotic
+then give
 \begin{equation}
- \sum_{\nu\in\Omega}e^{-\beta E_\nu}<\infty
+ \tau_\rho'(x)
+   =-\operatorname{Im}\psi'(1+ix)>0,\qquad
+ \lim_{x\to\infty}\tau_\rho(x)=+\infty .
+ \label{eq:phase-convexity}
+\end{equation}
+
+\begin{proposition}[Exact one-turn horizon clock]
+\label{prop:one-turn}
+For every \(\rho>0\), \(\tau_\rho\) is strictly increasing on
+\([0,\infty)\).  Moreover,
+\[
+ \left(\exists!\,x_\rho>0:\tau_\rho(x_\rho)=0\right)
  \quad\Longleftrightarrow\quad
- \sum_{a\in A}e^{-\beta\varepsilon_a}<\infty.
- \label{eq:hagedorn}
-\end{equation}
-Hence the many-body and one-particle partition sums have the same
-abscissa of convergence in $\beta$, for every occupation rule satisfying
-\eqref{eq:one-particle-retention}.
-\end{corollary}
-
-\begin{proof}
-Since $|p^\nu|^\beta=e^{-\beta E_\nu}$ and
-$|p_a|^\beta=e^{-\beta\varepsilon_a}$, this is
-Theorem~\ref{thm:universal} with $\sigma=\beta$.
-\end{proof}
-
-\begin{remark}[Sharpness]
-\label{rem:sharpness}
-Both hypotheses behind the conclusion are exposed by
-\eqref{eq:sandwich}.  The full bosonic sector is the universal upper
-envelope.  The retained one-particle states are the universal lower
-envelope.  If the latter condition is removed, no threshold statement
-is possible: the empty sector has zero mass for every $\sigma$,
-independently of the one-particle family.  Thus
-\eqref{eq:one-particle-retention} is not a technical convenience but
-the exact boundary of this statistics-independent law.
-\end{remark}
-
-\section{Infinite-mode canonical determinants}
-
-The same occupation spectrum generates a canonical entire product.
-For $g\in\N$, define the Weierstrass primary factor
-\begin{equation}
- E_g(z)=(1-z)
- \exp\left(\sum_{m=1}^{g}\frac{z^m}{m}\right),
- \qquad E_0(z)=1-z.
- \label{eq:primary-factor}
-\end{equation}
-Call $g$ \emph{admissible} for $p$ if
-\begin{equation}
- \sum_{a\in A}|p_a|^{g+1}<\infty.
- \label{eq:admissible}
-\end{equation}
-For any sector $\Omega\subset\N^{(A)}$, set
-\begin{equation}
- \D_{\Omega,g}(x)
- =\prod_{\nu\in\Omega}E_g(xp^\nu).
- \label{eq:restricted-det}
-\end{equation}
-Products over arbitrary index sets are unordered products, defined by
-the net of finite subproducts.
-
-\begin{theorem}[Entire determinant for every sector]
-\label{thm:entire-sector}
-If $g$ is admissible, then for every
-$\Omega\subset\N^{(A)}$ the product
-\eqref{eq:restricted-det} converges locally uniformly on $\C$ and
-defines an entire function.
-\end{theorem}
-
-No one-particle-retention assumption is needed here: deleting
-occupation configurations can only improve the absolute convergence
-estimate.  For the full bosonic sector, write
-\[
- \D_{A,g}=\D_{\N^{(A)},g}.
+ e^{-\gamma}<\rho .
 \]
-When $A$ is finite and $g=0$, this is the generalized
-$q$-Pochhammer block
-\[
- \D_{A,0}(x)
- =\prod_{\nu\in\N^A}(1-xp^\nu)
- =(x;p)^{(A)}_\infty
-\]
-that forms one of the two canonical halves of the multiple elliptic
-gamma function.  The hierarchy introduced by Nishizawa and developed
-by Narukawa uses finitely many nomes
-\cite{Nishizawa2001,Narukawa2004}; cone generalizations likewise retain
-finite-dimensional nome data \cite{Winding2018}.  Formula
-\eqref{eq:restricted-det} instead permits an arbitrary nome family,
-under the occupation-spectrum condition
-\eqref{eq:admissible}.
-
-\begin{theorem}[Enumeration-free finite-mode exhaustion]
-\label{thm:exhaustion}
-For $S\in\Fin(A)$ define
-\begin{equation}
- \D_{S,g}(x)=
- \prod_{\substack{\nu\in\N^{(A)}\\\supp\nu\subset S}}
- E_g(xp^\nu).
- \label{eq:finite-section}
-\end{equation}
-If $g$ is admissible, then for every $x\in\C$,
-\begin{equation}
- \lim_{S\uparrow A}\D_{S,g}(x)=\D_{A,g}(x),
- \label{eq:directed-exhaustion}
-\end{equation}
-where the limit is the net over $\Fin(A)$ directed by inclusion.
-\end{theorem}
-
-This is stronger than convergence along one chosen sequence: it states
-that every cofinal finite-mode exhaustion has the same limit.  It also
-covers uncountable ambient label sets.  Summability forces the
-nonzero effective mode support to be countable, but no enumeration
-enters the definition or proof.
-
-\section{Mode recursion and regulator independence}
-
-Adjoining one mode partitions the occupation space by that mode's
-occupation number.  Let $B$ be any set, let $p:B\to\C$, and adjoin a
-distinguished weight $r$ with $0<|r|<1$.  Write $(r,p)$ for the family
-on $\{\ast\}\sqcup B$.
-
-\begin{theorem}[Tower and coface laws]
-\label{thm:coface}
-If $\sum_{b\in B}|p_b|^{g+1}<\infty$, then
-\begin{align}
- \D_{\{\ast\}\sqcup B,g}(x)
- &=\prod_{n=0}^{\infty}\D_{B,g}(xr^n),
- \label{eq:tower}\\
- \D_{\{\ast\}\sqcup B,g}(x)
- &=\D_{B,g}(x)
-   \D_{\{\ast\}\sqcup B,g}(rx).
- \label{eq:coface}
-\end{align}
-Both products are unordered canonical products and the identities hold
-at every $x\in\C$, including zeros.
-\end{theorem}
-
-Equation \eqref{eq:coface} is the infinite-mode coface recursion.  It
-connects every mode deletion to the full object and makes the complete
-family projectively consistent.
-
-Regularized determinants allow more than one admissible genus.  Define
-the occupation moment
-\begin{equation}
- M_m(p)=\sum_{\nu\in\N^{(A)}}(p^\nu)^m.
- \label{eq:moment}
-\end{equation}
-If $g$ is admissible and $m\ge g+1$, this sum is absolutely convergent.
-
-\begin{theorem}[Exact scheme-change law]
-\label{thm:scheme}
-Let $g\le h$, and suppose $g$ is admissible.  Then $h$ is admissible
-and
-\begin{equation}
- \D_{A,h}(x)=\D_{A,g}(x)
- \exp\left[
-   \sum_{k=g}^{h-1}
-    \frac{x^{k+1}}{k+1}M_{k+1}(p)
- \right]
- \qquad(x\in\C).
- \label{eq:scheme}
-\end{equation}
-In particular, all admissible genera have the same zero set.
-\end{theorem}
-
-The exponent in \eqref{eq:scheme} is a finite polynomial in $x$.
-Thus regulator dependence is exactly local: raising the determinant
-order adds finitely many convergent spectral moments and introduces no
-new zeros or poles.  The multiplicative formulation avoids division by
-$\D_{A,g}$ and remains valid on its zero set.
-
-\section{Diagonal Fock-space interpretation}
-
-The preceding statements have an immediate operator meaning that
-explains both their universality and their relevance to physics.
-Let $\mathcal H_A$ have orthonormal basis $(e_a)_{a\in A}$ and let
-\[
- P=\diag(p_a)
-\]
-be the diagonal one-particle contraction.  For
-$\Omega\subset\N^{(A)}$, let $\Fock_\Omega$ have orthonormal basis
-$(e_\nu)_{\nu\in\Omega}$ and define the multiplicative lift
-\begin{equation}
- \Gamma_\Omega(P)e_\nu=p^\nu e_\nu.
- \label{eq:second-quantization}
-\end{equation}
-For the full bosonic sector this is multiplicative bosonic second
-quantization; other choices of $\Omega$ impose the desired occupation
-rule.
-
-For every $\sigma>0$, membership of a diagonal compact operator in the
-Schatten--von Neumann scale is equivalent to summability of the
-$\sigma$th powers of its singular values.  Theorem
-\ref{thm:universal} therefore becomes:
-
-\begin{corollary}[Schatten spectrum is preserved]
-\label{cor:schatten}
-If $\Omega$ contains every one-particle state, then for every
-$\sigma>0$,
-\begin{equation}
- \Gamma_\Omega(P)\in\Sp_\sigma
- \quad\Longleftrightarrow\quad
- P\in\Sp_\sigma.
- \label{eq:schatten-equivalence}
-\end{equation}
-For the full bosonic sector,
-\begin{equation}
- \Tr|\Gamma_{\mathrm B}(P)|^\sigma
- =
- \sup_{S\in\Fin(A)}
- \prod_{a\in S}(1-|p_a|^\sigma)^{-1}.
- \label{eq:fock-trace}
-\end{equation}
-\end{corollary}
-
-The statement includes $0<\sigma<1$, where $\Sp_\sigma$ is a
-quasi-ideal rather than a Banach ideal.  It also allows a nonseparable
-ambient $\mathcal H_A$: finiteness of either side automatically reduces
-the nonzero spectral support to a countable set.
-
-For an integer $d=g+1$, the standard diagonal regularized Fredholm
-determinant is
-\[
- \det_d(I-xT)
- =\prod_j(1-x\lambda_j)
-   \exp\left(\sum_{m=1}^{d-1}
-      \frac{(x\lambda_j)^m}{m}\right).
-\]
-Consequently Theorem~\ref{thm:entire-sector} gives
-\begin{equation}
- \D_{\Omega,g}(x)
- =\det_{g+1}(I-x\Gamma_\Omega(P)).
- \label{eq:fredholm}
-\end{equation}
-This identifies the primary-factor genus with determinant order.
-The exact change of order in Theorem~\ref{thm:scheme} is the familiar
-finite trace-counterterm change, now evaluated on the complete
-occupation spectrum; compare the general theory of regularized
-determinants in Schatten ideals \cite{Simon2005}.
-
-\section{Proof of the arithmetic phase law}
-
-We prove Theorem~\ref{thm:arithmetic} in full.  Two elementary
-differential-field facts will be used repeatedly.  Differentially
-algebraic elements form a differential field and differential
-algebraicity is transitive in towers.  For every nonzero meromorphic
-$f$,
-\begin{equation}
- f\text{ is differentially algebraic over }B
- \quad\Longleftrightarrow\quad
- \frac{f'}f\text{ is differentially algebraic over }B.
- \label{eq:log-da}
-\end{equation}
-The reverse implication follows from the linear differential equation
-$Y'-(f'/f)Y=0$ over the differential field generated by $f'/f$.
-
-\subsection{The rational-affine phase}
-
-If $d_{\Q}(\tau)=2$, choose one period $\omega=\tau_{i_0}$.
-The pair $1,\omega$ is rationally independent because
-$\operatorname{Im}\omega>0$, so
-\begin{equation}
- \tau_i=a_i+b_i\omega,\qquad
- a_i,b_i\in\Q,\quad b_i>0.
- \label{eq:affine-normal}
-\end{equation}
-Choose $M\ge1$ clearing all denominators.  Then
-$M\tau_i=A_i+B_i\omega$ with
-$A_i\in\Z$ and $B_i\in\Z_{>0}$.
-
-The product definition gives the simultaneous multiplication identity
-\begin{equation}
- G_I(z;\tau)=
- \prod_{k\in\prod_{i\in I}\{0,\ldots,M-1\}}
- G_I\left(z+\sum_{i\in I}k_i\tau_i;M\tau\right).
- \label{eq:multiplication}
-\end{equation}
-Indeed, in the $x$-side product every exponent is uniquely
-$M\ell_i+k_i$, while in the reflected product every positive exponent
-is uniquely $M(\ell_i+1)-k_i$.  These residue classes partition both
-products, and local uniform absolute convergence permits the finite
-regrouping.
-
-Integer offsets disappear under exponentiation, so the function with
-period tuple $M\tau$ equals the function with tuple
-$(B_i\omega)_i$.  Kato's theorem makes that function
-differentially algebraic \cite[Theorem~1.1]{Kato2021}.
-Translations preserve differential algebraicity over $\C(z)$, and the
-right side of \eqref{eq:multiplication} is a finite product.  Therefore
-$G_I$ is differentially algebraic; so is its logarithmic derivative by
-\eqref{eq:log-da}.
-
-\subsection{The rank-three seed}
-
-Let $\sigma,\tau\in\HH$ and suppose $1,\sigma,\tau$ are rationally
-linearly independent.  Write
-\[
- \Gamma(z)=G_{\{0,1\}}(z;\sigma,\tau),\qquad
- \Psi=\frac{\Gamma'}{\Gamma},
-\]
-and let $\theta_\omega=G_{\{0\}}(\,\cdot\,;\omega)$ and
-$\lambda_\omega=\theta_\omega'/\theta_\omega$.
-Direct residue separation gives
-\begin{align}
- \Gamma(z+\sigma)&=\theta_\tau(z)\Gamma(z),&
- \Gamma(z+\tau)&=\theta_\sigma(z)\Gamma(z),\label{eq:seed-face}\\
- \Deltaop_\sigma\Psi&=\lambda_\tau,&
- \Deltaop_\tau\Psi&=\lambda_\sigma,
- \label{eq:seed-log}
-\end{align}
-where $\Deltaop_hf(z)=f(z+h)-f(z)$.
-
-\begin{lemma}[Common Ostrowski descent]
-\label{lem:ostrowski}
-Let $C\subset k\subset F$ be characteristic-zero fields, with $F$ a
-differential field and $C$ contained in its constants.  Let
-$(\rho_j)$ be differential automorphisms stabilizing $k$, and suppose
-their joint fixed field in $F$ is $C$.  If
-$\rho_j(y)-y=a_j\in k$ for every $j$ and $y$ is differentially
-algebraic over $k$, then there are a nonzero
-$L\in C[\partial]$ and one $g\in k$ such that
-\begin{equation}
- \rho_j(g)-g=L(a_j)\qquad\text{for every }j.
- \label{eq:common-ostrowski}
-\end{equation}
-\end{lemma}
-
-\begin{proof}
-Some finite jet of $y$ is algebraically dependent over $k$.
-The corresponding K\"ahler differentials are linearly dependent in
-$\Omega_{F/k}$.  Choose a nonzero dependence of minimal support and
-normalize one coefficient to one.  Applying any $\rho_j$ and
-subtracting gives a dependence of smaller support; hence every
-coefficient is fixed by all $\rho_j$ and lies in $C$.  Thus
-$\dd_{F/k}L(y)=0$ for some nonzero $L\in C[\partial]$.
-In characteristic zero, the kernel of the relative universal
-derivation is the relative algebraic closure of $k$ in $F$, so $L(y)$
-is algebraic over $k$.
-If $E=k(L(y))$, the normalized field trace
-$g=[E:k]^{-1}\Tr_{E/k}(L(y))$ lies in $k$ and commutes with every
-semilinear $\rho_j$.  Since $\rho_j(L(y))-L(y)=L(a_j)\in k$,
-the trace identity gives \eqref{eq:common-ostrowski}.
-\end{proof}
-
-\begin{proposition}[Rank-three seed obstruction]
-\label{prop:seed}
-If $1,\sigma,\tau$ are rationally linearly independent, then
-$\Gamma$ and $\Psi$ are hypertranscendental over $\C(z)$.
+When the zero exists, \(\tau_\rho(x)<0\) for \(0\leq x<x_\rho\) and
+\(\tau_\rho(x)>0\) for \(x>x_\rho\).  If
+\(\rho\leq e^{-\gamma}\), then \(\tau_\rho(x)>0\) for every \(x>0\).
 \end{proposition}
 
-\begin{proof}
-Let $\Lambda_\omega=\Z+\Z\omega$, let $E_\omega$ be the field of
-$\Lambda_\omega$-elliptic meromorphic functions, and put
-$K=E_\tau E_\sigma$.  The two elliptic function fields are algebraically
-disjoint over $\C$: otherwise nonconstant algebraically dependent
-elements would give one of them an additional period and hence a
-nondiscrete rank-three period subgroup, forcing it to be constant.
-Thus $K$ is the function field of the product of the two elliptic
-curves.  It is a differentially algebraic extension of $\C$.
+Proposition~\ref{prop:one-turn} is a complete all-frequency statement, not
+an asymptotic or numerical observation.  Its invariant content under a
+change of time origin is the strict positivity in
+Eq.~\eqref{eq:phase-convexity}: multiplying the coefficient by any linear
+phase adds a constant to \(\tau_\rho\), but cannot change its strict
+increase or create two stationary frequencies.  The threshold refers to the
+canonical phase convention in Eq.~\eqref{eq:beta}; a common time-origin
+shift moves the zero but preserves the one-turn law.
 
-Choose $h\notin P=\Z+\Z\sigma+\Z\tau$ and put
-$D_h=\Deltaop_h\Psi$.  Commuting translations in
-\eqref{eq:seed-log} gives
-\begin{equation}
- \Deltaop_\sigma D_h=\Deltaop_h\lambda_\tau,\qquad
- \Deltaop_\tau D_h=\Deltaop_h\lambda_\sigma.
- \label{eq:paired-system}
-\end{equation}
-Every element of the generated field is $1$-periodic.  An element fixed
-also by the $\sigma$- and $\tau$-translations has the nondiscrete period
-group $P$ and is constant.  If $D_h$ were differentially algebraic over
-$K$, Lemma~\ref{lem:ostrowski} would therefore give a nonzero
-$L\in\C[\partial]$ and $g\in K$ satisfying
-\begin{equation}
- \Deltaop_\sigma g=L(\Deltaop_h\lambda_\tau),\qquad
- \Deltaop_\tau g=L(\Deltaop_h\lambda_\sigma).
- \label{eq:paired-coboundary}
-\end{equation}
+The elementary factor
+\((\omega'/\kappa)^{-i\omega/\kappa}\) in
+Eq.~\eqref{eq:beta} is one allowed gauge and carries the expected
+channel-dependent linear phase.  The Gamma contribution cannot be absorbed
+into any finite algebraic differential correction constructed from the
+Planck intensities.  Thus the stationary spectrum and the phase clock have
+provably different exact state complexity, while the phase itself has a
+rigid positive-dispersion geometry invisible in the spectrum.
 
-Specialize the second elliptic-curve coordinate of the first identity
-away from the finitely many poles of $g$.  This produces
-$g_\tau\in E_\tau$ with
+\section{Black-hole and cosmological reach}
+
+The theorem is not tied to a single mirror trajectory.  Its exact
+Gamma-orientation structure occurs in other QFT and scattering problems.
+
+\paragraph{de Sitter observer change.}
+The type-I global-to-static scalar Bogoliubov coefficient in four-dimensional
+de Sitter space contains
 \[
- \Deltaop_\sigma g_\tau=L(\Deltaop_h\lambda_\tau).
+ A_{\ell,\nu}(z)=
+ \frac{\Gamma(z+a_{\ell,\nu})}
+      {\Gamma(b_{\ell,\nu}-z)},\qquad
+ b_{\ell,\nu}-a_{\ell,\nu}=\ell\in\mathbb N,
 \]
-Modulo $\Lambda_\tau$, $\lambda_\tau$ has one simple pole.  Hence
-$\Deltaop_h\lambda_\tau$ has poles at two points, and the orbit of one
-of them under the nontorsion translation by $\sigma$ contains neither
-the other nor any translate forced by $P$; this is exactly where
-$h\notin P$ is used.  Applying the nonzero differential operator $L$
-preserves a highest-order pole at that private point.  The right side
-therefore has exactly one polar point on this translation orbit.
-But the polar support of a coboundary
-$\Deltaop_\sigma u$ on any nontorsion orbit is either empty or has at
-least two boundary points: take the first and last poles of the finite
-support along that orbit.  This contradiction proves that $D_h$ is
-hypertranscendental over $K$.
+with \(z=-i\omega/2\) \cite{SatoSuzuki1994}.  It lies on the first branch of
+\(\mathcal C\) for every mass branch \(\nu\) and angular mode \(\ell\).
+Therefore every reflected-frequency intensity is DA, whereas every
+orientation phase and phase slope is HT, including after all angular and
+mass channels are pooled.  This is a theorem about global-to-static observer
+data across a manifest horizon, not a classification of cosmological time
+evolution.
 
-If $\Psi$ were differentially algebraic over $K$, then its translate
-difference $D_h$ would be so.  Hence $\Psi$ is
-hypertranscendental over $K$, and therefore over $\C(z)$ because
-$K(z)/\C(z)$ is differentially algebraic.  Finally
-\eqref{eq:log-da} gives the claim for $\Gamma$.  This is the
-one-private-orbit specialization of elliptic orbital summability
-\cite{DreyfusHardouinRoquesSinger2018,ArrecheBabbitt2025}.
-\end{proof}
-
-\subsection{Every finite order and every ambient cardinality}
-
-For $q\in I$ with $|I|\ge2$, the product definition gives Nishizawa's
-coface equation
+\paragraph{Schwarzschild far-zone phase.}
+The Coulomb-like partial-wave factor used in the far-zone treatment of
+massless-field black-hole scattering is
 \begin{equation}
- G_I(z+\tau_q)=G_{I\setminus\{q\}}(z)G_I(z),
- \qquad
- \Deltaop_{\tau_q}\frac{G_I'}{G_I}
- =\frac{G_{I\setminus\{q\}}'}{G_{I\setminus\{q\}}}.
- \label{eq:finite-coface}
+ S_\ell(\omega)=
+ \frac{\Gamma(\ell+1-2iM\omega)}
+      {\Gamma(\ell+1+2iM\omega)}
+ \label{eq:schwarzschild-phase}
 \end{equation}
-If $d_{\Q}(\tau)\ge3$, finite-dimensional linear algebra selects
-distinct $q,r\in I$ for which $1,\tau_q,\tau_r$ are rationally
-independent.  Repeatedly applying \eqref{eq:finite-coface} recovers the
-two-period logarithmic derivative from the full one.  Differential
-algebraicity is preserved by translation and subtraction, so
-Proposition~\ref{prop:seed} forces the full logarithmic derivative, and
-then $G_I$, to be hypertranscendental.  Together with the
-rational-affine argument, this proves
-\eqref{eq:da-rank}--\eqref{eq:ht-rank}.
+\cite{BaticKelkarNowakowski2011}.  With \(z=-2iM\omega\), this is the
+self-shift case \(a=b=\ell+1\).  Its reflected-frequency intensity is
+identically one, while its orientation phase and logarithmic frequency slope
+are HT.  The conclusion applies to this exact asymptotic factor.  It does
+not promote the Born amplitude to an exact astrophysical S-matrix, does not
+locate quasinormal modes, and does not describe the near-horizon nonlinear
+dynamics.
 
-For an arbitrary $A$, absence of an edge has an exact global
-consequence.  If $A$ is nonempty, fix $a_0$ and put
-$\omega=\tau_{a_0}$.  For each $a$, dependence of
-$1,\omega,\tau_a$ gives
-$\tau_a=r_a+s_a\omega$ with $r_a,s_a\in\Q$; taking imaginary parts
-gives $s_a>0$.  Conversely, one rational affine line contains no
-rank-three pair.  Thus no compactness, enumeration, or uniform
-denominator is hidden in the global alternative.  If an edge exists,
-every finite set containing its endpoints has augmented rank at least
-three.  If none exists, every finite nonempty set has rank two.
-The finite theorem now proves the two global alternatives and completes
-Theorem~\ref{thm:arithmetic}.
+These instances share the same law: reflection can cancel every Gamma
+charge in intensity while doubling the oriented charge in phase.  The
+mechanism is independent of the number of channels and of elementary
+normalizations.
 
-Finally, exponentiation identifies
+\section{What the result changes}
+
+The result supplies a model-selection theorem for horizon phase inference.
+Any exact finite rational ODE, polynomial neural ODE, finite algebraic
+closure, or finite differential circuit driven only by the complete
+intensity field must fail to reproduce the phase or its slope.  An exact
+model must instead use at least one of:
+\begin{enumerate}
+\item an infinite algebraic state field;
+\item a non-algebraic primitive already carrying the missing phase;
+\item nonlocal analytic information, such as boundary data or an integral
+      transform;
+\item an independent phase-sensitive measurement.
+\end{enumerate}
+This is an exact-representation boundary, not an approximation bound.
+Finite models may approximate the phase on compact frequency windows, just
+as finite filters approximate nonlocal transforms.  The theorem says that
+no increase of finite differential order closes the representation exactly.
+The passage from finite rational state systems to algebraic
+input--output differential equations is standard in realization theory
+\cite{WangSontag1992}; the lower bound here applies directly to its
+derivation-closed state-field invariant.
+
+The conclusion also sharpens a familiar warning around thermal radiation.
+A Planck spectrum does not imply a simple underlying complex channel.  In
+the solvable horizon model, intensity belongs to the DA sector while the
+phase clock requires infinitely many algebraically independent state
+coordinates.  This coexistence is compatible with, but does not resolve,
+the black-hole information problem: no claim is made that astrophysical
+Hawking radiation exposes the hidden phase, that the phase stores a specific
+entropy, or that it restores unitarity.
+
+Phase retrieval in infinite-dimensional Hilbert spaces is known to lack
+uniform stability in broad settings \cite{CahillCasazzaDaubechies2016}.
+Our result is different in kind.  It is not a norm-instability theorem and
+does not compare nearby signals.  It gives an exact algebraic-state lower
+bound for a named QFT coefficient, even when the observation field already
+contains every intensity channel and derivative.
+
+Recent work on modulated accelerating mirrors has independently separated a
+stationary thermal contribution from a phase-sensitive nonstationary
+contribution in the two-point function \cite{Azizi2025}.  That work supplies
+a dynamical and potentially tunable phase sector; it does not give an exact
+differential-state lower bound.  Conversely, our theorem supplies the
+universal representation obstruction but does not model the modulation.
+The new content here is the exact collapse classification, invariance under
+an arbitrary observation atlas, and the positive \(\aleph_0\) state bound,
+not the elementary fact that a modulus omits phase.
+
+\section{Methods and proofs}
+
+\subsection{Gamma-orbit criterion}
+
+We use the following standard consequence of the
+Hölder--Ostrowski theory of the Gamma function
+\cite{Holder1886,HardouinSinger2008}.
+
+\begin{lemma}[Gamma-orbit charge]
+\label{lem:charge}
+For \(c_1,\ldots,c_r\in\C\) and \(m_1,\ldots,m_r\in\Z\), put
 \[
- \dim_{\Q}\Span_{\Q}(\{1\}\cup\{\tau_i\})-1
- =
- \operatorname{rank}_{\Z}
- \left(\langle e^{2\pi i\tau_i}\rangle/
-       \operatorname{Tor}\langle e^{2\pi i\tau_i}\rangle\right).
+ F(z)=\prod_{q=1}^r\Gamma(z+c_q)^{m_q}.
 \]
-Indeed, a nome monomial is torsion exactly when the corresponding
-integer combination of periods is rational.  This proves the
-multiplicative formulation following Theorem~\ref{thm:arithmetic}.
-
-\section{Proof of the universal occupation law}
-
-We give the proof in full because the argument reveals why no
-statistics assumption beyond \eqref{eq:one-particle-retention} can
-enter the critical exponent.
-
-Put $u_a=|p_a|^\sigma$.  For a finite $S\subset A$, independence of
-the occupation coordinates and the geometric series give
-\begin{equation}
- \sum_{\supp\nu\subset S}u^\nu
- =\prod_{a\in S}\sum_{n=0}^{\infty}u_a^n
- =\prod_{a\in S}(1-u_a)^{-1}.
- \label{eq:finite-geometric}
-\end{equation}
-Every finite set of finitely supported occupations is contained in
-the occupations supported on one finite $S$.  Taking the supremum of
-finite subsums in \eqref{eq:finite-geometric} proves
-\eqref{eq:exact-mass}.
-
-The single occupations embed injectively into $\Omega$, while $\Omega$
-embeds into the full bosonic sector.  Since all terms are nonnegative,
-these two embeddings give \eqref{eq:sandwich}.
-
-Suppose first that $\Zpart_\Omega(\sigma)<\infty$.  The lower bound in
-\eqref{eq:sandwich} immediately gives
-$\sum_a u_a<\infty$.
-
-Conversely, suppose $\sum_a u_a<\infty$.  Outside a finite set one has
-$u_a\le1/2$, and hence
+Then \(F\) is DA over \(\C(z)\) if and only if
 \[
- (1-u_a)^{-1}=1+\frac{u_a}{1-u_a},
- \qquad
- 0\le\frac{u_a}{1-u_a}\le2u_a.
+ \sum_{q:\ c_q\equiv c\ {\rm mod}\,\Z}m_q=0
+ \quad\text{for every }c\in\C/\Z.
+ \label{eq:orbit-charge}
 \]
-Therefore the unordered product of $(1-u_a)^{-1}$ has uniformly
-bounded finite subproducts.  Equation \eqref{eq:exact-mass} shows that
-the full bosonic mass is finite, and the upper bound in
-\eqref{eq:sandwich} makes $\Zpart_\Omega(\sigma)$ finite.  This proves
-\eqref{eq:threshold} and \eqref{eq:spectrum-equality}.
-
-If $\sigma\le\tau$, then $0<|p_a|<1$ implies
-$|p_a|^\tau\le|p_a|^\sigma$.  Summability at $\sigma$ therefore implies
-summability at $\tau$, proving upward closure.  Corollary
-\ref{cor:critical} follows.
-
-\section{Proof of the determinant laws}
-
-\subsection{Primary-factor estimate}
-
-The analytic input is a uniform estimate valid at every finite genus.
-
-\begin{lemma}[Primary-factor bound]
-\label{lem:primary}
-For $|z|\le1$,
-\begin{equation}
- |E_g(z)-1|\le e^g|z|^{g+1}.
- \label{eq:primary-bound}
-\end{equation}
+If the condition holds, \(F\) is rational.  Otherwise \(F\) is HT.
 \end{lemma}
 
 \begin{proof}
-Let
+The recurrence \(\Gamma(z+1)=z\Gamma(z)\) gives the first-order difference
+equation
 \[
- P_g(z)=\sum_{m=1}^{g}\frac{z^m}{m}.
+ F(z+1)=R(z)F(z),\qquad
+ R(z)=\prod_{q=1}^{r}(z+c_q)^{m_q}\in\C(z)^\times.
 \]
-Direct differentiation gives
+The divisor of \(R\) has, on the translation orbit \(c+\Z\), total
+multiplicity
+\(\sum_{q:c_q\equiv c\ {\rm mod}\,\Z}m_q\).
+For a rational function \(h\), the divisor of
+\(h(z+1)/h(z)\) has total multiplicity zero on every translation orbit.
+Conversely, if a rational divisor has zero total multiplicity on each
+orbit, finite telescoping along every occupied orbit constructs
+\(h\in\C(z)^\times\) and \(d\in\C^\times\) such that
 \[
- E_g'(z)=-z^g e^{P_g(z)}.
+ R(z)=d\,\frac{h(z+1)}{h(z)}.
 \]
-Along the segment $tz$, $0\le t\le1$, one has
-$\operatorname{Re}P_g(tz)\le g$.  Since $E_g(0)=1$,
-\[
- E_g(z)-1
- =-z^{g+1}\int_0^1 t^g e^{P_g(tz)}\,\dd t.
-\]
-Taking absolute values and using
-$|e^{P_g(tz)}|\le e^g$ proves \eqref{eq:primary-bound}.
+The first-order shift criterion of
+Hardouin and Singer \cite[Corollary~3.4]{HardouinSinger2008} says that a
+nonzero meromorphic solution of \(u(z+1)=R(z)u(z)\) is DA over the field of
+periodic meromorphic functions precisely in this coboundary case.  Hence a
+nonzero orbit charge makes \(F\) HT already over that larger coefficient
+field, and therefore over \(\C(z)\).
+
+If all charges vanish, recurrence reduces the Gamma factors on each orbit
+to a common representative with total exponent zero, leaving a rational
+function.  This proves both directions.
 \end{proof}
 
-\subsection{Local uniform convergence and entireness}
-
-By Theorem~\ref{thm:universal} with $\sigma=g+1$,
+The reflection identity
 \begin{equation}
- \sum_{\nu\in\N^{(A)}}|p^\nu|^{g+1}<\infty
- \quad\Longleftrightarrow\quad
- \sum_{a\in A}|p_a|^{g+1}<\infty.
- \label{eq:integer-threshold}
+ \Gamma(c-z)=
+ \frac{\pi}{\sin\!\bigl(\pi(c-z)\bigr)\Gamma(1-c+z)}
+ \label{eq:reflection}
 \end{equation}
-The same sum restricted to any $\Omega$ is finite.
+turns every negative-slope Gamma factor into a positive-slope factor times a
+nonzero DA sine gauge.  Lemma~\ref{lem:charge} can therefore be applied to
+all functions in Eqs.~\eqref{eq:orientations}--\eqref{eq:observables}.
 
-Fix a compact disk $|x|\le R$.  Apart from finitely many $\nu$, one
-has $R|p^\nu|\le1$.  Lemma~\ref{lem:primary} then gives
-\[
- \sup_{|x|\le R}|E_g(xp^\nu)-1|
- \le e^gR^{g+1}|p^\nu|^{g+1}.
-\]
-The right side is summable by \eqref{eq:integer-threshold}.  The
-Weierstrass criterion gives locally uniform convergence of
-\eqref{eq:restricted-det}.  Every finite subproduct is entire, so its
-locally uniform limit is entire.  This proves Theorem
-\ref{thm:entire-sector}.
+\subsection{Exact collapse locus}
 
-\subsection{Finite-mode exhaustion}
-
-For fixed $x$, put
-\[
- d_\nu=E_g(xp^\nu)-1.
-\]
-The preceding estimate gives $\sum_\nu|d_\nu|<\infty$.  For
-$S\in\Fin(A)$, replace $d_\nu$ by
-\[
- d_{\nu,S}=
- \begin{cases}
- d_\nu,&\supp\nu\subset S,\\
- 0,&\text{otherwise}.
- \end{cases}
-\]
-For each $\nu$, $d_{\nu,S}\to d_\nu$ as $S\uparrow A$, and
-$|d_{\nu,S}|\le|d_\nu|$.  Dominated convergence for unordered products
-therefore yields
-\[
- \prod_\nu(1+d_{\nu,S})
- \longrightarrow
- \prod_\nu(1+d_\nu),
-\]
-which is exactly \eqref{eq:directed-exhaustion}.
-
-\subsection{Coface decomposition}
-
-Every occupation on $\{\ast\}\sqcup B$ is uniquely a pair
-$(n,\nu)\in\N\times\N^{(B)}$, and its monomial is
-$r^np^\nu$.  Regrouping the absolutely convergent centered factors
-gives
-\[
- \D_{\{\ast\}\sqcup B,g}(x)
- =\prod_{n=0}^{\infty}
-   \prod_{\nu\in\N^{(B)}}E_g(xr^np^\nu)
- =\prod_{n=0}^{\infty}\D_{B,g}(xr^n).
-\]
-Separating the $n=0$ layer leaves the same tower evaluated at $rx$.
-This proves \eqref{eq:tower} and \eqref{eq:coface} without dividing by
-any factor.
-
-\subsection{Exact scheme change}
-
-For $g\le h$, the primary factors satisfy the pointwise identity
+Ignoring nonzero DA gauges, reflection rewrites the intensity as
 \begin{equation}
- E_h(z)=E_g(z)
- \exp\left(\sum_{k=g}^{h-1}
-              \frac{z^{k+1}}{k+1}\right).
- \label{eq:factor-scheme}
+ I_{a,b}(z)=
+ \frac{\sin\pi(b-z)}{\sin\pi(a-z)}
+ \frac{\Gamma(z+a)\Gamma(z+1-b)}
+      {\Gamma(z+b)\Gamma(z+1-a)}.
+ \label{eq:intensity-normal}
 \end{equation}
-Admissibility at $g$ and \eqref{eq:integer-threshold} imply absolute
-summability of $(p^\nu)^{k+1}$ for every $k\ge g$.  We may therefore
-multiply \eqref{eq:factor-scheme} over all occupations and interchange
-the finite $k$-sum with the unordered occupation sum.  The result is
-\eqref{eq:scheme}.  The exponential factor never vanishes, so the zero
-divisors agree.
-
-\section{Consequences for theoretical physics}
-
-The theorem is model-independent, so its physical use begins after a
-theory identifies a diagonal family of mode weights $p_a$.  It then
-advances four concrete parts of an analysis.
-
-\begin{enumerate}
-\item \textbf{Differential solvability of finite partition blocks.}
-      Finite-order elliptic-gamma factors appear in integrable models
-      and supersymmetric indices.  Theorem~\ref{thm:arithmetic} decides
-      exactly when such a factor can satisfy any algebraic ordinary
-      differential equation over $\C(z)$.  Augmented rank two gives a
-      finite reduction to one common nome; one rank-three pair rules
-      out every algebraic differential equation, at every order
-      containing that pair.  This separates genuine differential
-      nonintegrability of the special-function block from the
-      functional equations it always obeys.
-
-\item \textbf{Infinite-tower partition traces.}
-      For Kaluza--Klein, oscillator, or large-rank towers, the theorem
-      reduces finiteness of every constrained many-body trace
-      $\Tr|\Gamma_\Omega(P)|^\sigma$ to the one-particle sum
-      $\Tr|P|^\sigma$.  No separate many-body counting estimate is
-      needed, even when the constraint is global and nonfactorizing.
-      Corollary~\ref{cor:hagedorn} gives the identical reduction for
-      the Hagedorn inverse-temperature boundary.
-
-\item \textbf{Exclusion statistics.}
-      Haldane's generalized Pauli principle and the Haldane--Wu
-      formalism motivate occupation spaces between fermionic and
-      bosonic extremes \cite{Haldane1991,Wu1994}.  Theorem
-      \ref{thm:universal} shows that any such sector retaining all
-      single occupations has the same ultraviolet summability boundary.
-      Statistics can change degeneracies and finite thermodynamic
-      functions, but it cannot change this boundary.
-
-\item \textbf{One-loop and spectral determinants.}
-      Once $P\in\Sp_{g+1}$, every constrained occupation lift has an
-      entire determinant \eqref{eq:fredholm}.  Equation
-      \eqref{eq:scheme} gives the exact counterterm needed to compare
-      any two admissible determinant orders.  This permits
-      regulator-independent comparison of zero loci and isolates all
-      scheme dependence in finitely many spectral moments.
-
-\item \textbf{Elliptic-gamma partition blocks.}
-      Elliptic gamma functions occur in integrable models
-      \cite{FelderVarchenko2000}, superconformal indices
-      \cite{Spiridonov2014}, and modular supersymmetric partition
-      functions used in Cardy and black-hole entropy analyses
-      \cite{Gadde2021}.  If an infinite flavor, oscillator, or
-      compactification limit produces a nome family satisfying
-      \eqref{eq:admissible}, Theorems
-      \ref{thm:entire-sector}--\ref{thm:scheme} supply its
-      cutoff-independent elliptic-gamma block, exact mode recursion,
-      and regulator conversion.  The theorem supplies the analytic
-      foundation; identifying the weights and interpreting the resulting
-      determinant remain model-specific inputs rather than conclusions
-      asserted here.
-\end{enumerate}
-
-These consequences distinguish proven reach from possible application.
-Nothing in the theorem computes a new black-hole entropy, spectrum, or
-duality by itself.  It removes a prior analytic obstruction to such a
-calculation when infinitely many diagonal modes are present: existence
-and regulator comparison no longer have to be re-established for each
-occupation statistics.  It also supplies an exact obstruction to
-algebraic differential reduction of every finite block, but does not
-turn hypertranscendence alone into a dynamical nonintegrability theorem
-for a full interacting model.
-
-\section{Relation to prior work and novelty}
-
-For finitely many nomes, multiple elliptic gamma functions and their
-modular structure are classical
-\cite{FelderVarchenko2000,Nishizawa2001,Narukawa2004}; rational-cone
-extensions preserve a finite-dimensional cone
-\cite{Winding2018}.  Kato proved differential algebraicity on the
-rational-ray locus and explicitly left the non-rational case open
-\cite{Kato2021}.  Parameterized difference Galois theory and elliptic
-orbital residues provide general obstruction mechanisms
-\cite{HardouinSinger2008,DreyfusHardouinRoquesSinger2018,
-ArrecheBabbitt2025}, but do not state the all-period rank
-classification above.
-
-Regularized Fredholm determinants in Schatten ideals are classical
-\cite{Simon2005}.  Likewise, bosonic and fermionic grand-canonical
-factorization is standard in quantum statistical mechanics, while
-generalized exclusion statistics gives important interpolating
-state-counting rules \cite{Haldane1991,Wu1994}.
-
-The new point is not any one ingredient in isolation.  It is the exact
-arithmetic--spectral synthesis at arbitrary index:
-\begin{enumerate}
-\item the augmented-rank-two versus rank-at-least-three
-      differential dichotomy for every finite period tuple, including
-      all non-rational tuples;
-\item the rank-three obstruction graph deciding every finite section
-      of every ambient period family, without a cardinality bound;
-\item a full-bosonic mass identity as a directed supremum of finite
-      Euler products, with no countability assumption;
-\item equality of the complete positive summability spectrum for every
-      arbitrary, possibly nonfactorizing occupation sector containing
-      the one-particle states;
-\item an entire canonical determinant for every such sector at every
-      admissible genus;
-\item enumeration-free finite-mode exhaustion, exact mode cofaces, and
-      exact finite-polynomial changes between all admissible genera.
-\end{enumerate}
-The sector theorem is stronger than an interpolation between named
-statistics: it permits every subset of finitely supported
-configurations satisfying the single explicit retention condition.
-The proof also identifies why this is the largest possible universal
-class, as stated in Remark~\ref{rem:sharpness}.
-
-To our knowledge, neither the complete augmented-rank classification nor
-the arbitrary-sector spectrum law with its arbitrary-index determinant
-realization has previously been stated.  The priority claim is limited
-to these precise theorems and their synthesis.  We do not claim novelty
-for finite-rank elliptic-gamma identities, Kato's rational-ray theorem,
-standard Schatten theory, or traditional bosonic and fermionic trace
-formulas.
-
-\section{Conclusion}
-
-Every nome family now has two exact phase invariants.  On each nonempty
-finite section, augmented rational rank two is exactly the
-differential-algebraic phase and augmented rank at least three is exactly
-the hypertranscendental phase.  Across an arbitrary ambient family, one
-rank-three edge persists through every finite superset; without an edge,
-all periods lie on one rational affine line.  This closes the standard
-finite hierarchy with no unclassified period tuples.
-
-Independently, the many-body convergence question has an exact universal
-answer.  For every index set, every positive exponent, and every
-occupation sector that retains all one-particle states,
+The Gamma charges vanish precisely when the two-element multisets
 \[
- \Gamma_\Omega(P)\in\Sp_\sigma
- \quad\Longleftrightarrow\quad
- P\in\Sp_\sigma.
+ \{a,1-b\}\quad\text{and}\quad\{b,1-a\}
 \]
-Arbitrary exclusion constraints cannot shift the critical exponent.
-This is maximal because the one-particle sector supplies the necessary
-lower bound and the full bosonic sector supplies the sufficient upper
-bound.
+agree in \(\C/\Z\).  There are exactly two pairings.  The direct pairing
+gives \(b-a\in\Z\); the crossed pairing gives
+\(1-2a\in\Z\) and \(1-2b\in\Z\).  This proves the if-and-only-if statement
+in Eq.~\eqref{eq:collapse}.  Multiplication by a nonzero DA function
+preserves and reflects DA, so arbitrary \(g_i,\widetilde g_i\) do not alter
+the locus.
 
-For the full bosonic spectrum, the exact mass is the directed Euler
-product \eqref{eq:exact-mass}.  Its canonical primary-factor
-determinants yield an infinite-mode extension of the block underlying
-the multiple elliptic gamma hierarchy.  Every admissible genus gives
-an entire function; finite-mode nets converge without choosing an
-enumeration; adjoining any mode obeys the exact coface law; and every
-change of admissible genus is an explicit finite local counterterm.
-Thus arithmetic differential complexity is decided by rational period
-rank, while spectral criticality, infinite-mode existence, mode
-recursion, and regulator dependence are decided by one-particle decay.
-Neither finiteness of order, countability of labels, nor a named
-occupation statistics is needed beyond the explicit hypotheses of the
-corresponding law.
+For phase, reflection gives
+\begin{equation}
+ P_{a,b}(z)=G_{a,b}(z)\,
+ \Gamma(z+a)\Gamma(z+b)\Gamma(z+1-a)\Gamma(z+1-b),
+ \label{eq:phase-normal}
+\end{equation}
+where \(G_{a,b}\) is a nonzero DA sine gauge.  Every displayed Gamma charge
+is positive.  At least one translation orbit therefore has nonzero charge,
+so Lemma~\ref{lem:charge} makes \(P_{a,b}\) HT for all \(a,b\), without a
+genericity hypothesis.  A nonzero DA calibration cannot remove that charge.
+The same argument gives HT of the full amplitude.
+
+\subsection{Pooling an arbitrary intensity atlas}
+
+Assume every intensity generator is DA over \(K=\C(z)\).  The differential
+field \(K_I=K\langle I_i:i\in\iota\rangle_\partial\) is then a
+differentially algebraic extension of \(K\), irrespective of the cardinality
+of \(\iota\).  Differential algebraicity is transitive, hence for every
+ambient meromorphic \(f\),
+\begin{equation}
+ f\text{ is DA over }K_I
+ \quad\Longleftrightarrow\quad
+ f\text{ is DA over }K.
+ \label{eq:base-change}
+\end{equation}
+The HT phase over \(K\) is therefore HT over the complete observation field
+\(K_I\).
+
+The logarithmic phase slope \(L=P'/P\) is HT over a differential field
+exactly when \(P\) is.  One implication follows because DA elements form a
+differential field.  For the converse, if \(P'/P\) were DA, then \(P\)
+would satisfy a first-order linear equation over a DA extension; differential
+algebraic transitivity would make \(P\) DA.  This contradiction proves the
+phase-slope statement.
+
+\subsection{Infinite state lower bound}
+
+Let \(S\) be a derivation-closed intermediate field over \(K_I\), and suppose
+\(\trdeg_{K_I}S=n<\aleph_0\).  For every \(x\in S\), the
+\(n+1\) elements
+\[
+ x,\partial x,\ldots,\partial^n x
+\]
+belong to \(S\) and are algebraically dependent over \(K_I\).  Thus every
+\(x\in S\) is DA over \(K_I\).  Since \(P_j\) and \(L_j\) are HT, neither
+can lie in such an \(S\).  Equivalently, every derivation-closed state field
+containing either target satisfies
+\(\trdeg_{K_I}S\geq\aleph_0\).  This proves the positive state-complexity
+part of Theorem~\ref{thm:universal}.
+
+\subsection{Thermal identity}
+
+For real nonzero \(x\), conjugation invariance of Gamma gives
+\(\Gamma(-ix)=\overline{\Gamma(ix)}\).  Applying
+\(\Gamma(z)\Gamma(1-z)=\pi/\sin(\pi z)\) at \(z=ix\), followed by
+\(\Gamma(1-ix)=(-ix)\Gamma(-ix)\), yields
+Eq.~\eqref{eq:imaginary-reflection}.  Finally
+\[
+ 2e^{\pi x}\sinh(\pi x)=e^{2\pi x}-1
+\]
+gives Eq.~\eqref{eq:thermal-identity} and hence
+Eq.~\eqref{eq:planck} after restoring the elementary prefactor in
+Eq.~\eqref{eq:beta}.  Lemma~\ref{lem:charge}, applied to
+\(\Gamma(z)/\Gamma(-z)\) and its logarithmic derivative, proves
+Corollary~\ref{cor:horizon}.
+
+\subsection{One-turn phase geometry}
+
+For \(x>0\), the recurrence
+\(\psi(1+ix)=\psi(ix)+(ix)^{-1}\) has a purely imaginary correction, so
+their real parts agree.  Differentiation along the vertical line gives
+\[
+ \frac{\dd}{\dd x}\operatorname{Re}\psi(1+ix)
+   =-\operatorname{Im}\psi'(1+ix).
+\]
+The absolutely convergent trigamma expansion
+\[
+ \psi'(1+ix)=\sum_{n=0}^{\infty}\frac{1}{(n+1+ix)^2}
+\]
+has strictly negative imaginary part for \(x>0\): every summand has
+nonpositive imaginary part and the first is strictly negative.  This proves
+Eq.~\eqref{eq:phase-convexity} and strict monotonicity.
+
+At the lower endpoint,
+\(\psi(1)=-\gamma\), hence
+\(\tau_\rho(0)=-\gamma-\log\rho\).  At the upper endpoint,
+\(\operatorname{Re}\psi(1+ix)=\log x+o(1)\), hence
+\(\tau_\rho(x)\to+\infty\).  Continuity and strict monotonicity give one
+positive zero exactly when
+\(-\gamma-\log\rho<0\), equivalently
+\(e^{-\gamma}<\rho\); they give its uniqueness and both sign regions.
+If the endpoint value is nonnegative, strict monotonicity makes the slope
+positive for every \(x>0\).  This proves
+Proposition~\ref{prop:one-turn} without an unproved threshold or numerical
+root.
+
+\section{Discussion}
+
+The universal law answers the scoped question completely.  On the exact
+arithmetic collapse locus, every intensity channel is DA; outside it,
+intensity is HT.  On the locus, every complex amplitude, orientation phase,
+and phase slope remains HT after every intensity is adjoined.  Every exact
+algebraic state realization of phase or phase slope has at least countably
+infinite transcendence degree.  There is no residual finite-order case and
+no cardinality restriction on the observed family.
+
+For the solvable horizon channel, the same phase has an exact all-frequency
+prediction: positive group-delay dispersion and at most one stationary
+frequency, with the complete canonical-threshold classification in
+Proposition~\ref{prop:one-turn}.  This supplies a direct target for
+phase-sensitive moving-mirror and analogue-gravity calculations.  It also
+provides a diagnostic for reduced models: matching the Planck spectrum is
+insufficient, and an exact phase model must reproduce both the one-turn
+geometry and the infinite differential-state obstruction.
+
+The scientific message is narrower than ``phase can never be recovered''
+and stronger than ``modulus loses phase''.  Nonlocal recovery with extra
+analytic hypotheses remains possible.  What is impossible is exact recovery
+inside every finite local algebraic differential state architecture, even
+after unlimited intensity pooling.  In the solvable horizon QFT, exact
+thermality can therefore conceal an irreducibly infinite quantum clock.
 
 \section*{Data availability}
 
-No datasets were generated or analyzed.
+No datasets were generated or analysed.  All formulas and complete proofs
+needed to evaluate the results are contained in the Article.
 
 \section*{Competing interests}
 
 The author declares no competing interests.
 
-\footnotesize
 \begin{thebibliography}{99}
 
-\bibitem{ArrecheBabbitt2025}
-C.~E. Arreche and M.~W. Babbitt,
-\newblock Panorbital residues and elliptic summability,
-\newblock arXiv:2508.18247 (2025).
+\bibitem{CarlitzWilley1987}
+Carlitz, R. D. \& Willey, R. S.
+Reflections on moving mirrors.
+\emph{Phys. Rev. D} \textbf{36}, 2327--2335
+(1987). doi:10.1103/PhysRevD.36.2327.
 
-\bibitem{DreyfusHardouinRoquesSinger2018}
-T.~Dreyfus, C.~Hardouin, J.~Roques, and M.~F. Singer,
-\newblock On the nature of the generating series of walks in the
-quarter plane,
-\newblock \emph{Invent. Math.} \textbf{213} (2018), 139--203.
+\bibitem{GoodAndersonEvans2013}
+Good, M. R. R., Anderson, P. R. \& Evans, C. R.
+Time dependence of particle creation from accelerating mirrors.
+\emph{Phys. Rev. D} \textbf{88}, 025023
+(2013). doi:10.1103/PhysRevD.88.025023.
 
-\bibitem{FelderVarchenko2000}
-G.~Felder and A.~Varchenko,
-\newblock The elliptic gamma function and
-$\mathrm{SL}(3,\mathbb Z)\ltimes\mathbb Z^3$,
-\newblock \emph{Adv. Math.} \textbf{156} (2000), 44--76.
+\bibitem{GianfeliciMancini2017}
+Gianfelici, G. \& Mancini, S.
+Quantum channels from reflections on moving mirrors.
+\emph{Sci. Rep.} \textbf{7}, 15747
+(2017). doi:10.1038/s41598-017-15578-0.
 
-\bibitem{Gadde2021}
-A.~Gadde,
-\newblock Modularity of supersymmetric partition functions,
-\newblock \emph{J. High Energy Phys.} \textbf{2021} (2021), article 181.
+\bibitem{WangLowery2020}
+Wang, T. \& Lowery, A. J.
+Minimum phase conditions in Kramers--Kronig optical receivers.
+\emph{J. Lightwave Technol.} \textbf{38}, 6214--6220
+(2020). doi:10.1109/JLT.2020.3008714.
 
-\bibitem{Haldane1991}
-F.~D.~M. Haldane,
-\newblock ``Fractional statistics'' in arbitrary dimensions:
-a generalization of the Pauli principle,
-\newblock \emph{Phys. Rev. Lett.} \textbf{67} (1991), 937--940.
+\bibitem{SatoSuzuki1994}
+Sato, H.-T. \& Suzuki, H.
+On Bogoliubov transformation of scalar wave functions in de Sitter space.
+Preprint at \url{https://arxiv.org/abs/hep-th/9410092} (1994).
+
+\bibitem{BaticKelkarNowakowski2011}
+Batic, D., Kelkar, N. G. \& Nowakowski, M.
+On Born approximation in black hole scattering.
+\emph{Eur. Phys. J. C} \textbf{71}, 1831
+(2011). doi:10.1140/epjc/s10052-011-1831-y.
+
+\bibitem{CahillCasazzaDaubechies2016}
+Cahill, J., Casazza, P. G. \& Daubechies, I.
+Phase retrieval in infinite-dimensional Hilbert spaces.
+\emph{Trans. Am. Math. Soc. Ser. B} \textbf{3}, 63--76
+(2016). doi:10.1090/btran/12.
+
+\bibitem{Azizi2025}
+Azizi, A.
+Modulated accelerating mirrors as a physical realization of the
+\(\kappa\)-Gamma vacuum.
+Preprint at \url{https://arxiv.org/abs/2509.06762} (2025).
+
+\bibitem{Holder1886}
+Hölder, O.
+Ueber die Eigenschaft der Gammafunction keiner algebraischen
+Differentialgleichung zu genügen.
+\emph{Math. Ann.} \textbf{28}, 1--13 (1886).
 
 \bibitem{HardouinSinger2008}
-C.~Hardouin and M.~F. Singer,
-\newblock Differential Galois theory of linear difference equations,
-\newblock \emph{Math. Ann.} \textbf{342} (2008), 333--377.
+Hardouin, C. \& Singer, M. F.
+Differential Galois theory of linear difference equations.
+\emph{Math. Ann.} \textbf{342}, 333--377
+(2008). doi:10.1007/s00208-008-0238-z.
 
-\bibitem{Kato2021}
-M.~Kato,
-\newblock Differential algebraicity of the multiple elliptic gamma
-function for a rational period,
-\newblock \emph{Funkcial. Ekvac.} \textbf{64} (2021), 225--235.
-
-\bibitem{Narukawa2004}
-A.~Narukawa,
-\newblock The modular properties and the integral representations of
-the multiple elliptic gamma functions,
-\newblock \emph{Adv. Math.} \textbf{189} (2004), 247--267.
-
-\bibitem{Nishizawa2001}
-M.~Nishizawa,
-\newblock An elliptic analogue of the multiple gamma function,
-\newblock \emph{J. Phys. A: Math. Gen.} \textbf{34} (2001), 7411--7421.
-
-\bibitem{Simon2005}
-B.~Simon,
-\newblock \emph{Trace Ideals and Their Applications}, second ed.,
-\newblock Mathematical Surveys and Monographs, vol.~120,
-American Mathematical Society, Providence, 2005.
-
-\bibitem{Spiridonov2014}
-V.~P. Spiridonov,
-\newblock Modified elliptic gamma functions and 6d superconformal
-indices,
-\newblock \emph{Lett. Math. Phys.} \textbf{104} (2014), 397--414.
-
-\bibitem{Winding2018}
-J.~Winding,
-\newblock Multiple elliptic gamma functions associated to cones,
-\newblock \emph{Adv. Math.} \textbf{325} (2018), 56--86.
-
-\bibitem{Wu1994}
-Y.-S.~Wu,
-\newblock Statistical distribution for generalized ideal gas of
-fractional-statistics particles,
-\newblock \emph{Phys. Rev. Lett.} \textbf{73} (1994), 922--925.
+\bibitem{WangSontag1992}
+Wang, Y. \& Sontag, E. D.
+Algebraic differential equations and rational control systems.
+\emph{SIAM J. Control Optim.} \textbf{30}, 1126--1149
+(1992). doi:10.1137/0330060.
 
 \end{thebibliography}
 
