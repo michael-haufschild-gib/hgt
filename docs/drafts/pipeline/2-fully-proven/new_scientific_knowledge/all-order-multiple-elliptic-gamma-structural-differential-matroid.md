@@ -1560,3 +1560,19 @@ lemma, `hOffDA` at the bottom layer is therefore a pure assembly with no missing
 sigma_(n tau_q) y = y + sigma_a (Delta_(n tau_q) Psi_1),   y in C<t>_delta,
    second summand DA over C hence over C<t>_delta   ==>   sigma_(n tau_q) y DA over C<t>_delta.
 ```
+
+## Lean progress — off-star displacements
+
+**`differentialAlgebraicOver_offStar_displacement_bottom`** (axiom-clean, in
+`BottomFaceCrossSeparation.lean`): if the star direction `q` survives on the bottom face `J`, then
+for every packet element `y` and every `n`,
+
+```text
+sigma_(n tau_q) y - y   is differentially algebraic over C.
+```
+
+Indeed `q in {a,b}` makes `n tau_q` resonant for the pair `(tau_a, tau_b)` (witness `⟨0,0,n⟩` or
+`⟨0,n,0⟩`), and the displacement is a translate of that resonant defect.  This is the analytic
+content of `hOffDA`; what the engine additionally needs is only the bookkeeping step
+`sigma_(n tau_q) y = y + (DA element)` with `y` in the generated field, which is
+`hypertranscendentalOver_add_differentialAlgebraic_iff`.

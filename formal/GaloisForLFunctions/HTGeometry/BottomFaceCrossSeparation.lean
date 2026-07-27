@@ -134,6 +134,38 @@ theorem multipleEllipticGammaFacePacketSlice_exponent_eq_bottom_cross
   exact multipleEllipticGammaFace_translate_ne_bottom τ hτ hQ J J' haJ hbJ hab hJ
     haJ' hbJ' hab' hJ' hperiods hperiods' haa' hab'' _ _ heq
 
+set_option maxHeartbeats 1000000 in
+/-- **Off-star displacements at the bottom layer are differentially algebraic.**  If the star
+direction `q` survives on the face `J`, translation by `n tau_q` is a structural translation there,
+so it moves every packet element by a translate of a *resonant* defect. -/
+theorem differentialAlgebraicOver_offStar_displacement_bottom
+    (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im) (J : Finset ι) {a b : ι}
+    (haJ : a ∉ J) (hbJ : b ∉ J) (hab : a ≠ b) (hJ : ∀ i, i ∉ J → i = a ∨ i = b)
+    (hperiods : LinearIndependent ℚ (ellipticGammaSourcePeriods (τ a) (τ b)))
+    {q : ι} (hq : q ∉ J) (n : ℤ) {y : meroField (Set.univ : Set ℂ)}
+    (hy : y ∈ multipleEllipticGammaFacePacket τ hτ J) :
+    DifferentialAlgebraicOver ℂ
+      (addTranslationMeroEquiv ((n : ℂ) * τ q) y - y) := by
+  classical
+  obtain ⟨g, -, rfl⟩ := hy
+  show DifferentialAlgebraicOver ℂ
+    (addTranslationMeroEquiv ((n : ℂ) * τ q)
+        (addTranslationMeroEquiv g (multipleEllipticGammaLogDerivFaceMero τ hτ J)) -
+      addTranslationMeroEquiv g (multipleEllipticGammaLogDerivFaceMero τ hτ J))
+  have hform : ∀ (s : ℂ) (Ψ : meroField (Set.univ : Set ℂ)) (t : ℂ),
+      addTranslationMeroEquiv t (addTranslationMeroEquiv s Ψ) -
+          addTranslationMeroEquiv s Ψ =
+        addTranslationMeroEquiv s (addTranslationMeroEquiv t Ψ - Ψ) := by
+    intro s Ψ t
+    rw [map_sub, addTranslationMeroEquiv_add, addTranslationMeroEquiv_add, add_comm s t]
+  rw [hform, multipleEllipticGammaLogDerivFaceMero_two_surviving τ hτ J haJ hbJ hab hJ,
+    hform, addTranslationMeroEquiv_add]
+  have hres : ∃ p r' r : ℤ, (n : ℂ) * τ q = p + r' * τ b + r * τ a := by
+    rcases hJ q hq with rfl | rfl
+    · exact ⟨0, 0, n, by push_cast; ring⟩
+    · exact ⟨0, n, 0, by push_cast; ring⟩
+  exact differentialAlgebraicOver_translate_resonant_defect (hτ a) (hτ b) hperiods hres
+
 omit [Fintype ι] [DecidableEq ι] in
 /-- Distinct faces admit a parameter surviving on one and deleted on the other. -/
 theorem exists_separating_parameter_of_ne {J J' : Finset ι} (h : J ≠ J') :
