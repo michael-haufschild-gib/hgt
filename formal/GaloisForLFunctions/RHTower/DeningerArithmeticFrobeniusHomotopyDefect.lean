@@ -39,6 +39,7 @@ theorem deningerCompositeHomotopy_boundary
     (hdFm : d * Fm = Fm * d)
     (hdan : d * an = an * d)
     (hanFm : an * Fm = Fm * an)
+    (hanam : an * am = am * an)
     (hFmn : Fmn = Fm * Fn)
     (hamn : amn = am * an)
     (hhm : deningerHomotopyBoundary d hm = Fm - am)
@@ -46,7 +47,19 @@ theorem deningerCompositeHomotopy_boundary
     deningerHomotopyBoundary d (Fm * hn + an * hm) =
       Fmn - amn := by
   unfold deningerHomotopyBoundary at hhm hhn ⊢
-  noncomm_ring [hdFm, hdan, hanFm, hFmn, hamn, hhm, hhn]
+  calc
+    d * (Fm * hn + an * hm) + (Fm * hn + an * hm) * d =
+        Fm * (d * hn + hn * d) + an * (d * hm + hm * d) := by
+      simp only [mul_add, add_mul]
+      rw [← mul_assoc d Fm hn, hdFm, mul_assoc Fm d hn,
+        ← mul_assoc d an hm, hdan, mul_assoc an d hm,
+        mul_assoc Fm hn d, mul_assoc an hm d]
+      abel
+    _ = Fm * (Fn - an) + an * (Fm - am) := by rw [hhm, hhn]
+    _ = Fm * Fn - am * an := by
+      rw [mul_sub, mul_sub, hanFm, hanam]
+      noncomm_ring
+    _ = Fmn - amn := by rw [hFmn, hamn]
 
 /-- The factorization defect is closed in the endomorphism complex. -/
 theorem deningerFrobeniusHomotopyDefect_boundary
@@ -55,6 +68,7 @@ theorem deningerFrobeniusHomotopyDefect_boundary
     (hdFm : d * F m = F m * d)
     (hdan : d * scalar n = scalar n * d)
     (hanFm : scalar n * F m = F m * scalar n)
+    (hanam : scalar n * scalar m = scalar m * scalar n)
     (hFmn : F (m * n) = F m * F n)
     (hamn : scalar (m * n) = scalar m * scalar n)
     (hhm :
@@ -77,17 +91,28 @@ theorem deningerFrobeniusHomotopyDefect_boundary
       d (F m) (F n) (F (m * n))
       (scalar m) (scalar n) (scalar (m * n))
       (homotopy m) (homotopy n)
-      hdFm hdan hanFm hFmn hamn hhm hhn
+      hdFm hdan hanFm hanam hFmn hamn hhm hhn
   unfold deningerFrobeniusHomotopyDefect
   unfold deningerHomotopyBoundary at hhmn hcomposite ⊢
-  noncomm_ring [hhmn, hcomposite]
+  calc
+    d * (homotopy (m * n) -
+          F m * homotopy n - scalar n * homotopy m) +
+        (homotopy (m * n) -
+          F m * homotopy n - scalar n * homotopy m) * d =
+      (d * homotopy (m * n) + homotopy (m * n) * d) -
+        (d * (F m * homotopy n + scalar n * homotopy m) +
+          (F m * homotopy n + scalar n * homotopy m) * d) := by
+            noncomm_ring
+    _ = 0 := by rw [hhmn, hcomposite, sub_self]
 
 /-- The defects obey the multiplicative two-cocycle identity. -/
 theorem deningerFrobeniusHomotopyDefect_cocycle
     {M A : Type*} [Semigroup M] [Ring A]
     (F scalar homotopy : M → A) (l m n : M)
     (hFlm : F (l * m) = F l * F m)
-    (hasmn : scalar (m * n) = scalar m * scalar n) :
+    (hasmn : scalar (m * n) = scalar m * scalar n)
+    (hanFl : scalar n * F l = F l * scalar n)
+    (hanam : scalar n * scalar m = scalar m * scalar n) :
     deningerFrobeniusHomotopyDefect
           F scalar homotopy (l * m) n +
         scalar n *
@@ -100,6 +125,16 @@ theorem deningerFrobeniusHomotopyDefect_cocycle
             F scalar homotopy m n := by
   unfold deningerFrobeniusHomotopyDefect
   rw [mul_assoc, hFlm, hasmn]
+  have hcommF :
+      scalar n * (F l * homotopy m) =
+        F l * (scalar n * homotopy m) := by
+    rw [← mul_assoc, hanFl, mul_assoc]
+  have hcommScalar :
+      scalar n * (scalar m * homotopy l) =
+        scalar m * (scalar n * homotopy l) := by
+    rw [← mul_assoc, hanam, mul_assoc]
+  simp only [mul_sub]
+  rw [hcommF, hcommScalar]
   noncomm_ring
 
 end GaloisForLFunctions.RHTower

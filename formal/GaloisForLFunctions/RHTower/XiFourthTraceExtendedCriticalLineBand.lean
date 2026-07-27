@@ -22,9 +22,8 @@ theorem not_exists_xiZeroCopy_offLine_of_im_sq_lt_2365_over_16 :
   rintro ⟨q, hoff, hvUpper⟩
   have huLower : (0 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ 2 :=
     sq_pos_of_ne_zero (sub_ne_zero.mpr hoff)
-  have hstrip := xi_divisor_support_re_mem_open_unit q.1
-  have huUpper : ((q.1 : ℂ).re - 1 / 2) ^ 2 < (1 / 4 : ℝ) := by
-    nlinarith [mul_pos hstrip.1 (sub_pos.mpr hstrip.2)]
+  have huUpper : ((q.1 : ℂ).re - 1 / 2) ^ 2 < (1 / 4 : ℝ) :=
+    xi_divisor_support_centered_re_sq_lt_quarter q.1
   have hvLower := xiZeroCopy_offLine_eightyFive_lt_im_sq q hoff
   have hle := four_mul_xiFourthReciprocalTraceAtom_le_source_of_offLine q hoff
   have hatom :=
@@ -55,11 +54,9 @@ theorem xiThermalOrientationTerm_le_one_over_oneHundredFortySeven_node_sq
   · let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ 2
     let v : ℝ := (q.1 : ℂ).im ^ 2
     let D : ℝ := (u + v) ^ 2
-    have hstrip := xi_divisor_support_re_mem_open_unit q.1
     have hu0 : 0 ≤ u := by dsimp only [u]; positivity
-    have hu : u < 1 / 4 := by
-      dsimp only [u]
-      nlinarith [mul_pos hstrip.1 (sub_pos.mpr hstrip.2)]
+    have hu : u < 1 / 4 :=
+      xi_divisor_support_centered_re_sq_lt_quarter q.1
     have hv : (2365 / 16 : ℝ) ≤ v := by
       apply le_of_not_gt
       intro hvlt

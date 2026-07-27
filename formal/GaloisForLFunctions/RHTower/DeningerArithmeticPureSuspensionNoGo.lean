@@ -1,4 +1,4 @@
-import Mathlib.Topology.Algebra.Module.Basic
+import Mathlib
 
 /-!
 # Pure suspension scalar-spectrum no-go

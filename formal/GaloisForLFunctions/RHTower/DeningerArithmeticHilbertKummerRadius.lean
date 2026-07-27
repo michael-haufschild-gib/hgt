@@ -15,6 +15,8 @@ zero or Riemann-hypothesis premise occurs.
 
 namespace RHTower
 
+noncomputable section
+
 variable {H : Type*}
 variable [SeminormedAddCommGroup H] [NormedSpace ℝ H]
 
@@ -61,5 +63,7 @@ theorem deningerHilbertKummerFlowPullback_eq_dilation
     f (deningerHilbertKummerSuspensionRadius (u * v) ell) =
       f (v * deningerHilbertKummerSuspensionRadius u ell) := by
   rw [deningerHilbertKummerSuspensionRadius_flow]
+
+end
 
 end RHTower

@@ -2,9 +2,9 @@ import GaloisForLFunctions.RHTower.DeningerArithmeticAssociatedGraded
 import GaloisForLFunctions.RHTower.DeningerArithmeticOrientedHilbertHodge
 
 /-!
-# Completed three-degree arithmetic cohomology target
+# Zero-indexed completed comparison target
 
-This module assembles the completed Deninger target in degrees zero, one, and two:
+This module assembles a completed Xi-divisor comparison target in degrees zero, one, and two:
 
 * `H^0 = C`;
 * `H^1 = ell^2` completion of the source jet associated graded;
@@ -15,8 +15,10 @@ the completed oriented alternating form.  Both Poincare pairings are nondegenera
 by Hodge star is positive, endpoint Frobenius has weights zero and one, and the middle Frobenius
 is the closed densely defined maximal associated-graded source generator.
 
-All axioms except middle Frobenius/Hodge commutation hold unconditionally.  That final purity
-compatibility is exactly RH.
+The middle carrier is definitionally `XiDivisorL2`, so this is not a source-native construction of
+arithmetic cohomology.  All displayed algebraic and Hilbert identities except middle
+Frobenius/Hodge commutation hold unconditionally on this comparison target.  That final
+compatibility is exactly RH and is not proved here.
 -/
 
 open Complex
@@ -29,7 +31,7 @@ noncomputable section
 /-- Completed degree-zero arithmetic cohomology. -/
 abbrev DeningerArithmeticCompletedH0 := ℂ
 
-/-- Completed degree-one arithmetic cohomology. -/
+/-- Zero-indexed completed degree-one comparison carrier. -/
 abbrev DeningerArithmeticCompletedH1 := XiDivisorL2
 
 /-- Completed degree-two Tate cohomology. -/

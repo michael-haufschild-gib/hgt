@@ -18,6 +18,28 @@ namespace GaloisForLFunctions
 
 noncomputable section
 
+/-- A family of naturals indexed by a nonempty `Fin D`, each entry at least `q`, sums to at
+least `q`: one summand already reaches it. -/
+theorem le_sum_of_le_apply {D q : ℕ} (hD : 0 < D) {s : Fin D → ℕ} (h : ∀ i, q ≤ s i) :
+    q ≤ ∑ i, s i := by
+  obtain ⟨i₀⟩ : Nonempty (Fin D) := Fin.pos_iff_nonempty.mp hD
+  exact (h i₀).trans
+    (Finset.single_le_sum (f := s) (fun _ _ => Nat.zero_le _) (Finset.mem_univ i₀))
+
+/-- The same family sums to at least `D` copies of `q`, summand by summand. -/
+theorem mul_le_sum_of_le_apply {D q : ℕ} {s : Fin D → ℕ} (h : ∀ i, q ≤ s i) :
+    D * q ≤ ∑ i, s i := by
+  calc
+    D * q = ∑ _i : Fin D, q := by simp [Finset.sum_const]
+    _ ≤ ∑ i, s i := Finset.sum_le_sum fun i _ => h i
+
+/-- Dually, a family bounded above by `q` sums to at most `D` copies of `q`. -/
+theorem sum_le_mul_of_apply_le {D q : ℕ} {s : Fin D → ℕ} (h : ∀ i, s i ≤ q) :
+    ∑ i, s i ≤ D * q := by
+  calc
+    ∑ i, s i ≤ ∑ _i : Fin D, q := Finset.sum_le_sum fun i _ => h i
+    _ = D * q := by simp [Finset.sum_const]
+
 def jetMonomialDegree (n : ℕ) (m : Fin (n + 2) →₀ ℕ) : ℕ :=
   ∑ j : Fin (n + 1), m j.succ
 

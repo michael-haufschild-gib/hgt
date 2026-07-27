@@ -1,7 +1,7 @@
 # Möbius--Laplace half-polylog decay and zeta-multiplicity rigidity
 
 - **ID:** `mobius-laplace-half-polylog-decay-multiplicity-rigidity`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** `[THEOREM] [MOBIUS--LAPLACE FRONTIER WEAKENING]`
 - **Scientific status:** `[PAPER-PROVED] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
   `[GENERAL IRREGULARITY PARENT] [NOT AN UNCONDITIONAL RH PROOF]`
@@ -221,6 +221,7 @@ general irregularity parent is explicit.
 - [x] formalize general `q` critical Abel bound and zeta-order cap
 - [x] formalize maximal-order coefficient bound
 - [x] connect to `MobiusLaplaceMellinContinuationWall`
+- [x] formalize the `q=0` residue cap `(3)`
 - [ ] RH from an unconditional `HP_q` source proof
 
 ## Lean status
@@ -309,6 +310,35 @@ eventually_norm_scaled_mellin_le_halfPolylogConstant
 exists_localFactor_with_Gamma_cap_of_halfPolylog_maximalOrder
 ```
 
-Direct `lake env lean` checks pass for modified criterion, half-polylog, exact-boundary, and
-polylog-boundary modules, and the new sharp-coefficient module compiles cleanly on its first
-production check. Stage remains 2 until final build/lint/axiom gates pass.
+The residue-cap module closes the `q = 0` specialisation `(3)`:
+
+```text
+formal/GaloisForLFunctions/RHTower/MobiusLaplaceSimpleZeroResidueCap.lean
+```
+
+| Card item | Lean name |
+|---|---|
+| `ζ = (z-ρ)·p` near a simple zero gives `ζ′(ρ) = p(ρ)` | `RHTower.deriv_riemannZeta_eq_of_simple_factor` |
+| **`(3)`** `‖Γ(ρ)/ζ′(ρ)‖ ≤ C` from exact half-decay with constant `C` | `RHTower.norm_Gamma_div_deriv_riemannZeta_le_of_halfDecay` |
+| the whole `q = 0` package (RH, simplicity, residue cap) | `RHTower.mobiusDiscreteLaplaceHalfDecay_implies_rh_simplicity_and_residueCap` |
+
+**Verification.**  All six modules are imported by `GaloisForLFunctions.RHTower`,
+`lake build` succeeds on each, and `#print axioms` gives exactly
+`propext, Classical.choice, Quot.sound` for
+
+```text
+mobiusDiscreteLaplaceHalfPolylogDecay_implies_riemannHypothesis
+mobiusDiscreteLaplaceHalfPolylogDecay_implies_riemannHypothesis_and_multiplicityCap
+analyticOrderAt_riemannZeta_toNat_le_of_mobiusDiscreteLaplaceHalfPolylogDecay
+exists_localFactor_with_Gamma_cap_of_halfPolylog_maximalOrder
+mobiusDiscreteLaplaceHalfDecay_implies_riemannHypothesis_and_boundarySimplicity
+analyticOrderAt_riemannZeta_eq_one_of_mobiusDiscreteLaplaceHalfDecay
+eventually_norm_scaled_mellin_le_halfPolylogConstant
+norm_Gamma_div_deriv_riemannZeta_le_of_halfDecay
+mobiusDiscreteLaplaceHalfDecay_implies_rh_simplicity_and_residueCap
+```
+
+The source hypothesis `MobiusDiscreteLaplaceHalfPolylogDecay q` is carried as an explicit
+`Prop` interface — `(1)` itself — exactly as the card states; the implications `(1) ⇒ (2)`, `(3)`
+and the multiplicity cap are unconditional theorems.  Proving `HP_q` for some `q` remains the one
+open gate.

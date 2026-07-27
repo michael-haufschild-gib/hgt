@@ -1,7 +1,9 @@
 #!/usr/bin/env sh
 set -eu
 
-. "$(dirname "$0")/agentchattr-env.sh"
+AGENTCHATTR_SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+export AGENTCHATTR_SCRIPT_DIR
+. "$AGENTCHATTR_SCRIPT_DIR/agentchattr-env.sh"
 
 agentchattr_start_server_background
 

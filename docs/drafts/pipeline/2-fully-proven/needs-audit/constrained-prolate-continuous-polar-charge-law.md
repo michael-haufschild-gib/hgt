@@ -1,9 +1,9 @@
 # The constrained prolate exterior tail has bounded continuous polar charge
 
 - **ID:** `constrained-prolate-continuous-polar-charge-law`
-- **Stage:** 1-in-progress
-- **Type:** THEOREM CANDIDATE / SOURCE ESTIMATE
-- **Scientific status:** `[CONJECTURE WITH PROVED REDUCTION] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
+- **Stage:** 2-fully-proven
+- **Type:** THEOREM (paper) / SOURCE ESTIMATE
+- **Scientific status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED] [NOT AN RH PROOF]`
 - **Parent results:** `constrained-prolate-full-radial-prime-charge-law.md`,
   `ccm-countable-log-chirp-renormalization-law.md`,
   `ccm-exact-radial-nonstationary-sector-bound.md`, Dunster's pole-uniform and exterior radial
@@ -514,3 +514,219 @@ separates the representative/regularity problem from the completed Abel machiner
 - [ ] formalize the concrete radial-PSWF primitive theorem and its polar consequence in Lean
 - [ ] true even ground/gap comparison
 - [ ] locally uniform determinant convergence to `Xi`
+
+## Formula-level closure of the pole-uniform primitive
+
+The remaining paper gap in `(17)` is closed by using Dunster's Bessel expansion only on a fixed
+endpoint interval and the phase-preserving exterior expansion only where its potential is
+short-range. This avoids factoring the additive pole-uniform error through an oscillatory
+exponential.
+
+Fix one of the two one-dimensional PSWF degrees `n=0,4`. These are both spheroidal-order-zero
+solutions: Dunster's order parameter is `m=0`, while his degree parameter is `n=0,4`. Thus the
+Bessel function in his formula `(3.5)` is `J_0` for both CCM modes. Write `q_(n,lambda)` for the
+exterior Fourier transform, `d_n(lambda)=1-chi_n(lambda)^2`, and
+
+```text
+U_(n,lambda)(x)=sqrt(lambda*x)q_(n,lambda)(lambda*x).
+```
+
+The required single-mode estimate is
+
+```text
+sup_(X>=1)
+ |integral_1^X U_(n,lambda)(x)dx/sqrt(x)|
+ <=C_n*sqrt(d_n(lambda))/c.                                    (36)
+```
+
+### Endpoint interval
+
+The endpoint-response identity and differentiated fixed-mode asymptotic in
+`ccm-constrained-endpoint-euler-response-constant.md` give
+
+```text
+sqrt(lambda)*|q_(n,lambda)(lambda)|
+ <=C_n*sqrt(c)*sqrt(d_n(lambda)).                               (37)
+```
+
+Dunster's pole-uniform formula `(3.5)`, divided by its nonzero endpoint value, gives uniformly
+for `1<=x<=2`
+
+```text
+q_(n,lambda)(lambda*x)/q_(n,lambda)(lambda)
+ =A_(sigma,c)(x)
+   [J_0(c*xi_sigma(x))+c^(-1)E_(n,c)(x)],
+
+|E_(n,c)(x)|<=C_n*envJ_0(c*xi_sigma(x)),                         (38)
+```
+
+where
+
+```text
+xi_sigma(x)
+ =integral_1^x sqrt((t^2-sigma^2)/(t^2-1))dt,
+
+A_(sigma,c)(x)
+ =[xi_sigma(x)^2/((x^2-1)(x^2-sigma^2))]^(1/4),                 (39)
+```
+
+and `sigma^2=O_n(c^(-1))`. Put `r=xi_sigma(x)` and let `x=X_sigma(r)` be the inverse
+coordinate. Dunster's endpoint coordinate `eta=xi_sigma^2` is analytic at `x=1`, with
+
+```text
+eta=2*(1-sigma^2)*(x-1)+O((x-1)^2).                             (40)
+```
+
+Consequently
+
+```text
+A_(sigma,c)(X_sigma(r))*X_sigma'(r)=r*B_(sigma,c)(r),            (41)
+```
+
+where, explicitly,
+
+```text
+B_(sigma,c)(r)
+ =(X_sigma(r)^2-1)^(1/4)
+  /(r^(1/2)*(X_sigma(r)^2-sigma^2)^(3/4)).                      (42)
+```
+
+The apparent singularity at `r=0` is removable by `(40)`. More explicitly,
+
+```text
+B_(sigma,c)(r)
+ =[((X_sigma(r)^2-1)/eta)/
+    (X_sigma(r)^2-sigma^2)^3]^(1/4),   eta=r^2.                 (42a)
+```
+
+The quotient `(x^2-1)/eta(x)` is positive analytic at `x=1`, and the analytic inverse is a
+function of `eta=r^2`. Since fixed-mode `sigma^2=O(c^(-1))`, these functions and their first
+derivatives are uniformly bounded on the compact parameter set
+`1<=x<=2`, `0<=sigma^2<=1/2`. Hence
+
+```text
+||B_(sigma,c)||_(C^1[0,xi_sigma(2)])<=C_n.                      (43)
+```
+
+Use
+
+```text
+d/dr [r*J_1(c*r)]=c*r*J_0(c*r),
+|J_1(u)|<=C*min(u,u^(-1/2)).                                   (44)
+```
+
+Integration by parts, first on `0<=r<=min(R,c^(-1))` and then on
+`c^(-1)<=r<=R`, proves uniformly in every partial endpoint `R` that
+
+```text
+|integral_0^R r*B_(sigma,c)(r)J_0(c*r)dr|
+ <=C_n*c^(-3/2).                                                (45)
+```
+
+The standard Bessel envelope bound gives
+
+```text
+integral_0^R r*|B_(sigma,c)(r)|envJ_0(c*r)dr
+ <=C_n*integral_0^R r*(1+c*r)^(-1/2)dr
+ <=C_n*c^(-1/2).                                                (46)
+```
+
+The extra `c^(-1)` in the error term of `(38)` makes its contribution
+`O_n(c^(-3/2))` as well. Multiplying `(45)`--`(46)` by the endpoint
+normalization `(37)` yields
+
+```text
+sup_(1<=X<=2)
+ |integral_1^X U_(n,lambda)(x)dx/sqrt(x)|
+ <=C_n*sqrt(d_n(lambda))/c.                                    (47)
+```
+
+This is the missing pole-uniform estimate. Only the printed additive Bessel-envelope error is
+used; no derivative or phase factorization of that error is required.
+
+### Exterior interval
+
+On `x>=2`, Dunster's exterior Liouville--Green formulas `(2.19)`--`(2.21)` and the exact
+interaction-picture transport theorem give
+
+```text
+U_(n,lambda)(x)
+ =sqrt(d_n(lambda))*sum_(epsilon=+-1)
+   exp(i*epsilon*c*xi_sigma(x))*a_(epsilon,n,c)(x),
+
+|a_(epsilon,n,c)(x)|<=C_n*x^(-1/2),
+|a_(epsilon,n,c)'(x)|<=C_n*x^(-3/2).                            (48)
+```
+
+The amplitudes in the integral are `a_(epsilon,n,c)(x)/sqrt(x)`, whose boundary value and
+total variation on `[2,infinity)` are uniformly bounded. Moreover
+
+```text
+xi_sigma'(x)>=1,
+|(1/xi_sigma')'(x)|<=C_n*x^(-2).                               (49)
+```
+
+One integration by parts in each branch of `(48)` therefore proves
+
+```text
+sup_(X>=2)
+ |integral_2^X U_(n,lambda)(x)dx/sqrt(x)|
+ <=C_n*sqrt(d_n(lambda))/c.                                    (50)
+```
+
+Equations `(47)` and `(50)` prove `(36)`.
+
+### Constrained source and all radial channels
+
+The opposite-integral coefficients of the normalized degree-`n=0,4` constrained source stay bounded,
+while
+
+```text
+d_0(lambda)/d_1(lambda)=O(lambda^(-8)).
+```
+
+Thus `(36)` proves the `k=1` estimate `(17)` for the constrained source. For `k>=2`, the existing
+exterior estimate `(16)` gives
+
+```text
+sup_(H>=0)
+ |integral_0^H exp(s/2)H_(lambda,k)(s)ds|
+ <=C*sqrt(d_1(lambda))/(c*k^2).
+```
+
+The `k`-majorant is summable. Passing first from finite radial sums to `R_lambda` in `L2(0,H)`
+and then taking the supremum in `H` proves `(11)`. The abstract primitive identity `(10)` now
+gives the unconditional paper theorem
+
+```text
+PPol_lambda(R_lambda)=O(d_1(lambda)).                            (51)
+```
+
+Together with the already proved radial-prime, log-chirp, Poisson-center, and critical-Mellin
+estimates, this proves the seed law `(32)` on paper.
+
+## Hostile post-closure audit
+
+- The Poisson--BV estimate controls the center cross-terms but does not by itself control the
+  `R_lambda`--`R_lambda` polar term. The Bessel/exterior proof above is essential.
+- The theorem concerns one explicit source sequence and is not Weil-complete. It neither proves a
+  true restricted-Weil floor nor implies RH.
+- The tracked card before this proof ended at the former gate list; equations `(36)`--`(51)` are
+  not a rediscovery from the shared worktree. Independent review initially mistook these uncommitted
+  additions for prior corpus, then confirmed that the displayed endpoint/exterior assembly has the
+  required bounds.
+- Searches of Dunster, Slepian--Pollak, and the CCM papers found the component asymptotics but not
+  the uniform weighted primitive `(36)` or its continuous-polar consequence `(51)`. This establishes
+  no priority claim: the result remains `[NOVELTY UNVERIFIED]`.
+- The next mathematical wall is the true cofinal Weil floor. By
+  `ccm-rayleigh-transfer-collapses-to-spectral-floor.md`, any vanishing negative-floor allowance
+  already proves RH; it is not preliminary spectral engineering.
+
+## Updated gates
+
+- [x] prove the exact `k=1` pole-uniform primitive `(17)` on paper
+- [x] prove the all-radial primitive `(11)` on paper
+- [x] prove the continuous polar charge `(18)` on paper
+- [x] prove the exterior seed law `(32)` on paper
+- [ ] formalize the concrete radial-PSWF/Bessel realization and `(51)` unconditionally in Lean
+- [ ] prove the true cofinal Weil floor (RH-bearing)

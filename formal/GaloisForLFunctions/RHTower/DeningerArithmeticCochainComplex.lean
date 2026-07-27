@@ -2,7 +2,7 @@ import GaloisForLFunctions.RHTower.DeningerEntireQuotientCohomology
 import GaloisForLFunctions.Bottcher.AnalyticDomain
 
 /-!
-# The source arithmetic cochain complex
+# Completed-Xi comparison cochain complex
 
 The completed Xi function determines a three-term cochain complex
 
@@ -14,8 +14,10 @@ injective.  Consequently the cohomology is
 
 `H⁰ ≃ ℂ`, `H¹ = Entire(ℂ)/(XiC)`, and `H² ≃ ℂ`.
 
-This is a source construction: its differential is built from the prime--Gamma completed Xi
-function and does not enumerate its divisor.  Multiplication by the weight-one coordinate
+This is an analytic comparison model, not the source-native arithmetic cohomology sought in
+Deninger's program: the completed Xi function is built into its differential.  It avoids
+enumerating the Xi divisor, but it cannot establish the missing comparison from an independently
+constructed arithmetic coefficient to completed zeta.  Multiplication by the weight-one coordinate
 `1/2 + I*z` is a cochain endomorphism.  It induces the previously constructed Frobenius generator
 on `H¹`, while its endpoint actions have weights zero and two.
 -/

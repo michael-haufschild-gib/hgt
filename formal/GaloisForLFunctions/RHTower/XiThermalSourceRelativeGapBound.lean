@@ -128,11 +128,9 @@ theorem xiThermalOrientationTerm_le_thirtyTwo_over_fortyNine_node_sq
   let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ 2
   let v : ℝ := (q.1 : ℂ).im ^ 2
   let D : ℝ := (u + v) ^ 2
-  have hstrip := xi_divisor_support_re_mem_open_unit q.1
   have hu : 0 ≤ u := by dsimp [u]; positivity
-  have hu' : u < 1 / 4 := by
-    dsimp [u]
-    nlinarith [mul_pos hstrip.1 (sub_pos.mpr hstrip.2)]
+  have hu' : u < 1 / 4 :=
+    xi_divisor_support_centered_re_sq_lt_quarter q.1
   have hv : 2 < v := by simpa only [v] using xiZeroCopy_two_lt_im_sq q
   have hD : 0 < D := by dsimp [D]; positivity
   rw [xiThermalNode, xiZeroCopyReciprocalSquare_re_formula,
@@ -231,11 +229,9 @@ theorem xiThermalOrientationTerm_le_relativeFactor_node_sq (q : XiZeroCopy) :
     dsimp [a]
     rw [lt_div_iff₀ hc0]
     nlinarith
-  have hstrip := xi_divisor_support_re_mem_open_unit q.1
   have hu0 : 0 ≤ u := by dsimp [u]; positivity
-  have hu : u ≤ 1 / 4 := by
-    dsimp [u]
-    nlinarith [mul_pos hstrip.1 (sub_pos.mpr hstrip.2)]
+  have hu : u ≤ 1 / 4 :=
+    (xi_divisor_support_centered_re_sq_lt_quarter q.1).le
   have hv : a ≤ v := by
     have hheight := xiZeroCopy_im_sq_ge_endpoint_source_inverse_gap q
     dsimp [a, c, v]

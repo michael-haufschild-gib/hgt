@@ -134,4 +134,96 @@ theorem mellinInv_mellin_smoothWeight {N H : ℝ} (hN : 0 < N) (hH : 0 < H) {σ 
     (s := (σ : ℂ)) (by simpa using hσ)
   simpa [MellinConvergent, smul_eq_mul] using hconv
 
+/-- **Uniform decay on horizontal segments.**  On the strip `0 < Re s ≤ σmax` the transform decays
+faster than any power of `|Im s|`, uniformly in the real part: every factor `‖s+1+i‖` is at least
+`|Im s|`, so the `j`-th integration-by-parts bound gives `|Im s|^{j+1} ‖W(s)‖ ≤ C`. -/
+theorem exists_bound_mellin_smoothWeight_horizontal {N H : ℝ} (hN : 0 < N) (hH : 0 < H) (j : ℕ)
+    (σmax : ℝ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ s : ℂ, 0 < s.re → s.re ≤ σmax →
+      |s.im| ^ (j + 1) * ‖mellin (fun x : ℝ => ((smoothWeight N H x : ℝ) : ℂ)) s‖ ≤ C := by
+  obtain ⟨C, hC, hbd⟩ := exists_bound_mellin_smoothWeight hN hH j σmax
+  refine ⟨C, hC, fun s hs hsmax => ?_⟩
+  have h := hbd s hs hsmax
+  rw [← mellin_smoothWeight_eq (N := N) (H := H) s] at h
+  set X : ℝ := ‖mellin (fun x : ℝ => ((smoothWeight N H x : ℝ) : ℂ)) s‖ with hX
+  have hX0 : 0 ≤ X := norm_nonneg _
+  have him : |s.im| ≤ ‖s‖ := Complex.abs_im_le_norm s
+  have hprod : |s.im| ^ j ≤ ∏ i ∈ Finset.range j, ‖s + 1 + (i : ℂ)‖ := by
+    have hconst : |s.im| ^ j = ∏ _i ∈ Finset.range j, |s.im| := by
+      rw [Finset.prod_const, Finset.card_range]
+    rw [hconst]
+    refine Finset.prod_le_prod (fun i _ => abs_nonneg _) fun i _ => ?_
+    have him' : (s + 1 + (i : ℂ)).im = s.im := by simp
+    calc |s.im| = |(s + 1 + (i : ℂ)).im| := by rw [him']
+      _ ≤ ‖s + 1 + (i : ℂ)‖ := Complex.abs_im_le_norm _
+  calc |s.im| ^ (j + 1) * X = (|s.im| * |s.im| ^ j) * X := by rw [pow_succ]; ring
+    _ ≤ (‖s‖ * ∏ i ∈ Finset.range j, ‖s + 1 + (i : ℂ)‖) * X := by
+        refine mul_le_mul_of_nonneg_right ?_ hX0
+        exact mul_le_mul him hprod (by positivity) (norm_nonneg s)
+    _ ≤ C := h
+
+/-- **Arbitrarily fast polynomial decay along a vertical line.**  For every `m` the transform is
+`O((1+y²)^{-m})` on the line `Re s = σ > 0`.  Taking `j = 2m` in the integration-by-parts bound and
+using `‖s+1+i‖ ≥ ‖s‖` turns that bound into `‖s‖^{2m+1} ‖W(s)‖ ≤ C`, and `‖s‖² = σ²+y²` dominates
+`min(σ²,1)(1+y²)`. -/
+theorem exists_bound_mellin_smoothWeight_line_pow {N H : ℝ} (hN : 0 < N) (hH : 0 < H) {σ : ℝ}
+    (hσ : 0 < σ) (m : ℕ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ y : ℝ,
+      ‖mellin (fun x : ℝ => ((smoothWeight N H x : ℝ) : ℂ)) ((σ : ℂ) + (y : ℝ) * I)‖
+        ≤ C * ((1 + y ^ 2) ^ m)⁻¹ := by
+  obtain ⟨C, hC, hbd⟩ := exists_bound_mellin_smoothWeight hN hH (2 * m) σ
+  set mm : ℝ := (min (σ ^ 2) 1) ^ m with hmm
+  have hmin0 : (0 : ℝ) < min (σ ^ 2) 1 := lt_min (by positivity) one_pos
+  have hmm0 : (0 : ℝ) < mm := by rw [hmm]; positivity
+  refine ⟨C / (σ * mm), by positivity, fun y => ?_⟩
+  set s : ℂ := (σ : ℂ) + (y : ℝ) * I with hsdef
+  have hsre : s.re = σ := by rw [hsdef]; simp
+  have hsim : s.im = y := by rw [hsdef]; simp
+  have h := hbd s (by rw [hsre]; exact hσ) (by rw [hsre])
+  rw [mellin_smoothWeight_eq (N := N) (H := H) s]
+  set A : ℝ := ‖∫ x in Ioi (0 : ℝ), (x : ℂ) ^ (s - 1) * ((smoothWeight N H x : ℝ) : ℂ)‖ with hA
+  have hA0 : 0 ≤ A := norm_nonneg _
+  have hnorm2 : ‖s‖ ^ 2 = σ ^ 2 + y ^ 2 := by
+    rw [Complex.sq_norm, Complex.normSq_apply, hsre, hsim]; ring
+  have hσle : σ ≤ ‖s‖ := by
+    have := Complex.abs_re_le_norm s
+    rwa [hsre, abs_of_pos hσ] at this
+  have hprod : ‖s‖ ^ (2 * m) ≤ ∏ i ∈ Finset.range (2 * m), ‖s + 1 + (i : ℂ)‖ := by
+    have hconst : ‖s‖ ^ (2 * m) = ∏ _i ∈ Finset.range (2 * m), ‖s‖ := by
+      rw [Finset.prod_const, Finset.card_range]
+    rw [hconst]
+    refine Finset.prod_le_prod (fun i _ => norm_nonneg _) fun i _ => ?_
+    have hre : (s + 1 + (i : ℂ)).re = σ + 1 + (i : ℝ) := by
+      simp [Complex.add_re, hsre]
+    have him : (s + 1 + (i : ℂ)).im = y := by simp [hsim]
+    have hsq : ‖s + 1 + (i : ℂ)‖ ^ 2 = (σ + 1 + (i : ℝ)) ^ 2 + y ^ 2 := by
+      rw [Complex.sq_norm, Complex.normSq_apply, hre, him]; ring
+    nlinarith [norm_nonneg s, norm_nonneg (s + 1 + (i : ℂ)), hnorm2, hsq,
+      Nat.cast_nonneg (α := ℝ) i, hσ]
+  set P : ℝ := ‖s‖ ^ (2 * m) with hP
+  have hP0 : 0 ≤ P := by rw [hP]; positivity
+  set Q : ℝ := (1 + y ^ 2) ^ m with hQ
+  have hQ0 : (0 : ℝ) < Q := by rw [hQ]; positivity
+  have hbase : min (σ ^ 2) 1 * (1 + y ^ 2) ≤ ‖s‖ ^ 2 := by
+    have h1 : min (σ ^ 2) 1 ≤ σ ^ 2 := min_le_left _ _
+    have h2 : min (σ ^ 2) 1 ≤ 1 := min_le_right _ _
+    nlinarith [sq_nonneg y, hnorm2]
+  have hmQ : mm * Q ≤ P := by
+    rw [hmm, hQ, hP, ← mul_pow, pow_mul]
+    exact pow_le_pow_left₀ (by positivity) hbase m
+  have hstep : (σ * mm * Q) * A ≤ C := by
+    calc (σ * mm * Q) * A = (σ * (mm * Q)) * A := by ring
+      _ ≤ (‖s‖ * P) * A := by
+          refine mul_le_mul_of_nonneg_right ?_ hA0
+          exact mul_le_mul hσle hmQ (by positivity) (norm_nonneg s)
+      _ ≤ C := by
+          refine le_trans (mul_le_mul_of_nonneg_right ?_ hA0) h
+          exact mul_le_mul_of_nonneg_left hprod (norm_nonneg s)
+  have hAle : A ≤ C / (σ * mm * Q) := by
+    rw [le_div_iff₀ (by positivity)]
+    linarith [hstep]
+  calc A ≤ C / (σ * mm * Q) := hAle
+    _ = C / (σ * mm) * Q⁻¹ := by
+        field_simp
+
 end GaloisForLFunctions.HTGeometry

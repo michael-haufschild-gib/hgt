@@ -51,9 +51,11 @@ theorem deningerArithmeticRankKernel_stable
     deningerArithmeticRankKernel rank ≤
       (deningerArithmeticRankKernel rank).comap sourceOp := by
   intro x hx
-  rw [RingHom.mem_ker] at hx ⊢
+  change rank x = 0 at hx
+  change rank (sourceOp x) = 0
   have hpoint := DFunLike.congr_fun hcomm x
-  simpa [hx] using hpoint
+  change rank (sourceOp x) = targetOp (rank x) at hpoint
+  rw [hpoint, hx, map_zero]
 
 /-- Frobenius/Verschiebung operation induced on the exact rank quotient. -/
 def deningerArithmeticRankQuotientMap

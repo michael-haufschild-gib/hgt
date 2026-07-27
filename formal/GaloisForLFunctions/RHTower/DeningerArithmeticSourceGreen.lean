@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.DeningerArithmeticCompletedCohomology
 
 /-!
-# Source Green operator for completed Deninger cohomology
+# Green transport on the completed Xi-divisor comparison model
 
 The compact-support/ordinary Poincare pairing and the completed odd cup form determine a canonical
 linear Green map
@@ -19,9 +19,11 @@ On finite source jets, `G` is the explicit oriented functional-equation reflecti
 
 `(G a)_q = epsilon_q a_(R q)`.
 
-This linear Green transport is Frobenius-natural for the source associated graded
-unconditionally.  The remaining RH obligation is not Green naturality; it is naturality of the
-anti-linear Riesz/Hodge metric factor.
+This module operates on `XiDivisorL2`; despite the historical declaration names, it is not the
+global Green operator of an independently constructed arithmetic complex.  Its linear transport is
+Frobenius-natural for the Xi-jet associated graded unconditionally.  The source-native
+Calderón--Green construction and its comparison with this model remain open; on this comparison
+model the residual anti-linear Riesz/Hodge naturality is equivalent to RH.
 -/
 
 open Complex Function Set Topology

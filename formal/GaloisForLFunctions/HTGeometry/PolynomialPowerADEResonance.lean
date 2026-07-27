@@ -411,13 +411,8 @@ theorem exists_eventually_polynomialPower_bend_pair_of_eventual_profile
   let s : Fin (jetMonomialDegree n anchor) → ℕ := fun i => q + δ i
   let N := (∑ i, s i) + anchor 0 - J
   have hqJ : J ≤ q := by omega
-  have hqsum : q ≤ ∑ i, s i := by
-    obtain ⟨i₀⟩ : Nonempty (Fin (jetMonomialDegree n anchor)) :=
-      Fin.pos_iff_nonempty.mp haPos
-    calc
-      q ≤ s i₀ := by simp [s]
-      _ ≤ ∑ i, s i := Finset.single_le_sum (fun _ _ => Nat.zero_le _)
-        (Finset.mem_univ i₀)
+  have hqsum : q ≤ ∑ i, s i :=
+    le_sum_of_le_apply haPos fun i => by simp [s]
   have hJsum : J ≤ (∑ i, s i) + anchor 0 :=
     hqJ.trans (hqsum.trans (Nat.le_add_right _ _))
   have hNadd : N + J = (∑ i, s i) + anchor 0 := by
@@ -425,13 +420,8 @@ theorem exists_eventually_polynomialPower_bend_pair_of_eventual_profile
     exact Nat.sub_add_cancel hJsum
   have hDqN : D * q ≤ N + J := by
     rw [hNadd]
-    have hsLower : D * q ≤ ∑ i, s i := by
-      calc
-        D * q = ∑ _i : Fin (jetMonomialDegree n anchor), q := by simp [D]
-        _ ≤ ∑ i, s i := by
-          apply Finset.sum_le_sum
-          intro i _
-          simp [s]
+    have hsLower : D * q ≤ ∑ i, s i :=
+      mul_le_sum_of_le_apply fun i => by simp [s]
     omega
   have hNZ : Z < N := by
     have hqJZ : J + Z < q := by omega
@@ -463,15 +453,10 @@ theorem exists_eventually_polynomialPower_bend_pair_of_eventual_profile
     have hnorm := htail (s i) (by dsimp [s]; omega)
     exact norm_pos_iff.mp (by rw [hnorm]; exact Real.exp_pos _)
   let P : ℝ := Amass * (((N + 1) ^ E : ℕ) : ℝ)
-  have hsUpper : (∑ i, s i) ≤ D * (q + Boff) := by
-    calc
-      ∑ i : Fin (jetMonomialDegree n anchor), s i ≤
-          ∑ _i : Fin (jetMonomialDegree n anchor), (q + Boff) := by
-            apply Finset.sum_le_sum
-            intro i _
-            dsimp [s]
-            exact Nat.add_le_add_left (offset_le_magnitudeOffsetMax δ i) q
-      _ = D * (q + Boff) := by simp [D]
+  have hsUpper : (∑ i, s i) ≤ D * (q + Boff) :=
+    sum_le_mul_of_apply_le fun i => by
+      dsimp [s]
+      exact Nat.add_le_add_left (offset_le_magnitudeOffsetMax δ i) q
   have hNupper : N + 1 ≤ D * (q + Boff) + anchor 0 + 1 := by
     dsimp [N]
     omega
@@ -755,13 +740,8 @@ theorem exists_eventually_polynomialPower_bend_pair_of_eventual_profile_jetDegre
   let s : Fin (jetMonomialDegree n anchor) → ℕ := fun i => q + δ i
   let N := (∑ i, s i) + anchor 0 - J
   have hqJ : J ≤ q := by omega
-  have hqsum : q ≤ ∑ i, s i := by
-    obtain ⟨i₀⟩ : Nonempty (Fin (jetMonomialDegree n anchor)) :=
-      Fin.pos_iff_nonempty.mp haPos
-    calc
-      q ≤ s i₀ := by simp [s]
-      _ ≤ ∑ i, s i := Finset.single_le_sum (fun _ _ => Nat.zero_le _)
-        (Finset.mem_univ i₀)
+  have hqsum : q ≤ ∑ i, s i :=
+    le_sum_of_le_apply haPos fun i => by simp [s]
   have hJsum : J ≤ (∑ i, s i) + anchor 0 :=
     hqJ.trans (hqsum.trans (Nat.le_add_right _ _))
   have hNadd : N + J = (∑ i, s i) + anchor 0 := by
@@ -769,13 +749,8 @@ theorem exists_eventually_polynomialPower_bend_pair_of_eventual_profile_jetDegre
     exact Nat.sub_add_cancel hJsum
   have hDqN : D * q ≤ N + J := by
     rw [hNadd]
-    have hsLower : D * q ≤ ∑ i, s i := by
-      calc
-        D * q = ∑ _i : Fin (jetMonomialDegree n anchor), q := by simp [D]
-        _ ≤ ∑ i, s i := by
-          apply Finset.sum_le_sum
-          intro i _
-          simp [s]
+    have hsLower : D * q ≤ ∑ i, s i :=
+      mul_le_sum_of_le_apply fun i => by simp [s]
     omega
   have hNZ : Z < N := by
     have hqJZ : J + Z < q := by omega
@@ -797,15 +772,10 @@ theorem exists_eventually_polynomialPower_bend_pair_of_eventual_profile_jetDegre
     have hnorm := htail (s i) (by dsimp [s]; omega)
     exact norm_pos_iff.mp (by rw [hnorm]; exact Real.exp_pos _)
   let P : ℝ := Amass * (((N + 1) ^ E : ℕ) : ℝ)
-  have hsUpper : (∑ i, s i) ≤ D * (q + Boff) := by
-    calc
-      ∑ i : Fin (jetMonomialDegree n anchor), s i ≤
-          ∑ _i : Fin (jetMonomialDegree n anchor), (q + Boff) := by
-            apply Finset.sum_le_sum
-            intro i _
-            dsimp [s]
-            exact Nat.add_le_add_left (offset_le_magnitudeOffsetMax δ i) q
-      _ = D * (q + Boff) := by simp [D]
+  have hsUpper : (∑ i, s i) ≤ D * (q + Boff) :=
+    sum_le_mul_of_apply_le fun i => by
+      dsimp [s]
+      exact Nat.add_le_add_left (offset_le_magnitudeOffsetMax δ i) q
   have hNupper : N + 1 ≤ D * (q + Boff) + anchor 0 + 1 := by
     dsimp [N]
     omega

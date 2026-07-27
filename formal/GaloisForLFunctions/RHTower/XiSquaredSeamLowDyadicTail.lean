@@ -101,10 +101,8 @@ theorem xiSquaredSeamOneCoordinate_eightyFive_sector (q : XiZeroCopy) :
     let v : ℝ := (q.1 : ℂ).im ^ 2
     let A : ℝ := xiSquaredSeamOneRadialA q
     let B : ℝ := xiSquaredSeamTransverseB q
-    have hstrip := xi_divisor_support_re_mem_open_unit q.1
-    have hu : u < 1 / 4 := by
-      dsimp only [u]
-      nlinarith [mul_pos hstrip.1 (sub_pos.mpr hstrip.2)]
+    have hu : u < 1 / 4 :=
+      xi_divisor_support_centered_re_sq_lt_quarter q.1
     have hv : 85 < v := by
       simpa only [v] using xiZeroCopy_offLine_eightyFive_lt_im_sq q hoff
     have hv0 : 0 < v := by linarith
@@ -118,7 +116,8 @@ theorem xiSquaredSeamOneCoordinate_eightyFive_sector (q : XiZeroCopy) :
       nlinarith
     have hAv : v < A := by
       dsimp only [A, v, u, xiSquaredSeamOneRadialA]
-      nlinarith
+      nlinarith [(xi_divisor_support_re_mem_open_unit q.1).1,
+        (xi_divisor_support_re_mem_open_unit q.1).2]
     have hA0 : 0 < A := hv0.trans hAv
     have hAvsq : v ^ 2 < A ^ 2 := (sq_lt_sq₀ hv0.le hA0.le).2 hAv
     have hvscaled : 85 * v < v ^ 2 := by

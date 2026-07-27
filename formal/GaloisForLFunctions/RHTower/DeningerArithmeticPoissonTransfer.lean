@@ -21,6 +21,8 @@ No zeta zero, positivity hypothesis, or Riemann hypothesis occurs here.
 
 namespace RHTower
 
+noncomputable section
+
 section ScalarSuspension
 
 variable {ι X M : Type*}
@@ -181,5 +183,7 @@ theorem deningerRawDeckMap_flow_eq_frobenius_fixedHeight
   simp [deningerRawDeckMap, deningerRawSuspensionFlow, hq]
 
 end SuspensionFlow
+
+end
 
 end RHTower

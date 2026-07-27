@@ -74,39 +74,13 @@ theorem xiRelativeResolventTrace_im_nonneg_lowerExterior
     linarith
   have hXi : XiC z ≠ 0 :=
     SlabFullWidthAdmissibility.XiC_ne_zero_of_half_le_abs_im hzAbs
-  have hsum := summable_xiRelativeResolventTerm hXi
-  have hsumJ : Summable (fun q : XiZeroCopy =>
-      xiRelativeResolventTerm z (xiZeroCopyLineConjEquiv q)) :=
-    (xiZeroCopyLineConjEquiv.summable_iff).mpr hsum
-  have hpair := hsum.add hsumJ
-  have hreindex :
-      (∑' q : XiZeroCopy,
-        xiRelativeResolventTerm z (xiZeroCopyLineConjEquiv q)) =
-          xiRelativeResolventTrace z := by
-    rw [xiRelativeResolventTrace]
-    exact xiZeroCopyLineConjEquiv.tsum_eq (xiRelativeResolventTerm z)
-  have hpairsum :
-      (∑' q : XiZeroCopy,
-        (xiRelativeResolventTerm z q +
-          xiRelativeResolventTerm z (xiZeroCopyLineConjEquiv q))) =
-        2 * xiRelativeResolventTrace z := by
-    rw [hsum.tsum_add hsumJ, hreindex, xiRelativeResolventTrace]
-    ring
   have himsum :
       0 ≤ (∑' q : XiZeroCopy,
         (xiRelativeResolventTerm z q +
           xiRelativeResolventTerm z (xiZeroCopyLineConjEquiv q)).im) :=
     tsum_nonneg fun q =>
       xiRelativeResolventTerm_lineConj_pair_im_nonneg_lowerExterior z hzIm q
-  have hpairsumIm := congrArg Complex.im hpairsum
-  rw [Complex.im_tsum hpair] at hpairsumIm
-  norm_num [mul_im] at hpairsumIm
-  have himsum' :
-      0 ≤ (∑' q : XiZeroCopy,
-        ((xiRelativeResolventTerm z q).im +
-          (xiRelativeResolventTerm z (xiZeroCopyLineConjEquiv q)).im)) := by
-    simpa only [add_im] using himsum
-  linarith
+  linarith [tsum_lineConj_pair_im_eq_two_mul_xiRelativeResolventTrace_im hXi]
 
 /-- Algebraic conversion of the split current into logarithmic-derivative orientation. -/
 lemma kreinCurrent_eq_normSq_mul_logDeriv_im

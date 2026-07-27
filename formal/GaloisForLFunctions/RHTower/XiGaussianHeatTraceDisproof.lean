@@ -29,9 +29,8 @@ reciprocal-square divisor. -/
 theorem xiSpectralPoint_normSq_lt_two_mul_sq_re (q : XiZeroCopy) :
     Complex.normSq (xiSpectralPoint q) <
       2 * (xiSpectralPoint q ^ 2).re := by
-  have hstrip := xi_divisor_support_re_mem_open_unit q.1
-  have hhorizontal : ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4 := by
-    nlinarith [mul_pos hstrip.1 (sub_pos.mpr hstrip.2)]
+  have hhorizontal : ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4 :=
+    xi_divisor_support_centered_re_sq_lt_quarter q.1
   have hheight := xiZeroCopy_two_lt_im_sq q
   have hre : (xiSpectralPoint q).re = (q.1 : ℂ).im := by
     simp [xiSpectralPoint]

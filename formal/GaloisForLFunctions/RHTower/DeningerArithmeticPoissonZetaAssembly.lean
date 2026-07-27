@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerArithmeticThreeTermHodgePurity
+import GaloisForLFunctions.RHTower.DeningerArithmeticThreeTermCupDescent
 
 /-!
 # Poisson--zeta assembly for Deninger arithmetic cohomology
@@ -425,7 +425,7 @@ def deningerPoissonZetaFlow
     intro x
     apply Prod.ext
     · exact LinearMap.congr_fun hZ x.2
-    · simp
+    · simp [deningerPoissonZetaComplex, deningerPoissonZetaD0]
   theta_commutes_d1 := by
     apply LinearMap.ext
     intro x

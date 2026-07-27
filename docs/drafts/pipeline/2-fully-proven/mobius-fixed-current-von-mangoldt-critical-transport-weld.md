@@ -324,8 +324,41 @@ codifferential estimate.
 - [x] prime-current four-unit Gini law proved
 - [x] complementary packet transport cost proved vanishing
 - [x] Gamma/Sonin upper budget transferred to the Euler current
-- [ ] formalize the fixed-current and transport identities in Lean
+- [x] formalize the fixed-current identities in Lean
+- [ ] formalize the transport identities `(14)`--`(22)` in Lean
 - [ ] prove the charged anti-causal codifferential is nonexpansive
 - [ ] identify its graph limit with `ell_E`
 - [ ] independent specialist literature audit
 - [ ] RH
+
+## Lean formalization (fixed-current layer)
+
+`formal/GaloisForLFunctions/RHTower/MobiusFixedCurrentVonMangoldt.lean` (imported by
+`GaloisForLFunctions.RHTower`; builds clean; every result axiom-clean).
+
+| Card item | Lean name |
+|---|---|
+| the von Mangoldt current `A(s) = -ζ′/ζ(s)` | `RHTower.vonMangoldtCurrent` |
+| the moving multiplier `(3)` `τ_σ(u) = ζ(2σ)/[ζ(σ)ζ(σ+uε)]` | `RHTower.mobiusMovingMultiplier` |
+| **`(4)`** the fixed current `∂_u τ = ε·A(σ+uε)·τ`, i.e. `logDeriv τ (u) = ε·A(σ+uε)` | `RHTower.hasDerivAt_mobiusMovingMultiplier`, `RHTower.logDeriv_mobiusMovingMultiplier` |
+| the packet series `C(α,s) = ζ(s-α)/ζ(s+α)` | `RHTower.suzukiPacketDirichlet` |
+| **`(7)`** `∂_α C(α,s)\|₀ = 2A(s)` on `re s > 1` | `RHTower.hasDerivAt_suzukiPacketDirichlet` |
+| **`(8)`** the diagonal collapse `C(α,1+2α) → 3` | `RHTower.tendsto_suzukiPacketDirichlet_diagonal` |
+| **`(9)`/`(12)`** `cε·A(1+cε) → 1` for every scale `c > 0` | `RHTower.tendsto_mul_vonMangoldtCurrent_scaled` |
+| **`(11)`** `A(1+(1+u)ε)/A(1+ε) → 1/(1+u)` — the mean-one exponential Laplace transform | `RHTower.tendsto_eulerClockLaplace` |
+| the derivative residue `(s-1)²A′(s) → -1` | `RHTower.tendsto_sub_one_sq_mul_deriv_vonMangoldtCurrent` |
+| **`(13)`** `-εA′(1+ε)/A(1+ε) → 1` — the first moment of the critical Euler clock | `RHTower.tendsto_eulerClockFirstMoment` |
+| the second derivative residue `(s-1)³A″(s) → 2` | `RHTower.tendsto_sub_one_cube_mul_deriv2_vonMangoldtCurrent` |
+| **`(15a)`** `ε²A″(1+ε)/A(1+ε) → 2` — the second moment of the critical Euler clock | `RHTower.tendsto_eulerClockSecondMoment` |
+
+`(6)` is already in the corpus as `RHTower.hasDerivAt_suzukiShiftedCoefficient`
+(`∂_α c_α(n)\|₀ = 2Λ(n)`), and the squarefree half of `(11)` as
+`RHTower.tendsto_squarefreeMobiusBoundaryLayerLaplace`.  The no-go `(8)` and the ordered two-clock
+law `(7)`--`(9)` are therefore machine-checked in full.
+
+### What remains for the Lean transport layer
+
+`(14)`--`(22)`: `W₁`/`W₂` convergence of the two clocks (their moment inputs `(13)` and `(15a)` are proved above), the monotone quantile coupling, the
+prime-current four-unit Gini law `(16)`--`(17)`, and the complementary-packet asymptotic isometry.
+These need transport-distance and coupling infrastructure that mathlib does not yet carry; the
+analytic inputs they consume — `(11)`, `(13)` and their squarefree counterparts — are now proved.

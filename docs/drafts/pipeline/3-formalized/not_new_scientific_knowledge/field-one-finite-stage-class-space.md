@@ -53,12 +53,14 @@ every semilocal idele class acts on the orbit quotient by a homeomorphism.
   class-action types now exist unconditionally and independently of the
   global additive Weyl representation.
 - **New insight:** open quotient topology does not construct the trace
-  measure. Additive Haar invariance under diagonal \(S\)-units requires the
-  local Haar modulus and rational product formula; quotient measure then
-  requires a fundamental-domain or disintegration construction.
-- **Status:** algebraic and topological stages formalized. Measure, `L²`,
-  crossed product, compatible restriction maps, sheaf cohomology, Hodge
-  positivity, and RH remain open.
+  measure. Child card `field-one-finite-stage-module` now formalizes the norm
+  character and its rational \(S\)-unit product formula. Additive Haar
+  invariance still requires identification of that norm with the local and
+  finite-product Haar scaling characters; quotient measure then requires a
+  fundamental-domain or disintegration construction.
+- **Status:** algebraic, topological, and norm-module stages formalized.
+  Haar-character identification, measure, `L²`, crossed product, compatible
+  restriction maps, sheaf cohomology, Hodge positivity, and RH remain open.
 
 ## Audit
 

@@ -1,0 +1,877 @@
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[a4paper,margin=29mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage[colorlinks=true,linkcolor=blue!45!black,citecolor=blue!45!black,
+  urlcolor=blue!55!black]{hyperref}
+\setlength{\emergencystretch}{2em}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\C}{\mathbb C}
+\newcommand{\R}{\mathbb R}
+\newcommand{\cS}{\mathcal S}
+\newcommand{\cR}{\mathcal R}
+\newcommand{\cZ}{\mathcal Z}
+\newcommand{\supp}{\operatorname{supp}}
+\newcommand{\ran}{\operatorname{ran}}
+\newcommand{\Span}{\operatorname{span}}
+
+\title{No Positive-Definite Metric on the Schwartz Source Core\\
+of the Hedenmalm Theta Pair}
+\author{Michael Haufschild}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Hedenmalm recently represented the zeros of the centered Riemann function
+\(\Xi(z)=\xi(\frac12+iz)\) by a theta-driven differential pencil and proposed a
+self-adjointness problem for the pair \((LD,L)\).  We determine the metric geometry of this
+proposal on its natural translation-stable source core.
+
+Let \(k\) be the normalized logarithmic theta source, so that \(\widehat{k}=\Xi\), let
+\(D=-i\,d/dx\), and let \(Q\) be a jointly continuous nonnegative sesquilinear form on complex
+Schwartz space.  If \(D\) is symmetric for \(Q\) and \(Q(k,k)=0\), then \(Q\) has a unique
+representation
+\[
+ Q(f,g)=\int_{\R}\widehat f(t)\overline{\widehat g(t)}\,d\mu(t),
+\]
+where \(\mu\) is a positive measure of temperate growth supported on the real zero set of
+\(\Xi\).  Consequently \(\mu\) is purely atomic.  Conversely, every such divisor-supported
+measure gives a form with these properties.
+
+The classification has a sharp algebraic and topological consequence.  If \(Q\neq0\), the image in ordinary
+\(L^2(\R)\) of its radical is dense, proper, and nonclosed.  Moreover, for every source vector
+\(f\) there is a sequence \(z_n\to0\) in \(L^2\) with
+\[
+ Q(z_m-z_n,z_m-z_n)=0,\qquad Q(z_n,z_n)=Q(f,f).
+\]
+Thus sequential \(L^2\)-closability is equivalent to \(Q=0\).  In particular, no nonzero
+source-core metric for the Hedenmalm pair can be the restriction of a closed nonnegative
+quadratic form on ordinary \(L^2\).  More strongly, if \(Q\) is pulled back from a
+positive-definite form on the full algebraic range \(L\mathcal S(\R)\), its radical must equal
+\(\ker L=\C k\), contradicting the dense-radical theorem.  Hence no such positive-definite
+source-core metric exists, even before completion.
+
+For the Fourier eigenprofile attached to a zero \(\alpha\), the classified atomic polarization is
+zero when \(\alpha\notin\R\), while at a real zero it equals
+\(\mu(\{\alpha\})|\Xi'(\alpha)|^2\).  Hence conservativity on all theta eigenprofiles forces
+both the Riemann hypothesis and simplicity.  The result does not assert RH; it proves that the
+ordinary Hilbert-space completion of this new spectral program collapses and that every
+nonzero source-core alternative is necessarily a degenerate, singular, divisor-supported
+Fourier rigging.
+\end{abstract}
+
+\section{Introduction}
+
+The Hilbert--Pólya principle seeks a self-adjoint spectral mechanism whose eigenvalues encode the
+nontrivial zeros of the Riemann zeta function.  The principle is compelling because
+self-adjointness would force the spectral parameters to be real, but a spectral
+parametrization alone is not enough: the decisive issue is the construction of a positive
+Hilbert geometry \cite{Lagarias2006,Connes2026}.  This distinction is especially visible in the
+recent theta spectral problem of Hedenmalm \cite{Hedenmalm2026}.
+
+Write
+\[
+ \xi(s)=\frac12s(s-1)\pi^{-s/2}\Gamma(s/2)\zeta(s),
+ \qquad
+ \Xi(z)=\xi\!\left(\frac12+iz\right).
+ \tag{1.1}
+\]
+Hedenmalm constructs first-order differential operators \(D\) and \(L\) on the positive
+half-line and shows that the boundary-value problem
+\[
+ LDu+\alpha Lu=0
+ \tag{1.2}
+\]
+has a nonzero solution precisely when \(\Xi(\alpha)=0\), including complex \(\alpha\).
+He then asks for a Hilbert form that makes the pair \((LD,L)\) self-adjoint.  If that form is a
+genuine Hilbert norm on the required image space, the standard symmetry calculation excludes
+nonreal \(\alpha\) and proves RH.
+
+The present paper answers the metric-classification problem when the proposed form extends from
+the eigenfunction span to the natural Schwartz source core.  This regularity boundary is both
+strong enough for the differential pair to act and weak enough to include distributional
+Fourier-sampling metrics.  The answer is rigid:
+\[
+\boxed{
+\begin{gathered}
+\text{positive source-core pair symmetry}\\
+\Longrightarrow
+\text{positive Fourier measure on the real \(\Xi\)-divisor}\\
+\Longrightarrow
+\begin{matrix}
+\text{dense nonclosed \(L^2\)-radical},\\
+\text{no positive-definite metric on \(L\cS(\R)\)}.
+\end{matrix}
+\end{gathered}}
+\tag{1.3}
+\]
+Thus the metric cannot be repaired within ordinary \(L^2\), even by passing from bounded
+operators to closed unbounded quadratic forms.  The only nonzero metrics in the classified
+category are singular sampling riggings.
+
+\subsection{The source-core metric problem}
+
+After the logarithmic change of variables, the theta pair takes the form
+\[
+ D=-i\frac{d}{dx},\qquad L=kDk^{-1},
+ \tag{1.4}
+\]
+where \(k\) is a positive Schwartz function satisfying
+\[
+ Lk=0,\qquad \widehat k=\Xi.
+ \tag{1.5}
+\]
+Suppose a candidate form \(q_2\) is defined on the image of \(L\).  Its pullback is
+\[
+ Q(u,v)=q_2(Lu,Lv).
+ \tag{1.6}
+\]
+The pair-symmetry identity is exactly
+\[
+ Q(Du,v)=Q(u,Dv),
+ \tag{1.7}
+\]
+and \(Lk=0\) gives \(Q(k,k)=0\).  We study all jointly continuous nonnegative
+sesquilinear forms on \(\cS(\R)\) satisfying these two identities.  No zero location, RH,
+simplicity, or positivity of a zeta-derived kernel is assumed.
+
+Here \(L\cS(\R)\) means only the algebraic image of the Schwartz source inside the ambient
+smooth target class.  We do not assume that \(L\) maps \(\cS(\R)\) into itself or into ordinary
+\(L^2\); its logarithmic coefficient is unbounded.  The regularity hypothesis is solely that the
+pullback \(Q\), not the target form \(q_2\), is jointly continuous in the Schwartz topology.
+Thus the theorem tests a source-core extension without smuggling in a target-space completion.
+
+\subsection{Main theorem}
+
+Use the Fourier convention
+\[
+ \widehat f(t)=\int_{\R}f(x)e^{itx}\,dx.
+ \tag{1.8}
+\]
+A positive Borel measure \(\mu\) has \emph{temperate growth} if
+\[
+ \int_{\R}(1+t^2)^{-N}\,d\mu(t)<\infty
+ \tag{1.9}
+\]
+for some \(N\ge0\).  Let
+\[
+ \cZ_{\R}=\{t\in\R:\Xi(t)=0\}.
+ \tag{1.10}
+\]
+
+\begin{theorem}[Divisor metric and dense-radical law]\label{thm:main}
+Let \(Q:\cS(\R)\times\cS(\R)\to\C\) be jointly continuous, complex-linear in the first
+argument, conjugate-linear in the second, and nonnegative.  Assume
+\[
+ Q(Df,g)=Q(f,Dg),\qquad Q(k,k)=0.
+ \tag{1.11}
+\]
+Then:
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item There is a unique positive measure \(\mu\) of temperate growth such that
+\[
+ Q(f,g)=\int_{\R}\widehat f(t)\overline{\widehat g(t)}\,d\mu(t).
+ \tag{1.12}
+\]
+\item Its support is contained in \(\cZ_{\R}\).  Hence
+\[
+ \mu=\sum_{\gamma\in\cZ_{\R}}c_\gamma\delta_\gamma,
+ \qquad c_\gamma\ge0,
+ \tag{1.13}
+\]
+with the weights satisfying the temperate-growth condition.
+\item Conversely, every positive temperate measure of the form \textup{(1.13)} defines a
+jointly continuous nonnegative form satisfying \textup{(1.11)}.
+\item Let
+\[
+ \cR_Q=\{f\in\cS(\R):Q(f,g)=0\ \text{for every }g\in\cS(\R)\}.
+ \tag{1.14}
+\]
+If \(Q\neq0\), the image of \(\cR_Q\) in \(L^2(\R)\) is dense, proper, and nonclosed.
+\item If \(Q\neq0\), then
+\[
+ \C k\subsetneq\cR_Q.
+ \tag{1.15}
+\]
+Thus the induced form on \(L\cS(\R)\cong\cS(\R)/\C k\) is never positive definite.
+\item For every \(f\in\cS(\R)\) there is a sequence \(z_n\in\cS(\R)\) such that
+\[
+\begin{split}
+ &\|z_n\|_2\longrightarrow0,\\
+ &Q(z_m-z_n,z_m-z_n)=0\quad(m,n\ge1),\\
+ &Q(z_n,z_n)=Q(f,f)\quad(n\ge1).
+\end{split}
+\tag{1.16}
+\]
+Consequently \(Q\) is sequentially closable through \(\cS(\R)\hookrightarrow L^2(\R)\) if
+and only if \(Q=0\).
+\end{enumerate}
+\end{theorem}
+
+The strict containment in (1.15) is the algebraic no-go.  The fixed-energy sequence in (1.16) is
+the topological no-go and is stronger than failure of bounded representability.  It
+rules out every closed nonnegative \(L^2\)-form whose restriction is \(Q\).
+
+\begin{corollary}[Source-core no-go for the theta pair]\label{cor:no-go}
+Let \(q_2\) be a nonnegative form on a space containing \(L\cS(\R)\), and suppose its pullback
+\(Q(f,g)=q_2(Lf,Lg)\) is a nonzero jointly continuous form on \(\cS(\R)\).  If the Hedenmalm pair
+is symmetric on this core, then:
+\begin{enumerate}[label=\textup{(\alph*)}]
+\item \(Q\) is represented by a positive atomic measure on \(\cZ_{\R}\);
+\item the \(L^2\)-image of its radical is not closed;
+\item \(Q\) has no jointly continuous extension to \(L^2(\R)\);
+\item \(Q\) is not the restriction of a closed nonnegative quadratic form on \(L^2(\R)\).
+\end{enumerate}
+\end{corollary}
+
+\begin{corollary}[No positive-definite source-core metric]\label{cor:no-hilbert}
+There is no positive-definite sesquilinear form \(q_2\) on the algebraic range
+\(L\cS(\R)\) for which
+\[
+ Q(f,g)=q_2(Lf,Lg)
+ \tag{1.17}
+\]
+is jointly continuous on \(\cS(\R)\times\cS(\R)\) and makes the Hedenmalm pair symmetric on
+that source core.
+\end{corollary}
+
+\begin{proof}
+If such a form existed, positivity would give
+\[
+ f\in\cR_Q
+ \quad\Longleftrightarrow\quad
+ q_2(Lf,Lf)=0
+ \quad\Longleftrightarrow\quad
+ Lf=0.
+\]
+Thus \(\cR_Q=\ker L=\C k\).  The form \(Q\) is nonzero: \(xk\in\cS(\R)\),
+\(L(xk)=-ik\ne0\), and hence \(Q(xk,xk)>0\).  Theorem \ref{thm:main}\textup{(iv)} now says that
+the \(L^2\)-image of \(\C k\) is dense.  This is impossible because a nonzero one-dimensional
+subspace of \(L^2(\R)\) is closed and proper.
+\end{proof}
+
+\subsection{What is and is not excluded}
+
+Corollary \ref{cor:no-hilbert} excludes a positive-definite pair metric on the full algebraic
+range \(L\cS(\R)\) whenever its pullback has the natural Schwartz continuity.  Corollary
+\ref{cor:no-go} separately excludes every ordinary-\(L^2\), translation-stable
+Schwartz-source completion of a nonzero semidefinite metric.  Neither result concerns a form defined only on the
+finite linear span of eigenfunctions and refusing every continuous source-core extension.  Such
+a target-domain construction lies outside the hypotheses.  This boundary is exact rather than
+cosmetic: Fourier evaluation at a point is continuous on Schwartz space and discontinuous on
+ordinary \(L^2\), which is precisely the singularity forced by Theorem \ref{thm:main}.
+
+The novelty is not the Bochner--Schwartz theorem or Wiener's cyclicity theorem separately.
+It is their source-specific combination with (1.5)--(1.7), which converts Hedenmalm's metric
+problem into the atomic classification (1.13), strict source degeneracy (1.15), and the maximal
+\(L^2\)-topology obstruction (1.16).  Section \ref{sec:literature} gives the comparison with the
+direct parent.
+
+\section{The normalized theta source}\label{sec:source}
+
+This section fixes normalization without relying on a zero-dependent construction.  Put
+\[
+ h(t)=2\pi(2\pi t^4-3t^2)e^{-\pi t^2},\qquad t>0,
+ \tag{2.1}
+\]
+and define
+\[
+k(x)=e^{x/2}\sum_{n=1}^{\infty}h(ne^x).
+\tag{2.2}
+\]
+Termwise comparison with Hedenmalm's theta derivative gives
+\[
+ k(x)=2\,\mathop{\mathrm{Var}\Theta}_{00}(i e^{2x}),
+\]
+so this is precisely his logarithmic source with the scalar normalization that makes
+\(\widehat k=\Xi\).  Multiplying \(k\) by a nonzero constant does not change \(L=kDk^{-1}\).
+
+\begin{proposition}[Theta--Fourier identity]\label{prop:theta-fourier}
+The function \(k\) is nonzero, even, smooth, and belongs to \(\cS(\R)\).  It is strictly positive,
+and its Fourier transform is
+\[
+ \widehat k(z)=\Xi(z)\qquad(z\in\C).
+ \tag{2.3}
+\]
+\end{proposition}
+
+\begin{proof}
+The Mellin transform of \(h\) is
+\[
+\begin{aligned}
+ \int_0^\infty h(t)t^{s-1}\,dt
+ &=\frac12s(s-1)\pi^{-s/2}\Gamma(s/2).
+\end{aligned}
+\tag{2.4}
+\]
+For \(\Re s>1\), absolute convergence and the substitution \(u=ne^x\) give
+\[
+\begin{aligned}
+ \int_{\R}k(x)e^{i z x}\,dx
+ &=\sum_{n\ge1}\int_0^\infty h(nt)t^{s}\,\frac{dt}{t}\\
+ &=\left(\sum_{n\ge1}n^{-s}\right)
+   \int_0^\infty h(u)u^{s-1}\,du\\
+ &=\xi(s),\qquad s=\frac12+iz.
+\end{aligned}
+\tag{2.5}
+\]
+The Jacobi inversion formula applied to the theta series in (2.2) makes \(k\) even and gives
+double-exponential decay, with the same decay for every derivative.  It also gives strict
+positivity; these are the theta estimates used in the construction of
+\cite{Hedenmalm2026}.  Thus \(k\in\cS(\R)\), and the left side of (2.5) is entire in \(z\).
+Analytic continuation proves (2.3) on \(\C\).
+\end{proof}
+
+Define
+\[
+ \Phi(x)=-\log k(x),\qquad
+ D=-i\partial_x,\qquad
+ L=-i(\partial_x+\Phi'(x))=kDk^{-1}.
+ \tag{2.6}
+\]
+Then
+\[
+ Lk=0,\qquad \ker L=\C k
+ \tag{2.7}
+\]
+on the smooth source class.
+
+\begin{remark}
+The scalar normalization in (2.1)--(2.2) is chosen solely to make (2.3) exact.  Since
+\(\Phi\) changes only by an additive constant under a scalar change of \(k\), the differential
+operator \(L\), its kernel line, and every result below are normalization invariant.
+\end{remark}
+
+\section{From pair symmetry to translation invariance}\label{sec:translation}
+
+Let \(T_a f(x)=f(x+a)\).  Joint continuity of \(Q\) is taken in the usual Schwartz topology.
+Nonnegativity means
+\[
+ Q(f,f)\in[0,\infty)\qquad(f\in\cS(\R)).
+\tag{3.1}
+\]
+It implies Hermitian symmetry and the Cauchy--Schwarz inequality for the associated seminorm.
+
+\begin{lemma}[Theta diagonal nullity is radical nullity]\label{lem:null-radical}
+If \(Q\) is nonnegative and \(Q(k,k)=0\), then
+\[
+ Q(k,g)=Q(g,k)=0\qquad(g\in\cS(\R)).
+\tag{3.2}
+\]
+\end{lemma}
+
+\begin{proof}
+The Cauchy--Schwarz inequality gives
+\[
+ |Q(k,g)|^2\le Q(k,k)Q(g,g)=0.
+\]
+Hermitian symmetry gives the other identity.
+\end{proof}
+
+\begin{lemma}[Momentum symmetry]\label{lem:translation}
+If
+\[
+ Q(Df,g)=Q(f,Dg)\qquad(f,g\in\cS(\R)),
+\tag{3.3}
+\]
+then
+\[
+ Q(T_a f,T_a g)=Q(f,g)\qquad(a\in\R).
+\tag{3.4}
+\]
+\end{lemma}
+
+\begin{proof}
+Since \(D=-i\partial_x\), (3.3) is equivalent to
+\[
+ Q(\partial_x f,g)+Q(f,\partial_x g)=0.
+\tag{3.5}
+\]
+The map \(a\mapsto T_a f\) is differentiable in the Schwartz topology with derivative
+\(T_a\partial_x f\).  Joint continuity therefore permits differentiation:
+\[
+\begin{aligned}
+ \frac{d}{da}Q(T_a f,T_a g)
+ &=Q(T_a\partial_x f,T_a g)+Q(T_a f,T_a\partial_x g)=0
+\end{aligned}
+\]
+by (3.5).  Hence the matrix coefficient is constant, proving (3.4).
+\end{proof}
+
+\begin{proposition}[Pair reduction]\label{prop:pair-reduction}
+Let \(q_2\) be a nonnegative sesquilinear form on a space containing \(L\cS(\R)\), and put
+\[
+ Q(f,g)=q_2(Lf,Lg).
+\tag{3.6}
+\]
+Then \(Q(k,k)=0\).  Moreover,
+\[
+ q_2(LDf,Lg)=q_2(Lf,LDg)
+\tag{3.7}
+\]
+is equivalent to momentum symmetry (3.3) for \(Q\).
+\end{proposition}
+
+\begin{proof}
+The first assertion follows from \(Lk=0\).  Substituting (3.6) into (3.3) gives (3.7) exactly.
+\end{proof}
+
+\section{Classification by the real \(\Xi\)-divisor}\label{sec:classification}
+
+We use the Bochner--Schwartz theorem in the following standard form
+\cite[Chap.~VII, \S9]{Schwartz1966}: a positive-definite tempered distribution on \(\R\) is the
+Fourier transform of a unique positive measure of temperate growth.
+
+\begin{proposition}[Positive translation-invariant Schwartz forms]\label{prop:BS}
+Let \(Q\) be a jointly continuous nonnegative sesquilinear form on \(\cS(\R)\).  If
+\[
+ Q(T_a f,T_a g)=Q(f,g)
+\tag{4.1}
+\]
+for all \(a,f,g\), then there is a unique positive measure \(\mu\) of temperate growth such that
+\[
+ Q(f,g)=\int_{\R}\widehat f(t)\overline{\widehat g(t)}\,d\mu(t).
+\tag{4.2}
+\]
+Conversely, every positive measure of temperate growth defines a jointly continuous
+nonnegative translation-invariant form by (4.2).
+\end{proposition}
+
+\begin{proof}
+By the Schwartz kernel theorem, joint continuity represents \(Q\) by a tempered distribution
+on \(\R^2\).  Invariance under simultaneous translation makes that kernel depend only on the
+difference variable.  Nonnegativity makes the resulting tempered distribution positive
+definite.  The Bochner--Schwartz theorem gives a positive temperate measure \(\mu\), and Fourier
+polarization gives (4.2).
+
+Uniqueness follows because Fourier transforms of Schwartz functions contain
+\(C_c^\infty(\R)\): if two measures give the same form, compactly supported smooth spectral
+bumps and polarization make their integrals agree on \(C_c^\infty(\R)\), hence the measures
+agree.  Conversely, (1.9) and rapid decay of \(\widehat f,\widehat g\) imply both convergence
+and joint Schwartz continuity of (4.2).  Positivity and translation invariance are immediate.
+\end{proof}
+
+\begin{theorem}[Divisor-support classification]\label{thm:divisor}
+Under the hypotheses of Theorem \ref{thm:main}, the measure in
+Proposition \ref{prop:BS} satisfies
+\[
+ \supp\mu\subset\cZ_{\R}.
+\tag{4.3}
+\]
+It is therefore purely atomic as in (1.13).  Conversely, every positive temperate measure
+supported on \(\cZ_{\R}\) satisfies \(Q(k,k)=0\).
+\end{theorem}
+
+\begin{proof}
+Lemmas \ref{lem:translation} and Proposition \ref{prop:BS} give the unique measure.  By
+Proposition \ref{prop:theta-fourier},
+\[
+ 0=Q(k,k)=\int_{\R}|\Xi(t)|^2\,d\mu(t).
+\tag{4.4}
+\]
+The integrand is continuous and nonnegative.  Hence it vanishes on \(\supp\mu\), proving
+(4.3).
+
+The real zeros of a nonzero entire function are discrete and have no finite accumulation point.
+A positive measure supported on this set is the sum of its point masses, which gives (1.13).
+The temperate-growth condition is inherited from \(\mu\).  Conversely, if (4.3) holds, the
+integral in (4.4) is zero.
+\end{proof}
+
+\begin{corollary}[Descent through the theta constraint]\label{cor:descent}
+Every form in Theorem \ref{thm:divisor} has \(k\) in both radicals and descends to a
+well-defined nonnegative form on the algebraic range of \(L\) by
+\[
+ q_2(Lf,Lg)=Q(f,g).
+\tag{4.5}
+\]
+\end{corollary}
+
+\begin{proof}
+Radical nullity follows from Lemma \ref{lem:null-radical}.  If \(Lf=Lf'\), then
+\(f-f'\in\ker L=\C k\), so (4.5) is independent of the chosen preimages.
+\end{proof}
+
+The theorem is a complete classification: positivity and source-core pair symmetry leave only
+the weights \(c_\gamma\).  No absolutely continuous part, singular continuous part, or mass away
+from real zeta zeros survives.
+
+\section{Cyclicity and the dense-radical law}\label{sec:cyclicity}
+
+The divisor classification already shows that nonzero metrics are singular.  A second argument,
+using only source cyclicity, strengthens singularity to nonclosability.
+
+\begin{proposition}[Theta cyclicity]\label{prop:cyclic}
+The normalized theta source is cyclic for real translations in ordinary \(L^2(\R)\):
+\[
+ \overline{\Span\{T_a k:a\in\R\}}^{\,L^2}=L^2(\R).
+\tag{5.1}
+\]
+\end{proposition}
+
+\begin{proof}
+The real zero set of the nonzero entire function \(\Xi\) is countable and therefore
+Lebesgue-null.  Proposition \ref{prop:theta-fourier} gives
+\[
+ \widehat k(t)\ne0\quad\text{for almost every }t\in\R.
+\tag{5.2}
+\]
+Wiener's \(L^2\) cyclicity theorem \cite{Wiener1932} now gives (5.1).
+
+For completeness, suppose \(h\in L^2(\R)\) is orthogonal to every translated source.  Under
+Plancherel, translation becomes multiplication by a character, so the finite complex measure
+\[
+ d\nu(t)=h(t)\overline{\Xi(t)}\,dt
+\tag{5.3}
+\]
+has identically zero Fourier transform.  Uniqueness of the Fourier transform of finite measures
+gives \(\nu=0\).  Equation (5.2) then gives \(h=0\).  The orthogonal complement of the orbit span
+is zero, proving (5.1).
+\end{proof}
+
+\begin{lemma}[The translation orbit lies in the radical]\label{lem:orbit-radical}
+Under the hypotheses of Theorem \ref{thm:main},
+\[
+ T_a k\in\cR_Q\qquad(a\in\R).
+\tag{5.4}
+\]
+\end{lemma}
+
+\begin{proof}
+Given \(g\in\cS(\R)\), use Lemmas \ref{lem:null-radical} and \ref{lem:translation}:
+\[
+ Q(T_a k,g)
+ =Q(T_a k,T_aT_{-a}g)
+ =Q(k,T_{-a}g)=0.
+\]
+\end{proof}
+
+\begin{theorem}[Dense proper radical]\label{thm:dense-radical}
+If \(Q\neq0\), the image of \(\cR_Q\) under the inclusion
+\(\cS(\R)\hookrightarrow L^2(\R)\) is dense, proper, and nonclosed.
+\end{theorem}
+
+\begin{proof}
+Lemma \ref{lem:orbit-radical} and Proposition \ref{prop:cyclic} make the image dense.  If it were
+all of \(L^2\), then every \(f\in\cS(\R)\) would have the same \(L^2\)-class as some
+\(r\in\cR_Q\).  Equality almost everywhere of two continuous functions gives \(f=r\), so
+\(f\in\cR_Q\).  This would make \(Q=0\), contrary to the hypothesis.  Thus the image is proper.
+A dense proper linear subspace is not closed.
+\end{proof}
+
+\begin{theorem}[Fixed-energy null sequence]\label{thm:null-sequence}
+For each \(f\in\cS(\R)\), there is a sequence satisfying (1.16).
+\end{theorem}
+
+\begin{proof}
+By density in Theorem \ref{thm:dense-radical}, choose \(r_n\in\cR_Q\) with
+\[
+ \|f-r_n\|_2<\frac1n.
+\tag{5.5}
+\]
+Set \(z_n=f-r_n\).  Then \(z_n\to0\) in \(L^2\).  Because \(\cR_Q\) is a linear subspace and
+lies in both radicals,
+\[
+\begin{aligned}
+ Q(z_n,z_n)&=Q(f-r_n,f-r_n)=Q(f,f),\\
+ Q(z_m-z_n,z_m-z_n)&=Q(r_n-r_m,r_n-r_m)=0.
+\end{aligned}
+\]
+This is (1.16).
+\end{proof}
+
+\begin{corollary}[Strict source degeneracy]\label{cor:strict-degeneracy}
+If \(Q\neq0\), then \(\C k\subsetneq\cR_Q\).  Equivalently, the form induced by \(Q\) on
+\(\cS(\R)/\ker L\cong L\cS(\R)\) has a nonzero radical.
+\end{corollary}
+
+\begin{proof}
+Lemma \ref{lem:null-radical} gives \(\C k\subset\cR_Q\).  Equality would make the \(L^2\)-image
+of \(\cR_Q\) one-dimensional and therefore closed, contradicting Theorem
+\ref{thm:dense-radical}.
+\end{proof}
+
+\subsection{Exact closure consequences}
+
+Recall the standard sequential criterion for a nonnegative form \(Q\) on the dense source
+\(\cS(\R)\subset L^2(\R)\): it is closable if
+\[
+\left.
+\begin{array}{c}
+ f_n\to0\ \text{in }L^2,\\
+ Q(f_n-f_m,f_n-f_m)\to0
+\end{array}
+\right\}
+\quad\Longrightarrow\quad
+ Q(f_n,f_n)\to0.
+\tag{5.6}
+\]
+
+\begin{corollary}[Exact \(L^2\)-closure classification]\label{cor:closure}
+Under the hypotheses of Theorem \ref{thm:main}, the following are equivalent:
+\[
+\begin{split}
+ &Q\text{ is sequentially closable through }L^2(\R);\\
+ &Q=0;\\
+ &\mu=0.
+\end{split}
+\tag{5.7}
+\]
+\end{corollary}
+
+\begin{proof}
+If \(Q\neq0\), positivity and polarization give an \(f\) with \(Q(f,f)>0\).
+The sequence from Theorem \ref{thm:null-sequence} violates (5.6), so \(Q\) is not closable.
+The zero form is closable.  Finally, (4.2) and uniqueness give \(Q=0\) if and only if
+\(\mu=0\).
+\end{proof}
+
+\begin{corollary}[No continuous \(L^2\) extension]\label{cor:no-extension}
+If a jointly continuous sesquilinear form \(\widetilde Q\) on \(L^2(\R)\) agrees with \(Q\) on
+\(\cS(\R)\times\cS(\R)\), then \(Q=\widetilde Q=0\).
+\end{corollary}
+
+\begin{proof}
+The radical of \(\widetilde Q\) is closed.  It contains the dense translation span of \(k\) by
+Lemmas \ref{lem:null-radical}--\ref{lem:orbit-radical} and continuity, so it equals \(L^2\).
+Thus \(\widetilde Q=0\), and its restriction is zero.
+\end{proof}
+
+Corollaries \ref{cor:closure} and \ref{cor:no-extension} close the two standard ordinary-Hilbert
+escapes: neither a bounded metric operator nor a closed unbounded nonnegative form can implement a
+nonzero source-core metric.
+
+There is also an obstruction before topology is imposed on the target.  If a form on
+\(L\cS(\R)\) were positive definite, its pullback radical would be precisely
+\(\ker L=\C k\).  Theorem \ref{thm:dense-radical} forces the same radical to have dense
+\(L^2\)-image, whereas \(\C k\) has closed one-dimensional image.  This proves Corollary
+\ref{cor:no-hilbert}: every nonzero form surviving the classification is necessarily
+semidefinite on \(L\cS(\R)\), with additional null directions beyond the kernel of \(L\).
+
+\section{Exact sampling of theta eigenprofiles}\label{sec:sampling}
+
+The classification also determines what the divisor metric sees on Hedenmalm's
+eigenfunction family.  Let \(\alpha\in\C\) satisfy \(\Xi(\alpha)=0\).  The normalized Fourier
+profile of the corresponding theta eigenfunction is the entire removable quotient
+\[
+ F_\alpha(z)=-i\frac{\Xi(z)}{\alpha-z},
+\tag{6.1}
+\]
+with its value at \(z=\alpha\) defined by analytic continuation.  For an atomic measure
+\(\mu=\sum_\gamma c_\gamma\delta_\gamma\), extend the spectral polarization to the algebraic
+span of these profiles by
+\[
+ \langle F,G\rangle_\mu
+   =\sum_{\gamma\in\cZ_\R}c_\gamma
+      F(\gamma)\overline{G(\gamma)}.
+\tag{6.2}
+\]
+Each sum involving finitely many eigenprofiles is well defined: a profile vanishes at every
+real divisor point except possibly its own.
+
+\begin{theorem}[Eigenprofile sampling law]\label{thm:eigen-sampling}
+Let the polarization have the atomic representation (6.2).
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item If \(\alpha\notin\R\), then
+\[
+ \langle F_\alpha,F_\alpha\rangle_\mu=0.
+\tag{6.3}
+\]
+\item If \(\alpha\in\R\), then
+\[
+ \langle F_\alpha,F_\alpha\rangle_\mu
+ =c_\alpha|\Xi'(\alpha)|^2.
+\tag{6.4}
+\]
+\item Profiles attached to distinct real zeros are orthogonal.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+At any real zero \(\gamma\ne\alpha\), equation (6.1) gives
+\(F_\alpha(\gamma)=0\).  If \(\alpha\notin\R\), this covers every point of
+\(\supp\mu\), proving (6.3).  If \(\alpha\in\R\), removable division gives
+\[
+ F_\alpha(\alpha)=i\Xi'(\alpha).
+\tag{6.5}
+\]
+Inserting these samples into (6.2) proves (6.4) and the orthogonality assertion.
+\end{proof}
+
+\begin{corollary}[Conservativity criterion]\label{cor:conservative}
+The atomic polarization is positive definite on the algebraic span of all theta eigenprofiles if and only
+if:
+\[
+\begin{gathered}
+\text{every zero of \(\Xi\) is real},\\
+\text{every zero of \(\Xi\) is simple},\\
+c_\gamma>0\quad\text{at every zero}.
+\end{gathered}
+\tag{6.6}
+\]
+In particular, conservativity on all theta eigenprofiles implies RH and simplicity of every
+nontrivial zeta zero.
+\end{corollary}
+
+\begin{proof}
+A nonreal-zero eigenprofile is null by (6.3), and a multiple real zero is null by
+\(\Xi'(\alpha)=0\) in (6.4).  If (6.6) holds, then for every finite sum over distinct zeros,
+\[
+ \left\langle\sum_\alpha a_\alpha F_\alpha,
+          \sum_\alpha a_\alpha F_\alpha\right\rangle_\mu
+ =\sum_\alpha c_\alpha|a_\alpha|^2|\Xi'(\alpha)|^2,
+\tag{6.7}
+\]
+which vanishes only when every \(a_\alpha=0\).
+\end{proof}
+
+This corollary explains the exact limitation of positive semidefinite divisor metrics.
+Selecting weights on the real divisor automatically produces pair symmetry, but it annihilates
+every hypothetical off-line eigenprofile and every eigenprofile at a multiple real zero.
+Positive definiteness is therefore not supplied by the classification; it is equivalent, in this
+metric category, to RH together with simplicity and positive mass on every zero fiber.
+
+\section{The resulting Hilbert--Pólya boundary}\label{sec:boundary}
+
+Theorems \ref{thm:divisor}, \ref{thm:dense-radical}, and
+\ref{thm:eigen-sampling} give a closed structural answer to the source-core metric problem.
+
+\begin{enumerate}[label=\textup{\arabic*.},leftmargin=2em]
+\item \emph{A positive-definite source-core metric is impossible.}
+Any positive-definite form on \(L\cS(\R)\) would make the pullback radical exactly
+\(\C k\).  Pair symmetry instead forces that radical to be \(L^2\)-dense.  The contradiction
+occurs before completing the target space.
+
+\item \emph{Ordinary \(L^2\) is impossible even semidefinitely.}
+Every nonzero positive source-core form has a dense nonclosed \(L^2\)-radical and is
+nonclosable.  Enlarging a bounded metric to a closed unbounded quadratic form does not evade the
+obstruction.
+
+\item \emph{Nonlocality alone is insufficient.}
+The representing object is not an arbitrary nonlocal kernel.  It is a unique positive
+Fourier measure, and theta nullity forces its complete support onto \(\cZ_{\R}\).
+
+\item \emph{The surviving metric is singular in a precise sense.}
+It is a weighted Fourier-evaluation space.  Point evaluation is continuous in the Schwartz
+topology but has no continuous or closable realization in the ordinary \(L^2\) topology.
+
+\item \emph{Source-core positivity does not by itself prove RH.}
+The positive form sees only real divisor atoms.  Conservativity on the complete eigenprofile
+family is the clause that forces RH and simplicity, as stated exactly in
+Corollary \ref{cor:conservative}.
+
+\item \emph{A target-domain escape is outside the theorem and visibly different.}
+A form defined only on the finite zero-eigenfunction span need not extend continuously to the
+translation-stable Schwartz source core.  Such a construction cannot be presented as an ordinary
+source \(L^2\)-completion: the latter is excluded by Corollary \ref{cor:no-go}.
+\end{enumerate}
+
+Accordingly, the theta-pair architecture has only two mathematically distinct metric regimes:
+\[
+\begin{gathered}
+\text{Schwartz-source extension}
+\ \Longrightarrow\ \text{degenerate divisor metric with no \(L^2\)-closure},\\[1mm]
+\text{finite target-eigenfunction domain}
+\ \Longrightarrow\ \text{no source-core extension assumed}.
+\end{gathered}
+\tag{7.1}
+\]
+The first regime is completely classified here.  The second is not an ordinary completion of the
+source representation and is not covered by claims made for the first.
+
+\section{Relation to prior work}\label{sec:literature}
+
+Hedenmalm \cite{Hedenmalm2026} supplies the direct parent: the theta boundary-value
+characterization, the pair \((LD,L)\), the finite eigenfunction space, and the implication from a
+positive self-adjoint pair to RH.  His paper does not classify continuous source-core forms,
+derive a Fourier-support law for them, or study their \(L^2\) radical and closability.
+
+The two harmonic-analysis inputs are classical.  Bochner--Schwartz represents positive-definite
+tempered distributions by positive temperate measures \cite{Schwartz1966}; Wiener's theorem
+characterizes cyclic translation vectors by almost-everywhere nonvanishing of the Fourier
+transform \cite{Wiener1932}.  Here the theta identity \(\widehat k=\Xi\) activates both theorems
+at once.  Theta nullity forces the Bochner--Schwartz measure onto the real zeta divisor, while the
+same divisor is Lebesgue-null and therefore makes \(k\) cyclic in ordinary \(L^2\).  These two
+facts point in opposite topological directions: the admissible metric lives only on the divisor,
+but the metric radical is dense in the ambient \(L^2\) representation.
+
+General Hilbert--Pólya programs, de Branges spaces, trace-formula constructions, and
+noncommutative-geometric approaches use different operators and domains
+\cite{deBranges1968,Lagarias2006,Connes2026}.  The no-go theorem is not asserted for those
+architectures.  It is source-specific to the Hedenmalm theta pair and exact for the regularity
+class stated in Theorem \ref{thm:main}.
+
+To our knowledge, the current literature surrounding the June 2026 theta proposal contains no earlier
+divisor-support classification, dense-radical theorem, or \(L^2\)-nonclosability result for this
+pair, nor the resulting positive-definite source-core no-go theorem.  The direct-parent comparison
+above is the novelty boundary: classical representation and cyclicity theorems are used without
+novelty claims.
+
+\section{Conclusion}
+
+The Hedenmalm theta pair admits a complete source-core metric classification.  Positivity and pair
+symmetry force a unique positive temperate Fourier measure; theta nullity forces that measure to be
+purely atomic on the real \(\Xi\)-divisor.  The same theta source is cyclic in ordinary \(L^2\), so
+every nonzero classified metric has a dense proper nonclosed radical and a fixed-energy
+\(L^2\)-null sequence.  Sequential \(L^2\)-closability occurs only for the zero form.
+
+This closes the source-core Hilbert-metric problem for the new theta spectral program:
+no positive-definite metric exists on \(L\cS(\R)\) under the natural continuity and pair-symmetry
+hypotheses, and no nonzero semidefinite source-core metric can arise from a closed nonnegative
+quadratic form on \(L^2(\R)\).  The exact replacement is not another local operator but a
+degenerate divisor-supported Fourier rigging.  On theta eigenprofiles its conservativity criterion is
+precisely RH plus simplicity and positive mass at every divisor point.  These statements delimit
+the theorem sharply: they do not claim RH, and they do not extend the no-go beyond the
+source-core category proved here.
+
+\begin{thebibliography}{99}
+
+\bibitem{Connes2026}
+A.~Connes,
+\emph{The Riemann Hypothesis: Past, Present and a Letter Through Time},
+arXiv:2602.04022, 2026.
+
+\bibitem{deBranges1968}
+L.~de Branges,
+\emph{Hilbert Spaces of Entire Functions},
+Prentice--Hall, Englewood Cliffs, NJ, 1968.
+
+\bibitem{Hedenmalm2026}
+H.~Hedenmalm,
+\emph{Spectral interpretation of Riemann zeta zeros},
+arXiv:2606.17494, 2026.
+
+\bibitem{Lagarias2006}
+J.~C. Lagarias,
+The Riemann hypothesis: arithmetic and geometry,
+in \emph{Surveys in Noncommutative Geometry},
+Clay Math. Proc. \textbf{6} (2006), 127--139.
+
+\bibitem{Schwartz1966}
+L.~Schwartz,
+\emph{Th\'eorie des distributions},
+new edition, Hermann, Paris, 1966.
+
+\bibitem{Wiener1932}
+N.~Wiener,
+Tauberian theorems,
+\emph{Ann. of Math.} (2) \textbf{33} (1932), 1--100.
+
+\end{thebibliography}
+
+\end{document}

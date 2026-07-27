@@ -205,8 +205,18 @@ classified as a bridge. The candidate-new residue remains the arithmetic dilatio
 
 ## Lean decision
 
-The formal tree has no prolate integral/differential operator or fixed-mode asymptotic. No Lean
-file is added.
+**Correction, 2026-07-27.**  This section previously read "the formal tree has no prolate
+integral/differential operator or fixed-mode asymptotic".  Both halves of the first clause are
+**false**.  The prolate *integral* operator is `RHTower/ConstrainedProlateOperator.lean`
+(`evenTimeBandFourier a = P_a F P_a`, proved compact and self-adjoint, with its concentration and
+leakage operators); the prolate *differential* operator is `prolateSLAction` in
+`RHTower/FuchsProlateScale.lean`, and its commutation with the integral operator is proved in
+`RHTower/SlepianSincCommutation.lean` and `RHTower/SlepianBandCommutation.lean`, with the
+consequent invariant-line diagonalization in `RHTower/ProlateDiagonalization.lean`.  What is
+genuinely absent is the **fixed-mode asymptotic for the actual eigenvalues** `chi_n(lambda)`:
+`RHTower/FuchsProlateScale.lean` formalizes the Fuchs *rate calculus* for the model rate
+`A·lambda^(2n+1)·exp(-4 pi lambda^2)` and the prolate-to-Hermite scaling identity, but no theorem
+identifies the true `chi_n(lambda)` with that rate.  No Lean file is added by this card.
 
 ## Gates
 

@@ -284,6 +284,14 @@ theorem xi_divisor_support_re_mem_open_unit
   · by_contra hlt
     exact xi_ne_zero_of_one_le_re (not_lt.mp hlt) hzero
 
+/-- Centered at the critical line, the open strip is exactly the region where the horizontal
+square stays below `1/4`: `0 < x < 1` is equivalent to `(x - 1/2) ^ 2 < 1/4`. -/
+theorem xi_divisor_support_centered_re_sq_lt_quarter
+    (ρ : ↥(MeromorphicOn.divisor xi Set.univ).support) :
+    ((ρ : ℂ).re - 1 / 2) ^ 2 < 1 / 4 := by
+  have hstrip := xi_divisor_support_re_mem_open_unit ρ
+  nlinarith [mul_pos hstrip.1 (sub_pos.mpr hstrip.2)]
+
 /-- The actual xi divisor has no real point; its centered spectral coordinates therefore never
 come from the degenerate negative-real branch. -/
 theorem xi_divisor_support_im_ne_zero

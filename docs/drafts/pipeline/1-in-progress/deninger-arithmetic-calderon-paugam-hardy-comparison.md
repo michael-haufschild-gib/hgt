@@ -96,7 +96,16 @@ with the following properties.
    \]
    Their restrictions have the finite local values `(3)`.  Exact
    projectors are asserted here, after positive completion, not on
-   the uncomplemented nuclear source.
+   the uncomplemented nuclear source.  Concretely, the closed source
+   relation supplies a bounded self-adjoint almost-involution \(S\)
+   with \(S^2-1\) nuclear.  Source geometry proves \(\ker S=0\);
+   self-adjoint Fredholmness then makes \(S\) invertible, and
+   `DAC_POLAR_SIGN_LIFT_NUCLEAR_ALMOST_PROJECTOR` defines
+   \[
+     C=S|S|^{-1},\qquad \Pi_\pm=(1\pm C)/2.
+   \]
+   Thus exact projectors are constructed canonically; they are not
+   postulated from a zero-sector splitting.
 
 5. **Paugam sector comparison.**  Let
    \[
@@ -148,15 +157,23 @@ with the following properties.
    geometrically, not imported from Paugam's RH-conditional spectral
    formula.
 
-8. **Riesz spectral faithfulness.**  For every nontrivial zeta zero,
-   the order-zero Meyer evaluation functional pulled back by \(U\) is
-   bounded for the Hodge norm, has a nonzero Riesz representative in
-   \(\operatorname{Dom}\Theta_{\mathcal H}\), and its transpose action
-   is the corresponding eigencharacter.  By
-   `DAC_RIESZ_EIGENFUNCTIONAL_HODGE_PURITY`, this is the exact
-   one-way comparison required for RH.  The stronger version retains
-   every finite-order generalized Mellin jet, its domain filtration,
-   and block multiplicity.
+8. **Hodge--Schwartz resolvent faithfulness.**  The smooth arithmetic
+   Hodge core is dense in \(M_\zeta\) for its nuclear quotient topology
+   and is preserved by every off-axis resolvent of
+   \(\Theta-\tfrac12\).  Alternatively, it is enough that centered
+   time one \(V=\exp(\Theta_{\mathcal H}-\tfrac12)\) satisfy
+   \[
+     V-c:\mathcal D_{\mathrm{Hdg}}\to\mathcal D_{\mathrm{Hdg}}
+     \quad\text{surjectively whenever }|c|\ne1.
+   \]
+   Every nonzero Meyer strong-dual eigenfunctional restricts
+   nontrivially to this core.  By
+   `DAC_DENSE_RESOLVENT_TRANSPOSE_PURITY`, the corresponding
+   eigencharacter has unit modulus, forcing
+   \(\operatorname{Re}\rho=\tfrac12\).  This treats all generalized
+   Mellin jets.  Hodge-bounded Riesz representation and
+   `DAC_UNITARY_FLOW_RIESZ_EIGENFUNCTIONAL_PURITY` remain a stronger
+   sufficient alternative.
 
 ## Why this is the exact RH gate
 
@@ -188,7 +205,13 @@ then yields RH, including exclusion of off-line generalized blocks.
    inductive/projective system.  Identify its cutoff representatives
    with Meyer's almost-sections; do not require complemented range.
 4. Prove closability and positivity of the global Dirichlet form and
-   construct the exact projectors only on its Hilbert completion.
+   prove kernel vanishing for the self-adjoint global Calderón
+   almost-involution.  Its nuclear defect then supplies Fredholm
+   coercivity.  Apply
+   `DAC_POLAR_SIGN_LIFT_NUCLEAR_ALMOST_PROJECTOR` to construct exact
+   projectors only on the Hilbert completion.
+   Kernel vanishing is
+   `DAC_ARITHMETIC_CALDERON_GLOBAL_CHIRALITY_KERNEL`.
 5. Identify the global relative polarization with the Toeplitz pair
    `(4)`.
 6. Apply Meyer's nuclear heredity theorem to compute the quotient trace
@@ -209,6 +232,8 @@ then yields RH, including exclusion of off-line generalized blocks.
   nuclear source may not be assumed.
 - Finite-packet compatibility without a closed global relation and
   nuclear almost-section estimates does not define `(2)`.
+- Nuclear almost-idempotence without Hodge self-adjointness and
+  global middle-kernel vanishing does not produce exact projectors.
 - An upper/lower splitting chosen from a zero list is circular and does
   not satisfy clause 2.
 - Toeplitz trace alone does not prove `(5)`; hereditary passage to the
@@ -217,9 +242,9 @@ then yields RH, including exclusion of off-line generalized blocks.
 - Paugam's RH-conditional positivity cannot be cited for `(7)`.
 - Density of \(U\) without strong-dual jet faithfulness is
   insufficient.
-- Membership in the nuclear strong dual is also insufficient.  The
-  order-zero Meyer functionals must be Hodge-norm bounded with Riesz
-  representatives in the generator domain.
+- Hilbert-space resolvent existence alone is insufficient.  The
+  resolvent must preserve a core dense in the nuclear Meyer topology,
+  so every nonzero strong-dual functional restricts nontrivially.
 - The existing
   `DeningerArithmeticSourceGreen.lean` uses the zero-indexed
   `XiDivisorL2` carrier.  It is a frozen comparison realization and
@@ -235,6 +260,11 @@ then yields RH, including exclusion of off-line generalized blocks.
   arXiv:0803.0199.
 - `DAC_MEYER_TOEPLITZ_GREEN_TRANSGRESSION`.
 - `DAC_MEYER_POISSON_NUCLEAR_POLARIZATION_PAIR`.
+- `DAC_DENSE_RESOLVENT_TRANSPOSE_PURITY`.
+- `DAC_ARITHMETIC_HODGE_SCHWARTZ_RESOLVENT_CORE`.
+- `DAC_ARITHMETIC_CALDERON_GLOBAL_CHIRALITY_KERNEL`.
+- `DAC_POLAR_SIGN_LIFT_NUCLEAR_ALMOST_PROJECTOR`.
+- `DAC_UNITARY_FLOW_RIESZ_EIGENFUNCTIONAL_PURITY`.
 - `DAC_RIESZ_EIGENFUNCTIONAL_HODGE_PURITY`.
 - `DAC_ARITHMETIC_CALDERON_GREEN_INTERMEDIATE_EXTENSION`.
 - `DAC_KUMMER_RELATIVE_CALDERON_POISSON_DOMAIN`.
@@ -246,3 +276,10 @@ then yields RH, including exclusion of off-line generalized blocks.
   must give Meyer's nuclear relative trace and become Paugam's
   upper/lower splitting only after positive Hodge completion, with
   Green energy providing positivity before spectral evaluation.
+- 2026-07-27 — Replaced the stronger generator-domain spectral gate
+  by bounded nonzero order-zero evaluation plus centered time-one
+  unitarity.  Higher jets are no longer needed for RH itself.
+- 2026-07-27 — Improved the gate again to a dense nuclear
+  Hodge--Schwartz core preserved by off-axis resolvents.  This acts
+  directly on Meyer's strong-dual jets and removes pointwise
+  Hilbert-boundedness from the minimal hypothesis.

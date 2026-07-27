@@ -17,6 +17,7 @@ namespace GaloisForLFunctions.RHTower
 theorem deningerComplexLeaf_returnDet_eq_normSq (a : ℂ) :
     (1 - a.re) ^ 2 + a.im ^ 2 = Complex.normSq (1 - a) := by
   simp [Complex.normSq]
+  ring
 
 /-- A nondegenerate complex-linear return map has positive real determinant. -/
 theorem deningerComplexLeaf_returnDet_pos

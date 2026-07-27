@@ -23,6 +23,17 @@ namespace RHTower
 
 noncomputable section
 
+/-- The first three powers of a prime are strictly increasing. -/
+theorem prime_lt_sq_and_sq_lt_cube {p : ℕ} (hp : p.Prime) :
+    p < p ^ 2 ∧ p ^ 2 < p ^ 3 := by
+  refine ⟨?_, ?_⟩
+  · calc
+      p < p * p := lt_mul_of_one_lt_right hp.pos hp.one_lt
+      _ = p ^ 2 := by ring
+  · calc
+      p ^ 2 < p ^ 2 * p := lt_mul_of_one_lt_right (pow_pos hp.pos 2) hp.one_lt
+      _ = p ^ 3 := by ring
+
 theorem thetaPositiveFactorPairs_prime_sq {p : ℕ} (hp : p.Prime) :
     thetaPositiveFactorPairs (p ^ 2) =
       {(0, p ^ 2 - 1), (p - 1, p - 1), (p ^ 2 - 1, 0)} := by

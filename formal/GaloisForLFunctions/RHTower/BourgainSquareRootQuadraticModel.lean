@@ -25,6 +25,16 @@ def bourgainSquareRootCurvePhase
     (x : BourgainPhaseSpace) (t : ℝ) : ℝ :=
   bourgainDot x (bourgainSquareRootCurve t)
 
+/-- The square-root curve phase, written out in the four phase-space coordinates. -/
+theorem bourgainSquareRootCurvePhase_eq (x : BourgainPhaseSpace) :
+    bourgainSquareRootCurvePhase x =
+      fun t : ℝ =>
+        x 0 * t + x 1 * t ^ (2 : ℕ) +
+          x 2 * t ^ (3 / 2 : ℝ) + x 3 * t ^ (1 / 2 : ℝ) := by
+  funext t
+  simp [bourgainSquareRootCurvePhase, bourgainDot,
+    bourgainSquareRootCurve, Fin.sum_univ_four]
+
 /-- First-order phase coordinate at the base point `a²`. -/
 def bourgainSquareRootLinearPhaseCoordinate
     (a : ℝ) (x : BourgainPhaseSpace) : ℝ :=
@@ -184,15 +194,7 @@ theorem iteratedDeriv_bourgainSquareRootCurvePhase_one_sq
     {a : ℝ} (ha : 0 < a) (x : BourgainPhaseSpace) :
     iteratedDeriv 1 (bourgainSquareRootCurvePhase x) (a ^ 2) =
       bourgainSquareRootLinearPhaseCoordinate a x := by
-  have hfun :
-      bourgainSquareRootCurvePhase x =
-        fun t : ℝ =>
-          x 0 * t + x 1 * t ^ (2 : ℕ) +
-            x 2 * t ^ (3 / 2 : ℝ) + x 3 * t ^ (1 / 2 : ℝ) := by
-    funext t
-    simp [bourgainSquareRootCurvePhase, bourgainDot,
-      bourgainSquareRootCurve, Fin.sum_univ_four]
-  rw [hfun]
+  rw [bourgainSquareRootCurvePhase_eq]
   unfold bourgainSquareRootLinearPhaseCoordinate
   change iteratedDeriv 1
       (((fun t : ℝ => x 0 * t) +
@@ -244,15 +246,7 @@ theorem iteratedDeriv_bourgainSquareRootCurvePhase_two_sq
     {a : ℝ} (ha : 0 < a) (x : BourgainPhaseSpace) :
     iteratedDeriv 2 (bourgainSquareRootCurvePhase x) (a ^ 2) =
       2 * bourgainSquareRootQuadraticPhaseCoordinate a x := by
-  have hfun :
-      bourgainSquareRootCurvePhase x =
-        fun t : ℝ =>
-          x 0 * t + x 1 * t ^ (2 : ℕ) +
-            x 2 * t ^ (3 / 2 : ℝ) + x 3 * t ^ (1 / 2 : ℝ) := by
-    funext t
-    simp [bourgainSquareRootCurvePhase, bourgainDot,
-      bourgainSquareRootCurve, Fin.sum_univ_four]
-  rw [hfun]
+  rw [bourgainSquareRootCurvePhase_eq]
   unfold bourgainSquareRootQuadraticPhaseCoordinate
   change iteratedDeriv 2
       (((fun t : ℝ => x 0 * t) +
@@ -305,15 +299,7 @@ theorem iteratedDeriv_bourgainSquareRootCurvePhase_three
     iteratedDeriv 3 (bourgainSquareRootCurvePhase x) y =
       -(3 / 8 : ℝ) * x 2 * y ^ (-(3 / 2 : ℝ)) +
         (3 / 8 : ℝ) * x 3 * y ^ (-(5 / 2 : ℝ)) := by
-  have hfun :
-      bourgainSquareRootCurvePhase x =
-        fun t : ℝ =>
-          x 0 * t + x 1 * t ^ (2 : ℕ) +
-            x 2 * t ^ (3 / 2 : ℝ) + x 3 * t ^ (1 / 2 : ℝ) := by
-    funext t
-    simp [bourgainSquareRootCurvePhase, bourgainDot,
-      bourgainSquareRootCurve, Fin.sum_univ_four]
-  rw [hfun]
+  rw [bourgainSquareRootCurvePhase_eq]
   change iteratedDeriv 3
       (((fun t : ℝ => x 0 * t) +
         (fun t : ℝ => x 1 * t ^ (2 : ℕ))) +
@@ -391,15 +377,7 @@ theorem norm_iteratedDerivWithin_bourgainSquareRootCurvePhase_three_le
   rw [iteratedDerivWithin_eq_iteratedDeriv
     (uniqueDiffOn_Icc hinterval)
     (by
-      have hfun :
-          bourgainSquareRootCurvePhase x =
-            fun t : ℝ =>
-              x 0 * t + x 1 * t ^ (2 : ℕ) +
-                x 2 * t ^ (3 / 2 : ℝ) + x 3 * t ^ (1 / 2 : ℝ) := by
-        funext t
-        simp [bourgainSquareRootCurvePhase, bourgainDot,
-          bourgainSquareRootCurve, Fin.sum_univ_four]
-      rw [hfun]
+      rw [bourgainSquareRootCurvePhase_eq]
       have hpow3 : ContDiffAt ℝ 3
           (fun t : ℝ => t ^ (3 / 2 : ℝ)) y :=
         Real.contDiffAt_rpow_const_of_ne hypos.ne'
@@ -452,15 +430,7 @@ theorem norm_iteratedDerivWithin_bourgainSquareRootCurvePhase_three_le
 theorem contDiffAt_bourgainSquareRootCurvePhase
     {a : ℝ} (ha : 0 < a) (x : BourgainPhaseSpace) (n : ℕ) :
     ContDiffAt ℝ n (bourgainSquareRootCurvePhase x) (a ^ 2) := by
-  have hfun :
-      bourgainSquareRootCurvePhase x =
-        fun t : ℝ =>
-          x 0 * t + x 1 * t ^ (2 : ℕ) +
-            x 2 * t ^ (3 / 2 : ℝ) + x 3 * t ^ (1 / 2 : ℝ) := by
-    funext t
-    simp [bourgainSquareRootCurvePhase, bourgainDot,
-      bourgainSquareRootCurve, Fin.sum_univ_four]
-  rw [hfun]
+  rw [bourgainSquareRootCurvePhase_eq]
   have hpow3 : ContDiffAt ℝ n
       (fun t : ℝ => t ^ (3 / 2 : ℝ)) (a ^ 2) :=
     Real.contDiffAt_rpow_const_of_ne (pow_ne_zero 2 ha.ne')
@@ -540,15 +510,7 @@ theorem norm_bourgainSquareRootExactLocalSum_le_quadratic
         (Set.Icc (a ^ 2) (a ^ 2 + δ)) := by
     intro y hy
     have hypos : 0 < y := (sq_pos_of_pos ha).trans_le hy.1
-    have hfun :
-        bourgainSquareRootCurvePhase x =
-          fun t : ℝ =>
-            x 0 * t + x 1 * t ^ (2 : ℕ) +
-              x 2 * t ^ (3 / 2 : ℝ) + x 3 * t ^ (1 / 2 : ℝ) := by
-      funext t
-      simp [bourgainSquareRootCurvePhase, bourgainDot,
-        bourgainSquareRootCurve, Fin.sum_univ_four]
-    rw [hfun]
+    rw [bourgainSquareRootCurvePhase_eq]
     have hpow3 : ContDiffAt ℝ 3
         (fun t : ℝ => t ^ (3 / 2 : ℝ)) y :=
       Real.contDiffAt_rpow_const_of_ne hypos.ne'

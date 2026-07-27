@@ -63,12 +63,9 @@ theorem xiHedenmalmPointedMomentUpperHermitianDiagonalNonnegative_iff_source :
       ContinuedPrimeArchUpperCauchyDiagonalNonnegative := by
   constructor
   · intro h z hzpos hzhalf hzeta
-    have hspos : 0 < (1 / 2 + z * I).re := by simp [mul_re]; linarith
-    have hs1 : 1 / 2 + z * I ≠ 1 := by
-      intro heq
-      have hre := congrArg Complex.re heq
-      simp [mul_re] at hre
-      linarith
+    have hspos : 0 < (1 / 2 + z * I).re := centeredAbscissa_re_pos (by linarith)
+    have hs1 : 1 / 2 + z * I ≠ 1 :=
+      centeredAbscissa_ne_one (by linarith)
     have hzXi : XiC z ≠ 0 :=
       XiC_ne_zero_of_continuedPrimeArch_domain hspos hs1 hzeta
     have hnorm : 0 < normSq (XiC z) := normSq_pos.mpr hzXi

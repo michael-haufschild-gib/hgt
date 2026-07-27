@@ -140,11 +140,9 @@ theorem xiSquaredEulerOrbit_mem_chamber (q : XiZeroCopy) :
       (xiSquaredEulerOrbitT q) (xiSquaredEulerOrbitCharge q) := by
   let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ 2
   let v : ℝ := (q.1 : ℂ).im ^ 2
-  have hstrip := xi_divisor_support_re_mem_open_unit q.1
   have hu0 : 0 ≤ u := by dsimp only [u]; positivity
-  have hu : u < 1 / 4 := by
-    dsimp only [u]
-    nlinarith [mul_pos hstrip.1 (sub_pos.mpr hstrip.2)]
+  have hu : u < 1 / 4 :=
+    xi_divisor_support_centered_re_sq_lt_quarter q.1
   have hv : 41 / 2 < v := by
     simpa only [v] using xiZeroCopy_fortyOne_div_two_lt_im_sq q
   have hv0 : 0 < v := by linarith

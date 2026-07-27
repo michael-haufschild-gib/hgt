@@ -81,7 +81,8 @@ theorem deningerWeilArakelov_centered_pair02
     pair02 (deningerWeilArakelovCenteredVertical theta0 n x) z +
         pair02 x
           (deningerWeilArakelovCenteredVertical theta2 (1 - n) z) = 0 := by
-  simp only [deningerWeilArakelovCenteredVertical_apply, map_sub, map_smul, smul_eq_mul]
+  simp only [deningerWeilArakelovCenteredVertical_apply, map_sub, map_smul,
+    LinearMap.sub_apply, LinearMap.smul_apply, smul_eq_mul]
   linear_combination hTheta02 x z
 
 /--
@@ -96,7 +97,8 @@ theorem deningerWeilArakelov_centered_pair11
     pair11 (deningerWeilArakelovCenteredVertical theta1 n x) y +
         pair11 x
           (deningerWeilArakelovCenteredVertical theta1 (1 - n) y) = 0 := by
-  simp only [deningerWeilArakelovCenteredVertical_apply, map_sub, map_smul, smul_eq_mul]
+  simp only [deningerWeilArakelovCenteredVertical_apply, map_sub, map_smul,
+    LinearMap.sub_apply, LinearMap.smul_apply, smul_eq_mul]
   linear_combination hTheta11 x y
 
 /--
@@ -165,7 +167,7 @@ theorem deningerWeilArakelov_pair_D1_D1
           (deningerWeilArakelovD1 d0 d1
             (deningerWeilArakelovCenteredVertical theta1 (1 - n)) (y, b)) = 0 := by
   simp only [deningerWeilArakelovD1_apply, deningerWeilArakelovPair21,
-    deningerWeilArakelovPair12, map_sub, neg_sub]
+    deningerWeilArakelovPair12, map_sub, LinearMap.sub_apply, neg_sub]
   linear_combination
     deningerWeilArakelov_centered_pair11 theta1 pair11 hTheta11 n x y -
       hD a y -
@@ -196,9 +198,14 @@ theorem deningerWeilArakelov_pair_D2_D0
             (deningerWeilArakelovCenteredVertical theta0 (1 - n)) x) = 0 := by
   simp only [deningerWeilArakelovD2_apply, deningerWeilArakelovD0_apply,
     deningerWeilArakelovPair30, deningerWeilArakelovPair21, map_sub]
+  have hcomplement :
+      (1 - (1 - n) : R) = n := by ring
+  have hcentered :=
+    deningerWeilArakelov_centered_pair02
+      theta0 theta2 pair02 hTheta02 (1 - n) x z
+  rw [hcomplement] at hcentered
   linear_combination
-    deningerWeilArakelov_centered_pair02 theta0 theta2 pair02 hTheta02
-        (1 - n) x z +
+    hcentered +
       deningerThreeTermPoincare_d_right d0 d1 pair02 pair11 hSkew hD y x
 
 end WeilArakelovDuality

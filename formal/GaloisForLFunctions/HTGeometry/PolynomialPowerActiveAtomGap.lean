@@ -71,12 +71,8 @@ theorem exists_eventually_activeAtom_powerGap_or_window
   let s : Fin D → ℕ := fun i => q + δ i
   let N := (∑ i, s i) + anchor 0 - J
   have hqJ : J ≤ q := by omega
-  have hqsum : q ≤ ∑ i, s i := by
-    obtain ⟨i₀⟩ : Nonempty (Fin D) := Fin.pos_iff_nonempty.mp hD
-    calc
-      q ≤ s i₀ := by simp [s]
-      _ ≤ ∑ i, s i := Finset.single_le_sum (fun _ _ => Nat.zero_le _)
-        (Finset.mem_univ i₀)
+  have hqsum : q ≤ ∑ i, s i :=
+    le_sum_of_le_apply hD fun i => by simp [s]
   have hJsum : J ≤ (∑ i, s i) + anchor 0 :=
     hqJ.trans (hqsum.trans (Nat.le_add_right _ _))
   have hNadd : N + J = (∑ i, s i) + anchor 0 := by

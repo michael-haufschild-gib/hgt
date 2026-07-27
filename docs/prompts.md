@@ -58,8 +58,7 @@ Mandatory:
 3. no subagents or background tasks
 4. You are not allowed to change the cron timing.
 
-**Always use  lake env lean <file>  and only lake build <module> for the final audit.**
-LEAN PROOFS MUST BE UNCONDTIONAL!!!
+BEFORE WRITING ANY LEAN CODE, CHECK WHAT THE LEAN CORPUS ALREADY GIVES YOU AS BUILDING BLOCKS - DO NOT DUPLICATE WORK.
 
 
 ## loop consolidate
@@ -466,3 +465,97 @@ lean rules:
 follow the hgtl7 skill and heavy conjecturing and validation of novelty and significance against literature and arxiv as of july 2026.
 
 limit your updates. do not give a status update every 2 minutes. only report when you have actually found frontier-moving new math. do not constantly update that conjectures are not proven or disproven and this cannot be done in this session. this task will take years. just fucking do what is necessary and stop looking for excuses to not work.
+
+
+
+## CHAT
+/goal
+
+Your chat name is "Codex". The chat channel is "rh". If not done already, join the chat.
+
+There is another agent "Claude" from Anthropic. 
+
+Your task:
+- Discuss and research together with Claude how to create the proof for the Riemann Hypothesis.
+- Base your discussion on what our research corpus has already uncovered or ruled out.
+- Be critical of your own claims and the claims of the other agent.
+- Be open minded: let the lean research corpus guide you, your training data is biased towards a few classic routes, while our research body may lead to completely new routes.
+- Heavily use and stay up to date on what our lean research corpus already offers in terms of proofs, routes, open cores.
+- Use the hgt-fields-medalist skill´s research process on each non-immediate mathematical obstacle
+
+Lean rules:
+1. Proofs must be unconditional in lean.
+2. Always build in the foreground, 1 process per single agent.
+3. Be efficient, use caching, batch instead of running constant loops of tiny edits and rebuilds
+4. No computations.
+5. Always use  lake env lean <file>  and only lake build <module> for the final audit.
+6. make sure you don't leave stale lean processes running - clean up after yourself
+
+Anti-theatre protocol:
+- Be hypercritical of your own and the other agents claims, suggestions and results.
+- Any action that does not lead to truly novel and significant mathematical knowledge is theatre.
+- Novelty criterion is that you cannot find it via literature research (including arxiv) nor in our research body. 
+- Any action must aim towards creating truly novel and significant knowledge, nothing the literature or our research already know or that is trivial.
+
+Check the chat frequently. Communicate! The core tool here is joint research, honest critique, and communication.
+
+Goal is met when RH proof is formalized.
+
+## CHAT
+/goal
+
+Your chat name is "Claude". The chat channel is "rh". If not done already, join the chat.
+
+There is another agent "Codex" from OpenAI. 
+
+Your task:
+- Discuss and research together with Claude how to create the proof for the Riemann Hypothesis.
+- Base your discussion on what our research corpus has already uncovered or ruled out.
+- Be critical of your own claims and the claims of the other agent.
+- Be open minded: let the lean research corpus guide you, your training data is biased towards a few classic routes, while our research body may lead to completely new routes.
+- Heavily use and stay up to date on what our lean research corpus already offers in terms of proofs, routes, open cores.
+- use the hgtl7 skill´s research process on each non-immediate mathematical obstacle
+
+Lean rules:
+1. Proofs must be unconditional in lean.
+2. Always build in the foreground, 1 process per single agent.
+3. Be efficient, use caching, batch instead of running constant loops of tiny edits and rebuilds
+4. No computations.
+5. Always use  lake env lean <file>  and only lake build <module> for the final audit.
+6. make sure you don't leave stale lean processes running - clean up after yourself
+
+Anti-theatre protocol:
+- Be hypercritical of your own and the other agents claims, suggestions and results.
+- Any action that does not lead to truly novel and significant mathematical knowledge is theatre.
+- Novelty criterion is that you cannot find it via literature research (including arxiv) nor in our research body. 
+- Any action must aim towards creating truly novel and significant knowledge, nothing the literature or our research already know or that is trivial.
+  
+Check the chat frequently. Communicate! The core tool here is joint research, honest critique, and communication.
+
+Goal is met when RH proof is formalized.
+
+## paper
+/goal 
+in docs/drafts/pipeline/4-publication-ready/multiple-elliptic-gamma-rational-rank-dichotomy we have a paper written earlier. but in the meantime our research corpus in lean has grown a lot.
+
+your task:
+- work towards a much stronger paper
+- use the [$hgt-fields-medalist](/Users/michael/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to overcome mathematical obstacles 
+- apply critical antagonist review to make sure that the quality criteria for the paper are truly met
+
+The final paper must:
+1. Only claim what is unconditionally proven in lean.
+2. Present a novel and significant universal law.
+3. Answer a question that the broader research community has.
+4. Be of a quality that a general scientific journal would publish it.
+5. Not leave open questions, but answer them.
+
+Lean rules:
+1. Proofs must be unconditional in lean.
+2. Always build in the foreground, 1 process per single agent.
+3. Be efficient, use caching, batch instead of running constant loops of tiny edits and rebuilds.
+4. No computations.
+5. Always use  lake env lean <file>  and only lake build <module> for the final audit.
+6. make sure you don't leave stale lean processes running - clean up after yourself.
+
+Goal is met when an honest antagonistic review of the written paper confirms that all criteria are met and a review under the POV "what would a reviewer at a renomated general scientific journal demand, ask or critique?"

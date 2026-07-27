@@ -222,7 +222,7 @@ atoms enter.
   algebraically.
 - Analytic weight-one Calderón graph: proved Lagrangian.
 - Finite positive graph--conormal fibre: proved transverse and
-  acyclic.
+  acyclic, including formal complementary-sum theorem in Lean.
 - Finite positive Hodge--Koszul fibre: explicit cdga contraction
   proved.
 - Canonical shifted cotangent/conormal theorem: literature-proved in
@@ -251,3 +251,6 @@ atoms enter.
   location for cross-ray Green terms and formulated the PTVV
   shifted-cotangent/conormal enhancement, retaining the full relative
   Sullivan cell tower and explicit analytic/functorial falsifiers.
+- 2026-07-27 — Formalized finite graph/conormal direct-sum
+  transversality; no finite linear derived excess remains.  Open
+  content is analytic Lagrangian lifting and strict nuclear descent.

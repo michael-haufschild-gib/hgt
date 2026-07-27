@@ -162,9 +162,17 @@ clear the parent-theory novelty gate and is classified as a bridge.
 
 ## Lean decision
 
-The formal tree has no Liouville--Green remainder or nonstationary-phase interface. Formalizing
-this bridge would not close the surviving first-row or true-Weil comparison. No Lean file is
-added.
+**Correction, 2026-07-27.**  The Liouville--Green *coordinate* and the exact interaction-picture
+decomposition **are** formalized — `RHTower/RadialPSWFExteriorPhase.lean` and
+`RHTower/RadialPSWFInteractionPicture.lean`, the latter stating explicitly that the oscillatory
+decomposition is an exact consequence of the differential equation rather than a factored big-`O`.
+What is absent is the **remainder estimate** on the interaction potential and any
+nonstationary-phase interface.  Formalizing this bridge would still not close the surviving
+first-row or true-Weil comparison.  No Lean file is added by this card.
+
+The arithmetic-summation layer `(9)`--`(10)` of this card **is** now formalized, in
+`RHTower/RadialGramOffDiagonalDecay.lean` (exact partial-fraction row sum, the row bound
+`R K <= 3(1 + log K)/K`, and summability of `sum_K log K (1 + log K)/K^2`), axiom-clean.
 
 ## Gates
 

@@ -29,17 +29,9 @@ noncomputable section
 strictly positive seventeenth reciprocal power. -/
 theorem orderSeventeenReciprocalPower_re_pos_of_sectorRatio
     {A B : ℝ} (hA : 0 < A) (hsector : 118 * B ^ 2 < A ^ 2) :
-    0 < ((((A : ℂ) - B * I)⁻¹) ^ 17).re := by
-  refine GaloisForLFunctions.HTGeometry.re_inv_sub_mul_I_pow_pos
-    (t := 923 / 10000) hA ?_ ?_
-  · have hsq : (10000 * B) ^ 2 < (923 * A) ^ 2 := by nlinarith [sq_pos_of_pos hA]
-    have habsScaled : |10000 * B| < 923 * A :=
-      abs_lt_of_sq_lt_sq hsq (mul_nonneg (by norm_num) hA.le)
-    rw [abs_mul] at habsScaled
-    norm_num at habsScaled
-    nlinarith
-  · norm_num
-    nlinarith [Real.pi_gt_d20]
+    0 < ((((A : ℂ) - B * I)⁻¹) ^ 17).re :=
+  GaloisForLFunctions.HTGeometry.re_inv_sub_mul_I_pow_pos_of_sq_lt (t := 923 / 10000) hA
+    (by norm_num) (by norm_num) hsector (by norm_num; nlinarith [Real.pi_gt_d20])
 
 /-- Off the critical line, the protected central band satisfies the rational order-seventeen
 sector certificate at every absolute-Euler squared coordinate. -/
@@ -49,28 +41,9 @@ theorem xiOrderSeventeenSectorRatio_of_offLine_inner
     {y : ℝ} (hy : 1 / 4 < y) :
     118 * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ 2 <
       ((q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2 + y) ^ 2 := by
-  let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ 2
-  let v : ℝ := (q.1 : ℂ).im ^ 2
-  let A : ℝ := v - u + y
-  let B : ℝ := 2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im
-  have hu : u ≤ 9 / 50 := by simpa only [u] using hinner
-  have hv : 85 < v := by
-    simpa only [v] using xiZeroCopy_offLine_eightyFive_lt_im_sq q hoff
-  have hv0 : 0 < v := by linarith
-  have hA : v < A := by
-    dsimp only [A]
-    nlinarith
-  have hB : B ^ 2 = 4 * u * v := by
-    dsimp only [B, u, v]
-    ring
-  have hBbound : 118 * B ^ 2 ≤ (2124 / 25 : ℝ) * v := by
-    rw [hB]
-    nlinarith
-  have hheight : (2124 / 25 : ℝ) * v < v ^ 2 := by
-    nlinarith
-  have hAsq : v ^ 2 < A ^ 2 := by nlinarith
-  change 118 * B ^ 2 < A ^ 2
-  linarith
+  exact GaloisForLFunctions.HTGeometry.sector_ratio_of_corner (N := 118) (u₀ := 9 / 50)
+    (v₀ := 85) (y₀ := 1 / 4) (by norm_num) hy.le hinner
+    (xiZeroCopy_offLine_eightyFive_lt_im_sq q hoff).le (by norm_num) (by norm_num)
 
 /-- Every Xi zero above squared height `118` satisfies the rational order-seventeen sector
 certificate at every absolute-Euler squared coordinate. -/
@@ -79,29 +52,10 @@ theorem xiOrderSeventeenSectorRatio_of_oneHundredEighteen_le_im_sq
     {y : ℝ} (hy : 1 / 4 < y) :
     118 * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ 2 <
       ((q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2 + y) ^ 2 := by
-  let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ 2
-  let v : ℝ := (q.1 : ℂ).im ^ 2
-  let A : ℝ := v - u + y
-  let B : ℝ := 2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im
-  have hstrip := xi_divisor_support_re_mem_open_unit q.1
-  have hu : u < 1 / 4 := by
-    dsimp only [u]
-    nlinarith [mul_pos hstrip.1 (sub_pos.mpr hstrip.2)]
-  have hv : 118 ≤ v := by simpa only [v] using hhigh
-  have hv0 : 0 < v := by linarith
-  have hA : v < A := by
-    dsimp only [A]
-    nlinarith
-  have hB : B ^ 2 = 4 * u * v := by
-    dsimp only [B, u, v]
-    ring
-  have hBbound : 118 * B ^ 2 < 118 * v := by
-    rw [hB]
-    nlinarith
-  have hheight : 118 * v ≤ v ^ 2 := by nlinarith
-  have hAsq : v ^ 2 < A ^ 2 := by nlinarith
-  change 118 * B ^ 2 < A ^ 2
-  linarith
+  exact GaloisForLFunctions.HTGeometry.sector_ratio_of_corner_of_lt_width (N := 118)
+    (u₀ := 1 / 4) (v₀ := 118) (y₀ := 1 / 4) (by norm_num) hy.le
+    (xi_divisor_support_centered_re_sq_lt_quarter q.1) hhigh (by norm_num) (by norm_num)
+    (by norm_num)
 
 /-- Failure of the order-seventeen sector certificate at `y > 1/4` forces an off-critical Xi
 zero into `9/50 < delta^2 < 1/4`, `85 < gamma^2 < 118`. -/
@@ -114,23 +68,10 @@ theorem xiOrderSeventeenSectorFailure_mem_edgeCorner
     (9 / 50 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ 2 ∧
       ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4 ∧
       85 < (q.1 : ℂ).im ^ 2 ∧
-      (q.1 : ℂ).im ^ 2 < 118 := by
-  have hedge : (9 / 50 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ 2 := by
-    by_contra h
-    have hsector := xiOrderSeventeenSectorRatio_of_offLine_inner q hoff
-      (le_of_not_gt h) hy
-    linarith
-  have hstrip := xi_divisor_support_re_mem_open_unit q.1
-  have hu : ((q.1 : ℂ).re - 1 / 2) ^ 2 < (1 / 4 : ℝ) := by
-    nlinarith [mul_pos hstrip.1 (sub_pos.mpr hstrip.2)]
-  have hvlow : 85 < (q.1 : ℂ).im ^ 2 :=
-    xiZeroCopy_offLine_eightyFive_lt_im_sq q hoff
-  have hvhigh : (q.1 : ℂ).im ^ 2 < 118 := by
-    by_contra h
-    have hsector := xiOrderSeventeenSectorRatio_of_oneHundredEighteen_le_im_sq q
-      (le_of_not_gt h) hy
-    linarith
-  exact ⟨hedge, hu, hvlow, hvhigh⟩
+      (q.1 : ℂ).im ^ 2 < 118 :=
+  xiZeroCopy_sectorFailure_mem_edgeCorner q hoff
+    (fun h => xiOrderSeventeenSectorRatio_of_offLine_inner q hoff h hy)
+    (fun h => xiOrderSeventeenSectorRatio_of_oneHundredEighteen_le_im_sq q h hy) hfail
 
 /-- A nonpositive seventeenth reciprocal-power atom at `y > 1/4` must lie in the compact edge
 corner. -/
@@ -144,27 +85,10 @@ theorem xiOrderSeventeenReciprocalPower_nonpos_mem_edgeCorner
     (9 / 50 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ 2 ∧
       ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4 ∧
       85 < (q.1 : ℂ).im ^ 2 ∧
-      (q.1 : ℂ).im ^ 2 < 118 := by
-  let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ 2
-  let v : ℝ := (q.1 : ℂ).im ^ 2
-  let A : ℝ := v - u + y
-  let B : ℝ := 2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im
-  have hstrip := xi_divisor_support_re_mem_open_unit q.1
-  have hu : u < 1 / 4 := by
-    dsimp only [u]
-    nlinarith [mul_pos hstrip.1 (sub_pos.mpr hstrip.2)]
-  have hv0 : 0 ≤ v := by dsimp only [v]; positivity
-  have hA : 0 < A := by
-    dsimp only [A]
-    nlinarith
-  have hfail : A ^ 2 ≤ 118 * B ^ 2 := by
-    by_contra h
-    have hsector : 118 * B ^ 2 < A ^ 2 := lt_of_not_ge h
-    have hpos := orderSeventeenReciprocalPower_re_pos_of_sectorRatio hA hsector
-    change ((((A : ℂ) - B * I)⁻¹) ^ 17).re ≤ 0 at hnonpos
-    linarith
-  apply xiOrderSeventeenSectorFailure_mem_edgeCorner q hoff hy
-  simpa only [A, B, u, v] using hfail
+      (q.1 : ℂ).im ^ 2 < 118 :=
+  xiZeroCopy_reciprocalPower_nonpos_of_sector q hy
+    (fun _ _ hA h => orderSeventeenReciprocalPower_re_pos_of_sectorRatio hA h)
+    (xiOrderSeventeenSectorFailure_mem_edgeCorner q hoff hy) hnonpos
 
 end
 

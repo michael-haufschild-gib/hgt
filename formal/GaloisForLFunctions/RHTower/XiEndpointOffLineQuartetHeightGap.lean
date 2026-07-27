@@ -208,6 +208,24 @@ theorem xiZeroCopy_offLine_eightyFive_lt_im_sq (q : XiZeroCopy)
   have hC := xiEndpointCompletedCurvature_lt_two_over_fortyThree
   nlinarith
 
+/-- **A sector failure is confined to an edge corner.**  A sector certificate `P < A` that holds
+both on the inner width region `(Re - 1/2)^2 ≤ c` and above the height `K` leaves only the
+complementary window: a point where the certificate fails has width square strictly between `c`
+and `1/4`, and ordinate square strictly between `85` and `K`.  The certificate itself is abstract
+here, so the same law serves every order and every choice of the auxiliary coordinate. -/
+theorem xiZeroCopy_sectorFailure_mem_edgeCorner {P A c K : ℝ} (q : XiZeroCopy)
+    (hoff : (q.1 : ℂ).re ≠ 1 / 2)
+    (hinner : ((q.1 : ℂ).re - 1 / 2) ^ 2 ≤ c → P < A)
+    (hhigh : K ≤ (q.1 : ℂ).im ^ 2 → P < A) (hfail : A ≤ P) :
+    c < ((q.1 : ℂ).re - 1 / 2) ^ 2 ∧ ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4 ∧
+      85 < (q.1 : ℂ).im ^ 2 ∧ (q.1 : ℂ).im ^ 2 < K := by
+  refine ⟨?_, xi_divisor_support_centered_re_sq_lt_quarter q.1,
+    xiZeroCopy_offLine_eightyFive_lt_im_sq q hoff, ?_⟩
+  · by_contra h
+    exact absurd (hinner (not_lt.mp h)) (not_lt.mpr hfail)
+  · by_contra h
+    exact absurd (hhigh (not_lt.mp h)) (not_lt.mpr hfail)
+
 end
 
 end RHTower

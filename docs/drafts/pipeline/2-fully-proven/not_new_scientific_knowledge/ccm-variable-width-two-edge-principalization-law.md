@@ -156,7 +156,15 @@ equivalences `(VW5)`.
 - [x] support preservation proved
 - [x] both linear equivalences constructed
 - [x] variable-width vacuity isolated positively as the tightness obligation
-- [ ] narrow Lean verification
+- [x] narrow Lean verification — `VERIFIED 2026-07-27`.
+      `lake build GaloisForLFunctions.RHTower.CCMTwoEdgeVariableWidthPrincipalization`
+      completes successfully (1976 jobs), the module is registered in the
+      `GaloisForLFunctions.RHTower` umbrella, and a targeted axiom audit of all six headline
+      declarations — `evenTwoEdgePacket_apertureBoundaryReadout`,
+      `oddTwoEdgePacket_apertureBoundaryReadout`, `apertureBoundaryReadout_evenTwoEdgePacket`,
+      `apertureBoundaryReadout_oddTwoEdgePacket`, `evenApertureBoundaryLinearEquiv`,
+      `oddApertureBoundaryLinearEquiv` — reports only
+      `[propext, Classical.choice, Quot.sound]`.  Project `formal_tools.py lint` passes.
 - [ ] connect the tightness obligation to the frontier conjecture's profile-exhaustion statement
 
 ## Log

@@ -84,4 +84,15 @@ theorem integral_vertical_line_eq_of_horizontal_tendsto {G : ℂ → ℂ} {c d :
   have := mul_left_cancel₀ Complex.I_ne_zero hI
   linear_combination this
 
+
+/-- A uniform bound on a horizontal segment that tends to zero forces the segment integral to
+tend to zero. -/
+theorem tendsto_intervalIntegral_of_tendsto_bound {G : ℂ → ℂ} {c d : ℝ} {M hgt : ℝ → ℝ}
+    (hb : ∀ᶠ T : ℝ in atTop, ∀ u ∈ uIoc c d, ‖G ((u : ℂ) + ((hgt T : ℝ) : ℂ) * I)‖ ≤ M T)
+    (hM : Tendsto M atTop (𝓝 0)) :
+    Tendsto (fun T : ℝ => ∫ u in c..d, G ((u : ℂ) + ((hgt T : ℝ) : ℂ) * I)) atTop (𝓝 0) := by
+  refine squeeze_zero_norm' ?_ (by simpa using hM.mul_const |d - c|)
+  filter_upwards [hb] with T hT
+  exact intervalIntegral.norm_integral_le_of_norm_le_const hT
+
 end GaloisForLFunctions.HTGeometry

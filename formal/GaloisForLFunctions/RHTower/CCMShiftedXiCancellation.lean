@@ -55,6 +55,21 @@ theorem differentiable_regularizedRiemannZeta :
 def xiRightShiftedPole (q : XiRightZeroCopy) : ℂ :=
   1 + xiRightCenteredZero q
 
+/-- **A uniform shifted-pole bound bounds the transverse supremum.**  The shift is by one, so
+`Re (pole) ≤ σ` reads `Re (centered zero) ≤ σ - 1` at every copy, and the supremum of the centered
+real parts inherits the bound. -/
+theorem xiRightTransverseSup_le_of_shiftedPole_re_le {σ : ℝ}
+    (hne : Nonempty XiRightZeroCopy)
+    (hpole : ∀ q : XiRightZeroCopy, (xiRightShiftedPole q).re ≤ σ) :
+    xiRightTransverseSup ≤ σ - 1 := by
+  haveI := hne
+  apply csSup_le (Set.range_nonempty _)
+  intro x hx
+  obtain ⟨q, rfl⟩ := hx
+  have hq := hpole q
+  rw [xiRightShiftedPole, Complex.add_re, Complex.one_re] at hq
+  linarith
+
 theorem xiRightCenteredZero_eq_support_sub_half (q : XiRightZeroCopy) :
     xiRightCenteredZero q = (q.1.1 : ℂ) - 1 / 2 := by
   exact I_mul_xiSpectralPoint q.1

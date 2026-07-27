@@ -294,12 +294,21 @@ has generic and closed-point columns.
 - **Open:** `DAC_ARITHMETIC_CALDERON_GREEN_INTERMEDIATE_EXTENSION`:
   glue the proved local domains through every Tate--Milnor relative
   cell into a closed global Lagrangian Cauchy relation, identify its
-  Green supertrace with Paugam's cup form, and prove generalized-jet
-  faithfulness.  For RH this now means the exact condition
-  `DAC_RIESZ_EIGENFUNCTIONAL_HODGE_PURITY`: every order-zero Meyer
-  functional must be Hodge-bounded with a Riesz representative in the
-  generator domain.  Higher jets are the stronger block-multiplicity
-  target.  Its exact RH-bearing polarization statement is
+  Green supertrace with Paugam's cup form, and prove strong-dual
+  spectral faithfulness.  Positive completion is now reduced to the
+  exact radical conjecture `DAC_GLOBAL_GREEN_ENERGY_RADICAL`: summed
+  local Green energy vanishes exactly on closed middle boundaries.
+  Nonuniform summable passage, constrained Euler--Lagrange
+  graph/conormal reduction, finite complementary transversality, and
+  local full-Cauchy uniqueness are proved; strict
+  Rost--Schmid/Arakelov classification remains.  The minimal RH
+  condition is now
+  `DAC_ARITHMETIC_HODGE_SCHWARTZ_RESOLVENT_CORE`: construct a
+  source-dense smooth Hodge core preserved by every off-axis centered
+  resolvent.  `DAC_DENSE_RESOLVENT_TRANSPOSE_PURITY` then constrains
+  Meyer's order-zero and generalized-jet functionals without requiring
+  them to be Hilbert-bounded.  The earlier Riesz condition remains a
+  stronger sufficient criterion.  The exact RH-bearing polarization statement is
   `DAC_ARITHMETIC_CALDERON_PAUGAM_HARDY_COMPARISON`: source Calderón
   relations must reproduce Meyer's nuclear relative trace and become
   Paugam's upper/lower splitting only after positive Hodge completion.
@@ -444,9 +453,11 @@ Deninger--Singhof prove for a dense-leaf Kähler--Riemann foliation with
   and `DAC_ARITHMETIC_CALDERON_PAUGAM_HARDY_COMPARISON`: glue strict
   finite Hardy projectors into Meyer's nuclear almost-polarization,
   construct exact projectors after Hodge completion, identify the
-  hereditary relative trace with Paugam's cup form, prove
-  order-zero Riesz spectral faithfulness (then higher-jet
-  faithfulness), and obtain the positive Hodge form on \(M_\zeta\).
+  hereditary relative trace with Paugam's cup form, construct
+  `DAC_ARITHMETIC_HODGE_SCHWARTZ_RESOLVENT_CORE`, and obtain the
+  positive Hodge form on \(M_\zeta\).  Dense off-axis source-resolvent
+  stability sees all Meyer generalized jets directly in the strong
+  dual; pointwise Riesz representability is optional.
   **Open trace gate:** construction of the archimedean compactification
   and global Rees jet coefficient.  Paugam's displayed positive Hermitian sum
   is only a semisimple critical-line statement; it does not prove
@@ -522,27 +533,31 @@ three-term theorem gives
 \]
 
 - **Lean source:** `DeningerArithmeticThreeTermHodgePurity.lean`.
-- **Status:** arithmetic-cohomology source and endpoints constructed.
-  Poisson middle comparison, geometric Hodge polarization,
-  generalized-jet faithfulness, and source Lefschetz/determinant
-  transport remain open.  RH is not proved.
+- **Status:** source coefficient and endpoint candidates have paper-level
+  constructions.  Lean currently contains generic three-term/Arakelov
+  schemas and Xi-defined analytic comparison models, but no instantiation
+  of the generic schema by the actual arithmetic source Poisson map.
+  Global nuclear Green/Hodge projection, Hodge--Schwartz
+  resolvent-core faithfulness, and source Lefschetz/determinant transport
+  remain open.  RH is not proved.
 
 ## Exact active critical path
 
-1. **Completed:** construct
+1. **Paper-completed; Lean source instantiation open:** construct
    `DAC_DERIVED_STRATUM_KUMMER_ARITHMETIC_COEFFICIENT` from the
    pro-Stein \(R\alpha_*\mathcal G\), finite generalized-log residues,
    archimedean homology current, strict all-prime pushforward, and
    completed Arakelov trace kernel.  This gives intrinsic
    \(H^0=\mathbb R\), \(H^1\), and \(H^2=\mathbb R(-1)\).
-2. **Completed:** sheafify the Hilbert--Kummer fine source and radial
+2. **Paper-completed; Lean source instantiation open:** sheafify the Hilbert--Kummer fine source and radial
    Schwartz cosheaf; prove strict compatibility among nuclear, mixed
    \(L^1/L^2\), residue-graph, and endpoint topologies in
    `DAC_MEYER_NUCLEAR_RADIAL_STRICTNESS`.
-3. **Completed:** prove strict nuclear angular cosheaf contraction,
+3. **Paper-completed; Lean source instantiation open:** prove strict nuclear angular cosheaf contraction,
    including retained unitary phase and radius-zero boundary, in
    `DAC_HILBERT_KUMMER_STRICT_ANGULAR_COSHEAF_CONTRACTION`.
-4. **Completed at complex/flow/topology level:** apply
+4. **Paper-completed at complex/flow/topology level; Lean comparison
+   instance open:** apply
    `DAC_DENINGER_POISSON_RELEVANT_COMPLEX_AMALGAMATION` to identify
    intrinsic reduced \(H^1\) with Meyer's nuclear Fréchet quotient
    \(M_\zeta\), already known to be nonzero, infinite-dimensional, and
@@ -565,11 +580,13 @@ three-term theorem gives
    Lagrangian Cauchy relation, use Meyer's proved Toeplitz
    transgression and nuclear polarization pair for its
    \(Z\)/Fourier cross terms, identify its completed Hardy relative
-   trace with Paugam's cup form, and prove faithful positive
-   flow-natural Hodge polarization.  For RH, prove Hodge-norm
-   boundedness and generator-domain Riesz representation of every
-   order-zero Meyer functional; retain all higher jets for the full
-   generalized-block theory.
+   trace with Paugam's cup form, construct a nuclear-continuous source
+   Green operator and harmonic projector, and prove faithful positive
+   flow-natural Hodge polarization.  For RH, construct a nuclear-dense
+   arithmetic Hodge--Schwartz core and prove that every off-axis
+   centered resolvent preserves it.  By
+   `DAC_DENSE_RESOLVENT_TRANSPOSE_PURITY`, this handles all order-zero
+   and higher Meyer jets without Hilbert-boundedness assumptions.
    Build the archimedean conormal/dual-conormal trace domain from the
    real Rees jet tower; do not place finite-prime residue packets in
    its preserved support.
@@ -603,6 +620,15 @@ open-quotient restriction core now has a direct Lean module; its
 Deninger-specific character-space identification remains sourced by
 Deninger's paper.  Only the final umbrella audit may use
 `lake build <module>`.
+
+The new strong-dual bridge is formalized in
+`DeningerArithmeticDenseResolventPurity.lean`: surjectivity of an
+operator difference annihilates its transpose eigenfunctional,
+off-axis source-resolvent stability forces weight-one real part, and a
+`DeningerHodgeSchwartzResolventXiSpectrum` package derives RH.  Its
+required direct `lake env lean` check passes.  This does not assume
+the open arithmetic core-density/resolvent theorem; it isolates that
+theorem as a structure field.
 
 ## Log
 

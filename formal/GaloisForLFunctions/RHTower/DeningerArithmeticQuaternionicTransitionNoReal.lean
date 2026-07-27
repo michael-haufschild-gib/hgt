@@ -30,7 +30,11 @@ def deningerQuaternionTransitionK (v : ℂ × ℂ) : ℂ × ℂ :=
 theorem deningerQuaternionTransitionI_sq (v : ℂ × ℂ) :
     deningerQuaternionTransitionI (deningerQuaternionTransitionI v) = -v := by
   rcases v with ⟨z, w⟩
-  ext <;> simp [deningerQuaternionTransitionI] <;> ring
+  apply Prod.ext
+  · change Complex.I * (Complex.I * z) = -z
+    rw [← mul_assoc, Complex.I_mul_I, neg_one_mul]
+  · change -Complex.I * (-Complex.I * w) = -w
+    rw [← mul_assoc, neg_mul_neg, Complex.I_mul_I, neg_one_mul]
 
 /-- The second quaternion transition squares to minus the identity. -/
 @[simp]
@@ -44,7 +48,7 @@ theorem deningerQuaternionTransitionI_anticommutes_K (v : ℂ × ℂ) :
     deningerQuaternionTransitionI (deningerQuaternionTransitionK v) =
       -deningerQuaternionTransitionK (deningerQuaternionTransitionI v) := by
   rcases v with ⟨z, w⟩
-  ext <;> simp [deningerQuaternionTransitionI, deningerQuaternionTransitionK] <;> ring
+  ext <;> simp [deningerQuaternionTransitionI, deningerQuaternionTransitionK]
 
 /-- Quaternion holonomy preserves the odd rectangular Hodge operator. -/
 theorem deningerQuaternionTransitionI_commutes_hodge (v : ℂ × ℂ) :
@@ -53,8 +57,7 @@ theorem deningerQuaternionTransitionI_commutes_hodge (v : ℂ × ℂ) :
   rcases v with ⟨z, w⟩
   ext <;>
     simp [deningerQuaternionTransitionI, deningerRectangularQuaternionicHodge,
-      deningerRectangularComplexJ, deningerRectangularConjugation, map_mul] <;>
-    ring
+      deningerRectangularComplexJ, deningerRectangularConjugation, map_mul]
 
 /-- Quaternion holonomy preserves the odd rectangular Hodge operator. -/
 theorem deningerQuaternionTransitionK_commutes_hodge (v : ℂ × ℂ) :
@@ -106,7 +109,8 @@ theorem deningerQuaternionTransition_no_real_reduction
   have haeq : -Complex.I * a = Complex.I * a := by
     simpa [a, deningerQuaternionTransitionI] using congrArg Prod.fst hIe
   have hIa : Complex.I * a = 0 := by
-    exact neg_eq_self.mp haeq
+    apply neg_eq_self.mp
+    simpa only [neg_mul] using haeq
   have ha : a = 0 := (mul_eq_zero.mp hIa).resolve_left Complex.I_ne_zero
   have hCe₁ : C e₁ = (0, b) := by
     apply Prod.ext
@@ -125,8 +129,8 @@ theorem deningerQuaternionTransition_no_real_reduction
   have hbad : -((starRingEnd ℂ) b * b) = 1 := by
     simpa [e₁] using congrArg Prod.fst hsqe
   rw [← Complex.normSq_eq_conj_mul_self] at hbad
-  have hbadRe := congrArg Complex.re hbad
-  simp only [map_neg, Complex.ofReal_re, Complex.one_re] at hbadRe
+  have hbadRe : -Complex.normSq b = (1 : ℝ) := by
+    simpa using congrArg Complex.re hbad
   nlinarith [Complex.normSq_nonneg b]
 
 end

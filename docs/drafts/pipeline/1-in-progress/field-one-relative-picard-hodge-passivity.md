@@ -429,8 +429,9 @@ excluded as an equivalence, so Clause 1 must be a loss-aware zigzag.
   `FieldOneFiniteStageClassTopology.lean` proves the orbit projection is an
   open quotient map and every idele class acts by a homeomorphism.
 - **Axiom audit:** only `propext`, `Classical.choice`, and `Quot.sound`.
-- **Boundary:** no measure, `L²`, crossed product, restriction map, sheaf,
-  trace, positivity, or RH theorem is inferred.
+- **Boundary:** C13 now adds the descended norm module, but no identification
+  with Haar scaling, quotient measure, `L²`, crossed product, restriction
+  map, sheaf, trace, positivity, or RH theorem is inferred.
 
 ### C12. Quotient topology automatically determines the trace measure
 
@@ -444,11 +445,96 @@ excluded as an equivalence, so Clause 1 must be a loss-aware zigzag.
   product formula
   \(|u|_\infty\prod_{v\in S_f}|u|_v=1\).
 - **Strongest positive survivor:** continuous idele-class homeomorphisms are
-  complete. Next analytic theorem is exactly the invariant product measure
-  plus measurable quotient construction.
-- **New gate:** prove local Haar scaling, product-formula invariance on the
-  generated \(S\)-unit subgroup, then construct quotient measure by an
-  audited fundamental-domain or disintegration theorem.
+  complete, and C13 proves the product norm character is one on the generated
+  diagonal \(S\)-unit subgroup. Next analytic theorem is exactly its
+  identification with product-Haar scaling plus measurable quotient
+  construction.
+- **New gate:** identify local distributive Haar characters with the
+  normalized real and adic norms, derive product-measure invariance, then
+  construct quotient measure by an audited fundamental-domain or
+  disintegration theorem.
+
+### C13. Finite-stage norm module and rational \(S\)-unit product formula
+
+- **Status:** `[FORMALIZED]`
+- **Attack:** define
+  \(\delta_S(u)=|u_\infty|\prod_{v\in S_f}|u_v|\) and prove it vanishes
+  multiplicatively on the quotient subgroup, i.e. equals one on every
+  generated rational \(S\)-unit.
+- **Proof:** `FieldOneFiniteStageModule.lean` proves own-prime local norm
+  \(p^{-1}\), different-prime local norm \(1\), sign and selected-prime
+  generator module one, kernel containment for the generated subgroup and
+  its diagonal image, and descent
+  \[
+    \delta_S:C_{\mathbb Q,S}\longrightarrow\mathbb R_{\geq0}.
+  \]
+- **Axiom audit:** only `propext`, `Classical.choice`, and `Quot.sound`.
+- **Boundary:** this is the product-formula/module stage. It does not identify
+  \(\delta_S\) with `MeasureTheory.distribHaarChar`, install an invariant
+  measure, construct a measurable quotient, or infer `L²`, trace, positivity,
+  or RH.
+- **New gate:** mathlib has the abstract distributive Haar character but no
+  audited theorem in this toolchain equating its adic factors with the
+  normalized adic norm. Prove that local theorem and its finite-product
+  assembly before quotient measure descent.
+
+### C14. Finite-stage module equals additive Haar scaling
+
+- **Status:** `[FORMALIZED]`
+- **Attack:** calculate the distributive Haar character at every local
+  rational completion and assemble it over the finite product.
+- **Proof:** `FieldOnePadicHaarScaling.lean` proves the residue-kernel index
+  \(p\) and the own-prime factor \(p^{-1}\).
+  `FieldOneLocalHaarModule.lean` proves the full arbitrary-unit identity
+  \(\operatorname{distribHaarChar}_{\mathbb Q_v}(u)=|u|_v\).
+  `FieldOneHaarCharacterProducts.lean` proves binary and finite dependent
+  product factorization.
+  `FieldOneFiniteStageHaarScaling.lean` proves
+  \[
+    \operatorname{distribHaarChar}_{\mathbb A_S}(u)=\delta_S(u),
+  \]
+  identifies the descended character on \(C_{\mathbb Q,S}\), proves exact
+  all-idele scaling for every additive Haar measure, and proves invariance
+  under every diagonal rational \(S\)-unit.
+- **Axiom audit:** only `propext`, `Classical.choice`, and `Quot.sound`.
+- **New insight:** product formula and Haar invariance are no longer separate
+  assumptions. Remaining quotient-measure gap is disintegration, not local
+  normalization.
+
+### C15. Idele-class Haar \(L^2\) is definitionally the trace fiber
+
+- **Status:** `[FALSIFIED AS AN IDENTIFICATION]`
+- **Killing mechanism:** \(C_{\mathbb Q,S}\) is the invertible orbit in the
+  additive orbit quotient \(X_S\). Primary-source \(w_S\) uses both the
+  additive-product conull statement and a Radon--Nikodym derivative between
+  additive and multiplicative Haar. Haar \(L^2(C_{\mathbb Q,S})\) alone does
+  not construct \(L^2(X_S)\).
+- **Strongest positive survivor:**
+  `FieldOneFiniteStageIdeleClassHaarL2.lean` equips the locally compact,
+  second-countable idele-class group with Borel left Haar measure and
+  constructs its unitary left-regular representation
+  \((\lambda(c)f)(x)=f(c^{-1}x)\).
+- **New gate:** formalize the orbit-of-one embedding
+  \(C_{\mathbb Q,S}\hookrightarrow X_S\), conull complement for the genuine
+  quotient measure, the Radon--Nikodym multiplier, and equivariance of
+  \(w_S\).
+
+### C16. Extended module and orbit-of-one idele locus
+
+- **Status:** `[FORMALIZED ALGEBRAICALLY AND TOPOLOGICALLY]`
+- **Proof:** `FieldOneFiniteStageClassModule.lean` extends the product norm
+  to every additive adele, descends it continuously to \(X_S\), constructs
+  the orbit-of-one map \(C_{\mathbb Q,S}\to X_S\), proves that map continuous
+  and injective, identifies the two modules on its image, and proves
+  equivariance under idele-class scaling.
+  `FieldOneFiniteStageIdeleLocusMeasure.lean` identifies the coordinatewise
+  invertible locus with idele values, proves it open and conull for explicit
+  product additive Haar on \(\mathbb A_S\), and proves its idele-class image
+  open in \(X_S\).
+- **Axiom audit:** only `propext`, `Classical.choice`, and `Quot.sound`.
+- **Boundary:** genuine quotient measure, transport of prequotient nullness
+  through a fundamental domain/disintegration, Radon--Nikodym multiplier,
+  and \(w_S\) remain open.
 
 ## Ranked open cores
 
@@ -472,9 +558,17 @@ Ranking is by logical dependency, not preferred method or effort.
    Lean-identified with the full rational adele ring, not a finite-\(S\)
    quotient. Finite-\(S\) orbit quotient, semilocal idele class group,
    factored multiplicative scaling, open quotient topology, and scaling
-   homeomorphisms are now Lean-proved. Finite-\(S\) invariant quotient
-   measure, its `L²` representation, sheaf-restriction compatibility, and
-   compactified extension remain open.
+   homeomorphisms are now Lean-proved. Its product norm module, triviality on
+   diagonal rational \(S\)-units, and descent to semilocal idele classes are
+   also Lean-proved. Identification with product-Haar scaling, exact
+   all-idele measure scaling, diagonal \(S\)-unit invariance, idele-class Haar
+   `L²`, its unitary left-regular representation, the continuous module on
+   \(X_S\), and the continuous injective orbit-of-one map \(C_S\to X_S\) are
+   Lean-proved. Its image is Lean-proved open, and the prequotient idele
+   locus is Lean-proved open and conull for product additive Haar.
+   Additive-orbit quotient measure, Radon--Nikodym comparison
+   `L²(X_S) ≃ L²(C_S)`, sheaf-restriction compatibility, and compactified
+   extension remain open.
 2. `[OPEN CORE RP1 — COEFFICIENT TYPE]` Construct
    \(\mathscr A_{\mathrm{ar}}\) and the \(C_{\mathbb Q}\)-equivariant
    pull--push object \(\mathscr B\).  This is not itself RH-equivalent.
@@ -574,3 +668,9 @@ proof exists.
   scaling, open quotient topology, and scaling homeomorphisms. C12 killed
   automatic measure descent; local Haar modulus/product-formula invariance
   and a genuine measurable quotient are next.
+- 2026-07-27 — C13 formalized the finite-stage norm module and rational
+  \(S\)-unit product formula: own-prime norm \(p^{-1}\), other-prime norm
+  \(1\), full kernel containment, and descent to semilocal idele classes.
+  Measure gate is now exact identification of this norm module with
+  product-Haar `distribHaarChar`, followed by fundamental-domain or
+  disintegration quotient construction.

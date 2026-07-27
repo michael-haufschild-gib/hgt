@@ -282,8 +282,8 @@ gate; it does not by itself identify the spectrum with zeta zeros.
   Kummer modes form the positive relative Calderón boundary defect.
   Their global Tate--Milnor incidence closure over the complete-cusp
   pro-system, post-nuclear-cohomology harmonic realization, Green
-  supertrace/cup isometry, and order-zero Riesz spectral faithfulness
-  (then higher-jet faithfulness) remain open under
+  supertrace/cup isometry, and nuclear-dense Hodge--Schwartz
+  resolvent core remain open under
   `DAC_ARITHMETIC_CALDERON_GREEN_INTERMEDIATE_EXTENSION`.  Compact
   Benameur--Heitsch regularity does not automatically supply this
   global arithmetic gluing, and

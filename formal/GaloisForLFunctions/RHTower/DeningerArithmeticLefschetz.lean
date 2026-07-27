@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.DeningerArithmeticSpectralLine
 
 /-!
-# Deninger's arithmetic Lefschetz formula for arbitrary positive-time tests
+# Xi explicit-formula Lefschetz comparison for arbitrary positive-time tests
 
 This module combines three independently proved Euler-line identities:
 
@@ -9,8 +9,10 @@ This module combines three independently proved Euler-line identities:
 * the von-Mangoldt prime-power line;
 * the archimedean and endpoint line.
 
-The result is Deninger's Proposition 3.2 as an equality of distributions on `(0,∞)`.
+The result is the analytic equality predicted by Deninger's Proposition 3.2 on `(0,∞)`.
 No RH, zero simplicity, special test family, or cohomological positivity assumption is used.
+Its middle trace distribution is defined from `XiZeroCopy`, so it is not yet the Lefschetz trace
+of an independently constructed arithmetic flow.  Source-to-trace transport remains open.
 -/
 
 open Complex MeasureTheory
@@ -97,8 +99,9 @@ theorem deningerArithmeticScalarExplicitFormula_proved :
   linear_combination hspectral
 
 /--
-Unconditional distributional Lefschetz law predicted in Deninger's arithmetic-cohomology
-program, on the full space of smooth compactly supported positive-time tests.
+Unconditional Xi explicit-formula distributional identity predicted by Deninger's program, on the
+full space of smooth compactly supported positive-time tests.  This theorem does not identify the
+left side with the trace of a source-native arithmetic cohomology.
 -/
 theorem deningerArithmeticDistributionalLefschetz :
     deningerArithmeticAlternatingTraceDistribution =

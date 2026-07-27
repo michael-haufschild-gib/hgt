@@ -2,7 +2,15 @@
 
 ## Status
 
-Fully proven on paper; formalized in Lean 4.
+Fully proven on paper; formalized in Lean 4; **verification gate passed**.
+
+`lake build` succeeds on the module inside the `GaloisForLFunctions.HTGeometry` umbrella (which imports it), and `#print axioms` gives exactly `propext, Classical.choice, Quot.sound` for
+
+```text
+GaloisForLFunctions.HTGeometry.differentialAdjoin_base_union_matrixEntries_eq_traceless_trace
+GaloisForLFunctions.HTGeometry.differentialAdjoin_normalizedDelay_eq_projectiveReciprocal_traceGauge
+```
+
 
 ## Theorem-first source
 

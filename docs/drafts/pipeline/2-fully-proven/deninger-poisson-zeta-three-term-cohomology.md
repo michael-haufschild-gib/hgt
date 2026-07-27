@@ -483,7 +483,8 @@ Not used:
 - [ ] source-geometric cup/Hodge comparison
 - [ ] packetwise fixed-orbit identification on Deninger's space
 - [ ] source-positive Hodge operator
-- [ ] Lean formalization of the algebraic assembly
+- [x] Lean formalization of the algebraic assembly
+- [x] concrete exact Arakelov endpoint and \(H^0/H^1/H^2\) equivalences
 
 ## References
 
@@ -517,3 +518,11 @@ Not used:
 - 2026-07-27 — Extended the unconditional Lean surface from Paugam's
   sign--conjugation on an upper/lower product to the cokernel of every
   split Poisson map intertwining conjugation.
+- 2026-07-27 — Linearized the finite-plus-archimedean principal-divisor
+  and degree maps as an exact pair.  Instantiated the Poisson--zeta
+  complex concretely and proved in Lean that its cohomology is
+  \(R\), \(H_-/\operatorname{range}(Z)\), \(R\), with Arakelov degree
+  supplying the chain-level endpoint cup pairing.  Direct checks of
+  `DeningerArithmeticRealArakelovEndpoint.lean` and
+  `DeningerArithmeticArakelovPoissonComplex.lean` pass; final cached
+  module and axiom audit remains the stage-3 promotion gate.

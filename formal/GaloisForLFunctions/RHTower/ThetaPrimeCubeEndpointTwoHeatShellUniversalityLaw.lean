@@ -38,15 +38,7 @@ theorem thetaPrimeCube_endpointGibbsSum_eq_twoHeatShellCurrent
     exact one_le_pow₀ hpOne
   have hp3One : 1 ≤ p ^ 3 := by
     exact one_le_pow₀ hpOne
-  have hpp : p < p ^ 2 := by
-    calc
-      p < p * p := lt_mul_of_one_lt_right hp.pos hp.one_lt
-      _ = p ^ 2 := by ring
-  have hp2p3 : p ^ 2 < p ^ 3 := by
-    calc
-      p ^ 2 < p ^ 2 * p :=
-        lt_mul_of_one_lt_right (pow_pos hp.pos 2) hp.one_lt
-      _ = p ^ 3 := by ring
+  obtain ⟨hpp, hp2p3⟩ := prime_lt_sq_and_sq_lt_cube hp
   have hleft : (0, p ^ 3 - 1) ∉
       ({(p - 1, p ^ 2 - 1), (p ^ 2 - 1, p - 1), (p ^ 3 - 1, 0)} :
         Finset (ℕ × ℕ)) := by

@@ -215,6 +215,28 @@ theorem re_inv_sub_mul_I_pow_pos {A B t : ℝ} (hA : 0 < A) (hB : |B| < t * A) {
     rw [abs_mul, abs_of_nonneg hmpos.le]
     exact lt_of_lt_of_le (mul_lt_mul_of_pos_left harg hmpos) hangle
 
+/-- **Reciprocal sector power positivity from a squared ratio.**  A squared sector bound
+`N B² < A²` at `0 < A` gives `|B| < t A` for any positive `t` with `1 ≤ N t²`, because
+`B² ≤ N t² B² < t² A²`.  With the angle budget `n t ≤ π/2` this is the tangent-sector form of
+`re_inv_sub_mul_I_pow_pos` in which the sector is presented by a rational square ratio. -/
+theorem re_inv_sub_mul_I_pow_pos_of_sq_lt {A B N t : ℝ} {n : ℕ}
+    (hA : 0 < A) (ht : 0 < t) (hNt : 1 ≤ N * t ^ 2)
+    (hsector : N * B ^ 2 < A ^ 2) (hangle : (n : ℝ) * t ≤ Real.pi / 2) :
+    0 < ((((A : ℂ) - B * I)⁻¹) ^ n).re := by
+  have hsq : B ^ 2 < (t * A) ^ 2 := by
+    nlinarith [sq_nonneg B, sq_nonneg t, sq_pos_of_pos ht, sq_pos_of_pos hA]
+  exact re_inv_sub_mul_I_pow_pos hA
+    (abs_lt_of_sq_lt_sq hsq (by positivity)) hangle
+
+/-- **A nonpositive reciprocal power refutes the sector ratio.**  Contrapositive of a positivity
+criterion: if `N B² < A²` would force a positive real part, a nonpositive one forces `A² ≤ N B²`. -/
+theorem sq_le_of_re_inv_sub_mul_I_pow_nonpos {A B N : ℝ} {n : ℕ}
+    (hpos : N * B ^ 2 < A ^ 2 → 0 < ((((A : ℂ) - B * I)⁻¹) ^ n).re)
+    (hnonpos : ((((A : ℂ) - B * I)⁻¹) ^ n).re ≤ 0) :
+    A ^ 2 ≤ N * B ^ 2 := by
+  by_contra h
+  exact absurd (hpos (not_le.mp h)) (not_lt.mpr hnonpos)
+
 /-- **Sector ratio from a single corner check.**  Write `u = a ^ 2` for a horizontal square and
 `v = b ^ 2` for a vertical square.  The gap `(v - u + y) ^ 2 - N (2 a b) ^ 2` decreases in `u` and,
 as soon as `(2 N + 1) u₀ ≤ v₀ + y₀`, increases in `v` and in `y`.  A strict inequality at the

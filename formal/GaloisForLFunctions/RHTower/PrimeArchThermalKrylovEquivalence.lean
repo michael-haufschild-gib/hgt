@@ -90,9 +90,8 @@ theorem xiThermalNode_pos (q : XiZeroCopy) : 0 < xiThermalNode q := by
     nlinarith [xiEndpointCompletedCurvature_lt_one_half]
   have hheight := xiZeroCopy_im_sq_ge_endpoint_source_inverse_gap q
   have hgamma : 1 < (q.1 : ℂ).im ^ 2 := by linarith
-  have hstrip := xi_divisor_support_re_mem_open_unit q.1
-  have hdelta : ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4 := by
-    nlinarith [mul_pos hstrip.1 (sub_pos.mpr hstrip.2)]
+  have hdelta : ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4 :=
+    xi_divisor_support_centered_re_sq_lt_quarter q.1
   have hnum : 0 < (q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2 := by
     linarith
   have hden : 0 < Complex.normSq ((q.1 : ℂ) - 1 / 2) ^ 2 := by

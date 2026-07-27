@@ -342,8 +342,8 @@ extended-\(L^2\) and unitary relative Calderón domains are proved by
 `DAC_KUMMER_RELATIVE_CALDERON_POISSON_DOMAIN`.  Exact open core is their
 global Tate--Milnor incidence Lagrangian, the mixed \(L^1/L^2\)
 cohomologically faithful regulator, Green supertrace/cup identity, and
-Hodge-norm/domain Riesz faithfulness for Meyer eigenfunctionals (and
-then higher jets), as stated in
+nuclear-dense Hodge--Schwartz core with off-axis source-resolvent
+preservation for all Meyer generalized eigenfunctionals, as stated in
 `DAC_ARITHMETIC_CALDERON_GREEN_INTERMEDIATE_EXTENSION`.  No CCM/Gamma
 Hodge model is a dependency.
 

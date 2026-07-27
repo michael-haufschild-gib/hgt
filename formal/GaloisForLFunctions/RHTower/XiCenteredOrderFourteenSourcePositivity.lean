@@ -30,34 +30,10 @@ theorem xiCenteredOrderFifteenSectorRatio_of_offLine_inner
     (hinner : ((q.1 : ℂ).re - 1 / 2) ^ 2 ≤ (1 / 6 : ℝ)) :
     100 * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ 2 <
       ((q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2) ^ 2 := by
-  let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ 2
-  let v : ℝ := (q.1 : ℂ).im ^ 2
-  let A : ℝ := v - u
-  let B : ℝ := 2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im
-  have hu : u ≤ 1 / 6 := by simpa only [u] using hinner
-  have hu0 : 0 ≤ u := by dsimp only [u]; positivity
-  have hv : 85 < v := by
-    simpa only [v] using xiZeroCopy_offLine_eightyFive_lt_im_sq q hoff
-  have hv0 : 0 < v := by linarith
-  have hA : 509 / 6 < A := by
-    dsimp only [A]
-    nlinarith
-  have hB : B ^ 2 = 4 * u * v := by
-    dsimp only [B, u, v]
-    ring
-  have hBbound : 100 * B ^ 2 ≤ (200 / 3 : ℝ) * v := by
-    rw [hB]
-    nlinarith
-  have hfactor : 0 < A + 509 / 6 - 200 / 3 := by nlinarith
-  have hprod : 0 < (A - 509 / 6) * (A + 509 / 6 - 200 / 3) :=
-    mul_pos (sub_pos.mpr hA) hfactor
-  have hpoly : (200 / 3 : ℝ) * (A + 1 / 6) < A ^ 2 := by
-    nlinarith
-  have hvA : v ≤ A + 1 / 6 := by
-    dsimp only [A]
-    nlinarith
-  change 100 * B ^ 2 < A ^ 2
-  nlinarith
+  simpa only [add_zero] using
+    GaloisForLFunctions.HTGeometry.sector_ratio_of_corner (N := 100) (u₀ := 1 / 6)
+      (v₀ := 85) (y₀ := 0) (y := 0) (by norm_num) le_rfl hinner
+      (xiZeroCopy_offLine_eightyFive_lt_im_sq q hoff).le (by norm_num) (by norm_num)
 
 /-- Above squared height `101`, the full centered critical strip satisfies the order-fifteen
 sector condition. -/
@@ -65,36 +41,10 @@ theorem xiCenteredOrderFifteenSectorRatio_of_oneHundredOne_le_im_sq
     (q : XiZeroCopy) (hhigh : 101 ≤ (q.1 : ℂ).im ^ 2) :
     100 * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ 2 <
       ((q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2) ^ 2 := by
-  let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ 2
-  let v : ℝ := (q.1 : ℂ).im ^ 2
-  let A : ℝ := v - u
-  let B : ℝ := 2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im
-  have hstrip := xi_divisor_support_re_mem_open_unit q.1
-  have hu : u < 1 / 4 := by
-    dsimp only [u]
-    nlinarith [mul_pos hstrip.1 (sub_pos.mpr hstrip.2)]
-  have hu0 : 0 ≤ u := by dsimp only [u]; positivity
-  have hv : 101 ≤ v := by simpa only [v] using hhigh
-  have hv0 : 0 < v := by linarith
-  have hA0 : 0 < A := by dsimp only [A]; nlinarith
-  have hB : B ^ 2 = 4 * u * v := by
-    dsimp only [B, u, v]
-    ring
-  have hBbound : 100 * B ^ 2 < 100 * v := by
-    rw [hB]
-    nlinarith
-  have hprod : 0 ≤ (v - 101) * (v + 1 / 2) :=
-    mul_nonneg (sub_nonneg.mpr hv) (by nlinarith)
-  have hbase : 100 * v < (v - 1 / 4) ^ 2 := by
-    nlinarith
-  have hAsq : (v - 1 / 4) ^ 2 < A ^ 2 := by
-    have hleft : 0 < v - 1 / 4 := by nlinarith
-    have hlt : v - 1 / 4 < A := by
-      dsimp only [A]
-      nlinarith
-    nlinarith [mul_pos (sub_pos.mpr hlt) (add_pos hleft hA0)]
-  change 100 * B ^ 2 < A ^ 2
-  linarith
+  simpa only [add_zero] using
+    GaloisForLFunctions.HTGeometry.sector_ratio_of_corner (N := 100) (u₀ := 1 / 4)
+      (v₀ := 101) (y₀ := 0) (y := 0) (by norm_num) le_rfl
+      (xi_divisor_support_centered_re_sq_lt_quarter q.1).le hhigh (by norm_num) (by norm_num)
 
 /-- A centered order-fifteen sector failure lies in one compact edge corner. -/
 theorem xiCenteredOrderFifteenSectorFailure_mem_edgeCorner
@@ -105,23 +55,10 @@ theorem xiCenteredOrderFifteenSectorFailure_mem_edgeCorner
     (1 / 6 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ 2 ∧
       ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4 ∧
       85 < (q.1 : ℂ).im ^ 2 ∧
-      (q.1 : ℂ).im ^ 2 < 101 := by
-  have hedge : (1 / 6 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ 2 := by
-    by_contra h
-    have hsector := xiCenteredOrderFifteenSectorRatio_of_offLine_inner
-      q hoff (le_of_not_gt h)
-    linarith
-  have hstrip := xi_divisor_support_re_mem_open_unit q.1
-  have hu : ((q.1 : ℂ).re - 1 / 2) ^ 2 < (1 / 4 : ℝ) := by
-    nlinarith [mul_pos hstrip.1 (sub_pos.mpr hstrip.2)]
-  have hvlow : 85 < (q.1 : ℂ).im ^ 2 :=
-    xiZeroCopy_offLine_eightyFive_lt_im_sq q hoff
-  have hvhigh : (q.1 : ℂ).im ^ 2 < 101 := by
-    by_contra h
-    have hsector := xiCenteredOrderFifteenSectorRatio_of_oneHundredOne_le_im_sq
-      q (le_of_not_gt h)
-    linarith
-  exact ⟨hedge, hu, hvlow, hvhigh⟩
+      (q.1 : ℂ).im ^ 2 < 101 :=
+  xiZeroCopy_sectorFailure_mem_edgeCorner q hoff
+    (fun h => xiCenteredOrderFifteenSectorRatio_of_offLine_inner q hoff h)
+    (fun h => xiCenteredOrderFifteenSectorRatio_of_oneHundredOne_le_im_sq q h) hfail
 
 /-- Every atom in the centered compact corner spends more than `1/20000` of the complete fourth
 reciprocal trace. -/
@@ -184,10 +121,8 @@ theorem one_over_fiveThousand_lt_source_of_centeredOrderFourteen_edgeCorner
     (hvLower : 85 < (q.1 : ℂ).im ^ 2)
     (hvUpper : (q.1 : ℂ).im ^ 2 < 101) :
     (1 / 5000 : ℝ) < normalizedPrimeArchMoment 1 := by
-  have hoff : (q.1 : ℂ).re ≠ 1 / 2 := by
-    intro h
-    rw [h] at huLower
-    norm_num at huLower
+  have hoff : (q.1 : ℂ).re ≠ 1 / 2 :=
+    re_ne_half_of_pos_centered_sq (by linarith)
   have hsum : Summable
       (fun r : XiZeroCopy => (xiZeroCopyReciprocalSquare r ^ 2).re) :=
     (summable_xiZeroCopyReciprocalSquare_pow 1).mapL Complex.reCLM
@@ -214,6 +149,63 @@ theorem not_exists_xiZeroCopy_mem_centeredOrderFourteen_edgeCorner :
   have hupper := normalizedPrimeArchMoment_one_lt_nine_over_fiftyThousand
   nlinarith
 
+/-- **A nonpositive centered reciprocal power falls into the sector-failure window.**  Off the
+critical line the centered radial coordinate `A = im² - (re - 1/2)²` is positive, because
+`im² > 85` while `(re - 1/2)² < 1/4`.  A positivity criterion then makes a nonpositive real part of
+`((A - B i)⁻¹) ^ n` refute the sector ratio `N B² < A²`, and whatever `hwindow` concludes from the
+failure holds. -/
+theorem xiZeroCopy_centeredReciprocalPower_nonpos_of_sector {n : ℕ} {N : ℝ} {W : Prop}
+    (q : XiZeroCopy) (hoff : (q.1 : ℂ).re ≠ 1 / 2)
+    (hcrit : ∀ A B : ℝ, 0 < A → N * B ^ 2 < A ^ 2 →
+      0 < ((((A : ℂ) - B * I)⁻¹) ^ n).re)
+    (hwindow :
+      ((q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2) ^ 2 ≤
+        N * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ 2 → W)
+    (hnonpos :
+      let A : ℝ := (q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2
+      let B : ℝ := 2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im
+      ((((A : ℂ) - B * I)⁻¹) ^ n).re ≤ 0) :
+    W := by
+  have hA : 0 < (q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2 := by
+    have hu := xi_divisor_support_centered_re_sq_lt_quarter q.1
+    have hv := xiZeroCopy_offLine_eightyFive_lt_im_sq q hoff
+    linarith
+  exact hwindow
+    (GaloisForLFunctions.HTGeometry.sq_le_of_re_inv_sub_mul_I_pow_nonpos
+      (fun h => hcrit _ _ hA h) hnonpos)
+
+/-- **Centered coordinate power positivity from an empty window.**  On the critical line the
+transverse coordinate vanishes and `A = im²` is nonzero, so the sector ratio is trivial; off it a
+nonpositive real part lands the zero in the window `W`, which is empty. -/
+theorem xiZeroCopy_centeredCoordinate_re_pos_of_window_empty {n : ℕ} {N : ℝ} {W : Prop}
+    (q : XiZeroCopy)
+    (hcrit : ∀ A B : ℝ, 0 < A → N * B ^ 2 < A ^ 2 →
+      0 < ((((A : ℂ) - B * I)⁻¹) ^ n).re)
+    (hcorner : (q.1 : ℂ).re ≠ 1 / 2 →
+      ((q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2) ^ 2 ≤
+        N * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ 2 → W)
+    (hempty : ¬ W) :
+    let A : ℝ := (q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2
+    let B : ℝ := 2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im
+    0 < ((((A : ℂ) - B * I)⁻¹) ^ n).re := by
+  intro A B
+  have him : 0 < (q.1 : ℂ).im ^ 2 :=
+    sq_pos_of_ne_zero (xi_divisor_support_im_ne_zero q.1)
+  by_cases hoff : (q.1 : ℂ).re = 1 / 2
+  · have hB : B = 0 := by
+      show 2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im = 0
+      rw [hoff]
+      ring
+    have hA : 0 < A := by
+      show 0 < (q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2
+      rw [hoff]
+      nlinarith
+    exact hcrit A B hA (by rw [hB]; simpa using pow_pos hA 2)
+  · by_contra hnot
+    exact hempty
+      (xiZeroCopy_centeredReciprocalPower_nonpos_of_sector q hoff hcrit
+        (hcorner hoff) (not_lt.mp hnot))
+
 /-- A nonpositive centered fifteenth reciprocal-power atom would lie in the excluded corner. -/
 theorem xiCenteredOrderFifteenReciprocalPower_nonpos_mem_edgeCorner
     (q : XiZeroCopy) (hoff : (q.1 : ℂ).re ≠ 1 / 2)
@@ -224,51 +216,21 @@ theorem xiCenteredOrderFifteenReciprocalPower_nonpos_mem_edgeCorner
     (1 / 6 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ 2 ∧
       ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4 ∧
       85 < (q.1 : ℂ).im ^ 2 ∧
-      (q.1 : ℂ).im ^ 2 < 101 := by
-  let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ 2
-  let v : ℝ := (q.1 : ℂ).im ^ 2
-  let A : ℝ := v - u
-  let B : ℝ := 2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im
-  have hstrip := xi_divisor_support_re_mem_open_unit q.1
-  have hu : u < 1 / 4 := by
-    dsimp only [u]
-    nlinarith [mul_pos hstrip.1 (sub_pos.mpr hstrip.2)]
-  have hv : 85 < v := by
-    simpa only [v] using xiZeroCopy_offLine_eightyFive_lt_im_sq q hoff
-  have hA : 0 < A := by dsimp only [A]; nlinarith
-  have hfail : A ^ 2 ≤ 100 * B ^ 2 := by
-    by_contra h
-    have hsector : 100 * B ^ 2 < A ^ 2 := lt_of_not_ge h
-    have hpos := orderFifteenReciprocalPower_re_pos_of_sectorRatio hA hsector
-    change ((((A : ℂ) - B * I)⁻¹) ^ 15).re ≤ 0 at hnonpos
-    linarith
-  apply xiCenteredOrderFifteenSectorFailure_mem_edgeCorner q hoff
-  simpa only [A, B, u, v] using hfail
+      (q.1 : ℂ).im ^ 2 < 101 :=
+  xiZeroCopy_centeredReciprocalPower_nonpos_of_sector q hoff
+    (fun _ _ hA h => orderFifteenReciprocalPower_re_pos_of_sectorRatio hA h)
+    (xiCenteredOrderFifteenSectorFailure_mem_edgeCorner q hoff) hnonpos
 
 /-- The centered order-fifteen coordinate has positive real part at every Xi divisor point. -/
 theorem xiCenteredOrderFifteenCoordinate_re_pos
     (q : XiZeroCopy) :
     let A : ℝ := (q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2
     let B : ℝ := 2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im
-    0 < ((((A : ℂ) - B * I)⁻¹) ^ 15).re := by
-  by_cases hoff : (q.1 : ℂ).re = 1 / 2
-  · let A : ℝ := (q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2
-    let B : ℝ := 2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im
-    have hA : 0 < A := by
-      dsimp only [A]
-      rw [hoff]
-      norm_num
-      exact sq_pos_of_ne_zero (xi_divisor_support_im_ne_zero q.1)
-    apply orderFifteenReciprocalPower_re_pos_of_sectorRatio hA
-    dsimp only [A, B]
-    rw [hoff]
-    norm_num
-    nlinarith [sq_pos_of_ne_zero (xi_divisor_support_im_ne_zero q.1)]
-  · by_contra hnot
-    have hcorner :=
-      xiCenteredOrderFifteenReciprocalPower_nonpos_mem_edgeCorner
-        q hoff (le_of_not_gt hnot)
-    exact not_exists_xiZeroCopy_mem_centeredOrderFourteen_edgeCorner ⟨q, hcorner⟩
+    0 < ((((A : ℂ) - B * I)⁻¹) ^ 15).re :=
+  xiZeroCopy_centeredCoordinate_re_pos_of_window_empty q
+    (fun _ _ hA h => orderFifteenReciprocalPower_re_pos_of_sectorRatio hA h)
+    (fun hoff hfail => xiCenteredOrderFifteenSectorFailure_mem_edgeCorner q hoff hfail)
+    (fun hc => not_exists_xiZeroCopy_mem_centeredOrderFourteen_edgeCorner ⟨q, hc⟩)
 
 /-- The centered reciprocal-square atom is the inverse of the real-coordinate quadratic form. -/
 theorem xiZeroCopyReciprocalSquare_eq_centeredOrderCoordinate (q : XiZeroCopy) :
@@ -288,6 +250,23 @@ theorem xiZeroCopyReciprocalSquare_eq_centeredOrderCoordinate (q : XiZeroCopy) :
       · simp [pow_two, Complex.mul_re, Complex.mul_im]
       · simp [pow_two, Complex.mul_re, Complex.mul_im]
         ring
+
+/-- **Centered reciprocal-square power positivity from an empty window.**  The centered radial
+coordinate `A = im² - (re - 1/2)²` is positive at every Xi zero: on the critical line it is `im²`,
+which is nonzero, and off it `im² > 85` while `(re - 1/2)² < 1/4`.  A nonpositive `n`-th power real
+part therefore refutes the sector ratio `N B² < A²` and places the zero in the window `W`, which is
+empty. -/
+theorem xiZeroCopyReciprocalSquare_pow_re_pos_of_window_empty {n : ℕ} {N : ℝ} {W : Prop}
+    (q : XiZeroCopy)
+    (hcrit : ∀ A B : ℝ, 0 < A → N * B ^ 2 < A ^ 2 →
+      0 < ((((A : ℂ) - B * I)⁻¹) ^ n).re)
+    (hcorner : (q.1 : ℂ).re ≠ 1 / 2 →
+      ((q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2) ^ 2 ≤
+        N * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ 2 → W)
+    (hempty : ¬ W) :
+    0 < (xiZeroCopyReciprocalSquare q ^ n).re := by
+  rw [xiZeroCopyReciprocalSquare_eq_centeredOrderCoordinate]
+  exact xiZeroCopy_centeredCoordinate_re_pos_of_window_empty q hcrit hcorner hempty
 
 /-- Every centered reciprocal-square Xi atom has positive fifteenth-power real part. -/
 theorem xiZeroCopyReciprocalSquare_pow_fifteen_re_pos (q : XiZeroCopy) :

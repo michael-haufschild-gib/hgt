@@ -84,13 +84,37 @@ with a closed differential \(Q\), satisfying the following clauses.
    between the compactly supported/minimal domain and the
    distributional maximal domain.  Its relative boundary quotient is
    exactly `(2)`.  It is invariant under the Hodge operator, and
+   there are nuclear-continuous source operators \(P_{\mathrm{harm}}\)
+   and \(G_{\mathrm{arith}}\) satisfying
+   \[
+   \begin{gathered}
+     P_{\mathrm{harm}}^2=P_{\mathrm{harm}},\qquad
+     QP_{\mathrm{harm}}=P_{\mathrm{harm}}Q=0,\\
+     1-P_{\mathrm{harm}}
+     =
+     QQ^\dagger G_{\mathrm{arith}}
+     +Q^\dagger QG_{\mathrm{arith}},                           \tag{3a}
+   \end{gathered}
+   \]
+   with \(G_{\mathrm{arith}}\) commuting with \(Q,Q^\dagger\) on the
+   source graph core.  Consequently
    \[
     Q^2=0,\qquad
     \ker Q/\overline{\operatorname{im}Q}
-    \cong\ker Q\cap\ker Q^\dagger.                              \tag{3}
+    \xrightarrow{\ \sim\ }
+    P_{\mathrm{harm}}\mathcal E^1_{\mathrm{arith}}
+    =
+    \ker Q\cap\ker Q^\dagger.                                  \tag{3}
    \]
-   Nuclear cohomology is taken before Hilbert completion; completion
-   of `(3)` is faithful.
+   This is a topological isomorphism in the nuclear source category,
+   not only in the Hilbert completion.  Nuclear cohomology is taken
+   before Hilbert completion; completion of `(3)` is faithful.  The
+   bounded algebraic identities are already formalized in
+   `HTGeometry.BRSTHodgeConstraint`; the open work is their unbounded
+   arithmetic-domain realization and nuclear continuity.
+   `DAC_STRICT_NUCLEAR_HODGE_PROJECTOR_PASSAGE` proves the abstract
+   limit step once transition compatibility and place-uniform source
+   seminorm bounds are established.
 
 4. **Poisson comparison.**  Smooth Deninger suspension and unit
    augmentation give a strict multiplicative chain map
@@ -139,15 +163,21 @@ with a closed differential \(Q\), satisfying the following clauses.
    \]
    is the completed positive Dirichlet/Green energy.  The source flow
    has weight one, so \(e^{-t/2}\phi^{t*}\) is a strongly continuous
-   unitary group.
+   unitary group.  Faithfulness of this completion is the exact
+   radical statement `DAC_GLOBAL_GREEN_ENERGY_RADICAL`: zero source
+   energy must be equivalent to membership in the closed middle
+   boundary subspace.
 
-7. **Riesz spectral faithfulness.**  Every order-zero Meyer
-   eigenfunctional is bounded for the Hodge norm and its Riesz
-   representative lies nontrivially in the completed generator
-   domain.  This is the RH-only condition of
-   `DAC_RIESZ_EIGENFUNCTIONAL_HODGE_PURITY`.  The full arithmetic
-   theory additionally retains every finite-order generalized jet,
-   domain filtration, block multiplicity, and nuclear character.
+7. **Hodge--Schwartz resolvent faithfulness.**  The smooth arithmetic
+   Hodge core is dense in \(M_\zeta\) for its nuclear quotient
+   topology, and every off-axis resolvent of
+   \(\Theta-\tfrac12\) preserves that core.  By
+   `DAC_DENSE_RESOLVENT_TRANSPOSE_PURITY`, every nonzero Meyer
+   order-zero or generalized-jet eigenfunctional then lies on the
+   weight-one line.  This is
+   `DAC_ARITHMETIC_HODGE_SCHWARTZ_RESOLVENT_CORE`.  Hodge-bounded
+   Riesz representation remains a stronger sufficient alternative,
+   not a construction requirement.
 
 ## Exact proof program
 
@@ -169,9 +199,10 @@ with a closed differential \(Q\), satisfying the following clauses.
 5. Establish maximal isotropy of `(2)` by a global Green formula and
    exactness of the arithmetic boundary complex.
 6. Use local Dirichlet decompositions to construct the global harmonic
-   projection.  Prove a uniform estimate on every finite
-   field/place/lattice stage and pass through the strict nuclear
-   system.
+   projection and Green operator.  Prove `(3a)` and a uniform estimate
+   on every finite field/place/lattice stage, then apply
+   `DAC_STRICT_NUCLEAR_HODGE_PROJECTOR_PASSAGE` to pass both operators
+   through the strict nuclear system.
 7. Smoothly suspend before completing.  Apply the already-proved
    projective-ray augmentation resolution and Poisson complex
    comparison.
@@ -182,9 +213,11 @@ with a closed differential \(Q\), satisfying the following clauses.
    specified by
    `DAC_ARITHMETIC_CALDERON_PAUGAM_HARDY_COMPARISON`; a trace formula
    without the relative-polarization comparison is insufficient.
-9. Prove Hodge-norm bounds and generator-domain membership for the
-   pulled-back order-zero Meyer functionals.  Then prove the
-   filtration-compatible statement for every higher generalized jet.
+9. Construct the arithmetic Hodge--Schwartz graph core, prove its
+   density in the nuclear Meyer quotient, and prove off-axis
+   parameter-elliptic resolvent estimates that preserve it.  This
+   gives the order-zero and every higher generalized-jet statement at
+   once.
 10. Apply abstract Hilbert-complex Hodge decomposition and
    `DAC_TWISTED_KAHLER_RIEMANN_FLOW_PURITY`.
 
@@ -198,8 +231,9 @@ with a closed differential \(Q\), satisfying the following clauses.
   quotient seminorm zero.
 - If `(5)` differs by a nonconstant spectral multiplier, local
   positivity does not transport to Deninger's cup product.
-- Density of the comparison image is not faithfulness on the strong
-  dual; clause 7 is mandatory.
+- Density only in the Hodge Hilbert norm is not faithfulness on the
+  nuclear strong dual; source-topology density and resolvent
+  preservation in clause 7 are mandatory.
 - Any use of zeta zeros to define the boundary metric, star, incidence
   relation, or completion is circular.
 
@@ -214,7 +248,10 @@ with a closed differential \(Q\), satisfying the following clauses.
   proved before Hodge completion.
 - Global Milnor-incidence Lagrangian closure: open.
 - Green supertrace/cup identity: open.
-- Harmonic faithfulness on Meyer generalized jets: open.
+- Global Green-energy radical classification: open; abstract
+  nonuniform local-to-global passage is proved and Lean-formalized.
+- Hodge--Schwartz core density and off-axis source-resolvent
+  preservation: open.
 
 This card is the exact positive-Hodge gate in `docs/Deninger
 program.md`.  The archimedean conormal/dual-conormal construction is a

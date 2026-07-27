@@ -108,14 +108,10 @@ theorem exists_ccmPositivePairedReducedKernel_self_neg_above_of_zero
     have hleft := (abs_lt.mp hreAbs).1
     dsimp only [r] at hleft
     linarith
-  have hspos : 0 < (1 / 2 + z * I).re := by
-    simp [mul_re]
-    linarith
-  have hs1 : 1 / 2 + z * I ≠ 1 := by
-    intro h
-    have hre := congrArg Complex.re h
-    simp [mul_re] at hre
-    linarith
+  have hspos : 0 < (1 / 2 + z * I).re :=
+    centeredAbscissa_re_pos (by linarith)
+  have hs1 : 1 / 2 + z * I ≠ 1 :=
+    centeredAbscissa_ne_one (by linarith)
   have hzeta : riemannZeta (1 / 2 + z * I) ≠ 0 :=
     (xi_eq_zero_iff hspos hs1).not.mp (by simpa only [XiC] using hzXi)
   have hsource : continuedPrimeArchSourceRelativeTrace z = logDeriv XiC z := by
@@ -206,14 +202,10 @@ theorem riemannHypothesis_of_continuedPrimeArchPositiveExteriorPairedDiagonalNon
   obtain ⟨z, hzim, hzimhalf, hzR, hzXi, hzdiag⟩ :=
     exists_ccmPositivePairedReducedKernel_self_neg_above_of_zero
       halphaImPos halphaImHalf hband.1 hRalpha halphaXi
-  have hspos : 0 < (1 / 2 + z * I).re := by
-    simp [mul_re]
-    linarith
-  have hs1 : 1 / 2 + z * I ≠ 1 := by
-    intro h
-    have hre := congrArg Complex.re h
-    simp [mul_re] at hre
-    linarith
+  have hspos : 0 < (1 / 2 + z * I).re :=
+    centeredAbscissa_re_pos (by linarith)
+  have hs1 : 1 / 2 + z * I ≠ 1 :=
+    centeredAbscissa_ne_one (by linarith)
   have hzeta : riemannZeta (1 / 2 + z * I) ≠ 0 :=
     (xi_eq_zero_iff hspos hs1).not.mp (by simpa only [XiC] using hzXi)
   exact (not_lt_of_ge (hdiag z hzim hzimhalf hzR hzeta)) hzdiag

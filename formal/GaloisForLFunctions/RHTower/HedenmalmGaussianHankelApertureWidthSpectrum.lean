@@ -101,24 +101,6 @@ theorem xiRelativeResolventTrace_im_nonneg_of_halfPlaneBound
     have hqLower : -alpha ≤ (xiSpectralPoint q).im := (abs_le.mp hqAbs).1
     have him := congrArg Complex.im hq
     linarith
-  have hsum := summable_xiRelativeResolventTerm hXi
-  have hsumJ : Summable (fun q : XiZeroCopy =>
-      xiRelativeResolventTerm z (xiZeroCopyLineConjEquiv q)) :=
-    (xiZeroCopyLineConjEquiv.summable_iff).mpr hsum
-  have hpair := hsum.add hsumJ
-  have hreindex :
-      (∑' q : XiZeroCopy,
-        xiRelativeResolventTerm z (xiZeroCopyLineConjEquiv q)) =
-          xiRelativeResolventTrace z := by
-    rw [xiRelativeResolventTrace]
-    exact xiZeroCopyLineConjEquiv.tsum_eq (xiRelativeResolventTerm z)
-  have hpairsum :
-      (∑' q : XiZeroCopy,
-        (xiRelativeResolventTerm z q +
-          xiRelativeResolventTerm z (xiZeroCopyLineConjEquiv q))) =
-        2 * xiRelativeResolventTrace z := by
-    rw [hsum.tsum_add hsumJ, hreindex, xiRelativeResolventTrace]
-    ring
   have himsum :
       0 ≤ (∑' q : XiZeroCopy,
         (xiRelativeResolventTerm z q +
@@ -126,15 +108,7 @@ theorem xiRelativeResolventTrace_im_nonneg_of_halfPlaneBound
     tsum_nonneg fun q =>
       xiRelativeResolventTerm_lineConj_pair_im_nonneg_of_halfPlaneBound
         halpha hzeros z hzIm q
-  have hpairsumIm := congrArg Complex.im hpairsum
-  rw [Complex.im_tsum hpair] at hpairsumIm
-  norm_num [mul_im] at hpairsumIm
-  have himsum' :
-      0 ≤ (∑' q : XiZeroCopy,
-        ((xiRelativeResolventTerm z q).im +
-          (xiRelativeResolventTerm z (xiZeroCopyLineConjEquiv q)).im)) := by
-    simpa only [add_im] using himsum
-  linarith
+  linarith [tsum_lineConj_pair_im_eq_two_mul_xiRelativeResolventTrace_im hXi]
 
 /-- A Xi half-plane bound places the actual theta/Xi orbit in the nonnegative Krein chamber at
 every strictly larger aperture. -/

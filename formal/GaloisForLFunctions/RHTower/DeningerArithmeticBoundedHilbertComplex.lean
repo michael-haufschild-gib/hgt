@@ -40,7 +40,7 @@ theorem deningerBoundedHilbertComplex_closure_range_le_ker
     Q.range.topologicalClosure ≤ Q.ker :=
   Q.range.topologicalClosure_minimal
     (deningerBoundedHilbertComplex_range_le_ker Q hQ)
-    Q.ker.isClosed
+    Q.isClosed_ker
 
 /-- Harmonic vectors are cocycles orthogonal to the completed boundary subspace. -/
 theorem deningerBoundedHarmonic_eq_orthogonalClosureRange_inf_ker
@@ -57,7 +57,7 @@ theorem deningerBoundedHarmonic_eq_ker_brstHodgeHamiltonian
       (HTGeometry.brstHodgeHamiltonian Q).ker := by
   ext x
   simp only [deningerBoundedHarmonic, Submodule.mem_inf,
-    ContinuousLinearMap.mem_ker]
+    LinearMap.mem_ker]
   exact (HTGeometry.brstHodgeHamiltonian_apply_eq_zero_iff Q x).symm
 
 /--

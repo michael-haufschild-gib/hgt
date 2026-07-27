@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.DeningerClosedOperatorPolarization
+import GaloisForLFunctions.RHTower.XiHadamardFactorization
 
 /-!
 # Riesz-eigenfunctional purity for Deninger cohomology
@@ -57,6 +58,51 @@ theorem deningerClosedWeightOne_rieszEigenfunctional_re_eq_half
   have hre := congrArg Complex.re hconj
   simp only [add_re, conj_re, one_re] at hre
   linarith
+
+/--
+One-way Riesz spectral comparison for the closed Hodge generator.
+
+Each nontrivial Xi-divisor point supplies the order-zero transpose
+eigenfunctional through a nonzero Riesz vector in the generator
+domain.  No zero is used to define the Hilbert space or operator.
+-/
+structure DeningerClosedWeightOneRieszXiSpectrum
+    (P : DeningerClosedWeightOnePolarization H) where
+  representative :
+    XiDivisorSupport → P.theta.domain
+  representative_ne_zero :
+    ∀ q : XiDivisorSupport,
+      (representative q : H) ≠ 0
+  transpose_eigenfunctional :
+    ∀ (q : XiDivisorSupport) (x : P.theta.domain),
+      inner ℂ (representative q : H) (P.theta x) =
+        (1 / 2 + Complex.I * xiSpectralPointSupport q) *
+          inner ℂ (representative q : H) (x : H)
+
+/--
+A closed weight-one Hodge polarization plus Riesz representation of
+every order-zero Meyer/Xi eigenfunctional proves the Riemann
+hypothesis.
+-/
+theorem riemannHypothesis_of_closedWeightOne_rieszXiSpectrum
+    (P : DeningerClosedWeightOnePolarization H)
+    (Spectrum : DeningerClosedWeightOneRieszXiSpectrum P) :
+    RiemannHypothesis := by
+  rw [rh_iff_xi_ne_zero_right]
+  intro z hz hzero
+  let q : XiDivisorSupport :=
+    ⟨z, mem_xi_divisor_support_of_eq_zero hzero⟩
+  have hhalf :
+      (1 / 2 + Complex.I * xiSpectralPointSupport q).re = 1 / 2 :=
+    deningerClosedWeightOne_rieszEigenfunctional_re_eq_half
+      P (Spectrum.representative q)
+      (Spectrum.representative_ne_zero q)
+      (Spectrum.transpose_eigenfunctional q)
+  have hzhalf : z.re = 1 / 2 := by
+    dsimp only [q, xiSpectralPointSupport] at hhalf
+    norm_num [Complex.mul_re] at hhalf
+    linarith
+  exact (ne_of_gt (mem_rightHalf.mp hz)) hzhalf
 
 end
 

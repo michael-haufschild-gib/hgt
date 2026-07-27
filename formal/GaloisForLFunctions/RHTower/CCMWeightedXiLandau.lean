@@ -1296,17 +1296,8 @@ theorem no_eventual_lower_bound_xiWeightedRightDirichletCoefficientReal
     xiRightShiftedPole_re_le_of_weighted_landau_summable D C N hσ
       (xiRightTransverseSup_pos hne).le
       (fun q => xiRightCenteredZero_re_le_sup q) hsum
-  have hcenterBound : ∀ q : XiRightZeroCopy,
-      (xiRightCenteredZero q).re ≤ σ - 1 := by
-    intro q
-    have hq := hpoleBound q
-    rw [xiRightShiftedPole, Complex.add_re, Complex.one_re] at hq
-    linarith
-  have hsupBound : xiRightTransverseSup ≤ σ - 1 := by
-    apply csSup_le (Set.range_nonempty _)
-    intro x hx
-    obtain ⟨q, rfl⟩ := hx
-    exact hcenterBound q
+  have hsupBound : xiRightTransverseSup ≤ σ - 1 :=
+    xiRightTransverseSup_le_of_shiftedPole_re_le hne hpoleBound
   linarith
 
 theorem xiWeightedRightDirichletCoefficientReal_cofinally_unbounded_below

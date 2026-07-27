@@ -89,22 +89,22 @@ theorem smoothWeight_le_one (N H : ℝ) (x : ℝ) : smoothWeight N H x ≤ 1 := 
   rw [smoothWeight]
   linarith [Real.smoothTransition.nonneg (H⁻¹ * (x + -N))]
 
-/-- **Scaled derivative bounds.**  The `j`-th derivative of the cutoff is `O(H^{-j})`. -/
-theorem exists_bound_iteratedDeriv_smoothWeight {H : ℝ} (hH : 0 < H) (N : ℝ) (j : ℕ) :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ x : ℝ, |iteratedDeriv j (smoothWeight N H) x| ≤ C / H ^ j := by
+/-- **Scaled derivative bounds, uniform in the window.**  The `j`-th derivative of the cutoff is
+`O(H^{-j})` with a constant depending only on `j` — not on the location `N` or the width `H`.
+
+Uniformity matters downstream: the Perron estimate needs the `N`- and `H`-dependence of every
+constant to be explicit, and this is the only place where derivatives of the cutoff enter. -/
+theorem exists_bound_iteratedDeriv_smoothWeight_uniform (j : ℕ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ N H : ℝ, 0 < H → ∀ x : ℝ,
+      |iteratedDeriv j (smoothWeight N H) x| ≤ C / H ^ j := by
   rcases Nat.eq_zero_or_pos j with rfl | hj
-  · refine ⟨1, zero_le_one, fun x => ?_⟩
-    rw [iteratedDeriv_zero, pow_zero, div_one,
-      abs_of_nonneg (smoothWeight_nonneg N H x)]
+  · refine ⟨1, zero_le_one, fun N H _ x => ?_⟩
+    rw [iteratedDeriv_zero, pow_zero, div_one, abs_of_nonneg (smoothWeight_nonneg N H x)]
     exact smoothWeight_le_one N H x
   obtain ⟨C, hC, hbound⟩ := exists_bound_iteratedDeriv_smoothTransition j
-  refine ⟨C, hC, fun x => ?_⟩
+  refine ⟨C, hC, fun N H hH x => ?_⟩
   have hcd : ContDiff ℝ ((j : ℕ) : WithTop ℕ∞) Real.smoothTransition :=
     Real.smoothTransition.contDiff (n := (j : ℕ∞))
-  -- peel off the constant, then the shift, then the scaling
-  have hG : ContDiff ℝ ((j : ℕ) : WithTop ℕ∞)
-      (fun y : ℝ => Real.smoothTransition (H⁻¹ * (y + -N))) :=
-    hcd.comp (by fun_prop)
   have hstep : iteratedDeriv j (smoothWeight N H) x
       = -iteratedDeriv j (fun y : ℝ => Real.smoothTransition (H⁻¹ * (y + -N))) x := by
     have hdef : smoothWeight N H
@@ -122,5 +122,11 @@ theorem exists_bound_iteratedDeriv_smoothWeight {H : ℝ} (hH : 0 < H) (N : ℝ)
   rw [hscale, abs_mul, abs_pow, abs_of_pos (by positivity : (0 : ℝ) < H⁻¹)]
   rw [div_eq_mul_inv, ← inv_pow, mul_comm C ((H⁻¹) ^ j)]
   exact mul_le_mul_of_nonneg_left (hbound _) (by positivity)
+
+/-- **Scaled derivative bounds.**  The `j`-th derivative of the cutoff is `O(H^{-j})`. -/
+theorem exists_bound_iteratedDeriv_smoothWeight {H : ℝ} (hH : 0 < H) (N : ℝ) (j : ℕ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ x : ℝ, |iteratedDeriv j (smoothWeight N H) x| ≤ C / H ^ j := by
+  obtain ⟨C, hC, hbd⟩ := exists_bound_iteratedDeriv_smoothWeight_uniform j
+  exact ⟨C, hC, hbd N H hH⟩
 
 end GaloisForLFunctions.HTGeometry

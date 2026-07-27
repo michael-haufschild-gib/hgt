@@ -1269,3 +1269,219 @@ looks up is irrelevant, and the value at *every* prime is `1`:
 inside the Kolchin fracture proof), and prime-power support (already in the corpus). The layer's
 premise triple is therefore jointly realized by the object the corpus itself uses downstream, not
 just by an auxiliary indicator profile.
+
+## Iteration: `PeriodsIntegrallyIndependent` — a new ungrounded interface, discharged
+
+Re-running the grounding fixpoint over the current tree surfaced a row that was not there before
+(a concurrent lane added the face-lattice layer): `GaloisForLFunctions.PeriodsIntegrallyIndependent`
+with **11 consumers** (9 in `FaceShiftLatticeNonresonance`, 2 in `BottomFaceCrossSeparation`),
+ungrounded in both the loose and the strict fixpoint. It says `1` together with the periods admits
+no integral relation:
+`∀ (m : ℤ) (n : ι → ℤ), (m : ℂ) + ∑ i, (n i : ℂ) * τ i = 0 → m = 0 ∧ ∀ i, n i = 0`.
+
+Nine of the eleven consumers additionally require `∀ i, 0 < (τ i).im`, so the useful object is a
+*joint* realization in the upper half plane.
+
+**Corpus check first.** `Core.lean` already proves `logPrime_linearIndependent_int` (and its `ℚ`
+localization `linearIndependent_log_primes`); `OrbitFreeness` exports the finite-relation form.
+Nothing needed to be re-derived — the discharge is one composition away.
+
+`HTGeometry/PeriodIntegralIndependenceWitness.lean` (built, axioms clean, registered):
+
+* `logPrimePeriod q i = i · log (q i)` for a family of primes: real part `0`, imaginary part
+  `log (q i) > 0`, so the whole family sits in the upper half plane;
+* `periodsIntegrallyIndependent_logPrimePeriod` — the real part of a relation *is* its coefficient
+  of `1`, and its imaginary part is an integral relation between logarithms of distinct primes,
+  which unique factorization kills. **No transcendence input at all**: the hypothesis reads as if
+  it needed one, and it does not, because the periods may be chosen purely imaginary.
+* `exists_periods_im_pos_integrallyIndependent (ι) [Fintype ι]` — the realization at *every* finite
+  index type, via `Fintype.equivFin` ▸ `Fin.valEmbedding` ▸ `Infinite.natEmbedding Nat.Primes`.
+
+**The second premise, discharged as a connector.** The bottom-atomicity consumer also carries
+`LinearIndependent ℚ (ellipticGammaSourcePeriods (τ a) (τ b))`, i.e. of `![1, τ a, τ b]` — a mathlib
+`Prop`, so invisible to the interface audit, but a genuine open premise appearing in four files.
+It is exactly the two-parameter restriction of the lattice hypothesis:
+
+* `linearIndependent_ellipticGammaSourcePeriods_of_periodsIntegrallyIndependent` — clear the `ℚ`
+  denominators by proving `LinearIndependent ℤ ![1, τ a, τ b]` (route a `Fintype.linearIndependent_iff`
+  relation through `PeriodsIntegrallyIndependent` with `n` the two-point indicator, splitting the sum
+  by `Finset.sum_subset` + `Finset.sum_pair`) and then `LinearIndependent.localization ℚ`.
+
+**The payoff — an unconditional theorem.** `HTGeometry/BottomFacePacketUnconditional.lean`
+(built, axioms clean, registered): with `ι = Bool`, `τ = (i log p, i log r)` for distinct primes and
+the empty face,
+
+  `multipleEllipticGammaFacePacket_diffIndepOn_logPrime : p ≠ r → (∀ g ∈ G, DifferentialAlgebraicOver ℂ g) →`
+  `  DiffIndepOn ↥(differentialAdjoin ℂ G) (multipleEllipticGammaFacePacket (twoLogPrimePeriods p r) _ ∅)`
+
+— bottom-layer atomicity of the elliptic gamma hierarchy with **both** arithmetic hypotheses
+discharged and nothing left but the choice of two distinct primes.
+
+## New instrument: mathlib-`Prop` premises that no corpus theorem produces
+
+The `PeriodsIntegrallyIndependent` episode showed that the interface audit is blind to premises whose
+head is a *mathlib* `Prop` applied to corpus objects (`LinearIndependent ℚ (ellipticGammaSourcePeriods …)`
+was open in four files and invisible). New metaprogram `AuditM.lean` + `m4.py`: for every theorem in
+the three areas, `forallTelescope` the statement, and key each `Prop` binder by
+(head constant, set of `GaloisForLFunctions` constants occurring in it); do the same for conclusions.
+A premise key counts as produced when some conclusion has the same head — or is existentially
+quantified — over a *superset* of its corpus constants.
+
+Calibration mattered: exact-set matching reported `Matrix.PosDef (circleToeplitzGram …)` as open with
+56 uses (the producer is `InfiniteSupportCayleyGram`, stated for `cayleyMomentZ mu`), and ignoring
+`∃`-headed conclusions reported `IsIntegral ℤ (R.scaledCoeff c i)` as open with 46 uses (the producer
+is `Relation.exists_common_integer_scale`, already used at three call sites). Both are false alarms
+of the instrument, not gaps in the corpus — recorded here so the next run does not re-raise them.
+
+**Result: 233 corpus-specific mathlib-`Prop` premise keys, of which 16 are produced nowhere**, none
+with more than 3 uses. The premise layer outside the `Prop`-interface audit is therefore essentially
+closed as well. The 16 are dominated by deep analytic hypotheses (face-packet displacement
+injectivity, stretched-exponential Taylor magnitude, locally uniform convergence of Ising partition
+functions).
+
+## Iteration: the paraorthogonal root set is full
+
+`Polynomial.IsRoot (finiteParaorthogonalPolynomial p τ)` was one of the 16 — a *root-existence*
+hypothesis, so the two root-location theorems (`‖z‖ = 1`, and reality of the Cayley image) were
+compatible with there being no root at all.
+
+`HTGeometry/ParaorthogonalRootCount.lean` (built, axioms clean, registered):
+
+* `natDegree_finiteParaorthogonalPolynomial : p ≠ 0 → (X·p − τ·conj(p)ᵣₑᵥ).natDegree = p.natDegree + 1`
+  — reversal cannot raise the degree (`reverse_natDegree_le`), so the subtraction keeps the leading
+  term of `X·p`;
+* `exists_isRoot_finiteParaorthogonalPolynomial` — hence the degree is positive and `Complex.exists_root`
+  applies: **the premise is never vacuous**;
+* **`finiteParaorthogonalPolynomial_roots_on_unitCircle`** — `Splits.natDegree_eq_card_roots` upgrades
+  this to the exact count: the terminal closure has `deg p + 1` roots with multiplicity and every one
+  lies on the unit circle, i.e. it splits into unimodular linear factors;
+* **`finiteOPUCParaorthogonalPolynomial_roots_on_unitCircle`** — for the terminal polynomial of a
+  positive definite Toeplitz section of level `N` the count is exactly `N + 1`.
+
+This is the classical Jones–Njåstad–Thron picture, and it converts the corpus's per-root statement
+into a statement about the whole root set.
+
+## Iteration: the Cayley reality statement is inhabited
+
+`HTGeometry/ParaorthogonalCayleyRealization.lean` (built, axioms clean, registered). The companion
+premise to the root hypothesis is `IsRoot (finiteParaorthogonalPolynomial p τ) (lineCayley z)` — a
+root *of Cayley form*. Existence of a root does not by itself give one, because `lineCayley` misses
+the point `1`.
+
+* `exists_lineCayley_preimage` — `w` unimodular and `≠ 1` is `lineCayley (i(1+w)/(1−w))`, and the
+  preimage is real by the corpus's own norm criterion `norm_lineCayley_eq_one_iff_im_eq_zero`, not by
+  computing an imaginary part;
+* `exists_unimodular_terminal_not_isRoot_one` — `eval 1 (X·p − τ·conj(p)ᵣₑᵥ) = p(1) − τ·c`, and
+  `p(1) ≠ 0` because `1` is not in the open disk; if `p(1) = c` take `τ = −1`, otherwise `τ = 1`;
+* **`exists_real_lineCayley_paraorthogonal_root`** — for every `p ≠ 0` with roots in the open disk
+  there are a unimodular `τ` and a real `z` with `(X·p − τ·conj(p)ᵣₑᵥ)(lineCayley z) = 0`.
+
+Both root premises of the Carathéodory--Fejér layer are therefore realized, and the earlier
+`Polynomial.IsRoot` rows of the mathlib-premise scan are closed.
+
+## Iteration: the universal bottom-layer law
+
+Extending the two extractions above:
+
+* `finiteOPUCPolynomial_ne_zero`, `finiteOPUCPolynomial_roots_norm_lt_one` — named (they existed only
+  inside one proof), and `exists_real_lineCayley_finiteOPUC_root`: a positive definite Toeplitz
+  section has a unimodular terminal parameter and a **real** Cayley point that is a paraorthogonal
+  root.
+* **`exists_periods_bottom_faces_diffIndepOn (ι) [Fintype ι] [DecidableEq ι]`** — over any finite
+  index there is a period family in the upper half plane such that *simultaneously for every face
+  `J` with exactly two surviving parameters*, the packet is differentially independent over every
+  differentially algebraic extension of the constants. This subsumes the `ι = Bool`, `J = ∅`
+  instance: one period family works for all faces at once, because integral independence is a
+  property of the whole family and the pair restriction is derived from it, not assumed per pair.
+
+Instrument note: `Set.Infinite {p | primeOrientationPattern ε p = …}` also appeared in the 16, and is
+likewise a false alarm — `constraintOrientation_tailIndependent_of_anchoredSkeleton` realizes it in
+the same file, but through an `Iff`-headed producer whose constant set does not contain the pattern
+constants. The residue of the mathlib-premise scan is now dominated by genuinely analytic items.
+
+## Iteration: face-packet freeness — base case proved, general case characterized
+
+`Function.Injective (facePacketDisplacementSlice τ hτ J hq)` is the largest remaining row of the
+mathlib-premise scan (the freeness hypothesis `hinjD` of the telescoping layer).
+
+**Connector shipped.** `HTGeometry/DiffIndepLinearIndependence.lean` (built, axioms clean,
+registered): `DifferentialIndependent` unfolds to `AlgebraicIndependent` of the whole jet family, so
+restricting along `x ↦ (x, 0)` and rewriting `differentialJet 0 x = x` gives
+`linearIndependent_of_differentialIndependent`, `linearIndependent_of_diffIndepOn`, and
+`injective_of_differentialIndependent`. Nothing in the corpus had drawn the linear consequence of
+differential independence; it is the tool any freeness argument needs.
+
+**Base case shipped.** `HTGeometry/FacePacketBottomFreeness.lean` (built, axioms clean, registered).
+`faceShiftLattice τ J` is the span of the parameters the face *retains*, so `faceShiftLattice τ ∅ = {0}`,
+`multipleEllipticGammaFacePacket τ hτ ∅` is the single untranslated face log-derivative, and
+`facePacketDisplacementSlice_injective_empty` follows from subsingletonness. This is exactly the base
+of the face induction the telescoping layer runs.
+
+**Why the general case is not algebraic.** Attempted route: `y_i = T_{g_i}Ψ_J`, and
+`T_{τq}y₁ − y₁ = T_{τq}y₂ − y₂` is a ±1 relation among the four translates
+`T_{g₁+τq}Ψ_J, T_{g₁}Ψ_J, T_{g₂+τq}Ψ_J, T_{g₂}Ψ_J`, which linear independence of the translate family
+would kill (the multiset identity `{g₁+τq, g₂} = {g₁, g₂+τq}` forces `g₁ = g₂` since `τ q ≠ 0`).
+Two independent obstacles:
+
+1. The four shifts lie in `faceShiftLattice τ J + ℤ·τ q`, which is **not** the lattice of any face
+   carrying the same `Ψ`. A bottom face has `Jᶜ = {a, b}` exactly, so `J` cannot be enlarged while
+   keeping the surviving pair — there is no corpus packet containing all four elements.
+2. The available independence engine, `ellipticGammaTranslatePacket_diffIndepOn_daExtension`, demands
+   `ThetaTranslationNonresonant (τ b) (τ a) (hs j)` for every shift and every difference, and
+   `ThetaTranslationNonresonant τ q h := ¬∃ a b n : ℤ, h = a + b·τ + n·q`. The displacement shift is
+   `τ q` itself, which is resonant by definition (`n = 1`). **The displacement direction is precisely
+   the direction the independence machinery excludes**, so no amount of nonresonance bookkeeping can
+   produce it.
+
+Named open core: `w := T_{g₁}Ψ_J − T_{g₂}Ψ_J` invariant under translation by `τ q` forces `g₁ = g₂`.
+Iterating invariance gives `T_{g₁+nτq}Ψ_J − T_{g₂+nτq}Ψ_J = w` for all `n : ℤ`, so the route is the
+pole orbit rather than differential algebra — the same shape as
+`JacobiThetaDifferentialOrbitObstruction`'s finite-pole-orbit argument, which is where a proof should
+start.
+
+Instrument note (second false alarm class): `Filter.Eventually` on `taylorPS`/`stretchedExp` is also
+already produced — `StretchedExponentialMagnitudeHypertranscendence` builds the explicit entire family
+`stretchedExponentialPhaseFunction` with `taylorPS` coefficients of exactly the prescribed magnitude
+and concludes `hypertranscendental_stretchedExponentialPhaseFunction`. Of the 16 residual rows, the
+ones inspected so far are: 2 genuine (paraorthogonal roots — now discharged; face-packet freeness —
+base case discharged, general case characterized), 3 false alarms of the const-set matching. The
+scan's role is to *nominate*; each row still needs the producer search by hand.
+
+## Iteration: the parabolic sphere signatures are exactly six (universal law)
+
+The structure scan's largest unexamined row was `ParabolicSphereSignature` (16 consumers, six nullary
+constructors, never produced by a theorem). It is not an open premise — it is an *enumeration*, and
+the corpus proves things about its six values (`holonomyOrder_dvd_twelve`, tower rigidity) without
+ever proving the list complete. That completeness is the law the enumeration was standing in for.
+
+`HTGeometry/ParabolicSignatureClassification.lean` (built, axioms clean, registered):
+
+* `coneDefect k = 1 − 1/k`, `orbifoldDefect m c = ∑ coneDefect + c`, with
+  `coneDefect ∈ [1/2, 1)` for `k ≥ 2`;
+* **`parabolic_triple_classification`** — for `2 ≤ a ≤ b ≤ c`, `1/a + 1/b + 1/c = 1` holds exactly for
+  `(2,3,6)`, `(2,4,4)`, `(3,3,3)`. Ordering gives `a ≤ 3` from `1 ≤ 3/a`, then each branch bounds the
+  next entry the same way — the same shape as the corpus's hyperbolic `hurwitz_ordered_eq_237`, which
+  had no parabolic companion;
+* **`parabolic_signature_classification`** — cone defects in `[1/2, 1)` and unit cusp defects force at
+  most four cone points and at most two cusps, and the six cases are exactly
+  `([], 2)`, `([2,2], 1)`, `([2,2,2,2], 0)`, `([2,3,6], 0)`, `([2,4,4], 0)`, `([3,3,3], 0)`;
+* **`exists_parabolicSphereSignature_iff`** — a cone-order list with a cusp count comes from a
+  `ParabolicSphereSignature` **iff** its orders are at least two, weakly increasing, and its total
+  angle defect is two.
+
+The enumeration is now a theorem rather than a definition-by-list: every statement quantified over the
+six signatures is a statement about all parabolic data.
+
+## Iteration: the trichotomy of triangle signatures
+
+`HTGeometry/TriangleSignatureTrichotomy.lean` (built, axioms clean, registered). With the parabolic
+case proved and the hyperbolic case already in the corpus (`hurwitz_triple_sum_le`,
+`hurwitz_ordered_eq_237`), the spherical case completes the classification:
+
+* **`spherical_triple_classification`** — `1/a + 1/b + 1/c > 1` for `2 ≤ a ≤ b ≤ c` holds exactly for
+  the dihedral family `(2,2,c)` and the Platonic triples `(2,3,3)`, `(2,3,4)`, `(2,3,5)`;
+* **`triangle_signature_trichotomy`** — every ordered triple of cone orders is spherical from that
+  list, parabolic from `(2,3,6)/(2,4,4)/(3,3,3)`, or hyperbolic with reciprocal sum `≤ 41/42`.
+
+The Hurwitz bound was an isolated inequality in the corpus; it is now the third branch of a
+classification, and the parabolic signatures are the boundary case between the two.

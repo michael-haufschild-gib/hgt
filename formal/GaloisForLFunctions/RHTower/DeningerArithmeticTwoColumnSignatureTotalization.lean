@@ -208,12 +208,16 @@ def deningerTwoColumnSignatureFlow
     ext
     · have hc := LinearMap.congr_fun hVertical1 c
       have hb := LinearMap.congr_fun hHorizontal1 b
+      change vertical1 (theta10 c) = theta11 (vertical1 c) at hc
+      change horizontal1 (theta01 b) = theta11 (horizontal1 b) at hb
       change
         vertical1 (theta10 c) - horizontal1 (theta01 b) =
           theta11 (vertical1 c - horizontal1 b)
       rw [hc, hb, map_sub]
     · have hc := LinearMap.congr_fun hSignature10 c
       have hb := LinearMap.congr_fun hSignature01 b
+      change signature10 (theta10 c) = thetaS (signature10 c) at hc
+      change signature01 (theta01 b) = thetaS (signature01 b) at hb
       change
         signature10 (theta10 c) + signature01 (theta01 b) =
           thetaS (signature10 c + signature01 b)
@@ -240,6 +244,10 @@ def deningerTwoColumnPair02
   map_add' a a' := by
     apply LinearMap.ext
     intro z
+    change
+      topPair (a + a') z.1 + signaturePair (a + a') z.2 =
+        (topPair a z.1 + signaturePair a z.2) +
+          (topPair a' z.1 + signaturePair a' z.2)
     simp only [map_add, LinearMap.add_apply]
     abel
   map_smul' c a := by
@@ -259,7 +267,13 @@ def deningerTwoColumnPair11
     { toFun := fun y => crossPair x.1 y.2 - crossPair y.1 x.2
       map_add' := by
         intro y y'
-        simp only [Prod.fst_add, Prod.snd_add, map_add]
+        change
+          crossPair x.1 (y + y').2 -
+              crossPair (y + y').1 x.2 =
+            (crossPair x.1 y.2 - crossPair y.1 x.2) +
+              (crossPair x.1 y'.2 - crossPair y'.1 x.2)
+        simp only [Prod.fst_add, Prod.snd_add, map_add,
+          LinearMap.add_apply]
         abel
       map_smul' := by
         intro c y
@@ -268,6 +282,11 @@ def deningerTwoColumnPair11
   map_add' x x' := by
     apply LinearMap.ext
     intro y
+    change
+      crossPair (x + x').1 y.2 -
+          crossPair y.1 (x + x').2 =
+        (crossPair x.1 y.2 - crossPair y.1 x.2) +
+          (crossPair x'.1 y.2 - crossPair y.1 x'.2)
     simp only [Prod.fst_add, Prod.snd_add, map_add, LinearMap.add_apply]
     abel
   map_smul' c x := by

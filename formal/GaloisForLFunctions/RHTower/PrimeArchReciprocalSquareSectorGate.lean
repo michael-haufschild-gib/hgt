@@ -52,14 +52,10 @@ theorem continuedPrimeArchReciprocalSquareTrace_eq_tsum
     (hzeta : riemannZeta (1 / 2 + z * I) ≠ 0) :
     continuedPrimeArchReciprocalSquareTrace z =
       ∑' q : XiZeroCopy, xiReciprocalSquareResolventTerm z q := by
-  have hspos : 0 < (1 / 2 + z * I).re := by
-    simp [mul_re]
-    linarith
-  have hs1 : 1 / 2 + z * I ≠ 1 := by
-    intro h
-    have hre := congrArg Complex.re h
-    simp [mul_re] at hre
-    linarith
+  have hspos : 0 < (1 / 2 + z * I).re :=
+    centeredAbscissa_re_pos (by linarith)
+  have hs1 : 1 / 2 + z * I ≠ 1 :=
+    centeredAbscissa_ne_one (by linarith)
   have hXi : XiC z ≠ 0 := by
     change xi (1 / 2 + z * I) ≠ 0
     exact (xi_eq_zero_iff hspos hs1).not.mpr hzeta
@@ -100,14 +96,10 @@ theorem continuedPrimeArchReciprocalSquareUpperSectorNonnegative_of_riemannHypot
     ContinuedPrimeArchReciprocalSquareUpperSectorNonnegative := by
   intro z hzpos hzhalf hzeta
   rw [continuedPrimeArchReciprocalSquareTrace_eq_tsum hzpos hzhalf hzeta]
-  have hspos : 0 < (1 / 2 + z * I).re := by
-    simp [mul_re]
-    linarith
-  have hs1 : 1 / 2 + z * I ≠ 1 := by
-    intro h
-    have hre := congrArg Complex.re h
-    simp [mul_re] at hre
-    linarith
+  have hspos : 0 < (1 / 2 + z * I).re :=
+    centeredAbscissa_re_pos (by linarith)
+  have hs1 : 1 / 2 + z * I ≠ 1 :=
+    centeredAbscissa_ne_one (by linarith)
   have hXi : XiC z ≠ 0 := by
     change xi (1 / 2 + z * I) ≠ 0
     exact (xi_eq_zero_iff hspos hs1).not.mpr hzeta
@@ -122,17 +114,13 @@ theorem xiReciprocalSquareUpperSectorNonnegative_of_continuedPrimeArch
     (hsource : ContinuedPrimeArchReciprocalSquareUpperSectorNonnegative) :
     XiReciprocalSquareUpperSectorNonnegative := by
   intro z hzpos hzhalf hXi
-  have hspos : 0 < (1 / 2 + z * I).re := by
-    simp [mul_re]
-    linarith
+  have hspos : 0 < (1 / 2 + z * I).re :=
+    centeredAbscissa_re_pos (by linarith)
   have hshalf : (1 / 2 + z * I).re < 1 := by
     simp [mul_re]
     linarith
-  have hs1 : 1 / 2 + z * I ≠ 1 := by
-    intro h
-    have hre := congrArg Complex.re h
-    simp [mul_re] at hre
-    linarith
+  have hs1 : 1 / 2 + z * I ≠ 1 :=
+    centeredAbscissa_ne_one (by linarith)
   have hzeta : riemannZeta (1 / 2 + z * I) ≠ 0 := by
     exact (xi_eq_zero_iff hspos hs1).not.mp (by simpa only [XiC] using hXi)
   have h := hsource z hzpos hzhalf hzeta

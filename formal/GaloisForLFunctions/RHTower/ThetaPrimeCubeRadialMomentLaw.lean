@@ -24,15 +24,7 @@ theorem thetaProductFiberEvenMoment_primeCube
       2 * (3 * Real.log p / 2) ^ (2 * r) +
         2 * (Real.log p / 2) ^ (2 * r) := by
   rw [thetaProductFiberEvenMoment, thetaPositiveFactorPairs_prime_cube hp]
-  have hpp : p < p ^ 2 := by
-    calc
-      p < p * p := lt_mul_of_one_lt_right hp.pos hp.one_lt
-      _ = p ^ 2 := by ring
-  have hp2p3 : p ^ 2 < p ^ 3 := by
-    calc
-      p ^ 2 < p ^ 2 * p :=
-        lt_mul_of_one_lt_right (pow_pos hp.pos 2) hp.one_lt
-      _ = p ^ 3 := by ring
+  obtain ⟨hpp, hp2p3⟩ := prime_lt_sq_and_sq_lt_cube hp
   have hp3one : 1 < p ^ 3 := hp.one_lt.trans (hpp.trans hp2p3)
   have hpOne : 1 ≤ p := hp.one_lt.le
   have hp2One : 1 ≤ p ^ 2 := hpOne.trans (hpp.le)

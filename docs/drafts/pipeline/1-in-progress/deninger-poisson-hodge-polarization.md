@@ -118,9 +118,8 @@ Strict positivity forces
 Meyer's theorem identifies the generalized point spectrum of the
 strong dual of \(M_\zeta\) with every nontrivial zeta zero, with
 algebraic multiplicity equal to its zero order.  Therefore a Hodge
-operator satisfying Section 2, for which every order-zero Meyer
-eigenfunctional is Hodge-bounded with a nonzero Riesz representative
-in the generator domain, implies:
+operator satisfying Section 2, together with a source-dense smooth
+core preserved by every off-axis centered resolvent, implies:
 \[
  \operatorname{Re}\rho=\frac12
  \quad\text{for every nontrivial zeta zero }\rho.            \tag{5}
@@ -236,23 +235,24 @@ with the following properties.
    form induced by \(\psi_E=-h_E(-,J-)\), with the coefficient's
    internal Koszul parity, to Paugam's \(\psi\), including all
    continuous generalized-jet directions.
-7. **Riesz spectral faithfulness.**  Every order-zero Meyer
-   eigenfunctional is bounded for the Hodge norm and represented by a
-   nonzero vector in the completed generator domain.  The stronger
-   version retains every higher generalized jet and block
-   multiplicity.
+7. **Hodge--Schwartz resolvent faithfulness.**  A source-defined
+   smooth core is dense in \(M_\zeta\) for its nuclear topology and is
+   preserved by every off-axis centered resolvent.  Every nonzero
+   Meyer strong-dual eigenfunctional therefore restricts nontrivially,
+   and `DAC_DENSE_RESOLVENT_TRANSPOSE_PURITY` treats order-zero and
+   all higher generalized jets.
 
 Under these clauses, leafwise Hodge star transports through `(6)` to
 the operator in Section 2, so `(5)` follows from the proved local
 rigidity theorem.
 
-The difficult assertion is therefore clause 6 together with Riesz
-spectral faithfulness, not existence of a positive source star:
-\(J=*c\) is already positive on the leaf source.  Proving that the
-harmonic norm controls every order-zero Meyer functional, with its
-Riesz representative in the generator domain, is the noncircular
-content that would imply RH by
-`DAC_RIESZ_EIGENFUNCTIONAL_HODGE_PURITY`.
+The difficult assertion is therefore clause 6 together with
+source-resolvent faithfulness, not existence of a positive source
+star: \(J=*c\) is already positive on the leaf source.  Proving
+nuclear density of the arithmetic Hodge--Schwartz core and
+off-axis parameter-elliptic preservation is the noncircular content
+that would imply RH by `DAC_DENSE_RESOLVENT_TRANSPOSE_PURITY`.
+Pointwise Riesz boundedness is a stronger sufficient alternative.
 
 The Green frontier is now sharper.  Bare Kummer-mode
 \(\ell^2\) is not strongly continuous for the dense rational-power

@@ -20,7 +20,7 @@ universe u
 section FiniteResidueEndpoint
 
 variable {R Units Residues Orientation : Type u}
-variable [Ring R]
+variable [CommRing R]
 variable [AddCommGroup Units] [Module R Units]
 variable [AddCommGroup Residues] [Module R Residues]
 variable [AddCommGroup Orientation] [Module R Orientation]
@@ -41,21 +41,26 @@ def deningerFiniteResidueEndpointComplex
         intro c x
         simp }
   d1_comp_d0 := by
-    ext x
-    simp
+    apply LinearMap.ext
+    intro x
+    apply Prod.ext <;> simp
 
 namespace deningerFiniteResidueEndpointComplex
 
 variable (residue : Units ≃ₗ[R] Residues)
 
-private abbrev C :=
+private abbrev C :
+    DeningerArithmeticThreeTermComplex R R Units
+      (Residues × Orientation) :=
   deningerFiniteResidueEndpointComplex residue
 
 /-- Degree zero is canonically the constant line. -/
 def H0Equiv :
-    (C residue).H0 ≃ₗ[R] R where
+    (C (Orientation := Orientation) residue).H0 ≃ₗ[R] R where
   toFun x := x.1
-  invFun x := ⟨x, by simp [C, deningerFiniteResidueEndpointComplex]⟩
+  invFun x := ⟨x, by
+    change (0 : R →ₗ[R] Units) x = 0
+    rfl⟩
   left_inv x := rfl
   right_inv x := rfl
   map_add' _ _ := rfl
@@ -63,14 +68,17 @@ def H0Equiv :
 
 /-- Every middle cohomology class vanishes because the residue
 coordinate map is injective. -/
-theorem H1_eq_zero (x : (C residue).H1) :
+theorem H1_eq_zero
+    (x : (C (Orientation := Orientation) residue).H1) :
     x = 0 := by
   obtain ⟨x, rfl⟩ :=
     Submodule.Quotient.mk_surjective
-      ((C residue).boundaries1.comap (C residue).cycles1.subtype) x
-  apply ((C residue).H1_mk_eq_zero_iff x).2
+      ((C (Orientation := Orientation) residue).boundaries1.comap
+        (C (Orientation := Orientation) residue).cycles1.subtype) x
+  apply
+    ((C (Orientation := Orientation) residue).H1_mk_eq_zero_iff x).2
   have hxPair :
-      (residue (x : Units), 0 : Residues × Orientation) = 0 :=
+      ((residue (x : Units), 0) : Residues × Orientation) = 0 :=
     x.property
   have hxResidue : residue (x : Units) = 0 := by
     simpa using congrArg Prod.fst hxPair
@@ -88,7 +96,11 @@ def orientationProjection :
 /-- The finite residue differential followed by orientation projection
 is exact. -/
 theorem exact_d1_orientationProjection :
-    Function.Exact (C residue).d1 orientationProjection := by
+    Function.Exact
+      (C (Orientation := Orientation) residue).d1
+      (orientationProjection
+        (R := R) (Residues := Residues)
+        (Orientation := Orientation)) := by
   rw [LinearMap.exact_iff]
   ext x
   constructor
@@ -111,9 +123,11 @@ theorem orientationProjection_surjective :
 
 /-- Degree two is canonically the single orientation line. -/
 noncomputable def H2Equiv :
-    (C residue).H2 ≃ₗ[R] Orientation :=
+    (C (Orientation := Orientation) residue).H2 ≃ₗ[R] Orientation :=
   (exact_d1_orientationProjection residue).linearEquivOfSurjective
-    orientationProjection_surjective
+    (orientationProjection_surjective
+      (R := R) (Residues := Residues)
+      (Orientation := Orientation))
 
 end deningerFiniteResidueEndpointComplex
 

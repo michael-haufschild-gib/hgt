@@ -553,7 +553,17 @@ collapse together with `‖H‖² ≥ v₀²`.  All of this is axiom-clean.
   from the family data `A`.  Only `hsum`/`hbessel` and the coordinate limits `hl0`/`hl1` remain,
   the latter being the open prolate-to-Hermite gate below.  Axiom-clean
 - [ ] remaining true-operator inputs in Lean: mode identification, Fuchs asymptotics,
-  prolate-to-Hermite limits, evaluation identity `(1)`
+  prolate-to-Hermite limits.  **Evaluation identity `(1)` is now formalized**, axiom-clean, in
+  `formal/GaloisForLFunctions/RHTower/ConstrainedProlateEvaluationIdentity.lean`:
+  `timeBandEigenSourceIntegral_eq_mul_pointwiseSource_zero` proves `∫ e = χ · e(0)` for the
+  canonical compact representative of any nonzero time-band eigenmode at positive aperture, via the
+  interior Fourier eigen-equation and `𝓕 g 0 = ∫ g`.  The same module proves the exact two-mode
+  centre cancellation
+  `S(0) = (χ₁ − χ₀) · e₀(0) · e₁(0)`
+  (`timeBandTwoModeConstrainedSource_zero_eq`), which is the algebraic mechanism behind
+  `g_λ(0) = O(d_1)` in `constrained-prolate-exterior-weil-leading-law.md` `(2)` — the centre value
+  is governed by the **eigenvalue gap**, not by the eigenvalues themselves, and this is proved with
+  no asymptotics at all.
 - [ ] independent proof review
 - [ ] independent literature review
 - [ ] true Weil residual and spectral-gap transfer

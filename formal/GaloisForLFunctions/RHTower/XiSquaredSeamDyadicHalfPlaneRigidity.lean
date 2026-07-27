@@ -37,9 +37,8 @@ def XiSquaredSeamDyadicHalfPlane : Prop :=
 
 theorem xiSquaredSeamOneRadialA_pos (q : XiZeroCopy) :
     0 < xiSquaredSeamOneRadialA q := by
-  have hstrip := xi_divisor_support_re_mem_open_unit q.1
-  have hu : ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4 := by
-    nlinarith [mul_pos hstrip.1 (sub_pos.mpr hstrip.2)]
+  have hu : ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4 :=
+    xi_divisor_support_centered_re_sq_lt_quarter q.1
   dsimp only [xiSquaredSeamOneRadialA]
   nlinarith [sq_nonneg (q.1 : ℂ).im]
 

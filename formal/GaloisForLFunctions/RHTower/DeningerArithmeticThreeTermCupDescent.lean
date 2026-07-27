@@ -42,8 +42,9 @@ theorem boundaries2_le_pair02_ker (x : C.H0) :
   rintro _ ⟨y, rfl⟩
   change P.pair02 (x : A0) (C.d1 y) = 0
   have h := P.differential_adjoint (x : A0) y
-  rw [x.2, map_zero, zero_add] at h
-  exact h
+  have hx : C.d0 (x : A0) = 0 := x.2
+  rw [hx] at h
+  simpa only [map_zero, LinearMap.zero_apply, zero_add] using h
 
 /-- The endpoint cup-trace pairing descended in its degree-two variable. -/
 def pairH02 (x : C.H0) : C.H2 →ₗ[R] R :=
@@ -64,12 +65,18 @@ def pairH02Linear : C.H0 →ₗ[R] Module.Dual R C.H2 where
     apply LinearMap.ext
     intro q
     obtain ⟨z, rfl⟩ := Submodule.Quotient.mk_surjective C.boundaries2 q
-    simp [P.pairH02_mkQ C]
+    change
+      P.pair02 ((x + x' : C.H0) : A0) z =
+        P.pair02 (x : A0) z + P.pair02 (x' : A0) z
+    simp
   map_smul' r x := by
     apply LinearMap.ext
     intro q
     obtain ⟨z, rfl⟩ := Submodule.Quotient.mk_surjective C.boundaries2 q
-    simp [P.pairH02_mkQ C]
+    change
+      P.pair02 ((r • x : C.H0) : A0) z =
+        r • P.pair02 (x : A0) z
+    simp
 
 @[simp]
 theorem pairH02Linear_mkQ (x : C.H0) (z : A2) :
@@ -124,14 +131,21 @@ def cycles1ToH1Dual :
     obtain ⟨x, rfl⟩ :=
       Submodule.Quotient.mk_surjective
         (C.boundaries1.comap C.cycles1.subtype) q
-    simp [P.pairH11Left_mkQ C]
+    change
+      P.pair11 (x : A1) ((y + y' : C.cycles1) : A1) =
+        P.pair11 (x : A1) (y : A1) +
+          P.pair11 (x : A1) (y' : A1)
+    simp
   map_smul' r y := by
     apply LinearMap.ext
     intro q
     obtain ⟨x, rfl⟩ :=
       Submodule.Quotient.mk_surjective
         (C.boundaries1.comap C.cycles1.subtype) q
-    simp [P.pairH11Left_mkQ C]
+    change
+      P.pair11 (x : A1) ((r • y : C.cycles1) : A1) =
+        r • P.pair11 (x : A1) (y : A1)
+    simp
 
 /-- Skew-symmetry makes boundaries vanish in the remaining degree-one variable. -/
 theorem boundaries1_le_cycles1ToH1Dual_ker :
@@ -184,8 +198,17 @@ theorem pairH11_skew (x y : C.H1) :
   obtain ⟨y', rfl⟩ :=
     Submodule.Quotient.mk_surjective
       (C.boundaries1.comap C.cycles1.subtype) y
-  rw [P.pairH11_mkQ_mkQ C, P.pairH11_mkQ_mkQ C]
-  exact P.skew _ _
+  calc
+    P.pairH11 C
+        ((C.boundaries1.comap C.cycles1.subtype).mkQ x')
+        ((C.boundaries1.comap C.cycles1.subtype).mkQ y') =
+        P.pair11 (y' : A1) (x' : A1) :=
+      P.pairH11_mkQ_mkQ C y' x'
+    _ = -P.pair11 (x' : A1) (y' : A1) := P.skew _ _
+    _ = -P.pairH11 C
+        ((C.boundaries1.comap C.cycles1.subtype).mkQ y')
+        ((C.boundaries1.comap C.cycles1.subtype).mkQ x') := by
+      rw [P.pairH11_mkQ_mkQ C]
 
 /-- Cochain radical after one variable has been descended. -/
 def radical1 : Submodule R C.cycles1 :=
@@ -211,6 +234,7 @@ theorem pairH11_separating_iff_radical1_eq_boundaries1 :
   · intro hrad y hy
     obtain ⟨y', rfl⟩ := Submodule.Quotient.mk_surjective B y
     apply (Submodule.Quotient.mk_eq_zero B).mpr
+    change y' ∈ C.boundaries1.comap C.cycles1.subtype
     rw [← hrad]
     change P.cycles1ToH1Dual C y' = 0
     apply LinearMap.ext
@@ -251,33 +275,52 @@ variable
   (W : DeningerArithmeticThreeTermWeightOneCup F P)
 
 /-- The endpoint weight-one law descends to `H⁰ × H²`. -/
-theorem endpoint_weight_on_cohomology (x : F.complex.H0) (z : F.complex.H2) :
+theorem endpoint_weight_on_cohomology
+    (W : DeningerArithmeticThreeTermWeightOneCup F P)
+    (x : F.complex.H0) (z : F.complex.H2) :
     P.pairH02Linear F.complex (F.thetaH0 x) z +
         P.pairH02Linear F.complex x (F.thetaH2 z) =
       P.pairH02Linear F.complex x z := by
   obtain ⟨z', rfl⟩ :=
     Submodule.Quotient.mk_surjective F.complex.boundaries2 z
-  simp only [DeningerArithmeticThreeTermFlow.thetaH2_mk,
-    DeningerArithmeticThreeTermCupPairing.pairH02Linear_mkQ]
-  exact W.endpoint_weight (x : A0) z'
+  simp only [DeningerArithmeticThreeTermFlow.thetaH2_mk]
+  exact
+    DeningerArithmeticThreeTermWeightOneCup.endpoint_weight
+      W (x : A0) z'
 
 /-- The middle weight-one law descends to `H¹ × H¹`. -/
-theorem middle_weight_on_cohomology (x y : F.complex.H1) :
+theorem middle_weight_on_cohomology
+    (W : DeningerArithmeticThreeTermWeightOneCup F P)
+    (x y : F.complex.H1) :
     P.pairH11 F.complex (F.thetaH1 x) y +
         P.pairH11 F.complex x (F.thetaH1 y) =
       P.pairH11 F.complex x y := by
   let B := F.complex.boundaries1.comap F.complex.cycles1.subtype
   obtain ⟨x', rfl⟩ := Submodule.Quotient.mk_surjective B x
   obtain ⟨y', rfl⟩ := Submodule.Quotient.mk_surjective B y
-  simp only [DeningerArithmeticThreeTermFlow.thetaH1_mk,
-    DeningerArithmeticThreeTermCupPairing.pairH11_mkQ_mkQ]
-  simpa [add_comm] using W.middle_weight (y' : A1) (x' : A1)
+  simp only [DeningerArithmeticThreeTermFlow.thetaH1_mk]
+  calc
+    P.pairH11 F.complex (Submodule.Quotient.mk (F.thetaCycles1 x'))
+          (Submodule.Quotient.mk y') +
+        P.pairH11 F.complex (Submodule.Quotient.mk x')
+          (Submodule.Quotient.mk (F.thetaCycles1 y')) =
+        P.pair11 (y' : A1) (F.theta1 (x' : A1)) +
+          P.pair11 (F.theta1 (y' : A1)) (x' : A1) := by
+      congr 1
+    _ = P.pair11 (y' : A1) (x' : A1) := by
+      simpa [add_comm] using
+        DeningerArithmeticThreeTermWeightOneCup.middle_weight
+          W (y' : A1) (x' : A1)
+    _ = P.pairH11 F.complex (Submodule.Quotient.mk x')
+          (Submodule.Quotient.mk y') :=
+      (P.pairH11_mkQ_mkQ F.complex y' x').symm
 
 /--
 Trivial `H⁰` flow plus separating endpoint cup-trace forces the top cohomological generator
 to be the identity.
 -/
 theorem thetaH2_eq_id
+    (W : DeningerArithmeticThreeTermWeightOneCup F P)
     (htheta0 : F.thetaH0 = 0)
     (hseparating :
       ∀ z : F.complex.H2,
@@ -286,7 +329,8 @@ theorem thetaH2_eq_id
     F.thetaH2 = LinearMap.id :=
   deningerTheta2_eq_id_of_theta0_eq_zero_of_endpointPairing
     F.thetaH0 F.thetaH2 (P.pairH02Linear F.complex)
-    (W.endpoint_weight_on_cohomology F P) htheta0 hseparating
+    (DeningerArithmeticThreeTermWeightOneCup.endpoint_weight_on_cohomology
+      F P W) htheta0 hseparating
 
 end DeningerArithmeticThreeTermWeightOneCup
 

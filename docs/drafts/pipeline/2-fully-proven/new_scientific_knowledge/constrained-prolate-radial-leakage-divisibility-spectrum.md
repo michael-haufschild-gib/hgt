@@ -441,10 +441,18 @@ asymptotics are proved, but the asymptotics do not exist in the tree, so no stat
 them.  All axiom-clean.
 
 What is still not formalized is the **weak convergence** `(4)` of the finite-aperture measures
-`nu_lambda` to this limit, and the off-diagonal vanishing `(23)`: the formal tree has no radial
-PSWF, Bessel-envelope asymptotics, or oscillatory-measure interface (that is the Fuchs/Dunster
-analytic layer).  The present work fixes the target of that convergence exactly; it does not prove
-the convergence.
+`nu_lambda` to this limit, and the off-diagonal vanishing `(23)`.
+
+**Correction, 2026-07-27.**  This paragraph previously read "the formal tree has no radial PSWF,
+Bessel-envelope asymptotics, or oscillatory-measure interface".  The first clause is **false**: the
+tree carries a radial PSWF interface — `RHTower/RadialPSWFExteriorPhase.lean` (Dunster's exterior
+Liouville coordinate, its exact derivative, and the uniform nonstationary lower bound on the
+exterior ray), `RHTower/RadialPSWFInteractionPicture.lean` (the exact interaction-picture
+amplitudes and their transport laws for `W'' + c²W = psi·W`), and
+`RHTower/RadialPSWFSpeedMonotone.lean`.  What is genuinely absent is the **estimate layer**:
+bounds on the interaction potential `psi`, the resulting bounded-variation control, Bessel-envelope
+asymptotics, stationary/nonstationary phase, and an oscillatory-measure interface.  The present
+work fixes the target of that convergence exactly; it does not prove the convergence.
 
 ## Gates
 
@@ -459,6 +467,15 @@ the convergence.
 - [x] diagonal spectrum `(22)` identified in Lean with the `1/k`-scaled measure tail
 - [ ] weak convergence `nu_lambda -> nu_infinity` `(4)` in Lean
 - [ ] fixed off-diagonal vanishing `(23)` in Lean
-- [ ] simultaneous weighted off-diagonal limit
+- [x] simultaneous weighted off-diagonal limit — **completed elsewhere**, in
+  `../not_new_scientific_knowledge/ccm-exact-radial-nonstationary-sector-bound.md`,
+  equations `(8)`--`(10)`: the uniform bound `|G_lambda(j,k)| <= C d_1/(c j k |j-k|)` for
+  `j,k >= 2`, the row estimate `sum_(j>=2;j!=k) 1/(j k |j-k|) <= C(1+log k)/k^2`, and the
+  divisor-weighted total `O(d_1/c) = o(d_1)`.  The surviving sector is only the first row
+  `-2 sum_(k>=2) log(k) G_lambda(1,k)`, whose hybrid transfer uniform through `k/c` is the
+  live item.  The arithmetic-summation layer is formalized in
+  `RHTower/RadialGramOffDiagonalDecay.lean` (axiom-clean).
+  This gate was left stale and caused one duplicated attack; see
+  `../../5-failed/ccm-radial-offdiagonal-rediscovery-and-stale-gate.md`.
 - [ ] exact central graph-domain cancellation
 - [ ] true Weil Rayleigh-excess and parity transfer

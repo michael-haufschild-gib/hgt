@@ -1,9 +1,9 @@
-Nome rank exactly classifies every finite Nishizawa period tuple
+- Augmented rational period rank classifies every finite multiple elliptic gamma function as differentially algebraic or hypertranscendental.
 
-All exceptional non-rational differentially algebraic tuples are identified
+- One rank-three period pair controls every finite section of every ambient family; otherwise all periods lie on one rational affine line.
 
-Shift defects and quotients form the pointed period-coset matroid
+- Every occupation sector retaining one-particle states has exactly the one-particle positive Schatten spectrum and Hagedorn boundary.
 
-Differential transcendence degree equals occupied nonzero period classes
+- Full bosonic occupation mass is a directed Euler product, yielding an entire enumeration-free infinite-mode determinant at every admissible genus.
 
-The rank-three obstruction propagates through every higher order
+- Adjoining any mode obeys exact coface recursion; changing genus adds a finite local counterterm without changing the zero set.

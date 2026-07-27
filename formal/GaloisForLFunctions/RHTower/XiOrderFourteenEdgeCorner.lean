@@ -31,15 +31,72 @@ strictly positive fifteenth reciprocal power.  This is the exact complex-sector 
 by the order-fourteen radial source. -/
 theorem orderFifteenReciprocalPower_re_pos_of_sectorRatio
     {A B : ℝ} (hA : 0 < A) (hsector : 100 * B ^ 2 < A ^ 2) :
-    0 < ((((A : ℂ) - B * I)⁻¹) ^ 15).re := by
-  refine GaloisForLFunctions.HTGeometry.re_inv_sub_mul_I_pow_pos
-    (t := 1 / 10) hA ?_ ?_
-  · have hsq : (10 * B) ^ 2 < A ^ 2 := by nlinarith
-    have h := abs_lt_of_sq_lt_sq hsq hA.le
-    norm_num [abs_mul] at h
-    nlinarith
-  · norm_num
-    nlinarith [Real.pi_gt_d20]
+    0 < ((((A : ℂ) - B * I)⁻¹) ^ 15).re :=
+  GaloisForLFunctions.HTGeometry.re_inv_sub_mul_I_pow_pos_of_sq_lt (t := 1 / 10) hA
+    (by norm_num) (by norm_num) hsector (by norm_num; nlinarith [Real.pi_gt_d20])
+
+/-- A nonzero centered horizontal square is exactly an off-critical real part. -/
+theorem re_ne_half_of_pos_centered_sq {x : ℝ} (h : 0 < (x - 1 / 2) ^ 2) : x ≠ 1 / 2 := by
+  intro hx
+  rw [hx] at h
+  norm_num at h
+
+/-- **A nonpositive reciprocal power falls into the sector-failure window.**  At a Xi zero the
+radial coordinate `A = im² - (re - 1/2)² + y` is positive for every `y > 1/4`, because the strip
+keeps `(re - 1/2)² < 1/4`.  A positivity criterion `hcrit` then makes a nonpositive real part of
+`((A - B i)⁻¹) ^ n` refute the sector ratio `N B² < A²`, and whatever conclusion `hwindow` draws
+from that failure holds.  Order, sector constant and window are all parameters, so this is the
+single law behind every order's reciprocal-power reduction. -/
+theorem xiZeroCopy_reciprocalPower_nonpos_of_sector {n : ℕ} {N y : ℝ} {W : Prop}
+    (q : XiZeroCopy) (hy : 1 / 4 < y)
+    (hcrit : ∀ A B : ℝ, 0 < A → N * B ^ 2 < A ^ 2 →
+      0 < ((((A : ℂ) - B * I)⁻¹) ^ n).re)
+    (hwindow :
+      ((q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2 + y) ^ 2 ≤
+        N * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ 2 → W)
+    (hnonpos :
+      let A : ℝ := (q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2 + y
+      let B : ℝ := 2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im
+      ((((A : ℂ) - B * I)⁻¹) ^ n).re ≤ 0) :
+    W := by
+  have hA : 0 < (q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2 + y := by
+    have hu := xi_divisor_support_centered_re_sq_lt_quarter q.1
+    nlinarith [sq_nonneg (q.1 : ℂ).im]
+  exact hwindow
+    (GaloisForLFunctions.HTGeometry.sq_le_of_re_inv_sub_mul_I_pow_nonpos
+      (fun h => hcrit _ _ hA h) hnonpos)
+
+/-- **Reciprocal-power positivity from an empty window.**  On the critical line the transverse
+coordinate `B` vanishes and `A = im² + y` is positive, so the sector ratio is trivial.  Off it, a
+nonpositive real part would place the zero in the window `W`, and `W` is empty.  The real part is
+therefore positive at every Xi zero, for whatever order and sector constant `hcrit` supplies. -/
+theorem xiZeroCopy_reciprocalPower_re_pos_of_window_empty {n : ℕ} {N y : ℝ} {W : Prop}
+    (q : XiZeroCopy) (hy : 1 / 4 < y)
+    (hcrit : ∀ A B : ℝ, 0 < A → N * B ^ 2 < A ^ 2 →
+      0 < ((((A : ℂ) - B * I)⁻¹) ^ n).re)
+    (hcorner : (q.1 : ℂ).re ≠ 1 / 2 →
+      (let A : ℝ := (q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2 + y
+       let B : ℝ := 2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im
+       ((((A : ℂ) - B * I)⁻¹) ^ n).re ≤ 0) → W)
+    (hempty : ¬ W) :
+    let A : ℝ := (q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2 + y
+    let B : ℝ := 2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im
+    0 < ((((A : ℂ) - B * I)⁻¹) ^ n).re := by
+  intro A B
+  by_cases hoff : (q.1 : ℂ).re = 1 / 2
+  · have hB : B = 0 := by
+      show 2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im = 0
+      rw [hoff]
+      ring
+    have hA : 0 < A := by
+      show 0 < (q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2 + y
+      rw [hoff]
+      nlinarith [sq_nonneg (q.1 : ℂ).im]
+    refine hcrit A B hA ?_
+    rw [hB]
+    simpa using pow_pos hA 2
+  · by_contra hnot
+    exact hempty (hcorner hoff (not_lt.mp hnot))
 
 /-- Off the critical line, the central four-fifths of the critical strip satisfies the rational
 order-fifteen sector certificate at every absolute-Euler squared coordinate. -/
@@ -49,27 +106,9 @@ theorem xiOrderFifteenSectorRatio_of_offLine_inner
     {y : ℝ} (hy : 1 / 4 < y) :
     100 * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ 2 <
       ((q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2 + y) ^ 2 := by
-  let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ 2
-  let v : ℝ := (q.1 : ℂ).im ^ 2
-  let A : ℝ := v - u + y
-  let B : ℝ := 2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im
-  have hu : u ≤ 1 / 5 := by simpa only [u] using hinner
-  have hv : 85 < v := by
-    simpa only [v] using xiZeroCopy_offLine_eightyFive_lt_im_sq q hoff
-  have hv0 : 0 < v := by linarith
-  have hA : v < A := by
-    dsimp only [A]
-    nlinarith
-  have hB : B ^ 2 = 4 * u * v := by
-    dsimp only [B, u, v]
-    ring
-  have hBbound : 100 * B ^ 2 ≤ 80 * v := by
-    rw [hB]
-    nlinarith
-  have hheight : 80 * v < v ^ 2 := by nlinarith
-  have hAsq : v ^ 2 < A ^ 2 := by nlinarith
-  change 100 * B ^ 2 < A ^ 2
-  linarith
+  exact GaloisForLFunctions.HTGeometry.sector_ratio_of_corner (N := 100) (u₀ := 1 / 5)
+    (v₀ := 85) (y₀ := 1 / 4) (by norm_num) hy.le hinner
+    (xiZeroCopy_offLine_eightyFive_lt_im_sq q hoff).le (by norm_num) (by norm_num)
 
 /-- Every Xi zero above squared height `100` satisfies the rational order-fifteen sector
 certificate at every absolute-Euler squared coordinate. -/
@@ -78,29 +117,10 @@ theorem xiOrderFifteenSectorRatio_of_hundred_le_im_sq
     {y : ℝ} (hy : 1 / 4 < y) :
     100 * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ 2 <
       ((q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2 + y) ^ 2 := by
-  let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ 2
-  let v : ℝ := (q.1 : ℂ).im ^ 2
-  let A : ℝ := v - u + y
-  let B : ℝ := 2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im
-  have hstrip := xi_divisor_support_re_mem_open_unit q.1
-  have hu : u < 1 / 4 := by
-    dsimp only [u]
-    nlinarith [mul_pos hstrip.1 (sub_pos.mpr hstrip.2)]
-  have hv : 100 ≤ v := by simpa only [v] using hhigh
-  have hv0 : 0 < v := by linarith
-  have hA : v < A := by
-    dsimp only [A]
-    nlinarith
-  have hB : B ^ 2 = 4 * u * v := by
-    dsimp only [B, u, v]
-    ring
-  have hBbound : 100 * B ^ 2 < 100 * v := by
-    rw [hB]
-    nlinarith
-  have hheight : 100 * v ≤ v ^ 2 := by nlinarith
-  have hAsq : v ^ 2 < A ^ 2 := by nlinarith
-  change 100 * B ^ 2 < A ^ 2
-  linarith
+  exact GaloisForLFunctions.HTGeometry.sector_ratio_of_corner_of_lt_width (N := 100)
+    (u₀ := 1 / 4) (v₀ := 100) (y₀ := 1 / 4) (by norm_num) hy.le
+    (xi_divisor_support_centered_re_sq_lt_quarter q.1) hhigh (by norm_num) (by norm_num)
+    (by norm_num)
 
 /-- **Exact compact-edge reduction.**  If an off-critical Xi zero fails the rational
 order-fifteen sector certificate at `y > 1/4`, then its centered real square lies strictly between
@@ -114,23 +134,10 @@ theorem xiOrderFifteenSectorFailure_mem_edgeCorner
     (1 / 5 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ 2 ∧
       ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4 ∧
       85 < (q.1 : ℂ).im ^ 2 ∧
-      (q.1 : ℂ).im ^ 2 < 100 := by
-  have hedge : (1 / 5 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ 2 := by
-    by_contra h
-    have hsector := xiOrderFifteenSectorRatio_of_offLine_inner q hoff
-      (le_of_not_gt h) hy
-    linarith
-  have hstrip := xi_divisor_support_re_mem_open_unit q.1
-  have hu : ((q.1 : ℂ).re - 1 / 2) ^ 2 < (1 / 4 : ℝ) := by
-    nlinarith [mul_pos hstrip.1 (sub_pos.mpr hstrip.2)]
-  have hvlow : 85 < (q.1 : ℂ).im ^ 2 :=
-    xiZeroCopy_offLine_eightyFive_lt_im_sq q hoff
-  have hvhigh : (q.1 : ℂ).im ^ 2 < 100 := by
-    by_contra h
-    have hsector := xiOrderFifteenSectorRatio_of_hundred_le_im_sq q
-      (le_of_not_gt h) hy
-    linarith
-  exact ⟨hedge, hu, hvlow, hvhigh⟩
+      (q.1 : ℂ).im ^ 2 < 100 :=
+  xiZeroCopy_sectorFailure_mem_edgeCorner q hoff
+    (fun h => xiOrderFifteenSectorRatio_of_offLine_inner q hoff h hy)
+    (fun h => xiOrderFifteenSectorRatio_of_hundred_le_im_sq q h hy) hfail
 
 /-- **Actual order-fifteen atom reduction.**  A nonpositive fifteenth reciprocal-power atom from
 an off-critical Xi zero at `y > 1/4` must come from the exact compact edge corner. -/
@@ -144,27 +151,10 @@ theorem xiOrderFifteenReciprocalPower_nonpos_mem_edgeCorner
     (1 / 5 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ 2 ∧
       ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4 ∧
       85 < (q.1 : ℂ).im ^ 2 ∧
-      (q.1 : ℂ).im ^ 2 < 100 := by
-  let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ 2
-  let v : ℝ := (q.1 : ℂ).im ^ 2
-  let A : ℝ := v - u + y
-  let B : ℝ := 2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im
-  have hstrip := xi_divisor_support_re_mem_open_unit q.1
-  have hu : u < 1 / 4 := by
-    dsimp only [u]
-    nlinarith [mul_pos hstrip.1 (sub_pos.mpr hstrip.2)]
-  have hv0 : 0 ≤ v := by dsimp only [v]; positivity
-  have hA : 0 < A := by
-    dsimp only [A]
-    nlinarith
-  have hfail : A ^ 2 ≤ 100 * B ^ 2 := by
-    by_contra h
-    have hsector : 100 * B ^ 2 < A ^ 2 := lt_of_not_ge h
-    have hpos := orderFifteenReciprocalPower_re_pos_of_sectorRatio hA hsector
-    change ((((A : ℂ) - B * I)⁻¹) ^ 15).re ≤ 0 at hnonpos
-    linarith
-  apply xiOrderFifteenSectorFailure_mem_edgeCorner q hoff hy
-  simpa only [A, B, u, v] using hfail
+      (q.1 : ℂ).im ^ 2 < 100 :=
+  xiZeroCopy_reciprocalPower_nonpos_of_sector q hy
+    (fun _ _ hA h => orderFifteenReciprocalPower_re_pos_of_sectorRatio hA h)
+    (xiOrderFifteenSectorFailure_mem_edgeCorner q hoff hy) hnonpos
 
 end
 

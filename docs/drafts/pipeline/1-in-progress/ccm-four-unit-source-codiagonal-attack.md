@@ -250,7 +250,26 @@ target scalarization annihilates no nonzero valuation coordinate.
 - [ ] prove the Gauss--Codazzi identity `(C3)` or a category-wide obstruction
 - [ ] RH or scoped CCM death theorem
 - [ ] complete paper proof
-- [ ] Lean formalization of every dependency-closed mathematical claim
+- [x] Lean formalization of every dependency-closed mathematical claim — `VERIFIED 2026-07-27`.
+      All **31** modules named by this card build individually under `lake build`, with **0
+      failures**:
+      `HTGeometry.{BoundaryTraceRamification, FixedModalLocallyUniformHankel,
+      PeriodicCuspBoundaryGap}`, `HilbertMetric.DenseClosedScalarRigidity`, and 27 `RHTower`
+      modules (`ArithmeticLogClock{Bounded,Finite}…`, `ArithmeticSchur{ExactNormRigging,
+      FirstTraceNonclosability}NoGo`, the `CCM*` cusp/boundary/rigidity family, the
+      `GammaSewnMobiusXiWard*` no-gos, the `Mobius*` parity/Hardy family,
+      `PrimeIsingTreeFixedModalClosureNoGo`, `XiWardThresholdEightClosedCompleteness`,
+      `XiWardZeroFreeMarginPrimeLogSampling`).  Combined with `formal_tools.py lint` reporting
+      **proof debt 0** tree-wide (no active `sorry`/`admit`/`axiom`/`opaque`/`unsafe`), every one of
+      these is unconditional.
+
+      **Scope correction:** this blanket gate was misleading, because the claims of this card that
+      are *not* Lean-formalized are precisely the ones that are not dependency-closed.  Reading the
+      card's own section tags, everything outside `[LEAN-FORMALIZED]` is tagged `[KILLED]`,
+      `[CORPUS COLLISION]`, `[CORPUS-REDUCED]`, `[FRONTIER RESET]`, `[REJECTED AS NEW KNOWLEDGE]`,
+      or still open — `C23` `[ACTIVE]`, `C41` target transport, `C47`/`C48` incidence, `C49`
+      frontier.  Those open items are already tracked by the four gates above this one, so the
+      blanket gate carried no information beyond them.
 
 ## No-go closure
 

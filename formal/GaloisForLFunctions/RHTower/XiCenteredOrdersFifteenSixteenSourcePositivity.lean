@@ -124,10 +124,8 @@ theorem not_exists_xiZeroCopy_mem_centeredOrderSeventeen_sourceCorner :
       85 < (q.1 : ℂ).im ^ 2 ∧
       (q.1 : ℂ).im ^ 2 < 119 := by
   rintro ⟨q, huLower, huUpper, hvLower, hvUpper⟩
-  have hoff : (q.1 : ℂ).re ≠ 1 / 2 := by
-    intro h
-    rw [h] at huLower
-    norm_num at huLower
+  have hoff : (q.1 : ℂ).re ≠ 1 / 2 :=
+    re_ne_half_of_pos_centered_sq (by linarith)
   have hle := four_mul_xiFourthReciprocalTraceAtom_le_source_of_offLine q hoff
   have hatom :=
     one_over_twentyThousand_lt_xiFourthReciprocalTraceAtom_of_centered_orderSeventeenRange
@@ -142,49 +140,19 @@ theorem xiCenteredOrderSixteenSectorRatio_of_offLine_inner
     (hinner : ((q.1 : ℂ).re - 1 / 2) ^ 2 ≤ (1 / 6 : ℝ)) :
     104 * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ 2 <
       ((q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2) ^ 2 := by
-  let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ 2
-  let v : ℝ := (q.1 : ℂ).im ^ 2
-  let A : ℝ := v - u
-  let B : ℝ := 2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im
-  have hu : u ≤ 1 / 6 := by simpa only [u] using hinner
-  have hv : 85 < v := by
-    simpa only [v] using xiZeroCopy_offLine_eightyFive_lt_im_sq q hoff
-  have hA : 509 / 6 < A := by dsimp only [A]; nlinarith
-  have hB : B ^ 2 = 4 * u * v := by dsimp only [B, u, v]; ring
-  have hBbound : 104 * B ^ 2 ≤ (208 / 3 : ℝ) * v := by rw [hB]; nlinarith
-  have hfactor : 0 < A + 509 / 6 - 208 / 3 := by nlinarith
-  have hprod : 0 < (A - 509 / 6) * (A + 509 / 6 - 208 / 3) :=
-    mul_pos (sub_pos.mpr hA) hfactor
-  have hpoly : (208 / 3 : ℝ) * (A + 1 / 6) < A ^ 2 := by nlinarith
-  have hvA : v ≤ A + 1 / 6 := by dsimp only [A]; nlinarith
-  change 104 * B ^ 2 < A ^ 2
-  nlinarith
+  simpa only [add_zero] using
+    GaloisForLFunctions.HTGeometry.sector_ratio_of_corner (N := 104) (u₀ := 1 / 6)
+      (v₀ := 85) (y₀ := 0) (y := 0) (by norm_num) le_rfl hinner
+      (xiZeroCopy_offLine_eightyFive_lt_im_sq q hoff).le (by norm_num) (by norm_num)
 
 theorem xiCenteredOrderSixteenSectorRatio_of_oneHundredFive_le_im_sq
     (q : XiZeroCopy) (hhigh : 105 ≤ (q.1 : ℂ).im ^ 2) :
     104 * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ 2 <
       ((q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2) ^ 2 := by
-  let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ 2
-  let v : ℝ := (q.1 : ℂ).im ^ 2
-  let A : ℝ := v - u
-  let B : ℝ := 2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im
-  have hstrip := xi_divisor_support_re_mem_open_unit q.1
-  have hu : u < 1 / 4 := by
-    dsimp only [u]
-    nlinarith [mul_pos hstrip.1 (sub_pos.mpr hstrip.2)]
-  have hv : 105 ≤ v := by simpa only [v] using hhigh
-  have hB : B ^ 2 = 4 * u * v := by dsimp only [B, u, v]; ring
-  have hBbound : 104 * B ^ 2 < 104 * v := by rw [hB]; nlinarith
-  have hprod : 0 ≤ (v - 105) * (v + 211 / 2 - 209 / 2) :=
-    mul_nonneg (sub_nonneg.mpr hv) (by nlinarith)
-  have hbase : 104 * v < (v - 1 / 4) ^ 2 := by nlinarith
-  have hA0 : 0 < A := by dsimp only [A]; nlinarith
-  have hleft : 0 < v - 1 / 4 := by nlinarith
-  have hlt : v - 1 / 4 < A := by dsimp only [A]; nlinarith
-  have hAsq : (v - 1 / 4) ^ 2 < A ^ 2 := by
-    nlinarith [mul_pos (sub_pos.mpr hlt) (add_pos hleft hA0)]
-  change 104 * B ^ 2 < A ^ 2
-  linarith
+  simpa only [add_zero] using
+    GaloisForLFunctions.HTGeometry.sector_ratio_of_corner (N := 104) (u₀ := 1 / 4)
+      (v₀ := 105) (y₀ := 0) (y := 0) (by norm_num) le_rfl
+      (xi_divisor_support_centered_re_sq_lt_quarter q.1).le hhigh (by norm_num) (by norm_num)
 
 theorem xiCenteredOrderSixteenSectorFailure_mem_edgeCorner
     (q : XiZeroCopy) (hoff : (q.1 : ℂ).re ≠ 1 / 2)
@@ -194,56 +162,19 @@ theorem xiCenteredOrderSixteenSectorFailure_mem_edgeCorner
     (1 / 6 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ 2 ∧
       ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4 ∧
       85 < (q.1 : ℂ).im ^ 2 ∧
-      (q.1 : ℂ).im ^ 2 < 105 := by
-  have hedge : (1 / 6 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ 2 := by
-    by_contra h
-    linarith [xiCenteredOrderSixteenSectorRatio_of_offLine_inner
-      q hoff (le_of_not_gt h)]
-  have hstrip := xi_divisor_support_re_mem_open_unit q.1
-  have hu : ((q.1 : ℂ).re - 1 / 2) ^ 2 < (1 / 4 : ℝ) := by
-    nlinarith [mul_pos hstrip.1 (sub_pos.mpr hstrip.2)]
-  have hvlow := xiZeroCopy_offLine_eightyFive_lt_im_sq q hoff
-  have hvhigh : (q.1 : ℂ).im ^ 2 < 105 := by
-    by_contra h
-    linarith [xiCenteredOrderSixteenSectorRatio_of_oneHundredFive_le_im_sq
-      q (le_of_not_gt h)]
-  exact ⟨hedge, hu, hvlow, hvhigh⟩
+      (q.1 : ℂ).im ^ 2 < 105 :=
+  xiZeroCopy_sectorFailure_mem_edgeCorner q hoff
+    (fun h => xiCenteredOrderSixteenSectorRatio_of_offLine_inner q hoff h)
+    (fun h => xiCenteredOrderSixteenSectorRatio_of_oneHundredFive_le_im_sq q h) hfail
 
 /-- Every centered reciprocal-square Xi atom has positive sixteenth-power real part. -/
 theorem xiZeroCopyReciprocalSquare_pow_sixteen_re_pos (q : XiZeroCopy) :
-    0 < (xiZeroCopyReciprocalSquare q ^ 16).re := by
-  rw [xiZeroCopyReciprocalSquare_eq_centeredOrderCoordinate]
-  let A : ℝ := (q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2
-  let B : ℝ := 2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im
-  change 0 < ((((A : ℂ) - B * I)⁻¹) ^ 16).re
-  by_cases hoff : (q.1 : ℂ).re = 1 / 2
-  · have hA : 0 < A := by
-      dsimp only [A]
-      rw [hoff]
-      norm_num
-      exact sq_pos_of_ne_zero (xi_divisor_support_im_ne_zero q.1)
-    apply orderSixteenReciprocalPower_re_pos_of_sectorRatio hA
-    dsimp only [A, B]
-    rw [hoff]
-    norm_num
-    nlinarith [sq_pos_of_ne_zero (xi_divisor_support_im_ne_zero q.1)]
-  · by_contra hnot
-    have hstrip := xi_divisor_support_re_mem_open_unit q.1
-    have hu : ((q.1 : ℂ).re - 1 / 2) ^ 2 < (1 / 4 : ℝ) := by
-      nlinarith [mul_pos hstrip.1 (sub_pos.mpr hstrip.2)]
-    have hv := xiZeroCopy_offLine_eightyFive_lt_im_sq q hoff
-    have hA : 0 < A := by dsimp only [A]; nlinarith
-    have hfail : A ^ 2 ≤ 104 * B ^ 2 := by
-      by_contra h
-      have hpos :=
-        orderSixteenReciprocalPower_re_pos_of_sectorRatio hA (lt_of_not_ge h)
-      have hnonpos : ((((A : ℂ) - B * I)⁻¹) ^ 16).re ≤ 0 :=
-        le_of_not_gt hnot
-      linarith
-    have hc := xiCenteredOrderSixteenSectorFailure_mem_edgeCorner q hoff
-      (by simpa only [A, B] using hfail)
-    exact not_exists_xiZeroCopy_mem_centeredOrderSeventeen_sourceCorner
-      ⟨q, hc.1, hc.2.1, hc.2.2.1, hc.2.2.2.trans (by norm_num)⟩
+    0 < (xiZeroCopyReciprocalSquare q ^ 16).re :=
+  xiZeroCopyReciprocalSquare_pow_re_pos_of_window_empty q
+    (fun _ _ hA h => orderSixteenReciprocalPower_re_pos_of_sectorRatio hA h)
+    (fun hoff hfail => xiCenteredOrderSixteenSectorFailure_mem_edgeCorner q hoff hfail)
+    (fun hc => not_exists_xiZeroCopy_mem_centeredOrderSeventeen_sourceCorner
+      ⟨q, hc.1, hc.2.1, hc.2.2.1, hc.2.2.2.trans (by norm_num)⟩)
 
 /-! ### Centered order seventeen -/
 
@@ -252,49 +183,19 @@ theorem xiCenteredOrderSeventeenSectorRatio_of_offLine_inner
     (hinner : ((q.1 : ℂ).re - 1 / 2) ^ 2 ≤ (1 / 6 : ℝ)) :
     118 * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ 2 <
       ((q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2) ^ 2 := by
-  let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ 2
-  let v : ℝ := (q.1 : ℂ).im ^ 2
-  let A : ℝ := v - u
-  let B : ℝ := 2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im
-  have hu : u ≤ 1 / 6 := by simpa only [u] using hinner
-  have hv : 85 < v := by
-    simpa only [v] using xiZeroCopy_offLine_eightyFive_lt_im_sq q hoff
-  have hA : 509 / 6 < A := by dsimp only [A]; nlinarith
-  have hB : B ^ 2 = 4 * u * v := by dsimp only [B, u, v]; ring
-  have hBbound : 118 * B ^ 2 ≤ (236 / 3 : ℝ) * v := by rw [hB]; nlinarith
-  have hfactor : 0 < A + 509 / 6 - 236 / 3 := by nlinarith
-  have hprod : 0 < (A - 509 / 6) * (A + 509 / 6 - 236 / 3) :=
-    mul_pos (sub_pos.mpr hA) hfactor
-  have hpoly : (236 / 3 : ℝ) * (A + 1 / 6) < A ^ 2 := by nlinarith
-  have hvA : v ≤ A + 1 / 6 := by dsimp only [A]; nlinarith
-  change 118 * B ^ 2 < A ^ 2
-  nlinarith
+  simpa only [add_zero] using
+    GaloisForLFunctions.HTGeometry.sector_ratio_of_corner (N := 118) (u₀ := 1 / 6)
+      (v₀ := 85) (y₀ := 0) (y := 0) (by norm_num) le_rfl hinner
+      (xiZeroCopy_offLine_eightyFive_lt_im_sq q hoff).le (by norm_num) (by norm_num)
 
 theorem xiCenteredOrderSeventeenSectorRatio_of_oneHundredNineteen_le_im_sq
     (q : XiZeroCopy) (hhigh : 119 ≤ (q.1 : ℂ).im ^ 2) :
     118 * (2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im) ^ 2 <
       ((q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2) ^ 2 := by
-  let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ 2
-  let v : ℝ := (q.1 : ℂ).im ^ 2
-  let A : ℝ := v - u
-  let B : ℝ := 2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im
-  have hstrip := xi_divisor_support_re_mem_open_unit q.1
-  have hu : u < 1 / 4 := by
-    dsimp only [u]
-    nlinarith [mul_pos hstrip.1 (sub_pos.mpr hstrip.2)]
-  have hv : 119 ≤ v := by simpa only [v] using hhigh
-  have hB : B ^ 2 = 4 * u * v := by dsimp only [B, u, v]; ring
-  have hBbound : 118 * B ^ 2 < 118 * v := by rw [hB]; nlinarith
-  have hprod : 0 ≤ (v - 119) * (v + 119 - 237 / 2) :=
-    mul_nonneg (sub_nonneg.mpr hv) (by nlinarith)
-  have hbase : 118 * v < (v - 1 / 4) ^ 2 := by nlinarith
-  have hA0 : 0 < A := by dsimp only [A]; nlinarith
-  have hleft : 0 < v - 1 / 4 := by nlinarith
-  have hlt : v - 1 / 4 < A := by dsimp only [A]; nlinarith
-  have hAsq : (v - 1 / 4) ^ 2 < A ^ 2 := by
-    nlinarith [mul_pos (sub_pos.mpr hlt) (add_pos hleft hA0)]
-  change 118 * B ^ 2 < A ^ 2
-  linarith
+  simpa only [add_zero] using
+    GaloisForLFunctions.HTGeometry.sector_ratio_of_corner (N := 118) (u₀ := 1 / 4)
+      (v₀ := 119) (y₀ := 0) (y := 0) (by norm_num) le_rfl
+      (xi_divisor_support_centered_re_sq_lt_quarter q.1).le hhigh (by norm_num) (by norm_num)
 
 theorem xiCenteredOrderSeventeenSectorFailure_mem_edgeCorner
     (q : XiZeroCopy) (hoff : (q.1 : ℂ).re ≠ 1 / 2)
@@ -304,55 +205,18 @@ theorem xiCenteredOrderSeventeenSectorFailure_mem_edgeCorner
     (1 / 6 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ 2 ∧
       ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4 ∧
       85 < (q.1 : ℂ).im ^ 2 ∧
-      (q.1 : ℂ).im ^ 2 < 119 := by
-  have hedge : (1 / 6 : ℝ) < ((q.1 : ℂ).re - 1 / 2) ^ 2 := by
-    by_contra h
-    linarith [xiCenteredOrderSeventeenSectorRatio_of_offLine_inner
-      q hoff (le_of_not_gt h)]
-  have hstrip := xi_divisor_support_re_mem_open_unit q.1
-  have hu : ((q.1 : ℂ).re - 1 / 2) ^ 2 < (1 / 4 : ℝ) := by
-    nlinarith [mul_pos hstrip.1 (sub_pos.mpr hstrip.2)]
-  have hvlow := xiZeroCopy_offLine_eightyFive_lt_im_sq q hoff
-  have hvhigh : (q.1 : ℂ).im ^ 2 < 119 := by
-    by_contra h
-    linarith [xiCenteredOrderSeventeenSectorRatio_of_oneHundredNineteen_le_im_sq
-      q (le_of_not_gt h)]
-  exact ⟨hedge, hu, hvlow, hvhigh⟩
+      (q.1 : ℂ).im ^ 2 < 119 :=
+  xiZeroCopy_sectorFailure_mem_edgeCorner q hoff
+    (fun h => xiCenteredOrderSeventeenSectorRatio_of_offLine_inner q hoff h)
+    (fun h => xiCenteredOrderSeventeenSectorRatio_of_oneHundredNineteen_le_im_sq q h) hfail
 
 /-- Every centered reciprocal-square Xi atom has positive seventeenth-power real part. -/
 theorem xiZeroCopyReciprocalSquare_pow_seventeen_re_pos (q : XiZeroCopy) :
-    0 < (xiZeroCopyReciprocalSquare q ^ 17).re := by
-  rw [xiZeroCopyReciprocalSquare_eq_centeredOrderCoordinate]
-  let A : ℝ := (q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2
-  let B : ℝ := 2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im
-  change 0 < ((((A : ℂ) - B * I)⁻¹) ^ 17).re
-  by_cases hoff : (q.1 : ℂ).re = 1 / 2
-  · have hA : 0 < A := by
-      dsimp only [A]
-      rw [hoff]
-      norm_num
-      exact sq_pos_of_ne_zero (xi_divisor_support_im_ne_zero q.1)
-    apply orderSeventeenReciprocalPower_re_pos_of_sectorRatio hA
-    dsimp only [A, B]
-    rw [hoff]
-    norm_num
-    nlinarith [sq_pos_of_ne_zero (xi_divisor_support_im_ne_zero q.1)]
-  · by_contra hnot
-    have hstrip := xi_divisor_support_re_mem_open_unit q.1
-    have hu : ((q.1 : ℂ).re - 1 / 2) ^ 2 < (1 / 4 : ℝ) := by
-      nlinarith [mul_pos hstrip.1 (sub_pos.mpr hstrip.2)]
-    have hv := xiZeroCopy_offLine_eightyFive_lt_im_sq q hoff
-    have hA : 0 < A := by dsimp only [A]; nlinarith
-    have hfail : A ^ 2 ≤ 118 * B ^ 2 := by
-      by_contra h
-      have hpos :=
-        orderSeventeenReciprocalPower_re_pos_of_sectorRatio hA (lt_of_not_ge h)
-      have hnonpos : ((((A : ℂ) - B * I)⁻¹) ^ 17).re ≤ 0 :=
-        le_of_not_gt hnot
-      linarith
-    have hc := xiCenteredOrderSeventeenSectorFailure_mem_edgeCorner q hoff
-      (by simpa only [A, B] using hfail)
-    exact not_exists_xiZeroCopy_mem_centeredOrderSeventeen_sourceCorner ⟨q, hc⟩
+    0 < (xiZeroCopyReciprocalSquare q ^ 17).re :=
+  xiZeroCopyReciprocalSquare_pow_re_pos_of_window_empty q
+    (fun _ _ hA h => orderSeventeenReciprocalPower_re_pos_of_sectorRatio hA h)
+    (fun hoff hfail => xiCenteredOrderSeventeenSectorFailure_mem_edgeCorner q hoff hfail)
+    (fun hc => not_exists_xiZeroCopy_mem_centeredOrderSeventeen_sourceCorner ⟨q, hc⟩)
 
 /-- Atomwise positivity of one centered reciprocal-square power implies positivity of the
 corresponding normalized prime--archimedean moment. -/

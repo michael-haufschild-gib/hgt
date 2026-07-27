@@ -1249,3 +1249,294 @@ paper-level.  No duplicate Lean wrapper is warranted.
   What remains for the card's (P4) is the three inputs at `G = F W`: holomorphy on
   `Theta_chi + eps <= Re s <= sigma` (from `LFunction_ne_zero_of_zeroAbscissa_lt`), edge
   integrability, and horizontal decay.
+- 2026-07-27 — **Horizontal-edge inputs for (P4).**  Two additions, both axiom-clean:
+  - `HTGeometry/SmoothWeightInversion.lean` :
+    **`exists_bound_mellin_smoothWeight_horizontal`** — for every `j` and `sigma_max`,
+    `|Im s|^{j+1} ‖W(s)‖ <= C` on the whole strip `0 < Re s <= sigma_max`, **uniformly in the real
+    part**.  Every factor of the integration-by-parts product satisfies
+    `‖s+1+i‖ >= |(s+1+i).im| = |Im s|`, so the `j`-th bound already contains `|Im s|^{j+1}`.
+    This is the decay statement needed on *horizontal* segments, where `Re s` moves and `Im s` is
+    the large parameter.
+  - `HTGeometry/VerticalContourShift.lean` :
+    `tendsto_intervalIntegral_of_tendsto_bound` — a uniform bound on the segment that tends to `0`
+    forces the segment integral to tend to `0` (`norm_integral_le_of_norm_le_const` + squeeze).
+  Together with the contour-shift theorem these reduce the card's (P4) to a single remaining
+  ingredient: a polynomial bound for `1/L(chi,s)` on the strip, which the corpus already has as
+  `exists_lower_bound_right_of_abscissa` — the product `|Im s|^{j+1}` beats it once `j` exceeds the
+  polynomial degree, which is exactly why the smoothing was introduced.
+- 2026-07-27 — **Arbitrary-order line decay.**  Appended to `HTGeometry/SmoothWeightInversion.lean`,
+  axiom-clean: **`exists_bound_mellin_smoothWeight_line_pow`** — for every `m` and every
+  `sigma > 0` there is a `C` with
+  `‖W(sigma+iy)‖ <= C ((1+y^2)^m)^{-1}` for all real `y`.
+  Take `j = 2m` in the integration-by-parts bound; each factor satisfies `‖s+1+i‖ >= ‖s‖` (the real
+  part only grows), so the bound reads `‖s‖^{2m+1} ‖W(s)‖ <= C`, and
+  `‖s‖^2 = sigma^2+y^2 >= min(sigma^2,1)(1+y^2)`.
+  This supersedes `exists_bound_mellin_smoothWeight_line` (the case `m = 1`) and is the form the
+  contour shift needs: the edge integrand `W(s)/L(chi,s)` is dominated by
+  `(2+|y|)^A ((1+y^2)^m)^{-1}`, integrable as soon as `2m > A+1`.  Since `A` is a *fixed* constant
+  coming from `exists_lower_bound_right_of_abscissa` and `m` is free, integrability on both edges
+  is now a matter of choosing `m` — no further analysis of `L` is required.
+- 2026-07-27 — **Edge-integrability criterion.**  New module
+  `HTGeometry/PolynomialDecayIntegrable.lean`, axiom-clean, wired into the umbrella:
+  **`integrable_rpow_mul_inv_pow`** — for `0 <= A` and `A + 1 < 2m`,
+  `y |-> (2+|y|)^A ((1+y^2)^m)^{-1}` is integrable on the line.
+  Proof: dominate by `2^A 2^m (1+|y|)^{-(2m-A)}` using `2+|y| <= 2(1+|y|)` and
+  `(1+|y|)^2 <= 2(1+y^2)`, then apply mathlib's `integrable_one_add_norm` (Japanese bracket), whose
+  hypothesis in dimension one is exactly `1 < 2m - A`.
+  This is the exact shape of the contour-shift edge integrand: `‖W(c+iy)/L(chi,c+iy)‖` is bounded
+  by `(1/K)(2+|y|)^A` times `C ((1+y^2)^m)^{-1}`, with `A` fixed by
+  `exists_lower_bound_right_of_abscissa` and `m` free.  **Both edges of the (P4) rectangle are
+  therefore integrable for any `m > (A+1)/2`** — the last purely analytic obstruction to the
+  contour shift is removed; what remains is bookkeeping (holomorphy of the quotient on the strip
+  and the horizontal limit, both already reduced to corpus lemmas).
+- 2026-07-27 — **(P4) done in general form.**  New module `HTGeometry/SmoothWeightShift.lean`,
+  axiom-clean, wired into the umbrella:
+  **`integral_mul_mellin_smoothWeight_shift`** — if `F` is holomorphic on the closed strip
+  `c <= Re s <= d` with `c > 0` and satisfies `‖F s‖ <= K (2+|Im s|)^A` there, then
+  `int_R F(d+iy) W(d+iy) dy = int_R F(c+iy) W(c+iy) dy`.
+  **No hypothesis on `F` beyond holomorphy and a polynomial bound — the exponent `A` may be
+  arbitrarily large.**  That is the whole point of the smoothing: `W` beats every polynomial.
+  Supporting, both also general:
+  - `integrable_mul_mellin_smoothWeight_line` — the product is integrable on every line of the
+    strip; choose `m = ceil A + 1` in `exists_bound_mellin_smoothWeight_line_pow` and apply
+    `integrable_rpow_mul_inv_pow`.
+  - `tendsto_horizontal_mul_mellin_smoothWeight` — the horizontal segment integrals tend to `0`;
+    choose `j = ceil A` in `exists_bound_mellin_smoothWeight_horizontal`, giving the bound
+    `K 2^A C T^{A-(j+1)}` for `T >= 2`, which tends to `0` since `j+1 > A`.
+  - `differentiableOn_mellin_smoothWeight_strip`, `line_mem_verticalStrip`.
+  Programme status: (P1) ✓, (P2) ✓, (P3) ✓, (P4) ✓ (general engine), (P6) ✓.
+  Only (P5) is left, plus the instantiation of (P4) at `F = 1/L(chi, .)` — for which the two
+  hypotheses are `DirichletCharacter.differentiable_LFunction` +
+  `LFunction_ne_zero_of_zeroAbscissa_lt` (holomorphy) and `exists_lower_bound_right_of_abscissa`
+  (the polynomial bound, in exactly the `K exp(-A log(2+|Im s|))` form needed).
+- 2026-07-27 — **PLAN CORRECTION (important), plus Hadamard three-circles.**
+  Working out (P5) exposed a genuine gap in the route as previously written.  The target is
+  `TwistedMertensSubpowerBound chi Theta`, i.e. `M_chi(K) = O_eps(K^{Theta+eps})` for **every**
+  `eps > 0`.  With the smoothed Perron machinery now built, the shifted-line estimate gives
+    `sum_n a_n w(n) << N^c (N/H)^A`,
+  where `A` is the exponent in the polynomial bound `‖1/L(chi,s)‖ << (2+|t|)^A` on `Re s = c`.
+  The smoothing error is `H`, so `H` must be `~ N^{Theta+eps}` and hence `N/H ~ N^{1-Theta-eps}`.
+  **Therefore the final exponent is `Theta + eps + (1-Theta) A`, and the theorem follows only if
+  `A` can be taken arbitrarily small.**  The corpus's `exists_lower_bound_right_of_abscissa`
+  (Borel--Caratheodory) gives `A = 12 r / eps`, which is *large*, not small — so that bound alone
+  is provably insufficient, and the earlier plan entry claiming (P4)+(P5) would close the card was
+  wrong on this point.
+  The classical fix is Titchmarsh 14.2: zero-freeness on the whole half-plane `Re s > Theta`
+  upgrades the polynomial bound to the **subpolynomial** bound `1/L(sigma+it) = O_{delta,eps}
+  (|t|^{eps})` for every `sigma >= Theta + delta`, via Hadamard three-circles applied to
+  `log(1/L)` on discs of radius shrinking with `log|t|`.  This is the honest remaining core of the
+  card, and it is a construction, not an obstruction.
+  First brick laid, axiom-clean, in new module `HTGeometry/ThreeCircles.lean`:
+  - `isCompact_annulus` — the closed annulus is compact.
+  - **`norm_le_of_three_circles`** — for `f` holomorphic on `r1 <= |z| <= r3`,
+    `‖f z‖ <= M1^{1-t} M3^{t}` with `t = (log|z| - log r1)/(log r3 - log r1)`.
+  Mathlib has three-*lines* (`Complex.HadamardThreeLines.norm_le_interp_of_mem_verticalClosedStrip'`)
+  but not three-circles; the derivation is the exponential change of variable, with the
+  boundedness hypothesis of the three-lines theorem supplied by compactness of the annulus
+  (the strip itself is unbounded, but `exp` is `2 pi i`-periodic).
+- 2026-07-27 — **The subpolynomial step.**  Appended to `HTGeometry/ThreeCircles.lean`,
+  axiom-clean: **`eventually_exp_log_rpow_le_rpow`** — for `theta < 1` and every `eps > 0`,
+  `exp((log t)^theta) <= t^eps` for all large `t`.
+  Since `(log t)^theta = (log t)^{theta-1} (log t)` and `(log t)^{theta-1} -> 0`, the exponent is
+  eventually below `eps log t`.
+  This is the conversion step that makes the three-circles route worth the effort: three circles
+  gives `|log L(sigma+it)| <= M1^{1-theta} (C log|t|)^{theta}` with `theta < 1` **strictly**,
+  hence `|1/L(sigma+it)| <= exp(C' (log|t|)^{theta}) <= |t|^{eps}` for every `eps` — the
+  arbitrarily small polynomial exponent that the plan correction showed to be necessary.
+  Remaining for the card: (i) `|log L| = O(1)` on `Re s >= 1+delta` (Euler product / Dirichlet
+  series tail — elementary), (ii) `|log(1/L)| = O(log|t|)` on the large disc reaching
+  `Re s = Theta + delta/2` (Borel--Caratheodory, whose corpus form is `norm_lower_bound_of_ball`
+  in `HTGeometry/BallLogarithm.lean`, together with `exists_log_on_ball` for the holomorphic
+  branch), (iii) assemble via `norm_le_of_three_circles` at centre `2+it`, radii `1-delta`,
+  `2-sigma`, `2-Theta-delta/2`, then feed the resulting `A = eps` into the finished
+  (P1)-(P4),(P6) Perron machinery.
+- 2026-07-27 — **The logarithm bound, exposed.**  `HTGeometry/BallLogarithm.lean` refactored,
+  axiom-clean, downstream consumer `RHTower/DirichletLInverseBound` re-verified:
+  **`exists_bound_log_on_ball`** — if `f` is holomorphic and nonvanishing on `ball c R` with
+  `‖f‖ <= M` there and `m <= ‖f c‖`, then the branch `g` of `log(f / f c)` with `g c = 0` satisfies
+  `‖g z‖ <= 2 (log(M/m) + 1) r / (R - r)` for `‖z - c‖ <= r`.
+  This was previously buried inside the proof of `norm_lower_bound_of_ball`; that theorem is now a
+  four-line corollary of it (statement unchanged, so nothing downstream moves).
+  Exposing it matters because the three-circles route needs the bound on **`g` itself**, not on
+  `‖f‖`: the whole point is that the polynomial bound `‖1/L‖ << |t|^A` says
+  `Re g << log|t|` — additively — and three circles is then applied to `g`, giving
+  `‖g‖ << (log|t|)^{theta}` with `theta < 1`.
+  The three ingredients of the subpolynomial bound are now all in the corpus:
+  `exists_bound_log_on_ball` (the `O(log|t|)` bound on the large circle),
+  `norm_le_of_three_circles` (the convexity), and `eventually_exp_log_rpow_le_rpow` (the
+  conversion back to `|t|^{eps}`).  What is left is the L-function-specific plumbing:
+  boundedness of `‖log L‖` on the small circle, and the choice of radii around `2+it`.
+- 2026-07-27 — **The three-circles engine is complete.**  Two more theorems in
+  `HTGeometry/ThreeCircles.lean`, axiom-clean:
+  - `norm_le_of_three_circles_center` — three circles about an arbitrary centre `c` for a function
+    holomorphic on `ball c R` with `r1 < r3 < R` (translation of the centred version).
+  - **`norm_lower_bound_of_three_circles`** — if `f = f c exp g` on the disc and the branch `g` is
+    bounded by `M1` on the inner circle and `M3` on the outer one, then
+    `‖f z‖ >= ‖f c‖ exp(-(M1^{1-t} M3^{t}))` with
+    `t = (log‖z-c‖ - log r1)/(log r3 - log r1) < 1`.
+  This is the exact statement Titchmarsh 14.2 needs.  With `M1 = O(1)` (from boundedness of `L`
+  above and below on `Re s >= sigma_0`) and `M3 = O(log|t|)` (from `exists_bound_log_on_ball`
+  applied on the large disc, where the Borel--Caratheodory input is the corpus's polynomial bound),
+  the interpolated exponent is `O((log|t|)^{t})` with `t < 1` **strictly**, and
+  `eventually_exp_log_rpow_le_rpow` converts that into `‖1/L(sigma+it)‖ <= |t|^{eps}` for every
+  `eps > 0`.
+  Note what makes this work and why the direct Borel--Caratheodory bound could not: BC gives
+  `‖g‖ << log|t|` on the *same* disc where the growth is measured, hence
+  `‖1/L‖ << exp(C log|t|) = |t|^C` with `C` fixed and *large*.  Three circles instead interpolates
+  between a disc where `g` is `O(1)` and one where it is `O(log|t|)`, and the interpolation
+  exponent `t` can be made as small as desired by pushing `sigma` toward the bounded region.
+  The general engine is now finished; everything remaining on this card is L-function-specific.
+- 2026-07-27 — **The Titchmarsh-14.2 engine, closed form.**  `HTGeometry/BallLogarithm.lean`
+  refactored once more and `HTGeometry/ThreeCircles.lean` extended; both axiom-clean, and the whole
+  8818-job cone rebuilds.
+  - `norm_log_le_of_ball` — Borel--Caratheodory stated for a **given** branch `g` (rather than
+    producing one).  This is the enabling change: the *same* `g` can now be bounded on several
+    radii, with a different ratio `M/m` on each.  `exists_bound_log_on_ball` and
+    `norm_lower_bound_of_ball` are now corollaries; statements unchanged.
+  - **`norm_lower_bound_of_two_radii`** — the packaged theorem:
+    `f` holomorphic and nonvanishing on `ball c R`, bounded between `mi` and `Mi` on a small disc
+    `ball c rho`, and by `M` on `ball c R`, satisfies
+      `‖f z‖ >= ‖f c‖ exp(-(B1^{1-t} B3^{t}))`,
+      `B1 = 2(log(Mi/mi)+1) r1/(rho-r1)`, `B3 = 2(log(M/m)+1) r3/(R-r3)`,
+      `t = (log‖z-c‖ - log r1)/(log r3 - log r1)`,
+    for `r1 <= ‖z-c‖ <= r3`.
+  For the L-function this is applied at `c = sigma_0+1+it` with the corpus's
+  `exists_line_lower_bound` (`‖L‖ >= 1/2` for `Re s >= sigma_0`) and
+  `exists_bound_LFunction_of_two_le_re` (`‖L‖ <= C1` for `Re s >= 2`) supplying `Mi/mi = 2 C1`
+  — an **absolute constant** — while the large disc uses the cubic strip bound, giving
+  `log(M/m) = O(log(2+|t|))`.  So `B1 = O(1)`, `B3 = O(log|t|)`, and the interpolated exponent is
+  `O((log|t|)^{t})` with `t < 1`, which `eventually_exp_log_rpow_le_rpow` turns into
+  `‖1/L‖ <= |t|^{eps}`.
+  Every general ingredient of the card is now formalized.  What is left is purely the L-function
+  instantiation: choose the radii, verify the two disc inclusions, and read off `A = eps` for the
+  Perron machinery.
+- 2026-07-27 — **L-function instantiation begun.**  New module `RHTower/DirichletLDiscBound.lean`,
+  axiom-clean, wired into the RHTower umbrella:
+  **`exists_bound_LFunction_disc`** — for any disc centred on `Re s = a` of radius `R` whose left
+  edge stays right of `Re s = -2`, there is `E > 0` with `‖L(chi, z)‖ <= E (2+|t|)^3` for every `z`
+  in the disc centred at `a + it`, uniformly in `t`.
+  (Right of `Re s = 2` the Dirichlet series is bounded outright; elsewhere the Phragmen--Lindelof
+  cubic bound applies and `‖z-4‖ <= (D+1)(2+|t|)` with `D = R + |a-4|`.)
+  **The geometry for the three-circles application, now fixed.**  Let `sigma_0 >= 2` be the abscissa
+  from `exists_line_lower_bound` and put `c = (sigma_0 + 1) + it`.  Radii:
+    `r1 = 1/4`, `rho = 1/2`, `r3 = sigma_0 + 1 - (Theta + delta/2)`,
+    `R = sigma_0 + 1 - (Theta + delta/4)`.
+  Then `ball c rho` lies in `Re s >= sigma_0 + 1/2 >= 2` (so `Mi/mi = 2 C1`, an absolute constant),
+  and `ball c R` lies in `Re s > Theta + delta/4` (so `L` is zero-free there and
+  `M/m = 2 E (2+|t|)^3`, giving `log(M/m) = O(log(2+|t|))`).
+  **The essential point about the target line**: for `Re s >= Theta + delta` one has
+  `‖s - c‖ <= sigma_0 + 1 - Theta - delta < r3`, so the interpolation weight
+  `t = (log‖s-c‖ - log r1)/(log r3 - log r1)` is bounded by a constant `t_max < 1` depending only
+  on `delta`.  Had `r3` been taken to reach exactly `Theta + delta`, the weight would equal `1` on
+  the target line and the three-circles gain would vanish — this is why the outer radius must
+  overshoot to `Theta + delta/2`.
+- 2026-07-27 — **Titchmarsh 14.2 for Dirichlet L-functions is formalized.**  New module
+  `RHTower/DirichletLSubpolynomial.lean`, axiom-clean, wired into the umbrella; full 8820-job build:
+  **`exists_three_circles_lower_bound`** — for every `chi != 1` primitive and every
+  `delta in (0,1)` there are `B, K > 0` and **`theta < 1`** with
+    `(1/2) exp(-(B (K (1 + log(2+|t|)))^theta)) <= ‖L(chi, s)‖`  for all `Re s >= Theta_chi + delta`.
+  The three circles sit at `c = sigma_0 + 1 + it` with radii `1/4`, `1/2`, `r3 = c_re - Theta -
+  delta/2`, inside `R = c_re - Theta - delta/4`.  Inner disc: `Re >= 2`, so `1/2 <= ‖L‖ <= C1` and
+  the inner Borel--Caratheodory constant `B = 2(log(2 C1)+1)` is **absolute**.  Outer disc: inside
+  the zero-free half-plane, with `‖L‖ <= E (2+|t|)^3` from `exists_bound_LFunction_disc`, so the
+  outer constant is `<= K (1 + log(2+|t|))`.  Points with `Re s > c_re - 1/4` are handled directly
+  by `exists_line_lower_bound`.
+  `theta < 1` holds because on the target line `‖s - c‖ <= c_re - Theta - delta` is **strictly**
+  less than `r3` — the overshoot by `delta/2` is what buys the strict inequality, and with it the
+  entire subpolynomial gain.
+  Combined with `eventually_exp_log_rpow_le_rpow`, this yields `‖1/L(chi,s)‖ <= |t|^{eps}` for
+  every `eps > 0` on `Re s >= Theta + delta` — the input the plan correction of this morning
+  identified as necessary and missing.  With it, the finished (P1)-(P4),(P6) Perron machinery
+  gives `M_chi(K) = O(K^{Theta+eps})`, i.e. `TwistedMertensSubpowerBound chi (zeroAbscissa chi)`.
+  Remaining: convert the `exp(-(...)^theta)` form into the `K (2+|t|)^{-eps}` form (one compactness
+  argument plus `eventually_exp_log_rpow_le_rpow`), then instantiate (P4) and run the estimate.
+- 2026-07-27 — **The two conversion lemmas.**  Appended to `HTGeometry/ThreeCircles.lean`,
+  axiom-clean, warning-free:
+  - `eventually_const_mul_rpow_le` — for `theta < 1` and `eps > 0`, `c L^theta <= eps L` for all
+    large `L`.  (Note `c` needs no sign hypothesis: `L^{theta-1} -> 0` handles it.)
+  - `exists_pos_lower_bound_of_tendsto_atTop` — a positive continuous function on `[a, inf)` that
+    tends to infinity has a positive lower bound (min on the compact initial segment, the tail
+    bounded by `1`).
+  Together these turn the three-circles conclusion into the shape the Perron machinery consumes:
+  the function `u |-> exp(eps log u - B (K (1 + log u))^theta)` is continuous and positive on
+  `[2, inf)` and tends to infinity — because `(K(1+log u))^theta <= K^theta 2^theta (log u)^theta`
+  for `log u >= 1`, which the first lemma dominates by `(eps/B) log u`.  Hence it has a positive
+  lower bound `kappa`, and
+    `‖L(chi, s)‖ >= (kappa/2) (2+|Im s|)^{-eps}`  on `Re s >= Theta + delta`,
+  i.e. `‖1/L‖ <= (2/kappa) (2+|Im s|)^{eps}` — the polynomial bound with **arbitrarily small
+  exponent** that the plan correction demanded.
+- 2026-07-27 — **The subpolynomial bound, in consumable form.**  Appended to
+  `RHTower/DirichletLSubpolynomial.lean`, axiom-clean, full 8820-job build:
+  **`exists_lower_bound_subpolynomial`** — for every primitive `chi != 1`, every
+  `delta in (0,1)` and **every `eps > 0`** there is `kappa > 0` with
+    `kappa (2+|Im s|)^{-eps} <= ‖L(chi, s)‖`  for all `Re s >= Theta_chi + delta`.
+  Equivalently `‖1/L(chi,s)‖ <= kappa^{-1} (2+|Im s|)^{eps}`: the polynomial bound with an
+  **arbitrarily small** exponent.
+  Proof: the three-circles bound gives `‖L‖ >= (1/2) exp(-(B (K(1+log u))^theta))` with
+  `u = 2+|Im s|` and `theta < 1`; the function `u |-> exp(eps log u - B (K(1+log u))^theta)` is
+  continuous and positive on `[2,inf)` and tends to infinity (by
+  `eventually_const_mul_rpow_le`, since `theta < 1`), hence has a positive lower bound `kappa`
+  by `exists_pos_lower_bound_of_tendsto_atTop`; multiplying through by `exp(-eps log u)` gives the
+  claim.
+  **This closes the gap identified in this morning's plan correction.**  `exists_lower_bound_
+  subpolynomial` is a drop-in strengthening of `exists_lower_bound_right_of_abscissa` with
+  `A = eps` instead of `A = 12 r / eps`, and it is exactly the hypothesis
+  `integral_mul_mellin_smoothWeight_shift` takes (`‖F s‖ <= K (2+|Im s|)^A`).
+  Card status: every analytic ingredient of the Perron route is now formalized and
+  axiom-clean — (P1) cutoff, (P2) Mellin decay, (P3) Perron formula, (P4) contour shift,
+  (P6) smoothing error, and the subpolynomial `1/L` bound.  What remains is assembly:
+  identify `sum_n mu_chi(n) n^{-s}` with `1/L(chi,s)` on `Re s > 1`, run the shift, and optimise
+  `H = N^{Theta+eps}`.
+- 2026-07-27 — **The contour-shift datum for `1/L`.**  New module
+  `RHTower/DirichletLShiftData.lean`, axiom-clean, wired into the umbrella, full 8827-job build:
+  **`exists_shift_data`** — for every primitive `chi != 1`, every `delta in (0,1)`, every
+  `eps > 0` and every right edge `d`, there is `Kb >= 0` such that
+  `s |-> (L(chi,s))^{-1}` is **holomorphic** on `verticalStrip (Theta_chi + delta) d` and satisfies
+  `‖(L(chi,s))^{-1}‖ <= Kb (2+|Im s|)^{eps}` there.
+  Holomorphy is `LFunction_ne_zero_of_zeroAbscissa_lt` plus `DifferentiableAt.inv`; the bound is
+  `exists_lower_bound_subpolynomial` inverted.
+  **These are literally the two hypotheses `integral_mul_mellin_smoothWeight_shift` takes**
+  (`hFdiff` and `hFbd : ∀ s ∈ verticalStrip c d, ‖F s‖ <= K (2+|Im s|)^A`), with `A = eps` free.
+  So the contour shift for the twisted Moebius Perron integral is now available as a direct
+  composition of two corpus theorems; `0 < Theta + delta` holds since `Theta >= 1/2`.
+  The remaining assembly is bookkeeping with no analysis left in it:
+  (i) `LSeries (chi * mu) s = (L(chi,s))^{-1}` on `Re s > 1` — mathlib's
+      `DirichletCharacter.LSeries.mul_mu_eq_one`, already used in
+      `RHTower/TwistedMobiusMellin.lean`;
+  (ii) feed (i) and `exists_shift_data` into `tsum_mul_smoothWeight_eq_integral` and
+      `integral_mul_mellin_smoothWeight_shift`;
+  (iii) bound the shifted integral and add the `O(H)` smoothing error from
+      `norm_weighted_sub_partialSum_le`, choosing `H = N^{Theta+eps}`.
+- 2026-07-27 — **The shifted Perron formula for the twisted Moebius coefficients.**  New module
+  `RHTower/TwistedMobiusPerronShift.lean`, axiom-clean, wired into the umbrella, 8829-job build:
+  - `tsum_twistedMobius_cpow_eq_inv` — `sum_n (chi mu)(n) n^{-s} = (L(chi,s))^{-1}` for
+    `Re s > 1` (mathlib's `LSeries.mul_mu_eq_one`, with the `n = 0` term handled by `mu 0 = 0`).
+  - **`twistedMobius_perron_shift`** — for primitive `chi != 1`, `delta in (0,1)`, `eps > 0`,
+    `sigma > 1` with `Theta_chi + delta <= sigma`:
+      `2 pi * sum_n chi(n) mu(n) w(n)
+         = int_R (L(chi, (Theta+delta) + iy))^{-1} W((Theta+delta) + iy) dy`.
+  The proof is a three-line composition: `tsum_mul_smoothWeight_eq_integral` puts the smoothed sum
+  on the line `Re s = sigma`, the identity above rewrites the Dirichlet series as `1/L`, and
+  `integral_mul_mellin_smoothWeight_shift` — fed by `exists_shift_data` — moves the contour to
+  `Re s = Theta_chi + delta`.
+  **This is the analytic heart of the card, and it is now unconditional.**  The smoothed sum of the
+  twisted Moebius function is an explicit contour integral on a line arbitrarily close to the zero
+  abscissa.
+  Note the identifier trap hit here (worth remembering): with `LSeries.notation` open, `delta` is
+  `ArithmeticFunction.delta`, so a binder named `delta` fails to parse.
+  Left: bound the shifted integral (the integrand is `<= Kb (2+|y|)^{eps}` times the cutoff's
+  transform, whose size is `O(N^{Theta+delta})` by `norm_mellin_smoothWeight_le_pow`) and combine
+  with `norm_weighted_sub_partialSum_le`.
+- 2026-07-27 — **The size factor.**  Appended to `HTGeometry/SmoothWeightMellin.lean`,
+  axiom-clean: **`norm_mellin_smoothWeight_le_pow`** —
+  `‖W(s)‖ <= (N+H)^{Re s} / Re s` for `Re s > 0`.
+  Since `0 <= w <= 1` and `w` vanishes past `N+H`, the Mellin integral is dominated by
+  `int_0^{N+H} x^{sigma-1} dx = (N+H)^sigma / sigma`.
+  This is the factor that carries the *size* of the cutoff into the Perron estimate, and it is the
+  only place where `N` enters the analytic side: on the shifted line `Re s = Theta + delta` it
+  contributes `(N+H)^{Theta+delta}`, which is the target order.  The decay bounds
+  (`exists_bound_mellin_smoothWeight_line_pow`) contribute the `y`-integrability but no `N`.
+  With this the final estimate is a product of three already-proved factors:
+    `‖2 pi sum_n chi(n) mu(n) w(n)‖ <= Kb * (sup over the line of the two bounds) * (an integral
+    of (2+|y|)^{eps} ((1+y^2)^m)^{-1})`,
+  finite by `integrable_rpow_mul_inv_pow`.

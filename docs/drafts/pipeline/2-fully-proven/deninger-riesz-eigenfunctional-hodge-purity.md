@@ -103,6 +103,15 @@ comparison, not for critical-line location alone.
   final, one-way spectral comparison.
 - No RH premise, CCM object, or numerical computation enters.
 
+## Lean status
+
+Formalized as
+`RHTower.deningerClosedWeightOne_rieszEigenfunctional_re_eq_half` in
+`GaloisForLFunctions.RHTower.DeningerArithmeticRieszEigenfunctionalPurity`.
+The same module defines
+`DeningerClosedWeightOneRieszXiSpectrum` and proves
+`riemannHypothesis_of_closedWeightOne_rieszXiSpectrum`.
+
 ## References
 
 - `DAC_SOURCE_THREE_TERM_HODGE_PURITY`.

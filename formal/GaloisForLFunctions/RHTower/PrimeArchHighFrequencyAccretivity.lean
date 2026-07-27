@@ -151,24 +151,6 @@ theorem xiRelativeResolventTrace_im_nonpos_lowFrequency
     (xiRelativeResolventTrace z).im ≤ 0 := by
   have hXi : XiC z ≠ 0 :=
     XiC_ne_zero_of_abs_re_le_four (hzRe.trans hRfour)
-  have hsum := summable_xiRelativeResolventTerm hXi
-  have hsumJ : Summable (fun q : XiZeroCopy =>
-      xiRelativeResolventTerm z (xiZeroCopyLineConjEquiv q)) :=
-    (xiZeroCopyLineConjEquiv.summable_iff).mpr hsum
-  have hpair := hsum.add hsumJ
-  have hreindex :
-      (∑' q : XiZeroCopy,
-        xiRelativeResolventTerm z (xiZeroCopyLineConjEquiv q)) =
-          xiRelativeResolventTrace z := by
-    rw [xiRelativeResolventTrace]
-    exact xiZeroCopyLineConjEquiv.tsum_eq (xiRelativeResolventTerm z)
-  have hpairsum :
-      (∑' q : XiZeroCopy,
-        (xiRelativeResolventTerm z q +
-          xiRelativeResolventTerm z (xiZeroCopyLineConjEquiv q))) =
-        2 * xiRelativeResolventTrace z := by
-    rw [hsum.tsum_add hsumJ, hreindex, xiRelativeResolventTrace]
-    ring
   have himsum :
       (∑' q : XiZeroCopy,
         (xiRelativeResolventTerm z q +
@@ -176,15 +158,7 @@ theorem xiRelativeResolventTrace_im_nonpos_lowFrequency
     tsum_nonpos fun q =>
       xiRelativeResolventTerm_lineConj_pair_im_nonpos
         R hR hRfour z hzIm hzRe q
-  have hpairsumIm := congrArg Complex.im hpairsum
-  rw [Complex.im_tsum hpair] at hpairsumIm
-  norm_num [mul_im] at hpairsumIm
-  have himsum' :
-      (∑' q : XiZeroCopy,
-        ((xiRelativeResolventTerm z q).im +
-          (xiRelativeResolventTerm z (xiZeroCopyLineConjEquiv q)).im)) ≤ 0 := by
-    simpa only [add_im] using himsum
-  linarith
+  linarith [tsum_lineConj_pair_im_eq_two_mul_xiRelativeResolventTrace_im hXi]
 
 /-- Source-side form of the unconditional central-band sign. -/
 theorem continuedPrimeArchSourceRelativeTrace_im_nonpos_lowFrequency
@@ -192,14 +166,10 @@ theorem continuedPrimeArchSourceRelativeTrace_im_nonpos_lowFrequency
     (z : ℂ) (hzIm : 0 < z.im) (hzHalf : z.im < 1 / 2)
     (hzRe : |z.re| ≤ R) :
     (continuedPrimeArchSourceRelativeTrace z).im ≤ 0 := by
-  have hspos : 0 < (1 / 2 + z * I).re := by
-    simp [mul_re]
-    linarith
-  have hs1 : 1 / 2 + z * I ≠ 1 := by
-    intro h
-    have hre := congrArg Complex.re h
-    simp [mul_re] at hre
-    linarith
+  have hspos : 0 < (1 / 2 + z * I).re :=
+    centeredAbscissa_re_pos (by linarith)
+  have hs1 : 1 / 2 + z * I ≠ 1 :=
+    centeredAbscissa_ne_one (by linarith)
   have hXi : XiC z ≠ 0 :=
     XiC_ne_zero_of_abs_re_le_four (hzRe.trans hRfour)
   have hzeta : riemannZeta (1 / 2 + z * I) ≠ 0 := by
@@ -234,14 +204,10 @@ theorem continuedPrimeArchSourceRelativeTrace_neg_conj_im
       (continuedPrimeArchSourceRelativeTrace (-(starRingEnd ℂ) z)).im =
         (continuedPrimeArchSourceRelativeTrace z).im := by
   let w : ℂ := -(starRingEnd ℂ) z
-  have hspos : 0 < (1 / 2 + z * I).re := by
-    simp [mul_re]
-    linarith
-  have hs1 : 1 / 2 + z * I ≠ 1 := by
-    intro h
-    have hre := congrArg Complex.re h
-    simp [mul_re] at hre
-    linarith
+  have hspos : 0 < (1 / 2 + z * I).re :=
+    centeredAbscissa_re_pos (by linarith)
+  have hs1 : 1 / 2 + z * I ≠ 1 :=
+    centeredAbscissa_ne_one (by linarith)
   have hXi : XiC z ≠ 0 :=
     XiC_ne_zero_of_continuedPrimeArch_domain hspos hs1 hzeta
   have hcXi : XiC ((starRingEnd ℂ) z) ≠ 0 := XiC_ne_zero_conj hXi

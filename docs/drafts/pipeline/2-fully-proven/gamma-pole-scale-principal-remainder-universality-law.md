@@ -48,6 +48,16 @@ because the evaluated scale is a unit.
   `lake env lean GaloisForLFunctions/HTGeometry/GammaPoleScalePrincipalRemainderUniversalityLaw.lean`
   passed on 2026-07-22.
 
+## Verification gate (blocked)
+
+`lake build GaloisForLFunctions.HTGeometry.GammaPoleScalePrincipalRemainderUniversalityLaw` currently
+fails **inside a dependency**, not in this module: `GammaFactorialAllOrderPoleJet.lean` and
+`GammaFactorialSecondJetHarmonicResidue.lean` both declare `GaloisForLFunctions.shiftedHarmonicPowerSum`,
+`GaloisForLFunctions.iteratedDeriv_digamma_neg_nat_add_of_ne_int` and
+`GaloisForLFunctions.gammaFactorialScaledPolygamma`, so the older module no longer elaborates once
+both are in one import cone.  The named theorems of this card are unaffected in content; promotion
+waits on the duplicate-name resolution in the `GammaFactorial*` cone.
+
 ## Novelty audit
 
 Pending literature audit after theorem-generation phase.  Corpus audit is negative.

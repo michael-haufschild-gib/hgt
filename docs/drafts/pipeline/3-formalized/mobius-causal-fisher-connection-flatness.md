@@ -1,7 +1,7 @@
 # The coupled Mobius causal source is Fisher-flat at the critical boundary
 
 - **ID:** `mobius-causal-fisher-connection-flatness`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / POSITIVE HT CURVATURE SELECTOR
 - **Scientific status:** `[PROVED HERE] [LITERATURE NOVELTY OPEN] [NOT AN RH PROOF]`
 - **Parents:**
@@ -209,7 +209,7 @@ selection.
 - [ ] independent specialist literature audit
 - [ ] RH
 
-## Formalization (in progress)
+## Formalization (complete)
 
 **Working state — a session picking up this card should continue here, not restart.**
 
@@ -262,11 +262,105 @@ new content is the algebraic identity and the vanishing of the gap at the origin
 The derivative is proved for every `ω > 0` and every `z ≠ 0` with `re z ≥ 0`, i.e. on the closed
 half plane minus the origin, which is where the card differentiates `(2)`.
 
-### Next steps
+`[LEAN-PROVED]` **the derivative residue of zeta at its pole**, in
+`formal/GaloisForLFunctions/RHTower/ZetaDerivResidue.lean`.
 
-1. Take the `ω → 0+` limit of `RHTower.mobiusCausalMultiplierDeriv` using `(7)`
-   (`RHTower.tendsto_inv_riemannZeta_one_add_two_mul_div`) to obtain the pointwise formula `(4)`,
-   including the cancellation of the two `2/z` terms.
-2. Upgrade to `H²`-valued right differentiability using the boundary majorant `(8)` and dominated
-   convergence, then transfer to `L²(0,∞)` by the Laplace isometry to obtain `(9)`--`(11)`.
+| Card item | Lean name |
+|---|---|
+| `(s-1)² ζ'(s) → -1` (the derivative companion of `riemannZeta_residue_one`) | `RHTower.tendsto_sub_one_sq_mul_deriv_riemannZeta` |
+| the Laurent form `ζ = A + G/(s-1)`, `G = 1/Γℝ` entire | `RHTower.riemannZeta_eq_poleFree_add`, `RHTower.hasDerivAt_riemannZeta_laurent` |
+
+`[LEAN-PROVED]` **`(4)`, the flat critical limit of the parameter derivative**, in
+`formal/GaloisForLFunctions/RHTower/MobiusCausalFlatLimit.lean`.
+
+| Card item | Lean name |
+|---|---|
+| the pole factor of the subtracted term tends to `-2` | `RHTower.tendsto_mobiusCausalPoleFactor` |
+| **`(4)`** `M₀′(z) = -1/(1+z)² - 2ζ'(1+z)/[(1+z)ζ(1+z)] - 2/z` | `RHTower.mobiusCausalFlatDeriv` |
+| **`(4)`** `∂_ω M_ω(z) → M₀′(z)` as `ω → 0+`, for `re z ≥ 0`, `z ≠ 0` | `RHTower.tendsto_mobiusCausalMultiplierDeriv` |
+
+The two `2/z` terms of `(5)` and `(6)` cancel exactly: the `-2/z` of `(4)` is the residue
+`(s-1)²ζ'(s) → -1` beating against the simple pole `(s-1)ζ(s) → 1`.
+
+`[LEAN-PROVED]` **the pole-unit form**, in
+`formal/GaloisForLFunctions/RHTower/MobiusCausalPoleUnit.lean`.  Writing every zeta value through
+the entire `Z(s) = (s-1)ζ(s)` (corpus: `RHTower.zetaPoleUnit`) makes the removable singularity
+manifest and is what makes the near-origin estimates uniform in `ω`.
+
+| Card item | Lean name |
+|---|---|
+| `M_ω(z) = N_ω(z)/z`, `N_ω(z) = Z(1+z)q_ω(z) - q_ω(0)` | `RHTower.mobiusCausalNumerator`, `RHTower.mobiusCausalMultiplier_eq_numerator_div` |
+| `N_ω(0) = 0` | `RHTower.mobiusCausalNumerator_zero` |
+| `∂_ω M_ω(z) = [Z(1+z)q̇_ω(z) - q̇_ω(0)]/z` | `RHTower.mobiusCausalMultiplierDeriv_eq_numeratorDeriv_div` |
+| `∂_ω N_ω(0) = 0` (the uniform cancellation of the `2/z` terms) | `RHTower.mobiusCausalNumeratorDeriv_zero` |
+
+`[LEAN-PROVED]` **`(8)`, the boundary majorant**, in three pieces, all uniform in `0 < ω ≤ ω₀`:
+
+| Region | Lean name | file |
+|---|---|---|
+| `‖z‖ ≤ δ` (near origin, mean-value bound on a ball where `Z ≠ 0`) | `RHTower.exists_near_origin_bound` | `RHTower/MobiusCausalNearOriginBound.lean` |
+| `δ ≤ \|τ\| ≤ 9` (compact rectangle, `ζ` zero- and pole-free) | `RHTower.exists_mid_range_bound` | `RHTower/MobiusCausalMidRangeBound.lean` |
+| `\|τ\| ≥ 9` (log-power decay `C·log²⁶\|τ\|/\|τ\|`) | `RHTower.norm_mobiusCausalMultiplierDeriv_far_le` | `RHTower/MobiusCausalFarFieldBound.lean` |
+| the three combined into one square-integrable majorant | `RHTower.exists_uniform_boundary_bound`, `RHTower.integrable_boundaryBound` | `RHTower/MobiusCausalBoundaryMajorant.lean`, `RHTower/MobiusCausalBoundaryEnergy.lean` |
+
+The far field uses new **shift-uniform** line bounds proved in
+`formal/GaloisForLFunctions/RHTower/ZetaShiftedLineBound.lean`:
+
+| Card item | Lean name |
+|---|---|
+| `‖1/ζ(1+2ω+it)‖ ≤ (26/A)·log⁷\|t\|` for all `0 < 2ω ≤ 1`, `\|t\| ≥ 9` | `RHTower.norm_inv_riemannZeta_shift_le` |
+| `‖ζ′/ζ(1+2ω+it)‖ ≤ (2248/A²)·log¹⁸\|t\|` in the same range | `RHTower.norm_logDeriv_riemannZeta_shift_le` |
+
+Inside the zero-free strip these are the corpus zero-free region bounds
+(`RHTower.norm_inv_riemannZeta_le`, `RHTower.norm_deriv_div_riemannZeta_le`); outside it the shift
+itself is large and the quartic lower bound `RHTower.pow_four_norm_riemannZeta_ge` together with
+`RHTower.norm_zeta_logDeriv_le_line` take over.  A reusable mean-value/quotient estimate was added
+as `HTGeometry.norm_sub_le_of_hasDerivAt_ball` and `HTGeometry.norm_div_sub_div_le`
+(`HTGeometry/ComplexBallMeanValue.lean`).
+
+`[LEAN-PROVED]` **`(9)`--`(11)`**, in
+`formal/GaloisForLFunctions/RHTower/MobiusCausalBoundaryEnergy.lean`.
+
+| Card item | Lean name |
+|---|---|
+| **`(9)`** `∫ ‖∂_ω M_ω(iτ) - M₀′(iτ)‖² dτ → 0` (the `H²` right differentiability) | `RHTower.tendsto_boundary_deriv_energy` |
+| **`(10)`--`(11)`** `(4ω)² ∫ ‖∂_ω M_ω(iτ)‖² dτ → 0` (Fisher-scaled causal flatness) | `RHTower.tendsto_fisher_scaled_boundary_energy` |
+
+`(11)` is `(10)` verbatim: with `ε = σ-1 = 2ω` and `∂_σ = ∂_ω/2` the scaled derivative
+`4ε ∂_σ` is `4ω ∂_ω`.  The `H²` statements are boundary-`L²` statements, which is the same norm
+transported by the Laplace isometry.
+
+`[LEAN-PROVED]` **`(3)` on the multiplier side**, in
+`formal/GaloisForLFunctions/RHTower/MobiusCausalMultiplierBounds.lean`.  The same three-region
+majorant bounds the multiplier itself (near the origin only first derivatives of the pole unit
+enter, so the argument is the `q_ω(z) - q_ω(0)` version of the derivative bound).
+
+| Card item | Lean name |
+|---|---|
+| the three-region uniform bound for `M_ω` on the boundary | `RHTower.exists_near_origin_multiplier_bound`, `RHTower.exists_mid_range_multiplier_bound`, `RHTower.norm_mobiusCausalMultiplier_far_le`, `RHTower.exists_uniform_multiplier_bound` |
+| `1/ζ(1+2ω) → 0` at the critical parameter | `RHTower.tendsto_inv_riemannZeta_one_add_two_mul` |
+| **`(3)`** pointwise: `M_ω(z) → 1/(1+z)` on `re z ≥ 0`, `z ≠ 0` | `RHTower.tendsto_mobiusCausalMultiplier` |
+| **`(3)`** in `H²`: `∫ ‖M_ω(iτ) - 1/(1+iτ)‖² dτ → 0` | `RHTower.tendsto_boundary_multiplier_energy` |
+
+`[LEAN-PROVED]` **`(12)`--`(15)`, the normalized signed-coisometry form**, in
+`formal/GaloisForLFunctions/RHTower/MobiusCausalNormalizedFlatness.lean`.
+
+| Card item | Lean name |
+|---|---|
+| `(12)` the normalization `M_ω/Z_ω` with `1/Z_ω = ζ(2+4ω)/ζ(1+2ω)` | `RHTower.invSquarefreeNorm`, `RHTower.normalizedMobiusCausal` |
+| `(13)` `1/Z_ω → 0` and its finite critical derivative `∂_ω(1/Z_ω) → 2ζ(2)` | `RHTower.tendsto_invSquarefreeNorm`, `RHTower.tendsto_invSquarefreeNormDeriv` |
+| **`(15)`** the exact Leibniz decomposition of the normalized derivative | `RHTower.normalizedMobiusCausalDeriv`, `RHTower.hasDerivAt_normalizedMobiusCausal` |
+| **`(14)`** `(4ω)² ∫ ‖∂_ω(M_ω/Z_ω)(iτ)‖² dτ → 0` | `RHTower.tendsto_fisher_scaled_normalized_energy` |
+| **the no-go** of the tempting identification (`(11)`--`(14)`) | `RHTower.not_eventually_fisher_energy_ge`, `RHTower.not_eventually_normalized_fisher_energy_ge` |
+
+The no-go is stated in the only form the card's claim has: the Fisher-scaled boundary energy of the
+assembled causal derivative cannot stay above any positive threshold, so it cannot be a nonzero
+completed contact tangent.
+
+### What is not formalized
+
+`(16)`--`(17)` are the interpretation of the vanishing: the identification of the surviving
+curvature with a boundary/Sonin splitting, the finite Gamma/Sonin curvature kernel, its relative
+trace and the four-unit calibration.  Those are the card's four open gates — open research, not
+proved content.
 

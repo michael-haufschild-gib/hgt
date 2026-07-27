@@ -76,43 +76,40 @@ theorem exists_log_on_ball {f : ℂ → ℂ} {c : ℂ} {r : ℝ} (hr : 0 < r)
   rw [← hz', mul_assoc, ← Complex.exp_add]
   simp
 
-/-- **Lower bound from an upper bound.**  A nonvanishing holomorphic function on a disc, bounded
-above by `M` there and below by `m` at the centre, is bounded below on the concentric disc of
-radius `r` by `m exp (-2 (log (M/m) + 1) r / (R - r))`.
+/-- **Borel–Carathéodory for a given branch of the logarithm.**  If `f = f c · exp g` on a disc
+where `‖f‖ ≤ M` and `m ≤ ‖f c‖`, then `‖g‖ ≤ 2 (log (M/m) + 1) r / (R - r)` on the smaller disc.
 
-Mechanism: the holomorphic logarithm `g` has `Re g = log (‖f‖/‖f c‖) ≤ log (M/m)` and `g c = 0`, so
-Borel–Carathéodory bounds `‖g‖`, and `‖f‖ = ‖f c‖ exp (Re g) ≥ m exp (-‖g‖)`. -/
-theorem norm_lower_bound_of_ball {f : ℂ → ℂ} {c : ℂ} {R r M m : ℝ}
-    (hr0 : 0 ≤ r) (hrR : r < R)
-    (hf : DifferentiableOn ℂ f (ball c R)) (hne : ∀ z ∈ ball c R, f z ≠ 0)
+The real part of the branch is `log (|f| / |f c|) ≤ log (M/m)`; Borel–Carathéodory converts that
+one-sided bound on the real part into a two-sided bound on the modulus.
+
+Taking the branch as an argument rather than producing it lets the same `g` be bounded on several
+radii, with a different `M/m` on each — which is what makes the three-circles argument possible. -/
+theorem norm_log_le_of_ball {f g : ℂ → ℂ} {c : ℂ} {R r M m : ℝ} (hr0 : 0 ≤ r) (hrR : r < R)
+    (hg : DifferentiableOn ℂ g (ball c R)) (hg0 : g c = 0)
+    (hfg : ∀ z ∈ ball c R, f z = f c * Complex.exp (g z))
     (hM : ∀ z ∈ ball c R, ‖f z‖ ≤ M) (hm0 : 0 < m) (hm : m ≤ ‖f c‖)
     {z : ℂ} (hz : ‖z - c‖ ≤ r) :
-    m * Real.exp (-(2 * (Real.log (M / m) + 1) * r / (R - r))) ≤ ‖f z‖ := by
+    ‖g z‖ ≤ 2 * (Real.log (M / m) + 1) * r / (R - r) := by
   have hR : 0 < R := lt_of_le_of_lt hr0 hrR
   have hcmem : c ∈ ball c R := mem_ball_self hR
   have hMm : m ≤ M := le_trans hm (hM c hcmem)
   have hlogA : 0 ≤ Real.log (M / m) := Real.log_nonneg (by rw [le_div_iff₀ hm0]; linarith)
   set A : ℝ := Real.log (M / m) + 1 with hA
   have hApos : 0 < A := by rw [hA]; linarith
-  obtain ⟨g, hgon, hg0, hgeq⟩ := exists_log_on_ball hR hf hne
   have hgat : ∀ w ∈ ball c R, DifferentiableAt ℂ g w := fun w hw =>
-    hgon.differentiableAt (isOpen_ball.mem_nhds hw)
-  -- the modulus identity
+    hg.differentiableAt (isOpen_ball.mem_nhds hw)
   have hmod : ∀ w ∈ ball c R, ‖f w‖ = ‖f c‖ * Real.exp ((g w).re) := by
     intro w hw
-    rw [hgeq w hw, norm_mul, Complex.norm_exp]
+    rw [hfg w hw, norm_mul, Complex.norm_exp]
   have hfc0 : (0 : ℝ) < ‖f c‖ := lt_of_lt_of_le hm0 hm
-  -- the real part of the logarithm is bounded above
   have hre : ∀ w ∈ ball c R, (g w).re ≤ Real.log (M / m) := by
     intro w hw
     have h1 : ‖f c‖ * Real.exp ((g w).re) ≤ M := by rw [← hmod w hw]; exact hM w hw
     have h2 : Real.exp ((g w).re) ≤ M / m := by
       rw [le_div_iff₀ hm0]
       nlinarith [Real.exp_pos ((g w).re), hm, h1]
-    have h3 : (0 : ℝ) < M / m := lt_of_lt_of_le (Real.exp_pos _) h2
     rw [← Real.log_exp ((g w).re)]
     exact Real.log_le_log (Real.exp_pos _) h2
-  -- translate to the origin and apply Borel–Carathéodory
   have hzmem : z - c ∈ ball (0 : ℂ) R := by
     rw [mem_ball_zero_iff]
     linarith
@@ -134,7 +131,6 @@ theorem norm_lower_bound_of_ball {f : ℂ → ℂ} {c : ℂ} {R r M m : ℝ}
   have hG0 : (fun w => g (c + w)) 0 = 0 := by simpa using hg0
   have hBC := Complex.borelCaratheodory_zero hApos hGdiff hGmaps hR hzmem hG0
   rw [show c + (z - c) = z by ring] at hBC
-  -- the Borel–Carathéodory bound is monotone in the radius
   have hmono : 2 * A * ‖z - c‖ / (R - ‖z - c‖) ≤ 2 * A * r / (R - r) := by
     have hden1 : (0 : ℝ) < R - ‖z - c‖ := by
       have := mem_ball_zero_iff.mp hzmem
@@ -143,18 +139,47 @@ theorem norm_lower_bound_of_ball {f : ℂ → ℂ} {c : ℂ} {R r M m : ℝ}
     rw [div_le_div_iff₀ hden1 hden2]
     nlinarith [mul_nonneg (mul_nonneg (by linarith : (0 : ℝ) ≤ 2 * A) hR.le)
       (sub_nonneg.mpr hz)]
-  have hgbound : ‖g z‖ ≤ 2 * A * r / (R - r) := le_trans hBC hmono
-  -- assemble
+  exact le_trans hBC hmono
+
+/-- **Borel–Carathéodory for the logarithm.**  On a disc where a nonvanishing holomorphic function
+has modulus at most `M`, and modulus at least `m` at the centre, the branch of `log (f / f c)`
+vanishing at the centre is bounded by `2 (log (M/m) + 1) r / (R - r)` on the smaller disc. -/
+theorem exists_bound_log_on_ball {f : ℂ → ℂ} {c : ℂ} {R r M m : ℝ}
+    (hr0 : 0 ≤ r) (hrR : r < R)
+    (hf : DifferentiableOn ℂ f (ball c R)) (hne : ∀ z ∈ ball c R, f z ≠ 0)
+    (hM : ∀ z ∈ ball c R, ‖f z‖ ≤ M) (hm0 : 0 < m) (hm : m ≤ ‖f c‖) :
+    ∃ g : ℂ → ℂ, DifferentiableOn ℂ g (ball c R) ∧ g c = 0 ∧
+      (∀ z ∈ ball c R, f z = f c * Complex.exp (g z)) ∧
+      ∀ z : ℂ, ‖z - c‖ ≤ r → ‖g z‖ ≤ 2 * (Real.log (M / m) + 1) * r / (R - r) := by
+  have hR : 0 < R := lt_of_le_of_lt hr0 hrR
+  obtain ⟨g, hgon, hg0, hgeq⟩ := exists_log_on_ball hR hf hne
+  exact ⟨g, hgon, hg0, hgeq, fun z hz =>
+    norm_log_le_of_ball hr0 hrR hgon hg0 hgeq hM hm0 hm hz⟩
+
+/-- **Lower bound from an upper bound.**  Borel–Carathéodory turns a bound on the modulus of a
+nonvanishing holomorphic function into a lower bound on the smaller disc. -/
+theorem norm_lower_bound_of_ball {f : ℂ → ℂ} {c : ℂ} {R r M m : ℝ}
+    (hr0 : 0 ≤ r) (hrR : r < R)
+    (hf : DifferentiableOn ℂ f (ball c R)) (hne : ∀ z ∈ ball c R, f z ≠ 0)
+    (hM : ∀ z ∈ ball c R, ‖f z‖ ≤ M) (hm0 : 0 < m) (hm : m ≤ ‖f c‖)
+    {z : ℂ} (hz : ‖z - c‖ ≤ r) :
+    m * Real.exp (-(2 * (Real.log (M / m) + 1) * r / (R - r))) ≤ ‖f z‖ := by
+  obtain ⟨g, _, _, hgeq, hgbd⟩ := exists_bound_log_on_ball hr0 hrR hf hne hM hm0 hm
+  have hR : 0 < R := lt_of_le_of_lt hr0 hrR
+  have hfc0 : (0 : ℝ) < ‖f c‖ := lt_of_lt_of_le hm0 hm
   have hzball : z ∈ ball c R := by
     rw [mem_ball_iff_norm]
     linarith
-  have hrege : -(2 * A * r / (R - r)) ≤ (g z).re := by
+  have hmod : ‖f z‖ = ‖f c‖ * Real.exp ((g z).re) := by
+    rw [hgeq z hzball, norm_mul, Complex.norm_exp]
+  have hgz := hgbd z hz
+  have hrege : -(2 * (Real.log (M / m) + 1) * r / (R - r)) ≤ (g z).re := by
     have h1 : |(g z).re| ≤ ‖g z‖ := Complex.abs_re_le_norm _
     have h2 : -(g z).re ≤ |(g z).re| := neg_le_abs _
     linarith
-  calc m * Real.exp (-(2 * A * r / (R - r)))
+  calc m * Real.exp (-(2 * (Real.log (M / m) + 1) * r / (R - r)))
       ≤ ‖f c‖ * Real.exp ((g z).re) :=
-        mul_le_mul hm (Real.exp_le_exp.mpr hrege) (Real.exp_pos _).le (le_of_lt hfc0)
-    _ = ‖f z‖ := (hmod z hzball).symm
+        mul_le_mul hm (Real.exp_le_exp.mpr hrege) (Real.exp_pos _).le hfc0.le
+    _ = ‖f z‖ := hmod.symm
 
 end GaloisForLFunctions.HTGeometry

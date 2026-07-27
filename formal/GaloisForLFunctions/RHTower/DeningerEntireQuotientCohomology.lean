@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.XiHedenmalmMultiplicityChain
 
 /-!
-# Source-defined entire-quotient arithmetic cohomology
+# Completed-Xi entire-quotient comparison cohomology
 
 Finite Cauchy packets give the arithmetic trace pairing but are not stable under the Frobenius
 generator: coordinate multiplication creates polynomial boundary terms.  The intrinsic algebraic
@@ -14,8 +14,10 @@ zero enumeration.  Multiplication by `1/2 + I*z` descends automatically and supp
 Frobenius generator.  The removable Xi divided chains give the corresponding Jordan chains only
 after the quotient has been constructed.
 
-This is the algebraic source carrier.  Identifying its continuous dual/cup topology with the
-prime--Gamma packet quotient and proving Hodge positivity are later steps.
+This is an analytic completed-Xi comparison carrier.  Because `XiC` is built into the quotient,
+it is not the independently constructed arithmetic source carrier required by Deninger's program.
+Comparing a source-native coefficient with this quotient, and then transporting its cup/Hodge
+topology, remain separate obligations.
 -/
 
 open Complex
@@ -116,7 +118,10 @@ theorem deningerEntireThetaCoordinate_apply (z : ℂ) :
 def deningerEntireXiIdeal : Ideal DeningerEntire :=
   Ideal.span {deningerEntireXi}
 
-/-- Algebraic middle arithmetic cohomology, constructed without indexing Xi zeros. -/
+/--
+Algebraic completed-Xi comparison cohomology, constructed without indexing Xi zeros but not
+independently of `XiC`.
+-/
 abbrev DeningerEntireH1 :=
   DeningerEntire ⧸ deningerEntireXiIdeal
 

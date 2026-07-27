@@ -40,10 +40,8 @@ theorem nine_over_fiftyThousand_lt_source_of_orderEighteen_edgeCorner
     (hvLower : 85 < (q.1 : ℂ).im ^ 2)
     (hvUpper : (q.1 : ℂ).im ^ 2 < 147) :
     (9 / 50000 : ℝ) < normalizedPrimeArchMoment 1 := by
-  have hoff : (q.1 : ℂ).re ≠ 1 / 2 := by
-    intro h
-    rw [h] at huLower
-    norm_num at huLower
+  have hoff : (q.1 : ℂ).re ≠ 1 / 2 :=
+    re_ne_half_of_pos_centered_sq (by linarith)
   have hsum : Summable
       (fun r : XiZeroCopy => (xiZeroCopyReciprocalSquare r ^ 2).re) :=
     (summable_xiZeroCopyReciprocalSquare_pow 1).mapL Complex.reCLM
@@ -74,23 +72,11 @@ theorem xiOrderNineteenReciprocalPower_re_pos
     (q : XiZeroCopy) {y : ℝ} (hy : 1 / 4 < y) :
     let A : ℝ := (q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2 + y
     let B : ℝ := 2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im
-    0 < ((((A : ℂ) - B * I)⁻¹) ^ 19).re := by
-  by_cases hoff : (q.1 : ℂ).re = 1 / 2
-  · let A : ℝ := (q.1 : ℂ).im ^ 2 - ((q.1 : ℂ).re - 1 / 2) ^ 2 + y
-    let B : ℝ := 2 * ((q.1 : ℂ).re - 1 / 2) * (q.1 : ℂ).im
-    have hA : 0 < A := by
-      dsimp only [A]
-      rw [hoff]
-      norm_num
-      nlinarith [sq_nonneg (q.1 : ℂ).im]
-    apply orderNineteenReciprocalPower_re_pos_of_sectorRatio hA
-    rw [hoff]
-    norm_num
-    exact sq_pos_of_pos hA
-  · by_contra hnot
-    have hcorner := xiOrderNineteenReciprocalPower_nonpos_mem_edgeCorner q hoff hy
-      (le_of_not_gt hnot)
-    exact not_exists_xiZeroCopy_mem_orderEighteen_edgeCorner ⟨q, hcorner⟩
+    0 < ((((A : ℂ) - B * I)⁻¹) ^ 19).re :=
+  xiZeroCopy_reciprocalPower_re_pos_of_window_empty q hy
+    (fun _ _ hA h => orderNineteenReciprocalPower_re_pos_of_sectorRatio hA h)
+    (fun hoff hnonpos => xiOrderNineteenReciprocalPower_nonpos_mem_edgeCorner q hoff hy hnonpos)
+    (fun hc => not_exists_xiZeroCopy_mem_orderEighteen_edgeCorner ⟨q, hc⟩)
 
 end
 

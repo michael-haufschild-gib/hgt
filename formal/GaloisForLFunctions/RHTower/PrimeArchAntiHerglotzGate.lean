@@ -23,6 +23,22 @@ namespace RHTower
 
 noncomputable section
 
+/-- The centered abscissa `1/2 + z i` has real part `1/2 - Im z`, so it stays in the right half
+plane exactly while `Im z < 1/2`. -/
+theorem centeredAbscissa_re_pos {z : ℂ} (hzHalf : z.im < 1 / 2) :
+    0 < (1 / 2 + z * I).re := by
+  simp [mul_re]
+  linarith
+
+/-- The centered abscissa never reaches the zeta pole: `Re (1/2 + z i) = 1` would need
+`Im z = -1/2`, which the upper half plane excludes. -/
+theorem centeredAbscissa_ne_one {z : ℂ} (hzIm : 0 < z.im) :
+    1 / 2 + z * I ≠ 1 := by
+  intro h
+  have hre := congrArg Complex.re h
+  simp [mul_re] at hre
+  linarith
+
 /-- The continued prime--archimedean trace is anti-Herglotz on the centered upper half-strip. -/
 def ContinuedPrimeArchUpperAntiHerglotz : Prop :=
   ∀ z : ℂ, 0 < z.im → z.im < 1 / 2 →

@@ -44,9 +44,9 @@ import GaloisForLFunctions.HilbertMetric.GaussianMetricRankOneFracture
 import GaloisForLFunctions.HilbertMetric.DenseClosedScalarRigidity
 import GaloisForLFunctions.HilbertMetric.PrescribedEvaluationReconstruction
 import GaloisForLFunctions.HilbertMetric.ComplexPrescribedEvaluationReconstruction
-
 import GaloisForLFunctions.HilbertMetric.HilbertLineCommutatorCurvature
 import GaloisForLFunctions.HilbertMetric.QuadraticGraphFockConnector
+import GaloisForLFunctions.HilbertMetric.CCRCompletionWitness
 
 /-!
 # Hilbert-metric theorem area
@@ -55,4 +55,3 @@ This umbrella owns metric and Hilbert-space laws that are mathematically indepen
 `HTGeometry` and `RHTower` theorem areas.  Parent infrastructure is imported here before the
 Gaussian feature-determinant layer built on top of it.
 -/
-import GaloisForLFunctions.HilbertMetric.CCRCompletionWitness

@@ -71,14 +71,10 @@ theorem continuedPrimeArch_conj_domain_of_upperHalfStrip
     0 < (1 / 2 + (starRingEnd ℂ) z * I).re ∧
       1 / 2 + (starRingEnd ℂ) z * I ≠ 1 ∧
       riemannZeta (1 / 2 + (starRingEnd ℂ) z * I) ≠ 0 := by
-  have hspos : 0 < (1 / 2 + z * I).re := by
-    simp [mul_re]
-    linarith
-  have hs1 : 1 / 2 + z * I ≠ 1 := by
-    intro h
-    have hre := congrArg Complex.re h
-    simp [mul_re] at hre
-    linarith
+  have hspos : 0 < (1 / 2 + z * I).re :=
+    centeredAbscissa_re_pos (by linarith)
+  have hs1 : 1 / 2 + z * I ≠ 1 :=
+    centeredAbscissa_ne_one (by linarith)
   have hXi : XiC z ≠ 0 :=
     XiC_ne_zero_of_continuedPrimeArch_domain hspos hs1 hzeta
   have hcXi : XiC ((starRingEnd ℂ) z) ≠ 0 := XiC_ne_zero_conj hXi
@@ -102,12 +98,9 @@ theorem continuedPrimeArchSourceRelativeTrace_conj_of_upperHalfStrip
     (hzeta : riemannZeta (1 / 2 + z * I) ≠ 0) :
     continuedPrimeArchSourceRelativeTrace ((starRingEnd ℂ) z) =
       (starRingEnd ℂ) (continuedPrimeArchSourceRelativeTrace z) := by
-  have hspos : 0 < (1 / 2 + z * I).re := by simp [mul_re]; linarith
-  have hs1 : 1 / 2 + z * I ≠ 1 := by
-    intro h
-    have hre := congrArg Complex.re h
-    simp [mul_re] at hre
-    linarith
+  have hspos : 0 < (1 / 2 + z * I).re := centeredAbscissa_re_pos (by linarith)
+  have hs1 : 1 / 2 + z * I ≠ 1 :=
+    centeredAbscissa_ne_one (by linarith)
   obtain ⟨hcpos, hc1, hczeta⟩ :=
     continuedPrimeArch_conj_domain_of_upperHalfStrip hzpos hzhalf hzeta
   exact continuedPrimeArchSourceRelativeTrace_conj_of_domain
@@ -173,12 +166,9 @@ theorem continuedPrimeArchUpperCauchyDiagonalNonnegative_of_xiWeilOneCauchy
     (hone : XiWeilUpperOneCauchyNonnegative) :
     ContinuedPrimeArchUpperCauchyDiagonalNonnegative := by
   intro z hzpos hzhalf hzeta
-  have hspos : 0 < (1 / 2 + z * I).re := by simp [mul_re]; linarith
-  have hs1 : 1 / 2 + z * I ≠ 1 := by
-    intro h
-    have hre := congrArg Complex.re h
-    simp [mul_re] at hre
-    linarith
+  have hspos : 0 < (1 / 2 + z * I).re := centeredAbscissa_re_pos (by linarith)
+  have hs1 : 1 / 2 + z * I ≠ 1 :=
+    centeredAbscissa_ne_one (by linarith)
   have hXi : XiC z ≠ 0 :=
     XiC_ne_zero_of_continuedPrimeArch_domain hspos hs1 hzeta
   obtain ⟨hcpos, hc1, hczeta⟩ :=

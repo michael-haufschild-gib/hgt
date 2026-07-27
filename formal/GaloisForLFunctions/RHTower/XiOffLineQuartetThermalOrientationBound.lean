@@ -32,11 +32,9 @@ theorem xiThermalOrientationTerm_le_one_over_eightyFour_node_sq
   · let u : ℝ := ((q.1 : ℂ).re - 1 / 2) ^ 2
     let v : ℝ := (q.1 : ℂ).im ^ 2
     let D : ℝ := (u + v) ^ 2
-    have hstrip := xi_divisor_support_re_mem_open_unit q.1
     have hu0 : 0 ≤ u := by dsimp [u]; positivity
-    have hu : u < 1 / 4 := by
-      dsimp [u]
-      nlinarith [mul_pos hstrip.1 (sub_pos.mpr hstrip.2)]
+    have hu : u < 1 / 4 :=
+      xi_divisor_support_centered_re_sq_lt_quarter q.1
     have hv : 85 < v := by
       simpa only [v] using xiZeroCopy_offLine_eightyFive_lt_im_sq q hoff
     have hv0 : 0 < v := by linarith

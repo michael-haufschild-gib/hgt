@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "agentchattr": {
+      "type": "stdio",
+      "command": "/bin/sh",
+      "args": ["/Users/michael/Documents/code/hgt/scripts/agentchattr-mcp.sh"],
+      "env": {}
+    },
+    "sequential-thinking": {
+      "type": "stdio",
+      "command": "/opt/homebrew/bin/node",
+      "args": ["/opt/homebrew/lib/node_modules/@modelcontextprotocol/server-sequential-thinking/dist/index.js"],
+      "env": {}
+    }
+  }
+}

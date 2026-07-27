@@ -1,4 +1,6 @@
 {
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": ["agentchattr", "sequential-thinking"],
   "hooks": {
     "PreToolUse": [
       {

@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.XiHadamardFactorization
 import Mathlib.LinearAlgebra.Matrix.Block
 
 /-!
-# Regularized determinant of source Deninger jet Frobenius
+# Regularized determinant of the Xi-divisor jet comparison operator
 
 On the multiplicity-bounded derivative jets at a centered Xi point `rho`, the normalized centered
 source Frobenius
@@ -24,8 +24,10 @@ over finite source-support windows converges unconditionally, and its product is
 multiplicity-exact Xi canonical product.
 
 Thus nilpotent Jordan terms disappear from trace and determinant by finite-dimensional
-triangularity.  They are not erased by replacing source Frobenius with a diagonal divisor
-operator.  No RH, positivity, zero-location, or simplicity premise is used.
+triangularity.  No RH, positivity, zero-location, or simplicity premise is used.  The carrier is
+nevertheless indexed by `XiDivisorSupport`; this is an unconditional analytic comparison
+determinant, not the missing transport of a determinant from independently constructed arithmetic
+cohomology.
 -/
 
 open Complex Filter Matrix Set Topology

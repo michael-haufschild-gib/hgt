@@ -99,11 +99,9 @@ theorem xiThermalOrientationTerm_le_quartetRelativeFactor_node_sq (q : XiZeroCop
     dsimp [a]
     rw [lt_div_iff₀ hc0]
     nlinarith
-  have hstrip := xi_divisor_support_re_mem_open_unit q.1
   have hu0 : 0 ≤ u := by dsimp [u]; positivity
-  have hu : u ≤ 1 / 4 := by
-    dsimp [u]
-    nlinarith [mul_pos hstrip.1 (sub_pos.mpr hstrip.2)]
+  have hu : u ≤ 1 / 4 :=
+    (xi_divisor_support_centered_re_sq_lt_quarter q.1).le
   have hv : a ≤ v := by
     have hfour :=
       four_le_endpointCurvature_mul_one_add_im_sq_of_offLine q hon

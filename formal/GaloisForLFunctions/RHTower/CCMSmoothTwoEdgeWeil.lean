@@ -766,6 +766,51 @@ theorem riemannHypothesis_iff_smoothProfile_logSample_weil_eventually_bddBelow
         heta hwindow hRH f hf B N0
     exact (not_lt_of_ge (hB n hn hLa)) hbelow
 
+/-- Every single profile in the residual simultaneous-nonvanishing set is itself a complete
+fixed-width RH detector on the logarithmic mesh. -/
+theorem riemannHypothesis_iff_generic_smoothProfile_logSample_weil_nonneg
+    {eta L : ℝ} (heta : 0 < eta) (hwindow : eta < L - eta)
+    (f : SmoothBoundaryProfile eta L) (hf : f ∈ xiSmoothProfileGenericSet eta L) :
+    RiemannHypothesis ↔
+      ∀ n : ℕ, L < Real.log n / 2 →
+        0 ≤ (xiWeilPolarization
+          (xiSmoothProfileTwoEdgeTransform f (Real.log n / 2))
+          (xiSmoothProfileTwoEdgeTransform f (Real.log n / 2))).re := by
+  constructor
+  · intro hRH n hn
+    exact (riemannHypothesis_iff_smoothProfile_logSample_weil_nonneg
+      heta hwindow).mp hRH f n hn
+  · intro hnonneg
+    by_contra hRH
+    obtain ⟨n, _hn0, hLa, hneg⟩ :=
+      not_riemannHypothesis_implies_generic_smoothProfile_weil_cofinally_unbounded_below
+        heta hwindow hRH f hf 0 0
+    exact (not_lt_of_ge (hnonneg n hLa)) hneg
+
+/-- Every single generic smooth profile also detects RH through mere eventual lower
+boundedness; under false RH its samples are cofinally below every real level. -/
+theorem riemannHypothesis_iff_generic_smoothProfile_logSample_weil_eventually_bddBelow
+    {eta L : ℝ} (heta : 0 < eta) (hwindow : eta < L - eta)
+    (f : SmoothBoundaryProfile eta L) (hf : f ∈ xiSmoothProfileGenericSet eta L) :
+    RiemannHypothesis ↔
+      ∃ B : ℝ, ∃ N0 : ℕ, ∀ n : ℕ, N0 ≤ n →
+        L < Real.log n / 2 →
+        B ≤ (xiWeilPolarization
+          (xiSmoothProfileTwoEdgeTransform f (Real.log n / 2))
+          (xiSmoothProfileTwoEdgeTransform f (Real.log n / 2))).re := by
+  constructor
+  · intro hRH
+    refine ⟨0, 0, ?_⟩
+    intro n _hn hLa
+    exact (riemannHypothesis_iff_generic_smoothProfile_logSample_weil_nonneg
+      heta hwindow f hf).mp hRH n hLa
+  · rintro ⟨B, N0, hB⟩
+    by_contra hRH
+    obtain ⟨n, hn, hLa, hbelow⟩ :=
+      not_riemannHypothesis_implies_generic_smoothProfile_weil_cofinally_unbounded_below
+        heta hwindow hRH f hf B N0
+    exact (not_lt_of_ge (hB n hn hLa)) hbelow
+
 end
 
 end RHTower

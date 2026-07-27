@@ -58,12 +58,15 @@ Source Hodge compatibility forces every genuine middle Frobenius eigenvalue
 to have real part `1 / 2`.
 -/
 theorem eigenvalue_re_eq_half
+    (W : DeningerArithmeticThreeTermWeightOneCup F P)
+    (Hodge : DeningerArithmeticThreeTermHodge F P)
     {rho : ℂ} {x : F.complex.H1}
     (hx0 : x ≠ 0)
     (hx : F.thetaH1 x = rho • x) :
     rho.re = 1 / 2 := by
   have hcup :=
-    W.middle_weight_on_cohomology F P x (Hodge.star x)
+    DeningerArithmeticThreeTermWeightOneCup.middle_weight_on_cohomology
+      F P W x (Hodge.star x)
   rw [hx, Hodge.theta_star, hx] at hcup
   have hstar :
       Hodge.star (rho • x) =
@@ -105,6 +108,8 @@ A positive source Hodge structure plus one-way inclusion of every nontrivial
 zeta zero in the source point spectrum proves the Riemann hypothesis.
 -/
 theorem riemannHypothesis
+    (W : DeningerArithmeticThreeTermWeightOneCup F P)
+    (Hodge : DeningerArithmeticThreeTermHodge F P)
     (Spectrum : XiPointSpectrum F) :
     RiemannHypothesis := by
   rw [rh_iff_xi_ne_zero_right]
@@ -113,7 +118,8 @@ theorem riemannHypothesis
     ⟨z, mem_xi_divisor_support_of_eq_zero hzero⟩
   obtain ⟨x, hx0, hx⟩ := Spectrum.eigenvector rho
   have hhalf :=
-    Hodge.eigenvalue_re_eq_half F P W hx0 hx
+    DeningerArithmeticThreeTermHodge.eigenvalue_re_eq_half
+      F P W Hodge hx0 hx
   have hzhalf : z.re = 1 / 2 := by
     dsimp only [rho, xiSpectralPointSupport] at hhalf
     norm_num [Complex.mul_re] at hhalf

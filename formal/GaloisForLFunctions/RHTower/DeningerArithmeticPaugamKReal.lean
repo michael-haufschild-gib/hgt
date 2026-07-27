@@ -43,7 +43,10 @@ def signConjugationSigma
     (Vplus × Vminus) →ₗ⋆[ℂ] (Vplus × Vminus) where
   toFun x := (E.minusToPlus x.2, -E.plusToMinus x.1)
   map_add' x y := by
-    ext <;> simp
+    apply Prod.ext
+    · simp
+    · simp
+      abel
   map_smul' c x := by
     ext <;> simp
 
@@ -153,7 +156,6 @@ theorem splitPairing_skew
     (x y : Vplus × Vminus) :
     splitPairing B x y = -splitPairing B y x := by
   simp
-  ring
 
 theorem splitPairing_isAlt
     (B : Vplus →ₗ[ℂ] Vminus →ₗ[ℂ] ℂ) :
@@ -184,11 +186,10 @@ theorem splitPairing_weightOne
         B (thetaPlus x) y + B x (thetaMinus y) = B x y)
     (x y : Vplus × Vminus) :
     splitPairing B (splitEnd thetaPlus thetaMinus x) y +
-        splitPairing B x (splitEnd thetaPlus thetaMinus y) =
+    splitPairing B x (splitEnd thetaPlus thetaMinus y) =
       splitPairing B x y := by
   simp only [splitPairing_apply, splitEnd_apply]
-  rw [hB x.1 y.2, hB y.1 x.2]
-  ring
+  linear_combination hB x.1 y.2 - hB y.1 x.2
 
 section Cokernel
 
@@ -230,7 +231,8 @@ def splitKRealMorphism
   commutes x := by
     apply Prod.ext
     · exact hMinus x.2
-    · simp [hPlus]
+    · simpa [kReal, signConjugationSigma, splitLinearMap] using
+        congrArg Neg.neg (hPlus x.1)
 
 /-- The algebraic cokernel of an equivariant split Poisson map is odd in `K_R`. -/
 def cokernelKReal

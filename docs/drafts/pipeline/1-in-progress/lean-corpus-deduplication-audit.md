@@ -3258,3 +3258,306 @@ Top repeated blocks still outstanding: a `let u/v/A/B` sector-coordinate preambl
 `XiOrder*EdgeCorner` and `XiCenteredOrders*` families), the
 `continuedPrimeArchSourceRelativeTrace` half-plane preamble (×11), a bend-pair
 `Finset.single_le_sum` step (×8), and a `xiZeroCopyReciprocalSquare ^ 2` real-part formula (×7).
+
+### B95 — The squared reciprocal-square real part, ×7
+
+`blockrep.py`'s next hit. Seven proofs opened by re-deriving the same algebraic identity from
+`xiZeroCopyReciprocalSquare_{re,im}_formula`:
+
+```
+theorem xiZeroCopyReciprocalSquare_sq_re_formula (q : XiZeroCopy) :
+    (xiZeroCopyReciprocalSquare q ^ 2).re =
+      (((q.1 : ℂ).im ^ 2) ^ 2 - 6 * ((q.1 : ℂ).re - 1 / 2) ^ 2 * (q.1 : ℂ).im ^ 2 +
+          (((q.1 : ℂ).re - 1 / 2) ^ 2) ^ 2) /
+        (((q.1 : ℂ).re - 1 / 2) ^ 2 + (q.1 : ℂ).im ^ 2) ^ 4
+```
+
+Placed next to the two coordinate formulas it is built from, in `XiThermalSourceRelativeGapBound`;
+the other six files reach it because they already use those two. Every site is now
+`simp only [u, v, w]; exact xiZeroCopyReciprocalSquare_sq_re_formula q`.
+
+Watch the parenthesisation: `im ^ 2 ^ 2` is `im ^ 4` (`^` is right-associative), not `(im ^ 2) ^ 2`.
+Same value, different term — and the call sites unfold their `let v` to the *left*-nested form.
+
+Audit: `lake build … XiOrderFifteen/Sixteen/Seventeen/EighteenCornerSourceExclusion …` — 9177 jobs,
+exit 0.
+
+### B96 — One sector law replaces twenty-six sector proofs
+
+The `let u/v/A/B` preamble flagged in B94 was the surface symptom. Underneath it, twenty-six
+theorems across ten modules were each proving, by hand, an instance of the *same* real inequality:
+a certificate `N (2ab)² < (b² - a² + y)²` from a width bound on `a²` and a height bound on `b²`.
+Each hand proof invented its own intermediate constants (`509/6`, `2121/25`, `4243/50`, …) and ran
+20–30 lines of `nlinarith`.
+
+The general law, in `HTGeometry/SectorPowerPositivity`:
+
+```
+theorem sector_ratio_of_corner {a b y u₀ v₀ y₀ N : ℝ}
+    (hN : 0 ≤ N) (hy : y₀ ≤ y) (hu : a ^ 2 ≤ u₀) (hv : v₀ ≤ b ^ 2)
+    (hmono : (2 * N + 1) * u₀ ≤ v₀ + y₀)
+    (hcorner : 4 * N * u₀ * v₀ < (v₀ - u₀ + y₀) ^ 2) :
+    N * (2 * a * b) ^ 2 < (b ^ 2 - a ^ 2 + y) ^ 2
+```
+
+The gap `(v - u + y)² - 4Nuv` *decreases* in `u` and, once `(2N+1) u₀ ≤ v₀ + y₀`, *increases* in `v`
+and in `y`. So a single check at the corner `(u₀, v₀, y₀)` propagates over the whole region. The
+proof is the chain `4Na²b² ≤ 4Nu₀b² = 4Nu₀v₀ + 4Nu₀t ≤ D² + 2Dt ≤ (v-u+y)²` with `D = v₀-u₀+y₀`,
+`t = b²-v₀`; it compiled first try.
+
+Five of the twenty-six sit at corner *equality* (`4Nu₀v₀ = D²` exactly — e.g. `N = K = 100`,
+`u₀ = 1/4`, `y₀ = 1/4` gives `10000 = 10000`), because their strictness comes from the strict strip
+bound `u < 1/4` rather than from the corner. Those get a companion law
+`sector_ratio_of_corner_of_lt_width`, which trades a strict width bound for a non-strict corner.
+
+The arithmetic is not slack. Two of the corner checks hold by *one unit* in the last place:
+`4·163·(2365/10464)·(2365/16) < (2365·653/10464)²` is `426408 < 426409` after clearing `2365²`, and
+the order-21 analogue is `519840 < 519841`. Those constants were reverse-engineered for exactly this
+inequality; the general law makes that visible where twenty lines of `nlinarith` hid it.
+
+**−483 lines**, ten modules. Audit: 9177 jobs, exit 0.
+
+### B97 — And one law for the failure side
+
+The eleven `*SectorFailure_mem_edgeCorner` theorems are the contrapositive half of the same
+argument and were equally uniform. Abstracting the certificate away entirely — `P` and `A` are just
+reals — makes one law serve every order and both the `+ y` and centered variants:
+
+```
+theorem xiZeroCopy_sectorFailure_mem_edgeCorner {P A c K : ℝ} (q : XiZeroCopy)
+    (hoff : (q.1 : ℂ).re ≠ 1 / 2)
+    (hinner : ((q.1 : ℂ).re - 1 / 2) ^ 2 ≤ c → P < A)
+    (hhigh : K ≤ (q.1 : ℂ).im ^ 2 → P < A) (hfail : A ≤ P) :
+    c < ((q.1 : ℂ).re - 1 / 2) ^ 2 ∧ ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4 ∧
+      85 < (q.1 : ℂ).im ^ 2 ∧ (q.1 : ℂ).im ^ 2 < K
+```
+
+Keeping `A` abstract rather than writing `(b² - a² + y)²` is what makes it apply to the centered
+family too: `y := 0` would leave a `+ 0` that no call site's hypothesis matches syntactically.
+Each of the eleven proofs is now three lines, and a term rather than a tactic block. **−131 lines**.
+
+### B98 — The strip bound, derived 28 times
+
+```
+theorem xi_divisor_support_centered_re_sq_lt_quarter
+    (ρ : ↥(MeromorphicOn.divisor xi Set.univ).support) : ((ρ : ℂ).re - 1 / 2) ^ 2 < 1 / 4
+```
+
+`0 < Re < 1` centered is exactly `(Re - 1/2)² < 1/4` — two lines, re-derived from
+`xi_divisor_support_re_mem_open_unit` in 28 places across 20 modules, always by the same
+`nlinarith [mul_pos hstrip.1 (sub_pos.mpr hstrip.2)]`. Placed in `CentralReciprocalMoments`, the
+most upstream module that has the strip lemma; every call site loses both the derivation and its
+now-unused `have hstrip`.
+
+One trap the sweep hit: two sites wanted `u ≤ 1/4`, not `u < 1/4`, and a text-level pattern cannot
+see the difference. The compiler did — `.le` on both.
+
+Audit for B97+B98: 13 modules, exit 0.
+
+### B99 — The sector criterion, eight times
+
+Eight `order<N>ReciprocalPower_re_pos_of_sectorRatio` theorems, one per order, each eleven lines and
+byte-identical except for the triple `(N, t, n)`:
+
+```
+theorem re_inv_sub_mul_I_pow_pos_of_sq_lt {A B N t : ℝ} {n : ℕ}
+    (hA : 0 < A) (ht : 0 < t) (hNt : 1 ≤ N * t ^ 2)
+    (hsector : N * B ^ 2 < A ^ 2) (hangle : (n : ℝ) * t ≤ Real.pi / 2) :
+    0 < ((((A : ℂ) - B * I)⁻¹) ^ n).re
+```
+
+`N B² < A²` with `1 ≤ N t²` gives `B² ≤ N t² B² < t² A²`, hence `|B| < t A`; the rest is
+`re_inv_sub_mul_I_pow_pos`. The eight instances are four lines each now, and the only content left
+in them is the pair that actually differs per order — the rational tangent `t` and the angle budget
+`n t ≤ π/2`: `(104, 981/10000, 16)`, `(118, 923/10000, 17)`, `(132, 872/10000, 18)`,
+`(147, 826/10000, 19)`, `(163, 784/10000, 20)`, `(180, 747/10000, 21)`, `(417, 49/1000, 32)` and
+`(100, 1/10, 15)`.
+
+Companion, for the other direction:
+
+```
+theorem sq_le_of_re_inv_sub_mul_I_pow_nonpos {A B N : ℝ} {n : ℕ}
+    (hpos : N * B ^ 2 < A ^ 2 → 0 < ((((A : ℂ) - B * I)⁻¹) ^ n).re)
+    (hnonpos : ((((A : ℂ) - B * I)⁻¹) ^ n).re ≤ 0) : A ^ 2 ≤ N * B ^ 2
+```
+
+### B100 — Reciprocal-power reduction: three more families, three more laws
+
+All in the same shape — the *criterion* and the *window* become parameters, so one theorem covers
+every order.
+
+`xiZeroCopy_reciprocalPower_nonpos_of_sector` (six users, −89 lines) — the radial coordinate
+`A = im² − (re−1/2)² + y` is positive whenever `y > 1/4`, because the strip gives
+`(re−1/2)² < 1/4`; a nonpositive real part therefore refutes the ratio, and whatever `hwindow`
+concludes from the failure holds. The conclusion is an arbitrary `W : Prop`, which is exactly what
+lets the order-32 user — whose window is a six-part conjunction carrying its own lower certificate —
+go through the same law as the five four-part ones.
+
+`xiZeroCopy_reciprocalPower_re_pos_of_window_empty` (five users, −60) — on the critical line the
+transverse coordinate `B` vanishes and the ratio is trivial; off it, a nonpositive real part lands
+in a window already proved empty.
+
+`xiZeroCopyReciprocalSquare_pow_re_pos_of_window_empty` (four users, −105) — the centered (`y = 0`)
+form of the same dichotomy; positivity of `A = im² − (re−1/2)²` comes from `im² > 85 > 1/4 >
+(re−1/2)²` off the line and from `im² ≠ 0` on it.
+
+Design point worth keeping: these laws carry the *`let`-shaped* hypothesis
+`(hnonpos : let A := …; let B := …; …)` verbatim instead of a zeta-reduced version. That is what
+lets each call site hand its own hypothesis straight through — every hand proof had needed a
+`change … at hnonpos` line first.
+
+### B98a — A caution the sweep earned
+
+Dropping `have hstrip := …` because no *later text* mentions `hstrip` is wrong: a bare `linarith` or
+`nlinarith` reads the whole local context. `XiSquaredSeamLowDyadicTail` broke exactly this way — its
+`hAv : v < A` step had been silently consuming the strip bounds. The fix passes them explicitly,
+which is better than restoring the `have`: the proof now says what it uses.
+
+Audit for B99–B100: 11 targets, 9240 jobs, exit 0.
+
+### B101 — Closing the family: centered forms and the residual annuli
+
+Two centered analogues finish the cluster.
+
+`xiZeroCopy_centeredReciprocalPower_nonpos_of_sector` — the `y = 0` form of B100's first law; the
+radial coordinate `A = im² − (re−1/2)²` is positive off the line because `im² > 85 > 1/4`.
+
+`xiZeroCopy_centeredCoordinate_re_pos_of_window_empty` — the `let`-shaped centered dichotomy. With
+it, B100's `xiZeroCopyReciprocalSquare_pow_re_pos_of_window_empty` becomes a two-line corollary:
+rewrite through `xiZeroCopyReciprocalSquare_eq_centeredOrderCoordinate` and apply. That is a real
+discharge, not just a shortening — the reciprocal-square statement is now a *consequence* of the
+coordinate statement rather than a parallel proof of it.
+
+The two residual-annulus orders needed one more variant, because their height floor `2365/16 ≤ im²`
+comes from the centering criterion rather than the off-line height gap; a file-private
+`sectorFailure_mem_residualAnnulus_aux` covers both, and their power-positivity theorems then go
+through the shared centered law like every other order.
+
+Running total for the sector cluster: fifty-eight declarations across seventeen modules now rest on
+seven general laws (two in `HTGeometry/SectorPowerPositivity`, five in `RHTower`), for about
+**−1150 lines**. What is left in each declaration is only what genuinely differs between orders —
+the sector constant `N`, the rational tangent `t`, the corner `(u₀, v₀, y₀)`, and the name of the
+window that is empty.
+
+### B102 — The centered abscissa, nineteen times
+
+The `blockrep.py` ×11 entry, once traced properly, was nineteen copies of a two-fact preamble about
+the shifted abscissa `1/2 + z i`, spread over ten modules:
+
+```
+theorem centeredAbscissa_re_pos {z : ℂ} (hzHalf : z.im < 1 / 2) : 0 < (1 / 2 + z * I).re
+theorem centeredAbscissa_ne_one {z : ℂ} (hzIm : 0 < z.im) : 1 / 2 + z * I ≠ 1
+```
+
+`Re (1/2 + z i) = 1/2 - Im z`, so the strip `0 < Im z < 1/2` is exactly the statement that the
+abscissa sits in the zeta critical strip: positive real part, and never the pole at `1`. Both live
+in `PrimeArchAntiHerglotzGate`, the least upstream module the ten all reach.
+
+Each call site is now `centeredAbscissa_re_pos (by linarith)` / `centeredAbscissa_ne_one (by
+linarith)`. Passing the side condition as `by linarith` rather than a named hypothesis is what makes
+one sweep cover all nineteen: the sites call the hypothesis `hzHalf`, `hzhalf`, `hzIm` or `hzpos`,
+and the tactic does not care.
+
+Also swept: the eight-site `hoff : (q.1 : ℂ).re ≠ 1/2` derivation from a positive centered square,
+now `re_ne_half_of_pos_centered_sq (by linarith)`.
+
+`−82` lines over eighteen modules.
+
+### B103 — Two Nat sums, sixteen times
+
+The `blockrep.py` bend-pair entries were all one shape: a jet family `s i = q + δ i` over
+`Fin (jetMonomialDegree n anchor)`, and two lower bounds for its sum, written out by hand in eight
+`HTGeometry` modules.
+
+```
+theorem le_sum_of_le_apply {D q : ℕ} (hD : 0 < D) {s : Fin D → ℕ} (h : ∀ i, q ≤ s i) :
+    q ≤ ∑ i, s i
+theorem mul_le_sum_of_le_apply {D q : ℕ} {s : Fin D → ℕ} (h : ∀ i, q ≤ s i) :
+    D * q ≤ ∑ i, s i
+```
+
+Stating them over `Fin D` rather than a general `Fintype` is what makes the call sites one line:
+`D` is inferred from `s`, and the goal's `D` — a `let` for `jetMonomialDegree n anchor` — matches by
+zeta reduction. Every site is now `le_sum_of_le_apply haPos fun i => by simp [s]` or
+`mul_le_sum_of_le_apply fun i => by simp [s]`, down from seven lines. Sixteen sites, **−78 lines**.
+
+One mechanical slip worth the note: the sweep lifted the *`obtain`'s proof term*
+`Fin.pos_iff_nonempty.mp hD` into the new argument slot, but the lemma wants `hD : 0 < D` itself.
+A text-level sweep will happily carry a coercion it does not understand; the compiler caught all
+eight at once.
+
+### B104 — The transverse supremum, eight times
+
+Eight `CCM*` modules each shifted a uniform pole bound down to a supremum bound by hand, in the
+same eleven lines: strip the `+1` at every copy, then `csSup_le` over the range.
+
+```
+theorem xiRightTransverseSup_le_of_shiftedPole_re_le {σ : ℝ}
+    (hne : Nonempty XiRightZeroCopy)
+    (hpole : ∀ q : XiRightZeroCopy, (xiRightShiftedPole q).re ≤ σ) :
+    xiRightTransverseSup ≤ σ - 1
+```
+
+Placed in `CCMShiftedXiCancellation`, immediately after `xiRightShiftedPole` — the first module that
+sees both that definition and `xiRightTransverseSup`. Each site is two lines. **−72 lines**.
+
+The `Nonempty` hypothesis is the one thing a lifted lemma cannot inherit: at the call sites the
+instance came from an ambient `hne` that `Set.range_nonempty` picked up silently. Made explicit.
+
+### B105 — Line-conjugate pairing, six times
+
+Six accretivity theorems — four `PrimeArch*`, two `Hedenmalm*` — each spent twenty-six lines
+rebuilding the same reindexing before using its own pointwise sign. The reindexing is one identity:
+
+```
+theorem tsum_lineConj_pair_im_eq_two_mul_xiRelativeResolventTrace_im {z : ℂ} (hz : XiC z ≠ 0) :
+    (∑' q : XiZeroCopy,
+        (xiRelativeResolventTerm z q +
+          xiRelativeResolventTerm z (xiZeroCopyLineConjEquiv q)).im) =
+      2 * (xiRelativeResolventTrace z).im
+```
+
+Critical-line conjugation is a bijection of zero copies, so pairing each copy with its conjugate
+reproduces the trace twice. Stating it as an *equality* rather than as two sign lemmas is what makes
+it serve both directions: five sites conclude `≤ 0` and one concludes `0 ≤`, and each is now
+`linarith [tsum_lineConj_pair_im_eq_two_mul_… hXi]` against its own `tsum_nonpos` / `tsum_nonneg`.
+
+Home: `XiWeilResolventGram`, the least upstream module that sees both `xiZeroCopyLineConjEquiv`
+(from `XiWeilPolarization`) and `xiRelativeResolventTrace`. `XiRelativeResolventFlux` looked like
+the natural home and is not — it has the trace but not the conjugation.
+
+**−156 lines** across six modules.
+
+### B106 — The dual sum bound
+
+The upper counterpart of B103, seven sites across six modules:
+
+```
+theorem sum_le_mul_of_apply_le {D q : ℕ} {s : Fin D → ℕ} (h : ∀ i, s i ≤ q) : ∑ i, s i ≤ D * q
+```
+
+Each `hsUpper` is now three lines carrying only the pointwise estimate. **−35 lines**.
+
+### B107 — One phase expansion instead of six
+
+`BourgainSquareRootQuadraticModel` opened six proofs with the same nine-line `have hfun` unfolding
+the square-root curve phase into coordinates, immediately followed by `rw [hfun]`. As a named
+theorem next to the definition it reads better and each site is one `rw`:
+
+```
+theorem bourgainSquareRootCurvePhase_eq (x : BourgainPhaseSpace) :
+    bourgainSquareRootCurvePhase x =
+      fun t : ℝ => x 0 * t + x 1 * t ^ (2 : ℕ) + x 2 * t ^ (3 / 2 : ℝ) + x 3 * t ^ (1 / 2 : ℝ)
+```
+
+**−38 lines** in one module. This is the within-file variant of the pattern: not two theorems that
+should be one, but one *definition unfolding* that should have been a lemma from the start.
+
+### B108 — `p < p² < p³`, four times
+
+```
+theorem prime_lt_sq_and_sq_lt_cube {p : ℕ} (hp : p.Prime) : p < p ^ 2 ∧ p ^ 2 < p ^ 3
+```
+
+Nine lines of `calc` in four `Theta*PrimeCube*` modules, now one `obtain`. Placed in
+`ThetaCuspLikelihoodPrimeSquareSignWall`, the most upstream of the four. **−32 lines**.

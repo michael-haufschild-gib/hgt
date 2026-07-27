@@ -72,6 +72,12 @@ source-defined three-term complex with
 \[
  H^0=\mathbb C,\qquad H^1=M_\zeta,\qquad H^2=\mathbb C(-1).
 \]
+The abstract assembly and its concrete finite-plus-real Arakelov
+endpoint are now formalized unconditionally in Lean:
+`DeningerArithmeticPoissonZetaAssembly.lean` proves the quotient
+calculation, while
+`DeningerArithmeticArakelovPoissonComplex.lean` proves the concrete
+\(H^0/H^1/H^2\) equivalences and endpoint cup pairing.
 Meyer's theorems give the exact zero spectrum with multiplicity and the
 prime-plus-archimedean Weil character.  Deninger's regularized-product
 theorem gives the completed-zeta determinant.  Paugam gives the
@@ -1291,19 +1297,23 @@ exactly under RH.  CCM is not part of this comparison.
   Only an isolated generic lemma may be reused when its statement is independently part of the
   displayed Deninger chain.
 
-  Direct corpus audit against the nine sections of the program:
+  Historical direct corpus audit against the nine sections of the program.
+  **Status correction (2026-07-27):** “Lean-proved” in this table meant that
+  an Xi-defined comparison model or abstract implication compiled.  It did
+  not mean that source-native arithmetic cohomology or the RH-bearing
+  structures were constructed.  Corrected classification:
 
   | Deninger obligation | Direct source theorem/module | Status |
   |---|---|---|
-  | \(H^0=\mathbf C,\ H^1=\mathcal O/\Xi\mathcal O,\ H^2=\mathbf C(-1)\) | `DeningerArithmeticCochainComplex` | Lean-proved |
-  | compact-open topology and \(H^1_c\subset\mathcal H^1\subset H^1\) | `DeningerArithmeticJetProductEquivalence`, `DeningerArithmeticJetHilbertRigging` | Lean-proved |
-  | source Frobenius and closed dense Hilbert domain | `DeningerArithmeticTopologicalCohomology`, `DeningerArithmeticJetFrobenius` | Lean-proved |
-  | cup/Poincaré derivation law | `DeningerArithmeticPoincareDuality` | Lean-proved |
-  | regularized determinant \(=\widehat\zeta\) | `DeningerArithmeticJetDeterminant` | Lean-proved |
-  | prime-power plus archimedean Lefschetz distribution | `DeningerArithmeticLefschetz` | Lean-proved |
-  | odd positive completed Hodge form | `DeningerArithmeticOrientedHilbertHodge` | Lean-proved |
-  | source derivation of semisimple completed \(H^1\) | `DeningerArithmeticAssociatedGraded` | Lean-proved |
-  | source Green operator, dense range, cup representation, graded Frobenius transport | `DeningerArithmeticSourceGreen` | Lean-proved |
+  | \(H^0=\mathbf C,\ H^1=\mathcal O/\Xi\mathcal O,\ H^2=\mathbf C(-1)\) | `DeningerArithmeticCochainComplex` | `[LEAN-PROVED]` Xi-defined analytic comparison model; not source-native |
+  | compact-open topology and \(H^1_c\subset\mathcal H^1\subset H^1\) | `DeningerArithmeticJetProductEquivalence`, `DeningerArithmeticJetHilbertRigging` | `[LEAN-PROVED]` Xi-jet comparison rigging |
+  | source Frobenius and closed dense Hilbert domain | `DeningerArithmeticTopologicalCohomology`, `DeningerArithmeticJetFrobenius` | `[LEAN-PROVED]` on Xi-defined comparison carrier |
+  | cup/Poincaré derivation law | `DeningerArithmeticPoincareDuality` | `[LEAN-PROVED]` abstract law; Hodge-star constructor absent |
+  | regularized determinant \(=\widehat\zeta\) | `DeningerArithmeticJetDeterminant` | `[LEAN-PROVED]` zero-indexed comparison determinant; source transport open |
+  | prime-power plus archimedean Lefschetz distribution | `DeningerArithmeticLefschetz` | `[LEAN-PROVED]` Xi explicit formula; source trace identification open |
+  | odd positive completed Hodge form | `DeningerArithmeticOrientedHilbertHodge` | `[LEAN-PROVED]` on `XiDivisorL2`; closed Frobenius-natural polarization requires RH |
+  | source derivation of semisimple completed \(H^1\) | `DeningerArithmeticAssociatedGraded` | `[LEAN-PROVED]` Xi-jet associated graded only |
+  | source Green operator, dense range, cup representation, graded Frobenius transport | `DeningerArithmeticSourceGreen` | `[LEAN-PROVED]` Xi-divisor comparison Green transport; global arithmetic Green open |
   | Frobenius naturality of source Riesz/Hodge metric factor | `[DAC_SOURCE_GREEN_PURITY]` | open mathematical core |
   | RH extraction from that naturality | `deningerDivisorClosedTheta_orientedHodge_iff_riemannHypothesis` | Lean-proved equivalence |
 

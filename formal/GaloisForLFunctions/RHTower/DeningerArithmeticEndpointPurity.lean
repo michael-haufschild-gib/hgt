@@ -43,7 +43,7 @@ theorem deningerTheta2_eq_id_of_theta0_eq_zero_of_endpointPairing
   apply hseparating
   intro x
   have h := hTheta x z
-  rw [htheta0, LinearMap.zero_apply, map_zero, zero_add] at h
+  simp only [htheta0, LinearMap.zero_apply, map_zero, zero_add] at h
   simp only [map_sub, LinearMap.id_apply, h, sub_self]
 
 end EndpointPurity

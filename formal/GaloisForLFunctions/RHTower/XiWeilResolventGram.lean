@@ -185,6 +185,39 @@ theorem xiWeilPolarization_cauchyKernel_diagonal {z : ℂ} (hz : XiC z ≠ 0)
     exact hzim (by linarith)
   exact xiWeilPolarization_cauchyKernel_eq hz hzc hz0 hz0' hne
 
+/-- **Line-conjugate pairing of the relative resolvent trace.**  Reindexing by the critical-line
+conjugation is a bijection of zero copies, so pairing each copy with its conjugate reproduces the
+trace twice.  Taking imaginary parts turns any pointwise sign for the paired terms into the same
+sign for the trace. -/
+theorem tsum_lineConj_pair_im_eq_two_mul_xiRelativeResolventTrace_im
+    {z : ℂ} (hz : XiC z ≠ 0) :
+    (∑' q : XiZeroCopy,
+        (xiRelativeResolventTerm z q +
+          xiRelativeResolventTerm z (xiZeroCopyLineConjEquiv q)).im) =
+      2 * (xiRelativeResolventTrace z).im := by
+  have hsum := summable_xiRelativeResolventTerm hz
+  have hsumJ : Summable (fun q : XiZeroCopy =>
+      xiRelativeResolventTerm z (xiZeroCopyLineConjEquiv q)) :=
+    (xiZeroCopyLineConjEquiv.summable_iff).mpr hsum
+  have hpair := hsum.add hsumJ
+  have hreindex :
+      (∑' q : XiZeroCopy,
+        xiRelativeResolventTerm z (xiZeroCopyLineConjEquiv q)) =
+          xiRelativeResolventTrace z := by
+    rw [xiRelativeResolventTrace]
+    exact xiZeroCopyLineConjEquiv.tsum_eq (xiRelativeResolventTerm z)
+  have hpairsum :
+      (∑' q : XiZeroCopy,
+        (xiRelativeResolventTerm z q +
+          xiRelativeResolventTerm z (xiZeroCopyLineConjEquiv q))) =
+        2 * xiRelativeResolventTrace z := by
+    rw [hsum.tsum_add hsumJ, hreindex, xiRelativeResolventTrace]
+    ring
+  have hpairsumIm := congrArg Complex.im hpairsum
+  rw [Complex.im_tsum hpair] at hpairsumIm
+  norm_num [mul_im] at hpairsumIm
+  simpa only [add_im] using hpairsumIm
+
 end
 
 end RHTower

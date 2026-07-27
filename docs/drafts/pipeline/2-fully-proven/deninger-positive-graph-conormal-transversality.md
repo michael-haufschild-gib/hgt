@@ -125,11 +125,14 @@ Hilbert completion with coarse descent.
 
 ## Lean status
 
-The intersection statement `(2)` is formalized as
-`RHTower.deningerPositiveCalderonGraph_inf_conormal_eq_bot` in
-`GaloisForLFunctions.RHTower.DeningerArithmeticPositiveCalderonKoszul`.
-The finite-dimensional dimension argument proving `(3)` remains on
-paper.
+Both `(2)` and `(3)` are formalized in
+`GaloisForLFunctions.RHTower.DeningerArithmeticPositiveCalderonKoszul`
+as
+`RHTower.deningerPositiveCalderonGraph_inf_conormal_eq_bot` and
+`RHTower.deningerPositiveCalderonGraph_sup_conormal_eq_top`.
+Explicit graph/conormal linear equivalences and their finrank
+identities are included.  Required direct-file check passes; final
+cached module build and axiom audit remain reserved for final audit.
 
 ## References
 
@@ -142,3 +145,5 @@ paper.
 - 2026-07-27 — Proved finite positive graph--conormal transversality
   and isolated coarse suspension/Poisson descent as the only possible
   source of infinite arithmetic middle cohomology.
+- 2026-07-27 — Formalized finite complementary-sum statement, closing
+  acyclicity of finite linear position--momentum fibre in Lean.

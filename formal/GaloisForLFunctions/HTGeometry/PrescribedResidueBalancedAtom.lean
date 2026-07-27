@@ -46,12 +46,8 @@ theorem exists_eventually_balanced_nonzero_aevalWeight_residue {n : ℕ}
   let s : Fin D → ℕ := fun i => q + δ i
   let N := (∑ i, s i) + anchor 0 - J
   have hdata := hsurvive q hq₀
-  have hqsum : q ≤ ∑ i, s i := by
-    obtain ⟨i0⟩ : Nonempty (Fin D) := Fin.pos_iff_nonempty.mp hD
-    calc
-      q ≤ s i0 := by simp [s]
-      _ ≤ ∑ i, s i := Finset.single_le_sum (fun _ _ => Nat.zero_le _)
-        (Finset.mem_univ i0)
+  have hqsum : q ≤ ∑ i, s i :=
+    le_sum_of_le_apply hD fun i => by simp [s]
   have hJsum : J ≤ (∑ i, s i) + anchor 0 := by
     exact hqJ.trans (hqsum.trans (Nat.le_add_right _ _))
   have hNadd : N + J = (∑ i, s i) + anchor 0 := by

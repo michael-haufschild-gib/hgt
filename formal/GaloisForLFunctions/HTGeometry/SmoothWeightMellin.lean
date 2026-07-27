@@ -583,4 +583,50 @@ theorem exists_bound_mellin_smoothWeight {N H : ℝ} (hN : 0 < N) (hH : 0 < H) (
         mul_le_mul_of_nonneg_left (le_trans hexp1 hexp2) hCjH
     _ = M := by rw [hM]
 
+/-- **The trivial size of the cutoff's Mellin transform.**  Since `0 ≤ w ≤ 1` and `w` vanishes past
+`N + H`, the transform is at most `(N+H)^σ / σ` on `Re s = σ > 0`.  This is the factor that carries
+the size of the cutoff into the Perron estimate. -/
+theorem norm_mellin_smoothWeight_le_pow {N H : ℝ} (hN : 0 ≤ N) (hH : 0 < H) {s : ℂ}
+    (hs : 0 < s.re) :
+    ‖mellin (fun x : ℝ => ((smoothWeight N H x : ℝ) : ℂ)) s‖ ≤ (N + H) ^ s.re / s.re := by
+  have hNH : (0 : ℝ) ≤ N + H := by linarith
+  rw [mellin_smoothWeight_eq]
+  refine le_trans (norm_integral_le_integral_norm _) ?_
+  have hint : IntegrableOn
+      (fun x : ℝ => ‖(x : ℂ) ^ (s - 1) * ((smoothWeight N H x : ℝ) : ℂ)‖) (Ioi 0) :=
+    (integrableOn_mellin_smoothWeight hN hH hs).norm
+  have h1 : IntegrableOn
+      (fun x : ℝ => ‖(x : ℂ) ^ (s - 1) * ((smoothWeight N H x : ℝ) : ℂ)‖) (Ioc 0 (N + H)) :=
+    hint.mono_set fun x hx => hx.1
+  have h2 : IntegrableOn
+      (fun x : ℝ => ‖(x : ℂ) ^ (s - 1) * ((smoothWeight N H x : ℝ) : ℂ)‖) (Ioi (N + H)) :=
+    hint.mono_set fun x hx => lt_of_le_of_lt hNH hx
+  have hsplitset : Ioc (0 : ℝ) (N + H) ∪ Ioi (N + H) = Ioi (0 : ℝ) :=
+    Ioc_union_Ioi_eq_Ioi hNH
+  rw [← hsplitset, setIntegral_union (by
+      rw [Set.disjoint_left]
+      intro x hx hx'
+      exact absurd hx.2 (not_le.mpr hx')) measurableSet_Ioi h1 h2]
+  have hzero : ∫ x in Ioi (N + H), ‖(x : ℂ) ^ (s - 1) * ((smoothWeight N H x : ℝ) : ℂ)‖ = 0 := by
+    refine setIntegral_eq_zero_of_forall_eq_zero fun x hx => ?_
+    rw [mellin_smoothWeight_eq_zero_of_le hH (le_of_lt hx) s, norm_zero]
+  rw [hzero, add_zero]
+  have hmaj : ∀ x ∈ Ioc (0 : ℝ) (N + H),
+      ‖(x : ℂ) ^ (s - 1) * ((smoothWeight N H x : ℝ) : ℂ)‖ ≤ x ^ (s.re - 1) := by
+    intro x hx
+    have hx0 : (0 : ℝ) < x := hx.1
+    rw [norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos hx0, Complex.sub_re, Complex.one_re,
+      Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (smoothWeight_nonneg N H x)]
+    have hpow : (0 : ℝ) < x ^ (s.re - 1) := Real.rpow_pos_of_pos hx0 _
+    nlinarith [smoothWeight_le_one N H x, smoothWeight_nonneg N H x, hpow]
+  have hmajint : IntegrableOn (fun x : ℝ => x ^ (s.re - 1)) (Ioc (0 : ℝ) (N + H)) := by
+    rw [← intervalIntegrable_iff_integrableOn_Ioc_of_le hNH]
+    exact intervalIntegral.intervalIntegrable_rpow' (by linarith)
+  refine le_trans (setIntegral_mono_on h1 hmajint measurableSet_Ioc hmaj) ?_
+  rw [← intervalIntegral.integral_of_le hNH, integral_rpow (Or.inl (by linarith)),
+    Real.zero_rpow (by linarith)]
+  have hexp : s.re - 1 + 1 = s.re := by ring
+  rw [hexp]
+  simp
+
 end GaloisForLFunctions.HTGeometry
