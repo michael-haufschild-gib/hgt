@@ -795,3 +795,31 @@ With that definition the two orbit hypotheses of
    version is the only missing piece of pure bookkeeping).
 2. `hStarInj`: distinct `tau_q`-exponents give distinct germs — exactly nonresonance of `tau_q`
    against the DA spectrum of the face, which is where the special-function input enters.
+
+## Lean progress — the concrete face packets, and all-order star independence
+
+`formal/GaloisForLFunctions/HTGeometry/MultipleEllipticGammaFacePacket.lean` (axiom-clean, umbrella
+registered) carries out the packet plan recorded above.
+
+- `faceShiftLattice tau J` — the integer span of the parameters **deleted** by the face `J`, i.e.
+  its external translation subgroup, and `faceShiftLatticeSlice tau J q` its zero-exponent slice in
+  a deleted direction, with the splitting lemma `exists_slice_of_mem_faceShiftLattice`;
+- `multipleEllipticGammaFacePacket tau htau J` — the packet `O_J`, the face coordinate
+  `multipleEllipticGammaLogDerivFaceMero tau htau J` translated by that lattice;
+- **`multipleEllipticGammaFacePacket_eq_orbitUnion`** — for every deleted direction `q in J` the
+  packet is the union of the *full* `sigma_(tau q)`-orbits of its zero-exponent slice;
+- **`faceStar_eq_orbitUnion`** — hence the entire star of a direction is an orbit union (every face
+  of that star contains the direction; the union of orbit unions is the orbit union of the union of
+  slices, `orbitUnion_biUnion`);
+- **`multipleEllipticGammaFaceStar_diffIndepOn`** — the concrete all-order star-independence
+  statement: with these packets and the genuine additive translations as directions, the total star
+  is jointly differentially independent over the constants provided three analytic inputs hold —
+  each face packet is atomic, distinct exponents in a star direction give distinct germs
+  (nonresonance), and off-star translated packets are differentially algebraic over the packet they
+  came from.
+
+Both orbit hypotheses of `differentialRank_uniformFace_nestedStar_diffIndepOn_of_orbit` are now
+discharged by construction; the abstract engine, the rank-automorphism property, the free-translate
+mechanism, and the packet bookkeeping are all behind us.  What remains of `(14)` is exactly the three
+named analytic inputs — of which atomicity is already available at the bottom layer `|J| = n-2` — and
+after that the hierarchy-to-row identification and the capstone `(1)`.
