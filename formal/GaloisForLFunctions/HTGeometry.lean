@@ -2304,3 +2304,4 @@ import GaloisForLFunctions.HTGeometry.OrbitHeightFreeTranslates
 import GaloisForLFunctions.HTGeometry.DifferentialUniformFaceGluing
 import GaloisForLFunctions.HTGeometry.MultipleEllipticGammaFacePacket
 import GaloisForLFunctions.HTGeometry.MultipleEllipticGammaTelescope
+import GaloisForLFunctions.HTGeometry.FreeShiftTransport
