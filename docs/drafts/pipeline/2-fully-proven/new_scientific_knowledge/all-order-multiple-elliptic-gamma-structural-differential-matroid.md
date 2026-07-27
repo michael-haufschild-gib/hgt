@@ -1151,3 +1151,26 @@ registered) removes that restriction, reusing the corpus's existing base-normali
 - **`differentialRank_uniformFace_nestedStar_diffIndepOn_semilinear`** and
   **`..._of_orbit_semilinear`** — the all-order uniform-face nested-star gluing theorems with the
   acting automorphisms only normalizing the base.
+
+## Lean progress — completing one face layer
+
+`formal/GaloisForLFunctions/HTGeometry/FacePacketLayerGluing.lean` (axiom-clean, umbrella
+registered) performs the layer-completion step of the paper over the deeper face field.
+
+- **`facePacketSemilinearEquiv`** — the structural translation `T_q` as a base-normalizing
+  differential automorphism of the meromorphic field over `K_(s+1)`: it normalizes `K_(s+1)` by
+  `facePacketFieldTranslation` and commutes with the derivation;
+- **`multipleEllipticGammaFaceStar_diffIndepOn_deeper`** — the nested-star gluing engine over
+  `K_(s+1)`: the star of every direction is a union of full translation orbits
+  (`faceStar_eq_orbitUnion`), so the whole layer is jointly independent over `K_(s+1)` given
+  atomicity of each packet over that field, star nonresonance and off-star differential
+  algebraicity;
+- **`multipleEllipticGammaFaceLayer_diffIndepOn_deeper`** — the layer step itself: with two
+  surviving directions per face, the face-lifting lemma supplies the atomicity input, so the entire
+  `s`-layer is jointly differentially independent over the deeper face field.
+
+Together with the previous sections this formalizes the paper's chain
+"face lifting -> layer completion" over a *moving* base field, which is what the structure of the
+hierarchy forces.  The remaining inputs are the analytic ones the card already isolates: bottom-layer
+atomicity, star nonresonance (`hStarInj`), off-star differential algebraicity (`hOffDA`), and the
+per-face freeness/injectivity data that the descending induction is to carry.
