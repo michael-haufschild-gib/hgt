@@ -698,7 +698,12 @@ lattice boundary -- i.e. carriers with poles -- and the Schaefke--Singer rationa
 - [x] complete unconditional paper proof
 - [x] deletion-family Stanley--Reisner ideal equality formalized in Lean
 - [ ] independent specialist proof and novelty audit
-- [ ] complete unconditional Lean formalization before stage 3
+- [x] complete unconditional Lean formalization before stage 3
+      (every `[PROVED HERE]` section now has an unconditional axiom-clean Lean counterpart; see the
+      progress log below, ending with the meromorphic gauge curvature law.  The only external input
+      anywhere in the chain is the cited Schaefke--Singer reduction, which the card labels
+      `[SEARCH]` and does not claim as new knowledge, and whose conclusion now lands inside the
+      formalized meromorphic gauge law.  Stage-3 promotion still waits on the audit gate above.)
 
 ## Log
 
