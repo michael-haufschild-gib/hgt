@@ -1507,3 +1507,10 @@ nonresonance hypothesis `hStarInj` of the gluing engine at the bottom layer: the
 equal exponents, and the cross-face case is vacuous.  What remains of the all-order chain is the
 off-star differential algebraicity `hOffDA` and the per-face freeness data carried by the descending
 induction.
+
+**`multipleEllipticGammaFacePacketSlice_exponent_eq_bottom_cross`** (same file, axiom-clean) puts the
+separation in the form the gluing engine consumes: for slice points of two bottom faces separated by
+a parameter that survives on the first and is deleted on the second, the star-exponent implication
+holds vacuously, because the translated equality is impossible.  Combined with the same-face lemma,
+`hStarInj` is available for every pair of bottom faces once a separating parameter is exhibited —
+which for faces of equal size is just the statement that their complements differ.

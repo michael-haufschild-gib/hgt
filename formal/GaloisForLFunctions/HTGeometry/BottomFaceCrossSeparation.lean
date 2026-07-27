@@ -105,6 +105,33 @@ theorem multipleEllipticGammaFace_translate_ne_bottom
   rw [hkey] at hDA
   exact hHT hDA
 
+set_option maxHeartbeats 1000000 in
+/-- **Cross-face star exponents.**  Slice points of two bottom faces separated by a parameter that
+survives on the first and is deleted on the second never have equal translates, so the star exponent
+statement holds vacuously. -/
+theorem multipleEllipticGammaFacePacketSlice_exponent_eq_bottom_cross
+    (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im) (hQ : PeriodsIntegrallyIndependent τ)
+    (J J' : Finset ι) {a b a' b' : ι}
+    (haJ : a ∉ J) (hbJ : b ∉ J) (hab : a ≠ b) (hJ : ∀ i, i ∉ J → i = a ∨ i = b)
+    (haJ' : a' ∉ J') (hbJ' : b' ∉ J') (hab' : a' ≠ b') (hJ' : ∀ i, i ∉ J' → i = a' ∨ i = b')
+    (hperiods : LinearIndependent ℚ (ellipticGammaSourcePeriods (τ a) (τ b)))
+    (hperiods' : LinearIndependent ℚ (ellipticGammaSourcePeriods (τ a') (τ b')))
+    (hsepa : a ∈ J') {q : ι} {m n : ℤ} {y z : meroField (Set.univ : Set ℂ)}
+    (hy : y ∈ multipleEllipticGammaFacePacketSlice τ hτ J q)
+    (hz : z ∈ multipleEllipticGammaFacePacketSlice τ hτ J' q)
+    (heq : addTranslationMeroEquiv ((m : ℂ) * τ q) y =
+      addTranslationMeroEquiv ((n : ℂ) * τ q) z) :
+    m = n := by
+  classical
+  exfalso
+  obtain ⟨g, -, rfl⟩ := hy
+  obtain ⟨g', -, rfl⟩ := hz
+  rw [addTranslationMeroEquiv_add, addTranslationMeroEquiv_add] at heq
+  have haa' : a ≠ a' := fun h => haJ' (h ▸ hsepa)
+  have hab'' : a ≠ b' := fun h => hbJ' (h ▸ hsepa)
+  exact multipleEllipticGammaFace_translate_ne_bottom τ hτ hQ J J' haJ hbJ hab hJ
+    haJ' hbJ' hab' hJ' hperiods hperiods' haa' hab'' _ _ heq
+
 end
 
 end GaloisForLFunctions
