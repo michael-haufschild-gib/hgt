@@ -56,10 +56,7 @@ theorem infinite_ball (z₀ : ℂ) {r : ℝ} (hr : 0 < r) : (Metric.ball z₀ r)
     simp only [add_right_inj, Complex.ofReal_inj] at hmn
     have hm : (0 : ℝ) < (m : ℝ) + 2 := by positivity
     have hn : (0 : ℝ) < (n : ℝ) + 2 := by positivity
-    have h1 : r * ((n : ℝ) + 2) = r * ((m : ℝ) + 2) := by
-      field_simp at hmn
-      linarith
-    have h2 : ((n : ℝ) + 2) = ((m : ℝ) + 2) := mul_left_cancel₀ (ne_of_gt hr) h1
+    field_simp at hmn
     have h3 : (m : ℝ) = (n : ℝ) := by linarith
     exact_mod_cast h3
   · intro n
@@ -173,8 +170,10 @@ theorem differentialAlgebraicOver_of_translation_fixed
     differentialAlgebraicOver_analyticMeroElement_of_relation hVo hVc hVne hVinf hHV hP0 hrelV
   have hBVne : analyticMeroElement B hBV ≠ 0 := by
     intro hzero
-    have hgerm : analyticFunctionElement B hBV = 0 :=
-      (IsFractionRing.injective (analyticSubring V) (meroField V)) (by simpa using hzero)
+    have hgerm : analyticFunctionElement B hBV = 0 := by
+      apply IsFractionRing.injective (analyticSubring V) (meroField V)
+      rw [map_zero]
+      exact hzero
     have hval := congrArg Subtype.val hgerm
     rw [ZeroMemClass.coe_zero] at hval
     change ((B : ℂ → ℂ) : Germ (𝓟 V) ℂ) = 0 at hval
@@ -184,14 +183,17 @@ theorem differentialAlgebraicOver_of_translation_fixed
   have hHB : analyticMeroElement H hHV * analyticMeroElement B hBV =
       analyticMeroElement A hAV := by
     rw [← analyticMeroElement_mul hHV hBV]
+    have hfun : analyticFunctionElement (fun z => H z * B z) (hHV.mul hBV) =
+        analyticFunctionElement A hAV := by
+      apply Subtype.ext
+      change ((fun z => H z * B z : ℂ → ℂ) : Germ (𝓟 V) ℂ) = ((A : ℂ → ℂ) : Germ (𝓟 V) ℂ)
+      rw [Germ.coe_eq]
+      refine eventually_principal.mpr fun z hz => ?_
+      have hBz : B z ≠ 0 := hBne z hz
+      simp only [hHdef]
+      field_simp
     unfold analyticMeroElement
-    congr 1
-    apply Subtype.ext
-    change ((fun z => H z * B z : ℂ → ℂ) : Germ (𝓟 V) ℂ) = ((A : ℂ → ℂ) : Germ (𝓟 V) ℂ)
-    rw [Germ.coe_eq]
-    refine eventually_principal.mpr fun z hz => ?_
-    rw [hHdef]
-    field_simp
+    rw [hfun]
   set ρ := restrictMeroAlgHomRatFunc (Set.subset_univ V) isOpen_univ isPreconnected_univ
     Set.univ_nonempty Set.infinite_univ hVo hVc hVne hVinf with hρdef
   have hρa : ρ (algebraMap (analyticSubring (Set.univ : Set ℂ)) (meroField Set.univ) a) =

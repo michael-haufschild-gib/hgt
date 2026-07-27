@@ -1731,3 +1731,35 @@ which the denominator does not vanish, the identification of the restricted germ
 `A/B` there, and the descent of differential algebraicity along the injective restriction embedding
 (`hypertranscendentalOver_restrictMeroAlgHomRatFunc`, already an iff), combined with the new
 `AnalyticJetFieldBridge`.
+
+## Lean progress — MILESTONE: the elliptic meromorphic field is differentially algebraic
+
+`formal/GaloisForLFunctions/HTGeometry/EllipticMeroFieldDifferentialAlgebraicity.lean`
+(axiom-clean, umbrella registered).
+
+- **`differentialAlgebraicOver_of_translation_fixed`** — let `alpha, beta` be `R`-independent and let
+  `x` be any element of the genuine global meromorphic differential field fixed by both translations
+  `sigma_alpha, sigma_beta`.  Then `x` is differentially algebraic over the embedded rational
+  coordinate field `C(z)`.  No entirety, no growth bound, no theta-function presentation, no
+  Weierstrass structure theorem.
+- **`differentialAlgebraicOver_of_mem_ellipticMeroField`** — hence every element of the corpus's
+  `ellipticMeroField tau` is differentially algebraic when `1, tau` are `R`-independent.
+
+The chain, for the record.  Write `x = a/b` with `a, b` entire germs (`IsFractionRing.div_surjective`)
+and choose entire representatives `A, B`.  The two invariances become punctured-local functional
+periods of `A/B` (`fraction_eventually_periodic_of_addTranslationMeroEquiv_fixed`), hence genuine
+periods of the canonical normal form `F` of `A/B`
+(`periodic_toMeromorphicNFOn_of_eventually_punctured_meromorphic`), hence — by the unconditional
+elliptic theorem `differentiallyAlgebraic_of_lattice_periodic_meromorphicNF` — a nonzero algebraic
+differential relation satisfied by `F` at every point of `C`.  On a disc `V` where `B` does not
+vanish, `A/B` is analytic and equals `F` together with all its jets, so the relation holds pointwise
+there; the jet bridge `differentialAlgebraicOver_analyticMeroElement_of_relation` turns it into
+differential algebraicity of the restricted germ in `meroField V`; and the restriction embedding is
+an injective differential `C(z)`-algebra map, so the corpus's
+`hypertranscendentalOver_restrictMeroAlgHomRatFunc` descends the conclusion back to `x`.
+
+This is exactly the analytic input `(A0)` that `(C4)` consumes.  Remaining for `(C4)`: for a
+constant-multiplier `g` the logarithmic derivative `g'/g` is translation-invariant, hence elliptic,
+hence DA by the theorem above; `g` is then DA over `C(z)<g'/g>` by the order-one relation
+`y_1 - (g'/g) y_0 = 0`, hence DA over `C(z)` by the corpus's differential transitivity; and
+`f = g b` is DA by `differentialAlgebraicOver_mul`.
