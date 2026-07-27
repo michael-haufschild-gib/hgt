@@ -1097,3 +1097,33 @@ several-automorphism Ostrowski criterion.
 The lemma is therefore now reduced to a single remaining implication: the exclusion of a
 simultaneous jet telescoper, which is what the twisted one-slice obstruction of the previous section
 is for.
+
+## Lean progress — the descending face-lifting lemma
+
+`formal/GaloisForLFunctions/HTGeometry/FacePacketFreeTelescoping.lean` (axiom-clean, umbrella
+registered) closes the last implication of the face-lifting lemma by feeding the twisted
+obstruction into the difference system.
+
+- `facePacketBaseFamily S J q = S \ {insert q J}` and **`facePacketBaseFamily_closed`** — removing
+  the target packet leaves a family still closed in the direction `q`: a deeper face `L` with
+  `insert q L = insert q J` satisfies `L = J`, which is excluded because `J` is not deeper than
+  itself.  This is step (22) of the paper argument;
+- **`facePacket_displacement_mem_slice`** — the displacement of a block element in a surviving
+  direction is the coface element `T_J^a F_(J union {q})`, and its exponent in the direction `q`
+  vanishes: it lies in the *zero slice* of the next packet;
+- `facePacketDisplacementSlice` — hence the displacement labelling of the block by that zero slice;
+- **`facePacket_no_telescoping_of_free`** — if the target packet is differentially independent over
+  `K_0` and generates `K_(s+1)` over it, and the displacement labelling is injective, then in the
+  direction `q` no nonzero finite constant-coefficient jet form of the displacements is a
+  coboundary: transporting through the free parametrization turns the translation into the
+  `phi`-twisted shift with `phi` its own restriction to `K_0`, and the form is supported on the
+  single slice `0`;
+- **`facePacket_differentialIndependent_of_free`** — the descending face-lifting lemma: the
+  translation block of the face `J` is differentially algebraically independent over the deeper face
+  field.
+
+The paper proof of the face-lifting lemma is therefore formalized in full.  Its three remaining
+inputs are exactly the ones the descending induction is supposed to supply — joint independence of
+the deeper layer (in the two forms "free over the complement" and "generates the deeper field") and
+the injectivity of the displacement labelling — together with the `Q`-independence of
+`1, tau_q, tau_u`.
