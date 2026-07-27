@@ -22,7 +22,17 @@ open scoped Differential BigOperators
 
 namespace GaloisForLFunctions
 
+open Bottcher HTGeometry
+
 noncomputable section
+
+attribute [local instance] ellipticGammaStructuralGeneratorRestrictedDifferential
+  ellipticGammaStructuralGeneratorDifferentialAlgebra ellipticGammaRationalBaseDomain
+  ellipticGammaRationalBaseComplexAlgebraMero ellipticGammaRationalBaseComplexDifferential
+  ellipticGammaRationalBaseMeroDifferential ellipticGammaRationalBaseMeroCharZero
+  ellipticGammaRationalBaseComplexDifferentialAlgebra
+  ellipticGammaRationalBaseCoordinateDifferential
+  ellipticGammaRationalBaseCoordinateDifferentialAlgebra
 
 variable {ι : Type} [Fintype ι] [DecidableEq ι]
 
@@ -107,6 +117,73 @@ theorem thetaTranslationNonresonant_faceShiftLattice_sub
     have hnn : n i = n' i := by omega
     rw [hnn]
   · rw [hn i hiJ, hn' i hiJ]
+
+/-! ## The bottom-layer packet -/
+
+set_option maxHeartbeats 1000000 in
+set_option synthInstance.maxHeartbeats 800000 in
+/-- **Bottom-layer atomicity.**  The packet of a face with exactly two surviving parameters is
+differentially independent over every differentially algebraic extension of the constants. -/
+theorem multipleEllipticGammaFacePacket_diffIndepOn_bottom
+    (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im) (hQ : PeriodsIntegrallyIndependent τ)
+    (J : Finset ι) {a b : ι} (haJ : a ∉ J) (hbJ : b ∉ J) (hab : a ≠ b)
+    (hJ : ∀ i, i ∉ J → i = a ∨ i = b)
+    (hperiods : LinearIndependent ℚ (ellipticGammaSourcePeriods (τ a) (τ b)))
+    {G : Set (meroField (Set.univ : Set ℂ))}
+    (hG : ∀ g ∈ G, DifferentialAlgebraicOver ℂ g) :
+    DiffIndepOn ↥(differentialAdjoin ℂ G) (multipleEllipticGammaFacePacket τ hτ J) := by
+  classical
+  set Ψ := ellipticGammaLogDerivMero (τ a) (τ b) (hτ a) (hτ b) with hΨdef
+  set c : ℂ := -(1 + τ b) / 2 with hcdef
+  have hbridge : ∀ g : ℂ,
+      addTranslationMeroEquiv g (multipleEllipticGammaLogDerivFaceMero τ hτ J) =
+        addTranslationMeroEquiv (g + c) Ψ := by
+    intro g
+    rw [multipleEllipticGammaLogDerivFaceMero_two_surviving τ hτ J haJ hbJ hab hJ,
+      addTranslationMeroEquiv_add]
+  refine diffIndepOn_of_forall_finite ?_
+  intro T hTsub hTfin
+  have hchoice : ∀ y ∈ T, ∃ g : ℂ, g ∈ faceShiftLattice τ J ∧
+      addTranslationMeroEquiv (g + c) Ψ = y := by
+    intro y hy
+    obtain ⟨g, hg, hgy⟩ := hTsub hy
+    refine ⟨g, hg, ?_⟩
+    rw [← hbridge g]
+    exact hgy
+  let shift : meroField (Set.univ : Set ℂ) → ℂ :=
+    fun y => if h : y ∈ T then (hchoice y h).choose else 0
+  have hshift : ∀ y (hy : y ∈ T), shift y ∈ faceShiftLattice τ J ∧
+      addTranslationMeroEquiv (shift y + c) Ψ = y := by
+    intro y hy
+    have hd : shift y = (hchoice y hy).choose := dif_pos hy
+    rw [hd]
+    exact (hchoice y hy).choose_spec
+  set A : Finset ℂ := hTfin.toFinset.image (fun y => shift y + c) with hAdef
+  have hAmem : ∀ s ∈ A, ∃ g ∈ faceShiftLattice τ J, g + c = s := by
+    intro s hs
+    obtain ⟨y, hy, hys⟩ := Finset.mem_image.mp hs
+    exact ⟨shift y, (hshift y (hTfin.mem_toFinset.mp hy)).1, hys⟩
+  have hAnonres : ∀ s ∈ A, ThetaTranslationNonresonant (τ b) (τ a) s := by
+    intro s hs
+    obtain ⟨g, hg, rfl⟩ := hAmem s hs
+    exact thetaTranslationNonresonant_faceShiftLattice_add_half τ hQ J a b hg
+  have hAsep : ∀ s ∈ A, ∀ s' ∈ A, s ≠ s' →
+      ThetaTranslationNonresonant (τ b) (τ a) (s - s') := by
+    intro s hs s' hs' hne
+    obtain ⟨g, hg, rfl⟩ := hAmem s hs
+    obtain ⟨g', hg', rfl⟩ := hAmem s' hs'
+    have hgne : g ≠ g' := fun h => hne (by rw [h])
+    have hdiff : g + c - (g' + c) = g - g' := by ring
+    rw [hdiff]
+    exact thetaTranslationNonresonant_faceShiftLattice_sub τ hQ J haJ hbJ hg hg' hgne
+  have hpacket := ellipticGammaTranslatePacket_diffIndepOn_daExtension_of_separated
+    (hτ a) (hτ b) hperiods A hAnonres hAsep hG
+  refine hpacket.subset ?_
+  intro y hy
+  refine Set.mem_insert_of_mem _ ?_
+  refine ⟨⟨shift y + c, ?_⟩, ?_⟩
+  · exact Finset.mem_image.mpr ⟨y, hTfin.mem_toFinset.mpr hy, rfl⟩
+  · exact (hshift y hy).2
 
 end
 

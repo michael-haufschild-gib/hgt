@@ -1375,3 +1375,34 @@ These are exactly the `hnonres` and `hsep` hypotheses of
 `faceShiftLattice tau J - (1 + tau_b)/2`.  What remains for the bottom layer is pure bookkeeping:
 pass from the infinite lattice to finite shift sets by the finite-character property of
 `DiffIndepOn`, choosing for each element of a finite subpacket a lattice representative.
+
+## Lean progress — the bottom layer (14) is unconditional
+
+**`multipleEllipticGammaFacePacket_diffIndepOn_bottom`** (in
+`formal/GaloisForLFunctions/HTGeometry/FaceShiftLatticeNonresonance.lean`, axiom-clean, umbrella
+registered):
+
+```text
+tau rationally independent with 1, and 1, tau_a, tau_b rank-three independent
+  ==> DiffIndepOn (C<G>_delta) (O_J)   for every face J with exactly two surviving parameters
+      and every set G of germs differentially algebraic over C.
+```
+
+The proof composes the pieces built above:
+
+- `multipleEllipticGammaLogDerivFaceMero_two_surviving` rewrites each packet element
+  `T_J^a F_J` as the translate `sigma_(g - (1+tau_b)/2) Psi_1` of the genuine order-one elliptic
+  gamma;
+- `diffIndepOn_of_forall_finite` reduces to a finite subpacket, and a lattice representative is
+  chosen for each of its elements, giving a finite shift set `A`;
+- `thetaTranslationNonresonant_faceShiftLattice_add_half` and `..._sub` verify the nonresonance and
+  separation hypotheses for `A`;
+- `ellipticGammaTranslatePacket_diffIndepOn_daExtension_of_separated` — itself unconditional since
+  the escape law (BL) — gives independence of the corresponding order-one packet, and the finite
+  subpacket is a subset of it.
+
+Section (14) of the card — "the bottom layer is jointly atomic" in its per-face form — is therefore
+formalized with no remaining hypotheses beyond the card's own genericity assumption.  The remaining
+inputs of the all-order chain are the star nonresonance (`hStarInj`) and off-star differential
+algebraicity (`hOffDA`) of the gluing engine, and the per-face freeness data of the descending
+induction.
