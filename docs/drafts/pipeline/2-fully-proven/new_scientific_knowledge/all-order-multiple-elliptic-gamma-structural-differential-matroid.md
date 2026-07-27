@@ -1122,8 +1122,11 @@ obstruction into the difference system.
   translation block of the face `J` is differentially algebraically independent over the deeper face
   field.
 
-The paper proof of the face-lifting lemma is therefore formalized in full.  Its three remaining
-inputs are exactly the ones the descending induction is supposed to supply — joint independence of
-the deeper layer (in the two forms "free over the complement" and "generates the deeper field") and
-the injectivity of the displacement labelling — together with the `Q`-independence of
-`1, tau_q, tau_u`.
+**`facePacketUnion_le_free_adjoin`** discharges the generation half unconditionally: every packet of
+a face other than the target lies in the complementary base field, and the target packet is exactly
+the range of its own palette (`range_facePalette`), so the deeper face field is contained in
+`K_0<O_(J union {q})>_delta`.  The paper proof of the face-lifting lemma is therefore formalized in
+full, with only two remaining inputs: the freeness of the target packet over the complementary base
+(the induction hypothesis of the descending induction) and the injectivity of the displacement
+labelling (a nonresonance statement: distinct translates of `F_(J union {q})` are distinct), together
+with the `Q`-independence of `1, tau_q, tau_u`.
