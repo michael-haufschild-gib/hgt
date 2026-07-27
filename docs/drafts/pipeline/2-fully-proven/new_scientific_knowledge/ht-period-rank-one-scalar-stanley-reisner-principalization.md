@@ -1889,3 +1889,31 @@ needed, unlike the entire-carrier version which had to know the eigenvector was 
 exponential — gives a shift-stable space containing `1`, on which the derivative image drops
 dimension.  A finite-dimensional `C`-space closed under the derivation makes every member satisfy a
 constant-coefficient linear ODE, hence differentially algebraic.
+
+## Lean progress — the vector two-shift law inside the meromorphic differential field
+
+`formal/GaloisForLFunctions/HTGeometry/MeroFieldShiftStableSpace.lean` (axiom-clean, umbrella
+registered).  This is the transport the previous entry named as the remaining gap.
+
+- **`differentialAlgebraicOver_of_deriv`** — differential algebraicity is closed under
+  *antiderivatives*: `x'` differentially algebraic over `F` implies `x` is.  The relation
+  `y_1 - x' = 0` is a nonzero first-order jet relation over `F<x'>`, and
+  `differentialAlgebraicOver_trans` descends it.  General differential-field statement; the converse
+  of the corpus's `differentialAlgebraicOver_deriv`.
+- `addTranslationMeroEquiv_comm`, `meroDerivL`, `meroShiftL` — the two translations commute, and both
+  the derivation and each translation are `C`-linear (the complex constants being differential
+  constants).
+- **`differentialAlgebraicOver_of_mem_shiftStable`** — *a finite-dimensional complex space of
+  meromorphic germs stable under two `Q`-independent translations consists of differentially
+  algebraic germs.*  Induction on dimension: the two translations are commuting `C`-linear operators,
+  so `exists_common_eigenvector` gives `y != 0` with `sigma_gamma y = lambda_gamma y`, and
+  `lambda_gamma != 0` since the translations are injective; `y` is differentially algebraic by
+  `differentialAlgebraicOver_of_constant_multipliers`; dividing the space by `y` is a **field**
+  operation here, so unlike the entire-carrier argument it needs no nonvanishing hypothesis and no
+  exponential normal form; the quotient space contains `1`, so its derivative image is shift-stable
+  with strictly smaller dimension (rank-nullity), and the induction hypothesis plus
+  `differentialAlgebraicOver_of_deriv` and `differentialAlgebraicOver_mul` close the step.
+- **`differentialAlgebraicOver_of_constant_matrix_monodromy`** — hence the vector two-shift law: a
+  finite family of meromorphic germs reproduced by two `Q`-independent translations up to constant
+  matrices consists of differentially algebraic germs.  This is the meromorphic-carrier counterpart
+  of the corpus's entire-carrier `differentiallyAlgebraic_component_of_matrix_monodromy_two`.
