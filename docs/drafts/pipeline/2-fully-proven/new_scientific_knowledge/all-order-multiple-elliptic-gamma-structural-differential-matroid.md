@@ -1547,3 +1547,16 @@ follows from `multipleEllipticGammaFaceStar_diffIndepOn`.
 (`hres : exists p q r : Z, h = p + q tau + r sigma`) rather than the structural shift alone, which is
 the form `hOffDA` needs: for an off-star face the shift is `n tau_q` with `q` a surviving parameter,
 witnessed by `⟨0, 0, n⟩` or `⟨0, n, 0⟩`.
+
+Ingredient (ii) is already in the corpus:
+`hypertranscendentalOver_add_differentialAlgebraic_iff`
+(`GaloisForLFunctions.HTGeometry.ExponentialObservationHypertranscendence`) says that adding a
+differentially algebraic element does not change hypertranscendence, so adding a base-field element
+to a differentially algebraic element keeps it differentially algebraic; `differentialAlgebraicOver_add`
+(`FiniteDifferentialCircuitBoundary`) is the direct sum form.  With the generalized resonant-translate
+lemma, `hOffDA` at the bottom layer is therefore a pure assembly with no missing infrastructure:
+
+```text
+sigma_(n tau_q) y = y + sigma_a (Delta_(n tau_q) Psi_1),   y in C<t>_delta,
+   second summand DA over C hence over C<t>_delta   ==>   sigma_(n tau_q) y DA over C<t>_delta.
+```
