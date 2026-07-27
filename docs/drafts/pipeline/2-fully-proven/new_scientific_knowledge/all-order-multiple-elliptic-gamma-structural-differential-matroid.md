@@ -1130,3 +1130,24 @@ full, with only two remaining inputs: the freeness of the target packet over the
 (the induction hypothesis of the descending induction) and the injectivity of the displacement
 labelling (a nonresonance statement: distinct translates of `F_(J union {q})` are distinct), together
 with the `Q`-independence of `1, tau_q, tau_u`.
+
+## Lean progress — the gluing engine over a moving base
+
+The layer-completion step applies uniform simplicial-star gluing *over `K_(s+1)`*, and the
+structural translations do **not** fix `K_(s+1)` pointwise — they only normalize it.  The corpus's
+gluing specialization was stated for coefficient-fixing automorphisms
+(`HTGeometry.DifferentialAlgEquiv`), so it did not apply.
+
+`formal/GaloisForLFunctions/HTGeometry/SemilinearDifferentialRank.lean` (axiom-clean, umbrella
+registered) removes that restriction, reusing the corpus's existing base-normalizing transport
+(`HTGeometry.DifferentialSemilinearEquiv.differentialIndependent_map_iff`):
+
+- **`HTGeometry.DifferentialSemilinearEquiv.diffIndepOn_image_iff`** — a base-normalizing
+  differential automorphism preserves differential independence of sets exactly;
+- `differentialMatroid_mapEquiv_differentialSemilinearEquiv` — hence it is an automorphism of the
+  differential matroid;
+- **`HTGeometry.DifferentialSemilinearEquiv.mem_differentialRank_rankAutSubgroup`** — hence it
+  preserves the genuine differential rank, which is all the gluing engine ever needed;
+- **`differentialRank_uniformFace_nestedStar_diffIndepOn_semilinear`** and
+  **`..._of_orbit_semilinear`** — the all-order uniform-face nested-star gluing theorems with the
+  acting automorphisms only normalizing the base.
