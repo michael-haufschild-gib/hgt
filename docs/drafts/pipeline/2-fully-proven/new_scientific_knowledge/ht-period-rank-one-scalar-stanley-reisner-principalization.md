@@ -1823,3 +1823,30 @@ from `R`-independence to the card's `Q`-independence.
 `(C1)`--`(C5)` are therefore fully formalized and unconditional.  The only remaining card item is the
 Schaefke--Singer rational gauge reduction, labelled `[SEARCH]` by the card itself, and the gate
 "independent specialist proof and novelty audit".
+
+## Lean progress — the DA-gauge curvature law `(35)`--`(40)` is formalized
+
+`formal/GaloisForLFunctions/HTGeometry/DAGaugeCurvatureNecessity.lean` (axiom-clean, umbrella
+registered).  The last `[PROVED HERE]` section of the card without a Lean counterpart was the
+DA-gauge curvature necessity: a finite-state internal transport that is only *`DA`-gauge-flat*,
+`M_v(z) = B(z + omega_v) C_v B(z)^(-1)` with constant `C_v` and differentially algebraic invertible
+gauge `B`, must still obey the facet-codimension law.
+
+- `DAGaugeFlatFacetRealization` — the datum `(35)`--`(37)`: entire carrier, entire invertible gauge
+  with differentially algebraic entries, gauged constant transport, one hypertranscendental
+  component;
+- `gaugedCarrier_monodromy` — conjugating by the gauge produces the constant action `(38)`
+  (`B^(-1)(z+omega) (B(z+omega) C B^(-1)(z)) = C B^(-1)(z)`);
+- **`gaugedCarrier_hypertranscendental`** — the analytic content `(39)`: the gauge cannot manufacture
+  hypertranscendence.  If every component of `B^(-1)F` were differentially algebraic then every
+  component of `F = B (B^(-1) F)` would be too, because the differentially algebraic entire functions
+  form a ring — this is exactly the new `AnalyticJetFieldBridge` closure, packaged here as
+  `differentiallyAlgebraic_finsetSum` and `differentiallyAlgebraic_mulVec`;
+- **`daGaugeFlat_facetComplementRankOne`** — hence the facet-codimension law, by reduction to the
+  already-formalized constant-transport datum `MatrixFacetRealization`.
+
+Contrapositive, the card's stated law `(40)`: a one-variable finite-state full HT system with
+nonpure Stanley--Reisner geometry has an internal translation cocycle whose class in
+`H^1(<T_v>, GL_m(D_DA))` lies outside the constant-representation locus.  Before the ring closure
+this reduction was not available in Lean at all; the corpus could only move a *polynomial* factor
+through `DifferentiallyAlgebraic`.
