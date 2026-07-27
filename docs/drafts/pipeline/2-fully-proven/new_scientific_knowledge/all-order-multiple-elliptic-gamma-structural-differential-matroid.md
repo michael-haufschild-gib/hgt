@@ -1328,3 +1328,28 @@ nonresonant differences.  Both follow from `Q`-independence of `1, tau_0, ..., t
 period `(1 + tau_b)/2` in fact *helps*, since its rational part `1/2` is not an integer — and the
 passage from the infinite lattice to finite subsets is the finite-character property of
 `DiffIndepOn`.  That arithmetic is the next Lean step.
+
+### Next step recorded — the lattice arithmetic, with integer coefficients only
+
+The two remaining bottom-layer facts are best proved with the genericity hypothesis written with
+*integer* coefficients,
+
+```text
+PeriodsIntegrallyIndependent tau :
+  for all m : Z, n : V -> Z,  m + sum_i n_i tau_i = 0  ->  m = 0 and all n_i = 0,
+```
+
+which is exactly `Q`-independence of `1, tau_0, ..., tau_r` and avoids rational casts:
+
+- *nonresonance of the half-shifted lattice*: if `g - (1 + tau_b)/2 = p + q tau_b + r tau_a` with
+  `g = sum_(i in J) n_i tau_i`, multiply by `2`.  The relation becomes integral with the coefficient
+  of `1` equal to `-(2p+1)`, which is odd, hence nonzero — contradiction.  The half period therefore
+  *helps*;
+- *separation*: if `g - g' = p + q tau_b + r tau_a` then the integral relation has coefficients
+  `n_i - n'_i` at `i in J` (where the `tau_a`, `tau_b` indicators vanish because `a, b notin J`), so
+  all of them vanish and `g = g'`.
+
+Both feed `ellipticGammaTranslatePacket_diffIndepOn_daExtension_of_separated` through
+`multipleEllipticGammaLogDerivFaceMero_two_surviving`, and the infinite lattice reduces to finite
+shift sets by the finite-character property of `DiffIndepOn`
+(`DifferentialMatroidFoundations`).
