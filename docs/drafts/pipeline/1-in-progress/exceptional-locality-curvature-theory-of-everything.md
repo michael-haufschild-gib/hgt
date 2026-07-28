@@ -2,8 +2,9 @@
 
 - **ID:** `exceptional-locality-curvature-theory-of-everything`
 - **Stage:** 1-in-progress
-- **Type:** UNIVERSAL PHYSICS LAW / THEORY-OF-EVERYTHING RESEARCH PROGRAMME
-- **Scientific status:** `[CONJECTURE] [PRIMARY-SOURCE AUDIT ACTIVE] [NO DYNAMICS CLAIM]`
+- **Type:** THEORY-OF-EVERYTHING UMBRELLA PROGRAMME
+- **Active exact conjecture:** `history-nonseparability-unification-law.md`
+- **Scientific status:** `[NEW CONJECTURE FROZEN] [TARGETED AUDIT NOT YET STARTED]`
 - **Research target:** derive four-dimensional spacetime, quantum mechanics, gravity, and the exact
   global Standard Model gauge group from one exceptional quantum-geometric object and one dynamical
   law.
@@ -48,9 +49,10 @@ The programme adopts the explicit meta-constraint:
 The programme uses the following strict definition:
 
 > **A conjecture is a statement that, based on everything presently known, we have a hunch is
-> physically true even though we cannot yet say how it could be proved.**
+> physically true even though we cannot presently tell how it could be proved.**
 
-Provability is not part of conjecture formation. It comes afterward. “Jump” means proposing such an
+Provability is not a property used to generate, select, weaken, strengthen, rank, or reject the
+conjecture. It enters only after the statement has been frozen. “Jump” means proposing such an
 ontology or physical equivalence without obtaining it by interpolation between neighbouring
 published models or reverse-engineering it from a visible proof route. It does not mean relaxing
 proof, source, or empirical standards after the conjecture has been frozen. Each research cycle
@@ -59,7 +61,8 @@ therefore has two deliberately separated phases:
 1. **Abductive jump.** Synthesize everything presently known; state the resulting physical hunch as
    a declarative sentence; freeze and timestamp it before asking how to prove it. Lean tractability,
    available machinery, literature proximity, and likely publishability are forbidden generation
-   or pruning criteria in this phase.
+   or pruning criteria in this phase. A candidate does not qualify as the primary conjecture if its
+   author can already sketch the mechanism of proof that materially shaped it.
 2. **Hostile descent.** Derive consequences; collide them with no-go theorems, established data,
    known limits, and competing literature; label failures; retain the strongest positive survivor;
    formalize every surviving mathematical claim in Lean.
@@ -205,6 +208,28 @@ The new route is to determine whether the *same nested pair*, globalized and mad
 both Lorentzian spacetime and the internal gauge sector. A shared ambient exceptional algebra is not
 yet unification: the spacetime and gauge transformations must arise as two exact parts of one
 comparison group, and one action must couple their curvatures.
+
+### Representation collision: observable and matter copies are inequivalent
+
+The nested-pair group cannot be silently identified with the usual chiral
+\(G_{\rm SM}\subset{\rm Spin}(10)\). Exact character comparison in
+[the active history-law card](history-nonseparability-unification-law.md#exceptional-event-tangent-and-the-two-standard-models-obstruction)
+shows:
+
+1. the Baez--Schwahn group \(G_{\rm obs}\) lies in a \({\rm Spin}(9)\) stabilizer and its action on
+   the exceptional \(27\) contains a neutral weak triplet from
+   \(\operatorname{End}(\mathbb C^2)\);
+2. Krasnov's pure-spinor group \(G_{\rm mat}\subset{\rm Spin}(10)\) acts on the tangent \(16\) as
+   one full chiral generation, while \(27=16\oplus10\oplus1\) contains no weak triplet; and
+3. therefore the two abstractly isomorphic Standard Model groups are nonconjugate even in \(E_6\).
+
+The \({\rm Spin}(10)\) nonconjugacy was already identified in a
+[2025 Baez--Sawin MathOverflow exchange](https://mathoverflow.net/questions/504716/how-many-copies-of-the-standard-model-gauge-group-are-there-in-spin10/504717).
+The \(27\)-character extension to nonconjugacy in \(E_6\) was not found in the audited literature
+and remains a candidate contribution with priority open. Exceptional geometry supplies an
+observable symmetry and a matter symmetry, not one representation that automatically does both
+jobs. Any viable theory must derive a representation-changing interface between them. An \(E_6\)
+gauge rotation cannot provide it.
 
 ## Candidate ontology over all spacetimes
 
@@ -488,11 +513,14 @@ connections”, or “\(H_3(\mathbb O)\) is exceptional”. All are literature.
    spin--charge extension rather than a hand-built direct product.
 4. Classify \(K_{X,B}\)-connections and decompose their curvature without choosing the four
    components by hand.
-5. Determine invariant local functionals of the connection and exceptional frame up to the order
+5. Construct or kill a canonical representation-changing soldering field between the
+   nonconjugate observable and matter \(G_{\rm SM}\) reductions; classify the curvature mismatch
+   \(F_{\rm obs}S-SF_{\rm mat}\).
+6. Determine invariant local functionals of the connection and exceptional frame up to the order
    required for an Einstein--Yang--Mills--Higgs limit.
-6. Prove or kill existence of a non-signalling positive composition law for exceptional local
+7. Prove or kill existence of a non-signalling positive composition law for exceptional local
    frames; identify its exact monoidal obstruction.
-7. Only after a dependency-closed paper theorem, formalize the group/algebra/curvature spine in
+8. Only after a dependency-closed paper theorem, formalize the group/algebra/curvature spine in
    Lean.
 
 ## Finite prediction gate
@@ -548,6 +576,23 @@ Retire or narrow the route if any remains after a serious second pass:
   Algebra*, <https://arxiv.org/abs/2606.15235>.
 - I. Todorov and S. Drenska, *Octonions, exceptional Jordan algebra and the role of the group
   \(F_4\) in particle physics*, <https://arxiv.org/abs/1805.06739>.
+- K. Krasnov, *SO(9) characterisation of the Standard Model gauge group*,
+  <https://arxiv.org/abs/1912.11282>.
+- K. Krasnov, *Geometry of Spin(10) Symmetry Breaking*,
+  <https://arxiv.org/abs/2209.05088>.
+- J. C. Baez and W. Sawin, *How many copies of the Standard Model gauge group are there in
+  Spin(10)?*, MathOverflow question and answer, 2025,
+  <https://mathoverflow.net/questions/504716/how-many-copies-of-the-standard-model-gauge-group-are-there-in-spin10/504717>.
+- A. Iliev and L. Manivel, *The Chow ring of the Cayley plane*,
+  <https://arxiv.org/abs/math/0306329>.
+- L. Verhóczki, *On compact symmetric spaces associated to the exceptional Lie group \(E_6\)*,
+  <https://doi.org/10.1285/i15900932v29n1p185>.
+- T. Dray and C. A. Manogue, *Octonionic Cayley Spinors and \(E_6\)*,
+  <https://arxiv.org/abs/0911.2255>.
+- J. C. Baez, *The Standard Model and \(10\)-Dimensional Space(time)*,
+  <https://math.ucr.edu/home/baez/standard/standard_web.pdf>.
+- J. Szangolies, *The Standard Model Symmetry and Qubit Entanglement*,
+  <https://doi.org/10.3390/e27060569>.
 - L. Boyle, *The Standard Model, The Exceptional Jordan Algebra, and Triality*,
   <https://arxiv.org/abs/2006.16265>.
 - A. Wangberg, *The Structure of \(E_6\)*, <https://arxiv.org/abs/0711.3447>.
@@ -597,3 +642,15 @@ Retire or narrow the route if any remains after a serious second pass:
 - 2026-07-28 — naive same-\(X\) unification killed: the nested-pair electroweak \(SU(2)\) acts on
   \(H_2(\mathbb C)\) by the same conjugation representation as ordinary spatial rotations.
   Distinct-corner/triality construction or a literal weak-is-rotation theory is now required.
+- 2026-07-28 — priority audit found the \({\rm Spin}(10)\) nonconjugacy in a 2025 Baez--Sawin
+  MathOverflow exchange. A candidate \(27\)-character extension kills identification even in
+  \(E_6\): the exceptional-Jordan embedding contains a neutral weak triplet and the chiral
+  pure-spinor embedding does not. Novelty remains open. A representation-changing
+  double-soldering interface is now an open core.
+- 2026-07-28 — exact weak-\(SU(2)\) character test killed every invertible linear or locally
+  diffeomorphic interface between the two ten-carriers: the standard matter class is
+  \(3+3+2+2\), while the \({\rm Spin}(9)\) observable class is \(3+3+3+1\). Spinor-square maps are
+  prior, but the holomorphic square lacks the observable neutral weak triplet; the Hermitian
+  square contains it with multiplicity two and is not canonical. Priority-open conjectural
+  survivor: Higgs-shaped \(2+2\) and spacetime-shaped \(3+1\) are opposite polarizations of one
+  nonlinear quantum event, whose integrability defect is gravity.

@@ -47,6 +47,7 @@ import GaloisForLFunctions.HilbertMetric.ComplexPrescribedEvaluationReconstructi
 import GaloisForLFunctions.HilbertMetric.HilbertLineCommutatorCurvature
 import GaloisForLFunctions.HilbertMetric.QuadraticGraphFockConnector
 import GaloisForLFunctions.HilbertMetric.CCRCompletionWitness
+import GaloisForLFunctions.HilbertMetric.CharacterIntertwinerObstruction
 
 /-!
 # Hilbert-metric theorem area

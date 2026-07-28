@@ -4,7 +4,8 @@
 - **Stage:** 1-in-progress
 - **Type:** NEW INVARIANT / UNIVERSAL QUANTUM DYNAMICS LAW
 - **Working title:** *Time has an observer-dependent dimension*
-- **Status:** paper proof and exact-object novelty audit in progress
+- **Status:** universal spectral law certified; QFT/operational bridge and
+  exact-object novelty audit in progress
 - **Parent:** finite observer-coherence law, graph-rank recurrence law,
   worst-spectrum sharpness, finite contraction return boundary
 
@@ -33,22 +34,86 @@ claim that spacetime has a variable coordinate dimension.
 
 ## Abductive jump — conjecture before proof
 
-**Relational temporal-dimension conjecture.** In a globally reversible, or
+**State--observer spectral-time conjecture.** In a globally reversible, or
 globally stationary constrained, universe, experienced temporal dimension and
-the macroscopic arrow are properties of an observer's history space rather
-than of an external evolution parameter. The dimension is recoverable from the
-small-return scaling of that observer's record. In the thermodynamic or QFT
-limit, divergence of this observer dimension drives recurrence density to zero
-and is the mechanism by which a reversible microscopic law acquires a
-nonreturning macroscopic history. Different observer algebras on the same
-global state can therefore have different temporal dimensions and different
-finite-versus-infinite return structure.
+the macroscopic arrow are properties of the pair consisting of a physical
+state and an observer algebra, not properties of an external evolution
+parameter. The restricted modular spectrum of that pair has a compact
+arithmetic sector and a continuous sector. The compact sector fixes how many
+independent temporal directions can recur; the continuous sector fixes the
+irrecoverable density of nonreturning history. In a thermodynamic or QFT
+limit, loss of spectral atomicity—not microscopic nonunitarity—is the universal
+transition from recurrent clock time to a macroscopic arrow. Two observers of
+the same stationary global state can therefore inhabit temporal histories of
+different effective dimensions and different recurrent-versus-arrow type.
 
 This is a conjecture generated from the joined evidence below, not a theorem
-selected because a proof route is presently visible. Provability is a
-downstream question. No manuscript claim may use the conjecture until its
-finite, thermodynamic-limit, constrained-system, and physical-model bridges
-have been separately closed.
+selected because a proof route is presently visible. At the moment of writing
+it, no proof or formalization route for the full state--observer,
+thermodynamic-limit, modular-spectrum, or arrow correspondence is known.
+Provability is a downstream question. No manuscript claim may use the
+conjecture until each bridge has been separately closed.
+
+### Conjecture discipline
+
+A good conjecture records this exact epistemic state: based on everything
+currently known, there is a reasoned hunch that a sharp statement could be
+true, but no present account of how it would be proved. Provability is not part
+of the conjecture. Ease of proof, present library support, and likely
+formalizability play no role in generating it. They enter only afterward.
+
+A statement reverse-engineered from an available proof, or weakened until an
+existing method applies, is a theorem candidate rather than a conjectural
+jump. It may still be useful, but it cannot supply this project's abductive
+novelty.
+
+1. make the abductive jump;
+2. state exact falsifiers and predictions;
+3. attack truth and prior art;
+4. find a paper proof;
+5. certify every surviving mathematical claim;
+6. delete every clause that does not survive.
+
+### Second abductive jump — noncompact space dephases observer time
+
+**Noncompact-space temporal dephasing conjecture.** In every
+translation-invariant positive-energy relativistic quantum field theory with
+at least one noncompact spatial direction and a unique vacuum, every nonzero
+compact-local observer excitation orthogonal to the vacuum has atomless
+energy spectrum. Its temporal dimension is therefore continuum and every
+fixed positive-fidelity return set has zero asymptotic time density. Exact
+atomic recurrence can survive only in the vacuum sector or after a genuinely
+discrete spatial/spectral reduction such as compactification, confinement, or
+an imposed global-mode projection.
+
+This was posed as a hunch from the conjunction of the spectrum condition,
+mass-shell geometry, locality, and the all-spectrum return law. At the moment
+of conjecture, no proof of the passage from arbitrary interacting local QFT
+spectra to atomlessness was known. The product-dispersion theorem found
+afterward proves the measure-theoretic core below; it does not retroactively
+turn the QFT conjecture into a proof. The compact-local QFT interface remains
+an independent falsifiable obligation.
+
+### Third abductive jump — physical meaning fixes relational time
+
+**Operational clock-uniqueness conjecture.** For every separable constrained
+quantum universe with a faithful physically labelled record algebra and local
+tomography, all clock--world factorizations that preserve every labelled
+conditional probability are related by, and only by, physical symmetries:
+one common clock-origin transformation and the commutant of the labelled
+observable algebra. This remains true for finite, countably discrete, and
+continuous clocks, including type-III local observable algebras. Therefore a
+stationary universe needs no external clock to have determinate internal laws:
+clock choice changes perspective, not physics.
+
+This is a hunch prompted by the exact finite relational quotient, the
+commutant classification of labelled Heisenberg laws, and the 2026 result that
+bare Page--Wootters structure has maximal ambiguity but physical meanings
+should extinguish it. No proof route is presently known for the full
+clock--world tensor-refactorization stabilizer, continuous clocks, or type-III
+local algebras. Those clauses are the conjecture. Finite matrix stabilizer
+theorems found later count only as partial consequences and cannot be
+presented as if they prove the universal statement.
 
 ### Predicted consequences
 
@@ -73,6 +138,211 @@ have been separately closed.
 Any false item fractures the conjecture and must be recorded; surviving finite
 parts are not by themselves evidence for the thermodynamic, QFT, or
 experienced-time clauses.
+
+### Immediate fractures found after the jump
+
+1. Recurrence exponents and local dimension are related in classical dynamical
+   systems only under additional mixing or regularity structure; arithmetic
+   rotations supply counterexamples to an unrestricted equality. Prediction 1
+   must therefore remain restricted to the finite nondegenerate torus law.
+2. Rational span of the *topological support* of a measure is not always the
+   dimension of its temporal orbit. A countable dense atomic measure has
+   topological support \(\mathbb R\), but its atoms may have rational rank one.
+   The arbitrary-measure definition below is therefore only an exact-return
+   constraint rank until spectral-type and orbit-closure theorems identify the
+   correct general invariant.
+3. Thermal time already makes flow depend on state and observable algebra.
+   Novelty cannot be “time comes from a state” or qualitative observer
+   dependence. It must be an exact dimension/spectral-type law, its universal
+   finite-to-infinite transition, and a new physical prediction.
+4. Infinite rational rank does not by itself create a time arrow. Every
+   summable countable pure-point packet still returns arbitrarily closely at
+   every fixed resolution. Prediction 3 is false if “dimension diverges” is
+   its only nondegeneracy condition. The universal transition variable must be
+   spectral atomicity, not cardinal rank.
+5. The noncompact-space conjecture has a stronger known parent at the
+   relativistic-representation level. Lorentz covariance plus the spectrum
+   condition already imply that every timelike translation generator is
+   purely absolutely continuous after removing translation-invariant vectors;
+   the corresponding timelike clustering limit is known. Maison proved the
+   four-dimensional result using Wigner representation theory, and Kruse
+   (2024) gave a Mourre-theoretic proof and broader formulation. Equation (S5)
+   is a useful independent measure theorem and covers arbitrary
+   countable-fiber dispersions, but neither relativistic dephasing nor
+   timelike clustering can be claimed as new physics.
+
+These fractures narrow the proof problem; they do not retroactively narrow the
+conjecture.
+
+### New unconditional survivors
+
+For every nonempty finite sector set there exists one faithful normalized
+state, fixed independently of the observer, whose modular log-frequency
+dimension saturates
+\[
+ \dim_{\rm time}(G)=|V|-c(G)
+\]
+for every observer graph \(G\) on that same state. Thus observer dependence is
+not produced by changing the dynamics or retuning a state: access structure
+alone realizes every graph-allowed dimension. An explicit countable
+prime-log family also has temporal dimension exactly \(\aleph_0\).
+
+For every Borel probability spectral measure \(\mu\), with survival amplitude
+\(\widehat\mu(t)\), the symmetric-window mean fidelity obeys the exact
+all-spectrum law
+\[
+ \boxed{\quad
+ \lim_{T\to\infty}\frac1{2T}\int_{-T}^{T}
+       |\widehat\mu(t)|^2\,dt
+   =(\mu\otimes\mu)\{(x,y):x=y\}.
+ \quad}                                                     \tag{S1}
+\]
+The right side is the spectral collision probability: the probability that
+two independent samples from the observer's spectrum agree. It vanishes
+exactly when \(\mu\) has no atoms.
+
+Consequently, for every atomless spectrum—including every
+singular-continuous spectrum—and every fixed \(\eta>0\),
+\[
+ \lim_{T\to\infty}\frac{
+   |\{t\in(-T,T]:|\widehat\mu(t)|^2\ge\eta\}|}{2T}=0.        \tag{S2}
+\]
+Thus singular-continuous rigidity may permit rare returns, but never a
+positive-density population of fixed-fidelity returns. For a mixed spectrum,
+the same collision probability is the exact limiting mean-coherence budget
+and gives the universal asymptotic upper budget for every high-fidelity return
+density. For an absolutely continuous spectrum the stronger
+Riemann--Lebesgue law gives eventual permanent escape below every positive
+fidelity threshold.
+
+Equations (S1)--(S2) cover pure-point, singular-continuous,
+absolutely-continuous, and mixed spectral types without a finite-dimensional,
+bounded-support, or absolute-continuity assumption. Together with the
+countable pure-point recurrence theorem, they identify loss of atomicity—not
+infinite rank—as the sharp recurrent-versus-density-arrow boundary.
+
+The dimension side has a separate universal cardinal gap. For every real
+Borel spectral measure,
+\[
+ \boxed{\qquad
+ \dim_{\rm time}(\mu)\leq\aleph_0
+ \quad\text{or}\quad
+ \dim_{\rm time}(\mu)=2^{\aleph_0}.
+ \qquad}                                                     \tag{S3}
+\]
+No intermediate uncountable temporal cardinal can occur. If the support is
+uncountable, closedness forces it to have continuum cardinality, and its
+rational span therefore has continuum rank. In particular every atomless
+probability spectrum has
+\[
+ \dim_{\rm time}(\mu)=2^{\aleph_0},                           \tag{S4}
+\]
+so the continuous phase is not merely infinite: it jumps directly to
+continuum temporal dimension while all fixed positive-fidelity return sets
+simultaneously acquire zero time density.
+
+The measure law now has an exact stationary-field bridge. Every continuous
+nonnegative momentum-symmetric Schwartz sesquilinear form has one unique
+positive temperate spectral measure. Every nonzero Schwartz observer probe
+selects a finite weighted spectrum, its normalization is a probability law,
+and the probe weight is exactly the intrinsic diagonal value of the original
+form. Equations (S1)--(S4) therefore apply to every probe. If the reconstructed
+field spectrum is atomless, every nonzero probe has continuum temporal
+dimension and zero-density fixed-fidelity returns.
+
+There is also one explicit same-form separation theorem. A single positive
+stationary field form with one atomic sector and one separated continuum
+sector admits two Schwartz probes: one has unit return fidelity at every
+instant, while the other has zero-density returns above every fixed positive
+threshold. State and dynamics remain fixed; observer coupling alone changes
+the return phase.
+
+The spatial part now has a universal unconditional core. Let \(\nu\) be any
+atomless measure in one momentum coordinate, let \(\mu\) be any measure of all
+remaining labels, let \(\rho\ll\mu\otimes\nu\) be any correlated joint
+observer law, and let \(E(a,p)\) be any measurable dispersion for which
+\(\{p:E(a,p)=e\}\) is countable for every \(a,e\). Then
+\[
+ \boxed{\qquad E_\#\rho\ \text{is atomless}. \qquad}        \tag{S5}
+\]
+No finiteness or sigma-finiteness assumption is required for either product
+factor. Arbitrary nonnegative observer weighting is included because a
+weighted product remains absolutely continuous with respect to the original
+product.
+
+Whenever the pushed-forward energy law is normalized, (S5) joins (S2) and
+(S4): one atomless spatial momentum coordinate forces continuum temporal
+dimension and zero-density returns above every fixed positive fidelity.
+For the relativistic dispersion
+\[
+ E(m,p)=\sqrt{m^2+p^2},
+\]
+each fixed-\((m,E)\) momentum fiber contains at most two points. The joined
+conclusion therefore holds for every mass mixture and every normalized
+correlated joint law absolutely continuous with respect to an arbitrary mass
+law times an atomless momentum law. This closes the arbitrary-mass,
+arbitrary-weight product-dispersion theorem; it does not yet prove that every
+compact-local interacting QFT observer law has the required absolute
+continuity.
+
+The first clock-refactorization survivor is also exact. On every nonempty
+finite-dimensional world, choose one nondegenerate labelled coordinate
+observable and one fully connected labelled coupling. Their common commutant
+contains only scalar matrices. Consequently:
+
+1. if two arbitrary generators induce the same Heisenberg law on those two
+   labels, their difference is one scalar energy-origin term;
+2. after adjoining an arbitrary finite clock factor, the common commutant of
+   the two lifted world labels consists exactly of clock-only operators;
+3. every invertible clock--world refactorization preserving both labels by
+   conjugation is therefore clock-only—no clock--world mixing survives;
+4. if the physical clock labels comprise every basis reading and every
+   regular group shift, covariance under one origin change forces the
+   residual clock operator to be exactly that group translation times one
+   global scalar;
+5. if the refactorization is invertible, that scalar is nonzero;
+6. combining the world and clock labels gives an if-and-only-if
+   classification: every finite physical clock--world refactorization
+   preserving the two world meanings and transporting all clock readings and
+   shifts by one common origin is precisely one clock-origin translation
+   times one nonzero global scalar.
+
+Thus two physical world meanings, rather than the complete matrix algebra,
+already extinguish arbitrary finite-dimensional law ambiguity and remove
+every finite clock--world mixing transformation. Complete labelled clock
+readings and shifts then reduce the residual freedom to one physical origin
+change. This is a strict strengthening of the earlier complete-observable
+commutant statement. It does not prove that the same minimal label set is
+operationally complete, nor prove the conjecture for continuous or type-III
+systems.
+
+The discrete theorem is now cardinality-free. Let the clock be any group,
+finite, countably infinite, or uncountable, and let its record space be the
+full scalar function space on that group. Coordinate-projector covariance
+forces every output coordinate to depend on exactly one input coordinate;
+regular-shift covariance forces all coordinate weights to coincide. Hence
+every linear clock refactorization preserving all readings and shifts is one
+left translation times one scalar, with no topology, boundedness, basis
+expansion, or summability assumption. If it is bijective, the scalar is
+nonzero.
+
+For any nonempty finite labelled world coupled to that arbitrary discrete
+clock, the two world observables still force every total linear
+refactorization to be clock-only. Combining both classifications gives the
+exact if-and-only-if law at arbitrary discrete cardinality: a bijective
+clock--world refactorization preserves the two world meanings and transports
+all clock readings and regular shifts by one origin exactly when it is that
+origin translation times one nonzero global scalar. Thus the countably
+infinite clause of the conjecture is closed, and the result is stronger than
+countable. Continuous clocks and infinite/type-III world algebras remain
+separate problems because point-reading projectors and finite world-sector
+decomposition are no longer available in the same form.
+
+These survivors establish an exact observer-spectral return law. They do not
+yet establish compact-spacetime locality of the probes, modular spectral
+measures for arbitrary local von Neumann algebras, identify the mathematical
+density arrow with experienced time, select an arrow orientation, or derive
+cosmological time. Those bridges remain separate proof obligations.
 
 ## Definition
 
@@ -394,9 +664,57 @@ An exact-object literature match to this joined law kills the paper.
    realization or restrict claims to finite-level platforms.
 7. **Exact periods are nongeneric.** This is a conclusion of the rank law,
    not an omitted caveat.
-8. **Continuous spectra and thermodynamic limits.** Either extend the
-   invariant to countable frequency modules and state the infinite-rank
-   boundary, or keep “every finite quantum observer” explicit.
+8. **Continuous spectra and thermodynamic limits.** The all-spectrum collision
+   law now includes singular-continuous and mixed measures. Remaining demand
+   is a theorem deriving the relevant spectral measure from a local
+   thermodynamic/QFT observer algebra, not another abstract measure example.
+9. **The paper is a collage.** Arithmetic rank, modular flow, spectral type,
+   recurrence, dephasing, and experiment must appear as consequences or tests
+   of one theorem chain. Material not needed for that chain must be removed
+   from the main text.
+10. **A density arrow is not experienced time.** The manuscript must either
+    prove a physical operational bridge or use “return-density arrow,” never
+    consciousness, lived time, or cosmological time.
+11. **The cardinal gap may be elementary.** The proof uses the perfect-set
+    cardinality of uncountable closed subsets of \(\mathbb R\) plus vector-space
+    counting. Novelty must reside in a physically forced joined law or
+    prediction, not in relabelling this cardinal fact as time.
+12. **The same-state split is engineered filtering.** Separated atomic and
+    continuum sectors with matching probes demonstrate logical possibility,
+    not generic local-QFT behavior. A physical theorem must derive the
+    relevant probe class from locality or a realizable detector coupling.
+13. **The new spatial theorem may be “Fubini plus countable fibers.”** Its
+    proof is short. Significance cannot be assigned by proof length, but a
+    referee will demand an interacting compact-local QFT consequence that is
+    not merely a renamed pushforward fact.
+14. **Absolute continuity is the exposed bottleneck.** Equation (S5) allows
+    arbitrary correlations dominated by a product, but does not cover a joint
+    spectral law singular along a dispersion level set. The conjecture fails
+    if locality and spectrum condition permit a non-vacuum local excitation
+    concentrated on such a set.
+15. **Relativistic novelty is already killed.** In Lorentz-covariant
+    positive-energy representations, absolute continuity off the invariant
+    sector and timelike clustering are prior theorems. The manuscript may use
+    them as parents, but cannot sell their return-law consequence as a new
+    physical discovery.
+16. **Two matrices may look like Burnside in costume.** A nondegenerate
+    diagonal plus a connected coupling generating the full matrix algebra is
+    classical finite-dimensional algebra. Novelty can reside only in the
+    exact clock--world refactorization classification and its extension to
+    operational conditional probabilities, continuous clocks, and local
+    type-III algebras.
+17. **The finite clock label set may be excessive.** Residual freedom is now
+    exactly one clock-origin translation, up to nonzero global scalar, but the
+    theorem assumes covariance of every basis-reading projector and every
+    regular group shift. A hostile reviewer can demand a smaller
+    operationally measurable label family and a robustness theorem under
+    approximate preservation.
+18. **Cardinality-free discrete is not continuous.** The arbitrary-group
+    theorem acts on the full algebraic function space and allows unbounded
+    linear maps; it is mathematically stronger in cardinality but not yet a
+    theorem about bounded or unitary operators on \(L^2(\mathbb R)\). Point
+    projectors cease to be physical observables for a continuous clock.
+    Calling this the continuous-clock solution would be false.
 
 ## Formalization gates
 
@@ -404,16 +722,49 @@ An exact-object literature match to this joined law kills the paper.
 - [x] graph phase capacity \(d-c(G)\)
 - [x] graph-capacity recurrence deadline
 - [x] worst-spectrum rank exponent
-- [ ] visible rational frequency module definition
-- [ ] temporal dimension bounded by graph capacity
-- [ ] temporal dimension zero/stationary equivalence
-- [ ] exact positive period iff temporal dimension at most one
-- [ ] observer monotonicity
-- [ ] threshold-graph monotonicity and temporal-rank filtration
-- [ ] diagonal Lindblad entry and exponential solution identities
-- [ ] arbitrary star schedule realization
+- [x] visible rational frequency module definition
+- [x] temporal dimension bounded by graph capacity
+- [x] temporal dimension zero/stationary equivalence
+- [x] exact positive return iff the visible group is cyclic
+- [x] observer refinement monotonicity
+- [x] one fixed faithful state saturates every finite graph capacity
+- [x] explicit finite modular one-parameter automorphism law
 - [ ] fixed-spectrum rank-height recurrence refinement
-- [ ] countable/infinite-rank boundary
+- [x] countable/infinite-rank boundary
+- [x] countable pure-point approximate recurrence at every resolution
+- [x] exact all-spectrum collision-mass mean law
+- [x] collision mass vanishes iff the spectrum is atomless
+- [x] atomless high-fidelity return density tends to zero, including
+      singular-continuous spectra
+- [x] universal temporal-cardinality gap: at most countable or continuum
+- [x] atomless spectrum forces continuum temporal dimension
+- [x] mixed-spectrum collision-budget bound
+- [x] absolutely-continuous eventual escape law
+- [x] normalized bounded-below continuous-spectrum example
+- [x] unique positive-tempered spectrum for every stationary positive
+      Schwartz form
+- [x] normalized probe spectrum and intrinsic diagonal weight identity
+- [x] atomless stationary-field probe phase law
+- [x] one fixed stationary field form with exact recurrent/dispersive
+      observer phase separation
+- [x] arbitrary countable-fiber product-dispersion atomlessness
+- [x] arbitrary absolutely-continuous correlated-source extension
+- [x] arbitrary nonnegative observer-weight extension
+- [x] arbitrary-mass relativistic spatial dephasing phase law
+- [x] two explicit physical labels determine every finite world generator
+      up to scalar energy origin
+- [x] exact finite clock--world no-mixing stabilizer for those two labels
+- [x] reduce residual clock-only stabilizer exactly to physical clock origin
+- [x] exact combined finite physical clock--world stabilizer if and only if
+- [x] arbitrary-cardinality discrete clock-origin stabilizer
+- [x] arbitrary-cardinality discrete clock with finite labelled-world
+      no-mixing stabilizer
+- [x] exact combined arbitrary-discrete physical clock--world stabilizer iff
+- [ ] continuous clock--world stabilizer
+- [ ] local type-III observable-algebra stabilizer
+- [ ] compact-local or local-algebra QFT realization beyond Schwartz smearing
+- [ ] experimentally operational estimator and reachable parameter regime
+- [ ] justified bridge from return-density arrow to physical time
 - [ ] direct axiom and lint audits
 
 ## Promotion criterion

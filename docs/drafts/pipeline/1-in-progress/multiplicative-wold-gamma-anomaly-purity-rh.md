@@ -2,9 +2,9 @@
 
 - **ID:** `multiplicative-wold-gamma-anomaly-purity-rh`
 - **Stage:** 1 — in progress
-- **Type:** GENERAL HT MECHANISM / SOURCE-SPECIFIC RH PROGRAM
-- **Scientific status:** `[NEW MECHANISM] [EXACT CORE THEOREM PAPER-PROVED]`
-  `[EXTERNAL NOVELTY PROVISIONAL] [RH CHAIN INCOMPLETE]`
+- **Type:** POST-CONJECTURE MECHANISM HYPOTHESIS / SOURCE-SPECIFIC RH PROGRAM
+- **Scientific status:** `[PROOF HYPOTHESIS] [EXACT CORE BRIDGES PAPER-PROVED]`
+  `[GENERIC WOLD-EXACTNESS RETIRED] [EXTERNAL NOVELTY PROVISIONAL] [RH CHAIN INCOMPLETE]`
 - **RH used:** no
 - **Computation used:** no
 - **Parents:**
@@ -13,17 +13,19 @@
   `../2-fully-proven/not_new_scientific_knowledge/burnol-copoisson-berezin-diagonal-reflection-law.md`,
   `../3-formalized/hypertranscendental-minimal-polarized-critical-completion-architecture.md`,
   `../3-formalized/source-producer-integral-realization-minimality.md`.
+- **Frozen primary conjecture:**
+  `source-curved-prime-torus-conormal-temperedness.md`.
 
 ## Mechanism in one sentence
 
-The hypertranscendental Gamma phase is the regularized determinant of the Wold defect of
+The hypertranscendental Gamma phase is the regularized determinant of the Wold range defect of
 multiplicative arithmetic dilation, while the BV zeta-pole residue is its missing first-trace
-conormal coordinate; after these two layers are assembled into one source Hilbert complex,
-chain-unitarity makes every zeta annihilator character pure, hence critical.
+conormal coordinate; the RH-bearing object is the strict failure of the canonical Wold contraction
+to survive the completed co-Poisson source differential, not exactness of the Wold defect itself.
 
-This is not another positivity criterion.  It identifies a previously missing source coupling
-between the Gamma HT phase and the exact coefficient operator whose annihilator eigencharacter
-measures horizontal zero displacement.
+This is not another positivity criterion.  It is one possible attack on the independently frozen
+prime-Schwartz Xi conormal temperedness conjecture.  Failure of this mechanism does not change the
+conjecture.
 
 ## 1. Arithmetic Wold system
 
@@ -145,6 +147,23 @@ layers of one source defect.
 The corpus minimality theorems force six information channels for a conservative HT theory.
 The Wold--Gamma law shows how they can become one mathematical object.
 
+There is a necessary sidedness correction. In the source metric forced by `(1)`, centered
+multiplication is already an isometry:
+
+```text
+U_q^dagger U_q=I.
+```
+
+Its nonunitarity is the opposite Wold defect
+
+```text
+E_q=I-U_q U_q^dagger.                                    (8a)
+```
+
+The adjoint of an isometry can have every open-disk eigenvalue, so exactness of
+`U_q^dagger U_q-I` would say nothing: that operator is already zero on the coefficient core.
+The RH-bearing anomaly must cancel `(8a)`.
+
 For a constrained HT source `F`, form a polarized source Hilbert complex
 
 ```text
@@ -160,16 +179,48 @@ with:
 5. the missing first trace as a conormal boundary coordinate;
 6. critical product bornology as the domain on which all terms close.
 
-The source dilation `U_q` must be a chain map.  The decisive identity is not positivity of a
-target kernel but **unitarity modulo the source differential**:
+There is a second necessary correction.  The coefficient Wold complex is
 
 ```text
-U_q^* U_q-I=d_F^* K_q+K_q^* d_F.                        (9)
+0 -> H_Q --U_q--> H_Q --E_q--> E_qH_Q -> 0.             (8b)
 ```
 
-Equation `(9)` is the anomaly-inflow law.  The coefficient coisometry has a positive Wold defect;
-the Gamma determinant and first-trace conormal term place that defect in the exact part of the
-total source complex.
+It is canonically split exact.  Its contraction is `h_q=(U_q^dagger,i_q)`, where
+`i_q:E_qH_Q -> H_Q` is inclusion, because
+
+```text
+U_q^dagger U_q=I,
+U_q U_q^dagger+E_q=I,
+E_q i_q=I.                                               (8c)
+```
+
+Therefore neither contractibility of the coefficient Wold complex nor existential Hodge
+exactness of `E_q` is an RH advance.
+
+Let `mathcalD_(F,q)=partial_q+delta_F` be a source-fixed square-zero total differential on the
+relative Wold complex and define
+
+```text
+I+mathcalA_(F,q)
+ =mathcalD_(F,q) h_q+h_q mathcalD_(F,q),
+mathcalA_(F,q)=delta_F h_q+h_q delta_F.                  (8d)
+```
+
+The left side commutes with `mathcalD_(F,q)`.  Wherever `I+mathcalA_(F,q)` has a continuous
+inverse, `h_q(I+mathcalA_(F,q))^(-1)` contracts the total complex.  Nonzero completed source
+cohomology can therefore occur only at a noninvertibility, domain, or closability defect of this
+fixed homological-perturbation inverse.
+
+The earlier proposed identity
+
+```text
+I-U_q U_q^dagger=d_F^* K_q+K_q^* d_F.                   (9)
+```
+
+is still a sufficient purity endpoint on a fixed independently constructed source complex, but it
+is not the mechanism and supplies no evidence by itself.  It must be derived from the mixed
+anomaly or replaced by the stronger support theorem below; it cannot be the conjecture merely
+because it yields RH.
 
 ### Abstract purity consequence
 
@@ -183,15 +234,17 @@ d_F h=0,   d_F^* h=0.
 Taking its matrix coefficient in `(9)` gives
 
 ```text
-||U_q h||^2-||h||^2=0.                                  (10)
+<h,(I-U_q U_q^dagger)h>=0.                              (10)
 ```
 
-Thus source dilation is isometric on harmonic cohomology.  No global positive divisor measure,
-real-rooted approximation, self-adjoint zero operator, or Weil-sign premise occurs.
+The left side is nonnegative. Hence the range defect kills `h`; `U_q U_q^dagger h=h`.
+Together with the chain-level isometry `U_q^dagger U_q=I`, source dilation is unitary on harmonic
+cohomology. No global positive divisor measure, real-rooted approximation, self-adjoint zero
+operator, or Weil-sign premise occurs.
 
-This is the proposed general **polarized anomaly-cancellation purity theorem** for constrained
-hypertranscendental sources: source transport can be nonunitary on chains, but every effective
-annihilator class is pure after its regular determinant and first-trace anomaly are retained.
+This remains a valid abstract **polarized anomaly-cancellation purity lemma**.  The new conjecture
+does not assume `(9)`: it predicts which strict failure class the independently fixed source
+completion creates.
 
 ## 5. Riemann specialization
 
@@ -200,22 +253,23 @@ continuation supplies the exact dilation character.  At a nontrivial zero `rho`,
 fixed dyadic window,
 
 ```text
-U_q^* k_rho=conj(q^(rho-1/2)) k_rho,   k_rho!=0.         (11)
+U_q^dagger k_rho=conj(q^(rho-1/2)) k_rho,   k_rho!=0.    (11)
 ```
 
 The existing convention using `r` instead of `q=r^2` writes the same character as
 `r^(2rho-1)`.
 
-If the completed Wold--Gamma--co-Poisson complex realizes `k_rho` as a harmonic conormal class,
-then `(10)--(11)` imply
+If the completed Wold--Gamma--co-Poisson totalization has strict failure locus equal to the Xi
+principal conormal divisor and supported on unitary prime characters, then `k_rho!=0` lies in that
+failure locus and
 
 ```text
-|q^(rho-1/2)|<=1,
-Re(rho)<=1/2.                                            (12)
+|q^(rho-1/2)|=1,
+Re(rho)=1/2.                                             (12)
 ```
 
-Functional-equation reflection gives the opposite inequality for every nontrivial zero, hence
-`Re(rho)=1/2` and RH.
+Thus every nontrivial zero is critical and RH follows. Functional-equation reflection remains a
+source symmetry of the construction but is not needed to repair a one-sided contraction estimate.
 
 The proof mechanism is therefore:
 
@@ -224,19 +278,21 @@ finite arithmetic decimation coisometry
   -> Wold defect
   -> regular layer = HT Gamma determinant cocycle
   -> singular layer = BV Laurent conormal coordinate
-  -> one completed source Hilbert complex
-  -> chain-unitarity modulo completed co-Poisson differential
-  -> purity of annihilator cohomology
+  -> canonical Wold contraction
+  -> mixed contraction/source-differential anomaly
+  -> strict failure locus = Xi conormal divisor
+  -> failure support is unitary
   -> |q^(rho-1/2)|=1
   -> RH.                                                  (13)
 ```
 
 ## 6. Exact new open core
 
-`WOLD-GAMMA-COPOISSON-ANOMALY-INFLOW`:
+`WOLD-GAMMA-COPOISSON-PERTURBATION-SUPPORT`:
 
-Construct the total source differential `d_Xi` before annihilator specialization and prove
-`(9)` with the following fixed blocks:
+Construct the total source differential `mathcalD_(Xi,q)` before annihilator specialization,
+transport the canonical contraction `(8c)`, and construct the closed cofinal mixed class
+`mathcalA_Xi` with the following fixed blocks:
 
 1. coefficient block: exact `D_q,S_q,E_q` Wold system;
 2. regular boundary block: `Phi_q^def` from `(4)`;
@@ -245,9 +301,21 @@ Construct the total source differential `d_Xi` before annihilator specialization
 5. source constraint block: completed co-Poisson multiplier and its adjoint;
 6. harmonic effectivity: every uncensored annihilator conormal jet survives nontrivially.
 
-The first construction test is the one-step defect identity.  On a compact source core, exhibit
-`K_q` for which the coefficient Wold projection `E_q` plus the Gamma boundary and first-trace
-normal term equals `d_Xi^*K_q+K_q^*d_Xi`.  This must be checked before taking a cofinal limit.
+The post-conjecture mechanism hypothesis is:
+
+```text
+regular relative determinant of mathcalA_Xi
+  = Phi(t)/Phi(t/q);
+singular trace of mathcalA_Xi
+  = (1-q^(-1)) times the BV principal conormal;
+strict failure support of I+mathcalA_Xi
+  = the Xi principal conormal divisor with multiplicity;
+every strict failure character is unitary.               (14)
+```
+
+The first construction test is the one-prime typed identity `(8d)` on a compact source core,
+followed by proof that its graph and relative character survive cofinal completion.  These clauses
+are a proposed proof mechanism, not the truth-hunch itself.
 
 ## 7. Why this is not a renamed old route
 
@@ -258,8 +326,9 @@ normal term equals `d_Xi^*K_q+K_q^*d_Xi`.  This must be checked before taking a 
 3. **Not the existing Hodge--Green moment route.**  No target moment cone or Stieltjes
    representation is inserted.  Gamma is identified with the actual Wold defect determinant
    before Xi moments are read.
-4. **Not quasi-inner compactness.**  Calkin or Hankel compactness permits discrete nonunitary
-   fibres.  Equation `(9)` is an exact cohomological unitarity statement.
+4. **Not quasi-inner compactness.** Calkin or Hankel compactness permits discrete nonunitary
+   fibres. Equation `(9)` is only a possible consequence of the mixed support theorem; the other
+   isometry side is already fixed by the source metric.
 5. **Not generic FE/positivity/HT.**  Off-line generalized-prime quartet models do not carry the
    literal integer multiplication coisometries, the BV off-multiple identity, and the completed
    co-Poisson differential simultaneously.
@@ -272,12 +341,16 @@ Retire the RH mechanism if any of the following occurs.
 
 1. The Gamma phase in `(4)` enters only as a scalar determinant and has no source map into the
    co-Poisson conormal graph.
-2. The one-step Wold defect represents a nonzero class after the completed Gamma and polar
-   boundary blocks are added, so `(9)` is false.
-3. The required `K_q` depends on a chosen zero, a divisor residue norm, or Weil positivity.
+2. The one-step mixed anomaly has no source-defined closed graph after the completed Gamma and
+   polar boundary blocks are added.
+3. The totalization or its domain depends on a chosen zero, a divisor residue norm, or Weil
+   positivity.
 4. The harmonic projection kills an uncensored BV conormal jet.
 5. The total differential fails closability in the critical product bornology.
-6. An explicit off-line Euler system carries all six fixed blocks and satisfies `(9)`.
+6. An explicit off-line Euler system carries all six fixed blocks and the same mixed anomaly
+   class.
+7. `I+mathcalA_Xi` fails at a nonunitary character, or an Xi principal conormal does not occur in
+   its strict failure locus.
 
 The strongest positive survivor after falsification would be a classification of the residual
 Wold anomaly class.  It would identify the additional independent channel missing from the
@@ -294,6 +367,15 @@ Parent ingredients are classical and not claimed as new:
 - Burnol's co-Poisson/Sonine quotient;
 - Connes--Consani scaling and quasi-inner local-factor operators.
 
+Homological perturbation and torsion of contractible/Koszul complexes are also parent theory.  In
+particular, perturbing a contraction and reading secondary determinants is not itself new.
+Relative cyclic cocycles, renormalized traces, and boundary eta cocycles for algebra extensions
+are also parent theory. Perrot's `Extensions and renormalized traces` and Moriyoshi--Piazza's
+relative eta-cocycle construction show that a regularized bulk cochain and a secondary boundary
+cocycle naturally belong to one relative class. They support the extension/mapping-cone category
+but do not identify the arithmetic Wold determinant with the BV conormal, construct
+`mathcalA_Xi`, or prove `(14)`.
+
 Targeted exact searches found Wold decomposition theory, Gamma/Fredholm determinant literature,
 Connes--Consani quasi-inner local factors, and irregular/polarized Hodge theory, but no source
 identifying the Gamma quotient as the polarized determinant cocycle of the arithmetic
@@ -305,6 +387,13 @@ Closest primary sources:
 - Connes--Consani, *The Scaling Hamiltonian*, <https://arxiv.org/abs/1910.14368>;
 - Connes--Consani, *Quasi-inner functions and local factors*,
   <https://arxiv.org/abs/2008.10974>;
+- Perrot, *Extensions and renormalized traces*, <https://arxiv.org/abs/0908.1757>;
+- Moriyoshi--Piazza, *Eta cocycles, relative pairings and the Godbillon--Vey index theorem*,
+  <https://arxiv.org/abs/1102.2876>;
+- Sköldberg, *Algebraic Morse theory and homological perturbation theory*,
+  <https://arxiv.org/abs/1311.5803>;
+- Kaad, *Joint torsion of several commuting operators*,
+  <https://arxiv.org/abs/1011.0356>;
 - Sabbah, *Irregular Hodge theory*, <https://arxiv.org/abs/1511.00176>;
 - Burnol, *Two complete and minimal systems associated with the zeros of the Riemann zeta
   function*, <https://www.numdam.org/articles/10.5802/jtnb.434/>.
@@ -317,12 +406,15 @@ This is a provisional noncollision report, not a priority proof.
 - [x] exact polarized `det_2` Gamma cocycle proved on paper
 - [x] exact singular first-trace asymptotic proved on paper
 - [x] exact match with existing BV off-multiple residue coefficient
-- [x] abstract chain-unitarity-to-purity implication proved
+- [x] correct-sided range-defect-exactness-to-purity implication proved as a sufficient lemma
+- [x] actual coefficient Wold resolution proved canonically split exact
+- [x] generic Wold/Hodge exactness retired as non-frontier
 - [x] exact RH consumer identified through existing Burnol/BV interfaces
 - [x] internal exact-match search negative
 - [x] preliminary external exact-match search negative
-- [ ] construct one-step completed source differential and transgression `K_q`
+- [ ] construct one-step completed source differential and mixed class `mathcalA_(Xi,q)`
 - [ ] prove critical closability and harmonic conormal survival
-- [ ] prove chain-unitarity for every integer `q>=2`
+- [ ] identify strict failure locus with Xi conormal divisor
+- [ ] prove strict failure support is unitary
 - [ ] formalize only dependency-closed source theorems in Lean
 - [ ] compose unconditional RH proof
