@@ -79,6 +79,69 @@ theorem gammaSewnMobiusJuliaSourceTransportV_normSq
       rw [gammaSewnMobiusJuliaDefect_sq hx]
       ring
 
+/-- An orientation-preserving real plane isometry has a unique second column once its first
+orthonormal column is fixed. -/
+theorem orientedPlaneIsometry_secondColumn_unique
+    {c d a b : ℝ}
+    (hfirst : c ^ 2 + d ^ 2 = 1)
+    (hsecond : a ^ 2 + b ^ 2 = 1)
+    (horth : c * a + d * b = 0)
+    (horient : 0 < c * b - d * a) :
+    a = -d ∧ b = c := by
+  have hdetSq : (c * b - d * a) ^ 2 = 1 := by
+    calc
+      (c * b - d * a) ^ 2 =
+          (c ^ 2 + d ^ 2) * (a ^ 2 + b ^ 2) -
+            (c * a + d * b) ^ 2 := by ring
+      _ = 1 := by rw [hfirst, hsecond, horth]; norm_num
+  have hdet : c * b - d * a = 1 := by nlinarith
+  constructor
+  · calc
+      a = (c ^ 2 + d ^ 2) * a := by rw [hfirst]; ring
+      _ = -d * (c * b - d * a) + c * (c * a + d * b) := by ring
+      _ = -d := by rw [hdet, horth]; ring
+  · calc
+      b = (c ^ 2 + d ^ 2) * b := by rw [hfirst]; ring
+      _ = c * (c * b - d * a) + d * (c * a + d * b) := by ring
+      _ = c := by rw [hdet, horth]; ring
+
+/-- At positive aperture, the strict scalar compression cannot itself preserve source-axis
+norm.  Hence any isometric completion retaining that coordinate needs at least one environment
+dimension. -/
+theorem gammaSewnMobiusValuationContractionMultiplier_not_scalar_isometry
+    {x : ℝ} (hx : 0 < x) (p : Nat.Primes) :
+    ¬ ∀ u : ℝ,
+      (gammaSewnMobiusValuationContractionMultiplier x p * u) ^ 2 = u ^ 2 := by
+  intro h
+  have h1 : gammaSewnMobiusValuationContractionMultiplier x p ^ 2 = 1 := by
+    simpa using h 1
+  have hc0 := gammaSewnMobiusValuationContractionMultiplier_pos x p
+  have hc1 := gammaSewnMobiusValuationContractionMultiplier_lt_one hx p
+  nlinarith
+
+/-- **Unique minimal positive Julia lift.**  The Julia rotation is the unique
+orientation-preserving plane isometry whose first source-axis column is the prescribed scalar
+compression together with its positive defect coordinate.  Combined with the preceding scalar
+no-go, one extra real channel is minimal. -/
+theorem gammaSewnMobiusJuliaSourceTransportV_unique_minimal_positive_lift
+    {x : ℝ} (hx : 0 < x) (p : Nat.Primes) {a b : ℝ}
+    (hsecond : a ^ 2 + b ^ 2 = 1)
+    (horth :
+      gammaSewnMobiusValuationContractionMultiplier x p * a +
+        gammaSewnMobiusJuliaDefect x p * b = 0)
+    (horient :
+      0 <
+        gammaSewnMobiusValuationContractionMultiplier x p * b -
+          gammaSewnMobiusJuliaDefect x p * a) :
+    a = -gammaSewnMobiusJuliaDefect x p ∧
+      b = gammaSewnMobiusValuationContractionMultiplier x p := by
+  apply orientedPlaneIsometry_secondColumn_unique
+  · rw [gammaSewnMobiusJuliaDefect_sq hx.le]
+    ring
+  · exact hsecond
+  · exact horth
+  · exact horient
+
 /-- On the distinguished source axis, the two outputs are exactly the scalar compression and its
 Julia defect. -/
 theorem gammaSewnMobiusJuliaSourceTransportV_sourceAxis
@@ -527,6 +590,85 @@ theorem tendsto_gammaSewnMobiusJuliaHardHalfWeightTransport_nhdsGT_zero
           (nhds (gammaSewnMobiusJuliaSoftHalfWeightSource u pe)))
   rw [primeLog_mul_gammaSewnMobiusJuliaSoftHalfWeightSource u pe] at h
   simpa [gammaSewnMobiusJuliaHardHalfWeightTransport] using h
+
+/-- One-parameter squared mass orbit of the canonical Julia environment, extended by zero away
+from prime powers. -/
+def gammaSewnMobiusJuliaHardMassCoefficient
+    (x u : ℝ) (n : ℕ) : ℝ :=
+  if hpow : IsPrimePow n then
+    gammaSewnMobiusJuliaHardHalfWeightTransport x u
+      (Nat.Primes.prodNatEquiv.symm ⟨n, hpow⟩) ^ 2
+  else 0
+
+/-- The exact von Mangoldt Mellin orbit reached at the Julia boundary. -/
+def gammaSewnMobiusJuliaMellinBoundaryMass (u : ℝ) (n : ℕ) : ℝ :=
+  ArithmeticFunction.vonMangoldt n / (n : ℝ) *
+    Real.exp (-u * Real.log n)
+
+/-- Prime-clock covariance of the boundary mass: changing damping translates the entire
+von Mangoldt source by the diagonal logarithmic clock. -/
+theorem gammaSewnMobiusJuliaMellinBoundaryMass_add
+    (u v : ℝ) (n : ℕ) :
+    gammaSewnMobiusJuliaMellinBoundaryMass (u + v) n =
+      Real.exp (-v * Real.log n) *
+        gammaSewnMobiusJuliaMellinBoundaryMass u n := by
+  unfold gammaSewnMobiusJuliaMellinBoundaryMass
+  rw [show -(u + v) * Real.log n =
+      (-v * Real.log n) + (-u * Real.log n) by ring,
+    Real.exp_add]
+  ring
+
+/-- The damping `u = -1` face is the undamped von Mangoldt source itself. -/
+theorem gammaSewnMobiusJuliaMellinBoundaryMass_neg_one
+    (n : ℕ) :
+    gammaSewnMobiusJuliaMellinBoundaryMass (-1) n =
+      ArithmeticFunction.vonMangoldt n := by
+  rcases eq_or_ne n 0 with rfl | hn
+  · simp [gammaSewnMobiusJuliaMellinBoundaryMass]
+  · have hnpos : (0 : ℝ) < n := by exact_mod_cast Nat.pos_of_ne_zero hn
+    rw [gammaSewnMobiusJuliaMellinBoundaryMass,
+      show -(-1 : ℝ) * Real.log n = Real.log n by ring,
+      Real.exp_log hnpos]
+    exact div_mul_cancel₀ _ (by exact_mod_cast hn)
+
+/-- **Universal Julia--Mellin boundary law.**  At every real damping, the squared normal
+coordinate converges coefficientwise to the corresponding Mellin translate of the von Mangoldt
+source.  The Euler-logarithm and critical Weil faces are the specializations `u = -1` and
+`u = -1/2`. -/
+theorem tendsto_gammaSewnMobiusJuliaHardMassCoefficient_nhdsGT_zero
+    (u : ℝ) (n : ℕ) :
+    Tendsto
+      (fun x : ℝ => gammaSewnMobiusJuliaHardMassCoefficient x u n)
+      (nhdsWithin (0 : ℝ) (Ioi 0))
+      (nhds (gammaSewnMobiusJuliaMellinBoundaryMass u n)) := by
+  by_cases hpow : IsPrimePow n
+  · let pe : Nat.Primes × ℕ := Nat.Primes.prodNatEquiv.symm ⟨n, hpow⟩
+    have hn :
+        xiGammaEulerValuationNat pe = n := by
+      have hx := congrArg Subtype.val
+        (Nat.Primes.prodNatEquiv.apply_symm_apply ⟨n, hpow⟩)
+      simpa only [pe, xiGammaEulerValuationNat,
+        Nat.Primes.coe_prodNatEquiv_apply] using hx
+    have hlim :=
+      (tendsto_gammaSewnMobiusJuliaHardHalfWeightTransport_nhdsGT_zero
+        u pe).pow 2
+    rw [xiGammaEulerBoundaryRealAmplitude_sq] at hlim
+    have hvm :
+        ArithmeticFunction.vonMangoldt n = Real.log (pe.1 : ℝ) := by
+      rw [← hn]
+      exact vonMangoldt_prime_pow_succ_eq_log pe
+    have htarget :
+        Real.log (pe.1 : ℝ) / (xiGammaEulerValuationNat pe : ℝ) *
+            Real.exp (-u * Real.log (xiGammaEulerValuationNat pe)) =
+          gammaSewnMobiusJuliaMellinBoundaryMass u n := by
+      rw [gammaSewnMobiusJuliaMellinBoundaryMass, hvm, hn]
+    rw [htarget] at hlim
+    simpa only [gammaSewnMobiusJuliaHardMassCoefficient, hpow, pe] using hlim
+  · have hvm : ArithmeticFunction.vonMangoldt n = 0 :=
+      ArithmeticFunction.vonMangoldt_eq_zero_iff.mpr hpow
+    simp only [gammaSewnMobiusJuliaHardMassCoefficient, hpow, hvm,
+      gammaSewnMobiusJuliaMellinBoundaryMass, zero_div, zero_mul]
+    exact tendsto_const_nhds
 
 /-- **Gamma-sewn scalar-Pick obstruction/Julia--Euler escape universality law.**  No
 dimension-dependent operator mixing can preserve the scalar Gamma-sewn prime marginals and the

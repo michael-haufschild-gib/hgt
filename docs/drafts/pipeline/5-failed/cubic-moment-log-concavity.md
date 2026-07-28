@@ -677,3 +677,209 @@ sign_change_at_regular_zero                  both signs in every neighbourhood
 - [x] the Gaussian shown to be a regular zero, with both deformation derivatives exact
 - [ ] an unconditional proof of `C > 0` for the theta source — must resolve a `0.79 %` margin against
       a two-dimensional equality manifold, so it cannot come from any class containing the Gaussian
+
+## 15. The `y = x²` reformulation: the cubic is a second difference, and one quartic gate closes it
+
+### 15.1 The reformulation
+
+`Φ` is even (the theta functional equation — verified to 30 digits at four points), so
+
+```text
+mⱼ = ∫_ℝ x^{2j}Φ(x)dx = ∫₀^∞ y^{j−1/2} H(y) dy ,     H(y) = Φ(√y) .
+```
+
+The natural normalization in `y` is `Lⱼ = mⱼ/Γ(j+1/2)`, and its ratios
+
+```text
+rⱼ = Lⱼ/L_{j−1} = μⱼ/(j − 1/2)
+```
+
+turn the functional into a **pure second difference**:
+
+```text
+Λ = 15μ₁ − 10μ₂ + 3μ₃ = (15/2)·(r₁ − 2r₂ + r₃) .
+```
+
+Both models have `r` **affine in `j`** — which is the real reason both are equality cases:
+
+```text
+Φ = e^{−x²}    mⱼ = Γ(j+1/2)    rⱼ = 1
+Φ = e^{−|x|}   mⱼ = 2(2j)!      rⱼ = 4j
+```
+
+For the theta source `r = (0.0924199724617, 0.0859845497633, 0.0809080801817)`: decreasing, with
+first differences `−0.0064354` and `−0.0050765`, so `Δ²r = +0.001358953117` — **a `21 %` margin
+against the first difference**, far better conditioned than the `0.79 %` of the raw cubic.
+
+### 15.2 One quartic gate, tight at the right model
+
+Convexity follows from log-convexity by AM–GM: `r₂² ≤ r₁r₃` gives `2r₂ ≤ 2√(r₁r₃) ≤ r₁ + r₃`.  In raw
+moments `r₂² ≤ r₁r₃` is the single monomial inequality
+
+```text
+        5 m₀ m₂³  ≤  9 m₁³ m₃                    (the quartic gate)
+```
+
+verified for the theta source with relative margin `+1.126 %`.  Its status against the models is
+exactly right:
+
+```text
+Gaussian      mⱼ = Γ(j+1/2)   both sides = 135π²/64      EQUALITY
+exponential   mⱼ = 2(2j)!     1105920 > 829440           FAILS
+```
+
+so the gate is strictly stronger than `C ≥ 0` and is tight **precisely at the model the cubic is tight
+at** — unlike the corpus's earlier two-inequality split, whose `16m₀m₂ ≤ 45m₁²` half the exponential
+violates by a factor two.  **One inequality replaces two, and it is sharp where sharpness is needed.**
+
+### 15.3 The exponential-family framing, and the open core
+
+Put `t = log y`.  Then `ν_s ∝ y^sH(y)dy` has density `∝ exp((s+1)t + Θ(t))` with
+
+```text
+Θ(t) = log Φ(e^{t/2}) ,      Θ_Γ(t) = −e^t  (the Gaussian, giving A_Γ = log Γ) .
+```
+
+**The whole problem is a comparison of two exponential families in the variable `log y`**, with
+log-partition functions `A(λ) = log M(λ−1)` and `A_Γ(λ) = log Γ(λ)`.  Writing `g = A − A_Γ`:
+
+```text
+g′(s+1)  = E_{ν_s}[log y] − ψ(s+1)
+g″(s+1)  = Var_{ν_s}[log y] − ψ′(s+1)
+g‴(s+1)  = κ₃^{ν_s}[log y] − ψ″(s+1)
+```
+
+`Δ³g ≥ 0` gives `Δ² log r ≥ 0`, i.e. the quartic gate.  So the gate follows from `g‴ ≥ 0` on
+`[−1/2, 5/2]`, i.e. from **`g″` nondecreasing**.  Measured:
+
+```text
+s      −0.5      0        0.5      1        1.5      2        3        4        6        8
+g″   −0.0887  −0.0792  −0.0717  −0.0656  −0.0606  −0.0563  −0.0496  −0.0444  −0.0369  −0.0318
+```
+
+strictly increasing throughout, with per-step margins of `10–20 %` — the best-conditioned form of the
+target found so far.  Mechanism: the theta source is more strongly log-concave than the Gamma
+reference, so its tilted measure is narrower (`g″ < 0`) and its width shrinks more slowly under tilting
+(`g‴ > 0`).
+
+Two exact identities of the family, both from integration by parts:
+
+```text
+E_{ν_s}[y W′(y)] = s + 1/2 ,      Cov_λ(Θ′(t), t) = −1 ,      κ₃(Θ′, t, t) = 0 .
+```
+
+**`[OPEN CORE]`** `Var_{ν_s}[log y] − ψ′(s+1)` is nondecreasing on `s ∈ [−1/2, 5/2]`.
+Brascamp–Lieb alone is insufficient: it yields `Var_{ν_s}[log y] ≤ 1/s`, and `ψ′(s+1) < 1/s`, so the
+comparison is lost by exactly the amount that matters.
+
+### 15.4 What this route excludes
+
+`x²`-log-concavity of `Φ` (i.e. `H` log-concave, equivalently `xL″ ≤ L′`) is **verified** for the theta
+source — `xL″ − L′` runs `−0.0059, −0.368, −5.44, −35.4, −191, −1034` at `x = 0.05 … 2` — and it is
+**not sufficient**.  Counterexample: the truncated Gaussian `Φ = e^{−x²}·1_{|x| ≤ √R}`, whose `H` is
+log-concave, has
+
+```text
+R      0.05     1       2       3       4       5       6       8      12      20
+Δ²r/r₁ +0.224 +0.134 +0.0546 +0.0031 −0.0203 −0.0245 −0.0199 −0.0080 −0.00056 −8e−7
+```
+
+negative on `R ≳ 3.1`, with worst case `−2.45 %` — the same order as theta's `+1.47 %`.  Support
+truncation makes `r` concave; a super-Gaussian tail makes it convex.  The class straddles yet again,
+which is exactly what the regular-zero theorem of §14.4 predicts.
+
+### 15.5 Formalized
+
+`GaloisForLFunctions/HTGeometry/CubicMomentLogConvexRatio.lean` and
+`GaloisForLFunctions/RHTower/PrimeArchThetaQuarticRatioGate.lean`, both axiom-clean and built:
+
+```text
+chord_eq_second_difference                Λ = (15/2)(r₁ − 2r₂ + r₃)
+ratioSeq_halfGaussian / _exponential      rⱼ = 1 and rⱼ = 4j — both affine
+second_difference_nonneg_of_logConvex     r₂² ≤ r₁r₃ ⟹ 2r₂ ≤ r₁ + r₃
+logConvex_ratioSeq_iff / quartic_iff_logConvex
+cubic_nonneg_of_quartic                   5m₀m₂³ ≤ 9m₁³m₃ ⟹ C ≥ 0
+quartic_halfGaussian_eq                   equality at the Gaussian
+quartic_exponential_fails / cubic_exponential_eq
+ThetaCuspQuarticRatioGate                 the gate on the completed theta source
+thetaCuspSixthMomentHankelInequality_of_quarticRatioGate
+thetaCuspThreeTemperatureMeanBalance_of_quarticRatioGate
+forall_primeArchSourceTraceHankel_linear_nonneg_of_quarticRatioGate
+```
+
+## Gates
+
+- [x] `Φ` even; the `y = x²` reformulation `mⱼ = ∫y^{j−1/2}H`
+- [x] `Λ = (15/2)Δ²r`; both models have `r` affine
+- [x] the quartic gate `5m₀m₂³ ≤ 9m₁³m₃`, equality at the Gaussian, failing at the exponential
+- [x] Lean: gate ⟹ cubic ⟹ Hankel ⟹ three-temperature balance ⟹ all linear trace tests
+- [x] `x²`-log-concavity verified for theta and shown insufficient (truncated-Gaussian straddle)
+- [x] exponential-family framing in `t = log y`; `A_Γ = log Γ`
+- [ ] `[OPEN CORE]` `Var_{ν_s}[log y] − ψ′(s+1)` nondecreasing on `[−1/2, 5/2]`
+
+## 16. No local criterion exists, and the lane buys two faces of an RH-equivalent cone
+
+### 16.1 The no-go, in its final form
+
+In the exponential-family coordinates of §15.3, write `v(t) := (log(−Θ′))′(t)`.  The Gaussian is
+`v ≡ 1`; `v ≥ 1` is exactly `x²`-log-concavity; the power family `Φ = e^{−|x|^p}` is `v ≡ p/2`.  On a
+`43000`-point grid (Gaussian control returns `4.7e−8`):
+
+```text
+v ≡ 1        (Gaussian)         Λ-proxy Δ²r/r₁ =  0            equality
+v ≡ 3/2      (p = 3)                             +0.0944
+v = 1 + (t−t₀)₊, t₀ = −6, −3, −1, 0, 1, 2 :  +0.218, +0.199, +0.108, +0.014, −0.0132, −0.0004
+```
+
+**The same perturbation flips sign depending only on where it is placed.**  Worse, the counterexamples
+survive at arbitrarily small perturbation rate — `v = 1 + S(t−t₀)₊`, `v′ ≤ S`:
+
+```text
+S = 0.25 → −0.0074    S = 0.1 → −0.0039    S = 0.03 → −0.0014    S = 0.01 → −0.00051
+```
+
+and even the theta-shaped exponential onset `v = 1 + c e^{at}` fails at `a = 1.5, c = 0.02`
+(`−0.00198`).  So:
+
+> **No condition of the form "`v ≥ 1` together with bounds on the derivatives of `v`" implies
+> `Λ ≥ 0`.**  The sign is fixed by the *placement* of the steepening relative to the bulk of `ν_s`,
+> which sits at `t ≈ log λ ∈ [−0.69, 1.25]` for the four relevant `λ`.  Steepening before the bulk
+> gives `Λ > 0`; steepening at its right edge gives `Λ < 0`.
+
+Theta's `v` is smooth and rises through the bulk from far left:
+
+```text
+t     −5.99   −4.61   −3.22   −2.10   −1.39   −0.71    0.00    0.67    1.39    1.91
+v     1.0032  1.0124  1.0468  1.1259  1.2239  1.3713  1.6145  1.9655  2.5268  3.1103
+```
+
+**Consequence.** Any unconditional proof of `C > 0` for the theta source must be quantitative and
+non-perturbative — in practice, certified enclosures of the four integrals to about `0.1 %`.  That is
+finite and well-conditioned (smooth positive double-exponentially decaying integrand) but is a
+substantial numeric formalization.
+
+### 16.2 Why it is not worth doing: the load-bearing hypothesis is elsewhere
+
+Reading the proof body of `riemannHypothesis_of_thetaCuspRatioSplit_of_primeArchDegreeTwoTail`: the
+two theta ratio hypotheses appear **only** in the `¬(2 ≤ p.natDegree)` branch.  They discharge the
+constant and linear faces; `htail` carries the rest.  And
+
+```text
+primeArchSourceTraceHankel p = ∑_k (p²)_k · a_k ,   a_n = normalizedPrimeArchMoment n ,
+−Ξ′(z)/(zΞ(z)) = ∑_ρ 2/(γ_ρ² − z²)   ⟹   a_n = 2 ∑_ρ γ_ρ^{−2(n+1)} ,
+```
+
+with `primeArchSourceMomentHankelDeterminantsPositive_iff_riemannHypothesis` an explicit **iff**.  So
+the cone condition *is* RH, and this lane discharges two faces of it.  By Cauchy–Binet the `N × N`
+Hankel determinant of `a` is `∑_{|S| = N} (∏_{i∈S} c_i)·V(S)²` over `N`-subsets of zeros, so size `N`
+resolves only the lowest `N` zeros: detecting an off-line zero at height `T` needs `N ≈ #{γ < T}`.
+Finite blocks can never see past the verified height.  **No leverage.**
+
+## Gates
+
+- [x] no local criterion: counterexamples at perturbation rate `S → 0`, and for exponential onset
+- [x] the deciding feature is placement relative to the bulk `t ≈ log λ`, not any pointwise bound
+- [x] theta's steepness profile tabulated; it rises through the bulk from far left
+- [x] the two theta hypotheses discharge only the degree-`≤ 1` faces; `htail` is RH-equivalent
+- [x] Cauchy–Binet: Hankel size `N` resolves only the lowest `N` zeros — finite blocks have no leverage
+- [ ] not pursued: certified enclosure of the four moments (finite, but buys only two faces)

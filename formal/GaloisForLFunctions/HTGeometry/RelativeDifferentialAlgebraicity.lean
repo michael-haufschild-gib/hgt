@@ -29,6 +29,8 @@ open MvPolynomial
 
 namespace GaloisForLFunctions
 
+namespace RelativeDifferentialAlgebraicity
+
 variable {ι κ : Type*}
 
 /-- `f` satisfies a nonzero algebraic differential relation of order at most `n` whose coefficients
@@ -92,5 +94,7 @@ theorem HypertranscendentalOver.mono
     {f : ℂ → ℂ} (hht : HypertranscendentalOver h f) :
     HypertranscendentalOver g f :=
   fun hda => hht (hda.mono he hbase)
+
+end RelativeDifferentialAlgebraicity
 
 end GaloisForLFunctions

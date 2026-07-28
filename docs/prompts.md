@@ -536,19 +536,21 @@ Goal is met when RH proof is formalized.
 
 ## paper
 /goal 
-in docs/drafts/pipeline/4-publication-ready/multiple-elliptic-gamma-rational-rank-dichotomy we have a paper written earlier. but in the meantime our research corpus in lean has grown a lot.
 
-your task:
-- work towards a much stronger paper
-- use the [$hgt-fields-medalist](/Users/michael/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to overcome mathematical obstacles 
-- apply critical antagonist review to make sure that the quality criteria for the paper are truly met
+Do scientific research and then write a paper that is likely to be published in Nature.
 
-The final paper must:
-1. Only claim what is unconditionally proven in lean.
-2. Present a novel and significant universal law.
-3. Answer a question that the broader research community has.
-4. Be of a quality that a general scientific journal would publish it.
-5. Not leave open questions, but answer them.
+The paper must:
+- Be accepted by a hostile journal reviewer based on https://www.nature.com/nature/for-authors/editorial-criteria-and-processes
+- Present a headline law or discovery that "wows" people even if they do not understand the math behind it
+- Is bold and present a universal law or theorem about physical reality, not just math
+- Any mathematical claim must be unconditionally proven in lean
+  
+Topic must connect Hypertranscendence to one of these:
+- Time
+- Causality
+- Holographic principle
+- Cosmology  
+- Quantumness in macro reality
 
 Lean rules:
 1. Proofs must be unconditional in lean.
@@ -558,4 +560,11 @@ Lean rules:
 5. Always use  lake env lean <file>  and only lake build <module> for the final audit.
 6. make sure you don't leave stale lean processes running - clean up after yourself.
 
-Goal is met when an honest antagonistic review of the written paper confirms that all criteria are met and a review under the POV "what would a reviewer at a renomated general scientific journal demand, ask or critique?"
+lean folders:
+- formal/GaloisForLFunctions/HTGeometry for lean about hypertranscendental functions in general
+- formal/GaloisForLFunctions/RHTower for lean about the riemann zeta function
+- formal/GaloisForLFunctions/HilbertMetric for lean about hilber spaces and metrics
+
+prior papers: docs/drafts/pipeline/4-publication-ready
+
+Add the missing lean machinery and use [$hgt-fields-medalist](/Users/michael/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to do research and fill the scientific gap for dicovering Nature-level physics.

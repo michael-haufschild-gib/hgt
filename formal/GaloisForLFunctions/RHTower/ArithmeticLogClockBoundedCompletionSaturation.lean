@@ -152,6 +152,76 @@ theorem primeBoundedPostprocessedTraceClock_no_global_source_bound
   simp only [norm_zero, mul_zero] at hineq
   exact hy (norm_eq_zero.mp (le_antisymm hineq (norm_nonneg _)))
 
+/-- **Quantitative recovery instability.**  Suppose bounded operators on the Hardy source recover
+the postprocessed arithmetic clock pointwise on every actual-prime packet.  If the postprocessor
+is nonzero, their operator norms cannot be uniformly bounded.
+
+Thus the obstruction is stable under approximation: every faithful bounded regularization must
+become singular in operator norm. -/
+theorem primeBoundedPostprocessedTraceClock_any_recovery_norms_unbounded
+    {K : Type*} [NormedAddCommGroup K] [InnerProductSpace ℝ K] [CompleteSpace K]
+    (m : ℕ) (C : PrimeHardy →L[ℝ] K) (hC : ∃ y, C y ≠ 0)
+    (F : ℕ → PrimeHardy →L[ℝ] K)
+    (hF : ∀ d : Nat.Primes →₀ ℝ,
+      Tendsto (fun n => F n (primeHardyKernelMap d)) atTop
+        (nhds (primeBoundedPostprocessedTraceClock m C d))) :
+    ¬ ∃ M : ℝ, ∀ n, ‖F n‖ ≤ M := by
+  rintro ⟨M, hM⟩
+  apply primeBoundedPostprocessedTraceClock_no_global_source_bound m C hC
+  refine ⟨M, fun d => ?_⟩
+  apply le_of_tendsto (hF d).norm
+  filter_upwards [] with n
+  exact (F n).le_opNorm (primeHardyKernelMap d) |>.trans
+    (mul_le_mul_of_nonneg_right (hM n) (norm_nonneg _))
+
+/-- **Strong recovery blow-up law.**  Under the same packetwise recovery hypothesis, the operator
+norms do not merely have an unbounded subsequence: they tend to positive infinity.  For every
+proposed norm threshold, failure of global source domination supplies one fixed packet whose
+recovered value eventually forces every later operator above that threshold. -/
+theorem tendsto_norm_primeBoundedPostprocessedTraceClock_any_recovery_atTop
+    {K : Type*} [NormedAddCommGroup K] [InnerProductSpace ℝ K] [CompleteSpace K]
+    (m : ℕ) (C : PrimeHardy →L[ℝ] K) (hC : ∃ y, C y ≠ 0)
+    (F : ℕ → PrimeHardy →L[ℝ] K)
+    (hF : ∀ d : Nat.Primes →₀ ℝ,
+      Tendsto (fun n => F n (primeHardyKernelMap d)) atTop
+        (nhds (primeBoundedPostprocessedTraceClock m C d))) :
+    Tendsto (fun n => ‖F n‖) atTop atTop := by
+  rw [tendsto_atTop]
+  intro b
+  let M : ℝ := max b 0 + 1
+  have hbM : b < M := by
+    dsimp [M]
+    linarith [le_max_left b 0]
+  have hnot :
+      ¬ ∀ d : Nat.Primes →₀ ℝ,
+        ‖primeBoundedPostprocessedTraceClock m C d‖ ≤
+          M * ‖primeHardyKernelMap d‖ := by
+    intro hbound
+    exact primeBoundedPostprocessedTraceClock_no_global_source_bound m C hC
+      ⟨M, hbound⟩
+  push Not at hnot
+  obtain ⟨d, hd⟩ := hnot
+  have hsne : primeHardyKernelMap d ≠ 0 := by
+    intro hs
+    have ht :
+        Tendsto (fun _ : ℕ => (0 : K)) atTop
+          (nhds (primeBoundedPostprocessedTraceClock m C d)) := by
+      simpa [hs] using hF d
+    have hz : primeBoundedPostprocessedTraceClock m C d = 0 :=
+      tendsto_nhds_unique ht tendsto_const_nhds
+    rw [hs, hz, norm_zero, mul_zero] at hd
+    simp at hd
+  have hspos : 0 < ‖primeHardyKernelMap d‖ := norm_pos_iff.mpr hsne
+  have hev :
+      ∀ᶠ n : ℕ in atTop,
+        M * ‖primeHardyKernelMap d‖ <
+          ‖F n (primeHardyKernelMap d)‖ :=
+    (tendsto_order.1 (hF d).norm).1 _ hd
+  filter_upwards [hev] with n hn
+  have hop := (F n).le_opNorm (primeHardyKernelMap d)
+  have hMop : M < ‖F n‖ := by nlinarith
+  exact hbM.le.trans hMop.le
+
 end
 
 end RHTower

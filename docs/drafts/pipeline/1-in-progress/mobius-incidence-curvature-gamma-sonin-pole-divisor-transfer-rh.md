@@ -190,6 +190,28 @@ also the normal derivative of the packet connection because
 partial_alpha c_alpha(n)|_(alpha=0)=2Lambda(n).          (7j)
 ```
 
+The Gamma--Meixner shape mechanism gives an exact factorwise origin for this same normal
+connection. For `r=log p`, `lambda_p=i r/(2pi)`, Gamma reflection and the finite
+symmetric/chiral plaquette law prove
+
+```text
+(1-p^(-(s+alpha)))/(1-p^(-(s-alpha)))
+ =q_p(s-alpha)/q_p(s+alpha)
+   P_p(-lambda_p alpha,s)/P_p(lambda_p alpha,s),
+
+q_p(s)=r s exp(rs/2)/(4pi^2).                           (7j-Gamma)
+```
+
+Its derivative at `alpha=0` is exactly twice the local von Mangoldt depth current. Thus the
+normal Suzuki shift and Gamma shape are no longer merely analogous:
+`a=lambda_p alpha` is their exact local weld while `s` remains the independent spectral
+coordinate.
+
+The raw `q_p` and `P_p` products diverge separately as primes are added. Only their locally
+paired product in `(7j-Gamma)`, equal to the Euler normal factor, is completion-stable. The
+completed Ward theorem must act on this paired multiplication graph; separating its DA gauge
+from its HT chiral factor before cofinal completion is rejected.
+
 The normal shift `alpha` and thermal escape `epsilon` must be kept independent.  At fixed
 `Re s>1`, differentiation of
 
@@ -559,6 +581,7 @@ is a precise research target, not an RH proof.
 - [x] affine packet flux proved to recover the Fisher score exactly
 - [x] source packet-to-Fisher Ward map proved asymptotically isometric
 - [x] Fisher score-to-pole Laguerre contact fixed canonically
+- [x] local Euler normal shift factored exactly through the Gamma chiral shape weld
 - [x] completed squarefree current proved to have anti-causal profile `ell_E`
 - [x] boundary-unitary Ward curvature decomposition written explicitly
 - [x] infinitely many disjoint positive four-unit shells with the same Xi divisor constructed

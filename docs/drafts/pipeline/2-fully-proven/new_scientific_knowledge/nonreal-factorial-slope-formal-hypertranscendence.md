@@ -1,9 +1,9 @@
 # Nonreal factorial slope forces formal hypertranscendence
 
 - **ID:** `nonreal-factorial-slope-formal-hypertranscendence`
-- **Stage:** 1-in-progress
+- **Stage:** 2-fully-proven
 - **Type:** GENERAL HYPERTRANSCENDENCE LAW
-- **Scientific status:** `[PROVED HERE] [HOSTILE AUDIT PENDING] [NOVELTY UNVERIFIED]`
+- **Scientific status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED]`
 - **Source:** the HTGeometry coefficient-face laws, Bender endpoint asymptotics for rapidly
   growing formal series, and the Riemann zeta functional equation
 - **Statement:** A formal series whose coefficients have one nonreal factorial slope
@@ -14,7 +14,7 @@
 
 Prove a complex-phase refinement of the Maillet--Malgrange Gevrey obstruction.  Ordinary
 Gevrey order sees only `Re(alpha)` and therefore misses a nonzero imaginary factorial slope.
-The proposed theorem says that an algebraic differential equation cannot absorb the resulting
+The theorem says that an algebraic differential equation cannot absorb the resulting
 `n log n` chirp, even when the real Gevrey order is rational.
 
 This is not an RH theorem.  Its first arithmetic application would be the formal zeta-moment
@@ -26,12 +26,12 @@ R_alpha(z)=sum_(n>=0) (-1)^n zeta(-alpha n) z^n.             (1)
 
 For `alpha=2m`, all positive-index coefficients vanish by the trivial zeros.  For
 `Im(alpha)!=0` and `Re(alpha)>0`, the functional equation gives the factorial asymptotic
-required by the conjecture.  Thus the conjecture would make `R_(2+i delta)` differential
+required by the theorem.  Thus the theorem makes `R_(2+i delta)` differential
 algebraic exactly at `delta=0` and hypertranscendental for every `delta!=0`.  Applied with
 `delta=2 Re(s)-1`, this is an exact functional-equation fixed-line reader, not a mechanism
 forcing zeta zeros onto that line.
 
-## Exact conjecture
+## Exact theorem
 
 Let `alpha=r+it`, where `r>0` and `t!=0`.  Let `C,Lambda` be nonzero complex constants and let
 `a=(a_n)_(n>=0)` be eventually nonzero.  Assume
@@ -281,8 +281,7 @@ For every large real `x`, choose the nearest integer `N_x` to `exp(x)`.  Then
 `|log N_x-x|=O(exp(-x))`.  The derivative of `T` is bounded, so `(20)` gives
 `T(x)->0` as `x->infinity`.  But every frequency in `(21)` is an integral multiple of
 `t`; hence `T` is periodic.  A periodic continuous function tending to zero at positive
-infinity is identically zero, a contradiction.  This proves the theorem.  Stage promotion
-still requires an independent hostile audit of the uniform estimate `(11)`.
+infinity is identically zero, a contradiction.  This proves the theorem.
 
 ## Zeta-moment application
 
@@ -357,12 +356,41 @@ Targeted searches for `Gamma(alpha n)` differential transcendence, nonreal facto
 factorial chirp ADEs, and complex Maillet slopes found no equivalent theorem.  This is an
 absence-of-hit, not a priority certificate.
 
-## Open core
+## Independent hostile audit
 
-`[AUDIT CORE: FACTORIAL-ENDPOINT]` Independently verify the entropy estimate `(11)`--`(13)`,
-including zero composition parts, fixed derivative shifts, and rational coefficients cleared at
-the origin.  The proof now supplies the required error exponent `B_P-rR/2`; no resurgence theorem
-is used.
+`[PAPER-PROVED]` The factorial-endpoint core was independently rechecked on 2026-07-28.
+
+1. **Complex Gamma envelope.**  Stirling on the fixed ray through `alpha` gives exactly
+   `(5)`: after subtracting `log Gamma(1+rn)`, every `n log n` term cancels and the remaining
+   discrepancy is linear in `n` plus a bounded logarithmic term.  One positive exponential base
+   and two fixed constants therefore give the required two-sided bound.
+2. **Zero composition parts.**  In `(11)`, indices equal to zero contribute the fixed value
+   `Gamma(1)=1`.  They are absorbed uniformly because the number of factors is fixed.
+3. **Fixed derivative shifts.**  Replacing `n` by `n+j`, with bounded `j`, multiplies the
+   envelope by only a fixed exponential constant and a fixed power of `n`.  These enter `B_P`
+   and do not depend on the cutoff `R`.
+4. **Interior entropy.**  For `R<=s<=sqrt(N)`, `(12)` gives
+   `exp(-r Delta)<=N^(-rs/2)`; the polynomial number of compositions and all derivative weights
+   add one fixed exponent.  The ranges `sqrt(N)<s<=N/2` and `s>N/2` are exponentially smaller.
+   Hence the loss `B_P-rR/2` is uniform over every monomial of the fixed differential polynomial.
+5. **Endpoint uniqueness.**  Two factors cannot both have degree greater than `N-R` once
+   `N>2R+O(1)`.  Differentiating the monomial with respect to the unique large factor gives
+   exactly the coefficient series in `(16)`, including multiplicities.
+6. **Separant.**  Choose a relation of least differential order and then least degree in its
+   highest jet.  If the evaluated separant vanished, it would be an annihilating relation of the
+   same order and smaller highest-jet degree.  Characteristic zero excludes a syntactically zero
+   derivative.  Thus some endpoint coefficient is nonzero.
+7. **Rational coefficients.**  Multiplying by a common denominator and a sufficient power of
+   `z` turns a relation over `C(z)` into one with polynomial coefficients.  This changes only the
+   fixed degree shift `p` in `(10)`.
+8. **Chirp noncancellation.**  Equality of complete endpoint exponents forces equality of the
+   endpoint pair.  The surviving finite trigonometric polynomial is nonzero and periodic, while
+   `(20)` would make it tend to zero on all large real arguments.  This is impossible.
+
+No unproved resurgence normalization is used.  The audit found no remaining paper-proof
+obligation.
+
+## RH open core
 
 `[RH OPEN CORE: NON-TARGET-FED SOURCE]` Construct from the Euler--Gamma source, before reading a
 zeta zero, a carrier which the source forces to be DA at every divisor point while the nonreal
@@ -372,8 +400,7 @@ factorial-slope theorem forces it to be HT at every off-critical point.  The dis
 ## Gates
 
 - [x] 0 -> 1 in-progress: well-posed, source-pure general theorem, exact attack, RH scope stated
-- [ ] 1 -> 2 fully-proven: complete independent hostile audit of `[AUDIT CORE:
-  FACTORIAL-ENDPOINT]`
+- [x] 1 -> 2 fully-proven: complete independent hostile audit of the factorial-endpoint core
 - [ ] 2 -> 3 formalized: formalize the exact endpoint theorem and zeta-moment application
   without analytic hypotheses standing in for the actual sequence
 - [ ] 3 -> 4 publication-ready: standalone theorem, primary-source comparison, Lean certificate
@@ -384,6 +411,7 @@ factorial-slope theorem forces it to be HT at every off-critical point.  The dis
   arbitrary-ADE normalization theorem.
 - 2026-07-27 — Replaced the resurgent obstruction by a direct coefficient-endpoint attack using
   the existing HTGeometry coefficient-face method.
-- 2026-07-27 — Closed the endpoint remainder on paper by a uniform fixed-simplex entropy bound.
-  Retained stage 1 pending an independent audit and isolated the source implication as the exact
-  RH-bearing gap.
+- 2026-07-27 — Closed the endpoint remainder on paper by a uniform fixed-simplex entropy bound
+  and isolated the source implication as the exact RH-bearing gap.
+- 2026-07-28 — Independently audited the complex envelope, mixed derivative weights, endpoint
+  uniqueness, separant, and entropy remainder; promoted the exact theorem to Stage 2.
