@@ -1,0 +1,934 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1.12in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+\usepackage[nameinlink,noabbrev]{cleveref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\C}{\mathbb C}
+\newcommand{\R}{\mathbb R}
+\newcommand{\N}{\mathbb N}
+\newcommand{\HH}{\mathcal H}
+\newcommand{\OO}{\mathcal O}
+\newcommand{\WW}{\mathcal W}
+\newcommand{\ord}{\operatorname{ord}}
+\newcommand{\indm}{\operatorname{ind}_{-}}
+\newcommand{\Res}{\operatorname{Res}}
+\newcommand{\re}{\operatorname{Re}}
+\newcommand{\im}{\operatorname{Im}}
+\newcommand{\dd}{\,\mathrm d}
+
+\title{\textbf{A Julia--Euler--Weil index law for off-critical Riemann divisors}}
+\author{Author withheld for review}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We determine the first normal orientation carried by a finite off-critical
+divisor before any explicit-formula scalarization.  Given a finite packet of
+genuinely complex functional-equation--Schwarz quartets
+\[
+ \tfrac12\pm a_j\pm i\gamma_j,\qquad
+ 0<a_j<\tfrac12,\quad \gamma_j>0,
+\]
+we form the Cayley phase of the strict-right pair and differentiate its
+Julia defect in the unsquared aperture.  The derivative is pointwise
+strictly positive.  Its integral, the pole price of the corresponding
+rational Euler gauge, and the negative index of the isolated Weil packet
+block satisfy
+\[
+ \frac{Q_{\mathrm{Julia}}}{4\pi}
+   =\Delta\ord_{s=1}
+   =\indm(\WW_{\mathrm{packet}})
+   =2n.
+\]
+Thus the unsquared orientation exists, has a fixed sign, and is exactly
+quantized; its polarity records an off-line defect rather than excluding
+one.
+
+On the subcone \(a_j^2+\gamma_j^2\leq1/4\), we additionally construct a
+locally finite nonnegative continuous generalized-prime measure whose exact
+prime-power transform generates the whole packet.  The associated
+deformation retains the Riemann reflection law and has an entire
+Schwarz-real hypertranscendental completion with precisely the inserted
+zeros.  Hence Euler positivity, completed symmetry, hypertranscendence, and
+positive first Julia orientation are jointly compatible with arbitrary
+finite packets in this cone.  No criterion invariant under these positive
+Euler surgeries can force the critical line.  What breaks the surgery is
+not orientation but the exact simple-pole and discrete-prime normalization.
+\end{abstract}
+
+\section{Introduction}
+
+The Riemann hypothesis is equivalent to the assertion that every
+nontrivial zero of \(\zeta(s)\) has real part \(1/2\).  Three major
+languages for this statement are usually kept separate.
+
+First, the Euler side records primes through
+\(-\zeta'/\zeta\).  Second, Weil's explicit formula turns zero localization
+into positivity of a Hermitian quadratic form
+\cite{Weil1952,Bombieri2000}.  Third, geometric current constructions
+encode a zero divisor through Cauchy transforms or boundary Ward
+responses.  Recent work on localized Weil forms, screw functions, and
+spectral triples has made the relation between the first two languages
+especially active \cite{ConnesConsani2021,CCM2025,Suzuki2026}.
+
+A recurring difficulty is orientation.  Divisor currents and squared
+normal coordinates retain the location and multiplicity of a zero but may
+erase the sign of its transverse displacement from the critical line.
+This suggests an apparently decisive repair: keep the normal coordinate
+unsquared and prove a one-sided sign law before passing to a scalar
+explicit formula.
+
+The present paper answers that question at the first Julia derivative,
+before divisor squaring or explicit-formula contraction.  The unsquared
+aperture derivative exists and has a strict sign, but its sign is the sign
+of the \emph{defect}, not a sign excluding the defect.  Every genuinely
+off-critical quartet produces a positive normal derivative.  The same
+quartet carries \(8\pi\) of integrated Julia--Ward charge, costs two units
+of pole order at \(s=1\), and contributes a Weil block of negative index
+two.  These are not three bounds.  They are three exact readings of one
+integer.
+
+The arithmetic realization is not attached after the index calculation.
+On an explicit cone it starts with a nonnegative continuous
+generalized-prime measure.  M\"obius inversion is performed at measure
+level, the prime-power transform is recovered exactly, and its Laplace
+transform is the logarithmic derivative of the rational divisor gauge.
+The entire polynomial completion then compares Euler, geometric, and
+quadratic readings of the same packet.  Outside that cone the index law
+continues to hold, but positive measure realization is not asserted.
+
+\subsection{Main result}
+
+For \(a,\gamma>0\), put
+\[
+ q_{a,\gamma}(s)
+ =\prod_{\epsilon,\eta\in\{\pm1\}}
+   \left(s-\frac12-\epsilon a-i\eta\gamma\right),
+ \qquad
+ R_{a,\gamma}(s)
+ =\frac{q_{a,\gamma}(s)}{[s(s-1)]^2}.
+\]
+For a finite nonempty set \(J\), let
+\[
+ R_J(s)=\prod_{j\in J}R_{a_j,\gamma_j}(s),
+ \qquad
+ F_J(s)=\zeta(s)R_J(s),
+ \qquad
+ X_J(s)=\xi(s)\prod_{j\in J}q_{a_j,\gamma_j}(s),
+\]
+where
+\[
+ \xi(s)=\frac12s(s-1)\pi^{-s/2}\Gamma(s/2)\zeta(s).
+\]
+The function \(X_J\) is the entire completion naturally associated with
+\(F_J\).
+
+Put \(c_j=a_j+\frac12\).  At boundary coordinate \(t\in\R\) and real
+normal aperture \(\alpha\), define
+\[
+ \Phi_{j,t}(\alpha)
+ =\prod_{\eta\in\{\pm1\}}
+   \frac{c_j+i(t+\eta\gamma_j)-\alpha}
+        {c_j+i(t+\eta\gamma_j)+\alpha},
+ \qquad
+ \Delta_{j,t}(\alpha)=1-|\Phi_{j,t}(\alpha)|^2.
+\]
+The variable \(\alpha\), not \(\alpha^2\), is the Julia normal coordinate.
+
+\begin{theorem}[Finite-divisor Julia--Euler--Weil law]
+\label{thm:main}
+Let \(J\) be finite and nonempty, and suppose
+\[
+ 0<a_j<\frac12,\qquad \gamma_j>0
+\quad(j\in J).
+\]
+Then the following statements hold.
+
+\begin{enumerate}
+\item \(X_J\) is entire, satisfies
+      \[
+      X_J(1-s)=X_J(s),\qquad
+      X_J(\overline{s})=\overline{X_J(s)},
+      \]
+      is hypertranscendental over \(\C(s)\), and vanishes at every
+      \(\frac12\pm a_j\pm i\gamma_j\).
+\item The first Julia normal derivative is
+      \[
+      \left.\frac{\partial}{\partial\alpha}
+        \Delta_{j,t}(\alpha)\right|_{\alpha=0}
+      =
+      \frac{4c_j}{c_j^2+(t+\gamma_j)^2}
+      +\frac{4c_j}{c_j^2+(t-\gamma_j)^2}>0.
+      \]
+      Its integral over \(t\in\R\) is \(8\pi\) for every \(j\), independent
+      of height and horizontal displacement.
+\item The rational gauge \(R_J\) has pole order \(2|J|\) at \(s=1\);
+      \(F_J\) has total pole order \(1+2|J|\) there.
+\item At every regular Cauchy probe \(z\) with
+      \(\re z>0\) and \(\im z>0\), the polarized reciprocal-square
+      response of the packet is strictly positive.
+\item The isolated Weil packet block has signature
+      \((2|J|,2|J|)\).
+\item The integrated Julia charge, rational-gauge pole excess, and
+      isolated Weil
+      packet-block index obey
+      \[
+      \boxed{\quad
+      \frac{Q_{\mathrm{Julia}}(J)}{4\pi}
+       =\Delta\ord_1(F_J)
+       =\indm(\WW_J)
+       =2|J|.
+      \quad}
+      \]
+\item If additionally
+      \(a_j^2+\gamma_j^2\leq\frac14\) for every \(j\), there is a
+      measurable locally integrable density \(p_J\geq0\) on
+      \([0,\infty)\) whose generalized prime-power transform is exactly
+      the logarithmic density attached to \(R_J\).  Away from poles and
+      zeros,
+      \[
+      \frac{R_J'(s)}{R_J(s)}
+      =-\sum_{j\in J}D_{a_j,\gamma_j}(s),
+      \qquad
+      D_{a,\gamma}(s)+D_{a,\gamma}(1-s)=0.
+      \]
+\end{enumerate}
+\end{theorem}
+
+The word ``isolated'' in the Weil clause is essential.  We compute the
+quadratic block contributed by the inserted finite divisor.  We do not
+assert, without additional separation hypotheses, that adding this block
+to the unknown full zeta form increases its global negative index by
+exactly \(2|J|\).  Bombieri's global finite-truncation result has its own
+hypotheses \cite{Bombieri2000}.
+
+\subsection{What the theorem decides}
+
+The theorem rules out a specific inference:
+\[
+\begin{split}
+&\text{positive Euler source}
++\text{Riemann reflection}
++\text{Schwarz reality}\\
+&\qquad
++\text{entire hypertranscendental completion}
++\text{positive first Julia normal derivative}\\
+&\hspace{45mm}\not\Longrightarrow
+\text{zeros on the critical line}.
+\end{split}
+\]
+This closes the possible loophole created by squaring the original normal
+coordinate.  The pre-scalar, first-order sign is present and strict, but it
+measures transverse divisor mass with the non-excluding polarity.
+
+The conclusion is also narrower than a no-go theorem for the full
+Connes--Consani--Moscovici or Hilbert--P\'olya programs.  Those programs
+seek genuinely global operator limits and use the discreteness of the
+ordinary primes.  The result here proves a no-go theorem for every
+criterion invariant under the positive continuous Euler surgeries of
+\cref{thm:main}.  It identifies exactly which data are surgery-blind and
+which integer records the defect.  It does not claim that full CCM or
+Hilbert--P\'olya constructions are surgery invariant.
+
+\section{Positive generalized-prime realization}
+\label{sec:euler}
+
+\subsection{Prime powers and M\"obius inversion}
+
+For a function \(p\) on \([0,\infty)\), define
+\[
+ (Tp)(u)=\sum_{n\geq1}\frac1{n^2}p(u/n).
+\]
+This is the logarithmic-coordinate prime-power transform.  Its formal
+Dirichlet inverse is
+\[
+ (T^{-1}g)(u)
+ =\sum_{n\geq1}\frac{\mu(n)}{n^2}g(u/n),
+\]
+where \(\mu\) is the ordinary M\"obius function.
+
+The positivity of this inverse is not automatic.  The following
+elementary criterion is useful.
+
+\begin{lemma}[Monotone M\"obius positivity]
+\label{lem:mobius}
+If \(g:[0,\infty)\to[0,\infty)\) is nondecreasing, then
+\[
+ (T^{-1}g)(u)
+ \geq\left(2-\frac{\pi^2}{6}\right)g(u)\geq0
+ \qquad (u\geq0).
+\]
+Whenever the defining series are absolutely convergent,
+\(T(T^{-1}g)=g\).
+\end{lemma}
+
+\begin{proof}
+The \(n=1\) term is \(g(u)\).  For \(n\geq2\),
+\(0\leq g(u/n)\leq g(u)\), and therefore
+\[
+ \left|
+ \sum_{n\geq2}\frac{\mu(n)}{n^2}g(u/n)
+ \right|
+ \leq g(u)\sum_{n\geq2}\frac1{n^2}
+ =\left(\frac{\pi^2}{6}-1\right)g(u).
+\]
+The lower bound follows.  Exact inversion is the identity
+\[
+ \sum_{d\mid n}\mu(d)=
+ \begin{cases}
+ 1,&n=1,\\
+ 0,&n>1,
+ \end{cases}
+\]
+after an absolutely convergent rearrangement.
+\end{proof}
+
+\subsection{The quartet density}
+
+Put
+\[
+ \phi_{a,\gamma}(u)
+ =\cosh(u/2)-\cosh(au)\cos(\gamma u)
+ =\cosh(u/2)-\re\cosh((a+i\gamma)u).
+\]
+For \(u>0\), define the prime-power logarithmic density
+\[
+ g_{a,\gamma}(u)
+ =\frac{4e^{u/2}}{u}\phi_{a,\gamma}(u),
+ \qquad
+ g_{a,\gamma}(0)=0.
+\]
+
+\begin{lemma}[Disc convexity]
+\label{lem:convexity}
+If \(a^2+\gamma^2\leq1/4\), then
+\(\phi_{a,\gamma}\) is convex on \([0,\infty)\),
+\(\phi_{a,\gamma}(0)=0\), and
+\[
+ u\longmapsto g_{a,\gamma}(u)
+\]
+is nonnegative and nondecreasing.
+\end{lemma}
+
+\begin{proof}
+Let \(w=a+i\gamma\), so \(|w|\leq1/2\).  Differentiating twice gives
+\[
+ \phi_{a,\gamma}''(u)
+ =\frac14\cosh(u/2)-\re\!\left(w^2\cosh(wu)\right).
+\]
+For \(u\geq0\),
+\[
+ \re\!\left(w^2\cosh(wu)\right)
+ \leq |w|^2|\cosh(wu)|
+ \leq\frac14\cosh(|w|u)
+ \leq\frac14\cosh(u/2).
+\]
+Thus \(\phi''\geq0\).  Convexity and
+\(\phi(0)=0\) imply that \(\phi(u)/u\) is nonnegative and nondecreasing
+for \(u>0\).  Multiplication by the positive nondecreasing factor
+\(4e^{u/2}\) proves the claim.
+\end{proof}
+
+Define the genuine prime density
+\[
+ p_{a,\gamma}(u)
+ =\sum_{n\geq1}\frac{\mu(n)}{n^2}
+     g_{a,\gamma}(u/n).
+\]
+
+\begin{proposition}[One-quartet source]
+\label{prop:source}
+Under the hypotheses of \cref{lem:convexity}, with \(a,\gamma>0\),
+the function \(p_{a,\gamma}\) is measurable, nonnegative, and integrable
+on every compact interval.  Moreover
+\[
+ Tp_{a,\gamma}=g_{a,\gamma}.
+\]
+\end{proposition}
+
+\begin{proof}
+Measurability follows termwise.  Nonnegativity is
+\cref{lem:mobius}.  On a compact interval \([0,A]\), monotonicity gives
+a uniform summable majorant proportional to
+\(\sum n^{-2}g_{a,\gamma}(A)\), proving local integrability.
+Absolute convergence also justifies M\"obius inversion.
+\end{proof}
+
+For the finite packet, set
+\[
+ p_J=\sum_{j\in J}p_{a_j,\gamma_j},
+ \qquad
+ g_J=\sum_{j\in J}g_{a_j,\gamma_j}.
+\]
+Finite addition preserves every conclusion of
+\cref{prop:source}, and \(Tp_J=g_J\).
+
+\subsection{Laplace transform and the rational gauge}
+
+For \(\re s>1\), direct integration gives
+\[
+\begin{aligned}
+D_{a,\gamma}(s)
+&=\int_0^\infty e^{-su}\,u g_{a,\gamma}(u)\dd u\\
+&=2\left(\frac1{s-1}+\frac1s\right)
+ -\sum_{\epsilon,\eta\in\{\pm1\}}
+  \frac1{s-\frac12-\epsilon a-i\eta\gamma}.
+\end{aligned}
+\]
+The first line shows that \(D_{a,\gamma}\) is generated by a
+nonnegative generalized von Mangoldt correction.  The second gives two
+exact identities:
+\[
+ D_{a,\gamma}(s)+D_{a,\gamma}(1-s)=0,
+ \qquad
+ \frac{R_{a,\gamma}'(s)}{R_{a,\gamma}(s)}
+ =-D_{a,\gamma}(s).
+\]
+Summing over \(J\) proves the source-to-gauge clauses of
+\cref{thm:main}.
+
+\begin{remark}[Relation to known Beurling counterexamples]
+Positive continuous generalized-prime systems with off-line zeros are
+known.  For example, Debruyne, Diamond, and Vindas use a continuous prime
+measure whose zeta function is
+\[
+ \frac{(s-1)^2+1}{(s-1)^2},
+\]
+with zeros at \(1\pm i\) \cite[Example~4.3]{DebruyneDiamondVindas2018}.
+The contribution here is not the bare existence of an off-line Beurling
+zero.  It is the arbitrary finite FE--Schwarz packet realization, its
+exact source-to-gauge identity, the first Julia orientation law, and the
+common Euler--Ward--Weil index.
+\end{remark}
+
+\section{Completion and pole budget}
+\label{sec:completion}
+
+\subsection{Reflection, Schwarz symmetry, and hypertranscendence}
+
+The root multiset of \(q_{a,\gamma}\) is invariant under
+\(s\mapsto1-s\) and conjugation.  Hence
+\[
+ q_{a,\gamma}(1-s)=q_{a,\gamma}(s),\qquad
+ q_{a,\gamma}(\overline{s})
+ =\overline{q_{a,\gamma}(s)}.
+\]
+It follows immediately that \(X_J\) is entire and has the same two
+symmetries.
+
+\begin{proposition}[Prime-shift obstruction for the completed function]
+\label{prop:xiht}
+The completed Riemann function \(\xi\) is hypertranscendental over
+\(\C(s)\).
+\end{proposition}
+
+\begin{proof}
+Write \(L=\xi'/\xi\).  On \(\re s>1\), the Gamma recurrence and the Euler
+series give the exact shift defect
+\[
+\begin{aligned}
+L(s+2)-L(s)
+&-\left(\frac1{s+2}+\frac1{s+1}-\frac1{s-1}\right)\\
+&=\sum_{n\geq1}
+ \frac{\Lambda(n)(1-n^{-2})}{n^s}
+ =:V(s).
+\end{aligned}
+\]
+The coefficient of \(p^{-s}\) is
+\(\log p\,(1-p^{-2})\neq0\) at every prime \(p\), while the support is
+contained in the prime powers.  Ostrowski's Dirichlet-series theorem
+therefore implies that \(V\) is hypertranscendental over \(\C(s)\)
+\cite{Ostrowski1920}; modern difference--differential versions apply as
+well \cite{Nagoshi2016}.
+
+If \(\xi\) were differentially algebraic over \(\C(s)\), then so would be
+\(L=\xi'/\xi\).  Translation \(s\mapsto s+2\) preserves differential
+algebraicity over \(\C(s)\), and the displayed rational correction is
+differentially algebraic.  The left side would make \(V\)
+differentially algebraic, a contradiction.
+\end{proof}
+
+Multiplication by a nonzero polynomial preserves hypertranscendence:
+if \(P\xi\) satisfied an algebraic differential equation over \(\C(s)\),
+the identities obtained by differentiating \(\xi=(P\xi)/P\) would make
+\(\xi\) differentially algebraic.  Consequently \(X_J\) is
+hypertranscendental.
+
+This point matters for route selection.  The completed function is
+hypertranscendental because a two-step translation exposes infinitely many
+prime frequencies.  Yet the same obstruction survives every finite
+off-critical packet in \cref{thm:main}.  Differential-algebraic complexity
+therefore detects the infinite prime source while remaining blind to
+finite horizontal divisor surgery.
+
+\subsection{Exact pole order}
+
+At \(s=1\),
+\[
+ q_{a,\gamma}(1)
+ =\left(\left(\tfrac12-a\right)^2+\gamma^2\right)
+  \left(\left(\tfrac12+a\right)^2+\gamma^2\right)>0.
+\]
+Therefore each \(R_{a,\gamma}\) has a pole of order exactly two at
+\(s=1\).  Products add meromorphic orders:
+\[
+ \ord_{1}R_J=-2|J|.
+\]
+Since \(\zeta\) has a simple pole at \(1\),
+\[
+ \ord_{1}F_J=-(1+2|J|).
+\]
+We call
+\[
+ \Delta\ord_1(F_J)=2|J|
+\]
+the pole-order excess of the packet.
+
+The completion identity is
+\[
+ \frac12[s(s-1)]^{2|J|+1}
+   \pi^{-s/2}\Gamma(s/2)F_J(s)
+ =X_J(s).
+\]
+Thus the higher pole is not an artefact hidden outside the completion:
+it is exactly the linear budget paid to insert the finite divisor while
+retaining positivity and reflection.
+
+\section{Reciprocal-square Cauchy polarization}
+\label{sec:orientation}
+
+Use the centered spectral coordinate
+\[
+ A=\gamma-ia
+\]
+for the upper-right zero \(\frac12+a+i\gamma\).  The critical line is
+the real axis in this coordinate.  For a Cauchy probe \(z\in\C\), define
+the contribution of a spectral point \(A\) by
+\[
+ \tau_z(A)
+ =-\frac{\im(A^{-2})}{|A-z|^2}
+ =\frac{2(\re A)(\im A)}
+ {|A|^4|A-z|^2}.
+\]
+Although this reader uses the reciprocal square, taking its imaginary
+polarization retains a signed transverse factor.  It is a secondary check
+on whether the later Cauchy scalarization reverses the first Julia
+orientation.
+
+For the orbit
+\(\{A,\overline A,-A,-\overline A\}\), put
+\[
+\begin{aligned}
+V_z(A)
+={}&
+\frac{(\re A)^2(\im A)^2(|A|^2+|z|^2)}
+{|A|^4
+ |A-z|^2|\overline A-z|^2
+ |A+z|^2|\overline A+z|^2}.
+\end{aligned}
+\]
+At regular probes all denominators are nonzero, and \(V_z(A)\geq0\).
+
+\begin{proposition}[Universal quartet orientation identity]
+\label{prop:orientation}
+For every regular \(A,z\),
+\[
+ \tau_z(A)+\tau_z(\overline A)+\tau_z(-A)+\tau_z(-\overline A)
+ =64(\re z)(\im z)V_z(A).
+\]
+Moreover \(V_z(A)=0\) if and only if
+\(\re A=0\) or \(\im A=0\).
+\end{proposition}
+
+\begin{proof}
+Substituting the displayed rational formula for \(\tau_z\), putting the
+four terms over a common denominator, and collecting the numerator gives
+the identity.  Every denominator factor is strictly positive at a regular
+probe.  The numerator of \(V_z(A)\) is
+\[
+ (\re A)^2(\im A)^2(|A|^2+|z|^2).
+\]
+Since \(A\neq0\), the vanishing statement follows.
+\end{proof}
+
+For \(A_j=\gamma_j-ia_j\), both coordinates are nonzero.  If
+\(\re z,\im z>0\), \cref{prop:orientation} gives
+\[
+ \OO_J(z)
+ =64(\re z)(\im z)\sum_{j\in J}V_z(A_j)>0.
+\]
+Thus the reciprocal-square polarization has the same positive defect
+polarity as the first Julia derivative below.  Its strict positivity is
+unconditional, but it detects the presence of an off-critical quartet.
+A zero-exclusion argument based on a nonpositive response would require
+the opposite inequality \(\OO_J(z)\leq0\).  The source-positive examples
+show that such an inequality cannot follow from the preserved data.
+
+\section{The first Julia derivative and Ward charge}
+\label{sec:ward}
+
+For \(c=a+\frac12>0\), the squared modulus of the phase introduced before
+\cref{thm:main} is
+\[
+ |\Phi_t(\alpha)|^2
+ =\prod_{\eta\in\{\pm1\}}
+ \frac{(c-\alpha)^2+(t+\eta\gamma)^2}
+      {(c+\alpha)^2+(t+\eta\gamma)^2}.
+\]
+For every \(\alpha\geq0\), each Cayley factor is contractive.  Direct
+differentiation at the undeformed face gives
+\[
+\begin{aligned}
+\left.\frac{\partial}{\partial\alpha}
+ (1-|\Phi_t(\alpha)|^2)\right|_{\alpha=0}
+ &=
+ \frac{4c}{c^2+(t+\gamma)^2}
+ +\frac{4c}{c^2+(t-\gamma)^2}.
+\end{aligned}
+\]
+This is the first derivative in the normal aperture.  No squaring of
+\(\alpha\), zero divisor, or explicit-formula test function enters the
+calculation.
+
+The strict-right upper Schwarz pair of one quartet has the edge response
+\[
+\mathcal R_{a,\gamma}(w)
+=2\left(
+\frac1{w+a+i\gamma}
++\frac1{w+a-i\gamma}
+\right).
+\]
+On the Euler edge \(w=\frac12+it\), define the infinitesimal Ward density
+\[
+\begin{aligned}
+\omega_{a,\gamma}(t)
+=2\bigg[
+&\frac{2(a+\frac12)}
+ {(a+\frac12)^2+(t+\gamma)^2}\\
+&+\frac{2(a+\frac12)}
+ {(a+\frac12)^2+(t-\gamma)^2}
+\bigg].
+\end{aligned}
+\]
+It is twice the real part of \(\mathcal R_{a,\gamma}\) on that edge and
+is pointwise positive.  The preceding calculation proves that it is
+exactly the Julia phase-defect derivative:
+\[
+ \omega_{a,\gamma}(t)
+ =\left.\partial_\alpha
+   (1-|\Phi_t(\alpha)|^2)\right|_{\alpha=0}.
+\]
+
+\begin{proposition}[Ward quantization]
+\label{prop:ward}
+For every \(a>-\frac12\) and every \(\gamma\in\R\),
+\[
+ \int_{-\infty}^{\infty}\omega_{a,\gamma}(t)\dd t=8\pi.
+\]
+Consequently
+\[
+ Q_{\mathrm{Julia}}(J)
+ :=\sum_{j\in J}\int_{\R}
+ \left.\partial_\alpha
+   (1-|\Phi_{j,t}(\alpha)|^2)\right|_{\alpha=0}\dd t
+ =8\pi|J|.
+\]
+\end{proposition}
+
+\begin{proof}
+Each shifted Lorentzian has integral
+\[
+ \int_{-\infty}^{\infty}
+ \frac{2c}{c^2+(t-b)^2}\dd t=2\pi
+ \qquad(c>0).
+\]
+There are two such terms and one outer factor \(2\).
+\end{proof}
+
+The charge is independent of height and horizontal displacement.  It
+counts the orbit, but by itself supplies no upper bound and no vanishing
+theorem.  Crucially, the failure occurs already at the unsquared first
+normal derivative: later scalarization does not create the wrong polarity.
+Its significance emerges after comparison with pole budget and Weil block.
+
+\section{The isolated Weil packet block}
+\label{sec:weil}
+
+For centered divisor coordinate \(w=\rho-\frac12\), the zero side of
+Weil's form contains products of transform values at \(w\) and \(-w\).
+The finite-dimensional algebra attached to one symmetry orbit has three
+types.
+
+\begin{itemize}
+\item A critical pair \(\{i\gamma,-i\gamma\}\) gives
+      \(2(X^2+Y^2)\), which is positive semidefinite.
+\item A real pair \(\{a,-a\}\) gives \(2XY\), of signature \((1,1)\).
+\item A generic quartet
+      \(\{w,-w,\overline w,-\overline w\}\) gives
+      \[
+      4(Z_1W_1-Z_2W_2),
+      \]
+      of signature \((2,2)\).
+\end{itemize}
+
+The last assertion is transparent from
+\[
+\begin{aligned}
+4(Z_1W_1-Z_2W_2)
+={}&(Z_1+W_1)^2-(Z_1-W_1)^2\\
+&-(Z_2+W_2)^2+(Z_2-W_2)^2.
+\end{aligned}
+\]
+It is nonnegative on the two-plane
+\((W_1,W_2)=(Z_1,-Z_2)\) and negative definite on
+\((W_1,W_2)=(-Z_1,Z_2)\).
+
+Thus one generic quartet has isolated packet-block negative index two.
+For \(|J|\) independent orbit blocks,
+\[
+ \WW_J=\bigoplus_{j\in J}\WW_j,
+ \qquad
+ \operatorname{signature}(\WW_J)=(2|J|,2|J|),
+ \qquad
+ \indm(\WW_J)=2|J|.
+\]
+
+This is the local algebra behind Bombieri's theorem that, if RH has only
+finitely many exceptions, sufficiently large truncations of the global
+Weil form have one negative eigenvalue for every two exceptional zeros
+\cite{Bombieri2000}.  Our use of it is deliberately packetwise and does
+not import a global index-additivity assertion.
+
+\section{The Julia--Euler--Weil law}
+\label{sec:index}
+
+Combining \cref{sec:completion,sec:ward,sec:weil} gives the central
+identity.
+
+\begin{theorem}[Julia--Euler--Weil packet index]
+\label{thm:index}
+For every finite packet in \cref{thm:main},
+\[
+\frac{Q_{\mathrm{Julia}}(J)}{4\pi}
+=\Delta\ord_1(F_J)
+=\indm(\WW_J)
+=2|J|.
+\]
+\end{theorem}
+
+\begin{proof}
+\Cref{prop:ward} gives
+\(Q_{\mathrm{Julia}}/(4\pi)=2|J|\).
+The exact order calculation gives
+\(\Delta\ord_1=2|J|\).
+The generic-orbit diagonalization gives
+\(\indm(\WW_J)=2|J|\).
+\end{proof}
+
+The identity is a finite-divisor index theorem.  Its three entries have
+different origins:
+\[
+\begin{array}{c|c|c}
+\text{language}&\text{object}&\text{integer}\\ \hline
+\text{Euler source}&\text{pole at }s=1&2|J|\\
+\text{Julia boundary}&\text{normal defect current}&Q/(4\pi)=2|J|\\
+\text{explicit formula}&\text{generic Weil blocks}&\indm=2|J|.
+\end{array}
+\]
+The polarized Cauchy response in \cref{sec:orientation} supplies a fourth,
+non-quantized reading: it is a strictly positive weighted version of the
+same orbit census.
+
+\section{A surgery obstruction for RH criteria}
+\label{sec:nogo}
+
+Let a \emph{positive Euler quartet surgery} mean multiplication of a
+zeta function by one of the rational factors \(R_{a,\gamma}\) under the
+disc condition \(a^2+\gamma^2\leq1/4\), together with multiplication of
+its entire completion by \(q_{a,\gamma}\).
+
+\begin{definition}
+A predicate \(\mathcal P\) on a generalized Euler source and its completed
+function is \emph{packet-surgery invariant} if
+\(\mathcal P\) remains true after every finite positive Euler quartet
+surgery.
+\end{definition}
+
+\begin{corollary}[Surgery no-go]
+\label{cor:nogo}
+No packet-surgery-invariant predicate that holds for the Riemann source
+and completion can imply that all zeros of the completion lie on the
+critical line.
+\end{corollary}
+
+\begin{proof}
+Apply one nonempty surgery from \cref{thm:main}.  Invariance preserves
+\(\mathcal P\), while the new completion has the four prescribed
+off-critical zeros.
+\end{proof}
+
+The force of the corollary depends on which properties are invariant or
+survive the surgery.  The theorem proves this simultaneously for:
+\[
+\begin{gathered}
+\text{nonnegative locally finite continuous generalized-prime source},\\
+\text{exact source-to-logarithmic-derivative identity},\\
+\text{Riemann reflection and Schwarz reality},\qquad
+\text{entire completion},\\
+\text{hypertranscendence over }\C(s),\qquad
+\text{strictly positive first Julia normal derivative}.
+\end{gathered}
+\]
+Accordingly, no conjunction of these data can supply zero exclusion.
+
+Pole order is not invariant: every generic quartet costs exactly two
+units.  This is the sharp boundary exposed by the index law.  Within this
+finite positive-surgery class, retaining a simple pole at \(s=1\) forbids
+every nonempty insertion.  That statement is a rigidity theorem for the
+deformation class, not a proof of RH for the undeformed zeta function.
+It does, however, locate the missing information precisely: a successful
+source argument must use a feature not stable under continuous positive
+Euler surgery, such as the exact simple-pole normalization coupled to the
+discrete atomic arithmetic source.
+
+\section{Relation to current RH programs}
+
+Weil's criterion is global: positivity for the full test-function class is
+equivalent to RH \cite{Weil1952}.  Bombieri's variational and index
+analysis makes the negative directions caused by finitely many exceptions
+quantitative \cite{Bombieri2000,Bombieri2003}.  Suzuki's screw-function
+framework gives a continuous-kernel realization of localized Weil forms
+and relates them to self-adjoint extensions \cite{Suzuki2026}.
+Connes, Consani, and Moscovici construct finite-prime self-adjoint
+operators whose observed spectra approximate low zeta zeros; proving the
+required global convergence would establish RH \cite{CCM2025}.
+
+\Cref{thm:index} does not contradict those programs.  It separates two
+logical levels.
+
+\begin{enumerate}
+\item At finite divisor level, Julia--Ward charge, Euler pole budget, and the
+      generic Weil signature are the same defect integer.  Re-encoding one
+      as another cannot create a vanishing theorem.
+\item A global spectral proof must control a limit that is not invariant
+      under the continuous positive Euler surgeries constructed here.
+      In particular, it must retain arithmetic information beyond
+      reflection, positivity, hypertranscendence, and finite divisor
+      orientation.
+\end{enumerate}
+
+Connes and Consani already show that a tempting placewise sign inequality
+does not hold in general and emphasize the role of global Poisson
+normalization \cite{ConnesConsani2021}.  The present result gives a
+complementary divisor-level mechanism: the one-sided normal sign exists,
+but positive Euler sources realize it with the off-critical polarity.
+
+\section{Scope and conclusion}
+
+Four scope boundaries are part of the theorem.
+
+\begin{enumerate}
+\item The index and first-Julia-orientation laws hold for every finite
+      generic quartet packet in the open critical strip.  Finiteness is
+      essential to the present theorem.
+\item The nonnegative generalized-prime realization is continuous, not a
+      Beurling prime sequence, and is asserted on the centered closed disc
+      \(a^2+\gamma^2\leq1/4\), where M\"obius inversion is positive by the
+      monotonicity criterion.
+\item The Weil index is the exact signature of the isolated inserted
+      packet block, not an unconditional global index difference for the
+      unknown zeta divisor.
+\item The theorem is a no-go for packet-surgery-invariant criteria, not
+      for every possible CCM, trace-formula, or Hilbert--P\'olya
+      construction.
+\end{enumerate}
+
+Within those boundaries, the orientation problem is closed.  Squaring the
+normal coordinate can erase transverse sign, but restoring the unsquared
+first derivative does not force the critical line.  Every source-positive
+off-critical quartet has a strict positive Julia response before
+scalarization.  Its geometric charge, Euler pole price, and Weil block
+index are locked by
+\[
+ \frac{Q_{\mathrm{Julia}}}{4\pi}
+ =\Delta\ord_1
+ =\indm(\WW_{\mathrm{packet}}).
+\]
+The equality identifies a universal finite-surgery defect invariant.
+Any RH proof operating in these languages must introduce a selector that
+breaks positive Euler quartet surgery; merely preserving more faithfully
+the orientation already present cannot suffice.
+
+\begin{thebibliography}{99}
+
+\bibitem{Bombieri2000}
+E. Bombieri,
+\newblock Remarks on Weil's quadratic functional in the theory of prime
+numbers, I,
+\newblock \emph{Rend. Lincei Mat. Appl.} \textbf{11} (2000), 183--233.
+
+\bibitem{Bombieri2003}
+E. Bombieri,
+\newblock A variational approach to the explicit formula,
+\newblock \emph{Comm. Pure Appl. Math.} \textbf{56} (2003), 1151--1164.
+
+\bibitem{CCM2025}
+A. Connes, C. Consani, and H. Moscovici,
+\newblock Zeta spectral triples,
+\newblock arXiv:2511.22755 (2025).
+
+\bibitem{ConnesConsani2021}
+A. Connes and C. Consani,
+\newblock Weil positivity and trace formula, the archimedean place,
+\newblock \emph{Selecta Math.} \textbf{27} (2021), Article 77.
+
+\bibitem{DebruyneDiamondVindas2018}
+G. Debruyne, H. G. Diamond, and J. Vindas,
+\newblock \(M(x)=o(x)\) estimates for Beurling numbers,
+\newblock \emph{J. Th\'eor. Nombres Bordeaux} \textbf{30} (2018),
+469--483.
+
+\bibitem{HilberdinkLapidus2006}
+T. W. Hilberdink and M. L. Lapidus,
+\newblock Beurling zeta functions, generalised primes, and fractal
+membranes,
+\newblock \emph{Acta Appl. Math.} \textbf{94} (2006), 21--48.
+
+\bibitem{Nagoshi2016}
+H. Nagoshi,
+\newblock Hypertranscendence of \(L\)-functions for
+\(\mathrm{GL}_m(\mathbb A_{\mathbb Q})\),
+\newblock \emph{Bull. Aust. Math. Soc.} \textbf{93} (2016), 388--399.
+
+\bibitem{Ostrowski1920}
+A. Ostrowski,
+\newblock \"Uber Dirichletsche Reihen und algebraische
+Differentialgleichungen,
+\newblock \emph{Math. Z.} \textbf{8} (1920), 241--298.
+
+\bibitem{Suzuki2026}
+M. Suzuki,
+\newblock Weil's quadratic form via the screw function,
+\newblock arXiv:2606.09096 (2026).
+
+\bibitem{Weil1952}
+A. Weil,
+\newblock Sur les ``formules explicites'' de la th\'eorie des nombres
+premiers,
+\newblock \emph{Medd. Lunds Univ. Mat. Sem.} (1952), 252--265.
+
+\end{thebibliography}
+
+\end{document}

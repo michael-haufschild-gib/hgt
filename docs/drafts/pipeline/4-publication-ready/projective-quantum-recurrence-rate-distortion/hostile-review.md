@@ -1,242 +1,280 @@
 # Hostile editorial and referee review
 
-Manuscript: **“An information law for quantum recurrence”**  
-Review date: 2026-07-28  
+Manuscript: **“A universal information law for quantum return”**
+Review date: 2026-07-28
 Standard: *Nature* editorial criteria and a hostile mathematical-physics
 referee.
 
 ## Executive verdict
 
-**Editorial gate: SEND TO EXTERNAL REVIEW.**  
-**Acceptance claim: impossible before independent peer review.**  
-**Confidence: moderate, not high.**
+**Technical verdict: survives claim-level review.**
+**Specialist-journal verdict: external review warranted.**
+**Nature editorial verdict: borderline; desk rejection remains more likely
+than acceptance.**
 
-The revision crosses the threshold that the earlier specialist manuscript did
-not. It reports one arresting, interdisciplinary conclusion:
+The revision has a materially stronger mathematical centre. One scalar
+reverse-water entropy now controls:
 
 ```text
-the information that a quantum return must synchronize is selected
-by reverse water filling in weight space and by connected components
-in observer space.
+exact negative log return-target volume
+  + log least deadline valid for every compatible finite spectrum
+  + the parallel-Gaussian rate–distortion program.
 ```
 
-The paper gives a finite Haar-quantile theorem and a deterministic
-selected-support ceiling, not a metaphor; answers a current quantitative
-recurrence question; includes mixed-state/observable and arbitrary pure-point
-extensions; and supplies a current experimental
-discriminator. It no longer relies on formal verification, AI authorship, or
-cosmological rhetoric for significance.
+The true target has a constructive positive-volume inner box and an explicit
+upper envelope. This fixes nonvacuity, removes the earlier “exact Haar
+quantile” overstatement, and makes all support-size remainders visible. The
+paper also gives an exact local onsite-field spin-ensemble realization,
+Hilbert–Schmidt- and operator-normalized expectation-probe bounds, a sharp
+operator-to-Hilbert–Schmidt dimension conversion, calibration robustness and
+an analytic coherent-device-window certificate,
+and upgrades the infinite section from a zero-set identity to genuine
+recurrence for every nonnegative summable countable phase packet. A further
+audit caught the distinction between an immediate near-hit and post-exit
+recurrence; the paper now proves a return after every prescribed delay.
 
-This remains a high-risk *Nature* submission. The two strongest mathematical
-objections in the previous review have been materially reduced: the lower law
-now controls a full Haar recurrence quantile rather than one adversarial
-spectrum, and the constructive remainder now scales with selected rather than
-ambient support. A desk rejection remains plausible if editors reject Haar
-spectral ensembles as insufficiently physical, require data, or view the
-water-filling correspondence as an elegant mathematical synthesis rather than
-a broad physical discovery.
+Those are real advances. They do not by themselves guarantee *Nature*’s
+“outstanding scientific importance” threshold. The remaining editorial risk
+is significance, not an identified mathematical gap.
 
 ## Nature criteria
 
 | Criterion | Hostile assessment | Verdict |
 |---|---|---|
-| Original research | Exact-object search found no prior theorem joining a fixed-weight Haar quantile, a spectrum-uniform exact selected-support product with exact tail cost, and the full-support reverse-water law. Observer-union graph deadline also appears distinct. | Pass, subject to independent novelty search |
-| Outstanding scientific importance | Determines what information controls quantitative recurrence and directly sharpens a June 2026 PRL frontier. Importance is fundamental rather than technological. | Narrow pass |
-| Interdisciplinary conclusion | Joins quantum dynamics, information theory, graph topology and Diophantine approximation through exact theorems. | Pass |
-| Novel and arresting | “Quantum return obeys the water-filling mathematics of lossy compression” is surprising and precise. | Pass |
-| Immediate implications | Gives a preparation/probe protocol for multiqubit and observable-selective recurrence platforms. | Pass, theoretical |
-| Far-reaching implications | Applies to every finite weighted phase packet and every finite observer family; exact identity extends to arbitrary summable pure-point spectra. | Pass within closed unitary scope |
-| Readability | 2,600-word main text, one explanatory figure, explicit theorem boxes, distinctions from coding and continuous spectra. | Pass |
-| Technical validity | Main and supplementary arguments are dependency-closed; internal theorem audit and final module build pass. | Pass |
+| Original research | Exact-object search found no prior two-sided true target-volume law joined to the same minimax deadline and Gaussian water functional. Absence from literature cannot be proved internally. | Candidate pass |
+| Outstanding scientific importance | Answers a foundational quantitative recurrence question, but the result concerns ideal closed pure-point dynamics and has no data or many-body scaling demonstration. | Borderline |
+| Interdisciplinary conclusion | Exact bridge among quantum recurrence, rate–distortion geometry, graph topology and Diophantine approximation. | Pass |
+| Novel and arresting | “Quantum return-target information obeys reverse water filling” is concise and mathematically precise. | Pass |
+| Immediate implications | Gives an exact randomized onsite-field protocol, finite falsification inequalities for calibrated Floquet systems, both standard probe normalizations and a coherent-window certificate. No experimental data accompany it. | Narrow pass |
+| Far-reaching implications | Universal over finite packets, finite observer families and summable countable pure-point phase energy; excludes open and continuous-spectrum dynamics. | Pass within scope |
+| Readability | Central theorem now precedes corollaries; quantifiers and ensemble interpretation are explicit. | Pass after production audit |
+| Technical validity | Every retained mathematical statement has an internal unconditional theorem and a paper proof. | Pass, pending final audit |
 
-## Strongest hostile objections
+## Resolution of prior and final-audit attacks
 
-### 1. “Haar-distributed eigenphases are not a natural Hamiltonian ensemble.”
+1. **Worst-spectrum minimax framing — fixed.**
+   The manuscript identifies minimax as a uniform class guarantee, not a
+   “typical Hamiltonian” prediction. The exact target-information law is now
+   the organizing theorem.
 
-This is the most serious scientific objection. Most experiments have one
-structured local Hamiltonian, not independent uniform eigenphases. The authors
-must not imply that the quantile predicts the first return of every natural
-model.
+2. **Nonvacuity — fixed.**
+   A positive-volume product box lies inside the true coherence target:
+   \[
+   (\sqrt2/\pi)^{r-1}e^{-\mathcal H_{\rm proj}}\leq\mu_w(\eta).
+   \]
 
-**Revision response:** The lower statement now reports the Haar measure of all
-phase packets returning through every finite horizon. It no longer extracts
-one adversarial example. The deterministic selected-support ceiling still
-holds for every phase packet, and the manuscript explicitly states that
-commensurate fixed spectra can return at the first clock. Programmable Floquet
-systems supply a direct ensemble interpretation; qutrit and graph results
-supply fixed-Hamiltonian consequences.
+3. **Hidden dimension — fixed as disclosure, not eliminated.**
+   Absolute errors depend explicitly on support size \(r\). The paper proves
+   the finite relative bound \( |I/\mathcal H-1|\leq R_r/\mathcal H \).
+   It no longer claims a dimension-free exact law.
 
-**Residual risk:** Moderate to high. A local random-matrix or experimentally
-calibrated ensemble corollary would strengthen journal fit, but is not required
-for validity.
+4. **Water narrative overreach — fixed.**
+   Reverse water filling is the exact continuous optimizer. The selected-tail
+   rounded product is labelled a certificate for prescribed \(S\), not the
+   jointly optimized discrete solution.
 
-### 2. “Reverse water filling is imported branding.”
+5. **“Exact Haar quantile” overstatement — fixed.**
+   The exact object is one-step target volume. The finite-horizon result is
+   explicitly a one-sided union bound; no independence or equality is claimed.
 
-The change of variables could be dismissed as a familiar convex optimizer
-with a fashionable name.
+6. **Artificial Haar ensemble — fixed for one explicit local family.**
+   Independent Haar onsite phases are realized exactly in the
+   single-excitation block of a Hermitian, particle-number-preserving local
+   spin Hamiltonian. Generic interacting local-Hamiltonian spectra are not
+   claimed to be Haar.
 
-**Revision response:** The novelty does not rest on recognizing the optimizer.
-The canonical pivot water scales control a full finite-horizon Haar quantile,
-while anisotropic allocations and explicit tail selection control a deadline
-for every spectrum. The paper explicitly denies an operational coding theorem
-and cites the older random-string recurrence/rate-distortion parent.
+7. **No experimental prediction — materially fixed, no data added.**
+   The paper gives a one-tick randomized local-field target-volume protocol,
+   a fixed-Hamiltonian recurrence protocol and the exact coherent-window
+   criterion. It still has no experimental dataset or numerical device study.
 
-**Residual risk:** Moderate. Referees may still judge the conjunction
-insufficiently deep for *Nature*.
+8. **Elementary ingredients — not removable by exposition.**
+   Haar invariance, box approximation, Cauchy–Schwarz and graph coboundaries
+   are classical. Novelty must reside in the common invariant and joined law.
+   An editor may still judge the synthesis too elementary for *Nature*.
 
-### 3. “The refined lower and upper functionals are not identical.”
+9. **Non-operational Hilbert–Schmidt metric — fixed dimension-honestly.**
+   Every Hilbert–Schmidt-normalized self-adjoint trace probe is bounded by
+   \(\sqrt{D^2/\lambda_a}\). Every operator-norm contraction is bounded by
+   \(\sqrt{dD^2/\lambda_a}\), with the corresponding calibration term. The
+   general matrix pairing attains the dimension conversion.
 
-The Haar budget is a pivot log-sum-exponential, whereas the constructive
-ceiling permits an arbitrary hard tail and anisotropic allocation. The
-revision does not prove a single two-sided equality between those refined
-objects.
+10. **Graph exponent lacked optimality — fixed by narrowing the claim.**
+    The exponent is claimed as the exact visible phase dimension used by the
+    universal guarantee, not as the first-return exponent of every graph or
+    fixed Hamiltonian. Graph-specific lower optimality is not claimed.
 
-**Revision response:** This asymmetry is forced by quantifiers and geometry.
-The Haar theorem counts a target population; the universal construction must
-protect against arbitrary unsynchronized tail phases, which costs twice their
-mass. The paper states the two exact laws together and retains the old
-two-sided minimax sandwich only as a coarse corollary. No equality of refined
-functionals is claimed.
+11. **Infinite result was not recurrence — fixed.**
+    Every nonnegative summable countable phase packet returns below every
+    positive total phase-energy resolution, with an explicit head–tail bound.
 
-**Residual risk:** Moderate. Editors may prefer one scalar invariant, but the
-revision has removed the misleading full-support-linear remainder from the
-headline theorem. Its exact selected-support product has no additive
-dimension remainder; only the displayed smooth envelope has a
-selected-cardinality rounding term.
+12. **Nature-level significance — improved, not logically provable.**
+    Technical universality is now strong. Editorial importance still depends
+    on independent novelty assessment and whether a theorem without data is
+    considered to have sufficiently immediate scientific consequences.
 
-### 4. “The graph theorem is an elementary matrix expansion plus Dirichlet.”
+13. **The base deadline was not exit-conditioned — fixed.**
+    The least universal deadline still means least positive near-hit, and is
+    labelled that way. A new theorem proves that for every packet and every
+    prescribed delay \(M\), a return occurs at
+    \(M<n\leq(M+1)T_w(\eta)\). If exit occurred by \(M\), this is a genuine
+    post-exit recurrence. The manuscript does not call \(T_w\) the first
+    post-exit recurrence time.
 
-Each ingredient is classical and the observer deadline has no matching lower
-bound for every graph.
+14. **Closest classical parents were under-cited — fixed.**
+    Kac’s trigonometric-sum value-distribution work and Gimeno–Sotoca’s
+    finite/countably-discrete mixed-state recurrence bounds are now cited.
+    Phase-space distribution, mixed-state recurrence and qualitative
+    countable recurrence are explicitly excluded from novelty.
 
-**Revision response:** The paper claims the joined exact identity, zero-set
-classification, exact coboundary rank and rank-sensitive deterministic
-deadline. It labels the deadline a guarantee, not an exact exponent for a
-fixed spectrum. The significance is universality over every finite family of
-states and observables and closure of a current open direction, not ingredient
-novelty.
+## Remaining attacks
 
-**Residual risk:** Moderate.
+### 1. The target law is not an exact equality
 
-### 5. “No experiment validates the proposed law.”
+The leading invariant is identified only within explicit \(O(r)\) constants.
+The relative bound resolves the high-information regime but not the regime
+\(\mathcal H_{\rm proj}\asymp r\). A referee may demand sharp asymptotics or an
+exact determinant/curvature formula.
 
-This is the strongest journal-fit objection. The paper cites experiments and a
-2026 blueprint but contributes no data or device simulation.
+**Response:** The paper states the finite constants and relative criterion
+without calling the law exact equality. This is a limitation, not a validity
+defect.
 
-**Revision response:** The contribution is a universal theoretical law with
-explicit finite constants. The manuscript gives a falsifiable protocol:
-prepare weights, choose an observer graph, and search the theorem’s finite
-horizon for the certified displacement. It does not pretend this is an
-experimental demonstration.
+### 2. Local transfer is explicit but not generic
 
-**Residual risk:** High for *Nature*, lower for *Nature Physics*, *PRX* or
-*Communications Physics*.
+The exact onsite-field realization defeats the literal “no local-Hamiltonian
+transfer” objection. A hostile reviewer can still say that a noninteracting,
+engineered single-excitation ensemble is far from a generic interacting local
+many-body Hamiltonian.
 
-### 6. “The finite, graph and infinite results are stitched together.”
+**Response:** Correct. No blanket Haar claim should be made. Cui et al.,
+<https://arxiv.org/abs/2510.08434>, prove that constant-local
+time-independent Hamiltonian evolution cannot form a unitary 2-design, which
+reinforces the need for ensemble-specific transfer. Their unitary-design
+no-go concerns a stronger and different object than this phase marginal.
 
-**Revision response:** They answer one hierarchy:
+### 3. Fixed-Hamiltonian certified horizons can still be useless
 
-1. how strongly visible phases must be resolved — water weights;
-2. which relative phases are visible — graph components;
-3. what exact return means without finite dimension — termwise pure-point
-   phase locking.
+\((Q+1)^{d-c(G)}\) can exceed coherence time by many orders of magnitude.
+The new device-window inequality detects this failure rather than curing it.
 
-The qutrit theorem shows why local timing information cannot replace that
-relational carrier.
+**Response:** The one-tick randomized onsite-field protocol avoids the long
+coherence horizon for testing target volume. Karimi et al.,
+<https://arxiv.org/abs/2508.13489>, analyze an \(N=5\) superconducting model
+with \(T_1\) around \(10\,\mu{\rm s}\) and few-microsecond experiments, but
+their study does not validate this paper's graph deadline. Device-specific
+feasibility still requires measured tick duration, graph rank, leakage,
+calibration error and shot noise.
 
-**Residual risk:** Low after revision.
+### 4. Graph theorem may look appended
 
-### 7. “The infinite theorem is not an infinite recurrence theorem.”
+The water theorem is about weighted pure-state target geometry; the graph
+theorem is an exact matrix expansion plus rank-sensitive Dirichlet bound.
 
-Correct. Continuous-spectrum or arbitrary infinite-spectrum recurrence is
-false without further compactness.
+**Response:** Both classify information that must synchronize, and the
+operational transfer now joins graph distance to measurable probes. A hostile
+editor may still prefer two specialist papers.
 
-**Revision response:** The manuscript calls it an identity and exact zero law,
-not a deadline. It states the finite/infinite boundary explicitly.
+### 5. “Universal” has a narrow physical domain
 
-**Residual risk:** None if wording is preserved.
+The theorem is universal over finite closed Floquet packets, finite observer
+families and summable countable pure-point phase energy. It says nothing about
+generic open systems, continuous spectra, thermodynamic limits or gravity.
 
-## Questions a referee would demand answered
+**Response:** The title and abstract must retain “quantum return,” not
+“the universe returns,” and the scope exclusions must remain prominent.
 
-1. **What is the exact quantifier order in the headline theorem?**  
-   Answered before Theorem 1: weights and accuracy fixed; the lower statement
-   measures phase packets hitting by a fixed horizon, while the upper statement
-   supplies one deadline valid for every phase packet; the return clock may
-   depend on the packet.
+### 6. Operator normalization is solved only with dimension cost
 
-2. **Is the Gaussian correspondence operational?**  
-   Answered: no; equality is between finite convex programs.
+The standard \(\|\sigma\|_{\rm op}\leq1\) convention is now covered, but the
+bound pays \(\sqrt d\) in amplitude. In large many-body sectors that factor
+may erase the practical advantage of reducing graph rank.
 
-3. **Can support alone reproduce the result?**  
-   Answered by the exact binary separation at the same half-trace-distance
-   tail scale.
+**Response:** The factor is explicit, and the general matrix-pairing
+conversion is attained. A lower-rank or locality-sensitive Schatten bound
+could improve specific probes, but no such structural hypothesis is present
+in the universal theorem.
 
-4. **Do mixed states add anything beyond convexity?**  
-   Answered: novelty is not mixed-state recurrence itself; it is the exact
-   observer-union phase energy, graph capacity and rank deadline.
+### 7. The post-delay theorem is not an exit-time estimate
 
-5. **What happens for infinite spectra?**  
-   Answered by the summable pure-point identity and zero law, with no false
-   continuous-spectrum deadline.
+The new law guarantees a later hit after a user-specified \(M\); it does not
+bound when a nonstationary system first exits, nor identify the first return
+after that exit.
 
-6. **Could entropy, state spectrum, speed or quantum Fisher information
-   replace the new carrier?**  
-   Answered by the explicit qutrit pair.
+**Response:** Correct. The manuscript claims existence and an explicit
+post-delay horizon only. Inverse speed limits and first-passage recurrence are
+separate questions.
 
-7. **How could the result fail experimentally?**  
-   In ideal calibrated unitary dynamics, absence of any recurrence satisfying
-   the graph bound inside its finite horizon contradicts the theorem’s model.
-   In a device, such failure instead measures violation of the closed-unitary
-   assumptions.
+### 8. Moderate-information sharpness remains weak
+
+When \(\mathcal H_{\rm proj}=O(r)\), the additive target-information remainder
+is of the same order as the leading term, and the lower information bound may
+be negative. The relative law is informative only when
+\(\mathcal H_{\rm proj}\gg r\).
+
+**Response:** This limitation is displayed, not hidden. Calling the result an
+exact equality or a dimension-free law would still be grounds for rejection.
+Finite-blocklength Gaussian dispersion does not solve it. The correct
+moderate-information object is the nonquadratic circular large-deviation rate
+of a weighted phasor sum; matching bounds for arbitrary weight arrays would
+be a separate major theorem.
+
+### 9. The Gaussian-compression bridge may be a category error
+
+A reviewer could object that modern “Gaussian lossy compression” refers to
+operational diffusion codes, rate–distortion–perception constraints or
+finite-blocklength source coding, whereas the recurrence theorem has no
+encoder, blocklength, excess-distortion probability, shared randomness or
+perception constraint.
+
+**Response:** The manuscript now cites all three adjacent literatures and
+states the exact boundary. Only the unconstrained finite
+parallel-Gaussian convex program is identified with the phase-tolerance
+optimization. Diffusion mechanisms, perfect realism, one-shot coding
+overheads, rate dispersion and perception-constrained generalized water
+levels are not transferred. None of those papers sharpens the target-volume
+remainder because their correction variables are absent from the recurrence
+problem.
 
 ## Immediate rejection conditions
 
-Reject if any of the following is found:
+Reject if:
 
-1. a prior source already proves the same fixed-weight pivot-resolved Haar
-   quantile together with the same selected-support ceiling;
-2. the claimed water optimizer is not the exact value of the stated program;
-3. Haar avoidance does not preserve the target measure under every power map;
-4. the observer distance includes cross terms omitted by the graph energy;
-5. the graph exponent counts invisible isolated sectors;
-6. the qutrit pair fails equality of density spectrum, speed, or SLD quantum
-   Fisher information;
-7. the text promotes the result to continuous spectra, open systems, black
-   holes, cosmology, or source coding.
+1. prior literature contains the same two-sided target-volume/minimax/water
+   theorem up to constants;
+2. the inner product box is not contained in the true fidelity target;
+3. the continuous water allocation is not globally optimal;
+4. the finite-horizon result is presented as an equality or independent-hit
+   law;
+5. Haar volume is presented as a universal physical spectral distribution;
+6. the selected-tail certificate is presented as the discrete joint optimum;
+7. the observer distance omits cross terms or its probe transfer fails;
+8. the infinite recurrence is promoted to continuous spectra or open systems;
+9. graph rank is presented as a lower first-return exponent for every fixed
+   Hamiltonian;
+10. cosmological, black-hole or information-loss conclusions are restored.
+11. the least positive near-hit deadline is called a first post-exit
+    recurrence time;
+12. operator-normalized control is stated without its explicit dimension
+    conversion, or trace-distance control is inferred;
+13. qualitative mixed-state or countable recurrence is presented as novel.
+14. an operational diffusion code, perception constraint or finite-blocklength
+    correction is attributed to the recurrence theorem.
 
-The internal claim trace and paper proofs currently defeat conditions 2–7.
-Condition 1 remains bibliographic and cannot be eliminated by internal proof.
-
-## Formal and production audit
-
-- Final build:
-  `lake build GaloisForLFunctions.RHTower.QuantumRecurrenceUniversality`
-  — passed, 8,969 jobs.
-- Load-bearing axiom audit: only `propext`, `Classical.choice`, and
-  `Quot.sound`.
-- New paper modules contain no `sorry`, `admit`, `axiom`, `opaque`, or
-  `unsafe`.
-- Repository-wide `scripts/formal_tools.py lint` still reports seven
-  pre-existing unrelated RHTower umbrella-reachability errors. None is in the
-  paper dependency surface; this is not reported as a lint pass.
-- Main and supplementary PDFs render without overflow or undefined
-  references.
-- No stale Lean or Lake process remains.
-- Submitted manuscript, supplement, cover letter, and popular summary do not
-  mention the internal formalization.
-- Language models are not listed as authors; use is disclosed under current
-  Nature Portfolio policy.
+The current mathematical trace defeats conditions 2–14. Condition 1 is
+bibliographic and remains externally reviewable.
 
 ## Final hostile conclusion
 
-The manuscript now satisfies the requested scientific criteria in the only
-defensible sense available before submission: it contains a candidate novel
-universal law, answers a live community question, has a broad information-
-theoretic and experimental interpretation, closes its stated finite and
-pure-point scope, and survives a claim-level hostile review.
+The paper now has a coherent, nonvacuous universal law and has fixed every
+identified correctness or framing defect. It is suitable for serious
+mathematical-physics review.
 
-It does **not** establish a cosmological discovery, prove that the universe
-repeats, or guarantee acceptance by *Nature*. Those claims would be false.
-The honest recommendation is **submit to Nature; expect a serious risk of
-editorial rejection; if rejected for breadth rather than correctness, target
-Nature Physics or PRX without weakening the theorem.**
+An honest antagonist cannot certify *Nature* acceptance. The likely reasons
+for desk rejection would be lack of data, restriction of the exact physical
+ensemble transfer to engineered onsite fields, potentially impractical
+fixed-Hamiltonian horizons, weak moderate-information sharpness, and a view
+that the ingredients are too elementary for the claimed breadth. A measured
+device demonstration, a transfer theorem for interacting local ensembles, or
+the exact circular large-deviation law would materially change that verdict;
+none follows from the present unconditional corpus.

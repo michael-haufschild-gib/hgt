@@ -21,7 +21,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 3629 | `formal/GaloisForLFunctions/HTGeometry/GammaDifferentialFE.lean` |
 | 3593 | `formal/GaloisForLFunctions/Bottcher/HDiscLoopDeck.lean` |
 | 3468 | `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean` |
-| 3388 | `formal/GaloisForLFunctions/RHTower.lean` |
+| 3425 | `formal/GaloisForLFunctions/RHTower.lean` |
 | 2721 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranch.lean` |
 | 2671 | `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean` |
 | 2627 | `formal/GaloisForLFunctions/RHTower/DpolyBallFloor.lean` |
@@ -29,7 +29,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 2586 | `formal/GaloisForLFunctions/HilbertMetric/GaussianJetPositivity.lean` |
 | 2546 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityNaturalBoundary.lean` |
 | 2516 | `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailPhaseAdaptedProuhetHalfLine.lean` |
-| 2404 | `formal/GaloisForLFunctions/HTGeometry.lean` |
+| 2429 | `formal/GaloisForLFunctions/HTGeometry.lean` |
 | 2377 | `formal/GaloisForLFunctions/RHTower/SoninCoupledPrimeArchGramTransfer.lean` |
 | 2369 | `formal/GaloisForLFunctions/U0/U0SliceViableA.lean` |
 | 2304 | `formal/GaloisForLFunctions/RHTower/SeamCongruence.lean` |

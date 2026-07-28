@@ -1,13 +1,18 @@
 import GaloisForLFunctions.RHTower.FiniteSpectralBlockRecurrenceLaw
 import GaloisForLFunctions.RHTower.FiniteQuantumObserverCoherenceLaw
 import GaloisForLFunctions.RHTower.FiniteQuantumObserverGraphRecurrenceBound
+import GaloisForLFunctions.RHTower.FiniteQuantumObserverOperationalRecurrence
+import GaloisForLFunctions.RHTower.FiniteQuantumObserverDeviceFeasibility
 import GaloisForLFunctions.RHTower.PurePointSpectralBlockRecurrenceLaw
 import GaloisForLFunctions.RHTower.PurePointQuantumObserverCoherenceLaw
+import GaloisForLFunctions.RHTower.SummablePurePointPhaseRecurrence
 import GaloisForLFunctions.RHTower.MixedStateQutritRecurrenceSeparation
 import GaloisForLFunctions.RHTower.MixedStateQuquartMomentRecurrenceSeparation
 import GaloisForLFunctions.RHTower.FiniteJetRecurrenceSeparation
 import GaloisForLFunctions.RHTower.ProjectiveWeightedFloquetRecurrence
 import GaloisForLFunctions.RHTower.ProjectiveWeightedHaarQuantileActiveSupport
+import GaloisForLFunctions.RHTower.ProjectiveWeightedTargetVolumeLower
+import GaloisForLFunctions.RHTower.LocalSpinPhaseEnsembleTransfer
 import GaloisForLFunctions.RHTower.ProjectiveOperationalEffectiveSupport
 import GaloisForLFunctions.RHTower.InfiniteLocalRecurrenceSeparation
 import GaloisForLFunctions.RHTower.FiniteWindowRecurrenceInstability
@@ -20,10 +25,13 @@ import GaloisForLFunctions.HTGeometry.CoherenceGraphCapacity
 # Quantum recurrence universality
 
 Audit surface for the universal finite and pure-point spectral-block laws,
-the projective reverse-water-filling minimax law, its Haar-quantile refinement,
+the projective reverse-water-filling minimax law, its two-sided Haar-volume law,
+its exact realization by independently uniform onsite phases in a Hermitian
+particle-number-preserving local spin Hamiltonian,
 and its selected-support ceiling for every finite pure-state spectral
 probability vector, the exact finite observer-union phase energy,
 its coherence-graph capacity and graph-rank recurrence deadline, and the
+corresponding exact coherent-device-window certificate,
 summable arbitrary-pure-point observer zero law;
 exact open-interval separation for two-sided infinite spectral generators,
 finite positive-energy instability on every strict pre-return window,

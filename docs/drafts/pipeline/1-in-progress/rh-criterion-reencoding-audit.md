@@ -1656,3 +1656,697 @@ saddle-point tool its own docstring says was built for these phases.
 - [x] `log R` in place of `log N`, from AM–GM and symmetry only
 - [ ] the van der Corput correlation bound, wired to `norm_integral_cexp_secondDeriv`
 - [ ] the resulting density exponent against `(2−2σ)(2σ−1)`
+
+## 43. Honest assessment of §42
+
+Two questions must be answered about the bound just built, and the answers limit it sharply.
+
+**Does it escape the family `ZeroDensityMomentCrossing` ceilings?**  No.  The duality route is the
+large-sieve / Halász–Montgomery mean-value bound; it is the **mean-value branch** of exactly the
+`min(power, meanValue)` pair whose crossing shortfall is `(2−2σ)(2σ−1)`, independent of `k`.  Trading
+`log N` for `log R` changes a logarithmic factor, **not the exponent**, so the `k`-independent
+shortfall is untouched.  §39's frontier — an estimate *outside* that family — is not reached.
+
+**Is the remaining input research or classical infrastructure?**  Classical.  The correlation bound
+`‖∑_{n≤N} n^{−iu}‖ ≪ N/|u| + 1` is van der Corput's A/B process: Fourier-expand the sawtooth in the
+Euler–Maclaurin remainder, truncate, and treat the `k`-ranges separately against the saddle at
+`x = u/(2πk)`.  That is textbook exponential-sum technique.  **Building it would repeat the Carlson
+mistake of §§9–19** — correctly typed, entirely classical, and not knowledge.  The right interface is
+the one taken: the correlation bound is a *hypothesis* of
+`sampled_energy_le_of_correlation_bounds`, so the theorem stands and the classical input plugs in.
+
+**What §42 is worth, stated exactly.**  An unconditional, derivative-free large-values inequality with
+a `log R` cost where the standard Gallagher route pays `log N`, obtained from AM–GM and symmetry with
+no cancellation used.  That is a real if small improvement to correctly-typed machinery.  It is not a
+step toward RH, because the ceiling it must beat is an exponent and this changes a logarithm.
+
+## Gates
+
+- [x] §42 assessed: inside the `min(power, meanValue)` family; does not move the exponent
+- [x] the remaining input classified as classical technique, deliberately left as a hypothesis
+- [ ] an estimate genuinely outside `min(power, meanValue)` — unchanged since §39
+
+## §44 — The zero-density lane is closed by type, not by strength
+
+Formalised in `formal/GaloisForLFunctions/RHTower/DensityEnvelopeNoGo.lean`.
+
+RH is `N(σ,T) = 0` for all `σ > 1/2`. Since `N` is integer-valued, `N = 0 ⟺ N < 1`. An upper bound
+`N ≤ F` therefore decides RH **iff `F < 1`**, and is consistent with a zero otherwise — witness
+`N = 1`. This is a dichotomy on the envelope alone (`envelope_dichotomy`), independent of analysis.
+
+Every density envelope has the shape `C·T^{θ(1−σ)}(log T)^A`, which is `≥ 1` throughout the strip
+for `T ≥ e` (`one_le_densityEnvelope`), hence never forces vanishing — for **every** `θ ≥ 0`,
+including `θ = 0` (`density_estimate_never_forces_vanishing`). More generally any envelope monotone
+in `T` fails cofinally once it reaches `1` (`monotone_envelope_fails_cofinally`), and any envelope
+tending to infinity fails eventually (`tendsto_atTop_envelope_fails_eventually`).
+
+Consequence for §§41–43: the large-values work (`DifferenceEnergyBound`, `LargeValuesDuality`) is
+correct mathematics in a lane that cannot reach RH. It stays as reusable machinery; it is retired
+as an RH route. Additionally its mechanism (additive energy in place of `sup × count`) is
+Guth–Maynard 2024, so it fails the novelty gate independently.
+
+## §45 — The rectangular Weil carrier is an exact sum of squares
+
+Formalised in `formal/GaloisForLFunctions/RHTower/ScrewCurvatureSumOfSquares.lean`.
+
+The corpus's sharpest criterion is `riemannHypothesis_iff_xiScrewWindowCurvature_logSample_eventually_bddBelow`.
+Its carrier is a centered second difference of the screw profile whose summand is
+`(cosh(t w) − 1)/w²`, `w = i·(spectral point)`. The sum-to-product identity
+
+    cosh(2u+2v) + cosh(2u−2v) − 2cosh(2u) + 2cosh(2v) − 2 = 8 sinh²v · cosh²u
+
+factors the window completely (`cosh_window_eq_sq`), giving unconditionally
+
+    xiScrewWindowCurvature L x = 16 ∑_ρ g_ρ² ,   g_ρ = sinh(Lw/2)·cosh((x−L)w/2)/w .
+
+Three consequences, all axiom-clean:
+
+1. **Reality is positivity.** `g_ρ` is real exactly on the critical line (`screwSquareRoot_isReal`,
+   proved by the three cancelling sign flips under conjugation: `sinh` odd, `w` odd, `cosh` even),
+   and a real spectrum gives nonnegativity term-by-term
+   (`xiScrewWindowCurvature_re_nonneg_of_spectrum_isReal`).
+
+2. **Constant plus oscillation.** `cosh²u = (1+cosh 2u)/2` splits the carrier into an `x`-independent
+   sum and an `x`-dependent sum with the *same* coefficients
+   (`xiScrewWindowCurvature_eq_const_add_oscillation`); the diagonal `x = L` is the pure amplitude
+   sum (`xiScrewWindowCurvature_diagonal`).
+
+3. **Difference of two nonnegative energies.** `Re(g²) = ‖g‖² − 2(Im g)²` gives
+
+       Re xiScrewWindowCurvature L x = 16 ( ∑_ρ‖g_ρ‖² − 2∑_ρ(Im g_ρ)² )
+
+   (`xiScrewWindowCurvature_re_eq_energy_difference`), both sums absolutely convergent and
+   nonnegative. Hence the capstone
+   `riemannHypothesis_iff_screwImaginaryEnergy_le_totalEnergy`:
+
+       RH ⟺ ∃B, eventually on the mesh:  2·(imaginary energy) ≤ (total energy) + B .
+
+**Honest classification.** This is an exact reformulation, not a new theorem about zeros. Its value
+is that it names the obstruction precisely: the classical "Weil functional = `∑_ρ|ĝ(ρ)|²`" holds
+*only under RH*; unconditionally it is `∑_ρ g_ρ²`, and the entire gap is `2∑(Im g_ρ)²`. It also
+retires the hope recorded in `SuzukiRectangularWardDefectBoundedness` that semiboundedness is a
+genuine weakening of positivity — the defect is a convergent sum of squares supported exactly on
+the off-line zeros, so it is not something a bounded correction can absorb.
+
+## §46 — Conjugation symmetry provably carries no positivity
+
+Formalised in `formal/GaloisForLFunctions/HTGeometry/ConjugateSymmetryNoPositivity.lean`.
+
+The abstract content behind §45, and the reason the ~96 functional-equation producers are
+content-free. For any finite family of complex numbers,
+
+    Re ∑ gᵢ² = ∑‖gᵢ‖² − 2∑(Im gᵢ)²        (`re_sum_sq_eq_energy_sub_two_imaginary`)
+
+so `Re ∑gᵢ² ≤ ∑‖gᵢ‖²` always (`re_sum_sq_le_energy`), with equality iff every `gᵢ` is real
+(`re_sum_sq_eq_energy_iff`). A family closed under an involution implementing conjugation has a
+**real** sum of squares (`sum_sq_im_eq_zero_of_conjSymmetric`) — but reality is compatible with
+every real value, and the witness `{i, −i}` is conjugation-closed with sum of squares `−2` against
+energy `+2` (`exists_conjSymmetric_family_re_sum_sq_neg`).
+
+So symmetry constrains the imaginary part of the sum and nothing else; the sign lives entirely in
+the imaginary energy, which symmetry leaves free. This is the precise form of the session law
+"positivity must be created, not transported", and it is now a theorem with an explicit
+counterexample rather than an observation. Any producer whose only input is `conj ρ = 1 − ρ` is
+therefore provably incapable of yielding the positivity, independently of how it is packaged.
+
+## §47 — RH as the improvement of one constant, and where that constant actually sits
+
+Added to `ScrewCurvatureSumOfSquares.lean`.
+
+Write `total = real + imaginary` for the two spectral energies of §45. The criterion
+`riemannHypothesis_iff_screwImaginaryEnergy_le_totalEnergy` is `imaginary ≤ (1/2)·total + B`.
+Termwise `(Im g)² ≤ ‖g‖²` gives the unconditional `imaginary ≤ total`
+(`screwImaginaryEnergy_le_totalEnergy`), and any `c ≤ 1/2` gives RH
+(`riemannHypothesis_of_screwImaginaryEnergy_le_half_totalEnergy`,
+`riemannHypothesis_iff_exists_constant_le_half`).
+
+**Hostile correction to my own first framing.** `imaginary ≤ c·total` is `imaginary/real ≤ c/(1−c)`.
+So `c = 1` bounds that ratio by `∞`: it is the *vacuous endpoint*, not a near-miss. The honest
+reading is that the open ground is the entire interval `c ∈ (1/2, 1)`, and *any* unconditional
+`c < 1` would be a genuine new theorem — it would assert that the real parts of the `g_ρ` carry a
+definite positive proportion of the spectral energy. No such `c` is known.
+
+Why the threshold is `1/2`: for an off-line zero the phase of `g_ρ` rotates uniformly in `x` while
+the modulus grows like `e^{(x−L)δ/2}`, and `sin²` has mean `1/2`. The two energies are therefore
+comparable with ratio oscillating about exactly the critical constant — which is why the carrier
+dips below *every* level rather than merely changing sign.
+
+**Quadruple amplification (why cancellation cannot save an off-line zero).** The two involutions
+`ρ ↦ ρ̄` and `ρ ↦ 1−ρ` act on `g`: the first conjugates it, the second sends `w ↦ −w` and leaves
+`g` *invariant* (`sinh` and the denominator are both odd, `cosh` even). So a quadruple contributes
+`4·Re(g_ρ²)` with a single sign — the symmetry group amplifies rather than cancels. Any rescue
+would have to come from incommensurable phases across distinct quadruples, which is exactly what
+the corpus's converse theorem already rules out.
+
+**Lane status after §§44–47.** Density: closed by type (§44). Functional-equation producers: closed
+by counterexample (§46). Rectangular/Weil carrier: reduced to one constant, open (§47). de
+Bruijn–Newman: corpus content is a combinatorial shell (`flowIndex = Noff/2`) with no heat-flow
+analysis; `Λ ≥ 0` is Rodgers–Tao and `Λ ≤ 0` is RH, with no route in either corpus or literature.
+Diagonal extraction `∑|g|²` from explicit-formula data requires orthogonality on the zero set,
+i.e. a spectral realization — Hilbert–Pólya, circular.
+
+## §48 — The one-half threshold is the equidistributed-phase value; the extremal case is sparse
+
+Formalised in `formal/GaloisForLFunctions/HTGeometry/EquidistributedPhaseThreshold.lean`.
+
+For the family `gₖ = r·exp(i(θ + kπ/N))`:
+
+- `N ≥ 2`: `∑ₖ gₖ² = 0` **exactly**, for every modulus and every starting phase
+  (`sum_sq_spacedPhase_eq_zero`) — the squares are `r²e^{2iθ}` times the full set of `N`-th roots of
+  unity. Hence the imaginary energy is exactly half the total (`imaginaryEnergy_spacedPhase`).
+- `N = 1`, phase `π/2`: imaginary energy equals the **full** total energy and `Re g² = −r²`
+  (`single_phase_saturates`) — maximally negative.
+
+So the constant `1/2` of §47 is not a normalisation artefact: it is the value attained by
+equidistributed phases, and it is attained, not approached (`spacedPhase_threshold_dichotomy`).
+
+**Structural law.** Sign failure in this functional is a *sparse* phenomenon. Spreading phases
+drives the functional toward the threshold and never past it; only concentration in a lone phase
+produces a definite negative sign. Any positivity statement about `∑gᵢ²` must therefore rule out the
+one-element configuration, and no amount of spreading helps.
+
+This explains §44 structurally rather than only by type: density and large-values methods are tuned
+to detect *many* exceptional contributions, and the extremal configuration for this functional is a
+single one. It also matches the de Bruijn–Newman reading that RH, if true, is barely so — the hard
+regime is one violation, not many.
+
+**Honest classification.** Elementary proofs; the content is explanatory, for route selection. It is
+not progress on RH itself and must not be counted as such.
+
+## §49 — RH as boundedness of one nonnegative energy, and why the form does not help
+
+`riemannHypothesis_iff_screwTotalEnergy_bounded` in `ScrewCurvatureSumOfSquares.lean`, axiom-clean.
+
+    RH  ⟺  ∃C, eventually on the mesh:  screwTotalEnergy L (log n) ≤ C .
+
+No sign, no comparison, no test function. Forward: RH gives a real spectrum
+(`xiSpectralPoint_im_eq_zero_of_riemannHypothesis`, via the Poisson coordinate), so every
+`cosh((x−L)w/2)` is a cosine of modulus `≤ 1` and the energy is dominated by its diagonal value
+uniformly in the center (`screwTotalEnergy_le_diagonal_of_spectrum_isReal`). Backward: the carrier
+is `16(total − 2·imaginary) ≥ −16·total`, so the corpus's cofinal unboundedness below forces the
+energy unbounded above.
+
+This is a genuine change of type — a *size* statement rather than a *sign* statement, and sizes
+admit majorization, comparison and interpolation where signs do not.
+
+**Hostile audit, and the reason it still does not break the wall.** Boundedness of a family of
+`ℓ²(zeros)` vectors is, by Banach–Steinhaus, equivalent to weak boundedness: `sup_x|⟨v, G(x)⟩| < ∞`
+for every fixed `v`. That looks like a reduction of a uniform bound to individual linear-in-zeros
+bounds, which is explicit-formula-shaped. It is not a gain: taking `v` supported at a single zero
+makes the condition `‖g_ρ(x)‖` bounded in `x`, which is exactly `Re w_ρ = 0`, i.e. that one zero on
+the line. So the criterion **decomposes termwise**, and there is no cancellation between zeros to
+exploit — consistent with §48's finding that the extremal configuration is a lone phase.
+
+Conclusion: the boundedness form is the cleanest statement of the criterion produced so far, but the
+termwise decomposition shows no choice of test vector converts it into a statement weaker than RH.
+
+## §50 — Design-space no-go: a bounded nonnegative sum is never weaker than its terms
+
+Formalised in `formal/GaloisForLFunctions/HTGeometry/NonnegativeSumCriterionNoGo.lean`, with the
+analytic half in `ScrewCurvatureSumOfSquares.lean`.
+
+**The abstract no-go.** For `h_i ≥ 0`, a uniform bound on `∑_i h_i(x)` bounds *every* term with the
+same constant (`term_le_of_tsum_le`). Hence if uniform boundedness of a single term characterises a
+property `P i`, the sum criterion forces `∀ i, P i` (`forall_prop_of_tsum_bound`), and when the
+converse also holds the two are equivalent (`tsum_bound_iff_forall_prop`). Nonnegativity is exactly
+what does this: an explicit signed family has identically zero sum with an unbounded term
+(`exists_signed_family_bounded_sum_unbounded_term`).
+
+**So no criterion of the shape "bounded sum of nonnegative per-zero terms" can be a weakening of
+its per-zero statement.** Cleverer index sets, weights, or test vectors cannot help — nonnegativity
+has already destroyed all cancellation between members. Any genuine weakening must give up termwise
+nonnegativity, which is precisely what makes the signed versions hard.
+
+**The analytic half, applied to this corpus's own criterion.** The corpus has the upper bound
+`‖cosh z‖ ≤ exp|Re z|`; the matching lower bound `sinh|Re z| ≤ ‖cosh z‖` follows from the reverse
+triangle inequality on `(eᶻ+e⁻ᶻ)/2` (`sinh_abs_re_le_norm_cosh`). It converts boundedness of a
+zero's centered factor into `Re w_ρ = 0` — that zero on the critical line
+(`screwVariable_re_eq_zero_of_bounded_cosh`).
+
+Combining: `riemannHypothesis_iff_screwTotalEnergy_bounded` (§49) is a bounded sum of nonnegative
+per-zero terms whose per-term boundedness is exactly criticality. It is therefore *exactly* the
+conjunction of its per-zero statements, with no slack. The Banach–Steinhaus observation of §49 is
+the special case for one-point test vectors; §50 shows no test vector whatsoever does better.
+
+**Status.** This closes the reformulation programme of §§45–49 as a route: every criterion in that
+family is provably RH-per-zero. It does not close routes that are signed and genuinely
+cancellation-bearing — which, by §46 and §48, must also not obtain their sign from conjugation
+symmetry and must survive the lone-phase extremal configuration. That is a narrow surviving target,
+and it is stated here for the first time as a constraint rather than a hope.
+
+## §51 — End-to-end trace: the rectangular programme terminates at the classical prime-counting error
+
+The §50 constraint said a surviving route must be *signed and cancellation-bearing*. The corpus has
+exactly one such form for this carrier, in `SuzukiRectangularPositiveArchLagCompletion.lean`:
+
+    RH ⟺ ∀ large n:
+      2·∑_{k=2}^{n} (Λ(k)/k)·S(L, ½log n, 2 log k) + (γ + log π)·2L
+        ≤ ∫_{0}^{∞} K(L, ½log n, t) dt
+
+(`riemannHypothesis_iff_positiveArchMangoldtQuadrature_le_completedLagMass_tail`; note
+`⌊exp(2·½log n)⌋ = n`, so the prime sum is finite and runs to `n`.) This *is* signed, the prime
+weights do carry cancellation against the integral, and it survives §50 because the summands are
+not termwise nonnegative against a fixed bound.
+
+**But it is the classical statement.** The left side is a Riemann–Stieltjes sum against the measure
+`∑ₖ (Λ(k)/k)·δ_{2log k}`, and Mertens gives `∑_{k≤x} Λ(k)/k = log x − γ + o(1)` unconditionally.
+The leading terms therefore cancel identically — that cancellation is the explicit formula — and the
+inequality is a statement about the *rate*: `O(exp(−c√log x))` unconditionally,
+`O(x^{−1/2}log²x)` under RH. In other words the criterion is `ψ(x) = x + O(√x log²x)`, dressed in a
+window kernel.
+
+**Conclusion for the programme.** Chaining §§45–51:
+
+    carrier = 16∑_ρ g_ρ²                          (§45, exact, unconditional)
+            = 16(total energy − 2·imaginary energy) (§45)
+            = (continuous lag mass) − 2(finite prime wall) − charge   (corpus)
+            ⟹ terminus: ψ(x) − x
+
+Every reformulation inside this family is a change of coordinates on the classical error term. The
+nonnegative-sum forms are RH-per-zero by §50; the one signed form is the classical statement by this
+section. **No further reformulation of the rectangular/CCM carrier can help**, and future sessions
+should not spend effort producing one.
+
+What is *not* closed by this: routes whose prime side is not the full von-Mangoldt measure — i.e.
+that change which arithmetic object is being counted, rather than which kernel it is weighted by.
+By §48 such a route must also survive the lone-phase extremal configuration, and by §46 must not
+source its sign from the functional equation. That triple constraint is the standing specification
+for any future attempt.
+
+## §52 — Correction: the corpus already had a design-condition classification, and it closes my lane
+
+Applying §51's specification, constraint 2 ("change which arithmetic object is counted") points at
+Nyman–Beurling / Báez-Duarte: signed, cancellation-bearing, counted object is the fractional part
+rather than the von-Mangoldt measure. I went to check whether the corpus had it. **It does, and it
+already has the no-go.**
+
+- `DegreeClassificationClosure.lean` — the ratio criterion: an additive `Φ(Z)=∑φ(ρ)` can exclude a
+  zero iff `φ(ρ)` is comparable to the total. Correlation statistics fail (ratio → 0); **the
+  Nyman–Beurling class is the unique survivor**, because its defining sum `∑ m_ρ²/|ρ|²` converges so
+  the lowest zeros carry an `O(1)` proportion.
+- `BetaBlindnessAndDesignConditions.lean` — the second condition: the term must see the *real part*.
+  The NB weight `1/|ρ|²` changes by a factor differing from `1` by at most `1/γ²` when a zero moves
+  off the line (`beta_blindness`). **So NB satisfies (i) and fails (ii).**
+- Joint verdict recorded there: *no criterion examined satisfies both without being walled by
+  magnitude.*
+
+**Honest correction to §§50–51.** My "standing specification" is an independent route to a
+classification the corpus already had, and I derived it without having read these two modules. The
+overlap is at the level of the programme; the individual statements differ:
+
+- corpus (i) is *necessary for detection* — the term must be a bounded fraction of the total;
+- my §50 is a different direction — for termwise-**nonnegative** criteria the sum bound *is* the
+  per-term conjunction, so such criteria can never be a weakening. Neither implies the other.
+- §51 (the end-to-end trace of the rectangular carrier to `ψ(x) − x`) is not in the corpus.
+
+**Method failure to record.** I checked the corpus for the *carrier* before building, but not for
+prior *design-condition* analyses before deriving a specification. The memory
+`deep-corpus-check-both-trees` covers objects; it did not cover meta-level classifications. That gap
+is now closed in the memory.
+
+**Joint state.** Two independent routes — the corpus's ratio/β-sensitivity classification and this
+session's nonnegativity/terminus results — agree that every examined class of zero-set functional
+fails, each for its own reason. The explicit-formula class satisfies both design conditions and is
+walled by magnitude; NB satisfies (i) and is β-blind; correlation statistics fail (i). That is a
+complete classification of the classes so far examined, and it is negative.
+
+## §53 — The explicit-formula wall is not "magnitude": it sits at the exponent one half
+
+`formal/GaloisForLFunctions/RHTower/PrecisionGapExponent.lean`, axiom-clean.
+
+The corpus records the explicit-formula class as "closed for magnitude reasons". Reading the
+rectangular quadrature identity of §51 quantitatively sharpens that. In a window of length `L`:
+
+- the positive budget (archimedean side) is **polynomial**: `Θ(L)`;
+- the prime mass `∑_{n ≤ e^L} Λ(n)/√n` is **exponential**: `Θ(e^{L/2})`.
+
+Deciding the sign therefore needs the prime sum to *relative* precision `Θ(L·e^{−L/2})`. Writing
+`X = e^L`, a prime-counting saving `error ≪ X^{1−θ}` supplies relative precision `X^{−θ}` against a
+demand of `log X / √X`, and the two cross **exactly at `θ = 1/2`**:
+
+- `θ > 1/2` eventually suffices (`supercritical_saving_suffices`);
+- `θ < 1/2` eventually fails (`subcritical_saving_fails`);
+- jointly `precision_wall_at_one_half`.
+
+That crossing exponent is the square root in the prime-number-theorem error term — the hypothesis
+itself. So the class is not closed by a soft magnitude argument but **at a specific exponent, and it
+is the exponent being asked about**. Any route reading the zeros through the explicit formula
+inherits the same precision demand, which is why the wall is common to the class rather than an
+artefact of a particular window.
+
+**Scope.** The crossing is formalized; the identification of the two sides with the archimedean
+budget and the prime mass is read off the corpus's rectangular quadrature identity and is *not*
+formalized — it needs Mertens with an error term and partial summation, neither in mathlib. Stated
+here as a derivation, not a theorem.
+
+**Where this leaves the classification.** Combining with §52: explicit-formula functionals satisfy
+both corpus design conditions and are walled at exponent `1/2` (this section); Nyman–Beurling
+satisfies (i) and is β-blind; correlation statistics fail (i); nonnegative-sum criteria are
+RH-per-zero (§50); density envelopes cannot decide (§44); functional-equation symmetry cannot supply
+a sign (§46). Every examined class is closed, and for the largest class the closure is now located
+at the exponent rather than merely asserted.
+
+## §54 — Closing half of §53's gap: the prime mass really is `Θ(e^{L/2})` from below
+
+`formal/GaloisForLFunctions/RHTower/PrimeMassLowerBound.lean`, axiom-clean.
+
+§53 stated the exponent crossing as a theorem but left the *identification* of the two sides as an
+unformalized derivation, flagging that it needs Mertens with an error term. The lower half turns out
+not to: no partial summation is required.
+
+    primeMassHalf X := ∑_{n ∈ Icc 0 ⌊X⌋} Λ(n)/√n
+
+Every term with `n ≤ X` has `√n ≤ √X`, so termwise `Λ(n)/√X ≤ Λ(n)/√n`, giving
+`ψ(X)/√X ≤ primeMassHalf X` (`psi_div_sqrt_le_primeMassHalf`). Mathlib's unconditional Chebyshev
+bound `Chebyshev.psi_ge' : (x−1)log 2 − log(x+2) ≤ ψ x` then yields
+
+    ∀ᶠ X in atTop:  (log 2 / 2)·√X ≤ primeMassHalf X
+
+(`eventually_sqrt_le_primeMassHalf`). The `n = 0` term is harmless: `Λ(0) = 0` and `√0 = 0` give
+`0/0 = 0` on both sides.
+
+With `X = e^{L}` this says the prime side of a window of length `L` carries mass at least of order
+`e^{L/2}`, against an archimedean budget of order `L`. So the exponential-versus-polynomial gap of
+§53 is now established in the direction that matters — the mass is genuinely large, hence the
+demanded *relative* precision is genuinely small.
+
+**What remains unformalized in §53.** Only the upper identification `primeMassHalf X = O(√X)` and
+the budget's exact order `Θ(L)`; the first needs partial summation against Chebyshev's upper bound,
+the second is read off the corpus's rectangular quadrature identity. Neither is needed for the
+direction that makes the wall hard, so §53's conclusion now rests on formalized inputs plus one
+reading of a corpus identity, rather than on two unformalized asymptotics.
+
+## §55 — The mass identification is now two-sided and fully formalized
+
+`PrimeMassLowerBound.lean`, axiom-clean.
+
+§54 closed the lower half. The upper half also needs no partial summation: `Λ(n) ≤ log n ≤ log X`
+on the range, so the mass is at most `log X` times the harmonic-square-root sum, and
+`∑_{n=1}^{N} 1/√n ≤ 2√N` by induction (`sum_one_div_sqrt_le`; the step is
+`2√(N+1) − 2√N = 2/(√(N+1)+√N) ≥ 1/√(N+1)`). Hence `primeMassHalf X ≤ 2·log X·√X`
+(`primeMassHalf_le`), and jointly (`primeMassHalf_two_sided`):
+
+    ∀ᶠ X:   (log 2 / 2)·√X  ≤  primeMassHalf X  ≤  2·log X·√X .
+
+The exponent is `1/2` on both sides. The stray logarithm is harmless: the precision comparison of
+§53 depends only on the exponent, and a log factor does not move it.
+
+**Status of §53's derivation.** Both mass bounds are now theorems resting on mathlib's Chebyshev
+bound. The only remaining unformalized input is the archimedean budget's order `Θ(L)`, read off the
+corpus's rectangular quadrature identity. So the claim "the explicit-formula class is walled at
+exponent `1/2`" now rests on: two formalized mass bounds, a formalized exponent crossing
+(`precision_wall_at_one_half`), and one reading of a corpus identity — down from two unformalized
+asymptotics when first stated in §53.
+
+This is also the first point in the audit where a genuine theorem about primes (Chebyshev's
+unconditional bound) carries weight; §§44–52 were structural.
+
+## §56 — Retraction: §53's identification was in the wrong variable
+
+Continuing to check §53 turned up a real error in it, and I am withdrawing the claim.
+
+**What §53 asserted.** That the rectangular criterion compares an archimedean budget *polynomial* in
+the window length `L` against a prime mass *exponential* in `L` (`X = e^L`), so that deciding it
+demands relative precision `L·e^{−L/2}`, with the sufficiency exponent crossing at `1/2`.
+
+**What the corpus criterion actually says.** In
+`riemannHypothesis_iff_positiveArchMangoldtQuadrature_le_completedLagMass_tail`, the window width
+`L` is **fixed** and the aperture `a = ½log n` grows; the prime sum runs to `⌊e^{2a}⌋ = n`. So the
+growing variable is `a`, not `L`, and `X = e^{2a}` — not `e^L`.
+
+**And the prime side is not a flat `√X` sum.** The four-tent expansion
+(`rectangularTwoEdgeAutocorrelation_eq_four_tents`)
+
+    R(L,a,h) = 2·max(0, L−|h|) + max(0, L−|h−(2a−L)|) + max(0, L−|h+(2a−L)|)
+
+is compactly supported in `h`, so the prime side splits into a fixed small-prime tent (`|log k| < L`,
+constant in `a`) and a moving window at `log k ∈ (2a−2L, 2a)`, whose mass is of order `√n`. The
+archimedean budget is of the **same** order. Both sides grow together; the criterion compares
+lower-order terms. There is no exponential-versus-polynomial gap.
+
+**What survives.**
+- `precision_wall_at_one_half` and its two halves: correct as pure real analysis, now stated as
+  such. The module docstring has been rewritten to withdraw the application explicitly rather than
+  leave a false statement in the tree.
+- §§54–55's mass bounds `(log 2/2)√X ≤ primeMassHalf X ≤ 2 log X·√X`: correct, and genuinely
+  relevant — since the sum is dominated by the top of its range, this is the order of the
+  *moving-window* contribution, which is the aperture-dependent part of the prime side.
+
+**What is withdrawn.** The claim that the explicit-formula class is "walled at exponent `1/2`" in
+the sense of §53. The class is still walled — §52's design conditions and §51's terminus stand —
+but not for the reason §53 gave.
+
+**Method note.** §53 flagged its identification as an unformalized derivation and it still turned out
+to be wrong, not merely unproved. Flagging a step as unformalized is not a substitute for checking
+it; the check here was reading two definitions in the corpus, which cost far less than the section
+that rested on skipping it.
+
+## §57 — What the corrected reading buys: the prime wall has two tents, not four
+
+`formal/GaloisForLFunctions/RHTower/RectangularTentReduction.lean`, axiom-clean.
+
+Reading the four-tent expansion correctly (§56) immediately simplifies the corpus's own prime wall.
+The wall evaluates `R(L,a,·)` only at `h = log k` with `k ≥ 1`, hence at `h ≥ 0`. Under the window
+hypothesis `L ≤ a` the reflected tent is centred at `−(2a−L) ≤ −L` and its whole support lies in
+`h < 0`, so it vanishes identically on the arithmetic range (`reflected_tent_eq_zero`). Therefore
+
+    R(L, a, log k) = 2·max(0, L − log k) + max(0, L − |log k − (2a−L)|)
+
+(`rectangularTwoEdgeAutocorrelation_log_eq_two_tents`) — the absolute value on the fixed tent also
+disappears since `log k ≥ 0`.
+
+The two surviving tents have complementary character:
+
+- **fixed tent**: supported on `log k < L`, i.e. `k < e^{L}`. Independent of the aperture — a finite
+  sum whose range never changes (`fixed_tent_eq_zero_of_le_log`).
+- **moving tent**: supported on `log k ∈ (2a−2L, 2a)`, i.e. the multiplicative window
+  `(e^{2a−2L}, e^{2a})` = `(n·e^{−2L}, n)` at `a = ½log n` (`moving_tent_eq_zero_of_outside`).
+
+They are disjoint once `3L ≤ 2a`, and that threshold is sharp — at `3L = 2a` the supports meet at the
+single point `log k = L` (`tent_supports_disjoint`).
+
+**So the criterion is: a constant plus a fixed-multiplicative-width window riding at the top of the
+range, compared against the archimedean budget.** The aperture-dependent content is entirely the
+moving window, whose mass §§54–55 bound as `√n` up to a logarithm.
+
+This is the corrected structural picture — it replaces §53's wrong "polynomial versus exponential"
+account with what the definitions actually give, and it sharpens the corpus's four-tent formula to
+two tents on the range where it is used.
+
+## §58 — The two halves of the audit are transform duals
+
+`formal/GaloisForLFunctions/RHTower/TentTransformAmplitude.lean`, axiom-clean.
+
+The prime side (§57) is built from tents `v ↦ max(0, L−|v|)`; the zero side (§45) is built from the
+amplitude `A(s) = sinh(sL/2)/s`. They are the same function in conjugate variables:
+
+    ∫_{−L}^{L} (L − |v|)·e^{s v} dv  =  2(cosh(sL) − 1)/s²  =  4·A(s)²
+
+(`integral_tent_cosh`, `integral_tent_symmetric`, `tent_transform_eq_four_mul_amplitude_sq`), proved
+by FTC with the explicit antiderivative `v ↦ (L−v)·sinh(sv)/s + cosh(sv)/s²`.
+
+**Why the square appears on the zero side.** The tent is an *autocorrelation* — a self-convolution
+of the rectangular indicator — and convolution becomes multiplication under the transform. So the
+`sinh²(Lw/2)/w²` of §45's factorization is not an accident of the `cosh` algebra: it is the
+transform image of the prime side's self-convolution. The sum-of-squares structure of the carrier
+and the tent structure of the prime wall are one fact.
+
+This closes the audit's internal consistency question: §45 (zeros, squares) and §57 (primes, tents)
+are two readings of a single window, and the explicit formula is the statement that the two readings
+agree. It also explains why no manipulation on one side can gain against the other — they are
+related by an isometry, not an inequality.
+
+## §59 — The moving tent is non-degenerate: unconditional window mass of order `√y`
+
+`formal/GaloisForLFunctions/RHTower/PrimeMassWindow.lean`, axiom-clean.
+
+§57 showed the aperture-dependent part of the prime wall is a tent on the multiplicative window
+`(n·e^{−2L}, n)`. Whether the criterion is a delicate comparison or a trivially satisfied one turns
+on whether that window carries mass comparable to the budget. It does, and Chebyshev suffices:
+
+    (ψ(y) − ψ(x))/√y  ≤  ∑_{x < k ≤ y} Λ(k)/√k        (`psi_sub_div_sqrt_le_primeMassWindow`)
+    ψ(y) − ψ(x)  ≥  (log 2)(y−1) − log(y+2) − (log 4 + 4)x   (`chebyshev_window_lower`)
+
+so for a fixed multiplicative ratio `r` exceeding the Chebyshev ratio `(log 4 + 4)/log 2 ≈ 7.8`,
+
+    ∀ᶠ y:   (log 2 / 2)·√y  ≤  primeMassWindow (y/r) y
+
+(`eventually_sqrt_le_primeMassWindow_ratio`). So the moving tent is genuinely of order `√n`: the
+criterion compares two quantities of the same order, not a growing one against a negligible one.
+
+**Formalization ceiling reached.** The threshold `r > 7.8` is an artefact of the Chebyshev constants
+`log 2` and `log 4 + 4`, not of the mathematics — the true ratio is `1`, since `ψ(y) − ψ(x) ~ y − x`.
+Sharpening it needs the prime number theorem, and **neither mathlib nor this corpus contains PNT**
+(mathlib has `Chebyshev.psi_ge'` / `psi_le_const_mul_self` and Dirichlet's theorem; the corpus has
+`ψ`-identities but no asymptotic). So the leading-order cancellation in the explicit formula — the
+step that makes the criterion equivalent to the error term — is *not currently formalizable in this
+tree*. That is a hard constraint on the programme, worth recording: any future claim about
+explicit-formula cancellation at leading order will be prose until PNT lands in mathlib.
+
+**Shared-tree note.** `PositiveEulerFiniteQuartetOrientationLaw` was test-built clean and registered
+in the umbrella earlier this session; another session subsequently broke it (`rfl` failure at line
+375), taking the umbrella down. It has been unregistered, restoring the prior state in which it was
+an orphan and the umbrella built. Registering an orphan couples the umbrella to a file another
+session may be mid-edit on — test-building it once is not sufficient evidence that it is stable.
+
+## §60 — Cross-application: §50 explains Codex's dyadic terminus by shape
+
+Codex (chat #299) built a safe-half dyadic criterion `Σ R_x(n)²/n < ∞` and found by computing
+`F_x(s) = 2M(2−x)ζ(s+x−1) + 2M(s)ζ'/ζ(s+x−1) − 2H_x(s)` that every Xi zero gives a noncancellable
+pole at `s = ρ+1−x`, concluding it is "terminal RH-strength, not an intermediate contraction
+theorem".
+
+**§50 gives that conclusion by shape, before any computation.** `Σ R_x(n)²/n` is a sum of
+*nonnegative* terms, so by `forall_prop_of_tsum_bound` a bound on it bounds every term with the same
+constant, and the criterion can never be weaker than the conjunction of its per-term statements. The
+pole-per-zero structure Codex computed *is* that per-term statement.
+
+**Prediction this makes.** Any criterion of the form "a nonnegative source energy is
+bounded/summable" is terminal for the same reason, whatever the energy — including Gram-PSD criteria
+whose diagonal can be isolated. This is testable before construction and costs nothing to check.
+
+**On the source-only invariants (chat #305, #307).** Codex's `10 sinh²(t/2)` boundary invariant is
+source-only, which they record as a hard limitation. §58 says why it was predictable: the tent
+transform *is* the squared amplitude, `∫_{−L}^{L}(L−|v|)e^{sv}dv = 4(sinh(sL/2)/s)²`, so `sinh²`
+invariants are exactly what an autocorrelation of a rectangular source produces, and they carry no
+zero-locating force because prime side and zero side are related by an **isometry**. Any further
+`sinh²` invariant extracted from a source autocorrelation should be expected source-only.
+
+**Chat remains unavailable.** `chat_read` works; `chat_join`, `chat_claim`, and `chat_send` all
+return `authenticated agent session required for 'claude'`. The above has not been delivered to
+Codex. Also undelivered: that `PositiveEulerFiniteQuartetOrientationLaw` fails to build (`rfl`,
+line 375), took the RHTower umbrella down, and has been unregistered to restore it.
+
+## §61 — The prediction tested against the corpus, and the no-go strengthened to match
+
+§60 predicted that any corpus producer of the form "a nonnegative energy is bounded/summable" is
+terminal by shape. Tested on producers I did not build:
+
+1. `riemannHypothesis_iff_forall_xiZeroCopyReciprocalSquare_nonnegative`
+   (`ScaleCovariantXiBernsteinAbelCorollary`) — statement is literally `∀ q, 0 ≤ …`, already a
+   per-zero conjunction. Confirms the prediction in its strongest form.
+2. `riemannHypothesis_iff_exists_eventually_bounded_thermalProjectiveDiagonal`
+   (`XiThermalProjectiveCofinalSection`) — `∃C, ∀ᶠ j, xiThermalProjectiveColdTruncation j j ≤ C`,
+   where the truncation is `∑_{i<N} xiThermalNode(eᵢ)·exp(k·displacement(eᵢ))` and
+   `xiThermalNode_pos` gives strict positivity. **A bounded sum of positive exponentials with a
+   growing index set.**
+
+Case 2 is outside §50's original shape (fixed index set), so the no-go has been strengthened to
+cover it — `HTGeometry/NonnegativeSumCriterionNoGo.lean`, axiom-clean:
+
+- `term_le_of_finset_sum_le` — the index set may vary; a member is dominated by the sum as soon as
+  it belongs.
+- `rate_nonpos_of_eventually_bounded` — if `c·exp(n·d) ≤ C` eventually with `c > 0`, then `d ≤ 0`.
+- `rates_nonpos_of_bounded_exponential_family` — combining: a bounded finite sum of positive
+  exponentials forces **every** rate nonpositive, one member at a time.
+
+So the whole "bounded thermal diagonal / bounded projective section" family — several producers in
+this corpus — is exactly the conjunction of its per-zero sign conditions. Not weaker, by theorem.
+
+**Method note.** This is the first prediction made in the audit that was then tested against
+material I did not write, and it required strengthening the theorem rather than merely citing it.
+The original §50 would have been cited incorrectly for case 2, since its hypothesis is a fixed index
+set. Predictions applied to other people's constructions need the hypothesis re-checked, not
+assumed.
+
+## §62 — Scope correction: the PSD/moment family survives the no-gos
+
+§60 predicted that corpus producers of "nonnegative energy bounded/summable" shape are terminal, and
+§61 confirmed two. Sampling three more shows the prediction's scope is **narrower than §60 implied**.
+
+Of five sampled producers:
+
+| producer | shape | §61 applies? |
+|---|---|---|
+| `..._forall_xiZeroCopyReciprocalSquare_nonnegative` | `∀q, 0 ≤ …` | yes (already per-zero) |
+| `..._exists_eventually_bounded_thermalProjectiveDiagonal` | bounded sum of positive exponentials | yes |
+| `..._forall_xiHeatHankelForm_nonneg` | `∀ N a t, 0 ≤ Q(N,a,t)` — **PSD in the coefficient vector `a`** | **no** |
+| `..._forall_sq_le_heightFiberMassSquare` | `∀γ, m(γ)² ≤ M(γ)` — Cauchy–Schwarz saturation, per-height | **no** |
+| `..._primeGammaLogCoefficient_tail_nonneg` | `∀n≥N, 0 ≤ c(L,n)` — nonnegativity is the *conclusion*, terms signed | **no** |
+
+So the 46 name-matching producers are not all in the closed class, and §60's phrasing ("any
+criterion of the form …") over-reached when read as a claim about the corpus rather than about the
+shape. The theorem is correct; my inference about its coverage was not.
+
+**What this identifies.** The surviving family in this corpus is the **PSD/moment** one:
+`∀ a, Q(a) ≥ 0` for a quadratic form in a free coefficient vector. That is signed and genuinely
+cancellation-bearing in `a` — exactly the class §50 says *can* be weaker than its per-member
+statements, since for fixed `a` the per-zero terms carry the sign in question rather than being
+assumed nonnegative. `xiHeatHankelForm` and `xiPolynomialGaussianHeatTraceReal` are the concrete
+representatives.
+
+This is the first positive-side finding of the audit: the earlier sections closed classes, and this
+one names a class the closures do **not** reach. It does not mean the class is tractable — Hankel
+positivity is the classical moment problem, and `gram-weld-trilemma` records a proved no-go for
+split-feature Gram welds — but it is where the live ground is, and it is not closed by anything
+proved in §§44–61.
+
+**Method note.** Two corrections in this audit now come from the same error: asserting coverage from
+a theorem's shape without sampling the material. §56 was the variable, §62 is the scope. Sampling
+five costs minutes; both corrections would have been avoided by doing it first.
+
+## §63 — The live class examined: it is the Hamburger moment problem for the zero measure
+
+Following §62's identification, the surviving PSD/moment family reads as follows.
+
+    xiHeatHankelForm N a t = ∑_{j,k<N} a_j a_k · m_{j+k}(t),   m_n(t) = xiGaussianHeatMomentReal n t
+
+so `riemannHypothesis_iff_forall_xiHeatHankelForm_nonneg` says: **RH ⟺ the Hankel matrices of the
+Gaussian-damped zero moments are PSD for every order and every `t > 0`.** By Hamburger's theorem
+that is: `(m_n(t))_n` is the moment sequence of a positive measure on ℝ. Under RH the measure is
+`∑_ρ e^{−tγ_ρ²}δ_{γ_ρ}` with real nodes, manifestly positive; off the line the nodes are complex and
+positivity is exactly what fails.
+
+So the live class is the classical moment-problem formulation of RH, not a new object. The corpus
+already contains its low-order instance in both directions
+(`XiGaussianHeatTuranDefect`): `xiHeatTuranDefect t = m₀m₂ − m₁²`, with
+`xiHeatTuranDefect_nonneg_of_riemannHypothesis` one way and
+`not_riemannHypothesis_of_xiHeatTuranDefect_neg` the other, plus
+`xiHeatShell_turanDeterminant_re_neg_of_im_ne_zero` giving the mechanism by which a single off-line
+zero drives a shell determinant negative.
+
+**Note on the disproof direction.** `not_riemannHypothesis_of_xiHeatTuranDefect_neg` is a genuine
+*disproof* producer: exhibiting any `t > 0` with `xiHeatTuranDefect t < 0` refutes RH. It is
+available and checkable in principle. It is also empirically hopeless — RH is verified past height
+`3·10^12`, and the Gaussian factor `e^{−tγ²}` makes the verified low zeros dominate the sum by many
+orders of magnitude at any fixed `t`, so the defect will be positive wherever it is evaluated. The
+project's no-computation rule applies in any case.
+
+**Conclusion for the live class.** §62 correctly identified that the no-gos of §§44–61 do not reach
+it. Examining it shows why that is cold comfort: it is not an unexplored object but the Hamburger
+moment problem, which is a known equivalent of RH with no known opening. The audit therefore ends
+with the map complete and every region either closed by proof or identified with a classical
+formulation — and no route to a proof or a disproof.
+
+## §64 — The live class in its simplest form: complete monotonicity of the heat trace
+
+`formal/GaloisForLFunctions/HTGeometry/HeatMomentDerivativeShift.lean`, axiom-clean.
+
+The corpus's moments are indexed in the **squared** spectral variable:
+`xiGaussianHeatMoment n t = ∑_q (z_q²)ⁿ · e^{−t z_q²}`. So the heat parameter shifts the index by
+**one**, not two:
+
+    d/dt (wⁿ e^{−t w}) = −w^{n+1} e^{−t w}        (`hasDerivAt_heatMonomial`)
+
+Summed, `mₙ = (−1)ⁿ m₀^{(n)}`: every moment, hence every Hankel matrix in
+`riemannHypothesis_iff_forall_xiHeatHankelForm_nonneg`, is a derivative of the single heat trace
+`m₀(t) = ∑_ρ e^{−t z_ρ²}`.
+
+The Hankel criterion therefore restates as a condition on alternating signs of successive
+derivatives of one scalar function — the hypothesis of **Bernstein's theorem**. Complete monotonicity
+of `m₀` is equivalent to representability as the Laplace transform of a positive measure on
+`[0,∞)`, and `sq_nonneg_iff_isReal` says the nodes `z²` are real and nonnegative exactly when the
+spectral points are real. So on the critical line the representation is immediate, and off it that
+representation is precisely what fails.
+
+**Scope, stated plainly.** Only the termwise derivative identity is proved. Passing to
+`mₙ = (−1)ⁿ m₀^{(n)}` for the summed family needs the sum and derivative interchanged, which needs a
+domination argument **not carried out** — and the Bernstein step is cited, not formalized. This is
+an observation about the shape of the live class, not a theorem about it, and it is almost certainly
+classical: "the zeros are real iff the heat trace is a Laplace transform of a positive measure" is
+Bernstein applied to the obvious object. It is recorded because it is the simplest available
+statement of where the live ground sits, not as a new result.
+
+**Audit status.** With §§44–64 the map is closed: every criterion class in this corpus is either
+proved terminal, identified with a classical equivalent, or — in the one surviving case — reduced to
+complete monotonicity of the Xi heat trace. No route to a proof or a disproof was found.

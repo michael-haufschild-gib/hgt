@@ -1,5 +1,6 @@
 import Mathlib
 import GaloisForLFunctions.HTGeometry.SeparatedOffDiagonalBound
+import GaloisForLFunctions.HTGeometry.DifferenceEnergyBound
 
 /-!
 # The duality step of a large-values inequality
@@ -213,6 +214,53 @@ theorem sampled_energy_le_of_correlation_bounds [DecidableEq ι]
     rw [← Finset.sum_add_distrib]
   rw [hsplit, hdiagSum] at hsum
   nlinarith [hsum, hoffSum]
+
+
+
+/-! ### The dual bound through the additive energy
+
+The row-sum route bounds the off-diagonal by `sup × count`.  Routing it instead through the
+difference multiset replaces that by `√(additive energy) × ‖correlation‖_{ℓ²}`, which for an
+unstructured sampling set is smaller by a *power* of the count, not a logarithm. -/
+
+/-- **The dual sum through the additive energy.**  With bounded sampled values, correlations
+controlled by a function of the difference, and the difference multiset carrying energy `E`, the dual
+energy is at most `B²·√E·‖f‖_{ℓ²}`. -/
+theorem dual_sum_le_via_energy {Dt : Type*} [DecidableEq Dt]
+    {M : ι → κ → ℂ} {c : ι → ℂ} {B : ℝ} {d : ι → ι → Dt} {f : Dt → ℝ} {S : Finset Dt}
+    (hB : ∀ r, ‖c r‖ ≤ B) (hB0 : 0 ≤ B) (hf : ∀ x, 0 ≤ f x)
+    (hmem : ∀ p : ι × ι, d p.1 p.2 ∈ S)
+    (hcorr : ∀ r s, ‖∑ n, M r n * (starRingEnd ℂ) (M s n)‖ ≤ f (d r s)) :
+    ∑ n, ‖∑ r, c r * M r n‖ ^ 2
+      ≤ B ^ 2 * (Real.sqrt (∑ x ∈ S, (diffMult d x : ℝ) ^ 2)
+          * Real.sqrt (∑ x ∈ S, f x ^ 2)) := by
+  classical
+  rw [dual_sum_expand (M := M) c]
+  -- each Gram entry is at most the weights times the correlation bound
+  have hentry : ∀ p : ι × ι,
+      (c p.1 * (starRingEnd ℂ) (c p.2) * ∑ n, M p.1 n * (starRingEnd ℂ) (M p.2 n)).re
+        ≤ ‖c p.1‖ * ‖c p.2‖ * f (d p.1 p.2) :=
+    fun p => gram_entry_le (M := M) c p.1 p.2 (hcorr p.1 p.2)
+  have hflat : ∑ r, ∑ s, (c r * (starRingEnd ℂ) (c s) *
+        ∑ n, M r n * (starRingEnd ℂ) (M s n)).re
+      = ∑ p : ι × ι, (c p.1 * (starRingEnd ℂ) (c p.2) *
+        ∑ n, M p.1 n * (starRingEnd ℂ) (M p.2 n)).re := by
+    rw [← Finset.sum_product', Finset.univ_product_univ]
+  rw [hflat]
+  have habs : ∀ r, |‖c r‖| = ‖c r‖ := fun r => abs_of_nonneg (norm_nonneg _)
+  calc ∑ p : ι × ι, (c p.1 * (starRingEnd ℂ) (c p.2) *
+          ∑ n, M p.1 n * (starRingEnd ℂ) (M p.2 n)).re
+      ≤ ∑ p : ι × ι, ‖c p.1‖ * ‖c p.2‖ * f (d p.1 p.2) :=
+        Finset.sum_le_sum fun p _ => hentry p
+    _ = ∑ p : ι × ι, |‖c p.1‖| * |‖c p.2‖| * f (d p.1 p.2) := by
+        refine Finset.sum_congr rfl fun p _ => ?_
+        rw [habs p.1, habs p.2]
+    _ ≤ B ^ 2 * ∑ p : ι × ι, f (d p.1 p.2) :=
+        weighted_pairs_le_of_bounded (b := fun r => ‖c r‖) d f
+          (fun r => by rw [habs r]; exact hB r) hB0 hf
+    _ ≤ B ^ 2 * (Real.sqrt (∑ x ∈ S, (diffMult d x : ℝ) ^ 2)
+          * Real.sqrt (∑ x ∈ S, f x ^ 2)) := by
+        refine mul_le_mul_of_nonneg_left (sum_pairs_le_sqrt_energy d f S hmem) (by positivity)
 
 
 end GaloisForLFunctions

@@ -18,12 +18,14 @@ weak ones fall below it and cost nothing in the leading information budget.
 That is exactly the mathematical “reverse water-filling” rule used in lossy
 data compression.
 
-The strengthened result does not rely on inventing a single worst-case
-spectrum. It bounds what fraction of all phase spectra can return by any
-chosen deadline. Its guarantee for every spectrum can also ignore a
-low-weight tail: ignored levels consume part of the allowed error but add no
-factor to the clock. The overhead follows the levels that must be
-synchronized, not every level present.
+The strengthened result identifies one quantity three ways. It is the leading
+information needed to describe the exact set of near-return phases, the
+leading logarithm of the worst-case waiting guarantee, and the same
+water-filling quantity used in Gaussian compression. The return set is proved
+to have positive volume; the result is not inferred from an upper estimate or
+from one specially invented spectrum. A separate guarantee can ignore a
+chosen low-weight tail: ignored levels consume allowed error but add no factor
+to that clock certificate.
 
 There is a second twist. A quantum system has no single observer-independent
 return clock. A chosen state or measurement sees a network connecting energy
@@ -33,7 +35,16 @@ visible levels minus the number of disconnected pieces of that network.
 This does not solve cosmology or prove that the universe repeats. It gives a
 testable law for closed quantum systems: change the prepared weights or change
 what is observed, and the guaranteed recurrence budget changes in a precise
-way.
+way. Every Hilbert–Schmidt-normalized self-adjoint expectation probe obeys the
+resulting bound, with an explicit allowance for calibration error. Ordinary
+operator-normalized probes obey it too, at a dimension-dependent conversion
+cost that cannot be improved for arbitrary matrices. Independently tunable
+local fields in a nearest-neighbour spin chain can generate the required
+random phases exactly in a one-step experiment, avoiding an exponentially
+long wait. For a fixed system, a separate inequality states exactly whether
+the guaranteed wait fits inside the device's coherent operating window. The
+mathematics also proves that every countable pure-point packet with summable
+weight returns arbitrarily close in its total phase energy.
 
 ## One-sentence video pitch
 

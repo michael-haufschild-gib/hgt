@@ -228,7 +228,12 @@ for the stated law.
 - [x] Define selected-support resolutions with value one off the selected set.
 - [x] Prove hybrid active quadratic / inactive worst-case amplitude floor.
 - [x] Prove selected-support deadline and logarithmic bound.
-- [ ] Run `#print axioms`, targeted Lean checks, lint, and final module build.
+- [x] Run `#print axioms`, targeted Lean checks, lint, and final module build.
+
+Audit result: target and umbrella modules pass; load-bearing declarations use
+only `propext`, `Classical.choice`, and `Quot.sound`. Repository-wide lint was
+run and still reports five pre-existing unrelated RHTower umbrella
+reachability failures; none lies in this theorem's dependency surface.
 
 Formal module:
 `formal/GaloisForLFunctions/RHTower/ProjectiveWeightedHaarQuantileActiveSupport.lean`.

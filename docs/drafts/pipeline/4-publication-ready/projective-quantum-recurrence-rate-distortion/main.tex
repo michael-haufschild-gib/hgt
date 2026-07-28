@@ -30,7 +30,7 @@
 \newcommand{\Bhaar}{\mathcal B_{\mathrm H}}
 \newcommand{\ee}{\mathrm e}
 
-\title{\textbf{An information law for quantum recurrence}}
+\title{\textbf{A universal information law for quantum return}}
 \author{Michael Haufschild}
 \date{28 July 2026}
 
@@ -38,30 +38,36 @@
 \maketitle
 
 \begin{abstract}
-A closed quantum system can return near its initial state, but known guarantees
-primarily count energy levels.  We determine the information that a return must
-actually synchronize.  For every finite pure state and accuracy, we prove an
-exact Haar-quantile bound for the fraction of spectra returning through any
-finite horizon, together with a deterministic deadline for every spectrum.
-The Haar scale is governed by reverse water filling.  The constructive law may discard
-an arbitrary low-weight tail: discarded probability pays amplitude error,
-whereas only retained coordinates pay clock dimension.  This removes the
-full-support-linear remainder from the refined statement.  For every finite
-collection of mixed states or observables, return distance is then exactly a
-weighted energy on its coherence graph.  Its visible phase rank is the number
-of energy sectors minus the number of coherence components, yielding a
-deterministic recurrence deadline with that rank as exponent.  The identity
-extends to arbitrary summable pure-point spectra.  Quantum return is therefore
-controlled by how coherence is distributed, selected and connected.
+What determines the waiting time for a closed quantum system to resemble
+itself again?  We identify a universal information variable.  For every finite
+pure-state spectral distribution and every accuracy, the negative logarithm
+of the exact return-target volume and the logarithm of the worst-spectrum
+return deadline lie within explicit dimension-dependent additive constants
+of one pivot-optimized reverse-water entropy, which is exactly the
+parallel-Gaussian rate--distortion functional.  The target has a constructive positive-volume
+box, so the law is two-sided and nonvacuous; its relative error is bounded by
+the dimension cost divided by the water entropy.  The Haar law is realized
+exactly by an independently tunable onsite-field ensemble in a Hermitian
+local spin Hamiltonian.  For every finite family of
+states or observables, total return distance is exactly a weighted phase
+energy on its coherence graph, whose visible relative-phase dimension is the
+number of sectors minus the number of connected components.  Every
+Hilbert--Schmidt-normalized probe inherits the same bound; every
+operator-normalized probe inherits it with an explicit square-root dimension
+conversion, including calibration errors.  Finally, every nonnegative summable countable pure-point packet
+recurs below every positive phase-energy resolution.  Quantum return is thus
+governed by the information carried by weighted, relational coherence rather
+than Hilbert-space size alone.
 \end{abstract}
 
 \noindent\textbf{Summary.}
 How long must a quantum system wait to resemble itself again?  The answer is
-not fixed by size alone.  Weakly occupied energy levels can be ignored at a
-specified accuracy through the same ``water-filling'' rule used to allocate
-loss in data compression, while a chosen set of observations sees only a
-network of relative phases.  The law below gives finite guarantees for every
-allowed phase packet and a quantitative prevalence law over all phase packets.
+not fixed by size alone.  A requested accuracy assigns resolution to spectral
+weights through the same reverse-water rule that solves parallel Gaussian
+lossy compression, while a chosen set of observations sees only a network of
+relative phases.  The law below is deterministic for every finite phase
+packet; normalized Haar measure enters only as the invariant geometry of that
+compact phase space.
 
 \section*{Quantum return as an information problem}
 
@@ -76,6 +82,9 @@ theory has meanwhile produced generic recurrence scales
 effective-support refinements \cite{KotowskiOszmaniec2026}, simultaneous
 all-state bounds \cite{GuptaShort2026}, and arithmetic criteria for exact
 Floquet return \cite{AnandEtAl2026}.
+Classical value-distribution theory for trigonometric sums with linearly
+independent frequencies goes back to Kac \cite{Kac1943}; here phase-torus
+volume is kept distinct from arithmetic assumptions on any fixed orbit.
 
 These results leave a basic distinction unresolved.  A state assigns different
 probabilities to different energy sectors, and an experiment observes only
@@ -86,10 +95,9 @@ separately and then join them.
 
 For pure states, the answer is a continuous, accuracy-dependent water
 functional.  For arbitrary finite families of density matrices and
-observables, the answer is a coherence network.  The former controls a
-universal deadline and every Haar recurrence quantile; the latter gives an
-exact return identity, an exact observable phase rank, and a universal finite
-deadline.  Figure
+observables, the answer is a coherence network.  The former controls both the
+volume of the exact return target and a universal deadline; the latter gives
+an exact return identity, observable phase rank and finite guarantee.  Figure
 \ref{fig:law} shows the two reductions.
 
 \begin{figure}[t]
@@ -175,6 +183,9 @@ and the exact optimizer is
 \end{equation}
 Equations \eqref{eq:Hk}--\eqref{eq:waterfill} are numerically the parallel
 Gaussian reverse-water-filling program \cite{CoverThomas2006,GrayNeuhoff1998}.
+The same classical allocation is used as the Gaussian benchmark in diffusion
+compression \cite{TheisEtAl2022}.  Here its coordinates are phase tolerances
+and its objective is target information.
 We claim equality of finite convex programs, not an operational source code:
 there is no random source or communication channel in
 \eqref{eq:amplitude}.
@@ -183,67 +194,44 @@ stationary random sources \cite{KanayaMuramatsu1997}; that asymptotic
 random-string theorem is distinct from the finite projective phase problem
 here.
 
-Define the pivot-resolved Haar budget
-\begin{equation}
- \Bhaar(w,\eta)=
- \sum_{k=1}^r
- \exp\!\left\{\frac{\pi}{4}\lambda_k\eta
- -\Hwater_k(w,\eta)\right\}.
- \label{eq:Bhaar}
-\end{equation}
-For a chosen non-pivot set \(S\), let
-\(\tau_S=\sum_{j\ne k,\,j\notin S}w_j\).  Coordinates outside \(S\) will not
-be synchronized.
+Let
+\begin{align}
+ \mu_w(\eta)&=m_{\T^r}\left\{z:
+  \left|\sum_jw_jz_j\right|\geq1-\eta\right\},\label{eq:target-volume}\\
+ I_w(\eta)&=-\log\mu_w(\eta),\label{eq:target-information}\\
+ R_r&=\max\left\{\frac{\pi}{4}(r-1)+\log r,\,
+  -(r-1)\log\frac{\sqrt2}{\pi}\right\}.\label{eq:remainder}
+\end{align}
+Here Haar measure is not a postulated distribution of physical
+Hamiltonians.  It is the unique translation-invariant volume on the phase
+torus and makes \(I_w\) an intrinsic target-information quantity.
 
-\begin{theorem}[Universal and typical recurrence law]
-\label{thm:water}
-For every finite probability vector on a support of size \(r\geq2\), every
-\(0<\eta\leq1\), and every \(N\geq1\), normalized Haar measure \(m_{\T^r}\)
-satisfies
-\begin{equation}
-\boxed{
- m_{\T^r}\!\left\{\omega:\exists\,1\leq n\leq N,\,
-   \Fid_w(n;\omega)\geq(1-\eta)^2\right\}
- \leq N\Bhaar(w,\eta).}
-\label{eq:quantile-law}
-\end{equation}
-Moreover, for every pivot \(k\), selected set
-\(S\subseteq\{1,\ldots,r\}\setminus\{k\}\), and allocations
-\(0<D_j\leq w_j\) satisfying
-\begin{equation}
- 2\tau_S+\sum_{j\in S}D_j\leq\eta,
- \label{eq:selected-feasible}
-\end{equation}
-every phase packet returns by a deadline \(P_S\) obeying
-\begin{equation}
-\boxed{
- P_S=\prod_{j\in S}
- \left\lceil\pi\sqrt{\frac{2w_j}{D_j}}\right\rceil,
- \qquad
- \log P_S\leq
- \frac12\sum_{j\in S}\log\frac{w_j}{D_j}
- +|S|\log(2\pi\sqrt2).}
-\label{eq:selected-ceiling}
-\end{equation}
-\end{theorem}
-
-Thus, if \(N\Bhaar\leq\alpha\), at least a fraction \(1-\alpha\) of spectra
-avoid the target through \(N\); the lower statement is a population law, not
-one adversarial spectrum.  Conversely, \eqref{eq:selected-ceiling} works for
-every spectrum.  Discarded modes pay the worst-case amplitude loss
-\(2\tau_S\), but no clock factor.  The exact product in
-\eqref{eq:selected-ceiling} has no additive dimension remainder; its simpler
-logarithmic envelope charges a rounding constant only on the chosen set \(S\).
-
-For comparison, define \(T_w(\eta)\) as the least positive integer \(N\) such
-that every phase packet has some return by that deadline:
+Define \(T_w(\eta)\) as the least positive integer \(N\) such that every
+compatible phase packet has some return by that deadline:
 \begin{equation}
  \forall\omega\in\R^r\quad \exists\,1\leq n\leq N:
  \quad \Fid_w(n;\omega)\geq(1-\eta)^2.
  \label{eq:minimax-time}
 \end{equation}
-This worst-packet quantity is no longer the organizing statement.  It remains
-a useful coarse corollary:
+
+\begin{theorem}[Three-way information law]
+\label{thm:water}
+For every finite probability vector on a support of size \(r\geq2\) and every
+\(0<\eta\leq1\), the exact target volume is positive and
+\begin{equation}
+\boxed{
+ \Hwater_{\proj}-\frac{\pi}{4}(r-1)-\log r
+ \leq I_w
+ \leq \Hwater_{\proj}-(r-1)\log\frac{\sqrt2}{\pi}.}
+\label{eq:target-law}
+\end{equation}
+Consequently, whenever \(\Hwater_{\proj}>0\),
+\begin{equation}
+ \left|\frac{I_w}{\Hwater_{\proj}}-1\right|
+ \leq\frac{R_r}{\Hwater_{\proj}}.
+\label{eq:relative-law}
+\end{equation}
+The least deadline obeys
 \begin{equation}
  \Hwater_{\proj}(w,\eta)-\frac{\pi}{4}(r-1)-\log(2r)
  <\log T_w(\eta)
@@ -251,9 +239,85 @@ a useful coarse corollary:
  \Hwater_{\proj}(w,\eta)+(r-1)\log(2\pi\sqrt2).
 \label{eq:waterlaw}
 \end{equation}
-Its dimension-linear terms arise by synchronizing every non-pivot coordinate
-and replacing every pivot-specific factor in \eqref{eq:Bhaar} by its
-worst-case envelope.  They are not the refined law.
+For every compatible phase packet and every prescribed delay \(M\geq0\),
+there is a later return satisfying
+\begin{equation}
+ M<n\leq(M+1)T_w(\eta),\qquad
+ \Fid_w(n;\omega)\geq(1-\eta)^2.
+\label{eq:post-delay}
+\end{equation}
+For every \(N\geq1\), the finite-horizon return set satisfies the one-sided
+union law
+\begin{equation}
+ m_{\T^r}\!\left\{\omega:\exists\,1\leq n\leq N,\,
+   \Fid_w(n;\omega)\geq(1-\eta)^2\right\}
+ \leq N r\exp\!\left\{\frac{\pi}{4}(r-1)
+ -\Hwater_{\proj}\right\}.
+\label{eq:quantile-law}
+\end{equation}
+\end{theorem}
+
+Equation \eqref{eq:target-law} is the central result.  Its lower bound comes
+from an explicit product box contained in the true target,
+\[
+ \mu_w(\eta)\geq
+ \left(\frac{\sqrt2}{\pi}\right)^{r-1}
+ \exp\{-\Hwater_{\proj}(w,\eta)\},
+\]
+so neither positivity nor nonvacuity is inferred from an upper envelope.
+The same \(\Hwater_{\proj}\) is exactly the parallel-Gaussian
+rate--distortion program in \eqref{eq:Hk}.  Thus target information,
+worst-packet recurrence information and Gaussian distortion information
+share one leading scalar.  The absolute constants retain the full support
+size \(r\); \eqref{eq:relative-law}, rather than a claim that this dependence
+vanishes, states precisely when it becomes negligible.
+
+The phase geometry also has an exact local realization.  For
+\(x=(x_1,\ldots,x_r)\in\T^r\), choose onsite energies
+\(\omega_j=\arg x_j\) and a Hermitian, particle-number-preserving local XX
+spin Hamiltonian whose single-excitation block is
+\(\operatorname{diag}(\omega_1,\ldots,\omega_r)\).  The single-excitation
+state with probabilities \(w_j\) has one-tick return amplitude
+\(\sum_jw_jx_j\).  Therefore independent Haar onsite phases give
+\begin{equation}
+ \Pr\{\text{one-tick local-spin return at defect }\eta\}
+ =\mu_w(\eta)
+\label{eq:local-transfer}
+\end{equation}
+exactly, and both sides of \eqref{eq:target-law} transfer without an ensemble
+approximation.  This is an engineered onsite-field ensemble, not a claim that
+generic interacting local-Hamiltonian spectra have independent phases.
+
+The minimax quantity in \eqref{eq:minimax-time} is a uniform theorem over the
+entire compatible phase class.  It does not assert that a particular local
+Hamiltonian is random, typical or extremal.  Arithmetic spectra may return
+much earlier.  Equation \eqref{eq:post-delay} also removes a terminological
+loophole: if the system has exited the target by tick \(M\), the guaranteed
+hit occurs strictly after that exit.  Likewise, \eqref{eq:quantile-law} is an upper bound on a
+finite union; phase correlations prevent replacing it by \(N\mu_w\) as an
+equality.
+
+A separate constructive corollary can ignore a prescribed tail.  For a pivot
+\(k\), a chosen set \(S\subseteq\{1,\ldots,r\}\setminus\{k\}\), and
+\(\tau_S=\sum_{j\ne k,\,j\notin S}w_j\), suppose
+\begin{equation}
+ 2\tau_S+\sum_{j\in S}D_j\leq\eta,\qquad 0<D_j\leq w_j.
+ \label{eq:selected-feasible}
+\end{equation}
+Then every phase packet returns by
+\begin{equation}
+ P_S=\prod_{j\in S}
+ \left\lceil\pi\sqrt{\frac{2w_j}{D_j}}\right\rceil,
+ \qquad
+ \log P_S\leq
+ \frac12\sum_{j\in S}\log\frac{w_j}{D_j}
+ +|S|\log(2\pi\sqrt2).
+\label{eq:selected-ceiling}
+\end{equation}
+This is an exact certificate for any selected \(S\), not a theorem that the
+continuous water active set jointly optimizes the discrete rounded product.
+Discarded modes pay worst-case amplitude loss \(2\tau_S\); selected modes
+alone enter the product.
 
 The distinction from hard support is exact even for two levels.  Put
 \[
@@ -328,12 +392,41 @@ Consequently:
 \end{enumerate}
 \end{theorem}
 
+The Hilbert--Schmidt statement has two operational consequences.  Put
+\(\Delta B^{(a)}(t)=U_tB^{(a)}U_t^\dagger-B^{(a)}\).  For every positively
+weighted \(a\) and every self-adjoint matrix \(\sigma\) with
+\(\|\sigma\|_{\HS}\leq1\),
+\begin{equation}
+ \left|\operatorname{Tr}\!\left[\sigma\Delta B^{(a)}(t)\right]\right|
+ \leq\sqrt{\frac{D^2(t)}{\lambda_a}}.
+\label{eq:operational}
+\end{equation}
+If the final and initial matrix calibrations have Hilbert--Schmidt error
+radii \(\nu_1,\nu_0\), respectively, the right-hand side becomes
+\(\sqrt{D^2(t)/\lambda_a}+\nu_1+\nu_0\).
+
+For the standard physical normalization \(\|\sigma\|_{\rm op}\leq1\), the
+universal conversion is \(\|\sigma\|_{\HS}^2\leq d\), and hence
+\begin{equation}
+ \left|\operatorname{Tr}\!\left[\sigma\Delta B^{(a)}(t)\right]\right|
+ \leq\sqrt{\frac{dD^2(t)}{\lambda_a}}.
+\label{eq:operator-operational}
+\end{equation}
+The identity pairing attains the factor \(d\) in this general
+operator-to-Hilbert--Schmidt conversion, so a dimension-free bound for
+arbitrary matrix pairings is impossible.
+The calibrated right-hand side is
+\(\sqrt{dD^2(t)/\lambda_a}+\sqrt d(\nu_1+\nu_0)\).
+Thus both Hilbert--Schmidt- and operator-normalized self-adjoint probes have
+explicit, dimension-honest noise budgets.
+
 The exponent in \eqref{eq:graph-deadline} is the exact number of visible phase
-coordinates, not the Hilbert-space dimension.  Adding an observer changes the
-rank only if its nonzero energy-basis blocks connect previously disconnected
-components.  A diagonal state has no edges and is stationary.  A fully
-connected coherence pattern pays \(d-1\) relative phases.  Between them, every
-graph topology is handled by the same theorem.
+coordinates used by this universal construction, not the Hilbert-space
+dimension.  Adding an observer changes the rank only if its nonzero
+energy-basis blocks connect previously disconnected components.  A diagonal
+state has no edges and is stationary.  A fully connected coherence pattern
+pays \(d-1\) relative phases.  Between them, every graph topology is handled
+by the same theorem.
 
 Equations \eqref{eq:graph-deadline}--\eqref{eq:graph-error} are a guaranteed
 horizon, not a claim that every fixed Hamiltonian saturates it.  Arithmetic
@@ -341,12 +434,46 @@ relations among its energy gaps can make return earlier.  This qualification
 is essential: graph topology fixes observable phase capacity, while the
 particular spectrum fixes the orbit inside that capacity.
 
-\section*{The exact law survives infinite pure-point spectra}
+\section*{Every summable countable pure-point packet recurs}
 
-The identity itself is not finite-dimensional.  Let \(\iota\) be an arbitrary
-pure-point spectral index, let \(J\) be an arbitrary observer family, and let
-\(B^{(a)}_{ij}\) be blocks in any complex normed space.  Whenever the
-nonnegative series below is summable,
+Recurrence bounds for mixed states with finite and countably discrete spectra
+are known \cite{GimenoSotoca2017}.  The theorem below is included as the exact
+summable phase-energy closure needed by the observer law, not as a first
+qualitative recurrence theorem.
+
+The recurrence statement itself extends beyond finite dimension.  Let
+\(a_p\geq0\) be any summable sequence and let \(\omega_p\in\R\) be arbitrary.
+Define the countable phase energy
+\begin{equation}
+ \mathcal E(n)=\sum_{p=0}^{\infty}a_p
+   \left|\ee^{in\omega_p}-1\right|^2.
+\label{eq:countable-energy}
+\end{equation}
+For every head length \(M\) and integer resolution \(Q\), some
+\(1\leq n\leq(Q+1)^M\) satisfies
+\begin{equation}
+ \mathcal E(n)\leq
+ \left(\frac{2\pi}{Q+1}\right)^2\sum_{p<M}a_p
+ +4\sum_{p\geq M}a_p.
+\label{eq:head-tail}
+\end{equation}
+Because summability makes the tail arbitrarily small and \(Q\) makes the
+finite-head term arbitrarily small,
+\begin{equation}
+ \boxed{\quad
+ \forall\varepsilon>0\quad\exists n\geq1:
+ \mathcal E(n)<\varepsilon.\quad}
+\label{eq:countable-recurrence}
+\end{equation}
+No arithmetic, independence or rate assumption is imposed on the
+frequencies.  The theorem supplies existence at every resolution, not a
+dimension-free uniform deadline: the chosen head length enters the
+quantitative horizon.
+
+The observer identity is also not finite-dimensional.  Let \(\iota\) be an
+arbitrary pure-point spectral index, \(J\) an arbitrary observer family, and
+\(B^{(a)}_{ij}\) blocks in any complex normed space.  Whenever the nonnegative
+series below is summable,
 \begin{equation}
  D^2(t)=\sum_{a,i,j}\lambda_a\|B^{(a)}_{ij}\|^2
   \left|\ee^{it(E_i-E_j)}-1\right|^2.
@@ -360,11 +487,10 @@ Moreover,
 \quad\text{for every }\lambda_a>0\text{ and }B^{(a)}_{ij}\ne0.
 \label{eq:purepoint-zero}
 \end{equation}
-This gives a dimension-free necessary-and-sufficient law for exact
-observer return.  It deliberately does not assert a uniform finite deadline
-for continuous spectra, where recurrence need not occur.  The finite deadline
-and the infinite identity are different conclusions, and
-\eqref{eq:purepoint}--\eqref{eq:purepoint-zero} state the exact boundary.
+This gives a dimension-free necessary-and-sufficient law for exact observer
+return.  Equations \eqref{eq:countable-recurrence} and
+\eqref{eq:purepoint-zero} answer the summable pure-point problem; neither is
+extended to continuous spectra or open dynamics, where these hypotheses fail.
 
 \section*{Local clock quality does not determine global return}
 
@@ -420,22 +546,45 @@ available in recurrence platforms: state preparation changes spectral
 weights, while probe choice changes the coherence graph.  A direct protocol
 is therefore:
 \begin{enumerate}[leftmargin=2.1em]
- \item calibrate a stroboscopic unitary and prepare states with known
- energy-basis weights;
+ \item prepare a single-excitation state with known weights and sample
+ independent onsite phases for the one-tick test \eqref{eq:local-transfer},
+ or calibrate one fixed stroboscopic Hamiltonian for a deadline test;
  \item choose a family of tomographic blocks or observables whose union graph
  has prescribed component count;
- \item measure the weighted Hilbert--Schmidt displacement through
+ \item measure either the weighted Hilbert--Schmidt displacement or
+Hilbert--Schmidt- or operator-normalized self-adjoint expectation probes through
  \((Q+1)^{d-c(G)}\) ticks.
 \end{enumerate}
+If one tick lasts \(\Delta t\) and the coherent observation window is
+\(\tau_{\rm coh}\), the exact device certificate
+\begin{equation}
+ (Q+1)^{d-c(G)}\Delta t\leq\tau_{\rm coh}
+\label{eq:device-window}
+\end{equation}
+places the guaranteed graph return inside that window.  If it fails, the
+worst-spectrum theorem makes no feasibility claim; the randomized
+onsite-field target-volume test still requires only one coherent tick per
+setting.
 Ideal unitary dynamics must contain a tick satisfying
-\eqref{eq:graph-error}.  Changing only the observer family can reduce the
-guaranteed exponent by increasing \(c(G)\); changing only weak spectral
-weights changes the water allocation without changing hard support.  The
+\eqref{eq:graph-error}, and every probe must then satisfy
+\eqref{eq:operational} or \eqref{eq:operator-operational} with the
+corresponding calibrated error budget.  Failure of
+both inequalities inside the certified horizon falsifies the calibrated
+finite closed-unitary model; it does not falsify quantum mechanics, because
+leakage, decoherence or calibration error may violate the hypotheses.
+Changing only the observer family can reduce the guaranteed exponent by
+increasing \(c(G)\); changing only weak spectral weights changes the water
+allocation without changing hard support.  The
 multiqubit recurrence blueprint of Ref.~\cite{KarimiEtAl2026} supplies a
 finite-level setting, while the observable-selective many-body recurrence of
 Ref.~\cite{RauerEtAl2018} supplies the complementary motivation: a large
 system can recur for one probe and not visibly recur for another on the same
 window.
+
+Equation \eqref{eq:local-transfer} removes ensemble ambiguity for the explicit
+onsite-field protocol.  The Haar statement still makes no prediction for an
+unspecified interacting local-Hamiltonian ensemble.  The deterministic graph,
+probe and device-window inequalities require no ensemble.
 
 \section*{Discussion}
 
@@ -443,9 +592,9 @@ The results answer a single question at three levels:
 \[
 \begin{array}{c}
 \text{How much phase information must a return synchronize?}\\[2mm]
-\text{pure state: reverse-water-filled spectral weights}\\
+\text{finite pure state: reverse-water target information}\\
 \text{finite observer family: }d-c(G)\text{ connected relative phases}\\
-\text{arbitrary pure-point family: every visible block phase}.
+\text{summable countable packet: finite head plus summable tail}.
 \end{array}
 \]
 This classification is universal over the stated closed, unitary,
@@ -455,11 +604,15 @@ absent from the hypotheses.
 
 The cross-disciplinary point is exact but limited: recurrence and parallel
 Gaussian rate--distortion share the same finite optimization problem.  The
-quantum theorem supplies a finite-horizon Haar population law and a
-spectrum-uniform construction; it does not turn a Floquet system into a
-communication channel.  The graph law then shows why no scalar entropy can be
-a complete recurrence invariant: connectivity of observable coherence is
-independent information.
+quantum theorem shows that this optimizer governs both the true target volume
+and a spectrum-uniform deadline within displayed finite constants; it does
+not turn a Floquet system into a
+communication channel.  Its ingredients---Haar invariance, product boxes,
+finite approximation and graph coboundaries---are classical.  The claim of
+new content is their common, weight-resolved information variable and its
+observer and countable consequences, not a new approximation technique.  The
+graph law then shows why no scalar state entropy can be a complete recurrence
+invariant: connectivity of observable coherence is independent information.
 
 Together, the laws replace a dimension-only picture by an
 observer-sensitive one.  Quantum systems remember how to return through the
@@ -507,7 +660,7 @@ Using \(Q_j\leq2\pi\sqrt{2x_j}\) proves
 \eqref{eq:selected-ceiling}.  Taking \(S\) to be every non-pivot coordinate
 recovers the upper half of \eqref{eq:waterlaw}.
 
-\subsection*{Haar quantiles and the minimax corollary}
+\subsection*{Two-sided target volume and the universal deadline}
 
 For independent Haar phases \(z_j\), set \(m=\sum_jw_jz_j\).  The identity
 \[
@@ -519,12 +672,31 @@ Haar-preserving projective shear, exponential Markov inequality, and
  \int_{\T}\exp(-u|z-1|^2)\,dz
  \leq\min\!\left\{1,\frac{\sqrt\pi}{4\sqrt u}\right\}
 \]
-give the pivot-resolved one-step target bound
+give the pivot-resolved one-step target bound, with
 \[
- \mu_w(\eta)\leq
+ \mu_w(\eta)\leq\Bhaar(w,\eta),\qquad
+ \Bhaar(w,\eta)=
  \sum_k\exp\!\left\{\frac{\pi}{4}\lambda_k\eta
- -\Hwater_k(w,\eta)\right\}=\Bhaar(w,\eta).
+ -\Hwater_k(w,\eta)\right\}.
 \]
+For the converse, take a minimizing pivot and feasible canonical scales
+\(x_j\geq1\).  In projective coordinates require
+\[
+ \|y_j\|_{\T}\leq\frac{\sqrt{2/x_j}}{2\pi},\qquad j\ne k.
+\]
+The unit-circle chord is at most \(2\pi\|y_j\|_{\T}\), so the weighted pivot
+energy is at most \(2\sum_{j\ne k}w_j/x_j\leq2\eta\); its real projection
+gives return amplitude at least \(1-\eta\).  Projective shear preserves Haar
+measure, and this box has exact volume
+\[
+ \prod_{j\ne k}\frac{\sqrt{2/x_j}}{\pi}
+ =\left(\frac{\sqrt2}{\pi}\right)^{r-1}
+   \exp\{-\Hwater_{\proj}\}.
+\]
+This proves target positivity and the lower volume bound.  The upper envelope
+and monotonicity of the logarithm give \eqref{eq:target-law} and
+\eqref{eq:relative-law}.
+
 Every power map preserves Haar measure, so the first \(N\) return targets
 have union measure at most \(N\Bhaar(w,\eta)\), proving
 \eqref{eq:quantile-law}.  Finally,
@@ -534,7 +706,23 @@ have union measure at most \(N\Bhaar(w,\eta)\), proving
 Choosing \(N\) below half the reciprocal coarse bound leaves a phase packet
 outside the union and recovers the lower half of \eqref{eq:waterlaw}.
 
-\subsection*{Observer graph identity and deadline}
+To obtain \eqref{eq:post-delay}, apply the universal deadline to the compatible
+phase packet \((M+1)\omega\).  If it returns at clock \(q\leq T_w(\eta)\),
+the original packet returns at \(n=(M+1)q\), which is strictly larger than
+\(M\) and at most \((M+1)T_w(\eta)\).
+
+\subsection*{Exact local-spin ensemble transfer}
+
+For a torus point \(x\), \(\ee^{i\arg x_j}=x_j\).  The diagonal
+one-particle matrix \(\operatorname{diag}(\arg x_j)\) is Hermitian and
+nearest-neighbour.  Its number-conserving local XX lift is Hermitian,
+preserves every excitation-number sector, and restricts to that diagonal
+matrix on singleton occupations.  The weighted single-excitation survival
+amplitude is therefore \(\sum_jw_jx_j\).  Equality of the local return target
+with \eqref{eq:target-volume}, followed by equality of their Haar measures,
+proves \eqref{eq:local-transfer}.
+
+\subsection*{Observer graph identity, deadline and probes}
 
 In the energy basis,
 \[
@@ -554,7 +742,35 @@ error is a difference of two root-relative errors and is at most
 \(2(2\pi/(Q+1))\).  Multiplication by \(W_{ij}\), squaring and summing proves
 \eqref{eq:graph-error}.
 
-\subsection*{Pure-point extension and qutrit separation}
+For self-adjoint \(\sigma\), the Hilbert--Schmidt pairing with
+\(\Delta B^{(a)}\) equals
+\(\operatorname{Tr}[\sigma\Delta B^{(a)}]\).  Cauchy--Schwarz gives
+\[
+ |\operatorname{Tr}[\sigma\Delta B^{(a)}]|^2
+ \leq\|\sigma\|_{\HS}^2\|\Delta B^{(a)}\|_{\HS}^2
+ \leq D^2/\lambda_a,
+\]
+which proves \eqref{eq:operational}.  The triangle inequality applied to two
+calibration matrices gives the additive \(\nu_1+\nu_0\) extension.
+
+If \(\|\sigma\|_{\rm op}\leq1\), applying the contraction to each standard
+basis vector and summing gives
+\(\|\sigma\|_{\HS}^2\leq d\).  The same Cauchy--Schwarz argument proves
+\eqref{eq:operator-operational}; triangle inequalities give the
+\(\sqrt d(\nu_1+\nu_0)\) calibration term.  For the identity matrix paired
+with itself, the squared functional is \(d^2\) and the Hilbert--Schmidt
+energy is \(d\), attaining the conversion factor.  Finally,
+\(n\leq(Q+1)^{d-c(G)}\), \(\Delta t\geq0\), and
+\eqref{eq:device-window} imply \(n\Delta t\leq\tau_{\rm coh}\).
+
+\subsection*{Countable recurrence, pure-point identity and qutrit separation}
+
+For \eqref{eq:head-tail}, synchronize the first \(M\) frequencies by finite
+simultaneous approximation.  Every head chord is at most
+\(2\pi/(Q+1)\), while every tail chord is at most \(2\).  Given
+\(\varepsilon>0\), summability first chooses \(M\) with tail below
+\(\varepsilon/8\); increasing \(Q\) then makes the head term smaller than
+\(\varepsilon/2\), proving \eqref{eq:countable-recurrence}.
 
 The block identity
 \[
@@ -595,7 +811,7 @@ manuscript, mathematical arguments, citations and conclusions.
 
 \begin{multicols}{2}
 \begin{thebibliography}{99}
-\footnotesize
+\scriptsize
 \setlength{\itemsep}{0.08em}
 
 \bibitem{BocchieriLoinger1957}
@@ -646,6 +862,13 @@ Quantum recurrences and the arithmetic of Floquet dynamics,
 \href{https://doi.org/10.22331/q-2026-04-20-2074}
 {doi:10.22331/q-2026-04-20-2074}.
 
+\bibitem{GimenoSotoca2017}
+V.~Gimeno and J.~M.~Sotoca,
+Upper bounds for the Poincar\'e recurrence time in quantum mixed states,
+\emph{J. Phys. A: Math. Theor.} \textbf{50}, 185302 (2017).
+\href{https://doi.org/10.1088/1751-8121/aa67fe}
+{doi:10.1088/1751-8121/aa67fe}.
+
 \bibitem{CoverThomas2006}
 T.~M.~Cover and J.~A.~Thomas,
 \emph{Elements of Information Theory}, 2nd ed. (Wiley, 2006).
@@ -656,11 +879,23 @@ Quantization,
 \emph{IEEE Trans. Inf. Theory} \textbf{44}, 2325--2383 (1998).
 \href{https://doi.org/10.1109/18.720541}{doi:10.1109/18.720541}.
 
+\bibitem{TheisEtAl2022}
+L.~Theis, T.~Salimans, M.~D.~Hoffman and F.~Mentzer,
+Lossy compression with Gaussian diffusion,
+arXiv:\href{https://arxiv.org/abs/2206.08889}{2206.08889v2} (2022).
+
 \bibitem{KanayaMuramatsu1997}
 F.~Kanaya and J.~Muramatsu,
 An almost sure recurrence theorem with distortion for stationary ergodic
 sources,
 \emph{IEICE Trans. Fundamentals} \textbf{E80-A}, 2264--2267 (1997).
+
+\bibitem{Kac1943}
+M.~Kac,
+On the distribution of values of trigonometric sums with linearly independent
+frequencies,
+\emph{Am. J. Math.} \textbf{65}, 609--615 (1943).
+\href{https://doi.org/10.2307/2371869}{doi:10.2307/2371869}.
 
 \end{thebibliography}
 \end{multicols}
