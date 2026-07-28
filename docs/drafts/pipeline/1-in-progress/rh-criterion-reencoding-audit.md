@@ -2350,3 +2350,252 @@ statement of where the live ground sits, not as a new result.
 **Audit status.** With §§44–64 the map is closed: every criterion class in this corpus is either
 proved terminal, identified with a classical equivalent, or — in the one surviving case — reduced to
 complete monotonicity of the Xi heat trace. No route to a proof or a disproof was found.
+
+## §65 — The moment ladder proved, and the forward Bernstein direction
+
+`formal/GaloisForLFunctions/RHTower/HeatMomentDerivativeLadder.lean`, axiom-clean.
+
+§64's flagged gap is closed. `hasDerivAt_xiGaussianHeatMoment`: at every `t > 0`,
+
+    ∂ₜ mₙ(t) = −m_{n+1}(t)
+
+for the actual Xi Gaussian heat moments, not merely termwise. The interchange uses mathlib's
+`hasDerivAt_tsum_of_isPreconnected` with the domination
+
+    ‖wⁿ⁺¹e^{−tw}‖ ≤ ‖wⁿ⁺¹e^{−aw}‖ + ‖wⁿ⁺¹e^{−bw}‖   for t ∈ [a,b]
+
+(`norm_heatMonomial_le_endpoints`), which needs **no hypothesis on `Re(z²)`** — only that
+`e^{−t·Re w}` is monotone in `t`, so its value on a compact interval is bounded by an endpoint. That
+matters because the sign of those real parts is exactly what RH is about.
+
+**Correction to §64's assessment.** I declined this step last cycle, claiming it required knowing
+`Re(z²) ≥ 0` for every spectral point — a numerical input the project forbids computing. That was
+wrong: the two-endpoint domination sidesteps it entirely. The failure mode here is the mirror of
+§§56/62 — not overclaiming a result, but *underclaiming* a feasible step by misdiagnosing its
+obstruction, and thereby declining tractable work.
+
+**Forward Bernstein direction, proved.** A real spectrum makes every node `z²` a nonnegative real,
+hence every monomial term nonnegative, hence every moment nonnegative
+(`xiGaussianHeatMoment_re_nonneg_of_spectrum_isReal`), and so under RH
+(`xiGaussianHeatMoment_re_nonneg_of_riemannHypothesis`) the successive derivatives of the heat trace
+alternate in sign: `∂ₜmₙ = −m_{n+1} ≤ 0` with `m_{n+1} ≥ 0`
+(`xiGaussianHeatMoment_deriv_re_nonpos_of_riemannHypothesis`). That is complete monotonicity of `m₀`
+on `(0,∞)`. **Only this direction is formalized**; the converse is Bernstein's theorem, absent from
+mathlib.
+
+**Duplication caught.** My first draft proved `summable_norm_xiGaussianHeatMonomialTerm`, which
+already exists byte-identically in `XiGaussianHeatTuranPairSum.lean`. Removed and imported instead —
+the exact failure the `corpus-search-before-writing-lean` rule exists to prevent, committed anyway.
+
+## §66 — The two formalization ceilings, stated precisely
+
+The audit's remaining gaps are not mathematical judgement calls; they are two specific theorems
+absent from both mathlib and this corpus. Recording them precisely so nobody re-discovers the wall
+by hand.
+
+**Ceiling 1 — no prime number theorem.** mathlib has `Chebyshev.psi_ge'` and
+`Chebyshev.psi_le_const_mul_self` (constants `log 2` and `log 4 + 4`) and Dirichlet's theorem on
+primes in AP; it has no `ψ(x) ~ x`. The corpus has `ψ`-identities
+(`sum_Icc_vonMangoldt_eq_psi`, `criticalCumulative_vonMangoldt_eq_chebyshevPsi`, `MertensFirst`) but
+no asymptotic either. Consequences already met:
+- §55/§59 could only reach window-mass bounds with the Chebyshev ratio `(log 4 + 4)/log 2 ≈ 7.8`
+  where the true threshold is `1`;
+- the leading-order cancellation in the explicit formula — the step making the rectangular criterion
+  equivalent to the error term — cannot be formalized at all, and stays prose (§51).
+
+**Ceiling 2 — no Hamburger solvability / Bernstein.** mathlib has nothing matching
+`CompletelyMonotone`, Bernstein–Widder, or a moment-problem solvability theorem. The corpus has
+`HasHamburgerMoments` as a *predicate* (`HamburgerBoundaryKernel.lean`) plus machinery that consumes
+a given representing measure (`AtomApproximation`, `SemidefiniteCarrier`,
+`AnalyticNevanlinnaCarrierRelationFree`), but **no theorem producing a measure from a PSD Hankel
+sequence**. Consequence:
+- §65 proves the forward direction (RH ⟹ the Xi heat trace is completely monotone) and the converse
+  is unreachable, so `RH ⟺ complete monotonicity of m₀` cannot be closed here.
+
+**What closing either would take.** Ceiling 1 is the Lean 4 `PrimeNumberTheoremAnd` effort, months of
+work and independent of RH. Ceiling 2 is Helly selection plus Riesz representation on `ℝ`, smaller
+but still a real project. Neither would prove RH; both are prerequisites for stating the corpus's
+own criteria as closed equivalences rather than one-directional implications.
+
+**Standing assessment.** With §§44–66 the criterion landscape of this corpus is mapped and every
+class is closed, classical, or ceiling-blocked. No route to a proof or a disproof of RH was found,
+and the two ceilings mark exactly where the formalization programme stops being able to speak.
+
+## §67–69 — The CCM source-lock lane, finished: orphans connected, then closed by a proved obstruction
+
+Three turns of work on my own unfinished material, ending in a lane closure.
+
+**§67 — six modules of mine were consumed by nothing.** `LeakageFloorFromTrace`,
+`SecularTailSaturation`, `FloorUnderTraceClassPerturbation`, `ConstraintBesselDischarge`,
+`ConstraintCoordinateHermiteValues`, `DiagonalSummableOfFactors` were built to discharge the
+transfer's hypotheses and never wired to anything. The leakage trio did not meet because
+`tsum_secular_tail_le` wants a floor at **every** index while the trace argument gives one only
+**cofinally**. `SecularTailFromTrace.lean` closes that (`tsum_secular_tail_le_of_cofinal_floor`,
+`exists_secular_tail_bound_of_trace`).
+
+**§68 — four of five transfer hypotheses discharged.** `CCMHypothesisDischarge.lean`:
+`hsum`/`hbessel` from the Paley–Wiener kernel norm with margin (`1/π < 2`), and both limit targets
+verified against the Hermite origin data (`ccm_first_target_sq`,
+`ccm_second_target_pos_lt_first`). Remaining: `hgrow`.
+
+**§69 — and `hgrow`'s consequence is false, not merely unproved.** `hgrow` enters only through
+`ccm_struct`, whose substantive output is a *radial floor*
+
+    ∀ j,  d₂ ≤ d_{j+2},     d_j = A_j·lam^{8j+1}·e^{−4πlam²}   ⟺   A₂ ≤ A_{j+2}·lam^{8j}  uniformly in j.
+
+The Fuchs leakage asymptotic `1 − λ_n(c) ~ 4√π·8ⁿc^{n+½}e^{−2c}/n!` has a factorial denominator, so
+`A_{j+2}·K^j → 0` for **every** fixed `K` and the floor is violated at some index
+(`FuchsFloorNoGo.lean`: `exists_index_below_floor`, `factorial_amplitude_decay`,
+`factorial_amplitude_no_uniform_floor`).
+
+**Consequence — the lane is closed, not blocked.** Previously the record said `hgrow` is refuted,
+leaving open whether a weaker growth hypothesis might serve. It cannot: the consequence the proof
+uses is itself false for these amplitudes, so no weakening that still yields the radial floor can
+work. A replacement must avoid the radial floor entirely.
+
+**Correction to my own framing.** My trace route supplies a cofinal floor for the *leakage*
+`(1−λ)+e`, a different object from the radial scales `d_j`. I had let the two read as
+interchangeable across several sections; they are not, and the trace route does not resurrect the
+radial floor.
+
+## §70 — Correction to §68: two of five discharged, not four
+
+Reading `RiemannHypothesisSOTA2026` to check whether §69 made its CCM entry stale caught an
+overclaim of my own instead.
+
+The ledger records the transfer's live wall as: "`ccm_tendsto_min_norm_lp_normalize_sub_twoModeSeed`
+still takes the two concrete prolate-to-Hermite coordinate limits; those limits are the current
+operator-asymptotic wall." That is **still true**, and §68 did not touch it.
+
+`hl0` and `hl1` are `Tendsto` statements about the actual coordinate sequences. What
+`ccm_first_target_sq` and `ccm_second_target_pos_lt_first` establish is that the *target constants*
+are the Hermite origin data and are correctly ordered — algebraic identities about the limits'
+values, **not** the convergence. I wrote "four of five hypotheses discharged"; the correct count is:
+
+- `hsum`, `hbessel` — genuinely discharged (Paley–Wiener kernel norm, margin `1/π < 2`);
+- `hl0`, `hl1` — targets pinned, convergence untouched, and that convergence is the ledger's
+  operator-asymptotic wall;
+- `hgrow` — refuted, with its consequence proved false in §69.
+
+So two of five, not four. The module docstring has been corrected in the source as well. The §69
+closure stands independently: it concerns `hgrow`'s consequence and does not depend on the status of
+`hl0`/`hl1`.
+
+**Pattern.** This is the fourth time in this audit that a claim of mine survived until I read the
+adjacent material and then failed. The corrections have all come from reading, never from further
+derivation — §56 from two definitions, §62 from five statements, §65 from one lemma name, §70 from
+one ledger paragraph. Reading first would have been cheaper every time.
+
+## §71 — Reading the ledger: independent confirmation, and one route worth flagging
+
+Having established that every correction in this audit came from reading rather than deriving, I
+read `RiemannHypothesisSOTA2026`'s literature summary in full.
+
+**Independent confirmation.** The ledger's 2026 audit reaches the same verdict as this audit's
+structural one, by a different route: Guth–Maynard "bounds but does not eliminate off-line zeros"
+(matching §44); the parabolic-Mellin, Lagarias, Young-lattice, and harmonic-contour refinements
+"each remains an exact equivalent criterion or reduction, not a proof"; Zhao/Inoue gap statistics
+and the probabilistic Möbius route excluded for assuming independence or RH. Two independent audits
+agreeing is worth more than either alone, and neither found a discharging implication.
+
+**One route worth a flag: the Möbius–Laplace half-decay premise.**
+`mobiusDiscreteLaplaceHalfDecay_implies_riemannHypothesis` is unconditionally proved in
+`MobiusLaplaceCriterionFrontier`, and the ledger records the premise — the discrete Möbius–Laplace
+transform `F(x) = ∑_{n≥1} μ(n)e^{−nx}` being `O(x^{−1/2})` as `x → 0⁺` — as "the research wall".
+Worth noting explicitly: **RH does not supply that premise.** Under RH one has
+`M(t) = O(t^{1/2+ε})`, hence `F(x) = O(x^{−1/2−ε})`, which is weaker than `O(x^{−1/2})`. So the
+premise is strictly stronger than RH, and the criterion is a sufficient condition that RH itself
+does not return.
+
+**Caveat, stated because the distinction matters.** The unsmoothed analogue `M(t) = O(√t)` is widely
+believed false — Ingham/Odlyzko-type Ω-results give `M(t) = Ω_±(√t·(log log log t)^{5/4})`, and the
+sharp Mertens conjecture was disproved by Odlyzko–te Riele. But `F` is a *smoothed* transform, and
+smoothing can suppress exactly those oscillations, so the Ω-results do **not** refute the premise.
+This is an assessment of where the route sits, not a refutation of it: the premise is stronger than
+RH, its unsmoothed analogue is doubtful, and whether the smoothing rescues it is open.
+
+**Route-test consequence.** Per `route-test-unconditional-and-divisor-sensitive`: a sufficient
+condition that RH does not itself imply is a strictly harder target, and should be costed as such
+before work. The ledger's phrasing ("the research wall") does not convey that asymmetry.
+
+## §72 — Correction to §71: the Γ factor supplies the smoothing, so the premise is not "strictly stronger"
+
+§71 judged the Möbius–Laplace half-decay premise strictly stronger than RH, on the grounds that RH
+gives `M(t) = O(t^{1/2+ε})` hence only `F(x) = O(x^{−1/2−ε})`. That routed through `M` and is too
+crude. Going through the transform's own Mellin structure changes the verdict.
+
+For `Re s > 1`, `∫_0^∞ F(x)x^{s−1}dx = Γ(s)/ζ(s)`, so shifting the contour gives the zero expansion
+
+    F(x) ~ ∑_ρ (Γ(ρ)/ζ'(ρ))·x^{−ρ}    (simple zeros).
+
+Under RH each `|x^{−ρ}| = x^{−1/2}`, and the coefficient carries `|Γ(1/2+iγ)| = √(π/cosh πγ)`,
+which decays like `e^{−π|γ|/2}`. **That exponential decay is the smoothing.** It makes
+`∑_ρ|Γ(ρ)/ζ'(ρ)|` converge easily under simple zeros with any polynomial control on `1/ζ'(ρ)` —
+whereas the unsmoothed `M(t)` carries only `1/(ρζ'(ρ))`, polynomial decay, which is exactly why
+`M(t) = O(√t)` is doubtful while the smoothed statement is not.
+
+**Corrected verdict.** The premise sits between RH and RH-plus-simple-zeros, not strictly above RH
+in a problematic sense. §71's caveat guessed that "smoothing may rescue it"; the Γ factor is the
+specific mechanism, and it rescues it. The Ingham/Odlyzko Ω-results, which concern `M`, have no
+purchase here — as §71 already flagged but for a weaker reason than the true one.
+
+**Consequence for the route-test memory.** The third clause added there ("does RH itself supply the
+premise?") is still the right test, but this route is a poor illustration of it: RH plus simple
+zeros essentially does supply the premise. The clause has been kept and the example corrected.
+
+**Standing.** Five corrections in this audit now (§43, §56, §62, §70, §72). Four came from reading
+adjacent material; this one came from carrying the analysis one step further than the first pass. The
+lesson from §70 — read first — remains right, but is not sufficient: a first pass through the wrong
+representation (`M` instead of the Mellin transform) fails even when the reading is done.
+
+## §73 — The Gamma mechanism, proved; and why it cannot be checked numerically
+
+`formal/GaloisForLFunctions/HTGeometry/GammaCriticalLineModulus.lean`, axiom-clean.
+
+    ‖Γ(1/2+it)‖² = π / cosh(π t)          (`normSq_Gamma_half_add_mul_I`)
+    ‖Γ(1/2+it)‖² ≤ 2π·e^{−π|t|}           (`normSq_Gamma_half_add_mul_I_le`)
+
+from the reflection formula plus `Γ(z̄) = conj Γ(z)` and `sin(π(1/2+it)) = cosh(πt)`. This is §72's
+asserted mechanism, now machine-checked: it is why the smoothed expansion
+`∑_ρ (Γ(ρ)/ζ'(ρ))x^{−ρ}` converges absolutely while the unsmoothed Mertens sum, carrying only
+`1/(ρζ'(ρ))`, does not — and hence why Ω-oscillation results bite there and not here.
+
+**A clarification the decay might otherwise invite.** The decay `e^{−π|t|/2}` is severe enough to
+suggest the premise could be settled by low-zero data. It cannot, and the reason is instructive: an
+off-line zero at `β > 1/2` contributes `|x^{−ρ}| = x^{−β}`, which as `x → 0⁺` grows **faster** than
+`x^{−1/2}` no matter how small its Gamma coefficient is. The Gamma factor controls the *constant*,
+not the *exponent*. So a single off-line zero at any height, however astronomically suppressed,
+breaks `O(x^{−1/2})` asymptotically — which is exactly why the premise implies RH, and equally why
+no finite verification can establish it.
+
+This also re-confirms §72 from the other side: the premise is "no zero has `β > 1/2`" plus enough
+convergence to validate the expansion — RH together with technical conditions, not something above
+it.
+
+## §74 — The transfer's targets are the corpus's own Hermite coordinates, and a third ceiling
+
+`CCMHypothesisDischarge.lean`, axiom-clean.
+
+`ConstrainedProlateHermiteContrast` defines `constrainedProlateHermiteCoordinate j = √(√2·q_j)` with
+the rational weight `q_j = C(4j,2j)/16^j`. Its first two values are **exactly** the transfer's two
+limit constants:
+
+    constrainedProlateHermiteCoordinate 0 = 2^{1/4}            (`hermiteCoordinate_zero_eq_target`)
+    constrainedProlateHermiteCoordinate 1 = √3 / 2^{5/4}        (`hermiteCoordinate_one_eq_target`)
+
+via `q₀ = 1`, `q₁ = C(4,2)/16 = 3/8`, and `2^{5/2} = 4√2`. So `hl0` and `hl1` are not ad hoc numbers:
+they are the head of the corpus's own Hermite coordinate sequence, and the open obligation is the
+**convergence** of the prolate constraint coordinates to that sequence — not the identification of
+its values, which is now settled.
+
+**Third formalization ceiling.** That convergence is prolate-spheroidal asymptotics (Slepian-type,
+prolate → Hermite as bandwidth grows). The corpus has the *limit* objects
+(`constrainedProlateHermiteCoordinate`, and the whole `ConstrainedProlate*` family) but no
+convergence theorem; mathlib has no prolate spheroidal theory at all. So alongside the missing PNT
+(§66, ceiling 1) and the missing Hamburger solvability (§66, ceiling 2), this is a third located
+gap:
+
+    Ceiling 3 — no prolate→Hermite asymptotics, so `hl0`/`hl1` cannot be discharged.
+
+That is the ledger's own "operator-asymptotic wall", now with its formalization status named. All
+three ceilings are independent of RH and would each be a separate project.

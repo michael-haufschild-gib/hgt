@@ -1,11 +1,11 @@
 # Three Notes Decide Whether a Closed Quantum Field Will Ever Repeat
 
-**Status:** in progress; strongest public-law candidate, not Nature-ready  
+**Status:** supporting theorem in progress; headline retired as insufficient
 **Opened:** 2026-07-28  
-**Public headline gate:** pass  
+**Public headline gate:** fail on significance despite legibility
 **Exact theorem gate:** conditional on the square-root rank theorem in
 `three-beat-hypertranscendence-law.md`  
-**Nature gate:** hold; free/static universality objection unresolved  
+**Nature gate:** no; exact recurrence does not change a physical worldview
 **Lean gate:** not started
 
 ## Headline
@@ -507,9 +507,8 @@ consequences.
 
 ## Nature gate
 
-**HOLD, not pass.** This is the first candidate in the search with a non-specialist headline and a
-literal all-future physical conclusion. It still lacks the immediate, far-reaching implication
-Nature requires because:
+**NO.** The result has a legible non-specialist sentence and a literal all-future conclusion, but
+the conclusion is not important enough for Nature. It fails because:
 
 1. free/static source class is narrow;
 2. no experiment currently realizes the complete test;
@@ -519,7 +518,8 @@ Nature requires because:
 5. R6's interaction stability assumes an exactly protected one-particle sector and therefore does
    not yet cover generic interacting relativistic QFT.
 
-Promotion requires closing at least one of these gaps, not strengthening the wording.
+Closing one technical gap would not cure the significance failure. Keep R1--R6 and the `5/9`
+deadline as supporting spectral lemmas. Do not promote exact recurrence as the paper's discovery.
 
 ## Lean plan — intentionally held
 
@@ -567,3 +567,7 @@ After paper and significance closure:
 - 2026-07-28 — proved an interaction-transfer theorem at paper level: arbitrary interactions on
   sectors with at least two particles cannot restore a global period, exact thermal return, or
   differential algebraicity when the infinite-rank one-particle sector is protected.
+- 2026-07-28 — retired all recurrence headlines after hostile normal-reader review. Exact
+  never-recurrence is too source-dependent and operationally invisible to support a universal law
+  of reality. Preserved R1--R6 as supporting lemmas; redirected search toward a constrained
+  locality/positivity law with a direct causal, holographic, or cosmological consequence.

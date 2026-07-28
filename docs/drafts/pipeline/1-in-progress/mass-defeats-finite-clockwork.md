@@ -122,14 +122,20 @@ For `m>0`, set `c=(mR)^2>0`. The supporting card proves:
 dim_Q span_Q {sqrt(n^2+c) : n in N} = infinity.             (7)
 ```
 
-The proof splits by the arithmetic type of `c`.
+This theorem is not new. Peter Müller and Will Sawin proved the stronger statement for every
+real quadratic polynomial that is not a square, in a February 2025 MathOverflow answer. Their
+finite-field specialization argument is the correct dependency route:
 
-- If `c` is transcendental, the factors `X+n^2` give distinct square classes in `Q(X)`.
-  Character projections in the resulting multiquadratic extension make their positive square
-  roots linearly independent.
-- If `c` is algebraic, prime ideals of `Q(c)` with a fresh odd valuation on values of `X^2+c`
-  yield infinitely many distinct square classes. The same character argument makes a tail
-  subsequence linearly independent.
+- assume all sufficiently large square roots lie in a finite rational span;
+- place the coefficients and span generators in a finitely generated real domain and specialize
+  to a number field while preserving the nonsquare discriminant;
+- reduce at completely split odd primes;
+- count points on `y^2=x^2+A x+B` using
+  `(y-x-A/2)(y+x+A/2)=B-A^2/4`;
+- obtain `p-1` points when the right side is nonzero, contradicting the at least `2p-2` points that
+  would exist if every quadratic value were a square;
+- choose nonsquare residue classes at arbitrarily large integers and induct outside every finite
+  rational span.
 
 This covers every real positive mass, not only rational or generic masses.
 
@@ -370,7 +376,7 @@ Single-quadrature / intensity HT:      OPEN
 Finite noise-aware consequence:       OPEN
 Three-line massless/massive witness:  PAPER PROOF V1
 Robustness beyond free ring:           OPEN
-Priority audit:                        INITIAL SEARCH ONLY
+Priority audit:                        KNOWN MÜLLER--SAWIN THEOREM
 Nature-ready:                          NO
 ```
 
@@ -393,6 +399,8 @@ No Lean code is authorized by current stage. After paper proof and significance 
   Math. Z. 8 (1920), 241--298.
 - E. C. Hansen, Y. Stone, and J. Wolfson, *Alexander Ostrowski's “On Dirichlet Series and
   Algebraic Differential Equations”*, <https://arxiv.org/abs/2211.02088>.
+- P. Müller and W. Sawin, answer to *Linear independence of square roots of quadratic polynomial
+  values*, MathOverflow (February 2025), <https://mathoverflow.net/questions/488452/>.
 - I. G. Avramidi, *Heat Trace and Functional Determinant in One Dimension*,
   <https://arxiv.org/abs/1406.1499>.
 - K. Hémery et al., *Measuring the Loschmidt amplitude for finite-energy properties of the
@@ -408,6 +416,10 @@ No Lean code is authorized by current stage. After paper proof and significance 
 - 2026-07-28 — stated sharp all-mass DA/HT law, finite-state consequence, and hostile open gates.
 - 2026-07-28 — closed generic readout gate for a two-channel record: Hadamard/Ramsey ancilla
   expectations give `Re A` and `Im A`; no finite algebraic state model can jointly generate them
+- 2026-07-28 — priority correction: the all-real quadratic square-root rank theorem is a known
+  Müller--Sawin result, stronger than the proposed special case. Replaced the unclosed
+  transcendental/algebraic split proof sketch with their specialization and finite-field counting
+  route. This arithmetic theorem cannot carry the paper's novelty.
   at positive mass.
 - 2026-07-28 — proved finite three-beat survivor: ground-shifted relativistic spectrum is additive
   at zero mass and strictly superadditive for every positive mass, so `E_2+E_0-2E_1` is an exact

@@ -1,9 +1,9 @@
-# Classification of RH criterion classes: five no-gos and one duality
+# Classification of RH criterion classes: no-gos, a duality, and one lane closure
 
 - **ID:** rh-criterion-class-no-go-cluster
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** ../1-in-progress/rh-criterion-reencoding-audit.md §§44–58
+- **Source:** ../1-in-progress/rh-criterion-reencoding-audit.md §§44–73
 - **Statement:** Every examined class of zero-set functional is provably incapable of deciding RH,
   and the prime-side and zero-side descriptions of the rectangular window are transform duals.
 
@@ -81,9 +81,12 @@ see §52 of the audit for the method failure that made this correction necessary
 - **New insight:** the textbook "Weil functional `= ∑_ρ|ĝ(ρ)|²`" is a *consequence* of RH, not an
   unconditional identity. Unconditionally it is `∑_ρ g_ρ²`, and the entire gap is `2∑(Im g_ρ)²` —
   an explicit convergent sum supported exactly on the off-line zeros.
-- **Status:** dependency-closed and formalized. The one derivation left unformalized is the
-  archimedean budget's order, read off the corpus's rectangular quadrature identity; it is flagged
-  in §56 and is not load-bearing for any theorem above.
+- **Status:** dependency-closed and formalized. *(Earlier revisions of this card cited an
+  unformalized "archimedean budget order" as the sole remaining derivation. §56 retracted the
+  framing that made it relevant — the criterion fixes the window width `L` and grows the aperture,
+  so there is no polynomial-versus-exponential comparison to complete. The entry is withdrawn.)*
+  The genuine remaining gaps are the two formalization ceilings listed below, neither of which is
+  load-bearing for any theorem above.
 
 ## Log
 
@@ -91,3 +94,41 @@ see §52 of the audit for the method failure that made this correction necessary
   passing `scripts/formal_tools.py lint`. Two claims were retracted during the work (§43's
   significance, §53's variable error); both retractions are recorded in the audit and in the Lean
   docstrings rather than only in prose.
+
+## Later additions (§§65–73)
+
+| result | theorem | module |
+|---|---|---|
+| moment ladder `∂ₜmₙ = −m_{n+1}` (term-by-term interchange proved) | `hasDerivAt_xiGaussianHeatMoment` | `RHTower/HeatMomentDerivativeLadder` |
+| RH ⟹ heat trace completely monotone (forward Bernstein only) | `xiGaussianHeatMoment_re_nonneg_of_riemannHypothesis` | same |
+| prime mass `√X` up to a log, two-sided, via Chebyshev | `primeMassHalf_two_sided` | `RHTower/PrimeMassLowerBound` |
+| window mass `≥ (log2/2)√y` past the Chebyshev ratio | `eventually_sqrt_le_primeMassWindow_ratio` | `RHTower/PrimeMassWindow` |
+| four tents reduce to two on the arithmetic range | `rectangularTwoEdgeAutocorrelation_log_eq_two_tents` | `RHTower/RectangularTentReduction` |
+| secular tail from a cofinal floor, no growth hypothesis | `exists_secular_tail_bound_of_trace` | `RHTower/SecularTailFromTrace` |
+| CCM `hsum`/`hbessel` discharged; `hl0`/`hl1` targets pinned | `ccm_constraint_hypotheses_eventually` | `RHTower/CCMHypothesisDischarge` |
+| **CCM radial floor is false for factorial amplitudes** | `factorial_amplitude_no_uniform_floor` | `RHTower/FuchsFloorNoGo` |
+| `‖Γ(1/2+it)‖² = π/cosh(πt)`, hence `≤ 2π e^{−π\|t\|}` | `normSq_Gamma_half_add_mul_I_le` | `HTGeometry/GammaCriticalLineModulus` |
+| `x^{−θ}` vs `log x/√x` crossing at `θ = 1/2` (pure analysis) | `precision_wall_at_one_half` | `RHTower/PrecisionGapExponent` |
+| growing-index-set form of the nonnegative-sum no-go | `rates_nonpos_of_bounded_exponential_family` | `HTGeometry/NonnegativeSumCriterionNoGo` |
+
+**Lane closure recorded.** The CCM/prolate source lock — the corpus's own designated open core in
+`RiemannHypothesisSOTA2026` — is **closed, not blocked**: `hgrow` enters only via `ccm_struct`, whose
+output is a radial floor `A₂ ≤ A_{j+2}·lam^{8j}` uniform in `j`, and the Fuchs amplitudes decay
+factorially so that floor is false. No weakening of `hgrow` yielding the floor can work. What remains
+open there is the ledger's own operator-asymptotic wall (`hl0`/`hl1` convergence), untouched.
+
+**Two formalization ceilings located.** No PNT in mathlib or corpus (only Chebyshev bounds), so no
+leading-order explicit-formula cancellation is formalizable. No Hamburger solvability or
+Bernstein–Widder anywhere, so the complete-monotonicity criterion cannot be closed to an iff.
+
+## Corrections made during the work
+
+Six claims of mine were retracted and repaired **in the Lean source**, not only in prose: §43
+(significance), §53/§56 (wrong variable — `L` fixed, aperture grows), §60/§62 (scope — the PSD/moment
+family survives), §65 (declined a feasible step on a misdiagnosed obstruction), §68/§70 (two of five
+CCM hypotheses discharged, not four), §71/§72 (judged the Möbius premise through `M` instead of its
+Mellin transform).
+
+Five of six came from reading adjacent material; the sixth from carrying the analysis through the
+right representation. The operative lesson: **reading first is necessary but not sufficient — a first
+pass through the wrong representation fails even when the reading is done.**

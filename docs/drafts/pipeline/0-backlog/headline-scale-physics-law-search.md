@@ -660,11 +660,12 @@ full-field recurrence, although arbitrarily close returns remain.
 
 ### Current verdict
 
-**STRONGEST PUBLIC-LAW CANDIDATE; NATURE GATE HELD.** Unlike “time has no finite equation,” this
-headline states a real global dynamical fact. Hostile review still identifies free/static
-specialization, textbook commensurability parentage, and no combined experiment. The exact `5/9`
-deadline now supplies a finite-time consequence, but may itself be judged elementary. Full proof,
-novelty audit, Fock extension, and experimental bridge are in
+**RETIRED BY THE HEADLINE/SIGNIFICANCE GATE; SUPPORTING LEMMA ONLY.** The exact recurrence and
+`5/9` statements are real, but they remain facts about an idealized source whose public consequence
+is operationally weaker than the language “ever repeat” suggests. Free/static specialization,
+textbook commensurability parentage, and lack of a changed physical worldview prevent Nature
+promotion. Preserve the theorem as spectral support; do not spend further work improving this
+headline. Full proof, novelty audit, Fock extension, and experimental bridge are in
 `../1-in-progress/three-notes-never-repeat-law.md`.
 
 ## Candidate P: three notes can prove an interacting quantum world will never repeat
@@ -694,11 +695,250 @@ positive thermal multiplicities cannot cancel the infinite-rank support.
 
 ### Current verdict
 
-**OPEN; STRONGEST UNIVERSALITY UPGRADE.** Candidate P answers the objection that the result is only
-free many-particle bookkeeping. It covers arbitrary interaction strength in every protected higher
-sector. It does not yet cover generic relativistic QFT, where a nominal one-particle sector can mix
-with multiparticle states of the same conserved charge. Nature promotion still requires either
-closing that gap or demonstrating the protected-sector law in a compelling macroscopic platform.
+**RETIRED BY THE HEADLINE/SIGNIFICANCE GATE; SUPPORTING LEMMA ONLY.** Protected-sector interaction
+stability is mathematically useful, but it does not turn exact recurrence into a worldview-scale
+discovery. The theorem excludes generic relativistic QFT where a nominal one-particle sector mixes
+with multiparticle states of the same charge, and even closing that gap would not by itself change
+causality, cosmology, holography, or macroscopic quantumness. Preserve the transfer theorem; stop
+promoting this line as the paper's discovery.
+
+## Candidate Q: time forces space to grow
+
+### Public sentence
+
+> **Time forces the universe to grow.**
+
+Sharper version:
+
+> **The universe expands because eternal time cannot fit on a fixed hologram.**
+
+### North-star conjecture
+
+An operationally faithful eternal clock has a hypertranscendental response: no finite algebraic
+differential state closes its observable history. In a causal region whose complete physical
+state is represented on a holographic screen, assume:
+
+1. finite screen area bounds the number of mutually recoverable clock innovations at fixed
+   energy and resolution;
+2. causal closure prevents those innovations from being silently supplied by an inaccessible
+   exterior;
+3. the clock remains faithful for arbitrarily long proper time.
+
+Then the screen area cannot remain bounded. It must grow without bound or develop a horizon flux.
+In a homogeneous cosmology, the proposed physical conclusion is expansion.
+
+### Existing obstruction and kill condition
+
+Hypertranscendence alone does not imply entropy, metric capacity, or algorithmic incompressibility.
+A fixed finite-trace type-II carrier can support an HT clock, and arbitrary positive reweighting
+can suppress every metric mode while preserving algebraic independence. Candidate Q survives only
+if a source-derived *operational* innovation lower bound follows from positivity, locality, energy,
+and finite resolution. If that bound has to be postulated as a disguised area-growth assumption,
+retire the headline.
+
+### Status
+
+**NORTH-STAR CONJECTURE; CURRENTLY UNPROVED.** This is the correct headline altitude. The missing
+theorem is not another HT classification; it is the physical bridge from irreducible clock
+innovation to screen-area demand.
+
+## Candidate R: a black hole turns time into heat
+
+### Public sentence
+
+> **A black hole turns time into heat.**
+
+Sharper version:
+
+> **A horizon is where quantum time becomes temperature.**
+
+### Exact anchored mechanism
+
+Exponential horizon peeling produces a complex Bogoliubov coefficient with a Gamma carrier.
+Its orientation-sensitive phase and Wigner--Smith delay are HT, whereas opposite-frequency
+intensity collapses by Euler reflection to the DA Planck spectrum. Thus the solvable horizon
+channel literally maps
+
+```text
+HT causal phase  ->  orientation quotient / tracing  ->  thermal intensity.
+```
+
+The candidate universal law says this is not a Gamma coincidence: exact horizon thermality is the
+observable quotient of a causally oriented phase law, and the lost phase contains the redshift
+geometry. A possible invariant target is a mixed input--output phase curvature that returns the
+peeling surface gravity and is unchanged by independent mode-origin choices.
+
+### Existing obstruction and kill condition
+
+The exterior Hawking state can be exactly thermal, in which case the Gamma phase cancels from its
+reduced covariance. Full complex Bogoliubov data belongs to a calibrated input--output channel or
+to joint partner correlations, not automatically to spontaneous exterior radiation. Horizonless
+objects can reproduce Planckian flux. The Gamma phase, analogue-horizon coherence, and causal
+phase-retrieval mechanisms also have strong prior art.
+
+Candidate R survives only if one finds a gauge-invariant, exterior-accessible observable whose
+value distinguishes a true global horizon from every horizonless thermal impostor, survives
+formation transients and greybody scattering, and is not established inverse-scattering theory.
+
+### Status
+
+**HEADLINE STRONG; PHYSICAL NOVELTY OPEN.** “Hawking radiation contains a hidden clock” remains
+retired. Only the stronger time-to-heat law, with a new invariant prediction, merits reopening.
+
+## Candidate S: the inside of a black hole is time the outside cannot run
+
+### Public sentence
+
+> **Inside a black hole is time the outside cannot run.**
+
+More disruptive version:
+
+> **A black hole interior is not hidden space; it is unimplementable time.**
+
+### North-star conjecture
+
+The corpus proves that an expanding grade dilation `omega_n -> lambda^n omega_n`, `|lambda|>1`,
+cannot be implemented by one bounded operator on a fixed positive HT carrier. Candidate S asks
+whether black-hole interior evolution is exactly such a dilation of exterior modular/response
+grades. If so, the “interior” would be the minimal enlargement required to implement a time
+translation that the bounded exterior observable algebra cannot carry.
+
+The desired theorem would identify:
+
+```text
+interior proper-time evolution
+  = unbounded dilation of exterior HT response grades
+  = no bounded implementation in the exterior algebra
+  = canonical crossed-product or horizon extension.
+```
+
+### Kill condition
+
+Formal analogy is worthless unless derived from an accepted black-hole QFT model with the actual
+exterior algebra, modular generator, and infalling clock. If ordinary type-III/type-II modular
+theory already gives the same extension without HT, or if the grade dilation is coordinate
+choice, retire the claim.
+
+### Status
+
+**BOLD INTERIOR CONJECTURE; NO PHYSICAL BRIDGE YET.**
+
+## Candidate T: gravity is quantum time's backreaction
+
+### Public sentence
+
+> **Gravity is the price of keeping quantum time local.**
+
+Sharper version:
+
+> **Quantum time creates curvature.**
+
+### North-star conjecture
+
+HT clock jets produce an unbounded family of independent positive Kähler modes. Candidate T says
+that demanding compatible localization of those modes across overlapping causal diamonds forces a
+non-flat connection; its curvature is the gravitational field. The target is not “information
+geometry resembles gravity.” It is an exact consistency theorem whose continuum limit yields the
+Einstein equation, with Newton's constant fixed by the conversion between clock innovation and
+holographic area.
+
+### Kill condition
+
+Jacobson-style thermodynamic and entanglement-equilibrium derivations already obtain Einstein
+dynamics from local horizon entropy. Candidate T must derive a new term, fixed coefficient, or
+observable inequality from HT that those frameworks do not assume. If HT merely relabels
+entanglement or supplies an arbitrary Kähler metric, retire it.
+
+### Status
+
+**DEEPEST UNIFICATION CONJECTURE; HIGHEST GAP AND HIGHEST PAYOFF.**
+
+## Candidate U: the Big Bang began clocks, not time
+
+### Public sentence
+
+> **The Big Bang began clocks, not time.**
+
+Alternative:
+
+> **The universe is older than every possible clock.**
+
+### North-star conjecture
+
+A cosmological singular surface is proposed to be a boundary of *clock observability*, not a
+boundary of the underlying quantum source. The pre-geometric source continues across the surface,
+but every positive local clock representation is one-sided and loses backward implementability
+there. Cosmic age would then measure the length of the classical clock branch, not the age of
+physical reality.
+
+### Kill condition
+
+This must produce a gauge-invariant continuation and a distinguishable cosmological prediction:
+for example a fixed phase relation in primordial correlations unavailable to ordinary bounce,
+no-boundary, or inflationary models. Without that, it is interpretation rather than science.
+
+### Status
+
+**PUBLICLY DISRUPTIVE; CURRENTLY TOO UNDERDETERMINED FOR PROMOTION.**
+
+## Candidate V: a black hole keeps growing on the inside because its clock never closes
+
+### Public sentence
+
+> **A black hole keeps growing inside because its quantum clock never closes.**
+
+Alternative:
+
+> **The inside of a black hole is the complexity missing from its thermal surface.**
+
+### North-star conjecture
+
+Black-hole interior volume can continue growing after exterior area has equilibrated, while
+holographic complexity proposals identify that growth with boundary operator/state complexity.
+An HT boundary response excludes every finite algebraic state closure and therefore forces an
+unending exact innovation/Krylov chain. Candidate V proposes that the renormalized growth of this
+chain is the boundary definition of interior volume.
+
+The desired law is quantitative:
+
+```text
+renormalized interior-volume increment
+  = universal constant * boundary HT innovation increment.
+```
+
+It should explain both linear late-time interior growth and its finite-entropy saturation or
+breakdown without assuming complexity=volume as a dictionary entry.
+
+### Existing obstruction and kill condition
+
+The literature already relates K-complexity and maximal volume empirically or conjecturally.
+Moreover, an infinite Krylov chain does not imply HT, and simple DA thermal correlators can coexist
+with black-hole complexity growth. Candidate V survives only if the *HT-specific* innovation
+invariant matches a bulk geometric quantity that ordinary Krylov dimension does not, with a fixed
+coefficient and a calculable example. If HT is merely a sufficient label for an already-infinite
+chain, retire it.
+
+### Status
+
+**HEADLINE STRONG; CURRENT HT-TO-VOLUME BRIDGE UNPROVED AND POSSIBLY NONESSENTIAL.**
+
+## Headline ranking after significance reset
+
+1. **Time forces the universe to grow** — best single sentence; exact capacity bridge missing.
+2. **A black hole turns time into heat** — strongest existing Gamma/HT anchor; novelty and
+   accessibility are decisive.
+3. **A black hole keeps growing inside because its clock never closes** — direct contact with
+   complexity/volume; HT-specific geometric content must be isolated.
+4. **Inside a black hole is time the outside cannot run** — strongest interior ontology; needs an
+   actual modular black-hole derivation.
+5. **Gravity is the price of keeping quantum time local** — possible grand law; farthest from a
+   source-derived theorem.
+6. **The Big Bang began clocks, not time** — headline-scale but presently lacks a unique
+   prediction.
+
+The intended paper should ultimately collapse at least two of these into one law. A theorem that
+only classifies one special function, recurrence, or solvable response does not clear the
+significance gate.
 
 ## Approach
 

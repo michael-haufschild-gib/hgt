@@ -1,5 +1,6 @@
-import GaloisForLFunctions.RHTower.XiGaussianHeatTuranDefect
+import GaloisForLFunctions.RHTower.XiGaussianHeatTuranPairSum
 import GaloisForLFunctions.HTGeometry.HeatMomentDerivativeShift
+import GaloisForLFunctions.RHTower.ScrewCurvatureSumOfSquares
 
 /-!
 # The Gaussian heat moments are the derivatives of the heat trace
@@ -26,12 +27,6 @@ of the single heat trace `m₀`.
 open Filter Set
 
 namespace RHTower
-
-/-- Norm-summability of the monomial terms at any positive time. -/
-theorem summable_norm_xiGaussianHeatMonomialTerm {t : ℝ} (ht : 0 < t) (j : ℕ) :
-    Summable (fun q : XiZeroCopy =>
-      ‖(xiSpectralPoint q ^ 2) ^ j * xiGaussianHeatTerm t q‖) :=
-  summable_norm_iff.mpr (summable_xiGaussianHeatMonomialTerm ht j)
 
 /-- **Endpoint domination.**  On `[a,b] ⊂ (0,∞)` the monomial term at time `t` is bounded in norm by
 the sum of its values at the two endpoints, using only monotonicity of `e^{−t Re w}` in `t`. -/
@@ -105,5 +100,60 @@ theorem xiGaussianHeatMoment_succ_eq_neg_deriv {t : ℝ} (ht : 0 < t) (n : ℕ) 
     xiGaussianHeatMoment (n + 1) t = -deriv (fun s : ℝ => xiGaussianHeatMoment n s) t := by
   rw [(hasDerivAt_xiGaussianHeatMoment ht n).deriv]
   ring
+
+
+/-! ### A real spectrum makes the heat trace completely monotone
+
+Under the hypothesis the spectral points are real, so each node `z²` is a nonnegative real and every
+monomial term `(z²)ⁿe^{−t z²}` is a nonnegative real.  Hence every moment is nonnegative, and by the
+ladder above every moment is `(−1)ⁿ` times the `n`-th derivative of the heat trace.  That is exactly
+complete monotonicity of `m₀` on `(0,∞)`.
+
+Only this direction is proved.  The converse — complete monotonicity forcing a positive
+representing measure, hence a real spectrum — is Bernstein's theorem, which is not in mathlib. -/
+
+/-- Under a real spectrum each monomial term is a nonnegative real. -/
+theorem xiGaussianHeatMonomialTerm_nonneg_of_spectrum_isReal
+    (hreal : ∀ q : XiZeroCopy, (xiSpectralPoint q).im = 0) {t : ℝ} (n : ℕ) (q : XiZeroCopy) :
+    0 ≤ ((xiSpectralPoint q ^ 2) ^ n * xiGaussianHeatTerm t q).re := by
+  obtain ⟨r, hr⟩ : ∃ r : ℝ, xiSpectralPoint q = (r : ℂ) :=
+    ⟨(xiSpectralPoint q).re, by
+      conv_lhs => rw [← Complex.re_add_im (xiSpectralPoint q)]
+      rw [hreal q]
+      simp⟩
+  rw [hr, xiGaussianHeatTerm, hr]
+  have hcast : ((r : ℂ) ^ 2) ^ n * Complex.exp (-(t : ℂ) * (r : ℂ) ^ 2)
+      = (((r ^ 2) ^ n * Real.exp (-t * r ^ 2) : ℝ) : ℂ) := by
+    push_cast
+    rfl
+  rw [hcast, Complex.ofReal_re]
+  positivity
+
+/-- **A real spectrum makes every Gaussian heat moment nonnegative.** -/
+theorem xiGaussianHeatMoment_re_nonneg_of_spectrum_isReal
+    (hreal : ∀ q : XiZeroCopy, (xiSpectralPoint q).im = 0) {t : ℝ} (ht : 0 < t) (n : ℕ) :
+    0 ≤ (xiGaussianHeatMoment n t).re := by
+  rw [xiGaussianHeatMoment, Complex.re_tsum (summable_xiGaussianHeatMonomialTerm ht n)]
+  exact tsum_nonneg fun q => xiGaussianHeatMonomialTerm_nonneg_of_spectrum_isReal hreal n q
+
+/-- **RH makes every Gaussian heat moment nonnegative.**  Combined with the ladder
+`∂ₜ mₙ = −m_{n+1}`, this says the successive derivatives of the heat trace `m₀` alternate in sign on
+`(0,∞)` — the heat trace is completely monotone.  The converse implication is Bernstein's theorem,
+not formalized here. -/
+theorem xiGaussianHeatMoment_re_nonneg_of_riemannHypothesis
+    (hRH : RiemannHypothesis) {t : ℝ} (ht : 0 < t) (n : ℕ) :
+    0 ≤ (xiGaussianHeatMoment n t).re :=
+  xiGaussianHeatMoment_re_nonneg_of_spectrum_isReal
+    (xiSpectralPoint_im_eq_zero_of_riemannHypothesis hRH) ht n
+
+/-- **The alternating-sign form.**  Under RH the derivative of every moment is nonpositive when the
+moment index is even and the sign alternates thereafter; stated concretely, `∂ₜ mₙ = −m_{n+1}` with
+`m_{n+1} ≥ 0`, so each moment is nonincreasing in the heat parameter. -/
+theorem xiGaussianHeatMoment_deriv_re_nonpos_of_riemannHypothesis
+    (hRH : RiemannHypothesis) {t : ℝ} (ht : 0 < t) (n : ℕ) :
+    (deriv (fun s : ℝ => xiGaussianHeatMoment n s) t).re ≤ 0 := by
+  rw [(hasDerivAt_xiGaussianHeatMoment ht n).deriv, Complex.neg_re, neg_nonpos]
+  exact xiGaussianHeatMoment_re_nonneg_of_riemannHypothesis hRH ht (n + 1)
+
 
 end RHTower

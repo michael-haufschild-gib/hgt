@@ -1,0 +1,1221 @@
+\documentclass[11pt]{article}
+
+\usepackage[a4paper,margin=30mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage[colorlinks=true,linkcolor=blue!55!black,citecolor=blue!55!black,
+  urlcolor=blue!55!black]{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\C}{\mathbb C}
+\newcommand{\R}{\mathbb R}
+\newcommand{\N}{\mathbb N}
+\newcommand{\cS}{\mathcal S}
+\newcommand{\XiR}{\Xi}
+\newcommand{\dd}{\,\mathrm d}
+\newcommand{\ord}{\operatorname{ord}}
+\newcommand{\Rea}{\operatorname{Re}}
+\newcommand{\Ima}{\operatorname{Im}}
+\newcommand{\Diff}{\operatorname{Diff}}
+\newcommand{\Mat}{\operatorname{Mat}}
+\newcommand{\eqtag}[1]{\qquad\text{\upshape(#1)}}
+
+\title{\textbf{The orientation-carrier boundary of the Riemann theta source}\\
+\large Divisor width, Hilbert-metric collapse, and
+hypertranscendental charge escape}
+\author{Michael Haufschild}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Put \(\Xi(z)=\xi(\frac12+iz)\), and retain the unsquared transverse
+coordinate in the theta representation of \(\Xi\).  Its normal current is
+\[
+  J_a(b):=\frac{\partial}{\partial a}|\Xi(b-ia)|^2
+  =2|\xi(\tfrac12+a+ib)|^2
+     \Rea\frac{\xi'}{\xi}(\tfrac12+a+ib),
+\]
+with the product identity valid also at zeros.  We prove an exact phase
+law: for every \(\alpha\geq0\), \(J_a(b)\geq0\) for all
+\(\alpha<a<1\) and \(b\in\R\) if and only if every nontrivial zero
+\(\rho\) satisfies
+\[
+  \big|\Rea\rho-\tfrac12\big|\leq\alpha.
+\]
+The same threshold governs every complete Gaussian-windowed Hankel tower
+of the theta current and is independent of Gaussian temperature.  Thus
+the unsquared source current does not merely preserve divisor location:
+its sign measures the exact horizontal width of the Riemann divisor.
+
+We then determine which carriers can and cannot turn this orientation
+into positivity.
+At no positive aperture can \(J_a\) factor as
+\(|\Xi(b-ia)|^2Q(b)\) with \(Q\) entire.  Consequently the first
+variation of the actual tilted theta autocorrelation has no finite Gram
+representation by constant-coefficient differential filters.  The
+obstruction is rigid: such a representation would translate every zero
+of \(\xi\) repeatedly out of the critical strip.
+
+The obstruction persists at the natural global Hilbert level.  Every
+jointly Schwartz-continuous, nonnegative, momentum-symmetric form that
+annihilates the theta source is a unique positive Fourier measure
+supported on the real \(\Xi\)-divisor.  Every nonzero such form has a
+dense proper nonclosed radical in ordinary \(L^2\), is not closable, and
+cannot induce a positive-definite metric on the full theta-operator
+image.  This is an instance of a general cyclic-null collapse law proved
+here: a Hermitian form whose radical contains an ambient-cyclic family
+has null sequences of constant form energy and cannot be closable unless
+it vanishes.  The only source-core metrics in the stated class are
+therefore singular divisor-sampling riggings.
+
+Finally, we identify a polarity fracture.  The canonical unsquared
+Julia phase defect is nonnegative, but each off-critical quartet makes
+its first derivative strictly positive and contributes \(8\pi\) of
+Ward mass.  This positivity counts defects; it cannot exclude them.
+Polynomial surgeries preserving the functional equation and Schwarz
+symmetry insert arbitrary multiplicity \(N\), converge to \(\xi\) with
+every holomorphic jet on compact sets, and leave the complete continuum
+real-aperture differential matroid unchanged.  That matroid cannot
+recover \(N\), whereas the source-marked noncompact boundary recovers it
+as \(8\pi N\), even while its density vanishes on every bounded window.
+
+These results do not prove the Riemann hypothesis.  They answer the
+carrier question left by theta-spectral reformulations: orientation
+survives before scalarization, but the correct-polarity theta current
+admits no regular Hilbert carrier in the classes above, while the
+canonical positive Julia carrier has the opposite, defect-counting
+polarity.
+\end{abstract}
+
+\medskip
+\noindent\textbf{Keywords.}
+Riemann hypothesis; Riemann \(\xi\)-function; Jacobi theta function;
+Hilbert--P\'olya; hypertranscendence; differential algebra; Ward charge;
+Hankel moment problem.
+
+\section{Introduction}
+
+The Hilbert--P\'olya idea asks for a self-adjoint structure whose spectral
+reality forces the nontrivial zeros of the Riemann zeta function onto the
+critical line.  Hedenmalm recently obtained a concrete second-order
+theta differential equation whose boundary eigenvalues are precisely the
+zeros of
+\[
+  \Xi(z)=\xi\left(\frac12+iz\right),
+  \qquad
+  \xi(s)=\frac12s(s-1)\pi^{-s/2}\Gamma(s/2)\zeta(s),
+\]
+and isolated the missing step as the construction of an appropriate
+sesquilinear structure for the operator pair
+\cite{Hedenmalm2026}.  That construction raises a prior question.
+What information must a source-side form retain before it can orient a
+zero transversely?
+
+The distinction matters because several natural operations preserve the
+location or multiplicity of a divisor while erasing the direction from
+which it was reached.  Squaring a normal coordinate is one such
+operation.  Passing from a source to a scalar explicit formula is another.
+An unsigned index can count an off-line pair without providing a
+mechanism that makes the count vanish.
+
+This paper keeps the normal coordinate unsquared.  The resulting
+theta current
+\[
+  J_a(b)=\partial_a|\Xi(b-ia)|^2                     \eqtag{1.1}
+\]
+is the Fourier transform of the first variation of an autocorrelation of
+the exponentially tilted Jacobi-theta source.  Its sign has a complete
+geometric meaning: the first aperture beyond which the current is
+nonnegative is exactly the horizontal half-width of the zero divisor.
+This is stronger than another endpoint equivalence with the Riemann
+hypothesis.  It determines the full quantitative phase diagram for every
+\(\alpha\geq0\).
+
+The positive result exposes a second problem.  A Hilbert-space argument
+would naturally try to write \(J_a\) as a sum of squares.  We prove that
+no finite local differential frame can do so.  In fact, the obstruction
+is stronger: after division by \(|\Xi|^2\), the multiplier cannot extend
+to any entire function.  Its divisor poles are necessary.  The proof
+does not use simplicity of zeros.
+
+We then close the corresponding regular global source-core problem for
+Hedenmalm's theta pair.  Positivity and pair symmetry force every
+jointly Schwartz-continuous form to be a Fourier measure on the real
+\(\Xi\)-divisor.  The same theta source is cyclic in ordinary \(L^2\);
+hence every nonzero form has a dense nonclosed radical and is
+nonclosable.  No positive-definite form on the full algebraic image of
+the theta operator can have such a pullback.  Thus passing from a finite
+local frame to a closed or unbounded ordinary-Hilbert metric does not
+repair the carrier.
+
+The third result comes from hypertranscendental geometry.  For a real
+aperture \(h\), the prime source
+\[
+  n\longmapsto \Lambda(n)(1-n^{-h})
+\]
+has a meromorphic Dirichlet carrier.  Distinct nonzero apertures give the
+maximal possible differential matroid: zero aperture is a loop, repeated
+apertures are parallel, and distinct nonzero apertures are differentially
+independent over the rational coordinate field.  Nevertheless, an arbitrary number of off-critical
+functional-equation quartets can be inserted without changing that
+matroid.  The complete continuum aperture geometry is therefore
+charge-blind.
+
+The missing integer reappears at a source-marked boundary.  Each inserted
+quartet produces a nonnegative pair of Lorentzians with mass \(8\pi\).
+Multiplicity \(N\) gives mass \(8\pi N\).  Moving the quartet to
+infinite height makes this density converge uniformly to zero on every
+bounded window, while its total mass remains fixed.  The phenomenon is
+not loss of charge but escape of charge.
+
+This last positivity has the opposite logical direction from the theta
+current.  The theta-current inequality would exclude off-line zeros;
+the Julia--Ward inequality is already true for each off-line packet and
+counts it.  Unsquaring preserves orientation in both constructions, but
+does not choose its polarity.
+
+\subsection{Relation to known instability and monotonicity results}
+
+Horizontal monotonicity of \(|\xi|\) in zero-free half-planes is
+classical and was used by Sondow and Dumitrescu to reformulate the
+Riemann hypothesis \cite{SondowDumitrescu2010}; related monotonicity
+criteria were developed by Matiyasevich, Saidak, and Zvengrowski
+\cite{MatiyasevichSaidakZvengrowski2014}.  Our width law identifies the
+entire phase transition of the concrete theta autocorrelation current and
+its complete Gaussian Hankel hierarchy.  We do not claim novelty for
+horizontal monotonicity in isolation.
+
+The source-core metric theorem answers a different part of Hedenmalm's
+proposal \cite{Hedenmalm2026}.  Its two harmonic-analysis inputs are
+classical: Bochner--Schwartz represents positive-definite tempered
+distributions by positive temperate measures
+\cite{Schwartz1966}, and Wiener characterizes cyclic translation
+vectors by almost-everywhere nonvanishing of their Fourier transform
+\cite{Wiener1932}.  The new source-specific collision is that
+\(\widehat k=\Xi\) activates both in opposite directions: theta nullity
+forces the metric onto the real divisor, while the divisor's
+Lebesgue-nullity makes the same source cyclic in ordinary \(L^2\).
+Neither classical theorem alone gives the divisor classification,
+dense radical, or nonclosability of Hedenmalm's pair.
+
+Functional-equation-preserving perturbations are also known.
+Gauthier and Xarles proved that failure of the corresponding Riemann
+hypothesis is open and dense among broad spaces of meromorphic or entire
+functions satisfying a fixed functional equation
+\cite{GauthierXarles2009}.  Their proof already uses symmetric polynomial
+interpolation to insert off-line zeros while approximating on compact
+sets.  Accordingly, neither polynomial quartet insertion nor
+compact-open instability is claimed here as new.  Their role is to
+separate the new observables: continuum differential matroid, local
+spectral carrier, and quantized marked boundary.
+
+The differential-algebraic component belongs to the line beginning with
+Ostrowski's work on Dirichlet series
+\cite{Ostrowski1920,HansenStoneWolfson2022}; modern formulations include
+Pong \cite{Pong2016}.  Difference analogues of logarithmic-derivative
+estimates are much broader than the elementary zero-translation
+argument used below \cite{HalburdKorhonen2006,ChiangFeng2009}.
+The theorem package here is the coupling of these classical mechanisms
+to the actual theta current and its source-marked boundary.
+
+\subsection{What is decided}
+
+The paper proves the following strict separation.
+{\small
+\[
+\begin{array}{ccl}
+\text{unsquared theta current}
+  &\Longleftrightarrow& \text{exact horizontal divisor width},\\[1mm]
+\text{finite local entire carrier}
+  &\Longrightarrow& \text{impossible zero translation},\\[1mm]
+\text{regular source-core Hilbert metric}
+  &\Longrightarrow& \text{nonclosable divisor rigging},\\[1mm]
+\text{complete aperture differential matroid}
+  &\not\Longrightarrow& \text{quartet charge},\\[1mm]
+\text{positive Julia--Ward boundary}
+  &\Longrightarrow& \text{exact defect charge, not zero exclusion}.
+\end{array}                                                    \eqtag{1.2}
+\]
+}
+This is a classification inside explicitly stated observable classes,
+not a no-go theorem for every Hilbert--P\'olya construction.  It also
+does not prove that the Riemann divisor has width zero.  What it closes
+is the information question: a proof based on the present theta source
+cannot obtain zero exclusion from finite local Gram positivity,
+an ordinary closed source-core Hilbert metric, compact-open control of
+all jets, differential-algebraic maximality, or positivity of the
+canonical Julia defect.  Those mechanisms are now classified rather
+than left as unnamed candidates.
+
+\section{Theta source, current, and aperture width}
+
+\subsection{The normalized theta source}
+
+Riemann's integration by parts gives the explicit real, even Schwartz
+source
+\[
+ k(x)=\sum_{n=1}^{\infty}
+ 2\pi e^{x/2}
+ \bigl(2\pi n^4e^{4x}-3n^2e^{2x}\bigr)
+ e^{-\pi n^2e^{2x}},                                \eqtag{2.1}
+\]
+whose Jacobi reflection is \(k(-x)=k(x)\) and whose Fourier transform is
+\[
+  \Xi(b)=\int_{\R} k(x)e^{-ibx}\,\dd x.              \eqtag{2.2}
+\]
+For \(|a|<1\), define the
+right-line source and tangent
+\[
+  k_a(x)=e^{-ax}k(x),\qquad \dot k_a(x)=-xk_a(x).
+                                                               \eqtag{2.3}
+\]
+Both are Schwartz functions, and Fourier--Laplace continuation gives
+\[
+  \widehat{k_a}(b)=
+  \xi\left(\frac12+a+ib\right)=\Xi(b-ia).            \eqtag{2.4}
+\]
+
+For \(f,g\in\mathcal S(\R)\), write
+\[
+  \operatorname{Corr}(f,g)(x)
+  =\int_{\R} f(y+x)\overline{g(y)}\,\dd y.
+\]
+The first autocorrelation variation
+\[
+  A_a=\operatorname{Corr}(\dot k_a,k_a)
+       +\operatorname{Corr}(k_a,\dot k_a)            \eqtag{2.5}
+\]
+has Fourier transform
+\[
+  \widehat{A_a}(b)=J_a(b)
+  :=\frac{\partial}{\partial a}|\Xi(b-ia)|^2.        \eqtag{2.6}
+\]
+We call \(J_a\) the theta normal current.
+
+\subsection{Zero-safe orientation identity}
+
+\begin{proposition}[Normal orientation before scalarization]
+\label{prop:current}
+For \(|a|<1\) and \(b\in\R\),
+\[
+  J_a(b)
+   =2\Rea\!\left[
+       \xi'\!\left(\tfrac12+a+ib\right)
+       \overline{\xi\!\left(\tfrac12+a+ib\right)}
+     \right].                                       \eqtag{2.7}
+\]
+Equivalently, with \(s=\frac12+a+ib\),
+\[
+  J_a(b)
+   =2|\xi(s)|^2\Rea\frac{\xi'}{\xi}(s)               \eqtag{2.8}
+\]
+whenever \(\xi(s)\neq0\).  The multiplicative identity obtained by
+cross-multiplying (2.7) remains valid when \(\xi(s)=0\).
+\end{proposition}
+
+\begin{proof}
+Differentiate
+\(
+|\Xi(b-ia)|^2
+=\xi(s)\xi(\bar s)
+\)
+with respect to \(a\), use Schwarz symmetry
+\(\xi(\bar s)=\overline{\xi(s)}\), and collect conjugate terms.
+Division by \(|\xi(s)|^2\) gives (2.8) away from the divisor.  At a
+zero, both sides of the cross-multiplied identity vanish.
+\end{proof}
+
+\begin{definition}[Horizontal divisor width]
+\label{def:width}
+For \(\alpha\geq0\), let
+\[
+  Z(\alpha):
+  \qquad
+  \xi(\rho)=0\Longrightarrow
+  \left|\Rea\rho-\frac12\right|\leq\alpha.            \eqtag{2.9}
+\]
+The reflection symmetry \(\rho\mapsto1-\rho\) makes this equivalent to
+the one-sided bound \(\Rea\rho\leq\frac12+\alpha\).
+\end{definition}
+
+\section{The exact aperture--width law}
+
+\begin{theorem}[Normal-current phase law]
+\label{thm:width}
+For every \(\alpha\geq0\), the following are equivalent.
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item \(Z(\alpha)\) holds.
+\item For every \(a\) with \(\alpha<a<1\) and every \(b\in\R\),
+      \[
+        J_a(b)\geq0.                                 \eqtag{3.1}
+      \]
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+We first prove \(\textup{(i)}\Rightarrow\textup{(ii)}\).
+Use the centered spectral coordinate
+\[
+  z=b-ia,\qquad \lambda=u+iv,
+\]
+where a zero \(\rho\) of \(\xi\) corresponds to a zero \(\lambda\)
+of \(\Xi\) and \(|v|=|\Rea\rho-\frac12|\).  Pair each relative
+resolvent atom with its conjugate.  Direct calculation gives
+\[
+\begin{aligned}
+&\Ima\left[
+ \left(\lambda^{-1}-(\lambda-z)^{-1}\right)
+ +\left(\bar\lambda^{-1}-(\bar\lambda-z)^{-1}\right)
+\right]\\
+&\quad =
+\frac{-2\,\Ima z\,
+ \big((\Rea z-u)^2+(\Ima z)^2-v^2\big)}
+ {\big((\Rea z-u)^2+(\Ima z-v)^2\big)
+  \big((\Rea z-u)^2+(\Ima z+v)^2\big)}.
+\end{aligned}
+\eqtag{3.2}
+\]
+Here \(\Ima z=-a<-\alpha\) and \(|v|\leq\alpha\).
+The denominator is positive away from a zero, while
+\[
+  (\Rea z-u)^2+a^2-v^2>0.
+\]
+Thus every conjugate pair in the canonical relative-resolvent trace
+has nonnegative imaginary part.  The normally convergent paired sum
+therefore has nonnegative imaginary part.  The logarithmic derivative
+identity for the canonical product of \(\Xi\), followed by
+Proposition~\ref{prop:current}, gives \(J_a(b)\geq0\).
+
+For the converse, suppose (ii) and let
+\(\rho=d+\frac12+ib\) be a zero with \(d>\alpha\).
+Nontrivial zeros lie in \(0<\Rea s<1\), so \(0<d<\frac12\).
+In the \(z\)-coordinate, \(z_0=b-id\) is a zero of \(\Xi\).
+Zeros of a nonzero entire function are isolated.  Choose
+\(c\in(\alpha,d)\), sufficiently close to \(d\), such that
+\[
+  \Xi(b-ix)\neq0\qquad(c\leq x<d).                   \eqtag{3.3}
+\]
+Set \(U(x)=|\Xi(b-ix)|^2\).  By (ii),
+\(
+U'(x)=J_x(b)\geq0
+\)
+on \([c,d]\), hence \(U(c)\leq U(d)\).  But (3.3) gives
+\(U(c)>0\), while \(U(d)=0\), a contradiction.  Therefore no zero
+has displacement \(d>\alpha\).  Reflection supplies the opposite
+side, proving \(Z(\alpha)\).
+\end{proof}
+
+\begin{remark}
+At \(\alpha=0\), Theorem~\ref{thm:width} specializes to a
+monotonicity criterion equivalent to the Riemann hypothesis.  The
+content used in this paper is the full law for every \(\alpha\), which
+identifies what the current measures even when its endpoint is unknown.
+\end{remark}
+
+\subsection{The complete Gaussian Hankel phase transition}
+
+Fix \(\tau>0\).  For each admissible aperture \(a\), define moments
+\[
+  m_n(a,\tau)
+  =\int_{\R}b^nJ_a(b)e^{-\tau b^2}\,\dd b,\qquad n\geq0,            \eqtag{3.4}
+\]
+and the Hankel matrices
+\[
+  H_r(a,\tau)=\big(m_{j+k}(a,\tau)\big)_{0\leq j,k\leq r}.          \eqtag{3.5}
+\]
+
+\begin{corollary}[Temperature-independent Hankel threshold]
+\label{cor:hankel}
+Let \(\tau>0\) and \(\alpha\geq0\).  The following are equivalent:
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item \(Z(\alpha)\);
+\item for every \(\alpha<a<1\) and every \(r\geq0\),
+      \(H_r(a,\tau)\) is positive semidefinite.
+\end{enumerate}
+Consequently, for any \(\tau,\sigma>0\), the two complete Hankel
+tail conditions have exactly the same aperture threshold.
+\end{corollary}
+
+\begin{proof}
+If \(J_a\geq0\), then for every polynomial \(p\),
+\[
+ \sum_{j,k}c_j\bar c_km_{j+k}(a,\tau)
+ =\int_{\R}|p(b)|^2J_a(b)e^{-\tau b^2}\,\dd b\geq0,                \eqtag{3.6}
+\]
+so every Hankel matrix is positive semidefinite.
+
+Conversely, positivity of the complete Hankel family says that the
+Gaussian-weighted moment functional associated with the fixed continuous
+density \(J_a\) is positive on polynomial squares.  Put
+\(\dd\nu(b)=|J_a(b)|e^{-\tau b^2}\dd b\).  The standard vertical-strip
+bounds for \(\xi\) and \(\xi'\) give a Gaussian tail for \(\nu\);
+therefore polynomials are dense in \(L^2(\nu)\).  If \(J_a(b_0)<0\),
+continuity gives a compact interval on which it is strictly negative.
+Choose a nonzero continuous bump \(g\) supported in that interval and
+polynomials \(p_n\to g\) in \(L^2(\nu)\).  Cauchy--Schwarz gives
+\[
+ \int_{\R}\bigl||p_n|^2-|g|^2\bigr|\,\dd\nu\longrightarrow0.
+\]
+The left side of (3.6) therefore converges to
+\(\int |g|^2J_a(b)e^{-\tau b^2}\dd b<0\), a contradiction.  Hence
+\(J_a\geq0\).
+Theorem~\ref{thm:width} now proves the equivalence.  Since \(Z(\alpha)\)
+does not involve \(\tau\), the threshold is temperature-independent.
+\end{proof}
+
+\section{Why regular Hilbert positivity cannot orient the current}
+
+\subsection{Finite local carriers}
+
+The phase law makes a sum-of-squares representation tempting.  We now
+prove that the most direct local construction is impossible.
+
+\begin{definition}[Entire diagonal carrier]
+For \(a>0\), an entire diagonal carrier is an entire function
+\(Q:\C\to\C\) satisfying, for every \(b\in\R\),
+\[
+\begin{aligned}
+&\xi'(\tfrac12+a+ib)\xi(\tfrac12+a-ib)
+ +\xi(\tfrac12+a+ib)\xi'(\tfrac12+a-ib)\\
+&\qquad =
+Q(b)\xi(\tfrac12+a+ib)\xi(\tfrac12+a-ib).            \eqtag{4.1}
+\end{aligned}
+\]
+\end{definition}
+
+\begin{theorem}[Entire-carrier obstruction]
+\label{thm:entire}
+No positive aperture \(a\) admits an entire diagonal carrier.
+\end{theorem}
+
+\begin{proof}
+Assume that \(Q\) satisfies (4.1).  Both sides are entire functions of
+the complex variable \(b\), and equality on \(\R\) implies equality on
+\(\C\).  Put \(c=\frac12+a\) and substitute
+\[
+  b=-i(z-c).
+\]
+Using \(\xi(1-w)=\xi(w)\) and then dividing away from the divisor gives
+\[
+ \frac{\xi'}{\xi}(z)
+ -\frac{\xi'}{\xi}(z-2a)
+ =Q\big(-i(z-c)\big).                                \eqtag{4.2}
+\]
+The right side is entire.
+
+Let \(\rho\) be any zero of \(\xi\), of arbitrary multiplicity \(m\).
+The logarithmic derivative has residue \(m\) at \(\rho\).  Since the
+right side of (4.2) has no pole, the pole at \(\rho\) must be cancelled
+by the second term.  Therefore \(\rho-2a\) is also a zero, with the same
+multiplicity.  Iteration gives
+\[
+  \rho-2na\in Z(\xi)\qquad(n=0,1,2,\ldots).           \eqtag{4.3}
+\]
+For large \(n\), the real part of \(\rho-2na\) is negative.  This
+contradicts the fact that every nontrivial zero of the completed
+\(\xi\)-function lies in \(0<\Rea s<1\).  Hence \(Q\) cannot exist.
+\end{proof}
+
+\begin{corollary}[Finite local autocorrelation-frame obstruction]
+\label{cor:frame}
+Let \(a\in(0,1)\).  There do not exist finitely many polynomials
+\(p_1,\ldots,p_m\in\C[X]\) such that
+\[
+  A_a
+  =\sum_{j=1}^m
+    \operatorname{Corr}\big(p_j(\partial_x)k_a,
+                            p_j(\partial_x)k_a\big),               \eqtag{4.4}
+\]
+where \(A_a\) is the actual theta autocorrelation tangent in (2.5).
+\end{corollary}
+
+\begin{proof}
+Fourier transformation sends \(p_j(\partial_x)\) to the polynomial
+symbol \(p_j(ib)\) and autocorrelation to modulus square.  Thus (4.4)
+would give
+\[
+  J_a(b)=|\Xi(b-ia)|^2\sum_{j=1}^m|p_j(ib)|^2.       \eqtag{4.5}
+\]
+For real \(b\), the multiplier in (4.5) is the restriction of the
+polynomial
+\[
+  Q(z)=\sum_{j=1}^m
+  p_j(iz)\,\overline{p_j(i\bar z)}.
+\]
+Equation (4.5), written without division by \(\Xi\), is exactly
+(4.1).  Theorem~\ref{thm:entire} gives the contradiction.
+\end{proof}
+
+\begin{remark}[What the obstruction says]
+Infinite dimension alone does not evade Theorem~\ref{thm:entire} if the
+resulting diagonal multiplier still extends holomorphically across the
+divisor.  Any successful positive carrier in this theta model must retain
+a non-entire transverse divisor singularity.  The theorem does not
+exclude nonlocal or singular Hilbert structures; it proves that such a
+departure is necessary.
+\end{remark}
+
+\subsection{The full translation-stable source core}
+
+The preceding obstruction concerns diagonal multipliers.  We now allow
+an arbitrary jointly continuous positive form on the Schwartz source
+core.  This includes nonlocal and distributional kernels.
+
+We first isolate the topological mechanism, which is independent of
+zeta functions.
+
+\begin{proposition}[Cyclic-null collapse principle]
+\label{prop:cyclic-null}
+Let \(\mathcal D\) be a complex vector space, let
+\(j:\mathcal D\to H\) be an injective linear map into a Hilbert space,
+and let \(Q\) be a Hermitian sesquilinear form on \(\mathcal D\).
+Suppose that a family \((v_i)_{i\in I}\) lies in the left radical of
+\(Q\) and that
+\[
+ \overline{\operatorname{span}\{j(v_i):i\in I\}}=H.               \eqtag{4.6}
+\]
+Then for every \(u\in\mathcal D\) there is a sequence
+\((z_n)\subset\mathcal D\) such that
+\[
+\begin{gathered}
+ j(z_n)\longrightarrow0,\qquad
+ Q(z_m-z_n,z_m-z_n)=0,\\
+ Q(z_n,z_n)=Q(u,u)\qquad(m,n\geq0).                \eqtag{4.7}
+\end{gathered}
+\]
+Consequently, if \(Q\neq0\), its radical image is dense, proper, and
+nonclosed in \(H\), and \(Q\) is not sequentially closable through
+\(j\).
+\end{proposition}
+
+\begin{proof}
+Choose \(r_n\) in the algebraic span of the \(v_i\) with
+\(j(r_n)\to j(u)\), and put \(z_n=u-r_n\).  Hermitian symmetry makes
+the left radical two-sided.  Expanding \(Q\) therefore gives (4.7).
+The same cyclicity makes the radical image dense.  It is proper when
+\(Q\neq0\), since injectivity of \(j\) would otherwise put every vector
+in the radical.  A proper dense subspace is nonclosed.  Finally, (4.7)
+is a form-Cauchy sequence converging to zero in \(H\), but its energy is
+the fixed nonzero number \(Q(u,u)\) whenever such a \(u\) is chosen.
+This is exactly the failure of sequential closability.
+\end{proof}
+
+Put
+\[
+ \Phi(x)=-\log k(x),\qquad
+ D=-i\partial_x,\qquad
+ L=-i(\partial_x+\Phi'(x))=kDk^{-1}.                 \eqtag{4.8}
+\]
+Then \(Lk=0\) and \(\ker L=\C k\) on the smooth source class.
+Hedenmalm's pair-symmetry problem pulls back to
+\[
+ Q(Df,g)=Q(f,Dg),\qquad Q(k,k)=0.                    \eqtag{4.9}
+\]
+Here \(L\cS(\R)\) denotes only the algebraic image of the source;
+no ordinary-\(L^2\) target domain is assumed.
+
+\begin{theorem}[Source-core metric classification and collapse]
+\label{thm:metric}
+Let \(Q:\cS(\R)\times\cS(\R)\to\C\) be jointly continuous,
+sesquilinear, and nonnegative, and suppose (4.9) holds.
+Then:
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item there is a unique positive Borel measure \(\mu\) of temperate
+      growth such that
+      \[
+       Q(f,g)=\int_{\R}\widehat f(t)
+              \overline{\widehat g(t)}\,\dd\mu(t);   \eqtag{4.10}
+      \]
+\item its support lies in the real Riemann divisor
+      \[
+       \operatorname{supp}\mu
+       \subset\{t\in\R:\Xi(t)=0\};                   \eqtag{4.11}
+      \]
+      in particular \(\mu\) is purely atomic;
+\item if \(Q\neq0\), its radical has dense, proper, nonclosed image
+      in ordinary \(L^2(\R)\), and \(Q\) is not sequentially closable
+      through \(\cS(\R)\hookrightarrow L^2(\R)\);
+\item no nonzero form satisfying these hypotheses can have radical
+      exactly \(\C k\).  Consequently it cannot be the pullback of a
+      positive-definite form on the full algebraic image
+      \(L\cS(\R)\).
+\end{enumerate}
+Conversely, every positive temperate measure supported on the set in
+(4.11) defines a form satisfying the hypotheses.
+\end{theorem}
+
+\begin{proof}
+Since \(D=-i\partial_x\), the first identity in (4.9) says that
+\[
+ Q(\partial_xf,g)+Q(f,\partial_xg)=0.
+\]
+Differentiating \(Q(T_yf,T_yg)\), where \(T_yf(x)=f(x+y)\), therefore
+shows that \(Q\) is invariant under simultaneous translation.
+The Bochner--Schwartz theorem gives the unique representation (4.10)
+\cite{Schwartz1966}.
+
+Nonnegativity supplies Cauchy--Schwarz for the seminorm of \(Q\), so
+\(Q(k,k)=0\) puts \(k\) in both radicals.  Using
+\(\widehat k=\Xi\) in (4.10) gives
+\[
+ 0=Q(k,k)=\int_{\R}|\Xi(t)|^2\,\dd\mu(t).            \eqtag{4.12}
+\]
+The integrand is continuous and nonnegative, proving (4.11).
+The real zeros of a nonzero entire function are discrete, hence every
+such measure is atomic.  The converse follows directly from (4.10).
+
+Translation invariance puts every \(T_yk\) in the radical.  Because
+\(\Xi\) vanishes only on a Lebesgue-null discrete set, it is nonzero
+almost everywhere on \(\R\).  Wiener's \(L^2\) cyclicity theorem
+\cite{Wiener1932} gives
+\[
+ \overline{\operatorname{span}\{T_yk:y\in\R\}}^{\,L^2}
+ =L^2(\R).                                          \eqtag{4.13}
+\]
+Proposition~\ref{prop:cyclic-null}, applied to the translation orbit,
+now gives the dense proper nonclosed radical and nonclosability.
+Finally,
+positive definiteness on \(L\cS(\R)\) would make the pullback radical
+equal to \(\ker L=\C k\).  Its \(L^2\)-image is one-dimensional and
+closed, contradicting the dense-radical conclusion.
+\end{proof}
+
+\begin{remark}[Exact scope]
+Theorem~\ref{thm:metric} classifies the natural translation-stable
+Schwartz source extension.  A form defined only on a finite
+zero-eigenfunction span, with no such extension, lies outside the
+theorem.  The result is therefore a source-core no-go for Hedenmalm's
+theta pair, not a no-go for de Branges spaces or Hilbert--P\'olya in
+general.
+\end{remark}
+
+\section{Continuum differential geometry and quartet blindness}
+
+\subsection{The real-aperture prime family}
+
+For \(h\in\R\), define the arithmetic source
+\[
+  a_h(n)=\Lambda(n)(1-n^{-h})                         \eqtag{5.1}
+\]
+and, initially in a right half-plane, its Dirichlet carrier
+\[
+\begin{aligned}
+  D_h(s)
+  &=\sum_{n\geq1}\frac{\Lambda(n)(1-n^{-h})}{n^s}\\
+  &=\frac{\zeta'}{\zeta}(s+h)-\frac{\zeta'}{\zeta}(s).              \eqtag{5.2}
+\end{aligned}
+\]
+If
+\[
+ A(s)=\tfrac12s(s-1)\pi^{-s/2}\Gamma(s/2),
+\]
+then on the common Euler half-plane (5.2) is exactly
+\[
+ \left[\frac{\xi'}{\xi}(s+h)-\frac{\xi'}{\xi}(s)\right]
+ -
+ \left[\frac{A'}{A}(s+h)-\frac{A'}{A}(s)\right].     \eqtag{5.3}
+\]
+Thus \(D_h\) is the prime-corrected completed logarithmic shift defect;
+the archimedean term has been subtracted explicitly, not absorbed into
+the differential base.
+
+For a family \(f_i\) in a differential extension of \(\C(s)\), let
+\(\Mat(f_i)\) denote the represented differential matroid:
+\(I\) is independent when \(\{f_i:i\in I\}\) is differentially
+algebraically independent over \(\C(s)\).
+
+\begin{lemma}[Prime-tail differential criterion]
+\label{lem:ostrowski}
+Let \(f_1,\ldots,f_r\) be Dirichlet series with finite abscissa of
+convergence and coefficients supported on positive prime powers.  If,
+for every \(m\), the prime-layer coefficient profiles of
+\[
+ f_j,f_j',\ldots,f_j^{(m)}\qquad(1\leq j\leq r)
+\]
+are linearly independent modulo functions supported on finitely many
+primes, then \(f_1,\ldots,f_r\) are differentially algebraically
+independent over \(\C(s)\).
+\end{lemma}
+
+\begin{proof}
+This is the prime-support form of Ostrowski's coefficient criterion
+\cite{Ostrowski1920,Pong2016}.  Expand a hypothetical
+differential-polynomial relation as a Dirichlet series and choose its
+lowest nonvanishing coefficient.  Differentiation multiplies the
+\(n\)-th coefficient by powers of \(-\log n\), while multiplication
+becomes Dirichlet convolution.  Restriction to new prime rays and
+polarization of the highest nonzero homogeneous part produce a
+finite-prime-tail linear relation among the displayed jet profiles.
+The hypothesis kills that relation.  Descending through the homogeneous
+parts makes the original differential polynomial zero.
+\end{proof}
+
+\begin{proposition}[Pointed-collision aperture matroid]
+\label{prop:matroid}
+For every finite real-aperture family \(h_i\),
+\[
+  \Mat(D_{h_i})
+  =\text{the pointed-collision matroid of }(h_i):      \eqtag{5.4}
+\]
+\(h_i=0\) is a loop, equal nonzero apertures are parallel, and any
+collection of distinct nonzero apertures is differentially algebraically
+independent over \(\C(s)\).
+\end{proposition}
+
+\begin{proof}
+The first two statements follow directly from (5.1).  For distinct
+nonzero \(h_1,\ldots,h_r\), take all logarithmic jets.  On a prime \(p\),
+their coefficient profiles are finite linear combinations of
+\[
+  (\log p)^{k+1},
+  \qquad
+  e^{-h_j\log p}(\log p)^{k+1}
+  \quad(1\leq j\leq r,\ k\geq0).                     \eqtag{5.5}
+\]
+The real exponents \(0,h_1,\ldots,h_r\) are distinct.  The
+exponential-polynomial Vandermonde lemma implies that no nontrivial
+finite combination of the profiles in (5.5) vanishes on a tail of the
+primes.  Lemma~\ref{lem:ostrowski} gives differential algebraic
+independence.
+\end{proof}
+
+\subsection{Symmetric finite-divisor surgery}
+
+Fix \(d\in(0,\frac12)\), \(B>0\), and put \(z=s-\frac12\).  Define
+\[
+  G_{d,B}(s)
+  =\left(1+\frac{(z-d)^2}{B^2}\right)
+   \left(1+\frac{(z+d)^2}{B^2}\right).               \eqtag{5.6}
+\]
+It has zeros
+\[
+  \frac12\pm d\pm iB,                                \eqtag{5.7}
+\]
+satisfies \(G_{d,B}(1-s)=G_{d,B}(s)\), has real
+coefficients, and is positive on the real segment \(0<s<1\).
+For \(N\in\N\), set
+\[
+  F_{N,B}(s)=G_{d,B}(s)^N\xi(s).                     \eqtag{5.8}
+\]
+For the escape statement below, \(B_n=n+1\).
+
+\begin{proposition}[All-jet escape with arbitrary charge]
+\label{prop:escape}
+For each \(N\geq1\):
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item \(F_{N,B}\) is entire, Schwarz-real, satisfies
+      \(F_{N,B}(1-s)=F_{N,B}(s)\), is hypertranscendental over
+      \(\C(s)\), and its polynomial gauge contributes the
+      off-critical quartet (5.7) with multiplicity \(N\);
+\item as \(n\to\infty\), every holomorphic derivative of \(F_{N,B_n}\)
+      converges to the corresponding derivative of \(\xi\), locally
+      uniformly on \(\C\).
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+All symmetries and zeros follow from (5.6).  Multiplication by a nonzero
+polynomial preserves hypertranscendence.  On every compact set,
+\[
+  G_{d,B}(s)
+  =1+\frac{2(z^2+d^2)}{B^2}
+    +\frac{(z^2-d^2)^2}{B^4}\longrightarrow1.        \eqtag{5.9}
+\]
+The convergence is locally uniform.  Holomorphic convergence and
+Cauchy's integral formula give convergence of every derivative; fixed
+powers and multiplication by \(\xi\) preserve it.
+\end{proof}
+
+Let
+\[
+  q_{d,B}(s)=\frac{G'_{d,B}(s)}{G_{d,B}(s)}.          \eqtag{5.10}
+\]
+For the completed shift defect, surgery gives the exact affine change
+\[
+ D_h^{(N,B)}(s)
+ =D_h(s)+N\big(q_{d,B}(s+h)-q_{d,B}(s)\big),          \eqtag{5.11}
+\]
+after the same fixed archimedean correction on both sides.  The second
+term is rational.
+
+\begin{theorem}[Continuum hypertranscendental charge blindness]
+\label{thm:blind}
+For every aperture family \(h_i\), every \(B>0\), and every
+\(N\in\N\),
+\[
+  \Mat(D_{h_i}^{(N,B)})=\Mat(D_{h_i}).                \eqtag{5.12}
+\]
+Hence there is no function from the complete real-aperture differential
+matroid to \(\N\) that returns the inserted quartet multiplicity for all
+\(N\).
+\end{theorem}
+
+\begin{proof}
+Each correction in (5.11) belongs to the differential base
+\(\C(s)\).  Translating a represented family by base-field elements
+does not change any differential algebraic dependence relation:
+\[
+ \C(s)\langle D_{h_i}^{(N,B)}:i\in I\rangle
+ =\C(s)\langle D_{h_i}:i\in I\rangle.                \eqtag{5.13}
+\]
+This proves (5.12).
+If a matroid classifier returned \(N\), evaluate it at \(N=1\) and
+\(N=2\).  The inputs are equal by (5.12), while the required outputs
+are different, a contradiction.
+\end{proof}
+
+\begin{remark}
+Theorem~\ref{thm:blind} is not the assertion that
+hypertranscendence is weak.  Proposition~\ref{prop:matroid} says that
+the aperture family has maximal differential rank.  The stronger fact
+is that the whole rank geometry is transverse to the finite divisor
+charge.
+\end{remark}
+
+\section{The marked noncompact boundary recovers the charge}
+
+Set \(c=d+\frac12>0\).  The strict-right Schwarz pair in (5.7) has
+the unsquared Julia phase defect
+\[
+ \Delta_{d,B,t}(\varepsilon)
+ =1-\prod_{\eta\in\{\pm1\}}
+ \frac{(c-\varepsilon)^2+(t+\eta B)^2}
+      {(c+\varepsilon)^2+(t+\eta B)^2}.              \eqtag{6.1}
+\]
+For \(\varepsilon\geq0\), every factor in the product lies in
+\([0,1]\), so \(\Delta_{d,B,t}(\varepsilon)\geq0\).
+Direct differentiation before any divisor squaring gives
+\[
+ \left.\partial_\varepsilon
+   \Delta_{d,B,t}(\varepsilon)\right|_{\varepsilon=0}
+ =2\left[
+ \frac{2c}{c^2+(t+B)^2}
+ +\frac{2c}{c^2+(t-B)^2}
+ \right].                                           \eqtag{6.2}
+\]
+Thus this canonical positive Julia orientation has a
+\emph{defect-counting} polarity: an off-critical pair creates a
+strictly positive first derivative.  It is not the inequality
+\(J_a\geq0\) of Theorem~\ref{thm:width}, whose validity would exclude
+zeros beyond the aperture.
+
+The same pair has
+the reflected Cauchy response
+\[
+ \mathcal R_{d,B}(w)
+ =2\left[
+   \frac1{w+d+iB}+\frac1{w+d-iB}
+ \right].                                           \eqtag{6.3}
+\]
+In the normalization fixed by one logarithmic source pole, its
+Euler-edge Ward density is
+\[
+ W_{d,B}(t)
+ =2\left[
+  \frac{2c}{c^2+(t+B)^2}
+ +\frac{2c}{c^2+(t-B)^2}
+ \right]
+ =2\Rea\mathcal R_{d,B}\left(\frac12+it\right).      \eqtag{6.4}
+\]
+Equation (6.2) says exactly that
+\(W_{d,B}(t)=\partial_\varepsilon
+\Delta_{d,B,t}(0)\).
+For multiplicity \(N\), put \(W_{d,B}^{(N)}=NW_{d,B}\).
+
+\begin{theorem}[Quantized boundary recovery and escape]
+\label{thm:ward}
+Let \(d\in(0,\frac12)\), \(B>0\), and \(N\in\N\).
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item \(W_{d,B}^{(N)}(t)\geq0\) for all \(t\), and
+      \[
+        \int_{\R}W_{d,B}^{(N)}(t)\,\dd t=8\pi N.      \eqtag{6.5}
+      \]
+      Thus total marked boundary mass is injective in \(N\).
+\item For every \(R\geq0\) and \(B>R\),
+      \[
+        \sup_{|t|\leq R}W_{d,B}^{(N)}(t)
+        \leq \frac{8N}{(B-R)^2}.                     \eqtag{6.6}
+      \]
+      Hence for fixed \(N\), the density tends uniformly to zero on
+      every bounded height window as \(B\to\infty\), although its mass
+      remains \(8\pi N\).
+\item The marked logarithmic source \(Nq_{d,B}\) has a simple pole at
+      every inserted point.  No nonzero constant-coefficient
+      differential operator annihilates its principal-part class.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+Each term in (6.4) is a positive Lorentzian.  Translation invariance and
+\[
+  \int_{\R}\frac{2c}{c^2+t^2}\,\dd t=2\pi            \eqtag{6.7}
+\]
+give (6.5).  Since \(8\pi>0\), equality of the masses for two natural
+numbers forces equality of the multiplicities.
+
+If \(|t|\leq R<B\), then
+\(
+|t\pm B|\geq B-R
+\)
+and \(c<1\).  Dropping the positive \(c^2\) in each denominator gives
+\[
+ W_{d,B}(t)
+ \leq2\left[\frac2{(B-R)^2}+\frac2{(B-R)^2}\right]
+ =\frac8{(B-R)^2},
+\]
+which proves (6.6).
+
+Finally, a logarithmic derivative of a nonzero analytic function has a
+simple pole at each zero, independent of the zero's multiplicity as a
+statement about pole order.  More precisely, if a local factor is
+\((s-\rho)^Nm(s)\), \(m(\rho)\neq0\), then
+\[
+  Nq_{d,B}(s)=\frac{N}{s-\rho}+\frac{m'(s)}{m(s)}.    \eqtag{6.8}
+\]
+If \(P(\partial_s)\) is nonzero of degree \(r\), applying it to
+\((s-\rho)^{-1}\) creates a pole of order \(r+1\) whose leading
+coefficient is nonzero.  Lower derivatives cannot cancel it.
+\end{proof}
+
+\subsection{The singular common mode}
+
+There is a useful exact form of the last statement.  Let
+\(\mathcal M_\rho/\mathcal O_\rho\) be meromorphic germs at \(\rho\)
+modulo holomorphic germs, and let \(I\) be a finite nonempty set of
+source channels carrying the same marked logarithmic mode.  Define
+\[
+\begin{aligned}
+\Phi_I:\C[\partial]^{I}
+   &\longrightarrow \mathcal M_\rho/\mathcal O_\rho,\\
+ (P_i)_{i\in I}
+   &\longmapsto
+\left[\sum_{i\in I}P_i(\partial)(Nq_{d,B})\right].
+\end{aligned}                                                        \eqtag{6.9}
+\]
+Then
+\[
+ \ker\Phi_I
+ =\left\{(P_i):\sum_{i\in I}P_i=0\right\},\qquad
+ \operatorname{im}\Phi_I
+ =\C[\partial]\,[Nq_{d,B}].                           \eqtag{6.10}
+\]
+Thus the principal-part source projection has one free marked mode, with
+the \(A_{|I|-1}\) augmentation kernel.  This is the algebraic location
+of the charge that the aperture matroid forgets.
+
+\section{The orientation-carrier theorem}
+
+We can now collect the results into one visibility law.
+
+\begin{theorem}[Orientation-carrier fracture]
+\label{thm:main}
+The Riemann theta source has the following five exact layers.
+\begin{enumerate}[label=\textup{\Alph*.}]
+\item \textbf{Geometric visibility.}
+      The sign phase of the unsquared normal current is exactly the
+      horizontal width of the Riemann divisor
+      (Theorem~\ref{thm:width}), equivalently the phase threshold of
+      every complete Gaussian Hankel tower
+      (Corollary~\ref{cor:hankel}).
+\item \textbf{Local-carrier obstruction.}
+      At every positive aperture the current has no entire diagonal
+      carrier and the actual theta autocorrelation tangent has no
+      finite constant-coefficient differential Gram frame
+      (Theorem~\ref{thm:entire} and
+      Corollary~\ref{cor:frame}).
+\item \textbf{Regular global collapse.}
+      Every nonnegative momentum-symmetric form on the
+      translation-stable Schwartz source core is a singular measure on
+      the real \(\Xi\)-divisor.  Every nonzero such form is nonclosable
+      in ordinary \(L^2\), has dense nonclosed radical, and cannot
+      induce a positive-definite form on the full theta-operator image
+      (Theorem~\ref{thm:metric}).
+\item \textbf{Polarity fracture.}
+      The canonical Julia phase defect is nonnegative, but an
+      off-critical quartet makes its unsquared first derivative
+      strictly positive.  Its total derivative mass is \(8\pi N\);
+      therefore this positivity counts defects rather than excluding
+      them (equations (6.1)--(6.5)).
+\item \textbf{Hypertranscendental blindness and boundary escape.}
+      The complete continuum aperture family has the pointed-collision
+      differential matroid, but this matroid is unchanged by an
+      off-critical quartet of arbitrary multiplicity.  The surgery
+      converges through every holomorphic jet on compact sets, while
+      the source-marked noncompact boundary alone recovers the
+      multiplicity as \(8\pi N\); its density nevertheless disappears
+      on every bounded window as the quartet escapes
+      (Proposition~\ref{prop:matroid} and
+      Theorem~\ref{thm:blind},
+      Proposition~\ref{prop:escape}, and
+      Theorem~\ref{thm:ward}).
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+Parts A--E are precisely the cited results.  Their conjunction is
+nonvacuous: Part A proves that the current contains the desired
+orientation; Part B shows that a finite local sum-of-squares carrier
+cannot explain it; Part C closes the full regular ordinary-Hilbert
+source-core extension; Part D proves that the canonical positive
+unsquared alternative has the counting polarity; Part E proves that
+even maximal differential rank and all compact-open jets miss the
+charge that the marked noncompact boundary retains.
+\end{proof}
+
+\subsection{Consequence for theta-spectral RH programs}
+
+Hedenmalm's theta equation provides eigenfunctions for all zeros, including
+hypothetical nonreal spectral parameters, while a suitable positive
+sesquilinear structure would force those parameters to be real
+\cite{Hedenmalm2026}.  Theorem~\ref{thm:main} determines a necessary
+carrier property for such a structure in the present source model:
+
+\[
+\boxed{
+\begin{minipage}{0.86\linewidth}
+Within the translation-stable Schwartz source model, the desired theta
+orientation has neither a finite local entire Gram carrier nor a
+nonzero closable ordinary-\(L^2\) positive-definite carrier.  The
+canonical positive Julia carrier does retain an unsquared orientation,
+but with the opposite polarity: it assigns positive quantized mass to
+each off-line defect.
+\end{minipage}}                                                     \eqtag{7.1}
+\]
+
+This goes beyond loss of sign under squaring.  The preserved-sign
+current exists and exactly measures width; its
+regular Hilbert carriers are excluded.  The positive Julia derivative
+also exists; its sign is already satisfied by the unwanted divisor.
+Compact-open control of every holomorphic jet and the complete aperture
+differential matroid remain unable to distinguish multiplicity, while
+the only observable in the theorem package that does distinguish it is
+singular and noncompact.
+
+This conclusion is also narrower than a no-go theorem for
+Hilbert--P\'olya.  A genuinely global operator, a de Branges space, or a
+trace formula may contain precisely the singular and noncompact
+information isolated here.  The theorem says how such a construction can
+be tested: if it factors through an observable proven charge-blind above,
+it cannot force the critical line.
+
+\section{Closed scope and conclusion}
+
+The paper answers five questions without replacing them by conjectures.
+
+\begin{enumerate}[label=\textup{(\arabic*)}]
+\item \emph{Does keeping the Julia/theta coordinate unsquared preserve
+      transverse orientation?}  Yes.  Its normal current is (2.6), and
+      its sign threshold is exactly the full horizontal divisor width.
+\item \emph{Can a finite local positive spectral frame supply that sign?}
+      No.  Any entire diagonal carrier forces an impossible translation
+      orbit of every zero.
+\item \emph{Can a regular global ordinary-Hilbert source metric supply
+      it?}  No.  Every nonzero positive pair-symmetric source-core form
+      is a singular divisor measure with dense nonclosed radical and is
+      nonclosable.
+\item \emph{Does the canonical positive Julia derivative have the
+      exclusion polarity?}  No.  It is strictly positive when an
+      off-critical quartet is present and counts it in quanta of
+      \(8\pi\).
+\item \emph{Can complete hypertranscendental aperture geometry detect
+      off-line multiplicity?}  No.  All multiplicities have the same
+      continuum differential matroid; the missing multiplicity remains
+      observable only in the source-marked noncompact boundary, whose
+      exact mass is \(8\pi N\) and whose principal-part mode has kernel
+      (6.10).
+\end{enumerate}
+
+No assertion in these answers says that the actual marked mass of the
+Riemann divisor vanishes.  Such an assertion would prove the Riemann
+hypothesis and is not obtained here.  The advance is a carrier theorem:
+the actual theta source already contains an exact quantitative
+orientation observable, and the analysis completely classifies the
+local, regular source-Hilbert, compact-open, and differential-algebraic
+carriers considered here.  It also resolves the apparent Julia remedy:
+unsquaring restores a sign, but the canonical positive sign is a
+quantized defect counter.  No unproved vanishing or tightness statement
+is included among the conclusions.
+
+\begin{thebibliography}{99}
+\small
+
+\bibitem{ChiangFeng2009}
+Y.-M. Chiang and S.-J. Feng,
+\newblock On the growth of logarithmic differences, difference quotients
+and logarithmic derivatives of meromorphic functions,
+\newblock \emph{Trans. Amer. Math. Soc.} \textbf{361} (2009),
+3767--3791.
+
+\bibitem{GauthierXarles2009}
+P. M. Gauthier and X. Xarles,
+\newblock Perturbations of \(L\)-functions with or without non-trivial
+zeros off the critical line,
+\newblock in \emph{New Directions in Value-Distribution Theory of Zeta
+and \(L\)-Functions}, 2009; arXiv:0911.5135.
+
+\bibitem{HalburdKorhonen2006}
+R. G. Halburd and R. J. Korhonen,
+\newblock Difference analogue of the lemma on the logarithmic derivative
+with applications to difference equations,
+\newblock \emph{J. Math. Anal. Appl.} \textbf{314} (2006), 477--487.
+
+\bibitem{HansenStoneWolfson2022}
+E. C. Hansen, Y. Stone, and J. Wolfson,
+\newblock Alexander Ostrowski's ``On Dirichlet series and algebraic
+differential equations'',
+\newblock arXiv:2211.02088, 2022.
+
+\bibitem{Hedenmalm2026}
+H. Hedenmalm,
+\newblock Spectral interpretation of Riemann zeta zeros,
+\newblock arXiv:2606.17494, 2026.
+
+\bibitem{MatiyasevichSaidakZvengrowski2014}
+Y. Matiyasevich, F. Saidak, and P. Zvengrowski,
+\newblock Horizontal monotonicity of the modulus of the Riemann zeta
+function and related functions,
+\newblock \emph{Acta Arith.} \textbf{166} (2014), 189--200.
+
+\bibitem{Ostrowski1920}
+A. Ostrowski,
+\newblock \"Uber Dirichletsche Reihen und algebraische
+Differentialgleichungen,
+\newblock \emph{Math. Z.} \textbf{8} (1920), 241--298.
+
+\bibitem{Pong2016}
+W. Y. Pong,
+\newblock Applications of differential algebra to algebraic independence
+of arithmetic functions,
+\newblock \emph{Acta Arith.} \textbf{172} (2016), 149--173.
+
+\bibitem{SondowDumitrescu2010}
+J. Sondow and C. Dumitrescu,
+\newblock A monotonicity property of Riemann's xi function and a
+reformulation of the Riemann hypothesis,
+\newblock arXiv:1005.1104, 2010.
+
+\bibitem{Schwartz1966}
+L. Schwartz,
+\newblock \emph{Th\'eorie des distributions},
+\newblock Hermann, Paris, 1966.
+
+\bibitem{Wiener1932}
+N. Wiener,
+\newblock Tauberian theorems,
+\newblock \emph{Ann. of Math.} \textbf{33} (1932), 1--100.
+
+\end{thebibliography}
+
+\end{document}
