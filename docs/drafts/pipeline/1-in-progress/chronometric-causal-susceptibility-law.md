@@ -258,3 +258,10 @@ Retire or narrow the universal claim if any survives:
   strong-field corollary.
 - 2026-07-28 — formalized exact causal fracture/operator recovery plus complete finite
   clock-intervention packet and ordered-word reconstruction.
+- 2026-07-28 — hostile audit killed the broad datum “all finite clock-product laws” as an apex:
+  causal support alone determines at most conformal geometry, while all operational outcomes hide
+  the theory in the datum and make equivalence nearly circular.
+- 2026-07-28 — direct collision with propagator-to-metric reconstruction demoted two-clock metric
+  recovery to self-calibration machinery. Successor law moved to
+  `universal-causal-closure-law-of-gravity.md`: spacetime is the maximal common Lorentzian causal
+  factor of matter response; gravity is its complete conserved-stress graph.
