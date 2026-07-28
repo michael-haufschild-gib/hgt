@@ -156,4 +156,41 @@ theorem xiGaussianHeatMoment_deriv_re_nonpos_of_riemannHypothesis
   exact xiGaussianHeatMoment_re_nonneg_of_riemannHypothesis hRH ht (n + 1)
 
 
+
+/-! ### The full iterated identity
+
+Iterating the one-step ladder gives `mₙ = (−1)ⁿ m₀⁽ⁿ⁾` on `(0,∞)` outright, not merely one step at a
+time.  The induction is carried on the open ray, where the one-step identity holds at every point,
+so the derivative of the `n`-th iterate may be computed from a neighbourhood. -/
+
+/-- **Every moment is a signed derivative of the heat trace.**  On `(0,∞)`,
+`iteratedDeriv n m₀ = (−1)ⁿ mₙ`. -/
+theorem iteratedDeriv_xiGaussianHeatMoment_zero (n : ℕ) {t : ℝ} (ht : 0 < t) :
+    iteratedDeriv n (fun s : ℝ => xiGaussianHeatMoment 0 s) t
+      = (-1 : ℂ) ^ n * xiGaussianHeatMoment n t := by
+  induction n generalizing t with
+  | zero => simp
+  | succ m ih =>
+    have hev : (iteratedDeriv m fun s : ℝ => xiGaussianHeatMoment 0 s)
+        =ᶠ[nhds t] fun s : ℝ => (-1 : ℂ) ^ m * xiGaussianHeatMoment m s := by
+      filter_upwards [eventually_gt_nhds ht] with s hs using ih hs
+    rw [iteratedDeriv_succ, hev.deriv_eq]
+    rw [deriv_const_mul _ ((hasDerivAt_xiGaussianHeatMoment ht m).differentiableAt),
+      (hasDerivAt_xiGaussianHeatMoment ht m).deriv]
+    ring
+
+/-- **Complete monotonicity, in the literal form.**  Under RH the signed iterated derivatives of the
+heat trace are all nonnegative on `(0,∞)`: `(−1)ⁿ m₀⁽ⁿ⁾(t) ≥ 0`.  This is exactly the hypothesis of
+Bernstein's theorem; the converse is unavailable here (no Bernstein–Widder in mathlib). -/
+theorem neg_one_pow_mul_iteratedDeriv_re_nonneg_of_riemannHypothesis
+    (hRH : RiemannHypothesis) (n : ℕ) {t : ℝ} (ht : 0 < t) :
+    0 ≤ ((-1 : ℂ) ^ n * iteratedDeriv n (fun s : ℝ => xiGaussianHeatMoment 0 s) t).re := by
+  rw [iteratedDeriv_xiGaussianHeatMoment_zero n ht, ← mul_assoc, ← pow_add]
+  have hsign : ((-1 : ℂ) ^ (n + n)) = 1 := by
+    rw [← two_mul, pow_mul]
+    norm_num
+  rw [hsign, one_mul]
+  exact xiGaussianHeatMoment_re_nonneg_of_riemannHypothesis hRH ht n
+
+
 end RHTower

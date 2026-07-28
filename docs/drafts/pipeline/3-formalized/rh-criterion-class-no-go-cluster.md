@@ -117,13 +117,23 @@ output is a radial floor `A₂ ≤ A_{j+2}·lam^{8j}` uniform in `j`, and the Fu
 factorially so that floor is false. No weakening of `hgrow` yielding the floor can work. What remains
 open there is the ledger's own operator-asymptotic wall (`hl0`/`hl1` convergence), untouched.
 
-**Two formalization ceilings located.** No PNT in mathlib or corpus (only Chebyshev bounds), so no
-leading-order explicit-formula cancellation is formalizable. No Hamburger solvability or
-Bernstein–Widder anywhere, so the complete-monotonicity criterion cannot be closed to an iff.
+**Three formalization ceilings located**, none of which would prove RH if closed:
+
+1. *No PNT* in mathlib or corpus (only Chebyshev bounds), so no leading-order explicit-formula
+   cancellation is formalizable.
+2. *No Hamburger solvability / Bernstein–Widder.* Note the corrected scope (§80): this does **not**
+   block the `RH ⟺ Hankel-PSD` criterion, which the corpus already proves as a genuine
+   biconditional. It blocks only the *complete-monotonicity* reformulation — `mₙ ≥ 0 ∀n` is strictly
+   weaker than Hankel-PSD, witness `m = (1,1,0,…)` whose order-two Hankel determinant is `−1` — and
+   the measure-theoretic reading of `m₀` as a Laplace transform.
+3. *No prolate→Hermite asymptotics*, so the CCM coordinate limits `hl0`/`hl1` cannot be discharged.
 
 ## Corrections made during the work
 
-Six claims of mine were retracted and repaired **in the Lean source**, not only in prose: §43
+Eleven claims of mine were retracted and repaired **in the Lean source** where applicable, not only
+in prose. The recurring failure was asserting a scope or status from what I had *not found* rather
+than what I had *checked* (§§62, 84, 90, 92); the systematic citation check of §81 catches it and
+takes minutes. Among them: §43
 (significance), §53/§56 (wrong variable — `L` fixed, aperture grows), §60/§62 (scope — the PSD/moment
 family survives), §65 (declined a feasible step on a misdiagnosed obstruction), §68/§70 (two of five
 CCM hypotheses discharged, not four), §71/§72 (judged the Möbius premise through `M` instead of its
@@ -132,3 +142,42 @@ Mellin transform).
 Five of six came from reading adjacent material; the sixth from carrying the analysis through the
 right representation. The operative lesson: **reading first is necessary but not sufficient — a first
 pass through the wrong representation fails even when the reading is done.**
+
+## The surviving class, fully structured (§§75–86)
+
+The PSD/moment family — the one class the no-gos do not reach — now has an end-to-end account in
+`RHTower/HeatHankelLadderNesting` and `RHTower/HeatHankelMatrix`, all axiom-clean.
+
+| fact | theorem |
+|---|---|
+| rungs are symmetric matrices, unconditionally | `xiHeatHankelMatrix_isHermitian` |
+| conditions nest downward; RH from any starting order | `xiHeatHankelForm_nonneg_of_le`, `riemannHypothesis_iff_forall_ge` |
+| RH ⟹ PSD at every order and `t > 0` | `posSemidef_xiHeatHankelMatrix_of_riemannHypothesis` |
+| order two **is** the corpus's Turán defect | `det_xiHeatHankelMatrix_two` |
+| rungs approximable entrywise from **prime** contour data | `exists_primeSide_approx_hankel` |
+| witness vector below budget ⟹ ¬RH (all orders) | `not_riemannHypothesis_of_certified_witness` |
+| uniform positivity above budget ⟹ that rung PSD | `posSemidef_of_certified_positive` |
+| RH bounds how negative any approximation can be | `approx_form_ge_of_riemannHypothesis` |
+| exactly one certificate is available | `certificate_dichotomy` |
+| RH ⟹ `m_{j+k}² ≤ m_{2j}·m_{2k}` | `sq_heatMoment_le_mul_of_riemannHypothesis` |
+
+**Intrinsic asymmetry, recorded because the theorems look symmetric and are not.** A refutation
+certificate settles RH; a positivity certificate settles one order at one heat parameter. RH is the
+conjunction over an infinite family, so **no finite certificate from this apparatus can prove RH**.
+That is a property of the quantifier structure, not a weakness of the scheme.
+
+Nothing is evaluated anywhere. The no-computation rule holds throughout; what is added is the error
+accounting a certificate would require.
+
+## Scope of this cluster — corrected
+
+Earlier revisions of this card, and §§63–83 of the audit, said "every route in this corpus" is
+closed. That was over-scoped and is corrected in §84. What is actually established: the
+**criterion-reencoding** landscape of `RHTower` is mapped and closed. The Deninger
+arithmetic-cohomology programme (~20 live cards, `[LEAN-PROVED]` entries dated 2026-07-26, named
+next gates) is a different lane, is not a criterion reformulation, and **no no-go here touches it**.
+It was deliberately not entered: it is another session'"'"'s in-flight work.
+
+Eight corrections were made during this work (§§43, 56, 62, 65, 70, 72, 80, 84), each repaired in the
+Lean sources and memories as well as the cards. Six came from citing an adjacent claim without
+checking it; §81 records the systematic check that catches them, and it takes minutes.

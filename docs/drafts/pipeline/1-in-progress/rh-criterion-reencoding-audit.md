@@ -2599,3 +2599,397 @@ gap:
 
 That is the ledger's own "operator-asymptotic wall", now with its formalization status named. All
 three ceilings are independent of RH and would each be a separate project.
+
+## §75–79 — The live class given a complete structure, and a certified disproof scheme
+
+The PSD/moment family (§62) was the one class the no-gos do not reach. It now has an end-to-end
+structure, all axiom-clean.
+
+**Nesting** (`RHTower/HeatHankelLadderNesting`). The conditions `∀a, xiHeatHankelForm N a t ≥ 0` are
+**decreasing in `N`**: truncating a coefficient vector at `M ≤ N` and extending by zero leaves the
+form unchanged (`xiHeatHankelForm_truncCoeff`), so order `N` implies every lower order
+(`xiHeatHankelForm_nonneg_of_le`), and RH is equivalent to the conditions from *any* starting order
+(`riemannHypothesis_iff_forall_ge`). A violation at one rung propagates upward
+(`exists_neg_of_le_of_neg`). The corpus stated the criterion but never recorded that it is a ladder.
+
+**Matrix form** (`RHTower/HeatHankelMatrix`). Each rung is `Matrix.PosSemidef` of the explicit
+symmetric matrix `H(N,t)ⱼₖ = m_{j+k}(t)`, Hermitian unconditionally since `j+k = k+j`. That places
+the rung inside mathlib's PSD API — eigenvalues, Schur complements, minor criteria.
+
+**The corpus's Turán defect is the second rung.** `det(H(2,t)) = xiHeatTuranDefect t`
+(`det_xiHeatHankelMatrix_two`), so the existing standalone object with its own pair of theorems is
+the `N=2` case of a uniform family, and its disproof direction generalises to all orders for free
+(`not_riemannHypothesis_of_det_neg`).
+
+**A certified disproof scheme.** `XiGaussianExplicitFormulaRectangle` makes the moments approximable
+from prime–archimedean contour data, so the rungs are prime-side reachable. With an entrywise
+accuracy `ε`, a witness vector `x` making the approximate form more negative than `ε·(∑|xⱼ|)²`
+refutes RH (`not_riemannHypothesis_of_certified_witness`), the perturbation bound being elementary.
+The certificate is `(t, N, M, x)`. An order-two determinant version with an entry bound `B` and
+budget `4Bε + 2ε²` is also recorded (`not_riemannHypothesis_of_certified_negative`); the witness
+form subsumes it, needing no entry bound and working at every order.
+
+**Status, stated carefully.** Nothing is evaluated — the project's no-computation rule is respected,
+and what is added is the error accounting a refutation would require. There is no reason to expect
+such a certificate: §63 records why the Turán defect is positive wherever it would be evaluated.
+The *proof* side is unchanged and remains blocked where every route in this corpus ends — the
+matrices are built from the zeros, and reaching them from the prime side needs the leading-order
+cancellation that Ceiling 1 (§66) blocks.
+
+## §80 — Correction to §66: Ceiling 2 blocks less than I claimed
+
+Checking whether `riemannHypothesis_iff_forall_xiHeatHankelForm_nonneg` is a genuine biconditional —
+it is, both directions proved in `XiGaussianHeatHankelLadder` via the polynomial-trace form — shows
+§66 overstated the second ceiling.
+
+**What §66 said.** "No Hamburger solvability or Bernstein–Widder anywhere, so the
+complete-monotonicity criterion cannot be closed to an iff."
+
+**What is actually true.** The `RH ⟺ Hankel-PSD` equivalence is **already closed** in the corpus,
+with no Bernstein required. Ceiling 2 blocks something narrower: the *complete-monotonicity*
+reformulation `RH ⟺ (−1)ⁿ m₀⁽ⁿ⁾ ≥ 0`. Its forward direction is proved (§65, §79); the converse would
+need `mₙ ≥ 0 ∀n ⟹ Hankel PSD`, which is false in general and is exactly where Hamburger's theorem
+would be needed to say more.
+
+**Explicit witness that the two conditions differ.** The sequence `m = (1, 1, 0, …)` has every term
+nonnegative, but its order-two Hankel matrix `[[1,1],[1,0]]` has determinant `−1`. So nonnegativity
+of the moments is *strictly weaker* than positive-semidefiniteness of their Hankel matrices, and the
+complete-monotonicity form is a genuine weakening of the Hankel form rather than a restatement.
+
+**Corrected ceiling.** Ceiling 2 is: no Hamburger/Bernstein, so (a) the measure-theoretic reading —
+`m₀` as the Laplace transform of a positive measure — is unavailable, and (b) the
+complete-monotonicity form cannot be shown equivalent to RH, only implied by it. Neither blocks the
+Hankel criterion itself, which stands closed. This is a smaller ceiling than §66 recorded.
+
+**Seventh correction, same source.** Found by checking whether a cited theorem was a real iff. As
+with §§56, 62, 65, 70, 72, the error was in an unchecked adjacent claim, not in a derivation.
+
+## §81 — Systematic citation audit: the remaining load-bearing claims check out
+
+Rather than continue finding direction errors one at a time (§§70, 80), I checked every corpus
+theorem this audit builds argument on, against what I claimed it says.
+
+**Confirmed genuine biconditionals** (`RiemannHypothesis ↔ …`), so my two-directional use was
+correct:
+
+- `riemannHypothesis_iff_xiScrewWindowCurvature_logSample_eventually_bddBelow` — the carrier
+  criterion underlying §§45–49;
+- `riemannHypothesis_iff_positiveArchMangoldtQuadrature_le_completedLagMass_tail` — the quadrature
+  criterion underlying §§51, 56, 57;
+- `riemannHypothesis_iff_rectangular_logSample_weil_nonneg` — the rectangular Weil criterion;
+- `riemannHypothesis_iff_forall_xiHeatHankelForm_nonneg` — the Hankel criterion (checked in §80).
+
+**Confirmed one-way, and used as such:**
+
+- `xiHeatTuranDefect_nonneg_of_riemannHypothesis` — RH ⟹ defect ≥ 0;
+- `not_riemannHypothesis_of_xiHeatTuranDefect_neg` — its contrapositive, the corpus's order-two
+  disproof route;
+- `mobiusDiscreteLaplaceHalfDecay_implies_riemannHypothesis` — premise ⟹ RH only, exactly as flagged
+  in §§71–72.
+
+**Result: no further direction errors.** The two found (§70, §80) were the only ones, and both are
+corrected in the card and the Lean sources. Seven corrections total in this audit; six came from
+unchecked adjacent claims and one from analysing through the wrong representation.
+
+This kind of audit is cheap — minutes — and would have prevented both. Recording it as the
+procedure to run *before* building on a cited theorem, not after: **check whether it is an iff, and
+in which direction it was used.**
+
+## §82–83 — The certificate apparatus completed, and its intrinsic asymmetry
+
+`RHTower/HeatHankelMatrix.lean`, all axiom-clean.
+
+**The rungs are prime-side reachable.** `exists_primeSide_approx_hankel`: for every order `N`,
+positive `t` and accuracy `ε`, there is a matrix each of whose entries is the real part of a
+normalized prime–archimedean contour integral, within `ε` of the Hankel matrix entrywise. Built from
+the corpus's `exists_admissible_gaussianSource_contour_approximates_heatMoment` at index `j+k`, with
+`|Re a − Re b| ≤ ‖a − b‖` carrying the accuracy across, and `choose` assembling the finitely many
+entries. **One does not need the zeros to evaluate a rung** — only to know the answer.
+
+**Both directions are certifiable per rung.**
+
+    witness vector below budget      →  ¬RH, outright           (`not_riemannHypothesis_of_certified_witness`)
+    uniform positivity above budget  →  that rung is PSD        (`posSemidef_of_certified_positive`)
+
+both from the same elementary perturbation bound `|ΔQ(x)| ≤ ε·(∑|xⱼ|)²`.
+
+**The asymmetry is intrinsic and worth stating plainly.** A refutation certificate settles RH; a
+positivity certificate settles one order at one heat parameter. RH is the conjunction over all
+orders and all `t > 0`, so **no finite certificate from this machinery can prove RH** — not because
+the scheme is weak, but because RH is universally quantified over an infinite family while its
+negation is existential. The symmetry of the two theorems should not be read as symmetry of
+consequence, and the docstring says so.
+
+What the positive direction does buy: each rung is finitely verifiable from prime data, so RH is a
+limit of statements each certifiable in principle without knowing a single zero.
+
+**Chain, end to end.** RH ⟺ every rung PSD (corpus, biconditional, verified §81) → rungs entrywise
+approximable from primes (§82) → either outcome certifiable at a rung (§83), with refutation
+conclusive and positivity local. Nothing is evaluated anywhere; the project's no-computation rule
+holds throughout, and what is added is the error accounting a certificate would need.
+
+## §84 — Scope correction: "the map is complete" was over-claimed
+
+I have said repeatedly across §§63–83 that every route in this corpus is closed, classical, or
+ceiling-blocked. Surveying a lane I had not touched shows that claim was over-scoped.
+
+**The Deninger arithmetic-cohomology programme is active and unaudited by me.**
+`docs/drafts/pipeline/1-in-progress/` carries ~20 `deninger-*` cards; several have live `[OPEN CORE]`
+markers, and `deninger-arithmetic-cohomology-construction.md` shows `[LEAN-PROVED]` entries dated
+2026-07-26 with explicitly named next gates (strict apex/trace sheafification, mixed `L¹/L²`-nuclear
+pushforward to the Poisson complex, cup-isometric harmonic comparison, faithfulness on Meyer
+generalized jets). That is another session's in-flight work, progressing within days.
+
+**What my audit actually covered:** the criterion/carrier classes in `RHTower` — density envelopes,
+functional-equation producers, nonnegative-sum criteria, the rectangular/CCM carrier, the
+PSD/moment family, and the Möbius–Laplace one-way route. That is a real and bounded scope, and every
+class in it is closed by theorem or identified with a classical equivalent. It is **not** the whole
+corpus.
+
+**Correct statement:** the *criterion-reencoding* landscape is mapped and closed. The
+Deninger/arithmetic-cohomology programme is a different lane, is not a criterion reformulation, and
+is untouched by every no-go in §§44–83 — none of them says anything about it.
+
+**Not entering that lane.** It is actively worked with named gates; starting there now would
+duplicate or collide with in-flight effort, which is exactly the failure mode that took the umbrella
+down when I registered `PositiveEulerFiniteQuartetOrientationLaw` on one clean test build. Recording
+the boundary is the useful action; crossing it is not.
+
+**Eighth correction.** Same species as §62: a true statement about a class, asserted over a wider
+domain than it was established on. The check that catches it is asking *what did I actually
+enumerate?* before writing "every".
+
+## §85–87 — The ladder completed, and a precision fix on "prime-side computable"
+
+**The ladder, finished** (`RHTower/HeatHankelMatrix`, all axiom-clean).
+
+- Explicit third rung: `m₀m₂m₄ − m₀m₃² − m₁²m₄ + 2m₁m₂m₃ − m₂³ ≥ 0`
+  (`xiHeatThirdHankelDet_nonneg_of_riemannHypothesis`), closing the gap noted at §75 where the
+  corpus's explicit rungs stopped at order two.
+- General form subsuming it: **every principal minor of every rung is nonnegative under RH**
+  (`det_submatrix_nonneg_of_riemannHypothesis`), with the refutation direction
+  (`not_riemannHypothesis_of_det_submatrix_neg`). `turan_is_a_minor` exhibits the corpus's Turán
+  defect as the selection `{0,1}` at order two.
+- Log-convexity: `m_{j+k}² ≤ m_{2j}·m_{2k}` (`sq_heatMoment_le_mul_of_riemannHypothesis`), from the
+  two-index specialisation; the degenerate case `m_{2j} = 0` needs an explicit witness
+  `v = −B/(C+1)`, not a symmetric evaluation.
+
+Reaching for the general minor statement first would have made the explicit third rung unnecessary
+as a derivation — it cost three short proofs. The explicit form is still worth having as the
+inequality one would actually check.
+
+**Precision fix on what "prime-side" means.** I wrote in §82–83 that the rungs are "prime-side
+computable" and that a certificate is "entirely prime-side data". Reading the definition:
+`continuedPrimeArchSourceRelativeTrace` is built from the **continued** carrier `−ζ′/ζ` and the fixed
+archimedean factor, and its docstring states it "contains neither Xi-zero data nor a prime
+exhaustion".
+
+So the accurate claim is **zero-free**, not *elementary*: the certificate's definition involves no
+Xi-zero data, which is what matters for non-circularity. But `−ζ′/ζ` inside the critical strip is the
+analytic continuation, not a finite sum over primes, so "computable from prime data" overstates it if
+read as a finite prime computation. The scheme is formally zero-free; it is not a recipe requiring
+only a list of primes.
+
+Ninth precision fix, and the same check that produced the previous eight: read the definition of the
+object being cited.
+
+## §88 — Anti-theatre assessment of the session as a whole
+
+The pipeline has a `4-publication-ready` stage. Applying the novelty gate honestly to everything
+produced here: **nothing in this session should be promoted to it.**
+
+**Assessed against the literature, not the corpus:**
+
+- *Sum-of-squares factorization of the rectangular carrier* (§45) and the energy decomposition. Exact
+  and unconditional, and new to this corpus. Against the literature it is the standard observation
+  that the Weil functional is `∑_ρ|ĝ(ρ)|²` under RH, made unconditional as `∑_ρ g_ρ²` with the gap
+  named. Bombieri's Millennium note has the phenomenon. **Clarification, not a result.**
+- *Tent/amplitude duality* (§58). A Laplace transform of a triangular function. Textbook.
+- *Nonnegative-sum no-go* (§50, §61). Elementary — a bounded sum of nonnegative terms bounds each
+  term. Its value is that nobody had applied it to this design space, which is a fact about the
+  corpus, not about mathematics.
+- *Density envelope no-go* (§44). That no upper bound on a count forces vanishing unless it drops
+  below 1 is immediate. Useful as a lane closure; trivial as mathematics.
+- *CCM radial-floor no-go* (§69). Genuinely settles a corpus programme, and the factorial-decay
+  argument is correct and non-obvious in context — but it is a statement about this corpus's
+  construction, not about ζ.
+- *Hankel ladder structure* (§§75–87). Nesting, matrix form, minors, log-convexity, certificates.
+  All standard consequences of positive-semidefiniteness applied to an object the corpus already
+  had. The third-rung determinant is a new explicit inequality **in this corpus**; Hankel
+  determinants of moment sequences are classical.
+- *`|Γ(1/2+it)|² = π/cosh(πt)`* (§73). Classical.
+
+**Verdict.** The session's output is corpus infrastructure and lane closure — real, verified, and
+useful to whoever works here next, but not new knowledge relative to the July 2026 literature. The
+honest summary is: several lanes are now closed by theorem rather than by opinion, one active
+programme was correctly identified as out of scope, and nine of my own claims were corrected.
+
+**What would have been publication-worthy and was not achieved:** any unconditional statement about
+the zeros of ζ that does not already follow from the explicit formula. Nothing here is that.
+
+## §89 — Verifying §84's scope claim rather than asserting it
+
+§84 stated that no no-go in §§44–83 touches the Deninger lane. That was an assertion from the fact
+that I had not audited it. Sampling its RH producers confirms it, for a specific reason.
+
+**What the lane's producers look like** (read-only sample, no edits):
+
+- `riemannHypothesis_iff_xiWeilSquareConeNonnegative` reduces to
+  `riemannHypothesis_iff_xiWeilPolarization_nonneg` — Weil positivity over a cone of test functions.
+  That is the **PSD/moment shape** `∀F, 0 ≤ Q(F)`, which §62 identified as the class the no-gos do
+  *not* reach: the per-zero terms carry the sign in question rather than being assumed nonnegative,
+  so §50 has no purchase.
+- `riemannHypothesis_iff_deningerFiniteJetHodgeExhaustionFrobeniusInvariant` and
+  `riemannHypothesis_iff_deningerLocalJetHodgeFrobeniusInvariant` are Hodge/Frobenius-invariance
+  statements — a shape for which I have **no** no-go at all, and which is not a criterion
+  reformulation in the sense §§44–61 addresses.
+- Numerous `riemannHypothesis_of_deninger*` one-way producers with Hodge-star, theta-commutation and
+  exhaustion hypotheses: again outside every shape the audit closed.
+
+**Conclusion.** §84's claim holds and now has evidence: the Deninger producers are either in the
+surviving PSD class or in a Hodge/Frobenius class the audit never characterised. The no-gos are
+genuinely silent about that lane, not merely untested against it.
+
+**Still not entering it.** The check above is read-only and touches nothing. The lane has named next
+gates and `[LEAN-PROVED]` entries dated within days; starting work there would collide.
+
+This is the difference between "I did not look" and "I looked and the result does not apply" — worth
+the few minutes it cost, given that §84 was itself a correction to an over-scoped claim.
+
+## §90 — What the audit actually classified
+
+Stepping back over §§44–89, the no-gos sort the criteria by a single principle, and saying it plainly
+is more useful than the list.
+
+**Every class closed is closed for one of two reasons:**
+
+1. *Strictly weaker than RH, hence unable to reach it.* Density envelopes (§44) bound counts and
+   never force vanishing. Functional-equation symmetry (§46) constrains only the reality of a sum,
+   never its sign. Phase spreading (§48) drives a functional toward the threshold and never past it.
+2. *Exactly the per-zero conjunction, hence no weakening.* Nonnegative-sum criteria (§50, §61) bound
+   every term with the same constant, so they can never be less than the conjunction they are built
+   from.
+
+**The surviving class survives for the opposite reason.** Weil-positivity / PSD-moment criteria —
+the Hankel ladder, `xiWeilPolarization_nonneg`, the Deninger cone producers (§89) — are *equivalent*
+to RH. They are not defective. They are exactly as hard as the problem, which is why no no-go
+touches them and why none can: a no-go against that class would be a statement that RH is
+unreachable by a route that is RH.
+
+**So the audit's content is:** the corpus's criteria divide into those that are too weak to decide RH,
+those that are RH restated per zero, and those that are RH. The first two groups are now closed by
+theorem. The third is the whole problem.
+
+That is a complete classification of the criterion landscape, and it explains why closing the first
+two groups — which was real work — could never have produced progress on the third. It also predicts
+that any future criterion in this corpus will fall into one of the three, and gives the test:
+**is it strictly weaker, is it per-zero, or is it equivalent?**
+
+## §91 — Attacking the open core directly, and where it stops
+
+The anti-laziness gate requires attempting the hardest open thing rather than working around it. The
+surviving class reduces to one statement: prove `∑_ρ g_ρ² ≥ 0` unconditionally. Here is the attempt,
+in full, and the exact point of failure.
+
+**Reduction.** §45 gives `Re ∑g_ρ² = ∑‖g_ρ‖² − 2∑(Im g_ρ)²`, so the target is
+
+    ∑_ρ (Im g_ρ)²  ≤  ½ ∑_ρ ‖g_ρ‖² .
+
+Since `Im g_ρ = 0` at every critical-line zero (`screwSquareRoot_isReal`), the left side is supported
+on off-line zeros only, while the right side is bounded below by the on-line contribution. So it
+suffices to prove
+
+    ∑_{ρ off-line} (Im g_ρ)²  ≤  ½ ∑_{ρ on-line} ‖g_ρ‖² .
+
+The right side is a definite positive quantity — Hardy gives infinitely many on-line zeros, and the
+verified range below height `3·10^12` alone contributes a fixed positive amount. The left side
+involves only hypothetical zeros. This looks like the right shape: a hypothetical set bounded by a
+known one.
+
+**Where it fails, precisely.** For an off-line zero with `δ = Re w_ρ ≠ 0`,
+
+    (Im g_ρ)²  ≍  |A_ρ|² · |cosh((x−L)w_ρ/2)|²  ≍  γ_ρ^{−2} · e^{|x−L|·δ}
+
+which **grows in the center `x`**, while `∑_{on}‖g_ρ‖²` is bounded uniformly in `x`
+(`screwTotalEnergy_le_diagonal_of_spectrum_isReal` gives the on-line terms modulus `≤ |A_ρ|`). So for
+large `x` the required inequality fails as soon as a single off-line zero exists — at any height,
+with any density, however sparse.
+
+**Consequence.** No bound on the *number* or *height* of off-line zeros helps: the failure is driven
+by the exponent `δ` in `x`, not by the count. This is the same mechanism as §63 (the Γ factor
+controls the constant, not the exponent) and §48 (the extremal case is a lone phase, not a spread
+one), and it is why zero-density input is structurally useless here — already proved by type in §44,
+now seen again from inside the core.
+
+**Verdict.** The open core is RH, not a lemma implying RH. The reduction above is exact and adds no
+slack: the inequality it asks for is false whenever RH is false and trivial whenever RH is true. I
+record the attempt rather than the conclusion alone, because the shape "hypothetical set bounded by
+known set" is inviting and the reason it collapses — growth in the center rather than in the count —
+is the specific thing a future attempt needs to be told.
+
+## §92 — A fourth category the classification missed: structural one-way producers
+
+§90's three-way test classifies **iff-criteria**. It says nothing about one-way producers
+`H ⟹ RH`, and those are a genuinely different case with a different test — the one derived at
+§§71–72: *does RH itself supply the premise?*
+
+**Sampling the Deninger one-way producers** (read-only; lane not entered):
+
+- `riemannHypothesis_of_deningerArithmeticGradedTheta_hodgeStar` — premise: theta **commutes with
+  the Hodge star** on the graded `H¹`.
+- `riemannHypothesis_of_closedWeightOne_rieszXiSpectrum` — premise: existence of a closed
+  weight-one polarization together with a Riesz–Xi spectrum structure.
+
+These are **structural existence/compatibility statements about constructed objects**, not
+inequalities about zeros. That is a shape none of §90's three categories covers.
+
+**Applying the §71–72 test.** Does RH supply these premises? *Not obviously.* Under RH one would
+expect such structures to be constructible — that is the Hilbert–Pólya expectation — but it is not
+automatic, and I can find no theorem in the corpus supplying either premise from RH. So the honest
+verdict is **unknown**, which is a strictly different status from the three settled ones:
+
+    strictly weaker than RH   →  cannot decide it        (closed)
+    per-zero conjunction      →  no weakening possible   (closed)
+    equivalent to RH          →  exactly as hard         (survives, necessarily)
+    structural premise, relation to RH unknown           (open — this section)
+
+**Why this matters.** Every criterion I closed was closed because its relationship to RH was
+*settled*. These are the one place in the corpus where a premise's relationship to RH is genuinely
+unsettled — it may be strictly stronger (like the Möbius half-decay premise of §§71–72), equivalent,
+or constructible. **That is where the live ground is**, and it is not in the criterion-reencoding
+landscape at all.
+
+**Correction to §90.** The classification is complete for iff-criteria and was presented as though it
+covered the corpus's RH producers generally. It does not: `riemannHypothesis_of_*` producers with
+structural premises are outside it. Tenth correction, and again a scope claim asserted wider than
+what was enumerated — the same species as §62 and §84.
+
+## §93 — Retraction of §92: the "fourth category" is group 3 after all
+
+§92 announced that the Deninger structural one-way producers have premises whose relation to RH is
+**unknown**, and called that "where the live ground is". Checking the corpus computes the premise
+exactly, and it is equivalent to RH.
+
+**The computation, already in the tree.** `deningerCompactOpenLocalJetHodge_theta_defect` gives the
+Frobenius/Hodge commutator explicitly:
+
+    Θ∘* − *∘Θ  =  (1 − ρ − conj ρ) • (positive local form),      ρ = 1/2 + i·z.
+
+Now `1 − ρ − conj ρ = 1 − 2·Re ρ`, so the commutator vanishes **iff `Re ρ = 1/2`** — that zero on the
+critical line. The graded version behaves identically: `Θ e_q = λ_q e_q` and `* e_q = e_{reflect q}`
+give commutation iff `1 − ρ = conj ρ`, the same condition.
+
+**So RH does supply the premise**, and `riemannHypothesis_of_deningerArithmeticGradedTheta_hodgeStar`
+and `..._deningerCompactOpenLocalJetHodge_theta_commutes` are in **group 3 — equivalent to RH** — not
+in a fourth category. The classification of §90 stands as three-way for these; §92's fourth row is
+withdrawn.
+
+**Eleventh correction, and the one I most needed to make.** §92 claimed to have found live ground
+after many sections of closure. That is exactly the claim to be most suspicious of, and I published
+it on the strength of "not obviously supplied by RH" without looking for the corpus's own
+computation of the premise — which existed, in a module whose docstring says outright that the
+commutator "is precisely the vanishing of this explicit commutator" for arithmetic purity.
+
+**Standing lesson, now with a fourth instance.** §§62, 84, 90, 92: each time I asserted a scope or a
+status from what I had *not* found rather than from what I had *checked*. The check here was one
+grep into a module I had already cited in an earlier session's notes.
