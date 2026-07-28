@@ -66,9 +66,14 @@ hypertranscendence.
 
 ## Final audit gates
 
-- [ ] Direct foreground check of every new top-level module with `lake env lean <file>`.
-- [ ] One final foreground `lake build GaloisForLFunctions.RHTower`.
-- [ ] `#print axioms` scratch audit for paper capstones.
-- [ ] Formal lint gate.
-- [ ] Confirm no stale `lean`/`lake` process.
-- [ ] PDF compile, text extraction, and page-render inspection.
+- [x] Direct foreground check of every new top-level module with `lake env lean <file>`.
+- [x] Final foreground `lake build GaloisForLFunctions.RHTower` (13,591 jobs).
+- [x] `#print axioms` scratch audit for paper capstones: only `propext`,
+      `Classical.choice`, and `Quot.sound`.
+- [x] Whole-repository formal lint gate. A dead duplicate
+      `FiniteContractionPeripheralTransient` was reduced to a compatibility re-export of
+      `DissipativeQuantumReturnInformationTransition`, allowing both it and
+      `FiniteQuantumObserverGraphSharpness` to enter the umbrella without declaration collisions.
+- [x] Confirm no stale `lean`/`lake` process.
+- [x] PDF compile, text extraction, and all-page render inspection: 16 pages, no TeX warnings,
+      no internal verification terminology.

@@ -177,6 +177,124 @@ Retire the Nature claim if any holds:
 7. Only after G1--G3 survive, prove the mathematical package on paper and formalize it
    unconditionally in Lean.
 
+## Typed frontier after gravity and quantum-gravity audit
+
+The headline currently crosses six different mathematical types. They must not be identified.
+
+| Layer | Exact carrier | What it determines | What it does not determine |
+|---|---|---|---|
+| hypersurface kinematics | first normal--normal HDA bracket | inverse spatial metric and signature convention | Riemann curvature |
+| spacetime gravity | connection-corrected infinitesimal holonomy or clock-compass gradients | Riemann tensor | quantum character |
+| clock coordinates | brackets of chosen geometrical reference fields | gauge-dependent frame data | invariant noncommutativity |
+| bounded-region physics | corner/edge charge | observable remnant of a diffeomorphism at a marked boundary | a new HT sector by itself |
+| quantum-order protocol | coherent control of two operations | an order-sensitive amplitude | a uniquely gravitational witness |
+| HT source | differential transcendence of a physical response | exclusion of every finite differential closure | curvature, quantumness, or time orientation by itself |
+
+Consequences:
+
+1. The first HDA bracket is nonzero in flat Minkowski spacetime. Calling it curvature is false.
+2. Riemann curvature requires the connection-corrected commutator
+   `nabla_X nabla_Y - nabla_Y nabla_X - nabla_[X,Y]` on a vector/tensor frame, or an equivalent
+   clock-compass reconstruction. Scalar covariant derivatives commute.
+3. Giesel--Kabel--Wieland show that geometrical clocks in linearized gravity can be Abelianized
+   order by order by adding constraint terms. Bare clock noncommutativity is therefore not an
+   invariant gravitational observable.
+4. On a closed constraint surface the HDA displacement is gauge. A marked boundary or relational
+   reference is required before the order defect can carry a physical charge.
+5. An indefinite-order interference signal is not uniquely gravitational. The optical and
+   gravitational quantum switches have the same operational causal-order observable in the known
+   comparison.
+6. HT excludes a finite differential model, but a classical continuum can also be HT. It is not a
+   quantum witness without an independent nonclassicality theorem.
+
+## Exact local survivor: space is the span of clock-order defects
+
+At a point of a spatial slice, write
+
+```text
+B_q(N,M) = q sharp (N dM - M dN).
+```
+
+For the constant lapse `1` and every local coordinate function `x^j`,
+
+```text
+B_q(1,x^j) = q sharp(dx^j).
+```
+
+Therefore the span of all local clock-order defects is exactly `im(q sharp)`. In particular:
+
+```text
+q nondegenerate
+  iff local clock-order defects span the complete spatial tangent space;
+
+all local time steps commute
+  iff q sharp = 0.
+```
+
+This is the strongest correct version of the first half of the headline:
+
+> **Space is exactly what local time steps can disagree into.**
+
+It is a metric-reconstruction theorem, not yet a new law of gravity. The next original target is a
+gauge-invariant bounded-region theorem in which variation of this order map reconstructs curvature
+and its marked edge charge.
+
+## Schwarzschild HT source pressure test
+
+Solon's all-order Schwarzschild response supplies a genuine physical HT source:
+
+```text
+tau_ret(eta) = L + 2(psi(1-eta) + gamma_E).
+```
+
+It fails the naive G3 interpretation for two independent reasons.
+
+1. Its zeta tower is generated in the far zone by the universal Newtonian/Coulomb `1/r` phase,
+   not uniquely by horizon geometry.
+2. With `tau_adv(eta)=tau_ret(-eta)`, digamma reflection gives
+
+```text
+tau_ret - tau_adv
+  = 2(psi(1-eta)-psi(1+eta))
+  = 2 pi cot(pi eta) - 2/eta,
+```
+
+so the time-antisymmetric dressed-log sector is differentially algebraic. The time-symmetric sum
+remains hypertranscendental. Equivalently, for the Gamma carriers
+
+```text
+P(eta) = Gamma(1+eta) Gamma(1-eta),
+Q(eta) = Gamma(1+eta) / Gamma(1-eta),
+
+tau_ret - tau_adv = -2 logDeriv(P),
+tau_ret + tau_adv = DA constant + 2 logDeriv(Q).
+```
+
+The integral-shift product `P` is DA; the quotient `Q` and its logarithmic derivative are HT.
+Thus the irreducible HT content is shared by the two time orientations rather than being their
+difference. This rules out using the Schwarzschild far-zone scalar alone as the oriented
+clock-order charge.
+
+The exact proof is tracked in
+`../3-formalized/new_scientific_knowledge/schwarzschild-time-orientation-ht-split.md`.
+
+## Revised live conjecture
+
+The surviving route is no longer “an HT scalar clock is gravity.” It is:
+
+> **In a bounded gravitational region, the image of the clock-order map is spatial geometry; its
+> connection-corrected variation is curvature; and a source-selected HT obstruction to globally
+> Abelianizing this map is carried by an observer-marked edge mode.**
+
+Three obligations are independent:
+
+1. prove the local image/rank tomography and curvature reconstruction;
+2. prove invariance under allowed clock redefinitions and constraint additions;
+3. find a physical two-direction HT source whose antisymmetric boundary sector, not merely a
+   scalar scattering phase, survives those redefinitions.
+
+No current corpus theorem discharges obligation 3.
+
 ## Current verdict
 
 **PROMISING HEADLINE; OPEN SCIENCE.** The Riemann paper supplies a nontrivial warning and design
@@ -201,3 +319,7 @@ prediction do not yet exist.
 - 2026-07-28 — opened after direct audit of the publication-ready Riemann orientation-carrier
   paper. Recorded exact conceptual payload, immediate GR identity, prior-art collision, and
   missing HT-specific physical theorem.
+- 2026-07-28 — completed typed GR/QG pressure test. Separated metric from curvature, gauge clock
+  brackets from boundary charge, and order interference from a quantum witness. Identified the
+  exact local image/rank survivor and ruled out the Schwarzschild far-zone dressed log as a direct
+  orientation carrier: its time-antisymmetric sector is DA while its time-symmetric sector is HT.

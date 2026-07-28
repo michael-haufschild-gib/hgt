@@ -30,7 +30,7 @@
 \newcommand{\Bhaar}{\mathcal B_{\mathrm H}}
 \newcommand{\ee}{\mathrm e}
 
-\title{\textbf{A universal information law for quantum return}}
+\title{\textbf{Information geometry sets the limits of quantum return}}
 \author{Michael Haufschild}
 \date{28 July 2026}
 
@@ -38,36 +38,33 @@
 \maketitle
 
 \begin{abstract}
-What determines the waiting time for a closed quantum system to resemble
-itself again?  We identify a universal information variable.  For every finite
-pure-state spectral distribution and every accuracy, the negative logarithm
-of the exact return-target volume and the logarithm of the worst-spectrum
-return deadline lie within explicit dimension-dependent additive constants
-of one pivot-optimized reverse-water entropy, which is exactly the
-parallel-Gaussian rate--distortion functional.  The target has a constructive positive-volume
-box, so the law is two-sided and nonvacuous; its relative error is bounded by
-the dimension cost divided by the water entropy.  The Haar law is realized
-exactly by an independently tunable onsite-field ensemble in a Hermitian
-local spin Hamiltonian.  For every finite family of
-states or observables, total return distance is exactly a weighted phase
-energy on its coherence graph, whose visible relative-phase dimension is the
-number of sectors minus the number of connected components.  Every
-Hilbert--Schmidt-normalized probe inherits the same bound; every
-operator-normalized probe inherits it with an explicit square-root dimension
-conversion, including calibration errors.  Finally, every nonnegative summable countable pure-point packet
-recurs below every positive phase-energy resolution.  Quantum return is thus
-governed by the information carried by weighted, relational coherence rather
-than Hilbert-space size alone.
+Can a noisy finite quantum evolution ever recover its past, and how long can
+recovery take?  We prove a sharp returnability transition for every
+finite-dimensional contractive evolution.  The squared norm of the initial
+state's peripheral projection is an exact return-amplitude ceiling: every
+lower threshold is reached after every prescribed delay, whereas every higher
+threshold is eventually impossible.  Below this ceiling, the waiting-time
+problem reduces to the surviving phase packet.  For every finite spectral
+distribution and accuracy, both the negative logarithm of its exact
+return-target volume and the logarithm of its worst-spectrum deadline equal,
+within explicit finite constants, one pivot-optimized reverse-water entropy.
+The same functional is the parallel-Gaussian rate--distortion optimum.  For
+arbitrary finite families of states or observables, a coherence graph gives
+the exact visible phase rank, and deterministic hard spectra prove that this
+rank is the optimal universal recurrence exponent.  The results cover closed
+unitary dynamics, arbitrary finite Hilbert-space contractions and their finite
+convex mixtures, while explicitly separating what survives indefinitely from
+what noise irreversibly removes.
 \end{abstract}
 
 \noindent\textbf{Summary.}
-How long must a quantum system wait to resemble itself again?  The answer is
-not fixed by size alone.  A requested accuracy assigns resolution to spectral
-weights through the same reverse-water rule that solves parallel Gaussian
-lossy compression, while a chosen set of observations sees only a network of
-relative phases.  The law below is deterministic for every finite phase
-packet; normalized Haar measure enters only as the invariant geometry of that
-compact phase space.
+Noise does not merely make quantum return less likely: it places an exact
+ceiling on how much of the past can ever come back.  The part of an initial
+state supported on lossless modes returns arbitrarily late; the rest vanishes.
+Below that ceiling, return time is controlled not by system size alone but by
+how much weighted, observable phase information must be synchronized.  The
+law is deterministic; normalized Haar measure enters only as the invariant
+geometry used to measure the return target and construct worst-case spectra.
 
 \section*{Quantum return as an information problem}
 
@@ -86,19 +83,31 @@ Classical value-distribution theory for trigonometric sums with linearly
 independent frequencies goes back to Kac \cite{Kac1943}; here phase-torus
 volume is kept distinct from arithmetic assumptions on any fixed orbit.
 
-These results leave a basic distinction unresolved.  A state assigns different
-probabilities to different energy sectors, and an experiment observes only
-selected coherences.  Counting all sectors equally therefore discards two
-kinds of information: \emph{how strongly} each phase contributes and
-\emph{which relative phases} are visible.  We solve the two questions
-separately and then join them.
+Open dynamics presents a more basic question: whether return remains possible
+at all.  Peripheral spectra, attractor spaces and decoherence-free algebras
+describe the asymptotic degrees of freedom of quantum channels
+\cite{WolfPerezGarcia2010,Albert2019,AmatoEtAl2023}; non-Hermitian recurrence
+has also been tied to real spectra and unbroken symmetry
+\cite{LiuZheng2024}.  These structural results identify what can persist.
+They do not give a state-dependent scalar boundary separating all
+recurrently attainable late overlaps from all eventually impossible ones,
+nor a weight-sensitive finite deadline below that boundary.
 
-For pure states, the answer is a continuous, accuracy-dependent water
-functional.  For arbitrary finite families of density matrices and
-observables, the answer is a coherence network.  The former controls both the
-volume of the exact return target and a universal deadline; the latter gives
-an exact return identity, observable phase rank and finite guarantee.  Figure
-\ref{fig:law} shows the two reductions.
+The problem therefore has three layers.  Noise decides \emph{how much} return
+survives.  A state assigns different probabilities to the surviving spectral
+sectors.  An experiment observes only selected coherences.  Counting all
+sectors equally discards the resulting information hierarchy: persistent
+mass, spectral weight and visible relative phase.  We solve these questions
+and join them.
+
+For finite contractive dynamics, persistent mass is the exact returnability
+threshold.  Within its lossless phase packet, the answer is a continuous,
+accuracy-dependent water functional.  For arbitrary finite families of
+density matrices and observables, the answer is a coherence network.  The
+water functional controls both the volume of the exact return target and a
+universal deadline; the network gives an exact return identity, observable
+phase rank and a matching worst-spectrum exponent.  Figure \ref{fig:law}
+shows the two information reductions within the recurrent sector.
 
 \begin{figure}[t]
 \centering
@@ -339,6 +348,98 @@ require two coordinates at tail tolerance \(\delta_\eta\), but
 Thus a hard effective support does not determine the weight-sensitive
 functional at the same operational accuracy.
 
+\section*{Noise creates an exact returnability transition}
+
+The closed-system law extends to a sharp boundary between possible and
+impossible late return.  Let \(\mathcal K\) be any finite-dimensional complex
+Hilbert space, let \(T:\mathcal K\to\mathcal K\) be any linear contraction,
+\(\|T\|\leq1\), and let \(x\in\mathcal K\).  This setting includes a
+state-vector contraction, a contractive effective transfer operator, or a
+quantum channel acting contractively on a chosen Hilbert space of operators.
+Define the return overlap
+\[
+ A_n(x,T)=\langle x,T^n x\rangle.
+\]
+Let \(\mathcal K_{\partial}\) be the span of eigenspaces of \(T\) whose
+eigenvalues have modulus one, and let \(\Pi_{\partial}\) be its orthogonal
+projection.  The persistent mass is
+\begin{equation}
+ p_T(x)=\|\Pi_{\partial}x\|^2.
+\label{eq:persistent-mass}
+\end{equation}
+
+\begin{theorem}[Exact returnability transition]
+\label{thm:transition}
+For every finite-dimensional contraction and every initial vector,
+\(0\leq p_T(x)\leq\|x\|^2\), and \(p_T(x)\) is the exact asymptotic ceiling of
+the return amplitude:
+\begin{align}
+ a<p_T(x)&\Longrightarrow
+   \forall M\ \exists n>M:\quad a\leq |A_n(x,T)|,
+ \label{eq:below-ceiling}\\
+ p_T(x)<a&\Longrightarrow
+   \exists B\ \forall n\geq B:\quad |A_n(x,T)|<a.
+ \label{eq:above-ceiling}
+\end{align}
+Equivalently, the exact ceiling of \(|A_n|^2\) is \(p_T(x)^2\).
+
+If \(p_T(x)>0\), write the normalized surviving spectral weights as
+\[
+ w_\lambda=\frac{\|\Pi_\lambda x\|^2}{p_T(x)},\qquad
+ \sum_{\lambda\in\Lambda_\partial}w_\lambda=1.
+\]
+For every \(0\leq a<p_T(x)\), put
+\(\eta=(p_T(x)-a)/(2p_T(x))\).  There are a transient burn-in \(B\), a
+universal fidelity deadline \(N\) for the packet \(w\) at defect \(\eta\),
+and a clock
+\begin{equation}
+ B<n\leq(B+1)N,\qquad a\leq |A_n(x,T)|.
+\label{eq:contractive-deadline}
+\end{equation}
+When at least two peripheral modes carry weight, the least such universal
+deadline \(N=T_w(\eta)\) obeys the reverse-water bounds
+\eqref{eq:waterlaw}.
+\end{theorem}
+
+The transition is not an assumption that dissipation is small.  Every
+component orthogonal to \(\mathcal K_\partial\) decays to zero in norm; every
+peripheral component is a lossless phase mode.  Their orthogonality makes the
+surviving coefficients nonnegative, so the recurrent packet is exactly the
+weighted packet of Theorem~\ref{thm:water}.  This supplies both directions of
+the threshold: compact phase recurrence approaches \(p_T(x)\) after every
+delay, while contraction bounds the persistent contribution by \(p_T(x)\)
+and the transient contribution vanishes.
+
+Closed unitary evolution is the ceiling-preserving case
+\(p_T(x)=\|x\|^2\).  If the spectral radius of \(T\) is strictly below one,
+then \(p_T(x)=0\) and every positive late-return threshold is eventually
+impossible.  Intermediate values give partial memory: noise erases the
+transient component but does not eliminate recurrence of the surviving
+component.
+
+The class is stable under randomized dynamics.  For any contractions
+\(T_1,\ldots,T_m\) and probabilities \(q_i\geq0\), \(\sum_iq_i=1\), the
+one-step mixture
+\begin{equation}
+ \Phi=\sum_{i=1}^m q_iT_i
+\label{eq:mixed-contraction}
+\end{equation}
+is again a contraction and obeys
+\eqref{eq:below-ceiling}--\eqref{eq:contractive-deadline} with its own
+peripheral projection.  On Hilbert--Schmidt operator space this includes
+finite random-unitary channels, for which each branch is a unitary
+conjugation.  We do not claim that every completely positive
+trace-preserving map is Hilbert--Schmidt contractive; the theorem covers
+every channel or effective evolution for which the displayed contraction
+hypothesis holds.
+
+Peripheral and attractor spaces themselves are established objects in open
+quantum dynamics \cite{WolfPerezGarcia2010,Albert2019,AmatoEtAl2023}.  The new
+content here is the joined quantitative law: their state-dependent mass is a
+sharp scalar returnability boundary, and the same reverse-water information
+that controls closed target volume controls finite waiting below that
+boundary.
+
 \section*{Every finite observer has a coherence network}
 
 The pure-state law answers how probabilities allocate phase resolution.  A
@@ -392,6 +493,35 @@ Consequently:
 \end{enumerate}
 \end{theorem}
 
+\begin{theorem}[Sharp observer-rank exponent]
+\label{thm:graph-sharp}
+For every rank \(r\geq1\), the uniform pure state on \(r+1\) energy sectors
+has complete coherence graph, visible rank \(r\), and
+\begin{equation}
+ D^2(t)=2\left(1-\left|
+   \frac{1}{r+1}\sum_{j=1}^{r+1}\ee^{itE_j}\right|^2\right).
+\label{eq:uniform-distance}
+\end{equation}
+For every \(Q\), every spectrum has a clock
+\begin{equation}
+ 1\leq n\leq(Q+1)^r,\qquad
+ D^2(n)\leq4\left(\frac{2\pi}{Q+1}\right)^2.
+\label{eq:rank-upper}
+\end{equation}
+Conversely, for every \(0<\eta\leq1\) and horizon \(N\) satisfying
+\begin{equation}
+ N(r+1)\ee^{(r+1)/2}
+ \left(\sqrt{\frac{\pi\eta}{2}}\right)^r<1,
+\label{eq:rank-hard-budget}
+\end{equation}
+there is a deterministic real energy spectrum for which every
+\(1\leq n\leq N\) obeys
+\begin{equation}
+ D^2(n)>2\left[1-(1-\eta)^2\right].
+\label{eq:rank-lower}
+\end{equation}
+\end{theorem}
+
 The Hilbert--Schmidt statement has two operational consequences.  Put
 \(\Delta B^{(a)}(t)=U_tB^{(a)}U_t^\dagger-B^{(a)}\).  For every positively
 weighted \(a\) and every self-adjoint matrix \(\sigma\) with
@@ -421,12 +551,21 @@ Thus both Hilbert--Schmidt- and operator-normalized self-adjoint probes have
 explicit, dimension-honest noise budgets.
 
 The exponent in \eqref{eq:graph-deadline} is the exact number of visible phase
-coordinates used by this universal construction, not the Hilbert-space
-dimension.  Adding an observer changes the rank only if its nonzero
-energy-basis blocks connect previously disconnected components.  A diagonal
-state has no edges and is stationary.  A fully connected coherence pattern
-pays \(d-1\) relative phases.  Between them, every graph topology is handled
-by the same theorem.
+coordinates, not the Hilbert-space dimension.  It is also a minimax cost, not
+only a construction cost.  Equations
+\eqref{eq:rank-upper}--\eqref{eq:rank-lower} place the upper and hard-spectrum
+lower laws at the same quadratic resolution and the same rank power, with
+all constants displayed.  Thus every nonzero rank is attained by an
+operational density-matrix observer and has matching deterministic hard
+spectra.
+
+Adding an observer changes the rank only if its nonzero energy-basis blocks
+connect previously disconnected components.  A diagonal state has no edges
+and is stationary.  A fully connected coherence pattern pays \(d-1\)
+relative phases.  Between them, every graph topology is handled by
+Theorem~\ref{thm:graph}; Theorem~\ref{thm:graph-sharp} proves worst-spectrum
+sharpness of the rank-only exponent across the complete range of ranks, not a
+lower bound for every fixed graph and Hamiltonian.
 
 Equations \eqref{eq:graph-deadline}--\eqref{eq:graph-error} are a guaranteed
 horizon, not a claim that every fixed Hamiltonian saturates it.  Arithmetic
@@ -541,11 +680,15 @@ state coherently occupies.
 
 \section*{Experimental discriminator}
 
-Theorems \ref{thm:water} and \ref{thm:graph} separate two controls already
-available in recurrence platforms: state preparation changes spectral
-weights, while probe choice changes the coherence graph.  A direct protocol
-is therefore:
+Theorems \ref{thm:transition}, \ref{thm:water} and \ref{thm:graph} separate
+three controls available in recurrence platforms: calibrated loss changes
+the persistent mass, state preparation changes surviving spectral weights,
+and probe choice changes the coherence graph.  A direct protocol is
+therefore:
 \begin{enumerate}[leftmargin=2.1em]
+ \item reconstruct the peripheral modes of a calibrated one-step contraction
+ and compute \(p_T(x)\), then test return thresholds on opposite sides of
+ that predicted boundary;
  \item prepare a single-excitation state with known weights and sample
  independent onsite phases for the one-tick test \eqref{eq:local-transfer},
  or calibrate one fixed stroboscopic Hamiltonian for a deadline test;
@@ -588,37 +731,76 @@ probe and device-window inequalities require no ensemble.
 
 \section*{Discussion}
 
-The results answer a single question at three levels:
+The results answer a single question at four levels:
 \[
 \begin{array}{c}
-\text{How much phase information must a return synchronize?}\\[2mm]
+\text{What can return, and how much information must it synchronize?}\\[2mm]
+\text{finite contraction: persistent mass sets the exact threshold}\\
 \text{finite pure state: reverse-water target information}\\
 \text{finite observer family: }d-c(G)\text{ connected relative phases}\\
 \text{summable countable packet: finite head plus summable tail}.
 \end{array}
 \]
-This classification is universal over the stated closed, unitary,
-pure-point setting.  It does not infer cosmology, gravity, information loss
-or an arrow of time.  Those subjects require additional physical structure
-absent from the hypotheses.
+The transition theorem is universal over finite-dimensional Hilbert-space
+contractions and their finite convex mixtures.  The quantitative
+target-volume and observer-network laws apply to their finite lossless phase
+packets, closed finite systems, and the stated summable countable pure-point
+extension.  They do not cover arbitrary noncontractive effective models,
+continuous spectrum, thermodynamic limits, gravity or an arrow of time.
+Those subjects require physical structure absent from the hypotheses.
 
 The cross-disciplinary point is exact but limited: recurrence and parallel
 Gaussian rate--distortion share the same finite optimization problem.  The
 quantum theorem shows that this optimizer governs both the true target volume
 and a spectrum-uniform deadline within displayed finite constants; it does
 not turn a Floquet system into a
-communication channel.  Its ingredients---Haar invariance, product boxes,
-finite approximation and graph coboundaries---are classical.  The claim of
-new content is their common, weight-resolved information variable and its
-observer and countable consequences, not a new approximation technique.  The
-graph law then shows why no scalar state entropy can be a complete recurrence
-invariant: connectivity of observable coherence is independent information.
+communication channel.  Peripheral spectral decompositions, Haar invariance,
+product boxes, finite approximation and graph coboundaries are classical.
+The claim of new content is their joined threshold--information law:
+persistent mass decides whether a target remains attainable, reverse-water
+entropy controls the finite target and deadline below it, and coherence-graph
+rank gives the sharp observer-dependent minimax exponent.  No scalar state
+entropy can be a complete recurrence invariant, because persistent loss,
+spectral weight and connectivity of observable coherence are independent
+information.
 
-Together, the laws replace a dimension-only picture by an
-observer-sensitive one.  Quantum systems remember how to return through the
-weights and connectivity of the coherences that are asked to return.
+Together, the laws replace a yes-or-no recurrence theorem and a
+dimension-only timescale by a thresholded, observer-sensitive law.  A finite
+contractive system can recover exactly the part of its past carried by
+lossless modes; the time needed is set by the weighted and relational
+coherence that must return.
 
 \section*{Methods}
+
+\subsection*{Peripheral--transient return transition}
+
+For a finite contraction, eigenspaces belonging to distinct unit-modulus
+eigenvalues are orthogonal.  Their span \(\mathcal K_\partial\) and its
+orthogonal complement both reduce \(T\).  The restriction to the complement
+has spectral radius strictly below one, so its powers converge to zero in
+operator norm.  Writing
+\[
+ x=\sum_{\lambda\in\Lambda_\partial}\Pi_\lambda x+x_{\rm tr}
+\]
+therefore gives
+\[
+ A_n(x,T)=\sum_{\lambda\in\Lambda_\partial}
+   \lambda^n\|\Pi_\lambda x\|^2
+   +\langle x,T^nx_{\rm tr}\rangle,
+\]
+where the last term tends to zero.  The sum of the nonnegative coefficients
+is \(p_T(x)\).  Simultaneous phase recurrence approaches this sum after every
+delay, whereas the triangle inequality bounds it above by the same sum.
+These are exactly \eqref{eq:below-ceiling} and
+\eqref{eq:above-ceiling}.  Squaring yields the fidelity ceiling.
+
+For \(0\leq a<p_T(x)\), wait until the transient term is at most
+\((p_T(x)-a)/2\).  Apply the universal fidelity deadline to the normalized
+peripheral weights at
+\(\eta=(p_T(x)-a)/(2p_T(x))\).  The reverse triangle inequality then gives
+\eqref{eq:contractive-deadline}.  A convex combination of contractions is a
+contraction by the norm triangle inequality, proving
+\eqref{eq:mixed-contraction}.
 
 \subsection*{Reverse-water-filling optimizer}
 
@@ -861,6 +1043,31 @@ Quantum recurrences and the arithmetic of Floquet dynamics,
 \emph{Quantum} \textbf{10}, 2074 (2026).
 \href{https://doi.org/10.22331/q-2026-04-20-2074}
 {doi:10.22331/q-2026-04-20-2074}.
+
+\bibitem{WolfPerezGarcia2010}
+M.~M.~Wolf and D.~P\'erez-Garc\'ia,
+The inverse eigenvalue problem for quantum channels,
+arXiv:\href{https://arxiv.org/abs/1005.4545}{1005.4545} (2010).
+
+\bibitem{Albert2019}
+V.~V.~Albert,
+Asymptotics of quantum channels: conserved quantities, an adiabatic limit,
+and matrix product states,
+\emph{Quantum} \textbf{3}, 151 (2019).
+\href{https://doi.org/10.22331/q-2019-06-06-151}
+{doi:10.22331/q-2019-06-06-151}.
+
+\bibitem{AmatoEtAl2023}
+D.~Amato, P.~Facchi and A.~Konderak,
+Asymptotics of quantum channels,
+\emph{J. Phys. A: Math. Theor.} \textbf{56}, 265304 (2023).
+\href{https://doi.org/10.1088/1751-8121/acd828}
+{doi:10.1088/1751-8121/acd828}.
+
+\bibitem{LiuZheng2024}
+Z.~Liu and C.~Zheng,
+Recurrence theorem for open quantum systems,
+arXiv:\href{https://arxiv.org/abs/2402.19143}{2402.19143v3} (2026).
 
 \bibitem{GimenoSotoca2017}
 V.~Gimeno and J.~M.~Sotoca,

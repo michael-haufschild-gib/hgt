@@ -1114,6 +1114,18 @@ theorem finiteContractionPersistentMass_eq_norm_sq_projection
   rw [hsum] at hnorm
   simpa [finiteContractionPersistentMass] using hnorm.symm
 
+/-- The surviving mass cannot exceed the squared norm of the initial
+vector. -/
+theorem finiteContractionPersistentMass_le_norm_sq
+    (T : H →L[ℂ] H) (hT : ‖T‖ ≤ 1) (x : H) :
+    finiteContractionPersistentMass T x ≤ ‖x‖ ^ 2 := by
+  rw [finiteContractionPersistentMass_eq_norm_sq_projection T hT x]
+  have hprojection :=
+    (finiteContractionPeripheralSubspace T).norm_starProjection_apply_le x
+  nlinarith [norm_nonneg
+    ((finiteContractionPeripheralSubspace T).starProjection x),
+    norm_nonneg x]
+
 /-- Persistent mass is nonnegative. -/
 theorem finiteContractionPersistentMass_nonneg
     (T : H →L[ℂ] H) (x : H) :
@@ -1337,6 +1349,38 @@ theorem finiteContraction_returnAmplitude_exactAsymptoticCeiling
     rw [hamplitude]
     exact hpacket
 
+/--
+**Sharp return-threshold dichotomy.**  The persistent mass separates
+recurrently attainable late return amplitudes from eventually impossible
+ones.  Every lower threshold is reached after every delay; every higher
+threshold is excluded after a finite time.
+-/
+theorem finiteContraction_returnThreshold_dichotomy
+    (T : H →L[ℂ] H) (hT : ‖T‖ ≤ 1) (x : H) :
+    (∀ target : ℝ, target < finiteContractionPersistentMass T x →
+      ∀ M : ℕ, ∃ n : ℕ, M < n ∧
+        target ≤ ‖inner ℂ x ((T ^ n) x)‖) ∧
+    (∀ target : ℝ, finiteContractionPersistentMass T x < target →
+      ∃ B : ℕ, ∀ n : ℕ, B ≤ n →
+        ‖inner ℂ x ((T ^ n) x)‖ < target) := by
+  have hceiling :=
+    finiteContraction_returnAmplitude_exactAsymptoticCeiling T hT x
+  constructor
+  · intro target htarget M
+    let ε := finiteContractionPersistentMass T x - target
+    have hε : 0 < ε := sub_pos.mpr htarget
+    obtain ⟨n, hnM, hnreturn⟩ := hceiling.2 ε hε M
+    refine ⟨n, hnM, ?_⟩
+    simpa only [ε, sub_sub_cancel] using hnreturn
+  · intro target htarget
+    let ε := target - finiteContractionPersistentMass T x
+    have hε : 0 < ε := sub_pos.mpr htarget
+    obtain ⟨B, hB⟩ := hceiling.1 ε hε
+    refine ⟨B, fun n hn ↦ ?_⟩
+    have hnreturn := hB n hn
+    dsimp only [ε] at hnreturn
+    linarith
+
 /-- The persistent mass squared is the exact asymptotic ceiling of squared
 return amplitude. -/
 theorem finiteContraction_returnFidelity_exactAsymptoticCeiling
@@ -1403,6 +1447,87 @@ theorem finiteContraction_exists_return_at_target_before_deadline
       htransient
   refine ⟨B, N, ?_, n, hnB, hnN, ?_⟩
   · simpa only [eta] using hdeadline
+  · rw [finiteContraction_returnAmplitude_eq_dissipativeWeighted
+      T hT x hpersistent n]
+    exact hnreturn
+
+/--
+When the peripheral packet has at least two coordinates, the coupled
+contraction return can use the least universal weighted Floquet deadline
+itself.  Its logarithm is therefore governed by the existing reverse-water
+entropy sandwich.
+-/
+theorem finiteContraction_exists_return_at_target_before_waterDeadline
+    (T : H →L[ℂ] H) (hT : ‖T‖ ≤ 1) (x : H)
+    (hpersistent : 0 < finiteContractionPersistentMass T x)
+    (hperipheral :
+      2 ≤ Fintype.card (FiniteContractionPeripheralEigenvalue T))
+    (target : ℝ) (htarget0 : 0 ≤ target)
+    (htarget : target < finiteContractionPersistentMass T x) :
+    let eta :=
+      (finiteContractionPersistentMass T x - target) /
+        (2 * finiteContractionPersistentMass T x)
+    ∃ (heta0 : 0 < eta) (heta1 : eta ≤ 1) (B n : ℕ),
+      B < n ∧
+      n ≤ (B + 1) *
+        universalWeightedFloquetFidelityRecurrenceTime
+          hperipheral
+          (finiteContractionPeripheralWeight T x)
+          (finiteContractionPeripheralWeight_nonneg T x hpersistent)
+          (sum_finiteContractionPeripheralWeight T x hpersistent)
+          eta heta0 heta1 ∧
+      target ≤ ‖inner ℂ x ((T ^ n) x)‖ := by
+  dsimp only
+  let eta :=
+    (finiteContractionPersistentMass T x - target) /
+      (2 * finiteContractionPersistentMass T x)
+  have heta0 : 0 < eta := by
+    dsimp only [eta]
+    positivity
+  have heta1 : eta ≤ 1 := by
+    dsimp only [eta]
+    have hdenom :
+        0 < 2 * finiteContractionPersistentMass T x := by positivity
+    apply (div_le_iff₀ hdenom).2
+    nlinarith
+  let N :=
+    universalWeightedFloquetFidelityRecurrenceTime
+      hperipheral
+      (finiteContractionPeripheralWeight T x)
+      (finiteContractionPeripheralWeight_nonneg T x hpersistent)
+      (sum_finiteContractionPeripheralWeight T x hpersistent)
+      eta heta0 heta1
+  have hdeadline :
+      IsUniversalWeightedFloquetFidelityDeadline
+        (finiteContractionPeripheralWeight T x) eta N := by
+    dsimp only [N]
+    exact universalWeightedFloquetFidelityRecurrenceTime_isDeadline
+      hperipheral
+      (finiteContractionPeripheralWeight T x)
+      (finiteContractionPeripheralWeight_nonneg T x hpersistent)
+      (sum_finiteContractionPeripheralWeight T x hpersistent)
+      eta heta0 heta1
+  have hgap :
+      0 < (finiteContractionPersistentMass T x - target) / 2 := by
+    positivity
+  obtain ⟨B, hB⟩ :=
+    Metric.tendsto_atTop.1
+      (tendsto_finiteContractionTransientReturnAmplitude_zero T hT x)
+      ((finiteContractionPersistentMass T x - target) / 2) hgap
+  have htransient : ∀ n : ℕ, B < n →
+      ‖finiteContractionTransientReturnAmplitude T x n‖ ≤
+        (finiteContractionPersistentMass T x - target) / 2 := by
+    intro n hn
+    have hn' := hB n (Nat.le_of_lt hn)
+    simpa only [dist_zero_right] using hn'.le
+  obtain ⟨n, hnB, hnN, hnreturn⟩ :=
+    hdeadline.exists_dissipative_return_at_target
+      hpersistent htarget0 rfl
+      (finiteContractionPeripheralPhase T)
+      (finiteContractionTransientReturnAmplitude T x)
+      htransient
+  refine ⟨heta0, heta1, B, n, hnB, ?_, ?_⟩
+  · simpa only [N] using hnN
   · rw [finiteContraction_returnAmplitude_eq_dissipativeWeighted
       T hT x hpersistent n]
     exact hnreturn

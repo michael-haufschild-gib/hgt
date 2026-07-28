@@ -1,8 +1,10 @@
 import GaloisForLFunctions.RHTower.FiniteSpectralBlockRecurrenceLaw
 import GaloisForLFunctions.RHTower.FiniteQuantumObserverCoherenceLaw
 import GaloisForLFunctions.RHTower.FiniteQuantumObserverGraphRecurrenceBound
+import GaloisForLFunctions.RHTower.FiniteQuantumObserverGraphSharpness
 import GaloisForLFunctions.RHTower.FiniteQuantumObserverOperationalRecurrence
 import GaloisForLFunctions.RHTower.FiniteQuantumObserverDeviceFeasibility
+import GaloisForLFunctions.RHTower.DissipativeQuantumReturnInformationTransition
 import GaloisForLFunctions.RHTower.PurePointSpectralBlockRecurrenceLaw
 import GaloisForLFunctions.RHTower.PurePointQuantumObserverCoherenceLaw
 import GaloisForLFunctions.RHTower.SummablePurePointPhaseRecurrence
@@ -31,7 +33,10 @@ particle-number-preserving local spin Hamiltonian,
 and its selected-support ceiling for every finite pure-state spectral
 probability vector, the exact finite observer-union phase energy,
 its coherence-graph capacity and graph-rank recurrence deadline, and the
-corresponding exact coherent-device-window certificate,
+matching worst-spectrum rank exponent, the corresponding exact
+coherent-device-window certificate, the exact persistent/transient return
+transition for every finite contractive evolution and every finite convex
+mixture of contractive evolutions,
 summable arbitrary-pure-point observer zero law;
 exact open-interval separation for two-sided infinite spectral generators,
 finite positive-energy instability on every strict pre-return window,

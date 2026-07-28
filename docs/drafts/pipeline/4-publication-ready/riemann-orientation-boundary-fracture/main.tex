@@ -47,56 +47,40 @@ coordinate in the theta representation of \(\Xi\).  Its normal current is
   =2|\xi(\tfrac12+a+ib)|^2
      \Rea\frac{\xi'}{\xi}(\tfrac12+a+ib),
 \]
-with the product identity valid also at zeros.  We prove an exact phase
-law: for every \(\alpha\geq0\), \(J_a(b)\geq0\) for all
-\(\alpha<a<1\) and \(b\in\R\) if and only if every nontrivial zero
-\(\rho\) satisfies
+with a zero-safe product form.  For every \(\alpha\geq0\), we prove
+\(J_a(b)\geq0\) for all \(\alpha<a<1\) and \(b\in\R\) if and only if
+every nontrivial zero \(\rho\) satisfies
 \[
   \big|\Rea\rho-\tfrac12\big|\leq\alpha.
 \]
 The same threshold governs every complete Gaussian-windowed Hankel tower
-of the theta current and is independent of Gaussian temperature.  Thus
-the unsquared source current does not merely preserve divisor location:
-its sign measures the exact horizontal width of the Riemann divisor.
+and is independent of temperature.  Thus the current sign measures the
+exact horizontal width of the Riemann divisor.
 
-We then determine which carriers can and cannot turn this orientation
-into positivity.
-At no positive aperture can \(J_a\) factor as
+We classify natural carriers for this orientation.  At no positive
+aperture can \(J_a\) factor as
 \(|\Xi(b-ia)|^2Q(b)\) with \(Q\) entire.  Consequently the first
 variation of the actual tilted theta autocorrelation has no finite Gram
 representation by constant-coefficient differential filters.  The
-obstruction is rigid: such a representation would translate every zero
-of \(\xi\) repeatedly out of the critical strip.
+global obstruction is stronger.  We prove a cyclic-null collapse law and
+apply it to classify every jointly Schwartz-continuous, nonnegative,
+momentum-symmetric form annihilating the theta source as a positive
+Fourier measure on the real \(\Xi\)-divisor.  Every nonzero such form has
+dense nonclosed ordinary-\(L^2\) radical, is nonclosable, and cannot
+induce a positive-definite metric on the full theta-operator image.
 
-The obstruction persists at the natural global Hilbert level.  Every
-jointly Schwartz-continuous, nonnegative, momentum-symmetric form that
-annihilates the theta source is a unique positive Fourier measure
-supported on the real \(\Xi\)-divisor.  Every nonzero such form has a
-dense proper nonclosed radical in ordinary \(L^2\), is not closable, and
-cannot induce a positive-definite metric on the full theta-operator
-image.  This is an instance of a general cyclic-null collapse law proved
-here: a Hermitian form whose radical contains an ambient-cyclic family
-has null sequences of constant form energy and cannot be closable unless
-it vanishes.  The only source-core metrics in the stated class are
-therefore singular divisor-sampling riggings.
+The canonical unsquared Julia defect has the opposite polarity: every
+off-critical quartet makes its positive first derivative carry
+\(8\pi\) of Ward mass.  Functional-equation-preserving polynomial
+surgeries insert arbitrary multiplicity \(N\) while leaving the complete
+continuum real-aperture differential matroid unchanged.  That matroid
+cannot recover \(N\); the source-marked noncompact boundary recovers
+\(8\pi N\), even as its density escapes every bounded window.
 
-Finally, we identify a polarity fracture.  The canonical unsquared
-Julia phase defect is nonnegative, but each off-critical quartet makes
-its first derivative strictly positive and contributes \(8\pi\) of
-Ward mass.  This positivity counts defects; it cannot exclude them.
-Polynomial surgeries preserving the functional equation and Schwarz
-symmetry insert arbitrary multiplicity \(N\), converge to \(\xi\) with
-every holomorphic jet on compact sets, and leave the complete continuum
-real-aperture differential matroid unchanged.  That matroid cannot
-recover \(N\), whereas the source-marked noncompact boundary recovers it
-as \(8\pi N\), even while its density vanishes on every bounded window.
-
-These results do not prove the Riemann hypothesis.  They answer the
-carrier question left by theta-spectral reformulations: orientation
-survives before scalarization, but the correct-polarity theta current
-admits no regular Hilbert carrier in the classes above, while the
-canonical positive Julia carrier has the opposite, defect-counting
-polarity.
+This does not prove the Riemann hypothesis.  It closes the regular
+source-core Hilbert carrier class for the theta-spectral program and
+proves that canonical positive Julia orientation counts off-line defects
+rather than excluding them.
 \end{abstract}
 
 \medskip
@@ -237,15 +221,15 @@ The paper proves the following strict separation.
 \[
 \begin{array}{ccl}
 \text{unsquared theta current}
-  &\Longleftrightarrow& \text{exact horizontal divisor width},\\[1mm]
+  &\Longleftrightarrow& \text{horizontal divisor width},\\[1mm]
 \text{finite local entire carrier}
   &\Longrightarrow& \text{impossible zero translation},\\[1mm]
 \text{regular source-core Hilbert metric}
   &\Longrightarrow& \text{nonclosable divisor rigging},\\[1mm]
-\text{complete aperture differential matroid}
+\text{aperture differential matroid}
   &\not\Longrightarrow& \text{quartet charge},\\[1mm]
 \text{positive Julia--Ward boundary}
-  &\Longrightarrow& \text{exact defect charge, not zero exclusion}.
+  &\Longrightarrow& \text{defect charge, not zero exclusion}.
 \end{array}                                                    \eqtag{1.2}
 \]
 }
@@ -745,8 +729,8 @@ for every \(m\), the prime-layer coefficient profiles of
  f_j,f_j',\ldots,f_j^{(m)}\qquad(1\leq j\leq r)
 \]
 are linearly independent modulo functions supported on finitely many
-primes, then \(f_1,\ldots,f_r\) are differentially algebraically
-independent over \(\C(s)\).
+primes, then no nonzero differential polynomial over \(\C(s)\)
+vanishes on \(f_1,\ldots,f_r\).
 \end{lemma}
 
 \begin{proof}
