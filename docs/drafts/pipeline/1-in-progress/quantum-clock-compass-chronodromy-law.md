@@ -550,16 +550,17 @@ P_2n(z) [psi(z + 1/2 - n) + psi(z + 1/2 + n)].             (25)
 ```
 
 The bracket has integer-orbit charge `2`, hence is HT, and no local DA counterterm can erase it.
-The candidate physical phase boundary is therefore: DA only at positive odd gaps; HT at positive
-even gaps and every noninteger gap. Lean now constructs the even-gap Laurent regular part, derives
-the exact finite response, and proves the whole physical-residue meromorphic response HT for every
-finite subtraction constant. Positive-odd pole cancellation remains open.
+The physical phase boundary is therefore: DA only at positive odd gaps; HT at positive even gaps
+and every noninteger gap. Lean constructs the even-gap Laurent regular part, derives exact finite
+response, proves whole physical-residue meromorphic response HT for every finite subtraction
+constant, proves exact finite nonzero odd cancellation and DA response, and packages all three
+branches as `ads2GravitationalClockSpeciesLaw`.
 
 The scalaron channel is absent in Einstein gravity; do not describe `alpha=0` as an integer point.
 When the extra curvature mode exists, it is generically HT. New unconditional Möbius machinery
 also proves that any nondegenerate rational exterior matching and its observable Wigner--Smith
 clock preserve the normalized-core boundary. Exact unrestricted analytic matching,
-analytic-background subtraction, positive-odd closure, and synthesis by the finite clock
+analytic-background subtraction and synthesis by the finite clock
 compass remain open. Full audit:
 `scalaron-horizon-clock-complexity-phase-law.md`.
 
@@ -586,9 +587,9 @@ The first strong-field corollary is now:
 
 Precisely: a scalar-curvature degree of freedom generically gives an HT throat clock response.
 Positive odd resonances collapse to finite differential laws; positive even resonances retain an
-irreducible digamma clock after every local renormalization. Even branch is now fully formalized;
-corollary remains near-horizon and mode-specific until odd cancellation and exterior clock-compass
-protocol close.
+irreducible digamma clock after every local renormalization. All three mathematical branches are
+now formalized; corollary remains near-horizon and mode-specific until exterior clock-compass
+protocol closes.
 
 ## Exact kill conditions
 
@@ -649,15 +650,14 @@ The dependency-closed algebraic core is now formalized in
 8. **complete** — nondegenerate Möbius observation preserves DA/HT exactly.
 9. **complete** — scalaron throat integer-resonance law, rational exterior-matching invariance,
    and matched logarithmic-clock boundary.
-10. **complete** — static Gamma odd/even selector, exact even-gap Laurent finite part, and
-    whole-response HT for exact physical residue under every finite local subtraction.
+10. **complete** — exact three-branch AdS₂ species law: odd DA, even HT under every finite local
+    subtraction, and noninteger exact-normalization HT.
 
 Still defer until the corresponding physical derivations close:
 
 11. abstract central-Weyl echo factorization;
 12. exact two-qubit concurrence and optimized CHSH corollary;
-13. positive-odd pole cancellation, clock-compass realization, and unrestricted exterior
-    normalization of the scalaron response;
+13. clock-compass realization and unrestricted exterior normalization of the scalaron response;
 14. bundle-valued microlocal wavefront reconstruction and nonlinear intervention functor.
 
 All declarations must be unconditional. No physical identification may be encoded as an axiom,
@@ -738,3 +738,5 @@ typeclass assumption disguised as a theorem, or arbitrary naming of an operator 
 - 2026-07-28 — closed the positive-even branch: proved analytic pole removal, regular Laurent
   coefficient existence, exact finite-part response law, and whole-response HT for the physical
   residue under every finite local subtraction.
+- 2026-07-28 — closed positive-odd and noninteger branches and packaged exact odd-DA/even-HT/
+  noninteger-HT classification as one unconditional Lean theorem.

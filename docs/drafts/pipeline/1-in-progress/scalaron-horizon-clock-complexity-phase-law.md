@@ -4,9 +4,8 @@
 - **Stage:** 1-in-progress
 - **Type:** PHYSICS LAW / MODIFIED GRAVITY / BLACK HOLES / CLOCK RESPONSE /
   HYPERTRANSCENDENCE
-- **Status:** exact throat law, normalized-core boundary, and full positive-even renormalized HT
-  branch formalized; positive-odd cancellation, asymptotic clock-compass protocol, and unrestricted
-  exterior matching remain open
+- **Status:** exact throat law and full odd/even/noninteger renormalized species law formalized;
+  asymptotic clock-compass protocol and unrestricted exterior matching remain open
 - **Formal core:**
   `formal/GaloisForLFunctions/HTGeometry/NearHorizonScalaronClockBoundary.lean`;
   `formal/GaloisForLFunctions/HTGeometry/AdS2RenormalizedScalarClockParity.lean`
@@ -157,11 +156,12 @@ counterterm cannot erase HT. The resulting candidate physical boundary is theref
 \end{aligned}}
 \]
 
-`(9)` is the stronger target. Its complete positive-even branch is now formalized: Lean constructs
-the pole-removed analytic normalization, proves existence of its regular Laurent coefficient,
-derives `(8)` as the exact finite part, and proves the whole meromorphic response HT for the exact
-nonzero residue and every regular subtraction constant. Exact positive-odd pole cancellation
-remains open before `(9)` becomes one biconditional theorem.
+`(9)` is now formalized branch-by-branch and packaged as one species-law theorem. Lean constructs
+the even pole-removed analytic normalization, proves existence of its regular Laurent coefficient,
+derives `(8)` as exact finite part, and proves whole meromorphic response HT for exact nonzero
+residue and every regular subtraction constant. It also proves exact finite nonzero odd pole
+cancellation, DA of resulting odd response, and HT of exact-normalization response at every
+noninteger gap.
 
 ## Exterior matching and observable clock
 
@@ -273,6 +273,10 @@ Unconditionally checked in Lean:
 - every even-resonance digamma finite-part carrier is HT;
 - the complete physical-residue even-gap meromorphic response is HT for every finite regular
   subtraction constant;
+- the two normalization poles cancel at every positive odd gap with an exact finite nonzero limit;
+- the complete pole-cancelled positive odd response is DA and nonzero;
+- exact physical normalization is nonzero at every noninteger gap and preserves HT there;
+- one theorem packages odd DA, even HT, and noninteger HT branches;
 - nonzero DA normalization and arbitrary DA local counterterms preserve that HT carrier.
 
 Physical identifications `(1)`--`(4)` and the interpretation of `(7)` as the scalaron retarded
@@ -301,8 +305,9 @@ complex-analytic Laurent extraction from `(7)` through `(8)`.
 
 1. Derive the sourced scalaron equation including a compactly supported trace intervention.
 2. Derive the clock-compass Ricci-scalar transfer and physical normalization.
-3. Prove the positive-odd pole cancellation has finite nonzero coefficient and close `(9)`.
-4. Prove scaling-background subtraction identifies `(4)` without assuming unknown outer data DA.
+3. Prove scaling-background subtraction identifies `(4)` without assuming unknown outer data DA.
+4. Derive finite-resolution statistical witnesses that distinguish odd DA response from neighboring
+   even/noninteger HT response.
 5. Extend from \(R+\alpha R^2\) to a mode-by-mode theorem for general near-\(\mathrm{AdS}_2\)
    gravitational effective field theories.
 6. Determine whether all propagating Einstein throat modes occupy integer Gamma orbits, or record

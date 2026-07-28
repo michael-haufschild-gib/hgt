@@ -208,6 +208,145 @@ unattainable cofinal Euler gauge
 Another positivity equivalence, zero-indexed vector, finite jet, ordinary principal symbol, or
 abstract unitary representation does not address `(9)`.
 
+## Exponential-cofiber unit-root alternative `[CORPUS-REDUCED CRITERION; NOT RH]`
+
+The metric clause in item 5 is not the only possible way to prevent a reflected off-line pair.
+The new actual-prime graph rate gives a strictly weaker, integral alternative which does not ask
+for a one-sided scalar sign.
+
+For a prime-indexed normed source family define the polynomial-rate filtration
+
+```text
+F^lambda={v=(v_p): sup_(p>>1) p^lambda ||v_p||<infinity},
+gr^lambda=F^lambda / union_(epsilon>0) F^(lambda+epsilon).       (10)
+```
+
+The actual first-trace response satisfies
+
+```text
+1/p<=b_p<=8/p,
+```
+
+so it gives a nonzero class in `gr^1`.  In the centered Xi coordinate
+
+```text
+XiC(z)=xi(1/2+i z),
+```
+
+translation by `log p` acts on the semisimple analytic defect at `z` through
+
+```text
+exp(-i log(p) z),       |exp(-i log(p) z)|=p^(Im z).      (11)
+```
+
+Consequently `(11)` sends a nonzero grade-`lambda` family to grade
+`lambda-Im(z)`.  It and its inverse preserve one and the same nonzero graded
+lattice only when
+
+```text
+Im(z)=0,
+```
+
+equivalently `Re(s)=1/2`.  This is the rank-one unit-root principle for the
+prime-rate filtration.  Unlike determinant balance, it does not permit a
+pair of opposite nonzero slopes: a bijective lattice automorphism and its
+inverse must both have degree zero.
+
+This observation is only a selector unless the following source theorem is
+constructed.
+
+> **[CONJECTURE -- EXPONENTIAL-COFIBER UNIT-ROOT EXHAUSTION.]**  The actual
+> finite-prime Euler system and completed theta/Gamma comparison define a
+> controlled unseparated cofiber `C_Xi^exp`, before divisor localization,
+> with:
+>
+> 1. the lift-conditioning filtration `(10)`, in which the projective
+>    first-trace boundary class is nonzero in `gr^1`;
+> 2. a source-natural map from `C_Xi^exp` to the semisimple analytic
+>    theta-multiplier defect which is exhaustive on every local support
+>    fibre;
+> 3. invertible prime translations acting by degree-zero automorphisms of
+>    one source integral lattice, not merely by reciprocal automorphisms of
+>    its fraction object;
+> 4. exponent-zero Euler-gauge sensitivity, so multiplication of the
+>    completed function by a symmetric rational quartet gauge does not
+>    create an effective source fibre;
+> 5. compatibility with the polarized first-trace anomaly and with the
+>    completed Poisson relation, rather than with an arbitrary entire
+>    multiplier presentation.
+
+Items 1--3 and `(11)` would force the analytic support of `C_Xi^exp` to be
+real in the centered coordinate and hence prove RH.  The RH-bearing step is
+the construction and source-exhaustion of this cofiber, not the unit-root
+calculation.
+
+### Hostile controls
+
+1. **Global rank one is insufficient.**  The Xi principal-part module is
+   globally rank one, but its pole fibres still occur in
+   functional-equation/Schwarz pairs.  A global reversible action may swap
+   slopes `h` and `-h`.  The conjecture therefore requires one local
+   source lattice before fibre specialization; determinant balance alone
+   is rejected.
+2. **Ordinary unseparated cofiber is insufficient.**  Theta convolution has
+   dense nonclosed `L2` range, so its ordinary quotient seminorm is zero on
+   every class.  The presenting arrows and their exponential lift costs
+   must be retained; merely declining to Hausdorffize does not construct
+   `(10)`.
+3. **Entire-multiplier universality is a falsifier.**  The analytic
+   multiplier defect exists for every nonzero entire function.  A
+   construction using only that complex, translation covariance, or
+   functional-equation symmetry cannot satisfy item 4.
+4. **Positive quartet surgery is a falsifier.**  Positive generalized-prime
+   density, entire symmetric completion, hypertranscendence, and favorable
+   unsquared orientation coexist with off-line fibres.  The proposed
+   cofiber must use the discrete actual-prime occupation lattice and exact
+   Euler--theta incidence absent from that countermodel.
+5. **The causal horizon constrains carriers but does not select the
+   divisor.**  The dimension-free theorem with threshold
+   `(2R+3)/(2 exp(1)^2)` assumes a fixed positive probability gap, whereas
+   the actual first-trace response is `b_p=Theta(1/p)` and tends to zero.
+   A pointwise consequence is available only after two unproved
+   identifications: a source-natural nearest-neighbour realization whose
+   endpoint probability gap is at least `1/p`, and an incidence
+   `p |-> R_p`.  Under those assumptions, the exact condition
+
+   ```text
+   4p < 2^(2R_p+3)
+   ```
+
+   and the factorial tail force
+
+   ```text
+   |T| Lambda_p > (2R_p+3)/(2 exp(1)^2).
+   ```
+
+   The corpus supplies neither the Hardy-response/return-probability
+   intertwiner nor the prime/radius incidence.  Moreover the optimal local
+   future theorem realizes every terminal probability in `[0,1]` with
+   energy--time cost `O(R)`, matching the lower order of scale.  Linear
+   causal cost is therefore generic and divisor-blind; it cannot provide
+   the missing Euler-to-Xi map.
+6. **This is a rate-filtered collision with retired Route A.**  Items 2--3
+   ask for a source-faithful analytic defect comparison on which prime
+   translations preserve one effective lattice.  This is the
+   associated-graded version of the failed faithful positive/unitary theta
+   semisimplification in
+   `prime-translation-theta-unitary-defect-conjecture.md`.  Its
+   source-exhaustion is RH-equivalent.  The actual-prime grade-one class is
+   new source data, but no theorem transports it to local Xi fibres.
+   Therefore the unit-root paragraph is retained as an exact criterion and
+   falsifier for future constructions, not as a live proof route.
+
+The unit-root logic is standard slope/lattice parent mathematics, and
+unseparated cofibres and rate filtrations are standard parent technology.
+Potential novelty is only their source-effective collision with the
+actual-prime first-trace anomaly and the Xi analytic defect.  Preliminary
+search found related tropical scaling-site geometry, semilocal zeta
+spectral constructions, and slope filtrations in non-Archimedean Hodge
+theory, but no source-exhaustive exponential cofiber with properties
+1--5.  This is a noncollision report, not a priority claim.
+
 ## Falsifiers
 
 The conjecture fails if any of the following occurs:

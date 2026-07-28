@@ -17,9 +17,10 @@ hypertranscendental.  This file proves that exact statement and the scheme-indep
 nonzero differentially algebraic multiplication and differentially algebraic counterterms cannot
 erase the carrier.
 
-The physical Laurent expansion identifying this carrier is separate from the unconditional
-mathematics formalized here.  In particular, this module does not declare the holographic
-renormalization prescription as an axiom.
+The module also proves the exact even-gap Laurent extraction, exact odd-gap pole cancellation,
+and the full odd-DA/even-HT/noninteger-HT meromorphic response law.  It does not declare the
+physical identification with a holographic retarded response as an axiom; that map remains an
+external physics theorem.
 -/
 
 open Filter Set Topology Function Complex
@@ -780,6 +781,371 @@ theorem hypertranscendentalOver_ads2EvenPhysicalRenormalizedScalarResponseMero
   hypertranscendentalOver_ads2EvenRenormalizedScalarResponseMero
     n (ads2NeutralScalarGammaNormalizationEvenResidue n) regular
       (ads2NeutralScalarGammaNormalizationEvenResidue_ne_zero n hn)
+
+/-- Finite coefficient produced when the two Gamma poles cancel at positive odd gap `2n+1`.
+The unsimplified residue-ratio form records exactly which two pole scales cancel. -/
+def ads2NeutralScalarGammaNormalizationOddLimit (n : ℕ) : ℂ :=
+  (-((-1 : ℂ) ^ (2 * n + 1) /
+      (((2 * n + 1).factorial : ℕ) : ℂ))) /
+      (-2 * ((-1 : ℂ) ^ n / ((n.factorial : ℕ) : ℂ))) *
+    (Complex.Gamma ((n : ℂ) + 1) /
+      Complex.Gamma ((2 * n + 1 : ℕ) : ℂ))
+
+private theorem tendsto_neg_oddGap_add_nhdsNE (n : ℕ) :
+    Tendsto (fun epsilon : ℂ => -(2 * (n : ℂ) + 1 + epsilon))
+      (𝓝[≠] (0 : ℂ)) (𝓝[≠] (-(((2 * n + 1 : ℕ) : ℂ)))) := by
+  rw [tendsto_nhdsWithin_iff]
+  constructor
+  · have hc :
+        Tendsto (fun epsilon : ℂ => -(2 * (n : ℂ) + 1 + epsilon))
+          (𝓝 (0 : ℂ)) (𝓝 (-(2 * (n : ℂ) + 1))) := by
+        convert (by fun_prop :
+          ContinuousAt (fun epsilon : ℂ => -(2 * (n : ℂ) + 1 + epsilon)) 0).tendsto
+          using 1 <;> ring
+    convert hc.mono_left nhdsWithin_le_nhds using 1 <;> push_cast <;> ring
+  · filter_upwards [self_mem_nhdsWithin] with epsilon hepsilon
+    simp only [mem_compl_iff, mem_singleton_iff] at hepsilon ⊢
+    intro h
+    apply hepsilon
+    push_cast at h
+    linear_combination -h
+
+private theorem tendsto_oddStaticDenominator_add_nhdsNE (n : ℕ) :
+    Tendsto
+      (fun epsilon : ℂ =>
+        (1 - (2 * (n : ℂ) + 1 + epsilon)) / 2)
+      (𝓝[≠] (0 : ℂ)) (𝓝[≠] (-(n : ℂ))) := by
+  rw [tendsto_nhdsWithin_iff]
+  constructor
+  · have hc :
+        Tendsto
+          (fun epsilon : ℂ =>
+            (1 - (2 * (n : ℂ) + 1 + epsilon)) / 2)
+          (𝓝 (0 : ℂ)) (𝓝 (-(n : ℂ))) := by
+        convert (by fun_prop :
+          ContinuousAt
+            (fun epsilon : ℂ =>
+              (1 - (2 * (n : ℂ) + 1 + epsilon)) / 2) 0).tendsto
+          using 1 <;> ring
+    exact hc.mono_left nhdsWithin_le_nhds
+  · filter_upwards [self_mem_nhdsWithin] with epsilon hepsilon
+    simp only [mem_compl_iff, mem_singleton_iff] at hepsilon ⊢
+    intro h
+    apply hepsilon
+    linear_combination -2 * h
+
+/-- **Odd-resonance pole-cancellation theorem.**  The apparent `0/0` normalization at every
+positive odd gap has the declared finite limit. -/
+theorem tendsto_ads2NeutralScalarGammaNormalization_odd_limit (n : ℕ) :
+    Tendsto
+      (fun epsilon =>
+        ads2NeutralScalarGammaNormalization
+          (2 * (n : ℂ) + 1 + epsilon))
+      (𝓝[≠] (0 : ℂ))
+      (𝓝 (ads2NeutralScalarGammaNormalizationOddLimit n)) := by
+  have hnegMap := tendsto_neg_oddGap_add_nhdsNE n
+  have hnegativeRaw := (gamma_residue (2 * n + 1)).comp hnegMap
+  have hnegative :
+      Tendsto
+        (fun epsilon : ℂ =>
+          epsilon *
+            Complex.Gamma (-(2 * (n : ℂ) + 1 + epsilon)))
+        (𝓝[≠] (0 : ℂ))
+        (𝓝
+          (-((-1 : ℂ) ^ (2 * n + 1) /
+            (((2 * n + 1).factorial : ℕ) : ℂ)))) := by
+    have hscaled :=
+      (tendsto_const_nhds :
+        Tendsto (fun _ : ℂ => (-1 : ℂ)) (𝓝[≠] (0 : ℂ)) (𝓝 (-1 : ℂ))).mul
+        hnegativeRaw
+    have heq :
+        (fun epsilon : ℂ =>
+          (-1 : ℂ) *
+            (((-(2 * (n : ℂ) + 1 + epsilon)) +
+                (((2 * n + 1 : ℕ) : ℂ))) *
+              Complex.Gamma (-(2 * (n : ℂ) + 1 + epsilon)))) =ᶠ[
+            𝓝[≠] (0 : ℂ)]
+          (fun epsilon : ℂ =>
+            epsilon * Complex.Gamma (-(2 * (n : ℂ) + 1 + epsilon))) :=
+      Filter.Eventually.of_forall (fun epsilon : ℂ => by
+        have harg :
+            -(2 * (n : ℂ) + 1 + epsilon) +
+                (((2 * n + 1 : ℕ) : ℂ)) = -epsilon := by
+          push_cast
+          ring
+        change
+          (-1 : ℂ) *
+              ((-(2 * (n : ℂ) + 1 + epsilon) +
+                  (((2 * n + 1 : ℕ) : ℂ))) *
+                Complex.Gamma (-(2 * (n : ℂ) + 1 + epsilon))) =
+            epsilon * Complex.Gamma (-(2 * (n : ℂ) + 1 + epsilon))
+        rw [harg]
+        ring)
+    have hscaled' := hscaled.congr' heq
+    convert hscaled' using 1 <;> ring
+  have hlowerMap := tendsto_oddStaticDenominator_add_nhdsNE n
+  have hlowerRaw := (gamma_residue n).comp hlowerMap
+  have hlower :
+      Tendsto
+        (fun epsilon : ℂ =>
+          epsilon *
+            Complex.Gamma
+              ((1 - (2 * (n : ℂ) + 1 + epsilon)) / 2))
+        (𝓝[≠] (0 : ℂ))
+        (𝓝
+          (-2 * ((-1 : ℂ) ^ n / ((n.factorial : ℕ) : ℂ)))) := by
+    have hscaled :=
+      (tendsto_const_nhds :
+        Tendsto (fun _ : ℂ => (-2 : ℂ)) (𝓝[≠] (0 : ℂ)) (𝓝 (-2 : ℂ))).mul
+        hlowerRaw
+    have heq :
+        (fun epsilon : ℂ =>
+          (-2 : ℂ) *
+            (((1 - (2 * (n : ℂ) + 1 + epsilon)) / 2 + (n : ℂ)) *
+              Complex.Gamma
+                ((1 - (2 * (n : ℂ) + 1 + epsilon)) / 2))) =ᶠ[
+            𝓝[≠] (0 : ℂ)]
+          (fun epsilon : ℂ =>
+            epsilon *
+              Complex.Gamma
+                ((1 - (2 * (n : ℂ) + 1 + epsilon)) / 2)) :=
+      Filter.Eventually.of_forall (fun epsilon : ℂ => by
+        have harg :
+            (1 - (2 * (n : ℂ) + 1 + epsilon)) / 2 + (n : ℂ) =
+              -epsilon / 2 := by
+          ring
+        change
+          (-2 : ℂ) *
+              (((1 - (2 * (n : ℂ) + 1 + epsilon)) / 2 + (n : ℂ)) *
+                Complex.Gamma
+                  ((1 - (2 * (n : ℂ) + 1 + epsilon)) / 2)) =
+            epsilon *
+              Complex.Gamma
+                ((1 - (2 * (n : ℂ) + 1 + epsilon)) / 2)
+        rw [harg]
+        ring)
+    exact hscaled.congr' heq
+  have hlowerLimit0 :
+      -2 * ((-1 : ℂ) ^ n / ((n.factorial : ℕ) : ℂ)) ≠ 0 := by
+    exact mul_ne_zero (by norm_num)
+      (div_ne_zero (pow_ne_zero n (by norm_num))
+        (by exact_mod_cast Nat.factorial_ne_zero n))
+  have hratio := hnegative.div hlower hlowerLimit0
+  have hupperPole :
+      ∀ m : ℕ, (n : ℂ) + 1 ≠ -(m : ℂ) := by
+    intro m h
+    have hc : (((n + m + 1 : ℕ) : ℂ)) = 0 := by
+      push_cast
+      linear_combination h
+    have hnat : n + m + 1 = 0 := by
+      exact_mod_cast hc
+    omega
+  have hgapPole :
+      ∀ m : ℕ, (((2 * n + 1 : ℕ) : ℂ)) ≠ -(m : ℂ) := by
+    intro m h
+    have hc : (((2 * n + 1 + m : ℕ) : ℂ)) = 0 := by
+      push_cast
+      push_cast at h
+      linear_combination h
+    have hnat : 2 * n + 1 + m = 0 := by
+      exact_mod_cast hc
+    omega
+  have hupperArg :
+      Tendsto
+        (fun epsilon : ℂ =>
+          (1 + (2 * (n : ℂ) + 1 + epsilon)) / 2)
+        (𝓝[≠] (0 : ℂ)) (𝓝 ((n : ℂ) + 1)) := by
+    have hc := (by fun_prop :
+      ContinuousAt
+        (fun epsilon : ℂ =>
+          (1 + (2 * (n : ℂ) + 1 + epsilon)) / 2) 0)
+    convert hc.tendsto.mono_left nhdsWithin_le_nhds using 1 <;> ring
+  have hgapArg :
+      Tendsto
+        (fun epsilon : ℂ => 2 * (n : ℂ) + 1 + epsilon)
+        (𝓝[≠] (0 : ℂ)) (𝓝 (((2 * n + 1 : ℕ) : ℂ))) := by
+    have hc := (by fun_prop :
+      ContinuousAt (fun epsilon : ℂ => 2 * (n : ℂ) + 1 + epsilon) 0)
+    convert hc.tendsto.mono_left nhdsWithin_le_nhds using 1 <;> push_cast <;> ring
+  have hupperGamma :=
+    (Complex.continuousAt_Gamma ((n : ℂ) + 1) hupperPole).tendsto.comp hupperArg
+  have hgapGamma :=
+    (Complex.continuousAt_Gamma (((2 * n + 1 : ℕ) : ℂ)) hgapPole).tendsto.comp
+      hgapArg
+  have hgap0 : Complex.Gamma (((2 * n + 1 : ℕ) : ℂ)) ≠ 0 :=
+    Complex.Gamma_ne_zero hgapPole
+  have hlimit := hratio.mul (hupperGamma.div hgapGamma hgap0)
+  refine hlimit.congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with epsilon hepsilon
+  have hepsilon0 : epsilon ≠ 0 := by
+    simpa using hepsilon
+  change
+    (epsilon * Complex.Gamma (-(2 * (n : ℂ) + 1 + epsilon)) /
+          (epsilon *
+            Complex.Gamma
+              ((1 - (2 * (n : ℂ) + 1 + epsilon)) / 2))) *
+        (Complex.Gamma
+            ((1 + (2 * (n : ℂ) + 1 + epsilon)) / 2) /
+          Complex.Gamma (2 * (n : ℂ) + 1 + epsilon)) =
+      Complex.Gamma (-(2 * (n : ℂ) + 1 + epsilon)) *
+          Complex.Gamma
+            ((1 + (2 * (n : ℂ) + 1 + epsilon)) / 2) /
+        (Complex.Gamma (2 * (n : ℂ) + 1 + epsilon) *
+          Complex.Gamma
+            ((1 - (2 * (n : ℂ) + 1 + epsilon)) / 2))
+  rw [mul_div_mul_left _ _ hepsilon0]
+  rw [div_mul_div_comm]
+  congr 1 <;> ring
+
+/-- The odd-resonance cancellation coefficient is finite and nonzero. -/
+theorem ads2NeutralScalarGammaNormalizationOddLimit_ne_zero (n : ℕ) :
+    ads2NeutralScalarGammaNormalizationOddLimit n ≠ 0 := by
+  have hupperPole :
+      ∀ m : ℕ, (n : ℂ) + 1 ≠ -(m : ℂ) := by
+    intro m h
+    have hc : (((n + m + 1 : ℕ) : ℂ)) = 0 := by
+      push_cast
+      linear_combination h
+    have hnat : n + m + 1 = 0 := by
+      exact_mod_cast hc
+    omega
+  have hgapPole :
+      ∀ m : ℕ, (((2 * n + 1 : ℕ) : ℂ)) ≠ -(m : ℂ) := by
+    intro m h
+    have hc : (((2 * n + 1 + m : ℕ) : ℂ)) = 0 := by
+      push_cast
+      push_cast at h
+      linear_combination h
+    have hnat : 2 * n + 1 + m = 0 := by
+      exact_mod_cast hc
+    omega
+  unfold ads2NeutralScalarGammaNormalizationOddLimit
+  exact mul_ne_zero
+    (div_ne_zero
+      (neg_ne_zero.mpr
+        (div_ne_zero (pow_ne_zero _ (by norm_num))
+          (by exact_mod_cast Nat.factorial_ne_zero (2 * n + 1))))
+      (mul_ne_zero (by norm_num)
+        (div_ne_zero (pow_ne_zero _ (by norm_num))
+          (by exact_mod_cast Nat.factorial_ne_zero n))))
+    (div_ne_zero (Complex.Gamma_ne_zero hupperPole)
+      (Complex.Gamma_ne_zero hgapPole))
+
+/-- Pole-cancelled physical response at positive odd gap. -/
+def ads2OddRenormalizedScalarResponseMero (n : ℕ) :
+    meroField Set.univ :=
+  algebraMap ℂ (meroField Set.univ)
+      (ads2NeutralScalarGammaNormalizationOddLimit n) *
+    scalaronThroatGammaResponseMero (2 * (n : ℂ) + 1)
+
+/-- **Odd-resonance finite-law theorem.**  Every pole-cancelled positive odd response is
+differentially algebraic over the rational frequency field. -/
+theorem differentialAlgebraicOver_ads2OddRenormalizedScalarResponseMero
+    (n : ℕ) :
+    DifferentialAlgebraicOver (RatFunc ℂ)
+      (ads2OddRenormalizedScalarResponseMero n) := by
+  unfold ads2OddRenormalizedScalarResponseMero
+  apply HTGeometry.differentialAlgebraicOver_mul
+    (differentialAlgebraicOver_complexConstantMero _)
+  change DifferentialAlgebraicOver (RatFunc ℂ)
+    (kerrNewmanChargedScalarGammaResponseMero (2 * (n : ℂ) + 1))
+  exact differentialAlgebraicOver_kerrNewmanNeutralScalarGammaResponseMero n
+
+/-- The pole-cancelled positive odd response is nonzero. -/
+theorem ads2OddRenormalizedScalarResponseMero_ne_zero (n : ℕ) :
+    ads2OddRenormalizedScalarResponseMero n ≠ 0 := by
+  unfold ads2OddRenormalizedScalarResponseMero
+  apply mul_ne_zero
+  · intro hzero
+    apply ads2NeutralScalarGammaNormalizationOddLimit_ne_zero n
+    exact (algebraMap ℂ (meroField Set.univ)).injective (by simpa using hzero)
+  · exact scalaronThroatGammaResponseMero_ne_zero _
+
+/-- Exact nonresonant physical response before any integer-gap limiting prescription. -/
+def ads2NonresonantPhysicalScalarResponseMero (gap : ℂ) :
+    meroField Set.univ :=
+  algebraMap ℂ (meroField Set.univ)
+      (ads2NeutralScalarGammaNormalization gap) *
+    scalaronThroatGammaResponseMero gap
+
+/-- Away from the integer gap lattice, the exact neutral-scalar normalization is nonzero. -/
+theorem ads2NeutralScalarGammaNormalization_ne_zero_of_noninteger
+    (gap : ℂ) (hnoninteger : ∀ k : ℤ, gap ≠ (k : ℂ)) :
+    ads2NeutralScalarGammaNormalization gap ≠ 0 := by
+  have hnegative : ∀ m : ℕ, -gap ≠ -(m : ℂ) := by
+    intro m h
+    apply hnoninteger (Int.ofNat m)
+    norm_num [Int.cast_ofNat]
+    linear_combination -h
+  have hupper : ∀ m : ℕ, (1 + gap) / 2 ≠ -(m : ℂ) := by
+    intro m h
+    apply hnoninteger (-Int.ofNat (2 * m + 1))
+    norm_num [Int.cast_ofNat]
+    push_cast
+    linear_combination 2 * h
+  have hgap : ∀ m : ℕ, gap ≠ -(m : ℂ) := by
+    intro m h
+    apply hnoninteger (-Int.ofNat m)
+    norm_num [Int.cast_ofNat]
+    exact h
+  have hlower : ∀ m : ℕ, (1 - gap) / 2 ≠ -(m : ℂ) := by
+    intro m h
+    apply hnoninteger (Int.ofNat (2 * m + 1))
+    norm_num [Int.cast_ofNat]
+    push_cast
+    linear_combination -2 * h
+  unfold ads2NeutralScalarGammaNormalization
+  exact div_ne_zero
+    (mul_ne_zero (Complex.Gamma_ne_zero hnegative)
+      (Complex.Gamma_ne_zero hupper))
+    (mul_ne_zero (Complex.Gamma_ne_zero hgap)
+      (Complex.Gamma_ne_zero hlower))
+
+/-- **Nonresonant infinite-law theorem.**  At every noninteger complex gap, restoring the exact
+nonzero physical normalization preserves hypertranscendence of the scalar response. -/
+theorem hypertranscendentalOver_ads2NonresonantPhysicalScalarResponseMero
+    (gap : ℂ) (hnoninteger : ∀ k : ℤ, gap ≠ (k : ℂ)) :
+    HypertranscendentalOver (RatFunc ℂ)
+      (ads2NonresonantPhysicalScalarResponseMero gap) := by
+  have hnormalizationDA :=
+    differentialAlgebraicOver_complexConstantMero
+      (ads2NeutralScalarGammaNormalization gap)
+  have hnormalization0 :
+      algebraMap ℂ (meroField Set.univ)
+          (ads2NeutralScalarGammaNormalization gap) ≠ 0 := by
+    intro hzero
+    apply ads2NeutralScalarGammaNormalization_ne_zero_of_noninteger
+      gap hnoninteger
+    exact (algebraMap ℂ (meroField Set.univ)).injective (by simpa using hzero)
+  have hcore :=
+    (hypertranscendentalOver_scalaronThroatGammaResponseMero_iff_nonintegerGap
+      gap).2 hnoninteger
+  unfold ads2NonresonantPhysicalScalarResponseMero
+  rw [mul_comm]
+  exact
+    (HTGeometry.hypertranscendentalOver_mul_differentialAlgebraic_iff
+      hnormalizationDA hnormalization0).2 hcore
+
+/-- **AdS₂ gravitational clock species law.**  The exact physical response has three
+dependency-closed branches: positive odd resonances are finite-law (DA), positive even resonances
+are infinite-law (HT) after every finite local subtraction, and every noninteger gap is HT. -/
+theorem ads2GravitationalClockSpeciesLaw :
+    (∀ n : ℕ,
+      DifferentialAlgebraicOver (RatFunc ℂ)
+        (ads2OddRenormalizedScalarResponseMero n)) ∧
+    (∀ n : ℕ, 0 < n → ∀ regular : ℂ,
+      HypertranscendentalOver (RatFunc ℂ)
+        (ads2EvenRenormalizedScalarResponseMero n
+          (ads2NeutralScalarGammaNormalizationEvenResidue n) regular)) ∧
+    (∀ gap : ℂ, (∀ k : ℤ, gap ≠ (k : ℂ)) →
+      HypertranscendentalOver (RatFunc ℂ)
+        (ads2NonresonantPhysicalScalarResponseMero gap)) := by
+  exact
+    ⟨differentialAlgebraicOver_ads2OddRenormalizedScalarResponseMero,
+      fun n hn regular =>
+        hypertranscendentalOver_ads2EvenPhysicalRenormalizedScalarResponseMero
+          n hn regular,
+      hypertranscendentalOver_ads2NonresonantPhysicalScalarResponseMero⟩
 
 end
 

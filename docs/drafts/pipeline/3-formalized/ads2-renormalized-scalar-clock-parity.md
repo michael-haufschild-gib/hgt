@@ -3,9 +3,9 @@
 - **ID:** `ads2-renormalized-scalar-clock-parity`
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean) / ADS2 RESPONSE / RENORMALIZATION / HYPERTRANSCENDENCE
-- **Statement:** At every positive even neutral-scalar AdS₂ gap, the full renormalized
-  meromorphic response is hypertranscendental for the exact nonzero physical residue and every
-  finite local subtraction constant.
+- **Statement:** Exact neutral-scalar AdS₂ clock response obeys a three-branch species law:
+  positive odd resonances are DA, positive even resonances are HT after every finite local
+  subtraction, and every noninteger gap is HT.
 - **Lean:**
   `formal/GaloisForLFunctions/HTGeometry/AdS2RenormalizedScalarClockParity.lean`
 
@@ -93,10 +93,10 @@ g\notin\mathbb Z  & \text{HT Gamma quotient}
 \end{array}}
 \]
 
-The positive even branch is now dependency-closed in Lean, including Laurent extraction and HT of
-the whole renormalized response. The positive odd cancellation branch still requires its exact
-finite nonzero limit before this boxed three-branch physical classification moves to stage 3 as
-one theorem.
+All three branches are now dependency-closed in Lean. The positive odd cancellation has an exact
+finite nonzero limit and a DA nonzero meromorphic response; the positive even branch includes
+Laurent extraction and HT of the whole renormalized response; the noninteger exact-normalization
+branch is HT. `ads2GravitationalClockSpeciesLaw` packages them as one theorem.
 
 ## Primary sources
 
@@ -108,8 +108,12 @@ one theorem.
 
 ## Next proof obligations
 
-1. Prove the odd-gap pole cancellation has finite nonzero coefficient.
-2. Package the positive-gap DA/HT parity classification in one meromorphic response theorem.
+1. Prove clock-compass extraction of the renormalized throat response from finite operational
+   reporters.
+2. Prove a source-to-asymptotic observable theorem without assuming unknown outer matching
+   coefficients are DA.
+3. Test whether the parity law extends mode-by-mode beyond the scalaron to general
+   near-\(\mathrm{AdS}_2\) gravitational effective field theories.
 
 ## Log
 
@@ -126,3 +130,6 @@ one theorem.
   regular Laurent coefficient, and derived the exact finite-part response law.
 - 2026-07-28 — upgraded carrier HT to whole-response HT in the genuine meromorphic differential
   field for the exact physical residue and every regular subtraction constant.
+- 2026-07-28 — proved exact positive-odd pole cancellation, nonvanishing, and DA response; proved
+  exact-normalization noninteger HT; packaged all branches as
+  `ads2GravitationalClockSpeciesLaw`.
