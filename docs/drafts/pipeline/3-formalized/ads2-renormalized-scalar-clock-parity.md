@@ -3,9 +3,9 @@
 - **ID:** `ads2-renormalized-scalar-clock-parity`
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean) / ADS2 RESPONSE / RENORMALIZATION / HYPERTRANSCENDENCE
-- **Statement:** At every positive even neutral-scalar AdS₂ gap, the renormalized nonlocal
-  frequency carrier is a nonzero-charge digamma orbit; no nonzero DA normalization or local DA
-  counterterm can make it differentially algebraic.
+- **Statement:** At every positive even neutral-scalar AdS₂ gap, the full renormalized
+  meromorphic response is hypertranscendental for the exact nonzero physical residue and every
+  finite local subtraction constant.
 - **Lean:**
   `formal/GaloisForLFunctions/HTGeometry/AdS2RenormalizedScalarClockParity.lean`
 
@@ -41,7 +41,16 @@ local counterterm \(p\) are differentially algebraic, then
   a\Psi_n+p\ \text{is HT}\quad\Longleftrightarrow\quad\Psi_n\ \text{is HT}.
 \]
 
-Thus local holographic scheme changes cannot erase the even-resonance carrier.
+Lean now proves the stronger whole-response statement. The exact normalization has a nonzero
+residue \(r_n\), a single frequency-independent regular coefficient \(c_n\), and finite part
+
+\[
+  r_n\,P_{2n}(z)\frac{\Psi_n(z)}2+c_nP_{2n}(z).
+\]
+
+The polynomial response \(P_{2n}\) is DA and nonzero. Hence this entire meromorphic finite part,
+not merely its displayed carrier, is HT for every value of \(c_n\). Local holographic scheme
+changes cannot erase the even-resonance clock.
 
 ## Unconditionally checked in Lean
 
@@ -53,15 +62,20 @@ Thus local holographic scheme changes cannot erase the even-resonance carrier.
 - at \(g=2n\), that derivative exposes exactly \(\Psi_n/2\);
 - the exact neutral-scalar AdS₂ Gamma normalization has the declared simple-pole residue at every
   positive even gap, and that residue is nonzero;
+- its pole-removed analytic extension is differentiable through every positive even resonance,
+  so a regular Laurent coefficient exists;
 - for any simple-pole normalization, the renormalized finite part of its product with a
   differentiable response is exactly residue times response derivative plus regular part times
   response value;
 - \(\Psi_n\) is hypertranscendental for every \(n\);
+- the integer-gap Gamma response is DA and nonzero;
+- the complete even-gap finite-part meromorphic response is HT for the exact physical residue and
+  every regular complex subtraction constant;
 - nonzero DA multiplication plus arbitrary DA addition preserves HT exactly.
 
 No physical identification is introduced as an axiom. Faulkner--Liu--McGreevy--Vegh equation
-(D27), the Laurent expansion in \(g\), and the holographic interpretation supply the external
-physics map.
+(D27) and the holographic interpretation supply the external physics map; Lean proves the
+normalization's Laurent behavior and resulting frequency law as unconditional complex analysis.
 
 ## Scientific survivor
 
@@ -79,9 +93,10 @@ g\notin\mathbb Z  & \text{HT Gamma quotient}
 \end{array}}
 \]
 
-The even branch still requires a fully formal Laurent-to-digamma identification before this boxed
-three-branch physical classification moves to stage 3 as one theorem. The orbit-charge and
-scheme-independence conclusions themselves are formalized.
+The positive even branch is now dependency-closed in Lean, including Laurent extraction and HT of
+the whole renormalized response. The positive odd cancellation branch still requires its exact
+finite nonzero limit before this boxed three-branch physical classification moves to stage 3 as
+one theorem.
 
 ## Primary sources
 
@@ -93,9 +108,8 @@ scheme-independence conclusions themselves are formalized.
 
 ## Next proof obligations
 
-1. Prove existence of the normalization's regular Laurent coefficient at positive even gaps.
-2. Prove the odd-gap pole cancellation has finite nonzero coefficient.
-3. Package the positive-gap DA/HT parity classification in one meromorphic response theorem.
+1. Prove the odd-gap pole cancellation has finite nonzero coefficient.
+2. Package the positive-gap DA/HT parity classification in one meromorphic response theorem.
 
 ## Log
 
@@ -108,3 +122,7 @@ scheme-independence conclusions themselves are formalized.
 - 2026-07-28 — simple-pole product finite-part law checked in Lean: renormalized finite part equals
   residue times response derivative plus regular normalization times response value.
 - 2026-07-28 — exact even-gap normalization residue limit and its nonvanishing checked in Lean.
+- 2026-07-28 — constructed the analytic pole-removed normalization, proved existence of its
+  regular Laurent coefficient, and derived the exact finite-part response law.
+- 2026-07-28 — upgraded carrier HT to whole-response HT in the genuine meromorphic differential
+  field for the exact physical residue and every regular subtraction constant.

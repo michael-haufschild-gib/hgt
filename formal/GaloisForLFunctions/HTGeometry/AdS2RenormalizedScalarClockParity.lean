@@ -27,7 +27,11 @@ open scoped Differential
 
 namespace GaloisForLFunctions
 
+open Bottcher Polynomial
+
 noncomputable section
+
+open scoped UnivMeroFieldInstances
 
 /-- Frequency-independent neutral-scalar denominator argument in the finite-temperature AdS₂
 normalization. -/
@@ -622,6 +626,160 @@ theorem hypertranscendentalOver_nonzeroDA_mul_add_local
     HypertranscendentalOver F (residue * carrier + counterterm) :=
   (hypertranscendentalOver_nonzeroDA_mul_add_local_iff
     hresidue hresidue0 hcounterterm).2 hcarrier
+
+/-- Genuine meromorphic realization of the two-ended even-resonance clock. -/
+def evenResonantAdS2DigammaClockCoreMero (n : ℕ) : meroField Set.univ :=
+  digammaShiftMero (1 / 2 - (n : ℂ)) +
+    digammaShiftMero (1 / 2 + (n : ℂ))
+
+/-- The normalized scalaron throat response never vanishes as a meromorphic-field element. -/
+theorem scalaronThroatGammaResponseMero_ne_zero (gap : ℂ) :
+    scalaronThroatGammaResponseMero gap ≠ 0 := by
+  rw [scalaronThroatGammaResponseMero_eq_gammaRatio]
+  exact div_ne_zero
+    (gammaShiftMero_ne_zero ((1 + gap) / 2))
+    (gammaShiftMero_ne_zero ((1 - gap) / 2))
+
+/-- **Meromorphic even-resonance memory theorem.**  The exact two-ended clock at every
+nonnegative even gap is hypertranscendental over the rational frequency field.  Integer
+separation makes the endpoint *difference* DA, but the endpoint *sum* retains twice one
+uncancelled digamma orbit. -/
+theorem hypertranscendentalOver_evenResonantAdS2DigammaClockCoreMero
+    (n : ℕ) :
+    HypertranscendentalOver (RatFunc ℂ)
+      (evenResonantAdS2DigammaClockCoreMero n) := by
+  let b : Fin 1 → ℂ := fun _ => 1 / 2 - (n : ℂ)
+  let charge : Fin 1 → ℂ := fun _ => 1
+  have hlower :
+      HypertranscendentalOver (RatFunc ℂ)
+        (digammaShiftMero (1 / 2 - (n : ℂ))) := by
+    have h := hypertranscendentalOver_gammaOrbitDigammaMero b charge 0
+      (by simp [charge])
+      (by
+        intro c hc
+        exact (hc (Subsingleton.elim c 0)).elim)
+    simpa [b, charge, gammaOrbitDigammaMero] using h
+  have hresponseDA :
+      DifferentialAlgebraicOver (RatFunc ℂ)
+        (kerrNewmanChargedScalarGammaResponseMero (2 * (n : ℂ))) := by
+    change DifferentialAlgebraicOver (RatFunc ℂ)
+      (scalaronThroatGammaResponseMero (2 * (n : ℂ)))
+    apply
+      (differentialAlgebraicOver_scalaronThroatGammaResponseMero_iff_integerGap
+        (2 * (n : ℂ))).2
+    refine ⟨Int.ofNat (2 * n), ?_⟩
+    norm_num [Int.cast_ofNat]
+  have hclockDA :
+      DifferentialAlgebraicOver (RatFunc ℂ)
+        (kerrNewmanChargedScalarLogResponseClockMero (2 * (n : ℂ))) := by
+    by_contra hclockHT
+    have hresponseHT :=
+      (HTGeometry.hypertranscendentalOver_wignerSmithLogClock_iff
+        (kerrNewmanChargedScalarGammaResponseMero (2 * (n : ℂ)))).1 hclockHT
+    exact hresponseHT hresponseDA
+  have hdiffDA :
+      DifferentialAlgebraicOver (RatFunc ℂ)
+        (digammaShiftMero (1 / 2 + (n : ℂ)) -
+          digammaShiftMero (1 / 2 - (n : ℂ))) := by
+    rw [kerrNewmanChargedScalarLogResponseClockMero_eq_digammaDifference] at hclockDA
+    convert hclockDA using 1 <;> ring
+  have htwoDA :
+      DifferentialAlgebraicOver (RatFunc ℂ) (2 : meroField Set.univ) := by
+    simpa only [map_ofNat] using
+      HTGeometry.differentialAlgebraicOver_algebraMap
+        (F := RatFunc ℂ) (E := meroField Set.univ) (2 : RatFunc ℂ)
+  have hsum :=
+    hypertranscendentalOver_nonzeroDA_mul_add_local
+      hlower htwoDA (by norm_num) hdiffDA
+  convert hsum using 1
+  unfold evenResonantAdS2DigammaClockCoreMero
+  ring
+
+/-- Meromorphic frequency function equal to the exact even-gap finite part: physical residue
+times the integer-gap response times the two-ended clock, plus an arbitrary regular local
+counterterm proportional to the integer-gap response. -/
+def ads2EvenRenormalizedScalarResponseMero
+    (n : ℕ) (residue regular : ℂ) : meroField Set.univ :=
+  (algebraMap ℂ (meroField Set.univ) residue *
+      scalaronThroatGammaResponseMero (2 * (n : ℂ)) / 2) *
+      evenResonantAdS2DigammaClockCoreMero n +
+    algebraMap ℂ (meroField Set.univ) regular *
+      scalaronThroatGammaResponseMero (2 * (n : ℂ))
+
+private theorem differentialAlgebraicOver_complexConstantMero (c : ℂ) :
+    DifferentialAlgebraicOver (RatFunc ℂ)
+      (algebraMap ℂ (meroField Set.univ) c) := by
+  rw [← ratFuncC_toMero_eq_complex_natScale]
+  exact HTGeometry.differentialAlgebraicOver_algebraMap _
+
+/-- **Scheme-independent even-gap HT response.**  Every nonzero complex residue and every
+complex regular subtraction constant give an HT renormalized response.  Thus no frequency-local
+choice of finite counterterm can turn an even-resonance black-hole clock into a finite
+differential law. -/
+theorem hypertranscendentalOver_ads2EvenRenormalizedScalarResponseMero
+    (n : ℕ) (residue regular : ℂ) (hresidue : residue ≠ 0) :
+    HypertranscendentalOver (RatFunc ℂ)
+      (ads2EvenRenormalizedScalarResponseMero n residue regular) := by
+  have hresponseDA :
+      DifferentialAlgebraicOver (RatFunc ℂ)
+        (scalaronThroatGammaResponseMero (2 * (n : ℂ))) := by
+    apply
+      (differentialAlgebraicOver_scalaronThroatGammaResponseMero_iff_integerGap
+        (2 * (n : ℂ))).2
+    refine ⟨Int.ofNat (2 * n), ?_⟩
+    norm_num [Int.cast_ofNat]
+  have hresponse0 :
+      scalaronThroatGammaResponseMero (2 * (n : ℂ)) ≠ 0 :=
+    scalaronThroatGammaResponseMero_ne_zero _
+  have htwoDA :
+      DifferentialAlgebraicOver (RatFunc ℂ) (2 : meroField Set.univ) := by
+    simpa only [map_ofNat] using
+      HTGeometry.differentialAlgebraicOver_algebraMap
+        (F := RatFunc ℂ) (E := meroField Set.univ) (2 : RatFunc ℂ)
+  have hresidueDA :=
+    differentialAlgebraicOver_complexConstantMero residue
+  have hregularDA :=
+    differentialAlgebraicOver_complexConstantMero regular
+  have hmultiplierDA :
+      DifferentialAlgebraicOver (RatFunc ℂ)
+        (algebraMap ℂ (meroField Set.univ) residue *
+          scalaronThroatGammaResponseMero (2 * (n : ℂ)) / 2) :=
+    HTGeometry.differentialAlgebraicOver_div
+      (HTGeometry.differentialAlgebraicOver_mul hresidueDA hresponseDA)
+      htwoDA
+  have hmultiplier0 :
+      algebraMap ℂ (meroField Set.univ) residue *
+          scalaronThroatGammaResponseMero (2 * (n : ℂ)) / 2 ≠ 0 :=
+    div_ne_zero
+      (mul_ne_zero
+        (by
+          intro hzero
+          apply hresidue
+          exact (algebraMap ℂ (meroField Set.univ)).injective
+            (by simpa using hzero))
+        hresponse0)
+      (by norm_num)
+  have hcountertermDA :
+      DifferentialAlgebraicOver (RatFunc ℂ)
+        (algebraMap ℂ (meroField Set.univ) regular *
+          scalaronThroatGammaResponseMero (2 * (n : ℂ))) :=
+    HTGeometry.differentialAlgebraicOver_mul hregularDA hresponseDA
+  exact
+    hypertranscendentalOver_nonzeroDA_mul_add_local
+      (hypertranscendentalOver_evenResonantAdS2DigammaClockCoreMero n)
+      hmultiplierDA hmultiplier0 hcountertermDA
+
+/-- **Physical even-gap theorem.**  Substituting the exact neutral-scalar AdS₂ normalization
+residue gives an HT renormalized black-hole clock at every positive even gap, for every finite
+regular subtraction constant. -/
+theorem hypertranscendentalOver_ads2EvenPhysicalRenormalizedScalarResponseMero
+    (n : ℕ) (hn : 0 < n) (regular : ℂ) :
+    HypertranscendentalOver (RatFunc ℂ)
+      (ads2EvenRenormalizedScalarResponseMero n
+        (ads2NeutralScalarGammaNormalizationEvenResidue n) regular) :=
+  hypertranscendentalOver_ads2EvenRenormalizedScalarResponseMero
+    n (ads2NeutralScalarGammaNormalizationEvenResidue n) regular
+      (ads2NeutralScalarGammaNormalizationEvenResidue_ne_zero n hn)
 
 end
 

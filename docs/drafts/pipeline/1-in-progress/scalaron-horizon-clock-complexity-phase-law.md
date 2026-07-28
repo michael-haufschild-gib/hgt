@@ -4,8 +4,8 @@
 - **Stage:** 1-in-progress
 - **Type:** PHYSICS LAW / MODIFIED GRAVITY / BLACK HOLES / CLOCK RESPONSE /
   HYPERTRANSCENDENCE
-- **Status:** exact throat law, normalized-core boundary, and even-resonance HT survivor derived;
-  full Laurent finite-part formalization, asymptotic clock-compass protocol, and unrestricted
+- **Status:** exact throat law, normalized-core boundary, and full positive-even renormalized HT
+  branch formalized; positive-odd cancellation, asymptotic clock-compass protocol, and unrestricted
   exterior matching remain open
 - **Formal core:**
   `formal/GaloisForLFunctions/HTGeometry/NearHorizonScalaronClockBoundary.lean`;
@@ -157,10 +157,11 @@ counterterm cannot erase HT. The resulting candidate physical boundary is theref
 \end{aligned}}
 \]
 
-`(9)` is the stronger target, not yet the fully formalized physical theorem. Lean now proves the
-static Gamma parity selector, HT of the even-resonance digamma carrier, and invariance under every
-nonzero DA normalization and DA local counterterm. Formal Laurent identification of `(8)` remains
-open.
+`(9)` is the stronger target. Its complete positive-even branch is now formalized: Lean constructs
+the pole-removed analytic normalization, proves existence of its regular Laurent coefficient,
+derives `(8)` as the exact finite part, and proves the whole meromorphic response HT for the exact
+nonzero residue and every regular subtraction constant. Exact positive-odd pole cancellation
+remains open before `(9)` becomes one biconditional theorem.
 
 ## Exterior matching and observable clock
 
@@ -217,8 +218,8 @@ different:
 4. independently controlled trace-matter interventions can source the channel;
 5. the projective matching and directly observable logarithmic delay preserve its HT phase.
 
-The remaining gap is experimental synthesis of `(8)` from the same finite clock-compass reporter
-net used for geometry and quantum-product tomography.
+Remaining physics gap is experimental synthesis of `(8)` from the same finite clock-compass
+reporter net used for geometry and quantum-product tomography.
 
 ## Novelty audit
 
@@ -265,11 +266,18 @@ Unconditionally checked in Lean:
   exactly residue times gap derivative plus a regular local multiple of the response;
 - the exact AdS₂ normalization has the declared nonzero simple-pole residue at every positive even
   gap;
+- the pole-removed normalization is differentiable through the even resonance and has a regular
+  Laurent coefficient;
+- the complete finite part is exactly residue times the integer-gap response times one half of
+  the endpoint-digamma sum, plus a regular multiple of the integer-gap response;
 - every even-resonance digamma finite-part carrier is HT;
+- the complete physical-residue even-gap meromorphic response is HT for every finite regular
+  subtraction constant;
 - nonzero DA normalization and arbitrary DA local counterterms preserve that HT carrier.
 
-Physical identifications `(1)`--`(4)`, exact normalization `(7)`, and Laurent identification `(8)`
-remain source-derived mathematics outside Lean; they are not encoded as axioms.
+Physical identifications `(1)`--`(4)` and the interpretation of `(7)` as the scalaron retarded
+response remain source-derived; they are not encoded as axioms. Lean unconditionally proves the
+complex-analytic Laurent extraction from `(7)` through `(8)`.
 
 ## Primary sources
 
@@ -293,7 +301,7 @@ remain source-derived mathematics outside Lean; they are not encoded as axioms.
 
 1. Derive the sourced scalaron equation including a compactly supported trace intervention.
 2. Derive the clock-compass Ricci-scalar transfer and physical normalization.
-3. Formalize existence of the regular Laurent coefficient of `(7)` at positive even gaps.
+3. Prove the positive-odd pole cancellation has finite nonzero coefficient and close `(9)`.
 4. Prove scaling-background subtraction identifies `(4)` without assuming unknown outer data DA.
 5. Extend from \(R+\alpha R^2\) to a mode-by-mode theorem for general near-\(\mathrm{AdS}_2\)
    gravitational effective field theories.
