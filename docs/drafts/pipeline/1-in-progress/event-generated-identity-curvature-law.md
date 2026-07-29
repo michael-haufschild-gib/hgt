@@ -470,3 +470,357 @@ The editorial gate stays closed until the conjecture yields at minimum:
 1. one source-selection/uniqueness theorem;
 2. one continuum dynamics theorem recovering a tested nontrivial limit; and
 3. one finite falsifiable prediction not inserted as an axiom.
+
+## Sixth failure-driven jump: quantumness obstructs identity composition
+
+`[EXACT BRIDGE] [STANDARD MATHEMATICS] [PHYSICAL CONJECTURE SHARPENED]`
+
+The generic polar-decomposition route was too weak because it began with one supplied Hilbert
+space and renamed its unitary and positive factors. The support-changing route has a stronger
+exact invariant.
+
+Let \(u\) and \(v\) be the partial isometries created by two successive event amplitudes. They
+create, rather than merely preserve, the interface identities
+\[
+t(u)=uu^\dagger,
+\qquad
+s(v)=v^\dagger v.
+\]
+Define
+\[
+\mathcal K(v,u)=[t(u),s(v)].                                      \tag{EG31}
+\]
+The newly paper- and Lean-proved theorem gives, in every unital \(C^*\)-algebra,
+\[
+\boxed{
+\mathcal K(v,u)=0
+\quad\Longleftrightarrow\quad
+vu\text{ is again a partial isometry}.
+}                                                                  \tag{EG32}
+\]
+See
+[`event-identity-transport-curvature.md`](../3-formalized/not_new_scientific_knowledge/event-identity-transport-curvature.md)
+and
+`formal/GaloisForLFunctions/HTGeometry/EventIdentityTransportCurvature.lean`.
+
+Equation `(EG32)` is the Halmos--Wallen product criterion and is not new mathematics. Its new role
+in the research programme is exact: quantum noncommutativity at the event boundary is literally
+the obstruction to composing the identities created by successive events. A nonzero commutator
+is not yet gravity or gauge curvature. It says that strict event identity has ceased to exist under
+ordinary composition; a successor law must change support, lose information, or create a new
+comparison.
+
+Public compression:
+
+> **Quantum events can create identities that cannot be composed.**
+
+Stronger conjectural worldview:
+
+> **Spacetime and force are the universe's canonical record of repairing quantum identities that
+> cannot be composed. Gravity is the public part of that repair; gauge force is its hidden part.**
+
+This is the first candidate mechanism in the current route where “quantumness creates curvature”
+is an exact implication at the structural level rather than a metaphor. It remains far short of
+physical unification: Thomas--Wigner rotation already realizes the invertible Lorentz shadow, and
+Uhlmann transport already realizes a mixed-state holonomy shadow. Novelty can only lie in a
+source-generated, support-varying repair theorem that derives its own carriers and forces.
+
+### Sharpened source theorem
+
+The missing mathematical object is now a **source-generated support-varying polar completion**.
+Starting without supplied object identities, global dagger, Hilbert bundle, spacetime, or force
+connection, it must prove:
+
+1. objective events generate their source and target positive identities;
+2. `(EG31)` is the complete obstruction to strict successor composition;
+3. nonzero `(EG31)` canonically creates a minimal comparison cell, with no chosen dilation,
+   environment, or connection;
+4. comparison cells satisfy coherent triple and independent-product laws;
+5. public quotient of the cell is the complete positive causal record, while its vertical
+   automorphisms are retained internal identity;
+6. the exceptional source uniquely selects the complex binary public alternative, hidden color
+   triple, chirality, and exact \(S(U(3)\times U(2))\) global group;
+7. one comparison-cell curvature has exactly Einstein, \(SU(3)\), \(SU(2)\), \(U(1)\), and mixed
+   Higgs/soldering responses in the continuum, not a direct sum inserted by hand;
+8. its complete calibrated reporter is finitely horizontalizable exactly in the
+   differential-algebraic phase; and
+9. the construction removes at least one free parameter or predicts one finite observable beyond
+   GR plus the Standard Model.
+
+Hypertranscendence is deliberately absent from the local equation `(EG32)`. The corpus proves that
+Hypertranscendence is a relative gauge obstruction in specific translation systems, but also that
+flat connections can have infinite holonomy. The bridge becomes physical only after item 8 derives
+the accumulated reporter from the event source.
+
+- 2026-07-29 — hostile-tested polar-composition curvature against Thomas--Wigner and Uhlmann
+  holonomy; classified both as occupied shadows.
+- 2026-07-29 — extracted and Lean-formalized the exact Halmos--Wallen survivor `(EG32)` in every
+  unital \(C^*\)-algebra.
+- 2026-07-29 — sharpened the universal conjecture from “comparisons have curvature” to “quantum
+  event identities fail to compose, and physical geometry is the canonical repair.”
+
+## Seventh failure-driven jump: a quantum difference can become a distance
+
+`[FROZEN CONJECTURE] [EXACT SHADOWS] [SOURCE THEOREM OPEN] [NATURE GATE CLOSED]`
+
+The support-repair formulation still says what reality does after composition fails, but it does
+not say what must be preserved while the repair changes support. The obstruction corpus suggests
+one stronger invariant:
+
+> **Every real difference survives, but it need not survive as the same kind of difference.**
+
+Public headline:
+
+> **A quantum difference can become a spacetime distance.**
+
+Worldview headline:
+
+> **The universe is not made of things. It is the smallest reality that can preserve every
+> difference its events create.**
+
+Gravity headline:
+
+> **Gravity is the curvature of quantum differences becoming public distances.**
+
+The proposed universal law is not conservation of a scalar amount of information. It is
+conservation of the *ability of future reality to distinguish physical histories*, even when the
+carrier, type, adjoint, subsystem split, and meaning of the distinction change.
+
+### Minimal exact transmutation law
+
+`[CONJECTURE; PROVABILITY UNKNOWN]`
+
+> **MINIMAL EXACT TRANSMUTATION LAW.** A physical world is the initial source-positive,
+> future-separating completion of its objective events. No physically distinguishable source
+> alternatives are erased: an event may remove their old continuation type only by creating a
+> reciprocal record that distinguishes exactly those alternatives in its successors. No
+> physically empty structure is added: every generated degree of freedom must distinguish some
+> admissible intervention history. The reciprocal records compose coherently but need not commute.
+> Their public positive quotient is spacetime, their hidden automorphisms are gauge symmetry,
+> stable private distinctions are matter, their source order is time, and the noncommuting
+> coherence of their type changes is the single curvature whose public and vertical responses are
+> gravity and the three Standard Model forces.
+
+Lay compression:
+
+> **Nature never loses a difference. Matter stores it privately, spacetime stores it publicly,
+> and force is the cost of moving it between the two.**
+
+This adds two conditions missing from generic completion:
+
+1. **no erasure:** every source distinction has a complete future discriminator; and
+2. **no spectators:** every completed distinction is forced by some source intervention.
+
+Together they are the type-changing analogue of observability plus reachability in minimal
+realization theory. The discovery cannot be that minimal realizations exist for ordinary linear or
+quantum systems. It must be that objective events force a unique positive minimal realization
+which generates its own physical types and whose regular irreducible continuum is our observed
+spacetime and force law.
+
+### Why the additive version is false as the force carrier
+
+For an event \(e:A\to B\), let \(L_e\) denote distinctions erased from direct continuation and
+\(C_e\) distinctions created in the successor record. Every additive shadow has the index form
+\[
+[L_e]-[C_e]=[A]-[B].                                      \tag{EG33}
+\]
+The corpus proves this abstractly in `EventTopologicalDebt.lean`. Along a finite history, `(EG33)`
+telescopes to the endpoint difference; on a closed history its total is zero.
+
+Therefore neither dimension, entropy, a Grothendieck class, nor any other additive debt can itself
+be force. A closed history may have zero total debt and nontrivial holonomy. The required
+information is the source-generated equivalence and extension data
+\[
+\rho_e:L_e\simeq C_e                                      \tag{EG34}
+\]
+together with its coherent composition cells. Additive conservation is only the decategorified
+shadow of `(EG34)`. Force must live in the noncommuting gluing of reciprocal records, not in their
+rank difference.
+
+This explains several previous false starts at once:
+
+- scalar mixed curvatures missed flat but globally nontrivial holonomy;
+- curvature plus outgoing transfer missed boundary self-action;
+- kernel--cokernel equality conserved size but did not select a record;
+- complete scalar histories retained simultaneous-similarity gauge;
+- clock geometry plus conservation did not select dynamics; and
+- bare source equations retained fixed-gauge ambiguity.
+
+All six failures say that values and additive classes forget *how a lost distinction becomes a new
+record*.
+
+### Exact shadows already in the corpus
+
+The following are rigorous shadows, not proof of the conjecture:
+
+1. **Two-projection transmutation.** For sharp events \(p,q\), the sequential compression \(pqp\)
+   is generally unsharp and its exact impurity is the positive square of the transition corner.
+   Thus incompatible sharp distinctions already become positive probabilistic effects. This is
+   standard Lüders/sequential-product theory, formalized in `SoninLudersPinching.lean`.
+2. **Complementary-record lower bound.** If an event and its record are jointly faithful, the
+   record is injective on every erased source direction. For equal finite source and target
+   dimensions, a cokernel-valued record restricts to a kernel--cokernel bijection. This is
+   formalized in `EventComplementaryRecord.lean`.
+3. **Unitary defect transmutation.** Once a source involution and complete unitary are supplied,
+   preserving and transmuting parts reconstruct the unitary; the erased source record is
+   canonically equivalent to the created target cokernel. This is formalized in
+   `SymmetryFractureDefectConservation.lean`.
+4. **Topological debt.** Lost-minus-created classes equal source-minus-target classes and telescope
+   through histories. This is formalized in `EventTopologicalDebt.lean`.
+5. **Public Lorentz record.** For \(X\in M_{3,2}(\mathbb C)\), quotienting the hidden \(U(3)\)
+   frame gives \(X^\dagger X\in H_2(\mathbb C)_{\ge0}\), the \(3+1\)-dimensional Lorentz future
+   cone. This is formalized in `ColorGramMinkowskiOrbit.lean`.
+6. **Mass shadow.** \(\det(X^\dagger X)\) is the squared hidden--public bipartite area. Null public
+   records are rank-one separable events; timelike records have hidden event entanglement.
+7. **Identity-composition obstruction.** The interface-support commutator vanishes exactly when
+   successive partial identity transports remain composable. This is `(EG32)`, formalized in
+   `EventIdentityTransportCurvature.lean`.
+8. **Hypertranscendental global obstruction.** The corpus proves examples where complete
+   calibrated history cannot be horizontally compressed into a finite differential-algebraic
+   identity, while local flatness alone does not control global holonomy.
+
+The common interpretation is:
+
+> An event cannot destroy a physical distinction. It can only move that distinction from direct
+> quantum continuation into probability, hidden matter identity, public causal record, or
+> nontrivial interface memory.
+
+### Priority collision audit
+
+Every weaker phrase is occupied:
+
+- Heylighen already formulated causality as “distinction conservation” in a Boolean/dynamical
+  setting
+  ([1989 paper](https://pespmc1.vub.ac.be/Papers/CausalityDist.pdf)).
+- purification and no-hiding formulate conservation and relocation of information within
+  operational or Hilbert-space quantum theory
+  ([Chiribella--Scandolo](https://arxiv.org/abs/1411.2723),
+  [Braunstein--Pati](https://arxiv.org/abs/gr-qc/0603046)).
+- sequential products reconstruct Jordan and \(C^*\)-algebraic quantum structure from effect
+  axioms ([van de Wetering](https://arxiv.org/abs/1803.11139)).
+- universal constructions recover CPTP or partial CP maps from already supplied isometries,
+  unitaries, daggers, and object types
+  ([Huot--Staton](https://arxiv.org/abs/1901.10117),
+  [Andrés-Martínez--Heunen--Kaarsgaard](https://arxiv.org/abs/2206.04814)).
+- minimal quantum linear realizations use controllability and observability on a supplied quantum
+  system ([Gough--Zhang](https://arxiv.org/abs/1311.1375)).
+- quantum information flow has already been related to causal screens, holographic area, and
+  emergent spacetime
+  ([Markopoulou--Smolin](https://arxiv.org/abs/hep-th/9910146),
+  [Van Raamsdonk](https://arxiv.org/abs/1005.3035)).
+- entanglement equilibrium has already been connected to the semiclassical Einstein equation
+  ([Jacobson](https://arxiv.org/abs/1505.04753)).
+
+Novelty therefore cannot be “information is conserved,” “entanglement makes geometry,” “minimal
+realizations are unique,” or “quantum channels are universal completions.” The open conjunction
+is:
+
+> event source itself generates the distinction types; erased quantum distinction and created
+> causal record are source-canonically reciprocal; the minimal positive reciprocal completion is
+> unique; and its one nonabelian coherence law forces both Einstein gravity and the exact Standard
+> Model response spectrum.
+
+### New mathematics required
+
+The first genuinely new object is a **source-positive reciprocal exact completion** of an
+identity-free event semicategory. It must:
+
+1. generate reachable physical types from events rather than begin with object identities;
+2. define equality by all admissible future discriminators without assuming a global reporter
+   space;
+3. derive local possibility--record reciprocity and positivity without a global dagger;
+4. construct `(EG34)` from source data rather than choose a dilation, complement, environment, or
+   basis;
+5. retain the full extension and higher-composition data discarded by `(EG33)`;
+6. be initial among future-separating positive completions and terminal against spectator
+   extensions, or prove the precise replacement universal property if both cannot coexist;
+7. reconstruct ordinary complex quantum theory in the fixed-type regular shadow;
+8. classify finite irreducible completions and prove that the exceptional bi-Cayley source is the
+   unique chiral completion with the observed response spectrum; and
+9. admit a continuum descent whose interventional response, not geometry alone, yields dynamics.
+
+The decisive first theorem is:
+
+`[OPEN CORE: SOURCE-POSITIVE MINIMAL TRANSMUTATION]`
+
+> Construct the completion above for a nontrivial raw event source and prove existence and
+> uniqueness of its reciprocal record cells. Then prove that its complete scalar histories,
+> together with independent-product incidence, reconstruct the completion up to exactly its
+> internal gauge \(2\)-equivalence.
+
+This theorem must survive the corpus's simultaneous-similarity and transported-factorization
+no-go results. If it merely returns a fixed category of CP maps, a Karoubi envelope, a process
+tensor, or a minimal linear system, the jump has failed.
+
+### Physical deductions if the law is true
+
+1. **Spacetime is converted quantum distinguishability.** Public distance is not a container for
+   events; it is the positive record created when an old quantum distinction loses direct
+   continuation.
+2. **Mass is retained private distinction.** In the finite exceptional shadow, rest mass is the
+   Lorentz norm produced by hidden--public event entanglement.
+3. **Gravity is mandatory record compatibility.** Every public distinction gravitates because
+   successor records must remain jointly distinguishable; there is no nongravitating information
+   spectator.
+4. **Gauge symmetry is exact public invisibility.** Gauge transformations are precisely
+   automorphisms of the reciprocal record that preserve every public discriminator.
+5. **All forces are one transmutation curvature.** Strong, weak, hypercharge, and gravitational
+   responses are irreducible readings of how `(EG34)` fails to compose globally, not four added
+   connections.
+6. **Time is typed accumulation.** The arrow of time is the source order in which new
+   discriminator types become available, not a coordinate supplied before events.
+7. **Holography is minimality.** A complete public boundary record contains exactly the
+   distinctions lost from direct continuation and no spectator bulk data.
+8. **Black holes cannot erase a distinction.** Horizon formation may change its record type; a
+   complete theory must exhibit the reciprocal boundary or successor record rather than invoke
+   information conservation abstractly.
+9. **No fifth response without a fifth distinction type.** An additional fundamental force must
+   correspond to a new irreducible reciprocal-record channel and would falsify exceptional
+   four-response completeness.
+10. **Hypertranscendence is permanent type growth.** Complete history is Hypertranscendental when
+    no finite differential-algebraic identity can carry every accumulated discriminator type.
+
+Items 1--10 are conjectural deductions, not established physics.
+
+### First quantitative discriminator
+
+One mixed reciprocal-record cell must be readable both as:
+
+1. a quantum/gauge phase of retained private distinction; and
+2. a proper-time or frame holonomy of created public distinction.
+
+Minimality forbids two independent normalizations. The source-selection theorem must therefore
+fix a clock--charge phase conversion coefficient or an equivalent finite relation. A free
+relative coefficient makes the proposed single transmutation curvature observationally identical
+to GR plus an independently chosen gauge connection and kills the law.
+
+### Hostile kill conditions
+
+Retire the transmutation law if any survives:
+
+1. source-positive reciprocal completion does not exist or has inequivalent minimal solutions;
+2. future separation cannot generate physical types without inserting a global test category;
+3. `(EG34)` requires a chosen complement, dagger, environment, or metric not forced by the event;
+4. every model is equivalent to ordinary information conservation in one fixed Hilbert space;
+5. additive debt is the only invariant and all higher gluing can be strictified away;
+6. arbitrary laboratory Lüders measurements satisfy the axioms and therefore falsely create
+   spacetime or fundamental force;
+7. the completion admits spectator sectors not detected by any source intervention;
+8. the exceptional source is not uniquely selected or yields extra forces, wrong chirality,
+   ghosts, or peer generations;
+9. continuum descent fails to give local Lorentz invariance, universal free fall,
+   Einstein--Dirac--Yang--Mills--Higgs dynamics, and observed quantum probabilities;
+10. Hypertranscendence remains an appended reporter property rather than a theorem of complete
+    source history; or
+11. no finite parameter relation, forbidden process, or strong-field deviation is derived.
+
+Current verdict: the conjecture is a stronger explanatory jump than identity curvature alone, but
+it is not yet a result. The first publishable advance would be the source-positive minimal
+transmutation theorem, not another formalization of a known compression or index identity.
+
+- 2026-07-29 — killed naive “distinction conservation” and “information becomes geometry”
+  wordings by priority audit.
+- 2026-07-29 — identified type-changing, nonabelian, source-minimal reciprocal record completion
+  as the novel residue.
+- 2026-07-29 — froze “a quantum difference can become a spacetime distance” as the public
+  conjecture and isolated source-positive minimal transmutation as the exact open core.

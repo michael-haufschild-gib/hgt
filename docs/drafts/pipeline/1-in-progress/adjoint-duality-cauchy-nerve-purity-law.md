@@ -1698,3 +1698,2395 @@ intermediate extensions, and the Connes--Consani scaling Hamiltonian.  Targeted 
 statement identifying the finite Fourier-fixed source `(22)`, the reflected dilation Laplacians
 `(40)`, the order-\(|P|\) common indicial resonance `(60)`--`(63)`, and Meyer's complete zeta
 quotient as the single arithmetic middle-extension problem `(65)`.  No priority claim is made.
+
+## 15. Finite Green--Poisson sewing is canonical; the raw Ind-limit is not pure
+
+The extension part of the Green--Poisson conjecture can be constructed at every finite prime
+stage without summing the endpoint tails directly.
+
+Write
+\[
+ Q_P=\prod_{p\in P}Q_p(U_p),\qquad C_P=Q_P^{-1}
+                                                                  \tag{67}
+\]
+on radial \(L^2\).  For either member \({\cal H}_\bullet\) of Meyer's strict Poisson pair, define
+the Green-blown source space
+\[
+ {\cal E}_{\bullet,P}:=C_P({\cal H}_\bullet)              \tag{68}
+\]
+with the transported nuclear topology for which
+\[
+ Q_P:{\cal E}_{\bullet,P}\xrightarrow{\sim}{\cal H}_\bullet
+                                                                  \tag{69}
+\]
+is a topological isomorphism.  Since \(Q_P{\cal H}_\bullet\subset{\cal H}_\bullet\),
+\[
+ {\cal H}_\bullet\subset{\cal E}_{\bullet,P}\subset L^2.  \tag{70}
+\]
+
+Let
+\[
+ Z:{\cal H}_\cap\longrightarrow{\cal H}_-
+\]
+be Meyer's strict Poisson embedding.  Every normalized dilation commutes with \(Z\), hence so do
+\(Q_P\) and \(Z\).  Define
+\[
+ Z_P^{\rm G}
+ :=
+ C_PZQ_P:
+ {\cal E}_{\cap,P}\longrightarrow{\cal E}_{-,P}.         \tag{71}
+\]
+
+`[PAPER-PROVED — FINITE GREEN--POISSON SEWING]`
+
+1. \(Z_P^{\rm G}\) is a strict closed embedding.
+2. It extends the actual Poisson map:
+   \[
+    Z_P^{\rm G}f=Zf\qquad(f\in{\cal H}_\cap).             \tag{72}
+   \]
+3. The diagram
+   \[
+   \begin{CD}
+    {\cal E}_{\cap,P} @>{Z_P^{\rm G}}>> {\cal E}_{-,P}\\
+    @V{Q_P}V{\sim}V @V{Q_P}V{\sim}V\\
+    {\cal H}_\cap @>{Z}>> {\cal H}_-
+   \end{CD}                                               \tag{73}
+   \]
+   commutes.
+4. Therefore
+   \[
+   0\to{\cal E}_{\cap,P}
+     \xrightarrow{Z_P^{\rm G}}
+     {\cal E}_{-,P}
+     \to M_{\zeta,P}^{\rm G}
+     \to0                                                 \tag{74}
+   \]
+   is strict exact and
+   \[
+    M_{\zeta,P}^{\rm G}\cong M_\zeta                     \tag{75}
+   \]
+   as a nuclear source quotient.
+
+The proof is conjugation of Meyer's strict sequence by the topological isomorphisms `(69)`.
+For `(72)`,
+\[
+ C_PZQ_Pf=C_PQ_PZf=Zf.
+\]
+Thus the extension is not an arbitrary continuation of a divergent Poisson sum; it is the unique
+extension making `(73)` commute.
+
+### Prime-enlargement compatibility
+
+If \(q\notin P\), then
+\[
+ {\cal E}_{\bullet,P}\subset{\cal E}_{\bullet,P\cup\{q\}},
+                                                                  \tag{76}
+\]
+because \({\cal H}_\bullet\subset C_q{\cal H}_\bullet\).  On the smaller space,
+\[
+ Z_{P\cup\{q\}}^{\rm G}=Z_P^{\rm G}.                     \tag{77}
+\]
+Indeed, for \(f=C_Ph\),
+\[
+\begin{aligned}
+ C_PC_qZQ_qQ_Pf
+  &=C_PC_qZQ_qh\\
+  &=C_PZh.
+\end{aligned}
+\]
+Hence the finite Green source maps form a literal cofinal system, not merely isomorphic
+stagewise copies.
+
+Under the coordinates `(69)`, the inclusion `(76)` is the closed source operator
+\[
+ Q_q:{\cal H}_\bullet\longrightarrow{\cal H}_\bullet.    \tag{78}
+\]
+The one-prime boundary law `(51)` identifies its range as the kernel of two continuous boundary
+maps, so the inclusion is strict.  Consequently the strict final union
+\[
+ {\cal E}_{\bullet,\mathrm{fin}}
+ =
+ \underset{P\Subset\mathbb P}{\operatorname{colim}^{\rm str}}
+ {\cal E}_{\bullet,P}                                    \tag{79}
+\]
+is a canonical Hausdorff source-rigged carrier with compatible Poisson map
+\[
+ Z_{\mathrm{fin}}^{\rm G}:
+ {\cal E}_{\cap,\mathrm{fin}}
+ \longrightarrow
+ {\cal E}_{-,\mathrm{fin}}.                              \tag{80}
+\]
+
+This closes three formerly conjectural interfaces:
+
+```text
+finite source Green domain:       constructed;
+finite Poisson boundary sewing:   constructed;
+prime-order/exhaustion coherence: constructed algebraically and strictly.
+```
+
+### Hostile theorem: final topology retains every strip fibre
+
+The construction is not yet the arithmetic middle extension.  Identify each quotient in `(74)`
+with \(M_\zeta\) using \(Q_P\).  Under prime enlargement, the induced transition is
+\[
+ [h]\longmapsto[Q_qh].                                   \tag{81}
+\]
+At a zero \(\rho\), its top conormal jet transforms by the nonzero scalar
+\[
+ Q_q(q^{\rho-1/2})
+ =
+ q+1-q^\rho-q^{1-\rho}.                                 \tag{82}
+\]
+For \(0<\Re\rho<1\), `(82)` cannot vanish: its two factored zeros lie on the boundary lines
+\(\Re s=0,1\).  Therefore every nontrivial strip zero survives every finite transition and the
+algebraic system `(81)`.
+
+More strongly, the final locally convex topology in `(79)` imposes continuity stage by stage but
+no uniform moderation across growing \(P\).  A compatible family of continuous conormal
+functionals is therefore admitted for every strip zero.  Thus:
+\[
+\boxed{
+\text{strict finite Green--Poisson Ind-limit is Hausdorff and source-faithful,
+but RH-blind.}}
+                                                                  \tag{83}
+\]
+
+The positive survivor is exact.  The missing third completion is a completion of `(79)`, not a
+replacement for it.  It must impose one cofinal bornology coupling:
+
+1. the growing common-root jet order in `(60)`--`(63)`;
+2. the independent prime-sideband directions in `(58)`;
+3. the source-normal boundary scale from the Wold/BV cylinder law;
+4. Fourier exchange of the two indicial walls.
+
+Imposing arbitrary uniform boundedness would merely restate prime-Schwartz temperedness and hence
+RH.  The next theorem must derive the middle bornology from these four already-source-defined
+structures.
+
+## 16. The Green middle is exactly the critical Wold--Szegő--Poisson sector
+
+The one-prime Green inverse in Section 13 is not a new third completion.  It is an operator
+presentation of a critical sector already constructed elsewhere in the corpus.  The exact
+identification is nevertheless useful because it joins the radial Green graph to the literal
+valuation source rather than only to a scalar Poisson kernel.
+
+Put
+\[
+ r_p=p^{-1/2},\qquad
+ v_p(k)=\sqrt{1-r_p^2}\,r_p^k\quad(k\geq0),              \tag{84}
+\]
+and let \(S\) be the unilateral shift on \(\ell^2(\mathbb N_0)\).  Then
+\[
+ \|v_p\|=1,\qquad
+ \langle v_p,S^e v_p\rangle=r_p^e\quad(e\geq0).          \tag{85}
+\]
+Equivalently, the Hardy outer function
+\[
+ h_p(z)=\frac{\sqrt{1-r_p^2}}{1-r_pz}                   \tag{86}
+\]
+has coefficient vector \(v_p\) and boundary density
+\[
+ |h_p(e^{i\theta})|^2
+ =
+ P_{r_p}(\theta)
+ :=
+ \frac{1-r_p^2}{|1-r_pe^{i\theta}|^2}.                  \tag{87}
+\]
+The Fourier coefficients of `(87)` are \(r_p^{|e|}\).  Comparing with `(45)` gives the exact
+functional-calculus identity
+\[
+ \boxed{\quad
+ (p-1)C_p=P_{p^{-1/2}}(U_p).
+ \quad}                                                  \tag{88}
+\]
+Indeed
+\[
+ Q_p(U_p)
+ =p\bigl(1-r_pU_p\bigr)\bigl(1-r_pU_p^\ast\bigr),
+\]
+and the reciprocal of its symbol is \((p-1)^{-1}P_{r_p}\).
+
+`[PAPER-PROVED — GREEN/WOLD/SZEGŐ IDENTIFICATION]`
+
+Equations `(84)`--`(88)` say that the following are one local object in three polarizations:
+
+```text
+coefficient polarization:
+  the Wold valuation half-density
+  sqrt(1-p^(-1)) p^(-k/2);
+
+Hardy boundary polarization:
+  the outer vector sqrt(1-p^(-1))/(1-p^(-1/2)z);
+
+radial Green polarization:
+  the normalized inverse (p-1)Q_p(U_p)^(-1).
+```
+
+For a finite prime set \(P\), tensoring gives
+\[
+ \nu_P=\bigotimes_{p\in P}P_{p^{-1/2}}(\theta_p)
+                  \frac{d\theta_p}{2\pi},               \tag{89}
+\]
+whose Fourier coefficient at \(e=(e_p)_{p\in P}\in\mathbb Z^P\) is
+\[
+ \widehat\nu_P(e)=\prod_{p\in P}p^{-|e_p|/2}.           \tag{90}
+\]
+Unique factorization makes
+\[
+ e\longmapsto\sum_{p\in P}e_p\log p
+\]
+injective.  Thus the radial product Green multiplier retains every mixed prime mode in `(90)`.
+Only Mellin determinant scalarization replaces this full Fourier cube by the union of the
+one-factor zero sets of \(R_P(s)\).
+
+Each density in `(89)` is continuous and strictly positive.  Hence its state is faithful on
+\(C(\mathbb T^P)\): for \(a\geq0\),
+\[
+ \int_{\mathbb T^P}a\,d\nu_P=0\Longrightarrow a=0.      \tag{91}
+\]
+The infinite product
+\[
+ \nu_{\rm crit}
+ =
+ \bigotimes_p\nu_p                                      \tag{92}
+\]
+exists, has full support on \(\mathbb T^{\mathcal P}\), and its state is faithful on
+\(C(\mathbb T^{\mathcal P})\).  Thus every nonzero positive cylinder innovation is detected.
+This closes the finite/cylinder innovation-separation part of the relative-hyperrigidity
+programme without an abstract Gram factorization.
+
+### Exact corpus collision
+
+The measure `(92)` is precisely the \(s=1/2\), height-zero member of the already proved
+prime-Poisson superselection family.  Phase rotation gives the height-\(t\) member.  Its
+coefficient probabilities
+\[
+ |v_p(k)|^2=(1-p^{-1})p^{-k}                            \tag{93}
+\]
+are precisely the critical Wold/Kakutani valuation laws.  Therefore:
+
+```text
+Green middle completion       = critical product-Poisson GNS sector;
+Green coefficient vector      = critical valuation half-density;
+Green radial twists           = prior Kakutani/Rees radial sectors;
+Green phase rotations         = prior height superselection sectors.
+```
+
+This identification is a new cross-card weld, not new parent mathematics and not an RH advance.
+The corpus already proves that reflected Poisson sectors are equivalent exactly on the critical
+line and also proves that zero-to-sector descent is the missing RH-equivalent assertion.
+
+The corrected conclusion is important:
+
+\[
+\boxed{
+\text{the kinematic third completion is already constructed;
+the unsolved problem is conservative source landing into it.}}
+                                                               \tag{94}
+\]
+
+No further choice of scalar topology, Green norm, product state, Hardy rigging, or projective
+tensor carrier can close `(94)`.  Such choices either reproduce `(92)`, admit every radial sector,
+or discard hypothetical off-line conormals.
+
+## 17. Universal-law candidate: source-effective harmonic boundary conservativity
+
+All live routes now point to one statement which is stronger than their individual selector
+criteria and weaker than inserting RH as a norm hypothesis.
+
+Let \({\cal C}_{\rm src}(F)\) denote the source-effective object of a constrained HT section
+\(F\), retaining:
+
+1. its integral labelled source semigroup;
+2. its distinguished effective section;
+3. its full derived face/Koszul object rather than a determinant scalarization;
+4. its Wold range defects and boundary self-symbols;
+5. its regular Gamma determinant and singular first-trace/BV transgression;
+6. its Fourier/reflection polarization and critical product bornology.
+
+Let
+\[
+ H_{\rm con}(F)
+ \]
+be its principal-conormal cohomology before divisor specialization.  The Wold--Toeplitz extension
+and `(84)`--`(92)` provide a source-defined relative boundary realization
+\[
+ {\mathfrak B}_F:
+ H_{\rm con}(F)
+ \longrightarrow
+ H_{\rm rel}\!\left(
+ J_\Gamma\longrightarrow T_\Gamma
+       \longrightarrow C(\mathbb T^{\mathcal P});
+ \nu_{\rm crit}\right).                                  \tag{95}
+\]
+The notation in `(95)` is a theorem target, not a completed construction: the ideal
+transgression and boundary GNS state must remain in one relative object.
+
+> **[CONJECTURE — SOURCE-EFFECTIVE HARMONIC BOUNDARY CONSERVATIVITY.]**
+> For every integral, Fourier-self-dual, source-minimal HT effective lift, the map `(95)` is
+> conservative on principal conormal cohomology and its nonzero semisimple boundary support lies
+> in the unitary character spectrum:
+> \[
+> \ker({\mathfrak B}_F|_{H_{\rm con}(F)})=0,\qquad
+> \operatorname{Supp}_{\rm ss}{\mathfrak B}_F(H_{\rm con}(F))
+> \subseteq\operatorname{Hom}(G,\mathbb T).              \tag{96}
+> \]
+> Higher conormal jets map to finite-order distributions at the same unitary character.
+
+The first clause in `(96)` is effectivity; the second is harmonic purity.  Neither may be
+replaced by the other.  A plain \(C^\ast\)-boundary gives the second clause but can kill the
+conormal.  A raw analytic or Ind completion retains the conormal but also retains every
+nonunitary strip character.
+
+For \(F=\Xi\), the established principal-conormal covariance is
+\[
+ \chi_\rho(p)=p^{\rho-1/2}.                              \tag{97}
+\]
+Fibre faithfulness in `(96)` makes this character nonzero after boundary realization.  Unitary
+support then gives
+\[
+ |p^{\rho-1/2}|=1
+ \quad\Longrightarrow\quad
+ \Re\rho=\frac12.                                       \tag{98}
+\]
+Thus `(96)` implies RH with multiplicity.
+
+### What all the obstructions mean under `(96)`
+
+They are failures of conservativity of different forgetful functors:
+
+1. finite clocks retain the section but forget cofinal boundary records;
+2. scalar \(L^2\) retains the unitary action but forgets point conormals;
+3. raw Ind-limits retain conormals but forget uniform harmonic moderation;
+4. determinant and sign criteria forget the full derived face cube;
+5. HT alone retains unbounded differential capacity but forgets positive \(\ast\)-descent;
+6. positivity alone retains a cone but forgets the distinguished source section;
+7. reflection pairs two nonpure fibres but does not identify either with harmonic support;
+8. generalized-prime countermodels reproduce scalar shadows but need not carry the integral
+   ordinary-prime extension, source-effective section, and conservative comparison `(95)`;
+9. the normal-crossing excess theorem says why a scalar totalization cannot be conservative:
+   compatibility capacity grows exteriorly even while classical support stays thin;
+10. projective leakage, Hellinger singularity, Rees order, Wold first trace, and Green blow-up are
+    different norms or boundary charts of the failure of `(95)` to be a strict conservative
+    comparison.
+
+This is the proposed universal reinterpretation:
+
+\[
+\boxed{
+\text{purity is faithful source base change from complex HT conormal support
+to its harmonic unitary boundary.}}
+                                                               \tag{99}
+\]
+
+Equation `(99)` is the jump; it is not yet the theorem.  It subsumes the earlier
+source-determinant-purity, relative-hyperrigidity, prime-Schwartz-temperedness, and polarized
+middle-extension conjectures by identifying their common missing morphism.
+
+### First proof-bearing obstacle
+
+Do not prove another selector.  Construct `(95)` on the finite bivariate prime/face diagram and
+calculate its radical before any zero is selected:
+
+\[
+ {\cal R}_{P,N}
+ =
+ \ker\!\left(
+ H_{\rm con}({\cal C}_{P,N})
+ \longrightarrow
+ H_{\rm rel}({\cal C}_{P,N}^{\rm Green/Wold})
+ \right).                                                \tag{100}
+\]
+
+The Green state faithfulness `(91)` removes positive cylinder innovations, while the HT
+face/Koszul reporters must remove nilpotent, mixed-face, and exponentially flat innovations.
+The first substantive theorem must show that the cofinal source transition maps carry
+\({\cal R}_{P,N}\) injectively into the next new face and that the intersection of all transported
+radicals is zero.  A merely algebraic zero common kernel is insufficient; the source-gauge
+observability trichotomy requires a noncompact transverse channel or a uniform lower bound on
+the normalized radical.
+
+If the intersection is nonzero, that class is the exact missing seventh channel and must be
+classified.  If it is zero with a source-derived strictness estimate, `(96)` becomes a theorem
+rather than a restatement of prime-Schwartz temperedness.
+
+## 18. Finite Green faithfulness becomes infinitely ill-conditioned
+
+The faithfulness in `(91)` has an exact stability constant, and that constant collapses at a
+source-forced rate.
+
+For \(P\Subset\mathcal P\), write
+\[
+ w_P(\theta)=\prod_{p\in P}P_{p^{-1/2}}(\theta_p).
+\]
+The one-prime Poisson kernel has
+\[
+ \min_\theta P_{p^{-1/2}}(\theta)
+ =\frac{1-p^{-1/2}}{1+p^{-1/2}},\qquad
+ \max_\theta P_{p^{-1/2}}(\theta)
+ =\frac{1+p^{-1/2}}{1-p^{-1/2}}.                        \tag{101}
+\]
+Consequently the sharp comparison with Haar \(L^2\) is
+\[
+ m_P\|f\|_{L^2(m_P^{\rm Haar})}^2
+ \leq
+ \|f\|_{L^2(\nu_P)}^2
+ \leq
+ m_P^{-1}\|f\|_{L^2(m_P^{\rm Haar})}^2,                 \tag{102}
+\]
+where
+\[
+ m_P=\prod_{p\in P}
+       \frac{1-p^{-1/2}}{1+p^{-1/2}}.                   \tag{103}
+\]
+The constants are sharp by concentrating continuous functions near the maximum or minimum point
+of \(w_P\).
+
+Let \(P(x)=\{p:p\leq x\}\).  The prime number theorem and partial summation give
+\[
+ \sum_{p\leq x}p^{-1/2}
+ =
+ \frac{2\sqrt x}{\log x}(1+o(1)).                       \tag{104}
+\]
+Since
+\[
+ \log\frac{1-r}{1+r}
+ =
+ -2\left(r+\frac{r^3}{3}+\frac{r^5}{5}+\cdots\right)
+\]
+and \(\sum_pp^{-3/2}<\infty\), `(103)`--`(104)` give
+\[
+ \boxed{\quad
+ \log m_{P(x)}
+ =
+ -\frac{4\sqrt x}{\log x}(1+o(1)).
+ \quad}                                                  \tag{105}
+\]
+
+`[PAPER-PROVED — GREEN OBSERVABILITY-COLLAPSE LAW]`
+
+Thus every finite Green reporter is faithful, but no uniform anti-Lipschitz estimate survives
+prime enlargement.  There are Haar-unit vectors in growing cylinder algebras whose Green
+observation norm tends to zero at the stretched-exponential rate `(105)`.
+
+The failure is stronger than the Wold normal scale.  Mertens' theorem gives
+\[
+ a_x=\prod_{p\leq x}(1-p^{-1})
+ =
+ \frac{e^{-\gamma}}{\log x}(1+o(1)).
+ \]
+Therefore, for every fixed \(N>0\),
+\[
+ \frac{m_{P(x)}}{a_x^N}\longrightarrow0.                \tag{106}
+\]
+Finite Green faithfulness becomes flat beyond every finite Rees order of the source-normal
+boundary.
+
+This proves a concrete part of the radical problem `(100)`:
+
+```text
+finite algebraic/cylinder radical:  zero;
+cofinal normalized approximate radical: nonzero;
+collapse rate: exp(-4 sqrt(x)/log(x));
+ordinary Wold Rees jets: insufficient at every fixed order.
+```
+
+The result prevents a false inference from `(91)` to `(96)`.  Adding every finite face reporter
+can preserve algebraic injectivity while the completed comparison remains approximately blind.
+Any conservative boundary theorem must retain either an infinite-order/noncompact transverse
+channel or the full module-valued boundary before scalarization.
+
+### Height averaging explains why a module, not one sector, is forced
+
+For a finite \(P\), rotate the Green state by the arithmetic height flow
+\[
+ R_t(\theta)_p=\theta_p-t\log p.
+\]
+For a nonzero Fourier index \(e\in\mathbb Z^P\), unique factorization gives
+\[
+ \sum_{p\in P}e_p\log p\neq0.
+\]
+Hence
+\[
+ \frac1{2T}\int_{-T}^T(R_t)_\ast\nu_P\,dt
+ \xrightarrow[T\to\infty]{w^\ast}
+ m_P^{\rm Haar}.                                       \tag{107}
+\]
+The same cylinder argument gives the infinite-prime version already present in the
+prime-Poisson screen theorem.
+
+Equations `(105)` and `(107)` expose a duality:
+
+```text
+one height sector:
+  retains its singular phase fibre, but has collapsing cofinal observability;
+
+all heights before scalarization:
+  restore Haar-uniform observability, but scalar Haar L2 loses every point fibre;
+
+required relative module:
+  retains the entire torus of point fibres and the Wold/Gamma/BV ideal transgression.
+```
+
+This is why the universal object in `(95)` must be module-valued and relative.  A chosen GNS
+sector is too ill-conditioned; averaging sectors is too destructive; the relative
+Toeplitz-boundary object is the smallest category capable of carrying both.
+
+## 19. Conservation is not purity: the missing law is source recurrence
+
+The continuation--record interpretation still overclaims if ``conservative'' is read as the
+purity mechanism.  A lossless completion can retain every deleted record and nevertheless carry
+an arbitrary off-boundary zero as internal storage.
+
+For \(a\in\mathbb D\), put \(d_a=(1-|a|^2)^{1/2}\) and
+\[
+ {\cal U}_a=
+ \begin{pmatrix}
+  a&d_a\\
+  d_a&-\overline a
+ \end{pmatrix}.                                           \tag{108}
+\]
+Direct multiplication gives
+\[
+ {\cal U}_a^\ast{\cal U}_a
+ =
+ {\cal U}_a{\cal U}_a^\ast
+ =I.
+\]
+Its scalar transfer function is
+\[
+ \Theta_a(z)
+ =
+ a+z\,d_a(1+z\overline a)^{-1}d_a
+ =
+ {a+z\over1+\overline a z}.                              \tag{109}
+\]
+Thus the realization is two-sided unitary, minimal when \(|a|<1\), and reciprocal:
+\[
+ \Theta_a(1/\overline z)
+ =
+ {1\over\overline{\Theta_a(z)}}.
+                                                               \tag{110}
+\]
+Nevertheless \(\Theta_a\) has the freely prescribed zero \(-a\) in the open disk.  The missing
+amplitude has not been destroyed; it is stored in the one-dimensional state coordinate coupled
+with strength \(d_a\).
+
+`[PAPER-PROVED — PARENT SYSTEM THEORY / ROUTE CORRECTION]`
+
+Equations `(108)`--`(110)` are the elementary Julia colligation of one Blaschke factor, not new
+mathematics.  Their consequence here is load-bearing:
+
+```text
+unitary completion
+  + faithful complementary record
+  + reciprocal reflection
+  + minimality
+does not force transfer zeros to the reflection boundary.
+```
+
+This also explains why an off-line Euler quartet can coexist with positive source data,
+reflection, entire completion, Hypertranscendence, and a fully conservative dilation.  A
+conservative system does not delete the offending mode; it realizes it as Blaschke storage.
+The source-effective conservation conjecture in Section 17 can imply purity only through its
+additional ``unitary support'' clause.  That clause is not a consequence of conservation and must
+be proved independently.
+
+### Exact Wold storage identity
+
+Let \(V\) be an isometry on a Hilbert space and
+\[
+ E=I-VV^\ast
+\]
+its Wold range-defect projection.  If \(0\ne k\) satisfies
+\[
+ V^\ast k=\lambda k,
+\]
+then
+\[
+ \boxed{\quad
+ \|Ek\|^2
+ =
+ (1-|\lambda|^2)\|k\|^2.
+ \quad}                                                   \tag{111}
+\]
+Indeed,
+\[
+ \|Ek\|^2
+ =\langle k,Ek\rangle
+ =\|k\|^2-\|V^\ast k\|^2.
+\]
+Consequently:
+
+1. if \(|\lambda|<1\), the eigencharacter has a nonzero unilateral-storage component;
+2. if \(|\lambda|=1\), then \(Ek=0\), \(k\) lies in every range \(V^nH\), and its character is
+   carried by the unitary Wold summand;
+3. a reciprocal reflected pair can be realized conservatively for every
+   \(\lambda\ne0\), with the member of modulus below one stored on the corresponding shift side.
+
+For the centered Riemann character
+\[
+ \lambda_q(\rho)=q^{\rho-1/2},
+ \]
+unitary Wold support is exactly
+\[
+ |\lambda_q(\rho)|=1
+ \quad\Longleftrightarrow\quad
+ \operatorname{Re}\rho=\frac12.                         \tag{112}
+\]
+The prior Wold--Higgs, Kakutani, Hellinger--Rees, projective leakage, and prime-Schwartz
+selectors are different completions of the storage term in `(111)`.  They all locate the same
+wall because they all measure whether a coherent prime character has a unilateral component.
+
+### The universal law after the correction
+
+The corpus is not saying only that information is conserved.  It is saying:
+
+> **[CONJECTURE — SOURCE-RECURRENT HARMONIC CONORMAL LAW.]**  In the source-effective
+> continuation--record completion of a source-minimal self-dual constrained HT object, every
+> principal conormal class is recurrent under the complete source automorphism.  Equivalently,
+> after all complementary records have been restored, principal conormal cohomology has no
+> unilateral Wold/storage summand.
+
+Here recurrence is literal, not projective.  For a nonzero class \(x\), there must be
+\(n_j\to\infty\) such that
+\[
+ U^{n_j}x\longrightarrow x                                \tag{113}
+\]
+in the Hausdorff source-effective topology.  If \(Ux=\lambda x\), `(113)` forces
+\(\lambda^{n_j}\to1\), hence \(|\lambda|=1\).  Applied to any one prime dilation and the
+Meyer/BV character law, this proves `(112)` and therefore RH.
+
+This formulation explains all three completion failures without conflating them:
+
+```text
+finite prime truncation:
+  keeps the conormal and has projective recurrence, but amplitude leaks and return constants
+  have no cofinal lower bound;
+
+bare infinite adelic L2:
+  has unitary recurrent dynamics, but every divisor point fibre disappears into continuous
+  spectrum;
+
+conservative record completion:
+  keeps both the fibre and all leaked information, but may retain an off-line fibre as
+  unilateral Blaschke storage;
+
+required third completion:
+  keeps the fibre and the record, and proves that the source conormal itself belongs to the
+  recurrent/unitary Wold summand.
+```
+
+This is stronger and more precise than ``source normality'', ``sector equivalence'', or
+``conservation''.  It says why those conditions were close: each tries to rule out the shift
+summand, but none constructs source recurrence.
+
+### Hostile boundary and first proof-bearing obstacle
+
+The conjecture is not counted as an RH advance merely because `(113)` implies `(112)`.
+In Meyer's natural nuclear quotient, an off-line eigenfunctional has an exponentially growing
+discrete dilation orbit, so recurrence of every Xi conormal there is exactly RH.  Likewise, a
+global unitary dilation does not help: `(108)` stores the nonrecurrent compressed state in its
+record channel.
+
+The first noncircular theorem must therefore be source-local and pre-divisor:
+
+> construct return morphisms on the finite prime/face Wold--Gamma--BV relative complex, prove
+> that their complementary-record components are generated by the literal source differential,
+> and obtain a cofinal return estimate in the strict relative topology whose constants do not
+> collapse like `(105)`.
+
+A weak, projective, scalar-state, or zero-indexed return is insufficient.  If every such
+source-local return estimate still degenerates, the positive survivor is the exact classification
+of the nonrecurrent storage object and its growth filtration.  That object, rather than a seventh
+scalar invariant, is then the missing channel.
+
+### Novelty boundary
+
+Julia colligations, Blaschke transfer functions, Wold decomposition, and the fact that recurrent
+eigenvalues have unit modulus are parent operator theory.  The candidate-new claim is only the
+source-specific conjunction: the complete ordinary-prime Euler--Gamma/co-Poisson conormal
+comparison is recurrent after its Wold/BV complementary record is restored.  No literature or
+corpus theorem currently proves that conjunction.  Existing corpus results prove its finite
+shadows, its exact selector, and the failure of all scalar or ordinary-Hilbert limits.
+
+## 20. All-depth recurrence fracture and the global completion-phase law
+
+The proposed first obstacle at the end of Section 19 is still too local.  The new
+global-recurrence theorem in
+`../../4-publication-ready/multiple-elliptic-gamma-rational-rank-dichotomy/main.tex`
+(current title: *Whether quantum history repeats is not locally determined*) proves the following.
+An indeterminate positive moment class can contain two probability measures with
+
+\[
+ G_{\mu_{\rm r}}=G_{\mu_{\rm e}},
+ \qquad
+ J_{\mu_{\rm r}}=J_{\mu_{\rm e}}                         \tag{114}
+\]
+
+on every polynomial pair, hence the same connected Jacobi rule at every depth, while
+\(\mu_{\rm r}\) is pure point with positive mean recurrence and \(\mu_{\rm e}\) is atomless with
+zero mean recurrence.  This is not a finite-truncation counterexample.  The complete polynomial
+Hilbert geometry and the full local multiplication law agree.
+
+Therefore a compatible tower of finite return morphisms, finite innovation separation at every
+depth, or even an all-depth local Wold--Gamma--BV Jacobi rule cannot by itself prove `(113)`.
+Boundary data at infinity are an independent mathematical datum in the limit-circle case.  The
+earlier proof programme is corrected:
+
+```text
+not enough:
+  every finite source face returns and every finite innovation is detected;
+
+required:
+  the literal arithmetic source selects the recurrent global completion phase.
+```
+
+This correction agrees exactly with the high-shell corpus.  The positive exponent-shell frame
+has canonical weights
+\[
+ w_m=H_m(1)>0,
+ \qquad
+ H_m(s)=\zeta((m+1)s)^{-1}-\zeta(ms)^{-1},               \tag{115}
+\]
+and every zeta zero of order \(d\) gives the actual top shell conormal
+\[
+ (\zeta H_m)^{(d)}(\rho)=\zeta^{(d)}(\rho)H_m(\rho).      \tag{116}
+\]
+Nevertheless the adelic Fourier cross-Gram is rank one on this shell frame and annihilates every
+transverse shell-label direction.  The all-depth positive frame constructs the local Jacobi data;
+it does not select its global recurrence phase.
+
+### Exact global invariant
+
+For a probability spectral measure \(\mu\), let
+\[
+ \Delta\mu=(E-E')_\#(\mu\otimes\mu),
+ \qquad
+ \kappa_n(\mu)=((\Delta\mu)^{*n})(\{0\}).                 \tag{117}
+\]
+The same recurrence theorem proves
+\[
+ \lim_{T\to\infty}\frac1{2T}
+ \int_{-T}^{T}\left|\int e^{itE}\,d\mu(E)\right|^{2n}dt
+ =\kappa_n(\mu),                                        \tag{118}
+\]
+and the complete sequence \((\kappa_n)_{n\geq0}\) determines the long-time mean of every
+continuous fidelity statistic.  In particular,
+\[
+ \kappa_1(\mu)=\sum_{\lambda\in\mathbb R}\mu(\{\lambda\})^2, \tag{119}
+\]
+so \(\kappa_1>0\) detects a genuine atomic completion phase, while every atomless Poisson storage
+completion has \(\kappa_1=0\).
+
+This identifies the datum omitted by every finite/local route.  It is not another moment, jet,
+Gram matrix, or defect norm.  It is the **collision hierarchy of the completed boundary
+measure**.
+
+### One-character completion-phase selector
+
+Let \(|z|\leq1\), and let \(\mu_z\) be a probability measure on the unit circle satisfying
+\[
+ \int_{\mathbb T}\xi^n\,d\mu_z(\xi)=z^n
+ \qquad(n\geq0).                                        \tag{120}
+\]
+Positivity determines the negative Fourier coefficients by conjugation, so Fourier uniqueness
+determines \(\mu_z\) completely.  If \(|z|<1\), it is the atomless Poisson measure of \(z\); if
+\(|z|=1\), equality in the triangle inequality forces
+\[
+ \mu_z=\delta_z.                                        \tag{121}
+\]
+Consequently
+\[
+ \boxed{\quad
+ \kappa_1(\mu_z)>0
+ \quad\Longleftrightarrow\quad
+ |z|=1.
+ \quad}                                                  \tag{122}
+\]
+
+Equation `(122)` is the global-completion version of the Wold identity `(111)` and the scalar
+maximality theorem.  It adds the missing distinction:
+
+```text
+interior character:
+  all semigroup moments exist
+  + conservative minimal dilation
+  + atomless Poisson storage
+  + zero collision plateau;
+
+boundary character:
+  all semigroup moments exist
+  + no storage dilation
+  + one atomic phase
+  + positive collision plateau.
+```
+
+Thus conservation, moment completeness, and a faithful record still permit the first case.
+Atomic completion phase is the extra global condition.
+
+### Sharpened universal hunch
+
+> **[CONJECTURE — SOURCE-EFFECTIVE GLOBAL COMPLETION-PHASE CONSERVATION.]**
+> A source-minimal self-dual constrained hypertranscendental object does not consist only of its
+> finite differential/Krylov data.  Its source-effective continuation includes a distinguished
+> global boundary completion and the full collision hierarchy of that completion.  For an
+> integral principal conormal, the source collision class is nonzero and atomic, and source
+> duality preserves that atomic class rather than replacing it by an atomless Poisson storage
+> state.
+
+The word `integral` is load-bearing.  Generic analytic characters, generic HT functions,
+generalized-prime Euler systems, and disk-algebra evaluations can have atomless Poisson
+completions.  The proposed arithmetic source of the atomic class is the literal ordinary-integer
+package already present in the corpus:
+
+1. prime-square CRT additive Fourier clocks;
+2. the integral multiplication lattice and Möbius phase;
+3. the full prime-power Wold--Gamma/BV record;
+4. the archimedean Poisson ordering;
+5. the strict Meyer principal-conormal quotient; and
+6. every multiplicative collision tensor, not only its moments or determinant.
+
+For a nontrivial zeta zero \(\rho\), the centered \(p\)-character is
+\[
+ z_p(\rho)=p^{1/2-\rho}.                                 \tag{123}
+\]
+The complete semigroup moment tower in `(120)` is already its prime-dilation covariance.  If the
+conormal comparison carries the nonzero source collision class required by the conjecture, then
+`(122)` gives
+\[
+ |z_p(\rho)|=1
+ \quad\Longrightarrow\quad
+ \operatorname{Re}\rho=\frac12.                         \tag{124}
+\]
+This proves RH for every conormal and every multiplicity jet.
+
+### Exact construction target
+
+The next theorem must not try to derive recurrence from the finite nerve.  It must construct a
+global source map
+\[
+ {\cal C}_{\rm CRT/Wold/Gamma/Poisson}
+ \longrightarrow
+ {\cal M}_{\rm coll}(\mathbb T^{\mathcal P})             \tag{125}
+\]
+before selecting a zero, where the target retains measure-valued multiplicative moments and their
+collision products.  It must then prove:
+
+1. the moment coordinate of a principal conormal is `(123)` at every prime;
+2. its collision class is nonzero in the strict source quotient;
+3. the class is atomic rather than the Poisson state with the same analytic moments;
+4. Poisson/Fourier reflection preserves the class and all multiplicity jets; and
+5. no scalar \(L^2\), determinant, finite-Jacobi, or zero-indexed quotient is used.
+
+The high-shell Hardy corona gives an explicit one-prime chart for `(125)`: right-half conormals
+are interior Hardy evaluations, critical conormals are nonzero boundary-corona characters, and
+reflected left-half conormals leave the bounded chart.  The projective and prime-square clocks
+supply the finite collision tensors.  What remains is their source-global, archimedean-compatible
+totalization.
+
+### Immediate corpus collision: the positive source bulk is atomless
+
+The first literal source test rejects the naive reading of the conjecture.
+`formal/GaloisForLFunctions/RHTower/HighExponentShellClockMeasure.lean` proves that, for every
+fixed high shell, the positive Gibbs clock
+\[
+ (\sigma-1)\log n,
+ \qquad
+ \mathbb P_{m,\sigma}(n)
+ =
+ \frac{a_m(n)n^{-\sigma}}{S_m(\sigma)}
+ \]
+converges as \(\sigma\downarrow1\) to the unit-rate exponential law.  The oriented difference of
+two independent shell clocks converges to the Laplace law.  Both limits are atomless, so their
+positive-order collision masses at zero vanish.
+
+Thus
+
+```text
+literal integral positive source
+  does not by itself select an atomic recurrence phase;
+
+principal conormal
+  cannot be treated as an atom already present in the positive bulk measure.
+```
+
+The same conclusion is visible in ambient adelic \(L^2\): the source dynamics is unitary but its
+point conormals lie outside the continuous spectral representation.  Therefore the atomic clause
+in the global-completion-phase conjecture is false if it refers to the bulk Gibbs/Poisson measure.
+It can survive only as a **relative atom-birth statement**:
+
+> the principal conormal is a new singular collision class created by the Bockstein of the missing
+> Calderón primitive, and not an atom of the underlying positive source clock.
+
+This returns the global-completion law to the exact transgression `(12h)`.  The new information is
+that the Bockstein target must retain a measure-valued collision class, not only an \(H^1\) vector,
+first trace, determinant, or Rees order.  The RH-bearing claim becomes:
+
+\[
+\boxed{
+\begin{gathered}
+\text{atomless source bulk}
+\xrightarrow{\ \text{relative completion Bockstein}\ }
+\text{nonzero principal collision class},\\
+\text{self-dual source birth}
+\Longrightarrow
+\text{the born class is boundary-atomic rather than Poisson-stored}.
+\end{gathered}}                                             \tag{126}
+\]
+
+Rank-one perturbations of continuous spectrum can create ordinary off-spectrum bound states, so
+`(126)` is not generic spectral theory.  Generalized-prime off-line systems are direct
+falsifiers of any claim based only on positivity, self-duality, or rank one.  The load-bearing
+arithmetic theorem must identify the relative atom-birth map with the literal
+CRT/Wold/Gamma/co-Poisson Bockstein before divisor specialization.
+
+### Hostile falsifiers and anti-theatre boundary
+
+1. If the collision class is defined to be atomic after restricting to the unit circle, the
+   argument is circular.
+2. If only \(\kappa_1>0\) is postulated without preserving every moment in `(120)`, an interior
+   point can be represented by an unrelated atomic measure; `(122)` no longer follows.
+3. If the source map factors through finite moments, all-depth Jacobi data, or the scalar
+   determinant, `(114)` falsifies it.
+4. If a generalized-prime off-line system realizes the same literal ordinary-integer collision
+   package and a nonzero atomic conormal class, the conjecture is false.
+5. If the conormal is called an atom merely because it is one-dimensional algebraically, the disk
+   algebra is a counterexample: an interior scalar character has an atomless Poisson dilation.
+6. If the map `(125)` uses the Xi divisor to choose its measure, it is an RH restatement rather
+   than a source theorem.
+7. If the principal collision class is identified with the positive shell Gibbs collision law,
+   the formalized exponential/Laplace limit makes it atomless and the construction fails.
+
+Moment-indeterminate Jacobi extensions, Poisson representing measures, Wiener's atom formula,
+maximal dilations, and collision moments are parent mathematics.  The new candidate is only the
+source-specific claim that the ordinary-prime Euler--Gamma/co-Poisson Bockstein creates a nonzero
+boundary-atomic principal collision class from the atomless literal integral bulk.  At present
+that claim is RH-bearing and unproved.  The advance is the correction of the false finite-return
+and inherited-atom programmes and the identification of the exact global datum that any valid
+proof must construct.
+
+## 21. What the corpus means: cofinal completion and balanced boundary do not commute
+
+Sections 19--20 still describe the missing object from inside one operator realization.  The
+larger synthesis is categorical.  Every finite Euler packet is an invertible gauge.  It has no
+zeta divisor class, and every finite source complex contracts.  The nonzero class appears only
+after all ordinary primes, the Gamma boundary, the Meyer/co-Poisson quotient, and the strict
+source topology have been assembled.  Therefore the divisor cannot be an eigenvalue already
+present in a finite approximation.  It is an anomaly measuring failure of two infinite
+operations to commute.
+
+Let \(({\cal E}_P)_{P\Subset{\cal P}}\) denote the finite-prime enhanced Euler--Gamma source
+system, with all six independently forced channels retained: external source action, signed
+reflection polarization, critical Gevrey product bornology, controlled transport germ,
+distinguished source section, and integral/ramified comparison lattice.  Write
+\[
+ {\sf C}_{\rm src}({\cal E})
+ =
+ \mathop{\rm Ind\!-\!colim}^{\rm strict}_{P}
+ {\cal E}_P                                                   \tag{127}
+ \]
+for source-effective strict completion before specialization.  Write
+\({\sf J}_{\rm bal}\) for the reflected intermediate-boundary operation: the strict image
+between the rapid/minimal and two-sided moderate/maximal extensions, with the Green pairing and
+half-density normalization retained.
+
+There is a comparison morphism
+\[
+ \eta_{\cal E}:
+ {\sf C}_{\rm src}\bigl({\sf J}_{\rm bal}{\cal E}_P\bigr)
+ \longrightarrow
+ {\sf J}_{\rm bal}\bigl({\sf C}_{\rm src}{\cal E}\bigr).       \tag{128}
+ \]
+Define its cofinal-boundary commutator anomaly by
+\[
+ {\mathfrak A}_{\cal E}
+ =
+ {\rm cofib}(\eta_{\cal E}).                                  \tag{129}
+ \]
+At every finite stage the principal Euler gauge is exact, so its relevant balanced-boundary
+class is zero.  Equation `(129)` permits a nonzero class only because strict all-source
+completion was taken before the balanced boundary.
+
+### Frozen conjecture: source-effective cofinal-intermediate purity
+
+> **[CONJECTURE — SOURCE-EFFECTIVE COFINAL-INTERMEDIATE PURITY LAW.]**
+> Let \({\cal E}\) be a regular source-minimal integral hypertranscendental constraint system
+> with:
+>
+> 1. finite source gauges that are exact and compatible under genuine source enlargement;
+> 2. an additive Poisson realization and a multiplicative Euler realization related by the
+>    literal integral source lattice;
+> 3. a reflected duality exchanging the two adiabatic ends;
+> 4. principal finite-plus-archimedean Kummer slope cancellation;
+> 5. the six-channel source-effective strict completion in `(127)`; and
+> 6. a nonzero cofinal first-trace/Maurer--Cartan gauge defect.
+>
+> Then the commutator anomaly \({\mathfrak A}_{\cal E}\):
+>
+> ```text
+> is presentation-independent and conservative on the complete principal-conormal jet;
+> lies in the reflected intermediate extension, not merely either one-sided extension;
+> has pure real Stokes slope zero after the source half-density centering.
+> ```
+
+This is a conjecture in the strict sense: it is the statement suggested by the whole corpus, not
+a statement selected because a proof is visible.  No proof of the general law is known.  Its
+premises are source-side and can be checked before a divisor is chosen.  Neither conormal
+temperedness, unitary divisor characters, zero location, Weil positivity, nor an RH-equivalent
+norm occurs among them.
+
+The law says that hypertranscendence and arithmetic integrality have opposite roles.
+Hypertranscendence prevents the cofinal defect from being represented or killed at any finite
+differential order.  The conjugate integral Poisson/Euler polarizations prevent the surviving
+defect from choosing an arbitrary one-sided completion phase.  Their conjunction converts
+infinite irregular capacity into a balanced slope-zero boundary charge.
+
+### Zeta specialization and the RH consumer
+
+For the completed ordinary-prime source, the all-prime Maurer--Cartan connection is
+\[
+ -Z_h^{-1}\partial_hZ_h
+ =
+ \sum_p\sum_{k\geq1}(\log p)p^{-kh}U_{p^k}.                    \tag{130}
+ \]
+Every finite \(Z_{P,h}\) is an invertible gauge.  After Gamma completion, the meromorphic
+boundary of `(130)` is the independently constructed completed logarithmic Green current.  The
+zeta instance of the conjecture predicts
+\[
+ {\rm CharSupp}({\mathfrak A}_{\zeta})
+ =
+ {\rm Div}(\Xi)
+ \quad\text{with every multiplicity jet retained}.            \tag{131}
+ \]
+Equation `(131)` is not to be imposed by defining \({\mathfrak A}_{\zeta}\) from \(\Xi\).  It is
+the source-to-divisor comparison theorem that must be derived from `(130)`, Gamma
+transgression, co-Poisson continuation, and strictness of `(127)`.
+
+At a nontrivial zero \(\rho\), the centered rational-dilation character on the principal
+conormal is
+\[
+ \chi_\rho(g)=g^{\rho-1/2}.                                   \tag{132}
+ \]
+Its real adiabatic/Stokes slope is \(\operatorname{Re}\rho-\tfrac12\).  Conservativity in
+`(131)` keeps its top nonzero jet; slope-zero purity in the conjecture gives
+\[
+ \operatorname{Re}\rho-\frac12=0.                             \tag{133}
+ \]
+Thus the zeta instance implies RH, including all multiplicities.
+
+### What this reinterprets
+
+The previous obstructions become shadows of `(128)`--`(129)`:
+
+```text
+finite truncation leakage
+  = balanced boundary taken before strict cofinal source completion;
+
+adelic L2 loss of point fibres
+  = completion retained but the intermediate conormal boundary forgotten;
+
+moment-indeterminate recurrence phases
+  = nonuniqueness of one-sided closed extension before reflected intermediate image;
+
+Wold storage / Clark parameters / Suzuki residual escape
+  = one-sided boundary pieces removed only after the balanced source comparison;
+
+Gamma determinant and BV first trace
+  = regular and singular readings of the same cofinal gauge anomaly;
+
+high-shell positive atomless bulk
+  = ambient source measure before the relative commutator anomaly is formed;
+
+prime-Schwartz temperedness
+  = the slope-zero distributional shadow after `(129)` has been proved conservative;
+
+hypertranscendental infinite horizon
+  = impossibility of representing the anomaly in any finite jet, rate, or obstruction layer.
+```
+
+The “third completion” is therefore not primarily a third normed space.  It is the relative
+object \({\mathfrak A}_{\cal E}\) produced by the noncommutation of source completion and balanced
+boundary, together with its strict image and pairing.  A Hilbert or rigged-Hilbert carrier is a
+realization of this relative object, not its definition.
+
+### Hostile collision audit
+
+1. Standard irregular Riemann--Hilbert theory supplies enhanced exponential objects and
+   moderate/rapid boundary functors, but permits arbitrary nonzero irregular slopes.  Reflected
+   pairs \((a,-\overline a)\) show that self-duality alone does not imply purity.
+2. Stone--von Neumann uniqueness fixes a regular additive Weyl representation but does not prove
+   that the multiplicative Xi conormal lands in the valuation-Schwartz dual.  Bare representation
+   uniqueness is therefore insufficient.
+3. Prime-Schwartz conormal temperedness is exactly RH in the natural Xi quotient.  It can be a
+   consequence of `(129)` but not a premise or proof of the conjecture.
+4. The positive high-shell clock has an atomless exponential/Laplace limit.  The anomaly in
+   `(129)` is a relative boundary birth, not an inherited atom of that bulk.
+5. General self-dual hypertranscendental or generalized-prime Euler systems can have off-line
+   zeros.  The literal ordinary-integer additive Poisson lattice, principal product formula, and
+   strict comparison in clauses 2--6 are load-bearing.
+6. An ordinary derived colimit of finite acyclic packets may remain zero.  The conjecture uses a
+   strict nuclear/source-effective completion whose failure of exactness is measured before
+   specialization.  If no such nonzero strict defect exists, the conjecture is false.
+
+### First proof problem after conjecture generation
+
+The first new theorem is not `(133)`.  It is the construction of `(128)` on the actual
+all-prime Euler-gauge family and a source-side identification of its cofiber.  A successful first
+step must prove, without choosing a zero:
+
+1. the finite comparison morphisms form a strict, presentation-independent six-channel system;
+2. completion of the Maurer--Cartan connections has a nonzero cofinal class although every finite
+   gauge class is exact;
+3. its Gamma-completed boundary equals the independently constructed Green/co-Poisson current;
+4. the class belongs to both reflected moderate extensions and its nonzero-real-slope pieces map
+   to the rapid acyclic sector; and
+5. the comparison is conservative on principal conormal jets.
+
+Clauses 4--5 together are RH-bearing in the zeta quotient.  The point of `(127)`--`(129)` is to
+give a pre-divisor object from which they might follow, rather than to disguise them as
+continuity.  Failure at any clause must identify the precise surviving noncommutation defect,
+cofinal-order dependence, or one-sided Stokes component.
+
+The external parent boundary is clear.  Enhanced irregular Riemann--Hilbert, moderate/rapid
+nearby cycles, strict Ind-categories, intermediate extensions, Poisson summation, Euler products,
+and Maurer--Cartan connections are established mathematics.  The conjectural new law is their
+source-specific conjunction: a strict integral HT gauge anomaly is conservative and pure because
+it is born only in the commutator of cofinal completion with reflected intermediate extension.
+
+## 22. Exact coefficient model: reflected Mertens slope purity
+
+The slope-zero part of Section 21 is not merely an analogy.  It is already an unconditional
+theorem on the actual-prime Mertens boundary, before any Xi divisor or zero is introduced.
+The positive- and zero-slope cases below, including the complete boundary-jet law, were already
+proved in `deninger-poisson-mertens-boundary-jet-fracture.md`.  The additional content here is the
+negative-slope exclusion, complex-phase formulation, and reflected three-way synthesis.  This is
+an internal-corpus consolidation, not a fresh external novelty claim.
+
+For \(k\geq0\), let \(M_k\) be the weighted prime Marcinkiewicz space with
+\[
+ \|b\|_{M_k}
+ =
+ \sup_{X\geq2}
+ {1\over(\log X)^{k+1}}
+ \sum_{p\leq X}{\log p\over p}|b_p|,                      \tag{134}
+\]
+and let \(M_{k,0}\) be its closed finite-support subspace.  For
+\(\alpha\in\mathbb C\), define the logarithmic-grade exponential source
+\[
+ c_{\alpha,k}(p)=(\log p)^k p^{-\alpha}.                  \tag{135}
+\]
+
+### Theorem: Mertens exponential-slope trichotomy
+
+For every \(k\geq0\) and \(\alpha\in\mathbb C\):
+
+\[
+\begin{array}{c|c}
+\operatorname{Re}\alpha>0
+&
+c_{\alpha,k}\in M_{k,0},
+\\[2mm]
+\operatorname{Re}\alpha=0
+&
+c_{\alpha,k}\in M_k\setminus M_{k,0},
+\quad
+\|[c_{\alpha,k}]\|_{M_k/M_{k,0}}={1\over k+1},
+\\[2mm]
+\operatorname{Re}\alpha<0
+&
+c_{\alpha,k}\notin M_k.
+\end{array}                                               \tag{136}
+\]
+
+Consequently the reflected pair
+\[
+ c_{\alpha,k},\qquad c_{-\overline\alpha,k}               \tag{137}
+\]
+is simultaneously admissible and nonzero in the two Mertens corona quotients if and only if
+\[
+ \operatorname{Re}\alpha=0.                              \tag{138}
+\]
+
+#### Proof
+
+If \(a=\operatorname{Re}\alpha>0\), then
+\[
+ |c_{\alpha,k}(p)|=(\log p)^k p^{-a}.
+\]
+The already-proved positive Euler-translation estimate
+\[
+ S_a:M_k\longrightarrow M_{k,0},
+\qquad
+ (S_ab)_p=p^{-a}b_p,                                     \tag{139}
+\]
+applied to \(u_k(p)=(\log p)^k\), gives the first line of `(136)`.
+
+Suppose \(a=0\).  Absolute values in `(134)` erase the unit phase \(p^{-\alpha}\), so
+\[
+ \|c_{\alpha,k}\|_{M_k}
+ =
+ \|u_k\|_{M_k}.
+\]
+Multiplication by the phase is an isometric automorphism of \(M_k\), preserves finite support,
+and therefore preserves \(M_{k,0}\).  The proved Mertens asymptotic
+\[
+ \sum_{p\leq X}{(\log p)^{k+1}\over p}
+ =
+ {(\log X)^{k+1}\over k+1}+C_k+o(1)                     \tag{140}
+\]
+gives
+\[
+ u_k\in M_k\setminus M_{k,0},
+\qquad
+ \|[u_k]\|={1\over k+1}.
+\]
+The phase automorphism transfers both conclusions to \(c_{\alpha,k}\).
+
+Finally suppose \(a<0\), and put \(b=-a>0\).  Restrict the sum in `(134)` to
+\(\sqrt X<p\leq X\).  On this interval \(p^b\geq X^{b/2}\), so
+\[
+\begin{aligned}
+ {1\over(\log X)^{k+1}}
+ \sum_{p\leq X}{\log p\over p}|c_{\alpha,k}(p)|
+ &\geq
+ {X^{b/2}\over(\log X)^{k+1}}
+ \sum_{\sqrt X<p\leq X}{(\log p)^{k+1}\over p}.
+\end{aligned}                                             \tag{141}
+\]
+By `(140)`, the last normalized interval sum tends to
+\[
+ {1-2^{-(k+1)}\over k+1}>0.                              \tag{142}
+\]
+The right side of `(141)` therefore diverges, proving
+\(c_{\alpha,k}\notin M_k\).  Reflection changes \(a\) to \(-a\); the three cases now give
+`(138)`.  `QED`
+
+### Full logarithmic-jet compatibility
+
+Differentiation in the slope parameter gives
+\[
+ \partial_\alpha^r c_{\alpha,k}
+ =
+ (-1)^r c_{\alpha,k+r}.                                  \tag{143}
+\]
+Thus `(136)` holds compatibly at every logarithmic grade:
+
+```text
+positive slope:
+  every finite boundary jet lies in the rapid/tail-null layer;
+
+zero slope:
+  every jet grade survives with exact corona norm 1/(k+r+1);
+
+negative slope:
+  no jet grade enters the moderate Marcinkiewicz carrier.
+```
+
+For every \(a>0\), the source jump is already exact in the quotient:
+\[
+ [c_{0,k}-c_{a,k}]=[c_{0,k}],
+\qquad
+ \|[c_{0,k}-c_{a,k}]\|={1\over k+1}.                    \tag{144}
+\]
+Hence \(a\downarrow0\) is not a small perturbation in the corona.  Every positive-slope gauge is
+zero there, while the slope-zero boundary has a fixed nonzero charge at every differential
+grade.  Equation `(144)` is a literal finite-gauge/boundary noncommutation law.
+
+### Meaning and limitation
+
+Set
+\[
+ \alpha={1\over2}-\rho.
+\]
+Then `(135)` is the modulus-bearing part of the centered prime character
+\[
+ p^{\rho-1/2}=p^{-\alpha}.                               \tag{145}
+\]
+The theorem proves the desired critical selector entirely on the independently defined
+actual-prime coefficient boundary:
+
+```text
+nonzero reflected Mertens intermediate class
+  implies
+Re(alpha)=0
+  implies
+Re(rho)=1/2.
+```
+
+This is not RH progress by itself.  It neither constructs the Xi conormal in the Mertens
+intermediate class nor proves that the cofinal Euler--Gamma anomaly is conservative on every
+divisor jet.  It proves the coefficient-side purity mechanism that such a comparison would
+consume.
+
+The first-trace exponential-flat theorem locates why the ordinary corona is insufficient for the
+construction step.  Its actual-prime error has size \(p^{-1}\), hence positive exponential slope
+one, and `(136)` sends it to the rapid-null layer.  Nevertheless its dimensionless exponential
+rate grade is nonzero.  Therefore the all-prime source object must retain an exponential
+associated graded before applying the reflected Mertens intermediate quotient.  This matches the
+order required in `(127)`--`(129)`:
+
+```text
+first retain all exponential/Stokes rates in the strict source completion;
+then form the reflected intermediate image;
+only its surviving nonzero principal class is forced to slope zero.
+```
+
+The remaining frontier is now one sharply typed arrow:
+\[
+ {\mathfrak A}_{\zeta}
+ \longrightarrow
+ \bigoplus_{k\geq0}
+ \left(M_k/M_{k,0}\right)
+ \quad\text{conservative on every Xi principal jet}.     \tag{146}
+\]
+Constructing `(146)` before zero specialization would combine the exact cofinal anomaly with the
+proved slope-purity selector.  Assuming `(146)` only on the Xi quotient is again equivalent to
+RH and is forbidden.
+
+## 23. Universal interpretation: the arithmetic Stokes--Gauss law
+
+The new synthesis does not require inventing another completion after `(146)`.  It changes what
+**source effectivity** should mean.
+
+The source already carries an intrinsic real exponential-slope filtration.  At prime scale
+\[
+ \varepsilon_p={1\over\log p},
+\]
+the elementary exponential grade is
+\[
+ p^{-\alpha}
+ =
+ \exp(-\alpha/\varepsilon_p),                            \tag{147}
+\]
+and its real slope is \(\operatorname{Re}\alpha\).  The Mertens class \(c_{0,k}\) is pure slope
+zero.  The first-trace error \(p^{-1}\) is slope one.  Critical Fisher damping \(p^{-1/2}\) is
+slope one-half before the source half-density twist.  A centred Xi conormal has slope
+\[
+ \operatorname{Re}\left({1\over2}-\rho\right)
+ =
+ {1\over2}-\operatorname{Re}\rho.                       \tag{148}
+\]
+Thus all asymptotic faces already use one valuation; previous cards had treated its regular,
+formal, WKB, and conormal readings separately.
+
+Let
+\[
+ 0\longrightarrow M_{\rm src}
+ \longrightarrow M_{\rm amb}
+ \longrightarrow M_{\rm cor}
+ \longrightarrow0                                      \tag{149}
+\]
+be the conjectural source/ambient/corona sequence from `(12g)`, now formed in a category carrying
+the complete exponential-slope filtration \(F^{\rm St}\).  Its connecting morphism is
+\[
+ \partial_{\rm src}:
+ H^0(M_{\rm cor})
+ \longrightarrow
+ H^1(M_{\rm src}).                                      \tag{150}
+\]
+
+### Frozen conjecture: filtered-Bockstein source effectivity
+
+> **[CONJECTURE — ARITHMETIC STOKES--GAUSS LAW.]**
+> For every regular integral self-dual source-minimal HT constraint, its source-effective
+> completion constructs `(149)` before exceptional-divisor specialization such that:
+>
+> 1. \(F^{\rm St}\) is intrinsic to the arithmetic source and presentation-independent;
+> 2. `(149)` is strict for \(F^{\rm St}\), and \(\partial_{\rm src}\) is a strict morphism of
+>    Stokes degree zero;
+> 3. the escaping unit Calderón primitive defines a nonzero pure slope-zero class
+>    \([R]\in H^0(M_{\rm cor})\);
+> 4. \(\partial_{\rm src}[R]\) is the complete source principal-conormal charge, not merely its
+>    scalar trace, determinant, or finite jet;
+> 5. its realization in the holomorphic constraint quotient is conservative on every
+>    exceptional-divisor point and every multiplicity jet; and
+> 6. source reflection reverses Stokes slope and agrees with duality on the same strict sequence.
+
+This conjecture is not constrained by whether a proof is presently visible.  It is the strongest
+law suggested by the corpus.  It is also falsifiable: a source-equivalent presentation changing
+the slope filtration, a non-strict completion, a Bockstein with nonzero degree, a lost divisor
+jet, or an explicit off-line system satisfying all six clauses refutes it.
+
+### Why “Gauss law”
+
+Equation `(150)` is a boundary-charge map.  The missing primitive is bulk data; its Bockstein is
+the boundary charge.  Strictness says exponential slope is conserved across that transgression:
+\[
+ \operatorname{slope}\bigl(\partial_{\rm src}[R]\bigr)
+ =
+ \operatorname{slope}([R])
+ =
+ 0.                                                     \tag{151}
+\]
+This is the exact analogue of a Gauss law needed here: a global source charge cannot acquire an
+arbitrary radial/Stokes grade when it becomes divisor flux.
+
+The word `strict` is load-bearing.  An ordinary filtered morphism can send a pure class into a
+larger filtration and hide nonzero associated-graded components.  A scalar trace can cancel
+opposite slopes.  A non-Hausdorff quotient can kill the grade-zero class.  Strictness plus
+fibrewise conservativity excludes all three.
+
+### Formal RH deduction
+
+Assume the zeta instance.  Clause 4 identifies
+\(\partial_{\rm src}[R]\) with the complete Xi principal conormal, and clause 5 gives a nonzero
+component at every zero \(\rho\).  On a prime axis that component has character
+\[
+ p^{\rho-1/2}
+ =
+ \exp\!\left(-{(1/2-\rho)\over\varepsilon_p}\right).     \tag{152}
+\]
+By `(151)`, its real slope `(148)` is zero.  Hence
+\[
+ \operatorname{Re}\rho={1\over2}.                       \tag{153}
+\]
+Every nontrivial zero is covered, so RH follows.
+
+No positivity inequality is needed after the Stokes--Gauss law.  Positivity and reflection are
+structural inputs ensuring the source sequence and its two ends are the correct self-dual ones;
+the location theorem itself is conservation of filtered degree.
+
+### What all previous results become
+
+```text
+Mertens unit corona:
+  the pure slope-zero source charge;
+
+positive Euler translation vanishing:
+  positive slopes pass into the rapid/null subobject;
+
+negative-slope Marcinkiewicz divergence:
+  negative slopes fail the moderate source lattice;
+
+first-trace exponential flatness:
+  nonzero higher Stokes grades erased by every finite-order completion;
+
+Gamma determinant / BV first trace:
+  two readings of the Bockstein boundary;
+
+finite Wold exactness:
+  local Gauss law with a primitive and therefore no charge;
+
+cofinal Bockstein:
+  charge born only when the common primitive escapes strict completion;
+
+functional equation:
+  reflection of slope a to -a, not a proof that a vanishes;
+
+Meyer all-zero quotient:
+  holomorphic decomposition of the boundary charge into divisor fibres;
+
+prime-Schwartz moderation:
+  distributional realization of the slope-zero associated graded;
+
+generalized-prime and rational-quartet countermodels:
+  systems where the source Bockstein, its framing, its slope strictness, or its integral
+  realization is not the ordinary-integer one.
+```
+
+This also explains why every scalar sign route failed.  A scalar pairs or sums reflected slopes
+and can erase their grade.  The full associated-graded Bockstein retains the slope of each
+conormal component before any trace.
+
+### Parent theorem versus frontier theorem
+
+In a strict filtered exact category, a degree-zero strict connecting morphism preserves the
+associated grade.  That abstract statement is parent homological algebra and proving it again
+would be theatre.  Frontier content is entirely arithmetic:
+
+1. construct the exponential filtration from actual prime scales and Gamma/Poisson
+   normalization;
+2. build `(149)` on the strict all-prime source before specialization;
+3. prove the Wold--Gamma/BV connecting map has Stokes degree zero;
+4. identify its nonzero slope-zero source class with the co-Poisson/Xi principal conormal; and
+5. prove strict fibrewise conservativity, including multiplicity.
+
+The first serious obstruction is clause 3 above.  The local interval Bockstein records nilpotent
+multiplicity grade but is independent of semisimple radial slope.  The next theorem must show that
+the actual Gamma/BV transgression is homogeneous of Stokes degree zero after the forced
+half-density normalization.  Only then can the nilpotent interval tower and semisimple radial
+filtration live in one strict source sequence.
+
+## 24. Correction at infinity: arithmetic divisor charge must not diffuse
+
+The preceding order of attack is too local.  The corpus already proves that local Gamma Stokes
+data are Tate-local and projectively scalar, while the Wold/BV scalar coefficient has leading
+Stokes degree zero independently of a divisor parameter.  Homogeneity of that scalar coefficient
+cannot attach a Xi conormal to the unitary boundary.  It is therefore not the first serious
+obstruction and is retired as a standalone frontier target.
+
+The all-prime operator-algebra audit exposes a sharper issue.  The conjectural implication
+
+\[
+ \text{complete complementary record}
+ +\text{zero common reporter kernel}
+ \Longrightarrow
+ \text{maximal representation}                           \tag{154}
+\]
+
+is false without an additional terminality condition.
+
+### Exact Poisson-dilation countermodel to record maximality
+
+Let \(A(\mathbb D)\) be the disk algebra and let
+\(\chi_z(f)=f(z)\), where \(|z|<1\).  Let \(\mu_z\) be harmonic measure at \(z\),
+\[
+ d\mu_z(e^{i\theta})
+ =
+ {1-|z|^2\over |e^{i\theta}-z|^2}\,{d\theta\over2\pi},
+                                                               \tag{155}
+\]
+let \(U\) be multiplication by \(e^{i\theta}\) on \(L^2(\mu_z)\), and let
+\(\xi=1\).  The Poisson formula gives
+\[
+ \langle f(U)\xi,\xi\rangle=f(z)
+ \qquad(f\in A(\mathbb D)).                               \tag{156}
+\]
+Thus \((U,\xi)\) is a boundary dilation of \(\chi_z\).  It records every analytic moment of the
+interior character.  It also records the exact one-step Schwarz defect
+\[
+ 1-|z|^2>0.                                               \tag{157}
+\]
+No information-theoretic incompleteness is present: the complete moment sequence and the
+complementary defect recover \(z\), yet the original character is nonmaximal.
+
+For \(|z|<1\), the measure `(155)` is non-atomic with strictly positive density, so the cyclic
+boundary sector generated by \(\xi\) is infinite-dimensional.  For \(|z|=1\), harmonic measure
+degenerates to the atom \(\delta_z\), the cyclic sector is one-dimensional, and the scalar
+character is already a boundary representation.  In the prime polydisk, one strict coordinate
+\(|z_p|<1\) already produces the same infinite-dimensional dilation along that coordinate.
+
+This is parent Sz.-Nagy--Foiaş/Poisson dilation mathematics.  Its role here is a killing theorem:
+reporter completeness detects a proper dilation; it does not prohibit one.
+
+### Finite-fibre/no-diffusion trilemma `[PROVED ABSTRACTLY]`
+
+Let \(\chi_z\) be a finite-dimensional scalar prime-semigroup character and attempt to pass it to
+a maximal unitary boundary realization.  If some \(|z_p|\ne1\), then at least one of the following
+must happen:
+
+1. **boundary-fibre annihilation:** extension of scalars to
+   \(C^*(\mathbb Q_{>0}^{\times})\) kills the nonunitary character fibre, because
+   \(u_p-z_p\) is invertible on the unitary character torus;
+2. **Poisson diffusion:** retaining \(\chi_z\) as a compression replaces its finite point fibre by
+   an infinite-dimensional cyclic boundary sector;
+3. **nonmaximality:** the realization keeps the finite character fibre but has a nontrivial
+   boundary dilation.
+
+Consequently a finite, nonzero, maximal, point-character fibre exists only when
+\[
+ |z_p|=1\quad\text{for every }p.                          \tag{158}
+\]
+This is not another norm criterion.  It classifies the three possible failures of commuting
+finite divisor specialization with maximal completion.
+
+For the centered Xi conormal,
+\[
+ z_p(\rho)=p^{1/2-\rho}.                                  \tag{159}
+\]
+Equation `(158)` is therefore equivalent to
+\(\operatorname{Re}\rho=1/2\).
+
+### Frozen conjecture: source-terminal nearby-cycle strictness
+
+`[CONJECTURE] [XI_SOURCE_TERMINAL_NEARBY_CYCLE_STRICTNESS]`
+
+The literal integral Euler--Gamma/co-Poisson relative complex admits a source-generated terminal
+envelope \(\operatorname{Env}_{\rm src}\) for the Wold--Toeplitz extension such that:
+
+1. \(\operatorname{Env}_{\rm src}\) is constructed before divisor specialization and is maximal
+   only among morphisms preserving the integral source, Gamma/BV transgression, reflection, and
+   complete algebraic and exponential rate records;
+2. principal Xi nearby cycles commute strictly with this terminalization;
+3. a zero of multiplicity \(d\) has a nonzero finite-length completed principal-conormal fibre of
+   the same length \(d\);
+4. no finite fibre is replaced by a diffuse cyclic boundary state; and
+5. the comparison is compatible with prime enlargement and independent of source presentation.
+
+The conjecture asserts an arithmetic properness/non-diffusion law.  It does not infer maximality
+from complete records.  Maximality is part of the independently defined terminal envelope;
+the new arithmetic statement is that finite Xi nearby cycles survive terminalization without
+annihilation or diffusion.
+
+By the trilemma, clauses 2--4 force every character `(159)` to be unitary.  Hence the conjecture
+implies RH, including multiplicity.
+
+### What the corpus means under this law
+
+```text
+finite truncation:
+  finite point fibre survives, but representation is nonmaximal and leaks;
+
+ambient adelic L2:
+  unitary completion exists, but point fibre diffuses into continuous spectrum;
+
+plain C*-boundary:
+  unitary point fibres survive, but nonunitary fibres are annihilated and the anomaly ideal is lost;
+
+relative Wold--Gamma/BV extension:
+  retains the obstruction record needed to define source-compatible terminalization;
+
+high-shell Hardy interior:
+  a strict-right conormal is a bounded interior state, hence a nonmaximal Poisson compression;
+
+high-shell Calkin boundary and prime-Schwartz boundary:
+  exactly the atomic/non-diffusive grade;
+
+first-trace and Mertens fractures:
+  witnesses that completion and specialization need not commute;
+
+hypertranscendence:
+  forces the complete record tower, but does not prohibit Poisson diffusion;
+
+functional equation:
+  pairs reciprocal diffusive sectors, but does not atomize either one;
+
+generalized-prime off-line systems:
+  valid sources whose divisor charge is allowed to diffuse or whose terminal nearby-cycle
+  comparison is not the literal ordinary-prime one.
+```
+
+The new universal interpretation is:
+
+> **A zero is a finite arithmetic boundary charge.  Off the critical line, maximal completion can
+> retain that charge only by dissolving the point into a Poisson boundary cloud.  RH says the
+> ordinary-prime source is non-diffusive: every integral divisor charge remains a finite atom
+> under terminal completion.**
+
+This is the finite-fibre form of the arithmetic Stokes--Gauss law.  “Slope is conserved” now has
+an exact categorical meaning: the specialization remains atomic through completion, rather than
+being annihilated or spread across a boundary measure.
+
+### Hostile boundary and actual next theorem
+
+1. Integrality of total charge alone is insufficient; a probability measure can be diffuse and
+   still have integral total mass one.
+2. Complete reporter data alone are insufficient by `(155)`--`(157)`.
+3. Generic C*-envelopes and boundary representations are parent theory; they erase the relative
+   Gamma/BV ideal.
+4. Projective strictness in irregular Hodge theory is a finite-stage parent theorem.  It does not
+   prove strictness for the countable ordinary-prime Ind-limit or identify its nearby cycles with
+   the Xi conormal.
+5. Declaring terminalization to commute with Xi specialization is RH-bearing and may not be used
+   as a definition.
+
+The first serious construction problem is therefore:
+
+> build the source-relative terminal envelope before specialization and prove one finite-length
+> base-change theorem for its principal conormal nearby cycles.
+
+The proof must expose the exact boundary term that would cause Poisson diffusion and show, using
+the literal Euler--Gamma/co-Poisson transgression rather than abstract positivity, that this term
+vanishes or is returned to the finite conormal fibre.  If the term does not vanish, classify its
+boundary measure; that measure is the strongest positive survivor and the conjecture must be
+revised.
+
+External parent boundary: Dritschel--McCullough construct maximal boundary dilations and the
+\(C^*\)-envelope for general operator algebras; Sabbah--Yu prove strict projective pushforward for
+finite exponentially twisted mixed Hodge modules.  Neither parent supplies the source-relative
+ordinary-prime terminal envelope or the claimed finite Xi nearby-cycle base change.
+
+## 25. The jump: dualizable arithmetic charge cannot diffuse
+
+Section 24 still makes maximal terminalization carry more weight than is necessary.  A finite
+divisor fibre does not need to be a maximal boundary representation.  It only needs to survive as
+an invariant finite object inside a positive prime representation.  The obstruction is therefore
+not maximality itself but failure of completion to preserve **dualizable defect objects**.
+
+### Parent categorical lemma
+
+Let \(\mathcal C^\otimes\) be a symmetric monoidal source category and let
+\[
+ {\cal R}:\mathcal C^\otimes\longrightarrow {\rm Hilb}
+                                                               \tag{160}
+\]
+be a dagger Frobenius monoidal functor.  Strong monoidality is sufficient, but not necessary.
+Then:
+
+1. \({\cal R}\) preserves dualizable objects;
+2. a dualizable object of \({\rm Hilb}\) is finite-dimensional;
+3. if a unitary \(U\) preserves a finite-dimensional subspace \(E\), then
+   \(U|_E\) is unitary and \(E\) is reducing.
+
+The third statement uses only finite dimension: \(U|_E\) is an isometry and hence surjective.
+Consequently every eigenvalue of \(U|_E\) has modulus one.
+
+These are parent results.  Strong monoidal functors preserve duals; Day--Pastro prove that the
+weaker Frobenius monoidal condition still suffices.  The noncompact category of all Hilbert spaces
+is not compact closed; its dualizable sector is the finite-dimensional one.  No novelty is
+claimed for `(160)`.
+
+### The Cartier-orbit package
+
+Let \(\rho\) be a nontrivial Xi zero and let
+\[
+ {\cal O}_\rho
+ =
+ \{\rho,\overline\rho,1-\rho,1-\overline\rho\}
+                                                               \tag{161}
+\]
+with repetitions removed.  The local principal-conormal object of the Xi Cartier divisor,
+together with its multiplicity jets, has a finite perfect Koszul model at every member of
+`(161)`.  Write
+\[
+ K_\rho
+ =
+ \bigoplus_{\sigma\in{\cal O}_\rho}
+ K_{\Xi,\sigma}.                                             \tag{162}
+\]
+The full orbit package, rather than one fibre, is the correct dagger object: reflection and
+complex conjugation need not fix an off-line fibre separately.
+
+Prime half-density dilation preserves `(162)`.  On its semisimple conormal line at \(\sigma\), it
+has character
+\[
+ \lambda_p(\sigma)=p^{\sigma-1/2}.                          \tag{163}
+\]
+This is the already-proved Tate/Meyer/BV covariance.  Nilpotent multiplicity jets only add a
+finite upper-triangular part with the same diagonal character.
+
+Suppose a source realization, constructed before choosing \(\rho\), has the following properties
+on `(162)`:
+
+1. strict Cartier base change identifies the realized point package with
+   \({\cal R}(K_\rho)\);
+2. \({\cal R}\) is dagger Frobenius monoidal on the rigid defect subcategory containing
+   \(K_\rho\);
+3. \({\cal R}\) is conservative on every nonzero Xi point package; and
+4. prime half-density dilation is carried to a unitary operator and `(163)` is preserved.
+
+Then \({\cal R}(K_\rho)\) is nonzero and finite-dimensional.  It is invariant under the realized
+prime unitary.  Hence `(163)` is an eigenvalue of a finite-dimensional unitary, so
+\[
+ |p^{\rho-1/2}|=1,
+ \qquad
+ \operatorname{Re}\rho=\frac12.                           \tag{164}
+\]
+This proves RH.  Exact base change also retains the finite nilpotent package and therefore does
+not discard multiplicity.
+
+`[PAPER-PROVED — DUALIZABLE-CHARGE PURITY CONSUMER]`
+
+The proof of `(164)` is complete under the four displayed realization properties.  It is not new
+mathematics and should not be formalized as an RH advance.  Its value is that it removes two
+unnecessary hypotheses from Section 24:
+
+```text
+maximal boundary representation: not needed;
+explicit no-diffusion axiom:      not needed;
+
+Frobenius-monoidal preservation of the rigid defect:
+  automatically forbids diffusion;
+
+conservativity:
+  forbids annihilation;
+
+dagger prime-equivariance:
+  supplies unitary dynamics.
+```
+
+### Frozen conjecture: source Frobenius realization of the Xi defect
+
+`[CONJECTURE] [XI_SOURCE_FROBENIUS_CARTIER_REALIZATION]`
+
+The completed ordinary-prime Euler--Gamma/co-Poisson source has a positive realization functor
+\[
+ {\cal R}_{\rm src}:
+ {\rm Perf}_{\rm def}({\cal C}_{\rm Euler/Gamma/PZ})
+ \longrightarrow {\rm Hilb}                               \tag{165}
+\]
+defined before divisor specialization, with these properties:
+
+1. it is dagger Frobenius monoidal on the rigid subcategory generated by the cofinal
+   Euler-gauge defect, its Cartier conormal, reflection, and multiplicity Koszul objects;
+2. its dagger is induced by the source Fourier/real-orientation involution and sends normalized
+   prime dilation to a unitary;
+3. derived Cartier base change to every Xi point commutes strictly with `(165)`;
+4. it is conservative on every nonzero finite-length Xi conormal package; and
+5. it is compatible with prime enlargement, Gamma/BV transgression, and the literal integral
+   Rost--Schmid source lattice.
+
+This is a truth-hunch in the user's strict sense.  No proof method is included in the conjecture.
+Its attraction is explanatory: it asks for one universal preservation law rather than an
+independent sign, norm bound, recurrence estimate, or anti-diffusion clause at every zero.
+
+The completion need not be strongly monoidal on the infinite bulk.  Hypertranscendence and the
+all-prime gauge defect force that bulk to be noncompact and infinite-order.  The claim is
+selective rigidity:
+
+> completion may enlarge the nondualizable bulk, but it preserves the dualizable arithmetic
+> defect sector and its dagger.
+
+This is the precise sense in which infinity and finite divisor charge coexist.
+
+### What the prior obstructions mean
+
+```text
+finite prime truncations:
+  retain dualizable defect packets, but not the complete unitary prime action;
+
+ambient adelic L2:
+  has the dagger-unitary prime action, but Cartier base change is nonconservative and all point
+  packages vanish into continuous spectrum;
+
+Meyer/co-Poisson quotient:
+  retains finite Xi packages, but has no proved positive dagger Frobenius realization;
+
+Poisson/GNS dilation of an interior character:
+  is only a compression/lax realization on the point object and sends one dualizable line to an
+  infinite nondualizable cyclic cloud;
+
+plain C*-boundary:
+  preserves unitary points but annihilates nonunitary point packages and the Gamma/BV ideal;
+
+functional equation:
+  supplies the dagger orbit `(161)`, but not a positive realization of that orbit;
+
+hypertranscendence:
+  forces the full rigid source record and prevents finite-order scalarization, but does not by
+  itself make its realization Frobenius or conservative;
+
+generalized-prime off-line systems:
+  must fail strict dagger Frobenius base change, conservativity on the point package, or the
+  literal ordinary-prime source comparison.  Positive density and reflection do not supply
+  those properties.
+```
+
+The universal law is therefore:
+
+> **Arithmetic compact charge is conserved as dualizability.**  A positive source realization
+> may move or enlarge bulk information, but a Cartier divisor charge that is dualizable before
+> completion cannot become a diffuse boundary state after a conservative Frobenius-monoidal
+> realization.
+
+For Xi, prime half-density covariance turns that conservation law into `(164)`.
+
+### Corpus weld and first construction theorem
+
+Two existing programmes supply different halves of `(165)`:
+
+1. `DAC_FINITE_CORRESPONDENCE_ANALYTIC_REALIZATION` asks for a symmetric monoidal Deninger
+   realization of the rational-Witt/Milnor source;
+2. `DAC_ARITHMETIC_CALDERON_GREEN_INTERMEDIATE_EXTENSION` asks for a positive dagger Hodge
+   realization faithful on Meyer's quotient.
+
+They have previously been treated as parallel bridges.  The new construction target is their
+agreement on the rigid cofinal-defect subcategory.  It is unnecessary to build a universal
+terminal envelope first.
+
+The first non-parent theorem must construct one explicit Frobenius comparison square for the
+all-prime Euler-gauge commutator anomaly and prove strict Cartier base change for its principal
+conormal:
+\[
+\begin{CD}
+ K_{\Xi}^{\rm src}\otimes (K_{\Xi}^{\rm src})^\vee
+     @>>> \mathbbm 1_{\rm src}\\
+ @V{{\cal R}_{\rm src}\otimes{\cal R}_{\rm src}}VV
+     @VV{{\cal R}_{\rm src}}V\\
+ {\cal R}_{\rm src}(K_{\Xi}^{\rm src})
+   \widehat\otimes
+ {\cal R}_{\rm src}((K_{\Xi}^{\rm src})^\vee)
+     @>>> \mathbb C .
+\end{CD}                                                     \tag{166}
+\]
+The square must be formed before zero expansion and then commute with the finite-orbit base
+change `(161)`.  The evaluation and coevaluation composites must be identities in the completed
+defect sector, not merely nonzero scalar pairings.
+
+Failure of `(166)` has a sharp positive survivor: its cofiber is the **duality leakage object**.
+Under point base change, that object classifies exactly how much of a finite Xi charge is
+annihilated or converted into Poisson storage.  Constructing and identifying this cofiber is
+therefore useful even if the conjecture is false.
+
+### Hostile boundary
+
+1. A lax monoidal or state-valued GNS construction does not preserve duals and is defeated by
+   the disk Poisson model.
+2. Duality of \(K_{\Xi,\rho}\) with \(K_{\Xi,1-\overline\rho}\) is not positivity.  Dagger
+   compatibility must be proved on the full orbit `(161)`.
+3. Conservativity cannot be inferred from monoidality.  A point-supported perfect object may be
+   sent to zero.
+4. Strict Cartier base change is RH-bearing.  It must be derived from the literal source
+   comparison, not declared as the definition of the target fibre.
+5. A symmetric monoidal realization into completed locally convex spaces is insufficient until
+   its rigid defect sector lands in Hilbert dualizable objects with the source dagger.
+6. The conormal being a line before completion does not prevent diffusion under a non-Frobenius
+   functor.
+7. Proving `(160)` or the finite-isometry lemma again in Lean would be theatre; the only
+   formalization-worthy theorem is a source-specific instance of `(166)` or a nonzero computed
+   duality-leakage cofiber.
+
+Primary parent boundaries:
+
+- Brian Day and Craig Pastro, *Note on Frobenius monoidal functors*,
+  https://arxiv.org/abs/0801.4107;
+- Peter Selinger, *Finite dimensional Hilbert spaces are complete for dagger compact closed
+  categories*, https://arxiv.org/abs/1207.6972.
+
+Targeted corpus and literature searches found the parent dualizability statements and the two
+separate Deninger realization conjectures, but no source-relative theorem joining the
+ordinary-prime Euler--Gamma/co-Poisson Cartier defect to a conservative dagger Frobenius Hilbert
+realization.  This is preliminary noncollision, not a priority claim.
+
+## 26. The universal defect is multiplicative-domain curvature
+
+Section 25 identifies the categorical preservation law but leaves its analytic shadows separate.
+They are in fact exact transforms of one real curvature.
+
+For a complex divisor point \(\rho\) and a rational prime \(p\), put
+\[
+ \delta(\rho)=1-\rho-\overline\rho\in\mathbb R,\qquad
+ z_p(\rho)=p^{1/2-\rho}.                                  \tag{167}
+\]
+Here \(z_p\) is the centered prime character used by the Wold, Koszul, Kakutani, and
+Cartier-orbit realizations.  Let
+\[
+ C_p(\rho)
+ =(\log p)\left(p^{-\overline\rho}-p^{-(1-\rho)}\right)   \tag{168}
+\]
+be the already formalized FE--Schwarz prime seam.
+
+### Purity exponential-transgression theorem `[PAPER-PROVED]`
+
+The following identities hold:
+\[
+ |z_p(\rho)|^2=p^{\delta(\rho)},                          \tag{169}
+\]
+\[
+ C_p(\rho)
+ =(\log p)\,p^{-(1-\rho)}
+   \left(p^{\delta(\rho)}-1\right)
+ =-(\log p)\,p^{-(1-\rho)}
+   \left(1-|z_p(\rho)|^2\right).                          \tag{170}
+\]
+If \(\lambda_\rho=\rho\) denotes the uncentered Deninger Frobenius eigenvalue, the local Hodge
+calculation is
+\[
+ \Theta_c\star_\rho-\star_\rho\Theta
+ =\delta(\rho)\star_\rho.                                 \tag{171}
+\]
+The local form \(\star_\rho\) is nonzero unconditionally.  Therefore, for every \(p\),
+\[
+\begin{aligned}
+ \operatorname{Re}\rho=\tfrac12
+ &\Longleftrightarrow \delta(\rho)=0\\
+ &\Longleftrightarrow |z_p(\rho)|=1\\
+ &\Longleftrightarrow C_p(\rho)=0\\
+ &\Longleftrightarrow
+   \Theta_c\star_\rho=\star_\rho\Theta.                   \tag{172}
+\end{aligned}
+\]
+
+**Proof.**  Since the base \(p\) is positive real,
+\[
+ |p^{1/2-\rho}|^2
+ =p^{1/2-\rho}p^{1/2-\overline\rho}
+ =p^{1-\rho-\overline\rho},
+\]
+which proves `(169)`.  Factoring \(p^{-(1-\rho)}\) from `(168)` gives
+\[
+ p^{-\overline\rho}
+ =p^{-(1-\rho)}p^{1-\rho-\overline\rho},
+\]
+hence `(170)`.  Equation `(171)` is the proved Deninger local-Hodge obstruction.  Since
+\(\log p\ne0\), \(p^{-(1-\rho)}\ne0\), the real exponential is injective, and
+\(\star_\rho\ne0\), all equivalences in `(172)` follow. `QED`
+
+There is also a canonical divided-difference form:
+\[
+ {C_p(\rho)\over
+   \delta(\rho)(\log p)^2p^{-(1-\rho)}}
+ =
+ {e^{\delta(\rho)\log p}-1\over\delta(\rho)\log p},       \tag{173}
+\]
+with continuous value \(1\) at \(\delta=0\).  For real \(\delta\), the right side is strictly
+positive.  Thus the seam is not merely another reader with the same zero locus.  It is the finite
+prime holonomy of the infinitesimal Hodge curvature, with no extra zero and no sign cancellation.
+
+### Poisson diffusion is the same curvature
+
+Let \(\Phi_z:C(\mathbb T)\to\mathbb C\) be the Poisson state at \(|z|<1\), and let \(u(\zeta)=\zeta\)
+be the boundary unitary.  Then
+\[
+ \Phi_z(u)=z,\qquad
+ \Phi_z(u^*u)-\Phi_z(u)^*\Phi_z(u)=1-|z|^2.               \tag{174}
+\]
+In the Poisson GNS representation this is exactly
+\[
+ \|(1-P_{\mathbb C\xi})\,U\xi\|^2=1-|z|^2,               \tag{175}
+\]
+the squared component by which the point character spreads into the orthogonal boundary cloud.
+For \(\delta(\rho)<0\), substitute \(z=z_p(\rho)\) into `(174)`:
+\[
+ D_p(\rho)=1-p^{\delta(\rho)}
+ =-{C_p(\rho)\over(\log p)p^{-(1-\rho)}}.                \tag{176}
+\]
+For \(\delta(\rho)>0\), the reflected orbit point
+\(1-\overline\rho\) has curvature \(-\delta(\rho)\), lies in the disk chart, and has defect
+\(1-p^{-\delta(\rho)}\).  Hence every off-line quartet has a strictly positive Poisson-diffusion
+defect on one of its two oriented disk faces.
+
+Equations `(171)`, `(170)`, and `(176)` give the promised reinterpretation:
+
+```text
+delta(rho)                    = infinitesimal Hodge curvature;
+p^delta                       = prime holonomy;
+p^delta-1                     = finite transgression;
+C_p(rho)                      = phase-weighted Euler seam;
+1-|z_p(rho)|^2                = Kadison--Schwarz / Stinespring leakage;
+off-line Kakutani separation  = all-prime accumulation of that leakage;
+Poisson boundary cloud        = dilation realizing the leakage;
+duality-leakage cofiber       = categorical receiver before scalarization.
+```
+
+These are not analogies and not independent RH criteria.  They are realizations of one curvature.
+The exact seam/norm-growth theorem is the quadratic all-divisor accumulation of `(170)`;
+the finite-fibre trilemma classifies what completion can do when `(174)` is nonzero.
+
+### Multiplicative-domain meaning
+
+For a unital completely positive map \(\Phi:A\to B\) and a unitary \(u\in A\), the
+Kadison--Schwarz defect
+\[
+ D_\Phi(u)=1-\Phi(u)^*\Phi(u)\ge0                         \tag{177}
+\]
+vanishes, together with the identical defect for \(u^*\), exactly when \(u\) belongs to the
+multiplicative domain of \(\Phi\).  If \(\Phi(u)=z\,1\) on a nonzero point fibre, `(177)` becomes
+\((1-|z|^2)1\).  Thus:
+
+> **A positive realization retains a prime character as a finite multiplicative point exactly
+> when the normalized prime unitary lies in the point realization's multiplicative domain.**
+
+Off the unitary axis, a positive realization has only the three outcomes already found in
+Section 24: annihilate the point, diffuse it through a nonmultiplicative Stinespring dilation, or
+retain it in a nonmaximal/non-dagger chart.  The multiplicative-domain defect is the scalar shadow
+of the duality-leakage object from `(166)`.
+
+This also explains why the proposed Frobenius condition is natural rather than decorative.  The
+reduced support of a finite Cartier point carries copying and deletion maps from its diagonal and
+structure correspondences.  A dagger strong-monoidal realization preserves this special dagger
+Frobenius structure.  Its image remains a copyable classical charge, so the normalized prime
+unitary acts multiplicatively on the semisimple point character; no Poisson randomization is
+possible.
+
+The reduced qualifier is essential.  A multiplicity-\(d\) Cartier thickening has a finite perfect
+Koszul/Frobenius package but need not be a special dagger classical object; requiring special
+dagger copyability of the whole thickening could silently force semisimplicity and hence simple
+zeros.  The nilpotent multiplicity package is retained separately as a dualizable module over the
+copyable reduced support.  The weaker Frobenius-monoidal condition of Section 25 preserves that
+dualizable package even when strong monoidality is unavailable.
+
+### Refined frozen conjecture: Cartier classicality survives completion
+
+`[CONJECTURE] [XI_SOURCE_CARTIER_CLASSICALITY_BASE_CHANGE]`
+
+The source-first co-Poisson/Xi Cartier package admits a model as a derived zero locus in the
+ordinary-prime finite-correspondence category, constructed before selecting a zero.  Its reduced
+support has diagonal, counit, and transpose correspondences; its full thickening has the
+reflection orbit and multiplicity Koszul structure.  The finite-correspondence analytic
+realization satisfies, on the rigid subcategory generated by this package:
+
+1. after strict Cartier base change, the reduced-support diagonal and counit survive the all-prime
+   completion as a special dagger Frobenius object, while the full multiplicity package survives
+   as a dualizable module of the same finite length;
+2. transpose correspondence realizes as the positive analytic dagger;
+3. derived Cartier base change is strict and conservative on every finite Xi orbit package;
+4. normalized prime dilation realizes as the source unitary and preserves the source action on
+   the semisimple conormal line; and
+5. the construction commutes with prime enlargement, Gamma/BV transgression, and the integral
+   Rost--Schmid boundary.
+
+This is a construction form of `XI_SOURCE_FROBENIUS_CARTIER_REALIZATION`, not an additional
+purity axiom.  If true, the reduced image of every nonzero Xi Cartier package is copyable and lies
+in the multiplicative domain of every normalized prime unitary, while its nilpotent jets retain
+their length through dualizability.  Equations `(167)` and `(177)` force
+\(|z_p(\rho)|=1\), and `(172)` gives RH without asserting simplicity.
+
+The first source-specific theorem is correspondingly sharper than `(166)`: construct the
+completed image of the actual reduced-support Cartier diagonal and prove
+\[
+ {\cal R}_{\rm src}(\Delta_{K_{\rm red}})
+ =
+ \Delta_{{\cal R}_{\rm src}(K_{\rm red})},\qquad
+ {\cal R}_{\rm src}(\Delta_{K_{\rm red}}^\top)
+ =
+ {\cal R}_{\rm src}(\Delta_{K_{\rm red}})^\dagger,       \tag{178}
+\]
+then prove `(178)` commutes with principal-conormal base change.  Dualizability follows from the
+Frobenius identities; multiplicative-domain vanishing follows from dagger copyability.  If
+`(178)` fails, its mapping cofiber is the duality leakage object, whose \(p\)-local scalar shadow
+must recover `(176)`.  This gives a computable falsifier rather than an unspecified failure of
+positivity.
+
+### Hostile audit
+
+1. Choi's multiplicative-domain theorem, Stinespring dilation, special dagger Frobenius
+   structures, and preservation of duals by Frobenius monoidal functors are parent mathematics.
+2. The exact algebra in `(169)`--`(173)` is elementary.  Candidate-new content is the
+   cross-realization identification with the independently constructed Deninger Hodge form,
+   FE--Schwarz seam, Poisson diffusion, and source Cartier duality leakage.
+3. Local positive Deninger forms do not prove `(178)`: they exist at hypothetical off-line zeros
+   and fail Frobenius commutation by exactly `(171)`.
+4. A positive generalized-prime density does not prove multiplicative-domain membership of its
+   divisor character.  The explicit off-line Euler systems realize nonzero `(174)`.
+5. Functional-equation reflection exchanges \(\delta\) and \(-\delta\); it pairs the two leakage
+   faces but does not make either vanish.
+6. Hypertranscendence supplies a large source record but does not preserve a Cartier diagonal
+   through completion.  The positive HT divisor frame remains a counterexample to any such
+   inference.
+7. Merely formalizing `(169)`--`(173)` would be theatre.  Formalization becomes significant only
+   when the theorem connects the existing Lean Deninger obstruction and prime-seam definitions,
+   or when a source-specific instance of `(178)` is constructed.
+
+Primary literature boundaries are Choi's multiplicative-domain theorem, Day--Pastro's preservation
+of duals by Frobenius monoidal functors, and the purity theorem for isometric comonoids in
+`CPM(fHilb)`.  Targeted corpus and literature searches found these parents separately but no
+identification of Deninger Hodge curvature, the Xi FE--Schwarz prime seam, Poisson
+Kadison--Schwarz leakage, and Cartier Frobenius failure as the infinitesimal, holonomy,
+Stinespring, and categorical images of `(167)`.  This is a preliminary noncollision finding, not
+a priority claim.
+
+## 27. The missing universal law: an adelic Hodge index for completion curvature
+
+The preceding interpretation is still incomplete.  It identifies one curvature and says what
+would make it vanish, but it does not explain why the source should make it vanish.  Two tempting
+answers are already present in the corpus and therefore cannot be promoted as new progress:
+
+1. require the Xi conormal to be normal in the critical prime-valuation sector;
+2. require its polar regulator to land in the mixed \(L^1/L^2\) Kummer space.
+
+Both are exact RH consumers, but fibrewise they are RH-equivalent landing assumptions.  Likewise,
+finite-stage dagger monoidality is insufficient: every finite packet can be perfect while
+normalization amplifies the source transition from the summable \(a_P/p\) scale to the
+nonsummable \(1/p\) scale.  The missing theorem must operate before this normalization and explain
+the landing as a consequence.
+
+### The proposed change of interpretation
+
+The source-producing and divisor-reporting completions have the Beck--Chevalley comparison
+\({\rm BC}_X\) and completion-curvature object
+\[
+ \Omega_X=\operatorname{Cone}({\rm BC}_X)
+\]
+from `source-effective-boundary-complexity-conservation-law.md`.  Section 26 computes the scalar
+curvature of its reduced Xi fibre:
+\[
+ \delta(\rho)=1-\rho-\overline\rho.                       \tag{179}
+\]
+The prime seam, Poisson leakage, Hellinger separation, projective Weyl leakage, and Deninger
+Hodge commutator are positive or oriented analytic realizations of \(\Omega_\rho\).
+
+What was missing is a second, source-side realization of the same object.  The ordinary-prime
+finite-correspondence source, its integral Rost--Schmid boundary, and its principal Cartier
+conormal should make \(\Omega_\rho\) a **primitive arithmetic intersection class**.  A Hodge index
+law identifies its negative square with the analytic defect energy:
+\[
+ \underbrace{q_{\rm src}(\Omega_\rho,\Omega_\rho)}_{\text{primitive source intersection}}
+ \leq0,
+ \qquad
+ \underbrace{q_{\rm an}(\Omega_\rho,\Omega_\rho)}_{\text{completion-defect energy}}
+ \geq0.                                                     \tag{180}
+\]
+The sign alone does not force purity: it is exactly compatible with an off-line defect.  The
+decisive source statement is that, after every first-trace and prime-infinity boundary term has
+been restored, \(\Omega_X\) is the boundary of the **same principal enhanced arithmetic
+conormal**.  Hence its arithmetic intersection class vanishes.  The comparison is
+\[
+ [\Omega_X]_{\widehat{\rm CH}}=0,
+ \qquad
+ q_{\rm an}(\Omega_\rho,\Omega_\rho)
+ =
+ -q_{\rm src}(\Omega_\rho,\Omega_\rho).                    \tag{181}
+\]
+The first equality makes the source square zero; the second and faithfulness of the analytic
+realization make the defect energy zero.
+
+This is the analogue, for a principal divisor of a hypertranscendental Euler object, of the role
+played by the Hodge index theorem in the function-field proof.  It is not an ordinary Arakelov
+application: a Xi zero is not an algebraic closed point, and its prime holonomies are generally
+transcendental.  The required new object is an arithmetic intersection theory for
+source-effectively normalized **hypertranscendental Cartier conormals**, retaining the integral
+prime correspondence, the analytic divisor, the source-normal Rees boundary, and the
+Gamma/archimedean face simultaneously.
+
+### Frozen universal conjecture
+
+`[CONJECTURE] [HT_ADELIC_PRINCIPAL_COMPLETION_CURVATURE_HODGE_INDEX]`
+
+Let \(X\) be a source-effectively normalized, integral, self-dual hypertranscendental Euler object
+with:
+
+1. an ordinary-prime finite-correspondence presentation;
+2. a principal derived Cartier divisor \(K_X\), constructed before selecting a divisor point;
+3. the six-channel effective lift and its higher comparison coherence;
+4. a source reflection package, including its Gamma/archimedean boundary; and
+5. a distinguished source-effective principal conormal.
+
+On the rigid derived subcategory generated by \(K_X\), there is a presentation-independent
+intersection realization
+\[
+ {\cal I}_{\rm HT}:
+ \langle\Omega_X\rangle_{\rm rig}
+ \longrightarrow
+ {\cal H}_{\rm prim}^{\rm ar},
+                                                               \tag{182}
+\]
+and a positive analytic realization
+\[
+ {\cal A}_{\rm HT}:
+ \langle\Omega_X\rangle_{\rm rig}
+ \longrightarrow
+ {\cal H}_{\rm def}^{\rm an},                                  \tag{183}
+\]
+such that:
+
+1. **Enhanced arithmetic principality.**  The completion curvature of the distinguished
+   principal conormal is zero in the enhanced arithmetic Chow/cofiber group after adjoining its
+   Rost--Schmid, first-trace, source-normal, and Gamma boundary terms.  In particular it has
+   primitive degree zero and zero source self-intersection.
+2. **Hypertranscendental Hodge index.**  The source intersection form is negative semidefinite on
+   this primitive subspace.
+3. **Defect-energy positivity.**  The analytic form is positive semidefinite and faithful on the
+   reduced completion-curvature support.
+4. **Index--energy comparison.**  Equations `(182)` and `(183)` identify analytic energy with the
+   negative source square as in `(181)`, including the source-normal/Rees boundary term; no
+   first-trace or prime-infinity residue is dropped.
+5. **Strict Cartier base change.**  The comparison commutes with reduced divisor base change and
+   retains the full multiplicity package as a same-length dualizable module.
+6. **Dagger and product formula.**  Transpose, reflection, Frobenius/Verschiebung degree, and the
+   Gamma/real boundary are compatible with the comparison.  No divisor-selected metric or
+   RH-equivalent sign is inserted.
+
+The conjecture is a truth-hunch.  No proof is presently known.  Provability is not part of its
+statement.
+
+### Exact zeta consumer
+
+For the completed zeta source, the independently proved curvature dictionary gives, at each
+nontrivial zero \(\rho\),
+\[
+ q_{\rm an}(\Omega_\rho,\Omega_\rho)
+ =
+ W(\rho)\,\delta(\rho)^2,                                  \tag{184}
+\]
+where \(W(\rho)>0\) is the faithful reduced-fibre weight.  The weight can be read in equivalent
+charts:
+
+- as the positive divided-exponential factor in `(173)`;
+- as the Hellinger/Fisher coefficient of the prime-valuation sector;
+- as projective Weyl leakage in the ordinary-prime source clock;
+- as the squared norm of the duality-leakage cofiber; or
+- as the positive local Hodge norm of the Deninger commutator.
+
+Only positivity and faithfulness of \(W(\rho)\), not a preferred formula for it, enter the
+argument.  Enhanced arithmetic principality and equations `(180)`--`(184)` give
+\[
+ 0\leq W(\rho)\delta(\rho)^2
+ =q_{\rm an}(\Omega_\rho,\Omega_\rho)
+ =-q_{\rm src}(\Omega_\rho,\Omega_\rho)
+ =0.
+                                                               \tag{185}
+\]
+Hence \(\delta(\rho)=0\), so
+\[
+ \operatorname{Re}\rho=\frac12.                              \tag{186}
+\]
+Strict base change applies this to every reduced support point, while dualizability retains
+multiplicity without asserting simplicity.  Thus the zeta instance of the conjecture proves RH.
+
+### Why this subsumes the previous shadows
+
+The universal law changes the status of the earlier completion criteria:
+
+```text
+Deninger Hodge defect        = infinitesimal curvature in (184);
+prime FE--Schwarz seam       = finite holonomy of the same class;
+Poisson/Stinespring leakage  = positive analytic energy;
+Kakutani sector separation   = all-prime energy accumulation;
+Wold/BV first-trace anomaly  = boundary term needed in (181);
+Cartier dagger failure       = categorical support of the curvature;
+polar Kummer nonlanding      = failure to have a finite-energy harmonic representative;
+Meyer point-fibre escape     = loss of the class before intersection realization.
+```
+
+Vanishing of \(\Omega_X\) then implies all the desired consequences at once:
+
+1. the normalized prime unitary lies in the multiplicative domain;
+2. reduced Cartier support remains copyable after completion;
+3. the polar Kummer regulator has no radial charge at prime infinity;
+4. the Xi conormal is normal in the critical product sector;
+5. finite Frobenius/Verschiebung unitarity survives the infinite limit; and
+6. source and reporter completions commute strictly on the divisor package.
+
+These are corollaries of a source index theorem, not independent hypotheses.
+
+### Why hypertranscendence matters
+
+Hypertranscendence alone supplies none of `(180)`--`(181)`: the explicit positive HT off-line
+divisor frames already disprove that.  Its role is structural.  It forces work outside the
+finite-rank holonomic category and makes the completion-curvature object, complete transport
+class, flat boundary face, and higher fracture coherence unavoidable.  The proposed Hodge index
+is therefore not a theorem for bare HT functions.  It is a theorem only for the
+source-effectively normalized integral Euler stratum.
+
+Multiplication by an arbitrary self-dual off-line orbit polynomial fails this stratum: it changes
+the analytic divisor without producing the corresponding ordinary-prime principal conormal and
+intersection class.  The generalized-prime off-line systems likewise have positive scalar
+shadows but do not carry the literal rational-Witt/ordinary-prime finite-correspondence source
+and its comparison `(181)`.
+
+### First theorem to construct
+
+The first non-theatrical target is not the full conjecture and not another scalar equivalence.
+For the monic finite-correspondence generators of the rational-Witt source:
+
+1. construct the reduced Cartier completion-curvature class before analytic evaluation;
+2. construct its codimension-one source intersection pairing, including transpose and the
+   Rost--Schmid/Gamma boundary;
+3. prove that the fully enhanced curvature is the boundary of the principal source conormal and
+   therefore has zero class and zero source square;
+4. prove primitive negativity and that analytic character evaluation sends the negative square
+   to the already constructed projective-Weyl/Hellinger defect energy; and
+5. prove strict compatibility with the co-Poisson principal-conormal base change.
+
+The exact open square is therefore
+\[
+\begin{CD}
+ \Omega_{K_X}^{\otimes2} @>{q_{\rm src}}>> {\bf1}_{\rm ar}\\
+ @V{{\cal R}_{\rm src}^{\otimes2}}VV       @VV{\operatorname{place}}V\\
+ {\cal R}_{\rm src}(\Omega_{K_X})^{\otimes2}
+       @>{-q_{\rm an}}>> {\bf1}_{L^1/L^2}.
+\end{CD}                                                     \tag{187}
+\]
+Equation `(178)` is the dagger/diagonal edge of `(187)`.  The polar-regulator landing is its
+harmonic consequence.  This identifies one construction target rather than three unrelated open
+cores.
+
+### Hostile audit
+
+1. Ordinary arithmetic Hodge index theorems apply to adelic line bundles on algebraic varieties;
+   they do not construct `(182)` for a hypertranscendental divisor.
+2. Weil's function-field argument is a parent interpretation, not the missing zeta theorem.
+3. Calling completion leakage an “intersection class” does not prove enhanced arithmetic
+   principality, primitive negativity, or the comparison in `(181)`.
+4. Defining \(q_{\rm src}\) by the right side of `(184)` would be circular.  It must be built from
+   finite correspondences and the integral boundary before character evaluation.
+5. Local Deninger positivity exists at hypothetical off-line zeros and supplies only the
+   nonnegative analytic energy.  Hodge-index negativity by itself is compatible with that energy
+   through the minus sign in `(181)` and does not prove purity.
+6. A regularized scalar degree can hide prime-infinity leakage.  The full source-normal boundary
+   term in Clause 4 is load-bearing.
+7. If an explicit off-line generalized-prime system admits the same source-effective integral
+   finite-correspondence lift and satisfies `(187)`, the conjecture is false.
+
+### Literature boundary
+
+Parent theories include Weil's intersection-theoretic proof over finite fields; arithmetic Hodge
+index theorems of Faltings--Hriljac--Moriwaki and Yuan--Zhang; \(l^1\)-adelic Cartier divisors;
+intersection theory over adelic curves; enhanced irregular Riemann--Hilbert theory; and
+arithmetic differential geometry.  Targeted searches found these ingredients separately but no
+intersection theory for source-effectively normalized hypertranscendental Euler conormals, and no
+index--energy comparison whose analytic fibre is the Deninger/seam/Hellinger/Weyl completion
+curvature `(184)`.  This is a preliminary noncollision result, not a priority claim.
