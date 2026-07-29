@@ -457,7 +457,7 @@ theorem gap_series_no_polynomial_relation {bnat : ℕ → ℕ}
     rw [PowerSeries.coeff_mul]
     apply Finset.sum_eq_zero
     rintro ⟨c, e'⟩ hce
-    rw [Finset.mem_antidiagonal] at hce
+    rw [Finset.HasAntidiagonal.mem_antidiagonal] at hce
     by_cases hpc : (p j).coeff c = 0
     · rw [Polynomial.coeff_coe, hpc, zero_mul]
     · by_cases hge : PowerSeries.coeff e' (G ^ (j : ℕ)) = 0
@@ -486,13 +486,14 @@ theorem gap_series_no_polynomial_relation {bnat : ℕ → ℕ}
       = (p (Fin.last d)).coeff τ * (PowerSeries.coeff (bnat m) G) ^ d := by
     rw [Fin.val_last]
     rw [PowerSeries.coeff_mul]
-    have hmem : ((τ, d * bnat m) : ℕ × ℕ) ∈ Finset.antidiagonal K := by
-      rw [Finset.mem_antidiagonal]
+    have hmem : ((τ, d * bnat m) : ℕ × ℕ) ∈
+        Finset.HasAntidiagonal.antidiagonal K := by
+      rw [Finset.HasAntidiagonal.mem_antidiagonal]
     rw [Finset.sum_eq_single_of_mem _ hmem ?_]
     · rw [Polynomial.coeff_coe,
         coeff_pow_unique_rep (E := {k | PowerSeries.coeff k G ≠ 0}) (fun k hk => hk) huniq]
     · rintro ⟨c, e'⟩ hce hne
-      rw [Finset.mem_antidiagonal] at hce
+      rw [Finset.HasAntidiagonal.mem_antidiagonal] at hce
       by_cases hpc : (p (Fin.last d)).coeff c = 0
       · rw [Polynomial.coeff_coe, hpc, zero_mul]
       · by_cases hge : PowerSeries.coeff e' (G ^ d) = 0

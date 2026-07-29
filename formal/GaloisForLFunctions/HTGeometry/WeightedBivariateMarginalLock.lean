@@ -349,7 +349,7 @@ theorem tendsto_hankelToeplitzCounterweight
             tendsto_const_nhds.mul (hmoment (n + 3))
           have hdenzero : 2 * moment (n + 3) ≠ 0 :=
             mul_ne_zero (by norm_num) (hnonzero n)
-          simpa only [hankelToeplitzCounterweight_succ] using
+          simpa only [hankelToeplitzCounterweight_succ] using!
             hnum.div hden hdenzero
 
 /-- Uniqueness of the normalized Toeplitz countertrace.  Every weight sequence with initial value

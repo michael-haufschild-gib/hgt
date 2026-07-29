@@ -209,7 +209,7 @@ theorem hzeta_hasDerivAt {s : ℂ} (hs : 1 < s.re) {a₀ : ℂ} (ha₀ : a₀ �
     have h := (Complex.hasStrictDerivAt_cpow_const (c := -s) hb).hasDerivAt.comp a₀
       ((hasDerivAt_const a₀ (m : ℂ)).add (hasDerivAt_id a₀))
     simpa only [Function.comp_apply, Pi.add_apply, id_eq] using!
-      h.congr_deriv (by ring)
+      h.congr_deriv (by ring_nf)
   set C : ℝ := ‖s‖ * Real.exp (Real.pi * |s.im|) with hC
   set u : ℕ → ℝ := fun m => C * ((((m : ℝ) + M₀)) / 2) ^ (-(s.re + 1)) with hu
   have hsum_u : Summable u := by
@@ -239,7 +239,7 @@ theorem hzeta_hasDerivAt {s : ℂ} (hs : 1 < s.re) {a₀ : ℂ} (ha₀ : a₀ �
     have h := (Complex.hasStrictDerivAt_cpow_const (c := -s) hb).hasDerivAt.comp a
       ((hasDerivAt_const a (↑(m + M₀) : ℂ)).add (hasDerivAt_id a))
     simpa only [Function.comp_apply, Pi.add_apply, id_eq] using!
-      h.congr_deriv (by ring)
+      h.congr_deriv (by ring_nf)
   have hbound : ∀ m : ℕ, ∀ a ∈ Metric.ball a₀ ρ,
       ‖-s * ((↑(m + M₀) : ℂ) + a) ^ (-(s + 1))‖ ≤ u m := by
     intro m a ha

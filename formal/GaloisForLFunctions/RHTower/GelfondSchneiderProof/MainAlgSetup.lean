@@ -178,10 +178,17 @@ lemma c₁_pow_sub_one_mul_c₁_pow_mul_c₁_pow_eq :
       have := (finProdFinEquiv.symm u).2.isLt
       aesop
     rw [Nat.sub_add_cancel (by grind), Nat.sub_add_cancel
-       (by simpa [mul_comm] using (Nat.mul_le_mul (((finProdFinEquiv.symm.toFun t).1).isLt)
-         (((finProdFinEquiv.symm.toFun u).1).isLt))), Nat.sub_add_cancel (by simpa [mul_comm] using
-        (Nat.mul_le_mul (((finProdFinEquiv.symm.toFun t).2).isLt)
-        (((finProdFinEquiv.symm.toFun u).1).isLt)))]
+       (by
+         rw [a, l]
+         simpa [mul_comm] using
+           (Nat.mul_le_mul (((finProdFinEquiv.symm.toFun t).1).isLt)
+             (((finProdFinEquiv.symm.toFun u).1).isLt))),
+       Nat.sub_add_cancel
+         (by
+           rw [b, l]
+           simpa [mul_comm] using
+             (Nat.mul_le_mul (((finProdFinEquiv.symm.toFun t).2).isLt)
+               (((finProdFinEquiv.symm.toFun u).1).isLt)))]
 
 lemma house_add_mul_le :
     house (h7.c₁ • (↑(a q t) + b q t • h7.β')) ≤ (|h7.c₁| * |(q : ℤ)|) * (1 + house (h7.β')) := by

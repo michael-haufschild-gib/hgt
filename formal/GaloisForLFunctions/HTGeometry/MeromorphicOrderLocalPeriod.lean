@@ -28,7 +28,8 @@ theorem meromorphicOrderAt_add_eq_of_eventually_periodic
       simpa [g] using hcomp.symm
     _ = meromorphicOrderAt f p := by
       apply meromorphicOrderAt_congr
-      simpa [g, Function.comp_def] using hper
+      change ∀ᶠ z in 𝓝[≠] p, f (z + t) = f z
+      exact hper
 
 end
 

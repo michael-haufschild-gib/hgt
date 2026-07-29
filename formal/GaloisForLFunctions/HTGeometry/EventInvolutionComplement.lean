@@ -74,7 +74,7 @@ theorem involutionContinuation_add_record_apply
     (involutionContinuationProjection A).toLin' x +
       (involutionProjection A).toLin' x = x := by
   have h := congrArg (fun M => M *ᵥ x) (involutionContinuation_add_record A)
-  simpa only [add_mulVec, one_mulVec] using h
+  simpa only [add_mulVec, one_mulVec] using! h
 
 /-- The directions erased by continuation are exactly the complementary record directions. -/
 theorem involutionContinuation_ker_eq_record_range

@@ -10,8 +10,11 @@ theorem translateFiniteSupport_zero
     {G A : Type*} [AddCommGroup G] [AddCommMonoid A]
     (D : G →₀ A) :
     translateFiniteSupport 0 D = D := by
-  simpa only [translateFiniteSupport, add_zero] using
-    (Finsupp.mapDomain_id (v := D))
+  rw [translateFiniteSupport]
+  rw [show (fun x : G => x + 0) = id by
+    funext x
+    exact add_zero x]
+  exact Finsupp.mapDomain_id
 
 theorem translateFiniteSupport_add
     {G A : Type*} [AddCommGroup G] [AddCommMonoid A]

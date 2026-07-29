@@ -59,7 +59,11 @@ theorem ratFuncFixedPointToInfinityEquiv_symm (r : K) :
       ratFuncInfinityToFixedPointEquiv r := by
   have h := eq_inv_of_mul_eq_one_right
     (ratFuncFixedPointToInfinityEquiv_mul_inverse r)
-  simpa using h.symm
+  calc
+    (ratFuncFixedPointToInfinityEquiv r).symm =
+        (ratFuncFixedPointToInfinityEquiv r)⁻¹ :=
+      (AlgEquiv.aut_inv _).symm
+    _ = ratFuncInfinityToFixedPointEquiv r := h.symm
 
 /-- A fractional-linear coefficient tuple with nonzero lower-left entry has a finite fixed point
 over an algebraically closed field. -/
@@ -170,7 +174,12 @@ theorem exists_mobiusEquiv_conjugate_affine
   by_cases hc : c = 0
   · obtain ⟨u, β, heq⟩ := mobiusEquiv_eq_affine_of_c_eq_zero hdet hc
     refine ⟨AlgEquiv.refl, u, β, ?_⟩
-    simpa using heq
+    rw [AlgEquiv.refl_symm]
+    have hrefl :
+        (AlgEquiv.refl : RatFunc K ≃ₐ[K] RatFunc K) =
+          (1 : RatFunc K ≃ₐ[K] RatFunc K) := rfl
+    rw [hrefl, one_mul, mul_one]
+    exact heq
   · obtain ⟨r, u, β, heq⟩ :=
       exists_conjugate_affine_of_c_ne_zero hdet hc
     exact ⟨ratFuncFixedPointToInfinityEquiv r, u, β, heq⟩
@@ -188,7 +197,11 @@ theorem ratFuncTranslationEquiv_symm (r : K) :
     push_cast
     ring
   have h := eq_inv_of_mul_eq_one_left hmul
-  simpa using h.symm
+  calc
+    (ratFuncTranslationEquiv r).symm =
+        (ratFuncTranslationEquiv r)⁻¹ :=
+      (AlgEquiv.aut_inv _).symm
+    _ = ratFuncTranslationEquiv (-r) := h.symm
 
 private theorem ratFunc_conjugate_mul
     (h k e a n : RatFunc K ≃ₐ[K] RatFunc K)
@@ -248,7 +261,18 @@ theorem mobiusEquiv_normalForm
     refine ⟨h * k, ?_⟩
     have hk : k.symm * ratFuncAffineEquiv u β * k =
         ratFuncTranslationEquiv 1 := by
-      simpa [k] using hv
+      have hscale :
+          (ratFuncUnitScaleEquiv v).symm =
+            ratFuncUnitScaleEquiv v⁻¹ := by
+        calc
+          (ratFuncUnitScaleEquiv v).symm =
+              (ratFuncUnitScaleEquiv v)⁻¹ :=
+            (AlgEquiv.aut_inv _).symm
+          _ = ratFuncUnitScaleEquiv v⁻¹ :=
+            (map_inv ratFuncUnitScaleAction v).symm
+      dsimp only [k]
+      rw [AlgEquiv.symm_symm, hscale]
+      exact hv
     exact ratFunc_conjugate_mul h k e
       (ratFuncAffineEquiv u β) (ratFuncTranslationEquiv 1) he hk
 

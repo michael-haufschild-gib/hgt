@@ -267,7 +267,7 @@ theorem nonzero_additiveHopfIdeal_exists_nonzero_primitive
     intro s hs
     simpa [hD1] using hhom hs
   · exfalso
-    obtain ⟨s, hs⟩ := Finsupp.support_nonempty_iff.mpr hP0
+    obtain ⟨s, hs⟩ := MvPolynomial.support_nonempty.mpr hP0
     have hsdeg : s.sum (fun _ n => n) = P.totalDegree := hhom hs
     have hssupp : s.support.Nonempty := by
       by_contra hs0

@@ -130,7 +130,8 @@ theorem locallyConstant_eventuallyZero_iff_vanishes_tailCluster
   let U : Set (J → Bool) := {x | f x ≠ 0}
   have hU : IsClopen U := by
     have hzero := f.isLocallyConstant.isClopen_fiber 0
-    simpa only [U, Set.compl_setOf, not_not] using hzero.compl
+    change IsClopen {x | ¬f.toFun x = 0}
+    exact hzero.compl
   constructor
   · intro hfinite x hx
     by_contra hfx

@@ -1419,3 +1419,180 @@ non-termination, \(3+1\) signature, and the four-force factorization.
 - 2026-07-29 — separated infinite-support non-termination from actual Hypertranscendence.
 - 2026-07-29 — formulated the universal incompatibility completion law and its exact
   positive-source Koszul--Morita rigidity target.
+
+## Tenth exact discriminator: reciprocal laws share the entire nonzero characteristic factor
+
+`[PAPER-PROVED — REDISCOVERED BRIDGE; LEAN TARGET IN`
+`../2-fully-proven/not_new_scientific_knowledge/reciprocal-square-characteristic-polynomial-law.md]`
+
+For \(D:R^n\to R^m\) over a commutative star ring, \(m\le n\) implies
+
+\[
+\chi_{D^\dagger D}(X)
+=X^{n-m}\chi_{DD^\dagger}(X).
+\]
+
+Thus reciprocal squares share more than rank and power moments: every coefficient of one complete
+nonzero characteristic polynomial agrees.  Only forced zero modes record dimension imbalance.
+This is the standard rectangular Sylvester identity, not new physics.
+
+Its significance for the open program is diagnostic.  Any source theorem identifying the two
+coefficient sides as physical response predicts one shared source-local spectral invariant before
+low-energy interpretation.  Without that identification, the theorem is only \(AB\)--\(BA\)
+algebra.
+
+## Differential correction: ternary closure is not time
+
+Finite fiberwise ternary presentation does not imply differential algebraicity.  The fixed
+one-dimensional TRO \(X_z=\mathbb CP\) can carry the Hypertranscendental section
+\(D(z)=\Gamma(z)P\).  Therefore neither finite ternary dimension nor finite presentation controls
+the derivative of amplitudes.
+
+The missing primitive is a source-generated ternary connection.  Time can only be represented by
+strict derivative-envelope growth,
+
+\[
+X_{r+1}=\operatorname{TROEnv}
+\bigl(X_r\cup\nabla_{\rm src}X_r\bigr),
+\]
+
+not by static completion depth alone.  Literal connection uniqueness also fails: on
+\((\mathbb C,[x,y,z]=x\bar y z)\), every
+\(\delta_\lambda z=i\lambda z\) is a distinct ternary derivation invisible to the reciprocal
+positive square.  The positive survivor is a connection torsor whose source-invisible stabilizer
+is candidate gauge freedom.
+
+Known gauge theory, TRO derivations, and noncommutative geometry already own connection torsors,
+spatiality, curvature, and stabilizer interpretations.  The open novelty is source reconstruction
+of the torsor and its stabilizer together with nonconjugate transport between the corpus's
+observable and matter Standard Model embeddings.
+
+## Fixed-point jump
+
+The broader conjecture is now recorded in `reality-obstruction-fixed-point-law.md`:
+
+\[
+\mathcal R\simeq
+\operatorname{Comp}^{+,\dagger,\nabla}_{\rm src}
+\bigl(\operatorname{Ob}(\mathcal R)\bigr).
+\]
+
+Publicly:
+
+> **There is only one possible physics: every universe is a shadow of the same unfinished law.**
+
+The anti-tautology burden is explicit.  Obstruction and completion must be independently defined;
+no dimension, signature, gauge group, particle content, or constant may be supplied; the
+nontrivial fixed point must be unique up to its derived stabilizer; and it must yield one new
+dimensionless prediction.  Until those conditions are met, this is a research conjecture rather
+than a Nature claim.
+
+## Log continued: source connection and fixed point
+
+- 2026-07-29 — killed finite ternary presentation \(\Rightarrow\) differential closure with a
+  one-dimensional Gamma carrier.
+- 2026-07-29 — identified source-selected derivation, not static ternary depth, as the missing
+  Hypertranscendence bridge.
+- 2026-07-29 — killed literal connection uniqueness with the invisible \(U(1)\) phase-derivation
+  family; extracted the connection-torsor/gauge-stabilizer survivor.
+- 2026-07-29 — audited Baez--Schwahn and the corpus's same-qubit weak--Lorentz no-go: stabilizer
+  language is prior, and external Lorentz versus internal weak actions must remain distinct.
+- 2026-07-29 — froze the obstruction--completion fixed-point law with explicit kill conditions.
+
+## Eleventh exact discriminator: spatial change is only reciprocally spectral-blind
+
+`[PAPER-PROVED — REDISCOVERED BRIDGE; LEAN TARGET IN`
+`../2-fully-proven/not_new_scientific_knowledge/fixed-carrier-spatial-reciprocal-blindness.md]`
+
+For a rectangular transfer \(D\) and skew-adjoint coefficient generators \(A,B\), put
+\[
+E=AD+DB,\qquad Q=D^\dagger D,\qquad G=DD^\dagger.
+\]
+Then
+\[
+\delta Q=QB-BQ,\qquad \delta G=AG-GA,
+\]
+and every cyclic power trace of either reciprocal square has zero first variation.  Every TRO
+derivation is spatial by Pluta--Russo, so this is the exact fixed-carrier coefficient shadow of the
+general derivation theorem.
+
+The tempting inference “spatial change is gauge, therefore time and gravity are normal escape” is
+too strong.  Eigenvectors, interference, and source-relative matrix elements can detect spatial
+change.  The theorem proves only:
+
+```text
+isolated reciprocal positive spectra
+  do not reconstruct
+source-relative phase, orientation, or order.
+```
+
+This makes the source comparison, rather than either positive coefficient algebra alone, the
+irreducible carrier of the missing physical information.
+
+## Corrected synthesis: obstruction becomes future, not arbitrary completion
+
+The earlier corpus already killed minimal completion as a physical selector: minimal
+reconstruction consumes a supplied future language and does not explain why nature chose it.
+Accordingly, the fixed-point card is viable only as a mathematical realization of the sharper
+physical conjecture in `actuality-creates-future-law.md`:
+\[
+\boxed{
+\mathsf{Lost}_e(\text{coherent distinction})
+\simeq
+\mathsf{Future}_e(\text{causal distinction}).
+}
+\]
+
+Publicly:
+
+> **The future is made from the quantum possibilities that can no longer coexist.**
+
+The proposed one-law interpretation is now:
+
+```text
+coherent distinctions retained
+  -> internal comparison curvature
+  -> electromagnetism + weak + strong;
+
+coherent distinctions made impossible
+  -> positive causal record
+  -> spacetime + gravity;
+
+loss-to-future comparison
+  -> mixed curvature
+  -> matter + Higgs/soldering;
+
+non-terminating source-faithful composition
+  -> Hypertranscendental history
+  -> generated time.
+```
+
+This is still a conjectural ontology.  Exact reciprocal blindness supplies a necessary
+information boundary, not the physical equivalence.  The new mathematical core is a
+source-relative, positive, compositional deformation theory whose quotient is defined
+operationally—not by declaring every spatial direction gauge—and whose universal transfer
+realizes the loss--future identity without importing spacetime, a Hilbert-space factorization, or
+a future intervention alphabet.
+
+## Next decisive attack
+
+Construct or kill the infinitesimal source quotient for one exceptional event:
+
+1. define source-detectable comparisons independently of the Gram record;
+2. classify which fixed-carrier spatial variations they distinguish;
+3. form the residual operational loss object only after that classification;
+4. prove or refute a natural positive map from that object to the colour-preserving normal
+   \(H_2(\mathbb C)_+\) record; and
+5. test composition for nontrivial successor curvature and tensor-spectator exclusion.
+
+Failure at item 1 makes “gauge” definitional. Failure at item 4 kills the current loss--future
+realization. Failure at item 5 returns to parent gauge/embedding geometry.
+
+## Log continued: reciprocal blindness and physical hierarchy
+
+- 2026-07-29 — paper-proved fixed-carrier spatial reciprocal blindness and restricted its physical
+  interpretation to cyclic spectra.
+- 2026-07-29 — identified the source-rooted comparison as the carrier of phase, orientation, and
+  order forgotten by isolated positive squares.
+- 2026-07-29 — subordinated arbitrary obstruction completion to the sharper loss--future physical
+  identity; fixed point is now a proposed realization, not the source law.

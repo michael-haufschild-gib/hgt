@@ -175,7 +175,8 @@ theorem eventually_index_small_mass {B : Finset ℂ} (hBrep : ∀ z ∈ B, 1 < �
       have hpow : Tendsto (fun p : ℕ => ‖2 * z‖^p) atTop atTop :=
         tendsto_pow_atTop_atTop_of_one_lt hμ
       have hsub : Tendsto (fun p : ℕ => ‖2 * z‖^p - 1) atTop atTop := by
-        simpa using hpow.atTop_add (tendsto_const_nhds (x := (-1:ℝ)))
+        simpa only [sub_eq_add_neg] using
+          hpow.atTop_add (tendsto_const_nhds (x := (-1 : ℝ)))
       exact tendsto_inv_atTop_zero.comp hsub
     simpa using hsum
   have hgnn : ∀ p : ℕ, 0 ≤ ∑ z ∈ B, (‖2 * z‖^p - 1)⁻¹ := by
@@ -435,7 +436,7 @@ theorem norm_boundary_limit_eq_one {c : ℂ} {β : ℂ → ℂ} {z₀ w₀ : ℂ
       have hg0 : Tendsto (greenFunctionDyn c) (𝓝[(filledJulia c)ᶜ] z₀) (𝓝 0) :=
         (tendsto_greenFunctionDyn_boundary hz₀).mono_left nhdsWithin_le_nhds
       have := (Real.continuous_exp.continuousAt).tendsto.comp hg0
-      simpa using this
+      simpa only [Function.comp_apply, Real.exp_zero] using! this
     exact hgreen.congr' (by filter_upwards [self_mem_nhdsWithin] with z hz; rw [hβmod z hz])
   exact tendsto_nhds_unique h1 h2
 

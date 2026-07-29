@@ -50,7 +50,9 @@ theorem tendsto_integral_abs_sub_of_tendsto_integral
     rw [sub_self] at h1
     have hcont : Continuous fun y : ℝ => max y 0 := continuous_id.max continuous_const
     have h2 := (hcont.tendsto (0 : ℝ)).comp h1
-    simpa [hGdef] using h2
+    rw [show (fun i => G i x) =
+      (fun y : ℝ => max y 0) ∘ fun i => g x - f i x by rfl]
+    simpa only [max_self] using h2
   -- the limit density dominates the positive part
   have hgnn' : ∀ᵐ x ∂μ, 0 ≤ g x := by
     filter_upwards [hgnn] with x hx

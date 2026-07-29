@@ -109,7 +109,7 @@ theorem tendsto_clog_ratio (c : ℂ) (n : ℕ) :
   have h1mem : (1 : ℂ) ∈ Complex.slitPlane := by
     rw [show (1 : ℂ) = ((1 : ℝ) : ℂ) by norm_num]; exact Complex.ofReal_mem_slitPlane.mpr one_pos
   have hcont : ContinuousAt Complex.log 1 := (Complex.hasDerivAt_log h1mem).continuousAt
-  simpa [Complex.log_one] using hcont.tendsto.comp h1
+  simpa only [Function.comp_apply, Complex.log_one] using! hcont.tendsto.comp h1
 
 /-- **Principal-branch power-log identity (sector form).** `Complex.log (z^k) = k·Complex.log z` whenever
 `k·arg z ∈ (-π, π]` (and `z ≠ 0`): `z^k = exp(k·log z)` and `log∘exp` is the identity on the horizontal
@@ -223,7 +223,8 @@ theorem tendsto_explicitBranch_div_bottcherCoord (c : ℂ) (n : ℕ) :
     push_cast
     ring
   rw [heq]
-  simpa using (Complex.continuous_exp.continuousAt.tendsto.comp hW)
+  simpa only [Function.comp_apply, Complex.exp_zero] using!
+    (Complex.continuous_exp.continuousAt.tendsto.comp hW)
 
 /-- **The far-field anchor: `explicitBranch c n = bottcherCoord c`.** On a preconnected far-field region
 `V ⊆ explicitDomain c n ∩ escapeOpen c` that contains the positive real ray eventually (`hray`), the explicit

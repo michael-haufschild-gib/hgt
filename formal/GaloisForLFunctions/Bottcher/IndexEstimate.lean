@@ -84,7 +84,7 @@ theorem inv_pow_sub_one_tendsto {r : ℝ} (h : 1 < r) :
     Tendsto (fun p : ℕ => (r ^ p - 1)⁻¹) atTop (𝓝 0) := by
   apply Filter.Tendsto.inv_tendsto_atTop
   have := tendsto_atTop_add_const_right atTop (-1 : ℝ) (tendsto_pow_atTop_atTop_of_one_lt h)
-  simpa using this
+  simpa only [sub_eq_add_neg] using this
 
 /-- **The exceptional mass is eventually small.** For a finite set `B` of *repelling* points
 (`∀ z ∈ B, ‖2z‖ > 1`), the weighted exceptional mass `(2^p-1)·∑_{z∈B}(‖2z‖^p-1)⁻¹` is eventually below

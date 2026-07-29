@@ -118,7 +118,7 @@ theorem standardSimplexNormalizedFamily_exactAt_succ
         exact inferInstance }
   rw [hF.exactAt_iff]
   intro j
-  simpa [standardSimplexNormalizedFamily, F] using
+  simpa only [standardSimplexNormalizedFamily, F] using!
     standardSimplexNormalized_exactAt_succ k (n j.as) q
 
 /-- The direct sum of an arbitrary family of normalized full-simplex blocks. -/

@@ -132,7 +132,7 @@ theorem exists_graphRelativeEnergy_phase_approximation
   · simpa only [card_graphNonRoot G] using hnQ
   · intro v
     by_cases hv : ¬ IsGraphComponentRoot G v
-    · simpa only [r, hv, ↓reduceDIte, omega, Equiv.symm_apply_apply] using
+    · simpa only [r, hv, ↓reduceDIte, omega, Equiv.symm_apply_apply] using!
         hr0 (e ⟨v, hv⟩)
     · have hrel :
           graphRelativeEnergy G energy v = 0 :=

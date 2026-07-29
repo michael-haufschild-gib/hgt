@@ -53,7 +53,9 @@ theorem exists_mem_ne_zero_orthogonal_of_finrank_lt
   obtain ⟨x, hxmem, hxne⟩ := (Submodule.ne_bot_iff _).mp hkerne
   refine ⟨(x : H), x.2, fun h => hxne (Subtype.ext h), fun m hm => ?_⟩
   have hfx : f x = 0 := LinearMap.mem_ker.mp hxmem
-  simpa using congrFun hfx ⟨m, hm⟩
+  have hzero := congrFun hfx ⟨m, hm⟩
+  change inner ℂ (w m) (x : H) = 0 at hzero
+  exact hzero
 
 /-- **Courant–Fischer, lower bound.**  If `S` is bounded below by `M` on a trial subspace of
 dimension exceeding `n`, then the greedy constrained norm at step `n` is at least `M`. -/

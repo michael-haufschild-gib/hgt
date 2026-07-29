@@ -227,9 +227,9 @@ theorem hasDerivAt_dampedPacketKernel (ω δ : ℝ) (hω : 0 ≤ ω) {m : ℕ} (
     have h2 : HasDerivAt (fun s : ℝ => Real.exp (-δ * s)) (-δ * Real.exp (-δ * t)) t := by
       simpa [mul_comm] using hlin2.exp
     have h3 := (h1.mul_const S).sub (h2.div_const (1 + ω))
-    convert h3 using 1
-    field_simp
-    ring
+    exact h3.congr_deriv (by
+      field_simp
+      ring)
   have heq : (fun s : ℝ => Real.exp (-(1 + ω + δ) * s) * S - Real.exp (-δ * s) / (1 + ω))
       =ᶠ[nhds t] dampedPacketKernel ω δ := by
     filter_upwards [hmem] with s hs

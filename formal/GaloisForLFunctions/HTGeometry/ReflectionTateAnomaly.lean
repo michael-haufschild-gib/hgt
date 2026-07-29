@@ -274,7 +274,7 @@ theorem reflectionTateBoundaries_eq_fixedParity_ker
       intro i hi
       have hzero := DFunLike.congr_fun hq (⟨i, hi⟩ : ReflectionFixedPoint r)
       have hcast : ((q.1 i : ℤ) : ZMod 2) = 0 := by
-        simpa [reflectionTateFixedParity_apply] using hzero
+        simpa only [reflectionTateFixedParity_apply, Finsupp.zero_apply] using! hzero
       exact even_iff_two_dvd.mpr
         ((ZMod.intCast_zmod_eq_zero_iff_dvd (q.1 i) 2).mp hcast)
     obtain ⟨g, hg⟩ :=
@@ -446,6 +446,7 @@ theorem relativeReflectionBoundary_eq_iff_sub_canonical_fixed
             canonicalReflectionPrimitive (K := K) v := by abel
       _ = v := hcanonical
 
+omit [CharZero K] in
 /-- Any two primitives of the same reflection displacement differ by a fixed vector. -/
 theorem relativeReflectionBoundary_sub_fixed
     (C : V →ₗ[K] V) {v g h : V}

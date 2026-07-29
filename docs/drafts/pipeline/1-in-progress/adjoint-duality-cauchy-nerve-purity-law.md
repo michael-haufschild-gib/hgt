@@ -4504,3 +4504,942 @@ finite-dualizable, and all-prime-normality routes separately.  They did not loca
 one-prime theorem `(192)`--`(200)` sourced from the asymmetric relation \(F_pV_p=p\) and
 reflection-saturated nuclear conservativity.  Novelty is provisionally restricted to this
 arithmetic reduction and universal interpretation, not to the elementary operator lemma.
+
+## 29. Source-effective bidual scale descent is the universal purity law
+
+### Correction: the third completion need not be one carrier
+
+Section 28 still imposed too much global geometry.  The HT positive-realization theorem proves
+that a faithful infinite jet grading with nonunit dilation cannot be boundedly flattened onto one
+fixed carrier.  The finite Deninger source theorem likewise gives an isometric chain map, not in
+general a unitary endomorphism of one fixed Hodge space.  The correct recipient is therefore a
+directed contractive scale together with its source-normal Rees/local-cohomology boundary and a
+jointly sewn dual.
+
+This is not a cosmetic weakening.  It removes the conflict between:
+
+```text
+HT vertical faithfulness:
+  the noncompact jet grading must remain scale-valued;
+
+arithmetic horizontal purity:
+  one prime correspondence must be contractive along the scale;
+
+divisor conservativity:
+  the two reflected Xi conormals must be boundary sections of one sewn dual system.
+```
+
+The vertical and horizontal directions are different.  Hypertranscendental scale-rigidity is
+allowed in the first; purity is forced by bidual effectivity in the second.
+
+The boundary qualification is load-bearing.  The proved Poisson--Mertens fracture says that every
+positive Euler-time representative can vanish in a Hausdorff quotient while the complete
+time-zero logarithmic jet is nonzero.  An ordinary projective limit of positive-time Hilbert
+spaces therefore still loses the arithmetic conormal.  It must be retained as a Rees normal,
+Bockstein, local-cohomology, hyperfunction, or equivalent derived boundary section.
+
+### Directed conormal descent theorem
+
+Let \(H_n\) be complex Hilbert spaces, let
+\[
+ T_n:H_n\longrightarrow H_{n+1}
+\]
+be contractions, and put \(T_{0,n}=T_{n-1}\cdots T_0\).  A **uniformly normal covariant
+conormal section** of multiplier \(\lambda\) is a family
+\(\ell_n\in H_n^\ast\) such that
+\[
+ \sup_n\|\ell_n\|<\infty,\qquad
+ \ell_{n+1}T_n=\lambda\ell_n,\qquad
+ \ell_0\ne0.                                               \tag{202}
+\]
+
+`[PAPER-PROVED] [DIRECTED_CONORMAL_DESCENT_CONTRACTIVITY]`
+
+Every section `(202)` satisfies
+\[
+ |\lambda|\le1.                                            \tag{203}
+\]
+If a second uniformly normal section has multiplier
+\[
+ \lambda^\#={1\over\overline\lambda},
+\]
+then
+\[
+ |\lambda|=1.                                              \tag{204}
+\]
+
+Choose \(x\in H_0\) with \(\ell_0(x)\ne0\).  Iteration gives
+\[
+ |\lambda|^n|\ell_0(x)|
+ =|\ell_n(T_{0,n}x)|
+ \le \|\ell_n\|\,\|T_{0,n}x\|
+ \le \Bigl(\sup_m\|\ell_m\|\Bigr)\|x\|.
+\]
+Taking \(n\)-th roots proves `(203)`.  Apply the same argument to the reflected section to obtain
+\(|\lambda|^{-1}\le1\), proving `(204)`.
+
+Uniform boundedness may be weakened to zero exponential type:
+\[
+ \limsup_n\|\ell_n\|^{1/n}\le1,\qquad
+ \limsup_n\|T_{0,n}\|^{1/n}\le1.
+\]
+The same proof still gives `(203)`.  This version retains finite conormal jets, because their
+nilpotent factors grow only polynomially.
+
+The theorem is elementary directed functional analysis.  Bellomonte--Trapani's contractive
+Hilbert systems and their joint projective/inductive limits are parent theory
+(`arXiv:1312.1371`).  No novelty is claimed for `(202)`--`(204)`.
+
+### Isometric chain maps already give the horizontal contraction
+
+The finite source ingredients in Section 28 were misstated.  Under the already isolated
+Gamma-polarized projection-formula, Hodge-naturality, and degree hypotheses, normalized pullback
+is an isometric chain map between moving source complexes.  It need not be onto, so the unitary
+\(Q^\dagger\)-commutation theorem cannot be applied to it.  Constructing the arithmetic
+Gamma-polarized realization satisfying those hypotheses remains a separate specialization gate.
+
+There is a weaker theorem which is both sufficient and automatic.  Let
+\[
+ U:(C^\bullet,d)\longrightarrow(D^\bullet,d)
+\]
+be an isometric chain map of Hilbert complexes.  On reduced cohomology
+\[
+ \overline H^k(C)
+ =
+ \ker d_k/\overline{\operatorname{im}d_{k-1}},
+\]
+the induced map is contractive:
+\[
+ \|\overline U[x]\|_{\overline H^k(D)}
+ \le
+ \|[x]\|_{\overline H^k(C)}.                              \tag{205}
+\]
+Indeed, \(U\) maps boundaries to boundaries, and
+\[
+\begin{aligned}
+ \|\overline U[x]\|
+ &=\inf_{b\in\overline{\operatorname{im}d_D}}\|Ux+b\|\\
+ &\le
+   \inf_{a\in\overline{\operatorname{im}d_C}}\|U(x+a)\|\\
+ &=\inf_{a\in\overline{\operatorname{im}d_C}}\|x+a\|.
+\end{aligned}
+\]
+Surjectivity is not needed.  If the actual source regularity operators strictly intertwine the
+chain maps, the same proof applies to every graph-norm complex and gives the corresponding family
+of quotient-seminorm contractions.
+
+Thus the abstract finite metric producer is already present in the correct category.  After its
+arithmetic specialization, the remaining issue is not a missing reverse adjoint formula.  It is
+strict assembly of the reduced quotient maps and uniform normality of the source-produced Xi
+conormal section.
+
+### Universal ordered-cone form
+
+Let \(\Gamma\) be an additive scale-character group and let \(C_{\rm eff}\subset\Gamma\) be the
+closed cone of forward-effective growth characters.  Assume it is pointed:
+\[
+ C_{\rm eff}\cap(-C_{\rm eff})=\{0\}.                    \tag{206}
+\]
+Reflection duality acts on modular curvature by
+\[
+ \kappa\longmapsto-\kappa.                               \tag{207}
+\]
+If one source-effective sewn class realizes both a conormal and its reflected dual, forward
+descent puts both
+\[
+ \kappa\in C_{\rm eff},\qquad-\kappa\in C_{\rm eff}.
+\]
+Pointedness `(206)` forces
+\[
+ \boxed{\kappa=0.}                                      \tag{208}
+\]
+
+Equation `(208)` is the universal law:
+
+```text
+source effectivity
+  + reflected source effectivity
+  + pointed horizontal scale descent
+  = modular flatness.
+```
+
+The critical locus is not selected by a target-side sign.  It is the lineality locus of the
+source-effective cone.  A one-sided analytic completion sees the whole interior of one cone.
+Reflection sees the opposite cone.  Only a source object in which the two are genuinely sewn,
+rather than merely paired after specialization, restricts them to the common boundary.
+
+### What the obstruction corpus was saying
+
+The repeated failures are now exact failures of one clause of `(208)`:
+
+```text
+finite clocks:
+  conormals survive, but transition contractions are not uniform;
+
+ambient adelic L2:
+  transition is isometric, but every point conormal is non-effective;
+
+high-shell Hardy completion:
+  the right conormal is effective and the reflected conormal lies in the opposite Hardy scale;
+
+enhanced/Stokes completion:
+  both conormals survive, but in different chiral fibres with no strict common descent;
+
+HT capacity universality:
+  arbitrary kinematic scale cocycles exist before source selection;
+
+HT scale rigidity:
+  a faithful vertical grading cannot be flattened to manufacture horizontal purity;
+
+Wold/Gamma and BV anomalies:
+  record the transition defect erased by coarse completion;
+
+Kummer prime-infinity leakage:
+  finite effective sections fail strict cofinal descent;
+
+fixed-carrier completion flatness:
+  a globally chosen bounded trivialization is only a coboundary, so genuine content lives in
+  descent and sewing;
+
+off-line Euler and Helson systems:
+  realize the two chiral cones without the ordinary-prime integral source-effective sewing.
+```
+
+This also explains why the positive shell frame matters but does not prove RH.  Its canonical
+residue Hilbert scale constructs the two opposite effective cones and measures their displacement
+exactly.  It does not prove that the two normal jets are realizations of one source-effective
+section.
+
+### The algebraic Rees boundary section is already constructed
+
+The prime-sieve Wold--Gamma/BV theorem supplies more than a hint.  For a finite prime set \(P\),
+put
+\[
+ a_P=\prod_{p\in P}(1-p^{-1}),\qquad
+ E_P=\prod_{p\in P}(I-S_pD_p).
+\]
+Its source identity is
+\[
+ J(E_Pp_a)=a_PJ(p_a).                                  \tag{209}
+\]
+Define the source-normal Rees section
+\[
+ \eta_P:=a_P^{-1}J(E_Pp_a).                             \tag{210}
+\]
+
+`[PAPER-PROVED FROM THE EXISTING SOURCE IDENTITIES]`
+`[PRIME_SIEVE_REES_CONORMAL_DESCENT]`
+
+For every finite \(P\),
+\[
+ \eta_P=J(p_a).                                        \tag{211}
+\]
+Consequently \((\eta_P)_P\) is a presentation-independent compatible section over the complete
+finite-prime poset.  It does not need to converge as a net of normalized states.  The coarse
+section \(J(E_Pp_a)\) vanishes with \(a_P\), while `(210)`--`(211)` retain its nonzero normal
+direction.
+
+The centered dilation
+\[
+ \widetilde D_q=q^{1/2}D_q
+\]
+has exact conormal character
+\[
+ J(\widetilde D_qp_a)(s)=q^{s-1/2}J(p_a)(s).            \tag{212}
+\]
+At an uncensored Xi zero \(\rho\), the top associated-graded normal therefore has multiplier
+\(q^{\rho-1/2}\); higher multiplicity only adds polynomial Jordan factors.  A jointly
+noncensoring BV family gives at least one nonzero coordinate at every nontrivial zero.
+
+Thus three pieces of strict scale descent are no longer conjectural:
+
+```text
+source-first normal boundary carrier;
+prime-exhaustion compatibility without strong convergence;
+exact centered prime character on every uncensored top conormal jet.
+```
+
+What `(209)`--`(212)` do not provide is a positive quotient norm on the Rees normal line or a
+strict comparison with the Hodge/Green boundary scale.  Assigning
+\(\|\eta_P\|=1\) by hand would make `(212)` pure by definition and is rejected by the
+projective-conormal calibration no-go.  The missing theorem is precisely an independently
+source-generated Hermitian landing.
+
+### Refined frozen conjecture
+
+`[CONJECTURE] [XI_SOURCE_EFFECTIVE_BIDUAL_SCALE_DESCENT]`
+
+The completed ordinary-prime Euler--Gamma/co-Poisson source has a presentation-independent
+derived directed system of reduced Hodge/Green graph cohomologies and source-normal boundary
+cohomologies
+\[
+ \bigl(H_\alpha,T_{\beta\alpha}\bigr)
+\]
+and a source-produced comparison from the principal Xi conormal module
+\((\Xi)/(\Xi)^2\) into its joint dual with the following properties:
+
+1. **Source-first derived scale.**  The system, graph norms, transition maps, integral lattice,
+   Rees/local-cohomology boundary, and comparison are constructed before divisor specialization.
+2. **Horizontal contractivity.**  For one rational prime \(p\), the centered finite-correspondence
+   maps induce a cofinal directed subsystem of contractions by `(205)`.
+3. **Uniform boundary-conormal descent.**  Every nonzero top Xi multiplicity jet gives a nonzero
+   covariant boundary-conormal section of zero exponential type whose multiplier is
+   \[
+   \lambda_{p,\rho}=p^{\rho-1/2}.
+   \]
+4. **Order-zero reflected sewing.**  Functional-equation/Schwarz reflection is a strict
+   source comparison on the same derived joint dual system and sends that section to a nonzero
+   section with multiplier \(1/\overline{\lambda_{p,\rho}}\), without changing its exponential
+   order or local-cohomology degree.
+5. **Source effectivity.**  Nonvanishing and uniform normality follow from the distinguished
+   integral source section and its typed comparison maps, not from a zero-selected quotient or
+   metric.
+6. **Presentation independence.**  Prime enlargement, Hodge-scale refinement, Gamma/BV
+   transgression, Poisson presentation, and shell resolution induce the same joint conormal
+   section.
+
+This replaces the fixed-carrier conjecture of Section 28.  It is compatible with
+hypertranscendental scale-valued positive geometry and with the asymmetric relation
+\(F_pV_p=p\,\mathrm{id}\).
+
+### RH deduction
+
+For a nontrivial zero \(\rho\), Clauses 2--3 and `(203)` give
+\[
+ |p^{\rho-1/2}|\le1.
+\]
+Clause 4 and the reflected application give
+\[
+ |p^{1/2-\overline\rho}|\le1.
+\]
+Hence equality holds and
+\[
+ \operatorname{Re}\rho=\frac12.
+\]
+Top associated-graded jets handle multiplicity.  Thus the refined conjecture implies RH.
+
+In cone language,
+\[
+ \kappa_\rho(p)
+ =(\operatorname{Re}\rho-\tfrac12)\log p
+\]
+and its negative are both forward-effective; `(208)` forces
+\(\kappa_\rho(p)=0\).
+
+### Exact remaining open core
+
+The first non-immediate theorem is now narrower than
+`ONE_PRIME_SOURCE_HODGE_GRAPH_POWER_EQUICONTINUITY`:
+
+`[OPEN CORE] [XI_REES_CONORMAL_HODGE_LANDING]`
+
+Let \(\mathcal N_{\Xi,\mathrm{BV}}^{\rm Rees}\) be the Rees-normal conormal module generated by a
+fixed jointly noncensoring BV source family through `(209)`--`(212)`.  Construct, before divisor
+specialization, one natural transformation
+\[
+ \mathcal N_{\Xi,\mathrm{BV}}^{\rm Rees}
+ \longrightarrow
+ \mathbb H_{\partial,\mathrm{src}}^\ast
+\]
+where \(\mathbb H_{\partial,\mathrm{src}}^\ast\) is the source-normal
+Rees/local-cohomology boundary of the joint projective/inductive Hodge scale, and prove:
+
+1. every top divisor jet is nonzero in the joint Hausdorff dual;
+2. its norm growth along one prime correspondence is of zero exponential type;
+3. reflection is an order-zero sewing of the same section, not a map to an inequivalent Stokes
+   object; and
+4. the construction is induced by the distinguished ordinary-prime integral source lift.
+
+Finite Hodge isometry supplies the contraction side by `(205)`.  Equations `(209)`--`(212)`,
+Meyer, and the high-shell entire graph supply the algebraic boundary section, noncensorship, and
+exact characters.  None supplies the strict source-effective Hermitian landing.
+
+Stating only fibrewise existence of such a section is RH-equivalent and therefore theatre.  The
+candidate-new theorem is a source-defined natural transformation on the whole principal conormal
+module, together with strict descent and presentation independence.
+
+This target also supersedes the earlier mixed-Cauchy regulator proposal.  The normalized
+prime-sieve states move by exactly \(1/p\) and are not strongly Cauchy, while the
+Poisson--Mertens class is zero at every positive time.  A valid source section is therefore a
+compatible boundary section, not a strong limit of normalized representatives.  The directed
+purity theorem needs zero exponential type along the horizontal correspondence; it does not need
+total-variation or \(L^1+L^2\) convergence across prime exhaustions.
+
+### Hostile falsifiers
+
+1. The moving source complexes fail to form a contractive directed system after reduced
+   incidence/Hodge quotient.
+2. Their joint topological limit is non-Hausdorff or has no dual containing the source conormal.
+3. The conormal exists algebraically but has positive exponential norm growth at a hypothetical
+   off-line fibre.
+4. Reflection necessarily changes the source scale order, reproducing the high-shell
+   chiral fracture instead of an order-zero sewing.
+5. The integral source section does not determine a Hermitian/exponential calibration, in accord
+   with the projective-conormal scale no-go.
+6. A source-equivalent prime exhaustion changes the joint section or its exponential order.
+7. An explicit off-line ordinary-prime Euler system carries the same distinguished integral
+   source lift and all six clauses.
+
+If any falsifier occurs, the positive survivor must identify the exact descent obstruction or
+additional source comparison channel.  Reverting to a fixed carrier, an abstract antiunitary,
+or a divisor-selected norm is not a repair.
+
+### Literature and novelty boundary
+
+Directed contractive Hilbert systems, projective/inductive joint limits, rigged Hilbert spaces,
+reduced Hilbert cohomology, and the cone identity `(206)`--`(208)` are parent mathematics.
+Bellomonte--Trapani explicitly construct joint dual limits from contractive Hilbert families and
+allow an order-reversing dual index.  Enhanced nearby cycles and moderate/rapid duality provide
+the parent language for the chiral boundary fracture.
+
+Targeted primary-source searches found these parents, Meyer's all-zero nuclear realization,
+Connes--Consani's unitary scaling realization, and Deninger's finite-correspondence programme.
+They did not locate the arithmetic conjunction in the refined conjecture: a source-first
+ordinary-prime integral conormal natural transformation into a contractive Hodge scale whose
+functional-equation reflection is order-zero and jointly effective.  Novelty is provisional and
+begins only with that arithmetic source-descent theorem, not with `(202)`--`(208)`.
+
+### Anti-theatre verdict
+
+The cone law `(208)` is not an RH proof and is not new by itself.  The Rees identity
+`(209)`--`(212)` is an unconditional source construction, but it is projective and has no
+source-forced Hermitian norm.  Therefore it also does not exclude an off-line zero.
+
+The genuine frontier movement is the exact reduction:
+
+```text
+retired requirements:
+  one fixed carrier;
+  bilateral inverse;
+  real-time flow and resolvents;
+  strong convergence of normalized prime-sieve states;
+  ordinary positive-time projective limit;
+  all-prime normality;
+
+already constructed:
+  source-normal Rees conormal carrier;
+  presentation-compatible boundary section;
+  one-prime centered character;
+  abstract reduced-Hodge contraction;
+
+single remaining theorem:
+  source-induced Hermitian landing of that existing Rees section,
+  with reflection order zero in the same derived boundary scale.
+```
+
+This last theorem is still RH-bearing.  Calling the Rees generator unit length, defining its norm
+from the Xi divisor, or asserting that source duality preserves its order would restate the
+conclusion.  Progress after this section must construct the landing map or prove a new
+source identity that forces it.
+
+## 30. Positive shell conormals expose spectral location as a source-boundary order
+
+The publication-ready positive hypertranscendental divisor frame supplies a second, more concrete
+model of the source-normal boundary.  It does not require an arbitrary prime aperture.  For
+\(m\geq1\), let
+\[
+ a_m=\mathbf 1_{\{n:M(n)=m\}},\qquad
+ S_m(s)=\sum_{n\geq1}a_m(n)n^{-s},
+\]
+where \(M(n)\) is the largest prime exponent in \(n\).  The frame theorem gives
+\[
+ S_m^\#(s)=\zeta(s)H_m(s),\qquad
+ H_m(s)={1\over\zeta((m+1)s)}-{1\over\zeta(ms)}.          \tag{213}
+\]
+For \(m\geq12\), \(H_m\) is holomorphic and zero-free on
+\(\Re s>1/2\).  The coefficient supports of the \(S_m\) are positive and pairwise disjoint, and
+the smallest integer in the \(m\)-th shell is canonically
+\[
+ \min\{n:a_m(n)=1\}=2^m.                                  \tag{214}
+\]
+Thus \(2^{m/2}\), the critical half-density dual scale of the least source atom, is not a
+zero-selected normalization.
+
+### Least-atom asymptotic theorem
+
+`[PAPER-PROVED FROM THE POSITIVE SHELL FRAME]`
+`[POSITIVE_SHELL_CONORMAL_BOUNDARY_ORDER]`
+
+For every fixed \(s\) with \(\sigma=\Re s>0\),
+\[
+ \boxed{\quad
+  2^{ms}H_m(s)\longrightarrow 1-2^{-s}.
+ \quad}                                                     \tag{215}
+\]
+
+Indeed, once \(m\sigma>1\), the absolutely convergent Möbius series gives
+\[
+\begin{aligned}
+ H_m(s)
+ &=\sum_{n\geq1}\mu(n)n^{-ms}(n^{-s}-1)\\
+ &=(1-2^{-s})2^{-ms}+R_m(s),                               \tag{216}
+\end{aligned}
+\]
+where
+\[
+ |2^{ms}R_m(s)|
+ \leq
+ 2\sum_{n\geq3}(2/n)^{m\sigma}.
+\]
+For \(a=m\sigma>1\),
+\[
+ \sum_{n\geq3}(2/n)^a
+ \leq
+ (2/3)^a\left(1+{3\over a-1}\right)\longrightarrow0,
+\]
+which proves `(215)`.
+
+Put
+\[
+ v_m(s):=2^{m/2}H_m(s),\qquad A(s):=1-2^{-s}.             \tag{217}
+\]
+Then
+\[
+ v_m(s)
+ =
+ A(s)\,2^{-m(s-1/2)}+o\!\left(2^{-m(\sigma-1/2)}\right), \tag{218}
+\]
+and hence the source-boundary order is
+\[
+ \boxed{\quad
+ \kappa_{\rm sh}(s)
+ :=
+ \lim_{m\to\infty}
+ {1\over m\log2}\log|v_m(s)|
+ =
+ {1\over2}-\Re s.
+ \quad}                                                     \tag{219}
+\]
+The factor \(A(s)\) is nonzero in the open critical strip.
+
+At a zero \(\rho\) of multiplicity \(d\), multiplication by \(H_m(\rho)\) is exactly the map on
+the top local conormal grade of
+\[
+ S_m^\#=\zeta H_m.
+\]
+Thus `(219)` is not merely a value asymptotic: it is the exponential escape rate of one
+source-constructed coordinate of the actual Xi/zeta top conormal.  Multiplicity changes the
+polynomial jet block but not this exponential grade.
+
+### The all-grade shell corona
+
+For \(\delta\in\mathbb R\), define
+\[
+\begin{aligned}
+ B_\delta
+ &=
+ \left\{x=(x_m):
+   \sup_m 2^{-m\delta}|x_m|<\infty\right\},\\
+ B_{\delta,0}
+ &=
+ \left\{x\in B_\delta:
+   2^{-m\delta}|x_m|\longrightarrow0\right\},\\
+ \mathcal C_\delta&=B_\delta/B_{\delta,0}.                \tag{220}
+\end{aligned}
+\]
+These are weighted versions of the canonical sequence corona
+\(\ell^\infty/c_0\).  Equation `(218)` gives a nonzero class
+\[
+ [v(s)]_{\kappa_{\rm sh}(s)}
+ \in\mathcal C_{\kappa_{\rm sh}(s)}                       \tag{221}
+\]
+for every \(0<\Re s<1\).  Therefore the graded family
+\[
+ \mathcal C_{\rm sh}:=\{\mathcal C_\delta\}_{\delta\in\mathbb R} \tag{222}
+\]
+is a literal third completion of this conormal frame:
+
+```text
+every divisor conormal survives:
+  in exactly one exponential grade delta=1/2-Re(s);
+
+critical divisor conormals:
+  are precisely the nonzero classes in the unweighted corona C_0;
+
+strict-right divisor conormals:
+  decay to zero in C_0 but survive in a negative grade;
+
+strict-left divisor conormals:
+  are unbounded in C_0 but survive in the reflected positive grade.
+```
+
+The unweighted trichotomy is exact:
+\[
+\begin{array}{c|c}
+\Re s>1/2 & v(s)\in c_0,\\
+\Re s=1/2 & v(s)\in\ell^\infty\setminus c_0,\\
+\Re s<1/2 & v(s)\notin\ell^\infty.
+\end{array}                                                \tag{223}
+\]
+This is the first source-first completion in this route which both retains every conormal and
+records, rather than erases, why an off-line conormal fails to live in the critical carrier.
+
+Let \(R(x)_m=x_{m+1}\).  On \(\mathcal C_\delta\), the grade-normalized shift
+\[
+ T_\delta=2^{-\delta}R                                  \tag{224}
+\]
+is contractive.  Equation `(218)` makes `[v(s)]` an eigenclass with eigenvalue
+\[
+ 2^{-\delta}2^{-(s-1/2)}
+\]
+of modulus one when \(\delta=\kappa_{\rm sh}(s)\).  This is also a warning: every spectral point
+can be made unitary inside its own fitted grade.  Purity is the source theorem selecting grade
+zero, not gradewise unitarizability.
+
+### Reflection retains duality but negates boundary order
+
+For \(0<\Re s<1\), `(218)` also gives
+\[
+ v_m(s)\,
+ \overline{v_m(1-\overline s)}
+ \longrightarrow
+ A(s)A(1-s)\ne0.                                         \tag{225}
+\]
+Consequently the functional equation supplies a nondegenerate pairing between the grades
+\[
+ \mathcal C_{\kappa_{\rm sh}(s)}
+ \quad\text{and}\quad
+ \mathcal C_{-\kappa_{\rm sh}(s)}.                        \tag{226}
+\]
+It does not force either grade to be zero.  This one formula explains the recurring fracture:
+reflection-perfect indefinite duality survives every hypothetical off-line quartet, while a
+positive Hermitian realization on one source-normal grade exists only at the balance wall.
+
+### Universal interpretation
+
+The new invariant is not a zero value, sign, or finite jet.  It is the **source-normal conormal
+boundary order**.  In a positive disjoint HT frame whose \(m\)-th channel has least atom \(N_m\)
+and transverse multiplier
+\[
+ H_m(s)\sim A(s)N_m^{-s},
+\]
+half-density normalization gives
+\[
+ N_m^{1/2}H_m(s)
+\sim A(s)N_m^{-(s-1/2)}.                                 \tag{227}
+\]
+The real part of a divisor point is therefore the Lyapunov/Stokes escape rate of its conormal
+through the infinite positive frame.  Reflection reverses that rate.  Criticality means zero
+escape, not vanishing curvature or positive orientation.
+
+This interpretation subsumes the corpus observations more sharply:
+
+```text
+finite clocks and compact-open jets:
+  cannot see an asymptotic boundary order;
+
+ambient L2:
+  forgets all nonzero corona classes;
+
+high-shell Hardy inside/outside:
+  is the analytic realization of the signs of kappa_sh;
+
+HT order escape:
+  says no bounded differential order can capture kappa_sh;
+
+prime-aperture Stokes action:
+  is a continuous-aperture version of the discrete shell grade;
+
+Wold/BV/Rees normalization:
+  constructs the same conormal before shell specialization;
+
+functional equation:
+  pairs opposite grades but does not collapse them;
+
+positive generalized-prime surgery:
+  preserves divisor orientation while lacking this exact
+  least-integer-shell source filtration.
+```
+
+### Sharper conjecture and open core
+
+`[BOLD CONJECTURE] [XI_SOURCE_BALANCED_SHELL_CONTINUATION]`
+
+The completed ordinary-prime Euler--Gamma source continuation is strict of degree zero on the
+principal conormal for the least-atom half-density filtration `(214)`--`(220)`.  Equivalently,
+the source-defined continuation from the positive shell fusion to the Gamma/reflection boundary
+lands every nonzero Xi top conormal in \(\mathcal C_0\), and this landing is faithful and
+reflection-positive before divisor specialization.
+
+Combined with `(219)`, this statement forces
+\[
+ \kappa_{\rm sh}(\rho)=0
+ \quad\Longrightarrow\quad
+ \Re\rho=\frac12,
+\]
+so it implies RH.
+
+The corresponding non-immediate theorem is now concrete:
+
+`[OPEN CORE] [XI_POSITIVE_SHELL_CORONA_DEGREE_ZERO_LANDING]`
+
+Construct one source-global continuation morphism from the coefficient-positive, pairwise
+disjoint shell fusion into the shell-corona boundary such that:
+
+1. its critical scale is forced by the least source atoms \(2^m\);
+2. it agrees on the top principal conormal with the already constructed coordinates \(H_m\);
+3. it is strict of degree zero under Gamma completion and reflection;
+4. it is faithful on every top Xi jet; and
+5. degree-zero strictness follows from an independently positive source pairing or complete
+   Pick/Hodge transport, not from boundedness of \(v(\rho)\).
+
+This is a discrete source-normal model of
+`XI_REES_CONORMAL_HODGE_LANDING`.  It removes the arbitrary aperture coordinate and exhibits the
+exact filtration on which the landing must be proved.
+
+### Anti-theatre verdict
+
+Equations `(215)`--`(226)` are unconditional and materially new to this route: they construct the
+all-grade carrier and compute the grade of every divisor conormal from a positive HT source
+frame.  They do not prove that the actual Xi conormal has grade zero.
+
+Asking for `[v(\rho)]\ne0` in \(\mathcal C_0\) fibrewise is exactly RH by `(223)` and is forbidden
+as a proof.  Positivity of the coefficients \(a_m\) does not survive analytic continuation as a
+positive value statement, and the nonzero reflected product `(225)` proves that duality alone
+still permits off-line grades.  The next progress must be a source-global degree-zero strictness
+theorem.  If that theorem fails, the positive survivor is the canonical defect
+\[
+ \kappa_{\rm sh}(\rho)=\frac12-\Re\rho,
+\]
+now realized as an actual HT conormal boundary order rather than inserted from the zero coordinate.
+
+## 31. The shell conormal is a uniformly invertible gauge of the pure exponential model
+
+The asymptotic theorem can be made uniform on the full strict right half-plane.  Define
+\[
+ G_m(s)
+ =
+ {2^{ms}H_m(s)\over1-2^{-s}},
+ \qquad \Re s>\frac12.                                    \tag{228}
+\]
+
+`[PAPER-PROVED] [POSITIVE_SHELL_UNIFORM_EXPONENTIAL_GAUGE]`
+
+There are a source-only integer \(m_0\) and a constant \(0<q<1\) such that
+\[
+ \sup_{\substack{m\geq m_0\\ \Re s>1/2}}
+ |G_m(s)-1|
+ \leq q.                                                   \tag{229}
+\]
+Consequently
+\[
+ 1-q\leq |G_m(s)|\leq1+q                                \tag{230}
+\]
+uniformly in \(m\geq m_0\) and \(\Re s>1/2\).
+
+To prove this, use `(216)` and write \(\sigma=\Re s\), \(a=m\sigma\).  Since
+\[
+ |1-2^{-s}|\geq1-2^{-1/2},
+\]
+the same integral estimate gives
+\[
+ |G_m(s)-1|
+ \leq
+ {2\over1-2^{-1/2}}
+ \left({2\over3}\right)^a
+ \left(1+{3\over a-1}\right).                            \tag{231}
+\]
+For \(m\geq m_0\), one has \(a>m_0/2\), and the right side is bounded by a number
+\(q<1\) after choosing \(m_0\) once.  This proves `(229)`--`(230)` without any zero
+specialization.
+
+For fixed \(s\), the diagonal map
+\[
+ (x_m)_m\longmapsto(G_m(s)x_m)_m                         \tag{232}
+\]
+therefore induces a bounded invertible automorphism of every weighted corona
+\(\mathcal C_\delta\).  It carries the pure source character
+\[
+ \bigl((1-2^{-s})2^{-m(s-1/2)}\bigr)_m
+\]
+to the actual shell conormal \(v(s)\).
+
+This removes a possible hidden obstruction.  The transverse zero-free multipliers \(H_m\) do not
+create the off-line grade, change its sign, or distort the relevant corona topology.  Up to one
+uniformly invertible source gauge, the actual conormal is the pure exponential character with
+modular curvature
+\[
+ \kappa_{\rm sh}(s)=\frac12-\Re s.
+\]
+Thus the remaining degree-zero landing theorem cannot be repaired by better estimates on
+\(H_m\), prime-two domination, or a different finite shell threshold.  It must prove that
+ordinary-prime Euler--Gamma continuation makes the **common divisor conormal itself** tempered
+at the source half-density scale.
+
+This also sharpens the universal law:
+
+> A source-minimal positive HT divisor frame separates its finite transverse geometry from its
+> infinite spectral displacement.  Uniformly invertible transverse gauges carry no purity
+> information; the real part of a divisor is the exponential boundary order of the common
+> conormal, and purity is strict preservation of the source half-density order under
+> continuation.
+
+The theorem is unconditional.  The final strict-preservation clause remains the RH-bearing
+conjecture.
+
+## 32. The critical shell metric is the maximum-valuation law of the Wold source
+
+The half-density normalization in Section 30 has an exact positive source interpretation.  For
+each prime \(p\), let \(K_p\) be independent with the critical Wold valuation law
+\[
+ \mathbb P(K_p=k)=(1-p^{-1})p^{-k},
+ \qquad k\in\mathbb N_0.                                  \tag{233}
+\]
+This is the product law already forced independently by the multiplication Wold tower, the
+first-trace density, and the BV principal conormal.
+
+Put
+\[
+ M=\sup_pK_p.
+\]
+
+`[PAPER-PROVED] [WOLD_MAXIMUM_VALUATION_SHELL_LAW]`
+
+The random variable \(M\) is finite almost surely and
+\[
+ \boxed{\quad
+ \mathbb P(M=m)
+ =
+ h_m
+ :=
+ {1\over\zeta(m+1)}-{1\over\zeta(m)}
+ =
+ H_m(1),
+ \qquad m\geq1,
+ \quad}                                                     \tag{234}
+\]
+where \(1/\zeta(1)\) is interpreted as zero.
+
+Indeed, for \(m\geq1\),
+\[
+ \mathbb P(K_p<m)=1-p^{-m},
+\]
+so independence gives
+\[
+ \mathbb P(M<m)=\prod_p(1-p^{-m})={1\over\zeta(m)}.       \tag{235}
+\]
+For \(m=1\), Euler's divergence makes the product zero.  Since
+\[
+ {1\over\zeta(m)}\longrightarrow1,
+\]
+equation `(235)` also proves \(\mathbb P(M<\infty)=1\).  Taking consecutive differences gives
+`(234)`.
+
+Thus \((h_m)_{m\geq1}\) is a source-constructed probability distribution, not a divisor-fitted
+metric.  Equation `(215)` at \(s=1\) gives
+\[
+ 2^mh_m\longrightarrow\frac12.                           \tag{236}
+\]
+The critical least-atom half-density \(2^{-m/2}\) is therefore, up to its forced constant, exactly
+the square-root density \(\sqrt{h_m}\) of the Wold maximum statistic.
+
+### Conormal likelihood-rate theorem
+
+For \(\Re s>0\), define the source-normal conormal amplitude
+\[
+ w_m(s):={H_m(s)\over\sqrt{h_m}}.                         \tag{237}
+\]
+Equations `(215)` and `(236)` imply
+\[
+ w_m(s)
+ =
+ \sqrt2(1-2^{-s})\,2^{-m(s-1/2)}(1+o(1)),                \tag{238}
+\]
+and hence
+\[
+ \boxed{\quad
+ \lim_{m\to\infty}
+ {1\over m\log2}
+ \log {\,|H_m(s)|^2\over h_m}
+ =
+ 1-2\Re s.
+ \quad}                                                     \tag{239}
+\]
+
+For a nontrivial zero \(\rho\), the numerator in `(239)` is the squared intensity of the actual
+top shell-conormal coordinate, while the denominator is the probability of the same shell under
+the distinguished ordinary-prime source.  Therefore
+\[
+ 2\kappa_{\rm sh}(\rho)
+ =
+ 1-2\Re\rho
+\]
+is, up to the sign convention of Section 29, the exact asymptotic log-likelihood slope between
+divisor-conormal intensity and source maximum-valuation mass.
+
+The three cases are:
+
+```text
+Re(s)>1/2:
+  conormal intensity is exponentially thinner than source shell mass;
+
+Re(s)=1/2:
+  conormal intensity and source shell mass are exponentially contiguous;
+
+Re(s)<1/2:
+  conormal intensity is exponentially thicker than source shell mass.
+```
+
+Reflection sends the likelihood slope to its negative.  The indefinite reflected product remains
+nonzero by `(225)`, while zero likelihood slope is exactly the source/reflection balance wall.
+
+This is the sought joint interpretation of several previously separate laws:
+
+```text
+Wold/BV renewal:
+  produces the independent critical valuation source;
+
+positive HT exponent shells:
+  are the pushforward of that source by the maximum statistic;
+
+Fisher/half-density normalization:
+  is square root of the maximum-valuation probability;
+
+Kakutani radial separation:
+  is the full product-sector version of nonzero likelihood slope;
+
+Stokes boundary order:
+  is the shell-tail version of the same slope;
+
+modular curvature:
+  is one half of that source/conormal likelihood rate;
+
+critical line:
+  is exponential contiguity of source mass and divisor-conormal intensity.
+```
+
+The probability theorem and rate identity are unconditional.  They provide an independently
+positive **reference** calibration on the shell coordinate: the candidate shell metric is
+\(h_m=H_m(1)\), derived before analytic continuation and before reading a zero.  They do not yet
+identify the projective Rees section with an amplitude in that metric.
+
+They do not yet prove that a continued Xi conormal must be exponentially contiguous with this
+source law.  That is now the exact strictness statement:
+
+`[BOLD CONJECTURE] [XI_WOLD_SHELL_BORN_RATE_CONSERVATION]`
+
+The principal Xi conormal is the boundary amplitude of the distinguished Wold/BV source state, and
+the source-to-Gamma/reflection continuation preserves zero asymptotic likelihood rate under the
+maximum-valuation pushforward.
+
+By `(239)`, this conjecture implies RH.  Unlike a fitted norm, every term in the source reference
+law \(h_m\) is already fixed by `(233)`--`(235)`.  The remaining theorem must construct the
+amplitude comparison and prove rate conservation; merely imposing
+\[
+ \log(|H_m(\rho)|^2/h_m)=o(m)
+\]
+at each zero would be an RH-equivalent restatement.
+
+### New corollaries independent of RH
+
+1. The positive shell frame is not an unrelated decomposition of the integer coefficients: its
+   transverse multipliers are the analytic continuation of one concrete maximum statistic of the
+   Wold valuation source.
+2. The least-integer normalization, Wold product law, and Fisher half-density select the same
+   exponential scale independently.
+3. Every hypothetical off-line zero has a canonical, source-measurable information defect
+   \(1-2\Re\rho\); no finite differential jet or uniformly invertible transverse gauge can erase
+   it.
+4. Functional equation symmetry conserves the reflected likelihood product but reverses the
+   defect.  This explains, in one formula, why reflection and positive orientation permit
+   off-line quartets while a positive source-Born realization would not.

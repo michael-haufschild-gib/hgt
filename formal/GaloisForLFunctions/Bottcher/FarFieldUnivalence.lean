@@ -48,7 +48,9 @@ theorem bottcherCoord_injOn_far {c : ℂ} {R : ℝ}
         (deriv S (Complex.exp ζ) * Complex.exp ζ) ζ :=
       hSd.comp ζ (Complex.hasDerivAt_exp ζ)
     have := (hasDerivAt_id ζ).add hcomp
-    simpa [hΦdef, mul_comm] using this
+    rw [hΦdef, show (fun ζ => ζ + S (Complex.exp ζ)) =
+      id + fun ζ => S (Complex.exp ζ) by rfl]
+    exact this.congr_deriv (by ring)
   -- positivity of Re Φ'
   have hpos : ∀ ζ ∈ H, 0 < (deriv Φ ζ).re := by
     intro ζ hζ

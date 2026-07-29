@@ -60,7 +60,14 @@ theorem integral_Ioi_exp_neg_mul_cos {a b : ℝ} (ha : 0 < a) :
     intro u _
     have hexp : HasDerivAt (fun u : ℝ => Real.exp (-(a * u))) (Real.exp (-(a * u)) * (-a)) u := by
       have h : HasDerivAt (fun u : ℝ => -(a * u)) (-a) u := by
-        simpa using ((hasDerivAt_id u).const_mul a).neg
+        have hraw := ((hasDerivAt_id u).const_mul a).neg
+        have hfun :
+            -(fun y : ℝ => a * id y) = (fun y : ℝ => -(a * y)) := by
+          funext y
+          rfl
+        rw [hfun] at hraw
+        apply hraw.congr_deriv
+        ring
       simpa using h.exp
     have hsin : HasDerivAt (fun u : ℝ => Real.sin (b * u)) (Real.cos (b * u) * b) u := by
       simpa using ((hasDerivAt_id u).const_mul b).sin
@@ -70,8 +77,9 @@ theorem integral_Ioi_exp_neg_mul_cos {a b : ℝ} (ha : 0 < a) :
         (b * (Real.cos (b * u) * b) - a * (-Real.sin (b * u) * b)) u :=
       (hsin.const_mul b).sub (hcos.const_mul a)
     have hprod := (hexp.mul hmix).div_const (a ^ 2 + b ^ 2)
-    convert hprod using 1
-    field_simp
+    rw [hF]
+    apply hprod.congr_deriv
+    field_simp [hden.ne']
     ring
   have hcont : ContinuousWithinAt F (Ici 0) 0 := by
     have : Continuous F := by rw [hF]; fun_prop
@@ -263,15 +271,29 @@ theorem integral_feNeutralLogDensity {beta gam c σ : ℝ}
       (fun u : ℝ =>
         2 * (Real.exp (-(σ * u)) * (Real.cos (gam * u) * Real.exp ((1 - beta) * u)))) (Ioi 0) :=
     (hbound (1 - beta) (by linarith)).const_mul 2
-  have hA : IntegrableOn
-      (fun u : ℝ => 4 * (Real.exp (-(σ * u)) * Real.exp ((c + 1 / 2) * u)) +
-        4 * (Real.exp (-(σ * u)) * Real.exp ((1 / 2 - c) * u))) (Ioi 0) := by
-    simpa using I1.add I2
-  have hB : IntegrableOn
-      (fun u : ℝ => 2 * (Real.exp (-(σ * u)) * (Real.cos (gam * u) * Real.exp (beta * u))) +
-        2 * (Real.exp (-(σ * u)) * (Real.cos (gam * u) * Real.exp ((1 - beta) * u))))
-      (Ioi 0) := by
-    simpa using I3.add I4
+  have hA := I1.add I2
+  have hAfun :
+      ((fun u : ℝ => 4 * (Real.exp (-(σ * u)) * Real.exp ((c + 1 / 2) * u))) +
+        fun u : ℝ => 4 * (Real.exp (-(σ * u)) * Real.exp ((1 / 2 - c) * u))) =
+        (fun u : ℝ => 4 * (Real.exp (-(σ * u)) * Real.exp ((c + 1 / 2) * u)) +
+          4 * (Real.exp (-(σ * u)) * Real.exp ((1 / 2 - c) * u))) := by
+    funext u
+    rfl
+  rw [hAfun] at hA
+  have hB := I3.add I4
+  have hBfun :
+      ((fun u : ℝ =>
+          2 * (Real.exp (-(σ * u)) * (Real.cos (gam * u) * Real.exp (beta * u)))) +
+        fun u : ℝ =>
+          2 * (Real.exp (-(σ * u)) *
+            (Real.cos (gam * u) * Real.exp ((1 - beta) * u)))) =
+        (fun u : ℝ =>
+          2 * (Real.exp (-(σ * u)) * (Real.cos (gam * u) * Real.exp (beta * u))) +
+          2 * (Real.exp (-(σ * u)) *
+            (Real.cos (gam * u) * Real.exp ((1 - beta) * u)))) := by
+    funext u
+    rfl
+  rw [hBfun] at hB
   rw [hsplit, integral_sub hA hB, integral_add I1 I2, integral_add I3 I4]
   rw [integral_const_mul, integral_const_mul, integral_const_mul, integral_const_mul]
   rw [key _ (by linarith), key _ (by linarith), keycos _ h3, keycos _ (by linarith)]

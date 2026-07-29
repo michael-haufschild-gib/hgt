@@ -65,7 +65,7 @@ private theorem tendsto_exp_nat_mul_sub_of_le
   · have hneg : x - radius < 0 := sub_neg.mpr (lt_of_le_of_ne hupper h)
     have hlin : Tendsto (fun k : ℕ => (k : ℝ) * (x - radius)) atTop atBot :=
       tendsto_natCast_atTop_atTop.atTop_mul_const_of_neg hneg
-    simpa only [Function.comp_apply, if_neg h] using
+    simpa only [Function.comp_apply, if_neg h] using!
       (Real.tendsto_exp_atBot.comp hlin)
 
 /-- **Exposed-face zero-temperature limit.**  Tropical normalization of a finite positive Gibbs
@@ -79,18 +79,22 @@ theorem tendsto_finiteSourceGibbsGramEnergyNormalized_exposedFace
         c base energy radius k q)
       atTop (nhds (finiteSourceEnergyLevelGramEnergy c base energy radius q)) := by
   simp only [finiteSourceGibbsGramEnergyNormalized, finiteSourceEnergyLevelGramEnergy]
-  apply tendsto_finset_sum
+  apply tendsto_finsetSum
   intro p hp
   have hfactor := tendsto_exp_nat_mul_sub_of_le (hupper p)
   by_cases hlevel : energy p = radius
   · simp only [hlevel, if_pos]
-    simpa using hfactor.const_mul
-      (base p * ‖∑ j, q j * c j p‖ ^ 2)
-  · simp only [hlevel, if_neg]
+    convert hfactor.const_mul
+        (base p * ‖∑ j, q j * c j p‖ ^ 2) using 1
+    · funext k
+      rw [hlevel]
+      ring_nf
+    · simp [hlevel]
+  · simp only [hlevel]
     convert hfactor.const_mul
       (base p * ‖∑ j, q j * c j p‖ ^ 2) using 1
     · funext k
-      ring
+      ring_nf
     · simp [hlevel]
 
 /-- The exposed-level Gram radical consists exactly of coefficient combinations vanishing on the
@@ -270,7 +274,7 @@ theorem tendsto_finiteSourceGibbsPartitionNormalized_exposedFaceCard
   change Tendsto
     (fun k : ℕ => ∑ p, Real.exp ((k : ℝ) * (energy p - radius)))
     atTop (nhds (finiteSourceExposedFaceCard energy radius : ℝ))
-  have hsum := tendsto_finset_sum (Finset.univ : Finset P) (fun p hp =>
+  have hsum := tendsto_finsetSum (Finset.univ : Finset P) (fun p hp =>
     tendsto_exp_nat_mul_sub_of_le (hupper p))
   convert hsum using 1
   simp [finiteSourceExposedFaceCard]
@@ -297,11 +301,11 @@ theorem finiteGibbsPurity_neg_energy_eq_normalizedPartitionRatio
       Real.exp (-(k : ℝ) * radius) ^ 2 := by
     rw [pow_two, ← Real.exp_add]
     congr 1
-    ring
+    ring_nf
   rw [hk, h2k, hexp]
   field_simp [ne_of_gt hZkpos, ne_of_gt hZ2kpos, Real.exp_ne_zero]
-  <;> norm_num [Nat.cast_mul]
-  <;> ring
+  norm_num [Nat.cast_mul]
+  ring_nf
 
 /-- **Purity--face law.**  The zero-temperature Rényi-2 purity is the reciprocal cardinality of
 the exposed maximum-energy face.  Hence purity measures degeneracy while the limiting Gram radical
@@ -559,8 +563,12 @@ theorem finiteSourceEnergyLevelGramEnergy_tensor
       simp only [finiteTensorEnergy_eq_add_radius_iff
         energyP energyQ radiusP radiusQ hupperP hupperQ,
         sum_finiteTensorCoefficientVector_mul_finiteTensorCoefficient, norm_mul, mul_pow]
-      by_cases hpface : energyP p = radiusP <;>
-        by_cases hqface : energyQ q = radiusQ <;> simp [hpface, hqface] <;> ring
+      by_cases hpface : energyP p = radiusP
+      · by_cases hqface : energyQ q = radiusQ
+        · simp [hpface, hqface]
+          ring_nf
+        · simp [hpface, hqface]
+      · simp [hpface]
     _ = (∑ p, if energyP p = radiusP then
           baseP p * ‖∑ i, u i * cP i p‖ ^ 2 else 0) *
         ∑ q, if energyQ q = radiusQ then

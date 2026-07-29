@@ -136,6 +136,7 @@ def projectionReflection (P : E →L[k] E) : E →L[k] E :=
 def twoProjectionQuantumWalk (P Q : E →L[k] E) : E →L[k] E :=
   projectionReflection P * projectionReflection Q
 
+omit [CompleteSpace E] in
 /-- Idempotence is exactly what makes the associated reflection involutive. -/
 theorem projectionReflection_sq_eq_one
     (P : E →L[k] E) (hP : IsIdempotentElem P) :
@@ -200,6 +201,7 @@ theorem twoProjectionQuantumWalk_mul_adjoint
       rw [projectionReflection_sq_eq_one Q hQ, mul_one]
     _ = 1 := projectionReflection_sq_eq_one P hP
 
+omit [CompleteSpace E] in
 /-- **Compressed-walk value law.**  Compressing the walk shifted by `+1` to its second
 projection gives exactly twice the corresponding alternating compression.  This is the direct
 operator bridge from the unitary walk coordinate to localization/prolate blocks already used by
@@ -236,9 +238,7 @@ theorem quantumMasterConstraint_twoProjectionQuantumWalk_sub_one_eq_four_mul_dif
   have hunitary := twoProjectionQuantumWalk_adjoint_mul_self
     P Q hP hQ hPadj hQadj
   have hdiffAdj : adjoint (P - Q) = P - Q := by
-    let adj : (E →L[k] E) ≃ₗᵢ⋆[k] (E →L[k] E) :=
-      ContinuousLinearMap.adjoint
-    simpa [adj, hPadj, hQadj] using adj.map_sub P Q
+    simp [hPadj, hQadj]
   have hmasterDiff : quantumMasterConstraint (P - Q) = (P - Q) * (P - Q) := by
     simp only [quantumMasterConstraint, ContinuousLinearMap.mul_def, hdiffAdj]
   rw [quantumMasterConstraint_unitarySubOne_eq_two_sub_self_sub_adjoint

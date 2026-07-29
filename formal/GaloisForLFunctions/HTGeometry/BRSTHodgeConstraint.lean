@@ -84,8 +84,8 @@ theorem physicalState_brstHodgeHamiltonian_iff
     GaloisForLFunctions.PhysicalState (brstHodgeHamiltonian Q).toLinearMap ψ ↔
       GaloisForLFunctions.PhysicalState Q.toLinearMap ψ ∧
         GaloisForLFunctions.PhysicalState Q.adjoint.toLinearMap ψ := by
-  simpa only [GaloisForLFunctions.PhysicalState] using
-    brstHodgeHamiltonian_apply_eq_zero_iff Q ψ
+  change brstHodgeHamiltonian Q ψ = 0 ↔ Q ψ = 0 ∧ Q.adjoint ψ = 0
+  exact brstHodgeHamiltonian_apply_eq_zero_iff Q ψ
 
 /-- A joint `Q`/`Q†` physical state gives a Ward value for one self-adjoint Hodge constraint. -/
 theorem brstHodgeHamiltonian_WardValue_eq_zero

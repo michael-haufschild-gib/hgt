@@ -63,8 +63,13 @@ theorem polynomialXiEnvelope_global_certificate
     rw [polynomialXiEnvelope, hA, hP]
     norm_cast
   · intro h
-    simpa only [polynomialXiEnvelope] using
-      coshQuartetEnvelope_mul_polynomial_periodic_iff a ha P hdegree h
+    have hfun :
+        polynomialXiEnvelope a P =
+          (fun z => coshQuartetEnvelope a z * P.eval z) := by
+      funext z
+      rfl
+    rw [hfun]
+    exact coshQuartetEnvelope_mul_polynomial_periodic_iff a ha P hdegree h
   · simpa only [polynomialXiEnvelope] using
       coshQuartetEnvelope_mul_polynomial_exact_order_one_bounds a hPne
 

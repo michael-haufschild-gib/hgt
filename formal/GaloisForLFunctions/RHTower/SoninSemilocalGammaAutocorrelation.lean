@@ -72,7 +72,7 @@ theorem integrable_semilocalGammaQuarterKernel :
 
 theorem integrable_semilocalGammaQuarterReflection :
     Integrable semilocalGammaQuarterReflection := by
-  simpa [semilocalGammaQuarterReflection] using
+  simpa [semilocalGammaQuarterReflection] using!
     integrable_semilocalGammaQuarterKernel.comp_neg
 
 theorem integrable_semilocalGammaAutocorrelation :

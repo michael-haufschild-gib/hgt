@@ -26,8 +26,8 @@ theorem infinitePrimeRenormalizedShadow_tendsto_log {x : ℝ} (hx : 0 < x) :
     Tendsto (fun t : ℝ => (x ^ t - 1) / t)
       (nhdsWithin 0 {0}ᶜ) (nhds (Real.log x)) := by
   have hderiv : HasDerivAt (fun t : ℝ => x ^ t) (Real.log x) 0 := by
-    convert (hasDerivAt_id (𝕜 := ℝ) (0 : ℝ)).const_rpow hx using 1
-    norm_num
+    apply ((hasDerivAt_id (𝕜 := ℝ) (0 : ℝ)).const_rpow hx).congr_deriv
+    simp
   simpa [div_eq_inv_mul] using hderiv.tendsto_slope_zero
 
 end

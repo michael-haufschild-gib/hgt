@@ -219,6 +219,7 @@ Any claim that `M₃,₂(ℂ)` alone solves unification is `[FALSIFIED / REDISCO
 | curvature misses boundary self-law | a commutator is only one shadow of the full coefficient/linking algebra |
 | additive debt telescopes | decategorified dimension forgets bimodule extension |
 | fixed-carrier history is gauge-flat | globally supplied linking identifications form coboundaries |
+| fixed-carrier spatial variation is reciprocal-spectrally blind | coefficient variations are commutators, but source-relative eigenvectors and interference may still be observable |
 | Hypertranscendence survives flatness | nonclosure concerns iterated envelope, not one curvature |
 
 This table is abductive synthesis, not proof.
@@ -266,6 +267,10 @@ Retire the conjecture if:
 4. Determine whether higher exceptional incidence selects one normalized
    \(M_{3,2}(\mathbb C)\)-type envelope while producing an independent Lorentz spin action.
 5. Seek one dimensionless relation between the two coefficient-side spectra.
+6. Formalize fixed-carrier spatial reciprocal blindness and distinguish its exact spectral kernel
+   from the stronger, unproved physical gauge quotient.
+7. Define a source-relative comparison object retaining ternary phase and event order lost by the
+   two isolated positive coefficient shadows.
 
 ## Nature verdict
 
@@ -282,3 +287,7 @@ source-generation and physical uniqueness theorem, which is open.
 - 2026-07-29 — reconciled exceptional \(M_{3,2}(\mathbb C)\) clue with weak--Lorentz and local
   independence no-go results.
 - 2026-07-29 — isolated positive bar-to-ternary reconstruction as candidate-new mathematics.
+- 2026-07-29 — proved on paper that every skew spatial fixed-carrier variation induces only
+  coefficient commutators and is invisible to all cyclic reciprocal power reporters. Restricted
+  the conclusion to spectral blindness: physical gauge status still requires a source-relative
+  operational quotient.

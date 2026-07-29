@@ -380,9 +380,10 @@ theorem bourgainGaussian_le_halfGeometric
           pow_le_pow_left₀ hbase habs 2
         _ = d ^ (2 : ℕ) := sq_abs d
     have hlog : Real.log 2 ≤ (1 : ℝ) := by
-      convert
-        (Real.log_le_sub_one_of_pos (x := (2 : ℝ)) (by norm_num))
-          using 1 <;> norm_num
+      have h :=
+        Real.log_le_sub_one_of_pos (x := (2 : ℝ)) (by norm_num)
+      norm_num at h
+      exact h
     have hmain :
         ((n : ℝ) - 3) * Real.log 2 ≤
           Real.pi * d ^ (2 : ℕ) := by
@@ -441,7 +442,9 @@ theorem bourgainScaledNear_of_cell_eq
     Int.abs_sub_lt_one_of_floor_eq_floor hfloor
   have hscaled :
       |2 * (X j * (u j - v j))| < (1 : ℝ) := by
-    convert h using 1 <;> ring_nf
+    rw [show 2 * (X j * (u j - v j)) =
+      2 * (X j * u j) - 2 * (X j * v j) by ring]
+    exact h
   rw [abs_mul, abs_of_pos (by norm_num : (0 : ℝ) < 2)] at hscaled
   linarith
 
@@ -645,7 +648,7 @@ theorem bourgainGaussianSpacingEnergy_le_firstSpacingCount
         apply Finset.sum_congr rfl
         intro h' hh'
         rw [bourgainScaledNear_sixfold_iff hX]
-        simp [p, a]
+        simp [a]
       _ = ∑ q ∈
           ((Finset.univ : Finset (Fin 6 → Fin H)).product
             (Finset.univ : Finset (Fin 6 → Fin H))),

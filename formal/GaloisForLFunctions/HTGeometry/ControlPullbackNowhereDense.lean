@@ -84,7 +84,9 @@ theorem dense_residual_nondegenerateControls
     fun n => isNowhereDense_degenerateControls (L n) (hL n) (P n) (hP n)
   have hdense := dense_setOf_forall_notMem_of_isNowhereDense
     (fun n => (L n) ⁻¹' {x : σ n → ℂ | MvPolynomial.eval x (P n) = 0}) hnd
-  convert hdense using 2 with y
+  apply hdense.mono
+  intro y hy n hzero
+  exact hy n hzero
 
 end
 

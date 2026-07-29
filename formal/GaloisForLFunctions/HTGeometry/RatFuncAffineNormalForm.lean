@@ -146,8 +146,12 @@ theorem ratFuncAffineEquiv_normalForm
     right
     let v : Kˣ := Units.mk0 b hb
     refine ⟨v, ?_⟩
-    simpa [ratFuncAffineEquiv, v] using
-      ratFuncTranslationEquiv_scale_conj_eq_one b hb
+    have haff :
+        ratFuncAffineEquiv (1 : Kˣ) b = ratFuncTranslationEquiv b := by
+      rw [ratFuncAffineEquiv, ratFuncUnitScaleEquiv_one]
+      exact one_mul _
+    rw [haff]
+    exact ratFuncTranslationEquiv_scale_conj_eq_one b hb
   · left
     let r : K := b / ((u : K) - 1)
     refine ⟨r, ?_⟩

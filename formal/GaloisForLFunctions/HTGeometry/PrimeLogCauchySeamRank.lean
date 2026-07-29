@@ -27,8 +27,12 @@ theorem tendsto_eval_div_pow_natDegree (Q : ℂ[X]) :
       Complex.continuous_ofReal.continuousAt.tendsto.comp tendsto_inv_atTop_zero
   have hrev : Tendsto (fun t : ℝ => Q.reverse.eval ((t⁻¹ : ℝ) : ℂ))
       atTop (𝓝 Q.leadingCoeff) := by
-    convert Q.reverse.continuous.continuousAt.tendsto.comp hinv using 1
-    rw [← Polynomial.coeff_zero_eq_eval_zero, Polynomial.coeff_zero_reverse]
+    rw [show (fun t : ℝ => Q.reverse.eval ((t⁻¹ : ℝ) : ℂ)) =
+      (fun x => Q.reverse.eval x) ∘ fun t : ℝ => ((t⁻¹ : ℝ) : ℂ) by rfl]
+    have hzero : Q.reverse.eval 0 = Q.leadingCoeff := by
+      rw [← Polynomial.coeff_zero_eq_eval_zero, Polynomial.coeff_zero_reverse]
+    rw [← hzero]
+    exact Q.reverse.continuous.continuousAt.tendsto.comp hinv
   apply hrev.congr'
   filter_upwards [eventually_gt_atTop (0 : ℝ)] with t ht
   have ht0 : (t : ℂ) ≠ 0 := by exact_mod_cast ht.ne'

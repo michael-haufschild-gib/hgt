@@ -46,7 +46,11 @@ theorem tendsto_measureGram_diagonal_of_dominant {d : ℕ} (ν : Measure ℝ) (a
     exact measureGram_diagonal ν a y l hy
   refine Tendsto.congr' heq.symm ?_
   have hc := (Complex.continuous_ofReal.tendsto (0 : ℝ)).comp hlim
-  simpa using hc
+  rw [show (fun y : ℝ => ((∫ t, atomKernel (a l) y t ∂ν : ℝ) : ℂ)) =
+      Complex.ofReal ∘ fun y => ∫ t, atomKernel (a l) y t ∂ν by
+    funext y
+    rfl]
+  exact hc
 
 end
 

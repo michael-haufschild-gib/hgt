@@ -50,7 +50,10 @@ theorem monomialFeature_linearIndependent {κ τ : Type*}
   have hfamily := hmono.comp exponent hexponent
   have hmapped := hfamily.map' (monomialEvaluationLinearMap τ)
     (LinearMap.ker_eq_bot.mpr (monomialEvaluationLinearMap_injective τ))
-  simpa [monomialFeature, monomialEvaluationLinearMap, Function.comp_def] using hmapped
+  rw [show monomialFeature exponent =
+    (fun i x => MvPolynomial.eval x
+      (MvPolynomial.monomial (exponent i) (1 : ℝ))) by rfl]
+  exact hmapped
 
 /-- A finite family of distinct monomials admits distinct nodes and exact Kronecker-delta moment
 coefficients. -/

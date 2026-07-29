@@ -31,7 +31,7 @@ noncomputable def sectionLoop {T : ℂ → ℂ} {A : Set ℂ} {r : ℝ}
       (hT _ (hcirc θ)).differentiableAt.hasDerivAt
     have h2 := hasDerivAt_circleMap 0 r θ
     have h3 := h1.comp θ h2
-    simpa using h3
+    simpa using! h3
   closed := by
     have : circleMap 0 r (2 * Real.pi) = circleMap 0 r 0 := by
       simpa using periodic_circleMap 0 r 0

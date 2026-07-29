@@ -50,7 +50,13 @@ theorem dense_continuousLinearMap_mvPolynomial_ne_zero_of_witness
     simpa [abs_of_pos hε] using hεη
   have hlineMem : line ε ∈ o := hball hεball
   refine ⟨line ε, hlineMem, ?_⟩
-  simpa [line, map_add, map_sub, map_smul, Pi.smul_apply, smul_eq_mul] using hne
+  have hobs :
+      L (line ε) = fun i ↦ L x i + (ε : ℂ) * (L h i - L x i) := by
+    funext i
+    simp [line, map_add, map_sub, Pi.smul_apply]
+  change MvPolynomial.eval (L (line ε)) P ≠ 0
+  rw [hobs]
+  exact hne
 
 /-- A polynomial defect with one escaping source has empty interior. -/
 theorem interior_continuousLinearMap_mvPolynomial_zero_eq_empty_of_witness

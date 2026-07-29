@@ -187,6 +187,6 @@ theorem real_mem_mandelbrot {c : ℝ} (hc2 : -2 ≤ c) (hc4 : c ≤ 1 / 4) :
     (c : ℂ) ∈ mandelbrot := by
   have h0 : ((0 : ℝ) : ℂ) ∈ filledJulia (c : ℂ) :=
     real_mem_filledJulia_of_abs_le hc2 hc4 (by simpa using (betaFixed_pos c).le)
-  simpa using h0
+  simpa using! h0
 
 end Bottcher

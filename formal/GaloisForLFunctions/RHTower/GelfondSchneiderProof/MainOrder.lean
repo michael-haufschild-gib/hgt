@@ -115,7 +115,7 @@ lemma cexp_mul (c x : ℂ) : deriv (fun x ↦ cexp (c * x)) x = c * cexp (c * x)
   rw [deriv_cexp (by fun_prop), deriv_fun_mul (by fun_prop) (by fun_prop)]
   simp [deriv_const', deriv_id'', mul_comm]
 
-def iteratedDeriv_R (k' : ℕ) : deriv^[k'] (fun x ↦ (h7.R q hq0 h2mq) x) =
+theorem iteratedDeriv_R (k' : ℕ) : deriv^[k'] (fun x ↦ (h7.R q hq0 h2mq) x) =
     fun x ↦ ∑ t, (h7.σ ((h7.η q hq0 h2mq) t)) * exp (h7.ρ q t * x) * (h7.ρ q t)^k' := by
   induction k' with
   | zero => simp only [pow_zero, mul_one]; rfl
@@ -124,8 +124,8 @@ def iteratedDeriv_R (k' : ℕ) : deriv^[k'] (fun x ↦ (h7.R q hq0 h2mq) x) =
     simp only [iteratedDeriv_succ]
     conv => enter [1]; rw [hk]
     ext x
-    rw [deriv, fderiv_fun_sum]
-    · simp only [ContinuousLinearMap.coe_sum', Finset.sum_apply, fderiv_eq_smul_deriv,
+    rw [_root_.deriv, fderiv_fun_sum]
+    · simp only [FunLike.coe_sum, Finset.sum_apply, fderiv_eq_smul_deriv,
       deriv_mul_const_field', deriv_const_mul_field', smul_eq_mul, one_mul]
       rw [Finset.sum_congr rfl]
       intros t ht
@@ -146,7 +146,7 @@ lemma vecMul_V_eq_zero (hR : h7.R q hq0 h2mq = 0) :
   have hk : deriv^[k] (fun x ↦ h7.R q hq0 h2mq x) 0 = 0 :=
     h7.iteratedDeriv_R_eq_zero (hR := hR) _ _ _ _ _
   rw [h7.iteratedDeriv_R q hq0 h2mq k] at hk
-  simpa [of_apply] using hk
+  simpa [of_apply] using! hk
 
 lemma ηvec_eq_zero (hVecMulEq0 : (h7.V q).vecMul (fun t ↦ h7.σ ((h7.η q hq0 h2mq) t)) = 0) :
     (fun t ↦ h7.σ ((h7.η q hq0 h2mq) t )) = 0 := by

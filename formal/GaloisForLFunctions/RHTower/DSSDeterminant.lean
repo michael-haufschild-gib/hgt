@@ -28,8 +28,10 @@ theorem matrix_nontrivial_kernel_iff_det_eq_zero {n : ℕ}
   · rintro ⟨c, hc0, hc⟩
     by_contra hdet
     have hker : LinearMap.ker (Matrix.toLin' V) = ⊥ := by
-      simpa using
-        Matrix.ker_toLin_eq_bot (Pi.basisFun ℂ (Fin n)) V (isUnit_iff_ne_zero.mpr hdet)
+      rw [show Matrix.toLin' V =
+        Matrix.toLin (Pi.basisFun ℂ (Fin n)) (Pi.basisFun ℂ (Fin n)) V by rfl]
+      exact Matrix.ker_toLin_eq_bot (Pi.basisFun ℂ (Fin n)) V
+        (isUnit_iff_ne_zero.mpr hdet)
     have hcKer : c ∈ LinearMap.ker (Matrix.toLin' V) := by
       rw [LinearMap.mem_ker, Matrix.toLin'_apply]
       exact hc

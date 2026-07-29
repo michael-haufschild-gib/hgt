@@ -96,7 +96,7 @@ theorem derivSCLM_mulXCLM (f : 𝓢(ℝ, ℂ)) :
   apply SchwartzMap.ext
   intro x
   have h1 : HasDerivAt (fun y : ℝ => (y : ℂ)) 1 x := by
-    simpa using (Complex.ofRealCLM.hasDerivAt (x := x))
+    simpa using! (Complex.ofRealCLM.hasDerivAt (x := x))
   have h2 := f.hasDerivAt x
   have h3 : HasDerivAt (fun y : ℝ => (y : ℂ) * f y)
       (1 * f x + (x : ℂ) * deriv (f : ℝ → ℂ) x) x := h1.mul h2
@@ -118,7 +118,7 @@ theorem annihilationCLM_gaussianSchwartz : annihilationCLM gaussianSchwartz = 0 
   have hr : HasDerivAt (fun y : ℝ => ((gaussReal y : ℝ) : ℂ))
       (((-(2 * π * x) * gaussReal x : ℝ) : ℂ)) x := (hasDerivAt_gaussReal x).ofReal_comp
   have hc : deriv (gaussianSchwartz : ℝ → ℂ) x = ((-(2 * π * x) * gaussReal x : ℝ) : ℂ) := hr.deriv
-  rw [annihilationCLM_apply, hc, SchwartzMap.zero_apply, gaussianSchwartz_apply]
+  rw [annihilationCLM_apply, hc, _root_.zero_apply, gaussianSchwartz_apply]
   push_cast
   ring
 
@@ -176,7 +176,7 @@ theorem schwartzPair_creationCLM (f g : 𝓢(ℝ, ℂ)) :
       = mulS f (annihilationCLM g) - (mulS (derivSCLM f) g + mulS f (derivSCLM g)) := by
     apply SchwartzMap.ext
     intro x
-    simp only [mulS_apply, creationCLM_apply, annihilationCLM_apply, SchwartzMap.sub_apply,
+    simp only [mulS_apply, creationCLM_apply, annihilationCLM_apply, _root_.sub_apply,
       _root_.add_apply, derivSCLM_apply]
     ring
   have h1 : schwartzPair (derivSCLM f) g = ∫ x : ℝ, deriv (f : ℝ → ℂ) x * g x := by

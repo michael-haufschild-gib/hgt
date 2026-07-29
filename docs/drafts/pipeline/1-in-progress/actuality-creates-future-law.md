@@ -1612,3 +1612,37 @@ scientific result.
   Distinguished the target from generic information conservation, record-created spacetime,
   entanglement geometry, and static one-connection unification. Froze the uniqueness theorem for a
   background-free compositional causalization functor as the decisive Nature-level target.
+
+## Reciprocal-blindness pressure on the loss--future identity
+
+The exact theorem in
+`../2-fully-proven/not_new_scientific_knowledge/fixed-carrier-spatial-reciprocal-blindness.md`
+shows that for every skew spatial variation \(E=AD+DB\), the two reciprocal first variations are
+commutators:
+\[
+\delta(D^\dagger D)=[D^\dagger D,B],
+\qquad
+\delta(DD^\dagger)=[A,DD^\dagger].
+\]
+All cyclic power reporters are therefore blind.  In one complex dimension, an entire real family
+of distinct ternary phase derivations is invisible to the positive square.
+
+This supplies a necessary information boundary for `(F14)`:
+
+> a positive causal record cannot, by itself, be the complete successor law; the phase,
+> orientation, and ordering information it forgets must survive in the source-rooted
+> loss-to-future comparison.
+
+It does not prove that spectrally invisible information becomes spacetime.  A reference carrier
+can detect phase, and a source frame can detect eigenvector motion.  Hence
+\(\mathsf{Lost}_e\) cannot be defined as the bare kernel of a Gram map, and
+\(\mathsf{Future}_e\) cannot be defined as its codomain merely because dimensions fit.  The missing
+theorem must first construct the operational source quotient and then prove that its lost
+coherent distinction object is naturally equivalent to the created causal object.
+
+This also fixes the hierarchy among current universal candidates:
+
+1. `(F14)` is the physical law: lost coherent distinction becomes future causal distinction;
+2. the purity-boundary conjecture is its proposed exceptional local geometry; and
+3. the obstruction--completion fixed point is a proposed mathematical realization and must not
+   replace the physical transfer by an arbitrary minimal completion.

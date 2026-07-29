@@ -35,7 +35,9 @@ theorem fePullback_involutive (f : ℂ → ℂ) : fePullback (fePullback f) = f 
 @[aesop safe]
 theorem hasDerivAt_sigma (s : ℂ) : HasDerivAt sigma (-1) s := by
   unfold sigma
-  simpa using (hasDerivAt_const (x := s) (c := (1 : ℂ))).sub (hasDerivAt_id s)
+  rw [show (fun s : ℂ => 1 - s) = (fun _ : ℂ => 1) - id by rfl]
+  exact ((hasDerivAt_const (x := s) (c := (1 : ℂ))).sub
+    (hasDerivAt_id s)).congr_deriv (by ring)
 
 /-- Chain-rule form: pulling back by `sigma` negates the derivative. -/
 @[aesop safe]
@@ -43,7 +45,8 @@ theorem hasDerivAt_fePullback {f : ℂ → ℂ} {s f' : ℂ}
     (h : HasDerivAt f f' (sigma s)) :
     HasDerivAt (fePullback f) (-f') s := by
   have hcomp := h.comp s (hasDerivAt_sigma s)
-  simpa [fePullback, neg_mul, mul_comm] using hcomp
+  rw [show fePullback f = f ∘ sigma by rfl]
+  exact hcomp.congr_deriv (by ring)
 
 /-- Derivative form of the FE pullback chain rule. -/
 @[aesop safe]

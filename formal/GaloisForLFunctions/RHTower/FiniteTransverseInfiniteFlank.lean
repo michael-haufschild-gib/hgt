@@ -260,7 +260,7 @@ theorem finiteTransverse_flankSeries_reflection_rigidity
   have hb : ∀ n ∈ S, Summable (fun m : ℕ =>
       ‖b m n‖ * Real.exp (-(((m : ℝ) * α + (n : ℝ) * β) * w))) := by
     intro n hn
-    simpa using habs.comp_injective (show Function.Injective (fun m : ℕ => (m, n)) from by
+    simpa using! habs.comp_injective (show Function.Injective (fun m : ℕ => (m, n)) from by
       intro m k hmk
       exact congrArg Prod.fst hmk)
   apply finiteTransverse_infiniteSeries_reflection_rigidity

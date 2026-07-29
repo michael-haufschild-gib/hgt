@@ -135,6 +135,7 @@ theorem integrableOn_inv_sq_Ici {a : ℝ} (ha : 0 < a) :
     integrableOn_Ioi_rpow_of_lt (by norm_num) ha
   refine hbase.congr_fun (fun x hx => ?_) measurableSet_Ioi
   have hx0 : (0 : ℝ) < x := lt_trans ha hx
+  change x ^ (-2 : ℝ) = (x ^ 2)⁻¹
   rw [Real.rpow_neg hx0.le, show (2 : ℝ) = ((2 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]
 
 theorem integral_inv_sq_Ici {a : ℝ} (ha : 0 < a) : ∫ x in Ici a, (x ^ 2)⁻¹ = 1 / a := by
@@ -142,6 +143,7 @@ theorem integral_inv_sq_Ici {a : ℝ} (ha : 0 < a) : ∫ x in Ici a, (x ^ 2)⁻�
   have hcongr : ∫ x in Ioi a, (x ^ 2)⁻¹ = ∫ x in Ioi a, x ^ (-2 : ℝ) := by
     refine setIntegral_congr_fun measurableSet_Ioi fun x hx => ?_
     have hx0 : (0 : ℝ) < x := lt_trans ha hx
+    change (x ^ 2)⁻¹ = x ^ (-2 : ℝ)
     rw [Real.rpow_neg hx0.le, show (2 : ℝ) = ((2 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]
   rw [hcongr, integral_Ioi_rpow_of_lt (by norm_num) ha,
     show ((-2 : ℝ) + 1) = -1 by norm_num, Real.rpow_neg_one]

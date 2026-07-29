@@ -204,7 +204,10 @@ theorem eventually_exp_log_rpow_le_rpow {θ : ℝ} (hθ1 : θ < 1) {ε : ℝ} (h
   have hlim : Filter.Tendsto (fun t : ℝ => (Real.log t) ^ (θ - 1)) Filter.atTop (nhds 0) := by
     have hcomp := (tendsto_rpow_neg_atTop h1).comp Real.tendsto_log_atTop
     have hexp : -(1 - θ) = θ - 1 := by ring
-    simpa [Function.comp, hexp] using hcomp
+    rw [show (fun t : ℝ => (Real.log t) ^ (θ - 1)) =
+      (fun x : ℝ => x ^ (θ - 1)) ∘ Real.log by rfl]
+    rw [← hexp]
+    exact hcomp
   have hev : ∀ᶠ t : ℝ in Filter.atTop, (Real.log t) ^ (θ - 1) < ε :=
     hlim (Iio_mem_nhds hε)
   filter_upwards [hev, Filter.eventually_ge_atTop (Real.exp 1)] with t ht hte

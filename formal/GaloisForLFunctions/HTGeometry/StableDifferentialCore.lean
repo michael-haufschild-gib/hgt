@@ -84,8 +84,9 @@ theorem adjoin_le_stableRangeCore_of_algebraMap_eigenvector
     IntermediateField.adjoin K ({q} : Set F) ≤ stableRangeCore phi := by
   rw [IntermediateField.adjoin_le_iff]
   intro x hx
-  simpa only [Set.mem_singleton_iff.mp hx] using
-    algebraMap_eigenvector_mem_stableRangeCore phi q a ha hq
+  have hxq : x = q := Set.mem_singleton_iff.mp hx
+  subst x
+  exact algebraMap_eigenvector_mem_stableRangeCore phi q a ha hq
 
 /-- Applying the endomorphism to a stable-core element stays in the stable core. -/
 theorem stableRangeCore_map_mem

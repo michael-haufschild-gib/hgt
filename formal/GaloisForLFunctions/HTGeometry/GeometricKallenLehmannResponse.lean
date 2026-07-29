@@ -88,8 +88,7 @@ theorem summable_geometricKallenLehmannWeight_mul_node_abs_pow
   have hab₀ : 0 ≤ a * b ^ n := mul_nonneg ha₀ hbn₀
   have hab₁ : a * b ^ n < 1 := by nlinarith
   have hs := (summable_geometric_of_lt_one hab₀ hab₁).mul_left (1 - a)
-  convert hs using 1
-  funext k
+  refine hs.congr fun k => ?_
   have hpow : (b ^ k) ^ n = (b ^ n) ^ k := by
     rw [← pow_mul, ← pow_mul, Nat.mul_comm]
   rw [geometricKallenLehmannWeight, geometricKallenLehmannNode,

@@ -46,7 +46,8 @@ private theorem hasDerivAt_vert (σ y : ℝ) :
 /-- Derivative of the straight horizontal parametrization `x ↦ x + i·h`: constant `1`. -/
 private theorem hasDerivAt_horiz (h x : ℝ) :
     HasDerivAt (fun t : ℝ => (↑t : ℂ) + ↑h * I) 1 x := by
-  have h1 : HasDerivAt (fun t : ℝ => (↑t : ℂ)) 1 x := by simpa using Complex.ofRealCLM.hasDerivAt
+  have h1 : HasDerivAt (fun t : ℝ => (↑t : ℂ)) 1 x := by
+    simpa using! Complex.ofRealCLM.hasDerivAt
   have h2 : HasDerivAt (fun t : ℝ => (↑t : ℂ) + ↑h * I) (1 + 0) x :=
     h1.add (hasDerivAt_const x (↑h * I : ℂ))
   simpa using h2
@@ -63,7 +64,7 @@ private theorem path_ftc {Hf P : ℂ → ℂ} (hP : ∀ z, HasDerivAt P (Hf z) z
     ∫ t in a..b, Hf (δ t) * δ' t = P (δ b) - P (δ a) := by
   have hderiv : ∀ t ∈ Set.uIcc a b, HasDerivAt (fun s => P (δ s)) (Hf (δ t) * δ' t) t := by
     intro t ht
-    simpa [Function.comp, smul_eq_mul, mul_comm] using (hP (δ t)).scomp t (hδ t ht)
+    simpa [Function.comp, smul_eq_mul, mul_comm] using! (hP (δ t)).scomp t (hδ t ht)
   simpa using intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv hint
 
 set_option maxHeartbeats 800000 in

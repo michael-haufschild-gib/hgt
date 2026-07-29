@@ -26,7 +26,9 @@ theorem coeFn_sum_smul_circleMonomialLp (mu : Measure Circle) [IsFiniteMeasure m
       =ᵐ[mu] fun z : Circle => ∑ i ∈ s, c i * (z : ℂ) ^ i := by
   classical
   induction s using Finset.induction_on with
-  | empty => simpa using Lp.coeFn_zero ℂ 2 mu
+  | empty =>
+      filter_upwards [Lp.coeFn_zero ℂ 2 mu] with z hz
+      simpa using hz
   | @insert a S ha ih =>
       rw [Finset.sum_insert ha]
       filter_upwards [Lp.coeFn_add (c a • circleMonomialLp mu a)

@@ -64,7 +64,9 @@ theorem hasDerivAt_logTiltSlope
     (hq _ (Real.exp_pos L)).comp L hexp
   have hmul : HasDerivAt (fun L => Real.exp L * p (Real.exp L))
       (Real.exp L * p (Real.exp L) + Real.exp L * (q (Real.exp L) * Real.exp L)) L := by
-    simpa using hexp.mul hpc
+    rw [show (fun L => Real.exp L * p (Real.exp L)) =
+      Real.exp * fun L => p (Real.exp L) by rfl]
+    exact hexp.mul hpc
   have := hmul.const_add (2 * (n : ℝ) + 1)
   refine this.congr_deriv ?_
   ring

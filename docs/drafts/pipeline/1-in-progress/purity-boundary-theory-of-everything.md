@@ -378,6 +378,29 @@ Current Nature verdict: `[DO NOT WRITE MANUSCRIPT]`.
 - **Status:** live frozen conjecture; local algebraic evidence Lean-proved; physical open core
   untouched.
 
+## Fixed-carrier reciprocal-blindness bridge
+
+The paper theorem in
+`../2-fully-proven/not_new_scientific_knowledge/fixed-carrier-spatial-reciprocal-blindness.md`
+adds an independent representation boundary.  A skew two-sided spatial variation
+\(E=AD+DB\) changes \(D^\dagger D\) and \(DD^\dagger\) only by commutators, so every cyclic
+power reporter is blind to it.  Pluta--Russo's spatiality theorem places every TRO derivation in
+this fixed-carrier form.
+
+This does **not** prove that all tangent or spatial change is gauge, nor that actuality or gravity
+is normal motion.  Relative eigenvectors, interference, and source frames may still observe
+spatial variation.  What it proves is that an isolated reciprocal positive shadow cannot contain
+its complete law of change.  Any realization of the frozen purity-boundary conjecture must
+therefore construct a source-relative interface that:
+
+1. separates operational gauge directions from measurable orientations;
+2. retains the phase and order information forgotten by positive reciprocal spectra; and
+3. identifies any surviving source-normal class with the exceptional colour-preserving
+   four-carrier without assuming that identification.
+
+The physical headline remains the loss--future/purity-boundary conjecture.  Reciprocal blindness
+is a necessary bridge, not the discovery.
+
 ## Log
 
 - 2026-07-29 — frozen from the combined pure-tangent no-go, colour-preserving normal survivor,
@@ -392,3 +415,6 @@ Current Nature verdict: `[DO NOT WRITE MANUSCRIPT]`.
   colour-bivector/colour--weak cross-sector reaches the colourless normal doublet, and every
   nonzero colour bivector reaches all of it. Classified it as standard mathematics and retained
   operational actualization as the open core.
+- 2026-07-29 — added the fixed-carrier spatial reciprocal-blindness boundary. Corrected the
+  tempting overinterpretation “spatial equals gauge”: only cyclic reciprocal spectra are
+  unconditionally blind; a source-relative physical quotient remains part of the open core.

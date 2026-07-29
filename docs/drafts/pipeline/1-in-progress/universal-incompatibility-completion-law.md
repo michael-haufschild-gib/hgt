@@ -237,13 +237,19 @@ None is yet in experimentally usable form.
 ## Immediate theorem program
 
 1. Define finite rooted dagger ternary presentations and their source bar construction.
-2. Prove finite ternary presentation implies a finite differential-algebraic/finite-Hankel
-   recovery law.
-3. Prove the contrapositive Hypertranscendental non-closure theorem.
-4. Construct the minimal positive completion through degree three and classify irreducible
+2. Define a source-generated ternary connection independently of the target physics.  Fiberwise
+   finite ternary presentation alone does **not** imply differential closure; the Gamma
+   one-dimensional counterexample is recorded in
+   `../5-failed/finite-ternary-presentation-implies-differential-closure.md`.
+3. Reconstruct the compatible connection torsor and its source-invisible stabilizer.  Literal
+   connection uniqueness is already false in dimension one; see
+   `../5-failed/source-data-uniquely-determines-ternary-connection.md`.
+4. Prove finite source-horizontalizability implies differential algebraicity and the
+   contrapositive Hypertranscendental derivative-escape theorem.
+5. Construct the minimal positive completion through degree three and classify irreducible
    source-polarity factorizations.
-5. Test whether `(UIC6)` is selected or whether counterexamples leave other internal algebras.
-6. Derive one dimensionless spectral sum rule before any Nature manuscript.
+6. Test whether `(UIC6)` is selected or whether counterexamples leave other internal algebras.
+7. Derive one dimensionless spectral sum rule before any Nature manuscript.
 
 ## Gate
 
@@ -255,4 +261,3 @@ Nature work begins only after:
 - explicit separation from constructor theory, process theories, TRO/Morita theory, and
   noncommutative geometry; and
 - independent physics review.
-

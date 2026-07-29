@@ -121,6 +121,7 @@ theorem opTrace_pow_add_two_sub_pow_add_three_of_isHilbertSchmidt
     ((summable_inner_diag_pow_add_two T hT (n + 1)).congr fun i => by
       simp only [Nat.add_assoc])
 
+omit [CompleteSpace H] in
 /-- The overlap splits into its `P`-sector compression and its off-diagonal transition. -/
 theorem twoProjection_overlap_eq_interiorCompression_add_transition
     (P R : H →L[ℂ] H) :
@@ -138,8 +139,7 @@ theorem adjoint_twoProjectionTransition
   rw [twoProjectionTransition]
   change ContinuousLinearMap.adjoint (((1 - P) ∘L R) ∘L P) = _
   rw [ContinuousLinearMap.adjoint_comp, ContinuousLinearMap.adjoint_comp,
-    hPadj, hRadj, adjoint_one_sub_twoProjectionEnergy P hPadj] <;>
-    ext x <;> rfl
+    hPadj, hRadj, adjoint_one_sub_twoProjectionEnergy P hPadj]; ext x; rfl
 
 /-- The interior compression is self-adjoint when both projections are. -/
 theorem adjoint_twoProjectionInteriorCompression
@@ -151,7 +151,7 @@ theorem adjoint_twoProjectionInteriorCompression
   rw [twoProjectionInteriorCompression]
   change ContinuousLinearMap.adjoint ((P ∘L R) ∘L P) = _
   rw [ContinuousLinearMap.adjoint_comp, ContinuousLinearMap.adjoint_comp,
-    hPadj, hRadj] <;> ext x <;> rfl
+    hPadj, hRadj]; ext x; rfl
 
 /-- **Two-projection Shannon trace law.**  The trace of the positive compression `PRP` is
 exactly the Hilbert--Schmidt energy of the overlap `RP`.  Thus a time--band overlap area can be
@@ -197,9 +197,9 @@ theorem adjoint_twoProjectionExteriorCompression
       ContinuousLinearMap.adjoint Z = _
   rw [ContinuousLinearMap.adjoint_comp, ContinuousLinearMap.adjoint_comp,
     adjoint_one_sub_twoProjectionEnergy P hPadj,
-    adjoint_one_sub_twoProjectionEnergy R hRadj, hZadj] <;>
-    ext x <;> rfl
+    adjoint_one_sub_twoProjectionEnergy R hRadj, hZadj]; ext x; rfl
 
+omit [CompleteSpace H] in
 /-- The zero-mode-subtracted exterior compression kills the removed joint mode on the right. -/
 theorem twoProjectionExteriorCompression_mul_zeroMode_eq_zero
     (P R Z : H →L[ℂ] H)
@@ -211,6 +211,7 @@ theorem twoProjectionExteriorCompression_mul_zeroMode_eq_zero
   have hZZ : Z * Z = Z := hZ
   noncomm_ring [hZZ, hPZ, hRZ]
 
+omit [CompleteSpace H] in
 /-- The zero-mode-subtracted exterior compression also kills the removed joint mode on the
 left. -/
 theorem zeroMode_mul_twoProjectionExteriorCompression_eq_zero
@@ -221,9 +222,7 @@ theorem zeroMode_mul_twoProjectionExteriorCompression_eq_zero
     Z * twoProjectionExteriorCompression P R Z = 0 := by
   rw [twoProjectionExteriorCompression]
   have hZZ : Z * Z = Z := hZ
-  noncomm_ring <;>
-    simp only [← mul_assoc, hZZ, hZP, hZR, zero_mul, mul_zero, add_zero, zero_add] <;>
-    module
+  noncomm_ring; simp only [← mul_assoc, hZZ, hZP, hZR, zero_mul, zero_add]; module
 
 /-- After removing the joint zero mode, the exterior overlap splits into its exterior positive
 compression minus the adjoint transition channel. -/
@@ -256,9 +255,7 @@ theorem adjoint_twoProjectionTransition_mul_self_eq_interiorCompression_sub_sq
     twoProjectionTransition, twoProjectionInteriorCompression]
   have hPP : P * P = P := hP
   have hRR : R * R = R := hR
-  noncomm_ring <;>
-    simp only [← mul_assoc, hPP, hRR, zero_mul, mul_zero, add_zero, zero_add] <;>
-    module
+  noncomm_ring; simp only [← mul_assoc, hPP, hRR]; module
 
 /-- After subtracting the common zero mode, the exterior Hamiltonian impurity is the partner
 positive energy `KK†`. -/
@@ -283,10 +280,8 @@ theorem twoProjectionTransition_mul_adjoint_eq_exteriorCompression_sub_sq
   have hPP : P * P = P := hP
   have hRR : R * R = R := hR
   have hZZ : Z * Z = Z := hZ
-  noncomm_ring <;>
-    simp only [← mul_assoc, hPP, hRR, hZZ, hPZ, hZP, hRZ, hZR,
-      zero_mul, mul_zero, add_zero, zero_add] <;>
-    module
+  noncomm_ring; simp only [← mul_assoc, hPP, hRR, hZZ, hPZ, hZP, hRZ, hZR,
+    zero_mul, mul_zero, zero_add]; module
 
 /-- **Finite Witten supertrace cancellation.**  The interior and exterior Hamiltonian
 impurities have exactly the same trace because they are `K†K` and `KK†`.  Only products of
@@ -311,7 +306,9 @@ theorem opTrace_twoProjectionInteriorCompression_impurity_eq_exteriorCompression
           twoProjectionExteriorCompression P R Z *
             twoProjectionExteriorCompression P R Z) := by
   have hK : IsHilbertSchmidt (twoProjectionTransition P R) := by
-    simpa only [twoProjectionTransition, mul_assoc] using hRP.comp_left (1 - P)
+    change IsHilbertSchmidt (((1 - P) ∘L R) ∘L P)
+    rw [ContinuousLinearMap.comp_assoc]
+    exact hRP.comp_left (1 - P)
   have hInterior :=
     adjoint_twoProjectionTransition_mul_self_eq_interiorCompression_sub_sq
       P R hP hR hPadj hRadj
@@ -334,6 +331,7 @@ theorem opTrace_twoProjectionInteriorCompression_impurity_eq_exteriorCompression
           twoProjectionExteriorCompression P R Z *
             twoProjectionExteriorCompression P R Z) := congrArg opTrace hExterior
 
+omit [CompleteSpace H] in
 /-- The transition supercharge intertwines the exterior and interior compressed Hamiltonians. -/
 theorem twoProjectionExteriorCompression_mul_transition_eq_transition_mul_interiorCompression
     (P R Z : H →L[ℂ] H)
@@ -347,10 +345,9 @@ theorem twoProjectionExteriorCompression_mul_transition_eq_transition_mul_interi
     twoProjectionInteriorCompression]
   have hPP : P * P = P := hP
   have hRR : R * R = R := hR
-  noncomm_ring <;>
-    simp only [← mul_assoc, hPP, hRR, hZP, hZR, zero_mul, mul_zero, add_zero, zero_add] <;>
-    module
+  noncomm_ring; simp only [← mul_assoc, hPP, hRR, hZP, hZR, zero_mul, add_zero]; module
 
+omit [CompleteSpace H] in
 /-- The transition intertwining persists through every natural power of the partner
 Hamiltonians. -/
 theorem twoProjectionExteriorCompression_pow_mul_transition_eq_transition_mul_interiorCompression_pow
@@ -481,7 +478,9 @@ theorem opTrace_twoProjectionInteriorCompression_powerDifference_eq_exteriorComp
   let E := twoProjectionExteriorCompression P R Z
   let K := twoProjectionTransition P R
   have hK : IsHilbertSchmidt K := by
-    simpa only [K, twoProjectionTransition, mul_assoc] using hRP.comp_left (1 - P)
+    change IsHilbertSchmidt (((1 - P) ∘L R) ∘L P)
+    rw [ContinuousLinearMap.comp_assoc]
+    exact hRP.comp_left (1 - P)
   have hAK : IsHilbertSchmidt (A ^ n * ContinuousLinearMap.adjoint K) := by
     exact hK.adjoint.comp_left (A ^ n)
   have hintertwine : E ^ n * K = K * A ^ n := by
@@ -538,7 +537,9 @@ theorem opTrace_twoProjectionInteriorCompression_sq_sub_exteriorCompression_sq_e
   let A := twoProjectionInteriorCompression P R
   let E := twoProjectionExteriorCompression P R Z
   have hA : IsHilbertSchmidt A := by
-    simpa only [A, twoProjectionInteriorCompression, mul_assoc] using hRP.comp_left P
+    change IsHilbertSchmidt ((P ∘L R) ∘L P)
+    rw [ContinuousLinearMap.comp_assoc]
+    exact hRP.comp_left P
   change opTrace (A ^ 2) - opTrace (E ^ 2) =
     opTrace (A ^ (n + 2)) - opTrace (E ^ (n + 2))
   induction n with
@@ -564,6 +565,7 @@ theorem opTrace_twoProjectionInteriorCompression_sq_sub_exteriorCompression_sq_e
             opTrace (E ^ (Nat.succ n + 2)) := by
           simp only [Nat.succ_eq_add_one, Nat.add_assoc]
 
+omit [CompleteSpace H] in
 /-- The zero-mode-corrected complement is the difference of the interior and exterior overlap
 channels. -/
 theorem twoProjection_correctedComplement_eq_overlap_sub_exterior
@@ -604,9 +606,7 @@ theorem hsInner_twoProjection_overlap_exterior_eq_zero
     rw [hAdj]
     change (P * R) * ((1 - R) * (1 - P) - Z) = 0
     have hRR : R * R = R := hR
-    noncomm_ring <;>
-      simp only [← mul_assoc, hRR, hRZ, zero_mul, mul_zero, add_zero, zero_add] <;>
-      module
+    noncomm_ring; simp only [← mul_assoc, hRR, hRZ, mul_zero]; module
   have htrace :
       opTrace
           (ContinuousLinearMap.adjoint (R * P) ∘L
@@ -646,13 +646,17 @@ theorem hsNormSq_twoProjection_correctedComplement_eq_overlap_add_exterior
 theorem twoProjectionInteriorCompression_isHilbertSchmidt
     (P R : H →L[ℂ] H) (hRP : IsHilbertSchmidt (R * P)) :
     IsHilbertSchmidt (twoProjectionInteriorCompression P R) := by
-  simpa only [twoProjectionInteriorCompression, mul_assoc] using hRP.comp_left P
+  change IsHilbertSchmidt ((P ∘L R) ∘L P)
+  rw [ContinuousLinearMap.comp_assoc]
+  exact hRP.comp_left P
 
 /-- The transition corner inherits the Hilbert--Schmidt property from the overlap. -/
 theorem twoProjectionTransition_isHilbertSchmidt
     (P R : H →L[ℂ] H) (hRP : IsHilbertSchmidt (R * P)) :
     IsHilbertSchmidt (twoProjectionTransition P R) := by
-  simpa only [twoProjectionTransition, mul_assoc] using hRP.comp_left (1 - P)
+  change IsHilbertSchmidt (((1 - P) ∘L R) ∘L P)
+  rw [ContinuousLinearMap.comp_assoc]
+  exact hRP.comp_left (1 - P)
 
 /-- The exterior compression is Hilbert--Schmidt once the exterior overlap and the paired
 transition are.  This is the ideal-theoretic content of the exterior supersymmetric split. -/
@@ -703,9 +707,7 @@ theorem hsNormSq_twoProjection_overlap_eq_interiorCompression_add_transition
     change twoProjectionInteriorCompression P R * twoProjectionTransition P R = 0
     rw [twoProjectionInteriorCompression, twoProjectionTransition]
     have hPP : P * P = P := hP
-    noncomm_ring <;>
-      simp only [← mul_assoc, hPP, zero_mul, mul_zero, add_zero, zero_add] <;>
-      module
+    noncomm_ring; simp only [← mul_assoc, hPP]; module
   have horth :
       hsInner (twoProjectionInteriorCompression P R)
           (twoProjectionTransition P R) = 0 :=
@@ -743,9 +745,7 @@ theorem hsNormSq_twoProjectionExteriorOverlap_eq_exteriorCompression_add_transit
     change twoProjectionExteriorCompression P R Z * (P * R * (1 - P)) = 0
     rw [twoProjectionExteriorCompression]
     have hPP : P * P = P := hP
-    noncomm_ring <;>
-      simp only [← mul_assoc, hPP, hZP, zero_mul, mul_zero, add_zero, zero_add] <;>
-      module
+    noncomm_ring; simp only [← mul_assoc, hPP, hZP, zero_mul, add_zero]; module
   have horth :
       hsInner (twoProjectionExteriorCompression P R Z)
           (ContinuousLinearMap.adjoint (twoProjectionTransition P R)) = 0 :=

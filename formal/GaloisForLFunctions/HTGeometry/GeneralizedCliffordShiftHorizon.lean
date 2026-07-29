@@ -57,8 +57,9 @@ theorem generalizedCliffordPowerRelation_injective
     Function.Injective A := by
   apply Module.End.injective_of_iterate_injective hd
   rw [hpower]
-  simpa only [LinearMap.smul_apply, LinearMap.id_apply] using
-    (smul_right_injective M hF)
+  intro x y hxy
+  apply smul_right_injective M hF
+  simpa only [LinearMap.smul_apply, LinearMap.id_apply] using hxy
 
 /-- Off the scalar horizon, no internal iterate of a nonzero root can vanish. -/
 theorem generalizedCliffordPowerRelation_orbit_ne_zero

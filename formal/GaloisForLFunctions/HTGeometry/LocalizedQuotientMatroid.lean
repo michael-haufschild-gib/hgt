@@ -144,9 +144,10 @@ theorem linearIndependent_localizedQuotientFamily_iff
       h.restrict_scalars' R
     exact hR.of_comp (LocalizedModule.mkLinearMap R⁰ (M ⧸ N))
   · intro h
-    simpa [localizedQuotientFamily, Function.comp_def] using
-      h.of_isLocalizedModule (FractionRing R) R⁰
-        (LocalizedModule.mkLinearMap R⁰ (M ⧸ N))
+    rw [show localizedQuotientFamily N q =
+      (fun x => LocalizedModule.mk (N.mkQ (q x)) 1) by rfl]
+    exact h.of_isLocalizedModule (FractionRing R) R⁰
+      (LocalizedModule.mkLinearMap R⁰ (M ⧸ N))
 
 /-- Quotient classes are linearly independent exactly when every finite relation landing in the
 quotient submodule has zero coefficients. -/

@@ -114,8 +114,10 @@ theorem two_mul_integral_one_sub_sq_rpow (a : ℝ) :
     intro x _
     have h := (hasDerivAt_id x).pow 2
     simp only [id_eq, Nat.cast_ofNat] at h
-    exact (by simpa [mul_comm] using h : HasDerivAt (fun y : ℝ => y ^ 2) (2 * x) x)
-      |>.hasDerivWithinAt
+    have h' : HasDerivAt (fun y : ℝ => y ^ 2) (2 * x) x := by
+      rw [show (fun y : ℝ => y ^ 2) = id ^ 2 by rfl]
+      exact h.congr_deriv (by ring)
+    exact h'.hasDerivWithinAt
   have hinj : Set.InjOn (fun y : ℝ => y ^ 2) (Set.Ioo 0 1) := by
     intro x hx y hy h
     simp only at h
@@ -301,6 +303,5 @@ theorem integral_cosh_rpow_neg {s : ℝ} (hs : 0 < s) :
   ring
 
 end HTGeometry
-
 
 

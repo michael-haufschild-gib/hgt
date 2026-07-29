@@ -350,7 +350,7 @@ theorem exp_rational_relation_ne
     have hβqroot : Polynomial.aeval (β j) (minpoly ℚ θ) = 0 := by
       rw [hqmin, Polynomial.aeval_def, Polynomial.eval₂_eq_eval_map,
         Polynomial.map_map]
-      simpa using hβroot
+      simpa using! hβroot
     have hminθβ : minpoly ℚ θ = minpoly ℚ (β j) :=
       minpoly.eq_of_irreducible_of_monic
         (minpoly.irreducible hθint.tower_top) hβqroot

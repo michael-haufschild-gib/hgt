@@ -177,7 +177,6 @@ theorem tendsto_finiteExponentialPencil_cesaro_norm_sq
     rw [← Complex.ofReal_pow]
     exact (Complex.ofReal_re _).symm
   · apply congrArg nhds
-    change (∑ i ∈ s, ‖c i‖ ^ 2) = (∑ i ∈ s, star (c i) * c i).re
     rw [← Complex.reCLM_apply, map_sum]
     apply Finset.sum_congr rfl
     intro i hi
@@ -468,7 +467,10 @@ theorem exists_finite_maximal_norm_packet_of_tendsto_cofinite_one
   · intro i hiD
     by_cases hi : a ≤ ‖b i‖
     · have hiS : i ∈ S := by
-        simpa only [S, Set.Finite.mem_toFinset] using hi
+        dsimp only [S]
+        rw [Set.Finite.mem_toFinset]
+        change a ≤ ‖b i‖
+        exact hi
       have hir : ‖b i‖ ≤ r := hqmax i hiS
       exact lt_of_le_of_ne hir (fun heq => hiD (by simp [D, hiS, heq]))
     · have hia : ‖b i‖ < a := lt_of_not_ge hi

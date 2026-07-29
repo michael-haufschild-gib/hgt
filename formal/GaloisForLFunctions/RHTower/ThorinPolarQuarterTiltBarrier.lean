@@ -58,7 +58,7 @@ theorem integrableOn_thorinExponentialTiltKernel_Ioi_iff
         ring
   rw [hfun, IntegrableOn, integrable_const_mul_iff
     (isUnit_iff_ne_zero.mpr hrate.ne')]
-  simpa only [sub_neg] using integrableOn_expLinear_Ioi_iff (c := tilt - rate)
+  simpa only [IntegrableOn, sub_neg] using integrableOn_expLinear_Ioi_iff (c := tilt - rate)
 
 /-- Rate of the separated completed polar factor at square aperture `r`. -/
 def completedPolarRate (r : ℝ) : ℝ := r - 1 / 4

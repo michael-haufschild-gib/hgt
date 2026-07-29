@@ -16,8 +16,8 @@ open BourgainEisensteinInt
 noncomputable section
 
 local instance instEisensteinNormalizationMonoid :
-    NormalizationMonoid BourgainEisensteinInt :=
-  UniqueFactorizationMonoid.normalizationMonoid
+    StrongNormalizationMonoid BourgainEisensteinInt :=
+  UniqueFactorizationMonoid.strongNormalizationMonoid
 
 /-- Norm one implies invertibility. -/
 theorem eisenstein_isUnit_of_norm_eq_one

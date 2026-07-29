@@ -297,11 +297,11 @@ theorem det_algEquivMobiusMatrix_ne_zero (e : RatFunc K ≃ₐ[K] RatFunc K) :
     le_trans (Nat.le_max_right _ _) hdeg.le
   have hnum := Polynomial.eq_X_add_C_of_natDegree_le_one hn
   have hden := Polynomial.eq_X_add_C_of_natDegree_le_one hd
-  simpa [algEquivMobiusMatrix, Matrix.det_fin_two] using
-    det_ne_zero_of_num_denom_eq_linear (e X)
-      (algEquiv_image_X_ne_algebraMap e)
-      ((e X).num.coeff 1) ((e X).num.coeff 0)
-      ((e X).denom.coeff 1) ((e X).denom.coeff 0) hnum hden
+  rw [algEquivMobiusMatrix, det_mobiusMatrix]
+  exact det_ne_zero_of_num_denom_eq_linear (e X)
+    (algEquiv_image_X_ne_algebraMap e)
+    ((e X).num.coeff 1) ((e X).num.coeff 0)
+    ((e X).denom.coeff 1) ((e X).denom.coeff 0) hnum hden
 
 /-- The canonical projective matrix class attached to a rational-function automorphism. -/
 def algEquivProjectiveClass (e : RatFunc K ≃ₐ[K] RatFunc K) : PGL(2, K) :=
@@ -317,7 +317,8 @@ theorem algEquivProjectiveClass_eq_canonical (e : RatFunc K ≃ₐ[K] RatFunc K)
         ((e X).num.coeff 1) ((e X).num.coeff 0)
         ((e X).denom.coeff 1) ((e X).denom.coeff 0)
         (by
-          simpa [algEquivMobiusMatrix, Matrix.det_fin_two] using
+          rw [← det_mobiusMatrix]
+          simpa only [algEquivMobiusMatrix] using
             det_algEquivMobiusMatrix_ne_zero e) := by
   rfl
 
@@ -348,7 +349,8 @@ theorem algEquivProjectiveClass_eq_of_image_X_eq_mobius
   have hcanon :
       (e X).num.coeff 1 * (e X).denom.coeff 0 -
           (e X).num.coeff 0 * (e X).denom.coeff 1 ≠ 0 := by
-    simpa [algEquivMobiusMatrix] using det_algEquivMobiusMatrix_ne_zero e
+    rw [← det_mobiusMatrix]
+    simpa only [algEquivMobiusMatrix] using det_algEquivMobiusMatrix_ne_zero e
   exact mobiusProjectiveClass_eq_of_mobius_eq hcanon hdet
     ((algEquiv_image_X_eq_canonical_mobius e).symm.trans himage)
 
@@ -366,7 +368,8 @@ theorem algEquiv_mobius_coefficients_unique
       d = l * (e X).denom.coeff 0 := by
   apply (mobius_eq_iff_exists_smul hdet ?_).mp
   · exact himage.symm.trans (algEquiv_image_X_eq_canonical_mobius e)
-  · simpa [algEquivMobiusMatrix, Matrix.det_fin_two] using
+  · rw [← det_mobiusMatrix]
+    simpa only [algEquivMobiusMatrix] using
       det_algEquivMobiusMatrix_ne_zero e
 
 end RatFunc

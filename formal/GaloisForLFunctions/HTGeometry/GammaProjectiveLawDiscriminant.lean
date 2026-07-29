@@ -38,8 +38,11 @@ theorem hypertranscendental_gammaDirectionalObservation_iff (A : ℂ × ℂ) :
     rw [hfun]
     exact hconst
   · intro hnonzero
-    simpa [gammaDirectionalObservation] using
-      (hypertranscendental_gamma_affine hnonzero 0)
+    rw [show gammaDirectionalObservation A =
+        (fun s ↦ Complex.Gamma (A.1 * s + 0)) by
+      funext s
+      simp [gammaDirectionalObservation]]
+    exact hypertranscendental_gamma_affine hnonzero 0
 
 /-- Law directions along which the actual Gamma observation is differentially algebraic. -/
 def gammaDirectionalDependenceSet : Set (ℂ × ℂ) :=

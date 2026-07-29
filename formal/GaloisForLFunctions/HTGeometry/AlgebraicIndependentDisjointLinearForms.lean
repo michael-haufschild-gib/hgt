@@ -95,7 +95,16 @@ theorem algebraicIndependent_disjointBlockLinearForms_arbitrary
   have hxs : AlgebraicIndependent K (x ∘ embed) := hx.comp embed hembed
   have hfinite := algebraicIndependent_disjointBlockLinearForms
     (σ := σs) (fun t ↦ u t.1) (fun t ↦ hu t.1) (x ∘ embed) hxs
-  simpa [σs, embed, Function.comp_def] using hfinite
+  have hforms :
+      (fun t : s ↦ ∑ z, algebraMap K A (u t.1 z) * x ⟨t.1, z⟩) =
+        (fun t : s ↦ ∑ z, algebraMap K A (u t.1 z) * (x ∘ embed) ⟨t, z⟩) := by
+    funext t
+    apply Finset.sum_congr rfl
+    intro z _
+    simp only [Function.comp_apply]
+    rw [show embed ⟨t, z⟩ = ⟨t.1, z⟩ by rfl]
+  rw [hforms]
+  exact hfinite
 
 end ArbitraryIndex
 

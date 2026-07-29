@@ -98,7 +98,16 @@ theorem DifferentialIndependent.mulBase
     apply Subtype.ext
     exact congrArg (fun z : s × ℕ ↦ ((z.1 : ι), z.2)) hpq
   unfold DifferentialIndependent at hscaled
-  simpa only [Function.comp_apply, e, as, xs] using hscaled.comp e he
+  have hcomp := hscaled.comp e he
+  have hfun :
+      ((fun p : s × ℕ => differentialJet p.2
+        (algebraMap F K (as p.1) * xs p.1)) ∘ e) =
+        fun p : t => differentialJet p.1.2
+          (algebraMap F K (a p.1.1) * x p.1.1) := by
+    funext p
+    rfl
+  rw [hfun] at hcomp
+  exact hcomp
 
 /-- Arbitrary coordinatewise nonzero rescaling by the differential base preserves differential
 independence in both directions. -/

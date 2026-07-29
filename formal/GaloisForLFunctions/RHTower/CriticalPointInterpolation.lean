@@ -63,8 +63,8 @@ theorem exists_polynomial_mul_hasDerivAt_zero
   obtain ⟨P, hP⟩ := exists_polynomial_critical_packet w hw
     (fun i => F (w i)) df hf
   refine ⟨P, fun i => ⟨(hP i).1, ?_⟩⟩
-  convert (Polynomial.hasDerivAt P (w i)).mul (hF i) using 1
-  exact (hP i).2.symm
+  apply ((Polynomial.hasDerivAt P (w i)).mul (hF i)).congr_deriv
+  exact (hP i).2
 
 /-- **Sign/Schwarz-equivariant critical-packet interpolation.**  For a packet and value/derivative
 data compatible with `z ↦ -z` and complex conjugation, the multiplier can be chosen globally even

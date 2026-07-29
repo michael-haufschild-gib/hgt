@@ -208,7 +208,7 @@ theorem generalizedDirichletSeries_coeff_eq_zero_of_absolutelySummable_at
     simp only [b]
     rw [mul_assoc, ← Complex.exp_add]
     congr 1
-    ring
+    ring_nf
   have hzeroB : (fun y : ℝ => generalizedDirichletSeries mu b y) =ᶠ[atTop] 0 := by
     have hcomp := hzero.comp_tendsto (tendsto_atTop_add_const_right atTop sigma tendsto_id)
     filter_upwards [hcomp] with y hy

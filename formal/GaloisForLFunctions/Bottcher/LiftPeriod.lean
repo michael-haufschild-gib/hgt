@@ -83,7 +83,9 @@ theorem hasDerivAt_quadratic_iterate (c x : ℂ) (n : ℕ) :
     HasDerivAt (fun y => (quadratic c)^[n] y)
       (∏ k ∈ Finset.range n, 2 * (quadratic c)^[k] x) x := by
   induction n with
-  | zero => simpa using hasDerivAt_id x
+  | zero =>
+      simpa only [Function.iterate_zero_apply, Finset.range_zero, Finset.prod_empty]
+        using hasDerivAt_id' x
   | succ n ih =>
     have hcomp : HasDerivAt ((fun y => quadratic c y) ∘ (fun y => (quadratic c)^[n] y))
         (2 * (quadratic c)^[n] x * ∏ k ∈ Finset.range n, 2 * (quadratic c)^[k] x) x :=

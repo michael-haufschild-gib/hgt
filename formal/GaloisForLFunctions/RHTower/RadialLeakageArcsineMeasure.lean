@@ -65,7 +65,9 @@ theorem hasDerivAt_neg_arcsin_one_div {x : ℝ} (hx : 1 < x) :
     field_simp
   have hneg := hcomp.neg
   rw [hval, neg_neg] at hneg
-  simpa [Function.comp_def] using hneg
+  rw [show (fun y : ℝ => -Real.arcsin (1 / y)) =
+    -(Real.arcsin ∘ fun y : ℝ => 1 / y) by rfl]
+  exact hneg
 
 /-- **The arcsine tail law for the radial leakage density.**  For every `a ≥ 1`,
 `∫_a^∞ dx/(x√(x² − 1)) = arcsin(1/a)`.  The antiderivative `−arcsin(1/x)` is continuous at the

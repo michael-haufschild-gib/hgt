@@ -20,11 +20,11 @@ theorem homogeneousComponent_totalDegree_ne_zero
     MvPolynomial.homogeneousComponent P.totalDegree P ≠ 0 := by
   classical
   obtain ⟨m, hm, hmax⟩ := P.support.exists_mem_eq_sup
-    (Finsupp.support_nonempty_iff.mpr hP0)
+    (MvPolynomial.support_nonempty.mpr hP0)
     (fun e : σ →₀ ℕ => e.sum fun _ k => k)
   have hdeg : m.degree = P.totalDegree := by
     rw [MvPolynomial.totalDegree]
-    simpa [Finsupp.degree] using hmax.symm
+    simpa [Finsupp.degree] using! hmax.symm
   intro hzero
   have hcoeff := congrArg (MvPolynomial.coeff m) hzero
   rw [MvPolynomial.coeff_homogeneousComponent, if_pos hdeg,

@@ -233,7 +233,7 @@ theorem fullTimeBandFourier_eq_cutoffFourierCutoff
   have hgInt : Integrable (g : ℝ → ℂ) := integrable_indicatorCutoff_Icc c d f
   have hfourier : (fourierUnitary g : ℝ → ℂ) =ᵐ[volume]
       (Real.Lp.fourierTransform ((memLp_one_iff_integrable.mpr hgInt).toLp g) : ℝ → ℂ) := by
-    simpa [fourierUnitary] using l2_fourier_coeFn_eq_l1_fourier_of_integrable g hgInt
+    simpa [fourierUnitary] using! l2_fourier_coeFn_eq_l1_fourier_of_integrable g hgInt
   ext1
   filter_upwards [fullTimeBandFourier_coeFn_sonin a b c d hab f,
     indicatorCutoff_ae (Set.Icc a b) measurableSet_Icc (fourierUnitary g),
@@ -337,7 +337,7 @@ def rawDilationLinear (a : ℝ) (ha : a ≠ 0) : SoninL2 →ₗ[ℂ] SoninL2 whe
     ext1
     have hadd_scaled : ∀ᵐ x ∂volume,
         (f + g : SoninL2) (a * x) = f (a * x) + g (a * x) := by
-      simpa only [Function.comp_apply, Pi.add_apply] using
+      simpa only [Function.comp_apply, Pi.add_apply] using!
         (Lp.coeFn_add f g).comp_tendsto (realMul_quasiMeasurePreserving a ha).tendsto_ae
     filter_upwards [rawDilationAux_ae a ha (f + g), rawDilationAux_ae a ha f,
       rawDilationAux_ae a ha g, hadd_scaled,
@@ -349,7 +349,7 @@ def rawDilationLinear (a : ℝ) (ha : a ≠ 0) : SoninL2 →ₗ[ℂ] SoninL2 whe
     ext1
     have hsmul_scaled : ∀ᵐ x ∂volume,
         (c • f : SoninL2) (a * x) = c • f (a * x) := by
-      simpa only [Function.comp_apply, Pi.smul_apply] using
+      simpa only [Function.comp_apply, Pi.smul_apply] using!
         (Lp.coeFn_smul c f).comp_tendsto (realMul_quasiMeasurePreserving a ha).tendsto_ae
     filter_upwards [rawDilationAux_ae a ha (c • f), rawDilationAux_ae a ha f,
       hsmul_scaled, Lp.coeFn_smul c (rawDilationAux a ha f)] with x hcf hf hsmul hsmul'

@@ -201,7 +201,7 @@ theorem monoF_step_from_inverse_projectionBase {c₂ : ℂ} {U : Set ℂ} {ψ₁
         hUo hUc hUne (algebraMap (RatFunc ℂ) (meroField U) k)
         = algebraMap (RatFunc ℂ) (meroField U) k := by
     intro k
-    simpa using precompMeroEquiv_ratfuncToMeroVia_fix
+    simpa using! precompMeroEquiv_ratfuncToMeroVia_fix
       (analyticOnNhd_deckRot (liftUniformization_id U) hrot)
       (analyticOnNhd_deckRot (liftUniformization_id U) hrot')
       (mapsTo_deckRot (liftUniformization_id U) hrot)

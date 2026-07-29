@@ -24,8 +24,9 @@ theorem analyticOnNhd_simplePoleAt_compl_singleton (b : ℂ) :
     AnalyticOnNhd ℂ (simplePoleAt b) ({b}ᶜ : Set ℂ) := by
   intro z hz
   have hne : z - b ≠ 0 := sub_ne_zero.mpr (by simpa using hz)
-  simpa [simplePoleAt] using
-    analyticAt_const.div (analyticAt_id.sub analyticAt_const) hne
+  rw [show simplePoleAt b =
+    (fun _ : ℂ => 1) / (id - fun _ : ℂ => b) by rfl]
+  exact analyticAt_const.div (analyticAt_id.sub analyticAt_const) hne
 
 /-- Multiplying the reciprocal pole by its nonvanishing exponential partner preserves analyticity
 on the punctured plane. -/

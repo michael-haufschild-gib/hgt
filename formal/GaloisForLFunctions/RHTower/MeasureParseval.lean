@@ -39,10 +39,9 @@ theorem integral_measure_eq_integral_fourier_charFun (μ : Measure V) [IsFiniteM
     exact h.symm
   have hcont_unc : Continuous
       (Function.uncurry fun x w => (Real.fourierChar ⟪w, x⟫ : Circle) • 𝓕 g w) := by
-    apply Continuous.smul
-    · exact Real.continuous_fourierChar.comp
-        (continuous_inner.comp (continuous_snd.prodMk continuous_fst))
-    · exact hFgcont.comp continuous_snd
+    exact (Real.continuous_fourierChar.comp
+      (continuous_inner.comp (continuous_snd.prodMk continuous_fst))).smul
+        (hFgcont.comp continuous_snd)
   have hInt2 : Integrable
       (Function.uncurry fun x w => (Real.fourierChar ⟪w, x⟫ : Circle) • 𝓕 g w) (μ.prod volume) := by
     refine Integrable.mono' (hFgInt.norm.comp_snd μ) hcont_unc.aestronglyMeasurable ?_

@@ -286,7 +286,7 @@ theorem u0_phib_noRelation_descended_precomp_projection_lifts {U B V : Set ℂ} 
   obtain ⟨ζ₀, gdeck, gdeck', hg, hg', hmg, hmg', hgg', hg'g, hord, hscale, hinv, hpfix⟩ := hliftF d
   refine ⟨ζ₀, gdeck, gdeck', hg, hg', hmg, hmg', hgg', hg'g, hord, hscale, hinv, ?_⟩
   intro k
-  simpa using precompMeroEquiv_ratfuncToMeroVia_fix hg hg' hmg hmg' hgg' hg'g
+  simpa using! precompMeroEquiv_ratfuncToMeroVia_fix hg hg' hmg hmg' hgg' hg'g
     hUo hUc hUne hp0 hinf hpfix k
 
 end U0PhiLifts
@@ -341,7 +341,7 @@ theorem u0_phib_noRelation_descended_precomp_projection_base_lifts {U B V : Set 
     haveI := isDomain_analyticSubring B hBo hBc hBne
     letI := (ratfuncToMeroVia p₀ hp0 hinf hUo hUc hUne).toAlgebra
     letI : Algebra (RatFunc ℂ) (meroField B) := (ratfuncToMero B hBo hBc hBne hBinf).toAlgebra
-    simpa using U0CoverTransport.precompMeroCross_ratfuncToMeroVia hπ hπmaps hπtend hπsurj
+    simpa using! U0CoverTransport.precompMeroCross_ratfuncToMeroVia hπ hπmaps hπtend hπsurj
       hUo hUc hUne hBo hBc hBne hBinf hp0 hinf hp0π k
   · exact hliftF
 

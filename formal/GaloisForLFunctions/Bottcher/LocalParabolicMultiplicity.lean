@@ -26,7 +26,7 @@ private lemma analyticAt_iterate_of_fixed
       have hFn_at : AnalyticAt ℂ (F^[n]) (F z) := by
         simpa [hFz] using ih
       have hcomp : AnalyticAt ℂ (fun y => (F^[n]) (F y)) z := hFn_at.comp hF
-      simpa only [Function.iterate_succ_apply] using hcomp
+      simpa only [Function.iterate_succ_apply] using! hcomp
 
 /-- If `F y - y = (y - z)^r u y` near `z`, then the displacement of `F^[n]` has the
 same factor, with leading unit value `n * u z`. -/
@@ -133,7 +133,7 @@ theorem analyticOrderAt_iterate_sub_self_of_tangentToId
   · rw [hunz]
     have hnpos : 0 < n := lt_of_lt_of_le (by norm_num) hn
     exact mul_ne_zero (by exact_mod_cast hnpos.ne') hu_ne
-  · simpa [smul_eq_mul] using hfacn
+  · simpa [smul_eq_mul] using! hfacn
 
 /-- Fixed-point-polynomial form of local parabolic multiplicity stability.  If the first-return
 germ `f_c^[q]` has displacement `(y - z)^r u y` with `r ≥ 2` and `u z ≠ 0`, then every positive

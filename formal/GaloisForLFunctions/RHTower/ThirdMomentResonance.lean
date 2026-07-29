@@ -63,8 +63,11 @@ lemma integral_cexp_int (j : ℤ) :
       have h2 : HasDerivAt (fun t : ℝ => Complex.exp (((j:ℂ)*I) * t))
           (Complex.exp (((j:ℂ)*I)*x) * ((j:ℂ)*I)) x := by simpa using h1.cexp
       have h3 := h2.div_const ((j:ℂ)*I)
-      convert h3 using 1
-      rw [mul_div_assoc, div_self hc, mul_one]
+      have hcoef :
+          Complex.exp (((j : ℂ) * I) * x) * ((j : ℂ) * I) / ((j : ℂ) * I) =
+            Complex.exp (((j : ℂ) * I) * x) := by
+        rw [mul_div_assoc, div_self hc, mul_one]
+      simpa using! h3.congr_deriv hcoef
     rw [intervalIntegral.integral_eq_sub_of_hasDerivAt (fun x _ => hd x)
       (by apply Continuous.intervalIntegrable; fun_prop)]
     have he : Complex.exp (((j:ℂ) * I) * ((2:ℂ) * Real.pi)) = 1 := by

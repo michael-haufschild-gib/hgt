@@ -71,7 +71,7 @@ theorem evenEntireBaseSeries_coeff_eq_zero_of_odd
   have hnfac : (n.factorial : ℂ) ≠ 0 := by
     exact_mod_cast n.factorial_ne_zero
   simpa only [evenEntireBaseSeries, FormalMultilinearSeries.coeff,
-    nsmul_eq_mul, mul_eq_zero, hnfac, false_or] using hfac
+    nsmul_eq_mul, mul_eq_zero, hnfac, false_or] using! hfac
 
 theorem evenEntireBaseSeries_radius_eq_top
     {f : ℂ → ℂ} (hf : Differentiable ℂ f) :

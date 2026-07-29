@@ -109,13 +109,13 @@ theorem sub_jetPivotInclusion_elimination_mem_relationIdeal
       change P + Q - differentialJetPivotInclusion
         (differentialJetPivotElimination J (P + Q)) ∈ I
       have hadd := I.add_mem hP hQ
-      convert hadd using 1 <;> simp <;> ring
+      convert hadd using 1; simp; ring
   | mul_X P q hP =>
       rcases q with ⟨i, n⟩
       cases i with
       | inl b =>
           have hmul := Ideal.mul_mem_right (MvPolynomial.X (Sum.inl b, n)) I hP
-          convert hmul using 1 <;> simp <;> ring
+          convert hmul using 1; simp; ring
       | inr r =>
           have hgen : differentialJetPivotRelation J r n ∈ I :=
             Ideal.subset_span (Set.mem_range_self (r, n))
@@ -123,7 +123,7 @@ theorem sub_jetPivotInclusion_elimination_mem_relationIdeal
           have hmul₂ := Ideal.mul_mem_left I
             (differentialJetPivotInclusion (differentialJetPivotElimination J P)) hgen
           have hsum := I.add_mem hmul₁ hmul₂
-          convert hsum using 1 <;> simp [differentialJetPivotRelation] <;> ring
+          convert hsum using 1; simp [differentialJetPivotRelation]; ring
 
 /-- The pivot relation ideal is exactly the elimination kernel. -/
 theorem differentialJetPivotRelationIdeal_eq_ker

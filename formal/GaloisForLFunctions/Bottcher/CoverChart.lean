@@ -111,7 +111,7 @@ theorem exists_bottcher_deck_annulus {c : ℂ} {A : Set ℂ} {ρ R : ℝ} {ζ : 
   have hρmaps : Set.MapsTo (fun w => ζ * w) (bottcherCoord c '' A) (bottcherCoord c '' A) := by
     rw [himg]
     have := rotation_mapsTo_annulus hζ ρ R
-    simpa [rotation] using this
+    simpa [rotation] using! this
   refine ⟨fun z => ψ (ζ * bottcherCoord c z), ?_, ?_⟩
   · intro z hz
     show ψ (ζ * bottcherCoord c z) ∈ A

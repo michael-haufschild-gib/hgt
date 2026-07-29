@@ -45,7 +45,7 @@ Jacobian criterion over that field. -/
 theorem sourceResidueCotangentMap_injective
     (R P S : Type*) [CommRing R] [CommRing P] [CommRing S]
     [Algebra R P] [Algebra R S] [Algebra P S] [IsScalarTower R P S]
-    [IsLocalRing P] [IsLocalRing S] [Nontrivial S]
+    [IsLocalRing P] [IsLocalRing S]
     [Algebra.FormallySmooth R P]
     [Module.Free P Ω[P⁄R]] [Module.Finite P Ω[P⁄R]]
     (hsurj : Function.Surjective (algebraMap P S))
@@ -102,7 +102,9 @@ theorem sourceResidueCotangentMap_injective
       (KaehlerDifferential.cotangentComplexBaseChange R S P K) :=
     (Algebra.FormallySmooth.iff_injective_cotangentComplexBaseChange
       P K hsurj hfg hmax).mp hsmooth
-  simpa only [sourceResidueCotangentMap] using hinj
+  change Function.Injective
+    (KaehlerDifferential.cotangentComplexBaseChange R S P K)
+  exact hinj
 
 /-- An injective source-residue cotangent map supplies finitely many elements of the presentation
 kernel which generate it over the local source ring and have linearly independent cotangent

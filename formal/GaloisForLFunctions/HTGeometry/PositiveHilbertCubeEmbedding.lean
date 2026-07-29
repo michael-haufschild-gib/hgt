@@ -40,7 +40,8 @@ noncomputable def positiveHilbertCubeMap (delta : ℝ) (v : ℕ → E)
 
 theorem hilbertCubeWeight_summable (delta : ℝ) :
     Summable (hilbertCubeWeight delta) := by
-  simpa [hilbertCubeWeight] using summable_geometric_two' delta
+  change Summable (fun n => delta / 2 / 2 ^ n)
+  exact summable_geometric_two' delta
 
 lemma signedHilbertCube_abs_le_one (t : SignedHilbertCube) (n : ℕ) :
     |(t n : ℝ)| ≤ 1 := by

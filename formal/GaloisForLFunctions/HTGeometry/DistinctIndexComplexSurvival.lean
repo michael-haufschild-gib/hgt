@@ -80,7 +80,8 @@ theorem combination_permSymbolPolyC_indexed_ne_zero {ι : Type*} (T : Finset ι)
       refine ⟨π, fun j => ?_⟩
       have h1 := DFunLike.congr_fun hpm (π j)
       rw [permMon_apply, permMon_apply] at h1
-      simpa using h1
+      rw [show (1 : Equiv.Perm (Fin r)).symm = 1 by rfl] at h1
+      simpa only [Equiv.symm_apply_apply, Equiv.Perm.one_apply] using h1
     rw [hzero_count]
     simp
   · intro h
@@ -172,7 +173,8 @@ theorem combination_permSymbolPolyC_maxorder_ne_zero {ι : Type*} (T : Finset ι
         refine ⟨π, fun j => ?_⟩
         have h1 := DFunLike.congr_fun hpm (π j)
         rw [permMon_apply, permMon_apply] at h1
-        simpa using h1
+        rw [show (1 : Equiv.Perm (Fin r)).symm = 1 by rfl] at h1
+        simpa only [Equiv.symm_apply_apply, Equiv.Perm.one_apply] using h1
       · apply MvPolynomial.coeff_eq_zero_of_totalDegree_lt
         rw [hsupsum]
         exact lt_of_le_of_lt (permSymbolPoly_totalDegree_le (ν i))

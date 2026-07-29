@@ -31,7 +31,7 @@ theorem graded_monomial_delta {d M : ℕ}
     (a : HomogeneousMultiIndex d n) :
     ∑ i, c q i * monomialFeature HomogeneousMultiIndex.exponent a (nodes i) =
       if q = gradedIndex n a then 1 else 0 := by
-  simpa [gradedIndex, GradedMultiIndex.exponent] using hdelta q (gradedIndex n a)
+  simpa [gradedIndex, GradedMultiIndex.exponent] using! hdelta q (gradedIndex n a)
 
 /-- **Exact recombined power law.**  Double recombination of the degree-`n` Euclidean power
 kernel is the weighted projection onto its homogeneous multi-index channels. -/

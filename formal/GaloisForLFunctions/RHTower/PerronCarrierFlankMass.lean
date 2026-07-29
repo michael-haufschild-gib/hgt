@@ -269,7 +269,11 @@ theorem HasPerronCarrierFlankL2EnergyAt.hasPerronCarrierFlankMassAt
   have hwLp : MemLp w 2 := (memLp_two_iff_integrable_sq hwmeas).2 hwsqInt
   have hmassInt : Integrable (perronCarrierFlankWeight F M) := by
     have hprod : Integrable (f * w) := hfLp.integrable_mul hwLp
-    simpa only [perronCarrierFlankWeight, f, w, Pi.mul_apply, div_eq_mul_inv] using hprod
+    have hfun : f * w = perronCarrierFlankWeight F M := by
+      funext y
+      simp only [perronCarrierFlankWeight, f, w, Pi.mul_apply, div_eq_mul_inv]
+    rw [hfun] at hprod
+    exact hprod
   refine ⟨hmassInt, ?_⟩
   have hholder := integral_mul_le_Lp_mul_Lq_of_nonneg
     (f := f) (g := w) Real.HolderConjugate.two_two

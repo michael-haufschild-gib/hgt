@@ -48,7 +48,7 @@ theorem explicitBranch_injOn_of_lift_injOn_strip
     (hstrip : ∀ z ∈ A, y₀ < (explicitBranchLift c n z).im ∧
       (explicitBranchLift c n z).im ≤ y₀ + 2 * Real.pi) :
     Set.InjOn (explicitBranch c n) A := by
-  simpa [explicitBranch_eq_exp_lift] using
+  simpa [explicitBranch_eq_exp_lift] using!
     (exp_comp_injOn (g := explicitBranchLift c n) (D := A) (y₀ := y₀) hlift hstrip)
 
 /-- A combined version: injectivity of the iterate, injectivity of the selected logarithm on the

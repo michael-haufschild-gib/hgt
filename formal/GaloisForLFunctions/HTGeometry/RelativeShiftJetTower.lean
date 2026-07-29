@@ -201,7 +201,8 @@ theorem adjoin_stable_of_gen
   have hmem : t ∈ IntermediateField.adjoin S {x} := ht
   have hle : S ≤ L := by
     intro u hu
-    simpa using (IntermediateField.adjoin S {x}).algebraMap_mem ⟨u, hu⟩
+    change u ∈ (IntermediateField.adjoin S {x}).restrictScalars C
+    exact (IntermediateField.adjoin S {x}).algebraMap_mem ⟨u, hu⟩
   refine IntermediateField.adjoin_induction (F := S)
     (p := fun z _ => phi z ∈ L) ?_ ?_ ?_ ?_ ?_ hmem
   · intro z hz

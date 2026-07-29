@@ -62,6 +62,9 @@ theorem ae_eq_zero_of_integral_realProbCharacter_mul_eq_zero
     isFiniteMeasure_withDensity_ofReal hf.neg.hasFiniteIntegral
   have hchar : charFun mup = charFun mun := by
     funext t
+    change
+      charFun (mu.withDensity (fun x ↦ ENNReal.ofReal (f x))) t =
+        charFun (mu.withDensity (fun x ↦ ENNReal.ofReal ((-f) x))) t
     rw [charFun_apply_real, charFun_apply_real]
     rw [integral_withDensity_eq_integral_toReal_smul₀
       hfmeas.ennreal_ofReal.aemeasurable
@@ -112,8 +115,7 @@ theorem ae_eq_zero_of_integral_realProbCharacter_mul_eq_zero
     exact withDensity_ofReal_mutuallySingular hfmeas
   have hself : mup ⟂ₘ mup := by simpa [heq] using hsing
   have hmup : mup = 0 := by
-    have := hself.disjoint
-    simpa using this
+    exact (Measure.MutuallySingular.self_iff mup).mp hself
   have hmun : mun = 0 := by rw [← heq, hmup]
   have hpzero : (fun x ↦ ENNReal.ofReal (f x)) =ᵐ[mu] (fun _ ↦ 0) :=
     (withDensity_eq_zero_iff hfmeas.ennreal_ofReal.aemeasurable).mp hmup
@@ -201,7 +203,7 @@ theorem ae_eq_zero_of_integral_realProbCharacter_mul_eq_zero_complex
         integral_realProbCharacter_neg_mul_ofReal (f := fi) mu t] at hz
       have hzconj := congrArg (starRingEnd ℂ) hz
       dsimp [A, B]
-      simpa using hzconj
+      simpa [sub_eq_add_neg] using hzconj
     have htwoA : (2 : ℂ) * A = 0 := by
       calc
         (2 : ℂ) * A = (A + Complex.I * B) + (A - Complex.I * B) := by ring

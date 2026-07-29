@@ -131,7 +131,7 @@ theorem matrixPrincipalPacket_algebraicIndependent_iff
     let e : t → Fin N × ι := fun p ↦
       (⟨p.1.1, Nat.lt_succ_of_le (Finset.le_sup
         (f := fun q : ℕ × ι ↦ q.1)
-        (show p.1 ∈ t.toFinset by simpa using p.2))⟩, p.1.2)
+        (show p.1 ∈ t.toFinset by simp [p.2]))⟩, p.1.2)
     have he : Function.Injective e := by
       intro p q hpq
       apply Subtype.ext

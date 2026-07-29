@@ -69,11 +69,16 @@ theorem not_isExponentZeroEulerGauge_constant_relative {theta phi : Circle}
   have hscaled : Summable (fun p : Nat.Primes => (1 / (p : ℝ)) * c) := by
     simpa [IsExponentZeroEulerGauge, IsWeightedEulerGauge, constantPrimePhase,
       exponentZeroWeight_natPrime_one, c] using hsigma
-  have hunscaled := hscaled.mul_right c⁻¹
+  have hunscaled := hscaled.const_smul c⁻¹
   have hreciprocal : Summable (fun p : Nat.Primes => (1 / (p : ℝ))) := by
-    convert hunscaled using 1
-    funext p
-    simp [hc]
+    rw [show (fun p : Nat.Primes => (1 / (p : ℝ))) =
+        (fun p : Nat.Primes => c⁻¹ • ((1 / (p : ℝ)) * c)) by
+      funext p
+      rw [smul_eq_mul]
+      calc
+        1 / (p : ℝ) = (1 / (p : ℝ)) * (c⁻¹ * c) := by simp [hc]
+        _ = c⁻¹ * ((1 / (p : ℝ)) * c) := by ring]
+    exact hunscaled
   exact Nat.Primes.not_summable_one_div hreciprocal
 
 /-- Constant phases represent pairwise distinct exponent-zero gauge classes. -/

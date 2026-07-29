@@ -25,14 +25,22 @@ theorem eval_rescalePolynomialToSpectralMomentum (P : ℝ[X]) (t : ℝ) :
   congr 1
   field_simp [Real.pi_ne_zero]
 
+private theorem hasTemperateGrowth_ofReal
+    {f : ℝ → ℝ} (hf : Function.HasTemperateGrowth f) :
+    Function.HasTemperateGrowth (fun x : ℝ => (f x : ℂ)) := by
+  have h := Complex.ofRealCLM.hasTemperateGrowth.comp hf
+  rw [show Complex.ofRealCLM ∘ f = (fun x : ℝ => (f x : ℂ)) by
+    funext x
+    exact Complex.ofRealCLM_apply (f x)] at h
+  exact h
+
 theorem polynomialCoordinateCLM_eq_polynomialSpectralMomentumCLM
     (P : ℝ[X]) :
     SchwartzMap.smulLeftCLM ℂ (fun t => ((P.eval t : ℝ) : ℂ)) =
       polynomialSpectralMomentumCLM (rescalePolynomialToSpectralMomentum P) := by
   ext f t
   have htemp : Function.HasTemperateGrowth (fun x : ℝ => ((P.eval x : ℝ) : ℂ)) := by
-    simpa only [Function.comp_apply] using
-      Complex.ofRealCLM.hasTemperateGrowth.comp (polynomial_eval_hasTemperateGrowth P)
+    exact hasTemperateGrowth_ofReal (polynomial_eval_hasTemperateGrowth P)
   rw [SchwartzMap.smulLeftCLM_apply_apply htemp,
     polynomialSpectralMomentumCLM_apply,
     eval_rescalePolynomialToSpectralMomentum]
@@ -77,13 +85,12 @@ theorem ContinuousSchwartzSesquilinearForm.fourierPullback_realSmoothMultiplier_
     ext t
     have hpC : Function.HasTemperateGrowth
         (fun x : ℝ => (((P n).eval x : ℝ) : ℂ)) := by
-      simpa only [Function.comp_apply] using
-        Complex.ofRealCLM.hasTemperateGrowth.comp (polynomial_eval_hasTemperateGrowth (P n))
+      exact hasTemperateGrowth_ofReal (polynomial_eval_hasTemperateGrowth (P n))
     have heC : Function.HasTemperateGrowth
         (fun x : ℝ => (((P n).eval x : ℝ) : ℂ) - (a x : ℂ)) := hpC.sub
-      (by simpa only [Function.comp_apply] using Complex.ofRealCLM.hasTemperateGrowth.comp ha)
+      (hasTemperateGrowth_ofReal ha)
     have haC : Function.HasTemperateGrowth (fun x : ℝ => (a x : ℂ)) := by
-      simpa only [Function.comp_apply] using Complex.ofRealCLM.hasTemperateGrowth.comp ha
+      exact hasTemperateGrowth_ofReal ha
     change (AP n f) t = (E n f) t + (A f) t
     rw [show (AP n f) t = (((P n).eval t : ℝ) : ℂ) * f t by
         exact SchwartzMap.smulLeftCLM_apply_apply hpC f t,
@@ -96,13 +103,12 @@ theorem ContinuousSchwartzSesquilinearForm.fourierPullback_realSmoothMultiplier_
     ext t
     have hpC : Function.HasTemperateGrowth
         (fun x : ℝ => (((P n).eval x : ℝ) : ℂ)) := by
-      simpa only [Function.comp_apply] using
-        Complex.ofRealCLM.hasTemperateGrowth.comp (polynomial_eval_hasTemperateGrowth (P n))
+      exact hasTemperateGrowth_ofReal (polynomial_eval_hasTemperateGrowth (P n))
     have heC : Function.HasTemperateGrowth
         (fun x : ℝ => (((P n).eval x : ℝ) : ℂ) - (a x : ℂ)) := hpC.sub
-      (by simpa only [Function.comp_apply] using Complex.ofRealCLM.hasTemperateGrowth.comp ha)
+      (hasTemperateGrowth_ofReal ha)
     have haC : Function.HasTemperateGrowth (fun x : ℝ => (a x : ℂ)) := by
-      simpa only [Function.comp_apply] using Complex.ofRealCLM.hasTemperateGrowth.comp ha
+      exact hasTemperateGrowth_ofReal ha
     change (AP n g) t = (E n g) t + (A g) t
     rw [show (AP n g) t = (((P n).eval t : ℝ) : ℂ) * g t by
         exact SchwartzMap.smulLeftCLM_apply_apply hpC g t,
@@ -153,9 +159,9 @@ theorem ContinuousSchwartzSesquilinearForm.fourierPullback_complexSmoothMultipli
   have hleft : SchwartzMap.smulLeftCLM ℂ a f = Ar f + I • Ai f := by
     ext t
     have harC : Function.HasTemperateGrowth (fun x : ℝ => (ar x : ℂ)) := by
-      simpa only [Function.comp_apply] using Complex.ofRealCLM.hasTemperateGrowth.comp har
+      exact hasTemperateGrowth_ofReal har
     have haiC : Function.HasTemperateGrowth (fun x : ℝ => (ai x : ℂ)) := by
-      simpa only [Function.comp_apply] using Complex.ofRealCLM.hasTemperateGrowth.comp hai
+      exact hasTemperateGrowth_ofReal hai
     rw [SchwartzMap.smulLeftCLM_apply_apply ha]
     simp only [smul_eq_mul]
     change a t * f t = (Ar f) t + I * (Ai f) t
@@ -168,10 +174,10 @@ theorem ContinuousSchwartzSesquilinearForm.fourierPullback_complexSmoothMultipli
     ring
   have hconj : Function.HasTemperateGrowth (fun t => (starRingEnd ℂ) (a t)) := by
     have hreC : Function.HasTemperateGrowth (fun t => (ar t : ℂ)) :=
-      Complex.ofRealCLM.hasTemperateGrowth.comp har
+      hasTemperateGrowth_ofReal har
     have himC : Function.HasTemperateGrowth (fun t => (-I) * (ai t : ℂ)) :=
       (Function.HasTemperateGrowth.const (-I)).mul
-        (Complex.ofRealCLM.hasTemperateGrowth.comp hai)
+        (hasTemperateGrowth_ofReal hai)
     have hadd := hreC.add himC
     convert hadd using 1
     funext t
@@ -181,9 +187,9 @@ theorem ContinuousSchwartzSesquilinearForm.fourierPullback_complexSmoothMultipli
         Ar g + (-I) • Ai g := by
     ext t
     have harC : Function.HasTemperateGrowth (fun x : ℝ => (ar x : ℂ)) := by
-      simpa only [Function.comp_apply] using Complex.ofRealCLM.hasTemperateGrowth.comp har
+      exact hasTemperateGrowth_ofReal har
     have haiC : Function.HasTemperateGrowth (fun x : ℝ => (ai x : ℂ)) := by
-      simpa only [Function.comp_apply] using Complex.ofRealCLM.hasTemperateGrowth.comp hai
+      exact hasTemperateGrowth_ofReal hai
     rw [SchwartzMap.smulLeftCLM_apply_apply hconj]
     simp only [smul_eq_mul]
     change (starRingEnd ℂ) (a t) * g t = (Ar g) t + (-I) * (Ai g) t
@@ -211,7 +217,11 @@ theorem ContinuousSchwartzSesquilinearForm.fourierPullback_eq_product_cutoff
     Q.fourierPullback f g = Q.fourierPullback (pointwiseMulConj f g) χ := by
   let a : ℝ → ℂ := fun t => (starRingEnd ℂ) (g t)
   have ha : Function.HasTemperateGrowth a := by
-    simpa only [a, conjSLM_apply] using (conjSLM g).hasTemperateGrowth
+    have hgrowth := (conjSLM g).hasTemperateGrowth
+    rw [show (conjSLM g : ℝ → ℂ) = a by
+      funext t
+      simp [a]] at hgrowth
+    exact hgrowth
   have hadj := Q.fourierPullback_complexSmoothMultiplier_adjoint
     hQ a ha hT f χ hf hχsupp
   have hleft : SchwartzMap.smulLeftCLM ℂ a f = pointwiseMulConj f g := by

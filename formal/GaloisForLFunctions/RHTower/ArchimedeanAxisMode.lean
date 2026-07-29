@@ -37,7 +37,15 @@ theorem deriv_archimedeanPrimeMode (m : Nat.Primes →₀ ℤ) (s : ℂ) :
       (fun z : ℂ => -(z * primeLogFrequencyComplex m))
       (-primeLogFrequencyComplex m) s := by
     have hid : HasDerivAt (fun z : ℂ => z) 1 s := hasDerivAt_id s
-    simpa using (hid.mul_const (primeLogFrequencyComplex m)).neg
+    have hraw := (hid.mul_const (primeLogFrequencyComplex m)).neg
+    have hfun :
+        -(fun z : ℂ => z * primeLogFrequencyComplex m) =
+          (fun z : ℂ => -(z * primeLogFrequencyComplex m)) := by
+      funext z
+      rfl
+    rw [hfun] at hraw
+    apply hraw.congr_deriv
+    ring
   rw [hlin.cexp.deriv]
   ring
 

@@ -94,8 +94,11 @@ theorem poissonInt_harmonicOnNhd {c : ℂ} {R : ℝ} (hR : 0 < R) {g : ℂ → �
         simp only [smul_eq_mul]
         rw [← mul_assoc, hpf]; ring
       have hCI2w : CircleIntegrable (fun z => (2 : ℂ) • ((z - w)⁻¹ • gc z)) c R :=
-        (continuousOn_const.smul ((ContinuousOn.inv₀ (by fun_prop)
-          (fun z hz => hzw z hz)).smul hgcCont)).circleIntegrable'
+        by
+          rw [show (fun z => (2 : ℂ) • ((z - w)⁻¹ • gc z)) =
+            (fun _ : ℂ => (2 : ℂ)) • ((fun z => (z - w)⁻¹) • gc) by rfl]
+          exact (continuousOn_const.smul ((ContinuousOn.inv₀ (by fun_prop)
+            (fun z hz => hzw z hz)).smul hgcCont)).circleIntegrable'
       rw [hsplit, circleIntegral.integral_sub hCI2w hCIc, circleIntegral.integral_smul]
       simp only [smul_eq_mul]; ring
     rw [← hA, hB]

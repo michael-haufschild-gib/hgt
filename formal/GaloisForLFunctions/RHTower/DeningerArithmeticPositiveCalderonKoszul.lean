@@ -472,7 +472,8 @@ theorem deningerContinuousEnergy_zero_on_boundaryClosure
       IsClosed {y : E | energy y = 0} :=
     isClosed_eq hcontinuous continuous_const
   have hxclosure : x ∈ closure (boundaries : Set E) := by
-    simpa only [Submodule.topologicalClosure_coe] using hx
+    rw [← Submodule.topologicalClosure_coe]
+    exact hx
   exact (closure_minimal hsubset hclosed) hxclosure
 
 /--

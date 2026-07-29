@@ -67,6 +67,8 @@ theorem continuous_jetEval {n : ℕ} {g : Fin n → (ℝ → ℝ)} (hg : ∀ i, 
     (P : MvPolynomial (Fin n) ℝ) : Continuous (jetEval g P) := by
   have hpt : Continuous (fun E => (fun i => g i E : Fin n → ℝ)) := continuous_pi hg
   have := (MvPolynomial.continuous_eval P).comp hpt
-  simpa [jetEval] using this
+  rw [show jetEval g P =
+    (fun x => MvPolynomial.eval x P) ∘ fun E i => g i E by rfl]
+  exact this
 
 end GaloisForLFunctions.HTGeometry

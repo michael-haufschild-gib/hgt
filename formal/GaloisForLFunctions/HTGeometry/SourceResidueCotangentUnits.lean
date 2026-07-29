@@ -37,7 +37,7 @@ theorem sourceResidueCotangentMap_linearIndependent_units_smul
     funext i
     simp [dK]
   rw [hscaled]
-  simpa only [Pi.smul_apply] using hli.units_smul dK
+  simpa only [Pi.smul_apply] using! hli.units_smul dK
 
 end
 

@@ -49,7 +49,7 @@ theorem univGerm_ext {f g : Germ (𝓟 (Set.univ : Set ℂ)) ℂ}
     | _ g =>
       apply Quotient.sound
       exact eventually_principal.mpr fun z _ => by
-        simpa using h z
+        simpa only [univGermEval_coe] using! h z
 
 /-- Evaluation intertwines analytic translation with translation of the evaluation point. -/
 @[simp] theorem univGermEval_addTranslationAnalyticEquiv

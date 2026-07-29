@@ -41,8 +41,12 @@ theorem differentiable_schwarzPolarizedPartner
     {f : ℂ → ℂ} (hf : Differentiable ℂ f) :
     Differentiable ℂ (schwarzPolarizedPartner f) := by
   intro w
-  simpa [schwarzPolarizedPartner, Function.comp_def]
-    using (hf (star w)).star_conj
+  rw [show schwarzPolarizedPartner f = star ∘ f ∘ ⇑(starRingEnd ℂ) by
+    funext z
+    rfl]
+  have hw : (starRingEnd ℂ) (star w) = w := by simp
+  rw [← hw]
+  exact (hf (star w)).star_conj
 
 /-- **One-variable conjugation obstruction.**  If both an entire coefficient family and its
 pointwise conjugate are holomorphic in the same parameter, then the family is constant. -/

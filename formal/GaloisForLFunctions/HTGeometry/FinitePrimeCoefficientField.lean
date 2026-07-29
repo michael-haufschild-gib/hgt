@@ -28,7 +28,7 @@ def primeArithmeticDerivation (q : ℕ) (hq : q.Prime) :
       map_smul' := primeDeriv_smul q }
     (by
       intro f g
-      simpa only [Algebra.smul_def] using primeDeriv_mul q hq f g)
+      simpa only [Algebra.smul_def] using! primeDeriv_mul q hq f g)
 
 @[simp]
 theorem primeArithmeticDerivation_apply (q : ℕ) (hq : q.Prime)
@@ -67,10 +67,10 @@ def finitePrimeCoefficientField : Subfield arithmeticFunctionFractionField where
   carrier := {x | (finitePrimeActivity x).Finite}
   zero_mem' := by
     change (finitePrimeActivity 0).Finite
-    simpa [finitePrimeActivity] using (Set.finite_empty : (∅ : Set Nat.Primes).Finite)
+    simp [finitePrimeActivity]
   one_mem' := by
     change (finitePrimeActivity 1).Finite
-    simpa [finitePrimeActivity] using (Set.finite_empty : (∅ : Set Nat.Primes).Finite)
+    simp [finitePrimeActivity]
   add_mem' := by
     intro x y hx hy
     apply (hx.union hy).subset
@@ -79,7 +79,7 @@ def finitePrimeCoefficientField : Subfield arithmeticFunctionFractionField where
     change primeFractionDerivation p x ≠ 0 ∨ primeFractionDerivation p y ≠ 0
     by_contra hnot
     rw [not_or, not_ne_iff, not_ne_iff] at hnot
-    simpa [hnot.1, hnot.2] using hp
+    simp [hnot.1, hnot.2] at hp
   mul_mem' := by
     intro x y hx hy
     apply (hx.union hy).subset
@@ -88,7 +88,7 @@ def finitePrimeCoefficientField : Subfield arithmeticFunctionFractionField where
     change primeFractionDerivation p x ≠ 0 ∨ primeFractionDerivation p y ≠ 0
     by_contra hnot
     rw [not_or, not_ne_iff, not_ne_iff] at hnot
-    simpa [Derivation.leibniz, hnot.1, hnot.2] using hp
+    simp [Derivation.leibniz, hnot.1, hnot.2] at hp
   neg_mem' := by
     intro x hx
     apply hx.subset
@@ -184,7 +184,7 @@ def primeCommonKernelDerivation {I : Type*} (points : I → Nat.Primes) (i : I) 
         rw [Derivation.leibniz, c.2 i, smul_eq_mul, smul_eq_mul, mul_zero, add_zero] }
     (by
       intro x y
-      simpa only [Algebra.smul_def] using
+      simpa only [Algebra.smul_def] using!
         (primeFractionDerivation (points i)).leibniz x y)
 
 @[simp]
@@ -347,7 +347,7 @@ theorem algebraicIndependent_fractionPrimeColumns_over_finitePrimeCoefficientFie
       (fun i => primeCommonKernelDerivation points i)
       (fun i x y => map_add (primeCommonKernelDerivation points i) x y)
       (fun i x y => by
-        simpa only [Algebra.smul_def] using
+        simpa only [Algebra.smul_def] using!
           (primeCommonKernelDerivation points i).leibniz x y)
       (fun i c => (primeCommonKernelDerivation points i).map_algebraMap c)
       M hM ?_

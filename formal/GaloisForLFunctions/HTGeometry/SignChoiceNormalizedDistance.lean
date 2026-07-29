@@ -213,7 +213,11 @@ theorem tendsto_min_norm_sub_sq_normalize_of_inner_sq {ι : Type*} {l : Filter �
   have hs : Filter.Tendsto
       (fun i => Real.sqrt (inner ℝ (u i) (w i) ^ 2 / (‖u i‖ ^ 2 * ‖w i‖ ^ 2))) l (nhds 1) := by
     have hc := (Real.continuous_sqrt.tendsto (1 : ℝ)).comp h
-    simpa using hc
+    rw [show (fun i => Real.sqrt
+      (inner ℝ (u i) (w i) ^ 2 / (‖u i‖ ^ 2 * ‖w i‖ ^ 2))) =
+        Real.sqrt ∘ fun i =>
+          inner ℝ (u i) (w i) ^ 2 / (‖u i‖ ^ 2 * ‖w i‖ ^ 2) by rfl]
+    simpa only [Real.sqrt_one] using hc
   refine hs.congr' ?_
   filter_upwards [hu, hw] with i hui hwi
   have ha : (0 : ℝ) < ‖u i‖ := norm_pos_iff.mpr hui

@@ -88,10 +88,10 @@ theorem uniformMatroidOn_dual {E : Set α} {k : ℕ} (hk : k ≤ E.ncard) :
   have hBE' : B ⊆ E := by simpa using hBE
   have hBncard : B.ncard ≤ E.ncard := Set.ncard_le_ncard hBE' E.toFinite
   simp only [uniformMatroidOn_ground]
-  rw [Set.ncard_diff hBE']
+  rw [Set.ncard_sdiff hBE']
   constructor <;> rintro ⟨-, hcard⟩
   · exact ⟨hBE, by omega⟩
-  · exact ⟨diff_subset, by omega⟩
+  · exact ⟨sdiff_subset, by omega⟩
 
 /-- Contracting a nonloop from a positive-rank uniform matroid lowers both the ground-cardinality
 and the rank by one. -/
@@ -102,7 +102,8 @@ theorem uniformMatroidOn_contractElem {E : Set α} {k : ℕ} {e : α}
     rw [uniformMatroidOn_indep_iff]
     constructor
     · simpa using he
-    · simpa using hkpos
+    · rw [Set.ncard_singleton]
+      omega
   refine Matroid.ext_indep
     (M₁ := uniformMatroidOn E k ／ {e})
     (M₂ := uniformMatroidOn (E \ {e}) (k - 1)) rfl ?_
@@ -112,7 +113,7 @@ theorem uniformMatroidOn_contractElem {E : Set α} {k : ℕ} {e : α}
   have he_not_mem : e ∉ I := by
     intro hei
     exact (hIE hei).2 (by simp)
-  have hI_E : I ⊆ E := hIE.trans diff_subset
+  have hI_E : I ⊆ E := hIE.trans sdiff_subset
   have hIE' : I ⊆ E \ {e} := by simpa using hIE
   have hinsert_E : insert e I ⊆ E := insert_subset he hI_E
   rw [union_singleton, Set.ncard_insert_of_notMem he_not_mem]

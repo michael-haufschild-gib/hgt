@@ -155,8 +155,9 @@ theorem re_criticalMellinApertureAveragedMultiplier_one_neg
   norm_num
   have hden : 0 < (w.re + 1) ^ 2 + w.im ^ 2 := by
     positivity
-  convert (div_neg_of_neg_of_pos (by linarith : -(w.re + 1) < 0) hden) using 1
-  all_goals ring
+  apply div_neg_of_neg_of_pos
+  · linarith
+  · simpa only [pow_two] using hden
 
 def criticalMellinApertureAveragedModeResponse
     (a x : ℝ) (w : ℂ) : ℂ :=

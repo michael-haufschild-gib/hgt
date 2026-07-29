@@ -33,6 +33,7 @@ def MatrixPrincipalLowerLaw
           (R + matrixPrincipalBlockDiagonal (fun n : Fin N ↦ symbol n))
           (fun p : Fin N × ι ↦ u p.1 p.2)
 
+omit [Fintype ι] [DecidableEq ι] in
 /-- The canonical symbol matrix is block diagonal for the reverse filtration order. -/
 theorem matrixPrincipalBlockDiagonal_blockTriangular
     {N : ℕ} (symbol : Fin N → Matrix ι ι K) :
@@ -42,6 +43,7 @@ theorem matrixPrincipalBlockDiagonal_blockTriangular
   have hne : p.1 ≠ q.1 := ne_of_lt hlt
   simp [matrixPrincipalBlockDiagonal, hne]
 
+omit [Fintype ι] [DecidableEq ι] in
 /-- Every diagonal fiber of the canonical block matrix is exactly the corresponding symbol after
 the canonical reindexing of that layer. -/
 theorem matrixPrincipalBlockDiagonal_toSquareBlock
@@ -56,6 +58,7 @@ theorem matrixPrincipalBlockDiagonal_toSquareBlock
     symbol n p.1.2 q.1.2
   simp [hp, hq]
 
+omit [DecidableEq ι] in
 /-- Explicit strict-lower-layer laws produce the intrinsic finite packet realization. -/
 theorem matrixPrincipalPacketRealization_of_lowerLaw
     (u y : ℕ → ι → L) (symbol : ℕ → Matrix ι ι K)
@@ -79,7 +82,7 @@ theorem matrixPrincipalPacketRealization_of_lowerLaw
       ext p q
       have hp : p.1.1 = n := congrArg OrderDual.ofDual p.2
       have hq : q.1.1 = n := congrArg OrderDual.ofDual q.2
-      exact hR p.1 q.1 (by simpa [hp, hq])
+      exact hR p.1 q.1 (by simp [hp, hq])
     rw [hRblock, zero_add]
     exact matrixPrincipalBlockDiagonal_toSquareBlock
       (fun n : Fin N ↦ symbol n) n

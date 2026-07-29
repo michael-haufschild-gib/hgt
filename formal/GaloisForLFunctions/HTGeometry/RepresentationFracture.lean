@@ -98,9 +98,10 @@ omit [DecidableEq n] in
 theorem continuous_matrix_trace {X : Type*} [TopologicalSpace X]
     {A : X → Matrix n n ℂ} (hA : Continuous A) :
     Continuous fun x => Matrix.trace (A x) := by
-  simpa only [Matrix.trace] using
-    continuous_finsetSum Finset.univ
-      (fun i _ => hA.matrix_elem i i)
+  rw [show (fun x => Matrix.trace (A x)) =
+    (fun x => ∑ i, A x i i) by rfl]
+  exact continuous_finsetSum Finset.univ
+    (fun i _ => hA.matrix_elem i i)
 
 /--
 The trace of a continuous family of involutions on a fixed finite complex carrier is constant over

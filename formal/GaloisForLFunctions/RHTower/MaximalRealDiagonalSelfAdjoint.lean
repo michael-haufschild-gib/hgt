@@ -55,8 +55,16 @@ def maximalRealDiagonalDomain (energy : ι → ℝ) :
   smul_mem' := by
     intro c x hx
     change Memℓp (fun i => (energy i : ℂ) * (c • x) i) 2
-    simpa [smul_eq_mul, mul_assoc, mul_comm, mul_left_comm] using
-      hx.const_smul c
+    have hcx := hx.const_smul c
+    have hfun :
+        c • (fun i => (energy i : ℂ) * (x : DiagonalL2 ι) i) =
+          (fun i => (energy i : ℂ) * (c • x) i) := by
+      funext i
+      change c * ((energy i : ℂ) * (x : DiagonalL2 ι) i) =
+        (energy i : ℂ) * (c * (x : DiagonalL2 ι) i)
+      ring
+    rw [hfun] at hcx
+    exact hcx
 
 /-- Coordinatewise multiplication by `energy`, on its maximal domain. -/
 def maximalRealDiagonal (energy : ι → ℝ) :

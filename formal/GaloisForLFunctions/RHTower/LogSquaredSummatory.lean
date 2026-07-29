@@ -36,8 +36,13 @@ theorem hasDerivAt_logSqAntideriv {t : ℝ} (ht : 0 < t) :
   have hlog : HasDerivAt Real.log t⁻¹ t := Real.hasDerivAt_log ht.ne'
   have hsq : HasDerivAt (fun u : ℝ => Real.log u ^ 2)
       (2 * Real.log t * t⁻¹) t := by
-    have := hlog.pow 2
-    simpa [mul_comm, mul_assoc, mul_left_comm] using this
+    have hraw := hlog.pow 2
+    have hfun : Real.log ^ 2 = (fun u : ℝ => Real.log u ^ 2) := by
+      funext u
+      simp
+    rw [hfun] at hraw
+    apply hraw.congr_deriv
+    ring
   have h1 := (hasDerivAt_id' t).mul hsq
   have h2 := ((hasDerivAt_id' t).mul hlog).const_mul (2:ℝ)
   have h3 := (hasDerivAt_id' t).const_mul (2:ℝ)

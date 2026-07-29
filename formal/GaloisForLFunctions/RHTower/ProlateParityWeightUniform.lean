@@ -246,7 +246,14 @@ theorem tendsto_negativeProlateHermiteTheta_one :
       (fun k : ℕ => 1 / negativeProlateHermiteWeightSum (k + 1)) atTop (𝓝 0) := by
     have hshift : Tendsto (fun k : ℕ => negativeProlateHermiteWeightSum (k + 1)) atTop atTop :=
       tendsto_negativeProlateHermiteWeightSum_atTop.comp (tendsto_add_atTop_nat 1)
-    simpa using hshift.inv_tendsto_atTop
+    have hinv := hshift.inv_tendsto_atTop
+    have hfun :
+        (fun k : ℕ => negativeProlateHermiteWeightSum (k + 1))⁻¹ =
+          (fun k : ℕ => 1 / negativeProlateHermiteWeightSum (k + 1)) := by
+      funext k
+      simp
+    rw [hfun] at hinv
+    exact hinv
   rw [tendsto_iff_dist_tendsto_zero]
   refine squeeze_zero (fun k => dist_nonneg) (fun k => ?_) hzero
   simpa [Real.dist_eq] using hgap k

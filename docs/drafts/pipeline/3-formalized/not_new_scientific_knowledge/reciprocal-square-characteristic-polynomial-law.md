@@ -1,9 +1,9 @@
 # Reciprocal squares share one nonzero characteristic polynomial
 
 - **ID:** `reciprocal-square-characteristic-polynomial-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** exact spectral bridge
-- **Scientific status:** `[PAPER-PROVED] [BRIDGE] [REDISCOVERED] [NOT NEW SCIENTIFIC KNOWLEDGE]`
+- **Scientific status:** `[LEAN-PROVED] [BRIDGE] [REDISCOVERED] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Parent:** Sylvester determinant identity / rectangular \(AB\)--\(BA\) spectral equivalence
 
 ## Exact theorem
@@ -93,20 +93,41 @@ theory, and \(AB\)--\(BA\) spectral equivalence are established parents.  Candid
 requires a source theorem identifying \(Q\) with quantum/gauge response and \(G\) with
 causal/gravitational response.
 
-## Lean target
+## Lean formalization
 
-Create `GaloisForLFunctions.HTGeometry.ReciprocalSquareCharacteristicPolynomial` with:
+Module `GaloisForLFunctions.HTGeometry.ReciprocalSquareCharacteristicPolynomial` proves:
 
 - both dimension-ordered characteristic identities over a generic commutative star ring;
 - shifted coefficient equality;
 - vanishing of forced low coefficients;
+- equal-dimension equality;
 - complex reciprocal-square specializations.
+
+The pure algebra module imports `Mathlib` directly.  This keeps the standard
+\(AB\)--\(BA\) theorem independent of the heavier event/physics import chain.  Its complex
+products are definitionally the same \(D^\dagger D\) and \(DD^\dagger\) used by
+`SourceOddPositivitySquareLaw`.
+
+Foreground verification:
+
+```text
+lake env lean GaloisForLFunctions/HTGeometry/ReciprocalSquareCharacteristicPolynomial.lean
+lake build GaloisForLFunctions.HTGeometry.ReciprocalSquareCharacteristicPolynomial
+```
+
+The direct check passed and the targeted build completed `8655/8655`.
+
+A separate `/tmp` audit reports exactly
+`[propext, Classical.choice, Quot.sound]` for every declaration and no project axiom.
+Repository-wide lint currently exits nonzero because another active worktree migration has many
+unreachable new modules in both `RHTower` and `HTGeometry`; this module is imported by the
+`HTGeometry` umbrella and is not among the reported failures.
 
 ## Gate
 
 - [x] exact statement frozen
 - [x] hostile verdict: `BRIDGE / REDISCOVERED`
 - [x] dependency-closed paper proof
-- [ ] exact Lean formalization
-- [ ] axiom and lint audit
-
+- [x] exact Lean formalization
+- [x] axiom audit
+- [ ] repository-wide lint audit after concurrent umbrella migration settles

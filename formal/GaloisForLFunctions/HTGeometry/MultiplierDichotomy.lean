@@ -45,7 +45,9 @@ theorem hasDerivAt_mul_exp_const_ode {g : ℂ → ℂ} {g' lam z : ℂ}
       g' * Complex.exp (z * lam) + g z * (Complex.exp (z * lam) * lam) =
         ((g' / g z) + lam) * (g z * Complex.exp (z * lam)) := by
     field_simp [hgz]
-  simpa [Pi.mul_apply, hderiv] using hprod
+  rw [show (fun w : ℂ => g w * Complex.exp (w * lam)) =
+    g * fun w => Complex.exp (w * lam) by rfl]
+  exact hprod.congr_deriv hderiv
 
 /-- Global shift form of the case-(I) solution.
 If `c = exp lam` and `a(z) = c * g(z+1) / g(z)`, then

@@ -153,7 +153,8 @@ theorem exists_orbit_cos_ge {θ γ : ℝ} (hθ0 : 0 < θ) (hθπ : θ ≤ Real.p
     nlinarith
   -- shift to start at index 1 for the passage (so M ≥ 1)
   have hpass := exists_first_passage (ψ := fun i => ψ (1 + i)) (θmax := θ)
-    (c := c) (fun m => by simpa using hstep (1 + m)) (by simpa using hψ1)
+    (c := c) (fun m => by simpa only [Nat.add_assoc] using hstep (1 + m))
+    (by simpa using hψ1)
     (n := n) (by simpa using le_trans hn (by
       have : ψ n ≤ ψ (1 + n) := by
         simp only [hψ]; push_cast; nlinarith

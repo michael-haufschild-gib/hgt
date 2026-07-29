@@ -153,7 +153,7 @@ theorem ccmNormalizedPrimePoleVector_nat_comp_weakly_tendsto_zero
       Tendsto (fun n : ℕ => ℓ (ccmNormalizedPrimePoleVector L hL (φ n : ℤ)))
         atTop (𝓝 0) := by
   intro ℓ
-  simpa only [Function.comp_apply] using
+  simpa only [Function.comp_apply] using!
     (ccmNormalizedPrimePoleVector_nat_weakly_tendsto_zero hL ℓ).comp hφ
 
 end RHTower

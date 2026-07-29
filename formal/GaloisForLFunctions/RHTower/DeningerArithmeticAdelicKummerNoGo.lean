@@ -34,7 +34,8 @@ theorem deningerAdelicKummer_continuous_eq_zero_of_dense
     trace = 0 := by
   apply Continuous.ext_on hkummer htrace continuous_const
   intro x hx
-  simpa using hzero x hx
+  change trace x = (0 : Y)
+  exact hzero x hx
 
 section HalfTate
 

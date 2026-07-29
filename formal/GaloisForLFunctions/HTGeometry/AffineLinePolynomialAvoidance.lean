@@ -174,7 +174,11 @@ theorem mvPolynomialAffineLineRestriction_ne_zero_ae_pair {n : ℕ}
     simp
   have hsum : MvPolynomial.eval (av.1 + av.2) P = 0 := by
     rw [eval_mvPolynomialAffineLineRestriction] at heval
-    simpa [Pi.add_apply] using heval
+    have hadd : av.1 + av.2 = fun i ↦ av.1 i + av.2 i := by
+      funext i
+      simp
+    rw [hadd]
+    simpa using heval
   exact ⟨hsum, Set.mem_univ _⟩
 
 /-- For almost every affine line, countably many nonzero polynomial obstructions fail only at a

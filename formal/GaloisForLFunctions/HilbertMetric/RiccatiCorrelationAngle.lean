@@ -52,11 +52,19 @@ theorem hasDerivAt_riccatiCorrelationAngleCertificate
   have hexp :
       HasDerivAt (fun s => Real.exp (-2 * q s))
         ((-2 * q₁ t) * Real.exp (-2 * q t)) t := by
-    convert (hq.const_mul (-2)).exp using 1 <;> ring
-  unfold riccatiCorrelationAngleCertificate
-  convert (hq₁.pow 2).sub
-    (hq₂.mul ((hasDerivAt_const t 1).sub hexp)) using 1 <;>
-    simp only [Pi.one_apply, Pi.sub_apply, pow_one] <;> ring
+    exact ((hq.const_mul (-2)).exp).congr_deriv (by ring)
+  have hraw := (hq₁.pow 2).sub
+    (hq₂.mul ((hasDerivAt_const t 1).sub hexp))
+  have hfun :
+      riccatiCorrelationAngleCertificate q q₁ q₂ =
+        q₁ ^ 2 - q₂ * ((fun _ : ℝ => 1) -
+          fun s => Real.exp (-2 * q s)) := by
+    funext s
+    rfl
+  rw [hfun]
+  apply hraw.congr_deriv
+  norm_num
+  ring
 
 /-- A nonnegative Riccati margin transports the zero seam certificate into a nonnegative
 certificate throughout the interval. -/
@@ -105,8 +113,11 @@ theorem hasDerivAt_riccatiCorrelationAngle
       HasDerivAt (fun s => Real.exp (-q s))
         ((-q₁ t) * Real.exp (-q t)) t :=
     by
-      convert hq.neg.exp using 1 <;>
-        simp only [Pi.neg_apply] <;> ring
+      rw [show (fun s => Real.exp (-q s)) =
+          (fun s => Real.exp ((-q) s)) by
+        funext s
+        rw [Pi.neg_apply]]
+      exact hq.neg.exp.congr_deriv (by rw [Pi.neg_apply]; ring)
   have hrhoPos : 0 < Real.exp (-q t) := Real.exp_pos _
   have hrhoLt : Real.exp (-q t) < 1 :=
     Real.exp_lt_one_iff.mpr (by linarith)
@@ -115,10 +126,15 @@ theorem hasDerivAt_riccatiCorrelationAngle
     rw [pow_two, ← Real.exp_add]
     congr 1
     ring
-  unfold riccatiCorrelationAngle riccatiCorrelationAngleSlope
-  convert (Real.hasDerivAt_arccos
+  have hraw := (Real.hasDerivAt_arccos
     (by linarith : Real.exp (-q t) ≠ -1)
-    hrhoLt.ne).comp t hrho using 1
+    hrhoLt.ne).comp t hrho
+  rw [show riccatiCorrelationAngle q =
+      Real.arccos ∘ fun s => Real.exp (-q s) by
+    funext s
+    rfl]
+  apply hraw.congr_deriv
+  unfold riccatiCorrelationAngleSlope
   rw [hsq]
   ring
 
@@ -137,17 +153,24 @@ theorem hasDerivAt_riccatiCorrelationAngleSlope
   have he :
       HasDerivAt (fun s => Real.exp (-q s))
         ((-q₁ t) * e) t := by
-    convert hq.neg.exp using 1 <;>
-      simp only [e, Pi.neg_apply] <;> ring
+    rw [show (fun s => Real.exp (-q s)) =
+        (fun s => Real.exp ((-q) s)) by
+      funext s
+      rw [Pi.neg_apply]]
+    exact hq.neg.exp.congr_deriv (by rw [Pi.neg_apply]; dsimp [e]; ring)
   have he₂ :
       HasDerivAt (fun s => Real.exp (-2 * q s))
         ((-2 * q₁ t) * e₂) t := by
-    convert (hq.const_mul (-2)).exp using 1 <;> simp only [e₂] <;> ring
+    exact ((hq.const_mul (-2)).exp).congr_deriv (by dsimp [e₂]; ring)
   have hw :
       HasDerivAt (fun s => 1 - Real.exp (-2 * q s))
         (2 * q₁ t * e₂) t := by
-    convert (hasDerivAt_const t 1).sub he₂ using 1
-    ring
+    have hraw := (hasDerivAt_const t 1).sub he₂
+    rw [show (fun s => 1 - Real.exp (-2 * q s)) =
+        (fun _ : ℝ => 1) - (fun s => Real.exp (-2 * q s)) by
+      funext s
+      rfl]
+    exact hraw.congr_deriv (by ring)
   have hwpos : 0 < w := by
     dsimp [w, e₂]
     exact sub_pos.mpr (Real.exp_lt_one_iff.mpr (by linarith))
@@ -157,28 +180,31 @@ theorem hasDerivAt_riccatiCorrelationAngleSlope
         (fun s => Real.sqrt (1 - Real.exp (-2 * q s)))
         (q₁ t * e₂ / d) t := by
     have hsqrt := hw.sqrt hwpos.ne'
-    convert hsqrt using 1
-    dsimp [d]
-    ring
+    exact hsqrt.congr_deriv (by dsimp [d]; ring)
   have hn :
       HasDerivAt (fun s => q₁ s * Real.exp (-q s))
         ((q₂ t - q₁ t ^ 2) * e) t := by
-    convert hq₁.mul he using 1
-    dsimp [e]
-    ring
+    have hraw := hq₁.mul he
+    rw [show (fun s => q₁ s * Real.exp (-q s)) =
+        q₁ * (fun s => Real.exp (-q s)) by
+      funext s
+      rfl]
+    exact hraw.congr_deriv (by dsimp [e]; ring)
   have hraw := hn.div hd hdpos.ne'
-  unfold riccatiCorrelationAngleSlope
-    riccatiCorrelationAngleCurvature
-  convert hraw using 1
+  rw [show riccatiCorrelationAngleSlope q q₁ =
+      (fun s => q₁ s * Real.exp (-q s)) /
+        (fun s => Real.sqrt (1 - Real.exp (-2 * q s))) by
+    funext s
+    rfl]
+  apply hraw.congr_deriv
+  unfold riccatiCorrelationAngleCurvature
+    riccatiCorrelationAngleCertificate
   change
-    -e * (q₁ t ^ 2 - q₂ t * w) / (w * d) =
-      (((q₂ t - q₁ t ^ 2) * e * d -
-          q₁ t * e * (q₁ t * e₂ / d)) / d ^ 2)
+    (((q₂ t - q₁ t ^ 2) * e * d -
+        q₁ t * e * (q₁ t * e₂ / d)) / d ^ 2) =
+      -e * (q₁ t ^ 2 - q₂ t * w) / (w * d)
   have hsq : d ^ 2 = w := by
     exact Real.sq_sqrt hwpos.le
-  have hpartition : w + e₂ = 1 := by
-    dsimp [w]
-    ring
   field_simp [hdpos.ne', hwpos.ne']
   rw [hsq]
   have he₂eq : e₂ = 1 - w := by linarith
@@ -203,9 +229,12 @@ theorem concaveOn_riccatiCorrelationAngle_of_margin_nonneg
       hq hq₁ hq₂ hqnonneg hmargin
   apply concaveOn_of_hasDerivWithinAt2_nonpos (convex_Icc 0 T)
   · intro t ht
-    simpa [riccatiCorrelationAngle, Function.comp_def] using
-      (Real.continuous_arccos.continuousAt.comp
-        ((hq t ht).neg.exp).continuousAt).continuousWithinAt
+    rw [show riccatiCorrelationAngle q =
+        (fun s => Real.arccos (Real.exp (-q s))) by
+      funext s
+      rfl]
+    exact (Real.continuous_arccos.continuousAt.comp
+      ((hq t ht).neg.exp).continuousAt).continuousWithinAt
   · intro t ht
     exact (hasDerivAt_riccatiCorrelationAngle
       (hq t (interior_subset ht)) (hqpos t ht)).hasDerivWithinAt

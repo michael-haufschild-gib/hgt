@@ -23,6 +23,7 @@ noncomputable section
 variable {k K : Type*} [Field k] [Field K] [Algebra k K]
   [Differential k] [Differential K] [DifferentialAlgebra k K]
 
+omit [Differential k] [Differential K] [DifferentialAlgebra k K] in
 set_option maxHeartbeats 400000 in
 private theorem algebraicIndependent_nat_of_transcendental_prefix
     (j : ℕ → K)
@@ -64,6 +65,7 @@ private theorem algebraicIndependent_nat_of_transcendental_prefix
   rw [hsets] at hunion
   exact (algebraicIndependent_subtype_range hjinj).mp hunion
 
+omit [Differential k] [DifferentialAlgebra k K] in
 private theorem differentialIndependent_singleton_of_jets (x : K)
     (h : AlgebraicIndependent k (fun n : ℕ => differentialJet n x)) :
     DifferentialIndependent k (fun _ : Unit => x) := by
@@ -74,6 +76,7 @@ private theorem differentialIndependent_singleton_of_jets (x : K)
     exact Prod.ext rfl hmn)
   exact h'
 
+omit [Differential k] [DifferentialAlgebra k K] in
 set_option maxHeartbeats 100000 in
 private theorem exists_algebraic_jet_over_prefix {x : K}
     (hx : DifferentialAlgebraicOver k x) :
@@ -237,11 +240,25 @@ theorem differentialAdjoin_trdeg_lt_aleph0_of_differentialAlgebraic [CharZero K]
       change algebraMap k B c ∈ J
       exact IntermediateField.algebraMap_mem J c
     · intro u v hu hv huJ hvJ
-      simpa only [p, Subtype.coe_eta] using J.add_mem huJ hvJ
+      change (⟨u + v, B.add_mem hu hv⟩ : B) ∈ J
+      rw [show (⟨u + v, B.add_mem hu hv⟩ : B) =
+          (⟨u, hu⟩ : B) + ⟨v, hv⟩ by
+        apply Subtype.ext
+        rfl]
+      exact J.add_mem huJ hvJ
     · intro u hu huJ
-      simpa only [p, Subtype.coe_eta] using J.inv_mem huJ
+      change (⟨u⁻¹, B.inv_mem hu⟩ : B) ∈ J
+      rw [show (⟨u⁻¹, B.inv_mem hu⟩ : B) = (⟨u, hu⟩ : B)⁻¹ by
+        apply Subtype.ext
+        rfl]
+      exact J.inv_mem huJ
     · intro u v hu hv huJ hvJ
-      simpa only [p, Subtype.coe_eta] using J.mul_mem huJ hvJ
+      change (⟨u * v, B.mul_mem hu hv⟩ : B) ∈ J
+      rw [show (⟨u * v, B.mul_mem hu hv⟩ : B) =
+          (⟨u, hu⟩ : B) * ⟨v, hv⟩ by
+        apply Subtype.ext
+        rfl]
+      exact J.mul_mem huJ hvJ
   letI : Algebra.IsAlgebraic (Algebra.adjoin k (Set.range jB)) B :=
     HTGeometry.isAlgebraic_adjoin_of_intermediate_adjoin_eq_top jB hBtop
   have hBfinite : Algebra.trdeg k B < Cardinal.aleph0 := by
@@ -294,7 +311,13 @@ theorem differentialAlgebraicOver_trans [CharZero K] {x y : K}
     have h := hyLind.comp (fun n : ℕ => ((), n)) (by
       intro m n hmn
       exact congrArg Prod.snd hmn)
-    simpa using h
+    rw [show
+      ((fun p : Unit × ℕ => differentialJet p.2 yL) ∘
+          fun n : ℕ => ((), n)) =
+        (fun n : ℕ => differentialJet n yL) by
+      funext n
+      rfl] at h
+    exact h
   have haleph : Cardinal.aleph0 ≤ Algebra.trdeg k L := by
     have h := hjets.lift_cardinalMk_le_trdeg
     simpa using h
@@ -306,6 +329,7 @@ def differentialValuePolynomial
     (p : Polynomial k) : DifferentialPolynomial Unit F :=
   Polynomial.aeval (MvPolynomial.X ((), 0)) (p.map (algebraMap k F))
 
+omit [Differential k] [DifferentialAlgebra k K] in
 private theorem differentialPolynomialEval_valuePolynomial
     {F : Type*} [Field F] [Algebra k F] [Algebra F K]
     [IsScalarTower k F K] (y : K) (p : Polynomial k) :
@@ -320,6 +344,7 @@ private theorem differentialPolynomialEval_valuePolynomial
       simp [differentialValuePolynomial, Polynomial.aeval_monomial,
         differentialPolynomialEval, IsScalarTower.algebraMap_apply k F K]
 
+omit [Differential k] in
 private theorem eval_differentialValuePolynomial
     {F : Type*} [Field F] [Algebra k F]
     (g : Unit × ℕ → F) (p : Polynomial k) :
@@ -334,6 +359,7 @@ private theorem eval_differentialValuePolynomial
   | monomial n c =>
       simp [differentialValuePolynomial, Polynomial.aeval_monomial]
 
+omit [Differential k] [DifferentialAlgebra k K] in
 set_option maxHeartbeats 500000 in
 private theorem differentialAlgebraicOver_positiveRationalTensor
     [Infinite k] {y : K} {p r : Polynomial k} (hp : p ≠ 0) (hr : r ≠ 0)
@@ -388,7 +414,7 @@ private theorem differentialAlgebraicOver_positiveRationalTensor
     simp [differentialPolynomialEval, qF]
   rw [hqF]
   have hj1 : differentialJet 1 y = Differential.deriv y := by
-    simpa using differentialJet_succ 0 y
+    simp [differentialJet_succ]
   rw [hj1]
   change Polynomial.aeval y r * Q -
     Polynomial.aeval y p * Differential.deriv y ^ ell = 0
@@ -396,6 +422,7 @@ private theorem differentialAlgebraicOver_positiveRationalTensor
   field_simp [hry]
   ring
 
+omit [Differential k] [DifferentialAlgebra k K] in
 set_option maxHeartbeats 500000 in
 private theorem differentialAlgebraicOver_negativeRationalTensor
     [Infinite k] {y : K} {p r : Polynomial k} (hp : p ≠ 0) (hr : r ≠ 0)
@@ -448,7 +475,7 @@ private theorem differentialAlgebraicOver_negativeRationalTensor
     simp [differentialPolynomialEval, qF]
   rw [hqF]
   have hj1 : differentialJet 1 y = Differential.deriv y := by
-    simpa using differentialJet_succ 0 y
+    simp [differentialJet_succ]
   rw [hj1]
   change Polynomial.aeval y r * Q * Differential.deriv y ^ ell -
     Polynomial.aeval y p = 0
@@ -473,7 +500,7 @@ theorem hypertranscendentalOver_rationalTensorJetObservable
   have hdy : Differential.deriv y ≠ 0 := by
     have hjet := hypertranscendentalOver_jet_transcendental hy 1
     have hj1 : differentialJet 1 y = Differential.deriv y := by
-      simpa using differentialJet_succ 0 y
+      simp [differentialJet_succ]
     intro hzero
     apply hjet
     rw [hj1, hzero]

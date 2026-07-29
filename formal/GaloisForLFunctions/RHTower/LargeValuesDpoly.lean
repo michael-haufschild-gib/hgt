@@ -31,8 +31,9 @@ theorem cterm_hasDerivAt (a : ℕ → ℝ) (n : ℕ) (t : ℝ) :
     have := (h1.neg.mul_const I).mul_const (Real.log n : ℂ)
     simpa using this
   have := (hlin.cexp).const_mul (a n : ℂ)
-  convert this using 1
-  push_cast; ring
+  apply this.congr_deriv
+  push_cast
+  ring
 
 /-- `t ↦ cterm a t n` is differentiable. -/
 theorem cterm_differentiable (a : ℕ → ℝ) (n : ℕ) :

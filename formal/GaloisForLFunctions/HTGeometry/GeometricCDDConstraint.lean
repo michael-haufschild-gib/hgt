@@ -164,7 +164,7 @@ theorem hasDerivAt_geometricCDDTruncationPhase
     convert (((Real.hasDerivAt_sinh theta).const_mul (q ^ k)).div_const C).arctan using 1
     all_goals ring
   have hsum := HasDerivAt.sum hterm
-  simpa only [Pi.add_apply, Finset.sum_apply, zero_add] using
+  simpa only [Pi.add_apply, Finset.sum_apply, zero_add] using!
     (hasDerivAt_const theta Real.pi).add (hsum.const_mul 4)
 
 /-- Every nonempty physical finite truncation has strictly increasing unwrapped phase. -/
