@@ -433,7 +433,6 @@ theorem exists_pow_fixed_root (c : ℂ) (p : ℕ) (P S : Polynomial (Polynomial 
     intro v hv
     have key := congrArg (fun T : Polynomial (Polynomial ℂ) =>
         ∑ i ∈ T.support, (T.coeff i).aeval z₀ * v ^ i) hPS
-    simp only [] at key
     rw [relation_mul, relation_C, relation_mul, hv, zero_mul, compRelPoly_relation, hper] at key
     exact (mul_eq_zero.mp key).resolve_left hez
   set rootSet := {v : ℂ | (∑ i ∈ P.support, (P.coeff i).aeval z₀ * v ^ i) = 0 ∧ v ≠ 0} with hrs

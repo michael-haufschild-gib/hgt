@@ -261,7 +261,7 @@ theorem factorClockFiberIndependent_of_expLog
       * (u n : ℂ) ^ (ak.2 : ℕ) = 0 := by
     intro n
     have hmem := hqmem n
-    rw [Set.mem_diff] at hmem
+    rw [Set.mem_sdiff] at hmem
     obtain ⟨hqU, hqnt⟩ := hmem
     by_contra hne
     exact hqnt ⟨hqU, hne⟩

@@ -120,8 +120,15 @@ theorem multGammaProd_log_convexOn {n : ℕ} (hn : 0 < n) :
         simp only [Finset.sum_insert ha]
         exact (logGamma_shiftScale_convexOn hn a).add ih
   have hlin : ConvexOn ℝ (Set.Ioi (0 : ℝ)) (fun s => s * Real.log n) := by
-    simpa only [mul_comm _ (Real.log _)] using
+    have hsmul :=
       (convexOn_id (convex_Ioi (0 : ℝ))).smul (Real.log_nonneg h1n)
+    have hfun : (fun s : ℝ => Real.log n • id s) =
+        (fun s : ℝ => s * Real.log n) := by
+      apply _root_.funext
+      intro s
+      simp only [id_eq, smul_eq_mul, mul_comm]
+    rw [← hfun]
+    exact hsmul
   exact (hsum.add hlin).congr hEq.symm
 
 /-- **Gauss multiplication (up to constant), real positive form.**  For `n ≥ 1` and `s > 0`,

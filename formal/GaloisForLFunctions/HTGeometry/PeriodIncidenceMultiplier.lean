@@ -490,7 +490,7 @@ theorem periodIncidenceHalfDensity_not_mem_range_of_not_discrete
     norm_pos_iff.mpr (regularizedPeriodWeight_ne_zero (hpne n))
   have hs0 : Tendsto (fun n ↦ Real.sqrt (a n)) atTop (𝓝 0) :=
     by
-      simpa only [Function.comp_apply, Real.sqrt_zero] using
+      simpa only [Function.comp_def, Real.sqrt_zero] using
         Real.continuous_sqrt.continuousAt.tendsto.comp ha0
   have hsGT : Tendsto (fun n ↦ Real.sqrt (a n)) atTop (𝓝[>] 0) :=
     tendsto_nhdsWithin_iff.2
@@ -871,7 +871,7 @@ theorem periodIncidencePowerTarget_mem_closure_range_of_pos
   have hpowzero : Tendsto (fun n ↦ δ n ^ β) atTop (𝓝 0) := by
     have hcont :=
       (Real.continuousAt_rpow_const 0 β (Or.inr hβ.le)).tendsto.comp hδzero
-    simpa [Real.zero_rpow hβ.ne'] using hcont
+    simpa [Function.comp_def, Real.zero_rpow hβ.ne'] using hcont
   obtain ⟨N, hN⟩ := (Metric.tendsto_atTop.1 hpowzero) ε hε
   have hδpos : 0 < δ N := by
     dsimp [δ]
@@ -908,7 +908,7 @@ theorem periodIncidencePowerTarget_not_mem_range_of_lt_natCast
   have hpow0 : Tendsto (fun n ↦ a n ^ γ) atTop (𝓝 0) := by
     have hcont :=
       (Real.continuousAt_rpow_const 0 γ (Or.inr hγ.le)).tendsto.comp ha0
-    simpa [Real.zero_rpow hγ.ne'] using hcont
+    simpa [Function.comp_def, Real.zero_rpow hγ.ne'] using hcont
   have hpowGT : Tendsto (fun n ↦ a n ^ γ) atTop (𝓝[>] 0) :=
     tendsto_nhdsWithin_iff.2
       ⟨hpow0, Eventually.of_forall fun n ↦ Real.rpow_pos_of_pos (hapos n) γ⟩

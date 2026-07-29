@@ -487,8 +487,10 @@ theorem traceHankel_nonnegative_on_principalIdeal_implies_real
   have hrpos : 0 < ‖α‖ := norm_pos_iff.mpr hα0
   let S : Finset ι := (hfinite hrpos).toFinset
   have hi₀S : i₀ ∈ S := by
-    simpa only [S, Set.Finite.mem_toFinset, α] using
-      (le_rfl : ‖lam i₀‖ ≤ ‖lam i₀‖)
+    change i₀ ∈ (hfinite hrpos).toFinset
+    rw [Set.Finite.mem_toFinset]
+    change ‖lam i₀‖ ≤ ‖lam i₀‖
+    exact le_rfl
   let F : Finset ℂ := S.image lam
   obtain ⟨c, hc⟩ := exists_phase_sq_re_neg him
   let d : ℂ := c / evalRealPolynomial a α
@@ -652,12 +654,18 @@ theorem traceHankel_nonnegative_on_principalIdeal_implies_real
         intro h
         apply hiS
         have hnorm : ‖α‖ ≤ ‖lam i‖ := by rw [h]
-        simpa only [S, Set.Finite.mem_toFinset] using hnorm
+        change i ∈ (hfinite hrpos).toFinset
+        rw [Set.Finite.mem_toFinset]
+        change ‖α‖ ≤ ‖lam i‖
+        exact hnorm
       have hnec : lam i ≠ (starRingEnd ℂ) α := by
         intro h
         apply hiS
         have hnorm : ‖α‖ ≤ ‖lam i‖ := by rw [h, norm_conj]
-        simpa only [S, Set.Finite.mem_toFinset] using hnorm
+        change i ∈ (hfinite hrpos).toFinset
+        rw [Set.Finite.mem_toFinset]
+        change ‖α‖ ≤ ‖lam i‖
+        exact hnorm
       simp only [g, hneα, hnec, if_false]
   have hgsum : (∑' i, g i) = ∑ i ∈ T, g i := tsum_eq_sum hgoutside
   have hgneg : ∀ i ∈ T, (g i).re < 0 := by

@@ -138,7 +138,7 @@ theorem isHilbertSchmidt_of_adjoint_mul_self_memSchattenClass_one
   refine isHilbertSchmidt_of_summable (hsBasis ℂ H) ?_
   rw [← RCLike.summable_ofReal (𝕜 := ℂ)]
   refine hdiag.congr fun i => ?_
-  simp only [ContinuousLinearMap.mul_apply,
+  simp only [mul_apply_eq_comp,
     ContinuousLinearMap.adjoint_inner_right, inner_self_eq_norm_sq_to_K]
   push_cast
   rfl

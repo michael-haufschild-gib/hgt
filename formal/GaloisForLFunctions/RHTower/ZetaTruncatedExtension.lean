@@ -42,7 +42,7 @@ theorem isPreconnected_halfplane_punctured :
         ∪ ({z : ℂ | 0 < z.re} ∩ {z : ℂ | z.im < 0}))
         ∪ ({z : ℂ | 0 < z.re} ∩ {z : ℂ | z.re < 1}) := by
     ext z
-    simp only [Set.mem_diff, Set.mem_setOf_eq, Set.mem_singleton_iff,
+    simp only [Set.mem_sdiff, Set.mem_setOf_eq, Set.mem_singleton_iff,
       Set.mem_union, Set.mem_inter_iff]
     constructor
     · rintro ⟨hre0, hne1⟩

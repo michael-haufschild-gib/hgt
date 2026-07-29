@@ -45,12 +45,21 @@ theorem hasDerivAt_powerTerm {f : ℂ → ℂ} {J : ℂ → ℕ → ℂ} {z : �
     HasDerivAt (fun w => f w ^ d * eval (J w) Q)
       (f z ^ d * eval (J z) (totalDeriv Q + C (d : ℂ) * X 1 * Q)) z := by
   have hprod := (hf.pow d).mul (hJ Q)
-  convert hprod using 1
-  simp only [Pi.pow_apply]
-  rw [map_add, map_mul, map_mul, eval_C, eval_X]
-  cases d with
-  | zero => simp
-  | succ k => rw [pow_succ]; push_cast; ring
+  have hfun :
+      ((fun w => f w) ^ d * fun w => eval (J w) Q) =
+        fun w => f w ^ d * eval (J w) Q := by
+    funext w
+    rfl
+  rw [← hfun]
+  exact hprod.congr_deriv (by
+    rw [map_add, map_mul, map_mul, eval_C, eval_X]
+    cases d with
+    | zero => simp
+    | succ k =>
+        rw [pow_succ]
+        simp only [Pi.mul_apply, Pi.pow_apply]
+        push_cast
+        ring)
 
 /-- The `L`-operator on coefficients: `L d Q = 𝒟 Q + d·x₁·Q`. -/
 def Lop (d : ℕ) (Q : MvPolynomial ℕ ℂ) : MvPolynomial ℕ ℂ :=
@@ -251,10 +260,16 @@ theorem hasDerivAt_uJetEval {u : ℂ → ℂ} {Ω : Set ℂ}
         funext w; rw [map_mul, eval_X]
       rw [hfun]
       have hd := hP.mul (hasDerivAt_uJet_component hu i hz)
-      convert hd using 1
-      rw [Derivation.leibniz, totalDeriv_X, smul_eq_mul, smul_eq_mul, map_add,
-        map_mul, map_mul, eval_X]
-      ring
+      have hmulfun :
+          ((fun w => eval (uJet u w) P) * fun w => uJet u w i) =
+            fun w => eval (uJet u w) P * uJet u w i := by
+        funext w
+        rfl
+      rw [← hmulfun]
+      exact hd.congr_deriv (by
+        rw [Derivation.leibniz, totalDeriv_X, smul_eq_mul, smul_eq_mul, map_add,
+          map_mul, map_mul, eval_X]
+        ring)
 
 /-! ## The packaged capstone -/
 

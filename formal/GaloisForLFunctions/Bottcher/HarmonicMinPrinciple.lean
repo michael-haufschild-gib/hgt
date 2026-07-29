@@ -152,5 +152,4 @@ theorem harmonic_exterior_unique {u : ℂ → ℝ} {Ω : Set ℂ}
   have h1 := key u hu hucont hbd hinf z
   have h2 := key (fun w => -u w) hu.neg hucont.neg
     (fun w hw => by simp [hbd w hw]) (by simpa using hinf.neg) z
-  simp only at h2
   linarith

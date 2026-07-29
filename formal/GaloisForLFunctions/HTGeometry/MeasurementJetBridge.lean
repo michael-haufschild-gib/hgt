@@ -33,7 +33,7 @@ theorem measCLM_eq_sampleEval_lawEmbed {n m N : ℕ} (e : Fin N → (Fin n →�
     (g : Fin n → (ℝ → ℝ)) (E : Fin m → ℝ) (c : Fin N → ℝ) :
     measCLM (fun k i => (e k) i) (fun j i => g i (E j)) c = sampleEval g E (lawEmbed e c) := by
   ext j
-  simp only [measCLM, ContinuousLinearMap.sum_apply, ContinuousLinearMap.smulRight_apply,
+  simp only [measCLM, _root_.sum_apply, ContinuousLinearMap.smulRight_apply,
     ContinuousLinearMap.proj_apply, Finset.sum_apply, sampleEval_apply,
     jetEval_apply, lawEmbed, LinearMap.coe_mk, AddHom.coe_mk, map_sum, map_mul, eval_C,
     eval_monomial, one_mul]

@@ -37,7 +37,7 @@ theorem hasFDerivAt_phase_re (A : ℂ) (w : ℂ) :
     simp [ContinuousLinearMap.smulRight_apply, Complex.real_smul]
   refine ((h1.cexp).const_mul A).congr_fderiv ?_
   ext h
-  simp only [ContinuousLinearMap.smulRight_apply, ContinuousLinearMap.smul_apply, smul_eq_mul,
+  simp only [ContinuousLinearMap.smulRight_apply, _root_.smul_apply, smul_eq_mul,
     Complex.real_smul]
   ring
 
@@ -51,7 +51,7 @@ theorem hasFDerivAt_phase_im (B : ℂ) (w : ℂ) :
     simp [ContinuousLinearMap.smulRight_apply, Complex.real_smul]
   refine ((h1.cexp).const_mul B).congr_fderiv ?_
   ext h
-  simp only [ContinuousLinearMap.smulRight_apply, ContinuousLinearMap.smul_apply, smul_eq_mul,
+  simp only [ContinuousLinearMap.smulRight_apply, _root_.smul_apply, smul_eq_mul,
     Complex.real_smul]
   ring
 

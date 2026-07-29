@@ -113,13 +113,13 @@ theorem exists_holomorphic_completion_critical {c : ℂ} (hc : Disconnected c) :
     hcomp.fderiv.symm.trans hfd_eq
   have hd1 : (deriv F 0).re = 0 := by
     have h := congrArg (fun L => L (1:ℂ)) hCLM
-    simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.zero_apply,
+    simp only [ContinuousLinearMap.comp_apply, _root_.zero_apply,
       Complex.reCLM_apply] at h
     rw [← fderiv_apply_one_eq_deriv]
     exact h
   have hdI : (deriv F 0).im = 0 := by
     have h := congrArg (fun L => L Complex.I) hCLM
-    simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.zero_apply,
+    simp only [ContinuousLinearMap.comp_apply, _root_.zero_apply,
       Complex.reCLM_apply] at h
     have h1 : (fderiv ℂ F 0) Complex.I = Complex.I • (fderiv ℂ F 0) 1 := by
       rw [← ContinuousLinearMap.map_smul, smul_eq_mul, mul_one]
@@ -205,7 +205,7 @@ theorem fderiv_greenLimit_eq_zero_iff_quadratic {c z₀ : ℂ}
     have hy : Lf (y * (2 * z₀)⁻¹) = y := by
       rw [hLfapp, mul_assoc, inv_mul_cancel₀ h2z0, mul_one]
     have hh := DFunLike.congr_fun hcompzero (y * (2 * z₀)⁻¹)
-    rw [ContinuousLinearMap.comp_apply, hy, ContinuousLinearMap.zero_apply] at hh
+    rw [ContinuousLinearMap.comp_apply, hy, _root_.zero_apply] at hh
     exact hh
   · intro h
     rw [h, ContinuousLinearMap.zero_comp, smul_zero]
@@ -368,12 +368,12 @@ theorem deriv_eq_zero_of_fderiv_re_eq_zero {g : ℂ → ℂ} {z : ℂ}
     hcomp.fderiv.symm.trans hfd
   have hd1 : (deriv g z).re = 0 := by
     have h := congrArg (fun L => L (1:ℂ)) hCLM
-    simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.zero_apply,
+    simp only [ContinuousLinearMap.comp_apply, _root_.zero_apply,
       Complex.reCLM_apply] at h
     rw [← fderiv_apply_one_eq_deriv]; exact h
   have hdI : (deriv g z).im = 0 := by
     have h := congrArg (fun L => L Complex.I) hCLM
-    simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.zero_apply,
+    simp only [ContinuousLinearMap.comp_apply, _root_.zero_apply,
       Complex.reCLM_apply] at h
     have h1 : (fderiv ℂ g z) Complex.I = Complex.I • (fderiv ℂ g z) 1 := by
       rw [← ContinuousLinearMap.map_smul, smul_eq_mul, mul_one]

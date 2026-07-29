@@ -122,7 +122,7 @@ private theorem thetaCuspHorizontalAutocorrelationTangent_eq_integral
   have h1 := integrable_schwartz_mul_conj_shift v u x
   have h2 := integrable_schwartz_mul_conj_shift u v x
   change SchwartzMap.autocorrelationTangentSchwartz u v x = _
-  rw [SchwartzMap.autocorrelationTangentSchwartz, SchwartzMap.add_apply]
+  rw [SchwartzMap.autocorrelationTangentSchwartz, _root_.add_apply]
   rw [SchwartzMap.crossCorrelationSchwartz, SchwartzMap.convolution_apply,
     SchwartzMap.crossCorrelationSchwartz, SchwartzMap.convolution_apply]
   rw [convolution_def, convolution_def]

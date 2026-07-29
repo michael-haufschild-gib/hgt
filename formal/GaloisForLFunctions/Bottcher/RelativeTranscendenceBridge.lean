@@ -2508,7 +2508,7 @@ namespace Bottcher
 theorem derivative_ne_zero_of_natDegree_pos {q : Polynomial (Polynomial ℂ)}
     (hqpos : 0 < q.natDegree) : q.derivative ≠ 0 := by
   intro hzero
-  have hdeg : q.natDegree = 0 := Polynomial.natDegree_eq_zero_of_derivative_eq_zero hzero
+  have hdeg : q.natDegree = 0 := Polynomial.derivative_eq_zero.mp hzero
   exact (Nat.ne_of_gt hqpos) hdeg
 
 /-- Differentiating a deck-invariance equation gives the polynomial chain-rule identity. -/
@@ -3687,7 +3687,7 @@ theorem derivative_leadingCoeff_ne_zero_of_natDegree_pos_CzY
     (Polynomial.derivative F).leadingCoeff ≠ 0 := by
   have hderiv : Polynomial.derivative F ≠ 0 := by
     intro h
-    have := Polynomial.natDegree_eq_zero_of_derivative_eq_zero h
+    have := Polynomial.derivative_eq_zero.mp h
     omega
   exact Polynomial.leadingCoeff_ne_zero.mpr hderiv
 

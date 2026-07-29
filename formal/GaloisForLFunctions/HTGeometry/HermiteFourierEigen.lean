@@ -124,7 +124,7 @@ theorem fourierSCLM_derivSCLM (f : 𝓢(ℝ, ℂ)) :
   have hl : fourierSCLM (derivSCLM f) x = 𝓕 (deriv (f : ℝ → ℂ)) x := by
     rw [fourierSCLM_apply, coe_derivSCLM]
   rw [hl, h]
-  simp only [SchwartzMap.smul_apply, mulXCLM_apply, fourierSCLM_apply, smul_eq_mul]
+  simp only [_root_.smul_apply, mulXCLM_apply, fourierSCLM_apply, smul_eq_mul]
   ring
 
 /-- **Derivative of a transform:** `(𝓕 f)' = 𝓕 (−2πi · x · f)`. -/
@@ -141,7 +141,7 @@ theorem derivSCLM_fourierSCLM (f : 𝓢(ℝ, ℂ)) :
   have hfun : (((-2 * (π : ℂ) * I) • mulXCLM f : 𝓢(ℝ, ℂ)) : ℝ → ℂ)
       = fun y : ℝ => (-2 * (π : ℂ) * I * (y : ℂ)) • (f y) := by
     funext y
-    simp only [SchwartzMap.smul_apply, mulXCLM_apply, smul_eq_mul]
+    simp only [_root_.smul_apply, mulXCLM_apply, smul_eq_mul]
     ring
   rw [hl, h, fourierSCLM_apply, hfun]
 
@@ -156,7 +156,7 @@ theorem creationCLM_eq (f : 𝓢(ℝ, ℂ)) :
 @[simp] theorem creationCLM_apply (f : 𝓢(ℝ, ℂ)) (x : ℝ) :
     creationCLM f x = 2 * (π : ℂ) * (x : ℂ) * f x - deriv (f : ℝ → ℂ) x := by
   rw [creationCLM_eq]
-  simp only [SchwartzMap.sub_apply, SchwartzMap.smul_apply, mulXCLM_apply, derivSCLM_apply,
+  simp only [SchwartzMap.sub_apply, _root_.smul_apply, mulXCLM_apply, derivSCLM_apply,
     smul_eq_mul]
   ring
 
@@ -208,7 +208,7 @@ theorem hermiteSchwartz_succ_eq (n : ℕ) :
       = 2 * (π : ℂ) * (x : ℂ) * ((p.eval x * gaussReal x : ℝ) : ℂ)
         - ((deriv (fun y : ℝ => p.eval y * gaussReal y) x : ℝ) : ℂ) := by
     exact_mod_cast congrArg (fun t : ℝ => (t : ℂ)) hreal.symm
-  rw [SchwartzMap.smul_apply, creationCLM_apply, deriv_hermiteSchwartz, hermiteSchwartz_apply,
+  rw [_root_.smul_apply, creationCLM_apply, deriv_hermiteSchwartz, hermiteSchwartz_apply,
     hermiteSchwartz_apply, hermitePoly_succ, smul_eq_mul, eq_inv_mul_iff_mul_eq₀ hpic]
   exact hcast
 
@@ -237,7 +237,7 @@ theorem fourierSCLM_hermiteSchwartz (n : ℕ) :
 theorem fourier_hermiteSchwartz_apply (n : ℕ) (x : ℝ) :
     𝓕 (hermiteSchwartz n : ℝ → ℂ) x = (-I) ^ n * hermiteSchwartz n x := by
   have h := congrArg (fun g : 𝓢(ℝ, ℂ) => g x) (fourierSCLM_hermiteSchwartz n)
-  simpa [SchwartzMap.smul_apply, smul_eq_mul] using h
+  simpa [_root_.smul_apply, smul_eq_mul] using h
 
 /-! ## Transport to `L²` -/
 
@@ -285,7 +285,7 @@ theorem hermiteSchwartz_comp_neg (n : ℕ) :
     have hd : deriv (hermiteSchwartz n : ℝ → ℂ) (-x)
         = -((-1 : ℂ) ^ n * deriv (hermiteSchwartz n : ℝ → ℂ) x) := by
       rw [← hd2, hd1, neg_neg]
-    rw [hermiteSchwartz_succ_eq, SchwartzMap.smul_apply, SchwartzMap.smul_apply,
+    rw [hermiteSchwartz_succ_eq, _root_.smul_apply, _root_.smul_apply,
       creationCLM_apply, creationCLM_apply, hpt, hd, pow_succ, smul_eq_mul, smul_eq_mul]
     push_cast
     ring

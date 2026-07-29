@@ -62,7 +62,11 @@ theorem hasDerivAt_poleProfilePrimitive (y : ℝ) :
     simpa using (hasDerivAt_pow 2 y).add_const (1 / 4)
   have hD : HasDerivAt (fun u : ℝ => (u ^ 2 + 1 / 4) ^ 3)
       ((3 : ℕ) * (y ^ 2 + 1 / 4) ^ 2 * (2 * y)) y := by
-    simpa using hb.pow 3
+    rw [show (fun u : ℝ => (u ^ 2 + 1 / 4) ^ 3) =
+        (fun u : ℝ => u ^ 2 + 1 / 4) ^ 3 by
+      funext u
+      rfl]
+    exact hb.pow 3
   have hR : HasDerivAt (fun u : ℝ => (-(1 / 2) * u ^ 5 + 5 / 12 * u ^ 3 - 1 / 32 * u) /
       (u ^ 2 + 1 / 4) ^ 3)
       (((-(1 / 2) * ((5 : ℕ) * y ^ 4) + 5 / 12 * ((3 : ℕ) * y ^ 2) - 1 / 32 * 1) *
@@ -77,8 +81,17 @@ theorem hasDerivAt_poleProfilePrimitive (y : ℝ) :
     (Real.hasDerivAt_arctan (2 * y)).comp y hmul
   have hsum := hR.add hA
   unfold poleProfilePrimitive poleProfilePrimitiveRat
-  convert hsum using 1
-  rw [poleProfile]
+  rw [show
+      (fun u : ℝ =>
+        (-(1 / 2) * u ^ 5 + 5 / 12 * u ^ 3 - 1 / 32 * u) / (u ^ 2 + 1 / 4) ^ 3 +
+          Real.arctan (2 * u)) =
+        (fun u : ℝ =>
+          (-(1 / 2) * u ^ 5 + 5 / 12 * u ^ 3 - 1 / 32 * u) / (u ^ 2 + 1 / 4) ^ 3) +
+          fun u => Real.arctan (2 * u) by
+    funext u
+    rfl]
+  apply hsum.congr_deriv
+  unfold poleProfile
   push_cast
   field_simp
   ring
@@ -164,7 +177,11 @@ theorem tendsto_poleProfilePrimitive_atTop :
     (tendsto_nhds_of_tendsto_nhdsWithin Real.tendsto_arctan_atTop).comp
       (Filter.Tendsto.const_mul_atTop (by norm_num) tendsto_id)
   have := tendsto_poleProfilePrimitiveRat_atTop.add harc
-  simpa [poleProfilePrimitive] using this
+  rw [show poleProfilePrimitive =
+      (fun y => poleProfilePrimitiveRat y + Real.arctan (2 * y)) by
+    funext y
+    rfl]
+  simpa only [zero_add] using this
 
 theorem tendsto_poleProfilePrimitive_atBot :
     Tendsto poleProfilePrimitive atBot (nhds (-(Real.pi / 2))) := by
@@ -172,7 +189,11 @@ theorem tendsto_poleProfilePrimitive_atBot :
     (tendsto_nhds_of_tendsto_nhdsWithin Real.tendsto_arctan_atBot).comp
       (Filter.Tendsto.const_mul_atBot (by norm_num) tendsto_id)
   have := tendsto_poleProfilePrimitiveRat_atBot.add harc
-  simpa [poleProfilePrimitive] using this
+  rw [show poleProfilePrimitive =
+      (fun y => poleProfilePrimitiveRat y + Real.arctan (2 * y)) by
+    funext y
+    rfl]
+  simpa only [zero_add] using this
 
 /-! ### The value of the profile energy -/
 

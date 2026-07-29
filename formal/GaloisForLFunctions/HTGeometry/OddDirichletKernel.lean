@@ -128,7 +128,7 @@ theorem tendsto_oddReciprocal : Filter.Tendsto (fun k : ℕ => 1 / (2 * (k : ℝ
   have hlin : Filter.Tendsto (fun k : ℕ => 2 * (k : ℝ) + 1) Filter.atTop Filter.atTop := by
     have := (hnat.const_mul_atTop (by norm_num : (0 : ℝ) < 2))
     simpa using Filter.tendsto_atTop_add_const_right Filter.atTop (1 : ℝ) this
-  simpa [one_div] using hlin.inv_tendsto_atTop
+  simpa [one_div] using! hlin.inv_tendsto_atTop
 
 /-- **Dirichlet test.**  The odd harmonic sine series has Cauchy partial sums off the zeros of the
 sine.  It is only conditionally convergent, so this is a statement about partial sums, not a

@@ -112,7 +112,7 @@ theorem no_semilocalOnePrime_boundedPerturbationRealization
         rw [hmetric]
       _ = T x := by
         simp only [T, ContinuousLinearMap.comp_apply,
-          ContinuousLinearMap.sub_apply, ContinuousLinearMap.neg_apply]
+          _root_.sub_apply, ContinuousLinearMap.neg_apply]
   obtain ⟨k, hk, hklarge⟩ :=
     semilocalOnePrimeGroundCommutatorRow_unbounded hp ‖T‖
   have hi := norm_inner_le_norm (𝕜 := ℂ) (e 0) (T (e (2 * k)))

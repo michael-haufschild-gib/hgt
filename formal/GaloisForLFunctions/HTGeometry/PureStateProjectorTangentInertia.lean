@@ -48,7 +48,7 @@ theorem det_pureStateProjectorTangentCompression_eq_neg_sq_det_gram
   rw [Matrix.det_fin_two, Matrix.det_fin_two]
   simp only [pureStateProjectorTangentCompression, pureStateProjectorTangent,
     Matrix.of_apply, Matrix.gram_apply, Matrix.cons_val_zero, Matrix.cons_val_one,
-    ContinuousLinearMap.add_apply, rankOne_apply, inner_add_right,
+    _root_.add_apply, rankOne_apply, inner_add_right,
     inner_smul_right]
   ring
 

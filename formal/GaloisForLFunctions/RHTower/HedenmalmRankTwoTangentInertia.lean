@@ -48,7 +48,7 @@ theorem thetaCuspRightLine_source_tangent_linearIndependent
       thetaCuspRightLineTangentL2] using hrel
   have h1 := congrArg (fun f : SchwartzMap ℝ ℂ => f 1) hschwartz
   have h2 := congrArg (fun f : SchwartzMap ℝ ℂ => f 2) hschwartz
-  simp only [SchwartzMap.add_apply, SchwartzMap.smul_apply,
+  simp only [_root_.add_apply, _root_.smul_apply,
     thetaCuspRightLineTangent_apply, smul_eq_mul] at h1 h2
   change s * thetaCuspRightLineSource a ha 1 +
     t * (-(1 : ℂ) * thetaCuspRightLineSource a ha 1) = 0 at h1

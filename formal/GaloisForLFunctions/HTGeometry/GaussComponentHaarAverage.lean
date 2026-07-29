@@ -33,8 +33,8 @@ theorem integral_exp_affine (c : ℝ) (hc : c ≠ 0) :
       have := ((hasDerivAt_id x).const_sub (1:ℝ)).const_mul c
       simpa using this
     have h3 := (h1.exp).const_mul (-c⁻¹)
-    convert h3 using 1
-    field_simp
+    apply h3.congr_deriv
+    field_simp [hc]
   rw [intervalIntegral.integral_eq_sub_of_hasDerivAt (fun x _ => hderiv x)
     ((Continuous.intervalIntegrable (by fun_prop) 0 1))]
   simp only [mul_sub, mul_one, sub_self, mul_zero, Real.exp_zero]

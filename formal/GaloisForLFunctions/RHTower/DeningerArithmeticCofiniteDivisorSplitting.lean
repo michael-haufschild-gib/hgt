@@ -1,4 +1,4 @@
-import Mathlib.Algebra.Exact
+import Mathlib.Algebra.Exact.Basic
 import Mathlib.LinearAlgebra.Finsupp.Defs
 
 /-!

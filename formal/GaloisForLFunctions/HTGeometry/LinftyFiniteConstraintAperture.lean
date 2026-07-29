@@ -138,7 +138,7 @@ theorem linftyBlockProjection_apply_atom {k : ℕ}
     (j m : ℕ) (r : Fin (k + 1)) :
     linftyBlockProjection ν A hAmeas j (linftyBlockAtom ν A hAmeas m r) =
       if j = m then linftyBlockAtom ν A hAmeas m r else 0 := by
-  simp only [linftyBlockProjection, ContinuousLinearMap.sum_apply,
+  simp only [linftyBlockProjection, _root_.sum_apply,
     ContinuousLinearMap.smulRight_apply]
   simp_rw [linftyBlockCoordinate_apply_atom ν A hAmeas hApos hAdisj]
   split_ifs with hjm

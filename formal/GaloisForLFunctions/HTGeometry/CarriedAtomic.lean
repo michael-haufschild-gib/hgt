@@ -25,7 +25,7 @@ theorem measure_eq_fiberMeasure_of_carried (μ : Measure ℝ) [IsFiniteMeasure �
     μ = fiberMeasure (fun x => (μ {x}).toReal) F := by
   refine Measure.ext fun A hA => ?_
   have hdiff : μ (A \ F) = 0 :=
-    le_antisymm (le_trans (measure_mono (Set.diff_subset_compl A F)) (le_of_eq hcar)) zero_le
+    le_antisymm (le_trans (measure_mono (Set.sdiff_subset_compl A F)) (le_of_eq hcar)) zero_le
   have hsplit : μ (A ∩ F) = μ A := by
     have := measure_inter_add_diff (μ := μ) A hFm
     rw [hdiff, add_zero] at this

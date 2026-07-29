@@ -154,7 +154,7 @@ theorem xiReciprocalSquareOperator_pow_apply
   induction n generalizing f with
   | zero => simp
   | succ n ih =>
-      rw [pow_succ, ContinuousLinearMap.mul_apply, ih,
+      rw [pow_succ, mul_apply_eq_comp, ih,
         xiReciprocalSquareOperator_apply]
       ring
 

@@ -21,7 +21,7 @@ theorem surjective_fderiv_of_surjective_parameter_fderiv
   have hslice :
       fderiv ℝ (fun v => F (v, h)) p =
         (fderiv ℝ F (p, h)).comp (ContinuousLinearMap.inl ℝ P H) := by
-    have hc := fderiv_comp' (f := fun v : P => (v, h)) (g := F) p hF
+    have hc := fderiv_fun_comp (f := fun v : P => (v, h)) (g := F) p hF
       (hasFDerivAt_prodMk_left p h).differentiableAt
     rw [(hasFDerivAt_prodMk_left p h).fderiv] at hc
     exact hc
@@ -46,7 +46,7 @@ theorem surjective_fderiv_comp_of_surjective_parameter_fderiv
     Function.Surjective (fderiv ℝ (fun x => g (F x)) (p, h)) := by
   have hfull := surjective_fderiv_of_surjective_parameter_fderiv
     F p h hF hparameter
-  rw [fderiv_comp' (f := F) (g := g) (p, h) hg hF]
+  rw [fderiv_fun_comp (f := F) (g := g) (p, h) hg hF]
   exact hgSurj.comp hfull
 
 theorem exists_nhds_dimH_parameter_image_levelSet_le_finrank_ker

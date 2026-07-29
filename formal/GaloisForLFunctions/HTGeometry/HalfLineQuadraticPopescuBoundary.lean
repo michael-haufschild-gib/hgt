@@ -48,10 +48,16 @@ theorem hasDerivAt_oneDimQuadraticInverseCurvatureObservable
       (oneDimQuadraticInverseCurvatureScore x (curvature x) (curvature' x)) x := by
   unfold oneDimQuadraticInverseCurvatureObservable
     oneDimQuadraticInverseCurvatureScore
-  convert ((hasDerivAt_id x).const_mul 2).div hcurvature hcurvature_ne using 1
-  field_simp [hcurvature_ne]
+  have h := ((hasDerivAt_id x).const_mul 2).div hcurvature hcurvature_ne
+  have hfun :
+      ((fun y : ℝ => 2 * id y) / curvature) =
+        (fun y : ℝ => 2 * y / curvature y) := by
+    funext y
+    rfl
+  rw [hfun] at h
+  apply h.congr_deriv
   simp only [id_eq]
-  ring
+  field_simp [hcurvature_ne]
 
 /-- The quadratic inverse-curvature observable satisfies the Dirichlet trace required at the
 half-line endpoint, without a condition on the potential. -/

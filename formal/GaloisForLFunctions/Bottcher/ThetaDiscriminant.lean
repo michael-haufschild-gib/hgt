@@ -2,7 +2,6 @@ import GaloisForLFunctions.Bottcher.ThetaWronskian
 import Mathlib.NumberTheory.ModularForms.Discriminant
 import Mathlib.NumberTheory.ModularForms.LevelOne.DimensionFormula
 import Mathlib.NumberTheory.LSeries.HurwitzZetaEven
-import SpherePacking.ForMathlib.AtImInfty
 
 /-!
 # Jacobi theta product and the modular discriminant
@@ -79,7 +78,7 @@ theorem thetaProductPow8H_slash_T :
     push_cast
     ring
   have hden : denom ModularGroup.T z = 1 := by simp [ModularGroup.T, denom_apply]
-  rw [hact, hden, one_zpow, mul_one]
+  rw [hact, hden, _root_.one_zpow, mul_one]
   rw [show
       (thetaTwo ((z : ℂ) + 1) * thetaThree ((z : ℂ) + 1) *
           thetaFour ((z : ℂ) + 1)) ^ 8 =
@@ -108,7 +107,10 @@ theorem thetaProductPow8H_zeroAtImInfty : IsZeroAtImInfty thetaProductPow8H := b
   have h2 := tendsto_thetaTwo_atImInfty.comp tendsto_coe_atImInfty
   have h3 := tendsto_thetaThree_atImInfty.comp tendsto_coe_atImInfty
   have h4 := tendsto_thetaFour_atImInfty.comp tendsto_coe_atImInfty
-  simpa [thetaProductPow8H] using ((h2.mul h3).mul h4).pow 8
+  change Tendsto
+    (fun z : ℍ => (thetaTwo z * thetaThree z * thetaFour z) ^ 8)
+    atImInfty (nhds 0)
+  simpa [Function.comp_apply] using ((h2.mul h3).mul h4).pow 8
 
 /-- The eighth theta-product power as a weight-twelve level-one cusp form. -/
 def thetaProductPow8Cusp : CuspForm 𝒮ℒ 12 where
@@ -426,7 +428,7 @@ theorem thetaEisensteinFourDefectH_slash_T :
     rw [hTz]
     exact SlashInvariantForm.vAdd_apply_of_mem_strictPeriods
       ModularForm.E₄ z one_mem_strictPeriods_SL
-  rw [hact, hden, one_zpow, mul_one, hE,
+  rw [hact, hden, _root_.one_zpow, mul_one, hE,
     show thetaTwo ((z : ℂ) + 1) ^ 8 =
       (thetaTwo ((z : ℂ) + 1) ^ 4) ^ 2 by ring,
     show thetaThree ((z : ℂ) + 1) ^ 8 =
@@ -465,8 +467,10 @@ private theorem tendsto_zero_of_exp_decay_thetaEisenstein
     Tendsto f atImInfty (nhds 0) := by
   have hlin : Tendsto (fun y : ℝ => -c * y) atTop atBot := by
     simpa using tendsto_id.const_mul_atTop_of_neg (neg_neg_of_pos hc)
+  have him : Tendsto (fun z : ℍ => z.im) atImInfty atTop := by
+    exact tendsto_comap
   exact hO.trans_tendsto
-    (Real.tendsto_exp_atBot.comp hlin |>.comp tendsto_im_atImInfty)
+    (Real.tendsto_exp_atBot.comp hlin |>.comp him)
 
 theorem thetaEisensteinFourDefectH_zeroAtImInfty :
     IsZeroAtImInfty thetaEisensteinFourDefectH := by
@@ -490,7 +494,12 @@ theorem thetaEisensteinFourDefectH_zeroAtImInfty :
   have hE : Tendsto (ModularForm.E₄ : ℍ → ℂ) atImInfty (nhds 1) := by
     simpa [EisensteinSeries.E_qExpansion_coeff_zero
       (by norm_num : 3 ≤ 4) ⟨2, rfl⟩] using hE0
-  simpa [thetaEisensteinFourDefectH] using
+  change Tendsto
+    (fun z : ℍ =>
+      (thetaTwo z ^ 8 + thetaThree z ^ 8 + thetaFour z ^ 8) / 2 -
+        ModularForm.E₄ z)
+    atImInfty (nhds 0)
+  simpa [Function.comp_apply] using
     (((h2.pow 8).add (h3.pow 8) |>.add (h4.pow 8)).div_const 2).sub hE
 
 /-- The weight-four theta/Eisenstein defect as a level-one cusp form. -/

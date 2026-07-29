@@ -183,10 +183,10 @@ theorem infiniteSemimetricSymmetrization_apply_eq_zero_of_mem_ker
     infiniteSemimetricSymmetrization T data D x = 0 := by
   have hPx : data.support x = 0 := by
     have h := congrArg (fun A : E →L[ℝ] E => A x) data.inverse_mul_metric
-    simpa [ContinuousLinearMap.mul_apply, hx] using h.symm
+    simpa [mul_apply_eq_comp, hx] using h.symm
   have hsupp := (infiniteSemimetricSymmetrization_support T data D).2
   have h := congrArg (fun A : E →L[ℝ] E => A x) hsupp.symm
-  simpa [ContinuousLinearMap.mul_apply, hPx] using h
+  simpa [mul_apply_eq_comp, hPx] using h
 
 /-- Supported metric-adjoint operators are fixed by the universal symmetrizer. -/
 theorem infiniteSemimetricSymmetrization_fixed
@@ -320,16 +320,16 @@ theorem exists_symmetricSupportInverse_of_isClosed_range
     intro x y
     have hPGx : P (G x) = G x := by
       have h := congrArg (fun A : E →L[ℝ] E => A x) hPG
-      simpa [ContinuousLinearMap.mul_apply] using h
+      simpa [mul_apply_eq_comp] using h
     have hPGy : P (G y) = G y := by
       have h := congrArg (fun A : E →L[ℝ] E => A y) hPG
-      simpa [ContinuousLinearMap.mul_apply] using h
+      simpa [mul_apply_eq_comp] using h
     have hTGx : T (G x) = P x := by
       have h := congrArg (fun A : E →L[ℝ] E => A x) hTG
-      simpa [ContinuousLinearMap.mul_apply] using h
+      simpa [mul_apply_eq_comp] using h
     have hTGy : T (G y) = P y := by
       have h := congrArg (fun A : E →L[ℝ] E => A y) hTG
-      simpa [ContinuousLinearMap.mul_apply] using h
+      simpa [mul_apply_eq_comp] using h
     calc
       inner ℝ (G x) y = inner ℝ (P (G x)) y := by rw [hPGx]
       _ = inner ℝ (G x) (P y) := hPself.isSymmetric (G x) y
@@ -369,11 +369,11 @@ theorem isClosed_range_iff_nonempty_symmetricSupportInverse
       · rintro y ⟨x, rfl⟩
         refine ⟨T x, ?_⟩
         have h := congrArg (fun A : E →L[ℝ] E => A x) data.support_mul_metric
-        simpa [ContinuousLinearMap.mul_apply] using h
+        simpa [mul_apply_eq_comp] using h
       · rintro y ⟨x, rfl⟩
         refine ⟨data.inverse x, ?_⟩
         have h := congrArg (fun A : E →L[ℝ] E => A x) data.metric_mul_inverse
-        simpa [ContinuousLinearMap.mul_apply] using h
+        simpa [mul_apply_eq_comp] using h
     rw [hrange]
     exact ContinuousLinearMap.IsIdempotentElem.isClosed_range data.support_idempotent
 

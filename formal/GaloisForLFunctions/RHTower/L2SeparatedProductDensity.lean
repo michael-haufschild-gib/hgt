@@ -29,6 +29,7 @@ def l2SeparatedFun
     α × β → ℂ :=
   fun z => f z.1 * g z.2
 
+omit [SigmaFinite μ] [SigmaFinite ν] in
 theorem l2SeparatedFun_aestronglyMeasurable
     (f : Lp ℂ 2 μ) (g : Lp ℂ 2 ν) :
     AEStronglyMeasurable (l2SeparatedFun f g) (μ.prod ν) := by
@@ -36,6 +37,7 @@ theorem l2SeparatedFun_aestronglyMeasurable
     ((Lp.aestronglyMeasurable f).aemeasurable.comp_fst.mul
       (Lp.aestronglyMeasurable g).aemeasurable.comp_snd).aestronglyMeasurable
 
+omit [SigmaFinite μ] [SigmaFinite ν] in
 theorem l2SeparatedFun_memLp
     (f : Lp ℂ 2 μ) (g : Lp ℂ 2 ν) :
     MemLp (l2SeparatedFun f g) 2 (μ.prod ν) := by
@@ -59,12 +61,14 @@ def l2SeparatedProduct
   (l2SeparatedFun_memLp f g).toLp
     (l2SeparatedFun f g)
 
+omit [SigmaFinite μ] [SigmaFinite ν] in
 theorem l2SeparatedProduct_ae
     (f : Lp ℂ 2 μ) (g : Lp ℂ 2 ν) :
     l2SeparatedProduct f g
       =ᵐ[μ.prod ν] l2SeparatedFun f g :=
   (l2SeparatedFun_memLp f g).coeFn_toLp
 
+omit [SigmaFinite μ] in
 theorem l2SeparatedFun_eLpNorm
     (f : Lp ℂ 2 μ) (g : Lp ℂ 2 ν) :
     eLpNorm (l2SeparatedFun f g) 2 (μ.prod ν) =
@@ -101,6 +105,7 @@ theorem l2SeparatedFun_eLpNorm
     lintegral_rpow_enorm_eq_rpow_eLpNorm'
       (μ := ν) (q := 2) (by norm_num)]
 
+omit [SigmaFinite μ] in
 theorem l2SeparatedProduct_norm
     (f : Lp ℂ 2 μ) (g : Lp ℂ 2 ν) :
     ‖l2SeparatedProduct f g‖ = ‖f‖ * ‖g‖ := by
@@ -196,6 +201,7 @@ def l2SeparatedProductContinuousBilinear :
       rw [l2SeparatedProduct_norm]
       simp)
 
+omit [SigmaFinite μ] in
 @[simp]
 theorem l2SeparatedProductContinuousBilinear_apply
     (f : Lp ℂ 2 μ) (g : Lp ℂ 2 ν) :
@@ -208,6 +214,7 @@ def l2TensorToProduct :
       Lp ℂ 2 (μ.prod ν) :=
   TensorProduct.lift l2SeparatedProductBilinear
 
+omit [SigmaFinite μ] [SigmaFinite ν] in
 @[simp]
 theorem l2TensorToProduct_tmul
     (f : Lp ℂ 2 μ) (g : Lp ℂ 2 ν) :
@@ -215,6 +222,7 @@ theorem l2TensorToProduct_tmul
       l2SeparatedProduct f g :=
   rfl
 
+omit [SigmaFinite μ] in
 theorem l2SeparatedProduct_indicatorConstLp
     {A : Set α} (hA : MeasurableSet A) (hμA : μ A ≠ ∞)
     {B : Set β} (hB : MeasurableSet B) (hνB : ν B ≠ ∞)
@@ -273,8 +281,9 @@ theorem measurableSets_isSetRing
     IsSetRing {s : Set γ | MeasurableSet s} where
   empty_mem := MeasurableSet.empty
   union_mem := fun _ _ hs ht => hs.union ht
-  diff_mem := fun _ _ hs ht => hs.diff ht
+  sdiff_mem := fun _ _ hs ht => hs.diff ht
 
+omit [MeasurableSpace α] [MeasurableSpace β] in
 theorem setRingRectangles_isSetSemiring
     {C : Set (Set α)} {D : Set (Set β)}
     (hCr : IsSetRing C) (hDr : IsSetRing D) :
@@ -290,7 +299,7 @@ theorem setRingRectangles_isSetSemiring
         B ∩ D, hDr.inter_mem hB hD, ?_⟩
     ext z
     simp only [Set.mem_inter_iff, Set.mem_prod, and_and_and_comm]
-  diff_eq_sUnion' := by
+  sdiff_eq_sUnion' := by
     classical
     rintro _ ⟨A, hA, B, hB, rfl⟩
       _ ⟨C, hC, D, hD, rfl⟩
@@ -302,11 +311,11 @@ theorem setRingRectangles_isSetSemiring
         Set.mem_insert_iff, Set.mem_singleton_iff] at hR
       rcases hR with rfl | rfl
       · exact
-          ⟨A \ C, hCr.diff_mem hA hC,
+          ⟨A \ C, hCr.sdiff_mem hA hC,
             B, hB, rfl⟩
       · exact
           ⟨A ∩ C, hCr.inter_mem hA hC,
-            B \ D, hDr.diff_mem hB hD, rfl⟩
+            B \ D, hDr.sdiff_mem hB hD, rfl⟩
     · intro R hR S hS hRS
       simp only [Finset.coe_insert, Finset.coe_singleton,
         Set.mem_insert_iff, Set.mem_singleton_iff] at hR hS
@@ -323,7 +332,7 @@ theorem setRingRectangles_isSetSemiring
     · simp only [Finset.coe_insert, Finset.coe_singleton,
         Set.sUnion_insert, Set.sUnion_singleton, R₁, R₂]
       ext z
-      simp only [Set.mem_diff, Set.mem_prod, Set.mem_union,
+      simp only [Set.mem_sdiff, Set.mem_prod, Set.mem_union,
         Set.mem_inter_iff]
       tauto
 
@@ -354,11 +363,11 @@ theorem finiteMeasurableSets_isSetRing
         (ENNReal.add_lt_top.2
           ⟨lt_top_iff_ne_top.2 hρs,
             lt_top_iff_ne_top.2 hρt⟩)).ne
-  diff_mem := by
+  sdiff_mem := by
     rintro s t ⟨hs, hρs⟩ ⟨ht, hρt⟩
     refine ⟨hs.diff ht, ?_⟩
     exact
-      ((measure_mono Set.diff_subset).trans_lt
+      ((measure_mono Set.sdiff_subset).trans_lt
         (lt_top_iff_ne_top.2 hρs)).ne
 
 def finiteMeasureRectangles :
@@ -367,6 +376,7 @@ def finiteMeasureRectangles :
     (finiteMeasurableSets μ)
     (finiteMeasurableSets ν)
 
+omit [SigmaFinite μ] [SigmaFinite ν] in
 theorem finiteMeasureRectangles_isSetSemiring :
     IsSetSemiring
       (finiteMeasureRectangles
@@ -478,7 +488,7 @@ theorem exists_supClosure_finiteMeasureRectangles_symmDiff_lt
     · exact Set.empty_subset _
   have htailTendsto :
       Filter.Tendsto
-        (fun n => (μ.prod ν) (s \ R n))
+        ((μ.prod ν) ∘ fun n => s \ R n)
         Filter.atTop (𝓝 0) := by
     have h :=
       tendsto_measure_iInter_atTop
@@ -486,11 +496,11 @@ theorem exists_supClosure_finiteMeasureRectangles_symmDiff_lt
         (s := fun n => s \ R n)
         (fun n => (hs.diff (hRmeas n)).nullMeasurableSet)
         (fun m n hmn =>
-          Set.diff_subset_diff_right (hRmono hmn))
+          Set.sdiff_subset_sdiff_right (hRmono hmn))
         ⟨0,
-          ((measure_mono Set.diff_subset).trans_lt
+          ((measure_mono Set.sdiff_subset).trans_lt
             (lt_top_iff_ne_top.2 hρs)).ne⟩
-    simpa only [Function.comp_apply, hinter, measure_empty] using h
+    simpa only [hinter, measure_empty] using h
   obtain ⟨n, htail⟩ :
       ∃ n, (μ.prod ν) (s \ R n) < ε / 2 :=
     ((tendsto_order.1 htailTendsto).2
@@ -564,7 +574,7 @@ theorem exists_supClosure_finiteMeasureRectangles_symmDiff_lt
       apply measure_mono
       intro z hz
       simp only [u, Set.mem_symmDiff, Set.mem_inter_iff,
-        Set.mem_union, Set.mem_diff] at hz ⊢
+        Set.mem_union, Set.mem_sdiff] at hz ⊢
       tauto
     _ ≤
         (μ.prod ν) (u ∆ (s ∩ R n)) +
@@ -574,6 +584,7 @@ theorem exists_supClosure_finiteMeasureRectangles_symmDiff_lt
       ENNReal.add_lt_add hlocal htail
     _ = ε := ENNReal.add_halves ε
 
+omit [SigmaFinite μ] in
 theorem supClosure_finiteMeasureRectangles_measurable_finite
     {t : Set (α × β)}
     (ht :
@@ -616,6 +627,7 @@ theorem supClosure_finiteMeasureRectangles_measurable_finite
         (fun q hq => (hpart q hq).2)
     simpa only [Set.sUnion_eq_biUnion] using hlt.ne
 
+omit [SigmaFinite μ] in
 theorem indicatorConstLp_supClosure_mem_tensorRange
     {t : Set (α × β)}
     (ht :
@@ -680,7 +692,7 @@ theorem indicatorConstLp_supClosure_mem_tensorRange
     | empty =>
         refine
           ⟨by simp, by simp, ?_⟩
-        simpa using S.zero_mem
+        simp
     | @insert q Q hq ih =>
         have hqP : q ∈ P.parts :=
           hQP (Finset.mem_insert_self q Q)
@@ -820,7 +832,7 @@ theorem l2TensorToProduct_denseRange :
     eq_top_iff.mpr (fun f _ => hall f)
   rw [denseRange_iff_closure_range]
   simpa only [S, Submodule.topologicalClosure_coe,
-    Submodule.top_coe] using
+    Submodule.top_coe, LinearMap.coe_range] using
     congrArg
       (fun U : Submodule ℂ (Lp ℂ 2 (μ.prod ν)) =>
         (U : Set (Lp ℂ 2 (μ.prod ν))))
@@ -836,6 +848,7 @@ def denseFactorTensorToProduct
     (A ⊗[ℂ] B) →ₗ[ℂ] Lp ℂ 2 (μ.prod ν) :=
   l2TensorToProduct.comp (TensorProduct.map F G)
 
+omit [SigmaFinite μ] [SigmaFinite ν] in
 @[simp]
 theorem denseFactorTensorToProduct_tmul
     (F : A →ₗ[ℂ] Lp ℂ 2 μ)
@@ -881,7 +894,7 @@ theorem denseFactorTensorToProduct_denseRange
     have hout := (hmaps.closure L.continuous) hv
     simpa only [L,
       l2SeparatedProductContinuousBilinear_apply,
-      hclosed.closure_eq] using hout
+      hclosed.closure_eq, SetLike.mem_coe] using hout
   have hsep
       (u : Lp ℂ 2 μ) (v : Lp ℂ 2 ν) :
       l2SeparatedProduct u v ∈
@@ -896,13 +909,14 @@ theorem denseFactorTensorToProduct_denseRange
             Set (Lp ℂ 2 (μ.prod ν))) := by
       rintro _ ⟨a, rfl⟩
       simpa only [L, ContinuousLinearMap.flip_apply,
-        l2SeparatedProductContinuousBilinear_apply] using
+        l2SeparatedProductContinuousBilinear_apply,
+        SetLike.mem_coe] using
         hright a v
     have hu := hF u
     have hout := (hmaps.closure L.continuous) hu
     simpa only [L, ContinuousLinearMap.flip_apply,
       l2SeparatedProductContinuousBilinear_apply,
-      hclosed.closure_eq] using hout
+      hclosed.closure_eq, SetLike.mem_coe] using hout
   have hTensor :
       ∀ x : Lp ℂ 2 μ ⊗[ℂ] Lp ℂ 2 ν,
         l2TensorToProduct x ∈
@@ -910,7 +924,7 @@ theorem denseFactorTensorToProduct_denseRange
     intro x
     induction x using TensorProduct.induction_on with
     | zero =>
-        simpa using S.topologicalClosure.zero_mem
+        simp
     | tmul u v =>
         simpa only [l2TensorToProduct_tmul] using
           hsep u v
@@ -936,7 +950,7 @@ theorem denseFactorTensorToProduct_denseRange
     eq_top_iff.mpr (fun y _ => hall y)
   rw [denseRange_iff_closure_range]
   simpa only [T, S, Submodule.topologicalClosure_coe,
-    Submodule.top_coe] using
+    Submodule.top_coe, LinearMap.coe_range] using
     congrArg
       (fun U : Submodule ℂ (Lp ℂ 2 (μ.prod ν)) =>
         (U : Set (Lp ℂ 2 (μ.prod ν))))

@@ -122,7 +122,7 @@ theorem monomialValue_powerGrid_update_succ {L : ℕ} (q : ι → ℂ)
         columnMonomialValue q x d ^ m x by rfl]
   rw [show (∏ x : Fin L, columnMonomialValue q x d ^ m x) =
       b n * ∏ x ∈ Finset.univ \ {n}, b x by
-        rw [Finset.prod_eq_mul_prod_diff_singleton_of_mem (Finset.mem_univ n)]]
+        rw [Finset.prod_eq_mul_prod_sdiff_singleton_of_mem (Finset.mem_univ n)]]
   dsimp only [b]
   rw [pow_succ]
   ring
@@ -270,7 +270,7 @@ theorem coeff_columnDifferenceSet_univ_eq_zero_of_degree_lt {L : ℕ} (q : ι �
   classical
   have hex : ∃ n : Fin L, columnDegree d n = 0 := by
     by_contra h
-    push_neg at h
+    push Not at h
     have hpos : ∀ n : Fin L, 1 ≤ columnDegree d n :=
       fun n => Nat.one_le_iff_ne_zero.mpr (h n)
     have hle : L ≤ ∑ n : Fin L, columnDegree d n := by

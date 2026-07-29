@@ -225,7 +225,8 @@ theorem tendsto_normalizedTraceReal :
   have hmaj : Filter.Tendsto (fun σ : ℝ => Real.exp (-((σ - 1) * d)) * T 1)
       Filter.atTop (nhds 0) := by
     have h0 : Filter.Tendsto (fun σ : ℝ => σ - 1) Filter.atTop Filter.atTop := by
-      simpa using Filter.tendsto_atTop_add_const_right Filter.atTop (-1 : ℝ) Filter.tendsto_id
+      simpa only [sub_eq_add_neg, id_eq] using
+        Filter.tendsto_atTop_add_const_right Filter.atTop (-1 : ℝ) Filter.tendsto_id
     have hlin : Filter.Tendsto (fun σ : ℝ => (σ - 1) * d) Filter.atTop Filter.atTop :=
       h0.atTop_mul_const hdpos
     have hneg : Filter.Tendsto (fun σ : ℝ => -((σ - 1) * d)) Filter.atTop Filter.atBot :=

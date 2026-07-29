@@ -205,7 +205,7 @@ theorem activeQuotient_injective_of_fullOrbitFree_of_kernelCyclic_not
   have hkne : k ≠ 0 := by
     simpa only [k, sub_ne_zero] using habne
   have hsub : DifferentialIndependent F (fun n : ℤ => orbit (n • k)) := by
-    simpa only [Function.comp_apply] using
+    simpa only [Function.comp_def] using
       horbit.comp (fun n : ℤ => n • k) (hcyclic k hkne)
   exact hcompact k hkq hkne hsub
 

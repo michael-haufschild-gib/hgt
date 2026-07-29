@@ -37,8 +37,13 @@ noncomputable def thetaWronskianDefect (τ : ℂ) : ℂ :=
 theorem hasDerivAt_thetaTwo_pow4 {τ : ℂ} (hτ : 0 < τ.im) :
     HasDerivAt (fun t => thetaTwo t ^ 4) (4 * thetaTwo τ ^ 3 * deriv thetaTwo τ) τ := by
   have hp := (hasDerivAt_thetaTwo hτ).pow 4
+  rw [show (fun t => thetaTwo t ^ 4) = thetaTwo ^ 4 by
+    funext t
+    rfl]
+  apply hp.congr_deriv
   rw [(hasDerivAt_thetaTwo hτ).deriv]
-  convert hp using 1
+  push_cast
+  ring
 
 theorem deriv_thetaTwo_pow4 {τ : ℂ} (hτ : 0 < τ.im) :
     deriv (fun t => thetaTwo t ^ 4) τ = 4 * thetaTwo τ ^ 3 * deriv thetaTwo τ :=
@@ -48,8 +53,13 @@ theorem deriv_thetaTwo_pow4 {τ : ℂ} (hτ : 0 < τ.im) :
 theorem hasDerivAt_thetaThree_pow4 {τ : ℂ} (hτ : 0 < τ.im) :
     HasDerivAt (fun t => thetaThree t ^ 4) (4 * thetaThree τ ^ 3 * deriv thetaThree τ) τ := by
   have hp := (hasDerivAt_thetaThree hτ).pow 4
+  rw [show (fun t => thetaThree t ^ 4) = thetaThree ^ 4 by
+    funext t
+    rfl]
+  apply hp.congr_deriv
   rw [(hasDerivAt_thetaThree hτ).deriv]
-  convert hp using 1
+  push_cast
+  ring
 
 theorem deriv_thetaThree_pow4 {τ : ℂ} (hτ : 0 < τ.im) :
     deriv (fun t => thetaThree t ^ 4) τ = 4 * thetaThree τ ^ 3 * deriv thetaThree τ :=
@@ -75,8 +85,13 @@ theorem thetaWronskian23_of_defect
 theorem hasDerivAt_thetaFour_pow4 {τ : ℂ} (hτ : 0 < τ.im) :
     HasDerivAt (fun t => thetaFour t ^ 4) (4 * thetaFour τ ^ 3 * deriv thetaFour τ) τ := by
   have hp := (hasDerivAt_thetaFour hτ).pow 4
+  rw [show (fun t => thetaFour t ^ 4) = thetaFour ^ 4 by
+    funext t
+    rfl]
+  apply hp.congr_deriv
   rw [(hasDerivAt_thetaFour hτ).deriv]
-  convert hp using 1
+  push_cast
+  ring
 
 theorem deriv_thetaFour_pow4 {τ : ℂ} (hτ : 0 < τ.im) :
     deriv (fun t => thetaFour t ^ 4) τ = 4 * thetaFour τ ^ 3 * deriv thetaFour τ :=
@@ -108,7 +123,8 @@ private theorem deriv_shift_eq {g h : ℂ → ℂ} {τ : ℂ}
     (hid : ∀ t, g (t + 1) = h t) : deriv g (τ + 1) = deriv h τ := by
   have hcomp : HasDerivAt (fun t => g (t + 1)) (deriv g (τ + 1)) τ := by
     have h1 := hg.hasDerivAt.comp τ ((hasDerivAt_id τ).add_const 1)
-    simpa using h1
+    rw [show (fun t => g (t + 1)) = g ∘ (fun t => id t + 1) by rfl]
+    exact h1.congr_deriv (by ring)
   rw [funext hid] at hcomp
   exact hcomp.unique hh.hasDerivAt
 
@@ -201,7 +217,11 @@ private theorem deriv_S_shift {g h : ℂ → ℂ} {τ : ℂ} (hτ : τ ≠ 0)
     (hid : (fun t => g (-1 / t)) =ᶠ[nhds τ] h) :
     deriv g (-1 / τ) * (1 / τ ^ 2) = deriv h τ := by
   have hinv : HasDerivAt (fun t : ℂ => -1 / t) (1 / τ ^ 2) τ := by
-    simpa [neg_div, one_div] using (hasDerivAt_inv hτ).neg
+    rw [show (fun t : ℂ => -1 / t) = -(fun t : ℂ => t⁻¹) by
+      funext t
+      simp [neg_div, one_div]]
+    apply (hasDerivAt_inv hτ).neg.congr_deriv
+    field_simp
   have hcomp : HasDerivAt (fun t => g (-1 / t)) (deriv g (-1 / τ) * (1 / τ ^ 2)) τ :=
     hg.hasDerivAt.comp τ hinv
   exact (hcomp.congr_of_eventuallyEq hid.symm).unique hh.hasDerivAt
@@ -214,7 +234,12 @@ theorem deriv_thetaTwo_pow4_S {τ : ℂ} (hτ : 0 < τ.im) :
   have hHder : HasDerivAt (fun t => -t ^ 2 * thetaFour t ^ 4)
       (-(2 * τ) * thetaFour τ ^ 4 + -τ ^ 2 * (4 * thetaFour τ ^ 3 * deriv thetaFour τ)) τ := by
     have h1 : HasDerivAt (fun t : ℂ => -t ^ 2) (-(2 * τ)) τ := by
-      simpa using (hasDerivAt_pow 2 τ).neg
+      rw [show (fun t : ℂ => -t ^ 2) = -(fun t : ℂ => t ^ 2) by
+        funext t
+        rfl]
+      apply (hasDerivAt_pow 2 τ).neg.congr_deriv
+      push_cast
+      ring
     exact h1.mul (hasDerivAt_thetaFour_pow4 hτ)
   have hid : ∀ᶠ t in nhds τ, thetaTwo (-1 / t) ^ 4 = (fun t => -t ^ 2 * thetaFour t ^ 4) t := by
     filter_upwards [isOpen_ne.mem_nhds hτ0] with t ht using thetaTwo_pow4_S ht
@@ -232,7 +257,12 @@ theorem deriv_thetaThree_pow4_S {τ : ℂ} (hτ : 0 < τ.im) :
   have hHder : HasDerivAt (fun t => -t ^ 2 * thetaThree t ^ 4)
       (-(2 * τ) * thetaThree τ ^ 4 + -τ ^ 2 * (4 * thetaThree τ ^ 3 * deriv thetaThree τ)) τ := by
     have h1 : HasDerivAt (fun t : ℂ => -t ^ 2) (-(2 * τ)) τ := by
-      simpa using (hasDerivAt_pow 2 τ).neg
+      rw [show (fun t : ℂ => -t ^ 2) = -(fun t : ℂ => t ^ 2) by
+        funext t
+        rfl]
+      apply (hasDerivAt_pow 2 τ).neg.congr_deriv
+      push_cast
+      ring
     exact h1.mul (hasDerivAt_thetaThree_pow4 hτ)
   have hid : ∀ᶠ t in nhds τ, thetaThree (-1 / t) ^ 4 = (fun t => -t ^ 2 * thetaThree t ^ 4) t := by
     filter_upwards [isOpen_ne.mem_nhds hτ0] with t ht using thetaThree_pow4_S ht
@@ -481,7 +511,7 @@ theorem jacobiTheta₂_term_fderiv_diag (n : ℤ) (τ : ℂ) :
     (jacobiTheta₂_term_fderiv n (τ / 2) τ) (1/2, 1)
       = (π : ℂ) * I * n * (n + 1) * jacobiTheta₂_term n (τ / 2) τ := by
   rw [jacobiTheta₂_term_fderiv, jacobiTheta₂_term]
-  simp only [ContinuousLinearMap.smul_apply, ContinuousLinearMap.add_apply,
+  simp only [_root_.smul_apply, _root_.add_apply,
     ContinuousLinearMap.coe_fst', ContinuousLinearMap.coe_snd', smul_eq_mul]
   ring
 

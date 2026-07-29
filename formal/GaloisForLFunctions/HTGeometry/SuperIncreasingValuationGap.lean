@@ -230,7 +230,7 @@ theorem finsupp_pair_valuation_gap {b : ℕ → ℝ} (hb : ∀ n, 0 ≤ b n) {D 
     rw [Finsupp.mem_support_iff, hgn] at hn
     simp only [Finset.mem_union, Finsupp.mem_support_iff]
     by_contra hc
-    push_neg at hc
+    push Not at hc
     rw [hc.1, hc.2] at hn
     simp at hn
   have hval : ∑ n ∈ g.support, (g n : ℝ) * b n
@@ -434,7 +434,7 @@ theorem finsupp_pair_valuation_gap_tail {b : ℕ → ℝ} (hb : ∀ n, 0 ≤ b n
   have hKmem : K ∈ g.support := Finset.max'_mem _ _
   have hKge : N₀ ≤ K := by
     by_contra hlt
-    push_neg at hlt
+    push Not at hlt
     rw [Finsupp.mem_support_iff, hgn] at hKmem
     apply hKmem
     rw [hagree K hlt]; ring
@@ -445,7 +445,7 @@ theorem finsupp_pair_valuation_gap_tail {b : ℕ → ℝ} (hb : ∀ n, 0 ≤ b n
       intro n hn
       rw [Finsupp.mem_support_iff, hgn] at hn
       simp only [Finset.mem_union, Finsupp.mem_support_iff]
-      by_contra hc; push_neg at hc; rw [hc.1, hc.2] at hn; simp at hn
+      by_contra hc; push Not at hc; rw [hc.1, hc.2] at hn; simp at hn
     rw [Finset.sum_subset (Finset.subset_union_left (s₁ := ν.support) (s₂ := ν'.support))
       (fun n _ hn => by rw [Finsupp.notMem_support_iff.mp hn]; simp)]
     rw [Finset.sum_subset (Finset.subset_union_right (s₁ := ν.support) (s₂ := ν'.support))

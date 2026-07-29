@@ -31,10 +31,15 @@ theorem integral_pow_observablePushforwardMeasure
     ∫ y, y ^ n ∂observablePushforwardMeasure mu node =
       ∫ x, node x ^ n ∂mu := by
   rw [observablePushforwardMeasure]
-  simpa only [Function.comp_apply] using
-    (integral_map_of_stronglyMeasurable (μ := mu) hnode
-      ((continuous_id.pow n).stronglyMeasurable :
-        StronglyMeasurable (fun y : ℝ ↦ y ^ n)))
+  rw [show (fun y : ℝ => y ^ n) = id ^ n by
+      funext y
+      simp only [Pi.pow_apply, id_eq],
+    show (fun x => node x ^ n) = (id ^ n) ∘ node by
+      funext x
+      simp only [Function.comp_apply, Pi.pow_apply, id_eq]]
+  exact integral_map_of_stronglyMeasurable (μ := mu) hnode
+    ((continuous_id.pow n).stronglyMeasurable :
+      StronglyMeasurable (fun y : ℝ ↦ y ^ n))
 
 /-- Integrability of every reported power transports to the pushforward measure. -/
 theorem integrable_pow_observablePushforwardMeasure
@@ -42,9 +47,12 @@ theorem integrable_pow_observablePushforwardMeasure
     (hint : Integrable (fun x ↦ node x ^ n) mu) :
     Integrable (fun y : ℝ ↦ y ^ n) (observablePushforwardMeasure mu node) := by
   rw [observablePushforwardMeasure]
-  exact (integrable_map_measure (μ := mu) (f := node) (g := fun y : ℝ ↦ y ^ n)
+  apply (integrable_map_measure (μ := mu) (f := node) (g := fun y : ℝ ↦ y ^ n)
     (continuous_id.pow n).aestronglyMeasurable hnode.aemeasurable).2
-      (by simpa only [Function.comp_apply] using hint)
+  rw [show (fun y : ℝ => y ^ n) ∘ node = (fun x => node x ^ n) by
+    funext x
+    rfl]
+  exact hint
 
 /-- Positive mass outside every finite reported palette becomes ordinary infinite support after
 pushforward. -/
@@ -56,7 +64,10 @@ theorem observablePushforwardMeasure_infiniteSupport
   rw [observablePushforwardMeasure]
   change 0 < (Measure.map node mu) ((↑F : Set ℝ)ᶜ)
   rw [Measure.map_apply hnode F.measurableSet.compl]
-  simpa only [Set.mem_preimage, Set.mem_setOf_eq, Finset.mem_coe] using hinf F
+  rw [show node ⁻¹' (↑F : Set ℝ)ᶜ = {x | node x ∉ F} by
+    ext x
+    simp only [Set.mem_preimage, Set.mem_compl_iff, Finset.mem_coe, Set.mem_setOf_eq]]
+  exact hinf F
 
 /-- Infinite support of a reported pushforward forces infinite support of the hidden measure.
 No injectivity is needed: the image of every finite hidden palette is still finite. -/

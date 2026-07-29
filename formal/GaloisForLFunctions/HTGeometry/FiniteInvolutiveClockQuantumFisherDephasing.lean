@@ -36,11 +36,11 @@ theorem re_inner_finiteInvolutiveObservableTwirlStarKadisonDefect_eq_quarter_com
   have herased :
       (1 - finiteCyclicGaugeAverage U 2) (X ψ) =
         ((2 : 𝕜)⁻¹) • ((X * U - U * X) ψ) := by
-    rw [ContinuousLinearMap.sub_apply, ContinuousLinearMap.one_apply,
+    rw [_root_.sub_apply, one_apply_eq_self,
       ← finiteCyclicObservableTwirl_apply_of_fixed U X 2 hψ,
-      ← ContinuousLinearMap.sub_apply,
+      ← _root_.sub_apply,
       sub_finiteInvolutiveObservableTwirl_eq_half_commutator_mul U X hsq,
-      ContinuousLinearMap.smul_apply, ContinuousLinearMap.mul_apply, hψ]
+      _root_.smul_apply, mul_apply_eq_comp, hψ]
   rw [herased, norm_smul, norm_inv]
   have htwoNorm : ‖(2 : 𝕜)‖ = (2 : ℝ) := by norm_num
   rw [htwoNorm]

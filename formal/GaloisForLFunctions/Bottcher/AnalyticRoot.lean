@@ -75,7 +75,7 @@ theorem analyticAt_of_continuousAt_pow_eq {s g : ℂ → ℂ} {z₀ : ℂ} {N : 
   have hsrc : ContinuousAt (fun z => s z / r z) z₀ := hsc.div hra.continuousAt hr0
   set v₀ : ℂ := s z₀ / r z₀ with hv₀
   have hsr_const : ∀ᶠ z in 𝓝 z₀, s z / r z = v₀ := by
-    have hfin' : ({w : ℂ | w ^ N = 1} \ {v₀}).Finite := hTfin.subset Set.diff_subset
+    have hfin' : ({w : ℂ | w ^ N = 1} \ {v₀}).Finite := hTfin.subset Set.sdiff_subset
     have hcompl : ({w : ℂ | w ^ N = 1} \ {v₀})ᶜ ∈ 𝓝 v₀ :=
       hfin'.isClosed.isOpen_compl.mem_nhds (by simp)
     filter_upwards [hsrc.eventually_mem hcompl, hsr_pow] with z hz hzpow
@@ -321,15 +321,15 @@ theorem root_ratio_const_of_isPreconnected {V : Set ℂ} {s₁ s₂ : ℂ → �
       ext w; simp [Polynomial.IsRoot, sub_eq_zero]
     rw [heq]; exact Polynomial.finite_setOf_isRoot hpne
   have hScl : IsClosed ({w : ℂ | w ^ N = 1} \ {ζ}) :=
-    (hTfin.subset Set.diff_subset).isClosed
+    (hTfin.subset Set.sdiff_subset).isClosed
   obtain ⟨r, hr, hball⟩ := Metric.isOpen_iff.mp hScl.isOpen_compl ζ (by
-    simp only [Set.mem_compl_iff, Set.mem_diff, Set.mem_singleton_iff, not_and, not_not]
+    simp only [Set.mem_compl_iff, Set.mem_sdiff, Set.mem_singleton_iff, not_and, not_not]
     exact fun _ => trivial)
   -- `hball : Metric.ball ζ r ⊆ ({w | w^N=1} \ {ζ})ᶜ`; any root in `ball ζ r` equals `ζ`.
   have hroot_eq : ∀ w, dist w ζ < r → w ^ N = 1 → w = ζ := by
     intro w hwd hwr
     have : w ∈ ({u : ℂ | u ^ N = 1} \ {ζ})ᶜ := hball (by rw [Metric.mem_ball]; exact hwd)
-    simp only [Set.mem_compl_iff, Set.mem_diff, Set.mem_singleton_iff, not_and, not_not] at this
+    simp only [Set.mem_compl_iff, Set.mem_sdiff, Set.mem_singleton_iff, not_and, not_not] at this
     exact this hwr
   -- Two opens separating `ζ` from the other roots.
   obtain ⟨O₁, hO₁o, hO₁⟩ := (continuousOn_iff'.mp hqc) (Metric.ball ζ r) Metric.isOpen_ball

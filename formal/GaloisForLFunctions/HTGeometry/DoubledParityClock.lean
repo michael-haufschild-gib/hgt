@@ -72,11 +72,11 @@ theorem doubledParityClock_sq (J : E →L[𝕜] E) (hJ : J ^ 2 = 1) :
   ext x
   apply withLp_ext
   · change J (J x.fst) = x.fst
-    rw [← ContinuousLinearMap.mul_apply, ← pow_two, hJ,
-      ContinuousLinearMap.one_apply]
+    rw [← mul_apply_eq_comp, ← pow_two, hJ,
+      one_apply_eq_self]
   · change J (J x.snd) = x.snd
-    rw [← ContinuousLinearMap.mul_apply, ← pow_two, hJ,
-      ContinuousLinearMap.one_apply]
+    rw [← mul_apply_eq_comp, ← pow_two, hJ,
+      one_apply_eq_self]
 
 /-- A self-adjoint parity gives a self-adjoint doubled clock. -/
 theorem doubledParityClock_isSelfAdjoint (J : E →L[𝕜] E)
@@ -132,8 +132,8 @@ theorem doubledParityClock_fixed_pair (J : E →L[𝕜] E)
     doubledParityClock J (doubledParityPair J ψ) = doubledParityPair J ψ := by
   apply withLp_ext
   · change J (J ψ) = ψ
-    rw [← ContinuousLinearMap.mul_apply, ← pow_two, hJsq,
-      ContinuousLinearMap.one_apply]
+    rw [← mul_apply_eq_comp, ← pow_two, hJsq,
+      one_apply_eq_self]
   · rfl
 
 /-- If `J` and `A` commute, the doubled observable applied to the paired vector lies in the
@@ -144,17 +144,17 @@ theorem doubledParityClock_odd_pair (J A : E →L[𝕜] E)
       -doubledOddObservable A (doubledParityPair J ψ) := by
   apply withLp_ext
   · change J (-A (J ψ)) = -(A ψ)
-    rw [map_neg, ← ContinuousLinearMap.mul_apply, hcomm,
-      ContinuousLinearMap.mul_apply]
+    rw [map_neg, ← mul_apply_eq_comp, hcomm,
+      mul_apply_eq_comp]
     have hJJ : J (J ψ) = ψ := by
       have h := congrArg (fun T : E →L[𝕜] E => T ψ) hJsq
-      simpa only [pow_two, ContinuousLinearMap.mul_apply,
-        ContinuousLinearMap.one_apply] using h
+      simpa only [pow_two, mul_apply_eq_comp,
+        one_apply_eq_self] using h
     rw [hJJ]
   · change J (A ψ) = -(-A (J ψ))
     rw [neg_neg]
-    rw [← ContinuousLinearMap.mul_apply, hcomm,
-      ContinuousLinearMap.mul_apply]
+    rw [← mul_apply_eq_comp, hcomm,
+      mul_apply_eq_comp]
 
 /-- The clock commutator is twice the odd observable on the paired state. -/
 theorem doubledParityClock_commutator_pair (J A : E →L[𝕜] E)
@@ -164,8 +164,8 @@ theorem doubledParityClock_commutator_pair (J A : E →L[𝕜] E)
         WithLp 2 (E × E) →L[𝕜] WithLp 2 (E × E))
         (doubledParityPair J ψ) =
       (2 : 𝕜) • doubledOddObservable A (doubledParityPair J ψ) := by
-  rw [ContinuousLinearMap.sub_apply, ContinuousLinearMap.mul_apply,
-    ContinuousLinearMap.mul_apply, doubledParityClock_fixed_pair J hJsq,
+  rw [_root_.sub_apply, mul_apply_eq_comp,
+    mul_apply_eq_comp, doubledParityClock_fixed_pair J hJsq,
     doubledParityClock_odd_pair J A hJsq hcomm]
   module
 
@@ -254,7 +254,7 @@ theorem norm_doubledOddObservable_source_sq (J A : E →L[𝕜] E)
       ‖A ψ‖ ^ 2 := by
   have hAJ : A (J ψ) = J (A ψ) := by
     have h := congrArg (fun T : E →L[𝕜] E => T ψ) hcomm.symm
-    simpa only [ContinuousLinearMap.mul_apply] using h
+    simpa only [mul_apply_eq_comp] using h
   rw [doubledParitySource, map_smul, norm_smul, mul_pow,
     WithLp.prod_norm_sq_eq_of_L2]
   simp only [doubledOddObservable_fst, doubledOddObservable_snd, norm_neg,

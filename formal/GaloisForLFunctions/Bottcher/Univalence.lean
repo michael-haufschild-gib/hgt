@@ -39,12 +39,16 @@ theorem injOn_of_re_deriv_pos {f : ℂ → ℂ} {U : Set ℂ} (hU : Convex ℝ U
   have hγderiv : ∀ t, HasDerivAt γ d t := by
     intro t
     have h0 : HasDerivAt (fun x : ℝ => (x : ℂ)) 1 t := by
-      simpa using Complex.ofRealCLM.hasDerivAt
+      rw [show (fun x : ℝ => (x : ℂ)) = Complex.ofRealCLM by
+        funext x
+        rfl]
+      exact Complex.ofRealCLM.hasDerivAt
     have h1 : HasDerivAt (fun x : ℝ => (x : ℂ) * d) d t := by simpa using h0.mul_const d
     simpa [hγ] using h1.const_add a
   have hgderiv : ∀ t ∈ Icc (0:ℝ) 1, HasDerivAt (fun s => f (γ s)) (deriv f (γ t) * d) t := by
     intro t ht
     have h1 := (hf (γ t) (hγmem t ht)).scomp t (hγderiv t)
+    rw [show (fun s => f (γ s)) = f ∘ γ by rfl]
     simpa [smul_eq_mul, mul_comm] using h1
   have hcontint : ContinuousOn (fun t : ℝ => deriv f (γ t)) (Icc (0:ℝ) 1) := by
     apply hcont.comp _ hγmem

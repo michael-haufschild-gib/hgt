@@ -354,7 +354,7 @@ theorem archimedeanPrimeEulerGram_mul_not_isCompactOperator
     change (↑(u⁻¹ * u) : ArchimedeanWeightedL2 →L[ℂ] ArchimedeanWeightedL2) = 1
     simp
   have hcomp : IsCompactOperator (R * T) := by
-    simpa [ContinuousLinearMap.mul_apply, Function.comp_def] using hcompact.clm_comp R
+    simpa [mul_apply_eq_comp, Function.comp_def] using hcompact.clm_comp R
   have hid : IsCompactOperator (id : ArchimedeanWeightedL2 → ArchimedeanWeightedL2) := by
     rw [hRT] at hcomp
     simpa using hcomp

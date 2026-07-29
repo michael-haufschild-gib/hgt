@@ -40,7 +40,7 @@ theorem indicatorCutoff_idempotent (s : Set ℝ) (hs : MeasurableSet s) :
     IsIdempotentElem (indicatorCutoff s hs) := by
   rw [isIdempotentElem_iff]
   ext f
-  simp only [ContinuousLinearMap.mul_apply]
+  simp only [mul_apply_eq_comp]
   filter_upwards [indicatorCutoff_ae s hs (indicatorCutoff s hs f),
     indicatorCutoff_ae s hs f] with x h1 h2
   rw [h1]
@@ -98,14 +98,14 @@ theorem fourierCutoff_idempotent (s : Set ℝ) (hs : MeasurableSet s) :
   rw [isIdempotentElem_iff]
   apply ContinuousLinearMap.ext
   intro f
-  simp only [ContinuousLinearMap.mul_apply, fourierCutoff_apply,
+  simp only [mul_apply_eq_comp, fourierCutoff_apply,
     LinearIsometryEquiv.apply_symm_apply]
   have hP := indicatorCutoff_idempotent s hs
   rw [isIdempotentElem_iff] at hP
   have hPx := congrArg
     (fun T : SoninL2 →L[ℂ] SoninL2 => T (fourierUnitary f)) hP
   exact congrArg fourierUnitary.symm (by
-    simpa only [ContinuousLinearMap.mul_apply] using hPx)
+    simpa only [mul_apply_eq_comp] using hPx)
 
 theorem fourierCutoff_symmetric (s : Set ℝ) (hs : MeasurableSet s) :
     (fourierCutoff s hs).toLinearMap.IsSymmetric := by
@@ -274,7 +274,7 @@ theorem indicatorCutoff_closedEvenShell_eq_add
       (indicatorCutoff (Set.Icc (-b) (-a)) measurableSet_Icc f)
       (indicatorCutoff (Set.Icc a b) measurableSet_Icc f)
   ] with x hshell hneg hpos hadd
-  rw [hshell, ContinuousLinearMap.add_apply]
+  rw [hshell, _root_.add_apply]
   change (closedEvenShell a b).indicator (fun x => f x) x =
     (indicatorCutoff (Set.Icc (-b) (-a)) measurableSet_Icc f +
       indicatorCutoff (Set.Icc a b) measurableSet_Icc f : SoninL2) x
@@ -812,7 +812,7 @@ def dilationSum (p : ℝ) (hp : 1 < p) : SoninL2 →L[ℂ] SoninL2 :=
 @[simp] theorem dilationSum_apply (p : ℝ) (hp : 1 < p) (f : SoninL2) :
     dilationSum p hp f = dilation p (zero_lt_one.trans hp) f +
       dilation p⁻¹ (inv_pos.mpr (zero_lt_one.trans hp)) f := by
-  rw [dilationSum, ContinuousLinearMap.add_apply, adjoint_dilationCLM]
+  rw [dilationSum, _root_.add_apply, adjoint_dilationCLM]
   rfl
 
 theorem physicalCutoff_dilationSum_evenShellVector (a p : ℝ) (ha : 0 < a) (hp : 1 < p)

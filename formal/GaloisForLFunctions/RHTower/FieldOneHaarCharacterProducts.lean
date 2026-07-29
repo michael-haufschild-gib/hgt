@@ -176,7 +176,7 @@ theorem fieldOne_distribHaarChar_pi
         ∏ i, μ i (s i)
   simp_rw [hlocal]
   rw [Finset.prod_mul_distrib]
-  rw [ENNReal.coe_finsetProd]
+  rw [ENNReal.ofNNReal_finsetProd]
 
 /-- A norm-one unit of a locally compact nontrivially normed field preserves
 the closed unit ball, hence has distributive Haar character one. -/

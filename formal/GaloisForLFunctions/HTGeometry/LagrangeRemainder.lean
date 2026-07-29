@@ -171,7 +171,8 @@ theorem abs_sub_eval_interpolate_le
         ring
       · have hPt : P.eval t = f t := by
           have h := Lagrange.eval_interpolate_at_node (s := s) (v := id) f (Set.injOn_id _) hts
-          simpa using h
+          rw [hP]
+          exact h
         have hWt : W.eval t = 0 := by
           have h := Lagrange.eval_nodal_at_node (v := id) hts
           simpa using h

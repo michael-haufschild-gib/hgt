@@ -280,10 +280,8 @@ theorem cauchyJetRealLinearCombination_surjective
     have hR : R.re = 0 := hreal a
     have hstar : star R = -R := by
       apply Complex.ext
-      · change (star R).re = (-R).re
-        simp [hR]
-      · change (star R).im = (-R).im
-        simp
+      · simp [hR]
+      · simp
     rw [hstar, add_neg_cancel]
   have hc₂ := cauchyJet_coeff_eq_zero_of_infinite x₂ hx₂ n₂
     (fun a => (t a : ℂ)) htC hsep₂ c₂ hzero₂

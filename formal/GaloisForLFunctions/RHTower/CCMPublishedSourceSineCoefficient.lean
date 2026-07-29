@@ -63,7 +63,7 @@ theorem ccmPublishedPolarPrimeSineCoefficient_eq_completedErrorCosineMoment
           ((hasDerivAt_id x).const_mul ξ)
     have hc :=
       (Complex.ofRealCLM.hasFDerivAt.comp x hr.hasFDerivAt).hasDerivAt
-    simpa only [F, F', Function.comp_apply, ContinuousLinearMap.coe_comp',
+    simpa only [F, F', Function.comp_apply, ContinuousLinearMap.coe_comp,
       ContinuousLinearMap.comp_apply, ContinuousLinearMap.toSpanSingleton_apply,
       one_smul] using hc
   have hF' : IntervalIntegrable F' volume 0 (2 * a) := by

@@ -35,8 +35,15 @@ def compactlySupportedLocallyConstant :
     exact hf.add hg
   smul_mem' := by
     intro z f hf
-    simpa only [Pi.smul_apply, smul_eq_mul] using
-      hf.comp_left (show z * (0 : ℂ) = 0 by simp)
+    change HasCompactSupport ((z • f : LocallyConstant X ℂ) : X → ℂ)
+    have hcomp := hf.comp_left (show z * (0 : ℂ) = 0 by simp)
+    have hfun :
+        ((fun y : ℂ => z * y) ∘ (f : X → ℂ)) =
+          ((z • f : LocallyConstant X ℂ) : X → ℂ) := by
+      funext x
+      rfl
+    rw [hfun] at hcomp
+    exact hcomp
 
 /-- Negation as a continuous self-map of a topological abelian group. -/
 def locallyConstantNegContinuous : C(X, X) :=

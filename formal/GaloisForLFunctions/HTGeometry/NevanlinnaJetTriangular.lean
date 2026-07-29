@@ -102,12 +102,22 @@ theorem hasDerivAt_nevanlinnaCauchyPower
     (hden : tau - q z ≠ 0) (k : ℕ) :
     HasDerivAt (fun w => ((tau - q w)⁻¹) ^ (k + 1))
       ((k + 1 : ℕ) * q' * ((tau - q z)⁻¹) ^ (k + 2)) z := by
-  have hu : HasDerivAt (fun w => tau - q w) (-q') z :=
-    by simpa using (hasDerivAt_const z tau).sub hq
+  have hu : HasDerivAt (fun w => tau - q w) (-q') z := by
+    have hsub := (hasDerivAt_const z tau).sub hq
+    rw [show (fun w => tau - q w) = (fun _ => tau) - q by
+      funext w
+      rfl]
+    apply hsub.congr_deriv
+    ring
   have hinv := hu.inv hden
   have hpow := hinv.pow (k + 1)
-  simpa [Nat.add_sub_cancel, div_eq_mul_inv, pow_add, mul_assoc, mul_comm,
-    mul_left_comm] using hpow
+  rw [show (fun w => ((tau - q w)⁻¹) ^ (k + 1)) =
+      ((fun w => tau - q w)⁻¹) ^ (k + 1) by
+    funext w
+    rfl]
+  apply hpow.congr_deriv
+  simp [div_eq_mul_inv, pow_add, mul_assoc, mul_comm,
+    mul_left_comm]
 
 /-- Finite-sum reindexing used in the jet-expansion induction. -/
 theorem nevanlinnaJet_sum_step
@@ -173,8 +183,16 @@ theorem hasDerivAt_nevanlinnaJetExpansion
         (deriv (nevanlinnaJetCoeff a q r k) z) z :=
       ((contDiff_nevanlinnaJetCoeff ha hq r k).differentiable (by simp)).differentiableAt.hasDerivAt
     have hp := hasDerivAt_nevanlinnaCauchyPower hqderiv hden k
-    convert hb.mul hp using 1
-    all_goals ring
+    have hmul := hb.mul hp
+    rw [show
+      (fun w => nevanlinnaJetCoeff a q r k w *
+        ((tau - q w)⁻¹) ^ (k + 1)) =
+      nevanlinnaJetCoeff a q r k *
+        (fun w => ((tau - q w)⁻¹) ^ (k + 1)) by
+      funext w
+      rfl]
+    apply hmul.congr_deriv
+    ring
   have hsum := HasDerivAt.fun_sum hterm
   have hzero : deriv (nevanlinnaJetCoeff a q r (r + 1)) z = 0 := by
     rw [nevanlinnaJetCoeff_eq_zero_of_lt a q (Nat.lt_succ_self r), deriv_zero]
@@ -324,12 +342,37 @@ def nevanlinnaJetPacketLinearEquiv
     exact congrFun h s.2
   map_add' v w := by
     funext s
-    simpa only [Pi.add_apply] using congrFun
+    change
+      nevanlinnaJetLinearEquiv (ha s.1) (hq s.1) (n s.1)
+          (fun k => v ⟨s.1, k⟩ + w ⟨s.1, k⟩) s.2 =
+        nevanlinnaJetLinearEquiv (ha s.1) (hq s.1) (n s.1)
+            (fun k => v ⟨s.1, k⟩) s.2 +
+          nevanlinnaJetLinearEquiv (ha s.1) (hq s.1) (n s.1)
+            (fun k => w ⟨s.1, k⟩) s.2
+    have hinput :
+        (fun k => v ⟨s.1, k⟩ + w ⟨s.1, k⟩) =
+          (fun k => v ⟨s.1, k⟩) + (fun k => w ⟨s.1, k⟩) := by
+      funext k
+      rfl
+    rw [hinput]
+    exact congrFun
       (map_add (nevanlinnaJetLinearEquiv (ha s.1) (hq s.1) (n s.1))
         (fun k => v ⟨s.1, k⟩) (fun k => w ⟨s.1, k⟩)) s.2
   map_smul' c v := by
     funext s
-    simpa only [Pi.smul_apply] using congrFun
+    change
+      nevanlinnaJetLinearEquiv (ha s.1) (hq s.1) (n s.1)
+          (fun k => c • v ⟨s.1, k⟩) s.2 =
+        (RingHom.id ℂ) c •
+          nevanlinnaJetLinearEquiv (ha s.1) (hq s.1) (n s.1)
+            (fun k => v ⟨s.1, k⟩) s.2
+    have hinput :
+        (fun k => c • v ⟨s.1, k⟩) =
+          c • (fun k => v ⟨s.1, k⟩) := by
+      funext k
+      rfl
+    rw [hinput]
+    exact congrFun
       (map_smul (nevanlinnaJetLinearEquiv (ha s.1) (hq s.1) (n s.1)) c
         (fun k => v ⟨s.1, k⟩)) s.2
 

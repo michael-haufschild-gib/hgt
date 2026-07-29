@@ -115,7 +115,7 @@ theorem analyticAt_halfDigammaJetEval (n : ℕ) (P : MvPolynomial (Fin (n + 2)) 
       rw [← hψ]
       exact analyticAt_iteratedDeriv_logDeriv j _ hz
     have hc := AnalyticAt.comp (f := fun w : ℂ => w / 2) (x := z) h1 hhalf
-    simpa [Function.comp] using hc
+    simpa only [Function.comp_def] using hc
   induction P using MvPolynomial.induction_on with
   | C c =>
       have : (fun w => halfDigammaJetEval n (MvPolynomial.C c) w) = fun _ => c := by

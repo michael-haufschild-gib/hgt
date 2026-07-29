@@ -29,7 +29,7 @@ theorem pow_apply_eq_self_of_apply_eq_self
   induction d with
   | zero => simp
   | succ d ih =>
-      rw [pow_succ, ContinuousLinearMap.mul_apply, hUx, ih]
+      rw [pow_succ, mul_apply_eq_comp, hUx, ih]
 
 /-- The subclock average absorbs the full-clock average because every `U`-stationary vector is
 also `U ^ d`-stationary.  No adjoint or commutativity hypothesis is needed. -/
@@ -44,7 +44,7 @@ theorem finiteCyclicGaugeAverage_pow_absorbs
   have hUfix : U (P x) = P x := by
     rw [GaloisForLFunctions.PhysicalState] at hphysical
     change (U - 1) (P x) = 0 at hphysical
-    simpa only [ContinuousLinearMap.sub_apply, ContinuousLinearMap.one_apply,
+    simpa only [_root_.sub_apply, one_apply_eq_self,
       sub_eq_zero] using hphysical
   have hpowfix : (U ^ d) (P x) = P x :=
     pow_apply_eq_self_of_apply_eq_self U hUfix d
@@ -104,11 +104,11 @@ theorem nestedOrthogonalProjection_complement_energy_partition
     (x : E) :
     ‖(1 - P) x‖ ^ 2 = ‖(1 - Q) x‖ ^ 2 + ‖(Q - P) x‖ ^ 2 := by
   have hQgap : Q ((Q - P) x) = (Q - P) x := by
-    rw [← ContinuousLinearMap.mul_apply]
+    rw [← mul_apply_eq_comp]
     congr 1
     noncomm_ring [hQ2, hQP]
   have hQouter : Q ((1 - Q) x) = 0 := by
-    rw [← ContinuousLinearMap.mul_apply]
+    rw [← mul_apply_eq_comp]
     have : Q * (1 - Q) = 0 := by noncomm_ring [hQ2]
     rw [this]
     simp
@@ -121,7 +121,7 @@ theorem nestedOrthogonalProjection_complement_energy_partition
       _ = inner 𝕜 ((Q - P) x) (Q ((1 - Q) x)) := by rw [hQadj]
       _ = 0 := by rw [hQouter, inner_zero_right]
   have hsum : (Q - P) x + (1 - Q) x = (1 - P) x := by
-    simp only [ContinuousLinearMap.sub_apply, ContinuousLinearMap.one_apply]
+    simp only [_root_.sub_apply, one_apply_eq_self]
     module
   rw [← hsum]
   have hpyth := norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero

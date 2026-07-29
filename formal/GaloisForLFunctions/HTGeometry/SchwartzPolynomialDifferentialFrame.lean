@@ -41,7 +41,7 @@ theorem fourier_momentumCLM_pow_apply
   induction n generalizing u with
   | zero => simp
   | succ n ih =>
-      rw [pow_succ, ContinuousLinearMap.mul_apply, ih,
+      rw [pow_succ, mul_apply_eq_comp, ih,
         fourier_momentumCLM, spectralMomentumCLM_apply]
       rw [pow_succ]
       ring
@@ -54,8 +54,8 @@ theorem fourier_polynomialMomentum_apply
   rw [polynomialMomentum]
   rw [FourierTransform.fourier_sum]
   simp only [FourierTransform.fourier_smul]
-  rw [SchwartzMap.sum_apply]
-  simp only [SchwartzMap.smul_apply]
+  rw [_root_.sum_apply]
+  simp only [_root_.smul_apply]
   change (∑ x ∈ p.support,
       p.coeff x * FourierTransform.fourier ((momentumCLM ^ x) u) t) = _
   simp_rw [fourier_momentumCLM_pow_apply]
@@ -69,7 +69,8 @@ def conjugateReflection (u : SchwartzMap ℝ ℂ) (x : ℝ) : ℂ :=
 
 theorem integrable_conjugateReflection (u : SchwartzMap ℝ ℂ) :
     MeasureTheory.Integrable (conjugateReflection u) := by
-  simpa [conjugateReflection, Complex.conjCLE_apply] using
+  change MeasureTheory.Integrable (fun x : ℝ => (starRingEnd ℂ) (u (-x)))
+  simpa only [Complex.conjCLE_apply] using!
     ((Complex.conjCLE : ℂ →L[ℝ] ℂ).integrable_comp u.integrable.comp_neg)
 
 theorem fourier_conjugateReflection (u : SchwartzMap ℝ ℂ) (t : ℝ) :
@@ -107,13 +108,12 @@ theorem fourier_normalizedDerivativeCLM_apply
     (u : SchwartzMap ℝ ℂ) (t : ℝ) :
     FourierTransform.fourier (normalizedDerivativeCLM u) t =
       ((t : ℂ) * I) * FourierTransform.fourier u t := by
-  rw [normalizedDerivativeCLM, ContinuousLinearMap.smul_apply,
+  rw [normalizedDerivativeCLM, _root_.smul_apply,
     FourierTransform.fourier_smul]
   have h := fourier_negI_deriv_apply u t
   rw [map_smul] at h
   change (-I) * FourierTransform.fourier (derivCLM ℂ ℂ u) t = _ at h
   have hpi : (2 * Real.pi : ℝ) ≠ 0 := mul_ne_zero (by norm_num) Real.pi_ne_zero
-  push_cast at hpi
   have hD : FourierTransform.fourier (derivCLM ℂ ℂ u) t =
       I * ((2 * Real.pi * t : ℝ) : ℂ) * FourierTransform.fourier u t := by
     apply mul_left_cancel₀ (a := -I) (by simp)
@@ -121,7 +121,7 @@ theorem fourier_normalizedDerivativeCLM_apply
     rw [← mul_assoc]
     rw [show (-I) * I = (1 : ℂ) by simp]
     simp
-  rw [SchwartzMap.smul_apply]
+  rw [_root_.smul_apply]
   simp only [smul_eq_mul]
   rw [hD]
   field_simp [hpi]
@@ -135,7 +135,7 @@ theorem fourier_normalizedDerivativeCLM_pow_apply
   induction n generalizing u with
   | zero => simp
   | succ n ih =>
-      rw [pow_succ, ContinuousLinearMap.mul_apply, ih,
+      rw [pow_succ, mul_apply_eq_comp, ih,
         fourier_normalizedDerivativeCLM_apply, pow_succ]
       ring
 
@@ -149,8 +149,8 @@ theorem fourier_polynomialNormalizedDerivative_apply
       p.eval ((t : ℂ) * I) * FourierTransform.fourier u t := by
   rw [polynomialNormalizedDerivative, FourierTransform.fourier_sum]
   simp only [FourierTransform.fourier_smul]
-  rw [SchwartzMap.sum_apply]
-  simp only [SchwartzMap.smul_apply]
+  rw [_root_.sum_apply]
+  simp only [_root_.smul_apply]
   change (∑ x ∈ p.support,
       p.coeff x * FourierTransform.fourier
         ((normalizedDerivativeCLM ^ x) u) t) = _
@@ -216,7 +216,6 @@ theorem fourier_autocorrelationSchwartz
   have h := congrArg (fun f : SchwartzMap ℝ ℂ => f t)
     (SchwartzMap.fourier_convolution
       (ContinuousLinearMap.mul ℂ ℂ) u (conjugateReflectionSchwartz u))
-  dsimp only at h
   rw [SchwartzMap.pairing_apply_apply,
     fourier_conjugateReflectionSchwartz] at h
   exact h
@@ -236,7 +235,7 @@ theorem fourier_finitePolynomialAutocorrelationFrame
           (starRingEnd ℂ) (FourierTransform.fourier u t)) := by
   rw [finitePolynomialAutocorrelationFrame,
     FourierTransform.fourier_sum]
-  rw [SchwartzMap.sum_apply]
+  rw [_root_.sum_apply]
   simp_rw [fourier_autocorrelationSchwartz,
     fourier_polynomialNormalizedDerivative_apply]
   simp only [map_mul]
@@ -260,7 +259,6 @@ theorem fourier_crossCorrelationSchwartz
   have h := congrArg (fun f : SchwartzMap ℝ ℂ => f t)
     (SchwartzMap.fourier_convolution
       (ContinuousLinearMap.mul ℂ ℂ) u (conjugateReflectionSchwartz v))
-  dsimp only at h
   rw [SchwartzMap.pairing_apply_apply,
     fourier_conjugateReflectionSchwartz] at h
   exact h
@@ -277,7 +275,7 @@ theorem fourier_autocorrelationTangentSchwartz
         FourierTransform.fourier u t *
           (starRingEnd ℂ) (FourierTransform.fourier v t) := by
   rw [autocorrelationTangentSchwartz, FourierTransform.fourier_add]
-  simp only [SchwartzMap.add_apply]
+  simp only [_root_.add_apply]
   rw [fourier_crossCorrelationSchwartz, fourier_crossCorrelationSchwartz]
 
 end SchwartzMap

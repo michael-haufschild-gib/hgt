@@ -35,7 +35,7 @@ private theorem projectiveGramTangentEnergy_unitaryReferenceFrame
       inner 𝕜 (V v) (V w) = inner 𝕜 v w := by
     rw [← V.adjoint_inner_left w (V v)]
     have hleftApply := congrArg (fun T : E →L[𝕜] E => T v) hleft
-    simpa only [ContinuousLinearMap.mul_apply, ContinuousLinearMap.one_apply] using
+    simpa only [mul_apply_eq_comp, one_apply_eq_self] using
       congrArg (fun y : E => inner 𝕜 y w) hleftApply
   unfold HTGeometry.projectiveGramTangentEnergy
   rw [hvSq, hwSq, hinner]
@@ -80,10 +80,10 @@ theorem soninLogPinching_unitaryFrameProjectiveRayUniversality
   have hscatter :
       (V * soninLogFourierScattering * V.adjoint) (V (Y ψ)) =
         V (soninLogFourierScattering (Y ψ)) := by
-    simp only [ContinuousLinearMap.mul_apply]
+    simp only [mul_apply_eq_comp]
     have hleftApply :=
       congrArg (fun T : SoninL2 →L[ℂ] SoninL2 => T (Y ψ)) hleft
-    simpa only [ContinuousLinearMap.mul_apply, ContinuousLinearMap.one_apply] using
+    simpa only [mul_apply_eq_comp, one_apply_eq_self] using
       congrArg V (congrArg soninLogFourierScattering hleftApply)
   have hprojectiveFrame :
       HTGeometry.projectiveGramTangentEnergy (𝕜 := ℂ) (V (Y ψ))

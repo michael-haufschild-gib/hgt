@@ -56,9 +56,13 @@ theorem symmetricSpectralShift_ratio_eq_chiralShapeShift_ratio
   have hden :
       f (a - lam * h - lam * s) * f (a + lam * h + lam * s) ≠ 0 :=
     mul_ne_zero
-      (by convert hmp using 1 <;> ring_nf)
-      (by convert hpp using 1 <;> ring_nf)
-  exact (div_eq_div_iff (mul_ne_zero hpp hmp) hden).2 (by ring)
+      (by
+        convert hmp using 1
+        ring_nf)
+      (by
+        convert hpp using 1
+        ring_nf)
+  exact (div_eq_div_iff (mul_ne_zero hpp hmp) hden).2 (by ring_nf)
 
 /-- Spectral logarithmic derivative of the chiral quotient equals the shape logarithmic derivative
 of the symmetric intensity, scaled by the affine slope. This is branch-free phase recovery. -/
@@ -81,22 +85,46 @@ theorem chiralSpectral_logDeriv_eq_scale_mul_symmetricShape_logDeriv
       logDeriv (fun z => f (a + lam * z)) s =
         logDeriv f (a + lam * s) * lam := by
     have hinner : HasDerivAt (fun z : ℂ => a + lam * z) lam s := by
-      simpa only [Pi.add_apply, Pi.mul_apply, id_eq, zero_add, mul_one] using
-        (hasDerivAt_const s a).add ((hasDerivAt_id s).const_mul lam)
+      have hraw := (hasDerivAt_const s a).add ((hasDerivAt_id s).const_mul lam)
+      have hfun :
+          (fun z : ℂ => a + lam * z) =
+            (fun _ : ℂ => a) + fun z : ℂ => lam * id z := by
+        funext z
+        rfl
+      rw [hfun]
+      apply hraw.congr_deriv
+      ring
     have hcomp := logDeriv_comp (f := f) (g := fun z : ℂ => a + lam * z) (x := s)
       hfp hinner.differentiableAt
     rw [hinner.deriv] at hcomp
-    simpa only [Function.comp_apply] using hcomp
+    have hfun :
+        (fun z => f (a + lam * z)) = f ∘ fun z : ℂ => a + lam * z := by
+      funext z
+      rfl
+    rw [hfun]
+    exact hcomp
   have hsm' :
       logDeriv (fun z => f (a - lam * z)) s =
         logDeriv f (a - lam * s) * (-lam) := by
     have hinner : HasDerivAt (fun z : ℂ => a - lam * z) (-lam) s := by
-      simpa only [Pi.sub_apply, Pi.mul_apply, id_eq, zero_sub, mul_one] using
-        (hasDerivAt_const s a).sub ((hasDerivAt_id s).const_mul lam)
+      have hraw := (hasDerivAt_const s a).sub ((hasDerivAt_id s).const_mul lam)
+      have hfun :
+          (fun z : ℂ => a - lam * z) =
+            (fun _ : ℂ => a) - fun z : ℂ => lam * id z := by
+        funext z
+        rfl
+      rw [hfun]
+      apply hraw.congr_deriv
+      ring
     have hcomp := logDeriv_comp (f := f) (g := fun z : ℂ => a - lam * z) (x := s)
       hfm hinner.differentiableAt
     rw [hinner.deriv] at hcomp
-    simpa only [Function.comp_apply] using hcomp
+    have hfun :
+        (fun z => f (a - lam * z)) = f ∘ fun z : ℂ => a - lam * z := by
+      funext z
+      rfl
+    rw [hfun]
+    exact hcomp
   have hap' :
       logDeriv (fun b => f (b + lam * s)) a =
         logDeriv f (a + lam * s) := by
@@ -105,7 +133,12 @@ theorem chiralSpectral_logDeriv_eq_scale_mul_symmetricShape_logDeriv
     have hcomp := logDeriv_comp (f := f) (g := fun b : ℂ => b + lam * s) (x := a)
       hfp hinner.differentiableAt
     rw [hinner.deriv, mul_one] at hcomp
-    simpa only [Function.comp_apply] using hcomp
+    have hfun :
+        (fun b => f (b + lam * s)) = f ∘ fun b : ℂ => b + lam * s := by
+      funext b
+      rfl
+    rw [hfun]
+    exact hcomp
   have ham' :
       logDeriv (fun b => f (b - lam * s)) a =
         logDeriv f (a - lam * s) := by
@@ -114,7 +147,12 @@ theorem chiralSpectral_logDeriv_eq_scale_mul_symmetricShape_logDeriv
     have hcomp := logDeriv_comp (f := f) (g := fun b : ℂ => b - lam * s) (x := a)
       hfm hinner.differentiableAt
     rw [hinner.deriv, mul_one] at hcomp
-    simpa only [Function.comp_apply] using hcomp
+    have hfun :
+        (fun b => f (b - lam * s)) = f ∘ fun b : ℂ => b - lam * s := by
+      funext b
+      rfl
+    rw [hfun]
+    exact hcomp
   rw [hsp', hsm', hap', ham']
   ring
 
@@ -139,22 +177,46 @@ theorem symmetricSpectral_logDeriv_eq_scale_mul_chiralShape_logDeriv
       logDeriv (fun z => f (a + lam * z)) s =
         logDeriv f (a + lam * s) * lam := by
     have hinner : HasDerivAt (fun z : ℂ => a + lam * z) lam s := by
-      simpa only [Pi.add_apply, Pi.mul_apply, id_eq, zero_add, mul_one] using
-        (hasDerivAt_const s a).add ((hasDerivAt_id s).const_mul lam)
+      have hraw := (hasDerivAt_const s a).add ((hasDerivAt_id s).const_mul lam)
+      have hfun :
+          (fun z : ℂ => a + lam * z) =
+            (fun _ : ℂ => a) + fun z : ℂ => lam * id z := by
+        funext z
+        rfl
+      rw [hfun]
+      apply hraw.congr_deriv
+      ring
     have hcomp := logDeriv_comp (f := f) (g := fun z : ℂ => a + lam * z) (x := s)
       hfp hinner.differentiableAt
     rw [hinner.deriv] at hcomp
-    simpa only [Function.comp_apply] using hcomp
+    have hfun :
+        (fun z => f (a + lam * z)) = f ∘ fun z : ℂ => a + lam * z := by
+      funext z
+      rfl
+    rw [hfun]
+    exact hcomp
   have hsm' :
       logDeriv (fun z => f (a - lam * z)) s =
         logDeriv f (a - lam * s) * (-lam) := by
     have hinner : HasDerivAt (fun z : ℂ => a - lam * z) (-lam) s := by
-      simpa only [Pi.sub_apply, Pi.mul_apply, id_eq, zero_sub, mul_one] using
-        (hasDerivAt_const s a).sub ((hasDerivAt_id s).const_mul lam)
+      have hraw := (hasDerivAt_const s a).sub ((hasDerivAt_id s).const_mul lam)
+      have hfun :
+          (fun z : ℂ => a - lam * z) =
+            (fun _ : ℂ => a) - fun z : ℂ => lam * id z := by
+        funext z
+        rfl
+      rw [hfun]
+      apply hraw.congr_deriv
+      ring
     have hcomp := logDeriv_comp (f := f) (g := fun z : ℂ => a - lam * z) (x := s)
       hfm hinner.differentiableAt
     rw [hinner.deriv] at hcomp
-    simpa only [Function.comp_apply] using hcomp
+    have hfun :
+        (fun z => f (a - lam * z)) = f ∘ fun z : ℂ => a - lam * z := by
+      funext z
+      rfl
+    rw [hfun]
+    exact hcomp
   have hap' :
       logDeriv (fun b => f (b + lam * s)) a =
         logDeriv f (a + lam * s) := by
@@ -163,7 +225,12 @@ theorem symmetricSpectral_logDeriv_eq_scale_mul_chiralShape_logDeriv
     have hcomp := logDeriv_comp (f := f) (g := fun b : ℂ => b + lam * s) (x := a)
       hfp hinner.differentiableAt
     rw [hinner.deriv, mul_one] at hcomp
-    simpa only [Function.comp_apply] using hcomp
+    have hfun :
+        (fun b => f (b + lam * s)) = f ∘ fun b : ℂ => b + lam * s := by
+      funext b
+      rfl
+    rw [hfun]
+    exact hcomp
   have ham' :
       logDeriv (fun b => f (b - lam * s)) a =
         logDeriv f (a - lam * s) := by
@@ -172,7 +239,12 @@ theorem symmetricSpectral_logDeriv_eq_scale_mul_chiralShape_logDeriv
     have hcomp := logDeriv_comp (f := f) (g := fun b : ℂ => b - lam * s) (x := a)
       hfm hinner.differentiableAt
     rw [hinner.deriv, mul_one] at hcomp
-    simpa only [Function.comp_apply] using hcomp
+    have hfun :
+        (fun b => f (b - lam * s)) = f ∘ fun b : ℂ => b - lam * s := by
+      funext b
+      rfl
+    rw [hfun]
+    exact hcomp
   rw [hsp', hsm', hap', ham']
   ring
 

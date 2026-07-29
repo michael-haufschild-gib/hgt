@@ -237,11 +237,21 @@ theorem fourier_causalBlaschkeStep {a : ℝ} (ha : 0 < a)
   have hneg' :
       VectorFourier.fourierIntegral 𝐞 volume (innerₗ ℝ) (fun x => (-1 : ℂ) * f x) ξ =
         (-1 : ℂ) * VectorFourier.fourierIntegral 𝐞 volume (innerₗ ℝ) f ξ := by
-    simpa only [Pi.smul_apply, smul_eq_mul] using hneg
+    have hfun : ((-1 : ℂ) • f) = (fun x => (-1 : ℂ) * f x) := by
+      apply _root_.funext
+      intro x
+      simp only [Pi.smul_apply, smul_eq_mul]
+    rw [← hfun]
+    exact hneg
   have hmul' :
       VectorFourier.fourierIntegral 𝐞 volume (innerₗ ℝ) (fun x => (2 * a : ℂ) * conv x) ξ =
         (2 * a : ℂ) * VectorFourier.fourierIntegral 𝐞 volume (innerₗ ℝ) conv ξ := by
-    simpa only [Pi.smul_apply, smul_eq_mul] using hmul
+    have hfun : ((2 * a : ℂ) • conv) = (fun x => (2 * a : ℂ) * conv x) := by
+      apply _root_.funext
+      intro x
+      simp only [Pi.smul_apply, smul_eq_mul]
+    rw [← hfun]
+    exact hmul
   simp only [Pi.add_apply]
   rw [hneg', hmul']
   change (-1 : ℂ) * 𝓕 f ξ + (2 * a : ℂ) * 𝓕 conv ξ = _

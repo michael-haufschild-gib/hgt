@@ -231,7 +231,7 @@ theorem exists_finset_forall_norm_cut_mul_le
     exact ciInf_le ⟨0, by rintro r ⟨v, rfl⟩; positivity⟩ (⟨y, hyV⟩ : V)
   have hnormx : (1 : ℝ) / ‖(2 : ℂ)‖ = 1 / 2 := by norm_num
   calc ‖((1 - V.starProjection) * C) x‖ = ‖C x - V.starProjection (C x)‖ := by
-        simp [ContinuousLinearMap.mul_apply, ContinuousLinearMap.sub_apply]
+        simp [mul_apply_eq_comp, _root_.sub_apply]
     _ ≤ ‖C x - y‖ := hmin
     _ ≤ ε / 2 := le_of_lt (by simpa [dist_eq_norm] using hy)
     _ ≤ ε * ‖x‖ := by
@@ -299,7 +299,7 @@ private theorem re_inner_apply_cut_le
     (inner ℂ (C (x - P x)) (x - P x) : ℂ).re ≤ ε * ‖x‖ ^ 2 := by
   set y := x - P x with hy
   have h1subP : ((1 : H →L[ℂ] H) - P) x = x - P x := by
-    simp [ContinuousLinearMap.sub_apply]
+    simp [_root_.sub_apply]
   have hswap : (inner ℂ (C y) y : ℂ) = inner ℂ (((1 : H →L[ℂ] H) - P) (C y)) x := by
     have h1 : (inner ℂ (C y) y : ℂ) = inner ℂ (C y) (((1 : H →L[ℂ] H) - P) x) := by
       rw [h1subP]
@@ -307,7 +307,7 @@ private theorem re_inner_apply_cut_le
   have habs : ‖(inner ℂ (((1 : H →L[ℂ] H) - P) (C y)) x : ℂ)‖ ≤ ε * ‖x‖ ^ 2 := by
     calc ‖(inner ℂ (((1 : H →L[ℂ] H) - P) (C y)) x : ℂ)‖ ≤
         ‖((1 : H →L[ℂ] H) - P) (C y)‖ * ‖x‖ := norm_inner_le_norm _ _
-      _ = ‖((1 - P) * C) y‖ * ‖x‖ := by rw [ContinuousLinearMap.mul_apply]
+      _ = ‖((1 - P) * C) y‖ * ‖x‖ := by rw [mul_apply_eq_comp]
       _ ≤ (ε * ‖y‖) * ‖x‖ := mul_le_mul_of_nonneg_right (hC y) (norm_nonneg x)
       _ ≤ (ε * ‖x‖) * ‖x‖ := by
           have h2 : ε * ‖y‖ ≤ ε * ‖x‖ := mul_le_mul_of_nonneg_left hyx hε
@@ -340,7 +340,7 @@ theorem exists_isCompactOperator_norm_sub_le_one_add
     intro z
     have h1 : z - P z = Vᗮ.starProjection z := by
       rw [V.starProjection_orthogonal']
-      simp [ContinuousLinearMap.sub_apply, hP]
+      simp [_root_.sub_apply, hP]
     rw [h1]
     exact Vᗮ.norm_starProjection_apply_le z
   have h₀' : ∀ z : H, ‖((1 - P) * ((T†) * T - S)) z‖ ≤ ε * ‖z‖ := fun z =>
@@ -351,7 +351,7 @@ theorem exists_isCompactOperator_norm_sub_le_one_add
   apply opNorm_le_bound _ (by positivity)
   intro x
   have hTP : (T - T * P) x = T (x - P x) := by
-    simp [ContinuousLinearMap.sub_apply, ContinuousLinearMap.mul_apply, map_sub]
+    simp [_root_.sub_apply, mul_apply_eq_comp, map_sub]
   rw [hTP]
   set y := x - P x with hy
   have hyx : ‖y‖ ≤ ‖x‖ := hcut x
@@ -361,12 +361,12 @@ theorem exists_isCompactOperator_norm_sub_le_one_add
       (ContinuousLinearMap.adjoint_inner_right S (S y) y).symm
     rw [hSadj] at hmove
     have hsq : ‖S y‖ ^ 2 = (inner ℂ ((S * S) y) y : ℂ).re := by
-      rw [ContinuousLinearMap.mul_apply, hmove]
+      rw [mul_apply_eq_comp, hmove]
       exact (inner_self_eq_norm_sq (𝕜 := ℂ) (S y)).symm
     have hsplit : (inner ℂ ((S * S) y) y : ℂ).re =
         (inner ℂ (S y) y : ℂ).re + (inner ℂ ((S * S - S) y) y : ℂ).re := by
       have hdecomp : (S * S) y = S y + (S * S - S) y := by
-        simp [ContinuousLinearMap.sub_apply]
+        simp [_root_.sub_apply]
       rw [hdecomp, inner_add_left, Complex.add_re]
     have hlin : (inner ℂ (S y) y : ℂ).re ≤ ‖S y‖ * ‖x‖ := by
       calc (inner ℂ (S y) y : ℂ).re ≤ ‖(inner ℂ (S y) y : ℂ)‖ := Complex.re_le_norm _
@@ -378,12 +378,12 @@ theorem exists_isCompactOperator_norm_sub_le_one_add
     exact le_one_add_mul_of_sq_le_mul_add_sq (norm_nonneg _) hε hquad
   -- the corner itself obeys the same near-contraction
   have hTsq : ‖T y‖ ^ 2 = (inner ℂ (((T†) * T) y) y : ℂ).re := by
-    rw [ContinuousLinearMap.mul_apply, ContinuousLinearMap.adjoint_inner_left]
+    rw [mul_apply_eq_comp, ContinuousLinearMap.adjoint_inner_left]
     exact (inner_self_eq_norm_sq (𝕜 := ℂ) (T y)).symm
   have hTsplit : (inner ℂ (((T†) * T) y) y : ℂ).re =
       (inner ℂ (S y) y : ℂ).re + (inner ℂ (((T†) * T - S) y) y : ℂ).re := by
     have hdecomp : ((T†) * T) y = S y + ((T†) * T - S) y := by
-      simp [ContinuousLinearMap.sub_apply]
+      simp [_root_.sub_apply]
     rw [hdecomp, inner_add_left, Complex.add_re]
   have hlin' : (inner ℂ (S y) y : ℂ).re ≤ (1 + ε) * ‖x‖ * ‖x‖ := by
     calc (inner ℂ (S y) y : ℂ).re ≤ ‖(inner ℂ (S y) y : ℂ)‖ := Complex.re_le_norm _
@@ -413,7 +413,7 @@ theorem exists_isCompactOperator_norm_sub_le_of_adjoint_mul_isCompact
     intro z
     have h1 : z - P z = Vᗮ.starProjection z := by
       rw [V.starProjection_orthogonal']
-      simp [ContinuousLinearMap.sub_apply, hP]
+      simp [_root_.sub_apply, hP]
     rw [h1]
     exact Vᗮ.norm_starProjection_apply_le z
   have h₀' : ∀ z : H, ‖((1 - P) * ((T†) * T)) z‖ ≤ (δ * δ) * ‖z‖ := fun z =>
@@ -422,11 +422,11 @@ theorem exists_isCompactOperator_norm_sub_le_of_adjoint_mul_isCompact
   apply opNorm_le_bound _ hδ.le
   intro x
   have hTP : (T - T * P) x = T (x - P x) := by
-    simp [ContinuousLinearMap.sub_apply, ContinuousLinearMap.mul_apply, map_sub]
+    simp [_root_.sub_apply, mul_apply_eq_comp, map_sub]
   rw [hTP]
   set y := x - P x with hy
   have hTsq : ‖T y‖ ^ 2 = (inner ℂ (((T†) * T) y) y : ℂ).re := by
-    rw [ContinuousLinearMap.mul_apply, ContinuousLinearMap.adjoint_inner_left]
+    rw [mul_apply_eq_comp, ContinuousLinearMap.adjoint_inner_left]
     exact (inner_self_eq_norm_sq (𝕜 := ℂ) (T y)).symm
   have hTquad : ‖T y‖ ^ 2 ≤ (δ * δ) * ‖x‖ ^ 2 := by
     rw [hTsq]

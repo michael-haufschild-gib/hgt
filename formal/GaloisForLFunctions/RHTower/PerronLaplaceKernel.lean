@@ -107,7 +107,14 @@ theorem integral_mul_exp_neg_mul_Ioi {c : ℂ} (hc : 0 < c.re) :
       have h1 : HasDerivAt (fun z : ℂ => Complex.exp (-(c * z)))
           (Complex.exp (-(c * (t : ℂ))) * -c) (t : ℂ) := by
         have h2 : HasDerivAt (fun z : ℂ => -(c * z)) (-c) (t : ℂ) := by
-          simpa using ((hasDerivAt_id ((t : ℝ) : ℂ)).const_mul c).neg
+          have h2raw := ((hasDerivAt_id ((t : ℝ) : ℂ)).const_mul c).neg
+          have hfun :
+              -(fun z : ℂ => c * id z) = (fun z : ℂ => -(c * z)) := by
+            funext z
+            rfl
+          rw [hfun] at h2raw
+          apply h2raw.congr_deriv
+          ring
         exact (Complex.hasDerivAt_exp (-(c * (t : ℂ)))).comp
           ((t : ℝ) : ℂ) h2
       exact h1.comp_ofReal
@@ -117,8 +124,16 @@ theorem integral_mul_exp_neg_mul_Ioi {c : ℂ} (hc : 0 < c.re) :
         (hasDerivAt_id ((t : ℝ) : ℂ)).comp_ofReal
       simpa using (h1.div_const c).add_const (1 / c ^ 2)
     have hprod := (hA.mul hE).neg
-    convert hprod using 1
-    field_simp
+    have hfun :
+        -((fun s : ℝ => (s : ℂ) / c + 1 / c ^ 2) *
+          (fun s : ℝ => Complex.exp (-(c * s)))) =
+        (fun s : ℝ => -(((s : ℂ) / c + 1 / c ^ 2) *
+          Complex.exp (-(c * s)))) := by
+      funext s
+      rfl
+    rw [hfun] at hprod
+    apply hprod.congr_deriv
+    field_simp [hcne]
     ring
   -- continuity at the origin
   have hcont : ContinuousWithinAt

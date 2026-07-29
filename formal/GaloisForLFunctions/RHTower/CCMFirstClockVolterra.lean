@@ -476,7 +476,7 @@ theorem integral_norm_ccmFirstClockXiVolterraIntegrand_le
             ccmFirstClockScrewKernel t (xiSpectralPoint q))‖) ≤
         ∫ _t : ℝ in (0 : ℝ)..L, C := by
     apply intervalIntegral.integral_mono_on hL.le hint
-      intervalIntegral.intervalIntegrable_const
+      intervalIntegrable_const
     intro t ht
     have ht' := mem_Icc.mp ht
     simpa only [C] using

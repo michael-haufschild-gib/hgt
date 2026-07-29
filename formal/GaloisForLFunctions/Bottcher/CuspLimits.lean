@@ -33,7 +33,7 @@ theorem tendsto_jacobiTheta_bound :
     apply ContinuousAt.mul _ continuousAt_id
     exact ContinuousAt.div continuousAt_const (by fun_prop) (by norm_num)
   have := hcont.tendsto.comp tendsto_exp_neg_pi_im
-  simpa using this
+  simpa only [Function.comp_def, sub_zero, div_one, mul_zero] using this
 
 theorem tendsto_thetaThree_atImInfty :
     Tendsto thetaThree (comap Complex.im atTop) (𝓝 1) := by

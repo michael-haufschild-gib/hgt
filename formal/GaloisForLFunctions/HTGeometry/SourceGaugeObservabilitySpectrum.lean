@@ -336,7 +336,7 @@ theorem prod_injective_iff_residualGaugeGram_injective
     Q.isClosed_ker.completeSpace_coe
   rw [prod_injective_iff_residualGaugeReporter_injective]
   unfold residualGaugeGram
-  simpa only [ContinuousLinearMap.coe_comp'] using
+  simpa only [ContinuousLinearMap.coe_comp] using
     (residualGaugeReporter Q R).adjoint_comp_self_injective_iff.symm
 
 end Hilbert

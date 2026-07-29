@@ -55,7 +55,7 @@ theorem derivative_map_real_split_zero_im_eq_zero
     exact hpdeg
   have hPderiv : P.derivative ≠ 0 := by
     intro hzero
-    have hnat := Polynomial.natDegree_eq_zero_of_derivative_eq_zero hzero
+    have hnat := Polynomial.derivative_eq_zero.mp hzero
     have hnatpos : 0 < P.natDegree :=
       Polynomial.natDegree_pos_iff_degree_pos.mpr hPdeg
     omega

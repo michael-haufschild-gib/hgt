@@ -59,7 +59,7 @@ theorem tendsto_operatorPolynomialEval_apply_sub_boundary_smul
       convert h using 1
       · funext n
         simp only [operatorPolynomialEval, operatorPolynomialBoundary, map_add,
-          ContinuousLinearMap.add_apply, add_smul]
+          _root_.add_apply, add_smul]
         abel
       · simp
   | mul A B hA hB =>
@@ -77,7 +77,7 @@ theorem tendsto_operatorPolynomialEval_apply_sub_boundary_smul
       convert hsum using 1
       · funext n
         simp only [operatorPolynomialEval, operatorPolynomialBoundary, map_mul,
-          ContinuousLinearMap.mul_apply]
+          mul_apply_eq_comp]
         dsimp only [EA, EB, a, b]
         rw [map_sub, map_smul]
         simp only [smul_sub, smul_smul]

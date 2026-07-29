@@ -62,7 +62,7 @@ theorem isPreconnected_subsingleton_of_finite {X : Type*} [TopologicalSpace X] [
     {s : Set X} (hconn : IsPreconnected s) (hfin : s.Finite) : s.Subsingleton := by
   intro a ha b hb
   by_contra hab
-  have hu_closed : IsClosed (s \ {a}) := (hfin.subset Set.diff_subset).isClosed
+  have hu_closed : IsClosed (s \ {a}) := (hfin.subset Set.sdiff_subset).isClosed
   have hcover : s ⊆ {a} ∪ (s \ {a}) := by
     intro x hx; by_cases h : x = a
     · exact Or.inl h
@@ -72,7 +72,7 @@ theorem isPreconnected_subsingleton_of_finite {X : Type*} [TopologicalSpace X] [
     ⟨b, hb, hb, fun h => hab (Set.mem_singleton_iff.mp h).symm⟩
   obtain ⟨x, hx⟩ := isPreconnected_closed_iff.mp hconn {a} (s \ {a}) isClosed_singleton hu_closed
     hcover h1 h2
-  simp only [Set.mem_inter_iff, Set.mem_diff, Set.mem_singleton_iff] at hx
+  simp only [Set.mem_inter_iff, Set.mem_sdiff, Set.mem_singleton_iff] at hx
   tauto
 
 /-- **The cluster-set engine: a boundary limit with no Fatou theory.** If a map `f` (think: the disk

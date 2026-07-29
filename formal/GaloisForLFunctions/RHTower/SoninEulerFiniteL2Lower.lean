@@ -232,8 +232,8 @@ theorem centralSoninDilationCorner_commonExteriorShell_tendsto
       atTop (𝓝 0) := by
     convert hsum using 1
     funext m
-    simp only [crossBoundary, ContinuousLinearMap.mul_apply,
-      ContinuousLinearMap.one_apply, ContinuousLinearMap.sub_apply]
+    simp only [crossBoundary, mul_apply_eq_comp,
+      one_apply_eq_self, _root_.sub_apply]
     rw [hQe m]
     have hDe : D (e m) = D (e m - g m) + D (g m) := by
       rw [map_sub, sub_add_cancel]
@@ -334,8 +334,8 @@ theorem finiteEvenDilationCorners_commonExteriorShell_tendsto
     convert hsum using 1
     funext m
     dsimp [finiteEvenDilationCorners]
-    rw [ContinuousLinearMap.sum_apply]
-    simp only [ContinuousLinearMap.smul_apply]
+    rw [_root_.sum_apply]
+    simp only [_root_.smul_apply]
     simp_rw [smul_sub]
     rw [Finset.sum_sub_distrib]
   simpa [f, v] using tendsto_zero_iff_norm_tendsto_zero.mp hvec

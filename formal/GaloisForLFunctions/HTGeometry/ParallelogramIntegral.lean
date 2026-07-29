@@ -64,7 +64,7 @@ theorem parallelogramIntegral_eq_zero_of_continuousOn_of_differentiableAt
     exact (hdg p hp).neg
   have hdiv : ∀ p, f' p (1, 0) + q' p (0, 1) = 0 := by
     intro p
-    simp only [f', q', dg, ContinuousLinearMap.smul_apply,
+    simp only [f', q', dg, _root_.smul_apply,
       ContinuousLinearMap.neg_apply, ContinuousLinearMap.comp_apply,
       parallelogramCLM_apply]
     have hspan (z : ℂ) :

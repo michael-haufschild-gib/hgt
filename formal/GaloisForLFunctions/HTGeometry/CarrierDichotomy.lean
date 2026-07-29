@@ -405,7 +405,7 @@ theorem zeta_reflection_symbol_unbounded :
     have h := GaloisForLFunctions.gamma_residue 2
     have hval : ((-1 : ℂ)) ^ 2 / ((2 : ℕ).factorial : ℂ) = 1 / 2 := by norm_num [Nat.factorial]
     rw [hval] at h
-    convert h using 2
+    simpa using! h
   set L : ℂ := brk (-(2 : ℂ)) * (1 / 2) with hLdef
   have hLne : L ≠ 0 := mul_ne_zero hbrk_ne (by norm_num)
   have hbrk_t : Tendsto brk (𝓝[≠] (-(2 : ℂ))) (𝓝 (brk (-(2 : ℂ)))) :=
@@ -426,7 +426,8 @@ theorem zeta_reflection_symbol_unbounded :
         (continuous_id.add continuous_const).continuousAt
       rw [neg_add_cancel] at h0; exact h0.mono_left nhdsWithin_le_nhds
     have hn : Tendsto (fun s : ℂ => ‖s + (2 : ℂ)‖) (𝓝[≠] (-(2 : ℂ))) (𝓝 0) := by
-      simpa using (continuous_norm.continuousAt.tendsto).comp hc
+      simpa only [Function.comp_def, norm_zero] using
+        (continuous_norm.continuousAt.tendsto).comp hc
     simpa using hn.mul_const B
   have hle : ∀ᶠ s in 𝓝[≠] (-(2 : ℂ)), ‖(s + (2 : ℂ)) *
       (2 * (2 * (Real.pi : ℂ)) ^ (-s) * Complex.Gamma s * Complex.cos (Real.pi * s / 2))‖

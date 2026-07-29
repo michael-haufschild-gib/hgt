@@ -33,19 +33,19 @@ theorem powerSeries_not_rational_of_gaps {A : ℂ⟦X⟧}
   have hrhs : p.coeff (N + q.natTrailingDegree) = 0 := by
     apply Polynomial.coeff_eq_zero_of_natDegree_lt
     omega
-  have hsum : ∑ ij ∈ Finset.antidiagonal (N + q.natTrailingDegree),
+  have hsum : ∑ ij ∈ Finset.HasAntidiagonal.antidiagonal (N + q.natTrailingDegree),
       PowerSeries.coeff ij.1 (q : ℂ⟦X⟧) * PowerSeries.coeff ij.2 A = 0 := by
     rw [← PowerSeries.coeff_mul, heq, Polynomial.coeff_coe]
     exact hrhs
-  have hred : ∑ ij ∈ Finset.antidiagonal (N + q.natTrailingDegree),
+  have hred : ∑ ij ∈ Finset.HasAntidiagonal.antidiagonal (N + q.natTrailingDegree),
       PowerSeries.coeff ij.1 (q : ℂ⟦X⟧) * PowerSeries.coeff ij.2 A
       = q.coeff q.natTrailingDegree * PowerSeries.coeff N A := by
     have hmem : ((q.natTrailingDegree, N) : ℕ × ℕ)
-        ∈ Finset.antidiagonal (N + q.natTrailingDegree) := by
-      rw [Finset.mem_antidiagonal]; omega
+        ∈ Finset.HasAntidiagonal.antidiagonal (N + q.natTrailingDegree) := by
+      rw [Finset.HasAntidiagonal.mem_antidiagonal]; omega
     rw [Finset.sum_eq_single_of_mem _ hmem ?_, Polynomial.coeff_coe]
     rintro ⟨i, j⟩ hij hne
-    rw [Finset.mem_antidiagonal] at hij
+    rw [Finset.HasAntidiagonal.mem_antidiagonal] at hij
     rw [Polynomial.coeff_coe]
     rcases lt_or_ge i q.natTrailingDegree with hi | hi
     · rw [Polynomial.coeff_eq_zero_of_lt_natTrailingDegree hi, zero_mul]

@@ -54,7 +54,7 @@ theorem norm_integral_weight_cexp_secondDeriv_oneside
       intervalIntegral.integral_eq_sub_of_hasDerivAt (fun t ht => hw t (hsub ht)) hint
     have hnp : ∫ t in a..x, w' t ≤ 0 := by
       have hm := intervalIntegral.integral_mono_on hxIcc.1 hint
-        (intervalIntegral.intervalIntegrable_const (c := (0:ℝ)))
+        (intervalIntegrable_const (c := (0:ℝ)))
         (fun t ht => hwanti t (hsub (by rw [Set.uIcc_of_le hxIcc.1]; exact ht)))
       simpa using hm
     linarith [hftc, hnp]
@@ -76,7 +76,7 @@ theorem norm_integral_weight_cexp_secondDeriv_oneside
           intervalIntegral.norm_integral_le_integral_norm huv
       _ ≤ ∫ _x in u..v, w a := by
           apply intervalIntegral.integral_mono_on huv (hInt u v hu hv).norm
-            (intervalIntegral.intervalIntegrable_const)
+            intervalIntegrable_const
           intro x hx
           have hxab : x ∈ Set.uIcc a b := hsub (by rw [Set.uIcc_of_le huv]; exact hx)
           have hexp1 : ‖Complex.exp ((g x : ℂ) * I)‖ = 1 := by simp [Complex.norm_exp]

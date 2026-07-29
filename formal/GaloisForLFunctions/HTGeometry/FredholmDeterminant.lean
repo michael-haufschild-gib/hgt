@@ -69,9 +69,8 @@ theorem hasDerivAt_fredholmExp_term {K : ι × ι → ℂ} (n : ℕ) (y : ℂ) :
   have hp : HasDerivAt (fun z : ℂ => z ^ (n + 2)) (((n + 2 : ℕ) : ℂ) * y ^ (n + 1)) y := by
     simpa using hasDerivAt_pow (n + 2) y
   have h2 := (hp.div_const ((n + 2 : ℕ) : ℂ)).mul_const (∑' i, hsPow K (n + 1) (i, i))
-  convert h2 using 1
   have hne : ((n + 2 : ℕ) : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr (by omega)
-  field_simp
+  exact h2.congr_deriv (by field_simp)
 
 /-- **Termwise differentiation of the determinant exponent.**  On the disk `|z| < r` (for any `r` with
 `r·‖K‖_HS < 1`), the exponent series is differentiable and its derivative is the resolvent trace:

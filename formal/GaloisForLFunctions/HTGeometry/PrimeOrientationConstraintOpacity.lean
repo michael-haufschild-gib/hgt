@@ -58,7 +58,7 @@ theorem recurringPatternsSpan_of_anchoredSkeleton
     have hformula :
         (∑ k, c k * primeDirichletSign (singleNegativeOrientationPattern j k)) =
           (∑ k, c k) - 2 * c j := by
-      rw [Finset.sum_eq_add_sum_diff_singleton_of_mem (Finset.mem_univ j)]
+      rw [Finset.sum_eq_add_sum_sdiff_singleton_of_mem (Finset.mem_univ j)]
       rw [primeDirichletSign_singleNegativeOrientationPattern_same]
       have hrest :
           (∑ k ∈ (Finset.univ : Finset J) \ {j},
@@ -70,7 +70,7 @@ theorem recurringPatternsSpan_of_anchoredSkeleton
         rw [primeDirichletSign_singleNegativeOrientationPattern_ne hkj]
         ring
       rw [hrest]
-      rw [Finset.sum_eq_add_sum_diff_singleton_of_mem (Finset.mem_univ j)]
+      rw [Finset.sum_eq_add_sum_sdiff_singleton_of_mem (Finset.mem_univ j)]
       ring
     rw [hformula, hsum] at h
     simpa using h
@@ -116,6 +116,7 @@ theorem constraintOrientation_pattern_fiber_infinite_iff
   · intro hinf
     obtain ⟨p, hp⟩ := hinf.nonempty
     have hpb : p.1.1 = b := by
+      change primeOrientationPattern (constraintOrientation R) p = b at hp
       simpa only [primeOrientationPattern_constraintOrientation] using hp
     rw [← hpb]
     exact p.1.2

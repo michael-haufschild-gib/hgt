@@ -64,13 +64,16 @@ theorem weighted_iteratedFDeriv_le_productControl
     ‖x‖ ^ k * ‖iteratedFDeriv ℝ i f x‖ ≤
         (1 + ‖x‖) ^ k * ‖iteratedFDeriv ℝ i f x‖ := by gcongr; simp
     _ ≤ 2 ^ k * productControl k n f := by
-      simpa only [productControl] using
-        (one_add_le_sup_seminorm_apply (𝕜 := ℂ) (m := (k, n)) le_rfl hi f x)
+      rw [productControl, show schwartzSeminormFamily ℂ ℝ ℂ =
+        (fun m => SchwartzMap.seminorm ℂ m.1 m.2) by rfl]
+      exact one_add_le_sup_seminorm_apply (𝕜 := ℂ) (m := (k, n)) le_rfl hi f x
 
 theorem iteratedFDeriv_le_productControl
     (f : 𝓢(ℝ, ℂ)) {k n i : ℕ} (hi : i ≤ n) (x : ℝ) :
     ‖iteratedFDeriv ℝ i f x‖ ≤ 2 ^ k * productControl k n f := by
-  simpa only [pow_zero, one_mul, productControl, schwartzSeminormFamily_apply] using
+  rw [productControl, show schwartzSeminormFamily ℂ ℝ ℂ =
+    (fun m => SchwartzMap.seminorm ℂ m.1 m.2) by rfl]
+  simpa only [pow_zero, one_mul] using
     (one_add_le_sup_seminorm_apply (𝕜 := ℂ) (m := (k, n)) (Nat.zero_le k) hi f x)
 
 /-- Product estimate for every defining Schwartz seminorm. -/
@@ -215,10 +218,10 @@ theorem continuous_pointwiseMul :
         rw [show A * δ * δ = A * δ ^ 2 by ring, hδsq]
         exact mul_div_cancel₀ ε hA.ne'
   · intro f
-    simpa only [pointwiseMulAddHom_apply, pointwiseMul] using
+    simpa only [pointwiseMulAddHom_apply, pointwiseMul] using!
       (pairing (ContinuousLinearMap.mul ℂ ℂ) f).continuous.continuousAt
   · intro g
-    simpa only [pointwiseMulAddHom_apply, pointwiseMul] using
+    simpa only [pointwiseMulAddHom_apply, pointwiseMul] using!
       (pairing_continuous_left (ContinuousLinearMap.mul ℂ ℂ) g).continuousAt
 
 /-- Pointwise complex conjugation as a continuous conjugate-linear map of Schwartz space. -/

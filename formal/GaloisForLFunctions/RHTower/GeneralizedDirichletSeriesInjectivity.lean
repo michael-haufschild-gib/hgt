@@ -30,7 +30,7 @@ private lemma norm_generalizedDirichletTerm_real
 /-- Absolute convergence at `sigma` gives a uniform exponential bound on every farther-right real
 point, with rate equal to the smallest frequency. -/
 theorem norm_generalizedDirichletSeries_real_le
-    {mu : ℕ → ℝ} (hmu : Monotone mu) (hmu0 : 0 < mu 0)
+    {mu : ℕ → ℝ} (hmu : Monotone mu) (_hmu0 : 0 < mu 0)
     {a : ℕ → ℂ} {sigma x : ℝ}
     (ha : Summable fun n => ‖a n‖ * Real.exp (-mu n * sigma)) (hx : sigma ≤ x) :
     ‖generalizedDirichletSeries mu a x‖ ≤
@@ -158,10 +158,11 @@ theorem generalizedDirichletSeries_tendsto_scaled
             a n * (Complex.exp (mu k * x) *
               Complex.exp (-(mu n : ℂ) * (x : ℂ))) := by ring
         _ = a n * Complex.exp (-(mu n - mu k) * x) := by
+          have harg :
+              (mu k : ℂ) * (x : ℂ) + (-(mu n : ℂ) * (x : ℂ)) =
+                -((mu n : ℂ) - (mu k : ℂ)) * (x : ℂ) := by ring
           rw [← Complex.exp_add]
-          congr 1
-          push_cast
-          ring
+          rw [harg]
   have hadd : Tendsto (fun x => a k + ∑' n, F x n) atTop (𝓝 (a k + 0)) :=
     tendsto_const_nhds.add htail
   simpa using Tendsto.congr' (EventuallyEq.symm hidentity) hadd

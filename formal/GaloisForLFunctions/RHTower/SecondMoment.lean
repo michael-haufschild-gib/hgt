@@ -272,7 +272,6 @@ theorem harmonic_Icc_ge_log (N : ℕ) :
       rw [hrw] at hlog; exact hlog
     rw [Finset.sum_Icc_succ_top (by omega : 1 ≤ N + 1)]
     push_cast
-    push_cast at ih
     have harg : (N : ℝ) + 1 + 1 = (N : ℝ) + 2 := by ring
     rw [harg]
     linarith

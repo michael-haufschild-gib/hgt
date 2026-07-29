@@ -149,7 +149,7 @@ theorem jordan_chain_head_eq_zero
         (starRingEnd ℂ lambda • Hodge.star u) v =
       Hodge.star u v at hcup
   simp only [map_add, map_smul,
-    ContinuousLinearMap.smul_apply] at hcup
+    _root_.smul_apply] at hcup
   have huu : Hodge.star u u = 0 := by
     linear_combination hcup -
       Hodge.star u v * hweight

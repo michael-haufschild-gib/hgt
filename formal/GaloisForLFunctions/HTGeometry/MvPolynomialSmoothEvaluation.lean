@@ -118,7 +118,7 @@ theorem surjective_fderiv_mvPolynomial_eval_complex_real_of_pderiv_ne_zero
     (contDiff_mvPolynomial_eval_complex_real P).differentiable (by simp) |>.differentiableAt
   have hcurveDiff : DifferentiableAt ℝ curve (x i) := by
     exact differentiableAt_pi.mpr fun j => (hcurveCoord j).hasFDerivAt.restrictScalars ℝ |>.differentiableAt
-  have hcomp := fderiv_comp' (f := curve)
+  have hcomp := fderiv_fun_comp (f := curve)
     (g := fun y : Fin n → ℂ => MvPolynomial.eval y P) (x i) hFdiff hcurveDiff
   rw [hcurveValue] at hcomp
   intro y

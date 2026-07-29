@@ -89,7 +89,7 @@ theorem logHalflineCutoff_sub_eq_logIntervalCutoff
     indicatorCutoff_ae (Ioc lo hi) measurableSet_Ioc f,
     Lp.coeFn_sub (logHalflineCutoff hi f) (logHalflineCutoff lo f)
   ] with x hhi hlo hint hsub
-  rw [ContinuousLinearMap.sub_apply, hsub]
+  rw [_root_.sub_apply, hsub]
   change logHalflineCutoff hi f x - logHalflineCutoff lo f x =
     logIntervalCutoff lo hi f x
   rw [show logHalflineCutoff hi f x = (Iic hi).indicator (fun y => f y) x by
@@ -205,10 +205,10 @@ theorem logEvenUnitary_evenPhysicalShell
   have hlog : Real.log a ≤ Real.log (p * a) := by
     rw [Real.log_mul (ne_of_gt (zero_lt_one.trans hp)) ha.ne']
     exact le_add_of_nonneg_left (Real.log_nonneg hp.le)
-  rw [ContinuousLinearMap.sub_apply, map_sub,
+  rw [_root_.sub_apply, map_sub,
     logEvenUnitary_evenIndicatorCutoff (p * a) hpa,
     logEvenUnitary_evenIndicatorCutoff a ha,
-    ← ContinuousLinearMap.sub_apply,
+    ← _root_.sub_apply,
     logHalflineCutoff_sub_eq_logIntervalCutoff hlog]
 
 /-- Canonical semifinite weight of a physical logarithmic shell. -/

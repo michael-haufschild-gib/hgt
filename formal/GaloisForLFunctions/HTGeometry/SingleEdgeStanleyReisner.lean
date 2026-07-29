@@ -87,7 +87,7 @@ theorem singleEdgeX_mul_edgeX_ne_zero {F : Type*} [Field F] {n : ℕ} :
   have hne : (MvPolynomial.X 0 * MvPolynomial.X 1 : MvPolynomial (Fin 2) F) ≠ 0 := by
     intro hz
     have := congrArg (MvPolynomial.coeff (Finsupp.single 0 1 + Finsupp.single 1 1)) hz
-    simp [MvPolynomial.coeff_X'] at this
+    simp [MvPolynomial.coeff_X] at this
   exact hne hval
 
 /-- A nonedge `{b, k+2}` between an edge vertex and an isolated vertex: its product vanishes. -/

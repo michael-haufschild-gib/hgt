@@ -81,7 +81,7 @@ theorem norm_zetaChi_le_right_line_exp
       rw [intervalIntegral.integral_const, smul_eq_mul]
     rw [← hconst]
     apply intervalIntegral.integral_mono_on hab
-    · exact intervalIntegral.intervalIntegrable_const
+    · exact intervalIntegrable_const
     · apply ContinuousOn.intervalIntegrable
       have hφ :
           ContinuousOn (fun x : ℝ => (x : ℂ) + (y : ℂ) * I)

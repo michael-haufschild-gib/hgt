@@ -83,7 +83,7 @@ theorem differentiallyAlgebraic_cexp_linear (c : ℂ) :
   refine ⟨1, MvPolynomial.X 2 - MvPolynomial.C c * MvPolynomial.X 1, ?_, ?_⟩
   · intro h
     have hco := congrArg (MvPolynomial.coeff (Finsupp.single 2 1)) h
-    simp [MvPolynomial.coeff_sub, MvPolynomial.coeff_X', MvPolynomial.coeff_C_mul,
+    simp [MvPolynomial.coeff_sub, MvPolynomial.coeff_X, MvPolynomial.coeff_C_mul,
       Finsupp.single_eq_single_iff] at hco
   · intro z
     have hderiv : deriv (fun s => Complex.exp (c * s)) z = c * Complex.exp (c * z) := by

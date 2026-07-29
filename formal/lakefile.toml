@@ -2,19 +2,14 @@ name = "GaloisForLFunctions"
 defaultTargets = ["GaloisForLFunctions"]
 
 [[require]]
-name = "mathlib"
-git = "https://github.com/leanprover-community/mathlib4.git"
-rev = "v4.30.0"
-
-[[require]]
 name = "aesop"
 git = "https://github.com/leanprover-community/aesop"
-rev = "v4.30.0"
+rev = "v4.32.0"
 
 [[require]]
-name = "SpherePacking"
-git = "https://github.com/thefundamentaltheor3m/Sphere-Packing-Lean.git"
-rev = "139114cffabd11c10863133e57b056a29279eee2"
+name = "mathlib"
+git = "https://github.com/leanprover-community/mathlib4.git"
+rev = "v4.32.2"
 
 [[lean_lib]]
 name = "GaloisForLFunctions"

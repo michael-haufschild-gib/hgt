@@ -72,7 +72,7 @@ theorem norm_sq_apply_ge_of_orthonormal_span {m : ℕ} {g : Fin m → H} (hg : O
     (1 - Real.sqrt m * η) ^ 2 * ‖f‖ ^ 2 ≤ ‖T f‖ ^ 2 := by
   set R : H →L[ℂ] H := ContinuousLinearMap.id ℂ H - T with hR
   have hRapply : ∀ x : H, R x = x - T x := fun x => by
-    rw [hR, ContinuousLinearMap.sub_apply, ContinuousLinearMap.id_apply]
+    rw [hR, _root_.sub_apply, ContinuousLinearMap.id_apply]
   have hRk : ∀ k, ‖R (g k)‖ ≤ η := fun k => by rw [hRapply]; exact hη k
   have hagg := norm_sq_apply_le_of_orthonormal_span hg R hRk hf
   have hsqrt : ‖R f‖ ≤ Real.sqrt m * η * ‖f‖ := by

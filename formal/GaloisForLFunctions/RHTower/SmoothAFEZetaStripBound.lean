@@ -82,7 +82,7 @@ theorem norm_Gamma_vertical_ratio_le_exp_two
       rw [intervalIntegral.integral_const, smul_eq_mul]
     rw [← hconst]
     apply intervalIntegral.integral_mono_on hab
-    · exact intervalIntegral.intervalIntegrable_const
+    · exact intervalIntegrable_const
     · exact hcontinuous
     · intro x hx
       rw [mem_Icc] at hx

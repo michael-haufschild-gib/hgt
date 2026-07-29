@@ -446,7 +446,7 @@ theorem continuousPolar_stieltjesIntegrationByParts
       convert ((Real.hasDerivAt_sinh (x / 2)).comp x
         ((hasDerivAt_id x).div_const 2)).const_mul 4 using 1 <;> norm_num <;> ring
     have hc := (Complex.ofRealCLM.hasFDerivAt.comp x hr.hasFDerivAt).hasDerivAt
-    simpa only [Function.comp_apply, ContinuousLinearMap.coe_comp',
+    simpa only [Function.comp_apply, ContinuousLinearMap.coe_comp,
       ContinuousLinearMap.comp_apply, ContinuousLinearMap.toSpanSingleton_apply,
       one_smul] using hc
   have hP' : IntervalIntegrable

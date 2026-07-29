@@ -45,7 +45,7 @@ theorem inner_finiteClockErasedTangent_eq_zero
   have hPψ : P ψ = ψ :=
     finiteCyclicGaugeAverage_apply_of_fixed U N hN hψ
   have hPcomp : P ((1 - P) y) = 0 := by
-    rw [← ContinuousLinearMap.mul_apply]
+    rw [← mul_apply_eq_comp]
     have : P * (1 - P) = 0 := by noncomm_ring [hP2]
     rw [this]
     simp

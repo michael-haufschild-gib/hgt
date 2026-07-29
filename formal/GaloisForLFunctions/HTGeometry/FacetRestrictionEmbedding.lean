@@ -270,11 +270,15 @@ theorem range_birelativeCommonLiftMap_eq_ker
     obtain ⟨a, rfl⟩ := Submodule.Quotient.mk_surjective I x
     obtain ⟨b, rfl⟩ := Submodule.Quotient.mk_surjective J y
     have hxy' : (I ⊔ J).mkQ (a - b) = 0 := by
-      simpa only [birelativeCompatibilityMap_mk] using hxy
+      change birelativeCompatibilityMap I J (I.mkQ a, J.mkQ b) = 0 at hxy
+      rw [birelativeCompatibilityMap_mk] at hxy
+      exact hxy
     have hab : a - b ∈ I ⊔ J := by
       apply (Submodule.Quotient.eq (I ⊔ J)).1
       rw [← sub_eq_zero]
-      simpa only [map_sub] using hxy'
+      change (I ⊔ J).mkQ a - (I ⊔ J).mkQ b = 0
+      rw [← map_sub]
+      exact hxy'
     rcases Submodule.mem_sup.1 hab with ⟨i, hi, j, hj, hij⟩
     refine ⟨(I ⊓ J).mkQ (a - i), ?_⟩
     apply Prod.ext
@@ -507,10 +511,15 @@ theorem exists_commonFamilyRepresentative_of_pairwiseCompatible
         have hc := hx i (Finset.mem_insert_self i s) j (Finset.mem_insert_of_mem hj)
         rw [← hb, ← ha j hj] at hc
         have hc' : (J i ⊔ J j).mkQ (b - a) = 0 := by
-          simpa only [birelativeCompatibilityMap_mk] using hc
+          change birelativeCompatibilityMap (J i) (J j)
+            ((J i).mkQ b, (J j).mkQ a) = 0 at hc
+          rw [birelativeCompatibilityMap_mk] at hc
+          exact hc
         apply (Submodule.Quotient.eq (J i ⊔ J j)).1
         rw [← sub_eq_zero]
-        simpa only [map_sub] using hc'
+        change (J i ⊔ J j).mkQ b - (J i ⊔ J j).mkQ a = 0
+        rw [← map_sub]
+        exact hc'
       have h_inf : b - a ∈ s.inf (fun j => J i ⊔ J j) := by
         simpa only [Finset.inf_eq_iInf, Submodule.mem_iInf] using h_each
       rw [← hJ i s] at h_inf
@@ -600,9 +609,24 @@ theorem facetIdeal_sup (F G : Finset α) :
   ext i
   constructor
   · rintro ⟨x, hx, rfl⟩
-    exact ⟨x, by simpa only [Finset.mem_inter, not_and_or] using hx, rfl⟩
+    rcases hx with hxF | hxG
+    · change x ∉ F at hxF
+      refine ⟨x, ?_, rfl⟩
+      change x ∉ F ∩ G
+      intro hxFG
+      exact hxF (Finset.mem_inter.mp hxFG).1
+    · change x ∉ G at hxG
+      refine ⟨x, ?_, rfl⟩
+      change x ∉ F ∩ G
+      intro hxFG
+      exact hxG (Finset.mem_inter.mp hxFG).2
   · rintro ⟨x, hx, rfl⟩
-    exact ⟨x, by simpa only [Finset.mem_inter, not_and_or] using hx, rfl⟩
+    change x ∉ F ∩ G at hx
+    have hx' : x ∉ F ∨ x ∉ G := by
+      simpa only [Finset.mem_inter, not_and_or] using hx
+    refine ⟨x, ?_, rfl⟩
+    change (x ∉ F) ∨ (x ∉ G)
+    exact hx'
 
 /-- Coordinate-facet ideals obey the finite distributivity law needed for fracture descent. -/
 theorem facetIdeal_isFractureDistributive :

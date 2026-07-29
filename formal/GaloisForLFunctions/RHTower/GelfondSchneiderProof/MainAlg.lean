@@ -299,14 +299,18 @@ lemma isIntegral_c₁_pow_smul_γ'_pow : IsIntegral ℤ (h7.c₁ ^ (b q t * h7.l
 lemma isIntegral_c₁_pow_smul_α'_pow' :
     IsIntegral ℤ (h7.c₁^(h7.m * q) • (h7.α' ^ (a q t * h7.l q u))) :=
     h7.isIntegral_c₁_pow_smul_pow h7.α' h7.m q (a q t) (h7.l q u)
-  (by simpa [mul_comm] using Nat.mul_le_mul (((finProdFinEquiv.symm.toFun t).1).isLt)
-       (((finProdFinEquiv.symm.toFun u).1).isLt)) <| by grind [h7.isIntegral_c₁α]
+  (by
+    rw [a, l]
+    simpa [mul_comm] using Nat.mul_le_mul (((finProdFinEquiv.symm.toFun t).1).isLt)
+      (((finProdFinEquiv.symm.toFun u).1).isLt)) <| by grind [h7.isIntegral_c₁α]
 
 lemma isIntegral_c₁_pow_smul_γ'_pow' :
     IsIntegral ℤ (h7.c₁ ^ (h7.m * q) • (h7.γ'^ (b q t * h7.l q u))) :=
     h7.isIntegral_c₁_pow_smul_pow h7.γ' h7.m q (b q t) (h7.l q u)
-  (by simpa [mul_comm] using Nat.mul_le_mul (((finProdFinEquiv.symm.toFun t).2).isLt)
-       (((finProdFinEquiv.symm.toFun u).1).isLt)) <| by grind [h7.isIntegral_c₁γ]
+  (by
+    rw [b, l]
+    simpa [mul_comm] using Nat.mul_le_mul (((finProdFinEquiv.symm.toFun t).2).isLt)
+      (((finProdFinEquiv.symm.toFun u).1).isLt)) <| by grind [h7.isIntegral_c₁γ]
 
 lemma c_coeffs_neq_zero : h7.c_coeffs q ≠ 0 :=
     mul_ne_zero (mul_ne_zero (pow_ne_zero _ (Ne.symm (Int.ne_of_lt h7.one_le_c₁)))
@@ -356,6 +360,7 @@ lemma house_bound_c₁α :
     house (h7.c₁ • h7.α') ^ (a q t * h7.l q u) ≤ house (h7.c₁ • h7.α') ^ (h7.m * q) := by
   refine Bound.pow_le_pow_right_of_le_one_or_one_le (Or.inl ⟨one_le_house_of_isIntegral
     (h7.isIntegral_c₁α) h7.c₁α_ne_zero, ?_⟩)
+  rw [a, l]
   simpa [mul_comm] using mul_le_mul (((finProdFinEquiv.symm.toFun t).1).isLt)
     (((finProdFinEquiv.symm.toFun u).1).isLt) (Nat.zero_le _) (Nat.zero_le _)
 

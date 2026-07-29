@@ -81,10 +81,8 @@ def finiteObserverCoherenceGraph
     i ≠ j ∧
       (0 < finiteObserverUnionWeight lam block i j ∨
        0 < finiteObserverUnionWeight lam block j i)
-  symm := by
-    intro i j h
-    exact ⟨h.1.symm, h.2.symm⟩
-  loopless := ⟨fun i h => h.1 rfl⟩
+  symm := ⟨fun _ _ h => ⟨h.1.symm, h.2.symm⟩⟩
+  loopless := ⟨fun _ h => h.1 rfl⟩
 
 noncomputable instance finiteObserverCoherenceGraph.instDecidableRel
     {d : ℕ} {J : Type*} [Fintype J]

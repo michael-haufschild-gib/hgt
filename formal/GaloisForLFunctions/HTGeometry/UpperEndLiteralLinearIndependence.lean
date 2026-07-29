@@ -50,7 +50,7 @@ theorem coefficients_eq_zero_of_upperEndGerm_eq_zero
         have hconst : upperEndAnalyticSubring.subtype
             (upperEndPolyToAnalytic (Polynomial.C (c j))) =
             (↑(fun _ : ℂ => c j) : Germ upperEndFilter ℂ) := by
-          change (↑((Pi.ringHom fun z => Polynomial.evalRingHom z)
+          change (↑((RingHom.pi fun z => Polynomial.evalRingHom z)
             (Polynomial.C (c j))) : Germ upperEndFilter ℂ) = _
           congr 1
           funext z

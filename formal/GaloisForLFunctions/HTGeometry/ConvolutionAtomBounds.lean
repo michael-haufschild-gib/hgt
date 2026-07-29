@@ -172,7 +172,7 @@ open Finset in
 `∑_{(m,k)∈antidiag j} (a^m/m!)(b^k/k!) = (a+b)^j/j!`.  For the compound-Poisson intensities this is the
 semigroup coefficient identity `compoundPoisson(a) ∗ compoundPoisson(b) = compoundPoisson(a+b)`. -/
 theorem poisson_cauchy (a b : ℝ) (j : ℕ) :
-    ∑ p ∈ Finset.antidiagonal j, (a ^ p.1 / p.1.factorial) * (b ^ p.2 / p.2.factorial)
+    ∑ p ∈ Finset.HasAntidiagonal.antidiagonal j, (a ^ p.1 / p.1.factorial) * (b ^ p.2 / p.2.factorial)
       = (a + b) ^ j / j.factorial := by
   rw [Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk, add_pow, Finset.sum_div]
   apply Finset.sum_congr rfl
@@ -196,18 +196,18 @@ theorem measure_sum_sigma {ι : Type*} {T : ι → Type*} (f : (Σ i, T i) → M
   exact tsum_congr (fun i => (Measure.sum_apply _ hs).symm)
 
 /-- Equivalence grouping `ℕ × ℕ` by the antidiagonal of the coordinate sum. -/
-def sigmaAntidiagEquiv : (Σ j : ℕ, {p : ℕ × ℕ // p ∈ Finset.antidiagonal j}) ≃ ℕ × ℕ where
+def sigmaAntidiagEquiv : (Σ j : ℕ, {p : ℕ × ℕ // p ∈ Finset.HasAntidiagonal.antidiagonal j}) ≃ ℕ × ℕ where
   toFun x := x.2.1
-  invFun p := ⟨p.1 + p.2, ⟨p, Finset.mem_antidiagonal.mpr rfl⟩⟩
-  left_inv := fun ⟨j, p, hp⟩ => by simp only [Finset.mem_antidiagonal] at hp; subst hp; rfl
+  invFun p := ⟨p.1 + p.2, ⟨p, Finset.HasAntidiagonal.mem_antidiagonal.mpr rfl⟩⟩
+  left_inv := fun ⟨j, p, hp⟩ => by simp only [Finset.HasAntidiagonal.mem_antidiagonal] at hp; subst hp; rfl
   right_inv := fun _ => rfl
 
 /-- **Antidiagonal Cauchy reindex for `Measure.sum`**: a double-indexed measure sum over `ℕ × ℕ`
 regroups as a sum over `j` of the finite antidiagonal sums. -/
 theorem measure_sum_antidiagonal (g : ℕ × ℕ → Measure α) :
-    Measure.sum g = Measure.sum (fun j : ℕ => ∑ p ∈ Finset.antidiagonal j, g p) := by
+    Measure.sum g = Measure.sum (fun j : ℕ => ∑ p ∈ Finset.HasAntidiagonal.antidiagonal j, g p) := by
   rw [← Measure.sum_comp_equiv sigmaAntidiagEquiv g, measure_sum_sigma]
-  exact congrArg Measure.sum (funext (fun j => Measure.sum_coe_finset (Finset.antidiagonal j) g))
+  exact congrArg Measure.sum (funext (fun j => Measure.sum_coe_finset (Finset.HasAntidiagonal.antidiagonal j) g))
 
 omit [MeasurableSingletonClass M] in
 /-- **Convolution of two convolution-power mixtures is a mixture with the Cauchy-product coefficients**:
@@ -215,12 +215,12 @@ omit [MeasurableSingletonClass M] in
 compound-Poisson convolution-semigroup structural formula. -/
 theorem convPowMixture_conv_antidiagonal (c₁ c₂ : ℕ → ℝ≥0∞) (Q : Measure M) [SFinite Q] :
     convPowMixture c₁ Q ∗ convPowMixture c₂ Q =
-      convPowMixture (fun j => ∑ p ∈ Finset.antidiagonal j, c₁ p.1 * c₂ p.2) Q := by
+      convPowMixture (fun j => ∑ p ∈ Finset.HasAntidiagonal.antidiagonal j, c₁ p.1 * c₂ p.2) Q := by
   rw [convPowMixture_conv, Measure.sum_sum, measure_sum_antidiagonal, convPowMixture]
   refine congrArg Measure.sum (funext (fun j => ?_))
   rw [Finset.sum_smul]
   refine Finset.sum_congr rfl (fun p hp => ?_)
-  rw [Finset.mem_antidiagonal] at hp
+  rw [Finset.HasAntidiagonal.mem_antidiagonal] at hp
   rw [hp]
 
 omit [MeasurableSingletonClass M] in
@@ -229,11 +229,11 @@ noncomputable def compoundPoisson (lam : ℝ) (Q : Measure M) : Measure M :=
   convPowMixture (fun m => ENNReal.ofReal (Real.exp (-lam) * lam ^ m / m.factorial)) Q
 
 theorem compoundPoisson_coeff_cauchy (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) (j : ℕ) :
-    (∑ p ∈ Finset.antidiagonal j,
+    (∑ p ∈ Finset.HasAntidiagonal.antidiagonal j,
         ENNReal.ofReal (Real.exp (-a) * a ^ p.1 / p.1.factorial) *
           ENNReal.ofReal (Real.exp (-b) * b ^ p.2 / p.2.factorial))
       = ENNReal.ofReal (Real.exp (-(a + b)) * (a + b) ^ j / j.factorial) := by
-  have hreal : ∑ p ∈ Finset.antidiagonal j,
+  have hreal : ∑ p ∈ Finset.HasAntidiagonal.antidiagonal j,
       (Real.exp (-a) * a ^ p.1 / p.1.factorial) * (Real.exp (-b) * b ^ p.2 / p.2.factorial)
       = Real.exp (-(a + b)) * (a + b) ^ j / j.factorial := by
     have hfac : ∀ p : ℕ × ℕ,

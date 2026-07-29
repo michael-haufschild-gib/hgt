@@ -100,7 +100,7 @@ theorem ContinuousSchwartzSesquilinearForm.fourierPullback_spectralMomentum_pow_
   induction n generalizing f g with
   | zero => simp
   | succ n ih =>
-      simp only [pow_succ, ContinuousLinearMap.mul_apply]
+      simp only [pow_succ, mul_apply_eq_comp]
       calc
         Q.fourierPullback ((spectralMomentumCLM ^ n) (spectralMomentumCLM f)) g =
             Q.fourierPullback (spectralMomentumCLM f)
@@ -111,7 +111,7 @@ theorem ContinuousSchwartzSesquilinearForm.fourierPullback_spectralMomentum_pow_
         _ = Q.fourierPullback f
               ((spectralMomentumCLM ^ n) (spectralMomentumCLM g)) := by
           congr 1
-          rw [← ContinuousLinearMap.mul_apply, ← ContinuousLinearMap.mul_apply]
+          rw [← mul_apply_eq_comp, ← mul_apply_eq_comp]
           exact congrArg
             (fun A : SchwartzMap ℝ ℂ →L[ℂ] SchwartzMap ℝ ℂ => A g)
             (Commute.self_pow spectralMomentumCLM n).eq
@@ -131,14 +131,14 @@ theorem ContinuousSchwartzSesquilinearForm.fourierPullback_clm_pow_symmetric
   induction n generalizing f g with
   | zero => simp
   | succ n ih =>
-      simp only [pow_succ, ContinuousLinearMap.mul_apply]
+      simp only [pow_succ, mul_apply_eq_comp]
       calc
         Q.fourierPullback ((A ^ n) (A f)) g =
             Q.fourierPullback (A f) ((A ^ n) g) := ih _ _
         _ = Q.fourierPullback f (A ((A ^ n) g)) := hA _ _
         _ = Q.fourierPullback f ((A ^ n) (A g)) := by
           congr 1
-          rw [← ContinuousLinearMap.mul_apply, ← ContinuousLinearMap.mul_apply]
+          rw [← mul_apply_eq_comp, ← mul_apply_eq_comp]
           exact congrArg
             (fun B : SchwartzMap ℝ ℂ →L[ℂ] SchwartzMap ℝ ℂ => B g)
             (Commute.self_pow A n).eq

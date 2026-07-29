@@ -79,8 +79,7 @@ theorem quantumMasterConstraint_unitarySubOne_eq_two_sub_self_sub_adjoint
   have hsub : ContinuousLinearMap.adjoint (U - 1) = U.adjoint - 1 := by
     let adj : (E →L[𝕜] E) ≃ₗᵢ⋆[𝕜] (E →L[𝕜] E) :=
       ContinuousLinearMap.adjoint
-    simpa [adj, ContinuousLinearMap.adjoint_one] using
-      adj.map_sub U (1 : E →L[𝕜] E)
+    simp
   rw [quantumMasterConstraint, hsub]
   change (U.adjoint - 1) * (U - 1) = 2 - U - U.adjoint
   rw [show (2 : E →L[𝕜] E) = 1 + 1 by norm_num]
@@ -151,7 +150,7 @@ theorem quantumMasterConstraint_ker_eq (C : E →L[𝕜] E) :
 This is the operator-level nondegeneracy law behind Kraus effects and master constraints. -/
 theorem quantumMasterConstraint_eq_zero_iff (C : E →L[𝕜] E) :
     quantumMasterConstraint C = 0 ↔ C = 0 := by
-  simpa [quantumMasterConstraint] using adjoint_comp_self_eq_zero_iff C
+  simp [quantumMasterConstraint]
 
 /-- Equivalently, forming the positive master effect introduces no new nondegeneracy premise. -/
 theorem quantumMasterConstraint_ne_zero_iff (C : E →L[𝕜] E) :
@@ -217,7 +216,7 @@ theorem re_inner_finiteQuantumMasterConstraint_eq_sum_normSq
     RCLike.re (inner 𝕜 ψ (finiteQuantumMasterConstraint C ψ)) =
       ∑ i, ‖C i ψ‖ ^ 2 := by
   classical
-  simp only [finiteQuantumMasterConstraint, ContinuousLinearMap.sum_apply,
+  simp only [finiteQuantumMasterConstraint, sum_apply,
     inner_sum, map_sum]
   exact Finset.sum_congr rfl fun i _ =>
     re_inner_quantumMasterConstraint_eq_normSq (C i) ψ
@@ -244,7 +243,10 @@ theorem physicalState_finiteQuantumMasterConstraint_iff
   · intro hfamily
     have hzero : ∀ i, C i ψ = 0 := by
       intro i
-      simpa only [GaloisForLFunctions.PhysicalState] using hfamily i
+      have hi := hfamily i
+      change (C i).toLinearMap ψ = 0 at hi
+      change (C i).toLinearMap ψ = 0
+      exact hi
     rw [GaloisForLFunctions.PhysicalState]
     change finiteQuantumMasterConstraint C ψ = 0
     simp [finiteQuantumMasterConstraint, quantumMasterConstraint, hzero]
@@ -333,7 +335,7 @@ theorem finiteCyclicGaugeSum_physical
       (finiteCyclicGaugeSum U N ψ) := by
   rw [GaloisForLFunctions.PhysicalState]
   change (U - 1) (finiteCyclicGaugeSum U N ψ) = 0
-  rw [← ContinuousLinearMap.mul_apply, finiteCyclicGaugeSum_telescope, hperiod]
+  rw [← mul_apply_eq_comp, finiteCyclicGaugeSum_telescope, hperiod]
   simp
 
 /-- Normalization preserves the constraint solution constructed by the orbit sum. -/
@@ -356,7 +358,7 @@ theorem finiteCyclicGaugeSum_apply_of_fixed
     induction k with
     | zero => simp
     | succ k ih =>
-        rw [pow_succ, ContinuousLinearMap.mul_apply, hfix, ih]
+        rw [pow_succ, mul_apply_eq_comp, hfix, ih]
   calc
     finiteCyclicGaugeSum U N ψ = ∑ k ∈ Finset.range N, (U ^ k) ψ := by
       simp [finiteCyclicGaugeSum]
@@ -372,7 +374,7 @@ theorem finiteCyclicGaugeSum_apply_of_fixed
 theorem finiteCyclicGaugeAverage_apply_of_fixed
     (U : E →L[𝕜] E) (N : ℕ) (hN : N ≠ 0) {ψ : E} (hfix : U ψ = ψ) :
     finiteCyclicGaugeAverage U N ψ = ψ := by
-  rw [finiteCyclicGaugeAverage, ContinuousLinearMap.smul_apply,
+  rw [finiteCyclicGaugeAverage, smul_apply,
     finiteCyclicGaugeSum_apply_of_fixed U N hfix]
   simp [Nat.cast_ne_zero.mpr hN]
 
@@ -399,7 +401,7 @@ theorem finiteCyclicGaugeAverage_idempotent
     finiteCyclicGaugeAverage U N * finiteCyclicGaugeAverage U N =
       finiteCyclicGaugeAverage U N := by
   ext ψ
-  rw [ContinuousLinearMap.mul_apply]
+  rw [mul_apply_eq_comp]
   exact (physicalState_iff_finiteCyclicGaugeAverage_fixed U N hN hperiod
     (finiteCyclicGaugeAverage U N ψ)).mp
       (finiteCyclicGaugeAverage_physical U N hperiod ψ)
@@ -695,9 +697,9 @@ theorem finiteCyclicObservableTwirl_preserves_physicalState
   rw [GaloisForLFunctions.PhysicalState] at hψ ⊢
   change (U - 1) ψ = 0 at hψ
   change (U - 1) (finiteCyclicObservableTwirl U A N ψ) = 0
-  rw [← ContinuousLinearMap.mul_apply,
+  rw [← mul_apply_eq_comp,
     finiteCyclicObservableTwirl_commutes_constraint U A N hperiod,
-    ContinuousLinearMap.mul_apply, hψ]
+    mul_apply_eq_comp, hψ]
   simp
 
 end AlgebraicAverage
@@ -721,9 +723,9 @@ theorem inner_finiteCyclicObservableTwirlNumerator_of_fixed
         induction n + 1 with
         | zero => simp
         | succ k ih =>
-            rw [pow_succ, ContinuousLinearMap.mul_apply, hψ, ih]
+            rw [pow_succ, mul_apply_eq_comp, hψ, ih]
       simp only [finiteCyclicObservableTwirlNumerator,
-        ContinuousLinearMap.add_apply, ContinuousLinearMap.mul_apply, inner_add_right]
+        add_apply, mul_apply_eq_comp, inner_add_right]
       calc
         inner 𝕜 φ (U (finiteCyclicObservableTwirlNumerator U A n ψ)) +
             inner 𝕜 φ (A ((U ^ (n + 1)) ψ)) =
@@ -745,7 +747,7 @@ theorem inner_finiteCyclicObservableTwirl_of_fixed
     (hφ : U.adjoint φ = φ) (hψ : U ψ = ψ) :
     inner 𝕜 φ (finiteCyclicObservableTwirl U A N ψ) =
       inner 𝕜 φ (A ψ) := by
-  rw [finiteCyclicObservableTwirl, ContinuousLinearMap.smul_apply, inner_smul_right,
+  rw [finiteCyclicObservableTwirl, smul_apply, inner_smul_right,
     inner_finiteCyclicObservableTwirlNumerator_of_fixed U A hφ hψ N]
   simp [Nat.cast_ne_zero.mpr hN]
 
@@ -811,7 +813,7 @@ theorem stationaryClockEffect_matrixElement_eq_uniform
         inner 𝕜 φ (finiteCyclicObservableTwirl U e N ψ) :=
       (physicalMatrixElement_finiteCyclicObservableTwirl_eq U e N hN hφ hψ).symm
     _ = (N : 𝕜)⁻¹ * inner 𝕜 φ ψ := by
-      rw [hresolve, ContinuousLinearMap.smul_apply, inner_smul_right]
+      rw [hresolve, smul_apply, inner_smul_right]
       simp
 
 end RelationalClockObservables
@@ -882,6 +884,7 @@ theorem finiteInvolutiveGaugeAverage_isSelfAdjoint
   finiteCyclicGaugeAverage_isSelfAdjoint U 2
     (isSelfAdjoint_of_adjoint_mul_self_of_sq_eq_one U hadjoint_mul hsq)
 
+omit [CompleteSpace E] in
 /-- The `Z₂` group average is idempotent with no separately supplied projection premise. -/
 theorem finiteInvolutiveGaugeAverage_isIdempotentElem
     (U : E →L[𝕜] E) (hsq : U ^ 2 = 1) :
@@ -907,7 +910,7 @@ theorem norm_finiteInvolutiveGaugeAverage_sq_add_complement_sq
     finiteInvolutiveGaugeAverage_isIdempotentElem U hsq
   have horth : inner 𝕜 (P ψ) ((1 - P) ψ) = 0 := by
     have hfix : P (P ψ) = P ψ := by
-      rw [← ContinuousLinearMap.mul_apply, hPP]
+      rw [← mul_apply_eq_comp, hPP]
     calc
       inner 𝕜 (P ψ) ((1 - P) ψ) = inner 𝕜 (P ψ) (ψ - P ψ) := by simp
       _ = inner 𝕜 ψ (P.adjoint (ψ - P ψ)) :=

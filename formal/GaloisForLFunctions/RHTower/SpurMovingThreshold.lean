@@ -87,8 +87,7 @@ theorem smonoStepCerts_movingThresholdDiffsFromLists :
                   rcases hsteps with ⟨hvv', htailSteps⟩
                   rcases hthresholds with ⟨htt', htailThresholds⟩
                   constructor
-                  · dsimp [SMonoStepCert, movingThresholdDiffsFromLists]
-                    have hvpos : 0 < v' - v := hvv'
+                  · have hvpos : 0 < v' - v := hvv'
                     linarith
                   · exact ih (t' :: ts) htailSteps htailThresholds
 

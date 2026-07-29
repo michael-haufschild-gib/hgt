@@ -94,8 +94,8 @@ theorem sobolev_pointwise {f f' : ℝ → ℂ} {c δ : ℝ} (hδ : 0 < δ)
     linarith
   -- integrate over u
   have hKint : IntervalIntegrable (fun _ : ℝ => ∫ y in c..c + δ, |g' y|) volume c (c + δ) :=
-    intervalIntegral.intervalIntegrable_const
-  have hIntmono := integral_mono_on hcd intervalIntegral.intervalIntegrable_const
+    intervalIntegrable_const
+  have hIntmono := integral_mono_on hcd intervalIntegrable_const
     (hgint.add hKint) hbound
   rw [intervalIntegral.integral_const, intervalIntegral.integral_add hgint hKint,
     intervalIntegral.integral_const] at hIntmono

@@ -35,7 +35,7 @@ theorem Hypertranscendental.algebraicIndependent_initialJets
               rfl
         _ = 0 := by rw [hP]; rfl
     rw [eval_rename]
-    simpa using hz
+    simpa only [MvPolynomial.aeval_eq_eval, Function.comp_def, Fin.cons_succ] using hz
 
 /-- **Free-jet consequence of hypertranscendence.** The complete family of derivative functions
 of a hypertranscendental function is algebraically independent over `ℂ`. -/

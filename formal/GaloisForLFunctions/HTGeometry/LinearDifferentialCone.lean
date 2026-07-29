@@ -61,11 +61,15 @@ theorem nonnegativeOn_Icc_of_deriv_sub_reaction_nonnegative
       exact intervalIntegral.integral_hasDerivAt_right hrax hrmeas hrx
     have hexp : HasDerivAt (fun y => Real.exp (-I y))
         (Real.exp (-I x) * (-r x)) x := by
-      simpa only [Function.comp_apply] using
-        (Real.hasDerivAt_exp (-I x)).comp x hIderiv.neg
+      have hcomp := (Real.hasDerivAt_exp (-I x)).comp x hIderiv.neg
+      rw [show (fun y => Real.exp (-I y)) = Real.exp ∘ (-I) by rfl]
+      exact hcomp
     have hmul := hexp.mul (hfdiff x hx).hasDerivAt
-    convert hmul using 1
-    all_goals ring
+    rw [show g = (fun y => Real.exp (-I y)) * f by
+      funext y
+      rfl]
+    apply hmul.congr_deriv
+    ring
   have hmono : MonotoneOn g (Icc a b) := by
     apply monotoneOn_of_deriv_nonneg (convex_Icc a b) hgcont
     · rw [interior_Icc]

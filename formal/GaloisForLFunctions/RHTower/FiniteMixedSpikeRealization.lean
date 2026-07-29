@@ -102,7 +102,7 @@ theorem finiteMixedSpikeMatrix_trace {d : ℕ}
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     (energy : ι → ℝ) (x : FiniteIndexClockSpace ι) (i : ι) :
     finiteIndexDiagonalHamiltonian energy x i = (energy i : ℂ) * x i := by
-  simp [finiteIndexDiagonalHamiltonian, Matrix.toEuclideanLin_apply,
+  simp [finiteIndexDiagonalHamiltonian, Matrix.toLpLin_apply,
     Matrix.mulVec_diagonal]
 
 /-- A real diagonal Hamiltonian on any finite index type is self-adjoint. -/
@@ -237,7 +237,7 @@ theorem finiteIndexWeightKet_diagonal_variance
     (energy : Fin d → ℝ) (x : FiniteClockSpace d) (i : Fin d) :
     finiteDiagonalHamiltonian energy x i = (energy i : ℂ) * x i := by
   classical
-  simp [finiteDiagonalHamiltonian, Matrix.toEuclideanLin_apply,
+  simp [finiteDiagonalHamiltonian, Matrix.toLpLin_apply,
     Matrix.mulVec_diagonal]
 
 /-- A real diagonal finite Hamiltonian is self-adjoint. -/

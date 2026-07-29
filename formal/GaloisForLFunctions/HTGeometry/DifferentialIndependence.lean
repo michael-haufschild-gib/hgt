@@ -73,7 +73,11 @@ theorem DifferentialIndependent.comp
     simp only [g, Prod.mk.injEq] at h ⊢
     exact ⟨hf h.1, h.2⟩
   unfold DifferentialIndependent at hx ⊢
-  simpa only [Function.comp_apply, g] using AlgebraicIndependent.comp hx g hg
+  change AlgebraicIndependent F
+    (fun p : ι' × ℕ => differentialJet p.2 (x (f p.1)))
+  convert AlgebraicIndependent.comp hx g hg using 1
+  funext p
+  rfl
 
 /-- Differential independence implies ordinary algebraic independence of the order-zero
 coordinates. -/
@@ -85,7 +89,10 @@ theorem DifferentialIndependent.algebraicIndependent
   have h := AlgebraicIndependent.comp hx (fun i : ι => (i, 0)) (by
     intro i j h
     exact congrArg Prod.fst h)
-  simpa using h
+  change AlgebraicIndependent F x
+  convert h using 1
+  funext i
+  exact differentialJet_zero (x i)
 
 /-- A differentially independent family is faithfully indexed: two equal members have equal
 indices.  In orbit applications this says that differential freeness forces the acting palette to
@@ -217,7 +224,11 @@ theorem DifferentialIndependent.jetShift
     exact ⟨rfl, Nat.add_right_cancel h⟩
   unfold DifferentialIndependent at hx ⊢
   have h := AlgebraicIndependent.comp hx g hg
-  simpa only [Function.comp_apply, g, ← differentialJet_add] using h
+  change AlgebraicIndependent F
+    (fun p : ι × ℕ => differentialJet p.2 (differentialJet (m p.1) (x p.1)))
+  convert h using 1
+  funext p
+  exact (differentialJet_add p.2 (m p.1) (x p.1)).symm
 
 /-- Ordinary algebraic extension of the coefficient field preserves differential independence.
 This is the algebraic part of the base-change step used in constant extension. -/

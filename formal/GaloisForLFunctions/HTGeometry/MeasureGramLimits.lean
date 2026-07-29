@@ -44,7 +44,11 @@ theorem tendsto_measureGram_diagonal {d : ℕ} (ν : Measure ℝ) (a : Fin d →
     exact measureGram_diagonal ν a y l (hint y hy)
   refine Tendsto.congr' heq.symm ?_
   have hc := (Complex.continuous_ofReal.tendsto (0 : ℝ)).comp hlim
-  simpa using hc
+  rw [show (fun y : ℝ => ((∫ t, atomKernel (a l) y t ∂ν : ℝ) : ℂ)) =
+      Complex.ofReal ∘ fun y => ∫ t, atomKernel (a l) y t ∂ν by
+    funext y
+    rfl]
+  exact hc
 
 /-- **The measure off-diagonal converges to zero.**  Its squared modulus is squeezed by the product
 of the two diagonal integrals, and the square-root step finishes. -/

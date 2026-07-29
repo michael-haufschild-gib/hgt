@@ -194,17 +194,17 @@ theorem abs_coeff_cumulantLogPoly_pow_le (n j q m : ℕ) :
       rw [pow_succ]
       rw [Polynomial.coeff_mul]
       calc
-        |∑ x ∈ Finset.antidiagonal m,
+        |∑ x ∈ Finset.HasAntidiagonal.antidiagonal m,
             ((cumulantLogPoly n j) ^ q).coeff x.1 * (cumulantLogPoly n j).coeff x.2|
-            ≤ ∑ x ∈ Finset.antidiagonal m,
+            ≤ ∑ x ∈ Finset.HasAntidiagonal.antidiagonal m,
                 |((cumulantLogPoly n j) ^ q).coeff x.1 *
                   (cumulantLogPoly n j).coeff x.2| :=
               Finset.abs_sum_le_sum_abs _ _
-        _ ≤ ∑ _x ∈ Finset.antidiagonal m,
+        _ ≤ ∑ _x ∈ Finset.HasAntidiagonal.antidiagonal m,
               (((m + 1 : ℕ) : ℝ) ^ q * (j : ℝ) ^ (m + q + 1)) := by
               apply Finset.sum_le_sum
               intro x hx
-              have hxsum : x.1 + x.2 = m := Finset.mem_antidiagonal.mp hx
+              have hxsum : x.1 + x.2 = m := Finset.HasAntidiagonal.mem_antidiagonal.mp hx
               have hx1le : x.1 + 1 ≤ m + 1 := by omega
               have hx1leR : ((x.1 + 1 : ℕ) : ℝ) ≤ ((m + 1 : ℕ) : ℝ) := by
                 exact_mod_cast hx1le

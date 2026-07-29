@@ -97,7 +97,7 @@ theorem eq_sum_single_sub_base_of_orbitDegree_zero {α : Type*} [DecidableEq α]
     ext x
     by_cases hx : x = base
     · subst hx
-      simpa [orbitDegree] using hD
+      simpa [orbitDegree, Finsupp.sum] using hD
     · simp [hx]
   calc
     D = D.support.sum (fun a => Finsupp.single a (D a)) := by

@@ -106,7 +106,7 @@ theorem energy_eq_neg_second_derivative {s : Multiset ℝ} {c : ℝ}
   -- the product identity P′ = P · (Σ (z−r)⁻¹) holds eventually near c
   have hopen : ∀ᶠ z in nhds c, eval z P ≠ 0 := by
     have hcont : Continuous fun z : ℝ => eval z P := by
-      simpa using P.continuous_aeval
+      simpa [Polynomial.aeval_def] using! P.continuous_aeval
     exact hcont.continuousAt.eventually_ne hc
   have hev : (fun z => eval z (derivative P)) =ᶠ[nhds c]
       fun z => eval z P * (s.map fun r => (z - r)⁻¹).sum := by

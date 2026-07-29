@@ -109,10 +109,21 @@ theorem oscEnergy_hasDerivAt {V V' : ℝ → ℝ} {y v'' b : ℝ}
     have := (hVd y).pow 2
     simpa using this.const_mul (b ^ 2)
   have h2 : HasDerivAt (fun z => V' z ^ 2) (2 * V' y * v'') y := by
-    have := hV'.pow 2
-    simpa [mul_comm, mul_left_comm] using this
-  have := h1.add h2
-  convert this using 1
+    have hraw := hV'.pow 2
+    have hfun : (fun z => V' z ^ 2) = V' ^ 2 := by
+      funext z
+      rfl
+    rw [hfun]
+    apply hraw.congr_deriv
+    norm_num
+  have hraw := h1.add h2
+  have hfun :
+      (fun z => b ^ 2 * V z ^ 2 + V' z ^ 2) =
+        (fun z => b ^ 2 * V z ^ 2) + fun z => V' z ^ 2 := by
+    funext z
+    rfl
+  rw [hfun]
+  apply hraw.congr_deriv
   ring
 
 end RHTower

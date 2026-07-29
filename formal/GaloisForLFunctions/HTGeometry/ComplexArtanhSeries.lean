@@ -29,8 +29,7 @@ theorem hasSum_oddPow_div {z : ℂ} (hz : ‖z‖ < 1) :
   have hdiff : HasSum (fun n : ℕ => z ^ n / (n : ℂ) - (-z) ^ n / (n : ℂ))
       (Complex.log (1 + z) - Complex.log (1 - z)) := by
     have hsub := h1.sub h2
-    convert hsub using 1
-    ring
+    simpa only [sub_eq_add_neg, neg_neg, add_comm] using! hsub
   have hginj : Function.Injective (fun k : ℕ => 2 * k + 1) := by
     intro a b hab
     have h : 2 * a + 1 = 2 * b + 1 := hab

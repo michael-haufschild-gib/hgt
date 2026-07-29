@@ -461,7 +461,6 @@ theorem hypertranscendental_riemannZeta : Hypertranscendental riemannZeta := by
         apply Finset.sum_congr rfl
         intro d'' hd''
         rw [Finset.mem_filter] at hd''
-        simp only []
         rw [hd''.2]
     have hTa : ∀ M ∈ (Q.support.filter (fun d' => d' 0 = d 0)).image (jetM n),
         ∀ j ∈ M, j ≤ n := by

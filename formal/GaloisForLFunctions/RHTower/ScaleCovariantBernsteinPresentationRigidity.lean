@@ -425,7 +425,7 @@ theorem transverse_occupied_iff_of_common_pointed_moments
   constructor
   · rintro ⟨i0, hi0⟩
     by_contra hnot
-    push_neg at hnot
+    push Not at hnot
     have hposW : ∀ j, (0 : ℂ) ≤ w j := by
       intro j
       exact ⟨hrealW j (hnot j), (hnot j).symm⟩
@@ -434,7 +434,7 @@ theorem transverse_occupied_iff_of_common_pointed_moments
       hRN hRM hposW hrealZ hmomentW hmomentZ hi0
   · rintro ⟨j0, hj0⟩
     by_contra hnot
-    push_neg at hnot
+    push Not at hnot
     have hposZ : ∀ i, (0 : ℂ) ≤ z i := by
       intro i
       exact ⟨hrealZ i (hnot i), (hnot i).symm⟩

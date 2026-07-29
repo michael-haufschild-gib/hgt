@@ -63,8 +63,8 @@ theorem bohrCharacter_scaleCoordinate {ι G : Type*} [DecidableEq ι] [CommGroup
   unfold bohrCharacter scaleCoordinate
   rw [Finsupp.prod, Finsupp.prod]
   by_cases hp : p ∈ m.support
-  · rw [Finset.prod_eq_mul_prod_diff_singleton_of_mem hp]
-    rw [Finset.prod_eq_mul_prod_diff_singleton_of_mem hp]
+  · rw [Finset.prod_eq_mul_prod_sdiff_singleton_of_mem hp]
+    rw [Finset.prod_eq_mul_prod_sdiff_singleton_of_mem hp]
     simp only [Function.update_self]
     have hprod :
         (∏ q ∈ m.support \ {p}, Function.update x p (c * x p) q ^ m q) =

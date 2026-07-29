@@ -135,7 +135,7 @@ theorem descentStep [CharZero Cst]
   -- Step 2: the numerator is affine in `y`.
   have hdeg : N.natDegree ≤ 1 := by
     by_contra hlt
-    push_neg at hlt
+    push Not at hlt
     have hm2 : 2 ≤ N.natDegree := hlt
     have hNne : N ≠ 0 := fun h => by simp [h] at hm2
     have hlead : sigmaE N.leadingCoeff = N.leadingCoeff := by

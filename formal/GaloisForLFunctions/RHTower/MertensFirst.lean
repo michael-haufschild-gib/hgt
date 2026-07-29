@@ -66,7 +66,8 @@ theorem sum_log_ge (n : ℕ) : (n:ℝ) * Real.log n - n ≤ ∑ m ∈ Finset.Icc
         calc (k:ℝ) * (Real.log (k+1) - Real.log k)
             ≤ (k:ℝ) * ((↑k+1)/↑k - 1) := by nlinarith [hlog, hk0]
           _ = 1 := by rw [mul_sub, hkk]; ring
-    push_cast; push_cast at ih; nlinarith [ih, hstep]
+    push_cast
+    nlinarith [ih, hstep]
 
 /-- `∑_{d ≤ n} Λ(d) = ψ(n) ≤ (log 4 + 4)·n` (Chebyshev). -/
 theorem sum_vonMangoldt_Icc_le (n : ℕ) :

@@ -65,7 +65,7 @@ theorem finiteDerivativeReporter_isometricAdjointRecovery
   ext g
   have h := congrArg
     (fun T : Y →L[ℂ] Y => T (report g)) decode.adjoint_comp_self
-  simpa only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.one_apply,
+  simpa only [ContinuousLinearMap.comp_apply, one_apply_eq_self,
     LinearMap.comp_apply, LinearIsometry.coe_toLinearMap,
     LinearIsometry.coe_toContinuousLinearMap] using h
 

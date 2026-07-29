@@ -55,7 +55,7 @@ theorem IsLocalRegularLevelSetOfCodimAtLeast.image_continuousLinearEquiv
       calc
         fderiv ℝ g' (e z) = (fderiv ℝ g z).comp (fderiv ℝ e.symm (e z)) := by
           simpa only [g', e.symm_apply_apply] using
-            (fderiv_comp' (f := e.symm) (g := g) (e z)
+            (fderiv_fun_comp (f := e.symm) (g := g) (e z)
               hgAt' (e.symm.differentiableAt))
         _ = (fderiv ℝ g z).comp e.symm.toContinuousLinearMap := by
           rw [e.symm.fderiv]

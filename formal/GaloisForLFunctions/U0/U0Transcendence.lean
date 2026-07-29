@@ -403,7 +403,7 @@ Packaging the evaluation as a genuine ring hom is the clean *interface* through 
 `M` (the joint `M ⊇ ℂ(z)` hosting both `u₀` and `φ_b`) consumes the transcendence: a `ℂ(z)`-algebra
 relation on the image of `u₀` pulls back along `evalU0` to a relation on `Ext`. -/
 noncomputable def evalU0 : (Polynomial ℂ)[X] →+* (ℂ → ℂ) :=
-  eval₂RingHom (Pi.ringHom (fun z => Polynomial.evalRingHom z)) u0
+  eval₂RingHom (RingHom.pi (fun z => Polynomial.evalRingHom z)) u0
 
 /-- `evalU0 P` evaluated at `z` is the relation `P(z, u₀(z))` (PROVEN). -/
 @[aesop safe]
@@ -414,7 +414,7 @@ theorem evalU0_apply (P : (Polynomial ℂ)[X]) (z : ℂ) :
     apply Polynomial.ringHom_ext
     · intro p
       simp only [RingHom.comp_apply, evalU0, coe_eval₂RingHom, eval₂_C, Pi.evalRingHom_apply,
-        Pi.ringHom_apply]
+        RingHom.pi_apply]
     · simp only [RingHom.comp_apply, evalU0, coe_eval₂RingHom, eval₂_X, Pi.evalRingHom_apply]
   have h := DFunLike.congr_fun hcomp P
   simpa only [RingHom.comp_apply, Pi.evalRingHom_apply, coe_eval₂RingHom] using h
@@ -484,7 +484,7 @@ theorem polyAnalytic (p : Polynomial ℂ) (z₀ : ℂ) : AnalyticAt ℂ (fun z =
 
 noncomputable def polyToGerm : (Polynomial ℂ) →+* AnSub :=
   RingHom.codRestrict ((Germ.coeRingHom (𝓝 (2:ℂ))).comp
-    (Pi.ringHom (fun z => Polynomial.evalRingHom z))) AnSub
+    (RingHom.pi (fun z => Polynomial.evalRingHom z))) AnSub
     (fun p => ⟨fun z => p.eval z, rfl, polyAnalytic p 2⟩)
 
 noncomputable instance : Algebra (Polynomial ℂ) AnSub := polyToGerm.toAlgebra
@@ -496,14 +496,14 @@ noncomputable def u0Germ : AnSub :=
 theorem subtype_aeval_u0Germ (P : (Polynomial ℂ)[X]) :
     (AnSub.subtype) (aeval u0Germ P) = ((evalU0 P : ℂ → ℂ) : Germ (𝓝 (2:ℂ)) ℂ) := by
   have lhs : (AnSub.subtype) (aeval u0Germ P)
-      = eval₂ ((Germ.coeRingHom (𝓝 (2:ℂ))).comp (Pi.ringHom (fun z => Polynomial.evalRingHom z)))
+      = eval₂ ((Germ.coeRingHom (𝓝 (2:ℂ))).comp (RingHom.pi (fun z => Polynomial.evalRingHom z)))
           (u0 : Germ (𝓝 (2:ℂ)) ℂ) P := by
     rw [aeval_def, hom_eval₂, RingHom.algebraMap_toAlgebra]; rfl
   have rhs : ((evalU0 P : ℂ → ℂ) : Germ (𝓝 (2:ℂ)) ℂ)
-      = eval₂ ((Germ.coeRingHom (𝓝 (2:ℂ))).comp (Pi.ringHom (fun z => Polynomial.evalRingHom z)))
+      = eval₂ ((Germ.coeRingHom (𝓝 (2:ℂ))).comp (RingHom.pi (fun z => Polynomial.evalRingHom z)))
           (u0 : Germ (𝓝 (2:ℂ)) ℂ) P := by
     show Germ.coeRingHom (𝓝 (2:ℂ))
-        (eval₂ (Pi.ringHom (fun z => Polynomial.evalRingHom z)) u0 P) = _
+        (eval₂ (RingHom.pi (fun z => Polynomial.evalRingHom z)) u0 P) = _
     rw [hom_eval₂]; rfl
   rw [lhs, rhs]
 

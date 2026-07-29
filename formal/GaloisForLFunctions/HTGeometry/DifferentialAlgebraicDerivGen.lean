@@ -29,11 +29,11 @@ theorem eval_mapCoeffs_mem_integralClosure (A : IntermediateField F K) {z : K}
     (hz : z ∈ integralClosure A K)
     (hcoeff : ∀ a : A, Differential.deriv (a : K) ∈ integralClosure A K)
     (p : A[X]) :
-    PolynomialModule.eval z
-        ((Differential.deriv.compAlgebraMap A).mapCoeffs p) ∈ integralClosure A K := by
+    (((Differential.deriv.compAlgebraMap A).mapCoeffs p).map K .id).eval z
+      ∈ integralClosure A K := by
   rw [PolynomialModule.eval_apply, Finsupp.sum]
   refine sum_mem fun i _ => ?_
-  rw [Derivation.mapCoeffs_apply, Derivation.compAlgebraMap_apply]
+  change z ^ i * Differential.deriv (p.coeff i : K) ∈ integralClosure A K
   exact mul_mem (pow_mem hz i) (hcoeff (p.coeff i))
 
 omit [Differential K] in
@@ -64,14 +64,14 @@ theorem deriv_mem_integralClosure (A : IntermediateField F K) [CharZero K]
   have hden_ne : (aeval z) (derivative (minpoly A z)) ≠ 0 :=
     aeval_derivative_minpoly_ne_zero hzalg
   have hnum_mem :
-      PolynomialModule.eval z ((Differential.deriv.compAlgebraMap A).mapCoeffs (minpoly A z))
+      (((Differential.deriv.compAlgebraMap A).mapCoeffs (minpoly A z)).map K .id).eval z
         ∈ integralClosure A K :=
     eval_mapCoeffs_mem_integralClosure A hz hcoeff (minpoly A z)
   have hden_mem : (aeval z) (derivative (minpoly A z)) ∈ integralClosure A K :=
     aeval_mem_integralClosure A hz _
   have hden_int : IsIntegral A ((aeval z) (derivative (minpoly A z))) := hden_mem
   have hsolve : Differential.deriv z =
-      (-(PolynomialModule.eval z ((Differential.deriv.compAlgebraMap A).mapCoeffs (minpoly A z))))
+      (-(((Differential.deriv.compAlgebraMap A).mapCoeffs (minpoly A z)).map K .id).eval z)
         * ((aeval z) (derivative (minpoly A z)))⁻¹ := by
     field_simp
     linear_combination -hkey

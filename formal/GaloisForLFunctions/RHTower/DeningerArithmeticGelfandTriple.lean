@@ -74,7 +74,7 @@ theorem deningerLinearTestHilbertPairing_eq_zero
     ell (hilbertToDistribution x) = 0 := by
   have hbase := pairing_compatibility ell x
   have hI := pairing_compatibility (Complex.I • ell) x
-  simp only [map_smul, ContinuousLinearMap.smul_apply,
+  simp only [map_smul, _root_.smul_apply,
     inner_smul_left, conj_I] at hI
   rw [hbase] at hI
   have hinner :

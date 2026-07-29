@@ -69,7 +69,7 @@ theorem vectorMeasure_eq_zero_of_ac_of_mutuallySingular
     simp only [Set.mem_union, Set.mem_inter_iff, Set.mem_compl_iff]
     tauto
   rw [hsplit, VectorMeasure.of_union]
-  · rw [hleft, hright, zero_add, VectorMeasure.zero_apply]
+  · rw [hleft, hright, zero_add, _root_.zero_apply]
   · exact Set.disjoint_left.2 (fun x hx hy => hy.2 hx.2)
   · exact hs.inter ht
   · exact hs.inter ht.compl

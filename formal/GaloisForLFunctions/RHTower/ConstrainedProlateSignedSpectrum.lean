@@ -77,7 +77,7 @@ theorem evenProlateSignedMode_mem_timeLimited_of_value_ne_zero
 theorem evenProlateConcentration_apply_signedMode (a : ℝ) (n : ℕ) :
     evenProlateConcentration a (evenProlateSignedMode a n) =
       ((evenProlateSignedValue a n ^ 2 : ℝ) : ℂ) • evenProlateSignedMode a n := by
-  rw [evenProlateConcentration_eq_sq, ContinuousLinearMap.mul_apply,
+  rw [evenProlateConcentration_eq_sq, mul_apply_eq_comp,
     evenTimeBandFourier_apply_signedMode, map_smul,
     evenTimeBandFourier_apply_signedMode, smul_smul]
   congr 1
@@ -87,8 +87,8 @@ theorem evenProlateConcentration_apply_signedMode (a : ℝ) (n : ℕ) :
 theorem evenProlateLeakage_apply_signedMode (a : ℝ) (n : ℕ) :
     evenProlateLeakage a (evenProlateSignedMode a n) =
       ((1 - evenProlateSignedValue a n ^ 2 : ℝ) : ℂ) • evenProlateSignedMode a n := by
-  rw [evenProlateLeakage, ContinuousLinearMap.sub_apply,
-    ContinuousLinearMap.one_apply, evenProlateConcentration_apply_signedMode]
+  rw [evenProlateLeakage, _root_.sub_apply,
+    one_apply_eq_self, evenProlateConcentration_apply_signedMode]
   push_cast
   module
 

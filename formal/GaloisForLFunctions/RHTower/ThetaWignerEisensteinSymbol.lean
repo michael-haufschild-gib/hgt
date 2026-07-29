@@ -158,18 +158,34 @@ theorem hasDerivAt_thetaXiCompletionRadialWeight (b a : ℝ) :
       (4 * a * (a ^ 2 + b ^ 2 - 1 / 4)) a := by
   have hminus : HasDerivAt (fun x : ℝ => (x - 1 / 2) ^ 2 + b ^ 2)
       (2 * (a - 1 / 2)) a := by
-    have h := (((hasDerivAt_id a).sub_const (1 / 2)).pow 2).add
+    have hraw := (((hasDerivAt_id a).sub_const (1 / 2)).pow 2).add
       (hasDerivAt_const (x := a) (c := b ^ 2))
-    convert h using 1
-    all_goals norm_num [id_eq]
+    have hfun :
+        (fun x : ℝ => (x - 1 / 2) ^ 2 + b ^ 2) =
+          (fun x : ℝ => id x - 1 / 2) ^ 2 + fun _ => b ^ 2 := by
+      funext x
+      simp only [Pi.add_apply, Pi.pow_apply, id_eq]
+    rw [hfun]
+    exact hraw.congr_deriv (by norm_num [id_eq])
   have hplus : HasDerivAt (fun x : ℝ => (x + 1 / 2) ^ 2 + b ^ 2)
       (2 * (a + 1 / 2)) a := by
-    have h := (((hasDerivAt_id a).add_const (1 / 2)).pow 2).add
+    have hraw := (((hasDerivAt_id a).add_const (1 / 2)).pow 2).add
       (hasDerivAt_const (x := a) (c := b ^ 2))
-    convert h using 1
-    all_goals norm_num [id_eq]
-  convert hminus.mul hplus using 1
-  all_goals ring
+    have hfun :
+        (fun x : ℝ => (x + 1 / 2) ^ 2 + b ^ 2) =
+          (fun x : ℝ => id x + 1 / 2) ^ 2 + fun _ => b ^ 2 := by
+      funext x
+      simp only [Pi.add_apply, Pi.pow_apply, id_eq]
+    rw [hfun]
+    exact hraw.congr_deriv (by norm_num [id_eq])
+  have hfun :
+      thetaXiCompletionRadialWeight b =
+        (fun x : ℝ => (x - 1 / 2) ^ 2 + b ^ 2) *
+          fun x : ℝ => (x + 1 / 2) ^ 2 + b ^ 2 := by
+    funext x
+    rfl
+  rw [hfun]
+  exact (hminus.mul hplus).congr_deriv (by ring)
 
 theorem deriv_thetaXiCompletionRadialWeight (b a : ℝ) :
     deriv (thetaXiCompletionRadialWeight b) a =

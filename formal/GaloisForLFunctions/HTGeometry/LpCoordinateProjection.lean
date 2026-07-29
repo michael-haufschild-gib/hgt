@@ -67,9 +67,9 @@ theorem lpCoordinateProjection_idempotent
   apply lp.ext
   funext i
   by_cases hi : i ∈ S
-  · simp only [ContinuousLinearMap.mul_apply, lpCoordinateProjection_apply,
+  · simp only [mul_apply_eq_comp, lpCoordinateProjection_apply,
       indicator_of_mem hi]
-  · simp only [ContinuousLinearMap.mul_apply, lpCoordinateProjection_apply,
+  · simp only [mul_apply_eq_comp, lpCoordinateProjection_apply,
       indicator_of_notMem hi]
 
 /-- Coordinate restriction is self-adjoint, with no caller-supplied adjoint hypothesis. -/

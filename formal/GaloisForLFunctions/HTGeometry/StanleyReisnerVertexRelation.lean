@@ -115,7 +115,7 @@ Kronecker delta `δ_{wv}`. -/
 theorem srH0Detector_srVertexX (facets : Finset (Finset α)) {w v : α}
     (hw : IsFaceOf (↑facets : Set (Finset α)) {w}) :
     srH0Detector R facets w hw (srVertexX R facets v) = if w = v then 1 else 0 := by
-  rw [srVertexX, srH0Detector_mk, MvPolynomial.coeff_X']
+  rw [srVertexX, srH0Detector_mk, MvPolynomial.coeff_X]
   simp only [Finsupp.single_eq_single_iff]
   by_cases h : w = v <;> simp [h, eq_comm]
 

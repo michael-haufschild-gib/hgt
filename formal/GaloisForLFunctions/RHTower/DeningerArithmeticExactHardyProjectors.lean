@@ -61,7 +61,7 @@ theorem deningerHardyPlus_idempotent
       deningerHardyPlus C := by
   apply ContinuousLinearMap.ext
   intro x
-  rw [ContinuousLinearMap.mul_apply,
+  rw [mul_apply_eq_comp,
     deningerHardyPlus_apply, deningerHardyPlus_apply,
     map_smul, map_add,
     deningerChirality_apply_apply_eq_of_sq_eq_one C hC2 x]
@@ -76,7 +76,7 @@ theorem deningerHardyMinus_idempotent
       deningerHardyMinus C := by
   apply ContinuousLinearMap.ext
   intro x
-  rw [ContinuousLinearMap.mul_apply,
+  rw [mul_apply_eq_comp,
     deningerHardyMinus_apply, deningerHardyMinus_apply,
     map_smul, map_sub,
     deningerChirality_apply_apply_eq_of_sq_eq_one C hC2 x]
@@ -89,7 +89,7 @@ theorem deningerHardyPlus_add_minus
     deningerHardyPlus C + deningerHardyMinus C = 1 := by
   apply ContinuousLinearMap.ext
   intro x
-  rw [ContinuousLinearMap.add_apply,
+  rw [_root_.add_apply,
     deningerHardyPlus_apply, deningerHardyMinus_apply]
   change
     (2 : ℂ)⁻¹ • (x + C x) +
@@ -104,7 +104,7 @@ theorem deningerHardyPlus_mul_minus
     deningerHardyPlus C * deningerHardyMinus C = 0 := by
   apply ContinuousLinearMap.ext
   intro x
-  rw [ContinuousLinearMap.mul_apply,
+  rw [mul_apply_eq_comp,
     deningerHardyPlus_apply, deningerHardyMinus_apply,
     map_smul, map_sub,
     deningerChirality_apply_apply_eq_of_sq_eq_one C hC2 x]
@@ -122,7 +122,7 @@ theorem deningerHardyMinus_mul_plus
     deningerHardyMinus C * deningerHardyPlus C = 0 := by
   apply ContinuousLinearMap.ext
   intro x
-  rw [ContinuousLinearMap.mul_apply,
+  rw [mul_apply_eq_comp,
     deningerHardyMinus_apply, deningerHardyPlus_apply,
     map_smul, map_add,
     deningerChirality_apply_apply_eq_of_sq_eq_one C hC2 x]
@@ -139,7 +139,7 @@ theorem deningerHardyPlus_sub_minus
     deningerHardyPlus C - deningerHardyMinus C = C := by
   apply ContinuousLinearMap.ext
   intro x
-  rw [ContinuousLinearMap.sub_apply,
+  rw [_root_.sub_apply,
     deningerHardyPlus_apply, deningerHardyMinus_apply]
   module
 

@@ -281,10 +281,14 @@ theorem integral_Ioi_one_mul_exp_neg_pi :
       simpa using ((hasDerivAt_id t).div_const π).add_const
         ((1 : ℝ) / π ^ 2)
     have h3 := (h1.neg).mul h2
-    convert h3 using 1
+    rw [show (fun u : ℝ => -(Real.exp (-π * u)) * (u / π + 1 / π ^ 2)) =
+        (fun u : ℝ => -(Real.exp (-π * u))) * fun u => u / π + 1 / π ^ 2 by
+      funext u
+      rfl]
+    apply h3.congr_deriv
+    field_simp [Real.pi_ne_zero]
     simp only [Pi.neg_apply]
-    field_simp
-    ring
+    ring_nf
   have hcont : ContinuousWithinAt
       (fun u : ℝ => -(Real.exp (-π * u)) * (u / π + 1 / π ^ 2))
       (Set.Ici 1) 1 := by

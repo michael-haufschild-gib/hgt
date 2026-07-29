@@ -33,7 +33,7 @@ theorem aeval_derivative_minpoly_ne_zero [CharZero A] {x : R} (hx : IsAlgebraic 
   have hpos : 0 < (minpoly A x).natDegree := hirr.natDegree_pos
   have hderiv_ne : derivative (minpoly A x) ≠ 0 := by
     intro hz
-    exact absurd (natDegree_eq_zero_of_derivative_eq_zero hz) (by omega)
+    exact absurd (Polynomial.derivative_eq_zero.mp hz) (by omega)
   have hle : (derivative (minpoly A x)).natDegree < (minpoly A x).natDegree :=
     natDegree_derivative_lt (Nat.ne_zero_of_lt hpos)
   exact absurd (Polynomial.natDegree_le_of_dvd hdvd hderiv_ne) (by omega)

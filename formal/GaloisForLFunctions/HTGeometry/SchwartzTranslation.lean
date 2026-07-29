@@ -201,8 +201,12 @@ theorem iteratedDeriv_translateDifferenceQuotientError
   have h₂ : ContDiffAt ℝ n (fun y : ℝ => f (y + a)) x :=
     ((f.smooth n).comp (contDiff_id.add contDiff_const)).contDiffAt
   have hd : ContDiffAt ℝ n (fun y : ℝ => deriv f (y + a)) x := by
-    simpa only [derivCLM_apply] using
-      (((derivCLM ℂ ℂ f).smooth n).comp (contDiff_id.add contDiff_const)).contDiffAt
+    rw [show (fun y : ℝ => deriv f (y + a)) =
+        ⇑(derivCLM ℂ ℂ f) ∘ (fun y => y + a) by
+      funext y
+      exact (derivCLM_apply (𝕜 := ℂ) (F := ℂ) f (y + a)).symm]
+    exact (((derivCLM ℂ ℂ f).smooth n).comp
+      (contDiff_id.add contDiff_const)).contDiffAt
   have hsub : iteratedDeriv n
       (fun y : ℝ => f (y + (a + h)) - f (y + a)) x =
       iteratedDeriv n f (x + (a + h)) - iteratedDeriv n f (x + a) := by
@@ -376,6 +380,7 @@ theorem tendsto_translateDifferenceQuotientError_zero
     have hc : Continuous (fun h : ℝ => |h|) := by fun_prop
     have hc0 : ContinuousAt (fun h : ℝ => |h|) 0 := hc.continuousAt
     change Tendsto (fun h : ℝ => |h|) (𝓝 0) (𝓝 |(0 : ℝ)|) at hc0
+    change Tendsto (fun h : ℝ => |h|) (𝓝 0 ⊓ 𝓟 ({0} : Set ℝ)ᶜ) (𝓝 0)
     simpa only [abs_zero] using hc0.mono_left inf_le_left
   have hCzero : Tendsto (fun h : ℝ => C * |h|) (𝓝[≠] 0) (𝓝 0) := by
     simpa using habs.const_mul C

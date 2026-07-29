@@ -225,7 +225,7 @@ theorem tendsto_tan_phaseWrap (hu0 : Tendsto u atTop (𝓝 0))
       rw [hfun]
       exact Real.continuous_sin.continuousAt.div Real.continuous_cos.continuousAt (by simp)
     have := hc.tendsto.comp hδ0
-    simpa [Real.tan_zero] using this
+    simpa only [Function.comp_def, Real.tan_zero] using! this
   exact (hcont.congr fun m => (hper m).symm)
 
 /-! ## The obstruction -/
@@ -242,7 +242,7 @@ theorem exists_subseq_tangentIterate_tendsto_zero {h : ℕ → ℝ}
   have hu0 : Tendsto u atTop (𝓝 0) := by
     have hc : ContinuousAt Real.arctan 0 := Real.continuous_arctan.continuousAt
     have := hc.tendsto.comp h0
-    simpa [hu, Real.arctan_zero] using this
+    simpa only [hu, Function.comp_def, Real.arctan_zero] using! this
   have hsum : (fun N => ∑ k ∈ Finset.range N, u k) = arctanPartialSum h := rfl
   have hdiv' : Tendsto (fun N => ∑ k ∈ Finset.range N, u k) atTop atTop := by
     rw [hsum]; exact hdiv

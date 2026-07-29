@@ -47,7 +47,7 @@ theorem upperEnd_analyticOnNhd_polyEval (p : Polynomial ℂ) :
 noncomputable def upperEndPolyToAnalytic :
     Polynomial ℂ →+* upperEndAnalyticSubring :=
   ((Germ.coeRingHom upperEndFilter).comp
-    (Pi.ringHom (fun z => Polynomial.evalRingHom z))).codRestrict
+    (RingHom.pi (fun z => Polynomial.evalRingHom z))).codRestrict
       upperEndAnalyticSubring
       (fun p => ⟨fun z => p.eval z, 0, upperEnd_analyticOnNhd_polyEval p, rfl⟩)
 

@@ -396,7 +396,7 @@ theorem secondDerivTest {φ : ℝ → ℝ} {A : ℝ → ℂ} {a b mu : ℝ}
         (intervalIntegrable_of_continuousOn_Icc_real hpt
           (hφ2.continuousOn.mono (Set.Icc_subset_Icc hap htb)))
     have hmono : (∫ x in p..t, mu) ≤ ∫ x in p..t, deriv (deriv φ) x := by
-      apply intervalIntegral.integral_mono_on hpt intervalIntegral.intervalIntegrable_const
+      apply intervalIntegral.integral_mono_on hpt intervalIntegrable_const
         (intervalIntegrable_of_continuousOn_Icc_real hpt
           (hφ2.continuousOn.mono (Set.Icc_subset_Icc hap htb)))
       intro x hx
@@ -411,7 +411,7 @@ theorem secondDerivTest {φ : ℝ → ℝ} {A : ℝ → ℂ} {a b mu : ℝ}
         (intervalIntegrable_of_continuousOn_Icc_real htq
           (hφ2.continuousOn.mono (Set.Icc_subset_Icc hat hqb)))
     have hmono : (∫ x in t..q, mu) ≤ ∫ x in t..q, deriv (deriv φ) x := by
-      apply intervalIntegral.integral_mono_on htq intervalIntegral.intervalIntegrable_const
+      apply intervalIntegral.integral_mono_on htq intervalIntegrable_const
         (intervalIntegrable_of_continuousOn_Icc_real htq
           (hφ2.continuousOn.mono (Set.Icc_subset_Icc hat hqb)))
       intro x hx
@@ -722,7 +722,7 @@ theorem weight_le_left_of_deriv_nonpos {a b : ℝ} (hab : a ≤ b) {w w' : ℝ �
     intervalIntegral.integral_eq_sub_of_hasDerivAt (fun t ht => hw t (hsub ht)) hint
   have hnp : ∫ t in a..x, w' t ≤ 0 := by
     have hm := intervalIntegral.integral_mono_on hxIcc.1 hint
-      (intervalIntegral.intervalIntegrable_const (c := (0 : ℝ)))
+      (intervalIntegrable_const (c := (0 : ℝ)))
       (fun t ht => hwanti t (hsub (by rw [Set.uIcc_of_le hxIcc.1]; exact ht)))
     simpa using hm
   linarith [hftc, hnp]

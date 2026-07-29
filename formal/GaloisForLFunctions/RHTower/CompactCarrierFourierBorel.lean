@@ -34,8 +34,8 @@ theorem compactExponentialTest_apply (s : C(K, ℂ)) (z : ℂ) (k : K) :
   let ev : C(K, ℂ) →+* ℂ :=
     (Pi.evalRingHom (fun _ : K ↦ ℂ) k).comp ContinuousMap.coeFnRingHom
   have hev : Continuous ev := by
-    simpa only [RingHom.coe_comp, Function.comp_apply, ContinuousMap.coeFnRingHom_apply,
-      Pi.evalRingHom_apply] using (ContinuousMap.evalCLM ℂ k).continuous
+    change Continuous (fun f : C(K, ℂ) => f k)
+    exact (ContinuousMap.evalCLM ℂ k).continuous
   change ev (NormedSpace.exp (-(z • s))) = _
   rw [NormedSpace.map_exp ev hev]
   rw [Complex.exp_eq_exp_ℂ]
@@ -50,7 +50,8 @@ theorem compactExponentialTest_analyticOnNhd (s : C(K, ℂ)) :
   have he : AnalyticAt ℂ (NormedSpace.exp : C(K, ℂ) → C(K, ℂ)) (S z) :=
     NormedSpace.exp_analytic (S z)
   have hc := he.compContinuousLinearMap (u := S)
-  simpa [compactExponentialTest, S, Function.comp_def] using hc
+  change AnalyticAt ℂ (fun w => NormedSpace.exp (-(w • s))) z
+  simpa [S, Function.comp_def] using hc
 
 /-- The first scalar derivative of the compact exponential test at zero is
 the negative carrier coordinate. -/
@@ -62,12 +63,17 @@ theorem compactExponentialTest_hasDerivAt_zero (s : C(K, ℂ)) :
       (ContinuousLinearMap.id ℂ C(K, ℂ)) 0 := by
     have h := (NormedSpace.exp_hasFPowerSeriesAt_zero
       (𝕂 := ℂ) (𝔸 := C(K, ℂ))).hasFDerivAt
-    convert h using 1
+    apply h.congr_fderiv
     ext x : 1
     rw [continuousMultilinearCurryFin1_apply]
     have hx := NormedSpace.expSeries_apply_eq
       (𝕂 := ℂ) (𝔸 := C(K, ℂ)) x 1
-    simpa using hx.symm
+    have hvec : Fin.snoc (0 : Fin 0 → C(K, ℂ)) x = (fun _ : Fin 1 => x) := by
+      funext i
+      fin_cases i
+      rfl
+    rw [hvec]
+    simpa using hx
   have hexpS : HasFDerivAt (NormedSpace.exp : C(K, ℂ) → C(K, ℂ))
       (ContinuousLinearMap.id ℂ C(K, ℂ)) (S 0) := by
     simpa [S] using hexp
@@ -75,7 +81,7 @@ theorem compactExponentialTest_hasDerivAt_zero (s : C(K, ℂ)) :
   have hfun : compactExponentialTest s =
       (NormedSpace.exp : C(K, ℂ) → C(K, ℂ)) ∘ S := by
     funext z
-    simp [compactExponentialTest, S, Function.comp_def]
+    simp [compactExponentialTest, S]
   have hFD : HasFDerivAt (compactExponentialTest s) S 0 := by
     rw [hfun]
     simpa using hcomp
@@ -88,8 +94,8 @@ theorem compactExponentialTest_hasDerivAt_zero (s : C(K, ℂ)) :
 theorem compactFourierBorel_analyticOnNhd
     (L : C(K, ℂ) →L[ℂ] ℂ) (s : C(K, ℂ)) :
     AnalyticOnNhd ℂ (compactFourierBorel L s) Set.univ := by
-  simpa [compactFourierBorel, Function.comp_def] using
-    L.comp_analyticOnNhd (compactExponentialTest_analyticOnNhd s)
+  change AnalyticOnNhd ℂ (fun z => L (compactExponentialTest s z)) Set.univ
+  exact L.comp_analyticOnNhd (compactExponentialTest_analyticOnNhd s)
 
 /-- Pointwise sectorial positivity gives an exponential sup-norm bound on the
 compact exponential test. -/

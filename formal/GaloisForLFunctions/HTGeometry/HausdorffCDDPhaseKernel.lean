@@ -50,9 +50,9 @@ theorem sub_arctan_le_cube_div_three {t : ℝ} (ht : 0 ≤ t) :
     · intro u _
       have h1 : HasDerivAt (fun w : ℝ => w ^ 3 / 3) (u ^ 2) u := by
         have h := (hasDerivAt_pow 3 u).div_const 3
-        convert h using 1
-        push_cast
-        ring
+        simpa only [Pi.div_apply] using! h.congr_deriv (by
+          push_cast
+          ring)
       have h2 : HasDerivAt (fun w : ℝ => w) 1 u := hasDerivAt_id u
       have h3 := Real.hasDerivAt_arctan u
       have hd : deriv (fun w : ℝ => w ^ 3 / 3 - w + Real.arctan w) u

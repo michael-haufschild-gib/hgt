@@ -279,7 +279,13 @@ theorem differentialIndependent_differentialOperatorRows
     exact ⟨h.1, Fin.ext h.2⟩
   have hxB : AlgebraicIndependent C sourceJet := by
     have hcomp := hx.comp sourceIndex hsourceIndex
-    simpa [sourceJet, sourceIndex] using hcomp
+    have hsourceJet :
+        ((fun p : κ × ℕ => differentialJet p.2 (x p.1)) ∘ sourceIndex) =
+          sourceJet := by
+      funext q
+      rfl
+    rw [hsourceJet] at hcomp
+    exact hcomp
   have hrows := operatorToeplitzMatrix_rows_linearIndependent L hL t ht
   have hforms := algebraicIndependent_matrixLinearForms_of_linearIndependent_rows
     (operatorToeplitzMatrix L t ht) hrows sourceJet hxB
@@ -375,7 +381,12 @@ theorem differentialOperatorApplications_coefficients_eq_zero
       simp only [e, Prod.mk.injEq] at h ⊢
       exact ⟨h.1, Fin.ext h.2⟩
     have hcomp := hy.comp e he
-    simpa [jets, e] using hcomp
+    have hjets :
+        ((fun p : ι × ℕ => differentialJet p.2 (y p.1)) ∘ e) = jets := by
+      funext q
+      rfl
+    rw [hjets] at hcomp
+    exact hcomp
   have hjetsLI : LinearIndependent C jets := hjetsAI.linearIndependent
   have hcoeff : ∀ q : ι × Fin B, (A q.1).coeff q.2.1 = 0 := by
     rw [Fintype.linearIndependent_iff] at hjetsLI

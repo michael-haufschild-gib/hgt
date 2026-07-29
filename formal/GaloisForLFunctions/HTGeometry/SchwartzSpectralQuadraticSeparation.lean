@@ -61,6 +61,9 @@ theorem tendsto_zero_of_tendsto_seminorm
   rw [(schwartz_withSeminorms ℂ ℝ ℂ).tendsto_nhds]
   rintro ⟨a, k⟩ ε hε
   have hev := (hF a k) (Iio_mem_nhds hε)
+  rw [Filter.mem_map] at hev
+  change {i | SchwartzMap.seminorm ℂ a k (F i) < ε} ∈ l at hev
+  change {i | schwartzSeminormFamily ℂ ℝ ℂ (a, k) (F i - 0) < ε} ∈ l
   simpa only [schwartzSeminormFamily_apply, sub_zero] using hev
 
 /-- On uniformly compact support, convergence of the zero-weight derivative seminorm controls
@@ -172,7 +175,7 @@ theorem quadraticSpectralSeparatorCLM_pow_apply
   induction n generalizing f with
   | zero => simp
   | succ n ih =>
-      rw [pow_succ, ContinuousLinearMap.mul_apply, ih,
+      rw [pow_succ, mul_apply_eq_comp, ih,
         quadraticSpectralSeparatorCLM_apply]
       push_cast
       ring
@@ -194,9 +197,9 @@ theorem hasDerivAt_quadraticSpectralSeparatorMultiplier
   have hu : HasDerivAt (fun x : ℝ => 2 * Real.pi * x - lambda)
       (2 * Real.pi) t := by
     convert ((hasDerivAt_id t).const_mul (2 * Real.pi)).sub_const lambda using 1
-    ring
+    all_goals first | rfl | exact Subsingleton.elim _ _ | ring
   convert (((hasDerivAt_const t 1).add (hu.pow 2)).div_const C) using 1
-  ring
+  all_goals first | rfl | exact Subsingleton.elim _ _ | ring
 
 /-- Exact all-order derivative expansion for powers of the quadratic separator.  Every summand
 contains the falling-factorial/geometric factor isolated by
@@ -229,7 +232,15 @@ theorem deriv_quadraticSpectralSeparator_pow_mul
       (hasDerivAt_quadraticSpectralSeparatorMultiplier lambda C t)
   have hf : HasDerivAt (fun x : ℝ => f x) (deriv f t) t :=
     f.differentiable.differentiableAt.hasDerivAt
-  convert ((hm.pow n).mul hf).deriv using 1
+  have hfun :
+      (fun x : ℝ =>
+        (quadraticSpectralSeparatorMultiplier lambda C x : ℂ) ^ n * f x) =
+      (fun x : ℝ => (quadraticSpectralSeparatorMultiplier lambda C x : ℂ)) ^ n *
+        fun x : ℝ => f x := by
+    funext x
+    rw [Pi.mul_apply, Pi.pow_apply]
+  rw [hfun]
+  simpa only [Pi.pow_apply, Pi.mul_apply] using ((hm.pow n).mul hf).deriv
 
 theorem iteratedDeriv_two_quadraticSpectralSeparatorMultiplier
     (lambda C t : ℝ) :
@@ -249,7 +260,7 @@ theorem iteratedDeriv_two_quadraticSpectralSeparatorMultiplier
       (8 * Real.pi ^ 2 / C) t := by
     convert (((((hasDerivAt_id t).const_mul (2 * Real.pi)).sub_const lambda).const_mul
       (4 * Real.pi)).div_const C) using 1
-    ring
+    all_goals first | rfl | exact Subsingleton.elim _ _ | ring
   exact h.deriv
 
 theorem iteratedDeriv_add_three_quadraticSpectralSeparatorMultiplier
@@ -1036,7 +1047,7 @@ theorem seminorm_zero_smulLeftCLM_pow_le_smoothEnvelope
       | zero => simp
       | succ p ih =>
           intro u x
-          rw [pow_succ, ContinuousLinearMap.mul_apply, ih,
+          rw [pow_succ, mul_apply_eq_comp, ih,
             SchwartzMap.smulLeftCLM_apply_apply hmC]
           ring
     rw [show iteratedDeriv k
@@ -1123,7 +1134,7 @@ theorem tsupport_smulLeftCLM_pow_ofReal_subset
       | zero => simp
       | succ p ih =>
           intro u x
-          rw [pow_succ, ContinuousLinearMap.mul_apply, ih,
+          rw [pow_succ, mul_apply_eq_comp, ih,
             SchwartzMap.smulLeftCLM_apply_apply hmC]
           ring
     rw [hpowapply n f t, hft, mul_zero] at ht
@@ -1132,7 +1143,11 @@ theorem tsupport_smulLeftCLM_pow_ofReal_subset
       intro hmC
       have hre : Function.HasTemperateGrowth m := by
         have hreal := Complex.reCLM.hasTemperateGrowth.comp hmC
-        simpa using hreal
+        have hfun : (Complex.reCLM ∘ fun t => (m t : ℂ)) = m := by
+          funext t
+          rfl
+        rw [hfun] at hreal
+        exact hreal
       exact hm hre
     cases n with
     | zero => simp [hft] at ht
@@ -1158,7 +1173,9 @@ theorem tendsto_seminorm_zero_smulLeftCLM_pow_zero_of_compact_packet
       ‖iteratedDeriv j m t‖ ≤ C * (1 + ‖t‖) ^ p := hb
       _ ≤ C * (1 + T) ^ p := by
         gcongr
-        simpa only [Real.norm_eq_abs] using hsupp ht
+        have htT := hsupp ht
+        change |t| ≤ T at htT
+        simpa only [Real.norm_eq_abs] using htT
   exact squeeze_zero (fun n => by positivity)
     (fun n => seminorm_zero_smulLeftCLM_pow_le_smoothEnvelope
       m hm f hD hq0 hpacket k n hder)
@@ -1188,11 +1205,30 @@ theorem hasTemperateGrowth_inverseQuadraticSpectralSeparatorMultiplier
     Function.HasTemperateGrowth (inverseQuadraticSpectralSeparatorMultiplier lambda C) := by
   have hu : Function.HasTemperateGrowth (fun t : ℝ => 2 * Real.pi * t - lambda) := by
     fun_prop
-  have hbase := (Function.hasTemperateGrowth_one_add_norm_sq_rpow ℝ (-1)).comp hu
+  have hbase : Function.HasTemperateGrowth (fun x : ℝ => (1 + x ^ 2)⁻¹) := by
+    simpa only [Real.norm_eq_abs, sq_abs, Real.rpow_neg_one] using
+      Function.hasTemperateGrowth_one_add_norm_sq_rpow ℝ (-1)
+  have hbaseComp : Function.HasTemperateGrowth
+      (fun t : ℝ => (1 + (2 * Real.pi * t - lambda) ^ 2)⁻¹) := by
+    have hcomp := hbase.comp hu
+    have hfun :
+        (fun x : ℝ => (1 + x ^ 2)⁻¹) ∘ (fun t : ℝ => 2 * Real.pi * t - lambda) =
+          fun t : ℝ => (1 + (2 * Real.pi * t - lambda) ^ 2)⁻¹ := by
+      funext t
+      rfl
+    rw [hfun] at hcomp
+    exact hcomp
   have hconst : Function.HasTemperateGrowth (fun _t : ℝ => C) := by fun_prop
-  have hmul := hconst.mul hbase
-  simpa [inverseQuadraticSpectralSeparatorMultiplier, Function.comp_apply,
-    Real.norm_eq_abs, sq_abs, Real.rpow_neg_one, div_eq_mul_inv] using hmul
+  have hmul : Function.HasTemperateGrowth
+      (fun t : ℝ => C * (1 + (2 * Real.pi * t - lambda) ^ 2)⁻¹) :=
+    hconst.mul hbaseComp
+  have hfun :
+      (fun t : ℝ => C * (1 + (2 * Real.pi * t - lambda) ^ 2)⁻¹) =
+        inverseQuadraticSpectralSeparatorMultiplier lambda C := by
+    funext t
+    rw [inverseQuadraticSpectralSeparatorMultiplier, div_eq_mul_inv]
+  rw [hfun] at hmul
+  exact hmul
 
 /-- Continuous Schwartz multiplier by the reciprocal quadratic separator. -/
 def inverseQuadraticSpectralSeparatorCLM (lambda C : ℝ) :
@@ -1217,7 +1253,7 @@ theorem inverseQuadraticSpectralSeparatorCLM_pow_apply
   induction n generalizing f with
   | zero => simp
   | succ n ih =>
-      rw [pow_succ, ContinuousLinearMap.mul_apply, ih,
+      rw [pow_succ, mul_apply_eq_comp, ih,
         inverseQuadraticSpectralSeparatorCLM_apply]
       ring
 

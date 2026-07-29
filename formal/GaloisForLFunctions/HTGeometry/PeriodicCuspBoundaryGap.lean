@@ -121,7 +121,7 @@ theorem differentiableAt_normedPeriodicCuspFunction_zero
   have hFbd : BddAbove
       (norm ∘ normedPeriodicCuspFunction h f '' (S \ {0})) := by
     use c
-    simp only [mem_upperBounds, Set.mem_image, Set.mem_diff,
+    simp only [mem_upperBounds, Set.mem_image, Set.mem_sdiff,
       forall_exists_index, and_imp]
     intro y q hq hq2 hy
     simpa only [← hy, norm_one, mul_one] using (hS1 q hq hq2).2

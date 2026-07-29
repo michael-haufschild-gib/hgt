@@ -200,7 +200,7 @@ theorem lineReflect_preimage_chartRA {a : ℂ} (ha : a.re = 1 / 2) (r₀ R : ℝ
     lineReflect ⁻¹' chartRA a r₀ R = chartLA a r₀ R := by
   ext z
   simp only [Set.mem_preimage, chartRA, chartLA, Set.mem_inter_iff, Set.mem_setOf_eq,
-    Set.mem_diff, mem_ball, mem_closedBall]
+    Set.mem_sdiff, mem_ball, mem_closedBall]
   rw [dist_lineReflect_center ha]
   have hslit : lineReflect z - a ∈ Complex.slitPlane ↔ a - z ∈ Complex.slitPlane := by
     rw [lineReflect_sub_center ha]

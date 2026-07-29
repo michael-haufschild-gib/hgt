@@ -52,7 +52,11 @@ theorem iteratedDeriv_exp_neg_mul_log_fun (T : ℕ) (L : ℂ) :
       funext z
       have hlin : HasDerivAt (fun z : ℂ => -(z * L)) (-L) z := by
         have hid : HasDerivAt (fun z : ℂ => z) 1 z := hasDerivAt_id z
-        simpa using (hid.mul_const L).neg
+        have hneg := (hid.mul_const L).neg
+        rw [show (-(fun y : ℂ => y * L)) = (fun y : ℂ => -(y * L)) by
+          funext y
+          rfl] at hneg
+        simpa only [one_mul] using! hneg
       have hdiff : DifferentiableAt ℂ (fun z : ℂ => Complex.exp (-(z * L))) z :=
         hlin.cexp.differentiableAt
       rw [deriv_const_mul ((-L) ^ T) hdiff]

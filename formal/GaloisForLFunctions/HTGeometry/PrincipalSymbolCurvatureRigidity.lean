@@ -80,7 +80,7 @@ theorem coefficient_eq_zero_of_smul_source_mem_principalFiltration
       u '' (Set.univ \ {n}) := by
     rintro y ⟨j, rfl⟩
     refine ⟨j, ?_, rfl⟩
-    simp only [Set.mem_diff, Set.mem_univ, Set.mem_singleton_iff, true_and]
+    simp only [Set.mem_sdiff, Set.mem_univ, Set.mem_singleton_iff, true_and]
     exact Nat.ne_of_lt j.isLt
   exact hu.linearIndependent.eq_zero_of_smul_mem_span n c
     ((Submodule.span_mono hsubset) hc)

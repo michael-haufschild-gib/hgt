@@ -23,8 +23,13 @@ def ccmRationalCrossedProductKRealAlgebra :
     KRealAlgebraStructure CCMRationalAlgebraicCrossedProduct where
   sigma := ccmRationalCrossedProductRealStructureₛₗ
   sq F := by
-    simpa [kRealParityAction] using
-      ccmRationalCrossedProductRealStructure_sq F
+    calc
+      ccmRationalCrossedProductRealStructureₛₗ
+          (ccmRationalCrossedProductRealStructureₛₗ F) =
+        ccmRationalCrossedProductRealStructure
+          (ccmRationalCrossedProductRealStructure F) := by rfl
+      _ = F := ccmRationalCrossedProductRealStructure_sq F
+      _ = kRealParityAction false F := by rfl
   map_one := ccmRationalCrossedProductRealStructure_one
   map_mul := ccmRationalCrossedProductRealStructure_mul
 

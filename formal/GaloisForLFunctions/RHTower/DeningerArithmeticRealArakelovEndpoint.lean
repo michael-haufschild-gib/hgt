@@ -1,6 +1,6 @@
 import Mathlib.Data.Finsupp.Basic
 import Mathlib.LinearAlgebra.Finsupp.LinearCombination
-import Mathlib.Algebra.Exact
+import Mathlib.Algebra.Exact.Basic
 
 /-!
 # Algebraic graph model for a real Arakelov endpoint

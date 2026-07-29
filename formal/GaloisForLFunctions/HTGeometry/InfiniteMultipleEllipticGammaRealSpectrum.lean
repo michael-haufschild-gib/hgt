@@ -20,7 +20,7 @@ theorem occupationWeight_nomeRpow {ι : Type*}
   classical
   rw [occupationWeight, Finsupp.prod]
   simp_rw [← ENNReal.coe_pow]
-  rw [← ENNReal.coe_finsetProd]
+  rw [← ENNReal.ofNNReal_finsetProd]
   congr 1
   rw [nnnorm_nomeMonomial, Finsupp.prod]
   rw [← NNReal.finsetProd_rpow]

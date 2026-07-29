@@ -26,7 +26,6 @@ theorem mahler_homogeneous_eq_zero {Y : ℂ⟦X⟧} {k : ℕ} (hk : 2 ≤ k) {c 
   induction n using Nat.strong_induction_on with
   | _ n ih =>
     have hc := congrArg (fun G => PowerSeries.coeff n G) h
-    simp only [] at hc
     rw [PowerSeries.coeff_subst_X_pow (by omega : k ≠ 0), coeff_C_mul] at hc
     by_cases hdvd : k ∣ n
     · rw [if_pos hdvd] at hc
@@ -64,7 +63,6 @@ theorem subst_X_pow_injective {k : ℕ} (hk : k ≠ 0) :
   intro f g h
   ext n
   have hc := congrArg (PowerSeries.coeff (k * n)) h
-  simp only [] at hc
   rw [PowerSeries.coeff_subst_X_pow hk, PowerSeries.coeff_subst_X_pow hk,
     if_pos (Dvd.intro n rfl), if_pos (Dvd.intro n rfl),
     Nat.mul_div_cancel_left n (Nat.pos_of_ne_zero hk)] at hc

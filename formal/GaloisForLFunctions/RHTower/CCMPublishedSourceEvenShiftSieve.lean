@@ -265,7 +265,7 @@ theorem ccmPublishedEvenShiftSievedPolarPrimeCoefficient_eq_completedErrorMoment
     have hr := hasDerivAt_ccmPublishedEvenShiftSievedTest sigma xi x
     have hc :=
       (Complex.ofRealCLM.hasFDerivAt.comp x hr.hasFDerivAt).hasDerivAt
-    simpa only [F, F', Function.comp_apply, ContinuousLinearMap.coe_comp',
+    simpa only [F, F', Function.comp_apply, ContinuousLinearMap.coe_comp,
       ContinuousLinearMap.comp_apply, ContinuousLinearMap.toSpanSingleton_apply,
       one_smul] using hc
   have hF' : IntervalIntegrable F' volume 0 (2 * a) := by

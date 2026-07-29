@@ -85,7 +85,7 @@ theorem complexPolynomial_div_not_isBigO_exp_neg
 /-- Pointwise exponential domination on a tail forces the numerator of a polynomial quotient to
 vanish. -/
 theorem complexPolynomial_eq_zero_of_div_exponential_bound
-    {p q : Polynomial ℂ} (hq : q ≠ 0) {eta C : ℝ} (heta : 0 < eta) (hC : 0 ≤ C)
+    {p q : Polynomial ℂ} (hq : q ≠ 0) {eta C : ℝ} (heta : 0 < eta) (_hC : 0 ≤ C)
     (hbound : ∀ᶠ x : ℝ in atTop,
       ‖p.eval (x : ℂ) / q.eval (x : ℂ)‖ ≤ C * Real.exp (-eta * x)) :
     p = 0 := by

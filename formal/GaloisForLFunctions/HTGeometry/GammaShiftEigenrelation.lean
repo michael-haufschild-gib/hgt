@@ -260,7 +260,6 @@ private theorem dvd_of_dvd_C_mul {m : ℕ} {a b : MvPolynomial (Fin m) (RatFunc 
   obtain ⟨t, ht⟩ := h
   refine ⟨C k⁻¹ * t, ?_⟩
   have h2 := congrArg (fun x => C (k⁻¹ : RatFunc ℂ) * x) ht
-  simp only [] at h2
   rw [← mul_assoc, ← map_mul, inv_mul_cancel₀ hk, map_one, one_mul] at h2
   rw [h2]
   ring

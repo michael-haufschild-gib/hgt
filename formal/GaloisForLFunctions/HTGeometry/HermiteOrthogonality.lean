@@ -84,7 +84,7 @@ theorem annihilationCLM_eq (f : 𝓢(ℝ, ℂ)) :
 @[simp] theorem annihilationCLM_apply (f : 𝓢(ℝ, ℂ)) (x : ℝ) :
     annihilationCLM f x = 2 * (π : ℂ) * (x : ℂ) * f x + deriv (f : ℝ → ℂ) x := by
   rw [annihilationCLM_eq]
-  simp only [SchwartzMap.add_apply, SchwartzMap.smul_apply, mulXCLM_apply, derivSCLM_apply,
+  simp only [_root_.add_apply, _root_.smul_apply, mulXCLM_apply, derivSCLM_apply,
     smul_eq_mul]
   ring
 
@@ -100,7 +100,7 @@ theorem derivSCLM_mulXCLM (f : 𝓢(ℝ, ℂ)) :
   have h2 := f.hasDerivAt x
   have h3 : HasDerivAt (fun y : ℝ => (y : ℂ) * f y)
       (1 * f x + (x : ℂ) * deriv (f : ℝ → ℂ) x) x := h1.mul h2
-  rw [derivSCLM_apply, coe_mulXCLM, h3.deriv, SchwartzMap.add_apply, mulXCLM_apply,
+  rw [derivSCLM_apply, coe_mulXCLM, h3.deriv, _root_.add_apply, mulXCLM_apply,
     derivSCLM_apply]
   ring
 
@@ -177,7 +177,7 @@ theorem schwartzPair_creationCLM (f g : 𝓢(ℝ, ℂ)) :
     apply SchwartzMap.ext
     intro x
     simp only [mulS_apply, creationCLM_apply, annihilationCLM_apply, SchwartzMap.sub_apply,
-      SchwartzMap.add_apply, derivSCLM_apply]
+      _root_.add_apply, derivSCLM_apply]
     ring
   have h1 : schwartzPair (derivSCLM f) g = ∫ x : ℝ, deriv (f : ℝ → ℂ) x * g x := by
     rw [schwartzPair_eq_integral]

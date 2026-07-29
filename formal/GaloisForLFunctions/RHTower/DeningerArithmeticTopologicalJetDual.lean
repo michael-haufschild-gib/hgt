@@ -113,7 +113,7 @@ theorem deningerCompactOpenThetaCompact_H1Jet_zero
           (deningerArithmeticJetIndexZero rho))
         (deningerArithmeticCompactOpenH1Class F)
   rw [deningerCompactOpenThetaCompact_apply,
-    ContinuousLinearMap.smul_apply,
+    _root_.smul_apply,
     deningerCompactOpenH1Jet_class,
     deningerCompactOpenTheta_class,
     deningerCompactOpenH1Jet_class]

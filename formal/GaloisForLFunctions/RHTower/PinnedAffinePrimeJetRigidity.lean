@@ -305,7 +305,8 @@ theorem existsUnique_finitePrimeDerivativeJet_jetClass {k : ℕ}
       rw [jetClass, map_sub, sub_eq_zero]
       exact hb
     have hj := (jetClass_eq_zero_iff_coeff_lt_eq_zero ℂ k).mp hzero j j.isLt
-    simpa only [Polynomial.coeff_sub] using sub_eq_zero.mp hj
+    rw [Polynomial.coeff_sub] at hj
+    exact sub_eq_zero.mp hj
 
 /-- For the one-slot presentation, the descended Fitting boundary loses no information: its kernel
 is exactly the pinned-affine subgroup. -/

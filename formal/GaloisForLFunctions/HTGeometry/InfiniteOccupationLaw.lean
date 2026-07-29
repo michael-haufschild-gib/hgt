@@ -253,7 +253,7 @@ theorem occupationMass_ne_top_iff {ι : Type*} (u : ι → NNReal)
                 exact le_add_of_nonneg_right (v a).property
           _ ≤ r := hS₀ (S ∪ S₀) Finset.subset_union_right
       simp_rw [hfactor_en]
-      rw [← ENNReal.coe_finsetProd]
+      rw [← ENNReal.ofNNReal_finsetProd]
       rw [← ENNReal.ofReal_coe_nnreal]
       apply ENNReal.ofReal_le_ofReal
       exact_mod_cast hprod

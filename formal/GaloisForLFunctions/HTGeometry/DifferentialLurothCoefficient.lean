@@ -760,7 +760,7 @@ theorem exists_differentialRelation_coefficientRatio_not_mem_bot
         (⊥ : IntermediateField F E) := by
   classical
   by_contra hnone
-  push_neg at hnone
+  push Not at hnone
   obtain ⟨n, hn⟩ := Finsupp.ne_iff.mp hP0
   have hnSupport : n ∈ P.support := by
     simpa [MvPolynomial.mem_support_iff] using hn

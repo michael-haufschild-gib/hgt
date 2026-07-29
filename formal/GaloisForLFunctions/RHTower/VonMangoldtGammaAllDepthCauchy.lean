@@ -201,7 +201,7 @@ theorem finiteVonMangoldtAllDepthBalancedCauchyVector_plus_half_eq_zero
     apply Submodule.subset_span
     simp
   have hproj :=
-    Submodule.orthogonalProjection_mem_subspace_orthogonalComplement_eq_zero hv
+    Submodule.orthogonalProjectionOnto_mem_subspace_orthogonalComplement_eq_zero hv
   exact congrArg Subtype.val hproj
 
 theorem finiteVonMangoldtAllDepthBalancedCauchyVector_neg_half_eq_zero
@@ -214,7 +214,7 @@ theorem finiteVonMangoldtAllDepthBalancedCauchyVector_neg_half_eq_zero
     apply Submodule.subset_span
     simp
   have hproj :=
-    Submodule.orthogonalProjection_mem_subspace_orthogonalComplement_eq_zero hv
+    Submodule.orthogonalProjectionOnto_mem_subspace_orthogonalComplement_eq_zero hv
   exact congrArg Subtype.val hproj
 
 /-- Every compressed source vector satisfies the positive-half boundary constraint. -/

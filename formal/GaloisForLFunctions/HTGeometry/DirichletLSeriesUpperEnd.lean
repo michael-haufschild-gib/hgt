@@ -106,8 +106,9 @@ noncomputable def rightHalfPlaneLSeriesToUpperEndAnalytic :
     rw [ZeroMemClass.coe_zero]
     change Germ.coeRingHom upperEndFilter
       (fun z : ℂ => LSeries (0 : ℕ → ℂ) (-Complex.I * z)) = 0
-    simpa only [LSeries_zero, Pi.zero_apply] using
-      (Germ.coeRingHom upperEndFilter).map_zero
+    simp only [LSeries_zero, Pi.zero_apply]
+    change Germ.coeRingHom upperEndFilter (0 : ℂ → ℂ) = 0
+    exact (Germ.coeRingHom upperEndFilter).map_zero
   map_one' := by
     apply Subtype.ext
     rw [OneMemClass.coe_one]

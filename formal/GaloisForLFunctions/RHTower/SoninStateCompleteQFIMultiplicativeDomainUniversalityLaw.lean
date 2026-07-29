@@ -49,10 +49,10 @@ theorem
     change (soninLogFourierScattering - 1) (X ψ) = 0
     have hfixed : soninLogFourierScattering ψ = ψ := by
       apply sub_eq_zero.mp
-      simpa only [ContinuousLinearMap.sub_apply, ContinuousLinearMap.one_apply] using hψ
+      simpa only [_root_.sub_apply, one_apply_eq_self] using hψ
     change soninLogFourierScattering (X ψ) - X ψ = 0
-    rw [← ContinuousLinearMap.mul_apply, hcomm,
-      ContinuousLinearMap.mul_apply, hfixed, sub_self]
+    rw [← mul_apply_eq_comp, hcomm,
+      mul_apply_eq_comp, hfixed, sub_self]
   · intro hall
     let P : SoninL2 →L[ℂ] SoninL2 := soninLogFourierInvariantAverage
     have hP2 : P * P = P :=
@@ -62,7 +62,7 @@ theorem
     have hdepart : (1 - P) * X * P = 0 := by
       apply ContinuousLinearMap.ext
       intro v
-      simp only [ContinuousLinearMap.mul_apply]
+      simp only [mul_apply_eq_comp]
       let y : SoninL2 := P v
       by_cases hy : y = 0
       · simp [y, hy]
@@ -78,7 +78,7 @@ theorem
           exact inv_mul_cancel₀ hynorm
         have hPy : P y = y := by
           change P (P v) = P v
-          rw [← ContinuousLinearMap.mul_apply, hP2]
+          rw [← mul_apply_eq_comp, hP2]
         have hPψ : P ψ = ψ := by
           simp only [ψ, map_smul, hPy]
         have hψphysical :
@@ -94,7 +94,7 @@ theorem
           (physicalState_soninLogFourierScattering_iff_invariantAverage_fixed (X ψ)).mp
             hXphysical
         have hcompψ : (1 - P) (X ψ) = 0 := by
-          simp only [ContinuousLinearMap.sub_apply, ContinuousLinearMap.one_apply, hPX,
+          simp only [_root_.sub_apply, one_apply_eq_self, hPX,
             sub_self]
         have hscaled : c • ((1 - P) (X y)) = 0 := by
           simpa only [ψ, map_smul] using hcompψ
@@ -110,7 +110,7 @@ theorem
       apply ContinuousLinearMap.ext
       intro v
       have hPcommv := congrArg (fun A : SoninL2 →L[ℂ] SoninL2 => A v) hPcomm
-      simp only [ContinuousLinearMap.mul_apply] at hPcommv
+      simp only [mul_apply_eq_comp] at hPcommv
       change soninLogFourierInvariantAverage (X v) =
         X (soninLogFourierInvariantAverage v) at hPcommv
       rw [soninLogFourierInvariantAverage_apply,

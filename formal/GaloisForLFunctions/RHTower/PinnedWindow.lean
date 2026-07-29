@@ -496,10 +496,10 @@ theorem relative_error_le_on_annulus_of_circles {f G : ℂ → ℂ} {a : ℂ}
   set φ : ℂ → ℂ := fun z => (f z - G z) / G z with hφ_def
   set A : Set ℂ := ball a R \ closedBall a r₀ with hA_def
   have hAopen : IsOpen A := isOpen_ball.sdiff isClosed_closedBall
-  have hAbdd : Bornology.IsBounded A := Metric.isBounded_ball.subset Set.diff_subset
+  have hAbdd : Bornology.IsBounded A := Metric.isBounded_ball.subset Set.sdiff_subset
   have hRpos : 0 < R := lt_of_le_of_lt h0 hrR
   have hclosureA : closure A ⊆ closedBall a R \ ball a r₀ := by
-    have h1 : closure A ⊆ closure (ball a R) := closure_mono Set.diff_subset
+    have h1 : closure A ⊆ closure (ball a R) := closure_mono Set.sdiff_subset
     have h2 : closure A ⊆ (ball a r₀)ᶜ := by
       apply closure_minimal ?_ isOpen_ball.isClosed_compl
       intro z hz

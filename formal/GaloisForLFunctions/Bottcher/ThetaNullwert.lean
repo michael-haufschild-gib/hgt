@@ -49,9 +49,18 @@ theorem hasDerivAt_thetaTwo {τ : ℂ} (hτ : 0 < im τ) :
       ((jacobiTheta₂_fderiv (τ/2) τ) (1/2, 1)) τ := by
     have h := (hasFDerivAt_jacobiTheta₂ (τ/2) hτ).comp_hasDerivAt
       (f := fun s : ℂ => ((s / 2, s) : ℂ × ℂ)) τ hφ
-    convert h using 1
+    rw [show (fun s => jacobiTheta₂ (s / 2) s) =
+        (fun p => jacobiTheta₂ p.1 p.2) ∘ fun s : ℂ => ((s / 2, s) : ℂ × ℂ) by
+      funext s
+      rfl]
+    exact h
   have hmul := hexp.mul hcomp
   unfold thetaTwo
-  convert hmul using 1
+  rw [show (fun s : ℂ => Complex.exp ((π : ℂ) * I * s / 4) * jacobiTheta₂ (s / 2) s) =
+      (fun s : ℂ => Complex.exp ((π : ℂ) * I * s / 4)) *
+        fun s => jacobiTheta₂ (s / 2) s by
+    funext s
+    rfl]
+  exact hmul
 
 end Bottcher

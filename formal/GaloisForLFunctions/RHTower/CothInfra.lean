@@ -179,7 +179,13 @@ theorem sinh_lt_mul_cosh {x : ℝ} (hx : 0 < x) : Real.sinh x < x * Real.cosh x 
             (1 * Real.cosh t + t * Real.sinh t) t :=
           (hasDerivAt_id t).mul (Real.hasDerivAt_cosh t)
         have h2 := h1.sub (Real.hasDerivAt_sinh t)
-        convert h2 using 1
+        have hfun :
+            ((fun t : ℝ => t * Real.cosh t) - fun t : ℝ => Real.sinh t) =
+              (fun t : ℝ => t * Real.cosh t - Real.sinh t) := by
+          funext t
+          rfl
+        rw [hfun] at h2
+        apply h2.congr_deriv
         ring
       rw [hderiv.deriv]
       exact mul_pos htp (Real.sinh_pos_iff.mpr htp)
@@ -239,7 +245,12 @@ theorem rcoth_hasDerivAt {u : ℝ} (hu : u ≠ 0) :
     HasDerivAt rcoth (-(rcsch u) ^ 2) u := by
   have hs : Real.sinh u ≠ 0 := Real.sinh_ne_zero.mpr hu
   have h := (Real.hasDerivAt_cosh u).div (Real.hasDerivAt_sinh u) hs
-  convert h using 1
+  have hfun :
+      (fun x : ℝ => Real.cosh x) / (fun x : ℝ => Real.sinh x) = rcoth := by
+    funext x
+    rfl
+  rw [hfun] at h
+  apply h.congr_deriv
   rw [rcsch]
   have hid : Real.cosh u ^ 2 - Real.sinh u ^ 2 = 1 := Real.cosh_sq_sub_sinh_sq u
   field_simp
@@ -262,8 +273,14 @@ theorem rcsch_hasDerivAt {u : ℝ} (hu : u ≠ 0) :
 theorem rcsch_sq_hasDerivAt {u : ℝ} (hu : u ≠ 0) :
     HasDerivAt (fun u => (rcsch u) ^ 2) (-2 * rphi u) u := by
   have h := (rcsch_hasDerivAt hu).pow 2
-  convert h using 1
-  rw [rphi]; ring
+  have hfun :
+      (fun x : ℝ => rcsch x) ^ 2 = (fun x : ℝ => (rcsch x) ^ 2) := by
+    funext x
+    rfl
+  rw [hfun] at h
+  apply h.congr_deriv
+  rw [rphi]
+  ring
 
 /-- The excess of `coth` over its limit: `coth v − 1 = 2/(e^{2v} − 1)` for `v > 0`. -/
 theorem rcoth_sub_one {v : ℝ} (hv : 0 < v) :

@@ -65,8 +65,8 @@ theorem gramSecondOrderRemainder_eq_residualEnergy
   rw [hadj]
   apply ContinuousLinearMap.ext
   intro x
-  simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.add_apply,
-    ContinuousLinearMap.sub_apply, ContinuousLinearMap.smul_apply, map_add, map_smul]
+  simp only [ContinuousLinearMap.comp_apply, _root_.add_apply,
+    _root_.sub_apply, _root_.smul_apply, map_add, map_smul]
   module
 
 /-- The second-order remainder vanishes at zero perturbation. -/

@@ -303,7 +303,7 @@ theorem hypertranscendentalOver_differentialAdjoin_image_iff
   rw [← differentialMatroid_contract_isNonloop_iff_hypertranscendentalOver,
     ← differentialMatroid_contract_isNonloop_iff_hypertranscendentalOver,
     Matroid.contract_isNonloop_iff, Matroid.contract_isNonloop_iff]
-  simp only [differentialMatroid_ground, Set.mem_diff, Set.mem_univ, true_and]
+  simp only [differentialMatroid_ground, Set.mem_sdiff, Set.mem_univ, true_and]
   exact not_congr (sigma.mem_differentialMatroid_closure_image_iff s x)
 
 /-- Relative differential algebraicity is transported by the same normalized-base semilinear

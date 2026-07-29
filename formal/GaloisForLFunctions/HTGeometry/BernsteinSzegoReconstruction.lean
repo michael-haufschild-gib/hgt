@@ -414,7 +414,7 @@ theorem finiteToeplitzHeadDiff_residual_pow_invariant
           ih (opucResidualLinear p u) (opucResidualLinear p v)
         _ = finiteToeplitzHeadDiff c d (((opucResidualCLM p) ^ (n + 1)) u)
               (((opucResidualCLM p) ^ (n + 1)) v) := by
-          simp only [pow_succ, ContinuousLinearMap.mul_apply,
+          simp only [pow_succ, mul_apply_eq_comp,
             opucResidualCLM_apply]
 
 /-- **Stable terminal uniqueness on the head space.**  A common normalized terminal vector with

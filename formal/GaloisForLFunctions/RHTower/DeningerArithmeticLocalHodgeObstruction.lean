@@ -168,12 +168,12 @@ theorem deningerCompactOpenLocalJetHodge_theta_defect
         deningerCompactOpenLocalJetHodge rho x := by
   apply ContinuousLinearMap.ext
   intro y
-  rw [ContinuousLinearMap.sub_apply,
+  rw [_root_.sub_apply,
     deningerCompactOpenThetaCompact_apply,
     deningerCompactOpenLocalJetHodge_apply,
     deningerCompactOpenLocalJetHodge_apply,
     deningerCompactOpenLocalJetHodge_apply,
-    ContinuousLinearMap.smul_apply,
+    _root_.smul_apply,
     deningerCompactOpenH1Jet_zero_theta rho x,
     deningerCompactOpenH1Jet_zero_theta rho y]
   simp only [map_mul, deningerCompactOpenLocalJetHodge_apply]

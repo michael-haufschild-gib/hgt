@@ -43,7 +43,7 @@ theorem inner_sub_adjoint (A : E →L[ℂ] E) (x : E) :
     inner ℂ (A x) x - inner ℂ x (A x) = inner ℂ ((A - adjoint A) x) x := by
   have hadj : inner ℂ x (A x) = inner ℂ ((adjoint A) x) x := by
     rw [ContinuousLinearMap.adjoint_inner_left]
-  rw [hadj, ContinuousLinearMap.sub_apply, inner_sub_left]
+  rw [hadj, _root_.sub_apply, inner_sub_left]
 
 /-- The difference of a number and its conjugate is twice its imaginary part, times `i`. -/
 theorem sub_conj_eq (z : ℂ) : z - (starRingEnd ℂ) z = (2 * z.im : ℝ) * Complex.I := by

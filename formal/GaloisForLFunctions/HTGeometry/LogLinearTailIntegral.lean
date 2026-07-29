@@ -22,10 +22,11 @@ theorem hasDerivAt_neg_logLin_tail {x : ℝ} (hx : 0 < x) :
   have hlog : HasDerivAt Real.log x⁻¹ x := Real.hasDerivAt_log hx0
   have hg : HasDerivAt (fun x => Real.log x + 1) (x⁻¹) x := by simpa using hlog.add_const 1
   have hF := (hg.neg).div (hasDerivAt_id x) hx0
-  convert hF using 1
-  simp only [id_eq, Pi.neg_apply]
-  field_simp
-  ring
+  simpa only [id_eq, Pi.neg_apply, Pi.div_apply] using!
+    hF.congr_deriv (by
+      simp only [id_eq, Pi.neg_apply]
+      field_simp
+      ring)
 
 open Filter Topology MeasureTheory Set
 

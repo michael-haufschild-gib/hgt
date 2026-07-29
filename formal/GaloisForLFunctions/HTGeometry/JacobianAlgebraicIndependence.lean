@@ -144,7 +144,7 @@ theorem algebraicIndependent_of_jacobian_det_ne_zero
           intro hpzero
           simp [hpzero] at hpos
         obtain ⟨s, hs, hsum⟩ :=
-          P.support.exists_mem_eq_sup (Finsupp.support_nonempty_iff.mpr hPne)
+          P.support.exists_mem_eq_sup (support_nonempty.mpr hPne)
             (fun s => s.sum fun _ e => e)
         have hsumpos : 0 < s.sum (fun _ e => e) := by
           rw [totalDegree, hsum] at hpos
@@ -162,4 +162,3 @@ theorem algebraicIndependent_of_jacobian_det_ne_zero
       simpa using hrel
 
 end MvPolynomial
-

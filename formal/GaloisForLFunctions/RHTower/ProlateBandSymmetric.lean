@@ -51,7 +51,6 @@ theorem band_flux_integral_by_parts {f g : ℝ → ℝ}
     apply Continuous.intervalIntegrable
     fun_prop
   have h := intervalIntegral.integral_mul_deriv_eq_deriv_mul hu hv hu' hv'
-  simp only [] at h
   rw [h]
   norm_num
 
@@ -134,7 +133,6 @@ theorem band_flux_integral_by_parts_on {f g : ℝ → ℝ} {U : Set ℝ}
     exact (((continuous_const.mul continuous_id).neg.continuousOn).mul hf'on).add
       (((continuous_const.sub (continuous_pow 2)).continuousOn).mul (hf2c.mono hUI))
   have h := intervalIntegral.integral_mul_deriv_eq_deriv_mul hu hv hu' hv'
-  simp only [] at h
   rw [h]
   norm_num
 

@@ -45,7 +45,7 @@ theorem injMod_sub_opNorm_le [Nontrivial E] (A B : E →L[ℝ] F) :
   have h1 : injMod A ≤ ‖A w‖ := injMod_le A w
   have h2 : ‖A (w : E) - B (w : E)‖ ≤ ‖A - B‖ := by
     have := (A - B).unit_le_opNorm (w : E) (by rw [hw])
-    rwa [ContinuousLinearMap.sub_apply] at this
+    rwa [_root_.sub_apply] at this
   have h3 : ‖A (w : E)‖ ≤ ‖A (w : E) - B (w : E)‖ + ‖B (w : E)‖ := by
     have ht := norm_add_le (A (w : E) - B (w : E)) (B (w : E))
     rwa [sub_add_cancel] at ht

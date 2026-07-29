@@ -167,7 +167,7 @@ theorem quadratic_iterate_critical_finite (c : ℂ) (n : ℕ) :
     {w | (quadraticPolyIterate c n).derivative.IsRoot w}.Finite := by
   apply Polynomial.finite_setOf_isRoot
   intro h
-  have hd := Polynomial.natDegree_eq_zero_of_derivative_eq_zero h
+  have hd := Polynomial.derivative_eq_zero.mp h
   rw [quadraticPolyIterate_natDegree] at hd
   exact pow_ne_zero n two_ne_zero hd
 

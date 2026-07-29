@@ -271,8 +271,8 @@ theorem centralSoninDilationCorner_inverseDilatedEvenShell_tendsto_ratio_of_le
       atTop (𝓝 0) := by
     convert hsum using 1
     funext m
-    simp only [crossBoundary, ContinuousLinearMap.mul_apply,
-      ContinuousLinearMap.one_apply, ContinuousLinearMap.sub_apply]
+    simp only [crossBoundary, mul_apply_eq_comp,
+      one_apply_eq_self, _root_.sub_apply]
     rw [hQe m]
     have hDe : D (e m) = D (e m - g m) + D (g m) := by
       rw [map_sub, sub_add_cancel]
@@ -368,8 +368,8 @@ theorem centralSoninDilationCorner_inverseDilatedEvenShell_tendsto_zero_of_lt
       (crossBoundary Q D : SoninL2 →L[ℂ] SoninL2) (e m)) atTop (𝓝 0) := by
     convert hsum using 1
     funext m
-    simp only [crossBoundary, ContinuousLinearMap.mul_apply,
-      ContinuousLinearMap.one_apply, ContinuousLinearMap.sub_apply]
+    simp only [crossBoundary, mul_apply_eq_comp,
+      one_apply_eq_self, _root_.sub_apply]
     rw [hQe m]
     have hDe : D (e m) = D (e m - g m) + D (g m) := by
       rw [map_sub, sub_add_cancel]
@@ -591,21 +591,21 @@ theorem inner_finiteEvenDilationGramCombination
         (evenCentralSoninDilationCorner a (r i) (hr i) y)
         (evenCentralSoninDilationCorner a (r j) (hr j) x) := by
   classical
-  rw [finiteEvenDilationGramCombination, ContinuousLinearMap.sum_apply]
+  rw [finiteEvenDilationGramCombination, _root_.sum_apply]
   change (innerSL ℂ y) (∑ i, (∑ j, A i j •
     ((evenCentralSoninDilationCorner a (r i) (hr i))† ∘L
       evenCentralSoninDilationCorner a (r j) (hr j))) x) = _
   rw [map_sum]
   apply Finset.sum_congr rfl
   intro i _
-  rw [ContinuousLinearMap.sum_apply]
+  rw [_root_.sum_apply]
   change (innerSL ℂ y) (∑ j, (A i j •
     ((evenCentralSoninDilationCorner a (r i) (hr i))† ∘L
       evenCentralSoninDilationCorner a (r j) (hr j))) x) = _
   rw [map_sum]
   apply Finset.sum_congr rfl
   intro j _
-  rw [ContinuousLinearMap.smul_apply, map_smul]
+  rw [_root_.smul_apply, map_smul]
   congr 1
   exact inner_adjointComp_eq_corner_inner
     (evenCentralSoninDilationCorner a (r i) (hr i))

@@ -1112,7 +1112,7 @@ theorem not_isCompactOperator_evenIndicatorShellDiff
     intro n
     have h1 := evenIndicatorCutoff_evenShellVectorEven_of_le s t t hst le_rfl n
     have h0 := evenIndicatorCutoff_evenShellVectorEven_eq_zero s t s hst le_rfl n
-    rw [ContinuousLinearMap.sub_apply, h1, h0, sub_zero]
+    rw [_root_.sub_apply, h1, h0, sub_zero]
   have hnull := IsCompactOperator.norm_apply_tendsto_zero_of_orthonormal
     (evenIndicatorCutoff t - evenIndicatorCutoff s) hcpt
     (evenShellVectorEven_orthonormal s t hs hst)

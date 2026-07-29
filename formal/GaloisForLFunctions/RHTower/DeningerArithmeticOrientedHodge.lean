@@ -62,7 +62,7 @@ theorem deningerArithmeticFEOrientation_reflect (q : XiZeroCopy) :
   have ha0 : a ≠ 0 := xiSpectralPoint_ne_zero q
   have hcoords : a.re ≠ 0 ∨ a.im ≠ 0 := by
     by_contra h
-    push_neg at h
+    push Not at h
     apply ha0
     exact Complex.ext h.1 h.2
   rw [deningerArithmeticFEOrientation,

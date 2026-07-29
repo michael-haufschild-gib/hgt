@@ -43,7 +43,7 @@ theorem differentiallyAlgebraic_polynomial (p : Polynomial ℂ) :
   refine ⟨0, MvPolynomial.X 1 - Polynomial.aeval (MvPolynomial.X 0) p, ?_, ?_⟩
   · intro h
     have hc := congrArg (MvPolynomial.coeff (Finsupp.single 1 1)) h
-    rw [MvPolynomial.coeff_sub, MvPolynomial.coeff_X', coeff_single_one_aeval_X0,
+    rw [MvPolynomial.coeff_sub, MvPolynomial.coeff_X, coeff_single_one_aeval_X0,
       MvPolynomial.coeff_zero] at hc
     simp at hc
   · intro z

@@ -44,8 +44,15 @@ theorem exponent_zero_of_tendsto_pos {a c : ℝ} (hc : 0 < c)
   rcases lt_trichotomy a 0 with ha | ha | ha
   · exfalso
     have h0 : Tendsto (fun n : ℕ => (n : ℝ) ^ a) atTop (𝓝 0) := by
-      have := (tendsto_rpow_neg_atTop (y := -a) (by linarith)).comp tendsto_natCast_atTop_atTop
-      simpa [neg_neg] using this
+      have hcomp := (tendsto_rpow_neg_atTop (y := -a) (by linarith)).comp
+        tendsto_natCast_atTop_atTop
+      have hfun : ((fun x : ℝ => x ^ a) ∘ Nat.cast) =
+          (fun n : ℕ => (n : ℝ) ^ a) := by
+        apply _root_.funext
+        intro n
+        rfl
+      rw [← hfun]
+      simpa only [neg_neg] using hcomp
     have hc0 : c = 0 := tendsto_nhds_unique h h0
     rw [hc0] at hc; exact lt_irrefl 0 hc
   · exact ha

@@ -436,7 +436,7 @@ theorem indicatorCutoff_central_mul_of_le
     indicatorCutoff_ae (centralInterval t) (measurableSet_centralInterval t) f,
     indicatorCutoff_ae (centralInterval s) (measurableSet_centralInterval s) f
   ] with x houter hinner htarget
-  rw [ContinuousLinearMap.mul_apply, houter, htarget]
+  rw [mul_apply_eq_comp, houter, htarget]
   by_cases hxs : x ∈ centralInterval s
   · have hxt : x ∈ centralInterval t := by
       rw [centralInterval] at hxs ⊢
@@ -453,7 +453,7 @@ theorem fourierCutoff_central_mul_of_le
   apply ContinuousLinearMap.ext
   intro f
   apply fourierUnitary.injective
-  simp only [ContinuousLinearMap.mul_apply, fourierCutoff_apply,
+  simp only [mul_apply_eq_comp, fourierCutoff_apply,
     LinearIsometryEquiv.apply_symm_apply]
   exact DFunLike.congr_fun (indicatorCutoff_central_mul_of_le s t hst) (fourierUnitary f)
 
@@ -539,7 +539,7 @@ theorem dilation_mem_centralSoninCarrier_inv_mul
               (measurableSet_centralInterval (r⁻¹ * (r⁻¹ * a))) *
               fourierCutoff (centralInterval a)
                 (measurableSet_centralInterval a)) f := by rw [hnest]
-        _ = 0 := by rw [ContinuousLinearMap.mul_apply, hcutA, map_zero]
+        _ = 0 := by rw [mul_apply_eq_comp, hcutA, map_zero]
     simpa using congrArg (dilation r hr0) hsmallzero
 
 /-- The inverse normalized dilation by `r ≥ 1` obeys the same aperture loss.  This is the
@@ -590,7 +590,7 @@ theorem inverseDilation_mem_centralSoninCarrier_inv_mul
               (measurableSet_centralInterval (r⁻¹ * (r⁻¹ * a))) *
               indicatorCutoff (centralInterval a)
                 (measurableSet_centralInterval a)) f := by rw [hnest]
-        _ = 0 := by rw [ContinuousLinearMap.mul_apply, hcutA, map_zero]
+        _ = 0 := by rw [mul_apply_eq_comp, hcutA, map_zero]
     simpa only [inv_inv, map_zero] using
       congrArg (dilation r⁻¹ hri0) hsmallzero
   · change dilation r⁻¹ hri0 f ∈
@@ -629,7 +629,7 @@ theorem evenDilationSum_eq
   apply ContinuousLinearMap.ext
   intro f
   apply Subtype.ext
-  simp only [ContinuousLinearMap.add_apply, coe_evenDilationSum_apply,
+  simp only [_root_.add_apply, coe_evenDilationSum_apply,
     dilationSum_apply, coe_evenDilationCLM_apply, Submodule.coe_add]
 
 theorem adjoint_evenDilationSum

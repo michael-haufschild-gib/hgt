@@ -178,18 +178,18 @@ theorem BivariateTotalDegreeLE.mul {P Q : Polynomial ℂ[X]} {M N : ℕ}
   rw [Polynomial.coeff_mul] at hm ⊢
   obtain ⟨ij, hij, hterm⟩ := Finset.exists_ne_zero_of_sum_ne_zero hm
   rcases ij with ⟨i, j⟩
-  rw [Finset.mem_antidiagonal] at hij
+  rw [Finset.HasAntidiagonal.mem_antidiagonal] at hij
   have hPi : P.coeff i ≠ 0 := fun h => hterm (by rw [h, zero_mul])
   have hQj : Q.coeff j ≠ 0 := fun h => hterm (by rw [h, mul_zero])
   have h1 := hP i hPi
   have h2 := hQ j hQj
   have hmle : m ≤ M + N := by omega
-  have hsumdeg : (∑ x ∈ Finset.antidiagonal m,
+  have hsumdeg : (∑ x ∈ Finset.HasAntidiagonal.antidiagonal m,
       P.coeff x.1 * Q.coeff x.2).natDegree ≤ M + N - m := by
     apply Polynomial.natDegree_sum_le_of_forall_le
     intro ab hab
     rcases ab with ⟨a, b⟩
-    rw [Finset.mem_antidiagonal] at hab
+    rw [Finset.HasAntidiagonal.mem_antidiagonal] at hab
     by_cases hz : P.coeff a * Q.coeff b = 0
     · rw [hz, Polynomial.natDegree_zero]
       omega

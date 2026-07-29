@@ -55,7 +55,7 @@ theorem centralSoninCarrier_antitone {a b : ℝ} (hab : a ≤ b) :
               (measurableSet_centralInterval a) *
             indicatorCutoff (centralInterval b)
               (measurableSet_centralInterval b)) f := by rw [hnest]
-      _ = 0 := by rw [ContinuousLinearMap.mul_apply, hfb, map_zero]
+      _ = 0 := by rw [mul_apply_eq_comp, hfb, map_zero]
   · change f ∈
       (fourierForbidden (centralInterval a)
         (measurableSet_centralInterval a))ᗮ
@@ -77,7 +77,7 @@ theorem centralSoninCarrier_antitone {a b : ℝ} (hab : a ≤ b) :
               (measurableSet_centralInterval a) *
             fourierCutoff (centralInterval b)
               (measurableSet_centralInterval b)) f := by rw [hnest]
-      _ = 0 := by rw [ContinuousLinearMap.mul_apply, hfb, map_zero]
+      _ = 0 := by rw [mul_apply_eq_comp, hfb, map_zero]
 
 /-- The nested-carrier law restricted to the actual even Sonin Hilbert space. -/
 theorem evenCentralSoninCarrier_antitone {a b : ℝ} (hab : a ≤ b) :
@@ -100,7 +100,7 @@ theorem evenCentralSoninProjection_mul_of_le {a b : ℝ} (hab : a ≤ b) :
     exact Submodule.starProjection_comp_starProjection_of_le hcarrier
   · apply ContinuousLinearMap.ext
     intro f
-    rw [ContinuousLinearMap.mul_apply,
+    rw [mul_apply_eq_comp,
       evenCentralSoninProjection_eq_starProjection,
       evenCentralSoninProjection_eq_starProjection]
     exact (evenCentralSoninCarrier a).starProjection_eq_self_iff.mpr
@@ -183,7 +183,7 @@ theorem evenCentralSoninQuadraticCorner_restrictionDefect
   rw [hcompress]
   apply ContinuousLinearMap.ext
   intro x
-  simp only [ContinuousLinearMap.mul_apply, sub_apply, one_apply, map_sub]
+  simp only [mul_apply_eq_comp, sub_apply, one_apply, map_sub]
   abel
 
 /-- **Positive diagonal restriction defect.**  At one scale the aperture defect is exactly the
@@ -760,7 +760,7 @@ theorem evenSoninApertureLostTransition_pairedShell_tendsto
   intro n
   have hdecomp : T (f n) - v n =
       Qa (B (f n) - v n) + (Qa (v n) - v n) := by
-    rw [hTB, ContinuousLinearMap.mul_apply, map_sub]
+    rw [hTB, mul_apply_eq_comp, map_sub]
     abel
   rw [hdecomp]
   exact (norm_add_le _ _).trans

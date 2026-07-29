@@ -73,7 +73,12 @@ theorem continuousLinearMap_eq_id_of_basiswise_boundaryPick
     have hcross : Tendsto
         (fun a => operatorPickCross S (T a) q₀ (q a) h (b i)) l
         (𝓝 (‖h‖ ^ 2 / (1 - q₀))) := by
-      simpa [operatorPickCross] using hnum.div hden hden_ne
+      rw [show (fun a => operatorPickCross S (T a) q₀ (q a) h (b i)) =
+          (fun a => inner ℝ h (b i) - inner ℝ (S h) (T a (b i))) /
+            (fun a => 1 - q₀ * q a) by
+        funext a
+        rfl]
+      exact hnum.div hden hden_ne
     have hrhs : Tendsto
         (fun a => operatorPickDiagonal S q₀ h *
           operatorPickDiagonal (T a) (q a) (b i)) l (𝓝 0) := by

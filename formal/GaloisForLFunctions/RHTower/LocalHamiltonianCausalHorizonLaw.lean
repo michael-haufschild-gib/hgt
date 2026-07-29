@@ -252,7 +252,7 @@ theorem endpointIterate_eq_pow_apply
       simp [endpointIterate]
   | succ m ih =>
       rw [endpointIterate, pow_succ']
-      simp only [ContinuousLinearMap.mul_apply, ih]
+      simp only [mul_apply_eq_comp, ih]
 
 /-- Entire endpoint return amplitude defined by its absolutely convergent power series. -/
 def endpointExponentialAmplitude {n : ℕ}
@@ -314,7 +314,7 @@ theorem endpointExponentialAmplitude_eq_inner_exp
   unfold φ
   simp only [Function.comp_apply, ContinuousLinearMap.comp_apply,
     ContinuousLinearMap.apply_apply, innerSL_apply_apply,
-    ContinuousLinearMap.smul_apply, smul_pow,
+    _root_.smul_apply, smul_pow,
     endpointPowerMoment, endpointIterate_eq_pow_apply,
     inner_smul_right]
   ring
@@ -925,7 +925,7 @@ theorem energyGaugeShift_nearestNeighbor
     subst j
     omega
   unfold energyGaugeShift
-  simp only [ContinuousLinearMap.sub_apply, ContinuousLinearMap.smul_apply,
+  simp only [_root_.sub_apply, _root_.smul_apply,
     ContinuousLinearMap.id_apply, inner_sub_right, inner_smul_right]
   rw [hA i j hfar, EuclideanSpace.basisFun_inner]
   simp [hij]
@@ -941,7 +941,7 @@ theorem energyGaugeShift_selfAdjoint
   intro x
   rw [ContinuousLinearMap.adjoint_inner_right]
   unfold energyGaugeShift
-  simp only [ContinuousLinearMap.sub_apply, ContinuousLinearMap.smul_apply,
+  simp only [_root_.sub_apply, _root_.smul_apply,
     ContinuousLinearMap.id_apply, inner_sub_left, inner_sub_right,
     inner_smul_left, inner_smul_right]
   rw [← ContinuousLinearMap.adjoint_inner_right A x y, hA]
@@ -954,7 +954,7 @@ theorem energyGaugeShift_local
       (energyGaugeShift c A) (energyGaugeShift c B) := by
   intro i j hij
   unfold energyGaugeShift
-  simp only [ContinuousLinearMap.sub_apply, ContinuousLinearMap.smul_apply,
+  simp only [_root_.sub_apply, _root_.smul_apply,
     ContinuousLinearMap.id_apply, inner_sub_right, inner_smul_right]
   rw [hlocal i j hij]
 
@@ -1142,8 +1142,8 @@ theorem fixedProtocolHamiltonian_centered_norm_le
           (fixedProtocolHamiltonian T n U) x) =
         centeredScaledClockHamiltonian T n (U x) := by
     rw [centeredScaledClockHamiltonian_eq_shift]
-    simp only [energyGaugeShift, ContinuousLinearMap.sub_apply,
-      ContinuousLinearMap.smul_apply, ContinuousLinearMap.id_apply,
+    simp only [energyGaugeShift, _root_.sub_apply,
+      _root_.smul_apply, ContinuousLinearMap.id_apply,
       map_sub, map_smul]
     rw [fixedProtocolHamiltonian_intertwines]
   rw [hintertwines]

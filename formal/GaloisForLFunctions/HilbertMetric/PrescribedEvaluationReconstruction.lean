@@ -37,7 +37,7 @@ theorem prescribedEvaluationDualReconstruction_iff_det_ne_zero
     let D : Matrix κ κ ℝ := fun q i => dual q i
     have hleft : D * evaluationMatrix φ nodes = 1 := by
       ext q r
-      simpa [D, Matrix.mul_apply, evaluationMatrix] using hdelta q r
+      simpa [D, Matrix.mul_apply, evaluationMatrix, Matrix.one_apply] using hdelta q r
     exact Matrix.det_ne_zero_of_left_inverse hleft
   · intro hdet
     let P : Matrix κ κ ℝ := evaluationMatrix φ nodes
@@ -48,7 +48,7 @@ theorem prescribedEvaluationDualReconstruction_iff_det_ne_zero
       intro q r
       have hentry := congrArg (fun M : Matrix κ κ ℝ => M q r)
         (P.nonsing_inv_mul hunit)
-      simpa [dual, P, Matrix.mul_apply, evaluationMatrix] using hentry
+      simpa [dual, P, Matrix.mul_apply, evaluationMatrix, Matrix.one_apply] using hentry
     refine ⟨dual, hdelta, ?_⟩
     intro a q
     calc

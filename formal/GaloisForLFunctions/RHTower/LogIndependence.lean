@@ -162,14 +162,14 @@ private lemma padicValRat_prod {p : ℕ} [Fact p.Prime] {s : Finset ℕ} {f : �
       ih fun i hi => hf i (Finset.mem_insert_of_mem hi)]
 
 /-- `padicValRat.pow` extended to `ℤ` exponents. -/
-private lemma padicValRat_zpow {p : ℕ} [Fact p.Prime] {q : ℚ} (hq : q ≠ 0) (n : ℤ) :
+private lemma padicValRat_zpow {p : ℕ} [Fact p.Prime] {q : ℚ} (n : ℤ) :
     padicValRat p (q ^ n) = n * padicValRat p q := by
   by_cases hn : 0 ≤ n
   · lift n to ℕ using hn
-    rw [zpow_natCast, padicValRat.pow hq]
+    rw [zpow_natCast, padicValRat.pow q]
   · have h1 : n = -(((-n).toNat : ℕ) : ℤ) := by omega
     conv_lhs => rw [h1]
-    rw [zpow_neg, zpow_natCast, padicValRat.inv, padicValRat.pow hq]
+    rw [zpow_neg, zpow_natCast, padicValRat.inv, padicValRat.pow q]
     have h2 : (((-n).toNat : ℕ) : ℤ) = -n := by omega
     rw [h2]
     ring

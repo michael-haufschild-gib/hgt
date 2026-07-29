@@ -370,7 +370,7 @@ theorem connected_puncture_pullback {c : ℂ} {g : ℂ → ℂ} {V : Set ℂ}
       rw [← hfg w hw]
       exact (quadratic_mem_filledJulia_iff c (g w)).mpr hzK
   rw [hset]
-  exact hVconn.image g (hg.mono Set.diff_subset)
+  exact hVconn.image g (hg.mono Set.sdiff_subset)
 
 /-- **Cofinal one-sidedness from ONE base neighbourhood.**  Given a contracting inverse
 branch `g` of `f_c` fixing the frontier point `β'` on `ball β' r₀`, a SINGLE open

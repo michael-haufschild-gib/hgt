@@ -48,20 +48,20 @@ theorem primeOrientationTailIndependent_setFlip_of_exclusive
     PrimeOrientationTailIndependent (setFlipOrientation A) := by
   classical
   intro c hsupp
-  obtain ⟨p₀, hp₀, hp₀supp⟩ := (houtside.diff hsupp).nonempty
+  obtain ⟨p₀, hp₀, hp₀supp⟩ := (houtside.sdiff hsupp).nonempty
   have hp₀out : ∀ j, p₀ ∉ A j := hp₀
   have hzeroOutside : ∑ j, c j = 0 := by
     have h := hp₀supp
     simp only [Set.mem_setOf_eq, not_not] at h
     simpa [setFlipOrientation, hp₀out, primeDirichletSign] using h
   funext j
-  obtain ⟨p, hp, hpsupp⟩ := ((hexclusive j).diff hsupp).nonempty
+  obtain ⟨p, hp, hpsupp⟩ := ((hexclusive j).sdiff hsupp).nonempty
   have hzero : ∑ k, c k * primeDirichletSign (setFlipOrientation A k p) = 0 := by
     simpa only [Set.mem_setOf_eq, not_not] using hpsupp
   have hformula :
       (∑ k, c k * primeDirichletSign (setFlipOrientation A k p)) =
         (∑ k, c k) - 2 * c j := by
-    rw [Finset.sum_eq_add_sum_diff_singleton_of_mem (Finset.mem_univ j)]
+    rw [Finset.sum_eq_add_sum_sdiff_singleton_of_mem (Finset.mem_univ j)]
     rw [primeDirichletSign_setFlipOrientation_of_mem A j p hp.1]
     have hrest :
         (∑ k ∈ (Finset.univ : Finset J) \ {j},
@@ -73,7 +73,7 @@ theorem primeOrientationTailIndependent_setFlip_of_exclusive
       rw [primeDirichletSign_setFlipOrientation_of_not_mem A k p (hp.2 k hkj)]
       ring
     rw [hrest]
-    rw [Finset.sum_eq_add_sum_diff_singleton_of_mem (Finset.mem_univ j)]
+    rw [Finset.sum_eq_add_sum_sdiff_singleton_of_mem (Finset.mem_univ j)]
     ring
   rw [hformula, hzeroOutside] at hzero
   simpa using hzero
@@ -94,7 +94,7 @@ theorem infinite_exclusiveBlock_of_pairwise_finite_intersections
     exact hindices.biUnion fun k hk => by
       have hkj : k ≠ j := by simpa using hk
       exact hpair j k hkj.symm
-  have hprivate : (A j \ bad).Infinite := (hinfinite j).diff hbad
+  have hprivate : (A j \ bad).Infinite := (hinfinite j).sdiff hbad
   apply hprivate.mono
   intro p hp
   refine ⟨hp.1, ?_⟩

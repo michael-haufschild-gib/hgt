@@ -262,7 +262,8 @@ theorem coeff_permSymbolPoly_eq_card (ν : Fin r → ℕ) (d : Fin r →₀ ℕ)
       = ∏ j : Fin r, Polynomial.aeval (MvPolynomial.X j : MvPolynomial (Fin r) ℤ)
           (descPochhammer ℤ (ν (π.symm j))) := by
     apply Fintype.prod_bijective π π.bijective
-    intro t; dsimp only; rw [Equiv.symm_apply_apply]
+    intro t
+    rw [Equiv.symm_apply_apply]
   rw [hreindex]
   have hH := coeff_prod_aeval_X (fun j => descPochhammer ℤ (ν (π.symm j))) Finset.univ d
   rw [if_pos (fun j hj => absurd (Finset.mem_univ j) hj)] at hH
@@ -336,7 +337,7 @@ theorem combination_permSymbolPolyMap_ne_zero {R : Type*} [CommRing R] [CharZero
       refine ⟨π.symm, fun j => ?_⟩
       have h1 := DFunLike.congr_fun hpm j
       rw [permMon_apply, permMon_apply] at h1
-      simpa using h1.symm
+      simpa only [pull_end, Equiv.Perm.one_apply] using h1.symm
     rw [hzero_count]
     simp
   · intro h

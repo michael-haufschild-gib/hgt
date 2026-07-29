@@ -581,7 +581,7 @@ theorem differentialMatroid_mem_closure_iff_differentialAlgebraicOver_differenti
     differentialMatroid_contract_isNonloop_iff_hypertranscendentalOver
       (F := F) (E := E) (G := G) (x := x)
   rw [Matroid.contract_isNonloop_iff, differentialMatroid_ground] at h
-  simp only [Set.mem_diff, Set.mem_univ, true_and] at h
+  simp only [Set.mem_sdiff, Set.mem_univ, true_and] at h
   simpa only [HypertranscendentalOver, not_not] using not_congr h
 
 /-- **Matroid closure equals differential-algebraic closure.** For every source set, with no

@@ -20,7 +20,7 @@ noncomputable section
 
 /-- Cauchy series at zero used for even square descent. -/
 def evenEntireBaseSeries (f : ℂ → ℂ) : FormalMultilinearSeries ℂ ℂ ℂ :=
-  cauchyPowerSeries f 0 1
+  cauchyPowerSeries f 0 (1 : NNReal)
 
 /-- Keep only the even coefficients and halve their indices. -/
 def evenEntireSquareFactorSeries (f : ℂ → ℂ) : FormalMultilinearSeries ℂ ℂ ℂ :=
@@ -133,9 +133,17 @@ theorem evenEntireSquareFactor_sq
     intro m n h
     exact Nat.mul_left_cancel (by omega) (Nat.add_right_cancel h)
   have he : Summable (fun n : ℕ => p.coeff (2 * n) * z ^ (2 * n)) := by
-    simpa only [Function.comp_apply] using hsum.summable.comp_injective hdouble
+    rw [show (fun n : ℕ => p.coeff (2 * n) * z ^ (2 * n)) =
+        (fun n => p.coeff n * z ^ n) ∘ fun n => 2 * n by
+      funext n
+      rfl]
+    exact hsum.summable.comp_injective hdouble
   have ho : Summable (fun n : ℕ => p.coeff (2 * n + 1) * z ^ (2 * n + 1)) := by
-    simpa only [Function.comp_apply] using hsum.summable.comp_injective hdoubleOne
+    rw [show (fun n : ℕ => p.coeff (2 * n + 1) * z ^ (2 * n + 1)) =
+        (fun n => p.coeff n * z ^ n) ∘ fun n => 2 * n + 1 by
+      funext n
+      rfl]
+    exact hsum.summable.comp_injective hdoubleOne
   change FormalMultilinearSeries.ofScalarsSum
     (fun n => (evenEntireBaseSeries f).coeff (2 * n)) (z ^ 2) = f z
   rw [FormalMultilinearSeries.ofScalars_sum_eq]

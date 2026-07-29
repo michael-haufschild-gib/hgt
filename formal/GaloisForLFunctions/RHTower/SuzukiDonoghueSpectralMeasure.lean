@@ -42,6 +42,7 @@ theorem suzukiHerglotz_eq_twoAngleDonoghueQuotient
       -I * (suzukiCharacteristicPencil A E 1 z /
         suzukiCharacteristicPencil A E (-1) z) := by
   have hAE : A z - E z ≠ 0 := by
+    rw [sub_eq_add_neg]
     simpa [suzukiCharacteristicPencil] using hW
   have hEA : E z - A z ≠ 0 := by
     intro h
@@ -110,7 +111,10 @@ theorem suzukiUpperCayleyInv_residue_at_one
   have hinv : Tendsto (fun z => (slope θ x z)⁻¹) (𝓝[≠] x) (𝓝 d⁻¹) :=
     hslope.inv₀ hd
   have hθlim : Tendsto θ (𝓝[≠] x) (𝓝 1) := by
-    simpa [hone] using hθ.continuousAt.tendsto.mono_left inf_le_left
+    have hcont := hθ.continuousAt.tendsto
+    rw [hone] at hcont
+    change Tendsto θ (𝓝 x ⊓ 𝓟 {x}ᶜ) (𝓝 1)
+    exact hcont.mono_left inf_le_left
   have honeadd : Tendsto (fun z : ℂ => (1 : ℂ) + θ z)
       (𝓝[≠] x) (𝓝 ((1 : ℂ) + 1)) := tendsto_const_nhds.add hθlim
   have hnegI : Tendsto (fun _ : ℂ => (-I : ℂ)) (𝓝[≠] x) (𝓝 (-I)) :=

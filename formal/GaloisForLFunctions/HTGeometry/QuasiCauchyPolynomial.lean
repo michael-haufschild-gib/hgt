@@ -46,7 +46,7 @@ theorem quasiCofactorSum_eq (h : PositiveMomentForm s) (n : ℕ) (t : ℝ) :
   classical
   refine Polynomial.eq_of_infinite_eval_eq _ _ ?_
   have hinf : ((Set.univ : Set ℝ) \ (quasiNodes s n t : Set ℝ)).Infinite :=
-    Set.Infinite.diff Set.infinite_univ (quasiNodes s n t).finite_toSet
+    Set.Infinite.sdiff Set.infinite_univ (quasiNodes s n t).finite_toSet
   refine hinf.mono fun z hz => ?_
   have hznode : z ∉ quasiNodes s n t := by
     intro hc

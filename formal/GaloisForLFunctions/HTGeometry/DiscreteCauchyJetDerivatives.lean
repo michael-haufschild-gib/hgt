@@ -159,7 +159,12 @@ theorem iteratedDeriv_primeLogHerglotz_eq_factorial_mul_packet
   have h := iteratedDeriv_discreteHerglotz_eq_factorial_mul
     primeLogSupport (primeDyadicWeight u)
     (summable_norm_primeDyadicWeight u C hu) s.2.1 (nodes s.1) (hupper s.1)
-  simpa [primeLogHerglotz, primeLogCauchyJetPacket, discreteCauchyJetPacket,
-    cauchyJetColumn] using h
+  have hsource :
+      primeLogHerglotz u =
+        discreteHerglotz primeLogSupport (primeDyadicWeight u) := by
+    funext z
+    rfl
+  rw [hsource]
+  simpa [primeLogCauchyJetPacket, discreteCauchyJetPacket, cauchyJetColumn] using h
 
 end GaloisForLFunctions.HTGeometry

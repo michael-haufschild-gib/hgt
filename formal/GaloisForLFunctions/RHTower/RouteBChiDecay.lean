@@ -58,7 +58,7 @@ theorem norm_zetaChi_lt_one {σ t : ℝ} (hσ1 : 1/2 < σ) (hσ2 : σ < 1) (ht :
       rw [intervalIntegral.integral_const, smul_eq_mul]
     rw [← hconst]
     apply intervalIntegral.integral_mono_on hab
-    · exact intervalIntegral.intervalIntegrable_const
+    · exact intervalIntegrable_const
     · apply ContinuousOn.intervalIntegrable
       have hφ : ContinuousOn (fun x : ℝ => (x:ℂ) + (y:ℂ) * I) (Set.uIcc a b) := by fun_prop
       have hmaps : Set.MapsTo (fun x : ℝ => (x:ℂ) + (y:ℂ) * I) (Set.uIcc a b) {z : ℂ | 0 < z.im} := by
@@ -181,7 +181,7 @@ theorem norm_zetaChi_le_left_line {σ t : ℝ} (hσ0 : 0 < σ) (hσ2 : σ ≤ 1 
           Complex.I_im, Complex.ofReal_re, Complex.I_re, mul_zero, mul_one, zero_add, add_zero]
         exact hy0
       exact Complex.continuous_re.comp_continuousOn (digamma_continuousOn_uhp.comp hφ hmaps)
-    · exact intervalIntegral.intervalIntegrable_const
+    · exact intervalIntegrable_const
     · intro x hx
       rw [Set.mem_Icc] at hx
       have hx0 : 0 ≤ x := by linarith [ha0, hx.1]

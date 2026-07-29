@@ -41,7 +41,7 @@ theorem analyticAt_ellipticThetaLogShift_of_norm_pow_between {q x : ℂ} {m : �
   have hamb : a ^ m < b := by simpa [a, b] using hqmx
   have ha1 : a < 1 := by
     by_contra hcon
-    push_neg at hcon
+    push Not at hcon
     have hle : (1 : ℝ) ≤ a ^ m := by
       calc (1 : ℝ) = 1 ^ m := (one_pow m).symm
         _ ≤ a ^ m := pow_le_pow_left₀ zero_le_one hcon m
@@ -163,7 +163,7 @@ theorem analyticAt_ellipticThetaLogRemainder_of_norm_sq_between {q x : ℂ}
     (by simpa using hq2x) hx1
   have ha1 : ‖q‖ < 1 := by
     by_contra hcon
-    push_neg at hcon
+    push Not at hcon
     have hle : (1 : ℝ) ≤ ‖q‖ ^ 2 := by
       calc (1 : ℝ) = 1 ^ 2 := (one_pow 2).symm
         _ ≤ ‖q‖ ^ 2 := pow_le_pow_left₀ zero_le_one hcon 2

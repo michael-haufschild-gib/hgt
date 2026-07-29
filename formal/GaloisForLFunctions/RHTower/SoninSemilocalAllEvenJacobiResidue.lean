@@ -290,9 +290,13 @@ theorem summable_semilocalNonzeroPrimePoissonWeight
     {n : ℕ} (p : Fin (n + 1) → ℕ) (hprime : ∀ i, (p i).Prime) :
     Summable fun m : SemilocalNonzeroPrimePacket n =>
       semilocalFinitePrimePoissonWeight p m.1 := by
-  simpa only [SemilocalNonzeroPrimePacket] using
-    (summable_semilocalFinitePrimePoissonWeight p hprime).subtype
-      (fun m => m ≠ 0)
+  rw [show (fun m : SemilocalNonzeroPrimePacket n =>
+      semilocalFinitePrimePoissonWeight p m.1) =
+      (fun m => semilocalFinitePrimePoissonWeight p m) ∘ Subtype.val by
+    funext m
+    rfl]
+  exact (summable_semilocalFinitePrimePoissonWeight p hprime).subtype
+    (fun m => m ≠ 0)
 
 theorem semilocalArchimedeanCharacteristic_le_one (t : ℝ) :
     semilocalArchimedeanCharacteristic t ≤ 1 := by

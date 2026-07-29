@@ -48,7 +48,10 @@ theorem hasDerivAt_modularLambda {τ : ℂ} (hτ : 0 < τ.im) :
     have hh := (hasDerivAt_thetaTwo hτ).div (hasDerivAt_thetaThree hτ) h3
     rwa [(hasDerivAt_thetaTwo hτ).deriv, (hasDerivAt_thetaThree hτ).deriv]
   have hp := hg.pow 4
-  convert hp using 1
+  rw [show modularLambda = (fun s => (thetaTwo s / thetaThree s) ^ 4) by
+    funext s
+    rfl]
+  exact hp.congr_deriv (by norm_num)
 
 /-- **`λ' = πi·θ₂⁴θ₄⁴/θ₃⁴`** under the theta Wronskian identity — substituting `θ₂'θ₃ − θ₂θ₃' =
 (πi/4)θ₂θ₃θ₄⁴` into `hasDerivAt_modularLambda` and simplifying. -/

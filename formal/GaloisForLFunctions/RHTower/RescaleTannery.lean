@@ -39,7 +39,7 @@ theorem rescaledSection_tendsto {c : ℕ → ℂ} {z : ℂ} {ρ : ℝ} (hz : ‖
   · intro j
     have hcast : Tendsto (fun d => (φ d j : ℂ)) atTop (nhds 1) := by
       have := (Complex.continuous_ofReal.tendsto 1).comp (hφlim j)
-      simpa using this
+      simpa only [Function.comp_def, Complex.ofReal_one] using this
     have := hcast.mul_const (c j * z ^ j)
     simpa [mul_assoc] using this
   · filter_upwards with d

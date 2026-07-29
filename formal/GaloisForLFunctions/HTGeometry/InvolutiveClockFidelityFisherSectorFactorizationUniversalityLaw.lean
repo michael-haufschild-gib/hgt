@@ -33,9 +33,9 @@ theorem finiteInvolutiveClock_homogeneousFidelityDeficit_eq_invariantWeight_mul_
   have hcomm :
       ((X * U - U * X) : E →L[ℂ] E) ψ =
         (2 : ℂ) • ((1 - finiteCyclicGaugeAverage U 2) (X ψ)) := by
-    rw [ContinuousLinearMap.sub_apply, ContinuousLinearMap.mul_apply,
-      ContinuousLinearMap.mul_apply, hψ, ContinuousLinearMap.sub_apply,
-      ContinuousLinearMap.one_apply, finiteInvolutiveGaugeAverage_apply]
+    rw [_root_.sub_apply, mul_apply_eq_comp,
+      mul_apply_eq_comp, hψ, _root_.sub_apply,
+      one_apply_eq_self, finiteInvolutiveGaugeAverage_apply]
     norm_num
     module
   rw [finiteInvolutiveClock_homogeneousFidelityDeficit_eq_four_mul_sectorWeights

@@ -136,7 +136,7 @@ theorem analyticOnNhd_evalComp (c : ℂ) (hU : U ⊆ escapeOpen c) (p : Polynomi
 /-- `ℂ[X] →+* analyticSubring U`, `p ↦` germ of `z ↦ p(φ_c(z))`. -/
 noncomputable def evalCompHom (c : ℂ) (hU : U ⊆ escapeOpen c) : Polynomial ℂ →+* analyticSubring U :=
   ((Germ.coeRingHom (𝓟 U)).comp
-      (Pi.ringHom (fun z => Polynomial.evalRingHom (bottcherCoord c z)))).codRestrict
+      (RingHom.pi (fun z => Polynomial.evalRingHom (bottcherCoord c z)))).codRestrict
     (analyticSubring U) (fun p => ⟨fun z => p.eval (bottcherCoord c z),
       analyticOnNhd_evalComp c hU p, rfl⟩)
 
@@ -205,7 +205,7 @@ theorem analyticOnNhd_mvEval (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (
 noncomputable def mvEvalHom (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂) :
     MvPolynomial (Fin 3) ℂ →+* analyticSubring U :=
   ((Germ.coeRingHom (𝓟 U)).comp
-      (Pi.ringHom (fun z => (MvPolynomial.aeval
+      (RingHom.pi (fun z => (MvPolynomial.aeval
         (![z, bottcherCoord c₁ z, bottcherCoord c₂ z])).toRingHom))).codRestrict
     (analyticSubring U) (fun p => ⟨fun z => MvPolynomial.aeval
       (![z, bottcherCoord c₁ z, bottcherCoord c₂ z]) p, analyticOnNhd_mvEval c₁ c₂ hU₁ hU₂ p, rfl⟩)

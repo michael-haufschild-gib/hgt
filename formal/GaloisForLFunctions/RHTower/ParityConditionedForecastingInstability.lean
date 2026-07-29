@@ -1438,7 +1438,7 @@ theorem finiteIndexDiagonalHamiltonian_pow_apply
   induction k generalizing x with
   | zero => simp
   | succ k ih =>
-      rw [pow_succ, ContinuousLinearMap.mul_apply,
+      rw [pow_succ, mul_apply_eq_comp,
         ih, finiteIndexDiagonalHamiltonian_apply]
       ring
 
@@ -1480,9 +1480,9 @@ theorem fixedProtocolHamiltonian_pow_intertwines
   induction k generalizing x with
   | zero => simp
   | succ k ih =>
-      rw [pow_succ, ContinuousLinearMap.mul_apply, ih,
+      rw [pow_succ, mul_apply_eq_comp, ih,
         fixedProtocolHamiltonian_intertwines,
-        pow_succ, ContinuousLinearMap.mul_apply]
+        pow_succ, mul_apply_eq_comp]
 
 theorem fixedProtocol_energyMoment
     (T : ℝ) (n k : ℕ) {θ : ℝ}

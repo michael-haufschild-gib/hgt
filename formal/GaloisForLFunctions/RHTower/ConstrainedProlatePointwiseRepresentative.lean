@@ -127,7 +127,7 @@ theorem ae_eq_timeBandEigenPointwiseSource
   have hfix := (mem_evenTimeLimitedSubspace_iff a f).mp htime
   have heig' : evenIndicatorCutoff a (evenFourierTransform f) = χ • f := by
     rw [evenTimeBandFourier_eq_mul] at heig
-    simpa only [ContinuousLinearMap.mul_apply, hfix] using heig
+    simpa only [mul_apply_eq_comp, hfix] using heig
   have heigcoe := congrArg (fun g : evenSubspace => (g : SoninL2)) heig'
   change indicatorCutoff (centralInterval a) (measurableSet_centralInterval a)
       (fourierUnitary (f : SoninL2)) = χ • (f : SoninL2) at heigcoe

@@ -74,7 +74,8 @@ theorem negHalf_rpow_hasSum (y : ℝ) (hy : ‖y‖ < 1) :
     exact ENNReal.ofReal_lt_one.mpr hy
   have hsum := hball.hasSum hy'
   simp only [zero_add] at hsum
-  convert hsum using 2 with n
+  apply HasSum.congr_fun hsum
+  intro n
   rw [binomialSeries_apply]
   congr 1
   rw [List.ofFn_const, List.prod_replicate]

@@ -210,7 +210,15 @@ theorem suzuki_exp_neg_mul_tendsto_zero {c : ℝ} (hc : 0 < c) :
     Tendsto (fun a : ℝ => Real.exp (-c * a)) atTop (𝓝 0) := by
   have hscale : Tendsto (fun a : ℝ => c * a) atTop atTop :=
     (tendsto_const_mul_atTop_of_pos hc).mpr tendsto_id
-  simpa only [neg_mul] using Real.tendsto_exp_neg_atTop_nhds_zero.comp hscale
+  have hcomp := Real.tendsto_exp_neg_atTop_nhds_zero.comp hscale
+  have hfun :
+      ((fun x : ℝ => Real.exp (-x)) ∘ fun a : ℝ => c * a) =
+        (fun a : ℝ => Real.exp (-c * a)) := by
+    apply _root_.funext
+    intro a
+    simp only [Function.comp_apply, neg_mul]
+  rw [← hfun]
+  exact hcomp
 
 /-- A uniform majorant for the free carrier on a positive upper strip. -/
 theorem norm_suzukiFreeLivsic_le

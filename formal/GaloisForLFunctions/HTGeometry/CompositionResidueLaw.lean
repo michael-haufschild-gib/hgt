@@ -113,9 +113,11 @@ theorem reciprocalPosition_velocity
   have hcomp' : HasDerivAt (fun y : ℂ => -y⁻¹) (d * dz) x :=
     hposition.hasDerivAt_iff.mp hcomp
   have hinv : HasDerivAt (fun y : ℂ => -y⁻¹) ((x ^ 2)⁻¹) x := by
-    convert ((hasDerivAt_id x).inv hx).neg using 1
-    simp [id]
-    field_simp [hx]
+    have hraw := ((hasDerivAt_id x).inv hx).neg
+    rw [show (-id⁻¹ : ℂ → ℂ) = (fun y : ℂ => -y⁻¹) by
+      funext y
+      rfl] at hraw
+    exact hraw.congr_deriv (by simp [id, div_eq_mul_inv])
   exact hcomp'.unique hinv
 
 /-- **Position-residue interpolation law.**  Along a reciprocal-value position curve, the

@@ -54,19 +54,19 @@ theorem diffPolySumSplit_X_inl (i : L) (n : ℕ) :
     diffPolySumSplit L R k (MvPolynomial.X (Sum.inl i, n)) = MvPolynomial.X (i, n) := by
   simp only [diffPolySumSplit, AlgEquiv.trans_apply, renameEquiv_apply, rename_X,
     Equiv.sumProdDistrib_apply_left]
-  simp [sumAlgEquiv, sumRingEquiv, mvPolynomialEquivMvPolynomial, sumToIter_Xl]
+  exact sumAlgEquiv_X_inl (R := k) (S₁ := L × ℕ) (S₂ := R × ℕ) (i, n)
 
 theorem diffPolySumSplit_X_inr (j : R) (n : ℕ) :
     diffPolySumSplit L R k (MvPolynomial.X (Sum.inr j, n)) =
       MvPolynomial.C (MvPolynomial.X (j, n)) := by
   simp only [diffPolySumSplit, AlgEquiv.trans_apply, renameEquiv_apply, rename_X,
     Equiv.sumProdDistrib_apply_right]
-  simp [sumAlgEquiv, sumRingEquiv, mvPolynomialEquivMvPolynomial, sumToIter_Xr]
+  exact sumAlgEquiv_X_inr (R := k) (S₁ := L × ℕ) (S₂ := R × ℕ) (j, n)
 
 theorem diffPolySumSplit_C (c : k) :
     diffPolySumSplit L R k (MvPolynomial.C c) = MvPolynomial.C (MvPolynomial.C c) := by
   simp only [diffPolySumSplit, AlgEquiv.trans_apply, renameEquiv_apply, rename_C]
-  simp [sumAlgEquiv, sumRingEquiv, mvPolynomialEquivMvPolynomial, sumToIter_C]
+  exact sumAlgEquiv_C_inl (R := k) (S₁ := L × ℕ) (S₂ := R × ℕ) c
 
 @[simp] theorem diffPolyEvalRight_X_inl (y : R → K) (i : L) (n : ℕ) :
     diffPolyEvalRight (k := k) y (MvPolynomial.X (Sum.inl i, n)) = MvPolynomial.X (i, n) := by

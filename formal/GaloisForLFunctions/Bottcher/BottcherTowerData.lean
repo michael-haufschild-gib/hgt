@@ -1631,23 +1631,23 @@ theorem eval₂_polyToAnalytic_val_of_germ_eq {a : analyticSubring U} {g : ℂ �
         = (analyticSubring U).subtype (q.eval₂ (polyToAnalytic U) a) from rfl]
   rw [Polynomial.hom_eval₂ q (polyToAnalytic U) (analyticSubring U).subtype a]
   have hpi : (fun z => q.eval₂ (Polynomial.evalRingHom z) (g z))
-      = q.eval₂ (Pi.ringHom (fun z : ℂ => Polynomial.evalRingHom z)) g := by
+      = q.eval₂ (RingHom.pi (fun z : ℂ => Polynomial.evalRingHom z)) g := by
     funext z
     change Polynomial.eval₂ (Polynomial.evalRingHom z) (g z) q
       = Pi.evalRingHom (fun _ : ℂ => ℂ) z
-          (Polynomial.eval₂ (Pi.ringHom fun z : ℂ => Polynomial.evalRingHom z) g q)
-    rw [Polynomial.hom_eval₂ q (Pi.ringHom (fun z : ℂ => Polynomial.evalRingHom z))
+          (Polynomial.eval₂ (RingHom.pi fun z : ℂ => Polynomial.evalRingHom z) g q)
+    rw [Polynomial.hom_eval₂ q (RingHom.pi (fun z : ℂ => Polynomial.evalRingHom z))
       (Pi.evalRingHom (fun _ : ℂ => ℂ) z) g]
     rfl
   rw [hpi]
-  rw [show (↑(q.eval₂ (Pi.ringHom (fun z : ℂ => Polynomial.evalRingHom z)) g)
+  rw [show (↑(q.eval₂ (RingHom.pi (fun z : ℂ => Polynomial.evalRingHom z)) g)
         : Germ (𝓟 U) ℂ)
       = Germ.coeRingHom (𝓟 U)
-          (q.eval₂ (Pi.ringHom (fun z : ℂ => Polynomial.evalRingHom z)) g) from rfl]
-  rw [Polynomial.hom_eval₂ q (Pi.ringHom (fun z : ℂ => Polynomial.evalRingHom z))
+          (q.eval₂ (RingHom.pi (fun z : ℂ => Polynomial.evalRingHom z)) g) from rfl]
+  rw [Polynomial.hom_eval₂ q (RingHom.pi (fun z : ℂ => Polynomial.evalRingHom z))
     (Germ.coeRingHom (𝓟 U)) g]
   change q.eval₂ ((analyticSubring U).subtype.comp (polyToAnalytic U)) (a : Germ (𝓟 U) ℂ)
-    = q.eval₂ ((Germ.coeRingHom (𝓟 U)).comp (Pi.ringHom fun z : ℂ => Polynomial.evalRingHom z))
+    = q.eval₂ ((Germ.coeRingHom (𝓟 U)).comp (RingHom.pi fun z : ℂ => Polynomial.evalRingHom z))
         ((g : ℂ → ℂ) : Germ (𝓟 U) ℂ)
   rw [ha]
   rfl

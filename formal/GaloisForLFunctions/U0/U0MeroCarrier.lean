@@ -49,14 +49,14 @@ theorem subtype_aeval (hU : U ⊆ Ext)
     (analyticSubring U).subtype (aeval (u0AnSub hU) P)
       = ((evalU0 P : ℂ → ℂ) : Germ (𝓟 U) ℂ) := by
   have lhs : (analyticSubring U).subtype (aeval (u0AnSub hU) P)
-      = eval₂ ((Germ.coeRingHom (𝓟 U)).comp (Pi.ringHom (fun z => Polynomial.evalRingHom z)))
+      = eval₂ ((Germ.coeRingHom (𝓟 U)).comp (RingHom.pi (fun z => Polynomial.evalRingHom z)))
           (u0 : Germ (𝓟 U) ℂ) P := by
     rw [aeval_def, hom_eval₂, halg]; rfl
   have rhs : ((evalU0 P : ℂ → ℂ) : Germ (𝓟 U) ℂ)
-      = eval₂ ((Germ.coeRingHom (𝓟 U)).comp (Pi.ringHom (fun z => Polynomial.evalRingHom z)))
+      = eval₂ ((Germ.coeRingHom (𝓟 U)).comp (RingHom.pi (fun z => Polynomial.evalRingHom z)))
           (u0 : Germ (𝓟 U) ℂ) P := by
     show Germ.coeRingHom (𝓟 U)
-        (eval₂ (Pi.ringHom (fun z => Polynomial.evalRingHom z)) u0 P) = _
+        (eval₂ (RingHom.pi (fun z => Polynomial.evalRingHom z)) u0 P) = _
     rw [hom_eval₂]; rfl
   rw [lhs, rhs]
 

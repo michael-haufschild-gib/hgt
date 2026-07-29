@@ -155,6 +155,9 @@ theorem twoProjection_anticommutator_eq_zero_iff_mul_eq_zero
       have h := congrArg ContinuousLinearMap.adjoint hQP
       change ContinuousLinearMap.adjoint (Q ∘L P) =
         ContinuousLinearMap.adjoint 0 at h
+      rw [show P * Q = P.comp Q by
+        ext x
+        rfl]
       simpa [ContinuousLinearMap.adjoint_comp, hPadj, hQadj] using h
     simp [hPQ, hQP]
 
@@ -234,7 +237,7 @@ theorem norm_twoProjection_difference_sq_add_complement_sq
     _ = RCLike.re (inner k psi
         ((quantumMasterConstraint (P - Q) +
           quantumMasterConstraint (1 - P - Q) : E →L[k] E) psi)) := by
-      simp only [ContinuousLinearMap.add_apply, inner_add_right, map_add]
+      simp only [_root_.add_apply, inner_add_right, map_add]
     _ = RCLike.re (inner k psi psi) := by rw [hmaster]; simp
     _ = ‖psi‖ ^ 2 := inner_self_eq_norm_sq psi
 
@@ -289,7 +292,7 @@ theorem norm_twoProjection_difference_sq_add_corrected_complement_sq
     _ = RCLike.re (inner k psi
         ((quantumMasterConstraint (P - Q) +
           quantumMasterConstraint (Z - (1 - P - Q)) : E →L[k] E) psi)) := by
-      simp only [ContinuousLinearMap.add_apply, inner_add_right, map_add]
+      simp only [_root_.add_apply, inner_add_right, map_add]
     _ = RCLike.re (inner k psi ((1 - Z) psi)) := by rw [hpartition]
     _ = RCLike.re (inner k psi (quantumMasterConstraint (1 - Z) psi)) := by
       rw [hIZmaster]

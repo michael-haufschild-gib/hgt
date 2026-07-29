@@ -57,7 +57,6 @@ theorem no_l2_pointEvaluator_on_representatives (x : ℝ) :
   rw [htoLp] at hspike
   have hfx : f x = 1 := by simp [f, l2PointSpike]
   rw [hfx] at hspike
-  simp at hzero
   exact zero_ne_one (hzero.symm.trans hspike)
 
 end RHTower

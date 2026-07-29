@@ -105,7 +105,7 @@ private theorem norm_gammaWeierstrassFactor_le_initial (s : ℂ) (k : ℕ) :
     rw [Complex.norm_def]
     convert Real.sqrt_sq hkpos.le using 1
     norm_num [Complex.normSq]
-    ring
+    ring_nf
   have hdiv : ‖s / ((k : ℂ) + 1)‖ = ‖s‖ / ((k : ℝ) + 1) := by
     rw [norm_div, hden]
   have hsum : ‖1 + s / ((k : ℂ) + 1)‖ ≤ 1 + ‖s‖ := by
@@ -133,7 +133,7 @@ private theorem norm_gammaWeierstrassFactor_le_tail {s : ℂ} {k : ℕ}
     rw [Complex.norm_def]
     convert Real.sqrt_sq hkpos.le using 1
     norm_num [Complex.normSq]
-    ring
+    ring_nf
   let w := s / ((k : ℂ) + 1)
   have hwn : ‖w‖ = ‖s‖ / ((k : ℝ) + 1) := by dsimp [w]; rw [norm_div, hden]
   have hw : ‖w‖ ≤ 1 := by
@@ -217,7 +217,7 @@ private theorem prod_gammaWeierstrassFactor_norm_le_tail
       (s := s) (k := m + j) (hmceil.trans (Nat.le_add_right m j))
     dsimp [q]
     convert htail using 1
-    ring
+    ring_nf
   have hprod := Finset.prod_le_prod
     (fun j (_hj : j ∈ Finset.range n) => norm_nonneg (gammaWeierstrassFactor s (m + j))) hpoint
   calc
@@ -255,7 +255,12 @@ theorem norm_tprod_gammaWeierstrassFactor_le (s : ℂ) :
     rw [div_le_iff₀ hmpos]
     nlinarith [norm_nonneg s]
   have hmult : Multipliable (gammaWeierstrassFactor s) := by
-    simpa [gammaWeierstrassFactor] using multipliable_weierstrassFactor s
+    rw [show gammaWeierstrassFactor s =
+        (fun k : ℕ => (1 + s / ((k : ℂ) + 1)) *
+          Complex.exp (-(s / ((k : ℂ) + 1)))) by
+      funext k
+      rfl]
+    exact multipliable_weierstrassFactor s
   rw [hmult.norm_tprod]
   apply hmult.norm.tprod_le_of_prod_range_le
   intro n

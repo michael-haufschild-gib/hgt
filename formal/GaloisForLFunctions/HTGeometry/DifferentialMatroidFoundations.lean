@@ -74,7 +74,7 @@ theorem diffIndepOn_of_forall_finite {s : Set K}
         simp only [Prod.mk.injEq, Subtype.mk.injEq] at h
         obtain ⟨rfl, rfl⟩ := h
         rfl)
-    simpa using hcomp
+    simpa only [Function.comp_def] using hcomp
   simpa using this
 
 end GaloisForLFunctions

@@ -107,9 +107,9 @@ theorem re_primitive_sub_green_const {c : ℂ} {V : Set ℂ} (hVo : IsOpen V) (h
         conv_lhs => rw [show v = v.re • (1:ℂ) + v.im • Complex.I from by
           rw [Complex.real_smul, Complex.real_smul, mul_one]; exact (Complex.re_add_im v).symm]
         rw [map_add, map_smul, map_smul, smul_eq_mul, smul_eq_mul]
-      simp only [ContinuousLinearMap.sub_apply, ContinuousLinearMap.comp_apply,
+      simp only [_root_.sub_apply, ContinuousLinearMap.comp_apply,
         ContinuousLinearMap.coe_restrictScalars', ContinuousLinearMap.smulRight_apply,
-        ContinuousLinearMap.one_apply, Complex.reCLM_apply, ContinuousLinearMap.zero_apply, hLin,
+        one_apply_eq_self, Complex.reCLM_apply, _root_.zero_apply, hLin,
         greenLogDeriv]
       rw [show v • ((fderiv ℝ (greenLimit c) z 1 : ℂ)
             - Complex.I * (fderiv ℝ (greenLimit c) z Complex.I : ℂ))
@@ -265,7 +265,8 @@ theorem primitive_sub_const {f g₁ g₂ : ℂ → ℂ} {V : Set ℂ} (hVo : IsO
   have hpre : PreconnectedSpace ↥V := (isPreconnected_iff_preconnectedSpace).mp hVc
   set h : ℂ → ℂ := fun z => g₁ z - g₂ z with hh
   have hderiv : ∀ z ∈ V, HasDerivAt h 0 z := by
-    intro z hz; simpa using (h₁ z hz).sub (h₂ z hz)
+    intro z hz
+    simpa only [hh, Pi.sub_apply, sub_self] using! (h₁ z hz).sub (h₂ z hz)
   have hcont : Continuous (fun x : ↥V => h x.val) :=
     ContinuousOn.restrict (fun z hz => (hderiv z hz).continuousAt.continuousWithinAt)
   set S : Set ↥V := {x | h x.val = h z₀} with hSdef

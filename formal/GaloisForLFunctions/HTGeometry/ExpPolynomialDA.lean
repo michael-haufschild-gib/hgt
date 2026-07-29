@@ -57,9 +57,10 @@ theorem differentiallyAlgebraic_cexp_mul_polynomial (β : ℂ) (P : Polynomial �
         (Complex.exp (β * z) * (β * P.eval z + (P.derivative).eval z)) z := by
       have hb : HasDerivAt (fun s : ℂ => β * s) β z := by simpa using (hasDerivAt_id z).const_mul β
       have h1 : HasDerivAt (fun s : ℂ => Complex.exp (β * s)) (β * Complex.exp (β * z)) z := by
-        have := hb.cexp; rw [mul_comm] at this; convert this using 1
+        simpa only [Function.comp_apply] using!
+          hb.cexp.congr_deriv (by ring)
       have h2 : HasDerivAt (fun s : ℂ => P.eval s) ((P.derivative).eval z) z := P.hasDerivAt z
-      have := h1.mul h2; convert this using 1; ring
+      simpa only [Pi.mul_apply] using! (h1.mul h2).congr_deriv (by ring)
     rw [key,
       show (2 : Fin 3) = Fin.succ 1 from rfl, show (1 : Fin 3) = Fin.succ 0 from rfl,
       Fin.cons_succ, Fin.cons_succ, Fin.cons_zero]
@@ -87,7 +88,8 @@ theorem differentiallyAlgebraic_exp_polynomial (P : Polynomial ℂ) :
     have hgderiv : HasDerivAt (fun s => Complex.exp (P.eval s))
         ((P.derivative).eval z * Complex.exp (P.eval z)) z := by
       have h2 : HasDerivAt (fun s : ℂ => P.eval s) ((P.derivative).eval z) z := P.hasDerivAt z
-      have := h2.cexp; convert this using 1; ring
+      simpa only [Function.comp_apply] using!
+        h2.cexp.congr_deriv (by ring)
     rw [key,
       show (2 : Fin 3) = Fin.succ 1 from rfl, show (1 : Fin 3) = Fin.succ 0 from rfl,
       Fin.cons_succ, Fin.cons_succ, Fin.cons_zero]
@@ -130,9 +132,10 @@ theorem differentiallyAlgebraic_exp_poly_mul_poly (P Q : Polynomial ℂ) :
         (Complex.exp (P.eval z) * ((P.derivative).eval z * Q.eval z + (Q.derivative).eval z)) z := by
       have h1 : HasDerivAt (fun s : ℂ => Complex.exp (P.eval s))
           ((P.derivative).eval z * Complex.exp (P.eval z)) z := by
-        have := (P.hasDerivAt z).cexp; convert this using 1; ring
+        simpa only [Function.comp_apply] using!
+          (P.hasDerivAt z).cexp.congr_deriv (by ring)
       have h2 : HasDerivAt (fun s : ℂ => Q.eval s) ((Q.derivative).eval z) z := Q.hasDerivAt z
-      have := h1.mul h2; convert this using 1; ring
+      simpa only [Pi.mul_apply] using! (h1.mul h2).congr_deriv (by ring)
     rw [key,
       show (2 : Fin 3) = Fin.succ 1 from rfl, show (1 : Fin 3) = Fin.succ 0 from rfl,
       Fin.cons_succ, Fin.cons_succ, Fin.cons_zero]

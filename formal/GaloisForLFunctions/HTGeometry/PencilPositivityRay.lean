@@ -1,5 +1,5 @@
 import Mathlib.LinearAlgebra.Matrix.PosDef
-import Mathlib.Data.Real.StarOrdered
+import Mathlib.Algebra.Order.Star.Real
 import GaloisForLFunctions.HTGeometry.LeeYangForcingThreshold
 
 /-!

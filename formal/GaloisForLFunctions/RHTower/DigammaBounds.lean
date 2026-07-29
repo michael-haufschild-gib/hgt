@@ -113,8 +113,7 @@ theorem digamma_reflection {z : ℂ} (hz : ∀ m : ℤ, z ≠ (m : ℂ)) :
     have h3 : (Complex.sin ∘ fun w : ℂ => (Real.pi : ℂ) * w)
         = fun w : ℂ => Complex.sin ((Real.pi : ℂ) * w) := rfl
     rw [h3] at h2
-    convert h2 using 1
-    ring
+    exact h2.congr_deriv (mul_comm _ _)
   have hRHS : logDeriv (fun w : ℂ => (Real.pi : ℂ)
       / Complex.sin ((Real.pi : ℂ) * w)) z
       = -(Real.pi : ℂ) * Complex.cos ((Real.pi : ℂ) * z)
@@ -160,10 +159,17 @@ theorem sum_inv_sq_add_le {a t : ℝ} (ha : 0 ≤ a) (ht : 0 < t) (N : ℕ) :
       simpa using (hasDerivAt_id x).div_const t
     have h2 := (Real.hasDerivAt_arctan (x / t)).comp x h1
     have h3 := h2.const_mul (1 / t)
-    convert h3 using 1
-    have ht2 : t ^ 2 > 0 := by positivity
-    field_simp
-    ring
+    have hfun :
+        F = fun y : ℝ => 1 / t * (Real.arctan ∘ fun z : ℝ => z / t) y := by
+      funext y
+      simp only [hF, Function.comp_apply]
+    have hcoef :
+        1 / t * (1 / (1 + (x / t) ^ 2) * (1 / t)) = 1 / (x ^ 2 + t ^ 2) := by
+      have ht2 : t ^ 2 > 0 := by positivity
+      field_simp
+      ring
+    rw [hfun]
+    exact h3.congr_deriv hcoef
   have hcont : ∀ (lo hi : ℝ), ContinuousOn (fun x : ℝ => 1 / (x ^ 2 + t ^ 2))
       (Set.uIcc lo hi) := by
     intro lo hi
@@ -201,7 +207,6 @@ theorem sum_inv_sq_add_le {a t : ℝ} (ha : 0 ≤ a) (ht : 0 < t) (N : ℕ) :
     intro n _
     have := hstep n
     push_cast
-    push_cast at this
     exact this
   have htel : ∑ n ∈ Finset.range M,
       ((fun k : ℕ => F (k : ℝ)) (n + 1) - (fun k : ℕ => F (k : ℝ)) n)
@@ -280,8 +285,15 @@ theorem vertical_sum_log_comparison {σ t : ℝ} (hσ : 0 ≤ σ) (ht : 0 < t)
       simpa using (hasDerivAt_pow 2 x).add_const (t ^ 2)
     have h2 := (Real.hasDerivAt_log hpos.ne').comp x h1
     have h3 := h2.const_mul (1 / 2 : ℝ)
-    convert h3 using 1
-    field_simp
+    have hfun :
+        f = fun y : ℝ => 1 / 2 * (Real.log ∘ fun z : ℝ => z ^ 2 + t ^ 2) y := by
+      funext y
+      simp only [hf, Function.comp_apply]
+    have hcoef :
+        (1 / 2 : ℝ) * ((x ^ 2 + t ^ 2)⁻¹ * (2 * x)) = x / (x ^ 2 + t ^ 2) := by
+      field_simp
+    rw [hfun]
+    exact h3.congr_deriv hcoef
   have hcontd : ∀ (lo hi : ℝ),
       ContinuousOn (fun x : ℝ => x / (x ^ 2 + t ^ 2)) (Set.uIcc lo hi) := by
     intro lo hi

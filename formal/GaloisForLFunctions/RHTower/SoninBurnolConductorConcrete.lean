@@ -35,7 +35,7 @@ theorem evenFourierCutoff_eq_reflectedCutoff (a : ℝ) :
     rw [← evenFourierTransform_involutive x,
       ← evenFourierTransform_involutive y, hxy]
   apply hJinj
-  simp only [reflectedCutoff, ContinuousLinearMap.mul_apply]
+  simp only [reflectedCutoff, mul_apply_eq_comp]
   rw [evenFourierTransform_involutive]
   apply Subtype.ext
   simp only [coe_evenFourierTransform_apply, coe_evenFourierCutoff_apply,

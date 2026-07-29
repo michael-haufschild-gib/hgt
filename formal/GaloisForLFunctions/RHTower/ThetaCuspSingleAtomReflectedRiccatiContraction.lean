@@ -108,17 +108,28 @@ theorem thetaCuspSingleAtomReflectedAction_eq_neg_log_model
 theorem hasDerivAt_thetaCuspSingleAtomReflectionDefect (t : ℝ) :
     HasDerivAt thetaCuspSingleAtomReflectionDefect
       (2 * Real.sinh (2 * t)) t := by
-  unfold thetaCuspSingleAtomReflectionDefect
-  convert ((Real.hasDerivAt_cosh (2 * t)).comp t
-    ((hasDerivAt_id t).const_mul 2)).sub_const 1 using 1
-  ring
+  have hraw := ((Real.hasDerivAt_cosh (2 * t)).comp t
+    ((hasDerivAt_id t).const_mul 2)).sub_const 1
+  have hfun :
+      thetaCuspSingleAtomReflectionDefect =
+        fun x : ℝ => (Real.cosh ∘ fun y : ℝ => 2 * id y) x - 1 := by
+    funext x
+    rfl
+  rw [hfun]
+  exact hraw.congr_deriv (by ring)
 
 theorem hasDerivAt_two_mul_sinh_two (t : ℝ) :
     HasDerivAt (fun x : ℝ => 2 * Real.sinh (2 * x))
       (4 * (thetaCuspSingleAtomReflectionDefect t + 1)) t := by
   have h := ((Real.hasDerivAt_sinh (2 * t)).comp t
     ((hasDerivAt_id t).const_mul 2)).const_mul 2
-  convert h using 1
+  have hfun :
+      (fun x : ℝ => 2 * Real.sinh (2 * x)) =
+        fun x => 2 * (Real.sinh ∘ fun y : ℝ => 2 * id y) x := by
+    funext x
+    rfl
+  rw [hfun]
+  apply h.congr_deriv
   unfold thetaCuspSingleAtomReflectionDefect
   ring
 
@@ -138,9 +149,18 @@ theorem hasDerivAt_thetaCuspSingleAtomReflectionFactor
         (thetaCuspSingleAtomReflectionDefect x))
       (-thetaCuspSingleAtomReflectionLambda A * (2 * Real.sinh (2 * t))) t := by
   have hz := hasDerivAt_thetaCuspSingleAtomReflectionDefect t
-  unfold thetaCuspSingleAtomReflectionFactor
-  convert ((hz.const_mul (-thetaCuspSingleAtomReflectionLambda A)).const_add 1) using 1
-  ring
+  have hraw :=
+    (hz.const_mul (-thetaCuspSingleAtomReflectionLambda A)).const_add 1
+  have hfun :
+      (fun x => thetaCuspSingleAtomReflectionFactor A
+        (thetaCuspSingleAtomReflectionDefect x)) =
+        fun x => 1 + (-thetaCuspSingleAtomReflectionLambda A) *
+          thetaCuspSingleAtomReflectionDefect x := by
+    funext x
+    unfold thetaCuspSingleAtomReflectionFactor
+    ring
+  rw [hfun]
+  exact hraw.congr_deriv (by ring)
 
 theorem hasDerivAt_thetaCuspSingleAtomReflectionSlope
     {A t : ℝ}
@@ -154,12 +174,20 @@ theorem hasDerivAt_thetaCuspSingleAtomReflectionSlope
           (thetaCuspSingleAtomReflectionDefect t) ^ 2 *
             (2 * Real.sinh (2 * t))) t := by
   let l := thetaCuspSingleAtomReflectionLambda A
-  let z' := 2 * Real.sinh (2 * t)
   have hrDeriv := hasDerivAt_thetaCuspSingleAtomReflectionFactor A t
-  have hquot := (hasDerivAt_const t l).div hrDeriv hr
-  unfold thetaCuspSingleAtomReflectionSlope
-  convert hquot.const_add (2 * A) using 1
-  dsimp only [l, z']
+  have hquot := (hasDerivAt_const t l).fun_div hrDeriv hr
+  have hraw := hquot.const_add (2 * A)
+  have hfun :
+      (fun x => thetaCuspSingleAtomReflectionSlope A
+        (thetaCuspSingleAtomReflectionDefect x)) =
+        fun x => 2 * A + l /
+          thetaCuspSingleAtomReflectionFactor A
+            (thetaCuspSingleAtomReflectionDefect x) := by
+    funext x
+    rfl
+  rw [hfun]
+  apply hraw.congr_deriv
+  dsimp only [l]
   field_simp [hr]
   ring
 
@@ -178,15 +206,23 @@ theorem hasDerivAt_thetaCuspSingleAtomReflectionCurvature
             (2 * Real.sinh (2 * t))) t := by
   have hrDeriv := hasDerivAt_thetaCuspSingleAtomReflectionFactor A t
   have hquot := (hasDerivAt_const t
-    (thetaCuspSingleAtomReflectionLambda A)).div hrDeriv hr
+    (thetaCuspSingleAtomReflectionLambda A)).fun_div hrDeriv hr
   have hsquare := hquot.pow 2
-  convert hsquare using 1
-  · funext x
-    simp only [Pi.pow_apply, Pi.div_apply]
-    ring
-  · simp only [Pi.div_apply, Nat.cast_ofNat, zero_mul, zero_sub]
-    norm_num
-    field_simp [hr]
+  have hfun :
+      (fun x =>
+        thetaCuspSingleAtomReflectionLambda A ^ 2 /
+          thetaCuspSingleAtomReflectionFactor A
+            (thetaCuspSingleAtomReflectionDefect x) ^ 2) =
+        (fun x => thetaCuspSingleAtomReflectionLambda A /
+          thetaCuspSingleAtomReflectionFactor A
+            (thetaCuspSingleAtomReflectionDefect x)) ^ 2 := by
+    funext x
+    simp only [Pi.pow_apply, div_pow]
+  rw [hfun]
+  apply hsquare.congr_deriv
+  simp only [Nat.cast_ofNat, zero_mul, zero_sub]
+  norm_num
+  field_simp [hr]
 
 /-- The first displayed jet is the literal first derivative of the reflected action. -/
 theorem hasDerivAt_thetaCuspSingleAtomReflectedAction
@@ -199,7 +235,15 @@ theorem hasDerivAt_thetaCuspSingleAtomReflectedAction
   have hz := hasDerivAt_thetaCuspSingleAtomReflectionDefect t
   have hrDeriv := hasDerivAt_thetaCuspSingleAtomReflectionFactor A t
   have hmain := (hz.const_mul (2 * A)).sub (hrDeriv.log hr)
-  convert hmain using 1
+  have hfun :
+      thetaCuspSingleAtomReflectedAction A =
+        (fun x => 2 * A * thetaCuspSingleAtomReflectionDefect x) -
+          fun x => Real.log (thetaCuspSingleAtomReflectionFactor A
+            (thetaCuspSingleAtomReflectionDefect x)) := by
+    funext x
+    rfl
+  rw [hfun]
+  apply hmain.congr_deriv
   unfold thetaCuspSingleAtomReflectedActionJetOne
     thetaCuspSingleAtomReflectionSlope
   field_simp [hr]
@@ -219,7 +263,16 @@ theorem hasDerivAt_thetaCuspSingleAtomReflectedActionJetOne
   have hz' := hasDerivAt_two_mul_sinh_two t
   have hslope := hasDerivAt_thetaCuspSingleAtomReflectionSlope hr
   have hraw := hslope.mul hz'
-  convert hraw using 1
+  have hfun :
+      (fun x => thetaCuspSingleAtomReflectedActionJetOne A
+        (thetaCuspSingleAtomReflectionDefect x) (2 * Real.sinh (2 * x))) =
+        (fun x => thetaCuspSingleAtomReflectionSlope A
+          (thetaCuspSingleAtomReflectionDefect x)) *
+            fun x => 2 * Real.sinh (2 * x) := by
+    funext x
+    rfl
+  rw [hfun]
+  apply hraw.congr_deriv
   unfold thetaCuspSingleAtomReflectedActionJetTwo
   rw [show
       thetaCuspSingleAtomReflectionLambda A ^ 2 /
@@ -249,15 +302,30 @@ theorem hasDerivAt_thetaCuspSingleAtomReflectedActionJetTwo
   have hfirst := ((hcurvature.mul (hz.mul (hz.const_add 2))).const_mul 4)
   have hsecond := ((hslope.mul (hz.const_add 1)).const_mul 4)
   have hraw := hfirst.add hsecond
-  convert hraw using 1
-  · funext x
+  have hfun :
+      (fun x => thetaCuspSingleAtomReflectedActionJetTwo A
+        (thetaCuspSingleAtomReflectionDefect x)) =
+        (fun y =>
+          4 * ((fun x =>
+            thetaCuspSingleAtomReflectionLambda A ^ 2 /
+              thetaCuspSingleAtomReflectionFactor A
+                (thetaCuspSingleAtomReflectionDefect x) ^ 2) *
+                  (thetaCuspSingleAtomReflectionDefect *
+                    fun x => 2 + thetaCuspSingleAtomReflectionDefect x)) y) +
+        fun y =>
+          4 * ((fun x => thetaCuspSingleAtomReflectionSlope A
+            (thetaCuspSingleAtomReflectionDefect x)) *
+              fun x => 1 + thetaCuspSingleAtomReflectionDefect x) y := by
+    funext x
     unfold thetaCuspSingleAtomReflectedActionJetTwo
     simp only [Pi.add_apply, Pi.mul_apply]
     ring
-  · unfold thetaCuspSingleAtomReflectedActionJetThree
-    simp only [Pi.mul_apply]
-    field_simp [hr]
-    ring
+  rw [hfun]
+  apply hraw.congr_deriv
+  unfold thetaCuspSingleAtomReflectedActionJetThree
+  simp only [Pi.mul_apply]
+  field_simp [hr]
+  ring
 
 theorem thetaCuspSingleAtomReflectionLambda_pos
     {A : ℝ} (hA : 3 < A) :
@@ -404,7 +472,7 @@ theorem thetaCuspSourceTerm_eq_singleAtomScale
         rw [show Real.exp (2 * x) = Real.exp x ^ 2 by
           rw [show 2 * x = x + x by ring, Real.exp_add]
           ring]]
-  ring
+  ring_nf
 
 /-- Exact reflected-product form of one source atom on one modular half-line. -/
 theorem thetaCuspSourceTerm_reflected_mul_eq_singleAtomModel

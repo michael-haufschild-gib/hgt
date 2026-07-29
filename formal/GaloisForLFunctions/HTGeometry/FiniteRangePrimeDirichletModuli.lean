@@ -475,7 +475,7 @@ theorem primeCoefficientTailProjectivelyEquivalent_of_tailZero
   intro p hp
   simp only [Set.mem_setOf_eq, Set.mem_union] at hp ⊢
   by_contra hzero
-  push_neg at hzero
+  push Not at hzero
   apply hp
   rw [hzero.1, hzero.2]
   simp

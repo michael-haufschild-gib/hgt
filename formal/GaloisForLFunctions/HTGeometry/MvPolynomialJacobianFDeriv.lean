@@ -48,7 +48,7 @@ theorem fderiv_mvPolynomial_eval_complex_apply {n : ℕ}
       (fderiv_apply hcurveDiff j)
     rw [(hcurveCoord j).hasFDerivAt.fderiv] at hj
     simpa using hj.symm
-  have hcomp := fderiv_comp' (f := curve)
+  have hcomp := fderiv_fun_comp (f := curve)
     (g := fun y : Fin n → ℂ => MvPolynomial.eval y P) 0 hFdiff hcurveDiff
   have hcompAt := congrArg (fun L : ℂ →L[ℂ] ℂ => L 1) hcomp
   change fderiv ℂ (fun t => MvPolynomial.eval (curve t) P) 0 1 =

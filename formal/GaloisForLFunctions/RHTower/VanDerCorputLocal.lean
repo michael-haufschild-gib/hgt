@@ -308,7 +308,7 @@ theorem secondDerivTestOn {a b mu : ℝ} (hab : a ≤ b) (hmu : 0 < mu)
         (fun x hx => hφ' x (hsub (by rwa [uIcc_of_le hpt] at hx)))
         (intervalIntegrable_of_contOn_real hpt (hφ''c.mono hsub))
     have hmono : (∫ _x in p..t, mu) ≤ ∫ x in p..t, φ'' x :=
-      intervalIntegral.integral_mono_on hpt intervalIntegral.intervalIntegrable_const
+      intervalIntegral.integral_mono_on hpt intervalIntegrable_const
         (intervalIntegrable_of_contOn_real hpt (hφ''c.mono hsub)) (fun x hx => hbound x (hsub hx))
     rw [intervalIntegral.integral_const, smul_eq_mul] at hmono
     linarith
@@ -320,7 +320,7 @@ theorem secondDerivTestOn {a b mu : ℝ} (hab : a ≤ b) (hmu : 0 < mu)
         (fun x hx => hφ' x (hsub (by rwa [uIcc_of_le htq] at hx)))
         (intervalIntegrable_of_contOn_real htq (hφ''c.mono hsub))
     have hmono : (∫ _x in t..q, mu) ≤ ∫ x in t..q, φ'' x :=
-      intervalIntegral.integral_mono_on htq intervalIntegral.intervalIntegrable_const
+      intervalIntegral.integral_mono_on htq intervalIntegrable_const
         (intervalIntegrable_of_contOn_real htq (hφ''c.mono hsub)) (fun x hx => hbound x (hsub hx))
     rw [intervalIntegral.integral_const, smul_eq_mul] at hmono
     linarith

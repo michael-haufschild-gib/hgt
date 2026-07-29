@@ -47,9 +47,13 @@ theorem integral_Ioi_mul_halfLineSteinScore_with_boundary
   let v' : ℝ → ℝ := fun x => -2 * halfLineSteinScore P P' W x * ρ x
   have hv : ∀ x ∈ Ioi (0 : ℝ), HasDerivAt v (v' x) x := by
     intro x hx
-    convert (hP x hx).mul (hρ x hx) using 1
-    simp only [v', halfLineSteinScore]
-    ring
+    have hraw := (hP x hx).mul (hρ x hx)
+    rw [show v = P * ρ by
+      funext y
+      rfl]
+    exact hraw.congr_deriv (by
+      simp only [v', halfLineSteinScore]
+      ring)
   have hfv' : IntegrableOn (f * v') (Ioi 0) := by
     have heq : (f * v') = fun x =>
         -2 * (f x * halfLineSteinScore P P' W x * ρ x) := by
@@ -66,8 +70,8 @@ theorem integral_Ioi_mul_halfLineSteinScore_with_boundary
     (a := (0 : ℝ)) (a' := c) (b' := (0 : ℝ))
     (u := f) (u' := f') (v := v) (v' := v')
     hf hv hfv' hf'v
-    (by simpa only [Pi.mul_apply, v, mul_assoc] using hzero)
-    (by simpa only [Pi.mul_apply, v, mul_assoc] using hinfty)
+    (by simpa only [Pi.mul_apply, v, mul_assoc] using! hzero)
+    (by simpa only [Pi.mul_apply, v, mul_assoc] using! hinfty)
   have hleftIntegral :
       (∫ x : ℝ in Ioi 0, f x * v' x) =
         -2 * (∫ x : ℝ in Ioi 0,
@@ -119,9 +123,15 @@ theorem hasDerivAt_halfLineSteinVirialCurrent
     HasDerivAt (fun y : ℝ => P y ^ 2 * W y * ρ y)
       ((2 * P x * P' x * W x + P x ^ 2 * W' x -
           2 * P x ^ 2 * W x ^ 2) * ρ x) x := by
-  convert (((hP.pow 2).mul hW).mul hρ) using 1
-  simp only [Pi.pow_apply, Pi.mul_apply]
-  ring
+  have hraw := ((hP.pow 2).mul hW).mul hρ
+  have hfun :
+      (((P ^ 2) * W) * ρ) = fun y : ℝ => P y ^ 2 * W y * ρ y := by
+      funext y
+      rfl
+  rw [← hfun]
+  exact hraw.congr_deriv (by
+    simp only [Pi.pow_apply, Pi.mul_apply]
+    ring)
 
 /-- **Local Stein--virial value law.**  The squared symmetric first-order score is the
 curvature/field-gradient energy minus one half of an exact current derivative.  This is the
@@ -150,9 +160,15 @@ theorem hasDerivAt_halfLineSteinBilinearVirialCurrent
     HasDerivAt (fun y : ℝ => P y * Q y * W y * ρ y)
       (((P' x * Q x + P x * Q' x) * W x + P x * Q x * W' x -
           2 * P x * Q x * W x ^ 2) * ρ x) x := by
-  convert (((hP.mul hQ).mul hW).mul hρ) using 1
-  simp only [Pi.mul_apply]
-  ring
+  have hraw := ((hP.mul hQ).mul hW).mul hρ
+  have hfun :
+      (((P * Q) * W) * ρ) = fun y : ℝ => P y * Q y * W y * ρ y := by
+      funext y
+      rfl
+  rw [← hfun]
+  exact hraw.congr_deriv (by
+    simp only [Pi.mul_apply]
+    ring)
 
 /-- **Polarized local Stein--virial value law.**  A mixed score product is a
 bilinear curvature/field-gradient value modulo one exact half-line current.

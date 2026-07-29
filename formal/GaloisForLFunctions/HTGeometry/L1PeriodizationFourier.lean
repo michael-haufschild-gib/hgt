@@ -111,8 +111,10 @@ theorem integrableOn_Ioc_l1Periodization
     have hbase := hf.norm.hasSum_intervalIntegral_comp_add_int.summable
     exact hbase.congr (fun k => (hnormInt k).symm)
   change Integrable (l1Periodization f) μ
-  simpa only [F, l1Periodization] using
-    integrable_tsum_of_summable_integral_norm hFint hFsum
+  rw [show l1Periodization f = (fun x => ∑' k : ℤ, f (x + k)) by
+    funext x
+    rfl]
+  exact integrable_tsum_of_summable_integral_norm hFint hFsum
 
 /-- L1 periodizations are interval-integrable on every unit cell. -/
 theorem intervalIntegrable_l1Periodization_unitCell
@@ -277,7 +279,14 @@ theorem integrableOn_Ioc_realL1Periodization
     IntegrableOn (realL1Periodization f) (Ioc (0 : ℝ) 1) := by
   have hc := integrableOn_Ioc_l1Periodization
     (hf.ofReal : Integrable fun x => (f x : ℂ))
-  simpa only [← ofReal_realL1Periodization, Complex.ofReal_re] using hc.re
+  have hr := hc.re
+  rw [show
+      (fun x => Complex.re (l1Periodization (fun y => (f y : ℂ)) x)) =
+        realL1Periodization f by
+    funext x
+    rw [← ofReal_realL1Periodization]
+    exact Complex.ofReal_re _] at hr
+  exact hr
 
 /-- Real L1 periodizations are interval-integrable on every unit cell. -/
 theorem intervalIntegrable_realL1Periodization_unitCell

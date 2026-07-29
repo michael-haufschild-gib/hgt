@@ -112,7 +112,12 @@ noncomputable def quarticDefectSq : CuspForm 𝒮ℒ 4 where
     intro γ _
     rw [quarticDefectH_sq_slash_SL2Z γ]
     show Filter.Tendsto (quarticDefectH ^ 2) atImInfty (nhds 0)
-    simpa using Filter.Tendsto.pow quarticDefectH_zeroAtImInfty 2
+    rw [show quarticDefectH ^ 2 = (fun z => quarticDefectH z ^ 2) by
+      funext z
+      rfl]
+    have h := Filter.Tendsto.pow quarticDefectH_zeroAtImInfty 2
+    norm_num at h
+    exact h
 
 /-- **The Jacobi quartic identity** `θ₃⁴ = θ₂⁴ + θ₄⁴`, equivalently `F ≡ 0` on `ℍ`.
 

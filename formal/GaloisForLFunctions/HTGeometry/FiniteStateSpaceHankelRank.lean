@@ -120,7 +120,7 @@ theorem det_momentHankelMatrix_finiteStateSpaceResponse_succ_eq_zero {d : ℕ}
     (A : Matrix (Fin d) (Fin d) ℝ) (input output : Fin d → ℝ) :
     (momentHankelMatrix (finiteStateSpaceResponse A input output) (d + 1)).det = 0 := by
   simpa [momentHankelMatrix, finiteStateSpaceResponse, algebraicHankelMatrix,
-    algebraicStateSpaceResponse] using
+    algebraicStateSpaceResponse] using!
       (det_algebraicHankelMatrix_stateSpaceResponse_succ_eq_zero A input output)
 
 /-- The determinant obstruction in realization form. -/
@@ -139,8 +139,8 @@ theorem det_momentHankelMatrix_succ_eq_zero_of_fixedStateSpaceDimension_tendsto
   have hm' : ∀ j, AlgebraicStateSpaceDimensionAtMost d (m j) := by
     intro j
     simpa [StateSpaceDimensionAtMost, AlgebraicStateSpaceDimensionAtMost,
-      finiteStateSpaceResponse, algebraicStateSpaceResponse] using hm j
-  simpa [momentHankelMatrix, algebraicHankelMatrix] using
+      finiteStateSpaceResponse, algebraicStateSpaceResponse] using! hm j
+  simpa [momentHankelMatrix, algebraicHankelMatrix] using!
     (det_algebraicHankelMatrix_succ_eq_zero_of_fixedStateSpaceDimension_tendsto hm' hconv)
 
 /-- Uniformly bounded hidden-state dimension remains impossible even when each finite observation
@@ -152,8 +152,8 @@ theorem det_momentHankelMatrix_succ_eq_zero_of_fixedStateSpaceDimensionLocalClos
   have h' : FixedAlgebraicStateSpaceDimensionLocalClosure d target := by
     simpa [FixedStateSpaceDimensionLocalClosure,
       FixedAlgebraicStateSpaceDimensionLocalClosure,
-      finiteStateSpaceResponse, algebraicStateSpaceResponse] using h
-  simpa [momentHankelMatrix, algebraicHankelMatrix] using
+      finiteStateSpaceResponse, algebraicStateSpaceResponse] using! h
+  simpa [momentHankelMatrix, algebraicHankelMatrix] using!
     (det_algebraicHankelMatrix_succ_eq_zero_of_fixedStateSpaceDimensionLocalClosure h')
 
 /-- A single nonzero Hankel determinant rules out fixed-dimensional local state-space

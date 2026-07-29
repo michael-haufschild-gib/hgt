@@ -32,12 +32,27 @@ theorem hasDerivAt_gaussPrimitive (x : ℝ) :
     HasDerivAt (fun y : ℝ => -Real.exp (-(2 * π * y ^ 2)) / (4 * π))
       (x * Real.exp (-(2 * π * x ^ 2))) x := by
   have hinner : HasDerivAt (fun y : ℝ => -(2 * π * y ^ 2)) (-(2 * π * (2 * x))) x := by
-    simpa using ((hasDerivAt_pow 2 x).const_mul (2 * π)).neg
+    have hinnerRaw := ((hasDerivAt_pow 2 x).const_mul (2 * π)).neg
+    have hfun :
+        -(fun y : ℝ => 2 * π * y ^ 2) =
+          (fun y : ℝ => -(2 * π * y ^ 2)) := by
+      funext y
+      rfl
+    rw [hfun] at hinnerRaw
+    apply hinnerRaw.congr_deriv
+    norm_num
   have hexp := hinner.exp
   have hpi : (4 : ℝ) * π ≠ 0 := by positivity
-  have h := (hexp.neg).div_const (4 * π)
-  convert h using 1
-  field_simp
+  have hneg := hexp.neg
+  have hfun :
+      -(fun y : ℝ => Real.exp (-(2 * π * y ^ 2))) =
+        (fun y : ℝ => -Real.exp (-(2 * π * y ^ 2))) := by
+    funext y
+    rfl
+  rw [hfun] at hneg
+  have h := hneg.div_const (4 * π)
+  apply h.congr_deriv
+  field_simp [hpi]
   ring
 
 /-- The Gaussian vanishes at infinity. -/

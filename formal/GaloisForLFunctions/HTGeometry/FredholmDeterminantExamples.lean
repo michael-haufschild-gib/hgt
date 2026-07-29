@@ -377,7 +377,8 @@ theorem logDeriv_fredholmDet1 {K : ι × ι → ℂ} (hK : IsHS K) (r : ℝ) (hr
   have hf : HasDerivAt (fun w => fredholmDet K w) (fredholmDet K z * (- resolventTrace K z)) z :=
     hasDerivAt_fredholmDet hK r hr z hz
   have hh : HasDerivAt (fun w : ℂ => -(w * hsTraceDiag K)) (-hsTraceDiag K) z := by
-    have h := (hasDerivAt_id z).mul_const (hsTraceDiag K); simpa using h.neg
+    simpa only [id_eq, one_mul] using!
+      ((hasDerivAt_id z).mul_const (hsTraceDiag K)).neg
   have hexp : HasDerivAt (fun w => Complex.exp (-(w * hsTraceDiag K)))
       (Complex.exp (-(z * hsTraceDiag K)) * (-hsTraceDiag K)) z := hh.cexp
   have hprod : HasDerivAt (fun w => fredholmDet1 K w)

@@ -26,8 +26,12 @@ def upperEndFilter : Filter ℂ := Filter.comap Complex.im Filter.atTop
 /-- Upper half-planes form a basis of the upper-end filter. -/
 theorem upperEndFilter_basis :
     upperEndFilter.HasBasis (fun _ : ℝ ↦ True) upperTail := by
-  simpa [upperEndFilter, upperTail] using
-    (Filter.atTop_basis_Ioi.comap Complex.im)
+  have htails : (fun H : ℝ => Complex.im ⁻¹' Ioi H) = upperTail := by
+    funext H
+    ext z
+    rfl
+  rw [← htails]
+  exact Filter.atTop_basis_Ioi.comap Complex.im
 
 theorem upperTail_isOpen (H : ℝ) : IsOpen (upperTail H) := by
   exact isOpen_lt continuous_const Complex.continuous_im

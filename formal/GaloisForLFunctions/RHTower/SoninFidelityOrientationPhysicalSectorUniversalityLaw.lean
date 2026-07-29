@@ -31,7 +31,7 @@ theorem soninLogFourierScattering_physicalState_iff_fidelitySaturated_nonnegativ
         hphysical
     have hcomplement :
         (1 - soninLogFourierInvariantAverage) ψ = 0 := by
-      simpa only [ContinuousLinearMap.sub_apply, ContinuousLinearMap.one_apply,
+      simpa only [_root_.sub_apply, one_apply_eq_self,
         sub_eq_zero] using hfixed.symm
     constructor
     · rw [soninLogFourierScattering_homogeneousFidelityDeficit_eq_four_mul_sectorWeights,
@@ -73,8 +73,8 @@ theorem soninLogFourierScattering_physicalState_iff_fidelitySaturated_nonnegativ
       (physicalState_soninLogFourierScattering_iff_invariantAverage_fixed ψ).2
     have hsub :
         ψ - soninLogFourierInvariantAverage ψ = 0 := by
-      simpa only [ContinuousLinearMap.sub_apply,
-        ContinuousLinearMap.one_apply] using hcomplement
+      simpa only [_root_.sub_apply,
+        one_apply_eq_self] using hcomplement
     exact (sub_eq_zero.mp hsub).symm
 
 end

@@ -179,8 +179,7 @@ theorem differentiableAt_zetaSawtoothTail (hN : 1 ≤ N) {s₀ : ℂ}
     have hpow := hg.const_cpow (c := (u : ℂ))
       (Or.inl (by exact_mod_cast ne_of_gt hu0))
     have hmul := hpow.const_mul ((Int.fract u : ℝ) : ℂ)
-    convert hmul using 1
-    ring
+    exact hmul.congr_deriv (by ring)
 
 /-- The sawtooth tail is analytic on the right half-plane. -/
 theorem analyticOnNhd_zetaSawtoothTail (hN : 1 ≤ N) :

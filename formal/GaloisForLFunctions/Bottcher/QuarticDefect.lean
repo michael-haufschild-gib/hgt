@@ -79,7 +79,7 @@ theorem hasDerivAt_quarticDefect {τ : ℂ} (hτ : 0 < im τ) :
   have d3 := (hasDerivAt_thetaThree hτ).pow 4
   have d2 := (hasDerivAt_thetaTwo hτ).pow 4
   have d4 := (hasDerivAt_thetaFour hτ).pow 4
-  convert (d3.sub d2).sub d4 using 1
+  apply ((d3.sub d2).sub d4).congr_deriv
   rw [(hasDerivAt_thetaThree hτ).deriv, (hasDerivAt_thetaTwo hτ).deriv,
     (hasDerivAt_thetaFour hτ).deriv]
   push_cast; ring

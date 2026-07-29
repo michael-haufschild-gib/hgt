@@ -350,7 +350,7 @@ theorem eigenvalue_re_eq_half
     Hodge.star x (rho • x) +
         ((starRingEnd ℂ) rho • Hodge.star x) x =
       Hodge.star x x at hcup
-  simp only [map_smul, ContinuousLinearMap.smul_apply] at hcup
+  simp only [map_smul, _root_.smul_apply] at hcup
   have hmetric0 : Hodge.star x x ≠ 0 := by
     intro hzero
     have hpos := Hodge.positive hx0

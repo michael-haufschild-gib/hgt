@@ -129,10 +129,15 @@ theorem existsUnique_gammaShiftAnnihilatorValues {n : ℕ} (s : ℂ)
     dsimp only [a]
     rw [Matrix.mulVec_mulVec, Matrix.mul_nonsing_inv Mᵀ hunit, Matrix.one_mulVec]
   refine ⟨a, ?_, ?_⟩
-  · simpa only [M, b, Pi.neg_apply] using ha
+  · change Mᵀ.mulVec a = fun i ↦ -Complex.Gamma (s + shift i + (n : ℕ))
+    apply _root_.funext
+    intro i
+    exact congrFun ha i
   · intro a' ha'
     have ha'M : Mᵀ.mulVec a' = -b := by
-      simpa only [M, b, Pi.neg_apply] using ha'
+      apply _root_.funext
+      intro i
+      exact congrFun ha' i
     have hsub : Mᵀ.mulVec (a' - a) = 0 := by
       rw [Matrix.mulVec_sub, ha'M, ha, sub_self]
     exact sub_eq_zero.mp (Matrix.eq_zero_of_mulVec_eq_zero hMT hsub)

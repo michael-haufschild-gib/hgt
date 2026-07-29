@@ -112,10 +112,10 @@ theorem finiteClock_matrixElement_congr_mod_constraintTwoSidedIdeal
       (P.adjoint_inner_right φ (B (P ψ))).symm
     _ = inner 𝕜 φ (P (B (P ψ))) := by rw [hPadj]
     _ = inner 𝕜 φ ((P * B * P) ψ) := by
-      simp only [ContinuousLinearMap.mul_apply]
+      simp only [mul_apply_eq_comp]
     _ = inner 𝕜 φ ((P * A * P) ψ) := by rw [hcompress]
     _ = inner 𝕜 φ (P (A (P ψ))) := by
-      simp only [ContinuousLinearMap.mul_apply]
+      simp only [mul_apply_eq_comp]
     _ = inner 𝕜 (P φ) (A (P ψ)) := by
       simpa only [hPadj] using P.adjoint_inner_right φ (A (P ψ))
 

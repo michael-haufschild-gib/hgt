@@ -490,7 +490,7 @@ theorem differentialAlgebraicOver_differentialAdjoin_compl_iff_loop_or_collision
     DifferentialAlgebraicOver
         (differentialAdjoin F (x '' (Set.univ \ {i}))) (x i) ↔
       frame i = loop ∨ ∃ j, j ≠ i ∧ frame j = frame i := by
-  simpa only [Set.mem_image, Set.mem_diff, Set.mem_univ, true_and,
+  simpa only [Set.mem_image, Set.mem_sdiff, Set.mem_univ, true_and,
     Set.mem_singleton_iff] using
     (differentialAlgebraicOver_differentialAdjoin_image_iff_loop_or_observedLabel_of_pointedCollisionMatroid
       x frame loop (Set.univ \ {i}) i hmatroid)

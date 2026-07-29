@@ -64,7 +64,7 @@ theorem weakly_tendsto_zero_of_norm_sub_tendsto_zero
   have hdiff : Tendsto (fun n => f n - g n) atTop (𝓝 0) :=
     tendsto_zero_iff_norm_tendsto_zero.mpr hfg
   have hℓdiff : Tendsto (fun n => ℓ (f n - g n)) atTop (𝓝 0) := by
-    simpa only [Function.comp_apply, map_zero] using
+    simpa only [Function.comp_def, map_zero] using!
       ℓ.continuous.continuousAt.tendsto.comp hdiff
   simpa only [map_sub, sub_add_cancel, add_zero] using hℓdiff.add (hg ℓ)
 
@@ -303,9 +303,16 @@ theorem sonin_eulerMetricCorner_not_isCompactOperator_of_shell
   intro hcompact
   have hsource := sonin_crossBoundary_not_isCompactOperator_of_shell
     A B hblock W g hg hgA hBnull c hc hcross
+  let T : H →L[𝕜] H := crossBoundary Q W
+  have hcompact' : IsCompactOperator (b • T) := by
+    simpa [T] using! hcompact
+  have hunscaled : IsCompactOperator (b⁻¹ • (b • T)) := hcompact'.smul b⁻¹
+  have heq : b⁻¹ • (b • T) = T := by
+    rw [smul_smul, inv_mul_cancel₀ hb, one_smul]
   apply hsource
-  have hinv := hcompact.smul b⁻¹
-  simpa [smul_smul, hb] using hinv
+  change IsCompactOperator T
+  rw [← heq]
+  exact hunscaled
 
 end Sonin
 

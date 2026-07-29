@@ -203,8 +203,8 @@ theorem CommutingDifferenceDifferentialField.pointedBoundaryFingerprint_eq_iff
   · rintro ⟨hfixed, hcal⟩
     apply Prod.ext
     · exact S.boundaryFingerprint_eq_iff_sub_jointFixed x y |>.mpr hfixed
-    · apply sub_eq_zero.mp
-      simpa using hcal
+    · change calibration x = calibration y
+      exact sub_eq_zero.mp (by simpa only [map_sub] using hcal)
 
 /-- Exact conservativity criterion: boundary observations plus calibration reconstruct the
 primitive if and only if the calibration separates the residual joint-fixed gauge. -/

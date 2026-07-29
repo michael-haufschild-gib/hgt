@@ -68,8 +68,9 @@ theorem hasDerivAt_jacobiTheta₂'_term (n : ℤ) (z τ : ℂ) :
           Complex.exp (2 * (π : ℂ) * I * (n : ℂ) * w + (π : ℂ) * I * (n : ℂ) ^ 2 * τ)) := by
     funext w; rw [jacobiTheta₂'_term, jacobiTheta₂_term]
   rw [hfun]
-  convert h2 using 1
-  rw [thetaHeatTerm, jacobiTheta₂_term]; ring
+  apply h2.congr_deriv
+  unfold thetaHeatTerm jacobiTheta₂_term
+  ring
 
 /-- **Global second `z`-derivative of the Jacobi theta function.** Differentiating the first-
 derivative series `jacobiTheta₂' · τ = ∑ jacobiTheta₂'_term` in `z` term-by-term (uniformly on the
@@ -81,8 +82,12 @@ theorem hasDerivAt_jacobiTheta₂'_fst (z : ℂ) {τ : ℂ} (hτ : 0 < im τ) :
   set t : Set ℂ := {w | |im w| < S} with ht_def
   have hto : IsOpen t := (_root_.continuous_abs.comp continuous_im).isOpen_preimage _ isOpen_Iio
   have htc : IsPreconnected t := by
-    simpa only [ht_def, abs_lt] using
-      ((convex_halfSpace_im_gt (-S)).inter (convex_halfSpace_im_lt S)).isPreconnected
+    have ht_eq : {w : ℂ | |im w| < S} =
+        {w : ℂ | -S < im w} ∩ {w : ℂ | im w < S} := by
+      ext w
+      simp only [Set.mem_setOf_eq, Set.mem_inter_iff, abs_lt]
+    rw [ht_def, ht_eq]
+    exact ((convex_halfSpace_im_gt (-S)).inter (convex_halfSpace_im_lt S)).isPreconnected
   have hzt : z ∈ t := hz
   set u : ℤ → ℝ := fun n => 4 * π ^ 2 *
     ((|n| ^ 2 : ℝ) * Real.exp (-π * (im τ * n ^ 2 - 2 * S * |n|))) with hu_def
@@ -107,14 +112,14 @@ theorem hasDerivAt_jacobiTheta₂_snd (z : ℂ) {τ : ℂ} (hτ : 0 < im τ) :
     HasDerivAt (fun s => jacobiTheta₂ z s) (∑' n, jacobiTheta₂_snd_term n z τ) τ := by
   let eval_snd_CLM : (ℂ × ℂ →L[ℂ] ℂ) →L[ℂ] ℂ :=
   { toFun := fun f => f (0, 1)
-    map_add' := by simp only [ContinuousLinearMap.add_apply, forall_const]
+    map_add' := by simp only [_root_.add_apply, forall_const]
     map_smul' := by simp }
   have step1 : HasSum (fun n => (jacobiTheta₂_term_fderiv n z τ) (0, 1))
       ((jacobiTheta₂_fderiv z τ) (0, 1)) := by
     apply eval_snd_CLM.hasSum (hasSum_jacobiTheta₂_term_fderiv z hτ)
   have step2 (n : ℤ) : (jacobiTheta₂_term_fderiv n z τ) (0, 1) = jacobiTheta₂_snd_term n z τ := by
-    simp only [jacobiTheta₂_term_fderiv, smul_add, ContinuousLinearMap.add_apply,
-      ContinuousLinearMap.coe_smul', ContinuousLinearMap.coe_fst', ContinuousLinearMap.coe_snd',
+    simp only [jacobiTheta₂_term_fderiv, smul_add, _root_.add_apply,
+      FunLike.coe_smul, ContinuousLinearMap.coe_fst', ContinuousLinearMap.coe_snd',
       Pi.smul_apply, smul_eq_mul, mul_zero, mul_one, zero_add, jacobiTheta₂_snd_term,
       jacobiTheta₂_term, mul_comm _ (cexp _)]
   rw [funext step2] at step1

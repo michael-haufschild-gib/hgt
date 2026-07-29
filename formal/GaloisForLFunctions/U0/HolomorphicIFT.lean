@@ -180,7 +180,7 @@ theorem exists_circle_non_root {p : ℂ[X]} (hp : p ≠ 0) :
       (isConnected_sphere (by norm_num) (0:ℂ) (by norm_num)).isPreconnected
     refine hpre.infinite_of_nontrivial ⟨1, ?_, -1, ?_, by norm_num⟩ <;>
       simp
-  obtain ⟨z, hzc, hzr⟩ := (hcirc_inf.diff hroot_fin).nonempty
+  obtain ⟨z, hzc, hzr⟩ := (hcirc_inf.sdiff hroot_fin).nonempty
   rw [mem_sphere_zero_iff_norm] at hzc
   exact ⟨z, hzc, hzr⟩
 
@@ -199,7 +199,7 @@ theorem exists_squarefree_specialization {P : (Polynomial ℂ)[X]}
   have hP_ne : P ≠ 0 := fun h => by rw [h, natDegree_zero] at hdeg; exact absurd hdeg (by norm_num)
   have hderiv_ne : derivative P ≠ 0 := by
     intro h
-    have := natDegree_eq_zero_of_derivative_eq_zero h
+    have := derivative_eq_zero.mp h
     omega
   have hlc1 : P.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hP_ne
   have hlc2 : (derivative P).leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hderiv_ne

@@ -168,11 +168,11 @@ theorem tightOperatorFamily_subspace_finrank_eq_iff_adjoint_mem
       have hproj : ‖(U.orthogonalProjection x : X)‖ ^ 2 = ‖x‖ ^ 2 := by
         rw [← hs]
         simpa only [Submodule.coe_norm,
-          Submodule.inner_orthogonalProjection_eq_of_mem_left] using
+          Submodule.inner_orthogonalProjectionOnto_eq_of_mem_left] using
             (u.sum_sq_inner_right (U.orthogonalProjection x)).symm
       have hpy := U.orthogonalProjectionFn_norm_sq x
       have hres : ‖x - (U.orthogonalProjection x : X)‖ = 0 := by
-        rw [Submodule.orthogonalProjectionFn_eq] at hpy
+        rw [Submodule.orthogonalProjectionOntoFn_eq] at hpy
         nlinarith [hproj]
       have hx : x = (U.orthogonalProjection x : X) :=
         sub_eq_zero.mp (norm_eq_zero.mp hres)

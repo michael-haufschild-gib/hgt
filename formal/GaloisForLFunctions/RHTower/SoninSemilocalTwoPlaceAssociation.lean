@@ -62,10 +62,29 @@ theorem semilocalArchimedean_twoFrequencyAssociation_pos
     (show 0 < (1 / 2 : ℝ) by norm_num) (show 0 < (1 / 2 : ℝ) by norm_num)
     (show (1 / 2 : ℝ) + 1 / 2 = 1 by norm_num)
   rw [Real.cosh_add, Real.cosh_sub] at hmid
+  have havg :
+      (1 / 2 : ℝ) • (Real.cosh u * Real.cosh v + Real.sinh u * Real.sinh v) +
+          (1 / 2 : ℝ) • (Real.cosh u * Real.cosh v - Real.sinh u * Real.sinh v) =
+        Real.cosh u * Real.cosh v := by
+    simp only [smul_eq_mul]
+    ring
+  rw [havg] at hmid
   dsimp [semilocalArchimedeanCharacteristic]
-  convert hmid using 1 <;> ring_nf
-  · rw [← Real.mul_rpow (Real.cosh_pos u).le (Real.cosh_pos v).le]
-  · rw [Real.cosh_add, Real.cosh_sub]
+  calc
+    Real.cosh u ^ (-(1 : ℝ) / 2) * Real.cosh v ^ (-(1 : ℝ) / 2) =
+        (Real.cosh u * Real.cosh v) ^ (-(1 : ℝ) / 2) :=
+      (Real.mul_rpow (Real.cosh_pos u).le (Real.cosh_pos v).le).symm
+    _ < (1 / 2 : ℝ) •
+          (Real.cosh u * Real.cosh v + Real.sinh u * Real.sinh v) ^ (-(1 : ℝ) / 2) +
+        (1 / 2 : ℝ) •
+          (Real.cosh u * Real.cosh v - Real.sinh u * Real.sinh v) ^ (-(1 : ℝ) / 2) := hmid
+    _ = ((Real.cosh u * Real.cosh v + Real.sinh u * Real.sinh v) ^ (-(1 : ℝ) / 2) +
+          (Real.cosh u * Real.cosh v - Real.sinh u * Real.sinh v) ^ (-(1 : ℝ) / 2)) / 2 := by
+      simp only [smul_eq_mul]
+      ring
+    _ = (Real.cosh (u + v) ^ (-(1 : ℝ) / 2) +
+          Real.cosh (u - v) ^ (-(1 : ℝ) / 2)) / 2 := by
+      rw [Real.cosh_add, Real.cosh_sub]
 
 /-- The archimedean characteristic does not define a positive Hankel kernel by the tempting
 sum-frequency prescription `K(u,v) = phi(u+v)`.  Already the two nodes `0,t` have a negative
@@ -119,9 +138,10 @@ theorem semilocalArchimedeanDampedCovarianceKernel_self (t : ℝ) :
   unfold semilocalArchimedeanDampedCovarianceKernel
   have hchar : 0 ≤ semilocalArchimedeanCharacteristic (2 * t) :=
     (Real.rpow_pos_of_pos (Real.cosh_pos (2 * t)) (-(1 : ℝ) / 2)).le
-  rw [sub_self]
-  simp only [semilocalArchimedeanCharacteristic, Real.cosh_zero, Real.one_rpow, mul_one]
-  simpa [pow_two] using Real.sq_sqrt hchar
+  have hzero : semilocalArchimedeanCharacteristic 0 = 1 := by
+    simp [semilocalArchimedeanCharacteristic]
+  rw [sub_self, hzero, mul_one]
+  simpa only [pow_two] using Real.sq_sqrt hchar
 
 /-- Exact exponential upper bound for the Gamma covariance diagonal. -/
 theorem semilocalArchimedeanCharacteristic_two_mul_le_sqrtTwo_mul_exp_neg (t : ℝ) :

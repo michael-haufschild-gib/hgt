@@ -85,12 +85,10 @@ theorem abs_xiTaylorAnisotropicRightApprox_im_sub_lt
   have hnumLow : (-1 : ℝ) <
       ((Int.floor ((n : ℝ) ^ 2 * sigma.im) : ℤ) : ℝ) -
         (n : ℝ) ^ 2 * sigma.im := by
-    push_cast at hhi
     linarith
   have hnumHigh :
       ((Int.floor ((n : ℝ) ^ 2 * sigma.im) : ℤ) : ℝ) -
         (n : ℝ) ^ 2 * sigma.im ≤ 0 := by
-    push_cast at hlo
     linarith
   rw [abs_lt]
   constructor

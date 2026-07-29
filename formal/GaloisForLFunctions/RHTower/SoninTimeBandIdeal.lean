@@ -394,20 +394,20 @@ theorem centralPhysicalProjection_one_sub_projection_eq_zero_of_correction_eq_ze
     rw [map_sub]
     have hQQpsi := congrArg (fun T : SoninL2 →L[ℂ] SoninL2 => T psi) hQQ
     have hQQpsi' : Q (Q psi) = Q psi := by
-      simpa only [ContinuousLinearMap.mul_apply] using hQQpsi
+      simpa only [mul_apply_eq_comp] using hQQpsi
     rw [hQQpsi', sub_self]
   have hCy : C y = 0 := by
     dsimp only [y]
     change C (psi - Q psi) = 0
     rw [map_sub, show C (Q psi) = 0 by
       have h := congrArg (fun T : SoninL2 →L[ℂ] SoninL2 => T psi) hCQ
-      simpa only [ContinuousLinearMap.mul_apply, ContinuousLinearMap.zero_apply] using h]
+      simpa only [mul_apply_eq_comp, _root_.zero_apply] using h]
     simpa only [sub_zero, C] using hpsi
   have hy : y = P y + R y := by
     have h := hCy
     rw [hC] at h
     change (Q - (1 - P - R)) y = 0 at h
-    simp only [ContinuousLinearMap.sub_apply, ContinuousLinearMap.one_apply] at h
+    simp only [_root_.sub_apply, one_apply_eq_self] at h
     rw [hQy] at h
     have h' : y - P y - R y = 0 := by
       simpa only [zero_sub, neg_eq_zero] using h
@@ -420,7 +420,7 @@ theorem centralPhysicalProjection_one_sub_projection_eq_zero_of_correction_eq_ze
     have h := congrArg R hy
     rw [map_add] at h
     have hRRy := congrArg (fun T : SoninL2 →L[ℂ] SoninL2 => T y) hRR
-    simp only [ContinuousLinearMap.mul_apply] at hRRy
+    simp only [mul_apply_eq_comp] at hRRy
     rw [hRRy] at h
     apply add_right_cancel (b := R y)
     simpa only [zero_add] using h.symm
@@ -621,16 +621,16 @@ theorem centralSoninDilationCornerResidual_ne_zero
     intro x
     have hCx : C (D (Q x)) = 0 := by
       have h := congrArg (fun T : SoninL2 →L[ℂ] SoninL2 => T x) hCDQ
-      simpa only [ContinuousLinearMap.mul_apply, ContinuousLinearMap.zero_apply] using h
+      simpa only [mul_apply_eq_comp, _root_.zero_apply] using h
     have hkernel :=
       centralPhysicalProjection_one_sub_projection_eq_zero_of_correction_eq_zero
         a ha (D (Q x)) (by simpa only [C] using hCx)
     have hPQx : P (Q (D (Q x))) = 0 := by
       have h := congrArg (fun T : SoninL2 →L[ℂ] SoninL2 => T (D (Q x))) hPQ
-      simpa only [ContinuousLinearMap.mul_apply, ContinuousLinearMap.zero_apply] using h
+      simpa only [mul_apply_eq_comp, _root_.zero_apply] using h
     change P (D (Q x)) = 0
     change P ((1 - Q) (D (Q x))) = 0 at hkernel
-    simp only [ContinuousLinearMap.sub_apply, ContinuousLinearMap.one_apply,
+    simp only [_root_.sub_apply, one_apply_eq_self,
       map_sub, hPQx, sub_zero] at hkernel
     exact hkernel
   have hzero : ∀ n : ℕ,
@@ -641,8 +641,8 @@ theorem centralSoninDilationCornerResidual_ne_zero
     intro n
     have h := congrArg (fun T : SoninL2 →L[ℂ] SoninL2 =>
       T (evenShellVector a (p * a) (by nlinarith) n)) hPDQ
-    simpa only [P, D, Q, ContinuousLinearMap.mul_apply,
-      ContinuousLinearMap.zero_apply, norm_zero] using congrArg norm h
+    simpa only [P, D, Q, mul_apply_eq_comp,
+      _root_.zero_apply, norm_zero] using congrArg norm h
   have ht := centralPhysicalProjection_dilationSum_correctedShell_tendsto a p ha hp
   have ht0 : Tendsto (fun n : ℕ =>
       ‖(centralPhysicalForbidden a).starProjection

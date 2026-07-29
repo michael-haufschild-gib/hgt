@@ -162,11 +162,11 @@ theorem boundaryBarycenter_withDensity_mutuallyAbsolutelyContinuous
 the label map. -/
 theorem boundaryBarycenter_noAtoms
     [MeasurableSingletonClass T] [MeasurableSingletonClass X]
-    (η : Measure T) [NoAtoms η]
+    (η : Measure T) [NullSingletonClass η]
     (ν : T → Measure X) (π : X → T)
     (hν : Measurable ν) (hπ : Measurable π)
     (hlabel : ∀ t, Measure.map π (ν t) = Measure.dirac t) :
-    NoAtoms (boundaryBarycenter η ν) := by
+    NullSingletonClass (boundaryBarycenter η ν) := by
   constructor
   intro x
   rw [boundaryBarycenter, Measure.bind_apply (measurableSet_singleton x) hν.aemeasurable]

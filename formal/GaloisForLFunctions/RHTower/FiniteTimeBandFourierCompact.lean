@@ -72,7 +72,7 @@ theorem kernelOperator_indicatorConst
     Lp.coeFn_smul (ell f) (indicatorConstLp 2 hs hμs.ne (1 : ℂ))
   ] with x hholder hK hconst hone hsmul
   rw [kernelOperator, kernelOperatorMap_apply]
-  rw [hholder, hK, hconst, ContinuousLinearMap.coe_comp', Function.comp_apply,
+  rw [hholder, hK, hconst, ContinuousLinearMap.coe_comp, Function.comp_apply,
     ContinuousLinearMap.toSpanSingleton_apply, hsmul, Pi.smul_apply, hone]
   by_cases hx : x ∈ s <;> simp [hx, evalBilinear]
 
@@ -318,7 +318,7 @@ theorem lpSetCutoffCLM_coeFn (s : Set X) (hs : MeasurableSet s)
       (LpToLpRestrictCLM X F 𝕜 ν q s f),
     ae_restrict_iff' hs |>.mp (LpToLpRestrictCLM_coeFn (μ := ν) (p := q) 𝕜 s f)
   ] with x hext hres
-  rw [lpSetCutoffCLM, ContinuousLinearMap.coe_comp', Function.comp_apply, hext]
+  rw [lpSetCutoffCLM, ContinuousLinearMap.coe_comp, Function.comp_apply, hext]
   by_cases hx : x ∈ s
   · simp [hx, hres hx]
   · simp [hx]
@@ -355,7 +355,7 @@ theorem restrictToClosedInterval_coeFn (c d : ℝ) (f : RealL2) :
       (LpToLpRestrictCLM_coeFn (μ := (volume : Measure ℝ)) (p := (2 : ENNReal))
         ℂ (Icc c d) f)
   ] with y hcomp hres
-  rw [restrictToClosedInterval, ContinuousLinearMap.coe_comp', Function.comp_apply]
+  rw [restrictToClosedInterval, ContinuousLinearMap.coe_comp, Function.comp_apply]
   change (Lp.compMeasurePreserving ((↑) : ClosedInterval c d → ℝ) hmp g) y = f (y : ℝ)
   rw [hcomp]
   exact hres
@@ -443,7 +443,7 @@ def fullTimeBandFourier (a b c d : ℝ) (hab : a ≤ b) : RealL2 →L[ℂ] RealL
 theorem isCompactOperator_fullTimeBandFourier
     (a b c d : ℝ) (hab : a ≤ b) :
     IsCompactOperator (fullTimeBandFourier a b c d hab) := by
-  simpa only [fullTimeBandFourier, ContinuousLinearMap.coe_comp'] using
+  simpa only [fullTimeBandFourier, ContinuousLinearMap.coe_comp] using
     (isCompactOperator_kernelOperator ((volume : Measure ℝ).restrict (Icc a b))
       (fullFourierFunctionalField a b c d hab)).clm_comp
         (lpExtendByZeroCLM (F := ℂ) (𝕜 := ℂ) (volume : Measure ℝ) 2

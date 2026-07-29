@@ -108,8 +108,13 @@ theorem aeval_genericFormalJets_ne_zero {n : ℕ}
       (fun i => PowerSeries.mapAlgHom f
         (formalJetsOver n genericCoefficientPowerSeries i)) =
         formalJetsOver n G := by
-    simpa only [PowerSeries.mapAlgHom_apply, hgen] using
-      map_formalJetsOver f.toRingHom n genericCoefficientPowerSeries
+    apply _root_.funext
+    intro i
+    rw [PowerSeries.mapAlgHom_apply]
+    have hi := congrFun
+      (map_formalJetsOver f.toRingHom n genericCoefficientPowerSeries) i
+    rw [hgen] at hi
+    exact hi
   rw [hjets] at hmap
   simpa [formalJetsOver, formalJets] using hmap
 
@@ -148,8 +153,13 @@ theorem aeval_formalJetsOver_ne_zero_of_coeff_algebraicIndependent
         (fun i => PowerSeries.mapAlgHom f
           (formalJetsOver n genericCoefficientPowerSeries i)) =
           formalJetsOver n (PowerSeries.mk a) := by
-      simpa only [PowerSeries.mapAlgHom_apply, hgen] using
-        map_formalJetsOver f.toRingHom n genericCoefficientPowerSeries
+      apply _root_.funext
+      intro i
+      rw [PowerSeries.mapAlgHom_apply]
+      have hi := congrFun
+        (map_formalJetsOver f.toRingHom n genericCoefficientPowerSeries) i
+      rw [hgen] at hi
+      exact hi
     rw [hjets]
   have hmap : PowerSeries.mapAlgHom f U = 0 := hnat.trans hzero
   have hc := congrArg (PowerSeries.coeff N) hmap

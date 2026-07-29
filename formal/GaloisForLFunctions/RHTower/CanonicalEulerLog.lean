@@ -86,8 +86,9 @@ theorem canonicalEulerLogZeta_summable {s : ℂ} (hs : 1 < s.re) :
   rcases eq_or_ne n 0 with rfl | hn
   · simp [LSeries.term_zero]
   · rw [LSeries.term_of_ne_zero hn, LSeries.term_of_ne_zero hn, norm_div, norm_div]
-    simpa using mul_le_mul_of_nonneg_right (norm_eulerLogDirichletCoeff_le_one n)
-      (norm_nonneg ((n : ℂ) ^ s)⁻¹)
+    simp only [Pi.one_apply, norm_one, div_eq_mul_inv]
+    exact mul_le_mul_of_nonneg_right (norm_eulerLogDirichletCoeff_le_one n)
+      (inv_nonneg.mpr (norm_nonneg ((n : ℂ) ^ s)))
 
 /-- The natural-number coefficient series equals the canonical prime Euler logarithm. -/
 theorem canonicalEulerLogZeta_eq_primeLog {s : ℂ} (hs : 1 < s.re) :

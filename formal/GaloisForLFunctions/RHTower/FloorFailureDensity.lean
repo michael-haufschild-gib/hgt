@@ -161,7 +161,7 @@ theorem cesaroUpperDensity_secondMoment_le
     rw [hgdef]
     dsimp only
     rw [intervalIntegral.integral_div,
-      intervalIntegral.integral_sub (intervalIntegral.intervalIntegrable_const) hint2,
+      intervalIntegral.integral_sub intervalIntegrable_const hint2,
       intervalIntegral.integral_const, smul_eq_mul, sub_zero]
     field_simp
   have hgconv : Tendsto (fun T : ℝ => T⁻¹ * ∫ τ in (0:ℝ)..T, g τ) atTop

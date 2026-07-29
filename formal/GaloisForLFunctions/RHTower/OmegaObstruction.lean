@@ -956,7 +956,10 @@ private theorem isLatticeClass_of_isPrimeLogIntegral (D : SectionDefect Greal �
     (hD : IsPrimeLogIntegral D.defect) :
     IsLatticeClass primeLogLattice D.obstruction := by
   have hval : IsLatticeValued primeLogLattice (D.cocycle : Greal -> Greal -> ℝ) := by
-    simpa [cocycle, IsPrimeLogIntegral] using hD
+    rw [show (D.cocycle : Greal -> Greal -> ℝ) = D.defect by
+      funext g h
+      rfl]
+    exact hD
   simpa [obstruction, obstructionClass] using isLatticeClass_mk (omega := D.cocycle) hval
 
 /-- A section defect with a finite prime-log formula has a prime-log lattice-valued class. -/
@@ -986,7 +989,11 @@ theorem resection_isLatticeClass_of_primeLogFormula (D : SectionDefect Greal ℝ
   have hR : IsPrimeLogIntegral (D.resection b).defect :=
     (D.resection_isPrimeLogIntegral_iff hstable hb).mpr hD
   have hval : IsLatticeValued primeLogLattice ((D.resection b).cocycle : Greal -> Greal -> ℝ) := by
-    simpa [cocycle, IsPrimeLogIntegral] using hR
+    rw [show ((D.resection b).cocycle : Greal -> Greal -> ℝ) =
+        (D.resection b).defect by
+      funext g h
+      rfl]
+    exact hR
   simpa [obstruction, obstructionClass] using
     isLatticeClass_mk (omega := (D.resection b).cocycle) hval
 

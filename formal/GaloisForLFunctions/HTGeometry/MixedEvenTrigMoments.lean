@@ -67,15 +67,33 @@ lemma mixedEvenTrigQuarterIntegral_succ (m n : ℕ) :
     dsimp only [F, dF]
     have hs : HasDerivAt (fun y => Real.sin y ^ (2 * m + 1))
         ((2 * (m : ℝ) + 1) * Real.cos x * Real.sin x ^ (2 * m)) x := by
-      convert (Real.hasDerivAt_sin x).pow (2 * m + 1) using 1
+      have hp := (Real.hasDerivAt_sin x).pow (2 * m + 1)
+      rw [show (fun y => Real.sin y ^ (2 * m + 1)) =
+          Real.sin ^ (2 * m + 1) by
+        funext y
+        rfl]
+      apply hp.congr_deriv
       push_cast
       ring
     have hc : HasDerivAt (fun y => Real.cos y ^ (2 * n + 1))
         (-(2 * (n : ℝ) + 1) * Real.sin x * Real.cos x ^ (2 * n)) x := by
-      convert (Real.hasDerivAt_cos x).pow (2 * n + 1) using 1
+      have hp := (Real.hasDerivAt_cos x).pow (2 * n + 1)
+      rw [show (fun y => Real.cos y ^ (2 * n + 1)) =
+          Real.cos ^ (2 * n + 1) by
+        funext y
+        rfl]
+      apply hp.congr_deriv
       push_cast
       ring
-    convert hs.mul hc using 1
+    have hmul := hs.mul hc
+    rw [show
+      (fun y =>
+        Real.sin y ^ (2 * m + 1) * Real.cos y ^ (2 * n + 1)) =
+      (fun y => Real.sin y ^ (2 * m + 1)) *
+        (fun y => Real.cos y ^ (2 * n + 1)) by
+      funext y
+      rfl]
+    apply hmul.congr_deriv
     ring
   have hderiv : deriv F = dF := by
     funext x

@@ -80,8 +80,8 @@ theorem deningerArithmeticJetTestToCompact_apply
           (fun _ => by simp)
           (fun _ _ _ => by ring)
       rw [map_add, deningerArithmeticJetTestToCompact_single,
-        ContinuousLinearMap.add_apply,
-        ContinuousLinearMap.smul_apply, ih, hadd]
+        _root_.add_apply,
+        _root_.smul_apply, ih, hadd]
       simp
 
 /-- One product basis vector, written using the flattened jet-coordinate index. -/
@@ -180,7 +180,7 @@ theorem deningerArithmeticJetTestToCompact_surjective :
   intro x
   rw [hEll x]
   simp only [a, map_sum, deningerArithmeticJetTestToCompact_single,
-    ContinuousLinearMap.sum_apply, ContinuousLinearMap.smul_apply]
+    _root_.sum_apply, _root_.smul_apply]
   ring_nf
 
 /--
@@ -360,8 +360,8 @@ theorem deningerArithmeticJetHilbert_pairing
       simp [deningerArithmeticJetTestToHilbertConj]
   | single_add idx c a hidx _hc ih =>
       rw [map_add, deningerArithmeticJetTestToCompact_single,
-        ContinuousLinearMap.add_apply,
-        ContinuousLinearMap.smul_apply,
+        _root_.add_apply,
+        _root_.smul_apply,
         deningerCompactOpenH1Jet_jetHilbertToH1,
         map_add, inner_add_left,
         deningerArithmeticJetTestToHilbertConj_single,

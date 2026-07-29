@@ -107,7 +107,7 @@ theorem integral_expNeg_cut (u : ℝ) :
     intro y _
     have h : HasDerivAt (fun y : ℝ => Real.exp (-y)) (Real.exp (-y) * (-1)) y :=
       (hasDerivAt_neg y).exp
-    simpa using h.neg
+    simpa using! h.neg
   have hint : IntervalIntegrable (fun y : ℝ => Real.exp (-y)) MeasureTheory.volume 0 u := by
     apply Continuous.intervalIntegrable
     fun_prop
@@ -125,8 +125,12 @@ theorem integral_score_cut (u : ℝ) :
       (hasDerivAt_neg y).exp
     have h := (hasDerivAt_id y).mul hexp
     convert h using 1
-    simp only [id_eq]
-    ring
+    · rfl
+    · exact Module.ext' _ _ fun _ _ => rfl
+    · funext x
+      simp only [Pi.mul_apply, id_eq]
+    · simp only [id_eq]
+      ring
   have hint : IntervalIntegrable (fun y : ℝ => (1 - y) * Real.exp (-y))
       MeasureTheory.volume 0 u := by
     apply Continuous.intervalIntegrable
@@ -149,7 +153,11 @@ theorem integral_scoreSq_cut (u : ℝ) :
       exact HasDerivAt.const_add (1 : ℝ) h2
     have h := (hpoly.mul hexp).neg
     convert h using 1
-    ring
+    · rfl
+    · exact Module.ext' _ _ fun _ _ => rfl
+    · funext x
+      simp only [Pi.neg_apply, Pi.mul_apply]
+    · ring
   have hint : IntervalIntegrable (fun y : ℝ => (1 - y) ^ 2 * Real.exp (-y))
       MeasureTheory.volume 0 u := by
     apply Continuous.intervalIntegrable

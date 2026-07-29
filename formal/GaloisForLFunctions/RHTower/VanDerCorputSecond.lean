@@ -53,7 +53,7 @@ theorem deriv_lower_length {a b lam : ℝ} {g' g'' : ℝ → ℝ}
     intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv hint
   rw [← hftc]
   have hcst : IntervalIntegrable (fun _ : ℝ => lam) volume x y :=
-    intervalIntegral.intervalIntegrable_const
+    intervalIntegrable_const
   have hmono := intervalIntegral.integral_mono_on hxy hcst hint
     (fun z hz => hlam z (hsub (by rw [Set.uIcc_of_le hxy]; exact hz)))
   simp only [intervalIntegral.integral_const, smul_eq_mul] at hmono

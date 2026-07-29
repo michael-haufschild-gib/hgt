@@ -71,18 +71,18 @@ theorem re_inner_finiteCyclicObservableTwirlStarKadisonDefect_eq_erasedNormSq
     induction k with
     | zero => simp
     | succ k ih =>
-        rw [pow_succ, ContinuousLinearMap.mul_apply, hψ, ih]
+        rw [pow_succ, mul_apply_eq_comp, hψ, ih]
   have hψleft : U.adjoint ψ = ψ := by
     rw [hUadj, hpowfix]
   have hfirst := inner_finiteCyclicObservableTwirl_of_fixed
     U (X.adjoint * X) N hN hψleft hψ
   have hXnorm :
       RCLike.re (inner 𝕜 ψ ((X.adjoint * X) ψ)) = ‖X ψ‖ ^ 2 := by
-    simpa only [ContinuousLinearMap.mul_apply] using
+    simpa only [mul_apply_eq_comp] using
       (X.apply_norm_sq_eq_inner_adjoint_right ψ).symm
   have hPhinorm :
       RCLike.re (inner 𝕜 ψ ((Phi.adjoint * Phi) ψ)) = ‖Phi ψ‖ ^ 2 := by
-    simpa only [ContinuousLinearMap.mul_apply] using
+    simpa only [mul_apply_eq_comp] using
       (Phi.apply_norm_sq_eq_inner_adjoint_right ψ).symm
   have hPhiApply :
       Phi ψ = finiteCyclicGaugeAverage U N (X ψ) := by
@@ -94,13 +94,13 @@ theorem re_inner_finiteCyclicObservableTwirlStarKadisonDefect_eq_erasedNormSq
       ‖finiteCyclicGaugeAverage U N (X ψ)‖ ^ 2 +
           ‖X ψ - finiteCyclicGaugeAverage U N (X ψ)‖ ^ 2 =
         ‖X ψ‖ ^ 2 := by
-    simpa only [ContinuousLinearMap.sub_apply, ContinuousLinearMap.one_apply] using hsplit
+    simpa only [_root_.sub_apply, one_apply_eq_self] using hsplit
   rw [finiteCyclicObservableTwirlStarKadisonDefect]
   change RCLike.re
       (inner 𝕜 ψ
         ((finiteCyclicObservableTwirl U (X.adjoint * X) N -
           Phi.adjoint * Phi) ψ)) = _
-  simp only [ContinuousLinearMap.sub_apply, ContinuousLinearMap.one_apply,
+  simp only [_root_.sub_apply, one_apply_eq_self,
     inner_sub_right, map_sub]
   rw [hfirst, hXnorm, hPhinorm, hPhiApply]
   linarith [hsplit']
@@ -154,7 +154,7 @@ theorem re_inner_finiteCyclicObservableTwirlStarKadisonDefect_eq_zero_iff_twirl_
     rw [finiteCyclicObservableTwirl_apply_of_fixed U X N hψ]
     have hxP : X ψ = finiteCyclicGaugeAverage U N (X ψ) := by
       apply sub_eq_zero.mp
-      simpa only [ContinuousLinearMap.sub_apply, ContinuousLinearMap.one_apply] using hresidual
+      simpa only [_root_.sub_apply, one_apply_eq_self] using hresidual
     exact hxP.symm
   · intro hfixed
     rw [finiteCyclicObservableTwirl_apply_of_fixed U X N hψ] at hfixed
@@ -190,8 +190,8 @@ theorem re_inner_finiteCyclicObservableTwirlStarKadisonDefect_eq_zero_iff_commut
     U X N hN hadjoint_mul hperiod hψ]
   rw [GaloisForLFunctions.PhysicalState]
   change (U - 1) (X ψ) = 0 ↔ (U * X - X * U) ψ = 0
-  simp only [ContinuousLinearMap.sub_apply, ContinuousLinearMap.mul_apply,
-    ContinuousLinearMap.one_apply, hψ]
+  simp only [_root_.sub_apply, mul_apply_eq_comp,
+    one_apply_eq_self, hψ]
 
 /-- **Arbitrary-operator law of total finite-clock observability variance.**  Refining a power
 subclock to the full clock adds exactly the squared norm of the newly erased resolution layer.

@@ -71,7 +71,7 @@ theorem ascPochhammerCoeff_eq_zero_of_natDegree_lt (P : K[X]) {N i : ℕ}
     rw [Polynomial.mem_degreeLE]
     exact Polynomial.degree_le_natDegree.trans (by exact_mod_cast hdeg)
   have hbmem : P ∈ Submodule.span K ((ascPochhammerBasis K) '' Set.Iic N) := by
-    simpa only [ascPochhammerBasis_apply] using hmem
+    simpa only [ascPochhammerBasis_apply, ascPochhammerSequence] using hmem
   have hsupp : ↑((ascPochhammerBasis K).repr P).support ⊆ Set.Iic N :=
     (Module.Basis.mem_span_image (ascPochhammerBasis K)).mp hbmem
   by_contra hne
@@ -249,13 +249,12 @@ theorem iteratedDeriv_gammaJetRoot_mul_eq_zero
     (Polynomial.contDiff_aeval
       (gammaJetRootPolynomial ℂ s shift mult) (m : WithTop ℕ∞)).contDiffAt
   have hprod := iteratedDeriv_mul (n := m) (x := s + shift i) hpoly hg
-  rw [show iteratedDeriv m
-      (fun z => (gammaJetRootPolynomial ℂ s shift mult).eval z * g z)
-      (s + shift i) = ∑ a ∈ Finset.range (m + 1),
-        m.choose a * iteratedDeriv a
-            (fun z => (gammaJetRootPolynomial ℂ s shift mult).eval z) (s + shift i) *
-          iteratedDeriv (m - a) g (s + shift i) by
-      simpa only [Pi.mul_apply] using hprod]
+  have hfun :
+      (fun z => (gammaJetRootPolynomial ℂ s shift mult).eval z * g z) =
+        (fun z => (gammaJetRootPolynomial ℂ s shift mult).eval z) * g := by
+    funext z
+    rfl
+  rw [hfun, hprod]
   apply Finset.sum_eq_zero
   intro a ha
   have ham : a ≤ m := Nat.le_of_lt_succ (Finset.mem_range.mp ha)

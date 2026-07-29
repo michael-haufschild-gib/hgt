@@ -72,7 +72,9 @@ theorem linearIndependent_finiteFinsuppOperatorRows_iff
     change (Finsupp.lapply (R := P) q.1.2)
       (∑ x, A x • Q x q.1.1) = 0 at hs
     rw [map_sum] at hs
-    simpa only [map_smul, finiteFinsuppOperatorRows] using hs
+    simp only [map_smul] at hs
+    change (∑ x, A x • Q x q.1.1 q.1.2) = 0 at hs
+    exact hs
   · intro h A hrel i
     apply h A
     funext s
@@ -92,7 +94,9 @@ theorem linearIndependent_finiteFinsuppOperatorRows_iff
       simp only [Pi.zero_apply, Finsupp.zero_apply]
       change (Finsupp.lapply (R := P) g) (∑ x, A x • Q x s) = 0
       rw [map_sum]
-      simpa only [map_smul] using hq
+      simp only [map_smul]
+      change (∑ x, A x • Q x s g) = 0
+      exact hq
 
 /-- **Finite-support structural operator law.**  Acting on a differentially independent source
 packet, facetwise finitely supported operator rows produce a differentially independent output

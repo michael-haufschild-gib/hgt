@@ -269,7 +269,7 @@ theorem etaPair_eq (s : ℂ) (hs0 : 0 < s.re) (hs1 : s ≠ 1) :
   set U : Set ℂ := {s : ℂ | 0 < s.re} \ {1} with hUdef
   have hUopen : IsOpen U :=
     (isOpen_lt continuous_const Complex.continuous_re).sdiff isClosed_singleton
-  have hUsub0 : U ⊆ {s : ℂ | 0 < s.re} := Set.diff_subset
+  have hUsub0 : U ⊆ {s : ℂ | 0 < s.re} := Set.sdiff_subset
   have hUsub1 : U ⊆ {(1 : ℂ)}ᶜ := fun s hs => hs.2
   set g : ℂ → ℂ := fun s => (1 - (2 : ℂ) ^ (1 - s)) * riemannZeta s with hgdef
   have hgan : AnalyticOnNhd ℂ g U := by

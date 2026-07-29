@@ -119,23 +119,23 @@ theorem hasDerivAt_centeredUnitCirclePolynomialPhase
   let c : ℂ := Complex.exp (-I * alpha * z)
   have hc : HasDerivAt (fun u : ℂ => Complex.exp (-I * alpha * u))
       ((-I * alpha) * c) z := by
-    convert (Complex.hasDerivAt_exp (-I * alpha * z)).comp z
-      ((hasDerivAt_id z).const_mul (-I * alpha)) using 1
-    all_goals dsimp [c]
-    all_goals ring
+    refine ((Complex.hasDerivAt_exp (-I * alpha * z)).comp z
+      ((hasDerivAt_id z).const_mul (-I * alpha))).congr_deriv ?_
+    dsimp only [c]
+    ring
   have hw : HasDerivAt (fun u : ℂ => Complex.exp (I * (L : ℂ) * u))
       ((I * (L : ℂ)) * w) z := by
-    convert (Complex.hasDerivAt_exp (I * (L : ℂ) * z)).comp z
-      ((hasDerivAt_id z).const_mul (I * (L : ℂ))) using 1
-    all_goals dsimp [w]
-    all_goals ring
+    refine ((Complex.hasDerivAt_exp (I * (L : ℂ) * z)).comp z
+      ((hasDerivAt_id z).const_mul (I * (L : ℂ)))).congr_deriv ?_
+    dsimp only [w]
+    ring
   have hP : HasDerivAt (fun u : ℂ => P.eval (Complex.exp (I * (L : ℂ) * u)))
       (((I * (L : ℂ)) * w) * P.derivative.eval w) z := by
-    convert (P.hasDerivAt w).comp z hw using 1
-    all_goals ring
+    refine ((P.hasDerivAt w).comp z hw).congr_deriv ?_
+    ring
   unfold centeredUnitCirclePolynomialPhase
-  convert hc.mul hP using 1
-  dsimp [centeredUnitCirclePolynomialPhaseDerivative, alpha, w, c]
+  refine (hc.mul hP).congr_deriv ?_
+  dsimp only [centeredUnitCirclePolynomialPhaseDerivative, alpha, w, c]
   push_cast
   ring
 
@@ -311,13 +311,20 @@ theorem hasDerivAt_centeredGeometricExponentialPacket
     (fun j _hj => by
       let a : ℂ :=
         I * (((((j : ℕ) : ℝ) - ((N - 1 : ℕ) : ℝ) / 2) * L : ℝ) : ℂ)
-      convert (Complex.hasDerivAt_exp (a * z)).comp z
-        ((hasDerivAt_id z).const_mul a) using 1
-      all_goals dsimp [a]
-      all_goals ring)
-  convert hsum using 1
-  funext u
-  simp only [Finset.sum_apply]
+      refine ((Complex.hasDerivAt_exp (a * z)).comp z
+        ((hasDerivAt_id z).const_mul a)).congr_deriv ?_
+      dsimp only [a]
+      ring)
+  rw [show
+    (∑ j ∈ Finset.range N, fun u : ℂ =>
+      Complex.exp
+        (I * (((((j : ℕ) : ℝ) - ((N - 1 : ℕ) : ℝ) / 2) * L : ℝ) : ℂ) * u)) =
+      fun u : ℂ => ∑ j ∈ Finset.range N,
+        Complex.exp
+          (I * (((((j : ℕ) : ℝ) - ((N - 1 : ℕ) : ℝ) / 2) * L : ℝ) : ℂ) * u) by
+    funext u
+    simp only [Finset.sum_apply]] at hsum
+  exact hsum
 
 theorem centeredUnitCirclePolynomialPhaseDerivative_eq_centeredGeometricExponentialPacketDerivative
     (N : ℕ) (hN : 0 < N) (L : ℝ) (z : ℂ) :
@@ -538,20 +545,20 @@ theorem hasDerivAt_reverseCriticalUnitCirclePolynomialPhase
   let w : ℂ := Complex.exp (I * (L : ℂ) * (-z + I / 2))
   have hinner : HasDerivAt (fun u : ℂ => I * (L : ℂ) * (-u + I / 2))
       (-I * (L : ℂ)) z := by
-    convert ((hasDerivAt_id z).neg.add_const (I / 2)).const_mul
-      (I * (L : ℂ)) using 1
+    refine (((hasDerivAt_id z).neg.add_const (I / 2)).const_mul
+      (I * (L : ℂ))).congr_deriv ?_
     ring
   have hw : HasDerivAt (fun u : ℂ =>
       Complex.exp (I * (L : ℂ) * (-u + I / 2)))
       ((-I * (L : ℂ)) * w) z := by
-    convert (Complex.hasDerivAt_exp
-      (I * (L : ℂ) * (-z + I / 2))).comp z hinner using 1
-    all_goals dsimp [w]
-    all_goals ring
+    refine ((Complex.hasDerivAt_exp
+      (I * (L : ℂ) * (-z + I / 2))).comp z hinner).congr_deriv ?_
+    dsimp only [w]
+    ring
   unfold reverseCriticalUnitCirclePolynomialPhase
-  convert (P.hasDerivAt w).comp z hw using 1
-  all_goals dsimp [reverseCriticalUnitCirclePolynomialPhaseDerivative, w]
-  all_goals ring
+  refine ((P.hasDerivAt w).comp z hw).congr_deriv ?_
+  dsimp only [reverseCriticalUnitCirclePolynomialPhaseDerivative, w]
+  ring
 
 /-- On every fixed left-strip fibre, the reverse critical phase has an upper current budget
 linear in the degree. -/

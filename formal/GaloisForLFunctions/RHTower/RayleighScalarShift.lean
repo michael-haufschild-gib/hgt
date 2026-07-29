@@ -23,7 +23,7 @@ theorem rayleighQuotient_add_real_smul_id
       T.rayleighQuotient x + r := by
   rw [ContinuousLinearMap.rayleighQuotient_add]
   simp only [ContinuousLinearMap.rayleighQuotient,
-    ContinuousLinearMap.reApplyInnerSelf_apply, ContinuousLinearMap.smul_apply,
+    ContinuousLinearMap.reApplyInnerSelf_apply, _root_.smul_apply,
     ContinuousLinearMap.id_apply]
   rw [inner_smul_left, RCLike.conj_ofReal, RCLike.re_ofReal_mul,
     inner_self_eq_norm_sq]

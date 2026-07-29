@@ -32,7 +32,7 @@ noncomputable def lead (f : DirFormal) : ℂ[X] := f (ord f)
 
 theorem exists_ne_zero {f : DirFormal} (hf : f ≠ 0) : ∃ n, f n ≠ 0 := by
   by_contra h
-  push_neg at h
+  push Not at h
   exact hf (ArithmeticFunction.ext fun n => by simp [h n])
 
 theorem lead_ne_zero' {f : DirFormal} (hf : f ≠ 0) : lead f ≠ 0 :=
@@ -65,7 +65,7 @@ theorem mul_coeff_eq_zero_of_lt {f g : DirFormal} (hf : f ≠ 0) (hg : g ≠ 0)
   · have hge : ord f ≤ x.1 := by omega
     have hb : x.2 < ord g := by
       by_contra hb
-      push_neg at hb
+      push Not at hb
       have : ord f * ord g ≤ x.1 * x.2 := Nat.mul_le_mul hge hb
       omega
     rw [coeff_eq_zero_of_lt hb, mul_zero]
@@ -88,7 +88,7 @@ theorem mul_coeff_at {f g : DirFormal} (hf : f ≠ 0) (hg : g ≠ 0) :
     · have hge : ord f ≤ x.1 := by omega
       have hb : x.2 < ord g := by
         by_contra hb'
-        push_neg at hb'
+        push Not at hb'
         have hx2pos : 0 < x.2 := by
           rcases Nat.eq_zero_or_pos x.2 with h0 | hpos
           · exact absurd (by rw [← hxn, h0, mul_zero]) hn0
@@ -119,7 +119,7 @@ theorem ord_mul' {f g : DirFormal} (hf : f ≠ 0) (hg : g ≠ 0) :
     simp only [Set.mem_setOf_eq, this]
     exact mul_ne_zero (lead_ne_zero' hf) (lead_ne_zero' hg)
   · by_contra hlt
-    push_neg at hlt
+    push Not at hlt
     have := lead_ne_zero' (mul_ne_zero'' hf hg)
     rw [lead] at this
     exact this (mul_coeff_eq_zero_of_lt hf hg hlt)
@@ -283,7 +283,7 @@ noncomputable def dirichletLead : DirichletLead DirFormal where
   le_ord_sub := by
     intro f g hf hg hord hsub
     by_contra hlt
-    push_neg at hlt
+    push Not at hlt
     have h1 : f (ord (f - g)) = 0 := coeff_eq_zero_of_lt hlt
     have h2 : g (ord (f - g)) = 0 := coeff_eq_zero_of_lt (by rw [← hord]; exact hlt)
     exact lead_ne_zero' hsub (by rw [lead, sub_apply', h1, h2, sub_zero])

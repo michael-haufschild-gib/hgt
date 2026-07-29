@@ -79,7 +79,8 @@ theorem hasDerivAt_scalarWeylCharacter (q : ℝ) (z : ℂ) :
       HasDerivAt (fun w : ℂ => -Complex.I * (q : ℂ) * w)
         (-Complex.I * (q : ℂ)) z := by
     simpa using (hasDerivAt_id z).const_mul (-Complex.I * (q : ℂ))
-  convert hlinear.cexp using 1 <;> simp only [scalarWeylCharacter] <;> ring
+  rw [scalarWeylCharacter]
+  exact hlinear.cexp.congr_deriv (by ring)
 
 /-- Pointwise derivative of the scalar Weyl character. -/
 theorem deriv_scalarWeylCharacter (q : ℝ) (z : ℂ) :

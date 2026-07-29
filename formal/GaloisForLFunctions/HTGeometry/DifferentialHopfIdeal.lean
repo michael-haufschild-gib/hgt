@@ -87,7 +87,7 @@ theorem scale_two_sub_top_totalDegree_lt
     exact lt_of_le_of_ne hsle fun hEq => by
       apply hsQ
       rw [hcoeffQ, hEq, sub_self, mul_zero]
-  obtain ⟨s, hs⟩ := (Finsupp.support_nonempty_iff.mpr hP0)
+  obtain ⟨s, hs⟩ := MvPolynomial.support_nonempty.mpr hP0
   have hDpos : 0 < P.totalDegree := lt_of_le_of_lt (Nat.zero_le _) (hmono s hs)
   rw [MvPolynomial.totalDegree, Finset.sup_lt_iff hDpos]
   exact hmono

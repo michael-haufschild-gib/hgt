@@ -200,7 +200,7 @@ theorem primeOrientationJetCoefficient_tailIndependent
     have hfibreTail :
         ({p | primeOrientationPattern ε p = b} \
           {p | ∑ jk, c jk * primeOrientationJetCoefficient ε clock m jk p ≠ 0}).Infinite :=
-      hb.diff hsupp
+      hb.sdiff hsupp
     have himage :
         (clock '' ({p | primeOrientationPattern ε p = b} \
           {p | ∑ jk, c jk * primeOrientationJetCoefficient ε clock m jk p ≠ 0})).Infinite :=
@@ -365,8 +365,8 @@ theorem primeOrientationTailPairDependent_iff
     exfalso
     have hneInf : {p | ε p ≠ δ p}.Infinite := hne
     have heqInf : {p | ε p = δ p}.Infinite := heq
-    obtain ⟨p, hpne, hpout⟩ := (hneInf.diff hsupport).nonempty
-    obtain ⟨q, hqeq, hqout⟩ := (heqInf.diff hsupport).nonempty
+    obtain ⟨p, hpne, hpout⟩ := (hneInf.sdiff hsupport).nonempty
+    obtain ⟨q, hqeq, hqout⟩ := (heqInf.sdiff hsupport).nonempty
     have hpzero :
         a * primeDirichletSign (ε p) + b * primeDirichletSign (δ p) = 0 := by
       simpa only [Set.mem_setOf_eq, not_not] using hpout

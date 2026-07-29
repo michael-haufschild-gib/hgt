@@ -129,7 +129,7 @@ theorem exists_entire_extension_of_rawJetFactorialFockPartialEnergy_le
   · intro z _
     have hinner : AnalyticAt ℂ (fun w : ℂ => w - a) z :=
       analyticAt_id.sub analyticAt_const
-    exact AnalyticAt.comp' (f := fun w : ℂ => w - a) (x := z)
+    exact AnalyticAt.fun_comp (f := fun w : ℂ => w - a) (x := z)
       (hpAnalytic (z - a) (Set.mem_univ _)) hinner
   · filter_upwards [hpAt.eventually_hasSum_sub] with z hz
     simpa only [FormalMultilinearSeries.sum] using hz.tsum_eq.symm

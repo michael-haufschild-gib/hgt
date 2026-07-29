@@ -65,7 +65,7 @@ theorem spectralMomentumCLM_pow_apply_pointwise
   induction n generalizing f with
   | zero => simp
   | succ n ih =>
-      rw [pow_succ, ContinuousLinearMap.mul_apply, ih, spectralMomentumCLM_apply]
+      rw [pow_succ, mul_apply_eq_comp, ih, spectralMomentumCLM_apply]
       ring
 
 @[simp] theorem polynomialSpectralMomentumCLM_apply
@@ -74,7 +74,7 @@ theorem spectralMomentumCLM_pow_apply_pointwise
       ((P.eval (2 * Real.pi * t) : ℝ) : ℂ) * f t := by
   rw [polynomialSpectralMomentumCLM, Polynomial.eval₂_eq_sum, Polynomial.eval_eq_sum]
   simp only [Polynomial.sum]
-  rw [ContinuousLinearMap.sum_apply]
+  rw [_root_.sum_apply]
   have heval :
       (∑ d ∈ P.support,
         ((algebraMap ℝ (SchwartzMap ℝ ℂ →L[ℂ] SchwartzMap ℝ ℂ)) (P.coeff d) *
@@ -92,8 +92,8 @@ theorem spectralMomentumCLM_pow_apply_pointwise
   intro n _hn
   change ((algebraMap ℝ (SchwartzMap ℝ ℂ →L[ℂ] SchwartzMap ℝ ℂ)) (P.coeff n)
       (((⇑spectralMomentumCLM)^[n]) f)) t = _
-  simp only [Algebra.algebraMap_eq_smul_one, ContinuousLinearMap.smul_apply,
-    ContinuousLinearMap.one_apply]
+  simp only [Algebra.algebraMap_eq_smul_one, _root_.smul_apply,
+    one_apply_eq_self]
   change (P.coeff n : ℂ) * (((⇑spectralMomentumCLM)^[n]) f) t = _
   rw [show (((⇑spectralMomentumCLM)^[n]) f) t =
       spectralMomentumMultiplier t ^ n * f t by
@@ -137,7 +137,7 @@ theorem ContinuousSchwartzSesquilinearForm.fourierPullback_polynomialSpectralMom
           simpa using Q.fourierPullback.apply_smul_right 0 f 0
         exact hzL.trans hzR.symm
     | @insert n s hn ih =>
-        simp only [Finset.sum_insert hn, ContinuousLinearMap.add_apply,
+        simp only [Finset.sum_insert hn, _root_.add_apply,
           Q.fourierPullback.apply_add_left, Q.fourierPullback.apply_add_right]
         rw [hterm n (P.coeff n), ih]
   exact hs P.support
@@ -157,18 +157,41 @@ theorem polynomialMomentum_hasTemperateGrowth (P : ℝ[X]) :
   have hx : Function.HasTemperateGrowth (fun t : ℝ => 2 * Real.pi * t) := by
     fun_prop
   induction P using Polynomial.induction_on' with
-  | add P Q hP hQ => simpa using hP.add hQ
+  | add P Q hP hQ =>
+      have h := hP.add hQ
+      have hfun :
+          ((fun t : ℝ => P.eval (2 * Real.pi * t)) +
+            (fun t : ℝ => Q.eval (2 * Real.pi * t))) =
+          (fun t : ℝ => (P + Q).eval (2 * Real.pi * t)) := by
+        funext t
+        simp
+      rw [hfun] at h
+      exact h
   | monomial n a =>
-      simpa [Polynomial.eval_monomial] using
-        (Function.HasTemperateGrowth.const a).mul (hx.pow n)
+      have h := (Function.HasTemperateGrowth.const a).mul (hx.pow n)
+      have hfun :
+          (fun _t : ℝ => a) * (fun t : ℝ => 2 * Real.pi * t) ^ n =
+          (fun t : ℝ => (Polynomial.monomial n a).eval (2 * Real.pi * t)) := by
+        funext t
+        simp [Polynomial.eval_monomial]
+      rw [hfun] at h
+      exact h
 
 theorem positivePolynomialSpectralSeparatorMultiplier_hasTemperateGrowth (P : ℝ[X]) :
     Function.HasTemperateGrowth (positivePolynomialSpectralSeparatorMultiplier P) := by
   have hP := polynomialMomentum_hasTemperateGrowth P
   have hone : Function.HasTemperateGrowth (fun _t : ℝ => (1 : ℝ)) := by fun_prop
   have hhalf : Function.HasTemperateGrowth (fun _t : ℝ => ((2 : ℝ)⁻¹)) := by fun_prop
-  simpa [positivePolynomialSpectralSeparatorMultiplier, div_eq_mul_inv] using
-    (hone.add (hP.pow 2)).mul hhalf
+  have h := (hone.add (hP.pow 2)).mul hhalf
+  have hfun :
+      (((fun _t : ℝ => (1 : ℝ)) +
+        (fun t : ℝ => P.eval (2 * Real.pi * t)) ^ 2) *
+        (fun _t : ℝ => ((2 : ℝ)⁻¹))) =
+      positivePolynomialSpectralSeparatorMultiplier P := by
+    funext t
+    simp [positivePolynomialSpectralSeparatorMultiplier, div_eq_mul_inv]
+  rw [hfun] at h
+  exact h
 
 theorem inversePositivePolynomialSpectralSeparatorMultiplier_hasTemperateGrowth (P : ℝ[X]) :
     Function.HasTemperateGrowth (inversePositivePolynomialSpectralSeparatorMultiplier P) := by
@@ -176,8 +199,16 @@ theorem inversePositivePolynomialSpectralSeparatorMultiplier_hasTemperateGrowth 
   have hbase := (Function.hasTemperateGrowth_one_add_norm_sq_rpow ℝ (-1)).comp hP
   have hconst : Function.HasTemperateGrowth (fun _t : ℝ => (2 : ℝ)) := by fun_prop
   have hmul := hconst.mul hbase
-  simpa [inversePositivePolynomialSpectralSeparatorMultiplier, Function.comp_apply,
-    Real.norm_eq_abs, sq_abs, Real.rpow_neg_one, div_eq_mul_inv] using hmul
+  have hfun :
+      ((fun _t : ℝ => (2 : ℝ)) *
+        ((fun x : ℝ => (1 + ‖x‖ ^ 2) ^ (-1 : ℝ)) ∘
+          (fun t : ℝ => P.eval (2 * Real.pi * t)))) =
+      inversePositivePolynomialSpectralSeparatorMultiplier P := by
+    funext t
+    simp [inversePositivePolynomialSpectralSeparatorMultiplier, Function.comp_apply,
+      Real.norm_eq_abs, sq_abs, Real.rpow_neg_one, div_eq_mul_inv]
+  rw [hfun] at hmul
+  exact hmul
 
 /-- Continuous Schwartz multiplier by the positive polynomial separator. -/
 def positivePolynomialSpectralSeparatorCLM (P : ℝ[X]) :
@@ -246,7 +277,7 @@ theorem smulLeftCLM_ofReal_pow_apply
   induction n generalizing f with
   | zero => simp
   | succ n ih =>
-      rw [pow_succ, ContinuousLinearMap.mul_apply, ih,
+      rw [pow_succ, mul_apply_eq_comp, ih,
         SchwartzMap.smulLeftCLM_apply_apply]
       · ring
       · exact Complex.ofRealCLM.hasTemperateGrowth.comp hm

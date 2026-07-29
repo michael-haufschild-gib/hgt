@@ -262,7 +262,15 @@ theorem tailRelation_iff_linearForm_vanishes_tailCluster
     have hbmem : b ∈ badPatterns := by
       apply Finset.mem_filter.mpr
       refine ⟨Finset.mem_univ b, ?_⟩
-      simpa only [b, orientationLinearForm] using hn
+      have hbfun : b = fun i : I => θ n i := by
+        funext i
+        rfl
+      have hform :
+          orientationLinearForm I c (θ n) =
+            ∑ i, c i * primeDirichletSign (b i) := by
+        rw [orientationLinearForm, hbfun]
+      intro hzero
+      exact hn (hform.trans hzero)
     refine Set.mem_iUnion₂.mpr ⟨b, ?_, ?_⟩
     · exact hbmem
     · rfl

@@ -47,7 +47,7 @@ theorem carrier_hasDerivAt (c : ℕ → ℝ) (J : ℕ) (z : ℝ) :
       HasDerivAt (fun z => c j * z ^ j) (c j * (j : ℝ) * z ^ (j - 1)) z := by
     intro j _
     have h := (hasDerivAt_pow j z).const_mul (c j)
-    convert h using 1; ring
+    simpa only [Pi.mul_apply] using! h.congr_deriv (by ring)
   have hsum := HasDerivAt.fun_sum hterm
   exact hsum
 
@@ -60,8 +60,7 @@ theorem carrier_deriv_hasDerivAt (c : ℕ → ℝ) (J : ℕ) (z : ℝ) :
   have h := (hasDerivAt_pow (j - 1) z).const_mul (c j * (j : ℝ))
   have hexp : j - 1 - 1 = j - 2 := by omega
   rw [hexp] at h
-  convert h using 1
-  ring
+  simpa only [Pi.mul_apply] using! h.congr_deriv (by ring)
 
 /-- The recentered monomial `g(w) = aₘ(w−x*)ᵐ` has `g′(z) = aₘ·m·(z−x*)ᵐ⁻¹` — the clean
 carrier for the cluster splitting near an `m`-fold zero at `x*`. -/
@@ -70,8 +69,7 @@ theorem monomial_hasDerivAt (am xs : ℝ) (m : ℕ) (z : ℝ) :
   have hbase : HasDerivAt (fun w : ℝ => w - xs) 1 z := by
     simpa using (hasDerivAt_id z).sub_const xs
   have h := (hbase.pow m).const_mul am
-  convert h using 1
-  ring
+  simpa only [Pi.mul_apply] using! h.congr_deriv (by ring)
 
 /-- Its second derivative `g″(z) = aₘ·m·(m−1)·(z−x*)ᵐ⁻²`. -/
 theorem monomial_hasDerivAt2 (am xs : ℝ) (m : ℕ) (z : ℝ) :
@@ -82,8 +80,7 @@ theorem monomial_hasDerivAt2 (am xs : ℝ) (m : ℕ) (z : ℝ) :
   have h := (hbase.pow (m - 1)).const_mul (am * (m : ℝ))
   have hexp : m - 1 - 1 = m - 2 := by omega
   rw [hexp] at h
-  convert h using 1
-  ring
+  simpa only [Pi.mul_apply] using! h.congr_deriv (by ring)
 
 /-- **Cluster evaluation (the Lemma R crux, `m = k+2`).** The recentered-monomial heat form
 `g − z²g″/(2d)` at `z = x*+σu`, with `g = aₘ(z−x*)ᵐ` (so `g″` from `monomial_hasDerivAt2`),

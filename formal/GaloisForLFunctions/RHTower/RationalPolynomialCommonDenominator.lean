@@ -31,11 +31,15 @@ theorem exists_common_integer_polynomial_scale {ι : Type*} [Fintype ι] (q : ι
       (Int.castRingHom ℚ) = (D : ℚ) • q i
   have hbmap' : (IsLocalization.integerNormalization (nonZeroDivisors ℤ) (q i)).map
       (Int.castRingHom ℚ) = (b i : ℚ) • q i := by
-    simpa only [algebraMap_int_eq] using hbmap i
+    rw [← algebraMap_int_eq]
+    calc
+      (IsLocalization.integerNormalization (nonZeroDivisors ℤ) (q i)).map
+          (algebraMap ℤ ℚ) = b i • q i := hbmap i
+      _ = (b i : ℚ) • q i :=
+        (Int.cast_smul_eq_zsmul ℚ (b i) (q i)).symm
   rw [Polynomial.map_mul, Polynomial.map_C, show A₀ i =
       IsLocalization.integerNormalization (nonZeroDivisors ℤ) (q i) from rfl, hbmap',
     Polynomial.smul_eq_C_mul, Polynomial.smul_eq_C_mul]
-  push_cast at hprod
   rw [← hprod]
   simp only [Int.coe_castRingHom]
   push_cast

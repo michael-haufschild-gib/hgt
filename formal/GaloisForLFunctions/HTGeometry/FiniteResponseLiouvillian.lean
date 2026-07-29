@@ -99,7 +99,7 @@ theorem pow_transitionGapLiouvillian_thermalTransitionVector
   induction n with
   | zero => simp
   | succ n ih =>
-      rw [pow_succ', ContinuousLinearMap.mul_apply, ih,
+      rw [pow_succ', mul_apply_eq_comp, ih,
         transitionGapLiouvillian_thermalLiouvillianVector]
 
 /-- Exact inner-product value between two finite Liouvillian orbit vectors. -/

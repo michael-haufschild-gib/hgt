@@ -233,7 +233,7 @@ theorem closedSupportInverse_metric_apply
     change T (kernelSupportProjection T x) = T x
     have h := congrArg (fun A : E →L[ℝ] E => A x)
       (metric_mul_kernelSupportProjection T)
-    simpa [ContinuousLinearMap.mul_apply] using h
+    simpa [mul_apply_eq_comp] using h
   exact LinearPMap.inverse_apply_eq (supportRestriction_toFun_ker_eq_bot T) hxy
 
 theorem closedSupportInverse_formalSymmetric
@@ -311,7 +311,7 @@ theorem metric_graphSemimetricSymmetrization_apply
       T (D (kernelSupportProjection T x)) := by
     have h := congrArg (fun A : E →L[ℝ] E => A (D (kernelSupportProjection T x)))
       (metric_mul_kernelSupportProjection T)
-    simpa [ContinuousLinearMap.mul_apply] using h
+    simpa [mul_apply_eq_comp] using h
   have hG : T (closedSupportInverse T
       ⟨star D (T x), by
         rw [closedSupportInverse_domain]
@@ -360,7 +360,7 @@ theorem graphSemimetricSymmetrization_metricSymmetric
   have hPTx : kernelSupportProjection T (T x) = T x := by
     have hmul := congrArg (fun A : E →L[ℝ] E => A (x : E))
       (kernelSupportProjection_mul_metric T hT)
-    simpa [ContinuousLinearMap.mul_apply] using hmul
+    simpa [mul_apply_eq_comp] using hmul
   have hR1 : inner ℝ (T x)
       (kernelSupportProjection T (D (kernelSupportProjection T y))) =
       inner ℝ (T x) (D (kernelSupportProjection T y)) := by

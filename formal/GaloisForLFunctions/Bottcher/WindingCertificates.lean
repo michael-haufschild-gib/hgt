@@ -519,7 +519,12 @@ theorem windInt_eq_of_leash (ℓ g : C1Loop) (a : ℂ)
                   exact hs.2
                 have h6 : ‖(s:ℂ) * (g.γ' θ - ℓ.γ' θ)‖ ≤ B₃ := by
                   rw [norm_mul]
-                  nlinarith [norm_nonneg (g.γ' θ - ℓ.γ' θ), hB₃ θ hθI]
+                  calc
+                    ‖(s:ℂ)‖ * ‖g.γ' θ - ℓ.γ' θ‖
+                        ≤ 1 * ‖g.γ' θ - ℓ.γ' θ‖ :=
+                      mul_le_mul_of_nonneg_right h5 (norm_nonneg _)
+                    _ = ‖g.γ' θ - ℓ.γ' θ‖ := one_mul _
+                    _ ≤ B₃ := hB₃ θ hθI
                 have h7 := hB₂ θ hθI
                 linarith
         rw [h1]

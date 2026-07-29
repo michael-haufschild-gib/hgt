@@ -51,10 +51,11 @@ theorem hasDerivAt_phaseHalvedAmplitude {w z : ℝ → ℂ} {w' z' : ℂ} {x : �
       (((starRingEnd ℂ) w' * z x + (starRingEnd ℂ) (w x) * z').re) x := by
   have hwc : HasDerivAt (fun y => (starRingEnd ℂ) (w y))
       ((starRingEnd ℂ) w') x := by
-    simpa using Complex.conjCLE.hasFDerivAt.comp_hasDerivAt x hw
+    simpa only [Function.comp_def, Complex.conjCLE_apply] using!
+      Complex.conjCLE.hasFDerivAt.comp_hasDerivAt x hw
   have hprod := hwc.mul hz
   unfold phaseHalvedAmplitude
-  simpa only [Function.comp_apply, Pi.mul_apply] using
+  simpa only [Function.comp_def, Pi.mul_apply, Complex.reCLM_apply] using!
     Complex.reCLM.hasFDerivAt.comp_hasDerivAt x hprod
 
 theorem hasDerivAt_log_norm_complex {f : ℝ → ℂ} {f' : ℂ} {x : ℝ}
@@ -72,9 +73,9 @@ theorem hasDerivAt_log_norm_complex {f : ℝ → ℂ} {f' : ℂ} {x : ℝ}
       funext y
       rw [Complex.normSq_apply]
     rw [heq]
-    convert h using 1
-    dsimp [B]
-    ring
+    exact h.congr_deriv (by
+      dsimp [B]
+      ring)
   have hnsq0 : Complex.normSq (f x) ≠ 0 := fun h => h0 (Complex.normSq_eq_zero.mp h)
   have hlog := (Real.hasDerivAt_log hnsq0).comp x hnsq
   have hhalf := hlog.const_mul (1 / 2 : ℝ)
@@ -85,10 +86,10 @@ theorem hasDerivAt_log_norm_complex {f : ℝ → ℂ} {f' : ℂ} {x : ℝ}
     rw [Complex.normSq_eq_norm_sq, Real.log_pow]
     ring
   rw [heq] at hhalf
-  convert hhalf using 1
-  rw [Complex.div_re]
-  dsimp [B]
-  field_simp [Complex.normSq_apply]
+  exact hhalf.congr_deriv (by
+    rw [Complex.div_re]
+    dsimp [B]
+    field_simp [Complex.normSq_apply])
 
 private theorem hasDerivAt_norm_complex {f : ℝ → ℂ} {f' : ℂ} {x : ℝ}
     (hf : HasDerivAt f f' x) (h0 : f x ≠ 0) :
@@ -101,8 +102,8 @@ private theorem hasDerivAt_norm_complex {f : ℝ → ℂ} {f' : ℂ} {x : ℝ}
     filter_upwards [hne] with y hy
     exact Real.exp_log (norm_pos_iff.mpr hy)
   have hresult := hcomp.congr_of_eventuallyEq heq.symm
-  convert hresult using 1
-  rw [Real.exp_log (norm_pos_iff.mpr h0)]
+  exact hresult.congr_deriv (by
+    rw [Real.exp_log (norm_pos_iff.mpr h0)])
 
 /-- **Normalized conjugate-phase velocity.**  For every nonvanishing differentiable complex
 path, the derivative of `conj f / ‖f‖` is the phase itself times the purely imaginary logarithmic
@@ -114,15 +115,23 @@ theorem hasDerivAt_normalizedConjPhase {f : ℝ → ℂ} {f' : ℂ} {x : ℝ}
         ((starRingEnd ℂ) (f x) / ‖f x‖)) x := by
   have hc : HasDerivAt (fun y => (starRingEnd ℂ) (f y))
       ((starRingEnd ℂ) f') x := by
-    simpa using Complex.conjCLE.hasFDerivAt.comp_hasDerivAt x hf
+    simpa only [Function.comp_def, Complex.conjCLE_apply] using!
+      Complex.conjCLE.hasFDerivAt.comp_hasDerivAt x hf
   have hn := hasDerivAt_norm_complex hf h0
   have hnC : HasDerivAt (fun y => (‖f y‖ : ℂ))
       ((‖f x‖ * (f' / f x).re : ℝ) : ℂ) x := by
-    simpa using Complex.ofRealCLM.hasFDerivAt.comp_hasDerivAt x hn
+    simpa only [Function.comp_def, Complex.ofRealCLM_apply] using!
+      Complex.ofRealCLM.hasFDerivAt.comp_hasDerivAt x hn
   have hn0 : (‖f x‖ : ℂ) ≠ 0 := by
     exact_mod_cast (norm_ne_zero_iff.mpr h0)
   have hdiv := hc.div hnC hn0
-  convert hdiv using 1
+  have hdiv' : HasDerivAt (fun y => (starRingEnd ℂ) (f y) / ‖f y‖)
+      (((starRingEnd ℂ) f' * (‖f x‖ : ℂ) -
+        (starRingEnd ℂ) (f x) * ((‖f x‖ * (f' / f x).re : ℝ) : ℂ)) /
+        (‖f x‖ : ℂ) ^ 2) x := by
+    simpa only [Pi.div_apply] using! hdiv
+  apply hdiv'.congr_deriv
+  symm
   let a : ℂ := f' / f x
   have hf' : f' = a * f x := by
     dsimp [a]
@@ -154,7 +163,8 @@ theorem differentiable_phaseHalvedAmplitude
     Differentiable ℝ (fun x => phaseHalvedAmplitude (w x) (z x)) := by
   intro x
   have hwc : DifferentiableAt ℝ (fun y => (starRingEnd ℂ) (w y)) x := by
-    simpa using Complex.conjCLE.differentiableAt.comp x (hw x)
+    simpa only [Function.comp_def, Complex.conjCLE_apply] using!
+      Complex.conjCLE.differentiableAt.comp x (hw x)
   exact Complex.reCLM.differentiableAt.comp x (hwc.mul (hz x))
 
 /-- **Unitary phase-halving law.** A value obeys `w² * conj z = z` exactly when rotation by

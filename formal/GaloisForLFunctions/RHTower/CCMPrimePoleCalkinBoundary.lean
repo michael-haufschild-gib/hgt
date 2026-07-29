@@ -182,8 +182,8 @@ theorem essentialNorm_ccmPrimePoleProjectionAverage
         ((d : ℂ)⁻¹) • ∑ i,
           ((ccmPrimePoleClosedSubspace (L i) (hL i)).starProjection (f m) - f m) := by
     have hdC : (d : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr hd.ne'
-    simp only [ccmPrimePoleProjectionAverage, ContinuousLinearMap.smul_apply,
-      ContinuousLinearMap.sum_apply, Finset.sum_sub_distrib, Finset.sum_const,
+    simp only [ccmPrimePoleProjectionAverage, _root_.smul_apply,
+      _root_.sum_apply, Finset.sum_sub_distrib, Finset.sum_const,
       smul_sub]
     rw [Finset.card_univ, Fintype.card_fin]
     rw [← Nat.cast_smul_eq_nsmul ℂ d (f m)]
@@ -308,8 +308,8 @@ theorem essentialNorm_ccmPrimePoleProjectionPositiveCombination
       ccmPrimePoleProjectionPositiveCombination L hL a (f m) - (c : ℂ) • f m =
         ∑ i, (a i : ℂ) •
           ((ccmPrimePoleClosedSubspace (L i) (hL i)).starProjection (f m) - f m) := by
-    simp only [ccmPrimePoleProjectionPositiveCombination, ContinuousLinearMap.sum_apply,
-      ContinuousLinearMap.smul_apply, smul_sub, Finset.sum_sub_distrib]
+    simp only [ccmPrimePoleProjectionPositiveCombination, _root_.sum_apply,
+      _root_.smul_apply, smul_sub, Finset.sum_sub_distrib]
     have hcCsum : (c : ℂ) = ∑ i, (a i : ℂ) := by simp [c]
     rw [hcCsum, Finset.sum_smul]
   have hTvec : Tendsto (fun m =>

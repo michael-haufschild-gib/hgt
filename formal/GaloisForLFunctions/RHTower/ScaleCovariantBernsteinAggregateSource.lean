@@ -55,7 +55,7 @@ theorem exists_eq_of_atomicAggregateWeight_ne_zero
     (hu : atomicAggregateWeight c z u ≠ 0) :
     ∃ i : I, z i = u := by
   by_contra h
-  push_neg at h
+  push Not at h
   have hempty : z ⁻¹' ({u} : Set ℂ) = ∅ := by
     ext i
     simp [h i]

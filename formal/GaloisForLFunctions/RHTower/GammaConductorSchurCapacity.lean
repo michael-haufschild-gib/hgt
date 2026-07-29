@@ -125,7 +125,16 @@ theorem gammaConductorSchurProfile_leading :
     have h := (((hminus.pow 2).mul (hplus.pow 4)).const_mul (9 / 8 : ℝ)).div hden
       (by norm_num)
     norm_num at h ⊢
-    simpa [Pi.div_apply, mul_assoc] using h
+    have hfun :
+        ((fun x : ℝ => (9 / 8 : ℝ) *
+            ((1 - x⁻¹) ^ 2 * (1 + x⁻¹) ^ 4)) /
+          (fun x : ℝ => (1 + (x ^ 2)⁻¹) ^ 4)) =
+        (fun x : ℝ => (9 / 8 : ℝ) * (1 - x⁻¹) ^ 2 *
+          (1 + x⁻¹) ^ 4 / (1 + (x ^ 2)⁻¹) ^ 4) := by
+      funext x
+      simp only [Pi.div_apply, mul_assoc]
+    rw [hfun] at h
+    exact h
   refine hnorm.congr' ?_
   filter_upwards [eventually_ne_atTop (0 : ℝ)] with x hx
   rw [gammaConductorSchurProfile]
@@ -136,7 +145,14 @@ theorem gammaConductorPrimeSchurCost_leading :
     Tendsto (fun p : Nat.Primes => (p : ℝ) * gammaConductorPrimeSchurCost p)
       cofinite (nhds (9 / 8 : ℝ)) := by
   have h := gammaConductorSchurProfile_leading.comp tendsto_prime_coe_real_cofinite_atTop
-  simpa [gammaConductorPrimeSchurCost_eq_profile] using h
+  have hfun :
+      ((fun x : ℝ => x * gammaConductorSchurProfile x) ∘
+        (fun p : Nat.Primes => (p : ℝ))) =
+      (fun p : Nat.Primes => (p : ℝ) * gammaConductorPrimeSchurCost p) := by
+    funext p
+    simp only [Function.comp_apply, gammaConductorPrimeSchurCost_eq_profile]
+  rw [hfun] at h
+  exact h
 
 /-- Each prime consumes at least `9 / (512 * p)` units of scalar conductor capacity. -/
 lemma gammaConductorPrimeSchurCost_lower (p : Nat.Primes) :

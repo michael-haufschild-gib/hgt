@@ -1,7 +1,7 @@
 import GaloisForLFunctions.HTGeometry.MatrixPrincipalSymbolDerivationLawHorizon
 import Mathlib.Analysis.Convex.Basic
 import Mathlib.Analysis.Matrix.PosDef
-import Mathlib.Data.Real.StarOrdered
+import Mathlib.Algebra.Order.Star.Real
 
 /-!
 # Before-time causal chambers

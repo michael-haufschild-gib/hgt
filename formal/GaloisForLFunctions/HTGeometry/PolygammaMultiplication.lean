@@ -163,7 +163,12 @@ theorem trigamma_multiplication {n : ℕ} (hn : 0 < n) {s : ℂ}
     have hinner : HasDerivAt (fun w : ℂ => (w + (k : ℂ)) / (n : ℂ))
         ((1 : ℂ) / (n : ℂ)) s := by
       simpa using ((hasDerivAt_id s).add_const (k : ℂ)).div_const (n : ℂ)
-    convert hdig.comp s hinner using 1
+    have hcomp := hdig.comp s hinner
+    rw [show
+      (fun w : ℂ => Complex.digamma ((w + (k : ℂ)) / (n : ℂ))) =
+        Complex.digamma ∘ (fun w : ℂ => (w + (k : ℂ)) / (n : ℂ)) by
+      rfl]
+    apply hcomp.congr_deriv
     ring
   have hleft : HasDerivAt
       (fun w : ℂ => ∑ k ∈ Finset.range n, Complex.digamma ((w + k) / n))
@@ -235,7 +240,14 @@ theorem polygamma_multiplication (r : ℕ) {n : ℕ} (hn : 0 < n) {s : ℂ}
         have hinner : HasDerivAt (fun w : ℂ => (w + (k : ℂ)) / (n : ℂ))
             ((1 : ℂ) / (n : ℂ)) s := by
           simpa using ((hasDerivAt_id s).add_const (k : ℂ)).div_const (n : ℂ)
-        convert hout.comp s hinner using 1
+        have hcomp := hout.comp s hinner
+        rw [show
+          (fun w : ℂ => iteratedDeriv (r + 1) Complex.digamma
+            ((w + (k : ℂ)) / (n : ℂ))) =
+            iteratedDeriv (r + 1) Complex.digamma ∘
+              (fun w : ℂ => (w + (k : ℂ)) / (n : ℂ)) by
+          rfl]
+        apply hcomp.congr_deriv
         ring
       have hleft : HasDerivAt
           (fun w : ℂ => ∑ k ∈ Finset.range n,

@@ -187,8 +187,8 @@ theorem norm_evenTimeBandFourier_le (a : ℝ) (f : evenSubspace) :
 theorem evenProlateLeakage_inner_eq (a : ℝ) (f : evenSubspace) :
     inner ℂ (evenProlateLeakage a f) f =
       ((‖f‖ ^ 2 - ‖evenTimeBandFourier a f‖ ^ 2 : ℝ) : ℂ) := by
-  rw [evenProlateLeakage, ContinuousLinearMap.sub_apply,
-    ContinuousLinearMap.one_apply, inner_sub_left, evenProlateConcentration]
+  rw [evenProlateLeakage, _root_.sub_apply,
+    one_apply_eq_self, inner_sub_left, evenProlateConcentration]
   rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.adjoint_inner_left]
   simp [inner_self_eq_norm_sq_to_K]
 
@@ -290,7 +290,7 @@ theorem constrainedProlateLeakage_eq_compression (a : ℝ) :
   apply ContinuousLinearMap.ext
   intro f
   simp only [constrainedProlateLeakage, constrainedProlateConcentration,
-    evenProlateLeakage, ContinuousLinearMap.sub_apply, ContinuousLinearMap.one_apply,
+    evenProlateLeakage, _root_.sub_apply, one_apply_eq_self,
     ContinuousLinearMap.comp_apply]
   rw [map_sub]
   rw [Submodule.subtypeL_apply]
@@ -456,8 +456,8 @@ eigenvalues. -/
 theorem evenProlateLeakage_apply_mode (a : ℝ) (n : ℕ) :
     evenProlateLeakage a (evenProlateConcentrationMode a n) =
       (evenProlateLeakageValue a n : ℂ) • evenProlateConcentrationMode a n := by
-  rw [evenProlateLeakage, ContinuousLinearMap.sub_apply,
-    ContinuousLinearMap.one_apply, evenProlateConcentration_apply_mode]
+  rw [evenProlateLeakage, _root_.sub_apply,
+    one_apply_eq_self, evenProlateConcentration_apply_mode]
   simp only [evenProlateLeakageValue, Complex.ofReal_sub, Complex.ofReal_one]
   module
 

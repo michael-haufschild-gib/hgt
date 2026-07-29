@@ -44,7 +44,7 @@ theorem algebraicIndependent_sum_adjoin_linearDisjoint
   have htotal (q : MvPolynomial (ι ⊕ κ) F) :
       gxy (algebraMap (MvPolynomial (ι ⊕ κ) F) KXY q) =
         MvPolynomial.aeval (Sum.elim x y) q := by
-    simpa only [gxy, AlgHom.comp_apply] using
+    simpa only [gxy, AlgHom.comp_apply] using!
       hxy.aevalEquivField_algebraMap_apply_coe q
   have hxrange : (gxy.comp fx).fieldRange =
       IntermediateField.adjoin F (Set.range x) := by
@@ -137,8 +137,8 @@ theorem differentialIndependent_disjoint_familyObservableFields_linearDisjoint
   rw [Set.disjoint_left]
   intro p hpM hpN
   rcases hdisjoint p.1 with hM | hN
-  · simpa [differentialFamilyVisibleJetIndices, hM] using hpM
-  · simpa [differentialFamilyVisibleJetIndices, hN] using hpN
+  · simp [differentialFamilyVisibleJetIndices, hM] at hpM
+  · simp [differentialFamilyVisibleJetIndices, hN] at hpN
 
 /-- **Exact common-observable law.**  Disjoint clock sectors share only the coefficient field. -/
 theorem differentialIndependent_disjoint_familyObservableFields_inf_eq_bot

@@ -55,7 +55,11 @@ theorem tendsto_pickTwoPointDeterminant_of_boundaryContact
   have hcross :
       Tendsto (fun a => pickCrossDefect c₀ q₀ (c a) (q a)) l
         (𝓝 ((1 - c₀) / (1 - q₀))) := by
-    simpa [pickCrossDefect] using hnum.div hden hden_ne
+    rw [show (fun a => pickCrossDefect c₀ q₀ (c a) (q a)) =
+        (fun a => 1 - c₀ * c a) / (fun a => 1 - q₀ * q a) by
+      funext a
+      rfl]
+    exact hnum.div hden hden_ne
   have hfirst :
       Tendsto (fun a => pickDiagonalDefect c₀ q₀ * pickDiagonalDefect (c a) (q a)) l
         (𝓝 0) := by

@@ -115,13 +115,13 @@ theorem scaledEvenShellCutoff_summableDilationCombination_apply
       · have hkj : k < j := lt_of_le_of_ne (Nat.le_of_not_gt hjk) hj.symm
         have hk0 : 0 < r k := zero_lt_one.trans (hr k)
         have hj0 : 0 < r j := zero_lt_one.trans (hr j)
-        rw [ContinuousLinearMap.smul_apply, dilationSum_apply, map_smul, map_add,
+        rw [_root_.smul_apply, dilationSum_apply, map_smul, map_add,
           scaledEvenShellCutoff_offtarget_inward hk0 hj0 ha hab (hsep j hkj) m,
           scaledEvenShellCutoff_outward hk0 (hr j) ha hab hba m]
         simp
     _ = c k • dilation (r k) (zero_lt_one.trans (hr k)) g := by
       have hk0 : 0 < r k := zero_lt_one.trans (hr k)
-      rw [ContinuousLinearMap.smul_apply, dilationSum_apply, map_smul, map_add,
+      rw [_root_.smul_apply, dilationSum_apply, map_smul, map_add,
         scaledEvenShellCutoff_target_inward hk0 hab m,
         scaledEvenShellCutoff_outward hk0 (hr k) ha hab hba m]
       rw [add_zero]
@@ -271,8 +271,8 @@ theorem summableEvenDilationCorner_not_isCompactOperator
     change ((summableEvenDilationCorner a r hr c (evenProjectionToEven f) :
         evenSubspace) : SoninL2) = _
     simp only [summableEvenDilationCorner, crossBoundary,
-      ContinuousLinearMap.mul_apply, ContinuousLinearMap.one_apply,
-      ContinuousLinearMap.sub_apply]
+      mul_apply_eq_comp, one_apply_eq_self,
+      _root_.sub_apply]
     rw [Submodule.coe_sub]
     rw [summableEvenDilationCombination_coe_apply r hr c hc]
     simp only [coe_evenCentralSoninProjection_apply]

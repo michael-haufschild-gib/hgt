@@ -183,7 +183,7 @@ theorem finiteIndexDiagonal_exp_apply
     unfold φ
     simp only [Function.comp_apply, ContinuousLinearMap.comp_apply,
       ContinuousLinearMap.apply_apply, EuclideanSpace.coe_proj,
-      ContinuousLinearMap.smul_apply, smul_pow,
+      _root_.smul_apply, smul_pow,
       PiLp.smul_apply, smul_eq_mul]
     rw [mul_pow]
     rw [finiteIndexDiagonalHamiltonian_pow_apply]

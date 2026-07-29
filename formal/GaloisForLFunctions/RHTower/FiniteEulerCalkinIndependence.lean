@@ -306,10 +306,10 @@ theorem scaledEvenShellCutoff_finiteDilationCombination_apply
   calc
     scaledEvenShellCutoff (r k) a b (finiteDilationCombination r hr c g) =
         ∑ j, scaledEvenShellCutoff (r k) a b ((c j • dilationSum (r j) (hr j)) g) := by
-      rw [finiteDilationCombination, ContinuousLinearMap.sum_apply, map_sum]
+      rw [finiteDilationCombination, _root_.sum_apply, map_sum]
     _ = c k • dilation (r k) hk0 g := by
       rw [Finset.sum_eq_single k]
-      · rw [ContinuousLinearMap.smul_apply, dilationSum_apply, map_smul, map_add,
+      · rw [_root_.smul_apply, dilationSum_apply, map_smul, map_add,
           scaledEvenShellCutoff_target_inward hk0 hab m,
           scaledEvenShellCutoff_outward hk0 (hr k) ha hab hba m]
         module
@@ -317,7 +317,7 @@ theorem scaledEvenShellCutoff_finiteDilationCombination_apply
         by_cases hcj : c j = 0
         · simp [hcj]
         · have hj0 : 0 < r j := zero_lt_one.trans (hr j)
-          rw [ContinuousLinearMap.smul_apply, dilationSum_apply, map_smul, map_add,
+          rw [_root_.smul_apply, dilationSum_apply, map_smul, map_add,
             scaledEvenShellCutoff_offtarget_inward hk0 hj0 ha hab (hsep j hjk hcj) m,
             scaledEvenShellCutoff_outward hk0 (hr j) ha hab hba m]
           simp
@@ -519,12 +519,12 @@ theorem finiteEvenDilationCorners_coe_apply
   rw [finiteDilationCombination, hsum]
   change (evenSubspace.subtype : evenSubspace →ₗ[ℂ] SoninL2)
       ((finiteEvenDilationCorners a r hr c) f) = _
-  rw [finiteEvenDilationCorners, ContinuousLinearMap.sum_apply, map_sum]
-  simp only [ContinuousLinearMap.smul_apply, map_smul]
-  rw [ContinuousLinearMap.sum_apply]
+  rw [finiteEvenDilationCorners, _root_.sum_apply, map_sum]
+  simp only [_root_.smul_apply, map_smul]
+  rw [_root_.sum_apply]
   apply Finset.sum_congr rfl
   intro j _
-  rw [hsmul, ContinuousLinearMap.smul_apply]
+  rw [hsmul, _root_.smul_apply]
   exact congrArg (fun x : SoninL2 => c j • x)
     (coe_evenCentralSoninDilationCorner_apply a (r j) (hr j) f)
 
@@ -600,8 +600,8 @@ theorem finiteEvenDilationCorners_calkinIndependent
         E (centralSoninProjection a f) := by
       simpa [E] using
         DFunLike.congr_fun (centralSoninProjection_evenProjection_commute a) f
-    simp only [crossBoundary, ContinuousLinearMap.mul_apply,
-      ContinuousLinearMap.one_apply, ContinuousLinearMap.sub_apply,
+    simp only [crossBoundary, mul_apply_eq_comp,
+      one_apply_eq_self, _root_.sub_apply,
       ContinuousLinearMap.comp_apply]
     rw [hQE]
   rw [← heq]

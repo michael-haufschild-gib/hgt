@@ -242,7 +242,7 @@ theorem ofQuadraticPair_injective :
   have him := congrArg BourgainEisensteinInt.im h
   have hre := congrArg BourgainEisensteinInt.re h
   simp only [ofQuadraticPair] at him hre
-  apply Prod.ext <;> dsimp
+  apply Prod.ext
   · omega
   · omega
 

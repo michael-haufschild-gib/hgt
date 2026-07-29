@@ -41,12 +41,26 @@ theorem hasDerivAt_expNegSqPrimitive (hb : 0 < b) (x : ℝ) :
     HasDerivAt (fun y : ℝ => -Real.exp (-(b * y ^ 2)) / (2 * b))
       (x * Real.exp (-(b * x ^ 2))) x := by
   have hinner : HasDerivAt (fun y : ℝ => -(b * y ^ 2)) (-(b * (2 * x))) x := by
-    simpa using ((hasDerivAt_pow 2 x).const_mul b).neg
+    have hinnerRaw := ((hasDerivAt_pow 2 x).const_mul b).neg
+    have hfun :
+        -(fun y : ℝ => b * y ^ 2) = (fun y : ℝ => -(b * y ^ 2)) := by
+      funext y
+      rfl
+    rw [hfun] at hinnerRaw
+    apply hinnerRaw.congr_deriv
+    norm_num
   have hexp := hinner.exp
   have hbne : (2 : ℝ) * b ≠ 0 := by positivity
-  have h := (hexp.neg).div_const (2 * b)
-  convert h using 1
-  field_simp
+  have hneg := hexp.neg
+  have hfun :
+      -(fun y : ℝ => Real.exp (-(b * y ^ 2))) =
+        (fun y : ℝ => -Real.exp (-(b * y ^ 2))) := by
+    funext y
+    rfl
+  rw [hfun] at hneg
+  have h := hneg.div_const (2 * b)
+  apply h.congr_deriv
+  field_simp [hbne]
 
 theorem tendsto_expNegSq_atTop (hb : 0 < b) :
     Filter.Tendsto (fun y : ℝ => Real.exp (-(b * y ^ 2))) Filter.atTop (nhds 0) := by

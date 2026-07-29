@@ -32,8 +32,13 @@ theorem exists_primitive_polynomial_representation {ι : Type*} [Fintype ι]
     rw [hmin, pb.natDegree_minpoly]
     exact hqdeg i
   · intro i
-    have hi := congrArg (algebraMap K ℂ) (hq i)
-    simpa [αK, θ, ← Polynomial.aeval_algHom_apply] using hi
+    let ιK : K →ₐ[ℚ] ℂ := IsScalarTower.toAlgHom ℚ K ℂ
+    calc
+      α i = ιK (αK i) := by rfl
+      _ = ιK (Polynomial.aeval pb.gen (q i)) := congrArg ιK (hq i)
+      _ = Polynomial.aeval (ιK pb.gen) (q i) :=
+        (Polynomial.aeval_algHom_apply ιK pb.gen (q i)).symm
+      _ = Polynomial.aeval θ (q i) := by rfl
 
 /-- A finite algebraic family admits simultaneous rational-polynomial coordinates in one
 **algebraic-integer** primitive element.  Scaling an arbitrary primitive generator by a nonzero
@@ -86,7 +91,12 @@ theorem exists_integral_primitive_polynomial_representation {ι : Type*} [Fintyp
     rw [hmin, pb'.natDegree_minpoly]
     exact hqdeg i
   · intro i
-    have hi := congrArg (algebraMap K ℂ) (hq i)
-    simpa [αK, θ, ← Polynomial.aeval_algHom_apply] using hi
+    let ιK : K →ₐ[ℚ] ℂ := IsScalarTower.toAlgHom ℚ K ℂ
+    calc
+      α i = ιK (αK i) := by rfl
+      _ = ιK (Polynomial.aeval pb'.gen (q i)) := congrArg ιK (hq i)
+      _ = Polynomial.aeval (ιK pb'.gen) (q i) :=
+        (Polynomial.aeval_algHom_apply ιK pb'.gen (q i)).symm
+      _ = Polynomial.aeval θ (q i) := by rfl
 
 end GaloisForLFunctions.RHTower

@@ -40,8 +40,8 @@ theorem physicalState_twoSidedConjugation_iff
   change (V * C * W) (V ψ) = 0 ↔ C ψ = 0
   have hleftApply := congrArg
     (fun T : E →L[𝕜] E => T ψ) hWV
-  simp only [ContinuousLinearMap.mul_apply, ContinuousLinearMap.one_apply] at hleftApply
-  simp only [ContinuousLinearMap.mul_apply]
+  simp only [mul_apply_eq_comp, one_apply_eq_self] at hleftApply
+  simp only [mul_apply_eq_comp]
   rw [hleftApply]
   constructor
   · intro h
@@ -82,10 +82,10 @@ theorem finiteClockFamilyObservabilityEnergy_unitaryReferenceFrame
       (V * finiteCyclicObservableTwirlKadisonDefect (U i) X (N i) *
           V.adjoint) (V ψ) =
         V (finiteCyclicObservableTwirlKadisonDefect (U i) X (N i) ψ) := by
-    simp only [ContinuousLinearMap.mul_apply]
+    simp only [mul_apply_eq_comp]
     have hleftApply := congrArg
       (fun T : E →L[𝕜] E => T ψ) hleft
-    simpa only [ContinuousLinearMap.mul_apply, ContinuousLinearMap.one_apply] using
+    simpa only [mul_apply_eq_comp, one_apply_eq_self] using
       congrArg (fun y : E =>
         V (finiteCyclicObservableTwirlKadisonDefect (U i) X (N i) y))
         hleftApply
@@ -99,7 +99,7 @@ theorem finiteClockFamilyObservabilityEnergy_unitaryReferenceFrame
       (finiteCyclicObservableTwirlKadisonDefect (U i) X (N i) ψ) (V ψ)]
     have hleftApply := congrArg
       (fun T : E →L[𝕜] E => T ψ) hleft
-    simpa only [ContinuousLinearMap.mul_apply, ContinuousLinearMap.one_apply] using
+    simpa only [mul_apply_eq_comp, one_apply_eq_self] using
       congrArg (fun y : E => inner 𝕜 y
         (finiteCyclicObservableTwirlKadisonDefect (U i) X (N i) ψ))
         hleftApply
@@ -121,10 +121,10 @@ theorem finiteQuantumMasterConstraint_physical_unitaryReferenceFrame_iff
     physicalState_finiteQuantumMasterConstraint_iff]
   have hx :
       (V * X * V.adjoint) (V ψ) = V (X ψ) := by
-    simp only [ContinuousLinearMap.mul_apply]
+    simp only [mul_apply_eq_comp]
     have hleftApply := congrArg
       (fun T : E →L[𝕜] E => T ψ) hleft
-    simpa only [ContinuousLinearMap.mul_apply, ContinuousLinearMap.one_apply] using
+    simpa only [mul_apply_eq_comp, one_apply_eq_self] using
       congrArg V (congrArg X hleftApply)
   rw [hx]
   constructor

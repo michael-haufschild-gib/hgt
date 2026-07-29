@@ -119,7 +119,7 @@ theorem evenFourierTransform_evenDilationSum
     simpa only [evenDilationCLM, inv_inv] using
       evenFourierTransform_evenDilation r⁻¹ (inv_pos.mpr hr0) f
   rw [evenDilationSum_eq]
-  simp only [ContinuousLinearMap.add_apply, evenFourierTransform.map_add]
+  simp only [_root_.add_apply, evenFourierTransform.map_add]
   rw [hforward, hinverse]
   abel
 
@@ -131,7 +131,7 @@ theorem evenFourierTransform_evenSoninApertureSuccessiveLayerTransition
       evenSoninApertureSuccessiveLayerTransition a b c r hr
         (evenFourierTransform f) := by
   unfold evenSoninApertureSuccessiveLayerTransition evenSoninApertureLayer
-  simp only [ContinuousLinearMap.mul_apply, sub_apply]
+  simp only [mul_apply_eq_comp, sub_apply]
   rw [map_sub, evenFourierTransform_evenCentralSoninProjection,
     evenFourierTransform_evenCentralSoninProjection,
     evenFourierTransform_evenDilationSum,
@@ -146,7 +146,7 @@ theorem ccmCommutator_evenSoninApertureSuccessiveLayerTransition_evenFourier
   apply ContinuousLinearMap.ext
   intro f
   unfold ccmCommutator
-  simp only [sub_apply, ContinuousLinearMap.mul_apply]
+  simp only [sub_apply, mul_apply_eq_comp]
   rw [← evenFourierTransform_evenSoninApertureSuccessiveLayerTransition]
   simp
 

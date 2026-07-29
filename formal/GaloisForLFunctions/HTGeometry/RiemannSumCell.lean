@@ -34,9 +34,8 @@ theorem norm_integral_sub_smul_le {f : ℝ → ℂ} {K c h : ℝ} (hh : 0 ≤ h)
     have hd : ∀ x : ℝ, HasDerivAt (fun t : ℝ => (t - c) ^ 2 / 2) (x - c) x := by
       intro x
       have h2 := (((hasDerivAt_id x).sub_const c).pow 2).div_const 2
-      convert h2 using 1
-      simp only [id_eq]
-      ring
+      simpa only [Pi.div_apply] using! h2.congr_deriv (by
+        simp [id, sub_eq_add_neg])
     rw [intervalIntegral.integral_eq_sub_of_hasDerivAt (fun x _ => hd x)
       ((by fun_prop : Continuous (fun x : ℝ => x - c)).intervalIntegrable _ _)]
     ring

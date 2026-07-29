@@ -32,7 +32,10 @@ theorem entire_nonvanishing_has_log (f : ℂ → ℂ) (hf : Differentiable ℂ f
   -- Hence `logDeriv f = deriv f / f` is entire (denominator entire and nowhere zero).
   have hlog : Differentiable ℂ (logDeriv f) := by
     have hquot : Differentiable ℂ (fun z => deriv f z / f z) := hderiv.div hf h0
-    simpa [logDeriv] using hquot
+    rw [logDeriv, show deriv f / f = (fun z => deriv f z / f z) by
+      funext z
+      rfl]
+    exact hquot
   -- Morera's theorem on the plane gives a global primitive `G` of `logDeriv f`.
   obtain ⟨G, hG0⟩ := hlog.isExactOn_univ
   have hG : ∀ z, HasDerivAt G (logDeriv f z) z := fun z => hG0 z (Set.mem_univ z)

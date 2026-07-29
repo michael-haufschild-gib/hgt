@@ -50,28 +50,82 @@ theorem hasDerivAt_thetaCuspPolynomialAtom (P : ℝ[X]) (n : ℕ) (x : ℝ) :
     simpa [y] using (Real.hasDerivAt_exp x).const_mul (n : ℝ)
   have hhalf : HasDerivAt (fun z : ℝ => Real.exp (z / 2))
       ((1 / 2 : ℝ) * Real.exp (x / 2)) x := by
-    convert (Real.hasDerivAt_exp (x / 2)).comp x
-      ((hasDerivAt_id x).div_const 2) using 1
-    · ring
+    have hinner : HasDerivAt (fun z : ℝ => z / 2) (1 / 2 : ℝ) x := by
+      have hraw := (hasDerivAt_id x).div_const 2
+      have hfun : (fun z : ℝ => z / 2) = fun z => id z / 2 := by
+        funext z
+        rfl
+      rw [hfun]
+      exact hraw
+    have hraw := (Real.hasDerivAt_exp (x / 2)).comp x hinner
+    have hfun :
+        (fun z : ℝ => Real.exp (z / 2)) = Real.exp ∘ fun z : ℝ => z / 2 := by
+      funext z
+      rfl
+    rw [hfun]
+    exact hraw.congr_deriv (mul_comm _ _)
   have hpoly : HasDerivAt (fun z : ℝ => eval ((n : ℝ) * Real.exp z) P)
       (eval y (derivative P) * y) x := by
-    convert (P.hasDerivAt y).comp x hy using 1
+    have hraw := (P.hasDerivAt y).comp x hy
+    have hfun :
+        (fun z : ℝ => eval ((n : ℝ) * Real.exp z) P) =
+          (fun u : ℝ => eval u P) ∘ fun z : ℝ => (n : ℝ) * Real.exp z := by
+      funext z
+      rfl
+    rw [hfun]
+    exact hraw
   have hsq : HasDerivAt (fun z : ℝ => ((n : ℝ) * Real.exp z) ^ 2)
       (2 * y ^ 2) x := by
-    convert hy.pow 2 using 1
-    · dsimp [y]
+    have hraw := hy.pow 2
+    have hfun :
+        (fun z : ℝ => ((n : ℝ) * Real.exp z) ^ 2) =
+          (fun z : ℝ => (n : ℝ) * Real.exp z) ^ 2 := by
+      funext z
+      rfl
+    have hcoef :
+        (2 : ℝ) * ((n : ℝ) * Real.exp x) ^ (2 - 1) * y = 2 * y ^ 2 := by
+      norm_num
+      dsimp [y]
       ring
+    rw [hfun]
+    exact hraw.congr_deriv hcoef
   have hgauss : HasDerivAt
       (fun z : ℝ => Real.exp (-Real.pi * ((n : ℝ) * Real.exp z) ^ 2))
       ((-2 * Real.pi * y ^ 2) * Real.exp (-Real.pi * y ^ 2)) x := by
-    convert (Real.hasDerivAt_exp (-Real.pi * y ^ 2)).comp x
-      ((hasDerivAt_const x (-Real.pi)).mul hsq) using 1
-    · ring
-  convert (hhalf.mul hpoly).mul hgauss using 1
-  · unfold thetaCuspPolynomialAtom thetaCuspLogDerivativeStep
-    simp only [eval_add, eval_sub, eval_mul, eval_C, eval_X, eval_pow]
-    dsimp [y]
-    ring
+    have hinnerRaw := (hasDerivAt_const x (-Real.pi)).mul hsq
+    have hinnerFun :
+        (fun z : ℝ => -Real.pi * ((n : ℝ) * Real.exp z) ^ 2) =
+          (fun _ : ℝ => -Real.pi) *
+            fun z : ℝ => ((n : ℝ) * Real.exp z) ^ 2 := by
+      funext z
+      rfl
+    have hinner : HasDerivAt
+        (fun z : ℝ => -Real.pi * ((n : ℝ) * Real.exp z) ^ 2)
+        (-2 * Real.pi * y ^ 2) x := by
+      rw [hinnerFun]
+      exact hinnerRaw.congr_deriv (by ring)
+    have hraw := (Real.hasDerivAt_exp (-Real.pi * y ^ 2)).comp x hinner
+    have hfun :
+        (fun z : ℝ => Real.exp (-Real.pi * ((n : ℝ) * Real.exp z) ^ 2)) =
+          Real.exp ∘ fun z : ℝ => -Real.pi * ((n : ℝ) * Real.exp z) ^ 2 := by
+      funext z
+      rfl
+    rw [hfun]
+    exact hraw.congr_deriv (by ring)
+  have hraw := (hhalf.mul hpoly).mul hgauss
+  have hfun :
+      thetaCuspPolynomialAtom P n =
+        ((fun z : ℝ => Real.exp (z / 2)) *
+          fun z : ℝ => eval ((n : ℝ) * Real.exp z) P) *
+            fun z : ℝ => Real.exp (-Real.pi * ((n : ℝ) * Real.exp z) ^ 2) := by
+    funext z
+    rfl
+  rw [hfun]
+  apply hraw.congr_deriv
+  unfold thetaCuspPolynomialAtom thetaCuspLogDerivativeStep
+  simp only [eval_add, eval_sub, eval_mul, eval_C, eval_X, eval_pow]
+  dsimp [y]
+  ring
 
 theorem thetaCuspSourceTerm_eq_polynomialAtom (n : ℕ) :
     (fun x => thetaCuspSourceTerm x n) =
@@ -124,9 +178,8 @@ theorem summable_thetaCuspPolynomialMajorant (P : ℝ[X]) (R : ℝ) :
   simp_rw [Finset.mul_sum, Finset.sum_mul]
   apply summable_sum
   intro k _hk
-  convert (summable_pow_mul_exp_neg k hsigma).mul_left
-    (Real.exp (R / 2) * |P.coeff k| * Real.exp R ^ k) using 1
-  funext n
+  refine ((summable_pow_mul_exp_neg k hsigma).mul_left
+    (Real.exp (R / 2) * |P.coeff k| * Real.exp R ^ k)).congr (fun n => ?_)
   ring_nf
 
 theorem thetaCuspPolynomialMajorant_nonneg (P : ℝ[X]) (R : ℝ) (n : ℕ) :
@@ -249,7 +302,16 @@ theorem hasDerivAt_thetaCuspFullDerivative (m : ℕ) (x : ℝ) :
       rw [Real.norm_eq_abs, iteratedDeriv_thetaCuspSourceTerm_eq_polynomialAtom]
       exact abs_thetaCuspPolynomialAtom_le_majorant _ (Ioo_subset_Icc_self hy) n)
     hx (summable_iteratedDeriv_thetaCuspSourceTerm m x) hx
-  simpa [thetaCuspFullDerivative, u] using key
+  have hfun :
+      thetaCuspFullDerivative m =
+        fun z => ∑' n : ℕ, iteratedDeriv m (fun y => thetaCuspSourceTerm y n) z := by
+    funext z
+    rfl
+  have hderiv :
+      thetaCuspFullDerivative (m + 1) x =
+        ∑' n : ℕ, iteratedDeriv (m + 1) (fun y => thetaCuspSourceTerm y n) x := rfl
+  rw [hfun, hderiv]
+  exact key
 
 theorem hasDerivAt_finitePrimeThetaCuspDerivative (m N : ℕ) (x : ℝ) :
     HasDerivAt (finitePrimeThetaCuspDerivative m N)
@@ -267,7 +329,18 @@ theorem hasDerivAt_finitePrimeThetaCuspDerivative (m N : ℕ) (x : ℝ) :
       rw [Real.norm_eq_abs, iteratedDeriv_thetaCuspSourceTerm_eq_polynomialAtom]
       exact abs_thetaCuspPolynomialAtom_le_majorant _ (Ioo_subset_Icc_self hy) n)
     hx ((summable_iteratedDeriv_thetaCuspSourceTerm m x).subtype _) hx
-  simpa [finitePrimeThetaCuspDerivative, u] using key
+  have hfun :
+      finitePrimeThetaCuspDerivative m N =
+        fun z => ∑' n : (N + 1).smoothNumbers,
+          iteratedDeriv m (fun y => thetaCuspSourceTerm y n) z := by
+    funext z
+    rfl
+  have hderiv :
+      finitePrimeThetaCuspDerivative (m + 1) N x =
+        ∑' n : (N + 1).smoothNumbers,
+          iteratedDeriv (m + 1) (fun y => thetaCuspSourceTerm y n) x := rfl
+  rw [hfun, hderiv]
+  exact key
 
 /-- The derivative series is the actual iterated derivative of the all-integer theta-cusp source. -/
 theorem iteratedDeriv_thetaCuspFullSource (m : ℕ) :

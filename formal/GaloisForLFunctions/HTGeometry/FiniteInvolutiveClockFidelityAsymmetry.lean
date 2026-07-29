@@ -42,7 +42,7 @@ theorem inner_finiteInvolutiveClockTransform_eq_sectorNormSq_sub
       (finiteInvolutiveGaugeAverage_isSelfAdjoint U hadjoint_mul hsq).star_eq
   have hP2 : P * P = P := finiteInvolutiveGaugeAverage_isIdempotentElem U hsq
   have hPb : P b = 0 := by
-    rw [show b = (1 - P) ψ by rfl, ← ContinuousLinearMap.mul_apply]
+    rw [show b = (1 - P) ψ by rfl, ← mul_apply_eq_comp]
     have : P * (1 - P) = 0 := by noncomm_ring [hP2]
     rw [this]
     simp
@@ -55,7 +55,7 @@ theorem inner_finiteInvolutiveClockTransform_eq_sectorNormSq_sub
     rw [← inner_conj_symm]
     simp [hab]
   have hψ : ψ = a + b := by
-    simp only [a, b, P, ContinuousLinearMap.sub_apply, ContinuousLinearMap.one_apply]
+    simp only [a, b, P, _root_.sub_apply, one_apply_eq_self]
     module
   have hUψ : U ψ = a - b := by
     have hPapply := finiteInvolutiveGaugeAverage_apply U ψ

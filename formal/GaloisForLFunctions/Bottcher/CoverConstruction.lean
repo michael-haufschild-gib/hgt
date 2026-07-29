@@ -436,8 +436,12 @@ theorem exp_logDeriv_antiderivative {φ I : ℝ → ℂ} {a b : ℝ} (hab : a �
     intro t ht
     have hne : φ t ≠ 0 := hφ t ht
     have h3 := (hdφ t ht).mul ((hI t ht).neg.cexp)
-    convert h3 using 1
-    field_simp
+    rw [show (fun s => φ s * Complex.exp (-(I s))) =
+        φ * fun s => Complex.exp (-(I s)) by
+      funext s
+      rfl]
+    apply h3.congr_deriv
+    field_simp [hne]
     ring
   have hψeq2 : φ a * Complex.exp (-(I a)) = φ b * Complex.exp (-(I b)) := by
     have h := intervalIntegral.integral_eq_sub_of_hasDerivAt
@@ -730,7 +734,9 @@ theorem analyticOnNhd_quadratic_iterate (c : ℂ) (n : ℕ) :
   have hq : AnalyticOnNhd ℂ (quadratic c) Set.univ :=
     fun w _ => (analyticAt_id.pow 2).add analyticAt_const
   induction n with
-  | zero => simpa using analyticOnNhd_id
+  | zero =>
+      change AnalyticOnNhd ℂ (fun x : ℂ => x) Set.univ
+      exact analyticOnNhd_id
   | succ n ih =>
     rw [Function.iterate_succ']
     intro z _
@@ -1181,7 +1187,7 @@ Axiom-clean. -/
 theorem isCoveringMapOn_quadratic_iterate (c : ℂ) (n : ℕ) :
     IsCoveringMapOn ((quadratic c)^[n])
       ((quadratic c)^[n] '' {w | (quadraticPolyIterate c n).derivative.IsRoot w})ᶜ := by
-  apply (quadratic_iterate_isProperMap c n).isClosedMap.isCoveringMapOn_of_openPartialHomeomorph
+  apply (quadratic_iterate_isProperMap c n).isClosedMap.isCoveringMapOn_of_isLocalHomeomorphOn
   · intro x _
     exact quadratic_iterate_fiber_finite c n x
   · intro e he
@@ -1195,8 +1201,9 @@ theorem isCoveringMapOn_quadratic_iterate (c : ℂ) (n : ℕ) :
       exact mul_ne_zero two_ne_zero
         (fun h0 => hnc ((quadratic_iterate_deriv_eq_zero_iff c n e).mpr
           ⟨k, Finset.mem_range.mp hk, h0⟩))
-    exact exists_openPartialHomeomorph_of_hasStrictDerivAt
+    obtain ⟨φ, he, hφ⟩ := exists_openPartialHomeomorph_of_hasStrictDerivAt
       (hasStrictDerivAt_quadratic_iterate c n e) hd
+    exact ⟨φ, he, hφ.symm⟩
 
 end Bottcher
 
@@ -1252,7 +1259,7 @@ theorem criticalValues_finite (c : ℂ) (n : ℕ) :
   have hne : (quadraticPolyIterate c n).derivative ≠ 0 := by
     intro h
     have hdeg : (quadraticPolyIterate c n).natDegree = 0 :=
-      by simpa using Polynomial.natDegree_eq_zero_of_derivative_eq_zero h
+      by simpa using Polynomial.derivative_eq_zero.mp h
     rw [quadraticPolyIterate_natDegree] at hdeg
     exact absurd hdeg (by positivity)
   exact Polynomial.finite_setOf_isRoot hne

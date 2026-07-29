@@ -64,9 +64,9 @@ theorem finiteInvolutiveClockDoubleCommutator_apply_of_fixed
     finiteInvolutiveClockDoubleCommutator U X ψ =
       (2 : k) • ((X * U - U * X) ψ) := by
   rw [finiteInvolutiveClockDoubleCommutator_eq_four_smul_disturbance U X hsq,
-    ContinuousLinearMap.smul_apply,
+    _root_.smul_apply,
     sub_finiteInvolutiveObservableTwirl_eq_half_commutator_mul U X hsq,
-    ContinuousLinearMap.smul_apply, ContinuousLinearMap.mul_apply, hψ]
+    _root_.smul_apply, mul_apply_eq_comp, hψ]
   module
 
 omit [CompleteSpace E] in

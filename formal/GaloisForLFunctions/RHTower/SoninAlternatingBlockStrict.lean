@@ -80,7 +80,7 @@ theorem isCompactOperator_soninAlternatingBlock_of_compact_left
     (A B : Submodule ℂ H) [A.HasOrthogonalProjection] [B.HasOrthogonalProjection]
     (hBA : IsCompactOperator (B.starProjection * A.starProjection)) :
     IsCompactOperator (soninAlternatingBlock A B) := by
-  simpa [soninAlternatingBlock, Function.comp_def] using
+  simpa [soninAlternatingBlock, Function.comp_def] using!
     hBA.comp_clm B.starProjection
 
 /-- If the two forbidden subspaces have trivial intersection, the alternating block has no

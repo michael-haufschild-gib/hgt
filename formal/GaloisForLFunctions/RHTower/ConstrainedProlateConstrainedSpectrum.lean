@@ -79,8 +79,8 @@ noncomputable def constrainedProlateLeakageValue (a : ℝ) (n : ℕ) : ℝ :=
 theorem constrainedProlateLeakage_apply_mode (a : ℝ) (n : ℕ) :
     constrainedProlateLeakage a (constrainedProlateMode a n) =
       (constrainedProlateLeakageValue a n : ℂ) • constrainedProlateMode a n := by
-  rw [constrainedProlateLeakage, ContinuousLinearMap.sub_apply,
-    ContinuousLinearMap.one_apply, constrainedProlateConcentration_apply_mode]
+  rw [constrainedProlateLeakage, _root_.sub_apply,
+    one_apply_eq_self, constrainedProlateConcentration_apply_mode]
   simp only [constrainedProlateLeakageValue, Complex.ofReal_sub, Complex.ofReal_one]
   module
 

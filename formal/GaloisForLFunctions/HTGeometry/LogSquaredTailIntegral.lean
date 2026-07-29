@@ -23,17 +23,22 @@ theorem hasDerivAt_neg_logSq_tail {x : ℝ} (hx : 0 < x) :
   have hx0 : x ≠ 0 := ne_of_gt hx
   have hlog : HasDerivAt Real.log x⁻¹ x := Real.hasDerivAt_log hx0
   have hlogsq : HasDerivAt (fun x => Real.log x ^ 2) (2 * Real.log x * x⁻¹) x := by
-    simpa using hlog.pow 2
+    have hraw := hlog.pow 2
+    rw [show Real.log ^ 2 = (fun x => Real.log x ^ 2) by
+      funext y
+      rfl] at hraw
+    exact hraw.congr_deriv (by norm_num)
   have h2log : HasDerivAt (fun x => 2 * Real.log x) (2 * x⁻¹) x := by
     simpa using hlog.const_mul 2
   have hg : HasDerivAt (fun x => Real.log x ^ 2 + 2 * Real.log x + 2)
       (2 * Real.log x * x⁻¹ + 2 * x⁻¹) x := by
     simpa using (hlogsq.add h2log).add_const 2
   have hF := (hg.neg).div (hasDerivAt_id x) hx0
-  convert hF using 1
-  simp only [id_eq, Pi.neg_apply]
-  field_simp
-  ring
+  simpa only [id_eq, Pi.neg_apply, Pi.div_apply] using!
+    hF.congr_deriv (by
+      simp only [id_eq, Pi.neg_apply]
+      field_simp
+      ring)
 
 open Filter Topology MeasureTheory Set
 

@@ -68,7 +68,7 @@ theorem mul_pointedFisherConnection_mul
         (rankOne ℂ (A chi) (adjoint B psi) +
           rankOne ℂ (A psi) (adjoint B chi)) := by
   ext z
-  simp [pointedFisherConnection, ContinuousLinearMap.mul_apply,
+  simp [pointedFisherConnection, mul_apply_eq_comp,
     adjoint_inner_left]
 
 /-- Every bounded sandwich of the pointed Fisher connection has summable canonical diagonal. -/
@@ -105,7 +105,7 @@ theorem opTrace_mul_pointedFisherConnection_mul_cyclic
     show pointedFisherConnection psi chi * B * A =
         1 * pointedFisherConnection psi chi * (B * A) by noncomm_ring,
     opTrace_mul_pointedFisherConnection_mul]
-  simp [ContinuousLinearMap.mul_apply]
+  simp [mul_apply_eq_comp]
 
 /-- Double cutoff commutator, the curvature seen by the signed Ward trace. -/
 noncomputable def cutoffWardCurvature (e T : H →L[ℂ] H) : H →L[ℂ] H :=
@@ -383,8 +383,8 @@ theorem inner_conjugate_apply_involution
     inner ℂ (J x) ((J * D * J) (J y)) = inner ℂ x (D y) := by
   have hJJ (z : H) : J (J z) = z := by
     have hz := DFunLike.congr_fun hJ z
-    simpa [ContinuousLinearMap.mul_apply] using hz
-  simp only [ContinuousLinearMap.mul_apply, hJJ]
+    simpa [mul_apply_eq_comp] using hz
+  simp only [mul_apply_eq_comp, hJJ]
   calc
     inner ℂ (J x) (J (D y)) = inner ℂ x (adjoint J (J (D y))) :=
       (adjoint_inner_right J x (J (D y))).symm

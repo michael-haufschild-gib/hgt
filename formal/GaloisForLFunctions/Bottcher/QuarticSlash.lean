@@ -23,7 +23,9 @@ theorem quarticDefectH_slash_Tsq :
   funext z
   rw [ModularForm.slash_action_eq'_iff, quarticDefectH, quarticDefectH]
   have hact : ((ModularGroup.T ^ 2 • z : ℍ) : ℂ) = (z : ℂ) + 2 := by
-    have := ModularGroup.coe_T_zpow_smul_eq (z := z) (n := 2); push_cast at this ⊢; convert this using 2
+    have := ModularGroup.coe_T_zpow_smul_eq (z := z) (n := 2)
+    push_cast at this ⊢
+    exact this
   have he10 : ((ModularGroup.T ^ 2) 1 0 : ℤ) = 0 := by
     show (↑(ModularGroup.T ^ 2) : Matrix (Fin 2) (Fin 2) ℤ) 1 0 = 0; rw [Tsq_coe]; rfl
   have he11 : ((ModularGroup.T ^ 2) 1 1 : ℤ) = 1 := by

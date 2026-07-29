@@ -120,7 +120,7 @@ theorem re_inner_finiteCyclicObservableTwirlNumerator_quantumMasterConstraint_eq
           (finiteCyclicObservableTwirlNumerator U (quantumMasterConstraint D) N ψ)) =
       ∑ k ∈ Finset.range N, ‖D ((U ^ (N - k)) ψ)‖ ^ 2 := by
   rw [finiteCyclicObservableTwirlNumerator_eq_sum]
-  simp only [quantumMasterConstraint, ContinuousLinearMap.sum_apply, inner_sum, map_sum,
+  simp only [quantumMasterConstraint, _root_.sum_apply, inner_sum, map_sum,
     ContinuousLinearMap.mul_def]
   apply Finset.sum_congr rfl
   intro k hk

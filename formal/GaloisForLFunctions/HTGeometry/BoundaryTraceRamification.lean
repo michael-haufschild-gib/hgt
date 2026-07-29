@@ -35,7 +35,9 @@ theorem tendsto_thermalBoundaryRamificationAmplitude
     (hdensity : Tendsto (thermalBoundaryTraceDensity F) (𝓝[>] 0) (nhds ell)) :
     Tendsto (thermalBoundaryRamificationAmplitude F) (𝓝[>] 0)
       (nhds (Real.sqrt ell)) := by
-  simpa only [thermalBoundaryTraceDensity, thermalBoundaryRamificationAmplitude,
+  change Tendsto (fun u => ‖F u‖ / Real.sqrt (1 - Real.exp (-u))) (𝓝[>] 0)
+    (nhds (Real.sqrt ell))
+  simpa only [thermalBoundaryTraceDensity,
     Real.sqrt_div (sq_nonneg _), Real.sqrt_sq (norm_nonneg _)] using hdensity.sqrt
 
 section Differentiable
@@ -76,8 +78,8 @@ theorem tendsto_one_sub_exp_neg_slope_nhdsGT_zero :
     have hexp : HasDerivAt (fun u : ℝ => Real.exp (-u)) (-1) 0 := by
       convert hneg.exp using 1
       all_goals norm_num
-    convert (hasDerivAt_const (x := (0 : ℝ)) (c := (1 : ℝ))).sub hexp using 1
-    all_goals norm_num
+    simpa only [Pi.sub_apply, sub_neg_eq_add, zero_add] using!
+      (hasDerivAt_const (x := (0 : ℝ)) (c := (1 : ℝ))).sub hexp
   simpa only [zero_add, neg_zero, Real.exp_zero, sub_self, sub_zero, smul_eq_mul] using
     hderiv.tendsto_slope_zero_right
 

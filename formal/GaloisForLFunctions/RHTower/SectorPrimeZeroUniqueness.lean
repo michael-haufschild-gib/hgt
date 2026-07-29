@@ -81,7 +81,7 @@ theorem prime_shifted_log_power_recip_not_summable
   intro hshift
   have hlogtop : Tendsto (fun p : Nat.Primes ↦ Real.log (p : ℝ))
       cofinite atTop := by
-    simpa only [Function.comp_apply] using
+    simpa only [Function.comp_def] using!
       Real.tendsto_log_atTop.comp tendsto_prime_coe_real_cofinite_atTop
   have hlarge := Filter.tendsto_atTop.mp hlogtop (max R 1)
   have hmajor : Summable (fun p : Nat.Primes ↦
@@ -293,7 +293,7 @@ abbrev PrimeLogBeyond (R : ℝ) := (smallPrimeLogs R)ᶜ
 theorem smallPrimeLogs_finite (R : ℝ) : (smallPrimeLogs R).Finite := by
   have hlogtop : Filter.Tendsto (fun p : Nat.Primes ↦ Real.log (p : ℝ))
       Filter.cofinite Filter.atTop := by
-    simpa only [Function.comp_apply] using
+    simpa only [Function.comp_def] using!
       Real.tendsto_log_atTop.comp tendsto_prime_coe_real_cofinite_atTop
   have hlarge := Filter.tendsto_atTop.mp hlogtop (R + 2)
   rw [Filter.eventually_cofinite] at hlarge
@@ -418,9 +418,7 @@ theorem primeLogCayley_defect_not_summable
   have hone : Summable (fun p : PrimeLogBeyond R ↦
       (1 / ((Real.log ((p : Nat.Primes) : ℝ) - R) ^ n + 1) : ℝ)) := by
     have := htwo.mul_left (1 / 2 : ℝ)
-    convert this using 1
-    funext p
-    ring
+    exact this.congr (fun p => by ring)
   exact prime_shifted_log_power_recip_beyond_not_summable n R hR hone
 
 /-- A bounded analytic function on the unit disk, nonzero at the origin,
@@ -513,7 +511,7 @@ theorem summable_one_sub_norm_of_bounded_analytic_zeros_openDisk
         have hfa := hf ((R : ℂ) * z) (by simpa [mem_ball, dist_zero_right] using hmap)
         have hlin : AnalyticAt ℂ (fun w : ℂ ↦ (R : ℂ) * w) z :=
           analyticAt_const.mul analyticAt_id
-        simpa only [g, Function.comp_apply] using hfa.comp hlin
+        simpa only [g, Function.comp_def] using! hfa.comp hlin
       have hg0 : g 0 ≠ 0 := by simpa [g] using hf0
       have hgbound : ∀ z ∈ sphere (0 : ℂ) 1, ‖g z‖ ≤ M := by
         intro z hz

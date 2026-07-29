@@ -274,9 +274,15 @@ theorem hasDerivAt_cauchyTransform (ν : Measure ℝ) [IsFiniteMeasure ν]
     have hden : (t : ℂ) - z ≠ 0 := real_sub_ne_zero_of_im_ne_zero hzne t
     have hbase : HasDerivAt (fun w : ℂ => (t : ℂ) - w) (-1) z := by
       simpa using (hasDerivAt_id z).const_sub (t : ℂ)
-    have := hbase.inv hden
-    convert this using 1
-    field_simp
+    have hinv := hbase.inv hden
+    have hfun :
+        (fun w : ℂ => (t : ℂ) - w)⁻¹ =
+          (fun w : ℂ => ((t : ℂ) - w)⁻¹) := by
+      funext w
+      rfl
+    rw [hfun] at hinv
+    apply hinv.congr_deriv
+    field_simp [hden]
   have hmain := hasDerivAt_integral_of_dominated_loc_of_deriv_le
     (μ := ν) (F := fun z t => ((t : ℂ) - z)⁻¹)
     (F' := fun z t => (((t : ℂ) - z)⁻¹) ^ 2)

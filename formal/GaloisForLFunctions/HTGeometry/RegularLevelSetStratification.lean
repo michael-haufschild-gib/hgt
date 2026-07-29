@@ -90,7 +90,7 @@ theorem isLocalRegularLevelSetOfCodimAtLeast_zeroSet_finiteDimensional
     have hderiv : fderiv ℝ phi x =
         e.toContinuousLinearMap.comp (fderiv ℝ g x) := by
       change fderiv ℝ (fun y => e (g y)) x = _
-      rw [fderiv_comp' x e.differentiableAt
+      rw [fderiv_fun_comp x e.differentiableAt
         (hg.differentiable (by simp)).differentiableAt]
       have he : fderiv ℝ (e : Z → (Fin (Module.finrank ℝ Z) → ℝ)) (g x) =
           e.toContinuousLinearMap := e.hasFDerivAt.fderiv
@@ -122,7 +122,7 @@ theorem isLocalRegularLevelSetOfCodimAtLeast_zeroSet_inter_isOpen_finiteDimensio
     have hderiv : fderiv ℝ phi x =
         e.toContinuousLinearMap.comp (fderiv ℝ g x) := by
       change fderiv ℝ (fun y => e (g y)) x = _
-      rw [fderiv_comp' x e.differentiableAt
+      rw [fderiv_fun_comp x e.differentiableAt
         (hg.differentiable (by simp)).differentiableAt]
       have he : fderiv ℝ (e : Z → (Fin (Module.finrank ℝ Z) → ℝ)) (g x) =
           e.toContinuousLinearMap := e.hasFDerivAt.fderiv

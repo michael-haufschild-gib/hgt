@@ -203,7 +203,7 @@ theorem linearWidthDetectorPairReadout_principalBracketPair
       (ne_of_lt r.isLt).symm]
   · have hcoordinates : p.lower ≠ r.lower ∨ p.upper ≠ r.upper := by
       by_contra h
-      push_neg at h
+      push Not at h
       apply hpr
       cases p
       cases r

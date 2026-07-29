@@ -32,8 +32,8 @@ theorem exists_sign_soninLogFourierScatteringRayDistanceSq
   let a : SoninL2 := P ψ
   let b : SoninL2 := (1 - P) ψ
   have hψ : ψ = a + b := by
-    simp only [a, b, P, ContinuousLinearMap.sub_apply,
-      ContinuousLinearMap.one_apply]
+    simp only [a, b, P, _root_.sub_apply,
+      one_apply_eq_self]
     module
   have hSψ : soninLogFourierScattering ψ = a - b := by
     have hPapply := HTGeometry.finiteInvolutiveGaugeAverage_apply

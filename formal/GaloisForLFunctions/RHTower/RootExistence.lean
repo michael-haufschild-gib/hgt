@@ -70,7 +70,7 @@ theorem exists_root_of_finite {n : ℕ} (hn : 0 < n) (k : ℕ) :
       -- the peeled function has one fewer zero, same divisibility, finite orders
       have hZh_eq : {s ∈ U | h s = 0} = {s ∈ U | f s = 0} \ {ρ} := by
         ext x
-        simp only [Set.mem_setOf_eq, Set.mem_diff, Set.mem_singleton_iff]
+        simp only [Set.mem_setOf_eq, Set.mem_sdiff, Set.mem_singleton_iff]
         constructor
         · rintro ⟨hxU, hx0⟩
           have hxρ : x ≠ ρ := fun he => hhρ0 (he ▸ hx0)
@@ -87,7 +87,7 @@ theorem exists_root_of_finite {n : ℕ} (hn : 0 < n) (k : ℕ) :
       have hZh_card : hZh.toFinset.card ≤ k := by
         have hsub : hZh.toFinset = hZ.toFinset.erase ρ := by
           ext x
-          simp only [Set.Finite.mem_toFinset, Finset.mem_erase, hZh_eq, Set.mem_diff,
+          simp only [Set.Finite.mem_toFinset, Finset.mem_erase, hZh_eq, Set.mem_sdiff,
             Set.mem_singleton_iff, Set.Finite.mem_toFinset]
           tauto
         have hρmem : ρ ∈ hZ.toFinset := by

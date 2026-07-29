@@ -80,12 +80,12 @@ theorem finiteCyclicObservableTwirlNumerator_apply_of_fixed
     induction k with
     | zero => simp
     | succ k ih =>
-        rw [pow_succ, ContinuousLinearMap.mul_apply, hψ, ih]
+        rw [pow_succ, mul_apply_eq_comp, hψ, ih]
   rw [finiteCyclicObservableTwirlNumerator_eq_sum, finiteCyclicGaugeSum]
-  simp only [ContinuousLinearMap.sum_apply]
+  simp only [_root_.sum_apply]
   apply Finset.sum_congr rfl
   intro k hk
-  simp only [ContinuousLinearMap.mul_apply, hpow]
+  simp only [mul_apply_eq_comp, hpow]
 
 /-- On a stationary vector, twirling an observable is exactly projecting the observed vector onto
 the stationary sector. -/
@@ -94,7 +94,7 @@ theorem finiteCyclicObservableTwirl_apply_of_fixed
     finiteCyclicObservableTwirl U X N ψ =
       finiteCyclicGaugeAverage U N (X ψ) := by
   rw [finiteCyclicObservableTwirl, finiteCyclicGaugeAverage,
-    ContinuousLinearMap.smul_apply, ContinuousLinearMap.smul_apply,
+    _root_.smul_apply, _root_.smul_apply,
     finiteCyclicObservableTwirlNumerator_apply_of_fixed U X N hψ]
 
 end AlgebraicOrbitIdentities
@@ -192,7 +192,7 @@ theorem norm_finiteCyclicGaugeAverage_sq_add_complement_sq_of_periodic_isometry
     finiteCyclicGaugeAverage_idempotent U N hN hperiod
   have horth : inner 𝕜 (P ψ) ((1 - P) ψ) = 0 := by
     have hfix : P (P ψ) = P ψ := by
-      rw [← ContinuousLinearMap.mul_apply, hPP]
+      rw [← mul_apply_eq_comp, hPP]
     calc
       inner 𝕜 (P ψ) ((1 - P) ψ) = inner 𝕜 (P ψ) (ψ - P ψ) := by simp
       _ = inner 𝕜 ψ (P.adjoint (ψ - P ψ)) :=
@@ -274,7 +274,7 @@ theorem re_inner_finiteCyclicObservableTwirlKadisonDefect_eq_erasedNormSq
     induction k with
     | zero => simp
     | succ k ih =>
-        rw [pow_succ, ContinuousLinearMap.mul_apply, hψ, ih]
+        rw [pow_succ, mul_apply_eq_comp, hψ, ih]
   have hψleft : U.adjoint ψ = ψ := by
     rw [hUadj, hpowfix]
   have hΦadj : Φ.adjoint = Φ := by
@@ -290,7 +290,7 @@ theorem re_inner_finiteCyclicObservableTwirlKadisonDefect_eq_erasedNormSq
     U X N hN hperiod hψleft hψ
   have hBapply :
       B ψ = (1 - finiteCyclicGaugeAverage U N) (X ψ) := by
-    simp only [B, Φ, ContinuousLinearMap.sub_apply, ContinuousLinearMap.one_apply]
+    simp only [B, Φ, _root_.sub_apply, one_apply_eq_self]
     rw [finiteCyclicObservableTwirl_apply_of_fixed U X N hψ]
   calc
     RCLike.re
@@ -298,7 +298,7 @@ theorem re_inner_finiteCyclicObservableTwirlKadisonDefect_eq_erasedNormSq
         RCLike.re (inner 𝕜 ψ ((B * B) ψ)) := by
           exact congrArg RCLike.re hvalue
     _ = RCLike.re (inner 𝕜 ψ (B.adjoint (B ψ))) := by
-      rw [ContinuousLinearMap.mul_apply, hBadj]
+      rw [mul_apply_eq_comp, hBadj]
     _ = ‖B ψ‖ ^ 2 := (B.apply_norm_sq_eq_inner_adjoint_right ψ).symm
     _ = ‖(1 - finiteCyclicGaugeAverage U N) (X ψ)‖ ^ 2 := by rw [hBapply]
 
@@ -349,7 +349,7 @@ theorem re_inner_finiteCyclicObservableTwirlKadisonDefect_eq_zero_iff_twirl_fixe
     rw [finiteCyclicObservableTwirl_apply_of_fixed U X N hψ]
     have hxP : X ψ = finiteCyclicGaugeAverage U N (X ψ) := by
       apply sub_eq_zero.mp
-      simpa only [ContinuousLinearMap.sub_apply, ContinuousLinearMap.one_apply] using hresidual
+      simpa only [_root_.sub_apply, one_apply_eq_self] using hresidual
     exact hxP.symm
   · intro hfixed
     rw [finiteCyclicObservableTwirl_apply_of_fixed U X N hψ] at hfixed
@@ -383,8 +383,8 @@ theorem re_inner_finiteCyclicObservableTwirlKadisonDefect_eq_zero_iff_commutator
     U X N hN hadjoint_mul hperiod hX hψ]
   rw [GaloisForLFunctions.PhysicalState]
   change (U - 1) (X ψ) = 0 ↔ (U * X - X * U) ψ = 0
-  simp only [ContinuousLinearMap.sub_apply, ContinuousLinearMap.mul_apply,
-    ContinuousLinearMap.one_apply, hψ]
+  simp only [_root_.sub_apply, mul_apply_eq_comp,
+    one_apply_eq_self, hψ]
 
 end OrthogonalFiniteClock
 

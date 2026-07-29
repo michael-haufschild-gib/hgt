@@ -180,7 +180,7 @@ theorem projectiveGramTangentEnergy_eq_firstKrylovDeterminant
   rw [inner_self_eq_norm_sq_to_K] at h00 h11
   have hv0 : ‖v 0‖ ^ 2 = m 0 := by
     apply Complex.ofReal_injective
-    simpa only [Complex.ofReal_pow, zero_add] using h00
+    simpa only [Complex.ofReal_pow, zero_add] using! h00
   have hv1 : ‖v 1‖ ^ 2 = m 2 := by
     apply Complex.ofReal_injective
     norm_num at h11 ⊢

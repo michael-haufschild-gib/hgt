@@ -22,7 +22,7 @@ instance arithmeticFunctionComplex_nontrivial : Nontrivial (ArithmeticFunction �
   refine ⟨⟨0, 1, ?_⟩⟩
   intro h
   have h1 := congrArg (fun f : ArithmeticFunction ℂ => f 1) h
-  simpa using h1
+  simp at h1
 
 /-- The coefficient at the product of two first nonzero indices has only the distinguished
 factorization as a nonzero summand. -/
@@ -83,9 +83,9 @@ theorem arithmeticFunction_mul_ne_zero
   have hm : f m ≠ 0 := Nat.find_spec hfex
   have hn : g n ≠ 0 := Nat.find_spec hgex
   have hmpos : 0 < m := by
-    exact Nat.pos_of_ne_zero (fun hm0 => hm (by simpa [m, hm0] using ArithmeticFunction.map_zero (f := f)))
+    exact Nat.pos_of_ne_zero (fun hm0 => hm (by simp [m, hm0]))
   have hnpos : 0 < n := by
-    exact Nat.pos_of_ne_zero (fun hn0 => hn (by simpa [n, hn0] using ArithmeticFunction.map_zero (f := g)))
+    exact Nat.pos_of_ne_zero (fun hn0 => hn (by simp [n, hn0]))
   have hfbelow : ∀ k, k < m → f k = 0 := by
     intro k hk
     by_contra hfk

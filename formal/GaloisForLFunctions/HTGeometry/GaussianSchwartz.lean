@@ -39,7 +39,11 @@ theorem contDiff_gaussReal {n : WithTop ℕ∞} : ContDiff ℝ n gaussReal := by
 theorem hasDerivAt_gaussReal (x : ℝ) :
     HasDerivAt gaussReal (-(2 * π * x) * gaussReal x) x := by
   have h : HasDerivAt (fun y : ℝ => -(π * y ^ 2)) (-(π * (2 * x))) x := by
-    simpa using ((hasDerivAt_pow 2 x).const_mul π).neg
+    have hraw := ((hasDerivAt_pow 2 x).const_mul π).neg
+    rw [show (-(fun y : ℝ => π * y ^ 2)) = (fun y : ℝ => -(π * y ^ 2)) by
+      funext y
+      rfl] at hraw
+    exact hraw.congr_deriv (by norm_num)
   have h2 := h.exp
   unfold gaussReal
   convert h2 using 1
@@ -51,9 +55,9 @@ theorem hasDerivAt_poly_mul_gaussReal (p : Polynomial ℝ) (x : ℝ) :
       ((p.derivative - Polynomial.C (2 * π) * Polynomial.X * p).eval x * gaussReal x) x := by
   have hp : HasDerivAt (fun y => p.eval y) (p.derivative.eval x) x := p.hasDerivAt x
   have hmul := hp.mul (hasDerivAt_gaussReal x)
-  convert hmul using 1
-  simp only [Polynomial.eval_sub, Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_X]
-  ring
+  simpa only [Pi.mul_apply] using! hmul.congr_deriv (by
+    simp only [Polynomial.eval_sub, Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_X]
+    ring)
 
 /-- **Every iterated derivative of the Gaussian is a polynomial multiple of it.** -/
 theorem exists_poly_iteratedDeriv_gaussReal (n : ℕ) :
@@ -207,7 +211,8 @@ theorem contDiff_polyEval (p : Polynomial ℝ) {n : WithTop ℕ∞} :
     ContDiff ℝ n (fun y : ℝ => p.eval y) := by
   induction p using Polynomial.induction_on' with
   | add q r hq hr => simpa [Polynomial.eval_add] using hq.add hr
-  | monomial m c => simpa [Polynomial.eval_monomial] using (contDiff_id.pow m).const_smul c
+  | monomial m c =>
+      simpa [Polynomial.eval_monomial, smul_eq_mul] using! (contDiff_id.pow m).const_smul c
 
 theorem contDiff_polyGauss (p : Polynomial ℝ) {n : WithTop ℕ∞} :
     ContDiff ℝ n (fun y => p.eval y * gaussReal y) :=

@@ -61,7 +61,7 @@ theorem integral_mul_integral_le_of_monotoneLikelihoodKernel
     exact ((hT₁.sub hT₂).sub hT₃).add hT₄
   have hKnonneg : 0 ≤ ∫ z, K z ∂μ.prod μ := by
     apply integral_nonneg_of_ae
-    simpa only [K] using hkernel
+    simpa only [K] using! hkernel
   have hT₁value :
       (∫ z : α × α, h z.1 * (g z.2 * f z.2) ∂μ.prod μ) =
         (∫ x, h x ∂μ) * ∫ x, g x * f x ∂μ :=

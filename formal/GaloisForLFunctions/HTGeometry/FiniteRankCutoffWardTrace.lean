@@ -132,7 +132,7 @@ theorem summable_inner_diag_mul_finiteRankProbe_mul
       fun j ↦ ∑ i, c i * inner ℂ (hsBasis ℂ H j)
         (rankOne ℂ (A (x i)) (adjoint B (y i)) (hsBasis ℂ H j)) := by
     funext j
-    rw [ContinuousLinearMap.sum_apply, inner_sum]
+    rw [_root_.sum_apply, inner_sum]
     apply Finset.sum_congr rfl
     intro i hi
     rw [smul_apply, inner_smul_right]
@@ -162,7 +162,7 @@ theorem opTrace_mul_finiteRankProbe_mul
       · rw [opTrace_smul, opTrace_rankOne, adjoint_inner_left, ih]
       · simp_rw [smul_apply, inner_smul_right]
         exact (summable_inner_diag_rankOne (A (x i)) (adjoint B (y i))).mul_left (c i)
-      · simpa only [ContinuousLinearMap.sum_apply, inner_sum] using
+      · simpa only [_root_.sum_apply, inner_sum] using
           (summable_sum (s := s) (fun j hj ↦ by
             simpa only [smul_apply, inner_smul_right] using
               (summable_inner_diag_rankOne (A (x j))
@@ -178,7 +178,7 @@ theorem opTrace_mul_finiteRankProbe_mul_cyclic
     show finiteRankProbe c x y * B * A =
         1 * finiteRankProbe c x y * (B * A) by noncomm_ring,
     opTrace_mul_finiteRankProbe_mul]
-  simp [ContinuousLinearMap.mul_apply]
+  simp [mul_apply_eq_comp]
 
 /-- Signed cutoff pairing of a finite-rank source packet with a bounded channel. -/
 noncomputable def finiteRankCutoffWardTrace

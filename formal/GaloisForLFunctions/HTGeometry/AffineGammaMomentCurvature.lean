@@ -226,9 +226,10 @@ theorem hasDerivAt_normalizedMomentRatio
         (fun k => normalizedMomentRatio M a lambda k) j) lambda := by
   have hquot := (hshift (j + 1)).div (hshift j) (hMne j)
   have hscaled := hquot.div_const (a j)
-  convert hscaled using 1
-  simp only [normalizedMomentRatio, weightedMomentRatioVelocity]
-  field_simp [hMne j, hMne (j + 1), hane j, hane (j + 1)]
+  simpa only [normalizedMomentRatio, Pi.div_apply] using!
+    hscaled.congr_deriv (by
+      simp only [weightedMomentRatioVelocity]
+      field_simp [hMne j, hMne (j + 1), hane j, hane (j + 1)])
 
 /-- Second curvature of the normalized ratios of an abstract moment ladder. -/
 def normalizedMomentRatioCurvature
@@ -269,7 +270,7 @@ theorem hasDerivAt_normalizedMomentRatioCurvature_of_affineWeights
       HasDerivAt (fun eta => normalizedMomentRatioCurvature M a eta j)
         (ratioSecondCurvatureVelocity a q j) lambda := by
     simpa only [normalizedMomentRatioCurvature, ratioSecondCurvature,
-      ratioSecondCurvatureVelocity, q] using HasDerivAt.add hsub h2
+      ratioSecondCurvatureVelocity, q, Pi.add_apply] using! HasDerivAt.add hsub h2
   have hid :
       ratioSecondCurvatureVelocity a q j =
         4 * h * (q j - q (j + 1)) ^ 2 +

@@ -125,7 +125,7 @@ theorem exists_measurableSet_measure_ne_zero_ne_one_of_not_dirac
     ∃ A : Set X, MeasurableSet A ∧
       (mu : Measure X) A ≠ 0 ∧ (mu : Measure X) A ≠ 1 := by
   by_contra h
-  push_neg at h
+  push Not at h
   letI : IsZeroOneMeasure (mu : Measure X) :=
     ⟨fun {A} hA => by
       by_cases h0 : (mu : Measure X) A = 0
@@ -175,7 +175,7 @@ theorem isExtremeProbabilityLaw_univ_iff_dirac
   constructor
   · intro hextreme
     by_contra hdirac
-    push_neg at hdirac
+    push Not at hdirac
     obtain ⟨A, hA, hA0, hA1⟩ :=
       exists_measurableSet_measure_ne_zero_ne_one_of_not_dirac mu hdirac
     have hAle : (mu : Measure X) A ≤ 1 := by

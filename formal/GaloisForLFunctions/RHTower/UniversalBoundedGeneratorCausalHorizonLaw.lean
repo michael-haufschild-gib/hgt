@@ -31,7 +31,7 @@ theorem boundedGeneratorOrbit_series_hasSum
   funext m
   unfold φ
   simp only [Function.comp_apply, ContinuousLinearMap.apply_apply,
-    smul_pow, ContinuousLinearMap.smul_apply]
+    smul_pow, _root_.smul_apply]
   rw [div_eq_mul_inv]
   module
 

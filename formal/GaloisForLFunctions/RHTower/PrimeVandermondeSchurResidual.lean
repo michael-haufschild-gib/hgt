@@ -72,8 +72,15 @@ theorem canonicalFiniteDerivationPacket_matches {k : ℕ} {f : Fin k → ℂ}
   have hmul : A * A⁻¹ = 1 := Matrix.mul_nonsing_inv A hdet
   have happ : (A *ᵥ (A⁻¹ *ᵥ finiteDerivationTarget)) j = finiteDerivationTarget j := by
     rw [Matrix.mulVec_mulVec, hmul, Matrix.one_mulVec]
-  simpa [A, finiteMomentSamplingMatrix, canonicalFiniteDerivationPacket,
-    finiteDerivationTarget, Matrix.mulVec, mul_comm] using happ
+  change (∑ i : Fin k, canonicalFiniteDerivationPacket f i * f i ^ (j : ℕ)) =
+    finiteDerivationTarget j
+  rw [← happ]
+  simp only [A, finiteMomentSamplingMatrix, canonicalFiniteDerivationPacket,
+    Matrix.mulVec]
+  apply Finset.sum_congr rfl
+  intro i _
+  rw [mul_comm]
+  congr 1
 
 /-- The scalar Schur complement is the target's first omitted moment minus the interpolated one. -/
 theorem finiteDerivationSchurResidual_apply {k : ℕ} (f : Fin k → ℂ) :

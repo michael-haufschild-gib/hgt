@@ -53,7 +53,7 @@ theorem iteratedDeriv_finset_sum {ι : Type*} (u : Finset ι) (n : ℕ) {f : ι 
     (hf : ∀ i ∈ u, ContDiff ℂ n (f i)) (x : ℂ) :
     iteratedDeriv n (fun z => ∑ i ∈ u, f i z) x = ∑ i ∈ u, iteratedDeriv n (f i) x := by
   simp only [iteratedDeriv_eq_iteratedFDeriv]
-  rw [iteratedFDeriv_sum hf, Finset.sum_apply, ContinuousMultilinearMap.sum_apply]
+  rw [iteratedFDeriv_sum hf, Finset.sum_apply, _root_.sum_apply]
 
 /-- **Distinct-exponent independence (exp form).** The entire functions `z ↦ exp(β_k z)`, for pairwise
 distinct `β_k`, are `ℂ`-linearly independent: differentiate `j` times and evaluate at `0` to get the

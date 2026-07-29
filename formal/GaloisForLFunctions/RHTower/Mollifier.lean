@@ -30,7 +30,6 @@ collapse to its constant term. -/
 theorem sum_moebius_divisors (n : ℕ) :
     (∑ d ∈ n.divisors, (ArithmeticFunction.moebius d : ℤ)) = if n = 1 then 1 else 0 := by
   have h := congrArg (fun f : ArithmeticFunction ℤ => f n) coe_zeta_mul_moebius
-  simp only at h
   rw [ArithmeticFunction.coe_zeta_mul_apply, ArithmeticFunction.one_apply] at h
   rw [← h]
 

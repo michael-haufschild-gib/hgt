@@ -230,7 +230,7 @@ theorem hsInner_quantumMasterEffectPowerColumn_eq_tracePower
         rfl
       rw [henergy]
       change (T ^ m) (T ((T ^ n) x)) = (T ^ (m + n + 1)) x
-      rw [← ContinuousLinearMap.mul_apply, ← ContinuousLinearMap.mul_apply]
+      rw [← mul_apply_eq_comp, ← mul_apply_eq_comp]
       congr 1
       rw [← pow_succ, ← pow_add]
       congr 1
@@ -341,7 +341,7 @@ theorem quantumMasterEffectMoment_succ_le_sq_opNorm_mul
       apply ContinuousLinearMap.ext
       intro x
       simp only [V, quantumMasterEffectPowerColumn, quantumChannelEffect,
-        ContinuousLinearMap.comp_apply, pow_succ', ContinuousLinearMap.mul_apply]
+        ContinuousLinearMap.comp_apply, pow_succ', mul_apply_eq_comp]
     rw [← hfactor]
     simpa only [hadjointNorm] using hcomp
   · subst k
@@ -534,8 +534,8 @@ theorem quantumMasterEffectComplement_isPositive
       _ ≤ R * ‖x‖ ^ 2 :=
         mul_le_mul_of_nonneg_right hR (sq_nonneg ‖x‖)
   rw [ContinuousLinearMap.reApplyInnerSelf_apply]
-  simp only [quantumMasterEffectComplement, ContinuousLinearMap.sub_apply,
-    ContinuousLinearMap.smul_apply, ContinuousLinearMap.one_apply,
+  simp only [quantumMasterEffectComplement, _root_.sub_apply,
+    _root_.smul_apply, one_apply_eq_self,
     inner_sub_left, inner_smul_left, map_sub]
   rw [quantumChannelEffect, ContinuousLinearMap.comp_apply,
     ContinuousLinearMap.adjoint_inner_left, inner_self_eq_norm_sq_to_K]
@@ -784,7 +784,7 @@ private theorem opTrace_sub_eq_sub_of_summable_diag
           inner ℂ (ContinuousLinearMap.hsBasis ℂ E i)
             (T (ContinuousLinearMap.hsBasis ℂ E i))) := by
       exact tsum_congr fun i => by
-        rw [ContinuousLinearMap.sub_apply, inner_sub_right]
+        rw [_root_.sub_apply, inner_sub_right]
     _ = _ := hS.tsum_sub hT
 
 private theorem opTrace_smul_eq
@@ -794,7 +794,7 @@ private theorem opTrace_smul_eq
   unfold ContinuousLinearMap.opTrace
   rw [← tsum_mul_left]
   exact tsum_congr fun i => by
-    rw [ContinuousLinearMap.smul_apply, inner_smul_right]
+    rw [_root_.smul_apply, inner_smul_right]
 
 private theorem opTrace_smul_sub_eq_of_summable_diag
     (c : ℂ) (S T : E →L[ℂ] E)
@@ -813,7 +813,7 @@ private theorem opTrace_smul_sub_eq_of_summable_diag
           inner ℂ (ContinuousLinearMap.hsBasis ℂ E i)
             (T (ContinuousLinearMap.hsBasis ℂ E i))) := by
       exact tsum_congr fun i => by
-        rw [ContinuousLinearMap.sub_apply, ContinuousLinearMap.smul_apply,
+        rw [_root_.sub_apply, _root_.smul_apply,
           inner_sub_right, inner_smul_right]
     _ = (∑' i, c * inner ℂ (ContinuousLinearMap.hsBasis ℂ E i)
           (S (ContinuousLinearMap.hsBasis ℂ E i))) -

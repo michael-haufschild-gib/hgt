@@ -25,7 +25,7 @@ theorem re_inner_selfAdjointIdempotent_apply_eq_normSq
     (P : E →L[𝕜] E) (hPadj : P.adjoint = P) (hP2 : P * P = P) (x : E) :
     RCLike.re (inner 𝕜 x (P x)) = ‖P x‖ ^ 2 := by
   have hfixed : P (P x) = P x := by
-    rw [← ContinuousLinearMap.mul_apply, hP2]
+    rw [← mul_apply_eq_comp, hP2]
   calc
     RCLike.re (inner 𝕜 x (P x)) =
         RCLike.re (inner 𝕜 (P.adjoint x) x) := by
@@ -46,7 +46,7 @@ theorem norm_pow_apply_sq_eq_of_adjoint_mul_self
   calc
     ‖(U ^ k) x‖ ^ 2 =
         RCLike.re (inner 𝕜 x (((U ^ k).adjoint * U ^ k) x)) := by
-          simpa only [ContinuousLinearMap.mul_apply] using
+          simpa only [mul_apply_eq_comp] using
             (U ^ k).apply_norm_sq_eq_inner_adjoint_right x
     _ = ‖x‖ ^ 2 := by rw [hk]; simp
 
@@ -139,7 +139,7 @@ theorem sum_finiteClockCommutator_sq_eq_starObservability
         ∑ k ∈ Finset.range N, ‖(U ^ k) (X ψ) - X ψ‖ ^ 2 := by
           apply Finset.sum_congr rfl
           intro k hk
-          simp only [ContinuousLinearMap.sub_apply, ContinuousLinearMap.mul_apply, hpowfix]
+          simp only [_root_.sub_apply, mul_apply_eq_comp, hpowfix]
     _ = 2 * (N : ℝ) *
         ‖(1 - finiteCyclicGaugeAverage U N) (X ψ)‖ ^ 2 :=
       sum_finiteClockOrbitDeviation_sq_eq U N hN hadjoint_mul hperiod (X ψ)

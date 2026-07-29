@@ -84,7 +84,10 @@ private theorem integrableOn_comp_sub_Ioc
     simp only [mem_preimage, mem_Ioc]
     constructor <;> intro hh <;> constructor <;> linarith [hh.1, hh.2]
   rw [hpre] at hi
-  simpa only [Function.comp_apply, sub_eq_add_neg] using hi
+  rw [show (fun h => f (h - L)) = f ∘ fun h => h + -L by
+    funext h
+    rw [Function.comp_apply, sub_eq_add_neg]]
+  exact hi
 
 private theorem setIntegral_Ioc_comp_sub_eq
     (f : ℝ → ℝ) (a b L : ℝ) :
@@ -127,6 +130,6 @@ theorem sharpPrimePolarIntegral_eq_twice_adjacentBlock
       exact integrableOn_criticalMellinCompletedError_Ioc)]
   rw [setIntegral_Ioc_comp_sub_eq]
   rw [criticalMellinAdjacentBlock]
-  ring
+  ring_nf
 
 end RHTower

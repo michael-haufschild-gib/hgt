@@ -301,7 +301,7 @@ theorem soninAllPrimeColumnCoordinateOperator_ne_zero_iff_exists_primePowerResid
   constructor
   · intro hcolumn
     by_contra hnone
-    push_neg at hnone
+    push Not at hnone
     apply hcolumn
     exact (HilbertSchmidt.toOperatorRect_eq_zero_iff
       (soninAllPrimeColumnKernel_isHSRect a ha)).2 (by
@@ -396,7 +396,7 @@ theorem soninPrimePowerCrossOverlap_eq_smul (a : ℝ) (α β : Nat.Primes × ℕ
   rw [soninPrimePowerCrossOverlap, centralSoninWeightedPrimePowerResidual, hadj]
   apply ContinuousLinearMap.ext
   intro x
-  simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.smul_apply,
+  simp only [ContinuousLinearMap.comp_apply, _root_.smul_apply,
     soninPrimePowerResidualCrossOverlap, map_smul, smul_smul]
   rw [mul_comm]
 

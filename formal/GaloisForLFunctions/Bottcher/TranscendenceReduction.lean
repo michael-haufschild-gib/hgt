@@ -44,20 +44,20 @@ theorem eval₂_polyToAnalytic_val (c : ℂ) (hU : U ⊆ escapeOpen c) (q : Poly
         = (analyticSubring U).subtype (q.eval₂ (polyToAnalytic U) (phiAnalytic c hU)) from rfl]
   rw [hom_eval₂ q (polyToAnalytic U) (analyticSubring U).subtype (phiAnalytic c hU)]
   have hpi : (fun z => q.eval₂ (Polynomial.evalRingHom z) (bottcherCoord c z))
-      = q.eval₂ (Pi.ringHom (fun z : ℂ => Polynomial.evalRingHom z)) (bottcherCoord c) := by
+      = q.eval₂ (RingHom.pi (fun z : ℂ => Polynomial.evalRingHom z)) (bottcherCoord c) := by
     funext z
     change eval₂ (evalRingHom z) (bottcherCoord c z) q
       = Pi.evalRingHom (fun _ : ℂ => ℂ) z
-          (eval₂ (Pi.ringHom fun z : ℂ => evalRingHom z) (bottcherCoord c) q)
-    rw [hom_eval₂ q (Pi.ringHom (fun z : ℂ => Polynomial.evalRingHom z))
+          (eval₂ (RingHom.pi fun z : ℂ => evalRingHom z) (bottcherCoord c) q)
+    rw [hom_eval₂ q (RingHom.pi (fun z : ℂ => Polynomial.evalRingHom z))
       (Pi.evalRingHom (fun _ : ℂ => ℂ) z) (bottcherCoord c)]
     rfl
   rw [hpi]
-  rw [show (↑(q.eval₂ (Pi.ringHom (fun z : ℂ => Polynomial.evalRingHom z)) (bottcherCoord c))
+  rw [show (↑(q.eval₂ (RingHom.pi (fun z : ℂ => Polynomial.evalRingHom z)) (bottcherCoord c))
         : Germ (𝓟 U) ℂ)
       = Germ.coeRingHom (𝓟 U)
-          (q.eval₂ (Pi.ringHom (fun z : ℂ => Polynomial.evalRingHom z)) (bottcherCoord c)) from rfl]
-  rw [hom_eval₂ q (Pi.ringHom (fun z : ℂ => Polynomial.evalRingHom z)) (Germ.coeRingHom (𝓟 U))
+          (q.eval₂ (RingHom.pi (fun z : ℂ => Polynomial.evalRingHom z)) (bottcherCoord c)) from rfl]
+  rw [hom_eval₂ q (RingHom.pi (fun z : ℂ => Polynomial.evalRingHom z)) (Germ.coeRingHom (𝓟 U))
     (bottcherCoord c)]
   rfl
 
@@ -118,7 +118,10 @@ theorem analyticOnNhd_eval₂_bottcher (c : ℂ) (hU : U ⊆ escapeOpen c)
   have h1 : AnalyticOnNhd ℂ (fun z => (R.coeff i).eval z) U := analyticOnNhd_polyEval U (R.coeff i)
   have h2 : AnalyticOnNhd ℂ (fun z => (bottcherCoord c z) ^ i) U := by
     have := ((analyticOnNhd_bottcherCoord_full c).mono hU).pow i
-    simpa [Pi.pow_apply] using this
+    rw [show (fun z => (bottcherCoord c z) ^ i) = bottcherCoord c ^ i by
+      funext z
+      rfl]
+    exact this
   exact h1.mul h2
 
 /-- **Minimal-degree relation ⟹ cofinitely-many simple-root points.** From *any* nonzero `q ∈ ℂ[z][Y]`

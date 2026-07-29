@@ -63,10 +63,12 @@ theorem exp_neg_le_quadratic {x : ℝ} (hx : 0 ≤ x) :
         norm_num at this
         simpa using this
       have hc : HasDerivAt (fun y : ℝ => Real.exp (-y)) (-Real.exp (-y)) y := by
-        simpa using (Real.hasDerivAt_exp (-y)).comp y ((hasDerivAt_id y).neg)
-      have := (ha.add hb).sub hc
-      convert this using 1
-      ring
+        rw [show (fun y : ℝ => Real.exp (-y)) = Real.exp ∘ Neg.neg by rfl]
+        exact ((Real.hasDerivAt_exp (-y)).comp y ((hasDerivAt_id y).neg)).congr_deriv (by ring)
+      rw [show (fun y : ℝ => 1 - y + y ^ 2 / 2 - Real.exp (-y)) =
+          (fun y : ℝ => 1 - y) + (fun y : ℝ => y ^ 2 / 2) -
+            (fun y : ℝ => Real.exp (-y)) by rfl]
+      exact ((ha.add hb).sub hc).congr_deriv (by ring)
     rw [h1.deriv]
     have := Real.add_one_le_exp (-y)
     linarith

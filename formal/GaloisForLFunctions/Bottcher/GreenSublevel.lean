@@ -194,7 +194,7 @@ theorem isConnected_quadratic_preimage {c : ℂ} {U : Set ℂ}
       · rintro ⟨huU, hunW⟩
         refine ⟨huU, ?_⟩
         rintro ⟨y, hy, rfl⟩
-        rw [Set.mem_compl_iff, Set.mem_diff, not_and, not_not] at hy
+        rw [Set.mem_compl_iff, Set.mem_sdiff, not_and, not_not] at hy
         have hyP : y ∈ P := by
           show quadratic c y ∈ U
           exact huU
@@ -204,7 +204,7 @@ theorem isConnected_quadratic_preimage {c : ℂ} {U : Set ℂ}
         rintro ⟨y, hyW, rfl⟩
         apply hcomp'
         refine ⟨y, ?_, rfl⟩
-        rw [Set.mem_compl_iff, Set.mem_diff, not_and, not_not]
+        rw [Set.mem_compl_iff, Set.mem_sdiff, not_and, not_not]
         intro _
         exact hyW
     -- clopen dichotomy in the connected U
@@ -225,7 +225,7 @@ theorem isConnected_quadratic_preimage {c : ℂ} {U : Set ℂ}
       obtain ⟨y, hyW, rfl⟩ := hv1
       apply hv2
       refine ⟨y, ?_, rfl⟩
-      rw [Set.mem_compl_iff, Set.mem_diff, not_and, not_not]
+      rw [Set.mem_compl_iff, Set.mem_sdiff, not_and, not_not]
       intro _
       exact hyW
     · -- f(W) = U ∋ c, so 0 ∈ W

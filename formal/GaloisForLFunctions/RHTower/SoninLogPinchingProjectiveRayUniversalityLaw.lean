@@ -65,12 +65,12 @@ theorem soninLogPinching_projectiveRayUniversality
   have hfixed : soninLogFourierScattering (Y ψ) = Y ψ := by
     rw [GaloisForLFunctions.PhysicalState] at hphysical
     apply sub_eq_zero.mp
-    simpa only [ContinuousLinearMap.sub_apply, ContinuousLinearMap.one_apply] using hphysical
+    simpa only [_root_.sub_apply, one_apply_eq_self] using hphysical
   have havg : soninLogFourierInvariantAverage (Y ψ) = Y ψ := by
     rw [soninLogFourierInvariantAverage_apply, hfixed]
     module
   have hcomplement : (1 - soninLogFourierInvariantAverage) (Y ψ) = 0 := by
-    simp only [ContinuousLinearMap.sub_apply, ContinuousLinearMap.one_apply, havg, sub_self]
+    simp only [_root_.sub_apply, one_apply_eq_self, havg, sub_self]
   have hray : soninLogFourierScatteringRayDistanceSq (Y ψ) = 0 := by
     simp [soninLogFourierScatteringRayDistanceSq, havg, hcomplement]
   have hprojective :

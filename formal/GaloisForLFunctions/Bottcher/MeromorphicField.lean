@@ -107,7 +107,7 @@ theorem analyticOnNhd_polyEval (p : Polynomial ℂ) :
 /-- The ring hom `ℂ[X] →+* analyticSubring U`, sending a polynomial to the germ of its evaluation
 function `z ↦ p(z)`. -/
 noncomputable def polyToAnalytic : Polynomial ℂ →+* analyticSubring U :=
-  ((Germ.coeRingHom (𝓟 U)).comp (Pi.ringHom (fun z => Polynomial.evalRingHom z))).codRestrict
+  ((Germ.coeRingHom (𝓟 U)).comp (RingHom.pi (fun z => Polynomial.evalRingHom z))).codRestrict
     (analyticSubring U) (fun p => ⟨fun z => p.eval z, analyticOnNhd_polyEval U p, rfl⟩)
 
 /-- `polyToAnalytic` is **injective** when `U` is infinite: a polynomial whose evaluation vanishes on
@@ -194,7 +194,7 @@ theorem meroField_germ_eq_zero_iff (hUo : IsOpen U) (hUc : IsPreconnected U) (hU
 /-- The constant ring hom `ℂ →+* analyticSubring U`: `a ↦` germ of the constant function `a`. The
 scalar embedding of the carrier, used to evaluate `ℂ`-coefficients of a relation. -/
 noncomputable def constToAnalytic (U : Set ℂ) : ℂ →+* analyticSubring U :=
-  ((Germ.coeRingHom (𝓟 U)).comp (Pi.ringHom (fun _ : ℂ => RingHom.id ℂ))).codRestrict
+  ((Germ.coeRingHom (𝓟 U)).comp (RingHom.pi (fun _ : ℂ => RingHom.id ℂ))).codRestrict
     (analyticSubring U) (fun a => ⟨fun _ => a, analyticOnNhd_const, rfl⟩)
 
 /-- **Meromorphic faithfulness (fraction form).** For `a, b` analytic germs with `b ≠ 0`, the
@@ -909,7 +909,10 @@ theorem polyToAnalyticVia_coe {U : Set ℂ} (p₀ : analyticSubring U) {f₀ : �
   | C a =>
     rw [polyToAnalyticVia_C]
     show ((constToAnalytic U a : analyticSubring U) : Germ (𝓟 U) ℂ) = _
-    apply Germ.coe_eq.mpr; apply Filter.eventually_principal.mpr; intro w _; simp [eval_C]
+    apply Germ.coe_eq.mpr
+    apply Filter.eventually_principal.mpr
+    intro w _
+    simp only [RingHom.pi_apply, RingHom.id_apply, eval_C]
   | add p r hp hr =>
     rw [map_add, Subring.coe_add, hp, hr, ← Germ.coe_add]
     apply Germ.coe_eq.mpr; apply Filter.eventually_principal.mpr; intro w _; simp [eval_add]

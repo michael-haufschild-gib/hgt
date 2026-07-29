@@ -73,7 +73,7 @@ theorem shiftedPascalMatrix_succ (n r : ℕ) :
       intro h
       have := congrArg Fin.val h
       omega
-    rw [Finset.sum_eq_sum_diff_singleton_add (Finset.mem_univ j)
+    rw [Finset.sum_eq_sum_sdiff_singleton_add (Finset.mem_univ j)
       (fun x => if x = j then ((Nat.choose (n + i) x : ℤ))
         else if (x : ℕ) + 1 = j then (Nat.choose (n + i) x : ℤ) else 0)]
     simp only [↓reduceIte]
@@ -163,7 +163,7 @@ theorem exponentialPascalMatrix_succ (q : ℤ) (n r : ℕ) :
       intro h
       have := congrArg Fin.val h
       omega
-    rw [Finset.sum_eq_sum_diff_singleton_add (Finset.mem_univ j)
+    rw [Finset.sum_eq_sum_sdiff_singleton_add (Finset.mem_univ j)
       (fun x => if x = j then
           (Nat.choose (n + i) x : ℤ) * q ^ (n + i - x) * q
         else if (x : ℕ) + 1 = j then
@@ -203,7 +203,8 @@ private lemma exponentialPascalMatrix_zero_det (q : ℤ) (r : ℕ) :
     change i < j at h
     simp only [exponentialPascalMatrix]
     norm_cast
-    simp [Nat.choose_eq_zero_of_lt (by simpa using h)]
+    have hij : (i : ℕ) < (j : ℕ) := by exact_mod_cast h
+    simp [Nat.choose_eq_zero_of_lt hij]
 
 /-- Exact determinant of every exponentially weighted Pascal window. -/
 theorem exponentialPascalMatrix_det (q : ℤ) (n r : ℕ) :

@@ -103,7 +103,8 @@ theorem _root_.Orthonormal.countable_index {v : ι → E}
     have hdist : 1 ≤ dist (v i) (v j) := by
       rw [dist_eq_norm]
       nlinarith [norm_nonneg (v i - v j)]
-    convert hdist using 1 <;> norm_num [s]
+    convert hdist using 1
+    all_goals norm_num [s]
   · intro i
     exact Metric.isOpen_ball
   · intro i

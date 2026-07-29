@@ -57,7 +57,7 @@ private theorem midpoint_right_eq {x z : E} (h : midpoint ℝ x z = x) : z = x :
 theorem extremePoints_eq_diff_iUnion {K : Set E} (hK : Convex ℝ K) :
     K.extremePoints ℝ = K \ ⋃ n, nonExtremeWitness K n := by
   ext x
-  rw [mem_extremePoints_iff_forall_segment, Set.mem_diff, Set.mem_iUnion, not_exists]
+  rw [mem_extremePoints_iff_forall_segment, Set.mem_sdiff, Set.mem_iUnion, not_exists]
   constructor
   · rintro ⟨hxK, hx⟩
     refine ⟨hxK, fun n hxn => ?_⟩

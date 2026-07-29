@@ -25,7 +25,13 @@ private theorem hasDerivAt_ofReal_cpow_const {c : ℂ} {x : ℝ} (hx : 0 < x) :
   have hmem : (x : ℂ) ∈ Complex.slitPlane := Or.inl (by simpa using hx)
   have hout : HasDerivAt (fun z : ℂ => z ^ c) (c * (x : ℂ) ^ (c - 1) * 1) (x : ℂ) :=
     (hasDerivAt_id (x : ℂ)).cpow_const hmem
-  simpa using hout.comp x hb
+  have hcomp := hout.comp x hb
+  have hfun :
+      (fun y : ℝ => (y : ℂ) ^ c) = (fun z : ℂ => z ^ c) ∘ Complex.ofReal := by
+    funext y
+    rfl
+  rw [hfun]
+  exact hcomp.congr_deriv (by ring)
 
 /-- Per-interval sawtooth integration by parts: the local `B₂/2` vanishes at both integer endpoints,
 so the boundary term is zero and `∫_m^{m+1} (x−m−½)·x^{−s−1} = −∫_m^{m+1} Q(x)·(−s−1)x^{−s−2}` with
@@ -46,11 +52,30 @@ theorem sawtooth_ibp_unit {m : ℕ} (hm : 1 ≤ m) (s : ℂ) :
   have hUderiv : ∀ y ∈ Set.uIcc (m : ℝ) ((m : ℝ) + 1), HasDerivAt U (U' y) y := by
     intro y hy
     have h1 : HasDerivAt (fun z : ℝ => z - (m : ℝ)) 1 y := (hasDerivAt_id y).sub_const _
-    have h2 := ((h1.pow 2).sub h1).div_const 2
-    have h3 := h2.ofReal_comp
+    have hrealRaw := ((h1.pow 2).sub h1).div_const 2
+    have hrealFun :
+        (fun z : ℝ => ((z - (m : ℝ)) ^ 2 - (z - (m : ℝ))) / 2) =
+          fun z => (((fun w : ℝ => w - (m : ℝ)) ^ 2 -
+            fun w : ℝ => w - (m : ℝ)) z) / 2 := by
+      funext z
+      rfl
+    have hreal : HasDerivAt
+        (fun z : ℝ => ((z - (m : ℝ)) ^ 2 - (z - (m : ℝ))) / 2)
+        (y - (m : ℝ) - 1 / 2) y := by
+      rw [hrealFun]
+      apply hrealRaw.congr_deriv
+      norm_num
+      ring
+    have hcomplex := hreal.ofReal_comp
     rw [hU, hU']
-    convert h3 using 1
-    push_cast; ring
+    have hfun :
+        (fun z : ℝ => ((((z - (m : ℝ)) ^ 2 - (z - (m : ℝ))) / 2 : ℝ) : ℂ)) =
+          Complex.ofReal ∘
+            fun z : ℝ => ((z - (m : ℝ)) ^ 2 - (z - (m : ℝ))) / 2 := by
+      funext z
+      rfl
+    rw [hfun]
+    exact hcomplex
   have hVderiv : ∀ y ∈ Set.uIcc (m : ℝ) ((m : ℝ) + 1), HasDerivAt V (V' y) y := by
     intro y hy
     rw [hV, hV']

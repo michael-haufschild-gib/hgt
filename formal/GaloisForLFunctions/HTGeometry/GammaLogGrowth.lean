@@ -67,7 +67,7 @@ theorem tendsto_log_factorial_div_atTop :
   have hnat : Tendsto (fun n : ℕ => (n : ℝ)) atTop atTop := tendsto_natCast_atTop_atTop
   have hlog : Tendsto (fun n : ℕ => Real.log n) atTop atTop :=
     Real.tendsto_log_atTop.comp hnat
-  simpa using tendsto_atTop_add_const_right atTop (-1 : ℝ) hlog
+  simpa only [sub_eq_add_neg] using tendsto_atTop_add_const_right atTop (-1 : ℝ) hlog
 
 /-- **No exponential majorant.**  For every constant `C` the factorial eventually exceeds `e^{C n}`,
 so `Γ` admits no bound of the form `log Γ(n+1) ≤ C n`. -/

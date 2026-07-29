@@ -382,7 +382,7 @@ theorem hasDerivAt_B_eq_shell (φ : ℂ → ℝ) (hφ : ContDiff ℝ 2 φ) {ρ :
         funext θ
         have hzi : z θ * I = ρ • (I * w θ) := by rw [hzw θ]; simp only [Complex.real_smul]; ring
         rw [hzi, ContinuousLinearMap.map_smul, ContinuousLinearMap.map_smul,
-          ContinuousLinearMap.smul_apply]]
+          _root_.smul_apply]]
       rw [intervalIntegral.integral_smul, intervalIntegral.integral_smul]
     have hcR : (∫ θ in (0:ℝ)..(2*π), fderiv ℝ φ (z θ) (z θ))
         = ρ • ∫ θ in (0:ℝ)..(2*π), cc θ := by

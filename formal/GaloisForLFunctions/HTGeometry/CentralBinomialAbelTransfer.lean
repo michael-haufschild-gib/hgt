@@ -41,7 +41,7 @@ theorem tendsto_sqrt_one_sub_mul_tsum_of_normalizedCentralBinom_ratio
     · funext n
       dsimp only [e]
       field_simp [(normalizedCentralBinom_pos n).ne']
-    · ring
+    · ring_nf
   have he : Tendsto
       (fun x : ℝ => Real.sqrt (1 - x) * ∑' n : ℕ, e n * x ^ n)
       (nhdsWithin 1 (Set.Ico 0 1)) (nhds 0) := by
@@ -60,7 +60,7 @@ theorem tendsto_sqrt_one_sub_mul_tsum_of_normalizedCentralBinom_ratio
         have hsub : Tendsto (fun x : ℝ => 1 - x) (nhds 1) (nhds 0) := by
           simpa using (tendsto_const_nhds.sub tendsto_id :
             Tendsto (fun x : ℝ => 1 - x) (nhds 1) (nhds (1 - 1)))
-        simpa only [Function.comp_apply, Real.sqrt_zero] using
+        simpa only [Function.comp_def, Real.sqrt_zero] using
           (Real.continuous_sqrt.tendsto 0).comp hsub
       exact hcont.mono_left inf_le_left
     have hfinite : Tendsto (fun x : ℝ => Real.sqrt (1 - x) * A)
@@ -289,5 +289,4 @@ theorem tendsto_sqrt_one_sub_mul_tsum_of_sqrtNat_mul
 end
 
 end GaloisForLFunctions.HTGeometry
-
 

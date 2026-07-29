@@ -121,7 +121,7 @@ theorem exists_split_of_finite_zeros_aux {ρ : ℂ} {r₀ R : ℝ} :
       have hzset : {z | z ∈ ball ρ R ∧ h z = 0} =
           {z | z ∈ ball ρ R ∧ F z = 0} \ {z₀} := by
         ext w
-        simp only [Set.mem_setOf_eq, Set.mem_diff, Set.mem_singleton_iff]
+        simp only [Set.mem_setOf_eq, Set.mem_sdiff, Set.mem_singleton_iff]
         constructor
         · rintro ⟨hwball, hw0⟩
           have hwne : w ≠ z₀ := by
@@ -151,7 +151,7 @@ theorem exists_split_of_finite_zeros_aux {ρ : ℂ} {r₀ R : ℝ} :
       have hcard' : hfin'.toFinset.card = k := by
         have htf : hfin'.toFinset = hfin.toFinset.erase z₀ := by
           ext w
-          simp only [Set.Finite.mem_toFinset, Finset.mem_erase, hzset, Set.mem_diff,
+          simp only [Set.Finite.mem_toFinset, Finset.mem_erase, hzset, Set.mem_sdiff,
             Set.mem_singleton_iff]
           tauto
         rw [htf, Finset.card_erase_of_mem hz₀mem, hcard]

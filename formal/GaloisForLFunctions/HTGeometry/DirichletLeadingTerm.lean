@@ -259,7 +259,6 @@ theorem lead_shift_identity
       rwa [Dat.lead_mul (Dat.emb_ne_zero hrd) hu, Dat.lead_emb hrd,
         Dat.lead_mul (Dat.emb_ne_zero hrn) hQQ, Dat.lead_emb hrn] at this
     have hscaled := congrArg (fun p : ℂ[X] => Polynomial.C ((m : ℂ)) * p) hmain
-    simp only at hscaled
     calc ((Dat.lead P).comp (X + 1) * Dat.lead Q
             - Dat.lead P * (Dat.lead Q).comp (X + 1)) * rd
         = rd * (Polynomial.C ((m : ℂ)) *
@@ -321,7 +320,7 @@ noncomputable def comap {D E : Type*} [CommRing D] [CommRing E] (Dat : Dirichlet
 end DirichletLead
 
 /-- Normalise a shift-defect identity to a coprime pair with monic denominator. -/
-theorem exists_coprime_monic_shift_identity {A B rn rd : ℂ[X]} (hA : A ≠ 0) (hB : B ≠ 0)
+theorem exists_coprime_monic_shift_identity {A B rn rd : ℂ[X]} (_hA : A ≠ 0) (hB : B ≠ 0)
     (h : (A.comp (X + 1) * B - A * B.comp (X + 1)) * rd = rn * (B.comp (X + 1) * B)) :
     ∃ A' B' : ℂ[X], B'.Monic ∧ IsCoprime A' B' ∧
       (A'.comp (X + 1) * B' - A' * B'.comp (X + 1)) * rd = rn * (B'.comp (X + 1) * B') := by

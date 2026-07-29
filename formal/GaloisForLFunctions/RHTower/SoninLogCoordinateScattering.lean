@@ -194,7 +194,7 @@ theorem soninStationaryClockEffect_matrixElement_eq_half_of_fixed
     inner ℂ φ (e ψ) = inner ℂ φ (soninLogFourierObservableTwirl e ψ) :=
       (inner_soninLogFourierObservableTwirl_eq_of_fixed e hφ hψ).symm
     _ = (2 : ℂ)⁻¹ * inner ℂ φ ψ := by
-      rw [hresolve, ContinuousLinearMap.smul_apply, inner_smul_right]
+      rw [hresolve, _root_.smul_apply, inner_smul_right]
       simp
 
 /-- The multiplicativity defect of the Sonin clock-observer projection.  It vanishes exactly

@@ -289,7 +289,7 @@ theorem gradedPrincipalSymbol_unique
       u '' (Set.univ \ {n + 1}) := by
     rintro y ⟨j, rfl⟩
     refine ⟨j, ?_, rfl⟩
-    simp only [Set.mem_diff, Set.mem_univ, Set.mem_singleton_iff, true_and]
+    simp only [Set.mem_sdiff, Set.mem_univ, Set.mem_singleton_iff, true_and]
     exact Nat.ne_of_lt j.isLt
   have hspan : (symbol₂ n - symbol₁ n) • u (n + 1) ∈
       Submodule.span K (u '' (Set.univ \ {n + 1})) :=

@@ -22,7 +22,11 @@ theorem tendsto_quarticDefect_atImInfty :
     Tendsto quarticDefect (comap Complex.im atTop) (𝓝 0) := by
   have h := ((tendsto_thetaThree_atImInfty.pow 4).sub
     (tendsto_thetaTwo_atImInfty.pow 4)).sub (tendsto_thetaFour_atImInfty.pow 4)
-  simpa [quarticDefect] using h
+  rw [show quarticDefect =
+      (fun τ => thetaThree τ ^ 4 - thetaTwo τ ^ 4 - thetaFour τ ^ 4) by
+    rfl]
+  norm_num at h
+  exact h
 
 end Bottcher
 

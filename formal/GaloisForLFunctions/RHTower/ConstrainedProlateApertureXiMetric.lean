@@ -101,7 +101,7 @@ theorem fourier_constrainedProlateGroundHermiteSchwartz_scaled (t : ℝ) :
     (𝓕 constrainedProlateGroundHermiteSchwartz) (t / (2 * Real.pi)) =
       (constrainedProlateGroundHermiteXiScale : ℂ) * XiC (t : ℂ) := by
   rw [constrainedProlateGroundHermiteSchwartz, FourierTransform.fourier_smul,
-    SchwartzMap.smul_apply, fourier_thetaCuspSchwartz_scaled]
+    _root_.smul_apply, fourier_thetaCuspSchwartz_scaled]
   rfl
 
 /-! ## The first two Xi-square moment metric rows -/

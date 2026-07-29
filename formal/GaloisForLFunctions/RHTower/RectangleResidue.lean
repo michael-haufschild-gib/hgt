@@ -27,7 +27,14 @@ namespace RHTower
 /-- On the slit plane, `log(z − p)` is an antiderivative of `(z − p)⁻¹`. -/
 private theorem hasDerivAt_logSub {p z : ℂ} (h : z - p ∈ slitPlane) :
     HasDerivAt (fun z => Complex.log (z - p)) (z - p)⁻¹ z := by
-  simpa using (Complex.hasDerivAt_log h).comp z ((hasDerivAt_id z).sub_const p)
+  have hcomp := (Complex.hasDerivAt_log h).comp z ((hasDerivAt_id z).sub_const p)
+  have hfun : (Complex.log ∘ fun w : ℂ => w - p) =
+      (fun w : ℂ => Complex.log (w - p)) := by
+    apply _root_.funext
+    intro w
+    rfl
+  rw [← hfun]
+  simpa only [id_eq, mul_one] using hcomp
 
 /-- Where `−(z − p)` is in the slit plane, `log(−(z − p))` is an antiderivative of `(z − p)⁻¹`. -/
 private theorem hasDerivAt_logNegSub {p z : ℂ} (h : -(z - p) ∈ slitPlane) :
@@ -54,7 +61,16 @@ private theorem integral_horizontal {p : ℂ} {h a b : ℝ}
     have hin : HasDerivAt (fun x : ℝ => (x : ℂ) + (h : ℂ) * I) 1 x := by
       simpa using ((Complex.ofRealCLM.hasDerivAt (x := x)).add_const ((h : ℂ) * I))
     have hout := hasDerivAt_logSub (hslit x hx)
-    simpa using hout.comp x hin
+    have hcomp := hout.comp x hin
+    have hfun :
+        ((fun z : ℂ => Complex.log (z - p)) ∘
+          fun y : ℝ => (y : ℂ) + (h : ℂ) * I) =
+        (fun y : ℝ => Complex.log ((y : ℂ) + h * I - p)) := by
+      apply _root_.funext
+      intro y
+      rfl
+    rw [← hfun]
+    simpa only [mul_one] using hcomp
   have hcont : ContinuousOn (fun x : ℝ => ((x : ℂ) + h * I - p)⁻¹) (uIcc a b) :=
     (continuousOn_of_forall_continuousAt (fun x => by fun_prop)).inv₀
       (fun x hx => slitPlane_ne_zero (hslit x hx))

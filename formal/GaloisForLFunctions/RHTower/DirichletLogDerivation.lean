@@ -39,7 +39,7 @@ theorem pmul_log_mul (f g : ArithmeticFunction ℝ) :
   ext n
   rcases Nat.eq_zero_or_pos n with rfl | hn
   · simp
-  simp only [pmul_apply, mul_apply, add_apply, log_apply]
+  simp only [pmul_apply, mul_apply, ArithmeticFunction.add_apply, log_apply]
   rw [Finset.sum_mul, ← Finset.sum_add_distrib]
   apply Finset.sum_congr rfl
   intro x hx

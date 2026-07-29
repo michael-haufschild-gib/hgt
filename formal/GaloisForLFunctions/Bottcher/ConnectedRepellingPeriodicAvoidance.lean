@@ -131,7 +131,7 @@ theorem derivative_leadingCoeff_ne_zero_of_natDegree_pos (P : Polynomial (Polyno
     (Polynomial.derivative P).leadingCoeff ≠ 0 := by
   have hderiv : Polynomial.derivative P ≠ 0 := by
     intro h
-    have := Polynomial.natDegree_eq_zero_of_derivative_eq_zero h
+    have := Polynomial.derivative_eq_zero.mp h
     omega
   exact Polynomial.leadingCoeff_ne_zero.mpr hderiv
 

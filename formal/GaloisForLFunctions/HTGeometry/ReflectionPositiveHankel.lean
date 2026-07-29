@@ -205,7 +205,7 @@ theorem inner_selfAdjointObservableOrbit
     inner 𝕜 ((A ^ i) omega) ((A ^ j) omega) =
         inner 𝕜 omega ((A ^ i) ((A ^ j) omega)) := hsym omega ((A ^ j) omega)
     _ = inner 𝕜 omega (((A ^ i) * (A ^ j)) omega) := by
-      rw [ContinuousLinearMap.mul_apply]
+      rw [mul_apply_eq_comp]
     _ = inner 𝕜 omega ((A ^ (i + j)) omega) := by rw [pow_add]
 
 /-- Vacuum moments of a real bounded self-adjoint observable are positive on polynomial squares. -/

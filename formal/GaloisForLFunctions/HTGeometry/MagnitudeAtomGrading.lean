@@ -96,7 +96,7 @@ theorem valuation_ge_b_succ_of_weighted_sum {ν : ℕ →₀ ℕ} {b : ℕ → �
     le_trans hpig (Nat.mul_le_mul_left _ hcount)
   have hKmax : K < ν.support.max' hne := by
     by_contra h
-    push_neg at h
+    push Not at h
     have : ν.support.max' hne * D ≤ K * D := Nat.mul_le_mul_right _ h
     omega
   calc b (K + 1) ≤ b (ν.support.max' hne) := hbmono hKmax

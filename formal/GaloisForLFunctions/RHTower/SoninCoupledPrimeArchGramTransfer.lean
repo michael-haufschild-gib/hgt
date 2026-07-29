@@ -523,7 +523,7 @@ theorem hsInner_soninAllPrimeCoupledPowerColumn_eq_tracePower
         rfl
       rw [henergy]
       change (T ^ m) (T ((T ^ n) x)) = (T ^ (m + n + 1)) x
-      rw [← ContinuousLinearMap.mul_apply, ← ContinuousLinearMap.mul_apply]
+      rw [← mul_apply_eq_comp, ← mul_apply_eq_comp]
       congr 1
       rw [← pow_succ, ← pow_add]
       congr 1
@@ -1251,7 +1251,7 @@ theorem re_soninAllPrimeCoupledTraceMoment_succ_le_mass_mul
       simp only [V, soninAllPrimeCoupledPowerColumn,
         soninAllPrimeCoupledCoordinateEnergy,
         ContinuousLinearMap.comp_apply, pow_succ',
-        ContinuousLinearMap.mul_apply]
+        mul_apply_eq_comp]
       rfl
     rw [← hfactor]
     calc

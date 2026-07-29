@@ -95,8 +95,8 @@ theorem deningerCompactOpenFiniteJetHodge_theta_defect
                 xiSpectralPointSupport rho))) •
           deningerCompactOpenLocalJetHodge rho x := by
   unfold deningerCompactOpenFiniteJetHodge
-  simp only [ContinuousLinearMap.sum_apply,
-    ContinuousLinearMap.smul_apply]
+  simp only [_root_.sum_apply,
+    _root_.smul_apply]
   rw [map_sum]
   simp_rw [map_smul]
   rw [← Finset.sum_sub_distrib]
@@ -110,8 +110,8 @@ theorem deningerCompactOpenFiniteJetHodge_theta_defect
         L y)
       (deningerCompactOpenLocalJetHodge_theta_defect
         rho x)
-  simp only [ContinuousLinearMap.sub_apply,
-    ContinuousLinearMap.smul_apply] at h ⊢
+  simp only [_root_.sub_apply,
+    _root_.smul_apply] at h ⊢
   linear_combination (weight rho : ℂ) * h
 
 /--
@@ -161,9 +161,9 @@ theorem deningerCompactOpenFiniteJetHodge_commutes_point_real
       (fun L : DeningerArithmeticTopologicalH1Compact =>
         L x)
       hdefect
-  simp only [ContinuousLinearMap.zero_apply,
-    ContinuousLinearMap.sum_apply,
-    ContinuousLinearMap.smul_apply] at heval
+  simp only [_root_.zero_apply,
+    _root_.sum_apply,
+    _root_.smul_apply] at heval
   have hsum :
       ∑ tau ∈ S,
         ((weight tau : ℂ) *
@@ -181,7 +181,7 @@ theorem deningerCompactOpenFiniteJetHodge_commutes_point_real
         0 := by
     simpa only [
       deningerCompactOpenLocalJetHodge_apply,
-      ContinuousLinearMap.smul_apply, smul_eq_mul,
+      _root_.smul_apply, smul_eq_mul,
       mul_assoc] using heval.symm
   have hrhoScalar :
       (weight rho : ℂ) *

@@ -230,7 +230,7 @@ theorem mellin_salemFermiKernel_eq_closedForm
   have hUopen : IsOpen U :=
     (isOpen_lt continuous_const Complex.continuous_re).sdiff isClosed_singleton
   have hleft : AnalyticOnNhd ℂ (mellin salemFermiKernel) U :=
-    analyticOnNhd_mellin_salemFermiKernel.mono Set.diff_subset
+    analyticOnNhd_mellin_salemFermiKernel.mono Set.sdiff_subset
   have hright : AnalyticOnNhd ℂ G U := by
     intro z hz
     have hGamma := HTGeometry.analyticAt_Gamma_of_re_pos hz.1

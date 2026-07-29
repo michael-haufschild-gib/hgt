@@ -147,7 +147,7 @@ theorem momentFunctional_pow_two_eq_zero {μ : Measure ℝ} (s : ℕ → ℝ)
       hx (Multiset.mem_toFinset.mpr ((Polynomial.mem_roots hpne).mpr he))
     exact pow_ne_zero 2 hev
   have hle : μ {x : ℝ | x ∉ R} ≤ 0 := by rw [← hae']; exact measure_mono hsub
-  exact absurd (le_antisymm hle zero_le') (ne_of_gt (hμinf R))
+  exact absurd (le_antisymm hle zero_le) (ne_of_gt (hμinf R))
 
 /-- **Cauchy–Schwarz for the moment functional.**  The Hankel form is a positive-semidefinite inner
 product on polynomials: `L_s(p·q)² ≤ L_s(p²)·L_s(q²)` whenever `s` has a representing measure.  Proved
@@ -187,7 +187,7 @@ theorem momentFunctional_sum (s : ℕ → ℝ) {ι : Type*} (t : Finset ι) (g :
 /-- The moment functional sends the monomial `Xᵏ` to the moment `sₖ`. -/
 theorem momentFunctional_X_pow (s : ℕ → ℝ) (k : ℕ) :
     momentFunctional s ((X : Polynomial ℝ) ^ k) = s k := by
-  rw [momentFunctional_eq_support_sum, Polynomial.support_X_pow one_ne_zero, Finset.sum_singleton,
+  rw [momentFunctional_eq_support_sum, Polynomial.support_X_pow k, Finset.sum_singleton,
     Polynomial.coeff_X_pow, if_pos rfl, one_mul]
 
 /-- The moment functional of `(∑ᵢ vᵢ Xⁱ)²` is the Hankel quadratic form `∑ᵢⱼ vᵢ vⱼ s_{i+j}`. -/

@@ -40,7 +40,11 @@ theorem hasDerivAt_tentPrimitive {s : ℝ} (hs : s ≠ 0) (L v : ℝ) :
   have hcosh : HasDerivAt (fun v : ℝ => Real.cosh (s * v)) (Real.sinh (s * v) * s) v :=
     (Real.hasDerivAt_cosh (s * v)).comp v hsv
   have hlin : HasDerivAt (fun v : ℝ => L - v) (-1) v := by
-    simpa using (hasDerivAt_const v L).sub (hasDerivAt_id v)
+    have hsub := (hasDerivAt_const v L).sub (hasDerivAt_id v)
+    rw [show ((fun _ : ℝ => L) - id) = (fun y : ℝ => L - y) by
+      funext y
+      rfl] at hsub
+    simpa only [zero_sub] using! hsub
   have h1 : HasDerivAt (fun v : ℝ => (L - v) * Real.sinh (s * v) / s)
       ((-1 * Real.sinh (s * v) + (L - v) * (Real.cosh (s * v) * s)) / s) v :=
     (hlin.mul hsinh).div_const s

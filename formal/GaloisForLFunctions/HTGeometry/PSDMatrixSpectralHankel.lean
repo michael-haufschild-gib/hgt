@@ -191,6 +191,7 @@ def psdMatrixSpectralKernel {m : Nat}
   Matrix.conjTranspose (psdMatrixSpectralLift (m := m) (n := n) node omega) * density omega *
     psdMatrixSpectralLift (m := m) (n := n) node omega
 
+omit [MeasurableSpace Omega] in
 /-- Entry value of the lifted spectral kernel. -/
 theorem psdMatrixSpectralKernel_apply {m : Nat}
     (node : Omega -> Real) (density : Omega -> Matrix (Fin m) (Fin m) Real)
@@ -200,6 +201,7 @@ theorem psdMatrixSpectralKernel_apply {m : Nat}
         node omega ^ (jb.1 : Nat) := by
   simp [psdMatrixSpectralKernel, psdMatrixSpectralLift, Matrix.mul_apply]
 
+omit [MeasurableSpace Omega] in
 /-- A positive channel density remains positive after the clock-order lift. -/
 theorem psdMatrixSpectralKernel_posSemidef {m : Nat}
     (node : Omega -> Real) (density : Omega -> Matrix (Fin m) (Fin m) Real)
@@ -291,11 +293,16 @@ theorem psdMatrixSpectralBlockHankel_posDef_of_jointSeparation {m : Nat}
         (psdMatrixSpectralObservedQuadratic node density x))) :
     (psdMatrixSpectralBlockHankel mu node density n).PosDef := by
   rw [psdMatrixSpectralBlockHankel_eq_integralMatrixKernel]
-  exact integralMatrixKernel_posDef_of_support mu
+  apply integralMatrixKernel_posDef_of_support mu
     (psdMatrixSpectralKernel node density n)
     (integrable_psdMatrixSpectralKernel_of_moments mu node density hMoment)
     (fun omega => psdMatrixSpectralKernel_posSemidef node density n omega (hDensity omega))
-    (by simpa only [psdMatrixSpectralObservedQuadratic] using hSeparate)
+  intro x hx
+  rw [show integralMatrixKernelQuadratic (psdMatrixSpectralKernel node density n) x =
+      psdMatrixSpectralObservedQuadratic node density x by
+    funext omega
+    rfl]
+  exact hSeparate x hx
 
 /-- Joint separation makes every finite matrix-density block determinant strictly positive. -/
 theorem det_psdMatrixSpectralBlockHankel_pos_of_jointSeparation {m : Nat}

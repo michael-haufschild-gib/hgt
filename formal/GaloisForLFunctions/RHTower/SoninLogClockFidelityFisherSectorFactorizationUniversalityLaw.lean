@@ -37,10 +37,10 @@ theorem soninLogClock_homogeneousFidelityDeficit_eq_invariantWeight_mul_erasedQF
     have hfixed : soninLogFourierScattering ψ = ψ := by
       rw [GaloisForLFunctions.PhysicalState] at hψ
       apply sub_eq_zero.mp
-      simpa only [ContinuousLinearMap.sub_apply, ContinuousLinearMap.one_apply] using hψ
-    rw [ContinuousLinearMap.sub_apply, ContinuousLinearMap.mul_apply,
-      ContinuousLinearMap.mul_apply, hfixed, ContinuousLinearMap.sub_apply,
-      ContinuousLinearMap.one_apply, soninLogFourierInvariantAverage,
+      simpa only [_root_.sub_apply, one_apply_eq_self] using hψ
+    rw [_root_.sub_apply, mul_apply_eq_comp,
+      mul_apply_eq_comp, hfixed, _root_.sub_apply,
+      one_apply_eq_self, soninLogFourierInvariantAverage,
       HTGeometry.finiteInvolutiveGaugeAverage_apply]
     norm_num
     module

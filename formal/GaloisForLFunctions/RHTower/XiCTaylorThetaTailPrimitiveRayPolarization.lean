@@ -695,7 +695,7 @@ private theorem hasDerivAt_star_of_real
     (RCLike.conjCLE : ℂ ≃L[ℝ] ℂ).toContinuousLinearMap
   have hc : HasDerivAt c 0 x := hasDerivAt_const x _
   have h := hc.clm_apply hf
-  simpa only [c, Pi.zero_apply, ContinuousLinearMap.zero_apply, zero_add,
+  simpa only [c, Pi.zero_apply, _root_.zero_apply, zero_add,
     RCLike.conjCLE_apply] using h
 
 theorem continuous_thetaCuspTailSecondSectionSourceSpectralDerivative

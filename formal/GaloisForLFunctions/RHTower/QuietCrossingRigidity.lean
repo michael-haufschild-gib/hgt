@@ -72,7 +72,7 @@ theorem perronKernel_mellin {s : ℂ} (hs : 0 < s.re) :
   -- The integrand vanishes off `(0,1]`, so the Mellin integral collapses to `∫ over Ioc 0 1`.
   have hrestrict : ∫ t in Ioi (0:ℝ), (t:ℂ)^(s-1) • perronKernelG t
       = ∫ t in Ioc (0:ℝ) 1, (t:ℂ)^(s-1) • perronKernelG t := by
-    rw [← MeasureTheory.setIntegral_eq_of_subset_of_forall_diff_eq_zero
+    rw [← MeasureTheory.setIntegral_eq_of_subset_of_forall_sdiff_eq_zero
       (t := Ioi (0:ℝ)) (s := Ioc (0:ℝ) 1) measurableSet_Ioi Ioc_subset_Ioi_self ?_]
     intro x hx
     obtain ⟨hx0, hx1⟩ := hx

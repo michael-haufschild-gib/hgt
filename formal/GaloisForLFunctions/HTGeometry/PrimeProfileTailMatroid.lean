@@ -203,7 +203,7 @@ theorem primeProfileTailIndependent_of_algebraicIndependent
           Q.coeff (Finsupp.single i 1)) hzero
       simpa [P, MvPolynomial.coeff_add, MvPolynomial.coeff_C,
         MvPolynomial.coeff_sum, MvPolynomial.coeff_C_mul,
-        MvPolynomial.coeff_X', Finsupp.single_eq_single_iff, hmon] using hcoeff'
+        MvPolynomial.coeff_X, Finsupp.single_eq_single_iff, hmon] using hcoeff'
     apply hi
     apply FaithfulSMul.algebraMap_injective ℂ finitePrimeCoefficientField
     simpa using hcoeff

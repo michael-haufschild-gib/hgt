@@ -114,6 +114,9 @@ theorem universalUnitInverseCoefficientMap_involutive :
     MvPolynomial.X n
   have hc := congrArg (PowerSeries.coeff (n + 1))
     map_universalUnitInversePowerSeries
+  change universalUnitInverseCoefficientMap.toRingHom
+      (PowerSeries.coeff (n + 1) universalUnitInversePowerSeries) =
+    MvPolynomial.X n
   simpa only [PowerSeries.coeff_map,
     universalUnitPowerSeries_coeff_add_one] using hc
 

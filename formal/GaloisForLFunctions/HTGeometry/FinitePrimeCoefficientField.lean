@@ -478,7 +478,7 @@ theorem algebraicIndependent_fractionPrimeColumns_over_finitePrimeCoefficientFie
         Q.coeff (Finsupp.single i 1)) hzero
       simp [P, MvPolynomial.coeff_add, MvPolynomial.coeff_C,
         MvPolynomial.coeff_sum, MvPolynomial.coeff_C_mul,
-        MvPolynomial.coeff_X', Finsupp.single_eq_single_iff, hmon] at hcoeff
+        MvPolynomial.coeff_X, Finsupp.single_eq_single_iff, hmon] at hcoeff
       exact hi hcoeff
     exact hPne (hAI.eq_zero_of_aeval_eq_zero P hPeval)
   · exact algebraicIndependent_fractionPrimeColumns_over_finitePrimeCoefficientField a

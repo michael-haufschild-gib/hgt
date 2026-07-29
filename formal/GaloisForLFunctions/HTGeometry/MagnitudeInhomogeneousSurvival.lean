@@ -139,7 +139,7 @@ jets of *every* series, forcing `Q = 0`. -/
 theorem exists_nonzero_aevalWeight {n : ℕ} {Q : MvPolynomial (Fin (n + 2)) ℂ} (hQ : Q ≠ 0) :
     ∃ N : ℕ, ∃ ν ∈ (sigmaIdx n N Q).image (atomKeyOf n), aevalWeight n N Q ν ≠ 0 := by
   by_contra hcon
-  push_neg at hcon
+  push Not at hcon
   apply hQ
   apply formalJets_substitution_injective
   intro G

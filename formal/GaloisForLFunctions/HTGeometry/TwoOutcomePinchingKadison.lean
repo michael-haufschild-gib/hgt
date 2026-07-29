@@ -393,7 +393,7 @@ theorem re_inner_twoOutcomePinchingKadisonDefect_eq_transitionNormSq_add
         ‖twoOutcomeUpperTransition e X psi‖ ^ 2 := by
   rw [twoOutcomePinchingKadisonDefect_eq_quantumMasterConstraint_sum
     e X he heAdj hXAdj]
-  simp only [ContinuousLinearMap.add_apply, inner_add_right, map_add,
+  simp only [_root_.add_apply, inner_add_right, map_add,
     re_inner_quantumMasterConstraint_eq_normSq]
 
 /-- The two-outcome Kadison defect has nonnegative expectation with no additional positivity
@@ -457,10 +457,10 @@ theorem twoOutcomePinching_finiteInvolutiveGaugeAverage_eq_observableTwirl
   apply ContinuousLinearMap.ext
   intro psi
   rw [finiteInvolutiveObservableTwirl_eq_symmetrizer U X hsq,
-    ContinuousLinearMap.smul_apply]
-  simp only [twoOutcomePinching, ContinuousLinearMap.add_apply,
-    ContinuousLinearMap.mul_apply, ContinuousLinearMap.sub_apply,
-    ContinuousLinearMap.one_apply]
+    _root_.smul_apply]
+  simp only [twoOutcomePinching, _root_.add_apply,
+    mul_apply_eq_comp, _root_.sub_apply,
+    one_apply_eq_self]
   simp_rw [finiteInvolutiveGaugeAverage_apply U]
   simp only [map_add, map_sub, map_smul]
   module
@@ -572,7 +572,7 @@ theorem re_inner_finiteInvolutiveObservableTwirlKadisonDefect_eq_quarter_commuta
   rw [re_inner_finiteInvolutiveObservableTwirlKadisonDefect_eq_disturbanceNormSq
     U X hadjoint_mul hsq hXAdj,
     sub_finiteInvolutiveObservableTwirl_eq_half_commutator_mul U X hsq,
-    ContinuousLinearMap.smul_apply, ContinuousLinearMap.mul_apply, norm_smul]
+    _root_.smul_apply, mul_apply_eq_comp, norm_smul]
   have hhalfNorm : ‖((2 : k)⁻¹)‖ = (2 : ℝ)⁻¹ := by
     norm_num
   rw [hhalfNorm]

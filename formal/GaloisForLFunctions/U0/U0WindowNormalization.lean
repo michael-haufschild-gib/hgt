@@ -56,7 +56,7 @@ theorem coeffFun_analytic (hφ : AnalyticOnNhd ℂ φ Ω) (p : Polynomial (Polyn
 /-- The coefficient-function ring hom into functions on `↥D`. -/
 noncomputable def Φring (φ : ℂ → ℂ) (D : Set ℂ) :
     Polynomial (Polynomial ℂ) →+* (↥D → ℂ) :=
-  Pi.ringHom fun z => (eval₂RingHom (evalRingHom (z : ℂ)) (φ (z : ℂ)))
+  RingHom.pi fun z => (eval₂RingHom (evalRingHom (z : ℂ)) (φ (z : ℂ)))
 
 @[simp] theorem Φring_apply (φ : ℂ → ℂ) (D : Set ℂ) (p : Polynomial (Polynomial ℂ)) (z : ↥D) :
     Φring φ D p z = coeffFun φ p (z : ℂ) := rfl

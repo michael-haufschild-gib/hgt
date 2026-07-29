@@ -947,7 +947,7 @@ theorem sum_finiteContractionPeripheralComponent
       (P.starProjection x)
   rw [Submodule.starProjection_apply, Submodule.starProjection_apply]
   congr 1
-  exact (Submodule.orthogonalProjection_starProjection_of_le
+  exact (Submodule.orthogonalProjectionOnto_starProjection_of_le
     (show finiteContractionPeripheralEigenspace T μ ≤ P from
       le_iSup (fun ν : FiniteContractionPeripheralEigenvalue T =>
         finiteContractionPeripheralEigenspace T ν) μ) x).symm
@@ -1551,7 +1551,7 @@ theorem norm_finiteMixedEvolution_le_one
     ‖finiteMixedEvolution probability evolution‖ ≤ 1 := by
   apply ContinuousLinearMap.opNorm_le_bound _ zero_le_one
   intro x
-  rw [finiteMixedEvolution, ContinuousLinearMap.sum_apply]
+  rw [finiteMixedEvolution, _root_.sum_apply]
   calc
     ‖∑ i, ((probability i : ℂ) • evolution i) x‖ ≤
         ∑ i, ‖((probability i : ℂ) • evolution i) x‖ :=
@@ -1559,7 +1559,7 @@ theorem norm_finiteMixedEvolution_le_one
     _ = ∑ i, probability i * ‖evolution i x‖ := by
       apply Finset.sum_congr rfl
       intro i _hi
-      rw [ContinuousLinearMap.smul_apply, norm_smul,
+      rw [_root_.smul_apply, norm_smul,
         Complex.norm_real, Real.norm_eq_abs,
         abs_of_nonneg (hprobability i)]
     _ ≤ ∑ i, probability i * ‖x‖ := by

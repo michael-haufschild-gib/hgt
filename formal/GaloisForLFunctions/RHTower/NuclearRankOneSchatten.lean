@@ -28,7 +28,7 @@ theorem HasRankLE.add {S T : H →L[ℂ] H} {m n : ℕ}
   refine ⟨V ⊔ W, inferInstance, ?_, fun z => ?_⟩
   · have hdim := Submodule.finrank_sup_add_finrank_inf_eq V W
     omega
-  · rw [ContinuousLinearMap.add_apply]
+  · rw [_root_.add_apply]
     exact Submodule.add_mem (V ⊔ W)
       ((show V ≤ V ⊔ W from le_sup_left) (hSV z))
       ((show W ≤ V ⊔ W from le_sup_right) (hTW z))
@@ -55,7 +55,7 @@ theorem hasRankLE_sum_range_rankOne (x y : ℕ → H) (n : ℕ) :
   · exact (finrank_span_finset_le_card _).trans
       (Finset.card_image_le.trans (by simp))
   · intro z
-    rw [ContinuousLinearMap.sum_apply]
+    rw [_root_.sum_apply]
     refine Submodule.sum_mem _ fun k hk => ?_
     rw [InnerProductSpace.rankOne_apply]
     exact Submodule.smul_mem _ _

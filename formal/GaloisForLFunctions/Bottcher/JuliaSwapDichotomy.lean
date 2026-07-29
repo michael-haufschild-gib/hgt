@@ -38,7 +38,7 @@ theorem subset_of_frontier_subset {K L : Set ℂ}
     (hLpc : IsPreconnected Lᶜ) (hLunb : ¬ Bornology.IsBounded Lᶜ)
     (hfr : frontier K ⊆ L) : K ⊆ L := by
   have hfc : (frontier K)ᶜ = interior K ∪ Kᶜ := by
-    rw [frontier, hKcl.closure_eq]; ext x; simp only [Set.mem_diff, mem_compl_iff,
+    rw [frontier, hKcl.closure_eq]; ext x; simp only [Set.mem_sdiff, mem_compl_iff,
       mem_union]; tauto
   have hcover : Lᶜ ⊆ interior K ∪ Kᶜ := by
     rw [← hfc]; exact compl_subset_compl.mpr hfr

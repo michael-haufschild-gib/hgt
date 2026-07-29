@@ -198,7 +198,7 @@ theorem sawtooth_reflected_bound {N : ℕ} (hN : 1 ≤ N) {s : ℂ} (hσ : -2 �
           intervalIntegral.norm_integral_le_integral_norm hN1
       _ ≤ ∫ _x in (1 : ℝ)..(N : ℝ), (1 : ℝ) := by
           apply intervalIntegral.integral_mono_on hN1 hPii.norm
-            intervalIntegral.intervalIntegrable_const
+            intervalIntegrable_const
           intro x hx
           rw [hP, norm_cpow_eq_rpow_re_of_pos (by linarith [hx.1] : (0 : ℝ) < x)]
           apply Real.rpow_le_one_of_one_le_of_nonpos hx.1

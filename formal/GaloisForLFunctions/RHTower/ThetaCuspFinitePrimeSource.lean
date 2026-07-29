@@ -63,9 +63,23 @@ theorem hasDerivAt_thetaCuspGaussian (t : ℝ) :
     HasDerivAt thetaCuspGaussian
       (-2 * Real.pi * t * Real.exp (-Real.pi * t ^ 2)) t := by
   unfold thetaCuspGaussian
-  convert (Real.hasDerivAt_exp (-Real.pi * t ^ 2)).comp t
-    ((hasDerivAt_const t (-Real.pi)).mul (hasDerivAt_pow 2 t)) using 1
-  all_goals ring
+  have hinner : HasDerivAt (fun x : ℝ => -Real.pi * x ^ 2) (-2 * Real.pi * t) t := by
+    have hraw := (hasDerivAt_const t (-Real.pi)).mul (hasDerivAt_pow 2 t)
+    have hfun :
+        (fun x : ℝ => -Real.pi * x ^ 2) =
+          (fun _ : ℝ => -Real.pi) * fun x : ℝ => x ^ 2 := by
+      funext x
+      rfl
+    rw [hfun]
+    exact hraw.congr_deriv (by norm_num; ring)
+  have hcomp := (Real.hasDerivAt_exp (-Real.pi * t ^ 2)).comp t hinner
+  have hfun :
+      (fun x : ℝ => Real.exp (-Real.pi * x ^ 2)) =
+        Real.exp ∘ fun x : ℝ => -Real.pi * x ^ 2 := by
+    funext x
+    rfl
+  rw [hfun]
+  exact hcomp.congr_deriv (by ring)
 
 theorem multiplicativeDeriv_thetaCuspGaussian (t : ℝ) :
     multiplicativeDeriv thetaCuspGaussian t =
@@ -82,10 +96,17 @@ theorem hasDerivAt_multiplicativeDeriv_thetaCuspGaussian (t : ℝ) :
     funext x
     exact multiplicativeDeriv_thetaCuspGaussian x
   rw [heq]
-  convert (((hasDerivAt_const t (-2 * Real.pi)).mul (hasDerivAt_pow 2 t)).mul
-    ((Real.hasDerivAt_exp (-Real.pi * t ^ 2)).comp t
-      ((hasDerivAt_const t (-Real.pi)).mul (hasDerivAt_pow 2 t)))) using 1
-  simp only [Function.comp_apply, Pi.mul_apply]
+  have hpoly : HasDerivAt (fun x : ℝ => -2 * Real.pi * x ^ 2) (-4 * Real.pi * t) t := by
+    exact ((hasDerivAt_pow 2 t).const_mul (-2 * Real.pi)).congr_deriv (by norm_num; ring)
+  have hprod := hpoly.mul (hasDerivAt_thetaCuspGaussian t)
+  have hfun :
+      (fun x : ℝ => -2 * Real.pi * x ^ 2 * Real.exp (-Real.pi * x ^ 2)) =
+        (fun x : ℝ => -2 * Real.pi * x ^ 2) * thetaCuspGaussian := by
+    funext x
+    rfl
+  rw [hfun]
+  apply hprod.congr_deriv
+  unfold thetaCuspGaussian
   ring
 
 /-- Exact scaling-Hamiltonian seed identity `h = (D² + D)g₀`. -/
@@ -170,8 +191,7 @@ theorem summable_thetaCuspSourceTerm (x : ℝ) : Summable (thetaCuspSourceTerm x
     (Real.exp (x / 2) * 4 * Real.pi ^ 2 * Real.exp x ^ 4)
   have h2 := (summable_pow_mul_exp_neg_nat_sq 2 hsigma).mul_left
     (Real.exp (x / 2) * 6 * Real.pi * Real.exp x ^ 2)
-  convert h4.sub h2 using 1
-  funext n
+  refine (h4.sub h2).congr (fun n => ?_)
   unfold thetaCuspSourceTerm thetaCuspSeed
   dsimp [sigma]
   ring_nf
@@ -191,8 +211,7 @@ theorem summable_thetaCuspSourceMajorant (R : ℝ) :
     (Real.exp (R / 2) * 4 * Real.pi ^ 2 * Real.exp R ^ 4)
   have h2 := (summable_pow_mul_exp_neg 2 hsigma).mul_left
     (Real.exp (R / 2) * 6 * Real.pi * Real.exp R ^ 2)
-  convert h4.add h2 using 1
-  funext n
+  refine (h4.add h2).congr (fun n => ?_)
   unfold thetaCuspSourceMajorant
   ring_nf
 

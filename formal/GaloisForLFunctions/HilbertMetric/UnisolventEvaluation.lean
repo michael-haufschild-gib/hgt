@@ -33,8 +33,11 @@ def evaluationRow (φ : κ → X → ℝ) (x : X) : κ → ℝ :=
 theorem span_range_evaluationRow_eq_top (φ : κ → X → ℝ)
     (hφ : LinearIndependent ℝ φ) :
     Submodule.span ℝ (Set.range (evaluationRow φ)) = ⊤ := by
-  simpa only [evaluationRow, flip] using
-    (span_flip_eq_top_iff_linearIndependent (f := φ)).2 hφ
+  have evaluationRow_eq_flip : evaluationRow φ = flip φ := by
+    funext x j
+    rfl
+  rw [evaluationRow_eq_flip]
+  exact (span_flip_eq_top_iff_linearIndependent (f := φ)).2 hφ
 
 /-- An independent finite feature family has pairwise distinct nodes whose evaluation rows are
 linearly independent.  No nodes or nonsingularity certificate occur among the hypotheses. -/
@@ -195,8 +198,13 @@ to be nonzero. -/
 theorem evaluationMatrix_det_ne_zero (φ : κ → X → ℝ) (nodes : κ → X)
     (hli : LinearIndependent ℝ (fun i => evaluationRow φ (nodes i))) :
     (evaluationMatrix φ nodes).det ≠ 0 := by
+  have row_eq_evaluationRow :
+      (evaluationMatrix φ nodes).row = fun i => evaluationRow φ (nodes i) := by
+    funext i j
+    rfl
   have hrows : LinearIndependent ℝ (evaluationMatrix φ nodes).row := by
-    simpa [evaluationMatrix, evaluationRow] using hli
+    rw [row_eq_evaluationRow]
+    exact hli
   exact ((evaluationMatrix φ nodes).isUnit_iff_isUnit_det.mp
     (Matrix.linearIndependent_rows_iff_isUnit.mp hrows)).ne_zero
 

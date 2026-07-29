@@ -208,7 +208,7 @@ theorem fresnel_integral_tendsto :
       have := hc.tendsto 0; simpa using this
     exact h0.mono_left nhdsWithin_le_nhds
   have := hcont.tendsto.comp hmap
-  simpa [fresnelValue, Function.comp] using this
+  simpa only [fresnelValue, Function.comp_def] using! this
 
 /-- **The offset, tied to the Gaussian phase.** The survival envelope's offset is
 `½·arg(fresnelValue)` — half the argument of the ACTUAL Fresnel/Gaussian integral,

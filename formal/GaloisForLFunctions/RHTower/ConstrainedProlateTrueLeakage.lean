@@ -51,7 +51,7 @@ theorem inner_evenProlateConcentration_eq (a : ℝ) (f : evenSubspace) :
       = ((‖evenTimeBandFourier a f‖ ^ 2 : ℝ) : ℂ) := by
   have h := evenProlateLeakage_inner_eq a f
   have hsub : evenProlateLeakage a f = f - evenProlateConcentration a f := by
-    rw [evenProlateLeakage, ContinuousLinearMap.sub_apply, ContinuousLinearMap.one_apply]
+    rw [evenProlateLeakage, _root_.sub_apply, one_apply_eq_self]
   rw [hsub, inner_sub_left, inner_self_eq_norm_sq_to_K] at h
   push_cast at h ⊢
   linear_combination -h

@@ -52,8 +52,7 @@ theorem constraintTwoSidedIdealMatrixElement_eq_zero
     (hφ : GaloisForLFunctions.PhysicalState C.toLinearMap φ)
     (hψ : GaloisForLFunctions.PhysicalState C.toLinearMap ψ) :
     inner 𝕜 φ (((C * L + R * C) : E →L[𝕜] E) ψ) = 0 := by
-  rw [ContinuousLinearMap.add_apply, ContinuousLinearMap.mul_apply,
-    ContinuousLinearMap.mul_apply, inner_add_right,
+  rw [add_apply, mul_apply_eq_comp, mul_apply_eq_comp, inner_add_right,
     constraintLeftWardMatrixElement_eq_zero C L hC hφ,
     constraintRightWardMatrixElement_eq_zero C R hψ, add_zero]
 
@@ -67,7 +66,7 @@ theorem physicalMatrixElement_congr_mod_constraintTwoSidedIdeal
     (hφ : GaloisForLFunctions.PhysicalState C.toLinearMap φ)
     (hψ : GaloisForLFunctions.PhysicalState C.toLinearMap ψ) :
     inner 𝕜 φ (B ψ) = inner 𝕜 φ (A ψ) := by
-  rw [hmod, ContinuousLinearMap.add_apply, inner_add_right,
+  rw [hmod, add_apply, inner_add_right,
     constraintTwoSidedIdealMatrixElement_eq_zero C L R hC hφ hψ, add_zero]
 
 /-! ## Quantitative constraint leakage -/
@@ -80,8 +79,7 @@ theorem constraintLeakage_eq_commutator_apply
     (C A : E →L[𝕜] E) {ψ : E}
     (hψ : GaloisForLFunctions.PhysicalState C.toLinearMap ψ) :
     C (A ψ) = ((C * A - A * C) : E →L[𝕜] E) ψ := by
-  rw [ContinuousLinearMap.sub_apply, ContinuousLinearMap.mul_apply,
-    ContinuousLinearMap.mul_apply]
+  rw [sub_apply, mul_apply_eq_comp, mul_apply_eq_comp]
   rw [GaloisForLFunctions.PhysicalState] at hψ
   change C ψ = 0 at hψ
   rw [hψ]
@@ -116,8 +114,7 @@ theorem constraintCommutatorWardValue_eq_zero
     (C A : E →L[𝕜] E) (hC : IsSelfAdjoint C) {ψ : E}
     (hψ : GaloisForLFunctions.PhysicalState C.toLinearMap ψ) :
     inner 𝕜 ψ (((C * A - A * C) : E →L[𝕜] E) ψ) = 0 := by
-  rw [ContinuousLinearMap.sub_apply, ContinuousLinearMap.mul_apply,
-    ContinuousLinearMap.mul_apply, inner_sub_right,
+  rw [sub_apply, mul_apply_eq_comp, mul_apply_eq_comp, inner_sub_right,
     constraintWardValue_eq_zero C A hC hψ]
   rw [GaloisForLFunctions.PhysicalState] at hψ
   change C ψ = 0 at hψ

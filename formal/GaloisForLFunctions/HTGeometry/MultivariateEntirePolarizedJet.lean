@@ -40,8 +40,8 @@ theorem polarizedJetEvalCLM_apply {d n : ℕ} (x : Fin d → ℂ)
       ∑ s ∈ (Finset.univ : Finset (Fin n)).powerset,
         jetPolarizationCoeff n s •
           directionalJetEval n x (jetSubsetDirection dirs s) f := by
-  simp only [polarizedJetEvalCLM, ContinuousLinearMap.sum_apply,
-    ContinuousLinearMap.smul_apply, directionalJetEvalCLM_apply]
+  simp only [polarizedJetEvalCLM, _root_.sum_apply,
+    _root_.smul_apply, directionalJetEvalCLM_apply]
 
 /-- For a genuinely Frechet-holomorphic source, the polarized continuous observation is exactly
 the ordinary ordered mixed Frechet jet. -/

@@ -30,7 +30,7 @@ theorem good_proportion_ge (fail : ℝ → ℝ) (hf0 : ∀ τ, 0 ≤ fail τ) (h
   have hgle : ∀ᶠ T in atTop, g T ≤ 1 := by
     filter_upwards [eventually_gt_atTop (0:ℝ)] with T hT
     have hle : (∫ τ in (0:ℝ)..T, fail τ) ≤ ∫ _τ in (0:ℝ)..T, (1:ℝ) := by
-      apply intervalIntegral.integral_mono_on hT.le (hint T) intervalIntegral.intervalIntegrable_const
+      apply intervalIntegral.integral_mono_on hT.le (hint T) intervalIntegrable_const
       intro x _; exact hf1 x
     rw [intervalIntegral.integral_const, smul_eq_mul, mul_one, sub_zero] at hle
     rw [hgdef]
@@ -49,7 +49,7 @@ theorem good_proportion_ge (fail : ℝ → ℝ) (hf0 : ∀ τ, 0 ≤ fail τ) (h
   have heq : ∀ᶠ T in atTop, T⁻¹ * ∫ τ in (0:ℝ)..T, (1 - fail τ)
       = 1 - g T := by
     filter_upwards [eventually_gt_atTop (0:ℝ)] with T hT
-    rw [intervalIntegral.integral_sub intervalIntegral.intervalIntegrable_const (hint T),
+    rw [intervalIntegral.integral_sub intervalIntegrable_const (hint T),
       intervalIntegral.integral_const, smul_eq_mul, mul_one, sub_zero, mul_sub,
       inv_mul_cancel₀ (ne_of_gt hT), hgdef]
   rw [cesaroLowerDensity, liminf_congr heq, liminf_const_sub _ g 1 hbdd hcobdd]

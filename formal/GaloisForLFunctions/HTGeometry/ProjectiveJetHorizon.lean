@@ -32,7 +32,7 @@ theorem algebraicIndependent_differentialJet_of_hypertranscendentalOver
   have h := AlgebraicIndependent.comp hfull (fun n : ℕ => ((), n)) (by
     intro m n hmn
     exact congrArg Prod.snd hmn)
-  simpa using h
+  simpa only [Function.comp_def] using h
 
 /-- Every jet lies beyond a genuine transcendence horizon formed by all its strict successors. -/
 theorem hypertranscendentalOver_transcendental_over_strictJetTail
@@ -91,7 +91,7 @@ theorem algebraicIndependent_iInf_tail_adjoin_le_algebraicClosure
     rw [← IntermediateField.isAlgebraic_adjoin_iff]
     let yn : IntermediateField.adjoin F (j '' Set.Ici n) :=
       ⟨y, (iInf_le (fun m : ℕ ↦ IntermediateField.adjoin F (j '' Set.Ici m)) n) hy⟩
-    simpa [yn] using isAlgebraic_algebraMap yn
+    simpa [yn] using! isAlgebraic_algebraMap yn
   have hclosureEmpty : y ∈ M.closure ∅ := by
     rw [← hM.closure_iInter_eq_biInter_closure_of_forall_subset hsub,
       iInter_image_Ici_eq_empty hj.injective] at hclosures
@@ -146,7 +146,7 @@ theorem hypertranscendentalOver_jetTailField_strictAnti
     apply hypertranscendentalOver_transcendental_over_strictJetTail hx n
     let y : jetTailField F x (n + 1) := ⟨differentialJet n x, hmem⟩
     change IsAlgebraic (jetTailField F x (n + 1)) (differentialJet n x)
-    simpa [y] using isAlgebraic_algebraMap y
+    simpa [y] using! isAlgebraic_algebraMap y
 
 end
 

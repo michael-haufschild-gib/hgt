@@ -1,6 +1,6 @@
 import GaloisForLFunctions.Core
 import Mathlib.Analysis.Matrix.PosDef
-import Mathlib.Data.Real.StarOrdered
+import Mathlib.Algebra.Order.Star.Real
 
 /-!
 # Reciprocal Hankel multiplicity sensitivity

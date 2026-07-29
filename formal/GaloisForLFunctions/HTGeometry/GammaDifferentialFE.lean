@@ -32,7 +32,12 @@ theorem continuousAt_iteratedDeriv_of_contDiffAt {f : ℂ → ℂ} {x : ℂ} {i 
     (ContinuousMultilinearMap.apply ℂ (fun _ : Fin i => ℂ) ℂ (fun _ => 1)).continuous
   have hc : ContinuousAt (fun y => (iteratedFDeriv ℂ i f y) (fun _ => 1)) x :=
     happ.continuousAt.comp hF
-  simpa only [iteratedDeriv_eq_iteratedFDeriv] using hc
+  have hfun :
+      iteratedDeriv i f = fun y => (iteratedFDeriv ℂ i f y) (fun _ => 1) := by
+    funext y
+    rw [iteratedDeriv_eq_iteratedFDeriv]
+  rw [hfun]
+  exact hc
 
 /-- **The `m`-th derivative of a simple pole.**  `d^m/ds^m (s+c)⁻¹ = (−1)^m·m!·(s+c)^{−(m+1)}` at any
 `x` with `x+c ≠ 0`.  This is the Laurent structure of `(s+c)⁻¹` that the general derivative-residue of
@@ -49,7 +54,17 @@ theorem iteratedDeriv_inv_add_const (c : ℂ) (m : ℕ) (x : ℂ) (hx : x + c �
         =ᶠ[𝓝 x] fun y => (-1) ^ n * (n.factorial : ℂ) * ((y + c) ^ (n + 1))⁻¹ := by
       filter_upwards [hev] with y hy; exact ih y hy
     have hp : HasDerivAt (fun y : ℂ => (y + c) ^ (n + 1)) ((↑(n + 1)) * (x + c) ^ n) x := by
-      simpa using ((hasDerivAt_id x).add_const c).pow (n + 1)
+      have hfun :
+          (fun y : ℂ => (y + c) ^ (n + 1)) = (fun y : ℂ => y + c) ^ (n + 1) := by
+        funext y
+        rfl
+      rw [hfun]
+      have hbase : (fun y : ℂ => y + c) = fun y => id y + c := by
+        funext y
+        rfl
+      rw [hbase]
+      simpa only [id_eq, Nat.add_sub_cancel, mul_one] using
+        ((hasDerivAt_id x).add_const c).pow (n + 1)
     have hinv : HasDerivAt (fun y : ℂ => ((y + c) ^ (n + 1))⁻¹)
         (-((↑(n + 1)) * (x + c) ^ n) / ((x + c) ^ (n + 1)) ^ 2) x :=
       hp.inv (pow_ne_zero (n + 1) hx)
@@ -201,7 +216,9 @@ theorem continuousAt_digamma (x : ℂ) (hx : ∀ m : ℕ, x ≠ -(m : ℂ)) :
     ContinuousAt Complex.digamma x := by
   have hg : ContinuousAt Complex.Gamma x := (contDiffAt_Gamma x hx 1).continuousAt
   have := (contDiffAt_deriv_Gamma x hx).div hg (Complex.Gamma_ne_zero hx)
-  simpa only [Complex.digamma_def, logDeriv_apply] using this
+  rw [Complex.digamma_def]
+  change ContinuousAt (deriv Complex.Gamma / Complex.Gamma) x
+  exact this
 
 /-- **Γ′ is `C^n` off the poles.**  `deriv Γ` is `ContDiffAt ℂ n` at every `x ∉ −ℕ` (Γ is `C^{n+1}`
 there; the derivative is `C^n`, via the Fréchet derivative). -/
@@ -219,9 +236,8 @@ theorem contDiffAt_digamma_n (x : ℂ) (hx : ∀ m : ℕ, x ≠ -(m : ℂ)) (n :
     ContDiffAt ℂ n Complex.digamma x := by
   have h := (contDiffAt_deriv_Gamma_n x hx n).div (contDiffAt_Gamma x hx n) (Complex.Gamma_ne_zero hx)
   rw [Complex.digamma_def]
-  have heq : (fun s => deriv Complex.Gamma s / Complex.Gamma s) = logDeriv Complex.Gamma := by
-    funext s; rw [logDeriv_apply]
-  rwa [heq] at h
+  change ContDiffAt ℂ n (deriv Complex.Gamma / Complex.Gamma) x
+  exact h
 
 private theorem ball_avoids {k : ℕ} {s : ℂ} (hsb : s ∈ Metric.ball (-(k:ℂ)) (1/2)) (hsne : s ≠ -(k:ℂ)) :
     ∀ m : ℕ, s ≠ -(m:ℂ) := by
@@ -289,7 +305,13 @@ theorem digamma_residue (k : ℕ) :
         rw [neg_add_cancel] at this; exact this.mono_left nhdsWithin_le_nhds
       have hne : (-((n + 1 : ℕ) : ℂ)) ≠ 0 := neg_ne_zero.mpr (by exact_mod_cast Nat.succ_ne_zero n)
       have := hnz.div hd hne
-      simpa using this
+      have hfun :
+          (fun s : ℂ => (s + ((n + 1 : ℕ) : ℂ)) / s) =
+            (fun s : ℂ => s + ((n + 1 : ℕ) : ℂ)) / fun s : ℂ => s := by
+        funext s
+        rfl
+      rw [hfun]
+      simpa only [zero_div] using this
     have hsub := hnum.sub hfrac
     rw [sub_zero] at hsub
     refine hsub.congr' ?_
@@ -515,7 +537,13 @@ theorem poly_eval_neg_tendsto_zero_imp_zero (p : Polynomial ℂ)
     have h1 : Tendsto (fun k : ℕ => ‖p.eval (-(k : ℂ))‖) atTop atTop :=
       p.tendsto_norm_atTop (Polynomial.natDegree_pos_iff_degree_pos.mp hpos) hz
     have h2 : Tendsto (fun k : ℕ => ‖p.eval (-(k : ℂ))‖) atTop (𝓝 0) := by
-      simpa using (continuous_norm.tendsto (0 : ℂ)).comp h
+      have hfun :
+          (fun k : ℕ => ‖p.eval (-(k : ℂ))‖) =
+            (fun a : ℂ => ‖a‖) ∘ fun k : ℕ => p.eval (-(k : ℂ)) := by
+        funext k
+        rfl
+      rw [hfun]
+      simpa only [norm_zero] using (continuous_norm.tendsto (0 : ℂ)).comp h
     exact not_tendsto_nhds_of_tendsto_atTop h1 0 h2
 
 /-- **Γ is not D-finite of order 1 (first-order linear Hölder).**  Γ satisfies no linear differential
@@ -1169,7 +1197,13 @@ theorem sin_factor : ∃ g : ℂ → ℂ, AnalyticAt ℂ g 0 ∧ g 0 = 1 ∧
       have hp : HasDerivAt (fun w : ℂ => w ^ (m+2)) 0 0 := by
         simpa [zero_pow (Nat.succ_ne_zero m)] using hasDerivAt_pow (m+2) (0:ℂ)
       have hd : HasDerivAt (fun w : ℂ => w ^ (m+2) • g w) 0 0 := by
-        have := hp.smul (hg.differentiableAt.hasDerivAt); simpa using this
+        have hfun :
+            (fun w : ℂ => w ^ (m + 2) • g w) = (fun w : ℂ => w ^ (m + 2)) • g := by
+          funext w
+          rfl
+        rw [hfun]
+        simpa only [Pi.smul_apply, zero_pow (show m + 2 ≠ 0 by omega), zero_smul, add_zero] using
+          hp.smul (hg.differentiableAt.hasDerivAt)
       have hfac' : Complex.sin =ᶠ[𝓝 (0:ℂ)] fun w => w ^ (m+2) • g w := hfac
       exact one_ne_zero (hderiv1.unique (hfac'.hasDerivAt_iff.mpr hd))
   subst hn1
@@ -1178,7 +1212,12 @@ theorem sin_factor : ∃ g : ℂ → ℂ, AnalyticAt ℂ g 0 ∧ g 0 = 1 ∧
     filter_upwards [hfac] with w hw; simpa using hw
   refine ⟨g, hg, ?_, hfacm⟩
   have hd : HasDerivAt (fun w : ℂ => w * g w) (g 0) 0 := by
-    have := (hasDerivAt_id (0:ℂ)).mul (hg.differentiableAt.hasDerivAt); simpa using this
+    have hfun : (fun w : ℂ => w * g w) = id * g := by
+      funext w
+      rfl
+    rw [hfun]
+    simpa only [one_mul, id_eq, zero_mul, add_zero] using
+      (hasDerivAt_id (0 : ℂ)).mul (hg.differentiableAt.hasDerivAt)
   exact (hderiv1.unique (hfacm.hasDerivAt_iff.mpr hd)).symm
 
 /-- **Reflection of sine across an integer multiple of π:** `sin s = (−1)^n·sin(s − nπ)`. -/
@@ -1501,7 +1540,7 @@ theorem tan_not_holonomic : ∀ (n : ℕ) (c : ℕ → Polynomial ℂ),
   · exact h
   · rw [Complex.sin_add, Complex.cos_pi_div_two, Complex.sin_pi_div_two,
       Complex.sin_nat_mul_pi, cos_nat_pi]
-    simpa using pow_ne_zero m (by norm_num : (-1 : ℂ) ≠ 0)
+    simp
 
 /-- **The secant `sec = 1/cos` is not holonomic.**  It satisfies no linear ODE with polynomial
 coefficients — the `csc`-analogue for cosine: simple poles at `nπ+π/2` (`cos_half_reflect`), extension
@@ -1537,7 +1576,13 @@ theorem sinh_factor : ∃ g : ℂ → ℂ, AnalyticAt ℂ g 0 ∧ g 0 = 1 ∧
       have hp : HasDerivAt (fun w : ℂ => w ^ (mm+2)) 0 0 := by
         simpa [zero_pow (Nat.succ_ne_zero mm)] using hasDerivAt_pow (mm+2) (0:ℂ)
       have hd : HasDerivAt (fun w : ℂ => w ^ (mm+2) • g w) 0 0 := by
-        have := hp.smul (hg.differentiableAt.hasDerivAt); simpa using this
+        have hfun :
+            (fun w : ℂ => w ^ (mm + 2) • g w) = (fun w : ℂ => w ^ (mm + 2)) • g := by
+          funext w
+          rfl
+        rw [hfun]
+        simpa only [Pi.smul_apply, zero_pow (show mm + 2 ≠ 0 by omega), zero_smul, add_zero] using
+          hp.smul (hg.differentiableAt.hasDerivAt)
       have hfac' : Complex.sinh =ᶠ[𝓝 (0:ℂ)] fun w => w ^ (mm+2) • g w := hfac
       exact one_ne_zero (hderiv1.unique (hfac'.hasDerivAt_iff.mpr hd))
   subst hn1
@@ -1546,7 +1591,12 @@ theorem sinh_factor : ∃ g : ℂ → ℂ, AnalyticAt ℂ g 0 ∧ g 0 = 1 ∧
     filter_upwards [hfac] with w hw; simpa using hw
   refine ⟨g, hg, ?_, hfacm⟩
   have hd : HasDerivAt (fun w : ℂ => w * g w) (g 0) 0 := by
-    have := (hasDerivAt_id (0:ℂ)).mul (hg.differentiableAt.hasDerivAt); simpa using this
+    have hfun : (fun w : ℂ => w * g w) = id * g := by
+      funext w
+      rfl
+    rw [hfun]
+    simpa only [one_mul, id_eq, zero_mul, add_zero] using
+      (hasDerivAt_id (0 : ℂ)).mul (hg.differentiableAt.hasDerivAt)
   exact (hderiv1.unique (hfacm.hasDerivAt_iff.mpr hd)).symm
 
 /-- **Reflection of `sinh` across `inπ`:** `sinh s = (−1)^n·sinh(s − inπ)`, from `sinh(inπ)=0`,
@@ -1994,7 +2044,9 @@ theorem gamma_no_weightedHomog_firstOrder (N d : ℕ) (hd : 2 * N ≤ d) (c : �
       ∑ b ∈ range (N+1), (c b).eval s * Complex.Gamma s ^ (d - 2*b) * (deriv Complex.Gamma s) ^ b = 0) :
     ∀ b ∈ range (N+1), c b = 0 :=
   gamma_no_weightedHomog_firstOrder_rem N d hd c (fun _ => 0)
-    (fun k => by simpa using tendsto_const_nhds)
+    (fun k => by
+      simpa only [mul_zero] using
+        (tendsto_const_nhds (α := ℂ) (x := (0 : ℂ)) (f := 𝓝[≠] (-(k : ℂ)))))
     (fun s hs => by simpa using hrel s hs)
 
 /-- **A non-homogeneous first-order nonlinear relation is impossible for Γ.**  Γ satisfies no
@@ -2658,11 +2710,19 @@ theorem gamma_deriv_recurrence (s : ℂ) (hs : ∀ n : ℕ, s ≠ -(n:ℂ)) :
   have hcomp : deriv (fun z => Complex.Gamma (z + 1)) s = deriv Complex.Gamma (s + 1) := by
     have hd : HasDerivAt (fun z : ℂ => z + 1) 1 s := (hasDerivAt_id s).add_const 1
     have hc := hΓs1.hasDerivAt.comp s hd
-    simpa using hc.deriv
+    have hfun :
+        (fun z => Complex.Gamma (z + 1)) = Complex.Gamma ∘ fun z : ℂ => z + 1 := by
+      funext z
+      rfl
+    rw [hfun]
+    simpa only [mul_one] using hc.deriv
   have hmul : deriv (fun z => z * Complex.Gamma z) s
       = Complex.Gamma s + s * deriv Complex.Gamma s := by
-    have := (hasDerivAt_id s).mul hΓs.hasDerivAt
-    simpa using this.deriv
+    have hfun : (fun z => z * Complex.Gamma z) = id * Complex.Gamma := by
+      funext z
+      rfl
+    rw [hfun]
+    simpa only [one_mul, id_eq] using ((hasDerivAt_id s).mul hΓs.hasDerivAt).deriv
   rw [← hmul, ← hcomp, hev.deriv_eq]
 
 /-- **Γ' is not identically zero — constant-free.**  At least one of `Γ'(1), Γ'(2)` is nonzero.  If both
@@ -3035,7 +3095,11 @@ theorem trigamma_recurrence (s : ℂ) (hs : ∀ p : ℕ, s ≠ -(p:ℂ)) :
   have hL : deriv (fun z => ψ (z + 1)) s = deriv ψ (s + 1) := by
     have hd : HasDerivAt (fun z : ℂ => z + 1) 1 s := (hasDerivAt_id s).add_const 1
     have hc := (hψd hs1).hasDerivAt.comp s hd
-    simpa using hc.deriv
+    have hfun : (fun z => ψ (z + 1)) = ψ ∘ fun z : ℂ => z + 1 := by
+      funext z
+      rfl
+    rw [hfun]
+    simpa only [mul_one] using hc.deriv
   -- RHS derivative
   have hR : deriv (fun z => ψ z + 1 / z) s = deriv ψ s - 1 / s^2 := by
     have hinv : HasDerivAt (fun z : ℂ => 1 / z) (-1 / s ^ 2) s := by
@@ -3411,27 +3475,40 @@ theorem hasDerivAt_mvEval_jet {n : ℕ} (Q : MvPolynomial (Fin n) ℂ)
     exact hasDerivAt_const x a
   | add p q hp hq =>
     have hf : (fun s => MvPolynomial.eval (fun j => g j s) (p + q))
-        = fun s => MvPolynomial.eval (fun j => g j s) p + MvPolynomial.eval (fun j => g j s) q := by
+        = (fun s => MvPolynomial.eval (fun j => g j s) p) +
+            fun s => MvPolynomial.eval (fun j => g j s) q := by
       funext s; simp
     rw [hf]
-    convert hp.add hq using 1
-    simp only [map_add, add_mul, Finset.sum_add_distrib]
+    have hcoef :
+        (∑ j, MvPolynomial.eval (fun j => g j x) (MvPolynomial.pderiv j (p + q)) * g' j) =
+          (∑ j, MvPolynomial.eval (fun j => g j x) (MvPolynomial.pderiv j p) * g' j) +
+            ∑ j, MvPolynomial.eval (fun j => g j x) (MvPolynomial.pderiv j q) * g' j := by
+      simp only [map_add, add_mul, Finset.sum_add_distrib]
+    rw [hcoef]
+    exact hp.add hq
   | mul_X p i hp =>
     have hfun : (fun s => MvPolynomial.eval (fun j => g j s) (p * MvPolynomial.X i))
-        = fun s => MvPolynomial.eval (fun j => g j s) p * g i s := by
+        = (fun s => MvPolynomial.eval (fun j => g j s) p) * g i := by
       funext s; simp [MvPolynomial.eval_mul, MvPolynomial.eval_X]
     rw [hfun]
-    convert hp.mul (hg i) using 1
-    simp only [MvPolynomial.pderiv_mul, map_add, MvPolynomial.eval_mul,
-      MvPolynomial.eval_X, MvPolynomial.pderiv_X, Pi.single_apply, mul_ite, mul_one, mul_zero,
-      add_mul, Finset.sum_add_distrib]
-    congr 1
-    · rw [Finset.sum_mul]
-      exact Finset.sum_congr rfl (fun j _ => by ring)
-    · rw [Finset.sum_eq_single i]
-      · simp
-      · intro j _ hj; simp [Ne.symm hj]
-      · intro h; simp at h
+    have hcoef :
+        (∑ j, MvPolynomial.eval (fun j => g j x)
+            (MvPolynomial.pderiv j (p * MvPolynomial.X i)) * g' j) =
+          (∑ j, MvPolynomial.eval (fun j => g j x) (MvPolynomial.pderiv j p) * g' j) *
+              g i x +
+            MvPolynomial.eval (fun j => g j x) p * g' i := by
+      simp only [MvPolynomial.pderiv_mul, map_add, MvPolynomial.eval_mul,
+        MvPolynomial.eval_X, MvPolynomial.pderiv_X, Pi.single_apply, mul_ite, mul_one, mul_zero,
+        add_mul, Finset.sum_add_distrib]
+      congr 1
+      · rw [Finset.sum_mul]
+        exact Finset.sum_congr rfl (fun j _ => by ring)
+      · rw [Finset.sum_eq_single i]
+        · simp
+        · intro j _ hj; simp [Ne.symm hj]
+        · intro h; simp at h
+    rw [hcoef]
+    exact hp.mul (hg i)
 
 /-- **The general Bell chain: every derivative of Gamma is Gamma times a polynomial in the log-derivative
 jet.**  For every `n` there is a polynomial `B : MvPolynomial (Fin n) C` with
@@ -3569,7 +3646,12 @@ theorem exists_logDeriv_bell (k : ℕ) :
       (analyticAt_Gamma s hs).differentiableAt.hasDerivAt
     have hden : HasDerivAt (fun w => (Complex.Gamma w)^(k+1))
         ((↑(k+1)) * (Complex.Gamma s)^k * deriv Complex.Gamma s) s := by
-      simpa using hΓ.pow (k+1)
+      have hfun :
+          (fun w => (Complex.Gamma w) ^ (k + 1)) = Complex.Gamma ^ (k + 1) := by
+        funext w
+        rfl
+      rw [hfun]
+      exact hΓ.pow (k + 1)
     have hquot := hnum.div hden (pow_ne_zero (k+1) hne)
     rw [iteratedDeriv_succ, hev.deriv_eq.trans hquot.deriv]
     simp only [MvPolynomial.eval_sub, MvPolynomial.eval_mul, MvPolynomial.eval_X,

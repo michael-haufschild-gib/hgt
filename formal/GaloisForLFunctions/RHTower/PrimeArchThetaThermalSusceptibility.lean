@@ -566,7 +566,7 @@ theorem thetaCuspSizeBiasMeanLiftWindow_iff_susceptibilityWindow :
       have hdiff : 0 <
           14 * thetaCuspSizeBiasedMean 1 -
             9 * thetaCuspSizeBiasedMean 2 := by
-        push_neg at h
+        push Not at h
         linarith
       have hprod := mul_pos hmu1 hdiff
       nlinarith
@@ -574,7 +574,7 @@ theorem thetaCuspSizeBiasMeanLiftWindow_iff_susceptibilityWindow :
       have hdiff : 0 <
           16 * thetaCuspSizeBiasedMean 1 -
             45 * thetaCuspSizeBiasedMean 0 := by
-        push_neg at h
+        push Not at h
         linarith
       have hprod := mul_pos hmu0 hdiff
       nlinarith

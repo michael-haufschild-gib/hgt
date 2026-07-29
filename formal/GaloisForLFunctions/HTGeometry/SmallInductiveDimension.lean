@@ -287,7 +287,7 @@ theorem smallIndDimLE_succ_of_separators {X : Type*} [TopologicalSpace X] [Regul
   · have hfrL : frontier U₁ ⊆ L := by
       have hcl : closure U₁ ⊆ V₁ᶜ := closure_minimal hU₁V₁c hV₁open.isClosed_compl
       intro z hz
-      rw [frontier, Set.mem_diff, hU₁open.interior_eq] at hz
+      rw [frontier, Set.mem_sdiff, hU₁open.interior_eq] at hz
       have hzUV : z ∉ U₁ ∪ V₁ := fun h => h.elim hz.2 (fun hv => hcl hz.1 hv)
       rw [← hLc] at hzUV
       exact not_not.mp hzUV

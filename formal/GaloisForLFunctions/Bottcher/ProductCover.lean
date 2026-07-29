@@ -226,7 +226,7 @@ theorem precompMeroEquivGen_algebraMap {g g' : E → E}
 
 /-- Constant functions as analytic germs on a several-variable carrier. -/
 noncomputable def constToAnalyticGen : ℂ →+* analyticSubringGen U :=
-  ((Germ.coeRingHom (𝓟 U)).comp (Pi.ringHom (fun _ : E => RingHom.id ℂ))).codRestrict
+  ((Germ.coeRingHom (𝓟 U)).comp (RingHom.pi (fun _ : E => RingHom.id ℂ))).codRestrict
     (analyticSubringGen U) (fun a => ⟨fun _ => a, analyticOnNhd_const, rfl⟩)
 
 /-- Constants are fixed by every precomposition operator. -/

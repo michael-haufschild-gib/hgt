@@ -47,7 +47,7 @@ theorem re_inner_brstHodgeHamiltonian_eq_sum_normSq
     (Q : E →L[𝕜] E) (ψ : E) :
     RCLike.re (inner 𝕜 ψ (brstHodgeHamiltonian Q ψ)) =
       ‖Q ψ‖ ^ 2 + ‖Q.adjoint ψ‖ ^ 2 := by
-  simp only [brstHodgeHamiltonian, ContinuousLinearMap.add_apply,
+  simp only [brstHodgeHamiltonian, _root_.add_apply,
     inner_add_right, map_add]
   rw [re_inner_quantumMasterConstraint_eq_normSq,
     re_inner_quantumMasterConstraint_eq_normSq]

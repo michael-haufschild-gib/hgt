@@ -52,9 +52,28 @@ theorem l2_fourier_coeFn_eq_l1_fourier_of_integrable
       (μ := volume) (ν := volume) (L := innerₗ ℝ)
       (f := (f1 : ℝ → ℂ)) (g := (psi : ℝ → ℂ))
       Real.continuous_fourierChar continuous_inner hf1_int psi.integrable
+    have hf_fourier (x : ℝ) :
+        VectorFourier.fourierIntegral Real.fourierChar volume (innerₗ ℝ)
+            (f1 : ℝ → ℂ) x =
+          𝓕 (f1 : ℝ → ℂ) x := by
+      rw [Real.fourier_eq]
+      rfl
+    have hpsi_fourier (x : ℝ) :
+        VectorFourier.fourierIntegral Real.fourierChar volume (innerₗ ℝ)
+            (psi : ℝ → ℂ) x =
+          (𝓕 psi) x := by
+      rw [SchwartzMap.fourier_coe, Real.fourier_eq]
+      rfl
+    have hpsi_fourier_flip (x : ℝ) :
+        VectorFourier.fourierIntegral Real.fourierChar volume (innerₗ ℝ).flip
+            (psi : ℝ → ℂ) x =
+          (𝓕 psi) x := by
+      rw [flip_innerₗ]
+      exact hpsi_fourier x
     have hswap' :
         ∫ x : ℝ, G x * psi x = ∫ x : ℝ, (f1 : ℝ → ℂ) x * (𝓕 psi) x := by
-      simpa [G, Real.Lp.fourierTransform_apply, smul_eq_mul] using hswap
+      simpa only [G, Real.Lp.fourierTransform_apply, hf_fourier, hpsi_fourier_flip,
+        smul_eq_mul] using hswap
     calc
       _ = ∫ x : ℝ, (f1 : ℝ → ℂ) x * (𝓕 psi) x := hswap'
       _ = _ := by

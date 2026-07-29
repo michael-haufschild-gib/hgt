@@ -32,7 +32,6 @@ theorem squarefree_square_decomposition_unique
       2 * m.factorization p + d.factorization p =
         2 * m'.factorization p + d'.factorization p := by
     have hp := congrArg (fun n : ℕ => n.factorization p) h
-    dsimp only at hp
     rw [Nat.factorization_mul (pow_ne_zero _ hm0) hd0,
       Nat.factorization_mul (pow_ne_zero _ hm'0) hd'0,
       Nat.factorization_pow, Nat.factorization_pow] at hp
@@ -119,7 +118,6 @@ theorem dyadicSquarefreeSquareEquiv_log
         2 * Real.log ((dyadicSquarefreeSquareEquiv n).2 : ℝ) := by
   have heq := congrArg (fun k : ℕ => Real.log (k : ℝ))
     (dyadicSquarefreeSquareEquiv_mul n)
-  dsimp only at heq
   rw [Nat.cast_mul, Nat.cast_pow, Real.log_mul, Real.log_pow] at heq
   · calc
       Real.log (n : ℝ) =

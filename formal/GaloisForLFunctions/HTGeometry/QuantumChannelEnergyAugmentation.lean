@@ -125,7 +125,7 @@ theorem opTrace_augmentedQuantumChannelEffect
     (∑' i, inner ℂ (b i) (quantumChannelEffect C (b i))) +
       ∑' i, inner ℂ (b i) (quantumChannelEffect B (b i))
   rw [← hCdiag'.tsum_add hBdiag']
-  exact tsum_congr fun i => by rw [ContinuousLinearMap.add_apply, inner_add_right]
+  exact tsum_congr fun i => by rw [_root_.add_apply, inner_add_right]
 
 /-- Exact zeroth value relation for positive-channel augmentation. -/
 theorem re_opTrace_augmentedQuantumChannelEffect

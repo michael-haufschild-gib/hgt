@@ -38,7 +38,7 @@ theorem hilbertSamplingDefect_eq_zero_iff [CompleteSpace Y]
     hilbertSamplingDefect S h = 0 ↔
       h ∈ (ContinuousLinearMap.adjoint S).range.topologicalClosure := by
   rw [hilbertSamplingDefect, norm_eq_zero]
-  rw [Submodule.orthogonalProjection_eq_zero_iff]
+  rw [Submodule.orthogonalProjectionOntoOnto_eq_zero_iff]
   rw [S.orthogonal_ker]
 
 /-- The canonical invisible component really is killed by the sampling operator. -/
@@ -54,7 +54,7 @@ theorem norm_inner_le_norm_mul_hilbertSamplingDefect
     ‖inner 𝕜 x h‖ ≤ ‖x‖ * hilbertSamplingDefect S h := by
   let u : S.ker := ⟨x, hx⟩
   have hinner : inner 𝕜 u (S.ker.orthogonalProjection h) = inner 𝕜 x h :=
-    Submodule.inner_orthogonalProjection_eq_of_mem_left u h
+    Submodule.inner_orthogonalProjectionOnto_eq_of_mem_left u h
   rw [← hinner]
   exact norm_inner_le_norm u (S.ker.orthogonalProjection h)
 

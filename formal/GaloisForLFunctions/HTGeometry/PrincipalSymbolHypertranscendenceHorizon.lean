@@ -34,6 +34,7 @@ theorem principalFiltration_source_mem (u : ℕ → L) {j n : ℕ} (hj : j < n) 
     u j ∈ principalFiltration (K := K) u n :=
   Submodule.subset_span (R := K) ⟨⟨j, hj⟩, rfl⟩
 
+omit [IsScalarTower k K L] in
 /-- A compatible derivation carries the strict source filtration at order `n` into the one at
 order `n+1` whenever its action has one-step principal symbol `s`. -/
 theorem derivation_principalFiltration_succ
@@ -70,6 +71,7 @@ theorem derivation_principalFiltration_succ
     simpa [Algebra.smul_def, mul_comm] using
       (principalFiltration (K := K) u (n + 1)).add_mem haDy hD₀y
 
+omit [IsScalarTower k K L] in
 /-- The `n`-th iterated law jet has principal term `s^n u_n`; every other term lies strictly
 below it in the source filtration. -/
 theorem principalJet_sub_pow_smul_mem
@@ -103,9 +105,11 @@ theorem principalJet_sub_pow_smul_mem
       have hrEq : ((D : L → L)^[n] (u 0)) = r + (s ^ n) • u n := by
         exact (sub_add_cancel _ _).symm
       rw [hrEq, map_add, Algebra.smul_def, Derivation.leibniz, hcompat]
-      convert hsum using 1 <;>
-        simp [Algebra.smul_def, map_pow, pow_succ, Nat.add_comm] <;> ring
+      convert hsum using 1
+      all_goals simp [Algebra.smul_def, map_pow, pow_succ]
+      all_goals ring
 
+omit [Algebra k K] [IsScalarTower k K L] in
 /-- The principal raising coefficient is intrinsic to an algebraically free source filtration.
 Two coefficients satisfying the same one-step law for the same derivation must coincide.  Thus the
 characteristic horizon cannot be manufactured by choosing a symbol after the law action is fixed. -/
@@ -119,7 +123,8 @@ theorem principalSymbol_unique
     s = t := by
   have hdiff : (t - s) • u 1 ∈ principalFiltration (K := K) u 1 := by
     have h := (principalFiltration (K := K) u 1).sub_mem (hs 0) (ht 0)
-    convert h using 1 <;> simp [sub_smul]
+    convert h using 1
+    all_goals simp [sub_smul]
   obtain ⟨q, hq⟩ :=
     (Submodule.mem_span_range_iff_exists_fun K).mp hdiff
   have hrel : (t - s) • u 1 = q 0 • u 0 := by
@@ -137,7 +142,7 @@ theorem principalSymbol_unique
     (fun Q : MvPolynomial ℕ K ↦ Q.coeff (Finsupp.single 1 1)) hPzero
   have hfirst : MvPolynomial.coeff (Finsupp.single 1 1)
       (MvPolynomial.C (t - s) * MvPolynomial.X 1) = t - s := by
-    rw [MvPolynomial.coeff_C_mul, MvPolynomial.coeff_X, mul_one]
+    rw [MvPolynomial.coeff_C_mul, MvPolynomial.coeff_X, if_pos rfl, mul_one]
   have hmonomial_ne :
       (Finsupp.single 0 1 : ℕ →₀ ℕ) ≠ Finsupp.single 1 1 := by
     intro h
@@ -146,7 +151,7 @@ theorem principalSymbol_unique
   have hsecond : MvPolynomial.coeff (Finsupp.single 1 1)
       (MvPolynomial.C (q 0) * MvPolynomial.X 0) = 0 := by
     rw [MvPolynomial.coeff_C_mul]
-    simp [MvPolynomial.coeff_X', hmonomial_ne]
+    simp [MvPolynomial.coeff_X, hmonomial_ne]
   have hcoeffP : P.coeff (Finsupp.single 1 1) = t - s := by
     change MvPolynomial.coeff (Finsupp.single 1 1)
         (MvPolynomial.C (t - s) * MvPolynomial.X 1) -
@@ -208,7 +213,7 @@ theorem algebraicIndependent_of_lowerTriangularSpan
               (⟨u ⟨l, lt_trans l.isLt i.isLt⟩,
                 Submodule.subset_span
                   ⟨⟨l, lt_trans l.isLt i.isLt⟩, rfl⟩⟩ : S)) j := by
-      simpa using map_sum (Finsupp.applyAddHom j)
+      exact map_sum (Finsupp.applyAddHom j)
         (fun l : Fin (i : ℕ) ↦ c l •
           b.repr
             (⟨u ⟨l, lt_trans l.isLt i.isLt⟩,
@@ -268,6 +273,7 @@ theorem algebraicIndependent_of_lowerTriangularSpan
   rw [hpacket]
   exact algebraicIndependent_matrixLinearForms_of_linearIndependent_rows M hrows u hu
 
+omit [IsScalarTower k K L] in
 /-- Every finite packet of principal-law jets is algebraically independent off the characteristic
 horizon. -/
 theorem principalJetPacket_algebraicIndependent
@@ -288,6 +294,7 @@ theorem principalJetPacket_algebraicIndependent
   · intro i
     exact pow_ne_zero _ hs
 
+omit [IsScalarTower k K L] in
 /-- Nonzero principal symbol propagates algebraic independence from the complete source filtration
 to the complete iterated law jet. -/
 theorem principalJet_algebraicIndependent
@@ -304,7 +311,7 @@ theorem principalJet_algebraicIndependent
   let N : ℕ := t.toFinset.sup id + 1
   let e : t → Fin N := fun i ↦
     ⟨i.1, Nat.lt_succ_of_le (Finset.le_sup (f := id)
-      (show i.1 ∈ t.toFinset by simpa using i.2))⟩
+      (show i.1 ∈ t.toFinset by simp [i.2]))⟩
   have he : Function.Injective e := by
     intro i j hij
     apply Subtype.ext
@@ -315,6 +322,7 @@ theorem principalJet_algebraicIndependent
     D₀ D u s hcompat hstep hs N huN
   simpa [e, Function.comp_def] using hN.comp e he
 
+omit [IsScalarTower k K L] in
 /-- Exact principal-symbol horizon.  A zero symbol gives a first-order linear relation, while a
 nonzero symbol gives an algebraically independent complete jet tower. -/
 theorem principalJet_algebraicIndependent_iff

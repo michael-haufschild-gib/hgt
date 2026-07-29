@@ -74,7 +74,7 @@ theorem ccmRadicalProjection_riesz (T : Matrix n n ℂ) (alpha v : n → ℂ)
     change WithLp.toLp 2 (T *ᵥ v) = 0
     rw [hv]
     rfl⟩
-  have hinner := Submodule.inner_orthogonalProjection_eq_of_mem_left u
+  have hinner := Submodule.inner_orthogonalProjectionOnto_eq_of_mem_left u
     (WithLp.toLp 2 alpha)
   change ccmRadicalProjection T alpha ⬝ᵥ star v = alpha ⬝ᵥ star v at hinner
   have hs := congrArg star hinner

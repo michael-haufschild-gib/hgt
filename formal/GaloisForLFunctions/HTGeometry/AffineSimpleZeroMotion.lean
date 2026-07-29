@@ -26,7 +26,7 @@ theorem exists_affineSimpleZero_branch
     have hsnd : AnalyticAt ℂ (fun p : ℂ × ℂ => p.2) (0, z0) := analyticAt_snd
     have hsum := (hH.comp (x := (0, z0)) hsnd).add
       (hfst.mul (hK.comp (x := (0, z0)) hsnd))
-    simpa [f, affineSimpleZeroRelation, Function.comp_def] using hsum
+    simpa only [f, affineSimpleZeroRelation, Pi.add_apply, Pi.mul_apply] using! hsum
   have hroot : f (0, z0) = 0 := by
     simp [f, affineSimpleZeroRelation, hzero]
   have hHder : HasDerivAt H (deriv H z0) z0 := hH.differentiableAt.hasDerivAt
@@ -44,19 +44,22 @@ theorem exists_affineSimpleZero_branch
       (deriv K z0 * deriv g 0) 0 := by
     simpa [Function.comp_def] using hKder.comp_of_eq 0 hgraw hg0.symm
   have hcK : HasDerivAt (fun c : ℂ => c * K (g c)) (K z0) 0 := by
-    simpa [hg0] using (hasDerivAt_id (0 : ℂ)).mul hKcomp
+    simpa only [Pi.mul_apply, id_eq, hg0, one_mul, zero_mul, add_zero] using!
+      (hasDerivAt_id (0 : ℂ)).mul hKcomp
   have hrelationDer : HasDerivAt (fun c : ℂ => H (g c) + c * K (g c))
       (deriv H z0 * deriv g 0 + K z0) 0 := hHcomp.add hcK
   have hrelEq : (fun c : ℂ => H (g c) + c * K (g c)) =ᶠ[𝓝 0]
       (fun _ : ℂ => (0 : ℂ)) := by
-    simpa [f, affineSimpleZeroRelation] using hrel
+    filter_upwards [hrel] with c hc
+    simpa only [f, affineSimpleZeroRelation] using hc
   have hcoeff : deriv H z0 * deriv g 0 + K z0 = 0 :=
     hrelationDer.unique (hrelEq.hasDerivAt_iff.mpr (hasDerivAt_const 0 0))
   have hgderiv : deriv g 0 = -K z0 / deriv H z0 := by
     apply (eq_div_iff hsimple).2
     linear_combination hcoeff
   refine ⟨g, hgan, hg0, ?_, ?_⟩
-  · simpa [f, affineSimpleZeroRelation] using hrel
+  · filter_upwards [hrel] with c hc
+    simpa only [f, affineSimpleZeroRelation] using hc
   · simpa [hgderiv] using hgraw
 
 /-- A real perturbation of a real simple-zero equation has horizontal first-order velocity. -/
@@ -87,4 +90,3 @@ theorem exists_affineSimpleZero_branch_real_tangent
 end
 
 end HTGeometry
-

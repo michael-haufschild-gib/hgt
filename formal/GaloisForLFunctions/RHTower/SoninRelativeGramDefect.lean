@@ -145,8 +145,8 @@ theorem centralSoninWeightedRelativeGramDefect_eq
   rw [sonin_adjoint_add, sonin_adjoint_smul]
   apply ContinuousLinearMap.ext
   intro x
-  simp only [ContinuousLinearMap.mul_apply, ContinuousLinearMap.add_apply,
-    ContinuousLinearMap.sub_apply, ContinuousLinearMap.smul_apply, map_add, map_smul]
+  simp only [mul_apply_eq_comp, _root_.add_apply,
+    _root_.sub_apply, _root_.smul_apply, map_add, map_smul]
   module
 
 /-- Weighting does not reintroduce a Schatten hypothesis: the full relative defect remains

@@ -114,7 +114,7 @@ theorem deningerCompactOpenFiniteJets_section
               (deningerCompactOpenFiniteJetBasisSource
                 S idx) := by
       rw [deningerCompactOpenFiniteJetSection,
-        ContinuousLinearMap.sum_apply, map_sum]
+        _root_.sum_apply, map_sum]
       apply Finset.sum_congr rfl
       intro idx hidx
       rw [ContinuousLinearMap.comp_apply,

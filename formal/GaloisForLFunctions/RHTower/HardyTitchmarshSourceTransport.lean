@@ -50,7 +50,7 @@ def unitaryPush (u : H ≃ₗᵢ[ℂ] K) (T : H →L[ℂ] H) : K →L[ℂ] K :=
 @[simp] theorem unitaryPush_mul (u : H ≃ₗᵢ[ℂ] K) (A B : H →L[ℂ] H) :
     unitaryPush u (A * B) = unitaryPush u A * unitaryPush u B := by
   ext x
-  simp [unitaryPush, ContinuousLinearMap.mul_apply]
+  simp [unitaryPush, mul_apply_eq_comp]
 
 @[simp] theorem adjoint_unitaryPush [CompleteSpace H] [CompleteSpace K]
     (u : H ≃ₗᵢ[ℂ] K) (T : H →L[ℂ] H) :
@@ -157,9 +157,9 @@ theorem evenPrimeLocalFactor_adjoint_comp_self (p : ℝ) (hp : 1 < p) :
           (U.symm : evenSubspace →L[ℂ] evenSubspace))
   apply ContinuousLinearMap.ext
   intro f
-  simp only [ContinuousLinearMap.mul_apply, ContinuousLinearMap.sub_apply,
-    ContinuousLinearMap.one_apply, ContinuousLinearMap.smul_apply,
-    ContinuousLinearMap.add_apply, map_sub, map_smul]
+  simp only [mul_apply_eq_comp, _root_.sub_apply,
+    one_apply_eq_self, _root_.smul_apply,
+    _root_.add_apply, map_sub, map_smul]
   have hU :
       (U : evenSubspace →L[ℂ] evenSubspace)
         ((U.symm : evenSubspace →L[ℂ] evenSubspace) f) = f :=

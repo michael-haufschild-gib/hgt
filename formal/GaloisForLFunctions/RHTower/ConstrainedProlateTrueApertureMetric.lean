@@ -47,7 +47,7 @@ theorem trueApertureRawDilation_ae {n : ℕ} (hn : 0 < n) (f : SoninL2) :
       fun x : ℝ => f ((n : ℝ) * x) := by
   rw [trueApertureRawDilation, dif_pos hn]
   have hnR : (0 : ℝ) < (n : ℝ) := Nat.cast_pos.mpr hn
-  simp only [ContinuousLinearMap.smul_apply]
+  simp only [_root_.smul_apply]
   filter_upwards [
     Lp.coeFn_smul (((Real.sqrt (n : ℝ))⁻¹ : ℂ))
       (dilationCLM (n : ℝ) hnR f),
@@ -100,7 +100,7 @@ theorem trueApertureMuntzMap_ae (a b : ℝ) (N : ℕ) (f : SoninL2) :
               (∑ k ∈ s, trueApertureRawDilation k f), ih] with x hadd htail
           rw [hadd, Pi.add_apply, htail]
           simp [Finset.sum_insert hn]
-    simpa only [T, ContinuousLinearMap.sum_apply] using hcoe.trans hterms
+    simpa only [T, _root_.sum_apply] using hcoe.trans hterms
   change indicatorCutoff (Icc a b) measurableSet_Icc (T f) =ᵐ[volume] _
   filter_upwards [indicatorCutoff_ae (Icc a b) measurableSet_Icc (T f), hsum] with x hcut hs
   rw [hcut]

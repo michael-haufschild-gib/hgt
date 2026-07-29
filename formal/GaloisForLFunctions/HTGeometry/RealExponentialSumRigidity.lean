@@ -109,7 +109,6 @@ theorem abs_le_of_expSum_norm_le {ι : Type*} [DecidableEq ι]
   intro i hi
   have hup := le_of_expSum_norm_le s J B hinj hB hbound i hi
   have hlow := le_of_expSum_norm_le s (fun k => -J k) B hinj' hB hbound' i hi
-  simp only at hlow
   rw [abs_le]
   exact ⟨by linarith, hup⟩
 

@@ -189,6 +189,6 @@ theorem bohrAP_pointValue_return {f : ℝ →ᵇ ℂ} (hf : IsBohrAP f) (s : ℝ
   have hcont : Continuous (fun g : ℝ →ᵇ ℂ => g s) :=
     continuous_eval_const s
   have hev := (hcont.tendsto f).comp hconv
-  simpa using hev
+  simpa only [Function.comp_def, bcfTranslate_apply] using hev
 
 end GaloisForLFunctions

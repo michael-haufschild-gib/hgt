@@ -718,7 +718,7 @@ theorem centralSoninCornerCorrectionResponse_signalSq_ne_zero_or_primeSquareResi
           (soninPrimeDilationSignal p * soninPrimeDilationSignal p) ≠ 0 ∨
       centralSoninPrimePowerResidual a (p, 0) ≠ 0 := by
   by_contra hzero
-  push_neg at hzero
+  push Not at hzero
   exact centralSoninCornerCorrectionResponse_signalSq_ne_primeSquareResidual a ha p
     (hzero.1.trans hzero.2.symm)
 

@@ -56,7 +56,7 @@ theorem separant_not_autonomousAnnihilator {f : ℂ → ℂ} {n : ℕ}
     ¬ AutonomousAnnihilator f n (Polynomial.derivative P) := by
   intro hAd
   have hd0 : Polynomial.derivative P ≠ 0 := fun h0 =>
-    hdeg (Polynomial.natDegree_eq_zero_of_derivative_eq_zero h0)
+    hdeg (Polynomial.derivative_eq_zero.mp h0)
   exact absurd (hmin _ hd0 hAd) (not_le.mpr (Polynomial.natDegree_derivative_lt hdeg))
 
 /-- **Ritt's separant step.**  If `f` satisfies some nonzero autonomous equation of order `n`,

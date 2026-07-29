@@ -73,8 +73,8 @@ theorem riemannHypothesis_iff_deningerFiniteJetHodgeExhaustionFrobeniusInvariant
   constructor
   · intro hRH weight _hweight n x
     unfold deningerCompactOpenFiniteJetHodge
-    simp only [ContinuousLinearMap.sum_apply,
-      ContinuousLinearMap.smul_apply]
+    simp only [_root_.sum_apply,
+      _root_.smul_apply]
     rw [map_sum]
     apply Finset.sum_congr rfl
     intro rho hrho

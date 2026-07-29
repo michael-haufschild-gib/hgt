@@ -327,8 +327,8 @@ def inverseDilatedEvenShell
       atTop (𝓝 0) := by
     convert hsum using 1
     funext n
-    simp only [crossBoundary, ContinuousLinearMap.mul_apply,
-      ContinuousLinearMap.one_apply, ContinuousLinearMap.sub_apply]
+    simp only [crossBoundary, mul_apply_eq_comp,
+      one_apply_eq_self, _root_.sub_apply]
     rw [hQe n]
     have hDe : D (e n) = D (e n - g n) + D (g n) := by
       rw [map_sub, sub_add_cancel]
