@@ -718,3 +718,161 @@ Current Nature verdict: `[DO NOT WRITE MANUSCRIPT]`.
   carries the former's source kernel to its target cokernel. This exposes “spacetime is the
   quantum symmetry that could not survive an event” as the next physical landing, while the
   noncanonical-dilation and transported-grading attacks remain fatal.
+
+## Post-theorem jump: fact creates its own frame
+
+The source-selection attack exposed a more precise reading of the quaternionic bridge. Let a
+nonzero colour-preserving actualization supply a unit quaternion \(q\). Under the
+\(\operatorname{Spin}(4)\) pair action
+\[
+(u,v)\cdot x=uxv^\ast,
+\]
+the full unit-pair stabilizer of \(q\) is not an arbitrarily chosen diagonal:
+\[
+\operatorname{Stab}(q)
+=\Delta_q
+=\{(u,q^\ast u q):\lVert u\rVert=1\}.                     \tag{AC13}
+\]
+This graph fixes \(\mathbb Rq\) pointwise and preserves
+\[
+q^\perp=(\operatorname{Im}\mathbb H)q.
+\]
+On \(q^\perp\), it acts by
+\[
+aq\longmapsto (uau^\ast)q.                                \tag{AC14}
+\]
+Thus the actualized point itself selects one fixed direction, three rotated directions, and the
+subgroup that reads them as `1 + 3`. The exact stabilizer, uniqueness, unit graph partner, radial
+fixing, and spatial preservation are paper- and Lean-proved in
+[`quaternionic-actuality-graph-lock.md`](../3-formalized/not_new_scientific_knowledge/quaternionic-actuality-graph-lock.md).
+
+This mathematics is standard custodial/observer-field locking. It is not the discovery. The
+physical jump begins only if \(q\) is not a Higgs value on a supplied spacetime but the
+source-complete defect of an objective event, and if the already proved noninvertible
+`Lost ≃ New` equivalence changes its physical representation:
+
+```text
+unresolved side:
+  weak/internal symmetry moves the possible outcome q
+
+objective event:
+  q becomes the complementary defect carried from kernel to cokernel
+
+actual side:
+  the graph stabilizer selected by q fixes the event's time direction
+  and rotates its three mutually spatial directions.
+```
+
+### `[CONJECTURE — ACTUALITY--STABILIZER TRANSMUTATION LAW]`
+
+> **Every objective event turns the symmetry that moved an unresolved quantum distinction into
+> the frame symmetry that fixes its new causal record.**
+
+Public law:
+
+> **The universe is not inside spacetime. Spacetime is the symmetry quantum reality leaves behind
+> when possibility becomes fact.**
+
+In this interpretation, the same conserved distinction has two nonconjugate physical variances:
+
+1. before actualization it is an interference-capable matter direction acted on by internal
+   symmetry;
+2. after actualization it is a composition-capable causal direction whose selected stabilizer is
+   local frame symmetry;
+3. Standard Model gauge forces are curvature of the retained coherent action;
+4. gravity is curvature of comparing the event-selected causal stabilizers and their solderings;
+5. Higgs/soldering data are the mixed law performing the representation transmutation; and
+6. Hypertranscendence is the global nonclosure of the accumulated event history: no finite
+   differential state can replace the source-complete sequence of transmutations.
+
+The last clause is a conjectural physical interpretation, not a consequence of differential
+hypertranscendence alone. The exact Riemann-orientation result supplies one mathematical shadow:
+finite local and complete continuum carriers can lose a source orientation charge that reappears
+only on a source-marked noncompact boundary. The actuality colligation results supply another:
+visible curvature can lose arbitrary boundary self-dynamics, while inherited law, transfer, and
+boundary law reconstruct the whole. Both say that quotienting away a source obstruction does not
+destroy it; it relocates the missing distinction to a boundary whose own law must be retained.
+
+### What all earlier obstructions may mean
+
+The repeated failures now point at one possible mistake shared by conventional unification
+attempts:
+
+> They ask for a larger symmetry acting on one fixed kind of object. The corpus instead demands a
+> source-selected, noninvertible change in what the object *is allowed to mean and compose with*.
+
+Character rigidity killed a smooth change between the weak `2 + 2` and stabilizer `1 + 3`
+representations. Pure-tangent rigidity killed production of the four-direction defect by motion
+inside quantum possibility. Curvature reconstruction failed because boundary self-law is
+independent data. Fixed-carrier simulations killed bare Hilbert-type change. Finite fusion and
+Hypertranscendence killed finite autonomous closure. The common survivor is therefore not a
+bigger static group, manifold, Hilbert space, or action. It is a compositional law for
+representation-changing defects.
+
+### New mathematics required
+
+`ACTUALITY--STABILIZER RECOLLEMENT`
+
+Develop a positive source-complete category of noninvertible event colligations in which:
+
+1. an event derives its own complementary defect rather than receiving a boundary;
+2. the defect equivalence `Lost ≃ New` transports magnitude but is not an invertible
+   same-representation intertwiner;
+3. the actualized defect canonically selects its target stabilizer and pointed causal order;
+4. source and target representations may be nonconjugate while one complete evolution remains
+   conservative;
+5. composition has an intrinsic holonomy comparing retained actions, target stabilizers, and
+   mixed solderings;
+6. the continuum tangent bundle, Lorentz connection, and local causal cone arise as moduli of
+   composed events rather than supplied objects; and
+7. the unique regular four-dimensional phase has exactly Einstein--Dirac--Yang--Mills--Higgs
+   dynamics and the global Standard Model group.
+
+This is the new mathematical object the programme needs. Operator colligations, recollement,
+Cartan geometry, custodial locking, and dagger categories each supply pieces; none currently
+supplies all seven clauses.
+
+### Hostile kill conditions for the jump
+
+Retire the actuality--stabilizer law if any one survives serious repair:
+
+1. every source-complete definition of actualization reduces to an ordinary Higgs/order-parameter
+   field on pre-existing spacetime;
+2. the compact graph lock has no unique Lorentzian, tetrad, or causal completion;
+3. operationally equivalent event presentations select inequivalent graph stabilizers or
+   continuum holonomies;
+4. retaining the weak source connection while the target graph becomes a frame connection gives
+   the wrong massless spectrum, chirality, or gauge redundancy;
+5. the exceptional pure pair does not uniquely select the actualization defect and its real
+   structure;
+6. composed event holonomy fails to recover universal free fall and Einstein dynamics;
+7. Hypertranscendence remains an analogy with no theorem coupling source nonclosure to physical
+   event composition; or
+8. no finite parameter-reducing prediction distinguishes the law from GR plus the Standard
+   Model.
+
+### Updated exact open core
+
+`SOURCE-COMPLETE EVENT-TO-STABILIZER UNIQUENESS`
+
+Starting only from the compatible exceptional pure pair, derive or rule out a presentation-free
+objective event whose four-dimensional colour-preserving normal defect:
+
+1. is canonically the kernel/cokernel defect of the event colligation;
+2. selects its graph stabilizer by `(AC13)` rather than by an external diagonal choice;
+3. acquires the unique positive Lorentz spin-factor order compatible with event composition;
+4. retains the source weak connection without identifying gauge redundancy with physical space;
+   and
+5. composes so that graph/soldering holonomy is the gravitational connection.
+
+The graph-lock theorem closes only the second arrow conditional on the event supplying \(q\).
+Arrows 1, 3, 4, and 5 remain the Nature-bearing core.
+
+## Latest log continued: actuality--stabilizer jump
+
+- 2026-07-29 — proved that a pointed unit quaternion canonically selects the entire
+  graph-conjugate diagonal stabilizer that fixes it, and that this graph fixes the radial line and
+  preserves the orthogonal three-plane. Classified the result as standard mathematics and
+  custodial/observer-field adjacent. Froze only the stronger conjecture that noninvertible
+  actualization changes a lost internal representation into the frame law of its own causal
+  record. Reframed the missing mathematics as source-complete actuality--stabilizer recollement.

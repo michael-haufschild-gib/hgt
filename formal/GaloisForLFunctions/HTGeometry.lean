@@ -1122,6 +1122,7 @@ import GaloisForLFunctions.HTGeometry.PureSpinorColorNormalSelection
 import GaloisForLFunctions.HTGeometry.SquareZeroCompatibilityDefect
 import GaloisForLFunctions.HTGeometry.PointedLorentzSpinFactor
 import GaloisForLFunctions.HTGeometry.HiggsCausalOrbit
+import GaloisForLFunctions.HTGeometry.QuaternionicActualityGraphLock
 import GaloisForLFunctions.HTGeometry.EventPlebanskiSimplicity
 import GaloisForLFunctions.HTGeometry.ClockDynamicsUnderdetermination
 import GaloisForLFunctions.HTGeometry.MobiusObservationHypertranscendence
@@ -2480,3 +2481,8 @@ import GaloisForLFunctions.HTGeometry.CanonicalEventSlice
 import GaloisForLFunctions.HTGeometry.ActualityWallFlatness
 import GaloisForLFunctions.HTGeometry.PeifferKernelAbelianBoundary
 import GaloisForLFunctions.HTGeometry.EventSquareZeroUnificationBoundary
+
+/- # Spectral-causality and interaction-observation duality -/
+import GaloisForLFunctions.HTGeometry.ParametricSpectralBranch
+import GaloisForLFunctions.HTGeometry.SpectralCausality
+import GaloisForLFunctions.HTGeometry.SteinerMobiusDuality
