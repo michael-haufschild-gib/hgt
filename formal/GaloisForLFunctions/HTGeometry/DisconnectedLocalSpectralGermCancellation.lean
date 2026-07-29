@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.DisconnectedLocalSpectralCancellation
+import GaloisForLFunctions.HTGeometry.FinsetPosetMobiusBridge
 
 /-!
 # Branch-independent disconnected spectral cancellation
@@ -35,7 +36,7 @@ namespace FiniteLocalInteractionFamily
 
 variable
     {V E : Type*} [Fintype V] [DecidableEq V]
-    [Fintype E] [DecidableEq E]
+    [DecidableEq E]
     {A : V → Type*} [∀ v, Fintype (A v)] [∀ v, DecidableEq (A v)]
     [∀ v, Nonempty (A v)]
 
@@ -165,6 +166,115 @@ theorem disconnectedLocalBranch_crossPacket_germ_eq_zero
         (Finset.sdiff_subset : fullPacket \ active ⊆ fullPacket))
   rw [heq]
   exact hcross z
+
+/-- Incidence-algebra form of branch-independent disconnected cancellation. -/
+theorem disconnectedLocalBranch_crossPacket_posetMobius_germ_eq_zero
+    (L : FiniteLocalInteractionFamily V E A)
+    (onsite : ∀ v, A v → ℂ)
+    (hinj : Function.Injective (onsiteProductEnergy onsite))
+    (left right : Finset E)
+    (hleft : left.Nonempty) (hright : right.Nonempty)
+    (hdisj :
+      Disjoint (L.packetSiteSupport left) (L.packetSiteSupport right))
+    (x : ∀ v, A v)
+    (branch :
+      (Sum {e : E // e ∈ left} {e : E // e ∈ right} → ℂ) → ℂ)
+    (hbranch : AnalyticAt ℂ branch 0)
+    (hbranch0 : branch 0 = onsiteProductEnergy onsite x)
+    (hbranchRoot :
+      ∀ᶠ coupling in 𝓝 0,
+        matrixCharpolyRelation
+          (affineMatrixFamily
+            (Matrix.diagonal (onsiteProductEnergy onsite))
+            (L.splitPacketGlobalInteraction left right)
+            coupling,
+            branch coupling) = 0) :
+    let fullPacket :=
+      (Finset.univ : Finset {e : E // e ∈ left}).map
+          (sumInlEmbedding {e : E // e ∈ left} {e : E // e ∈ right}) ∪
+        (Finset.univ : Finset {e : E // e ∈ right}).map
+          (sumInrEmbedding {e : E // e ∈ left} {e : E // e ∈ right})
+    (fun z =>
+      posetMobiusProbe (R := ℂ) fullPacket
+        (fun active =>
+          branch (restrictInteractionPacket active z)))
+      =ᶠ[𝓝 0]
+        (fun _ :
+          (Sum {e : E // e ∈ left} {e : E // e ∈ right} → ℂ) =>
+          (0 : ℂ)) := by
+  dsimp only
+  have hfin := L.disconnectedLocalBranch_crossPacket_germ_eq_zero
+    onsite hinj left right hleft hright hdisj x branch
+    hbranch hbranch0 hbranchRoot
+  filter_upwards [hfin] with z hz
+  rw [← finsetMobiusResponse_eq_posetMobiusProbe]
+  exact hz
+
+/-- **All-order disconnected cancellation.**  Along every scalar coupling
+direction, every Taylor jet of the full mixed response between two disjoint
+site sectors is zero. -/
+theorem disconnectedLocalBranch_crossPacket_iteratedDeriv_eq_zero
+    (L : FiniteLocalInteractionFamily V E A)
+    (onsite : ∀ v, A v → ℂ)
+    (hinj : Function.Injective (onsiteProductEnergy onsite))
+    (left right : Finset E)
+    (hleft : left.Nonempty) (hright : right.Nonempty)
+    (hdisj :
+      Disjoint (L.packetSiteSupport left) (L.packetSiteSupport right))
+    (x : ∀ v, A v)
+    (branch :
+      (Sum {e : E // e ∈ left} {e : E // e ∈ right} → ℂ) → ℂ)
+    (hbranch : AnalyticAt ℂ branch 0)
+    (hbranch0 : branch 0 = onsiteProductEnergy onsite x)
+    (hbranchRoot :
+      ∀ᶠ coupling in 𝓝 0,
+        matrixCharpolyRelation
+          (affineMatrixFamily
+            (Matrix.diagonal (onsiteProductEnergy onsite))
+            (L.splitPacketGlobalInteraction left right)
+            coupling,
+            branch coupling) = 0)
+    (z : Sum {e : E // e ∈ left} {e : E // e ∈ right} → ℂ)
+    (n : ℕ) :
+    let fullPacket :=
+      (Finset.univ : Finset {e : E // e ∈ left}).map
+          (sumInlEmbedding {e : E // e ∈ left} {e : E // e ∈ right}) ∪
+        (Finset.univ : Finset {e : E // e ∈ right}).map
+          (sumInrEmbedding {e : E // e ∈ left} {e : E // e ∈ right})
+    iteratedDeriv n
+      (fun g : ℂ =>
+        finsetMobiusResponse fullPacket
+          (fun active =>
+            branch (restrictInteractionPacket active (g • z)))) 0 = 0 := by
+  dsimp only
+  have hgerm := L.disconnectedLocalBranch_crossPacket_germ_eq_zero
+    onsite hinj left right hleft hright hdisj x branch
+    hbranch hbranch0 hbranchRoot
+  let ray :
+      ℂ →
+        (Sum {e : E // e ∈ left} {e : E // e ∈ right} → ℂ) :=
+    fun g => g • z
+  have hray : Tendsto ray (𝓝 0) (𝓝 0) := by
+    have hc : Continuous ray := continuous_id.smul continuous_const
+    have hc0 : ContinuousAt ray 0 := hc.continuousAt
+    change Tendsto ray (𝓝 0) (𝓝 (ray 0)) at hc0
+    simpa only [ray, zero_smul] using hc0
+  have hpull := hgerm.comp_tendsto hray
+  have heq :
+      (fun g : ℂ =>
+        finsetMobiusResponse
+          ((Finset.univ : Finset {e : E // e ∈ left}).map
+              (sumInlEmbedding {e : E // e ∈ left}
+                {e : E // e ∈ right}) ∪
+            (Finset.univ : Finset {e : E // e ∈ right}).map
+              (sumInrEmbedding {e : E // e ∈ left}
+                {e : E // e ∈ right}))
+          (fun active =>
+            branch (restrictInteractionPacket active (g • z))))
+        =ᶠ[𝓝 0] (fun _ : ℂ => (0 : ℂ)) := by
+    simpa only [Function.comp_apply, ray] using hpull
+  rw [Filter.EventuallyEq.iteratedDeriv_eq n heq]
+  simp
 
 end FiniteLocalInteractionFamily
 end GaloisForLFunctions.HTGeometry

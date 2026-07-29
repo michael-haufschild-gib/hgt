@@ -922,3 +922,97 @@ comparison, not the parent containers.
 - [ ] prove conormal and multiplicity-jet descent faithfulness
 - [ ] dependency-close and formalize unconditional theorems in Lean
 - [ ] prove RH
+
+## 11. Local interval transgression and cofinal Bockstein
+
+The previously untyped one-face comparison is now closed at the exact local divisor-jet level.
+For every field \(K\) and \(m\geq 0\), Lean constructs canonical linear equivalences
+\[
+ K[X]/(X^m)
+ \;\simeq\;
+ K^{\{0,\ldots,m-1\}}
+ \;\simeq\;
+ K^{(\mathbb N)}/K^{(\{m,m+1,\ldots\})}.                 \tag{17}
+\]
+Under `(17)`, the class of \(X^k\) is the \(k\)-th Tate-clock point mass and multiplication by
+\(X\) is the common nilpotent forward arrow.  Over \(\mathbb C\), for every nonzero Barnes period
+\(\omega\), the same interval injects into the analytic nodal receiver by
+\[
+ X^k\longmapsto
+ \ell_k(z)=
+ \exp\!\left({2\pi i k z\over\omega}\right),
+ \qquad 0\leq k<m.                                      \tag{18}
+\]
+Every image in `(18)` is killed by the selected face operator \(T_\omega-1\), and finite packets
+remain linearly independent.  Thus the local Kummer jet, Tate tail quotient, and Barnes nodal
+charge packet are not merely equinumerous: they are one typed interval representation.
+
+The crucial new finite-to-infinite law is the failure of the truncated forward arrows to be a
+morphism of the cofinal interval system.  If
+\[
+ I_m:K^{m+1}\longrightarrow K^{m+2}
+\]
+appends a zero top coordinate, \(S_m\) is the truncated forward arrow, and
+\(\beta_m\) sends the old top coefficient to the new top vertex, then
+\[
+ S_{m+1}I_m-I_mS_m=\beta_m.                              \tag{19}
+\]
+The map \(\beta_m\) has rank one and is nonzero at every stage.  Its analytic realization is
+exactly the first excluded charge:
+\[
+ \ell_1(z)\sum_{k=0}^{m}a_k\ell_k(z)
+ =
+ \sum_{k=0}^{m}(S_ma)_k\ell_k(z)
+ +a_m\ell_{m+1}(z).                                     \tag{20}
+\]
+Equivalently, for a polynomial \(P\),
+\[
+ \ell_1\cdot{\cal R}_{m+1}([P])
+ =
+ {\cal R}_{m+1}([XP])
+ +[X^m]P\,\ell_{m+1}.                                   \tag{21}
+\]
+
+Equations `(19)`--`(21)` identify the one-prime completion Bockstein without an abstract
+surrogate.  Finite nilpotence is produced by deleting \(\beta_m\); the algebraic Ind clock keeps
+it as the next charge; scalar Hilbert completion can make its cofinal orbit escape; a correct
+enhanced completion must retain its class at infinity.  This is the precise local meaning of
+“nonuniform finite exactness creates a boundary class.”
+
+This advance does **not** control the semisimple radial character
+\(p^{\rho-1/2}\).  The jet charge \(k\) in `(18)` records nilpotent multiplicity, while zero
+location is the independent radial/Rees grading.  Conflating them would turn `(17)` into a false
+RH argument.  The remaining global theorem must therefore preserve both gradings:
+
+> **[CONJECTURE — POLARIZED ASYMPTOTIC EXACTNESS.]**  The pre-divisor ordinary-prime
+> Tate--Milnor/Poisson source has a strict enhanced totalization in which the cofinal classes
+> \(\beta_m\), their full prime cubical coherences, and the semisimple Wold--Gamma radial record
+> form one source-generated derived boundary.  Analytic positive graph and arithmetic conormal
+> jointly generate its Hodge comparison.  Source reflection is an order-zero equivalence of this
+> same boundary object, rather than an equivalence between two separately completed scalar
+> shadows.
+
+If constructed source-first, the nilpotent part of this conjecture is now supplied by
+`(17)`--`(21)`.  Its semisimple part would feed either dense-resolvent purity or exact reflected
+Rees-depth equality and force \(\Re\rho=1/2\).  The first unresolved theorem is not the elementary
+bilateral-moderateness selector, which the corpus already proves.  It is the strict all-prime map
+from Meyer's pre-divisor conormal quotient into this polarized asymptotic boundary, with no
+temperedness, normality, or divisor-selected topology assumed.
+
+Lean file
+`formal/GaloisForLFunctions/RHTower/TateKummerWoldGammaIntervalCharacter.lean` now proves:
+
+- `localDivisorJetEquivFiniteInterval`;
+- `localDivisorJetEquivTateClockTailQuotient`;
+- `localDivisorJetEquivFiniteInterval_X_mul_intertwines`;
+- `nodalIntervalSynthesis_injective`;
+- `localDivisorJetNodalIntervalRealization_injective`;
+- `localDivisorJetNodalIntervalRealization_X_pow`;
+- `tateClockFinIntervalForward_inclusion_defect`;
+- `tateClockFinIntervalTopBoundary_basis_last_ne_zero`;
+- `nodalIntervalSynthesis_topBoundary_basis_last`;
+- `nodalIntervalSynthesis_forward_leakage`;
+- `localDivisorJetNodalIntervalRealization_X_mul_leakage`.
+
+Direct `lake env lean` verification passes.  Final module build, axiom audit, and lint remain
+reserved until the dependency-closed local theorem set stops changing.
