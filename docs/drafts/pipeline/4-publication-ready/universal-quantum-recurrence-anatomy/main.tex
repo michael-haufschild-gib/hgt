@@ -1,0 +1,782 @@
+\documentclass[10pt]{article}
+
+\usepackage[a4paper,margin=0.78in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{microtype}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{enumitem}
+\usepackage{multicol}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit}
+\usepackage[colorlinks=true,linkcolor=blue!45!black,
+  citecolor=blue!45!black,urlcolor=blue!45!black]{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+
+\newcommand{\C}{\mathbb C}
+\newcommand{\R}{\mathbb R}
+\newcommand{\N}{\mathbb N}
+\newcommand{\T}{\mathbb T}
+\newcommand{\HS}{\mathrm{HS}}
+\newcommand{\ee}{\mathrm e}
+\newcommand{\Fid}{\mathcal F}
+\newcommand{\Hwater}{\mathcal H}
+\newcommand{\Gap}{\Delta}
+
+\title{\textbf{A universal law of quantum recurrence}}
+\author{Michael Haufschild}
+\date{29 July 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Will a quantum system recover its past, when will it do so, and what part of
+the return can an observer see? We prove one recurrence anatomy spanning
+finite closed and contractive dynamics, countably infinite pure-point
+spectra, atomless spectra and arbitrary probability energy laws. For every
+finite contraction, peripheral spectral mass is the exact late-return
+threshold: every lower overlap recurs after every delay and every higher one
+eventually becomes impossible. Conditional on a finite surviving packet, the
+logarithm of the least spectrum-uniform deadline and the negative logarithm
+of the exact return-target volume are both governed, within explicit finite
+constants, by one pivot-optimized reverse-water information, identical as a
+finite convex program to parallel-Gaussian rate--distortion. For every finite
+observer family, a coherence graph gives the exact visible phase dimension
+and its universal recurrence exponent. For every probability spectrum,
+every continuous long-time fidelity statistic exists; its moments are the
+zero-sum collision probabilities of independent visible energy gaps.
+Countable summable pure-point packets recur at every resolution, whereas
+atomless spectra have continuum temporal dimension and zero-density
+positive-fidelity returns. Finally, complete polynomial local dynamics, even
+at every depth, does not determine the recurrence phase; the missing datum is
+global spectral completion. The result supplies a model-independent boundary
+for late-time spectral-form-factor inference, including black-hole models:
+all-orders perturbative data cannot by itself certify an exact recurrence
+plateau.
+\end{abstract}
+
+\noindent\textbf{One-sentence summary.}
+Quantum return is governed by a hierarchy: global spectrum decides whether
+history returns, surviving spectral weight sets when, and an observer's
+coherence network decides what return is visible.
+
+\section{The question left open by recurrence theorems}
+
+Quantum recurrence is usually stated as an existence theorem: an isolated
+system with a discrete finite spectrum eventually approaches its initial
+state \cite{BocchieriLoinger1957}. Current quantitative results bound return
+times for finite systems \cite{KotowskiOszmaniec2026,GuptaShort2026}, connect
+exact Floquet recurrence to arithmetic \cite{AnandEtAl2026}, and relate
+equilibration to recurrence \cite{RiddellEtAl2023}. Open-system work
+identifies persistent or peripheral sectors
+\cite{WolfPerezGarcia2010,Albert2019,AmatoEtAl2023} and studies special
+non-Hermitian recurrence mechanisms \cite{LiuZheng2024}. These results answer
+parts of a larger question:
+\begin{equation}
+ \boxed{\text{Does a quantum history return, when, and for whom?}}
+ \label{eq:question}
+\end{equation}
+
+The three clauses cannot be answered by Hilbert-space dimension alone.
+Dissipation can erase part of a state while leaving a lossless phase packet.
+Within that packet, weakly occupied energies need less synchronization than
+strongly occupied ones. A restricted observer may see only some energy
+coherences. In infinite systems, discrete and continuous spectral mass have
+qualitatively different long-time phases. The same complication appears in
+late-time spectral form factors: a perturbative description can specify
+arbitrarily much local information without selecting a global spectral
+completion.
+
+We prove that these are not separate complications. They are successive
+levels of one spectral information hierarchy. Figure~\ref{fig:anatomy}
+shows the reduction. Each arrow is exact; no randomness, genericity,
+regularity or arithmetic independence is assumed unless explicitly stated.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[
+  node distance=7mm and 7mm,
+  box/.style={draw,rounded corners,align=center,inner sep=5pt,
+    text width=3.25cm,minimum height=1.25cm},
+  arr/.style={-{Latex[length=2mm]},thick}
+]
+\node[box] (evolution) {finite contractive evolution\\state \(x\)};
+\node[box,right=of evolution] (persistent)
+  {peripheral projection\\persistent mass \(p_T(x)\)};
+\node[box,right=of persistent] (weights)
+  {surviving phase packet\\weights \(w_j\)};
+\node[box,below=of weights] (observer)
+  {observer coherence graph\\visible rank \(d-c(G)\)};
+\node[box,left=of observer] (gaps)
+  {global gap law \(\Gap\mu\)\\collision hierarchy \(\kappa_n\)};
+\node[box,left=of gaps] (statistics)
+  {all continuous\\long-time return statistics};
+\draw[arr] (evolution)--node[above,font=\scriptsize]{what survives}(persistent);
+\draw[arr] (persistent)--node[above,font=\scriptsize]{normalize}(weights);
+\draw[arr] (weights)--node[right,font=\scriptsize]{what is visible}(observer);
+\draw[arr] (observer)--node[above,font=\scriptsize]{complete}(gaps);
+\draw[arr] (gaps)--node[above,font=\scriptsize]{determines}(statistics);
+\node[draw=red!65!black,dashed,rounded corners,fit=(evolution)(persistent),
+  inner sep=4pt,label={[red!65!black,font=\scriptsize]below:
+  complete polynomial local data stop here}] {};
+\end{tikzpicture}
+\caption{\textbf{The recurrence anatomy.}
+Peripheral mass decides the attainable late-return threshold. Surviving
+weights set the finite minimax clock. Observer coherence selects a quotient
+of the phase packet. Global energy-gap collisions determine the complete
+long-time return distribution. Complete polynomial local dynamics need not
+determine the final global layer.}
+\label{fig:anatomy}
+\end{figure}
+
+\section{The universal recurrence anatomy}
+
+We first define the objects entering the master law.
+
+\subsection{Threshold and finite return information}
+
+Let \(\mathcal K\) be a finite-dimensional complex Hilbert space,
+\(T:\mathcal K\to\mathcal K\) a linear contraction and \(x\in\mathcal K\).
+Let \(\mathcal K_\partial\) be the span of eigenspaces of \(T\) with
+unit-modulus eigenvalue and \(\Pi_\partial\) its orthogonal projection. Define
+\begin{equation}
+ p_T(x)=\|\Pi_\partial x\|^2.
+ \label{eq:persistent}
+\end{equation}
+For a normalized finite spectral packet \(w=(w_1,\ldots,w_r)\), \(w_j>0\),
+and eigenphases \(\omega_j\), define
+\begin{equation}
+ A_w(n;\omega)=\left|\sum_{j=1}^r w_j\ee^{in\omega_j}\right|,
+ \qquad \Fid_w(n;\omega)=A_w(n;\omega)^2.
+ \label{eq:finite-fidelity}
+\end{equation}
+The least universal deadline \(T_w(\eta)\) is the smallest \(N\geq1\) such
+that every phase packet has some \(1\leq n\leq N\) with
+\(\Fid_w(n;\omega)\geq(1-\eta)^2\).
+
+For a pivot \(k\), allocate distortions \(0<D_j\leq w_j\) to \(j\ne k\) and
+put
+\begin{align}
+ \Hwater_k(w,\eta)
+ &=\min\left\{\frac12\sum_{j\ne k}\log\frac{w_j}{D_j}:
+       \sum_{j\ne k}D_j\leq\eta\right\}, \label{eq:water-k}\\
+ \Hwater_{\rm proj}(w,\eta)&=\min_k\Hwater_k(w,\eta).
+ \label{eq:water-proj}
+\end{align}
+If \(\eta<1-w_k\), the optimizer is the reverse-water allocation
+\begin{equation}
+ D_j^*=\min\{w_j,\lambda_k^{-1}\},\qquad
+ \sum_{j\ne k}\min\{w_j,\lambda_k^{-1}\}=\eta.
+ \label{eq:water-opt}
+\end{equation}
+The program \eqref{eq:water-k} is numerically the finite
+parallel-Gaussian rate--distortion allocation \cite{CoverThomas2006}. No
+source, encoder or communication channel is inferred.
+
+\subsection{Observer content and global recurrence}
+
+Let \(E_1,\ldots,E_d\) be distinct finite energy sectors. For a finite family
+of matrices \(B^{(a)}\) with nonnegative weights \(\lambda_a\), define
+\begin{align}
+ D^2(t)&=\sum_a\lambda_a
+  \|U_tB^{(a)}U_t^\dagger-B^{(a)}\|_{\HS}^2,\label{eq:D}\\
+ W_{ij}&=\sum_a\lambda_a|B^{(a)}_{ij}|^2.\label{eq:W}
+\end{align}
+The observer coherence graph \(G\) has edge \(\{i,j\}\) exactly when
+\(W_{ij}>0\) or \(W_{ji}>0\). Let \(c(G)\) be its number of connected
+components.
+
+For an arbitrary probability spectral measure \(\mu\) on \(\R\), write
+\begin{equation}
+ A_\mu(t)=\int_\R\ee^{itE}\,d\mu(E),\qquad
+ F_\mu(t)=|A_\mu(t)|^2.
+ \label{eq:general-fidelity}
+\end{equation}
+Let \(\Gap\mu\) be the law of \(E-E'\) for independent \(E,E'\sim\mu\), and
+define its additive collision hierarchy
+\begin{equation}
+ \kappa_n(\mu)=((\Gap\mu)^{*n})(\{0\}),\qquad n\in\N,
+ \label{eq:kappa}
+\end{equation}
+with zeroth convolution power the point mass at zero.
+
+\begin{theorem}[Universal quantum recurrence anatomy]
+\label{thm:master}
+The following statements hold simultaneously.
+\begin{enumerate}[leftmargin=2.2em,label=\textbf{\Alph*.}]
+\item \textbf{Whether and how much.}
+For every finite contraction \(T\) and vector \(x\), \(p_T(x)\) is the exact
+asymptotic return-amplitude ceiling:
+\begin{align}
+ a<p_T(x)&\Longrightarrow
+   \forall M\ \exists n>M:\quad
+   a\leq|\langle x,T^nx\rangle|,\label{eq:below}\\
+ p_T(x)<a&\Longrightarrow
+   \exists B\ \forall n\geq B:\quad
+   |\langle x,T^nx\rangle|<a.\label{eq:above}
+\end{align}
+The exact fidelity ceiling is \(p_T(x)^2\).
+
+\item \textbf{When.}
+For every positive finite packet, \(r\geq2\), and \(0<\eta\leq1\),
+\begin{align}
+ \Hwater_{\rm proj}-\frac{\pi}{4}(r-1)-\log(2r)
+ &<\log T_w(\eta)\nonumber\\
+ &\leq\Hwater_{\rm proj}
+ +(r-1)\log(2\pi\sqrt2).
+\label{eq:clock-law}
+\end{align}
+Every prescribed delay \(M\) admits a later return at
+\begin{equation}
+ M<n\leq(M+1)T_w(\eta).
+\label{eq:after-delay}
+\end{equation}
+For a finite contraction and \(0\leq a<p_T(x)\), after a finite transient
+burn-in the same deadline applies to its normalized peripheral packet with
+\(\eta=(p_T(x)-a)/(2p_T(x))\).
+
+Let \(\mu_w(\eta)\) be normalized Haar volume of the exact phase target
+\(\{z\in\T^r:|\sum_jw_jz_j|\geq1-\eta\}\) and
+\(I_w=-\log\mu_w\). Then
+\begin{equation}
+ \Hwater_{\rm proj}-\frac{\pi}{4}(r-1)-\log r
+ \leq I_w
+ \leq\Hwater_{\rm proj}-(r-1)\log\frac{\sqrt2}{\pi}.
+\label{eq:volume-law}
+\end{equation}
+
+\item \textbf{What an observer sees.}
+For every finite observer family,
+\begin{equation}
+ D^2(t)=\sum_{i,j}W_{ij}
+  |\ee^{it(E_i-E_j)}-1|^2.
+\label{eq:observer-law}
+\end{equation}
+Exact return occurs precisely when the phase is constant on every connected
+component of \(G\). The visible relative-phase dimension is exactly
+\begin{equation}
+ r_{\rm obs}=d-c(G).
+\label{eq:visible-rank}
+\end{equation}
+For every integer \(Q\geq1\), some \(1\leq n\leq(Q+1)^{r_{\rm obs}}\)
+satisfies
+\begin{equation}
+ D^2(n)\leq
+ 4\left(\frac{2\pi}{Q+1}\right)^2\sum_{i,j}W_{ij}.
+\label{eq:observer-clock}
+\end{equation}
+
+\item \textbf{Every spectrum and every long-time statistic.}
+For every probability spectrum, finite or infinite, and every \(n\in\N\),
+\begin{equation}
+ \lim_{T\to\infty}\frac1{2T}\int_{-T}^{T}F_\mu(t)^n\,dt
+ =\kappa_n(\mu).
+\label{eq:collision-law}
+\end{equation}
+For every continuous \(h:[0,1]\to\R\), the long-time mean of
+\(h(F_\mu(t))\) exists and is uniquely determined by
+\(\{\kappa_n(\mu)\}_{n\geq0}\).
+
+Every nonnegative summable countable pure-point phase packet returns below
+every positive total phase-energy resolution. A positive-time perfect return
+\(F_\mu(t)=1\) exists exactly when the additive group generated by the
+visible energy-gap support is cyclic. Every atomless spectrum has continuum
+projective temporal dimension, and for every \(\eta>0\) the time density of
+\(\{t:F_\mu(t)\geq\eta\}\) tends to zero.
+
+\item \textbf{What local data cannot decide.}
+For every normalized indeterminate Hamburger moment class there are a
+pure-point completion and an atomless completion with identical polynomial
+Krylov Gram matrix, identical energy-multiplication matrix and the same
+connected Jacobi rule at every depth, but respectively positive and zero
+mean return. Such a pair exists with strictly positive energy.
+
+On one fixed compact positive interval there are two coupling-dependent
+spectral families for which every perturbative coefficient of every bounded
+continuous spectral observable and every all-time spectral-form-factor
+coefficient agrees, while their exact plateaux are respectively
+\(\ee^{-2/g}\) and \(0\) for every \(g>0\). No decision rule using only
+either complete input can classify recurrence universally. Conversely, if
+one representative of an exact moment sequence has compact support, all
+representatives coincide; exact moments then determine the complete
+recurrence law.
+\end{enumerate}
+\end{theorem}
+
+The theorem is a hierarchy, not a claim that one formula has the same domain
+at every level. Finite surviving packets have a finite minimax deadline.
+Arbitrary spectra have the complete long-time collision law. The
+local/global obstruction identifies why the former cannot be inferred from
+complete polynomial local data without a global completion.
+
+\section{Whether: noise creates an exact return threshold}
+
+The peripheral and transient parts of a finite contraction are orthogonal
+and reducing. The restriction to the transient complement has spectral
+radius below one, so it decays. Hence
+\begin{equation}
+ \langle x,T^nx\rangle
+ =\sum_{\lambda\in\Lambda_\partial}
+   \lambda^n\|\Pi_\lambda x\|^2+r_n,\qquad r_n\to0.
+\label{eq:decomp}
+\end{equation}
+The nonnegative coefficients in the persistent sum total \(p_T(x)\).
+Simultaneous phase recurrence approaches this total after every delay,
+whereas the triangle inequality bounds it from above. This proves both sides
+of the sharp transition \eqref{eq:below}--\eqref{eq:above}.
+
+The result covers every finite linear contraction. A finite convex mixture
+of contractions is again a contraction. It therefore includes closed
+unitary dynamics and any quantum channel or effective operator that is
+contractive in the Hilbert-space norm being used. It does not assert that
+every completely positive trace-preserving map is Hilbert--Schmidt
+contractive.
+
+Below the threshold, normalize the nonzero peripheral weights and wait until
+\(|r_n|\leq(p_T(x)-a)/2\). The remaining half-gap is assigned to the phase
+packet. The finite clock law then gives a return above \(a\). Dissipation
+therefore changes both the recoverable amount and a finite burn-in, while
+the surviving weights determine the recurrence information cost.
+
+\section{When: return time is a rate--distortion problem}
+
+The water law differs from a dimension-only estimate in two ways. First, one
+phase is physically irrelevant and is removed by the pivot. Second, the
+allocation \eqref{eq:water-opt} charges only weights above its endogenous
+water line. A weak tail whose total mass lies below the permitted defect can
+be left unsynchronized.
+
+The upper bound in \eqref{eq:clock-law} is constructive. Partition each
+active relative-phase circle into
+\[
+ Q_j=\left\lceil\pi\sqrt{2w_j/D_j}\right\rceil
+\]
+arcs. Two of the first \(1+\prod_{j\ne k}Q_j\) orbit points occupy the same
+product cell. Their difference gives a return clock, and
+\(\cos u\geq1-u^2/2\) converts coordinate errors into fidelity. Optimizing
+over \(D\) and the pivot gives the upper law.
+
+The lower bound is adversarial rather than probabilistic physics.
+Multiplication by each positive integer preserves Haar measure on the phase
+torus. The first \(N\) targets therefore occupy at most \(N\) times the
+one-step target volume. A Gaussian envelope for the unit-circle chord
+Laplace transform gives a phase packet avoiding all returns whenever this
+union has volume below one. The same water optimizer appears in the upper
+and lower constructions.
+
+The exact target also contains an explicit projective product box, which
+proves the other half of \eqref{eq:volume-law}. Thus one scalar controls
+\[
+ \text{target information}
+ \quad+\quad
+ \text{least worst-spectrum deadline}
+ \quad+\quad
+ \text{Gaussian allocation information},
+\]
+with all support-linear remainders displayed. The law becomes
+constant-free whenever
+\(\Hwater_{\rm proj}/r\to\infty\). It is not claimed to be a sharp equality
+when the information itself is only \(O(r)\).
+
+\section{What: recurrence belongs to an observer}
+
+Equation~\eqref{eq:observer-law} follows by expanding every observer block in
+the energy basis. It makes observer dependence exact. A diagonal record has
+no edges and is stationary. A connected coherence graph sees all \(d-1\)
+relative phases. Every intermediate graph sees precisely \(d-c(G)\).
+
+This is not merely a count of Hamiltonian energies. Adding an observer costs
+one new temporal coordinate only when its nonzero blocks connect previously
+disconnected coherence components. The graph quotient determines exact
+return and the universal recurrence exponent. Arithmetic relations among
+the actual energy gaps can make a fixed system return earlier; the exponent
+is the class-wide guarantee and has deterministic hard-spectrum witnesses.
+
+For a self-adjoint expectation probe \(\sigma\),
+Cauchy--Schwarz gives
+\begin{equation}
+ |\operatorname{Tr}[\sigma(U_tB^{(a)}U_t^\dagger-B^{(a)})]|
+ \leq\sqrt{D^2(t)/\lambda_a}
+\label{eq:probe-hs}
+\end{equation}
+when \(\|\sigma\|_{\HS}\leq1\). Under the standard normalization
+\(\|\sigma\|_{\rm op}\leq1\), the right side is multiplied by \(\sqrt d\);
+that general conversion factor is attained. Calibration errors add by the
+triangle inequality. The observer law is therefore operational but
+dimension-honest.
+
+\section{Infinite spectra: the completed recurrence law}
+
+Qualitative and quantitative recurrence bounds for discrete mixed-state
+spectra are known \cite{GimenoSotoca2017}. The first result below is the exact
+summable head--tail closure needed by the observer hierarchy.
+For a countable phase packet \(a_p\geq0\), \(\sum_pa_p<\infty\), define
+\begin{equation}
+ \mathcal E(n)=\sum_{p=0}^\infty a_p
+ |\ee^{in\omega_p}-1|^2.
+\label{eq:countable-energy}
+\end{equation}
+Synchronizing a finite head of length \(M\) and bounding every tail chord by
+two gives, for some \(1\leq n\leq(Q+1)^M\),
+\begin{equation}
+ \mathcal E(n)\leq
+ \left(\frac{2\pi}{Q+1}\right)^2\sum_{p<M}a_p
+4\sum_{p\geq M}a_p.
+\label{eq:head-tail}
+\end{equation}
+First choosing a small summable tail and then increasing \(Q\) proves
+recurrence at every positive resolution. This is an infinite theorem, but
+not a dimension-free deadline.
+
+Continuous spectra have a different recurrence phase. If \(\mu\) is
+atomless, so is its difference law, and every positive-order collision
+probability \(\kappa_n\) vanishes. Equation~\eqref{eq:collision-law} then
+forces zero mean fidelity and zero asymptotic density above every positive
+threshold. Rare spikes are not excluded; they must occupy vanishing time
+density.
+
+The collision hierarchy closes the arbitrary spectral case. Since
+\(F_\mu(t)^n\) is the characteristic function of
+\((\Gap\mu)^{*n}\), symmetric-window averaging selects its atom at zero.
+The case \(n=1\) is the classical Wiener collision formula
+\cite{Wiener1933}; the all-order hierarchy and continuous-statistic closure
+are the content used here.
+Polynomial approximation on the compact fidelity interval \([0,1]\) then
+gives every continuous statistic. No discreteness, absolute continuity,
+finite dimension, finite temporal dimension or spectral regularity is used.
+
+\section{Why complete local dynamics is still insufficient}
+
+Moment-indeterminate spectral laws expose the exact local/global boundary.
+Quantum constructions of moment-indeterminate densities and characteristic
+functions are known \cite{SalaMayato2020,LoughlinCohen2022}.
+Equality of all energy moments implies equality of every polynomial Krylov
+inner product
+\[
+ G_\mu(p,q)=\int p(E)q(E)\,d\mu(E)
+\]
+and every energy-multiplication matrix element
+\[
+ J_\mu(p,q)=\int E\,p(E)q(E)\,d\mu(E).
+\]
+Gram--Schmidt therefore produces the same connected Jacobi rule at every
+depth. Nevertheless, one global completion can be pure point with positive
+mean recurrence and another atomless with zero mean and zero-density
+positive-threshold return. An explicit strictly positive pair consists of a
+geometric lattice and a lognormal density with identical moments.
+
+The distinction is not between two boundary conditions of one already
+complete self-adjoint system. The histories are inequivalent global
+Hilbert-space completions of the same polynomial local rule. In
+indeterminate Jacobi theory, extremal self-adjoint extensions on the minimal
+polynomial closure are pure point; the atomless completion lies in a
+different global representation \cite{Yafaev2023,BergSzwarc2023}.
+
+Compact support is the exact moment boundary. If one representative is
+supported in a compact interval, polynomial approximation of continuous
+functions forces every moment-equivalent representative to be the same
+measure. Exact moments then determine the spectrum and all recurrence
+statistics.
+
+All-orders perturbation fails for a different reason. Let
+\(\eta(g)=0\) for \(g\leq0\) and \(\eta(g)=\ee^{-1/g}\) for \(g>0\).
+On a fixed compact positive interval, adding an atom of mass \(\eta(g)\) to
+an atomless reference family changes no coupling derivative at \(g=0\).
+Every bounded continuous spectral observable and the entire time-dependent
+spectral form factor therefore have identical all-orders jets. Yet the exact
+plateau is \(\eta(g)^2=\ee^{-2/g}\) for the completed family and zero for the
+atomless family. No all-orders classifier can distinguish them.
+
+\section{Consequence for black-hole spectral form factors}
+
+For a normalized thermal energy law
+\[
+ d\mu_\beta(E)=Z(\beta)^{-1}\ee^{-\beta E}\,d\rho(E),
+\]
+the spectral form factor is exactly
+\begin{equation}
+ \frac{|Z(\beta+it)|^2}{Z(\beta)^2}=F_{\mu_\beta}(t).
+\label{eq:sff}
+\end{equation}
+Late-time spectral form factors diagnose random-matrix behavior and proposed
+microscopic black-hole spectra \cite{BarbonRabinovici2003,CotlerEtAl2017}.
+Theorem~\ref{thm:master} therefore yields two model-independent conclusions.
+
+First, the complete long-time distribution of a fixed normalized thermal
+spectrum is governed by additive collisions of thermal energy gaps, not by
+the one-number plateau alone. Second, no inference rule whose only input is
+the complete all-orders coupling expansion of the spectral form factor---even
+at every physical time---can universally certify whether an exact late-time
+plateau is positive. The missing datum is a global nonperturbative spectral
+completion.
+
+This is a certification theorem, not a solution of black-hole dynamics. It
+does not assert that a black hole realizes either constructed compact
+spectrum, that a positive plateau equals information recovery, or that
+gravity leaves its completion unspecified. It establishes what perturbative
+spectral data alone cannot prove and identifies the exact global data that
+would suffice.
+
+\section{Experimental discriminators}
+
+The hierarchy separates three controllable operations:
+\begin{enumerate}[leftmargin=2.1em]
+\item calibrated loss changes the persistent mass and hence the exact
+returnability threshold;
+\item state preparation changes surviving spectral weights and therefore
+the water information;
+\item probe choice changes the coherence graph and visible phase rank.
+\end{enumerate}
+For a finite stroboscopic device with tick duration \(\Delta t\) and coherent
+window \(\tau_{\rm coh}\), the graph theorem certifies an observable return
+inside the window whenever
+\begin{equation}
+ (Q+1)^{d-c(G)}\Delta t\leq\tau_{\rm coh}.
+\label{eq:device}
+\end{equation}
+Failure of the predicted displacement and probe bounds within a certified
+window falsifies the calibrated finite closed-unitary model, not quantum
+mechanics: leakage, decoherence or calibration error can violate that model.
+
+The target-volume law also has an exact one-tick realization. Independently
+tunable onsite phases in the single-excitation sector of a Hermitian,
+number-preserving local spin Hamiltonian realize every torus phase packet,
+so randomized onsite fields sample \(\mu_w(\eta)\) without a spectral
+ensemble approximation. This engineered family is not claimed to represent
+generic interacting local Hamiltonians. Spectral form factors have already
+been measured in programmable many-body quantum processors
+\cite{DongEtAl2025}; the theorem supplies analytic separation tests rather
+than device data.
+
+\section{Methods}
+
+\subsection{Peripheral reduction}
+
+Distinct unit-modulus eigenspaces of a contraction are orthogonal. Their span
+and orthogonal complement reduce the operator. Finite dimensionality and
+contractivity place every spectral value on the complement strictly inside
+the unit disk, hence its powers converge to zero. Equation~\eqref{eq:decomp}
+follows. Compact simultaneous phase recurrence proves the lower-ceiling
+direction; the norm triangle inequality proves the upper direction.
+
+\subsection{Water optimizer and clock sandwich}
+
+Put \(x_j=w_j/D_j\). The constraint becomes
+\(\sum_{j\ne k}w_j/x_j\leq\eta\), \(x_j\geq1\), with objective
+\(\frac12\sum\log x_j\). A supporting-line inequality proves global
+optimality of \(x_j=\max\{1,\lambda_kw_j\}\). An anisotropic product-box
+pigeonhole argument gives the upper deadline. For the lower deadline,
+projective Haar shear, an exponential bound on the chord energy and a union
+bound construct a deterministic avoiding spectrum. An explicit inner box
+gives target-volume positivity and the reverse inequality.
+
+\subsection{Observer quotient}
+
+In the energy basis,
+\[
+ (U_tB^{(a)}U_t^\dagger-B^{(a)})_{ij}
+ =(\ee^{it(E_i-E_j)}-1)B^{(a)}_{ij},
+\]
+which proves \eqref{eq:observer-law}. A nonnegative sum vanishes exactly
+when every positive edge phase locks. The graph coboundary has rank
+\(d-c(G)\). Simultaneous approximation of one root-relative phase per
+non-root vertex proves \eqref{eq:observer-clock}.
+
+\subsection{Collision hierarchy}
+
+The characteristic function of \(\Gap\mu\) is \(F_\mu(t)\); hence the
+characteristic function of \((\Gap\mu)^{*n}\) is \(F_\mu(t)^n\). The
+normalized integral over \([-T,T]\) is its sinc average, which converges to
+the mass at zero. This proves \eqref{eq:collision-law}. Uniform polynomial
+approximation of continuous functions on \([0,1]\), together with the
+uniform fidelity bound, proves existence and uniqueness of every continuous
+long-time statistic.
+
+\subsection{Global-completion separation}
+
+For an indeterminate Hamburger moment sequence, a pure-point extremal
+representing measure and an atomless barycentric representing measure have
+all moments in common. Polynomial Gram and multiplication tensors depend
+only on those moments. Their recurrence conclusions follow respectively
+from positive collision mass and atomlessness. Translating the explicit
+geometric/lognormal pair places both spectra at positive energy.
+
+For the compact perturbative pair, every derivative of \(\ee^{-1/g}\) at
+zero vanishes. Linearity of integration gives equality of every bounded
+spectral-observable jet; differentiating finite products gives equality of
+the full spectral-form-factor jet. The added atom contributes exactly its
+squared mass to the long-time plateau.
+
+\section{Discussion}
+
+The recurrence theorem is therefore not one yes-or-no statement. It is a
+decision hierarchy:
+\[
+\begin{array}{ccl}
+\text{persistent mass} &\longrightarrow& \text{whether and how much},\\
+\text{water information} &\longrightarrow& \text{when},\\
+\text{coherence graph} &\longrightarrow& \text{what an observer sees},\\
+\text{gap collisions} &\longrightarrow& \text{all long-time statistics}.
+\end{array}
+\]
+Complete local polynomial dynamics need not determine the last line.
+Compact exact moments do; all-orders perturbative data do not. This
+local--global boundary is the unifying content of the law.
+
+The result replaces dimension-only recurrence intuition by a classification
+that depends on state, observer and global completion.
+It covers every finite contraction, every finite phase packet, every finite
+observer family, every summable countable pure-point packet, every atomless
+probability spectrum and every arbitrary probability spectrum at the
+long-time distribution level. It makes no claim about nonlinear gain
+dynamics, a universal thermodynamic-limit deadline or a dynamical law of
+quantum gravity.
+
+\section*{Data availability}
+
+No datasets were generated or analysed in this theoretical study.
+
+\section*{Competing interests}
+
+The author declares no competing interests.
+
+\section*{Use of generative artificial intelligence}
+
+Generative language models assisted literature triage, proof exploration and
+draft preparation. The human author takes responsibility for the manuscript,
+mathematical arguments, citations and conclusions.
+
+\begin{multicols}{2}
+\begin{thebibliography}{99}
+\scriptsize
+\setlength{\itemsep}{0.08em}
+
+\bibitem{BocchieriLoinger1957}
+P.~Bocchieri and A.~Loinger,
+Quantum recurrence theorem,
+\emph{Phys. Rev.} \textbf{107}, 337--338 (1957).
+\href{https://doi.org/10.1103/PhysRev.107.337}
+{doi:10.1103/PhysRev.107.337}.
+
+\bibitem{KotowskiOszmaniec2026}
+M.~Kotowski and M.~Oszmaniec,
+Tight bounds on recurrence time in closed quantum systems,
+preprint (2026).
+\href{https://arxiv.org/abs/2601.10409}{arXiv:2601.10409}.
+
+\bibitem{GuptaShort2026}
+C.~Gupta and A.~J.~Short,
+Recurrence time for finite quantum systems,
+\emph{Phys. Rev. A} \textbf{114}, 012208 (2026).
+\href{https://arxiv.org/abs/2604.14995}{arXiv:2604.14995}.
+
+\bibitem{AnandEtAl2026}
+A.~Anand, D.~Valluri, J.~Davis and S.~Ghose,
+Quantum recurrences and the arithmetic of Floquet dynamics,
+\emph{Quantum} \textbf{10}, 2074 (2026).
+\href{https://doi.org/10.22331/q-2026-04-20-2074}
+{doi:10.22331/q-2026-04-20-2074}.
+
+\bibitem{RiddellEtAl2023}
+J.~Riddell, N.~J.~Pagliaroli and A.~M.~Alhambra,
+Concentration of quantum equilibration and an estimate of the recurrence
+time, \emph{SciPost Phys.} \textbf{15}, 165 (2023).
+\href{https://arxiv.org/abs/2206.07541}{arXiv:2206.07541}.
+
+\bibitem{WolfPerezGarcia2010}
+M.~M.~Wolf and D.~P\'erez-Garc\'ia,
+The inverse eigenvalue problem for quantum channels,
+\href{https://arxiv.org/abs/1005.4545}{arXiv:1005.4545} (2010).
+
+\bibitem{Albert2019}
+V.~V.~Albert,
+Asymptotics of quantum channels: conserved quantities, an adiabatic limit,
+and matrix product states,
+\emph{Quantum} \textbf{3}, 151 (2019).
+
+\bibitem{AmatoEtAl2023}
+D.~Amato, P.~Facchi and A.~Konderak,
+Asymptotics of quantum channels,
+\emph{J. Phys. A: Math. Theor.} \textbf{56}, 265304 (2023).
+\href{https://doi.org/10.1088/1751-8121/acd828}
+{doi:10.1088/1751-8121/acd828}.
+
+\bibitem{LiuZheng2024}
+Z.~Liu and C.~Zheng,
+Recurrence theorem for open quantum systems (2024; revised 2026).
+\href{https://arxiv.org/abs/2402.19143}{arXiv:2402.19143}.
+
+\bibitem{CoverThomas2006}
+T.~M.~Cover and J.~A.~Thomas,
+\emph{Elements of Information Theory}, 2nd ed.
+(Wiley, 2006).
+
+\bibitem{GimenoSotoca2017}
+V.~Gimeno and J.~M.~Sotoca,
+Upper bounds for the Poincar\'e recurrence time in quantum mixed states,
+\emph{J. Phys. A: Math. Theor.} \textbf{50}, 185302 (2017).
+\href{https://doi.org/10.1088/1751-8121/aa67fe}
+{doi:10.1088/1751-8121/aa67fe}.
+
+\bibitem{Wiener1933}
+N.~Wiener,
+\emph{The Fourier Integral and Certain of Its Applications}
+(Cambridge University Press, 1933).
+
+\bibitem{SalaMayato2020}
+R.~Sala Mayato, P.~Loughlin and L.~Cohen,
+Generating moment-indeterminate probability densities by way of quantum
+mechanics,
+\emph{J. Theor. Probab.} \textbf{35}, 133--153 (2022).
+\href{https://arxiv.org/abs/2001.02134}{arXiv:2001.02134}.
+
+\bibitem{LoughlinCohen2022}
+P.~Loughlin and L.~Cohen,
+Characteristic function and operator approach to moment-indeterminate
+probability densities,
+\emph{J. Math. Anal. Appl.} \textbf{516}, 126519 (2022).
+\href{https://arxiv.org/abs/2203.11310}{arXiv:2203.11310}.
+
+\bibitem{Yafaev2023}
+D.~R.~Yafaev,
+Self-adjoint Jacobi operators in the limit circle case,
+\emph{J. Operator Theory} \textbf{89}, 411--450 (2023).
+\href{https://arxiv.org/abs/2104.13609}{arXiv:2104.13609}.
+
+\bibitem{BergSzwarc2023}
+C.~Berg and R.~Szwarc,
+Indeterminate Jacobi operators,
+\emph{Math. Nachr.} \textbf{296}, 4962--4980 (2023).
+\href{https://arxiv.org/abs/2301.00586}{arXiv:2301.00586}.
+
+\bibitem{BarbonRabinovici2003}
+J.~L.~F.~Barbon and E.~Rabinovici,
+Very long time scales and black hole thermal equilibrium,
+\emph{JHEP} \textbf{11}, 047 (2003).
+\href{https://arxiv.org/abs/hep-th/0308063}{hep-th/0308063}.
+
+\bibitem{CotlerEtAl2017}
+J.~S.~Cotler \emph{et al.},
+Black holes and random matrices,
+\emph{JHEP} \textbf{05}, 118 (2017).
+\href{https://arxiv.org/abs/1611.04650}{arXiv:1611.04650}.
+
+\bibitem{DongEtAl2025}
+H.~Dong \emph{et al.},
+Measuring the spectral form factor in many-body chaotic and localized phases
+of quantum processors,
+\emph{Phys. Rev. Lett.} \textbf{134}, 010402 (2025).
+\href{https://doi.org/10.1103/PhysRevLett.134.010402}
+{doi:10.1103/PhysRevLett.134.010402}.
+
+\end{thebibliography}
+\end{multicols}
+
+\end{document}

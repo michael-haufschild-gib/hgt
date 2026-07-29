@@ -1,0 +1,18 @@
+2026-07-29 continuation of active TOE goal using truth-hunch-first protocol.
+
+New frozen physical conjecture: `docs/drafts/pipeline/1-in-progress/event-relative-independence-spacetime-law.md`.
+Public law: “Space is not where things are. Space is reality's changing answer to what can exist independently.” Gravity: “Gravity is quantum reality disagreeing about where one thing ends and another begins.” TOE: “The three quantum forces are the symmetries of a local answer. Gravity is the failure of all local answers to agree.”
+
+Frozen content: each actual event creates a pre-dynamical local independence structure on its newly created possible futures. The total comparison structure of these answers is spacetime itself. Causal order is admissible extension; proper time is invariant succession; gravity is nonintegrability of comparing independence structures; local stabilizer is exactly S(U(2)xU(3)), with three internal curvatures. No tensor category/fiber functor/etc is part of frozen statement.
+
+Hostile preliminary verdict: SURVIVES PRELIMINARY ATTACK, not evidence of truth/novelty. Bare nonfactorization and “space is entanglement” are killed as weaker readings. QRF subsystem relativity is established (arXiv:2103.01232, 2308.09131); gravity/gauge boundary frames can restore relational regions (1601.04744, 2302.11629); DHR/DR reconstruct arbitrary compact gauge groups; entanglement/reference-frame correlations already yield geometry/Einstein under assumptions; 2512.19806 proves operational field-mediated interaction without local Hilbert tensor factorization. Exact residue not found in parents: spacetime itself as event-created independence-comparison space, exact GSM as local stabilizer, gravity as global nonintegrability, one dynamics.
+
+Exact mathematical survivor: finite-carrier spacelike compression debt. Paper: `docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge/finite-carrier-spacelike-compression-defect.md`. Stage-3 cert: `docs/drafts/pipeline/3-formalized/finite-carrier-spacelike-compression-defect.md`. Lean: `formal/GaloisForLFunctions/HTGeometry/FiniteCarrierSpacelikeCompression.lean`.
+
+For field K, finite-dimensional V with d=finrank K V, any μ: V⊗V→V has finrank ker μ ≥ d²-d. Hence d≥2 implies μ not injective; injectivity forces d≤1; surjectivity gives equality; V⊗V≃V forces d≤1. This is sharp elementary rank-nullity, REDISCOVERED/BRIDGE/NOT NEW SCIENTIFIC KNOWLEDGE.
+
+Lean declarations: `finiteCarrierTensorCompression_kernel_lower_bound`, `_not_injective`, `_injective_finrank_le_one`, `_kernel_eq_of_surjective`, `finiteCarrierTensorSelfEquiv_finrank_le_one`. Direct `lake env lean` passed; focused final build 1558/1558 passed; axiom audit only propext, Classical.choice, Quot.sound; repo formal lint passed; no stale Lean/Lake processes.
+
+Physical meaning: universal direct sum preserves arbitrary typed sequential maps, but exact finite self-composition cannot preserve two independent copies. A finite realization must enlarge carrier, lose information, or deny full tensor independence. This does NOT prove carrier creation/gravity: infinite H≅H⊗H; composite can enlarge; gauge/gravity constraints can use matched subspace; exact finite regional carrier not established.
+
+Next open core: `BOUNDARY STORAGE OF FINITE COMPRESSION DEBT`. Derive finite regional carrier and spacelike composition operationally; distinguish generic gauge edge-sector matching from a universal gravitational boundary law; only then ask whether debt selects external Lorentzian plus exact GSM internal channels.

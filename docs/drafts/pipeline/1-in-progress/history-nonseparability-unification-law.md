@@ -463,7 +463,7 @@ The public bridge is:
 > **Matter may be the tangent space of an indivisible event; the quantum forces are the symmetry
 > left by its first admissible split.**
 
-### Exact embedding comparison `[PARTLY PRIOR; E6 CHARACTER TEST CANDIDATE; NOT YET LEAN]`
+### Exact embedding comparison `[PARTLY PRIOR; PAPER-PROVED E6 CHARACTER TEST; PRIORITY OPEN; NOT YET LEAN]`
 
 There are two exact but inequivalent Standard Model embeddings in this exceptional geometry.
 
@@ -540,8 +540,9 @@ history may carry two reductions of one exceptional event bundle:
 1. an observable/Jordan reduction selecting which event questions compose; and
 2. a matter/pure-spinor reduction selecting which chiral tangent histories propagate.
 
-Because their Standard Model stabilizers are nonconjugate, no \(E_6\) gauge transformation can
-identify the reductions. A representation-changing soldering field \(S\), if it exists, must
+Their Standard Model stabilizers are nonconjugate even inside \(E_6\), by the complex-\(27\)
+character obstruction above. Therefore no exceptional gauge rotation identifies the reductions.
+A representation-changing soldering field \(S\), if it exists, must
 intertwine their parallel transports by extra physical structure. For connections on the two
 associated bundles its exact compatibility identity is
 
@@ -600,20 +601,26 @@ intertwiner, contradicting the character calculation. Therefore:
 > matter ten-vector into the observable ten-vector.**
 
 This closes the literal linear-soldering route. The strongest positive survivor is a necessarily
-singular nonlinear event map. The source-independent theorem that an invertible matrix
-intertwiner forces equality of traces is unconditional in
-`formal/GaloisForLFunctions/HilbertMetric/CharacterIntertwinerObstruction.lean`. Formalization
-still owed here: the two explicit restricted representations, their traces \(2\) and \(10\), and
-the derivative-of-equivariance corollary for a smooth local diffeomorphism.
+noninvertible four-for-four interface index, not a proof that nature chooses a singular nonlinear
+map. The source-independent theorem that an invertible matrix intertwiner forces equality of
+traces is unconditional in
+`formal/GaloisForLFunctions/HilbertMetric/CharacterIntertwinerObstruction.lean`. The stronger
+kernel/rank/cokernel survivor is unconditional in
+`formal/GaloisForLFunctions/HTGeometry/EventInterfaceIndex.lean`: a trace-two source involution
+intertwined with the identity on a ten-carrier forces kernel and cokernel dimension at least four
+and range dimension at most six; at rank six both defects are exactly four. Formalization is still
+owed for the explicit restricted \(SU(2)\times SU(3)\) representations and the
+derivative-of-equivariance corollary for a smooth local diffeomorphism.
 
-That survivor is independently motivated but not supplied by the literature. In the affine Cayley
-chart at a rank-one event, the tangent half-spinor \((x,y)\in\mathbb O_{\mathbb C}^2\cong
+Exceptional geometry supplies a prior nonlinear mechanism, but not its proposed physical double
+reading. In the affine Cayley chart at a rank-one event, the tangent half-spinor
+\((x,y)\in\mathbb O_{\mathbb C}^2\cong
 \mathbf{16}\) enters the normal ten-vector through the quadratic second fundamental form
 \[
 \nu_2(x,y)=
 \begin{pmatrix}
-x\bar x & y\bar x\\
-x\bar y & y\bar y
+x\bar x & x\bar y\\
+y\bar x & y\bar y
 \end{pmatrix}\in\mathfrak h_2(\mathbb O_{\mathbb C})\cong\mathbf{10}.
 \]
 Its projectivized zero locus is the pure-spinor variety. This is literature geometry, not a project
@@ -622,36 +629,167 @@ discovery: see [Iliev--Manivel](https://arxiv.org/abs/math/0306329). Likewise,
 \(\Psi\mapsto\Psi\Psi^\dagger\) to combine bosonic and fermionic data in the exceptional Jordan
 algebra. Thus “events are squares of matter” is occupied territory.
 
-The two nonconjugate Standard Model actions create a sharper unresolved problem. For one chiral
-matter generation,
+The two nonconjugate Standard Model actions create a sharper unresolved problem. Use the
+hypercharge convention \(Q=I_3+Y/2\), so all hypercharges below are twice those in the convention
+\(Q=T_3+Y\). For one all-left chiral matter generation,
 \[
 \mathbf{16}_{\rm mat}=
-(\mathbf1,\mathbf1)_0\oplus(\overline{\mathbf3},\mathbf1)_{-2/3}
-\oplus(\mathbf3,\mathbf2)_{1/6}\oplus(\mathbf1,\mathbf1)_1
-\oplus(\overline{\mathbf3},\mathbf1)_{1/3}\oplus(\mathbf1,\mathbf2)_{-1/2}.
+(\mathbf1,\mathbf1)_0\oplus(\overline{\mathbf3},\mathbf1)_{-4/3}
+\oplus(\mathbf3,\mathbf2)_{1/3}\oplus(\mathbf1,\mathbf1)_2
+\oplus(\overline{\mathbf3},\mathbf1)_{2/3}\oplus(\mathbf1,\mathbf2)_{-1}.
 \]
-A direct tensor-product audit gives:
+[Todorov--Drenska](https://arxiv.org/abs/1805.06739) and
+[Baez--Schwahn](https://arxiv.org/abs/2606.15235) give the observable real splitting
+\(\mathfrak h_3(\mathbb O)\cong\mathfrak h_3(\mathbb C)\oplus M_3(\mathbb C)\) and the
+\((g,h)\)-action \((X,M)\mapsto(gXg^\dagger,hMg^\dagger)\). Complexifying and restricting to
+\(G_{\rm SM}\) gives
+\[
+\begin{aligned}
+\mathbf{27}_{\rm obs}={}&
+2(\mathbf1,\mathbf1)_0\oplus(\mathbf1,\mathbf3)_0
+\oplus(\mathbf1,\mathbf2)_1\oplus(\mathbf1,\mathbf2)_{-1}\\
+&\oplus(\mathbf3,\mathbf2)_{1/3}\oplus(\overline{\mathbf3},\mathbf2)_{-1/3}\\
+&\oplus(\mathbf3,\mathbf1)_{-2/3}\oplus
+(\overline{\mathbf3},\mathbf1)_{2/3}.
+\end{aligned}
+\]
+The dimensions sum to \(27\). A complete tensor-product audit of
+\(\operatorname{End}(\mathbf{16}_{\rm mat})\) gives the following interface count:
+
+| target type in \(\mathbf{27}_{\rm obs}\) | target multiplicity | multiplicity in \(\operatorname{End}(\mathbf{16}_{\rm mat})\) | contribution |
+|---|---:|---:|---:|
+| \((\mathbf1,\mathbf1)_0\) | \(2\) | \(6\) | \(12\) |
+| \((\mathbf1,\mathbf3)_0\) | \(1\) | \(2\) | \(2\) |
+| conjugate pair \((\mathbf1,\mathbf2)_{\pm1}\) | \(1\) each | \(1\) each | \(2\) |
+| conjugate pair \((\mathbf3,\mathbf2)_{1/3}\), \((\overline{\mathbf3},\mathbf2)_{-1/3}\) | \(1\) each | \(3\) each | \(6\) |
+| conjugate pair \((\mathbf3,\mathbf1)_{-2/3}\), \((\overline{\mathbf3},\mathbf1)_{2/3}\) | \(1\) each | \(1\) each | \(2\) |
+| **total** |  |  | **\(24\)** |
+
+For auditability, the three copies of \((\mathbf3,\mathbf2)_{1/3}\) arise from
+\(Q\otimes N^*\), \(L\otimes U^*\), and the \(\mathbf3\) summand of
+\(D\otimes Q^*\), using \(\overline{\mathbf3}\otimes\overline{\mathbf3}
+=\overline{\mathbf6}\oplus\mathbf3\). The six neutral singlets are the scalar
+endomorphisms of the six irreducible matter summands; the two neutral triplets are the traceless
+weak endomorphisms of \(Q\) and \(L\). Compactness and the compatible real structures identify the
+complex dimension of this intertwiner space with the real dimension of equivariant maps
+\[
+\operatorname{Herm}(\mathbf{16}_{\rm mat})\longrightarrow\mathbf{27}_{\rm obs}.
+\]
+Therefore:
+
+> **Standard Model equivariance permits a \(24\)-real-parameter family of Hermitian quadratic
+> matter-to-observable maps. It selects no event law.**
+
+This count also corrects an earlier normalization error: the full observable \(27\) does occur in
+\(\mathbf{16}\otimes\overline{\mathbf{16}}\). The obstruction is noncanonicity, not absence. By
+contrast, a direct symmetric-square audit still gives:
 
 - \(\operatorname{Sym}^2(\mathbf{16}_{\rm mat})\) contains no
   \((\mathbf1,\mathbf3)_0\): every possible weak triplet comes from two doublets, whose
   hypercharges and/or colour do not permit that type.
-- \(\mathbf{16}_{\rm mat}\otimes\overline{\mathbf{16}}_{\rm mat}\) contains exactly two copies of
-  \((\mathbf1,\mathbf3)_0\), one from the quark-doublet endomorphisms and one from the lepton-doublet
-  endomorphisms.
 
 Therefore the holomorphic spinor square cannot populate the observable weak triplet. A
-Born-type Hermitian quadratic map can carry the required representation type, but representation
-theory alone supplies two copies and selects no canonical one. Exceptional event geometry must
-choose a particular Hermitian quadratic quotient—or the route dies as another inserted
-measurement rule.
+Born-type Hermitian square can populate every required type, but the \(24\)-parameter count kills
+the proposal that equivariance alone chooses one.
 
-`[OPEN: QUADRATIC EVENT INTERFACE]`
+The positive survivor is stronger and less arbitrary. Homogenizing the affine Cayley chart defines
+the rational quadratic map
+\[
+\mathcal Q:\mathbb P(\mathbf1\oplus\mathbf{16})\dashrightarrow
+\mathbb P(\mathbf1\oplus\mathbf{16}\oplus\mathbf{10}),\qquad
+[t:s]\longmapsto[t^2:ts:\nu_2(s)].
+\]
+On \(t\ne0\), normalize \(t=1\). Then \(\mathcal Q\) is exactly the affine rank-one Cayley cell
+\(s\mapsto[1:s:\nu_2(s)]\), and its linear component recovers \(s\). Its image is therefore dense
+in the Cayley plane and the map is birational onto that plane. Its projective base locus is
+\[
+\{[0:s]:\nu_2(s)=0\},
+\]
+exactly the pure-spinor variety. These statements follow directly from the chart and pure-spinor
+zero-locus in [Iliev--Manivel](https://arxiv.org/abs/math/0306329); they are not yet Lean-formalized.
+The exact homogeneous quadratic map is also prior:
+[Kim--Schreyer](https://arxiv.org/abs/1905.09626) explicitly construct
+\(\mathbb P^{16}\dashrightarrow\mathbb P^{26}\) by the spinor-tenfold quadrics and identify its
+image closure with the Cayley plane. Thus neither the birational parametrization nor its
+pure-spinor base locus is a project discovery.
+The map is \({\rm Spin}(10)\)-equivariant into the same \(27\) that both Standard Model embeddings
+can read. This supplies a common carrier, not an interface.
 
-Classify \(G_{\rm SM}\)-equivariant Hermitian quadratic maps from the matter \(16\) to the
-observable \(27\), impose the Cayley rank-one identities, and determine whether the admissible cone
-contains a unique map up to scale and exceptional automorphism. Required hostile checks: positivity,
-causal composition, chirality, anomaly compatibility, Lorentzian real form, and whether the map
-retains enough information to reconstruct unitary quantum dynamics.
+There is also a precise rigidity theorem available. [Landsberg](https://arxiv.org/abs/alg-geom/9710028)
+proves that a \(16\)-dimensional analytic projective manifold whose second fundamental form is the
+system of quadrics vanishing on the spinor variety is locally the Cayley plane; the same conclusion
+holds in the smooth category when the hypothesis holds on a neighbourhood. Thus the pure-spinor
+quadratic germ rigidly determines exceptional event geometry once that germ is physically
+justified. The theorem does **not** justify the physical premise, Lorentzian real form, dynamics,
+or observable reading.
+
+### Cayley-carrier no-go and symmetry-fracture survivor
+`[CAYLEY CARRIER: PAPER ARGUMENT; GROUP-INTERSECTION SOURCE AUDIT OPEN]`
+
+`[REPRESENTATION FRACTURE: PAPER-PROVED; LEAN-PROVED]`
+
+The first proposed use of \(\mathcal Q\) fails. The observable Standard Model group lies in the
+\({\rm Spin}(9)\) stabilizer of the chosen rank-one Cayley event, while
+\[
+F_4\cap{\rm Spin}(10)={\rm Spin}(9).
+\]
+Thus both the matter and observable Standard Model embeddings lie in the same
+\({\rm Spin}(10)\) Levi stabilizing the chart origin. Since \(\nu_2\) is
+\({\rm Spin}(10)\)-equivariant, both embeddings act linearly on the spinor coordinate \(s\), and
+\(\mathcal Q\) is equivariant for each separately. Pulling the observable action through
+\(\mathcal Q\) therefore does **not** create a nonlinear interaction law. The Cayley map hosts two
+readings but does not say when or why nature changes readings, identify the two abstract gauge
+groups, or select one of the \(24\) Hermitian interfaces.
+
+This closes the “canonical quadratic map automatically is the conversion” route. Its strongest
+survivor is a forced symmetry fracture.
+
+> **Representation-fracture theorem.** Let \(I\) be a connected parameter space and
+> \(\rho_\tau:SU(2)\to GL(V)\) a continuous family of complex representations on one fixed
+> finite-dimensional carrier. Then
+> \(\operatorname{tr}\rho_\tau(-I)\) is constant on \(I\).
+
+Proof: \(A_\tau=\rho_\tau(-I)\) obeys \(A_\tau^2=1\). The half-difference
+\(P_\tau=(1-A_\tau)/2\) is idempotent, hence its trace is the dimension of its range. Therefore
+\[
+\operatorname{tr}A_\tau=\dim V-2\operatorname{rank}P_\tau
+\]
+belongs to a finite discrete set. The trace is continuous in \(\tau\), and a continuous image of a
+connected space in a discrete set is one point. Here the endpoint traces are \(2\) and \(10\), so
+no such family exists.
+
+This exact argument is unconditional in
+`formal/GaloisForLFunctions/HTGeometry/RepresentationFracture.lean`. The Lean theorem is stronger
+than the physical application: it works for a preconnected parameter space, an arbitrary monoid,
+any order-two element, and complex matrix representations without unitarity.
+
+Therefore any physical matter-to-observable transition must violate at least one of:
+
+1. continuity of the transition;
+2. fixed ten-dimensional carrier;
+3. exact weak-\(SU(2)\) representation law.
+
+Breaking unitarity alone does **not** evade the obstruction.
+
+A hostile gauge-theory correction is essential: local gauge symmetry is a redundancy and is not
+literally destroyed by the Higgs mechanism. A nonzero Higgs instead defines a reduction of the
+electroweak bundle to its \(U(1)_{\rm em}\) stabilizer; the underlying \(SU(2)\) representation law
+remains. Therefore the ordinary Higgs mechanism does **not** evade the theorem by itself. What it
+does supply is a canonical singular stratum: at \(H=0\), the normalized Higgs direction and the
+reduced bundle cease to exist. This makes a zero-Higgs reduction singularity one candidate
+interface, not a forced survivor. A later compact-\(E_6\) orbit audit found a smooth ambient path
+\(e+t(\mathbf1-e)\) with generic stabilizer
+\(\operatorname{Spin}(9)=\operatorname{Spin}(10)\cap F_4\). Consequently the exact obstruction
+forces a singularity, a carrier change, **or** failure of the exact representation law, but current
+geometry does not select which alternative occurs.
+
+`[OPEN: DYNAMICAL POLARIZATION FRACTURE]`
+
+Classify minimal physical paths between the two nonconjugate \(E_6\) subgroup reductions and
+determine the unavoidable symmetry-restoration, carrier-changing, or singular stratum.
+Required hostile checks: gauge independence, causal composition, chirality, anomaly compatibility,
+Lorentzian real form, unitarity, and whether the transition yields rather than inserts a tetrad and
+metric.
 
 ### Higgs--spacetime event conjecture
 `[POST-FREEZE PHYSICAL CONJECTURE; PRIORITY OPEN; PROOF ROUTE UNKNOWN]`
@@ -660,13 +798,30 @@ Evidence now points to a sharper hunch:
 
 > **The Higgs and spacetime are the same four directions, before and after a quantum event.**
 
+An independent stronger public conjecture is now frozen:
+
+> **The Higgs field does not live in spacetime. Spacetime is what the Higgs becomes when a quantum
+> event happens.**
+
+Technical truth-hunch: at an elementary event, the four real degrees of the electroweak Higgs
+doublet and the four real coordinates of \(\mathfrak h_2(\mathbb C)\) are two nonconjugate
+polarizations of one exceptional event coordinate. Before causal localization, the four split into
+the three-dimensional electroweak gauge orbit of a nonzero Higgs and its one radial degree. After
+localization, the same count is read as the traceless spatial triplet and trace time direction of a
+Hermitian \(2\times2\) event coordinate. The determinant of that Hermitian coordinate supplies the
+Lorentzian quadratic form. The necessarily singular polarization change turns a spinor square into
+null causal data; its failure to glue from event to event generates the tetrad and gravitational
+curvature. Internal stabilizer curvature supplies the other three forces.
+
+This conjecture is frozen as a truth claim, not selected for provability. No proof route is known.
+Any later tractable theorem is a bridge and may not replace or weaken it.
+
 Technical conjecture: every elementary physical event is a singular Hermitian-quadratic change of
 polarization on one exceptional ten-carrier. On the incoming matter side, its four colourless
 directions transform as \(\mathbf2\oplus\mathbf2\), the Higgs polarization. On the outgoing
-observable side, the corresponding four transform as \(\mathbf3\oplus\mathbf1\), the compact
-precursor of a \(3+1\) spacetime polarization. Gravity is the integrability defect of making this
-conversion consistently from event to event; the three internal forces are the remaining
-irreducible stabilizer curvatures.
+observable side, the corresponding four transform as \(\mathbf3\oplus\mathbf1\). Gravity is the
+integrability defect of making this conversion consistently from event to event; the three
+internal forces are the remaining irreducible stabilizer curvatures.
 
 No proof strategy is assumed. This is a conjecture in the strict project sense: an
 evidence-informed claim about physical reality whose truth is being guessed before its
@@ -678,16 +833,38 @@ physical spacetime. In particular:
    selected;
 3. the two ten-vector actions are nonconjugate, so “same directions” asserts a physical nonlinear
    transition, not equality by a gauge rotation;
-4. no dynamics, Einstein limit, Higgs potential, masses, couplings, generations, or finite
+4. the elementary square \(H\mapsto HH^\dagger\) loses a \(U(1)\) phase and lands on the
+   determinant-zero causal cone, so it cannot by itself produce an invertible four-dimensional
+   spacetime chart;
+5. the three Higgs orbit directions are gauge directions and the Goldstone modes are eaten after
+   electroweak symmetry breaking; turning them into relational spatial directions requires a
+   gauge-independent soldering observable, not a degree-of-freedom analogy;
+6. no tetrad, metric dynamics, Einstein limit, Higgs potential, masses, couplings, generations, or finite
    prediction has been derived.
+
+The kinematic content of item 4 is now unconditional in
+`formal/GaloisForLFunctions/HTGeometry/HiggsSpinorNullCone.lean`: the Hermitian determinant is
+\(t^2-x^2-y^2-z^2\); a complex-doublet outer square is positive semidefinite, has zero determinant,
+obeys the exact light-cone identity, and is invariant under a common unit complex phase. The
+existing
+`formal/GaloisForLFunctions/HTGeometry/WeakLorentzOverlap.lean` separately proves that a nontrivial
+weak \(SU(2)\) conjugation cannot act as a pointwise internal kernel on the same Hermitian corner.
+Together these are a sharp boundary, not a derivation: the first supplies a singular causal map;
+the second forbids silently identifying weak isospin with spatial rotation.
 
 [Baez's 2022 account](https://math.ucr.edu/home/baez/standard/standard_web.pdf) already juxtaposes
 the Euclidean and spacetime \(4+6\) embeddings and explicitly warns that the weak \(SU(2)\) acts on
 isospin rather than spin. [Szangolies](https://doi.org/10.3390/e27060569) already gives alternative
-spacetime/internal readings of octonionic quantum systems. Those broad ideas are prior. The
-priority-open residue is the exact nonconjugate
+spacetime/internal readings of octonionic quantum systems.
+[Todorov--Drenska](https://arxiv.org/abs/1805.06739) identify the observable
+\(\mathbf3\oplus\mathbf1\) in this compact decomposition with three massive weak gauge bosons and
+the photon, not with spacetime. [Tiemblo--Tresguerres](https://arxiv.org/abs/gr-qc/9607066)
+already obtain three Goldstone-like directions and one Higgs-like time component from a nonlinear
+Poincaré-gauge construction. Thus the broad \(3+1\) Goldstone/Higgs analogy is prior. The
+priority-open residue is specifically the electroweak-Higgs/exceptional event claim: the exact nonconjugate
 \((\mathbf2\oplus\mathbf2)\leftrightarrow(\mathbf3\oplus\mathbf1)\) event conversion, its
-Hermitian-quadratic obstruction, and the claim that its curvature is gravity.
+pure-spinor singularity, and the claim that its relational gluing—not a preselected Poincaré
+coframe—is gravity.
 
 ## External/internal lock audit
 
@@ -767,7 +944,9 @@ implications.
   pass.
 - **Original:** not yet audited.
 - **Immediate:** no finite prediction yet.
-- **Technically valid:** no definition, proof, or Lean theorem yet.
+- **Technically valid:** character mismatch, involution representation fracture, and null-cone
+  bridges are Lean-proved; no operational nonseparability invariant, dynamics, or universal-law
+  theorem yet.
 
 Current Nature verdict: `[DO NOT WRITE MANUSCRIPT]`.
 
@@ -802,3 +981,40 @@ Current Nature verdict: `[DO NOT WRITE MANUSCRIPT]`.
   Cayley/spinor squares motivate but do not solve a nonlinear interface. New conjectural jump:
   Higgs \(2+2\) and spacetime-shaped \(3+1\) are the two sides of a quantum event. New open core:
   `QUADRATIC EVENT INTERFACE`.
+- 2026-07-28 — full \(G_{\rm SM}\) decomposition audit corrected the hypercharge normalization and
+  proved on paper that equivariance permits a \(24\)-real-parameter family of Hermitian
+  matter-to-observable maps. Equivariance-only selection is dead. The canonical Cayley rational
+  map survives, but Kim--Schreyer already constructed it; novelty must lie in the physical double
+  reading, relational composition, and dynamics.
+- 2026-07-28 — stronger proof-independent conjecture frozen: “The Higgs field does not live in
+  spacetime. Spacetime is what the Higgs becomes when a quantum event happens.” Immediate
+  falsifiers retained: gauge-orbit directions are gauge, the elementary square loses phase and
+  reaches only the null cone, and no tetrad or dynamics exists.
+- 2026-07-28 — exact singular kinematic boundary formalized in
+  `HTGeometry/HiggsSpinorNullCone.lean`: Hermitian \(2\times2\) determinant is Lorentzian; every
+  complex-doublet outer square is positive semidefinite, null, and invariant under common unit
+  phase. This is a bridge only. It neither identifies weak and Lorentz actions nor derives gravity.
+- 2026-07-28 — Cayley-map conversion route killed: both Standard Model readings act linearly in
+  the same spinor chart, so the known rational map is a carrier rather than a dynamical conversion.
+  Strongest exact survivor formalized in `HTGeometry/RepresentationFracture.lean`: an order-two
+  character is constant in every continuous fixed-carrier representation family. The endpoint
+  values \(2\) and \(10\) therefore force a singularity, carrier change, or failure of the exact
+  representation law; abandoning unitarity alone cannot help.
+- 2026-07-28 — repaired an internal contradiction about ambient conjugacy. The observable
+  \(27\) contains a weak adjoint in
+  \(\mathfrak h_3(\mathbb C)_{\mathbb C}\), while the matter restriction
+  \(27=16\oplus10\oplus1\) has only weak singlets and doublets. Since the unique
+  three-dimensional simple ideal of the Standard Model Lie algebra is preserved by every
+  automorphism, conjugate subgroups would have equivalent weak restrictions. They do not.
+  Nonconjugacy therefore holds in \(E_6\), not only in \({\rm Spin}(10)\). Paper proof is
+  dependency-closed; literature priority and Lean formalization remain open.
+- 2026-07-28 — compact-orbit audit corrected the provisional claim that the obstruction selects a
+  zero-Higgs singularity. The exact line \(e+t(\mathbf1-e)\) has stabilizers
+  \(\operatorname{Spin}(10)\), generically \(\operatorname{Spin}(9)\), and \(F_4\), while remaining
+  full Jordan rank for \(t>0\). It is a smooth carrier path, not a continuous family of the two
+  exact weak representations. Singularity remains one physical option, not a theorem.
+- 2026-07-28 — extracted and formalized the four-for-four interface index in
+  `HTGeometry/EventInterfaceIndex.lean`. Any trace-two-to-identity intertwiner on ten complex
+  directions has kernel and cokernel dimension at least four and rank at most six; rank six gives
+  exact four-dimensional kernel and cokernel. This proves noninvertibility and defect size, not a
+  Higgs-to-spacetime conversion, dynamics, or explicit Standard Model branching.

@@ -11,6 +11,8 @@ import GaloisForLFunctions.RHTower.SummablePurePointPhaseRecurrence
 import GaloisForLFunctions.RHTower.MixedStateQutritRecurrenceSeparation
 import GaloisForLFunctions.RHTower.MixedStateQuquartMomentRecurrenceSeparation
 import GaloisForLFunctions.RHTower.FiniteJetRecurrenceSeparation
+import GaloisForLFunctions.RHTower.QuantumRecurrenceGlobalCompletionLaw
+import GaloisForLFunctions.RHTower.UniversalQuantumRecurrenceAnatomyLaw
 import GaloisForLFunctions.RHTower.ProjectiveWeightedFloquetRecurrence
 import GaloisForLFunctions.RHTower.ProjectiveWeightedHaarQuantileActiveSupport
 import GaloisForLFunctions.RHTower.ProjectiveWeightedTargetVolumeLower
@@ -51,5 +53,9 @@ all-particle-number exterior-power lift with complete
 subset-sum spectra; the dual realization in one fixed permutation-invariant
 uniform-field qubit Hamiltonian with symmetric pure preparations;
 and finite-dimensional separations between local clock information and global
-recurrence.
+recurrence; every normalized indeterminate moment class has exact all-depth
+connected Jacobi agreement with opposite global recurrence phases, including
+an explicit strictly-positive-energy realization; and compact atomless
+spectra admit connected Jacobi recurrence completions invisible to every
+perturbative order.
 -/

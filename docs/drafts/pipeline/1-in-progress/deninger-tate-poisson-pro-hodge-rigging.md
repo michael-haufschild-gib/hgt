@@ -132,7 +132,7 @@ Then for every \(r>0\):
    \[
     G_r(f,g)=\sum_pG_{p,r}(f_p,g_p)                         \tag{4}
    \]
-   converges in the Banach space of continuous bilinear forms on
+   converges in the Banach space of continuous sesquilinear forms on
    \(\mathcal H_\beta\);
 2. \(G_r\) is nonnegative and positive definite on
    \(\bigoplus_pE_p^{\mathrm{osc}}\);
@@ -203,6 +203,28 @@ weight
 \]
 and does not invent a new decay weight.
 
+The circle \(S_p\) here is Deninger's **transverse periodic prime
+orbit**, not the angular circle of a Kummer leaf.  Accordingly `(2)`
+is a transverse Dirichlet-to-Neumann form.  Its identification with
+the leafwise Kummer Hodge cup metric remains open.
+
+There are also two distinct time normalizations.  Common Tate time
+\(r\) in \(e^{-r\widehat A_p}\) gives mode damping
+\(e^{-2\pi r|k|}\), independent of \(p\).  Horizontal Euler
+translation by \(h\) follows the source-curved diagonal
+\[
+ r_p(h)={h\log p\over2\pi},
+ \qquad
+ e^{-r_p(h)\widehat A_p}\big|_k=p^{-h|k|}.              \tag{8a}
+\]
+The card `deninger-poisson-mertens-boundary-jet-fracture` proves that
+every \(h>0\) trajectory in `(8a)` is zero in the relevant Mertens
+corona, while its complete \(h=0\) logarithmic jet is nonzero.
+Therefore the positive-time pro-Hodge family can only be part of the
+third completion.  A source-faithful construction must additionally
+retain the singular local-cohomology/hyperfunction class at the
+Poisson-time boundary.
+
 The circle-horizontal sector
 \[
  L^2(B_p)\widehat\otimes\mathbf1_{S_p}
@@ -225,6 +247,8 @@ The theorem does not yet control:
 4. Meyer \(Z\)/Fourier Toeplitz corrections;
 5. comparison of the family topology with \(M_\zeta\);
 6. full-Cauchy conservativity on global cohomology.
+7. the source-curved \(r_p(h)\to0\) boundary class and all logarithmic
+   Mertens jets.
 
 ## Source mechanism predicted by the conjecture
 
@@ -236,6 +260,12 @@ injective Poisson smoothing operators
 They have the same local radical as the unregularized Green form on
 the oscillatory sector, commute with local chirality, and retain the
 exact half-density power law.
+
+They do not, by themselves, retain the arithmetic Mertens boundary:
+that class is singular at \(h=0\) along the source-curved family
+`(8a)`.  The pro-Hodge conjecture is therefore understood only after
+adjoining the derived boundary object isolated in
+`deninger-poisson-mertens-boundary-jet-fracture`.
 
 The global construction should therefore proceed in this order:
 
@@ -258,6 +288,8 @@ would be compatible with the conjecture.
   continuously to the \(r>0\) family, the conjecture fails.
 - If Poisson smoothing destroys a Meyer generalized-jet functional,
   the family is not conservative.
+- If the singular \(h=0\) boundary class is omitted, the construction
+  is already falsified by the graded Mertens corona theorem.
 - If centered source flow does not preserve the common graph core,
   local positivity cannot imply global purity.
 - If the family topology is strictly weaker than Meyer's quotient
@@ -299,6 +331,9 @@ certificate.
 - [x] prove positive-time all-prime form convergence in operator norm
 - [x] classify the profinite-horizontal kernel through the strict
       Arakelov boundary theorem
+- [x] distinguish transverse prime-orbit energy from leafwise Kummer
+      Hodge energy
+- [x] identify the source-curved Euler-time boundary fracture
 - [ ] construct generic Kummer positive-time form estimates
 - [ ] control Milnor and Meyer Toeplitz cross terms at every \(r>0\)
 - [ ] prove full-Cauchy conservativity for the common source core
@@ -326,3 +361,7 @@ certificate.
   Hostile audit found and resolved the profinite-horizontal kernel:
   it is an exact Arakelov boundary sector, not a positive
   circle-energy mode.
+- 2026-07-28 — Corrected the prime circle to Deninger's transverse
+  orbit and separated common Tate time from prime-dependent Euler
+  time.  The Mertens boundary-jet fracture proves that positive-time
+  Hilbert levels require an added local-cohomology boundary class.

@@ -96,6 +96,11 @@ an independent falsifiable obligation.
 
 ### Third abductive jump — physical meaning fixes relational time
 
+**Status: falsified after the jump.** The universal similarity and physical
+transpose gauges exhibited below also preserve the labelled conditional
+histories in this conjecture while lying outside its proposed
+origin--commutant stabilizer.
+
 **Operational clock-uniqueness conjecture.** For every separable constrained
 quantum universe with a faithful physically labelled record algebra and local
 tomography, all clock--world factorizations that preserve every labelled
@@ -114,6 +119,320 @@ clock--world tensor-refactorization stabilizer, continuous clocks, or type-III
 local algebras. Those clauses are the conjecture. Finite matrix stabilizer
 theorems found later count only as partial consequences and cannot be
 presented as if they prove the universal statement.
+
+### Fourth abductive jump — finite histories determine internal time
+
+**Status: falsified after the jump.** The frozen conjecture below omits an
+unavoidable similarity/antiunitary gauge of complete operational histories.
+
+**Operational history-reconstruction conjecture.** Let a separable local
+quantum theory be represented by a faithful normal state on a local
+observable algebra, a covariant internal clock action, and a physically
+labelled family of local instruments that is tomographically complete. If an
+alternative clock--world description preserves every finite joint
+conditional probability for every ordered list of clock readings and every
+word of labelled instruments, then it is related to the original description
+by exactly one clock-origin transformation followed by an element of the
+action-fixed commutant of the labelled algebra. No other clock--world
+refactorization exists. If the labels generate a factor and the clock action
+is ergodic, only the clock-origin transformation and an invisible global
+phase remain.
+
+This is a genuine hunch, not a theorem selected from a visible method. At the
+moment of conjecture there is no proof route from equality of all finite
+instrument histories to full labelled-multiplier covariance, no construction
+that handles continuous clock POVMs without point projectors, and no
+clock--world tensor factorization available for a general type-III local
+algebra. The algebraic stabilizer discovered afterward identifies what would
+follow *if* that reconstruction bridge were proved; it does not prove the
+bridge.
+
+Hard falsifiers are:
+
+1. two nonconjugate faithful modular dynamical systems with identical
+   probabilities for every finite word in one tomographically complete
+   labelled instrument family;
+2. a nonspatial or clock--world-mixing refactorization of a local type-III
+   algebra that preserves all such histories but violates multiplier
+   covariance;
+3. a continuous-clock model in which every finite operational history agrees
+   while no common origin intertwines the clock action;
+4. an ergodic factor whose history-preserving stabilizer contains a
+   nontrivial element outside the global phase and clock-origin action.
+
+Any one counterexample kills the conjecture. Weakening “every finite
+history” after seeing a proof route would create a different theorem
+candidate, not repair this conjecture.
+
+The counterexample mechanism is universal. Let \(S\) be any invertible linear
+change of a state-space realization. Transform the initial state by \(S\),
+every labelled instrument \(\Phi_a\) by
+\(S\Phi_aS^{-1}\), and every terminal report \(r\) by \(rS^{-1}\). For every
+finite word \(a_1\cdots a_n\),
+\[
+ (rS^{-1})(S\Phi_{a_n}S^{-1})\cdots
+ (S\Phi_{a_1}S^{-1})(S\rho)
+ =r\Phi_{a_n}\cdots\Phi_{a_1}(\rho).
+\]
+Thus even all labelled histories determine only a simultaneous-similarity
+class unless part of the realization is externally anchored. This exact
+cardinality-free identity is now certified for arbitrary label and reporter
+families and every finite word.
+
+Arbitrary similarities need not preserve the quantum positive cone, but the
+physical obstruction survives. Global matrix transposition maps density
+matrices and POVM effects to density matrices and effects, and maps a Kraus
+instrument \(\Phi(X)=\sum_iK_iXK_i^\dagger\) to the Kraus instrument with
+operators \(\overline{K_i}\). Applied to the entire preparation--instrument--
+measurement description, it preserves every sequential probability. In
+dimension at least two, transposition is not multiplicative and hence is not
+an inner clock-origin automorphism or a scalar commutant action. The exact
+nonmultiplicativity witness is certified in dimension two. Transposition is
+also certified to preserve finite Kraus form, density-matrix positivity and
+unit trace, POVM-effect positivity bounds, and the terminal Born trace. The
+physical counterexample is therefore dependency-closed.
+
+This is consistent with gate-set tomography, where complete circuit
+probabilities identify a gate set only up to a common similarity gauge, and
+with Wigner's unitary/antiunitary alternative. A corrected classification
+must include operational representation gauges or add independently
+calibrated anchors. Either correction is materially weaker than the frozen
+conjecture and belongs to known parent theory.
+
+### Fifth abductive jump — nonrepetition fixes black-hole algebra type
+
+**Status: falsified after the jump.** The conjecture remains below in its
+frozen, originally proposed form. It must not be weakened retroactively.
+
+**Return-density type-III conjecture.** Let \(\psi\) be a faithful normal
+state on a nontrivial von Neumann algebra \(\mathcal M\), and let
+\(\sigma^\psi_t\) be its modular flow. Suppose the scalar multiples of the
+identity together with all centred observables whose modular spectral
+measures are atomless form a von Neumann algebra, and every nonzero centred
+element of that algebra has atomless modular spectrum. Then that algebra is a
+type-III\(_1\) factor and \(\psi\) has trivial centralizer.
+
+By the all-spectrum collision law, “atomless” is operationally equivalent to
+the statement that every fixed positive-fidelity return set has zero
+asymptotic time density. The conjecture therefore says:
+
+> If a closed algebra of physical observables never statistically repeats,
+> that nonrepetition alone fixes the black-hole-compatible algebraic type.
+
+This is strictly weaker than the known premise that every connected
+correlator converges to zero. Mixing implies atomlessness, but atomlessness
+allows singular-continuous spectra and Fourier transforms with no pointwise
+limit. The conjecture was generated from three facts: finite/type-I systems
+have pure-point modular recurrence; nontrivial centralizer elements carry a
+zero-frequency atom; and known mixing-algebra theorems force
+type III\(_1\). At the moment of conjecture there is no proof that the weaker
+zero-density premise excludes type II, type III\(_0\), or type
+III\(_\lambda\), and no proof that closure of the recurrence-null class
+supplies the missing Connes-spectrum argument.
+
+Hard falsifiers are:
+
+1. a type-I or type-II von Neumann algebra with a faithful normal state whose
+   nonzero centred elements all have atomless modular spectra;
+2. a type-III\(_0\) or type-III\(_\lambda\), \(0<\lambda<1\), factor with that
+   property;
+3. a recurrence-null class closed under multiplication and weak limits but
+   having a nontrivial modular centralizer;
+4. a nontrivial action-fixed centred observable whose spectral measure is
+   nevertheless atomless.
+
+Finding any such example kills the conjecture. The known mixing theorem may
+be used as evidence and as a comparison target, never as a proof of this
+strictly weaker statement.
+
+The first falsifier exists already in dimension two. Take
+\(\mathcal M=M_2(\mathbb C)\) with any faithful state. Its modular
+representation is finite dimensional, so every modular spectral measure is
+pure point. The only centred observable with atomless modular spectrum is
+zero. Consequently, the scalars together with all such observables form
+exactly \(\mathbb C1\), and the clause about every nonzero centred element of
+that algebra is vacuous. All stated premises hold, but \(\mathbb C1\) is not
+a type-III\(_1\) factor.
+
+Requiring the resulting algebra to be nontrivial produces a true-looking
+replacement but not a new conjecture under the rule above. The proof route is
+then visible: any non-scalar centralizer element can be centred to a nonzero
+modular fixed point, whose spectral measure has a zero-frequency atom. The
+atomless premise therefore makes the restricted state ergodic. The
+established ergodic-state theorem says that a nontrivial von Neumann algebra
+admitting a faithful normal state with trivial centralizer is a
+type-III\(_1\) factor. Marrakchi and Vaes proved the converse under separable
+predual and explicitly identify the forward implication as known since early
+Tomita--Takesaki theory. Thus the repaired statement is a short corollary of
+known operator algebra, not a novelty anchor.
+
+The surviving new task is not to rename weak mixing as nonrepetition. It is
+to find a genuinely weaker operational statistic that does not already force
+trivial centralizer element-by-element, yet still determines a physically
+important algebraic or gravitational phase. No such statistic is currently
+proved.
+
+### Sixth abductive jump — time's dimension survives clock ambiguity
+
+**Status after proof search: operational core proved; hidden-representation
+clause unresolved; novelty anchor rejected.**
+
+**Operational temporal-invariance conjecture.** Consider two separable
+stationary quantum theories with faithful minimal operational realizations,
+strongly continuous internal clock actions, and the same physically labelled
+preparations, instruments, reports, and clock readings. Suppose they assign
+exactly the same joint probability to every finite labelled history. Their
+clock realizations need not be related by a clock-origin transformation:
+similarity and antiunitary gauges show that this is false. Nevertheless, the
+restricted clock representations seen by the cyclic operational subspaces
+have the same spectral measure class, up to reversal
+\(\omega\mapsto-\omega\). Consequently every observer refinement has the
+same:
+
+1. rational visible-frequency rank in the pure-point sector;
+2. atomic, singular-continuous, and absolutely-continuous decomposition;
+3. collision mass and every fixed-fidelity asymptotic return-density law;
+4. recurrent-versus-nonrecurrent temporal phase.
+
+In short:
+
+> A universe may not determine a unique clock, but it determines the
+> operational dimension and return type of its time.
+
+This is a conjecture in the strict sense. It is suggested by three pieces of
+evidence: common similarities preserve finite-dimensional generator spectra;
+global transpose reverses frequencies without changing rational rank or
+spectral type; and operationally null sectors must be removed by minimality.
+But no proof route is known from equality of all finite probabilities to
+equivalence of continuous spectral measure classes. In particular, there is
+no known route for nonunitary positive similarities, nonspatial
+representations, continuous clocks, or type-III local algebras. The existing
+finite-history gauge theorem proves invariance of probabilities, not
+invariance of spectral measures.
+
+Hard falsifiers are:
+
+1. two minimal faithful finite-dimensional quantum gate sets with identical
+   probabilities for every labelled word but different visible rational
+   frequency rank;
+2. two standard-form von Neumann dynamical systems with identical operational
+   process tensors but mutually singular clock spectral types;
+3. a quantum-compatible similarity gauge that changes collision mass or
+   converts an atomic clock record into an atomless one;
+4. a type-III clock--world refactorization preserving every local history but
+   changing the Connes spectral class seen by the operational cyclic
+   subspace.
+
+Any one example kills the conjecture. Minimality, faithfulness, and the
+complete history quantifier are frozen parts of the hunch, not clauses to be
+adjusted after proof search. No manuscript may claim the result unless all
+four conclusions and the continuous/type-III bridge are proved
+unconditionally.
+
+The scalar spectral core closes much more directly than anticipated. If two
+finite real spectral measures have the same return amplitude at every real
+time, uniqueness of characteristic functions makes the measures equal
+exactly. Temporal dimension, atomicity, collision mass, and every
+finite-window high-fidelity density are therefore identical. This
+dependency-closed theorem is now certified without finite-dimensional,
+pure-point, or absolute-continuity assumptions.
+
+That result is useful but cannot carry novelty: it is Fourier uniqueness
+applied to an operational record. For finite minimal process realizations,
+similarity equivalence and gauge-invariance of generator spectra are also
+established realization theory and gate-set tomography. The genuinely hard
+clause is whether equality of all operational histories identifies a hidden
+continuous/type-III clock representation rather than only its reported
+scalar spectral measures. Claiming that hidden clause would exceed the
+evidence; deleting it leaves a known theorem. The jump therefore contributes
+a supporting invariant, not the paper's discovery.
+
+### Seventh abductive jump — a horizon changes the dimension of time
+
+**Status: falsified after the jump; model core collides with prior art.**
+
+**Horizon temporal-phase conjecture.** Consider any UV-complete holographic
+quantum theory on a compact boundary Cauchy surface, in a strict
+semiclassical large-\(N\) limit admitting both a stationary horizonless bulk
+phase and a stationary nonextremal black-hole phase. For every centred,
+nonconserved simple boundary observable whose bulk excitation reaches the
+horizon, the connected boundary-time spectral measure is pure point in the
+horizonless phase and atomless in the black-hole phase. Conversely, if a
+separating family of such observables changes from pure-point to atomless
+connected spectra while the boundary kinematics and conserved charges remain
+fixed, the dominant semiclassical bulk phase has acquired a horizon.
+
+Combined with the exact all-spectrum return law, this predicts an
+observer-level phase transition:
+
+> **A black hole forms when time becomes infinitely dimensional for outside
+> observers.**
+
+More precisely, the temporal dimension of every horizon-coupled probe jumps
+from at most countable to continuum, and every fixed positive-fidelity return
+set changes from arbitrarily late recurrence to zero asymptotic time density.
+The conjecture concerns the strict semiclassical limit; it does not deny
+finite-entropy late-time recurrences at finite \(N\).
+
+This statement is frozen before proof search. It is a hunch suggested by the
+joint pattern of normal modes in horizonless compact geometries, quasinormal
+decay in black-hole geometries, holographic mixing results, and the proved
+spectral return law. No present argument establishes either universal
+direction, the all-probe quantifier, or the converse. In particular, no
+known route derives global horizon existence from boundary spectral type.
+The availability of exact BTZ or thermal-CFT calculations plays no role in
+the quantifiers above and may not be used to weaken them retroactively.
+
+Hard falsifiers are:
+
+1. a compact-boundary, stationary, horizonless semiclassical holographic
+   phase with an atomless connected spectrum for a simple local probe;
+2. a stationary nonextremal black-hole phase with a nonconserved
+   horizon-coupled simple probe carrying a nonzero spectral atom;
+3. a horizon-forming phase transition at fixed boundary kinematics and
+   charges with no pure-point-to-atomless transition for a separating probe
+   family;
+4. a pure-point-to-atomless transition of a separating simple-probe family
+   caused by a horizonless dominant bulk phase;
+5. dependence of the alleged phase boundary on an arbitrary probe
+   normalization, time-origin gauge, or representation choice.
+
+Any one counterexample kills the conjecture. A theorem proved only for BTZ,
+generalized free fields, a selected Gamma response, or the Hawking--Page
+saddle would be a model theorem and supporting evidence, not proof of this
+conjecture.
+
+The conjecture does not survive its frozen quantifiers.
+
+1. Birmingham, Sachs and Solodukhin already established the sharp
+   normal-mode/oscillatory versus quasinormal-mode/decaying transition in the
+   large-\(k\) AdS\(_3\)/CFT\(_2\) model and identified it with the
+   Hawking--Page transition. The strongest easy model case is therefore
+   parent physics, not a new horizon law
+   (<https://arxiv.org/abs/hep-th/0212308>).
+2. Horizonless global AdS\(_3\) string theory with NS--NS flux has long-string
+   continuous representations. In the UV-complete supersymmetric setting,
+   the spacetime dual contains an \(\mathcal N=4\) Liouville factor for
+   generic flux, hence a continuum even though the boundary spatial circle
+   is compact and the background need not contain a black-hole horizon
+   (<https://arxiv.org/abs/1903.00421>). This defeats the universal
+   horizonless-pure-point direction.
+3. Nonextremal Kerr--AdS black holes have superradiant onset curves on which
+   a nonconserved perturbation has a real, zero-damping mode; black-resonator
+   branches grow from those onsets. Thus a horizon does not make every
+   nonconserved horizon-coupled probe atomless
+   (<https://arxiv.org/abs/1312.5323>,
+   <https://arxiv.org/abs/1505.04793>). This defeats the universal
+   black-hole-atomless direction.
+
+Adding “Einstein-like,” “stable,” “away from marginality,” “no long strings,”
+and “generic probe” would manufacture a different, proof-shaped model
+statement. It would not repair the conjecture. The positive survivor is only
+the exact AdS\(_3\) Hawking--Page model consequence: in the strict large-\(k\)
+limit the oscillatory/decaying correlator transition induces a
+pure-point/atomless return-phase transition for the selected response. That
+consequence is useful exposition and a calibration example, but it cannot
+carry novelty or Nature significance.
 
 ### Predicted consequences
 
@@ -337,6 +656,44 @@ infinite clause of the conjecture is closed, and the result is stronger than
 countable. Continuous clocks and infinite/type-III world algebras remain
 separate problems because point-reading projectors and finite world-sector
 decomposition are no longer available in the same form.
+
+A second cardinality-free formulation removes point readings altogether.
+Let an arbitrary group act by automorphisms on an arbitrary unital labelled
+observable algebra, commutative or noncommutative. A linear refactorization
+covariant with every labelled left multiplier and every group shift is
+exactly
+\[
+  T(a)=\alpha_g(a)c,
+\]
+where \(g\) is one clock-origin transformation and \(c\) is fixed by the
+entire group action. Conversely every such map has both covariance
+properties. If \(T\) preserves the identity, then \(c=1\) and
+\(T=\alpha_g\) exactly. This theorem has no finiteness, cardinality,
+commutativity, topology, spectral-type, or factor-type restriction.
+
+For the full scalar function algebra on any group, regular translation has
+only constant invariant functions. The exact stabilizer is therefore one
+regular translation times one scalar, without decidable equality or point
+projectors. This is the algebraic continuous-clock survivor. It applies to
+the underlying algebra of continuous-group and type-III models, but it does
+not yet prove that equality of operational conditional probabilities implies
+full multiplier covariance, nor that the resulting refactorization is normal,
+bounded, or spatial on a Hilbert-space representation.
+
+At the purely tomographic level, the scalar-to-algebra bridge is now exact.
+For any family of linear reports that separates points of the labelled
+observable algebra, equality of every reported multiplier and shift
+correlation forces the corresponding algebra-valued covariance identities.
+The same origin-times-fixed-element stabilizer therefore follows from scalar
+reports alone. This closes the abstract local-tomography implication; it does
+not identify finite quantum-instrument conditional probabilities with that
+separating linear family.
+
+The mathematical mechanism is close to classical systems of imprimitivity
+and crossed-product covariance. It is therefore a bridge theorem, not yet a
+novelty claim. Scientific novelty would require the missing operational
+reconstruction implication and a physical consequence that existing
+imprimitivity theory does not already supply.
 
 These survivors establish an exact observer-spectral return law. They do not
 yet establish compact-spacetime locality of the probes, modular spectral
@@ -715,6 +1072,36 @@ An exact-object literature match to this joined law kills the paper.
     theorem about bounded or unitary operators on \(L^2(\mathbb R)\). Point
     projectors cease to be physical observables for a continuous clock.
     Calling this the continuous-clock solution would be false.
+19. **The full-algebra theorem may be crossed-product folklore.** Setting the
+    second multiplier argument to the identity almost immediately yields the
+    twisted-multiplier normal form. Mackey imprimitivity and covariant
+    crossed-product representations are much stronger analytic parents.
+    This theorem can close logical scope, but cannot carry novelty or
+    significance unless operational probabilities are proved to force its
+    covariance premise in a setting not already covered by those parents.
+20. **“Tomographically complete” can hide the conclusion.** The report-level
+    theorem defines completeness as point separation and then uses point
+    separation once. A physics referee will demand a concrete finite or local
+    instrument family, a proof that its actual conditional probabilities
+    supply those separating reports, and noise-stable quantitative
+    reconstruction. Abstract tomography alone is not a physical result.
+21. **Nonrepetition-to-type-III\(_1\) is not the missing headline.** The
+    original conjecture is false by a vacuous finite-dimensional example.
+    Adding nontriviality makes atomlessness kill the centralizer immediately,
+    after which the type-III\(_1\) conclusion is established operator
+    algebra. This route cannot supply the required jump or Nature-level
+    significance.
+22. **All histories retain a representation gauge.** Complete sequential
+    probabilities are invariant under simultaneous similarity, and a global
+    transpose supplies a quantum-compatible antiunitary obstruction beyond
+    clock-origin times commutant. The history-reconstruction conjecture is
+    false unless externally calibrated structure is added; doing so returns
+    the question to gate-set tomography and Wigner/Kadison classification.
+23. **Operational spectral invariance is close to tautological.** Equality
+    of every time-labelled return amplitude fixes the spectral measure by
+    Fourier uniqueness, while finite minimal-realization spectra are already
+    known gauge invariants. This is a clean supporting theorem, not a
+    Nature-level answer to the problem of time.
 
 ## Formalization gates
 
@@ -736,6 +1123,9 @@ An exact-object literature match to this joined law kills the paper.
 - [x] collision mass vanishes iff the spectrum is atomless
 - [x] atomless high-fidelity return density tends to zero, including
       singular-continuous spectra
+- [x] equality of all return amplitudes fixes the complete spectral measure,
+      temporal dimension, collision mass, atomicity, and every finite-window
+      high-fidelity density
 - [x] universal temporal-cardinality gap: at most countable or continuum
 - [x] atomless spectrum forces continuum temporal dimension
 - [x] mixed-spectrum collision-budget bound
@@ -760,8 +1150,21 @@ An exact-object literature match to this joined law kills the paper.
 - [x] arbitrary-cardinality discrete clock with finite labelled-world
       no-mixing stabilizer
 - [x] exact combined arbitrary-discrete physical clock--world stabilizer iff
-- [ ] continuous clock--world stabilizer
+- [x] universal labelled-observable-algebra stabilizer for every group and
+      every unital algebra
+- [x] point-projector-free regular function-algebra clock stabilizer
+- [x] exact scalar-report-to-algebra covariance bridge for every
+      point-separating tomographic family
+- [x] exact arbitrary-cardinality similarity gauge for all scalar reports
+      and every finite labelled instrument word
+- [x] two-dimensional transpose witness outside multiplicative algebra
+      automorphisms
+- [x] transpose preserves finite Kraus instruments, density conditions,
+      POVM-effect conditions, and terminal Born probabilities
+- [ ] bounded/normal continuous-clock Hilbert-space stabilizer
 - [ ] local type-III observable-algebra stabilizer
+- [ ] concrete quantum-instrument conditional probabilities supply a
+      separating report family
 - [ ] compact-local or local-algebra QFT realization beyond Schwartz smearing
 - [ ] experimentally operational estimator and reachable parameter regime
 - [ ] justified bridge from return-density arrow to physical time

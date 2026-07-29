@@ -1012,6 +1012,25 @@ end SpectralMemory
 open Filter MeasureTheory Set
 open scoped Topology
 
+/-- **Complete operational spectral identification.** Equality of every
+time-labelled return amplitude determines the full finite real spectral
+measure exactly. -/
+theorem spectralMeasure_eq_of_all_returnAmplitudes_eq
+    (mu nu : Measure ℝ)
+    [IsFiniteMeasure mu] [IsFiniteMeasure nu]
+    (hreturn : ∀ t : ℝ, charFun mu t = charFun nu t) :
+    mu = nu :=
+  Measure.ext_of_charFun (funext hreturn)
+
+/-- Atomic versus atomless spectral type is fixed by the complete
+time-labelled return record. -/
+theorem noAtoms_iff_of_all_returnAmplitudes_eq
+    (mu nu : Measure ℝ)
+    [IsProbabilityMeasure mu] [IsProbabilityMeasure nu]
+    (hreturn : ∀ t : ℝ, charFun mu t = charFun nu t) :
+    NoAtoms mu ↔ NoAtoms nu := by
+  rw [spectralMeasure_eq_of_all_returnAmplitudes_eq mu nu hreturn]
+
 /-- Away from zero frequency, the rescaled sinc kernel vanishes at large
 positive time. -/
 lemma tendsto_sinc_mul_atTop (x : ℝ) (hx : x ≠ 0) :
@@ -1255,6 +1274,24 @@ noncomputable def highFidelityWindowDensity
     (mu : Measure ℝ) (eta r : ℝ) : ℝ :=
   (2 * r)⁻¹ *
     volume.real (highFidelityTimes mu eta ∩ Ioc (-r) r)
+
+/-- Complete return records determine temporal dimension, collision mass,
+and every finite-window high-fidelity density simultaneously. -/
+theorem temporalData_eq_of_all_returnAmplitudes_eq
+    (mu nu : Measure ℝ)
+    [IsProbabilityMeasure mu] [IsProbabilityMeasure nu]
+    (hreturn : ∀ t : ℝ, charFun mu t = charFun nu t) :
+    SpectralMemory.measureTemporalDimension mu =
+        SpectralMemory.measureTemporalDimension nu ∧
+      spectralDifferenceMeasure mu {0} =
+        spectralDifferenceMeasure nu {0} ∧
+      (∀ eta r : ℝ,
+        highFidelityWindowDensity mu eta r =
+          highFidelityWindowDensity nu eta r) := by
+  have hmeasure :=
+    spectralMeasure_eq_of_all_returnAmplitudes_eq mu nu hreturn
+  subst nu
+  exact ⟨rfl, rfl, fun _ _ => rfl⟩
 
 lemma measurableSet_highFidelityTimes
     (mu : Measure ℝ) [IsFiniteMeasure mu] (eta : ℝ) :

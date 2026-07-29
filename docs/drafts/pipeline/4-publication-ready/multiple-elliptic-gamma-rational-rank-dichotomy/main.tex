@@ -1,11 +1,12 @@
 \documentclass[10pt]{article}
 
-\usepackage[margin=0.86in]{geometry}
+\usepackage[margin=0.78in]{geometry}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
 \usepackage{microtype}
 \usepackage{amsmath,amssymb,amsthm,mathtools}
 \usepackage{booktabs}
+\usepackage{array}
 \usepackage{enumitem}
 \usepackage{xcolor}
 \usepackage{tikz}
@@ -13,699 +14,795 @@
 
 \usetikzlibrary{arrows.meta,positioning,fit}
 \setlist{nosep,leftmargin=*}
-\setlength{\parindent}{1.1em}
+\setlength{\parindent}{1.05em}
 \setlength{\parskip}{0.12em}
 \setlength{\emergencystretch}{2em}
 \numberwithin{equation}{section}
 
 \newtheorem{theorem}{Theorem}[section]
-\newtheorem{proposition}[theorem]{Proposition}
 \newtheorem{corollary}[theorem]{Corollary}
-\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
 \theoremstyle{definition}
 \newtheorem{definition}[theorem]{Definition}
 \theoremstyle{remark}
 \newtheorem{remark}[theorem]{Remark}
 
+\newcommand{\R}{\mathbb R}
 \newcommand{\C}{\mathbb C}
+\newcommand{\N}{\mathbb N}
 \newcommand{\Z}{\mathbb Z}
+\newcommand{\Q}{\mathbb Q}
 \newcommand{\dd}{\mathrm d}
-\newcommand{\DA}{\mathrm{DA}}
-\newcommand{\HT}{\mathrm{HT}}
-\newcommand{\trdeg}{\operatorname{trdeg}}
-\newcommand{\range}{\operatorname{range}}
+\newcommand{\supp}{\operatorname{supp}}
+\newcommand{\spanQ}{\operatorname{span}_{\Q}}
+\newcommand{\card}{\operatorname{card}}
+\newcommand{\I}{\mathrm i}
 
-\title{\bfseries Perfect thermality can hide\\
-an irreducibly infinite quantum clock}
+\title{\bfseries Whether quantum history repeats is not locally determined}
 \author{Michael Haufschild}
-\date{July 27, 2026}
+\date{July 29, 2026}
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-A thermal particle spectrum fixes occupation probabilities but not the phase
-that localizes wave packets in time.  We ask whether complete intensity
-information---arbitrarily many channels and all frequency derivatives---can
-nevertheless encode that phase through a finite local dynamical model.  The
-answer is no for the exactly solvable Carlitz--Willey horizon channel.  Its
-intensity is exactly Planckian, whereas its phase slope satisfies no algebraic
-differential equation over the entire, possibly infinite, intensity atlas.
-Every exact derivation-closed algebraic state representation of the clock
-therefore has at least countably infinite transcendence degree.  We also
-derive a sharp time-domain law.  For every channel the Gamma group-delay
-dispersion is strictly positive; in the canonical channel calibration the
-phase slope has exactly one positive zero if and only if
-\(\omega'/\kappa>e^{-\gamma}\), and otherwise has none.  A universal
-Gamma-channel theorem extends the state obstruction to every shift pair,
-every index set and arbitrary elementary calibrations.  Exact thermality can
-thus coexist with irreducibly infinite clock complexity and a rigid
-one-turn phase geometry.
+Does complete polynomial local dynamical information determine whether a
+quantum history will return?  We prove that it does not.  Every normalized
+indeterminate moment class contains two stationary quantum histories with
+identical polynomial Krylov inner products, identical energy-multiplication
+matrix elements and therefore the same connected nearest-neighbour Jacobi rule
+at every depth.  Nevertheless, one has positive long-time return, at-most
+countable temporal dimension and a pure-point completion, whereas the other has
+zero long-time return, continuum temporal dimension and zero time density above
+every positive return threshold.  An explicit strictly-positive-energy pair
+has equal energy moments of every order and equal survival-amplitude derivatives
+of every order; one undergoes arbitrarily late full phase recurrences while the
+other almost never returns.  This is not a finite-data effect.  At the
+exact-theory level, compact support restores uniqueness from exact moments, locating the
+sharp boundary.  Yet on the fixed compact interval \([1,2]\), even the all-orders coupling expansion of every
+bounded continuous spectral observable, at every physical time, admits
+opposite exact recurrence phases; the missing plateau is exactly
+\(e^{-2/g}\).  We then identify the global datum that is sufficient: the
+\(n\)-th long-time fidelity moment equals the probability that \(n\)
+independently sampled visible energy gaps sum to zero.  This additive collision
+hierarchy determines the long-time mean of every continuous fidelity statistic
+for every probability spectrum.  In finite connected chains, one local record
+can admit every target return probability in \([0,1]\); preserving this full
+future ambiguity through radius \(R\) has necessary and sufficient centred
+energy--time cost linear in \(R\).  Applied to spectral form factors, the result
+places a model-independent limit on what local or perturbative descriptions of
+late-time quantum systems, including black-hole models, can establish without
+a global spectral completion.
 \end{abstract}
 
 \noindent\textbf{One-sentence summary.}
-All thermal intensities and all their local frequency derivatives still
-cannot produce the phase clock of an exact horizon quantum channel from any
-finite algebraic state model.
+Two quantum histories can obey the same polynomial local energy rule at every
+algebraic depth while one keeps returning and the other escapes for almost all
+time; recurrence is fixed by global spectral completion, not by those local
+data alone.
 
-\section{Thermality and the missing clock}
+\section{The question and the answer}
 
-Hawking-like radiation is most visibly characterized by a Planck spectrum.
-Yet a spectrum records squared amplitudes, while temporal localization of a
-wave packet also uses their relative phases.  This distinction is explicit
-in moving-mirror quantum field theory, where an accelerating boundary gives
-an exactly soluble analogue of horizon particle creation
-\cite{CarlitzWilley1987,GoodAndersonEvans2013}.  The same distinction is
-operational in the Gaussian quantum channel induced by the mirror: the
-channel phase contains the argument of Euler's Gamma function
-\cite{GianfeliciMancini2017}.
-
-For the Carlitz--Willey trajectory, the right-moving Bogoliubov coefficient
-may be written
-\begin{equation}
- \beta_{\omega\omega'}^{R}
- =-\frac{1}{2\pi\kappa}\sqrt{\frac{\omega}{\omega'}}
-   e^{-\pi\omega/(2\kappa)}
-   \left(\frac{\omega'}{\kappa}\right)^{-i\omega/\kappa}
-   \Gamma\!\left(\frac{i\omega}{\kappa}\right),
- \label{eq:beta}
-\end{equation}
-with \(\omega,\omega',\kappa>0\).  Its particle-number spectrum is
-\begin{equation}
- |\beta_{\omega\omega'}^{R}|^2
- =\frac{1}{2\pi\kappa\omega'}
-   \frac{1}{e^{2\pi\omega/\kappa}-1}.
- \label{eq:planck}
-\end{equation}
-The intensity is stationary and Planckian, but the coefficient retains the
-phase
-\[
- -\frac{\omega}{\kappa}\log\frac{\omega'}{\kappa}
- +\arg\Gamma\!\left(\frac{i\omega}{\kappa}\right)
- \quad \text{modulo a constant}.
-\]
-Wave-packet constructions use precisely the information absent from the
-unpacketized spectrum to resolve particle creation in time
-\cite{GoodAndersonEvans2013}.
-
-This exact coefficient also exposes a falsifiable phase geometry.  With
-\(x=\omega/\kappa\) and \(\rho=\omega'/\kappa\), its dimensionless phase
-slope is
-\[
- \tau_\rho(x)=
- \frac{\dd}{\dd x}\arg\!\left[
-   e^{-ix\log\rho}\Gamma(ix)\right]
- =\operatorname{Re}\psi(ix)-\log\rho ,
-\]
-where \(\psi=\Gamma'/\Gamma\).  We prove below that \(\tau_\rho\) is strictly
-increasing at every positive frequency and give its complete zero
-classification.  Thus the result is not only a non-reconstruction theorem:
-it fixes the sign of the group-delay dispersion throughout the spectrum.
-
-Equation~\eqref{eq:planck} alone does not answer a stronger question:
-could the complete intensity functions, pooled across every channel and
-closed under frequency differentiation, encode the phase by a finite local
-state law?  Ordinary non-uniqueness of phase retrieval is too weak to answer
-this.  Additional global hypotheses can sometimes recover phase from
-intensity, for example through a Kramers--Kronig relation under a
-minimum-phase condition \cite{WangLowery2020}.  Our question is instead
-exact and local:
+Quantum recurrence is often presented as a consequence of finite Hilbert
+space, discrete spectrum or compact motion \cite{BocchieriLoinger1957}.
+Late-time return has also become a diagnostic of quantum chaos and of proposed
+microscopic descriptions of black holes
+\cite{Cotler2017,BarbonRabinovici2003,Saad2019}.  These uses hide a prior
+identifiability question:
 \begin{quote}
-\emph{Can phase or phase slope belong to any finite algebraic differential
-state model whose coefficient field contains all intensities?}
+\emph{Which part of a quantum law decides whether the observed history
+returns?}
 \end{quote}
-The answer below is negative, with a positive lower bound on every possible
-state field.
+The answer proved here is a sharp local--global dichotomy.  Complete local
+Krylov data do not decide recurrence.  Complete perturbation theory does not
+decide it, even with compact positive energy.  Global additive collisions in
+the completed spectral measure do decide every continuous long-time return
+statistic.  At finite depth the transition is quantitative: local agreement
+creates a factorially protected prediction horizon, while the entire future
+probability interval becomes achievable at centred energy--time action linear
+in hidden distance.  The lower and upper scalings match.
+
+This distinction is stronger than the familiar observation that finitely many
+measurements do not determine an infinite-dimensional system.  Our first
+separation preserves all polynomial matrix elements at every depth.  Our
+second preserves every perturbative coefficient of every bounded continuous
+spectral observable and of the full time-dependent spectral form factor.  No
+regularity, continuity or computability assumption on a proposed recurrence
+classifier is used.
+
+\subsection*{Relation to prior results}
+
+Moment-indeterminate probability laws can share every moment while having
+different characteristic functions, including in quantum constructions
+\cite{SalaMayato2020,LoughlinCohen2022}.  Indeterminate Jacobi operators
+require boundary data at infinity \cite{Yafaev2021,BergSzwarc2023}.  The
+one-power long-time return formula is a form of Wiener's theorem
+\cite{Wiener1933}.  These facts are inputs, not the claimed discovery.  The
+new result is their exact recurrence completion: equality of the full
+polynomial Hilbert geometry and energy action is compatible with opposite
+recurrence phases and different temporal dimensions; no classifier on those
+complete local data exists.  Independently, compact positive spectra show the
+same logical failure for the complete perturbative theory of every continuous
+spectral probe.  The collision hierarchy then supplies the missing positive
+classification for every continuous long-time statistic, and the finite-chain
+theorem gives matching linear necessary and sufficient resource scaling.
+
+Recent recurrence theory obtains upper and lower recurrence-time bounds for
+specified finite systems and arithmetic criteria for exact finite-dimensional
+Floquet recurrence
+\cite{Riddell2023,Anand2026,Kotowski2026,GuptaShort2026}.  Those works ask
+\emph{when a given spectrum returns}.  We ask the logically prior inverse
+question: \emph{which incomplete descriptions determine whether the exact
+spectrum belongs to a returning phase at all?}  Our results include arbitrary
+probability spectra, an exact local-data no-go, and a matching local
+prediction-horizon construction; they do not replace finite-dimensional
+recurrence-time estimates.
 
 \begin{figure}[t]
 \centering
 \begin{tikzpicture}[
-  node distance=8mm and 14mm,
-  box/.style={draw,rounded corners,align=center,inner sep=6pt,
-    minimum height=9mm},
-  arr/.style={-{Latex[length=2mm]},thick},
-  faint/.style={draw=gray!65,text=black}
+  node distance=8mm and 13mm,
+  box/.style={draw,rounded corners,align=center,inner sep=5pt,
+    text width=38mm},
+  result/.style={draw,very thick,rounded corners,align=center,inner sep=5pt,
+    text width=40mm},
+  arr/.style={-{Latex[length=2.2mm]},thick}
 ]
-\node[box] (amp) {complex horizon amplitude\\
-  elementary gauge \(\times\,\Gamma(i\omega/\kappa)\)};
-\node[box,below left=of amp] (int) {complete intensity atlas\\
-  exact Planck factors};
-\node[box,below right=of amp] (phase) {strictly convex phase slope\\
-  one-turn wave-packet clock};
-\node[box,faint,below=of int] (finite) {every finite algebraic\\
-  differential state model};
-\node[box,below=of phase,draw=red!70!black,text=red!60!black] (inf)
-  {state transcendence degree\\\(\geq\aleph_0\)};
-\draw[arr] (amp) -- node[left,sloped,font=\small]{modulus square} (int);
-\draw[arr] (amp) -- node[right,sloped,font=\small]{orientation} (phase);
-\draw[arr] (int) -- node[left,font=\small]{all derivatives} (finite);
-\draw[arr,dashed,red!70!black] (finite) -- node[above,sloped,font=\small]
-  {cannot contain} (phase);
-\draw[arr] (phase) -- (inf);
+\node[box] (local) {same polynomial Krylov geometry\\
+same energy matrix elements\\same connected Jacobi rule at every depth};
+\node[result,below left=of local] (return) {pure-point completion\\
+positive mean return\\at-most countable temporal dimension};
+\node[result,below right=of local] (escape) {atomless completion\\
+zero mean return\\continuum temporal dimension};
+\draw[arr] (local) -- node[left,align=right,font=\small]
+  {global\\completion A} (return);
+\draw[arr] (local) -- node[right,align=left,font=\small]
+  {global\\completion B} (escape);
+\node[box,below=15mm of local,text width=58mm] (global)
+  {global collision hierarchy\\
+  \(\kappa_n=(\Delta\mu)^{*n}(\{0\})\)\\
+  determines every continuous long-time return statistic};
+\draw[arr] (return) -- (global);
+\draw[arr] (escape) -- (global);
 \end{tikzpicture}
-\caption{\textbf{Thermal-spectrum/clock separation and phase rigidity.}
-The intensity channel collapses to an algebraic-differential Planck sector.
-The orientation phase and its logarithmic frequency slope remain outside
-every finite algebraic state field generated from the complete intensity
-atlas.  On the physical frequency ray the phase slope is strictly increasing,
-so any stationary frequency is unique.  The obstruction is exact
-representation, not approximation and not nonlocal phase retrieval.}
+\caption{\textbf{Global-completion law.}  Infinite agreement of polynomial
+local dynamics does not select a recurrence phase.  The completed
+spectral gap law does.}
 \label{fig:law}
 \end{figure}
 
-\section{Universal intensity--phase separation}
+\section{Observer time and its global invariants}
 
-We formulate the result over the differential field \(\C(z)\), with
-derivative \(\partial=\dd/\dd z\).  A meromorphic function is
-\emph{differentially algebraic} (DA) if its finite derivative jet satisfies
-a nonzero polynomial equation over \(\C(z)\); otherwise it is
-\emph{hypertranscendental} (HT).  HT therefore rules out every algebraic
-ordinary differential equation of every finite order, not only closed forms
-or linear equations.
-
-Let \(\iota\) be an arbitrary index set.  For each \(i\in\iota\), choose
-\(a_i,b_i\in\C\) and nonzero DA meromorphic calibrations
-\(g_i,\widetilde g_i\).  Define the two frequency orientations
-\begin{align}
- A_i(z)&=g_i(z)\frac{\Gamma(z+a_i)}{\Gamma(b_i-z)},&
- A_i^-(z)&=\widetilde g_i(z)
-   \frac{\Gamma(a_i-z)}{\Gamma(z+b_i)}, \label{eq:orientations}\\
- I_i(z)&=A_i(z)A_i^-(z),&
- P_i(z)&=\frac{A_i(z)}{A_i^-(z)},&
- L_i(z)&=\frac{P_i'(z)}{P_i(z)}. \label{eq:observables}
-\end{align}
-When \(A_i^-\) is the reflected conjugate of \(A_i\) on a physical
-frequency slice, \(I_i\) is the intensity, \(P_i\) is the unit-modulus
-orientation phase, and \(L_i\) is its logarithmic phase slope up to the
-fixed frequency-coordinate factor.  Independent calibrations are retained
-in the theorem because the algebraic separation does not require this
-physical specialization.
-
-The arithmetic collapse condition is
+Let \(H\) be self-adjoint, let \(\psi\) be normalized and let \(\mu\) be the
+probability spectral measure selected by the pair \((H,\psi)\).  The survival
+amplitude and fidelity are
 \begin{equation}
- \mathcal C(a,b)\quad\Longleftrightarrow\quad
- b-a\in\Z
- \quad\text{or}\quad
- \bigl(1-2a\in\Z\ \text{and}\ 1-2b\in\Z\bigr).
- \label{eq:collapse}
+ A_\mu(t)=\langle\psi,e^{\I tH}\psi\rangle
+ =\int_{\R}e^{\I tE}\,\dd\mu(E),
+ \qquad F_\mu(t)=|A_\mu(t)|^2\in[0,1].
+\label{eq:survival}
 \end{equation}
+Every probability measure on \(\R\) occurs in this way: take multiplication by
+\(E\) on \(L^2(\mu)\) and the constant unit vector.  Thus statements below
+cover finite, countably infinite, singular-continuous and absolutely
+continuous stationary quantum histories without a dimension assumption.
 
-\begin{theorem}[Universal Gamma spectrum--clock law]
-\label{thm:universal}
-For every index set \(\iota\), every shift family, and every family of
-nonzero DA calibrations:
+Only energy gaps affect projective return.  Write
+\begin{equation}
+ \Delta\mu=(E-E')_\#(\mu\otimes\mu)
+\label{eq:gaplaw}
+\end{equation}
+for the distribution of a difference of two independent visible energies.
+We define the \emph{temporal dimension}
+\begin{equation}
+ d_{\rm time}(\mu)=
+ \dim_{\Q}\spanQ\{E-E':E,E'\in\supp\mu\}.
+\label{eq:dimension}
+\end{equation}
+It counts rationally independent phase directions, not spatial coordinates
+or Hilbert-space basis states.  It is invariant under a common shift and a
+nonzero rescaling of energy.
+
+\begin{theorem}[Universal temporal alternatives]
+\label{thm:dimension}
+For every probability spectrum \(\mu\):
 \begin{enumerate}
-\item \(I_i\) is DA over \(\C(z)\) if and only if
-      \(\mathcal C(a_i,b_i)\).  Thus the collapse locus is exact and is
-      unchanged by arbitrary independent calibrations.
-\item Suppose \(\mathcal C(a_i,b_i)\) holds for every \(i\), and let
-      \[
-       K_I=\C(z)\langle I_i:i\in\iota\rangle_\partial
-      \]
-      be the differential field generated by the complete intensity atlas.
-      Then \(A_j\), \(P_j\), and \(L_j\) are HT over \(K_I\) for every
-      \(j\in\iota\).
-\item If \(S\) is any derivation-closed intermediate field over \(K_I\)
-      containing \(P_j\) or \(L_j\), then
-      \[
-        \trdeg_{K_I}S\geq\aleph_0.
-      \]
-      In particular, neither observable admits an exact finite algebraic
-      state realization over all intensities.
+\item \(d_{\rm time}(\mu)\le\aleph_0\) or
+      \(d_{\rm time}(\mu)=2^{\aleph_0}\); no intermediate uncountable value
+      occurs.
+\item A positive exact projective return exists if and only if the additive
+      group generated by the visible gaps is cyclic.
+\item If \(\mu\) is atomless, then
+      \(d_{\rm time}(\mu)=2^{\aleph_0}\), the mean of \(F_\mu\) is zero and,
+      for every \(\eta>0\), the symmetric time density of
+      \(\{t:F_\mu(t)\ge\eta\}\) tends to zero.
 \end{enumerate}
-No finiteness, countability, independence, common shift, or common
-calibration assumption is imposed on \(\iota\).
 \end{theorem}
 
-The quantifier over all index sets matters.  Adding more intensity channels
-cannot evade the obstruction: even an uncountable atlas, with each channel
-independently calibrated, remains a differentially algebraic extension of
-the rational frequency clock.  The conclusion concerns each target phase
-after \emph{all} such data have been pooled.
+The word ``dimension'' in the title therefore has an operational meaning.
+It is the number of independent visible phase clocks.  The same ambient
+Hamiltonian can expose different dimensions to different spectral probes;
+more strongly, Section~\ref{sec:localglobal} shows that even the complete
+polynomial local rule of one probe need not select between the countable and
+continuum phases.
 
-\section{The exact horizon specialization}
+\section{The global-completion theorem}
+\label{sec:localglobal}
 
-Put \(x=\omega/\kappa\) and \(z=ix\).  Complex conjugation and Euler
-reflection give, for real \(x\neq0\),
+For polynomials \(p,q\in\R[E]\), define the polynomial Krylov data
+\begin{align}
+ G_\mu(p,q)&=\int p(E)q(E)\,\dd\mu(E),\\
+ J_\mu(p,q)&=\int E\,p(E)q(E)\,\dd\mu(E).
+\label{eq:localdata}
+\end{align}
+\(G_\mu\) is the full Gram geometry generated algebraically from the observed
+state; \(J_\mu\) is the complete polynomial matrix of energy multiplication.
+If \(P_n\) are the associated monic orthogonal polynomials, positivity gives
+the connected Jacobi rule
 \begin{equation}
- \Gamma(-ix)=\overline{\Gamma(ix)},\qquad
- \Gamma(ix)\Gamma(-ix)
-   =\frac{\pi}{x\sinh(\pi x)}.
- \label{eq:imaginary-reflection}
+ E P_{n+1}=P_{n+2}+a_{n+1}P_{n+1}+b_nP_n,
+ \qquad b_n>0,
+\label{eq:jacobi}
 \end{equation}
-Consequently,
+at every \(n\).  Thus equality of all moments implies equality of
+\emph{both} tensors in \eqref{eq:localdata}, not merely equality of a short
+time series.
+
+\begin{theorem}[All-depth local agreement, opposite recurrence]
+\label{thm:all-depth}
+Every normalized indeterminate Hamburger moment class contains probability
+spectra \(\mu_{\rm r}\) and \(\mu_{\rm e}\) such that:
+\begin{enumerate}
+\item \(G_{\mu_{\rm r}}=G_{\mu_{\rm e}}\) and
+      \(J_{\mu_{\rm r}}=J_{\mu_{\rm e}}\) for all polynomial pairs.  Hence
+      both induce the same coefficients \(a_n,b_n\), with \(b_n>0\), at every
+      Jacobi depth.
+\item Every derivative of \(A_{\mu_{\rm r}}\) and \(A_{\mu_{\rm e}}\) at
+      \(t=0\) agrees.
+\item \(\mu_{\rm r}\) has positive mean fidelity and at-most countable
+      temporal dimension.
+\item \(\mu_{\rm e}\) has zero mean fidelity, continuum temporal dimension
+      and zero time density above every positive fidelity threshold.
+\end{enumerate}
+Consequently, no predicate of the complete data
+\((G_\mu,J_\mu)\) classifies positive-mean recurrence for all
+strictly-positive-energy probability spectra with moments of every order.
+\end{theorem}
+
+The two histories are inequivalent global Hilbert-space completions of the
+same polynomial rule.  In the language of indeterminate Jacobi operators, the
+minimal recurrence relation is in the limit-circle regime and requires data
+at infinity \cite{Yafaev2021,BergSzwarc2023}.  One must not confuse the
+atomless completion above with an ordinary self-adjoint extension on the same
+\(\ell^2\) polynomial closure: the latter extremal extensions are pure point.
+The exact statement is equality of all polynomial Krylov data with different
+global spectral completions.
+
+\subsection{A positive-energy witness}
+
+The phenomenon has an explicit one-parameter realization.  Fix \(v>0\) and
+write
+\begin{align}
+ \mu_{\rm d}
+ &=\frac1{Z_v}\sum_{k\in\Z}e^{-vk^2/2}\,
+        \delta_{e^{vk}},&
+ Z_v&=\sum_{k\in\Z}e^{-vk^2/2},\label{eq:discrete}\\
+ \dd\mu_{\rm c}(E)
+ &=\frac{\mathbf1_{E>0}}{E\sqrt{2\pi v}}\,
+   \exp\!\left[-\frac{(\log E)^2}{2v}\right]\dd E .
+\label{eq:continuous}
+\end{align}
+Both spectra are strictly positive.  Completing the square and translating
+the integer summation index give, for every \(n\in\N\),
 \begin{equation}
- x e^{-\pi x}\Gamma(ix)\Gamma(-ix)
- =\frac{2\pi}{e^{2\pi x}-1},
- \label{eq:thermal-identity}
+ \int E^n\,\dd\mu_{\rm d}(E)
+ =e^{vn^2/2}
+ =\int E^n\,\dd\mu_{\rm c}(E).
+\label{eq:moments}
 \end{equation}
-which is exactly the non-elementary Gamma reduction behind
-Eq.~\eqref{eq:planck}.
+Therefore their data \eqref{eq:localdata}, their Jacobi rule
+\eqref{eq:jacobi} and all derivatives \(A^{(n)}(0)=\I^n e^{vn^2/2}\)
+coincide.  Yet
+\begin{equation}
+ \lim_{T\to\infty}\frac1{2T}\int_{-T}^{T}F_{\mu_{\rm d}}(t)\,\dd t
+ =\sum_{k\in\Z}\left(\frac{e^{-vk^2/2}}{Z_v}\right)^2>0,
+ \qquad
+ \lim_{T\to\infty}\frac1{2T}\int_{-T}^{T}F_{\mu_{\rm c}}(t)\,\dd t=0.
+\label{eq:opposite}
+\end{equation}
+The discrete history admits arbitrarily late times at which its total
+weighted phase error is arbitrarily small.  For the continuous history, every
+set \(\{t:F_{\mu_{\rm c}}(t)\ge\eta\}\), \(\eta>0\), has asymptotic density
+zero.
 
-Remove from Eq.~\eqref{eq:beta} only its known real algebraic normalization.
-The remaining frequency-normalized channel is a nonzero DA exponential
-gauge times \(\Gamma(z)\).  Allow an arbitrary family of such gauges and
-their reflected partners:
-\[
- B_i(z)=g_i(z)\Gamma(z),\qquad
- B_i^-(z)=\widetilde g_i(z)\Gamma(-z).
-\]
-Let \(\mathcal I_i=B_iB_i^-\),
-\(\mathcal P_i=B_i/B_i^-\), and
-\(\mathcal L_i=\mathcal P_i'/\mathcal P_i\).
+Equation~\eqref{eq:moments} alone is a classical moment-indeterminacy
+mechanism.  Quantum constructions of moment-indeterminate densities and
+characteristic functions are known
+\cite{SalaMayato2020,LoughlinCohen2022}.  The advance in
+Theorem~\ref{thm:all-depth} is the recurrence classification consequence:
+complete polynomial Hilbert geometry and energy action, including the
+connected Jacobi rule at every depth, still leave the global recurrence phase
+undecided; this failure holds against an arbitrary classifier.
 
-\begin{corollary}[Infinite-state horizon phase]
-\label{cor:horizon}
-For every index set and every family of nonzero DA gauges, all
-\(\mathcal I_i\) are DA.  Every \(\mathcal P_j\) and
-\(\mathcal L_j\) is HT over the differential field generated by the entire,
-possibly infinite, atlas \(\{\mathcal I_i\}\).  Every derivation-closed
-algebraic state field over that atlas containing either observable has
-transcendence degree at least \(\aleph_0\).
+\subsection{The exact compact boundary}
+
+\begin{corollary}[Compact exact-moment determinacy]
+\label{cor:compact-determinate}
+If two probability spectra have the same moment of every natural order and
+one is supported in a compact interval, then the spectra are equal.  Hence
+their recurrence law and every long-time fidelity statistic are equal.
 \end{corollary}
 
-The phase slope has a second, independent rigidity.  Define it at zero by
-continuous extension,
-\[
- \tau_\rho(0)=-\gamma-\log\rho .
-\]
-The digamma recurrence gives
-\(\operatorname{Re}\psi(ix)=\operatorname{Re}\psi(1+ix)\) for \(x>0\).
-The vertical trigamma orientation and the high-frequency digamma asymptotic
-then give
+Equality of moments gives equality against every polynomial.  Compact support
+of one representative forces every other representative into the same
+interval; uniform polynomial approximation of continuous functions then gives
+equality of the measures.  Thus Theorem~\ref{thm:all-depth} locates the exact
+fixed-theory failure at moment-indeterminate noncompact completion.
+Section~\ref{sec:compact} shows that compactness does \emph{not} rescue a
+theory known only perturbatively.
+
+\section{Compact spectra and the failure of all-orders perturbation theory}
+\label{sec:compact}
+
+Heavy tails and moment indeterminacy are not required for the perturbative
+obstruction.  Let \(\lambda\) be normalized Lebesgue measure on \([1,2]\),
+let \(E_\star=3/2\), and define the smooth flat weight
 \begin{equation}
- \tau_\rho'(x)
-   =-\operatorname{Im}\psi'(1+ix)>0,\qquad
- \lim_{x\to\infty}\tau_\rho(x)=+\infty .
- \label{eq:phase-convexity}
+ \eta(g)=
+ \begin{cases}
+ 0,&g\le0,\\ e^{-1/g},&g>0.
+ \end{cases}
+\label{eq:flat}
+\end{equation}
+Consider
+\begin{equation}
+ \mu_{\rm r}(g)=\eta(g)\delta_{E_\star}+
+       (1-\eta(g))\lambda,\qquad
+ \mu_{\rm e}(g)=\lambda .
+\label{eq:compactfamilies}
+\end{equation}
+Both families remain supported in the same positive compact interval.
+
+\begin{theorem}[Nonperturbative recurrence separation]
+\label{thm:nonpert}
+For every bounded continuous \(f:\R\to\C\) and every \(n\in\N\),
+\begin{equation}
+ \left.\frac{\dd^n}{\dd g^n}\int f\,\dd\mu_{\rm r}(g)\right|_{g=0}
+ =
+ \left.\frac{\dd^n}{\dd g^n}\int f\,\dd\mu_{\rm e}(g)\right|_{g=0}.
+\label{eq:allobservables}
+\end{equation}
+The equality includes the complete coupling jet of \(A(t)\) and \(F(t)\) for
+every physical time \(t\).  Nevertheless, for every \(g>0\),
+\begin{equation}
+ \overline F_{\mu_{\rm r}(g)}=e^{-2/g}>0,
+ \qquad
+ \overline F_{\mu_{\rm e}(g)}=0.
+\label{eq:instanton}
+\end{equation}
+Both exact spectra have connected Jacobi realizations.  No predicate receiving
+the all-orders jets in \eqref{eq:allobservables}, simultaneously for every
+bounded continuous \(f\), can correctly classify recurrence for every family
+supported in \([1,2]\).  The same impossibility holds when the input is the
+all-orders coupling jet of the full time-dependent spectral form factor.
+\end{theorem}
+
+This theorem does not say that every resummation or microscopic prescription
+fails.  It says that perturbative coefficients alone possess no universal
+logical power to choose the completion: analyticity, quasianalyticity,
+resurgent boundary data, an exact microscopic Hamiltonian or a direct
+late-time measurement is additional information.  The flat function in
+\eqref{eq:flat} is elementary; the result is the exact compact-spectrum
+recurrence no-go and the universal quantification over all bounded continuous
+spectral probes and all classifiers.
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{@{}
+  >{\raggedright\arraybackslash}p{0.35\linewidth}
+  >{\raggedright\arraybackslash}p{0.20\linewidth}
+  >{\raggedright\arraybackslash}p{0.34\linewidth}@{}}
+\toprule
+\textbf{Information supplied} & \textbf{Spectrum class} &
+\textbf{What is determined universally}\\
+\midrule
+all exact energy moments & one compact representative &
+the entire spectrum and recurrence law\\
+all exact polynomial Krylov and energy data & positive indeterminate &
+not the recurrence phase\\
+all perturbative coefficients of every continuous spectral probe &
+compact \([1,2]\) & not the recurrence phase\\
+completed gap-collision hierarchy & every probability spectrum &
+every continuous long-time fidelity statistic\\
+\bottomrule
+\end{tabular}
+\caption{\textbf{Recurrence determinacy boundary.}  Compact support restores
+determinacy for exact moment data, but not for an all-orders perturbative
+description.  Global collision data are sufficient without a spectrum-class
+restriction.}
+\label{tab:boundary}
+\end{table}
+
+\section{What does determine every long-time return statistic?}
+\label{sec:collision}
+
+The obstruction has a complete positive counterpart.  Define the additive
+collision hierarchy
+\begin{equation}
+ \kappa_n(\mu)=
+ \bigl((\Delta\mu)^{*n}\bigr)(\{0\}),\qquad n\in\N,
+\label{eq:collision}
+\end{equation}
+where the zeroth convolution power is \(\delta_0\).  Thus \(\kappa_1\) is the
+probability that two visible energies coincide, while higher orders count
+exact cancellations among independent gaps.
+
+\begin{theorem}[Complete long-time recurrence law]
+\label{thm:complete}
+For every probability spectrum \(\mu\) and every \(n\in\N\),
+\begin{equation}
+ \lim_{T\to\infty}\frac1{2T}\int_{-T}^{T}F_\mu(t)^n\,\dd t
+ =\kappa_n(\mu).
+\label{eq:hierarchy}
+\end{equation}
+For every continuous \(h:[0,1]\to\R\), the limit
+\begin{equation}
+ \lim_{T\to\infty}\frac1{2T}
+ \int_{-T}^{T}h(F_\mu(t))\,\dd t
+\label{eq:statistic}
+\end{equation}
+exists and is uniquely determined by the sequence
+\(\{\kappa_n(\mu)\}_{n\ge0}\).  If \(\mu\) is atomless, this limit is \(h(0)\).
+\end{theorem}
+
+The law is universal: no discreteness, absolute continuity, finite dimension
+or spectral regularity is assumed.  It also shows why the plateau is global.
+For a pure-point spectrum with weights \(w_j\),
+\(\kappa_1=\sum_jw_j^2\); for an atomless spectrum it is zero.  The higher
+\(\kappa_n\) contain additive gap degeneracies invisible to the one-number
+plateau.  The \(n=1\) identity is the classical Wiener collision law
+\cite{Wiener1933}; the complete hierarchy and continuous-statistic closure are
+the content used here.
+
+\section{A finite causal shadow and an exact cost of hiding the future}
+\label{sec:causal}
+
+The all-depth theorem is not directly an experimental construction because
+its two completions need not have the same Hilbert-space closure.  A separate
+finite theorem supplies its operational shadow.  Prepare the endpoint vector
+\(e_0\) of a finite connected self-adjoint nearest-neighbour chain \(H\) and
+measure
+\begin{equation}
+ P_H(t)=|\langle e_0,e^{\I tH}e_0\rangle|^2.
 \end{equation}
 
-\begin{proposition}[Exact one-turn horizon clock]
-\label{prop:one-turn}
-For every \(\rho>0\), \(\tau_\rho\) is strictly increasing on
-\([0,\infty)\).  Moreover,
-\[
- \left(\exists!\,x_\rho>0:\tau_\rho(x_\rho)=0\right)
- \quad\Longleftrightarrow\quad
- e^{-\gamma}<\rho .
-\]
-When the zero exists, \(\tau_\rho(x)<0\) for \(0\leq x<x_\rho\) and
-\(\tau_\rho(x)>0\) for \(x>x_\rho\).  If
-\(\rho\leq e^{-\gamma}\), then \(\tau_\rho(x)>0\) for every \(x>0\).
-\end{proposition}
-
-Proposition~\ref{prop:one-turn} is a complete all-frequency statement, not
-an asymptotic or numerical observation.  Its invariant content under a
-change of time origin is the strict positivity in
-Eq.~\eqref{eq:phase-convexity}: multiplying the coefficient by any linear
-phase adds a constant to \(\tau_\rho\), but cannot change its strict
-increase or create two stationary frequencies.  The threshold refers to the
-canonical phase convention in Eq.~\eqref{eq:beta}; a common time-origin
-shift moves the zero but preserves the one-turn law.
-
-The elementary factor
-\((\omega'/\kappa)^{-i\omega/\kappa}\) in
-Eq.~\eqref{eq:beta} is one allowed gauge and carries the expected
-channel-dependent linear phase.  The Gamma contribution cannot be absorbed
-into any finite algebraic differential correction constructed from the
-Planck intensities.  Thus the stationary spectrum and the phase clock have
-provably different exact state complexity, while the phase itself has a
-rigid positive-dispersion geometry invisible in the spectrum.
-
-\section{Black-hole and cosmological reach}
-
-The theorem is not tied to a single mirror trajectory.  Its exact
-Gamma-orientation structure occurs in other QFT and scattering problems.
-
-\paragraph{de Sitter observer change.}
-The type-I global-to-static scalar Bogoliubov coefficient in four-dimensional
-de Sitter space contains
-\[
- A_{\ell,\nu}(z)=
- \frac{\Gamma(z+a_{\ell,\nu})}
-      {\Gamma(b_{\ell,\nu}-z)},\qquad
- b_{\ell,\nu}-a_{\ell,\nu}=\ell\in\mathbb N,
-\]
-with \(z=-i\omega/2\) \cite{SatoSuzuki1994}.  It lies on the first branch of
-\(\mathcal C\) for every mass branch \(\nu\) and angular mode \(\ell\).
-Therefore every reflected-frequency intensity is DA, whereas every
-orientation phase and phase slope is HT, including after all angular and
-mass channels are pooled.  This is a theorem about global-to-static observer
-data across a manifest horizon, not a classification of cosmological time
-evolution.
-
-\paragraph{Schwarzschild far-zone phase.}
-The Coulomb-like partial-wave factor used in the far-zone treatment of
-massless-field black-hole scattering is
-\begin{equation}
- S_\ell(\omega)=
- \frac{\Gamma(\ell+1-2iM\omega)}
-      {\Gamma(\ell+1+2iM\omega)}
- \label{eq:schwarzschild-phase}
-\end{equation}
-\cite{BaticKelkarNowakowski2011}.  With \(z=-2iM\omega\), this is the
-self-shift case \(a=b=\ell+1\).  Its reflected-frequency intensity is
-identically one, while its orientation phase and logarithmic frequency slope
-are HT.  The conclusion applies to this exact asymptotic factor.  It does
-not promote the Born amplitude to an exact astrophysical S-matrix, does not
-locate quasinormal modes, and does not describe the near-horizon nonlinear
-dynamics.
-
-These instances share the same law: reflection can cancel every Gamma
-charge in intensity while doubling the oriented charge in phase.  The
-mechanism is independent of the number of channels and of elementary
-normalizations.
-
-\section{What the result changes}
-
-The result supplies a model-selection theorem for horizon phase inference.
-Any exact finite rational ODE, polynomial neural ODE, finite algebraic
-closure, or finite differential circuit driven only by the complete
-intensity field must fail to reproduce the phase or its slope.  An exact
-model must instead use at least one of:
+\begin{theorem}[Complete local future set]
+\label{thm:future}
+Fix a local radius \(R\), a target time \(T>0\), a prior horizon
+\(0\le H_0<T\), and a tolerance \(\delta>0\).  There exists one finite
+isospectral connected nearest-neighbour family with:
 \begin{enumerate}
-\item an infinite algebraic state field;
-\item a non-algebraic primitive already carrying the missing phase;
-\item nonlocal analytic information, such as boundary data or an integral
-      transform;
-\item an independent phase-sensitive measurement.
+\item exactly the same endpoint matrix entries through radius \(R\);
+\item return records differing by less than \(\delta\) for every
+      \(|t|\le H_0\);
+\item target-time probabilities \(P_H(T)\) filling exactly the full physical
+      interval \([0,1]\).
 \end{enumerate}
-This is an exact-representation boundary, not an approximation bound.
-Finite models may approximate the phase on compact frequency windows, just
-as finite filters approximate nonlocal transforms.  The theorem says that
-no increase of finite differential order closes the representation exactly.
-The passage from finite rational state systems to algebraic
-input--output differential equations is standard in realization theory
-\cite{WangSontag1992}; the lower bound here applies directly to its
-derivation-closed state-field invariant.
-
-The conclusion also sharpens a familiar warning around thermal radiation.
-A Planck spectrum does not imply a simple underlying complex channel.  In
-the solvable horizon model, intensity belongs to the DA sector while the
-phase clock requires infinitely many algebraically independent state
-coordinates.  This coexistence is compatible with, but does not resolve,
-the black-hole information problem: no claim is made that astrophysical
-Hawking radiation exposes the hidden phase, that the phase stores a specific
-entropy, or that it restores unitarity.
-
-Phase retrieval in infinite-dimensional Hilbert spaces is known to lack
-uniform stability in broad settings \cite{CahillCasazzaDaubechies2016}.
-Our result is different in kind.  It is not a norm-instability theorem and
-does not compare nearby signals.  It gives an exact algebraic-state lower
-bound for a named QFT coefficient, even when the observation field already
-contains every intensity channel and derivative.
-
-Recent work on modulated accelerating mirrors has independently separated a
-stationary thermal contribution from a phase-sensitive nonstationary
-contribution in the two-point function \cite{Azizi2025}.  That work supplies
-a dynamical and potentially tunable phase sector; it does not give an exact
-differential-state lower bound.  Conversely, our theorem supplies the
-universal representation obstruction but does not model the modulation.
-The new content here is the exact collapse classification, invariance under
-an arbitrary observation atlas, and the positive \(\aleph_0\) state bound,
-not the elementary fact that a modulus omits phase.
-
-\section{Methods and proofs}
-
-\subsection{Gamma-orbit criterion}
-
-We use the following standard consequence of the
-Hölder--Ostrowski theory of the Gamma function
-\cite{Holder1886,HardouinSinger2008}.
-
-\begin{lemma}[Gamma-orbit charge]
-\label{lem:charge}
-For \(c_1,\ldots,c_r\in\C\) and \(m_1,\ldots,m_r\in\Z\), put
-\[
- F(z)=\prod_{q=1}^r\Gamma(z+c_q)^{m_q}.
-\]
-Then \(F\) is DA over \(\C(z)\) if and only if
-\[
- \sum_{q:\ c_q\equiv c\ {\rm mod}\,\Z}m_q=0
- \quad\text{for every }c\in\C/\Z.
- \label{eq:orbit-charge}
-\]
-If the condition holds, \(F\) is rational.  Otherwise \(F\) is HT.
-\end{lemma}
-
-\begin{proof}
-The recurrence \(\Gamma(z+1)=z\Gamma(z)\) gives the first-order difference
-equation
-\[
- F(z+1)=R(z)F(z),\qquad
- R(z)=\prod_{q=1}^{r}(z+c_q)^{m_q}\in\C(z)^\times.
-\]
-The divisor of \(R\) has, on the translation orbit \(c+\Z\), total
-multiplicity
-\(\sum_{q:c_q\equiv c\ {\rm mod}\,\Z}m_q\).
-For a rational function \(h\), the divisor of
-\(h(z+1)/h(z)\) has total multiplicity zero on every translation orbit.
-Conversely, if a rational divisor has zero total multiplicity on each
-orbit, finite telescoping along every occupied orbit constructs
-\(h\in\C(z)^\times\) and \(d\in\C^\times\) such that
-\[
- R(z)=d\,\frac{h(z+1)}{h(z)}.
-\]
-The first-order shift criterion of
-Hardouin and Singer \cite[Corollary~3.4]{HardouinSinger2008} says that a
-nonzero meromorphic solution of \(u(z+1)=R(z)u(z)\) is DA over the field of
-periodic meromorphic functions precisely in this coboundary case.  Hence a
-nonzero orbit charge makes \(F\) HT already over that larger coefficient
-field, and therefore over \(\C(z)\).
-
-If all charges vanish, recurrence reduces the Gamma factors on each orbit
-to a common representative with total exponent zero, leaving a rational
-function.  This proves both directions.
-\end{proof}
-
-The reflection identity
+Moreover, for fixed \(T,H_0,\delta\), there is one integer \(a\), independent
+of \(R\), for which the construction can be chosen with chain index
 \begin{equation}
- \Gamma(c-z)=
- \frac{\pi}{\sin\!\bigl(\pi(c-z)\bigr)\Gamma(1-c+z)}
- \label{eq:reflection}
+ n_R\le 4R+2a+5
+\label{eq:linear-dimension}
 \end{equation}
-turns every negative-slope Gamma factor into a positive-slope factor times a
-nonzero DA sine gauge.  Lemma~\ref{lem:charge} can therefore be applied to
-all functions in Eqs.~\eqref{eq:orientations}--\eqref{eq:observables}.
-
-\subsection{Exact collapse locus}
-
-Ignoring nonzero DA gauges, reflection rewrites the intensity as
+and, after a common energy-origin shift, the uniform norm certificate
 \begin{equation}
- I_{a,b}(z)=
- \frac{\sin\pi(b-z)}{\sin\pi(a-z)}
- \frac{\Gamma(z+a)\Gamma(z+1-b)}
-      {\Gamma(z+b)\Gamma(z+1-a)}.
- \label{eq:intensity-normal}
+ \Lambda_R\le\frac{\pi(4R+2a+5)}{2T}.
+\label{eq:linear-energy}
 \end{equation}
-The Gamma charges vanish precisely when the two-element multisets
-\[
- \{a,1-b\}\quad\text{and}\quad\{b,1-a\}
-\]
-agree in \(\C/\Z\).  There are exactly two pairings.  The direct pairing
-gives \(b-a\in\Z\); the crossed pairing gives
-\(1-2a\in\Z\) and \(1-2b\in\Z\).  This proves the if-and-only-if statement
-in Eq.~\eqref{eq:collapse}.  Multiplication by a nonzero DA function
-preserves and reflects DA, so arbitrary \(g_i,\widetilde g_i\) do not alter
-the locus.
+\end{theorem}
 
-For phase, reflection gives
+Local agreement nevertheless has a sharp causal effect.  If two such
+Hamiltonians agree through radius \(R\), and after one common energy-origin
+shift both norms are at most \(\Lambda\), then
 \begin{equation}
- P_{a,b}(z)=G_{a,b}(z)\,
- \Gamma(z+a)\Gamma(z+b)\Gamma(z+1-a)\Gamma(z+1-b),
- \label{eq:phase-normal}
+ |P_A(t)-P_B(t)|
+ \le
+ 4\,\frac{(|t|\Lambda)^{2R+3}}{(2R+3)!}\,e^{|t|\Lambda}.
+\label{eq:causalbound}
 \end{equation}
-where \(G_{a,b}\) is a nonzero DA sine gauge.  Every displayed Gamma charge
-is positive.  At least one translation orbit therefore has nonzero charge,
-so Lemma~\ref{lem:charge} makes \(P_{a,b}\) HT for all \(a,b\), without a
-genericity hypothesis.  A nonzero DA calibration cannot remove that charge.
-The same argument gives HT of the full amplitude.
-
-\subsection{Pooling an arbitrary intensity atlas}
-
-Assume every intensity generator is DA over \(K=\C(z)\).  The differential
-field \(K_I=K\langle I_i:i\in\iota\rangle_\partial\) is then a
-differentially algebraic extension of \(K\), irrespective of the cardinality
-of \(\iota\).  Differential algebraicity is transitive, hence for every
-ambient meromorphic \(f\),
+Consequently, if a fixed positive return-probability gap persists while the
+common radius tends to infinity, then eventually
 \begin{equation}
- f\text{ is DA over }K_I
- \quad\Longleftrightarrow\quad
- f\text{ is DA over }K.
- \label{eq:base-change}
+ |T|\Lambda_R>\frac{2R+3}{e}.
+\label{eq:criticalcost}
 \end{equation}
-The HT phase over \(K\) is therefore HT over the complete observation field
-\(K_I\).
+The obstruction is therefore compatible with locality, but not free:
+\eqref{eq:linear-energy} and \eqref{eq:criticalcost} make linear
+energy--time versus hidden-distance scaling sufficient and necessary, up to
+universal constants.  At the critical value on the right of
+\eqref{eq:criticalcost}, the universal probability discrepancy is at most
+\(8/\sqrt{2\pi(2R+3)}\).
 
-The logarithmic phase slope \(L=P'/P\) is HT over a differential field
-exactly when \(P\) is.  One implication follows because DA elements form a
-differential field.  For the converse, if \(P'/P\) were DA, then \(P\)
-would satisfy a first-order linear equation over a DA extension; differential
-algebraic transitivity would make \(P\) DA.  This contradiction proves the
-phase-slope statement.
+Theorem~\ref{thm:future} and bound \eqref{eq:causalbound} define a direct
+quantum-simulator benchmark: reconstruct a common endpoint block, compare the
+pre-target return record, and then resolve the target-time spread.  Spectral
+form factors and their ramp--plateau structure are already measurable on
+superconducting quantum processors \cite{Dong2025}; the theorem identifies a
+specific local-identifiability stress test rather than claiming that the
+particular extremal family has already been implemented.
 
-\subsection{Infinite state lower bound}
+\section{Consequence for black-hole spectral form factors}
+\label{sec:blackholes}
 
-Let \(S\) be a derivation-closed intermediate field over \(K_I\), and suppose
-\(\trdeg_{K_I}S=n<\aleph_0\).  For every \(x\in S\), the
-\(n+1\) elements
+For a normalized thermal energy law, the spectral form factor
+\(|Z(\beta+\I t)|^2/Z(\beta)^2\) is precisely a fidelity of the form
+\eqref{eq:survival}.  Its plateau is therefore \(\kappa_1\), and all of its
+continuous long-time statistics are fixed by the hierarchy
+\eqref{eq:collision}.  This applies to each fixed spectrum wherever the
+thermal weights define a probability measure.  An annealed or quenched
+ensemble average is an additional operation and is not identified here with
+the single-spectrum limit.
+
+The distinction matters in black-hole theory.  Semiclassical horizon
+descriptions can produce continuum spectra and decaying late-time
+correlators, while unitary microscopic descriptions motivate discrete
+late-time structure \cite{BarbonRabinovici2003}.  Random-matrix behaviour in
+black-hole models is diagnosed by spectral form factors
+\cite{Cotler2017}, and matrix-integral completions of JT gravity are
+explicitly non-unique and sensitive to eigenvalue discreteness
+\cite{Saad2019}.
+
+Theorems~\ref{thm:all-depth} and \ref{thm:nonpert} give a precise
+model-independent statement:
+\begin{quote}
+\emph{Neither complete polynomial local dynamics nor complete all-orders
+perturbative spectral data can, by itself, certify the exact late-time
+recurrence phase.  A global spectral completion is additional input relative
+to either description.}
+\end{quote}
+\begin{corollary}[Spectral-form-factor certification no-go]
+Fix any positive target coupling.  No decision rule whose only input is the
+complete all-orders coupling jet of the normalized spectral form factor at
+every physical time can correctly decide whether the exact plateau is positive
+for every compact positive normalized spectral family.  This remains true
+when the input is enlarged to the jets of all bounded continuous spectral
+observables.
+\end{corollary}
+This answers an inference problem; it does not assert that an astrophysical
+black hole realizes either constructed spectrum, that a positive plateau
+equals full information recovery, or that gravity selects no completion.
+It separates what a semiclassical or perturbative calculation can establish
+universally from what must enter through microscopic or nonperturbative
+physics.  In particular, the result does not rely on the claim that every
+plateau in every model is nonperturbative; some model-specific observables can
+expose one.  The theorem is that no universally valid classifier can do so
+from perturbative data alone.
+
+\section{Proofs}
+\label{sec:proofs}
+
+\subsection{Collision hierarchy}
+
+The characteristic function of \(\Delta\mu\) is
 \[
- x,\partial x,\ldots,\partial^n x
+ \widehat{\Delta\mu}(t)
+ =A_\mu(t)\overline{A_\mu(t)}=F_\mu(t).
 \]
-belong to \(S\) and are algebraically dependent over \(K_I\).  Thus every
-\(x\in S\) is DA over \(K_I\).  Since \(P_j\) and \(L_j\) are HT, neither
-can lie in such an \(S\).  Equivalently, every derivation-closed state field
-containing either target satisfies
-\(\trdeg_{K_I}S\geq\aleph_0\).  This proves the positive state-complexity
-part of Theorem~\ref{thm:universal}.
-
-\subsection{Thermal identity}
-
-For real nonzero \(x\), conjugation invariance of Gamma gives
-\(\Gamma(-ix)=\overline{\Gamma(ix)}\).  Applying
-\(\Gamma(z)\Gamma(1-z)=\pi/\sin(\pi z)\) at \(z=ix\), followed by
-\(\Gamma(1-ix)=(-ix)\Gamma(-ix)\), yields
-Eq.~\eqref{eq:imaginary-reflection}.  Finally
+Hence \(F_\mu(t)^n\) is the characteristic function of
+\((\Delta\mu)^{*n}\).  For \(T>0\), Fubini's theorem gives
 \[
- 2e^{\pi x}\sinh(\pi x)=e^{2\pi x}-1
+ \frac1{2T}\int_{-T}^{T}F_\mu(t)^n\,\dd t
+ =\int_{\R}\operatorname{sinc}(Tx)\,
+       \dd(\Delta\mu)^{*n}(x).
 \]
-gives Eq.~\eqref{eq:thermal-identity} and hence
-Eq.~\eqref{eq:planck} after restoring the elementary prefactor in
-Eq.~\eqref{eq:beta}.  Lemma~\ref{lem:charge}, applied to
-\(\Gamma(z)/\Gamma(-z)\) and its logarithmic derivative, proves
-Corollary~\ref{cor:horizon}.
+The integrand is bounded by one, converges to one at \(x=0\), and converges to
+zero elsewhere.  Dominated convergence proves \eqref{eq:hierarchy}.
 
-\subsection{One-turn phase geometry}
-
-For \(x>0\), the recurrence
-\(\psi(1+ix)=\psi(ix)+(ix)^{-1}\) has a purely imaginary correction, so
-their real parts agree.  Differentiation along the vertical line gives
+For a polynomial \(p(x)=\sum_na_nx^n\), linearity gives
 \[
- \frac{\dd}{\dd x}\operatorname{Re}\psi(1+ix)
-   =-\operatorname{Im}\psi'(1+ix).
+ \lim_{T\to\infty}\frac1{2T}\int_{-T}^{T}p(F_\mu(t))\,\dd t
+ =\sum_na_n\kappa_n(\mu).
 \]
-The absolutely convergent trigamma expansion
+Every continuous \(h\) on \([0,1]\) is uniformly approximable by polynomials.
+Because \(F_\mu(t)\in[0,1]\), the same uniform error bounds every finite-window
+mean.  The polynomial limits are Cauchy and determine
+\eqref{eq:statistic}.  If \(\mu\) is atomless then \(\Delta\mu\), and every
+positive convolution power of it, is atomless.  Thus
+\(\kappa_n=0\) for \(n>0\), while \(\kappa_0=1\); polynomial approximation
+then gives the limit \(h(0)\).
+
+\subsection{Temporal alternatives}
+
+The visible gap span is a \(\Q\)-vector subspace of \(\R\).  A countable
+support gives countable rank.  An uncountable closed support contains a
+perfect subset and therefore has cardinality continuum.  Translating it by
+one support point injects it into the gap set.  Because \(\Q\) is countable,
+the cardinality of an infinite-dimensional \(\Q\)-vector space is the maximum
+of its basis cardinality and \(\aleph_0\).  The gap span is contained in
+\(\R\), so its rank is exactly continuum.  This proves the dichotomy.  Exact projective
+return at \(t>0\) means \(t(E-E')\in2\pi\Z\) for all visible gaps.  This is
+equivalent to containment in one cyclic frequency lattice; conversely, a
+cyclic gap group gives a common period.  An atomless probability measure has
+uncountable support and continuum rational span.  Its mean-return and
+threshold-density statements follow from Theorem~\ref{thm:complete} using,
+respectively, \(h(x)=x\) and continuous majorants of
+\(\mathbf1_{[\eta,1]}\).
+
+\subsection{All-depth separation}
+
+Let \(s_n\) be a normalized indeterminate Hamburger sequence and
+\(\mathcal L(E^n)=s_n\) its positive moment functional.  Gram--Schmidt applied
+to \(1,E,E^2,\ldots\) produces monic \(P_n\).  Strict positivity of
+\(\mathcal L(p^2)\) gives the three-term law \eqref{eq:jacobi} and \(b_n>0\).
+The Nevanlinna family supplies pure-point extremal representing measures
+\(\mu_\theta\) with the same moments.  Choose one as \(\mu_{\rm r}\).  Averaging
+the mutually disjoint extremal measures over a continuous boundary parameter
+produces an atomless representing probability measure \(\mu_{\rm e}\).
+
+For any polynomials \(p,q\), both integrands in \eqref{eq:localdata} are
+polynomials.  Their integrals depend only on \(s_n\), so all \(G\) and \(J\)
+entries agree.  Differentiating the characteristic functions at zero is
+justified by finiteness of every moment and gives the same derivatives.  The
+pure-point measure has positive collision mass and at-most countable temporal
+dimension.  The atomless conclusions follow from
+Theorems~\ref{thm:dimension} and \ref{thm:complete}.
+
+For the no-classifier statement, suppose a predicate \(C(G,J)\) classified
+positive-mean recurrence throughout the stated positive-energy class.  Apply
+it to the explicit measures \eqref{eq:discrete}--\eqref{eq:continuous}.
+Their inputs are equal, while \eqref{eq:opposite} gives opposite truth values,
+a contradiction.
+
+\subsection{Compact nonperturbative separation}
+
+Every derivative of \(\eta\) in \eqref{eq:flat} vanishes at zero.  For bounded
+continuous \(f\),
 \[
- \psi'(1+ix)=\sum_{n=0}^{\infty}\frac{1}{(n+1+ix)^2}
+ \int f\,\dd\mu_{\rm r}(g)
+ =\int f\,\dd\lambda+
+   \eta(g)\left(f(E_\star)-\int f\,\dd\lambda\right),
 \]
-has strictly negative imaginary part for \(x>0\): every summand has
-nonpositive imaginary part and the first is strictly negative.  This proves
-Eq.~\eqref{eq:phase-convexity} and strict monotonicity.
+which proves \eqref{eq:allobservables}.  Taking
+\(f(E)=e^{\I tE}\) and differentiating products gives equality of all
+spectral-form-factor jets.  The recurrent measure has exactly one atom of
+mass \(\eta(g)\); the comparison measure is atomless.  The first collision
+law therefore gives \eqref{eq:instanton}.  The continuum component preserves
+infinite support, so its orthogonal-polynomial Jacobi coefficient \(b_n\)
+remains strictly positive at every depth.  Any universal classifier would
+receive identical inputs for these two families and return both opposite
+answers, which is impossible.
 
-At the lower endpoint,
-\(\psi(1)=-\gamma\), hence
-\(\tau_\rho(0)=-\gamma-\log\rho\).  At the upper endpoint,
-\(\operatorname{Re}\psi(1+ix)=\log x+o(1)\), hence
-\(\tau_\rho(x)\to+\infty\).  Continuity and strict monotonicity give one
-positive zero exactly when
-\(-\gamma-\log\rho<0\), equivalently
-\(e^{-\gamma}<\rho\); they give its uniqueness and both sign regions.
-If the endpoint value is nonnegative, strict monotonicity makes the slope
-positive for every \(x>0\).  This proves
-Proposition~\ref{prop:one-turn} without an unproved threshold or numerical
-root.
+\subsection{Local causal horizon}
 
-\section{Discussion}
+For nearest-neighbour matrices agreeing through radius \(R\), every endpoint
+closed walk of length below \(2R+3\) remains inside the common block.  Hence
+\(\langle e_0,A^me_0\rangle=\langle e_0,B^me_0\rangle\) for
+\(m<2R+3\).  Expanding both operator exponentials, bounding the remaining
+tails by the common centred norm \(\Lambda\), and using
+\(|\,|z|^2-|w|^2|\le2|z-w|\) for \(|z|,|w|\le1\) gives
+\eqref{eq:causalbound}.  The critical bound follows from the factorial lower
+estimate at \(|t|\Lambda\le(2R+3)/e\); its right side tends to zero, proving
+\eqref{eq:criticalcost} for any persistent positive gap.
 
-The universal law answers the scoped question completely.  On the exact
-arithmetic collapse locus, every intensity channel is DA; outside it,
-intensity is HT.  On the locus, every complex amplitude, orientation phase,
-and phase slope remains HT after every intensity is adjoined.  Every exact
-algebraic state realization of phase or phase slope has at least countably
-infinite transcendence degree.  There is no residual finite-order case and
-no cardinality restriction on the observed family.
+For Theorem~\ref{thm:future}, put \(n=2q+1\), use the common angular spectrum
+\(E_j=\pi j/T\), and let
+\(w_j=2^{-n}\binom nj\).  The parity-conditioned weights are
+\(\widetilde w_j=w_j(1+(-1)^{n-j})\), and the interpolating weights are
+\(w_j(\theta)=(1-\theta)w_j+\theta\widetilde w_j\).
+Finite-difference cancellation makes every energy moment below order \(n\)
+independent of \(\theta\).  At the target time, the corresponding amplitude
+is \(\theta\), while on \(|t|\le H_0<T\) its difference from the
+\(\theta=0\) amplitude is bounded by a power of
+\(\sin(\pi H_0/(2T))<1\).  Choose \(q\) large enough to make this bound less
+than \(\delta/2\), and set \(\theta=\sqrt p\) for a requested
+\(p\in[0,1]\).
 
-For the solvable horizon channel, the same phase has an exact all-frequency
-prediction: positive group-delay dispersion and at most one stationary
-frequency, with the complete canonical-threshold classification in
-Proposition~\ref{prop:one-turn}.  This supplies a direct target for
-phase-sensitive moving-mirror and analogue-gravity calculations.  It also
-provides a diagnostic for reduced models: matching the Planck spectrum is
-insufficient, and an exact phase model must reproduce both the one-turn
-geometry and the infinite differential-state obstruction.
+Unitary Krylov changes of basis preserve the common spectrum and convert each
+positive spectral packet to a self-adjoint tridiagonal Jacobi matrix.  Equality
+of the first \(2R+2\) moments fixes the radius-\(R\) endpoint block.  Choosing
+\(q\le 2R+2+a\), with \(a\) fixed solely by \(H_0/T\) and \(\delta\), gives
+\eqref{eq:linear-dimension}.  The common centred angular spectrum lies in an
+interval of half-width \(\pi n/(2T)\), which gives
+\eqref{eq:linear-energy}.  Thus the compatible set is exactly \([0,1]\).
 
-The scientific message is narrower than ``phase can never be recovered''
-and stronger than ``modulus loses phase''.  Nonlocal recovery with extra
-analytic hypotheses remains possible.  What is impossible is exact recovery
-inside every finite local algebraic differential state architecture, even
-after unlimited intensity pooling.  In the solvable horizon QFT, exact
-thermality can therefore conceal an irreducibly infinite quantum clock.
+\section{Conclusion}
 
-\section*{Data availability}
+The central question has a complete answer.  Local polynomial dynamics,
+however deep, need not decide whether history returns.  Perturbation theory,
+however many orders and spectral probes it contains, need not decide either.
+The missing information is not another finite coefficient: it is the global
+spectral completion.  Once that completion is supplied, its additive gap
+collisions determine every continuous long-time fidelity statistic.
 
-No datasets were generated or analysed.  All formulas and complete proofs
-needed to evaluate the results are contained in the Article.
+At finite depth, this statement has an exact causal scale.  A common local
+radius protects near-future return with a factorial remainder; every target
+probability becomes compatible once centred energy--time action grows linearly
+with that radius, and linear growth is necessary.  The quantum prediction
+horizon is therefore neither metaphor nor asymptotic slogan: it is a
+dimension-free inequality with a matching construction.
 
-\section*{Competing interests}
-
-The author declares no competing interests.
+The worldview shift is precise rather than metaphoric.  ``How many independent
+times does this observer see?'' and ``does this history return?'' are not
+properties of polynomial local recurrence data alone.  They are global properties of
+the completed system--observer spectrum.  In black-hole and quantum-chaos
+settings, this identifies exactly why a late-time plateau can carry information
+that no universally valid local or all-orders perturbative analysis contains.
 
 \begin{thebibliography}{99}
 
-\bibitem{CarlitzWilley1987}
-Carlitz, R. D. \& Willey, R. S.
-Reflections on moving mirrors.
-\emph{Phys. Rev. D} \textbf{36}, 2327--2335
-(1987). doi:10.1103/PhysRevD.36.2327.
+\bibitem{BocchieriLoinger1957}
+P.~Bocchieri and A.~Loinger,
+Quantum recurrence theorem,
+\emph{Phys.\ Rev.} \textbf{107}, 337--338 (1957).
 
-\bibitem{GoodAndersonEvans2013}
-Good, M. R. R., Anderson, P. R. \& Evans, C. R.
-Time dependence of particle creation from accelerating mirrors.
-\emph{Phys. Rev. D} \textbf{88}, 025023
-(2013). doi:10.1103/PhysRevD.88.025023.
+\bibitem{Riddell2023}
+J.~Riddell, N.~J.~Pagliaroli and A.~M.~Alhambra,
+Concentration of quantum equilibration and an estimate of the recurrence time,
+\emph{SciPost Phys.} \textbf{15}, 165 (2023).
 
-\bibitem{GianfeliciMancini2017}
-Gianfelici, G. \& Mancini, S.
-Quantum channels from reflections on moving mirrors.
-\emph{Sci. Rep.} \textbf{7}, 15747
-(2017). doi:10.1038/s41598-017-15578-0.
+\bibitem{Anand2026}
+A.~Anand, D.~Valluri, J.~Davis and S.~Ghose,
+Quantum recurrences and the arithmetic of Floquet dynamics,
+\emph{Quantum} \textbf{10}, 2074 (2026).
 
-\bibitem{WangLowery2020}
-Wang, T. \& Lowery, A. J.
-Minimum phase conditions in Kramers--Kronig optical receivers.
-\emph{J. Lightwave Technol.} \textbf{38}, 6214--6220
-(2020). doi:10.1109/JLT.2020.3008714.
+\bibitem{Kotowski2026}
+M.~Kotowski and M.~Oszmaniec,
+Tight bounds on recurrence time in closed quantum systems,
+arXiv:2601.10409; accepted in \emph{Phys.\ Rev.\ Lett.} (2026).
 
-\bibitem{SatoSuzuki1994}
-Sato, H.-T. \& Suzuki, H.
-On Bogoliubov transformation of scalar wave functions in de Sitter space.
-Preprint at \url{https://arxiv.org/abs/hep-th/9410092} (1994).
+\bibitem{GuptaShort2026}
+C.~Gupta and A.~J.~Short,
+Recurrence time for finite quantum systems,
+arXiv:2604.14995 (2026).
 
-\bibitem{BaticKelkarNowakowski2011}
-Batic, D., Kelkar, N. G. \& Nowakowski, M.
-On Born approximation in black hole scattering.
-\emph{Eur. Phys. J. C} \textbf{71}, 1831
-(2011). doi:10.1140/epjc/s10052-011-1831-y.
+\bibitem{Wiener1933}
+N.~Wiener,
+\emph{The Fourier Integral and Certain of Its Applications}
+(Cambridge University Press, 1933).
 
-\bibitem{CahillCasazzaDaubechies2016}
-Cahill, J., Casazza, P. G. \& Daubechies, I.
-Phase retrieval in infinite-dimensional Hilbert spaces.
-\emph{Trans. Am. Math. Soc. Ser. B} \textbf{3}, 63--76
-(2016). doi:10.1090/btran/12.
+\bibitem{BarbonRabinovici2003}
+J.~L.~F.~Barbon and E.~Rabinovici,
+Very long time scales and black hole thermal equilibrium,
+\emph{JHEP} \textbf{11}, 047 (2003).
 
-\bibitem{Azizi2025}
-Azizi, A.
-Modulated accelerating mirrors as a physical realization of the
-\(\kappa\)-Gamma vacuum.
-Preprint at \url{https://arxiv.org/abs/2509.06762} (2025).
+\bibitem{Cotler2017}
+J.~S.~Cotler \emph{et al.},
+Black holes and random matrices,
+\emph{JHEP} \textbf{05}, 118 (2017).
 
-\bibitem{Holder1886}
-Hölder, O.
-Ueber die Eigenschaft der Gammafunction keiner algebraischen
-Differentialgleichung zu genügen.
-\emph{Math. Ann.} \textbf{28}, 1--13 (1886).
+\bibitem{Saad2019}
+P.~Saad, S.~H.~Shenker and D.~Stanford,
+JT gravity as a matrix integral,
+arXiv:1903.11115 (2019).
 
-\bibitem{HardouinSinger2008}
-Hardouin, C. \& Singer, M. F.
-Differential Galois theory of linear difference equations.
-\emph{Math. Ann.} \textbf{342}, 333--377
-(2008). doi:10.1007/s00208-008-0238-z.
+\bibitem{Yafaev2021}
+D.~R.~Yafaev,
+Self-adjoint Jacobi operators in the limit circle case,
+\emph{J.\ Operator Theory} \textbf{89}, 411--450 (2023).
 
-\bibitem{WangSontag1992}
-Wang, Y. \& Sontag, E. D.
-Algebraic differential equations and rational control systems.
-\emph{SIAM J. Control Optim.} \textbf{30}, 1126--1149
-(1992). doi:10.1137/0330060.
+\bibitem{BergSzwarc2023}
+C.~Berg and R.~Szwarc,
+Indeterminate Jacobi operators,
+\emph{Math.\ Nachr.} \textbf{296}, 4962--4980 (2023).
+
+\bibitem{SalaMayato2020}
+R.~Sala Mayato, P.~Loughlin and L.~Cohen,
+Generating moment-indeterminate probability densities by way of quantum
+mechanics,
+\emph{J.\ Theor.\ Probab.} \textbf{35}, 133--153 (2022).
+
+\bibitem{LoughlinCohen2022}
+P.~Loughlin and L.~Cohen,
+Characteristic function and operator approach to moment-indeterminate
+probability densities,
+\emph{J.\ Math.\ Anal.\ Appl.} \textbf{516}, 126519 (2022).
+
+\bibitem{Dong2025}
+H.~Dong \emph{et al.},
+Measuring the spectral form factor in many-body chaotic and localized phases
+of quantum processors,
+\emph{Phys.\ Rev.\ Lett.} \textbf{134}, 010402 (2025).
 
 \end{thebibliography}
 

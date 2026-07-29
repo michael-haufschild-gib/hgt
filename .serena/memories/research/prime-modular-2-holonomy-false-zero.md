@@ -1,0 +1,9 @@
+2026-07-29 hostile descent on `docs/drafts/pipeline/1-in-progress/quantum-incompatibility-spacetime-law.md`.
+
+Killed candidate mixed invariant `N1 = ||[E_h,E_v]||` (and one-plaquette/Jones-projection variants). For a tracial commuting square, `E_01 E_10 = E_00 = E_10 E_01`, so commutator vanishes by definition. Nevertheless repeated basic constructions generate nontrivial finite-index subfactors, planar algebras, fusion categories, Kac/spin/vertex models. Kawahigashi arXiv:2111.14332 characterizes finite-depth commuting squares through Morita-equivalent unitary fusion categories and notes nonuniqueness; canonical commuting squares of nontrivial finite-depth subfactors have flat bi-unitary connections. Therefore local zero curvature/flatness does not imply spectator product.
+
+Positive survivor frozen: `PRIME MODULAR 2-HOLONOMY LAW`. Physical history is prime state-equipped event double net; spacetime locality and quantum charge are its two directions. Required invariant is complete reduced modular 2-holonomy of whole inclusion tower, not scalar/local curvature. Public candidate: “Gravity is clocks disagreeing about which moment comes first. Matter is why the disagreement cannot be removed. All four forces are the holonomy of that impossible agreement.”
+
+Exact open core `PRIME MODULAR 2-HOLONOMY COMPLETENESS`: construct intrinsic modular transport 2-functor and prove/refute `Hol_2^red(D)=1 iff D ≃ H ⊠ V` as state-equipped physical double net, quantifying over physical factorizations independently of the dynamics to avoid transported-split tautology. No dependency-closed proof; Lean gated.
+
+Primary sources: Kawahigashi 2111.14332; Bakshi–Kodiyalam 1912.04546; Banica math/9909156; Nicoara math/0404301. Related prior modular Berry curvature is restricted holography and not the proposed universal theorem.

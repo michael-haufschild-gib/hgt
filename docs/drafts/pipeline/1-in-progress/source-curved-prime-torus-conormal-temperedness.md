@@ -757,6 +757,8 @@ extension.  This is provisional placement, not a priority claim.
 - [x] prime-Schwartz third completion and exact RH consumer stated
 - [x] exact coefficient extension `(4b)` proved, including the adjoined source operator `Q`
 - [x] algebraic BV/co-Poisson normal orbit and one-prime Wold renewal typed on paper
+- [x] one-prime Wold renewal lifted to the coherent continuous
+      unit-exponential Wold--Calderón first-cell cocycle
 - [ ] finite-prime Schwartz Ind-space and tempered-character criterion formalized
 - [ ] analytic conormal quotient topology and multiplicity-jet continuity proved
 - [ ] `J_Xi^alg` extended continuously on every finite-prime Schwartz chart
@@ -816,3 +818,9 @@ extension.  This is provisional placement, not a priority claim.
   divisor-jet spaces, and each jet is a polynomial times `g^(rho-1/2)`, tempered on a prime axis
   exactly on the critical line.  Reclassified it as a clean hunch/third-completion specification,
   not frontier progress.  Independent source-forced continuity remains the actual research task.
+- 2026-07-28 — `unit-exponential-wold-calderon-suspension.md` supplies the missing continuous
+  comparison at the coefficient layer.  The unit exponential aperture cells have exactly the
+  Wold/Haar masses `(1-q^(-1))q^(-k)`, compose under rational multiplication, and have first-cell
+  symbol `(1-q^(-(1+w)))/(1+w)`.  This is Lean-formalized.  It does not prove the all-prime
+  source-effective product or conormal conservativity; the bounded unit metric is norm-equivalent
+  to scalar `L2` and therefore cannot be the third completion.
