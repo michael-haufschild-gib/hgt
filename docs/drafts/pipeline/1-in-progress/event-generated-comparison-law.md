@@ -607,3 +607,24 @@ Retire the dynamical-identity realization if any of the following holds:
   Grothendieck, metric, and dagger descriptions: they supply physical identity before events.
 - 2026-07-29 — formulated source-positive actuality completion and the dynamical-identity
   principle as the next definition and hostile-audit target. No theorem or Lean target claimed.
+
+## Corpus-wide source-law synthesis
+
+The stronger universal conjecture is now isolated in
+`event-generated-identity-curvature-law.md`:
+
+> **Matter and spacetime are the hidden and public halves of one quantum fact. Gauge force is
+> hidden identity curvature; gravity is public identity curvature; both are representations of one
+> event-comparison curvature.**
+
+This synthesis adds two corrections:
+
+1. the four-dimensional public cone is selected by two complex surviving alternatives, not by
+   color dimension three; and
+2. the exact Gram determinant is also the hidden bipartite event-area invariant, motivating the
+   separate physical hunch that rest mass is hidden event entanglement.
+
+The exact finite quotient bridge—unitary-orbit classification, surjectivity, and quotient
+homeomorphism—is unconditionally formalized in
+`../../../../formal/GaloisForLFunctions/HTGeometry/ColorGramMinkowskiOrbit.lean`.
+It does not prove the physical source law.

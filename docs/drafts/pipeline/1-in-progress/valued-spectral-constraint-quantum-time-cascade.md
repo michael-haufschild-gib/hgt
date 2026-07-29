@@ -1419,3 +1419,87 @@ The pair witness still requires formalization of the labelled-cycle
 square-free eigenbranch coefficient `(79)` and its edge-local tensor
 embedding. Until those declarations compile and pass the axiom/lint gate,
 Theorem H and `(80)` are not authorized manuscript claims.
+
+## Exact observer connected-sector law
+
+`[LEAN-PROVED; MODULE AUDIT PASSED; MANUSCRIPT OPEN]`
+
+The common invariant is now stronger than the earlier graph-only Steiner
+filtration.  For every finite family of arbitrary many-site interaction
+labels and every analytic eigenvalue branch born from a simple product level,
+Boolean inversion in coupling space gives an exact direct packet
+decomposition.  A second Boolean inversion over changed product-state sites
+then leaves only packets that:
+
+1. are nonempty;
+2. are spatially indecomposable under every disjoint packet partition; and
+3. touch every site queried by the observer.
+
+Distinct packet sectors are pairwise orthogonal Möbius projectors.  Therefore
+they cannot cancel as multivariate germs.  The full observer contrast is a
+nonzero germ if and only if at least one connected spanning packet sector is
+nonzero.  Every packet of cardinality \(n\) is
+\(O(\lVert g\rVert^n)\) on every scalar coupling ray.
+
+This exposes an exact observer-dependent invariant:
+\[
+  \dim_{\mathrm{time}}(O)
+  :=
+  \min\left\{
+    |P|:\;
+    P\text{ is connected, spans }O,\text{ and its irreducible observer
+    response is a nonzero germ}
+  \right\}.                                             \tag{81}
+\]
+It is the minimum number of jointly indispensable interaction channels
+carrying any spectral-time response visible to observer \(O\).  Every purely
+geometric hypergraph-Steiner lower bound is a lower bound for `(81)`.
+
+The precise unconditional law is thus not that graph distance always equals
+analytic onset.  Selection rules may delay a packet.  The law is:
+\[
+ \boxed{\text{observer-visible spectral time is the direct sum of its
+ connected spanning interaction sectors.}}             \tag{82}
+\]
+Geometry fixes which sectors can exist and their earliest possible
+perturbative order; dynamics fixes which eligible sectors are active.
+Observer choice fixes which connected sectors survive.
+
+Formal modules:
+
+- `LocalSpectralObserverSteinerLaw.lean`: exact connected-spanning germ
+  decomposition and hypergraph-Steiner \(O(|g|^r)\) onset bound;
+- `LocalSpectralObserverDirectSumLaw.lean`: packet-projector orthogonality,
+  exact noncancellation/visibility equivalence, active temporal layers,
+  minimum observer spectral-time dimension, and its Steiner lower bound.
+
+Both modules compile in the pinned toolchain with no warnings.  This law
+requires neither Hermiticity, unitarity, positivity, pairwise interactions,
+nor a closed-system dynamical interpretation.  It does require a finite
+configuration matrix, a simple uncoupled product spectrum, finite local
+interaction support, and local analyticity at zero coupling.  Those are
+mathematical scope conditions, not claims about every physical regime.
+
+### Antagonist status
+
+The direct-sector theorem kills the most serious logical weakness of the
+earlier framing: the paper no longer promotes a one-sided no-go bound into an
+exact law.  Exactness now means exact decomposition and exact visibility,
+while order sharpness is stated separately.
+
+Remaining rejection risks:
+
+1. calling `(81)` a dimension without proving its operational invariance
+   under interaction-label refinement;
+2. claiming a law of physical time instead of a law of observer-visible
+   spectral response;
+3. failing to specialize the arbitrary hypergraph law to standard
+   \(k\)-local Hamiltonians and experimentally measurable spectroscopy;
+4. failing to prove at least one nontrivial sharp family beyond the
+   structural lower bound;
+5. novelty overlap with linked-cluster/cumulant expansions if the
+   observer-site Möbius projection, orthogonal packet sectors, and
+   observer-dependent minimum are not distinguished by a primary-source
+   literature audit;
+6. extrapolating to black holes, cosmology, thermodynamic limits, continuous
+   spectra, or open-system generators without separate theorems.

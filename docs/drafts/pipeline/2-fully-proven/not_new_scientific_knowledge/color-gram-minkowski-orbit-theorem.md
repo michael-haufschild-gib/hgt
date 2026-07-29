@@ -3,8 +3,7 @@
 - **ID:** `color-gram-minkowski-orbit-theorem`
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM (paper)
-- **Status:** `[PAPER-PROVED] [ALGEBRAIC-CORE-LEAN-PROVEN]`
-  `[QUOTIENT-TOPOLOGY-PAPER-ONLY] [REDISCOVERED] [BRIDGE]`
+- **Status:** `[PAPER-PROVED] [FULLY-LEAN-PROVEN] [REDISCOVERED] [BRIDGE]`
 - **Parent conjecture:** `../../1-in-progress/color-blind-event-gram-spacetime-law.md`
 - **Statement:** The Gram map identifies
   \(M_{3,2}(\mathbb C)/U(3)\) with the positive-semidefinite Hermitian \(2\times2\) cone, hence with
@@ -233,9 +232,10 @@ The unproved physical statement that nature uses this quotient is isolated in
 
 ## Formalization status
 
-The exact algebraic core is unconditionally Lean-proven in
-`../../../../../formal/GaloisForLFunctions/HTGeometry/ColorGramMinkowskiCone.lean` and documented in
-`../../3-formalized/color-gram-minkowski-cauchy-binet-law.md`:
+The exact algebraic and topological theorem is unconditionally Lean-proven in
+`../../../../../formal/GaloisForLFunctions/HTGeometry/ColorGramMinkowskiCone.lean` and
+`../../../../../formal/GaloisForLFunctions/HTGeometry/ColorGramMinkowskiOrbit.lean`, documented in
+the two stage-3 cards:
 
 1. the explicit \(3\times2\) Gram matrix;
 2. positive semidefiniteness, Hermiticity, and exact rank preservation;
@@ -245,16 +245,17 @@ The exact algebraic core is unconditionally Lean-proven in
 6. nonnegative future time and Lorentz mass-squared;
 7. null iff all maximal minors vanish, timelike iff one is nonzero.
 
-Parts 2--4 of the paper theorem—exact \(U(3)\)-orbit classification, surjectivity onto the full
-positive Hermitian cone, and quotient homeomorphism—remain paper-only. They must be formalized
-before a manuscript presents them as mathematical theorems.
+The orbit module additionally proves parts 2--4 of the paper theorem: exact \(U(3)\)-orbit
+classification, surjectivity onto the full positive Hermitian cone, continuity of the Gram map
+and square-root section, identification of kernel classes with unitary orbits, and the quotient
+homeomorphism.
 
 ## Gates
 
 - [x] 0 → 1: exact source-independent theorem and role identified
 - [x] 1 → 2: dependency-closed proof written and hostile audit classifies it as a bridge
 - [x] algebraic core extracted to stage 3; focused build and axiom audit green
-- [ ] 2 → 3 for this full card: orbit classification, surjectivity, and quotient homeomorphism
+- [x] 2 → 3 for this full card: orbit classification, surjectivity, and quotient homeomorphism
   formalized unconditionally in Lean
 - [ ] 3 → 4: not eligible as a standalone publication claim; physical parent remains stage 1
 
@@ -264,3 +265,6 @@ before a manuscript presents them as mathematical theorems.
   rediscovered and isolated the new physical content in the parent conjecture.
 - 2026-07-29 — formalized the exact Gram/Lorentz/Cauchy--Binet core, causal rank strata, and
   covariance. Kept quotient classification and topology explicitly at paper-only status.
+- 2026-07-29 — formalized equality of records iff left-unitary equivalence, positive-cone
+  surjectivity, a continuous positive-square-root section, kernel-class/orbit identification, and
+  the quotient homeomorphism.

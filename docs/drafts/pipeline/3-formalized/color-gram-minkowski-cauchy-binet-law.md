@@ -87,14 +87,13 @@ Both pass. `#print axioms` reports only Lean/mathlib foundations:
 
 This card does **not** formalize:
 
-- equality of Gram matrices iff equality of \(U(3)\)-orbits;
-- surjectivity onto every positive-semidefinite Hermitian \(2\times2\) matrix;
-- the quotient-space homeomorphism;
 - any physical rule selecting the left orbit as observational equivalence;
 - spacetime incidence, a tetrad, a connection, field equations, or a prediction.
 
-Those first three statements remain dependency-closed on paper in the paper parent. The physical
-claims remain conjectural in the physical parent.
+Equality of Gram matrices iff equality of \(U(3)\)-orbits, surjectivity onto the complete positive
+cone, and the quotient-space homeomorphism are now formalized separately in
+`not_new_scientific_knowledge/color-gram-minkowski-orbit-theorem.md`. The physical claims remain
+conjectural in the physical parent.
 
 ## Novelty boundary
 
@@ -110,10 +109,12 @@ connection simultaneously produces gravity and the Standard Model forces.
 - [x] focused source check, focused build, and axiom audit pass
 - [x] mathematical novelty classified as rediscovered
 - [ ] exceptional physical selection and descent proved
-- [ ] quotient topology formalized before any manuscript uses it as a theorem
+- [x] quotient topology formalized before any manuscript uses it as a theorem
 
 ## Log
 
 - 2026-07-29 — formalized the colour Gram matrix, Lorentz coordinates, exact
   Cauchy--Binet/minor identity, causal inequalities, null/timelike criterion, left invariance,
   right covariance, and rank preservation.
+- 2026-07-29 — moved the completed orbit classification, surjectivity, and quotient-homeomorphism
+  extension to its dedicated stage-3 card.

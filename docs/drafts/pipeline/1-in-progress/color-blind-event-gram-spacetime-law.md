@@ -154,7 +154,9 @@ The exact algebraic core is now unconditionally Lean-proven in
 `../3-formalized/color-gram-minkowski-cauchy-binet-law.md`. In particular, Lean proves the
 Lorentz quadratic form is the sum of the three squared maximal minors, the Gram rank equals the
 event rank, left \(U(3)\) is invisible, and the right \(2\times2\) frame acts covariantly. The
-orbit-classification and quotient-homeomorphism claims remain paper-only.
+orbit classification, positive-cone surjectivity, and quotient homeomorphism are now also
+unconditionally Lean-proven in
+`../../../../formal/GaloisForLFunctions/HTGeometry/ColorGramMinkowskiOrbit.lean`.
 
 ## Hostile attack
 
@@ -272,3 +274,31 @@ Current Nature verdict: `[DO NOT WRITE MANUSCRIPT]`.
   the weak/Lorentz lock to a positive future-null event. The right weak half-turn provably rotates
   the actual Gram light cone. The primary conjecture now requires a source-selected doubled action
   or noninvertible weak-kernel/Lorentz-cokernel interface.
+
+## Post-freeze dimension-selection attack
+
+`[CORRECTION] [STRONGER SURVIVOR]`
+
+The Gram quotient does not derive four dimensions from color dimension three. For every
+\(n\ge2\), the same standard orbit argument gives
+\[
+M_{n,2}(\mathbb C)/U(n)\cong H_2(\mathbb C)_{\ge0}.
+\]
+Thus the four real public coordinates come from the surviving two-dimensional complex alternative
+space. Hidden carrier dimension does not determine them.
+
+The stronger surviving headline is:
+
+> **The universe has four dimensions because an elementary objective fact has two complex quantum
+> alternatives.**
+
+The exceptional source remains necessary because it selects the simultaneous
+\(\mathbb C^3\otimes\mathbb C^2\) carrier and exact Standard Model group. A Nature-level theorem
+must derive binary complex public alternatives, hidden color three, and their common dynamics
+from one source law. Assuming the \(3\times2\) event tensor is not enough.
+
+The complete `3 × 2` orbit classification, positive-cone surjectivity, and quotient topology are
+now unconditionally formalized in
+`../../../../formal/GaloisForLFunctions/HTGeometry/ColorGramMinkowskiOrbit.lean`.
+The broader physical interpretation has been sharpened in
+`event-generated-identity-curvature-law.md`.
