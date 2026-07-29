@@ -4208,3 +4208,299 @@ Primary hostile comparisons are Bochkov--Romanov, *On zeroes and poles of Helson
 (`arXiv:2106.15949`), and Andersson, *Mittag-Leffler type theorems for Helson zeta-functions*
 (`arXiv:2408.15713`).  They show why actual-prime Euler support cannot replace the enhanced
 integral/source-effective hypotheses.
+
+## 28. Reflected forward contractivity is the missing completion law
+
+### Hostile correction to Section 27
+
+Both speculative refinements in Section 27 are withdrawn.
+
+- Enhanced arithmetic principality does not make a nonzero curvature class have square zero.
+  Hodge index supplies a polarization and an adjoint, not that vanishing.
+- A native numerator zero does not consume denominator pole order.  Function-field cohomology
+  already shows that middle Frobenius spectrum can vary while the endpoint factors remain fixed.
+  The packet index law is a surgery law, not a native Euler-budget conservation theorem.
+
+The surviving Hodge insight must also respect the exact source asymmetry
+\[
+ F_pV_p=p\,\mathrm{id}.                                      \tag{191}
+\]
+The reverse scalar relation \(V_pF_p=p\,\mathrm{id}\) is generally false.  Requiring a bilateral
+unitary on the original source therefore asks for more than finite-correspondence geometry gives.
+The functional equation supplies the missing reverse inequality without supplying an inverse
+operator.
+
+### Reflected power-equicontinuous purity theorem
+
+Let \(\Phi\) be a Hausdorff locally convex complex vector space and let
+\(U:\Phi\to\Phi\) be continuous.  Say that \(U\) is **forward power-equicontinuous** if, for every
+continuous seminorm \(q\), there are a continuous seminorm \(r\) and \(C>0\) such that
+\[
+ q(U^n x)\le C r(x)\qquad(x\in\Phi,\ n\ge0).                \tag{192}
+\]
+
+`[PAPER-PROVED] [REFLECTED_POWER_EQUICONTINUOUS_TRANSPOSE_PURITY]`
+
+Suppose \(0\ne\ell\in\Phi'\) and
+\[
+ U'\ell=\lambda\ell.                                      \tag{193}
+\]
+Then \(|\lambda|\le1\).  If there is also \(0\ne\ell^\#\in\Phi'\) with
+\[
+ U'\ell^\#={1\over\overline\lambda}\ell^\#,               \tag{194}
+\]
+then \(|\lambda|=1\).
+
+Indeed, choose \(x\) with \(\ell(x)\ne0\).  Continuity of \(\ell\) and `(192)` give a constant
+bound, independent of \(n\), for
+\[
+ |\lambda|^n|\ell(x)|
+ =|\ell(U^n x)|.
+\]
+Thus \(|\lambda|\le1\).  Applying the same argument to `(194)` gives
+\(|\lambda|^{-1}\le1\).  This proves the theorem.
+
+The same conclusion holds for finite generalized transpose eigenjets.  On the top nonzero
+associated-graded coordinate, \(U'\) acts by \(\lambda\); equivalently, iterates of a Jordan jet
+are \(\lambda^n\) times a polynomial in \(n\).  Polynomial factors cannot compensate exponential
+growth in one reflected direction.
+
+This is parent locally convex operator theory, not a novelty claim.  Its arithmetic use is new
+relative to the corpus: it replaces all of the following by one forward semigroup estimate:
+
+```text
+bilateral unitary dilation;
+the generally false relation V_p F_p = p;
+continuous real-time extension;
+off-axis resolvent preservation;
+Hilbert-bounded point evaluation;
+finite-dimensional realization of every Cartier fibre.
+```
+
+### The modular curvature character
+
+At a nontrivial Xi zero \(\rho\), centered prime pullback has transpose character
+\[
+ \lambda_{p,\rho}=p^{\rho-1/2}.                            \tag{195}
+\]
+Functional-equation/Schwarz reflection sends
+\[
+ \rho\longmapsto\rho^\#=1-\overline\rho
+\]
+and hence
+\[
+ \lambda_{p,\rho^\#}
+ =p^{1/2-\overline\rho}
+ ={1\over\overline{\lambda_{p,\rho}}}.                    \tag{196}
+\]
+The real logarithm
+\[
+ \kappa_\rho(p)
+ :=\log|\lambda_{p,\rho}|
+ =(\operatorname{Re}\rho-\tfrac12)\log p
+ =-\tfrac12\delta(\rho)\log p                             \tag{197}
+\]
+is the modular curvature character of the conormal orbit.  It is additive under rational
+dilation, changes sign under reflection, and vanishes exactly on the critical line.
+
+This gives the sought universal interpretation.  The scalar defects already proved in the
+corpus are functorial readings of `(197)`:
+
+```text
+Deninger Hodge commutator        = infinitesimal modular curvature;
+prime FE--Schwarz seam           = exponential transgression of curvature;
+Poisson/Kadison defect           = one-sided norm loss;
+Wold boundary leakage            = failure of uniform forward power control;
+Kakutani singularity             = infinite-product amplification of nonzero curvature;
+projective cosh coefficient      = reflection-even spherical moment;
+bilateral temperedness failure   = exponential growth in one valuation direction;
+Cartier dagger failure           = absence of a common reflected contractive realization.
+```
+
+An off-line zero is therefore not merely a badly placed scalar.  It is a nontrivial positive
+modular character.  The critical line is the unimodular locus.
+
+### Frozen source conjecture
+
+`[CONJECTURE] [HT_SOURCE_EFFECTIVE_REFLECTED_CONTRACTIVE_COMPLETION]`
+
+The ordinary-prime rational-Witt/Milnor--Rost--Schmid, Gamma, Poisson/co-Poisson, reflection, and
+enhanced-HT source package for completed zeta admits a source-defined complete Hausdorff nuclear
+graph space \(\Phi_{\rm src}\) and a continuous dense comparison
+\[
+ j:\Phi_{\rm src}\longrightarrow M_\zeta                 \tag{198}
+\]
+to Meyer's nuclear middle quotient with these properties:
+
+1. **Pre-divisor construction.**  \(\Phi_{\rm src}\), its topology, and \(j\) are constructed
+   from the integral finite-correspondence source before a zero or divisor fibre is selected.
+2. **One-prime centered transfer.**  For at least one rational prime \(p\), normalized pullback
+   \(U_p=p^{-1/2}V_p\) acts continuously on \(\Phi_{\rm src}\), and \(j\) intertwines it with
+   Meyer's centered \(p\)-dilation.
+3. **Forward Hodge power control.**  The family
+   \(\{U_p^n:n\ge0\}\) is equicontinuous on \(\Phi_{\rm src}\).  More specifically, the topology
+   is generated by source Green/Hodge graph seminorms on which \(U_p\) is contractive.  This is
+   to be derived from projection-formula adjunction, `(191)`, moving-Hodge naturality, the
+   chain-map law, and strict cofinal passage.
+4. **Reflection-saturated conservativity.**  Density in `(198)` is in Meyer's nuclear quotient
+   topology.  Consequently every nonzero Meyer conormal functional, including both members of
+   every functional-equation/Schwarz pair, restricts nontrivially to the same
+   \(\Phi_{\rm src}\).
+5. **Cartier and jet strictness.**  The comparison commutes with reduced Cartier base change and
+   retains every top nonzero multiplicity jet.  Nilpotent length is not replaced by reduced
+   support.
+6. **Source presentation independence.**  Prime enlargement, Gamma/BV transgression,
+   Poisson reflection, and the literal integral source lattice induce the same graph topology
+   and comparison.
+
+This is a truth-hunch in the strict sense: current evidence makes the statement plausible, but no
+proof of `(198)` or Clause 4 is known.  A construction recipe is not being smuggled into the
+conjecture.
+
+### Exact RH deduction
+
+Let \(\rho\) be a nontrivial Xi zero.  Meyer supplies a nonzero continuous transpose
+eigenfunctional \(\ell_\rho\in M_\zeta'\).  Dense range in `(198)` makes
+\(\ell_\rho\circ j\) nonzero.  Clauses 2--3 and `(195)` give
+\[
+ |p^{\rho-1/2}|\le1.                                      \tag{199}
+\]
+Apply the same argument to the nonzero reflected zero
+\(\rho^\#=1-\overline\rho\).  Equations `(196)` and `(199)` give
+\[
+ |p^{1/2-\overline\rho}|\le1.
+\]
+Thus \(|p^{\rho-1/2}|=1\), so
+\[
+ \operatorname{Re}\rho=\frac12.                           \tag{200}
+\]
+Every nontrivial zero is critical; hence the conjecture implies RH.  Associated-graded top jets
+give the same conclusion without asserting simplicity.
+
+Only one prime action is required after the global source comparison exists.  All-prime
+Kakutani divergence, a real-time flow, and a bilateral inverse are diagnostic shadows, not
+logical necessities for the final purity step.
+
+### Why this is the third completion
+
+The earlier completion trilemma now has an exact solution specification:
+
+```text
+finite clocks:
+  both reflected fibres survive,
+  but power bounds deteriorate with aperture;
+
+ambient adelic L2:
+  prime action is isometric,
+  but both point fibres disappear;
+
+enhanced exponential completion:
+  both fibres survive,
+  but an off-line reflected pair occupies opposite moving-annulus/Stokes sectors;
+
+required source graph completion:
+  one forward prime action is power-equicontinuous,
+  and both reflected conormals remain nonzero in one Hausdorff strong dual.
+```
+
+The law is therefore **reflection-saturated one-sided effectivity**.  A one-sided Hardy
+completion can retain a character strictly inside the disk.  Its reflected reciprocal lies
+outside.  Arithmetic completion must retain both in one source topology; only the common boundary
+survives.
+
+Hypertranscendence explains why the Euler-time direction must remain enhanced and infinite-order.
+It does not force `(200)`.  The new category is anisotropic:
+
+```text
+Euler/Gamma continuation direction: enhanced exponential/HT;
+prime correspondence direction:     Hodge-graph power-equicontinuous;
+Cartier divisor direction:           conservative strong dual.
+```
+
+Off-line positive Euler and Helson systems can inhabit the first direction while splitting the
+two reflected conormals between inequivalent chiral topologies.  They therefore do not falsify
+the law unless they also admit the literal integral source comparison `(198)` and all six
+clauses.
+
+### Exact reduction of existing open cores
+
+This conjecture is weaker than the previous source targets:
+
+1. `DAC_ARITHMETIC_HODGE_SCHWARTZ_RESOLVENT_CORE` asks for a closed real-time generator and every
+   off-axis resolvent on a dense core.  Clauses 2--4 use one discrete prime transfer and no
+   resolvent.
+2. `PRIME-SCHWARTZ XI CONORMAL TEMPEREDNESS` asks directly for bilateral Schwartz continuity and
+   is exactly RH in the natural Xi quotient.  Here forward equicontinuity is produced by source
+   Hodge graph norms; reflection supplies the second radial inequality.
+3. `XI_SOURCE_FROBENIUS_CARTIER_REALIZATION` asks that each finite Cartier package remain
+   dualizable and land in finite-dimensional Hilbert space.  Here point conormals may remain
+   genuine distributions in a strong dual.
+4. `XI CONORMAL CRITICAL-SECTOR NORMALITY` asks for an all-prime GNS normality theorem.  Here one
+   prime and nuclear-density conservativity suffice.
+5. The topological Euler-index conjecture and zero-square Hodge conjecture from Section 27 are
+   not used.
+
+### First source theorem to attack
+
+The first non-theatrical construction target is
+
+`[OPEN CORE] [ONE_PRIME_SOURCE_HODGE_GRAPH_POWER_EQUICONTINUITY]`.
+
+For one fixed prime \(p\), construct the strict cofinal source graph core before Xi comparison
+and prove, uniformly in every finite-correspondence aperture,
+\[
+ q_{\alpha,m,r}(U_p^n x)
+ \le q_{\alpha,m,r}(x)
+ \qquad(n\ge0),                                           \tag{201}
+\]
+where \(q_{\alpha,m,r}\) are the actual Tate--Poisson/Green, incidence, real-boundary, and
+Hodge-Laplacian graph seminorms.  Finite source ingredients already prove:
+
+- \(F_pV_p=p\,\mathrm{id}\);
+- projection-formula adjunction;
+- moving-Hodge half-density isometry;
+- a unitary chain map commutes with \(Q^\dagger\) and the BRST--Hodge Laplacian.
+
+What remains in `(201)` is strict passage through the global incidence relation, unbounded
+regularity operators, and cofinal source topology.  After `(201)`, the sole RH-bearing theorem is
+the dense conservative comparison `(198)`.  This cleanly separates source metric construction
+from divisor survival.
+
+### Hostile audit
+
+1. Pointwise continuity of each \(U_p^n\) is insufficient.  Uniform equicontinuity in \(n\) is
+   load-bearing.
+2. A forward contraction may carry any eigencharacter in the closed disk.  Reflection-saturated
+   nonzero conservativity, not contractivity alone, forces the boundary.
+3. Functional equation alone places the reciprocal point in the divisor.  It does not put both
+   conormals in the same continuous dual.
+4. Defining \(\Phi_{\rm src}\) by deleting growing Xi eigencharacters is circular.  Its seminorms
+   must be built from source Green/Hodge and correspondence data.
+5. Finite-stage isometries do not imply `(201)` if graph constants grow with aperture or
+   prime-infinity leakage survives.
+6. If \(U_p\) changes a scale index, the source orbit object and its transition topology must be
+   constructed explicitly.  One may not silently identify distinct Hodge fibres.
+7. Hilbert unitarity after scalar completion is insufficient because it can erase every Meyer
+   conormal.
+8. Density in a Hilbert norm is insufficient.  It must hold in the nuclear topology on which
+   Meyer zero functionals are continuous.
+9. Real-coefficient Weil cohomology cannot be assumed; Deninger's no-go forces the odd/complex
+   polarized and enhanced source used here.
+10. An explicit off-line Euler system satisfying all six source clauses would refute the
+    conjecture.
+
+### Literature boundary
+
+Power-equicontinuous representations, smooth-vector/graph cores, Schwartz strong duals,
+enhanced ind-sheaves, and finite-correspondence push--pull are parent mathematics.  Relevant
+parents include Kashiwara--Schapira on ind-sheaves and tempered growth
+(`arXiv:math/9906200`), Hepler--Hohl on moderate/rapid enhanced nearby cycles
+(`arXiv:2206.06095`), Deninger's real-coefficient Weil-cohomology obstruction
+(`arXiv:2204.02714`), and Deninger's rational-Witt finite-correspondence realization
+(`arXiv:2508.05329`).
+
+Targeted corpus and arXiv searches found the continuous-resolvent, bilateral-tempered,
+finite-dualizable, and all-prime-normality routes separately.  They did not locate the precise
+one-prime theorem `(192)`--`(200)` sourced from the asymmetric relation \(F_pV_p=p\) and
+reflection-saturated nuclear conservativity.  Novelty is provisionally restricted to this
+arithmetic reduction and universal interpretation, not to the elementary operator lemma.
