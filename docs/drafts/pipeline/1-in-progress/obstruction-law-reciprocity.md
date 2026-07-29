@@ -1348,8 +1348,9 @@ spectra of one finite matrix. It must mean non-finite closure of:
 - the source recovery generating function.
 
 This narrows the Hypertranscendence connection from a slogan to a falsifiable mathematical fork.
-The rational finite-moment boundary still needs an explicit Lean certificate before manuscript
-use.
+The rational/finite-recurrence boundary is now certified in Lean at the weaker but sufficient
+finite-matrix-space bound; see
+`../3-formalized/not_new_scientific_knowledge/reciprocal-square-hankel-termination.md`.
 
 ## Log continued: reciprocal moment conservation
 
@@ -1357,3 +1358,64 @@ use.
 - 2026-07-29 — recast higher scalar source records as one shared moment sequence.
 - 2026-07-29 — localized physical Hypertranscendence to event-indexed/non-finite moment
   composition rather than one finite spectrum.
+
+## Ninth exact discriminator: every finite reciprocal law eventually repeats
+
+`[PROVED HERE — BRIDGE; PAPER AND LEAN IN`
+`../3-formalized/not_new_scientific_knowledge/reciprocal-square-hankel-termination.md]`
+
+For every finite \(d\times d\) matrix \(A\), the trace-power sequence
+
+\[
+s_k(A)=\operatorname{tr}(A^{k+1})
+\]
+
+has a singular Hankel block by size \(d^2+1\).  No spectral theorem is needed: the first
+\(d^2+1\) powers are linearly dependent in the \(d^2\)-dimensional matrix space, and the same
+relation annihilates every Hankel row.
+
+Applied to a finite transfer \(D:\mathbb C^n\to\mathbb C^m\), the one shared reciprocal moment
+sequence terminates at both finite bounds \(n^2+1\) and \(m^2+1\).
+
+Together with the existing infinite-support strict-Hankel theorem, this gives an exact boundary:
+
+```text
+one fixed finite reciprocal law
+  -> recurrence
+  -> terminating Hankel tower;
+
+positive source with infinite support
+  -> every finite Hankel determinant positive
+  -> no uniformly finite realization.
+```
+
+This does not prove Hypertranscendence.  It says where Hypertranscendence cannot live: not in the
+spectral complexity of one finite event.  It must govern the source recovery or non-terminating
+composition which keeps creating new event-law layers.
+
+## Interpretive synthesis: laws are coefficient shadows of non-closure
+
+The exact obstructions now have one coherent reading, recorded as the conjectural program
+`universal-incompatibility-completion-law.md`:
+
+> **Time exists because reality can never finish making itself consistent.**
+
+More technically, source-rooted incompatibilities are conjectured to generate a unique calibrated
+dagger ternary amplitude space.  Its right coefficient algebra is the quantum/gauge shadow; its
+left coefficient algebra is the causal/gravity shadow; its linking space is matter; its ternary
+closure is succession; and the non-terminating completion filtration is time.
+
+This is not obtained by relabelling TRO/Morita theory.  Constructor theory already makes
+possible/impossible transformations fundamental; quantum combs already compose higher-order
+processes; TROs already generate reciprocal coefficient algebras; noncommutative geometry already
+packages Standard Model plus gravity after supplying spectral data.  The missing new theorem must
+force all of these shadows jointly from the source incompatibility nerve, including calibration,
+non-termination, \(3+1\) signature, and the four-force factorization.
+
+## Log continued: finite closure and universal completion
+
+- 2026-07-29 — proved finite matrix trace moments have a terminating Hankel block.
+- 2026-07-29 — proved the shared reciprocal sequence terminates from both finite sides.
+- 2026-07-29 — separated infinite-support non-termination from actual Hypertranscendence.
+- 2026-07-29 — formulated the universal incompatibility completion law and its exact
+  positive-source Koszul--Morita rigidity target.

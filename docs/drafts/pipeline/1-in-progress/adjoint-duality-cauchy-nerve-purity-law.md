@@ -3913,7 +3913,7 @@ Gamma/archimedean face simultaneously.
 
 ### Frozen universal conjecture
 
-`[CONJECTURE] [HT_ADELIC_PRINCIPAL_COMPLETION_CURVATURE_HODGE_INDEX]`
+`[WITHDRAWN HUNCH] [HT_ADELIC_PRINCIPAL_COMPLETION_CURVATURE_HODGE_INDEX]`
 
 Let \(X\) be a source-effectively normalized, integral, self-dual hypertranscendental Euler object
 with:
@@ -4090,3 +4090,121 @@ arithmetic differential geometry.  Targeted searches found these ingredients sep
 intersection theory for source-effectively normalized hypertranscendental Euler conormals, and no
 index--energy comparison whose analytic fibre is the Deninger/seam/Hellinger/Weyl completion
 curvature `(184)`.  This is a preliminary noncollision result, not a priority claim.
+
+### Topological refinement: off-line curvature consumes Euler boundary index
+
+The metric square in `(184)` measures the size of transverse displacement, but it misses a second
+piece of information: whether a transverse orbit exists at all.  The publication-ready
+Julia--Euler--Weil packet theorem computes that topological charge exactly.  For every finite
+inserted off-line quartet packet \(J\),
+\[
+ \frac{Q_{\rm Julia}(J)}{4\pi}
+ =
+ \Delta\operatorname{ord}_{s=1}(F_J)
+ =
+ \operatorname{ind}_{-}({\cal W}_J)
+ =
+ 2|J|.                                                       \tag{188}
+\]
+This identity is stronger than a sign.  It says that a transverse divisor orbit, Euler boundary
+normalization, and negative Weil block are three realizations of one integer index.
+
+The theorem currently applies to inserted packets.  It explicitly warns that retaining the
+simple pole only forbids insertions inside that deformation class; it says nothing about a
+hypothetical **native** off-line zero of zeta.  The missing jump is an excision theorem saying that
+the index in `(188)` belongs to the source-native completion-curvature object, not to the chosen
+rational surgery presentation.
+
+`[WITHDRAWN HUNCH] [HT_SOURCE_NATIVE_EULER_BOUNDARY_INDEX_CONSERVATION]`
+
+For every source-effectively normalized integral self-dual HT Euler object in the class of the
+preceding conjecture, the enhanced completion-curvature object carries a locally finite
+nonnegative transverse index measure
+\[
+ \operatorname{Ind}_{\perp}(\Omega_X)
+ \in {\cal M}_{\rm lf}^{+}(|K_X|/\langle{\rm FE,Schwarz}\rangle;\mathbb Z),
+                                                               \tag{189}
+\]
+constructed before divisor specialization, such that:
+
+1. every genuine off-fixed reflection quartet of reduced support has mass \(2\), independent of
+   height and horizontal displacement;
+2. critical-line support has transverse mass \(0\), while multiplicity jets remain in a separate
+   length filtration;
+3. restriction to a finite divisor window is excisive and agrees with Julia--Ward charge and the
+   localized Weil negative index;
+4. its pushforward to the Euler boundary equals the **excess source boundary index** above the
+   source-minimal pole/endpoint normalization;
+5. this equality is invariant under source presentation and includes first-trace, Gamma, and
+   prime-infinity boundary terms; and
+6. analytic multiplication by an external self-dual orbit polynomial changes both sides by the
+   packet index `(188)`, rather than being silently treated as a source equivalence.
+
+For the Riemann source the minimal boundary normalization is its one simple pole at \(s=1\), so
+the excess boundary index is zero.  Clause 4 would give
+\[
+ \operatorname{Ind}_{\perp}(\Omega_\xi)(|K_\xi|)=0.          \tag{190}
+\]
+Nonnegativity and Clause 1 then exclude every off-critical quartet.  Functional-equation and
+Schwarz symmetry give RH.  No summation over the full zero divisor is needed: excision says that
+any one hypothetical off-line orbit already contributes a positive compactly supported
+submeasure, contradicting `(190)`.
+
+The target and surgery ends are already formalized unconditionally:
+
+- `finiteQuartet_eulerWardWeil_index_law` proves `(188)` for every finite generic packet;
+- `xiEndpointWeightedWardIndex_eq_twoPi_offLineCharge` constructs a convergent positive
+  source-weighted analytic index of the actual Xi divisor; and
+- `xiEndpointWeightedWardIndex_eq_zero_iff_rh` proves that its vanishing is exactly RH.
+
+These theorems do not construct Clause 4.  They make its required output exact: a pre-divisor
+boundary-index pushforward must force the already constructed Xi Ward index to vanish from the
+zero excess source budget.  No new divisor scalar needs to be invented.
+
+Equations `(181)` and `(188)` are the metric and topological parts of one proposed enhanced index
+theorem:
+
+```text
+K-theoretic/transverse index  -> whether completion curvature is present;
+Hodge/energy realization     -> how far its fibre is from the critical locus;
+Euler boundary pushforward   -> source budget that must carry the curvature;
+principal enhanced class     -> conservation through every completion face.
+```
+
+If this law is correct, it explains why all target-only criteria fail.  They measure the analytic
+charge after it has appeared but never compare it with the fixed source budget.  It also explains
+why the simple pole is relevant only when coupled to the literal discrete-prime source and strict
+presentation-independent excision: pole order by itself has no control over native zeros.
+
+#### Hostile audit of the index refinement
+
+1. Equation `(188)` is proved only for finite rational quartet surgery.  Native excision is the
+   entire new claim.
+2. A simple pole, Euler product, functional equation, or hypertranscendence alone does not imply
+   `(190)`.
+3. Defining the source boundary index by counting off-line zeros would be circular.  It must be
+   constructed from finite correspondences, endpoint normalization, and the enhanced boundary
+   complex before analytic divisor evaluation.
+4. The packet Weil form supplies a negative-index count, not an unconditional global
+   index-additivity theorem.  Clause 3 must prove the missing localization.
+5. Infinite off-line divisors cannot be assigned a regularized signed total that cancels.  The
+   conjecture requires a nonnegative locally finite measure and compact-window excision.
+6. Positive generalized-prime systems and external HT orbit insertions are falsifiers of any
+   version omitting integral ordinary-prime source minimality.
+7. Helson zeta functions use the literal rational primes with completely multiplicative
+   unimodular coefficients and admit highly flexible prescribed zero/pole sets after meromorphic
+   continuation.  Thus ordinary-prime discreteness and an Euler product are still insufficient.
+   The conjecture must use the positive/integral finite-correspondence lift, transpose, source
+   reflection, and enhanced principal-conormal excision; it cannot be a theorem about bare
+   ordinary-prime Euler products.
+
+The first source theorem is now even narrower than `(187)`: construct one
+presentation-independent boundary-index map on the reduced monic rational-Witt Cartier
+generator, prove its excision square, and show that external quartet multiplication changes its
+value by two.  Only after that finite source theorem exists is passage to the native Xi divisor a
+meaningful construction problem.
+
+Primary hostile comparisons are Bochkov--Romanov, *On zeroes and poles of Helson zeta functions*
+(`arXiv:2106.15949`), and Andersson, *Mittag-Leffler type theorems for Helson zeta-functions*
+(`arXiv:2408.15713`).  They show why actual-prime Euler support cannot replace the enhanced
+integral/source-effective hypotheses.
