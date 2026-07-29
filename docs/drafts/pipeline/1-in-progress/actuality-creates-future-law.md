@@ -879,3 +879,736 @@ Current status:
   the post-freeze universal consequential-actuality candidate `(F5)`--`(F6)`.
 - 2026-07-29 — reorganized exact event, factorization, similarity-gauge, topology-debt, and
   Hypertranscendence results as constraints on one minimal consequence-closure law.
+
+## Ninth hostile descent: consequence closure is not the universal law
+
+The exact audit in
+`../2-fully-proven/not_new_scientific_knowledge/noninvertible-event-complementary-record-boundary.md`
+kills `(F6)` as the primitive law.
+
+For a noninjective event `T`, every later report formed by postcomposition has
+`ker T` in its kernel.  It can never reveal a distinction erased by `T`.  Therefore:
+
+1. if “physical distinction” already means a class separated by all future reports, `(F6)` is
+   operational extensionality and true by definition;
+2. if the source distinctions are independently physical, `(F6)` is false whenever the event is
+   noninjective.
+
+The corpus's rank-six ten-to-ten event makes the contradiction exact: it erases a
+four-dimensional kernel.  Future closure alone cannot recover those four directions.
+
+The exact positive survivor is also sharper.  A faithful event must be a combined map
+`(T,R)`, where the complementary record `R` is injective on `ker T`.  A minimal record has at least
+the kernel dimension.  If it is valued in `coker T`, equal parent dimensions make
+
+\[
+R|_{\ker T}:\ker T\xrightarrow{\sim}\operatorname{coker}T.       \tag{F7}
+\]
+
+At the rank-six ten-to-ten boundary, `(F7)` is an exact four-to-four pairing.  Lean now proves
+this boundary unconditionally in `EventComplementaryRecord.lean`.
+
+The same audit proves that a bare `T` cannot choose `(F7)` canonically: independent kernel
+rescaling preserves `T` but forces every natural linear pairing to vanish.  New source structure
+must physically select the record.
+
+## Replacement jump: actuality--geometry equivalence
+
+`[CONJECTURE; INFORMED TRUTH-HUNCH; PROOF ROUTE UNKNOWN]`
+
+The reinterpretive target is no longer “every distinction has a consequence.”  It is:
+
+\[
+\boxed{\quad
+\text{quantum distinguishability removed by actuality}
+\;\equiv\;
+\text{causal distinguishability created as spacetime}.
+\quad}                                                         \tag{F8}
+\]
+
+Both directions matter:
+
+- no actual event destroys a genuine quantum distinction without inscribing it in a complementary
+  causal record;
+- no elementary spacetime distinction exists except as such an inscription.
+
+Public law:
+
+> **Every event writes the quantum possibility it destroys into spacetime.**
+
+Worldview headline:
+
+> **Spacetime is not where quantum events happen. Spacetime is what quantum events remember.**
+
+This is a change of interpretation, not a fifth force or another term in an action.  Quantum
+possibility and spacetime geometry become two phases of one conserved physical distinction:
+unresolved alternatives are quantum; actualized complementary records are geometric.
+
+### One-law reinterpretation tree
+
+If `(F8)` is true, familiar physics must be derived as follows:
+
+| familiar concept | interpretation forced by `(F8)` |
+|---|---|
+| quantumness | distinctions still co-present in the continuable event channel |
+| actualization | transfer of a distinction from quantum continuation to causal record |
+| time | source-derived order in which complementary records can be written |
+| causality | reachability in the record-writing dependency network |
+| spacetime | complete compatible history of complementary event records |
+| gravity | path dependence of comparing record frames across the network |
+| internal gauge forces | path dependence of comparing retained quantum frames |
+| Higgs/soldering | mixed connection converting retained and recorded directions |
+| matter | recursively retained quantum structure stable under repeated transfer |
+| entropy | complementary records unavailable to a chosen local continuation channel |
+| holography | a boundary record family sufficient to reconstruct bulk event distinctions |
+| black-hole information | relocation into complementary gravitational records, not destruction |
+| cosmology | self-generated closed record history with no external spacetime container |
+| Hypertranscendence | impossibility of compressing the complete record history into a finite differential-algebraic observer law |
+
+The table is not evidence.  Each row is a derivation obligation from one source-natural event
+structure.
+
+### Why this can subsume the exact corpus
+
+The existing results now constrain one object rather than decorate one narrative:
+
+1. `EventInterfaceIndex.lean` fixes the local record debt at `4/6/4`.
+2. `EventComplementaryRecord.lean` proves that lost event directions require a complementary
+   record and exactly pair kernel with cokernel at the minimal boundary.
+3. `EventTopologicalDebt.lean` makes record debt telescope across event histories.
+4. `FiniteCarrierSpacelikeCompression.lean` forbids faithful compression of independently
+   created record channels into a fixed finite carrier.
+5. `EventNetworkFixedCarrier.lean` forbids confusing changing containers with created geometry.
+6. `OperationalHistorySimilarityGauge.lean` forces representational frames to be quotiented
+   before record distinctions are physical.
+7. `ColorGramWeakLorentzLock.lean` forbids collapsing retained internal and recorded external
+   frames into one renamed carrier.
+8. Hypertranscendence results obstruct finite differential-algebraic compression of complete
+   history, supplying a possible exact meaning of inexhaustible record growth.
+
+Only items 1--7 are presently exact bridges.  Item 8 still lacks a physical derivation from the
+event source.
+
+### Difference from occupied quantum-information facts
+
+Stinespring dilation already says a quantum channel has an environment.  No-hiding already says
+information absent from one subsystem resides elsewhere under its hypotheses.  These do not say:
+
+1. the complementary system is created Lorentzian causal geometry;
+2. every spacetime relation is an event complement;
+3. one source canonically selects the complement rather than an arbitrary environment unitary;
+4. the resulting connection has exactly gravitational, electromagnetic, weak, and strong
+   curvature sectors; or
+5. Hypertranscendence controls the global noncompressibility of their complete history.
+
+Those five clauses contain the possible discovery.  Without them, `(F8)` is only a provocative
+reinterpretation of dilation theory.
+
+### New exact Nature theorem target
+
+`[OPEN CORE: ACTUALITY--GEOMETRY EQUIVALENCE AND FOUR-CURVATURE THEOREM]`
+
+From one pre-spatiotemporal source object, derive without inserting a spacetime, subsystem split,
+environment, field list, gauge group, or known action:
+
+1. a unique source-natural minimal quantum event dilation whose complement is not arbitrary;
+2. a theorem identifying its complementary distinguishability object with four-dimensional
+   Lorentzian causal comparison data;
+3. the converse that every elementary causal distinction arises from that complement;
+4. a unique connection on retained plus recorded data whose curvature decomposes into exactly
+   one external gravitational sector, three internal gauge sectors with global group
+   \(S(U(2)\times U(3))\), and one mixed Higgs/soldering sector, with no peers;
+5. Einstein--Dirac--Yang--Mills--Higgs dynamics as its regular continuum conservation law;
+6. objective event probabilities, unitary closed evolution, entropy, holography, horizons, and
+   admissible cosmologies as consequences of the same dilation;
+7. Hypertranscendence of complete record history from the source; and
+8. one finite dimensionless prediction beyond GR plus the Standard Model.
+
+This is now the strongest coherent candidate for the requested universal reinterpretive law.
+It does not yet satisfy Nature's discovery bar because items 1--8 are open.  It does satisfy the
+“true jump” bar as a conjecture: current mathematics forces a complementary record, while the
+unproved leap identifies that record bidirectionally with spacetime itself.
+
+Updated status:
+
+`TRUE-JUMP CONJECTURE SHARPENED; EXACT NECESSITY BOUNDARY LEAN-PROVED; PHYSICAL IDENTIFICATION OPEN`.
+
+## Latest log continued
+
+- 2026-07-29 — hostile audit split future separation into a tautological operational quotient or
+  a false claim for noninjective events.
+- 2026-07-29 — proved and Lean-formalized the minimal complementary-record theorem and bare-map
+  noncanonicity.
+- 2026-07-29 — replaced consequential closure with the bidirectional actuality--geometry
+  equivalence `(F8)`: lost quantum distinction is created causal distinction.
+
+## Tenth hostile descent: creation headline occupied; conservation law survives
+
+### Priority collision
+
+The broad claim that quantum actualization creates spacetime is occupied. Kauffman
+(arXiv:2108.13905) explicitly proposes that episodic actualization maps Hilbert-space relations
+into classical spacetime, that discrete spacetime consists of relations among actualization events,
+and that their history is recorded in the resulting spacetime.
+
+Therefore neither
+
+> actualization creates spacetime
+
+nor
+
+> spacetime records actualization history
+
+can carry novelty. They remain worldview-level motivation only.
+
+The exact novelty residue, if true, must be stronger:
+
+1. an equality/conservation law for the physical distinctions transferred by every event;
+2. a source-derived, non-arbitrary complement;
+3. the converse that every causal distinction arises from that transfer;
+4. exactly four-dimensional Lorentzian geometry;
+5. exactly the gravitational and Standard Model curvature sectors from one connection; and
+6. a finite prediction.
+
+### Failed direct source mechanism
+
+The tempting identification
+
+\[
+\text{Albert Hessian at a primitive idempotent}
+=
+\text{rank-six event}
+\]
+
+is false. On \(H_2(\mathbb O)\), the Hessian is the nondegenerate determinant form of signature
+\((1,9)\), hence has rank ten. The exact no-go and positive survivor are recorded in
+`../5-failed/albert-hessian-as-rank-six-event.md`.
+
+Representation lesson: the cubic Hessian metricizes the outgoing record; it does not generate the
+`6+4` fracture. The fracture comes from the compatible-pair product involution.
+
+### Exact source-selected continuation and record
+
+Krasnov's compatible pure pair determines commuting orthogonal complex structures whose product
+is an involution \(A\) with `6+4` eigenspaces. Define
+
+\[
+C_A=\frac{1+A}{2},\qquad R_A=\frac{1-A}{2}.                    \tag{F9}
+\]
+
+The paper and Lean theorem
+`EventInvolutionComplement.lean` proves unconditionally that
+
+\[
+C_A+R_A=1,\qquad C_AR_A=R_AC_A=0,
+\]
+
+\[
+\ker C_A=\operatorname{im}R_A,\qquad
+\operatorname{coker}C_A\cong\operatorname{im}R_A,
+\]
+
+and `trace A = 2` on ten directions gives the exact `4/6/4` index. Thus the involution selects
+both the rank-six continuation and its minimal four-record. No arbitrary complement remains.
+
+This closes the finite source-selection gap, conditional only on the physical event selecting the
+compatible pair. It does not establish actualization or spacetime.
+
+## Strengthened universal conjecture: conservation across actuality
+
+`[CONJECTURE; INFORMED TRUTH-HUNCH; PROOF ROUTE UNKNOWN]`
+
+The universal law should be stated as conservation, not creation alone:
+
+\[
+\boxed{\quad
+\text{total physical distinguishability before an event}
+=
+\text{continuable quantum distinguishability}
+\oplus
+\text{created causal distinguishability}.
+\quad}                                                        \tag{F10}
+\]
+
+The decomposition is not an observer's coarse graining. An elementary event physically changes
+the role of one source-selected sector:
+
+\[
+\text{coherent alternative}
+\longrightarrow
+\text{irreversible causal record}.
+\]
+
+The complete event remains lossless; only the local quantum continuation is noninvertible.
+Spacetime is the accumulated complementary record, and no elementary spacetime relation exists
+without such a transfer.
+
+Lay headline:
+
+> **Nothing quantum disappears. What reality rules out becomes spacetime.**
+
+Alternative:
+
+> **The universe saves every quantum possibility it rejects as spacetime.**
+
+This formulation is stronger than actualization-created spacetime and stronger than no-hiding:
+it asserts an exact physical destination, a converse origin law for geometry, and one connection
+whose sector decomposition yields all four forces.
+
+### Why projectors still do not prove `(F10)`
+
+Spectral projectors merely route a fixed carrier. They are reversible at the combined level and
+do not select an objective outcome. To realize `(F10)`, the theory must show that:
+
+1. the compatible pair is selected by an elementary quantum actualization;
+2. \(C_A\) and \(R_A\) lift to a completely positive probability-preserving quantum instrument;
+3. the record is transported into a distinct causal role rather than renamed inside one carrier;
+4. outcome probabilities and irreversible classical accessibility emerge without violating
+   unitary closed evolution; and
+5. repeated records compose into a locally finite causal order and continuum spacetime.
+
+### Derived-critical representation and its boundary
+
+One possible representation change is to treat an event as a self-dual critical complex rather
+than a map between fixed carriers. Quantum alternatives are deformation directions; actualized
+records are obstruction directions one homological degree later. A symmetric Hessian canonically
+dualizes kernel and cokernel, so this language can make the record source-natural and can encode
+the transition from possibility to constraint.
+
+This mechanism is occupied mathematics. Derived critical loci carry canonical
+\((-1)\)-shifted symplectic structures, and symmetric obstruction theories and BV structures are
+standard (Pantev--Toën--Vaquié--Vezzosi, arXiv:1111.3209; Vezzosi, arXiv:1109.5213;
+Behrend--Fantechi, arXiv:math/0512556). It becomes relevant here only if the exceptional source
+derives the physical critical complex and its causal interpretation.
+
+`[OPEN CORE: EXCEPTIONAL SELF-DUAL EVENT COMPLEX]`
+
+Construct, or prove impossible, a source-derived event complex whose local linearization is `(F9)`
+and whose global structure:
+
+1. makes the four-record an obstruction object rather than a relabelled subspace;
+2. carries the Albert \(1+3\) quadratic form and positive orientation;
+3. avoids the universal Higgs--tangent bundle topology no-go through event-relative gluing;
+4. has one source connection with retained, recorded, determinant, and mixed curvature sectors;
+5. derives objective quantum probabilities and causal composition; and
+6. fixes a finite observable.
+
+Derived language is not accepted as the law. It is a candidate realization that must earn every
+physical identification.
+
+### Updated hostile verdict
+
+- `(F10)` remains a genuine physical conjecture.
+- Actualization-created spacetime alone is `[REDISCOVERED]`.
+- Source-selected `6+4` continuation and record are `[LEAN-PROVED] [BRIDGE]`.
+- Direct Albert-Hessian rank-six event is `[FALSIFIED]`.
+- Self-dual obstruction language is `[LITERATURE] [BRIDGE]`.
+- Four-dimensional causal transport, quantum instrument, one-curvature dynamics,
+  Hypertranscendental history, and prediction remain open.
+
+Current status:
+
+`UNIVERSAL CONSERVATION LAW FROZEN; SOURCE COMPLEMENT LEAN-PROVED; PHYSICAL TRANSFER OPEN`.
+
+## Latest log continued again
+
+- 2026-07-29 — external audit found Kauffman's prior actualization-created-spacetime proposal;
+  removed headline-level novelty.
+- 2026-07-29 — killed the primitive Albert Hessian as rank-six event because its ten-dimensional
+  Lorentz form is nondegenerate.
+- 2026-07-29 — extracted and Lean-proved the compatible-pair involution's canonical rank-six
+  continuation and four-record, including canonical cokernel realization.
+- 2026-07-29 — strengthened actuality--geometry equivalence into the conservation law `(F10)` and
+  isolated the exceptional self-dual event complex as the next realization gate.
+
+## Eleventh hostile descent: one law, not a synthesis of laws
+
+### Research judgment
+
+The target should no longer be described as “derive gravity, then attach the Standard Model.”
+That wording already concedes a collage. The required jump is a change in what all physical
+theories are about:
+
+> quantum theory and spacetime theory describe the same physical distinctions before and after
+> they acquire irreversible consequences.
+
+Quantum mechanics describes distinctions that can still coexist coherently. Causal geometry
+describes distinctions that have become public constraints on every continuation. Gauge and
+gravitational fields are not added forces; they are the two diagonal comparison curvatures of
+these two roles. The mixed comparison is the soldering/Higgs channel.
+
+This is the first candidate in the corpus at the requested semantic level: one ontology, one
+conversion law, one comparison connection. It remains a conjecture, not a theory.
+
+### Public law
+
+> **THE UNIVERSE NEVER ERASES A POSSIBILITY. IT TURNS IT INTO WHERE AND WHEN.**
+
+Short scientific name:
+
+> **CAUSALIZATION LAW**
+
+### Frozen one-law conjecture `(F11)`
+
+`[CONJECTURE; INFORMED TRUTH-HUNCH; PROOF ROUTE UNKNOWN]`
+
+Every elementary physical event conserves physical distinction by changing its type. The
+source-natural distinctions that cease to be jointly available as coherent quantum alternatives
+become exactly the new positive causal distinctions constraining all later events, and every
+elementary causal distinction has this origin:
+
+\[
+\boxed{\quad
+\operatorname{Lost}_{e}(\mathcal D_{\rm coherent})
+\;\simeq\;
+\operatorname{New}_{e}(\mathcal D_{\rm causal}),
+\qquad
+[\mathcal D_{\rm total}]_{\rm before}
+=
+[\mathcal D_{\rm total}]_{\rm after}.
+\quad}                                                        \tag{F11}
+\]
+
+The first relation is typed: it is not equality of two scalar information measures. It asserts a
+source-derived transfer from phase-sensitive operational distinctions to phase-blind positive
+record geometry. The second relation asks for an additive conserved class recovered from the event
+complex. Neither object has yet been constructed at the required physical level.
+
+The local causal representative is conjectured to be the unique source-covariant Gram record
+\[
+\Gamma_e=X_e^\dagger X_e\in H_2(\mathbb C)_{\ge0},             \tag{F12}
+\]
+where the exceptional event itself must produce
+\(X_e\in M_{3,2}(\mathbb C)\). Under Pauli coordinates:
+
+- \(\Gamma_e\ge0\) gives future orientation;
+- \(\det\Gamma_e=t^2-x^2-y^2-z^2\) gives Lorentz interval;
+- rank-one event records are future-null;
+- full-rank event records are future-timelike;
+- \(P\preceq Q\) iff \(Q-P\ge0\) is the local causal order.
+
+Equation `(F12)` is known Gram/Lorentz mathematics. The conjectural law is that this object is the
+actual destination of the complementary quantum distinction, that all causal relations arise this
+way, and that its event composition generates physical spacetime.
+
+### Why the Hermitian record is a necessary representation change
+
+Treating the new causal record as merely another complex Hilbert subspace risks a type and
+dimension error: complex quantum directions do not become four real spacetime directions by
+renaming them. A positive Hermitian record changes representation:
+
+\[
+\text{quantum amplitudes}
+\longmapsto
+\text{frame-invariant quadratic record}
+\longmapsto
+\text{Lorentz causal vector}.
+\]
+
+For a single doublet \(\psi\in\mathbb C^2\), the outer square
+\(\psi\psi^\dagger\) is invariant under common unit phase, positive, and future-null. The corpus
+already proves these statements unconditionally in `HiggsSpinorNullCone.lean`. A general positive
+Hermitian record requires a rank-two Gram event—equivalently at least two independent spinor
+contributions—so:
+
+> one pure alternative supplies a lightlike increment; independent alternatives can supply a
+> timelike future.
+
+The stronger exceptional version uses \(X\in M_{3,2}(\mathbb C)\). Its left \(U(3)\) frame is
+forgotten while \(X^\dagger X\) retains the complete colour-blind quadratic record. The paper and
+Lean results behind `ColorGramMinkowskiCone.lean` prove the exact cone, rank, determinant,
+Cauchy--Binet, left-invariance, and right-covariance identities.
+
+### One-law reinterpretation of existing physics
+
+If `(F11)` is true, the familiar theories are regimes of one conversion process:
+
+| observed structure | one-law meaning |
+|---|---|
+| superposition | physically available distinctions not yet causalized |
+| Born probability | unique normalized weight with which a coherent distinction can become a positive record |
+| measurement | source-selected causalization, not unexplained deletion |
+| time | monotone order in which positive records can be added |
+| space | mutually non-ordering directions inside the generated Lorentz cone |
+| causality | reachability under composition of positive record increments |
+| spacetime | globally compatible accumulation of causalized distinctions |
+| matter | recursively stable coherent structure that survives repeated causalization |
+| mass/Higgs | mixed coupling controlling transfer between coherent and causal roles |
+| strong, weak, electromagnetic forces | internal curvature comparing retained coherent frames |
+| gravity | causal curvature comparing generated record frames |
+| equivalence principle | all retained matter is transported through the same causal-record connection |
+| entropy | causalized distinction inaccessible to a chosen coherent continuation |
+| holography | boundary record completeness for the distinctions causalized in a bulk history |
+| horizon | boundary beyond which records remain globally conserved but locally inaccessible |
+| cosmology | a self-generated total record history with no external spacetime container |
+| different spacetimes / gravities | different global phases and histories of the same local causalization law |
+| Hypertranscendence | complete history cannot be compressed into any finite differential-algebraic observer law |
+
+Every row is a derivation obligation. The table is a statement of what “subsumes everything” must
+mean, not evidence that it has been achieved.
+
+### One connection or the law fails
+
+Let the event source split the total distinction carrier into retained and causalized roles. The
+same source connection must descend schematically as
+\[
+\nabla^{\rm total}
+=
+\begin{pmatrix}
+\nabla_{\rm coherent} & \Theta\\
+\widetilde\Theta & \nabla_{\rm causal}
+\end{pmatrix},
+\qquad
+\Omega^{\rm total}
+=
+\begin{pmatrix}
+\Omega_{\rm internal} & D\Theta\\
+D\widetilde\Theta & \Omega_{\rm gravity}
+\end{pmatrix}.                                                \tag{F13}
+\]
+
+The exceptional stabilizer of the coherent sector must be exactly
+\(S(U(3)\times U(2))\), giving strong, weak, and hypercharge curvature with the observed global
+quotient. The causal sector must give the Lorentz/spin connection and, after soldering, metric
+gravity. The off-diagonal sector must give the Higgs/tetrad conversion rather than an extra force.
+
+Writing `(F13)` is easy. The law lives or dies on proving that one source object uniquely forces
+this decomposition and one invariant dynamics. Supplying independent familiar connections or
+actions would return to a collage.
+
+### Direct priority collisions
+
+The following claims cannot carry novelty:
+
+1. quantum information is not destroyed—no-hiding and unitary dilation already establish precise
+   versions;
+2. informational principles can reconstruct quantum theory—operational reconstructions already
+   do this;
+3. unnormalized qubit states form the Minkowski future cone and quantum operations act by Lorentz
+   transformations—Arrighi--Patricot and earlier spinor geometry already contain this;
+4. actualization/decoherence creates spacetime and records its history—Kauffman states this
+   explicitly; Zhang's 2026 “spacetime anchors” proposal (arXiv:2607.13096) additionally treats
+   locally irreversible, redundantly recorded events as a partially ordered causal skeleton, while
+   explicitly not deriving event generation or the Born rule;
+5. distinguishability or irreversible record bookkeeping can induce an effective geometry or
+   Einstein equation—information-geometric, thermodynamic, entanglement, causal-horizon-ledger, and
+   recent detector-based models already occupy broad versions (for recent examples,
+   arXiv:2512.17961 and arXiv:2604.10349).
+
+The surviving possible discovery is the conjunction plus necessity:
+
+> the source-selected information complement is uniquely the causal Gram record; every causal
+> distinction is such a record; one exceptional connection preserves the total distinction and
+> yields gravity plus the exact Standard Model with a finite new prediction.
+
+No audited source states or proves this claim. Phrase-level absence is not a priority proof.
+
+### First exact mathematical target exposed by `(F11)`: closed bridge
+
+`[LEAN-PROVED 3x2] [REDISCOVERED] [BRIDGE: GRAM CAUSALIZATION UNIQUENESS]`
+
+The exact surviving theorem is stronger than the original quadratic target:
+
+> Up to a nonnegative scalar, \(X\mapsto X^\dagger X\) is the unique nonzero continuous
+> Hermitian-valued map
+> \[
+> \Gamma:M_{3,2}(\mathbb C)\to H_2(\mathbb C)
+> \]
+> that is invariant under the left \(U(3)\) source frame, covariant under the right
+> \(GL_2(\mathbb C)\) frame, and positive on every event.
+
+The paper proof holds for all \(n\ge k\). The exact \(3\times2\) physical specialization is now
+unconditionally Lean-proved in `ContinuousEquivariantGramRigidity.lean`. Continuity, not an assumed
+quadratic formula, transports the full-rank orbit classification across singular rank strata.
+Positivity is equivalent to nonnegative scale; a nonzero positive record has positive scale.
+
+This closes freedom in the local representation `(F12)`. It does not show that the source produces
+\(X_e\), that the record is causal geometry, or that all spacetime distinctions arise from it.
+
+### Decisive physical open core
+
+`[OPEN CORE: EXCEPTIONAL CAUSALIZATION AND ONE-CURVATURE THEOREM]`
+
+From the pre-spatiotemporal exceptional event source, without supplying a manifold, metric,
+subsystem split, environment, gauge group, field list, or known action, derive:
+
+1. objective events and Born weights;
+2. the source-selected \(6+4\) complement and its physical transfer into the unique Gram record;
+3. the converse origin of every causal distinction;
+4. composition of records into a locally finite order and a nondegenerate \(3+1\) continuum phase;
+5. one connection whose curvature yields gravity and exactly the three Standard Model gauge
+   forces, with Higgs/soldering off diagonal and no extra massless sectors;
+6. Einstein--Dirac--Yang--Mills--Higgs as the unique regular infrared conservation dynamics;
+7. global information conservation across horizons and admissible cosmologies;
+8. source-derived Hypertranscendence of complete event history; and
+9. one finite dimensionless prediction beyond GR plus the Standard Model.
+
+### Kill conditions
+
+Retire `(F11)` if any survives a serious repair:
+
+1. the complementary distinction can be routed to inequivalent non-geometric environments with
+   identical source data;
+2. causal record capacity and lost coherent distinguishability fail exact bidirectional matching;
+3. the physical quotient removes too much data to leave a four-dimensional cone;
+4. the weak \(SU(2)\) and Lorentz-frame action cannot be separated source-naturally;
+5. event records cannot compose into causal locality without assuming spacetime;
+6. one connection cannot yield observed chirality, anomaly cancellation, equivalence principle,
+   and no extra long-range forces;
+7. the infrared action or Born rule must be inserted independently;
+8. no finite observation distinguishes the law from GR plus the Standard Model.
+
+Current status:
+
+`ONE-LAW CAUSALIZATION CONJECTURE FROZEN; LOCAL GRAM UNIQUENESS LEAN-PROVED; UNIVERSAL PHYSICAL TRANSFER OPEN`.
+
+## Latest log continued once more
+
+- 2026-07-29 — consolidated the corpus under `(F11)`: conservation of physical distinction through
+  causalization, with public headline “The universe never erases a possibility. It turns it into
+  where and when.”
+- 2026-07-29 — replaced the ambiguous complex-subspace record by the phase/frame-blind positive
+  Hermitian Gram record, exposing the exact role of `HiggsSpinorNullCone.lean` and
+  `ColorGramMinkowskiCone.lean`.
+- 2026-07-29 — identified Gram causalization uniqueness as the next exact bridge and exceptional
+  causalization plus one-curvature dynamics as the decisive physical open core. No new Lean module
+  was started.
+- 2026-07-29 — paper-proved the general continuous equivariant Gram-rigidity theorem and
+  Lean-proved its exact \(3\times2\) specialization, including density through rank change and the
+  nonnegative/positive scalar laws. The decisive open core is now physical transfer and one
+  curvature, not local record-map ambiguity.
+
+## Post-freeze sharpening: the loss--future identity
+
+`[UNIVERSAL-LAW CANDIDATE] [PHYSICAL CONJECTURE] [PROOF ROUTE UNKNOWN]`
+
+The candidate should no longer be advertised merely as “records create spacetime.” That
+interpretation is too broad and already occupied. The sharper proposed identity is:
+
+> **What a quantum event removes as a coherent distinction, it creates as a causal distinction.**
+
+Public version:
+
+> **The future is made from the quantum possibilities that stop being alternatives.**
+
+Let \(\mathsf{Lost}_e\) denote the operational distinction object erased from every admissible
+coherent continuation by an objective event \(e\). This must be defined without a chosen
+environment, tensor-product split, observer, clock, or background spacetime. Let
+\(\mathsf{Future}_e\) denote the new positive causal distinction object created by that event:
+the local distinctions between what can occur after \(e\), what cannot, and which later events can
+be ordered relative to it. The frozen truth-hunch is that every elementary event carries a
+canonical natural order-isomorphism
+\[
+\boxed{\quad
+\Lambda_e:\mathsf{Lost}_e\xrightarrow{\;\simeq\;}\mathsf{Future}_e
+\quad}                                                        \tag{F14}
+\]
+such that:
+
+1. \(\Lambda_e\) preserves the physical distinction weight that appears as Born probability on
+   the coherent side and as positive causal magnitude on the record side;
+2. \(\Lambda\) respects event composition rather than only matching dimensions event by event;
+3. every elementary future-causal distinction has this origin;
+4. coherent continuation together with the created causal record reconstructs the complete
+   distinction content of the event; and
+5. one source connection transports this identity, so its retained, created, and mixed
+   curvatures are respectively the Standard Model gauge fields, gravity, and Higgs/soldering.
+
+In deliberately schematic conservation notation,
+\[
+\mathfrak D_{\rm before}
+=
+\mathfrak D_{\rm coherent\ after}
+\boxplus
+\mathfrak D_{\rm newly\ causal}.                              \tag{F15}
+\]
+Here \(\boxplus\) is not ordinary scalar addition and \(\mathfrak D\) is not Shannon entropy,
+Hilbert-space dimension, trace distance, or a freely chosen information measure. Finding the
+typed distinction object and its composition law is part of the discovery. Replacing `(F14)` by
+an untyped numerical balance would make the conjecture false or vacuous.
+
+### Why this would be the reinterpretive jump
+
+If `(F14)` is true, quantum theory and relativity describe the two sides of one event rather than
+two theories requiring later quantization or unification:
+
+- quantum mechanics describes distinctions while they remain jointly available for interference;
+- actualization is their physical change of role, not deletion from reality;
+- the Born rule measures the transfer into a positive future record;
+- spacetime is the compositional accumulation of those transferred distinctions;
+- gravity is curvature of the loss-to-future identification from event to event;
+- internal gauge forces are curvature of the coherent frames retained by the same identification;
+- Higgs and soldering data are the mixed transfer components;
+- entropy records the one-sided inaccessibility created by causalization;
+- horizons and holography concern where the conserved record is accessible and how completely a
+  boundary represents it; and
+- cosmology is a closed self-generated history of repeated causalization, not evolution inside an
+  external container.
+
+This is stronger than saying that “everything is information.” It identifies a specific
+bidirectional physical conversion and makes all spacetime distinctions, not merely some emergent
+geometry, its output.
+
+### Why the existing results now align
+
+The current corpus supplies four exact shadows of `(F14)`:
+
+1. the source-selected involution has complementary continuation and record projections, with
+   exact kernel--record and cokernel--record equivalences and the exceptional `4/6/4` index;
+2. continuous equivariance and positivity uniquely force the local colour-blind causal record to
+   be a positive Gram record, up to normalization;
+3. the trace obstruction proves that the relevant weak representation change cannot be a smooth
+   relabelling on one fixed carrier, so a true event fracture is compulsory; and
+4. connection descent proves that a noninvertible event can transmit a common connection while
+   leaving genuinely different kernel and cokernel curvatures.
+
+None proves the physical identity. Together they constrain its possible mathematical form far more
+strongly than a free analogy.
+
+External results independently supply neighbouring pieces but not `(F14)`. No-hiding places
+bleached quantum information in a complement
+([Braunstein--Pati](https://arxiv.org/abs/gr-qc/0603046)); entanglement can control spacetime
+connectivity ([Van Raamsdonk](https://arxiv.org/abs/1005.3035)); entanglement equilibrium can imply
+the semiclassical Einstein equation under stated assumptions
+([Jacobson](https://arxiv.org/abs/1505.04753)); irreversible records can anchor an effective causal
+skeleton while leaving event generation and the Born rule open
+([Zhang](https://arxiv.org/abs/2607.13096)); and a pure-spinor pair selects the exact
+\(6+4\) Spin(10) product structure and Standard Model intersection
+([Krasnov](https://arxiv.org/abs/2209.05088)).
+
+Conversely, placing gravity, gauge fields, and Higgs components in one curvature is not itself new:
+it appears in enlarged Plebanski and exceptional-connection programmes
+([Lisi--Smolin--Speziale](https://arxiv.org/abs/1004.4866),
+[Lisi](https://arxiv.org/abs/0711.0770)). Direct exceptional embeddings also face sharp chirality
+obstructions ([Distler--Garibaldi](https://arxiv.org/abs/0905.2658)). The proposed escape is not a
+larger static group. The event changes physical role noninvertibly before a manifold and
+spacetime-symmetry group exist. This must be demonstrated, not asserted.
+
+### Exact discovery gate
+
+The Nature-level result would be a uniqueness theorem for `(F14)`: from background-free
+operational event axioms, derive one and only one compositional causalization functor whose local
+positive record is \(H_2(\mathbb C)_+\), whose coherent stabilizer is the exact global Standard
+Model group, and whose one curvature has Einstein--Dirac--Yang--Mills--Higgs as its unique regular
+infrared phase.
+
+The immediate fatal gaps are:
+
+1. define \(\mathsf{Lost}_e\) without smuggling in a subsystem split or external observer;
+2. derive the physical map from the exceptional four-complement to the unique Hermitian Gram
+   record, including real structure and time orientation;
+3. prove naturality under composition and emergence of local \(3+1\) causal continuum;
+4. derive one pregeometric connection rather than placing familiar fields into a block matrix;
+5. recover chirality, anomalies, equivalence principle, and sourced dynamics with no independent
+   actions; and
+6. produce a finite dimensionless prediction not adjustable inside GR plus the Standard Model.
+
+Until these gates close, `(F14)` is the research target and possible worldview shift, not a
+scientific result.
+
+## Latest log continued: loss--future sharpening
+
+- 2026-07-29 — sharpened causalization into the bidirectional loss--future identity `(F14)`.
+  Distinguished the target from generic information conservation, record-created spacetime,
+  entanglement geometry, and static one-connection unification. Froze the uniqueness theorem for a
+  background-free compositional causalization functor as the decisive Nature-level target.

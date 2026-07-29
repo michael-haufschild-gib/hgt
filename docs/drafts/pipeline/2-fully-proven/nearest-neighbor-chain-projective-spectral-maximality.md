@@ -55,6 +55,26 @@ energy resonances in every two-body Hamiltonian?”: **no**. Trace supplies the
 one unavoidable common-energy relation; no other resonance is forced, even
 by nearest-neighbour locality.
 
+### Corollary — every interaction graph with a spanning path
+
+Let \(G\) be any interaction graph on \(n\) qubits containing a spanning
+path. After relabelling vertices,
+\[
+ \mathcal L_{P_n}\subseteq\mathcal L_G.
+\]
+For each nontrivial rational projective relation, its symmetric
+relation polynomial is nonzero on \(\mathcal L_{P_n}\), hence nonzero on
+\(\mathcal L_G\). The same countable polynomial-zero-set argument gives
+\[
+ \rho(H)=2^n-1
+\]
+for Lebesgue-almost every \(H\in\mathcal L_G\).
+
+This includes open chains, rings, complete graphs and every finite qubit
+lattice graph for which a spanning path is specified. It does not include
+every connected graph; stars and other non-Hamiltonian graphs require a
+different witness theorem.
+
 ## Endpoint transition graph
 
 Let \(H\) have simple eigenvectors
@@ -346,8 +366,9 @@ apart from trace.
 5. Exact-object priority against generic local no-resonance and spin-chain
    spectral Galois literature remains open.
 6. Extension from qubits to arbitrary \(q\), general connected graphs,
-   periodic boundaries and translation-invariant low-parameter families is
-   not yet proved.
+   and translation-invariant low-parameter families is not yet proved.
+   Periodic boundaries and all other qubit graphs containing a spanning path
+   are covered by the subspace corollary.
 
 ## Gates
 

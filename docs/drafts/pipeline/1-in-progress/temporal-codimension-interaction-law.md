@@ -10,6 +10,13 @@
   `universal-quantum-recurrence-anatomy`
 - **Component candidate:** `local-interaction-recurrence-rank-explosion-law`
 
+> **Supersession note (2026-07-29).** This remains a component theorem, but
+> is no longer the strongest master organization. The higher candidate is
+> `universal-replica-collision-law-of-quantum-return.md`: temporal dimension
+> becomes a derived upper-tail invariant of the complete replica-collision
+> return law, while local interaction is characterized by simultaneous
+> minimization of every return moment.
+
 ## Public discovery
 
 > **Time has an observer-dependent dimension, and interaction creates it.**
@@ -29,6 +36,32 @@ The proposed law is:
 The first sentence supplies the universal classification. The second supplies
 the new many-body prediction: an arbitrarily weak generic interaction changes
 the asymptotic recurrence clock from local scale to Hilbert-space scale.
+
+## Corpus closure discovered after freeze
+
+The universal observer/spectrum foundation is already unconditionally
+formalized in the current corpus. In particular:
+
+- `ObserverTemporalDimensionLaw.lean` defines cardinal-valued temporal
+  dimension for arbitrary finite or infinite visible frequency families,
+  proves observer monotonicity, the exact cyclic-versus-dense return
+  dichotomy, finite graph-capacity laws, atomless continuum dimension and
+  zero-density positive-threshold return;
+- `ObserverTemporalUniversalityLaw.lean` proves invariance under the common
+  energy origin, one fixed finite Hamiltonian saturating every observer graph,
+  and one fixed stationary spectrum with observer choices realizing temporal
+  dimension zero and continuum;
+- `ObserverRecurrenceDistributionLaw.lean` proves that every long-time
+  fidelity moment is an additive gap-collision probability and that every
+  continuous fidelity statistic has a long-time mean for every probability
+  spectrum, finite or infinite.
+
+These results close the kinematic “one object” foundation. They do not make
+the paper novel: their formal status is an internal correctness control, and
+the manuscript will neither mention formalization nor count it as scientific
+significance. The candidate new discovery remains the physical generator
+theorem: bounded-degree local interaction creates the maximal exponential
+temporal dimension.
 
 ## Why this is not the earlier collage
 
@@ -246,6 +279,12 @@ This is the new physical mechanism behind doubly exponential generic
 many-body recurrence. Hilbert dimension makes many phases available;
 interaction makes them arithmetically independent.
 
+The path case of `(9)` is now paper-proved for every \(q\geq2\), and the
+same theorem follows for every interaction graph containing a spanning path.
+See
+`../2-fully-proven/nearest-neighbor-qudit-projective-spectral-maximality.md`.
+Only connected graphs without a spanning path remain in open core 1.
+
 ### V. Dissipation, infinite spectra and the arrow boundary
 
 Every finite power-bounded recurrence record decomposes into a persistent
@@ -298,9 +337,33 @@ Hilbert space. The difference is not dimension of state space but dimension
 of the relative temporal orbit actually generated.
 
 It also answers the explicit two-body question whether locality forces hidden
-energy resonances. It does not: even a static nearest-neighbour qubit chain
-generically has the maximal \(2^n-1\) projective clocks. The combined law then
-turns that spectral fact into exact density and first-return exponents.
+energy resonances. It does not: even a static nearest-neighbour chain of
+\(q\)-level systems generically has the maximal \(q^n-1\) projective clocks.
+The combined law then turns that spectral fact into exact density and
+first-return exponents. Every interaction graph containing a spanning path
+inherits the same generic theorem, including rings and standard finite grids
+with such a path.
+
+At arbitrary local dimension, maximal projective rank also proves every
+finite-order no-resonance condition simultaneously. Equal sums of the same
+number of energy levels are forced to be the same multiset. Higher-moment
+dephasing assumptions therefore become generic theorems inside a static
+bounded-degree local coupling space, while near-resonance scales remain
+nonuniform.
+
+Writing the chain's maximum entropy as
+\(S_{\max}=\log(q^n)\), the exact fixed-fidelity recurrence density becomes
+\[
+ -\log\operatorname{dens}\{\Delta_H<\varepsilon\}
+ =
+ (e^{S_{\max}}-1)
+ \log\!\left(\frac{\pi}{2\arcsin(\varepsilon/2)}\right).
+\]
+Thus interaction turns an additive many-body system into one whose
+high-fidelity returns occupy a doubly exponentially small fraction of time
+as a function of maximum entropy. This is an exact finite-chain density
+identity, not an assumption of randomness and not a first-hitting-time
+identity.
 
 ### Black-hole recurrence estimates
 
@@ -381,42 +444,49 @@ Failure of one clause does not license silently weakening it. Record the
 counterexample, extract the strongest positive survivor and freeze a new
 conjecture.
 
-## Open cores
+## Remaining gates
 
-1. Prove generic maximal projective spectral rank for the full local
-   Hamiltonian space of every connected graph and every \(q\geq2\).
-2. Prove metric shrinking-target exponents on the same local spectral
-   manifolds.
-3. Prove the sharp finite-resolution comparison between exact target
-   information and reverse-water information without a misleading
-   support-linear remainder.
-4. Complete exact-object priority audit against Kronecker factors,
-   almost-periodic decompositions, quantum recurrence, Koopman spectral
-   theory, local-Hamiltonian nonresonance and shrinking-target dynamics.
-5. Identify one experimentally definable finite spin protocol measuring the
-   observer rank slope without waiting for the first astronomical return.
-
-No Lean formalization of the new master law is authorized before open cores
-1--4 have dependency-closed paper proofs and survive hostile novelty review.
+1. Exact-object priority audit for the local generator theorem. Abstract
+   generic non-resonance is known in continuum Schrödinger control theory;
+   novelty must rest on full \(q^n-1\) rank inside the static
+   polynomial-parameter bounded-degree tensor-local family.
+2. Independent specialist audit of the qudit endpoint-extension proof and
+   the metric-Diophantine transfer.
+3. Unconditional formalization of the local qudit-chain generator theorem,
+   its all-order no-resonance corollary and exact recurrence-density law.
+4. An experimentally definable finite-spin protocol measuring the temporal
+   rank slope without waiting for the astronomical global return.
+5. Optional strengthening from spanning-path graphs to every connected
+   graph. This would widen the generator theorem but is not required for the
+   universal observer/spectrum law, since a one-dimensional degree-two path
+   is already the minimal locality anchor.
+6. Either prove the sharp reverse-water comparison or omit it from the
+   master paper. It cannot remain as an independent decorative layer.
 
 ## Nature gate
 
 ```text
-One canonical object rather than collage:                 CANDIDATE
+One canonical object rather than collage:                 YES
 Recognized major question:                                YES
-New mathematical theorem beyond parent machinery:         OPEN CORE 1--3
-New physical mechanism:                                   CONJECTURED
-Arbitrary finite/infinite stationary scope:               PAPER PROOF PARTIAL
-Local physical Hamiltonian anchor:                         OPEN CORE
+New mathematical theorem beyond parent machinery:         PAPER-PROVED; AUDIT OPEN
+New physical mechanism:                                   PAPER-PROVED; PRIORITY OPEN
+Arbitrary finite/infinite stationary scope:               FORMALIZED
+Local physical Hamiltonian anchor:                         PAPER-PROVED FOR ALL QUDIT PATHS
 Experimental consequence:                                 OPEN
 Black-hole relevance without overclaim:                    DELIMITED
 Exact-object priority:                                     OPEN
-Unconditional formal trace:                                NOT AUTHORIZED
+Unconditional formal trace:                                FOUNDATION YES; GENERATOR NO
 Hostile specialist review:                                 OPEN
 Hostile Nature editorial review:                           OPEN
 ```
 
 ## Log
+
+- 2026-07-29: Corpus audit found unconditional arbitrary-spectrum
+  observer-temporal universality and complete recurrence-distribution modules.
+  This closes the master law's kinematic foundation and narrows all novelty
+  scoring to the local interaction generator and its physical consequences.
+  Formalization remains internal and will not be mentioned in the manuscript.
 
 - 2026-07-29: Closed the paper-level first-return gap for generic static
   nearest-neighbour qubit chains. Analytic branch independence makes the local
@@ -432,6 +502,12 @@ Hostile Nature editorial review:                           OPEN
   no-resonance statistically, engineer only \(O(n)\) free frequencies, or use
   unrestricted random Hamiltonians. Priority remains open pending spectral
   Galois and sparse-matrix literature.
+- 2026-07-29: Upgraded bounded-degree maximality from qubits to every finite
+  local dimension \(q\geq2\). The endpoint-extension equality graph is the
+  categorical product of the old non-bipartite transition graph with
+  \(K_q\), hence connected. A separate endpoint-observability induction
+  supplies the required open witness set. Every qudit interaction graph
+  containing a spanning path inherits rank \(q^n-1\).
 
 - 2026-07-29 — user rejected a universal-law title assembled from sharpened
   known results and requested one reinterpretation subsuming prior work.

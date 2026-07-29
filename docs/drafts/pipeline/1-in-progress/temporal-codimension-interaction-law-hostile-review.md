@@ -21,6 +21,44 @@ interaction creates exponentially many independent temporal directions,
 together with a physical finite-time crossover law. Neither is presently
 proved.
 
+## Round-2 reassessment after new theorems
+
+The first review forced real progress. It did not clear the paper.
+
+| Objection | New evidence | Round-2 status |
+|---|---|---|
+| Classical core deletable | Universal Haar/Wiener law is now explicitly infrastructure. Principal candidate is bounded-degree spectral maximality. | Still editorially dangerous, but correctly framed. |
+| Exact rank nonrobust | `finite-horizon-observer-temporal-profile-stability.md` proves a Lipschitz orbit bound and covering/return-set sandwiches. | Lower crossover and stability closed; upper crossover open. |
+| Local maximality open | The qubit path theorem is upgraded by `nearest-neighbor-qudit-projective-spectral-maximality.md`: almost every qudit path has rank \(q^n-1\), and every interaction graph containing a spanning path inherits it. | Closed for every local dimension on a standard bounded-degree family; connected graphs without a spanning path remain open. |
+| Density confused with first return | `local-chain-metric-recurrence-exponents.md` proves exact continuous and stroboscopic exponents on the local spectral manifold using analytic nondegeneracy and metric extremality. | Closed on paper; formal dependency and specialist audit open. |
+| Manufactured question | A 2024 autonomous two-body research talk asks explicitly whether generic two-body eigenenergies are rationally independent and whether every two-body Hamiltonian has hidden resonances. | Strong relevance evidence; not priority clearance. |
+| No new prediction | The joined theorem predicts that static nearest-neighbour \(q\)-level locality generically realizes \(q^n-1\) clocks, recurrence density exponent \((q^n-1)/2\), and continuous first-return exponent \((q^n-2)/2\) for quadratic deficit. | Genuine new consequence if proofs and priority survive. |
+
+**Round-2 verdict:** `MAJOR THEORETICAL CORE FOUND; STILL REJECT`.
+
+Remaining rejection reasons are narrower and more serious: proof
+specialization, exact priority, formal closure of metric extremality,
+finite-resolution constants/protocol, and physical interpretation. A Nature
+claim cannot rest on an unaudited analytic-symmetrization step or on
+asymptotic ranks that no finite protocol can distinguish.
+
+### Nature editorial screen
+
+Nature's current criteria require original research of outstanding scientific
+importance and an interdisciplinary conclusion. The editor's review gate asks
+whether results appear novel, arresting, immediate in implication and
+far-reaching:
+[editorial criteria](https://www.nature.com/nature/for-authors/editorial-criteria-and-processes).
+
+| Editorial test | Current evidence | Verdict |
+|---|---|---|
+| Original | No exact collision found; a 2024 source poses the generic two-body resonance question as open. | `PROVISIONAL`, not cleared. |
+| Arresting/unexpected | Degree-two one-dimensional locality with \(O(n)\) coupling parameters generically creates \(q^n-1\) independent projective clocks. | `PASS IF PROOF SURVIVES`. |
+| Immediate implication | Answers whether two-body locality forces hidden resonances and computes exact recurrence density/first-hit exponents in the same physical family. | `PASS IF FORMALIZED`. |
+| Far-reaching | Connects local many-body interaction, recurrence, observer visibility, integrability, open/infinite spectral phases and entropy-based recurrence certification. | `PROMISING`; gravity remains certification only. |
+| Interdisciplinary readability | “Interaction creates exponentially many relative clocks” is intelligible; current cards are not a readable Article. | `FAIL NOW`. |
+| Technical establishment | Qudit endpoint induction, metric extremality, constants and operational profile are not formally or independently audited. | `FAIL NOW`. |
+
 ## Fatal objections
 
 ### 1. The universal core can still be deleted as classical background
@@ -182,4 +220,3 @@ how their activation changes recurrence.
 - first-return claims use inverse density without Diophantine proof;
 - black-hole language outruns the verified model class;
 - the paper still reads as old results attached to a new noun.
-

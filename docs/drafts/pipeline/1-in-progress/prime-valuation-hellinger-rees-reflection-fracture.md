@@ -4,6 +4,7 @@
 - **Stage:** 1-in-progress
 - **Type:** THEOREM (paper) / SINGULAR THIRD-COMPLETION MECHANISM
 - **Scientific status:** `[PAPER-PROVED CORE] [NOVELTY PROVISIONAL] [NOT RH]`
+  `[CRITICAL NORMAL-CONE CROSSOVER PAPER-PROVED]`
   `[SOURCE-REFLECTION MODERATION OPEN]`
 - **Parents:**
   - `../2-fully-proven/prime-valuation-kakutani-polar-third-completion.md`;
@@ -156,6 +157,160 @@ Mertens' product theorem gives
 The magnitude \(x^{2c}/\log x\) dominates every multiple of \(\log\log x\), so `(5)` implies
 `(6)`.  Equations `(3)`--`(6)` give `(7)`.
 
+## Theorem: universal critical normal-cone crossover
+
+The fixed-\(c\) trichotomy has a nontrivial transition layer of width \(1/\log x\).  Define
+\[
+ \Phi(u)
+ =
+ \frac12\int_0^1\frac{(e^{ut}-1)^2}{t}\,dt,
+ \qquad u\in\mathbb R.                                  \tag{7a}
+\]
+The integrand extends continuously by zero at \(t=0\).
+
+`[PROVED HERE]` For every fixed real \(u\), put \(c_x=u/\log x\).  Then
+\[
+ \boxed{
+ {\cal H}_x(c_x)\longrightarrow e^{-\Phi(u)}.
+ }                                                       \tag{7b}
+\]
+
+Thus the singular third completion has a canonical real normal coordinate
+\[
+ u=c\log x,                                             \tag{7c}
+\]
+and its Hellinger comparison does not jump directly from bulk to the two off-line Rees faces.
+It passes through the universal positive profile \(e^{-\Phi(u)}\).
+
+### Proof
+
+For \(p\leq x\), write
+\[
+ q=p^{-1},\qquad t_p=\frac{\log p}{\log x}.
+\]
+Substitution of \(c_x\) into `(1)` gives
+\[
+ \log H_p(c_x)
+ =
+ \frac12\log(1-q)
+ +\frac12\log(1-qe^{2ut_p})
+ -\log(1-qe^{ut_p}).                                    \tag{7d}
+\]
+Taylor expansion in \(q\), with the finitely many small primes separated, yields
+\[
+ \log H_p(c_x)
+ =
+ -\frac{(e^{ut_p}-1)^2}{2p}+R_{p,x}.                    \tag{7e}
+\]
+For fixed \(u\), the remainders are dominated by \(C_u p^{-2}\).  For every fixed prime,
+\(R_{p,x}\to0\) because \(c_x\to0\).  Dominated convergence over the primes therefore gives
+\[
+ \sum_{p\leq x}R_{p,x}\longrightarrow0.                 \tag{7f}
+\]
+
+For every fixed integer \(n\geq1\), prime-number-theorem partial summation gives
+\[
+ \frac1{(\log x)^n}\sum_{p\leq x}\frac{(\log p)^n}{p}
+ \longrightarrow\frac1n.                                \tag{7g}
+\]
+The uniformly absolutely convergent expansion
+\[
+ (e^{ut}-1)^2
+ =
+ \sum_{n\geq2}\frac{(2^n-2)u^n}{n!}t^n                 \tag{7h}
+\]
+and the bound \(t^n\leq t^2\) on \([0,1]\) allow the limit to pass through the series.  Hence
+\[
+ \sum_{p\leq x}\frac{(e^{ut_p}-1)^2}{p}
+ \longrightarrow
+ \sum_{n\geq2}\frac{(2^n-2)u^n}{n!\,n}
+ =
+ \int_0^1\frac{(e^{ut}-1)^2}{t}\,dt.                    \tag{7i}
+\]
+Summing `(7e)` and using `(7f)`--`(7i)` proves `(7b)`.
+
+## Geometry of the crossover
+
+The profile has the following exact consequences.
+
+1. \(\Phi(0)=0\), while \(\Phi(u)>0\) for \(u\ne0\).
+2. Its critical quadratic metric is
+   \[
+    \Phi(u)=\frac{u^2}{4}+O(u^3),\qquad
+    \Phi''(0)=\frac12.                                   \tag{7j}
+   \]
+3. Reflection has a strict orientation:
+   \[
+    \Phi(u)-\Phi(-u)
+    =
+    2\int_0^1
+      \frac{\sinh(ut)(\cosh(ut)-1)}{t}\,dt,              \tag{7k}
+   \]
+   which has the sign of \(u\).
+4. For \(v\to+\infty\),
+   \[
+    \Phi(-v)
+    =
+    \frac12(\log v+\gamma-\log2)+o(1),                  \tag{7l}
+   \]
+   while
+   \[
+    \Phi(v)
+    =
+    \frac{e^{2v}}{4v}(1+o(1)).                           \tag{7m}
+   \]
+
+Equation `(7l)` follows after \(y=vt\) from
+\[
+ \int_0^v\frac{(1-e^{-y})^2}{y}\,dy
+ =
+ \log v+\gamma-\log2+2E_1(v)-E_1(2v).
+\]
+Equation `(7m)` is endpoint Laplace asymptotics; the \(e^{2vt}\) term dominates the
+\(e^{vt}\) and constant terms.  The two ends of one profile have the same leading forms as the
+half-normal logarithmic scale and the rapid exponential scale of `(4)`--`(6)` after
+\(u=c\log x\) is substituted.  The crossover theorem itself is for fixed \(u\); no uniform
+interchange of \(x\to\infty\) and \(u\to\pm\infty\) is asserted.  The fixed-\(c\) endpoint laws
+remain the independent theorems `(4)`--`(6)`.
+
+Mertens' theorem also identifies the normal coordinate with the exact Wold scale:
+\[
+ u=c\log x
+ =
+ e^{-\gamma}\frac{c}{a_x}(1+o(1)).                       \tag{7m'}
+\]
+
+There is also an exact source-metric identity.  Differentiating the local affinity at the critical
+sector gives
+\[
+ -\left.\frac{d^2}{dc^2}\log H_p(c)\right|_{c=0}
+ =
+ (\log p)^2\frac{p^{-1}}{(1-p^{-1})^2}.                  \tag{7n}
+\]
+If
+\[
+ d_p^2=\frac{p^{-1}}{(1+p^{-1})^2}
+\]
+is the already formalized squarefree Fisher/WKB capacity, then
+\[
+ -\left.\frac{d^2}{dc^2}\log H_p(c)\right|_{c=0}
+ =
+ (\log p)^2
+ \left(\frac{1+p^{-1}}{1-p^{-1}}\right)^2 d_p^2.         \tag{7o}
+\]
+Consequently
+\[
+ -\frac1{(\log x)^2}
+ \left.\frac{d^2}{dc^2}\log{\cal H}_x(c)\right|_{c=0}
+ \longrightarrow\frac12,                                \tag{7p}
+\]
+in agreement with `(7j)`.
+
+Equations `(7n)`--`(7o)` give the first exact metric comparison between the prime-valuation
+Hellinger fracture and the squarefree Fisher/WKB seam.  The correction factor tends to one at
+large primes but is retained exactly.  This supplies a source-derived critical tangent
+calibration; it does not yet prove global order-zero reflection on Xi conormals.
+
 ## Reflection fracture
 
 For a centered divisor character
@@ -293,7 +448,11 @@ This separates the precise source problem from the already false normalized-Cauc
 Parent mathematics includes Kakutani's product-measure theorem, Hellinger affinity, Mertens'
 product theorem, prime-number-theorem partial summation, Rees filtrations, and Stokes moderation.
 Targeted searches located these parents but not the three-face asymptotic `(3)`--`(7)` for the
-ordinary-prime geometric valuation sectors, nor its functional-equation reflection use.
+ordinary-prime geometric valuation sectors, the critical crossover `(7a)`--`(7p)`, nor their
+functional-equation reflection use.  Searches also checked prime-factor Poisson models,
+mod-Poisson convergence, local asymptotic normality, and Hellinger geometry of product models.
+Those are conceptual parents for a critical scaling profile but no located source states the
+specific ordinary-prime geometric-sector limit `(7b)` or its two Rees endpoint laws.
 
 The exact asymptotic theorem is elementary once `(1)` is written, so novelty is provisional and
 restricted to the source-specific Hellinger--Rees interpretation and reflection fracture.  The RH
@@ -319,6 +478,9 @@ Primary parents:
 - [x] exact local Hellinger affinity inherited from the proved Kakutani card
 - [x] negative-slope half-density asymptotic paper-proved
 - [x] positive-slope super-Rees-flat asymptotic paper-proved
+- [x] critical \(c=u/\log x\) normal-cone crossover paper-proved
+- [x] crossover orientation and both endpoint asymptotics paper-proved
+- [x] exact valuation-Hellinger/squarefree-Fisher metric comparison paper-proved
 - [x] reflection fracture and exact selector paper-proved
 - [x] normalization-amplification no-go incorporated
 - [x] preliminary corpus and literature noncollision search

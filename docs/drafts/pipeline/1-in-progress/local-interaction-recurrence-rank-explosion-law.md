@@ -256,15 +256,53 @@ connected, so every coefficient is equal and only trace survives. A
 symmetric-polynomial null-set argument then gives dense full-measure
 maximality.
 
-This closes the hostile bounded-degree objection for qubit chains. It does
-not yet prove the frozen clause for every connected graph or every
-\(q\geq2\).
+This closes the hostile bounded-degree objection for qubit chains.
+
+## Post-freeze all-local-dimensions core proved
+
+`../2-fully-proven/nearest-neighbor-qudit-projective-spectral-maximality.md`
+extends the endpoint construction to every finite local dimension
+\(q\geq2\). For almost every arbitrary one-site plus nearest-neighbour
+two-site Hamiltonian on an open \(q\)-level path,
+\[
+ \rho(H)=q^n-1.
+\]
+The equality graph in the extension step is the categorical product of the
+old endpoint transition graph with \(K_q\); connectedness follows because
+the old graph is non-bipartite. A separate endpoint-observability induction
+supplies the required open witness set. Every interaction graph containing a
+spanning path inherits the theorem.
+
+The same theorem gives, without a finite-order cutoff:
+
+1. every equal-length additive energy relation is a trivial equality of
+   multisets;
+2. exact recurrence density
+   \[
+   \left(2\arcsin(\varepsilon/2)/\pi\right)^{q^n-1};
+   \]
+3. with \(S_{\max}=n\log q\),
+   \[
+   -\log d_H(\varepsilon)
+   =
+   (e^{S_{\max}}-1)
+   \log\!\frac{\pi}{2\arcsin(\varepsilon/2)}.
+   \]
+
+`../2-fully-proven/local-chain-metric-recurrence-exponents.md` separately
+closes the typical first-return exponent on the local spectral manifold at
+paper level.
+
+These are paper proofs only. Specialist, priority and formal gates remain
+open.
 
 ## Gates
 
 - [x] 0 → 1: recognized external question, exact conjecture, physical
       observable and hard falsifiers recorded
-- [ ] 1 → 2: complete paper proof of `(5)`--`(11)`
+- [x] 1 → 2 for open paths at every \(q\), including exact density and
+      metric first-return exponents
+- [ ] 1 → 2 for every connected graph without a spanning path
 - [ ] 2 → 3: exact unconditional Lean theorem; axiom and lint gates
 - [ ] 3 → 4: unified manuscript, primary-source priority audit and hostile
       Nature review

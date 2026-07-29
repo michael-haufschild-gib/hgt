@@ -1,0 +1,688 @@
+# Dyadic fermionization of prime valuations and the universal critical normal cone
+
+- **ID:** `prime-valuation-dyadic-fermion-normal-cone-law`
+- **Stage:** 2-fully-proven / external novelty audit preliminary
+- **Type:** EXACT PRIME-SOURCE FACTORIZATION / HELLINGER NORMAL-CONE THEOREM
+- **Scientific status:** `[PAPER PROOF COMPLETE]`
+  `[DYADIC SOURCE FACTORIZATION IS CORPUS-KNOWN PARENT]`
+  `[HELLINGER NORMAL-CONE UNIVERSALITY CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
+  `[SIGNIFICANCE PASS] [NOT RH]`
+- **Parents:**
+  - `../../1-in-progress/prime-valuation-hellinger-rees-reflection-fracture.md`;
+  - `../prime-valuation-kakutani-polar-third-completion.md`;
+  - `../not_new_scientific_knowledge/dyadic-squarefree-euler-fock-source-factorization.md`;
+  - `../../3-formalized/new_scientific_knowledge/prime-first-trace-exponential-flat-graph-fracture.md`;
+  - `../../1-in-progress/deninger-enhanced-adiabatic-milnor-calderon-vanishing-cycle.md`.
+
+## The jump
+
+The corpus already proves that the geometric Euler state and the squarefree/Mobius state are the
+bosonic and first fermionic faces of one exact dyadic Fock factorization, including its unitary,
+logarithmic-current, Fisher-tangent, and affine-cutoff laws.  That factorization is accumulated
+parent knowledge, not rediscovered novelty here.
+
+The new question is what this exact source channel does to the three-face Hellinger--Rees
+completion.  The answer is stronger than tangent-energy convergence: the squarefree digit carries
+the entire non-Gaussian critical normal-cone profile, while every higher dyadic digit disappears
+from that profile.
+
+For \(0<q<1\), let
+\[
+ \mu_q(k)=(1-q)q^k,\qquad k\in\mathbb N.
+\]
+Write the binary expansion
+\[
+ k=\sum_{j\geq0}2^j\epsilon_j,\qquad \epsilon_j\in\{0,1\}.
+\]
+Then the digits are independent and
+\[
+ \boxed{
+ \mu_q
+ \simeq
+ \bigotimes_{j\geq0}\nu_{q^{2^j}},
+ \qquad
+ \nu_r(\epsilon)=\frac{r^\epsilon}{1+r}.
+ }                                                       \tag{1}
+\]
+
+The \(j=0\) digit is valuation parity.  At \(q=p^{-1}\), it is exactly the local squarefree
+Bernoulli/Mobius state.  Every \(j\geq1\) digit has prime weight at most \(p^{-2}\) and belongs to
+the regular all-prime tail.
+
+Combining the parent factorization with the new Hellinger calculation gives:
+
+1. the complete critical Hellinger normal cone is carried by the single squarefree digit;
+2. every higher binary digit is asymptotically invisible on the critical \(1/\log x\) scale;
+3. geometric valuation Fisher curvature splits exactly into the squarefree Fisher curvature plus
+   a summable dyadic tower;
+4. the only divergent all-prime first trace is the squarefree digit;
+5. every strict-right zeta zero is already a zero of the squarefree Euler layer.
+
+Items 1--3 are the new theorem surface.  Items 4--5 are known corpus consequences now seen to be
+the two endpoint shadows of the same squarefree normal-cone law.
+
+## 1. Exact local probability factorization
+
+Euler's binary identity is
+\[
+ \prod_{j\geq0}(1+q^{2^j})=\frac1{1-q}.                  \tag{2}
+\]
+For a finite binary word \(\epsilon\) representing \(k\),
+\[
+ \prod_{j\geq0}
+ \frac{q^{2^j\epsilon_j}}{1+q^{2^j}}
+ =
+ (1-q)q^k.                                               \tag{3}
+\]
+Moreover
+\[
+ \sum_{j\geq0}\frac{q^{2^j}}{1+q^{2^j}}<\infty,
+\]
+so the product Bernoulli measure has only finitely many nonzero digits almost surely.  Binary
+summation is therefore an almost-sure inverse and `(1)` is an isomorphism of probability spaces.
+
+The first split is already exact:
+\[
+ k=\epsilon+2m,\qquad
+ \mu_q(k)=\nu_q(\epsilon)\mu_{q^2}(m).                   \tag{4}
+\]
+Thus parity and paired occupation are independent.  The parity pushforward is
+\[
+ \Pr(k\ {\rm even})=\frac1{1+q},\qquad
+ \Pr(k\ {\rm odd})=\frac q{1+q}.                         \tag{5}
+\]
+
+For a finite prime aperture, product of the parity maps is the source-defined Markov channel from
+full valuations to squarefree valuations.  Its pointed Hilbert/unitary refinement and Fisher
+tangent transport are already proved in the dyadic-Fock parent.  Its pullback on commutative
+observable algebras is unital and positive, and its standard \(L^2\) conditional expectation is
+contractive.  This existing finite source leg still does not construct the independent Xi
+reporter.
+
+## 2. Exact Hellinger digit factorization
+
+For the prime radial family put
+\[
+ q_{p,0}=p^{-1},\qquad q_{p,c}=p^{-(1-2c)}.
+\]
+The geometric Hellinger affinity is
+\[
+ H_p^{\rm geo}(c)
+ =
+ \frac{\sqrt{(1-q_{p,0})(1-q_{p,c})}}
+ {1-\sqrt{q_{p,0}q_{p,c}}}.                              \tag{6}
+\]
+The \(j\)-th binary digit has affinity
+\[
+ H_{p,j}^{\rm bit}(c)
+ =
+ \frac{1+(q_{p,0}q_{p,c})^{2^{j-1}}}
+ {\sqrt{(1+q_{p,0}^{2^j})(1+q_{p,c}^{2^j})}}
+ =
+ \frac{1+p^{-2^j(1-c)}}
+ {\sqrt{(1+p^{-2^j})(1+p^{-2^j(1-2c)})}}.               \tag{7}
+\]
+For \(j=0\), the exponent \(2^{j-1}\) in the first expression means the square root; the second
+expression is uniform and unambiguous.
+
+Hellinger affinity is multiplicative on product measures.  Equation `(1)` gives
+\[
+ \boxed{
+ H_p^{\rm geo}(c)=\prod_{j\geq0}H_{p,j}^{\rm bit}(c).
+ }                                                       \tag{8}
+\]
+At the first split,
+\[
+ \frac{H_{p,0}^{\rm bit}(c)}{H_p^{\rm geo}(c)}
+ =
+ \frac{1-p^{-2(1-c)}}
+ {\sqrt{(1-p^{-2})(1-p^{-2(1-2c)})}}
+ \geq1.                                                  \tag{9}
+\]
+The inequality is the Hellinger data-processing inequality for parity; algebraically its square
+reduces to \((a-b)^2\geq0\).
+
+## 3. Squarefree universality of the critical normal cone
+
+For \(x\geq2\), define
+\[
+ {\cal H}_x^{\rm geo}(c)=\prod_{p\leq x}H_p^{\rm geo}(c),
+ \qquad
+ {\cal H}_{x,j}^{\rm bit}(c)=\prod_{p\leq x}H_{p,j}^{\rm bit}(c).
+\]
+Let
+\[
+ \Phi(u)=\frac12\int_0^1\frac{(e^{ut}-1)^2}{t}\,dt.      \tag{10}
+\]
+
+> **[THEOREM -- SQUAREFREE CRITICAL NORMAL-CONE UNIVERSALITY.]**
+> For every fixed \(u\in\mathbb R\), with \(c_x=u/\log x\),
+> \[
+> {\cal H}_{x,0}^{\rm bit}(c_x)\longrightarrow e^{-\Phi(u)},       \tag{11}
+> \]
+> \[
+> \prod_{j\geq1}{\cal H}_{x,j}^{\rm bit}(c_x)\longrightarrow1,     \tag{12}
+> \]
+> and consequently
+> \[
+> {\cal H}_x^{\rm geo}(c_x)\longrightarrow e^{-\Phi(u)}.          \tag{13}
+> \]
+
+### Proof
+
+For \(t_p=\log p/\log x\), Taylor expansion of `(7)` at \(j=0\) gives
+\[
+ \log H_{p,0}^{\rm bit}(c_x)
+ =
+ -\frac{(e^{ut_p}-1)^2}{2p}+O_u(p^{-2}),                \tag{14}
+\]
+where the total remainder tends to zero by dominated convergence: each fixed-prime remainder
+tends to zero as \(c_x\to0\), and a summable \(O_u(p^{-2})\) majorant is available after finitely
+many small primes are separated.
+
+Prime-number-theorem partial summation gives, for every \(n\geq1\),
+\[
+ \frac1{(\log x)^n}
+ \sum_{p\leq x}\frac{(\log p)^n}{p}\longrightarrow\frac1n.        \tag{15}
+\]
+Using
+\[
+ (e^{ut}-1)^2
+ =
+ \sum_{n\geq2}\frac{(2^n-2)u^n}{n!}t^n,
+\]
+uniform absolute convergence on \(0\leq t\leq1\) turns `(15)` into
+\[
+ \sum_{p\leq x}\frac{(e^{ut_p}-1)^2}{p}
+ \longrightarrow
+ \int_0^1\frac{(e^{ut}-1)^2}{t}\,dt.                    \tag{16}
+\]
+Equations `(14)`--`(16)` prove `(11)`.
+
+For all sufficiently large \(x\), \(|c_x|<1/8\).  For \(j\geq1\), the two Bernoulli parameters in
+`(7)` are bounded by a constant times
+\[
+ p^{-(3/4)2^j}.
+\]
+The double series over \(p\) and \(j\geq1\) is summable.  Each fixed \((p,j)\) affinity tends to one
+as \(c_x\to0\), so dominated convergence gives `(12)`.  Equation `(8)` then gives `(13)`. `QED`
+
+### Full two-parameter kernel and Fock realization
+
+The one-point profile is the diagonal slice of a complete limiting experiment.  Let
+\({\cal H}_x^{\rm geo}(c,d)\) and \({\cal H}_{x,j}^{\rm bit}(c,d)\) denote the affinities between
+parameters \(c\) and \(d\).  For fixed real \(u,v\), put
+\[
+ c_x=\frac{u}{\log x},\qquad d_x=\frac{v}{\log x}.
+\]
+The same proof, with
+\[
+ -\frac{1}{2p}(e^{ut_p}-e^{vt_p})^2                   \tag{13a}
+\]
+in place of `(14)`, gives
+\[
+ \boxed{
+ {\cal H}_x^{\rm geo}(c_x,d_x)
+ \longrightarrow
+ K(u,v)
+ :=
+ \exp\!\left[
+  -\frac12\int_0^1\frac{(e^{ut}-e^{vt})^2}{t}\,dt
+ \right].
+ }                                                       \tag{13b}
+\]
+The squarefree digit has the same limit, while the product of all \(j\geq1\) digit affinities
+tends to one.
+
+This kernel has a literal positive completion.  Put
+\[
+ {\mathfrak h}=L^2((0,1),dt/t),\qquad
+ F_u(t)=e^{ut}-1.                                       \tag{13c}
+\]
+Since \(F_u(t)=ut+O(t^2)\) at zero, \(F_u\in{\mathfrak h}\), and
+\[
+ K(u,v)=\exp[-\tfrac12\|F_u-F_v\|_{\mathfrak h}^2].     \tag{13d}
+\]
+If \({\rm Exp}(F)\) is the normalized exponential vector in the symmetric Fock space
+\(\Gamma_s({\mathfrak h})\), then
+\[
+ \langle{\rm Exp}(F_u),{\rm Exp}(F_v)\rangle=K(u,v).    \tag{13e}
+\]
+
+Thus the critical all-prime Gram geometry of finite fermionic squarefree lines converges to a
+bosonic coherent-state field.  This is the concrete positive normal-cone chart:
+\[
+ \text{finite prime exterior/Pluecker lines}
+ \quad\longrightarrow\quad
+ \{{\rm Exp}(F_u):u\in\mathbb R\}
+ \subset\Gamma_s({\mathfrak h}).                         \tag{13f}
+\]
+
+### Prime-profile theorem: the scalar curve is a shadow of a full source field
+
+The radial family \(u\mapsto ut\) is not the complete normal experiment.  Let
+\[
+ {\cal F}_0
+ =
+ \{f\in C^1([0,1],\mathbb R):f(0)=0\}.                  \tag{13p}
+\]
+For \(p\leq x\), put \(t_{p,x}=\log p/\log x\) and define the squarefree odds
+\[
+ r_{p,x}(f)=p^{-1}e^{2f(t_{p,x})}.                       \tag{13q}
+\]
+Let \(\nu_{p,x}^f\) be the Bernoulli law
+\[
+ \nu_{p,x}^f(\epsilon)
+ =
+ \frac{r_{p,x}(f)^\epsilon}{1+r_{p,x}(f)}
+ \qquad(\epsilon\in\{0,1\}),                            \tag{13r}
+\]
+and let \({\cal B}_x(f,g)\) be the Hellinger affinity of the product laws
+\(\bigotimes_{p\leq x}\nu_{p,x}^f\) and
+\(\bigotimes_{p\leq x}\nu_{p,x}^g\).
+
+> **[THEOREM -- PRIME-PROFILE SQUAREFREE FOCK LIMIT.]**
+> For every \(f,g\in{\cal F}_0\),
+> \[
+>  {\cal B}_x(f,g)
+>  \longrightarrow
+>  {\cal K}(f,g)
+>  :=
+>  \exp\!\left[
+>   -\frac12\int_0^1
+>   \bigl(e^{f(t)}-e^{g(t)}\bigr)^2\,\frac{dt}{t}
+>  \right].                                             \tag{13s}
+> \]
+> The same limit is obtained from the geometric prime-valuation laws with
+> \(q_{p,x}(f)=p^{-1}e^{2f(t_{p,x})}\); their complete \(j\geq1\) dyadic tail has
+> Hellinger affinity tending to one.
+
+For the squarefree law the local affinity is
+\[
+ \frac{1+p^{-1}e^{f(t_{p,x})+g(t_{p,x})}}
+ {\sqrt{(1+p^{-1}e^{2f(t_{p,x})})
+              (1+p^{-1}e^{2g(t_{p,x})})}}.              \tag{13t}
+\]
+Uniformly on the bounded ranges of \(f\) and \(g\), its logarithm is
+\[
+ -\frac1{2p}\bigl(e^{f(t_{p,x})}-e^{g(t_{p,x})}\bigr)^2
+ +R_{p,x},                                              \tag{13u}
+\]
+where \(|R_{p,x}|\leq C_{f,g}p^{-2}\).  For every fixed \(p\), both the displayed
+principal term and \(R_{p,x}\) tend to zero because \(t_{p,x}\to0\) and
+\(f(0)=g(0)=0\).  Dominated convergence gives
+\[
+ \sum_{p\leq x}R_{p,x}\longrightarrow0.                 \tag{13v}
+\]
+The function
+\[
+ A(t)=\bigl(e^{f(t)}-e^{g(t)}\bigr)^2
+\]
+satisfies \(A(t)=O(t^2)\).  Writing \(A(t)=tB(t)\), with \(B\) continuous and
+\(B(0)=0\), prime-number-theorem partial summation gives
+\[
+ \sum_{p\leq x}\frac{A(t_{p,x})}{p}
+ =
+ \frac1{\log x}\sum_{p\leq x}
+ B(t_{p,x})\frac{\log p}{p}
+ \longrightarrow
+ \int_0^1B(t)\,dt
+ =
+ \int_0^1A(t)\,\frac{dt}{t}.                            \tag{13w}
+\]
+This proves `(13s)`.  For the geometric laws, all sufficiently large \(x\) have
+\(q_{p,x}(f),q_{p,x}(g)<1\) for every \(p\leq x\).  The \(j\geq1\) dyadic
+parameters are then dominated by \(C_{f,g}p^{-2^j}\).  The same fixed-coordinate
+limit plus double-series dominated convergence proves that the regular dyadic tail tends to one.
+
+Put
+\[
+ G_f(t)=e^{f(t)}-1\in{\mathfrak h}.                      \tag{13x}
+\]
+Then
+\[
+ {\cal K}(f,g)
+ =
+ \exp[-\tfrac12\|G_f-G_g\|_{\mathfrak h}^2]
+ =
+ \langle{\rm Exp}(G_f),{\rm Exp}(G_g)\rangle.           \tag{13y}
+\]
+This field is total in the full symmetric Fock space.  Indeed, for every
+\(\varphi\in{\cal F}_0\) and every sufficiently small real \(\epsilon\),
+\[
+ G_{\log(1+\epsilon\varphi)}=\epsilon\varphi.            \tag{13z}
+\]
+The space \({\cal F}_0\) is dense in \({\mathfrak h}\).  If a Fock vector is orthogonal to all
+\({\rm Exp}(G_f)\), its entire coherent transform vanishes on every small line
+\(\epsilon\varphi\).  Polarization kills each homogeneous tensor component, so the vector is zero.
+
+More information survives than the scalar affinity.  The limit has the canonical
+**prime-scale defect measure**
+\[
+ d\kappa_{f,g}(t)
+ =
+ \frac12\bigl(e^{f(t)}-e^{g(t)}\bigr)^2\,\frac{dt}{t},
+ \qquad
+ {\cal K}(f,g)=e^{-\kappa_{f,g}((0,1))}.                 \tag{13aa}
+\]
+Scalar fidelity remembers only its total mass.  The source incidence remembers its location in
+logarithmic prime scale.
+
+For reflection \(f\mapsto-f\), equality of the two defect measures relative to the critical
+source is rigid:
+\[
+ \kappa_{f,0}=\kappa_{-f,0}
+ \quad\Longleftrightarrow\quad
+ f=0.                                                    \tag{13ab}
+\]
+Indeed equality of the absolutely continuous measures gives almost everywhere
+\[
+ (e^f-1)^2-(e^{-f}-1)^2
+ =
+ 4\sinh(f)(\cosh(f)-1)=0,                               \tag{13ac}
+\]
+whose only real solution is \(f=0\); continuity gives pointwise vanishing.  On the radial line
+\(f(t)=ut\), `(13aa)` reduces to \(\Phi(u)\), and `(13ab)` reduces to the unique zero of the
+reflection-odd scalar anomaly \(\Phi(u)-\Phi(-u)\).
+
+This is the first source-complete normal chart in the construction: arbitrary smooth
+prime-scale probes, not one scalar radial parameter, separate the squarefree Fock sector.  It
+also identifies the datum lost by earlier scalar routes.  Determinants, integrated energies,
+single signs, and total Hellinger affinities apply the pushforward
+\[
+ \kappa_{f,g}\longmapsto\kappa_{f,g}((0,1)),
+\]
+before the all-prime limit.  That pushforward is not conservative for general profile fields.
+The RH specialization uses the sign-definite radial subfield, but the producer--reporter
+comparison must retain the measure-valued class to be presentation-controlled rather than
+tailored to the radial answer.
+
+The two-sided source reflection has a canonical positive realization as well.  In
+\({\mathfrak h}\oplus{\mathfrak h}\), set
+\[
+ \widetilde F_u=F_u\oplus F_{-u}.                       \tag{13g}
+\]
+Its coherent kernel
+\[
+ K_{\rm bi}(u,v)
+ =
+ \exp[-\tfrac12\|\widetilde F_u-\widetilde F_v\|^2]      \tag{13h}
+\]
+is invariant under \(u\mapsto-u\): reflection is the unitary swapping the two summands.  This
+unitarity is derived from the two literal chiral source profiles and is not imposed at selected
+zeros.
+
+For finite \(v\),
+\[
+ K(u,v)\longrightarrow0\qquad (u\to+\infty\ \text{or}\ u\to-\infty).          \tag{13i}
+\]
+Indeed \(\|F_u\|^2=2\Phi(u)\to\infty\) at both ends.  Since coherent vectors are total, the
+normalized vectors \({\rm Exp}(F_u)\) escape weakly to zero as \(|u|\to\infty\).  A fixed
+off-critical exponent \(c\ne0\) has \(u=c\log x\to\pm\infty\); the critical exponent has \(u=0\).
+The rigged completion must retain the two escaping ends as half-normal and rapid boundary
+functionals, but its positive Hausdorff middle chart is now explicit.
+
+The theorem therefore says more than equality of two quadratic metrics.  The entire non-Gaussian
+kernel `(13b)`, for every finite pair of normal coordinates, survives parity coarse-graining.
+The higher occupation digits carry no part of that critical boundary experiment.
+
+### The half-normal end as a generalized coherent boundary
+
+The negative end admits an explicit rigged limit.  Let
+\[
+ \Phi_1=\{f\in C^\infty[0,1]:f(0)=0\}
+ \subset{\mathfrak h}.
+                                                               \tag{13j}
+\]
+With its usual smooth Fréchet topology, the functional
+\[
+ \ell_-(f)=-\int_0^1 f(t)\,\frac{dt}{t}                  \tag{13k}
+\]
+is continuous: \(f(t)/t\) extends continuously to \(t=0\).  For \(V\to+\infty\),
+\[
+ \langle F_{-V},f\rangle_{\mathfrak h}
+ =
+ \int_0^1(e^{-Vt}-1)f(t)\,\frac{dt}{t}
+ \longrightarrow\ell_-(f)                              \tag{13l}
+\]
+by dominated convergence.  Hence \(F_{-V}\to\ell_-\) weakly in \(\Phi_1'\), although
+\(\|F_{-V}\|_{\mathfrak h}\to\infty\).
+
+Let \(e(F)\) denote the unnormalized exponential vector.  Since
+\[
+ e(F_{-V})=e^{\Phi(-V)}{\rm Exp}(F_{-V}),                \tag{13m}
+\]
+for every exponential test vector \(e(f)\), \(f\in\Phi_1\),
+\[
+ \langle e(F_{-V}),e(f)\rangle
+ =
+ \exp\langle F_{-V},f\rangle
+ \longrightarrow
+ \exp(\ell_-(f)).                                       \tag{13n}
+\]
+Thus the half-normal renormalization has a canonical generalized coherent boundary functional
+\(e^{\ell_-}\) on the exponential test algebra.  Its scale is exact:
+\[
+ e^{\Phi(-V)}
+ \sim
+ \sqrt{\frac{e^\gamma V}{2}}.                           \tag{13o}
+\]
+With \(V=|c|\log x\), this is the inverse Wold half-density scale up to the explicit factor
+\(\sqrt{|c|/2}\).
+
+The positive end is genuinely different.  Pairing \(F_V\) with the single test function \(f(t)=t\)
+already grows like \(e^V/V\), so \(F_V\) has no limit in \(\Phi_1'\).  It requires the
+rapid/Stokes enhancement retained by the full boundary-complexity object.  In the doubled chart,
+reflection exchanges which component has the half-normal generalized coherent limit and which
+component escapes rapidly.
+
+This is a literal three-face construction:
+
+```text
+finite u:       positive Hausdorff coherent Fock chart;
+u -> -infinity: generalized coherent half-normal boundary in Phi_1';
+u -> +infinity: no distributional limit; enhanced rapid/Stokes face required.
+```
+
+No Xi zero or divisor topology enters this rigging.
+
+The scale is the Wold normal scale:
+\[
+ a_x=\prod_{p\leq x}(1-p^{-1})
+ \sim\frac{e^{-\gamma}}{\log x},
+ \qquad
+ u=e^{-\gamma}\frac{c}{a_x}(1+o(1)).                    \tag{17}
+\]
+
+## 4. Exact dyadic Fisher decomposition
+
+The critical Hellinger curvature of the geometric state is
+\[
+ -\left.\partial_c^2\log H_p^{\rm geo}(c)\right|_{c=0}
+ =
+ (\log p)^2\frac{q}{(1-q)^2},
+ \qquad q=p^{-1}.                                       \tag{18}
+\]
+For the \(j\)-th binary digit it is
+\[
+ -\left.\partial_c^2\log H_{p,j}^{\rm bit}(c)\right|_{c=0}
+ =
+ (\log p)^2
+ \frac{4^j q^{2^j}}{(1+q^{2^j})^2}.                    \tag{19}
+\]
+Differentiating `(8)`, or taking variance in the independent binary expansion of \(k\), gives the
+exact identity
+\[
+ \boxed{
+ \frac{q}{(1-q)^2}
+ =
+ \sum_{j\geq0}
+ \frac{4^j q^{2^j}}{(1+q^{2^j})^2}.
+ }                                                       \tag{20}
+\]
+
+The \(j=0\) term is precisely the squarefree Fisher/WKB capacity
+\[
+ d_p^2=\frac{p^{-1}}{(1+p^{-1})^2}.                     \tag{21}
+\]
+All \(j\geq1\) terms are summable over the ordinary primes.  Therefore
+\[
+ \frac1{(\log x)^2}
+ \sum_{p\leq x}(\log p)^2
+ \frac{p^{-1}}{(1-p^{-1})^2}
+ \longrightarrow\frac12,                                \tag{22}
+\]
+and the same limit is obtained after retaining only \(j=0\).  The discarded dyadic tower changes
+finite calibration but not the critical normal-cone metric or profile.
+
+## 5. Euler factor and first-trace decomposition `[CORPUS-KNOWN PARENT, REINTERPRETED]`
+
+Equation `(2)` gives, initially for \(\Re s>1\),
+\[
+ \frac1{1-p^{-s}}
+ =
+ \prod_{j\geq0}(1+p^{-2^j s}).                           \tag{23}
+\]
+Globally,
+\[
+ \prod_p(1+p^{-2^j s})
+ =
+ \frac{\zeta(2^j s)}{\zeta(2^{j+1}s)},                  \tag{24}
+\]
+so the binary tower telescopes to \(\zeta(s)\).  The singular first digit is
+\[
+ \prod_p(1+p^{-s})=\frac{\zeta(s)}{\zeta(2s)}.           \tag{25}
+\]
+
+At \(s=1\), only \(j=0\) has divergent first trace:
+\[
+ \sum_p p^{-1}=\infty,\qquad
+ \sum_p p^{-2^j}<\infty\quad(j\geq1).                   \tag{26}
+\]
+Thus the Wold/BV first-trace anomaly and the squarefree Fisher seam are literally the same binary
+source layer.  The higher bits form the regular determinant-compatible correction.
+
+There is also an exact right-half divisor consequence.  If \(\Re\rho>1/2\), then
+\(\Re(2\rho)>1\), so \(\zeta(2\rho)\) is finite and nonzero.  Hence
+\[
+ \zeta(\rho)=0
+ \quad\Longleftrightarrow\quad
+ \frac{\zeta(\rho)}{\zeta(2\rho)}=0
+ \qquad(\Re\rho>1/2).                                   \tag{27}
+\]
+Every hypothetical strict-right zero is therefore already carried by the singular squarefree
+digit.  Functional-equation reflection handles the strict-left mate.  No higher binary occupation
+layer is needed to detect the RH obstruction.
+
+## 6. Meaning for the third completion
+
+The target-side third completion is not an unknown scalar Hilbert space.  The exact source
+decomposition is
+\[
+ \text{prime valuation sector}
+ =
+ \text{squarefree singular sector}
+ \widehat\otimes
+ \text{summable dyadic regular tower}.                   \tag{28}
+\]
+On the critical normal cone, parity is asymptotically sufficient: its Markov channel retains the
+complete Hellinger comparison profile and the entire divergent Fisher metric.  The regular tower
+can be handled by ordinary determinant/Gamma transport; the squarefree sector requires the
+singular Rees/Tate correspondence and carries every possible strict-right zeta zero.
+
+The finite source leg was already closed by the dyadic-Fock parent.  The new theorem adds exact
+normal-cone control: its parity reduction retains the full critical Hellinger experiment, not only
+the limiting quadratic Fisher energy.  What remains open is the independent
+source-to-reporter theorem:
+
+```text
+squarefree singular source correspondence
+  -> exceptional Gamma/Mellin reporter
+  -> every Xi principal conormal and multiplicity jet.
+```
+
+Neither `(1)` nor `(27)` constructs that arrow.
+
+## 7. Hostile audit
+
+1. **Binary factorization is corpus-known parent mathematics.**  Equations `(1)`--`(5)`, the
+   global unitary, logarithmic-current split, Fisher-tangent split, dyadic telescope, and affine
+   cutoff were already proved in
+   `dyadic-squarefree-euler-fock-source-factorization.md`.  None is a novelty claim here.
+2. **The crossover theorem is local in normal coordinate.**  Equations `(11)`--`(13)` hold for
+   fixed \(u\).  Their \(u\to\pm\infty\) asymptotics match the independently proved fixed-\(c\)
+   Rees laws, but no unproved uniform interchange of \(x\to\infty\) and \(u\to\infty\) is used.
+3. **Parity is not globally sufficient.**  It discards paired prime occupation at finite aperture.
+   Its sufficiency assertion is restricted to the critical Hellinger normal cone and divergent
+   Fisher scale.
+4. **The coherent chart is not the whole third completion.**  Fixed off-line characters escape
+   to \(|u|=\infty\), and the aperture-Stokes regime
+   \(\log X\asymp(\sigma-1)^{-2}\) lives beyond every compact \(u\)-chart.  The half-normal, rapid,
+   and residue-sensitive Stokes ends must remain in a rigged/enhanced boundary.
+5. **Right-half detection is not RH.**  Equation `(27)` says where an off-line zero would be
+   represented, not that it cannot exist.
+6. **No target divisor was inserted.**  Factorization, Markov channel, Hellinger profile, and
+   Fisher decomposition are defined for every radial parameter before zero specialization.
+7. **Multiplicity remains open.**  Polynomial valuation jets and the top Xi conormal jet have not
+   yet been transported through the exceptional reporter.
+
+## 8. Novelty and significance gate
+
+Parent mathematics includes binary expansion, Euler's product `(2)`, Bose/Fermi product
+factorizations, Hellinger data processing, Fisher information, Kakutani product measures, and
+prime-number-theorem partial summation.  The complete dyadic source/Fisher factorization and
+right-half squarefree localization are also accumulated corpus parents.  Searches checked
+mod-Poisson prime-factor models, local asymptotic normality, geometric/Bose distributions, and
+Bose--Fermi decompositions.
+
+No located external source, and no prior corpus card, states the candidate-new residue
+\[
+ \text{prime geometric Hellinger local experiment}
+ \xrightarrow{\rm parity}
+ \text{same full coherent kernel }K(u,v)
+ \text{, reflection-doubled Fock normal cone, and generalized half-normal end}
+ \quad\text{with all higher dyadic experiments tending to the unit}.          \tag{29}
+\]
+The exact Fisher series `(20)` is a useful infinitesimal shadow of this profile, but is elementary
+once the parent independent-digit decomposition is known.  This is a preliminary noncollision
+finding, not a priority certificate.
+
+- `[ANTI-THEATRE -- PASS]` Novelty is restricted to `(11)`--`(13i)` and their source-completion
+  interpretation.  Parent binary/Fisher/divisor results are explicitly excluded.
+- `[SIGNIFICANCE -- PASS]` The theorem proves that the already source-canonical parity channel is
+  asymptotically sufficient for the complete critical Hellinger normal cone, not only its
+  quadratic tangent, and constructs its positive reflection-doubled coherent-state chart.  It
+  materially narrows the singular completion while reusing rather than renaming prior source work.
+- `[FIELDS VERDICT]` Not by itself.  Fields-scale content begins with the squarefree
+  source-to-exceptional-reporter equivalence and conormal conservativity, which would imply RH.
+- `[RH BOUNDARY]` No source-to-Xi landing or exclusion theorem is proved.
+
+## 9. Lean boundary
+
+The local identities `(1)`--`(9)`, finite binary truncations, and finite Fisher decomposition are
+appropriate unconditional Lean targets.  The infinite probability isomorphism needs an
+almost-sure finite-support argument; `(11)`--`(13)` and `(22)` need prime asymptotics.  No analytic
+claim is inserted as an axiom.  Formalization should wait until an independent paper audit confirms
+the theorem surface.
+
+## Gates
+
+- [x] exact geometric valuation binary factorization inherited and re-audited
+- [x] parity/Mobius source channel inherited and re-audited
+- [x] exact Hellinger digit product proved here
+- [x] squarefree-only critical normal-cone theorem proved
+- [x] full two-parameter Hellinger kernel limit proved
+- [x] coherent Fock and reflection-doubled positive normal-cone charts constructed
+- [x] generalized coherent half-normal boundary constructed
+- [x] rapid end proved absent from the distributional test dual
+- [x] exact dyadic Fisher decomposition proved
+- [x] first-trace divergence isolation inherited
+- [x] strict-right zeta divisor localization inherited
+- [x] finite source Markov/CP leg inherited
+- [x] hostile limit-order audit recorded
+- [x] preliminary external collision search
+- [ ] independent probability/information-geometry audit
+- [ ] independent analytic-number-theory audit
+- [ ] formalize dependency-closed algebraic core in Lean
+- [ ] construct squarefree source-to-exceptional-reporter comparison
+- [ ] prove Xi conormal and multiplicity-jet conservativity

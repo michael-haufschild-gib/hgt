@@ -11,11 +11,11 @@
 
 ## Main theorem
 
-Let \(\mathcal L_{P_n}\) be the full real space of traceless one-site and
-nearest-neighbour two-site Hamiltonians on an open chain of \(n\geq2\)
-qubits. Put
+Let \(q\geq2\), and let \(\mathcal L_{P_n,q}\) be the full real space of
+traceless one-site and nearest-neighbour two-site Hamiltonians on an open
+chain of \(n\geq2\) \(q\)-level systems. Put
 \[
- D=2^n,\qquad d=D-1.
+ D=q^n,\qquad d=D-1.
 \]
 For a simple-spectrum Hamiltonian, order the eigenvalues and define its
 projective gap vector
@@ -23,7 +23,7 @@ projective gap vector
  g(H)=(E_2-E_1,\ldots,E_D-E_1)\in\mathbb R^d.       \tag{1}
 \]
 
-For Lebesgue-almost every \(H\in\mathcal L_{P_n}\), the following limits
+For Lebesgue-almost every \(H\in\mathcal L_{P_n,q}\), the following limits
 hold.
 
 For integer-time sampling, let
@@ -40,7 +40,7 @@ Then
  \boxed{
  \lim_{r\downarrow0}
  \frac{\log T_H^{\rm disc}(r)}{\log(1/r)}
- =d=2^n-1.
+ =d=q^n-1.
  }                                                    \tag{3}
 \]
 
@@ -77,7 +77,7 @@ The corresponding physical time differs from
  \boxed{
  \lim_{r\downarrow0}
  \frac{\log T_H^{\rm cont}(r)}{\log(1/r)}
- =d-1=2^n-2.
+ =d-1=q^n-2.
  }                                                    \tag{6}
 \]
 
@@ -89,12 +89,12 @@ nondegenerate quadratic minimum at the return point, then phase radius
  \lim_{\varepsilon\downarrow0}
  \frac{\log T_H^{\rm disc}(\varepsilon)}
       {\log(1/\varepsilon)}
- =\frac{2^n-1}{2},
+ =\frac{q^n-1}{2},
  \qquad
  \lim_{\varepsilon\downarrow0}
  \frac{\log T_H^{\rm cont}(\varepsilon)}
       {\log(1/\varepsilon)}
- =2^{n-1}-1.
+ =\frac{q^n-2}{2}.
  }                                                    \tag{7}
 \]
 
@@ -142,11 +142,13 @@ Letting \(\eta\downarrow0\) gives the liminf bound \(m\). ∎
 On a simple-spectrum chart, regard the centered ordered spectrum as an
 analytic map
 \[
- F:\mathcal L_{P_n}\longrightarrow
+ F:\mathcal L_{P_n,q}\longrightarrow
  W=\{x\in\mathbb R^D:\sum_jx_j=0\}.                  \tag{10}
 \]
-The endpoint-extension theorem proves that on one such chart there is no
-constant real affine relation among the eigenbranches except trace.
+The qudit endpoint-extension theorem in
+`nearest-neighbor-qudit-projective-spectral-maximality.md` proves that on one
+such chart there is no constant real affine relation among the eigenbranches
+except trace.
 Consequently the positive-order derivatives of \(F\), up to some finite
 order, span \(W\) at some point: otherwise a nonzero covector annihilating
 their span would make its pairing with \(F\) locally constant and hence give

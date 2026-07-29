@@ -3,7 +3,7 @@
 - **ID:** `noninvertible-event-complementary-record-boundary`
 - **Stage:** 2-fully-proven
 - **Type:** EXACT LINEAR-ALGEBRA NO-GO / MINIMAL-RECORD CLASSIFICATION / PHYSICS BRIDGE
-- **Status:** `[PAPER-PROVED] [REDISCOVERED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
+- **Status:** `[PAPER-PROVED] [LEAN-PROVED] [REDISCOVERED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Parent:** `../../1-in-progress/actuality-creates-future-law.md`
 - **Physics target:** `../../1-in-progress/purity-boundary-theory-of-everything.md`
 - **Lean target:** `formal/GaloisForLFunctions/HTGeometry/EventComplementaryRecord.lean`
@@ -244,13 +244,27 @@ lemma after its automorphism interface is fixed.
 The physical complementary-record law is not ready for Lean.  No physical assumption may be
 introduced as a Lean axiom or hypothesis and then advertised as proof.
 
+The exact boundary is now formalized in
+`formal/GaloisForLFunctions/HTGeometry/EventComplementaryRecord.lean` through:
+
+- `eventKernel_le_postReportKernel`;
+- `eventRecordOnKernel_injective`;
+- `eventRecord_finrank_lower_bound`;
+- `eventKernel_finrank_eq_coker_of_equal_finrank`;
+- `eventRecordOnKernel_bijective_of_combined_injective`;
+- `rankSixEvent_recordOnKernel_bijective`; and
+- `linearRecord_eq_zero_of_scaling_invariant`.
+
+The module contains no physical axioms.  Its declarations use only Lean's standard logical
+foundations.
+
 ## Gates
 
 - [x] exact statement and dependency-closed paper proof
 - [x] sharpness and noncanonicity proved
 - [x] hostile novelty audit: standard linear/quantum information mathematics
 - [x] positive survivor and stronger physical conjecture extracted
-- [ ] exact mathematical theorem formalized unconditionally in Lean
+- [x] exact mathematical theorem formalized unconditionally in Lean
 - [ ] source-natural physical record constructed
 - [ ] four-response continuum and finite prediction derived
 
@@ -263,3 +277,5 @@ introduced as a Lean axiom or hypothesis and then advertised as proof.
   independent kernel scaling.
 - 2026-07-29 — no-hiding and Stinespring audits classified the mathematical mechanism as occupied;
   retained “spacetime is the complementary event record” as the stronger physical conjecture.
+- 2026-07-29 — formalized the complete linear boundary and scaling noncanonicity theorem in Lean;
+  targeted module build, formal lint, and axiom audit passed.
