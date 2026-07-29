@@ -144,9 +144,10 @@ theorem boundaryBarycenter_hasHamburgerMoments
     calc
       (∫⁻ x, ENNReal.ofReal (x ^ e) ∂eta.bind nu) =
           ∫⁻ t, ∫⁻ x, ENNReal.ofReal (x ^ e) ∂nu t ∂eta := by
-        simpa only [Function.comp_apply] using
-          (Measure.lintegral_bind hnu.aemeasurable
-            (ENNReal.measurable_ofReal.comp (measurable_id.pow_const e)).aemeasurable)
+        have hmeas :
+            AEMeasurable (fun x : ℝ => ENNReal.ofReal (x ^ e)) (eta.bind nu) :=
+          (ENNReal.measurable_ofReal.comp (measurable_id.pow_const e)).aemeasurable
+        exact Measure.lintegral_bind hnu.aemeasurable hmeas
       _ = ∫⁻ _t, ENNReal.ofReal (s e) ∂eta := by
         apply lintegral_congr
         intro t

@@ -28,8 +28,7 @@ theorem hasDerivAt_sq {f f' : ℝ → ℝ} {x : ℝ} (h : HasDerivAt f (f' x) x)
   have hm := HasDerivAt.mul h h
   have hfun : (f * f) = fun y => f y ^ 2 := by funext y; simp [sq]
   rw [hfun] at hm
-  convert hm using 1
-  ring
+  exact hm.congr_deriv (by ring)
 
 /-- **Pointwise-to-mean transfer, difference form.**  For `f` differentiable on `[a,b]` with
 `2 f f'` integrable, the difference of squares at any two points of `[a,b]` is bounded by the total

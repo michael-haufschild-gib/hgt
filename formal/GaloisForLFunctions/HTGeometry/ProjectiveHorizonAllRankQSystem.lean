@@ -489,11 +489,11 @@ theorem adjoin_range_lift_eq_top
   · intro z
     simp [p, J, A]
   · intro z w hz hw hzJ hwJ
-    simpa only [p, Subtype.coe_eta] using J.add_mem hzJ hwJ
+    simpa only [p, Subtype.coe_eta] using! J.add_mem hzJ hwJ
   · intro z hz hzJ
-    simpa only [p, Subtype.coe_eta] using J.inv_mem hzJ
+    simpa only [p, Subtype.coe_eta] using! J.inv_mem hzJ
   · intro z w hz hw hzJ hwJ
-    simpa only [p, Subtype.coe_eta] using J.mul_mem hzJ hwJ
+    simpa only [p, Subtype.coe_eta] using! J.mul_mem hzJ hwJ
 
 theorem isAlgebraic_adjoin_of_intermediate_adjoin_eq_top
     {F A I : Type*} [Field F] [Field A] [Algebra F A]
@@ -529,7 +529,7 @@ theorem algebraicIndependent_of_adjoin_eq_of_finite
       exact IntermediateField.subset_adjoin F _ (Set.mem_range_self i)⟩
   have hxA : AlgebraicIndependent F xA := by
     apply AlgebraicIndependent.of_comp (A.val : A →ₐ[F] E)
-    simpa only [Function.comp_apply, A, xA] using hx
+    simpa only [Function.comp_apply, A, xA] using! hx
   have hxTop : IntermediateField.adjoin F (Set.range xA) = ⊤ := by
     simpa [A, xA] using adjoin_range_lift_eq_top x x rfl
   have hyTop : IntermediateField.adjoin F (Set.range yA) = ⊤ := by
@@ -572,7 +572,8 @@ theorem adjoin_normalizedFiniteJet_eq
     · have hii : i = 0 := Fin.ext hi0
       subst i
       simpa [normalizedFiniteJet] using hzero
-    · have hmul := J.mul_mem hi hzero
+    · change x i ∈ J
+      have hmul := J.mul_mem hi hzero
       convert hmul using 1
       simp [normalizedFiniteJet, hi0, hx0]
   · rw [IntermediateField.adjoin_le_iff]
@@ -931,29 +932,29 @@ theorem adjoin_finiteUnitSquarePositive_eq
             apply J.mul_mem
             · rw [show (finiteUnitPolynomial z).coeff (p.1 + 1) =
                   z ⟨p.1, by
-                    have hp1 := Finset.antidiagonal.fst_le hp
+                    have hp1 := Finset.mem_antidiagonal.mp hp
                     omega⟩ by
                 simpa using finiteUnitPolynomial_coeff_succ z
                   ⟨p.1, by
-                    have hp1 := Finset.antidiagonal.fst_le hp
+                    have hp1 := Finset.mem_antidiagonal.mp hp
                     omega⟩]
               exact ih p.1 (by
-                have hp1 := Finset.antidiagonal.fst_le hp
+                have hp1 := Finset.mem_antidiagonal.mp hp
                 omega) (by
-                have hp1 := Finset.antidiagonal.fst_le hp
+                have hp1 := Finset.mem_antidiagonal.mp hp
                 omega)
             · rw [show (finiteUnitPolynomial z).coeff (p.2 + 1) =
                   z ⟨p.2, by
-                    have hp2 := Finset.antidiagonal.snd_le hp
+                    have hp2 := Finset.mem_antidiagonal.mp hp
                     omega⟩ by
                 simpa using finiteUnitPolynomial_coeff_succ z
                   ⟨p.2, by
-                    have hp2 := Finset.antidiagonal.snd_le hp
+                    have hp2 := Finset.mem_antidiagonal.mp hp
                     omega⟩]
               exact ih p.2 (by
-                have hp2 := Finset.antidiagonal.snd_le hp
+                have hp2 := Finset.mem_antidiagonal.mp hp
                 omega) (by
-                have hp2 := Finset.antidiagonal.snd_le hp
+                have hp2 := Finset.mem_antidiagonal.mp hp
                 omega)
           have hrel := finiteUnitSquarePositive_succ z hk
           have hsolve : z ⟨k + 1, hk⟩ = (2 : E)⁻¹ *
@@ -1176,7 +1177,7 @@ theorem adjoin_powerSeriesInvPositive_le
             · rw [PowerSeries.coeff_zero_eq_constantCoeff_apply, hP0]
               exact J.one_mem
             · have hrL : r < L := by
-                have hp1 := Finset.antidiagonal.fst_le hp
+                have hp1 := Finset.mem_antidiagonal.mp hp
                 omega
               change powerSeriesPositiveJet P L ⟨r, hrL⟩ ∈ J
               exact IntermediateField.subset_adjoin F _
@@ -1246,7 +1247,7 @@ theorem powerSeriesSquarePositiveJet_eq_finite
     · rw [finiteUnitPolynomial_coeff_zero,
         PowerSeries.coeff_zero_eq_constantCoeff_apply, hP0]
     · have hrL : r < L := by
-        have hp1 := Finset.antidiagonal.fst_le hp
+        have hp1 := Finset.mem_antidiagonal.mp hp
         omega
       exact (by
         simpa [powerSeriesPositiveJet] using
@@ -1256,7 +1257,7 @@ theorem powerSeriesSquarePositiveJet_eq_finite
     · rw [finiteUnitPolynomial_coeff_zero,
         PowerSeries.coeff_zero_eq_constantCoeff_apply, hP0]
     · have hrL : r < L := by
-        have hp2 := Finset.antidiagonal.snd_le hp
+        have hp2 := Finset.mem_antidiagonal.mp hp
         omega
       exact (by
         simpa [powerSeriesPositiveJet] using
@@ -1339,7 +1340,8 @@ theorem hypertranscendentalHorizonPositive_algebraicIndependent
     rw [PowerSeries.constantCoeff_inv, hP0, inv_one]
   have hsquare := powerSeriesSquarePositive_algebraicIndependent
     (F := F) P⁻¹ hPinv0 L hzinv
-  simpa [powerSeriesSquarePositiveJet, hypertranscendentalHorizonCoefficient, P] using hsquare
+  change AlgebraicIndependent F (powerSeriesSquarePositiveJet P⁻¹ L)
+  exact hsquare
 
 theorem horizonAmplitude_eq_positiveHorizonAmplitude
     {E : Type*} [Field E] (h : ℕ → E) (h0 : h 0 = 1) (m n : ℕ) :

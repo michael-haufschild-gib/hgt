@@ -33,6 +33,7 @@ theorem gradedPrincipalProduct_succ (symbol : ℕ → K) (n : ℕ) :
       gradedPrincipalProduct symbol n * symbol n := by
   simp [gradedPrincipalProduct, Finset.prod_range_succ]
 
+omit [IsScalarTower k K L] in
 /-- A compatible derivation raises the strict source filtration by at most one layer when its
 principal coefficient is allowed to vary with the layer. -/
 theorem derivation_principalFiltration_succ_graded
@@ -70,6 +71,7 @@ theorem derivation_principalFiltration_succ_graded
     simpa [Algebra.smul_def, mul_comm] using
       (principalFiltration (K := K) u (n + 1)).add_mem haDy hD₀y
 
+omit [IsScalarTower k K L] in
 /-- The `n`-th jet has leading source term equal to the product of all preceding layer symbols. -/
 theorem gradedPrincipalJet_sub_product_smul_mem
     (D₀ : Derivation k K K) (D : Derivation k L L) (u : ℕ → L)
@@ -107,9 +109,11 @@ theorem gradedPrincipalJet_sub_product_smul_mem
           r + gradedPrincipalProduct symbol n • u n := by
         exact (sub_add_cancel _ _).symm
       rw [hrEq, map_add, Algebra.smul_def, Derivation.leibniz, hcompat]
-      convert hsum using 1 <;>
-        simp [Algebra.smul_def, gradedPrincipalProduct_succ] <;> ring
+      convert hsum using 1
+      all_goals
+        (simp [Algebra.smul_def, gradedPrincipalProduct_succ] ; ring)
 
+omit [IsScalarTower k K L] in
 /-- Every finite jet packet is algebraically independent when every layer symbol before it is
 nonzero. -/
 theorem gradedPrincipalJetPacket_algebraicIndependent
@@ -131,6 +135,7 @@ theorem gradedPrincipalJetPacket_algebraicIndependent
   · intro i
     exact Finset.prod_ne_zero_iff.mpr (fun j _ ↦ hsymbol j)
 
+omit [IsScalarTower k K L] in
 /-- If no graded principal symbol vanishes, the complete cyclic jet is algebraically independent. -/
 theorem gradedPrincipalJet_algebraicIndependent
     (D₀ : Derivation k K K) (D : Derivation k L L) (u : ℕ → L)
@@ -146,7 +151,7 @@ theorem gradedPrincipalJet_algebraicIndependent
   let N : ℕ := t.toFinset.sup id + 1
   let e : t → Fin N := fun i ↦
     ⟨i.1, Nat.lt_succ_of_le (Finset.le_sup (f := id)
-      (show i.1 ∈ t.toFinset by simpa using i.2))⟩
+      (show i.1 ∈ t.toFinset by simp))⟩
   have he : Function.Injective e := by
     intro i j hij
     apply Subtype.ext
@@ -157,6 +162,7 @@ theorem gradedPrincipalJet_algebraicIndependent
     D₀ D u symbol hcompat hstep hsymbol N huN
   simpa [e, Function.comp_def] using hN.comp e he
 
+omit [IsScalarTower k K L] in
 /-- If the symbol at layer `m` vanishes, the filtration through `u_m` is invariant under the
 derivation. -/
 theorem derivation_principalFiltration_invariant_of_gradedSymbol_eq_zero
@@ -197,6 +203,7 @@ theorem derivation_principalFiltration_invariant_of_gradedSymbol_eq_zero
     simpa [Algebra.smul_def, mul_comm] using
       (principalFiltration (K := K) u (m + 1)).add_mem haDy hD₀y
 
+omit [IsScalarTower k K L] in
 /-- A vanished layer symbol traps every later jet in the corresponding finite source filtration. -/
 theorem gradedPrincipalJet_mem_of_symbol_eq_zero
     (D₀ : Derivation k K K) (D : Derivation k L L) (u : ℕ → L)
@@ -216,6 +223,7 @@ theorem gradedPrincipalJet_mem_of_symbol_eq_zero
       exact derivation_principalFiltration_invariant_of_gradedSymbol_eq_zero
         D₀ D u symbol hcompat hstep m hm ih
 
+omit [IsScalarTower k K L] in
 /-- One vanished layer symbol forces algebraic dependence of the complete cyclic jet. -/
 theorem not_algebraicIndependent_gradedPrincipalJet_of_symbol_eq_zero
     (D₀ : Derivation k K K) (D : Derivation k L L) (u : ℕ → L)
@@ -243,13 +251,17 @@ theorem not_algebraicIndependent_gradedPrincipalJet_of_symbol_eq_zero
     Submodule.finrank_mono hWS
   have hfinrankS : Module.finrank K S ≤ m + 1 := by
     dsimp [S, principalFiltration]
+    change (Set.range (fun j : Fin (m + 1) ↦ u j)).finrank K ≤ m + 1
     simpa using (finrank_range_le_card (R := K)
       (fun j : Fin (m + 1) ↦ u j))
   have hcard : m + 2 = Module.finrank K W := by
     have h := (linearIndependent_iff_card_eq_finrank_span (R := K)).mp hvLI
-    simpa [W, v] using h
+    dsimp only [W]
+    change m + 2 = (Set.range v).finrank K
+    simpa only [Fintype.card_fin] using h
   omega
 
+omit [IsScalarTower k K L] in
 /-- Exact graded principal-symbol horizon.  The complete cyclic jet is algebraically independent
 if and only if every layer symbol is nonzero. -/
 theorem gradedPrincipalJet_algebraicIndependent_iff
@@ -269,6 +281,7 @@ theorem gradedPrincipalJet_algebraicIndependent_iff
     exact gradedPrincipalJet_algebraicIndependent
       D₀ D u symbol hcompat hstep hsymbol hu
 
+omit [Algebra k K] [IsScalarTower k K L] in
 /-- Each layer symbol is intrinsic to the filtered derivation action on an algebraically free
 source sequence. -/
 theorem gradedPrincipalSymbol_unique
@@ -284,7 +297,8 @@ theorem gradedPrincipalSymbol_unique
       principalFiltration (K := K) u (n + 1) := by
     have h := (principalFiltration (K := K) u (n + 1)).sub_mem
       (hstep₁ n) (hstep₂ n)
-    convert h using 1 <;> simp [sub_smul]
+    convert h using 1
+    all_goals simp [sub_smul]
   have hsubset : Set.range (fun j : Fin (n + 1) ↦ u j) ⊆
       u '' (Set.univ \ {n + 1}) := by
     rintro y ⟨j, rfl⟩
@@ -300,6 +314,7 @@ theorem gradedPrincipalSymbol_unique
 
 variable {g : Type*} [AddCommMonoid g] [Module k g]
 
+omit [IsScalarTower k K L] in
 /-- The non-hypertranscendental directions in a linear law space are exactly the union of the
 kernels of all graded principal symbols. -/
 theorem gradedPrincipalSymbolLawSpace_characteristicSet_eq_iUnion_ker
@@ -332,6 +347,7 @@ theorem gradedPrincipalSymbolLawSpace_characteristicSet_eq_iUnion_ker
     have hnzero : symbol n A = 0 := hn
     exact (hiff.mp hAI n) hnzero
 
+omit [IsScalarTower k K L] in
 /-- The graded hypertranscendental law phase is the complement of the complete characteristic
 arrangement. -/
 theorem gradedPrincipalSymbolLawSpace_hypertranscendentalSet_eq_compl_iUnion_ker

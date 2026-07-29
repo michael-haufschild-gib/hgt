@@ -20,7 +20,12 @@ theorem linearIndependent_of_differentialIndependent {ι : Type*} {x : ι → K}
     (h : DifferentialIndependent k x) : LinearIndependent k x := by
   have hcomp := h.linearIndependent.comp (fun i : ι => (i, 0))
     (fun i j hij => congrArg Prod.fst hij)
-  simpa [Function.comp] using hcomp
+  have hfun :
+      ((fun p : ι × ℕ => differentialJet p.2 (x p.1)) ∘ fun i => (i, 0)) = x := by
+    funext i
+    rfl
+  rw [hfun] at hcomp
+  exact hcomp
 
 /-- A differentially independent family is injective. -/
 theorem injective_of_differentialIndependent {ι : Type*} {x : ι → K}

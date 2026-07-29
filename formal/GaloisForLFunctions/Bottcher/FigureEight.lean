@@ -37,8 +37,9 @@ theorem fderiv_greenLimit_critical {c : ℂ} (hc : Disconnected c) :
     have hd : HasDerivAt (quadratic c) 0 0 := by
       simpa using (hasStrictDerivAt_quadratic c 0).hasDerivAt
     have h2 := hd.hasFDerivAt.restrictScalars ℝ
-    convert h2 using 1
-    ext z; simp
+    apply h2.congr_fderiv
+    ext z
+    simp
   have hcomp : HasFDerivAt (greenLimit c ∘ quadratic c) (0 : ℂ →L[ℝ] ℝ) 0 := by
     have := hdiffc.hasFDerivAt.comp 0 hfd
     rwa [ContinuousLinearMap.comp_zero] at this
@@ -601,7 +602,12 @@ theorem deriv2_completion_critical_ne_zero {c : ℂ} (hc : Disconnected c) {R : 
   rw [hderivF_ev.deriv_eq]
   have hHD2 : HasDerivAt (fun z => z * deriv Fc (quadratic c z)) (deriv Fc (quadratic c 0)) 0 := by
     have h := (hasDerivAt_id (0:ℂ)).mul hgdiff.hasDerivAt
-    simpa using h
+    rw [show (fun z => z * deriv Fc (quadratic c z)) =
+        id * (fun z => deriv Fc (quadratic c z)) by
+      funext z
+      rfl]
+    apply h.congr_deriv
+    simp
   rw [hHD2.deriv]; exact hFc'c
 
 end Bottcher
@@ -693,7 +699,11 @@ theorem exists_sq_normal_form {F : ℂ → ℂ} (hF : AnalyticAt ℂ F 0)
   refine ⟨fun z => z * s z, analyticAt_id.mul hsan, by simp, ?_, ?_⟩
   · have hHD : HasDerivAt (fun z => z * s z) (s 0) 0 := by
       have h := (hasDerivAt_id (0:ℂ)).mul hsan.differentiableAt.hasDerivAt
-      simpa using h
+      rw [show (fun z => z * s z) = id * s by
+        funext z
+        rfl]
+      apply h.congr_deriv
+      simp
     rw [hHD.deriv]; exact hs0
   · filter_upwards [hGeq, hseq] with z hz1 hz2
     rw [hz1, ← hz2]; ring

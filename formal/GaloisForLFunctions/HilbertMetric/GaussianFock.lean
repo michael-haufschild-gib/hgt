@@ -122,7 +122,7 @@ theorem tendsto_truncatedExpSeries (z : ℝ) :
     exact Fin.sum_univ_eq_sum_range
       (fun k => z ^ k / Nat.factorial k) (m + 1)
   rw [Real.exp_eq_exp_ℝ]
-  simpa only [hpartial, Function.comp_apply] using
+  simpa only [hpartial, Function.comp_apply] using!
     h.comp (tendsto_add_atTop_nat 1)
 
 /-- The ordered-tensor Gram entries are precisely exponential Taylor truncations. -/
@@ -294,7 +294,7 @@ theorem hilbertExponentialInnerMatrix_fin_det_mul_sq_le
     ⟨x i, Submodule.subset_span (Set.mem_range_self i)⟩
   have h := hilbertExponentialInnerMatrix_fin_det_mul_sq_le_of_finiteDimensional
     xs a b ha hb
-  simpa [hilbertExponentialInnerMatrix, xs] using h
+  simpa [hilbertExponentialInnerMatrix, xs] using! h
 
 /-- **Universal finite Hilbert Gaussian Fock law.**  For every finite index type and every real
 Hilbert space, the exponential inner-product determinant is multiplicatively log-convex in the

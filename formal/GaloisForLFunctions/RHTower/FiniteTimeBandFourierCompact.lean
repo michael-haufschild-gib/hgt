@@ -443,7 +443,8 @@ def fullTimeBandFourier (a b c d : ℝ) (hab : a ≤ b) : RealL2 →L[ℂ] RealL
 theorem isCompactOperator_fullTimeBandFourier
     (a b c d : ℝ) (hab : a ≤ b) :
     IsCompactOperator (fullTimeBandFourier a b c d hab) := by
-  simpa only [fullTimeBandFourier, ContinuousLinearMap.coe_comp] using
+  simpa only [fullTimeBandFourier, fullToRestrictedTimeBandFourier,
+    ContinuousLinearMap.coe_comp] using!
     (isCompactOperator_kernelOperator ((volume : Measure ℝ).restrict (Icc a b))
       (fullFourierFunctionalField a b c d hab)).clm_comp
         (lpExtendByZeroCLM (F := ℂ) (𝕜 := ℂ) (volume : Measure ℝ) 2

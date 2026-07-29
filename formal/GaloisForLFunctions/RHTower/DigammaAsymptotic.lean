@@ -480,7 +480,9 @@ theorem digamma_vertical_anchor_tendsto (σ t : ℝ) :
     have hre : Tendsto (fun N : ℕ => (Complex.digamma ((N:ℂ) + 1) - Complex.log ((N:ℂ) + 1)).re)
         atTop (nhds 0) := by
       have := (Complex.continuous_re.tendsto _).comp hcomplex
-      simpa [Function.comp_apply] using this
+      apply this.congr'
+      filter_upwards [] with N
+      simp only [Function.comp_apply, Complex.sub_re]
     apply hre.congr
     intro N
     rw [Complex.sub_re]
@@ -511,7 +513,14 @@ theorem digamma_vertical_anchor_tendsto (σ t : ℝ) :
     have hlog : Tendsto (fun N : ℕ => Real.log (((σ + (N:ℝ))^2 + t^2) / ((N:ℝ)+1)^2))
         atTop (nhds 0) := by
       have := (Real.continuousAt_log (by norm_num : (1:ℝ) ≠ 0)).tendsto.comp hratio
-      simpa [Function.comp_apply, Real.log_one] using this
+      have hcomp :
+          Tendsto (Real.log ∘ fun N : ℕ =>
+            ((σ + (N : ℝ)) ^ 2 + t ^ 2) / ((N : ℝ) + 1) ^ 2)
+            atTop (nhds 0) := by
+        simpa only [Real.log_one] using this
+      apply hcomp.congr'
+      filter_upwards [] with N
+      rfl
     have hP3fin : Tendsto (fun N : ℕ =>
         (-1/2 : ℝ) * Real.log (((σ + (N:ℝ))^2 + t^2) / ((N:ℝ)+1)^2)) atTop (nhds 0) := by
       simpa using hlog.const_mul (-1/2 : ℝ)
@@ -548,12 +557,20 @@ theorem hasDerivAt_log_norm_Gamma (y x : ℝ)
   set z : ℂ := (x:ℂ) + (y:ℂ) * I with hzdef
   have hg : HasDerivAt (fun x : ℝ => (x:ℂ) + (y:ℂ) * I) 1 x := by
     have h1 : HasDerivAt (fun x : ℝ => (x:ℂ)) 1 x := by
-      simpa using Complex.ofRealCLM.hasDerivAt (x := x)
+      exact Complex.ofRealCLM.hasDerivAt
     simpa using h1.add_const ((y:ℂ) * I)
   have hΓd : HasDerivAt Complex.Gamma (deriv Complex.Gamma z) z :=
     (Complex.differentiableAt_Gamma z hz).hasDerivAt
   have hu : HasDerivAt (fun x : ℝ => Complex.Gamma ((x:ℂ) + (y:ℂ) * I)) (deriv Complex.Gamma z) x := by
-    simpa using hΓd.comp x hg
+    have h := hΓd.comp x hg
+    have hfun :
+        Complex.Gamma ∘ (fun x : ℝ => (x : ℂ) + (y : ℂ) * I) =
+          (fun x : ℝ => Complex.Gamma ((x : ℂ) + (y : ℂ) * I)) := by
+      funext u
+      rfl
+    rw [hfun] at h
+    apply h.congr_deriv
+    ring
   have hure : HasDerivAt (fun x : ℝ => (Complex.Gamma ((x:ℂ) + (y:ℂ) * I)).re)
       (deriv Complex.Gamma z).re x := Complex.reCLM.hasFDerivAt.comp_hasDerivAt x hu
   have huim : HasDerivAt (fun x : ℝ => (Complex.Gamma ((x:ℂ) + (y:ℂ) * I)).im)
@@ -567,7 +584,7 @@ theorem hasDerivAt_log_norm_Gamma (y x : ℝ)
           + (Complex.Gamma ((x:ℂ) + (y:ℂ) * I)).im * (Complex.Gamma ((x:ℂ) + (y:ℂ) * I)).im := by
       funext x; rw [Complex.normSq_apply]
     rw [hfn]
-    convert h using 1
+    apply h.congr_deriv
     rw [hBdef]; ring
   have hn0 : Complex.normSq (Complex.Gamma z) ≠ 0 := fun h => hΓ (Complex.normSq_eq_zero.mp h)
   have hlog := (Real.hasDerivAt_log hn0).comp x hnsq
@@ -579,7 +596,7 @@ theorem hasDerivAt_log_norm_Gamma (y x : ℝ)
     rw [Complex.normSq_eq_norm_sq, Real.log_pow]
     push_cast; ring
   rw [hfunF] at hF
-  convert hF using 1
+  apply hF.congr_deriv
   -- Re ψ z = ½ · (1/normSq)·B
   rw [Complex.digamma_def, logDeriv_apply, Complex.div_re, hBdef]
   field_simp

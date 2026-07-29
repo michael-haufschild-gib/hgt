@@ -26,8 +26,9 @@ def lowerEndFilter : Filter ℂ := Filter.comap Complex.im Filter.atBot
 
 theorem lowerEndFilter_basis :
     lowerEndFilter.HasBasis (fun _ : ℝ ↦ True) lowerTail := by
-  simpa [lowerEndFilter, lowerTail] using
-    (Filter.atBot_basis_Iio.comap Complex.im)
+  change (Filter.comap Complex.im Filter.atBot).HasBasis
+    (fun _ : ℝ ↦ True) (fun H => Complex.im ⁻¹' Set.Iio H)
+  exact Filter.atBot_basis_Iio.comap Complex.im
 
 theorem lowerTail_nonempty (H : ℝ) : (lowerTail H).Nonempty := by
   refine ⟨(H - 1 : ℂ) * Complex.I, ?_⟩

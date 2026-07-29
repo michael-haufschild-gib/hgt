@@ -259,9 +259,10 @@ theorem fieldOnePadicAddChar_principal_ne_one :
 theorem fieldOnePadicAddChar_ne_one :
     fieldOnePadicAddChar p ≠ 1 := by
   intro h
-  exact fieldOnePadicAddChar_principal_ne_one p <| by
-    simpa only [Pi.one_apply] using
-      DFunLike.congr_fun h (p : ℚ_[p])⁻¹
+  apply fieldOnePadicAddChar_principal_ne_one p
+  have hx := DFunLike.congr_fun h (p : ℚ_[p])⁻¹
+  change fieldOnePadicAddChar p (p : ℚ_[p])⁻¹ = 1 at hx
+  exact hx
 
 /-- Local constancy follows from the open integral kernel. -/
 theorem fieldOnePadicAddChar_isLocallyConstant :
@@ -277,11 +278,13 @@ theorem fieldOnePadicAddChar_isLocallyConstant :
     intro x hx
     exact
       fieldOnePadicUnitAddCircleCharacter_vanishes_on_integers p hx
-  simpa only [fieldOnePadicAddChar,
-    AddChar.compAddMonoidHom_apply,
-    MonoidHom.compAddChar_apply] using
-      hlocal.comp
-        (fun z : UnitAddCircle => (AddCircle.toCircle z : ℂ))
+  rw [show (fieldOnePadicAddChar p : ℚ_[p] → ℂ) =
+    (fun z : UnitAddCircle => (AddCircle.toCircle z : ℂ)) ∘
+      fieldOnePadicUnitAddCircleCharacter p by
+    funext z
+    rfl]
+  exact hlocal.comp
+    (fun z : UnitAddCircle => (AddCircle.toCircle z : ℂ))
 
 /-- Packaged locally constant additive character for the generic
 finite-place Weyl multiplier. -/

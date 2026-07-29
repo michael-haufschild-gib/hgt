@@ -825,8 +825,9 @@ theorem integral_truncatedLogKernel_limitingBrolinMeasure_escapeDisk_lower_bound
     integrable_const A
   have hfun :
       Integrable (fun w : escapeDisk c => truncatedLogKernel z δ (w : ℂ)) μK := by
-    simpa [truncatedLogKernelOnEscapeDisk, μK] using
-      (truncatedLogKernelOnEscapeDisk c z δ hδ).integrable μK
+    rw [show (fun w : escapeDisk c => truncatedLogKernel z δ (w : ℂ)) =
+      (truncatedLogKernelOnEscapeDisk c z δ hδ : escapeDisk c → ℝ) by rfl]
+    exact (truncatedLogKernelOnEscapeDisk c z δ hδ).integrable μK
   have hmono :
       (fun _ : escapeDisk c => A) ≤
         (fun w : escapeDisk c => truncatedLogKernel z δ (w : ℂ)) := by

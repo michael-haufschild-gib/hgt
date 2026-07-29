@@ -229,7 +229,7 @@ theorem hasDerivAt_factorizedCenteredDivisorPhase
         (k.factorization p + 1) (Real.log p) z)
   simpa only [factorizedCenteredDivisorPhase,
     factorizedCenteredDivisorPhaseDerivative, Finset.smul_sum,
-    smul_eq_mul, mul_comm] using h
+    smul_eq_mul, mul_comm] using! h
 
 /-- Exact arithmetic polarization of the complete divisor-packet current into its prime-power
 currents.  Every coefficient is the norm square of the complementary Euler packet. -/

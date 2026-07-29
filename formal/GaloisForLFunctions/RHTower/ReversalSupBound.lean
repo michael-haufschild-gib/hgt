@@ -97,8 +97,9 @@ theorem mul_sinh_cosh_le_sinh_mul {t c : ℝ} (ht : 0 < t) (hc : 2 ≤ c) :
       rw [interior_Icc, mem_Ioo] at hu
       have hu0 : u ≠ 0 := ne_of_gt (by linarith [hu.1])
       have h1 : HasDerivAt (fun u : ℝ => Real.sinh (u * t)) (Real.cosh (u * t) * t) u := by
-        simpa [Function.comp] using
-          (Real.hasDerivAt_sinh (u * t)).comp u (hasDerivAt_mul_const t)
+        rw [show (fun u : ℝ => Real.sinh (u * t)) =
+          Real.sinh ∘ fun u => u * t by rfl]
+        exact (Real.hasDerivAt_sinh (u * t)).comp u (hasDerivAt_mul_const t)
       exact h1.div (hasDerivAt_id u) hu0
     apply monotoneOn_of_deriv_nonneg (convex_Icc 2 c)
     · apply ContinuousOn.div (by fun_prop) (by fun_prop)
@@ -197,8 +198,7 @@ theorem reversalAhead_le {c : ℝ} (hc : 2 ≤ c) : reversalAhead c ≤ 4 / (3 *
       have h1 : HasDerivAt (fun z : ℝ => z / 2) (1 / 2 : ℝ) z := by
         simpa using (hasDerivAt_id z).div_const 2
       have h3 := ((hasDerivAt_tanh (z / 2)).comp z h1).const_mul (4 / c ^ 2)
-      convert h3 using 1
-      ring
+      exact h3.congr_deriv (by ring)
     rw [intervalIntegral.integral_eq_sub_of_hasDerivAt hF
       (hgcont.intervalIntegrable _ _)]
     rw [show (0 : ℝ) / 2 = 0 by norm_num, Real.tanh_zero, tanh_half_log_two]

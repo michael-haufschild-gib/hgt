@@ -139,7 +139,11 @@ theorem increments_ratio_tendsto_atTop {b : ℕ → ℝ}
   · -- Δ_{n+1}/Δ_n ≥ b(n+2)/b(n+1) − 1 → ∞
     have hshift : Tendsto (fun n => b (n + 2) / b (n + 1)) atTop atTop := by
       have := hratio.comp (tendsto_add_atTop_nat 1)
-      simpa [Function.comp] using this
+      rw [show (fun n => b (n + 2) / b (n + 1)) =
+        (fun n => b (n + 1) / b n) ∘ fun n => n + 1 by
+        funext n
+        congr 2]
+      exact this
     have hminor : Tendsto (fun n => b (n + 2) / b (n + 1) - 1) atTop atTop :=
       tendsto_atTop_add_const_right atTop (-1) hshift
     refine tendsto_atTop_mono' atTop ?_ hminor

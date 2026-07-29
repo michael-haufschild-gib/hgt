@@ -933,7 +933,11 @@ theorem monoF_witness_projection_base {U : Set ℂ}
   refine monoF_witness hUo hUc hUne a₁ a₂ d ζ₀ hg hg' hmaps hmaps' hgg' hg'g
     hord hscale hinv ?_
   intro k
-  simpa using precompMeroEquiv_ratfuncToMeroVia_fix hg hg' hmaps hmaps' hgg' hg'g
+  change
+    precompMeroEquiv hg hg' hmaps hmaps' hgg' hg'g hUo hUc hUne
+        (ratfuncToMeroVia p₀ hp0 hinf hUo hUc hUne k) =
+      ratfuncToMeroVia p₀ hp0 hinf hUo hUc hUne k
+  exact precompMeroEquiv_ratfuncToMeroVia_fix hg hg' hmaps hmaps' hgg' hg'g
     hUo hUc hUne hp0 hinf hpfix k
 
 /-- **Projection-base `monoG`: symmetric `RatFunc ℂ`-linear deck witness.**
@@ -963,7 +967,11 @@ theorem monoG_witness_projection_base {U : Set ℂ}
     (ratfuncToMeroVia p₀ hp0 hinf hUo hUc hUne).toAlgebra
   refine monoG_witness hUo hUc hUne a₂ d ζ₀ hg hg' hmaps hmaps' hgg' hg'g hord hscale ?_
   intro k
-  simpa using precompMeroEquiv_ratfuncToMeroVia_fix hg hg' hmaps hmaps' hgg' hg'g
+  change
+    precompMeroEquiv hg hg' hmaps hmaps' hgg' hg'g hUo hUc hUne
+        (ratfuncToMeroVia p₀ hp0 hinf hUo hUc hUne k) =
+      ratfuncToMeroVia p₀ hp0 hinf hUo hUc hUne k
+  exact precompMeroEquiv_ratfuncToMeroVia_fix hg hg' hmaps hmaps' hgg' hg'g
     hUo hUc hUne hp0 hinf hpfix k
 
 end Bottcher
@@ -1035,14 +1043,22 @@ theorem q62_independence_disconnected_of_projection_base_lifts {U : Set ℂ}
       hliftF d
     refine ⟨ζ₀, g, g', hg, hg', hmaps, hmaps', hgg', hg'g, hord, hscale, hinv, ?_⟩
     intro k
-    simpa using precompMeroEquiv_ratfuncToMeroVia_fix hg hg' hmaps hmaps' hgg' hg'g
+    change
+      precompMeroEquiv hg hg' hmaps hmaps' hgg' hg'g hUo hUc hUne
+          (ratfuncToMeroVia p₀ hp0 hinf hUo hUc hUne k) =
+        ratfuncToMeroVia p₀ hp0 hinf hUo hUc hUne k
+    exact precompMeroEquiv_ratfuncToMeroVia_fix hg hg' hmaps hmaps' hgg' hg'g
       hUo hUc hUne hp0 hinf hpfix k
   · intro d
     obtain ⟨ζ₀, g, g', hg, hg', hmaps, hmaps', hgg', hg'g, hord, hpfix, hscale⟩ :=
       hliftG d
     refine ⟨ζ₀, g, g', hg, hg', hmaps, hmaps', hgg', hg'g, hord, hscale, ?_⟩
     intro k
-    simpa using precompMeroEquiv_ratfuncToMeroVia_fix hg hg' hmaps hmaps' hgg' hg'g
+    change
+      precompMeroEquiv hg hg' hmaps hmaps' hgg' hg'g hUo hUc hUne
+          (ratfuncToMeroVia p₀ hp0 hinf hUo hUc hUne k) =
+        ratfuncToMeroVia p₀ hp0 hinf hUo hUc hUne k
+    exact precompMeroEquiv_ratfuncToMeroVia_fix hg hg' hmaps hmaps' hgg' hg'g
       hUo hUc hUne hp0 hinf hpfix k
 
 end Bottcher
@@ -1079,7 +1095,11 @@ theorem transcendental_of_projection_base_lifts {U : Set ℂ}
   obtain ⟨ζ₀, g, g', hg, hg', hmaps, hmaps', hgg', hg'g, hord, hpfix, hscale⟩ := hliftG d
   refine ⟨ζ₀, g, g', hg, hg', hmaps, hmaps', hgg', hg'g, hord, hscale, ?_⟩
   intro k
-  simpa using precompMeroEquiv_ratfuncToMeroVia_fix hg hg' hmaps hmaps' hgg' hg'g
+  change
+    precompMeroEquiv hg hg' hmaps hmaps' hgg' hg'g hUo hUc hUne
+        (ratfuncToMeroVia p₀ hp0 hinf hUo hUc hUne k) =
+      ratfuncToMeroVia p₀ hp0 hinf hUo hUc hUne k
+  exact precompMeroEquiv_ratfuncToMeroVia_fix hg hg' hmaps hmaps' hgg' hg'g
     hUo hUc hUne hp0 hinf hpfix k
 
 /-- **Projection-base mixed q62 from lift data.**  In the mixed case, the disconnected coordinate only
@@ -1117,7 +1137,11 @@ theorem noRelation_of_mixed_projection_base_lifts {U : Set ℂ}
   obtain ⟨ζ₀, g, g', hg, hg', hmaps, hmaps', hgg', hg'g, hord, hpfix, hscale, hinv⟩ := hliftF d
   refine ⟨ζ₀, g, g', hg, hg', hmaps, hmaps', hgg', hg'g, hord, hscale, hinv, ?_⟩
   intro k
-  simpa using precompMeroEquiv_ratfuncToMeroVia_fix hg hg' hmaps hmaps' hgg' hg'g
+  change
+    precompMeroEquiv hg hg' hmaps hmaps' hgg' hg'g hUo hUc hUne
+        (ratfuncToMeroVia p₀ hp0 hinf hUo hUc hUne k) =
+      ratfuncToMeroVia p₀ hp0 hinf hUo hUc hUne k
+  exact precompMeroEquiv_ratfuncToMeroVia_fix hg hg' hmaps hmaps' hgg' hg'g
     hUo hUc hUne hp0 hinf hpfix k
 
 end Bottcher

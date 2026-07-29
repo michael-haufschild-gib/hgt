@@ -98,13 +98,11 @@ theorem hasDerivAt_cauchyKernelMoment (ν : Measure ℝ) [IsFiniteMeasure ν]
     have hinv : HasDerivAt (fun w : ℂ => (((t : ℝ) : ℂ) - w)⁻¹)
         ((((t : ℝ) : ℂ) - z)⁻¹ ^ 2) z := by
       have := hbase.inv hden
-      convert this using 1
-      field_simp
+      exact this.congr_deriv (by field_simp)
     have hpow := hinv.pow (k + 1)
-    convert hpow using 1
-    simp only [Nat.add_sub_cancel]
-    push_cast
-    ring
+    exact hpow.congr_deriv (by
+      push_cast
+      ring)
   have hmain := hasDerivAt_integral_of_dominated_loc_of_deriv_le
     (μ := ν) (F := fun z t => (((t : ℝ) : ℂ) - z)⁻¹ ^ (k + 1))
     (F' := fun z t => ((k : ℂ) + 1) * (((t : ℝ) : ℂ) - z)⁻¹ ^ (k + 2))

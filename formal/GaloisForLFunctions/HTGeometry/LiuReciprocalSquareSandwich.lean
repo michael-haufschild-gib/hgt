@@ -60,7 +60,9 @@ theorem log_one_add_lower {x : ℝ} (hx : 0 < x) : x - x ^ 2 / 2 < Real.log (1 +
       have h1 : HasDerivAt (fun t : ℝ => 1 + t) 1 t := by
         simpa using (hasDerivAt_id t).const_add (1 : ℝ)
       have h2 : HasDerivAt (fun t : ℝ => Real.log (1 + t)) ((1 + t)⁻¹ * 1) t := by
-        simpa [Function.comp] using (Real.hasDerivAt_log (ne_of_gt ht1)).comp t h1
+        rw [show (fun t : ℝ => Real.log (1 + t)) =
+          Real.log ∘ fun t => 1 + t by rfl]
+        exact (Real.hasDerivAt_log (ne_of_gt ht1)).comp t h1
       have h3 : HasDerivAt (fun t : ℝ => t ^ 2 / 2) ((2 : ℝ) * t ^ 1 / 2) t := by
         simpa using (hasDerivAt_pow 2 t).div_const 2
       have hd : HasDerivAt (fun t : ℝ => Real.log (1 + t) - t + t ^ 2 / 2)
@@ -98,7 +100,9 @@ theorem log_one_sub_upper {x : ℝ} (hx0 : 0 < x) (hx1 : x < 1) :
       have h1 : HasDerivAt (fun t : ℝ => 1 - t) (-1) t := by
         simpa using (hasDerivAt_id t).const_sub (1 : ℝ)
       have h2 : HasDerivAt (fun t : ℝ => Real.log (1 - t)) ((1 - t)⁻¹ * (-1)) t := by
-        simpa [Function.comp] using (Real.hasDerivAt_log (ne_of_gt hsub)).comp t h1
+        rw [show (fun t : ℝ => Real.log (1 - t)) =
+          Real.log ∘ fun t => 1 - t by rfl]
+        exact (Real.hasDerivAt_log (ne_of_gt hsub)).comp t h1
       have h3 : HasDerivAt (fun t : ℝ => t ^ 2 / 2) ((2 : ℝ) * t ^ 1 / 2) t := by
         simpa using (hasDerivAt_pow 2 t).div_const 2
       have hd : HasDerivAt (fun t : ℝ => -t - t ^ 2 / 2 - Real.log (1 - t))
@@ -293,9 +297,12 @@ theorem hasSum_logRatio {x : ℝ} (hx : |x| < 1) :
     simpa [sub_neg_eq_add] using h2
   have hdiff : HasSum (fun n : ℕ => x ^ (n + 1) / (n + 1) - (-x) ^ (n + 1) / (n + 1))
       (Real.log (1 + x) - Real.log (1 - x)) := by
-    have := h1.sub h2'
-    convert this using 1
-    ring
+    have hsub := h1.sub h2'
+    have hterminal :
+        -Real.log (1 - x) - -Real.log (1 + x) =
+          Real.log (1 + x) - Real.log (1 - x) := by ring
+    rw [hterminal] at hsub
+    exact hsub
   set F : ℕ → ℝ := fun n => x ^ (n + 1) / (n + 1) - (-x) ^ (n + 1) / (n + 1) with hF
   have hinj : Function.Injective (fun j : ℕ => 2 * j) := by
     intro i j h
@@ -371,9 +378,15 @@ theorem upperBd_sub_lowerBd_eq_oddSeries (hpos : ∀ m, 0 < a m) (hz : 0 < z) (h
     have h := hasSum_logRatio_tail habs
     have h' : HasSum (fun k : ℕ => (a m * z) ^ (2 * (k + 1) + 1) / (2 * (k + 1) + 1))
         ((Real.log (1 + a m * z) - Real.log (1 - a m * z) - 2 * (a m * z)) / 2) := by
-      have := h.div_const 2
-      convert this using 2 with k
-      ring
+      have hdiv := h.div_const 2
+      have hfun :
+          (fun k : ℕ => (2 * (a m * z) ^ (2 * (k + 1) + 1) /
+            (2 * (k + 1) + 1)) / 2) =
+          fun k : ℕ => (a m * z) ^ (2 * (k + 1) + 1) / (2 * (k + 1) + 1) := by
+        funext k
+        ring
+      rw [hfun] at hdiv
+      exact hdiv
     rw [h'.tsum_eq]
     ring
   rw [upperBd_sub_lowerBd_eq hpos hz hq hb hsum]

@@ -58,7 +58,9 @@ theorem eq_zero_of_compact_orbit_of_tendsto_zero
     intro ε hε
     -- the limit gives a threshold beyond which `‖f‖ ≤ ε`
     have hnorm : Tendsto (fun x : ℝ => ‖f x‖) atTop (nhds 0) := by
-      simpa using (continuous_norm (E := E)).tendsto (0 : E) |>.comp h0
+      rw [show (fun x : ℝ => ‖f x‖) = (fun z : E => ‖z‖) ∘ fun x => f x by rfl]
+      simpa only [norm_zero] using
+        (continuous_norm (E := E)).tendsto (0 : E) |>.comp h0
     obtain ⟨M, hM⟩ := eventually_atTop.mp (hnorm.eventually_le_const hε)
     -- recurrence supplies a return time beyond `M - x₀`
     obtain ⟨t, ht, hdist⟩ :=

@@ -97,9 +97,9 @@ theorem polynomial_eval_hasTemperateGrowth (P : ℝ[X]) :
     Function.HasTemperateGrowth (fun x : ℝ => P.eval x) := by
   have hx : Function.HasTemperateGrowth (fun x : ℝ => x) := by fun_prop
   induction P using Polynomial.induction_on' with
-  | add P Q hP hQ => simpa using hP.add hQ
+  | add P Q hP hQ => simpa only [Polynomial.eval_add, Pi.add_apply] using! hP.add hQ
   | monomial n a =>
-      simpa [Polynomial.eval_monomial] using
+      simpa only [Polynomial.eval_monomial, Pi.mul_apply, Pi.pow_apply] using!
         (Function.HasTemperateGrowth.const a).mul (hx.pow n)
 
 /-- If real polynomials approximate a smooth temperate multiplier in all derivatives on the

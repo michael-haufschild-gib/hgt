@@ -337,7 +337,7 @@ theorem combination_permSymbolPolyMap_ne_zero {R : Type*} [CommRing R] [CharZero
       refine ⟨π.symm, fun j => ?_⟩
       have h1 := DFunLike.congr_fun hpm j
       rw [permMon_apply, permMon_apply] at h1
-      simpa only [pull_end, Equiv.Perm.one_apply] using h1.symm
+      simpa only [pull_end, Equiv.refl_symm, Equiv.refl_apply] using h1.symm
     rw [hzero_count]
     simp
   · intro h

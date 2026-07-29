@@ -739,12 +739,14 @@ theorem volume_quadratic_preimage_eq_lintegral_kernel_of_boundary_avoid
     ext z
     constructor
     · intro hz
+      change (0 < (starRingEnd ℂ (-v) * z).re) ∧ z ∈ quadratic c ⁻¹' A at hz
       refine ⟨?_, hz.2⟩
       have hlt : 0 < -((starRingEnd ℂ v * z).re) := by
         simpa only [map_neg, neg_mul, Complex.neg_re] using hz.1
       exact neg_pos.mp hlt
     · intro hz
       refine ⟨?_, hz.2⟩
+      change 0 < (starRingEnd ℂ (-v) * z).re
       have hlt : (starRingEnd ℂ v * z).re < 0 := hz.1
       have : 0 < -((starRingEnd ℂ v * z).re) := neg_pos.mpr hlt
       simpa only [map_neg, neg_mul, Complex.neg_re] using this

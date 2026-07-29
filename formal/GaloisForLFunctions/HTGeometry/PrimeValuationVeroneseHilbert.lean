@@ -351,7 +351,7 @@ theorem recurrentHilbertPivot_linearIndependent
     (LinearMap.ker_eq_bot.mpr Subtype.val_injective)
   change LinearIndependent ℂ (fun j : recurrentHilbertIndex x m =>
     homogeneousRecurringEvaluation x m (recurrentHilbertPivot x m j))
-  simpa only [homogeneousRecurringEvaluation_recurrentHilbertPivot] using hLI
+  simpa only [homogeneousRecurringEvaluation_recurrentHilbertPivot] using! hLI
 
 /-- Coordinates of an arbitrary homogeneous observable in the complete recurrent Hilbert basis. -/
 noncomputable def recurrentHilbertCoefficient
@@ -381,7 +381,7 @@ theorem recurrentHilbertPivot_spans
       (homogeneousRecurringEvaluation x m (recurrentHilbertPivot x m j)) v
   simp_rw [homogeneousRecurringEvaluation_recurrentHilbertPivot]
   simpa only [y, recurrentHilbertCoefficient, Finset.sum_apply,
-    Pi.smul_apply, smul_eq_mul] using hv.symm
+    Pi.smul_apply, smul_eq_mul] using! hv.symm
 
 /-- Exponent vectors of all monomials in one complete homogeneous degree. -/
 def homogeneousMonomialIndex (σ : Type*) (m : ℕ) :=
@@ -414,7 +414,8 @@ theorem homogeneousRecurringEvaluation_range_mono
   obtain ⟨Q, rfl⟩ := hy
   let R : homogeneousSubmodule σ ℂ (m + 1) :=
     ⟨Q.1 * X h₀, by
-      convert Q.2.mul (isHomogeneous_X (R := ℂ) h₀) using 1⟩
+      rw [MvPolynomial.mem_homogeneousSubmodule]
+      exact Q.2.mul (isHomogeneous_X (R := ℂ) h₀)⟩
   refine ⟨R, ?_⟩
   funext v
   change eval v.1 (Q.1 * X h₀) = eval v.1 Q.1

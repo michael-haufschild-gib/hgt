@@ -91,7 +91,9 @@ theorem exists_modulus_one_root_of_root_limit_green {s : Finset ℕ} {a : ℕ �
       have := ((continuous_greenFunctionDyn c₁).continuousAt (x := w)).tendsto.comp hz
       rwa [hGw] at this
     have := (Real.continuous_exp.continuousAt (x := 0)).tendsto.comp hg
-    simpa using this
+    rw [show (fun k => Real.exp (greenFunctionDyn c₁ (z k))) =
+      Real.exp ∘ fun k => greenFunctionDyn c₁ (z k) by rfl]
+    simpa only [Real.exp_zero] using this
   exact exists_modulus_one_root_of_root_limit hz hcont hroot hmod hM
 
 end Bottcher

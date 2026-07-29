@@ -23,17 +23,26 @@ def ccmPolarPotential (t : ℝ) : ℝ :=
 /-- First derivative of the local polar potential. -/
 theorem hasDerivAt_ccmPolarPotential (t : ℝ) :
     HasDerivAt ccmPolarPotential (-4 * Real.sinh (t / 2)) t := by
-  convert
+  have h :=
     (((Real.hasDerivAt_cosh (t / 2)).comp t ((hasDerivAt_id t).div_const 2)).sub_const 1
-      |>.const_mul (-8)) using 1 <;> simp [ccmPolarPotential] <;> ring
+      |>.const_mul (-8))
+  have hfun :
+      ccmPolarPotential = fun u : ℝ => -8 * (Real.cosh (u / 2) - 1) := by
+    funext u
+    rfl
+  rw [hfun]
+  apply h.congr_deriv
+  ring
 
 /-- Second derivative of the local polar potential. -/
 theorem hasDerivAt_ccmPolarPotential_derivative (t : ℝ) :
     HasDerivAt (fun u : ℝ => -4 * Real.sinh (u / 2))
       (-2 * Real.cosh (t / 2)) t := by
-  convert
-    ((Real.hasDerivAt_sinh (t / 2)).comp t ((hasDerivAt_id t).div_const 2)).const_mul (-4)
-      using 1 <;> simp <;> ring
+  have h :=
+    ((Real.hasDerivAt_sinh (t / 2)).comp t
+      ((hasDerivAt_id t).div_const 2)).const_mul (-4)
+  apply h.congr_deriv
+  ring
 
 /-- The distributional sign is forced: `-r₀''` is the positive polar kernel. -/
 theorem neg_ccmPolarPotential_secondDerivative (t : ℝ) :
@@ -59,20 +68,24 @@ theorem hasDerivAt_polarCosinePrimitive (ξ t : ℝ) :
   have hden : ξ ^ 2 + 1 / 4 ≠ 0 := by positivity
   have hsinh : HasDerivAt (fun u : ℝ => Real.sinh (u / 2))
       ((1 / 2 : ℝ) * Real.cosh (t / 2)) t := by
-    convert (Real.hasDerivAt_sinh (t / 2)).comp t ((hasDerivAt_id t).div_const 2) using 1 <;>
-      ring
+    apply ((Real.hasDerivAt_sinh (t / 2)).comp t
+      ((hasDerivAt_id t).div_const 2)).congr_deriv
+    ring
   have hcosh : HasDerivAt (fun u : ℝ => Real.cosh (u / 2))
       ((1 / 2 : ℝ) * Real.sinh (t / 2)) t := by
-    convert (Real.hasDerivAt_cosh (t / 2)).comp t ((hasDerivAt_id t).div_const 2) using 1 <;>
-      ring
+    apply ((Real.hasDerivAt_cosh (t / 2)).comp t
+      ((hasDerivAt_id t).div_const 2)).congr_deriv
+    ring
   have hcos : HasDerivAt (fun u : ℝ => Real.cos (ξ * u))
       (-ξ * Real.sin (ξ * t)) t := by
-    convert (Real.hasDerivAt_cos (ξ * t)).comp t ((hasDerivAt_id t).const_mul ξ) using 1 <;>
-      ring
+    apply ((Real.hasDerivAt_cos (ξ * t)).comp t
+      ((hasDerivAt_id t).const_mul ξ)).congr_deriv
+    ring
   have hsin : HasDerivAt (fun u : ℝ => Real.sin (ξ * u))
       (ξ * Real.cos (ξ * t)) t := by
-    convert (Real.hasDerivAt_sin (ξ * t)).comp t ((hasDerivAt_id t).const_mul ξ) using 1 <;>
-      ring
+    apply ((Real.hasDerivAt_sin (ξ * t)).comp t
+      ((hasDerivAt_id t).const_mul ξ)).congr_deriv
+    ring
   have hnum := (hsinh.mul hcos).add ((hcosh.mul hsin).const_mul (2 * ξ))
   rw [show polarCosinePrimitive ξ = fun u : ℝ =>
       (Real.sinh (u / 2) * Real.cos (ξ * u) +
@@ -81,7 +94,7 @@ theorem hasDerivAt_polarCosinePrimitive (ξ t : ℝ) :
     funext u
     rw [polarCosinePrimitive]
     ring]
-  convert hnum.div_const (ξ ^ 2 + 1 / 4) using 1
+  apply (hnum.div_const (ξ ^ 2 + 1 / 4)).congr_deriv
   field_simp [hden]
   ring
 

@@ -164,7 +164,6 @@ def sigmaFun (x : Carrier) : Carrier :=
   Finsupp.onFinset (x.support.image sw) (fun q => eps q * conj (x (sw q)))
     (by
       intro q hq
-      dsimp only at hq
       have hx : x (sw q) ≠ 0 := by
         intro h
         rw [h] at hq
@@ -234,7 +233,6 @@ def thetaFun (t : ℕ → ℝ) (x : Carrier) : Carrier :=
   Finsupp.onFinset x.support (fun q => lam t q * x q)
     (by
       intro q hq
-      dsimp only at hq
       have hx : x q ≠ 0 := by
         intro h
         rw [h] at hq
@@ -285,11 +283,10 @@ theorem inner_theta_add (t : ℕ → ℝ) (u v : Carrier) :
 /-- The cup trace, defined from the Hodge star and the inner product. -/
 def cupForm : LinearMap.BilinForm ℂ Carrier :=
   LinearMap.mk₂ ℂ (fun a b => -@inner ℂ Carrier _ (sigmaMap b) a)
-    (fun a₁ a₂ b => by dsimp only; rw [inner_add_right]; ring)
-    (fun c a b => by dsimp only; rw [inner_smul_right, smul_eq_mul]; ring)
-    (fun a b₁ b₂ => by dsimp only; rw [map_add, inner_add_left]; ring)
+    (fun a₁ a₂ b => by rw [inner_add_right]; ring)
+    (fun c a b => by rw [inner_smul_right, smul_eq_mul]; ring)
+    (fun a b₁ b₂ => by rw [map_add, inner_add_left]; ring)
     (fun c a b => by
-      dsimp only
       rw [map_smulₛₗ, inner_smul_left, RingHomCompTriple.comp_apply, RingHom.id_apply,
         smul_eq_mul]
       ring)

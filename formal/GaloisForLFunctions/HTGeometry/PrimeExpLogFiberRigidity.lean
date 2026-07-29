@@ -253,7 +253,7 @@ theorem factorClockFiberIndependent_of_expLog
   set t : Set P :=
     {p | p ∈ U ∧ ∑ ak, D ak * Complex.exp (-(alpha ak.1) * (L p : ℂ)) * (L p : ℂ) ^ (ak.2 : ℕ) ≠ 0}
     with ht
-  have hgood : (U \ t).Infinite := hU.diff hbad
+  have hgood : (U \ t).Infinite := hU.sdiff hbad
   obtain ⟨q, hqmem, hqtend⟩ := hLproper (U \ t) hgood
   set u : ℕ → ℝ := fun n => L (q n) with hu_def
   have hu : Tendsto u atTop atTop := hqtend
@@ -329,7 +329,9 @@ theorem primeLog_proper (V : Set Nat.Primes) (hV : V.Infinite) :
   have hcast : Tendsto (fun n => ((q n : ℕ) : ℝ)) atTop atTop := by
     refine tendsto_atTop_mono (fun n => ?_) tendsto_natCast_atTop_atTop
     exact_mod_cast le_of_lt (hqlt n)
-  simpa [Function.comp] using Real.tendsto_log_atTop.comp hcast
+  rw [show (fun n => Real.log ((q n : ℕ) : ℝ)) =
+    Real.log ∘ fun n => ((q n : ℕ) : ℝ) by rfl]
+  exact Real.tendsto_log_atTop.comp hcast
 
 /-- **Prime exponential-polynomial fibre rigidity — acceptance theorem.**  For the genuine prime
 columns `factor a p = p^{-α a}` and clock `p ↦ log p`, with the finite shifts of pairwise distinct

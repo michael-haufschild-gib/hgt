@@ -39,7 +39,7 @@ theorem integral_exp_affine (c : ℝ) (hc : c ≠ 0) :
     ((Continuous.intervalIntegrable (by fun_prop) 0 1))]
   simp only [mul_sub, mul_one, sub_self, mul_zero, Real.exp_zero]
   field_simp
-  ring
+  ring_nf
 
 /-- **Exact two-variable Haar average** (Gauss-component residue constant).  For a prime-power
 scale `s_p(x) = p^(1-x)`, the product of the `m`-th and `(-m)`-th moment integrals over the unit

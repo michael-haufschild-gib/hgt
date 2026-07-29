@@ -43,7 +43,9 @@ theorem eq_zero_of_isBohrAlmostPeriodic_of_tendsto_zero
     -- the limit gives a threshold beyond which `‖f‖ ≤ ε`
     have hev : ∀ᶠ y in Filter.atTop, ‖f y‖ ≤ ε := by
       have hnorm : Filter.Tendsto (fun y => ‖f y‖) Filter.atTop (nhds 0) := by
-        simpa using (continuous_norm (E := E)).tendsto (0 : E) |>.comp h0
+        rw [show (fun y => ‖f y‖) = (fun z : E => ‖z‖) ∘ f by rfl]
+        simpa only [norm_zero] using
+          (continuous_norm (E := E)).tendsto (0 : E) |>.comp h0
       exact Filter.Tendsto.eventually_le_const hε hnorm
     obtain ⟨M, hM⟩ := Filter.eventually_atTop.mp hev
     -- pick an almost-period far enough to the right

@@ -208,8 +208,8 @@ theorem hzeta_hasDerivAt {s : ℂ} (hs : 1 < s.re) {a₀ : ℂ} (ha₀ : a₀ �
     have hb : ((m : ℂ) + a₀) ∈ Complex.slitPlane := natCast_add_mem_slitPlane ha₀im m
     have h := (Complex.hasStrictDerivAt_cpow_const (c := -s) hb).hasDerivAt.comp a₀
       ((hasDerivAt_const a₀ (m : ℂ)).add (hasDerivAt_id a₀))
-    convert h using 1
-    all_goals ring_nf
+    simpa only [Function.comp_apply, Pi.add_apply, id_eq] using!
+      h.congr_deriv (by ring)
   set C : ℝ := ‖s‖ * Real.exp (Real.pi * |s.im|) with hC
   set u : ℕ → ℝ := fun m => C * ((((m : ℝ) + M₀)) / 2) ^ (-(s.re + 1)) with hu
   have hsum_u : Summable u := by
@@ -238,8 +238,8 @@ theorem hzeta_hasDerivAt {s : ℂ} (hs : 1 < s.re) {a₀ : ℂ} (ha₀ : a₀ �
       natCast_add_mem_slitPlane (hball_pos a ha) (m + M₀)
     have h := (Complex.hasStrictDerivAt_cpow_const (c := -s) hb).hasDerivAt.comp a
       ((hasDerivAt_const a (↑(m + M₀) : ℂ)).add (hasDerivAt_id a))
-    convert h using 1
-    all_goals ring_nf
+    simpa only [Function.comp_apply, Pi.add_apply, id_eq] using!
+      h.congr_deriv (by ring)
   have hbound : ∀ m : ℕ, ∀ a ∈ Metric.ball a₀ ρ,
       ‖-s * ((↑(m + M₀) : ℂ) + a) ^ (-(s + 1))‖ ≤ u m := by
     intro m a ha
@@ -294,13 +294,17 @@ theorem hzeta_hasDerivAt {s : ℂ} (hs : 1 < s.re) {a₀ : ℂ} (ha₀ : a₀ �
       (Metric.mem_ball_self hρpos)
   rw [hsplit]
   have hsum := hhead.add htail
-  convert hsum using 1
-  have hs1 : 1 < (s + 1).re := by rw [Complex.add_re, Complex.one_re]; linarith
-  have hseries := (summable_hurwitzSeries hs1 a₀).sum_add_tsum_nat_add M₀
-  rw [hzeta]
-  rw [tsum_mul_left, ← Finset.mul_sum]
-  rw [← hseries]
-  ring
+  have hcoef :
+      (∑ m ∈ Finset.range M₀, -s * ((m : ℂ) + a₀) ^ (-(s + 1))) +
+          ∑' m : ℕ, -s * ((↑(m + M₀) : ℂ) + a₀) ^ (-(s + 1)) =
+        -s * hzeta (s + 1) a₀ := by
+    have hs1 : 1 < (s + 1).re := by rw [Complex.add_re, Complex.one_re]; linarith
+    have hseries := (summable_hurwitzSeries hs1 a₀).sum_add_tsum_nat_add M₀
+    rw [hzeta]
+    rw [tsum_mul_left, ← Finset.mul_sum]
+    rw [← hseries]
+    ring
+  simpa only [Pi.add_apply] using! hsum.congr_deriv hcoef
 
 /-- Derivative form of `hzeta_hasDerivAt`. -/
 theorem hzeta_deriv {s : ℂ} (hs : 1 < s.re) {a : ℂ} (ha : a ∈ UHP) :

@@ -36,7 +36,7 @@ theorem hasDerivAt_normSq_vertical_general (f : ℂ → ℂ) (x a : ℝ)
   have hcomp : HasDerivAt (fun t : ℝ => f ((x : ℂ) + (t : ℂ) * Complex.I))
       (Complex.I • deriv f z) a := by
     have := hf.hasDerivAt.scomp a (hasDerivAt_verticalPath x a)
-    simpa [Function.comp] using this
+    simpa only [Function.comp_apply, smul_eq_mul] using! this
   have hre : HasDerivAt (fun t : ℝ => (f ((x : ℂ) + (t : ℂ) * Complex.I)).re)
       (Complex.I • deriv f z).re a :=
     Complex.reCLM.hasFDerivAt.comp_hasDerivAt a hcomp
@@ -57,8 +57,10 @@ theorem hasDerivAt_normSq_vertical_general (f : ℂ → ℂ) (x a : ℝ)
       rw [Complex.normSq_apply]
     rw [hform]
     have h := (hre.mul hre).add (him.mul him)
-    convert h using 1
-    ring
+    simpa only [Pi.add_apply, Pi.mul_apply] using!
+      h.congr_deriv (by
+        rw [hw, hz]
+        ring)
   convert hsq using 1
   simp only [smul_eq_mul, Complex.mul_re, Complex.mul_im, Complex.I_re, Complex.I_im,
     Complex.conj_re, Complex.conj_im]

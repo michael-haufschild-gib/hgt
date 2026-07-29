@@ -77,7 +77,8 @@ theorem hasCompactSupport_comp_add_right (φ : ℂ → ℝ) (ρ : ℂ)
     (hφc : HasCompactSupport φ) : HasCompactSupport (fun x => φ (x + ρ)) := by
   have : HasCompactSupport (φ ∘ (fun x => x + ρ)) :=
     hφc.comp_homeomorph (Homeomorph.addRight ρ)
-  simpa [Function.comp] using this
+  rw [show (fun x => φ (x + ρ)) = φ ∘ fun x => x + ρ by rfl]
+  exact this
 
 /-- **Polar reduction of the log-weighted integral** (the first analytic step
 toward `FundamentalSolutionProp`, banked and verified).  The planar integral of

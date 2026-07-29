@@ -206,7 +206,7 @@ theorem hasDerivAt_hermite (x : ℝ) :
   have h2 : HasDerivAt (fun t => (hermiteFℝ A m).eval t)
       ((derivative (hermiteFℝ A m)).eval x) x := (hermiteFℝ A m).hasDerivAt x
   have hm := h1.mul h2
-  convert hm using 1
+  apply hm.congr_deriv
   rw [← hermiteFℝ_add_derivative A m, eval_add, mul_add]
 
 /-- The integrand `eˣ · fℝ(x)`. -/

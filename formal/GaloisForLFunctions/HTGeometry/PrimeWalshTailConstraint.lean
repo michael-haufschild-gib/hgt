@@ -145,11 +145,14 @@ theorem orientationWalshRestrictionLinearMap_surjective
 
 /-- **Finite Prime-Walsh rank law.**  The restriction rank of the complete Walsh palette is exactly
 the number of allowed Boolean patterns. -/
+noncomputable local instance {I : Type*} [Fintype I] {R : Set (I → Bool)} :
+    Fintype R :=
+  Fintype.ofFinite R
+
 theorem orientationWalshRestrictionLinearMap_finrank
     {I : Type*} [Fintype I] (R : Set (I → Bool)) :
     Module.finrank ℂ (orientationWalshRestrictionLinearMap R).range = Fintype.card R := by
   classical
-  letI : Fintype R := Fintype.ofFinite _
   rw [LinearMap.range_eq_top.mpr (orientationWalshRestrictionLinearMap_surjective R)]
   simp
 

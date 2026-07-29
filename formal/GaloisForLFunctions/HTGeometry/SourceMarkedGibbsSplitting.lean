@@ -95,7 +95,7 @@ theorem tendsto_sourceMarkedGibbsPartition_log_div_cold
       have hle := (summable_sourceMarkedGibbsWeight base energy radius k
         (fun q => (hbase q).le) hsum hupper).le_tsum p
         (fun q _ => mul_nonneg (hbase q).le (Real.exp_pos _).le)
-      simpa only [sourceMarkedGibbsWeight, w, d] using hle
+      simpa only [sourceMarkedGibbsPartition, sourceMarkedGibbsWeight, w, d] using hle
     have htermPos : 0 < w * Real.exp ((k : ℝ) * d) :=
       mul_pos hw (Real.exp_pos _)
     have hlogle := Real.log_le_log htermPos htermle
@@ -182,8 +182,8 @@ the two weighted energies converge.  No phase or differential-independence hypot
 theorem cofiniteWeightedGramEnergy_sourceMarkedGibbs_zero_iff_change_temperature
     {J P : Type*} [Fintype J] [DecidableEq P]
     (c : J → P → ℂ) (base energy : P → ℝ) (radius : ℝ)
-    (hbase : ∀ p, 0 < base p) (hsum : Summable base)
-    (hupper : ∀ p, energy p ≤ radius)
+    (hbase : ∀ p, 0 < base p) (_hsum : Summable base)
+    (_hupper : ∀ p, energy p ≤ radius)
     (k l : ℕ) (F : Finset P) (q : J → ℂ)
     (hsummablek : Summable fun p => if p ∈ F then 0 else
       sourceMarkedGibbsWeight base energy k p * ‖∑ j, q j * c j p‖ ^ 2)

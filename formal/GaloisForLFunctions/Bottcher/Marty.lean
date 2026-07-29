@@ -33,7 +33,7 @@ theorem hasDerivAt_stereo_path {w : ℝ → ℂ} {w' : ℂ} {t : ℝ} (hw : HasD
   have hD : HasDerivAt (fun s => 1 + ((w s).re ^ 2 + (w s).im ^ 2))
       (2 * (w t).re * w'.re + 2 * (w t).im * w'.im) t := by
     have := (hasDerivAt_const t (1:ℝ)).add ((hu.pow 2).add (hv.pow 2))
-    convert this using 1; ring
+    exact this.congr_deriv (by ring)
   -- rewrite the path into re/im rational form
   have hstereo : (fun s => stereo (w s)) = fun s =>
       (!₂[2 * (w s).re / (1 + ((w s).re ^ 2 + (w s).im ^ 2)),
@@ -77,7 +77,9 @@ theorem marty_equicontinuity {f : ℂ → ℂ} {U : Set ℂ} {M : ℝ}
   have hγ1 : γ 1 = b := by simp only [hγ_def]; push_cast; ring
   have hγderiv : ∀ s, HasDerivAt γ (b - a) s := by
     intro s
-    have hs1 : HasDerivAt (fun r : ℝ => (r : ℂ)) 1 s := by simpa using Complex.ofRealCLM.hasDerivAt
+    have hs1 : HasDerivAt (fun r : ℝ => (r : ℂ)) 1 s := by
+      rw [show (fun r : ℝ => (r : ℂ)) = (Complex.ofRealCLM : ℝ → ℂ) by rfl]
+      exact Complex.ofRealCLM.hasDerivAt
     have := ((hs1.mul_const (b - a)).const_add a)
     simpa [hγ_def] using this
   have hγmem : ∀ s ∈ Set.Icc (0 : ℝ) 1, γ s ∈ U := by

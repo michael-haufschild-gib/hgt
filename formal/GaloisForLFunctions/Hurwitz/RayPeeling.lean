@@ -53,7 +53,9 @@ theorem tendsto_log_cut_upper {x : ℝ} (hx : x < 0) :
       have hy0 : Tendsto (fun y : ℝ => y) (𝓝[>] (0 : ℝ)) (𝓝 0) :=
         tendsto_id.mono_left nhdsWithin_le_nhds
       have := hy0.div (tendsto_norm_base hx) (by linarith : (-x : ℝ) ≠ 0)
-      simpa using this
+      rw [show (fun y : ℝ => y / ‖(x : ℂ) + y * Complex.I‖) =
+        (fun y : ℝ => y) / (fun y : ℝ => ‖(x : ℂ) + y * Complex.I‖) by rfl]
+      simpa only [zero_div] using this
     have hratio_neg : Tendsto (fun y : ℝ => -y / ‖(x : ℂ) + y * Complex.I‖) (𝓝[>] 0)
         (𝓝 0) := by
       have := hratio.neg

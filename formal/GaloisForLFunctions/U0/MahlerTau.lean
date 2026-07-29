@@ -257,7 +257,10 @@ theorem bottcherCoord_div_id_tendsto_one (c : ℂ) :
       (fun t : ℝ => Complex.exp (bottcherLog c (t : ℂ) - Complex.log (t : ℂ)))
       Filter.atTop (nhds 1) := by
     have := (Complex.continuous_exp.tendsto 0).comp hδ
-    simpa using this
+    rw [show (fun t : ℝ => Complex.exp
+      (bottcherLog c (t : ℂ) - Complex.log (t : ℂ))) =
+        Complex.exp ∘ fun t : ℝ => bottcherLog c (t : ℂ) - Complex.log (t : ℂ) by rfl]
+    simpa only [Complex.exp_zero] using this
   refine hexp.congr' ?_
   filter_upwards [Filter.eventually_gt_atTop (max 2 ‖c‖)] with t ht
   have hmem : (t : ℂ) ∈ escapeOpen c := by

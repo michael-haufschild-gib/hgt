@@ -86,7 +86,7 @@ theorem inner_ccmNormalizedPrimePoleVector
         ((r : ℝ) / Lq - (n : ℝ) / Lp)) := by
   rw [lp.inner_eq_tsum]
   simp only [ccmNormalizedPrimePoleVector_apply, RCLike.inner_apply]
-  simpa only [mul_comm] using
+  simpa only [starRingEnd_apply, mul_comm] using
     ccmNormalizedPrimePoleSequence_cross_tsum hp hq n r
 
 /-- Exact cross-scale covariance law.  The squared Hilbert distance is the

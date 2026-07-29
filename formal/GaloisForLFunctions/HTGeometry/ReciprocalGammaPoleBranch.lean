@@ -89,7 +89,11 @@ theorem reciprocalGammaPoleBranch_nonempty (k : ℕ) :
   have hleft : (fun w => g (H w)) =ᶠ[𝓝 a] id :=
     hstrict.eventually_left_inverse hDne
   have hneg : Tendsto (fun x : ℂ => -x) (𝓝 0) (𝓝 0) := by
-    simpa using (continuousAt_id.neg : ContinuousAt (fun x : ℂ => -x) 0).tendsto
+    have hfun : (-id : ℂ → ℂ) = fun x => -x := by
+      funext x
+      rfl
+    simpa only [hfun, neg_zero] using!
+      (continuousAt_id.neg : ContinuousAt (fun x : ℂ => -x) 0).tendsto
   have hzright : (fun x => H (z x)) =ᶠ[𝓝 0] (fun x => -x) := by
     filter_upwards [hneg.eventually hright] with x hx
     simpa [z] using hx
@@ -100,7 +104,7 @@ theorem reciprocalGammaPoleBranch_nonempty (k : ℕ) :
     rw [hD]
   have hzder : HasDerivAt z (d⁻¹ * (-1 : ℂ)) 0 := by
     have hminus : HasDerivAt (fun x : ℂ => -x) (-1) 0 := by
-      simpa using (hasDerivAt_id (0 : ℂ)).neg
+      simpa only [Pi.neg_apply, id_eq] using! (hasDerivAt_id (0 : ℂ)).neg
     have hgder' : HasDerivAt g d⁻¹ ((fun x : ℂ => -x) 0) := by simpa using hgder
     simpa [z, Function.comp_def] using hgder'.comp 0 hminus
   refine ⟨⟨z, hzan, ?_, ?_, ?_, ?_⟩⟩
@@ -146,8 +150,8 @@ theorem ReciprocalGammaPoleBranch.finite_cocycle
     rw [← zn.map_zero]
     exact zn.analyticAt_zero.continuousAt
   have hy : Tendsto (fun x : ℂ => x / P x) (𝓝 0) (𝓝 0) := by
-    convert tendsto_id.div hPcont.tendsto hP0 using 1
-    simp [P]
+    simpa only [Pi.div_apply, id_eq, zero_div] using!
+      tendsto_id.div hPcont.tendsto hP0
   have htarget : -(n : ℂ) + (k : ℂ) = -((n - k : ℕ) : ℂ) := by
     rw [Nat.cast_sub hk]
     ring

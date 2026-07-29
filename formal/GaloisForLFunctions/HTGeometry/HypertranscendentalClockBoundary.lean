@@ -65,10 +65,9 @@ theorem hypertranscendentalFiniteJetEquiv_generator
       congr 1
       apply (hypertranscendentalFiniteJetParametrization hx L).injective
       rw [AlgEquiv.apply_symm_apply]
-      simpa [u] using
-        (hypertranscendentalFiniteJetParametrization_X hx L i).symm
+      simp [u]
     _ = _ := by
-      simpa [u] using hypertranscendentalFiniteJetParametrization_X hy L i
+      simp [u]
 
 end FiniteJetHomogeneity
 
@@ -237,21 +236,16 @@ theorem coefficientDerivativeEval_mem_adjoin_simple
     (hP : ∀ a : P, (a.1)′ ∈ IntermediateField.adjoin P {t})
     (p : P[X]) :
     PolynomialModule.eval t
-        (((Differential.deriv : Derivation ℤ E E).compAlgebraMap P).mapCoeffs p) ∈
+        (PolynomialModule.map E LinearMap.id
+          (((Differential.deriv : Derivation ℤ E E).compAlgebraMap P).mapCoeffs p)) ∈
       IntermediateField.adjoin P {t} := by
   induction p using Polynomial.induction_on' with
   | add p q hp hq =>
-      rw [map_add]
-      change PolynomialModule.eval t
-        ((show PolynomialModule E E from
-            ((Differential.deriv : Derivation ℤ E E).compAlgebraMap P).mapCoeffs p) +
-          (show PolynomialModule E E from
-            ((Differential.deriv : Derivation ℤ E E).compAlgebraMap P).mapCoeffs q)) ∈
-        IntermediateField.adjoin P {t}
-      rw [LinearMap.map_add]
+      simp only [map_add]
       exact IntermediateField.add_mem _ hp hq
   | monomial n a =>
       rw [Derivation.mapCoeffs_monomial]
+      rw [PolynomialModule.map_single]
       change PolynomialModule.eval t
         (PolynomialModule.single E n ((a.1)′)) ∈ IntermediateField.adjoin P {t}
       rw [PolynomialModule.eval_single, smul_eq_mul]
@@ -350,9 +344,11 @@ theorem simpleTranscendental_clock_internal_iff
     let A : E := Polynomial.aeval t w.num
     let B : E := Polynomial.aeval t w.denom
     let Ac : E := PolynomialModule.eval t
-      (((Differential.deriv : Derivation ℤ E E).compAlgebraMap P).mapCoeffs w.num)
+      (PolynomialModule.map E LinearMap.id
+        (((Differential.deriv : Derivation ℤ E E).compAlgebraMap P).mapCoeffs w.num))
     let Bc : E := PolynomialModule.eval t
-      (((Differential.deriv : Derivation ℤ E E).compAlgebraMap P).mapCoeffs w.denom)
+      (PolynomialModule.map E LinearMap.id
+        (((Differential.deriv : Derivation ℤ E E).compAlgebraMap P).mapCoeffs w.denom))
     let boundary : E := B⁻¹ ^ 2 *
       (B * Polynomial.aeval t w.num.derivative -
         A * Polynomial.aeval t w.denom.derivative)
