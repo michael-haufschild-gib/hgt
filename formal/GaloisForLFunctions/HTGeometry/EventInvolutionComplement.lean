@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.EventComplementaryRecord
+import GaloisForLFunctions.HTGeometry.EventRangeRecordCompletion
 
 /-!
 # An involution selects its complementary event record
@@ -170,6 +170,59 @@ noncomputable def involutionContinuationCokernelEquivRecordRange
     (involutionRecordToRange_ker_eq_continuation_range A hA).symm).trans
     ((involutionRecordToRange A).quotKerEquivOfSurjective
       (involutionRecordToRange_surjective A))
+
+/--
+Transport the source-selected complementary record into the intrinsic cokernel of continuation.
+-/
+def involutionCokernelRecord
+    {n : Type*} [Fintype n] [DecidableEq n]
+    (A : Matrix n n ℂ) (hA : A * A = 1) :
+    (n → ℂ) →ₗ[ℂ]
+      ((n → ℂ) ⧸ LinearMap.range (involutionContinuationProjection A).toLin') :=
+  (involutionContinuationCokernelEquivRecordRange A hA).symm.toLinearMap.comp
+    (involutionRecordToRange A)
+
+/--
+Continuation together with its involution-selected cokernel record is faithful.
+-/
+theorem involutionContinuation_prod_cokernelRecord_injective
+    {n : Type*} [Fintype n] [DecidableEq n]
+    (A : Matrix n n ℂ) (hA : A * A = 1) :
+    Function.Injective
+      ((involutionContinuationProjection A).toLin'.prod
+        (involutionCokernelRecord A hA)) := by
+  intro x y hxy
+  apply involutionContinuation_prod_record_injective A
+  apply Prod.ext
+  · exact congrArg
+      (fun z : (n → ℂ) ×
+        ((n → ℂ) ⧸ LinearMap.range (involutionContinuationProjection A).toLin') => z.1)
+      hxy
+  · exact
+      (involutionContinuationCokernelEquivRecordRange A hA).symm.injective
+        (congrArg
+          (fun z : (n → ℂ) ×
+            ((n → ℂ) ⧸ LinearMap.range
+              (involutionContinuationProjection A).toLin') => z.2)
+          hxy)
+
+/--
+**Source-selected event completion.**  An involution canonically completes its noninvertible
+continuation to an equivalence between the source and its transmitted range plus created
+cokernel record.
+-/
+def involutionRangeRecordCompletionEquiv
+    {n : Type*} [Fintype n] [DecidableEq n]
+    (A : Matrix n n ℂ) (hA : A * A = 1) :
+    (n → ℂ) ≃ₗ[ℂ]
+      (LinearMap.range (involutionContinuationProjection A).toLin' ×
+        ((n → ℂ) ⧸
+          LinearMap.range (involutionContinuationProjection A).toLin')) :=
+  eventRangeRecordCompletionEquiv
+    (involutionContinuationProjection A).toLin'
+    (involutionCokernelRecord A hA)
+    (by rfl)
+    (involutionContinuation_prod_cokernelRecord_injective A hA)
 
 /--
 The part of a law which is even under conjugation by the source involution.  For an involution,

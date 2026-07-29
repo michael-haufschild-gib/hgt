@@ -1502,3 +1502,259 @@ This is the first Nature-bearing implication. The current Nature verdict remains
 - 2026-07-29 — paper-proved endpoint-story reconstruction and the seam--triangle covariant
   transgression identity as standard bridge mathematics. The source-selected reciprocal process,
   continuum theory, Hypertranscendence landing, and finite prediction remain open.
+
+## Fourth failure-driven jump: there is no complete present
+
+This section sharpens the event--spacetime reciprocity law; it does not add a second fundamental
+law.
+
+Repeated obstructions in the corpus point to one assumption that survived every earlier
+reinterpretation:
+
+> physics normally assumes that the type of possible state, the alphabet of admissible
+> interventions, and the rule pairing possibilities with records are already available before an
+> event occurs.
+
+Quantum theory supplies a Hilbert space, its ket--bra pairing, and an algebra of operations.
+General relativity supplies a differentiable manifold, tangent and cotangent carriers, and a
+metric or causal field. Gauge theory supplies a bundle, structure group, and fibrewise duality.
+Process tensors may retain arbitrary memory, but still start with typed intervention slots.
+GNS reconstruction recovers a representation relative to a supplied algebra and positive
+functional. In each case the theory evolves data after enough of the meaning of “what could
+happen next” has already been fixed.
+
+The corpus suggests that this shared background assumption, not merely background spacetime, is
+too strong. An objective event may change the type of admissible future itself.
+
+### `[CONJECTURE — ENDOGENOUS-POSSIBILITY FORM OF EVENT--SPACETIME RECIPROCITY]`
+
+> **Every objective event changes the space of what can happen next and creates the complementary
+> comparison needed to relate that new future to distinctions the event removed. The ordered,
+> noncompressible history of these changes is time. Their reciprocal comparison law is
+> interaction. Its four source-stable continuum responses are gravity, electromagnetism, and the
+> weak and strong forces.**
+
+Public headline:
+
+> **The future does not exist until events create it. Gravity is how their futures disagree.**
+
+Expanded worldview:
+
+> **There is no complete present. Every event creates a new future. Time is the part of history no
+> present can contain.**
+
+“No complete present” has a deliberately narrow technical meaning. It does **not** deny that an
+infinite-dimensional Cauchy datum, a universal wavefunction, or a totalized category can encode an
+entire history. It asserts that no finite source-compatible differential-algebraic state can
+replace the calibrated event history while preserving its composition, independence, positivity,
+and physical source interpretation. The existing Hypertranscendence theorems prove this boundary
+for an assumed HT reporter; deriving that reporter from the exceptional source remains open.
+
+### Exact completion shadow
+
+Let \(T:V\to W\) be an equal-finite-dimensional event map, let
+\[
+C_T=W/\operatorname{im}T,
+\]
+and let \(R:V\to C_T\) be a faithful complementary record. The newly formalized completion theorem
+proves
+\[
+\widehat T_R:V\xrightarrow{\;\sim\;}
+\operatorname{im}T\oplus C_T,
+\qquad
+v\longmapsto(Tv,Rv).                                               \tag{AC29}
+\]
+At the rank-six ten-to-ten boundary this is exactly
+\[
+10 \simeq 6_{\rm transmitted}\oplus4_{\rm recorded}.               \tag{AC30}
+\]
+See
+[`event-range-record-completion.md`](../3-formalized/not_new_scientific_knowledge/event-range-record-completion.md).
+
+Equations `(AC29)`--`(AC30)` are standard linear algebra, not new physics. Their conceptual use is
+precise: a noninvertible event may be reversible only after its outputs are read as two different
+types. One face carries what remains directly possible; the other carries the comparison record
+needed to recover what the event excluded. The bare event does not select \(R\). Therefore the
+new law must derive the pairing rather than name an arbitrary environment “spacetime.”
+
+The source-involution corpus closes that finite algebraic selector once richer source data are
+supplied. For \(A^2=1\),
+\[
+P_A=(1+A)/2,\qquad Q_A=(1-A)/2
+\]
+canonically select continuation and record, and the exact cokernel--record equivalence produces
+\[
+V\xrightarrow{\;\sim\;}
+\operatorname{im}P_A\oplus\operatorname{coker}P_A.                  \tag{AC31}
+\]
+The new Lean capstone is `involutionRangeRecordCompletionEquiv`. Thus the open problem is no
+longer arbitrary finite complementation. It is to derive why an objective physical source selects
+the compatible-pair involution, why its complement is new causal comparison rather than a second
+internal sector, and why iterated changes of this split yield observed continuum physics.
+
+### What the previous mathematics may have been trying to say
+
+1. **The \(4/6/4\) fracture is not a particle inventory.** It is the smallest audited example in
+   which one complete source can reappear as transmitted and created output types.
+2. **Kernel--cokernel equality is not conservation by itself.** With a source-selected faithful
+   record it becomes exact reconstruction across a change of type.
+3. **Pure one-way event channels are square-zero because a possibility-to-record arrow alone is
+   only half an interaction.** Dynamics needs the reciprocal record-to-possibility action.
+4. **Curvature false zeros occur because curvature observes failure of supplied comparisons, while
+   mutual action decides which comparisons and future compositions exist in the first place.**
+5. **Operational history quotients reconstruct only relative to supplied controls.** The missing
+   datum is the endogenous creation of the next control alphabet.
+6. **Fixed Hermitian duality is too early.** A Hermitian Jordan pair identifies its two halves via
+   a supplied invertible antilinear involution. An objective noninvertible event instead needs a
+   source-created partial duality between removed possibilities and new records.
+7. **Hypertranscendence is not complicated motion inside a fixed state space.** If physically
+   derived, it says no finite algebraic present closes the tower of type-changing comparisons.
+
+This is the proposed common object behind the shadows:
+
+> **a source-generated fibred reciprocal process with event-created fibres, a positive partial
+> dagger between possibility and record faces, and no finite source-preserving horizontalization.**
+
+“Fibred” means each history \(h\) has its own possibility carrier \(P_h\), and an event
+\(e:h\to h'\) helps create \(P_{h'}\) rather than acting only as an endomorphism of one supplied
+carrier. “Partial dagger” means the possibility--record pairing exists on the physically
+actualized face and is derived from the source; it is neither a globally assumed inner product nor
+an arbitrarily chosen adjoint. “No finite horizontalization” means that replacing all fibres and
+events by one fixed finite differential-algebraic state destroys at least one source-relevant
+composition or calibrated distinction.
+
+That object is not yet a definition, theorem, or theory. It is the new mathematics the programme
+must construct and then try to kill.
+
+### Hostile alternatives that must be defeated
+
+1. **Totalization:** every varying carrier can be encoded in one larger fixed carrier. The
+   conjecture survives only if source, composition, independence, positivity, and calibration
+   cannot all be preserved by a finite differential-algebraic totalization.
+2. **Ordinary non-Markovianity:** process tensors and causal-state constructions already encode
+   memory. The conjecture must derive changing physical possibility types and forces, not rename
+   generic memory.
+3. **Dilation:** Stinespring already restores reversible evolution with an environment. The theory
+   must source-select the complementary record without assuming an environment or tensor split.
+4. **Initial-value completeness:** continuum field theories admit complete Cauchy data. The claim
+   concerns absence of finite algebraic source-compatible closure, not absence of arbitrary
+   infinite encodings.
+5. **Fixed duality:** a supplied metric, inner product, dagger, modular state, or Jordan-pair
+   involution can manufacture the comparison. The physical duality must be a consequence of the
+   event source.
+6. **Arbitrary exceptional decoration:** \(4/6/4\), Jordan, octonionic, or pure-spinor data do not
+   establish physics unless they uniquely select positivity, Lorentzian locality, the exact
+   Standard Model, continuum dynamics, and a new observable.
+
+### Sharpened open core
+
+`EXCEPTIONAL ENDOGENOUS-POSSIBILITY RECONSTRUCTION`
+
+Starting only from one independently characterized physical source:
+
+1. define a composable fibred process whose events create their target possibility carriers;
+2. derive the physical event source that selects the involution behind `(AC31)`, prove its
+   presentation-independent uniqueness, and exclude equally valid noncausal interpretations;
+3. derive a positive partial dagger and both reciprocal actions without supplied spacetime,
+   environment, tensor factorization, metric, gauge bundle, or dynamics;
+4. prove a reconstruction theorem from complete calibrated mixed histories, modulo exactly the
+   physically empty gauges;
+5. prove that spectator factorization is equivalent to vanishing reciprocal action;
+6. prove exceptional rigidity: exactly the \(3+1\) Lorentzian, \(U(1)\), \(SU(2)\), \(SU(3)\), and
+   Higgs/soldering responses occur, with no peer fifth response;
+7. derive three chiral generations, anomaly cancellation, and
+   Einstein--Dirac--Yang--Mills--Higgs continuum dynamics;
+8. derive, rather than assume, a Hypertranscendental calibrated reporter and prove that no finite
+   source-compatible algebraic present closes its history; and
+9. calculate one finite dimensionless gravity--gauge or clock--charge relation not independently
+   adjustable in GR plus the Standard Model.
+
+Only the generic completion `(AC29)`--`(AC30)` and its source-involution specialization `(AC31)`
+are now paper- and Lean-proved. Items 1--9 are the actual jump. Until at least items 1--8 are
+dependency-closed and item 9 is quantitative, current Nature verdict remains:
+
+`[DO NOT WRITE MANUSCRIPT]`.
+
+## Latest log continued: endogenous-possibility jump
+
+- 2026-07-29 — identified the fixed-possibility-type and fixed-duality assumptions shared by
+  standard state-space, geometric, gauge, GNS, and process descriptions.
+- 2026-07-29 — froze “no complete present” only in the finite source-compatible
+  differential-algebraic sense; explicitly excluded arbitrary infinite encodings.
+- 2026-07-29 — paper- and Lean-proved that a faithful complementary record completes an
+  equal-dimensional event to
+  \(V\simeq\operatorname{im}T\oplus\operatorname{coker}T\), including exact rank-six
+  \(10\simeq6\oplus4\).
+- 2026-07-29 — connected the generic completion to the existing source involution: after
+  \(A^2=1\) is supplied, its complementary projector canonically selects the cokernel record and
+  closes the finite source-to-\(6+4\) equivalence without arbitrary choices.
+- 2026-07-29 — sharpened the missing mathematical object to a source-generated fibred reciprocal
+  process with event-created possibility types, source-derived partial duality, and no finite
+  source-preserving horizontalization.
+
+## Fifth failure-driven jump: the law is not inside one event
+
+The exceptional \(M_{3,2}(\mathbb C)\) carrier makes a tempting local promise: its Gram matrix is a
+Lorentz-future vector, while its antisymmetrized Jordan inner derivations generate the exact
+Standard Model gauge algebra. Perhaps the Hermitian and skew-Hermitian halves of one event
+comparison are already gravity and internal force.
+
+The new paper-and-Lean theorem
+[`color-event-local-response-independence.md`](../3-formalized/not_new_scientific_knowledge/color-event-local-response-independence.md)
+kills that realization exactly. If \(X^\dagger X=I\), then for every Hermitian causal response
+\(H\) and every skew-Hermitian internal response \(K\), the allowed variation
+\[
+Y=X(H+K)
+\]
+has
+\[
+\operatorname{herm}(X^\dagger Y)=H,
+\qquad
+\operatorname{skew}(X^\dagger Y)=K.                                 \tag{AC32}
+\]
+The two responses are independently and exhaustively variable even at a regular timelike event.
+Sharing one exceptional matrix carrier therefore supplies no gravity--gauge coupling law,
+relative coupling constant, dynamics, or finite prediction.
+
+This failure changes the target:
+
+> **No single event contains the laws of nature. The law is the source-selected restriction on
+> which events may succeed one another.**
+
+Public form:
+
+> **The laws of nature live between events, not inside them.**
+
+The stronger conjecture is not that physical constants or mathematical laws fluctuate after every
+measurement. It is that one invariant succession law creates the admissible future type and
+reciprocal comparison for each next event. Observed fields and forces must be stable continuum
+responses of that compositional law. A local \(M_{3,2}(\mathbb C)\) event can be its alphabet, but
+cannot by itself be the sentence.
+
+This also marks a hard priority boundary. Causal-set sequential growth already makes spacetime
+grow event by event, and Hermitian Jordan systems have been proposed as Standard Model-plus-gravity
+frameworks since 1993. A publishable result must prove more than either juxtaposition:
+
+1. source-select the admissible successor relation without a supplied spacetime or control
+   alphabet;
+2. prove that composition correlates responses that `(AC32)` leaves locally independent;
+3. derive exactly the \(3+1\) Lorentzian and
+   \(U(1)\times SU(2)\times SU(3)\) continuum sectors, with no peer fifth sector;
+4. recover Einstein--Dirac--Yang--Mills--Higgs dynamics; and
+5. produce a non-adjustable gravity--gauge or clock--charge prediction.
+
+Until those clauses close, “events create spacetime” and “one exceptional object carries both
+shadows” remain bridges rather than the universal law.
+
+## Latest log continued: local-response no-go
+
+- 2026-07-29 — proved on paper that Hermitian causal and skew-Hermitian internal cross-responses
+  are independently prescribable at every isometric colour event.
+- 2026-07-29 — killed pointwise \(M_{3,2}(\mathbb C)\) force unification as a predictive
+  mechanism; retained the exact local response-space classification as positive survivor.
+- 2026-07-29 — moved the first possible unification locus from one event to source-selected event
+  succession and added causal-set growth and 1993 Jordan-gravity work to the hostile priority
+  boundary.
+- 2026-07-29 — formalized the exact local-response classification unconditionally in
+  `HTGeometry/ColorEventLocalResponseIndependence.lean`; final targeted build and axiom audit
+  passed.

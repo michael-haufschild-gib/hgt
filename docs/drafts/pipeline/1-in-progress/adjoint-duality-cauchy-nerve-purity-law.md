@@ -4,6 +4,8 @@
 - **Stage:** 1-in-progress
 - **Type:** UNIVERSAL PURITY LAW / SOURCE-SPECIFIC RH CONJECTURE
 - **Scientific status:** `[ABSTRACT SELECTOR: PARENT MATHEMATICS]`
+  `[INTERVAL-CHARACTER TRIPLE REALIZATION: LEAN FORMALIZED]`
+  `[FINITE CUBICAL COHERENCE: LEAN FORMALIZED]`
   `[GLOBAL SOURCE CONSTRUCTION: CONJECTURAL]` `[NOT RH]`
 - **Parents:**
   - `source-record-relative-hyperrigidity-purity-law.md`;
@@ -623,10 +625,157 @@ bridge closes formula and rational-power compatibility at the generator
 level.  It does not construct the sheafwise map `(13)`, its strict topology,
 or conormal faithfulness.
 
-### Ordinary Toeplitz index is too coarse `[PROVED NO-GO]`
+### Common oriented interval character `[PAPER PROVED]`
+
+The apparent mismatch between the integral Kummer residue \(m\) and the
+modular value \(1-p^{-m}\) comes from applying two different characters to
+one equivariant interval, not from a failure of the interval boundary.  In
+the Laurent group ring define
+\[
+ \chi_m(u)=
+ \begin{cases}
+  \displaystyle\sum_{k=0}^{m-1}u^k,&m>0,\\[4pt]
+  0,&m=0,\\[4pt]
+  \displaystyle-\sum_{k=m}^{-1}u^k,&m<0.
+ \end{cases}                                               \tag{13e}
+\]
+Direct splitting of the oriented interval gives, for all
+\(m,n\in\mathbb Z\),
+\[
+\begin{aligned}
+ (1-u)\chi_m(u)&=1-u^m,\\
+ \chi_{m+n}(u)&=\chi_m(u)+u^m\chi_n(u),\\
+ \chi_{-m}(u)&=-u^{-m}\chi_m(u).                           \tag{13f}
+\end{aligned}
+\]
+This is the virtual associated-graded character of the positive boundary
+interval \(B(m)\), or of its oppositely oriented reflected interval when
+\(m<0\).  It has three exact realizations:
+\[
+\begin{array}{rcll}
+ \epsilon_1(\chi_m)&=&m,
+   &\text{Kummer/localization rank},\\[2pt]
+ (1-p^{-1})\chi_m(p^{-1})&=&1-p^{-m},
+   &\text{Wold/BV modular mass},\\[2pt]
+ \det_\Phi(\chi_m)(t)&=&
+   \Phi(t)/\Phi(p^{-m}t),
+   &\text{nested Gamma determinant}.
+\end{array}                                                \tag{13g}
+\]
+Here the determinant character is defined layerwise by
+\[
+ \det_\Phi(\chi_m)(t)=
+ \begin{cases}
+  \displaystyle\prod_{k=0}^{m-1}D_1(p^{-k}t),&m>0,\\[5pt]
+  1,&m=0,\\[3pt]
+  \displaystyle\prod_{k=m}^{-1}D_1(p^{-k}t)^{-1},&m<0,
+ \end{cases}
+ \qquad
+ D_1(t)={\Phi(t)\over\Phi(p^{-1}t)}.                       \tag{13h}
+\]
+Both `(13g)` identities telescope.  Thus arithmetic localization, the
+unilateral clock interval, Wold/BV weighting, and the Gamma determinant do
+not require a fitted scalar map: they are decategorifications of one
+filtered equivariant interval class.  What remains open at one prime is the
+source-natural comparison identifying the actual Tate-theta/Kummer
+localization morphism with this interval object in the declared strict
+Barnes-face topology.
+
+The dependency-closed positive-charge theorem package is formalized in
+`GaloisForLFunctions.RHTower.TateKummerWoldGammaIntervalCharacter`:
+`tateClockPairing_unitInterval_one_eq_natCast` is the Kummer augmentation,
+`unitExponentialWoldCells_eq_intervalBoundary` is the Wold/BV realization,
+and `tateIntervalDeterminant_eq_boundary_ratio` is the multiplicative
+endpoint telescope.
+
+The interval is not only an associated-graded character.  Let
+\[
+ V=K^{(\mathbb N)},\qquad
+ T_m=\{a:a_0=\cdots=a_{m-1}=0\}=\operatorname{range}S^m .
+\]
+Restriction to the first \(m\) coordinates is surjective with kernel
+\(T_m\), hence gives the canonical linear equivalence
+\[
+ V/T_m\;\simeq\;K^{\operatorname{Fin}m}.                   \tag{13h+}
+\]
+Under `(13h+)`, the unilateral forward shift sends the \(k\)-th basis
+vector to the \((k+1)\)-st and sends the top vector into the discarded
+tail.  Thus it is exactly the nilpotent interval arrow, the typed linear
+model of multiplication by \(x\) on \(K[x]/(x^m)\).  This upgrades equality
+of \(K\)-classes to equality of the filtered representation with all
+successor arrows retained.  It is Lean-formalized by
+`tateClockIndBoundaryCoordinateMap_ker`,
+`tateClockIndTailQuotientEquiv`,
+`tateClockIndBoundaryCoordinateMap_forward_single`, and
+`tateClockIndBoundaryCoordinateMap_forward_last`.
+
+The unresolved one-prime statement is now narrower: prove that the actual
+analytic nodal class \(x\mapsto\ell_1\) carries its localization module
+\(K[x]/(x^m)\) to `(13h+)` naturally over the Barnes face, rather than only
+after choosing a local coordinate and a positive chamber.
+
+### Prime commutativity forces higher cells `[PAPER PROVED]`
+
+The one-prime interval is still insufficient to construct \(\Theta_P\).
+Let \([g]\) denote the oriented interval edge of a commuting dilation \(g\),
+with boundary
+\[
+ \partial[g]=1-g.
+\]
+For two dilations \(g,h\), multiplication has two ordered interval paths,
+\[
+ P(g,h)=[g]+g[h],\qquad P(h,g)=[h]+h[g].                  \tag{13i}
+\]
+Their scalar boundaries agree because \(gh=hg\), but the oriented paths do
+not agree.  With the Koszul orientation
+\[
+ \partial([g]\wedge[h])
+   =(1-g)[h]-(1-h)[g],
+\]
+one has the exact chain identity
+\[
+ P(g,h)-P(h,g)=-\partial([g]\wedge[h]).                   \tag{13j}
+\]
+This is the missing commuting square.  For three primes, the different
+square homotopies are themselves related by the boundary of the canonical
+three-cube; inductively, a finite prime packet requires the entire cubical
+bar/Koszul object, not only its vertices and face edges.
+
+The already proved operator and scalar formulas
+\[
+\begin{aligned}
+ E_{gh}&=E_g+S_gE_hS_g^*
+        =E_h+S_hE_gS_h^*,\\
+ 1-(gh)^{-1}
+   &=(1-g^{-1})+g^{-1}(1-h^{-1})
+    =(1-h^{-1})+h^{-1}(1-g^{-1})
+\end{aligned}                                             \tag{13k}
+\]
+are decategorified shadows of `(13j)`: they identify the two path images
+after the square cell has been forgotten.  Consequently the earlier claim
+that unit-amalgamation reduces `(13)` to one generator square is corrected:
+one generator square determines the local edge, but naturality under
+adjoining and reordering primes requires all cubical coherences.
+
+The square identities are Lean-formalized in the same module as
+`primeIntervalEdgeBoundary_pathGH`,
+`primeIntervalEdgeBoundary_pathHG`,
+`primeIntervalEdgeBoundary_squareBoundary`, and
+`primeIntervalPaths_sub_eq_squareBoundary`.
+
+This gives a finite model for the sought comparison.  Its arithmetic side is
+the finite Koszul/Čech nerve of the Kummer generators; its analytic side is
+the cubical interval object whose one-faces have Wold/BV and Gamma
+realizations `(13g)`.  The new finite theorem still required for `(13)` is
+that the actual source filtrations realize this abstract cubical model,
+including extension arrows, and that the resulting comparison is strict in
+the mixed \(L^1/L^2\) Rees topology.
+
+### Decategorified Toeplitz index is too coarse `[CORRECTED PROVED NO-GO]`
 
 A tempting construction sends a Kummer uniformizer to the Toeplitz symbol
-unitary and uses the \(K\)-theory boundary class of the Wold defect.  It loses
+unitary, forgets the equivariant interval filtration, and then uses only the
+ordinary \(K\)-theory boundary rank.  This decategorified construction loses
 the arithmetic power law.  For \(m\geq1\),
 \[
  E_{p^m}
@@ -644,8 +793,10 @@ Gamma/BV reporter includes the reciprocal occupation operator and gives
 \end{aligned}
 \]
 For \(m>1\), this is not \(m(1-p^{-1})\).  Therefore `(13)` cannot be an
-ordinary \(K\)-theory boundary followed by an untwisted trace or Chern
-character.
+ordinary nonequivariant boundary rank followed by an untwisted trace or
+Chern character.  This does not rule out the filtered equivariant interval
+class `(13e)`: that class retains every layer and gives `(15)` under its
+modular character.
 
 The positive replacement is already visible in `(12e)`--`(12f)`.  It is a
 modular/twisted relative regulator retaining simultaneously:
@@ -666,7 +817,8 @@ The identity
 is precisely the cocycle law, while ordinary additivity would erase its
 modular action.  Twisted cyclic theory and modular index pairings are parent
 containers.  The new arithmetic task is the source map `(13)` carrying the
-Kummer/Tor Bockstein class to this exact modular relative cocycle.
+Kummer/Tor Bockstein class to the full cubical interval cocycle, before
+applying any one of its scalar characters.
 
 The first RH-bearing step is the subsequent all-prime theorem that the
 distinguished principal-conormal comparisons totalize strictly and
