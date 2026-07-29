@@ -845,6 +845,200 @@ Hamiltonians. The finite-difference cancellation and relation count are
 independent unconditional algebraic theorems and should be formalized
 first.
 
+## Frozen jump: the spectral birth--recurrence law `[CONJECTURE]`
+
+The linked-cluster statement alone is established physics and cannot carry
+novelty. The stronger conjecture is that its support obstruction is
+generically sharp and is the missing first half of the recurrence law.
+
+For a finite interaction graph \(G=(V,E)\) and a nontrivial site packet
+\(S\subset V\), define its birth depth
+\[
+ \tau_G(S)
+ =
+ \min\{|C|:C\subset E,\ C\text{ is connected and spans }S\}. \tag{54}
+\]
+Let \(\epsilon_x(g)\) be the analytic eigenvalue branch born from product
+configuration \(x\) under a generic edge-local perturbation, and let
+\(\mathcal M_S\epsilon(g)\) be any nonzero anchored Möbius contrast on
+exactly the sites in \(S\).
+
+The frozen conjecture is
+\[
+ \boxed{
+ \operatorname{ord}_{g=0}\mathcal M_S\epsilon(g)=\tau_G(S)
+ }
+ \qquad\text{simultaneously for every }S\text{ and contrast}. \tag{55}
+\]
+Equivalently, the multivariate Taylor tensors through depth \(r\) generate
+exactly—not merely a subspace of—the Steiner-eligible interaction modes at
+depth \(r\). The lower bound in `(55)` is the universal obstruction; equality
+is the generic saturation claim.
+
+If the leading coefficient is \(c_S\ne0\), then the corresponding balanced
+spectral relation has
+\[
+ \delta_S(g)=c_Sg^{\tau_G(S)}+O(g^{\tau_G(S)+1}),\qquad
+ T_S(g)\asymp |g|^{-\tau_G(S)}. \tag{56}
+\]
+After these packets become resolvable, their rational span is the
+observer-visible temporal dimension; Haar target volume then gives exact
+recurrence density. Thus the proposed one-law cascade is
+\[
+ \boxed{
+ \text{interaction connectivity}
+ \longrightarrow
+ \text{spectral birth depth}
+ \longrightarrow
+ \text{resolvability time}
+ \longrightarrow
+ \text{temporal rank}
+ \longrightarrow
+ \text{return rarity}.
+ } \tag{57}
+\]
+
+This conjecture is false if one can exhibit a graph, local alphabet and
+Steiner-eligible contrast whose depth-\(\tau_G(S)\) coefficient vanishes
+identically throughout the full edge-local interaction space. A symmetry or
+fine-tuned Hamiltonian is not a counterexample to the generic equality; an
+identical polynomial cancellation is.
+
+## Universal generator law: connectivity is observable depth
+
+The prior results are not separate effects. They are shadows of one exact
+generator--observer law:
+
+> **An irreducible joint observable becomes visible at exactly the first
+> generator depth whose interaction support can contain it.**
+
+There are two dual filtrations. The generator filtration asks which
+interaction packets can be made by words of length \(n\). The observer
+filtration asks which packets survive Möbius contrast. A word of length
+\(n\) uses at most \(n\) distinct interaction labels; a Möbius probe
+extracts only words using every label in its packet. Therefore, for every
+finite interaction set \(E\), every field, every order \(n\), every
+coefficient assignment to length-\(n\) words, and every packet \(C\subset
+E\),
+\[
+ |C|>n
+ \quad\Longrightarrow\quad
+ \mathcal M_C F_n=0. \tag{58}
+\]
+This is exact, not asymptotic.
+
+For an arbitrary formal analytic series
+\[
+ P=(P_0,P_1,\ldots),\qquad
+ P_n:(\mathbb C^E)^n\longrightarrow\mathbb C, \tag{59}
+\]
+restrict the coupling vector \(z\) to \(D\subset E\), and define the
+packet coefficient
+\[
+ W_C^{(n)}(z)=
+ \mathcal M_C\!\left[
+   D\longmapsto P_n(z|_D,\ldots,z|_D)
+ \right]. \tag{60}
+\]
+The exact Taylor-depth law is
+\[
+ W_C^{(n)}(z)=0\quad(n<|C|), \qquad
+ P_n(z,\ldots,z)=\sum_{\substack{C\subset E\\|C|\le n}}
+ W_C^{(n)}(z). \tag{61}
+\]
+Thus order \(n\) is not merely bounded by a parameter count: it is
+*exactly decomposed* into interaction packets of depth at most \(n\).
+
+Connectivity supplies the second half. For arbitrary finite matrices over
+any commutative domain, if \(a\) is a characteristic root of \(A\) and
+\(b\) is a characteristic root of \(B\), then
+\[
+ a+b\text{ is a characteristic root of }
+ A\otimes I+I\otimes B. \tag{62}
+\]
+For analytic matrix families with simple product energy, branch uniqueness
+upgrades `(58)` to equality of germs:
+\[
+ \epsilon_{A\boxplus B}=\epsilon_A+\epsilon_B. \tag{63}
+\]
+No self-adjointness, normality, diagonalizability, or closed-system
+assumption is needed for `(58)`--`(59)`.
+
+If a packet \(C=C_1\sqcup C_2\) is dynamically disconnected, `(59)` makes
+its restricted spectral response additive across \(C_1,C_2\). Boolean
+Möbius contrast then cancels it exactly:
+\[
+ \mathcal M_C(F_1+F_2)=0. \tag{64}
+\]
+Combining `(61)` and `(64)` leaves only connected packets with at most
+\(n\) interactions. Combining that fact with the exact
+Steiner--Möbius duality proves the desired causal statement: an
+irreducible site packet is spectrally invisible below its Steiner
+connectivity cost.
+
+This answers “what does it mean?”:
+
+1. perturbative order is generator depth;
+2. graph/Steiner cost is the birth depth of a joint spectral fact;
+3. Möbius contrast is the canonical observer for that fact;
+4. recurrence dimension counts facts already born at the available
+   depth;
+5. inverse detuning converts birth depth into observation time;
+6. replica height measures detector complexity, independently of spatial
+   connectivity.
+
+The worldview claim is therefore not “the future cannot be hidden for
+free.” It is:
+
+> **The dimension of observable quantum time is built, packet by packet,
+> by interaction connectivity.**
+
+This can become the master law only after the remaining transfer below is
+closed. Until then it is a proved universal analytic-combinatorial law
+plus a proved disconnected spectral theorem, not yet a proved theorem for
+every local Hamiltonian.
+
+### Formal closure ledger for the generator law
+
+`formal/GaloisForLFunctions/HTGeometry/ParametricSpectralBranch.lean`
+now checks:
+
+1. analytic simple-eigenvalue branches for arbitrary finite complex
+   matrix families;
+2. uniqueness of continuous characteristic-root germs at every simple
+   diagonal eigenvalue;
+3. exact Kronecker-sum root addition over every commutative domain;
+4. exact additivity of analytic disconnected eigenvalue branches.
+
+`formal/GaloisForLFunctions/HTGeometry/SpectralClusterTransfer.lean`
+now checks:
+
+1. every length-\(n\) interaction word has support cardinality at most
+   \(n\);
+2. Möbius probes annihilate every larger interaction packet;
+3. arbitrary homogeneous analytic coefficients are word-generated;
+4. exact vanishing `(57)` below packet depth;
+5. exact bounded reconstruction `(57)` at every order;
+6. exact Möbius cancellation for every response additive across two
+   nonempty disconnected packets.
+
+The remaining fatal bridge is no longer a linked-cluster theorem in the
+abstract. It is the concrete tensor-reindexing instance:
+
+1. define the full finite local Hamiltonian
+   \(H_0+\sum_e\lambda_eV_e\) on product configurations;
+2. prove that restriction to a disconnected edge packet is, after basis
+   reindexing, the Kronecker sum of its component Hamiltonians;
+3. use germ uniqueness to identify the globally labelled branch with the
+   component sum;
+4. prove the resulting connected packet coefficient is local on its
+   incident sites;
+5. compose `(57)`, `(60)`, and the already proved
+   Steiner--Möbius theorem.
+
+Only after those five items may the manuscript state the local-Hamiltonian
+law or its \(T\asymp |g|^{-\tau}\) observation-time consequence.
+
 ### Formal closure ledger for Theorem G
 
 The following are now checked in
@@ -903,3 +1097,325 @@ Retire or demote the route if:
 6. Determine whether a symmetry class forces a nontrivial multi-stage
    cascade \(v=1,2,\ldots\), rather than one generic first-order activation.
 7. Only then rewrite the master manuscript and run a hostile Nature review.
+
+## Abductive jump: the temporal Steiner spectrum `[FROZEN CONJECTURE]`
+
+The preceding law still describes several projections of one filtration. The
+stronger candidate says what that filtration *is* for a local quantum system.
+
+Let \(G=(V,E)\) be a finite connected interaction graph. Site \(v\) has a
+finite pointed alphabet of size \(q_v\ge2\). For a nonempty site packet
+\(S\subseteq V\), put
+\[
+ w(S)=\prod_{v\in S}(q_v-1)
+ \quad\text{and}\quad
+ \tau_G(S)=
+ \min\{|C|:C\subseteq E,\ C\text{ is connected and spans }S\}.
+                                                               \tag{65}
+\]
+Singletons have cost zero. Define the weighted Steiner birth spectrum
+\[
+ B_r(G,\mathbf q)
+ =
+ \sum_{\substack{\varnothing\ne S\subseteq V\\\tau_G(S)=r}}w(S).
+                                                               \tag{66}
+\]
+
+The frozen conjecture is that, for a generic edge-local Hermitian affine
+perturbation of a simple onsite product Hamiltonian, the order-\(r\)
+associated graded piece of the projective spectral-constraint cascade has
+dimension exactly
+\[
+ \boxed{\Delta d_r=B_r(G,\mathbf q).}                         \tag{67}
+\]
+Equivalently, the eigenvalue jets through depth \(r\) generate the entire
+Steiner-eligible interaction-mode space and no more:
+\[
+ \boxed{
+ \dim K_{r+1}
+ =
+ \sum_{\substack{\varnothing\ne S\subseteq V\\\tau_G(S)\le r}}
+ \prod_{v\in S}(q_v-1).
+ }                                                             \tag{68}
+\]
+This is simultaneous over every site packet and every anchored contrast.
+It is stronger than generic final rational independence and stronger than
+the universal lower obstruction. It identifies the complete temporal birth
+profile with a graph invariant.
+
+The conceptual law is
+
+> **A local quantum system's temporal architecture is the weighted Steiner
+> geometry of its interaction network.**
+
+This answers the recurring “what does it mean?” question:
+
+1. a temporal direction is an irreducible joint distinction between product
+   configurations;
+2. its birth depth is the least interaction network capable of joining the
+   sites carrying that distinction;
+3. its detector cost is the replica height of the corresponding spectral
+   relation;
+4. its observation horizon is the inverse detuning created at that depth;
+5. recurrence rarity is the Haar target volume after those directions have
+   been born.
+
+Disconnected cancellation, graph-distance delay, interval-capacity
+remainders, weak-coupling singularity, observer quotients and recurrence
+rank are therefore shadows of one object: the temporal Steiner spectrum and
+its observer-visible quotient.
+
+### Exact chain prediction
+
+For the open \(n\)-site \(q\)-level chain, `(66)` is elementary:
+\[
+ B_0=n(q-1),\qquad
+ \boxed{
+ B_r=(n-r)(q-1)^2q^{r-1}
+ }\quad(1\le r\le n-1).                                \tag{69}
+\]
+Indeed, a packet of path cost \(r\) has fixed left and right endpoints,
+nonconstant contrasts at both endpoints, and an arbitrary constant or
+nonconstant choice at each of the \(r-1\) interior sites. Consequently
+\[
+ \sum_{r=0}^{n-1}B_r=q^n-1,                            \tag{70}
+\]
+and the exact fraction of final temporal dimension still unborn after
+depth \(R\) would be
+\[
+ \boxed{
+ \frac{\sum_{r=R+1}^{n-1}B_r}{q^n-1}
+ =
+ \frac{(q-1)^2\sum_{r=R+1}^{n-1}(n-r)q^{r-1}}
+      {q^n-1}.
+ }                                                       \tag{71}
+\]
+
+For every fixed \(0<\alpha<1\), `(71)` tends to one when
+\(R=\lfloor\alpha n\rfloor\). Thus asymptotically almost every independent
+temporal direction is born only at interaction order linear in system size,
+not at any bounded or subextensive order.
+
+More sharply, choose one of the \(q^n-1\) nonconstant temporal modes
+uniformly and let \(R_n\) be its birth depth. For every fixed \(s\ge1\),
+\[
+ \boxed{
+ \lim_{n\to\infty}\Pr[n-R_n=s]
+ =
+ \frac{(q-1)^2s}{q^{s+1}}.
+ }                                                       \tag{72}
+\]
+The limiting mean distance from full-system depth is
+\[
+ \boxed{
+ \lim_{n\to\infty}\mathbb E[n-R_n]
+ =
+ \frac{q+1}{q-1}.
+ }                                                       \tag{73}
+\]
+For qubits, a typical temporal mode is therefore born only three
+interaction edges short of spanning the whole chain.
+
+At weak coupling, a mode of depth \(r\) has the sharp generic horizon
+\[
+ T_r(g)\asymp |g|^{-r}.                                 \tag{74}
+\]
+Equations `(69)`--`(74)` predict an extensive-depth concentration of an
+exponential number of clocks. This is stronger than the earlier statement
+that at least one mode is late and stronger than a dimension-linear
+remainder: it gives the entire proposed birth distribution.
+
+### What this would newly explain
+
+The free or commuting limit is not merely a model with unusually many
+resonances. It is the depth-zero face of a temporal birth spectrum. Turning
+on local noncommuting interaction does not create the final projective torus
+at once. It resolves a sequence of Steiner layers. Almost all of the final
+torus lies in layers whose generator words nearly span the system.
+
+The resulting worldview is:
+
+> **Most many-body quantum time is globally born, even when every
+> interaction is local.**
+
+This does not assert extra spacetime dimensions. It says that almost all
+rationally independent phases controlling complete recurrence are
+irreducible global facts and become operational only on horizons set by
+system-spanning virtual interaction depth.
+
+### Hard falsifiers
+
+The conjecture is killed, not weakened, by any of:
+
+1. a finite graph, finite local alphabet and anchored contrast whose
+   coefficient at exact Steiner cost vanishes identically over the full
+   edge-local Hermitian interaction space;
+2. a path-local counterexample to the exact birth numbers `(69)`;
+3. a structural parity, closed-walk or perturbative-selection rule forcing
+   birth strictly after Steiner cost for an open set of unrestricted
+   edge-local interactions;
+4. a primary source already proving the exact associated-graded
+   identification `(67)`--`(68)` for local Hamiltonian eigenvalue branches;
+5. failure of the existing generic maximal-rank endpoint, which would make
+   `(70)` physically unattainable.
+
+Fine tuning, symmetry restriction or a specially chosen interaction does
+not falsify generic equality. An identically zero leading coefficient does.
+
+### Proven lower half and new obligations
+
+The generator-support, disconnected-sector and Steiner--Möbius theorems
+already prove the inclusion
+\[
+ \text{order-\(\le r\) spectral jets}
+ \subseteq
+ \text{Steiner-eligible modes of cost \(\le r\)}.       \tag{75}
+\]
+They also prove the exact dimension of the right side for every finite graph
+and alphabet. The observation-horizon theorem converts every strict
+inclusion into an operational delay.
+
+The missing new theorem is the reverse inclusion generically for actual
+local Hamiltonian eigenbranches. Before manuscript promotion:
+
+1. attack `(67)` first on qubit paths, including parity and closed-walk
+   selection rules;
+2. prove or kill exact pair-distance birth;
+3. if pair birth survives, prove the full path associated-graded statement;
+4. only then attempt arbitrary trees and graphs;
+5. formalize `(69)`--`(73)` independently of the sharpness conjecture, since
+   they are unconditional properties of the weighted Steiner spectrum;
+6. state physical recurrence consequences only after generic spectral
+   sharpness and maximal final rank are both unconditional.
+
+## First sharpness theorem: pair distance is generically exact
+
+`[PAPER-PROVED; DEPENDENCY AUDIT PASSED; LEAN OPEN]`
+
+The first hard falsifier does not occur for two-site contrasts.
+
+**Theorem H (generic exact pair birth).** Let \(G\) be a finite interaction
+graph, let \(u,v\) lie in one connected component, and put
+\(d=d_G(u,v)\). Fix any product configuration \(x\) and alternatives
+\(a\ne x_u\), \(b\ne x_v\). For every simple onsite product Hamiltonian
+\(A\), the coefficient
+\[
+ V\longmapsto
+ [g^d]\,
+ \left(
+ E_{x^{ab}}(g)+E_x(g)-E_{x^a}(g)-E_{x^b}(g)
+ \right)                                               \tag{76}
+\]
+is a nonzero real-analytic function on the full space of edge-local
+Hermitian interactions \(V\). Hence, outside a proper analytic null set,
+\[
+ \boxed{
+ \operatorname{ord}_{g=0}
+ \left(
+ E_{x^{ab}}(g)+E_x(g)-E_{x^a}(g)-E_{x^b}(g)
+ \right)
+ =
+ d_G(u,v).
+ }                                                       \tag{77}
+\]
+Because there are only finitely many pairs, backgrounds and endpoint
+alternatives, `(77)` holds simultaneously for all of them on a dense
+full-measure set of interactions.
+
+### Witness construction
+
+Choose a shortest path
+\[
+ v_0=u,v_1,\ldots,v_d=v.
+\]
+At every internal path site choose one auxiliary local value different from
+its background value. Set every interaction off the path to zero. In the
+endpoint sector where \(v_0=a\) and \(v_d=b\), consider the configurations
+\[
+ s_0=x^{ab},\qquad
+ s_j=\text{the configuration with one auxiliary token at }v_j
+ \quad(1\le j\le d-1).
+\]
+Choose the edge interactions as follows:
+
+1. the first edge creates or removes the token at \(v_1\), conditional on
+   \(v_0=a\);
+2. every internal edge swaps the token between its two endpoints;
+3. the last edge removes or creates the token at \(v_{d-1}\), conditional
+   on \(v_d=b\).
+
+Each term is the sum of one local matrix unit and its adjoint, hence
+Hermitian and edge-local. The reachable configuration block born from
+\(s_0\) is the labelled cycle
+\[
+ s_0
+ \mathrel{\mathop{\longleftrightarrow}^{\lambda_1}}
+ s_1
+ \mathrel{\mathop{\longleftrightarrow}^{\lambda_2}}
+ \cdots
+ \mathrel{\mathop{\longleftrightarrow}^{\lambda_{d-1}}}
+ s_{d-1}
+ \mathrel{\mathop{\longleftrightarrow}^{\lambda_d}}
+ s_0.                                                    \tag{78}
+\]
+For \(d=2\), `(78)` is a two-vertex block with two independently labelled
+parallel couplings. For \(d=1\), use the diagonal endpoint projector.
+
+If either endpoint alternative is absent, one closing edge of `(78)` is
+absent. The reachable block is a path, so it has no closed walk using every
+edge label exactly once.
+
+### Noncancellation of the leading coefficient
+
+Write the distinct onsite energies of \(s_j\) as \(A_j\). For \(d\ge2\),
+the square-free coefficient of the eigenvalue branch issuing from \(s_0\)
+is
+\[
+ \boxed{
+ [\lambda_1\cdots\lambda_d]E_{s_0}(\lambda)
+ =
+ \frac{2}{\prod_{j=1}^{d-1}(A_0-A_j)}
+ \ne0.
+ }                                                       \tag{79}
+\]
+The two terms are the two orientations of the labelled cycle. No
+normalization counterterm contributes to this square-free monomial: every
+proper edge subset is a forest and has no closed walk using each selected
+label once. Equivalently, in the characteristic determinant, the only
+permutations carrying \(\lambda_1\cdots\lambda_d\) are the two cyclic
+orientations, while the simple-root derivative at \(A_0\) is nonzero.
+
+For the other three endpoint sectors the coefficient is zero because the
+cycle is open. Their mixed rectangle `(76)` therefore equals the nonzero
+quantity `(79)`. For \(d=1\), the chosen diagonal endpoint projector gives
+coefficient one.
+
+The universal lower theorem gives vanishing below \(d\); `(79)` supplies a
+witness at \(d\). Thus `(76)` is not identically zero. Real-analytic
+zero-set theory gives `(77)` generically.
+
+### Consequence
+
+Graph distance is not merely a lower speed limit for spectral birth. It is
+the exact generic activation exponent of every height-two endpoint
+contrast:
+\[
+ T_{u,v}(g)\asymp |g|^{-d_G(u,v)}.                     \tag{80}
+\]
+This proves the complete pairwise layer of the temporal Steiner spectrum.
+The remaining conjecture is genuinely higher-order: simultaneous exact
+birth for arbitrary multi-site packets, especially branched Steiner trees.
+
+### Formal status
+
+`TemporalSteinerBirthSpectrum.lean` now unconditionally defines the
+projective Steiner capacity and its exact birth multiplicities, proves
+monotonicity, proves the telescoping birth-sum law, and proves that every
+finite connected graph saturates at
+\[
+ |\text{local alphabet}|^{|V|}-1.
+\]
+The pair witness still requires formalization of the labelled-cycle
+square-free eigenbranch coefficient `(79)` and its edge-local tensor
+embedding. Until those declarations compile and pass the axiom/lint gate,
+Theorem H and `(80)` are not authorized manuscript claims.

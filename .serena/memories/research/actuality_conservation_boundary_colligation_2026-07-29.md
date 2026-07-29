@@ -1,27 +1,28 @@
-Continuation sharpened actuality conservation.
+Active Stage-1 card: docs/drafts/pipeline/1-in-progress/actuality-conservation-boundary-colligation-law.md.
 
-Active Stage-1 card: docs/drafts/pipeline/1-in-progress/actuality-conservation-boundary-colligation-law.md. Public ontology now has two nested headlines: “Every event turns a quantum possibility into a piece of spacetime” and sharper “Spacetime is the quantum symmetry that could not survive an event.” Exceptional local version: “Reality does not happen inside spacetime. An event changes the symmetry law of a quantum distinction, and its new law is spacetime.”
+Core physical target: actuality conservation. A source-complete objective event changes a coherent distinction into its complementary causal boundary rather than deleting it. Retained curvature is Standard Model gauge; target/frame curvature is gravity; mixed transfer is Higgs/soldering. Hypertranscendence is conjectured global nonclosure of accumulated event history, not yet a physical theorem.
 
-Exact source audit:
-- PurePairProductProjection.lean already proves commuting complex structures J1,J2 select comparison involution and exact agreement/disagreement projectors/ranges.
-- quantum-disagreement-spacetime-law.md already records 6+4 source, pure-tangent reporter no-go, colour-preserving normal H/C2 survivor.
-- QuaternionicWeakSpacetimeFracture.lean proves same real H carrier has left action (central -1 = -I4, no common fixed vector) and diagonal conjugation action (central -1 = +I4, invariant scalar 1 plus imaginary 3).
-- four-dimensional-higgs-event-fracture-law.md already has local Pati-Salam carrier H⊕V6, source 2+2, target 1+3, T=0_H⊕I6, and global topological-debt/no-soldering no-go.
+Prior exact bridges:
+1. SymmetryFractureDefectConservation.lean: for self-adjoint involution A, projections P,Q, and unitary U, T=UQ and S=UP are orthogonal partial isometries; S canonically realizes ker(T)≃coker(T). Existing exceptional model gives 4/6/4. Standard defect algebra.
+2. QuaternionicActualityGraphLock.lean: for unit u,v,q under Spin(4) pair action (u,v)·x=u x v*, fixing q iff v=q* u q. The graph partner is unit; graph fixes Rq and preserves q⊥=(Im H)q. Standard custodial/observer-field bridge.
 
-New exact bridge formalized:
-- Paper: docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/symmetry-fracture-unitary-defect-conservation.md
-- Lean: formal/GaloisForLFunctions/HTGeometry/SymmetryFractureDefectConservation.lean
-For self-adjoint involution A, P=(1-A)/2, Q=(1+A)/2, and two-sided unitary U, define T=UQ and S=UP. Lean proves U=T+S, TA=T, SA=-S, T†T=Q, S†S=P, cross-orthogonality, TT†+SS†=1, initial/final defect equalities, ker T=im P, im S=ker T†, target reporter kernel=im T, canonical coker(T)≃im P, and that S realizes the defect equivalence. For trace-2 ten-involution existing theorem gives 4/6/4. This turns Lost≃New from dimension postulate into conditional unitary defect theorem.
+New exact no-go and classification (2026-07-29):
+- Paper: docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/quaternionic-graph-endpoint-flatness.md
+- Lean: formal/GaloisForLFunctions/HTGeometry/QuaternionicGraphEndpointFlatness.lean
+Define endpoint right transport tau(q,r)=r* q. Lean proves unit/action, tau(q,q)=1, reverse=star, strict cocycle tau(r,s)tau(q,r)=tau(q,s), and triangle holonomy=1. Every unit pair transporter mapping q to r satisfies v=r* u q and factors exactly
+  (u,r* u q)=(1,r* q)(u,q* u q).
+Flat endpoint transport conjugates graph stabilizer Delta_q to Delta_r.
 
-Physics jump: exceptional local parent may take U=identity on underlying H⊕V6 while endpoint representation law changes. Then T=0_H⊕I6 and S=I_H⊕0_6. Six common directions preserve representation; four directions transmute from weak 2+2 to scalar+three 1+3. Actualization candidate is change of representation law, not carrier destruction or added Stinespring environment.
+Killed subclaim: event-selected directions/stabilizers alone generate gravity. Endpoint directions admit canonical pure-gauge transport, so clock-direction disagreement is frame kinematics, not curvature. This is ordinary homogeneous-space/Cartan/Higgs mathematics, not new science. Extra path/history/connection data are necessary.
 
-Hostile boundary:
-- algebra is standard Julia/Halmos/partial-isometry defect theory, not new math;
-- generic Stinespring U is noncanonical and unitary dilation has continuity issues;
-- transported grading can make odd sector vanish;
-- Cartan/broken-symmetry gravity is prior;
-- local same-carrier identity does not solve EventTopologicalDebt or global Higgs≅TM no-go;
-- outgoing 1+3 is not yet Lorentzian operational tangent, actualization, gravity, dynamics, or prediction.
-Next exact open core: SOURCE-CANONICAL CHANGE OF REPRESENTATION LAW—derive why objective exceptional event selects left-to-diagonal quaternionic change and why outgoing 1+3 becomes causal geometry.
+Strongest positive survivor: every transporter is uniquely flat endpoint transmutation times a source-stabilizer history residue. This identifies the first possible carrier of nonzero holonomy.
 
-Verification: direct `lake env lean` passed; final `lake build GaloisForLFunctions.HTGeometry.SymmetryFractureDefectConservation` passed 2948/2948; #print axioms only propext/Classical.choice/Quot.sound; git diff --check passed; no stale Lean/lake process. Repository lint still fails only because concurrently edited unrelated ParametricSpectralBranch, SpectralCausality, SteinerMobiusDuality are not reachable from umbrella; generated indexes were repeatedly made stale by concurrent SteinerMobiusDuality edits. Shared workspace externally created commit d37511c1 (`research`) during work; this agent did not commit.
+Frozen replacement conjecture: ACTUALITY MEMORY CURVATURE LAW—every objective event contains irreducible comparison history beyond its endpoint facts; the non-endpoint-compressible residue is not an added field but the missing part of the same actuality colligation. Its retained curvature gives SU3×SU2×U1, its created Lorentz-frame curvature gives gravity, and its mixed component gives Higgs/soldering, with no fifth sector. Public: “Gravity is reality remembering how quantum possibility became fact.” Sharper: “Facts do not curve the universe by themselves. The universe curves because it remembers how they became facts.”
+
+New exact open core: SOURCE-COMPLETE HISTORY-RESIDUE UNIQUENESS. Derive objective colligation, q/r endpoints, presentation-invariant C_e=tau(q,r)M_e factorization, M_e from colligation rather than supplied, nonabelian composition/curvature, exact exceptional force decomposition, Lorentzian soldering/Einstein dynamics, and finite prediction.
+
+Hostile blockers: residue arbitrary appended connection; presentation dependence; ordinary Berry/process-memory/Cartan rediscovery; compact SO3 cannot yield boosts/tetrad/free fall; flat lab false positives; peer exceptional residues/fifth forces; no unique E-D-YM-H action; HT no physical functor; no finite prediction.
+
+Verification for QuaternionicGraphEndpointFlatness: direct `lake env lean GaloisForLFunctions/HTGeometry/QuaternionicGraphEndpointFlatness.lean` passed; final `lake build GaloisForLFunctions.HTGeometry.QuaternionicGraphEndpointFlatness` passed 3015/3015; #print axioms only propext/Classical.choice/Quot.sound; proof-debt scan clean; base formal lint passed; git diff --check passed; no stale Lean/lake process. Generated indexes were refreshed multiple times, but `lint --check-generated` could not stabilize because concurrent unrelated work created/edited ParametricSpectralBranch and then an unimported SpectralClusterTransfer during the checks. Do not attribute that failure to this module.
+
+Shared worktree: HEAD was 42ee3160 at start; do not commit. Preserve concurrent dirty files.

@@ -224,6 +224,103 @@ controlled schedule on a countable determining family and prove that the
 resulting graded morphism is independent of that family.  Pointwise
 diagonalization without this independence is not a canonical completion.
 
+## Finite-packet fixed-Euler incidence `[PAPER-PROVED]`
+
+The first attack closes on paper.  Let `I` be a nonempty finite set and fix
+real Euler points `s_i>1`.  Put
+
+```text
+delta = (1/2) min_i(s_i-1),
+sigma_n = 1 + delta/(n+1),
+u_(i,n) = (s_i-sigma_n)/(sigma_n-1).
+```
+
+Then
+
+```text
+1 < sigma_n < s_i,
+u_(i,n) >= 0,
+mobiusCriticalBoundaryParameter(sigma_n,u_(i,n)) = s_i.
+```
+
+Let `f_n` be the actual critical Möbius Fisher vector at `sigma_n` and
+`d_(i,n)` its actual damped signed source vector at `u_(i,n)`.  The complete
+singular graph scale for point `i` is
+
+```text
+g_(i,n)
+ = (sigma_n-1)
+   Z_sq(s_i)/Z_sq(sigma_n) > 0.                          (FP1)
+```
+
+For every `i`, `g_(i,n)->0`.  Because `I` is finite,
+
+```text
+g_n = min_i g_(i,n)
+```
+
+is positive and tends to zero.  Apply the already proved finite-packet
+singular Sonin transport theorem to the packet
+
+```text
+{f_n} union {d_(i,n) : i in I}
+```
+
+at a common auxiliary scale smaller than
+
+```text
+g_n^2 /
+  (1 + ||f_n|| + max_i ||d_(i,n)||).
+```
+
+It supplies one strictly increasing shell depth such that every transported
+vector error is negligible compared with `g_n^2` after the displayed norm
+normalization.  The Fisher vectors are bounded along `sigma_n->1+`, every
+damped source has norm at most one, and the Sonin corner is bounded.
+Therefore the polarization estimate
+
+```text
+|<Tf_i,Td_i>-<f_i,d_i>|
+ <= ||Tf_i-Bf_i|| ||Td_i||
+    +||Bf_i|| ||Td_i-Bd_i||
+```
+
+gives, simultaneously for every `i`,
+
+```text
+(<Tf_n,Td_(i,n)>-<f_n,d_(i,n)>)/g_(i,n) -> 0.           (FP2)
+```
+
+The fixed-Euler identity turns `(FP1)` into the exact denominator
+
+```text
+(sigma_n-1)
+ squarefreeMobiusBoundaryLayerLaplace(sigma_n,u_(i,n)).
+```
+
+Substitute `(FP2)` into
+`squarefreeMobiusGammaXiWardTransportV` and use the already proved actual
+Fisher-score weld.  One obtains one common depth schedule with
+
+```text
+SoninGammaXiTransport_(i,n)
+ ->
+continuedPrimeArchSourceRelativeTrace(
+  xiWardCenteredCoordinate(s_i))
+```
+
+for every `i in I`.  Applying the same finite packet estimate to every pair
+of packet legs preserves their complete Gram matrix at the common smaller
+grade.  Hence the existing pointwise incidence is genuinely the finite
+shadow of one matrix-level Rees chart; it is not a collection of unrelated
+one-point subsequences.
+
+This theorem still does not prove RH.  Its nodes remain in the Euler source
+chamber, and analytic continuation of its scalar limits does not preserve
+positive Gram order.  The new exact wall is now source-global **polarized**
+continuation from this finite Rees chart to the reciprocal-horizon Hardy
+chart.
+
 ## Falsifiers
 
 1. Two source-natural cofinal schedules give inequivalent graded Xi classes.
