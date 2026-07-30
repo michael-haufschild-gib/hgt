@@ -1,7 +1,7 @@
 # Time makes space and black holes glow
 
 - **ID:** `time-makes-space-and-black-holes-glow`
-- **Stage:** 0-backlog
+- **Stage:** 1-in-progress
 - **Type:** NORTH-STAR PHYSICAL CONJECTURE / HEADLINE-LAW SEARCH
 - **Source:** synthesis of `headline-scale-physics-law-search.md`,
   `finite-factor-eternal-time-screen-trilemma.md`, and the horizon Gamma observability corpus
@@ -237,3 +237,178 @@ Retire the umbrella law if any of the following is established:
 
 - 2026-07-28 - created after headline-altitude reset; deliberately recorded as a conjecture with
   the HT-to-operational-information gap exposed.
+
+## Apex reset after proof-proximity correction — 2026-07-30
+
+The conjecture is promoted to active research. Its sharper public statement
+is:
+
+> **The universe expands so its future does not have to repeat.**
+
+> **Black holes glow because a bounded horizon cannot retain an open-ended
+> future for free.**
+
+This is frozen as a truth-hunch, not inferred from the finite-capacity
+theorems already available.
+
+### Strong technical form now under attack
+
+For every causally complete physical region \(R\), there is a canonical
+operational innovation process \(\mathcal I_R\) derived from newly
+distinguishable future relations, not from an externally supplied age label.
+There is also a retained gravitational capacity \(\mathcal C_R\), an outward
+export \(\Phi_R\), and a clock-failure defect \(\mathcal L_R\), all defined
+without double counting. The conjectured local law is
+\[
+  d\mathcal I_R
+  =
+  d\mathcal C_R+d\Phi_R+d\mathcal L_R.
+  \tag{TC*}
+\]
+
+In a semiclassical regime,
+\[
+  \mathcal C_R=S_{\rm gen}(R)
+  =
+  \frac{A(\partial R)}{4G\hbar}
+  +S_{\rm out}(R)
+\]
+after the correct renormalized and gravitationally dressed definition is
+used.
+
+The frozen consequences are:
+
+1. a causally closed region with unbounded operational innovation, bounded
+   exported information and faithful clocks must have unbounded generalized
+   capacity;
+2. in a homogeneous closed cosmological phase, capacity growth is realized
+   as physical geometric expansion, not merely growth of a chosen causal
+   diamond;
+3. a stationary bounded-capacity horizon with continuing innovation must
+   export information;
+4. for a nonextremal black hole, the universal stationary export channel is
+   Hawking radiation;
+5. an extremal horizon must instead retain memory, grow, export a nonthermal
+   channel, or lose faithful clock capacity;
+6. ordinary quantum recurrence is the finite-capacity phase in which
+   innovation eventually stops producing new distinguishable age records and
+   the accessible future closes onto a compact return geometry.
+
+No item is presently a result. In particular, `(TC*)` may not be obtained by
+defining \(\mathcal I_R\) as the right-hand side.
+
+### Why this is a genuine jump
+
+The conjecture reverses the explanatory direction:
+
+```text
+standard:
+cosmic expansion + horizon radiation
+  -> changing state capacity and recurrence properties
+
+conjectured:
+open-ended distinguishable future + finite gravitational capacity
+  -> expansion or horizon export
+  -> recurrence when neither outlet remains available.
+```
+
+It asserts that cosmic expansion, Hawking emission and quantum recurrence are
+three phases of one temporal-capacity law.
+
+### Immediate kill tests
+
+1. Define \(\mathcal I_R\) without an external age code, algorithmic
+   randomness, or the conclusion of `(TC*)`.
+2. Exhibit a finite-energy, bounded-\(S_{\rm gen}\), causally closed quantum
+   system with unbounded robust innovation, no export, and faithful clocks.
+3. Show whether generalized entropy bounds the relevant operational
+   distinguishability rather than only a separately assumed message
+   ensemble.
+4. Separate physical FRW expansion from the kinematic growth of ordinary
+   causal diamonds in Minkowski space.
+5. Prove that stationary nonextremal export is forced to be Hawking/KMS
+   rather than an arbitrary environment channel.
+6. Test exact extremal black-hole response, where the simple Gamma-to-Planck
+   story already fails.
+
+Failure of any one of items 1--5 in the universal form kills the corresponding
+headline. The paper may not present a conditional trilemma as an explanation
+of real cosmology or black holes.
+
+## First hostile parent and reality attack — 2026-07-30
+
+The jump is at the right explanatory scale, but none of its physical bridges
+may be treated as available.
+
+### Occupied mathematical and physical parents
+
+1. Buzek, Derka and Massar already derive finite-clock resolution and
+   information limits from spectral width and the Holevo bound. Thus
+   “faithful clocks require information capacity” is parent physics, not
+   novelty.
+2. Autonomous-clock work already relates clock accuracy and resolution to
+   entropy production and finite resources. Thus “timekeeping has a
+   thermodynamic cost” is occupied.
+3. The quantum focusing conjecture defines generalized entropy and proposes a
+   monotonicity law, but it is itself conjectural and known local violations
+   occur in higher-curvature gravity in \(d\ge5\). It cannot be an
+   unconditional universal dependency.
+4. Information and entropy flux in Hawking radiation are established
+   research topics. Reinterpreting that flux as temporal overflow is not a
+   result.
+5. Information-theoretic explanations of cosmic expansion have already been
+   proposed. A verbal information/expansion connection has no priority.
+
+### Exact logical obstruction
+
+A finite-dimensional closed quantum system does not need to preserve a
+permanently distinguishable absolute age. It can recur. Therefore the
+implication
+\[
+  \text{bounded capacity}
+  \Longrightarrow
+  \text{expansion or radiation}
+\]
+is false unless one independently establishes unbounded robust operational
+innovation. Calling an “open future” physically necessary merely assumes the
+branch needed to force the conclusion.
+
+This is the same conditional-in-disguise problem that the project forbids.
+The conjecture survives only if \(\mathcal I_R\) is derived from an
+independent physical law or measured invariant whose unbounded growth is not
+an age-code premise.
+
+### Cosmological obstruction
+
+Expansion is not generally growth of observer-accessible capacity. An
+asymptotically de Sitter causal patch has an expanding scale factor while its
+cosmological horizon area remains finite. Conversely, causal-diamond area can
+grow in a fixed Minkowski spacetime without cosmological expansion. Hence no
+theorem about abstract area or Hilbert dimension identifies physical FRW
+expansion without additional gravitational dynamics.
+
+### Black-hole obstruction
+
+Bounded area does not force a stationary horizon to have net outgoing flux.
+Equilibrium black-hole states can balance outgoing and incoming radiation.
+Irreversible loss into an arbitrary environment can also export information
+without a horizon or Hawking thermality. Therefore `(TC*)` cannot select
+Hawking radiation from capacity bookkeeping alone.
+
+### Current verdict
+
+`[HEADLINE-SCALE CONJECTURE; CENTRAL INNOVATION INVARIANT UNDEFINED;
+EXPANSION AND HAWKING SELECTION UNPROVED]`
+
+The route remains active as a truth-hunch, but it is not a manuscript
+candidate. Its first scientific task is no longer an entropy inequality. It
+is to construct or refute a source-derived \(\mathcal I_R\) that:
+
+1. is nonzero for genuinely new physical futures;
+2. vanishes for mere reparametrization and repeated age labels;
+3. is operationally measurable at fixed error and energy;
+4. is not defined using capacity, flux, expansion, or radiation;
+5. is provably unbounded in a stated physical class.
+
+Without that object, no amount of formal work on the right-hand side of
+`(TC*)` can turn the headline into science.

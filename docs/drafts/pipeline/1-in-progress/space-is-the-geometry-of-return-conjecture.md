@@ -248,3 +248,57 @@ Retire or sharply split the conjecture if any occurs:
 8. Attempt continuum and gravitationally dressed horizon theorems.
 9. Formalize every retained theorem before manuscript use.
 
+## First hostile result — return cannot locate one-way escape
+
+`[DIRECTED/HORIZON CLAUSES SPLIT 2026-07-30]`
+
+Rooted self-return data cannot by itself reconstruct a directed acyclic
+transition.
+
+Take three labelled operational ports \(x,y,z\). Let \(y\) and \(z\) have
+distinct but fixed local return laws \(A\) and \(B\). Compare two one-way
+processes:
+
+\[
+  P:\ x\longrightarrow y,
+  \qquad
+  Q:\ x\longrightarrow z,
+\]
+
+with no path from either target back to \(x\). At \(x\), both processes have
+the same permanent nonreturn after the escape. At \(y\) and \(z\), the local
+rooted return laws remain \(A\) and \(B\) in both processes. Local
+perturbations confined to a target cannot create a closed history back
+through \(x\). Hence the full family of rooted self-return laws can be
+identical while the destination of the one-way edge differs.
+
+This is the directed analogue of a basic diagonal-data obstruction: acyclic
+off-diagonal structure need not appear in any rooted closed walk. It triggers
+hard falsifier 6.
+
+Consequences:
+
+1. the Hermitian/bidirectional metric conjecture \(b_x(y)=2d(x,y)\) remains
+   live;
+2. full directed graph reconstruction from self-return alone is false;
+3. a true horizon cannot be distinguished from unlabelled irreversible loss
+   without an escape or cross-transfer reporter;
+4. calling such additional reporter data “return” would be semantic
+   concealment, not a theorem.
+
+## No-go closure for the directed extension
+
+- **Exact killing mechanism:** rooted closed histories are blind to acyclic
+  destination data.
+- **Strongest positive survivor:** the rooted atlas may determine the
+  reversible round-trip geometry inside mutually returning sectors. A
+  separate oriented escape object is necessary for directed causal order and
+  horizons.
+- **New insight:** recurrence and irreversibility are complementary rather
+  than reducible to one another. A viable larger law must explain their exact
+  composition instead of claiming that one determines the other.
+- **Formal status:** finite countermodel paper-level only.
+
+The finite Hermitian return-metric clause stays under attack. The
+directed/horizon and continuum-horizon clauses are unauthorized unless a
+separate escape object is introduced and proved necessary and sufficient.
