@@ -4,18 +4,20 @@
 - **Stage:** 1-in-progress
 - **Type:** UNIVERSAL PHYSICS CONJECTURE / THEORY-OF-EVERYTHING TARGET / NEW-MATHEMATICS TARGET
 - **Status:** `[CONJECTURE FROZEN] [PROOF ROUTE UNKNOWN] [NOVELTY UNVERIFIED]`
-  `[TWO EXACT FINITE SURVIVORS] [NO PHYSICS PROVED] [NATURE: DO NOT WRITE]`
+  `[EXACT FINITE BOUNDARIES] [NO PHYSICS PROVED] [NATURE: DO NOT WRITE]`
 - **Parents:** `projective-source-square-universal-law.md`,
   `dynamical-composition-universal-law.md`,
   `source-generated-ternary-reciprocity-law.md`
 - **Exact finite bridges:**
   `../3-formalized/not_new_scientific_knowledge/projective-source-visibility-parity-law.md`,
   `../3-formalized/not_new_scientific_knowledge/projective-source-color-symmetry-no-go.md`,
+  `../3-formalized/not_new_scientific_knowledge/source-defect-path-cocycle-law.md`,
   `../3-formalized/not_new_scientific_knowledge/composition-transport-projective-bianchi-law.md`,
   `../3-formalized/not_new_scientific_knowledge/anchored-transport-bianchi-law.md`,
   `../3-formalized/color-gram-weak-lorentz-lock-no-go.md`,
   `../3-formalized/not_new_scientific_knowledge/color-gram-minkowski-orbit-theorem.md`
-- **Retired shortcut:** `../5-failed/projective-source-directions-are-color.md`
+- **Retired shortcuts:** `../5-failed/projective-source-directions-are-color.md`,
+  `../5-failed/source-reporter-counts-are-particle-indices.md`
 
 ## Public law
 
@@ -189,6 +191,50 @@ prevents a common invisible state.
 On symmetric successor layers this joint visibility holds exactly at odd degree, while every even
 degree has an explicit invisible sector. Phase, observation, and successor parity are exact shadows
 of one projective source relation.
+
+## Exact upstream no-go: reports of change carry no new force index
+
+For every pair of linear source changes,
+\[
+D_A=1-A
+\qquad\Longrightarrow\qquad
+D_{AB}=D_A+AD_B.
+\tag{CC.4a}
+\]
+
+Lean proves `(CC.4a)`, its finite-word telescoping law, and the exact factorization
+\[
+\bigl(D_1,D_A,D_B,D_{AB}\bigr)
+=
+L_A\bigl(D_A,D_B\bigr).
+\tag{CC.4b}
+\]
+The lift \(L_A\) is injective. Thus the four-label square report is injective exactly when the
+paired generator report is injective. Identity contributes zero; composite change contributes no
+independent reporter direction.
+
+For a comparison triangle \(A,B,C\), Lean also proves
+\[
+\boxed{
+(D_A+AD_B)-D_C=C-AB.
+}
+\tag{CC.4c}
+\]
+If \(AB=\zeta C\), the residual is \((1-\zeta)C\). Thus failure of the exact change-report cocycle
+is literally comparison-path curvature; projective phase is its central specialization.
+
+This kills a tempting \(4\times2\times2\) reading of square labels, reporter labels, and projective
+coordinates as Pati--Salam colour, weak isospin, and causal spin. Reporter coordinates are not
+state multiplicities, and the physical count is already occupied by Pati--Salam/Spin(10).
+
+The exact correction sharpens the universal law:
+
+> **Change itself is an exact cocycle. Force can begin only where changes fail to compose
+> consistently.**
+
+The first sentence is proved in the linear shadow. The second is a physical conjecture. It directs
+the new mathematics away from cardinality and toward source-generated nontrivial composition
+obstruction classes.
 
 ## Second exact finite survivor: composition must move with the frame
 
@@ -423,6 +469,7 @@ The conjecture fails if any of the following occurs:
 - [x] finite visibility, covariant-composition, projective-composition-Bianchi, and anchored-Bianchi
   survivors are
   paper-proved and Lean-formalized
+- [x] reporter-index multiplication rejected by exact path-cocycle factorization
 - [x] direct colour and weak shortcuts are rejected rather than hidden
 - [x] nearby parent theories and novelty boundary identified
 - [ ] source-generated higher object defined
@@ -449,3 +496,7 @@ The conjecture fails if any of the following occurs:
 - 2026-07-30 — Proved in Lean the exact quadratic-anchor triangle law coupling hidden holonomy,
   public holonomy, and causal-anchor transport defect. This is the first finite anchored shadow of
   the gravity clause.
+- 2026-07-30 — Killed the \(4\times2\times2\) reporter-count shortcut. Source defects form an exact
+  path cocycle; identity and composite square reports add no independent index. Reframed frontier:
+  genuine physical content must begin in nontrivial obstruction to composition, not counts of
+  change reports.

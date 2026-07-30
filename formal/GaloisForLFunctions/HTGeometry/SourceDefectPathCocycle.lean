@@ -11,6 +11,8 @@ Consequently every word defect telescopes from the defects of its generators. Fo
 source square, the identity report is zero and the composite report is determined by the two
 generator reports. The four-label square report is injective exactly when the paired generator
 report is injective; adding identity and composite labels creates no new visibility index.
+Failure of the exact defect cocycle on a comparison triangle is exactly the negative path-
+composition defect; projective closure turns it into the central phase residual.
 
 This is elementary linear and group-cohomological algebra. It does not derive physical states,
 weak isospin, colour, spacetime, gravity, or any other force.
@@ -35,6 +37,29 @@ theorem sourceChangeDefect_comp (A B : V →ₗ[K] V) :
       sourceChangeDefect A + A.comp (sourceChangeDefect B) := by
   ext v
   simp [sourceChangeDefect]
+
+/-- Failure of three source comparisons to satisfy the exact defect cocycle law. -/
+def sourceDefectTriangleCurvature
+    (A B C : V →ₗ[K] V) : V →ₗ[K] V :=
+  sourceChangeDefect A + A.comp (sourceChangeDefect B) - sourceChangeDefect C
+
+/-- **Defect-curvature identity.** Failure of the source-defect cocycle is exactly the negative
+of the comparison-path composition defect. -/
+theorem sourceDefectTriangleCurvature_eq_pathDefect
+    (A B C : V →ₗ[K] V) :
+    sourceDefectTriangleCurvature A B C = C - A.comp B := by
+  rw [sourceDefectTriangleCurvature, ← sourceChangeDefect_comp]
+  ext v
+  simp [sourceChangeDefect]
+
+/-- Projective comparison closure turns the defect curvature into the central phase residual. -/
+theorem sourceDefectTriangleCurvature_projective
+    (A B C : V →ₗ[K] V) (ζ : K)
+    (hprojective : A.comp B = ζ • C) :
+    sourceDefectTriangleCurvature A B C = (1 - ζ) • C := by
+  rw [sourceDefectTriangleCurvature_eq_pathDefect, hprojective]
+  ext v
+  simp [sub_smul]
 
 /-- Ordered composition of a word of source changes. -/
 def sourceChangeWord : List (V →ₗ[K] V) → V →ₗ[K] V

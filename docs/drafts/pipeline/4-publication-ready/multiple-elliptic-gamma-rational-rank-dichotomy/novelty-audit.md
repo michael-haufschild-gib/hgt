@@ -2,6 +2,22 @@
 
 Cutoff: 30 July 2026.
 
+## Audit rule
+
+Scientific novelty is measured exclusively against externally available
+literature.  This repository is not a priority comparator.  Internal overlap
+is used only to recover dependencies, avoid repeating failed work, and check
+that the final theorem is proved.  An internally unprecedented statement may
+be externally known; an internally established statement may still be
+externally new.  These are separate audits:
+
+- **internal closure:** every manuscript claim follows from completed proofs;
+- **external priority:** no earlier public source contains the same theorem
+  or a theorem that immediately subsumes it.
+
+No novelty verdict below may cite absence from, or presence in, the internal
+corpus as evidence.
+
 ## Candidate contribution
 
 Novelty cannot rest on any of these ingredients separately:
@@ -52,10 +68,35 @@ classification:
   ensembles and sinc-filtered energy combinations.
 - Riddell and Pagliaroli, *J. Stat. Phys.* **191**, 144 (2024), analyze
   finite-order no-resonance conditions and pseudo-resonances.
+- Mark et al., *Phys. Rev. Lett.* **131**, 110601 (2023), derive
+  sample-efficient benchmarking from universal late-time fluctuations under
+  a `k`th no-resonance assumption.  They say the assumption is expected for
+  generic ergodic Hamiltonians; they do not prove it for a tensor-local
+  Hamiltonian family.
+- Mark et al., *Phys. Rev. X* **14**, 041051 (2024), identify the infinite
+  temporal ensemble with the random-phase ensemble under all finite
+  no-resonance conditions modulo degeneracies.  They describe generic
+  validity and resonance breaking by small perturbations as a belief.  A
+  proof for almost every bounded-range static chain would discharge the
+  load-bearing premise of that theorem.
 - Classical phase retrieval and diffraction theory identify autocorrelation
   or homometry as the information retained by Fourier magnitudes.
 - Classical probability supplies characteristic-function uniqueness and
   compact moment determinacy.
+- Campos Venuti, *The recurrence time in quantum mechanics* (2015),
+  already obtains generic doubly-exponential recurrence scaling in system
+  volume and exponential scaling for integrable quasi-free models.  Any
+  headline based only on recurrence scarcity or double-exponential time is
+  therefore unavailable.
+- Kotowski and Oszmaniec, *Tight bounds on recurrence time in closed quantum
+  systems* (accepted in *Physical Review Letters*, 23 June 2026), prove
+  dimension-dependent upper bounds of the form
+  `t_rec ≲ t_exit(ε)(1/ε)^d` and generic saturation for random Hamiltonians.
+  A new paper must distinguish a structural locality mechanism from their
+  quantitative recurrence-time bounds.
+- The connectivity and two-component parity law for categorical/Kronecker
+  graph products is classical, going back at least to Weichsel (1962).
+  Connectivity of the interaction lift is an input, not a novelty claim.
 
 ## Exact difference claimed
 
@@ -103,8 +144,81 @@ show that complete-return equivalence and the exact information boundary
 change a live inference problem, not merely rename cosine-transform
 tomography.
 
-The stronger local-interaction theorem in the corpus—generic
+The stronger local-interaction theorem under internal development—generic
 nearest-neighbour coupling opens `q^n - 1` projective temporal directions and
-minimizes every replica collision moment—would materially change the novelty
-case. It is not authorized for the manuscript until its physical
-local-Hamiltonian generator is fully formalized.
+minimizes every replica collision moment—would materially change the
+manuscript's scientific content.  Whether it is novel depends only on the
+external-priority audit.  It is not authorized for the manuscript until its
+physical local-Hamiltonian generator is fully formalized.
+
+## Revised candidate after hostile audit
+
+The only candidate that survives the comparisons above is not a new
+recurrence-time estimate.  It is an exact relation-kernel mechanism:
+
+1. one projective character relation space controls operational temporal
+   dimension, indistinguishable phase histories, and every replica-collision
+   correction to return statistics;
+2. arbitrary observer action quotients that same relation space and thereby
+   determines every finite return moment, not only the quadratic mean;
+3. local interaction changes the relation space through an exact response
+   kernel whose quotient by the trace direction is reduced `H^0` of the
+   interaction lift;
+4. when that reduced cohomology vanishes, the interaction removes every
+   nontrace spectral relation and forces simultaneous all-order collision
+   extremality.
+
+The graph theorem and the collision floor are known ingredients.  Candidate
+novelty is the proved chain
+
+`local spectral response kernel = reduced H^0`
+`→ projective relation erasure`
+`→ observer-dependent temporal dimension`
+`→ complete all-order recurrence law`.
+
+This chain is not yet authorized as the paper's claim.  It still requires:
+
+- the all-order observer-action recurrence projection;
+- a fully formal local-Hamiltonian genericity theorem rather than an abstract
+  transition-graph hypothesis;
+- a finite-horizon observable that separates the resulting universality
+  classes;
+- a fresh priority search aimed at equivalent relation-kernel formulations,
+  not only recurrence-time literature.
+
+**Revised verdict: potentially deep, presently incomplete.**  Calling the
+existing manuscript a universal law would still overstate the result.
+
+## External-priority update: live premise discharge
+
+The nearest-neighbour maximal-rank theorem has a more direct external target
+than the earlier recurrence framing.  Current quantum-dynamics papers use
+the hierarchy
+\[
+ \sum_{a=1}^{k}E_{i_a}=\sum_{a=1}^{k}E_{j_a}
+ \Longrightarrow
+ \{i_1,\ldots,i_k\}=\{j_1,\ldots,j_k\}
+\]
+as a premise for random-phase temporal ensembles, Porter--Thomas
+fluctuations, deep thermalization, and fidelity benchmarking.  External
+sources characterize it as expected, believed, numerically observed, or
+assumed for generic ergodic Hamiltonians.  The targeted local theorem would
+instead prove, simultaneously for every finite `k`, that the premise holds
+for Lebesgue-almost every inhomogeneous nearest-neighbour qudit chain.
+
+This comparison changes the significance test:
+
+- **not new:** consequences obtained after assuming no resonance;
+- **candidate new:** tensor-local interaction is proved to generate all-order
+  no resonance generically despite only polynomially many local controls and
+  exponentially many many-body energies;
+- **direct physics advance:** several existing temporal-ensemble and
+  benchmarking theorems become unconditional on this broad physical
+  Hamiltonian class;
+- **remaining limitation:** exact nonresonance is asymptotic and does not
+  bound finite-time near-resonance resolution.
+
+Targeted searches have not yet found an external proof of generic maximal
+projective rational rank for the same nearest-neighbour qudit family.
+Search absence is not priority certification; references cited by the
+benchmarking and temporal-ensemble papers must still be chased individually.

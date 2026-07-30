@@ -523,3 +523,138 @@ pairing. Direct foreground verification passes warning-free.
 The second remaining generator obligation is closed. The next open core is
 the finite tensor-coupling sum reorganization that feeds these ordered poles
 into `crossLayer_eq_of_rational_identity`.
+
+## Interaction-lift law and exact endpoint bridge
+
+The finite tensor-coupling reorganization is now closed in
+`LocalTwoLayerSpectralResponse.lean`. For a shifted two-level extension it
+proves the exact identity
+\[
+\sum_i c_i\sum_{j\ne i}
+\frac{V_{ij}V_{ji}}{\mathcal E_i-\mathcal E_j}
+=
+\sum_{\alpha,\beta}
+\frac{(c_{\alpha,0}-c_{\beta,1})
+A_{\alpha\beta}A_{\beta\alpha}}
+{z+E_\alpha-E_\beta}.
+\]
+No diagonal term was silently discarded: all \(\alpha=\beta\) terms share
+the zero-gap pole, and
+`coefficients_eq_zero_of_shifted_rational_identity_with_zeroPole` proves
+that this repeated pole cannot conceal any distinct nonzero-gap residue.
+
+The same module now proves:
+
+1. the forbidden layer shifts form a finite set, so collision-free shifts
+   are infinite;
+2. maximal projective rank makes the old spectrum simple and every
+   oriented transition pole distinct;
+3. every actual analytic eigenbranch relation yields the exact residue
+   packet;
+4. every nonzero forward-backward transition product therefore forces the
+   corresponding cross-layer coefficient equality.
+
+The more universal object exposed by this proof is the **interaction lift**
+\[
+ \widetilde G_\rho:
+ \qquad
+ (\alpha,r)\sim(\beta,s)
+ \iff
+ \alpha\sim_G\beta\ \text{and}\ r\ne s .
+\]
+`LocalSpectralExtensionRelationRigidity.lean` proves:
+
+- vanishing of all distinct-pole response packets is equivalent to the
+  coefficient function being a component-constant \(0\)-cochain on
+  \(\widetilde G_\rho\);
+- the nontrace relation space has exact dimension
+  \[
+  \dim \widetilde H^0(\widetilde G_\rho;\mathbb C)
+  =
+  \#\pi_0(\widetilde G_\rho)-1;
+  \]
+- for \(q\ge3\), a connected old transition graph makes every coefficient
+  constant by the spare-label mechanism;
+- for \(q=2\), a connected graph containing a triangle removes the parity
+  obstruction and again leaves only the trace direction.
+
+This replaces the earlier slogan with a precise candidate universal law:
+
+> **Local interaction creates independent observable time characters
+> exactly by killing reduced \(H^0\) of its interaction lift.**
+
+It explains the previously separate \(q\ge3\) success, qubit parity
+obstruction, odd-cycle repair, trace survivor and rank jump through one
+invariant. Direct foreground checks of both modules pass warning-free.
+
+Remaining before the nearest-neighbour theorem is formal:
+
+1. formalize endpoint-observable path witnesses and the induction that
+   supplies connected lift geometry;
+2. formalize symmetric relation polynomials and the dense full-measure
+   \(G_\delta\) genericity step;
+3. derive finite-horizon observable consequences.
+
+Nature-level status remains withheld. The interaction-lift law is genuine
+new organizing mathematics, but the physical locality-to-genericity
+assembly and a discriminating observable are still required.
+
+### Arbitrary local dimension closed at the analytic bridge
+
+`LocalSelectedLayerSpectralResponse.lean` now selects any distinct
+\(r,s\) inside an arbitrary finite local alphabet and proves:
+
+1. all unselected layers disappear exactly from second-order response;
+2. the selected pair produces the same oriented-gap residue packet as the
+   Boolean extension;
+3. every analytic spectral relation for the full product spectrum forces
+   \(c_{\alpha,r}=c_{\beta,s}\) on every nonzero transition.
+
+Thus the local analytic theorem is no longer a qubit statement. Local
+dimension changes only connectivity of the interaction lift. The separate
+\(q=2\) and \(q\ge3\) arguments are now recognized as two topological ways
+to make the same reduced-\(H^0\) obstruction vanish.
+
+Direct foreground verification passes warning-free. The first remaining
+generator obligation above is closed.
+
+## Hostile novelty correction and master-kernel target
+
+Three tempting headlines fail priority:
+
+1. generic doubly-exponential quantum recurrence already appears in Campos
+   Venuti (2015);
+2. rigorous dimension-dependent recurrence-time bounds and random-Hamiltonian
+   saturation now appear in Kotowski--Oszmaniec (accepted PRL, 2026);
+3. connectivity and the Boolean parity split of the categorical graph product
+   are classical (Weichsel, 1962).
+
+Therefore neither recurrence scarcity, dimension scaling, nor interaction
+lift connectivity is the new law.
+
+The stronger surviving target is one exact projective relation kernel
+\(\mathcal R\).  Its shadows are:
+
+- \(\operatorname{rank}(L/\mathcal R)\): operational dimension of time;
+- cosets of \(\mathcal R\): observationally indistinguishable phase histories;
+- replica pairs whose difference lies in \(\mathcal R\): all return-moment
+  excess above the permutation floor;
+- the local-response tangent kernel: component-constant cochains on the
+  interaction lift;
+- \(\widetilde H^0\) of that lift: exact number of nontrace relations that
+  local interaction fails to erase.
+
+The intended master statement is:
+
+> **Quantum recurrence is the return law of an observer-visible projective
+> character quotient.  Observer action selects the quotient; local
+> interaction changes it by killing reduced interaction-lift cohomology; all
+> recurrence statistics are Fourier moments of the resulting quotient.**
+
+This is not yet a theorem merely because each noun is formalized elsewhere.
+The next required bridge is an all-order observer-action recurrence
+projection proving that every return moment, not only the quadratic mean, is
+the corresponding finite sum of character-action coefficients.  Only after
+that composition, the local-Hamiltonian generator, and a finite-horizon
+discriminator close may the earlier results be presented as corollaries of
+one kernel law.

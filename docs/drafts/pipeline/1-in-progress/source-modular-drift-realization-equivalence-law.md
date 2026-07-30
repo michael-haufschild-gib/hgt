@@ -1095,7 +1095,1011 @@ It materially advances the mechanism only if the Poisson/Tate comparison proves
 SOURCE-GRAM ADJOINT LANDING.  Without that theorem, `(56)` is another faithful reporter of the
 already-known drift and must not be advertised as an RH proof.
 
-## 12. Literature boundary
+## 12. Half-density dagger and conditional first-trace transgression
+
+The projective coefficient \(\mu(n)/n\) is not merely a fitted cross-Gram entry.  It is forced by
+the adjoint of the actual arithmetic dilation representation at critical half-density.
+
+For real \(\sigma\), put
+\[
+ {\cal H}_\sigma
+ =
+ L^2\!\left(\mathbb R_{>0},x^{2\sigma}{dx\over x}\right),
+ \qquad
+ (D_n f)(x)=f(nx).
+ \tag{61}
+\]
+A change of variables gives
+\[
+ \|D_n f\|_{{\cal H}_\sigma}^2
+ =n^{-2\sigma}\|f\|_{{\cal H}_\sigma}^2,
+ \qquad
+ \boxed{D_n^*=n^{-2\sigma}D_{1/n}.}
+ \tag{62}
+\]
+Consequently, for every finite dilation polynomial,
+\[
+ \left(\sum_n c_nD_n\right)^*
+ =
+ \sum_n \overline{c_n}\,n^{-2\sigma}D_{1/n}.
+ \tag{63}
+\]
+Under inverse-basis identification \(D_{1/n}\leftrightarrow e_n\), the linear coefficient part
+of the dagger, after the canonical conjugation, is
+\[
+ B_\sigma e_n=n^{-2\sigma}e_n.
+ \tag{64}
+\]
+If \(M_\mu e_n=\mu(n)e_n\), then the critical Möbius-dagger symbol is
+\[
+ \boxed{M_\mu B_{1/2}e_n={\mu(n)\over n}e_n=Ae_n.}
+ \tag{65}
+\]
+Thus `(52)` is the coefficient symbol of the critical half-density adjoint applied to the
+Möbius-twisted dilation packet.  This is an exact coefficient-level Poisson/Wold identification,
+not yet an equality of the projective synthesis map with the full adelic Poisson transform.
+
+Reflection sends \(\sigma\) to \(1-\sigma\).  On any coefficient \(n>1\),
+\[
+ B_\sigma=B_{1-\sigma}
+ \quad\Longleftrightarrow\quad
+ \sigma={1\over2},
+ \qquad
+ B_{1-\sigma}B_\sigma^{-1}e_n=n^{4\sigma-2}e_n.
+ \tag{66}
+\]
+For \(\sigma=\tfrac12+a\), the relative coefficient modular operator is \(n^{4a}\), or \(n^{-4a}\)
+in the opposite comparison direction.  This gives a direct source meaning to the drift in
+`(55)`: it is the logarithmic failure of the two reflected coefficient daggers to agree.
+
+There is a second, nonlinear realization which joins the Wold first trace to the
+Kadison--Schwarz defect.  On \(\ell^2(\mathbb N_{\geq1})\), let
+\[
+ S_qe_n=e_{qn},\qquad
+ E_q=I-S_qS_q^*,\qquad
+ Qe_n={1\over n}e_n.
+ \tag{67}
+\]
+Suppose \(0\ne\xi\in\ell^2(\mathbb N_{\geq1})\) and
+\[
+ S_q^*\xi=z\xi,\qquad |z|<1,
+ \tag{68}
+\]
+and write \(\omega_\xi(T)=\langle T\xi,\xi\rangle\).  Decompose every integer uniquely as
+\(q^km\) with \(q\nmid m\).  Equation `(68)` makes the squared coefficients on each \(q\)-adic
+ray a geometric progression of ratio \(|z|^2\).  Summing first along each ray gives
+\[
+ \boxed{
+ {\omega_\xi(E_qQ)\over\omega_\xi(Q)}
+ =
+ 1-{|z|^2\over q}.}
+ \tag{69}
+\]
+The quotient is independent of the distribution of \(\xi\) among the \(q\)-free wandering
+vectors.
+
+On the other hand, the literal arithmetic first-trace exhaustion satisfies
+\[
+ {\operatorname{Tr}_{n\leq N}(E_qQ)
+  \over
+  \operatorname{Tr}_{n\leq N}(Q)}
+ \longrightarrow
+ 1-{1\over q}.
+ \tag{70}
+\]
+Combining `(69)` and `(70)` gives the **conditional first-trace--Kadison transgression law**
+\[
+ \boxed{
+ {\omega_\xi(E_qQ)\over\omega_\xi(Q)}
+ -
+ \left(1-{1\over q}\right)
+ =
+ {1-|z|^2\over q}.}
+ \tag{71}
+\]
+The right side is \(q^{-1}\) times the right Kadison defect of the scalar compression
+\(S_q\mapsto\overline z\).  Equivalently, for the balanced density operator
+\[
+ {\cal B}_q=E_qQ-\left(1-{1\over q}\right)Q,
+ \tag{72}
+\]
+the Wold covariance in `(67)` gives the exact commutator identity
+\[
+ \boxed{
+ {\cal B}_q
+ =
+ S_q^*QS_q-QS_qS_q^*
+ =
+ [S_q^*,QS_q].}
+ \tag{72a}
+\]
+Indeed, \(S_q^*QS_q=q^{-1}Q\) and \(QS_qS_q^*=Q(I-E_q)\).  Therefore every cyclic singular trace
+on the weak first-trace ideal annihilates \({\cal B}_q\).  Its vanishing source symbol is not an
+asymptotic coincidence: it is the trace of a literal arithmetic commutator.
+
+By contrast, every interior Wold eigenstate is noncyclic on this commutator:
+\[
+ {\omega_\xi({\cal B}_q)\over\omega_\xi(Q)}
+ ={1-|z|^2\over q}>0.
+ \tag{73}
+\]
+Hence completion and principal first-trace specialization fail to commute by exactly the
+multiplicative-domain curvature.  Equivalently, the missing source theorem is preservation of
+the cyclic residue class under principal-conormal localization.
+
+For the right-half centered Riemann character
+\[
+ z_q(\rho)=q^{1/2-\rho},
+ \tag{74}
+\]
+equation `(71)` becomes
+\[
+ {\omega_\rho(E_qQ)\over\omega_\rho(Q)}
+ -
+ \left(1-{1\over q}\right)
+ =
+ {1-q^{1-2\operatorname{Re}\rho}\over q}.
+ \tag{75}
+\]
+For \(q=p\) prime, conditioning the Wold eigenstate by \(Q\) gives the full valuation law
+\[
+ \mathbb P_{\rho,Q}(v_p=k)
+ =
+ (1-p^{-2\sigma})p^{-2\sigma k},
+ \qquad \sigma=\operatorname{Re}\rho.
+ \tag{75a}
+\]
+Indeed, the unconditioned squared eigenvector amplitudes have ratio
+\(|z_p(\rho)|^2=p^{1-2\sigma}\), and \(Q\) contributes one further factor \(p^{-1}\).
+With \(c=\tfrac12-\sigma\), `(75a)` is exactly the already-proved Kakutani-sector law
+\(\mu_{p,c}\) in `prime-valuation-kakutani-polar-third-completion.md`.  Thus Poisson diffusion,
+prime-valuation sector change, and Wold conditional density are literally the same localized
+state.  The geometric measure and its Kakutani wall are corpus-known; the new bridge here is the
+typed \(Q\)-conditioned eigenstate realization and the exact excess identity `(71)`.
+
+For \(\operatorname{Re}\rho>\tfrac12\), the right side is positive.  Summed over ordinary primes,
+it diverges:
+\[
+ \sum_p{1-p^{1-2\operatorname{Re}\rho}\over p}=+\infty,
+ \tag{76}
+\]
+because \(\sum_pp^{-1}\) diverges while
+\(\sum_pp^{-2\operatorname{Re}\rho}\) converges.  At the critical line every local excess
+vanishes.
+
+The infinitesimal form also recovers the projective source Gram.  With
+\(\operatorname{Re}\rho=\tfrac12+a\),
+\[
+ {d\over da}\bigg|_{a=0}
+ {1-p^{-2a}\over p}
+ ={2\log p\over p}.
+ \tag{77}
+\]
+At a prime, \(Ae_p=-p^{-1}e_p\); after applying the logarithmic prime clock, the magnitude of the
+linearized off-diagonal anomaly `(56)` is the same \(2\log(p)/p\).  Thus the projective
+source-Gram anomaly is the oriented linearization of the nonlinear first-trace--Kadison
+transgression.
+
+### Narrower RH-bearing source theorem
+
+`[BOLD CONJECTURE: XI WOLD CONDITIONAL-DENSITY BASE CHANGE]`
+
+The Euler--Gamma/BV/co-Poisson comparison carries the principal Xi conormal, before zero-fibre
+decomposition, to the relative Wold extension so that:
+
+1. the reciprocal occupation clock and Wold boundary are the literal \(Q\) and \(E_q\) in
+   `(67)`;
+2. the BV off-multiple principal-normal ratio \(1-q^{-1}\) is the localized conditional density
+   in `(69)`, not merely an equal scalar in a separate model;
+3. reduced Xi specialization preserves the cyclic logarithmic residue class, so the commutator
+   `(72a)` remains zero in the localized principal symbol; and
+4. every nonzero right-half Xi conormal gives the centered Wold character `(74)` without losing
+   its top multiplicity jet.
+
+Then `(71)` forces \(1-|z_q(\rho)|^2=0\), and `(74)` gives
+\(\operatorname{Re}\rho=\tfrac12\).  Functional-equation reflection excludes the left half, so
+the conjecture implies RH.
+
+This is strictly narrower than demanding a faithful UCP split on the whole source operator
+system.  It asks only that one source-fixed conditional first-trace density commute with
+principal-conormal localization.  It is also load-bearing: equality of the standalone Wold and
+BV coefficients \(1-q^{-1}\) does not prove clause 2.  One must construct the typed relative
+state or conormal functional on the common span of \(Q\) and \(E_qQ\).  A plain Hilbert
+completion, a boundary quotient killing \(Q\), or a zero-fitted state invalidates the argument.
+
+The critical fibre is necessarily singular: a nonzero \(\ell^2\) eigenvector in `(68)` has
+\(|z|<1\), so `(73)` is strictly positive.  Source-density preservation can occur only in the
+boundary limit \(|z|\to1\), exactly where the scalar Hilbert eigenvector disappears and a
+module/conormal boundary fibre is required.  This is the explicit one-prime form of the third
+completion problem.
+
+## 13. Universal law: source-effective base change conserves modular dimension
+
+The preceding identities admit a stronger interpretation than either a Toeplitz boundary
+selector or a comparison of two KMS sectors.
+
+On one \(q\)-adic ray, let \(V e_k=e_{k+1}\).  The reciprocal occupation density restricts,
+up to a constant on the \(q\)-free base point, to
+\[
+ Q_qe_k=q^{-k}e_k.
+ \tag{78}
+\]
+Thus the source weak first-trace functional has the fixed twisted-cyclic ratio
+\[
+ {\rm src}(VV^*)=q^{-1}{\rm src}(V^*V).
+ \tag{79}
+\]
+Equivalently, for the dynamics
+\[
+ \alpha_t(V)=q^{it}V,
+ \tag{80}
+\]
+the source functional has modular parameter \(\beta_{\rm src}=1\).  Equation `(79)` is the
+one-generator KMS relation on the analytic Toeplitz core.  This statement concerns the fixed
+source weight; it is not the false claim that every coherent Wold vector state is a KMS state.
+
+For a Wold eigenvector with character \(z\), condition by \(Q\) and then restrict to the
+valuation diagonal.  The resulting geometric law has ratio
+\[
+ r={|z|^2\over q}.
+ \tag{81}
+\]
+Gauge-averaging its phase gives the canonical diagonal Gibbs/KMS marginal with
+\[
+ q^{-\beta_{\rm con}}=r.
+ \tag{82}
+\]
+For the centered Riemann character `(74)`,
+\[
+ r=q^{-2\operatorname{Re}\rho},
+ \qquad
+ \boxed{\ \beta_{\rm con}=2\operatorname{Re}\rho.\ }
+ \tag{83}
+\]
+The distinction between the coherent state and its gauge-invariant KMS marginal is
+load-bearing.  Only the radial marginal is used below.
+
+`[PAPER-PROVED] [TOEPLITZ_KMS_VALUATION_LAW]`
+
+More generally, let \(\varphi_\beta\) be a normalized KMS functional on the analytic
+one-isometry Toeplitz core for `(80)`.  Then
+\[
+ \varphi_\beta(V^kV^{*k})=q^{-\beta k},
+ \qquad
+ \varphi_\beta\!\left(
+   V^kV^{*k}-V^{k+1}V^{*(k+1)}
+ \right)
+ =(1-q^{-\beta})q^{-\beta k}.
+ \tag{83a}
+\]
+Indeed, the KMS relation moves \(V^k\) past \(V^{*k}\), while
+\(\alpha_{i\beta}(V^k)=q^{-\beta k}V^k\) and \(V^{*k}V^k=1\).  Subtracting
+successive range projections gives the second identity.  Thus the entire valuation law, not
+only its first cylinder, is the modular twist.
+
+For commuting multiplicative isometries \(S_n\) with
+\(\alpha_t(S_n)=n^{it}S_n\), the same proof gives
+\[
+ \varphi_\beta(S_nS_n^*)=n^{-\beta}.
+ \tag{83b}
+\]
+In the multiplication Nica/Wold representation, coprime range projections intersect as the
+range projection of the product.  Hence the differences
+\(S_p^kS_p^{*k}-S_p^{k+1}S_p^{*(k+1)}\) are the valuation-shell projections and
+`(83a)`--`(83b)` recover the product Gibbs laws.  This standard Toeplitz--KMS calculation
+explains why one preserved twist controls every prime and every valuation layer.
+
+### Additive Haar and multiplicative Gibbs are the same modular exponent
+
+Let \(p\) be prime.  Additive Haar probability on \(\mathbb Z_p\) has valuation law
+\[
+ \nu_{p,1}(v_p=k)=(1-p^{-1})p^{-k}.
+ \tag{84}
+\]
+For \(\beta>0\), define its radial Gibbs tilt by
+\[
+ \nu_{p,\beta}(v_p=k)=(1-p^{-\beta})p^{-\beta k},
+ \tag{85}
+\]
+with Haar-uniform conditional distribution on each unit shell.
+
+`[PAPER-PROVED] [ADDITIVE_HAAR_MULTIPLICATIVE_GIBBS_RIGIDITY]`
+
+The following are equivalent:
+
+1. \(\nu_{p,\beta}\) is invariant under additive translations of \(\mathbb Z_p\);
+2. \(\nu_{p,\beta}\) is additive Haar probability;
+3. \(\nu_{p,\beta}(p\mathbb Z_p)=p^{-1}\);
+4. \(\beta=1\).
+
+Indeed, translation invariance makes a probability on the compact additive group
+\(\mathbb Z_p\) its unique Haar probability.  Haar gives mass \(p^{-1}\) to the index-\(p\)
+subgroup \(p\mathbb Z_p\), whereas `(85)` gives \(p^{-\beta}\).  Since \(p>1\), equality is
+equivalent to \(\beta=1\).  The converse is `(84)`.
+
+For the product law on \(\widehat{\mathbb Z}=\prod_p\mathbb Z_p\), invariance even only under
+the dense translation subgroup \(\mathbb Z\) implies invariance under
+\(\widehat{\mathbb Z}\), hence Haar probability and \(\beta=1\).  Off the critical parameter,
+the product Gibbs law is the already-proved Kakutani-singular sector.
+
+Combining `(83)` with this rigidity gives the exact local selector
+\[
+ \boxed{
+ \text{Riemann conormal Born marginal retains the source modular class}
+ \quad\Longrightarrow\quad
+ 2\operatorname{Re}\rho=1.}
+ \tag{86}
+\]
+One prime is enough once the comparison is typed.  The all-prime tower is not needed for the
+last algebraic implication; it is needed to construct the source comparison without fitting it
+to a divisor point.
+
+Equation `(71)` is precisely the cylinder-level failure of `(86)`:
+\[
+ \frac{\omega_\rho({\cal B}_p)}{\omega_\rho(Q)}
+ =
+ p^{-1}-p^{-2\operatorname{Re}\rho}.
+ \tag{87}
+\]
+Thus the cyclic commutator, the additive Haar index, the Wold conditional density, and the
+KMS temperature are not analogous reporters.  They are four evaluations of one modular
+exponent.
+
+### Modular-dimension conservation
+
+The common law suggested by the corpus is:
+\[
+ \boxed{
+ \begin{gathered}
+ \textbf{source-effective base change conserves modular dimension;}\\
+ \text{a spectral specialization may change phase and representation,}\\
+ \text{but it cannot retune the twist of the source cyclic class.}
+ \end{gathered}}
+ \tag{88}
+\]
+
+For an equivariant algebraic base change, preservation of a fixed twisted-cyclic relation is
+formal: if
+\[
+ \tau(ab)=\tau(b\,\vartheta(a))
+ \tag{89}
+\]
+and the base-change map intertwines \(\vartheta\), then the specialized nonzero functional
+satisfies the same relation.  The Riemann difficulty is not `(89)`.  It is constructing the
+strict meromorphic/BV conormal as that base change after cofinal completion, while retaining
+its positive \(Q\)-Born marginal and every multiplicity jet.
+
+This interpretation explains why the earlier mechanisms repeatedly selected the same locus:
+
+```text
+half-density dagger:
+  the source modular exponent is one;
+
+Wold interior/boundary:
+  beta != 1 is a contraction state; beta = 1 reaches the source boundary;
+
+Kakutani:
+  retuning beta changes the all-prime measure sector;
+
+first-trace commutator:
+  p^(-1)-p^(-beta) is the local modular-class defect;
+
+projective source Gram:
+  2 log(p)/p is the oriented tangent of that defect at beta=1;
+
+positive maximum-valuation shells:
+  their reference law is the pushforward of the beta=1 Haar valuations;
+
+finite truncation:
+  sees the index p only up to terminal leakage;
+
+ambient adelic L2:
+  retains Haar modularity but loses the divisor conormal;
+
+generalized-prime off-line systems:
+  may reproduce scalar Euler, reflection, orientation, and HT data, but their
+  off-line Born functional cannot be the specialization of this fixed ordinary-integer
+  modular class.
+```
+
+Hypertranscendence has a precise supporting role.  The inverse-limit law of
+`analytic-grassmann-lattice-dirichlet-fields` proves that a genuinely HT prime-profile carrier
+cannot be controlled through a uniformly bounded family of finite clock annihilators.  Hence
+the comparison in `(88)` cannot be certified by any fixed finite jet, finite prime packet, or
+finite cyclic reporter.  It must be a class in the complete twisted-cyclic/Rees source object.
+Hypertranscendence does not itself make that class positive or conservative.
+
+### The reduced BV relation is already a Hochschild boundary
+
+The first finite source-to-cyclic square does not need to be conjectured.  In the notation of the
+typed renewal `(4j1)`--`(4j6)` in
+`source-curved-prime-torus-conormal-temperedness`, put
+\[
+ r_{q,j}:=c_j-(1-q^{-1})p_j.
+ \tag{90}
+\]
+The proved BV principal-conormal relation gives
+\[
+ J(r_{q,j})=0.
+ \tag{91}
+\]
+On the two-dimensional reporter span define
+\[
+ {\cal W}_{q,j}(p_j)=Q,
+ \qquad
+ {\cal W}_{q,j}(c_j)=E_qQ.
+ \tag{92}
+\]
+Then `(72)`--`(72a)` give the exact identity
+\[
+ \boxed{
+ {\cal W}_{q,j}(r_{q,j})
+ =
+ E_qQ-(1-q^{-1})Q
+ =
+ [S_q^*,QS_q]
+ =
+ b(S_q^*\otimes QS_q),}
+ \tag{93}
+\]
+where \(b(a_0\otimes a_1)=a_0a_1-a_1a_0\) is the degree-one Hochschild
+boundary.
+
+`[PAPER-PROVED] [BV_REDUCED_RELATION_TO_HOCHSCHILD_BOUNDARY]`
+
+Thus the scalar BV coefficient, the balanced density operator, and cyclicity are already one
+finite commuting square:
+\[
+ \begin{array}{ccc}
+ r_{q,j} & \xmapsto{\ {\cal W}_{q,j}\ } & b(S_q^*\otimes QS_q)\\
+ \big\downarrow J && \big\downarrow HH_0\\
+ 0 & \longmapsto & 0.
+ \end{array}
+ \tag{94}
+\]
+This is a value-level reporter square, not yet a chain map on the full Euler--Gamma/co-Poisson
+source complex.  Its significance is that it fixes the required extension uniquely on the first
+nontrivial relation.  An off-line conormal Born functional evaluates the upper-right term as
+`(87)`, so its failure to descend through `(94)` is exactly its modular-dimension defect.
+
+The first producer is therefore no longer “find some cyclic cocycle.”  It is:
+
+> extend the concrete maps `(92)` compatibly to the finite Kummer/BV source complex and the
+> relative Hochschild complex, then prove that their cofinal strict base change carries the
+> positive conormal marginal through \(HH_0\).
+
+If no such extension exists, the obstruction must already appear as failure of a specific
+higher-face relation, positivity of the induced diagonal functional, or prime-enlargement
+compatibility.  Those are falsifiable finite-stage failures, not an RH-equivalent norm condition.
+
+### Sharpened RH-bearing source theorem
+
+`[BOLD CONJECTURE: XI TWISTED-CYCLIC MODULAR-DIMENSION CONSERVATION]`
+
+Before divisor specialization, the ordinary-prime Euler--Gamma/Tate--co-Poisson source
+constructs a strict relative twisted-cyclic class on the Wold--Toeplitz/Rees extension with:
+
+1. modular twist fixed by \(Q\), so its \(p\)-ray ratio is \(p^{-1}\);
+2. BV principal-normal restriction equal to the already-proved off-multiple renewal;
+3. strict equivariant base change to every nonzero Xi principal conormal and every
+   multiplicity jet;
+4. positive gauge-averaged \(Q\)-Born restriction equal to the valuation marginal of the
+   centered conormal character \(p^{1/2-\rho}\).
+
+Then `(83)`, twist preservation, `(93)`, and `(86)` prove RH.
+
+This is narrower than a faithful UCP recovery on the whole source operator system and more
+structured than imposing essential unitarity on a chosen fibre.  The producer is one global
+twisted-cyclic class and one source-first base-change theorem.  Clause 4 is indispensable:
+the complex BV residue is a linear conormal reporter, not automatically the square of a
+Hilbert amplitude.  Calling it a Born state without constructing the positive restriction
+would repeat the projective-source-square error.
+
+### New consequences and hostile audit
+
+1. **One-prime deduction, all-prime construction.**  Any one typed prime comparison forces
+   criticality, but choosing that comparison after reading \(\rho\) is circular.  The cofinal
+   ordinary-prime class is what makes the construction source-defined.
+2. **Multiplicity is radial-neutral.**  Analytic order multiplies the residue amplitude but
+   does not change `(81)`--`(83)`.  Every retained top jet has the same modular dimension.
+3. **Critical fibres must be singular.**  At \(\beta=1\), \(|z|=1\); the coherent Wold vector
+   leaves \(\ell^2\).  Any successful completion must therefore keep the conormal as a boundary
+   functional/module fibre, not as an ordinary eigenvector.
+4. **Functional equation is a reflection, not a producer.**  It sends
+   \(\beta\mapsto2-\beta\).  Conservation of the source modular exponent, not reflection alone,
+   fixes \(\beta=1\).
+5. **The all-prime defect is macroscopic.**  For \(\beta>1\),
+   \(\sum_p(p^{-1}-p^{-\beta})=+\infty\); for \(0<\beta<1\) it diverges with the opposite sign.
+   No trace-density limit may average away one off-line conormal.
+6. **No full-KMS overclaim.**  The unaveraged coherent conormal state has phase coherences and
+   need not be KMS.  Only its gauge-invariant valuation marginal has parameter `(83)`.
+7. **No automatic cyclic-residue shortcut.**  Laurent residues of a meromorphic family of
+   twisted traces inherit twisted cyclicity, but the present BV scalar residue has not yet been
+   constructed as such a trace-valued family.  That construction is the first proof-bearing
+   obstacle.
+8. **No additive-Haar overclaim.**  The proved BV ratios recover Haar valuation cylinders.
+   Full translation invariance on every residue class is stronger and is not asserted for the
+   Xi conormal before the twisted-cyclic comparison is built.
+
+`[OPEN CORE: XI_BV_TWISTED_CYCLIC_BASE_CHANGE]`
+
+Extend `(92)` from the reduced one-relation reporter square `(94)` to a morphism from the finite
+Kummer/BV source complex into the relative Hochschild complex.  Its meromorphic trace boundary
+must have the literal occupation twist, its Laurent boundary must be the existing BV principal
+conormal, and its positive gauge-diagonal restriction must be the \(Q\)-conditioned Wold law.
+Then prove compatibility under prime enlargement and strict Rees completion.  A failure must
+exhibit one of five exact obstructions: failure of a higher source relation, loss of the twist, a
+nonpositive diagonal restriction, a killed multiplicity jet, or nonclosable cofinal base change.
+
+## 14. Correction: finite algebraic flatness, controlled curvature at infinity
+
+The finite source-to-Hochschild problem is less obstructed than the open core above suggests.
+The one-prime transgression has a canonical two-prime extension.
+
+Let \(S_ne_k=e_{nk}\), \(P_n=S_nS_n^*\), and \(Qe_k=k^{-1}e_k\).  For coprime \(m,n\), put
+\[
+ {\cal B}_n=(n^{-1}1-P_n)Q,
+ \qquad
+ h_n=S_n^*\otimes QS_n,
+ \qquad
+ h_{n\mid m}=S_n^*\otimes P_mQS_n .
+ \tag{95}
+\]
+The degree-one Hochschild boundary satisfies
+\[
+ b(h_n)={\cal B}_n,
+ \qquad
+ b(h_{n\mid m})=n^{-1}P_mQ-P_{mn}Q.
+ \tag{96}
+\]
+Indeed, \(S_n^*QS_n=n^{-1}Q\), while coprimality gives the required double commutation
+and \(P_mP_n=P_{mn}\).
+
+Define the two ordered transgressions
+\[
+ H_{m\to n}:=n^{-1}h_m+h_{n\mid m},
+ \qquad
+ H_{n\to m}:=m^{-1}h_n+h_{m\mid n}.
+ \tag{97}
+\]
+Then
+\[
+ \boxed{\quad
+ b(H_{m\to n})=b(H_{n\to m})
+ =(mn)^{-1}Q-P_{mn}Q={\cal B}_{mn}.
+ \quad}
+ \tag{98}
+\]
+Thus their difference is a Hochschild one-cycle.  It is in fact a boundary.
+
+`[PAPER-PROVED] [TWO_PRIME_BV_HOCHSCHILD_FACE_FLATNESS]`
+
+Write \(U=S_m\), \(V=S_n\), \(e=P_m\), \(f=P_n\), and \(x=Q\).  A direct application of
+\[
+ b(a_0\otimes a_1\otimes a_2)
+ =
+ a_0a_1\otimes a_2-a_0\otimes a_1a_2+a_2a_0\otimes a_1
+ \tag{99}
+\]
+gives, modulo degree-two Hochschild boundaries,
+\[
+ H_{m\to n}
+ \sim
+ h_{mn}+f\otimes ex,
+ \qquad
+ H_{n\to m}
+ \sim
+ h_{mn}+e\otimes fx.
+ \tag{100}
+\]
+For completeness, witnesses for the first congruence are
+\[
+ U^*V^*\otimes V\otimes QU,
+ \qquad
+ V^*\otimes P_UQ\otimes V,
+ \tag{100a}
+\]
+with coefficient \(n^{-1}\) on the first boundary; the second congruence is obtained by
+interchanging \(U,m,e\) with \(V,n,f\).  Expanding `(99)`, using
+\[
+ U^*QU=m^{-1}Q,\qquad V^*QV=n^{-1}Q,
+ \tag{100b}
+\]
+and the double-commutation relations gives `(100)` term by term.
+The residual cycle is therefore
+\[
+ C_{e,f,x}=f\otimes ex-e\otimes fx.
+ \tag{101}
+\]
+For commuting \(a,e\) with \(e^2=e\), define
+\[
+ R(a,e)
+ :=
+ 2ae\otimes e\otimes e-a\otimes e\otimes e .
+ \tag{102}
+\]
+Then \(bR(a,e)=a\otimes e\).  Since \(e,f,x\) commute, `(99)` also gives
+\[
+\begin{aligned}
+ C_{e,f,x}
+ &=
+ xf\otimes e-xe\otimes f\\
+ &\quad-b(f\otimes e\otimes x)+b(e\otimes f\otimes x),
+\end{aligned}
+\tag{103}
+\]
+and hence
+\[
+ C_{e,f,x}
+ =
+ b\!\left(
+ R(xf,e)-R(xe,f)-f\otimes e\otimes x+e\otimes f\otimes x
+ \right).
+ \tag{104}
+\]
+Equations `(100)`--`(104)` prove
+\[
+ \boxed{\quad H_{m\to n}-H_{n\to m}\in bC_2. \quad}
+ \tag{105}
+\]
+Adjacent transpositions consequently make the degree-one transgression of every finite
+squarefree prime packet independent of prime order in Hochschild homology.
+
+The finite-packet formula is explicit.  For an ordering
+\(\pi=(p_1,\ldots,p_r)\), put
+\[
+ M_j=\prod_{i\leq j}p_i,\qquad M_0=1,
+ \tag{105a}
+\]
+and
+\[
+ H_\pi
+ :=
+ \sum_{j=1}^r
+ \left(\prod_{k=j+1}^rp_k^{-1}\right)
+ h_{p_j\mid M_{j-1}} .
+ \tag{105b}
+\]
+Repeated use of `(96)` telescopes to
+\[
+ b(H_\pi)=M_r^{-1}Q-P_{M_r}Q={\cal B}_{M_r}.
+ \tag{105c}
+\]
+Swapping two adjacent primes replaces \(Q\) in `(95)`--`(105)` by the commuting prefix
+weight \(P_{M_{j-1}}Q\) and multiplies the result by the reciprocal scalar of the suffix.
+The same primitive `(102)`--`(104)` therefore fills the swapped face.  Since adjacent
+transpositions generate every permutation:
+\[
+ \boxed{\quad
+ H_\pi-H_{\pi'}\in bC_2
+ \quad\text{for all orderings of one finite squarefree packet.}
+ \quad}
+ \tag{105d}
+\]
+
+`[PAPER-PROVED] [FINITE_PACKET_BV_HOCHSCHILD_PATH_FLATNESS]`
+
+This does **not** yet construct a coherently filled cubical chain map in every degree: braid and
+higher-face compatibility require explicit higher homotopies.  It does close the first possible
+rank-two obstruction.  In particular, the finite Boolean cylinder directions are algebraically
+flat after their complementary record is retained.
+
+The noncommutative algebraic core `(99)` and `(102)`--`(104)` is formalized unconditionally in
+`formal/GaloisForLFunctions/HTGeometry/LowDegreeHochschildFaceFlatness.lean`.  The Lean module
+defines the genuine degree-one boundary on \(A\otimes A\), proves \(b_1b_2=0\) on pure degree-two
+chains, proves the idempotent primitive, and proves the commuting-idempotent face-difference
+formula over every algebra over a commutative ring.  Its focused build and axiom audit pass; it
+uses only Lean's standard `propext`, `Quot.sound`, and, for the generic \(b_1b_2\) lemma,
+`Classical.choice`.  The operator specialization `(95)`--`(100)` and arbitrary-packet coherence
+remain paper-level.
+
+### What this means
+
+The corpus's infinity fractures now have a common sharper form:
+
+```text
+finite Euler gauges:
+  invertible;
+
+finite Kummer/BV cubes:
+  algebraically exact;
+
+finite prime-order transgressions:
+  Hochschild-homotopic;
+
+finite HT jets:
+  universally indistinguishable;
+
+all-prime completion:
+  the chosen inverses and homotopies need not remain controlled, strict, or nonzero.
+```
+
+The missing invariant is therefore not an ordinary finite cohomology class and not an algebraic
+\(\lim^1\) of finite-dimensional packets.  It is the **source-controlled growth class of the
+null-homotopies themselves**.  Kakutani singularity, Hellinger--Rees order, nonclosable inverse
+graphs, prime-infinity flux, orthogonality catastrophe, and exponentially escaping HT annihilator
+order are different scalar shadows of failure of a family of finite exact comparisons to define
+one morphism in the source bornological/filtered totalization.
+
+This suggests a general law about constrained hypertranscendental sources.
+
+`[BOLD CONJECTURE: HT CONTROLLED NULL-HOMOTOPY CONSERVATION]`
+
+> A source-minimal constrained HT object is not classified by its finite algebraic obstruction
+> classes, which may all vanish.  Its conservative analytic invariant is the controlled homotopy
+> type of the complete source comparison.  Source-effective localization preserves a principal
+> conormal precisely when the canonical finite algebraic null-homotopies survive as strict
+> morphisms in the source-selected critical bornology, with their pointing, dagger, and
+> complementary records intact.
+
+For the Riemann source, the conjectural specialization says that the finite homotopies
+`(95)`--`(105)`, their higher cubical extensions, the Gamma determinant transgression, and the
+additive Poisson/Tate comparison form one controlled all-prime null-homotopy before divisor
+specialization.  Conservative base change carries that same controlled class, not merely its
+zero in ordinary homology, to every Xi principal conormal and multiplicity jet.  The source class
+has modular exponent one; a conormal radial marginal has exponent
+\(2\operatorname{Re}\rho\).  Equality of the controlled classes then gives
+\(\operatorname{Re}\rho=1/2\).
+
+This is still a conjecture.  Its advantage over bare modular-dimension conservation is that it
+identifies an explicit family of finite primitives whose survival can be constructed or
+falsified.  It also explains the HT role without claiming that hypertranscendence implies
+positivity: HT forces the decisive datum out of every fixed finite algebraic quotient and into
+the control of the complete homotopy.
+
+### Superseding hostile correction
+
+The earlier open core `XI_BV_TWISTED_CYCLIC_BASE_CHANGE` is too broad at finite level and too weak
+at the positive boundary.
+
+1. The two-prime algebraic face is already filled by `(95)`--`(105)`.
+2. Finite semisimple/cubical exactness cannot force an RH conclusion.
+3. A twisted-cyclic class can coexist with an off-line smooth Poisson state unless the BV class
+   and the positive conormal state are proved to be restrictions of the **same** controlled
+   source morphism.
+4. Preserving the scalar twist after choosing the conormal is the already-known
+   multiplicative-domain/purity criterion in different language.
+
+The revised exact open core is:
+
+`[OPEN CORE: XI_CONTROLLED_CUBICAL_HOMOTOPY_BASE_CHANGE]`
+
+Construct the higher homotopies extending `(105)` on every finite Kummer/BV prime cube; attach
+their literal Gamma, first-trace, Möbius-phase, and Poisson/Tate records; prove source-uniform
+estimates in the critical Gevrey--Rees/bornological scale; and form the strict all-prime
+totalization.  Then prove that Xi Cartier base change is conservative on this controlled
+homotopy and that its gauge-diagonal positive functional is the same specialization, not an
+independently fitted Poisson state.  Failure must produce a specific uncontrolled higher
+homotopy, nonstrict cofinal boundary, lost multiplicity jet, or mismatch between cyclic and
+positive restrictions.
+
+This is where genuinely new mathematics is required.  Algebraic bar/Koszul comparison maps are
+parent theory; the candidate-new theorem is their source-canonical controlled all-prime
+Euler--Gamma/Poisson totalization and conservative Xi conormal base change.
+
+## 15. New infinite invariant: positive-shell conormal activation rate
+
+The controlled-homotopy conjecture still lacked an intrinsic observable of “control.”  The
+positive hypertranscendental Riemann-divisor frame supplies one.
+
+For \(m\geq12\), recall its disjoint positive shell and zero-free multiplier
+\[
+ S_m^\#(s)=\zeta(s)H_m(s),
+ \qquad
+ H_m(s)=\frac1{\zeta((m+1)s)}-\frac1{\zeta(ms)} .
+ \tag{106}
+\]
+Let \(\rho\) be any nontrivial zeta zero of order \(d\).  For every sufficiently large \(m\),
+\(\operatorname{Re}(m\rho)>1\), so \(H_m\) is holomorphic and nonzero near \(\rho\).  Define the
+normalized shell-conormal **tail germ**, modulo alteration of finitely many coordinates, by
+\[
+ \nu_\rho(m)
+ :=
+ \frac{(S_m^\#)^{(d)}(\rho)}{\zeta^{(d)}(\rho)}
+ =H_m(\rho).
+ \tag{107}
+\]
+The equality follows directly from Leibniz: every derivative of \(\zeta\) below order \(d\)
+vanishes at \(\rho\).  If \(\operatorname{Re}\rho>1/2\), the paper's uniform \(m\geq12\)
+zero-free theorem supplies the whole displayed tail without exceptions.  On the reflected
+left-half point, finitely many meromorphic coordinates may be exceptional; quotienting finite
+coordinates is necessary and does not change any activation rate below.  Thus `(107)` retains
+multiplicity but removes its irrelevant common scalar.  It is source-canonical at infinity:
+shell coefficients are nonnegative and pairwise disjoint, while the normalized transverse family
+is jointly differentially algebraically independent over the full zeta differential field.  No
+fixed finite jet packet can replace this infinite frame.
+
+### Exact activation-rate theorem
+
+`[PAPER-PROVED] [POSITIVE_SHELL_CONORMAL_ACTIVATION_RATE]`
+
+For fixed \(s\) with \(\sigma=\operatorname{Re}s>0\), absolute convergence far to the right gives
+\[
+ \zeta(ms)=1+2^{-ms}+O(3^{-m\sigma})
+ \tag{108}
+\]
+and hence
+\[
+ \frac1{\zeta(ms)}
+ =1-2^{-ms}+O(3^{-m\sigma}).
+ \tag{109}
+\]
+Subtracting consecutive terms yields
+\[
+ \boxed{\quad
+ H_m(s)
+ =(1-2^{-s})\,2^{-ms}+O(3^{-m\sigma}).
+ \quad}
+ \tag{110}
+\]
+Since \(1-2^{-s}\neq0\) for \(\sigma>0\),
+\[
+ \lim_{m\to\infty}\frac{H_{m+1}(s)}{H_m(s)}=2^{-s},
+ \qquad
+ \lim_{m\to\infty}-\frac1m\log|H_m(s)|=\sigma\log2.
+ \tag{111}
+\]
+
+Equivalently, on the exponential Rees tail scale, where sequences differing in finitely many
+coordinates represent the same germ,
+\[
+ {\cal E}_r
+ :=
+ \left\{[a]_{\rm tail}:
+ \|a\|_{r,M}:=\sup_{m\geq M}e^{rm}|a_m|<\infty
+ \text{ for some }M\right\},
+ \tag{112}
+\]
+define
+\[
+ \kappa(a):=\sup\{r:a\in{\cal E}_r\}.
+ \tag{113}
+\]
+Then every nontrivial zero satisfies the exact source-depth law
+\[
+ \boxed{\quad
+ \kappa(\nu_\rho)=\operatorname{Re}\rho\,\log2.
+ \quad}
+ \tag{114}
+\]
+For the Riemann reflection \(\tau\rho=1-\overline\rho\),
+\[
+ \kappa(\nu_{\tau\rho})=(1-\operatorname{Re}\rho)\log2,
+ \tag{115}
+\]
+so
+\[
+ \kappa(\nu_\rho)=\kappa(\nu_{\tau\rho})
+ \quad\Longleftrightarrow\quad
+ \operatorname{Re}\rho=\frac12.
+ \tag{116}
+\]
+
+This is more than another coordinate for drift.  It identifies an infinite, positive,
+coefficient-disjoint, multiplicity-aware conormal frame whose **asymptotic source activation
+rate** is the horizontal coordinate.  Hypertranscendence makes the whole frame irreducible to
+finite differential data; `(110)` makes its missing infinite datum exact.
+
+There is also an exact reflection rate-distortion cocycle.
+
+`[PAPER-PROVED] [POSITIVE_SHELL_REFLECTION_RATE_DISTORTION]`
+
+On every tail where both sides are defined, put
+\[
+ u_m(\rho):=\frac{H_m(\tau\rho)}{H_m(\rho)}.
+ \tag{117}
+\]
+Equations `(110)`--`(111)` give
+\[
+ \boxed{\quad
+ \lim_{m\to\infty}\frac1m\log|u_m(\rho)|
+ =(2\operatorname{Re}\rho-1)\log2.
+ \quad}
+ \tag{118}
+\]
+Moreover \(u_m(\tau\rho)=u_m(\rho)^{-1}\), so the rate is an antisymmetric reflection cocycle.
+This is the positive-shell realization of the same centered modular drift read by the
+Kakutani, Hellinger--Rees, first-trace, source-Gram, and Wold defects.  It is not merely a
+membership wall: it is the exact exponential condition-number growth of the literal comparison
+between two complete, disjoint positive conormal frames.
+
+The obvious normalization also exposes a new no-go.  Define
+\[
+ \widetilde\nu_\rho(m)
+ :=
+ 2^{m(\rho-1/2)}\nu_\rho(m).
+ \tag{119}
+\]
+Then `(110)` gives
+\[
+ \widetilde\nu_\rho(m)
+ =(1-2^{-\rho})2^{-m/2}+o(2^{-m/2})
+ \tag{120}
+\]
+for **every** \(\rho\) in the open strip.  Thus a parameter-dependent half-density gauge makes
+the shell activation rate reflection-invariant everywhere, including off line.  Existence of
+some balanced or scale-exact chart is therefore as powerless as a fitted Hilbert metric.
+The unrenormalized positive/integral shell pointing is load-bearing.
+
+### Universal law suggested by the corpus
+
+Finite clock-alias rank conservation says a complete observation cannot create or destroy
+projective rank; it only transfers rank between hidden relations and visible phase directions.
+The infinite analogue suggested here is:
+
+`[BOLD CONJECTURE: SOURCE ASYMPTOTIC-DIMENSION CONSERVATION]`
+
+> A source-minimal constrained HT object has an asymptotic source dimension given by the critical
+> abscissa of its complete conormal/homotopy frame.  Every source-internal symmetry acts
+> bicontinuously on each step of the source Rees scale and therefore preserves this abscissa.
+> Finite obstruction classes, finite differential jets, scalar Hilbert shadows, and individual
+> positive states are quotient observations of this invariant and need not preserve it.
+
+For Xi, this becomes the concrete open theorem:
+
+`[OPEN CORE: XI_POSITIVE_SHELL_SCALE_EXACT_REFLECTION]`
+
+Construct, before selecting a zero, the reflection comparison on the positive-shell principal
+conormal module and the finite Kummer/BV homotopies of Section 14.  Prove that it and its inverse
+preserve every \({\cal E}_r\) in `(112)`, preserve multiplicity jets, and identify the shell
+conormal with the gauge-diagonal restriction of the same controlled Euler--Gamma/Poisson
+homotopy.  Then the comparison carries \(\nu_\rho\) to a nonzero scalar multiple of
+\(\nu_{\tau\rho}\); bicontinuity gives equality of `(114)` and `(115)`, and `(116)` proves RH.
+
+This gives the proposed universal interpretation:
+
+```text
+finite rank conservation
+  -> finite observers preserve resolved projective dimension;
+
+finite Hochschild flatness
+  -> every finite source path has a null-homotopy;
+
+HT finite-jet blindness
+  -> no finite differential observer sees the source dimension;
+
+Kakutani / Hellinger--Rees / weak-first-trace fractures
+  -> scalar shadows of an abscissa changing under uncontrolled completion;
+
+positive disjoint divisor shells
+  -> a canonical infinite conormal frame measuring that abscissa;
+
+critical line
+  -> fixed locus where Riemann reflection preserves asymptotic source dimension.
+```
+
+### Hostile audit
+
+1. `(114)`--`(116)` are a new exact selector, not an RH proof.
+2. Merely defining a fibrewise map
+   \(\nu_\rho\mapsto\nu_{\tau\rho}\) is circular.  The map must descend from the source comparison
+   before the divisor is decomposed.
+3. A bounded map on one \(\ell^p\) space is insufficient: permutations or exponentially weighted
+   diagonal maps can change \(\kappa\).  Preservation of every named Rees step by both map and
+   inverse is load-bearing.
+4. The naive diagonal ratio
+   \(H_m(\tau\rho)/H_m(\rho)\) has exponential rate
+   `(118)`.  Off line it is exactly **not** scale-exact.  The functional equation alone therefore
+   does not prove the open core; it displays its anomaly.
+5. Smooth positive off-line Poisson states remain valid countermodels to positivity,
+   bilateral regularity, and finite-order orientation.  They do not refute the conjecture unless
+   they also realize the literal disjoint positive zeta shell frame and a source-first
+   scale-exact reflection comparison.
+6. The static requirement that both reflected sequences lie in one chosen tail space is an
+   already-known RH-equivalent membership test.  Candidate-new content is the construction of
+   one source-internal comparison whose scale-exactness would force equality, not imposing that
+   equality as a fibre condition.
+7. The balanced frame `(119)`--`(120)` is an explicit off-line falsifier for any unpointed version
+   of the conjecture.  Allowed comparison maps must preserve the raw positive coefficient
+   partition, its integral shell depth, and its distinguished unit—not merely some isomorphic
+   exponential scale.
+
+The gain over the preceding open core is a falsifiable quantitative target.  “Controlled at
+infinity” now means preservation of the explicit family of norms `(112)`, and its failure has the
+measurable exponent in item 4.  The positive-shell frame supplies the left-invertible infinite
+clock compass that finite HT data was missing.
+
+## 16. Literature boundary
 
 Parent mathematics includes:
 
@@ -1104,13 +2108,35 @@ Parent mathematics includes:
 - Choi multiplicative domains and Stinespring dilation;
 - Rees filtrations, moderate/rapid Stokes structures, and irregular Riemann--Hilbert theory;
 - operator-system matrix order, \(C^*\)-envelopes, and local Shilov boundaries; and
-- strict determinant/differential-character and arithmetic regulator theories.
+- strict determinant/differential-character and arithmetic regulator theories;
+- Cuntz--Quillen bar/X-complex excision; and
+- entire, analytic, local, and equivariant cyclic homology for complete bornological algebras.
 
 Targeted searches found no theorem identifying one zeta-centered drift simultaneously through
 `(5)`, `(8)`, `(10)`, `(12)`, and `(13)`, or deriving its vanishing from a strict
 ordinary-prime Euler--Gamma principal-source realization.  This is a noncollision result, not a
 priority certificate.  Each individual equivalence remains parent or already proved in the
 corpus; candidate novelty is the faithful realization dictionary and the source-effectivity law.
+Further targeted searches found the standard KMS classification of Toeplitz/product-system
+algebras, modular spectral triples with twisted weights, additive Haar measure on profinite
+completions, and the adelic half-density scaling module.  No located source constructs an Xi
+BV principal conormal as equivariant base change of a fixed occupation-twisted cyclic class, or
+identifies its gauge-averaged conormal marginal with that class.  The local Haar/Gibbs rigidity
+itself is elementary parent mathematics; candidate-new content is precisely this
+ordinary-prime source comparison.
+Bornological analytic/local cyclic theories already make controlled completion, excision, and
+homotopy invariance into parent mathematics.  Therefore no novelty is claimed for the phrase
+“controlled null-homotopy” or for the bar primitives `(99)`--`(104)`.  No located source constructs
+the specific all-prime Euler--Gamma/Poisson family `(105b)`, proves its source-critical control,
+or identifies its strict Xi Cartier specialization with the same positive conormal functional.
+That source-specific construction is the only candidate-new content of Section 14.
+Targeted searches found no prior use of the maximum-prime-exponent positive shell frame
+`(106)` to define the conormal activation abscissa `(113)`--`(114)`, or a scale-exact Riemann
+reflection comparison on that frame.  The asymptotic expansion `(108)`--`(111)` is routine
+Dirichlet-series analysis once the frame is known; no novelty is claimed for that estimate alone.
+The candidate-new content of Section 15 is the conjunction of the corpus's positive disjoint
+divisor frame, its maximal relative differential rank, and source-first preservation of its full
+exponential Rees scale.
 The general strict-angle/closed-sum and block-Gram inversion used in `(37)`--`(42)` are classical
 two-subspace Hilbert geometry.  Targeted searches found no prior occurrence of their
 source-specific combination with the projective Möbius diagonal \(\mu(n)/n\), its Dirichlet-scale
@@ -1138,6 +2164,22 @@ Primary references:
 - Mark Greenfield, Matilde Marcolli, and Kevin Teh,
   *Type III sigma-spectral triples and quantum statistical mechanical systems*,
   <https://arxiv.org/abs/1305.5492>.
+- Jeong Hee Hong, Nadia S. Larsen, and Wojciech Szymański,
+  *KMS states on Nica--Toeplitz algebras of product systems*,
+  <https://arxiv.org/abs/1202.4594>.
+- Marco Matassa, *A modular spectral triple for kappa-Minkowski space*,
+  <https://arxiv.org/abs/1212.3462>.
+- Alain Connes and Caterina Consani, *The scaling Hamiltonian*,
+  <https://arxiv.org/abs/1910.14368>.
+- Ralf Meyer, *Analytic cyclic cohomology*,
+  <https://arxiv.org/abs/math/9906205>.
+- Ralf Meyer, *Bornological versus topological analysis in metrizable spaces*,
+  <https://arxiv.org/abs/math/0310225>.
+- Christian Voigt, *Equivariant local cyclic homology and the equivariant Chern--Connes
+  character*, <https://arxiv.org/abs/math/0608609>.
+- Luca Demangos and Ignazio Longhi,
+  *Densities on Dedekind domains, completions and Haar measure*,
+  <https://arxiv.org/abs/2009.04229>.
 - Jean-Pierre Antoine and Camillo Trapani,
   *Metric operators, generalized hermiticity and lattices of Hilbert spaces*,
   <https://arxiv.org/abs/1409.3497>.
@@ -1184,3 +2226,31 @@ Primary references:
   \(4|a|/\zeta(2)\).  This identifies compact/Hilbert blindness and \(L^1\)/first-trace memory as
   two endpoint shadows of one source welding law.  Proposed the bipolar graded weak-trace
   completion and isolated source-Gram adjoint landing as the remaining RH-bearing theorem.
+- 2026-07-30 — Identified \(A=\operatorname{diag}(\mu(n)/n)\) as the coefficient symbol of the
+  critical half-density adjoint of a Möbius-twisted dilation packet.  Proved the exact Wold
+  eigenstate law `(71)`: conditional occupation-defect density minus the ordinary-prime
+  first-trace density is \(q^{-1}\) times the Kadison defect.  Its logarithmic linearization is
+  the projective source-Gram anomaly, and its all-prime sum diverges off line.  Reduced the
+  source comparison to the typed conditional-density base-change theorem in clauses 1--4 above.
+- 2026-07-30 — Reinterpreted the conditional-density law as conservation of one modular
+  exponent.  The fixed occupation weight is the \(\beta=1\) twisted-cyclic/Haar class, while the
+  gauge-averaged \(Q\)-conditioned conormal has \(\beta=2\operatorname{Re}\rho\).  Proved local
+  additive-Haar/multiplicative-Gibbs rigidity and identified the exact cylinder defect with
+  \(\omega_\rho({\cal B}_p)/\omega_\rho(Q)=p^{-1}-p^{-2\operatorname{Re}\rho}\).  Isolated one
+  trace-valued BV cocycle plus strict equivariant conormal base change as the source-first
+  producer; explicitly retained the positive Born-identification gap.
+- 2026-07-30 — Closed the first higher source face: for coprime \(m,n\), the two ordered
+  BV--Hochschild transgressions have boundary \({\cal B}_{mn}\), and their difference is an
+  explicit degree-two Hochschild boundary.  Therefore finite two-prime curvature vanishes after
+  retaining the complementary record.  Corrected the proposed producer: the RH-bearing datum is
+  controlled survival of the canonical finite null-homotopies through the strict all-prime
+  Euler--Gamma/Poisson totalization and Xi Cartier base change, not finite cyclic exactness or a
+  separately imposed twist.
+- 2026-07-30 — Formalized the low-degree noncommutative Hochschild core axiom-clean in
+  `HTGeometry/LowDegreeHochschildFaceFlatness.lean`.  Extracted a new infinite observable from the
+  positive hypertranscendental divisor frame: the normalized shell conormal has exact activation
+  abscissa \(\operatorname{Re}\rho\log2\), while its Riemann reflection has abscissa
+  \((1-\operatorname{Re}\rho)\log2\).  Proposed source asymptotic-dimension conservation and
+  isolated scale-exact, source-first reflection on the full positive-shell Rees frame as the
+  quantitative RH-bearing open core.  Explicitly retained the hostile boundary: the abscissa
+  equality is only a selector until that comparison is constructed.
