@@ -687,3 +687,194 @@ may not be reported merely as “the map is unbounded.”
   the inward Sonin corner.  Added the general capacity--width purity consumer and isolated the
   source-global polarized Sonin--Hardy reporter mate as the unique arithmetic factorization still
   required for RH.
+
+## Reflected-character passivity is the common law
+
+The latest source-horizon theorem changes the interpretation of the open core.  The corpus's
+apparently different purity selectors all read one multiplicative character:
+
+```text
+BV/co-Poisson depth:       chi_r(rho) = r^(2 rho - 1);
+entire high-shell graph:   U_(m+1)(rho)/U_m(rho) -> 2^(1 - 2 rho);
+source-horizon channel:    complete mass = |m_rho|^2 exp((2 Re rho - 1) tau);
+prime-valuation sector:    radial twist c = 1/2 - Re rho;
+projective recurrence:     D_p v_rho = p^(rho - 1/2) v_rho;
+Ward/Hardy packet:         finite passive matrix coefficient of the same transverse mode.
+```
+
+These are not six mechanisms.  They are six realizations of one reflected character and its
+inverse.  Functional equation supplies the inverse character; a source Hilbert dagger supplies
+the adjoint character.  Criticality is the coincidence of those two operations.
+
+`[PAPER-PROVED] [PARENT THEOREM] [REFLECTED_CHARACTER_PASSIVITY_PURITY]`
+
+Let `T` and `T_ref` be contractions on normed source realizations.  Suppose nonzero retained
+vectors `v` and `v_ref` satisfy
+
+```text
+T v         = lambda v,
+T_ref v_ref = lambda^(-1) v_ref.                          (PCR7)
+```
+
+Then `|lambda| <= 1` from the first equation and `|lambda|^(-1) <= 1` from the second, hence
+
+```text
+|lambda| = 1.                                             (PCR8)
+```
+
+For `lambda=r^(2 rho-1)` with `r>1`, `(PCR8)` is `Re rho=1/2`.  Equivalently, if the complete
+source-horizon channels of `rho` and `1-rho` are uniformly bounded at all canonical times, then
+
+```text
+exp((2 Re rho-1) tau) = O(1),
+exp(-(2 Re rho-1) tau) = O(1),
+```
+
+so their common transverse rate is zero.  This is parent operator/real analysis.  The corpus
+already formalizes its scalar reflected-bound form in
+`FinitePrimeBoundaryTransfer.exponent_eq_zero_of_uniform_reflected_bounds`; no novelty is claimed
+for the abstract implication.
+
+What the theorem explains is the complete no-go pattern:
+
+```text
+finite truncation:
+  retains v_rho, but dilation leaks, so contractivity is not cofinal;
+
+bare adelic/Burnol L2:
+  has a dagger and dilation covariance, but v_rho is not a nonzero vector;
+
+unpolarized singular completion:
+  retains v_rho, but algebraic inverse is not identified with Hilbert adjoint;
+
+positive generalized-prime systems:
+  retain off-line characters, but do not possess the ordinary-prime source dagger mate;
+
+compact-open and differential-matroid observers:
+  retain neither the co-moving norm nor its reflected inverse;
+
+Ward capacity:
+  is a finite Cauchy matrix shadow of contractive character transport, not a separate source of
+  criticality.
+```
+
+Thus the sought universal theorem is not “completion creates positivity.”  It is:
+
+> **A conservative completion cannot create orientation.  It can only make the source's
+> algebraic inverse and physical adjoint comparable.  If both reflected conormal fibres survive
+> nontrivially and that comparison is contractive, their radial character is forced to be
+> unitary.**
+
+This subsumes the earlier phrase “source-generated causal dagger compatibility” from the
+Gamma--Gaussian envelope card.  The new task is to construct the comparison, not another
+unit-circle criterion.
+
+## Ambidextrous Sonin carrier
+
+The inward Sonin incidence supplies more than one contractive arrow.  Let `Q` be the central
+Sonin projection, let `U=U_r` be unitary dilation, and put
+
+```text
+C = (1-Q) U Q,
+R = Q U^* (1-Q).                                         (PCR9)
+```
+
+Then
+
+```text
+R = C^*,
+||C|| <= 1,
+||R|| <= 1.                                              (PCR10)
+```
+
+For the corpus shell pair
+
+```text
+v_n = evenShellVector(c,d,n),
+g_n = U^* v_n = inverseDilatedEvenShell(c,d,r,n),
+```
+
+one has `Q v_n=0` and `Q g_n-g_n -> 0`.  Consequently
+
+```text
+C g_n - v_n
+  = (1-Q) U (Q g_n-g_n) -> 0,                            (PCR11)
+
+R v_n - g_n
+  = Q g_n-g_n -> 0.                                     (PCR12)
+```
+
+Both compositions therefore recover the corresponding shell:
+
+```text
+R C g_n-g_n -> 0,
+C R v_n-v_n -> 0.                                       (PCR13)
+```
+
+The same holds for every vector in the complete cofinal `ell^2` shell embedding.  After choosing
+the already available countable diagonal at any positive singular scale, `C` and `R` induce
+mutually inverse arrows on the source-generated shell subcorrespondence of the singular
+Rees-corona.  This is the first two-sided contractive carrier in the present route; ordinary
+ambient `L2` does not retain its shell classes, while a one-sided corona does not expose the
+adjoint mate.
+
+There is also a decisive no-creation corollary.  Since `R=C^*`, `(PCR13)` gives
+
+```text
+<C x_n,C y_n>-<x_n,y_n> -> 0                             (PCR14)
+```
+
+for bounded shell sections at the controlled grade.  Hence the ambidextrous carrier preserves
+the source Gram matrix and every coherent codiagonal.  It cannot create a nonzero Ward column
+from an orthogonal source pair, nor repair an indefinite source block.  This agrees with the
+formalized contraction-saturation law and prevents misreading `(PCR9)`--`(PCR13)` as an RH proof.
+
+### Sharpened RH-bearing conjecture
+
+`[BOLD CONJECTURE] [XI_PRINCIPAL_CONORMAL_AMBIDEXTROUS_DESCENT]`
+
+> The literal bounded-exponent Euler, Gamma, co-Poisson, and reflection maps construct, before
+> divisor specialization, a morphism from the Xi source-normal principal conormal into the
+> source-generated ambidextrous Sonin Rees-corona subcorrespondence.  It is nonzero on every top
+> conormal jet; intertwines centered prime depth with the character `r^(2s-1)`; and intertwines
+> Riemann reflection with the Sonin adjoint arrow `C^*`.
+
+If this holds, every Xi zero supplies the two nonzero vectors in `(PCR7)`, so `(PCR8)` proves RH.
+The capacity-four Ward block then follows as a finite Hardy reporter of the same contractive
+descent and is no longer an independent premise.
+
+This conjecture is stronger and more falsifiable than the previous generic Hardy-reporter mate:
+
+1. it specifies the domain as the already formalized source-normal principal conormal;
+2. it specifies the codomain as the shell-generated ambidextrous corona, not an arbitrary
+   target-fitted Hilbert space;
+3. it specifies the character and the adjoint intertwining off the divisor;
+4. it requires nonzero attainment, the exact clause lost in ambient `L2`;
+5. it can fail by a concrete null, nonclosed, or cross-aperture component.
+
+### Hostile audit
+
+1. `(PCR7)`--`(PCR8)` and the scalar source-horizon boundedness implication are old parent
+   mathematics.  Their synthesis is a research map, not a novelty claim.
+2. `(PCR9)`--`(PCR13)` concerns shell carriers, not Xi conormal fibres.  Without the conjectured
+   descent it proves no zero-location statement.
+3. Ambidextrous contractivity is conservative.  By `(PCR14)` it transports only a polarization
+   already present at source.  It cannot manufacture the four-unit Ward column.
+4. The universal Gamma--Gaussian property-`S` envelope retains arbitrary off-line conormals, so
+   conormal survival plus Fourier self-duality remains insufficient.  The ordinary-prime
+   contractive dagger comparison is load-bearing.
+5. The high-shell entire graph already reports the same dyadic character but supplies no
+   contractive graph norm.  A value identity at a zero cannot replace the off-divisor
+   intertwining required above.
+6. A proof that starts by placing each Xi conormal in the desired normal sector is circular.
+   Nonzero attainment and contractivity must be proved uniformly from the source graph before
+   any zero is selected.
+
+- 2026-07-30 — Reinterpreted source-horizon growth, BV depth characters, Kakutani sectors,
+  projective recurrence, and Ward capacity as realizations of one reflected-character passivity
+  law.  Derived the two-sided Sonin shell relation `(PCR9)`--`(PCR13)` and its no-creation
+  consequence.  Formalized the adjoint identity, reverse shell transport, complete cofinal
+  transport, and both strong round trips in
+  `SoninCofinalAmbidextrousInwardIncidence.lean`; direct elaboration, targeted build, and axiom
+  audit pass.  Replaced the broad reporter target by the explicit
+  `XI_PRINCIPAL_CONORMAL_AMBIDEXTROUS_DESCENT` conjecture.

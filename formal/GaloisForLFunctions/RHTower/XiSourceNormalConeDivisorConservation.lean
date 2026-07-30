@@ -120,6 +120,37 @@ theorem tendsto_sourceDepthQuotient_normalScale
   exact sourceDepthQuotient_normal_coordinate
     (by exact_mod_cast (show M + 1 ≠ 0 by omega)) u
 
+/-- **Finite renormalized-depth selector.**  If the observation scale tends to
+zero while depth times scale tends to `lam`, then the source quotient retains
+exactly the reciprocal carrier at the rescaled coordinate `lam * u`. -/
+theorem tendsto_sourceDepthQuotient_finiteRenormalizedDepth
+    {f : ℂ → ℂ} {eps depth : ℕ → ℂ} {lam u : ℂ}
+    (hf0 : ContinuousAt f 0)
+    (hflam : ContinuousAt f (lam * u))
+    (hflam0 : f (lam * u) ≠ 0)
+    (heps : Tendsto eps atTop (𝓝 0))
+    (hscale : Tendsto (fun n => depth n * eps n) atTop (𝓝 lam)) :
+    Tendsto
+      (fun n =>
+        sourceDepthQuotient f (depth n) (eps n * u))
+      atTop (𝓝 (f 0 / f (lam * u))) := by
+  have harg0 : Tendsto (fun n => eps n * u) atTop (𝓝 0) := by
+    convert heps.mul_const u using 1 <;> simp
+  have harglam :
+      Tendsto (fun n => (depth n * eps n) * u)
+        atTop (𝓝 (lam * u)) :=
+    hscale.mul_const u
+  have hnum :=
+    hf0.tendsto.comp harg0
+  have hden :=
+    hflam.tendsto.comp harglam
+  have hquot := hnum.div hden hflam0
+  convert hquot using 1
+  funext n
+  simp only [sourceDepthQuotient, Function.comp_apply, Pi.div_apply]
+  congr 1
+  ring
+
 /-- Ratio of consecutive depths before the normal rescaling. -/
 theorem sourceDepthQuotient_successor_ratio
     {f : ℂ → ℂ} {t s : ℂ}
@@ -357,6 +388,81 @@ theorem tendsto_boundedExponentNormalCone_zero (u : ℂ) :
   rw [riemannZeta_zero] at hnum
   simpa [boundedExponentNormalCone] using hnum.div_const (riemannZeta u)
 
+/-- Zeta tends to one along every sequence escaping through the open right
+half-plane. -/
+theorem tendsto_riemannZeta_of_re_atTop
+    {w : ℕ → ℂ}
+    (hw : Tendsto (fun n => (w n).re) atTop atTop) :
+    Tendsto (fun n => riemannZeta (w n)) atTop (𝓝 1) := by
+  rw [Metric.tendsto_atTop]
+  intro eps heps
+  obtain ⟨N, hN⟩ :=
+    Filter.eventually_atTop.1
+      (hw.eventually_gt_atTop (1 + 1 / eps))
+  refine ⟨N, fun n hn => ?_⟩
+  have hnlarge := hN n hn
+  have hwin : 1 < (w n).re := by
+    have : 0 < 1 / eps := one_div_pos.mpr heps
+    linarith
+  have hbound := norm_riemannZeta_sub_one_le hwin
+  rw [dist_eq]
+  refine hbound.trans_lt ?_
+  have hden : 1 / eps < (w n).re - 1 := by
+    linarith
+  have hdenpos : 0 < (w n).re - 1 := by
+    linarith
+  exact (one_div_lt hdenpos heps).2 hden
+
+/-- Zeta specialization of the finite renormalized-depth selector. -/
+theorem tendsto_sourceDepthQuotient_zeta_finiteRenormalizedDepth
+    {eps depth : ℕ → ℂ} {lam u : ℂ}
+    (hpole : lam * u ≠ 1)
+    (hzero : riemannZeta (lam * u) ≠ 0)
+    (heps : Tendsto eps atTop (𝓝 0))
+    (hscale :
+      Tendsto (fun n => depth n * eps n) atTop (𝓝 lam)) :
+    Tendsto
+      (fun n =>
+        sourceDepthQuotient riemannZeta (depth n) (eps n * u))
+      atTop (𝓝 ((-1 / 2 : ℂ) / riemannZeta (lam * u))) := by
+  have h :=
+    tendsto_sourceDepthQuotient_finiteRenormalizedDepth
+      ((differentiableAt_riemannZeta (by norm_num)).continuousAt)
+      ((differentiableAt_riemannZeta hpole).continuousAt)
+      hzero heps hscale
+  rw [riemannZeta_zero] at h
+  exact h
+
+/-- **Right-escaping renormalized-depth selector.**  If the observation scale
+tends to zero while the renormalized zeta argument escapes through the right
+half-plane, every divisor is erased and only the endpoint constant remains. -/
+theorem tendsto_sourceDepthQuotient_zeta_infiniteRenormalizedDepth
+    {eps depth : ℕ → ℂ} {u : ℂ}
+    (heps : Tendsto eps atTop (𝓝 0))
+    (hright :
+      Tendsto (fun n => ((depth n * eps n) * u).re)
+        atTop atTop) :
+    Tendsto
+      (fun n =>
+        sourceDepthQuotient riemannZeta (depth n) (eps n * u))
+      atTop (𝓝 (-1 / 2 : ℂ)) := by
+  have harg0 : Tendsto (fun n => eps n * u) atTop (𝓝 0) := by
+    convert heps.mul_const u using 1 <;> simp
+  have hzeta0 : ContinuousAt riemannZeta 0 :=
+    (differentiableAt_riemannZeta (by norm_num)).continuousAt
+  have hnum := hzeta0.tendsto.comp harg0
+  rw [riemannZeta_zero] at hnum
+  have hden :=
+    (tendsto_riemannZeta_of_re_atTop hright).inv₀ one_ne_zero
+  have hprod := hnum.mul hden
+  convert hprod using 1
+  · funext n
+    simp only [sourceDepthQuotient, Function.comp_apply]
+    rw [div_eq_mul_inv]
+    congr 2
+    ring
+  · ring
+
 /-- At fixed scale the arithmetic source converges to the zeta bulk. -/
 theorem tendsto_boundedExponentEulerSource_fixedScale
     {s : ℂ} (hs : 0 < s.re) :
@@ -391,6 +497,87 @@ theorem tendsto_boundedExponentEulerSource_normalScale (u : ℂ) :
   refine hcone.congr' (Filter.Eventually.of_forall fun M => ?_)
   symm
   exact boundedExponentEulerSource_normal_coordinate (by omega) u
+
+/-- A square-depth source observed at inverse linear scale has right-escaping
+renormalized depth and collapses to the endpoint constant. -/
+theorem tendsto_boundedExponentEulerSource_mesoscopicScale
+    {u : ℂ} (hu : 0 < u.re) :
+    Tendsto
+      (fun M : ℕ =>
+        boundedExponentEulerSource ((M + 1) ^ 2)
+          ((((M + 1 : ℕ) : ℂ)⁻¹) * u))
+      atTop (𝓝 (-1 / 2 : ℂ)) := by
+  have hinv :
+      Tendsto (fun M : ℕ => (((M + 1 : ℕ) : ℂ)⁻¹))
+        atTop (𝓝 0) := by
+    have h :=
+      GaloisForLFunctions.tendsto_natCast_inv_complex.comp
+        (tendsto_add_atTop_nat 1)
+    exact h.congr' (Filter.Eventually.of_forall fun M => by rfl)
+  have harg :
+      Tendsto (fun M : ℕ => (((M + 1 : ℕ) : ℂ)⁻¹) * u)
+        atTop (𝓝 0) := by
+    convert hinv.mul_const u using 1 <;> simp
+  have hzeta0 : ContinuousAt riemannZeta 0 :=
+    (differentiableAt_riemannZeta (by norm_num)).continuousAt
+  have hnum :=
+    hzeta0.tendsto.comp harg
+  rw [riemannZeta_zero] at hnum
+  have hden :=
+    tendsto_inv_riemannZeta_nat_dilation_one (K := 1) hu
+  have hprod := hnum.mul hden
+  convert hprod using 1
+  · funext M
+    have hM : ((M + 1 : ℕ) : ℂ) ≠ 0 := by
+      exact_mod_cast (show M + 1 ≠ 0 by omega)
+    simp only [boundedExponentEulerSource, div_eq_mul_inv,
+      Nat.cast_pow, Nat.cast_add, Nat.cast_one]
+    congr 2
+    field_simp [hM]
+    ring
+  · ring
+
+/-- A linear-depth source observed faster than inverse depth has zero
+renormalized depth and collapses to the identity. -/
+theorem tendsto_boundedExponentEulerSource_microscopicScale
+    (u : ℂ) :
+    Tendsto
+      (fun M : ℕ =>
+        boundedExponentEulerSource (M + 1)
+          (((((M + 1 : ℕ) : ℂ)⁻¹) ^ 2) * u))
+      atTop (𝓝 1) := by
+  have hinv :
+      Tendsto (fun M : ℕ => (((M + 1 : ℕ) : ℂ)⁻¹))
+        atTop (𝓝 0) := by
+    have h :=
+      GaloisForLFunctions.tendsto_natCast_inv_complex.comp
+        (tendsto_add_atTop_nat 1)
+    exact h.congr' (Filter.Eventually.of_forall fun M => by rfl)
+  have hargNum :
+      Tendsto
+        (fun M : ℕ => ((((M + 1 : ℕ) : ℂ)⁻¹) ^ 2) * u)
+        atTop (𝓝 0) := by
+    convert (hinv.pow 2).mul_const u using 1 <;> simp
+  have hargDen :
+      Tendsto
+        (fun M : ℕ => (((M + 1 : ℕ) : ℂ)⁻¹) * u)
+        atTop (𝓝 0) := by
+    convert hinv.mul_const u using 1 <;> simp
+  have hzeta0 : ContinuousAt riemannZeta 0 :=
+    (differentiableAt_riemannZeta (by norm_num)).continuousAt
+  have hnum := hzeta0.tendsto.comp hargNum
+  have hden := hzeta0.tendsto.comp hargDen
+  rw [riemannZeta_zero] at hnum hden
+  have hquot := hnum.div hden (by norm_num : (-1 / 2 : ℂ) ≠ 0)
+  convert hquot using 1
+  · funext M
+    simp only [boundedExponentEulerSource, Function.comp_apply,
+      Pi.div_apply, Nat.cast_add, Nat.cast_one]
+    congr 1
+    have hM : ((M + 1 : ℕ) : ℂ) ≠ 0 := by
+      exact_mod_cast (show M + 1 ≠ 0 by omega)
+    field_simp
+  · norm_num
 
 /-- At fixed scale the ordered positive hypertranscendental resolution fuses to
 the zeta bulk. -/
@@ -441,9 +628,76 @@ theorem riemannZeta_mul_exceptionalFace
     riemannZeta u * ((-1 / 2 : ℂ) / riemannZeta u) = -1 / 2 := by
   field_simp
 
+/-- Exact scale-selector package for bounded-exponent zeta sources. -/
+structure ZetaSourceScaleTransitionCertificate : Prop where
+  finiteRenormalizedDepth :
+    ∀ (eps depth : ℕ → ℂ) (lam u : ℂ),
+      lam * u ≠ 1 →
+      riemannZeta (lam * u) ≠ 0 →
+      Tendsto eps atTop (𝓝 0) →
+      Tendsto (fun n => depth n * eps n) atTop (𝓝 lam) →
+      Tendsto
+        (fun n =>
+          sourceDepthQuotient riemannZeta (depth n) (eps n * u))
+        atTop (𝓝 ((-1 / 2 : ℂ) / riemannZeta (lam * u)))
+  infiniteRenormalizedDepth :
+    ∀ (eps depth : ℕ → ℂ) (u : ℂ),
+      Tendsto eps atTop (𝓝 0) →
+      Tendsto (fun n => ((depth n * eps n) * u).re) atTop atTop →
+      Tendsto
+        (fun n =>
+          sourceDepthQuotient riemannZeta (depth n) (eps n * u))
+        atTop (𝓝 (-1 / 2 : ℂ))
+  fixedScale :
+    ∀ {s : ℂ}, 0 < s.re →
+      Tendsto (fun M : ℕ => boundedExponentEulerSource (M + 1) s)
+        atTop (𝓝 (riemannZeta s))
+  criticalScale :
+    ∀ u : ℂ,
+      Tendsto
+        (fun M : ℕ =>
+          boundedExponentEulerSource (M + 1)
+            ((((M + 1 : ℕ) : ℂ)⁻¹) * u))
+        atTop (𝓝 ((-1 / 2 : ℂ) / riemannZeta u))
+  mesoscopicCollapse :
+    ∀ {u : ℂ}, 0 < u.re →
+      Tendsto
+        (fun M : ℕ =>
+          boundedExponentEulerSource ((M + 1) ^ 2)
+            ((((M + 1 : ℕ) : ℂ)⁻¹) * u))
+        atTop (𝓝 (-1 / 2 : ℂ))
+  microscopicCollapse :
+    ∀ u : ℂ,
+      Tendsto
+        (fun M : ℕ =>
+          boundedExponentEulerSource (M + 1)
+            (((((M + 1 : ℕ) : ℂ)⁻¹) ^ 2) * u))
+        atTop (𝓝 1)
+
+/-- **Zeta divisor scale-transition law.**  Renormalized depth selects whether
+the bounded-exponent source retains a reciprocal divisor, collapses to the
+identity, or erases the divisor to the endpoint constant. -/
+theorem zetaSourceScaleTransition_law :
+    ZetaSourceScaleTransitionCertificate where
+  finiteRenormalizedDepth :=
+    fun _ _ _ _ hpole hzero heps hscale =>
+      tendsto_sourceDepthQuotient_zeta_finiteRenormalizedDepth
+        hpole hzero heps hscale
+  infiniteRenormalizedDepth :=
+    fun _ _ _ heps hright =>
+      tendsto_sourceDepthQuotient_zeta_infiniteRenormalizedDepth
+        heps hright
+  fixedScale := tendsto_boundedExponentEulerSource_fixedScale
+  criticalScale := tendsto_boundedExponentEulerSource_normalScale
+  mesoscopicCollapse :=
+    tendsto_boundedExponentEulerSource_mesoscopicScale
+  microscopicCollapse :=
+    tendsto_boundedExponentEulerSource_microscopicScale
+
 /-- Exact package joining positive coefficient resolution, maximal relative
 differential rank, bulk fusion, and reciprocal exceptional boundary. -/
 structure PositiveHTBulkBoundaryDualityCertificate (K : ℕ) : Prop where
+  scaleTransition : ZetaSourceScaleTransitionCertificate
   relativeDifferentialFree :
     DifferentialIndependent zetaUpperEndDifferentialField
       (completeResolutionUpperEndMultiplier K)
@@ -493,6 +747,7 @@ fusion is zeta while its inverse-depth fusion is reciprocal zeta. -/
 theorem positiveHTBulkBoundaryDuality_law
     {K : ℕ} (hK : 12 ≤ K) :
     PositiveHTBulkBoundaryDualityCertificate K where
+  scaleTransition := zetaSourceScaleTransition_law
   relativeDifferentialFree :=
     completeResolutionUpperEndMultiplier_relativeDifferentialIndependent K
       (by omega)
