@@ -228,6 +228,66 @@ coupling, or additive rectangle tests kills only that ingredient.
 - Formal verification contributes truth control only, never novelty or
   significance.
 
+## Black-hole, holography and cosmology SOTA audit (2026-07-30)
+
+Three hostile literature audits converged on one defensible physics bridge.
+Gravity reviews identify the missing contact between ensemble-averaged
+ramp/plateau data and the erratic late-time behavior of one exact discrete
+spectrum. De Sitter literature likewise distinguishes finite-time
+semiclassical correlators from recurrence-scale microscopic behavior.
+Neither literature permits the present theorem to claim a solution of
+factorization, information loss, singularities, de Sitter quantum gravity,
+the problem of time or the Big Bang.
+
+The strongest supported model consequence is instead exact:
+
+\[
+  \tau(H_A\otimes I+I\otimes H_B)\le d_A+d_B-2,
+  \qquad
+  \tau(H_{\rm coupled})=d_A d_B-1,
+\]
+
+for an arbitrarily weak joint perturbation, while every fixed-time
+Heisenberg probe remains within the dimension-free perturbation bound.
+Thus at least
+\[
+  (d_A-1)(d_B-1)
+\]
+independent recurrence directions can be created without any prescribed
+finite observation window resolving the change.
+
+For a finite Type-I microcanonical model with \(D\) black-hole or horizon
+microstates and a two-state probe, the gain is at least \(D-1\). If a
+separate model establishes \(D\sim e^{S_{\rm micro}}\), this is exponential
+in microstate entropy. This is a finite-model corollary, not a statement
+about an astrophysical black hole or the actual de Sitter horizon.
+
+Closest conceptual and novelty parents that must be confronted explicitly:
+
+- Mertens--Turiaci, *Solvable models of quantum black holes*;
+- Saad--Shenker--Stanford, *JT gravity as a matrix integral*;
+- Cotler--Jensen, *Wormholes and black hole microstates in AdS/CFT*;
+- Riddell--Bertini, *Rationally independent free fermions with local
+  hopping*;
+- Banks, *Some Thoughts on the Quantum Theory of de Sitter Space*;
+- Chandrasekaran--Longo--Penington--Witten, *An Algebra of Observables for
+  de Sitter Space*;
+- Mirbabayi, *An Observer's Measure of de Sitter Entropy*.
+
+The primary Nature rejection gates exposed by this audit are:
+
+1. the perturbation is a general joint interaction, not yet a
+   geometrically local or gravity-compatible coupling;
+2. no theorem maps gravitational replica or wormhole observables to the
+   resolved integer characters used here;
+3. finite entropy does not imply a finite-dimensional Type-I Hilbert space;
+4. the result has no gravity-specific observable or parameter-free
+   prediction;
+5. the qualitative claim that finite-time physics need not determine
+   recurrence-scale behavior already appears in Banks and black-hole
+   recurrence literature. Novelty must rest on the exact relation
+   classification and sharp additive-to-multiplicative law.
+
 ## Nature gate
 
 Current hostile verdict: **mathematically cohesive and potentially
@@ -263,6 +323,10 @@ Unconditional Lean theorems currently prove:
 - `threeLevelSpectra_same_through_cutoff_but_phaseEnsembles_ne`;
 - `exists_arbitrarilyWeak_fullRecurrenceCompletion`;
 - `exists_arbitrarilyWeak_bipartiteInteraction_fullRecurrenceCompletion`;
+- `projectiveTemporalRank_le`;
+- `projectiveTemporalRank_eq`;
+- `bipartiteProduct_projectiveTemporalRank_le`;
+- `exists_arbitrarilyWeak_temporalDimensionMultiplication`;
 - `universalRecurrenceSwap_iff_additivelySeparableAcross`;
 - Boolean closure of recurrence masks;
 - atom disjointness, coverage and unique site assignment;
@@ -305,6 +369,7 @@ and observer probes. The required dependency spine is:
 | no finite replica cutoff | new impossibility corollary | unbounded character height at fixed spectral dimension |
 | additive interaction reconstruction | new inverse layer | Boolean algebra of recurrence-preserving controlled swaps |
 | arbitrarily weak joint-interaction singularity | proved physical layer | erases \((d_A-1)(d_B-1)\) independent product relations and changes \(G_E\) to the full projective torus while bounded-time probes remain close |
+| temporal-dimension multiplication | proved universal finite-pair law | every uncoupled \(d_A\times d_B\) tensor-sum has rank at most \(d_A+d_B-2\), while an arbitrarily weak joint perturbation attains \(d_A d_B-1\), a gain of at least \((d_A-1)(d_B-1)\) |
 | generic local-interaction singularity | required headline upgrade | physical local connectivity must force the same completion growth without an eigenbasis-engineered joint perturbation |
 | finite contraction return threshold | dissipative extension | transient/peripheral decomposition followed by recurrence completion of the peripheral packet |
 

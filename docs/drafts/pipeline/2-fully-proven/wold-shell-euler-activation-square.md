@@ -3,6 +3,10 @@
 - **ID:** `wold-shell-euler-activation-square`
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM (paper), `[PROVED HERE] [EXACT SOURCE BRIDGE] [NOT RH]`
+- **Lean status:** The coefficient/holonomy weld, zero face, shifted cocycle, first von-Mangoldt
+  jet, and infinite-activation limit are formalized in
+  `RHTower/WoldEulerActivationHolonomy.lean`.  The finite-depth Euler product and local blow-up
+  remain paper-proved.
 - **Parents:**
   - `new_scientific_knowledge/wold-sieve-normal-cone-von-mangoldt-current.md`;
   - `mobius-fixed-current-von-mangoldt-critical-transport-weld.md`;
@@ -244,11 +248,30 @@ Hence
  \frac{D_{m+1}(s)}{D_m(s)}\longrightarrow2^{-s},
  \tag{17}
 \]
-and the residual adjacent transfer tends to \(3^{-s}\).  After the same half-density
-normalization used by the shell paper, the tangent characters are
+and the residual adjacent transfer tends to \(3^{-s}\).  Put
 \[
- 2^{1/2-s},\qquad3^{1/2-s}.
- \tag{18}
+ \delta_m=D_m(1),
+ \qquad
+ \delta_m^{(3)}=D_m(1)-(\log2)2^{-m}.
+\]
+Equations `(15)`--`(16)` give
+\[
+ \frac{\delta_m}{\delta_{m+1}}\longrightarrow2,
+ \qquad
+ \frac{\delta_m^{(3)}}{\delta_{m+1}^{(3)}}\longrightarrow3.
+\]
+Therefore the same half-density normalization used by the shell paper gives the rigorous tangent
+limits
+\[
+ \sqrt{\frac{\delta_m}{\delta_{m+1}}}
+ \frac{D_{m+1}(s)}{D_m(s)}
+ \longrightarrow2^{1/2-s},
+ \qquad
+ \sqrt{\frac{\delta_m^{(3)}}{\delta_{m+1}^{(3)}}}
+ \frac{D_{m+1}(s)-(\log2)2^{-(m+1)s}}
+      {D_m(s)-(\log2)2^{-ms}}
+ \longrightarrow3^{1/2-s}.
+\tag{18}
 \]
 
 `[HOSTILE CONSEQUENCE]` Exact minimal-rank-two transfer tomography is already present in the
@@ -335,6 +358,14 @@ Gamma/co-Poisson completion:
   must supply the positive dagger transport on that exceptional fibre.
 ```
 
+The concurrent `prime-valuation-normal-corner-duality.md` theorem adds a necessary matrix-level
+qualification.  A support-\(N\) normal packet requires exactly \(N\) valuation rows for faithful
+reconstruction, and Gamma Schur elimination translates this entire row tower.  Thus the
+two-prime spectrum is only **scalar** faithfulness of the spectral coordinate.  The source
+comparison needed for RH must be faithful/contractive at every support rank, compatibly as
+\(N\to\infty\).  This is why rank-two tomography can recover an off-line point perfectly while
+still losing the source law which would have to exclude it.
+
 Therefore the paper does not move the RH frontier by adding another detector.  Its source
 normalization becomes useful because it fixes the positive metric on one boundary face of the
 activation square.  What remains is a comparison theorem between independently fixed faces.
@@ -351,9 +382,10 @@ activation square.  What remains is a comparison theorem between independently f
 > 2. agrees with the source-normalized positive shell boundary `(13)` as \(h\to\infty\);
 > 3. retains every reduced exceptional conormal fibre `(23)`;
 > 4. identifies reflected backward activation with the positive adjoint of forward activation;
->    and
 > 5. is contractive in both oriented activation directions for the independently fixed source
->    and Hardy polarizations.
+>    and Hardy polarizations; and
+> 6. is completely compatible with the full support-rank/valuation-depth matrix tower, not only
+>    with the scalar two-prime spectral quotient.
 
 On a retained one-dimensional Xi conormal at \(\rho\), prime activation has character
 \[
@@ -375,6 +407,17 @@ Construct the completed two-variable source family off the divisor and prove tha
 Gamma/co-Poisson continuation acts adjointably and two-sided contractively on the exceptional
 normal module `(23)`.  The topology and polarization must be fixed from the Wold weights,
 Gamma determinant, and Sonin/Hardy source maps before any zero is chosen.
+
+The successor theorem
+`new_scientific_knowledge/euler-activation-squarefree-valuation-disintegration.md` now fixes the
+source map more sharply.  On the diagonal \(h=s\), activation is the squarefree partition;
+primewise it has a canonical radical conditional expectation from full valuation depth to
+squarefree occupancy.  Möbius depth atoms are its unwhitened joint probabilities, while the Gamma
+valuation frame is their Fisher whitening.  Therefore the remaining transport is not an
+arbitrary positive dagger on a Gamma frame.  It is the Gamma/co-Poisson continuation of this
+specific radical channel as a completely positive **Rees correspondence**: ordinary bounded CP
+continuation is impossible because the overlap has divisor order \(d\) while its Fisher numerator
+has order \(d-1\).
 
 This is more concrete than “find a third completion”: the underlying point-retaining completion
 is the activation/divisor blow-up, and the sole missing theorem is its source-derived polarized
@@ -411,9 +454,10 @@ already-tangent invariant.  This is a preliminary noncollision report, not a pri
 
 - [x] 0 → 1: source-pure object, exact formulas, falsifiers, and RH consumer isolated.
 - [x] 1 → 2: activation square, normal strata, tangent spectrum, and local blow-up proved on paper.
-- [ ] 2 → 3: formalize the finite Euler activation square and connect its first normal derivative
-  to `hasDerivAt_woldIncidenceNormalFactor`; the infinite analytic faces remain the load-bearing
-  Lean target.
+- [ ] 2 → 3: the coefficient/holonomy weld is formalized by
+  `woldEulerActivationHolonomy_law` in
+  `formal/GaloisForLFunctions/RHTower/WoldEulerActivationHolonomy.lean`; formalize the finite
+  Euler activation product and the local exceptional blow-up before promoting the complete card.
 - [ ] 3 → 4: no publication claim before broader literature audit and a nontrivial part of the
   exceptional Gamma/co-Poisson transport is constructed.
 
@@ -425,3 +469,11 @@ already-tangent invariant.  This is a preliminary noncollision report, not a pri
   the zeta divisor as a nonperturbative activation boundary, and proved its literal local
   blow-up normal form.  Replaced “find a third completion” by the typed
   `XI_GAMMA_COPOISSON_ACTIVATION_EXCEPTIONAL_TRANSPORT` open core.
+- 2026-07-30 — Formalized the first/infinite-depth source weld:
+  `woldActivationHolonomy_zero`, `hasDerivAt_woldActivationHolonomy_zero`,
+  `woldActivationHolonomy_cocycle`, `tendsto_woldActivationHolonomy_nat_atTop`, and the certificate
+  `woldEulerActivationHolonomy_law`.  Direct Lean check, module build, and formal lint pass.
+- 2026-07-30 — Diagonal activation was identified with a Bernoulli--geometric squarefree
+  disintegration.  This replaces the generic exceptional-dagger conjecture by the source-fixed
+  radical Rees correspondence and proves that ordinary bounded CP continuation has the wrong
+  divisor grade.
