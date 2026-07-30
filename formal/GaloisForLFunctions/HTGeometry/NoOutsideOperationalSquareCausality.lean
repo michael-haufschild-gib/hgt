@@ -66,14 +66,18 @@ theorem twoRecordWitnessWeight_add
     (A B : Matrix (Fin 2) (Fin 2) ℂ) (ψ : Fin 2 → ℂ) :
     twoRecordWitnessWeight (A + B) ψ =
       twoRecordWitnessWeight A ψ + twoRecordWitnessWeight B ψ := by
-  simp [twoRecordWitnessWeight, Matrix.add_mulVec, dotProduct_add]
+  unfold twoRecordWitnessWeight
+  rw [Matrix.add_mulVec, dotProduct_add]
+  rfl
 
 /-- Witness weights subtract in the public record. -/
 theorem twoRecordWitnessWeight_sub
     (A B : Matrix (Fin 2) (Fin 2) ℂ) (ψ : Fin 2 → ℂ) :
     twoRecordWitnessWeight (A - B) ψ =
       twoRecordWitnessWeight A ψ - twoRecordWitnessWeight B ψ := by
-  simp [twoRecordWitnessWeight, Matrix.sub_mulVec, dotProduct_sub]
+  unfold twoRecordWitnessWeight
+  rw [Matrix.sub_mulVec, dotProduct_sub]
+  rfl
 
 /-- Every positive record gives nonnegative weight to every pure witness. -/
 theorem twoRecordWitnessWeight_nonneg
@@ -134,6 +138,13 @@ theorem twoRecordPrecedes_iff_exists_colorEvent_increment
 /-- Closed Lorentz-future condition in real Pauli coordinates. -/
 def IsLorentzFuture (t x y z : ℝ) : Prop :=
   0 ≤ t ∧ 0 ≤ t ^ 2 - x ^ 2 - y ^ 2 - z ^ 2
+
+/-- Matrix trace is twice the Lorentz time coordinate. -/
+theorem lorentzHermitianMatrix_trace
+    (t x y z : ℝ) :
+    Matrix.trace (lorentzHermitianMatrix t x y z) = (2 * t : ℝ) := by
+  simp [lorentzHermitianMatrix, Matrix.trace_fin_two]
+  ring
 
 /--
 The positive cone of Hermitian `2 × 2` matrices is exactly the closed Lorentz future cone.
@@ -301,6 +312,38 @@ theorem twoRecordWitnessWeight_add_spinFlip
     Matrix.mulVec, dotProduct, Fin.sum_univ_succ, Matrix.trace_fin_two,
     Complex.normSq_apply, Complex.mul_re, Complex.mul_im]
   ring
+
+/--
+The Lorentz time coordinate is half the total unnormalised quantum-witness weight in every unit
+spinor basis.
+-/
+theorem lorentzTime_eq_half_totalWitnessWeight
+    (t x y z : ℝ) (ψ : Fin 2 → ℂ)
+    (hψ : twoSpinorNormSq ψ = 1) :
+    t =
+      (twoRecordWitnessWeight (lorentzHermitianMatrix t x y z) ψ +
+        twoRecordWitnessWeight
+          (lorentzHermitianMatrix t x y z) (causalSpinFlip ψ)) / 2 := by
+  rw [twoRecordWitnessWeight_add_spinFlip, hψ,
+    lorentzHermitianMatrix_trace]
+  norm_num
+
+/--
+For a record increment with Lorentz coordinates, half the total witness-weight gain is exactly
+the causal time increment, independently of the complete unit-spinor alternative used to read it.
+-/
+theorem recordSuccessor_lorentzTime_eq_half_totalWitnessGain
+    (A B : Matrix (Fin 2) (Fin 2) ℂ)
+    (t x y z : ℝ)
+    (hcoord : B - A = lorentzHermitianMatrix t x y z)
+    (ψ : Fin 2 → ℂ) (hψ : twoSpinorNormSq ψ = 1) :
+    t =
+      ((twoRecordWitnessWeight B ψ - twoRecordWitnessWeight A ψ) +
+        (twoRecordWitnessWeight B (causalSpinFlip ψ) -
+          twoRecordWitnessWeight A (causalSpinFlip ψ))) / 2 := by
+  rw [← twoRecordWitnessWeight_sub, ← twoRecordWitnessWeight_sub,
+    hcoord]
+  exact lorentzTime_eq_half_totalWitnessWeight t x y z ψ hψ
 
 /--
 Exact binary Born normalization.  A positive trace-one record evaluated on a unit spinor and its

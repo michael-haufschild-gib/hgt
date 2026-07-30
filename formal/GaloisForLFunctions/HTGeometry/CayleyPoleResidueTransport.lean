@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.CayleyFockOrderSpaceConservation
+import GaloisForLFunctions.HTGeometry.DirectionalVandermondePhaseJet
 import GaloisForLFunctions.HTGeometry.ExponentialSumDA
 import GaloisForLFunctions.HTGeometry.LogarithmicResidueQuantization
 
@@ -46,6 +47,57 @@ def cayleyPoleEvolvedResponse
 /-- Coherent mode obtained by transporting residue `m` at `rho`. -/
 def cayleyPoleResidueMode (m c rho x : ℂ) : ℂ :=
   m * Complex.exp ((rho - c)⁻¹ * x)
+
+/-- Finite divisor transport as a constant-coefficient exponential
+spectrum in evolution time. -/
+def finiteCayleyResidueCarrier {n : ℕ}
+    (m rho : Fin n → ℂ) (c : ℂ) : ℂ → ℂ :=
+  phasePolynomial (fun j => (rho j - c)⁻¹) m
+
+/-- Every finite transported divisor carrier is differentially
+algebraic in evolution time, even when the ambient meromorphic
+function is hypertranscendental. -/
+theorem finiteCayleyResidueCarrier_differentiallyAlgebraic
+    {n : ℕ} (m rho : Fin n → ℂ) (c : ℂ) :
+    DifferentiallyAlgebraic
+      (finiteCayleyResidueCarrier m rho c) := by
+  unfold finiteCayleyResidueCarrier phasePolynomial
+  exact differentiallyAlgebraic_finset_expSum_general
+    Finset.univ m (fun j => (rho j - c)⁻¹)
+
+/-- The finite transported divisor satisfies the explicit
+constant-coefficient ODE whose characteristic roots are the inverse
+source displacements. -/
+theorem finiteCayleyResidueCarrier_ode
+    {n : ℕ} (m rho : Fin n → ℂ) (c x : ℂ) :
+    let lam : Fin n → ℂ := fun j => (rho j - c)⁻¹
+    let p := expSumAnnihilator Finset.univ lam
+    ∑ j ∈ Finset.range (p.natDegree + 1),
+        p.coeff j *
+          iteratedDeriv j
+            (finiteCayleyResidueCarrier m rho c) x = 0 := by
+  dsimp only
+  unfold finiteCayleyResidueCarrier phasePolynomial
+  exact expSumAnnihilator_ode Finset.univ m
+    (fun j => (rho j - c)⁻¹) x
+
+/-- **Finite source spectra are jet-faithful.** Distinct divisor
+points give distinct inverse-source frequencies. Hence a nonzero
+finite residue vector cannot disappear: at every evolution time one
+of the first `n` jets is nonzero. -/
+theorem finiteCayleyResidueCarrier_jetFaithful
+    {n : ℕ} {m rho : Fin n → ℂ} {c x : ℂ}
+    (hrho : Function.Injective rho) (hm : m ≠ 0) :
+    ∃ r : Fin n,
+      iteratedDeriv (r : ℕ)
+        (finiteCayleyResidueCarrier m rho c) x ≠ 0 := by
+  apply phaseJet_exists_ne_zero
+  · intro i j hij
+    apply hrho
+    have hinv :=
+      congrArg (fun z : ℂ => z⁻¹) hij
+    simpa only [inv_inv, sub_left_inj] using hinv
+  · exact hm
 
 /-- Poisson completion of the discrete geometric orbit `a ^ n`.
 
@@ -137,7 +189,6 @@ theorem sourceCayleyObservationTime_eq_coherentGeneratorTime
     (c rho : ℂ) (tau : ℝ) (hrho : rho ≠ c) :
     sourceCayleyObservationTime c rho tau =
       coherentGeneratorObservationTime ((rho - c)⁻¹) tau := by
-  symm
   exact coherentGenerator_observationTime_unique
     ((rho - c)⁻¹) tau
       (sourceCayleyObservationTime c rho tau)

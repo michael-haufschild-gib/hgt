@@ -12,6 +12,7 @@
   - `../2-fully-proven/prime-winning-cech-divisor-resolution.md`;
   - `../2-fully-proven/bounded-exponent-poisson-strictness-emergence.md`;
   - `riemann-complex-modular-character-law.md`;
+  - `riemann-source-cayley-order-space-law.md`;
   - `source-reporter-ambidexterity-categorical-half-density-law.md`;
   - `adjoint-duality-cauchy-nerve-purity-law.md`.
 - **Statement:** A source obstruction does not directly become a law. Its complete source-indexed
@@ -1335,6 +1336,293 @@ formed on the full prime-profile/depth failure nerve and compared with the indep
 Gamma/co-Poisson frame. Claiming that `(7n59)` alone constructs Xi, or calling an arbitrary frame
 derivative \(\Xi'/\Xi\), would be circular.
 
+### Integer depth is already complete at the Poisson boundary
+`[PAPER-PROVED] [PARENT DENSITY THEOREM + SOURCE INTERPRETATION]`
+
+The full continuous profile family is not needed to generate the boundary Hilbert space. In
+\[
+ H=L^2\!\left((0,\infty),e^{-x}\frac{dx}{x}\right),
+\]
+put
+\[
+ v_n(x)=e^{-nx}-1
+ \qquad(n\geq1).
+\tag{7n64}
+\]
+
+> **Theorem (integer-depth one-particle completeness).**
+> \[
+>  \boxed{\qquad
+>  \overline{\operatorname{span}}\{v_n:n\geq1\}=H.
+>  \qquad}
+> \tag{7n65}
+> \]
+
+Let \(g\in H\) be orthogonal to every \(v_n\). Since \(v_1\in H\),
+\[
+ d\alpha(x)
+ =
+ g(x)(e^{-x}-1)e^{-x}\frac{dx}{x}
+\tag{7n66}
+\]
+defines a finite complex measure by Cauchy--Schwarz. The factorization
+\[
+ v_n(x)
+ =
+ (e^{-x}-1)\sum_{k=0}^{n-1}e^{-kx}
+\tag{7n67}
+\]
+and orthogonality give
+\[
+ \sum_{k=0}^{n-1}\int e^{-kx}\,d\alpha(x)=0
+\qquad(n\geq1).
+\tag{7n68}
+\]
+Taking consecutive differences yields
+\[
+ \int e^{-kx}\,d\alpha(x)=0
+\qquad(k\geq0).
+\tag{7n69}
+\]
+Push \(\alpha\) forward by \(y=e^{-x}\) to a finite measure on \([0,1]\). All polynomial moments
+vanish, so Weierstrass density gives the zero measure. Since \(e^{-x}-1\ne0\) for \(x>0\),
+\(g=0\) almost everywhere. This proves `(7n65)`.
+
+Let
+\[
+ V_{\rm depth}=\operatorname{span}\{v_n:n\geq1\}.
+\]
+Then the algebraic symmetric tensor algebra
+\[
+ \bigoplus_{k\geq0}^{\rm alg}
+ V_{\rm depth}^{\widehat\otimes_s k}
+\tag{7n70}
+\]
+is dense in \(\Gamma_s(H)\). Equivalently, exponential vectors
+\({\rm Exp}(v)\) with \(v\in V_{\rm depth}\) are total. Thus the complete discrete
+exponent-depth nerve already generates the full positive Fock boundary; continuous source time
+adds interpolation, not new Hilbert directions.
+
+This proves a useful no-surplus principle. If a bounded operator \(T\) on the boundary Fock space
+annihilates every finite symmetric word in the literal depth profiles \(v_n\), then \(T=0\).
+Consequently a bounded relative Gamma/Xi connection is uniquely determined by its action on all
+finite depth words.
+
+The theorem does not prove that the required connection is bounded or that its action on those
+words equals the source prediction. It reduces the construction target:
+
+```text
+old target:
+  control an unspecified operator on every boundary profile;
+
+new target:
+  prove the prelimit Gamma/co-Poisson mate identity on each literal integer-depth word,
+  with one uniform energy bound;
+
+density consequence:
+  no additional bounded boundary defect can remain.
+```
+
+This is the exact sense in which “we need infinity”: no finite depth packet is complete, but the
+entire discrete depth succession is already a total coordinate system for the boundary law.
+
+### Four units are the tangent square of source versus antipode
+`[PAPER-PROVED] [EXACT C41/C48 IDENTIFICATION]`
+
+The same boundary object fixes the four-unit normalization. For real \(u\geq0\), put
+\[
+ v_u(x)=e^{-ux}-1.
+\tag{7n71}
+\]
+Frullani's integral gives the exact one-particle Gram and orientation pairings
+\[
+ \langle v_u,v_v\rangle_H
+ =
+ \log\frac{(1+u)(1+v)}{1+u+v},
+\qquad
+ \ell(v_u)=-\log(1+u).
+\tag{7n72}
+\]
+The integer-depth kernel in `(7n65)` is therefore
+\[
+ \langle v_m,v_n\rangle_H
+ =
+ \log\frac{(m+1)(n+1)}{m+n+1}.
+\tag{7n73}
+\]
+
+Let
+\[
+ X(\eta)=\int_0^\infty x\,d\eta(x).
+\tag{7n74}
+\]
+Under \(\Pi_\nu\), `(7n36)` says \(X\sim{\rm Exp}(1)\). Consequently the unnormalized Laplace
+vectors \(k_u=e^{-uX}\) have
+\[
+ \langle k_u,k_v\rangle_{L^2(\Pi_\nu)}
+ =
+ \frac1{1+u+v}.
+\tag{7n75}
+\]
+This is exactly the Hardy father kernel in C41.
+
+The normalized Poisson stochastic exponential associated with \(v_u\) is
+\[
+ {\cal E}_{\rm P}(v_u)
+ =
+ (1+u)e^{-uX}.
+\tag{7n76}
+\]
+Its doubled tangent at the source point is
+\[
+ D
+ :=
+ 2\left.\frac d{du}{\cal E}_{\rm P}(v_u)\right|_{u=0}
+ =
+ 2(1-X).
+\tag{7n77}
+\]
+Since \(X\) has mean and variance one,
+\[
+ \langle D,1\rangle=0,
+\qquad
+ \|D\|_2^2=4,
+\tag{7n78}
+\]
+and for every \(u\geq0\),
+\[
+ \langle D,k_u\rangle
+ =
+ 2\left(
+  \frac1{1+u}-\frac1{(1+u)^2}
+ \right)
+ =
+ \frac{2u}{(1+u)^2}.
+\tag{7n79}
+\]
+These are precisely the zero base column, four-unit detail, and universal soft Fisher column
+already proved for the critical Möbius clock.
+
+The factor two is forced by orientation. The positive and signed-antipode radial laws are
+\[
+ {\cal L}^+(u)=\frac1{1+u},
+\qquad
+ {\cal L}^-(u)=1+u.
+\tag{7n80}
+\]
+Their logarithmic tangents at zero are \(-1\) and \(+1\). Their separation is two and its squared
+charge is four:
+\[
+ \left|
+ \left.\frac d{du}\right|_{u=0}
+ \bigl(\log{\cal L}^-(u)-\log{\cal L}^+(u)\bigr)
+ \right|^2
+ =
+ 4.
+\tag{7n81}
+\]
+Equivalently, evaluation of the positive-vacuum-normalized test against the generalized antipode
+is
+\[
+ \langle\Pi_{-\nu},{\cal E}_{\rm P}(v_u)\rangle
+ =
+ (1+u)^2,
+\tag{7n82}
+\]
+whose logarithmic derivative at zero is two.
+
+Thus the C41/C48 source block is not merely a universal exponential-clock coincidence. It is the
+infinitesimal comparison of the positive Gibbs law with its exact Möbius antipode. This supplies
+the source meaning of the four-unit budget and fixes its normalization before Xi is read.
+
+It still does not create the continued Xi column \(r_P\). The static tangent has the soft column
+`(7n79)`, and the parity-doubled detail is orthogonal to the father at the base. The missing
+Gamma/co-Poisson connection must turn this oriented tangent into \(r_P\) without exceeding the
+already forced norm four. That remains C49.
+
+### Source-horizon growth is the antipode--dagger defect
+`[EXACT CORPUS WELD] [RH CONSUMER CLOSED]`
+
+The new source-horizon theorem gives an operational form of the same modular invariant. At a Xi
+zero \(\rho\ne1\) of multiplicity \(m_\rho\), source evolution before residue extraction produces
+\[
+ M_\rho(x)
+ =
+ m_\rho\exp\!\left(\frac{x}{\rho-1}\right).
+\tag{7n83}
+\]
+At the canonical inverse-drift time
+\[
+ x=|\rho-1|^2\tau,
+\tag{7n84}
+\]
+its factorial derivative-order energy is the exact Poisson packet
+\[
+ \frac{x^k}{k!}
+ \left|\partial_x^kM_\rho(x)\right|^2
+ =
+ |m_\rho|^2
+ e^{(2\operatorname{Re}\rho-1)\tau}
+ \Pr\{\operatorname{Pois}(\tau)=k\}.
+\tag{7n85}
+\]
+Summing all orders gives
+\[
+ {\cal E}_\rho(\tau)
+ =
+ |m_\rho|^2e^{(2\operatorname{Re}\rho-1)\tau}.
+\tag{7n86}
+\]
+
+For a continuous prime-dilation scale \(r=e^\tau\), the antipode--dagger modular defect from
+`(16)` is
+\[
+ {\mathfrak m}_{r,\rho}
+ =
+ r^{1-2\operatorname{Re}\rho}.
+\tag{7n87}
+\]
+Therefore
+\[
+ \boxed{\qquad
+ \frac{{\cal E}_\rho(\tau)}{|m_\rho|^2}
+ =
+ {\mathfrak m}_{e^\tau,\rho}^{-1}.
+ \qquad}
+\tag{7n88}
+\]
+The following are exactly the same statement:
+
+```text
+Re rho > 1/2;
+the centered prime character is nonunitary in the expanding direction;
+antipode differs from dagger by a modulus below one;
+the canonical source-horizon packet is a positive Lyapunov mode.
+```
+
+This closes the consumer. If the actual prime/Gamma/co-Poisson source construction proves
+\[
+ {\cal E}_\rho(\tau)\leq{\cal E}_\rho(0)
+ \qquad(\tau\geq0)
+\tag{7n89}
+\]
+for every persistent Xi conormal, then `(7n86)` gives
+\(\operatorname{Re}\rho\leq1/2\). Functional-equation reflection gives the opposite inequality,
+hence RH. Equality/conservation is stronger than needed; one-sided nonexpansion suffices.
+
+The current C49 target is the prelimit operator form of `(7n89)`. Its moving
+\(C_\sigma\) must transport the actual one-corner Fisher field to the continued Xi Ward column
+without increasing the four-unit source energy. The source-horizon theorem then identifies every
+hypothetical strict-right zero as an exponentially expanding output mode, contradicting that
+contractivity.
+
+This weld also states exactly what the positive source-square/causal results do and do not add.
+Loewner-positive event succession supplies a canonical order, while trace normalization can turn
+order plus conserved total mass into equality. But the corpus has not proved that the arithmetic
+Gamma/Xi packet is a closed normalized event record. Importing “closed-system conservation” at
+this point would assume `(7n89)` in physical language. The mathematical task remains the
+source-defined C49 contraction.
+
 ### Hypertranscendence is infinite connection rank, not another reporter
 `[ALGEBRAIC DESCENT PROVED IN CORPUS] [METRIC RIGIDITY CONJECTURAL]`
 
@@ -1342,7 +1630,7 @@ The publication-ready positive divisor frame supplies the missing source-first C
 presentation. For every \(m\geq12\), its positive disjoint shell has
 \[
  S_m^\#(s)=\zeta(s)H_m(s)
-\tag{7n64}
+\tag{7n90}
 \]
 on the strict right half-plane, where \(H_m\) is holomorphic and zero-free. Therefore, in the
 analytic local ring \({\cal O}_\rho\) at every strict-right zeta zero,
@@ -1352,13 +1640,13 @@ analytic local ring \({\cal O}_\rho\) at every strict-right zeta zero,
  \frac{(S_m^\#)}{(S_m^\#)^2}
  \simeq
  \frac{(\zeta)}{(\zeta)^2}.
-\tag{7n65}
+\tag{7n91}
 \]
 The isomorphism is multiplication by the unit \(H_m\). It retains analytic multiplicity, and
 between two positive shell presentations its transition gauge is
 \[
  g_{m,n}=\frac{H_m}{H_n}\in{\cal O}_\rho^\times.
-\tag{7n66}
+\tag{7n92}
 \]
 Thus Xi/zeta conormal base change is not algebraically mysterious: it is already the common
 principal Cartier quotient of countably many literal, pairwise disjoint, nonnegative coefficient
@@ -1366,7 +1654,7 @@ sources.
 
 The same paper proves that \(\{H_m:m\geq2\}\) is jointly differentially algebraically independent
 even over the complete differential field
-\(\mathbb C(s)\langle\zeta\rangle\). Consequently the transition gauges `(7n66)` cannot be
+\(\mathbb C(s)\langle\zeta\rangle\). Consequently the transition gauges `(7n92)` cannot be
 encoded by any finite differential state or finite jet connection. Every new shell and every new
 derivative supplies a new transverse direction.
 
@@ -1375,7 +1663,7 @@ The logarithmic connections in different shell frames satisfy
  d\log S_m^\#-d\log S_n^\#
  =
  d\log g_{m,n},
-\tag{7n67}
+\tag{7n93}
 \]
 and the right side is holomorphic at \(\rho\). Hence the divisor residue is independent of the
 shell frame. After centering, it is the common residue `(7n63)`. This gives a clean division of
@@ -1408,7 +1696,7 @@ This yields the hypertranscendental version of the jump.
 > On the source-canonical adiabatic failure-nerve completion, there is at most one connection
 > which simultaneously:
 > 
-> 1. descends through every positive shell presentation `(7n64)`;
+> 1. descends through every positive shell presentation `(7n90)`;
 > 2. is continuous in the full prime-profile Fock topology, not merely every finite jet topology;
 > 3. intertwines the exact Gibbs--Möbius antipode;
 > 4. is compatible with the independent Gamma/co-Poisson reflection; and
@@ -1438,7 +1726,7 @@ There is a source-canonical nuclear rigged Hopf completion
  L^2(\Pi_\nu)
  \subset
  {\mathscr S}_{\rm ar}'
-\tag{7n68}
+\tag{7n94}
 \]
 obtained as the cofinal graph completion of the exact pairs
 \(({\mathsf G}_{1+\varepsilon},{\mathsf S}_{1+\varepsilon})\), with all of the following
@@ -1838,6 +2126,14 @@ is not known in advance from the conjecture.
     generalized coherent functionals can be retained. It does not prove that the Xi divisor
     lands conservatively, that prime dilation is contractive on the required adiabatic field, or
     that Gamma reflection identifies antipode with dagger. Those are the RH-bearing theorems.
+16. **No positive stationary Gamma shortcut.** The Gamma succession Markov map has no positive
+    stationary probability with moments near zero, by `(7n21g)`--`(7n21h)`. Therefore a proposal
+    to obtain antipode--dagger equality from a globally reversible positive Gamma equilibrium is
+    false. Positivity can occur only in a restricted reflected quotient/sector.
+17. **Boundary density is not source comparison.** Integer depth words are total in the limiting
+    Fock space, but density only proves uniqueness of a bounded comparison once its values on
+    those words are known. It neither constructs the comparison nor proves the uniform C49 energy
+    bound.
 
 ## Literature boundary
 
@@ -1891,6 +2187,11 @@ exactly the source-effective landing theorem left open above.
 - [x] construct exact finite-\(\sigma\) positive Gibbs/Möbius convolution antipode
 - [x] identify its critical positive-Poisson/generalized-negative-Poisson bosonization
 - [x] construct one concrete Poisson test/Fock/distribution triple retaining the inverse
+- [x] identify Gamma succession as an exponential-clock coboundary and exclude positive
+  stationary reversal
+- [x] construct cofinal prime-quantile one-particle isometries into the Poisson boundary
+- [x] prove literal integer-depth profiles generate the complete boundary Fock algebra
+- [x] identify source-horizon packet growth exactly with inverse antipode--dagger modular defect
 - [ ] construct finite EPG failure-nerve mate comparison
 - [ ] construct source-first exponential filtration and raw/graded gauge separation
 - [ ] assemble finite Gibbs--Möbius pairs into a source-canonical adiabatic Poisson/Gamma field
@@ -1923,3 +2224,589 @@ exactly the source-effective landing theorem left open above.
   vector \({\rm Exp}(-2\ell)\). Hostile audit records that all these features also occur for free
   generalized-prime monoids; RH content remains Gamma/co-Poisson reflection, C49 incidence, and
   conservative Xi conormal landing.
+- 2026-07-30 — Reinterpreted the positive Gamma depth flow as the Mellin coboundary of an
+  exponential law and its generalized inverse. Proved no positive stationary probability can
+  make this flow reversible. Constructed ordered prime-quantile isometries from the exact
+  squarefree Fisher one-particle spaces to the Poisson boundary and proved strong convergence on
+  compact prime-scale profiles. Proved the discrete negative-integer depth profiles
+  \(e^{-nx}-1\) are total in the one-particle space, hence their finite symmetric words are total
+  in Fock space. This supplies a genuine no-surplus theorem but leaves the source-specific
+  Gamma/Xi mate identity and its uniform energy bound open.
+- 2026-07-30 — Integrated the newly proved source-horizon conservation law. At continuous scale
+  \(r=e^\tau\), the complete co-moving Xi residue packet has normalized energy
+  \(e^{(2\operatorname{Re}\rho-1)\tau}={\mathfrak m}_{r,\rho}^{-1}\). Thus a strict-right zero,
+  positive source-horizon Lyapunov mode, and nonunitary antipode--dagger character are one exact
+  defect. The missing C49 contractivity is precisely nonexpansion of this packet; no physical
+  conservation premise was imported.
+
+## Einstein-scale reinterpretation: the critical line is zero anomalous source dimension
+
+The preceding formulations still begin with a metric, adjoint, completion, or comparison and ask
+why it should be pure. There is a more primitive reading. For a divisor point
+\(\rho=\beta+i\gamma\), define its multiplicative energy dimension on a finite source
+correspondence of degree \(n\) by
+\[
+ D_\rho(n):=\left|n^\rho\right|^2=n^{2\beta}.
+\tag{7n95}
+\]
+The ordinary-integer source has the independently fixed extensive dimension
+\[
+ D_{\rm src}(n)=n.
+\tag{7n96}
+\]
+Thus the centered radial character is not merely a nonunitary scalar. Its squared modulus is the
+dimension anomaly
+\[
+ {\cal A}_\rho(n)
+ :=
+ \frac{D_\rho(n)}{D_{\rm src}(n)}
+ =
+ n^{2\beta-1}.
+\tag{7n97}
+\]
+
+This is exactly, rather than analogically, the source-horizon invariant. At canonical source time
+\(\tau=\log r\), `(7n86)` becomes
+\[
+ \frac{E_\rho(\log r)}{|m_\rho|^2}
+ =
+ {\cal A}_\rho(r).
+\tag{7n98}
+\]
+On the prime-valuation sector, put
+\[
+ c=\frac12-\beta,\qquad
+ \mu_{p,\rho}(k)=(1-p^{-2\beta})p^{-2\beta k}.
+\]
+Relative to the critical geometric law
+\(\mu_{p,1/2}(k)=(1-p^{-1})p^{-k}\), the exact finite-coordinate
+Radon--Nikodym derivative is
+\[
+ \frac{\mu_{p,\rho}(k)}{\mu_{p,1/2}(k)}
+ =
+ \frac{1-p^{-2\beta}}{1-p^{-1}}\,
+ p^{(1-2\beta)k}
+ =
+ \frac{1-p^{-2\beta}}{1-p^{-1}}\,
+ {\cal A}_\rho(p^k)^{-1}.
+\tag{7n99}
+\]
+Hence the source-horizon Lyapunov growth and the Kakutani sector-change density are reciprocal
+readings of one dimension anomaly. Functional-equation reflection
+\(\tau\rho=1-\overline\rho\) gives
+\[
+ D_{\tau\rho}(n)=n^{2-2\beta}
+ =\frac{n^2}{D_\rho(n)},
+\qquad
+ {\cal A}_{\tau\rho}(n)={\cal A}_\rho(n)^{-1}.
+\tag{7n100}
+\]
+This explains the exact weakness of reflection: it fixes the product of the two dimensions,
+\[
+ D_\rho(n)D_{\tau\rho}(n)=n^2,
+\tag{7n101}
+\]
+but permits arbitrary reciprocal anomalous dimensions.
+
+The elementary rigidity behind the proposed law is absolute.
+
+> **Theorem (extensive semiring-dimension rigidity).** Let
+> \(D:\mathbb N\to\mathbb R_{\geq0}\) satisfy
+> \[
+> D(0)=0,\qquad D(1)=1,\qquad
+> D(m+n)=D(m)+D(n),\qquad
+> D(mn)=D(m)D(n).
+> \tag{7n102}
+> \]
+> Then \(D(n)=n\) for every \(n\). In particular, if \(D(n)=n^{2\beta}\), then
+> \(\beta=1/2\).
+
+Indeed additivity and \(D(1)=1\) give
+\[
+ D(n)=D(\underbrace{1+\cdots+1}_{n\ {\rm terms}})=n.
+\tag{7n103}
+\]
+The multiplicative clause is not needed for uniqueness; its role in arithmetic is to identify
+the conormal energy `(7n95)` from the prime character. Consequently one single nontrivial
+codiagonal already detects the anomaly:
+\[
+ D_\rho(2)=D_\rho(1)+D_\rho(1)
+\quad\Longleftrightarrow\quad
+ 2^{2\beta}=2
+\quad\Longleftrightarrow\quad
+ \beta=\frac12.
+\tag{7n104}
+\]
+
+`[BOLD CONJECTURE] [XI_SOURCE_EXTENSIVE_DIMENSION_DESCENT]`
+
+> The source/reporter completion of the literal ordinary-integer
+> Euler--Gamma--co-Poisson object carries a positive dimension trace on finite integral
+> correspondences which is simultaneously:
+>
+> 1. additive under source-disjoint codiagonal fusion;
+> 2. multiplicative under independent integer correspondences;
+> 3. normalized by the source vacuum;
+> 4. preserved, without new attainment homology, by reduced Xi principal-Cartier base change;
+> 5. nonzero on every top Xi conormal jet; and
+> 6. equal on that jet to the squared modulus of the already-proved multiplicative conormal
+>    character \(n^\rho\).
+
+The conjecture does not postulate \(D_\rho(n)=n\) after choosing \(\rho\). It asserts that one
+pre-divisor source dimension descends conservatively to every Xi conormal. The elementary theorem
+then gives
+\[
+ n^{2\operatorname{Re}\rho}=n
+\]
+and RH.
+
+### What all prior failures mean in this interpretation
+
+```text
+Euler multiplicativity:
+  constructs D_rho(mn)=D_rho(m)D_rho(n), allowing every anomalous exponent;
+
+functional equation:
+  pairs an anomaly with its reciprocal, fixing only (7n101);
+
+positive generalized-prime countermodels:
+  realize multiplicative dimensions and reflected partners without one literal
+  ordinary-integer extensive codiagonal;
+
+finite truncations:
+  retain finite additivity, but their codiagonal dimension leaks under cofinal completion;
+
+bare adelic L2:
+  retains extensive dimension and dilation covariance, but annihilates the singular
+  conormal on which the dimension must be evaluated;
+
+large analytic/Ind completions:
+  retain every conormal, but admit every anomalous multiplicative dimension;
+
+hypertranscendental shell frames:
+  prevent the conormal descent from being certified by a finite reporter;
+
+Gamma factorial amplification:
+  shows algebraic reconstruction and positive extensive realization cannot be one
+  scalar bounded arrow;
+
+Möbius orientation:
+  remembers which reciprocal is the source inverse, but does not prove extensivity;
+
+C49:
+  is the current moving, prelimit tangent/corner candidate for transporting
+  extensive source dimension to the Xi reporter without amplification; its
+  identification with the derivative of the literal source codiagonal is open.
+```
+
+This changes the interpretation of the missing metric. The half-density is not a norm chosen to
+make prime dilation unitary. It is the amplitude square root of the unique dimension that is both
+additive over alternatives and multiplicative over independent source composition. The real part
+of a zero is its scaling dimension; the critical line is the absence of an anomalous correction
+to literal source cardinality.
+
+### Audit against the source-horizon paper
+
+The updated
+`source-horizon-riemann-divisor/main.tex` strengthens two premises and sharply limits the
+conclusion.
+
+First, its generator-duality theorem proves that for every nonzero coherent generator \(b\), the
+clock
+\[
+ x_b(\tau)=\frac{\tau}{|b|^2}
+\tag{7n105}
+\]
+is the unique clock whose derivative-order Poisson mean is \(\tau\). At this clock the normalized
+energy exponent is
+\[
+ \nu(b)=2\operatorname{Re}(b^{-1})+1.
+\tag{7n106}
+\]
+For \(b=(\rho-1)^{-1}\), this is \(2\operatorname{Re}\rho-1\). Consequently `(7n98)` is not the
+result of choosing a divisor-dependent rescaling to manufacture the critical line: the Poisson
+order law forces the clock and therefore forces the anomalous-dimension ratio.
+
+Second, the finite-carrier theorem sends distinct divisor points to the exponential spectrum
+\[
+ S(x)=\sum_{j=1}^N m_j e^{b_jx},
+\qquad
+ b_j=(\rho_j-1)^{-1},
+\tag{7n107}
+\]
+with explicit constant-coefficient annihilator and a Vandermonde-faithful first \(N\)-jet. Thus
+finite source transport does not annihilate a divisor mode. It supplies the algebraic
+noncensorship leg required by Clause 5 of source-extensive descent.
+
+It does **not** supply positive additivity. The order-space norm of the sum `(7n107)` contains
+cross terms between \(b_i\) and \(b_j\); Vandermonde injectivity is not orthogonality, a positive
+direct-sum decomposition, or preservation of categorical degree. Moreover the same paper's
+explicit escaping quartet has canonical normalized energy \(e^{2a\tau}\) for every
+\(0<a<1/2\). This is a direct counterexample to any claim that Poisson normalization, finite
+spectral recoverability, hypertranscendence, or Ward conservation alone forces zero anomalous
+dimension.
+
+The paper therefore changes the immediate theorem target to:
+
+`[OPEN CORE] [SOURCE_HORIZON_EXTENSIVE_POLARIZATION]`
+
+> Construct, before divisor localization, a polarized reporter of the finite carrier `(7n107)`
+> whose dimension trace is additive on literal source-disjoint integer correspondences, whose
+> multiplicative transfer is the Riemann conormal character, and whose cofinal completion retains
+> every top Xi jet. Prove that its additive trace survives the prime/Gamma limit without a
+> boundary or attainment term.
+
+The source-horizon paper supplies the forced clock, exact anomaly exponent, and finite
+nonannihilation. C48--C49 supply a positive one-corner energy candidate. The missing weld is to
+prove that this one-corner field is the tangent of the same extensive finite-carrier
+polarization—not merely another positive Gram with the right total four.
+
+### Canonical-clock reflection decoherence
+
+The generator theorem also has a polarized consequence not stated in the source-horizon paper.
+For \(b\in\mathbb C^\times\) define its canonical derivative-order vector in
+\(\ell^2(\mathbb N_0)\) by
+\[
+ \Psi_b(\tau)_r
+ :=
+ \frac{x_b(\tau)^{r/2}}{\sqrt{r!}}\,
+ \partial_x^r e^{bx}\big|_{x=x_b(\tau)},
+ \qquad
+ x_b(\tau)=\frac{\tau}{|b|^2}.
+\tag{7n108}
+\]
+Writing \(u_b=b/|b|\), direct substitution gives
+\[
+ \Psi_b(\tau)_r
+ =
+ e^{\tau/\overline b}
+ \frac{\tau^{r/2}}{\sqrt{r!}}u_b^r,
+\qquad
+ \|\Psi_b(\tau)\|^2
+ =
+ e^{\nu(b)\tau}.
+\tag{7n109}
+\]
+For two generators \(b,c\),
+\[
+ \left\langle\Psi_b(\tau),\Psi_c(\tau)\right\rangle
+ =
+ \exp\!\left(
+  \frac{\tau}{b}
+  +\frac{\tau}{\overline c}
+  +\tau\overline{u_b}u_c
+ \right).
+\tag{7n110}
+\]
+After individual norm normalization,
+\[
+ \boxed{\quad
+ \left|
+ \left\langle\widehat\Psi_b(\tau),
+                 \widehat\Psi_c(\tau)\right\rangle
+ \right|
+ =
+ \exp\!\left[
+  -\tau\bigl(1-\operatorname{Re}(\overline{u_b}u_c)\bigr)
+ \right].
+ \quad}
+\tag{7n111}
+\]
+Thus canonical source time separates amplitude anomaly from a universal Poisson phase geometry:
+radial generator size appears only in \(e^{\nu(b)\tau/2}\), while normalized overlap depends only
+on the angle between generator rays.
+
+Apply this to a Riemann zero \(\rho\) and its same-height reflected mate
+\[
+ \rho^\#=1-\overline\rho,\qquad
+ b_\rho=(\rho-1)^{-1},\qquad
+ b_{\rho^\#}=-\overline\rho^{-1}.
+\tag{7n112}
+\]
+The two Lyapunov rates cancel:
+\[
+ \nu(b_{\rho^\#})=-\nu(b_\rho).
+\tag{7n113}
+\]
+Put
+\[
+ \delta(\rho)
+ :=
+ 1+
+ \frac{\operatorname{Re}(\rho(\rho-1))}
+      {|\rho|\,|\rho-1|}.
+\tag{7n114}
+\]
+Then `(7n111)` gives
+\[
+ \left|
+ \left\langle\widehat\Psi_{b_\rho}(\tau),
+                 \widehat\Psi_{b_{\rho^\#}}(\tau)\right\rangle
+ \right|
+ =
+ e^{-\tau\delta(\rho)}.
+\tag{7n115}
+\]
+For \(\operatorname{Im}\rho\ne0\),
+\[
+ \delta(\rho)=0
+ \quad\Longleftrightarrow\quad
+ \operatorname{Re}\rho=\frac12.
+\tag{7n116}
+\]
+Indeed equality in
+\(-\operatorname{Re}(\rho(\rho-1))\le|\rho|\,|\rho-1|\) requires
+\(\rho(\rho-1)\) to be negative real. Its imaginary part is
+\((2\operatorname{Re}\rho-1)\operatorname{Im}\rho\).
+
+Because the diagonal norm product is one by `(7n113)`, the reflected two-mode Gram determinant is
+exactly
+\[
+ \boxed{\quad
+ \det
+ \operatorname{Gram}
+ \left(
+  \Psi_{b_\rho}(\tau),
+  \Psi_{b_{\rho^\#}}(\tau)
+ \right)
+ =
+ 1-e^{-2\tau\delta(\rho)}.
+ \quad}
+\tag{7n117}
+\]
+Hence:
+
+```text
+critical zero:
+  source reflection preserves one canonical order-space ray;
+
+off-line zero:
+  source reflection creates a second ray and the two rays become
+  exponentially orthogonal at canonical time;
+
+delta(rho):
+  exact reflected-channel decoherence / rank-creation rate.
+```
+
+This theorem is unconditional algebra once a divisor point is given. It adds a positive
+two-channel detector, not an exclusion theorem. The explicit off-line quartet family in the
+source-horizon paper realizes \(\delta(\rho)>0\), so positivity of `(7n117)` cannot prove RH.
+Its value is structural: the missing source comparison must now prevent a principal Xi conormal
+from acquiring the second reflected order channel. In the learning language, an off-line zero
+requires nonzero auxiliary-adjoint homology; in the base-change language, it requires a
+rank-creating attainment class.
+
+`[BOLD CONJECTURE] [XI_INTERNAL_REFLECTION_RANK_NONCREATION]`
+
+> In the source-effective extensive polarization of the literal integer
+> Euler--Gamma--co-Poisson object, analytic reflection is an internal change of reporter on every
+> nonzero reduced Xi principal conormal, not an independently adjoined anti-source channel.
+> Therefore canonical-clock reflection preserves its one-dimensional order-space ray and the
+> Gram determinant `(7n117)` vanishes.
+
+Together with `(7n116)`, this implies RH. The load-bearing theorem is source-first internal
+reflection and conservative conormal landing. Calling functional-equation pairing itself
+“internal” is insufficient: a unitary involution can exchange two orthogonal rays. The conjecture
+requires reflection to descend on the same principal conormal line, which is precisely what
+off-line two-point orbits and generalized-prime packet surgery fail.
+
+The jump also specifies a smaller falsifier than a complete RH construction. At finite
+prime/Gamma aperture, build the actual two-copy source codiagonal and its reporter mate before
+divisor specialization. If its positive dimension trace fails additivity, the conjecture is
+false and the defect must be retained as a new source anomaly. If finite additivity holds but its
+cofinal mate is not strict or conservative, that failure is exactly the C49/attainment class,
+not a technical topology problem. This last identification is itself a theorem target: the
+existing \(L_{\sigma,u}\) is a one-corner Fisher-connection field, not yet a constructed
+degree-two codiagonal derivative.
+
+### Hostile audit of the dimension law
+
+1. Categorical degree \(n\) at the unspecialized finite source is already known. The new theorem
+   is conservative equality between that degree and the conormal energy dimension after the
+   singular cofinal Xi base change.
+2. Defining a \(\rho\)-dependent metric so that \(D_\rho(n)=n\) is circular. One source trace and
+   one codiagonal must be constructed before any divisor localization.
+3. Reflection supplies `(7n101)`, not additivity of either factor. Calling reciprocal pairing
+   “dimension conservation” would be false.
+4. The dimension law is stronger than positivity, reversibility, detailed balance, or
+   ambidexterity on the bulk. Each admits complementary/off-line sectors unless the same
+   extensive trace survives on the Xi conormal.
+5. Additivity at every finite aperture is insufficient. The corpus already proves that exact
+   finite identities can acquire a prime-infinity boundary class. Strict cofinal descent is
+   load-bearing.
+6. Equation `(7n104)` does not make RH a trivial two-point calculation. It identifies the one
+   two-point identity whose source-first, nonannihilating transport through the infinite
+   arithmetic completion is the whole hard theorem.
+7. Targeted corpus and literature searches found categorical half-density, degree traces,
+   additive--multiplicative number theory, and scaling/anomalous-dimension analogies separately,
+   but not the exact dictionary `(7n95)`--`(7n101)` or the source-extensive Xi descent law.
+   This is provisional noncollision evidence, not a priority certificate.
+
+- 2026-07-30 — Reinterpreted the centered real part as an anomalous source dimension. Proved the
+  exact dictionary: source-horizon energy is the conormal/source dimension ratio, the
+  prime-valuation Radon--Nikodym cocycle is its reciprocal, and functional-equation reflection
+  fixes only the product of reciprocal dimensions. Froze source-extensive dimension descent:
+  the next bridge is to identify the existing C49 one-corner field with the tangent of a literal
+  integer codiagonal and transport that codiagonal conservatively, not to discover another
+  positivity inequality.
+- 2026-07-30 — Audited the updated source-horizon paper. Its universal generator theorem proves
+  the anomaly clock is uniquely Poisson-normalized, and its finite-carrier theorem gives
+  Vandermonde-faithful nonannihilation. Its escaping quartets prove those facts do not imply
+  positive additivity. Isolated source-horizon extensive polarization as the missing weld between
+  the finite carrier and the C49 one-corner energy.
+- 2026-07-30 — Polarized the canonical source clock. Proved the exact normalized overlap
+  `(7n111)` and reflected Gram determinant `(7n117)`: a critical reflected pair is one order-space
+  ray, while an off-line pair becomes exponentially orthogonal at the explicit rate
+  \(\delta(\rho)\). Reinterpreted the remaining source theorem as internal-reflection rank
+  noncreation, with the explicit warning that ordinary involutive or unitary reflection can still
+  exchange two rays.
+
+### Contractive inward Sonin incidence
+`[PAPER-PROVED] [C49.1 DISCHARGED ON THE COFINAL SONIN CARRIER]`
+
+The recent unconditional module
+`SoninCofinalMobiusGammaXiIncidence.lean` proves that the self-adjoint Sonin
+corner built from
+\[
+ D_r=U_r+U_{r^{-1}}
+\]
+can follow every moving Möbius Fisher two-jet through the singular Gamma
+normal scale and reconstruct the continued source trace on the safe Euler
+ray.  This is a genuine Rees-incidence theorem, but \(D_r\) has norm at most
+two.  It therefore does not prove the contractive clause `(C49.1)`.
+
+The self-adjoint doubling is unnecessary for the oriented lower incidence.
+Let \(Q_a\) be the central Sonin projection, let \(U_r\) be normalized unitary
+dilation for \(r>1\), and define the inward corner
+\[
+ T_{a,r}:=(1-Q_a)U_rQ_a .
+\tag{7n118}
+\]
+Because both \(Q_a\) and \(1-Q_a\) are orthogonal projections,
+\[
+ \boxed{\qquad \|T_{a,r}\|\leq1. \qquad}
+\tag{7n119}
+\]
+
+Let \(v_n\) be an interior even shell and
+\[
+ g_n=U_{r^{-1}}v_n .
+\tag{7n120}
+\]
+The source inequalities \(d<a<rc\) imply
+\[
+ Q_av_n=0,
+\qquad
+ \|Q_ag_n-g_n\|\longrightarrow0.
+\tag{7n121}
+\]
+Since \(U_rg_n=v_n\), there is an exact error identity
+\[
+\begin{aligned}
+ T_{a,r}(Q_ag_n)-v_n
+ &=(1-Q_a)U_r(Q_ag_n-g_n),\\
+ \|T_{a,r}(Q_ag_n)-v_n\|
+ &\leq \|Q_ag_n-g_n\|.
+\end{aligned}
+\tag{7n122}
+\]
+Thus the one-sided inward corner has the same cofinal carrier incidence as
+the doubled self-adjoint corner, but is contractive before taking a limit.
+
+Shift the shell index by \(N\), and let
+\[
+ A_N:\ell^2(\mathbb N_0)\longrightarrow{\cal H}_{\rm Sonin},
+\qquad
+ B_N:\ell^2(\mathbb N_0)\longrightarrow{\cal H}_{\rm Sonin}
+\tag{7n123}
+\]
+be the exterior and interior isometric embeddings.  Equation `(7n122)` on
+every coordinate and the already proved moving-isometry extension give
+\[
+ \|T_{a,r}A_Nx-B_Nx\|\longrightarrow0
+\qquad(x\in\ell^2).
+\tag{7n124}
+\]
+For arbitrary moving pairs \(x_n,y_n\) and every positive
+\(\varepsilon_n\to0\), singular diagonal selection therefore gives one
+strictly increasing depth \(N(n)\) such that
+\[
+\begin{aligned}
+ \frac{\|T_{a,r}A_{N(n)}x_n-B_{N(n)}x_n\|}{\varepsilon_n}&\to0,\\
+ \frac{\|T_{a,r}A_{N(n)}y_n-B_{N(n)}y_n\|}{\varepsilon_n}&\to0,\\
+ \frac{\left|
+ \langle T_{a,r}A_{N(n)}x_n,T_{a,r}A_{N(n)}y_n\rangle
+ -\langle x_n,y_n\rangle\right|}{\varepsilon_n}&\to0.
+\end{aligned}
+\tag{7n125}
+\]
+Applying `(7n125)` to the actual Möbius Fisher tangent and damped source
+repeats the proved singular Gamma calculation with a contractive rather than
+norm-two Sonin corner.  Hence the scalar Rees chart and finite safe-Euler
+packet reconstruction survive unchanged, while the carrier map
+\[
+ C_n:=T_{a,r}A_{N(n)}
+\tag{7n126}
+\]
+satisfies \(\|C_n\|\leq1\) exactly.
+
+There is also an automatic Hilbert--Schmidt consequence.  Conjugation
+\[
+ \Phi_n(X)=C_nXC_n^\ast
+\tag{7n127}
+\]
+obeys
+\[
+ \|\Phi_n(X)\|_{\rm HS}\leq\|X\|_{\rm HS}.
+\tag{7n128}
+\]
+Thus `(C49.3)` is available for every transported operator field once the
+physical Gamma/co-Poisson reporter is identified with the Laplace reporter
+of \(\Phi_n(L_{\sigma,u})\).
+
+This narrows C49 to one typed equality:
+
+`[OPEN CORE] [CONTRACTIVE_SONIN_ONE_CORNER_REPORTER_MATE]`
+
+> Construct the Gamma/co-Poisson reporter mate on the contractive inward
+> Sonin conjugation `(7n127)` and prove, locally uniformly at the complete
+> right-half-plane Hardy node family, that the Laplace column of the
+> transported actual lower Fisher corner tends to \(r_P\).  The mate must use
+> one presentation-independent cofinal schedule on a source graph core and
+> must retain the affine prime/Gamma terms before scalar division.
+
+If this equality holds, `(7n119)`, `(7n128)`, and the four-unit source
+integral prove `(C49.1)--(C49.3)`, hence the continued Ward corner law and RH.
+
+#### Hostile audit
+
+1. The scalar theorem in `SoninCofinalMobiusGammaXiIncidence.lean` reconstructs
+   safe real Euler values after singular division.  It does not represent the
+   complete continued Ward column by a norm-four vector.
+2. The schedule in `(7n125)` may depend on the moving finite packet.  Pointwise
+   packet existence is not a natural transformation on the complete source
+   graph.
+3. Real \(s>1\) reconstruction does not continue into the critical strip
+   without a locally uniform Hardy bound.  Analytic uniqueness alone is
+   insufficient.
+4. Replacing \(U_r+U_{r^{-1}}\) by \(U_r\) deliberately removes
+   self-adjointness.  This is valid for the oriented one-corner incidence, but
+   Gamma/co-Poisson reflection must still construct the independent reporter
+   mate; it may not be inferred from \(T_{a,r}\).
+5. Hilbert--Schmidt contractivity of `(7n127)` is parent operator theory.
+   Candidate-new content is the exact ordinary-prime Gamma/Xi reporter
+   identification on this noncompact cofinal contraction, not the inequality
+   itself.
+6. Targeted arXiv searches found Burnol's Sonine/co-Poisson zero systems and
+   Connes--Consani's compressed scaling/Weil framework, but no cofinal
+   one-sided inward Sonin contraction carrying the singular Möbius--Gamma
+   Rees codiagonal.  This is provisional noncollision evidence, not a
+   priority claim.
+
+- 2026-07-30 — Audited the unconditional cofinal Sonin--Gamma/Xi module under
+  standard Lean axioms.  Replaced its norm-two self-adjoint dilation sum by
+  the oriented inward unitary corner.  Proved exact contraction `(7n119)` and
+  shell error identity `(7n122)`, retaining singular two-jet/codiagonal
+  incidence.  C49 is now reduced from constructing a noncompact contraction
+  to identifying the complete Gamma/co-Poisson reporter mate of its
+  Hilbert--Schmidt conjugation.

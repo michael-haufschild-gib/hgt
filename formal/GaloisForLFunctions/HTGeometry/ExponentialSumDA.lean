@@ -52,6 +52,51 @@ theorem iteratedDeriv_finset_expSum {ι : Type*} [DecidableEq ι]
         (by fun_prop : ContDiffAt ℂ j (fun x => ∑ i ∈ t, a i * Complex.exp (c i * x)) x),
         hterm, ih, Finset.sum_insert hmt]
 
+/-- Monic constant-coefficient annihilator of a finite exponential
+spectrum. -/
+noncomputable def expSumAnnihilator
+    {ι : Type*} [DecidableEq ι]
+    (s : Finset ι) (c : ι → ℂ) : Polynomial ℂ :=
+  ∏ i ∈ s, (Polynomial.X - Polynomial.C (c i))
+
+theorem expSumAnnihilator_eval_root
+    {ι : Type*} [DecidableEq ι]
+    (s : Finset ι) (c : ι → ℂ) {i : ι} (hi : i ∈ s) :
+    (expSumAnnihilator s c).eval (c i) = 0 := by
+  rw [expSumAnnihilator, Polynomial.eval_prod]
+  exact Finset.prod_eq_zero hi (by simp)
+
+/-- Every finite exponential spectrum satisfies the explicit
+constant-coefficient ODE whose characteristic roots are its
+frequencies. -/
+theorem expSumAnnihilator_ode
+    {ι : Type*} [DecidableEq ι]
+    (s : Finset ι) (a c : ι → ℂ) (x : ℂ) :
+    ∑ j ∈ Finset.range ((expSumAnnihilator s c).natDegree + 1),
+        (expSumAnnihilator s c).coeff j *
+          iteratedDeriv j
+            (fun x => ∑ i ∈ s,
+              a i * Complex.exp (c i * x)) x = 0 := by
+  simp_rw [iteratedDeriv_finset_expSum]
+  simp_rw [Finset.mul_sum]
+  rw [Finset.sum_comm]
+  apply Finset.sum_eq_zero
+  intro i hi
+  calc
+    ∑ j ∈ Finset.range ((expSumAnnihilator s c).natDegree + 1),
+        (expSumAnnihilator s c).coeff j *
+          (a i * c i ^ j * Complex.exp (c i * x)) =
+      (a i * Complex.exp (c i * x)) *
+        ∑ j ∈ Finset.range ((expSumAnnihilator s c).natDegree + 1),
+          (expSumAnnihilator s c).coeff j * c i ^ j := by
+            rw [Finset.mul_sum]
+            exact Finset.sum_congr rfl (fun j _ => by ring)
+    _ = (a i * Complex.exp (c i * x)) *
+        (expSumAnnihilator s c).eval (c i) := by
+          rw [Polynomial.eval_eq_sum_range]
+    _ = 0 := by
+      rw [expSumAnnihilator_eval_root s c hi, mul_zero]
+
 open MvPolynomial in
 theorem differentiallyAlgebraic_finset_expSum_general
     {ι : Type*} [DecidableEq ι] (s : Finset ι) (a c : ι → ℂ) :

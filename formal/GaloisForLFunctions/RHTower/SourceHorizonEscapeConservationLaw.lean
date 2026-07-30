@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.CompactOpenKolchinWardChargeEscape
 import GaloisForLFunctions.RHTower.XiSourceCayleyOrderSpaceConservationLaw
+import GaloisForLFunctions.RHTower.XiArithmeticSourceMomentTorelli
 
 /-!
 # Source-horizon conservation and noncompact Riemann-divisor escape
@@ -32,6 +33,47 @@ noncomputable section
 /-- Complete certificate for source-horizon conservation together with
 compact-open, differential-algebraic, and Ward-charge escape. -/
 structure SourceHorizonEscapeConservationCertificate : Prop where
+  generatorClockUniqueness :
+    ∀ (b : ℂ) (tau x : ℝ), b ≠ 0 →
+      cayleyFockDrift b * x = tau →
+        x = coherentGeneratorObservationTime b tau
+  generatorDuality :
+    ∀ (b : ℂ) (tau : ℝ), b ≠ 0 →
+      b * (coherentGeneratorObservationTime b tau : ℂ) =
+        (starRingEnd ℂ) (b⁻¹) * (tau : ℂ)
+  generatorConservation :
+    ∀ (m b : ℂ) (tau : ℝ) (r : ℕ), b ≠ 0 →
+      coherentGeneratorObservationTime b tau ^ r / r.factorial *
+          ‖coherentExponentialJet m b
+            (coherentGeneratorObservationTime b tau) r‖ ^ 2 =
+        ‖m‖ ^ 2 *
+          Real.exp (coherentGeneratorDualRate b * tau) *
+            poissonOrderWeight tau r
+  generatorNeutralLineCircle :
+    ∀ (b : ℂ), b ≠ 0 →
+      (coherentGeneratorDualRate b = 0 ↔ ‖1 + b‖ = 1)
+  sourceClockPullback :
+    ∀ (c rho : ℂ) (tau : ℝ), rho ≠ c →
+      sourceCayleyObservationTime c rho tau =
+        coherentGeneratorObservationTime ((rho - c)⁻¹) tau
+  finiteCarrierAlgebraic :
+    ∀ {n : ℕ} (m rho : Fin n → ℂ) (c : ℂ),
+      DifferentiallyAlgebraic
+        (finiteCayleyResidueCarrier m rho c)
+  finiteCarrierODE :
+    ∀ {n : ℕ} (m rho : Fin n → ℂ) (c x : ℂ),
+      let lam : Fin n → ℂ := fun j => (rho j - c)⁻¹
+      let p := expSumAnnihilator Finset.univ lam
+      ∑ j ∈ Finset.range (p.natDegree + 1),
+          p.coeff j *
+            iteratedDeriv j
+              (finiteCayleyResidueCarrier m rho c) x = 0
+  finiteCarrierFaithful :
+    ∀ {n : ℕ} {m rho : Fin n → ℂ} {c x : ℂ},
+      Function.Injective rho → m ≠ 0 →
+        ∃ r : Fin n,
+          iteratedDeriv (r : ℕ)
+            (finiteCayleyResidueCarrier m rho c) x ≠ 0
   sourceInversion :
     ∀ (c rho : ℂ) (tau : ℝ), rho ≠ c →
       (rho - c)⁻¹ *
@@ -52,6 +94,8 @@ structure SourceHorizonEscapeConservationCertificate : Prop where
             poissonOrderWeight tau r
   actualXiSourceLaw :
     XiSourceCayleyOrderSpaceConservationCertificate
+  arithmeticSourceTomography :
+    XiArithmeticSourceMomentTorelliCertificate
   compactEscape :
     ∀ {a : ℝ}, 0 < a → a < 1 / 2 →
       (∀ n, Hypertranscendental (escapingQuartetGaugedXi a n)) ∧
@@ -109,6 +153,22 @@ structure SourceHorizonEscapeConservationCertificate : Prop where
 theorem sourceHorizonEscapeConservation_law :
     SourceHorizonEscapeConservationCertificate := by
   exact {
+    generatorClockUniqueness :=
+      coherentGenerator_observationTime_unique
+    generatorDuality :=
+      coherentGenerator_duality
+    generatorConservation :=
+      coherentGenerator_poisson_conservation
+    generatorNeutralLineCircle :=
+      coherentGeneratorDualRate_eq_zero_iff_shift_norm_one
+    sourceClockPullback :=
+      sourceCayleyObservationTime_eq_coherentGeneratorTime
+    finiteCarrierAlgebraic :=
+      finiteCayleyResidueCarrier_differentiallyAlgebraic
+    finiteCarrierODE :=
+      finiteCayleyResidueCarrier_ode
+    finiteCarrierFaithful :=
+      finiteCayleyResidueCarrier_jetFaithful
     sourceInversion :=
       sourceCayley_inverse_observationTime
     sourceHorizon :=
@@ -117,6 +177,8 @@ theorem sourceHorizonEscapeConservation_law :
       sourceCayleyResidueMode_horizon_conservation
     actualXiSourceLaw :=
       xiSourceCayleyOrderSpaceConservation_law
+    arithmeticSourceTomography :=
+      xiArithmeticSourceMomentTorelli_law
     compactEscape :=
       fun ha0 ha1 =>
         compactOpenKolchinWardChargeEscape_law ha0 ha1

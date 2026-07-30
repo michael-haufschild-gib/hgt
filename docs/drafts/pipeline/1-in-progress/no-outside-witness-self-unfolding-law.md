@@ -867,6 +867,15 @@ source-available spin complements give two nonnegative Born weights summing to o
 trace-one record. Thus finite event composition, pure quantum evaluation, Loewner order, and
 Lorentz causal order are no longer separate interpretive declarations.
 
+The scalar identification is exact as well. For every complete unit-spinor alternative,
+\[
+\Delta t=
+\frac{\Delta w(\psi)+\Delta w(\psi^\perp)}2.
+\]
+Lorentz time is half the total unnormalised quantum-witness gain, independent of the readout
+basis. In this finite source model, time and total quantum weight are the same quantity in
+different operational units.
+
 The unresolved jump is now empirical and dynamical: prove that physical histories realize this
 source-complete record, derive local incidence and continuum composition, and show that variation
 of the witness law generates clock transport, curvature, Einstein dynamics, matter/force
@@ -876,3 +885,33 @@ The result blocks another false shortcut. The generated sign torsor and its
 \(\mathbb Z_2\) holonomy concern time orientation. They do not equal gravitational curvature.
 Gravity still requires a dynamically generated complete clock/frame transporter whose
 infinitesimal holonomy reconstructs Riemann curvature.
+
+## Continuum target: residual-to-transport transmutation
+
+The active core is now maintained in
+[`source-generated-continuum-transporter-law.md`](source-generated-continuum-transporter-law.md).
+It is no longer “find a physical interpretation” for the finite square. The finite lift fixes the
+local causal and quantum record; the missing theorem must generate transport and dynamics.
+
+The new proof-independent hunch is:
+
+> **What one event cannot decide becomes how the next event compares.**
+
+Every static-source no-go leaves a residual comparison object: scale, phase, frame, connection,
+boundary self-law, relative topology, or sector weight. The conjecture identifies these as one
+temporal role, not seven missing inputs. A source-complete event promotes the full positive
+residual object to its successor's local transporter. Its anchored clock holonomy is gravity; its
+vertical holonomies are the Standard Model forces; its mixed and boundary data are
+matter/Higgs/soldering.
+
+Two exact boundaries are load-bearing:
+
+1. canonical endpoint transport is a strict cocycle and therefore flat, so the transporter must
+   retain source path/history data; and
+2. same-level weak/tangent identification is topologically and representationally false, so causal
+   spin must be generated in a successor role rather than renamed weak isospin.
+
+The next theorem is finite residual-to-transporter transmutation, not another curvature identity.
+Only after that theorem is dependency-closed may the programme differentiate it to a
+Cartan--Atiyah transporter, derive Einstein--Dirac--Yang--Mills--Higgs dynamics, and formalize the
+new mathematics in Lean.

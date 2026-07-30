@@ -129,13 +129,31 @@ This supplies a physical derivation of the degree bound for finite-depth
 affine path experiments. It does not yet cover generic exponential
 Hamiltonian evolution.
 
+### Sharp finite-noise no-go
+
+No positive error floor can decide zero response from finitely many samples
+without an amplitude normalization or separation margin. For every finite
+sample family, every \(\delta>0\), and every nonzero polynomial response
+\(p\) with \(p(0)=0\), there is a nonzero scalar multiple \(q=cp\) such that
+\[
+ q(0)=0,\qquad
+ \deg q\le\deg p,\qquad
+ |q(g_i)|<\delta
+\]
+at every sampled coupling \(g_i\).
+
+Thus the exact finite certificate `(5)` is sharp. Device-feasible horizon
+certification requires one additional calibrated datum, such as coefficient
+normalization, a lower response margin or a signal-to-noise promise.
+
 ## Formal proof status
 
 Files:
 
 - `formal/GaloisForLFunctions/HTGeometry/AnalyticOperationalHorizonDichotomyLaw.lean`;
 - `formal/GaloisForLFunctions/HTGeometry/BoundedDegreeOperationalHorizonCertificate.lean`;
-- `formal/GaloisForLFunctions/HTGeometry/FiniteDepthOperationalHorizonLaw.lean`.
+- `formal/GaloisForLFunctions/HTGeometry/FiniteDepthOperationalHorizonLaw.lean`;
+- `formal/GaloisForLFunctions/HTGeometry/OperationalHorizonNoiseNoGo.lean`.
 
 Unconditional theorems:
 
@@ -147,7 +165,8 @@ Unconditional theorems:
 - `boundedDegreeOperationalHorizon_finiteCertificate`;
 - `natDegree_affinePathResponse_le`;
 - `natDegree_finiteDepthAffineResponse_le`; and
-- `finiteDepthAffineResponse_horizonCertificate`.
+- `finiteDepthAffineResponse_horizonCertificate`; and
+- `exists_nonzeroPolynomialResponse_below_finiteNoiseFloor`.
 
 Foreground verification passed with
 `lake env lean
@@ -164,6 +183,7 @@ The scratch axiom audit reports only `propext`, `Classical.choice` and
 - [x] unconditional Lean proof
 - [x] finite upper bound and exact sample certificate for polynomial responses
 - [x] finite-depth affine source/path/reporter specialization
+- [x] sharp no-margin finite-noise impossibility theorem
 - [ ] generic unitary/channel protocol specialization
 - [ ] finite-sample noise and estimation theorem
 - [ ] channel-level observer comparison map

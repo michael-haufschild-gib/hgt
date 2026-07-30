@@ -7,6 +7,7 @@
 \usepackage[a4paper,margin=30mm]{geometry}
 \usepackage{enumitem}
 \usepackage{booktabs}
+\usepackage{xcolor}
 \usepackage{hyperref}
 \usepackage[nameinlink,noabbrev]{cleveref}
 
@@ -15,7 +16,7 @@
   linkcolor=blue!55!black,
   citecolor=blue!55!black,
   urlcolor=blue!55!black,
-  pdftitle={The source horizon of a meromorphic divisor},
+  pdftitle={Poisson-normalized generator duality},
   pdfauthor={Michael Haufschild}
 }
 
@@ -41,8 +42,8 @@
 \newcommand{\cW}{\mathcal W}
 \newcommand{\dd}{\,\mathrm d}
 
-\title{\textbf{The source horizon of a meromorphic divisor}\\
-\large An exact information law for escaping Riemann zeros}
+\title{\textbf{Poisson-normalized generator duality}\\
+\large A universal source horizon for escaping Riemann divisors}
 \author{Michael Haufschild}
 \date{}
 
@@ -51,51 +52,49 @@
 \maketitle
 
 \begin{abstract}
-A divisor can escape every fixed compact observer without losing its information.  We prove the
-exact law governing where that information goes.
+A divisor can escape every fixed compact observer without losing its information.  We prove a
+universal law governing where that information goes.
 
-Let \(F\) be meromorphic, let \(c\in\C\) be a marked source, and let \(\rho\ne c\) be a divisor
-point of order \(m\).  Multiplication of the logarithmic response \(F'/F\) by
-\(\exp(x/(s-c))\) before residue extraction transports \(m\) into the coherent mode
+For a nonzero coherent generator \(b\), factorially normalized evolution derivatives have Poisson
+mean \(|b|^2x\).  Requiring that mean to equal an intrinsic time \(\tau\) uniquely forces
+\(x=\tau/|b|^2\).  At that same forced clock,
 \[
-  M_{\rho,c}(x)=m\exp\!\left(\frac{x}{\rho-c}\right).
-\]
-At the canonical observation time \(x=|\rho-c|^2\tau\), reciprocal displacement becomes direct
-conjugate displacement,
-\[
-  M_{\rho,c}(|\rho-c|^2\tau)
-    =m e^{\overline{\rho-c}\tau},
-\]
-and every factorially normalized derivative channel obeys
-\[
- \frac{x^r}{r!}\bigl|\partial_x^rM_{\rho,c}(x)\bigr|^2
- =|m|^2e^{[2\Rea(\rho-c)+1]\tau}
+ bx=\frac{\tau}{\overline b},
+ \qquad
+ \frac{x^r}{r!}\left|m b^r e^{bx}\right|^2
+ =|m|^2e^{[\,2\Rea(b^{-1})+1\,]\tau}
    \Pr\{\Pois(\tau)=r\}.
 \]
-Thus each source has a neutral horizon
-\(\Rea\rho=\Rea c-\tfrac12\).  Radial distance has become observation time, imaginary
-displacement has become phase frequency, and signed distance from the horizon is the only
-surviving exponential rate.
+Thus order normalization automatically converts a generator into its conjugate reciprocal.  The
+universal neutral horizon is \(\Rea(b^{-1})=-\tfrac12\).
 
-For the completed Riemann response the arithmetic source is \(c=1\), so the neutral horizon is
-exactly the critical line.  The same mode is the Poisson completion of the inverse Li--Cayley
-orbit.  Its packet drift and growth rate reconstruct the zero up to conjugation, and every
-strict-right zero is a positive Lyapunov mode.  We then couple this law to an explicit sequence of
-functional-equation-preserving, hypertranscendental quartet perturbations.  Every holomorphic jet
-converges compact-open to \(\xi\), the complete rational differential matroid is unchanged, and
-the nonnegative Ward density vanishes on every bounded window while retaining mass \(8\pi\) per
-quartet.  Canonical source observation nevertheless restores an exact height-independent packet.
+For a meromorphic response evolved from a marked source \(c\), residue extraction gives
+\(b=(\rho-c)^{-1}\).  The forced clock is therefore
+\(x=|\rho-c|^2\tau\), the dual coordinate is \(\overline{\rho-c}\), and the horizon pulls back to
+\(\Rea\rho=\Rea c-\tfrac12\).  A finite transported divisor becomes a
+constant-coefficient exponential spectrum: it is differentially algebraic, its explicit
+annihilator has characteristic roots \((\rho-c)^{-1}\), and its first \(N\) evolution jets are
+Vandermonde-faithful for \(N\) distinct divisor points.
 
-The result does not prove the Riemann hypothesis.  It gives a closed explanation of a recurring
-obstruction in analytic, Hilbert-space, differential-algebraic, and index approaches: fixed-scale
-observables lose defects at the noncompact boundary, whereas the source-selected inverse-drift
-scale conserves their full oriented divisor data.
+For the completed Riemann response, \(c=1\) is present in the prime--Gamma source, so the pulled-back
+horizon is the critical line.  Its residue mode is the Poisson completion of the inverse
+Li--Cayley orbit; packet drift and dual rate reconstruct the zero up to conjugation.  We couple
+this law to functional-equation-preserving hypertranscendental quartet perturbations.  Every
+holomorphic jet converges compact-open to \(\xi\), the complete rational differential matroid is
+unchanged, and a nonnegative Ward density vanishes on every bounded window while retaining
+\(8\pi\) per quartet.  The uniquely normalized source carrier nevertheless remains exact and
+height-independent.
+
+The result does not prove the Riemann hypothesis.  It establishes a new scale-covariant carrier
+that converts divisor data invisible to fixed analytic, differential-algebraic, and index
+observers into a finite reconstructible spectrum, and identifies zero exclusion with control of
+its reciprocal-generator Lyapunov rates.
 \end{abstract}
 
 \medskip
 \noindent\textbf{Keywords.}
-Riemann hypothesis; meromorphic divisor; logarithmic derivative; Li coefficients; coherent state;
-Poisson law; hypertranscendence; Ward index; compact-open convergence.
+Riemann hypothesis; meromorphic divisor; generator duality; logarithmic derivative; Li
+coefficients; coherent state; Poisson law; hypertranscendence; Ward index.
 
 \medskip
 \noindent\textbf{2020 Mathematics Subject Classification.}
@@ -103,13 +102,14 @@ Primary 11M26, 30D30; Secondary 11J91, 46E20, 12H05.
 
 \section{Introduction}
 
-Many routes to the Riemann hypothesis translate zero location into positivity, self-adjointness,
-or boundedness.  Li's criterion encodes the zeros through powers of the Cayley coordinate
+Many routes to the Riemann hypothesis translate zero location into positivity, spectral reality,
+or bounds.  Li's criterion encodes the zeros through powers of the Cayley coordinate
 \(1-\rho^{-1}\) \cite{Li1997,BombieriLagarias1999}; Keiper's generating series already centers
 that coordinate at the arithmetic point \(s=1\) \cite{Keiper1992}; Voros showed how an off-line
 zero creates exponential large-order behavior \cite{Voros2014}.  Hilbert--P\'olya and trace-formula
-programs instead seek a positive spectral realization.  Recent work makes both the promise and
-the missing positivity step especially explicit \cite{ConnesConsani2021,Connes2026,Hedenmalm2026}.
+programs instead seek a positive spectral realization.  Recent work makes both the promise
+\cite{ConnesConsani2021} and the missing positivity step
+\cite{Connes2026,Hedenmalm2026} especially explicit.
 
 A separate body of evidence warns that fixed local observation is too weak.  Small
 functional-equation-preserving perturbations can insert off-line zeros
@@ -118,18 +118,32 @@ moves to infinite height while every holomorphic jet converges locally uniformly
 hypertranscendental differential stratum remains fixed, and a nonnegative charge density loses
 all mass on bounded windows.  Yet its total charge does not change.
 
-These facts are usually read as unrelated defects of particular methods.  The present paper gives
-a common mechanism.  A marked source \(c\) determines the singular evolution
+These facts are usually read as unrelated defects of particular methods.  The present paper
+identifies their common missing coordinate.  Begin with any nonzero coherent generator \(b\).
+Its derivative-order packet has mean \(|b|^2x\).  There is exactly one observation clock that
+normalizes this mean to a prescribed intrinsic time \(\tau\):
+\[
+ x_b(\tau)=\frac{\tau}{|b|^2}.
+\]
+The elementary identity
+\[
+ b\,x_b(\tau)=\frac{\tau}{\overline b}
+\]
+then becomes structural: Poisson order normalization forces conjugate reciprocal duality.  Neither
+the clock nor the dual coordinate is selected after inspecting a desired boundary.
+
+A marked meromorphic source \(c\) determines the singular evolution
 \[
   U_c(x;s):=\exp\!\left(\frac{x}{s-c}\right).
 \]
 If one evolves the meromorphic logarithmic response before extracting its residue, each divisor
-point becomes one coherent exponential mode.  The derivative orders of that mode form a Poisson
-packet.  At fixed \(x\), a high divisor has packet drift of order \(|\rho|^{-2}\); its nontrivial
-orders therefore move beyond any fixed observation regime.  At the inverse-drift time
-\(x=|\rho-c|^2\tau\), the radial factor cancels exactly.  This is not a limiting approximation.
+point becomes one coherent exponential mode with \(b=(\rho-c)^{-1}\).  The universal normalized
+clock therefore becomes \(x=|\rho-c|^2\tau\).  At fixed \(x\), a high divisor has packet drift of
+order \(|\rho|^{-2}\); its nontrivial orders collapse into an unresolved fixed-scale regime.  At
+the forced inverse-drift time, radial dependence cancels exactly.  This is not a limiting
+approximation.
 
-The cancellation has a sharper complex form:
+The specialization has the sharper complex form
 \[
   \frac{|\rho-c|^2\tau}{\rho-c}
   =\overline{\rho-c}\,\tau.
@@ -141,10 +155,12 @@ The neutral locus is therefore
 \[
   2\Rea(\rho-c)+1=0.
 \]
-We call this line the \emph{source horizon}.
+We call this line the \emph{source horizon}.  More generally, the universal horizon is the
+vertical line \(\Rea(b^{-1})=-\tfrac12\) in reciprocal-generator space; a chosen evolution pulls
+that line back to its spectral variable.
 
-The Riemann case is distinguished twice.  First, the pole of the Euler factor places the
-arithmetic source at \(c=1\).  Second,
+The Riemann case is distinguished twice.  First, the completed prime--Gamma response already
+contains the arithmetic source \(c=1\).  Second,
 \[
   1+\frac1{\rho-1}=\frac{\rho}{\rho-1}
   =\left(1-\frac1\rho\right)^{-1},
@@ -153,16 +169,25 @@ so the source mode is exactly the Poisson completion of the inverse Li orbit.  T
 is then \(\Rea\rho=\tfrac12\), and reflection \(\rho\mapsto1-\rho\) reverses the resulting
 Lyapunov rate.
 
+There is also a differential-algebraic inversion.  Polynomial quartet insertion does not change
+the ambient hypertranscendental differential stratum.  After source transport, however, a finite
+divisor becomes a finite exponential spectrum.  Its characteristic polynomial is explicit, and a
+Vandermonde block of evolution jets recovers every nonzero distinct-frequency carrier.  The
+transport therefore converts a defect invisible to the original differential matroid into a
+finite, rigid differential-algebraic object.
+
 \subsection*{Main results}
 
-The paper proves four closed statements.
+The paper proves five closed statements.
 
 \begin{enumerate}[leftmargin=2.2em]
-\item The \emph{source inversion law}: canonical observation converts reciprocal displacement
-into conjugate direct displacement.
-\item The \emph{source-horizon conservation law}: the complete derivative-order energy is an
-exact Poisson packet with rate \(2\Rea(\rho-c)+1\).
-\item The \emph{Riemann source law}: the actual prime--Gamma logarithmic response transports every
+\item The \emph{generator-duality law}: Poisson drift normalization uniquely fixes the clock and
+converts every nonzero generator into its conjugate reciprocal.
+\item The \emph{source-horizon law}: source evolution pulls the universal generator horizon back
+to \(\Rea\rho=\Rea c-\tfrac12\), with exact Poisson channel conservation.
+\item The \emph{finite-carrier law}: transported divisor points form a constant-coefficient
+exponential spectrum, differentially algebraic and faithful in a finite jet.
+\item The \emph{Riemann source law}: the prime--Gamma logarithmic response transports each
 \(\xi\)-zero residue into this packet, with no simplicity assumption, and the mode is the Poisson
 completion of the inverse Li--Cayley orbit.
 \item The \emph{escape--renormalization law}: explicit off-line quartets are simultaneously
@@ -170,21 +195,22 @@ invisible to every fixed compact holomorphic jet, to a complete rational differe
 and to every bounded Ward window, but reappear exactly at canonical source time.
 \end{enumerate}
 
-The first two statements hold for every meromorphic function.  The last two identify why the
-Riemann critical line is the neutral line selected by its arithmetic source and why several
-apparently strong observers lose the same off-line data.
+The first statement is generator-universal; the next two hold for every finite meromorphic
+divisor.  The last two identify why the Riemann critical line is the neutral line selected by its
+arithmetic source and why several apparently strong observers lose the same off-line data.
 
 \subsection*{Novelty boundary}
 
 No novelty is claimed for logarithmic residues, coherent-state Poisson statistics
 \cite{Bargmann1961,Glauber1963}, Li's criterion, exponential Li asymptotics, or symmetric
-polynomial perturbations.  The contribution is the exact conjunction: source evolution is
-performed before residue extraction; its mode is identified with the factorial completion of the
-Li orbit; inverse-drift time converts reciprocal to direct spectral displacement; the critical
-line becomes the attenuation--order-entropy balance line; and the same law resolves the
-compact-open, differential-algebraic, and Ward escape examples.  We found no prior source stating
-this source-horizon theorem or its Riemann specialization.  That database statement is evidence,
-not a claim that literature search proves absence.
+polynomial perturbations.  The contribution is the exact conjunction and classification: order
+normalization uniquely forces reciprocal-generator duality; meromorphic source transport pulls
+its universal horizon into divisor space; finite hidden divisors become explicit
+Vandermonde-faithful differential-algebraic spectra; the Riemann specialization is the factorial
+completion of the inverse Li orbit; and the same carrier resolves the compact-open,
+differential-algebraic, and Ward escape examples.  We found no prior source stating this
+generator-duality/source-horizon theorem or its Riemann specialization.  That database statement
+is evidence, not a claim that literature search proves absence.
 
 \section{Meromorphic source evolution}
 
@@ -298,6 +324,92 @@ Since
 \]
 inserting \(e^{d_{c,\rho}x}e^{-d_{c,\rho}x}=1\) gives the first identity.  Summing
 the Poisson weights gives the second.
+\end{proof}
+
+\subsection{The universal generator law}
+
+The source form above is a pullback of a law that does not mention meromorphic functions.  For
+\(b\in\C^\times\), put
+\[
+ E_{m,b}(x):=m e^{bx},\qquad
+ x_b(\tau):=\frac{\tau}{|b|^2},\qquad
+ \nu(b):=2\Rea(b^{-1})+1.
+\]
+
+\begin{theorem}[Poisson-normalized generator duality]\label{thm:generator-duality}
+Let \(b\ne0\) and \(\tau\ge0\).
+
+\begin{enumerate}[label=\textup{(\roman*)},leftmargin=2.4em]
+\item \(x_b(\tau)\) is the unique real \(x\) satisfying
+\[
+ |b|^2x=\tau.
+\]
+\item At this uniquely normalized clock, the generator becomes its conjugate reciprocal:
+\[
+ b\,x_b(\tau)=\overline{b^{-1}}\,\tau.
+\]
+\item For every \(r\in\N_0\),
+\[
+ \frac{x_b(\tau)^r}{r!}
+ \left|\partial_x^r E_{m,b}(x)
+   \big|_{x=x_b(\tau)}\right|^2
+ =
+ |m|^2e^{\nu(b)\tau}p_r(\tau).
+\]
+\end{enumerate}
+
+Consequently the universal neutral horizon is
+\[
+ \Rea(b^{-1})=-\frac12.
+\]
+Equivalently, with \(\kappa(b):=|1+b|^2-1\),
+\[
+ \kappa(b)=|b|^2\nu(b),
+ \qquad
+ \nu(b)=0\ \Longleftrightarrow\ |1+b|=1.
+\]
+\end{theorem}
+
+\begin{proof}
+Since \(b\ne0\), \(|b|^2>0\), so (i) follows by division.  For (ii),
+\[
+ b\,\frac{\tau}{|b|^2}
+ =\frac{b}{b\bar b}\tau
+ =\frac{\tau}{\bar b}
+ =\overline{b^{-1}}\tau.
+\]
+Finally,
+\[
+ \frac{x^r}{r!}|\partial_x^rE_{m,b}(x)|^2
+ =|m|^2e^{2\Rea(b)x}\frac{(|b|^2x)^r}{r!}.
+\]
+Insert \(x=x_b(\tau)\), write \(\tau^r/r!=e^\tau p_r(\tau)\), and use
+\[
+ \frac{\Rea b}{|b|^2}=\Rea(b^{-1}).
+\]
+This gives (iii).  Expanding \(|1+b|^2\) yields
+\(\kappa(b)=2\Rea b+|b|^2=|b|^2\nu(b)\); since \(b\ne0\), the two neutral
+conditions are equivalent.
+\end{proof}
+
+\begin{corollary}[Pullback principle]\label{cor:pullback}
+Let \(b=b(\rho)\ne0\) be any divisor-dependent evolution generator.  Poisson normalization pulls
+the universal vertical horizon back to
+\[
+ \Rea\!\left(b(\rho)^{-1}\right)=-\frac12.
+\]
+For the multipolar generator \(b(\rho)=(\rho-c)^{-q}\), \(q\ge1\), the clock and neutral locus are
+\[
+ x=|\rho-c|^{2q}\tau,
+ \qquad
+ \Rea\!\left((\rho-c)^q\right)=-\frac12.
+\]
+Thus a line in dual-generator space produces a hierarchy of algebraic source horizons; the usual
+source line is the case \(q=1\).
+\end{corollary}
+
+\begin{proof}
+Apply \cref{thm:generator-duality} and substitute the stated generators.
 \end{proof}
 
 The theorem separates two invariants:
@@ -442,6 +554,63 @@ Then
 All dependence on \(T\) has disappeared from the energy packet.
 \end{corollary}
 
+\section{Finite-divisor spectral localization}
+
+The preceding law acts on individual divisor points.  For a finite divisor it also creates an
+exact differential carrier.  Let \(\rho_1,\ldots,\rho_N\) be distinct points different from \(c\),
+with nonzero integer orders \(m_1,\ldots,m_N\), and put
+\[
+ b_j=(\rho_j-c)^{-1},
+ \qquad
+ S_c(x):=\sum_{j=1}^{N}m_j e^{b_jx},
+ \qquad
+ P_c(z):=\prod_{j=1}^{N}(z-b_j)
+        =\sum_{k=0}^{N}p_kz^k.
+\]
+
+\begin{theorem}[Finite-carrier localization]\label{thm:finite-carrier}
+The transported finite divisor has the following properties.
+
+\begin{enumerate}[label=\textup{(\roman*)},leftmargin=2.4em]
+\item It satisfies the explicit constant-coefficient equation
+\[
+ P_c(\partial_x)S_c(x)
+ =\sum_{k=0}^{N}p_k\,\partial_x^kS_c(x)=0
+ \qquad (x\in\C).
+\]
+In particular, \(S_c\) is differentially algebraic over \(\C(x)\).
+\item At every \(x_0\in\C\), its first \(N\) jets cannot all vanish:
+\[
+ \bigl(S_c(x_0),S_c'(x_0),\ldots,S_c^{(N-1)}(x_0)\bigr)\ne0.
+\]
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+Each factor \(\partial_x-b_j\) kills \(e^{b_jx}\); their product therefore kills the sum, proving
+(i).  For (ii), suppose the first \(N\) jets vanish at \(x_0\).  Then
+\[
+ 0=S_c^{(k)}(x_0)
+   =\sum_{j=1}^{N}b_j^k
+      \bigl(m_je^{b_jx_0}\bigr),
+ \qquad 0\le k<N.
+\]
+This is a Vandermonde system in the distinct nodes \(b_j\).  Its determinant is
+\(\prod_{i<j}(b_j-b_i)\ne0\), while every \(m_je^{b_jx_0}\ne0\), a contradiction.
+\end{proof}
+
+This is the differential-algebraic inversion behind the construction.  Multiplying a
+hypertranscendental response by a rational polynomial cannot change its rational differential
+matroid; the inserted divisor is invisible in that ambient stratum.  Residue transport discards
+the ambient function but retains the defect as \(S_c\), a finite constant-coefficient spectrum.
+Its frequencies are precisely the inverse source displacements, so
+\[
+ \rho_j=c+b_j^{-1}.
+\]
+Hypertranscendental background and finite divisor data have separated into different carriers:
+the former remains infinite differential complexity, while the latter becomes finite spectral
+rigidity.
+
 \section{The arithmetic source and the Riemann divisor}
 
 Let
@@ -456,7 +625,7 @@ Its logarithmic response is \(\cR_\xi=\xi'/\xi\).  On \(\Rea s>1\),
 \begin{equation}\label{eq:arithmetic-source}
  \cR_\xi(s)
  =\frac1s+\frac1{s-1}
-   \frac{\Gamma_{\R}'(s)}{\Gamma_{\R}(s)}
+   +\frac{\Gamma_{\R}'(s)}{\Gamma_{\R}(s)}
    -\sum_{n=1}^{\infty}\frac{\Lambda(n)}{n^s}.
 \end{equation}
 Thus the marked point \(c=1\) is already present in the completed prime--Gamma source; it is not
@@ -506,6 +675,17 @@ For \(c=1\),
   \qquad
   \kappa_\rho=(2\Rea\rho-1)d_\rho.
 \]
+Here \(b_\rho=(\rho-1)^{-1}\) and \(1+b_\rho=a_\rho=w_\rho^{-1}\).  The universal
+line--circle equivalence therefore reads
+\[
+ \Rea\rho=\frac12
+ \quad\Longleftrightarrow\quad
+ |1+b_\rho|=1
+ \quad\Longleftrightarrow\quad
+ |w_\rho|=1.
+\]
+The critical line in divisor space, the unit circle of Li dynamics, and neutral coherent growth
+are not three criteria: they are three coordinate shadows of the same generator identity.
 The source horizon is
 \[
   \Rea\rho=\frac12.
@@ -520,7 +700,7 @@ Moreover,
   -\frac14\left(1-\frac{\kappa_\rho}{d_\rho}\right)^2.
 \end{equation}
 
-\begin{corollary}[Riemann Lyapunov orientation]\label{cor:riemann-rate}
+\begin{corollary}[Riemann Lyapunov orientation]\label{cor:riemann-rate}\hfill\break
 Every strict-right zero has positive source rate
 \[
   \nu_1(\rho)=2\Rea\rho-1>0.
@@ -690,8 +870,8 @@ For every \(r\in\N_0\) and \(\tau\ge0\),
  \frac{x_{a,n}(\tau)^r}{r!}
  \left|
  \partial_x^r
- \left(m_{a,n}e^{x/(\rho_{a,n}-1)}\right)_
-   {x=x_{a,n}(\tau)}
+ \left(m_{a,n}e^{x/(\rho_{a,n}-1)}\right)
+   \big|_{x=x_{a,n}(\tau)}
  \right|^2
  =
  |m_{a,n}|^2e^{2a\tau}p_r(\tau).
@@ -732,7 +912,7 @@ derivative-order ridge.  At \(x=\tau/d_\rho\), the ridge is restored at mean \(\
 rate becomes \(2\Rea\rho-1\).  Thus the correct distinction is not ``squared versus unsquared''
 alone, but ``fixed observer versus source-co-moving observer.''
 
-\subsection{What the \(8\pi\) index does and does not say}
+\subsection{What the \texorpdfstring{\(8\pi\)}{8 pi} index does and does not say}
 
 The Ward law counts a quartet and survives escape, but it supplies no upper bound forcing the
 count to vanish.  Indeed, \cref{thm:ward} permits arbitrary mass \(8\pi N\) in the identical
@@ -754,19 +934,24 @@ Taken alone, this equivalence is not a proof and receives no novelty credit.  Th
 source-derived realization behind it:
 
 \begin{enumerate}[leftmargin=2.2em]
+\item Poisson drift normalization uniquely forces the clock; divisor-dependent rescaling was not
+chosen to manufacture the critical line;
 \item \(\nu_1(\rho)\) is the exact canonical-time growth rate of an actual residue of the
-prime--Gamma response;
-\item the same residue is the Poisson completion of the inverse Li orbit;
-\item its packet drift and rate reconstruct the zero;
+prime--Gamma response, and neutrality is simultaneously the Li unit circle;
+\item a finite divisor becomes an explicit constant-coefficient spectrum with characteristic
+roots \((\rho-1)^{-1}\) and a faithful Vandermonde jet;
+\item packet drift and dual rate reconstruct each zero up to conjugation;
 \item explicit countermodels prove why every fixed compact, finite differential, or bounded-window
 observer can miss it;
-\item inverse-drift renormalization recovers it without a limiting error.
+\item the uniquely normalized carrier recovers it without a limiting error.
 \end{enumerate}
 
-This replaces the search for another fixed positive scalar by a sharply specified dynamical
-problem: control the source-generated semigroup at its canonical, divisor-dependent scale.  The
-present paper closes the information-loss problem and identifies the oriented variable.  It does
-not claim the additional arithmetic estimate that would exclude positive-rate modes.
+This replaces the search for another fixed positive scalar by a sharply specified spectral
+problem: control the arithmetic source semigroup at the unique Poisson-normalized clock, or
+equivalently control the characteristic roots of its finite transported carriers relative to the
+shifted-generator unit circle.  The present paper closes the information-loss and carrier-design
+problems.  It does not claim the additional arithmetic estimate that would exclude positive-rate
+modes.
 
 \section{Relation to prior work}
 
@@ -775,8 +960,8 @@ Li proved positivity of his coefficient sequence equivalent to RH
 related it to Weil positivity \cite{BombieriLagarias1999}.  Generalized Li criteria move the
 basepoint or target zero-free subregions \cite{Freitas2007,Sekatskii2014}.  The present law differs
 in both operation and output: it evolves the logarithmic response before taking a local residue,
-Poisson-completes the inverse orbit, and then chooses the exact inverse-drift time at which the
-reciprocal spectral variable becomes direct conjugate displacement.
+Poisson-completes the inverse orbit, and uses the unique order-normalizing clock at which the
+reciprocal spectral variable must become direct conjugate displacement.
 
 Voros's analysis gives the closest asymptotic neighbor: off-line zeros create exponential
 large-order Li behavior \cite{Voros2014}.  Here the exponential rate is obtained channel by
@@ -788,6 +973,11 @@ Coherent exponentials and their Poisson occupation statistics are classical
 the literal residue of the evolved arithmetic response.  The source inversion
 \(z^{-1}|z|^2\tau=\bar z\tau\) and the resulting attenuation--order-entropy horizon are then exact
 properties of meromorphic divisor transport.
+
+Finite exponential sums, their constant-coefficient annihilators, and Vandermonde recovery are
+also classical.  The point here is the carrier transition: the spectrum is produced canonically
+from residues of a hypertranscendental response, its frequencies are inverse source displacements,
+and it remains faithful precisely where the ambient rational differential matroid collides.
 
 Gauthier and Xarles showed broad instability of RH under small functional-equation-preserving
 perturbations \cite{GauthierXarles2009}.  We assign no novelty to quartet insertion or
@@ -810,17 +1000,20 @@ The paper answers the question it poses:
 \begin{quote}
 When a divisor point becomes invisible to compact analytic observation, finite differential
 algebra, and bounded charge windows, its information is transported into a source-generated
-coherent mode.  Radial displacement fixes observation time, imaginary displacement becomes phase,
-and signed distance from the source horizon becomes the exact Lyapunov rate.
+coherent mode.  Poisson normalization uniquely fixes observation time and converts the generator
+to its conjugate reciprocal.  Radial displacement becomes clock, imaginary displacement becomes
+phase, and signed distance from the pulled-back universal horizon becomes the exact Lyapunov rate.
 \end{quote}
 
 For the Riemann response, the source is \(1\), the horizon is the critical line, and the coherent
-mode is the Poisson completion of the inverse Li orbit.  The conclusion is unconditional and
-contains no simplicity, rightmost-zero, finite-off-line-divisor, or RH assumption.
+mode is the Poisson completion of the inverse Li orbit.  Finite divisor data additionally becomes
+an explicit, differentially algebraic, Vandermonde-faithful exponential spectrum.  The conclusion
+is unconditional and contains no simplicity, rightmost-zero, finite-off-line-divisor, or RH
+assumption.
 
 The theorem does not assert that all Riemann modes are neutral.  It proves what the existing
-blindness and charge laws are projections of, why the critical half-line is selected by the
-arithmetic source, and which exact co-moving observable retains the orientation that fixed
+blindness and charge laws are projections of, why the critical line and Li circle are the same
+neutral generator geometry, and which exact finite carrier retains the orientation that fixed
 scalarizations lose.
 
 \begin{thebibliography}{99}

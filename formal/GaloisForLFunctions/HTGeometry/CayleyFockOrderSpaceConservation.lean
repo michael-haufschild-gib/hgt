@@ -154,6 +154,63 @@ theorem coherentGenerator_exponent_observationTime
     ne_of_gt (Complex.normSq_pos.mpr hb)
   field_simp
 
+/-- Fock growth factors into order drift and reciprocal-generator
+orientation. -/
+theorem cayleyFockExponent_eq_drift_mul_dualRate
+    (b : ℂ) (hb : b ≠ 0) :
+    cayleyFockExponent b =
+      cayleyFockDrift b * coherentGeneratorDualRate b := by
+  rw [cayleyFockExponent_eq, cayleyFockDrift,
+    coherentGeneratorDualRate, Complex.inv_re,
+    Complex.sq_norm]
+  have hden : Complex.normSq b ≠ 0 :=
+    ne_of_gt (Complex.normSq_pos.mpr hb)
+  field_simp
+
+/-- Reciprocal-generator neutrality is exactly vanishing total Fock
+growth. -/
+theorem coherentGeneratorDualRate_eq_zero_iff_fockExponent_eq_zero
+    (b : ℂ) (hb : b ≠ 0) :
+    coherentGeneratorDualRate b = 0 ↔
+      cayleyFockExponent b = 0 := by
+  have htime :
+      coherentGeneratorObservationTime b 1 ≠ 0 := by
+    rw [coherentGeneratorObservationTime]
+    exact div_ne_zero one_ne_zero
+      (ne_of_gt (Complex.normSq_pos.mpr hb))
+  have hlink :=
+    coherentGenerator_exponent_observationTime b 1 hb
+  simp only [mul_one] at hlink
+  constructor
+  · intro hrate
+    rw [hrate] at hlink
+    exact (mul_eq_zero.mp hlink).resolve_right htime
+  · intro hexp
+    rw [hexp, zero_mul] at hlink
+    exact hlink.symm
+
+/-- Fock neutrality is exactly the unit circle of the shifted
+generator `1 + b`. -/
+theorem cayleyFockExponent_eq_zero_iff_shift_norm_one
+    (b : ℂ) :
+    cayleyFockExponent b = 0 ↔ ‖1 + b‖ = 1 := by
+  rw [cayleyFockExponent]
+  constructor
+  · intro h
+    have hn : 0 ≤ ‖1 + b‖ := norm_nonneg _
+    nlinarith
+  · intro h
+    rw [h]
+    norm_num
+
+/-- Universal line--circle equivalence: the neutral line in reciprocal
+generator space is the shifted-generator unit circle. -/
+theorem coherentGeneratorDualRate_eq_zero_iff_shift_norm_one
+    (b : ℂ) (hb : b ≠ 0) :
+    coherentGeneratorDualRate b = 0 ↔ ‖1 + b‖ = 1 := by
+  rw [coherentGeneratorDualRate_eq_zero_iff_fockExponent_eq_zero b hb,
+    cayleyFockExponent_eq_zero_iff_shift_norm_one]
+
 /-- **Universal generator-horizon conservation.** At the uniquely
 Poisson-normalized clock, every coherent exponential has a
 height-free packet whose sole exponential datum is reciprocal

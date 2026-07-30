@@ -749,3 +749,145 @@ Hypertranscendence becomes relevant only if finite transgression towers necessar
 common mode while the full source-generated completion exists. Exceptional, Jordan, spinorial, and
 Standard Model structures may be tested as possible rigid fixed points only after the
 transgression is defined; inserting them at the start would return to the collage failure.
+
+## Sixth hostile refinement: all source factorizations do not make space
+
+The most economical attempt to remove supplied ports is already factor-congruence theory.
+For a raw source set \(X\), let a recognizer be an equivalence relation. Two recognizers
+\(\theta,\phi\) are exact independent factors when the canonical map
+
+\[
+  X\longrightarrow X/\theta\times X/\phi
+\]
+
+is bijective. Equivalently, \((\theta,\phi)\) is a factor pair and presents one Cartesian
+decomposition of \(X\).
+
+This construction is presentation-invariant and uses no prior tensor product. It fails as a
+physical selector:
+
+1. factor pairs and Cartesian decompositions are established universal algebra and permutation
+   group theory, not new mathematics;
+2. the complete factor-pair structure of a bare set is transported by every bijection;
+3. any two finite bare sets of the same cardinality therefore have isomorphic complete
+   factorization atlases;
+4. the atlas sees possible Cartesian decompositions and arithmetic of cardinality, but no
+   adjacency, causal direction, metric, source response, or preferred physical decomposition; and
+5. restricting to “accessible” recognizers restores exactly the intervention/test alphabet the
+   construction was supposed to derive.
+
+Primary parent boundaries include factor congruences and Cartesian decompositions
+([Sánchez Terraf--Vaggione](https://arxiv.org/abs/0808.1860),
+[Baddeley--Praeger--Schneider](https://arxiv.org/abs/math/0306039)).
+In quantum theory, observable-induced tensor-product structure is already explicit in
+[Zanardi--Lidar--Lloyd](https://arxiv.org/abs/quant-ph/0308043).
+
+Thus:
+
+> `[REDISCOVERED / INSUFFICIENT]` The lattice of every possible factorization of a source does not
+> reconstruct physical space. It reconstructs only every factorization one permits.
+
+This is the factorization analogue of source-test partition universality. “Use all tests” and “use
+all decompositions” are both maximally complete and maximally nonselective.
+
+### Symmetry pressure on a structureless source
+
+The background-independent process literature supplies the operational version of the same
+obstruction. Full permutation invariance removes the distinction between laboratory locations and
+forbids nondegenerate products of distinct local operations; locality can be recovered only after
+a physical reference-frame record is added
+([Parker--Costa](https://arxiv.org/abs/2106.01038)).
+
+Consequently a structureless source cannot generate a nontrivial locality law merely by demanding
+relabeling invariance. A relational state, source dynamics, or reference record must reduce the
+symmetry. Calling that extra datum “matter,” “geometry,” or “history” does not derive it.
+
+### Corrected open core
+
+The conjecture cannot require space to arise from a bare set of events. Einstein did not derive a
+metric from an unstructured point set; he made geometry a physical field constrained by a new
+principle and dynamics. The analogous honest jump is:
+
+> **Treat operational separateness itself as the primitive physical field, then derive what its
+> states, symmetries, defects, response, and continuum dynamics must be.**
+
+This is stronger scientifically and weaker metaphysically than ex-nihilo source generation. It
+accepts one primitive—an operational independence field—and must earn universality by rigidity:
+
+1. a representation-independent state space of sharp and coherent independence laws;
+2. a local equivalence principle for their operational realizations;
+3. a canonical response/curvature not removable by reference-frame transport;
+4. reconstruction of classical causal geometry and calibrated metric in sharp phases;
+5. a quantum phase not equivalent to a stochastic metric mixture;
+6. matter as intrinsic defects rather than an attachable spectator fiber;
+7. exact internal symmetry and continuum dynamics; and
+8. one finite quantitative discriminator.
+
+The next conjecture must state that dynamics before selecting a proof representation. Another
+partition, graph, commuting square, process cover, or complete response table is already killed.
+
+## Seventh hostile refinement: separateness does not determine matter
+
+The Einstein jump above still overclaims. A locality or causal-independence structure can constrain
+where observables commute and how regional descriptions embed without selecting which quantum field
+theory inhabits that structure.
+
+Locally covariant quantum field theory makes the distinction exact. One and the same category of
+globally hyperbolic spacetimes and causal embeddings supports different covariant functors into
+observable algebras
+([Brunetti--Fredenhagen--Verch](https://arxiv.org/abs/math-ph/0112041)).
+In particular, free Klein--Gordon theories with different masses live on the same spacetime causal
+background and satisfy the same causal-locality type of axiom while having different field
+equations, spectra, propagators, and responses. The massive free scalar theories also satisfy
+dynamical locality
+([Fewster--Verch](https://arxiv.org/abs/1109.6732)), but this does not make the mass a consequence of
+the underlying causal relation. It says that, *within a supplied theory*, its kinematical and
+dynamically defined local substructures agree. The general condition and its limits were developed
+in
+[Fewster--Verch](https://arxiv.org/abs/1106.4785).
+
+Therefore the no-independent-fiber principle `(NIF)` is false under any non-tautological reading in
+which \(\mathbb I\) records only separateness, causal compatibility, or regional factorization.
+Distinct matter dynamics can be attached while those data remain fixed.
+
+Enlarging \(\mathbb I\) to contain the complete relative Cauchy evolution, every response function,
+the full observable functor, and all spectral data avoids the counterexample only circularly:
+\(\mathbb I\) then determines matter because the entire physical theory has been inserted into
+\(\mathbb I\). “Everything is separateness” becomes a renaming rather than a law.
+
+The exact verdict is:
+
+> `[FALSIFIED]` Operational separateness alone is not the only physical field and does not determine
+> matter. `[BRIDGE]` Separateness may encode or reconstruct causal geometry, while dynamical response
+> distinguishes theories compatible with that geometry.
+
+This also prevents a weak replacement conjecture. “Kinematical locality equals dynamical locality”
+is already an established theory-selection principle, not the missing universal law. Any successor
+must neither identify matter with locality nor merely pair two independently supplied fields called
+“geometry” and “dynamics.”
+
+### Failure-driven constraint on the next jump
+
+The repeated obstruction is now sharper:
+
+1. a bare source does not select physical tests;
+2. all tests or all factorizations are complete but nonselective;
+3. causal separateness can constrain geometry but not choose matter dynamics; and
+4. complete response data choose the theory only because they *are* the theory.
+
+The missing primitive, if one exists, must generate two non-equivalent shadows without containing
+either by definition:
+
+\[
+  \text{one source law}
+  \longrightarrow
+  \begin{cases}
+    \text{which alternatives can coexist},\\
+    \text{which distinctions persist or return}.
+  \end{cases}
+\]
+
+The first shadow is causal/independence structure. The second is spectral/recurrence structure. A
+genuine universal law would impose a nontrivial reciprocity between them, recover locality and
+dynamics as different projections, and forbid their arbitrary recombination. No such source law is
+presently defined. This is a constraint extracted from failure, not a new conjecture.

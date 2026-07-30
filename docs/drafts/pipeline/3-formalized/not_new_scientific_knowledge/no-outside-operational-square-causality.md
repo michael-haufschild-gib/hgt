@@ -90,6 +90,29 @@ w_A(\psi)+w_A(\psi^\perp)=\operatorname{tr}A.
 If \(\operatorname{tr}A=1\), the two nonnegative weights in `(10)` are probabilities summing to
 one. They are exactly the two-outcome Born rule.
 
+There is also an exact scalar identification, not merely a shared matrix carrier:
+\[
+\operatorname{tr}\Phi(t,x,y,z)=2t.
+\tag{11}
+\]
+Hence for every unit spinor and every record increment
+\[
+B-A=\Phi(\Delta t,\Delta x,\Delta y,\Delta z),
+\]
+\[
+\boxed{
+\Delta t=
+\frac{
+  [w_B(\psi)-w_A(\psi)]
+  +
+  [w_B(\psi^\perp)-w_A(\psi^\perp)]
+}{2}.
+}
+\tag{12}
+\]
+The right side is independent of which complete unit-spinor alternative is used. Lorentz time is
+half the total unnormalised quantum-witness gain.
+
 The theorem therefore supplies the finite operational identification:
 
 ```text
@@ -224,19 +247,42 @@ Central declarations:
 - `lorentzHermitianMatrix_posSemidef_iff`;
 - `twoRecordPrecedes_iff_lorentzFuture_of_difference_eq`;
 - `noOutside_operationalSquareCausality_fourWay`;
+- `triangleSource_operationalPhysicalLift`;
 - `higgsSpinorEventMatrix_add_spinFlip_eq_smul_one`;
 - `twoRecordWitnessWeight_add_spinFlip`;
+- `lorentzTime_eq_half_totalWitnessWeight`;
+- `recordSuccessor_lorentzTime_eq_half_totalWitnessGain`;
 - `twoRecord_binaryBorn_probabilities`.
 
 The Lorentz-cone converse is not delegated to a spectral oracle: Lean checks an explicit
 completed-square proof and separately discharges the singular null-boundary case.
+
+Focused verification:
+
+```text
+lake env lean GaloisForLFunctions/HTGeometry/NoOutsideOperationalSquareCausality.lean
+lake build GaloisForLFunctions.HTGeometry.NoOutsideOperationalSquareCausality
+```
+
+Both pass. The final module build completes `8674/8674` jobs. `#print axioms` on the capstones
+reports only the project baseline: `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Gates
 
 - [x] dependency-closed paper proof
 - [x] primary-source novelty audit
 - [x] unconditional Lean formalization
-- [ ] axiom audit
+- [x] axiom audit
 - [x] umbrella reachability
-- [ ] generated API index
+- [x] generated API index
 - [x] physical and empirical boundary explicit
+
+## Log
+
+- 2026-07-30 — proved generic row-stack Gram additivity, event-factor reachability, pure-witness
+  order separation, exact Lorentz-future cone equivalence, and binary Born normalization.
+- 2026-07-30 — connected the theorem directly to the triangle-generated witness record through
+  `triangleSource_operationalPhysicalLift`.
+- 2026-07-30 — proved that Lorentz time increment is half the basis-independent total pure
+  witness-weight gain.
+- 2026-07-30 — focused Lean check, final module build, and axiom audit passed.
