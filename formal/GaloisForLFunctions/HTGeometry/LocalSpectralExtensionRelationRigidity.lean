@@ -46,6 +46,29 @@ theorem distinctNodePacketNumerator_eval_node
   · intro hi
     exact absurd (Finset.mem_univ i) hi
 
+/-- One nonzero coefficient at a pole not shared by any other term already
+forces the cleared packet numerator to be nonzero.  No separation assumption
+is needed among the remaining poles. -/
+theorem distinctNodePacketNumerator_ne_zero_of_unique_node
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (z c : ι → ℂ) (i : ι)
+    (hci : c i ≠ 0)
+    (hi : ∀ j, j ≠ i → z j ≠ z i) :
+    distinctNodePacketNumerator z c ≠ 0 := by
+  intro hzero
+  have heval :=
+    congrArg (fun P : ℂ[X] => P.eval (z i)) hzero
+  have hisolated :
+      c i * ∏ j ∈ Finset.univ.erase i, (z j - z i) = 0 := by
+    simpa [distinctNodePacketNumerator_eval_node] using heval
+  have hprod :
+      ∏ j ∈ Finset.univ.erase i, (z j - z i) ≠ 0 := by
+    apply Finset.prod_ne_zero_iff.mpr
+    intro j hj
+    apply sub_ne_zero.mpr
+    exact hi j (Finset.mem_erase.mp hj).1
+  exact (mul_ne_zero hci hprod) hisolated
+
 /-- Distinct poles make the cleared simple-pole numerator injective in its
 coefficient packet. -/
 theorem distinctNodePacketNumerator_eq_zero_iff

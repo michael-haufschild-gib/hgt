@@ -27,9 +27,7 @@ def inverseRadialMoment (a : I → ℝ) (w : I → ℂ) (n : ℕ) : ℝ :=
 
 /-- Every summable inverse-radial moment is nonnegative when all marks are nonnegative. -/
 theorem inverseRadialMoment_nonneg
-    (a : I → ℝ) (w : I → ℂ) (ha : ∀ i, 0 ≤ a i)
-    (hsum : ∀ n, Summable (fun i => a i * ‖w i‖⁻¹ ^ n))
-    (n : ℕ) :
+    (a : I → ℝ) (w : I → ℂ) (ha : ∀ i, 0 ≤ a i) (n : ℕ) :
     0 ≤ inverseRadialMoment a w n := by
   rw [inverseRadialMoment]
   exact tsum_nonneg fun i => mul_nonneg (ha i) (pow_nonneg (inv_nonneg.mpr (norm_nonneg _)) _)
@@ -46,7 +44,7 @@ theorem le_inverseRadialMoment
 
 /-- The zeroth inverse-radial moment is exactly the total marked mass. -/
 theorem inverseRadialMoment_zero
-    (a : I → ℝ) (w : I → ℂ) (hsum : Summable a) :
+    (a : I → ℝ) (w : I → ℂ) :
     inverseRadialMoment a w 0 = ∑' i, a i := by
   simp only [inverseRadialMoment, pow_zero, mul_one]
 

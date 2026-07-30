@@ -1,14 +1,14 @@
 # The critical line is the zero-distortion locus of infinite divisor replication
 
 - **ID:** `infinite-hypertranscendental-divisor-replication-purity-law`
-- **Stage:** 1-in-progress
-- **Type:** FOUNDATIONAL RH CONJECTURE / THIRD-COMPLETION TARGET
+- **Stage:** 5-failed
+- **Type:** RETIRED RH PRODUCER / POSITIVE INTERPRETIVE SURVIVOR
 - **Source:** `positive-hypertranscendental-riemann-divisor-frame`,
   `deninger-gamma-rank-regular-representation`,
   `euler-ward-weil-index-law`, and
   `riemann-orientation-boundary-fracture`
-- **Scientific status:** `[FROZEN HUNCH] [ABSTRACT CONSUMER PROVED]`
-  `[SOURCE REPLICATION COMPLETION OPEN] [NOT RH]`
+- **Scientific status:** `[CORPUS COLLISION] [ABSTRACT CONSUMER PROVED]`
+  `[NOT AN INDEPENDENT PRODUCER] [NOT RH]`
 - **Statement:** A dynamically non-neutral Cartier defect cannot be copied into countably many
   source-orthogonal positive Hypertranscendental channels while centered prime transfer remains
   unitary modulo compact source leakage.
@@ -34,6 +34,31 @@ character to have zero centered radial drift, hence every nontrivial zero to sat
 
 No Xi zero, zero ordinate, or zero-indexed Hilbert basis may enter the construction of the
 completion or prime transfer.
+
+## No-go closure
+
+- **Exact killing mechanism:** The corpus already proves the shell weighted-shift/Calkin selector
+  \[
+  W_s\text{ essentially unitary}\iff\Re s=\frac12
+  \]
+  and separately proves fixed-prime higher-Euler-grade compactness iff
+  \(\Re s=1/2\). It also records that imposing essential unitarity only after Xi-fibre
+  specialization is an RH-equivalent endpoint. The conjectural clauses `(2)`--`(5)` merely move
+  the same missing source-first conormal landing into an orthogonal-copy completion; they do not
+  construct it.
+- **Strongest positive survivor:** Infinite source replication gives a clean explanation of why
+  compact leakage can hide every finite off-line packet but cannot hide an off-neutral mode after
+  genuine infinite-multiplicity promotion. The abstract consumer below is correct, and the
+  coefficient/divisor completion fracture is exact. This is a useful diagnostic for any future
+  source construction.
+- **New insight:** The divisor cannot simply be counted once per shell. Since
+  \(S_m=\zeta H_m\) with \(H_m\) a local unit, all shell generators define one Cartier conormal
+  with different trivializations, not automatically countably many independent conormal objects.
+  Disjoint coefficient support is insufficient to promote these trivializations to orthogonal
+  divisor copies. The next law must explain why a source obstruction becomes an operation before
+  analytic Cartier localization, rather than postulate copies after localization.
+- **Status:** Retired as an active RH producer. Do not formalize the abstract compactness lemma.
+  Retain the reinterpretation only as a falsifier and infinity diagnostic.
 
 ## Exact corpus forcing the reinterpretation
 

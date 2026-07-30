@@ -732,6 +732,56 @@ theorem maximallyProjectiveEnergy_orientedGap_injective
   subst d
   rfl
 
+/-- **Two-step cross-channel pole separation.**  Suppose `a → g` is a
+nontrivial first transition and `g → b` is a nontrivial second transition.
+Under maximal projective rank, the pole labelled by the first ordered gap
+`energy g - energy a` cannot coincide with any oppositely oriented pole
+`energy b - energy d`.
+
+This is the no-cancellation fact needed to propagate a local-observable
+transition through an attachment site and then through an arbitrary old
+site. -/
+theorem maximallyProjectiveEnergy_twoStep_crossPole_ne
+    {I : Type*} [Fintype I] [DecidableEq I]
+    (energy : I → ℝ) (hmax : MaximallyProjectiveEnergy energy)
+    {a g b d : I} (hag : a ≠ g) (hgb : g ≠ b) :
+    energy g - energy a ≠ energy b - energy d := by
+  intro hgap
+  by_cases hbd : b = d
+  · subst d
+    have henergy : energy g = energy a := by
+      linarith
+    let p : {x : I × I // x.1 ≠ x.2} :=
+      ⟨(g, a), hag.symm⟩
+    let q : {x : I × I // x.1 ≠ x.2} :=
+      ⟨(a, g), hag⟩
+    have hpq :
+        (fun x : {x : I × I // x.1 ≠ x.2} =>
+          energy x.1.1 - energy x.1.2) p =
+        (fun x : {x : I × I // x.1 ≠ x.2} =>
+          energy x.1.1 - energy x.1.2) q := by
+      simp [p, q, henergy]
+    have heq :=
+      maximallyProjectiveEnergy_orientedGap_injective energy hmax hpq
+    have hga : g = a := by
+      simpa [p, q] using congrArg (fun x => x.1.1) heq
+    exact hag hga.symm
+  · let p : {x : I × I // x.1 ≠ x.2} :=
+      ⟨(g, a), hag.symm⟩
+    let q : {x : I × I // x.1 ≠ x.2} :=
+      ⟨(b, d), hbd⟩
+    have hpq :
+        (fun x : {x : I × I // x.1 ≠ x.2} =>
+          energy x.1.1 - energy x.1.2) p =
+        (fun x : {x : I × I // x.1 ≠ x.2} =>
+          energy x.1.1 - energy x.1.2) q := by
+      simpa [p, q] using hgap
+    have heq :=
+      maximallyProjectiveEnergy_orientedGap_injective energy hmax hpq
+    have hgb' : g = b := by
+      simpa [p, q] using congrArg (fun x => x.1.1) heq
+    exact hgb hgb'
+
 end
 
 end GaloisForLFunctions.HTGeometry

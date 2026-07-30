@@ -10,7 +10,7 @@ What single law makes the endpoint source charge, the weighted \(8\pi\) Ward ind
 amplification, compact-open height escape, and finite differential-algebraic blindness different
 shadows of one mechanism?
 
-## Candidate answer
+## First candidate answer
 
 Functional-equation reflection becomes inversion in the Li coordinate
 
@@ -102,3 +102,78 @@ statements. The phase-free tower is stronger than the prior static index because
 all-order, no-cancellation amplification. It does **not** yet exclude zeros. Publication
 significance depends on proving the universal all-order theorem, actual Xi instantiation, and a
 clear consequence beyond renaming RH.
+
+## Stronger reinterpretation: Poisson order-space conservation
+
+The inverse-radial tower is only one marginal of a sharper two-parameter law.  Put
+
+\[
+  a=w^{-1},\qquad b=a-1,\qquad
+  d=|b|^2,\qquad \kappa=|a|^2-1.
+\]
+
+For a coherent exponential mode \(e^{bx}\), its factorially normalized derivative-order energy is
+exactly
+
+\[
+ e^{-x}\frac{x^r}{r!}|b^r e^{bx}|^2
+ =e^{\kappa x}\Pr\{\operatorname{Pois}(dx)=r\}.
+\]
+
+Thus a divisor defect is not merely exponentially visible.  It is conserved as a Poisson packet
+in observation-order space:
+
+- packet center: \(r=dx\);
+- total exponential mass: \(e^{\kappa x}\);
+- local width: \(\sqrt{dx}\);
+- critical line: \(\kappa=0\);
+- strict-right defect: \(\kappa>0\).
+
+For the conjugate pair \(b,\bar b\), the exterior curvature
+
+\[
+ H_r=G_rG_{r+2}-G_{r+1}^2
+\]
+
+has no rotating phase:
+
+\[
+ H_r=m^2(b-\bar b)^2|b|^{2r}e^{2\operatorname{Re}(b)x}<0.
+\]
+
+After factorial normalization its magnitude is the same Poisson packet, and summing over every
+order gives the exact signed scalar
+
+\[
+ e^{-x}\sum_{r\ge0}\frac{x^r}{r!}H_r
+ =m^2(b-\bar b)^2e^{\kappa x}.
+\]
+
+For \(b=(\rho-1)^{-1}\),
+
+\[
+ d=\frac1{|\rho-1|^2},\qquad
+ \kappa=(2\operatorname{Re}\rho-1)d.
+\]
+
+Consequently ridge position and growth reconstruct the zero up to conjugation:
+
+\[
+ \operatorname{Re}\rho=\frac12\left(1+\frac\kappa d\right),\qquad
+ (\operatorname{Im}\rho)^2=
+ \frac1d-\frac14\left(1-\frac\kappa d\right)^2.
+\]
+
+This makes the existing results shadows of one law:
+
+- compact-open height escape sends \(d\to0\), so every fixed order misses the packet;
+- complete differential-algebraic finite-jet data fixes order before the packet arrives;
+- the Ward index is the static marked divisor mass;
+- Cayley/Li powers read the radial exponent \(\kappa\);
+- growing-order Fock channels follow the packet center \(dx\);
+- exterior square removes phase while retaining \(d\) and \(\kappa\).
+
+The headline must be this order-space conservation and reconstruction theorem, not the bounded
+radial criterion.  Remaining hostile gate: establish an actual source-side Xi realization of the
+coherent packet, or the theorem risks being judged a universal identity applied decoratively to
+zeros.
