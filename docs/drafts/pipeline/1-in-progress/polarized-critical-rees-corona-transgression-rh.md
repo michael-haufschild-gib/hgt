@@ -482,3 +482,208 @@ Euler--Gamma/Xi realization.
   the actual source transport, not by itself novel RH mathematics.  The
   RH-bearing open core remains the pre-scalarized polarized Hardy morphism and
   its independently fixed contractive metric.
+
+## Universality correction: one transgression, not one cofiber
+
+The universal object cannot be the single comparison cofiber
+
+```text
+cofib(receiver(completion X) -> completion(receiver X)).
+```
+
+The formalized unseparated-cofiber calculus already refutes that compression.  A dense proper
+Gamma range gives a pure null cofiber, while a Sonin/Calkin range gives a separated essential
+cofiber; either Hausdorffization or one undifferentiated cone destroys one of these classes.  The
+increasingly general theorem must therefore retain a **polarized correspondence with all exact
+faces**, not replace them by one scalar obstruction.
+
+For a source-minimal self-dual constrained HT object `F`, the proposed universal carrier has the
+shape
+
+```text
+                      P_F
+             /          |          \
+       R_F^alg       R_F^+       H_F
+   (Rees/divisor)  (positive)   (Hardy/record),
+```
+
+where `P_F` retains the actual source arrows, Rees grades, unseparated null part, separated
+essential part, attainment/base-change class, and inverse-versus-adjoint polarization.  A new
+reporter is useful only when it is proved to factor through this same source-generated
+correspondence.  Adding a reporter as a disconnected component is theatre.
+
+`[BOLD CONJECTURE] [SOURCE_MINIMAL_POLARIZED_REPORTER_FACTORISATION]`
+
+> Every source-compatible analytic, positive, Hardy, index, and conormal reporter of a regular
+> source-minimal self-dual HT object factors through one presentation-independent polarized
+> Rees--corona correspondence `P_F`.  Its algebraic, null, separated, attainment, and positive
+> realizations are jointly conservative.  Source reversal supplies the algebraic inverse face;
+> physical polarization supplies the adjoint face; their difference is transported, not erased,
+> by every realization.
+
+This is a universality direction rather than a fixed final list of hypotheses.  Future corpus
+results strengthen it by constructing another factorization or by proving that a proposed face is
+forced by the existing correspondence.  A counterexample in which two source presentations give
+inequivalent `P_F`, or one corpus obstruction has no factorization, falsifies the conjecture.
+
+The conjecture is not allowed to define `P_F` as the product or free envelope of all known
+reporters.  `P_F` must be constructed from the literal source operations before the divisor or a
+target norm is read.  Otherwise joint conservativity is true by definition and has no mathematical
+content.
+
+### Contractive descent is now universal on every singular grade
+
+`[LEAN-FORMALIZED] [PARENT CARRIER THEOREM]`
+
+Let `epsilon_n>0`, and let
+
+```text
+T_n : H -> K,                    ||T_n|| <= 1
+```
+
+be any moving family of continuous linear maps.  If bounded sections `x` and `y` satisfy
+
+```text
+||x_n-y_n||/epsilon_n -> 0,
+```
+
+then
+
+```text
+||T_n x_n-T_n y_n||/epsilon_n -> 0,                       (PCR1)
+```
+
+and the image of a uniformly bounded section has the same uniform ceiling.  Hence `T_n` induces a
+canonical map
+
+```text
+SingularGradeCorona(H,epsilon) -> SingularGradeCorona(K,epsilon).   (PCR2)
+```
+
+The proof is the pointwise contraction inequality followed by squeezing.  It is parent functional
+analysis, not a novelty claim.  Its importance here is typing: the actual inward Sonin corner
+
+```text
+T_(a,r)=(1-Q_a)U_rQ_a,             ||T_(a,r)||<=1
+```
+
+now acts on every positive singular Rees-corona grade.  Contractivity is no longer merely a
+pointwise estimate outside the proposed universal carrier.  The declarations are in
+`SingularGradeCoronaContractiveDescent.lean`.
+
+Together with `XiSourceNormalConeDivisorConservation.lean`, the three currently exact faces are:
+
+```text
+algebraic/Rees face:
+  bounded-exponent depth exposes 1/(2 Xi), and its centered connection has residue
+  -m(rho-1/2) at every Xi divisor point;
+
+source-generation face:
+  finite contour moments reconstruct every finite Xi divisor packet, so no zero is selected as
+  input;
+
+positive/corona face:
+  the inward Sonin corner descends contractively at every singular grade and its conjugation is
+  Hilbert--Schmidt contractive.
+```
+
+The normal-cone theorem deliberately preserves the full off-line affine displacement.  It does
+not force it to vanish.  The missing factorization is the source-global Gamma/co-Poisson mate from
+this contractive corona face to the already fixed anti-causal Hardy reporter.
+
+### Universal capacity--width purity consumer
+
+`[PAPER-PROVED] [PARENT CONSUMER]`
+
+The four-unit endpoint is one instance of a general geometric theorem.  Let a self-dual divisor be
+contained in the open centered strip
+
+```text
+|Re(s-c)| < h,
+```
+
+and let its strict-right anti-causal response be the positive Schwarz-pair Cauchy sum.  Suppose
+that for every finite right-half-plane packet the augmented Cauchy block with scalar boundary
+capacity `D` is positive semidefinite.  If
+
+```text
+D <= 2/h,                                                     (PCR3)
+```
+
+then every divisor point lies on `Re(s)=c`.
+
+Indeed, a strict-right point of multiplicity `m>=1` and displacement `0<a<h`, sampled at its
+conjugate-centered node, gives
+
+```text
+|r(conj lambda)|^2 > m^2/a^2.                               (PCR4)
+```
+
+Positivity of the one-node block, whose Cauchy diagonal is `1/(2a)`, gives
+
+```text
+|r(conj lambda)|^2 <= D/(2a).                               (PCR5)
+```
+
+Equations `(PCR4)`--`(PCR5)` force
+
+```text
+D > 2m^2/a > 2/h,
+```
+
+contradicting `(PCR3)`.  Thus criticality is a capacity--width saturation law: a passive boundary
+with capacity equal to the reciprocal open-strip width cannot contain a transverse divisor atom.
+For Xi, `c=1/2`, `h=1/2`, and `D=4=2/h`.
+
+This theorem is a universal consumer, not the RH producer.  The producer remains the
+source-specific factorization
+
+```text
+P_Xi --T_sq--> H_Xi,
+T_sq(squarefree lower Fisher grade) = ell_E,
+||T_sq|| <= 1,                                                (PCR6)
+```
+
+with source capacity exactly four.  The new contractive corona descent proves the middle
+carrier can support `(PCR6)` without metric expansion.  The source-normal-cone and Torelli laws
+prove its divisor current and every finite divisor packet are source-generated.  What remains is
+one equality of polarized morphisms, not another zero criterion:
+
+`[OPEN CORE] [SOURCE_GLOBAL_POLARIZED_SONIN_HARDY_REPORTER_MATE]`
+
+> Construct from the literal squarefree prime, Gamma, co-Poisson, reflection, and Sonin maps one
+> presentation-independent morphism from the contractive singular Rees-corona correspondence to
+> the reciprocal-horizon Hardy correspondence.  Prove on a countable determining family, locally
+> uniformly in the right-half-plane node, that its anti-causal component is the complete continued
+> Ward column and that it preserves the independently fixed four-unit source capacity.
+
+A proof gives `(PCR6)`, then the capacity--width theorem gives RH.  A failure must produce the exact
+null, separated, attainment, or polarization face in which the affine divisor current lands; it
+may not be reported merely as “the map is unbounded.”
+
+### Hostile audit
+
+1. `SOURCE_MINIMAL_POLARIZED_REPORTER_FACTORISATION` is a truth-hunch, not a theorem.  Its universal
+   language supplies no RH content until `P_F` is source-constructed and at least two independent
+   reporter factorizations are proved.
+2. `(PCR1)`--`(PCR2)` are parent mathematics.  Their formalization closes a typing gap but is not
+   significant frontier mathematics by itself.
+3. The inward Sonin map is one-sided and deliberately non-self-adjoint.  Functional equation does
+   not manufacture its Hardy/reflection mate.
+4. Scalar equality of the safe Euler logarithmic trace with `logDeriv XiC`, and scalar subtraction
+   of the complementary non-right record, do not prove continuity or contractivity of `(PCR6)`.
+5. The normal-cone residue theorem strengthens source generation but also proves that completion
+   can conserve arbitrary off-line displacement.  It cannot be cited as a purity theorem.
+6. `(PCR3)`--`(PCR5)` generalize the already formalized zero-adapted Ward endpoint and are only a
+   consumer.  Re-proving them without constructing `(PCR6)` would be theatre.
+7. Generalized-prime off-line systems are expected to realize a nonzero polarization or
+   attainment face of `P_F`.  Any weakened conjecture that grants them the same strict
+   source-global reporter mate is false.
+
+- 2026-07-30 — Rejected the single completion-cofiber as universal invariant using the formalized
+  Gamma-null/Sonin-separated counterexample.  Recast universality as factorization through one
+  multi-relative polarized Rees-corona correspondence.  Formalized contractive descent of every
+  uniformly contractive moving family to the bounded singular-grade corona and instantiated it by
+  the inward Sonin corner.  Added the general capacity--width purity consumer and isolated the
+  source-global polarized Sonin--Hardy reporter mate as the unique arithmetic factorization still
+  required for RH.

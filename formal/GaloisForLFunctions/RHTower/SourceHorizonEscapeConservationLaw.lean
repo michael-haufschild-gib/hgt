@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.CompactOpenKolchinWardChargeEscape
 import GaloisForLFunctions.RHTower.XiSourceCayleyOrderSpaceConservationLaw
-import GaloisForLFunctions.RHTower.XiArithmeticSourceMomentTorelli
+import GaloisForLFunctions.RHTower.XiSourceNormalConeDivisorConservation
 
 /-!
 # Source-horizon conservation and noncompact Riemann-divisor escape
@@ -96,6 +96,11 @@ structure SourceHorizonEscapeConservationCertificate : Prop where
     XiSourceCayleyOrderSpaceConservationCertificate
   arithmeticSourceTomography :
     XiArithmeticSourceMomentTorelliCertificate
+  positiveHTBulkBoundaryDuality :
+    ∀ K : ℕ, 12 ≤ K →
+      PositiveHTBulkBoundaryDualityCertificate K
+  sourceNormalConeDivisorConservation :
+    XiSourceNormalConeDivisorConservationCertificate
   compactEscape :
     ∀ {a : ℝ}, 0 < a → a < 1 / 2 →
       (∀ n, Hypertranscendental (escapingQuartetGaugedXi a n)) ∧
@@ -179,6 +184,10 @@ theorem sourceHorizonEscapeConservation_law :
       xiSourceCayleyOrderSpaceConservation_law
     arithmeticSourceTomography :=
       xiArithmeticSourceMomentTorelli_law
+    positiveHTBulkBoundaryDuality :=
+      fun _ hK => positiveHTBulkBoundaryDuality_law hK
+    sourceNormalConeDivisorConservation :=
+      xiSourceNormalConeDivisorConservation_law
     compactEscape :=
       fun ha0 ha1 =>
         compactOpenKolchinWardChargeEscape_law ha0 ha1

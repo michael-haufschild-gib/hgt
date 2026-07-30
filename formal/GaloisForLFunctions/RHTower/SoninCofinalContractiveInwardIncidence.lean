@@ -158,6 +158,50 @@ theorem norm_centralSoninInwardDilationCorner_cofinalEmbedding_le
         (norm_nonneg _)
     _ = ‖x‖ := by rw [one_mul, LinearIsometry.norm_map]
 
+/-- Conjugation by the inward corner contracts Hilbert--Schmidt energy. -/
+theorem hsNormSq_centralSoninInwardDilationCorner_conjugation_le
+    (a r : ℝ) (hr : 1 < r)
+    (X : SoninL2 →L[ℂ] SoninL2)
+    (hX : ContinuousLinearMap.IsHilbertSchmidt X) :
+    ContinuousLinearMap.hsNormSq
+        (centralSoninInwardDilationCorner a r hr ∘L X ∘L
+          ContinuousLinearMap.adjoint
+            (centralSoninInwardDilationCorner a r hr)) ≤
+      ContinuousLinearMap.hsNormSq X := by
+  let C := centralSoninInwardDilationCorner a r hr
+  have hC : ‖C‖ ≤ 1 :=
+    norm_centralSoninInwardDilationCorner_le_one a r hr
+  have hCsq : ‖C‖ ^ 2 ≤ 1 := by
+    nlinarith [norm_nonneg C]
+  have hCX : ContinuousLinearMap.IsHilbertSchmidt (C ∘L X) :=
+    hX.comp_left C
+  have hright :=
+    ContinuousLinearMap.hsNormSq_comp_right_le hCX
+      (ContinuousLinearMap.adjoint C)
+  have hleft :=
+    ContinuousLinearMap.hsNormSq_comp_left_le hX C
+  have hAdjNorm :
+      ‖ContinuousLinearMap.adjoint C‖ = ‖C‖ :=
+    (ContinuousLinearMap.adjoint :
+      (SoninL2 →L[ℂ] SoninL2) ≃ₗᵢ⋆[ℂ]
+        (SoninL2 →L[ℂ] SoninL2)).norm_map C
+  calc
+    ContinuousLinearMap.hsNormSq
+        (C ∘L X ∘L ContinuousLinearMap.adjoint C) ≤
+        ‖ContinuousLinearMap.adjoint C‖ ^ 2 *
+          ContinuousLinearMap.hsNormSq (C ∘L X) := hright
+    _ = ‖C‖ ^ 2 *
+          ContinuousLinearMap.hsNormSq (C ∘L X) := by rw [hAdjNorm]
+    _ ≤ 1 * ContinuousLinearMap.hsNormSq (C ∘L X) :=
+      mul_le_mul_of_nonneg_right hCsq
+        (ContinuousLinearMap.hsNormSq_nonneg _)
+    _ = ContinuousLinearMap.hsNormSq (C ∘L X) := one_mul _
+    _ ≤ ‖C‖ ^ 2 * ContinuousLinearMap.hsNormSq X := hleft
+    _ ≤ 1 * ContinuousLinearMap.hsNormSq X :=
+      mul_le_mul_of_nonneg_right hCsq
+        (ContinuousLinearMap.hsNormSq_nonneg _)
+    _ = ContinuousLinearMap.hsNormSq X := one_mul _
+
 /-- Singular two-jet and codiagonal transport through one common contractive
 inward Sonin schedule. -/
 theorem exists_centralSoninInwardDilationCorner_singularDiagonal_pair_codiagonal

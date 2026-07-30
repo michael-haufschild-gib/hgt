@@ -1,0 +1,670 @@
+import GaloisForLFunctions.RHTower.XiArithmeticSourceMomentTorelli
+import GaloisForLFunctions.RHTower.MFreeLadder
+import GaloisForLFunctions.RHTower.SeamFluxCompletion
+import GaloisForLFunctions.RHTower.CompletePositiveKolchinFreeRiemannResolution
+import GaloisForLFunctions.HTGeometry.LogarithmicResidueQuantization
+import GaloisForLFunctions.HTGeometry.InverseGammaPoleCluster
+
+/-!
+# Source normal-cone divisor conservation
+
+A dilation quotient has two different asymptotic faces. At fixed coordinate it may
+converge to its bulk carrier, while at inverse-depth coordinate it converges to the
+reciprocal exceptional section. Consecutive depths differentiate to the Euler
+logarithmic current, whose centered residue retains the full affine displacement of
+each divisor point.
+
+The first part is carrier-independent. The second specializes the law to the
+bounded-exponent Euler source and the completed Riemann `xi` carrier. The arithmetic
+contour-moment Torelli certificate shows that no divisor point is selected as input.
+-/
+
+open Complex Filter Set
+open scoped Topology BigOperators ArithmeticFunction.Omega Differential
+  ArithmeticFunction.Moebius UpperEndDifferentialInstances
+  UpperEndComplexTowerInstances LSeries.notation ArithmeticFunction.zeta
+
+noncomputable section
+
+namespace GaloisForLFunctions.HTGeometry
+
+/-- The lower endpoint chart of a reciprocal carrier. -/
+def endpointNormalChart (f : ℂ → ℂ) (ε u : ℂ) : ℂ :=
+  f (ε * u) / f u
+
+/-- The upper endpoint chart of a reciprocal carrier. -/
+def reflectedEndpointNormalChart (f : ℂ → ℂ) (ε u : ℂ) : ℂ :=
+  f (1 - ε * u) / f u
+
+/-- Exceptional section exposed when the endpoint scale tends to zero. -/
+def exceptionalBoundarySection (f : ℂ → ℂ) (u : ℂ) : ℂ :=
+  f 0 / f u
+
+/-- Quotient between a carrier and its dilation by depth `t`. -/
+def sourceDepthQuotient (f : ℂ → ℂ) (t s : ℂ) : ℂ :=
+  f s / f (t * s)
+
+/-- Transport between two infinitesimally adjacent normal depths. -/
+def depthSuccessorTransport (f : ℂ → ℂ) (ε u : ℂ) : ℂ :=
+  f u / f ((1 + ε) * u)
+
+/-- Centered affine current carried by the exceptional divisor. -/
+def exceptionalAffineDivisorCurrent
+    (center : ℂ) (f : ℂ → ℂ) (u : ℂ) : ℂ :=
+  -(u - center) * logDeriv f u
+
+/-- A dilation quotient is a multiplicative cocycle for the dilation semigroup. -/
+theorem sourceDepthQuotient_cocycle
+    {f : ℂ → ℂ} {t v s : ℂ}
+    (hmid : f (t * s) ≠ 0)
+    (hend : f ((t * v) * s) ≠ 0) :
+    sourceDepthQuotient f (t * v) s =
+      sourceDepthQuotient f t s *
+        sourceDepthQuotient f v (t * s) := by
+  rw [sourceDepthQuotient, sourceDepthQuotient, sourceDepthQuotient]
+  have harg : v * (t * s) = (t * v) * s := by ring
+  rw [harg]
+  field_simp
+
+/-- Reciprocal symmetry glues the two endpoint charts exactly at every scale. -/
+theorem endpointNormalChart_eq_reflected
+    {f : ℂ → ℂ} (hsym : ∀ s, f (1 - s) = f s) (ε u : ℂ) :
+    endpointNormalChart f ε u = reflectedEndpointNormalChart f ε u := by
+  rw [endpointNormalChart, reflectedEndpointNormalChart, hsym]
+
+/-- The zero-scale chart is the exceptional reciprocal section. -/
+theorem endpointNormalChart_zero (f : ℂ → ℂ) (u : ℂ) :
+    endpointNormalChart f 0 u = exceptionalBoundarySection f u := by
+  simp [endpointNormalChart, exceptionalBoundarySection]
+
+/-- Every carrier continuous at the endpoint has the same normal-cone law. -/
+theorem tendsto_endpointNormalChart_zero
+    {f : ℂ → ℂ} (hf : ContinuousAt f 0) (u : ℂ) :
+    Tendsto (fun ε => endpointNormalChart f ε u)
+      (𝓝 0) (𝓝 (exceptionalBoundarySection f u)) := by
+  have harg : Tendsto (fun ε : ℂ => ε * u) (𝓝 0) (𝓝 0) := by
+    convert (continuousAt_id.mul_const u).tendsto using 1 <;> simp
+  have hnum : Tendsto (fun ε : ℂ => f (ε * u)) (𝓝 0) (𝓝 (f 0)) :=
+    hf.tendsto.comp harg
+  simpa [endpointNormalChart, exceptionalBoundarySection] using
+    hnum.div_const (f u)
+
+/-- A depth quotient at inverse depth is exactly its endpoint chart. -/
+theorem sourceDepthQuotient_normal_coordinate
+    {f : ℂ → ℂ} {t : ℂ} (ht : t ≠ 0) (u : ℂ) :
+    sourceDepthQuotient f t (t⁻¹ * u) =
+      endpointNormalChart f t⁻¹ u := by
+  rw [sourceDepthQuotient, endpointNormalChart]
+  congr 1
+  field_simp
+
+/-- Universal inverse-depth limit: every continuous carrier exposes its reciprocal
+exceptional section. -/
+theorem tendsto_sourceDepthQuotient_normalScale
+    {f : ℂ → ℂ} (hf : ContinuousAt f 0) (u : ℂ) :
+    Tendsto
+      (fun M : ℕ =>
+        sourceDepthQuotient f ((M + 1 : ℕ) : ℂ)
+          ((((M + 1 : ℕ) : ℂ)⁻¹) * u))
+      atTop (𝓝 (exceptionalBoundarySection f u)) := by
+  have heps :
+      Tendsto (fun M : ℕ => (((M + 1 : ℕ) : ℂ)⁻¹))
+        atTop (𝓝 0) := by
+    have h :=
+      GaloisForLFunctions.tendsto_natCast_inv_complex.comp
+        (tendsto_add_atTop_nat 1)
+    exact h.congr' (Filter.Eventually.of_forall fun M => by rfl)
+  have hcone := (tendsto_endpointNormalChart_zero hf u).comp heps
+  refine hcone.congr' (Filter.Eventually.of_forall fun M => ?_)
+  symm
+  exact sourceDepthQuotient_normal_coordinate
+    (by exact_mod_cast (show M + 1 ≠ 0 by omega)) u
+
+/-- Ratio of consecutive depths before the normal rescaling. -/
+theorem sourceDepthQuotient_successor_ratio
+    {f : ℂ → ℂ} {t s : ℂ}
+    (hfs : f s ≠ 0) (hft : f (t * s) ≠ 0)
+    (hft1 : f ((t + 1) * s) ≠ 0) :
+    sourceDepthQuotient f (t + 1) s /
+        sourceDepthQuotient f t s =
+      f (t * s) / f ((t + 1) * s) := by
+  rw [sourceDepthQuotient, sourceDepthQuotient]
+  field_simp
+
+/-- On the inverse-depth chart, the consecutive quotient is the depth transport. -/
+theorem sourceDepthQuotient_normal_successor_ratio
+    {f : ℂ → ℂ} {t u : ℂ}
+    (ht : t ≠ 0)
+    (hfx : f (t⁻¹ * u) ≠ 0) (hfu : f u ≠ 0)
+    (hfnext : f ((1 + t⁻¹) * u) ≠ 0) :
+    sourceDepthQuotient f (t + 1) (t⁻¹ * u) /
+        sourceDepthQuotient f t (t⁻¹ * u) =
+      depthSuccessorTransport f t⁻¹ u := by
+  rw [sourceDepthQuotient_successor_ratio hfx
+    (by
+      convert hfu using 1
+      field_simp)
+    (by
+      convert hfnext using 1
+      field_simp)]
+  rw [depthSuccessorTransport]
+  congr 1 <;> field_simp
+
+/-- Infinitesimal depth transport is the Euler logarithmic current. -/
+theorem hasDerivAt_depthSuccessorTransport_zero
+    {f : ℂ → ℂ} {u : ℂ} (hf : DifferentiableAt ℂ f u)
+    (hfu : f u ≠ 0) :
+    HasDerivAt (fun ε => depthSuccessorTransport f ε u)
+      (-u * logDeriv f u) 0 := by
+  have harg : HasDerivAt (fun ε : ℂ => (1 + ε) * u) u 0 := by
+    simpa using (((hasDerivAt_id (0 : ℂ)).const_add 1).mul_const u)
+  have hden : HasDerivAt (fun ε : ℂ => f ((1 + ε) * u))
+      (deriv f u * u) 0 := by
+    have hf' : HasDerivAt f (deriv f u) ((1 + 0) * u) := by
+      simpa using hf.hasDerivAt
+    convert hf'.comp 0 harg using 1 <;> rfl
+  have hquot := (hasDerivAt_const (x := (0 : ℂ)) (f u)).div hden
+    (by simpa using hfu)
+  change HasDerivAt (fun ε : ℂ => f u / f ((1 + ε) * u))
+    ((0 * f ((1 + 0) * u) - f u * (deriv f u * u)) /
+      f ((1 + 0) * u) ^ 2) 0 at hquot
+  have heq :
+      -u * logDeriv f u =
+        (0 * f ((1 + 0) * u) - f u * (deriv f u * u)) /
+          f ((1 + 0) * u) ^ 2 := by
+    rw [logDeriv_apply]
+    simp only [add_zero, one_mul, zero_mul, zero_sub]
+    field_simp [hfu]
+  rw [heq]
+  exact hquot
+
+/-- The exceptional section reverses the logarithmic connection. -/
+theorem logDeriv_exceptionalBoundarySection
+    {f : ℂ → ℂ} {u : ℂ}
+    (hf0 : f 0 ≠ 0) (hfu : f u ≠ 0) (hf : DifferentiableAt ℂ f u) :
+    logDeriv (exceptionalBoundarySection f) u = -logDeriv f u := by
+  have h :=
+    logDeriv_div (x := u) (f := fun _ : ℂ => f 0) (g := f)
+      hf0 hfu (hasDerivAt_const u (f 0)).differentiableAt hf
+  change logDeriv (fun z => f 0 / f z) u = -logDeriv f u
+  simpa [logDeriv_apply] using h
+
+/-- The exceptional section carries the negative of the original divisor. -/
+theorem meromorphicOrderAt_exceptionalBoundarySection
+    {f : ℂ → ℂ} {rho : ℂ} {n : ℤ}
+    (hf0 : f 0 ≠ 0) (hf : MeromorphicAt f rho)
+    (horder : meromorphicOrderAt f rho = n) :
+    meromorphicOrderAt (exceptionalBoundarySection f) rho = -n := by
+  change meromorphicOrderAt ((fun _ : ℂ => f 0) / f) rho = _
+  rw [meromorphicOrderAt_div analyticAt_const.meromorphicAt hf,
+    meromorphicOrderAt_const, if_neg hf0, horder]
+  simp
+
+/-- The affine divisor current is intrinsically the exceptional boundary connection. -/
+theorem exceptionalAffineDivisorCurrent_eq_boundaryConnection
+    {f : ℂ → ℂ} {center u : ℂ}
+    (hf0 : f 0 ≠ 0) (hfu : f u ≠ 0) (hf : DifferentiableAt ℂ f u) :
+    exceptionalAffineDivisorCurrent center f u =
+      (u - center) * logDeriv (exceptionalBoundarySection f) u := by
+  rw [logDeriv_exceptionalBoundarySection hf0 hfu hf]
+  simp [exceptionalAffineDivisorCurrent]
+  ring
+
+/-- The centered affine current of a reciprocal carrier is reflection invariant. -/
+theorem exceptionalAffineDivisorCurrent_reflection
+    {f : ℂ → ℂ}
+    (hlog : ∀ s, logDeriv f (1 - s) = -logDeriv f s)
+    (u : ℂ) :
+    exceptionalAffineDivisorCurrent (1 / 2) f (1 - u) =
+      exceptionalAffineDivisorCurrent (1 / 2) f u := by
+  rw [exceptionalAffineDivisorCurrent, exceptionalAffineDivisorCurrent, hlog]
+  ring
+
+/-- An affine weight is odd under reflection about `center` exactly when it is a
+scalar multiple of the centered coordinate. -/
+theorem affineWeight_reflectionOdd_iff
+    (a b center : ℂ) :
+    (∀ u : ℂ, a * (2 * center - u) + b = -(a * u + b)) ↔
+      b = -a * center := by
+  constructor
+  · intro h
+    have hc : a * center + b = -(a * center + b) := by
+      calc
+        a * center + b = a * (2 * center - center) + b := by ring
+        _ = -(a * center + b) := h center
+    have htwo : (2 : ℂ) * (a * center + b) = 0 := by
+      calc
+        (2 : ℂ) * (a * center + b) =
+            (a * center + b) + (a * center + b) := by ring
+        _ = -(a * center + b) + (a * center + b) :=
+          congrArg (fun z : ℂ => z + (a * center + b)) hc
+        _ = 0 := by ring
+    have hzero : a * center + b = 0 :=
+      (mul_eq_zero.mp htwo).resolve_left (by norm_num)
+    simpa only [neg_mul] using eq_neg_of_add_eq_zero_right hzero
+  · intro hb u
+    rw [hb]
+    ring
+
+/-- The centered affine coordinate is therefore the unique affine polarization,
+up to scale, compatible with reflection. -/
+theorem affineWeight_eq_centered_of_reflectionOdd
+    {a b center : ℂ}
+    (hodd : ∀ u : ℂ, a * (2 * center - u) + b = -(a * u + b))
+    (u : ℂ) :
+    a * u + b = a * (u - center) := by
+  rw [(affineWeight_reflectionOdd_iff a b center).mp hodd]
+  ring
+
+/-- Every reflection-even scalar observer identifies a point with its reflected
+partner and hence cannot be globally injective. -/
+theorem reflectionEvenObserver_not_injective
+    {α : Type*} (center : ℂ) (obs : ℂ → α)
+    (heven : ∀ u : ℂ, obs (2 * center - u) = obs u) :
+    ¬Function.Injective obs := by
+  intro hinj
+  have hpair := hinj (heven (center + 1))
+  have hone : (-1 : ℂ) = 1 := by
+    calc
+      (-1 : ℂ) = (2 * center - (center + 1)) - center := by ring
+      _ = (center + 1) - center := congrArg (fun z : ℂ => z - center) hpair
+      _ = 1 := by ring
+  norm_num at hone
+
+/-- Local conservation law: order becomes the full centered affine residue vector. -/
+theorem exceptionalAffineDivisorCurrent_residue
+    {f : ℂ → ℂ} {center rho : ℂ} {n : ℤ}
+    (hf : MeromorphicAt f rho)
+    (horder : meromorphicOrderAt f rho = n) :
+    Tendsto
+      (fun s => (s - rho) * exceptionalAffineDivisorCurrent center f s)
+      (𝓝[≠] rho)
+      (𝓝 (-((rho - center) * (n : ℂ)))) := by
+  have hres :=
+    logDeriv_residue_of_meromorphicOrder hf horder
+  have hfactor :
+      Tendsto (fun s : ℂ => -(s - center)) (𝓝[≠] rho)
+        (𝓝 (-(rho - center))) := by
+    exact ((continuous_id.sub continuous_const).neg.tendsto rho).mono_left
+      nhdsWithin_le_nhds
+  convert hfactor.mul hres using 1
+  · funext s
+    simp only [exceptionalAffineDivisorCurrent]
+    ring
+  · ring
+
+end GaloisForLFunctions.HTGeometry
+
+namespace RHTower
+
+open ArithmeticFunction LSeries
+open GaloisForLFunctions
+open GaloisForLFunctions.HTGeometry
+
+/-- Euler source for integers whose prime exponents are bounded by `m - 1`. -/
+def boundedExponentEulerSource (m : ℕ) (s : ℂ) : ℂ :=
+  riemannZeta s / riemannZeta ((m : ℂ) * s)
+
+/-- Inverse-depth chart of the bounded-exponent source. -/
+def boundedExponentNormalCone (ε u : ℂ) : ℂ :=
+  riemannZeta (ε * u) / riemannZeta u
+
+/-- Ordered positive-resolution prefix after reinserting the common zeta carrier. -/
+def completeResolutionCarrierPrefix (K N : ℕ) (s : ℂ) : ℂ :=
+  riemannZeta s *
+    ∑ j ∈ Finset.range (N + 1), completeResolutionMultiplier K j s
+
+/-- Every finite positive-resolution prefix is exactly one bounded-exponent
+Euler source. This is the algebraic bridge between the hypertranscendental
+channel resolution and the normal-cone family. -/
+theorem completeResolutionCarrierPrefix_eq_boundedExponentEulerSource
+    (K N : ℕ) (s : ℂ) :
+    completeResolutionCarrierPrefix K N s =
+      boundedExponentEulerSource (K + N) s := by
+  rw [completeResolutionCarrierPrefix, sum_range_completeResolutionMultiplier]
+  simp only [boundedExponentEulerSource, div_eq_mul_inv]
+
+/-- The bounded-exponent Euler source is the exact `m`-free Dirichlet series. -/
+theorem boundedExponentEulerSource_eq_LSeries
+    {m : ℕ} (hm : m ≠ 0) {s : ℂ} (hs : 1 < s.re) :
+    boundedExponentEulerSource m s =
+      LSeries (fun n => ((mFreeIndicator m n : ℤ) : ℂ)) s := by
+  symm
+  simpa [boundedExponentEulerSource] using
+    LSeries_mFree_eq_riemannZeta_div hm hs
+
+/-- Exact conversion from arithmetic depth to normal coordinate. -/
+theorem boundedExponentEulerSource_normal_coordinate
+    {m : ℕ} (hm : m ≠ 0) (u : ℂ) :
+    boundedExponentEulerSource m (((m : ℂ)⁻¹) * u) =
+      boundedExponentNormalCone ((m : ℂ)⁻¹) u := by
+  rw [boundedExponentEulerSource, boundedExponentNormalCone]
+  have hmC : (m : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr hm
+  congr 1
+  field_simp
+
+/-- Continuous normal-cone limit of the arithmetic source. -/
+theorem tendsto_boundedExponentNormalCone_zero (u : ℂ) :
+    Tendsto (fun ε => boundedExponentNormalCone ε u)
+      (𝓝 0) (𝓝 ((-1 / 2 : ℂ) / riemannZeta u)) := by
+  have hzeta : ContinuousAt riemannZeta 0 :=
+    (differentiableAt_riemannZeta (by norm_num)).continuousAt
+  have harg : Tendsto (fun ε : ℂ => ε * u) (𝓝 0) (𝓝 0) := by
+    convert (continuousAt_id.mul_const u).tendsto using 1 <;> simp
+  have hnum : Tendsto (fun ε : ℂ => riemannZeta (ε * u))
+      (𝓝 0) (𝓝 (riemannZeta 0)) :=
+    hzeta.tendsto.comp harg
+  rw [riemannZeta_zero] at hnum
+  simpa [boundedExponentNormalCone] using hnum.div_const (riemannZeta u)
+
+/-- At fixed scale the arithmetic source converges to the zeta bulk. -/
+theorem tendsto_boundedExponentEulerSource_fixedScale
+    {s : ℂ} (hs : 0 < s.re) :
+    Tendsto (fun M : ℕ => boundedExponentEulerSource (M + 1) s)
+      atTop (𝓝 (riemannZeta s)) := by
+  have hden :
+      Tendsto
+        (fun M : ℕ => (riemannZeta (((1 + M : ℕ) : ℂ) * s))⁻¹)
+        atTop (𝓝 1) :=
+    tendsto_inv_riemannZeta_nat_dilation_one (K := 1) hs
+  have hconst :
+      Tendsto (fun _ : ℕ => riemannZeta s) atTop (𝓝 (riemannZeta s)) :=
+    tendsto_const_nhds
+  have hprod := hconst.mul hden
+  simpa [boundedExponentEulerSource, div_eq_mul_inv, Nat.add_comm] using hprod
+
+/-- At inverse depth the same arithmetic source converges to reciprocal zeta. -/
+theorem tendsto_boundedExponentEulerSource_normalScale (u : ℂ) :
+    Tendsto
+      (fun M : ℕ =>
+        boundedExponentEulerSource (M + 1)
+          ((((M + 1 : ℕ) : ℂ)⁻¹) * u))
+      atTop (𝓝 ((-1 / 2 : ℂ) / riemannZeta u)) := by
+  have heps :
+      Tendsto (fun M : ℕ => (((M + 1 : ℕ) : ℂ)⁻¹))
+        atTop (𝓝 0) := by
+    have h :=
+      GaloisForLFunctions.tendsto_natCast_inv_complex.comp
+        (tendsto_add_atTop_nat 1)
+    exact h.congr' (Filter.Eventually.of_forall fun M => by rfl)
+  have hcone := (tendsto_boundedExponentNormalCone_zero u).comp heps
+  refine hcone.congr' (Filter.Eventually.of_forall fun M => ?_)
+  symm
+  exact boundedExponentEulerSource_normal_coordinate (by omega) u
+
+/-- At fixed scale the ordered positive hypertranscendental resolution fuses to
+the zeta bulk. -/
+theorem tendsto_completeResolutionCarrierPrefix_fixedScale
+    (K : ℕ) {s : ℂ} (hs : 0 < s.re) :
+    Tendsto (fun N : ℕ => completeResolutionCarrierPrefix K N s)
+      atTop (𝓝 (riemannZeta s)) := by
+  have hmultiplier :=
+    tendsto_sum_range_completeResolutionMultiplier_one K hs
+  simpa [completeResolutionCarrierPrefix] using
+    (tendsto_const_nhds.mul hmultiplier)
+
+/-- Exact conversion of a positive-resolution prefix to its inverse-depth chart. -/
+theorem completeResolutionCarrierPrefix_normal_coordinate
+    {K N : ℕ} (hdepth : K + N ≠ 0) (u : ℂ) :
+    completeResolutionCarrierPrefix K N
+        ((((K + N : ℕ) : ℂ)⁻¹) * u) =
+      boundedExponentNormalCone (((K + N : ℕ) : ℂ)⁻¹) u := by
+  rw [completeResolutionCarrierPrefix_eq_boundedExponentEulerSource,
+    boundedExponentEulerSource_normal_coordinate hdepth]
+
+/-- At inverse depth the same ordered positive hypertranscendental resolution
+converges to the reciprocal zeta boundary. -/
+theorem tendsto_completeResolutionCarrierPrefix_normalScale
+    {K : ℕ} (hK : K ≠ 0) (u : ℂ) :
+    Tendsto
+      (fun N : ℕ =>
+        completeResolutionCarrierPrefix K N
+          ((((K + N : ℕ) : ℂ)⁻¹) * u))
+      atTop (𝓝 ((-1 / 2 : ℂ) / riemannZeta u)) := by
+  have heps :
+      Tendsto (fun N : ℕ => (((K + N : ℕ) : ℂ)⁻¹))
+        atTop (𝓝 0) := by
+    have h :=
+      GaloisForLFunctions.tendsto_natCast_inv_complex.comp
+        (tendsto_add_atTop_nat K)
+    exact h.congr' (Filter.Eventually.of_forall fun N => by
+      simp [Function.comp_apply, Nat.add_comm])
+  have hcone := (tendsto_boundedExponentNormalCone_zero u).comp heps
+  refine hcone.congr' (Filter.Eventually.of_forall fun N => ?_)
+  symm
+  exact completeResolutionCarrierPrefix_normal_coordinate
+    (by omega) u
+
+/-- The bulk and exceptional zeta faces pair to the endpoint constant `ζ(0)`. -/
+theorem riemannZeta_mul_exceptionalFace
+    {u : ℂ} (hu : riemannZeta u ≠ 0) :
+    riemannZeta u * ((-1 / 2 : ℂ) / riemannZeta u) = -1 / 2 := by
+  field_simp
+
+/-- Exact package joining positive coefficient resolution, maximal relative
+differential rank, bulk fusion, and reciprocal exceptional boundary. -/
+structure PositiveHTBulkBoundaryDualityCertificate (K : ℕ) : Prop where
+  relativeDifferentialFree :
+    DifferentialIndependent zetaUpperEndDifferentialField
+      (completeResolutionUpperEndMultiplier K)
+  coefficientZeroOrOne :
+    ∀ j n : ℕ, completeResolutionIndicator K j n = 0 ∨
+      completeResolutionIndicator K j n = 1
+  coefficientDisjoint :
+    ∀ i j n : ℕ, i ≠ j →
+      completeResolutionIndicator K i n ≠ 0 →
+      completeResolutionIndicator K j n = 0
+  coefficientFusion :
+    ∀ n : ℕ, (∑' j : ℕ, completeResolutionIndicator K j n) =
+      (ζ : ArithmeticFunction ℤ) n
+  channelLSeries :
+    ∀ j : ℕ, ∀ {s : ℂ}, 1 < s.re →
+      LSeries ↗(completeResolutionIndicator K j) s =
+        riemannZeta s * completeResolutionMultiplier K j s
+  exactPrefix :
+    ∀ N : ℕ, ∀ s : ℂ,
+      completeResolutionCarrierPrefix K N s =
+        boundedExponentEulerSource (K + N) s
+  bulkFusion :
+    ∀ {s : ℂ}, 0 < s.re →
+      Tendsto (fun N : ℕ => completeResolutionCarrierPrefix K N s)
+        atTop (𝓝 (riemannZeta s))
+  exceptionalFusion :
+    ∀ u : ℂ,
+      Tendsto
+        (fun N : ℕ =>
+          completeResolutionCarrierPrefix K N
+            ((((K + N : ℕ) : ℂ)⁻¹) * u))
+        atTop (𝓝 ((-1 / 2 : ℂ) / riemannZeta u))
+  channelDivisor :
+    ∀ j : ℕ, ∀ s : ℂ, 1 / 2 < s.re → s ≠ 1 →
+      analyticOrderAt
+          (fun z => riemannZeta z * completeResolutionMultiplier K j z) s =
+        analyticOrderAt riemannZeta s
+  bulkExceptionalPairing :
+    ∀ {u : ℂ}, riemannZeta u ≠ 0 →
+      riemannZeta u * ((-1 / 2 : ℂ) / riemannZeta u) = -1 / 2
+
+/-- **Positive hypertranscendental bulk--boundary duality.**  For every
+`K ≥ 12`, one explicit countable family is simultaneously a disjoint positive
+resolution of zeta, maximally differentially free transverse to zeta, exactly
+isodivisorial channel by channel, and a two-scale family whose fixed-scale
+fusion is zeta while its inverse-depth fusion is reciprocal zeta. -/
+theorem positiveHTBulkBoundaryDuality_law
+    {K : ℕ} (hK : 12 ≤ K) :
+    PositiveHTBulkBoundaryDualityCertificate K where
+  relativeDifferentialFree :=
+    completeResolutionUpperEndMultiplier_relativeDifferentialIndependent K
+      (by omega)
+  coefficientZeroOrOne := completeResolutionIndicator_eq_zero_or_one
+  coefficientDisjoint := fun _ _ _ hij hi =>
+    completeResolutionIndicator_pairwiseDisjoint hij hi
+  coefficientFusion := tsum_completeResolutionIndicator
+  channelLSeries := fun j _ hs =>
+    LSeries_completeResolutionIndicator (by omega) j hs
+  exactPrefix := completeResolutionCarrierPrefix_eq_boundedExponentEulerSource K
+  bulkFusion := tendsto_completeResolutionCarrierPrefix_fixedScale K
+  exceptionalFusion :=
+    tendsto_completeResolutionCarrierPrefix_normalScale (by omega)
+  channelDivisor := fun j s hs hs1 =>
+    analyticOrderAt_riemannZeta_completeResolutionChannel hK j hs hs1
+  bulkExceptionalPairing := riemannZeta_mul_exceptionalFace
+
+/-- Completed lower endpoint chart. -/
+def xiEndpointNormalChart : ℂ → ℂ → ℂ :=
+  endpointNormalChart xi
+
+/-- Completed upper endpoint chart. -/
+def xiReflectedEndpointNormalChart : ℂ → ℂ → ℂ :=
+  reflectedEndpointNormalChart xi
+
+/-- Completed exceptional reciprocal section. -/
+def xiExceptionalBoundarySection : ℂ → ℂ :=
+  exceptionalBoundarySection xi
+
+/-- Completed consecutive-depth transport. -/
+def xiDepthSuccessorTransport : ℂ → ℂ → ℂ :=
+  depthSuccessorTransport xi
+
+/-- Reflection-balanced affine Xi divisor current. -/
+def xiExceptionalAffineDivisorCurrent : ℂ → ℂ :=
+  exceptionalAffineDivisorCurrent (1 / 2) xi
+
+/-- The completed endpoint charts glue exactly by the functional equation. -/
+theorem xiEndpointNormalChart_eq_reflected (ε u : ℂ) :
+    xiEndpointNormalChart ε u = xiReflectedEndpointNormalChart ε u :=
+  endpointNormalChart_eq_reflected xi_one_sub ε u
+
+/-- Both completed endpoint charts converge to the same exceptional reciprocal Xi section. -/
+theorem tendsto_xiEndpointNormalChart_zero (u : ℂ) :
+    Tendsto (fun ε => xiEndpointNormalChart ε u)
+      (𝓝 0) (𝓝 ((1 / 2 : ℂ) / xi u)) := by
+  have h :=
+    tendsto_endpointNormalChart_zero
+      (xi_differentiable 0).continuousAt u
+  simpa [xiEndpointNormalChart, xiExceptionalBoundarySection,
+    exceptionalBoundarySection, xi_zero] using h
+
+/-- Infinitesimal completed depth is the Xi Euler current. -/
+theorem hasDerivAt_xiDepthSuccessorTransport_zero
+    {u : ℂ} (hu : xi u ≠ 0) :
+    HasDerivAt (fun ε => xiDepthSuccessorTransport ε u)
+      (-u * logDeriv xi u) 0 := by
+  simpa [xiDepthSuccessorTransport] using
+    hasDerivAt_depthSuccessorTransport_zero (xi_differentiable u) hu
+
+/-- Difference-quotient form of the completed depth-current law. -/
+theorem tendsto_xiDepthSuccessorTransport_differenceQuotient
+    {u : ℂ} (hu : xi u ≠ 0) :
+    Tendsto
+      (fun ε : ℂ =>
+        ε⁻¹ * (xiDepthSuccessorTransport ε u -
+          xiDepthSuccessorTransport 0 u))
+      (𝓝[≠] 0)
+      (𝓝 (-u * logDeriv xi u)) := by
+  simpa [smul_eq_mul] using
+    (hasDerivAt_xiDepthSuccessorTransport_zero hu).tendsto_slope_zero
+
+/-- The centered affine Xi current is reflection invariant. -/
+theorem xiExceptionalAffineDivisorCurrent_reflection (u : ℂ) :
+    xiExceptionalAffineDivisorCurrent (1 - u) =
+      xiExceptionalAffineDivisorCurrent u := by
+  simpa [xiExceptionalAffineDivisorCurrent] using
+    exceptionalAffineDivisorCurrent_reflection logDeriv_xi_reciprocity u
+
+/-- The centered current is the intrinsic connection of the exceptional boundary. -/
+theorem xiExceptionalAffineDivisorCurrent_eq_boundaryConnection
+    {u : ℂ} (hu : xi u ≠ 0) :
+    xiExceptionalAffineDivisorCurrent u =
+      (u - 1 / 2) * logDeriv xiExceptionalBoundarySection u := by
+  exact exceptionalAffineDivisorCurrent_eq_boundaryConnection
+    (by rw [xi_zero]; norm_num) hu (xi_differentiable u)
+
+/-- At a Xi divisor point, the residue is multiplicity times its full centered
+affine displacement. -/
+theorem xiExceptionalAffineDivisorCurrent_residue
+    {rho : ℂ} {n : ℤ}
+    (horder : meromorphicOrderAt xi rho = n) :
+    Tendsto
+      (fun s => (s - rho) * xiExceptionalAffineDivisorCurrent s)
+      (𝓝[≠] rho)
+      (𝓝 (-((rho - 1 / 2) * (n : ℂ)))) := by
+  have hxi : MeromorphicAt xi rho :=
+    (xi_analyticOnNhd_univ rho (Set.mem_univ _)).meromorphicAt
+  simpa [xiExceptionalAffineDivisorCurrent] using
+    exceptionalAffineDivisorCurrent_residue hxi horder
+
+/-- The exceptional Xi section carries the inverse Xi divisor with exact multiplicity. -/
+theorem meromorphicOrderAt_xiExceptionalBoundarySection
+    {rho : ℂ} {n : ℤ}
+    (horder : meromorphicOrderAt xi rho = n) :
+    meromorphicOrderAt xiExceptionalBoundarySection rho = -n := by
+  exact meromorphicOrderAt_exceptionalBoundarySection
+    (by rw [xi_zero]; norm_num)
+    (xi_analyticOnNhd_univ rho (Set.mem_univ _)).meromorphicAt horder
+
+/-- Exact theorem package for the Riemann source normal-cone conservation law. -/
+structure XiSourceNormalConeDivisorConservationCertificate : Prop where
+  arithmeticSource :
+    ∀ {m : ℕ}, m ≠ 0 → ∀ {s : ℂ}, 1 < s.re →
+      boundedExponentEulerSource m s =
+        LSeries (fun n => ((mFreeIndicator m n : ℤ) : ℂ)) s
+  bulkLimit :
+    ∀ {s : ℂ}, 0 < s.re →
+      Tendsto (fun M : ℕ => boundedExponentEulerSource (M + 1) s)
+        atTop (𝓝 (riemannZeta s))
+  exceptionalLimit :
+    ∀ u : ℂ,
+      Tendsto
+        (fun M : ℕ =>
+          boundedExponentEulerSource (M + 1)
+            ((((M + 1 : ℕ) : ℂ)⁻¹) * u))
+        atTop (𝓝 ((-1 / 2 : ℂ) / riemannZeta u))
+  endpointGluing :
+    ∀ ε u : ℂ,
+      xiEndpointNormalChart ε u = xiReflectedEndpointNormalChart ε u
+  completedExceptionalLimit :
+    ∀ u : ℂ,
+      Tendsto (fun ε => xiEndpointNormalChart ε u)
+        (𝓝 0) (𝓝 ((1 / 2 : ℂ) / xi u))
+  depthCurrent :
+    ∀ {u : ℂ}, xi u ≠ 0 →
+      HasDerivAt (fun ε => xiDepthSuccessorTransport ε u)
+        (-u * logDeriv xi u) 0
+  boundaryConnection :
+    ∀ {u : ℂ}, xi u ≠ 0 →
+      xiExceptionalAffineDivisorCurrent u =
+        (u - 1 / 2) * logDeriv xiExceptionalBoundarySection u
+  reflectionConservation :
+    ∀ u : ℂ,
+      xiExceptionalAffineDivisorCurrent (1 - u) =
+        xiExceptionalAffineDivisorCurrent u
+  affineResidue :
+    ∀ {rho : ℂ} {n : ℤ}, meromorphicOrderAt xi rho = n →
+      Tendsto
+        (fun s => (s - rho) * xiExceptionalAffineDivisorCurrent s)
+        (𝓝[≠] rho)
+        (𝓝 (-((rho - 1 / 2) * (n : ℂ))))
+  exceptionalDivisor :
+    ∀ {rho : ℂ} {n : ℤ}, meromorphicOrderAt xi rho = n →
+      meromorphicOrderAt xiExceptionalBoundarySection rho = -n
+  arithmeticTomography : XiArithmeticSourceMomentTorelliCertificate
+
+/-- Source-generated Xi divisor conservation: bulk, exceptional divisor, affine
+current, and finite-divisor tomography in one unconditional certificate. -/
+theorem xiSourceNormalConeDivisorConservation_law :
+    XiSourceNormalConeDivisorConservationCertificate where
+  arithmeticSource := fun hm _ hs =>
+    boundedExponentEulerSource_eq_LSeries hm hs
+  bulkLimit := fun hs => tendsto_boundedExponentEulerSource_fixedScale hs
+  exceptionalLimit := tendsto_boundedExponentEulerSource_normalScale
+  endpointGluing := xiEndpointNormalChart_eq_reflected
+  completedExceptionalLimit := tendsto_xiEndpointNormalChart_zero
+  depthCurrent := hasDerivAt_xiDepthSuccessorTransport_zero
+  boundaryConnection := xiExceptionalAffineDivisorCurrent_eq_boundaryConnection
+  reflectionConservation := xiExceptionalAffineDivisorCurrent_reflection
+  affineResidue := xiExceptionalAffineDivisorCurrent_residue
+  exceptionalDivisor := meromorphicOrderAt_xiExceptionalBoundarySection
+  arithmeticTomography := xiArithmeticSourceMomentTorelli_law
+
+end RHTower

@@ -435,9 +435,22 @@ countable, so there are only countably many forbidden real scales. Choose
 \(t_k\) outside them. The scaled component modules form a direct sum, and
 `(18)` attains `(19)`.
 
-This one witness makes every nonmaximal global relation polynomial
-nonzero. The same discriminant and countable zero-set argument proves dense
-full-measure \(G_\delta\) sharpness and completes `(2)`.
+The genericity step must distinguish unavoidable additive rectangle
+relations from relations that reduce the component-module rank. This is
+proved in full in
+`disconnected-local-spectral-factorization-genericity.md`.
+
+For completeness, for every nonzero rational coefficient family on one
+canonical gap basis in each component, balance its coefficients within each
+component and multiply the resulting linear form over independent
+permutations of every component spectrum. The product is separately
+symmetric in each component eigenvalue block and hence polynomial in the
+component characteristic coefficients. It is nonzero at the transverse
+scaled witness: every permuted factor is a sum of balanced component gap
+combinations, so transversality and component maximality prevent its
+vanishing. Each excess relation therefore lies in a proper polynomial zero
+set. Removing the countable union of those sets and the total discriminant
+proves dense full-measure \(G_\delta\) sharpness and completes `(2)`.
 
 ### 9. Simultaneous subsystem atlas
 
