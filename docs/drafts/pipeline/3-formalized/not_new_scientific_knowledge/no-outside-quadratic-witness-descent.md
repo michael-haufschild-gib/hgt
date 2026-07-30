@@ -142,7 +142,9 @@ This theorem does **not** prove:
 - that physical reporters must be entire;
 - that \(a^2\) is a probability, norm, metric, or causal interval;
 - that a real sign quotient generates complex scalars, a dagger, or positivity;
-- that a scalar square uniquely becomes the Hermitian matrix square \(X^\dagger X\);
+- by itself, that a scalar square uniquely becomes the Hermitian matrix square \(X^\dagger X\)
+  (the additional triangle-source symmetry and metric hypotheses closing the finite lift are
+  proved separately in `triangle-source-hermitian-lift.md`);
 - that a Gram cone is physically spacetime;
 - that comparison of neighboring square roots yields gravity or gauge forces; or
 - that the law has a continuum dynamics or observable prediction.
@@ -198,3 +200,5 @@ The final target build completed all 8,657 jobs. `#print axioms` reports only pr
   as three distinct layers.
 - 2026-07-30 — formalized source-invariant reporter evenness and entire square descent; direct
   check, final target build, and axiom audit passed.
+- 2026-07-30 — finite sign-to-Hermitian passage subsequently closed by the separate
+  triangle-source phase, conjugation, metric-rigidity, and exact-complexification theorem.

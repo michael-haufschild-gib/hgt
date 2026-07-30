@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.FiniteHorizonCStarPerturbationLaw
 import Mathlib.LinearAlgebra.Countable
 import Mathlib.LinearAlgebra.Dimension.Constructions
+import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 import Mathlib.LinearAlgebra.LinearIndependent.Lemmas
 import Mathlib.Topology.Algebra.Module.Cardinality
 import Mathlib.Topology.MetricSpace.Pseudo.Pi
@@ -172,16 +173,45 @@ theorem rationalCoordinateRank_nowhereContinuous
     (dense_exactRationalRank hkpos hkle).inter_nhds_nonempty hev
   exact hkne (hyrank.symm.trans hyeq)
 
+/-- Rational frequency space visible to an observer. -/
+def visibleGapSubspace {n : ℕ} (ω : Fin n → ℝ) : Submodule ℚ ℝ :=
+  Submodule.span ℚ (Set.range ω)
+
+/-- Observer temporal dimension obeys exact inclusion-exclusion: the
+dimension available to the joined observers plus their shared dimension is
+the sum of their separate dimensions. -/
+theorem observerTemporalDimension_conservation
+    {m n : ℕ} (ω : Fin m → ℝ) (η : Fin n → ℝ) :
+    Module.finrank ℚ ↥((visibleGapSubspace ω) ⊔ (visibleGapSubspace η)) +
+        Module.finrank ℚ ↥((visibleGapSubspace ω) ⊓ (visibleGapSubspace η)) =
+      rationalCoordinateRank ω + rationalCoordinateRank η := by
+  letI : FiniteDimensional ℚ (visibleGapSubspace ω) :=
+    FiniteDimensional.span_of_finite ℚ (Set.finite_range ω)
+  letI : FiniteDimensional ℚ (visibleGapSubspace η) :=
+    FiniteDimensional.span_of_finite ℚ (Set.finite_range η)
+  change
+    Module.finrank ℚ ↥((visibleGapSubspace ω) ⊔ (visibleGapSubspace η)) +
+          Module.finrank ℚ ↥((visibleGapSubspace ω) ⊓ (visibleGapSubspace η)) =
+        Module.finrank ℚ ↥(visibleGapSubspace ω) +
+          Module.finrank ℚ ↥(visibleGapSubspace η)
+  exact
+    Submodule.finrank_sup_add_finrank_inf_eq
+      (visibleGapSubspace ω) (visibleGapSubspace η)
+
 /-- Formal finite core of the temporal-completion instability law.  Exact
 finite frequency rank has every admissible dense stratum and is nowhere
-continuous from two coordinates onward, while every operator-norm observable
-history in every unital `C⋆`-algebra obeys the dimension-free finite-time
-perturbation bound. -/
+continuous from two coordinates onward; observer temporal dimension obeys
+inclusion-exclusion; and every operator-norm observable history in every
+unital `C⋆`-algebra obeys the dimension-free finite-time perturbation bound. -/
 theorem finiteTemporalCompletion_instability_stability_core :
     (∀ {n k : ℕ}, 0 < k → k ≤ n →
       Dense {ω : Fin n → ℝ | rationalCoordinateRank ω = k}) ∧
     (∀ {n : ℕ}, 2 ≤ n → ∀ x : Fin n → ℝ,
       ¬ ContinuousAt rationalCoordinateRank x) ∧
+    (∀ {m n : ℕ} (ω : Fin m → ℝ) (η : Fin n → ℝ),
+      Module.finrank ℚ ↥((visibleGapSubspace ω) ⊔ (visibleGapSubspace η)) +
+          Module.finrank ℚ ↥((visibleGapSubspace ω) ⊓ (visibleGapSubspace η)) =
+        rationalCoordinateRank ω + rationalCoordinateRank η) ∧
     (∀ {A : Type*} [CStarAlgebra A]
       (H K O : A), IsSelfAdjoint H → IsSelfAdjoint K → ∀ t : ℝ,
       ‖exp (t • ((-Complex.I) • H)) * O *
@@ -189,11 +219,13 @@ theorem finiteTemporalCompletion_instability_stability_core :
           exp (t • ((-Complex.I) • K)) * O *
             star (exp (t • ((-Complex.I) • K)))‖
         ≤ 2 * |t| * ‖H - K‖ * ‖O‖) := by
-  refine ⟨?_, ?_, ?_⟩
+  refine ⟨?_, ?_, ?_, ?_⟩
   · intro n k hk hkn
     exact dense_exactRationalRank hk hkn
   · intro n hn x
     exact rationalCoordinateRank_nowhereContinuous hn x
+  · intro m n ω η
+    exact observerTemporalDimension_conservation ω η
   · intro A _ H K O hH hK t
     exact selfAdjoint_heisenbergEvolution_norm_sub_le H K O hH hK t
 

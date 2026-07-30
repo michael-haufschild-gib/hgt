@@ -89,6 +89,89 @@ theorem cayleyPoleResidueMode_eq_poissonCompletion
   congr 2
   ring
 
+/-- Canonical observation time centered at source `c`. -/
+def sourceCayleyObservationTime
+    (c rho : ℂ) (tau : ℝ) : ℝ :=
+  Complex.normSq (rho - c) * tau
+
+/-- Signed transverse rate measured from the neutral source horizon
+`Re (rho - c) = -1/2`. -/
+def sourceCayleyTransverseRate (c rho : ℂ) : ℝ :=
+  2 * (rho - c).re + 1
+
+/-- Every source `c` determines the exact neutral horizon
+`Re rho = Re c - 1/2`. -/
+theorem sourceCayleyTransverseRate_eq_zero_iff
+    (c rho : ℂ) :
+    sourceCayleyTransverseRate c rho = 0 ↔
+      rho.re = c.re - 1 / 2 := by
+  simp only [sourceCayleyTransverseRate, Complex.sub_re]
+  constructor <;> intro h <;> linarith
+
+/-- The source mode is unstable exactly to the right of its neutral
+horizon. -/
+theorem sourceCayleyTransverseRate_pos_iff
+    (c rho : ℂ) :
+    0 < sourceCayleyTransverseRate c rho ↔
+      c.re - 1 / 2 < rho.re := by
+  simp only [sourceCayleyTransverseRate, Complex.sub_re]
+  constructor <;> intro h <;> linarith
+
+/-- Canonical source observation cancels inverse-square packet drift
+exactly. -/
+theorem sourceCayley_drift_observationTime
+    (c rho : ℂ) (tau : ℝ) (hrho : rho ≠ c) :
+    cayleyFockDrift ((rho - c)⁻¹) *
+        sourceCayleyObservationTime c rho tau =
+      tau := by
+  rw [cayleyFockDrift, Complex.sq_norm, Complex.normSq_inv,
+    sourceCayleyObservationTime]
+  have hden : Complex.normSq (rho - c) ≠ 0 :=
+    ne_of_gt (Complex.normSq_pos.mpr (sub_ne_zero.mpr hrho))
+  field_simp
+
+/-- **Source inversion law.** Canonical observation converts reciprocal
+Cayley displacement into conjugate direct displacement. -/
+theorem sourceCayley_inverse_observationTime
+    (c rho : ℂ) (tau : ℝ) (hrho : rho ≠ c) :
+    (rho - c)⁻¹ *
+        (sourceCayleyObservationTime c rho tau : ℂ) =
+      (starRingEnd ℂ) (rho - c) * (tau : ℂ) := by
+  rw [sourceCayleyObservationTime, Complex.inv_def]
+  have hden : Complex.normSq (rho - c) ≠ 0 :=
+    ne_of_gt (Complex.normSq_pos.mpr (sub_ne_zero.mpr hrho))
+  have hdenC : (Complex.normSq (rho - c) : ℂ) ≠ 0 :=
+    Complex.ofReal_ne_zero.mpr hden
+  push_cast
+  field_simp [hdenC]
+
+/-- At canonical time, the full complex residue mode is a direct
+conjugate spectral mode; radial escape becomes oscillatory phase rather
+than information loss. -/
+theorem cayleyPoleResidueMode_observationTime_eq
+    (m c rho : ℂ) (tau : ℝ) (hrho : rho ≠ c) :
+    cayleyPoleResidueMode m c rho
+        (sourceCayleyObservationTime c rho tau : ℂ) =
+      m * Complex.exp
+        ((starRingEnd ℂ) (rho - c) * (tau : ℂ)) := by
+  rw [cayleyPoleResidueMode,
+    sourceCayley_inverse_observationTime c rho tau hrho]
+
+/-- At canonical source observation time, total packet growth loses
+all radial information and retains only signed distance from the source
+horizon. -/
+theorem sourceCayley_exponent_observationTime
+    (c rho : ℂ) (tau : ℝ) (hrho : rho ≠ c) :
+    cayleyFockExponent ((rho - c)⁻¹) *
+        sourceCayleyObservationTime c rho tau =
+      sourceCayleyTransverseRate c rho * tau := by
+  rw [cayleyFockExponent_eq, cayleyFockDrift, Complex.sq_norm,
+    Complex.normSq_inv, Complex.inv_re,
+    sourceCayleyObservationTime, sourceCayleyTransverseRate]
+  have hden : Complex.normSq (rho - c) ≠ 0 :=
+    ne_of_gt (Complex.normSq_pos.mpr (sub_ne_zero.mpr hrho))
+  field_simp
+
 /-- Vertical pole family at horizontal displacement `a` from the
 critical boundary `Re rho = 1/2`. -/
 def parabolicCayleyPole (a T : ℝ) : ℂ :=
@@ -242,6 +325,24 @@ theorem cayleyPoleResidueMode_poisson_conservation
   simpa only [coherentExponentialJet] using
     coherentExponentialJet_poisson_conservation
       m ((rho - c)⁻¹) x r
+
+/-- **Universal source-horizon conservation law.**  At the canonical
+observation time `|rho-c|² tau`, every transported residue has an exact
+height-free Poisson order packet.  Its only surviving exponential datum
+is signed distance from the neutral source horizon. -/
+theorem sourceCayleyResidueMode_horizon_conservation
+    (m c rho : ℂ) (tau : ℝ) (r : ℕ) (hrho : rho ≠ c) :
+    let x := sourceCayleyObservationTime c rho tau
+    x ^ r / r.factorial *
+        ‖iteratedDeriv r
+          (cayleyPoleResidueMode m c rho) (x : ℂ)‖ ^ 2 =
+      ‖m‖ ^ 2 *
+        Real.exp (sourceCayleyTransverseRate c rho * tau) *
+          poissonOrderWeight tau r := by
+  dsimp only
+  rw [cayleyPoleResidueMode_poisson_conservation]
+  rw [sourceCayley_exponent_observationTime c rho tau hrho,
+    sourceCayley_drift_observationTime c rho tau hrho]
 
 /-- **Parabolic residue-renormalization law.**  A residue escaping to
 height `T` has an exactly height-independent Poisson order packet when

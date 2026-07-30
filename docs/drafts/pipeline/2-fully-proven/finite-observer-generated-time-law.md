@@ -452,8 +452,9 @@ this full conjunction and its physical interpretation.
 - [ ] independent specialist proof audit
 - [ ] exact external priority audit
 - [~] Lean formalization: dense every-rank instability, nowhere continuity
-  and dimension-free finite-horizon operator stability proved; operational
-  completion representation and observer quotient remain
+  observer-dimension conservation and dimension-free finite-horizon operator
+  stability proved; operational completion representation and dual quotient
+  remain
 - [ ] resource-scale dimension construction
 - [ ] open-system representation theorem
 - [ ] infinite/continuous-spectrum representation theorem
@@ -471,11 +472,13 @@ Unconditional theorems:
 - `exists_exactRationalRank_close_add`;
 - `dense_exactRationalRank`;
 - `rationalCoordinateRank_nowhereContinuous`; and
+- `observerTemporalDimension_conservation`; and
 - `finiteTemporalCompletion_instability_stability_core`.
 
-The capstone joins dense exact-rank strata and nowhere continuity with the
-previously proved dimension-free finite-horizon operator-norm law for
-arbitrary unital \(C^*\)-algebras.
+The capstone joins dense exact-rank strata, nowhere continuity and exact
+observer-dimension inclusion-exclusion with the previously proved
+dimension-free finite-horizon operator-norm law for arbitrary unital
+\(C^*\)-algebras.
 
 Foreground verification passed with
 `lake env lean
@@ -487,7 +490,7 @@ Not yet formalized:
 
 - the phase-orbit closure representation `(4)`;
 - topological dimension identification `(5)`--`(7)`;
-- observer dual quotient `(9)` and dimension valuation `(10)`;
+- observer dual quotient `(9)`;
 - Haar equidistribution `(11)`--`(12)`;
 - the Hermitian eigenvalue-perturbation bridge from frequency packets to
   commuting matrices; and

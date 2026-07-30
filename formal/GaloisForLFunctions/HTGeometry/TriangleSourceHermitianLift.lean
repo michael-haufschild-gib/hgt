@@ -179,6 +179,58 @@ theorem commutes_triangleAccountCycle_reflection_iff
     constructor <;>
       simp
 
+/-- The complexified account plane has no nonzero line invariant under both source generators. -/
+theorem triangleAccount_no_nonzero_common_eigenvector
+    (v : Fin 2 → ℂ) (eigenR eigenT : ℂ)
+    (hR : (triangleAccountCycle ℂ).mulVec v = eigenR • v)
+    (hT : (triangleAccountReflection ℂ).mulVec v = eigenT • v) :
+    v = 0 := by
+  have hT0 := congrFun hT (0 : Fin 2)
+  have hT1 := congrFun hT (1 : Fin 2)
+  have hR0 := congrFun hR (0 : Fin 2)
+  have hR1 := congrFun hR (1 : Fin 2)
+  simp [triangleAccountReflection, triangleAccountCycle, Matrix.mulVec] at hT0 hT1 hR0 hR1
+  change v 1 = eigenT * v 0 at hT0
+  change v 0 = eigenT * v 1 at hT1
+  change -v 0 - v 1 = eigenR * v 0 at hR0
+  change v 0 = eigenR * v 1 at hR1
+  by_cases hv0 : v 0 = 0
+  · have hv1 : v 1 = 0 := by
+      rw [hv0] at hT0
+      simpa using hT0
+    funext i
+    fin_cases i <;> simp [hv0, hv1]
+  · have hmu2 : eigenT ^ 2 = 1 := by
+      apply (mul_left_cancel₀ hv0)
+      calc
+        v 0 * eigenT ^ 2 = eigenT * (eigenT * v 0) := by ring
+        _ = eigenT * v 1 := by rw [← hT0]
+        _ = v 0 := hT1.symm
+        _ = v 0 * 1 := by simp
+    have hmu : eigenT = 1 ∨ eigenT = -1 :=
+      sq_eq_one_iff.mp hmu2
+    rcases hmu with rfl | rfl
+    · have hv1 : v 1 = v 0 := by
+        simpa using hT0
+      rw [hv1] at hR0 hR1
+      have heigenR : eigenR = 1 := by
+        apply (mul_right_cancel₀ hv0)
+        calc
+          eigenR * v 0 = v 0 := hR1.symm
+          _ = 1 * v 0 := by simp
+      rw [heigenR] at hR0
+      simp at hR0
+      have : (3 : ℂ) * v 0 = 0 := by
+        linear_combination -hR0
+      exact False.elim (hv0 ((mul_eq_zero.mp this).resolve_left (by norm_num)))
+    · have hv1 : v 1 = -v 0 := by
+        simpa using hT0
+      rw [hv1] at hR0 hR1
+      simp at hR0
+      have heigenR : eigenR = 0 := hR0.resolve_right hv0
+      rw [heigenR] at hR1
+      exact False.elim (hv0 (by simpa using hR1))
+
 /-- Full unlabeled-source symmetry has no nontrivial invariant projector on the account doublet. -/
 theorem triangleAccount_sourceInvariant_idempotent_eq_zero_or_one
     {K : Type*} [Field K] [CharZero K]

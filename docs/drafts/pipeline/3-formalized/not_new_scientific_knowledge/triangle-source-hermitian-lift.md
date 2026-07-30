@@ -1,16 +1,18 @@
 # The unlabeled triangle forces a conjugate-complete Hermitian lift
 
 - **ID:** `triangle-source-hermitian-lift`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** EXACT FINITE RECONSTRUCTION / COMPLEX-SCALAR AND HERMITIAN BRIDGE
-- **Scientific status:** `[PAPER-PROVED] [LEAN-OPEN] [CLASSICAL REPRESENTATION THEORY]`
+- **Scientific status:** `[PAPER-PROVED] [LEAN-PROVEN] [CLASSICAL REPRESENTATION THEORY]`
   `[NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Parent:**
-  `triangle-fact-orientation-transmutation.md`
+  `../../2-fully-proven/not_new_scientific_knowledge/triangle-fact-orientation-transmutation.md`
 - **Formal dependencies:**
-  `../../3-formalized/not_new_scientific_knowledge/source-ordered-pair-complex-structure.md`,
-  `../../3-formalized/not_new_scientific_knowledge/no-outside-quadratic-witness-descent.md`,
-  and `../../3-formalized/not_new_scientific_knowledge/event-square-polarization-law.md`
+  `source-ordered-pair-complex-structure.md`,
+  `no-outside-quadratic-witness-descent.md`,
+  and `event-square-polarization-law.md`
+- **Lean:**
+  `formal/GaloisForLFunctions/HTGeometry/TriangleSourceHermitianLift.lean`
 - **Statement:** The full source symmetry of the unlabeled triangle canonically generates a
   complex phase algebra with conjugation, forces both conjugate phase directions to remain, and
   gives the free complex exact sequence whose deformation carrier is
@@ -26,7 +28,7 @@ become a complex doublet rather than one chosen complex line.
 
 - [x] 0 → 1: explicit source representation, no-orientation criterion, and hostile alternatives
 - [x] 1 → 2: dependency-closed paper proof `[PROVED HERE]`
-- [ ] 2 → 3: exact source matrices, phase algebra, conjugation, metric rigidity, and carrier
+- [x] 2 → 3: exact source matrices, phase algebra, conjugation, metric rigidity, and carrier
   formalized in Lean
 - [ ] 3 → 4: supporting theorem only; no independent Nature claim
 
@@ -353,6 +355,44 @@ Those are no longer allowed to be hidden inside “derive the Hermitian lift.”
 start from the closed carrier `(HL21)`--`(HL22)` and derive its physical interpretation and
 composition.
 
+## Lean certificate
+
+`[LEAN-PROVEN]`
+
+The module formalizes:
+
+- triangle cycle/reflection relations \(R^3=T^2=I\), \(TRT=R^2\);
+- centered phase generator \(K\), \(K^2=-3I\), and \(TKT=-K\);
+- exact phase-scalar multiplication and reflection conjugation;
+- complete centralizer classifications for \(A_3\) and \(S_3\);
+- absence of a nonzero common eigenvector and of a nontrivial invariant idempotent;
+- source-counting Gram invariance, positive definiteness, and phase skew-adjointness;
+- uniqueness of every invariant symmetric form up to scale;
+- uniqueness of every invariant positive metric on one positive ray;
+- positive phase norm \(a^2+3b^2\);
+- complex triangle exactness at edge and account layers; and
+- positive semidefiniteness of the \(3\times2\) Hermitian Gram report.
+
+Capstone declarations:
+
+- `triangleAccount_no_nonzero_common_eigenvector`
+- `triangleAccount_sourceInvariant_idempotent_eq_zero_or_one`
+- `triangleAccount_invariant_posDef_eq_pos_smul_countingGram`
+- `triangleComplexEdgeBoundary_eq_zero_iff`
+- `triangleComplexVertexAugmentation_eq_zero_iff`
+- `triangleWitnessGram_posSemidef`
+
+Foreground verification:
+
+```text
+lake env lean GaloisForLFunctions/HTGeometry/TriangleSourceHermitianLift.lean
+lake build GaloisForLFunctions.HTGeometry.TriangleSourceHermitianLift
+```
+
+The final target build completed all 8,668 jobs. `#print axioms` for the irreducibility,
+no-spectator, positive-metric-rigidity, and Hermitian-Gram capstones reports only project-baseline
+`propext`, `Classical.choice`, and `Quot.sound`.
+
 ## Physical law exposed
 
 `[CONJECTURE — NOT SCIENTIFIC KNOWLEDGE]`
@@ -373,3 +413,6 @@ worldview jump is:
   eigenlines, so choosing either one imports an outside orientation.
 - 2026-07-30 — proved source-counting metric rigidity, induced dagger, positive scalar norm, free
   exact complexification, and the \(M_{3,2}(\mathbb C)\) Hermitian carrier on paper.
+- 2026-07-30 — formalized source phase/conjugation, full-source irreducibility, no-spectator
+  projector rigidity, positive metric-ray uniqueness, complex exactness, and positive Hermitian
+  Gram lift; direct check, final target build, and axiom audit passed.

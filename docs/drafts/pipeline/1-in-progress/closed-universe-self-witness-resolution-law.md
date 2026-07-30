@@ -525,9 +525,12 @@ source residual transforms as sign
 ```
 
 The source-odd positivity theorem independently proves that a nonzero positive law cannot remain
-odd and that positive even information survives as reciprocal Gram squares. What remains open is
-the unique source-derived passage from the scalar sign quotient in `(CW15)` to a Hermitian
-positive square with endogenous dagger, magnitude, and composition.
+odd and that positive even information survives as reciprocal Gram squares. The finite
+source-derived passage to a Hermitian positive square is now proved and Lean-formalized in
+[`triangle-source-hermitian-lift.md`](../3-formalized/not_new_scientific_knowledge/triangle-source-hermitian-lift.md):
+triangle source symmetry generates the conjugate complex phase algebra, retains both conjugate
+account directions, fixes the positive account metric up to scale, and yields the exact complex
+\(1\to3\to2\) sequence and \(M_{3,2}(\mathbb C)\) Gram carrier.
 
 ### Exact loss
 
@@ -550,8 +553,8 @@ Construct a source extension law for which:
 2. no invariant representative is selected when the source symmetry forbids one;
 3. the residual representation becomes a genuinely executable successor operation type;
 4. comparison of two promoted types is source-derived, not an arbitrary edge calibration;
-5. iteration uniquely promotes the scalar quadratic quotient to an endogenous positive Hermitian
-   reciprocal square with dagger and calibrated magnitude;
+5. iteration physically identifies and composes the now source-derived Hermitian Gram records,
+   with normalization fixed by successor conservation rather than an inserted probability rule;
 6. the first regular irreducible positive deformation is uniquely complex \(3\times2\);
 7. the continuous comparison object separates internal weak transport from external Lorentz
    transport; and
@@ -571,3 +574,7 @@ The static triangle now satisfies the source-symmetry part of items 1--2. Items 
 - 2026-07-30 — proved and Lean-formalized that every entire source-natural scalar reporter of the
   orientation residual factors through its square; isolated sign-square to Hermitian-positive
   square as the next exact bridge.
+- 2026-07-30 — closed that finite bridge: triangle source phase/conjugation, conjugate-complete
+  doublet, invariant positive metric ray, complex exact sequence, \(M_{3,2}(\mathbb C)\) carrier,
+  and positive Gram record are paper- and Lean-proved. Physical Born/causal identification and
+  composition are now the active core.

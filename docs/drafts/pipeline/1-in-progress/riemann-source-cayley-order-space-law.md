@@ -1,19 +1,54 @@
-# Parabolic conservation of escaping Riemann defects
+# Source-horizon conservation of Riemann divisor information
 
 - **ID:** `riemann-source-cayley-order-space-law`
 - **Stage:** 1-in-progress
-- **Type:** UNIVERSAL RENORMALIZATION THEOREM / NOVEL RH ROUTE
+- **Type:** UNIVERSAL SOURCE-HORIZON THEOREM / NOVEL RH ROUTE
 - **Supersedes as headline:** `riemann-complex-modular-character-law`
 - **Status:** universal packet law already formalized; arithmetic residue realization and hostile novelty audit in progress
 
 ## Universal law
 
-Spectral escape is not information loss.  A pole approaching the noncompact height boundary
-becomes invisible at every fixed analytic scale, but its complete residue information is conserved
-under one canonical parabolic blow-up.
+Every marked source \(c\) defines a neutral horizon
+\[
+  \operatorname{Re}\rho=\operatorname{Re}c-\frac12
+\]
+for divisor information.  This horizon is not imposed as a symmetry line: it is the zero-rate
+locus of the exact source-residue semigroup.
 
-For any meromorphic response, source point \(1\), residue \(m\), horizontal displacement \(a\),
-and height \(T\ne0\), put
+For any meromorphic response, source \(c\), divisor point \(\rho\ne c\), residue \(m\), and
+\(\tau\ge0\), put
+\[
+  x_{c,\rho}(\tau)=|\rho-c|^2\tau,\qquad
+  \nu_c(\rho)=2\operatorname{Re}(\rho-c)+1.
+\]
+Then
+\[
+ \frac{x_{c,\rho}(\tau)^r}{r!}
+ \left|\partial_x^r\!\left(m e^{x/(\rho-c)}\right)
+   \bigg|_{x=x_{c,\rho}(\tau)}\right|^2
+ =
+ |m|^2e^{\nu_c(\rho)\tau}
+ \Pr\{\operatorname{Pois}(\tau)=r\}.
+\]
+This is an exact identity, not an asymptotic statement.  All radial information has been converted
+into observation time; the only surviving exponential datum is signed distance from the neutral
+horizon.
+
+Before taking norms, canonical observation gives the sharper inversion law
+\[
+  \frac{x_{c,\rho}(\tau)}{\rho-c}
+    =\overline{\rho-c}\,\tau,\qquad
+  m e^{x_{c,\rho}(\tau)/(\rho-c)}
+    =m e^{\overline{\rho-c}\tau}.
+\]
+Reciprocal Cayley displacement becomes conjugate direct spectral displacement.  Radial escape is
+therefore converted into oscillatory phase, not destroyed.  The raw mode energy contributes
+\(e^{2\operatorname{Re}(\rho-c)\tau}\); summing the factorial derivative orders contributes the
+Poisson entropy factor \(e^\tau\).  Their balance produces
+\(\nu_c(\rho)=2\operatorname{Re}(\rho-c)+1\) and hence the neutral horizon.
+
+The Riemann specialization is arithmetically forced: the completed prime response has source
+\(c=1\), so its neutral horizon is exactly \(\operatorname{Re}\rho=1/2\).  For
 \[
  \rho_T=\frac12+a+iT,\qquad
  x_T(\tau)=\tau\left((a-\tfrac12)^2+T^2\right).
@@ -27,12 +62,12 @@ The source-residue mode at \(\rho_T\) obeys the exact, height-independent law
  |m|^2e^{2a\tau}
  \Pr\{\operatorname{Pois}(\tau)=r\}.
 \]
-There is no limiting approximation in this formula.  Height has become observation time,
-horizontal displacement has become Lyapunov rate, and derivative order carries the conserved
-packet.
+Height has become observation time, horizontal displacement has become Lyapunov rate, and
+derivative order carries the conserved packet.
 
-This is the parent law.  Compact-open convergence is its fixed-time shadow; Ward quantization is
-its static-mass shadow; Cayley/Li growth is its Lyapunov shadow; finite-jet blindness is its
+This source-horizon theorem is the parent law.  Parabolic escape is its vertical-orbit
+specialization; compact-open convergence is its fixed-time shadow; Ward quantization is its
+static-mass shadow; Cayley/Li growth is its Lyapunov shadow; finite-jet blindness is its
 fixed-order shadow; ridge tomography is its inverse map.
 
 ## Source mechanism
@@ -98,8 +133,9 @@ At fixed height this is a conservation law in derivative-order space:
       \frac1{d_\rho}-\frac14\left(1-\frac{\kappa_\rho}{d_\rho}\right)^2.
   \]
 
-Thus the critical line is the zero-Lyapunov locus \(\kappa_\rho=0\), while every strict-right zero
-is an exponentially unstable source residue.
+Thus the critical line is not a coordinate inserted after the fact.  It is the neutral horizon of
+the source \(s=1\): \(\kappa_\rho=0\).  Every strict-right zero is an exponentially unstable source
+residue and every strict-left zero is its stable reflection.
 
 ## Why the corpus becomes shadows of this law
 
@@ -128,24 +164,27 @@ is an exponentially unstable source residue.
 
 ## Theorem package
 
-1. Prove the universal Poisson completion of every geometric Cayley orbit.
-2. Prove the arithmetic source evolution
+1. Prove the universal source-horizon conservation law for arbitrary \(c,\rho,m\).
+2. Prove the source inversion law converting reciprocal displacement into conjugate direct
+   displacement at canonical time.
+3. Prove the universal Poisson completion of every geometric Cayley orbit.
+4. Prove the arithmetic source evolution
    \[
      (s-\rho)\mathcal R(s)E_x(s)\longrightarrow
        m_\rho e^{x/(\rho-1)}
    \]
    for every Xi zero, with no simplicity assumption.
-3. Prove the full evolution-jet formula in \(x\).
-4. Prove the exact parabolic escape-renormalization law.
-5. Identify these jets with the existing coherent exponential modes.
-6. Import the existing Poisson conservation, phase-free exterior, strict sign, and
+5. Prove the full evolution-jet formula in \(x\).
+6. Derive the exact parabolic escape-renormalization law as a corollary.
+7. Identify these jets with the existing coherent exponential modes.
+8. Import the existing Poisson conservation, phase-free exterior, strict sign, and
    ridge/rate reconstruction theorems.
-7. Package the existing source-weighted Ward time-zero law, height--order visibility lower bound,
+9. Package the existing source-weighted Ward time-zero law, height--order visibility lower bound,
    exponential false-RH instability, and bounded-tower iff RH.
-8. Add the compact-open Kolchin/Ward escape theorem: every holomorphic jet converges, the
+10. Add the compact-open Kolchin/Ward escape theorem: every holomorphic jet converges, the
    hypertranscendental stratum is unchanged, bounded windows lose the defect, yet Ward mass remains
    exactly \(8\pi\).
-9. Add the strip-monodromy reconstruction and BV residue character coordinate only as charts of
+11. Add the strip-monodromy reconstruction and BV residue character coordinate only as charts of
    the pole, not as independent headlines.
 
 ## Paper question answered
@@ -158,7 +197,8 @@ At fixed time its velocity tends to zero with height, producing every known blin
 At the unique inverse-drift scale \(x=\tau/d_\rho\), height cancels exactly and the packet reappears
 as \(e^{(2\operatorname{Re}\rho-1)\tau}\operatorname{Pois}(\tau)\).  Co-moving observation
 reconstructs the zero.  The one-sided orientation required for RH is precisely the surviving
-Lyapunov exponent.
+Lyapunov exponent.  More universally, every source has a neutral horizon; the Riemann critical
+line is the horizon selected by the arithmetic source at \(1\).
 
 ## Hostile gates
 
@@ -166,13 +206,15 @@ Lyapunov exponent.
    completed prime-source response before residues are taken.
 2. Reject if the residue law assumes simple zeros.
 3. Reject if Poisson conservation is presented as an asymptotic approximation; it must be exact.
-4. Reject if the claimed universal law omits the exact parabolic rescaling that cancels height.
-5. Reject if reconstruction loses \(\operatorname{Re}\rho\) or height.
-6. Reject if the paper claims boundedness of the complete source tower; only the proved
+4. Reject if the claimed universal law is stated only for the Riemann source rather than arbitrary
+   source and divisor point.
+5. Reject if it omits the exact canonical rescaling that cancels radial distance.
+6. Reject if reconstruction loses \(\operatorname{Re}\rho\) or height.
+7. Reject if the paper claims boundedness of the complete source tower; only the proved
    equivalence/instability may be stated.
-7. Reject as headline if literature already uses this source-generated Poisson completion and
-   exact parabolic escape-renormalization law for meromorphic divisors.
-8. Reject if HGT, Ward, Hilbert/projective, and compact-open results are listed without explicit
+8. Reject as headline if literature already uses this source-generated Poisson completion,
+   neutral-horizon classification, and exact escape-renormalization law for meromorphic divisors.
+9. Reject if HGT, Ward, Hilbert/projective, and compact-open results are listed without explicit
    maps to \(d_\rho,\kappa_\rho\), or the source residue.
-9. Reject if the final narrative ends with an open conjecture.  The closed result is the
+10. Reject if the final narrative ends with an open conjecture.  The closed result is the
    escape-renormalization/conservation/reconstruction theorem; RH remains the application boundary.

@@ -846,11 +846,16 @@ certificate are in
 [`no-outside-quadratic-witness-descent.md`](../3-formalized/not_new_scientific_knowledge/no-outside-quadratic-witness-descent.md).
 
 This supplies the exact mathematical content behind the new quadratic witness form of the
-headline. It does not yet identify \(a^2\) with Born probability or spacetime. The independent
-source-odd positivity theorem shows why a nonzero positive public law cannot remain odd and why
-reciprocal Gram squares are the positive survivor. The unresolved jump is to prove that iterative
-self-witnessing uniquely promotes the scalar sign quotient to a positive Hermitian square whose
-scalar reading is probability and whose ordered matrix reading is causal spacetime.
+headline. The finite Hermitian lift is now also closed in
+[`triangle-source-hermitian-lift.md`](../3-formalized/not_new_scientific_knowledge/triangle-source-hermitian-lift.md).
+Orientation-preserving triangle symmetry generates a complex phase algebra; odd relabeling acts
+as conjugation; full \(S_3\) symmetry forbids selecting either conjugate phase line; the
+source-counting metric uniquely supplies a positive adjoint ray; and free exact scalar extension
+gives the \(M_{3,2}(\mathbb C)\) carrier with positive Gram record.
+
+The unresolved jump is now physical, not Hermitian algebra: prove that this source-forced positive
+record is uniquely Born probability in its scalar reading and causal spacetime in its ordered
+matrix reading, then derive event composition, curvature, dynamics, and a prediction.
 
 The result blocks another false shortcut. The generated sign torsor and its
 \(\mathbb Z_2\) holonomy concern time orientation. They do not equal gravitational curvature.

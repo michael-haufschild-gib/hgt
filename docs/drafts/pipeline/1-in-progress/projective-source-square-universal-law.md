@@ -334,8 +334,10 @@ all be projections of one nonflat source-completion object.
    consequence multiplicity or on a covariant composition bundle, not silently completed.
 7. **Why Gram is the complete public causal report?** The triangle source now derives sign
    reversal and forces every entire invariant scalar reporter to descend through the squared
-   orientation coordinate. This closes only the scalar quadratic quotient. Positivity, dagger,
-   matrix-valued Hermitian lift, and its physical causal interpretation are not source-derived.
+   orientation coordinate. Its Hermitian-lift child also derives source phase/conjugation,
+   conjugate-complete complex ranks \(1,3,2\), the invariant positive metric ray, and the
+   \(M_{3,2}(\mathbb C)\) Gram carrier. The remaining gap is physical causal/Born identification,
+   composition, and dynamics—not positivity, dagger, or the finite matrix-valued lift.
 8. **Why exactly `(PS.6)` and no fifth force?** One \(3\times2\) carrier cannot supply it: colour
    requires covariant composition or independent multiplicity, while the right \(SU(2)\) is
    causally active rather than weak-internal. The missing typed consequence levels must be derived.

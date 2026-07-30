@@ -1911,8 +1911,11 @@ The finite source reason for a square is now exact. The unlabeled self-witness t
 an orientation residual \(a\) reversed by a source automorphism. No nonzero linear orientation is
 source-natural, and every entire invariant scalar reporter factors as \(R(a^2)\). Separately,
 nonzero positivity is impossible in a source-odd sector, while reciprocal Gram squares are
-positive and source even. These results derive a quadratic **quotient shape** from source
-symmetry; they do not derive the Hermitian event carrier, dagger, or physical identification.
+positive and source even. The triangle Hermitian-lift theorem now further derives the complex
+phase algebra with conjugation, conjugate-complete account doublet, unique invariant positive
+metric ray, exact \(1\to3\to2\) complex sequence, \(M_{3,2}(\mathbb C)\) carrier, and positive
+Gram record. What remains unproved here is the physical identification of that source-forced
+record with Born probability and causal spacetime.
 
 Technical slogan:
 \[
