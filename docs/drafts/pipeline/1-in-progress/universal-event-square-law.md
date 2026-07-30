@@ -1,15 +1,19 @@
-# The universe uses one square to make quantum outcomes and spacetime
+# Spacetime is how incompatible quantum events share one reality
 
 - **ID:** `universal-event-square-law`
 - **Stage:** 1-in-progress
-- **Type:** UNIVERSAL PHYSICS CONJECTURE / NEW-MATHEMATICS TARGET / THEORY OF EVERYTHING
+- **Type:** CANDIDATE LOCAL REALIZATION / NEW-MATHEMATICS TARGET / MASTER-LAW SUBCARD
 - **Scientific status:** `[TRUE-JUMP CANDIDATE] [NOVELTY UNVERIFIED]`
   `[EXACT ALGEBRAIC SHADOWS LEAN-PROVED] [NO PHYSICS PROVED] [NATURE: DO NOT WRITE]`
 - **Parents:** `actuality-creates-future-law.md`,
   `jointly-conservative-future-shape-law.md`,
   `dynamical-composition-universal-law.md`
+- **Canonical role:** proposed quadratic local mechanism for the conservation-of-distinction
+  master law in `actuality-creates-future-law.md`; not a competing theory of everything
 - **New exact shadow:**
-  `../3-formalized/not_new_scientific_knowledge/event-square-polarization-law.md`
+  `../3-formalized/not_new_scientific_knowledge/event-square-polarization-law.md`,
+  `../3-formalized/not_new_scientific_knowledge/complex-event-square-realification-no-go.md`,
+  `../3-formalized/not_new_scientific_knowledge/complex-event-orientation-sewing-no-go.md`
 - **Statement:** A primitive physical event is one source-generated matrix-valued quadratic
   passage. Its coherent polarization is quantum theory, its positive order is causal spacetime,
   its root ambiguity is gauge, and curvature of its compositional comparisons is every force.
@@ -30,6 +34,72 @@ Force form:
 > compares the futures they make.**
 
 These are conjectures about physical reality, not consequences of the proved matrix identities.
+
+## What does all this mean? Current universal jump
+
+The stronger headline forced by the obstruction corpus is:
+
+> **Spacetime is what the universe creates because quantum events cannot all agree on one global
+> reality.**
+
+Equivalent force form:
+
+> **Gravity is the failure of event-made futures to fit one global future. Gauge force is the
+> failure of their quantum roots to fit one global phase. They are two faces of one failure to
+> sew actuality.**
+
+This is not the retired claim that all forces are curvature of a local imaginary unit. One \(J\)
+does not choose a connection, and one event square does not choose \(\mathbb C\). The proposed
+primitive is the complete **oriented event-square sewing cell**:
+
+\[
+\boxed{
+\text{source order}
+\;+\;
+\text{root }X
+\xrightarrow{\ q\ }
+\text{positive future }q(X)
+\;+\;
+\text{active comparison of two such passages}.
+}
+\tag{ES0}
+\]
+
+For two independently or sequentially composable events there are two routes:
+
+```text
+compose unresolved roots, then actualize by q
+                  versus
+actualize each root, then sew their generated positive futures.
+```
+
+A sewing comparison \(\Sigma\) relates those routes. Around a three-event composition cube, the
+failure of the \(\Sigma\)'s to close is one descent defect \(\Omega\).
+
+`[CONJECTURE: UNIVERSAL ACTUALITY-DESCENT LAW]`
+
+> No source-preserving, jointly conservative global event square simultaneously trivializes every
+> local root orientation and every generated future order. Physical reality is the minimal
+> consequence-complete sewing of the local squares that retains this unavoidable defect
+> \(\Omega\). Quantum theory and spacetime are its two local projections; gauge, gravitational,
+> and mixed matter responses are its vertical, target, and mixed faces.
+
+In this interpretation:
+
+- **quantumness** is the polarized unresolved root before target creation;
+- **actuality** is the quadratic type change \(X\mapsto q(X)\);
+- **time** is orientation of iterated target creation;
+- **spacetime** is the minimal compatibility record of all generated futures;
+- **gauge force** is the root-facing part of the sewing defect;
+- **gravity** is the future-order-facing part;
+- **matter/Higgs data** is the mixed root-to-future incidence; and
+- **hypertranscendence** is the analytic shadow that no fixed finite horizontal carrier closes
+  every continued source consequence.
+
+Those eight identifications are one conjecture, not eight independent mechanisms. The research
+obligation is to define \(\Sigma\) and \(\Omega\) source-internally and derive every item from their
+single universal property. If different freely chosen laws are needed for different bullets, the
+conjecture has collapsed back into a collage.
 
 ## What all the obstructions may have been saying
 
@@ -212,6 +282,30 @@ fixed algebra. That is standard Clifford algebra. The open problem is to derive 
 correlated source succession and prove that its event-square composition has physical consequences
 not simulable by a spectator realification.
 
+The new exact realification no-go closes the static version of that problem. For every finite
+complex rectangular matrix there is an injective real block representation
+\[
+\rho(X)=
+\begin{pmatrix}\operatorname{Re}X&-\operatorname{Im}X\\
+\operatorname{Im}X&\operatorname{Re}X\end{pmatrix}
+\]
+that preserves addition, multiplication, adjoint as transpose, event squares, and cross-Gram
+records. Complex multiplication is retained as a real quarter-turn \(J\), and every realified
+passage obeys
+\[
+J_m\rho(X)=\rho(X)J_n.
+\]
+Therefore a finite static event square cannot select its scalar presentation. The first possible
+non-representational distinction is how independently source-generated \(J\)-orientations are
+sewn. The retired route and exact positive survivor are recorded in
+[`static-event-square-selects-complex-field.md`](../5-failed/static-event-square-selects-complex-field.md).
+
+The first sign-sewing model is also closed. Joint reversal of source and target \(J\)'s preserves
+every realified passage, while reversing exactly one endpoint is compatible only with the zero
+passage. Thus ordinary nonzero \(J\)-linear transport synchronizes orientation signs; it does not
+produce continuous curvature. A live sewing defect must use noninvertible, semilinear, quadratic,
+or higher boundary structure beyond endpoint signs.
+
 ## Direct-parent and novelty boundary
 
 Occupied mathematics includes:
@@ -227,10 +321,26 @@ Occupied mathematics includes:
    square roots, Clifford algebras, and Hopf fibrations;
 4. gauge/gravity color--kinematics duality and double-copy structures
    ([Bern et al.](https://arxiv.org/abs/1909.01358)); and
-5. higher process theories, Segal/decomposition completion, higher gauge theory, and derived
-   moduli/descent.
+5. probabilistic theories with dynamic/indefinite causal structure and quantum causal histories
+   ([Hardy](https://arxiv.org/abs/gr-qc/0608043),
+   [Hawkins--Markopoulou--Sahlmann](https://arxiv.org/abs/hep-th/0302111));
+6. general-boundary quantum theory and consistency under gluing arbitrary spacetime regions
+   ([Oeckl](https://arxiv.org/abs/hep-th/0306025));
+7. higher gauge theory, 2-connections, nonabelian descent, and surface holonomy
+   ([Baez--Schreiber](https://arxiv.org/abs/hep-th/0412325));
+8. sheaf-theoretic contextuality as obstruction to a global section
+   ([Abramsky--Brandenburger](https://arxiv.org/abs/1102.0264));
+9. entanglement/spacetime emergence and entanglement-equilibrium derivations of the semiclassical
+   Einstein equation
+   ([Van Raamsdonk](https://arxiv.org/abs/1005.3035),
+   [Jacobson](https://arxiv.org/abs/1505.04753)); and
+10. higher process theories, Segal/decomposition completion, and derived moduli/descent.
 
-None of these parent labels supplies the desired theorem. Candidate novelty can only be:
+According to their stated results, these parents respectively assume local matrix algebras,
+spacetime regions, higher bundles, measurement covers, holographic boundary theories, or
+entanglement/metric data before the proposed source construction begins. That is an inference from
+their scopes, not proof that no equivalent formulation exists in the literature. Candidate novelty
+can only be the entire source-to-dynamics chain:
 
 ```text
 raw source incidence
@@ -247,28 +357,39 @@ identities, not new physics.
 
 ## Exact first classification target
 
-`[OPEN CORE: SOURCE-ONLY EVENT-SQUARE RIGIDITY]`
+The former target—select \(M_{3,2}(\mathbb C)\to H_2(\mathbb C)_+\) from one static finite
+square—has been retired by faithful realification.
 
-Construct a finite source \(H\) without target linear algebra and classify every causal
-polarization `(ES4)` satisfying:
+`[OPEN CORE: ORIENTATION-DESCENT RIGIDITY MODULO FAITHFUL PRESENTATION]`
 
-1. active two-history composition rather than formal-path retention;
-2. positive extreme-ray generation;
-3. full polarization recovery;
-4. source equivariance;
-5. independent/sequential boundary interchange;
-6. no nontrivial spectator idempotent or invisible tensor padding;
-7. nontrivial root and target reporters that are individually lossy but jointly conservative; and
-8. minimality under deletion of source consequences.
+Construct a finite raw source \(H\) carrying both independent and sequential composition but no
+target linear algebra. Classify tuples
+\[
+(q,J,\Sigma)
+\]
+where:
+
+1. source order generates \(J\), rather than receiving a scalar \(i\);
+2. \(q\) actively changes type from unresolved root to positive target;
+3. polarization recovers every coherent source comparison;
+4. \(\Sigma\) compares “compose then square” with “square then sew”;
+5. the three-event closure defect \(\Omega\) is invariant under faithful realification;
+6. \(\Sigma\) is not reducible to endpoint \(J\)-sign transport, which is rigid or zero;
+7. no nontrivial spectator idempotent or invisible tensor padding survives;
+8. root, target, and boundary reporters are individually lossy but jointly conservative;
+9. every datum is source-detectable in a finite continuation; and
+10. the object is minimal under deletion of source consequences.
 
 Then prove or refute:
 
-> the primitive regular irreducible solution is uniquely the
-> \(M_{3,2}(\mathbb C)\to H_2(\mathbb C)_+\) event square, up to source equivalence.
+> modulo faithful change of presentation, there is a unique primitive non-flat
+> orientation-descent class, and its irreducible regular representation simultaneously fixes
+> complex quantum composition and a \(3+1\)-dimensional causal target.
 
-The first task is not continuum gravity. It is finding a source-internal invariant that excludes
-real, quaternionic, exceptional, padded, free-path, and classical stochastic completions without
-encoding \(3\), \(2\), \(\mathbb C\), or the Lorentz cone.
+The first new-mathematics task is to define the equivalence and the defect without inserting a
+category, tensor product, \(J\), cone, or connection by hand. The first physics task is to derive a
+dimensionless consequence that distinguishes the resulting sewing law from GR plus the Standard
+Model.
 
 ## Kill conditions
 
@@ -297,10 +418,14 @@ Retire or radically revise the law if any survives complete source equivalence:
 - [x] complete matrix-valued polarization identity paper-proved and Lean-proved
 - [x] standard algebra versus physical conjecture separated
 - [x] purification/Jordan/double-copy/real-quantum parent boundary recorded
+- [x] static complex-field rigidity falsified by faithful realification
+- [x] \(J\)-intertwining extracted as exact positive survivor
+- [x] endpoint orientation-sign defect falsified for nonzero complex-linear passages
 - [ ] source-only event-square category defined
 - [ ] nontrivial no-spectator invariant derived
-- [ ] first finite classification completed
-- [ ] unique \(3\times2\) complex regular phase forced
+- [ ] orientation-descent equivalence and \(\Omega\) defined
+- [ ] first finite classification modulo faithful presentation completed
+- [ ] unique \(3\times2\) complex/Lorentz regular phase forced modulo realification
 - [ ] compositional Born rule and causal order derived
 - [ ] exact gauge/gravity/matter split and normalization derived
 - [ ] continuum dynamics and equivalence principle derived
@@ -321,3 +446,7 @@ Current verdict:
 - 2026-07-30 — formalized full four-superposition recovery of the ordered cross-Gram record.
 - 2026-07-30 — used finite real-quantum indistinguishability to forbid choosing complex scalars by
   finite operational tomography.
+- 2026-07-30 — proved faithful event-square realification; retired static complex-field selection.
+- 2026-07-30 — compressed the surviving programme into the actuality-descent conjecture:
+  spacetime is the minimal sewing record of incompatible local actualizations, and all forces must
+  be typed faces of one sewing defect rather than independent added mechanisms.

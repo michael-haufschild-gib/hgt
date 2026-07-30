@@ -4908,3 +4908,65 @@ This is stronger and more operational than record completeness, but it remains u
   positive multiplicative purity, corrected record-separation as a non-producer, and identified
   the third completion as the category in which finite source reconstructions assemble into a
   strict faithful positive retraction.
+
+- 2026-07-30 — Formalized the exact generic positive survivor as
+  `kadisonDefects_eq_zero_of_faithful` and
+  `map_unitaryRelations_of_faithfulSplit` in
+  `formal/GaloisForLFunctions/HTGeometry/FaithfulSplitKadison.lean`.  The latter proves that a
+  unital faithful positive Schwarz split transports both unitary relations.  Direct Lean check,
+  module build, and formal lint pass; the declarations use only Lean/mathlib's standard
+  `propext`, `Classical.choice`, and `Quot.sound`.  This does not prove the arithmetic conjecture:
+  the non-parent open core is still construction of the Xi-relative faithful split without a
+  pullback topology or an RH-equivalent premise.
+
+## Hostile correction: factorial recovery and Schwarz recovery cannot be the same arrow
+
+The completed Gamma audit falsifies the strongest reading of
+`ARITHMETIC_SOURCE_FAITHFUL_SPLIT_DESCENT`.  On clock coordinate \(n\), Gamma observation is the
+strict scalar attenuation
+\[
+ \phi_n(z)=c_nz,\qquad c_n=\frac1{(n+1)!}\in(0,1),
+\]
+and exact reconstruction is
+\[
+ \psi_n(z)=c_n^{-1}z.
+\]
+If the reconstruction were Schwarz-positive on this scalar \(C^*\)-coordinate, evaluation at
+\(z=1\) would require
+\[
+ |\psi_n(1)|^2\leq\psi_n(|1|^2),
+ \qquad c_n^{-2}\leq c_n^{-1},
+\]
+which is false for \(0<c_n<1\).  Equivalently, if a unital faithful Schwarz split transported a
+unitary source coordinate to \(c_n\) times a unitary observed coordinate, the formalized
+`map_unitaryRelations_of_faithfulSplit` theorem would force the observed coordinate to remain
+unitary and hence force \(c_n=1\).
+
+Therefore no change from Hilbert to product, Fréchet, or pro topology can make the literal
+factorial inverse into the positive recovery map required above.  The obstruction is algebraic,
+not merely failure of boundedness.
+
+The positive survivor is a two-polarization law:
+
+```text
+source/pro/Rees leg:
+  exact algebraic reconstruction and grade shifts;
+
+positive Hilbert/Hardy leg:
+  Schwarz contractivity and unitary boundary transport;
+
+innovation/corona leg:
+  stores the Kadison/Gamma/BV defect separating the two.
+```
+
+Thus faithful split descent remains valid only as a terminal consumer after conservative
+dilation or polarized transgression.  It cannot itself define the third completion.  The
+source-specific open core moves to
+`polarized-critical-rees-corona-transgression-rh.md`: construct one graded correspondence whose
+source face is reconstructive, whose Hardy face is contractive, and whose defect face retains the
+factorial/BV anomaly.
+
+- 2026-07-30 — Killed the single-object faithful-split interpretation by the exact scalar
+  factorial Schwarz obstruction.  Reclassified faithful split descent as a terminal boundary
+  consumer and adopted the polarized Rees--corona transgression as the only version compatible
+  with both Gamma amplification and positive contractivity.

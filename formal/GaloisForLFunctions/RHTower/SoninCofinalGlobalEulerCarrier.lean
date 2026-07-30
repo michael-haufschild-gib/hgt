@@ -957,4 +957,197 @@ theorem exists_centralSoninDilationCorner_singularDiagonal_finite
             (tendsto_add_atTop_nat i))
     (packet := packet) (epsilon := epsilon) hepsilon hepsilonZero
 
+/-- **Finite-packet singular codiagonal law.**  A finite family of moving
+father/detail pairs is transported through one common strictly cofinal
+schedule.  Every vector error and every off-diagonal Gram error is
+`o(epsilon)` simultaneously.  The shell depth absorbs the complete finite
+packet norm, so no uniform bound on any moving leg is assumed. -/
+theorem exists_strictMono_singularDiagonal_transport_finite_codiagonal
+    {H K ι : Type*} [Fintype ι]
+    [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
+    [NormedAddCommGroup K] [InnerProductSpace ℂ K] [CompleteSpace K]
+    (A : ℕ → lp (fun _ : ℕ => ℂ) 2 →ₗᵢ[ℂ] H)
+    (B : ℕ → lp (fun _ : ℕ => ℂ) 2 →ₗᵢ[ℂ] K)
+    (T : H →L[ℂ] K)
+    (hbasis : ∀ i : ℕ, Tendsto (fun N =>
+      T (A N (lp.single 2 i 1)) - B N (lp.single 2 i 1))
+      atTop (𝓝 0))
+    (father detail : ℕ → ι → lp (fun _ : ℕ => ℂ) 2)
+    (epsilon : ℕ → ℝ) (hepsilon : ∀ n, 0 < epsilon n)
+    (hepsilonZero : Tendsto epsilon atTop (𝓝 0)) :
+    ∃ depth : ℕ → ℕ, StrictMono depth ∧
+      ∀ i : ι,
+        Tendsto (fun n =>
+          ‖T (A (depth n) (father n i)) -
+              B (depth n) (father n i)‖ / epsilon n)
+          atTop (𝓝 0) ∧
+        Tendsto (fun n =>
+          ‖T (A (depth n) (detail n i)) -
+              B (depth n) (detail n i)‖ / epsilon n)
+          atTop (𝓝 0) ∧
+        Tendsto (fun n =>
+          ‖inner ℂ
+                (T (A (depth n) (father n i)))
+                (T (A (depth n) (detail n i))) -
+              inner ℂ (father n i) (detail n i)‖ / epsilon n)
+          atTop (𝓝 0) := by
+  let load : ℕ → ℝ := fun n =>
+    ∑ i : ι, (‖T‖ * ‖detail n i‖ + ‖father n i‖)
+  let scale : ℕ → ℝ := fun n =>
+    epsilon n ^ 2 / (1 + load n)
+  have hloadNonneg (n : ℕ) : 0 ≤ load n := by
+    dsimp [load]
+    exact Finset.sum_nonneg fun _ _ => by positivity
+  have hdenPos (n : ℕ) : 0 < 1 + load n := by
+    linarith [hloadNonneg n]
+  have hscalePos (n : ℕ) : 0 < scale n := by
+    exact div_pos (sq_pos_of_pos (hepsilon n)) (hdenPos n)
+  have hscaleLe (n : ℕ) : scale n ≤ epsilon n ^ 2 := by
+    dsimp [scale]
+    rw [div_le_iff₀ (hdenPos n)]
+    nlinarith [sq_nonneg (epsilon n), hloadNonneg n]
+  have htermLe (n : ℕ) (i : ι) :
+      ‖T‖ * ‖detail n i‖ + ‖father n i‖ ≤ load n := by
+    dsimp [load]
+    exact Finset.single_le_sum
+      (fun j _ => by
+        exact add_nonneg
+          (mul_nonneg (norm_nonneg T) (norm_nonneg (detail n j)))
+          (norm_nonneg (father n j)))
+      (Finset.mem_univ i)
+  have hscaleLoadLe (n : ℕ) :
+      scale n * load n ≤ epsilon n ^ 2 := by
+    calc
+      scale n * load n ≤ scale n * (1 + load n) := by
+        exact mul_le_mul_of_nonneg_left (by linarith) (hscalePos n).le
+      _ = epsilon n ^ 2 := by
+        dsimp [scale]
+        field_simp [(hdenPos n).ne']
+  have hthreshold : ∀ n : ℕ, ∃ M : ℕ, ∀ N : ℕ, M ≤ N →
+      ∀ i : ι,
+        ‖T (A N (father n i)) - B N (father n i)‖ ≤ scale n ∧
+        ‖T (A N (detail n i)) - B N (detail n i)‖ ≤ scale n := by
+    intro n
+    have hevent : ∀ᶠ N : ℕ in atTop, ∀ i : ι,
+        ‖T (A N (father n i)) - B N (father n i)‖ ≤ scale n ∧
+        ‖T (A N (detail n i)) - B N (detail n i)‖ ≤ scale n := by
+      rw [Filter.eventually_all]
+      intro i
+      have hfather :=
+        cofinalOrthonormalEmbedding_strong_transport A B T hbasis (father n i)
+      have hdetail :=
+        cofinalOrthonormalEmbedding_strong_transport A B T hbasis (detail n i)
+      have hfatherEventually : ∀ᶠ N : ℕ in atTop,
+          ‖T (A N (father n i)) - B N (father n i)‖ < scale n := by
+        have hball := hfather.eventually
+          (Metric.ball_mem_nhds (0 : ℝ) (hscalePos n))
+        filter_upwards [hball] with N hN
+        simpa [Real.dist_eq] using hN
+      have hdetailEventually : ∀ᶠ N : ℕ in atTop,
+          ‖T (A N (detail n i)) - B N (detail n i)‖ < scale n := by
+        have hball := hdetail.eventually
+          (Metric.ball_mem_nhds (0 : ℝ) (hscalePos n))
+        filter_upwards [hball] with N hN
+        simpa [Real.dist_eq] using hN
+      filter_upwards [hfatherEventually, hdetailEventually] with N hF hD
+      exact ⟨hF.le, hD.le⟩
+    exact eventually_atTop.1 hevent
+  choose threshold hthresholdBound using hthreshold
+  let depth : ℕ → ℕ :=
+    fun n => n + ∑ k ∈ Finset.range (n + 1), threshold k
+  have hdepthThreshold (n : ℕ) : threshold n ≤ depth n := by
+    simp only [depth, Finset.sum_range_succ]
+    omega
+  have hdepthMono : StrictMono depth := by
+    apply strictMono_nat_of_lt_succ
+    intro n
+    simp only [depth, Finset.sum_range_succ]
+    omega
+  have hfatherAt (n : ℕ) (i : ι) :
+      ‖T (A (depth n) (father n i)) -
+          B (depth n) (father n i)‖ ≤ scale n :=
+    (hthresholdBound n (depth n) (hdepthThreshold n) i).1
+  have hdetailAt (n : ℕ) (i : ι) :
+      ‖T (A (depth n) (detail n i)) -
+          B (depth n) (detail n i)‖ ≤ scale n :=
+    (hthresholdBound n (depth n) (hdepthThreshold n) i).2
+  refine ⟨depth, hdepthMono, ?_⟩
+  intro i
+  constructor
+  · apply squeeze_zero'
+      (Filter.Eventually.of_forall fun n =>
+        div_nonneg (norm_nonneg _) (hepsilon n).le)
+      (Filter.Eventually.of_forall fun n => ?_)
+      hepsilonZero
+    rw [div_le_iff₀ (hepsilon n)]
+    simpa only [pow_two] using (hfatherAt n i).trans (hscaleLe n)
+  constructor
+  · apply squeeze_zero'
+      (Filter.Eventually.of_forall fun n =>
+        div_nonneg (norm_nonneg _) (hepsilon n).le)
+      (Filter.Eventually.of_forall fun n => ?_)
+      hepsilonZero
+    rw [div_le_iff₀ (hepsilon n)]
+    simpa only [pow_two] using (hdetailAt n i).trans (hscaleLe n)
+  · apply squeeze_zero'
+      (Filter.Eventually.of_forall fun n =>
+        div_nonneg (norm_nonneg _) (hepsilon n).le)
+      (Filter.Eventually.of_forall fun n => ?_)
+      hepsilonZero
+    rw [div_le_iff₀ (hepsilon n)]
+    have hdecomp :
+        inner ℂ
+              (T (A (depth n) (father n i)))
+              (T (A (depth n) (detail n i))) -
+            inner ℂ (father n i) (detail n i) =
+          inner ℂ
+              (T (A (depth n) (father n i)) -
+                B (depth n) (father n i))
+              (T (A (depth n) (detail n i))) +
+            inner ℂ (B (depth n) (father n i))
+              (T (A (depth n) (detail n i)) -
+                B (depth n) (detail n i)) := by
+      rw [← (B (depth n)).inner_map_map (father n i) (detail n i),
+        inner_sub_left, inner_sub_right]
+      abel
+    rw [hdecomp]
+    calc
+      ‖inner ℂ
+            (T (A (depth n) (father n i)) -
+              B (depth n) (father n i))
+            (T (A (depth n) (detail n i))) +
+          inner ℂ (B (depth n) (father n i))
+            (T (A (depth n) (detail n i)) -
+              B (depth n) (detail n i))‖ ≤
+          ‖T (A (depth n) (father n i)) -
+              B (depth n) (father n i)‖ *
+              ‖T (A (depth n) (detail n i))‖ +
+            ‖B (depth n) (father n i)‖ *
+              ‖T (A (depth n) (detail n i)) -
+                B (depth n) (detail n i)‖ := by
+        exact (norm_add_le _ _).trans
+          (add_le_add (norm_inner_le_norm _ _) (norm_inner_le_norm _ _))
+      _ ≤ scale n * (‖T‖ * ‖detail n i‖) +
+            ‖father n i‖ * scale n := by
+        exact add_le_add
+          (mul_le_mul (hfatherAt n i)
+            (by
+              calc
+                ‖T (A (depth n) (detail n i))‖ ≤
+                    ‖T‖ * ‖A (depth n) (detail n i)‖ := T.le_opNorm _
+                _ = ‖T‖ * ‖detail n i‖ := by
+                  rw [LinearIsometry.norm_map])
+            (norm_nonneg _)
+            (hscalePos n).le)
+          (by
+            rw [LinearIsometry.norm_map]
+            exact mul_le_mul_of_nonneg_left
+              (hdetailAt n i) (norm_nonneg _))
+      _ = scale n *
+          (‖T‖ * ‖detail n i‖ + ‖father n i‖) := by ring
+      _ ≤ scale n * load n :=
+        mul_le_mul_of_nonneg_left (htermLe n i) (hscalePos n).le
+      _ ≤ epsilon n * epsilon n := by
+        simpa only [pow_two] using hscaleLoadLe n
+
 end RHTower

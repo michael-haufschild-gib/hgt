@@ -258,12 +258,21 @@ Hermitian channel consumed by the tensor-local extension theorem, while the
 operator itself remains endpoint-local.  This is proof status, not novelty
 evidence.
 
-The remaining mathematical authorization gap is the full path theorem: the
-endpoint-observable witness must be carried through every chain length and
-local alphabet, and the exceptional set must be proved null and nowhere
-dense in the complete nearest-neighbour Hamiltonian parameter space.  Until
-that is closed, the manuscript may not claim generic nearest-neighbour
-maximal rank.
+The exceptional-set mechanism is now formally closed at the correct level of
+generality.  For every finite real-affine Hermitian matrix family, one
+maximally projective member implies that the actual Hermitian eigenvalue
+packet is maximally projective on a dense residual full-measure parameter
+set.  The proof is unordered: characteristic coefficients pull back the
+entire countable family of balanced spectral-relation orbit polynomials, and
+the Hermitian spectral theorem identifies those coefficients with the actual
+real spectrum.  This is proof status, not novelty evidence.
+
+The remaining mathematical authorization gap is therefore narrower and
+sharper: construct the required endpoint-observable witness inside the
+nearest-neighbour path family for every chain length and every local
+alphabet, then identify that physical parameter space with the proved
+real-affine Hermitian framework.  Until that witness theorem is closed, the
+manuscript may not claim generic nearest-neighbour maximal rank.
 
 External comparison also found two sharper boundary markers:
 
@@ -281,5 +290,12 @@ External comparison also found two sharper boundary markers:
   **single-particle** free-fermion energies using special local hopping.
   The additive many-body spectrum retains free-model structure, so this is
   not the claimed full interacting many-body projective-rank theorem.
+
+Further exact-phrase searches for generic local Hamiltonians, generic spin
+chains, sparse Hermitian families, and all-order no-resonance located no
+matching local many-body theorem.  They did locate Cohen's 1990 theorem on
+the Galois group of a fully generic symmetric matrix, which is an important
+dense-matrix predecessor but does not address a polynomial-dimensional
+tensor-local subspace.  Search absence remains non-certifying.
 
 Priority remains unverified until searches and citation chains are exhausted.

@@ -1974,3 +1974,184 @@ Current status:
 
 `QUADRATIC CAUSALIZATION LAW FROZEN AS SHARPER REALIZATION; LOCAL SECOND-ORDER BRIDGE
 PAPER-PROVED; PHYSICAL TRANSFER, COMPOSITION, DYNAMICS, AND PREDICTION OPEN`.
+
+## Realification hostile descent and one-law consolidation
+
+The quadratic realization has now passed one hostile test and failed another.
+
+Exact positive result:
+
+\[
+q(X)=X^\dagger X
+\]
+on coherent superpositions recovers every ordered cross-Gram comparison by complex polarization.
+Thus coherent and positive reporters can be two faces of one quadratic passage.
+
+Exact no-go:
+
+\[
+\rho(X)=
+\begin{pmatrix}
+\operatorname{Re}X&-\operatorname{Im}X\\
+\operatorname{Im}X&\operatorname{Re}X
+\end{pmatrix}
+\]
+is injective and preserves addition, composition, adjoint as transpose, event squares, and
+cross-Gram records. Complex phase survives as a real quarter-turn \(J\) satisfying
+\[
+J_m\rho(X)=\rho(X)J_n.
+\]
+Therefore the event square does not select the word “complex.” Its physically relevant residue,
+if any, is how source-generated orientations are sewn under independent composition. The exact
+paper and Lean proof are recorded in
+[`complex-event-square-realification-no-go.md`](../3-formalized/not_new_scientific_knowledge/complex-event-square-realification-no-go.md).
+
+The first sewing model is now also closed. For a realified complex passage, reversing source and
+target \(J\) together preserves every passage, while reversing exactly one endpoint is compatible
+if and only if the passage is zero. Ordinary \(J\)-linear transport therefore synchronizes a
+\(\mathbb Z_2\) orientation; its sign mismatch is not a force. The exact theorem is recorded in
+[`complex-event-orientation-sewing-no-go.md`](../3-formalized/not_new_scientific_knowledge/complex-event-orientation-sewing-no-go.md).
+
+This kills another possible collage:
+
+```text
+positive square
+  + choose C
+  + choose connection
+  + call its components forces.
+```
+
+The corpus already proves that a static square does not choose \(\mathbb C\), one \(J\) does not
+choose connection, curvature does not choose its boundary law, and bare outcomes do not naturally
+compose. One-sided \(J\)-sign reversal also kills rather than curves a nonzero complex-linear
+passage. The ingredients cannot be selected independently.
+
+### Current canonical master law
+
+`[CONJECTURE: UNIVERSAL CONSERVATION OF PHYSICAL DISTINCTION THROUGH ACTUALIZATION]`
+
+> **Nothing quantum disappears. What stops being a possibility becomes a distinction in where
+> and when.**
+
+Formal hunch:
+
+\[
+\boxed{
+\Lambda_e:
+\mathsf{Lost}^{\rm coherent}_e
+\;\simeq\;
+\mathsf{Future}^{\rm causal}_e
+}
+\tag{F27}
+\]
+
+for every primitive event \(e\), where \(\Lambda_e\) is not a dimension count or chosen
+environmental purification. It must be:
+
+1. generated from the event source;
+2. positive and quadratically polarized in every finite local realization;
+3. invariant under faithful realification and every physically empty presentation change;
+4. compatible with sequential and independent event composition through one source-selected
+   sewing law;
+5. minimal and consequence-separating, so no spectator distinction survives;
+6. globally nonhorizontalizable, so a complete history cannot be reduced to one fixed law without
+   losing a physical consequence; and
+7. unique up to exactly the equivalences detected by all admissible future continuations.
+
+The public spacetime consequence is:
+
+> **Spacetime is the record made when quantum possibilities stop being mutually available.**
+
+The public gravity consequence is:
+
+> **Gravity is the failure of those event-made futures to fit one global future.**
+
+The previous “event square,” “future creation,” “minimal consequence closure,”
+“obstruction-completion fixed point,” and “actuality descent” proposals are no longer separate
+universal laws. They are required parts of `(F27)`:
+
+| former candidate | status under `(F27)` |
+|---|---|
+| event square | local quadratic realization of \(\Lambda_e\) |
+| loss--future identity | statement of \(\Lambda_e\) |
+| minimal consequence closure | no-spectator universal property of its target |
+| obstruction--completion fixed point | global uniqueness theorem for the completed history |
+| orientation descent | presentation-invariant sewing of local \(\Lambda_e\)'s |
+| law-valued actuality | nonhorizontalizability of the complete succession |
+| Hypertranscendence | analytic certificate that no finite differential observer law closes the complete history |
+
+This table is organizational, not evidence. Its purpose is to prevent writing seven mechanisms
+and calling their juxtaposition unification.
+
+### The new mathematics all results demand
+
+Existing categories begin with objects and legal morphisms. `(F27)` needs a theory in which one
+physical cell creates its own target distinction object and its legal future compositions. The
+required primitive is a **source-generated polarized causalization cell** carrying together:
+
+\[
+\bigl(
+\text{source order},\
+\text{coherent distinction},\
+\text{positive causal image},\
+\text{polarization},\
+\text{presentation orientation},\
+\text{sewing comparison}
+\bigr).
+\tag{F28}
+\]
+
+For two events, compare:
+
+```text
+compose coherent distinctions, then causalize
+                         versus
+causalize each distinction, then sew the created futures.
+```
+
+Let \(\Sigma\) denote the comparison. The three-event failure of the \(\Sigma\)'s to close is one
+typed defect \(\Omega\). The conjectural physical reading is:
+
+- root-facing curvature of \(\Omega\): internal gauge response;
+- future-facing curvature: gravity;
+- mixed root--future curvature: matter/Higgs/soldering;
+- compatibility identity for the whole defect: common conservation/Bianchi law.
+
+This exceeds ordinary descent only if the source construction derives the root, positive target,
+orientation, allowed sewing, and no-spectator quotient before \(\Omega\) is formed. If those are
+supplied, \(\Omega\) is standard higher gauge theory with renamed blocks.
+
+Hypertranscendence has one admissible role. It must prove a theorem of the form:
+
+\[
+\text{complete causalization history has a faithful finite differential horizontalization}
+\iff
+\text{its source obstruction class vanishes}.
+\tag{F29}
+\]
+
+The forward or reverse implication is not yet proved. Existing HGT theorems prove derivative
+escape from specified finite differential carriers; they do not identify those carriers with all
+physical totalizations. Until `(F29)` is closed, Hypertranscendence is an exact mathematical clue,
+not the engine of time.
+
+### Discovery gate after consolidation
+
+A Nature-level result must derive from `(F27)`, without independently inserting known physics:
+
+1. existence and uniqueness of the causalization cell `(F28)`;
+2. a nontrivial orientation-sewing defect modulo faithful realification;
+3. exactly one \(3+1\) external causal sector and exactly three internal gauge sectors;
+4. the global Standard Model quotient, chirality, anomaly cancellation, and three generations;
+5. Born probability and equivalence principle as the two conservation readings of \(\Lambda\);
+6. Einstein--Dirac--Yang--Mills--Higgs as the unique regular continuum law;
+7. holography, horizons, black-hole information, and cosmological closure from the same
+   consequence-separation rule;
+8. the physical horizontalization theorem `(F29)`; and
+9. one new finite dimensionless prediction.
+
+Current verdict:
+
+`ONE CANONICAL UNIVERSAL CONJECTURE IDENTIFIED; STATIC COMPLEX SELECTION FALSIFIED;`
+`LOCAL QUADRATIC AND REALIFICATION SHADOWS LEAN-PROVED; CAUSALIZATION, SEWING,`
+`FOUR-SECTOR RIGIDITY, CONTINUUM DYNAMICS, AND PREDICTION OPEN; NATURE GATE CLOSED`.

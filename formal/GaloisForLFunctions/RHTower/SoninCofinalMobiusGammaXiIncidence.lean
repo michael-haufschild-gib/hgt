@@ -235,6 +235,29 @@ theorem tendsto_fixedEulerCofinalSigma_nhdsWithin
   exact ⟨tendsto_fixedEulerCofinalSigma s,
     Filter.Eventually.of_forall (fixedEulerCofinalSigma_gt_one hs)⟩
 
+/-- The cofinal normal coordinate never exceeds its initial Euler point. -/
+theorem fixedEulerCofinalSigma_le_self
+    {s : ℝ} (hs : 1 ≤ s) (n : ℕ) :
+    fixedEulerCofinalSigma s n ≤ s := by
+  have hden : 0 < (n : ℝ) + 1 := by positivity
+  have hn : 0 ≤ (n : ℝ) := Nat.cast_nonneg n
+  have hsub : 0 ≤ s - 1 := sub_nonneg.mpr hs
+  have hquot : (s - 1) / ((n : ℝ) + 1) ≤ s - 1 := by
+    rw [div_le_iff₀ hden]
+    nlinarith [mul_nonneg hsub hn]
+  simp only [fixedEulerCofinalSigma]
+  linarith
+
+/-- Solving the affine critical boundary parameter for its tangential
+damping recovers the prescribed Euler point exactly. -/
+theorem mobiusCriticalBoundaryParameter_solvedDamping
+    {sigma s : ℝ} (hsigma : sigma ≠ 1) :
+    mobiusCriticalBoundaryParameter sigma
+        ((s - sigma) / (sigma - 1)) = s := by
+  unfold mobiusCriticalBoundaryParameter
+  field_simp [sub_ne_zero.mpr hsigma]
+  ring
+
 /-- Moving-parameter version of the cofinal Sonin--Gamma transport. -/
 def soninCofinalMobiusGammaXiWardMovingTransport
     (a c d r : ℝ) (hc : 0 < c) (hcd : c < d) (hr : 1 < r)
@@ -429,5 +452,284 @@ theorem exists_soninCofinalMobiusGammaXiWardFixedEulerTransport
     Subsingleton.elim _ _
   simpa only [soninCofinalMobiusGammaXiWardFixedEulerTransport,
     sigma, u, hsigmaProof, huProof, sub_add_sub_cancel, zero_add] using hsum
+
+/-- **Finite-packet common-grade fixed-Euler incidence.**  Suppose one
+critical normal path `sigma n → 1+` and finitely many nonnegative tangential
+paths keep finitely many Euler points fixed.  Then one strictly cofinal Sonin
+shell schedule reconstructs the continued Xi source trace at every point
+simultaneously.
+
+The common schedule is selected at the minimum of the exact pointwise graph
+scales.  Consequently every father/detail Gram error remains negligible at
+each original graph scale; this is a matrix-level Rees chart, not a family of
+unrelated pointwise subsequences. -/
+theorem exists_soninCofinalMobiusGammaXiWardTransport_finite_fixedEuler
+    {ι : Type*} [Fintype ι] [Nonempty ι]
+    (a c d r : ℝ) (ha : 0 < a) (hc : 0 < c) (hcd : c < d)
+    (hda : d < a) (hr : 1 < r) (harc : a < r * c)
+    (sigma : ℕ → ℝ) (hsigma : ∀ n, 1 < sigma n)
+    (hsigmaOne : Tendsto sigma atTop (𝓝 1))
+    (s : ι → ℝ) (hs : ∀ i, 1 < s i)
+    (u : ℕ → ι → ℝ) (hu : ∀ n i, 0 ≤ u n i)
+    (hfixed : ∀ n i,
+      mobiusCriticalBoundaryParameter (sigma n) (u n i) = s i) :
+    ∃ depth : ℕ → ℕ, StrictMono depth ∧
+      ∀ i : ι, Tendsto (fun n =>
+        soninCofinalMobiusGammaXiWardMovingTransport
+            a c d r hc hcd hr sigma hsigma
+            (fun n => u n i) (fun n => hu n i) depth n -
+          continuedPrimeArchSourceRelativeTrace
+            (xiWardCenteredCoordinate (s i : ℂ)))
+        atTop (𝓝 0) := by
+  classical
+  let fisher : ℕ → ι → lp (fun _ : ℕ => ℂ) 2 :=
+    fun n _ => infiniteMobiusCriticalFisherTangentLp (sigma n) (hsigma n)
+  let damped : ℕ → ι → lp (fun _ : ℕ => ℂ) 2 :=
+    fun n i => infiniteMobiusCriticalDampedSignedWeightLp
+      (sigma n) (u n i) (hsigma n) (hu n i)
+  let graphScale : ℕ → ι → ℝ := fun n i =>
+    (sigma n - 1) *
+      (squarefreeMobiusTotal (s i) / squarefreeMobiusTotal (sigma n))
+  have hgraphScale (n : ℕ) (i : ι) : 0 < graphScale n i := by
+    exact mul_pos (sub_pos.mpr (hsigma n))
+      (div_pos (squarefreeMobiusTotal_pos (hs i))
+        (squarefreeMobiusTotal_pos (hsigma n)))
+  have hsigmaWithin :
+      Tendsto sigma atTop (𝓝[>] (1 : ℝ)) := by
+    apply tendsto_nhdsWithin_iff.mpr
+    exact ⟨hsigmaOne, Filter.Eventually.of_forall hsigma⟩
+  have hinvTotal :
+      Tendsto (fun n => (squarefreeMobiusTotal (sigma n))⁻¹)
+        atTop (𝓝 0) :=
+    (tendsto_inv_squarefreeMobiusTotal_zero).comp hsigmaWithin
+  have hnormal :
+      Tendsto (fun n => sigma n - 1) atTop (𝓝 0) := by
+    simpa using hsigmaOne.sub_const 1
+  have hgraphScaleZero (i : ι) :
+      Tendsto (fun n => graphScale n i) atTop (𝓝 0) := by
+    have hratio :
+        Tendsto (fun n =>
+          squarefreeMobiusTotal (s i) / squarefreeMobiusTotal (sigma n))
+          atTop (𝓝 0) := by
+      simpa only [div_eq_mul_inv, mul_zero] using
+        hinvTotal.const_mul (squarefreeMobiusTotal (s i))
+    simpa only [graphScale, zero_mul] using hnormal.mul hratio
+  have hscalePacketNonempty (n : ℕ) :
+      (Finset.univ.image (graphScale n)).Nonempty :=
+    Finset.univ_nonempty.image (graphScale n)
+  let commonScale : ℕ → ℝ := fun n =>
+    (Finset.univ.image (graphScale n)).min' (hscalePacketNonempty n)
+  have hcommonScalePos (n : ℕ) : 0 < commonScale n := by
+    change 0 <
+      (Finset.univ.image (graphScale n)).min' (hscalePacketNonempty n)
+    have hmem := Finset.min'_mem
+      (Finset.univ.image (graphScale n)) (hscalePacketNonempty n)
+    obtain ⟨i, _hi, hi⟩ := Finset.mem_image.mp hmem
+    rw [← hi]
+    exact hgraphScale n i
+  have hcommonScaleLe (n : ℕ) (i : ι) :
+      commonScale n ≤ graphScale n i := by
+    change
+      (Finset.univ.image (graphScale n)).min' (hscalePacketNonempty n) ≤
+        graphScale n i
+    exact Finset.min'_le _ _
+      (Finset.mem_image.mpr ⟨i, Finset.mem_univ _, rfl⟩)
+  let i₀ : ι := Classical.choice (inferInstance : Nonempty ι)
+  have hcommonScaleZero :
+      Tendsto commonScale atTop (𝓝 0) := by
+    apply squeeze_zero'
+      (Filter.Eventually.of_forall fun n => (hcommonScalePos n).le)
+      (Filter.Eventually.of_forall fun n => hcommonScaleLe n i₀)
+      (hgraphScaleZero i₀)
+  obtain ⟨depth, hdepth, hpacket⟩ :=
+    exists_strictMono_singularDiagonal_transport_finite_codiagonal
+      (A := cofinalInverseDilatedShellEmbedding c d r hc hcd hr)
+      (B := cofinalEvenShellEmbedding c d hc hcd)
+      (T := crossBoundary (centralSoninProjection a) (dilationSum r hr) ∘L
+        centralSoninProjection a)
+      (hbasis := by
+        intro j
+        apply tendsto_zero_iff_norm_tendsto_zero.mpr
+        simpa [cofinalInverseDilatedEvenShell, cofinalEvenShell] using!
+          (centralSoninDilationCorner_inverseDilatedEvenShell_tendsto
+            a c d r ha hc hcd hda hr harc).comp
+              (tendsto_add_atTop_nat j))
+      (father := fisher) (detail := damped)
+      (epsilon := commonScale) hcommonScalePos hcommonScaleZero
+  refine ⟨depth, hdepth, ?_⟩
+  intro i
+  let corner : SoninL2 →L[ℂ] SoninL2 :=
+    crossBoundary (centralSoninProjection a) (dilationSum r hr) ∘L
+      centralSoninProjection a
+  let transportedScore : ℕ → ℂ := fun n =>
+    inner ℂ
+      (corner
+        (cofinalInverseDilatedShellEmbedding
+          c d r hc hcd hr (depth n) (fisher n i)))
+      (corner
+        (cofinalInverseDilatedShellEmbedding
+          c d r hc hcd hr (depth n) (damped n i)))
+  let sourceScore : ℕ → ℂ := fun n =>
+    inner ℂ (fisher n i) (damped n i)
+  have hcodiagonal := (hpacket i).2.2
+  have hgraphNorm : Tendsto (fun n =>
+      ‖transportedScore n - sourceScore n‖ / graphScale n i)
+      atTop (𝓝 0) := by
+    apply squeeze_zero'
+      (Filter.Eventually.of_forall fun n =>
+        div_nonneg (norm_nonneg _) (hgraphScale n i).le)
+      (Filter.Eventually.of_forall fun n => by
+        exact div_le_div_of_nonneg_left
+          (norm_nonneg _) (hcommonScalePos n) (hcommonScaleLe n i))
+    convert hcodiagonal using 1
+  have hnormalized : Tendsto (fun n =>
+      (transportedScore n - sourceScore n) /
+        ((graphScale n i : ℝ) : ℂ))
+      atTop (𝓝 0) := by
+    apply tendsto_zero_iff_norm_tendsto_zero.mpr
+    convert hgraphNorm using 1
+    funext n
+    rw [norm_div, Complex.norm_real, Real.norm_eq_abs,
+      abs_of_pos (hgraphScale n i)]
+  have hoverlap (n : ℕ) :
+      squarefreeMobiusBoundaryLayerLaplace (sigma n) (u n i) =
+        (squarefreeMobiusTotal (s i) : ℂ) /
+          (squarefreeMobiusTotal (sigma n) : ℂ) := by
+    simp only [squarefreeMobiusBoundaryLayerLaplace, hfixed n i]
+  have htransportDifference : Tendsto (fun n =>
+      soninCofinalMobiusGammaXiWardMovingTransport
+          a c d r hc hcd hr sigma hsigma
+          (fun n => u n i) (fun n => hu n i) depth n -
+        squarefreeMobiusGammaXiWardTransportV
+          (sigma n : ℂ) ((sigma n - 1 : ℝ) : ℂ)
+          (fun v =>
+            GaloisForLFunctions.squarefreeFisherScore
+              (sigma n : ℂ) ((sigma n - 1 : ℝ) : ℂ) v)
+          (u n i : ℂ))
+      atTop (𝓝 0) := by
+    have hscaled : Tendsto (fun n =>
+        (I / 2) *
+          ((transportedScore n - sourceScore n) /
+            ((graphScale n i : ℝ) : ℂ)))
+        atTop (𝓝 0) := by
+      simpa using hnormalized.const_mul (I / 2)
+    convert hscaled using 1
+    funext n
+    rw [show sourceScore n =
+        GaloisForLFunctions.squarefreeFisherScore
+          (sigma n : ℂ) ((sigma n - 1 : ℝ) : ℂ) (u n i : ℂ) by
+      exact inner_fisherTangent_damped_eq_squarefreeFisherScore
+        (hsigma n) (hu n i)]
+    simp only [graphScale, Complex.ofReal_mul, Complex.ofReal_div]
+    rw [← hoverlap n]
+    simp only [soninCofinalMobiusGammaXiWardMovingTransport,
+      transportedScore, fisher, damped, corner,
+      squarefreeMobiusGammaXiWardTransportV,
+      squarefreeMobiusGammaCurrentTransportV]
+    rw [squarefreeMobiusBoundaryLayerLaplace_eq_squarefreeBoundaryOverlap
+      (hsigma n) (hu n i)]
+    ring
+  have hexact : Tendsto (fun n =>
+      squarefreeMobiusGammaXiWardTransportV
+          (sigma n : ℂ) ((sigma n - 1 : ℝ) : ℂ)
+          (fun v =>
+            GaloisForLFunctions.squarefreeFisherScore
+              (sigma n : ℂ) ((sigma n - 1 : ℝ) : ℂ) v)
+          (u n i : ℂ) -
+        continuedPrimeArchSourceRelativeTrace
+          (xiWardCenteredCoordinate (s i : ℂ)))
+      atTop (𝓝 0) := by
+    have hzero : (fun n =>
+        squarefreeMobiusGammaXiWardTransportV
+            (sigma n : ℂ) ((sigma n - 1 : ℝ) : ℂ)
+            (fun v =>
+              GaloisForLFunctions.squarefreeFisherScore
+                (sigma n : ℂ) ((sigma n - 1 : ℝ) : ℂ) v)
+            (u n i : ℂ) -
+          continuedPrimeArchSourceRelativeTrace
+            (xiWardCenteredCoordinate (s i : ℂ))) = fun _ => 0 := by
+      funext n
+      rw [squarefreeMobiusGammaXiWardTransportV_actualTangent
+        (hsigma n) (hu n i)]
+      rw [hfixed n i]
+      simp
+    rw [hzero]
+    exact tendsto_const_nhds
+  simpa only [sub_add_sub_cancel, zero_add] using
+    htransportDifference.add hexact
+
+/-- **Unconditional finite Euler-packet Rees chart.**  Every nonempty finite
+family of Euler points in `s > 1` admits one source-defined critical normal
+path, compatible nonnegative tangential paths fixing all points exactly, and
+one strictly cofinal Sonin schedule which reconstructs all continued Xi
+source coordinates simultaneously.
+
+The normal path is chosen from half the smallest packet distance to the
+Euler boundary.  No pointwise subsequence, divisor datum, or zero-dependent
+topology enters the construction. -/
+theorem exists_finiteEulerPacket_soninGammaXiReesChart
+    {ι : Type*} [Fintype ι] [Nonempty ι]
+    (a c d r : ℝ) (ha : 0 < a) (hc : 0 < c) (hcd : c < d)
+    (hda : d < a) (hr : 1 < r) (harc : a < r * c)
+    (s : ι → ℝ) (hs : ∀ i, 1 < s i) :
+    ∃ (sigma : ℕ → ℝ) (u : ℕ → ι → ℝ)
+        (hsigma : ∀ n, 1 < sigma n) (hu : ∀ n i, 0 ≤ u n i)
+        (depth : ℕ → ℕ),
+      Tendsto sigma atTop (𝓝 1) ∧
+      (∀ n i,
+        mobiusCriticalBoundaryParameter (sigma n) (u n i) = s i) ∧
+      StrictMono depth ∧
+      ∀ i : ι, Tendsto (fun n =>
+        soninCofinalMobiusGammaXiWardMovingTransport
+            a c d r hc hcd hr sigma hsigma
+            (fun n => u n i) (fun n => hu n i) depth n -
+          continuedPrimeArchSourceRelativeTrace
+            (xiWardCenteredCoordinate (s i : ℂ)))
+        atTop (𝓝 0) := by
+  classical
+  let gaps : Finset ℝ :=
+    Finset.univ.image (fun i : ι => s i - 1)
+  have hgapsNonempty : gaps.Nonempty := by
+    exact Finset.univ_nonempty.image (fun i : ι => s i - 1)
+  let gap : ℝ := gaps.min' hgapsNonempty
+  have hgapPos : 0 < gap := by
+    have hmem : gap ∈ gaps := by
+      exact Finset.min'_mem gaps hgapsNonempty
+    obtain ⟨i, _hi, hi⟩ := Finset.mem_image.mp hmem
+    rw [← hi]
+    exact sub_pos.mpr (hs i)
+  have hgapLe (i : ι) : gap ≤ s i - 1 := by
+    exact Finset.min'_le gaps _ <|
+      Finset.mem_image.mpr ⟨i, Finset.mem_univ _, rfl⟩
+  let delta : ℝ := gap / 2
+  have hdeltaPos : 0 < delta := by
+    dsimp [delta]
+    positivity
+  have hbasePos : 1 < 1 + delta := by linarith
+  have hbaseLe (i : ι) : 1 + delta ≤ s i := by
+    dsimp [delta]
+    linarith [hgapLe i]
+  let sigma : ℕ → ℝ := fixedEulerCofinalSigma (1 + delta)
+  have hsigma (n : ℕ) : 1 < sigma n := by
+    exact fixedEulerCofinalSigma_gt_one hbasePos n
+  have hsigmaOne : Tendsto sigma atTop (𝓝 1) := by
+    exact tendsto_fixedEulerCofinalSigma (1 + delta)
+  let u : ℕ → ι → ℝ := fun n i =>
+    (s i - sigma n) / (sigma n - 1)
+  have hu (n : ℕ) (i : ι) : 0 ≤ u n i := by
+    have hsigmaLe : sigma n ≤ 1 + delta := by
+      exact fixedEulerCofinalSigma_le_self hbasePos.le n
+    exact div_nonneg
+      (sub_nonneg.mpr (hsigmaLe.trans (hbaseLe i)))
+      (sub_nonneg.mpr (hsigma n).le)
+  have hfixed (n : ℕ) (i : ι) :
+      mobiusCriticalBoundaryParameter (sigma n) (u n i) = s i := by
+    exact mobiusCriticalBoundaryParameter_solvedDamping
+      (ne_of_gt (hsigma n))
+  obtain ⟨depth, hdepth, hlimit⟩ :=
+    exists_soninCofinalMobiusGammaXiWardTransport_finite_fixedEuler
+      a c d r ha hc hcd hda hr harc sigma hsigma hsigmaOne
+      s hs u hu hfixed
+  exact ⟨sigma, u, hsigma, hu, depth, hsigmaOne, hfixed, hdepth, hlimit⟩
 
 end RHTower

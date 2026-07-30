@@ -3,7 +3,9 @@
 - **ID:** `polarized-critical-rees-corona-transgression-rh`
 - **Stage:** 1-in-progress
 - **Type:** UNIVERSAL HT COMPLETION LAW / SOURCE-SPECIFIC RH CONJECTURE
-- **Scientific status:** `[BOLD CONJECTURE] [EXACT CORPUS CHARTS] [NOT RH]`
+- **Scientific status:** `[BOLD CONJECTURE] [EXACT CORPUS CHARTS]`
+  `[FINITE-PACKET COMMON-GRADE LEAN-FORMALIZED]`
+  `[COUNTABLE COMMON-SCHEDULE CORONA SKELETON LEAN-FORMALIZED] [NOT RH]`
 - **Parents:**
   - `source-record-relative-hyperrigidity-purity-law.md`;
   - `derived-self-dual-clock-splitting-stack.md`;
@@ -15,6 +17,7 @@
   - `../3-formalized/squarefree-fixed-current-right-half-ward-localization.md`.
 - **Lean charts already present:**
   - `formal/GaloisForLFunctions/RHTower/SoninCofinalGlobalEulerCarrier.lean`;
+  - `formal/GaloisForLFunctions/RHTower/SoninSourceGlobalGradedCorona.lean`;
   - `formal/GaloisForLFunctions/RHTower/SoninCofinalMobiusGammaXiIncidence.lean`;
   - `formal/GaloisForLFunctions/RHTower/MobiusCoMovingDiffuseCodiagonal.lean`;
   - `formal/GaloisForLFunctions/RHTower/MobiusCofinalReplicaOneCorner.lean`;
@@ -93,6 +96,10 @@ The corpus already proves more than the older route ledgers record.
    strictly cofinal shell schedule with error `o(epsilon)`, preserves a moving
    father/detail codiagonal after division by `epsilon`, and has a simultaneous
    finite-packet form.
+   `SoninSourceGlobalGradedCorona` now upgrades the finite packet to one
+   constructive countable schedule: stage `n` absorbs the complete norm load
+   of the first `n+1` source coordinates.  Every fixed father/detail pair and
+   codiagonal is then recovered at `o(epsilon)` along that same schedule.
 2. `SoninCofinalMobiusGammaXiIncidence` applies that theorem to the actual
    Möbius Fisher two-jet.  At every fixed Euler point `s>1`, the Sonin
    codiagonal survives the complete singular overlap division and converges to
@@ -224,7 +231,7 @@ controlled schedule on a countable determining family and prove that the
 resulting graded morphism is independent of that family.  Pointwise
 diagonalization without this independence is not a canonical completion.
 
-## Finite-packet fixed-Euler incidence `[PAPER-PROVED]`
+## Finite-packet fixed-Euler incidence `[LEAN-FORMALIZED]`
 
 The first attack closes on paper.  Let `I` be a nonempty finite set and fix
 real Euler points `s_i>1`.  Put
@@ -321,6 +328,72 @@ positive Gram order.  The new exact wall is now source-global **polarized**
 continuation from this finite Rees chart to the reciprocal-horizon Hardy
 chart.
 
+## Countable common-schedule corona skeleton `[LEAN-FORMALIZED]`
+
+The finite-packet restriction is not an infinity obstruction.  Let
+`father(n,i)` and `detail(n,i)` be an arbitrary countable moving family, with
+no uniform norm bound in either index.  At stage `n`, define the finite load
+
+```text
+L_n = sum_{i<=n} (||T|| ||detail(n,i)|| + ||father(n,i)||)
+```
+
+and the internal accuracy
+
+```text
+eta_n = epsilon_n^2 / (1+L_n).
+```
+
+Strong transport of each fixed `ell^2` vector gives one threshold beyond
+which every one of the first `n+1` father/detail errors is at most `eta_n`.
+Summing those thresholds constructs, rather than assumes, a strictly
+increasing common depth.  The polarization identity and the definition of
+`L_n` then give
+
+```text
+vector error / epsilon_n -> 0,
+codiagonal error / epsilon_n -> 0
+```
+
+for every fixed coordinate `i` along this single depth.  This is formalized
+as
+
+```text
+exists_strictMono_singularDiagonal_transport_countable_codiagonal
+exists_centralSoninDilationCorner_singularDiagonal_countable_codiagonal.
+```
+
+The same module defines the exact relation
+
+```text
+x ~_epsilon y  iff  ||x_n-y_n||/epsilon_n -> 0
+```
+
+and proves it is a setoid on uniformly bounded sections.  Its quotient
+`SingularGradeCorona` is a canonical grade-level carrier.  If two depth
+schedules recover one source codiagonal to `o(epsilon)`, then
+`singularCodiagonal_schedules_equivalent` proves their representatives have
+the same grade class.  This removes schedule choice at each scalar
+codiagonal and gives one countable product chart, rather than a family of
+coordinate-dependent subsequences.
+
+Hostile boundary: this is a corona **skeleton**, not yet the conjectured
+polarized critical Rees transgression.  It does not yet provide:
+
+1. all Rees grades and their degree-shift operations;
+2. a Hilbert `C*`-module norm or adjointable prime/Gamma action;
+3. a pre-scalarized map from the complete joined Fisher field to the
+   reciprocal-horizon Hardy seam;
+4. any contractive inequality.
+
+Moreover, coordinatewise bounded scalar classes do not by themselves give
+one bounded `ell^infinity`-valued class across the determining family.  The
+remaining source-global step must either prove the required uniform
+bornological control or formulate the carrier as a locally convex/product
+Rees module and prove the eventual Hardy morphism is continuous for that
+topology.  Calling the present quotient the completed RH carrier would be
+false.
+
 ## Falsifiers
 
 1. Two source-natural cofinal schedules give inequivalent graded Xi classes.
@@ -362,9 +435,12 @@ Euler--Gamma/Xi realization.
 - [x] collision evacuation with graph-safe vanishing energy formalized
 - [x] exact four-unit source field and Cauchy Gram consumer formalized
 - [x] reciprocal-horizon seam and target anti-causal vector identified
-- [ ] finite-packet fixed-Euler Sonin--Gamma incidence proved
-- [ ] canonical graded corona carrier constructed
-- [ ] schedule independence and source-global chart descent proved
+- [x] finite-packet fixed-Euler Sonin--Gamma incidence proved and Lean-formalized
+- [x] bounded singular-grade quotient skeleton constructed
+- [x] one countable Sonin codiagonal schedule and scalar grade schedule
+  independence formalized
+- [ ] full Rees grading, bornological determining-family descent, and
+  actual Gamma--Xi/Hardy source-global morphism constructed
 - [ ] pre-scalarized reciprocal-horizon incidence constructed
 - [ ] polarized contractivity proved
 - [ ] RH deduced
@@ -378,3 +454,31 @@ Euler--Gamma/Xi realization.
   codiagonals, fixed Euler points, one-corner current recovery, collision
   evacuation, and four-unit coarea.  Isolated the common graded polarized
   morphism—not another scalar sign or fixed Hilbert space—as exact RH core.
+- 2026-07-30 — Formalized the finite-packet common-grade theorem.  The generic
+  declaration
+  `exists_strictMono_singularDiagonal_transport_finite_codiagonal` constructs
+  one cofinal schedule preserving every moving father/detail pair and all
+  off-diagonal Gram entries at a common singular scale without uniform vector
+  bounds.  The source-specific declarations
+  `exists_soninCofinalMobiusGammaXiWardTransport_finite_fixedEuler` and
+  `exists_finiteEulerPacket_soninGammaXiReesChart` then construct, for every
+  nonempty finite family of Euler points \(s_i>1\), one critical normal path,
+  exact nonnegative tangential paths fixing all \(s_i\), and one common Sonin
+  schedule reconstructing every continued Xi coordinate.  Direct checks,
+  targeted module builds, axiom audit, and formal lint pass.  Remaining wall
+  is source-global polarized continuation from these finite Rees charts to the
+  reciprocal-horizon Hardy chart.
+- 2026-07-30 — Removed the finite-to-countable schedule obstruction and
+  constructed the first exact grade quotient.  In
+  `SoninSourceGlobalGradedCorona`,
+  `exists_strictMono_singularDiagonal_transport_countable_codiagonal`
+  diagonalizes the first `n+1` moving source coordinates at stage `n`, with
+  the depth absorbing their full unbounded finite load.  Its Sonin
+  specialization gives one schedule for every fixed countable father/detail
+  coordinate and codiagonal.  `SingularGradeCorona` quotients uniformly
+  bounded sections by `o(epsilon)` difference, and
+  `singularCodiagonal_schedules_equivalent` proves scalar schedule
+  independence.  This is a standard diagonal/quotient mechanism applied to
+  the actual source transport, not by itself novel RH mathematics.  The
+  RH-bearing open core remains the pre-scalarized polarized Hardy morphism and
+  its independently fixed contractive metric.
