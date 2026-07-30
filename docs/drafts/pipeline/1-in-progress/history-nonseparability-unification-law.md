@@ -288,7 +288,7 @@ dressed observables necessarily carry long-range fields, while
 [Donnelly--Freidel](https://arxiv.org/abs/1601.04744) require boundary data to formulate localized
 gauge subsystems.
 
-### Relational factorization profile `[BRIDGE CANDIDATE; NOT THE CONJECTURE]`
+### Relational factorization profile `[BRIDGE; PURE CROSSING LEAN-PROVED; NOT THE CONJECTURE]`
 
 The strongest survivor is not a preferred binary tensor cut. It is a profile over every
 independently admissible relational port family:
@@ -299,12 +299,27 @@ independently admissible relational port family:
 \text{ factorizes across the port partition }\pi\}.
 \]
 
-For a nonzero finite pure tensor, factorizing partitions are expected to be closed under common
-refinement and hence to possess a unique finest factorizing partition. If proved, this would remove
-arbitrary binary-cut choices *relative to a fixed admissible port family*. It would not select the
-ports themselves, and it would not survive gravitational dressing without a relational replacement
-for local algebras. Until those two points are closed this is a mathematical bridge candidate, not
-\(\mathfrak N\).
+The first exact refinement move is now paper- and Lean-proved. If a nonzero four-party pure tensor
+factorizes across both crossed bipartitions
+
+\[
+IJ\mid KL
+\qquad\text{and}\qquad
+IK\mid JL,
+\]
+
+then it factorizes across the common four-block refinement
+
+\[
+I\mid J\mid K\mid L.
+\]
+
+The exact theorem and audit are recorded in
+[`crossed-pure-factorization-refinement.md`](../3-formalized/crossed-pure-factorization-refinement.md).
+This is standard pure-state partition-lattice rigidity, not new scientific knowledge. It removes
+arbitrary crossed-cut choice *relative to a fixed pure port family*. It does not select the ports,
+handle mixed operational histories, or survive gravitational dressing without a relational
+replacement for local algebras. Those points—not pure-cut ambiguity—remain the open core.
 
 `[OPEN: RELATIONAL INTERVENTION GROUPOID]`
 

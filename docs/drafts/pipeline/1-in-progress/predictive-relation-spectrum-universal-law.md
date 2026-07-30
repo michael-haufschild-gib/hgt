@@ -224,6 +224,27 @@ rather than metaphysical rhetoric.
 composition; a locality-respecting family whose complexity activates outside
 every causal-volume bound; absence of a matching lower family.
 
+### Proved lower boundary of P2
+
+The finite-horizon continuity mechanism is now unconditional in every
+unital \(C^*\)-algebra.  For self-adjoint \(H,K\), arbitrary bounded
+observable \(O\), and real \(t\),
+\[
+ \|e^{-itH}Oe^{itH}-e^{-itK}Oe^{itK}\|
+ \leq 2|t|\|H-K\|\|O\|.                              \tag{P2.1}
+\]
+Hence resolving a difference \(\varepsilon\) requires
+\[
+ |t|\geq
+ \frac{\varepsilon}{2\|H-K\|\|O\|}.                 \tag{P2.2}
+\]
+The result is dimension-free and operator-normalized.  It proves fixed-time
+stability and the inverse-coupling lower activation scale, but not the
+causal-volume upper/lower laws or maximal completed dimension.
+
+Formal source:
+`formal/GaloisForLFunctions/HTGeometry/FiniteHorizonCStarPerturbationLaw.lean`.
+
 ## Conjecture P3 — infinite-volume temporal inexhaustibility
 
 For generic finite-range interactions on an infinite connected lattice, a
@@ -339,6 +360,25 @@ The following are parents, not discoveries:
 - quantum prethermalization and noncommuting long-time/weak-coupling limits;
 - black-hole late-time spectral discreteness and nonperturbative plateaux.
 
+Closest checked quantum-recurrence parents:
+
+- Riddell--Pagliaroli--Alhambra,
+  `arXiv:2206.07541`, derive concentration and doubly exponential recurrence
+  lower bounds under a generic-spectrum condition. Their genericity argument
+  is for the full Hermitian matrix space; it does not prove that a
+  geometrically local interaction family contains a witness, nor the
+  one-knob weak-coupling singularity.
+- Riddell--Bertini, `arXiv:2404.12100`, construct rationally independent
+  *single-particle* spectra with local free-fermion hopping. Their many-body
+  additive structure remains detectable in higher spectral-form-factor
+  moments. This is a close integrable boundary, not P1's maximal
+  \(q^n-1\) interacting many-body projective rank.
+- Huang--Tong--Fang--Su, `arXiv:2210.03030`, achieve and lower-bound
+  \(O(\varepsilon^{-1})\) total evolution time for active many-body
+  Hamiltonian learning. This is operationally adjacent to `(P2.2)`, but it
+  neither identifies completed recurrence geometry nor proves its
+  discontinuous activation at nonzero coupling.
+
 Searches found no checked source joining these parents to the exact
 local-interaction projective-rank transition, its all-observer recurrence
 consequences and a causal finite-resolution activation law. Search absence is
@@ -361,7 +401,8 @@ smuggled into a manuscript as interpretations of finite spectral theorems.
 1. Close the physical endpoint-local witness and prove P1 for path graphs.
 2. Prove the one-knob arbitrarily weak interaction theorem.
 3. Formalize the pure-point minimal carrier only as classical infrastructure.
-4. Define one operational pseudometric from specified quantum interventions.
+4. Extend the proved C⋆ operator metric to one intervention-complete
+   operational pseudometric.
 5. Prove an upper causal-volume activation law and construct a matching lower
    family.
 6. Extend the finite relation groups to an inverse system for infinite
@@ -370,3 +411,188 @@ smuggled into a manuscript as interpretations of finite spectral theorems.
 8. Let a hostile general-journal review decide whether the joined theorem is
    a universal physical law or a new mathematical many-body theorem.
 
+## Novelty-finder reset: seek the law whose results are shadows
+
+The search must not promote the strongest theorem currently within reach.
+Theorems, observations and no-gos are data.  Default move:
+
+1. conjecture a reinterpretation with a more universal primitive;
+2. require an exact recovery map from that primitive to every claimed shadow;
+3. attack the reinterpretation against the strongest external parent;
+4. retain it only if one recovery theorem is genuinely new and
+   parameter-reducing.
+
+This reverses the earlier workflow.  P1 and `(P2.1)`--`(P2.2)` are evidence
+for a law, not the law itself.
+
+## Jump J1 — relation--metric recurrence duality
+
+The current best mathematical jump replaces “recurrence rank” and
+“rate--distortion entropy” by one exact object.
+
+Let \(K\) be the minimal compact observable return group, let \(d\) be its
+translation-invariant observer metric after quotienting the zero-distance
+subgroup, let \(m\) be Haar probability and put
+\[
+ B_\varepsilon=\{k\in K:d(k,0)<\varepsilon\}.
+\]
+For \(\alpha\in K\), define the first observer return
+\[
+ \tau_\varepsilon(\alpha)
+ =\min\{n\geq1:d(n\alpha,0)<\varepsilon\}.
+\]
+Write \(N_\delta(K,d)\) for the least number of open
+\(\delta\)-balls covering \(K\).
+
+### Universal metric-return theorem target
+
+For every compact metrizable group with invariant metric,
+\[
+ \tau_\varepsilon(\alpha)
+ \leq N_{\varepsilon/2}(K,d)                         \tag{J1.1}
+\]
+for every \(\alpha\).  Indeed, two of
+\(0,\alpha,\ldots,N_{\varepsilon/2}\alpha\) lie in one
+\(\varepsilon/2\)-ball, and invariance translates their collision to a
+return to zero.
+
+For every nontrivial compact connected metrizable abelian group, define the
+worst dense-orbit return
+\[
+ \tau_\varepsilon^\star
+ =\sup_{\overline{\mathbb Z\alpha}=K}
+ \tau_\varepsilon(\alpha).
+\]
+The proposed sharp scale-shift law is
+\[
+ \boxed{
+ \left\lceil\frac1{m(B_\varepsilon)}\right\rceil
+ \leq \tau_\varepsilon^\star
+ \leq N_{\varepsilon/2}(K,d)
+ \leq \frac1{m(B_{\varepsilon/4})}.}                  \tag{J1.2}
+\]
+The left inequality follows by choosing a Haar-generic dense generator
+outside the finitely many inverse images
+\(\{\alpha:n\alpha\in B_\varepsilon\}\); connectedness makes multiplication
+by every positive integer Haar-preserving.  The final inequality follows
+from a maximal \(\varepsilon/2\)-separated set whose
+\(\varepsilon/4\)-balls are disjoint.
+
+This is a paper-proof target, not yet a manuscript theorem.  Its important
+feature is exactness at neighboring resolutions.  It does not replace a
+dimension-linear error by a hidden dimension-dependent constant:
+\[
+ \text{worst return}
+ \quad\leftrightarrow\quad
+ \text{inverse target volume}
+ \quad\leftrightarrow\quad
+ \text{covering complexity}
+\]
+with only the explicit scale change
+\(\varepsilon\mapsto\varepsilon/4\).
+
+### Existing laws recovered as shadows
+
+| Shadow | Recovery from \((K,d,m)\) |
+|---|---|
+| exact periodicity | the orbit generator is torsion |
+| quasiperiodic recurrence | a dense rotation on \(K\) |
+| rational spectral rank | Lie dimension when \(K\) is a finite torus |
+| observer coherence rank | dimension of the quotient by the metric kernel |
+| reverse-water entropy | finite weighted-torus estimate of \(-\log m(B_\varepsilon)\) |
+| worst-spectrum minimax exponent | `(J1.2)` plus finite-torus ball asymptotics |
+| countable pure-point recurrence | compact metrizability of the dual of the countable visible-frequency group |
+| solenoidal return | finite-rank non-finitely-generated frequency groups give non-toral \(K\) |
+| infinite temporal dimension | an infinite-rank dual inverse limit; every fixed-resolution cover remains finite |
+| finite contraction ceiling | apply the return group to the reversible peripheral factor; stable mass fixes the ceiling |
+| observer restriction | quotient \(K\) by a closed zero-distance subgroup |
+| local-moment no-go | a finite observable prefix does not determine the completed metric group |
+
+The table is a derivation obligation.  A row enters the paper only after its
+recovery theorem is proved and formalized.
+
+## Jump J2 — interaction changes the return object, not merely the spectrum
+
+For a \(D\)-level Hamiltonian let \(R_H\) be the balanced integer relation
+lattice of its energies and let
+\[
+ \Gamma_H=\mathbb Z^D/(\mathbb Z{\bf1}+R_H),\qquad
+ K_H=\widehat{\Gamma_H}.
+\]
+The uncoupled tensor law gives
+\(\operatorname{rank}\Gamma_H\leq n(q-1)\).  The target local-interaction
+theorem gives
+\(\Gamma_H\cong\mathbb Z^{q^n-1}\) for almost every nearest-neighbour
+Hamiltonian.
+
+The reinterpretation is stronger than “generic gaps are independent”:
+
+> **Interaction changes the minimal space in which the complete observable
+> future can return.  Observation chooses a metric quotient of that space;
+> dissipation chooses its surviving factor; target volume sets the minimax
+> waiting time.**
+
+Along a one-knob perturbation \(H_g=H_0+gV\), the exact return object can jump
+for every nonzero \(g\) outside a countable exceptional set, while
+`(P2.1)` gives
+\[
+ \sup_{|t|\leq T}
+ \|O_{H_g}(t)-O_{H_0}(t)\|
+ \leq 2T|g|\|V\|\|O\|.                               \tag{J2.1}
+\]
+Thus exact completion and zero coupling do not commute, but finite-time
+physics remains continuous.  If the local maximality theorem closes, this
+gives a new joined consequence:
+\[
+ \boxed{
+ \text{arbitrarily weak local interaction changes exact return complexity
+ from linear to exponential, while detecting the change requires time
+ at least of order }|g|^{-1}.}                         \tag{J2.2}
+\]
+
+The inverse-coupling bound alone is a standard perturbative speed limit.
+The rank jump alone is an algebraic genericity statement.  Candidate novelty
+is their recovery from one return object and their simultaneous realization
+inside a physical bounded-degree local family.
+
+## Hostile parent attack on J1--J2
+
+J1 uses classical compactness, Haar measure, Pontryagin duality and Kronecker
+rotation.  Quantitative recurrence versus local dimension, Bohr return sets,
+metric entropy and Kac-type inverse-volume laws are established subjects.
+Therefore `(J1.1)`--`(J1.2)` alone cannot carry a Nature claim even if the
+exact scale-shift formulation is absent from searches.
+
+Weak integrability breaking and prethermal plateaux already establish that a
+small perturbation can have a late dynamical effect, often on
+\(g^{-2}\) or longer scales.  J2 must not be advertised as discovery of
+noncommuting weak-coupling and long-time limits.  It survives only if the
+following exact conjunction is externally new:
+
+1. every finite and countable pure-point reporter is represented by the same
+   minimal compact return object;
+2. exact target volume and covering geometry give the two-resolution
+   minimax law `(J1.2)`;
+3. observer restriction and open-system survival are canonical
+   quotient/factor operations on that object;
+4. almost every bounded-degree local interacting Hamiltonian has maximal
+   projective return group;
+5. an arbitrarily weak one-knob local interaction realizes the full
+   linear-to-exponential jump; and
+6. operator-norm observations cannot detect that completed jump before the
+   inverse-coupling scale.
+
+Current verdict:
+
+- **reinterpretive coherence:** pass;
+- **infinite pure-point universality:** plausible and exact;
+- **worst-spectrum minimax framing:** materially stronger;
+- **dimension-linear remainder:** removed at the universal level by the
+  neighboring-resolution law;
+- **arbitrary continuous spectrum:** not covered;
+- **arbitrary open dynamics:** not covered;
+- **physical local maximality:** open;
+- **external priority:** open;
+- **Nature gate:** closed.
+
+J1--J2 is therefore the next theorem programme, not yet the paper headline.

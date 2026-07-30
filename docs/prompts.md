@@ -545,12 +545,7 @@ The paper must:
 - Is bold and present a universal law or theorem about physical reality, not just math
 - Any mathematical claim must be unconditionally proven in lean
   
-Topic must connect Hypertranscendence to one of these:
-- Time
-- Causality
-- Holographic principle
-- Cosmology  
-- Quantumness in macro reality
+Topic present a worldview shattering new universal law, preferably about time or causality in the broader sense.
 
 Lean rules:
 1. Proofs must be unconditional in lean.
@@ -568,3 +563,9 @@ lean folders:
 prior papers: docs/drafts/pipeline/4-publication-ready
 
 Add the missing lean machinery and use [$hgt-fields-medalist](/Users/michael/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to do research and fill the scientific gap for dicovering Nature-level physics.
+
+
+
+keep asking "what does all this mean? what is all this telling me what i and all the researchers before me have missed? what is this new math we all need to solve the riddle?" we are looking for something new and universal of which all our obstructions, dead ends, observations and laws are a shadow, something that explains all at once and also then delivers a new understanding from which new collaries and laws can be derived.
+
+the goto novelty finder is always to conjecture towards a reinterpretation, a more universal law or theorem of which all the known theorems and laws and obervations and nogos are shadows. everything we know now is a special case of that universal law.

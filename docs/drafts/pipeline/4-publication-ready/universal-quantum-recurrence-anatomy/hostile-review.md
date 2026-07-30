@@ -1,17 +1,38 @@
 # Hostile editorial and referee review
 
 Manuscript: **A universal law of quantum recurrence**  
-Review date: 29 July 2026  
+Review date: 30 July 2026  
 Standard: Nature editorial criteria plus a hostile mathematical-physics
 referee.
 
 ## Executive verdict
 
-**Mathematical validity:** pass, subject to independent checking.  
-**Scientific coherence:** pass.  
+**Mathematical validity:** pass for the claims presently stated, subject to
+independent checking.  
+**Scientific coherence:** incomplete; the manuscript still joins a hierarchy
+rather than deriving it from one law.  
 **Specialist-journal threshold:** clear pass.  
-**Nature send-to-review threshold:** warranted, but acceptance cannot be
-certified.
+**Nature send-to-review threshold:** **fail in current form**.
+
+The previous “send to review” verdict was too generous. Breadth, correctness
+and an exact dependency diagram do not by themselves establish one
+transformative law. A hostile editor can still summarize the manuscript as
+several rigorous recurrence classifications connected after the fact:
+contractive thresholds, a minimax clock, observer quotients, moment
+hierarchies and non-identifiability. That is a strong specialist synthesis,
+not yet a Nature-level conceptual discovery.
+
+The credible rebuild requires a new theorem spine:
+
+> Arbitrarily weak generic local interaction changes completed recurrence
+> geometry from linearly to exponentially many independent temporal
+> directions, while every bounded-time operator-norm observation remains
+> continuous and requires inverse-coupling time to resolve the change.
+
+The dimension-free finite-horizon half is now proved in arbitrary unital
+\(C^*\)-algebras. The physical local maximal-rank half remains open. Until
+both halves and their external priority audit close, the title “A universal
+law of quantum recurrence” is not earned.
 
 Combining the two source papers is materially better. The former
 rate--distortion paper answered how long finite recurrent packets can take,
@@ -46,9 +67,9 @@ conclusions that are novel, arresting, immediate and far-reaching:
 | Criterion | Hostile assessment | Verdict |
 |---|---|---|
 | Original research | No checked source joins exact contractive threshold, state-weighted minimax clock, observer graph quotient, arbitrary-spectrum collision hierarchy and local/global non-identifiability. Each parent literature is identified. Priority remains externally auditable. | Candidate pass |
-| Outstanding importance | The paper answers the full “whether, when and what” recurrence question and gives a rigorous limit on late-time SFF inference. No experiment or gravity calculation accompanies it. | Pass for a foundational theory submission; editorial risk remains |
-| Interdisciplinary reach | Connects quantum dynamics, open-system spectral theory, information geometry, graph topology, harmonic analysis, moment problems and black-hole SFF inference. | Pass |
-| Novel and arresting | “The amount, time and observable content of quantum return belong to different levels of one spectral hierarchy” is clear and surprising. | Pass |
+| Outstanding importance | The paper classifies several aspects of recurrence but does not yet show that one previously unknown physical mechanism controls them. | Fail for Nature; pass for specialist venue |
+| Interdisciplinary reach | Connects several fields, but connection count is not conceptual unification. Black-hole relevance remains cautionary rather than predictive. | Insufficient |
+| Novel and arresting | “Different aspects of return occupy different spectral levels” is intelligible but not a worldview-changing result. | Fail |
 | Immediate implications | Gives finite device inequalities, an exact onsite-field protocol, and a sharp warning about perturbative SFF certification. | Pass, theory-only |
 | Far-reaching implications | Arbitrary probability spectra receive a complete long-time law; finite, countably pure-point and atomless phases are separated exactly. | Pass |
 | Technical validity | Every displayed claim is mapped to an unconditional theorem; scope boundaries are explicit. | Pass pending external proof review |
@@ -230,21 +251,32 @@ Reject if any of the following occurs:
 11. formal verification is used as novelty or significance evidence;
 12. literature search is represented as proof of priority.
 
-The current manuscript avoids all twelve.
+The current manuscript avoids all twelve. That establishes claim discipline,
+not Nature significance.
+
+Additional rejection triggers for the rebuild:
+
+13. “universal law” is retained without one theorem from which the recurrence
+    hierarchy follows;
+14. generic-spectrum results in the full Hermitian ensemble are presented as
+    proving genericity inside a geometrically local Hamiltonian family;
+15. the standard Duhamel bound is presented as stand-alone novelty rather
+    than one half of a new singular pairing;
+16. black-hole, cosmological or arrow-of-time language is used without a
+    model-specific theorem yielding a new physical prediction.
 
 ## Final hostile conclusion
 
-The merger is scientifically justified and substantially stronger than the
-two source papers. It converts one paper's quantitative but narrow clock and
-the other's broad but thin no-go into a positive universal classification:
-threshold, deadline, observer quotient, collision distribution and
-determinacy boundary.
+The merger is mathematically substantial and suitable for a strong
+specialist journal, but it does not presently earn Nature review or the title
+“universal law.” Its organizing hierarchy is a synthesis; it is not yet one
+new mechanism that explains why all layers have the forms proved.
 
-An honest hostile reviewer would recommend external review. A specialist
-referee should not reject it for correctness, scope concealment or lack of a
-single organizing theorem. Nature rejection could still occur because the
-work is theory-only, because an editor regards the synthesis of classical
-parents as insufficiently transformative, or because independent priority
-search finds an equivalent joined theorem. Those risks cannot be eliminated
-by wording. They are now the real risks rather than defects hidden inside the
-manuscript.
+The rebuild becomes a credible general-journal candidate only if it proves
+the singular local-interaction theorem, derives the existing recurrence
+anatomy as consequences, and survives an external priority audit against
+generic-spectrum equilibration, local rational-independence constructions,
+Hamiltonian learning and perturbative stability. If the physical
+local-maximality theorem fails, the current manuscript should be retitled and
+submitted as a specialist classification rather than defended with broader
+language.

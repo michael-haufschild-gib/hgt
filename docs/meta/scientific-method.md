@@ -18,6 +18,35 @@ If a proof route is already visible and materially determines the statement, cla
 hostile falsification, novelty audit, prediction extraction, and unconditional Lean formalization
 begin. Inability to find a proof does not count against the conjecture.
 
+## Universal-shadow novelty search
+
+Use this as default conjecture-forming operator after absorbing corpus results, failures, no-gos,
+observations, and primary literature:
+
+1. treat every known item as a possible shadow, limit, quotient, representation, obstruction, or
+   corollary of a still-missing universal law—not as the research headline;
+2. seek one new primitive and one law from which all items follow through explicit shadow maps;
+3. require the reinterpretation to change what existing objects mean, rather than place them in a
+   larger vocabulary;
+4. state which mathematical object is missing if current mathematics cannot express the law;
+5. freeze the strongest informed truth-hunch before asking whether it is provable;
+6. use proved bridges and Lean formalizations only to discriminate among universal candidates;
+7. demand at least one new risky consequence that does not follow from the shadow theories alone.
+
+For each candidate, record:
+
+- one public sentence intelligible without its mathematics;
+- one universal statement or equation;
+- a table mapping every major corpus theorem, failure, no-go, and established physical law to its
+  proposed shadow;
+- closest parent theories and exact unoccupied residue;
+- falsifiers and one parameter-free prediction target.
+
+Reject a candidate when its shadow map only renames known concepts, imports independent ingredients,
+does not force major known results, or promotes an easily proved special case into the headline.
+State what is wrong before what is right; state uncertainty explicitly; disagree with the proposed
+interpretation when evidence warrants it.
+
 ## Conjecture attack
 
 When stuck on a frozen conjecture:

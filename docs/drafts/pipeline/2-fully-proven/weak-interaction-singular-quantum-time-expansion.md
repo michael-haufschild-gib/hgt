@@ -8,6 +8,7 @@
   `../1-in-progress/universal-replica-collision-law-of-quantum-return.md`
 - **Scientific status:** `[PAPER-PROVED] [PRIORITY PROVISIONALLY CLEARED
   THROUGH LOCAL GENERATOR] [ONE-KNOB POLYNOMIAL LAYER LEAN-PROVED]`
+  `[FINITE-HORIZON CSTAR CORE LEAN-PROVED]`
   `[PHYSICAL LOCAL GENERATOR FORMALIZATION OPEN]`
 
 ## Discovery
@@ -159,6 +160,22 @@ instantiate the obstruction polynomials with eigenvalue relations of the
 local qudit chain. That tensor-local spectral witness is the remaining
 formal core.
 
+`formal/GaloisForLFunctions/HTGeometry/FiniteHorizonCStarPerturbationLaw.lean`
+now also proves unconditionally, for arbitrary unital \(C^*\)-algebras:
+
+1. the dimension-free Duhamel bound
+   \(\|e^{-itH}-e^{-itK}\|\leq |t|\|H-K\|\);
+2. operator-normalized Heisenberg stability
+   \[
+   \|e^{-itH}Oe^{itH}-e^{-itK}Oe^{itK}\|
+   \leq2|t|\|H-K\|\|O\|;
+   \]
+3. the inverse-coupling distinguishability-time lower bound.
+
+Thus the finite-horizon continuity mechanism is no longer restricted to
+finite matrices or Hilbert--Schmidt probes. The finite-family Hausdorff
+assembly in `(7)` remains to be formalized.
+
 ## What one law now explains
 
 The same arithmetic transition simultaneously explains:
@@ -203,5 +220,6 @@ nontrivial additive energy collisions—not separate mechanisms.
 - [ ] formalization of local generator
 - [x] formalization of generic one-knob polynomial restriction
 - [ ] formal instantiation with local-chain relation polynomials
-- [ ] formalization of finite-horizon stability
+- [x] formalization of dimension-free operator-norm finite-horizon stability
+- [ ] formalization of finite-family Hausdorff assembly
 - [ ] hostile Nature editorial pass

@@ -2694,6 +2694,191 @@ Current verdict:
 `SOURCE GENERATION, FOUR-FORCE RIGIDITY, CONTINUUM PHYSICS, AND PREDICTION REMAIN OPEN;`
 `NATURE GATE CLOSED`.
 
+## Fifteenth hostile descent: partitions are shadows of regenerating recognizers
+
+### Exact new discriminator
+
+[`crossed-pure-factorization-refinement.md`](../3-formalized/crossed-pure-factorization-refinement.md)
+now unconditionally proves the following over an arbitrary field. If a nonzero four-index pure
+tensor factorizes across both crossed bipartitions
+
+\[
+(I,J)\mid(K,L)
+\qquad\text{and}\qquad
+(I,K)\mid(J,L),
+\]
+
+then it factorizes across the common four-block refinement
+\[
+I\mid J\mid K\mid L.
+\]
+
+This is standard multipartite partition-lattice rigidity and is explicitly classified
+`[NOT NEW SCIENTIFIC KNOWLEDGE]`. Its research force is negative: after pure operational ports are
+supplied, crossed exact decompositions already resolve by refinement. Choosing among instantaneous
+cuts is not the missing universal physics.
+
+Combined with the transported-split no-go, the result isolates a more primitive question:
+
+> **What generates the operational ports whose persistence makes factorization physically
+> meaningful?**
+
+A state does not answer it. A transported tensor split makes any unitary look local relative to
+adapted input and output factors. A compatibility graph does not answer it because arbitrary
+graphs are realizable. A fixed process tensor does not answer it because its intervention slots
+are supplied. The finite boundary-record theorem answers only how much information a faithful
+record needs after a port law has already been chosen.
+
+### Sharpened master interpretation
+
+Do not create a second conjecture by renaming `(F35)`. The proposed missing primitive inside
+\(\mathfrak{Sep}(H)\) is a **regenerating recognizer**: a source-generated operational distinction
+whose complete event record generates the successor tests by which its consequences remain
+distinguishable. A physical thing is a recurrent orbit of such recognizers, not a state occupying
+a prior subsystem.
+
+The universal law is therefore read as
+
+\[
+\boxed{
+\text{lost coherent joint distinction}
+\;\simeq\;
+\text{born independent recognizer},
+}
+\tag{F38}
+\]
+
+with no surplus successor recognizer and no lost source distinction. Equation `(F38)` is the
+recognizer form of `(F35)`, not an additional theorem. Both sides require independent operational
+definitions; defining either side as a copy of the other makes the law tautological.
+
+Public law:
+
+> **Reality preserves every distinction by changing what counts as a thing.**
+
+Worldview headline:
+
+> **The universe makes things—and the space between them—from quantum possibilities that can no
+> longer coexist.**
+
+Gravity corollary:
+
+> **Gravity is the path dependence of how reality rebuilds its things.**
+
+### Universal-shadow map
+
+Every row remains a derivation obligation.
+
+| Shadow | Reading under `(F38)` |
+|---|---|
+| quantum alternative | distinction available before recognizer regeneration |
+| objective event | conversion of lost jointness into a successor recognizer |
+| physical thing | recurrent recognizer orbit |
+| matter | stable nontrivial defect carried by that recurrence |
+| space | independence structure among regenerated recognizers |
+| time | order in which recognizers generate their successors |
+| causality | reachability under the generated successor tests |
+| internal gauge symmetry | vertical automorphism of one recognizer orbit |
+| gauge force | vertical holonomy between regenerated recognizers |
+| gravity | horizontal holonomy of their changing independence law |
+| equivalence principle | one horizontal comparison law shared by all matter recurrences |
+| Higgs/soldering | mixed conversion between internal recurrence and external comparison scale |
+| holography | minimal boundary record sufficient to regenerate interior recognizers |
+| horizon | failure to export a recognizer while its record remains generative |
+| cosmology | source-closed recognizer succession with no external port, law, or clock |
+| Hypertranscendence | no finite differential-algebraic present closes the regeneration tower |
+
+This is a reinterpretation, not evidence. It earns novelty only if one source theorem forces the
+whole table.
+
+### Why the exact corpus becomes one set of shadows
+
+| Exact result or no-go | Required universal-law reading |
+|---|---|
+| typed histories and cross-law bridges totalize | carriers and law labels are not primitive; port regeneration must be preserved |
+| arbitrary compatibility patterns occur | binary coexistence forgets source, record, and succession |
+| transported splits trivialize finite dynamics | instantaneous state and unitary evolution cannot select physical things |
+| crossed pure cuts refine | once pure ports exist, partition ambiguity is derived rather than fundamental |
+| faithful compression needs boundary capacity | lost joint distinction must return in a complete complementary record |
+| curvature does not reconstruct boundary self-law | force is only a shadow of the full regeneration colligation |
+| modular clocks admit tensor spectators | a clock does not determine which distinctions count as physical things |
+| local causal and gauge responses vary independently | four-force unification must constrain succession, not one event |
+| finite carriers obey finite differential laws | Hypertranscendence can live only in non-terminating regeneration, not one finite fiber |
+
+### Hostile parent boundary
+
+Large pieces are occupied:
+
+1. [quantum Darwinism](https://arxiv.org/abs/quant-ph/0308163) explains redundant objective records
+   after a system--environment structure is supplied;
+2. [quantum error correction](https://arxiv.org/abs/quant-ph/9604034) preserves or reconstructs
+   logical distinctions after a code, channel, and subsystem algebra are supplied;
+3. [computational-mechanics causal states](https://arxiv.org/abs/cond-mat/9907176) identify
+   predictively equivalent histories after a stochastic process and alphabet are supplied;
+4. [constructor theory](https://arxiv.org/abs/1210.7439) makes possible and impossible tasks
+   fundamental but begins with task types and substrates;
+5. [process tensors](https://arxiv.org/abs/1512.00589) characterize multitime response after
+   operational slots are supplied; and
+6. [Doplicher--Roberts reconstruction](https://annals.math.princeton.edu/1989/130-1/p03) and
+   related results recover charge and gauge structure from a supplied observable net and locality
+   law.
+
+Therefore “things are persistent information,” “records create objectivity,” and “systems are
+operational” are occupied statements. Candidate novelty survives only if source events generate
+the recognizers, their independence law, their complete positive records, and their successor
+composition with no prior system boundary, intervention alphabet, spacetime, or gauge data—and a
+rigidity theorem then yields quantum probability, \(3+1\) Lorentzian gravity, exactly
+\(U(1)\), \(SU(2)\), \(SU(3)\), observed matter, and a parameter-free prediction.
+
+### Internal hostile audit
+
+The recognizer interpretation currently faces eight fatal risks:
+
+1. **decoder regress:** a record cannot generate a successor test unless a decoding law is already
+   available; that law must follow from a universal property of the event record rather than be
+   supplied one level higher;
+2. **identity circularity:** “the next test recognizes the same distinction” cannot define
+   recurrence unless sameness is reconstructed source-relatively before a persistent thing is
+   named;
+3. **causal smuggling:** source and successor notation must not assume the temporal or causal order
+   it is supposed to derive;
+4. **decoder nonuniqueness:** many inequivalent future operation algebras can faithfully encode one
+   finite record, so exact information balance alone cannot select a future;
+5. **spectator instability:** excluding idle tensor factors can also exclude genuinely disconnected
+   regions or superselection sectors unless physical no-surplus is stated operationally;
+6. **objectivity conflict:** [quantum reference-frame changes](https://arxiv.org/abs/2103.01232)
+   can alter subsystem structure, so a recognizer must descend to a relational equivalence class
+   without erasing observable frame-dependent effects;
+7. **irreversibility gap:** exact global distinction conservation must derive Born statistics,
+   decoherence, entropy increase, and inaccessible horizon records rather than contradict them; and
+8. **force-label freedom:** vertical, horizontal, and mixed curvature still admit far more than the
+   observed four forces unless one classification theorem supplies the rigidity.
+
+Any construction that solves these by inserting a decoder, persistent identity, time order,
+subsystem equivalence, or Standard Model representation has relocated the old assumptions and
+fails the jump.
+
+### Decisive mathematical target
+
+Construct or rule out an **autogenic recognizer geometry** with:
+
+1. an independently defined source-test functor producing \(\mathfrak{Sep}(H)\);
+2. a source-generated complete colligation whose lost-joint and born-recognizer objects satisfy
+   the natural positive equivalence `(F38)`;
+3. exact composition and gluing without an ambient tensor product containing all stages;
+4. recurrence objects defined intrinsically and invariant under presentation, dilation, gauge,
+   and quantum-reference-frame change;
+5. a flatness theorem: one fixed global subsystem theory exists exactly when recognizer
+   regeneration has trivial horizontal holonomy;
+6. classification of irreducible finite positive local shadows; and
+7. a non-termination theorem identifying Hypertranscendence with failure of finite
+   differential-algebraic recognizer closure.
+
+Failure to define item 1 without smuggling in a subsystem split kills the interpretation. Failure
+of `(F38)` under independent definitions kills the proposed conservation law. Multiple inequivalent
+minimal local phases kill universality unless they yield a new, independently testable selection
+rule.
+
 ## Latest log: dynamic separability
 
 - 2026-07-30 — used the cross-law totalization no-go to reject generic event-driven type promotion
@@ -2704,3 +2889,6 @@ Current verdict:
   conservation shadow `(F36)`--`(F37)`; explicitly classified it as standard linear algebra.
 - 2026-07-30 — identified autogenic monoidal geometry and the source-generated positive
   separability colligation as the new mathematical open core.
+- 2026-07-30 — used crossed pure-factorization refinement to demote instantaneous partition choice;
+  sharpened the missing primitive to source-generated regenerating recognizers and recorded `(F38)`
+  as the recognizer interpretation of `(F35)`, not a separately supported theorem.

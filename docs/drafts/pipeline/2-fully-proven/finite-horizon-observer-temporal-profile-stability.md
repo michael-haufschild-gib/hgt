@@ -7,6 +7,8 @@
 - **Source:** hostile objection 2--3 against
   `../1-in-progress/temporal-codimension-interaction-law.md`
 - **Scientific status:** `[PAPER-PROVED] [NOVELTY NOT CLAIMED]`
+  `[CSTAR OPERATOR-NORM CORE LEAN-PROVED]`
+  `[COVERING-PROFILE FORMALIZATION OPEN]`
 
 ## Result
 
@@ -314,11 +316,62 @@ fixed nonzero generic perturbation, T -> infinity, resolution -> 0:
 The missing upper crossover theorem must determine how quickly a generic
 local perturbation fills the newly enlarged hull.
 
+## Stronger dimension-free operator theorem
+
+The finite-dimensional Hilbert--Schmidt argument above has now been
+strengthened to arbitrary unital \(C^*\)-algebras and operator-normalized
+observables.  For self-adjoint \(H,K\), every \(O\) in the algebra, and every
+real \(t\),
+\[
+ \left\|
+ e^{-itH}Oe^{itH}-e^{-itK}Oe^{itK}
+ \right\|
+ \leq
+ 2|t|\,\|H-K\|\,\|O\|.                              \tag{23}
+\]
+No matrix dimension, discrete spectrum, Hilbert--Schmidt normalization or
+finite reporter assumption enters `(23)`.  If the left side is at least
+\(\varepsilon\), with \(H\ne K\) and \(O\ne0\), then necessarily
+\[
+ |t|
+ \geq
+ \frac{\varepsilon}
+ {2\|H-K\|\,\|O\|}.                                 \tag{24}
+\]
+
+This closes the universal lower observability scale in the natural
+operator norm.  It does not formalize the Hausdorff and covering-number
+consequences `(6)`--`(9)`, nor the finite-dimensional completed-orbit
+dimension theorem `(17)`.
+
+### Formal audit
+
+Source:
+`formal/GaloisForLFunctions/HTGeometry/FiniteHorizonCStarPerturbationLaw.lean`
+
+Unconditional theorem chain:
+
+1. `exp_skewAdjoint_sub_exp_skewAdjoint_norm_le`;
+2. `selfAdjoint_unitaryEvolution_norm_sub_le`;
+3. `unitary_conjugation_norm_sub_le`;
+4. `selfAdjoint_heisenbergEvolution_norm_sub_le`;
+5. `selfAdjoint_distinguishability_time_lowerBound`.
+
+Direct source check passed with:
+
+```text
+lake env lean GaloisForLFunctions/HTGeometry/FiniteHorizonCStarPerturbationLaw.lean
+```
+
+The axiom audit reports only `propext`, `Classical.choice`, and
+`Quot.sound`.
+
 ## Hostile boundary
 
 1. `(6)`--`(15)` are standard perturbation geometry applied to a new target;
    no stand-alone novelty is claimed.
-2. `(17)` is finite-dimensional. Infinite pure-point hulls require a
+2. `(23)`--`(24)` are dimension-free, but `(17)` is finite-dimensional.
+   Infinite pure-point hulls require a
    scale-dependent information profile and need not have a finite rank
    exponent.
 3. This result supplies only a lower activation timescale. It does not prove
@@ -335,8 +388,10 @@ local perturbation fills the newly enlarged hull.
 - [x] return-set sandwich proved
 - [x] asymptotic rank recovered from operational orbit
 - [x] lower crossover obstruction proved
+- [x] arbitrary unital C⋆-algebra operator-norm stability formalized
+- [x] operator-normalized distinguishability-time lower bound formalized
 - [ ] primary-source collision audit
 - [ ] upper crossover theorem
 - [ ] bounded-degree local maximality
-- [ ] formalization after master novelty gate
-
+- [ ] Hausdorff/covering-profile formalization
+- [ ] completed-orbit dimension formalization
