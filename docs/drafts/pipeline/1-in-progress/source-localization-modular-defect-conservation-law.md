@@ -4605,3 +4605,179 @@ not construct `(199)` for the Riemann source or prove `(203)`--`(205)`.
   hypertranscendental theorem as reduced entire/matricial source saturation, identified its
   positive face with local Shilov base change, and extracted cofinal matrix lifting as a concrete
   finite falsifier and proof target.
+
+## Backpropagation is the degree-zero shadow of source-pure reverse transport
+
+The neural-network analogy can be made exact, but it also exposes a sharp boundary.  Ordinary
+reverse-mode automatic differentiation transports a cotangent backwards through the adjoint of a
+linearized forward map.  In the module chart, this retains \(T^\vee\) or \(T^\dagger\) but discards
+whether solutions appearing after a quotient, completion, or source-face restriction are attained
+by the original source.
+
+Let \(T:M\to N\), put \(K=\ker T\) and \(C=\operatorname{coker}T\), and let \(A\to B\) be an
+effective source restriction.  Under the flatness/Cartier hypotheses of `(192)`, derived base
+change gives
+\[
+ 0\longrightarrow K\otimes_A B
+ \longrightarrow \ker(T\otimes_A B)
+ \longrightarrow \operatorname{Tor}_1^A(C,B)
+ \longrightarrow 0.                                      \tag{206}
+\]
+The first term is inherited forward ambiguity.  The last term is a new boundary solution which
+exists only after changing reporter.  It is therefore an **attainment record**, not a gradient.
+The adjoint \(T^\dagger\) can exist perfectly while this record is nonzero.
+
+The smallest hostile witness is multiplication by two:
+\[
+ T:\mathbb Z\longrightarrow\mathbb Z,\qquad T(n)=2n.
+\tag{207}
+\]
+It is injective and its reverse linear rule is again multiplication by two.  After the source
+change \(B=\mathbb Z/2\mathbb Z\), however, \(T\otimes B=0\) and
+\[
+ \operatorname{Tor}_1^{\mathbb Z}(\mathbb Z/2,\mathbb Z/2)
+ \cong \mathbb Z/2.
+\tag{208}
+\]
+Thus an exact forward/adjoint pair, conservation, and bounded singular values do not imply
+base-change purity.  Conversely, on an ordinary finite-dimensional computation graph over a
+field, every module is flat and `(206)` has no Tor term.  Any proposed replacement for
+backpropagation which differs only there is theatre: the new channel can matter only for
+singular constraints, arithmetic quotients, nonclosed ranges, completion, infinite depth, or a
+change of reporter.
+
+This sharpens rather than replaces
+`SOURCE_EFFECTIVE_DAGGER_BECK_CHEVALLEY_LAW`.
+
+`[BOLD CONJECTURE] [SOURCE_EFFECTIVE_PURE_REVERSE_LAW]`
+
+> For a source-effectively normalized meromorphic HT object, the canonical completed observation
+> complex on the full clock--source reporter tower admits a reverse dagger transport which
+> satisfies derived Beck--Chevalley on every reduced source-effective Cartier face.  Equivalently,
+> the forward comparison is pure relative to those faces.  The degree-minus-one reverse record is
+> the source-face attainment Tor, and its maximal positive realization is the reduced positive
+> radical.
+
+For the literal ordinary-prime Euler--Gamma--Poisson object, the Xi specialization of this
+conjecture is exactly
+\[
+ H^{-1}\!\left(
+   \operatorname{Cone}(
+     \operatorname{BC}^{\dagger}_{\mathfrak R_{\rm ar}})
+   \otimes_A^{\mathbf L}B_\Xi^{\rm red}
+ \right)
+ =
+ \operatorname{Tor}_1^A\!\left(
+   \operatorname{coker}
+     \operatorname{BC}^{\dagger}_{\mathfrak R_{\rm ar}},
+   B_\Xi^{\rm red}
+ \right)
+ =0.                                                       \tag{209}
+\]
+Subject to the comparison and maximal-positive identifications in `(193)`, `(209)` is equivalent
+to RH.  It is not a proof: constructing the comparison and proving its relative purity remain
+`XI_COFINAL_MATRICIAL_SOURCE_SATURATION`.
+
+### Algorithmic conjecture
+
+`[CONJECTURE] [ATTAINMENT_AWARE_REVERSE_MODE]`
+
+> A computation graph containing constraints, quotients, completions, or infinite limits should
+> propagate a presentation complex rather than only a primal value and cotangent.  Its reverse
+> pass carries three typed outputs: the ordinary cotangent, the inherited kernel, and the
+> degree-minus-one attainment record in `(206)`.  Composition is by derived base change, and exact
+> reverse credit assignment is equivalent to the relevant dagger Beck--Chevalley squares being
+> pure.
+
+This construction would reduce to ordinary backpropagation on flat finite-dimensional smooth
+graphs.  It could differ on implicit or infinite-depth networks, quantized/parameter-shared
+systems, and operator-learning limits.  No claim of better optimization follows yet.  The RH
+content is not an ML performance claim: it is the arithmetic theorem that the literal prime
+source has no reduced Xi-supported attainment record.
+
+### Literature boundary and hostile verdict
+
+Reverse-derivative categories already identify reverse differentiation with forward
+differentiation plus a dagger on linear maps (`arXiv:1910.07065`).  Backpropagation has already
+been formulated functorially (`arXiv:1711.10455`), and equilibrium propagation still computes the
+same objective gradient (`arXiv:1602.05179`).  Dynamical isometry controls the singular values of
+finite Jacobians (`arXiv:1711.04735`).  None of these statements supplies relative module purity
+or kills the source-face Tor in `(209)`.  General derived base change and Tor are parent
+homological algebra, so attaching them to a neural network is not by itself new mathematics.
+
+The candidate-new conjunction is narrower:
+
+```text
+literal HT arithmetic source
+  -> canonical all-reporter observation complex
+  -> source-derived dagger Beck--Chevalley
+  -> relative purity on the reduced Xi face
+  -> no off-line reduced positive radical
+  -> RH.
+```
+
+`[HOSTILE VERDICT]` The neural interpretation survives as a precise structural unification and
+suggests the missing object type.  It does not strengthen `(209)` and supplies no evidence that
+`(209)` is true.  Its value is the negative correction: backward adjoints are degree-zero data;
+the frontier is cofinal source-attainment, measured by the derived reverse record.
+
+- 2026-07-30 — Identified ordinary backpropagation with the already-insufficient adjoint leg,
+  separated it from relative purity by the exact witness `(207)`--`(208)`, and froze
+  source-effective pure reverse transport as the universal formulation.  The only RH-producing
+  task remains construction and Xi-relative purity of the literal arithmetic comparison.
+
+### Forward-Forward and forward-only audit through July 2026
+
+Hinton's Forward-Forward algorithm (`arXiv:2212.13345`) replaces the backward pass by positive and
+negative forward passes and trains every layer against a local goodness.  Current descendants
+change scale and hardware feasibility, not the information type:
+
+- scalable Forward-Forward (`arXiv:2501.03176`) trains layers or residual blocks independently and
+  permits backpropagation inside a block;
+- the 2025 training-behavior audit (`arXiv:2504.11229`) reports delayed improvement in deeper
+  layers, exposing the cost of replacing global credit by local objectives;
+- FAUST (`arXiv:2509.08697`) replaces the original goodness by a similarity-based objective and
+  narrows empirical gaps on small image benchmarks;
+- FFzero (`arXiv:2603.24790`, revised April 2026) removes even local automatic differentiation by
+  combining fixed layer prototypes with forward directional-derivative estimates;
+- deeper equilibrium propagation (`arXiv:2509.26003`) improves the physical relaxation
+  architecture, but still targets local computation of an objective gradient; and
+- divide-and-conquer predictive coding (`arXiv:2408.05834`) retains correlated sample populations
+  for structured Bayesian inference, but does not carry algebraic source-attainment under base
+  change.
+
+These algorithms realize the opposite half of the corpus obstruction:
+
+```text
+backpropagation:
+  exact global reverse composition
+  + only cotangent/adjoint data
+  - no attainment record;
+
+Forward-Forward / FFzero:
+  local forward witnesses and physical black-box compatibility
+  - no exact global reverse comparison
+  - no cofinal source-lifting theorem;
+
+source-effective pure reverse transport:
+  complete compatible forward reporter tower
+  + derived reverse comparison
+  + degree-minus-one attainment record
+  + proof that the reduced Xi record vanishes.
+```
+
+Forward-Forward is therefore not a direct RH producer.  Its positive/negative goodness is a finite
+local orientation, and the corpus already constructs off-line Euler systems with positive local
+orientation.  FFzero's fixed prototypes are finite reporters; the finite-reporter collapse and
+Gamma finite-jet no-go show why no fixed finite family can certify the required HT completion.
+
+The useful research prediction is instead an infinite-depth limit theorem.  A compatible
+Forward-Forward tower can define a globally source-attained object only if the local goodness
+quotients form a cofinal pure system.  Failure of that purity is the same type of nonattainment
+record as `(206)`.  This is a falsifiable bridge to `XI_COFINAL_MATRICIAL_SOURCE_SATURATION`, not
+evidence for its truth.
+
+- 2026-07-30 — Audited Forward-Forward, FFzero, equilibrium propagation, and predictive-coding
+  descendants.  Found no existing algorithm that combines local forward reporters with a derived
+  global attainment record.  Extracted the exact two-sided design requirement and ruled out
+  finite local goodness as an RH selector.

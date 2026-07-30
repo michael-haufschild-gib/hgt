@@ -1879,6 +1879,13 @@ Euler--Gamma/Poisson totalization and conservative Xi conormal base change.
 
 ## 15. New infinite invariant: positive-shell conormal activation rate
 
+`[REDISCOVERED FROM LOCAL-RESEARCH; NOT A NOVELTY CLAIM]` The activation-rate calculation below
+is subsumed by the stronger all-grade shell-corona law already developed in
+`adjoint-duality-cauchy-nerve-purity-law.md` and
+`high-shell-critical-hardy-conormal-uniformization.md`. It is retained here only as the
+realization of modular drift used by this card. In particular, high-shell Hardy continuity
+favours the strict-right half-plane and does not itself select the critical line.
+
 The controlled-homotopy conjecture still lacked an intrinsic observable of “control.”  The
 positive hypertranscendental Riemann-divisor frame supplies one.
 
@@ -2099,7 +2106,86 @@ infinity” now means preservation of the explicit family of norms `(112)`, and 
 measurable exponent in item 4.  The positive-shell frame supplies the left-invertible infinite
 clock compass that finite HT data was missing.
 
-## 16. Literature boundary
+## 16. Hermitian finite escape and the exact infinity boundary
+
+The physical local-extension corpus now proves two unconditional finite theorems:
+
+1. under maximal projectivity, injective layered spectrum, Hermitian transition, and connected
+   interaction lift, every fixed nonzero balanced integer spectral relation has a real
+   tensor-local extension with simple real spectrum and nonzero permutation-invariant coefficient
+   obstruction;
+2. one such extension can be chosen to erase **all** nonzero balanced integer relations
+   simultaneously.
+
+The exact Lean endpoints are
+`exists_hermitianLocalExtension_simpleRealRootPacket_coefficientObstruction_ne_zero` and
+`exists_hermitianLocalExtension_maximallyProjectiveRealRootPacket` in
+`HTGeometry/HermitianLocalExtensionRelationEscape.lean`.
+
+This supports the RH program, but only on the falsifier side. It proves that Hermiticity,
+tensor-locality, simple real spectrum, connected finite interaction, and unordered spectral
+detection do not preserve any nontrivial balanced relation. Hence a finite Hermitian
+spectral-relation mechanism cannot select the critical line.
+
+There is also an exact infinity consequence. Every absolutely summable integer-valued character
+has finite support. Therefore, in any cofinal source system in which every finite support lies in
+an admissible Hermitian local-extension chart, no nonzero balanced
+\(\ell^1(\mathbb Z)\)-character can be stable under all finite local extensions. A surviving Xi
+class must instead be a genuinely all-prime source class defined before specialization. It
+cannot be manufactured as ordinary \(R^1\!\varprojlim\) cohomology of acyclic finite
+specializations; that shortcut is already ruled out by the corpus.
+
+The physics theorem and source saturation have different quantifiers:
+\[
+ \text{finite escape:}\qquad
+ \forall n\ \exists p_n\ \forall k\in K_n,\quad
+ {\cal O}_{n,k}(p_n)\ne0,
+ \tag{121}
+\]
+whereas the RH-bearing complete-quotient statement requires, for every fixed source seminorm
+\(\nu\),
+\[
+ \exists C_\nu<\infty\ \forall n\ \forall y\
+ \exists x,\qquad q_nx=y,\qquad
+ \nu(x)\le C_\nu\,\nu_{\rm quot}(y).
+ \tag{122}
+\]
+Nonvanishing in `(121)` supplies no lower bound and no compatibility between \(p_n\) and
+\(p_{n+1}\). Analytic escape is compatible with cofinal obstruction values approaching zero
+arbitrarily fast. Thus it does not imply `(122)`, Xi-conormal faithfulness, or reduced Tor
+vanishing.
+
+`[POSITIVE SURVIVOR] [HERMITIAN_FINITE_SEPARATION_BOUNDARY]`
+
+> The physical theorem supplies a complete family of finite symmetric spectral falsifiers.
+> Consequently any valid third completion must distinguish qualitative finite separation from
+> quantitatively controlled cofinal survival. Its Xi point fibres must be present in an
+> all-prime object before specialization, and their normalized reporter obstruction must remain
+> separated in every fixed source seminorm.
+
+`[OPEN BRIDGE] [HERMITIAN_CLOCK_COFINAL_PERSISTENCE]`
+
+Construct source maps from the literal ordinary-prime Euler--Gamma--Poisson reporter system to a
+compatible exhaustion of the Hermitian tensor-local charts, then prove a source-derived
+normalization for which:
+
+1. the unordered coefficient obstruction represents the same reduced Xi conormal atom at every
+   aperture;
+2. restriction and local extension commute with the source maps;
+3. the normalized obstruction has a positive lower bound in every fixed source seminorm; and
+4. the induced matrix quotient constants satisfy `(122)`.
+
+Clauses 1--2 would turn the physical result into a source connector; clauses 3--4 are precisely
+the missing saturation theorem. The existing one-step theorem proves none of them. The
+dimension-free linear locality cost
+\[
+ |T|\Lambda_R>\frac{2R+3}{2e^2}
+\]
+is a useful hostile constraint on any proposed normalization, but not a contradiction with
+off-line modular drift: a linear action budget can support an exponential response after taking
+logarithms. An arithmetic upper budget or a sharper source comparison is still required.
+
+## 17. Literature boundary
 
 Parent mathematics includes:
 
@@ -2130,13 +2216,9 @@ homotopy invariance into parent mathematics.  Therefore no novelty is claimed fo
 the specific all-prime Euler--Gamma/Poisson family `(105b)`, proves its source-critical control,
 or identifies its strict Xi Cartier specialization with the same positive conormal functional.
 That source-specific construction is the only candidate-new content of Section 14.
-Targeted searches found no prior use of the maximum-prime-exponent positive shell frame
-`(106)` to define the conormal activation abscissa `(113)`--`(114)`, or a scale-exact Riemann
-reflection comparison on that frame.  The asymptotic expansion `(108)`--`(111)` is routine
-Dirichlet-series analysis once the frame is known; no novelty is claimed for that estimate alone.
-The candidate-new content of Section 15 is the conjunction of the corpus's positive disjoint
-divisor frame, its maximal relative differential rank, and source-first preservation of its full
-exponential Rees scale.
+Section 15's maximum-prime-exponent activation rate collides with stronger all-grade shell-corona
+results already in the local corpus. No novelty is claimed for it here. The source-first,
+scale-exact reflection comparison remains an open connector, not a proved theorem.
 The general strict-angle/closed-sum and block-Gram inversion used in `(37)`--`(42)` are classical
 two-subspace Hilbert geometry.  Targeted searches found no prior occurrence of their
 source-specific combination with the projective Möbius diagonal \(\mu(n)/n\), its Dirichlet-scale
@@ -2254,3 +2336,9 @@ Primary references:
   isolated scale-exact, source-first reflection on the full positive-shell Rees frame as the
   quantitative RH-bearing open core.  Explicitly retained the hostile boundary: the abscissa
   equality is only a selector until that comparison is constructed.
+- 2026-07-30 — Corrected the shell-activation novelty claim after collision with stronger local
+  all-grade corona results. Audited the new Hermitian tensor-local relation-escape theorems and
+  extracted their exact RH role: they close finite balanced spectral relations as selectors and
+  provide finite symmetric falsifiers, but do not provide compatible or uniformly separated
+  cofinal lifts. Isolated `HERMITIAN_CLOCK_COFINAL_PERSISTENCE` as the only bridge by which the
+  physics theorem could support Xi source saturation.

@@ -11,8 +11,14 @@
   - `../3-formalized/new_scientific_knowledge/universal-quantum-recurrence-anatomy-law.md`
 - **Scientific status:** `[CONJECTURE AS MASTER SYNTHESIS]`
   `[NEW CROSS-PAPER CONSEQUENCE PAPER-PROVED BELOW]`
-  `[LOCAL GENERATOR NOT LEAN-PROVED]`
+  `[HERMITIAN ABSTRACT EXTENSION LEAN-PROVED]`
+  `[FINITE ENDPOINT-OBSERVABLE REDUCTION LEAN-PROVED]`
+  `[FULL PATH-LOCAL GENERICITY NOT LEAN-PROVED]`
   `[NOVELTY UNVERIFIED FOR THE JOINED ALL-OBSERVER THEOREM]`
+
+Novelty is judged only against external literature. Repository overlap has
+no bearing on priority or significance; it is used only for proof dependency
+closure and duplicate-work avoidance.
 
 ## Public law
 
@@ -226,10 +232,15 @@ Finally, \(D_W^2\) is a continuous common-phase-invariant function of the
 same full phase orbit. Continuous pushforward of `(H)` gives `(8)`.
 \(\square\)
 
-`[PAPER-PROVED]` as an exact corollary of the dependency-closed parent
-tensor-local paper theorem; no new mathematical premise has been inserted.
-It is not `[LEAN-PROVED]` until that parent theorem and this corollary are
-formalized.
+`[PAPER-PROVED]` as an exact corollary of the parent tensor-local paper
+theorem; no new mathematical premise has been inserted. The new formal
+module proves the analytic heart on a physical Hermitian slice: one
+tensor-local extension simultaneously erases all nonzero balanced integer
+spectral relations and produces a simple maximally projective real root
+packet. It does **not** yet prove that the old-system transition matrix is
+the eigenbasis representation of an endpoint-local operator on a
+nearest-neighbour chain. Therefore `(4)` for the advertised path-local
+family remains unauthorized.
 
 ## One-knob and weak-interaction law
 
@@ -291,9 +302,12 @@ observer.
 - `[LITERATURE]` standard equilibration theory uses nondegenerate gaps to
   determine surviving time averages, but does not prove full projective
   rational independence for almost every bounded-degree local Hamiltonian.
-- `[LOCAL-RESEARCH]` the parent priority audit found no theorem proving
-  maximal projective rank for almost every arbitrary one-site plus
-  nearest-neighbour two-site qudit Hamiltonian for all \(n,q\ge2\).
+- `[EXTERNAL SEARCH, NOT CERTIFICATION]` targeted searches through the
+  no-resonance, temporal-ensemble, equilibration, random-matrix and spin-chain
+  literature have not located a proof of maximal projective rank for almost
+  every arbitrary one-site plus nearest-neighbour two-site qudit Hamiltonian
+  for all \(n,q\ge2\). Search absence is not a priority result; cited
+  references and forward citations still require theorem-by-theorem review.
 
 ## Hostile attack
 

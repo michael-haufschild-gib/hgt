@@ -2,6 +2,7 @@ import GaloisForLFunctions.HTGeometry.HermitianLocalExtensionChart
 import GaloisForLFunctions.HTGeometry.LocalExtensionChartSelectedWitness
 import GaloisForLFunctions.HTGeometry.RealFiniteAnalyticEscape
 import GaloisForLFunctions.HTGeometry.HermitianLocalSpectralObserverLaw
+import GaloisForLFunctions.HTGeometry.HermitianTransitionFamilyReduction
 import Mathlib.Analysis.Analytic.IsolatedZeros
 
 /-!
@@ -1011,6 +1012,55 @@ theorem
   intro i
   rw [← hcomplexEnergy i]
   exact hroot i
+
+/-- **Finite physical observable-family extension.** If a finite Hermitian
+endpoint observable family detects a connected interaction lift, one real
+observable in its span and one Hermitian nearest-factor coupling erase all
+nonzero balanced integer spectral relations simultaneously. -/
+theorem
+    exists_hermitianLocalExtension_maximallyProjectiveRealRootPacket_of_family
+    {α ρ η : Type*} [Fintype α] [Fintype ρ] [Fintype η]
+    [DecidableEq α] [DecidableEq ρ] [DecidableEq η]
+    [Nonempty α] [Nonempty ρ]
+    (energy : α → ℝ) (hmax : MaximallyProjectiveEnergy energy)
+    (shift₀ : ρ → ℝ)
+    (transition : η → Matrix α α ℂ)
+    (htransition : ∀ i, (transition i).IsHermitian)
+    (hsimple :
+      Function.Injective
+        (layeredEnergy
+          (fun a => (energy a : ℂ))
+          (fun r => (shift₀ r : ℂ))))
+    (hlift :
+      (crossLayerLiftGraph
+        (transitionFamilySupportGraph transition) ρ).Preconnected) :
+    ∃ observableCoefficient : η → ℝ,
+      ∃ p : (ρ → ℝ) × Matrix ρ ρ ℝ,
+        ∃ extendedEnergy : α × ρ → ℝ,
+          MaximallyProjectiveEnergy extendedEnergy ∧
+          Function.Injective extendedEnergy ∧
+          ∀ i,
+            matrixCharpolyRelation
+              (localExtensionMatrix
+                  (fun a => (energy a : ℂ))
+                  (realLocalExtensionParameter p).1
+                  (realMatrixFamilyCombination
+                    transition observableCoefficient)
+                  (realLocalExtensionParameter p).2,
+                (extendedEnergy i : ℂ)) = 0 := by
+  obtain ⟨observableCoefficient,
+      hcombinedHermitian, hcombinedLift⟩ :=
+    exists_hermitianTransition_preconnected_crossLayerLift
+      transition htransition hlift
+  obtain ⟨p, extendedEnergy,
+      hextendedMax, hextendedInjective, hroot⟩ :=
+    exists_hermitianLocalExtension_maximallyProjectiveRealRootPacket
+      energy hmax shift₀
+      (realMatrixFamilyCombination
+        transition observableCoefficient)
+      hcombinedHermitian hsimple hcombinedLift
+  exact ⟨observableCoefficient, p, extendedEnergy,
+    hextendedMax, hextendedInjective, hroot⟩
 
 end
 

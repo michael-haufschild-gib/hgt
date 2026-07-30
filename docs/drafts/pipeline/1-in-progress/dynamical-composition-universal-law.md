@@ -504,6 +504,29 @@ relative law free.
 - 2026-07-30 — recognized the existing paired-transfer and reciprocal-square Lean theorems as the
   first exact finite shadow of “composition generates its unit”; no new formal wrapper added.
 
+## Exact bare-source boundary: same-level natural composition is impossible
+
+`[LEAN-PROVED BRIDGE / YONEDA SHADOW / NOT PHYSICS]`
+
+The formalized theorem
+[`bare-source-natural-composition-no-go.md`](../3-formalized/not_new_scientific_knowledge/bare-source-natural-composition-no-go.md)
+proves that every family
+\[
+\mu_X:X\times X\to X
+\]
+natural under all maps of bare sets is one coordinate projection. In particular no such family is
+commutative.
+
+Thus the source cannot generate time by placing a nontrivial universal multiplication back on the
+same unstructured outcome carrier. A viable source completion must use higher incidence and enlarge
+the type of possible consequences by adjoining paths, spans, correspondences, or fillers.
+Free-category, Segal, 2-Segal, and decomposition-space constructions already perform the generic
+enlargement. Candidate novelty is the source-positive selector and physical quotient, not the
+existence of completion machinery.
+
+This exact boundary supports—without proving—the next conjecture: events evolve completion moduli
+rather than move points inside one pre-existing law space.
+
 ## Second failure-driven jump: events evolve the space of laws
 
 `[PHYSICAL CONJECTURE] [TRUE-JUMP CANDIDATE] [PROOF ROUTE UNKNOWN]`

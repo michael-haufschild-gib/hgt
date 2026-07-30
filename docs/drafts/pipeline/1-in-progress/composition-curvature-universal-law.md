@@ -12,6 +12,7 @@
   `../3-formalized/not_new_scientific_knowledge/projective-source-visibility-parity-law.md`,
   `../3-formalized/not_new_scientific_knowledge/projective-source-color-symmetry-no-go.md`,
   `../3-formalized/not_new_scientific_knowledge/source-defect-path-cocycle-law.md`,
+  `../3-formalized/not_new_scientific_knowledge/bare-source-natural-composition-no-go.md`,
   `../3-formalized/not_new_scientific_knowledge/composition-transport-projective-bianchi-law.md`,
   `../3-formalized/not_new_scientific_knowledge/anchored-transport-bianchi-law.md`,
   `../3-formalized/color-gram-weak-lorentz-lock-no-go.md`,
@@ -162,6 +163,28 @@ construct local products, comparison correspondences, positivity, role typing, a
 from a raw source \(1\)-skeleton containing none of them, then prove uniqueness modulo physical
 gauge. The positive anchored composition 2-stack is a possible realized output of that theorem,
 not the primitive input.
+
+## Exact source boundary: composition must change type
+
+The Lean-formalized binary Yoneda theorem closes one stronger shortcut. If every bare set \(X\) is
+assigned an operation
+\[
+\mu_X:X\times X\to X
+\]
+natural under every map of sets, then \(\mu\) is exactly first projection or exactly second
+projection. No such operation is commutative.
+
+Therefore a raw outcome set cannot naturally generate a nontrivial same-level composition law.
+The source-generated completion must either:
+
+1. use additional source incidence/higher cells; or
+2. change codomain by adjoining paths, spans, correspondences, or higher fillers.
+
+The second move is established free/Segal/2-Segal parent mathematics. Candidate novelty is not
+“use higher fillers,” but a source-positive universal property that selects which fillers,
+comparisons, positivity, and physical quotient survive. This corrects the type of the open core:
+composition should first live in an enlarging completion tower, not as a miraculous multiplication
+on the primitive event set.
 
 ## First exact finite survivor: order creates phase and visibility
 

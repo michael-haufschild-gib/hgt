@@ -222,3 +222,64 @@ Targeted searches have not yet found an external proof of generic maximal
 projective rational rank for the same nearest-neighbour qudit family.
 Search absence is not priority certification; references cited by the
 benchmarking and temporal-ensemble papers must still be chased individually.
+
+## 30 July 2026 external-priority checkpoint
+
+The latest targeted external search reinforces, but does not certify, the
+premise-discharge gap:
+
+- Riddell--Pagliaroli explicitly describe higher no-resonance as usually
+  assumed for quantum-chaotic models, study numerical/random-matrix
+  statistics and near violations, and weaken downstream equilibration bounds
+  when violations occur. They do not prove all-order nonresonance for a
+  bounded-range local family.
+- Mark et al. prove random-phase temporal-ensemble conclusions under all
+  finite no-resonance conditions modulo degeneracy and describe generic
+  resonance breaking as a belief. Their theorem makes the premise important;
+  it does not discharge it for local chains.
+- Keating--Linden--Wells prove Gaussian limiting spectral density and
+  eigenstate statements for broad nearest-neighbour spin-chain classes. Their
+  theorems concern density of states and entanglement, not exact rational
+  independence of the complete finite-size spectrum.
+
+No internal repository fact enters those comparisons.
+
+Formal progress now proves a stronger abstract extension statement than the
+earlier one-relation result: one real Hermitian tensor-local extension
+simultaneously eliminates every nonzero balanced integer spectral relation
+and yields a simple maximally projective real spectrum. This is proof status,
+not novelty evidence.
+
+The finite-observable locality mismatch is now formally closed.  Given any
+finite Hermitian endpoint-observable family whose union transition graph has
+connected interaction lift, one real linear combination preserves every
+detected transition edge.  Its energy-basis matrix is therefore the single
+Hermitian channel consumed by the tensor-local extension theorem, while the
+operator itself remains endpoint-local.  This is proof status, not novelty
+evidence.
+
+The remaining mathematical authorization gap is the full path theorem: the
+endpoint-observable witness must be carried through every chain length and
+local alphabet, and the exceptional set must be proved null and nowhere
+dense in the complete nearest-neighbour Hamiltonian parameter space.  Until
+that is closed, the manuscript may not claim generic nearest-neighbour
+maximal rank.
+
+External comparison also found two sharper boundary markers:
+
+- a 29 August 2024 research talk at `quantumstat.es` explicitly asks
+  “Are eigenenergies of generic 2-body Hamiltonians rationally independent?”
+  and restates the question as whether hidden energy resonances occur in
+  every two-body Hamiltonian.  This is evidence that the target answers a
+  live community question, not evidence of priority by itself;
+- Poláčik--Valdebenito (2019) prove generic rational independence for bound
+  eigenvalues of radial Schrödinger operators.  Their infinite-dimensional
+  potential class is an important mathematical predecessor, but it neither
+  proves nor implies the finite tensor-product, bounded-range many-body
+  result;
+- Riddell--Bertini (2024) construct rationally independent
+  **single-particle** free-fermion energies using special local hopping.
+  The additive many-body spectrum retains free-model structure, so this is
+  not the claimed full interacting many-body projective-rank theorem.
+
+Priority remains unverified until searches and citation chains are exhausted.
