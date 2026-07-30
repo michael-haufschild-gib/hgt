@@ -2155,3 +2155,552 @@ Current verdict:
 `ONE CANONICAL UNIVERSAL CONJECTURE IDENTIFIED; STATIC COMPLEX SELECTION FALSIFIED;`
 `LOCAL QUADRATIC AND REALIFICATION SHADOWS LEAN-PROVED; CAUSALIZATION, SEWING,`
 `FOUR-SECTOR RIGIDITY, CONTINUUM DYNAMICS, AND PREDICTION OPEN; NATURE GATE CLOSED`.
+
+## Thirteenth hostile descent: the future is a rule, not an object
+
+`[CONJECTURE: DISTINCTION PROMOTION LAW] [TRUE-JUMP CANDIDATE] [PROOF ROUTE UNKNOWN]`
+
+### What the accumulated failures may actually mean
+
+The common hidden assumption in the failed routes was not merely a fixed Hilbert space. It was a
+fixed **type of physical law**:
+
+- fixed-carrier dilations retain one supplied carrier;
+- process theories retain supplied event and composition types;
+- causal-set growth retains a supplied class of causal sets and one growth rule;
+- higher gauge and descent theories retain a supplied ambient higher category;
+- evolving-coupling models vary values inside a supplied action;
+- a spacetime category, even if its metric changes, retains a supplied meaning of field,
+  locality, and legal composition.
+
+The corpus repeatedly finds either noncanonicity, invisible spectators, or exact flatness after
+such a totalization. This suggests a stronger jump than `(F27)`:
+
+> **A physical event does not only change what is actual. It changes the rule defining what can
+> become actual next.**
+
+Public law:
+
+> **Nothing merely happens. Every event changes what can happen.**
+
+Worldview form:
+
+> **The universe turns possibilities into laws. Space, time, matter, and force are the accumulated
+> record of that promotion.**
+
+This is not a claim that numerical constants drift with external time. It is the conjecture that a
+source-selected distinction crosses the state--law boundary: what ceases to be a jointly available
+quantum alternative becomes a new operation type constraining every admissible continuation.
+
+### Promotion form of the conservation law
+
+`[CONJECTURAL SCHEMA; OBJECTS AND QUOTIENT NOT YET CONSTRUCTED]`
+
+Let \(\operatorname{Op}(H)\) denote the complete source-derived operation object at a history
+\(H\), not a supplied process category. A primitive event \(e:H\rightsquigarrow H_{e^+}\) should
+carry a natural promotion equivalence
+\[
+\boxed{
+\Pi_e:
+\mathsf{Lost}^{\rm coherent}_e
+\;\simeq\;
+\mathsf{NewRule}_e
+:=
+\operatorname{Op}(H_{e^+})/
+\operatorname{Cont}_e\operatorname{Op}(H).
+}
+\tag{F30}
+\]
+The right side is the genuinely new successor structure, not merely a new state in the old
+operation object. The earlier causalization equivalence `(F27)` should be its first positive,
+degree-zero shadow:
+\[
+\mathsf{Lost}^{\rm coherent}_e
+\xrightarrow{\ \Pi_e\ }
+\mathsf{NewRule}_e
+\longrightarrow
+\mathsf{Future}^{\rm causal}_e.
+\tag{F31}
+\]
+
+The intended conservation statement is therefore:
+
+> **Reality conserves physical distinction by promoting its type. What stops being a possibility
+> becomes a rule for possibilities.**
+
+This promotion may iterate. A rule created at one event becomes part of the source from which a
+later event creates a higher comparison rule. The universal law is finite; its faithful history
+need not close at any finite type or differential order.
+
+### Why this is stronger than neighbouring programmes
+
+`[LITERATURE]` Constructor theory makes possible and impossible transformations fundamental, but
+its task repertoire is specified by laws rather than created event by event
+([Deutsch](https://arxiv.org/abs/1210.7439);
+[Deutsch--Marletto](https://arxiv.org/abs/1405.5563)).
+Classical sequential growth derives families of causal-set transition probabilities from
+causality and discrete covariance, but the growth type and causal-set codomain are supplied
+([Rideout--Sorkin](https://arxiv.org/abs/gr-qc/9904062)).
+Models of evolving laws vary couplings or constants with chosen clock variables inside a supplied
+action ([Magueijo](https://arxiv.org/abs/2306.08390)).
+Process matrices remove a predefined global causal order while retaining local laboratory
+input--output types ([Oreshkov--Costa--Brukner](https://arxiv.org/abs/1105.4464)).
+Quantum causal histories supply event algebras and completely positive causal maps
+([Hawkins--Markopoulou--Sahlmann](https://arxiv.org/abs/hep-th/0302111)).
+
+None of these priority checks establishes that `(F30)` is new. They isolate its required residue:
+the event source must generate the new target operation type, its positivity, and its composition
+without reading them from a target theory.
+
+### Exact finite clue: global completion is the flat phase
+
+The new paper and Lean theorem
+[`fixed-carrier-quadratic-variation-flatness.md`](../3-formalized/not_new_scientific_knowledge/fixed-carrier-quadratic-variation-flatness.md)
+proves two exact statements.
+
+First, whenever local consequence projections are absorbed by one common final carrier, their
+positive lost-layer variation obeys a path-independent compressed cocycle. Every completion
+diamond inside that supplied carrier is flat.
+
+Second, for orthogonal projections the universal unit test has the converse:
+\[
+\Delta_I(I,R)
+=
+\Delta_I(Q,R)+R\Delta_I(I,Q)R
+\quad\Longleftrightarrow\quad
+QR=RQ=R.
+\tag{F32}
+\]
+Thus this quadratic flatness detects common-future absorption exactly in the finite model.
+
+This is only operator algebra, not gravity. Its research meaning is sharp:
+
+```text
+all locally generated futures absorbed into one fixed law
+  -> quadratic promotion record is path-flat;
+
+nonzero fundamental interaction
+  -> some source-changing promotion data cannot be absorbed into one fixed law
+     without losing a physical distinction.
+```
+
+The generic phrase “common future” is occupied mathematics. Ore directedness asks for common
+multiples, and a Markov semigroup over the opposite of an Ore monoid has a full dilation exactly
+when its GNS subproduct system embeds in a product system under the hypotheses of
+[Shalit--Skeide](https://arxiv.org/abs/2003.05166). Likewise, failure of local classical
+descriptions to admit a global section is the standard structural content of contextuality
+([Abramsky--Brandenburger](https://arxiv.org/abs/1102.0264)).
+
+Candidate novelty is therefore not:
+
+```text
+force = no common future
+```
+
+but:
+
+```text
+force = positive, source-generated obstruction to promoting local futures
+        into one common successor law while conserving every physical distinction.
+```
+
+### Common-successor law and one curvature
+
+For two primitive promotions \(e,f\) after history \(H\), the new object should be a positive
+source-generated higher space
+\[
+\operatorname{Amalg}^{+}_{H}(e,f)
+\tag{F33}
+\]
+of spectator-free common **successor laws**. It must not be the set of common future points in an
+already supplied causal order.
+
+The conjectural phase dictionary is:
+
+- a contractible, coherently absorbing `(F33)` is a flat local phase;
+- vertical automorphisms of one common successor act as internal gauge symmetry;
+- source-changing failure of coherent absorption is gravitational curvature;
+- mixed classes that survive promotion are matter and Higgs/soldering data;
+- emptiness or loss of external accessibility is a horizon or singular boundary; and
+- failure of every finite differential presentation to retain all iterated promotion classes is
+  the physical Hypertranscendental phase.
+
+These are conjectural identifications. Ordinary moduli, Ore localization, descent, higher
+connections, and obstruction theory already contain this architecture once the ambient objects
+are supplied. The discovery requires a uniqueness theorem deriving `(F33)` from source
+distinctions alone and proving that its one comparison defect decomposes into exactly:
+
+1. \(U(1)\), \(SU(2)\), and \(SU(3)\) vertical responses;
+2. one Lorentz/gravitational source-changing response;
+3. one mixed Higgs/soldering response; and
+4. no additional long-range sector.
+
+The current \(4/4/4\) balance and primitive \(M_{3,2}(\mathbb C)\) realization make this outcome
+possible but do not force it.
+
+### Wild physical corollaries if `(F30)` is true
+
+`[CONJECTURAL CONSEQUENCES, NOT RESULTS]`
+
+1. **Spacetime is fossil law.** Geometry is the stable public shadow of operation types created by
+   past events, not a container in which those events occurred.
+2. **Gravity is disagreement about legality.** Freely falling clocks disagree because their local
+   event histories generate successor rules that cannot be identified by one path-independent
+   global promotion.
+3. **Matter is a persistent square root of law.** A matter sector is coherent root data that
+   remains nontrivial through repeated promotion; mass measures non-collinearity in the positive
+   causal square only if the exceptional realization theorem closes.
+4. **A black-hole horizon is a promotion boundary.** Local distinction is conserved, but its
+   successor rule cannot be exported to the same external continuation object.
+5. **The multiverse is not many pre-existing spacetimes.** Different spacetimes are inequivalent
+   maximal globalizations of one locally generated successor-law history.
+6. **The Big Bang is not necessarily the first instant.** It may be the first regular phase in
+   which the promotion tower admits a \(3+1\)-dimensional Lorentzian public shadow; asking for its
+   age “before” that phase may be a type error.
+7. **A finite theory of everything may prove that no fixed finite theory is complete.**
+   Hypertranscendence would mean that one finite promotion law generates a history that no finite
+   differential law on one fixed carrier can faithfully horizontalize.
+
+The last statement resolves an apparent contradiction rather than weakening the target: the
+meta-law can be universal and finite while its generated physical law tower is unbounded.
+
+### What would make this Nature-level rather than metaphysics
+
+Nature requires original research of outstanding importance and a conclusion interesting across
+disciplines; editors further ask whether results are novel, arresting, and have immediate and
+far-reaching implications
+([editorial criteria](https://www.nature.com/nature/for-authors/editorial-criteria-and-processes)).
+`(F30)` supplies an arresting conclusion but presently no established physical result.
+
+The minimum discovery package is:
+
+1. define a finite source object and its operation-type promotion without target physics;
+2. prove existence and uniqueness of \(\Pi_e\) and
+   \(\operatorname{Amalg}^{+}_{H}(e,f)\);
+3. prove that fixed-law absorbability is equivalent to vanishing of one positive promotion
+   obstruction, extending `(F32)`;
+4. derive quantum probability and \(3+1\) causal order as coherent and positive shadows of the
+   same promotion;
+5. prove exact four-force rigidity, chirality, anomaly cancellation, equivalence principle, and
+   Einstein--Dirac--Yang--Mills--Higgs infrared dynamics;
+6. prove the physical Hypertranscendental horizontalization equivalence `(F29)`; and
+7. obtain one parameter-free finite prediction distinguishing the law from GR plus the Standard
+   Model.
+
+Every mathematical item must then be formalized unconditionally in Lean. No physics promotion is
+authorized from the existing flatness theorem alone.
+
+### Fatal tests
+
+Retire or revise the distinction-promotion law if:
+
+1. \(\operatorname{Op}(H_{e^+})\) can be defined only by choosing a target process category,
+   future-test alphabet, spacetime, Hilbert space, or known field theory;
+2. `(F30)` becomes tautological because `NewRule` is defined as a copy of `Lost`;
+3. ordinary free completion supplies a universal solution with arbitrary spectators;
+4. all promotion towers admit a faithful fixed-law totalization while retaining every physical
+   distinction;
+5. the common-successor obstruction cannot distinguish internal gauge, gravity, and mixed
+   matter responses without labels inserted by hand;
+6. the \(3+1\), \(3\)-colour, doublet phase is one choice among equally source-natural peers;
+7. no derived continuum limit reproduces known physics quantitatively; or
+8. no parameter-free observable differs from GR plus the Standard Model.
+
+Current verdict:
+
+`THE LIKELY MISSING INGREDIENT IS EVENT-DRIVEN TYPE PROMOTION, NOT ANOTHER FIELD;`
+`FIXED-CARRIER ABSORPTION/FLATNESS IS LEAN-PROVED; COMMON-SUCCESSOR LAW, FOUR-SECTOR`
+`RIGIDITY, CONTINUUM DYNAMICS, AND PREDICTION REMAIN OPEN; NATURE GATE CLOSED`.
+
+## Latest log: distinction promotion
+
+- 2026-07-30 — audited causal-set growth, constructor theory, evolving-law models, process
+  matrices, quantum causal histories, contextuality, and Ore/product-system dilation.
+- 2026-07-30 — identified the shared supplied-law-type assumption and sharpened `(F27)` to the
+  conjectural promotion equivalence `(F30)`: lost coherent distinction becomes new successor
+  operation type, whose positive degree-zero shadow is causal future.
+- 2026-07-30 — used the exact quadratic cocycle converse `(F32)` to identify globally absorbable
+  fixed-law completion as the finite flat phase; rejected the generic “no common future” slogan as
+  occupied and too weak.
+
+## Fourteenth hostile descent: separability, not generic law, is the missing variable
+
+### Correction to `(F30)`
+
+The generic type-promotion reading of `(F30)` is still too weak.
+[`finite-cross-law-interference-without-containing-theory.md`](../5-failed/finite-cross-law-interference-without-containing-theory.md)
+proves that changing carriers, changing operation types, positive branch laws, cross-law bridges,
+and typed sequential composition all admit a faithful realization in one fixed direct-sum or
+linking theory. If bridges are omitted, relative phase is operationally absent; if bridges are
+admitted, they totalize with the rest.
+
+Therefore this statement is false as a sufficient criterion for new physics:
+
+```text
+events change their law type
+  -> no containing fixed theory
+  -> force or gravity.
+```
+
+The exact positive survivor of that no-go is sharper:
+
+> **A bare history is containable. What may fail to be containable is the history together with
+> its changing law of which events are independent.**
+
+The missing physical variable is not an arbitrary operation type. It is **separability**:
+reality's answer to which possibilities count as two independently composable systems.
+
+### Frozen public law
+
+> **Space is what can exist independently. Gravity is that answer changing.**
+
+Worldview form:
+
+> **There are not four fundamentally different forces. There is one changing boundary between
+> “one thing” and “two things.” Internal rotations of that boundary are gauge forces; disagreement
+> between boundaries is gravity; stable defects in it are matter.**
+
+Quantum-conservation form:
+
+> **Quantum possibilities do not disappear. When an event removes their ability to coexist as
+> alternatives, the lost joint possibility returns as a new distinction between systems. That
+> distinction is spacetime.**
+
+This is the first formulation in the descent that says what space is, what gravity is, why gauge
+symmetry is different from gravity, and why quantum loss could create rather than merely inhabit
+geometry.
+
+### Dynamic Separability Conjecture
+
+`[WILD CONJECTURE; TRUTH HUNCH; DEFINITIONS AND PROOF UNKNOWN]`
+
+Every source-complete physical history \(H\) determines a positive groupoid
+\(\mathfrak{Sep}(H)\) of maximal operational independence charts. A chart specifies which
+counterfactual continuations admit faithful joint composition, but it must be reconstructed from
+source tests; no subsystem split, tensor factorization, spacetime, causal order, gauge group, or
+target field theory may be supplied.
+
+A primitive event \(e:H^-\rightsquigarrow H^+\) generates a full separability colligation
+
+\[
+\mathcal S_e=
+\left(
+\mathfrak{Sep}(H^-)
+\xleftarrow{\;\partial_-\;}
+\mathfrak B_e
+\xrightarrow{\;\partial_+\;}
+\mathfrak{Sep}(H^+);
+\ U_e,\Gamma_e
+\right),                                                           \tag{F34}
+\]
+
+including its positive boundary form, comparison map, source kernel, target-born quotient, and
+gluing law. The conjectured universal conservation theorem is
+
+\[
+\boxed{
+\mathsf{LostJoint}_e
+\;\simeq\;
+\mathsf{BornSeparation}_e,
+}
+\tag{F35}
+\]
+
+where:
+
+- \(\mathsf{LostJoint}_e\) is derived from source alternatives that cease to admit coherent joint
+  continuation after \(e\);
+- \(\mathsf{BornSeparation}_e\) is independently reconstructed from new successor
+  distinguishability and comparison tests; and
+- `(F35)` must be proved as a natural positive equivalence, not imposed by defining either side as
+  a copy of the other.
+
+The complete colligation \(\mathcal S_e\), not one curvature tensor, is the conserved primitive.
+Curvature is only its path-comparison shadow. This incorporates the
+[`actuality-factorization-interchange-law.md`](../5-failed/actuality-factorization-interchange-law.md)
+failure: curvature alone does not reconstruct the boundary self-law, while a full colligation can
+retain transmitted, erased, born, and comparison data.
+
+### Why independent composition is the one survivor
+
+The corpus now gives a coherent elimination table.
+
+| Attempted primitive | Hostile result | Positive survivor |
+|---|---|---|
+| one changing state | ordinary dynamics already contains it | source-selected event boundary |
+| one changing carrier | direct sums contain every typed history | independent joint capacity |
+| one changing law type | linking theories totalize cross-law bridges | changing independence law |
+| no global tensor factorization | gauge/gravity literature already has it; nonfactorization is not interaction | operational comparison of source-derived independence charts |
+| one curvature | flat on common carriers; incomplete off them | full positive boundary colligation |
+| one finite differential closure | Hypertranscendental towers escape every finite differential presentation | finite generator with non-stationary separability tower |
+
+The convergence is not proof. It is a much stronger research hunch than “law changes”: every
+failed totalization preserves sequential arrows but either supplies, ignores, or destroys the
+meaning of independent joint composition.
+
+### Exact finite shadow now proved
+
+[`independent-composition-boundary-record-conservation.md`](../2-fully-proven/not_new_scientific_knowledge/independent-composition-boundary-record-conservation.md)
+proves the following unconditional finite-dimensional law.
+
+For
+
+\[
+\mu:V\otimes V\to V,\qquad R:V\otimes V\to E,
+\]
+
+if \((\mu,R)\) is injective and \(d=\dim V\), then
+
+\[
+\dim E\geq d^2-d.                                                   \tag{F36}
+\]
+
+At equality, faithfulness forces
+
+\[
+\ker\mu\simeq E,
+\qquad
+V\otimes V\simeq V\oplus E,                                       \tag{F37}
+\]
+
+and \(\mu\) is surjective. Thus the minimal complementary record is exactly the joint capacity
+erased by public compression.
+
+`(F36)`--`(F37)` are standard linear algebra and not new scientific knowledge. They assume the
+tensor law, record, finite capacity, and faithfulness. Their value is narrower:
+
+> **If independent joint possibility is compressed but globally conserved, its exact missing
+> capacity must reappear in a complementary record.**
+
+This is the first dependency-closed mathematical shadow of `(F35)`. It does not identify the record
+with a spatial boundary. A physical derivation must construct \(E\) from successor tests and prove
+its localization rather than choose \(E=\ker\mu\).
+
+### One-law dictionary
+
+If `(F34)`--`(F35)` exist and satisfy the required rigidity theorem, familiar physics becomes a
+set of projections of one object:
+
+| Existing concept | Dynamic-separability interpretation |
+|---|---|
+| quantum system | one local independence chart, not a fundamental object |
+| superposition/entanglement | coherent incompatibility among admissible charts and joint tests |
+| spacelike separation | permission for faithful independent joint composition |
+| causality | obstruction to such joint composition after an event |
+| time | directed refinement of the answer to what can still happen independently |
+| spacetime | comparison geometry of all event-created independence charts |
+| internal gauge force | vertical automorphism preserving one local chart |
+| gravity | horizontal holonomy from comparing charts generated by different histories |
+| matter | stable defect/intertwiner that persists between inequivalent charts |
+| Higgs/soldering | mixed datum converting internal chart change into external comparison scale |
+| holography | minimal public boundary record reconstructing compressed joint possibility |
+| horizon | failure to export an interior separation record into the exterior comparison system |
+| multiverse | inequivalent maximal globalizations of one locally generated separability history |
+
+This dictionary is not a result. Its merit is compression: no separate ontology is introduced for
+quantumness, spacetime, gauge, gravity, matter, and holography.
+
+### The new mathematics the conjecture demands
+
+Existing geometry starts with points and neighborhoods. Quantum theory starts with systems and
+tensor products. Category theory starts with objects and legal composition. Higher gauge theory
+starts with a higher category or stack. All can describe a changing structure after its type of
+independence has been supplied.
+
+The required mathematics would instead be an **autogenic monoidal geometry**:
+
+1. objects are not prior to composition; an event source generates both;
+2. the binary independence law may change after composition;
+3. comparisons between generated monoidal laws require no ambient tensor product containing both;
+4. lost source jointness and born target separation are related by a positive exact colligation;
+5. vertical stabilizers and horizontal comparison arise from one universal object;
+6. iterated colligations form a coherent tower that need not stabilize at finite categorical or
+   differential order; and
+7. a representation theorem classifies every finite positive realization and its continuum
+   shadows.
+
+`[CANDIDATE NEW MATHEMATICS, NOT A NOVELTY CLAIM]` Ordinary promonoidal categories, duoidal
+categories, equipments, intercategories, operads, factorization algebras, higher stacks, and
+subfactor tensor categories are priority parents. The unoccupied residue must be
+**source-generation of the independence law plus the non-tautological conservation equivalence
+`(F35)`**, not a relabelling of those parents.
+
+### Wild consequences worth trying to kill
+
+`[CONJECTURAL; NONE IS ESTABLISHED]`
+
+1. **The number of things is dynamical.** System boundaries are physical observables generated by
+   events, not bookkeeping chosen by an observer.
+2. **The equivalence principle is an independence theorem.** All matter falls alike because every
+   matter sector is a representation of the same horizontal comparison of local separability,
+   while charges distinguish only vertical stabilizer representations.
+3. **Macroscopic quantumness gravitates through branch separation, not only mean stress-energy.**
+   A coherent superposition of different independence charts should generate comparison holonomy
+   absent from a semiclassical equation sourced solely by \(\langle T_{\mu\nu}\rangle\).
+4. **Black-hole entropy counts unexportable jointness.** Horizon area should arise as the continuum
+   density of the minimal record required to preserve interior--exterior joint possibility when
+   exterior public compression is faithful.
+5. **The Big Bang was a separability transition, not necessarily a first moment.** A
+   \(3+1\)-dimensional Lorentzian phase begins when the generated independence tower first admits
+   that public continuum shadow.
+6. **The Standard Model group is a rigidity residue.** The exact local stabilizer of the smallest
+   positive chiral separability colligation should be \(S(U(2)\times U(3))\), with no labels
+   inserted by hand.
+7. **Hypertranscendence is physical non-closure.** A finite universal event law can generate an
+   iterated separability history that no finite differential field on one spacetime captures. The
+   continuum fields are finite-order shadows, not the complete law.
+
+Items 3 and 4 offer the clearest route to empirical contact. They must produce parameter-free
+formulae before any discovery claim.
+
+### Exact programme and kill conditions
+
+The next open core is no longer generic type promotion. It is:
+
+`SOURCE-GENERATED POSITIVE SEPARABILITY COLLIGATION`
+
+Required order:
+
+1. define operational independence from source counterfactuals without prior systems;
+2. construct \(\mathfrak{Sep}(H)\) and \(\mathcal S_e\);
+3. prove non-tautological existence, uniqueness, positivity, and gluing of `(F35)`;
+4. prove a totalization dichotomy: global trivialization is possible exactly when the full
+   separability colligation is flat;
+5. classify minimal positive realizations and derive, rather than choose,
+   \(3+1\) Lorentzian geometry and \(S(U(2)\times U(3))\);
+6. derive Born probability and Einstein--Dirac--Yang--Mills--Higgs infrared dynamics;
+7. prove the Hypertranscendental non-closure correspondence; and
+8. derive one finite parameter-free prediction.
+
+Retire the conjecture if any of the following occurs:
+
+1. every candidate separability history totalizes in one fixed structure while preserving its
+   operational independence tests;
+2. \(\mathfrak{Sep}(H)\) requires a prior subsystem split, tensor product, spacetime, or target
+   theory;
+3. `(F35)` is true only because `BornSeparation` is defined from `LostJoint`;
+4. the full colligation reduces to standard supplied higher gauge or factorization data;
+5. its minimal positive stabilizer is not uniquely the Standard Model group;
+6. Lorentzian \(3+1\) geometry is not uniquely selected;
+7. the continuum limit fails any quantitative test of quantum theory, GR, or the Standard Model;
+8. horizon record capacity does not yield the correct entropy law under independently derived
+   hypotheses; or
+9. no parameter-free observable distinguishes the theory from GR plus the Standard Model.
+
+Current verdict:
+
+`THE STRONGEST SURVIVING HUNCH IS DYNAMIC SEPARABILITY, NOT GENERIC LAW CHANGE;`
+`THE FINITE BOUNDARY-RECORD SHADOW IS LEAN-PROVED BUT STANDARD;`
+`SOURCE GENERATION, FOUR-FORCE RIGIDITY, CONTINUUM PHYSICS, AND PREDICTION REMAIN OPEN;`
+`NATURE GATE CLOSED`.
+
+## Latest log: dynamic separability
+
+- 2026-07-30 — used the cross-law totalization no-go to reject generic event-driven type promotion
+  as sufficient; retained changing independent composition as the exact positive survivor.
+- 2026-07-30 — froze the Dynamic Separability Conjecture `(F34)`--`(F35)` and the public law
+  “Space is what can exist independently. Gravity is that answer changing.”
+- 2026-07-30 — derived and unconditionally formalized the exact finite boundary-record
+  conservation shadow `(F36)`--`(F37)`; explicitly classified it as standard linear algebra.
+- 2026-07-30 — identified autogenic monoidal geometry and the source-generated positive
+  separability colligation as the new mathematical open core.

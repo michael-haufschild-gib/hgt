@@ -174,6 +174,82 @@ theorem nestedProjectionQuadraticCurvature_eq_compression_sub_self
   rw [hcocycle]
   abel
 
+/-- A projection compression equal to the compressed projection forces both absorption laws. -/
+theorem projection_absorption_of_compression_eq_self
+    (Q R : E →L[𝕜] E)
+    [CompleteSpace E]
+    (hQ2 : Q * Q = Q) (hR2 : R * R = R)
+    (hQadj : Q.adjoint = Q) (hRadj : R.adjoint = R)
+    (hRQR : R * Q * R = R) :
+    Q * R = R ∧ R * Q = R := by
+  let X : E →L[𝕜] E := (1 - Q) * R
+  have hQcomp2 : (1 - Q) * (1 - Q) = 1 - Q := by
+    noncomm_ring [hQ2]
+  have hXadj : X.adjoint = R * (1 - Q) := by
+    dsimp only [X]
+    change ContinuousLinearMap.adjoint ((1 - Q) ∘L R) = R * (1 - Q)
+    rw [ContinuousLinearMap.adjoint_comp,
+      ContinuousLinearMap.adjoint.map_sub,
+      ContinuousLinearMap.adjoint_one, hQadj, hRadj]
+    rfl
+  have hXstar : X.adjoint * X = 0 := by
+    rw [hXadj]
+    dsimp only [X]
+    calc
+      (R * (1 - Q)) * ((1 - Q) * R) =
+          R * ((1 - Q) * (1 - Q)) * R := by noncomm_ring
+      _ = R * (1 - Q) * R := by rw [hQcomp2]
+      _ = 0 := by noncomm_ring [hRQR, hR2]
+  have hXzero : X = 0 := by
+    rw [← ContinuousLinearMap.star_eq_adjoint] at hXstar
+    exact (CStarRing.star_mul_self_eq_zero_iff X).mp hXstar
+  have hQR : Q * R = R := by
+    dsimp only [X] at hXzero
+    have hdiff : R - Q * R = 0 := by
+      simpa only [sub_mul, one_mul] using hXzero
+    exact (sub_eq_zero.mp hdiff).symm
+  have hadj := congrArg ContinuousLinearMap.adjoint hQR
+  have hRQ : R * Q = R := by
+    change ContinuousLinearMap.adjoint (Q ∘L R) =
+      ContinuousLinearMap.adjoint R at hadj
+    rw [ContinuousLinearMap.adjoint_comp, hQadj, hRadj] at hadj
+    exact hadj
+  exact ⟨hQR, hRQ⟩
+
+/-- **Unit flatness detects absorption.** For orthogonal projections, the quadratic cocycle with
+unit top carrier and unit passage is flat exactly when `R` is absorbed by `Q` on both sides. -/
+theorem nestedProjectionQuadraticVariation_unit_flat_iff_absorption
+    (Q R : E →L[𝕜] E)
+    [CompleteSpace E]
+    (hQ2 : Q * Q = Q) (hR2 : R * R = R)
+    (hQadj : Q.adjoint = Q) (hRadj : R.adjoint = R) :
+    nestedProjectionQuadraticVariation 1 R 1 =
+        nestedProjectionQuadraticVariation Q R 1 +
+          R * nestedProjectionQuadraticVariation 1 Q 1 * R ↔
+      Q * R = R ∧ R * Q = R := by
+  constructor
+  · intro hflat
+    have htopR : nestedProjectionQuadraticVariation 1 R 1 = 0 := by
+      unfold nestedProjectionQuadraticVariation
+      noncomm_ring [hR2]
+    have htopQ : nestedProjectionQuadraticVariation 1 Q 1 = 0 := by
+      unfold nestedProjectionQuadraticVariation
+      noncomm_ring [hQ2]
+    have hmiddle :
+        nestedProjectionQuadraticVariation Q R 1 =
+          R * Q * R - R := by
+      unfold nestedProjectionQuadraticVariation
+      noncomm_ring [hR2]
+    have hRQR : R * Q * R = R := by
+      rw [htopR, htopQ, hmiddle] at hflat
+      simp only [mul_zero, zero_mul, add_zero] at hflat
+      exact sub_eq_zero.mp hflat.symm
+    exact projection_absorption_of_compression_eq_self
+      Q R hQ2 hR2 hQadj hRadj hRQR
+  · rintro ⟨hQR, hRQ⟩
+    exact nestedProjectionQuadraticVariation_compressed_cocycle
+      1 Q R 1 hQR hRQ
+
 end
 
 end GaloisForLFunctions.HTGeometry

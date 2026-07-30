@@ -21,9 +21,11 @@ For \(R\preceq Q\preceq P\),
 \Delta_D(P,R)
 =\Delta_D(Q,R)+R\Delta_D(P,Q)R.
 \]
-Every fixed-carrier projection diamond is therefore path-flat. Its transported quadratic variation
-depends only on endpoints. The corresponding triple curvature is compression-minus-identity, and
-the Sonin realization has an explicit scalar Ward potential.
+Every fixed-carrier projection diamond is therefore path-flat. In fact Lean proves a stronger
+algebraic theorem: intermediate operators need not be projections or comparable with the initial
+carrier; common absorption by the final carrier already forces path independence. The corresponding
+triple curvature is compression-minus-identity, and the Sonin realization has an explicit scalar
+Ward potential.
 
 ## Strongest positive survivor
 
@@ -35,6 +37,11 @@ C_D(Q)-QC_D(P)Q
 This gives a universal local conservation mechanism. It also proves that physical curvature, if
 this research direction is right, must be the obstruction to putting all locally valid
 consequence filtrations into one compatible fixed carrier.
+
+The formal converse strengthens this boundary: for orthogonal projections, the unit quadratic
+cocycle is flat exactly when the proposed final carrier absorbs the intermediate carrier. The
+finite model therefore identifies curvature with failed common-future absorption, not with an
+arbitrary Gram square.
 
 ## New insight
 
@@ -48,5 +55,5 @@ missing mathematics must combine:
 
 ## Status
 
-Paper proof dependency-closed. Lean formalization pending in
+Paper proof dependency-closed and unconditional Lean formalization complete in
 `GaloisForLFunctions.HTGeometry.NestedProjectionQuadraticVariation`.

@@ -48,6 +48,41 @@ ball. Simplicity and the within-block triangle are open conditions.
 **Verdict:** closed. The perturbation is chosen once outside the finite
 union; the proof does not choose incompatible perturbations edge by edge.
 
+### 2a. Does the qubit endpoint witness require an unformalized
+free-fermion diagonalization?
+
+No. At the product extension by one qubit, \(X_v\) supplies every vertical
+edge \((\alpha,0)-(\alpha,1)\). For an old endpoint transition
+\(\alpha-\beta\), perturbing by \(A_{\alpha\beta}\otimes X_v\) has two
+independent first-order consequences:
+\[
+ \frac d{dx}
+ \langle\alpha,1|Z_v|\beta,0\rangle
+ =
+ \frac{2A_{\alpha\beta}}{E_\alpha-E_\beta-z},
+\]
+and
+\[
+ \frac d{dx}
+ \langle\alpha,0|X_v|\beta,0\rangle
+ =
+ \frac{2zA_{\alpha\beta}}
+ {z^2-(E_\alpha-E_\beta)^2},
+\]
+up to eigenvector sign convention. Product-spectrum simplicity makes both
+denominators and both numerators nonzero. The first family connects the
+vertical blocks along an old spanning tree. One old tree edge together with
+its same-layer transition and a persistent vertical transition forms a
+triangle.
+
+As in objection 2, finitely many analytic failure loci are avoided by one
+small coefficient vector. This proves connectedness and non-bipartiteness
+inductively in finite-dimensional matrix perturbation theory.
+
+**Verdict:** closed. The free-fermion witness remains a valid independent
+paper construction but is no longer a dependency of the general theorem or
+its formalization.
+
 ### 3. Does second-order perturbation omit compensating terms?
 
 For \(p=(\alpha,r)\), \(q=(\beta,s)\), the perturbation
@@ -148,8 +183,8 @@ distribution.
 
 ## Remaining hostile objections
 
-1. Independent specialists must audit analytic perturbation conventions and
-   the symmetrized-polynomial argument.
+1. Independent specialists must audit the first- and second-order analytic
+   perturbation conventions and the symmetrized-polynomial argument.
 2. Priority remains open: continuum Schrödinger control theory already
    proves abstract generic non-resonance by related analytic methods.
 3. Translation-invariant and fixed low-parameter chains are not covered.

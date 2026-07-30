@@ -72,11 +72,82 @@ eigenbasis makes `(3)` nonzero for every pair, so
 \(\mathcal G_u(H)\) is complete. Assign distinct eigenvalues to obtain a
 simple allowed \(H\).
 
-### Qubit case
+### Endpoint extension for \(q=2\)
 
-For \(q=2\), the endpoint free-fermion witness in
-`nearest-neighbor-chain-projective-spectral-maximality.md` proves
-nonemptiness for every \(n\).
+Assume \(H_A\) is a simple chain on \(n\) qubits whose transition graph at
+the attachment endpoint is connected. Attach one qubit \(v\) and use the
+product Hamiltonian
+\[
+ H_0
+ =
+ H_A\otimes I+a_0I\otimes|0\rangle\langle0|
+              +a_1I\otimes|1\rangle\langle1|,          \tag{4a}
+\]
+where \(z=a_0-a_1\) makes all \(E_\alpha+a_r\) distinct. Put
+\[
+ X_v=|0\rangle\langle1|+|1\rangle\langle0|,
+ \qquad
+ Z_v=|0\rangle\langle0|-|1\rangle\langle1|.
+\]
+At zero edge coupling, \(X_v\) joins
+\((\alpha,0)\) to \((\alpha,1)\) for every \(\alpha\).
+
+Choose a spanning tree of the old endpoint graph. For each tree edge
+\(\{\alpha,\beta\}\), choose a Hermitian endpoint operator
+\(A_{\alpha\beta}\) with
+\(\langle\psi_\alpha,A_{\alpha\beta}\psi_\beta\rangle\neq0\), and perturb the
+new edge by a generic small linear combination of
+\[
+ A_{\alpha\beta}\otimes X_v.                           \tag{4b}
+\]
+For one coefficient \(x\), first-order eigenvector perturbation gives
+\[
+ \left.\frac d{dx}
+ \langle\psi_{\alpha,1}(x),Z_v\psi_{\beta,0}(x)\rangle
+ \right|_{x=0}
+ =
+ \frac{
+  2\langle\psi_\alpha,A_{\alpha\beta}\psi_\beta\rangle
+ }{
+  E_\alpha-E_\beta-z
+ },                                                     \tag{4c}
+\]
+up to the harmless sign imposed by the eigenvector convention. This is
+nonzero because the product spectrum is simple. Thus every selected old tree
+edge produces a cross-block endpoint transition.
+
+The same perturbation also gives the same-layer derivative
+\[
+ \left.\frac d{dx}
+ \langle\psi_{\alpha,0}(x),X_v\psi_{\beta,0}(x)\rangle
+ \right|_{x=0}
+ =
+ \langle\psi_\alpha,A_{\alpha\beta}\psi_\beta\rangle
+ \left(
+  \frac1{E_\alpha-E_\beta+z}
+  +\frac1{E_\beta-E_\alpha+z}
+ \right)
+ =
+ \frac{
+  2z\langle\psi_\alpha,A_{\alpha\beta}\psi_\beta\rangle
+ }{
+  z^2-(E_\alpha-E_\beta)^2
+ }.                                                      \tag{4d}
+\]
+Again this is nonzero: simplicity excludes \(z=0\) and
+\(z=\pm(E_\alpha-E_\beta)\).
+
+Every required transition amplitude is analytic in the finitely many edge
+coefficients and has a nonzero derivative in its selected coefficient.
+Their failure loci are therefore proper analytic zero sets. Choose one
+sufficiently small coefficient vector outside their finite union. The
+vertical \(X_v\)-edges persist and the cross-block tree edges connect all
+blocks. For any selected old tree edge, the three persistent/generated edges
+\[
+ (\alpha,1)-(\alpha,0)-(\beta,0)-(\alpha,1)
+ \]
+form a triangle. Simplicity also persists. Hence the new endpoint graph is
+connected and non-bipartite.
 
 ### Endpoint extension for \(q\geq3\)
 
@@ -123,8 +194,8 @@ cover a small coefficient ball, so one perturbation makes every spanning-tree
 cross edge nonzero simultaneously.
 
 The new endpoint graph is connected, and its old within-block triangle
-persists. Simplicity also persists. This proves nonemptiness inductively for
-every \(q\geq3\). Together with the qubit witness, Lemma 1 holds for every
+persists. Simplicity also persists. The two endpoint-extension arguments,
+starting from the two-site base, prove nonemptiness inductively for every
 \(q\geq2\). ∎
 
 ## Lemma 2 — one \(q\)-level endpoint extension destroys every relation

@@ -471,7 +471,7 @@ cannot be fitted after inspecting zeros.
 - [x] universal vacuum--anomaly reciprocity theorem paper-proved
 - [x] reflected renormalization-anomaly theorem paper-proved
 - [x] preliminary internal and external parent audit
-- [ ] construct finite-prime polarized irregular triples
+- [x] construct finite-prime polarized irregular triples on actual `ell²` occupation carriers
 - [ ] prove uniform cofinal polarization after unitary irregular factorization
 - [ ] land the pre-divisor Xi conormal and all multiplicity jets
 - [ ] prove strict Hermitian irregular purity
@@ -489,11 +489,18 @@ cannot be fitted after inspecting zeros.
   Hellinger half-density, occupation-vector norm, Gamma first trace, and reflected irregular gauge
   are reciprocal records of one finite-source occupation line.  This identifies the missing
   completion as a projective direction plus its norm/determinant torsor.
-- 2026-07-30 — Formalized the scalar core of vacuum--anomaly reciprocity in
+- 2026-07-30 — Formalized vacuum--anomaly reciprocity in
   `formal/GaloisForLFunctions/HTGeometry/OccupationVacuumAnomalyReciprocity.lean`.
   `HTGeometry.finiteOccupation_vacuum_mul_mass` proves for every finite complex nome family in
-  the open unit polydisc that vacuum amplitude times raw occupation mass is exactly one.
-  Direct verification with
-  `lake env lean GaloisForLFunctions/HTGeometry/OccupationVacuumAnomalyReciprocity.lean`
-  succeeds.  The Hilbert-vector and Gamma-scheme-change identifications in `(14a)`--`(14f)`
-  remain separate already-proved corpus inputs rather than declarations in this module.
+  the open unit polydisc that vacuum amplitude times raw occupation mass is exactly one.  The same
+  module now constructs the raw and normalized finite occupation half-densities as actual `ell²`
+  vectors and proves their norm and vacuum-amplitude identities.
+- 2026-07-30 — Formalized the complete finite-prime specialization in
+  `formal/GaloisForLFunctions/RHTower/FinitePrimePolarizedIrregularTriple.lean`.
+  `finitePrimePolarizedIrregularTriple_exact` proves simultaneously that the normalized
+  occupation direction has squared norm one, its squared vacuum amplitude is the Wold boundary
+  volume, the raw squared norm is the reciprocal boundary volume, and the reflected genus-one
+  Gamma phase is the genus-zero phase multiplied by the exponential of centered charge times that
+  raw squared norm.  Both modules pass direct Lean checking; the generic module also passes its
+  targeted module build.  This closes finite-stage Step 1 only.  Cofinal polarization and
+  source-defined Xi conormal landing remain open.

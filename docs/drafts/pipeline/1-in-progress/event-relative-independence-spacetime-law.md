@@ -337,3 +337,45 @@ Current Nature verdict: `[DO NOT WRITE MANUSCRIPT]`.
 - 2026-07-29 — preliminary hostile attack killed bare nonfactorization but did not kill the frozen
   comparison-space ontology. Formalized the sharp finite-capacity compression debt as the first
   surviving monoidal resource boundary.
+
+## Second hostile refinement: from nonfactorization to dynamic separability
+
+The cross-law totalization theorem now kills a broader weak reading. Different carriers, operation
+types, typed sequential laws, and admitted cross-law bridges all fit faithfully in one fixed
+direct-sum or linking theory. Therefore neither “the Hilbert space changes” nor “the law type
+changes” is enough.
+
+The frozen residue is:
+
+> **Space is what can exist independently. Gravity is that answer changing.**
+
+“Independently” must be operational and source-derived. Bare Hilbert nonfactorization is not the
+claim. The sought object is the full positive comparison colligation of event-generated
+independence charts; vertical automorphisms are candidate internal gauge transformations,
+horizontal nonintegrability is candidate gravity, and mixed persistent defects are candidate
+matter.
+
+The exact new finite bridge is paper- and Lean-proved in
+[`independent-composition-boundary-record-conservation.md`](../2-fully-proven/not_new_scientific_knowledge/independent-composition-boundary-record-conservation.md).
+For a faithful pair
+
+\[
+(\mu,R):V\otimes V\to V\oplus E,
+\]
+
+one has \(\dim E\geq d^2-d\). At equality,
+
+\[
+\ker\mu\simeq E
+\quad\text{and}\quad
+V\otimes V\simeq V\oplus E.
+\]
+
+This is standard finite-dimensional algebra. It does not identify \(E\) with space. It fixes the
+non-tautological target: construct the record from successor independence tests, prove boundary
+localization, then show that comparison of such records yields Lorentzian geometry and the exact
+four-force decomposition.
+
+The master conjecture, new-mathematics target, wild consequences, and kill conditions are recorded
+under “Fourteenth hostile descent” in
+[`actuality-creates-future-law.md`](actuality-creates-future-law.md).

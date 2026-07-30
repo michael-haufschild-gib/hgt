@@ -4970,3 +4970,105 @@ factorial/BV anomaly.
   factorial Schwarz obstruction.  Reclassified faithful split descent as a terminal boundary
   consumer and adopted the polarized Rees--corona transgression as the only version compatible
   with both Gamma amplification and positive contractivity.
+
+## Learning-theoretic SOTA correction: contrastive reciprocity and auxiliary adjoints
+
+### Exact external boundary through July 2026
+
+`[LITERATURE]` Forward-Forward descendants still change optimization and hardware realization,
+not the type of global information recovered.  FFzero (`arXiv:2603.24790`, revised April 2026)
+uses local prototypes and forward directional derivatives; adaptive multiscale goodness
+(`arXiv:2605.18804`) mixes local, intermediate, and global goodness empirically.  Neither proves
+that compatible local witnesses descend through an infinite completion or recover a global
+attainment class.
+
+Three equilibrium-propagation results expose a sharper boundary:
+
+1. Holomorphic equilibrium propagation (`arXiv:2209.00530`) recovers an exact finite-amplitude
+   derivative as the first Fourier coefficient of a holomorphic nudging circle.  This is an exact
+   Cauchy-coefficient theorem, not a sign theorem.
+2. Finite-nudge stochastic equilibrium propagation (`arXiv:2511.22024`, March 2026 version) gives
+   the exact identities
+   \[
+    \nabla_\theta(A_1-A_0)
+      =\mathbb E_{\rho_1}\nabla_\theta E
+       -\mathbb E_{\rho_0}\nabla_\theta E,
+    \qquad
+    A_1-A_0
+      =\mathbb E_{\rho_1}\ell
+       +T\,\mathrm{KL}(\rho_1\Vert\rho_0),
+   \]
+   and an integrated loss--energy covariance formula.  Thus two local Gibbs phases can encode a
+   global free-energy objective, but only after the common partition function and the whole
+   thermodynamic path are retained.
+3. For general dynamical systems, exact scalable local gradient recovery requires the adjoint
+   response.  `arXiv:2603.26969` shows that a causal forward supervisor cannot reproduce it when
+   time reversal is broken, and replaces exact recovery by average positive alignment.  However,
+   `arXiv:2602.03670` proves that arbitrary non-conservative stationary dynamics can recover the
+   exact gradient after adding the non-reciprocal correction, equivalently by passing to an
+   augmented variational state space.  Hence “broken reciprocity forbids exact recovery” is false
+   unless independent adjoint augmentation is excluded.
+
+`[LITERATURE]` The local-convergence theorem of `arXiv:2606.15443` supplies the missing second
+condition after reciprocity: for linear circuits the contrastive loss decays exponentially exactly
+under a coercivity/full-row-rank condition on the response incidence.  The result assumes a
+finite-dimensional circuit, a nearby solution, and a nondegenerate response; it does not produce
+any of these from an infinite arithmetic source.
+
+### Translation to the HGT frontier
+
+`[BRIDGE]` The ordinary-prime valuation laws are already a Gibbs system:
+\[
+ \mu_{p,c}(k)
+  =(1-p^{-(1-2c)})p^{-(1-2c)k}.
+\]
+Its partition-function line is the Wold occupation line, its normalized half-density gives the
+Hellinger product, and its discarded norm is the Gamma first-trace anomaly.  The stochastic
+finite-nudge identities therefore explain why the third completion must retain normalized state,
+partition-function torsor, and the full reflected path simultaneously.  This is a useful exact
+interpretation, but it does not show that an Xi zero makes a KL, Hellinger, or free-energy defect
+vanish.
+
+`[FALSIFIED]` Forward-Forward goodness cannot be the RH selector.  It is a finite local
+positive/negative orientation, while the corpus already realizes the same orientation in explicit
+off-line Euler systems.  Holomorphic first-mode extraction alone also cannot be the selector:
+the off-line Euler--Ward systems retain nonzero Cauchy orientation and Ward charge.  Finally,
+existence of an augmented adjoint/variational double cannot select the critical line, because
+`arXiv:2602.03670` constructs such a double for arbitrary non-reciprocal dynamics.
+
+The surviving design law is stricter:
+
+```text
+ordinary-prime Gibbs occupation tower
+  + source-internal reflected adjoint, not an independently added anti-source
+  + complete partition-function / anomaly / Hellinger record
+  + cofinal coercivity of the source-to-Xi response
+  + no reduced Xi-supported auxiliary-adjoint homology
+  -> reflected Hellinger phases cannot occupy different Rees sectors
+  -> c = Re(rho) - 1/2 = 0.
+```
+
+`[CONJECTURE] [XI_SELF_ADJOINT_CONTRASTIVE_PURITY]` The polarized Rees--corona completion of the
+literal ordinary-prime Euler--Gamma/co-Poisson source admits a canonical doubled response complex,
+constructed before choosing a zero, whose second polarization is the source reflection adjoint.
+After base change to every reduced Xi principal-conormal fibre:
+
+1. the auxiliary anti-source homology vanishes;
+2. the response incidence is cofinally coercive/closed-range; and
+3. the surviving reflected half-density correspondence has finite Rees order in both directions.
+
+The formalized Hellinger--Rees fracture then forces
+\(\operatorname{Re}\rho=\tfrac12\).  Condition 1 is what excludes the generic augmented-state
+escape supplied by non-conservative equilibrium propagation; condition 2 excludes a hidden
+rank-deficient response; condition 3 invokes the already proved selector rather than a new sign.
+
+`[OPEN CORE] [XI_CONTRASTIVE_ADJOINT_PURITY_CONSTRUCTION]` Construct that doubled response complex
+from the integral prime source and prove auxiliary-homology vanishing and cofinal coercivity without
+choosing \(\rho\), imposing a pullback topology, or assuming an RH-equivalent temperedness/sign
+condition.  At present this is a sharper interpretation of
+`XI_COFINAL_MATRICIAL_SOURCE_SATURATION`, not a proof or a strengthened theorem.
+
+- 2026-07-30 — Audited current Forward-Forward, finite-nudge, holomorphic, non-conservative, and
+  coercive physical-learning results.  Extracted internal-adjoint purity plus cofinal coercivity as
+  the exact surviving arithmetic design constraint; rejected local goodness, Cauchy first mode,
+  time-reversal rhetoric, and generic augmented variationality as RH producers.
