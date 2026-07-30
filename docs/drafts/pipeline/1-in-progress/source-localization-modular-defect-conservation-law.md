@@ -4781,3 +4781,130 @@ evidence for its truth.
   descendants.  Found no existing algorithm that combines local forward reporters with a derived
   global attainment record.  Extracted the exact two-sided design requirement and ruled out
   finite local goodness as an RH selector.
+
+## Faithful split descent: one producer for module purity and positive purity
+
+The corpus already contains a stronger operation than an adjoint or a complete record.  Let
+\(\phi:A\to B\) and \(\psi:B\to A\) be complex-linear maps between ordered \(C^*\)-algebras.
+Assume:
+
+1. \(\psi\phi=\mathrm{id}_A\);
+2. both maps satisfy the required positive Schwarz inequalities; and
+3. \(\psi\) is faithful on positive elements.
+
+Then the formalized faithful-split theorem gives, for every \(a\in A\),
+\[
+\begin{aligned}
+ \phi(a^*a)-\phi(a)^*\phi(a)&=0,\\
+ \phi(aa^*)-\phi(a)\phi(a)^*&=0.                         \tag{210}
+\end{aligned}
+\]
+The declarations are
+`rightKadisonDefect_eq_zero_of_faithful` and
+`leftKadisonDefect_eq_zero_of_faithful` in
+`HTGeometry/FaithfulSplitKadison.lean`.  The mechanism is exact: Schwarz sends each positive
+defect into \(\ker\psi\), and positive faithfulness kills it.
+
+The same split has a module-theoretic consequence.  If \(T:M\to N\) has an \(A\)-linear
+retraction \(R:N\to M\), then for every \(A\)-algebra or module \(B\),
+\[
+ (R\otimes 1_B)(T\otimes 1_B)=1,
+\tag{211}
+\]
+so \(T\otimes B\) is injective.  Under the flat-source hypotheses of `(192)`, its born
+base-change Tor is therefore zero.  Thus a **faithful positive split** supplies both structures
+that the previous routes treated separately:
+
+```text
+algebraic left recovery
+  -> purity under source-face base change
+  -> no reduced attainment Tor;
+
+positive faithful Schwarz recovery
+  -> zero two-sided Kadison defect
+  -> multiplicative-domain / unitary boundary purity.
+```
+
+This is the first candidate universal law which is a producer rather than a reporter.  It also
+corrects `XI_SOURCE_RECORD_RELATIVE_HYPERRIGIDITY`: separating every complementary innovation
+does not make the innovation vanish.  A conservative Stinespring dilation of an interior disk
+character retains its complete record and remains nonmaximal.  Actual positive left recovery,
+faithful on that record, is the missing implication.
+
+### Arithmetic conjecture
+
+`[BOLD CONJECTURE] [ARITHMETIC_SOURCE_FAITHFUL_SPLIT_DESCENT]`
+
+> The literal ordinary-prime Euler--Gamma/co-Poisson observation complex admits, before Xi
+> specialization, a source-presentation-invariant relative completion and maps
+> \[
+>  \mathcal M_{\rm alg}
+>   \mathop{\longrightarrow}^{\Phi_{\rm ar}}
+>  \mathcal M_{\rm rel}
+>   \mathop{\longrightarrow}^{\Psi_{\rm ar}}
+>  \mathcal M_{\rm alg}
+> \]
+> such that:
+> 1. \(\Psi_{\rm ar}\Phi_{\rm ar}=1\) on the complete principal-conormal source module;
+> 2. both maps intertwine integral prime transport, reflection, Gamma/BV transgression, and every
+>    clock--source reporter;
+> 3. their positive realizations are Schwarz and \(\Psi_{\rm ar}\) is faithful on the complete
+>    anomaly/innovation ideal;
+> 4. the split persists strictly through the all-orders-flat and reduced Xi Cartier faces; and
+> 5. every reduced Xi principal conormal fibre remains nonzero.
+
+If the prime source generators are unitary in the relative positive object, `(210)` makes their
+action on every surviving one-dimensional conormal fibre unitary.  The fibre character is
+\[
+ p^{1/2-\rho},
+\]
+so unit modulus gives \(\operatorname{Re}\rho=\tfrac12\).  Independently, `(211)` makes
+\(\Phi_{\rm ar}\otimes B_\Xi^{\rm red}\) injective and kills the reduced Tor in `(194)`.
+Therefore the conjecture implies RH through both the positive-radical and attainment channels.
+
+### Why this specifies the third completion
+
+The completed Gamma factorial reporter cannot have such a split in raw \(\ell^2\):
+`gammaFactorialObservabilityOperator_no_continuousLeftInverse` is already Lean-proved.  Every
+finite clock inverse exists, but its amplification grows factorially.  Hence
+\(\mathcal M_{\rm rel}\) cannot be another scalar Hilbert completion.
+
+The minimal possible carrier is a source-relative graph/pro object in which:
+
+- the finite inverse system remains an actual morphism rather than an unbounded Hilbert operator;
+- the Hilbert middle still supplies positivity;
+- the mixed \(L^1/L^2\) Kummer leg keeps product-formula degree closed;
+- the irregular Gamma/BV torsor retains factorial and exponentially flat records; and
+- the split is proved from source transition estimates, not installed by defining the topology
+  with \(\Psi_{\rm ar}\).
+
+This also sharpens the learning analogy.  Backpropagation supplies an adjoint, not a left inverse.
+Forward-Forward supplies local witnesses, not global recovery.  Reversible networks may supply a
+set-theoretic inverse, but not positive faithfulness on every hidden innovation after completion.
+The missing operation is therefore **faithful split backpropagation**: exact source recovery plus
+positive faithfulness, stable under the infinite reporter limit.
+
+### Hostile boundary
+
+The conjecture is false or circular if:
+
+1. the recovery is defined only on the range after choosing a zero;
+2. continuity is obtained by a pullback norm chosen from the desired inverse;
+3. recovery is positive but not faithful on the anomaly ideal;
+4. the split holds on every finite clock but not in the strict cofinal category;
+5. the positive target kills the principal conormal fibre;
+6. the construction uses an RH-equivalent sign or temperedness premise; or
+7. an explicit off-line generalized-prime system carries the same literal rational source split.
+
+`[OPEN CORE] [XI_SOURCE_FAITHFUL_SPLIT_CONSTRUCTION]`
+
+Construct \(\Phi_{\rm ar}\) from the nested Wold/Gamma/BV boundary cells and construct
+\(\Psi_{\rm ar}\) from their compatible finite reconstructions.  Prove that the retractions are
+Cauchy in the mixed Kummer/irregular topology and faithful on the positive innovation ideal.
+This is stronger and more operational than record completeness, but it remains unproved.
+
+- 2026-07-30 — Extracted faithful positive split descent from the formal Kadison corpus.  Proved
+  on paper that one source-derived split would simultaneously give base-change injectivity and
+  positive multiplicative purity, corrected record-separation as a non-producer, and identified
+  the third completion as the category in which finite source reconstructions assemble into a
+  strict faithful positive retraction.

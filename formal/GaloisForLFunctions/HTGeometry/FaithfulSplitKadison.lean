@@ -83,6 +83,46 @@ theorem leftKadisonDefect_eq_zero_of_faithful
   hfaithful _ (hφ a)
     (map_leftKadisonDefect_eq_zero φ ψ hsplit hφ hψpos hψSchwarz a)
 
+/-- A faithful positive Schwarz split kills both Kadison defects simultaneously. -/
+theorem kadisonDefects_eq_zero_of_faithful
+    (φ : A →ₗ[ℂ] B) (ψ : B →ₗ[ℂ] A)
+    (hsplit : ∀ x, ψ (φ x) = x)
+    (hφRight : ∀ x, 0 ≤ rightKadisonDefect φ x)
+    (hφLeft : ∀ x, 0 ≤ leftKadisonDefect φ x)
+    (hψpos : ∀ y, 0 ≤ y → 0 ≤ ψ y)
+    (hψRightSchwarz : ∀ y, star (ψ y) * ψ y ≤ ψ (star y * y))
+    (hψLeftSchwarz : ∀ y, ψ y * star (ψ y) ≤ ψ (y * star y))
+    (hfaithful : ∀ y, 0 ≤ y → ψ y = 0 → y = 0)
+    (a : A) :
+    rightKadisonDefect φ a = 0 ∧ leftKadisonDefect φ a = 0 :=
+  ⟨rightKadisonDefect_eq_zero_of_faithful
+      φ ψ hsplit hφRight hψpos hψRightSchwarz hfaithful a,
+    leftKadisonDefect_eq_zero_of_faithful
+      φ ψ hsplit hφLeft hψpos hψLeftSchwarz hfaithful a⟩
+
+/-- A unital faithful positive Schwarz split sends every two-sided unitary relation in the
+source to the corresponding two-sided unitary relation in the target. -/
+theorem map_unitaryRelations_of_faithfulSplit
+    (φ : A →ₗ[ℂ] B) (ψ : B →ₗ[ℂ] A)
+    (hsplit : ∀ x, ψ (φ x) = x)
+    (hφRight : ∀ x, 0 ≤ rightKadisonDefect φ x)
+    (hφLeft : ∀ x, 0 ≤ leftKadisonDefect φ x)
+    (hψpos : ∀ y, 0 ≤ y → 0 ≤ ψ y)
+    (hψRightSchwarz : ∀ y, star (ψ y) * ψ y ≤ ψ (star y * y))
+    (hψLeftSchwarz : ∀ y, ψ y * star (ψ y) ≤ ψ (y * star y))
+    (hfaithful : ∀ y, 0 ≤ y → ψ y = 0 → y = 0)
+    (hφOne : φ 1 = 1)
+    {a : A} (haRight : star a * a = 1) (haLeft : a * star a = 1) :
+    star (φ a) * φ a = 1 ∧ φ a * star (φ a) = 1 := by
+  obtain ⟨hRight, hLeft⟩ :=
+    kadisonDefects_eq_zero_of_faithful
+      φ ψ hsplit hφRight hφLeft hψpos hψRightSchwarz hψLeftSchwarz hfaithful a
+  constructor
+  · rw [rightKadisonDefect, haRight, hφOne, sub_eq_zero] at hRight
+    exact hRight.symm
+  · rw [leftKadisonDefect, haLeft, hφOne, sub_eq_zero] at hLeft
+    exact hLeft.symm
+
 end
 
 end GaloisForLFunctions.HTGeometry
