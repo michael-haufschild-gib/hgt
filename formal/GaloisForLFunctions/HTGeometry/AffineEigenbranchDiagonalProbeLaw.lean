@@ -245,6 +245,46 @@ def affineEigenbranchMatrixProbe
       O i j *
       affineEigenbranchAdjugateColumn energy V branchY y g j
 
+/-- Physical sesquilinear bra--ket amplitude of an arbitrary matrix probe
+between two canonical adjugate-column eigenvector germs. -/
+def affineEigenbranchSesquilinearMatrixProbe
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (energy : ι → ℂ) (V : Matrix ι ι ℂ)
+    (branchX branchY : ℂ → ℂ) (O : Matrix ι ι ℂ)
+    (x y : ι) (g : ℂ) : ℂ :=
+  ∑ i, ∑ j,
+    star
+        (affineEigenbranchAdjugateColumn
+          energy V branchX x g i) *
+      O i j *
+      affineEigenbranchAdjugateColumn energy V branchY y g j
+
+/-- On a real adjugate-column slice, the algebraic bilinear response is
+exactly the physical sesquilinear bra--ket response. -/
+theorem affineEigenbranchSesquilinearMatrixProbe_eq_bilinear_of_left_real
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (energy : ι → ℂ) (V : Matrix ι ι ℂ)
+    (branchX branchY : ℂ → ℂ) (O : Matrix ι ι ℂ)
+    (x y : ι) (g : ℂ)
+    (hreal :
+      ∀ i,
+        star
+            (affineEigenbranchAdjugateColumn
+              energy V branchX x g i) =
+          affineEigenbranchAdjugateColumn
+            energy V branchX x g i) :
+    affineEigenbranchSesquilinearMatrixProbe
+        energy V branchX branchY O x y g =
+      affineEigenbranchMatrixProbe
+        energy V branchX branchY O x y g := by
+  unfold affineEigenbranchSesquilinearMatrixProbe
+    affineEigenbranchMatrixProbe
+  apply Finset.sum_congr rfl
+  intro i hi
+  apply Finset.sum_congr rfl
+  intro j hj
+  rw [hreal i]
+
 /-- Arbitrary probe transitions are analytic along analytic labeled
 eigenbranches. -/
 theorem analyticAt_affineEigenbranchMatrixProbe

@@ -136,6 +136,140 @@ theorem twoStepEndpointPacketNumerator_ne_zero
       energy hmax hag hgb j (Finset.mem_erase.mp hj).1
   exact (mul_ne_zero hcoefficient hprod) hisolated
 
+/-- The actual finite simple-pole packet associated with the two-step
+endpoint response. -/
+def twoStepEndpointPacketResponse
+    {I : Type*} [Fintype I]
+    (energy : I → ℝ) (attachment observer : Matrix I I ℂ)
+    (a b : I) (shift : ℂ) : ℂ :=
+  ∑ j : Sum I I,
+    twoStepEndpointPacketCoefficient attachment observer a b j /
+      (twoStepEndpointPacketPole energy a b j - shift)
+
+/-- Expanded perturbative form of the same response: the first sum moves
+through the attachment channel before applying the observer, while the
+second applies them in the opposite order. -/
+theorem twoStepEndpointPacketResponse_eq
+    {I : Type*} [Fintype I]
+    (energy : I → ℝ) (attachment observer : Matrix I I ℂ)
+    (a b : I) (shift : ℂ) :
+    twoStepEndpointPacketResponse
+        energy attachment observer a b shift =
+      (∑ d,
+        attachment a d * observer d b /
+          (shift + energy a - energy d)) +
+      ∑ d,
+        observer a d * attachment d b /
+          (-shift + energy b - energy d) := by
+  rw [twoStepEndpointPacketResponse, Fintype.sum_sum_type]
+  apply congrArg₂ (· + ·)
+  · apply Finset.sum_congr rfl
+    intro d hd
+    simp only [twoStepEndpointPacketCoefficient,
+      twoStepEndpointPacketPole]
+    push_cast
+    rw [show
+      (energy d : ℂ) - energy a - shift =
+        -(shift + energy a - energy d) by ring,
+      neg_div_neg_eq]
+  · apply Finset.sum_congr rfl
+    intro d hd
+    congr 1
+    simp only [twoStepEndpointPacketPole]
+    push_cast
+    ring
+
+/-- A nonzero two-step channel is observable at some collision-free onsite
+layer shift.  This turns the nonzero cleared numerator into an admissible
+physical parameter witness without selecting or suppressing any other
+matrix entry. -/
+theorem exists_twoStepEndpointPacketResponse_ne_zero
+    {I : Type*} [Fintype I] [DecidableEq I]
+    (energy : I → ℝ) (hmax : MaximallyProjectiveEnergy energy)
+    (attachment observer : Matrix I I ℂ)
+    {a g b : I} (hag : a ≠ g) (hgb : g ≠ b)
+    (hattachment : attachment a g ≠ 0)
+    (hobserver : observer g b ≠ 0) :
+    ∃ shift : ℂ,
+      (∀ j,
+        shift ≠ twoStepEndpointPacketPole energy a b j) ∧
+      twoStepEndpointPacketResponse
+        energy attachment observer a b shift ≠ 0 := by
+  let pole := twoStepEndpointPacketPole energy a b
+  let coefficient :=
+    twoStepEndpointPacketCoefficient attachment observer a b
+  let S : Set ℂ := (Set.range pole)ᶜ
+  have hS : S.Infinite :=
+    (Set.finite_range pole).infinite_compl
+  have hnum :
+      distinctNodePacketNumerator pole coefficient ≠ 0 := by
+    exact twoStepEndpointPacketNumerator_ne_zero
+      energy hmax attachment observer hag hgb hattachment hobserver
+  by_contra hnone
+  push Not at hnone
+  have hidentity :
+      ∀ shift ∈ S,
+        ∑ j, coefficient j / (pole j - shift) = 0 := by
+    intro shift hshift
+    apply hnone shift
+    intro j heq
+    exact hshift ⟨j, heq.symm⟩
+  have hzero :
+      distinctNodePacketNumerator pole coefficient = 0 := by
+    apply distinctNodePacketNumerator_eq_zero_of_rational_identity
+      pole coefficient S hS
+    · intro shift hshift j heq
+      exact hshift ⟨j, heq.symm⟩
+    · exact hidentity
+  exact hnum hzero
+
+/-- The nonzero response may be witnessed at a real physical shift; in fact
+one can choose a nonnegative integer shift outside the finite collision set.
+-/
+theorem exists_natCast_twoStepEndpointPacketResponse_ne_zero
+    {I : Type*} [Fintype I] [DecidableEq I]
+    (energy : I → ℝ) (hmax : MaximallyProjectiveEnergy energy)
+    (attachment observer : Matrix I I ℂ)
+    {a g b : I} (hag : a ≠ g) (hgb : g ≠ b)
+    (hattachment : attachment a g ≠ 0)
+    (hobserver : observer g b ≠ 0) :
+    ∃ n : ℕ,
+      (∀ j,
+        (n : ℂ) ≠ twoStepEndpointPacketPole energy a b j) ∧
+      twoStepEndpointPacketResponse
+        energy attachment observer a b n ≠ 0 := by
+  let pole := twoStepEndpointPacketPole energy a b
+  let coefficient :=
+    twoStepEndpointPacketCoefficient attachment observer a b
+  let R : Set ℂ := Set.range (fun n : ℕ => (n : ℂ))
+  let S : Set ℂ := R \ Set.range pole
+  have hR : R.Infinite :=
+    Set.infinite_range_of_injective Nat.cast_injective
+  have hS : S.Infinite :=
+    hR.sdiff (Set.finite_range pole)
+  have hnum :
+      distinctNodePacketNumerator pole coefficient ≠ 0 := by
+    exact twoStepEndpointPacketNumerator_ne_zero
+      energy hmax attachment observer hag hgb hattachment hobserver
+  by_contra hnone
+  push Not at hnone
+  have hidentity :
+      ∀ shift ∈ S,
+        ∑ j, coefficient j / (pole j - shift) = 0 := by
+    intro shift hshift
+    rcases hshift.1 with ⟨n, rfl⟩
+    apply hnone n
+    intro j heq
+    exact hshift.2 ⟨j, heq.symm⟩
+  have hzero :
+      distinctNodePacketNumerator pole coefficient = 0 := by
+    apply distinctNodePacketNumerator_eq_zero_of_rational_identity
+      pole coefficient S hS
+    · intro shift hshift j heq
+      exact hshift.2 ⟨j, heq.symm⟩
+    · exact hidentity
+  exact hnum hzero
+
 end
 
 end GaloisForLFunctions.HTGeometry

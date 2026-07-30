@@ -73,6 +73,37 @@ theorem analyticAt_affineEigenbranchAdjugateColumn
   intro i
   exact analyticAt_matrix_adjugate_apply_parametric hA i x
 
+/-- Entrywise reality of the affine characteristic data forces the canonical
+adjugate-column eigenvector coordinate to be real at the same parameter.
+This supplies the exact bridge on a real-symmetric Hamiltonian slice between
+the bilinear adjugate response and the physical sesquilinear bra--ket
+response. -/
+theorem star_affineEigenbranchAdjugateColumn_eq
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (energy : ι → ℂ) (V : Matrix ι ι ℂ)
+    (branch : ℂ → ℂ) (x i : ι) (g : ℂ)
+    (henergy : ∀ k, (starRingEnd ℂ) (energy k) = energy k)
+    (hV : ∀ k l, (starRingEnd ℂ) (V k l) = V k l)
+    (hbranch : (starRingEnd ℂ) (branch g) = branch g)
+    (hg : (starRingEnd ℂ) g = g) :
+    star (affineEigenbranchAdjugateColumn
+      energy V branch x g i) =
+      affineEigenbranchAdjugateColumn energy V branch x g i := by
+  let M := affineBranchCharacteristicMatrix energy V branch g
+  have hM : (starRingEnd ℂ).mapMatrix M = M := by
+    ext k l
+    rw [RingHom.mapMatrix_apply]
+    by_cases hkl : k = l
+    · subst l
+      simp [M, henergy, hV, hbranch, hg]
+    · simp [M, affineBranchCharacteristicMatrix_apply_ne _ _ _ _ hkl,
+        hV, hg]
+  have hadj := (starRingEnd ℂ).map_adjugate M
+  have hentry := congrArg (fun N : Matrix ι ι ℂ => N i x) hadj
+  rw [hM] at hentry
+  simpa [M, affineEigenbranchAdjugateColumn,
+    RingHom.mapMatrix_apply] using hentry
+
 /-- At the uncoupled point the adjugate column is supported only at its
 labelled simple level. -/
 theorem affineEigenbranchAdjugateColumn_zero

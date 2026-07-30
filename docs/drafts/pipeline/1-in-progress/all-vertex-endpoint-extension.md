@@ -251,12 +251,46 @@ Equation `(9)` is the exact mathematical candidate behind:
 
 > **Space is the curvature of observer-completed time.**
 
+## Physical Hermitian bridge: real-symmetric induction
+
+The bilinear-versus-sesquilinear objection can be removed at the witness
+level by strengthening the induction invariant:
+
+1. the Hamiltonian is real symmetric in one fixed product basis;
+2. every local transition graph is witnessed by real-symmetric one-site
+   probes;
+3. every leaf coupling uses a real-symmetric old-site probe tensored with a
+   real-symmetric layer exchange.
+
+At the two-site base, the full real-symmetric matrix space is allowed.
+A generic real orthogonal eigenbasis makes the partial transition matrix of
+every spectral pair have a nonzero real-symmetric local component at both
+sites. The failure of one pair/site is a proper real-algebraic subset of the
+orthogonal group. Finitely many such subsets do not cover either determinant
+component: a column sign change transfers a witness between the two
+components without changing nonvanishing. Assign a maximally projective real
+eigenvalue list.
+
+The leaf extension preserves real symmetry. Canonical eigenvectors and their
+first derivatives may therefore be chosen real on the real coupling line.
+For real vectors and a real-symmetric probe,
+\[
+  \psi_x^\dagger B\psi_y=\psi_x^{T}B\psi_y.
+\]
+Hence the bilinear first-derivative formula `(5)` is exactly the physical
+Hermitian bra--ket derivative on this witness slice. Complex polarization is
+not needed.
+
+The real-symmetric slice is sufficient for genericity in the full Hermitian
+parameter space: a rational-relation or transition polynomial nonzero on the
+real slice is nonzero on the containing physical space.
+
 ## Dependency audit still required
 
 This card is not yet a proof-complete stage-2 result. Required checks:
 
-1. derive `(5)` with the exact conjugations and signs for complex Hermitian
-   eigenvectors;
+1. formalize the real-symmetric adjugate-column reality statement and use it
+   to identify the bilinear derivative with the physical bra--ket derivative;
 2. prove the selected pole cannot collide with any first- or second-sum pole,
    including repeated label cases;
 3. handle \(r=u\) without assuming a simple length-two path when the
@@ -269,8 +303,7 @@ This card is not yet a proof-complete stage-2 result. Required checks:
    lemma;
 7. prove the disconnected upper bound and mutually transverse sharpness
    separately;
-8. formalize the Hermitian bra--ket version of `(5)` and the finite
-   analytic-avoidance assembly in Lean.
+8. formalize the finite real-analytic-avoidance assembly in Lean.
 
 ## Formal progress — 2026-07-30
 
@@ -292,3 +325,15 @@ It proves for every finite maximally projective real energy family that
 for every \(d\). This closes dependency-audit item 2 for the selected
 opposite-channel pole. It does not yet formalize the full derivative formula,
 Hermitian bra--ket identification, or simultaneous analytic avoidance.
+
+The stronger response packet is also now formalized in
+`formal/GaloisForLFunctions/HTGeometry/AllVertexEndpointResponse.lean`:
+
+- `twoStepEndpointPacketResponse_eq` is the exact two-sum formula `(5)`;
+- `twoStepEndpointPacketNumerator_ne_zero` proves that one two-step channel
+  prevents total cancellation even when every other channel is arbitrary;
+- `exists_natCast_twoStepEndpointPacketResponse_ne_zero` supplies a
+  collision-free **real** onsite shift with nonzero response.
+
+The module passes
+`lake env lean GaloisForLFunctions/HTGeometry/AllVertexEndpointResponse.lean`.
