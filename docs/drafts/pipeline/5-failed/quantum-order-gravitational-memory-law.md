@@ -1,14 +1,15 @@
 # Gravity is the memory of quantum order
 
 - **ID:** `quantum-order-gravitational-memory-law`
-- **Stage:** 1-in-progress
-- **Type:** CHILD PHYSICS CONJECTURE / QUANTUM GRAVITY / EXPERIMENT TARGET
+- **Stage:** 5-failed
+- **Type:** FAILED CHILD PHYSICS CONJECTURE / QUANTUM GRAVITY NO-GO
 - **Parent:** `universal-continuation-boundary-law.md`
 - **Source:** user-directed Einstein-scale reinterpretation jump; internal precursors
   `../0-backlog/gravity-is-clock-order-disagreement.md` and
   `../0-backlog/gravity-is-clock-change-holonomy.md`
 - **Scientific status:**
-  `[CONJECTURE] [NOVELTY UNVERIFIED] [NO PHYSICAL CLAIM PROVED]`
+  `[FAILED CLOSED-RESET REALIZATION] [NO-PROGRAMMING OBSTRUCTION]`
+  `[POSITIVE SURVIVOR EXTRACTED] [NO PHYSICAL CLAIM PROVED]`
 - **Nature status:** `DO NOT WRITE`
 - **Statement:** A closed noncommuting quantum history sources a persistent gravitational boundary
   memory determined by its order holonomy, even when every stress-energy-based source and every
@@ -262,6 +263,48 @@ Retire the conjecture if any holds:
 
 No Lean target is authorized. The physical source pair and observable do not yet exist.
 
+## Terminal no-programming attack
+
+The exact closed-source realization fails before gravity is considered.
+
+An operational channel difference is not a free counterfactual property of one restored physical
+state. In a deterministic programmable quantum processor, exact distinct unitary channels require
+orthogonal program states (Nielsen--Chuang, <https://arxiv.org/abs/quant-ph/9703032>). The program,
+control, apparatus, or environment therefore carries an actual physical distinction. If the
+complete closed laboratory evolves unitarily and every output carrier is restored to the same
+state, inner-product preservation forbids that distinction from disappearing. A record remains in
+some physical degree of freedom, or the two total processes are not distinct.
+
+This yields the dichotomy:
+
+1. if the program/control record remains, standard gravity may respond to that actual carrier and
+   the proposed residual is not matched-source gravitational memory; or
+2. if every actual carrier and the complete gravitational influence functional are exactly
+   matched, standard gravity has identical reduced dynamics by construction and no independent
+   process residue remains to source `(QOGM1)`.
+
+Matching only the mean stress tensor does not evade the argument. Matching the complete influence
+functional includes the stress correlations and apparatus/environment records through which
+standard gravitational response is defined. A nonzero residual would therefore require a new
+source law already equivalent to the conjectured conclusion.
+
+This activates kill conditions 1, 2, 3, and 5 for the closed-reset form. The route is retired rather
+than weakened to an ordinary apparatus-memory or soft-charge experiment.
+
+## Strongest positive survivor
+
+Exact channel distinctions require physical program distinctions. Closed reversible dynamics
+cannot turn a physically real process record into an uncarried counterfactual residue. Therefore:
+
+> **A proposed gravitational response to quantum process order must identify the actual physical
+> program or boundary record carrying that order before claiming a new gravitational source.**
+
+This is a useful experiment-design firewall, not new physics. The unresolved universal question is
+no longer whether gravity detects a private counterfactual channel. It is whether source-derived
+physical independence itself can vary without being a freely transported subsystem
+presentation; see
+[`event-relative-independence-spacetime-law.md`](../1-in-progress/event-relative-independence-spacetime-law.md).
+
 ## Gates
 
 - [x] 0 -> 1: proof-independent physical hunch frozen
@@ -284,3 +327,6 @@ No Lean target is authorized. The physical source pair and observable do not yet
   chronodromy, generic quantum switches, and the retired causal-identity complementarity law.
 - 2026-07-30 — demoted from universal ontology to first falsifiable child of the
   universal continuation-boundary conjecture.
+- 2026-07-30 — exact physical-program audit killed the closed-reset realization: distinct exact
+  channels require an actual program record, while complete reset and matched influence
+  functional leave no independent process residue for standard gravity.

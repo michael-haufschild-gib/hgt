@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.AffineEigenbranchGeneralSecondOrderLaw
 import GaloisForLFunctions.HTGeometry.LocalExtensionMatrixChart
+import GaloisForLFunctions.HTGeometry.HermitianLocalExtensionChart
 
 /-!
 # Exact first-order transition law for a diagonal probe
@@ -564,6 +565,251 @@ theorem localDirectedProbe_sameLayer_deriv_ne_zero
     · simp [layerMatrixCoupling, directedLayerMatrix, hiold]
   · simp [layerMatrixCoupling, directedLayerMatrix]
   · exact mul_ne_zero htransition hedge
+
+/-- Hermitian cosine quadrature of one directed local matrix unit. -/
+def hermitianLayerCosineProbe
+    {ρ : Type*} [DecidableEq ρ] (target source : ρ) :
+    Matrix ρ ρ ℂ :=
+  directedLayerMatrix target source +
+    directedLayerMatrix source target
+
+/-- Hermitian sine quadrature of one directed local matrix unit. -/
+def hermitianLayerSineProbe
+    {ρ : Type*} [DecidableEq ρ] (target source : ρ) :
+    Matrix ρ ρ ℂ :=
+  Complex.I • directedLayerMatrix target source +
+    (-Complex.I) • directedLayerMatrix source target
+
+theorem directedLayerMatrix_conjTranspose
+    {ρ : Type*} [DecidableEq ρ] (target source : ρ) :
+    Matrix.conjTranspose (directedLayerMatrix target source) =
+      directedLayerMatrix source target := by
+  ext r s
+  simp [Matrix.conjTranspose_apply, directedLayerMatrix, and_comm]
+
+theorem hermitianLayerCosineProbe_isHermitian
+    {ρ : Type*} [DecidableEq ρ] (target source : ρ) :
+    (hermitianLayerCosineProbe target source).IsHermitian := by
+  rw [Matrix.IsHermitian]
+  simp [hermitianLayerCosineProbe,
+    directedLayerMatrix_conjTranspose, add_comm]
+
+theorem hermitianLayerSineProbe_isHermitian
+    {ρ : Type*} [DecidableEq ρ] (target source : ρ) :
+    (hermitianLayerSineProbe target source).IsHermitian := by
+  rw [Matrix.IsHermitian]
+  simp [hermitianLayerSineProbe,
+    directedLayerMatrix_conjTranspose, add_comm]
+
+/-- Every off-diagonal directed matrix unit is the complex polarization of
+two explicit Hermitian quadrature probes. -/
+theorem directedLayerMatrix_eq_hermitian_quadratures
+    {ρ : Type*} [DecidableEq ρ] (target source : ρ)
+    (hts : target ≠ source) :
+    directedLayerMatrix target source =
+      (2 : ℂ)⁻¹ • hermitianLayerCosineProbe target source +
+        (-(2 : ℂ)⁻¹ * Complex.I) •
+          hermitianLayerSineProbe target source := by
+  ext r s
+  simp [hermitianLayerCosineProbe, hermitianLayerSineProbe,
+    directedLayerMatrix]
+  by_cases h : r = target ∧ s = source
+  · rcases h with ⟨rfl, rfl⟩
+    simp [hts]
+    ring_nf
+    norm_num
+  · by_cases h' : r = source ∧ s = target
+    · rcases h' with ⟨rfl, rfl⟩
+      simp [hts]
+      ring_nf
+      norm_num
+    · simp [h, h']
+
+/-- Matrix-probe eigenbranch responses respect the Hermitian quadrature
+decomposition of a directed local probe. -/
+theorem affineEigenbranchMatrixProbe_directed_eq_quadratures
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    {ρ : Type*} [Fintype ρ] [DecidableEq ρ]
+    (energy : ι → ℂ) (V : Matrix ι ι ℂ)
+    (branchX branchY : ℂ → ℂ)
+    (target source : ρ) (hts : target ≠ source)
+    (lift : Matrix ρ ρ ℂ → Matrix ι ι ℂ)
+    (hlift_add :
+      ∀ A B, lift (A + B) = lift A + lift B)
+    (hlift_smul :
+      ∀ (c : ℂ) A, lift (c • A) = c • lift A)
+    (x y : ι) :
+    affineEigenbranchMatrixProbe
+        energy V branchX branchY
+        (lift (directedLayerMatrix target source)) x y =
+      fun g =>
+        (2 : ℂ)⁻¹ *
+            affineEigenbranchMatrixProbe
+              energy V branchX branchY
+              (lift (hermitianLayerCosineProbe target source)) x y g +
+          (-(2 : ℂ)⁻¹ * Complex.I) *
+            affineEigenbranchMatrixProbe
+              energy V branchX branchY
+              (lift (hermitianLayerSineProbe target source)) x y g := by
+  funext g
+  rw [directedLayerMatrix_eq_hermitian_quadratures target source hts,
+    hlift_add, hlift_smul, hlift_smul]
+  unfold affineEigenbranchMatrixProbe
+  simp only [Matrix.add_apply, Matrix.smul_apply, smul_eq_mul]
+  simp_rw [mul_add, add_mul, Finset.sum_add_distrib,
+    Finset.mul_sum]
+  apply congrArg₂ (· + ·)
+  · apply Finset.sum_congr rfl
+    intro i hi
+    apply Finset.sum_congr rfl
+    intro j hj
+    ring
+  · apply Finset.sum_congr rfl
+    intro i hi
+    apply Finset.sum_congr rfl
+    intro j hj
+    ring
+
+/-- **Hermitian polarization of a nonzero directed response.** If one
+directed local matrix unit has nonzero first response between two canonical
+eigenbranch germs, then at least one of its explicit Hermitian cosine/sine
+quadratures has nonzero first response. -/
+theorem exists_hermitianLocalQuadratureProbe_deriv_ne_zero
+    {α ρ : Type*} [Fintype α] [Fintype ρ]
+    [DecidableEq α] [DecidableEq ρ]
+    (energy : α × ρ → ℂ) (V : Matrix (α × ρ) (α × ρ) ℂ)
+    (branchX branchY : ℂ → ℂ)
+    (hbranchX : AnalyticAt ℂ branchX 0)
+    (hbranchY : AnalyticAt ℂ branchY 0)
+    (x y : α × ρ) (target source : ρ)
+    (hts : target ≠ source)
+    (hdir :
+      deriv
+        (affineEigenbranchMatrixProbe
+          energy V branchX branchY
+          (layerMatrixCoupling (1 : Matrix α α ℂ)
+            (directedLayerMatrix target source))
+          x y) 0 ≠ 0) :
+    ∃ O : Matrix (α × ρ) (α × ρ) ℂ,
+      O.IsHermitian ∧
+        deriv
+          (affineEigenbranchMatrixProbe
+            energy V branchX branchY O x y) 0 ≠ 0 := by
+  let OX : Matrix (α × ρ) (α × ρ) ℂ :=
+    layerMatrixCoupling (1 : Matrix α α ℂ)
+      (hermitianLayerCosineProbe target source)
+  let OY : Matrix (α × ρ) (α × ρ) ℂ :=
+    layerMatrixCoupling (1 : Matrix α α ℂ)
+      (hermitianLayerSineProbe target source)
+  have hOX : OX.IsHermitian := by
+    exact layerMatrixCoupling_isHermitian Matrix.isHermitian_one
+      (hermitianLayerCosineProbe_isHermitian target source)
+  have hOY : OY.IsHermitian := by
+    exact layerMatrixCoupling_isHermitian Matrix.isHermitian_one
+      (hermitianLayerSineProbe_isHermitian target source)
+  have hlift_add :
+      ∀ A B : Matrix ρ ρ ℂ,
+        layerMatrixCoupling (1 : Matrix α α ℂ) (A + B) =
+          layerMatrixCoupling (1 : Matrix α α ℂ) A +
+            layerMatrixCoupling (1 : Matrix α α ℂ) B := by
+    intro A B
+    ext i j
+    simp [layerMatrixCoupling, mul_add]
+  have hlift_smul :
+      ∀ (c : ℂ) (A : Matrix ρ ρ ℂ),
+        layerMatrixCoupling (1 : Matrix α α ℂ) (c • A) =
+          c • layerMatrixCoupling (1 : Matrix α α ℂ) A := by
+    intro c A
+    ext i j
+    simp [layerMatrixCoupling]
+    ring
+  have hquadratures :=
+    affineEigenbranchMatrixProbe_directed_eq_quadratures
+      energy V branchX branchY target source hts
+      (fun A => layerMatrixCoupling (1 : Matrix α α ℂ) A)
+      hlift_add hlift_smul x y
+  have hOXan :
+      AnalyticAt ℂ
+        (affineEigenbranchMatrixProbe
+          energy V branchX branchY OX x y) 0 :=
+    analyticAt_affineEigenbranchMatrixProbe
+      energy V branchX branchY OX x y hbranchX hbranchY
+  have hOYan :
+      AnalyticAt ℂ
+        (affineEigenbranchMatrixProbe
+          energy V branchX branchY OY x y) 0 :=
+    analyticAt_affineEigenbranchMatrixProbe
+      energy V branchX branchY OY x y hbranchX hbranchY
+  by_cases hx :
+      deriv
+        (affineEigenbranchMatrixProbe
+          energy V branchX branchY OX x y) 0 ≠ 0
+  · exact ⟨OX, hOX, hx⟩
+  · refine ⟨OY, hOY, ?_⟩
+    intro hy
+    apply hdir
+    rw [hquadratures]
+    have hsum :
+        HasDerivAt
+          (fun g =>
+            (2 : ℂ)⁻¹ *
+                affineEigenbranchMatrixProbe
+                  energy V branchX branchY OX x y g +
+              (-(2 : ℂ)⁻¹ * Complex.I) *
+                affineEigenbranchMatrixProbe
+                  energy V branchX branchY OY x y g)
+          ((2 : ℂ)⁻¹ *
+              deriv
+                (affineEigenbranchMatrixProbe
+                  energy V branchX branchY OX x y) 0 +
+            (-(2 : ℂ)⁻¹ * Complex.I) *
+              deriv
+                (affineEigenbranchMatrixProbe
+                  energy V branchX branchY OY x y) 0) 0 := by
+      exact
+        (hOXan.differentiableAt.hasDerivAt.const_mul (2 : ℂ)⁻¹).add
+          (hOYan.differentiableAt.hasDerivAt.const_mul
+            (-(2 : ℂ)⁻¹ * Complex.I))
+    rw [hsum.deriv, not_ne_iff.mp hx, hy]
+    ring
+
+/-- A nonzero tensor-local interaction channel always admits an explicit
+Hermitian new-factor quadrature with nonzero same-layer first response. -/
+theorem exists_hermitianLocalProbe_sameLayer_deriv_ne_zero
+    {α ρ : Type*} [Fintype α] [Fintype ρ]
+    [DecidableEq α] [DecidableEq ρ]
+    (energy : α × ρ → ℂ) (hinj : Function.Injective energy)
+    (transition : Matrix α α ℂ) (edge : Matrix ρ ρ ℂ)
+    (a b : α) (r s : ρ) (hab : a ≠ b) (hrs : r ≠ s)
+    (htransition : transition b a ≠ 0)
+    (hedge : edge s r ≠ 0)
+    (branchX branchY : ℂ → ℂ)
+    (hbranchX : AnalyticAt ℂ branchX 0)
+    (hbranchY : AnalyticAt ℂ branchY 0)
+    (hbaseX : branchX 0 = energy (a, r))
+    (hbaseY : branchY 0 = energy (b, r))
+    (hrootX :
+      ∀ᶠ g in 𝓝 0,
+        matrixCharpolyRelation
+          (Matrix.diagonal energy +
+            g • layerMatrixCoupling transition edge,
+            branchX g) = 0) :
+    ∃ O : Matrix (α × ρ) (α × ρ) ℂ,
+      O.IsHermitian ∧
+        deriv
+          (affineEigenbranchMatrixProbe
+            energy (layerMatrixCoupling transition edge)
+            branchX branchY O (a, r) (b, r)) 0 ≠ 0 := by
+  apply
+    exists_hermitianLocalQuadratureProbe_deriv_ne_zero
+      energy (layerMatrixCoupling transition edge)
+      branchX branchY hbranchX hbranchY
+      (a, r) (b, r) s r hrs.symm
+  exact
+    localDirectedProbe_sameLayer_deriv_ne_zero
+      energy hinj transition edge a b r s hab hrs
+      htransition hedge branchX branchY hbranchX hbranchY
+      hbaseX hbaseY hrootX
 
 end
 

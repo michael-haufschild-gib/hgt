@@ -8,7 +8,7 @@
   `../3-formalized/source-test-partition-universality.md`
 - **Scientific status:**
   `[CONJECTURE] [NOVELTY UNVERIFIED] [MATHEMATICAL OBJECT OPEN]`
-  `[NO PHYSICAL CLAIM PROVED]`
+  `[FINITE ITEM-6 REALIZATION FAILED] [NO PHYSICAL CLAIM PROVED]`
 - **Nature status:** `DO NOT WRITE`
 
 ## Public law
@@ -198,6 +198,90 @@ Construct a finite raw branching source \(S\) and prove:
 Item 6 is the first exact new-mathematics target. Items 1--5 alone are standard contextuality,
 descent, or gluing obstruction.
 
+## Hostile item-6 audit: witness is not successor
+
+The nearest finite realization does not pass item 6.
+
+For a finite contextual empirical model, failure of globalization can be converted into a
+Bell/noncontextuality witness. Cohomological obstructions already provide witnesses in standard
+examples, and contextual-fraction linear-program duality computes a witnessing inequality
+([Abramsky--Mansfield--Barbosa](https://arxiv.org/abs/1111.3620);
+[Abramsky--Barbosa--Mansfield](https://arxiv.org/abs/1705.07918)). This is not the required
+successor:
+
+1. the witness is a linear reporter on statistics in the supplied measurement scenario;
+2. it does not create a new intervention or operation type;
+3. turning it into a physical test requires an instrument and outcome alphabet not supplied by the
+   obstruction; and
+4. optimal dual witnesses need not be unique, while a canonical selection requires additional
+   norm, metric, utility, or symmetry-breaking data.
+
+The quantum-program version has the same defect. Exact distinct unitary channels require
+distinguishable program states in a deterministic programmable processor
+([Nielsen--Chuang](https://arxiv.org/abs/quant-ph/9703032)). The channel distinction is therefore
+already carried by an actual program record. Closed unitarity prevents that record from
+disappearing under complete reset. A globalization obstruction may classify a record; it does not
+by itself generate the next physical alphabet.
+
+Consequently the obvious finite candidate activates kill condition 5. The full frozen conjecture
+is not universally disproved, because a stronger source object might itself derive an instrument.
+But no finite theorem target is authorized until that source-to-instrument map is defined
+independently of the desired successor. Contextuality, cohomology, or LP duality alone cannot serve
+as item 6.
+
+## Positive residue after the audit
+
+The obstruction-to-successor formulation is not currently the live discriminator. The prior
+totalization theorems and this decoder failure leave one earlier physical datum:
+
+> **the source-derived rule of independent composition, not a witness computed after a supplied
+> measurement cover.**
+
+Source diamonds and cubical fillers are themselves established concurrency mathematics and typed
+diamond defects are universal carriers that select no force. The remaining problem is therefore
+not to generate another witness from a gluing obstruction. It is to derive which counterfactual
+events are physically independently specifiable, prove that this law cannot be freely transported
+with a subsystem presentation, and test whether its variation reconstructs spacetime. That
+frontier is tracked in
+[`event-relative-independence-spacetime-law.md`](event-relative-independence-spacetime-law.md).
+
+## Anomaly-inflow attack: physical consequence without successor uniqueness
+
+Anomaly inflow is the strongest established shadow of “an obstruction makes new physics
+necessary.” An anomalous boundary theory can occur as a boundary mode of a bulk topological phase,
+and anomaly matching can force nontrivial infrared realization. Concrete four-dimensional chiral
+gauge theories can also occur on boundaries between higher-dimensional topological phases
+([Hsieh--Tachikawa--Yonekura](https://arxiv.org/abs/2003.11550);
+[Kaplan](https://arxiv.org/abs/2312.01494)).
+
+It does not pass item 6:
+
+1. the QFT, symmetry, dimension, background fields, and boundary operation types are supplied before
+   the anomaly is defined;
+2. the anomaly constrains the successor phase but does not generally select one boundary or
+   infrared completion;
+3. distinct gapless, symmetry-breaking, and topologically ordered realizations can match the same
+   anomaly;
+4. even subsystem-symmetry inflow can depend on how additional boundary structure is extended into
+   the bulk
+   ([Burnell--Devakul--Gorantla--Lam--Shao](https://arxiv.org/abs/2110.09529)); and
+5. turning the family of allowed completions into quantum alternatives still requires an
+   independently generated interference evaluator.
+
+Thus anomaly inflow proves that an obstruction can impose physical existence constraints. It does
+not prove that the obstruction canonically creates a new executable operation, its probability, or
+its independence law. The reinterpretation “completion nonuniqueness is quantum” is already frozen
+and attacked in
+[`law-valued-actuality-universal-law.md`](law-valued-actuality-universal-law.md); bare alternatives
+either have no relative phase or totalize inside a containing theory.
+
+The positive survivor is sharper:
+
+> A successful source-to-successor transgression must do more than anomaly matching. It must
+> generate the analogue of the anomalous symmetry, dimension, boundary interface, full completion
+> family, and physical interference evaluator from the same pregeometric source, then show that its
+> completion defects are matter and its changing independence law is gravity.
+
 ## Kill conditions
 
 Retire or replace the conjecture if any occurs:
@@ -248,3 +332,6 @@ Closed until all are present:
 - 2026-07-30 — created from source-test partition universality.
 - 2026-07-30 — replaced local recognizer selection by cross-history recognition globalization and
   made obstruction-to-successor transgression the decisive novelty gate.
+- 2026-07-30 — contextuality/cohomology/LP-duality audit showed that the nearest obstruction
+  produces only a reporter on a supplied scenario, not a new physical intervention; no-programming
+  and closed-reset reasoning exposed the same decoder gap for exact process distinctions.

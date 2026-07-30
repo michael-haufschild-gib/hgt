@@ -1,11 +1,12 @@
 # Reality is the boundary of possibility
 
 - **ID:** `universal-continuation-boundary-law`
-- **Stage:** 1-in-progress
-- **Type:** EINSTEIN-JUMP CONJECTURE / THEORY OF EVERYTHING / NEW ONTOLOGY
+- **Stage:** 5-failed
+- **Type:** FAILED EINSTEIN-JUMP CONJECTURE / REDISCOVERED BOUNDARY ONTOLOGY
 - **Parent:** none; intended to subsume `quantum-order-gravitational-memory-law`
 - **Scientific status:**
-  `[CONJECTURE] [ONTOLOGY FROZEN] [NOVELTY UNVERIFIED] [NO PHYSICAL CLAIM PROVED]`
+  `[FAILED MODAL-SOURCE READING] [REDISCOVERED / BRIDGE]`
+  `[POSITIVE SURVIVOR EXTRACTED] [NO PHYSICAL CLAIM PROVED]`
 - **Nature status:** `DO NOT WRITE`
 
 ## Public discovery
@@ -333,6 +334,49 @@ low-energy projections whose joint map is faithful.
 
 No Lean target is authorized. Nothing in `(UCB1)`--`(UCB8)` is yet a proved physical law.
 
+## Terminal collision and modal-source failure
+
+The ontology does not survive its first physical realization.
+
+1. Indefinite causal order, process matrices, quantum causal histories, general-boundary
+   formulations, no-hiding, boundary completeness, gravitational dressing, asymptotic memory, and
+   anomaly/descent theory already occupy the weaker claims that processes precede causal order,
+   local data can fail to globalize, and missing bulk information can reside at a boundary.
+2. `(UCB1)` is an ordinary process/group commutator until a physical continuation object is
+   independently supplied.
+3. A counterfactual channel is not an additional physical source. Exact distinct unitary channels
+   in a programmable processor require distinguishable program records
+   (Nielsen--Chuang, <https://arxiv.org/abs/quant-ph/9703032>). Including controls and apparatus
+   turns the modal distinction into an actual carried distinction.
+4. If every actual carrier is restored and the complete gravitational influence functional is
+   matched, unitarity and standard source coupling leave no private process residue. If a record
+   remains, ordinary physics may couple to that record and `(UCB5)` has not discovered a new
+   boundary law.
+5. The proposed exact four projections are inserted from the observed force list; no source axiom
+   selects them.
+
+Thus “gravity weighs unrealized possibilities” is not an admissible physical interpretation.
+Unrealized channel action on unused inputs has no independent stress source, while a physically
+implemented program has an actual record. This activates kill conditions 1, 2, 4, 5, and 8.
+
+## Strongest positive survivor
+
+The failure identifies what cannot be primitive:
+
+```text
+not a private counterfactual channel;
+not a return commutator;
+not boundary faithfulness by definition;
+not four named projections.
+```
+
+Every finite sequential process and its program can be represented in a containing theory. The
+first structure not disposed of by that totalization is the physical rule of independent
+composition: which events can be specified and varied independently. Its active conjecture is
+[`event-relative-independence-spacetime-law.md`](../1-in-progress/event-relative-independence-spacetime-law.md).
+This survivor is not established physics; it is the next discriminator exposed by the failed
+route.
+
 ## Gates
 
 - [x] proof-independent ontology jump frozen
@@ -354,3 +398,6 @@ No Lean target is authorized. Nothing in `(UCB1)`--`(UCB8)` is yet a proved phys
 - 2026-07-30 — Created after rejecting proof-shaped extrapolation as conjecture method. Froze the
   ontology before selecting a proof route: possible continuations are primitive; reality is their
   boundary; forces are jointly faithful projections of one return defect.
+- 2026-07-30 — retired after primary collision and physical-program audit: counterfactual channel
+  difference is either carried by an actual program record or absent after complete closed reset;
+  no exact-four source classification survived.

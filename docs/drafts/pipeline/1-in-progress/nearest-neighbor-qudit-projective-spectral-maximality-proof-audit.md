@@ -235,3 +235,35 @@ requires nonbipartiteness; vertical and cross-block edges alone remain
 bipartite. One same-layer endpoint transition must therefore be created and
 proved nonzero. That requires the corresponding off-diagonal-probe derivative
 law and its finite analytic-avoidance assembly.
+
+## 2026-07-30 formal closure: directed response forces a Hermitian quadrature
+
+`AffineEigenbranchDiagonalProbeLaw.lean` now proves:
+
+1. every directed new-factor matrix unit is the exact complex polarization of
+   explicit cosine and sine Hermitian quadratures;
+2. the canonical matrix-probe eigenbranch response is linear under that
+   polarization;
+3. a nonzero directed same-layer first derivative therefore forces at least
+   one explicit Hermitian local quadrature to have nonzero first derivative;
+4. a nonzero old transition channel and a nonzero new-layer interaction
+   channel supply that directed derivative without phase cancellation.
+
+The new capstone is
+`exists_hermitianLocalProbe_sameLayer_deriv_ne_zero`. Direct
+`lake env lean` checking passes.
+
+This closes the non-Hermitian-probe objection but does **not** yet close the
+physical endpoint theorem. The canonical adjugate-column response used here
+is bilinear, whereas the physical matrix element is sesquilinear. They agree
+on a real-symmetric eigenbranch witness, but that agreement and the existence
+of a sufficiently rich real-symmetric inductive slice remain to be proved.
+Until then, the paper's physical same-layer formula is paper-proved but its
+formal bridge is incomplete.
+
+The exact remaining formal obligation is therefore:
+
+> construct a real-symmetric local-extension witness whose canonical
+> eigenbranches are real on the physical parameter line, identify the
+> bilinear response with the Hermitian bra--ket response there, and assemble
+> finite analytic avoidance for all required endpoint edges.
