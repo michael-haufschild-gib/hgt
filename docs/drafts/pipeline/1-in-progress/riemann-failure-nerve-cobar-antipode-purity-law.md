@@ -4,6 +4,8 @@
 - **Stage:** 1-in-progress
 - **Type:** FROZEN UNIVERSAL CONJECTURE / RH PRODUCER / NEW-MATHEMATICS TARGET
 - **Scientific status:** `[TRUTH-HUNCH] [FINITE SOURCE NERVE PROVED]`
+  `[EXACT GIBBS--MOBIUS SOURCE ANTIPODE PROVED]`
+  `[ORIENTED POISSON BOSONIZATION PROVED ON CYLINDERS]`
   `[INCIDENCE/BAR--COBAR PARENTS AUDITED] [ANTIPODE--DAGGER IDENTIFICATION OPEN] [NOT RH]`
 - **Source:**
   - `riemann-autogenic-obstruction-operation-purity-law.md`;
@@ -625,6 +627,7 @@ integration twice yields the exact Lévy--Khintchine formula
  \log M_r(q)
  =
  -(r-1)(\gamma+\log\pi)q
+ +
  \int_0^\infty
    (e^{-qu}-1+qu)\frac{A_r(u)}u\,du .
  \quad}
@@ -694,6 +697,423 @@ Gamma-ratio infinite divisibility and Fox-\(H\)/Barnes-beta representing measure
 mathematics; see Karp--Prilepkina and Ostrovsky. The corpus-specific advance is the weld of this
 continuous positive flow to the prime-cofinal anomaly, bounded-exponent inverse, and completed Xi
 cocycle. No zero-location conclusion follows from positive forward time alone.
+
+### Exact Möbius orientation and oriented Poisson bosonization
+`[PAPER-PROVED] [PARENT ALGEBRA + CANDIDATE-NEW SOURCE WELD]`
+
+The preceding Poisson language has an exact finite-\(\sigma\) source origin. It is stronger than
+the first-order squarefree approximation.
+
+For \(\sigma>1\), define two mass-one measures on the multiplicative semigroup
+\(\mathbb N_{>0}\):
+\[
+ {\mathsf G}_\sigma
+ =
+ \frac1{\zeta(\sigma)}
+ \sum_{n\geq1}n^{-\sigma}\delta_n,
+ \qquad
+ {\mathsf S}_\sigma
+ =
+ \zeta(\sigma)
+ \sum_{n\geq1}\mu(n)n^{-\sigma}\delta_n.
+\tag{7n22}
+\]
+The first is a positive Gibbs probability. The second is a finite signed measure, has total mass
+one, and is the normalized determinant-line orientation of the squarefree sector. Its total
+variation is
+\[
+ \|{\mathsf S}_\sigma\|_{\rm TV}
+ =
+ \zeta(\sigma)\sum_{n\geq1}\frac{\mu(n)^2}{n^\sigma}
+ =
+ \frac{\zeta(\sigma)^2}{\zeta(2\sigma)}.
+\tag{7n23}
+\]
+
+> **Theorem (exact Gibbs--Möbius source antipode).**
+> Under multiplicative convolution of measures,
+> \[
+>  \boxed{\qquad
+>  {\mathsf G}_\sigma *_\times {\mathsf S}_\sigma=\delta_1
+>  \qquad(\sigma>1).
+>  \qquad}
+> \tag{7n24}
+> \]
+
+Indeed, the coefficient of \(\delta_k\) on the left is
+\[
+ \frac1{\zeta(\sigma)}\zeta(\sigma)
+ \sum_{d\mid k}d^{-\sigma}\mu(k/d)(k/d)^{-\sigma}
+ =
+ k^{-\sigma}\sum_{e\mid k}\mu(e)
+ =
+ {\bf1}_{k=1}.
+\tag{7n25}
+\]
+This is ordinary Möbius inversion, but its typed content is different: the literal positive
+arithmetic source already carries a mass-one signed convolution inverse before continuation,
+zeros, or a Hilbert completion are introduced.
+
+Locally, with \(a=p^{-\sigma}\) and additive valuation convolution, `(7n24)` is
+\[
+ \left((1-a)\sum_{k\geq0}a^k\delta_k\right)
+ *
+ \left(\frac{\delta_0-a\delta_1}{1-a}\right)
+ =
+ \delta_0.
+\tag{7n26}
+\]
+The first factor is the complete geometric prime-occupation law. The second is supported on the
+squarefree digit and carries its Möbius orientation. Thus one fermionic digit is not merely a
+coarse approximation to the bosonic source: as a signed determinant line it is the exact
+antipode of the entire geometric occupation tower.
+
+This explains the corpus's dyadic factorization. Writing
+\[
+ \frac{1-a}{1-az}
+ =
+ \prod_{j\geq0}\frac{1+a^{2^j}z^{2^j}}{1+a^{2^j}},
+\tag{7n27}
+\]
+the positive geometric law is the convolution product of all binary occupation layers. Its
+inverse telescopes to the single normalized Möbius factor in `(7n26)`. The higher dyadic bits are
+not extra critical orientation; they are the regular collision tower whose total product makes
+the first-bit orientation an exact inverse.
+
+Now put \(\varepsilon=\sigma-1\), and record the complete marked prime divisor of \(n\) by
+\[
+ \eta_\varepsilon(n)
+ =
+ \sum_p v_p(n)\,\delta_{\varepsilon\log p}
+ \quad\text{on }(0,\infty).
+\tag{7n28}
+\]
+For \(f\in C_c^+((0,\infty))\), pushforward of the two measures in `(7n22)` has Laplace
+functionals
+\[
+ \begin{aligned}
+ {\cal L}_\varepsilon^+(f)
+ &=
+ \prod_p
+ \frac{1-p^{-1-\varepsilon}}
+      {1-p^{-1-\varepsilon}e^{-f(\varepsilon\log p)}},
+ \\
+ {\cal L}_\varepsilon^-(f)
+ &=
+ \prod_p
+ \frac{1-p^{-1-\varepsilon}e^{-f(\varepsilon\log p)}}
+      {1-p^{-1-\varepsilon}}
+ =
+ \bigl({\cal L}_\varepsilon^+(f)\bigr)^{-1}.
+ \end{aligned}
+\tag{7n29}
+\]
+The inverse relation is exact for every \(\varepsilon>0\), not only asymptotic.
+
+Let
+\[
+ d\nu(x)=e^{-x}\frac{dx}{x}.
+\tag{7n30}
+\]
+Prime-number-theorem partial summation gives
+\[
+ \sum_p p^{-1-\varepsilon}
+       \bigl(1-e^{-f(\varepsilon\log p)}\bigr)
+ \longrightarrow
+ \int_0^\infty(1-e^{-f(x)})\,d\nu(x).
+\tag{7n31}
+\]
+Because the support of \(f\) stays a positive distance from zero,
+\[
+ \sum_{\varepsilon\log p\in\operatorname{supp}f}p^{-2-2\varepsilon}
+ \longrightarrow0.
+\tag{7n32}
+\]
+Expanding the logarithms in `(7n29)` and using `(7n31)`--`(7n32)` proves
+\[
+ \boxed{
+ \begin{aligned}
+ {\cal L}_\varepsilon^+(f)&\longrightarrow
+ \exp\!\left[-\int(1-e^{-f})\,d\nu\right],\\
+ {\cal L}_\varepsilon^-(f)&\longrightarrow
+ \exp\!\left[+\int(1-e^{-f})\,d\nu\right].
+ \end{aligned}}
+\tag{7n33}
+\]
+The first limit is the Laplace functional of the Poisson point process
+\(\Pi_\nu\). The second is its convolution inverse \(\Pi_{-\nu}\) on the cylinder algebra.
+
+This last statement is literal on every compact \(K\Subset(0,\infty)\). There
+\(\nu(K)<\infty\), and
+\[
+ \Pi_{-\nu|K}
+ =
+ e^{\nu(K)}
+ \sum_{m\geq0}\frac{(-1)^m}{m!}
+ (\nu|K)^{\otimes_s m}
+\tag{7n34}
+\]
+is a finite signed measure satisfying
+\[
+ \Pi_{\nu|K}*\Pi_{-\nu|K}=\delta_{\varnothing}.
+\tag{7n35}
+\]
+Its total variation is \(e^{2\nu(K)}\). Since \(\nu((\delta,1))\sim\log(1/\delta)\),
+that variation diverges like \(\delta^{-2}\) as the omitted face approaches zero. Therefore the
+global inverse is not a finite signed measure and cannot belong to ordinary positive
+\(L^2(\Pi_\nu)\). It is a compatible cylindrical generalized functional.
+
+The radial observable is not compactly supported at zero, but the zeta ratios give it exactly.
+For \(f_u(x)=ux\), \(u\geq0\),
+\[
+ {\cal L}_\varepsilon^+(f_u)
+ =
+ \frac{\zeta(1+(1+u)\varepsilon)}{\zeta(1+\varepsilon)}
+ \longrightarrow\frac1{1+u},
+\qquad
+ {\cal L}_\varepsilon^-(f_u)
+ =
+ \frac{\zeta(1+\varepsilon)}{\zeta(1+(1+u)\varepsilon)}
+ \longrightarrow1+u.
+\tag{7n36}
+\]
+Hence the positive total log-mass converges to \({\rm Exp}(1)\), while its oriented antipode
+converges on radial Laplace tests to
+\[
+ \delta_0+\delta_0',
+\tag{7n37}
+\]
+whose Laplace transform is \(1+u\). This identifies two corpus phenomena as shadows of one
+object: the universal positive exponential clock is the bosonized source, and the singular
+Möbius boundary derivative is its retained convolution orientation.
+
+There is also a precise white-noise reading. On a compact \(K\), the density of `(7n34)` relative
+to \(\Pi_{\nu|K}\) is
+\[
+ e^{2\nu(K)}(-1)^{\eta(K)}.
+\tag{7n38}
+\]
+It is the generalized coherent direction \(h=-1\), whose one-particle displacement from the
+positive vacuum \(h=1\) is the constant \(-2\). That displacement is not in
+\(L^2(\nu)\) at the infinite-activity face \(x=0\). The corpus's finite-prime exterior/Plücker
+lines therefore bosonize into the positive Poisson/Fock middle, but their determinant
+orientation exits the Hilbert space and survives in the distributional dual.
+
+The conclusion is an exact universal mechanism:
+
+```text
+finite geometric occupation:
+  positive bosonic source;
+
+finite Möbius determinant line:
+  exact signed convolution antipode of that source;
+
+critical all-prime limit:
+  positive Gamma--Poisson/Fock field;
+
+lost parity in ambient L2:
+  antipode has become a generalized coherent functional;
+
+required third completion:
+  a rigged Hopf completion retaining positive vacuum, generalized antipode,
+  prime-dilation action, and the rapid/Stokes character face simultaneously.
+```
+
+Möbius inversion, Poisson rare-event limits, and Poisson/Gamma white-noise triples are parent
+mathematics. The candidate-new content is their source-exact weld: the normalized Möbius line is
+the prelimit antipode of the full positive integer Gibbs law, its critical bosonization is the
+negative-intensity Poisson functional, and this object specifies the missing non-\(L^2\) face of
+the RH third completion. No zero-location theorem follows until Gamma/co-Poisson reflection and
+Xi Cartier base change are proved continuous on the same rigging.
+
+### A concrete orientation-retaining Poisson rigging
+`[PAPER-PROVED] [PARENT WHITE-NOISE CONSTRUCTION]`
+
+The generalized inverse in `(7n33)` is not merely formal. A concrete Gelfand triple retains it.
+Let
+\[
+ H=L^2\!\left((0,\infty),e^{-x}\frac{dx}{x}\right),
+\qquad
+ E=\{\varphi\in{\cal S}([0,\infty)):\varphi(0)=0\}.
+\tag{7n39}
+\]
+The closed codimension-one subspace \(E\) of the Schwartz space is nuclear. Its inclusion in
+\(H\) is continuous and dense. Continuity at the singular face follows from
+\(\varphi(x)=O(x)\), and density follows because \(C_c^\infty((0,\infty))\subset E\) is dense in
+\(H\).
+
+The source boundary functional
+\[
+ \ell(\varphi)
+ =
+ \int_0^\infty\varphi(x)e^{-x}\frac{dx}{x}
+\tag{7n40}
+\]
+belongs to \(E'\): the zero boundary condition controls \(x=0\), and Schwartz decay controls
+infinity. Choose any countably Hilbert nuclear realization
+\[
+ E=\bigcap_{p\geq0}H_p
+ \subset H
+ \subset
+ \bigcup_{p\geq0}H_{-p}=E'.
+\tag{7n41}
+\]
+Its weighted symmetric second quantization gives the standard Fock test/distribution triple
+\[
+ (E)
+ \subset
+ \Gamma_s(H)
+ \subset
+ (E)'.
+\tag{7n42}
+\]
+Concretely, test norms may be taken of the form
+\[
+ \|\Phi\|_{p,q}^2
+ =
+ \sum_{m\geq0}2^{qm}\|\Phi_m\|_{H_p^{\widehat\otimes_s m}}^2,
+\tag{7n43}
+\]
+with the dual obtained by reversing \(p,q\).
+
+The generalized exponential
+\[
+ {\rm Exp}(-2\ell)
+ =
+ \left(\frac{(-2\ell)^{\otimes m}}{\sqrt{m!}}\right)_{m\geq0}
+\tag{7n44}
+\]
+belongs to \((E)'\). Indeed \(\ell\in H_{-p}\) for some \(p\), and for a sufficiently negative
+Fock weight its squared norm is bounded by
+\[
+ \sum_{m\geq0}
+ 2^{-qm}\frac{4^m\|\ell\|_{H_{-p}}^{2m}}{m!}
+ =
+ \exp\!\left(2^{2-q}\|\ell\|_{H_{-p}}^2\right)<\infty.
+\tag{7n45}
+\]
+
+Let \(I_{\rm P}:\Gamma_s(H)\to L^2(\Pi_\nu)\) be the Poisson chaos isometry. For
+\(g\in E\), initially real with \(g>-1\), the Poisson stochastic exponential is
+\[
+ {\cal E}_{\rm P}(g;\eta)
+ =
+ \exp\!\left(-\int g\,d\nu\right)
+ \prod_{x\in\eta}(1+g(x)).
+\tag{7n46}
+\]
+It corresponds under \(I_{\rm P}\) to the Fock exponential \({\rm Exp}(g)\), and
+\[
+ \langle{\rm Exp}(-2\ell),{\rm Exp}(g)\rangle
+ =
+ \exp\!\left(-2\int g\,d\nu\right).
+\tag{7n47}
+\]
+On the other hand, evaluation of `(7n46)` against the cylinder signed measures
+\(\Pi_{-\nu|K}\), followed by exhaustion, gives
+\[
+ \begin{aligned}
+ \langle\Pi_{-\nu},{\cal E}_{\rm P}(g)\rangle
+ &=
+ \exp\!\left(-\int g\,d\nu\right)
+ \exp\!\left(-\int g\,d\nu\right)\\
+ &=
+ \exp\!\left(-2\int g\,d\nu\right).
+ \end{aligned}
+\tag{7n48}
+\]
+Since stochastic exponentials are total in the test Fock space, `(7n47)`--`(7n48)` identify
+\[
+ \boxed{\qquad
+ I_{\rm P}^{\,\prime}{\rm Exp}(-2\ell)=\Pi_{-\nu}
+ \quad\text{in the Poisson test dual.}
+ \qquad}
+\tag{7n49}
+\]
+Here \(I_{\rm P}^{\,\prime}\) denotes the distributional extension of the chaos isometry.
+
+Thus the first two faces of the required completion now exist:
+\[
+ \begin{array}{c|c}
+ \text{positive source face} & \Pi_\nu\text{ and }L^2(\Pi_\nu)\\
+ \text{oriented inverse face} & \Pi_{-\nu}=
+ I_{\rm P}^{\,\prime}{\rm Exp}(-2\ell)\in (E)'.
+ \end{array}
+\tag{7n50}
+\]
+The zero boundary condition in `(7n39)` is not cosmetic. Without it, \(\ell\) is not continuous
+because \(d\nu\sim dx/x\); with the ordinary \(H\)-norm alone, \(\ell\notin H\). The singular
+test/dual boundary is exactly what retains orientation after the positive Hilbert limit has lost
+it.
+
+This theorem does **not** yet construct the full RH space. The Schwartz choice at infinity is one
+admissible rigging, not a proof of source-canonical uniqueness. More importantly:
+
+1. fixed off-critical prime characters live on the rapid/Stokes face, beyond the compact
+   critical chart represented by `(7n39)`;
+2. the discrete finite-\(\varepsilon\) Gibbs--Möbius pairs have not yet been assembled into a
+   continuous adiabatic field whose boundary is `(7n42)`;
+3. Gamma/co-Poisson reflection has not yet been proved continuous or reflection-positive on that
+   field; and
+4. no theorem yet places every Xi conormal and multiplicity jet in its dualizable sector.
+
+The construction nevertheless kills one ambiguity: the third completion cannot be an arbitrary
+singular Hilbert norm. Its orientation face is forced to contain the generalized coherent
+displacement \(-2\ell\) arising from exact finite Möbius inversion.
+
+### Frozen jump: oriented bosonization reflection purity
+
+`[BOLD CONJECTURE] [ARITHMETIC_ORIENTED_BOSONIZATION_REFLECTION_PURITY]`
+
+There is a source-canonical nuclear rigged Hopf completion
+\[
+ {\mathscr S}_{\rm ar}
+ \subset
+ L^2(\Pi_\nu)
+ \subset
+ {\mathscr S}_{\rm ar}'
+\tag{7n51}
+\]
+obtained as the cofinal graph completion of the exact pairs
+\(({\mathsf G}_{1+\varepsilon},{\mathsf S}_{1+\varepsilon})\), with all of the following
+properties:
+
+1. \(\Pi_\nu\) is its positive vacuum and the cylinder-compatible
+   \(\Pi_{-\nu}\) from `(7n33)` is a continuous generalized group-like functional in the dual;
+2. the finite Gibbs--Möbius identity `(7n24)` survives as the Hopf antipode identity, not merely
+   as equality of scalar transforms;
+3. prime dilation and exponent-depth succession act equicontinuously on the test/dual pair, so
+   the critical escape cannot factor through one fixed compact operator;
+4. the independently defined Gamma/co-Poisson reflection extends to a reflection-positive
+   involution on this same pair;
+5. the completed Xi Cartier module, including every multiplicity jet, is a conservative
+   dualizable base change of this oriented source object; and
+6. on every such conormal, reflection positivity identifies the source antipode with analytic
+   dagger.
+
+This is not a conjecture that some convenient Hida space works. The topology must be recovered
+from the finite Gibbs--Möbius graph and must pass the generalized-prime surgery, scalar-clock
+blindness, rapid/Stokes, and critical-escape falsifiers. In particular, item 5 is not licensed by
+the existence of the Xi determinant alone.
+
+If the conjecture holds, a conormal character must be continuous for both the positive source
+and its retained inverse orientation. For the centered prime character
+\(p^{\rho-1/2}\), source antipode gives \(p^{1/2-\rho}\), whereas reflected analytic dagger gives
+\(p^{\overline\rho-1/2}\). Item 6 therefore gives exactly `(14)` below and forces
+\(\operatorname{Re}\rho=1/2\).
+
+This conjecture is the proposed universal law, not a proof:
+
+> **When an infinite positive law is the bosonization of finite oriented source cells, physical
+> reversal is not determined by the positive limit alone. It is determined by the generalized
+> convolution antipode retained from the microscopic orientation. Persistent divisor modes are
+> physical precisely where that source antipode equals reflection adjunction.**
+
+It simultaneously explains why finite truncations are exact but topologically trivial, why
+ambient adelic \(L^2\) restores covariance but loses divisor fibres, why scalar exponential clocks
+are universal and divisor-blind, why fixed compact transports vanish under critical escape, why
+the positive Gamma flow is one-sided, and why the critical line is an isometric fixed locus
+rather than the sign of a scalar reporter.
 
 ## Arithmetic completion-relativity conjecture
 
@@ -1041,6 +1461,17 @@ is not known in advance from the conjecture.
     in the corpus. They are not new conjectures of this card. The new theorem-level input is the
     horizontal--vertical inverse weld `(7m)`--`(7q)` and its use to specify a concrete failure
     cobar for those laws.
+14. **Antipode universality is insufficient.** Every free commutative generalized-prime monoid
+    has the same normalized positive geometric law, Möbius convolution inverse, and rare-event
+    Poisson/negative-Poisson pair. The exact source antipode `(7n24)`, its bosonization `(7n33)`,
+    and the rigging `(7n42)` therefore do not distinguish ordinary primes and do not imply RH.
+    Ordinary-prime content first enters through the simultaneous Gamma/co-Poisson reflection,
+    continued Xi Cartier landing, and the source-defined prelimit incidence. Any argument ending
+    at oriented bosonization is theatre.
+15. **Off-the-shelf Hida circularity.** Standard Poisson/Gamma white-noise analysis proves that
+    generalized coherent functionals can be retained. It does not prove that the Xi divisor
+    lands conservatively, that prime dilation is contractive on the required adiabatic field, or
+    that Gamma reflection identifies antipode with dagger. Those are the RH-bearing theorems.
 
 ## Literature boundary
 
@@ -1057,6 +1488,16 @@ Parent sources:
 - Ostrovsky, *Theory of Barnes Beta Distributions*,
   <https://arxiv.org/abs/1305.4422>, and *On Barnes Beta Distributions, Selberg Integral and
   Riemann Xi*, <https://arxiv.org/abs/1402.6163>;
+- Kondratiev--Silva--Streit--Us, *Analysis on Poisson and Gamma spaces*,
+  <https://arxiv.org/abs/math/9908033>;
+- Kondratiev--Lytvynov, *Operators of Gamma white noise analysis*,
+  <https://arxiv.org/abs/math/0608340>;
+- Last, *Perturbation analysis of Poisson processes*,
+  <https://arxiv.org/abs/1203.3181>;
+- Arratia, *On the amount of dependence in the prime factorization of a uniform random integer*,
+  <https://arxiv.org/abs/1305.0941>;
+- Ford, *Joint Poisson distribution of prime factors in sets*,
+  <https://arxiv.org/abs/2006.12650>;
 - Burnol, *Two complete and minimal systems associated with the zeros of the Riemann zeta
   function*, <https://arxiv.org/abs/math/0203120>.
 
@@ -1081,8 +1522,13 @@ exactly the source-effective landing theorem left open above.
   parent boundary stated
 - [x] failure-to-law typing repaired through a higher record and cobar construction
 - [x] first experiment has an answer not fixed by present corpus
+- [x] construct exact finite-\(\sigma\) positive Gibbs/Möbius convolution antipode
+- [x] identify its critical positive-Poisson/generalized-negative-Poisson bosonization
+- [x] construct one concrete Poisson test/Fock/distribution triple retaining the inverse
 - [ ] construct finite EPG failure-nerve mate comparison
 - [ ] construct source-first exponential filtration and raw/graded gauge separation
+- [ ] assemble finite Gibbs--Möbius pairs into a source-canonical adiabatic Poisson/Gamma field
+- [ ] extend that field to the rapid/Stokes character face and prove the C49 moving incidence
 - [ ] identify or classify its complete defect
 - [ ] prove cofinal source-topological cobar and group completion exist
 - [ ] prove Gamma/co-Poisson antipode--dagger identity
@@ -1102,3 +1548,12 @@ exactly the source-effective landing theorem left open above.
   normalized face transition into the pure centered prime character and a nonconstant zero-rate
   Euler gauge. Moved antipode--dagger purity to the source exponential associated grade and made
   source-first gauge separation an explicit construction gate.
+- 2026-07-30 — Proved that the normalized positive integer Gibbs measure and normalized signed
+  Möbius measure are exact convolution inverses for every \(\sigma>1\). Under critical marked
+  prime scaling they converge on cylinder Laplace tests to the Poisson law with intensity
+  \(e^{-x}dx/x\) and its negative-intensity convolution inverse. Radially these are
+  \({\rm Exp}(1)\) and \(\delta_0+\delta_0'\). Constructed an explicit nuclear one-particle
+  boundary space and Poisson Fock test triple in which the inverse is the generalized coherent
+  vector \({\rm Exp}(-2\ell)\). Hostile audit records that all these features also occur for free
+  generalized-prime monoids; RH content remains Gamma/co-Poisson reflection, C49 incidence, and
+  conservative Xi conormal landing.

@@ -1,0 +1,904 @@
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{microtype}
+\usepackage[a4paper,margin=30mm]{geometry}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage[nameinlink,noabbrev]{cleveref}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!55!black,
+  citecolor=blue!55!black,
+  urlcolor=blue!55!black,
+  pdftitle={The source horizon of a meromorphic divisor},
+  pdfauthor={Michael Haufschild}
+}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\C}{\mathbb C}
+\newcommand{\R}{\mathbb R}
+\newcommand{\N}{\mathbb N}
+\newcommand{\Res}{\operatorname*{Res}}
+\newcommand{\Pois}{\operatorname{Pois}}
+\newcommand{\ord}{\operatorname{ord}}
+\newcommand{\Rea}{\operatorname{Re}}
+\newcommand{\Ima}{\operatorname{Im}}
+\newcommand{\cR}{\mathcal R}
+\newcommand{\cE}{\mathcal E}
+\newcommand{\cW}{\mathcal W}
+\newcommand{\dd}{\,\mathrm d}
+
+\title{\textbf{The source horizon of a meromorphic divisor}\\
+\large An exact information law for escaping Riemann zeros}
+\author{Michael Haufschild}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+A divisor can escape every fixed compact observer without losing its information.  We prove the
+exact law governing where that information goes.
+
+Let \(F\) be meromorphic, let \(c\in\C\) be a marked source, and let \(\rho\ne c\) be a divisor
+point of order \(m\).  Multiplication of the logarithmic response \(F'/F\) by
+\(\exp(x/(s-c))\) before residue extraction transports \(m\) into the coherent mode
+\[
+  M_{\rho,c}(x)=m\exp\!\left(\frac{x}{\rho-c}\right).
+\]
+At the canonical observation time \(x=|\rho-c|^2\tau\), reciprocal displacement becomes direct
+conjugate displacement,
+\[
+  M_{\rho,c}(|\rho-c|^2\tau)
+    =m e^{\overline{\rho-c}\tau},
+\]
+and every factorially normalized derivative channel obeys
+\[
+ \frac{x^r}{r!}\bigl|\partial_x^rM_{\rho,c}(x)\bigr|^2
+ =|m|^2e^{[2\Rea(\rho-c)+1]\tau}
+   \Pr\{\Pois(\tau)=r\}.
+\]
+Thus each source has a neutral horizon
+\(\Rea\rho=\Rea c-\tfrac12\).  Radial distance has become observation time, imaginary
+displacement has become phase frequency, and signed distance from the horizon is the only
+surviving exponential rate.
+
+For the completed Riemann response the arithmetic source is \(c=1\), so the neutral horizon is
+exactly the critical line.  The same mode is the Poisson completion of the inverse Li--Cayley
+orbit.  Its packet drift and growth rate reconstruct the zero up to conjugation, and every
+strict-right zero is a positive Lyapunov mode.  We then couple this law to an explicit sequence of
+functional-equation-preserving, hypertranscendental quartet perturbations.  Every holomorphic jet
+converges compact-open to \(\xi\), the complete rational differential matroid is unchanged, and
+the nonnegative Ward density vanishes on every bounded window while retaining mass \(8\pi\) per
+quartet.  Canonical source observation nevertheless restores an exact height-independent packet.
+
+The result does not prove the Riemann hypothesis.  It gives a closed explanation of a recurring
+obstruction in analytic, Hilbert-space, differential-algebraic, and index approaches: fixed-scale
+observables lose defects at the noncompact boundary, whereas the source-selected inverse-drift
+scale conserves their full oriented divisor data.
+\end{abstract}
+
+\medskip
+\noindent\textbf{Keywords.}
+Riemann hypothesis; meromorphic divisor; logarithmic derivative; Li coefficients; coherent state;
+Poisson law; hypertranscendence; Ward index; compact-open convergence.
+
+\medskip
+\noindent\textbf{2020 Mathematics Subject Classification.}
+Primary 11M26, 30D30; Secondary 11J91, 46E20, 12H05.
+
+\section{Introduction}
+
+Many routes to the Riemann hypothesis translate zero location into positivity, self-adjointness,
+or boundedness.  Li's criterion encodes the zeros through powers of the Cayley coordinate
+\(1-\rho^{-1}\) \cite{Li1997,BombieriLagarias1999}; Keiper's generating series already centers
+that coordinate at the arithmetic point \(s=1\) \cite{Keiper1992}; Voros showed how an off-line
+zero creates exponential large-order behavior \cite{Voros2014}.  Hilbert--P\'olya and trace-formula
+programs instead seek a positive spectral realization.  Recent work makes both the promise and
+the missing positivity step especially explicit \cite{ConnesConsani2021,Connes2026,Hedenmalm2026}.
+
+A separate body of evidence warns that fixed local observation is too weak.  Small
+functional-equation-preserving perturbations can insert off-line zeros
+\cite{GauthierXarles2009}.  In the constructions below, the warning is exact: a divisor quartet
+moves to infinite height while every holomorphic jet converges locally uniformly, the
+hypertranscendental differential stratum remains fixed, and a nonnegative charge density loses
+all mass on bounded windows.  Yet its total charge does not change.
+
+These facts are usually read as unrelated defects of particular methods.  The present paper gives
+a common mechanism.  A marked source \(c\) determines the singular evolution
+\[
+  U_c(x;s):=\exp\!\left(\frac{x}{s-c}\right).
+\]
+If one evolves the meromorphic logarithmic response before extracting its residue, each divisor
+point becomes one coherent exponential mode.  The derivative orders of that mode form a Poisson
+packet.  At fixed \(x\), a high divisor has packet drift of order \(|\rho|^{-2}\); its nontrivial
+orders therefore move beyond any fixed observation regime.  At the inverse-drift time
+\(x=|\rho-c|^2\tau\), the radial factor cancels exactly.  This is not a limiting approximation.
+
+The cancellation has a sharper complex form:
+\[
+  \frac{|\rho-c|^2\tau}{\rho-c}
+  =\overline{\rho-c}\,\tau.
+\]
+The reciprocal Cayley coordinate is converted into direct conjugate displacement.  Consequently
+spectral escape becomes rapid phase, not information loss.  After factorial summation of the
+derivative orders, the raw energy \(e^{2\Rea(\rho-c)\tau}\) acquires the factor \(e^\tau\).
+The neutral locus is therefore
+\[
+  2\Rea(\rho-c)+1=0.
+\]
+We call this line the \emph{source horizon}.
+
+The Riemann case is distinguished twice.  First, the pole of the Euler factor places the
+arithmetic source at \(c=1\).  Second,
+\[
+  1+\frac1{\rho-1}=\frac{\rho}{\rho-1}
+  =\left(1-\frac1\rho\right)^{-1},
+\]
+so the source mode is exactly the Poisson completion of the inverse Li orbit.  The source horizon
+is then \(\Rea\rho=\tfrac12\), and reflection \(\rho\mapsto1-\rho\) reverses the resulting
+Lyapunov rate.
+
+\subsection*{Main results}
+
+The paper proves four closed statements.
+
+\begin{enumerate}[leftmargin=2.2em]
+\item The \emph{source inversion law}: canonical observation converts reciprocal displacement
+into conjugate direct displacement.
+\item The \emph{source-horizon conservation law}: the complete derivative-order energy is an
+exact Poisson packet with rate \(2\Rea(\rho-c)+1\).
+\item The \emph{Riemann source law}: the actual prime--Gamma logarithmic response transports every
+\(\xi\)-zero residue into this packet, with no simplicity assumption, and the mode is the Poisson
+completion of the inverse Li--Cayley orbit.
+\item The \emph{escape--renormalization law}: explicit off-line quartets are simultaneously
+invisible to every fixed compact holomorphic jet, to a complete rational differential matroid,
+and to every bounded Ward window, but reappear exactly at canonical source time.
+\end{enumerate}
+
+The first two statements hold for every meromorphic function.  The last two identify why the
+Riemann critical line is the neutral line selected by its arithmetic source and why several
+apparently strong observers lose the same off-line data.
+
+\subsection*{Novelty boundary}
+
+No novelty is claimed for logarithmic residues, coherent-state Poisson statistics
+\cite{Bargmann1961,Glauber1963}, Li's criterion, exponential Li asymptotics, or symmetric
+polynomial perturbations.  The contribution is the exact conjunction: source evolution is
+performed before residue extraction; its mode is identified with the factorial completion of the
+Li orbit; inverse-drift time converts reciprocal to direct spectral displacement; the critical
+line becomes the attenuation--order-entropy balance line; and the same law resolves the
+compact-open, differential-algebraic, and Ward escape examples.  We found no prior source stating
+this source-horizon theorem or its Riemann specialization.  That database statement is evidence,
+not a claim that literature search proves absence.
+
+\section{Meromorphic source evolution}
+
+Let \(F\) be meromorphic near \(\rho\).  We use the signed divisor order convention
+\[
+  F(s)=(s-\rho)^m h(s),\qquad h(\rho)\ne0,
+\]
+where \(m>0\) for a zero and \(m<0\) for a pole.  Its logarithmic response is
+\[
+  \cR_F(s):=\frac{F'(s)}{F(s)}.
+\]
+
+\begin{proposition}[Residue transport]\label{prop:transport}
+Let \(c,\rho\in\C\) with \(\rho\ne c\), and let \(m=\ord_\rho F\).  Then, for every
+\(x\in\C\),
+\[
+ \Res_{s=\rho}
+   \left(\cR_F(s)e^{x/(s-c)}\right)
+ =m e^{x/(\rho-c)}.
+\]
+No simplicity assumption is required.
+\end{proposition}
+
+\begin{proof}
+The local factorization gives
+\[
+  \cR_F(s)=\frac{m}{s-\rho}+\frac{h'(s)}{h(s)}.
+\]
+The second term is holomorphic at \(\rho\), while \(e^{x/(s-c)}\) is holomorphic there because
+\(\rho\ne c\).  Multiplying the principal part by the value of the holomorphic factor proves the
+formula.
+\end{proof}
+
+\begin{definition}
+The transported residue mode is
+\[
+  M_{m,c,\rho}(x):=m e^{x/(\rho-c)}.
+\]
+Write
+\[
+  b_{c,\rho}:=(\rho-c)^{-1},\qquad
+  d_{c,\rho}:=|b_{c,\rho}|^2,\qquad
+  \kappa_{c,\rho}:=|1+b_{c,\rho}|^2-1.
+\]
+\end{definition}
+
+Every evolution derivative is explicit:
+\begin{equation}\label{eq:jets}
+  \partial_x^r M_{m,c,\rho}(x)
+  =m b_{c,\rho}^{\,r}e^{b_{c,\rho}x}.
+\end{equation}
+
+\section{Poisson completion and order-space conservation}
+
+The elementary exponential series becomes structurally useful when its geometric parameter is the
+Cayley node.
+
+\begin{proposition}[Poisson completion]\label{prop:poisson-completion}
+For \(a,x\in\C\),
+\[
+ e^{-x}\sum_{n=0}^{\infty}\frac{x^n}{n!}a^n=e^{(a-1)x}.
+\]
+Consequently,
+\[
+ M_{m,c,\rho}(x)
+ =m e^{-x}\sum_{n=0}^{\infty}\frac{x^n}{n!}
+   \left(1+\frac1{\rho-c}\right)^n.
+\]
+\end{proposition}
+
+\begin{proof}
+Absolute convergence permits direct summation:
+\[
+ e^{-x}\sum_{n\ge0}\frac{(ax)^n}{n!}=e^{-x}e^{ax}=e^{(a-1)x}.
+\]
+Use \(a=1+(\rho-c)^{-1}\).
+\end{proof}
+
+For \(\lambda\ge0\), write
+\[
+  p_r(\lambda):=e^{-\lambda}\frac{\lambda^r}{r!}
+  =\Pr\{\Pois(\lambda)=r\}.
+\]
+
+\begin{theorem}[Order-space conservation]\label{thm:order-conservation}
+For \(x\ge0\) and \(r\in\N_0\),
+\[
+ \frac{x^r}{r!}\left|\partial_x^rM_{m,c,\rho}(x)\right|^2
+ =
+ |m|^2e^{\kappa_{c,\rho}x}\,
+ p_r(d_{c,\rho}x).
+\]
+In particular,
+\[
+ \sum_{r=0}^{\infty}
+ \frac{x^r}{r!}\left|\partial_x^rM_{m,c,\rho}(x)\right|^2
+ =|m|^2e^{\kappa_{c,\rho}x}.
+\]
+\end{theorem}
+
+\begin{proof}
+From \cref{eq:jets},
+\[
+ \frac{x^r}{r!}|\partial_x^rM(x)|^2
+ =|m|^2e^{2\Rea(b_{c,\rho})x}
+   \frac{(d_{c,\rho}x)^r}{r!}.
+\]
+Since
+\[
+ \kappa_{c,\rho}=2\Rea(b_{c,\rho})+d_{c,\rho},
+\]
+inserting \(e^{d_{c,\rho}x}e^{-d_{c,\rho}x}=1\) gives the first identity.  Summing
+the Poisson weights gives the second.
+\end{proof}
+
+The theorem separates two invariants:
+
+\begin{itemize}[leftmargin=2em]
+\item \(d_{c,\rho}\) is packet velocity in derivative order;
+\item \(\kappa_{c,\rho}\) is total exponential rate.
+\end{itemize}
+
+Neither invariant requires a choice of phase.  Together they recover the spectral displacement up
+to conjugation.
+
+\begin{proposition}[Ridge reconstruction]\label{prop:ridge}
+Put \(z=\rho-c\ne0\), \(d=|z|^{-2}\), and
+\(\kappa=|1+z^{-1}|^2-1\).  Then
+\[
+  \Rea z=\frac12\left(\frac{\kappa}{d}-1\right),
+  \qquad
+  (\Ima z)^2=\frac1d-\frac14\left(\frac{\kappa}{d}-1\right)^2.
+\]
+\end{proposition}
+
+\begin{proof}
+The identity
+\[
+  \kappa=\frac{2\Rea z+1}{|z|^2}=(2\Rea z+1)d
+\]
+gives the real part.  Then \(|z|^2=d^{-1}=(\Rea z)^2+(\Ima z)^2\).
+\end{proof}
+
+\section{The source-horizon law}
+
+\begin{definition}
+For \(\tau\ge0\), define canonical source time
+\[
+  x_{c,\rho}(\tau):=|\rho-c|^2\tau
+\]
+and transverse source rate
+\[
+  \nu_c(\rho):=2\Rea(\rho-c)+1.
+\]
+The \emph{source horizon} is the neutral locus \(\nu_c(\rho)=0\).
+\end{definition}
+
+\begin{theorem}[Source inversion]\label{thm:inversion}
+For every \(c,\rho\in\C\), \(\rho\ne c\), and \(\tau\ge0\),
+\[
+  \frac{x_{c,\rho}(\tau)}{\rho-c}
+  =\overline{\rho-c}\,\tau.
+\]
+Consequently,
+\[
+  M_{m,c,\rho}(x_{c,\rho}(\tau))
+  =m e^{\overline{\rho-c}\tau}.
+\]
+\end{theorem}
+
+\begin{proof}
+For \(z=\rho-c\ne0\), \(z^{-1}=\bar z/|z|^2\).  Multiplication by
+\(|z|^2\tau\) gives the first identity, and the second follows from the definition of \(M\).
+\end{proof}
+
+\begin{theorem}[Source-horizon conservation]\label{thm:horizon}
+For every \(r\in\N_0\),
+\begin{equation}\label{eq:horizon}
+ \frac{x_{c,\rho}(\tau)^r}{r!}
+ \left|\partial_x^rM_{m,c,\rho}(x)
+   \big|_{x=x_{c,\rho}(\tau)}\right|^2
+ =
+ |m|^2e^{\nu_c(\rho)\tau}p_r(\tau).
+\end{equation}
+Equivalently,
+\begin{equation}\label{eq:entropy}
+ \frac{x_{c,\rho}(\tau)^r}{r!}
+ \left|\partial_x^rM_{m,c,\rho}(x)
+   \big|_{x=x_{c,\rho}(\tau)}\right|^2
+ =
+ |m|^2e^{2\Rea(\rho-c)\tau}\frac{\tau^r}{r!}.
+\end{equation}
+The complete channel mass is
+\[
+ \sum_{r=0}^{\infty}
+ \frac{x_{c,\rho}(\tau)^r}{r!}
+ \left|\partial_x^rM_{m,c,\rho}(x)
+   \big|_{x=x_{c,\rho}(\tau)}\right|^2
+ =|m|^2e^{\nu_c(\rho)\tau}.
+\]
+\end{theorem}
+
+\begin{proof}
+At \(x=x_{c,\rho}(\tau)\),
+\[
+ d_{c,\rho}x=|\rho-c|^{-2}|\rho-c|^2\tau=\tau
+\]
+and
+\[
+ \kappa_{c,\rho}x
+ =\frac{2\Rea(\rho-c)+1}{|\rho-c|^2}
+   |\rho-c|^2\tau
+ =\nu_c(\rho)\tau.
+\]
+Insert both identities into \cref{thm:order-conservation}.  Expanding
+\(p_r(\tau)=e^{-\tau}\tau^r/r!\) gives \cref{eq:entropy}; summing gives the final formula.
+\end{proof}
+
+\begin{corollary}[Horizon classification]\label{cor:horizon-classification}
+\[
+\begin{aligned}
+ \nu_c(\rho)&>0 &&\Longleftrightarrow&
+   \Rea\rho&>\Rea c-\tfrac12,\\
+ \nu_c(\rho)&=0 &&\Longleftrightarrow&
+   \Rea\rho&=\Rea c-\tfrac12,\\
+ \nu_c(\rho)&<0 &&\Longleftrightarrow&
+   \Rea\rho&<\Rea c-\tfrac12.
+\end{aligned}
+\]
+\end{corollary}
+
+\begin{remark}[Attenuation--entropy balance]
+Equation \eqref{eq:entropy} isolates the mechanism.  Canonical inversion contributes raw mode
+energy \(e^{2\Rea(\rho-c)\tau}\).  The factorial order tower contributes
+\(\sum_r\tau^r/r!=e^\tau\).  The neutral line is exactly where these two factors balance.
+\end{remark}
+
+\begin{corollary}[Vertical parabolic renormalization]\label{cor:vertical}
+Let
+\[
+  \rho_T=\frac12+a+iT,\qquad T\ne0,\qquad c=1,
+\]
+and
+\[
+  x_T(\tau)=\left((a-\tfrac12)^2+T^2\right)\tau.
+\]
+Then
+\[
+ \frac{x_T(\tau)^r}{r!}
+ \left|\partial_x^r
+   \left(m e^{x/(\rho_T-1)}\right)_{x=x_T(\tau)}\right|^2
+ =
+ |m|^2e^{2a\tau}p_r(\tau).
+\]
+All dependence on \(T\) has disappeared from the energy packet.
+\end{corollary}
+
+\section{The arithmetic source and the Riemann divisor}
+
+Let
+\[
+  \xi(s)=\frac12s(s-1)\pi^{-s/2}\Gamma(s/2)\zeta(s)
+\]
+and
+\[
+  \Gamma_{\R}(s):=\pi^{-s/2}\Gamma(s/2).
+\]
+Its logarithmic response is \(\cR_\xi=\xi'/\xi\).  On \(\Rea s>1\),
+\begin{equation}\label{eq:arithmetic-source}
+ \cR_\xi(s)
+ =\frac1s+\frac1{s-1}
+   \frac{\Gamma_{\R}'(s)}{\Gamma_{\R}(s)}
+   -\sum_{n=1}^{\infty}\frac{\Lambda(n)}{n^s}.
+\end{equation}
+Thus the marked point \(c=1\) is already present in the completed prime--Gamma source; it is not
+chosen from the zero set.
+
+Define
+\[
+  \cR_{\xi,x}(s):=\cR_\xi(s)e^{x/(s-1)}.
+\]
+
+\begin{theorem}[Riemann source transport]\label{thm:riemann-transport}
+If \(\rho\) is a nontrivial zero of \(\xi\) of analytic multiplicity \(m_\rho\), then
+\[
+ \Res_{s=\rho}\cR_{\xi,x}(s)
+ =m_\rho e^{x/(\rho-1)}.
+\]
+All source-horizon identities apply with \(c=1\) and \(m=m_\rho\).
+\end{theorem}
+
+\begin{proof}
+Nontrivial zeros satisfy \(\rho\ne1\).  Apply \cref{prop:transport} to \(F=\xi\).
+\end{proof}
+
+\subsection{Exact relation to the Li orbit}
+
+Put
+\[
+  w_\rho:=1-\frac1\rho=\frac{\rho-1}{\rho},
+  \qquad
+  a_\rho:=w_\rho^{-1}=\frac{\rho}{\rho-1}.
+\]
+Then \(a_\rho-1=(\rho-1)^{-1}\).  Hence
+\begin{equation}\label{eq:li-poisson}
+ e^{x/(\rho-1)}
+ =e^{-x}\sum_{n=0}^{\infty}\frac{x^n}{n!}a_\rho^n.
+\end{equation}
+Li's coefficients use the discrete powers \(w_\rho^n\)
+\cite{Li1997,BombieriLagarias1999}; false RH produces exponentially dominant Cayley powers
+\cite{Voros2014}.  Equation \eqref{eq:li-poisson} identifies the continuous source residue with
+the exact Poisson completion of the inverse orbit \(w_\rho^{-n}\).  Discrete Cayley dynamics,
+continuous source evolution, and derivative-order transport are therefore three levels of one
+semigroup.
+
+For \(c=1\),
+\[
+  d_\rho=|\rho-1|^{-2},
+  \qquad
+  \kappa_\rho=(2\Rea\rho-1)d_\rho.
+\]
+The source horizon is
+\[
+  \Rea\rho=\frac12.
+\]
+Moreover,
+\begin{equation}\label{eq:riemann-reconstruction}
+ \Rea\rho
+ =\frac12\left(1+\frac{\kappa_\rho}{d_\rho}\right),
+ \qquad
+ (\Ima\rho)^2
+ =\frac1{d_\rho}
+  -\frac14\left(1-\frac{\kappa_\rho}{d_\rho}\right)^2.
+\end{equation}
+
+\begin{corollary}[Riemann Lyapunov orientation]\label{cor:riemann-rate}
+Every strict-right zero has positive source rate
+\[
+  \nu_1(\rho)=2\Rea\rho-1>0.
+\]
+The reflected zero \(1-\rho\) has rate \(-\nu_1(\rho)\), while conjugation reverses phase and
+preserves rate.  Thus an off-line quartet is a stable--unstable, phase-reversed source packet,
+whereas a critical-line pair is neutral.
+\end{corollary}
+
+\begin{proof}
+The sign statement is \cref{cor:horizon-classification}.  Direct calculation gives
+\[
+ \nu_1(1-\rho)=2\Rea(-\rho)+1=1-2\Rea\rho=-\nu_1(\rho),
+\]
+and \(\Rea\bar\rho=\Rea\rho\).
+\end{proof}
+
+\section{Fixed-scale blindness and exact escape}
+
+We now exhibit a family for which compact analysis, differential algebra, and bounded-window
+charge all lose an off-line divisor, while \cref{thm:horizon} retains it.
+
+Fix \(0<a<\tfrac12\), put \(T_n=n+1\), and define
+\[
+ G_{a,n}(s):=
+ \left[1+T_n^{-2}\left((s-\tfrac12)-a\right)^2\right]
+ \left[1+T_n^{-2}\left((s-\tfrac12)+a\right)^2\right],
+\]
+\[
+ F_{a,n}(s):=G_{a,n}(s)\xi(s),
+ \qquad
+ \rho_{a,n}:=\frac12+a+iT_n.
+\]
+The normalization makes \(G_{a,n}\to1\) locally uniformly.  It also preserves
+\(s\mapsto1-s\) and Schwarz conjugation.
+
+\begin{theorem}[Compact-open hypertranscendental escape]\label{thm:escape}
+For every \(n\):
+
+\begin{enumerate}[label=\textup{(\roman*)},leftmargin=2.4em]
+\item \(F_{a,n}\) is entire and hypertranscendental over \(\C(s)\);
+\item \(F_{a,n}(1-s)=F_{a,n}(s)\) and
+  \(F_{a,n}(\bar s)=\overline{F_{a,n}(s)}\);
+\item \(F_{a,n}(\rho_{a,n})=0\) and
+  \(\Rea\rho_{a,n}\ne\tfrac12\);
+\item for every \(j\ge0\),
+\[
+  \partial_s^jF_{a,n}\longrightarrow\partial_s^j\xi
+\]
+locally uniformly on \(\C\).
+\end{enumerate}
+
+The same statements hold with \(G_{a,n}\) replaced by \(G_{a,n}^N\) for every positive
+integer \(N\).
+\end{theorem}
+
+\begin{proof}
+The symmetry identities follow by expanding the two paired quadratic factors.  At
+\(\rho_{a,n}\), the first bracket equals \(1+T_n^{-2}(iT_n)^2=0\).  Local uniform convergence
+of \(G_{a,n}\) and all its derivatives to \(1\) follows from \(T_n^{-2}\to0\); multiplication by
+the fixed entire function \(\xi\), followed by the Weierstrass theorem for derivatives, gives
+(iv).  Multiplication by a nonzero polynomial preserves hypertranscendence: a differential
+algebraic relation for \(G_{a,n}\xi\) over \(\C(s)\) would divide by the rational polynomial and
+give one for \(\xi\).  The power \(G_{a,n}^N\) is treated identically.
+\end{proof}
+
+\subsection{Differential-matroid blindness}
+
+For a nonzero meromorphic \(H\), define its even-shift logarithmic packet
+\[
+  \Delta_m(H)(s)
+  :=\frac{H'(s+2m)}{H(s+2m)}-\frac{H'(s)}{H(s)},
+  \qquad m\in\N_0.
+\]
+Since
+\[
+ \Delta_m(F_{a,n})
+ =\Delta_m(\xi)+\Delta_m(G_{a,n})
+\]
+and \(\Delta_m(G_{a,n})\in\C(s)\), every differential dependence matroid of the packet over
+\(\C(s)\) is unchanged by the inserted quartet.  The same remains true after adjoining every
+scalar Euler-valuation layer used by the prime source, and after replacing \(G_{a,n}\) by
+\(G_{a,n}^N\).
+
+\begin{theorem}[Exact Kolchin-stratum collision]\label{thm:matroid}
+For every index set \(A\), grading \(g:A\to\N_0\), \(n\), and \(N\ge1\), the represented
+differential matroid of
+\[
+  \bigl(\Delta_{g(q)}(G_{a,n}^N\xi)\bigr)_{q\in A}
+\]
+over the rational coordinate differential field is exactly the represented differential matroid
+of
+\[
+  \bigl(\Delta_{g(q)}(\xi)\bigr)_{q\in A}.
+\]
+The equality persists over the differential field obtained by adjoining all scalar
+prime-valuation layers.
+\end{theorem}
+
+\begin{proof}
+For each \(q\), the two family elements differ by
+\(\Delta_{g(q)}(G_{a,n}^N)\), an element of the base differential field.  Translating each
+coordinate by a base-field element is an invertible affine change over that base.  It preserves
+all differential-algebraic dependence subsets, hence the represented matroid.  The same argument
+applies after any base-field enlargement containing the correction.
+\end{proof}
+
+\subsection{Ward charge escape}
+
+The quartet has the nonnegative density
+\begin{equation}\label{eq:ward-density}
+ \cW_{a,T}(t)
+ :=
+ 2\left[
+ \frac{2(a+\tfrac12)}
+ {(a+\tfrac12)^2+(t+T)^2}
+ +
+ \frac{2(a+\tfrac12)}
+ {(a+\tfrac12)^2+(t-T)^2}
+ \right].
+\end{equation}
+
+\begin{theorem}[Quantized Ward escape]\label{thm:ward}
+For every \(T>0\),
+\[
+  \cW_{a,T}(t)\ge0,
+  \qquad
+  \int_{\R}\cW_{a,T}(t)\dd t=8\pi.
+\]
+For every \(R\ge0\),
+\[
+ \sup_{|t|\le R}\cW_{a,T_n}(t)\longrightarrow0.
+\]
+For quartet multiplicity \(N\), the density and total mass are multiplied by \(N\), so the
+mass is \(8\pi N\) although every bounded window still loses it.
+\end{theorem}
+
+\begin{proof}
+Nonnegativity is immediate from \eqref{eq:ward-density}.  Each translated Lorentzian satisfies
+\[
+ \int_{\R}
+ \frac{2(a+\tfrac12)}
+ {(a+\tfrac12)^2+(t\pm T)^2}\dd t=2\pi;
+\]
+the outer factor \(2\) therefore gives \(8\pi\).  If \(|t|\le R<T\), both denominators are at
+least \((T-R)^2\), and
+\[
+ 0\le\cW_{a,T}(t)\le\frac8{(T-R)^2}.
+\]
+This bound proves uniform convergence on the window.  Multiplicity is additive in the logarithmic
+response.
+\end{proof}
+
+\subsection{The missing information is restored}
+
+The zero \(\rho_{a,n}\) escapes vertically.  Let \(m_{a,n}\) be its actual analytic multiplicity
+in \(F_{a,n}\); no simplicity assumption is needed.  At source \(c=1\),
+\[
+ x_{a,n}(\tau)
+ =|\rho_{a,n}-1|^2\tau
+ =\left((a-\tfrac12)^2+T_n^2\right)\tau.
+\]
+
+\begin{corollary}[Escape--renormalization]\label{cor:escape-renormalization}
+For every \(r\in\N_0\) and \(\tau\ge0\),
+\[
+ \frac{x_{a,n}(\tau)^r}{r!}
+ \left|
+ \partial_x^r
+ \left(m_{a,n}e^{x/(\rho_{a,n}-1)}\right)_
+   {x=x_{a,n}(\tau)}
+ \right|^2
+ =
+ |m_{a,n}|^2e^{2a\tau}p_r(\tau).
+\]
+The packet shape and exponential rate are exactly independent of height.
+\end{corollary}
+
+\begin{proof}
+Apply \cref{cor:vertical} with \(T=T_n\) and \(m=m_{a,n}\).
+\end{proof}
+
+\Cref{thm:escape,thm:matroid,thm:ward,cor:escape-renormalization} give one precise
+nonproperness law.  The following data can remain fixed or converge:
+
+\begin{itemize}[leftmargin=2em]
+\item every compact holomorphic jet;
+\item functional equation and Schwarz symmetry;
+\item hypertranscendence and the complete rational differential matroid;
+\item every bounded Ward window.
+\end{itemize}
+
+Nevertheless the divisor is off line at every stage, its Ward charge is fixed, and its
+source-horizon packet is recovered exactly after canonical rescaling.  Fixed observers do not
+contradict the conserved observer; they are its non-co-moving projections.
+
+\section{Consequences for Riemann-hypothesis routes}
+
+\subsection{Why squaring and fixed scale lose orientation}
+
+The energy packet \eqref{eq:horizon} retains the sign of
+\(\nu_1(\rho)=2\Rea\rho-1\) in its total rate.  Phase-insensitive squaring does not itself erase
+this orientation; observing at a fixed scale does.  As \(|\Ima\rho|\to\infty\),
+\[
+  d_\rho=|\rho-1|^{-2}\to0.
+\]
+At fixed \(x\), the Poisson mean \(d_\rho x\) collapses to zero and cannot resolve a moving
+derivative-order ridge.  At \(x=\tau/d_\rho\), the ridge is restored at mean \(\tau\) and the
+rate becomes \(2\Rea\rho-1\).  Thus the correct distinction is not ``squared versus unsquared''
+alone, but ``fixed observer versus source-co-moving observer.''
+
+\subsection{What the \(8\pi\) index does and does not say}
+
+The Ward law counts a quartet and survives escape, but it supplies no upper bound forcing the
+count to vanish.  Indeed, \cref{thm:ward} permits arbitrary mass \(8\pi N\) in the identical
+compact-open and differential stratum.  The source-horizon law does not manufacture such a bound.
+It answers a different closed question: it identifies the exact oriented dynamic variable that
+the static index omits.  Ward mass records \emph{how much} divisor charge escapes; the Lyapunov
+rate records \emph{to which side} of the source horizon it belongs.
+
+\subsection{The new route boundary}
+
+For the completed Riemann response, RH is equivalent to neutral source rate for every nontrivial
+zero:
+\[
+  \mathrm{RH}
+  \quad\Longleftrightarrow\quad
+  \nu_1(\rho)=0\ \text{for every nontrivial zero }\rho.
+\]
+Taken alone, this equivalence is not a proof and receives no novelty credit.  The advance is the
+source-derived realization behind it:
+
+\begin{enumerate}[leftmargin=2.2em]
+\item \(\nu_1(\rho)\) is the exact canonical-time growth rate of an actual residue of the
+prime--Gamma response;
+\item the same residue is the Poisson completion of the inverse Li orbit;
+\item its packet drift and rate reconstruct the zero;
+\item explicit countermodels prove why every fixed compact, finite differential, or bounded-window
+observer can miss it;
+\item inverse-drift renormalization recovers it without a limiting error.
+\end{enumerate}
+
+This replaces the search for another fixed positive scalar by a sharply specified dynamical
+problem: control the source-generated semigroup at its canonical, divisor-dependent scale.  The
+present paper closes the information-loss problem and identifies the oriented variable.  It does
+not claim the additional arithmetic estimate that would exclude positive-rate modes.
+
+\section{Relation to prior work}
+
+Li proved positivity of his coefficient sequence equivalent to RH
+\cite{Li1997}; Bombieri and Lagarias placed the criterion in a general multiset framework and
+related it to Weil positivity \cite{BombieriLagarias1999}.  Generalized Li criteria move the
+basepoint or target zero-free subregions \cite{Freitas2007,Sekatskii2014}.  The present law differs
+in both operation and output: it evolves the logarithmic response before taking a local residue,
+Poisson-completes the inverse orbit, and then chooses the exact inverse-drift time at which the
+reciprocal spectral variable becomes direct conjugate displacement.
+
+Voros's analysis gives the closest asymptotic neighbor: off-line zeros create exponential
+large-order Li behavior \cite{Voros2014}.  Here the exponential rate is obtained channel by
+channel through an exact identity, and the vertical height cancels at finite rescaled time rather
+than only in a large-order asymptotic.
+
+Coherent exponentials and their Poisson occupation statistics are classical
+\cite{Bargmann1961,Glauber1963}.  Their role here is not a quantum analogy: the coherent mode is
+the literal residue of the evolved arithmetic response.  The source inversion
+\(z^{-1}|z|^2\tau=\bar z\tau\) and the resulting attenuation--order-entropy horizon are then exact
+properties of meromorphic divisor transport.
+
+Gauthier and Xarles showed broad instability of RH under small functional-equation-preserving
+perturbations \cite{GauthierXarles2009}.  We assign no novelty to quartet insertion or
+compact-open instability alone.  The new statement is their exact collision with every
+holomorphic jet, a complete differential matroid, quantized Ward escape, and source-horizon
+renormalization in one explicit family.
+
+Connes and Consani analyzed scaling and the limitations of a positivity attempt in a semilocal
+operator framework \cite{ConnesConsani2021}; Connes's recent survey stresses the continuing need
+to connect finite arithmetic approximations to the full divisor \cite{Connes2026}.  Hedenmalm's
+recent theta differential problem likewise isolates a missing self-adjoint structure
+\cite{Hedenmalm2026}.  Our theorem is neither a no-go for those full programs nor a substitute
+Hilbert space.  It specifies the noncompact, scale-covariant divisor datum that any successful
+global carrier must retain.
+
+\section{Closed scope}
+
+The paper answers the question it poses:
+
+\begin{quote}
+When a divisor point becomes invisible to compact analytic observation, finite differential
+algebra, and bounded charge windows, its information is transported into a source-generated
+coherent mode.  Radial displacement fixes observation time, imaginary displacement becomes phase,
+and signed distance from the source horizon becomes the exact Lyapunov rate.
+\end{quote}
+
+For the Riemann response, the source is \(1\), the horizon is the critical line, and the coherent
+mode is the Poisson completion of the inverse Li orbit.  The conclusion is unconditional and
+contains no simplicity, rightmost-zero, finite-off-line-divisor, or RH assumption.
+
+The theorem does not assert that all Riemann modes are neutral.  It proves what the existing
+blindness and charge laws are projections of, why the critical half-line is selected by the
+arithmetic source, and which exact co-moving observable retains the orientation that fixed
+scalarizations lose.
+
+\begin{thebibliography}{99}
+
+\bibitem{Bargmann1961}
+V.~Bargmann,
+\newblock On a Hilbert space of analytic functions and an associated integral transform. I,
+\newblock \emph{Comm. Pure Appl. Math.} \textbf{14} (1961), 187--214.
+\newblock \url{https://doi.org/10.1002/cpa.3160140303}.
+
+\bibitem{BombieriLagarias1999}
+E.~Bombieri and J.~C. Lagarias,
+\newblock Complements to Li's criterion for the Riemann hypothesis,
+\newblock \emph{J. Number Theory} \textbf{77} (1999), 274--287.
+\newblock \url{https://doi.org/10.1006/jnth.1999.2392}.
+
+\bibitem{Connes2026}
+A.~Connes,
+\newblock The Riemann hypothesis: past, present and a letter through time,
+\newblock arXiv:2602.04022 (2026).
+\newblock \url{https://arxiv.org/abs/2602.04022}.
+
+\bibitem{ConnesConsani2021}
+A.~Connes and C.~Consani,
+\newblock The scaling Hamiltonian,
+\newblock \emph{J. Operator Theory} \textbf{85} (2021), 257--276.
+\newblock \url{https://arxiv.org/abs/1910.14368}.
+
+\bibitem{Freitas2007}
+P.~Freitas,
+\newblock A Li-type criterion for zero-free half-planes of Riemann's zeta function,
+\newblock \emph{J. London Math. Soc.} \textbf{75} (2007), 399--414.
+\newblock \url{https://arxiv.org/abs/math/0507368}.
+
+\bibitem{GauthierXarles2009}
+P.~M. Gauthier and X.~Xarles,
+\newblock Perturbations of \(L\)-functions with or without non-trivial zeros off the critical line,
+\newblock arXiv:0911.5135 (2009).
+\newblock \url{https://arxiv.org/abs/0911.5135}.
+
+\bibitem{Glauber1963}
+R.~J. Glauber,
+\newblock Coherent and incoherent states of the radiation field,
+\newblock \emph{Phys. Rev.} \textbf{131} (1963), 2766--2788.
+\newblock \url{https://doi.org/10.1103/PhysRev.131.2766}.
+
+\bibitem{Hedenmalm2026}
+H.~Hedenmalm,
+\newblock Spectral interpretation of Riemann zeta zeros,
+\newblock arXiv:2606.17494 (2026).
+\newblock \url{https://arxiv.org/abs/2606.17494}.
+
+\bibitem{Keiper1992}
+J.~B. Keiper,
+\newblock Power series expansions of Riemann's \(\xi\) function,
+\newblock \emph{Math. Comp.} \textbf{58} (1992), 765--773.
+\newblock \url{https://doi.org/10.1090/S0025-5718-1992-1122072-5}.
+
+\bibitem{Li1997}
+X.-J. Li,
+\newblock The positivity of a sequence of numbers and the Riemann hypothesis,
+\newblock \emph{J. Number Theory} \textbf{65} (1997), 325--333.
+\newblock \url{https://doi.org/10.1006/jnth.1997.2137}.
+
+\bibitem{Sekatskii2014}
+S.~K. Sekatskii,
+\newblock Generalized Bombieri--Lagarias theorem and generalized Li criterion with its arithmetic
+interpretation,
+\newblock \emph{Ukrainian Math. J.} \textbf{66} (2014), 371--383.
+\newblock \url{https://doi.org/10.1007/s11253-014-0935-8}.
+
+\bibitem{Voros2014}
+A.~Voros,
+\newblock Zeta functions over zeros of zeta functions and an exponential-asymptotic view of the
+Riemann hypothesis,
+\newblock arXiv:1403.4558 (2014).
+\newblock \url{https://arxiv.org/abs/1403.4558}.
+
+\end{thebibliography}
+
+\end{document}
