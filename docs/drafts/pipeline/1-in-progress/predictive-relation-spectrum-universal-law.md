@@ -602,3 +602,53 @@ Current verdict:
 - **Nature gate:** closed.
 
 J1--J2 is therefore the next theorem programme, not yet the paper headline.
+
+## 2026-07-30 reinterpretation-first novelty gate
+
+Novelty search now uses one hard rule: seek a primitive law under which several
+established theorems, observations, and no-go results become necessary shadows.
+A renamed conjunction does not qualify. The current candidate primitive is the
+**relation--observation duality**:
+
+1. exact integer relations determine the compact return object and its metric
+   recurrence complexity;
+2. observer restriction quotients that relation object;
+3. interaction changes the exact relation object discontinuously;
+4. finite-time operator observations change continuously, with detection time
+   bounded below by inverse coupling;
+5. open evolution retains only the nondecaying observable factor.
+
+This is still a research conjecture, not a manuscript claim. Its key physical
+local-interaction bridge advanced today: the exact diagonal-probe transition
+law and one-sided nonvanishing corollary are now Lean-proved in
+`AffineEigenbranchDiagonalProbeLaw.lean`. They show, without phase assumptions,
+how an arbitrarily weak local interaction creates endpoint-observable
+cross-block transitions. Qubit same-layer transition creation remains the
+single explicit endpoint-geometry gap before the all-path local maximal-rank
+theorem can be promoted.
+
+## 2026-07-30 hostile external parent collision
+
+Two checked parents materially narrow novelty:
+
+- L. Campos Venuti, *The recurrence time in quantum mechanics* (2015),
+  arXiv:1509.04352, already states that any nonzero generic
+  nonintegrable perturbation restores rational independence with probability
+  one, changes recurrence from exponential to double exponential, and makes
+  recurrence time discontinuous at the integrable point (paper lines 94--113).
+  Therefore “arbitrarily weak interaction changes recurrence discontinuously”
+  is occupied and cannot be the headline.
+- M. J. W. Hall, *Almost-periodic time observables for bound quantum systems*
+  (2008), arXiv:0803.3721, already constructs time observables for arbitrary
+  discrete spectra using almost-periodic measures and energy-gap Fourier
+  modes. Therefore “discrete quantum histories are almost periodic” and
+  “almost-periodicity defines a time observable” are occupied.
+
+Survivor requiring a stricter novelty audit: an observer-indexed **minimal
+compact clock theorem**. Proposed invariant is the Pontryagin dual of the
+frequency group visible to the observer's entire history algebra; its rank is
+the least number of independent phase coordinates through which all those
+histories factor. Required genuinely new consequences are exact quotient/data-
+processing laws under observer restriction and a proved exponential local-
+interaction amplification theorem. Classical almost-periodic hull and
+Pontryagin-duality results must be presented only as parents, not novelty.

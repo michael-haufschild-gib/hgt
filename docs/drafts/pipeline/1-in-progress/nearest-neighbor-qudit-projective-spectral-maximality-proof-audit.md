@@ -202,3 +202,36 @@ bounded-degree, polynomial-parameter local many-body family, together with
 its exact recurrence consequences.
 
 Current status remains **paper proof only**.
+
+## 2026-07-30 formal closure: one-sided diagonal probes create cross-block edges
+
+The first endpoint-propagation mechanism is now formalized in
+`formal/GaloisForLFunctions/HTGeometry/AffineEigenbranchDiagonalProbeLaw.lean`.
+For two distinct simple affine eigenbranches `x,y`, the canonical adjugate-column
+transition amplitude of an arbitrary diagonal probe `D` obeys the exact identity
+\[
+ (E_x-E_y)F'_{xy}(0)=P_xP_y\bigl(D_yV_{yx}-D_xV_{xy}\bigr),
+ \qquad
+ P_x=\prod_{j\ne x}(E_x-E_j).
+\]
+Consequently, if `D_x=0`, `D_y\ne0`, and `V_{yx}\ne0`, then `F'_{xy}(0)\ne0`.
+This is unconditional and needs no phase convention, eigenvector normalization,
+or appeal to perturbation-theory folklore. Taking `D` to be a new-site level
+projector gives every required cross-block edge from a nonzero old endpoint
+transition.
+
+Formal status:
+
+- `analyticAt_affineEigenbranchDiagonalProbe`: proved;
+- `affineEigenbranchDiagonalProbe_deriv_gap_mul`: proved;
+- `affineEigenbranchDiagonalProbe_deriv_ne_zero_of_left_zero`: proved;
+- direct `lake env lean` check: passed;
+- axiom audit: only `propext`, `Classical.choice`, `Quot.sound`.
+
+Remaining endpoint-geometry obstruction is narrower. For local dimension at
+least three, vertical new-site transitions plus cross-block edges can make the
+new endpoint graph connected. For a qubit, the spectral-relation lift also
+requires nonbipartiteness; vertical and cross-block edges alone remain
+bipartite. One same-layer endpoint transition must therefore be created and
+proved nonzero. That requires the corresponding off-diagonal-probe derivative
+law and its finite analytic-avoidance assembly.
