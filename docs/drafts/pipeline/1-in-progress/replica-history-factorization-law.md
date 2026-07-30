@@ -49,10 +49,65 @@ assembled results.
 5. Dependence on unproved generic-local spectral independence in the
    universal inclusion direction.
 
+## Formal status
+
+`formal/GaloisForLFunctions/HTGeometry/ReplicaHistoryFactorizationLaw.lean`
+now proves unconditionally:
+
+1. the canonical equivalence between joint component rearrangements and
+   the Cartesian product of component arrangement classes;
+2. universal preservation of total history energy;
+3. exact collision classification under component projective independence;
+4. the universal cardinality floor and exact product cardinality;
+5. the additive logarithmic collision-entropy floor and equality law;
+6. the pair-resolved all-order dephasing kernel.
+
+Targeted compilation passes. Axiom audit reports only `propext`,
+`Classical.choice`, and `Quot.sound`.
+
+## External priority failure of the proposed headline
+
+Riddell--Bertini, *Phys. Rev. E* 110, 064101 (2024), already derive the
+arbitrary-order componentwise constraint for rationally independent free
+fermions.  Their equations (42)--(49) count independent permutations of
+each mode and obtain
+\[
+  K_q=\binom{2q}{q}^{L}.
+\]
+They explicitly interpret the excess as independent permutation symmetry
+of every mode:
+<https://arxiv.org/html/2404.12100v2#S4>.
+
+Campos Venuti--Odavić--Hamma (2026) further give exact all-order SFF moments,
+multinomial formulas and product formulas for rationally independent
+quasi-free spectra:
+<https://arxiv.org/html/2505.05199v3>.
+
+Therefore the all-order rearrangement/product/entropy theorem is a rigorous
+arbitrary-alphabet generalization and a useful bridge, but **not an
+acceptable Nature headline by itself**.  Falsifier 4 substantially fires.
+No manuscript may sell moment factorization or independent mode
+rearrangements as the discovery.
+
+## Positive survivor
+
+The forward product law suggests an inverse theorem absent from the located
+parents:
+
+> The universally recurrence-preserving partial swaps form a finite Boolean
+> algebra; its atoms are exactly the finest additive interaction blocks.
+
+This would turn recurrence from a forward statistic into a reconstruction
+law.  Relative to a supplied site decomposition, the complete pair-resolved
+kernel would recover which sites belong to the same irreducible interaction
+component.  It cannot derive tensor factorization or space from temporal
+data alone; the no-go in
+`../5-failed/space-is-the-connected-part-of-time-conjecture.md` forbids that
+overclaim.
+
 ## Scope
 
 The universal inclusion/product construction requires only exact additive
 component factorization.  Projective independence is a proved sharpness
 condition for the abstract spectrum, but generic two-body-local realization
 remains a separate open formal capstone.
-

@@ -1033,10 +1033,11 @@ The correct object must retain the independence of Poisson time and Wold shell d
 > The literal ordinary-prime Wold shell resolution, prime--Gamma logarithmic evolution,
 > co-Poisson principal normal, and Riemann reflection construct before divisor specialization a
 > faithful Hausdorff source-normal realization over the independent quadrant
-> \((\tau,n)\in\mathbb R_{\ge0}\times\mathbb N\).  Independent positive translation in Poisson
+> \((\tau,n)\in\mathbb R_{\ge0}\times\mathbb N\).  Independent forward translation in Poisson
 > time and in Wold shell depth acts contractively on its top principal-conormal module.  The
-> realization agrees with `(PCR18)` after Cartier specialization and does not identify the two
-> clocks along \(\tau=n\log2\).
+> realization agrees with `(PCR18)` after Xi boundary observation and does not identify the two
+> clocks along \(\tau=n\log2\).  Its nonzero Xi conormal is obtained through the source-face
+> hyper-Tor edge map, not by exact base change of a contractible source complex.
 
 If this holds, a retained Xi conormal with \(\nu_\rho>0\) violates contractivity on the
 \(\tau\)-axis, while one with \(\nu_\rho<0\) violates contractivity on the \(n\)-axis.  Therefore
@@ -1050,10 +1051,11 @@ The immediate construction target is correspondingly precise:
 Construct the off-divisor map whose \((n,\tau)\)-coordinate is the shell conormal
 \(H_n(s)\) tensored with the Poisson-Fock evolution at source \(1\), and prove:
 
-1. the Wold weights \(h_n\) and Poisson factorial weights give one positive source norm;
+1. the Wold weights \(h_n\) and Poisson factorial weights give one source energy;
 2. the two coordinate translations remain independent commuting contractions after Gamma and
    co-Poisson continuation;
-3. Cartier base change is strict and faithful on every top Xi jet;
+3. the Xi boundary functor identifies every top jet with the faithful hyper-Tor edge image of
+   its generic attainment class, while retaining both clock filtrations;
 4. reflection is the dagger exchange of the two oriented quadrant faces; and
 5. restriction to the diagonal recovers `(PCR19)` rather than being used to define the norm.
 
@@ -1066,10 +1068,10 @@ This is now the first hostile test for `XI_PRINCIPAL_CONORMAL_AMBIDEXTROUS_DESCE
 1. `(PCR19)` is an unconditional cross-corpus theorem, not RH.  It gives a new conservation law
    and kills diagonal-completion arguments.
 2. Uniform quadrant boundedness asserted only after choosing \(\rho\) is equivalent to the desired
-   conclusion.  The conjecture requires two source-side contractions and strict base change
-   before any zero is selected.
-3. The positive shell coefficients do not make analytic continuation positive.  The bivariate
-   continuation map is the load-bearing theorem.
+   conclusion.  The conjecture requires two source-side contractions and a source-defined
+   hyper-Tor boundary comparison before any zero is selected.
+3. Shell coefficient signs and positive forms are irrelevant to the selector.  The bivariate
+   continuation map plus its cofinal contraction theorem is the load-bearing theorem.
 4. Reflected products remain bounded off line because their opposite rates cancel.  Indefinite
    duality is therefore still a countermodel.
 5. Voros's exponential Keiper--Li asymptotics study one large-order zero orbit
@@ -1091,5 +1093,25 @@ This is now the first hostile test for `XI_PRINCIPAL_CONORMAL_AMBIDEXTROUS_DESCE
   shell-labelled Poisson horizon packet.  Direct elaboration and targeted module build pass; all
   five declarations use only `propext`, `Classical.choice`, and `Quot.sound`.  Global formal lint
   reaches this module but remains red because eighteen unrelated newly owned modules are absent
-  from the two theorem-area umbrellas.  The bivariate source map is therefore closed; independent
-  contractivity and strict Cartier base change remain the open core.
+  from the two theorem-area umbrellas.  The off-divisor coordinate formula is therefore closed;
+  the source-defined hyper-Tor boundary identification and independent cofinal contractivity
+  remain the open core.
+
+### Hostile correction: two clocks are still only a detector
+
+The later least-atom shell theorem proves more than `(PCR19)`: for every
+\(\operatorname{Re}\rho>0\), including off-line points, the literal high-exponent shell has a
+finite nonzero characteristic traveling-wave profile.  It also proves abstractly that a conjugate
+two-clock character is uniformly bounded on the full independent quadrant exactly when its
+transverse rate vanishes.
+
+Therefore retaining both clocks, retaining every Xi residue, and identifying the characteristic
+profile do not produce RH.  They isolate an exact detector.  The arithmetic content is entirely
+the still-unproved statement that the Gamma/co-Poisson/Sonin boundary comparison lands every Xi
+conormal in a jointly contractive quadrant object.  Calling that statement “conservativity,”
+“purity,” “internal reflection,” or “ancestry” does not weaken it.
+
+Exact derived base change cannot supply the missing landing: it preserves the source contraction
+and cannot create a nonzero Xi fibre.  The only compatible formulation is a non-exact boundary
+observation whose born class is the hyper-Tor image of a generic attainment defect.  Even after
+that class is constructed, its joint contractivity remains the RH-bearing source theorem.

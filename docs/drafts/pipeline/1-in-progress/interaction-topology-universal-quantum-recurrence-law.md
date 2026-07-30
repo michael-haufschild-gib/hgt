@@ -221,7 +221,11 @@ experiment resolves it. No parameter-free laboratory timescale is claimed.
   state that no-resonance assumptions are standard, strong, and generally
   infeasible to verify analytically or numerically; they identify the
   interplay between rational independence and interacting perturbations as
-  immediate future work:
+  immediate future work. More damagingly for the synthesis route, their
+  equations (42)--(49) already derive arbitrary-order SFF moments by
+  independent history rearrangements of every rationally independent
+  free-fermion mode, obtaining
+  \(K_q=\binom{2q}{q}^{L}\):
   <https://arxiv.org/abs/2404.12100>.
 - `[LITERATURE]` Campos Venuti--Odavić--Hamma, *Phys. Rev. E* 113, 044128
   (2026), derive exact arbitrary SFF moments and exponential/log-normal laws
@@ -296,12 +300,24 @@ experiment resolves it. No parameter-free laboratory timescale is claimed.
    generator novelty must be maximal projective rank—simultaneous absence of
    nontrivial balanced relations at every replica order—and its exact
    recurrence consequences.
+10. **All-order rearrangement-parent attack.** Riddell--Bertini already use
+    componentwise replica rearrangements at every order; Campos
+    Venuti--Odavić--Hamma already give exact multinomial and product moment
+    laws. **Verdict:** the new arbitrary-alphabet product theorem and its
+    logarithm are not a Nature-level discovery alone. Surviving synthesis
+    novelty must be inverse: the pair-resolved recurrence symmetry algebra
+    must reconstruct the finest additive interaction blocks.
 
-**Current verdict:** `SURVIVES PRELIMINARY ATTACK`. Candidate novelty is the
-generator theorem `(1)` in arbitrary local interaction architecture and its
-exact consequence that interaction factorization is the sole generic source
-of completed replica collisions. Priority, disconnected genericity, the
-hypergraph lift, and formalization remain open.
+**Current verdict:** `FORWARD SYNTHESIS FAILS; INVERSE LAW PROVED;
+RELATION-LATTICE SYNTHESIS OPEN`. The Boolean inverse theorem is now proved
+on paper and in Lean. It is not promoted alone because rectangle
+separability and interaction-grouping parent theories may absorb much of its
+mathematical novelty. The stronger candidate is now one relation-lattice
+law: the completed phase ensemble, all resolved replica layers and the
+projective arithmetic constraint lattice are equivalent invariants; the
+controlled order-two sector reconstructs the unique additive interaction
+partition. See `recurrence-relation-lattice-universal-law.md`. Exact
+priority and the generic local-generator capstone remain open.
 
 ## Open cores
 
@@ -322,11 +338,28 @@ hypergraph lift, and formalization remain open.
 6. `[CLOSED ON PAPER AND IN LEAN]` The order-two equal-energy class is a
    Boolean cube and has cardinality \(2^{d_H}\), proved in
    `../2-fully-proven/replica-collision-hamming-tomography-law.md`.
-7. `[OPEN CORE]` Complete exact-object citation ancestry/descendancy search,
+7. `[CLOSED ON PAPER AND IN LEAN; PRIOR ART LIMIT]` The all-order
+   replica-history collision class is a Cartesian product of component
+   arrangement spaces; its logarithmic cardinality is additive and gives a
+   universal floor without independence. Formalized in
+   `replica-history-factorization-law.md`. Riddell--Bertini and Campos
+   Venuti--Odavić--Hamma prevent using the forward product law as headline
+   novelty.
+8. `[CLOSED ON PAPER AND IN LEAN]` Universal partial-swap recurrence is
+   exactly additive cut separability; the valid masks form a Boolean
+   algebra whose atoms partition the supplied sites and are recovered by
+   pair-resolved completed-time kernels. Do not claim recovery of tensor
+   factorization or emergent space.
+9. `[OPEN CORE]` Complete exact-object citation ancestry/descendancy search,
    including quantum control generic nonresonance and local spectral Galois
    literature, plus collision-class/Hamming tomography.
-8. `[OPEN CORE]` Formalize the arbitrary-graph generator theorem and every
-   retained recurrence corollary before manuscript use.
+10. `[OPEN CORE]` Formalize the arbitrary-graph generator theorem and every
+    retained recurrence corollary before manuscript use.
+11. `[CLOSED ON PAPER AND IN LEAN; PRIORITY OPEN]` Every finite spectrum has
+    a unique completed phase ensemble with Fourier transform equal to the
+    indicator of its integer relation lattice. Replica order is exactly
+    arithmetic height, and the full resolved hierarchy reconstructs the
+    projective relation lattice.
 
 ## Lean status
 
@@ -343,6 +376,20 @@ hypergraph lift, and formalization remain open.
 - every finite rationally independent phase flow converges weakly to
   normalized Haar measure, hence every continuous phase statistic has its
   Haar completed-time average;
+- every finite-order equal-energy history class is the Cartesian product of
+  component arrangement spaces under projective independence, with a
+  universal product-cardinality and logarithmic-entropy floor for every
+  additive spectrum;
+- every finite spectrum has a unique completed phase ensemble whose Fourier
+  transform is the exact indicator of its full integer relation lattice;
+- the completed phase ensemble and full relation lattice determine each
+  other;
+- resolved replica order `n` detects exactly projective relations of
+  positive coefficient mass at most `n`, and all orders reconstruct the
+  projective relation lattice;
+- universally recurrence-preserving partial-swap masks form a Boolean
+  algebra whose atoms are the unique additive interaction blocks relative
+  to supplied coordinates;
 - the local second-order residue, pole separation and endpoint-response
   lemmas needed by the connected graph induction;
 - abstract one-knob polynomial avoidance.
