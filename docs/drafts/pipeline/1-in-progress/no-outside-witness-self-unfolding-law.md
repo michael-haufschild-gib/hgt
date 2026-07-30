@@ -25,7 +25,7 @@
 
 Spacetime form:
 
-> **Space has three dimensions because a complete fact needs two sides and no third witness.**
+> **Space has three dimensions because the smallest fact that can check itself is a triangle.**
 
 Matter form:
 
@@ -91,6 +91,70 @@ The truth-hunch is:
 “Witness” is operational, not conscious. It means the complete source-relative data required to
 distinguish two alternatives, recognize equivalent realizations, and determine their admissible
 continuations.
+
+## The proposed single mechanism: fact--disagreement reciprocity
+
+The five clauses below cannot remain a conjunction. The candidate mechanism intended to generate
+all of them is:
+
+> **Reality witnesses itself by disagreeing with itself.**
+
+More exactly, a physical fact is conjectured to be the same source object in two physical
+variances:
+
+\[
+\boxed{
+\mathsf{Fact}(e)
+\simeq
+\mathsf{IrrDisagreement}
+\bigl(\mathsf{IndependentAccounts}(e)\bigr).
+}
+\tag{NOW1a}
+\]
+
+The left variance is the public distinction that occurred. The right variance is the irreducible
+failure of two internally generated complete accounts of that distinction to globalize as one
+independent account. The equivalence must change physical role:
+
+```text
+degree/variance 0: public fact;
+degree/variance 1: seam witnessing why two accounts are not one;
+successor action: that seam changes which later facts can be distinguished.
+```
+
+This is not a contradiction theory of truth. The two accounts agree on the public fact. Their
+disagreement is the source-relative comparison information erased by that agreement. If it were
+also erased physically, the fact would require an outside witness to identify which internal event
+occurred.
+
+The universal succession claim is:
+
+\[
+\boxed{
+\mathsf{Fact}_{h+e}
+\simeq
+\mathsf{Act}^{+}
+\left(
+  \mathsf{IrrDisagreement}_{h}(e)
+\right),
+}
+\tag{NOW1b}
+\]
+
+where the disagreement does not merely label the next state. It generates the operation type under
+which the next fact becomes possible. Neither side of `(NOW1a)` nor the role-changing action in
+`(NOW1b)` has a completed mathematical definition.
+
+If `(NOW1a)`--`(NOW1b)` exist, the narrower laws become forced shadows:
+
+- no outside part structure: relata are generated as the two accounts of one distinction;
+- no third witness: the pair and its one disagreement already close the elementary fact;
+- seam matter: recurrent disagreement is a persistent physical object;
+- gauge freedom: account changes invisible to the fact are internal symmetry;
+- gravity: different fact histories change which later accounts can globalize;
+- time: iteration of disagreement-to-successor-action transmutation;
+- holography: the complete seam retains the account data erased by the public side;
+- Hypertranscendence: no finite account language closes the full role-changing succession.
 
 ## Five inseparable clauses of internal witnessing
 
@@ -172,6 +236,242 @@ It is not an ordinary least fixed point in a supplied category.
 
 Every row is a derivation obligation. If these readings can be assigned independently after the
 fact, the conjecture is a collage and fails.
+
+## Exact arithmetic shadow: one fact is its own excess disagreement
+
+The positive-shell Koszul theorem supplies a precise source-specific shadow of `(NOW1a)`. Two
+coefficient-disjoint positive Riemann shell presentations have one common Cartier fact and one
+excess fusion obstruction:
+
+\[
+\mathcal H_0(K_{m,n})
+\simeq
+\mathcal O_D,
+\qquad
+\mathcal H_1(K_{m,n})
+\simeq
+\mathcal O_D
+\simeq
+\mathcal I_D/\mathcal I_D^2,
+\qquad
+\mathcal H_2(K_{m,n})=0.
+\tag{NOW2a}
+\]
+
+Thus the same divisor occurs as:
+
+```text
+H0: the public analytic fact;
+H1: failure of two independent positive presentations to form a regular intersection;
+conormal: infinitesimal seam of that same failure.
+```
+
+For \(r\) unit-multiple presentations of one regular principal fact, the full homology is
+
+\[
+\mathcal H_\bullet
+\simeq
+\mathcal O_D\otimes\bigwedge\nolimits^\bullet E,
+\qquad
+\operatorname{rank}E=r-1.
+\tag{NOW2b}
+\]
+
+Consequently the elementary signature
+
+```text
+one fact = one irreducible disagreement, with no higher residual witness
+```
+
+selects two presentations in this finite shadow. This is the first exact reason that
+self-witnessing may be binary without defining source arity from a two-input operation.
+
+Full proof:
+`../2-fully-proven/positive-shell-koszul-cartier-obstruction-reciprocity.md`.
+
+The algebra is standard quasi-complete-intersection/Koszul mathematics and does not prove new
+physics. General quasi-complete-intersection ideals also have free exterior Koszul homology, so
+`(NOW2a)` cannot itself be the universal law. Candidate novelty begins only if the degree-one
+disagreement generates the next operation alphabet and if the same role-changing construction
+produces the physical \(3\times2\) phase.
+
+## Exact finite seed: a closed comparison turns disagreement into law
+
+There is a sharper selection than cardinal minimality. Suppose one elementary fact has \(n\)
+internally generated accounts, every pair is directly comparable, and no higher filler is supplied
+at the raw comparison layer. The raw layer is the one-dimensional complete graph \(K_n\). For
+\(n\ge1\),
+
+\[
+\dim_F H^0(K_n;F)=1,\qquad
+\dim_F H^1(K_n;F)
+=\binom n2-n+1
+=\frac{(n-1)(n-2)}2.
+\tag{NOW2c}
+\]
+
+Fact--disagreement reciprocity requires one irreducible disagreement for the one connected fact.
+Therefore
+
+\[
+\dim H^1(K_n;F)=\dim H^0(K_n;F)=1
+\quad\Longleftrightarrow\quad
+\boxed{n=3}.
+\tag{NOW2d}
+\]
+
+Thus source-complete pairwise comparison plus one-fact/one-disagreement reciprocity forces the
+empty triangle \(C_3=\partial\Delta^2\): three pairwise comparisons are present, but their joint
+filling is absent. This is the first candidate reconstruction theorem worth promoting to Lean if
+the raw pairwise-comparison premise survives the simplicial-smuggling attack.
+
+Its cochain sequence is
+
+\[
+0\longrightarrow H^0(C_3;F)
+\longrightarrow C^0(C_3;F)
+\xrightarrow{\delta}
+C^1(C_3;F)
+\longrightarrow H^1(C_3;F)
+\longrightarrow0,
+\tag{NOW2e}
+\]
+
+with dimensions
+
+\[
+\boxed{1\longrightarrow3\longrightarrow3\longrightarrow1.}
+\tag{NOW2f}
+\]
+
+After quotienting the common constant account, the active part is
+
+\[
+\boxed{
+0\longrightarrow F^2
+\xrightarrow{\bar\delta}
+F^3
+\longrightarrow F
+\longrightarrow0.
+}
+\tag{NOW2g}
+\]
+
+This gives a precise finite dictionary:
+
+```text
+one connected public fact          H⁰(C₃)                  rank 1;
+two independent account modes      C⁰(C₃)/H⁰(C₃)           rank 2;
+three internal comparisons          C¹(C₃)                  rank 3;
+one irreducible loop disagreement   H¹(C₃)                  rank 1.
+```
+
+The equality of the first and last ranks is the finite fact--disagreement reciprocity shadow. The
+two-to-three comparison map is the first non-arbitrary source of the \(3\times2\) shape.
+
+More importantly, this closes the finite conjunction problem. For the complete raw comparison
+graph put
+
+\[
+p:=\#E(K_n)=\binom n2,\qquad
+q:=\operatorname{rank}\delta=n-1.
+\tag{NOW2h}
+\]
+
+Then
+
+\[
+\boxed{
+p-q=\dim H^1(K_n;F).
+}
+\tag{NOW2i}
+\]
+
+The single reciprocity condition \(\dim H^1=1\) therefore forces
+
+\[
+\boxed{
+n=3,\qquad (p,q)=(3,2),\qquad p=q+1.
+}
+\tag{NOW2j}
+\]
+
+These are exactly the two numbers previously reached by separate finite requirements:
+\(p=q+1\) is the no-residual-frame Gram-fibre condition, while \(q=2\) is the no-third-witness
+primitive-pair-interiority condition. In this finite source model they are no longer independent
+axioms. Both are consequences of one-fact/one-disagreement reciprocity on a source-complete
+pairwise comparison.
+
+The stronger point is homological role change. Hochster's formula places the full-support loop of
+an \(n\)-cycle in
+
+\[
+\operatorname{Tor}_{n-2}.
+\tag{NOW2k}
+\]
+
+For \(C_3\), the missing filling is a minimal nonface and its loop becomes a
+\(\operatorname{Tor}_1\) class: the obstruction is a primitive generator of the next algebraic
+constraint. For \(C_4,C_5,C_6,\ldots\), the same one-dimensional loop appears only as a higher
+syzygy among already present constraints. Thus the empty triangle is the unique simple cycle whose
+irreducible global disagreement becomes a new first-order rule in one homological step.
+
+This is the first exact model of `(NOW1b)`:
+
+```text
+unfillable internal comparison
+  -> nonzero disagreement class
+  -> generator in the next operation layer.
+```
+
+The topology and commutative algebra are standard, not new physics. Existing unconditional Lean
+already proves the \(C_3\) rank-one topological class, its nonzero first Koszul class, and their
+concrete rank-one Hochster match; it also realizes \(C_4,C_5,C_6\) in
+\(\operatorname{Tor}_2,\operatorname{Tor}_3,\operatorname{Tor}_4\). Relevant modules are
+`ReducedH1FirstBetti.lean`, `ReducedEulerCharacteristic.lean`, and
+`HochsterCycleRealization.lean`.
+
+This does **not** revive triadic sufficiency. Independent four-vertex Bargmann invariants kill the
+claim that all higher comparison data are generated by triangles. The triangle is only the
+source-minimal role-changing seed. Longer cycles and higher complexes must survive as genuinely new
+successor layers; their unbounded coherence is the proposed finite shadow of physical
+Hypertranscendence.
+
+## Minimal self-witnessing flag
+
+The arithmetic shadow, triangle seed, and causal Gram shadow now suggest one shared finite pattern:
+
+```text
+two independent accounts
+  + one irreducible disagreement that closes them
+  = one elementary self-witnessing fact.
+```
+
+The reduced triangle coboundary is a rank-two map from two account modes to three comparison
+channels. If ordered two-sided comparison generates complex scalars and if all faithful framed
+deformations of that coboundary are physical, its regular event carrier is
+
+\[
+\operatorname{Hom}_{\mathbb C}(Q,E)
+\cong
+M_{3,2}(\mathbb C).
+\tag{NOW2l}
+\]
+
+Public compression:
+
+> **Space has three dimensions because the smallest fact that can check itself is a triangle.**
+
+Complex scalars are no longer wholly unmotivated: the existing paper-and-Lean theorem
+`source-ordered-pair-complex-structure` proves that source polarity and pair exchange are
+involutions whose ordered product squares to \(-1\), and that the corresponding even centralizer
+over \(\mathbb R\) is \(\mathbb C\). Applying that algebra edgewise is still conjectural.
+
+Equation `(NOW2l)` is not a theorem deriving nature. Simple-graph locality, the empty filling,
+physical complexification, and passage from one incidence map to all faithful complex deformations
+remain open physical/mathematical obligations. Its value is to make the \(3\times2\) target a
+deformation space of one self-witnessing comparison seed rather than two unrelated dimension
+axioms.
 
 ## Exact finite shadow: why \(3\times2\) is no longer merely guessed
 
@@ -345,22 +645,31 @@ is an absence-of-hit result, not a priority certificate.
    than consequences of one source principle.
 3. **Target smuggling.** “Two sides,” “no third witness,” or “complete witness” may encode rank two
    or the desired future cone by definition.
-4. **Family smuggling.** The AIII complex matrix family may be chosen only because it returns
+4. **Simplicial smuggling.** A self-loop is a one-cell model of a circle. Selecting a simple
+   triangle requires deriving distinct vertices, pairwise locality, no self-comparison, and no
+   parallel comparison channels before graph or simplicial language is available.
+5. **Homological smuggling.** Declaring \(\operatorname{Tor}_1\) to be the “next operation layer”
+   may merely redescribe a supplied polynomial algebra and resolution rather than generate a new
+   physical operation.
+6. **Deformation smuggling.** One triangle coboundary is one rank-two \(3\times2\) matrix. The full
+   regular \(M_{3,2}(\mathbb C)\) phase does not follow until all faithful framed deformations are
+   derived as physical possibilities.
+7. **Family smuggling.** The AIII complex matrix family may be chosen only because it returns
    \(M_{3,2}(\mathbb C)\).
-5. **Scalar smuggling.** Complex amplitudes and the Born rule are not derived.
-6. **Local/global mismatch.** Binary local cuts can retain arbitrarily deep global coherence, as
+8. **Scalar smuggling.** Complex amplitudes and the Born rule are not derived.
+9. **Local/global mismatch.** Binary local cuts can retain arbitrarily deep global coherence, as
    the existing thin-support Hochster examples prove.
-7. **Self-reference totalization.** An ordinary recursive domain, higher category, universal
+10. **Self-reference totalization.** An ordinary recursive domain, higher category, universal
    algebra, or set-theoretic fixed point may encode every stage in one supplied ambient object.
-8. **Weak--Lorentz lock.** One right \(SU(2)\) action cannot serve pointwise as both weak isospin
+11. **Weak--Lorentz lock.** One right \(SU(2)\) action cannot serve pointwise as both weak isospin
    and Lorentz spin.
-9. **Local response independence.** The existing Lean theorem proves Hermitian causal and
+12. **Local response independence.** The existing Lean theorem proves Hermitian causal and
    skew-Hermitian internal responses are independently variable at one \(3\times2\) event.
-10. **Representation mismatch.** The ordinary \(SU(5)\) off-diagonal central weight is not the
+13. **Representation mismatch.** The ordinary \(SU(5)\) off-diagonal central weight is not the
     observed quark-doublet weight.
-11. **Dynamics gap.** No Einstein, Dirac, Yang--Mills, Higgs, chirality, generation, anomaly, mass,
+14. **Dynamics gap.** No Einstein, Dirac, Yang--Mills, Higgs, chirality, generation, anomaly, mass,
     coupling, or cosmological law follows from the finite carrier.
-12. **No observable.** A worldview with no parameter-reducing prediction is not Nature-level
+15. **No observable.** A worldview with no parameter-reducing prediction is not Nature-level
     physics.
 
 ## Kill conditions
@@ -393,20 +702,28 @@ Construct or refute a finite raw source notion of objective distinction, without
 matrices, positivity, tensor factors, spacetime, operation alphabet, or target category, such that:
 
 1. source equivalence defines what counts as the same distinction;
-2. internal closure independently defines two operational sides, a consequential seam, public
-   record, and internal comparison;
-3. one theorem—not two added axioms—forces both no-third-witness causal completeness and
+2. source data independently define public fact and irreducible disagreement, and prove the
+   role-changing reciprocity `(NOW1a)` rather than defining either side from the other;
+3. the disagreement acts to generate a successor operation type as in `(NOW1b)`, rather than
+   remaining a homology class in a supplied algebra;
+4. source closure derives simple empty-triangle comparison before graph, field, cochain, or
+   Stanley--Reisner structure is supplied;
+5. the triangle's disagreement generates the coefficient/operation structure in which its
+   first-Koszul avatar lives, rather than being transported into a preselected polynomial ring;
+6. one theorem—not two added axioms—forces both no-third-witness causal completeness and
    no-residual-frame recovery;
-4. all positive source-complete realizations are equivalent to one complex \(3\times2\) regular
+7. all faithful framed deformations of the source comparison, and no additional finite phases,
+   form one complex \(3\times2\) regular model, or the exact alternative classification is obtained;
+8. all positive source-complete realizations are equivalent to that complex \(3\times2\) regular
    model, or the exact alternative classification is obtained;
-5. the seam generates a successor operation absent from the raw alphabet and changes later
+9. the seam generates a successor operation absent from the raw alphabet and changes later
    executable cuts;
-6. no spectator or fixed-carrier totalization preserves complete source consequences;
-7. event succession separates inherited Lorentz action from newly generated weak action;
-8. the continuum rigidity theorem yields quantum probability, GR, exact Standard Model dynamics
+10. no spectator or fixed-carrier totalization preserves complete source consequences;
+11. event succession separates inherited Lorentz action from newly generated weak action;
+12. the continuum rigidity theorem yields quantum probability, GR, exact Standard Model dynamics
    and matter, and no fifth response;
-9. source iteration implies a genuine Hypertranscendence theorem; and
-10. one finite dimensionless prediction is calculated.
+13. source iteration implies a genuine Hypertranscendence theorem; and
+14. one finite dimensionless prediction is calculated.
 
 The first dependency-closed theorem may be formalized in Lean only after it survives the
 family/scalar/target-smuggling attacks. No Lean work is currently authorized.
@@ -431,3 +748,15 @@ family/scalar/target-smuggling attacks. No Lean work is currently authorized.
 - 2026-07-30 — primary-source audit found substantial collisions with background independence,
   quantum reference frames, and self-referential/emergent-law universes; retained only the exact
   reconstruction/selection/continuum conjunction as candidate novelty.
+- 2026-07-30 — promoted fact--disagreement reciprocity to candidate single mechanism: one fact is
+  the irreducible failure of two internal complete accounts to become one independent account, and
+  that disagreement generates the successor operation type.
+- 2026-07-30 — identified the positive-shell equality
+  \(\mathcal H_0\simeq\mathcal H_1\simeq\mathcal O_D\), with no
+  \(\mathcal H_2\), as an exact arithmetic shadow of binary self-witnessing rather than a proof of
+  the physical law.
+- 2026-07-30 — found the first exact role-changing seed. The empty triangle has one connected
+  public mode, two independent account modes, three comparison channels, and one loop
+  disagreement; Hochster sends that disagreement to \(\operatorname{Tor}_1\), so the missing
+  filling becomes a primitive next constraint. Longer cycles survive at strictly deeper syzygy
+  levels and therefore prevent any revival of global triadic sufficiency.

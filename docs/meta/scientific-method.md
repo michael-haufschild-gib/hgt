@@ -47,6 +47,27 @@ does not force major known results, or promotes an easily proved special case in
 State what is wrong before what is right; state uncertainty explicitly; disagree with the proposed
 interpretation when evidence warrants it.
 
+## Conjecture-distance gate
+
+Do not optimize the primary conjecture toward a nearby unoccupied statement. Search for a change of
+primitive from which frontier results become representations, limits, or obstructions.
+
+Before freezing a primary conjecture:
+
+1. require one ontological reversal: change what a familiar object is, not only what property it has;
+2. require the new primitive to compress at least three independent theorems, observations, or
+   failed routes; distance unsupported by evidence is speculation, not a scientific jump;
+3. require one risky consequence not obtainable by local strengthening or recombination of the
+   source results;
+4. state why the conjecture cannot be described as “known framework plus one sharper hypothesis”;
+5. ignore available proof machinery while selecting the statement;
+6. freeze the statement before searching for a proof or an easier theorem;
+7. after freezing, attack truth, priority, and discriminating predictions independently.
+
+Treat a nearby provable result as a `[BRIDGE]`, never as a substitute for the frozen jump. Retire a
+falsified jump or extract its strongest positive survivor; do not rescue it by redefining its terms.
+Admit no part of a surviving conjecture to a paper until its mathematical content is unconditional.
+
 ## Conjecture attack
 
 When stuck on a frozen conjecture:

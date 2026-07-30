@@ -79,7 +79,7 @@ the zero-edge Hamiltonian in the enlarged connected parameter space contains
 maximal-rank Hamiltonians. Such a Hamiltonian must have a nonzero connecting
 term because the zero-edge subspace obeys the strict upper bound in `(2)`.
 
-## Corollary 2 — temporal curvature reconstructs two-body space
+## Corollary 2 — temporal curvature reconstructs the supplied interaction graph
 
 For every vertex subset \(S\subseteq V\), retain the one-site terms in \(S\)
 and the edge terms of the induced graph \(G[S]\). There is one dense,
@@ -120,15 +120,51 @@ Hence
 \]
 The complete two-body interaction graph, its connected components, graph
 metric, cycles and topology are therefore determined by the set function
-\(\tau\).
+\(\tau\), relative to the supplied subsystem decomposition. This does not
+derive physical space from temporal data: the vertex factors and their
+induced restrictions are inputs. “Space is temporal curvature” is therefore
+not an authorized interpretation of `(8)`.
 
-Equation `(8)` is the exact content of:
+## Corollary 2b — exact temporal factorization lattice
 
-> **Space is the positive curvature of intrinsic completed quantum time.**
+For every nonempty \(S\subseteq V\) and every set partition \(\Pi\) of
+\(S\), define partition curvature
+\[
+  \mathcal K_\Pi(S)
+  =
+  \tau(S)-\sum_{B\in\Pi}\tau(B).
+  \tag{8a}
+\]
+Then
+\[
+  \boxed{\mathcal K_\Pi(S)\ge0,}
+  \qquad
+  \boxed{
+  \mathcal K_\Pi(S)=0
+  \iff
+  \text{every component of \(G[S]\) lies in one block of \(\Pi\)}.
+  }
+  \tag{8b}
+\]
+Consequently \(G[S]\) is connected exactly when every nontrivial partition
+has strictly positive curvature. Pair curvature `(6)` is the two-vertex
+case; the full zero-partition lattice gives a cancellation-free
+factorization classifier.
 
-Here “intrinsic” means the complete coherence carrier, equivalently the
-supremum over observer access. Restricted observers see canonical quotients
-and need not recover every edge.
+To prove `(8b)`, fix a component \(C\) of \(G[S]\). Intersect the blocks of
+\(\Pi\) with \(C\), refine those intersections into induced connected
+fragments \(F_1,\ldots,F_m\), and put
+\[
+  d_j=\prod_{v\in F_j}q_v\ge2.
+\]
+The contribution of \(C\) to the block-rank sum is
+\(\sum_j(d_j-1)\); its contribution to \(\tau(S)\) is
+\(\prod_jd_j-1\). For \(d_j\ge2\),
+\[
+  \prod_jd_j-1\ge\sum_j(d_j-1),
+\]
+with equality exactly when \(m=1\). Summing over \(C\) proves nonnegativity.
+Equality holds exactly when no component is split between partition blocks.
 
 ## Corollary 3 — exact generic recurrence law
 
@@ -500,4 +536,3 @@ Still required before stage 3:
 6. spanning-tree lift;
 7. disconnected module equality and rational-transverse scaling;
 8. simultaneous subsystem and infinite product capstones.
-

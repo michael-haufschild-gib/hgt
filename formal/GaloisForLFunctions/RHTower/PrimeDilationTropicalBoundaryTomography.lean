@@ -284,6 +284,178 @@ theorem tropicalShellIndicator_primeDilation
   have hboundary := tropicalShellIndicator_primeDilation_sub x p hm
   omega
 
+/-- Source covariance defect in one prime-dilation direction. -/
+noncomputable def primeDifference
+    (p : Nat.Primes) (f : BoundedPrimeValuation → ℤ)
+    (x : BoundedPrimeValuation) : ℤ :=
+  f (x.primeDilation p) - f x
+
+/-- Indicator of the radius-`m` face on which every prime in `F` is a winner.
+Primes outside `F` may also be winners. -/
+def winningFaceIndicator
+    (F : Finset Nat.Primes) (m : ℕ) (x : BoundedPrimeValuation) : ℤ :=
+  if x.radius = m ∧ ∀ p ∈ F, x.valuation p = m then 1 else 0
+
+theorem winningFaceIndicator_singleton
+    (x : BoundedPrimeValuation) (p : Nat.Primes) (m : ℕ) :
+    winningFaceIndicator {p} m x = primeWinningFacetIndicator p m x := by
+  simp [winningFaceIndicator, primeWinningFacetIndicator]
+
+/-- **Face-extension law.** Once a nonempty winning face has been generated, taking
+the covariance defect in a new prime direction adjoins exactly that prime to the face. -/
+theorem primeDifference_winningFaceIndicator_of_nonempty_not_mem
+    (x : BoundedPrimeValuation) (F : Finset Nat.Primes) (p : Nat.Primes) (m : ℕ)
+    (hF : F.Nonempty) (hpF : p ∉ F) :
+    primeDifference p (winningFaceIndicator F m) x =
+      -winningFaceIndicator (insert p F) m x := by
+  unfold primeDifference winningFaceIndicator
+  by_cases hpmax : x.valuation p = x.radius
+  · have hout :
+        ¬ ((x.primeDilation p).radius = m ∧
+          ∀ q ∈ F, (x.primeDilation p).valuation q = m) := by
+      rintro ⟨hradius, hface⟩
+      obtain ⟨q, hqF⟩ := hF
+      have hqp : q ≠ p := by
+        intro h
+        subst q
+        exact hpF hqF
+      have hq := hface q hqF
+      rw [primeDilation_radius_of_eq x p hpmax] at hradius
+      rw [primeDilation_valuation_of_ne x hqp] at hq
+      have hle := x.valuation_le_radius q
+      omega
+    have hinsert :
+        (x.radius = m ∧ ∀ q ∈ insert p F, x.valuation q = m) ↔
+          (x.radius = m ∧ ∀ q ∈ F, x.valuation q = m) := by
+      constructor
+      · rintro ⟨hradius, hface⟩
+        exact ⟨hradius, fun q hqF => hface q (Finset.mem_insert_of_mem hqF)⟩
+      · rintro ⟨hradius, hface⟩
+        refine ⟨hradius, ?_⟩
+        intro q hq
+        rw [Finset.mem_insert] at hq
+        rcases hq with rfl | hqF
+        · exact hpmax.trans hradius
+        · exact hface q hqF
+    rw [if_neg hout]
+    by_cases hface : x.radius = m ∧ ∀ q ∈ F, x.valuation q = m
+    · rw [if_pos hface, if_pos (hinsert.mpr hface)]
+      norm_num
+    · rw [if_neg hface, if_neg (fun h => hface (hinsert.mp h))]
+      norm_num
+  · have hbelow : x.valuation p < x.radius :=
+      lt_of_le_of_ne (x.valuation_le_radius p) hpmax
+    have hdilation :
+        ((x.primeDilation p).radius = m ∧
+            ∀ q ∈ F, (x.primeDilation p).valuation q = m) ↔
+          (x.radius = m ∧ ∀ q ∈ F, x.valuation q = m) := by
+      constructor
+      · rintro ⟨hradius, hface⟩
+        refine ⟨?_, ?_⟩
+        · simpa [primeDilation_radius_of_ne x p hpmax] using hradius
+        · intro q hqF
+          have hqp : q ≠ p := by
+            intro h
+            subst q
+            exact hpF hqF
+          simpa [primeDilation_valuation_of_ne x hqp] using hface q hqF
+      · rintro ⟨hradius, hface⟩
+        refine ⟨?_, ?_⟩
+        · simpa [primeDilation_radius_of_ne x p hpmax] using hradius
+        · intro q hqF
+          have hqp : q ≠ p := by
+            intro h
+            subst q
+            exact hpF hqF
+          simpa [primeDilation_valuation_of_ne x hqp] using hface q hqF
+    have hinsert :
+        ¬ (x.radius = m ∧ ∀ q ∈ insert p F, x.valuation q = m) := by
+      rintro ⟨hradius, hface⟩
+      have hp := hface p (Finset.mem_insert_self p F)
+      omega
+    rw [if_neg hinsert]
+    by_cases hface : x.radius = m ∧ ∀ q ∈ F, x.valuation q = m
+    · rw [if_pos hface, if_pos (hdilation.mpr hface)]
+      norm_num
+    · rw [if_neg hface, if_neg (fun h => hface (hdilation.mp h))]
+      norm_num
+
+/-- Iteration of source covariance defects in an ordered finite prime list. -/
+noncomputable def iteratedPrimeDifference :
+    List Nat.Primes → (BoundedPrimeValuation → ℤ) → BoundedPrimeValuation → ℤ
+  | [], f => f
+  | p :: ps, f => primeDifference p (iteratedPrimeDifference ps f)
+
+/-- **Higher winning-face generation.** Every squarefree iterated prime-dilation defect
+of a positive radial shell is the signed boundary of the corresponding simultaneous-winning
+face. Thus the source operation closure of radial shells contains the full finite face nerve. -/
+theorem iteratedPrimeDifference_tropicalShellIndicator
+    (ps : List Nat.Primes) (hne : ps ≠ []) (hnd : ps.Nodup)
+    (x : BoundedPrimeValuation) {m : ℕ} (hm : 0 < m) :
+    iteratedPrimeDifference ps (tropicalShellIndicator m) x =
+      (-1 : ℤ) ^ (ps.length - 1) *
+        (winningFaceIndicator ps.toFinset (m - 1) x -
+          winningFaceIndicator ps.toFinset m x) := by
+  induction ps generalizing x with
+  | nil =>
+      exact (hne rfl).elim
+  | cons p ps ih =>
+      obtain ⟨hpF, hps⟩ := List.nodup_cons.mp hnd
+      by_cases htail : ps = []
+      · subst ps
+        simp only [iteratedPrimeDifference, primeDifference]
+        rw [tropicalShellIndicator_primeDilation_sub x p hm]
+        simp [winningFaceIndicator_singleton]
+      · have ihD := ih htail hps (x.primeDilation p)
+        have ihx := ih htail hps x
+        have hlow :=
+          primeDifference_winningFaceIndicator_of_nonempty_not_mem
+            x ps.toFinset p (m - 1) ((List.toFinset_nonempty_iff ps).mpr htail)
+              (by simpa using hpF)
+        have hhigh :=
+          primeDifference_winningFaceIndicator_of_nonempty_not_mem
+            x ps.toFinset p m ((List.toFinset_nonempty_iff ps).mpr htail)
+              (by simpa using hpF)
+        rw [iteratedPrimeDifference, primeDifference, ihD, ihx]
+        simp only [List.length_cons, Nat.succ_sub_one, List.toFinset_cons]
+        unfold primeDifference at hlow hhigh
+        calc
+          (-1 : ℤ) ^ (ps.length - 1) *
+                (winningFaceIndicator ps.toFinset (m - 1) (x.primeDilation p) -
+                  winningFaceIndicator ps.toFinset m (x.primeDilation p)) -
+              (-1 : ℤ) ^ (ps.length - 1) *
+                (winningFaceIndicator ps.toFinset (m - 1) x -
+                  winningFaceIndicator ps.toFinset m x) =
+              (-1 : ℤ) ^ (ps.length - 1) *
+                ((winningFaceIndicator ps.toFinset (m - 1) (x.primeDilation p) -
+                    winningFaceIndicator ps.toFinset (m - 1) x) -
+                  (winningFaceIndicator ps.toFinset m (x.primeDilation p) -
+                    winningFaceIndicator ps.toFinset m x)) := by ring
+          _ = (-1 : ℤ) ^ (ps.length - 1) *
+                (-winningFaceIndicator (insert p ps.toFinset) (m - 1) x -
+                  -winningFaceIndicator (insert p ps.toFinset) m x) := by
+                rw [hlow, hhigh]
+          _ = -((-1 : ℤ) ^ (ps.length - 1)) *
+                (winningFaceIndicator (insert p ps.toFinset) (m - 1) x -
+                  winningFaceIndicator (insert p ps.toFinset) m x) := by ring
+          _ = (-1 : ℤ) ^ ps.length *
+                (winningFaceIndicator (insert p ps.toFinset) (m - 1) x -
+                  winningFaceIndicator (insert p ps.toFinset) m x) := by
+                have hlength : ps.length = (ps.length - 1) + 1 := by
+                  have : 0 < ps.length := List.length_pos_of_ne_nil htail
+                  omega
+                have hsign :
+                    (-1 : ℤ) ^ ps.length =
+                      -((-1 : ℤ) ^ (ps.length - 1)) := by
+                  calc
+                    (-1 : ℤ) ^ ps.length =
+                        (-1 : ℤ) ^ ((ps.length - 1) + 1) := by
+                      exact congrArg (fun n : ℕ => (-1 : ℤ) ^ n) hlength
+                    _ = -((-1 : ℤ) ^ (ps.length - 1)) := by
+                      rw [pow_succ]
+                      ring
+                rw [hsign]
+
 end BoundedPrimeValuation
 
 end RHTower
