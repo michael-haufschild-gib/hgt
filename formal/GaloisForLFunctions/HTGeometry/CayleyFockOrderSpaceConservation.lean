@@ -94,6 +94,82 @@ theorem coherentExponentialJet_poisson_conservation
   rw [hexp]
   ring
 
+/-- Canonical time of a nonzero coherent generator. It is the
+unique clock that normalizes derivative-order drift to `tau`. -/
+def coherentGeneratorObservationTime
+    (b : ℂ) (tau : ℝ) : ℝ :=
+  tau / Complex.normSq b
+
+/-- Universal transverse rate in the reciprocal generator
+coordinate. -/
+def coherentGeneratorDualRate (b : ℂ) : ℝ :=
+  2 * (b⁻¹).re + 1
+
+/-- Canonical generator time normalizes the Poisson drift exactly. -/
+theorem coherentGenerator_drift_observationTime
+    (b : ℂ) (tau : ℝ) (hb : b ≠ 0) :
+    cayleyFockDrift b * coherentGeneratorObservationTime b tau =
+      tau := by
+  rw [cayleyFockDrift, Complex.sq_norm,
+    coherentGeneratorObservationTime]
+  field_simp [ne_of_gt (Complex.normSq_pos.mpr hb)]
+
+/-- Poisson drift normalization uniquely forces the canonical
+generator clock. -/
+theorem coherentGenerator_observationTime_unique
+    (b : ℂ) (tau x : ℝ) (hb : b ≠ 0)
+    (hx : cayleyFockDrift b * x = tau) :
+    x = coherentGeneratorObservationTime b tau := by
+  rw [coherentGeneratorObservationTime, ← hx, cayleyFockDrift,
+    Complex.sq_norm]
+  exact (mul_div_cancel_left₀ x
+    (ne_of_gt (Complex.normSq_pos.mpr hb))).symm
+
+/-- **Coherent generator duality.** The clock forced by order
+normalization converts a generator into its conjugate reciprocal. -/
+theorem coherentGenerator_duality
+    (b : ℂ) (tau : ℝ) (hb : b ≠ 0) :
+    b * (coherentGeneratorObservationTime b tau : ℂ) =
+      (starRingEnd ℂ) (b⁻¹) * (tau : ℂ) := by
+  rw [coherentGeneratorObservationTime, Complex.inv_def]
+  have hden : Complex.normSq b ≠ 0 :=
+    ne_of_gt (Complex.normSq_pos.mpr hb)
+  have hdenC : (Complex.normSq b : ℂ) ≠ 0 :=
+    Complex.ofReal_ne_zero.mpr hden
+  push_cast
+  rw [map_mul]
+  simp
+  field_simp [hdenC]
+
+/-- Total coherent growth at canonical time is measured by the
+universal reciprocal-generator horizon. -/
+theorem coherentGenerator_exponent_observationTime
+    (b : ℂ) (tau : ℝ) (hb : b ≠ 0) :
+    cayleyFockExponent b * coherentGeneratorObservationTime b tau =
+      coherentGeneratorDualRate b * tau := by
+  rw [cayleyFockExponent_eq, cayleyFockDrift, Complex.sq_norm,
+    coherentGeneratorObservationTime, coherentGeneratorDualRate,
+    Complex.inv_re]
+  have hden : Complex.normSq b ≠ 0 :=
+    ne_of_gt (Complex.normSq_pos.mpr hb)
+  field_simp
+
+/-- **Universal generator-horizon conservation.** At the uniquely
+Poisson-normalized clock, every coherent exponential has a
+height-free packet whose sole exponential datum is reciprocal
+generator orientation. -/
+theorem coherentGenerator_poisson_conservation
+    (c b : ℂ) (tau : ℝ) (r : ℕ) (hb : b ≠ 0) :
+    coherentGeneratorObservationTime b tau ^ r / r.factorial *
+        ‖coherentExponentialJet c b
+          (coherentGeneratorObservationTime b tau) r‖ ^ 2 =
+      ‖c‖ ^ 2 *
+        Real.exp (coherentGeneratorDualRate b * tau) *
+          poissonOrderWeight tau r := by
+  rw [coherentExponentialJet_poisson_conservation]
+  rw [coherentGenerator_exponent_observationTime b tau hb,
+    coherentGenerator_drift_observationTime b tau hb]
+
 /-- A two-mode coherent jet. -/
 def twoModeCoherentJet (c d b e : ℂ) (x : ℝ) (r : ℕ) : ℂ :=
   c * b ^ r * Complex.exp (b * (x : ℂ)) +

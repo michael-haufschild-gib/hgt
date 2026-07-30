@@ -3,7 +3,7 @@
 - **ID:** `analytic-operational-horizon-dichotomy`
 - **Stage:** 2-fully-proven
 - **Type:** HORIZON DISCRIMINATOR / EXACT ANALYTIC SCALING LAW
-- **Status:** `[PAPER-PROVED] [LEAN-PROVED] [NOT NOVEL ALONE]`
+- **Status:** `[PAPER-PROVED] [LEAN-PROVED] [FINITE POLYNOMIAL CERTIFICATE] [NOT NOVEL ALONE]`
 - **Parent conjecture:**
   `../1-in-progress/temporal-atlas-relativity-conjecture.md`
 
@@ -87,16 +87,67 @@ derivatives, because the zero branch concerns the complete Taylor jet.
 6. No gravity, black-hole information or spacetime claim follows without a
    concrete operational model.
 
+## Bounded-degree finite certificate
+
+If the calibrated response is a polynomial \(p\) of known degree at most
+\(D\), the all-jet criterion becomes finite. For any \(D+1\) distinct
+coupling settings \(g_0,\ldots,g_D\),
+\[
+ p=0
+ \quad\Longleftrightarrow\quad
+ p(g_0)=\cdots=p(g_D)=0.                             \tag{5}
+\]
+If \(p\ne0\) and \(p(0)=0\), its unlocking order is its root multiplicity
+at zero and lies in
+\[
+ 1\le \operatorname{ord}_0 p\le D.                  \tag{6}
+\]
+
+Thus a bounded-degree response model admits an exact finite horizon
+certificate without reconstructing a Hamiltonian. This is a noiseless
+identifiability theorem; finite-error certification still requires a
+stability margin.
+
+### Finite-depth path specialization
+
+Consider an arbitrary finite interferometric path family. Let every path
+contain \(m\) affine coupling factors
+\[
+ a_j+g b_j,\qquad j=1,\ldots,m,
+\]
+and permit arbitrary complex path weights and interference among paths.
+Every path amplitude is a polynomial of degree at most \(m\), and a finite
+weighted sum remains degree at most \(m\). Therefore:
+
+- \(m+1\) distinct coupling settings decide exact zero response;
+- any nonzero response vanishing at \(g=0\) unlocks at some
+  \(1\le b\le m\); and
+- destructive interference can delay unlocking but cannot hide the link
+  beyond protocol depth.
+
+This supplies a physical derivation of the degree bound for finite-depth
+affine path experiments. It does not yet cover generic exponential
+Hamiltonian evolution.
+
 ## Formal proof status
 
-File:
-`formal/GaloisForLFunctions/HTGeometry/AnalyticOperationalHorizonDichotomyLaw.lean`.
+Files:
+
+- `formal/GaloisForLFunctions/HTGeometry/AnalyticOperationalHorizonDichotomyLaw.lean`;
+- `formal/GaloisForLFunctions/HTGeometry/BoundedDegreeOperationalHorizonCertificate.lean`;
+- `formal/GaloisForLFunctions/HTGeometry/FiniteDepthOperationalHorizonLaw.lean`.
 
 Unconditional theorems:
 
 - `hasPermanentAnalyticHorizon_iff_series_eq_zero`;
 - `hasPermanentAnalyticHorizon_or_finiteUnlocking`; and
-- `analyticOperationalHorizon_dichotomy_core`.
+- `analyticOperationalHorizon_dichotomy_core`;
+- `polynomialResponse_eq_zero_iff_finiteSamples`;
+- `polynomialResponse_unlockingOrder_pos_le`; and
+- `boundedDegreeOperationalHorizon_finiteCertificate`;
+- `natDegree_affinePathResponse_le`;
+- `natDegree_finiteDepthAffineResponse_le`; and
+- `finiteDepthAffineResponse_horizonCertificate`.
 
 Foreground verification passed with
 `lake env lean
@@ -111,10 +162,10 @@ The scratch axiom audit reports only `propext`, `Classical.choice` and
 - [x] finite unlocking order for every active analytic response
 - [x] inverse-response scaling law
 - [x] unconditional Lean proof
-- [ ] finite model-derived upper bound on unlocking order
-- [ ] source/reporter operational specialization
+- [x] finite upper bound and exact sample certificate for polynomial responses
+- [x] finite-depth affine source/path/reporter specialization
+- [ ] generic unitary/channel protocol specialization
 - [ ] finite-sample noise and estimation theorem
 - [ ] channel-level observer comparison map
 - [ ] external joined-law novelty audit
 - [ ] physical horizon model
-

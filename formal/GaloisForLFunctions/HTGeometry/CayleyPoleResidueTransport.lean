@@ -130,6 +130,28 @@ theorem sourceCayley_drift_observationTime
     ne_of_gt (Complex.normSq_pos.mpr (sub_ne_zero.mpr hrho))
   field_simp
 
+/-- Source-Cayley time is not an independently chosen scale: it is
+exactly the unique clock forced by universal Poisson drift
+normalization. -/
+theorem sourceCayleyObservationTime_eq_coherentGeneratorTime
+    (c rho : ℂ) (tau : ℝ) (hrho : rho ≠ c) :
+    sourceCayleyObservationTime c rho tau =
+      coherentGeneratorObservationTime ((rho - c)⁻¹) tau := by
+  symm
+  exact coherentGenerator_observationTime_unique
+    ((rho - c)⁻¹) tau
+      (sourceCayleyObservationTime c rho tau)
+      (inv_ne_zero (sub_ne_zero.mpr hrho))
+      (sourceCayley_drift_observationTime c rho tau hrho)
+
+/-- The source horizon is the pullback of the universal reciprocal
+generator horizon. -/
+theorem coherentGeneratorDualRate_sourceCayley
+    (c rho : ℂ) :
+    coherentGeneratorDualRate ((rho - c)⁻¹) =
+      sourceCayleyTransverseRate c rho := by
+  rw [coherentGeneratorDualRate, sourceCayleyTransverseRate, inv_inv]
+
 /-- **Source inversion law.** Canonical observation converts reciprocal
 Cayley displacement into conjugate direct displacement. -/
 theorem sourceCayley_inverse_observationTime

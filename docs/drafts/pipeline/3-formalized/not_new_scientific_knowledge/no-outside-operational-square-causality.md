@@ -1,9 +1,9 @@
 # No-outside operational square--causality law
 
 - **ID:** `no-outside-operational-square-causality`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** EXACT FINITE OPERATIONAL BRIDGE / THEOREM
-- **Status:** `[PAPER-PROVED] [LEAN TARGET OPEN] [REDISCOVERED MATHEMATICS]`
+- **Status:** `[PAPER-PROVED] [LEAN-PROVEN] [REDISCOVERED MATHEMATICS]`
 - **Physical parent:** `../../1-in-progress/no-outside-witness-self-unfolding-law.md`
 - **Hermitian source parent:** `../../3-formalized/not_new_scientific_knowledge/triangle-source-hermitian-lift.md`
 - **Headline:** **The future is what reality can add without subtracting any possibility.**
@@ -208,28 +208,35 @@ interpretive declarations. Novel physics can begin only if source-complete succe
 this operational record in nature and its varying comparison law yields continuum curvature and a
 falsifiable prediction.
 
-## Formalization target
+## Lean realization
 
-Target module:
+Module:
 `formal/GaloisForLFunctions/HTGeometry/NoOutsideOperationalSquareCausality.lean`.
 
-Required declarations:
+Central declarations:
 
-- generic direct-sum event stacking and Gram additivity;
-- positive-record precedence;
-- precedence iff color-event-square increment;
-- pure witness weight, nonnegativity, additivity, and order separation;
-- exact Lorentz-Hermitian positive-semidefinite iff future-cone criterion;
-- spin-complement resolution of the identity;
-- binary Born normalization;
-- one bundled four-way equivalence.
+- `eventStack`;
+- `eventSquare_eventStack_eq_add`;
+- `twoRecordPrecedes`;
+- `twoRecordWitnessWeight`;
+- `twoRecordPrecedes_iff_exists_colorEvent_increment`;
+- `twoRecordPrecedes_iff_forall_witnessWeight_le`;
+- `lorentzHermitianMatrix_posSemidef_iff`;
+- `twoRecordPrecedes_iff_lorentzFuture_of_difference_eq`;
+- `noOutside_operationalSquareCausality_fourWay`;
+- `higgsSpinorEventMatrix_add_spinFlip_eq_smul_one`;
+- `twoRecordWitnessWeight_add_spinFlip`;
+- `twoRecord_binaryBorn_probabilities`.
+
+The Lorentz-cone converse is not delegated to a spectral oracle: Lean checks an explicit
+completed-square proof and separately discharges the singular null-boundary case.
 
 ## Gates
 
 - [x] dependency-closed paper proof
 - [x] primary-source novelty audit
-- [ ] unconditional Lean formalization
+- [x] unconditional Lean formalization
 - [ ] axiom audit
-- [ ] umbrella reachability and generated API index
+- [x] umbrella reachability
+- [ ] generated API index
 - [x] physical and empirical boundary explicit
-

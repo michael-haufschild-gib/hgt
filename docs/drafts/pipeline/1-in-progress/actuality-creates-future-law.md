@@ -1914,8 +1914,11 @@ nonzero positivity is impossible in a source-odd sector, while reciprocal Gram s
 positive and source even. The triangle Hermitian-lift theorem now further derives the complex
 phase algebra with conjugation, conjugate-complete account doublet, unique invariant positive
 metric ray, exact \(1\to3\to2\) complex sequence, \(M_{3,2}(\mathbb C)\) carrier, and positive
-Gram record. What remains unproved here is the physical identification of that source-forced
-record with Born probability and causal spacetime.
+Gram record. The finite operational square--causality theorem now proves that direct-sum event
+composition, addition of another Gram square, monotonicity under every pure Born witness, and
+Lorentz-future order are equivalent; it also proves exact binary Born normalization for every unit
+spinor and its spin complement. What remains unproved is that physical histories select this
+source record and that its local/continuum variation produces gravitational and gauge dynamics.
 
 Technical slogan:
 \[

@@ -853,9 +853,24 @@ as conjugation; full \(S_3\) symmetry forbids selecting either conjugate phase l
 source-counting metric uniquely supplies a positive adjoint ray; and free exact scalar extension
 gives the \(M_{3,2}(\mathbb C)\) carrier with positive Gram record.
 
-The unresolved jump is now physical, not Hermitian algebra: prove that this source-forced positive
-record is uniquely Born probability in its scalar reading and causal spacetime in its ordered
-matrix reading, then derive event composition, curvature, dynamics, and a prediction.
+The finite operational lift is now also closed in
+[`no-outside-operational-square-causality.md`](../3-formalized/not_new_scientific_knowledge/no-outside-operational-square-causality.md).
+Independent event stacking adds Gram squares. For positive records \(A,B\), the four statements
+\[
+B-A\succeq0,\qquad
+B=A+Y^\dagger Y,\qquad
+w_A(\psi)\le w_B(\psi)\ \forall\psi,\qquad
+\Delta x\in\overline{V_+}
+\]
+are equivalent, where \(\overline{V_+}\) is the closed Lorentz future cone. Unit spinors and their
+source-available spin complements give two nonnegative Born weights summing to one on every
+trace-one record. Thus finite event composition, pure quantum evaluation, Loewner order, and
+Lorentz causal order are no longer separate interpretive declarations.
+
+The unresolved jump is now empirical and dynamical: prove that physical histories realize this
+source-complete record, derive local incidence and continuum composition, and show that variation
+of the witness law generates clock transport, curvature, Einstein dynamics, matter/force
+couplings, and a new quantitative prediction.
 
 The result blocks another false shortcut. The generated sign torsor and its
 \(\mathbb Z_2\) holonomy concern time orientation. They do not equal gravitational curvature.

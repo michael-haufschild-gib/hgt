@@ -698,6 +698,97 @@ mathematics; see Karp--Prilepkina and Ostrovsky. The corpus-specific advance is 
 continuous positive flow to the prime-cofinal anomaly, bounded-exponent inverse, and completed Xi
 cocycle. No zero-location conclusion follows from positive forward time alone.
 
+### The Gamma flow is an oriented exponential coboundary
+`[PAPER-PROVED] [CANDIDATE-NEW SOURCE WELD]`
+
+The continuous Gamma flow has a simpler group-completion origin. Let
+\({\mathsf E}_\pi\) be the exponential probability law of rate \(\pi\). Its Mellin transform is
+\[
+ G(q)
+ :=
+ \int_0^\infty x^q\,d{\mathsf E}_\pi(x)
+ =
+ \frac{\Gamma(q+1)}{\pi^q}
+ \qquad(q>-1).
+\tag{7n21a}
+\]
+Then `(7n13)` is exactly
+\[
+ \boxed{\qquad
+ M_r(q)=\frac{G(rq)}{G(q)}.
+ \qquad}
+\tag{7n21b}
+\]
+Indeed
+\[
+ \frac{G(rq)}{G(q)}
+ =
+ \pi^{-(r-1)q}
+ \frac{\Gamma(rq+1)}{\Gamma(q+1)}
+ =
+ r\pi^{-(r-1)q}\frac{\Gamma(rq)}{\Gamma(q)}.
+\]
+
+If \({\mathsf E}_\pi^{[-1]}\) denotes the generalized Mellin-convolution inverse with transform
+\[
+ G(q)^{-1}=\frac{\pi^q}{\Gamma(q+1)},
+\tag{7n21c}
+\]
+then the positive law \(W_r\) has the group-completion factorization
+\[
+ \boxed{\qquad
+ {\rm Law}(W_r)
+ =
+ D_r{\mathsf E}_\pi *_\times {\mathsf E}_\pi^{[-1]}
+ \qquad(r\geq1),
+ \qquad}
+\tag{7n21d}
+\]
+where \(D_r\) sends \(x\) to \(x^r\). Thus the archimedean law-succession kernel is a positive
+coboundary built from a positive exponential clock and its non-positive orientation inverse.
+Positivity of the quotient for \(r\geq1\) is the nontrivial Gamma-ratio theorem in `(7n16)`;
+the coboundary identity itself is exact.
+
+The inverse in `(7n21c)` cannot be a positive nondegenerate probability with moments on an
+interval at zero. Logarithms of positive Mellin transforms are convex, whereas
+\[
+ \frac{d^2}{dq^2}
+ \log\frac{\pi^q}{\Gamma(q+1)}
+ =
+ -\psi_1(q+1)<0.
+\tag{7n21e}
+\]
+There is a stronger dynamical no-go.
+
+> **Theorem (no positive stationary law for Gamma succession).**
+> Fix \(r>1\). Let
+> \[
+>  P_r f(x)={\mathbb E}\,f(x^rW_r).
+> \tag{7n21f}
+> \]
+> There is no positive probability law \(\lambda\) on \((0,\infty)\) whose Mellin transform is
+> finite on a nontrivial interval \([0,q_0]\) and which is stationary for \(P_r\).
+
+If \(F(q)=\int x^q\,d\lambda(x)\), stationarity and `(7n21b)` give
+\[
+ F(q)=F(rq)\frac{G(rq)}{G(q)}.
+\tag{7n21g}
+\]
+Hence \(H(q):=\log F(q)+\log G(q)\) satisfies \(H(q)=H(rq)\). Applying this identity at
+\(q/r,q/r^2,\ldots\) and using continuity at zero gives \(H(q)=H(0)=0\). Therefore
+\[
+ F(q)=G(q)^{-1}.
+\tag{7n21h}
+\]
+But \(\log F\) is strictly concave by `(7n21e)`, contradicting Hölder log-convexity of positive
+moments.
+
+This no-go changes the target. The Gamma completion cannot be made globally reversible by finding
+a missing positive stationary measure. Its reverse exists naturally only in the generalized
+group-completion face. A positive dagger can agree with that reverse only after restriction to a
+special dualizable sector. The RH conjecture below says Xi conormals are exactly such sectors and
+that source reflection forces the agreement there.
+
 ### Exact Möbius orientation and oriented Poisson bosonization
 `[PAPER-PROVED] [PARENT ALGEBRA + CANDIDATE-NEW SOURCE WELD]`
 
@@ -1061,6 +1152,281 @@ The construction nevertheless kills one ambiguity: the third completion cannot b
 singular Hilbert norm. Its orientation face is forced to contain the generalized coherent
 displacement \(-2\ell\) arising from exact finite Möbius inversion.
 
+### The source adiabatic field and the arithmetic equivalence principle
+`[ONE-PARTICLE THEOREM PAPER-PROVED] [FULL CONNECTION CONJECTURAL]`
+
+A static boundary rigging is still not enough. It remembers the universal Poisson limit but not
+how the ordinary primes approach it. The approach itself has a canonical moving Hilbert
+realization.
+
+For \(\varepsilon>0\), give the prime \(p\) its exact squarefree Fisher weight
+\[
+ w_{p,\varepsilon}
+ =
+ \frac{p^{-1-\varepsilon}}
+      {(1+p^{-1-\varepsilon})^2},
+\qquad
+ H_\varepsilon^{\rm pr}
+ =
+ \ell^2(\mathbb P,w_{\bullet,\varepsilon}).
+\tag{7n51}
+\]
+Let
+\[
+ M_\varepsilon=\sum_p w_{p,\varepsilon}.
+\tag{7n52}
+\]
+There is a unique \(\delta_\varepsilon>0\) such that
+\[
+ \nu([\delta_\varepsilon,\infty))=M_\varepsilon.
+\tag{7n53}
+\]
+Since \(M_\varepsilon\to\infty\), one has \(\delta_\varepsilon\to0\).
+
+Order the primes \(p_1<p_2<\cdots\). Starting at \(b_{0,\varepsilon}=\delta_\varepsilon\),
+choose \(b_{j,\varepsilon}\) uniquely by
+\[
+ \nu([b_{j-1,\varepsilon},b_{j,\varepsilon}))
+ =
+ w_{p_j,\varepsilon}.
+\tag{7n54}
+\]
+The intervals
+\[
+ I_{p_j,\varepsilon}
+ =
+ [b_{j-1,\varepsilon},b_{j,\varepsilon})
+\tag{7n55}
+\]
+partition \([\delta_\varepsilon,\infty)\). Define
+\[
+ (J_\varepsilon c)(x)
+ =
+ \begin{cases}
+ c_p,&x\in I_{p,\varepsilon},\\
+ 0,&0<x<\delta_\varepsilon.
+ \end{cases}
+\tag{7n56}
+\]
+Then \(J_\varepsilon\) is an isometry from \(H_\varepsilon^{\rm pr}\) onto the closed
+step-function subspace associated with this partition:
+\[
+ \|J_\varepsilon c\|_H^2
+ =
+ \sum_p |c_p|^2\nu(I_{p,\varepsilon})
+ =
+ \sum_p w_{p,\varepsilon}|c_p|^2.
+\tag{7n57}
+\]
+
+> **Theorem (cofinal prime-quantile isometry).**
+> For every \(f\in C_c((0,\infty))\), let
+> \[
+>  (S_\varepsilon f)_p=f(\varepsilon\log p).
+> \tag{7n58}
+> \]
+> Then
+> \[
+>  \boxed{\qquad
+>  J_\varepsilon S_\varepsilon f\longrightarrow f
+>  \quad\text{strongly in }H.
+>  \qquad}
+> \tag{7n59}
+> \]
+
+To prove this, first note that the \(p^{-2-2\varepsilon}\) correction is negligible on every
+compact subset away from zero. Prime-number-theorem partial summation therefore gives, vaguely,
+\[
+ \sum_p w_{p,\varepsilon}\delta_{\varepsilon\log p}
+ \Longrightarrow
+ e^{-x}\frac{dx}{x}.
+\tag{7n60}
+\]
+On a compact interval \([a,b]\Subset(0,\infty)\), the corresponding tail distribution functions
+are monotone and converge uniformly to the continuous strictly decreasing tail of \(\nu\).
+Moreover the largest weight among primes with
+\(\varepsilon\log p\in[a,b]\) tends to zero. Inverting the tail functions shows that every
+interval \(I_{p,\varepsilon}\) meeting \([a,b]\) has diameter tending uniformly to zero and lies
+at distance \(o(1)\) from \(\varepsilon\log p\). Uniform continuity of \(f\), followed by
+`(7n57)`, proves `(7n59)`.
+
+Second quantization makes \(\Gamma_s(J_\varepsilon)\) an isometry on every finite Fock grade, and
+`(7n59)` gives
+\[
+ \Gamma_s(J_\varepsilon)
+ {\rm Exp}(S_\varepsilon f)
+ \longrightarrow
+ {\rm Exp}(f).
+\tag{7n61}
+\]
+This is the operator-level core beneath the corpus's prime-profile Fock kernel. Unlike a fixed
+compact synthesis, \(J_\varepsilon\) follows prime labels
+\(p\asymp e^{x/\varepsilon}\) to infinity. It is therefore a genuine cofinal moving
+identification and has no fixed finite-prime factorization.
+
+The theorem constructs the positive one-particle and finite-chaos part of an adiabatic field:
+\[
+ \{H_\varepsilon^{\rm pr}\}_{\varepsilon>0}
+ \rightsquigarrow
+ H
+ \quad(\varepsilon=0).
+\tag{7n62}
+\]
+Together with `(7n49)`, it also specifies the missing oriented boundary section. It still does
+not prove C49: the universal quantile isometry transports the singular prime Fisher field, but
+does not by itself produce the ordinary-prime Gamma/Xi Ward column.
+
+This leads to a sharper reinterpretation.
+
+`[BOLD CONJECTURE] [ARITHMETIC_EQUIVALENCE_CONNECTION_LAW]`
+
+> All admissible Euler sources have the same local Poisson/Fock tangent law at the critical
+> infinite face. Ordinary arithmetic is not stored in that universal boundary fibre. It is
+> stored in the source-induced connection describing how the exact discrete prime field
+> approaches the fibre. The completed Xi divisor is the exceptional holonomy of the relative
+> connection between the prime/Fisher trivialization and the independent Gamma/co-Poisson
+> trivialization.
+
+The analogy is structural, not rhetorical:
+
+```text
+universal Exp/Poisson clock:
+  local equivalence principle;
+
+prime-profile Fock field:
+  tangent fibre at arithmetic infinity;
+
+cofinal quantile maps J_epsilon:
+  moving source frame;
+
+Gamma/co-Poisson completion:
+  independent metric/reflection frame;
+
+Xi'/Xi and its divisor residues:
+  relative connection and exceptional holonomy;
+
+Möbius signed inverse:
+  microscopic orientation transported by the connection;
+
+RH:
+  metric compatibility of the oriented relative connection.
+```
+
+The corpus already proves that the centered law-succession connection has, at a zero \(\rho\) of
+order \(d\), residue
+\[
+ -d\left(\rho-\frac12\right).
+\tag{7n63}
+\]
+If the relative connection is metric-compatible on the conservative Xi conormal base change,
+this residue must be skew-adjoint. Its real part is then zero, giving
+\(\operatorname{Re}\rho=1/2\).
+
+This formulation explains why every calculation performed only in the limiting exponential
+clock is doomed: it works in a locally universal fibre from which the arithmetic connection has
+already been discarded. It also explains why C49 must be prelimit and moving. C49 is the
+contractive metric-compatibility statement for the connection, not a map between two already
+completed scalar clocks.
+
+Hostile qualification: the quantile frame is canonical only after choosing the exact Fisher
+weights, prime order, and boundary measure. Differentiating its step endpoints is distributional,
+and a raw one-parameter frame connection is gauge-dependent. The conjectural invariant must be
+formed on the full prime-profile/depth failure nerve and compared with the independently defined
+Gamma/co-Poisson frame. Claiming that `(7n59)` alone constructs Xi, or calling an arbitrary frame
+derivative \(\Xi'/\Xi\), would be circular.
+
+### Hypertranscendence is infinite connection rank, not another reporter
+`[ALGEBRAIC DESCENT PROVED IN CORPUS] [METRIC RIGIDITY CONJECTURAL]`
+
+The publication-ready positive divisor frame supplies the missing source-first Cartier
+presentation. For every \(m\geq12\), its positive disjoint shell has
+\[
+ S_m^\#(s)=\zeta(s)H_m(s)
+\tag{7n64}
+\]
+on the strict right half-plane, where \(H_m\) is holomorphic and zero-free. Therefore, in the
+analytic local ring \({\cal O}_\rho\) at every strict-right zeta zero,
+\[
+ (S_m^\#)=(\zeta),
+\qquad
+ \frac{(S_m^\#)}{(S_m^\#)^2}
+ \simeq
+ \frac{(\zeta)}{(\zeta)^2}.
+\tag{7n65}
+\]
+The isomorphism is multiplication by the unit \(H_m\). It retains analytic multiplicity, and
+between two positive shell presentations its transition gauge is
+\[
+ g_{m,n}=\frac{H_m}{H_n}\in{\cal O}_\rho^\times.
+\tag{7n66}
+\]
+Thus Xi/zeta conormal base change is not algebraically mysterious: it is already the common
+principal Cartier quotient of countably many literal, pairwise disjoint, nonnegative coefficient
+sources.
+
+The same paper proves that \(\{H_m:m\geq2\}\) is jointly differentially algebraically independent
+even over the complete differential field
+\(\mathbb C(s)\langle\zeta\rangle\). Consequently the transition gauges `(7n66)` cannot be
+encoded by any finite differential state or finite jet connection. Every new shell and every new
+derivative supplies a new transverse direction.
+
+The logarithmic connections in different shell frames satisfy
+\[
+ d\log S_m^\#-d\log S_n^\#
+ =
+ d\log g_{m,n},
+\tag{7n67}
+\]
+and the right side is holomorphic at \(\rho\). Hence the divisor residue is independent of the
+shell frame. After centering, it is the common residue `(7n63)`. This gives a clean division of
+labor:
+
+```text
+positive shell fusion:
+  constructs the common Cartier divisor from literal source channels;
+
+relative hypertranscendence:
+  proves all transverse gauges cannot collapse to finite differential data;
+
+prime-profile Fock/adiabatic field:
+  supplies enough infinite rank to retain those gauges;
+
+Möbius orientation:
+  supplies the source antipode across every chart;
+
+Gamma/co-Poisson reflection:
+  must supply one presentation-independent metric connection;
+
+common divisor residue:
+  is the gauge-invariant quantity whose metric purity is RH.
+```
+
+This yields the hypertranscendental version of the jump.
+
+`[BOLD CONJECTURE] [HYPERTRANSCENDENTAL_ADIABATIC_DESCENT_RIGIDITY]`
+
+> On the source-canonical adiabatic failure-nerve completion, there is at most one connection
+> which simultaneously:
+> 
+> 1. descends through every positive shell presentation `(7n64)`;
+> 2. is continuous in the full prime-profile Fock topology, not merely every finite jet topology;
+> 3. intertwines the exact Gibbs--Möbius antipode;
+> 4. is compatible with the independent Gamma/co-Poisson reflection; and
+> 5. has no surplus component orthogonal to all shell channels.
+>
+> That connection is metric on the common Cartier conormal.
+
+If true, `(7n63)` is skew-adjoint and RH follows. The point of maximal differential rank is not
+that hypertranscendence itself locates zeros. It prevents a finite-state gauge choice from hiding
+the antipode--dagger defect separately in every positive shell. Full infinite descent would have
+to carry one defect coherently across countably many independent gauges.
+
+This statement survives a first hostile attack but not as a theorem. Differential algebraic
+independence alone does not imply metric compatibility, and generalized-prime systems can also
+have positive shell decompositions and Möbius inversion. Items 3--5, especially ordinary
+Gamma/co-Poisson reflection and no-surplus source completeness, are load-bearing. Removing them
+turns the conjecture into a false “many independent charts force RH” slogan.
+
 ### Frozen jump: oriented bosonization reflection purity
 
 `[BOLD CONJECTURE] [ARITHMETIC_ORIENTED_BOSONIZATION_REFLECTION_PURITY]`
@@ -1072,7 +1438,7 @@ There is a source-canonical nuclear rigged Hopf completion
  L^2(\Pi_\nu)
  \subset
  {\mathscr S}_{\rm ar}'
-\tag{7n51}
+\tag{7n68}
 \]
 obtained as the cofinal graph completion of the exact pairs
 \(({\mathsf G}_{1+\varepsilon},{\mathsf S}_{1+\varepsilon})\), with all of the following

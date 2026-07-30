@@ -1,3 +1,4 @@
+import GaloisForLFunctions.HTGeometry.CayleyPoleResidueTransport
 import GaloisForLFunctions.HTGeometry.FieldOneMultiplicativeCore
 import GaloisForLFunctions.HTGeometry.FieldOneAffineGeometry
 import GaloisForLFunctions.HTGeometry.FieldOneSignedAxis
@@ -2647,3 +2648,4 @@ import GaloisForLFunctions.HTGeometry.CompleteComparisonReciprocity
 import GaloisForLFunctions.HTGeometry.TriangleFactOrientationTransmutation
 import GaloisForLFunctions.HTGeometry.NoOutsideQuadraticWitnessDescent
 import GaloisForLFunctions.HTGeometry.TriangleSourceHermitianLift
+import GaloisForLFunctions.HTGeometry.NoOutsideOperationalSquareCausality
