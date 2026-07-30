@@ -512,7 +512,24 @@ Already unconditional in Lean:
 7. real characteristic data give real canonical adjugate columns:
    `star_affineEigenbranchAdjugateColumn_eq`;
 8. on that slice the bilinear response equals the physical bra--ket:
-   `affineEigenbranchSesquilinearMatrixProbe_eq_bilinear_of_left_real`.
+   `affineEigenbranchSesquilinearMatrixProbe_eq_bilinear_of_left_real`;
+9. every off-label adjugate-column derivative is its exact simple-gap
+   quotient:
+   `affineEigenbranchAdjugateColumn_deriv_eq_div_general`;
+10. an arbitrary zero-base probe has the exact two-packet first derivative:
+    `affineEigenbranchMatrixProbe_deriv_eq_gapPackets`;
+11. the physical two-layer derivative equals the two-step packet times both
+    nonzero adjugate normalizations, and a nonzero packet forces a nonzero
+    derivative:
+    `twoLayerCrossMatrixProbe_deriv_eq_twoStepSums` and
+    `twoLayerCrossMatrixProbe_deriv_ne_zero_of_twoStepSums`;
+12. nonzero complex derivative forces a nonzero physical transition on a
+    punctured real coupling neighborhood:
+    `eventually_real_ne_of_complex_deriv_ne_zero` and
+    `eventually_affineEigenbranchMatrixProbe_ne_zero_of_deriv`;
+13. finitely many first-order responses survive simultaneously along one
+    sufficiently small real coupling line:
+    `eventually_all_real_ne_of_complex_deriv_ne_zero`.
 
 Direct checks passed:
 
@@ -526,13 +543,9 @@ lake env lean GaloisForLFunctions/HTGeometry/AllVertexEndpointResponse.lean
 
 Still required before stage 3:
 
-1. exact layered eigenbranch derivative-to-packet theorem including nonzero
-   adjugate normalization factors;
-2. real-line nonzero derivative implies a nonzero physical transition in
-   every sufficiently small coefficient ball;
-3. finite simultaneous analytic-avoidance theorem;
-4. all-vertex-good graph induction;
-5. heterogeneous relation-erasure capstone;
-6. spanning-tree lift;
-7. disconnected module equality and rational-transverse scaling;
-8. simultaneous subsystem and infinite product capstones.
+1. all-vertex-good graph induction;
+2. heterogeneous relation-erasure capstone;
+3. spanning-tree lift;
+4. disconnected module equality and rational-transverse scaling;
+5. temporal partition-curvature capstone;
+6. simultaneous subsystem and infinite product capstones.

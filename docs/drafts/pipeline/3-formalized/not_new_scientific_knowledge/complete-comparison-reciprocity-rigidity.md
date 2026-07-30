@@ -1,11 +1,12 @@
 # Complete-comparison reciprocity forces the \(3\times2\) witness
 
 - **ID:** `complete-comparison-reciprocity-rigidity`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper) / FINITE GRAPH-COHOMOLOGY BRIDGE
-- **Source:** `../1-in-progress/no-outside-witness-self-unfolding-law.md`
-- **Scientific status:** `[PROVED HERE] [STANDARD MATHEMATICS]`
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean) / FINITE GRAPH-COHOMOLOGY BRIDGE
+- **Source:** `../../1-in-progress/no-outside-witness-self-unfolding-law.md`
+- **Scientific status:** `[PROVED HERE] [LEAN-FORMALIZED] [STANDARD MATHEMATICS]`
   `[NEW CROSS-SHADOW SYNTHESIS] [NO NEW PHYSICS PROVED]`
+- **Lean target:** `GaloisForLFunctions.HTGeometry.CompleteComparisonReciprocity`
 - **Statement:** A connected elementary fact with \(n\) pairwise-complete raw accounts has one
   independent loop disagreement exactly when \(n=3\); its reduced comparison map then has source
   rank \(2\), target rank \(3\), and cokernel rank \(1\).
@@ -138,6 +139,9 @@ The role-changing corollary is standard Hochster/Stanley--Reisner mathematics. T
 formalizes its concrete rank-one \(C_3\) instance in
 `formal/GaloisForLFunctions/HTGeometry/HochsterCycleRealization.lean`.
 
+The complete-comparison rigidity and exact triangle dimensions are formalized in
+`formal/GaloisForLFunctions/HTGeometry/CompleteComparisonReciprocity.lean`.
+
 ## Relation to the physical \(3\times2\) phase
 
 The theorem supplies the dimensions of one reduced incidence map
@@ -176,7 +180,8 @@ source reciprocity equation \(d=1\).
 
 - [x] 0 → 1 in-progress: well-posed finite source model, attacks recorded
 - [x] 1 → 2 fully-proven: dependency-closed paper proof, `[PROVED HERE]`
-- [ ] 2 → 3 formalized: exact complete-graph rigidity theorem and \(3\times2\) corollary in Lean
+- [x] 2 → 3 formalized: exact count rigidity and \(2\to3\to1\) triangle ranks in Lean;
+  `lake build GaloisForLFunctions.HTGeometry.CompleteComparisonReciprocity` PASS
 - [ ] 3 → 4 publication-ready: not standalone; usable only as a certified lemma in a physical paper
 
 ## Log
@@ -184,3 +189,6 @@ source reciprocity equation \(d=1\).
 - 2026-07-30 — extracted complete-comparison rank identity from fact--disagreement reciprocity.
 - 2026-07-30 — proved that one loop disagreement forces \(n=3\) and simultaneously yields
   \(p=q+1\), \(q=2\), closing the finite conjunction in the root conjecture.
+- 2026-07-30 — formalized the count rigidity, complete-graph edge-cochain rank, and exact
+  \(2\to3\to1\) triangle dimensions. Source compile and single-module Lake build pass; axiom audit
+  contains only `propext`, `Classical.choice`, and `Quot.sound`.

@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.AffineEigenbranchGeneralSecondOrderLaw
 import GaloisForLFunctions.HTGeometry.LocalExtensionMatrixChart
 import GaloisForLFunctions.HTGeometry.HermitianLocalExtensionChart
+import GaloisForLFunctions.HTGeometry.LocalTwoLayerSpectralResponse
 
 /-!
 # Exact first-order transition law for a diagonal probe
@@ -259,6 +260,28 @@ def affineEigenbranchSesquilinearMatrixProbe
       O i j *
       affineEigenbranchAdjugateColumn energy V branchY y g j
 
+/-- At the uncoupled point, the arbitrary-probe transition is the selected
+matrix entry multiplied by the two canonical adjugate normalizations. -/
+theorem affineEigenbranchMatrixProbe_zero
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (energy : ι → ℂ) (V : Matrix ι ι ℂ)
+    (branchX branchY : ℂ → ℂ) (O : Matrix ι ι ℂ)
+    (x y : ι)
+    (hbaseX : branchX 0 = energy x)
+    (hbaseY : branchY 0 = energy y) :
+    affineEigenbranchMatrixProbe
+        energy V branchX branchY O x y 0 =
+      (∏ k ∈ Finset.univ.erase x, (energy x - energy k)) *
+        O x y *
+        ∏ k ∈ Finset.univ.erase y, (energy y - energy k) := by
+  unfold affineEigenbranchMatrixProbe
+  simp_rw [
+    affineEigenbranchAdjugateColumn_zero
+      energy V branchX x _ hbaseX,
+    affineEigenbranchAdjugateColumn_zero
+      energy V branchY y _ hbaseY]
+  simp
+
 /-- On a real adjugate-column slice, the algebraic bilinear response is
 exactly the physical sesquilinear bra--ket response. -/
 theorem affineEigenbranchSesquilinearMatrixProbe_eq_bilinear_of_left_real
@@ -306,6 +329,72 @@ theorem analyticAt_affineEigenbranchMatrixProbe
       energy V branchX x hbranchX i).mul analyticAt_const).mul
       (analyticAt_affineEigenbranchAdjugateColumn
         energy V branchY y hbranchY j)
+
+/-- A nonzero complex derivative cannot disappear on the real physical
+coefficient line: throughout some punctured real neighborhood, the response
+differs from its base value. -/
+theorem eventually_real_ne_of_complex_deriv_ne_zero
+    (f : ℂ → ℂ) (d : ℂ)
+    (hf : HasDerivAt f d 0) (hd : d ≠ 0) :
+    ∀ᶠ t : ℝ in 𝓝[≠] 0, f t ≠ f 0 := by
+  have hreal :
+      HasDerivAt (fun t : ℝ => f t) d 0 := by
+    simpa using hf.comp_ofReal
+  simpa only [Set.mem_compl_iff, Set.mem_singleton_iff] using
+    (hreal.tendsto_nhdsNE hd).eventually
+      (self_mem_nhdsWithin :
+        {f 0}ᶜ ∈ 𝓝[{f 0}ᶜ] f 0)
+
+/-- Finitely many nonzero first-order responses survive simultaneously on
+one sufficiently small nonzero real coupling interval. -/
+theorem eventually_all_real_ne_of_complex_deriv_ne_zero
+    {J : Type*} [Finite J]
+    (f : J → ℂ → ℂ) (d : J → ℂ)
+    (hf : ∀ j, HasDerivAt (f j) (d j) 0)
+    (hd : ∀ j, d j ≠ 0) :
+    ∀ᶠ t : ℝ in 𝓝[≠] 0, ∀ j, f j t ≠ f j 0 := by
+  exact Filter.eventually_all.mpr fun j =>
+    eventually_real_ne_of_complex_deriv_ne_zero
+      (f j) (d j) (hf j) (hd j)
+
+/-- If a probe transition vanishes at the uncoupled point but has nonzero
+first derivative, it is physically nonzero for every sufficiently small
+nonzero real coupling. -/
+theorem eventually_affineEigenbranchMatrixProbe_ne_zero_of_deriv
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (energy : ι → ℂ) (V : Matrix ι ι ℂ)
+    (branchX branchY : ℂ → ℂ) (O : Matrix ι ι ℂ)
+    (x y : ι)
+    (hbranchX : AnalyticAt ℂ branchX 0)
+    (hbranchY : AnalyticAt ℂ branchY 0)
+    (hbaseX : branchX 0 = energy x)
+    (hbaseY : branchY 0 = energy y)
+    (hOxy : O x y = 0)
+    (hderiv :
+      deriv
+        (affineEigenbranchMatrixProbe
+          energy V branchX branchY O x y) 0 ≠ 0) :
+    ∀ᶠ t : ℝ in 𝓝[≠] 0,
+      affineEigenbranchMatrixProbe
+        energy V branchX branchY O x y t ≠ 0 := by
+  let f : ℂ → ℂ :=
+    affineEigenbranchMatrixProbe
+      energy V branchX branchY O x y
+  have hfan : AnalyticAt ℂ f 0 :=
+    analyticAt_affineEigenbranchMatrixProbe
+      energy V branchX branchY O x y hbranchX hbranchY
+  have hbase : f 0 = 0 := by
+    dsimp [f]
+    rw [affineEigenbranchMatrixProbe_zero
+      energy V branchX branchY O x y hbaseX hbaseY,
+      hOxy, mul_zero, zero_mul]
+  have hev :
+      ∀ᶠ t : ℝ in 𝓝[≠] 0, f t ≠ f 0 :=
+    eventually_real_ne_of_complex_deriv_ne_zero
+      f (deriv f 0)
+      hfan.differentiableAt.hasDerivAt hderiv
+  filter_upwards [hev] with t ht
+  simpa [hbase] using ht
 
 /-- **Exact arbitrary-probe first derivative.** At the uncoupled point only
 the `y` coordinate of the second eigenvector germ and the `x` coordinate of
@@ -443,6 +532,320 @@ theorem affineEigenbranchMatrixProbe_deriv_eq
           wx 0 i * O i j * deriv (fun g => wy g j) 0) := by
     simp only [term, Finset.sum_add_distrib]
   rw [hprobe, hsplit, hfirst, hsecond]
+
+/-- Off-label derivative of a canonical adjugate-column eigenvector,
+written in the simple-gap quotient form used by transition-response
+packets. -/
+theorem affineEigenbranchAdjugateColumn_deriv_eq_div_general
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (energy : ι → ℂ) (hinj : Function.Injective energy)
+    (V : Matrix ι ι ℂ)
+    (x y : ι) (hyx : y ≠ x) (branch : ℂ → ℂ)
+    (hbranch : AnalyticAt ℂ branch 0)
+    (hbase : branch 0 = energy x)
+    (hroot :
+      ∀ᶠ g in 𝓝 0,
+        matrixCharpolyRelation
+          (Matrix.diagonal energy + g • V, branch g) = 0) :
+    deriv
+        (fun g =>
+          affineEigenbranchAdjugateColumn
+            energy V branch x g y) 0 =
+      (V y x *
+          ∏ j ∈ Finset.univ.erase x,
+            (energy x - energy j)) /
+        (energy x - energy y) := by
+  have hgap : energy x - energy y ≠ 0 := by
+    apply sub_ne_zero.mpr
+    intro heq
+    exact hyx (hinj heq).symm
+  apply (eq_div_iff hgap).2
+  simpa [mul_comm] using
+    affineEigenbranchAdjugateColumn_deriv_gap_mul_general
+      energy hinj V x y hyx branch hbranch hbase hroot
+
+/-- **Exact arbitrary-probe partial-fraction response.** If the probe has
+zero uncoupled `x → y` entry, the complete first derivative is the product
+of the two adjugate normalization factors and two explicit simple-gap
+packets.  No restriction on collisions among those packet poles is used. -/
+theorem affineEigenbranchMatrixProbe_deriv_eq_gapPackets
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (energy : ι → ℂ) (hinj : Function.Injective energy)
+    (V : Matrix ι ι ℂ)
+    (x y : ι)
+    (branchX branchY : ℂ → ℂ)
+    (hbranchX : AnalyticAt ℂ branchX 0)
+    (hbranchY : AnalyticAt ℂ branchY 0)
+    (hbaseX : branchX 0 = energy x)
+    (hbaseY : branchY 0 = energy y)
+    (hrootX :
+      ∀ᶠ g in 𝓝 0,
+        matrixCharpolyRelation
+          (Matrix.diagonal energy + g • V, branchX g) = 0)
+    (hrootY :
+      ∀ᶠ g in 𝓝 0,
+        matrixCharpolyRelation
+          (Matrix.diagonal energy + g • V, branchY g) = 0)
+    (O : Matrix ι ι ℂ) (hOxy : O x y = 0) :
+    deriv
+        (affineEigenbranchMatrixProbe
+          energy V branchX branchY O x y) 0 =
+      ((∏ k ∈ Finset.univ.erase x, (energy x - energy k)) *
+        (∏ k ∈ Finset.univ.erase y, (energy y - energy k))) *
+        ((∑ i,
+            V i x * O i y / (energy x - energy i)) +
+          ∑ j,
+            O x j * V j y / (energy y - energy j)) := by
+  let Px : ℂ :=
+    ∏ k ∈ Finset.univ.erase x, (energy x - energy k)
+  let Py : ℂ :=
+    ∏ k ∈ Finset.univ.erase y, (energy y - energy k)
+  let dx : ι → ℂ :=
+    fun i =>
+      deriv
+        (fun g =>
+          affineEigenbranchAdjugateColumn
+            energy V branchX x g i) 0
+  let dy : ι → ℂ :=
+    fun j =>
+      deriv
+        (fun g =>
+          affineEigenbranchAdjugateColumn
+            energy V branchY y g j) 0
+  have hformula :=
+    affineEigenbranchMatrixProbe_deriv_eq
+      energy V x y branchX branchY hbranchX hbranchY
+      hbaseX hbaseY O
+  have hfirst :
+      (∑ i, dx i * O i y) =
+        Px * ∑ i, V i x * O i y / (energy x - energy i) := by
+    rw [Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro i hi
+    by_cases hix : i = x
+    · subst i
+      simp [hOxy]
+    · have hdx :
+          dx i =
+            (V i x * Px) / (energy x - energy i) := by
+        simpa [dx, Px] using
+          affineEigenbranchAdjugateColumn_deriv_eq_div_general
+            energy hinj V x i hix branchX
+            hbranchX hbaseX hrootX
+      rw [hdx]
+      ring
+  have hsecond :
+      (∑ j, O x j * dy j) =
+        Py * ∑ j, O x j * V j y / (energy y - energy j) := by
+    rw [Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro j hj
+    by_cases hjy : j = y
+    · subst j
+      simp [hOxy]
+    · have hdy :
+          dy j =
+            (V j y * Py) / (energy y - energy j) := by
+        simpa [dy, Py] using
+          affineEigenbranchAdjugateColumn_deriv_eq_div_general
+            energy hinj V y j hjy branchY
+            hbranchY hbaseY hrootY
+      rw [hdy]
+      ring
+  change
+    deriv
+        (affineEigenbranchMatrixProbe
+          energy V branchX branchY O x y) 0 =
+      Py * (∑ i, dx i * O i y) +
+        Px * (∑ j, O x j * dy j) at hformula
+  change
+    deriv
+        (affineEigenbranchMatrixProbe
+          energy V branchX branchY O x y) 0 =
+      (Px * Py) *
+        ((∑ i, V i x * O i y / (energy x - energy i)) +
+          ∑ j, O x j * V j y / (energy y - energy j))
+  rw [hformula, hfirst, hsecond]
+  ring
+
+/-- **Physical two-layer cross-transition response.** For a symmetric
+old-system attachment channel, the first derivative of an old-observer
+cross-layer transition is exactly the two-step simple-pole packet, multiplied
+by the two nonzero adjugate normalization factors. -/
+theorem twoLayerCrossMatrixProbe_deriv_eq_twoStepSums
+    {α : Type*} [Fintype α] [DecidableEq α]
+    (energy : α → ℂ) (henergy : Function.Injective energy)
+    {z : ℂ} (hz : z ∉ twoLayerForbiddenShift energy)
+    (attachment observer : Matrix α α ℂ)
+    (hattachment : ∀ a b, attachment a b = attachment b a)
+    (a b : α)
+    (branchX branchY : ℂ → ℂ)
+    (hbranchX : AnalyticAt ℂ branchX 0)
+    (hbranchY : AnalyticAt ℂ branchY 0)
+    (hbaseX : branchX 0 = energy a + z)
+    (hbaseY : branchY 0 = energy b)
+    (hrootX :
+      ∀ᶠ g in 𝓝 0,
+        matrixCharpolyRelation
+          (Matrix.diagonal (twoLayerEnergy energy z) +
+            g • twoLayerCoupling attachment,
+            branchX g) = 0)
+    (hrootY :
+      ∀ᶠ g in 𝓝 0,
+        matrixCharpolyRelation
+          (Matrix.diagonal (twoLayerEnergy energy z) +
+            g • twoLayerCoupling attachment,
+            branchY g) = 0) :
+    deriv
+        (affineEigenbranchMatrixProbe
+          (twoLayerEnergy energy z)
+          (twoLayerCoupling attachment)
+          branchX branchY
+          (layerMatrixCoupling observer
+            (1 : Matrix Bool Bool ℂ))
+          (a, false) (b, true)) 0 =
+      ((∏ k ∈ Finset.univ.erase (a, false),
+          (twoLayerEnergy energy z (a, false) -
+            twoLayerEnergy energy z k)) *
+        (∏ k ∈ Finset.univ.erase (b, true),
+          (twoLayerEnergy energy z (b, true) -
+            twoLayerEnergy energy z k))) *
+        ((∑ d,
+            attachment a d * observer d b /
+              (z + energy a - energy d)) +
+          ∑ d,
+            observer a d * attachment d b /
+              (-z + energy b - energy d)) := by
+  classical
+  have hinj :
+      Function.Injective (twoLayerEnergy energy z) :=
+    twoLayerEnergy_injective_of_not_forbidden
+      energy henergy hz
+  have hOxy :
+      layerMatrixCoupling observer (1 : Matrix Bool Bool ℂ)
+          (a, false) (b, true) = 0 := by
+    simp [layerMatrixCoupling]
+  have hformula :=
+    affineEigenbranchMatrixProbe_deriv_eq_gapPackets
+      (twoLayerEnergy energy z) hinj
+      (twoLayerCoupling attachment)
+      (a, false) (b, true)
+      branchX branchY hbranchX hbranchY
+      hbaseX hbaseY hrootX hrootY
+      (layerMatrixCoupling observer (1 : Matrix Bool Bool ℂ))
+      hOxy
+  have hfirst :
+      (∑ i : α × Bool,
+          twoLayerCoupling attachment i (a, false) *
+              layerMatrixCoupling observer
+                (1 : Matrix Bool Bool ℂ) i (b, true) /
+            (twoLayerEnergy energy z (a, false) -
+              twoLayerEnergy energy z i)) =
+        ∑ d,
+          attachment a d * observer d b /
+            (z + energy a - energy d) := by
+    rw [Fintype.sum_prod_type]
+    apply Finset.sum_congr rfl
+    intro d hd
+    simp only [Fintype.sum_bool, twoLayerCoupling_same,
+      twoLayerCoupling_true_false, twoLayerEnergy_false,
+      twoLayerEnergy_true, zero_mul, zero_div]
+    simp only [layerMatrixCoupling]
+    rw [hattachment d a]
+    simp
+    congr 1
+    ring
+  have hsecond :
+      (∑ j : α × Bool,
+          layerMatrixCoupling observer
+                (1 : Matrix Bool Bool ℂ) (a, false) j *
+              twoLayerCoupling attachment j (b, true) /
+            (twoLayerEnergy energy z (b, true) -
+              twoLayerEnergy energy z j)) =
+        ∑ d,
+          observer a d * attachment d b /
+            (-z + energy b - energy d) := by
+    rw [Fintype.sum_prod_type]
+    apply Finset.sum_congr rfl
+    intro d hd
+    simp only [Fintype.sum_bool, twoLayerCoupling_false_true,
+      twoLayerCoupling_same, twoLayerEnergy_false,
+      twoLayerEnergy_true, mul_zero, zero_div]
+    simp only [layerMatrixCoupling]
+    simp
+    congr 1
+    ring
+  rw [hfirst, hsecond] at hformula
+  exact hformula
+
+/-- A nonzero two-step packet is therefore a genuine nonzero first-order
+transition between the two labeled cross-layer eigenbranches. -/
+theorem twoLayerCrossMatrixProbe_deriv_ne_zero_of_twoStepSums
+    {α : Type*} [Fintype α] [DecidableEq α]
+    (energy : α → ℂ) (henergy : Function.Injective energy)
+    {z : ℂ} (hz : z ∉ twoLayerForbiddenShift energy)
+    (attachment observer : Matrix α α ℂ)
+    (hattachment : ∀ a b, attachment a b = attachment b a)
+    (a b : α)
+    (branchX branchY : ℂ → ℂ)
+    (hbranchX : AnalyticAt ℂ branchX 0)
+    (hbranchY : AnalyticAt ℂ branchY 0)
+    (hbaseX : branchX 0 = energy a + z)
+    (hbaseY : branchY 0 = energy b)
+    (hrootX :
+      ∀ᶠ g in 𝓝 0,
+        matrixCharpolyRelation
+          (Matrix.diagonal (twoLayerEnergy energy z) +
+            g • twoLayerCoupling attachment,
+            branchX g) = 0)
+    (hrootY :
+      ∀ᶠ g in 𝓝 0,
+        matrixCharpolyRelation
+          (Matrix.diagonal (twoLayerEnergy energy z) +
+            g • twoLayerCoupling attachment,
+            branchY g) = 0)
+    (hpacket :
+      (∑ d,
+          attachment a d * observer d b /
+            (z + energy a - energy d)) +
+        ∑ d,
+          observer a d * attachment d b /
+            (-z + energy b - energy d) ≠ 0) :
+    deriv
+        (affineEigenbranchMatrixProbe
+          (twoLayerEnergy energy z)
+          (twoLayerCoupling attachment)
+          branchX branchY
+          (layerMatrixCoupling observer
+            (1 : Matrix Bool Bool ℂ))
+          (a, false) (b, true)) 0 ≠ 0 := by
+  have hinj :
+      Function.Injective (twoLayerEnergy energy z) :=
+    twoLayerEnergy_injective_of_not_forbidden
+      energy henergy hz
+  have hPx :
+      ∏ k ∈ Finset.univ.erase (a, false),
+          (twoLayerEnergy energy z (a, false) -
+            twoLayerEnergy energy z k) ≠ 0 := by
+    apply Finset.prod_ne_zero_iff.mpr
+    intro k hk
+    apply sub_ne_zero.mpr
+    intro heq
+    exact (Finset.mem_erase.mp hk).1 (hinj heq.symm)
+  have hPy :
+      ∏ k ∈ Finset.univ.erase (b, true),
+          (twoLayerEnergy energy z (b, true) -
+            twoLayerEnergy energy z k) ≠ 0 := by
+    apply Finset.prod_ne_zero_iff.mpr
+    intro k hk
+    apply sub_ne_zero.mpr
+    intro heq
+    exact (Finset.mem_erase.mp hk).1 (hinj heq.symm)
+  rw [twoLayerCrossMatrixProbe_deriv_eq_twoStepSums
+    energy henergy hz attachment observer hattachment a b
+    branchX branchY hbranchX hbranchY hbaseX hbaseY
+    hrootX hrootY]
+  exact mul_ne_zero (mul_ne_zero hPx hPy) hpacket
 
 /-- A directed probe creates a nonzero transition without any cancellation.
 If the probe row at `x` vanishes, its column at `y` is supported only at

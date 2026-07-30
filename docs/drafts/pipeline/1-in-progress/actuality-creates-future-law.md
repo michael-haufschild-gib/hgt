@@ -1907,6 +1907,13 @@ Public law:
 
 > **The universe uses the same square to decide what happens and to build where it happens.**
 
+The finite source reason for a square is now exact. The unlabeled self-witness triangle generates
+an orientation residual \(a\) reversed by a source automorphism. No nonzero linear orientation is
+source-natural, and every entire invariant scalar reporter factors as \(R(a^2)\). Separately,
+nonzero positivity is impossible in a source-odd sector, while reciprocal Gram squares are
+positive and source even. These results derive a quadratic **quotient shape** from source
+symmetry; they do not derive the Hermitian event carrier, dagger, or physical identification.
+
 Technical slogan:
 \[
 \boxed{

@@ -217,6 +217,9 @@ The formal development adds:
 
 - `primeDifference`;
 - `winningFaceIndicator`;
+- `winningFaceIndicator_mul`;
+- `winnerSetWithin`;
+- `tropicalShellIndicator_eq_alternating_winningFace_sum`;
 - `primeDifference_winningFaceIndicator_of_nonempty_not_mem`;
 - `iteratedPrimeDifference`; and
 - `iteratedPrimeDifference_tropicalShellIndicator`.
@@ -235,6 +238,12 @@ primeDifference_winningFaceIndicator_of_nonempty_not_mem:
   [propext, Quot.sound]
 
 iteratedPrimeDifference_tropicalShellIndicator:
+  [propext, Classical.choice, Quot.sound]
+
+winningFaceIndicator_mul:
+  [propext, Classical.choice, Quot.sound]
+
+tropicalShellIndicator_eq_alternating_winningFace_sum:
   [propext, Classical.choice, Quot.sound]
 ```
 

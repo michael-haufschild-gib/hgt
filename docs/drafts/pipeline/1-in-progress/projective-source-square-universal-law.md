@@ -332,8 +332,10 @@ all be projections of one nonflat source-completion object.
    \(S_3\), and the exact symmetry no-go proves that full `SU(3)` does not preserve their fixed
    Pauli bracket. Continuous colour frame equivalence must be derived on an independent
    consequence multiplicity or on a covariant composition bundle, not silently completed.
-7. **Why Gram is the complete public causal report?** Positivity and quadratic descent are not
-   source-derived.
+7. **Why Gram is the complete public causal report?** The triangle source now derives sign
+   reversal and forces every entire invariant scalar reporter to descend through the squared
+   orientation coordinate. This closes only the scalar quadratic quotient. Positivity, dagger,
+   matrix-valued Hermitian lift, and its physical causal interpretation are not source-derived.
 8. **Why exactly `(PS.6)` and no fifth force?** One \(3\times2\) carrier cannot supply it: colour
    requires covariant composition or independent multiplicity, while the right \(SU(2)\) is
    causally active rather than weak-internal. The missing typed consequence levels must be derived.

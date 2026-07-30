@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.HighExponentShellHypertranscendence
+import Mathlib.Data.Nat.Choose.Sum
 
 /-!
 # Prime-dilation tropical-boundary tomography
@@ -300,6 +301,99 @@ theorem winningFaceIndicator_singleton
     (x : BoundedPrimeValuation) (p : Nat.Primes) (m : ℕ) :
     winningFaceIndicator {p} m x = primeWinningFacetIndicator p m x := by
   simp [winningFaceIndicator, primeWinningFacetIndicator]
+
+/-- Winning-face cells form the intersection semilattice of the prime-facet cover. -/
+theorem winningFaceIndicator_mul
+    (x : BoundedPrimeValuation) (F G : Finset Nat.Primes) (m : ℕ) :
+    winningFaceIndicator F m x * winningFaceIndicator G m x =
+      winningFaceIndicator (F ∪ G) m x := by
+  unfold winningFaceIndicator
+  by_cases hF : x.radius = m ∧ ∀ p ∈ F, x.valuation p = m
+  · by_cases hG : x.radius = m ∧ ∀ p ∈ G, x.valuation p = m
+    · have hUnion : x.radius = m ∧ ∀ p ∈ F ∪ G, x.valuation p = m := by
+        refine ⟨hF.1, ?_⟩
+        intro p hp
+        rw [Finset.mem_union] at hp
+        rcases hp with hpF | hpG
+        · exact hF.2 p hpF
+        · exact hG.2 p hpG
+      rw [if_pos hF, if_pos hG, if_pos hUnion]
+      norm_num
+    · have hUnion : ¬(x.radius = m ∧ ∀ p ∈ F ∪ G, x.valuation p = m) := by
+        intro h
+        exact hG ⟨h.1, fun p hpG => h.2 p (Finset.mem_union_right F hpG)⟩
+      rw [if_pos hF, if_neg hG, if_neg hUnion]
+      norm_num
+  · have hUnion : ¬(x.radius = m ∧ ∀ p ∈ F ∪ G, x.valuation p = m) := by
+      intro h
+      exact hF ⟨h.1, fun p hpF => h.2 p (Finset.mem_union_left G hpF)⟩
+    rw [if_neg hF, if_neg hUnion]
+    norm_num
+
+/-- Winners visible in a finite prime aperture. -/
+def winnerSetWithin
+    (x : BoundedPrimeValuation) (P : Finset Nat.Primes) : Finset Nat.Primes :=
+  P.filter (fun p => x.valuation p = x.radius)
+
+/-- **Finite prime-winning Čech augmentation.** At every source point where a finite aperture
+contains a winner, alternating over all nonempty faces of its winner simplex recovers the radial
+shell indicator exactly. -/
+theorem tropicalShellIndicator_eq_alternating_winningFace_sum
+    (x : BoundedPrimeValuation) (P : Finset Nat.Primes) (m : ℕ)
+    (hW : (winnerSetWithin x P).Nonempty) :
+    tropicalShellIndicator m x =
+      ∑ F ∈ (winnerSetWithin x P).powerset.erase ∅,
+        (-1 : ℤ) ^ (F.card + 1) * winningFaceIndicator F m x := by
+  classical
+  let W := winnerSetWithin x P
+  have hsumZero :
+      (∑ F ∈ W.powerset, (-1 : ℤ) ^ F.card) = 0 :=
+    Finset.sum_powerset_neg_one_pow_card_of_nonempty hW
+  have hempty : (∅ : Finset Nat.Primes) ∈ W.powerset := by
+    simp
+  have herase :
+      (∑ F ∈ W.powerset.erase ∅, (-1 : ℤ) ^ F.card) = -1 := by
+    have hsplit :=
+      Finset.sum_erase_add W.powerset (fun F => (-1 : ℤ) ^ F.card) hempty
+    rw [hsumZero] at hsplit
+    norm_num at hsplit ⊢
+    exact hsplit
+  have halternating :
+      (∑ F ∈ W.powerset.erase ∅, (-1 : ℤ) ^ (F.card + 1)) = 1 := by
+    calc
+      (∑ F ∈ W.powerset.erase ∅, (-1 : ℤ) ^ (F.card + 1)) =
+          -(∑ F ∈ W.powerset.erase ∅, (-1 : ℤ) ^ F.card) := by
+            rw [← Finset.sum_neg_distrib]
+            apply Finset.sum_congr rfl
+            intro F hF
+            rw [pow_succ]
+            ring
+      _ = 1 := by rw [herase]; norm_num
+  by_cases hradius : x.radius = m
+  · rw [tropicalShellIndicator, if_pos hradius]
+    calc
+      1 = ∑ F ∈ W.powerset.erase ∅, (-1 : ℤ) ^ (F.card + 1) :=
+        halternating.symm
+      _ = ∑ F ∈ (winnerSetWithin x P).powerset.erase ∅,
+          (-1 : ℤ) ^ (F.card + 1) * winningFaceIndicator F m x := by
+            apply Finset.sum_congr rfl
+            intro F hF
+            have hsubset : F ⊆ W := by
+              exact Finset.mem_powerset.mp (Finset.mem_of_mem_erase hF)
+            have hface :
+                winningFaceIndicator F m x = 1 := by
+              unfold winningFaceIndicator
+              rw [if_pos]
+              refine ⟨hradius, ?_⟩
+              intro p hpF
+              have hpW := hsubset hpF
+              have hpRadius :
+                  x.valuation p = x.radius :=
+                (Finset.mem_filter.mp hpW).2
+              exact hpRadius.trans hradius
+            rw [hface]
+            ring
+  · simp [tropicalShellIndicator, winningFaceIndicator, hradius]
 
 /-- **Face-extension law.** Once a nonempty winning face has been generated, taking
 the covariance defect in a new prime direction adjoins exactly that prime to the face. -/

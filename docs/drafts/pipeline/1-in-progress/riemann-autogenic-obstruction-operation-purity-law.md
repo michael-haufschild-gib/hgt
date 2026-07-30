@@ -554,3 +554,221 @@ carry model.
   source. Reinterpreted zeros and prime operations as two variances of one persistent arithmetic
   obstruction. Retired the independent infinite-replication/Calkin producer after collision with
   the existing shell weighted-shift selector and Cartier-unit gauge correction.
+
+## The failure closure is the prime-winning Čech resolution `[PAPER + LEAN PROGRESS]`
+
+The higher no-surplus claim is now exact at every finite prime degree. The Lean theorem
+`iteratedPrimeDifference_tropicalShellIndicator` proves
+\[
+ \Delta_{p_1}\cdots\Delta_{p_k}a_m
+ =
+ (-1)^{k-1}(b_{F,m-1}-b_{F,m})
+\]
+for every nonempty list of distinct primes. Thus actual prime covariance failure generates every
+finite intersection in the winning-facet cover.
+
+The paper theorem
+`../2-fully-proven/prime-winning-cech-divisor-resolution.md` identifies the resulting object:
+
+1. \(a_m\) is the union of the singleton winning facets;
+2. \(b_{F,m}\) is their intersection over \(F\);
+3. each integer sees the full simplex on its finite winner set \(W(n)\);
+4. coning to \(\min W(n)\) gives a source-canonical contracting homotopy; and
+5. every nonempty cell has Dirichlet series
+   \[
+   B_{F,m}(s)=\zeta(s)U_{F,m}(s),
+   \qquad
+   U_{F,m}\in
+   \mathcal O(\operatorname{Re}s>1/2)^\times.
+   \]
+
+The principal conormal transition under adjoining \(p\notin F\) is therefore the explicit unit
+\[
+ R_{p,m}(s)
+ =
+ \frac{p^{-ms}(1-p^{-s})}{1-p^{-(m+1)s}}.
+\]
+This is the first algebraic/projective Xi-conormal landing derived from literal source cells,
+rather than assumed after choosing a zero.
+
+### Sharpened universal law
+
+The missing invariant is not homology of finite face complexes: those are canonically
+contractible. Nor can an ordinary derived inverse limit of zero fibres create it. What can fail at
+infinity is control of the **specific source contraction** and its Gamma-reflected adjoint after
+Cartier base change.
+
+`[SHARPENED CONJECTURE] [RIEMANN_REFLECTED_CONTROLLED_CECH_PURITY]`
+
+> Completed zeta is the regularized determinant of the unique reflected controlled totalization
+> of the source-generated prime-winning Čech resolutions. Every Xi principal conormal is a
+> conservative base change of the source contraction. A conormal is harmonic precisely when the
+> contraction and its reflected adjoint are both strict on it; this common strictness is
+> equivalent to zero prime-face radial drift.
+
+Positive-source normalization gives
+\[
+ \log\left|
+ \frac{R_{p,m}(s)}{\sqrt{R_{p,m}(1)}}
+ \right|
+ =
+ -m(\operatorname{Re}s-\tfrac12)\log p+o(\log p).
+\]
+Hence the conjectured common strict domain is exactly \(\operatorname{Re}s=1/2\). This would
+explain why the line appears: it is the balanced control locus of one source contraction and its
+reflection, not a positivity sign or a norm fitted to a zero.
+
+### Current open core
+
+`[OPEN CORE] [XI_REFLECTED_CONTROLLED_CECH_BASE_CHANGE]`
+
+Construct the source topology in which the canonical cone homotopy is closable; derive its adjoint
+from Gamma/co-Poisson reflection; prove Xi Cartier base change preserves both on every principal
+normal jet; and identify the resulting Hodge determinant with \(\Xi\).
+
+Hostile boundary: functional equation alone can place \(\rho\) and \(1-\overline\rho\) in opposite
+one-sided domains. That does not force RH. Both contraction directions must act on the same
+source-generated harmonic conormal, and that fact must be proved before zero specialization.
+
+## Created regularity law: finite nonlanding, infinite Poisson strictness
+
+The additive comparison is now concrete. For finite exponent depth \(M\), the positive dilation
+operator supported on integers with \(M(n)\leq M\) has Mellin multiplier
+\[
+ A_M(s)=\frac{\zeta(s)}{\zeta((M+1)s)}.
+\]
+It has a forced pole at
+\[
+ s_M=-\frac2{M+1}.
+\]
+A single explicit even Schwartz test with \(f(0)=\widehat f(0)=0\) detects that pole for every
+\(M\). Therefore no finite bounded-exponent truncation maps Meyer's Poisson source into his strict
+nuclear target. Nevertheless the infinite-depth limit is the strict Meyer--Poisson operator.
+
+Full theorem:
+`../2-fully-proven/bounded-exponent-poisson-strictness-emergence.md`.
+
+The horizontal winning-face Čech augmentation and vertical shell-depth telescope now form one
+source-generated double resolution. Every finite rectangle leaves one terminal scaled
+trivial-zero pole. The complete double augmentation cancels the tower and creates Poisson
+regularity. The escaping pole has nonzero normalized boundary flux
+\[
+ \lim_{M\to\infty}
+(M+1)\operatorname*{Res}_{s=-2/(M+1)}A_M(s)
+ =
+ \frac{2\pi^2}{\zeta(3)}.
+\]
+
+This sharpens the third-completion target. It must retain both:
+
+1. finite non-Poisson cells and their moving-pole current; and
+2. the strict infinite Poisson limit.
+
+`[OPEN CORE] [MOVING_POLE_POISSON_XI_GRAPH_TOTALIZATION]`
+
+Construct a Hausdorff graph/Tate totalization where the moving pole converges to its \(s=0\)
+boundary functional, the complete augmentation is Meyer's \(Z\), Gamma/Fourier supplies the
+adjoint, and Xi conormal base change is conservative. Then prove the resulting interior Hodge
+classes have zero arithmetic weight.
+
+This is the first source-specific mechanism explaining why infinity creates a law absent from
+every finite stage. It still does not prove that Xi zeros are the pure classes of that
+totalization.
+
+## Exceptional-divisor jump: zeta and reciprocal zeta are two charts of one source limit
+
+The terminal pole is the trivial-zero point of a complete scaled divisor. With
+\[
+ \varepsilon_M=\frac1{M+1},
+ \qquad
+ A_M(s)=\frac{\zeta(s)}{\zeta((M+1)s)},
+\]
+the normal-coordinate chart \(s=\varepsilon_Mu\) satisfies
+\[
+ A_M(\varepsilon_Mu)
+ =
+ \frac{\zeta(\varepsilon_Mu)}{\zeta(u)}
+ \longrightarrow
+ \frac{\zeta(0)}{\zeta(u)}
+ =
+ -\frac1{2\zeta(u)}.
+\]
+
+Thus bounded-exponent completion has two inequivalent limits:
+
+1. fixed \(s\): the bulk limit is \(\zeta(s)\);
+2. fixed \(u=(M+1)s\): the exceptional boundary limit is
+   \(\zeta(0)/\zeta(u)\).
+
+Every zeta zero of every multiplicity is a pole of the exceptional fibre. This supplies the
+previously missing conormal-retaining boundary without choosing a zero:
+\[
+ \mathscr A(\varepsilon,u)
+ =
+ \frac{\zeta(\varepsilon u)}{\zeta(u)}
+\]
+extends meromorphically to \(\varepsilon=0\). The “third completion” is therefore not an unknown
+Hilbert space in the first instance. It is the source deformation-to-normal-cone gluing the bulk
+Poisson fibre to the reciprocal-zeta exceptional fibre.
+
+The new open problem is narrower and harder: derive from Gamma/co-Poisson reflection a positive
+Hodge law on this two-chart object whose weight-zero exceptional classes are exactly the bulk Xi
+zeros. The carrier/landing problem is solved at the meromorphic Rees level; purity is not.
+
+Gamma completion makes the two endpoint blow-ups literally identical. Define
+\[
+ \mathscr X_0(\varepsilon,u)=\frac{\Xi(\varepsilon u)}{\Xi(u)},
+ \qquad
+ \mathscr X_1(\varepsilon,u)=\frac{\Xi(1-\varepsilon u)}{\Xi(u)}.
+\]
+Then
+\[
+ \mathscr X_0=\mathscr X_1
+\]
+for every \(\varepsilon,u\), and their common exceptional fibre is
+\[
+ \mathscr X_0(0,u)=\frac1{2\Xi(u)}.
+\]
+Thus functional equation is not merely symmetry of a finished determinant. It is exact gluing of
+the two endpoint normal cones of the finite-depth source. Every nontrivial zero and multiplicity is
+already a pole of the common exceptional fibre.
+
+This changes the role of hypertranscendence. It is not expected to force zero location directly.
+It should prove that the Gamma-completed exceptional transition cannot be flattened into a finite
+differential-algebraic state chart. The new mathematics sought is a polarized real/Hodge structure
+on this operation-valued Rees gluing whose poles are pure exactly on the fixed line.
+
+Consecutive exponent depths generate the missing determinant connection. For
+\[
+ X_M(s)=\frac{\Xi(s)}{\Xi((M+1)s)},
+ \qquad
+ \varepsilon_M=(M+1)^{-1},
+\]
+one has
+\[
+ \varepsilon_M^{-1}
+ \log\frac{X_{M+1}(\varepsilon_Mu)}{X_M(\varepsilon_Mu)}
+ \longrightarrow
+ -u\frac{\Xi'(u)}{\Xi(u)}.
+\]
+Combining the two endpoint generators gives the reflection-invariant centered connection
+\[
+ \mathcal G_{\rm bal}(u)
+ =
+ -\left(u-\frac12\right)\frac{\Xi'(u)}{\Xi(u)}.
+\]
+At a zero \(\rho\) of order \(d\),
+\[
+ \operatorname*{Res}_{u=\rho}\mathcal G_{\rm bal}
+ =
+ -d(\rho-\tfrac12).
+\]
+Horizontal zero displacement is therefore the radial residue of the source-generated
+exponent-depth successor law.
+
+`[OPEN CORE] [SOURCE_DEPTH_CONNECTION_HERGLOTZ_PURITY]`
+
+Construct a matrix-positive operator realization of the same depth transitions, compatible with
+prime-winning Čech incidence and Gamma reflection, and prove its centered logarithmic derivative
+is Herglotz after Xi conormal base change. Herglotz poles in centered coordinate are real, which
+would force every \(\rho\) onto the critical line. Real-half-line scalar positivity is not enough.

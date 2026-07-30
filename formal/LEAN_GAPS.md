@@ -14,28 +14,28 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 12440 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean` |
 | 9829 | `formal/GaloisForLFunctions/RHTower/ThetaCuspShellIncompleteGammaCoordinate.lean` |
 | 5221 | `formal/GaloisForLFunctions/FullyProvenNewTargets.lean` |
-| 4728 | `formal/GaloisForLFunctions/HTGeometry/GaussianTorsionLanguageTailLock.lean` |
+| 4763 | `formal/GaloisForLFunctions/HTGeometry/GaussianTorsionLanguageTailLock.lean` |
 | 3980 | `formal/GaloisForLFunctions/Bottcher/RelativeTranscendenceBridge.lean` |
 | 3722 | `formal/GaloisForLFunctions/Bottcher/DeckAnnulusData.lean` |
 | 3711 | `formal/GaloisForLFunctions/HTGeometry/GammaDifferentialFE.lean` |
 | 3644 | `formal/GaloisForLFunctions/U0/U0SliceViableB.lean` |
 | 3594 | `formal/GaloisForLFunctions/Bottcher/HDiscLoopDeck.lean` |
 | 3468 | `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean` |
-| 3461 | `formal/GaloisForLFunctions/RHTower.lean` |
+| 3465 | `formal/GaloisForLFunctions/RHTower.lean` |
 | 2721 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranch.lean` |
 | 2671 | `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean` |
+| 2648 | `formal/GaloisForLFunctions/HTGeometry.lean` |
 | 2627 | `formal/GaloisForLFunctions/RHTower/DpolyBallFloor.lean` |
-| 2593 | `formal/GaloisForLFunctions/HTGeometry.lean` |
-| 2588 | `formal/GaloisForLFunctions/RHTower/DeningerArithmeticTimeDistribution.lean` |
+| 2587 | `formal/GaloisForLFunctions/RHTower/DeningerArithmeticTimeDistribution.lean` |
 | 2583 | `formal/GaloisForLFunctions/HilbertMetric/GaussianJetPositivity.lean` |
 | 2546 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityNaturalBoundary.lean` |
 | 2516 | `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailPhaseAdaptedProuhetHalfLine.lean` |
-| 2377 | `formal/GaloisForLFunctions/RHTower/SoninCoupledPrimeArchGramTransfer.lean` |
+| 2378 | `formal/GaloisForLFunctions/RHTower/SoninCoupledPrimeArchGramTransfer.lean` |
 | 2369 | `formal/GaloisForLFunctions/U0/U0SliceViableA.lean` |
 | 2304 | `formal/GaloisForLFunctions/RHTower/SeamCongruence.lean` |
 | 2282 | `formal/GaloisForLFunctions/RHTower/ObserverTemporalDimensionLaw.lean` |
+| 2249 | `formal/GaloisForLFunctions/RHTower/CCMFirstClockVolterra.lean` |
 | 2229 | `formal/GaloisForLFunctions/Bottcher/NewtonPeriodic.lean` |
-| 2226 | `formal/GaloisForLFunctions/RHTower/CCMFirstClockVolterra.lean` |
 
 ## Gap Markers
 
