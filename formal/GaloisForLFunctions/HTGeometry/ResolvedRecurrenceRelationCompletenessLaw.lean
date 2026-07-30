@@ -388,6 +388,66 @@ def delayedThreeLevelRelation (m : ℕ) : Fin 3 → ℤ :=
 def delayedThreeLevelSpectrum (m : ℕ) : Fin 3 → ℝ :=
   ![0, (m : ℝ), 1]
 
+/-- A three-level spectrum with maximal projective rational rank. -/
+def independentThreeLevelSpectrum : Fin 3 → ℝ :=
+  ![0, 1, Real.sqrt 2]
+
+/-- The irrational three-level spectrum has no nontrivial projective
+spectral relation. -/
+theorem independentThreeLevel_projectiveRelationLattice_eq_bot :
+    projectiveSpectralRelationLattice independentThreeLevelSpectrum =
+      ⊥ := by
+  ext k
+  simp only [mem_projectiveSpectralRelationLattice_iff,
+    AddSubgroup.mem_bot]
+  constructor
+  · rintro ⟨hbalanced, henergy⟩
+    have hsum :
+        k 0 + k 1 + k 2 = 0 := by
+      simpa [SpectralCharacterBalanced, Fin.sum_univ_three] using
+        hbalanced
+    have hrelation :
+        (k 1 : ℝ) + (k 2 : ℝ) * Real.sqrt 2 = 0 := by
+      simpa [finiteTorusCharacterDetuning,
+        independentThreeLevelSpectrum, Fin.sum_univ_three] using henergy
+    have hk2 : k 2 = 0 := by
+      by_contra hk2
+      apply irrational_sqrt_two.ne_rat
+        (-((k 1 : ℤ) : ℚ) / ((k 2 : ℤ) : ℚ))
+      have hk2r : ((k 2 : ℤ) : ℝ) ≠ 0 := by
+        exact_mod_cast hk2
+      push_cast
+      apply (eq_div_iff hk2r).2
+      linarith
+    have hk1 : k 1 = 0 := by
+      rw [hk2] at hrelation
+      norm_num at hrelation ⊢
+      exact_mod_cast hrelation
+    have hk0 : k 0 = 0 := by
+      rw [hk1, hk2] at hsum
+      simpa using hsum
+    funext i
+    fin_cases i
+    · exact hk0
+    · exact hk1
+    · exact hk2
+  · rintro rfl
+    simp [SpectralCharacterBalanced,
+      finiteTorusCharacterDetuning]
+
+/-- Every resolved replica detector for the irrational three-level spectrum
+sees only the trivial character. -/
+theorem independentThreeLevel_resolvedReplicaDetects_iff_eq_zero
+    (n : ℕ) (k : Fin 3 → ℤ) :
+    ResolvedReplicaDetects independentThreeLevelSpectrum n k ↔
+      k = 0 := by
+  rw [resolvedReplicaDetects_iff_relation_and_height_le,
+    independentThreeLevel_projectiveRelationLattice_eq_bot]
+  constructor
+  · exact fun h => h.1
+  · rintro rfl
+    simp [spectralCharacterPositiveMass]
+
 /-- The delayed three-level character is projectively balanced. -/
 theorem delayedThreeLevelRelation_balanced (m : ℕ) :
     SpectralCharacterBalanced (delayedThreeLevelRelation m) := by
@@ -399,10 +459,9 @@ theorem delayedThreeLevelRelation_balanced (m : ℕ) :
 theorem delayedThreeLevelRelation_positiveMass
     (m : ℕ) (hm : 0 < m) :
     spectralCharacterPositiveMass (delayedThreeLevelRelation m) = m := by
-  have hmz : (0 : ℤ) ≤ (m : ℤ) - 1 := by omega
   simp [spectralCharacterPositiveMass, delayedThreeLevelRelation,
-    Fin.sum_univ_three, Int.toNat_of_nonneg hmz,
-    Int.toNat_of_nonpos]
+    Fin.sum_univ_three, Int.toNat_of_nonpos]
+  omega
 
 /-- The delayed character is an exact relation of its three-level
 spectrum. -/
@@ -414,6 +473,232 @@ theorem delayedThreeLevelRelation_mem_relationLattice (m : ℕ) :
   · exact delayedThreeLevelRelation_balanced m
   · simp [finiteTorusCharacterDetuning, delayedThreeLevelRelation,
       delayedThreeLevelSpectrum, Fin.sum_univ_three]
+
+/-- Every projective relation of the delayed three-level spectrum is an
+integer multiple of its displayed generator. -/
+theorem mem_delayedThreeLevel_relationLattice_iff
+    (m : ℕ) (k : Fin 3 → ℤ) :
+    k ∈ projectiveSpectralRelationLattice
+        (delayedThreeLevelSpectrum m) ↔
+      ∃ z : ℤ, k = z • delayedThreeLevelRelation m := by
+  constructor
+  · rintro ⟨hbalanced, henergy⟩
+    have hsum :
+        k 0 + k 1 + k 2 = 0 := by
+      simpa [SpectralCharacterBalanced, Fin.sum_univ_three] using
+        hbalanced
+    have henergyReal :
+        (k 1 : ℝ) * (m : ℝ) + (k 2 : ℝ) = 0 := by
+      simpa [finiteTorusCharacterDetuning,
+        delayedThreeLevelSpectrum, Fin.sum_univ_three] using henergy
+    have henergyInt :
+        k 1 * (m : ℤ) + k 2 = 0 := by
+      exact_mod_cast henergyReal
+    refine ⟨k 1, ?_⟩
+    funext i
+    fin_cases i
+    · change k 0 = k 1 * ((m : ℤ) - 1)
+      linear_combination hsum - henergyInt
+    · simp [delayedThreeLevelRelation]
+    · change k 2 = k 1 * (-(m : ℤ))
+      linear_combination henergyInt
+  · rintro ⟨z, rfl⟩
+    exact
+      (projectiveSpectralRelationLattice
+        (delayedThreeLevelSpectrum m)).zsmul_mem
+        (delayedThreeLevelRelation_mem_relationLattice m) z
+
+/-- Every nonzero projective relation of the delayed spectrum has arithmetic
+height at least `m`. -/
+theorem delayedThreeLevelRelation_height_lower_bound
+    (m : ℕ) (hm : 0 < m) {k : Fin 3 → ℤ}
+    (hrelation :
+      k ∈ projectiveSpectralRelationLattice
+        (delayedThreeLevelSpectrum m))
+    (hk : k ≠ 0) :
+    m ≤ spectralCharacterPositiveMass k := by
+  rw [mem_delayedThreeLevel_relationLattice_iff] at hrelation
+  obtain ⟨z, rfl⟩ := hrelation
+  have hz : z ≠ 0 := by
+    intro hzero
+    subst z
+    simp at hk
+  rcases lt_or_gt_of_ne hz with hzneg | hzpos
+  · have hmneg : (-(m : ℤ)) ≤ 0 := by omega
+    have hboundInt :
+        (m : ℤ) ≤ z * (-(m : ℤ)) := by
+      have hzle : z ≤ -1 := by omega
+      have :=
+        mul_le_mul_of_nonpos_right hzle hmneg
+      simpa using this
+    have hnonneg : 0 ≤ z * (-(m : ℤ)) :=
+      le_trans (by exact_mod_cast Nat.zero_le m) hboundInt
+    have hboundNat :
+        m ≤ (z * (-(m : ℤ))).toNat :=
+      (Int.le_toNat hnonneg).2 hboundInt
+    have hthird :
+        z * (-(m : ℤ)) = -(z * (m : ℤ)) := by ring
+    rw [hthird] at hboundNat
+    have hmass :
+        spectralCharacterPositiveMass
+            (z • delayedThreeLevelRelation m) =
+          (z * ((m : ℤ) - 1)).toNat + z.toNat +
+            (-(z * (m : ℤ))).toNat := by
+      simp [spectralCharacterPositiveMass,
+        delayedThreeLevelRelation, Fin.sum_univ_three]
+    rw [hmass]
+    omega
+  · have hznonneg : 0 ≤ z := le_of_lt hzpos
+    have hmoneNonneg : (0 : ℤ) ≤ (m : ℤ) - 1 := by omega
+    have hfirstNonneg :
+        0 ≤ z * ((m : ℤ) - 1) :=
+      mul_nonneg hznonneg hmoneNonneg
+    have hboundInt :
+        (m : ℤ) ≤
+          z * ((m : ℤ) - 1) + z := by
+      calc
+        (m : ℤ) = 1 * (m : ℤ) := by ring
+        _ ≤ z * (m : ℤ) :=
+          mul_le_mul_of_nonneg_right (by omega) (by omega)
+        _ = z * ((m : ℤ) - 1) + z := by ring
+    have hcast :
+        (((z * ((m : ℤ) - 1)).toNat + z.toNat : ℕ) : ℤ) =
+          z * ((m : ℤ) - 1) + z := by
+      rw [Nat.cast_add, Int.toNat_of_nonneg hfirstNonneg,
+        Int.toNat_of_nonneg hznonneg]
+    have hboundNat :
+        m ≤ (z * ((m : ℤ) - 1)).toNat + z.toNat := by
+      exact_mod_cast hcast ▸ hboundInt
+    have hmass :
+        spectralCharacterPositiveMass
+            (z • delayedThreeLevelRelation m) =
+          (z * ((m : ℤ) - 1)).toNat + z.toNat +
+            (-(z * (m : ℤ))).toNat := by
+      simp [spectralCharacterPositiveMass,
+        delayedThreeLevelRelation, Fin.sum_univ_three]
+    rw [hmass]
+    omega
+
+/-- No nontrivial projective relation of the delayed spectrum is visible
+below order `m`. -/
+theorem resolvedReplicaDetects_delayedThreeLevel_eq_zero_of_lt
+    (m n : ℕ) (hm : 0 < m) (hnm : n < m)
+    {k : Fin 3 → ℤ}
+    (hdetect :
+      ResolvedReplicaDetects (delayedThreeLevelSpectrum m) n k) :
+    k = 0 := by
+  by_contra hk
+  have hresolved :=
+    (resolvedReplicaDetects_iff_relation_and_height_le
+      (delayedThreeLevelSpectrum m) n k).1 hdetect
+  have hlower :=
+    delayedThreeLevelRelation_height_lower_bound
+      m hm hresolved.1 hk
+  omega
+
+/-- Below the delayed height, the complete resolved detector set contains
+only the trivial character. -/
+theorem resolvedReplicaDetects_delayedThreeLevel_iff_eq_zero_of_lt
+    (m n : ℕ) (hm : 0 < m) (hnm : n < m)
+    (k : Fin 3 → ℤ) :
+    ResolvedReplicaDetects (delayedThreeLevelSpectrum m) n k ↔
+      k = 0 := by
+  constructor
+  · exact
+      resolvedReplicaDetects_delayedThreeLevel_eq_zero_of_lt
+        m n hm hnm
+  · intro hk
+    subst k
+    rw [resolvedReplicaDetects_iff_relation_and_height_le]
+    simp [projectiveSpectralRelationLattice,
+      SpectralCharacterBalanced, spectralCharacterPositiveMass,
+      finiteTorusCharacterDetuning]
+
+/-- The delayed generator is nonzero. -/
+theorem delayedThreeLevelRelation_ne_zero (m : ℕ) :
+    delayedThreeLevelRelation m ≠ 0 := by
+  intro hzero
+  have hone := congrFun hzero 1
+  simp [delayedThreeLevelRelation] at hone
+
+/-- **No finite replica cutoff is complete, already for three levels.**
+For every cutoff `n`, one three-level spectrum has only the trivial resolved
+relation through every order at most `n`, but exposes a nontrivial relation
+at order `n + 1`. -/
+theorem threeLevelSpectrum_relation_hidden_beyond_every_cutoff
+    (n : ℕ) :
+    (∀ r ≤ n, ∀ k : Fin 3 → ℤ,
+      ResolvedReplicaDetects
+          (delayedThreeLevelSpectrum (n + 1)) r k ↔
+        k = 0) ∧
+      ∃ k : Fin 3 → ℤ,
+        k ≠ 0 ∧
+          ResolvedReplicaDetects
+            (delayedThreeLevelSpectrum (n + 1)) (n + 1) k := by
+  constructor
+  · intro r hr k
+    exact
+      resolvedReplicaDetects_delayedThreeLevel_iff_eq_zero_of_lt
+        (n + 1) r (by omega) (by omega) k
+  · refine
+      ⟨delayedThreeLevelRelation (n + 1),
+        delayedThreeLevelRelation_ne_zero (n + 1), ?_⟩
+    rw [resolvedReplicaDetects_iff_relation_and_height_le,
+      delayedThreeLevelRelation_positiveMass (n + 1) (by omega)]
+    exact
+      ⟨delayedThreeLevelRelation_mem_relationLattice (n + 1),
+        le_rfl⟩
+
+/-- The delayed and irrational spectra have different completed recurrence
+ensembles. -/
+theorem delayedThreeLevel_phaseEnsemble_ne_independent
+    (m : ℕ) :
+    spectralRelationPhaseEnsemble (delayedThreeLevelSpectrum m) ≠
+      spectralRelationPhaseEnsemble independentThreeLevelSpectrum := by
+  intro hensemble
+  have hlattice :
+      spectralRelationLattice (delayedThreeLevelSpectrum m) =
+        spectralRelationLattice independentThreeLevelSpectrum :=
+    (spectralRelationLattice_eq_iff_phaseEnsemble_eq _ _).2 hensemble
+  have hdelayedFull :
+      delayedThreeLevelRelation m ∈
+        spectralRelationLattice (delayedThreeLevelSpectrum m) :=
+    (delayedThreeLevelRelation_mem_relationLattice m).2
+  have hindependentFull :
+      delayedThreeLevelRelation m ∈
+        spectralRelationLattice independentThreeLevelSpectrum := by
+    rw [← hlattice]
+    exact hdelayedFull
+  have hindependentProjective :
+      delayedThreeLevelRelation m ∈
+        projectiveSpectralRelationLattice
+          independentThreeLevelSpectrum :=
+    ⟨delayedThreeLevelRelation_balanced m, hindependentFull⟩
+  rw [independentThreeLevel_projectiveRelationLattice_eq_bot] at hindependentProjective
+  exact delayedThreeLevelRelation_ne_zero m
+    (by simpa using hindependentProjective)
+
+/-- **Finite-depth indistinguishability with different completed futures.**
+For every cutoff `n`, two explicit three-level spectra have identical
+resolved recurrence detectors at every order through `n`, while their
+completed phase ensembles are unequal. -/
+theorem threeLevelSpectra_same_through_cutoff_but_phaseEnsembles_ne
+    (n : ℕ) :
+    (∀ r ≤ n, ∀ k : Fin 3 → ℤ,
+      (ResolvedReplicaDetects
+          (delayedThreeLevelSpectrum (n + 1)) r k ↔
+        ResolvedReplicaDetects
+          independentThreeLevelSpectrum r k)) ∧
+      spectralRelationPhaseEnsemble
+          (delayedThreeLevelSpectrum (n + 1)) ≠
+        spectralRelationPhaseEnsemble
+          independentThreeLevelSpectrum := by
+  constructor
+  · intro r hr k
+    rw [resolvedReplicaDetects_delayedThreeLevel_iff_eq_zero_of_lt
+        (n + 1) r (by omega) (by omega),
+      independentThreeLevel_resolvedReplicaDetects_iff_eq_zero]
+  · exact delayedThreeLevel_phaseEnsemble_ne_independent (n + 1)
 
 /-- **Unbounded detector-depth law in three levels.** For every positive
 `m`, one explicit relation in a three-level spectrum is detected by replica

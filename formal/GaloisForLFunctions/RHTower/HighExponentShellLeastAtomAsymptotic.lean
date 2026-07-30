@@ -340,6 +340,14 @@ theorem norm_shellTransferCharacter (s : ℂ) :
     Complex.sub_re]
   norm_num
 
+/-- The logarithmic shell-transfer modulus is the signed transverse
+displacement times the least-atom clock `log 2`. -/
+theorem log_norm_shellTransferCharacter (s : ℂ) :
+    Real.log ‖shellTransferCharacter s‖ =
+      (1 / 2 - s.re) * Real.log 2 := by
+  rw [norm_shellTransferCharacter,
+    Real.log_rpow (by norm_num : (0 : ℝ) < 2)]
+
 /-- The critical line is exactly the unitary locus of the normalized
 shell-transfer character. -/
 theorem norm_shellTransferCharacter_eq_one_iff (s : ℂ) :

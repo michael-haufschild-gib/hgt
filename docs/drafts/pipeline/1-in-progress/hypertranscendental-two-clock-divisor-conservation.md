@@ -186,3 +186,34 @@ Imported source theorems supply:
   `sqrt(h_n/h_(n+1)) H_(n+1)(s)/H_n(s) -> 2^(1/2-s)`.
 - 2026-07-30 — Proved the transfer trichotomy and reciprocal reflection-pair law.  This promotes
   the candidate from a traveling-wave observation to an arithmetic divisor-location theorem.
+- 2026-07-30 — Proved the local--cofinal modular-residue transgression
+  \[
+  \operatorname{Re}\operatorname{Res}_{s=\rho}J_\Xi(s)
+  =m_\rho\,\frac{\log|2^{1/2-\rho}|}{\log2}
+  =m_\rho\left(\frac12-\operatorname{Re}\rho\right).
+  \]
+  The Julia normal residue, shell Lyapunov exponent, and divisor multiplicity are exact charts of
+  one signed modular charge.  Reflection reverses the charge, and for nonzero multiplicity it
+  vanishes exactly on the critical line.  Verified declarations live in
+  `XiHypertranscendentalModularResidueTransgression.lean`.
+- 2026-07-30 — Removed the prime-two asymptotic atom from the same positive shell and proved the
+  exact second-layer law
+  \[
+  3^{ns}\!\left(H_n(s)-2^{-ns}(1-2^{-s})\right)\longrightarrow1-3^{-s}.
+  \]
+  The residual adjacent transfer converges to \(3^{-s}\), and half-density normalization gives
+  \(3^{1/2-s}\).  Because \(\log 3/\log 2\) is irrational, the paired transfer spectrum
+  \[
+  s\longmapsto\left(2^{1/2-s},3^{1/2-s}\right)
+  \]
+  is globally injective: its moduli recover \(\operatorname{Re}s\), while its two
+  incommensurate phases recover \(\operatorname{Im}s\) without periodic aliasing.  Verified in
+  `HighExponentShellPrimeSpectrum.lean`.
+- 2026-07-30 — Proved base-independence of normalized modular entropy:
+  \[
+  \frac{\log\lVert q^{c/2-s}\rVert}{\log q}=\frac c2-\operatorname{Re}s
+  \qquad(q>1).
+  \]
+  Consequently the local Xi affine-current residue transgresses to every cofinal atom base,
+  not only the leading prime-two chart.  The prime-two and prime-three charts carry the same
+  horizontal modular charge while jointly reconstructing the full spectral point.

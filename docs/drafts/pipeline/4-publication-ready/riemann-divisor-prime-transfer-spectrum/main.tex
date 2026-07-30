@@ -1,0 +1,1057 @@
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[a4paper,margin=27mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,mathrsfs}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage[colorlinks=true,linkcolor=blue!45!black,citecolor=blue!45!black,
+  urlcolor=blue!55!black]{hyperref}
+\setlength{\emergencystretch}{2em}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem*{maintheorem}{Divisor--transfer localization theorem}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\C}{\mathbb C}
+\newcommand{\N}{\mathbb N}
+\newcommand{\cA}{\mathcal A}
+\newcommand{\cD}{\mathcal D}
+\newcommand{\cE}{\mathcal E}
+\newcommand{\cH}{\mathcal H}
+\newcommand{\cK}{\mathcal K}
+\newcommand{\cU}{\mathcal U}
+\newcommand{\ord}{\operatorname{ord}}
+\newcommand{\Res}{\operatorname{Res}}
+\newcommand{\trdeg}{\operatorname{trdeg}}
+
+\title{Prime-Atom Tomography and an Information-Localization Law\\
+for the Riemann Divisor}
+\author{Michael Haufschild}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+We construct a positive arithmetic resolution of the Riemann divisor and determine where
+spectral location is stored inside it.  Let
+\[
+ H_n(s)=\zeta((n+1)s)^{-1}-\zeta(ns)^{-1},
+ \qquad S_n(s)=\zeta(s)H_n(s).
+\]
+The Dirichlet coefficients of \(S_n\) are the indicators of integers whose largest prime
+exponent is \(n\).  Thus the \(S_n\) have nonnegative, pairwise disjoint coefficient supports
+which fuse exactly to the zeta stream away from \(1\).  For \(n\geq12\), \(H_n\) is
+holomorphic and zero-free on \(\Re s>1/2\), so every \(S_n\) carries the complete zeta zero
+divisor there, with multiplicity.  Nevertheless the entire family \((H_n)_{n\geq2}\) is
+jointly differentially algebraically independent over
+\(\C(s)\langle\zeta\rangle\).
+
+The missing spectral coordinate occurs at the opposite, cofinal end of the resolution.
+For every fixed \(s\) with \(\Re s>0\),
+\[
+ 2^{ns}H_n(s)\longrightarrow1-2^{-s},
+\]
+and, after exact removal of this leading layer,
+\[
+ 3^{ns}\!\left[H_n(s)-2^{-ns}(1-2^{-s})\right]
+ \longrightarrow1-3^{-s}.
+\]
+The half-density-normalized adjacent transfers therefore converge to
+\(2^{1/2-s}\) and \(3^{1/2-s}\).  Their ordered pair is injective on \(\C\): its common
+radial slope determines \(\Re s\), while the incommensurable prime phases determine
+\(\Im s\).  This tomography rank is minimal, and two arbitrary atom scales work exactly when
+their logarithms are incommensurable.  At a zero \(\rho\) of the completed zeta function of
+multiplicity \(d_\rho\),
+the same horizontal coordinate appears locally as
+\[
+ \Re\Res_{s=\rho}\!
+ \left[-(s-\tfrac12)\frac{\Xi'(s)}{\Xi(s)}\right]
+ =
+ d_\rho\,\frac{\log|q^{1/2-\rho}|}{\log q}
+ =
+ d_\rho(\tfrac12-\Re\rho)
+ \qquad(q>1).
+\]
+This identifies the local divisor current and the cofinal prime-transfer entropy as two
+base-independent charts of one signed modular charge.  A two-clock theorem then proves
+exactly why co-moving scalarization loses this charge although the independent clock
+quadrant detects it.  The resulting localization law is unconditional: common-divisor
+replication, finite differential structure, and spectral position occupy three distinct
+levels of the same positive arithmetic object.
+\end{abstract}
+
+\medskip
+\noindent\textbf{2020 Mathematics Subject Classification.}
+Primary 11M26, 11J91; Secondary 12H05, 11M41, 11A51.
+
+\noindent\textbf{Keywords.}
+Riemann zeta function; Riemann divisor; hypertranscendence; Dirichlet series;
+prime-atom asymptotics; modular transfer; spectral tomography.
+
+\section{Introduction}
+
+The zeros of the Riemann zeta function are global cancellation data.  Two recurrent
+difficulties in attempts to localize those data are that a common divisor need not identify
+its arithmetic source, and reflection symmetry does not retain the side of the critical line.
+This paper exhibits one object in which both losses can be seen and separated exactly.
+
+For \(m\geq1\), let \(a_m(k)\) be the indicator that the largest exponent in the prime
+factorization of \(k\) is \(m\), and set
+\[
+ S_m(s)=\sum_{k\geq1}a_m(k)k^{-s},\qquad
+ H_m(s)=\frac1{\zeta((m+1)s)}-\frac1{\zeta(ms)}.
+ \tag{1.1}\label{eq:intro-shell}
+\]
+The elementary factorization \(S_m=\zeta H_m\) is only the entry point.  The family has
+three sharply different information layers:
+\[
+\boxed{
+\begin{array}{c}
+\text{the divisor is replicated longitudinally through all high shells},\\[2mm]
+\text{the transverse factors have maximal finite differential rank},\\[2mm]
+\text{the spectral coordinate is recovered from ordered cofinal prime atoms}.
+\end{array}}
+\tag{1.2}\label{eq:three-layers}
+\]
+Neither divisor replication nor finite differential algebra can replace the last layer.
+
+The new feature is visible only after the shell depth tends to infinity.  The first
+M\"obius atom of \(1/\zeta(ns)\) is \(2^{-ns}\).  It gives the adjacent transfer
+\(2^{-s}\), or \(2^{1/2-s}\) after half-density normalization.  Removing that atom exactly
+reveals a second transfer \(3^{1/2-s}\).  One transfer has periodic phase and therefore
+aliases height.  The pair does not: \(\log 2\) and \(\log 3\) are incommensurable.
+Consequently the first two cofinal layers of the same positive isodivisorial frame recover the
+entire complex point.
+
+The radial part has a second, local description.  For the completed function
+\[
+ \Xi(s)=\frac12s(s-1)\pi^{-s/2}\Gamma(s/2)\zeta(s),
+ \qquad \Xi(1-s)=\Xi(s),
+ \tag{1.3}\label{eq:xi}
+\]
+consider the reflection-balanced divisor current
+\[
+ J_\Xi(s)=-(s-\tfrac12)\frac{\Xi'(s)}{\Xi(s)}.
+ \tag{1.4}\label{eq:current}
+\]
+At a zero \(\rho\), its residue retains the full centered affine displacement.  Its real part
+is exactly the logarithmic radial slope of every transfer character \(q^{1/2-s}\), after
+normalization by \(\log q\).  This is not a criterion obtained by attaching a decorative
+function to the zeros: both charts arise from the same dilation-depth geometry, one at a local
+divisor point and the other at the cofinal end of an explicit positive arithmetic resolution.
+
+The following theorem collects the result.  A family is \emph{jointly differentially
+algebraically independent} over a differential field \(K\) if all derivatives of all its
+members are algebraically independent over \(K\).
+
+\begin{maintheorem}\label{thm:main}
+The exponent-shell resolution \((S_m,H_m)\) has the following properties.
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item The coefficients of the \(S_m\) lie in \(\{0,1\}\), distinct shells have disjoint
+supports, and
+\[
+ \sum_{m\geq1}a_m(k)=1-\mathbf1_{\{1\}}(k)
+\]
+coefficientwise.
+\item For \(m\geq12\), \(H_m\) is holomorphic and zero-free on \(\Re s>1/2\).
+Hence \(S_m^\#=\zeta H_m\) and \(\zeta\) have the same zero divisor there, with
+multiplicity, away from \(s=1\).
+\item The larger transverse family \((H_m)_{m\geq2}\) is jointly differentially
+algebraically independent over \(\C(s)\langle\zeta\rangle\).
+\item For every \(s\) with \(\Re s>0\),
+\begin{align}
+ 2^{ms}H_m(s)&\longrightarrow1-2^{-s},\label{eq:first-atom-main}\\
+ 3^{ms}R_m(s)&\longrightarrow1-3^{-s},\label{eq:second-atom-main}
+\end{align}
+where
+\[
+ R_m(s)=H_m(s)-2^{-ms}(1-2^{-s}).
+\]
+Consequently, wherever the ratios are defined,
+\[
+ \sqrt2\,\frac{H_{m+1}(s)}{H_m(s)}\longrightarrow2^{1/2-s},
+ \qquad
+ \sqrt3\,\frac{R_{m+1}(s)}{R_m(s)}\longrightarrow3^{1/2-s}.
+ \tag{1.5}\label{eq:transfer-main}
+\]
+The first normalization can equivalently be made from the actual positive source masses
+\(h_m=H_m(1)\):
+\[
+ \sqrt{\frac{h_m}{h_{m+1}}}\,
+ \frac{H_{m+1}(s)}{H_m(s)}
+ \longrightarrow2^{1/2-s}.
+ \tag{1.6}\label{eq:source-normalized}
+\]
+\item The two-prime transfer spectrum
+\[
+ \cU(s)=\bigl(2^{1/2-s},3^{1/2-s}\bigr)
+ \tag{1.7}\label{eq:spectrum}
+\]
+is injective on \(\C\).  More generally, no single \(q^{c/2-s}\) is injective, while
+the pair \((q^{c/2-s},r^{c/2-s})\) is injective if and only if
+\(\log r/\log q\) is irrational.  Thus unrestricted modular tomography has exact minimal
+rank two.  For every \(q>1\), its normalized radial entropy
+\[
+ \mathfrak e_q(s)=\frac{\log|q^{1/2-s}|}{\log q}
+ \tag{1.8}\label{eq:entropy}
+\]
+is independent of \(q\), equals \(1/2-\Re s\), and changes sign under
+\(s\mapsto1-\bar s\).
+\item If \(\rho\) is a zero of \(\Xi\) of multiplicity \(d_\rho\), then
+\[
+ \Re\Res_{s=\rho}J_\Xi(s)
+ =d_\rho\mathfrak e_q(\rho)
+ =d_\rho(\tfrac12-\Re\rho)
+ \qquad(q>1).
+ \tag{1.9}\label{eq:transgression-main}
+\]
+For \(d_\rho\ne0\), this charge vanishes exactly when \(\Re\rho=1/2\).
+\end{enumerate}
+\end{maintheorem}
+
+Parts (iv)--(vi) form the \emph{prime-atom tomography and local--cofinal transgression
+law}.  Sections 5 and 9 establish its two observer boundaries: unit scalar label erasure is
+nonclosable, and identifying the two clocks before testing boundedness removes precisely the
+signed transverse rate.  Together these statements answer a structural RH question.  Spectral
+location is not absent from the positive isodivisorial resolution; it is encoded in labeled,
+ordered, cofinal transitions.  Divisor-only, finite differential, reflection-even, and
+co-moving scalar observers each forget a specified part of that encoding.
+
+The theorem does not prove zero exclusion.  It gives a more restrictive target for a new RH
+argument: an arithmetic estimate must control the independent transfer directions before
+reflection pairing or characteristic scalarization.  A diagonal finite profile cannot supply
+such control, because Theorem \ref{thm:two-clock} holds on and off the critical line.
+
+Equality of zero divisors under modified Euler factors is classical
+\cite{GrosswaldSchnitzer1978}.  Differential transcendence of Dirichlet series begins with
+Ostrowski \cite{Ostrowski1920}; system and Jacobian methods appear in
+\cite{Postnikov1949,ShapiroSparer1986,Pong2016}, and broad \(L\)-function
+hypertranscendence in \cite{Nagoshi2016}.  None of those facts alone is claimed as new.
+The contribution is their conjunction with a positive coefficient-disjoint divisor resolution,
+successive prime-atom transfer recovery, exact minimal-rank-two modular tomography, and the
+local--cofinal charge identity.
+
+The location information here is also different from the global zero statistics in Li's
+criterion and its multiset extension \cite{Li1997,BombieriLagarias1999}, and from the
+large-order exponential signatures studied by Voros \cite{Voros2014}: our order parameter is
+shell depth, and the readout comes from successive M\"obius atoms of one positive divisor
+frame.  Functional-equation-preserving perturbations show that symmetry alone does not control
+off-line zeros \cite{GauthierXarles2009}.  Scaling and spectral language also occurs in the
+operator-theoretic program of Connes and Consani \cite{ConnesConsani2021}; no identification
+with that program is asserted here.  Our operator statement is only the explicit codiagonal
+boundary in Proposition \ref{prop:nonclosable}.
+
+\section{Positive exponent shells}
+
+For \(k\geq2\), write
+\[
+ M(k)=\max_{p\mid k}v_p(k),\qquad M(1)=0,
+\]
+and set \(a_m(k)=\mathbf1_{\{M(k)=m\}}\).  Let \(b_r(k)\) be the indicator that
+\(k\) is \(r\)-free, with \(b_1=\mathbf1_{\{1\}}\).  Then
+\[
+ a_m=b_{m+1}-b_m.
+ \tag{2.1}\label{eq:shell-diff}
+\]
+
+\begin{proposition}[Positive fusion]\label{prop:fusion}
+For \(m\ne n\), \(a_m(k)a_n(k)=0\), and
+\[
+ \sum_{m=1}^{N}a_m(k)=b_{N+1}(k)-b_1(k).
+ \tag{2.2}\label{eq:finite-fusion}
+\]
+Thus \(\sum_{m\geq1}a_m(k)=1-\mathbf1_{\{1\}}(k)\), with only finitely many
+nonzero summands for each \(k\).
+\end{proposition}
+
+\begin{proof}
+An integer \(k\geq2\) is \((m+1)\)-free but not \(m\)-free exactly when
+\(M(k)=m\).  This proves disjointness.  Equation \eqref{eq:finite-fusion} is the
+telescoping sum of \eqref{eq:shell-diff}; taking \(N\geq M(k)\) gives the last claim.
+\end{proof}
+
+The Euler product of the \(r\)-free indicator gives, on \(\Re s>1\),
+\[
+ \sum_{k\geq1}\frac{b_r(k)}{k^s}
+ =\prod_p(1+p^{-s}+\cdots+p^{-(r-1)s})
+ =\frac{\zeta(s)}{\zeta(rs)}.
+ \tag{2.3}\label{eq:rfree}
+\]
+Subtracting consecutive values of \(r\) proves
+\[
+ S_m(s)=\zeta(s)H_m(s),\qquad
+ H_m(s)=\zeta((m+1)s)^{-1}-\zeta(ms)^{-1}.
+ \tag{2.4}\label{eq:factor}
+\]
+Moreover,
+\[
+ \sum_{m\geq1}S_m(s)=\zeta(s)-1,\qquad \Re s>1,
+ \tag{2.5}\label{eq:analytic-fusion}
+\]
+and the double series is absolutely summable there.
+
+\section{Exact divisor replication}
+
+The transverse factor in \eqref{eq:factor} must be controlled before the common divisor has
+content.  The following elementary estimate is sufficient.
+
+\begin{lemma}[Prime-two domination]\label{lem:prime-two-domination}
+Let \(m\geq12\), \(s=\sigma+it\), and \(\sigma>1/2\).  Write
+\[
+ \zeta(ms)-\zeta((m+1)s)=A+T,
+\]
+where
+\[
+ A=2^{-ms}-2^{-(m+1)s},\qquad
+ T=\sum_{k\geq3}\bigl(k^{-ms}-k^{-(m+1)s}\bigr).
+\]
+Then
+\[
+ |A|>2^{-m\sigma}\frac{29}{100},
+ \qquad
+ |T|<2^{-m\sigma}\frac{21}{100}.
+ \tag{3.1}\label{eq:domination}
+\]
+\end{lemma}
+
+\begin{proof}
+Since \(2^{-\sigma}<2^{-1/2}<71/100\),
+\[
+ |A|=2^{-m\sigma}|1-2^{-s}|
+ >2^{-m\sigma}\frac{29}{100}.
+\]
+Put \(x=m\sigma>6\).  For \(k\geq3\),
+\[
+ |k^{-ms}-k^{-(m+1)s}|
+ \leq k^{-x}(1+k^{-\sigma})<\frac85k^{-x}.
+\]
+Also \(k^{-x}\leq2^{-x}64k^{-6}\).  Hence
+\[
+ |T|
+ \leq2^{-m\sigma}\frac{512}{5}\sum_{k\geq3}k^{-6}.
+\]
+The integral estimate
+\[
+ \sum_{k\geq3}k^{-6}
+ \leq3^{-6}+4^{-6}+\frac1{2500}
+\]
+makes the last constant smaller than \(21/100\).
+\end{proof}
+
+\begin{theorem}[Isodivisorial positive frame]\label{thm:divisor-frame}
+For \(m\geq12\), \(H_m\) is holomorphic and zero-free on \(\Re s>1/2\).
+Consequently, at every \(s\ne1\) in this half-plane,
+\[
+ \ord_s(\zeta H_m)=\ord_s\zeta.
+ \tag{3.2}\label{eq:order-replication}
+\]
+\end{theorem}
+
+\begin{proof}
+Both dilated zeta functions are holomorphic and nonzero because their arguments have real
+part greater than one.  Lemma \ref{lem:prime-two-domination} shows that
+\(\zeta(ms)-\zeta((m+1)s)\ne0\).  Therefore
+\[
+ H_m(s)=
+ \frac{\zeta(ms)-\zeta((m+1)s)}
+ {\zeta(ms)\zeta((m+1)s)}
+\]
+is holomorphic and nonzero.  The order formula follows from additivity of analytic order.
+\end{proof}
+
+Thus a hypothetical zero \(\rho\) with \(\Re\rho>1/2\) is reproduced, with unchanged
+multiplicity, in every positive coefficient stream
+\[
+ \{k:M(k)=12\},\{k:M(k)=13\},\ldots .
+ \tag{3.3}\label{eq:disjoint-streams}
+\]
+This statement concerns meromorphic continuation; it does not assert termwise convergence of
+the positive series in the critical strip.
+
+\section{Maximal transverse differential rank}
+
+We give the algebraic argument because it rules out a large class of hidden finite
+explanations for the common divisor.
+
+Let \(\cA\) be the integral domain of arithmetic functions under Dirichlet convolution.
+For a prime \(q\), define
+\[
+ (\partial_qf)(k)=v_q(kq)f(kq).
+ \tag{4.1}\label{eq:prime-derivation}
+\]
+Then \(\partial_q(f*g)=(\partial_qf)*g+f*(\partial_qg)\).  Put
+\(\Omega(k)=\sum_pv_p(k)\) and \(L^jf(k)=(-\log k)^jf(k)\).
+
+\begin{theorem}[\(\Omega\)-leading-echelon criterion]\label{thm:omega}
+Let \(R\) be finite, let \(\ell:R\to\N_{>0}\) be injective, and let \(f_r\in\cA\).
+Assume that for every \(r\in R\), prime \(q\), and \(j,k\geq0\),
+\begin{align}
+ \Omega(k)<\ell(r)-1
+ &\Longrightarrow \partial_q(L^jf_r)(k)=0,\label{eq:below-grade}\\
+ \Omega(k)=\ell(r)-1
+ &\Longrightarrow \partial_q(L^jf_r)(k)
+ =\ell(r)(-\ell(r)\log q)^j
+ \mathbf1_{\{q^{\ell(r)-1}\}}(k).\label{eq:leading-grade}
+\end{align}
+Then every finite jet rectangle \(\{L^jf_r:r\in R,0\leq j\leq J\}\) is
+algebraically independent over \(\C\).  If the sources have a finite half-plane of absolute
+Dirichlet convergence, their Dirichlet transforms are jointly differentially algebraically
+independent over \(\C(s)\).
+\end{theorem}
+
+\begin{proof}
+Index columns by \(I=R\times\{0,\ldots,J\}\), choose distinct primes \(q_i\), and form
+the \(\cA\)-valued Jacobian
+\[
+ \mathcal J_{i,(r,j)}=\partial_{q_i}(L^jf_r).
+\]
+Extract from its determinant the coefficient at
+\[
+ N=\prod_{i=(r,t)\in I}q_i^{\ell(r)-1}.
+\]
+No determinant term can enter below the sum of the prescribed grades.  At the minimal grade,
+unique factorization forces every permutation to preserve each \(\ell(r)\)-block.
+Up to nonzero row and column factors, that block is
+\[
+ \left[(-\ell(r)\log q_{(r,t)})^j\right]_{0\leq t,j\leq J}.
+\]
+Its determinant is the nonzero Vandermonde product
+\[
+ (-\ell(r))^{J(J+1)/2}
+ \prod_{0\leq t<u\leq J}
+ \bigl(\log q_{(r,u)}-\log q_{(r,t)}\bigr).
+\]
+The full Jacobian is therefore nonzero.  The characteristic-zero Jacobian criterion over
+\(\operatorname{Frac}(\cA)\) proves algebraic independence.
+
+The Dirichlet transform is an injective algebra homomorphism and sends \(L^j\) to the
+\(j\)-th derivative.  To adjoin \(s\), suppose after clearing denominators that a nonzero
+relation has coefficients in \(\C[s]\).  Expanding it gives a Dirichlet series
+\[
+ \sum_{k\geq1}Q_k(s)k^{-s}=0
+\]
+whose coefficient polynomials have uniformly bounded degree.  Choose the least \(k\) with
+\(Q_k\ne0\), multiply by \(k^s\), and let \(s=\sigma\to+\infty\).  Exponential separation
+dominates polynomial growth, a contradiction.  Thus no relation over \(\C(s)\) exists.
+\end{proof}
+
+\begin{theorem}[Relative hypertranscendence]\label{thm:relative}
+Let \(K_\zeta=\C(s)\langle\zeta\rangle\).  Then
+\[
+ (H_m)_{m\geq2}
+\quad\text{is jointly differentially algebraically independent over }K_\zeta.
+ \tag{4.4}\label{eq:relative}
+\]
+For distinct \(m_1,\ldots,m_r\geq2\) and \(J_i\geq0\),
+\[
+ \trdeg_{K_\zeta}
+ K_\zeta\bigl(H_{m_i}^{(j)}:1\leq i\leq r,\ 0\leq j\leq J_i\bigr)
+ =\sum_{i=1}^r(J_i+1).
+ \tag{4.5}\label{eq:rank}
+\]
+\end{theorem}
+
+\begin{proof}
+If \(a_m(k)\ne0\), then \(\Omega(k)\geq m\); equality holds only for a pure prime
+power \(k=p^m\).  Consequently the sources \(a_m\) satisfy
+\eqref{eq:below-grade}--\eqref{eq:leading-grade} with \(\ell(m)=m\).  The constant zeta
+source satisfies the same criterion at level one.  Theorem \ref{thm:omega} therefore makes
+\(\{\zeta\}\cup\{S_m:m\geq2\}\) jointly differentially algebraically independent over
+\(\C(s)\).
+
+Adjoining all derivatives of \(\zeta\) to the base preserves independence of the \(S_m\).
+Multiplication by the nonzero element \(\zeta^{-1}\) is an invertible triangular change of
+jet coordinates over \(K_\zeta\).  Since \(H_m=\zeta^{-1}S_m\), this proves
+\eqref{eq:relative}; \eqref{eq:rank} is its finite transcendence-degree form.
+\end{proof}
+
+Theorem \ref{thm:relative} is stronger than separate hypertranscendence.  Even after the entire
+differential data of the common divisor carrier have been placed in the coefficient field,
+every new shell jet contributes one new algebraically independent coordinate.
+
+\section{The Hilbert scalar-assembly boundary}
+
+Disjoint coefficients make the shell label a genuine orthogonal coordinate.  Let
+\(c_{00}(\N)\) be the finitely supported real sequences, let
+\(j:c_{00}(\N)\to\ell^2(\N)\) be the coordinate inclusion, and define the unit
+codiagonal
+\[
+ \Sigma x=\sum_{m\geq0}x(m).
+ \tag{5.1}\label{eq:codiagonal}
+\]
+
+\begin{proposition}[Nonclosable label erasure]\label{prop:nonclosable}
+There is no closable operator on \(\ell^2(\N)\) whose restriction along \(j\) is
+\(\Sigma\).
+\end{proposition}
+
+\begin{proof}
+Set
+\[
+ x_N=\frac1{N+1}\sum_{m=0}^{N}e_m.
+\]
+Then
+\[
+ \|j(x_N)\|_2^2=\frac1{N+1}\longrightarrow0,
+ \qquad
+ \Sigma x_N=1.
+\]
+This is a graph-null sequence with nonzero image, which contradicts closability.
+\end{proof}
+
+The proposition is deliberately narrow.  It is not a no-go theorem for Hilbert--P\'olya,
+trace formulae, or weighted operator constructions.  It identifies the exact failed
+operation: unit-weight scalar erasure of infinitely many orthogonal shell labels.  Any viable
+operator assembly must retain the label, change the topology, or introduce a controlled
+weight.
+
+\section{Successive cofinal prime atoms}
+
+We now locate the information which the divisor and finite differential structure do not
+contain.  On \(\Re w>1\),
+\[
+ F(w):=\frac1{\zeta(w)}=\sum_{k\geq1}\frac{\mu(k)}{k^w}.
+ \tag{6.1}\label{eq:moebius}
+\]
+
+\begin{lemma}[Two effective atom extractions]\label{lem:atom-bounds}
+If \(\sigma=\Re w>1\), then
+\begin{align}
+ \left|2^w(F(w)-1)+1\right|
+ &\leq\frac{2}{\sigma-1},\label{eq:two-tail}\\
+ \left|3^w(F(w)-1+2^{-w})+1\right|
+ &\leq\frac{3}{\sigma-1}.\label{eq:three-tail}
+\end{align}
+\end{lemma}
+
+\begin{proof}
+After extracting \(1-2^{-w}\) from \eqref{eq:moebius}, the remaining absolute tail is at
+most
+\[
+ \sum_{k\geq3}k^{-\sigma}
+ \leq\int_2^\infty x^{-\sigma}\,dx
+ =\frac{2^{1-\sigma}}{\sigma-1}.
+\]
+Multiplication by \(|2^w|=2^\sigma\) proves \eqref{eq:two-tail}.  After also extracting
+\(-3^{-w}\), the same argument beginning at \(4\) gives
+\[
+ \sum_{k\geq4}k^{-\sigma}
+ \leq\frac{3^{1-\sigma}}{\sigma-1},
+\]
+which proves \eqref{eq:three-tail}.
+\end{proof}
+
+\begin{theorem}[First two prime layers]\label{thm:two-layers}
+For every fixed \(s\) with \(\Re s>0\),
+\begin{align}
+ 2^{ms}H_m(s)&\longrightarrow1-2^{-s},\label{eq:two-layer}\\
+ 3^{ms}R_m(s)&\longrightarrow1-3^{-s},\label{eq:three-layer}
+\end{align}
+where \(R_m(s)=H_m(s)-2^{-ms}(1-2^{-s})\).
+Both limiting amplitudes are nonzero.
+\end{theorem}
+
+\begin{proof}
+Put
+\[
+ B_m^{(2)}=2^{ms}\bigl(F(ms)-1\bigr).
+\]
+By \eqref{eq:two-tail}, \(B_m^{(2)}\to-1\).  Since
+\[
+ 2^{ms}H_m(s)=2^{-s}B_{m+1}^{(2)}-B_m^{(2)},
+\]
+\eqref{eq:two-layer} follows.
+
+Next put
+\[
+ B_m^{(3)}=3^{ms}\bigl(F(ms)-1+2^{-ms}\bigr).
+\]
+Equation \eqref{eq:three-tail} gives \(B_m^{(3)}\to-1\), while exact cancellation of the
+prime-two term gives
+\[
+ 3^{ms}R_m(s)=3^{-s}B_{m+1}^{(3)}-B_m^{(3)}.
+\]
+This proves \eqref{eq:three-layer}.  Finally
+\(|p^{-s}|=p^{-\Re s}<1\), so \(1-p^{-s}\ne0\) for \(p=2,3\).
+\end{proof}
+
+\begin{corollary}[Adjacent transfer spectrum]\label{cor:adjacent}
+For \(\Re s>0\), the denominators below are nonzero for all sufficiently large \(m\), and
+\begin{align}
+ \frac{H_{m+1}(s)}{H_m(s)}&\longrightarrow2^{-s},\label{eq:ratio-two}\\
+ \frac{R_{m+1}(s)}{R_m(s)}&\longrightarrow3^{-s}.\label{eq:ratio-three}
+\end{align}
+Thus the half-density-normalized limits are \(2^{1/2-s}\) and \(3^{1/2-s}\).
+If \(h_m=H_m(1)\), then \(h_m>0\),
+\[
+ 2^mh_m\longrightarrow\frac12,\qquad
+ \frac{h_m}{h_{m+1}}\longrightarrow2,
+ \tag{6.6}\label{eq:mass-ratio}
+\]
+and the source-normalized limit \eqref{eq:source-normalized} follows.
+\end{corollary}
+
+\begin{proof}
+If \(p^{ms}X_m(s)\to A(s)\ne0\), then
+\[
+ \frac{X_{m+1}(s)}{X_m(s)}
+ =p^{-s}\frac{p^{(m+1)s}X_{m+1}(s)}{p^{ms}X_m(s)}
+ \longrightarrow p^{-s}.
+\]
+Apply this observation to Theorem \ref{thm:two-layers}.  At \(s=1\), the first limit gives
+\(2^mh_m\to1/2\).  Positivity follows from
+\(\zeta(m+1)<\zeta(m)\) for \(m>1\), hence
+\(\zeta(m+1)^{-1}>\zeta(m)^{-1}\).  The remaining claims follow by taking ratios and square
+roots.
+\end{proof}
+
+The order of operations matters.  Squaring, summing over reflection partners, or discarding
+the shell label before extracting the cofinal ratios preserves divisor location but can erase
+the orientation carried by their moduli.  The next section makes the retained information
+exact.
+
+\section{Minimal two-scale tomography and modular phases}
+
+For a scale \(q>1\) and a real source center \(c\), define
+\[
+ U_{q,c}(s)=q^{c/2-s},\qquad
+ \mathfrak e_{q,c}(s)=\frac{\log|U_{q,c}(s)|}{\log q}.
+ \tag{7.1}\label{eq:universal-character}
+\]
+
+\begin{theorem}[Universal least-atom modular law]\label{thm:modular-law}
+For every \(q>1\),
+\[
+ |U_{q,c}(s)|=q^{c/2-\Re s},
+ \qquad
+ \mathfrak e_{q,c}(s)=\frac c2-\Re s.
+ \tag{7.2}\label{eq:modulus-entropy}
+\]
+Hence the entropy is independent of \(q\).  Moreover,
+\[
+ U_{q,c}(s)\,
+ \overline{U_{q,c}(c-\bar s)}=1.
+ \tag{7.3}\label{eq:reflection-pair}
+\]
+The character is contractive, unitary, or expansive according as
+\(\Re s>c/2\), \(\Re s=c/2\), or \(\Re s<c/2\).
+\end{theorem}
+
+\begin{proof}
+For positive \(q\),
+\[
+ q^{c/2-s}
+ =e^{(c/2-\Re s)\log q}e^{-i(\Im s)\log q}.
+\]
+This proves \eqref{eq:modulus-entropy} and the phase trichotomy.  Substitution in
+\eqref{eq:reflection-pair} makes the exponents add to zero.
+\end{proof}
+
+Equation \eqref{eq:reflection-pair} is strictly weaker than pointwise unitarity.  Reflection
+pairs reciprocal moduli at every point; ordinary unitarity occurs only on the self-dual line.
+This distinction is the signed orientation which a reflection-even observer loses.
+
+\begin{theorem}[Exact two-scale tomography classification]\label{thm:tomography}
+Let \(q,r>1\) and \(c\in\mathbb R\).  The map
+\[
+ \cU_{q,r,c}:\C\longrightarrow\C^2,\qquad
+ \cU_{q,r,c}(s)=\bigl(U_{q,c}(s),U_{r,c}(s)\bigr)
+\]
+is injective if and only if \(\log r/\log q\) is irrational.  No single map
+\(s\mapsto U_{q,c}(s)\) is injective on \(\C\).
+\end{theorem}
+
+\begin{proof}
+First suppose that \(\log r/\log q\) is irrational and
+\(\cU_{q,r,c}(s)=\cU_{q,r,c}(t)\).  Equality of the first moduli and
+\eqref{eq:modulus-entropy} give \(\Re s=\Re t\).  Cancelling the common radial factors
+then gives
+\[
+ e^{-i(\Im s)\log q}=e^{-i(\Im t)\log q},
+\qquad
+ e^{-i(\Im s)\log r}=e^{-i(\Im t)\log r}.
+\]
+For \(\delta=\Im s-\Im t\), there are \(a,b\in\mathbb Z\) with
+\[
+ \delta\log q=2\pi a,\qquad \delta\log r=2\pi b.
+\]
+If \(\delta\ne0\), then \(\log r/\log q=b/a\) is rational, contrary to the
+hypothesis.  Thus \(\delta=0\), and \(s=t\).
+
+Conversely, suppose \(\log r/\log q=A/B\) with nonzero integers \(A,B\).  On the
+self-dual vertical line \(s_t=c/2-it\),
+\[
+ U_{q,c}(s_t)=e^{it\log q},\qquad
+ U_{r,c}(s_t)=e^{it\log r}.
+\]
+The nonzero time \(T=2\pi B/\log q\) is a common period: the first phase makes
+\(B\) turns and the second makes \(A\) turns.  Hence
+\(\cU_{q,r,c}(s_T)=\cU_{q,r,c}(s_0)\) although \(s_T\ne s_0\).
+Taking only the first component gives the same conclusion for a single scale, with period
+\(2\pi/\log q\).
+\end{proof}
+
+\begin{corollary}[Prime-two/prime-three shell tomography]\label{cor:two-three}
+The actual shell transfer spectrum
+\[
+ \cU(s)=\bigl(2^{1/2-s},3^{1/2-s}\bigr)
+\]
+is injective on \(\C\).
+\end{corollary}
+
+\begin{proof}
+The ratio \(\log3/\log2\) is irrational: a rational relation would imply
+\(3^A=2^B\) for nonzero positive integers \(A,B\), contrary to unique factorization.
+Apply Theorem \ref{thm:tomography} with \(q=2\), \(r=3\), and \(c=1\).
+\end{proof}
+
+One atom clock determines the horizontal coordinate but aliases height modulo
+\(2\pi/\log q\).  A second logarithmically incommensurable atom is not a redundant
+refinement: it removes the entire aliasing kernel.  Rank two is both sufficient and necessary.
+The same shell realizes this universal law with its first two successive atom extractions.
+
+\section{Local--cofinal divisor transgression}
+
+We now compare the cofinal transfer with the local geometry of a zero.  Let \(\rho\) be a zero
+of \(\Xi\) of multiplicity \(d_\rho\).  Locally,
+\[
+ \Xi(s)=(s-\rho)^{d_\rho}g(s),\qquad g(\rho)\ne0.
+\]
+
+\begin{theorem}[Modular-residue transgression]\label{thm:transgression}
+The current \(J_\Xi\) from \eqref{eq:current} has residue
+\[
+ \Res_{s=\rho}J_\Xi(s)=-d_\rho(\rho-\tfrac12).
+ \tag{8.1}\label{eq:complex-residue}
+\]
+For every \(q>1\),
+\[
+ \Re\Res_{s=\rho}J_\Xi(s)
+ =d_\rho\mathfrak e_{q,1}(\rho)
+ =d_\rho(\tfrac12-\Re\rho).
+ \tag{8.2}\label{eq:real-transgression}
+\]
+If \(d_\rho\ne0\), these quantities vanish exactly on the critical line.
+\end{theorem}
+
+\begin{proof}
+The local factorization gives
+\[
+ \frac{\Xi'(s)}{\Xi(s)}
+ =\frac{d_\rho}{s-\rho}+\frac{g'(s)}{g(s)}.
+\]
+Multiplication by \(-(s-\tfrac12)\) proves \eqref{eq:complex-residue}.  Taking real parts
+and applying \eqref{eq:modulus-entropy} with \(c=1\) proves
+\eqref{eq:real-transgression}.  The final assertion follows because \(d_\rho\ne0\).
+\end{proof}
+
+Define the signed modular charge
+\[
+ Q(\rho,d_\rho)=d_\rho(\tfrac12-\Re\rho).
+ \tag{8.3}\label{eq:charge}
+\]
+Theorem \ref{thm:transgression} gives two exact charts:
+\[
+ \boxed{
+ Q(\rho,d_\rho)
+ =
+ \underbrace{\Re\Res_\rho J_\Xi}_{\text{local divisor chart}}
+ =
+ \underbrace{d_\rho\,
+ \frac{\log|U_{q,1}(\rho)|}{\log q}}_{\text{cofinal transfer chart}}.}
+ \tag{8.4}\label{eq:two-charts}
+\]
+The right-hand side does not depend on which atom base reports it.  For the actual shell, the
+first two reports are \(q=2\) and \(q=3\), and their phases jointly recover \(\rho\), not merely
+its horizontal charge.
+
+The functional equation pairs \(\rho\) with \(1-\bar\rho\).  Their entropies are opposite:
+\[
+ \mathfrak e_{q,1}(1-\bar\rho)=-\mathfrak e_{q,1}(\rho).
+ \tag{8.5}\label{eq:odd-charge}
+\]
+Thus every reflection-even aggregation cancels the signed charge of an off-line pair.  It may
+retain a nonnegative defect count or a squared displacement, but it cannot recover which member
+lies on which side.  This explains, at the level of an exact invariant, why divisor location
+survives reflection while orientation does not.
+
+\section{The two-clock observer theorem}
+
+The local rate associated with \(\rho\) is
+\[
+ \nu_\rho=2\Re\rho-1=-2\mathfrak e_{q,1}(\rho).
+ \tag{9.1}\label{eq:rate-charge}
+\]
+The same rate occurs with opposite signs in source evolution and shell depth.  This produces a
+traveling wave rather than a line-selecting scalar.
+
+\begin{theorem}[Characteristic conservation]\label{thm:two-clock}
+Let \(h_m=H_m(1)\), \(\Re\rho>0\), and \(\alpha\in\C\).  Then
+\[
+ \cE_{\alpha,\rho}(\tau,m)
+ =|\alpha|^2\frac{|H_m(\rho)|^2}{h_m}e^{\nu_\rho\tau}
+\]
+satisfies
+\[
+ \lim_{m\to\infty}
+ \cE_{\alpha,\rho}(m\log2+u,m)
+ =
+ 2|\alpha|^2|1-2^{-\rho}|^2e^{\nu_\rho u}.
+ \tag{9.2}\label{eq:energy-limit}
+\]
+For \(\alpha\ne0\), the limit is positive for every \(u\in\mathbb R\), including when
+\(\Re\rho\ne1/2\).
+\end{theorem}
+
+\begin{proof}
+Theorem \ref{thm:two-layers} and \eqref{eq:mass-ratio} give
+\[
+ |H_m(\rho)|^2
+ =2^{-2m\Re\rho}
+ \bigl(|1-2^{-\rho}|^2+o(1)\bigr),
+ \qquad
+ h_m=2^{-m}\bigl(\tfrac12+o(1)\bigr).
+\]
+At \(\tau=m\log2+u\),
+\[
+ e^{\nu_\rho\tau}
+ =2^{m(2\Re\rho-1)}e^{\nu_\rho u}.
+\]
+All powers of \(2\) cancel, leaving \eqref{eq:energy-limit}.  Since
+\(|2^{-\rho}|<1\), the atom amplitude is nonzero; positivity follows.
+\end{proof}
+
+\begin{theorem}[Independent-quadrant detection]\label{thm:quadrant}
+For
+\[
+ \chi_\nu(\tau,d)=e^{\nu(\tau-d)}
+\]
+the following hold.
+\begin{enumerate}[label=\textup{(\alph*)}]
+\item On every characteristic line \(\tau=d+u\),
+\(\chi_\nu(d+u,d)=e^{\nu u}\), for every \(\nu\in\mathbb R\).
+\item There is a constant \(C\) with
+\[
+ \chi_\nu(\tau,d)\leq C\qquad(\tau,d\geq0)
+ \]
+if and only if \(\nu=0\).
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+Part (a) is substitution.  If \(\nu>0\), then
+\(\chi_\nu(\tau,0)\to\infty\) as \(\tau\to\infty\).  If \(\nu<0\), then
+\(\chi_\nu(0,d)\to\infty\) as \(d\to\infty\).  If \(\nu=0\), the character is
+identically one.
+\end{proof}
+
+Theorem \ref{thm:quadrant} isolates the observer error.  Restriction to a characteristic line
+does not establish neutrality; it makes every rate conservative by forcing the growing and
+decaying directions to cancel.  In the Riemann setting, \eqref{eq:energy-limit} is therefore
+not evidence that \(\Re\rho=1/2\).  The full independent quadrant detects the line exactly.
+
+\section{The information-localization law}
+
+The preceding results can now be read as one theorem rather than as a list of phenomena.
+
+\begin{theorem}[Divisor--transfer information localization]\label{thm:localization}
+In the exponent-shell resolution, the following data occupy distinct and provably
+noninterchangeable levels.
+\begin{enumerate}[label=\textup{(\alph*)}]
+\item \emph{Longitudinal divisor data:} every high positive shell carries the same Riemann
+divisor with multiplicity.
+\item \emph{Finite transverse structure:} after the common divisor and all its derivatives are
+adjoined, the shell multipliers have maximal differential rank.
+\item \emph{Cofinal spectral data:} the first two ordered atom transitions recover the entire
+spectral point; their base-normalized radial part equals the local centered divisor charge.
+\item \emph{Observer boundary:} unit scalar label erasure is nonclosable, reflection-even
+aggregation cancels charge orientation, and co-moving clock restriction makes every transverse
+rate conservative.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+Parts (a)--(d) are respectively Theorems \ref{thm:divisor-frame} and
+\ref{thm:relative}, Theorems \ref{thm:two-layers}, \ref{thm:tomography}, and
+\ref{thm:transgression}, and Proposition \ref{prop:nonclosable} together with
+\eqref{eq:odd-charge} and Theorem \ref{thm:quadrant}.
+\end{proof}
+
+This law gives a precise answer to the question ``what did divisor-preserving constructions
+miss?''  They did not lose the zeros.  They lost the ordered transfer coordinate which says
+where a zero sits.  The loss occurs in three recognizable ways:
+\[
+\begin{array}{c|c}
+\text{operation} & \text{information destroyed}\\ \hline
+\text{finite differential closure} & \text{cannot couple the transverse shell directions}\\
+\text{unit scalar codiagonal} & \text{cannot continuously forget infinitely many labels}\\
+\text{reflection-even or co-moving reduction} & \text{cancels the signed transverse rate}.
+\end{array}
+\tag{10.1}\label{eq:loss-table}
+\]
+The cofinal spectrum survives all three only while prime order, shell label, and independent
+clock directions remain visible.
+
+\section{Exact consequence for the RH route}
+
+For \(m\geq12\), zero-freeness of \(S_m^\#\) in
+\(1/2<\Re s<1\) is equivalent to RH, by Theorem \ref{thm:divisor-frame} and the functional
+equation.  That equivalence is not the contribution of this paper.  The new content is that a
+hypothetical off-line zero has a completely determined signature inside the resolution:
+
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item it occurs with the same multiplicity in every high positive shell;
+\item no finite differential identity over the full zeta differential field accounts for the
+shared occurrence;
+\item the two cofinal transitions recover the zero exactly;
+\item its signed horizontal displacement equals both the local Xi-current residue per
+multiplicity and every base-normalized cofinal entropy;
+\item reflection pairing and characteristic scalarization erase that sign by exact algebraic
+cancellation, not by lack of precision.
+\end{enumerate}
+
+Accordingly, the missing zero-exclusion input is now localized.  It cannot be obtained from
+divisor replication, finite differential closure, unit scalar assembly, or a bounded
+characteristic profile.  It must be an arithmetic estimate which controls the independent
+transfer directions before those reductions.  Theorem \ref{thm:quadrant} fixes the required
+form: a genuine bound on the full two-clock quadrant forces the rate to vanish; a bound only
+after \(\tau-d\) has been fixed does not.
+
+This is a closed structural conclusion rather than an asserted proof of RH.  It supplies a new
+local--cofinal realization of the signed modular divisor charge and proves where that charge is
+preserved, where it is recoverable, and where the specified reductions destroy it.
+
+\section{Conclusion}
+
+The largest-exponent partition of the integers produces more than a family of positive zeta
+subseries.  It is an information-resolving frame.  Its high channels reproduce the Riemann
+divisor exactly, its normalized transverse directions are maximally free over the zeta
+differential field, and its first two cofinal prime atoms reconstruct the complete spectral
+coordinate.
+
+The central identity is
+\[
+\boxed{
+\Re\Res_{s=\rho}\!
+\left[-(s-\tfrac12)\frac{\Xi'(s)}{\Xi(s)}\right]
+=
+d_\rho\frac{\log|q^{1/2-\rho}|}{\log q}
+=
+d_\rho(\tfrac12-\Re\rho).}
+\tag{12.1}\label{eq:final-law}
+\]
+It identifies local divisor geometry and cofinal arithmetic transfer without dependence on the
+chosen atom scale.  The prime-two and prime-three phases then recover the missing vertical
+coordinate as the arithmetic instance of the exact minimal-rank-two modular tomography law
+realized by the first two shell atoms.
+
+The resulting universal law is an information-localization principle: common-divisor data,
+finite differential structure, and spectral position are different kinds of information, even
+when they inhabit one explicit positive arithmetic object.  Within this resolution,
+critical-line selection demands an isometry of the last kind.  Reflection symmetry supplies
+reciprocal pairing but not isometry; diagonal
+two-clock conservation supplies a traveling wave but not neutrality.  Those distinctions are
+now exact theorems rather than heuristic warnings.
+
+\begin{thebibliography}{99}
+
+\bibitem{BombieriLagarias1999}
+E.~Bombieri and J.~C.~Lagarias,
+\newblock Complements to Li's criterion for the Riemann hypothesis,
+\newblock \emph{J. Number Theory} \textbf{77} (1999), 274--287.
+\newblock \href{https://doi.org/10.1006/jnth.1999.2392}
+{doi:10.1006/jnth.1999.2392}.
+
+\bibitem{ConnesConsani2021}
+A.~Connes and C.~Consani,
+\newblock The scaling Hamiltonian,
+\newblock \emph{J. Operator Theory} \textbf{85} (2021), 257--276.
+\newblock \href{https://arxiv.org/abs/1910.14368}{arXiv:1910.14368}.
+
+\bibitem{GauthierXarles2009}
+P.~M.~Gauthier and X.~Xarles,
+\newblock Perturbations of \(L\)-functions with or without non-trivial zeros off the
+critical line,
+\newblock \href{https://arxiv.org/abs/0911.5135}{arXiv:0911.5135}.
+
+\bibitem{GrosswaldSchnitzer1978}
+E.~Grosswald and F.~J.~Schnitzer,
+\newblock A class of modified \(\zeta\) and \(L\)-functions,
+\newblock \emph{Pacific J. Math.} \textbf{74} (1978), 357--364.
+\newblock \href{https://doi.org/10.2140/pjm.1978.74.357}
+{doi:10.2140/pjm.1978.74.357}.
+
+\bibitem{Kolchin1973}
+E.~R.~Kolchin,
+\newblock \emph{Differential Algebra and Algebraic Groups},
+\newblock Academic Press, New York, 1973.
+
+\bibitem{Li1997}
+X.-J.~Li,
+\newblock The positivity of a sequence of numbers and the Riemann hypothesis,
+\newblock \emph{J. Number Theory} \textbf{65} (1997), 325--333.
+\newblock \href{https://doi.org/10.1006/jnth.1997.2137}
+{doi:10.1006/jnth.1997.2137}.
+
+\bibitem{Nagoshi2016}
+H.~Nagoshi,
+\newblock The hypertranscendence of \(L\)-functions for
+\(\mathrm{GL}_m(\mathbb A_{\mathbb Q})\),
+\newblock \emph{Bull. Aust. Math. Soc.} \textbf{93} (2016), 388--399.
+\newblock \href{https://doi.org/10.1017/S000497271500129X}
+{doi:10.1017/S000497271500129X}.
+
+\bibitem{Ostrowski1920}
+A.~Ostrowski,
+\newblock \"Uber Dirichletsche Reihen und algebraische Differentialgleichungen,
+\newblock \emph{Math. Z.} \textbf{8} (1920), 241--298.
+\newblock \href{https://doi.org/10.1007/BF01206523}
+{doi:10.1007/BF01206523}.
+
+\bibitem{Pong2016}
+W.~Y.~Pong,
+\newblock Applications of differential algebra to algebraic independence of arithmetic
+functions,
+\newblock \emph{Acta Arith.} \textbf{172} (2016), 149--173.
+\newblock \href{https://doi.org/10.4064/aa8112-12-2015}
+{doi:10.4064/aa8112-12-2015}.
+
+\bibitem{Postnikov1949}
+A.~G.~Postnikov,
+\newblock On the differential independence of Dirichlet series,
+\newblock \emph{Dokl. Akad. Nauk SSSR} \textbf{66} (1949), 561--564
+\newblock (in Russian).
+
+\bibitem{ShapiroSparer1986}
+H.~N.~Shapiro and G.~H.~Sparer,
+\newblock On algebraic independence of Dirichlet series,
+\newblock \emph{Comm. Pure Appl. Math.} \textbf{39} (1986), 695--745.
+\newblock \href{https://doi.org/10.1002/cpa.3160390602}
+{doi:10.1002/cpa.3160390602}.
+
+\bibitem{Titchmarsh1986}
+E.~C.~Titchmarsh,
+\newblock \emph{The Theory of the Riemann Zeta-Function}, 2nd ed.,
+revised by D.~R.~Heath-Brown,
+\newblock Oxford University Press, Oxford, 1986.
+
+\bibitem{Voros2014}
+A.~Voros,
+\newblock Zeta functions over zeros of zeta functions and an exponential-asymptotic view of
+the Riemann hypothesis,
+\newblock \href{https://arxiv.org/abs/1403.4558}{arXiv:1403.4558}.
+
+\end{thebibliography}
+
+\end{document}

@@ -1,5 +1,6 @@
 import Mathlib.Analysis.SpecialFunctions.Pow.Complex
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
+import GaloisForLFunctions.HTGeometry.IncommensuratePhaseClock
 
 /-!
 # Least-atom modular transfer law
@@ -123,6 +124,203 @@ theorem leastAtomTransferCharacter_phase_trichotomy
   · exact Or.inr (Or.inr
       ⟨hleft,
         (one_lt_norm_leastAtomTransferCharacter_iff hq c s).2 hleft⟩)
+
+/-- Base-normalized logarithmic modulus of a least-atom transfer
+character.  The normalization removes the arbitrary atom scale. -/
+def leastAtomTransferEntropy (q c : ℝ) (s : ℂ) : ℝ :=
+  Real.log ‖leastAtomTransferCharacter q c s‖ / Real.log q
+
+/-- **Base-independence of modular entropy.**  Every atom scale
+`q > 1` reports the same signed displacement from the source-selected
+self-dual line. -/
+theorem leastAtomTransferEntropy_eq
+    {q : ℝ} (hq : 1 < q) (c : ℝ) (s : ℂ) :
+    leastAtomTransferEntropy q c s = c / 2 - s.re := by
+  rw [leastAtomTransferEntropy,
+    norm_leastAtomTransferCharacter (lt_trans (by norm_num) hq) c s,
+    Real.log_rpow (lt_trans (by norm_num) hq)]
+  have hlog : Real.log q ≠ 0 :=
+    ne_of_gt (Real.log_pos hq)
+  field_simp
+
+/-- Entropies from any two admissible atom bases coincide pointwise. -/
+theorem leastAtomTransferEntropy_base_independent
+    {q r : ℝ} (hq : 1 < q) (hr : 1 < r) (c : ℝ) (s : ℂ) :
+    leastAtomTransferEntropy q c s =
+      leastAtomTransferEntropy r c s := by
+  rw [leastAtomTransferEntropy_eq hq,
+    leastAtomTransferEntropy_eq hr]
+
+/-! ## Universal two-scale tomography -/
+
+/-- Radial/phase decomposition of a least-atom transfer character. -/
+theorem leastAtomTransferCharacter_radial_phase
+    {q : ℝ} (hq : 0 < q) (c : ℝ) (s : ℂ) :
+    leastAtomTransferCharacter q c s =
+      Complex.exp
+          ((((Real.log q) * (c / 2 - s.re) : ℝ) : ℂ)) *
+        _root_.HTGeometry.phaseClockValue (Real.log q) (-s.im) := by
+  have hqC : (q : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hq.ne'
+  have hlog :
+      Complex.log (q : ℂ) = ((Real.log q : ℝ) : ℂ) := by
+    exact (Complex.ofReal_log hq.le).symm
+  rw [leastAtomTransferCharacter,
+    Complex.cpow_def_of_ne_zero hqC, hlog,
+    _root_.HTGeometry.phaseClockValue]
+  rw [← Complex.exp_add]
+  congr 1
+  apply Complex.ext
+  · simp [Complex.mul_re, Complex.sub_re]
+  · simp [Complex.mul_im, Complex.sub_im]
+
+/-- Ordered modular readout at two atom scales. -/
+def leastAtomTwoScaleSpectrum
+    (q r c : ℝ) (s : ℂ) : ℂ × ℂ :=
+  (leastAtomTransferCharacter q c s,
+    leastAtomTransferCharacter r c s)
+
+/-- **Universal two-scale modular tomography.**  Two atom scales with
+incommensurable logarithms recover the entire complex spectral
+coordinate: common radial drift recovers the real part and the paired
+phase clock recovers the imaginary part. -/
+theorem leastAtomTwoScaleSpectrum_injective
+    {q r : ℝ} (hq : 1 < q) (hr : 1 < r)
+    (hirr : Irrational (Real.log r / Real.log q))
+    (c : ℝ) :
+    Function.Injective (leastAtomTwoScaleSpectrum q r c) := by
+  intro s t hst
+  have hqeq :
+      leastAtomTransferCharacter q c s =
+        leastAtomTransferCharacter q c t :=
+    congrArg Prod.fst hst
+  have hreq :
+      leastAtomTransferCharacter r c s =
+        leastAtomTransferCharacter r c t :=
+    congrArg Prod.snd hst
+  have hnorm := congrArg norm hqeq
+  rw [norm_leastAtomTransferCharacter
+      (lt_trans (by norm_num) hq) c s,
+    norm_leastAtomTransferCharacter
+      (lt_trans (by norm_num) hq) c t] at hnorm
+  have hreExponent : c / 2 - s.re = c / 2 - t.re :=
+    (Real.rpow_right_inj (lt_trans (by norm_num) hq)
+      hq.ne').mp hnorm
+  have hre : s.re = t.re := by linarith
+  have hphaseq :
+      _root_.HTGeometry.phaseClockValue (Real.log q) (-s.im) =
+        _root_.HTGeometry.phaseClockValue (Real.log q) (-t.im) := by
+    rw [leastAtomTransferCharacter_radial_phase
+        (lt_trans (by norm_num) hq) c s,
+      leastAtomTransferCharacter_radial_phase
+        (lt_trans (by norm_num) hq) c t] at hqeq
+    rw [hre] at hqeq
+    exact mul_left_cancel₀
+      (Complex.exp_ne_zero
+        (((Real.log q) * (c / 2 - t.re) : ℝ) : ℂ))
+      hqeq
+  have hphaser :
+      _root_.HTGeometry.phaseClockValue (Real.log r) (-s.im) =
+        _root_.HTGeometry.phaseClockValue (Real.log r) (-t.im) := by
+    rw [leastAtomTransferCharacter_radial_phase
+        (lt_trans (by norm_num) hr) c s,
+      leastAtomTransferCharacter_radial_phase
+        (lt_trans (by norm_num) hr) c t] at hreq
+    rw [hre] at hreq
+    exact mul_left_cancel₀
+      (Complex.exp_ne_zero
+        (((Real.log r) * (c / 2 - t.re) : ℝ) : ℂ))
+      hreq
+  have hpair :
+      _root_.HTGeometry.phaseClockPair
+          (Real.log q) (Real.log r) (-s.im) =
+        _root_.HTGeometry.phaseClockPair
+          (Real.log q) (Real.log r) (-t.im) := by
+    exact Prod.ext hphaseq hphaser
+  have himneg :
+      -s.im = -t.im :=
+    _root_.HTGeometry.phaseClockPair_injective
+      (ne_of_gt (Real.log_pos hq)) hirr hpair
+  apply Complex.ext hre
+  linarith
+
+/-- Vertical self-dual coordinate whose real time is reported by atom
+phases. -/
+def leastAtomVerticalCoordinate (c time : ℝ) : ℂ :=
+  ((c / 2 : ℝ) : ℂ) - (time : ℂ) * Complex.I
+
+/-- On the self-dual vertical line, a modular transfer character is
+exactly its phase-clock report. -/
+theorem leastAtomTransferCharacter_vertical
+    {q : ℝ} (hq : 0 < q) (c time : ℝ) :
+    leastAtomTransferCharacter q c
+        (leastAtomVerticalCoordinate c time) =
+      _root_.HTGeometry.phaseClockValue (Real.log q) time := by
+  rw [leastAtomTransferCharacter_radial_phase hq]
+  simp [leastAtomVerticalCoordinate]
+
+/-- **Exact modular tomography classification.**  For two scales
+larger than one, the ordered transfer spectrum is globally injective
+exactly when their logarithms are incommensurable. -/
+theorem leastAtomTwoScaleSpectrum_injective_iff_irrational
+    {q r : ℝ} (hq : 1 < q) (hr : 1 < r) (c : ℝ) :
+    Function.Injective (leastAtomTwoScaleSpectrum q r c) ↔
+      Irrational (Real.log r / Real.log q) := by
+  constructor
+  · intro hinjective
+    rw [← _root_.HTGeometry.phaseClockPair_injective_iff_irrational
+      (ne_of_gt (Real.log_pos hq))]
+    intro time₁ time₂ hphase
+    have hspectrum :
+        leastAtomTwoScaleSpectrum q r c
+            (leastAtomVerticalCoordinate c time₁) =
+          leastAtomTwoScaleSpectrum q r c
+            (leastAtomVerticalCoordinate c time₂) := by
+      apply Prod.ext
+      · change
+          leastAtomTransferCharacter q c
+              (leastAtomVerticalCoordinate c time₁) =
+            leastAtomTransferCharacter q c
+              (leastAtomVerticalCoordinate c time₂)
+        rw [
+          leastAtomTransferCharacter_vertical
+            (lt_trans (by norm_num) hq),
+          leastAtomTransferCharacter_vertical
+            (lt_trans (by norm_num) hq)]
+        exact congrArg Prod.fst hphase
+      · change
+          leastAtomTransferCharacter r c
+              (leastAtomVerticalCoordinate c time₁) =
+            leastAtomTransferCharacter r c
+              (leastAtomVerticalCoordinate c time₂)
+        rw [
+          leastAtomTransferCharacter_vertical
+            (lt_trans (by norm_num) hr),
+          leastAtomTransferCharacter_vertical
+            (lt_trans (by norm_num) hr)]
+        exact congrArg Prod.snd hphase
+    have hcoordinate := hinjective hspectrum
+    have him := congrArg Complex.im hcoordinate
+    simpa [leastAtomVerticalCoordinate] using congrArg Neg.neg him
+  · intro hirr
+    exact leastAtomTwoScaleSpectrum_injective hq hr hirr c
+
+/-- One atom scale never recovers the unrestricted complex spectral
+coordinate: its phase has a nontrivial vertical period. -/
+theorem leastAtomTransferCharacter_not_injective
+    {q : ℝ} (hq : 1 < q) (c : ℝ) :
+    ¬ Function.Injective (leastAtomTransferCharacter q c) := by
+  intro hinjective
+  have hpair :
+      Function.Injective (leastAtomTwoScaleSpectrum q q c) := by
+    intro s t hst
+    exact hinjective (congrArg Prod.fst hst)
+  have hirr :=
+    (leastAtomTwoScaleSpectrum_injective_iff_irrational
+      hq hq c).1 hpair
+  have hlog : Real.log q ≠ 0 :=
+    ne_of_gt (Real.log_pos hq)
+  rw [div_self hlog] at hirr
+  norm_num at hirr
 
 end
 
