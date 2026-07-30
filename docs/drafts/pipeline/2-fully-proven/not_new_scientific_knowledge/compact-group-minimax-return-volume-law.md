@@ -3,8 +3,10 @@
 - **ID:** `compact-group-minimax-return-volume-law`
 - **Stage:** 2-fully-proven
 - **Type:** COMPACT-GROUP RECURRENCE / METRIC ENTROPY INFRASTRUCTURE
-- **Scientific status:** `[PAPER-PROVED] [CLASSICAL INFRASTRUCTURE]`
-  `[NO NOVELTY CLAIM] [LEAN OPEN]`
+- **Scientific status:** `[PAPER-PROVED] [THEOREM A LEAN-PROVED]`
+  `[HAAR BUDGET LOWER LAW LEAN-PROVED]`
+  `[CONNECTED-DENSE-GENERATOR SPECIALIZATION LEAN OPEN]`
+  `[CLASSICAL INFRASTRUCTURE] [NO NOVELTY CLAIM]`
 - **Parent:** `../../1-in-progress/predictive-relation-spectrum-universal-law.md`
 - **Freeze date:** 2026-07-30
 
@@ -241,19 +243,38 @@ It does not cover arbitrary continuous spectral mass, arbitrary
 noncontractive open dynamics, locality, or the interaction-induced change
 of \(K\).  Those are separate theorem obligations.
 
-## Lean plan
+## Lean status and remaining plan
 
-1. formalize the finite-cover collision theorem for an invariant metric
-   group;
-2. reuse compact totally-bounded finite nets rather than define numerical
-   covering entropy;
-3. formalize the finite-union Haar avoidance lower bound;
-4. import or prove surjectivity of integer multiplication on compact
+Theorem A is formalized in
+`formal/GaloisForLFunctions/HTGeometry/CompactGroupMetricReturnLaw.lean`.
+It exports:
+
+- `exists_pow_return_le_two_mul_of_finset_isCover`;
+- `exists_pow_return_le_two_mul_coveringNumber`;
+- `exists_mem_avoids_first_powers_of_measure_budget`;
+- `exists_mem_avoids_first_powers_of_haar_budget`.
+
+The last two declarations prove the exact finite-union lower mechanism.
+For a probability measure, a conull admissible set `Good`, measurable target
+\(B\), and measure-preserving first \(L\) power maps,
+\[
+ L\,m(B)<1
+\]
+forces an element of `Good` whose first \(L\) powers all avoid \(B\).
+The Haar declaration supplies measure preservation for every compact
+rootable commutative group.
+
+The direct source check passed.  The axiom audit reports only `propext`,
+`Classical.choice` and `Quot.sound`.
+
+The connected dense-generator specialization of Theorem B remains
+paper-proved but is not yet formalized.  Its remaining plan:
+
+1. import or prove surjectivity of integer multiplication on compact
    connected abelian groups;
-5. formalize the full-measure generator lemma only if the necessary
+2. formalize the full-measure generator lemma only if the necessary
    Pontryagin-duality surface exists in this toolchain;
-6. otherwise first formalize the conditional lower theorem for any
-   full-measure set of generators and Haar-preserving power maps.
+3. formalize the covering-volume sandwich.
 
 No statement from this card enters the manuscript before its exact Lean
 counterpart passes direct elaboration and axiom audit.
@@ -264,6 +285,9 @@ counterpart passes direct elaboration and axiom audit.
 - [x] dependency-closed paper proof
 - [x] finite/infinite pure-point specialization
 - [x] classical-parent status recorded
-- [ ] Lean theorem
-- [ ] axiom audit
+- [x] covering-deadline Lean theorem
+- [x] covering-deadline axiom audit
+- [x] conull Haar-budget minimax lower mechanism
+- [ ] connected-group dense-generator corollary
+- [ ] covering-volume sandwich
 - [ ] external specialist audit

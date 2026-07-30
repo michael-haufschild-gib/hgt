@@ -478,9 +478,15 @@ by every positive integer Haar-preserving.  The final inequality follows
 from a maximal \(\varepsilon/2\)-separated set whose
 \(\varepsilon/4\)-balls are disjoint.
 
-This is a paper-proof target, not yet a manuscript theorem.  Its important
-feature is exactness at neighboring resolutions.  It does not replace a
-dimension-linear error by a hidden dimension-dependent constant:
+The complete chain is paper-proved.  The covering deadline `(J1.1)` and the
+general conull Haar-budget lower mechanism are Lean-proved in
+`CompactGroupMetricReturnLaw.lean`.  The connected-group
+full-measure-dense-generator corollary and the final covering-volume
+inequality are not yet Lean-proved, so the boxed chain `(J1.2)` is not yet a
+manuscript theorem.
+
+Its important feature is exactness at neighboring resolutions.  It does not
+replace a dimension-linear error by a hidden dimension-dependent constant:
 \[
  \text{worst return}
  \quad\leftrightarrow\quad
