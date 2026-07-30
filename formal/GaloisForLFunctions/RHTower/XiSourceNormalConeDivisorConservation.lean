@@ -23,6 +23,7 @@ open Complex Filter Set
 open scoped Topology BigOperators ArithmeticFunction.Omega Differential
   ArithmeticFunction.Moebius UpperEndDifferentialInstances
   UpperEndComplexTowerInstances LSeries.notation ArithmeticFunction.zeta
+  ComplexOrder
 
 noncomputable section
 
@@ -921,5 +922,255 @@ theorem xiSourceNormalConeDivisorConservation_law :
   affineResidue := xiExceptionalAffineDivisorCurrent_residue
   exceptionalDivisor := meromorphicOrderAt_xiExceptionalBoundarySection
   arithmeticTomography := xiArithmeticSourceMomentTorelli_law
+
+/-- The signed arithmetic coefficient exposed by the exceptional boundary of
+the positive bounded-exponent source. -/
+def mobiusExceptionalCoefficient (n : ℕ) : ℝ :=
+  -(((μ : ArithmeticFunction ℤ) n : ℤ) : ℝ) / 2
+
+/-- The reciprocal-zeta exceptional boundary of the positive
+bounded-exponent source. -/
+def mobiusExceptionalBoundary (u : ℂ) : ℂ :=
+  (-1 / 2 : ℂ) / riemannZeta u
+
+@[simp] theorem mobiusExceptionalCoefficient_one :
+    mobiusExceptionalCoefficient 1 = -1 / 2 := by
+  simp [mobiusExceptionalCoefficient]
+
+@[simp] theorem mobiusExceptionalCoefficient_two :
+    mobiusExceptionalCoefficient 2 = 1 / 2 := by
+  rw [mobiusExceptionalCoefficient,
+    ArithmeticFunction.moebius_apply_prime Nat.prime_two]
+  norm_num
+
+/-- On the absolute-convergence half-plane, the exceptional boundary is
+exactly the Dirichlet series with coefficients `-μ(n)/2`. -/
+theorem LSeries_mobiusExceptionalCoefficient
+    {u : ℂ} (hu : 1 < u.re) :
+    LSeries (fun n => ((mobiusExceptionalCoefficient n : ℝ) : ℂ)) u =
+      mobiusExceptionalBoundary u := by
+  have hfun :
+      (fun n => ((mobiusExceptionalCoefficient n : ℝ) : ℂ)) =
+        (-1 / 2 : ℂ) • (↗μ : ℕ → ℂ) := by
+    funext n
+    simp [mobiusExceptionalCoefficient]
+    ring
+  rw [hfun, LSeries_smul, LSeries_moebius_eq_inv_riemannZeta hu]
+  simp only [mobiusExceptionalBoundary, div_eq_mul_inv]
+
+/-- A mixed-sign Möbius boundary cannot be obtained by coefficientwise
+convergence of nonnegative coefficients on one fixed Dirichlet basis. -/
+theorem no_nonnegative_coefficients_tendsto_mobiusExceptional :
+    ¬ ∃ a : ℕ → ℕ → ℝ,
+      (∀ k n, 0 ≤ a k n) ∧
+      (∀ n, Tendsto (fun k => a k n) atTop
+        (𝓝 (mobiusExceptionalCoefficient n))) := by
+  rintro ⟨a, ha, hlim⟩
+  have hnonneg : 0 ≤ mobiusExceptionalCoefficient 1 :=
+    isClosed_Ici.mem_of_tendsto (hlim 1)
+      (Filter.Eventually.of_forall fun k => ha k 1)
+  rw [mobiusExceptionalCoefficient_one] at hnonneg
+  norm_num at hnonneg
+
+/-- Every native real value of a nontrivial bounded-exponent source is
+strictly positive on its Dirichlet half-plane. -/
+theorem boundedExponentEulerSource_pos_of_one_lt
+    {m : ℕ} (hm : m ≠ 0) {x : ℝ} (hx : 1 < x) :
+    0 < boundedExponentEulerSource m (x : ℂ) := by
+  have hm1 : (1 : ℝ) ≤ (m : ℝ) := by
+    exact_mod_cast (Nat.one_le_iff_ne_zero.mpr hm)
+  have hmx : 1 < (m : ℝ) * x := by
+    nlinarith
+  have hnum : 0 < riemannZeta x :=
+    riemannZeta_pos_of_one_lt hx
+  have hden :=
+    riemannZeta_pos_of_one_lt hmx
+  have hden' :
+      0 < riemannZeta ((m : ℂ) * (x : ℂ)) := by
+    convert hden using 1
+    all_goals norm_num
+  rw [boundedExponentEulerSource]
+  exact div_pos hnum hden'
+
+/-- Every finite positive-resolution prefix is strictly positive at a native
+real Dirichlet point. -/
+theorem completeResolutionCarrierPrefix_pos_of_one_lt
+    {K N : ℕ} (hKN : K + N ≠ 0) {x : ℝ} (hx : 1 < x) :
+    0 < completeResolutionCarrierPrefix K N (x : ℂ) := by
+  rw [completeResolutionCarrierPrefix_eq_boundedExponentEulerSource]
+  exact boundedExponentEulerSource_pos_of_one_lt hKN hx
+
+/-- The Möbius exceptional boundary is strictly negative on the real
+Dirichlet half-line. -/
+theorem mobiusExceptionalBoundary_neg_of_one_lt
+    {x : ℝ} (hx : 1 < x) :
+    mobiusExceptionalBoundary (x : ℂ) < 0 := by
+  have hz : 0 < riemannZeta x :=
+    riemannZeta_pos_of_one_lt hx
+  rw [mobiusExceptionalBoundary]
+  exact div_neg_of_neg_of_pos (by norm_num) hz
+
+/-- At divisor-retaining inverse depth, the analytically continued positive
+prefix is eventually strictly negative on every real ray `x > 1`. -/
+theorem eventually_completeResolutionCarrierPrefix_critical_re_neg
+    {K : ℕ} (hK : K ≠ 0) {x : ℝ} (hx : 1 < x) :
+    ∀ᶠ N : ℕ in atTop,
+      (completeResolutionCarrierPrefix K N
+        ((((K + N : ℕ) : ℂ)⁻¹) * (x : ℂ))).re < 0 := by
+  have hlim :=
+    tendsto_completeResolutionCarrierPrefix_normalScale hK (x : ℂ)
+  have hlimre :=
+    Complex.continuous_re.continuousAt.tendsto.comp hlim
+  have hneg :
+      (mobiusExceptionalBoundary (x : ℂ)).re < 0 :=
+    (Complex.neg_iff.mp
+      (mobiusExceptionalBoundary_neg_of_one_lt hx)).1
+  simpa only [Function.comp_apply, mobiusExceptionalBoundary] using
+    (tendsto_order.1 hlimre).2 0 hneg
+
+/-- Every inverse-depth observation point eventually leaves the common
+Dirichlet half-plane of the nonnegative coefficient expansions. -/
+theorem eventually_completeResolution_critical_outside_dirichletHalfPlane
+    {K : ℕ} (x : ℝ) :
+    ∀ᶠ N : ℕ in atTop,
+      ¬ 1 <
+        (((((K + N : ℕ) : ℂ)⁻¹) * (x : ℂ))).re := by
+  have heps :
+      Tendsto (fun N : ℕ => (((K + N : ℕ) : ℂ)⁻¹))
+        atTop (𝓝 0) := by
+    have h :=
+      GaloisForLFunctions.tendsto_natCast_inv_complex.comp
+        (tendsto_add_atTop_nat K)
+    exact h.congr' (Filter.Eventually.of_forall fun N => by
+      simp [Function.comp_apply, Nat.add_comm])
+  have harg :
+      Tendsto
+        (fun N : ℕ => (((K + N : ℕ) : ℂ)⁻¹) * (x : ℂ))
+        atTop (𝓝 0) := by
+    convert heps.mul_const (x : ℂ) using 1
+    all_goals simp
+  have hre :=
+    Complex.continuous_re.continuousAt.tendsto.comp harg
+  exact (hre.eventually_lt_const zero_lt_one).mono
+    (fun _ hlt => not_lt_of_ge hlt.le)
+
+/-- The exceptional Möbius boundary reverses every zeta divisor order. -/
+theorem meromorphicOrderAt_mobiusExceptionalBoundary
+    {rho : ℂ} {n : ℤ}
+    (hf : MeromorphicAt riemannZeta rho)
+    (horder : meromorphicOrderAt riemannZeta rho = n) :
+    meromorphicOrderAt mobiusExceptionalBoundary rho = -n := by
+  have hfun :
+      mobiusExceptionalBoundary =
+        exceptionalBoundarySection riemannZeta := by
+    funext u
+    simp [mobiusExceptionalBoundary, exceptionalBoundarySection,
+      riemannZeta_zero]
+  rw [hfun]
+  exact
+    meromorphicOrderAt_exceptionalBoundarySection
+      (f := riemannZeta) (rho := rho) (n := n)
+      (by rw [riemannZeta_zero]; norm_num) hf horder
+
+/-- Exact certificate for the positive-occupancy to Möbius-boundary
+transmutation and the minimal affine polarization of its completed divisor. -/
+structure PositiveOccupancyMobiusBoundaryPolarityCertificate
+    (K : ℕ) : Prop where
+  bulkBoundary : PositiveHTBulkBoundaryDualityCertificate K
+  nativePositive :
+    ∀ N : ℕ, ∀ {x : ℝ}, 1 < x →
+      0 < completeResolutionCarrierPrefix K N (x : ℂ)
+  criticalLimit :
+    ∀ x : ℝ,
+      Tendsto
+        (fun N : ℕ =>
+          completeResolutionCarrierPrefix K N
+            ((((K + N : ℕ) : ℂ)⁻¹) * (x : ℂ)))
+        atTop (𝓝 (mobiusExceptionalBoundary (x : ℂ)))
+  criticalEventuallyNegative :
+    ∀ {x : ℝ}, 1 < x →
+      ∀ᶠ N : ℕ in atTop,
+        (completeResolutionCarrierPrefix K N
+          ((((K + N : ℕ) : ℂ)⁻¹) * (x : ℂ))).re < 0
+  criticalLeavesDirichletHalfPlane :
+    ∀ x : ℝ,
+      ∀ᶠ N : ℕ in atTop,
+        ¬ 1 < (((((K + N : ℕ) : ℂ)⁻¹) * (x : ℂ))).re
+  boundaryLSeries :
+    ∀ {u : ℂ}, 1 < u.re →
+      LSeries
+          (fun n => ((mobiusExceptionalCoefficient n : ℝ) : ℂ)) u =
+        mobiusExceptionalBoundary u
+  boundaryMixedSign :
+    mobiusExceptionalCoefficient 1 < 0 ∧
+      0 < mobiusExceptionalCoefficient 2
+  noCoefficientwisePositiveBoundary :
+    ¬ ∃ a : ℕ → ℕ → ℝ,
+      (∀ k n, 0 ≤ a k n) ∧
+      (∀ n, Tendsto (fun k => a k n) atTop
+        (𝓝 (mobiusExceptionalCoefficient n)))
+  boundaryDivisorPolarity :
+    ∀ {rho : ℂ} {n : ℤ},
+      MeromorphicAt riemannZeta rho →
+      meromorphicOrderAt riemannZeta rho = n →
+      meromorphicOrderAt mobiusExceptionalBoundary rho = -n
+  affinePolarization :
+    ∀ {a b : ℂ},
+      (∀ u : ℂ, a * (1 - u) + b = -(a * u + b)) →
+      ∀ u : ℂ, a * u + b = a * (u - 1 / 2)
+  xiAffineResidue :
+    ∀ {rho : ℂ} {n : ℤ},
+      meromorphicOrderAt xi rho = n →
+      Tendsto
+        (fun s => (s - rho) * xiExceptionalAffineDivisorCurrent s)
+        (𝓝[≠] rho)
+        (𝓝 (-((rho - 1 / 2) * (n : ℂ))))
+  evenObserverLoss :
+    ∀ {α : Type*} (obs : ℂ → α),
+      (∀ u : ℂ, obs (1 - u) = obs u) →
+      ¬Function.Injective obs
+
+/-- **Positive occupancy--Möbius boundary-polarity law.**  For every
+`K ≥ 12`, the complete positive hypertranscendental zeta resolution has a
+forced singular boundary: its native branch is positive, its divisor-retaining
+inverse-depth branch is eventually negative and equals signed Möbius inversion,
+the boundary reverses divisor order, and reflection admits only the centered
+affine polarization while every even observer loses injectivity. -/
+theorem positiveOccupancyMobiusBoundaryPolarity_law
+    {K : ℕ} (hK : 12 ≤ K) :
+    PositiveOccupancyMobiusBoundaryPolarityCertificate K where
+  bulkBoundary := positiveHTBulkBoundaryDuality_law hK
+  nativePositive := fun N _ hx =>
+    completeResolutionCarrierPrefix_pos_of_one_lt
+      (by omega) hx
+  criticalLimit := fun x => by
+    simpa [mobiusExceptionalBoundary] using
+      tendsto_completeResolutionCarrierPrefix_normalScale
+        (K := K) (by omega) (x : ℂ)
+  criticalEventuallyNegative := fun hx =>
+    eventually_completeResolutionCarrierPrefix_critical_re_neg
+      (K := K) (by omega) hx
+  criticalLeavesDirichletHalfPlane := fun x =>
+    eventually_completeResolution_critical_outside_dirichletHalfPlane
+      (K := K) x
+  boundaryLSeries :=
+    LSeries_mobiusExceptionalCoefficient
+  boundaryMixedSign := by
+    rw [mobiusExceptionalCoefficient_one,
+      mobiusExceptionalCoefficient_two]
+    norm_num
+  noCoefficientwisePositiveBoundary :=
+    no_nonnegative_coefficients_tendsto_mobiusExceptional
+  boundaryDivisorPolarity :=
+    fun hf horder =>
+      meromorphicOrderAt_mobiusExceptionalBoundary hf horder
+  affinePolarization := fun hodd u =>
+    affineWeight_eq_centered_of_reflectionOdd
+      (center := (1 / 2 : ℂ)) (by simpa using hodd) u
+  xiAffineResidue :=
+    xiExceptionalAffineDivisorCurrent_residue
+  evenObserverLoss := fun obs heven =>
+    reflectionEvenObserver_not_injective
+      (center := (1 / 2 : ℂ)) obs (by simpa using heven)
 
 end RHTower

@@ -878,3 +878,218 @@ This conjecture is stronger and more falsifiable than the previous generic Hardy
   `SoninCofinalAmbidextrousInwardIncidence.lean`; direct elaboration, targeted build, and axiom
   audit pass.  Replaced the broad reporter target by the explicit
   `XI_PRINCIPAL_CONORMAL_AMBIDEXTROUS_DESCENT` conjecture.
+
+## Two-clock source--shell reciprocity
+
+The source-horizon law and the positive hypertranscendental shell law have a stronger joint
+consequence.  They are not merely two readers of the same centered character.  Their rates are
+exact opposites.
+
+Let
+\[
+ H_n(s)=\frac1{\zeta((n+1)s)}-\frac1{\zeta(ns)},\qquad
+ h_n=H_n(1)>0.
+ \tag{PCR15}
+\]
+The shell and Wold-maximum theorems give, for every fixed \(s\) with \(\Re s>0\),
+\[
+ 2^{ns}H_n(s)\longrightarrow 1-2^{-s},
+ \qquad
+ 2^n h_n\longrightarrow\frac12.
+ \tag{PCR16}
+\]
+For a nontrivial Xi zero \(\rho\) of multiplicity \(d_\rho\), put
+\[
+ \nu_\rho=2\Re\rho-1,
+ \qquad
+ x_\rho(\tau)=|\rho-1|^2\tau.
+ \tag{PCR17}
+\]
+Apply the source-horizon Poisson order norm to the top conormal coordinate
+\[
+ d_\rho H_n(\rho)e^{x/(\rho-1)}
+ \]
+and divide by the independently positive source-shell mass \(h_n\).  The resulting joint
+source-normal energy is
+\[
+ \begin{aligned}
+ {\cal E}_{\rho,n}(\tau)
+ &:=
+ {1\over h_n}
+ \sum_{r\ge0}{x_\rho(\tau)^r\over r!}
+ \left|
+ \partial_x^r
+ \left(
+ d_\rho H_n(\rho)e^{x/(\rho-1)}
+ \right)_{x=x_\rho(\tau)}
+ \right|^2\\
+ &=
+ d_\rho^2\,{|H_n(\rho)|^2\over h_n}\,e^{\nu_\rho\tau}.
+ \end{aligned}
+ \tag{PCR18}
+\]
+This is a literal combination of two already source-defined constructions before any norm is
+fitted to a zero.
+
+`[PAPER-PROVED] [SOURCE_SHELL_TWO_CLOCK_RECIPROCITY]`
+
+For every fixed \(u\in\mathbb R\),
+\[
+ \boxed{\quad
+ {\cal E}_{\rho,n}(n\log2+u)
+ \longrightarrow
+ 2d_\rho^2|1-2^{-\rho}|^2e^{\nu_\rho u}.
+ \quad}
+ \tag{PCR19}
+\]
+Equivalently,
+\[
+ {|H_n(\rho)|^2\over h_n}
+ =
+ 2|1-2^{-\rho}|^2
+ e^{-\nu_\rho n\log2}(1+o(1)).
+ \tag{PCR20}
+\]
+Thus source time has Lyapunov rate \(+\nu_\rho\), while positive-shell depth has
+likelihood rate \(-\nu_\rho\).  Their product is asymptotically conserved on the
+source-defined characteristic ray \(\tau=n\log2\).
+
+**Proof.**  Equation `(PCR18)` is source-horizon order-space conservation with initial amplitude
+\(d_\rho H_n(\rho)\).  Equations `(PCR16)` give
+\[
+ {|H_n(\rho)|^2\over h_n}
+ \sim
+ { |1-2^{-\rho}|^2 2^{-2n\Re\rho}\over 2^{-n-1}}
+ =
+ 2|1-2^{-\rho}|^2 2^{-n(2\Re\rho-1)}.
+ \]
+Insert this into `(PCR18)` and set \(\tau=n\log2+u\).  `QED`
+
+### Universal form
+
+The cancellation is not tied to base two.  Suppose a positive source frame has least scales
+\(N_n\to\infty\), transverse conormal coordinates
+\[
+ H_n(s)=A(s)N_n^{-s}(1+o(1)),
+ \]
+and source masses
+\[
+ h_n=B\,N_n^{-(2c-1)}(1+o(1)),
+ \qquad B>0,
+ \]
+where \(c\in\mathbb R\) is the marked source point.  The source-horizon rate is
+\[
+ \nu_c(s)=2\Re(s-c)+1.
+ \]
+Then
+\[
+ {|H_n(s)|^2\over h_n}e^{\nu_c(s)\tau}
+ =
+ {|A(s)|^2\over B}
+ \exp\!\left(\nu_c(s)(\tau-\log N_n)\right)(1+o(1)).
+ \tag{PCR21}
+\]
+Hence a horizon-calibrated Born frame and Poisson source evolution always form two conjugate
+clocks.  The Riemann source realizes this law canonically with
+\[
+ c=1,\qquad N_n=2^n,\qquad h_n=H_n(1).
+ \]
+
+### Meaning of the no-go corpus
+
+Equation `(PCR19)` changes the completion problem:
+
+```text
+finite rectangle in (source time, shell depth):
+  every drift is bounded and therefore invisible;
+
+fixed source time:
+  strict-left modes escape through shell depth;
+
+fixed shell depth:
+  strict-right modes escape through source time;
+
+co-moving diagonal tau=n log 2:
+  every mode is asymptotically conservative, including off-line modes;
+
+single fitted shell grade:
+  follows one characteristic and unitarizes every divisor point;
+
+functional-equation reflection:
+  reverses the two-clock current but does not make it vanish;
+
+full independent quadrant:
+  a nonzero drift is unbounded on one of its two source axes.
+```
+
+This explains why a one-parameter “third completion” can retain all divisor data yet remain
+nonselective.  It may have completed a characteristic ray rather than the source quadrant.
+The correct object must retain the independence of Poisson time and Wold shell depth.
+
+### Sharper universal conjecture
+
+`[BOLD CONJECTURE] [XI_TWO_CLOCK_QUADRANT_CONSERVATIVITY]`
+
+> The literal ordinary-prime Wold shell resolution, prime--Gamma logarithmic evolution,
+> co-Poisson principal normal, and Riemann reflection construct before divisor specialization a
+> faithful Hausdorff source-normal realization over the independent quadrant
+> \((\tau,n)\in\mathbb R_{\ge0}\times\mathbb N\).  Independent positive translation in Poisson
+> time and in Wold shell depth acts contractively on its top principal-conormal module.  The
+> realization agrees with `(PCR18)` after Cartier specialization and does not identify the two
+> clocks along \(\tau=n\log2\).
+
+If this holds, a retained Xi conormal with \(\nu_\rho>0\) violates contractivity on the
+\(\tau\)-axis, while one with \(\nu_\rho<0\) violates contractivity on the \(n\)-axis.  Therefore
+\(\nu_\rho=0\), hence \(\Re\rho=1/2\).  Unlike reflected-character passivity on a single carrier,
+the producer is now a rank-two source action; the line criterion is its elementary consumer.
+
+The immediate construction target is correspondingly precise:
+
+`[OPEN CORE] [XI_WOLD_POISSON_BIVARIATE_CONORMAL_MAP]`
+
+Construct the off-divisor map whose \((n,\tau)\)-coordinate is the shell conormal
+\(H_n(s)\) tensored with the Poisson-Fock evolution at source \(1\), and prove:
+
+1. the Wold weights \(h_n\) and Poisson factorial weights give one positive source norm;
+2. the two coordinate translations remain independent commuting contractions after Gamma and
+   co-Poisson continuation;
+3. Cartier base change is strict and faithful on every top Xi jet;
+4. reflection is the dagger exchange of the two oriented quadrant faces; and
+5. restriction to the diagonal recovers `(PCR19)` rather than being used to define the norm.
+
+The ambidextrous Sonin carrier remains useful only if it realizes the two independent faces.
+If it realizes merely their characteristic diagonal, `(PCR19)` proves that it is nonselective.
+This is now the first hostile test for `XI_PRINCIPAL_CONORMAL_AMBIDEXTROUS_DESCENT`.
+
+### Anti-theatre and literature boundary
+
+1. `(PCR19)` is an unconditional cross-corpus theorem, not RH.  It gives a new conservation law
+   and kills diagonal-completion arguments.
+2. Uniform quadrant boundedness asserted only after choosing \(\rho\) is equivalent to the desired
+   conclusion.  The conjecture requires two source-side contractions and strict base change
+   before any zero is selected.
+3. The positive shell coefficients do not make analytic continuation positive.  The bivariate
+   continuation map is the load-bearing theorem.
+4. Reflected products remain bounded off line because their opposite rates cancel.  Indefinite
+   duality is therefore still a countermodel.
+5. Voros's exponential Keiper--Li asymptotics study one large-order zero orbit
+   (arXiv:1403.4558); Meng's \(k\)-free limiting laws use zeta zeros under RH
+   (arXiv:1408.0429); Connes--Consani's scaling Hamiltonian supplies a one-parameter dilation
+   setting (arXiv:1910.14368).  The targeted search found no joint Poisson-source/Wold-maximum
+   two-clock reciprocity theorem or bivariate conormal quadrant construction.  This is a
+   preliminary noncollision report, not a priority claim.
+
+- 2026-07-30 — Combined the new source-horizon conservation law with the Wold-calibrated positive
+  shell conormal asymptotic.  Proved the exact traveling-wave limit `(PCR19)`, generalized it to
+  horizon-calibrated source frames in `(PCR21)`, and identified co-moving diagonal completion as
+  universally blind.  Replaced the one-carrier intuition by the rank-two
+  `XI_TWO_CLOCK_QUADRANT_CONSERVATIVITY` target and the concrete bivariate conormal-map open core.
+- 2026-07-30 — Constructed the off-divisor map in
+  `formal/GaloisForLFunctions/RHTower/XiWoldPoissonBivariateConormal.lean`.  Lean proves exact
+  shell-labelled residue transport, faithfulness of the zero-free shell factor on every
+  strict-right conormal, the literal prime--Gamma source formula on `Re s > 1`, and the exact
+  shell-labelled Poisson horizon packet.  Direct elaboration and targeted module build pass; all
+  five declarations use only `propext`, `Classical.choice`, and `Quot.sound`.  Global formal lint
+  reaches this module but remains red because eighteen unrelated newly owned modules are absent
+  from the two theorem-area umbrellas.  The bivariate source map is therefore closed; independent
+  contractivity and strict Cartier base change remain the open core.

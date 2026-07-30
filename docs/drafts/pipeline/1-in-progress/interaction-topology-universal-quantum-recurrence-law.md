@@ -37,7 +37,8 @@ late-time regimes as factorization shadows of one object.
 The paper is theoretical mathematical physics. Its novelty cannot be the
 classical Kronecker--Weyl theorem, the collision identity, the independent-
 phase random-walk law, or formal verification. Novelty must be the exact
-local-generator theorem and the factorization classification it forces.
+local-generator theorem and the new order-two tomography law: recurrence
+collision classes measure the product geometry of noninteracting components.
 
 ## Exact finite law
 
@@ -124,21 +125,61 @@ permutation floor. If components are disconnected, different joint
 histograms with identical component marginals survive. A connecting
 interaction removes exactly those factorization collisions.
 
+### Order-two recurrence tomography
+
+`[PAPER-PROVED] [LEAN-PROVED]` For joint spectral labels
+\(x=(x_C)_C\), \(y=(y_C)_C\), let
+\[
+ d_H(x,y)=\#\{C:x_C\ne y_C\}.
+\]
+For every additive component spectrum, the complete ordered equal-energy
+collision class
+\[
+ \mathcal R_2(x,y)=
+ \{(z,w):E_z+E_w=E_x+E_y\}
+\]
+contains a canonical Boolean cube:
+\[
+\boxed{
+ |\mathcal R_2(x,y)|\ge2^{d_H(x,y)}
+ \quad\text{for every additive factorization},
+}                                                       \tag{5}
+\]
+Under component projective independence, the inclusion is an equivalence
+\(\mathcal R_2(x,y)\cong\{0,1\}^{d_H(x,y)}\), so equality holds in `(5)`.
+Each Boolean coordinate independently decides whether one disconnected
+component is exchanged between the two replicas. Consequently the
+order-two collision multiplicity recovers the component Hamming distance
+exactly in the independent case and supplies a universal lower bound in
+every case. This is the non-formal
+tomographic content missing from the earlier synthesis: recurrence does not
+merely depend on factorization; its resolved collision classes measure
+factor-product geometry exactly.
+
+Operationally, \(\mathcal R_2(x,y)\) is the support of the pair-resolved
+completed recurrence kernel
+\[
+ \lim_{T\to\infty}\frac1{2T}\int_{-T}^{T}
+ e^{it[(E_z+E_w)-(E_x+E_y)]}\,dt.
+\]
+The theorem therefore concerns a dephasing observable, not a post hoc
+combinatorial relabelling of a scalar SFF moment.
+
 For uniform spectral weights, define
 \[
  X_D(t)=D^{-1}|\operatorname{Tr}e^{-itH}|^2,\qquad
  a_{D,m}=D^{-m}\sum_{\substack{k\in\mathbb N^D\\|k|=m}}
- {m\choose k}^{2}.                                    \tag{5}
+ {m\choose k}^{2}.                                    \tag{6}
 \]
 Equation `(4)` gives the exact finite-size law
 \[
  \lim_{T\to\infty}\frac1{2T}\int_{-T}^{T}X_D(t)^m\,dt
  =
- \prod_{C\in\pi_0(\mathfrak H)}a_{D_C,m}.             \tag{6}
+ \prod_{C\in\pi_0(\mathfrak H)}a_{D_C,m}.             \tag{7}
 \]
 When every \(D_C\to\infty\) with a fixed number \(c\) of components,
 \[
- \prod_Ca_{D_C,m}\longrightarrow(m!)^c.               \tag{7}
+ \prod_Ca_{D_C,m}\longrightarrow(m!)^c.               \tag{8}
 \]
 Hence the connected limit is \(\operatorname{Exp}(1)\); \(c\) macroscopic
 components give the product of \(c\) independent unit exponentials; and a
@@ -154,7 +195,7 @@ For fixed replica order \(m\), let
  =
  \min\{|E_{i_1}+\cdots+E_{i_m}
        -E_{j_1}-\cdots-E_{j_m}|:
-       \text{the difference is nonzero}\}.             \tag{8}
+       \text{the difference is nonzero}\}.             \tag{9}
 \]
 For finite spectrum, \(\delta_m(H)>0\).
 
@@ -163,7 +204,7 @@ For finite spectrum, \(\delta_m(H)>0\).
  \left|
  \frac1{2T}\int_{-T}^{T}F(t)^m\,dt-M_m(H,p)
  \right|
- \le \frac{1}{T\delta_m(H)}                            \tag{9}
+ \le \frac{1}{T\delta_m(H)}                            \tag{10}
 \]
 for \(T>0\), with the convention that the right side may be replaced by
 \(\min(1,(T\delta_m)^{-1})\). On compact coupling sets avoiding the finitely
@@ -192,6 +233,13 @@ experiment resolves it. No parameter-free laboratory timescale is claimed.
   independent eigenenergies and whether every two-body Hamiltonian contains
   hidden resonances:
   <https://quantumstat.es/talks/29aug2024/>.
+- `[LITERATURE — CLOSE PARENT]` Huang, *Extensive entropy from unitary
+  evolution* (2021), proves that nondegenerate gaps hold almost everywhere
+  in broad nearest-neighbour local-Hamiltonian ensembles:
+  <https://arxiv.org/abs/2104.02053>. This settles the order-two no-resonance
+  layer for those ensembles. The proposed generator theorem must therefore
+  be presented strictly as an all-orders/projective-rank advance, never as
+  the first generic local nonresonance theorem.
 - `[LITERATURE]` Campos Venuti, *The recurrence time in quantum mechanics*
   (2015), obtains double-exponential generic recurrence estimates under
   rational independence and a Gaussian approximation:
@@ -220,7 +268,7 @@ experiment resolves it. No parameter-free laboratory timescale is claimed.
    not local level statistics, is the invariant.
 4. **Weak-coupling attack.** An arbitrarily small link cannot change
    finite-horizon observations discontinuously.
-   **Verdict:** rank changes only in the completed limit; `(9)` and the
+   **Verdict:** rank changes only in the completed limit; `(10)` and the
    existing finite-horizon stability theorem must be stated together.
 5. **Symmetry attack.** Translation-invariant, conserved-charge and
    integrable subfamilies may lie entirely in the exceptional set.
@@ -236,6 +284,18 @@ experiment resolves it. No parameter-free laboratory timescale is claimed.
    spectrum and no global recurrence.
    **Verdict:** the countable extension is only simultaneous finite-volume
    exhaustion. It does not assert infinite-volume recurrence.
+8. **Assembly attack.** Factorization of ordinary scalar SFF moments is
+   expected from independent subsystems and is not a discovery.
+   **Verdict:** scalar factorization is demoted to a corollary. The candidate
+   contribution is the resolved collision theorem `(5)`: every two-copy
+   collision class is a Boolean cube whose dimension is exactly component
+   Hamming distance. Exact priority remains under audit.
+9. **Huang-parent attack.** Generic local nondegenerate gaps were already
+   proved for substantial nearest-neighbour ensembles in 2021.
+   **Verdict:** any order-two genericity claim is prior art. Surviving
+   generator novelty must be maximal projective rank—simultaneous absence of
+   nontrivial balanced relations at every replica order—and its exact
+   recurrence consequences.
 
 **Current verdict:** `SURVIVES PRELIMINARY ATTACK`. Candidate novelty is the
 generator theorem `(1)` in arbitrary local interaction architecture and its
@@ -252,17 +312,20 @@ hypergraph lift, and formalization remain open.
 3. `[CLOSED ON PAPER]` The tensor phase-torus embedding,
    Kronecker--Weyl law and component-histogram equivalence are proved in
    `../2-fully-proven/component-recurrence-torus-and-replica-factorization-law.md`.
-4. `[CLOSED ON PAPER FOR FIXED COMPONENT COUNT]` Equations `(6)`--`(7)` and
+4. `[CLOSED ON PAPER FOR FIXED COMPONENT COUNT]` Equations `(7)`--`(8)` and
    the product-exponential limit are proved for fixed component count. A
    growing-component log-normal limit is not required by the master theorem
    and must not be claimed without a separate proof.
-5. `[CLOSED ON PAPER]` Equation `(9)` with unit constant and fixed-order
+5. `[CLOSED ON PAPER]` Equation `(10)` with unit constant and fixed-order
    one-knob uniformity is proved in
    `../2-fully-proven/finite-window-replica-collision-resolution-law.md`.
-6. `[OPEN CORE]` Complete exact-object citation ancestry/descendancy search,
+6. `[CLOSED ON PAPER AND IN LEAN]` The order-two equal-energy class is a
+   Boolean cube and has cardinality \(2^{d_H}\), proved in
+   `../2-fully-proven/replica-collision-hamming-tomography-law.md`.
+7. `[OPEN CORE]` Complete exact-object citation ancestry/descendancy search,
    including quantum control generic nonresonance and local spectral Galois
-   literature.
-7. `[OPEN CORE]` Formalize the arbitrary-graph generator theorem and every
+   literature, plus collision-class/Hamming tomography.
+8. `[OPEN CORE]` Formalize the arbitrary-graph generator theorem and every
    retained recurrence corollary before manuscript use.
 
 ## Lean status
@@ -271,14 +334,24 @@ hypergraph lift, and formalization remain open.
 
 - finite-spectrum all-order time-average equals replica collision mass;
 - all-order collision-floor equality iff maximal projective energy;
+- component-factorized equal-energy collisions are exactly equal component
+  histograms, and the completed weighted moment is their collision mass;
+- every order-two equal-energy collision class of a mutually independent
+  component spectrum is a Boolean cube of cardinality \(2^{d_H}\);
+- normalized finite-window error is at most
+  \(\min(1,(T\delta_m)^{-1})\) with unit constant;
+- every finite rationally independent phase flow converges weakly to
+  normalized Haar measure, hence every continuous phase statistic has its
+  Haar completed-time average;
 - the local second-order residue, pole separation and endpoint-response
   lemmas needed by the connected graph induction;
 - abstract one-knob polynomial avoidance.
 
-No Lean theorem yet proves `(1)` for arbitrary graphs, the component
-histogram law `(4)`, or the finite-window certificate `(9)`. None may enter
-the paper as established science before those capstones pass the axiom and
-lint gates.
+No Lean theorem yet proves `(1)` for arbitrary local graphs. The collision
+law `(4)`, Hamming law `(5)`, finite-window certificate `(10)`, and
+full-phase Haar law are formalized. The generic-local manuscript claim
+remains unauthorized until the generator capstone passes the axiom and lint
+gates.
 
 ## Nature gate
 

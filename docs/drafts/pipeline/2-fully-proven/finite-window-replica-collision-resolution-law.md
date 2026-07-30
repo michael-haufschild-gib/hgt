@@ -5,7 +5,8 @@
 - **Type:** DEPENDENCY-CLOSED PAPER PROOF / FINITE-TIME RETURN MOMENTS /
   OPERATIONAL CROSSOVER
 - **Date:** 2026-07-30
-- **Status:** `[PAPER-PROVED] [BRIDGE] [LEAN PROOF OPEN]`
+- **Status:** `[PAPER-PROVED] [BRIDGE] [LEAN THEOREM A COMPLETE]`
+  `[LEAN THEOREM B OPEN]`
 - **Parent:** `local-interaction-replica-collision-extremality.md`
 
 ## Theorem A — exact finite-window error certificate
@@ -193,5 +194,6 @@ not standalone novelty.
 - [x] probability-weight normalization
 - [x] sharp inverse-detuning error bound
 - [x] finite-order one-knob uniformity
-- [ ] exact Lean formalization
-
+- [ ] exact Lean formalization (unit-constant finite-window certificate
+  complete in `FiniteWindowReplicaCollisionResolution.lean`; fixed-order
+  one-knob uniformity open)

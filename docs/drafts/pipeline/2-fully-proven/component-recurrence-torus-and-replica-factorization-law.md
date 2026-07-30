@@ -6,7 +6,7 @@
   ALL-ORDER RETURN LAW / SPECTRAL FORM FACTOR
 - **Date:** 2026-07-30
 - **Status:** `[PAPER-PROVED] [ABSTRACT BRIDGE NOT NOVEL ALONE]`
-  `[LEAN PROOF OPEN]`
+  `[LEAN CORE PARTIAL]`
 - **Parents:**
   `hypergraph-local-projective-spectral-factorization.md`,
   `local-interaction-replica-collision-extremality.md`
@@ -277,7 +277,10 @@ No finite-time discontinuity is asserted.
 7. **Does this prove a first-return time or finite mixing time?** No. It
    classifies orbit closure and completed statistics.
 
-No paper-proof dependency remains. Formalization is open.
+No paper-proof dependency remains. The component-histogram equivalence and
+completed weighted-moment identity are formalized in
+`ComponentReplicaCollisionLaw.lean`. Full product-torus embedding and the
+uniform-SFF product/asymptotic corollaries remain open.
 
 ## Gates
 
@@ -286,6 +289,6 @@ No paper-proof dependency remains. Formalization is open.
 - [x] arbitrary-weight component collision classification
 - [x] exact finite-size uniform SFF product
 - [x] fixed-component product-exponential limit
-- [ ] exact Lean formalization
+- [ ] exact Lean formalization (component-histogram law complete; torus
+  embedding and SFF product/asymptotics open)
 - [ ] independent specialist review
-
