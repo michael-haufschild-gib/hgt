@@ -2881,6 +2881,9 @@ rule.
 
 ## Sixteenth hostile descent: every local recognizer is programmable
 
+Canonical active card:
+[`cross-history-recognition-globalization-law.md`](cross-history-recognition-globalization-law.md).
+
 ### Exact killing theorem
 
 [`source-test-partition-universality.md`](../3-formalized/source-test-partition-universality.md)

@@ -5,7 +5,7 @@
 - **Type:** THEOREM (paper) / NO-GO DISCRIMINATOR
 - **Scientific status:** `[PAPER-PROVED] [REDISCOVERED] [BRIDGE]`
   `[NOT NEW SCIENTIFIC KNOWLEDGE]`
-- **Source:** `../1-in-progress/actuality-creates-future-law.md`
+- **Source:** `../../1-in-progress/actuality-creates-future-law.md`
 - **Statement:** Every equivalence relation is exactly the observational equivalence of a
   deterministic, exhaustive family of tests.
 - **Lean target:**
@@ -173,4 +173,4 @@ interaction, gauge curvature, gravity, and Hypertranscendental nonclosure.
 - 2026-07-30 — paper-proved quotient-test universality and identified cross-history compatibility
   as strongest positive survivor.
 - 2026-07-30 — formalized the exact theorem unconditionally in Lean and recorded the certificate
-  in `../3-formalized/source-test-partition-universality.md`.
+  in `../../3-formalized/source-test-partition-universality.md`.
