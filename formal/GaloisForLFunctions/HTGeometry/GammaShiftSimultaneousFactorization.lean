@@ -166,7 +166,7 @@ theorem gammaJetSimultaneousEliminated_bottom_gamma {r q : ℕ}
     apply hpole i (p + (h : ℕ))
     push_cast
     linear_combination hzero
-  simpa only [add_assoc, add_left_comm, add_comm] using
+  simpa only [add_assoc, add_left_comm, add_comm] using!
     gammaJetAnnihilator_iteratedDeriv_sum_eq_zero
       (s + (h : ℕ)) shift mult hpole' (gammaJetSlotNode mult a)
         (gammaJetSlotOrderIso mult a).2.isLt

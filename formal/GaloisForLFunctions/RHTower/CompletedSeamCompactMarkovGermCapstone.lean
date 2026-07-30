@@ -120,16 +120,18 @@ private theorem hasDerivAt_compactMarkovKernelIntegrand
     rw [hzero, norm_zero] at hdennorm
     norm_num at hdennorm
   have hbase : HasDerivAt (fun w : ℂ => 1 - (x : ℂ) * w) (-(x : ℂ)) z := by
-    simpa using (hasDerivAt_const z (1 : ℂ)).sub
+    simpa using! (hasDerivAt_const z (1 : ℂ)).sub
       ((hasDerivAt_id z).const_mul (x : ℂ))
   have hinv : HasDerivAt (fun w : ℂ => (1 - (x : ℂ) * w)⁻¹)
       ((x : ℂ) * (1 - (x : ℂ) * z)⁻¹ ^ 2) z := by
     have h := hbase.inv hden
     convert h using 1
-    field_simp
+    all_goals try rfl
+    field_simp [hden]
   have hpow := hinv.pow (k + 1)
   have h := hpow.const_mul ((x : ℂ) ^ k)
   convert h using 1
+  all_goals try rfl
   simp only [Nat.add_sub_cancel]
   push_cast
   rw [pow_add]
@@ -237,7 +239,7 @@ theorem analyticAt_compactMarkovTransform
     (isOpen_lt continuous_norm continuous_const).mem_nhds
       (by simpa using (show (0 : ℝ) < 1 / (2 * B) by positivity))
   filter_upwards [hdisk] with z hz
-  simpa only [compactMarkovTransform] using
+  simpa only [compactMarkovTransform] using!
     (hasDerivAt_compactMarkovKernelMoment μ hB hbound 0 hz).differentiableAt
 
 /-- Ordinary (non-interleaved) generating series of the completed source moments. -/
@@ -338,7 +340,7 @@ theorem iteratedDeriv_completedSeamMomentGerm (n : ℕ) :
   rw [completedSeamMomentPowerSeries, FormalMultilinearSeries.ofScalars_apply_eq,
     one_pow, smul_eq_mul, mul_one] at hfac
   rw [completedSeamMomentGerm]
-  simpa only [nsmul_eq_mul] using hfac.symm
+  simpa only [nsmul_eq_mul] using! hfac.symm
 
 /-- One compact positive Markov transform agrees locally with the completed source moment germ. -/
 def PrimeArchCompactMarkovGermRepresentation : Prop :=

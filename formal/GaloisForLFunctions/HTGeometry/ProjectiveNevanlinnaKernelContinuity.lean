@@ -72,7 +72,7 @@ def nevanlinnaUpperNodeImage (q : ℂ → ℂ) (η : ℝ)
 theorem continuous_nevanlinnaUpperNodeImage
     {q : ℂ → ℂ} {η : ℝ} (hq : Continuous q) :
     Continuous (nevanlinnaUpperNodeImage q η) := by
-  simpa only [nevanlinnaUpperNodeImage] using
+  simpa only [nevanlinnaUpperNodeImage] using!
     (hq.comp continuous_subtype_val).subtype_mk (fun z => z.2)
 
 /-- The forward triangular projective Nevanlinna-jet expansion.  It is defined without any
@@ -300,7 +300,7 @@ theorem projectiveNevanlinnaJetExpansionLinftyControl_eq_forwardCLM_comp_cauchyC
     rw [hcol]
     exact memLp_projectiveNevanlinnaJetExpansionColumn η hη n mu z
   have hcomp := linftyBochnerControl_comp mu T K hK hTK
-  simpa [zv, K, T, hK, hTK, hcol] using hcomp.symm
+  simpa [zv, K, T, hK, hTK, hcol] using! hcomp.symm
 
 /-- The continuous-function `L¹` class is the class used by the direct Bochner control. -/
 theorem projectiveNevanlinnaJetExpansionLpKernel_eq_memLpToLp

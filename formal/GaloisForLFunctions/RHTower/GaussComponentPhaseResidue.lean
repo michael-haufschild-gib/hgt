@@ -76,7 +76,7 @@ theorem gaussComponentPrimeMagnitudeEnergy_phase_logResidue
     simpa [b, L] using gaussComponentPrimeMagnitudeEnergy_mul_succ_tendsto hm k p
   have hbzero : Tendsto (fun n => ((b n - L : ℝ) : ℂ)) atTop (nhds 0) := by
     have hr : Tendsto (fun n => b n - L) atTop (nhds 0) := tendsto_sub_nhds_zero_iff.mpr hb
-    simpa only [Complex.ofReal_zero] using
+    simpa only [Complex.ofReal_zero] using!
       Complex.continuous_ofReal.continuousAt.tendsto.comp hr
   have hfBounded : IsBoundedUnder (· ≤ ·) atTop
       (fun n : ℕ => ‖f (gaussComponentPhasePoint m p n)‖) :=
@@ -87,7 +87,7 @@ theorem gaussComponentPrimeMagnitudeEnergy_phase_logResidue
         ContinuousMap.norm_coe_le_norm f (gaussComponentPhasePoint m p n)
   have hezero : Tendsto e atTop (nhds 0) := by
     have h := NormedField.tendsto_zero_smul_of_tendsto_zero_of_bounded hbzero hfBounded
-    simpa [e, Pi.smul_apply, smul_eq_mul] using h
+    simpa [e, Pi.smul_apply, smul_eq_mul] using! h
   have herror := GaloisForLFunctions.tendsto_complexHarmonicWeighted_error_zero hezero
   have haverage := gaussComponentPhase_harmonicAverage_tendsto hm p f
   have hmain := haverage.const_mul (L : ℂ)

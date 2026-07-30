@@ -91,7 +91,7 @@ theorem xiCentralTraceHankel_re_pos_of_riemannHypothesis
     0 < (xiCentralTraceHankel p).re := by
   obtain ⟨ρ₀, hpρ₀⟩ := exists_xiCentralReciprocalSquare_not_root_of_polynomial hp
   have hsumre : Summable (fun ρ => (xiCentralTraceHankelTerm p ρ).re) := by
-    simpa only [Function.comp_apply] using
+    simpa only [Function.comp_apply] using!
       (xi_central_traceHankel_summable p).map Complex.reCLM Complex.reCLM.continuous
   rw [xiCentralTraceHankel,
     Complex.re_tsum (xi_central_traceHankel_summable p)]
@@ -307,4 +307,3 @@ theorem xiCentralMomentHankelDeterminantsPositive_iff_riemannHypothesis :
 
 end
 end RHTower
-

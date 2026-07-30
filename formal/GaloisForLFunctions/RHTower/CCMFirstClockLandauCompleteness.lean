@@ -813,7 +813,10 @@ theorem hasDerivAt_ccmXiScrewLaplace
         Continuous (fun L : ℝ => -(L : ℂ))).aestronglyMeasurable
     have hbase : AEStronglyMeasurable (F s₀)
         (volume.restrict (Ioi 0)) := hFint.1
-    simpa only [F', F, mul_assoc] using hlinear.mul hbase
+    exact (hlinear.mul hbase).congr
+      (Eventually.of_forall fun L => by
+        dsimp only [F', F, Pi.mul_apply]
+        ring)
   have hBint : Integrable B (volume.restrict (Ioi 0)) := hMom a ha
   have hboundInt : Integrable bound (volume.restrict (Ioi 0)) := by
     exact hBint.norm.const_mul δ⁻¹
@@ -874,7 +877,8 @@ theorem hasDerivAt_ccmXiScrewLaplace
     (μ := volume.restrict (Ioi 0)) (F := F) (F' := F')
     (x₀ := s₀) (s := Metric.ball s₀ δ) (bound := bound)
     hball hFmeas hFint hF'meas hbound hboundInt hdiff
-  simpa only [ccmXiScrewLaplace, F, F'] using hmain.2
+  exact hmain.2.congr_of_eventuallyEq
+    (Eventually.of_forall fun _ => rfl)
 
 /-- All positive exponential moments make the full CCM screw Laplace transform analytic on the
 entire right half-plane. -/

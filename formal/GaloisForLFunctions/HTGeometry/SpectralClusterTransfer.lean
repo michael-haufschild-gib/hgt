@@ -330,7 +330,7 @@ theorem HasFPowerSeriesAt.posetMobiusProbe_couplingRay_isBigO
       filter_upwards [] with g
       simp [norm_smul, mul_pow, mul_comm]
     have hfinal := hcomposed.trans hnorm
-    simpa [remainder, v, zero_add] using hfinal
+    simpa [remainder, v, zero_add] using! hfinal
   have hsum :
       (fun g : ℂ =>
         ∑ active ∈ Finset.Iic packet,

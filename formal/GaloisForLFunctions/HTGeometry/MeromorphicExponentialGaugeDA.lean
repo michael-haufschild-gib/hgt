@@ -72,7 +72,7 @@ theorem analyticSubringDeriv_physicalExponentialAnalytic (lambda : ℂ) :
         (fun z : ℂ => lambda * Complex.exp (lambda * z))
   rw [Germ.coe_eq]
   exact eventually_principal.mpr fun z _ => by
-    simpa [mul_comm] using ((Complex.hasDerivAt_exp (lambda * z)).comp z
+    simpa [mul_comm] using! ((Complex.hasDerivAt_exp (lambda * z)).comp z
       ((hasDerivAt_const z lambda).mul (hasDerivAt_id z))).deriv
 
 /-- The genuine global meromorphic exponential is an eigenvector of differentiation. -/

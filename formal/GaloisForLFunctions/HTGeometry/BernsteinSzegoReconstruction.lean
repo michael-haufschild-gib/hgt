@@ -253,7 +253,7 @@ theorem opucResidual_contracting_subsequence
   have hpow : Tendsto (fun n : ℕ => ((opucResidualCLM p) ^ m) ^ n)
       atTop (𝓝 0) := tendsto_pow_atTop_nhds_zero_of_norm_lt_one hcontract
   have happ := (((ContinuousLinearMap.apply ℂ (Fin (N + 1) → ℂ)) q).continuous.tendsto 0).comp hpow
-  simpa only [Function.comp_apply, ContinuousLinearMap.apply_apply] using happ
+  simpa only [Function.comp_apply, ContinuousLinearMap.apply_apply] using! happ
 
 /-- A normalized vector that is orthogonal to the head space in both arguments decomposes every
 Toeplitz quadratic value into a scalar feedback energy and the residual quadratic value. -/
@@ -442,10 +442,10 @@ theorem finiteToeplitzHeadDiff_eq_zero_of_stable_terminal
     tendsto_pow_atTop_nhds_zero_of_norm_lt_one hcontract
   have hTu : Tendsto (fun n : ℕ => ((T ^ m) ^ n) u) atTop (𝓝 0) := by
     have happ := (((ContinuousLinearMap.apply ℂ (Fin (N + 1) → ℂ)) u).continuous.tendsto 0).comp hOp
-    simpa only [Function.comp_apply, ContinuousLinearMap.apply_apply] using happ
+    simpa only [Function.comp_apply, ContinuousLinearMap.apply_apply] using! happ
   have hTv : Tendsto (fun n : ℕ => ((T ^ m) ^ n) v) atTop (𝓝 0) := by
     have happ := (((ContinuousLinearMap.apply ℂ (Fin (N + 1) → ℂ)) v).continuous.tendsto 0).comp hOp
-    simpa only [Function.comp_apply, ContinuousLinearMap.apply_apply] using happ
+    simpa only [Function.comp_apply, ContinuousLinearMap.apply_apply] using! happ
   have hinv : ∀ x y : Fin (N + 1) → ℂ,
       finiteToeplitzHeadDiff c d x y =
         finiteToeplitzHeadDiff c d (opucResidualLinear p x)
@@ -468,7 +468,7 @@ theorem finiteToeplitzHeadDiff_eq_zero_of_stable_terminal
   have hlim0 : Tendsto
       (fun n : ℕ => finiteToeplitzHeadDiff c d (((T ^ m) ^ n) u) (((T ^ m) ^ n) v))
       atTop (𝓝 0) := by
-    simpa only [Prod.fst, Prod.snd, hzero] using hlim
+    simpa only [Prod.fst, Prod.snd, hzero] using! hlim
   have hconstlim : Tendsto (fun _ : ℕ => finiteToeplitzHeadDiff c d u v)
       atTop (𝓝 0) :=
     hlim0.congr' (Filter.Eventually.of_forall hconst)
@@ -700,4 +700,3 @@ theorem bernsteinSzegoMoment_prefix
 
 end
 end GaloisForLFunctions.HTGeometry
-

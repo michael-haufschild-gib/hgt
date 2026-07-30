@@ -87,7 +87,7 @@ theorem constrainedProlateLeakage_apply_mode (a : ℝ) (n : ℕ) :
 /-- The complementary constrained leakage values tend to one. -/
 theorem constrainedProlateLeakageValue_tendsto_one (a : ℝ) (ha : 0 < a) :
     Filter.Tendsto (constrainedProlateLeakageValue a) Filter.atTop (nhds 1) := by
-  simpa [constrainedProlateLeakageValue] using
+  simpa [constrainedProlateLeakageValue] using!
     (tendsto_const_nhds.sub (constrainedProlateConcentrationValue_tendsto_zero a ha))
 
 end RHTower

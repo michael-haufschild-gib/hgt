@@ -140,7 +140,6 @@ theorem orthogonal_Jinvariant {V : Type*} [AddCommGroup V] [Module ℝ V]
   intro v hv
   rw [LinearMap.BilinForm.mem_orthogonal_iff] at hv ⊢
   intro u hu
-  rw [LinearMap.BilinForm.isOrtho_def] at *
   have key : Q u (P.complex.J v) = -Q (P.complex.J u) v := P.Q_right_J_eq_neg_Q_J_left u v
   rw [key, hv (P.complex.J u) (hU u hu), neg_zero]
 
@@ -357,7 +356,7 @@ theorem plane_orthogonal_zero {V : Type*} [AddCommGroup V] [Module ℝ V]
   intro p hp
   rw [LinearMap.BilinForm.mem_orthogonal_iff] at hm
   have := hm p hp
-  rwa [LinearMap.BilinForm.isOrtho_def] at this
+  exact this
 
 /-- **The signature decomposition — Sylvester's law of inertia for a `J`-form.**  A nondegenerate
 symmetric form with a compatible polarization `J` splits into two `J`-invariant, `Q`-orthogonally

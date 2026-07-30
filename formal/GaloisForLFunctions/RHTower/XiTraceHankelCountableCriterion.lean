@@ -127,7 +127,7 @@ theorem xiCentralTraceHankelVector_smul (n : ℕ) (c : ℝ) (a : Fin n → ℝ) 
 
 private theorem denseRange_ratCast_fin (n : ℕ) :
     DenseRange (fun a : Fin n → ℚ => fun i => (a i : ℝ)) := by
-  simpa [Pi.map_apply] using
+  simpa [Pi.map_apply] using!
     (DenseRange.piMap (fun _ : Fin n => Rat.denseRange_cast))
 
 /-- The countable integer-polynomial trace-Hankel positivity criterion. -/

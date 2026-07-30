@@ -39,11 +39,11 @@ theorem thueMorseNegativeMellinSource_eq_complexExp (M : ℕ) (u : ℝ) :
 theorem thueMorseNegativeMellinSource_integrable (M : ℕ) :
     Integrable (thueMorseNegativeMellinSource M) := by
   have hconv : MellinConvergent thueMorseMellinKernel ((-(M : ℝ) : ℝ) : ℂ) := by
-    simpa using
+    simpa using!
       thueMorseMellinKernel_isMellinFlatKernel.mellinConvergent (-(M : ℝ) : ℂ)
   have h := integrable_logMellinPullback_of_mellinConvergent
     thueMorseMellinKernel (-(M : ℝ)) hconv
-  simpa only [neg_mul, neg_neg, thueMorseNegativeMellinSource] using h
+  simpa only [neg_mul, neg_neg, thueMorseNegativeMellinSource] using! h
 
 /-- Mellin convergence at `-2M` and `norm K ≤ 1` promote the same source to `L²`. -/
 theorem thueMorseNegativeMellinSource_memLp_two (M : ℕ) :

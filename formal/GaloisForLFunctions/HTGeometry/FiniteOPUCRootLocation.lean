@@ -205,7 +205,7 @@ theorem finiteOPUCPolynomial_natDegree {N : ℕ} (c : ℤ → ℂ)
     exact Nat.lt_succ_iff.mp (Polynomial.ofFn_natDegree_lt (Nat.succ_pos N)
       (finiteOPUCVector c hG))
   · apply Polynomial.le_natDegree_of_ne_zero
-    simpa [finiteOPUCPolynomial] using finiteOPUCVector_last_ne_zero c hG
+    simpa [finiteOPUCPolynomial] using! finiteOPUCVector_last_ne_zero c hG
 
 /-- Every zero of a positive-degree finite OPUC polynomial lies strictly inside the unit disk. -/
 theorem finiteOPUCPolynomial_isRoot_norm_lt_one_succ

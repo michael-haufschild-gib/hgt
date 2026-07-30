@@ -168,7 +168,7 @@ theorem gammaConductorModeSchurResidual_quadratic_eq
     have hscaled := htail.mul_left
       (c i * c j * semilocalArchimedeanCharacteristic (t i) *
         semilocalArchimedeanCharacteristic (t j))
-    convert hscaled using 1
+    convert! hscaled using 1
     funext k
     dsimp [g]
     rw [gammaConductorJacobiFeature_mul_eq]
@@ -349,7 +349,7 @@ theorem summable_gammaConductorJacobiTail_sum_sq
     have hscaled := htail.mul_left
       (c i * c j * semilocalArchimedeanCharacteristic (t i) *
         semilocalArchimedeanCharacteristic (t j))
-    convert hscaled using 1
+    convert! hscaled using 1
     funext k
     dsimp [g]
     rw [gammaConductorJacobiFeature_mul_eq]

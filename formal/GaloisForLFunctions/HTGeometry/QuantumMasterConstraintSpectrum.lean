@@ -88,10 +88,10 @@ theorem constraint_apply_eq_zero_of_forall_inner_masterSvVec
       (re_inner_quantumMasterConstraint_nonneg C) hx
   have hmasterState : GaloisForLFunctions.PhysicalState
       (quantumMasterConstraint C).toLinearMap x := by
-    simpa only [GaloisForLFunctions.PhysicalState] using hmaster
+    simpa only [GaloisForLFunctions.PhysicalState] using! hmaster
   have hconstraintState :=
     (physicalState_quantumMasterConstraint_iff C x).mp hmasterState
-  simpa only [GaloisForLFunctions.PhysicalState] using hconstraintState
+  simpa only [GaloisForLFunctions.PhysicalState] using! hconstraintState
 
 /-- The trace of a Hilbert--Schmidt master constraint is the total squared constraint energy. -/
 theorem re_opTrace_quantumMasterConstraint_eq_hsNormSq

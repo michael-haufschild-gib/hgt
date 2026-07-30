@@ -100,7 +100,7 @@ theorem multipleEllipticGammaFaceStar_diffIndepOn_deeper (τ : ι → ℂ) (hτ 
       multipleEllipticGammaFacePacketSlice τ hτ J q)
     (fun A q _ _ => ?_) (fun A q hA hq => hStarInj A q hA hq)
     (fun A q hA hq t ht n z hz => hOffDA A q hA hq t ht n z (by
-      simpa [Finset.coe_image] using hz))
+      simpa [Finset.coe_image] using! hz))
   exact faceStar_eq_orbitUnion τ hτ faces A q
 
 set_option synthInstance.maxHeartbeats 400000 in

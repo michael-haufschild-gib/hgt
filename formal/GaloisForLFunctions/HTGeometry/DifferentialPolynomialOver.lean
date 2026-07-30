@@ -18,18 +18,16 @@ noncomputable section
 def differentialPolynomialMapCoeffsLinear
     (ι K : Type*) [CommRing K] [Differential K] :
     DifferentialPolynomial ι K →ₗ[ℤ] DifferentialPolynomial ι K :=
-  (Finsupp.mapRange.linearMap Differential.deriv.toLinearMap :
-    DifferentialPolynomial ι K →ₗ[ℤ] DifferentialPolynomial ι K)
+  (AddMonoidAlgebra.coeffLinearEquiv ℤ).symm.toLinearMap.comp <|
+    (Finsupp.mapRange.linearMap Differential.deriv.toLinearMap).comp <|
+      (AddMonoidAlgebra.coeffLinearEquiv ℤ).toLinearMap
 
 @[simp] theorem differentialPolynomialMapCoeffsLinear_monomial
     {ι K : Type*} [CommRing K] [Differential K]
     (s : (ι × ℕ) →₀ ℕ) (a : K) :
     differentialPolynomialMapCoeffsLinear ι K (MvPolynomial.monomial s a) =
       MvPolynomial.monomial s a′ := by
-  change (Finsupp.mapRange.linearMap Differential.deriv.toLinearMap)
-    (Finsupp.single s a) = Finsupp.single s a′
-  dsimp only [Finsupp.mapRange.linearMap_apply]
-  simp
+  simp [differentialPolynomialMapCoeffsLinear, MvPolynomial.monomial]
 
 def differentialPolynomialCoeffDerivation
     (ι K : Type*) [CommRing K] [Differential K] :
@@ -37,7 +35,7 @@ def differentialPolynomialCoeffDerivation
   toLinearMap :=
     differentialPolynomialMapCoeffsLinear ι K
   map_one_eq_zero' := by
-    change (Finsupp.single 0 (1 : K)).mapRange (fun x => x′) (map_zero _) = 0
+    rw [MvPolynomial.one_def, differentialPolynomialMapCoeffsLinear_monomial]
     simp
   leibniz' P Q := by
     induction P using MvPolynomial.induction_on' with

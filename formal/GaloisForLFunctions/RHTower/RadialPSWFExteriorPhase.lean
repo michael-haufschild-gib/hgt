@@ -78,9 +78,9 @@ theorem hasDerivAt_radialPSWFExteriorPhase_dilate
     (sigma k : ℝ) {x : ℝ} (hkx : 1 < k * x) :
     HasDerivAt (fun y : ℝ => radialPSWFExteriorPhase sigma (k * y))
       (k * radialPSWFExteriorSpeed sigma (k * x)) x := by
-  convert (hasDerivAt_radialPSWFExteriorPhase sigma hkx).comp x
-    ((hasDerivAt_id x).const_mul k) using 1
-  all_goals ring
+  simpa only [Function.comp_def, mul_one, mul_comm] using
+    (hasDerivAt_radialPSWFExteriorPhase sigma hkx).comp x
+      (HasDerivAt.const_mul k (hasDerivAt_id x))
 
 /-- Uniform derivative floor for every positive radial dilation. -/
 theorem radialPSWFExteriorPhase_dilate_deriv_floor
@@ -95,8 +95,8 @@ theorem hasDerivAt_radialPSWFExteriorBandwidthPhase_dilate
     (c sigma k : ℝ) {x : ℝ} (hkx : 1 < k * x) :
     HasDerivAt (fun y : ℝ => c * radialPSWFExteriorPhase sigma (k * y))
       (c * k * radialPSWFExteriorSpeed sigma (k * x)) x := by
-  convert (hasDerivAt_radialPSWFExteriorPhase_dilate sigma k hkx).const_mul c using 1
-  all_goals ring
+  simpa only [mul_assoc] using
+    (hasDerivAt_radialPSWFExteriorPhase_dilate sigma k hkx).const_mul c
 
 end
 

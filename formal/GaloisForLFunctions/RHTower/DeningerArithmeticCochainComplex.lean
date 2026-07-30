@@ -102,7 +102,7 @@ theorem deningerEntireXi_mul_injective :
         0 Set.univ := by
     intro z _
     have hz := congrArg (fun H : DeningerEntire => H z) hprod
-    simpa only [deningerEntire_mul_apply, deningerEntire_zero_apply] using hz
+    simpa only [deningerEntire_mul_apply, deningerEntire_zero_apply] using! hz
   rcases Bottcher.analyticOnNhd_domain hXiAnalytic hDiffAnalytic
       isPreconnected_univ isOpen_univ hproduct with hXiZero | hDiffZero
   · exact (deningerEntireXi_ne_zero (DeningerEntire.ext fun z =>

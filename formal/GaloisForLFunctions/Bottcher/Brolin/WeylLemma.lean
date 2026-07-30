@@ -281,7 +281,7 @@ theorem harmonic_reproduction {h : ℂ → ℝ} {c : ℂ} {R R' : ℝ} (hR : 0 <
           ((isOpen_ball).mem_nhds (hclosed_sub hz))
         have hd0 : Tendsto (h - poissonInt h c R) (𝓝[Metric.ball c R] z) (𝓝 0) := by
           have := (hcAt.continuousWithinAt.tendsto).sub (poissonInt_tendsto_boundary hR hhsphere hzs)
-          simpa using this
+          simpa using! this
         refine hd0.congr' ?_
         filter_upwards [self_mem_nhdsWithin] with x hx using (huEq hx).symm
       · refine tendsto_const_nhds.congr' ?_
@@ -346,7 +346,7 @@ theorem integrable_mollN_comp (n : ℕ) (z : ℂ) : Integrable (fun t => mollN n
   have hcs : HasCompactSupport (fun t => mollN n (z - t)) := by
     have : HasCompactSupport ((mollN n) ∘ (fun t => z - t)) :=
       (mollN_hasCompactSupport n).comp_homeomorph (Homeomorph.subLeft z)
-    simpa [Function.comp] using this
+    simpa [Function.comp] using! this
   exact ((mollN_continuous n).comp (continuous_const.sub continuous_id)).integrable_of_hasCompactSupport hcs
 
 theorem integral_mollN_comp (n : ℕ) (z : ℂ) : ∫ t, mollN n (z - t) = 1 := by

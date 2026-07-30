@@ -273,7 +273,7 @@ theorem algebraicIndependent_prod_nat_of_fin
     · exact congrArg (fun u => u.1) hzw
     · exact congrArg (fun u => (u.2 : ℕ)) hzw
   have hsub := (hfin q.2).comp f hf
-  simpa only [Function.comp_apply, f] using hsub
+  simpa only [Function.comp_apply, f] using! hsub
 
 /-- **Complete shifted differential tail matroid.** The family containing every shift in a finite
 palette is differentially algebraically independent over `E_fin(s)` exactly when the Boolean
@@ -304,7 +304,7 @@ theorem signedPrimeShiftPalette_differentialIndependent_iff
               (signedPrimeShiftedRotatedJet
                 (ε jak.1) (alpha jak.2.1) jak.2.2).1)) := by
       simpa only [Function.comp_apply, f,
-        differentialJet_signedPrimeShiftCarrier] using hzero
+        differentialJet_signedPrimeShiftCarrier] using! hzero
     exact
       (signedPrimeShiftedRotatedJets_algebraicIndependent_over_finitePrimeRationalCoefficientField_iff
         ε alpha hdistinct 0).mp hjets
@@ -327,7 +327,7 @@ theorem signedPrimeShiftPalette_differentialIndependent_iff
       (signedPrimeShiftedRotatedJets_algebraicIndependent_over_finitePrimeRationalCoefficientField_iff
         ε alpha hdistinct m).mpr htail
     have hsub := hrect.comp f hf
-    simpa only [Function.comp_apply, f, x] using hsub
+    simpa only [Function.comp_apply, f, x] using! hsub
 
 end
 
@@ -381,7 +381,7 @@ theorem signedPrimeNaturalShiftPalette_differentialIndependent_iff
               (signedPrimeShiftedRotatedJet
                 (ε jak.1) ((jak.2.1 : ℕ) : ℂ) jak.2.2).1)) := by
       simpa only [Function.comp_apply, f, signedPrimeNaturalShiftPalette,
-        differentialJet_signedPrimeShiftCarrier] using hzero
+        differentialJet_signedPrimeShiftCarrier] using! hzero
     exact
       (signedPrimeShiftedRotatedJets_algebraicIndependent_over_finitePrimeRationalCoefficientField_iff
         ε (fun a : Fin 1 => ((a : ℕ) : ℂ)) (by
@@ -414,7 +414,7 @@ theorem signedPrimeNaturalShiftPalette_differentialIndependent_iff
           apply Fin.ext
           exact natCastComplex_re_injective h) qk.2).mpr htail
     have hsub := hrect.comp f hf
-    simpa only [Function.comp_apply, f] using hsub
+    simpa only [Function.comp_apply, f] using! hsub
 
 end
 
@@ -775,7 +775,7 @@ theorem allPositiveSignedPrimeSource_hypertranscendental :
   have hsource := hpalette.comp (fun _ : Unit => ((), 0)) (by
     intro _ _ _
     exact Subsingleton.elim _ _)
-  simpa only [Function.comp_apply] using hsource
+  simpa only [Function.comp_apply] using! hsource
 
 end
 end GaloisForLFunctions.HTGeometry

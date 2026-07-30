@@ -443,7 +443,7 @@ theorem not_eventuallyEq_continuedPrimeArchSourceRelativeTrace_universalGapRespo
           (Complex.I * eta))
       (nhdsWithin 0 (Ioi 0))
       (nhds (deriv continuedPrimeArchSourceRelativeTrace 0)) := by
-    simpa only [Function.comp_apply, sub_zero] using htraceFinite.comp hmap
+    simpa only [Function.comp_def, sub_zero] using htraceFinite.comp hmap
   have hquotientEq :
       (fun eta : ℝ =>
         continuedPrimeArchSourceRelativeTrace (Complex.I * eta) /

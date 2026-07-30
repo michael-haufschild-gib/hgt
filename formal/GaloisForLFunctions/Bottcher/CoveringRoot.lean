@@ -42,7 +42,7 @@ covering-space heart of the connected Böttcher root: lift `g` through the cover
 `existsUnique_continuousMap_lifts_of_range_le` makes the lift exist exactly when the winding number of
 `g` is divisible by `n`. No analyticity is used here — purely topological. -/
 theorem exists_continuous_pow_lift {A : Type*} [TopologicalSpace A]
-    [PathConnectedSpace A] [LocPathConnectedSpace A]
+    [PathConnectedSpace A] [LocallyPathConnectedSpace A]
     {n : ℕ} (hn : (n : ℂ) ≠ 0)
     (g : C(A, {w : ℂ // w ≠ 0})) (a₀ : A) (e₀ : {w : ℂ // w ≠ 0})
     (he : (⟨(e₀ : ℂ) ^ n, pow_ne_zero n e₀.2⟩ : {w : ℂ // w ≠ 0}) = g a₀)
@@ -75,7 +75,7 @@ theorem exists_analyticOnNhd_pow_eq_of_lift
         ⟨fun x : {w : ℂ // w ≠ 0} => (⟨(x : ℂ) ^ n, pow_ne_zero n x.2⟩ : {w : ℂ // w ≠ 0}),
           by fun_prop⟩ he).range) :
     ∃ s : ℂ → ℂ, AnalyticOnNhd ℂ s U ∧ (∀ z ∈ U, s z ^ n = g z) ∧ (∀ z ∈ U, s z ≠ 0) := by
-  haveI : LocPathConnectedSpace U := hUo.locPathConnectedSpace
+  haveI : LocallyPathConnectedSpace U := hUo.locallyPathConnectedSpace
   haveI : PathConnectedSpace U := by
     have h := (hUo.isConnected_iff_isPathConnected).mp hUc
     rwa [isPathConnected_iff_pathConnectedSpace] at h

@@ -44,7 +44,7 @@ theorem localPresentationSourceResidueCotangentMap_linearIndependent_units_smul
     simp [dK]
     rw [IsScalarTower.algebraMap_smul]
   rw [hscaled]
-  simpa only [Pi.smul_apply] using hli.units_smul dK
+  simpa only [Pi.smul_apply] using! hli.units_smul dK
 
 end
 

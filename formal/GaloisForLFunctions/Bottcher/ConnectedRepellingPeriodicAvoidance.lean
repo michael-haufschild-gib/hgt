@@ -207,7 +207,7 @@ theorem squarefreeBadFamily_ne_zero {P : Polynomial (Polynomial ℂ)} {e : Polyn
     ∀ q ∈ squarefreeBadFamily P e B, q ≠ 0 := by
   classical
   intro q hq
-  simp [squarefreeBadFamily] at hq
+  simp only [squarefreeBadFamily, Finset.mem_insert] at hq
   rcases hq with rfl | rfl | rfl | rfl | rfl | hqB
   · exact he
   · exact hlead

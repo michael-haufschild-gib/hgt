@@ -48,7 +48,7 @@ theorem differentiableOn_xiRectangularLandauAnalyticShiftedSeries
     linarith
   have hzeta := differentiableAt_riemannZeta hsone
   have hprefix := differentiable_xiRectangularLandauPrefixSeries L C N s
-  simpa only [xiRectangularLandauAnalyticShiftedSeries] using
+  simpa only [xiRectangularLandauAnalyticShiftedSeries] using!
     (((hL.sub (hzeta.const_mul (C : ℂ))).add hprefix).div_const (2 : ℂ)).differentiableWithinAt
 
 /-- On the original right half-plane, the reconstructed analytic carrier is

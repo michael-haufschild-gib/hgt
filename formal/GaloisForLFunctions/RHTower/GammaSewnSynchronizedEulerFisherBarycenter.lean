@@ -36,25 +36,28 @@ private theorem synchronizedEulerBarycenterNumerator_hasDerivAt (y : ℝ) :
     HasDerivAt synchronizedEulerBarycenterNumerator
       (1 - (y + 1) * Real.exp (-y)) y := by
   unfold synchronizedEulerBarycenterNumerator
-  convert ((hasDerivAt_id y).sub_const 2).add
+  exact (((hasDerivAt_id y).sub_const 2).add
     (((hasDerivAt_id y).add_const 2).mul
-      ((Real.hasDerivAt_exp (-y)).comp y (hasDerivAt_neg y))) using 1
-  all_goals (simp only [Function.id_def, Function.comp_apply]; ring)
+      ((Real.hasDerivAt_exp (-y)).comp y (hasDerivAt_neg y)))).congr_deriv (by
+        simp only [Function.id_def, Function.comp_apply]
+        ring)
 
 private theorem synchronizedEulerBarycenterNumeratorFirst_hasDerivAt (y : ℝ) :
     HasDerivAt (fun z : ℝ => 1 - (z + 1) * Real.exp (-z))
       (y * Real.exp (-y)) y := by
-  convert (hasDerivAt_const (x := y) (c := (1 : ℝ))).sub
+  exact ((hasDerivAt_const (x := y) (c := (1 : ℝ))).sub
     (((hasDerivAt_id y).add_const 1).mul
-      ((Real.hasDerivAt_exp (-y)).comp y (hasDerivAt_neg y))) using 1
-  all_goals (simp only [Function.id_def, Function.comp_apply]; ring)
+      ((Real.hasDerivAt_exp (-y)).comp y (hasDerivAt_neg y)))).congr_deriv (by
+        simp only [Function.id_def, Function.comp_apply]
+        ring)
 
 private theorem synchronizedEulerBarycenterNumeratorSecond_hasDerivAt (y : ℝ) :
     HasDerivAt (fun z : ℝ => z * Real.exp (-z))
       ((1 - y) * Real.exp (-y)) y := by
-  convert (hasDerivAt_id y).mul
-    ((Real.hasDerivAt_exp (-y)).comp y (hasDerivAt_neg y)) using 1
-  all_goals (simp only [Function.id_def, Function.comp_apply]; ring)
+  exact ((hasDerivAt_id y).mul
+    ((Real.hasDerivAt_exp (-y)).comp y (hasDerivAt_neg y))).congr_deriv (by
+      simp only [Function.id_def, Function.comp_apply]
+      ring)
 
 private theorem tendsto_synchronizedEulerBarycenterNumerator_div_cube_zero :
     Tendsto (fun y : ℝ => synchronizedEulerBarycenterNumerator y / y ^ 3)
@@ -64,7 +67,11 @@ private theorem tendsto_synchronizedEulerBarycenterNumerator_div_cube_zero :
       (𝓝[≠] 0) (𝓝 (1 / 6 : ℝ)) := by
     have hcont : ContinuousAt
         (fun y : ℝ => ((1 - y) * Real.exp (-y)) / 6) 0 := by fun_prop
-    simpa using hcont.tendsto.mono_left inf_le_left
+    have ht : Tendsto
+        (fun y : ℝ => ((1 - y) * Real.exp (-y)) / 6)
+        (𝓝 0) (𝓝 (1 / 6 : ℝ)) := by
+      simpa using hcont.tendsto
+    exact ht.mono_left nhdsWithin_le_nhds
   have hsecond : Tendsto
       (fun y : ℝ => (y * Real.exp (-y)) / (6 * y))
       (𝓝[≠] 0) (𝓝 (1 / 6 : ℝ)) := by
@@ -74,13 +81,17 @@ private theorem tendsto_synchronizedEulerBarycenterNumerator_div_cube_zero :
     · exact Filter.Eventually.of_forall
         synchronizedEulerBarycenterNumeratorSecond_hasDerivAt
     · exact Filter.Eventually.of_forall fun y => by
-        convert (hasDerivAt_id y).const_mul 6 using 1
-        all_goals simp
+        exact ((hasDerivAt_id y).const_mul 6).congr_deriv (by norm_num)
     · exact Filter.Eventually.of_forall fun _ => by norm_num
     · have hcont : ContinuousAt (fun y : ℝ => y * Real.exp (-y)) 0 := by fun_prop
-      simpa using hcont.tendsto.mono_left inf_le_left
+      have ht : Tendsto (fun y : ℝ => y * Real.exp (-y))
+          (𝓝 0) (𝓝 0) := by
+        simpa using hcont.tendsto
+      exact ht.mono_left nhdsWithin_le_nhds
     · have hcont : ContinuousAt (fun y : ℝ => 6 * y) 0 := by fun_prop
-      simpa using hcont.tendsto.mono_left inf_le_left
+      have ht : Tendsto (fun y : ℝ => 6 * y) (𝓝 0) (𝓝 0) := by
+        simpa using hcont.tendsto
+      exact ht.mono_left nhdsWithin_le_nhds
   have hfirst : Tendsto
       (fun y : ℝ => (1 - (y + 1) * Real.exp (-y)) / (3 * y ^ 2))
       (𝓝[≠] 0) (𝓝 (1 / 6 : ℝ)) := by
@@ -90,17 +101,23 @@ private theorem tendsto_synchronizedEulerBarycenterNumerator_div_cube_zero :
     · exact Filter.Eventually.of_forall
         synchronizedEulerBarycenterNumeratorFirst_hasDerivAt
     · exact Filter.Eventually.of_forall fun y => by
-        convert ((hasDerivAt_id y).pow 2).const_mul 3 using 1
-        simp only [Function.id_def]
-        ring
+        exact (((hasDerivAt_id y).pow 2).const_mul 3).congr_deriv (by
+          simp only [Function.id_def]
+          ring)
     · filter_upwards [self_mem_nhdsWithin] with y hy
       simp only [mem_compl_iff, mem_singleton_iff] at hy
       exact mul_ne_zero (by norm_num) hy
     · have hcont : ContinuousAt
           (fun y : ℝ => 1 - (y + 1) * Real.exp (-y)) 0 := by fun_prop
-      simpa using hcont.tendsto.mono_left inf_le_left
+      have ht : Tendsto
+          (fun y : ℝ => 1 - (y + 1) * Real.exp (-y))
+          (𝓝 0) (𝓝 0) := by
+        simpa using hcont.tendsto
+      exact ht.mono_left nhdsWithin_le_nhds
     · have hcont : ContinuousAt (fun y : ℝ => 3 * y ^ 2) 0 := by fun_prop
-      simpa using hcont.tendsto.mono_left inf_le_left
+      have ht : Tendsto (fun y : ℝ => 3 * y ^ 2) (𝓝 0) (𝓝 0) := by
+        simpa using hcont.tendsto
+      exact ht.mono_left nhdsWithin_le_nhds
   refine HasDerivAt.lhopital_zero_nhdsNE
     (f' := fun y : ℝ => 1 - (y + 1) * Real.exp (-y))
     (g' := fun y : ℝ => 3 * y ^ 2) ?_ ?_ ?_ ?_ ?_ hfirst
@@ -112,21 +129,24 @@ private theorem tendsto_synchronizedEulerBarycenterNumerator_div_cube_zero :
   · have hcont : ContinuousAt synchronizedEulerBarycenterNumerator 0 := by
       unfold synchronizedEulerBarycenterNumerator
       fun_prop
-    simpa [synchronizedEulerBarycenterNumerator] using
-      hcont.tendsto.mono_left inf_le_left
+    have ht : Tendsto synchronizedEulerBarycenterNumerator
+        (𝓝 0) (𝓝 0) := by
+      simpa [synchronizedEulerBarycenterNumerator] using hcont.tendsto
+    exact ht.mono_left nhdsWithin_le_nhds
   · have hcont : ContinuousAt (fun y : ℝ => y ^ 3) 0 := by fun_prop
-    simpa using hcont.tendsto.mono_left inf_le_left
+    have ht : Tendsto (fun y : ℝ => y ^ 3) (𝓝 0) (𝓝 0) := by
+      simpa using hcont.tendsto
+    exact ht.mono_left nhdsWithin_le_nhds
 
 private theorem tendsto_one_sub_exp_neg_div_self_zero :
     Tendsto (fun y : ℝ => (1 - Real.exp (-y)) / y)
       (𝓝[≠] 0) (𝓝 1) := by
   have hderiv : HasDerivAt (fun y : ℝ => 1 - Real.exp (-y)) 1 0 := by
-    convert (hasDerivAt_const (x := 0) (c := (1 : ℝ))).sub
-      ((Real.hasDerivAt_exp (-0)).comp 0 (hasDerivAt_neg 0)) using 1
-    all_goals norm_num
+    exact ((hasDerivAt_const (x := 0) (c := (1 : ℝ))).sub
+      ((Real.hasDerivAt_exp (-0)).comp 0 (hasDerivAt_neg 0))).congr_deriv (by
+        norm_num)
   rw [hasDerivAt_iff_tendsto_slope] at hderiv
-  convert hderiv using 1
-  funext y
+  refine hderiv.congr (fun y => ?_)
   rw [slope_def_field]
   norm_num
 
@@ -201,9 +221,13 @@ theorem hasSum_gammaSewnSynchronizedEulerDepthProbability_one
     rw [Real.norm_eq_abs, abs_of_pos hq0]
     exact hq1
   have hsum := (hasSum_geometric_of_norm_lt_one hqnorm).mul_left (1 - q)
-  convert hsum using 1
   have hne : 1 - q ≠ 0 := sub_ne_zero.mpr hq1.ne'
-  field_simp [hne]
+  have hseries : HasSum
+      (fun e : ℕ => gammaSewnSynchronizedEulerDepthProbability x p e)
+      ((1 - q) * (1 - q)⁻¹) := by
+    simpa only [gammaSewnSynchronizedEulerDepthProbability, q] using hsum
+  rw [mul_inv_cancel₀ hne] at hseries
+  exact hseries
 
 /-- The closed barycenter is not a chosen depth: it is the exact expectation over every
 common valuation depth in the synchronized geometric source. -/
@@ -225,15 +249,24 @@ theorem hasSum_gammaSewnSynchronizedEulerDepthProbability_mul_halfHeight
   have hgeom := hasSum_geometric_of_norm_lt_one (K := ℝ) hqnorm
   have hsum := hweighted.add hgeom
   have hscaled := hsum.mul_left ((1 - q) * (L / 2))
-  convert hscaled using 1
-  · funext e
+  have hseries : HasSum (fun e : ℕ =>
+      gammaSewnSynchronizedEulerDepthProbability x p e *
+        xiGammaEulerBoundaryHalfHeight p e)
+      ((1 - q) * (L / 2) *
+        (q / (1 - q) ^ 2 + (1 - q)⁻¹)) := by
+    refine HasSum.congr_fun hscaled (fun e => ?_)
     change (1 - q) * q ^ e * ((((e : ℝ) + 1) / 2) * L) =
       (1 - q) * (L / 2) * ((e : ℝ) * q ^ e + q ^ e)
     ring
-  · unfold gammaSewnSynchronizedEulerHalfHeightBarycenter
+  have hvalue : gammaSewnSynchronizedEulerHalfHeightBarycenter x p =
+      (1 - q) * (L / 2) *
+        (q / (1 - q) ^ 2 + (1 - q)⁻¹) := by
+    unfold gammaSewnSynchronizedEulerHalfHeightBarycenter
     dsimp only [q, L]
     field_simp [hne]
     ring
+  rw [hvalue]
+  exact hseries
 
 theorem tsum_gammaSewnSynchronizedEulerDepthProbability_mul_halfHeight
     {x : ℝ} (hx : 0 < x) (p : Nat.Primes) :
@@ -268,17 +301,24 @@ private theorem hasSum_succ_sq_mul_geometric
   have hgeom := hasSum_geometric_of_norm_lt_one (K := ℝ) hqnorm
   have hsucc := hweighted.add hgeom
   have hraw := (hchoose.mul_left 2).sub hsucc
-  convert hraw using 1
-  · funext e
+  have hseries : HasSum (fun e : ℕ => ((e : ℝ) + 1) ^ 2 * q ^ e)
+      (2 * (1 / (1 - q) ^ (2 + 1)) -
+        (q / (1 - q) ^ 2 + (1 - q)⁻¹)) := by
+    refine HasSum.congr_fun hraw (fun e => ?_)
     rw [← two_mul_choose_two_add_eq_succ_sq e]
     ring
-  · have hq : q ≠ 1 := by
-      intro h
-      subst q
-      norm_num at hqnorm
-    have hne : 1 - q ≠ 0 := sub_ne_zero.mpr hq.symm
+  have hq : q ≠ 1 := by
+    intro h
+    subst q
+    norm_num at hqnorm
+  have hne : 1 - q ≠ 0 := sub_ne_zero.mpr hq.symm
+  have hvalue : (1 + q) / (1 - q) ^ 3 =
+      2 * (1 / (1 - q) ^ (2 + 1)) -
+        (q / (1 - q) ^ 2 + (1 - q)⁻¹) := by
     field_simp [hne]
     ring
+  rw [hvalue]
+  exact hseries
 
 theorem hasSum_gammaSewnSynchronizedEulerDepthProbability_mul_halfHeight_sq
     {x : ℝ} (hx : 0 < x) (p : Nat.Primes) :
@@ -299,13 +339,23 @@ theorem hasSum_gammaSewnSynchronizedEulerDepthProbability_mul_halfHeight_sq
   have hne : 1 - q ≠ 0 := sub_ne_zero.mpr hq1.ne'
   have hsum := (hasSum_succ_sq_mul_geometric hqnorm).mul_left
     ((1 - q) * (L ^ 2 / 4))
-  convert hsum using 1
-  · funext e
+  have hseries : HasSum
+      (fun e : ℕ =>
+        gammaSewnSynchronizedEulerDepthProbability x p e *
+          xiGammaEulerBoundaryHalfHeight p e ^ 2)
+      ((1 - q) * (L ^ 2 / 4) * ((1 + q) / (1 - q) ^ 3)) := by
+    refine HasSum.congr_fun hsum (fun e => ?_)
     change (1 - q) * q ^ e * (((((e : ℝ) + 1) / 2) * L) ^ 2) =
       (1 - q) * (L ^ 2 / 4) * (((e : ℝ) + 1) ^ 2 * q ^ e)
     ring
-  · dsimp only [q, L]
+  have hvalue : Real.log (p : ℝ) ^ 2 *
+        (1 + xiMobiusContinuousApertureDiskNode x p) /
+          (4 * (1 - xiMobiusContinuousApertureDiskNode x p) ^ 2) =
+      (1 - q) * (L ^ 2 / 4) * ((1 + q) / (1 - q) ^ 3) := by
+    dsimp only [q, L]
     field_simp [hne]
+  rw [hvalue]
+  exact hseries
 
 /-- Literal infinite-depth variance of the physical Euler half-height. -/
 def gammaSewnSynchronizedEulerHalfHeightVariance
@@ -386,9 +436,11 @@ theorem hasDerivAt_gammaSewnSynchronizedEulerHalfHeightBarycenter
   have hq : HasDerivAt q (-L * q x) x := by
     dsimp only [q, L]
     unfold xiMobiusContinuousApertureDiskNode
-    convert (Real.hasDerivAt_exp (-x * Real.log (p : ℝ))).comp x
-      ((hasDerivAt_neg x).mul_const (Real.log (p : ℝ))) using 1
-    all_goals ring
+    apply (((Real.hasDerivAt_exp (-x * Real.log (p : ℝ))).comp x
+      ((hasDerivAt_neg x).mul_const (Real.log (p : ℝ)))).congr_deriv (by
+        ring)).congr_of_eventuallyEq
+    exact Filter.Eventually.of_forall fun y => by
+      simp only [Function.comp_apply]
   have hq1 := xiMobiusContinuousApertureDiskNode_lt_one hx p
   have hden : 2 * (1 - q x) ≠ 0 :=
     mul_ne_zero (by norm_num) (sub_ne_zero.mpr hq1.ne')
@@ -397,11 +449,11 @@ theorem hasDerivAt_gammaSewnSynchronizedEulerHalfHeightBarycenter
   rw [gammaSewnSynchronizedEulerHalfHeightVariance_eq hx]
   change HasDerivAt (fun y : ℝ => L / (2 * (1 - q y)))
     (-2 * (L ^ 2 * q x / (4 * (1 - q x) ^ 2))) x
-  convert hderiv using 1
-  dsimp only [q, L]
-  field_simp [sub_ne_zero.mpr hq1.ne']
-  simp only [Pi.sub_apply]
-  ring
+  exact hderiv.congr_deriv (by
+    dsimp only [q, L]
+    field_simp [sub_ne_zero.mpr hq1.ne']
+    simp only [Pi.sub_apply]
+    ring)
 
 /-- The all-depth physical Euler height barycenter contracts strictly throughout the positive
 aperture chamber; its speed is exactly twice its infinite-depth height variance. -/
@@ -460,10 +512,13 @@ theorem tendsto_gammaSewnSewingBernoulliFisherCurvature_zero
       norm_num
     exact (continuousAt_const.mul (hq.pow 4)).div
       ((continuousAt_const.add (hq.pow 4)).pow 2) hden
-  convert hcont.tendsto.mono_left inf_le_left using 1
-  unfold gammaSewnSewingBernoulliFisherCurvature
-    xiMobiusContinuousApertureDiskNode
-  norm_num
+  have hvalue : gammaSewnSewingBernoulliFisherCurvature 0 p =
+      Real.log (p : ℝ) ^ 2 := by
+    unfold gammaSewnSewingBernoulliFisherCurvature
+      xiMobiusContinuousApertureDiskNode
+    norm_num
+  rw [← hvalue]
+  exact hcont.tendsto.mono_left nhdsWithin_le_nhds
 
 /-- After the universal pole is removed, the infinite Euler depth-variance channel has a
 *negative* finite part.  The positive Fisher clock is created only after the larger sewing
@@ -529,7 +584,9 @@ theorem tendsto_gammaSewnSynchronizedEulerBarycenterRegularCoefficient_zero
   have hscale : Tendsto (fun x : ℝ => x * L) (𝓝[≠] 0) (𝓝[≠] 0) := by
     apply tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within
     · have hid : Tendsto (fun x : ℝ => x) (𝓝 0) (𝓝 0) := tendsto_id
-      simpa using (hid.mul_const L).mono_left inf_le_left
+      have ht : Tendsto (fun x : ℝ => x * L) (𝓝 0) (𝓝 0) := by
+        simpa using hid.mul_const L
+      exact ht.mono_left nhdsWithin_le_nhds
     · filter_upwards [self_mem_nhdsWithin] with x hx
       simp only [mem_compl_iff, mem_singleton_iff] at hx ⊢
       exact mul_ne_zero hx hL.ne'

@@ -166,11 +166,11 @@ theorem norm_integral_cexp_secondDeriv_oneside_neg
   have hgh : ∀ y ∈ Set.uIcc a b, HasDerivAt h (h' y) y := by
     intro y hy
     have := (hg (a + b - y) (hrefl_mem y hy)).comp y (hderiv_in y)
-    simpa [hh, hh', mul_comm] using this
+    simpa [hh, hh', mul_comm] using! this
   have hg'h : ∀ y ∈ Set.uIcc a b, HasDerivAt h' (h'' y) y := by
     intro y hy
     have hc := ((hg' (a + b - y) (hrefl_mem y hy)).comp y (hderiv_in y)).neg
-    simpa [hh', hh'', mul_comm] using hc
+    simpa [hh', hh'', mul_comm] using! hc
   have hh''c : ContinuousOn h'' (Set.uIcc a b) :=
     hg''c.comp ((continuous_const.sub continuous_id).continuousOn) (fun y hy => hrefl_mem y hy)
   have hh''lb : ∀ y ∈ Set.uIcc a b, lam ≤ h'' y := fun y hy => hg''lb _ (hrefl_mem y hy)

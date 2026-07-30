@@ -54,7 +54,7 @@ theorem universalFacetOrbitPrimeOrientedSource_differentialIndependent
     letI : Algebra (RatFunc ℂ) upperEndMeroField := upperEndRatfuncToMero.toAlgebra
     letI := upperEndMeroFieldDifferential
     DifferentialIndependent (RatFunc ℂ) (universalFacetOrbitPrimeOrientedSource J) := by
-  simpa [universalFacetOrbitPrimeOrientedSource] using
+  simpa [universalFacetOrbitPrimeOrientedSource] using!
     universalFacetOrbitRationalGaugeSource_differentialIndependent
       (universalPrimeOrientedPaletteGauge J)
 
@@ -68,7 +68,7 @@ theorem universalFacetOrbitPrimeOrientedSource_differentialAdjoin_eq
       differentialAdjoin (RatFunc ℂ)
         (Set.range (boundedGaugeTranslatedPrimeLogUpperEnd universalFacetOrbitShift
           universalFacetOrbitGauge)) := by
-  simpa [universalFacetOrbitPrimeOrientedSource] using
+  simpa [universalFacetOrbitPrimeOrientedSource] using!
     universalFacetOrbitRationalGaugeSource_differentialAdjoin_eq
       (universalPrimeOrientedPaletteGauge J)
 
@@ -146,7 +146,7 @@ theorem continuousAt_universalPrimeOrientedRegular
           have hsupp : primeLogSupport q = primeLogSupport p := by
             exact Complex.ofReal_injective (sub_eq_zero.mp heq)
           exact hqp (primeLogSupport_injective hsupp)
-        simpa [Finset.sum_insert hq] using hterm.add (ih hpT)
+        simpa [Finset.sum_insert hq] using! hterm.add (ih hpT)
 
 theorem universalPrimeOrientedHerglotz_eq_regular_sub_atom
     {J : Finset Nat.Primes} {p : Nat.Primes} (hpJ : p ∈ J) (z : ℂ) :

@@ -119,7 +119,7 @@ theorem matrixCharpolyRelation_analyticAt
     exact (entry.analyticAt q₀.1).comp analyticAt_fst
   by_cases hij : i = j
   · subst j
-    simpa [matrixCharpolyRelation, Matrix.scalar_apply] using
+    simpa [matrixCharpolyRelation, Matrix.scalar_apply] using!
       analyticAt_snd.sub hentry
   · have hneg :
         AnalyticAt ℂ (fun q : Matrix ι ι ℂ × ℂ => -q.1 i j) q₀ :=
@@ -275,7 +275,7 @@ theorem analyticMatrixFamily_eigenvalueBranch
       Tendsto H (𝓝 p₀) (𝓝 (Matrix.diagonal energy)) := by
     have hcont := hH.continuousAt
     change Tendsto H (𝓝 p₀) (𝓝 (H p₀)) at hcont
-    simpa only [hbase] using hcont
+    simpa only [hbase] using! hcont
   refine ⟨fun p => r (H p), hr.comp_of_eq' hH hbase, ?_, ?_⟩
   · simpa [hbase] using hr0
   · exact hHt.eventually hrroot
@@ -361,7 +361,7 @@ theorem analyticAt_kroneckerSum
   by_cases hij : i = j <;> by_cases hkl : k = l
   · subst j
     subst l
-    simpa [kroneckerSum] using hAij.add hBkl
+    simpa [kroneckerSum] using! hAij.add hBkl
   · subst j
     simpa [kroneckerSum, hkl] using hBkl
   · subst l
@@ -482,7 +482,7 @@ theorem disconnectedAnalyticEigenvalueBranches_add
       Tendsto totalMatrix (𝓝 p₀) (𝓝 (Matrix.diagonal totalEnergy)) := by
     have hcont := htotal.continuousAt
     change Tendsto totalMatrix (𝓝 p₀) (𝓝 (totalMatrix p₀)) at hcont
-    simpa only [htotalBase] using hcont
+    simpa only [htotalBase] using! hcont
   have hbranchTendsto :
       Tendsto totalBranch (𝓝 p₀) (𝓝 (totalEnergy (x, y))) := by
     have hcont := htotalBranch.continuousAt

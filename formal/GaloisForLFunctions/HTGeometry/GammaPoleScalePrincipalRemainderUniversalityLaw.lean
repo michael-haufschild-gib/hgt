@@ -87,9 +87,12 @@ theorem algebraicIndependent_gammaPoleScaleAndFinitePartJet_over_ratFunc :
     AlgebraicIndependent GammaPoleRationalBase
       gammaPoleScaleAndFinitePartJetFamily := by
   rw [algebraicIndependent_iff_injective_aeval]
+  intro P Q hPQ
+  apply gammaPoleScaleAndFinitePartJetRationalEval_injective
+  have hbase :
+      algebraMap GammaPoleRationalBase NatGerm = ratNatEval := rfl
   simpa [gammaPoleScaleAndFinitePartJetRationalEval,
-    MvPolynomial.aeval_def] using
-      gammaPoleScaleAndFinitePartJetRationalEval_injective
+    MvPolynomial.aeval_def, hbase] using hPQ
 
 /-- Polynomial presentation after separating the factorial scale from the finite-part jets. -/
 def gammaPoleScaleAndFinitePartJetPolynomialEval :

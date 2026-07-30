@@ -28,12 +28,13 @@ theorem boundedGeneratorOrbit_series_hasSum
       (𝕂 := ℂ) (z • A)).map φ φ.continuous
   unfold boundedGeneratorOrbit
   convert hs using 1
-  funext m
-  unfold φ
-  simp only [Function.comp_apply, ContinuousLinearMap.apply_apply,
-    smul_pow, _root_.smul_apply]
-  rw [div_eq_mul_inv]
-  module
+  · funext m
+    unfold φ
+    simp only [Function.comp_apply, ContinuousLinearMap.apply_apply,
+      smul_pow, _root_.smul_apply]
+    rw [div_eq_mul_inv]
+    module
+  · rfl
 
 omit [CompleteSpace E] in
 theorem boundedGenerator_pow_apply_norm_le

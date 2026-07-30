@@ -119,9 +119,13 @@ theorem pointTailIdeal_at_n_eq_vanishingIdeal {n : ℕ} (x : Fin n → ℂ) :
       apply MvPolynomial.ringHom_ext
       · intro r
         simp [pointTailEvalHom]
+        change MvPolynomial.coeff 0 (MvPolynomial.C r) = r
+        exact MvPolynomial.coeff_zero_C r
       · intro i
         have hi : ¬ n ≤ i.1 := Nat.not_le_of_gt i.isLt
         simp [pointTailEvalHom, hi]
+        change MvPolynomial.coeff 0 (MvPolynomial.C (x i)) = x i
+        exact MvPolynomial.coeff_zero_C (x i)
     exact DFunLike.congr_fun hhom p
   constructor
   · intro hp

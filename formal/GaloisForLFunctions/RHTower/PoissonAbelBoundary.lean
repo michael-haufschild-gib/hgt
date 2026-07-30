@@ -77,7 +77,7 @@ theorem poissonAbelFourierAverage_eq_poissonIntegral
           (Complex.continuous_ofReal.mul continuous_const)).zpow₀ m
             (fun t => Or.inl (Complex.exp_ne_zero _)))
     rw [Set.uIoc_of_le hpi]
-    simpa only [F, Pi.mul_apply] using
+    simpa only [F, Pi.mul_apply] using!
       hphase.aestronglyMeasurable.mul
         hφ.1.aestronglyMeasurable.aemeasurable.complex_ofReal.aestronglyMeasurable
   have hbound : ∀ m, ∀ᵐ t ∂volume, t ∈ Set.uIoc (-Real.pi) Real.pi →

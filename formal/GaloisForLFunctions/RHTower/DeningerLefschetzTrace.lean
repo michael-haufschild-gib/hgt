@@ -82,7 +82,7 @@ theorem deningerResolventLefschetzTrace_testAlgebra
         ∑ i ∈ t, c i * deningerDivisorRelativeResolventTerm (z i) q) =
       ∑ i ∈ t, c i * continuedPrimeArchSourceRelativeTrace (z i) := by
   simpa [xiTestFunction, xiTestPrimeArchFunctional,
-    deningerDivisorRelativeResolventTerm] using
+    deningerDivisorRelativeResolventTerm] using!
       xiGuinandWeilExplicitFormula c z t hz
 
 /--
@@ -95,7 +95,7 @@ theorem deningerResolventLefschetzTrace_testAlgebra_primeSeries
     (∑' q : XiZeroCopy,
         ∑ i ∈ t, c i * deningerDivisorRelativeResolventTerm (z i) q) =
       ∑ i ∈ t, c i * primeArchSourceRelativeTrace (z i) := by
-  simpa [xiTestFunction, deningerDivisorRelativeResolventTerm] using
+  simpa [xiTestFunction, deningerDivisorRelativeResolventTerm] using!
     xiGuinandWeilExplicitFormula_primeSeries c z t hz
 
 /--

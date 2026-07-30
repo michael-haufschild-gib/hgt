@@ -42,7 +42,7 @@ theorem hasDerivAt_semilocalArchimedeanJacobiShape (n : ℕ) (t : ℝ) :
           ((n : ℝ) + 1 / 2) * Real.tanh t ^ (n + 1))) t := by
   have hraw := (hasDerivAt_semilocalArchimedeanCharacteristic t).mul
     ((hasDerivAt_tanh_one_sub_sq t).pow n)
-  convert hraw using 1
+  apply hraw.congr_deriv
   cases n <;> simp [pow_succ] <;> ring
 
 theorem hasDerivAt_semilocalArchimedeanJacobiFourierClosedForm
@@ -55,11 +55,17 @@ theorem hasDerivAt_semilocalArchimedeanJacobiFourierClosedForm
   have hcomplex := (hasDerivAt_semilocalArchimedeanJacobiShape n t).ofReal_comp
   have hscaled := hcomplex.const_mul
     (Complex.I ^ n * (semilocalArchimedeanJacobiNormalization n : ℂ))
-  convert hscaled using 1
-  · funext y
-    simp [semilocalArchimedeanJacobiFourierClosedForm,
+  have hfun : semilocalArchimedeanJacobiFourierClosedForm n =
+      fun y => (Complex.I ^ n * (semilocalArchimedeanJacobiNormalization n : ℂ)) *
+        (semilocalArchimedeanJacobiShape n y : ℂ) := by
+    funext y
+    rw [semilocalArchimedeanJacobiFourierClosedForm,
       semilocalArchimedeanJacobiShape]
+    push_cast
     ring
+  rw [hfun]
+  apply hscaled.congr_deriv
+  ring
 
 theorem semilocalArchimedeanJacobiFourierClosedForm_derivativeValue_succ
     (n : ℕ) (t : ℝ) :

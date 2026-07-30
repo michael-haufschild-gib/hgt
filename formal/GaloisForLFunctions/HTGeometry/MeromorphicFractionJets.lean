@@ -185,7 +185,8 @@ theorem functionFractionJetPair_div_eq_iteratedDeriv
       rw [← hderiv]
       have hdiv := deriv_div (hpa z (Set.mem_univ z)).differentiableAt
         (hpb z (Set.mem_univ z)).differentiableAt hpbz
-      convert hdiv.symm using 1 <;> ring
+      change deriv (fun w => p.1 w / p.2 w) z = _ at hdiv
+      convert! hdiv.symm using 1 <;> ring
 
 end
 

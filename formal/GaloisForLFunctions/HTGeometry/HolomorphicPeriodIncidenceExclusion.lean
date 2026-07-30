@@ -128,7 +128,7 @@ theorem norm_periodHolomorphicEvaluation_sub_multiplier_ge_norm_zero
     (hd.differentiableAt (Metric.isOpen_ball.mem_nhds (by simp))).continuousAt
   have hfeval : Tendsto
       (fun n ↦ periodHolomorphicEvaluation L f R hmap (q n)) atTop (𝓝 (f 0)) := by
-    simpa using hfcont.tendsto.comp hweight
+    simpa using! hfcont.tendsto.comp hweight
   have hnorm : Tendsto
       (fun n ↦ ‖periodHolomorphicEvaluation L f R hmap (q n) -
         periodIncidenceMultiplier L x (q n)‖) atTop (𝓝 ‖f 0‖) := by
@@ -219,7 +219,7 @@ theorem natCast_le_analyticOrderAt_of_periodHolomorphicEvaluation_mem_poweredRan
             rw [← mul_assoc, ← pow_add, Nat.add_sub_of_le hmr.le]
       have hpow0 : Tendsto (fun n ↦ w n ^ (r - m)) atTop (𝓝 0) := by
         have hp := (continuous_pow (r - m)).continuousAt.tendsto.comp hw0
-        simpa [Nat.sub_ne_zero_of_lt hmr] using hp
+        simpa [Nat.sub_ne_zero_of_lt hmr] using! hp
       have hpowNorm : Tendsto (fun n ↦ ‖w n ^ (r - m)‖) atTop (𝓝 0) :=
         tendsto_zero_iff_norm_tendsto_zero.mp hpow0
       have hright0 : Tendsto (fun n ↦ w n ^ (r - m) * a (q n)) atTop (𝓝 0) := by

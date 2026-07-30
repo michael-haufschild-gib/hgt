@@ -97,13 +97,13 @@ theorem hasDerivAt_simpleZeroExponentialRealizer (P : Polynomial ℂ) (z : ℂ) 
       (Complex.exp (P.eval z) +
         z * (Complex.exp (P.eval z) * (derivative P).eval z)) z := by
   change HasDerivAt (fun x : ℂ => x * Complex.exp (P.eval x)) _ z
-  simpa [mul_assoc, mul_comm, mul_left_comm] using
+  simpa [mul_assoc, mul_comm, mul_left_comm] using!
     (hasDerivAt_id z).mul ((P.hasDerivAt z).cexp)
 
 theorem simpleZeroExponentialRealizer_analyticAt (P : Polynomial ℂ) (z : ℂ) :
     AnalyticAt ℂ (simpleZeroExponentialRealizer P) z := by
   have hpoly : AnalyticAt ℂ (fun x : ℂ => P.eval x) z := by
-    simpa only [aeval_def] using analyticAt_id.aeval_polynomial P
+    simpa only [aeval_def] using! analyticAt_id.aeval_polynomial P
   exact analyticAt_id.mul hpoly.cexp
 
 @[simp] theorem simpleZeroExponentialRealizer_zero (P : Polynomial ℂ) :

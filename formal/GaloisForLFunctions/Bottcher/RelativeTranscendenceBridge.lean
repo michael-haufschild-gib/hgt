@@ -348,7 +348,6 @@ theorem eval₂_polyToAnalytic_phiAnalytic_eq_zero_iff_of_transcendental
     haveI := isDomain_analyticSubring U hUo hUc hUne
     letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
     have haeval := aeval_phiMero_eq hUo hUc hUne hUinf c hU q
-    simp only at haeval
     rw [hq, map_zero] at haeval
     have haeval0 : Polynomial.aeval (phiMero c hU)
         (q.map (algebraMap (Polynomial ℂ) (RatFunc ℂ))) = 0 := by
@@ -3861,7 +3860,6 @@ theorem fractionField_squarefree_of_squarefree_CzY
       dsimp [gp]
       exact Polynomial.isPrimitive_primPart g
     have hgp2_prim : (gp * gp).IsPrimitive := hgp_prim.mul hgp_prim
-    have hDprim_prim : D.primPart.IsPrimitive := Polynomial.isPrimitive_primPart D
     have hassoc_q : Associated (gp.map φ) q := by
       simpa [g, gp, R, K, φ] using fractionField_integerNormalization_primPart_associated_CzY q hq0
     have hassoc_q2 : Associated ((gp * gp).map φ) (q * q) := by
@@ -3872,7 +3870,7 @@ theorem fractionField_squarefree_of_squarefree_CzY
     have hmap_dvd : (gp * gp).map φ ∣ D.primPart.map φ := by
       exact (hassoc_q2.dvd_iff_dvd_left).mpr ((hassoc_D.dvd_iff_dvd_right).mpr hqdiv)
     have hgp2_dvd : gp * gp ∣ D.primPart := by
-      exact (Polynomial.IsPrimitive.dvd_iff_fraction_map_dvd_fraction_map K hgp2_prim hDprim_prim).mpr hmap_dvd
+      exact (hgp2_prim.dvd_iff_fraction_map_dvd_fraction_map K).mpr hmap_dvd
     have hgp_unit : IsUnit gp := hDprim_sq gp hgp2_dvd
     simpa [g, gp, R, K] using
       (Polynomial.isUnit_or_eq_zero_of_isUnit_integerNormalization_primPart hq0 hgp_unit)

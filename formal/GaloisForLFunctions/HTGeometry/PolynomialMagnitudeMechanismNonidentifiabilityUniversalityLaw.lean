@@ -30,7 +30,7 @@ theorem isEquivalent_natCast_succ_rpow (γ : ℝ) :
     (fun n : ℕ => (((n : ℝ) + 1) ^ γ)) ~[atTop]
       (fun n : ℕ => (n : ℝ) ^ γ) := by
   apply (isEquivalent_iff_tendsto_one (v := fun n : ℕ => (n : ℝ) ^ γ) ?_).2
-  · simpa [Nat.cast_add, Nat.cast_one] using
+  · simpa [Nat.cast_add, Nat.cast_one] using!
       (tendsto_natCast_add_rpow_div_rpow (β := γ) 1)
   · filter_upwards [eventually_ge_atTop 1] with n hn
     exact ne_of_gt (Real.rpow_pos_of_pos (by exact_mod_cast (show 0 < n by omega)) γ)

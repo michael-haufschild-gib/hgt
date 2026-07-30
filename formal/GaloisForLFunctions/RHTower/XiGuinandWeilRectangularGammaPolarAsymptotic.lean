@@ -111,6 +111,8 @@ theorem continuousOn_rectangularGammaMovingKernel_support
       Real.exp_lt_one_iff.mpr (by linarith)
     dsimp only [den]
     linarith
+  change ContinuousOn (fun t => rectangularGammaMovingKernel L a t)
+    (Icc (4 * (a - L)) (4 * a))
   simpa only [num, den, rectangularGammaMovingKernel] using hquot
 
 theorem integrableOn_rectangularGammaMovingKernel

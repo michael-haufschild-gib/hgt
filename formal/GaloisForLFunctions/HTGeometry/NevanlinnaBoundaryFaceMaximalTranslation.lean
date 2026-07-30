@@ -110,7 +110,7 @@ theorem barycenter_mem_closure_maximalTranslationFullRankWitness_inter_face
       BF.barycenter eta
     apply congrArg BF.barycenter
     apply ProbabilityMeasure.toMeasure_injective
-    simpa [carrier, density, zeroChart, mu] using
+    simpa [carrier, density, zeroChart, mu] using!
       (linftyDensityMeasure_linftyOne (eta : Measure (OnePoint ℝ)))
   have hzero : carrier zeroChart ∈ closure (carrier '' good) :=
     hcarrier.range_subset_closure_image_dense hlocal.1 ⟨zeroChart, rfl⟩

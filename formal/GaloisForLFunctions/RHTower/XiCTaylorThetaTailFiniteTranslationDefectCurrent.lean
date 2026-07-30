@@ -120,7 +120,7 @@ def thetaCuspTailPhaseTranslationPacketIntegratedNorm (d : ℕ) (z : ℂ) (a : �
 lemma continuous_eval_finitePositivePhaseTranslationPacket (d : ℕ) (z : ℂ) (a : ℝ) :
     Continuous (fun x : ℝ => (finitePositivePhaseTranslationPacket d x a).eval z) := by
   have hx := continuous_eval_finitePositivePhasePolynomial d z
-  simpa only [finitePositivePhaseTranslationPacket, eval_mul] using
+  simpa only [finitePositivePhaseTranslationPacket, eval_mul] using!
     hx.mul (continuous_const : Continuous (fun _ : ℝ =>
       (finitePositivePhasePolynomial d a).eval z))
 
@@ -128,7 +128,7 @@ lemma continuous_eval_derivative_finitePositivePhaseTranslationPacket (d : ℕ) 
     Continuous (fun x : ℝ => (finitePositivePhaseTranslationPacket d x a).derivative.eval z) := by
   have hx := continuous_eval_finitePositivePhasePolynomial d z
   have hdx := continuous_eval_derivative_finitePositivePhasePolynomial d z
-  simpa only [finitePositivePhaseTranslationPacket, derivative_mul, eval_add, eval_mul] using
+  simpa only [finitePositivePhaseTranslationPacket, derivative_mul, eval_add, eval_mul] using!
     (hdx.mul (continuous_const : Continuous (fun _ : ℝ =>
       (finitePositivePhasePolynomial d a).eval z))).add
       (hx.mul (continuous_const : Continuous (fun _ : ℝ =>
@@ -347,10 +347,10 @@ theorem abs_thetaCuspTailPhaseTranslationFullDefectIntegratedCurrent_le
     norm_thetaCuspTailPhaseTranslationEdgeAverage_le d z a
   have hED : ‖thetaCuspTailPhaseTranslationEdgeDerivativeAverage d z a‖ ≤ ED :=
     norm_thetaCuspTailPhaseTranslationEdgeDerivativeAverage_le d z a
-  have hPV0 : 0 ≤ PV := by dsimp [PV]; positivity
-  have hPD0 : 0 ≤ PD := by dsimp [PD]; positivity
-  have hEV0 : 0 ≤ EV := by dsimp [EV]; positivity
-  have hED0 : 0 ≤ ED := by dsimp [ED]; positivity
+  have hPV0 : 0 ≤ PV := (norm_nonneg _).trans hPV
+  have hPD0 : 0 ≤ PD := (norm_nonneg _).trans hPD
+  have hEV0 : 0 ≤ EV := (norm_nonneg _).trans hEV
+  have hED0 : 0 ≤ ED := (norm_nonneg _).trans hED
   have hA : |A| ≤ PD * EV := by
     dsimp [A]
     calc

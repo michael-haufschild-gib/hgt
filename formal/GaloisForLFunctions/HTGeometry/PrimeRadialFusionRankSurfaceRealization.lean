@@ -55,7 +55,9 @@ def primeRadialMonoidProfileAlgebra
     exfalso
     apply hnS
     have hadd : ij.1 + ij.2 ∈ S := S.add_mem (hu ij.1 hi) (hv ij.2 hj)
-    simpa [Finset.mem_antidiagonal.mp hij] using hadd
+    have hij' : ij.1 + ij.2 = n :=
+      Finset.HasAntidiagonal.mem_antidiagonal.mp hij
+    simpa [hij'] using hadd
   smul_mem' := by
     intro a u hu n hn
     by_contra hnS

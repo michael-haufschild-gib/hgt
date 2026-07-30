@@ -158,8 +158,8 @@ theorem summable_thetaPositiveProductFiberRealValueCorrelation
     simpa only [C] using
       (summable_mul_of_summable_norm hV.norm hstar)
   have hCre : Summable (fun q : ℕ × ℕ => (C q).re) := by
-    simpa only [Function.comp_apply] using
-      hC.map Complex.reCLM Complex.reCLM.continuous
+    exact (hC.map Complex.reCLM Complex.reCLM.continuous).congr
+      (fun q => rfl)
   have hfiber := hCre.hasSum.tsum_fiberwise thetaPositivePairProduct
   apply Summable.congr hfiber.summable
   intro k
@@ -181,8 +181,8 @@ theorem tsum_thetaPositiveProductFiberRealValueCorrelation_eq_normSq
     simpa only [C] using
       (summable_mul_of_summable_norm hV.norm hstar)
   have hCre : Summable (fun q : ℕ × ℕ => (C q).re) := by
-    simpa only [Function.comp_apply] using
-      hC.map Complex.reCLM Complex.reCLM.continuous
+    exact (hC.map Complex.reCLM Complex.reCLM.continuous).congr
+      (fun q => rfl)
   change (∑' k : ℕ, ∑ q ∈ thetaPositiveFactorPairs k, (C q).re) = _
   rw [← tsum_eq_tsum_thetaPositiveFactorPairs (fun q : ℕ × ℕ => (C q).re) hCre,
     ← Complex.re_tsum hC]

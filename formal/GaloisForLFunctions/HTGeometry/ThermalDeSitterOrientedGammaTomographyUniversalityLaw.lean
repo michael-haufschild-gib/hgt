@@ -77,7 +77,7 @@ theorem hypertranscendentalOver_thermalCFTResponse_mul_deSitterZeroModeCarrier
     have h := hypertranscendentalOver_gammaFintypeOrbitProductMero_of_pos
       (fun _ : Fin 1 => (((ell + 1 : ℕ) : ℂ)))
       (fun _ : Fin 1 => (2 : ℤ)) (by intro i; norm_num)
-    simpa [gammaFintypeOrbitProductMero] using h
+    simpa [gammaFintypeOrbitProductMero] using! h
   exact
     (HTGeometry.hypertranscendentalOver_mul_differentialAlgebraic_iff
       (differentialAlgebraicOver_physicalExponentialMero lambda)

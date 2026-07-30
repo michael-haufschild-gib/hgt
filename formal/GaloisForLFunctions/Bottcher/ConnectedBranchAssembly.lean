@@ -510,7 +510,7 @@ theorem global_branch_deriv_ne_zero_of_criticalValue_not_escape {c : ℂ} {β : 
   have hFder : HasDerivAt F
       (deriv (bottcherCoord c) ((quadratic c)^[n] z) *
         (∏ k ∈ Finset.range n, 2 * (quadratic c)^[k] z)) z := by
-    simpa [F, hFdef] using hbc.comp z hiter
+    simpa [F, hFdef] using! hbc.comp z hiter
   have hprod : (∏ k ∈ Finset.range n, 2 * (quadratic c)^[k] z) ≠ 0 := by
     rw [Finset.prod_ne_zero_iff]
     intro k hk
@@ -540,7 +540,7 @@ theorem global_branch_deriv_ne_zero_of_criticalValue_not_escape {c : ℂ} {β : 
   have hβder : HasDerivAt β (deriv β z) z :=
     (hβan z (hlevel_basin hzn)).differentiableAt.hasDerivAt
   have hGder : HasDerivAt G ((2 ^ n : ℕ) * (β z) ^ (2 ^ n - 1) * deriv β z) z := by
-    simpa [G, hGdef] using hβder.pow (2 ^ n)
+    simpa [G, hGdef] using! hβder.pow (2 ^ n)
   intro hzero
   have hGderiv_zero : deriv G z = 0 := by
     rw [hGder.deriv, hzero]
@@ -611,7 +611,7 @@ theorem isCompact_global_branch_preimage_of_norm_annulus {c : ℂ} {β : ℂ →
   have hcontBand : ContinuousOn β (greenBand c a b) :=
     (hβan.continuousOn).mono hbandBasin
   have hclosedPre : IsClosed ({z : ℂ | z ∈ greenBand c a b ∧ β z ∈ K}) := by
-    simpa [Set.inter_comm, Set.setOf_and] using
+    simpa [Set.inter_comm, Set.setOf_and] using!
       hcontBand.preimage_isClosed_of_isClosed hbandClosed hK.isClosed
   have hcompBandPre : IsCompact ({z : ℂ | z ∈ greenBand c a b ∧ β z ∈ K}) :=
     hbandCompact.of_isClosed_subset hclosedPre (by intro z hz; exact hz.1)

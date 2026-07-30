@@ -13,7 +13,7 @@ fiber.
 
 This module keeps the genuinely measure-theoretic input explicit: the required countable positive
 partition is an assumption, rather than being conflated with mathlib's weaker singleton-null
-`NoAtoms` predicate.
+`NullSingletonClass` predicate.
 -/
 
 namespace GaloisForLFunctions.HTGeometry

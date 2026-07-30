@@ -52,12 +52,18 @@ theorem mem_evenCentralSoninCarrier_iff_cutoffs_zero
         (K := centralPhysicalForbidden a)).mp
       unfold centralPhysicalForbidden
       rw [← indicatorCutoff_eq_physicalForbidden_starProjection]
-      simpa only [centralInterval] using congrArg Subtype.val hP
+      have hPval := congrArg (fun v : evenSubspace => (v : SoninL2)) hP
+      change indicatorCutoff (centralInterval a) (measurableSet_centralInterval a) f = 0
+        at hPval
+      exact hPval
     · apply (Submodule.starProjection_apply_eq_zero_iff
         (K := centralFourierForbidden a)).mp
       unfold centralFourierForbidden
       rw [← fourierCutoff_eq_fourierForbidden_starProjection]
-      simpa only [centralInterval] using congrArg Subtype.val hB
+      have hBval := congrArg (fun v : evenSubspace => (v : SoninL2)) hB
+      change fourierCutoff (centralInterval a) (measurableSet_centralInterval a) f = 0
+        at hBval
+      exact hBval
 
 /-- Cosine Fourier reflection preserves the even Sonin carrier. -/
 theorem evenFourierTransform_mem_evenCentralSoninCarrier
@@ -110,13 +116,17 @@ theorem evenFourierTransform_evenDilationSum
   have hforward :
       evenFourierTransform (evenDilationCLM r hr0 f) =
         evenDilationCLM r⁻¹ (inv_pos.mpr hr0) (evenFourierTransform f) := by
-    simpa only [evenDilationCLM] using
-      evenFourierTransform_evenDilation r hr0 f
+    change evenFourierTransform (evenDilationUnitary r hr0 f) =
+      evenDilationUnitary r⁻¹ (inv_pos.mpr hr0) (evenFourierTransform f)
+    exact evenFourierTransform_evenDilation r hr0 f
   have hinverse :
       evenFourierTransform
           (evenDilationCLM r⁻¹ (inv_pos.mpr hr0) f) =
         evenDilationCLM r hr0 (evenFourierTransform f) := by
-    simpa only [evenDilationCLM, inv_inv] using
+    change evenFourierTransform
+        (evenDilationUnitary r⁻¹ (inv_pos.mpr hr0) f) =
+      evenDilationUnitary r hr0 (evenFourierTransform f)
+    simpa only [inv_inv] using
       evenFourierTransform_evenDilation r⁻¹ (inv_pos.mpr hr0) f
   rw [evenDilationSum_eq]
   simp only [_root_.add_apply, evenFourierTransform.map_add]
@@ -160,7 +170,7 @@ theorem ccmCommutator_evenSoninApertureSymmetricSuccessiveLayerChannel_evenFouri
   let J := evenFourierTransform
   have hZ : Z * J = J * Z := by
     apply sub_eq_zero.mp
-    simpa only [Z, J] using
+    simpa only [ccmCommutator, Z, J] using
       ccmCommutator_evenSoninApertureSuccessiveLayerTransition_evenFourier
         a b c r hr
   have hZadj : ContinuousLinearMap.adjoint Z * J =
@@ -199,6 +209,10 @@ theorem evenFourierTransform_mul_evenDilationCLM
   intro f
   have h := evenFourierTransform_evenDilation r (zero_lt_one.trans hr) f
   rw [adjoint_evenDilationCLM]
+  change evenFourierTransform
+      (evenDilationUnitary r (zero_lt_one.trans hr) f) =
+    evenDilationUnitary r⁻¹ (inv_pos.mpr (zero_lt_one.trans hr))
+      (evenFourierTransform f)
   exact h
 
 theorem evenFourierTransform_mul_adjoint_evenDilationCLM
@@ -211,7 +225,10 @@ theorem evenFourierTransform_mul_adjoint_evenDilationCLM
   rw [adjoint_evenDilationCLM]
   have h := evenFourierTransform_evenDilation r⁻¹
     (inv_pos.mpr (zero_lt_one.trans hr)) f
-  simpa only [evenDilationCLM, inv_inv] using h
+  change evenFourierTransform
+      (evenDilationUnitary r⁻¹ (inv_pos.mpr (zero_lt_one.trans hr)) f) =
+    evenDilationUnitary r (zero_lt_one.trans hr) (evenFourierTransform f)
+  simpa only [inv_inv] using h
 
 /-- **Fourier-oddness of bilateral aperture holonomy.** -/
 theorem evenSoninBilateralApertureHolonomy_fourier_odd

@@ -42,7 +42,7 @@ theorem naturalFamilyShiftCode_injective (m : ℕ) :
 positive-definite Hankel ray, with every finite determinant strictly positive. -/
 theorem strictHankelRay_of_atomlessProbability_hamburgerMoments
     {s : ℕ → ℝ} (mu : Measure ℝ)
-    [IsProbabilityMeasure mu] [NoAtoms mu]
+    [IsProbabilityMeasure mu] [NullSingletonClass mu]
     (hmoments : HasHamburgerMoments s mu) :
     ∀ n : ℕ,
       (HTGeometry.momentHankelMatrix s n).PosDef ∧
@@ -217,7 +217,7 @@ theorem allFinitePatterns_relationFree_of_shiftPaletteEmbedding
   intro p shift coeff hrelation
   let q := remapFiniteDifferentialPattern e he p
   have hq := hfree q shift coeff (by
-    simpa [q, remapFiniteDifferentialPattern] using hrelation)
+    simpa [q, remapFiniteDifferentialPattern] using! hrelation)
   simpa [q, remapFiniteDifferentialPattern] using hq
 
 /-- Countable-palette coefficient rigidity excludes every mixed differential relation among an
@@ -270,7 +270,7 @@ theorem
     have hy : ∀ t : sigma, y (r, Fintype.equivFin sigma t) = x t := by
       intro t
       simpa [y, x, p, Q, shiftP, shiftCode, carrier, codedFamilyPatternOfRelation,
-        familyOrders] using
+        familyOrders] using!
         (F.weightedBoundaryCarrierExpandedPacketValue_eq_familyJetVec
           eta density packet shift r
           (⟨t.1, t.2⟩ : Σ _ : Fin m, Fin (n + 1)))
@@ -306,7 +306,7 @@ theorem
           patternCoeff b * z ^ patternDegree p b *
             (patternExponent p b).prod (fun t e => x t ^ e)) =
           MvPolynomial.eval (Sum.elim (fun _ => z) fun q => x ⟨q.1, q.2⟩) P := by
-            simpa [patternCoeff, p, Q] using
+            simpa [patternCoeff, p, Q] using!
               (codedFamilyPatternExpansion_eq_eval shiftCode hshiftCode P z x)
       _ = 0 := hPzero z hdomain
   have hcoeffZero := hfree p shiftP coeff hrelation
@@ -395,7 +395,7 @@ theorem singularContinuousCarrier_fullTranslationFamilyFreeness_denseResidual
         let carrier := weightedBoundaryCarrier F.base.toBoundaryFamily mu density
         LinftyStrictlyPositive mu density ∧
           ∫ t, density t ∂mu = 1 ∧
-          IsProbabilityMeasure carrier ∧ NoAtoms carrier ∧
+          IsProbabilityMeasure carrier ∧ NullSingletonClass carrier ∧
           carrier ⟂ₘ (volume : Measure ℝ) ∧
           MaximallySeparatedFromAbsolutelyContinuousProbabilities carrier ∧
           HasHamburgerMoments s carrier ∧
@@ -469,7 +469,7 @@ theorem singularContinuousCarrier_fullTranslationFamilyFreeness_denseResidual
   have hstructure := weightedBoundaryCarrier_singularContinuous_probability
     F.base.toBoundaryFamily eta hetaSC hnull density hpositive hintegral
   letI : IsProbabilityMeasure carrier := hstructure.1
-  letI : NoAtoms carrier := hstructure.2.1
+  letI : NullSingletonClass carrier := hstructure.2.1
   have hmaximalTV :=
     singularProbability_maximalTotalVariation_from_everyACProbability
       carrier hstructure.2.2.1

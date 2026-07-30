@@ -68,16 +68,20 @@ theorem intervalIntegral_gaussAmplitudeSegment
     rw [hseg]
     dsimp [F]
     have hcx : HasDerivAt (fun y : ℝ => c * y) c x := by
-      convert (hasDerivAt_id x).const_mul c using 1 <;> ring
+      convert! (hasDerivAt_id x).const_mul c using 1
+      ring
     have hcx1 : HasDerivAt (fun y : ℝ => c * (y - 1)) c x := by
-      convert ((hasDerivAt_id x).sub_const 1).const_mul c using 1 <;> ring
+      convert! ((hasDerivAt_id x).sub_const 1).const_mul c using 1
+      ring
     have hlin1 : HasDerivAt (fun y : ℝ => (1 - y) / c + 1 / c ^ 2) (-1 / c) x := by
-      convert (((hasDerivAt_const x 1).sub (hasDerivAt_id x)).div_const c).add_const
-        (1 / c ^ 2) using 1 <;> ring
+      convert! (((hasDerivAt_const x 1).sub (hasDerivAt_id x)).div_const c).add_const
+        (1 / c ^ 2) using 1
+      ring
     have hlin2 : HasDerivAt (fun y : ℝ => y / c - 1 / c ^ 2) (1 / c) x := by
-      convert (((hasDerivAt_id x).div_const c).sub_const (1 / c ^ 2)) using 1 <;> ring
-    convert ((hcx.exp.mul hlin1).add (hcx1.exp.mul hlin2)) using 1 <;>
-      field_simp [hc.ne'] <;> ring
+      convert! (((hasDerivAt_id x).div_const c).sub_const (1 / c ^ 2)) using 1
+    convert! ((hcx.exp.mul hlin1).add (hcx1.exp.mul hlin2)) using 1
+    field_simp [hc.ne']
+    ring
   rw [intervalIntegral.integral_eq_sub_of_hasDerivAt
     (fun x _ => hF x) ((continuous_gaussAmplitudeSegment p m).intervalIntegrable 0 1)]
   dsimp [F]

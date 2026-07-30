@@ -35,7 +35,7 @@ theorem meromorphicTrailingCoeffAt_simplePrimeDivisorContinuedSource
     meromorphicAt_logDeriv_regularizedRiemannZeta (shift p)
   have hlog : MeromorphicAt
       (fun s : ℂ => logDeriv regularizedRiemannZeta (s - 1 / 2)) p := by
-    simpa only [shift, Function.comp_apply] using
+    simpa only [shift, Function.comp_apply] using!
       MeromorphicAt.comp_analyticAt hbase hshift
   have hdsGlobal : Differentiable ℂ
       (fun s : ℂ => dslope regularizedRiemannZeta 1 (s - 1 / 2)) := by

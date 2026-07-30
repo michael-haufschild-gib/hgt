@@ -74,7 +74,7 @@ theorem tendsto_deriv_of_meromorphicAt_of_simplePoleResidue
       rw [(hUsub ht).1]
       ring)
     1
-  simpa [hgp] using hlim
+  simpa [hgp] using! hlim
 
 /-- Pole order of `f^i * (f')^j` when `f` has a simple pole. -/
 def firstOrderPoleWeight (p : ℕ × ℕ) : ℕ := p.1 + 2 * p.2
@@ -264,7 +264,11 @@ theorem firstOrderRowPolynomial_ne_zero {P : MvPolynomial (Fin 3) ℂ} (hP : P �
 theorem firstOrderRowSupport_nonempty {P : MvPolynomial (Fin 3) ℂ} (hP : P ≠ 0) :
     (firstOrderRowSupport P).Nonempty := by
   rw [firstOrderRowSupport, Finset.image_nonempty]
-  exact Finsupp.support_nonempty_iff.mpr (firstOrderRowPolynomial_ne_zero hP)
+  apply Finsupp.support_nonempty_iff.mpr
+  intro hcoeff
+  apply firstOrderRowPolynomial_ne_zero hP
+  apply AddMonoidAlgebra.coeff_injective
+  simpa using hcoeff
 
 theorem firstOrderRowCoefficient_ne_zero {P : MvPolynomial (Fin 3) ℂ}
     {p : ℕ × ℕ} (hp : p ∈ firstOrderRowSupport P) :

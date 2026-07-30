@@ -143,7 +143,7 @@ theorem primePowerCoefficientShiftedRotatedJet_tailIndependent_of_recurringPatte
         TailCoefficientIndependent raw :=
     tailCoefficientIndependent_scale_columns_iff raw u hu
   have hraw : TailCoefficientIndependent raw := by
-    simpa only [raw, coefficientShiftJet] using
+    simpa only [raw, coefficientShiftJet] using!
       coefficientShiftJet_tailIndependent_of_recurringPatternsSpan c
         (fun a p ↦ primeShiftFactor (alpha a) p) primeLogClock hspan m
         (primeFactorClockFiberIndependent alpha hdistinct m)
@@ -220,7 +220,7 @@ theorem primePowerCoefficientShiftPalettes_differentialIndependent_of_recurringP
     primePowerCoefficientShiftedJets_algebraicIndependent_of_recurringPatternsSpan
       J B c alpha hdistinct hspan (fun _ ↦ m)
   have hsub := hrect.comp f hf
-  simpa only [Function.comp_apply, f, y] using hsub
+  simpa only [Function.comp_apply, f, y] using! hsub
 
 /-- A valuation-pivot presentation controlled by infinitely recurring coefficient patterns rather
 than by finite coefficient range. -/
@@ -398,7 +398,7 @@ theorem PrimeValuationRecurringPivotPresentation.pivotPalette_differentialIndepe
     rfl
   have hsub := hraw.comp f hf
   simpa only [Function.comp_apply, B, a, f, y, primePowerSigmaExponent,
-    primePowerSigmaCoefficient, primePowerCoefficientShiftedRotatedJet] using hsub
+    primePowerSigmaCoefficient, primePowerCoefficientShiftedRotatedJet] using! hsub
 
 theorem PrimeValuationRecurringPivotPresentation.complete_relationIdeal
     {d : ℕ} {J R A : Fin d → Type u}

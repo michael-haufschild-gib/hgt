@@ -123,7 +123,7 @@ theorem algebraicIndependent_fractionPrimePowerColumns_over_commonKernel
     (fun i => primeCommonKernelDerivation q i)
     (fun i x y => map_add (primeCommonKernelDerivation q i) x y)
     (fun i x y => by
-      simpa only [Algebra.smul_def] using
+      simpa only [Algebra.smul_def] using!
         (primeCommonKernelDerivation q i).leibniz x y)
     (fun i c => (primeCommonKernelDerivation q i).map_algebraMap c)
     M hM ?_

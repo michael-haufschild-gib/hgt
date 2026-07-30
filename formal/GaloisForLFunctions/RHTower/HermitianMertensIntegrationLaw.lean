@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.DirichletLMixedAdditiveZeroAbscissaLaw
+import Mathlib.Data.Finset.NatAntidiagonal
 import Mathlib.RingTheory.PowerSeries.WellKnown
 
 /-!

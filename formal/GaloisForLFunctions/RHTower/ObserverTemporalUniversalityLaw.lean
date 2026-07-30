@@ -103,8 +103,8 @@ theorem projectiveMeasureExactReturn_translate_invariant
 
 /-- Every atomless state spectrum has an atomless energy-gap distribution. -/
 theorem spectralDifferenceMeasure_noAtoms
-    (mu : Measure ℝ) [NoAtoms mu] :
-    NoAtoms (spectralDifferenceMeasure mu) := by
+    (mu : Measure ℝ) [NullSingletonClass mu] :
+    NullSingletonClass (spectralDifferenceMeasure mu) := by
   rw [spectralDifferenceMeasure]
   exact noAtoms_map_prod_of_countable_fibers
     mu mu (fun p : ℝ × ℝ ↦ p.1 - p.2)
@@ -123,12 +123,12 @@ theorem spectralDifferenceMeasure_noAtoms
 energy-gap dimension, while every fixed positive-fidelity return set has
 zero asymptotic time density. -/
 theorem atomlessProjectiveObserverTemporalPhaseLaw
-    (mu : Measure ℝ) [IsProbabilityMeasure mu] [NoAtoms mu] :
+    (mu : Measure ℝ) [IsProbabilityMeasure mu] [NullSingletonClass mu] :
     projectiveObserverTemporalDimension mu = Cardinal.continuum ∧
       ∀ eta : ℝ, 0 < eta →
         Tendsto (highFidelityWindowDensity mu eta)
           atTop (𝓝 0) := by
-  haveI : NoAtoms (spectralDifferenceMeasure mu) :=
+  haveI : NullSingletonClass (spectralDifferenceMeasure mu) :=
     spectralDifferenceMeasure_noAtoms mu
   exact
     ⟨measureTemporalDimension_eq_continuum_of_noAtoms
@@ -145,7 +145,7 @@ returns. -/
 theorem dispersiveSpatialProjectiveObserverTemporalPhaseLaw
     {α β : Type*}
     [MeasurableSpace α] [MeasurableSpace β]
-    (mu : Measure α) (nu : Measure β) [NoAtoms nu]
+    (mu : Measure α) (nu : Measure β) [NullSingletonClass nu]
     (source : Measure (α × β))
     (hsource : source ≪ mu.prod nu)
     (dispersion : α × β → ℝ)
@@ -161,7 +161,7 @@ theorem dispersiveSpatialProjectiveObserverTemporalPhaseLaw
           (highFidelityWindowDensity
             (source.map dispersion) eta)
           atTop (𝓝 0) := by
-  letI : NoAtoms (source.map dispersion) :=
+  letI : NullSingletonClass (source.map dispersion) :=
     noAtoms_map_of_absolutelyContinuous_prod_of_countable_fibers
       mu nu source hsource dispersion hdispersion hfiber
   exact atomlessProjectiveObserverTemporalPhaseLaw
@@ -173,7 +173,7 @@ absolutely continuous with respect to an arbitrary mass law times an
 atomless momentum law. -/
 theorem relativisticSpatialProjectiveObserverTemporalPhaseLaw
     (massMeasure momentumMeasure : Measure ℝ)
-    [NoAtoms momentumMeasure]
+    [NullSingletonClass momentumMeasure]
     (source : Measure (ℝ × ℝ))
     (hsource :
       source ≪ massMeasure.prod momentumMeasure)
@@ -202,7 +202,7 @@ positive-fidelity returns. -/
 theorem stationarySchwartzObserverProjectiveTemporalPhaseLaw
     (Q : ContinuousSchwartzSesquilinearForm)
     (hQ : Q.MomentumSymmetric) (hQnonneg : Q.IsNonnegative)
-    [NoAtoms (Q.compactSpectralRieszMeasure hQ hQnonneg)]
+    [NullSingletonClass (Q.compactSpectralRieszMeasure hQ hQnonneg)]
     (probe : SchwartzMap ℝ ℂ)
     (hprobe :
       0 < (Q.fourierPullback probe probe).re) :
@@ -223,7 +223,7 @@ theorem stationarySchwartzObserverProjectiveTemporalPhaseLaw
   letI :
       (Q.compactSpectralRieszMeasure hQ hQnonneg).HasTemperateGrowth :=
     Q.compactSpectralRieszMeasure_hasTemperateGrowth hQ hQnonneg
-  letI : NoAtoms
+  letI : NullSingletonClass
       (schwartzObserverProbabilityMeasure
         (Q.compactSpectralRieszMeasure hQ hQnonneg) probe :
           Measure ℝ) :=
@@ -463,7 +463,7 @@ theorem oneStationarySpectrum_twoObserverTemporalDimensions :
             observerPhaseSeparatedSpectrum
             dispersivePhaseObserverProbe : Measure ℝ) =
         Cardinal.continuum := by
-    haveI : NoAtoms
+    haveI : NullSingletonClass
         (schwartzObserverProbabilityMeasure
           observerPhaseSeparatedSpectrum
           dispersivePhaseObserverProbe : Measure ℝ) := by
@@ -494,7 +494,7 @@ theorem universalObserverTemporalPhaseClassification
           measureVisibleFrequencyGroup
               (spectralDifferenceMeasure mu) =
             AddSubgroup.zmultiples omega) ∧
-      (NoAtoms mu →
+      (NullSingletonClass mu →
         projectiveObserverTemporalDimension mu =
             Cardinal.continuum ∧
           ∀ eta : ℝ, 0 < eta →
@@ -506,7 +506,7 @@ theorem universalObserverTemporalPhaseClassification
       exists_positive_unitFidelity_iff_cyclic mu,
       ?_⟩
   intro hNoAtoms
-  letI : NoAtoms mu := hNoAtoms
+  letI : NullSingletonClass mu := hNoAtoms
   exact atomlessProjectiveObserverTemporalPhaseLaw mu
 
 end RHTower

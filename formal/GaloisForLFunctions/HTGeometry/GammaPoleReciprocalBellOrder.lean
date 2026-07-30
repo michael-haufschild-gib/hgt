@@ -259,7 +259,8 @@ theorem inverseSectionJetEval_gammaPole_eventuallyEq_covariant
     nhdsWithin_le_nhds hS.eventually_analyticAt
   filter_upwards [hSan, gammaPoleSimpleZeroSection_eventually_ne_zero branch]
       with x hSx hSx0
-  simpa [simpleZeroCovariantSectionEval] using
+  simpa [simpleZeroCovariantSectionEval, gammaSimpleZeroCovariantEval,
+    gammaSimpleZeroCovariantJet] using
     inverseSectionJetEval_eq_covariant hSx hSx0 hP
 
 theorem meromorphicOrderAt_inv_gammaPoleSimpleZeroSection (branch : ℕ) :
@@ -619,7 +620,8 @@ theorem reciprocalBellFockTransform_eq_of_isHomogeneous
   change MvPolynomial.eval₂ f (fun j => Polynomial.X * g j) P = _ at hscale
   change MvPolynomial.eval₂ f (fun j => Polynomial.X * g j) P = _
   rw [hscale]
-  congr 1
+  apply congrArg (fun Q : Polynomial (MvPolynomial (Fin (n + 1)) ℂ) =>
+    Polynomial.X ^ D * Q)
   let lhs : MvPolynomial (Fin (n + 2)) ℂ →+*
       Polynomial (MvPolynomial (Fin (n + 1)) ℂ) :=
     MvPolynomial.eval₂Hom f g
@@ -777,8 +779,11 @@ theorem tendsto_scale_inv_gammaPoleSimpleZeroSection (branch : ℕ) :
     field_simp [hx0, hUx]
   have hlim : Tendsto (fun x => -gammaPoleRegularUnit branch x)
       (𝓝[≠] 0) (𝓝 (-1 : ℂ)) := by
-    simpa [gammaPoleRegularUnit_zero] using
-      hUan.continuousAt.neg.tendsto.mono_left inf_le_left
+    have hlimU : Tendsto (gammaPoleRegularUnit branch)
+        (𝓝[≠] 0) (𝓝 (1 : ℂ)) := by
+      simpa [gammaPoleRegularUnit_zero] using
+        hUan.continuousAt.tendsto.mono_left nhdsWithin_le_nhds
+    exact hlimU.neg
   exact hlim.congr' hev.symm
 
 /-- **Homogeneous reciprocal-Bell top-residue reflection.**  The exact

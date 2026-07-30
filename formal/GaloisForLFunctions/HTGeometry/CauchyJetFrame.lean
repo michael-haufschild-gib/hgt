@@ -115,8 +115,10 @@ theorem hasDerivAt_resolventPowerTransform
     exact hbase.pow r
   have hraw := hasDerivAt_integral_of_dominated_loc_of_deriv_le hs_a hmeas
     (integrable_resolvent_pow ha r) (by fun_prop) hbound (by fun_prop) hderiv
-  rw [resolventPowerTransform]
-  convert hraw.2 using 1
+  change HasDerivAt
+    (fun w : ℂ => ∫ x : ℝ, resolvent w x ^ r ∂μ)
+    ((r : ℂ) * ∫ x : ℝ, resolvent a x ^ (r + 1) ∂μ) a
+  apply hraw.2.congr_deriv
   rw [integral_const_mul]
 
 /-- The normalized all-order Cauchy-jet function. -/
@@ -130,9 +132,12 @@ theorem hasDerivAt_cauchyJetFunction
     HasDerivAt (cauchyJetFunction μ n) (cauchyJetFunction μ (n + 1) a) a := by
   have h := HasDerivAt.const_mul (n.factorial : ℂ)
     (hasDerivAt_resolventPowerTransform (μ := μ) (n + 1) (by omega) a ha)
-  unfold cauchyJetFunction
-  convert h using 1
-  simp [Nat.factorial_succ]
+  change HasDerivAt
+    (fun y : ℂ => (n.factorial : ℂ) * resolventPowerTransform μ (n + 1) y)
+    (((n + 1).factorial : ℂ) * resolventPowerTransform μ (n + 1 + 1) a) a
+  apply h.congr_deriv
+  rw [Nat.factorial_succ]
+  push_cast
   ring
 
 /-- The all-order derivative formula for the resolvent transform of a finite real measure. -/

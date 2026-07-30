@@ -141,11 +141,13 @@ theorem gammaPoleSymbolicCenterUniversalJetLaurentEval_factor
       (fun j : Fin (n + 1) =>
         gammaPoleSymbolicUniversalDerivativeLaurentProfile (j : ℕ)) P = _
   simp_rw [gammaPoleSymbolicUniversalDerivativeLaurentProfile_factor]
-  exact isHomogeneous_eval₂_scale_general hD
-    gammaPoleSymbolicCenterCoefficientInclude
-    (fun j : Fin (n + 1) =>
-      gammaPoleSymbolicUniversalRegularDerivativeLaurentProfile (j : ℕ))
-    (LaurentPolynomial.T 1)
+  simpa only [gammaPoleSymbolicCenterUniversalRegularJetLaurentEval,
+    MvPolynomial.coe_eval₂Hom] using
+    isHomogeneous_eval₂_scale_general (P := P) hD
+      gammaPoleSymbolicCenterCoefficientInclude
+      (fun j : Fin (n + 1) =>
+        gammaPoleSymbolicUniversalRegularDerivativeLaurentProfile (j : ℕ))
+      (LaurentPolynomial.T 1)
 
 def gammaPoleSymbolicCenterUniversalRegularPolynomialEval (n : ℕ) :
     MvPolynomial (Fin (n + 1)) (Polynomial ℂ) →+*
@@ -215,12 +217,12 @@ theorem gammaPoleSymbolicCenterUniversalRegularPolynomialEval_eval_zero
 
 theorem gammaPoleSymbolicCenterUniversalRegularJetLaurentEval_coeff_zero
     (n : ℕ) (P : MvPolynomial (Fin (n + 1)) (Polynomial ℂ)) :
-    gammaPoleSymbolicCenterUniversalRegularJetLaurentEval n P 0 =
+    (gammaPoleSymbolicCenterUniversalRegularJetLaurentEval n P).coeff 0 =
       LaurentPolynomial.C (gammaPoleCenterBoundaryPolynomialEval n P) := by
   rw [gammaPoleSymbolicCenterUniversalRegularJetLaurentEval_eq,
     Polynomial.toLaurent_apply]
   change Finsupp.mapDomain (fun q : ℕ => (q : ℤ))
-      (gammaPoleSymbolicCenterUniversalRegularPolynomialEval n P).toFinsupp
+      (gammaPoleSymbolicCenterUniversalRegularPolynomialEval n P).toFinsupp.coeff
         ((0 : ℕ) : ℤ) = _
   have hinj : Function.Injective (fun q : ℕ => (q : ℤ)) :=
     Int.ofNat_injective
@@ -234,22 +236,15 @@ trace over the rational pole-position field. -/
 theorem gammaPoleSymbolicCenterUniversalJetLaurentEval_coeff_particleNumber
     {n D : ℕ} {P : MvPolynomial (Fin (n + 1)) (Polynomial ℂ)}
     (hD : P.IsHomogeneous D) :
-    gammaPoleSymbolicCenterUniversalJetLaurentEval n P (D : ℤ) =
+    (gammaPoleSymbolicCenterUniversalJetLaurentEval n P).coeff (D : ℤ) =
       LaurentPolynomial.C (gammaPoleCenterBoundaryPolynomialEval n P) := by
   rw [gammaPoleSymbolicCenterUniversalJetLaurentEval_factor hD,
     LaurentPolynomial.T_pow]
   simp only [Int.mul_one]
   have hsingle :
       (LaurentPolynomial.T (D : ℤ) : GammaPoleMovingJetSymbolic) =
-        Finsupp.single (D : ℤ) 1 := by
-    calc
-      LaurentPolynomial.T (D : ℤ) =
-          LaurentPolynomial.C (1 : GammaPoleScaleDerivativeSymbolic) *
-            LaurentPolynomial.T (D : ℤ) := by simp
-      _ = Finsupp.single (D : ℤ) 1 :=
-        (LaurentPolynomial.single_eq_C_mul_T
-          (1 : GammaPoleScaleDerivativeSymbolic) (D : ℤ)).symm
-  rw [hsingle, AddMonoidAlgebra.single_mul_apply]
+        AddMonoidAlgebra.single (D : ℤ) 1 := rfl
+  rw [hsingle, AddMonoidAlgebra.coeff_single_mul_apply]
   simp only [one_mul, neg_add_cancel]
   exact gammaPoleSymbolicCenterUniversalRegularJetLaurentEval_coeff_zero n P
 
@@ -261,14 +256,14 @@ theorem gammaPoleSymbolicCenterJetLaurentEval_coeff_particleNumber
     (hD : P.IsHomogeneous D)
     (hW : MvPolynomial.IsWeightedHomogeneous
       gammaPoleSourceDerivativeWeight P W) :
-    gammaPoleSymbolicCenterJetLaurentEval n P (D : ℤ) =
+    (gammaPoleSymbolicCenterJetLaurentEval n P).coeff (D : ℤ) =
       gammaPoleSymbolicBiscaleFactor D W *
         LaurentPolynomial.C (gammaPoleCenterBoundaryPolynomialEval n P) := by
   rw [gammaPoleSymbolicCenterJetLaurentEval_biscale_factor hD hW,
     gammaPoleSymbolicBiscaleFactor_outer_eq,
     ← LaurentPolynomial.smul_eq_C_mul]
   change gammaPoleSymbolicBiscaleFactor D W *
-      (gammaPoleSymbolicCenterUniversalJetLaurentEval n P (D : ℤ)) = _
+      (gammaPoleSymbolicCenterUniversalJetLaurentEval n P).coeff (D : ℤ) = _
   rw [gammaPoleSymbolicCenterUniversalJetLaurentEval_coeff_particleNumber hD]
 
 theorem gammaPoleSymbolicBiscaleFactor_eq (D W : ℕ) :
@@ -318,7 +313,7 @@ theorem gammaPoleSymbolicCenterJetLaurentEval_particle_derivative_coeff
     (hD : P.IsHomogeneous D)
     (hW : MvPolynomial.IsWeightedHomogeneous
       gammaPoleSourceDerivativeWeight P W) :
-    (gammaPoleSymbolicCenterJetLaurentEval n P (D : ℤ)) (-(W : ℤ)) =
+    ((gammaPoleSymbolicCenterJetLaurentEval n P).coeff (D : ℤ)).coeff (-(W : ℤ)) =
       MvPolynomial.C (RatFunc.C ((-1 : ℂ) ^ (D + W))) *
         gammaPoleCenterBoundaryPolynomialEval n P := by
   rw [gammaPoleSymbolicCenterJetLaurentEval_coeff_particleNumber hD hW,
@@ -335,7 +330,7 @@ theorem gammaPoleSymbolicCenterJetLaurentEval_particle_derivative_coeff
           LaurentPolynomial.T (-(W : ℤ)) := by
     rw [mul_right_comm, ← map_mul]
   rw [heq, ← LaurentPolynomial.single_eq_C_mul_T,
-    Finsupp.single_eq_same]
+    AddMonoidAlgebra.coeff_single, Finsupp.single_eq_same]
 
 /-- The center-frozen maximal-weight diagonal of a nonzero homogeneous source
 sector cannot vanish. -/
@@ -346,7 +341,7 @@ theorem gammaPoleSymbolicCenterJetLaurentEval_particle_derivative_coeff_ne_zero
     (hW : MvPolynomial.IsWeightedHomogeneous
       gammaPoleSourceDerivativeWeight P W)
     (hP : P ≠ 0) :
-    (gammaPoleSymbolicCenterJetLaurentEval n P (D : ℤ)) (-(W : ℤ)) ≠ 0 := by
+    ((gammaPoleSymbolicCenterJetLaurentEval n P).coeff (D : ℤ)).coeff (-(W : ℤ)) ≠ 0 := by
   rw [gammaPoleSymbolicCenterJetLaurentEval_particle_derivative_coeff hD hW]
   have hscalar :
       (MvPolynomial.C (RatFunc.C ((-1 : ℂ) ^ (D + W))) :

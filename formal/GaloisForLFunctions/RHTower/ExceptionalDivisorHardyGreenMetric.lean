@@ -49,25 +49,25 @@ theorem finiteOfflineCauchyEnergy_one_eq_exceptionalHardyGreenEnergy
 theorem hasDerivAt_exceptionalJensenCharge_zero :
     HasDerivAt exceptionalJensenCharge 2 0 := by
   have hnum : HasDerivAt (fun a : ℝ => 1 + a) 1 0 := by
-    simpa using (hasDerivAt_const (x := (0 : ℝ)) (c := (1 : ℝ))).add (hasDerivAt_id 0)
+    simpa using! (hasDerivAt_const (x := (0 : ℝ)) (c := (1 : ℝ))).add (hasDerivAt_id 0)
   have hden : HasDerivAt (fun a : ℝ => 1 - a) (-1) 0 := by
-    simpa using (hasDerivAt_const (x := (0 : ℝ)) (c := (1 : ℝ))).sub (hasDerivAt_id 0)
+    simpa using! (hasDerivAt_const (x := (0 : ℝ)) (c := (1 : ℝ))).sub (hasDerivAt_id 0)
   have hquot : HasDerivAt (fun a : ℝ => (1 + a) / (1 - a)) 2 0 := by
-    convert hnum.div hden (by norm_num) using 1
+    convert! hnum.div hden (by norm_num) using 1
     all_goals norm_num
-  simpa [exceptionalJensenCharge] using
+  simpa [exceptionalJensenCharge] using!
     (Real.hasDerivAt_log (by norm_num : ((1 + (0 : ℝ)) / (1 - 0)) ≠ 0)).comp 0 hquot
 
 /-- Ordinary Jensen charge vanishes at the exceptional boundary. -/
 theorem tendsto_exceptionalJensenCharge_nhdsGT_zero :
     Tendsto exceptionalJensenCharge (𝓝[>] (0 : ℝ)) (𝓝 0) := by
-  simpa [exceptionalJensenCharge] using
+  simpa [exceptionalJensenCharge] using!
     hasDerivAt_exceptionalJensenCharge_zero.continuousAt.tendsto.mono_left inf_le_left
 
 /-- Hardy--Green energy diverges at the exceptional boundary. -/
 theorem tendsto_exceptionalHardyGreenEnergy_nhdsGT_zero :
     Tendsto exceptionalHardyGreenEnergy (𝓝[>] (0 : ℝ)) atTop := by
-  simpa [exceptionalHardyGreenEnergy, div_eq_mul_inv] using
+  simpa [exceptionalHardyGreenEnergy, div_eq_mul_inv] using!
     tendsto_inv_nhdsGT_zero.const_mul_atTop (by norm_num : (0 : ℝ) < 2)
 
 /-- The Hardy--Green and Jensen metrics are asymptotic duals with product constant four. -/

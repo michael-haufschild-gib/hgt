@@ -212,7 +212,7 @@ theorem coordinatewiseMutuallyDifferentialAlgebraic_preserves_fin_succ
           cases a
           cases b
           rfl)
-        simpa using h
+        simpa using! h
       have hxNot : ¬ DifferentialAlgebraicOver F (x 0) := by
         intro hxDA
         have hyDA : DifferentialAlgebraicOver F (y 0) :=
@@ -295,7 +295,7 @@ theorem coordinatewiseMutuallyDifferentialAlgebraic_preserves_fin_succ
             cases a
             cases b
             rfl)
-          simpa [FY, yLast, yInit] using h
+          simpa [FY, yLast, yInit] using! h
         exact hyLastFY hyLastUnit
       have hxLastUnit : DifferentialIndependent FX (fun _ : Unit => xLast) :=
         Classical.not_not.mp hxLastNot
@@ -303,7 +303,7 @@ theorem coordinatewiseMutuallyDifferentialAlgebraic_preserves_fin_succ
         have h := hxLastUnit.comp (fun _ : Fin 1 => ()) (by
           intro i j hij
           exact Subsingleton.elim i j)
-        simpa using h
+        simpa using! h
       exact (differentialIndependent_fin_succ_iff x).mpr ⟨hxInit, by
         simpa [FX, xInit, xLast] using hxLastFin⟩
 
@@ -1083,7 +1083,7 @@ theorem no_finitePole_solution_constantCoeffDifferentialOperator_inv
   · have hinvMero : MeromorphicAt (fun w : ℂ => w⁻¹) 0 := by fun_prop
     have hinvOrder : meromorphicOrderAt (fun w : ℂ => w⁻¹) 0 =
         ((-1 : ℤ) : WithTop ℤ) := by
-      simpa [zpow_neg_one, sub_zero] using
+      simpa [zpow_neg_one, sub_zero] using!
         (meromorphicOrderAt_zpow_id_sub_const (𝕜 := ℂ) (x := 0) (n := (-1 : ℤ)))
     rw [meromorphicOrderAt_constantCoeffDifferentialOperator_of_simplePole
       hL hinvMero hinvOrder]

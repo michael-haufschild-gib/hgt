@@ -171,7 +171,7 @@ lemma restoration_branch_differentiableOn (K : ℕ) (p : ℂ) (n : ℕ) :
       HurwitzN2BlockAnalytic.region := by
   intro z _
   have ha : DifferentiableAt ℂ (fun w => -(n : ℂ) + Complex.exp w) z := by fun_prop
-  simpa only [Function.comp_apply] using
+  simpa only [Function.comp_apply] using!
     ((restoration_differentiable K p).differentiableAt.comp z ha).differentiableWithinAt
 
 /-- The infinite regularized tail in the branch model is holomorphic on the full logarithmic
@@ -308,7 +308,7 @@ theorem continuedRegular_differentiableOn (s : ℂ) (k n : ℕ) :
   have htail := continuedRegularTail_differentiableOn s k n
   have hrest := restoration_branch_differentiableOn K p n
   have h := ((hhead.sub hsing).add htail).add hrest
-  simpa only [continuedRegular, p, K, head] using h
+  simpa only [continuedRegular, p, K, head] using! h
 
 /-- The unrestricted local deformation model is holomorphic on the full logarithmic region. -/
 theorem continuedDmodel_differentiableOn (s : ℂ) {M : ℕ}

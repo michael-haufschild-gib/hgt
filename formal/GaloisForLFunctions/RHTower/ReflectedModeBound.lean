@@ -36,20 +36,20 @@ theorem reflected_per_mode_bound {N : ℕ} (hN : 1 ≤ N) {σ τ : ℝ} (hσ : -
   have hwD : ∀ x ∈ Set.uIcc (1 : ℝ) (N : ℝ), HasDerivAt w (w' x) x := by
     intro x hx
     have := ((Real.hasDerivAt_log (hxne x hx)).const_mul (-σ - 2)).exp
-    simpa [hw_def, hw'_def, mul_comm] using this
+    simpa [hw_def, hw'_def, mul_comm] using! this
   have hgD : ∀ x ∈ Set.uIcc (1 : ℝ) (N : ℝ), HasDerivAt g (g' x) x := by
     intro x hx
     have h1 : HasDerivAt (fun y : ℝ => (2 * π * (n : ℝ)) * y) (2 * π * (n : ℝ)) x := by
-      simpa using (hasDerivAt_id x).const_mul (2 * π * (n : ℝ))
+      simpa using! (hasDerivAt_id x).const_mul (2 * π * (n : ℝ))
     have h2 : HasDerivAt (fun y : ℝ => τ * Real.log y) (τ * x⁻¹) x :=
       (Real.hasDerivAt_log (hxne x hx)).const_mul τ
-    simpa [hg_def, hg'_def] using h1.sub h2
+    simpa [hg_def, hg'_def] using! h1.sub h2
   have hg'D : ∀ x ∈ Set.uIcc (1 : ℝ) (N : ℝ), HasDerivAt g' (g'' x) x := by
     intro x hx
     have hinv : HasDerivAt (fun y : ℝ => y⁻¹) (-(x ^ 2)⁻¹) x := hasDerivAt_inv (hxne x hx)
     have h2 : HasDerivAt (fun y : ℝ => τ * y⁻¹) (τ * -(x ^ 2)⁻¹) x := hinv.const_mul τ
     have := (hasDerivAt_const x (2 * π * (n : ℝ))).sub h2
-    simpa [hg'_def, hg''_def, mul_neg] using this
+    simpa [hg'_def, hg''_def, mul_neg] using! this
   -- continuity of w', g''
   have hcont_wg : ContinuousOn (fun x : ℝ => x⁻¹) (Set.uIcc (1 : ℝ) (N : ℝ)) :=
     ContinuousOn.inv₀ continuousOn_id (fun x hx => hxne x hx)

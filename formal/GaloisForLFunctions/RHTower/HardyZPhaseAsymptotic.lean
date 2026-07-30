@@ -61,13 +61,18 @@ theorem hasDerivAt_gammaHardyPhaseRate (t : ℝ) :
       (deriv Complex.digamma (linePt t / 2) * (I / 2)) t := by
     simpa [Function.comp_def, mul_comm] using hcomp.hasDerivAt
   have hre := Complex.reCLM.hasFDerivAt.comp_hasDerivAt t hpsi
-  unfold gammaHardyPhaseRate
-  convert (hre.div_const 2).sub_const (Real.log Real.pi / 2) using 1
-  change -(deriv Complex.digamma (linePt t / 2)).im / 4 =
-    (deriv Complex.digamma (linePt t / 2) * (I / 2)).re / 2
-  rw [Complex.mul_re]
-  simp
-  ring
+  have hre' : HasDerivAt
+      (fun u : ℝ => (Complex.digamma (linePt u / 2)).re)
+      (deriv Complex.digamma (linePt t / 2) * (I / 2)).re t := by
+    simpa only [Function.comp_apply] using! hre
+  have hcoeff :
+      (deriv Complex.digamma (linePt t / 2) * (I / 2)).re / 2 =
+        -(deriv Complex.digamma (linePt t / 2)).im / 4 := by
+    rw [Complex.mul_re]
+    simp
+    ring
+  simpa only [gammaHardyPhaseRate, hcoeff] using!
+    (hre'.div_const 2).sub_const (Real.log Real.pi / 2)
 
 /-- The exact derivative form of the second-jet law. -/
 theorem deriv_gammaHardyPhaseRate (t : ℝ) :
@@ -315,14 +320,23 @@ private theorem hasDerivAt_gammaHardyPhaseGauge (τ : ℝ) :
     HasDerivAt gammaHardyPhaseGauge 0 τ := by
   have hthetaC : HasDerivAt (fun u : ℝ => (gammaHardyTheta u : ℂ))
       (gammaHardyPhaseRate τ : ℂ) τ := by
-    simpa using Complex.ofRealCLM.hasFDerivAt.comp_hasDerivAt τ
+    simpa using! Complex.ofRealCLM.hasFDerivAt.comp_hasDerivAt τ
       (hasDerivAt_gammaHardyTheta τ)
   have hinner : HasDerivAt (fun u : ℝ => I * (gammaHardyTheta u : ℂ))
       (I * (gammaHardyPhaseRate τ : ℂ)) τ := hthetaC.const_mul I
   have hexp := hinner.cexp
   have hprod := (hasDerivAt_gammaHardyPhase τ).mul hexp
+  have hprod' : HasDerivAt
+      (fun u : ℝ =>
+        gammaHardyPhase u * Complex.exp (I * (gammaHardyTheta u : ℂ)))
+      ((-I * (gammaHardyPhaseRate τ : ℂ)) * gammaHardyPhase τ *
+          Complex.exp (I * (gammaHardyTheta τ : ℂ)) +
+        gammaHardyPhase τ *
+          (Complex.exp (I * (gammaHardyTheta τ : ℂ)) *
+            (I * (gammaHardyPhaseRate τ : ℂ)))) τ := by
+    simpa only [Pi.mul_apply] using! hprod
   unfold gammaHardyPhaseGauge
-  convert hprod using 1
+  convert hprod' using 1
   ring
 
 private theorem differentiable_gammaHardyPhaseGauge :
@@ -447,12 +461,12 @@ theorem deriv_gammaPhaseReflected_eq_exp_neg_theta_mul
   have hA : Differentiable ℝ A :=
     differentiable_phaseHalvedAmplitude differentiable_gammaHardyPhase hdiff
   have hAC : HasDerivAt (fun u : ℝ => (A u : ℂ)) ((deriv A t : ℝ) : ℂ) t := by
-    simpa using Complex.ofRealCLM.hasFDerivAt.comp_hasDerivAt t (hA t).hasDerivAt
+    simpa using! Complex.ofRealCLM.hasFDerivAt.comp_hasDerivAt t (hA t).hasDerivAt
   have hprod := (hasDerivAt_gammaHardyPhase t).mul hAC
   have hprod' : HasDerivAt (fun u => gammaHardyPhase u * (A u : ℂ))
       ((-I * (gammaHardyPhaseRate t : ℂ)) * gammaHardyPhase t * (A t : ℂ) +
         gammaHardyPhase t * ((deriv A t : ℝ) : ℂ)) t := by
-    simpa only [Pi.mul_apply] using hprod
+    simpa only [Pi.mul_apply] using! hprod
   have hfun : z = fun u => gammaHardyPhase u * (A u : ℂ) := by
     funext u
     exact (hz u).eq_phase_mul_amplitude (gammaHardyPhase_isUnitary u)
@@ -884,11 +898,19 @@ theorem hasDerivAt_gammaHardyThetaMain {t : ℝ} (ht : 0 < t) :
   have hlog := (Real.hasDerivAt_log (div_ne_zero ht.ne' hden)).comp t harg
   have hprod := ((hasDerivAt_id t).div_const 2).mul hlog
   have hlinear := (hasDerivAt_id t).div_const 2
-  unfold gammaHardyThetaMain
-  convert hprod.sub hlinear using 1
-  simp only [Function.comp_apply, id_eq]
-  field_simp [ht.ne', hden]
-  ring
+  have hraw : HasDerivAt
+      (fun u : ℝ => u / 2 * Real.log (u / (2 * Real.pi)) - u / 2)
+      (1 / 2 * Real.log (t / (2 * Real.pi)) +
+        t / 2 * ((t / (2 * Real.pi))⁻¹ * (1 / (2 * Real.pi))) - 1 / 2) t := by
+    simpa only [Function.comp_apply, id_eq, Pi.mul_apply, Pi.sub_apply] using!
+      hprod.sub hlinear
+  have hcoeff :
+      1 / 2 * Real.log (t / (2 * Real.pi)) +
+          t / 2 * ((t / (2 * Real.pi))⁻¹ * (1 / (2 * Real.pi))) - 1 / 2 =
+        Real.log (t / (2 * Real.pi)) / 2 := by
+    field_simp [ht.ne', hden]
+    ring
+  simpa only [gammaHardyThetaMain, hcoeff] using! hraw
 
 /-- **Classical Riemann--Siegel phase-value asymptotic.**  Integrating the exact velocity
 asymptotic shows that the global branch-free phase differs from its leading model by `o(t)`. -/

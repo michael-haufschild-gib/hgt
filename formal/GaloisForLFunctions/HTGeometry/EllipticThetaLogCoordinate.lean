@@ -51,7 +51,7 @@ theorem analyticAt_ellipticThetaCoordinate (τ z : ℂ) :
   have hconst : AnalyticAt ℂ (fun _ : ℂ => -Complex.exp (Real.pi * I * τ)) z :=
     analyticAt_const
   have hmul := hconst.mul hexp
-  simpa [ellipticThetaCoordinate, Function.comp_def] using hmul
+  simpa [ellipticThetaCoordinate, Function.comp_def] using! hmul
 
 theorem ellipticThetaCoordinate_add_one (τ z : ℂ) :
     ellipticThetaCoordinate τ (z + 1) = ellipticThetaCoordinate τ z := by

@@ -88,7 +88,7 @@ theorem false_of_meromorphicAt_of_positive_sqrt_scaled_boundary
     rfl
   have hlin : MeromorphicAt (fun z : ℂ => z - (p : ℂ)) p := by fun_prop
   have hF : MeromorphicAt F p := by
-    simpa only [F, Pi.mul_apply, Pi.pow_apply] using hlin.mul (hf.pow 2)
+    simpa only [F, Pi.mul_apply, Pi.pow_apply] using! hlin.mul (hf.pow 2)
   have hlimit_ne : c ≠ 0 := by
     dsimp only [c]
     exact Complex.ofReal_ne_zero.mpr
@@ -115,4 +115,3 @@ theorem false_of_meromorphicAt_of_positive_sqrt_scaled_boundary
 end
 
 end GaloisForLFunctions.HTGeometry
-

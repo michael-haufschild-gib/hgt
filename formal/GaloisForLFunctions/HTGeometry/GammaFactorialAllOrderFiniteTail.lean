@@ -224,6 +224,8 @@ theorem tendsto_gammaFactorialEvenPolygamma_regular_finiteTail
     dsimp only [m]
     rw [hm1]
     ring
+  · have hm2 : m - 1 = 2 * r + 1 := by omega
+    rw [hm2]
 
 /-- **All-order even finite-tail residue.**  After the reciprocal principal jet and bounded zeta
 layer both cancel, magnification by `(n+1)^m` leaves `-(m-1)!`. -/

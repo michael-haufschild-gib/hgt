@@ -150,7 +150,7 @@ theorem algebraicIndependent_gammaPoleLogDerivativeGerm_over_ratFunc_fin
     AlgebraicIndependent GammaPoleRationalBase
       (fun j : Fin m => gammaPoleLogDerivativeGerm (j : ℕ)) := by
   rw [algebraicIndependent_iff_injective_aeval]
-  simpa [gammaPoleLogDerivativeRationalEval, MvPolynomial.aeval_def] using
+  simpa [gammaPoleLogDerivativeRationalEval, MvPolynomial.aeval_def] using!
     gammaPoleLogDerivativeRationalEval_injective m
 
 /-- **Relative Gamma pole-log freeness.**  The complete logarithmic jet family is countably

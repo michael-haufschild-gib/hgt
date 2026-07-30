@@ -418,7 +418,7 @@ theorem tendsto_eulerSquarefreeAffineCriticalClockProbabilityMeasure :
       |>.continuousAt.tendsto.comp hprod
   rw [map_exponential_prod_residual_zero_add] at hadd
   simpa [eulerSquarefreeAffineCriticalClockProbabilityMeasure,
-    eulerSquarefreeAffineCriticalClockPairProbabilityMeasure] using hadd
+    eulerSquarefreeAffineCriticalClockPairProbabilityMeasure] using! hadd
 
 /-- Normalized logarithmic moment of the residual square coordinate. -/
 def eulerSquareResidualLogMoment (k : ℕ) (sigma : ℝ) : ℝ :=
@@ -625,7 +625,7 @@ private theorem ae_eulerSquareResidualCriticalClock_nonneg
     ∀ᵐ y ∂(eulerSquareResidualCriticalClockProbabilityMeasure sigma : Measure ℝ),
       0 ≤ y := by
   rw [ae_iff]
-  simpa only [not_le] using
+  simpa only [not_le] using!
     eulerSquareResidualCriticalClockProbabilityMeasure_Iio_zero hsigma
 
 /-- The squarefree clock is supported on the nonnegative half-line in the physical half-plane. -/
@@ -659,7 +659,7 @@ theorem eulerSquarefreeAffineCriticalClockProbabilityMeasure_Iio_zero
     (eulerSquareResidualCriticalClockProbabilityMeasure sigma : Measure ℝ)
   have hx : ∀ᵐ x ∂μ, 0 ≤ x := by
     rw [ae_iff]
-    simpa only [not_le] using
+    simpa only [not_le] using!
       squarefreeMobiusCriticalClockProbabilityMeasure_Iio_zero hsigma
   have hy : ∀ᵐ y ∂ν, 0 ≤ y := by
     exact ae_eulerSquareResidualCriticalClock_nonneg hsigma
@@ -690,7 +690,7 @@ theorem positiveClockCapMoment_eq_cutMoment_add_tail
       (positiveClockCapPowBCF k u hu)
   have hnonneg : ∀ᵐ x ∂(mu : Measure ℝ), 0 ≤ x := by
     rw [ae_iff]
-    simpa only [not_le] using hmu
+    simpa only [not_le] using! hmu
   have hleft :
       (∫ x : ℝ in Iic u, f x ∂(mu : Measure ℝ)) =
         ∫ x : ℝ in Iic u, x ^ k ∂(mu : Measure ℝ) := by
@@ -844,7 +844,7 @@ theorem tendsto_eulerSquarefreeAffineCriticalClockCDF (u : ℝ) :
       (nhds (ProbabilityTheory.cdf
         (mobiusCriticalExponentialProbabilityMeasure : Measure ℝ) u)) := by
     simpa [Function.comp_apply, ProbabilityTheory.cdf_eq_real, Measure.real,
-      ProbabilityMeasure.coe_mk] using hreal
+      ProbabilityMeasure.coe_mk] using! hreal
   have hlimit := ProbabilityTheory.cdf_expMeasure_eq (r := (1 : ℝ))
     (by norm_num) u
   simpa [eulerSquarefreeAffineCriticalClockCDF,
@@ -1014,7 +1014,7 @@ theorem tendsto_eulerSquarefreeAffineCriticalClockMean :
   have h :=
     tendsto_squarefreeMobiusLogMoment_one_critical.add
       tendsto_eulerSquareResidualCriticalClockMoment_one
-  simpa [eulerSquarefreeAffineCriticalClockMean] using h
+  simpa [eulerSquarefreeAffineCriticalClockMean] using! h
 
 /-- **Critical square-invariance law.**  Adding every Euler square channel leaves the critical
 clock variance equal to one. -/
@@ -1048,7 +1048,7 @@ carries exactly the universal four-unit critical Fisher budget. -/
 theorem tendsto_eulerSquarefreeAffineCriticalProjectiveFisherEnergy :
     Tendsto eulerSquarefreeAffineCriticalProjectiveFisherEnergy
       (nhdsWithin 1 (Ioi 1)) (nhds 4) := by
-  simpa [eulerSquarefreeAffineCriticalProjectiveFisherEnergy] using
+  simpa [eulerSquarefreeAffineCriticalProjectiveFisherEnergy] using!
     tendsto_const_nhds.mul
       tendsto_eulerSquarefreeAffineCriticalClockVariance
 

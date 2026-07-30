@@ -154,21 +154,21 @@ private theorem hasDerivAt_scalingTest (N : ℕ) (c : ℝ) (hN : 1 < N)
   have hlogt : Real.log t ≠ 0 := (Real.log_pos ht).ne'
   have hz : HasDerivAt (fun x : ℝ => c * Real.log x / Real.log N)
       (c / (Real.log N * t)) t := by
-    convert ((Real.hasDerivAt_log ht0).const_mul c).div_const (Real.log N) using 1
-    field_simp
+    have hraw := ((Real.hasDerivAt_log ht0).const_mul c).div_const (Real.log N)
+    simpa only [Pi.mul_apply, Pi.div_apply] using!
+      hraw.congr_deriv (by field_simp)
   have hs := hz.sinh
   have hsq : HasDerivAt (fun x => Real.sinh (c * Real.log x / Real.log N) ^ 2)
       (2 * Real.sinh (c * Real.log t / Real.log N) *
         Real.cosh (c * Real.log t / Real.log N) * (c / (Real.log N * t))) t := by
-    convert hs.pow 2 using 1
-    norm_num
-    ring
+    simpa only [Pi.pow_apply] using!
+      (hs.pow 2).congr_deriv (by norm_num; ring)
   have hnum := hsq.const_mul 4
   have hden := Real.hasDerivAt_log ht0
-  convert hnum.div hden hlogt using 1
-  simp only [scalingTestDeriv]
-  field_simp
-  ring
+  simpa only [scalingTest, Pi.mul_apply, Pi.div_apply, Pi.pow_apply] using!
+    (hnum.div hden hlogt).congr_deriv (by
+      rw [scalingTestDeriv]
+      ring)
 
 private theorem scalingTestDeriv_continuousOn (N : ℕ) (c : ℝ) (hN : 1 < N) :
     ContinuousOn (scalingTestDeriv N c) (Set.Ioi 1) := by
@@ -199,7 +199,7 @@ private theorem scalingTestDeriv_continuousOn (N : ℕ) (c : ℝ) (hN : 1 < N) :
   have hright : ContinuousAt (fun x : ℝ =>
       4 * Real.sinh (c * Real.log x / Real.log N) ^ 2 * x⁻¹) t :=
     (h4.mul (hs.pow 2)).mul hinv
-  simpa only [scalingTestDeriv] using
+  simpa only [scalingTestDeriv] using!
     ((hleft.sub hright).div hden (pow_ne_zero 2 hlogt)).continuousWithinAt
 
 private theorem scalingTestDeriv_nonneg (N : ℕ) (c : ℝ) (hN : 1 < N)
@@ -244,9 +244,8 @@ theorem continuous_primeClockScalingProfileIntegrand (c : ℝ) :
       simpa using (hasDerivAt_id (x := (0 : ℝ))).const_mul c
     have hs := hz.sinh
     have hF : HasDerivAt F 0 0 := by
-      dsimp [F]
-      convert (hs.pow 2).const_mul 4 using 1
-      norm_num
+      simpa only [F, Pi.mul_apply, Pi.pow_apply] using!
+        ((hs.pow 2).const_mul 4).congr_deriv (by norm_num)
     have hupdate : ContinuousAt (Function.update q 0 0) 0 :=
       continuousAt_update_same.mpr (by simpa [q] using hF.tendsto_slope_zero)
     convert hupdate using 1
@@ -465,9 +464,10 @@ private theorem scalingMain_eq_boundary_add_integral (N : ℕ) (c : ℝ) (hN : 2
     have ht1 : 1 < t := lt_of_lt_of_le one_lt_two ht.1
     have ht0 : t ≠ 0 := by positivity
     have hf := hasDerivAt_scalingTest N c hN' ht1
-    convert hf.mul (Real.hasDerivAt_log ht0) using 1
-    rw [hf.deriv]
-    ring
+    simpa only [Pi.mul_apply] using!
+      (hf.mul (Real.hasDerivAt_log ht0)).congr_deriv (by
+        rw [hf.deriv]
+        ring)
   have hcontExplicit : ContinuousOn (scalingTestDeriv N c) (Set.Icc (2 : ℝ) N) :=
     (scalingTestDeriv_continuousOn N c hN').mono (by
       intro t ht
@@ -490,7 +490,8 @@ private theorem scalingMain_eq_boundary_add_integral (N : ℕ) (c : ℝ) (hN : 2
   have hcontSum : ContinuousOn (fun t : ℝ =>
       deriv (scalingTest N c) t * Real.log t + scalingTest N c t / t)
       (Set.Icc (2 : ℝ) N) := by
-    simpa only [div_eq_mul_inv] using (hcontDeriv.mul hcontLog).add (hcontTest.mul hcontInv)
+    simpa only [div_eq_mul_inv] using!
+      (hcontDeriv.mul hcontLog).add (hcontTest.mul hcontInv)
   have hcontSumU : ContinuousOn (fun t : ℝ =>
       deriv (scalingTest N c) t * Real.log t + scalingTest N c t / t)
       [[(2 : ℝ), N]] := by
@@ -507,7 +508,7 @@ private theorem scalingMain_eq_boundary_add_integral (N : ℕ) (c : ℝ) (hN : 2
       scalingTest N c t / t) volume 2 N := by
     apply ContinuousOn.intervalIntegrable
     rw [Set.uIcc_of_le (by exact_mod_cast hN)]
-    simpa only [div_eq_mul_inv] using hcontTest.mul hcontInv
+    simpa only [div_eq_mul_inv] using! hcontTest.mul hcontInv
   rw [intervalIntegral.integral_add
     hlogProdInt htestInvInt] at hftc
   rw [scalingMain, ← intervalIntegral.integral_of_le (by exact_mod_cast hN)]
@@ -524,9 +525,10 @@ private theorem integral_scalingTest_div_eq_profile_interval
     intro t ht
     rw [Set.uIcc_of_le (by exact_mod_cast hN)] at ht
     have ht0 : t ≠ 0 := by linarith [ht.1]
-    dsimp [f, f']
-    convert (Real.hasDerivAt_log ht0).div_const (Real.log N) using 1
-    field_simp
+    have hraw := (Real.hasDerivAt_log ht0).div_const (Real.log N)
+    simpa only [f, f', Pi.div_apply] using!
+      hraw.congr_deriv (by
+        field_simp [hlogN.ne', ht0])
   have hf' : ContinuousOn f' [[(2 : ℝ), N]] := by
     rw [Set.uIcc_of_le (by exact_mod_cast hN)]
     intro t ht
@@ -569,7 +571,7 @@ private theorem tendsto_profile_interval (c : ℝ) :
       (a := (0 : ℝ)) (continuous_primeClockScalingProfileIntegrand c)).continuous
   have hPzero : P 0 = 0 := by simp [P]
   have hPa : Tendsto (fun N : ℕ => P (Real.log 2 / Real.log N)) atTop (𝓝 0) := by
-    simpa [hPzero] using hP.continuousAt.tendsto.comp ha
+    simpa [Function.comp_apply, hPzero] using! hP.continuousAt.tendsto.comp ha
   have hrewrite : ∀ N : ℕ,
       (∫ u in Real.log 2 / Real.log N..1, primeClockScalingProfileIntegrand c u) =
         primeClockUniversalProfile c - P (Real.log 2 / Real.log N) := by

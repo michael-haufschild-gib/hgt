@@ -59,7 +59,7 @@ theorem gammaPrefixWeight_eq_wordWeight (N ω : ℕ → ℕ) (d : ℕ) :
   | succ d ih =>
       simp only [gammaPrefixWeight, gammaWordWeight, gammaCodeLabel]
       congr 1
-      simpa [gammaCodeShift, Fin.tail] using
+      simpa [gammaCodeShift, Fin.tail] using!
         ih (gammaCodeShift N) (gammaCodeShift ω)
 
 /-- Reciprocal compression supplies a global diameter bound for one actual Gamma sheet. -/
@@ -356,7 +356,7 @@ theorem tendsto_gammaScheduleMass_gammaThinSchedule
   · intro d
     change (∏ k ∈ Finset.range (d + K), gammaStageMass s (gammaThinSchedule k)) ≤ _
     rw [show d + K = K + d by omega, Finset.prod_range_add]
-    apply mul_le_mul_left'
+    apply mul_le_mul_right
     calc
       (∏ k ∈ Finset.range d, gammaStageMass s (gammaThinSchedule (K + k)))
           ≤ ∏ _k ∈ Finset.range d, (1 / 2 : ℝ≥0∞) := by

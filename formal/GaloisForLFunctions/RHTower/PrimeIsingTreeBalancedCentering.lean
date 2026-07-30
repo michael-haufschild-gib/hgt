@@ -204,7 +204,7 @@ theorem deriv_centralNormalizedPrimeIsingTreePartition_zero (T : PrimeIsingTree)
     deriv (centralNormalizedPrimeIsingTreePartition T) 0 =
       -((treePrimeLeeYangMass T : ℝ) : ℂ) * I / 2 := by
   have hbalanced : deriv (balancedPrimeIsingTreePartition T) 0 = 0 := by
-    simpa only [Function.iterate_one] using
+    simpa only [Function.iterate_one] using!
       (_root_.RHTower.iteratedDeriv_odd_eq_zero_of_symmetric
         (f := balancedPrimeIsingTreePartition T) (c := 0)
         ((differentiable_balancedPrimeIsingTreePartition T).differentiableOn.analyticOnNhd
@@ -218,12 +218,12 @@ theorem deriv_centralNormalizedPrimeIsingTreePartition_zero (T : PrimeIsingTree)
   have hlin : HasDerivAt
       (fun z : ℂ => -((treePrimeLeeYangMass T : ℝ) : ℂ) * I * z / 2)
       (-((treePrimeLeeYangMass T : ℝ) : ℂ) * I / 2) 0 := by
-    convert ((hasDerivAt_id (0 : ℂ)).const_mul
+    convert! ((hasDerivAt_id (0 : ℂ)).const_mul
       (-((treePrimeLeeYangMass T : ℝ) : ℂ) * I)).div_const 2 using 1
     all_goals ring
   have hprod := hlin.cexp.mul
     ((differentiable_balancedPrimeIsingTreePartition T 0).hasDerivAt)
-  simpa [hbalanced] using hprod.deriv
+  simpa [hbalanced] using! hprod.deriv
 
 /-- The pointed target germ.  Finite balanced partitions equal one at the origin, so the raw
 `XiC` germ must be divided by its nonzero central value before a source comparison is attainable. -/
@@ -243,7 +243,7 @@ theorem differentiable_unitCentralXiC : Differentiable ℂ unitCentralXiC := by
 
 /-- The raw completed Xi germ has zero central derivative by functional-equation parity. -/
 theorem deriv_XiC_zero_of_even : deriv _root_.RHTower.XiC 0 = 0 := by
-  simpa only [Function.iterate_one] using
+  simpa only [Function.iterate_one] using!
     (_root_.RHTower.iteratedDeriv_odd_eq_zero_of_symmetric
       (f := _root_.RHTower.XiC) (c := 0) _root_.RHTower.XiC_analytic
       (by
@@ -254,7 +254,7 @@ theorem deriv_XiC_zero_of_even : deriv _root_.RHTower.XiC 0 = 0 := by
 
 /-- The unit-pointed completed Xi germ also has zero central derivative. -/
 theorem deriv_unitCentralXiC_zero : deriv unitCentralXiC 0 = 0 := by
-  simpa only [Function.iterate_one] using
+  simpa only [Function.iterate_one] using!
     (_root_.RHTower.iteratedDeriv_odd_eq_zero_of_symmetric
       (f := unitCentralXiC) (c := 0)
       (differentiable_unitCentralXiC.differentiableOn.analyticOnNhd isOpen_univ)
@@ -293,7 +293,7 @@ theorem not_tendstoLocallyUniformly_centralNormalizedPrimeIsingTreePartition_of_
     simpa using hscaled.congr' (Filter.Eventually.of_forall hpoint)
   have hmassReal : Tendsto (fun n => treePrimeLeeYangMass (T n)) atTop (nhds 0) := by
     have hre := Complex.continuous_re.continuousAt.tendsto.comp hmassComplex
-    simpa using hre
+    simpa using! hre
   have hlog : 0 < Real.log 2 := Real.log_pos (by norm_num)
   have hevent : ∀ᶠ n in atTop, treePrimeLeeYangMass (T n) < Real.log 2 / 2 :=
     hmassReal.eventually (Iio_mem_nhds (half_pos hlog))

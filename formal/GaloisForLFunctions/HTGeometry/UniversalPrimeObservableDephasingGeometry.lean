@@ -44,7 +44,7 @@ theorem universalFacetOrbitPrimeOrientedSource_familyObservableField_eq
     (fun q n => upperEndRatfunc_allJets_closed
       (universalPrimeOrientedPaletteGauge J q) n) N
   simpa [base, correction, universalFacetOrbitPrimeOrientedSource,
-    universalFacetOrbitRationalGaugeSource] using h
+    universalFacetOrbitRationalGaugeSource] using! h
 
 /-- Any two finite prime-residue chambers have exactly the same observable field at every
 resolution. -/

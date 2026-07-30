@@ -66,7 +66,7 @@ theorem primeRecurringPrefixChamber_eq_image
       primePrefixRestriction n ''
         primeOrientationTailClusterSet (fun k j => ε j (e k)) := by
   symm
-  simpa only [primeRecurringPatternChamber, primePrefixOrientation, primePrefixRestriction] using
+  simpa only [primeRecurringPatternChamber, primePrefixOrientation, primePrefixRestriction] using!
     image_tailCluster_primePrefixRestriction (fun k j => ε j (e k)) n
 
 /-- The countable prime-tail constraint is invariant under every left shift of its orientation

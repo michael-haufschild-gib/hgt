@@ -68,7 +68,7 @@ theorem infiniteGenusCounterterm_summable {ι : Type*}
           simpa only [norm_pow] using hqnorm).of_norm
   have hterm :=
     (hq.mul_left (x ^ (k + 1))).div_const (k + 1 : ℂ)
-  convert hterm using 1
+  convert! hterm using 1
   funext ν
   rw [mul_pow]
 
@@ -103,7 +103,7 @@ theorem infiniteGenusCounterterm_eq_moment_sum {ι : Type*}
         Summable (fun ν : ι →₀ ℕ =>
           ‖nomeMonomial p ν ^ (k + 1)‖) by
             simpa only [norm_pow] using hqnorm).of_norm
-    convert (hq.mul_left (x ^ (k + 1))).div_const (k + 1 : ℂ) using 1
+    convert! (hq.mul_left (x ^ (k + 1))).div_const (k + 1 : ℂ) using 1
     funext ν
     rw [mul_pow]
   rw [Summable.tsum_finsetSum hterms]

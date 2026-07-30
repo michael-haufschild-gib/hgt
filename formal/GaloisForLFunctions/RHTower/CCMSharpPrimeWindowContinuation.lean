@@ -176,7 +176,7 @@ theorem analyticAt_dyadicSharpPrimeContinuedSource_of_regularizedZeta_ne_zero
       hreg.deriv hshift
     have hden := AnalyticAt.comp (f := fun z : ℂ => z - 1 / 2) (x := s)
       hreg hshift
-    simpa only [Function.comp_apply] using hnum.div hden hz
+    simpa only [Function.comp_apply] using! hnum.div hden hz
   have herr : AnalyticAt ℂ dyadicSharpPrimeWindowErrorSeries s :=
     (differentiableOn_dyadicSharpPrimeWindowErrorSeries_rightHalf.analyticOnNhd
       hUopen) s hs
@@ -238,7 +238,7 @@ theorem meromorphicOrderAt_dyadicSharpPrimeContinuedSource_eq_neg_one
       hshiftAnalytic hshiftDeriv
     rw [show shift p = ρ by simpa only [shift] using hpρ,
       meromorphicOrderAt_logDeriv_regularizedRiemannZeta_eq_neg_one hregZero] at hcomp
-    simpa only [shift, Function.comp_apply] using hcomp
+    simpa only [shift, Function.comp_apply] using! hcomp
   have hpRight : 1 < p.re := by
     dsimp only [p]
     rw [xiRightShiftedPole, Complex.add_re, Complex.one_re]
@@ -271,7 +271,7 @@ theorem meromorphicOrderAt_dyadicSharpPrimeContinuedSource_eq_neg_one
     have hcomp := MeromorphicAt.comp_analyticAt
       (f := logDeriv regularizedRiemannZeta) (g := shift)
       hbase hshiftAnalytic
-    simpa only [shift, Function.comp_apply] using hcomp
+    simpa only [shift, Function.comp_apply] using! hcomp
   have hsingOrder : meromorphicOrderAt singular p =
       ((-1 : ℤ) : WithTop ℤ) := by
     dsimp only [singular]
@@ -370,7 +370,9 @@ theorem logDeriv_regularizedRiemannZeta_eq
   have hprod0 := ((hasDerivAt_id t).sub_const 1).mul hζdiff.hasDerivAt
   have hprod : HasDerivAt (fun z : ℂ => (z - 1) * riemannZeta z)
       (riemannZeta t + (t - 1) * deriv riemannZeta t) t := by
-    convert hprod0 using 1 <;> simp [Function.id_def] <;> ring
+    convert! hprod0 using 1
+    simp only [Function.id_def]
+    ring
   rw [logDeriv_apply, hev.deriv_eq, hprod.deriv,
     regularizedRiemannZeta_of_ne_one ht, zetaLogDeriv]
   have ht1 : t - 1 ≠ 0 := sub_ne_zero.mpr ht

@@ -69,7 +69,7 @@ theorem truncatedJetClock_oneSidedShift_weyl
       zeta • (boundaryCompletedJetShift n 0 * truncatedJetClock n zeta) := by
   ext i j
   simp only [truncatedJetClock, Matrix.diagonal_mul, Matrix.mul_diagonal,
-    smul_eq_mul, smul_apply]
+    smul_eq_mul, Matrix.smul_apply]
   by_cases hstep : (j : ℕ) + 1 = (i : ℕ)
   · simp only [boundaryCompletedJetShift, hstep, if_pos]
     rw [← hstep, pow_succ]
@@ -98,7 +98,7 @@ theorem boundaryCompletedJetWeyl_of_phase_pow_card
       zeta • (boundaryCompletedJetShift n h * truncatedJetClock n zeta) := by
   ext i j
   simp only [truncatedJetClock, Matrix.diagonal_mul, Matrix.mul_diagonal,
-    smul_eq_mul, smul_apply]
+    smul_eq_mul, Matrix.smul_apply]
   by_cases hstep : (j : ℕ) + 1 = (i : ℕ)
   · simp only [boundaryCompletedJetShift, hstep, if_pos]
     rw [← hstep, pow_succ]

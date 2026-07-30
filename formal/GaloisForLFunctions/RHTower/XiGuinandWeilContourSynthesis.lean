@@ -187,7 +187,7 @@ theorem xiRectangularTwoEdgeTransform_sq_analyticOnNhd (L a : ℝ) :
   have hlin : Differentiable ℂ (fun z : ℂ => I * z) :=
     (differentiable_const _).mul differentiable_id
   have hxi : Differentiable ℂ (xiRectangularTwoEdgeTransform L a) := by
-    simpa [xiRectangularTwoEdgeTransform] using
+    simpa [xiRectangularTwoEdgeTransform] using!
       (rectangularTwoEdgeTransform_differentiable L a).comp hlin
   exact (hxi.pow 2).differentiableOn.analyticOnNhd isOpen_univ
 
@@ -268,7 +268,6 @@ theorem rectIntegral_xiRelativeResolventTrace_of_factorization
       (hh0 z hzU)
   rw [rectIntegral_congr (g₂ := fun z => g z * logDeriv XiC z)
       (fun z hz => by
-        change g z * xiRelativeResolventTrace z = g z * logDeriv XiC z
         rw [logDeriv_XiC_eq_relativeResolventTrace (hXi0 z hz)])
       hbot htop hright hleft]
   exact rectIntegral_mul_logDeriv_boxCount t ρ m hg hUopen hin hsub hh hh0 hfact

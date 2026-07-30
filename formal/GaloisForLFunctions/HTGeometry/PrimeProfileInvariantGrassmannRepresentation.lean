@@ -75,7 +75,7 @@ theorem linearIndependent_primeProfileClockClass_grassmannSource
         primeProfileClockClass (primeProfileGrassmannSource W i)) := by
   let b := Module.Basis.ofVectorSpace ℂ W
   have hb := b.linearIndependent.map' W.subtype W.ker_subtype
-  simpa only [b, primeProfileClockClass_grassmannSource] using hb
+  simpa only [b, primeProfileClockClass_grassmannSource] using! hb
 
 /-- The embedded field represented by an arbitrary subspace of the prime-profile quotient. -/
 def primeProfileGrassmannField
@@ -185,7 +185,7 @@ theorem primeProfileCarrierPullback_grassmannField
     apply (primeProfileCarrier_mem_grassmannField_iff W
       (primeProfileClockRepresentative q)
       (primeProfileClockRepresentative_supportedOnPositivePrimePowers q)).mpr
-    simpa only [primeProfileClockClass_representative] using hq
+    simpa only [primeProfileClockClass_representative] using! hq
 
 /-- A complement to `U` can be chosen inside any ambient subspace `V` containing it. -/
 theorem exists_primeProfileSubmodule_complement_of_le
@@ -542,7 +542,7 @@ theorem PrimeProfileClockInvariant.jet_mem
     (hf : primeProfileClockClass f ∈ W) (n : ℕ) :
     primeProfileClockClass (primeProfileRotatedLogJet n f) ∈ W := by
   induction n with
-  | zero => simpa [primeProfileRotatedLogJet] using hf
+  | zero => simpa [primeProfileRotatedLogJet] using! hf
   | succ n ih =>
       have hnext := hW _ ih
       rw [primeProfileQuotientClock_clockClass,

@@ -156,7 +156,7 @@ theorem xi_central_spectrum_real_of_traceHankel_nonnegative_on_principalIdeal
   let S : Finset I :=
     (xi_central_reciprocal_square_finite_norm_ge hrpos).toFinset
   have hρ₀S : ρ₀ ∈ S := by
-    simpa only [S, Set.Finite.mem_toFinset, α, lam] using
+    simpa only [S, Set.Finite.mem_toFinset, Set.mem_setOf_eq, α, lam] using
       (le_rfl : ‖xiCentralReciprocalSquare (ρ₀ : ℂ)‖ ≤
         ‖xiCentralReciprocalSquare (ρ₀ : ℂ)‖)
   let F : Finset ℂ := S.image lam
@@ -310,12 +310,16 @@ theorem xi_central_spectrum_real_of_traceHankel_nonnegative_on_principalIdeal
         intro h
         apply hρS
         have hnorm : ‖α‖ ≤ ‖lam ρ‖ := by rw [h]
-        simpa only [S, Set.Finite.mem_toFinset, lam] using hnorm
+        dsimp only [S]
+        rw [Set.Finite.mem_toFinset]
+        exact hnorm
       have hnec : lam ρ ≠ (starRingEnd ℂ) α := by
         intro h
         apply hρS
         have hnorm : ‖α‖ ≤ ‖lam ρ‖ := by rw [h, norm_conj]
-        simpa only [S, Set.Finite.mem_toFinset, lam] using hnorm
+        dsimp only [S]
+        rw [Set.Finite.mem_toFinset]
+        exact hnorm
       simp only [g, hneα, hnec, if_false]
   have hgsum : (∑' ρ, g ρ) = ∑ ρ ∈ T, g ρ := tsum_eq_sum hgoutside
   have hgneg : ∀ ρ ∈ T, (g ρ).re < 0 := by
@@ -568,8 +572,7 @@ theorem finitePositiveAtomicLocalMomentClosure_shiftedPrimeArchMomentTail_iff_ri
       (finiteKMSWightmanLocalMomentClosure_of_finitePositiveAtomicLocalMomentClosure hclosure)
   · intro hRH
     have hsource := primeArchFinitePositiveAtomicLocalMomentClosure_of_riemannHypothesis hRH
-    simpa only [shiftedPrimeArchMomentTail] using
-      finitePositiveAtomicLocalMomentClosure_shift hsource (2 * M)
+    exact finitePositiveAtomicLocalMomentClosure_shift hsource (2 * M)
 
 /-- A complex static self-adjoint observable representing only one even-shifted prime--Gamma tail
 already proves RH.  No Hamiltonian flow and no low source moments are required. -/

@@ -165,7 +165,7 @@ theorem pointedCollisionIncidenceMatroid_comp_injective_eq
     · intro hnew
       have hmap := hnew.map' T.symm.toLinearMap
         (LinearMap.ker_eq_bot.mpr T.symm.injective)
-      convert hmap using 1
+      convert! hmap using 1
       funext i
       change pointedCollisionIncidenceMatrix
           (C := C) frame loopFrame tail head i =
@@ -176,7 +176,7 @@ theorem pointedCollisionIncidenceMatroid_comp_injective_eq
     · intro hold
       have hmap := hold.map' T.toLinearMap
         (LinearMap.ker_eq_bot.mpr T.injective)
-      convert hmap using 1
+      convert! hmap using 1
       funext i
       exact (hrow i).symm
 
@@ -315,11 +315,11 @@ theorem linearIndependent_pointedCollisionIncidenceEuclideanRow_iff
   · intro hrow
     have hmap := hrow.map' L.toLinearMap
       (LinearMap.ker_eq_bot.mpr L.injective)
-    simpa [pointedCollisionIncidenceEuclideanRow, L] using hmap
+    simpa [pointedCollisionIncidenceEuclideanRow, L] using! hmap
   · intro hmatrix
     have hmap := hmatrix.map' L.symm.toLinearMap
       (LinearMap.ker_eq_bot.mpr L.symm.injective)
-    simpa [pointedCollisionIncidenceEuclideanRow, L] using hmap
+    simpa [pointedCollisionIncidenceEuclideanRow, L] using! hmap
 
 /-- Collision kernel for two endpoints: it is one exactly when their labels agree away from the
 distinguished loop label. -/
@@ -726,7 +726,7 @@ theorem pointedCollisionIncidenceCoordinateReconstruction_iff_vertexConservation
       frame loopFrame tail head).1 hrec weight
     apply (isPointedCollisionIncidenceCirculation_iff_vertex_conservation
       frame loopFrame tail head id weight).2
-    simpa using hconservation
+    simpa using! hconservation
   · intro hconservation
     apply (pointedCollisionIncidenceCoordinateReconstruction_iff_no_nonzeroCirculation
       frame loopFrame tail head).2
@@ -735,7 +735,7 @@ theorem pointedCollisionIncidenceCoordinateReconstruction_iff_vertexConservation
     have hvertex :=
       (isPointedCollisionIncidenceCirculation_iff_vertex_conservation
         frame loopFrame tail head id weight).1 hcirculation
-    simpa using hvertex
+    simpa using! hvertex
 
 /-- Collision-quotient incidence linear forms remain literal endpoint-label differences when the
 target is only a commutative coefficient algebra, including function rings. -/

@@ -22,7 +22,7 @@ lemma hasDerivAt_tiltedTentRightProfile (beta d : ℝ) {L : ℝ} (hL : L ≠ 0) 
     HasDerivAt (tiltedTentRightProfile beta L)
       (Real.exp (beta * d) / L * (beta * (L - d) - 1)) d := by
   change HasDerivAt (fun x : ℝ => Real.exp (beta * x) * (1 - x / L)) _ d
-  convert ((((hasDerivAt_id d).const_mul beta).exp).mul
+  convert! ((((hasDerivAt_id d).const_mul beta).exp).mul
     ((hasDerivAt_const d 1).sub ((hasDerivAt_id d).div_const L))) using 1
   · simp only [Pi.sub_apply, id_eq]
     field_simp [hL]

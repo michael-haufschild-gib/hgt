@@ -301,7 +301,7 @@ theorem tendsto_opTrace_pow_add_two_zero_of_isHilbertSchmidt_norm_lt_one
   have hhsNorm :
       Filter.Tendsto (fun n : ℕ => hsNorm (T ^ n * T)) Filter.atTop (nhds 0) := by
     have hsqrt := Real.continuous_sqrt.continuousAt.tendsto.comp hsq
-    simpa only [Function.comp_apply, hsNorm, Real.sqrt_zero] using hsqrt
+    simpa only [Function.comp_apply, hsNorm, Real.sqrt_zero] using! hsqrt
   refine squeeze_zero_norm'
     (a := fun n : ℕ => hsNorm (T ^ n * T) * hsNorm T) ?_ ?_
   · exact Filter.Eventually.of_forall fun n => by
@@ -661,7 +661,7 @@ theorem centralSoninCutoffAnticommutator_ne_zero
   have hHS : ContinuousLinearMap.IsHilbertSchmidt (Q * P) := by
     simpa [P, Q, centralPhysicalForbidden, centralFourierForbidden,
       indicatorCutoff_eq_physicalForbidden_starProjection,
-      fourierCutoff_eq_fourierForbidden_starProjection] using
+      fourierCutoff_eq_fourierForbidden_starProjection] using!
         isHilbertSchmidt_fourierCutoff_indicatorCutoff_central a a ha
   have hzero : ContinuousLinearMap.hsNormSq (Q * P) = 0 :=
     (ContinuousLinearMap.hsNormSq_eq_zero_iff hHS).2 hQP
@@ -748,7 +748,7 @@ theorem centralSoninFormalComplement_not_isIdempotentElem
       (isSelfAdjoint_starProjection (centralFourierForbidden a)).star_eq).2 htransition
   simpa [centralSoninFormalComplement, P, Q,
     indicatorCutoff_eq_physicalForbidden_starProjection,
-    fourierCutoff_eq_fourierForbidden_starProjection] using hnot
+    fourierCutoff_eq_fourierForbidden_starProjection] using! hnot
 
 /-- The outside-time/outside-band overlap after subtracting the actual common-kernel projector.
 Together with the ordinary time-band overlap, this is the second positive channel in the exact
@@ -793,12 +793,12 @@ theorem centralSoninExteriorOverlap_isHilbertSchmidt
   have hC : ContinuousLinearMap.IsHilbertSchmidt (Q - (1 - P - R)) := by
     simpa only [P, R, Q, A, B, centralSoninProjectionCorrection,
       indicatorCutoff_eq_physicalForbidden_starProjection,
-      fourierCutoff_eq_fourierForbidden_starProjection] using
+      fourierCutoff_eq_fourierForbidden_starProjection] using!
       centralSoninProjectionCorrection_isHilbertSchmidt a ha
   have hRP : ContinuousLinearMap.IsHilbertSchmidt (R * P) := by
     simpa only [P, R, A, B, centralPhysicalForbidden, centralFourierForbidden,
       indicatorCutoff_eq_physicalForbidden_starProjection,
-      fourierCutoff_eq_fourierForbidden_starProjection] using
+      fourierCutoff_eq_fourierForbidden_starProjection] using!
       isHilbertSchmidt_fourierCutoff_indicatorCutoff_central a a ha
   simpa only [centralSoninExteriorOverlap, P, R, Q, A, B] using
     HTGeometry.twoProjectionExteriorOverlap_isHilbertSchmidt P R Q hC hRP
@@ -823,12 +823,12 @@ theorem centralSoninExteriorCompression_isHilbertSchmidt
     rw [hSwap]
     simpa only [P, R, Q, A, B, centralSoninProjectionCorrection,
       indicatorCutoff_eq_physicalForbidden_starProjection,
-      fourierCutoff_eq_fourierForbidden_starProjection] using
+      fourierCutoff_eq_fourierForbidden_starProjection] using!
       centralSoninProjectionCorrection_isHilbertSchmidt a ha
   have hRP : ContinuousLinearMap.IsHilbertSchmidt (R * P) := by
     simpa only [P, R, A, B, centralPhysicalForbidden, centralFourierForbidden,
       indicatorCutoff_eq_physicalForbidden_starProjection,
-      fourierCutoff_eq_fourierForbidden_starProjection] using
+      fourierCutoff_eq_fourierForbidden_starProjection] using!
       isHilbertSchmidt_indicatorCutoff_fourierCutoff_central a a ha
   have hD := HTGeometry.twoProjectionExteriorOverlap_isHilbertSchmidt P R Q hC hRP
   simpa only [centralSoninExteriorCompression, P, R, Q, A, B] using
@@ -955,9 +955,9 @@ theorem centralSoninAlternatingBlock_isHilbertSchmidt
         (centralPhysicalForbidden a).starProjection) := by
     simpa only [centralPhysicalForbidden, centralFourierForbidden,
       indicatorCutoff_eq_physicalForbidden_starProjection,
-      fourierCutoff_eq_fourierForbidden_starProjection] using
+      fourierCutoff_eq_fourierForbidden_starProjection] using!
       isHilbertSchmidt_fourierCutoff_indicatorCutoff_central a a ha
-  simpa only [soninAlternatingBlock, mul_assoc] using
+  simpa only [soninAlternatingBlock, mul_assoc] using!
     hFX.comp_right (centralFourierForbidden a).starProjection
 
 /-- **Sonin time-band correction energy split.**  The exact projection-correction energy is the
@@ -990,12 +990,12 @@ theorem hsNormSq_centralSoninProjectionCorrection_eq_timeBand_add_exterior
   have hC : ContinuousLinearMap.IsHilbertSchmidt (Q - (1 - P - R)) := by
     simpa only [P, R, Q, A, B, centralSoninProjectionCorrection,
       indicatorCutoff_eq_physicalForbidden_starProjection,
-      fourierCutoff_eq_fourierForbidden_starProjection] using
+      fourierCutoff_eq_fourierForbidden_starProjection] using!
       centralSoninProjectionCorrection_isHilbertSchmidt a ha
   have hRP : ContinuousLinearMap.IsHilbertSchmidt (R * P) := by
     simpa only [P, R, A, B, centralPhysicalForbidden, centralFourierForbidden,
       indicatorCutoff_eq_physicalForbidden_starProjection,
-      fourierCutoff_eq_fourierForbidden_starProjection] using
+      fourierCutoff_eq_fourierForbidden_starProjection] using!
       isHilbertSchmidt_fourierCutoff_indicatorCutoff_central a a ha
   have hsplit :=
     HTGeometry.hsNormSq_twoProjection_correctedComplement_eq_overlap_add_exterior
@@ -1003,7 +1003,7 @@ theorem hsNormSq_centralSoninProjectionCorrection_eq_timeBand_add_exterior
   simpa only [P, R, Q, A, B, centralSoninProjectionCorrection,
     centralSoninExteriorOverlap,
     indicatorCutoff_eq_physicalForbidden_starProjection,
-    fourierCutoff_eq_fourierForbidden_starProjection] using hsplit
+    fourierCutoff_eq_fourierForbidden_starProjection] using! hsplit
 
 /-- **Sonin supersymmetric partition.**  The correction energy is the sum of the existing
 prolate-block energy, the exterior compressed energy, and twice the physical-to-Fourier
@@ -1057,12 +1057,12 @@ theorem hsNormSq_centralSoninProjectionCorrection_eq_compressions_add_two_mul_tr
     rw [hSwap]
     simpa only [P, R, Q, A, B, centralSoninProjectionCorrection,
       indicatorCutoff_eq_physicalForbidden_starProjection,
-      fourierCutoff_eq_fourierForbidden_starProjection] using
+      fourierCutoff_eq_fourierForbidden_starProjection] using!
       centralSoninProjectionCorrection_isHilbertSchmidt a ha
   have hRP : ContinuousLinearMap.IsHilbertSchmidt (R * P) := by
     simpa only [P, R, A, B, centralPhysicalForbidden, centralFourierForbidden,
       indicatorCutoff_eq_physicalForbidden_starProjection,
-      fourierCutoff_eq_fourierForbidden_starProjection] using
+      fourierCutoff_eq_fourierForbidden_starProjection] using!
       isHilbertSchmidt_indicatorCutoff_fourierCutoff_central a a ha
   have hpartition :=
     HTGeometry.hsNormSq_twoProjection_correctedComplement_eq_compressions_add_two_mul_transition
@@ -1074,7 +1074,7 @@ theorem hsNormSq_centralSoninProjectionCorrection_eq_compressions_add_two_mul_tr
     HTGeometry.twoProjectionExteriorCompression,
     HTGeometry.twoProjectionTransition,
     indicatorCutoff_eq_physicalForbidden_starProjection,
-    fourierCutoff_eq_fourierForbidden_starProjection] using hpartition
+    fourierCutoff_eq_fourierForbidden_starProjection] using! hpartition
 
 /-- The ordinary time-band overlap splits exactly into the squared prolate block and the
 free-fermion transition energy. -/
@@ -1101,7 +1101,7 @@ theorem hsNormSq_centralTimeBandOverlap_eq_prolateBlock_add_transition
   have hRP : ContinuousLinearMap.IsHilbertSchmidt (R * P) := by
     simpa only [P, R, A, B, centralPhysicalForbidden, centralFourierForbidden,
       indicatorCutoff_eq_physicalForbidden_starProjection,
-      fourierCutoff_eq_fourierForbidden_starProjection] using
+      fourierCutoff_eq_fourierForbidden_starProjection] using!
       isHilbertSchmidt_indicatorCutoff_fourierCutoff_central a a ha
   have hAdj : ContinuousLinearMap.adjoint (R * P) = P * R := by
     change ContinuousLinearMap.adjoint (R ∘L P) = P ∘L R
@@ -1220,7 +1220,7 @@ theorem opTrace_centralProlatePowerDifference_eq_exteriorCompressionPowerDiffere
   have hRP : ContinuousLinearMap.IsHilbertSchmidt (R * P) := by
     simpa only [P, R, A, B, centralPhysicalForbidden, centralFourierForbidden,
       indicatorCutoff_eq_physicalForbidden_starProjection,
-      fourierCutoff_eq_fourierForbidden_starProjection] using
+      fourierCutoff_eq_fourierForbidden_starProjection] using!
       isHilbertSchmidt_indicatorCutoff_fourierCutoff_central a a ha
   have htrace :=
     HTGeometry.opTrace_twoProjectionInteriorCompression_powerDifference_eq_exteriorCompression_powerDifference
@@ -1370,9 +1370,9 @@ theorem hsNormSq_centralSoninExteriorCompression_eq_prolateBlock_of_norm_lt_one
   rw [hAadj] at hAenergy
   rw [hEadj] at hEenergy
   have hAtrace : Complex.re (opTrace (A ^ 2)) = hsNormSq A := by
-    simpa only [pow_two, ContinuousLinearMap.mul_def] using hAenergy
+    simpa only [pow_two, ContinuousLinearMap.mul_def] using! hAenergy
   have hEtrace : Complex.re (opTrace (E ^ 2)) = hsNormSq E := by
-    simpa only [pow_two, ContinuousLinearMap.mul_def] using hEenergy
+    simpa only [pow_two, ContinuousLinearMap.mul_def] using! hEenergy
   change hsNormSq E = hsNormSq A
   calc
     hsNormSq E = Complex.re (opTrace (E ^ 2)) := hEtrace.symm

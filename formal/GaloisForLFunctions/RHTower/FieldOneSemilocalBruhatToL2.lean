@@ -64,7 +64,7 @@ theorem fieldOneSemilocalPureTensorFun_memLp
       ((fieldOneSemilocalPureTensorFun_continuous f g).comp
         continuous_swap).aestronglyMeasurable).2
   simpa only [fieldOneSemilocalPureTensorFun, Function.comp_apply,
-    Prod.swap_prod_mk, norm_mul, mul_pow, mul_comm] using
+    Prod.swap_prod_mk, norm_mul, mul_pow, mul_comm] using!
     hg.mul_prod hf
 
 /-- Product-Haar `L²` class of a pure semilocal Bruhat tensor. -/

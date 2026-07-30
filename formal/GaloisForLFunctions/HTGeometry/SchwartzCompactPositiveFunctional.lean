@@ -670,9 +670,9 @@ theorem CompactContinuousSchwartzApproximation.diagonalLimit_nonnegative
       rfl
     rw [hrtc, map_add, map_smul] at hp
     change 0 ≤ A.diagonalSequence Q n + η * C
-    simpa [CompactContinuousSchwartzApproximation.diagonalSequence,
+    simpa [C, CompactContinuousSchwartzApproximation.diagonalSequence,
       CompactContinuousSchwartzApproximation.cutoffMass,
-      Complex.mul_re] using hp.1
+      Complex.mul_re] using! hp.1
   have hlimit : Tendsto (fun n ↦ A.diagonalSequence Q n + η * C) atTop
       (𝓝 (A.diagonalLimit Q hQ hQnonneg + η * C)) :=
     (A.tendsto_diagonalLimit Q hQ hQnonneg).add tendsto_const_nhds
@@ -701,7 +701,7 @@ def ContinuousSchwartzSesquilinearForm.compactContinuousDiagonalLinearMap
   toFun := Q.compactContinuousDiagonalValue hQ hQnonneg
   map_add' := Q.compactContinuousDiagonalValue_add hQ hQnonneg
   map_smul' c f := by
-    simpa only [smul_eq_mul] using
+    simpa only [smul_eq_mul, RingHom.id_apply] using
       Q.compactContinuousDiagonalValue_smul hQ hQnonneg c f
 
 /-- The positive real functional on `C_c(ℝ,ℝ)` canonically reconstructed from the Schwartz form. -/

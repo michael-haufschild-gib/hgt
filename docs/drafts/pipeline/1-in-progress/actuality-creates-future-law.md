@@ -1616,7 +1616,7 @@ scientific result.
 ## Reciprocal-blindness pressure on the loss--future identity
 
 The exact theorem in
-`../2-fully-proven/not_new_scientific_knowledge/fixed-carrier-spatial-reciprocal-blindness.md`
+`../3-formalized/not_new_scientific_knowledge/fixed-carrier-spatial-reciprocal-blindness.md`
 shows that for every skew spatial variation \(E=AD+DB\), the two reciprocal first variations are
 commutators:
 \[
@@ -1646,3 +1646,331 @@ This also fixes the hierarchy among current universal candidates:
 2. the purity-boundary conjecture is its proposed exceptional local geometry; and
 3. the obstruction--completion fixed point is a proposed mathematical realization and must not
    replace the physical transfer by an arbitrary minimal completion.
+
+## What all the failed representations jointly force
+
+The corpus now rules out a long list of easier ontologies:
+
+1. one regular \(M_{3,2}(\mathbb C)\) event permits arbitrary independent Hermitian and
+   skew-Hermitian responses, so a common local carrier does not couple gravity to gauge;
+2. three-observer closure is incomplete because independent four-vertex Bargmann invariants
+   survive, while an unbounded comparison hierarchy is not gravity-specific;
+3. every finite labelled operational history retains simultaneous-similarity gauge, so history
+   alone does not create its calibration;
+4. initial/minimal completion reconstructs a supplied future behavior but does not select nature's
+   behavior;
+5. modular clocks and standard inclusions permit direct-sum multiplicity and tensor spectators;
+6. fixed-carrier unitary completions are coboundary-flat;
+7. finite ternary closure does not constrain a Hypertranscendental derivative; and
+8. fixed-carrier spatial derivations are reciprocally spectral-blind but not automatically
+   physically gauge.
+
+The common message is:
+
+> the missing primitive cannot be another object or evolution law inside one already supplied
+> physical category. An event must change the operational law in which its successor can be
+> stated.
+
+### Candidate new mathematics: source-causalizing law-valued differential
+
+Let \(\mathcal L_e\) denote the complete operational law immediately before event \(e\), including
+its admissible preparations, comparisons, compositions, and positive reports. The required
+differential is not an endomorphism
+\(\mathcal L_e\to\mathcal L_e\). It is a source-generated passage
+\[
+\mathbf D_e:\mathcal L_e\longrightarrow\mathcal L_{e^+}
+\tag{F16}
+\]
+whose target operation types are not supplied in advance. Its defining no-surplus reciprocity
+would be
+\[
+\boxed{
+\operatorname{NewRule}_{e}
+\bigl(\mathcal L_{e^+}/\operatorname{Cont}_e\mathcal L_e\bigr)
+\;\simeq\;
+\mathsf{Lost}_{e}(\mathcal L_e).
+}
+\tag{F17}
+\]
+Here \(\operatorname{Cont}_e\mathcal L_e\) is the coherently retained law. Equation `(F17)` is not
+yet typed mathematics. A valid definition must satisfy all of:
+
+1. source calibration is defined before the target law;
+2. every new target operation is forced by a lost source distinction;
+3. every lost source distinction has a faithful positive target role;
+4. no invisible direct summand or tensor spectator survives;
+5. composition of events composes the generated laws, not merely their endpoint carriers;
+6. presentation, dilation, Morita, gauge, and quantum-reference-frame changes give equivalent
+   passages; and
+7. no finite fixed differential-algebraic carrier horizontalizes the complete iteration.
+
+Ordinary cofibers, bar--cobar duality, BV--BRST resolution, \(L_\infty\) transfer, Morita
+bimodules, predictive-state minimization, and categorical completion all begin inside supplied
+operation and coefficient types. They are parent mechanisms, not `(F16)`--`(F17)`.
+
+### Force as noncommuting generated futures
+
+If two source distinctions \(\alpha,\beta\) can be causalized in alternative local orders, the
+first candidate force reporter is not a commutator of operators on one fixed fiber. It is the
+comparison 2-cell between the object-changing composites
+\[
+\mathsf{Succ}_{\alpha}\mathsf{Succ}_{\beta}(\mathcal L_e)
+\quad\text{and}\quad
+\mathsf{Succ}_{\beta}\mathsf{Succ}_{\alpha}(\mathcal L_e).
+\tag{F18}
+\]
+The physical conjecture requires one exceptional regular phase in which this single successor
+curvature has exactly:
+
+- three retained internal components \(U(1),SU(2),SU(3)\);
+- one created causal/Lorentz component, gravity; and
+- mixed Higgs/soldering data but no fifth force.
+
+Lay consequence:
+
+> **Every force is a disagreement about what the universe can make happen next.**
+
+Gauge and gravitational curvature as noncommuting comparison are established ideas. Candidate-new
+content begins only if `(F17)` independently generates the changing objects, their comparisons,
+the exact four-response decomposition, and one finite parameter-reducing prediction.
+
+## Twelfth hostile descent: loss does not become future linearly
+
+The isometric tangent theorem now gives a decisive correction to `(F14)`.  At a regular
+\(3\times2\) event, the kernel of the linear Gram reporter has eight real dimensions, whereas the
+Hermitian future record has four.  Therefore the literal local realization
+\[
+\ker d(\operatorname{Gram})_D
+\stackrel?{\simeq}
+H_2(\mathbb C)
+\]
+is false.  Calling selected kernel directions “the loss” until dimensions match would make the
+conjecture definitional.
+
+The exact positive survivor is quadratic.  Write an arbitrary variation uniquely as
+\[
+E=DH+DS+N,\qquad
+H^\dagger=H,\quad S^\dagger=-S,\quad D^\dagger N=0.
+\tag{F19}
+\]
+For a \(3\times2\) isometry, the three summands have real dimensions \(4,4,4\).  The Hermitian
+part is the complete first-order record, the skew part is the in-frame comparison, and the
+transverse part is absent from that comparison.  Yet the transverse part is not erased:
+\[
+\boxed{
+(D+tN)^\dagger(D+tN)
+=I_2+|t|^2N^\dagger N.
+}
+\tag{F20}
+\]
+Because \(\ker D^\dagger\) is one complex dimensional, \(N^\dagger N\) is rank at most one.
+Under the exact Pauli-coordinate theorem already in the corpus, it is a closed-future null
+Lorentz vector.  Conversely every positive null \(2\times2\) Hermitian matrix has such a
+transverse square root, unique up to the left \(U(1)\) phase.  Thus the correct local candidate is
+not a linear loss--future isomorphism but an extreme-ray equivalence
+\[
+\boxed{
+\mathsf{Lost}^{\perp}_e/U(1)
+\ \simeq\
+\operatorname{ExtRay}\bigl(\mathsf{Future}_e\bigr),
+\qquad
+[N]\longmapsto N^\dagger N,
+}
+\tag{F21}
+\]
+followed by positive compositional completion of elementary rays.
+
+This sharpens the public law:
+
+> **The universe makes the future by squaring quantum possibilities that can no longer
+> interfere.**
+
+And it suggests the one-sentence force law:
+
+> **The future has quantum square roots.  Their disagreement from event to event is every
+> force.**
+
+### One-law reinterpretation after the quadratic correction
+
+If the physical transfer conjecture survives, the dictionary is no longer a collage:
+
+| One source operation | Familiar shadow |
+|---|---|
+| amplitude \(N\) before positive squaring | quantum possibility / matter carrier |
+| square-root ambiguity \(N\mapsto UN\) | internal gauge freedom |
+| positive square \(N^\dagger N\) | elementary causal future ray |
+| positive sum of non-collinear rays | timelike future and mass |
+| eventwise comparison of square-root torsors | gauge and gravitational connection |
+| noncommuting comparison around successor diamonds | force curvature |
+| mixed retained/transverse comparison | Higgs/soldering |
+| non-finitely horizontalizable iterated square-root history | Hypertranscendental time |
+
+The existing exact mass identity now receives a particularly direct reading: the Lorentz
+mass-squared of a colour Gram record is exactly the sum of squared pairwise minors.  A single
+square-root direction is null; mass appears precisely when elementary quantum square roots cannot
+all be made collinear.  This remains mathematics plus a conjectural physical interpretation, not
+a derivation of particle mass.
+
+### Candidate dimensional corollary: why \(3+1\), three colours, and a doublet
+
+The three-way decomposition exposes a parameter-free selection mechanism if the no-surplus law is
+strengthened to require equal local distinction capacity in its three roles:
+\[
+\dim_{\mathbb R}(\text{created Hermitian record})
+=
+\dim_{\mathbb R}(\text{retained skew comparison})
+=
+\dim_{\mathbb R}(\text{transverse square-root loss}).
+\tag{F22}
+\]
+For \(M_{m,n}(\mathbb C)\), these dimensions are
+\[
+n^2,\qquad n^2,\qquad 2n(m-n).
+\]
+The balance condition is therefore
+\[
+2m=3n.
+\tag{F23}
+\]
+Its primitive positive integer solution is \((m,n)=(3,2)\).  At precisely this solution:
+
+- \(H_2(\mathbb C)_+\) is the four-dimensional Lorentz future cone;
+- the left/right unimodular frame group is
+  \(S(U(3)\times U(2))\), the exact global Standard Model group;
+- the transverse carrier is one complex doublet, four real dimensions; and
+- Hermitian record, skew comparison, and transverse loss have the exact \(4/4/4\) balance.
+
+This gives a genuinely public-facing possible consequence:
+
+> **Three spatial directions, three colours of matter, and the two-component quantum doublet may
+> be shadows of one balance law.**
+
+This is not yet a derived prediction.  Equal capacity in `(F22)` must follow from the independently
+defined physical distinction object; imposing it because \(3,2,4\) are observed would be
+numerology.  There is also a known same-carrier trap: the internal weak \(SU(2)\) cannot simply be
+identified with the external spin/Lorentz action.  Quadratic causalization must generate a new
+post-event \(SL_2(\mathbb C)\) causal action while retaining a distinct internal \(SU(2)\), and
+prove their nonconjugate coupling.  Failure to do so kills this corollary.
+
+### What the group mismatch may be telling us
+
+The repeated weak--Lorentz obstruction is not merely a nuisance.  It points to a change in what
+symmetry means across the square:
+
+```text
+before causalization:
+  symmetry preserves coherent amplitude and its inner comparison
+  -> compact unitary gauge group;
+
+after causalization:
+  symmetry preserves the positive cone and its determinant order
+  -> noncompact Lorentz/conformal causal group.
+```
+
+For the exact local model, \(N\mapsto N^\dagger N\) is invariant under left square-root frame
+change, while arbitrary right congruence acts on the positive record.  In the \(2\times2\) record,
+determinant-one complex congruence is the Lorentz-spin action.  Thus gauge and gravity need not be
+subgroups squeezed into one peer list.  They can be the vertical and ordered-base symmetries of
+one source-generated square-root passage.
+
+This gives the most compressed proposed ontology so far:
+
+> **Matter is the quantum square root of causal future.  Gauge forces compare the square roots;
+> gravity compares the futures they make.**
+
+The statement is conjectural physics.  Gram factorization, purification bundles, tetrad
+factorizations, spinor bilinears, and Lorentz-cone automorphisms are all established parents.
+Candidate novelty is the proof that objective events physically enact this change of preservation
+law and that its one compositional connection has exactly the observed compact internal and
+noncompact gravitational responses.
+
+### One square, not two juxtaposed theories
+
+The quadratic map contains more than a positive output.  Knowing
+\[
+q(N)=N^\dagger N
+\]
+on all coherent superpositions recovers the complete sesquilinear comparison by polarization.
+In the \(2\times2\) causal record:
+
+- \(\operatorname{tr}q(N)\) is total squared amplitude weight;
+- positivity of \(q(N)\) supplies the future order;
+- Pauli coordinates supply one time and three spatial components;
+- \(\det q(N)\) is the Lorentz quadratic invariant; and
+- cross terms recovered from \(q(N_1+i^kN_2)\) are the interference data.
+
+If the source-transfer conjecture is true, Born weight and causal spacetime are therefore not
+separately postulated outputs.  They are scalar and ordered-geometric readings of one
+matrix-valued event square.
+
+Public law:
+
+> **The universe uses the same square to decide what happens and to build where it happens.**
+
+Technical slogan:
+\[
+\boxed{
+\text{quantum theory}=\text{polarization of the event square},
+\qquad
+\text{spacetime}=\text{positive order of the event square}.
+}
+\tag{F24}
+\]
+The exact Gram and polarization identities do not prove the physical identification.  The
+source-positive causal Hessian must make this reading unique and compositional.
+
+### Candidate new mathematics: source-positive causal Hessian
+
+The law-valued differential `(F16)` is still too first-order to express `(F20)`.  The missing
+object must carry a source-selected **causal Hessian**
+\[
+\mathbf H_e:
+\mathsf{Lost}^{\perp}_e\times\mathsf{Lost}^{\perp}_e
+\longrightarrow
+\mathsf{Future}_e
+\tag{F25}
+\]
+whose diagonal is positive, whose polarization recovers the complete source comparison, and whose
+extreme positive values generate the successor law.  Locally the model is
+\[
+\mathbf H_e(N_1,N_2)
+=\frac12\bigl(N_1^\dagger N_2+N_2^\dagger N_1\bigr),
+\qquad
+\mathbf H_e(N,N)=N^\dagger N\ge0.
+\tag{F26}
+\]
+The required new theorem is not the standard existence of a Gram map, purification bundle, or
+Uhlmann connection.  Those are occupied parents
+([Dittmann--Uhlmann](https://arxiv.org/abs/quant-ph/9806028);
+[Åberg--Kult--Sjöqvist--Oi](https://arxiv.org/abs/quant-ph/0608185)).
+Novelty requires proving from background-free event axioms that:
+
+1. operationally lost transverse classes, rather than an inserted Hilbert-space split, are the
+   complete square roots of elementary future;
+2. positive completion of their images generates \(3+1\) causal locality;
+3. the ambiguity torsor is exactly \(S(U(3)\times U(2))\), with observed chiral matter and no
+   spectator sector;
+4. one torsor comparison yields Einstein--Dirac--Yang--Mills--Higgs dynamics, rather than an
+   Uhlmann/Bures kinematics relabelled as gravity;
+5. successor composition forces the Born rule and the equivalence principle; and
+6. the construction predicts one dimensionless quantity not used as input.
+
+Failure of any of items 1--4 kills the square-root realization.  Until they close, `(F20)` is an
+exact bridge and `(F21)`--`(F23)` are the new conjectural core.
+
+### Updated research headline and status
+
+Strongest current headline:
+
+> **The future is the positive square of quantum possibilities reality can no longer keep
+> together.**
+
+Strongest worldview consequence:
+
+> Quantum theory describes the square roots of reality; spacetime describes their positive
+> record; forces measure why no single square root works everywhere.
+
+Current status:
+
+`QUADRATIC CAUSALIZATION LAW FROZEN AS SHARPER REALIZATION; LOCAL SECOND-ORDER BRIDGE
+PAPER-PROVED; PHYSICAL TRANSFER, COMPOSITION, DYNAMICS, AND PREDICTION OPEN`.

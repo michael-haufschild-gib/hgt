@@ -25,9 +25,15 @@ theorem hasDerivAt_thetaCuspMorseDressedPolynomial
           thetaCuspMorseDressedPolynomial A n P x) x := by
   have hP := P.hasDerivAt x
   have hψ := hasDerivAt_thetaCuspMorseZeroMode A n x
-  convert hP.mul hψ using 1
-  all_goals simp only [thetaCuspMorseDressedPolynomial]
-  all_goals ring
+  change HasDerivAt
+    (fun y : ℝ => P.eval y * thetaCuspMorseZeroMode A n y)
+    (P.derivative.eval x * thetaCuspMorseZeroMode A n x -
+      thetaCuspMorseSuperpotential A n x *
+        (P.eval x * thetaCuspMorseZeroMode A n x)) x
+  exact (hP.mul hψ).congr_deriv
+    (g' := P.derivative.eval x * thetaCuspMorseZeroMode A n x -
+      thetaCuspMorseSuperpotential A n x *
+        (P.eval x * thetaCuspMorseZeroMode A n x)) (by ring)
 
 theorem thetaCuspMorse_supercharge_dressedPolynomial
     (A : ℝ) (n : ℕ) (P : ℝ[X]) (x : ℝ) :
@@ -108,9 +114,14 @@ theorem hasDerivAt_deriv_thetaCuspMorseDressedPolynomial
             thetaCuspMorseDressedPolynomial A n P y by
     funext y
     exact (hasDerivAt_thetaCuspMorseDressedPolynomial A n P y).deriv]
-  convert hfirst.sub hsecond using 1
-  all_goals simp only [thetaCuspMorsePotentialMinus]
-  all_goals ring
+  exact (hfirst.sub hsecond).congr_deriv
+    (g' := P.derivative.derivative.eval x * thetaCuspMorseZeroMode A n x -
+      2 * thetaCuspMorseSuperpotential A n x *
+        P.derivative.eval x * thetaCuspMorseZeroMode A n x +
+      thetaCuspMorsePotentialMinus A n x *
+        thetaCuspMorseDressedPolynomial A n P x) (by
+      simp only [thetaCuspMorsePotentialMinus]
+      ring)
 
 theorem secondDeriv_thetaCuspMorseDressedPolynomial
     (A : ℝ) (n : ℕ) (P : ℝ[X]) (x : ℝ) :

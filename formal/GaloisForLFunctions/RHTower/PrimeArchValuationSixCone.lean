@@ -58,12 +58,17 @@ theorem tsum_abs_primeArchShiftTwelveMoment_tail_le :
     have hbase :
         HasSum (fun n : ℕ => (2 / 41 : ℝ) ^ n) (1 - (2 / 41 : ℝ))⁻¹ :=
       hasSum_geometric_of_lt_one (by norm_num) (by norm_num)
-    convert ((hbase.mul_left (2 / 41 : ℝ)).mul_right
-      xiShiftThirteenAbsoluteMass) using 1
-    · funext n
-      rw [pow_succ]
-      ring
-    · norm_num
+    have hvalue :
+        (2 / 41 : ℝ) * (1 - (2 / 41 : ℝ))⁻¹ *
+            xiShiftThirteenAbsoluteMass =
+          (2 / 39 : ℝ) * xiShiftThirteenAbsoluteMass := by
+      norm_num
+    rw [← hvalue]
+    apply HasSum.congr_fun
+      ((hbase.mul_left (2 / 41 : ℝ)).mul_right xiShiftThirteenAbsoluteMass)
+    intro n
+    rw [pow_succ]
+    ring
   calc
     (∑' n : ℕ, |primeArchShiftTwelveMoment (n + 1)|) ≤
         ∑' n : ℕ,

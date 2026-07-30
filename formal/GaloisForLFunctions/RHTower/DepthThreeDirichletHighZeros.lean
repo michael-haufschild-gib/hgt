@@ -86,6 +86,8 @@ lemma exists_depthThree_rotation_subsequence :
     simpa [a] using hirr
   have hbcl : b ∈ closure (Set.range (fun m : ℤ => m • a)) := hdZ b
   have hbtop : b ∈ (AddSubgroup.zmultiples a).topologicalClosure := by
+    change b ∈ closure (AddSubgroup.zmultiples a :
+      Set (AddCircle (1 : ℝ)))
     simpa only [AddSubgroup.coe_zmultiples] using hbcl
   have hcluster : MapClusterPt b atTop (fun n : ℕ => n • a) :=
     mapClusterPt_atTop_nsmul_iff_mem_topologicalClosure_zmultiples.mpr hbtop
@@ -283,9 +285,10 @@ lemma hasDerivAt_depthThreeLimit (σ : ℝ) (z : ℂ) :
       ((3 : ℂ) ^ (-z) * Complex.log 3 * (-1)) z :=
     (hasDerivAt_id z).neg.const_cpow (Or.inl (by norm_num))
   unfold depthThreeLimit
-  convert ((hasDerivAt_const z (1 : ℂ)).sub
+  convert! ((hasDerivAt_const z (1 : ℂ)).sub
     (h2.const_mul (((2 : ℝ) ^ (-σ) : ℝ) : ℂ))).sub
-    (h3.const_mul (((3 : ℝ) ^ (-σ) : ℝ) : ℂ)) using 1 <;> ring
+    (h3.const_mul (((3 : ℝ) ^ (-σ) : ℝ) : ℂ)) using 1
+  ring
 
 lemma deriv_depthThreeLimit_zero_pos (σ : ℝ) :
     0 < (deriv (depthThreeLimit σ) 0).re := by
@@ -386,9 +389,11 @@ lemma depthThreeTranslatedApprox_eq_factor (σ : ℝ) (k : ℕ) (z : ℂ) :
       depthThreeDirichletFactor ((σ : ℂ) + I * (depthThreeHeight k : ℂ) + z) := by
   rw [depthThreeTranslatedApprox, depthThreeDirichletFactor]
   have h2 : (((2 : ℝ) ^ (-σ) : ℝ) : ℂ) = (2 : ℂ) ^ (-(σ : ℂ)) := by
-    simpa only [ofReal_neg] using Complex.ofReal_cpow (by norm_num : (0 : ℝ) ≤ 2) (-σ)
+    simpa only [ofReal_neg] using!
+      Complex.ofReal_cpow (by norm_num : (0 : ℝ) ≤ 2) (-σ)
   have h3 : (((3 : ℝ) ^ (-σ) : ℝ) : ℂ) = (3 : ℂ) ^ (-(σ : ℂ)) := by
-    simpa only [ofReal_neg] using Complex.ofReal_cpow (by norm_num : (0 : ℝ) ≤ 3) (-σ)
+    simpa only [ofReal_neg] using!
+      Complex.ofReal_cpow (by norm_num : (0 : ℝ) ≤ 3) (-σ)
   rw [h2, h3]
   have h2ne : (2 : ℂ) ≠ 0 := by norm_num
   have h3ne : (3 : ℂ) ≠ 0 := by norm_num

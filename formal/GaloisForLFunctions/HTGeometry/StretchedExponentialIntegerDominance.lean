@@ -183,7 +183,7 @@ lemma log_isLittleO_stretchedExp {α : ℝ} (hα0 : 0 < α) :
   have hrpowExp : (fun x : ℝ => x ^ α) =o[atTop] stretchedExp α := by
     have h := (Real.isLittleO_pow_exp_atTop (n := 1)).comp_tendsto
       (tendsto_rpow_atTop hα0)
-    simpa [stretchedExp] using h
+    simpa [stretchedExp] using! h
   exact (isLittleO_log_rpow_atTop hα0).trans hrpowExp
 
 lemma key_scaledStretchedValuation {α B : ℝ} {D : ℕ} (t : Fin D → ℕ) :

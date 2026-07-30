@@ -131,7 +131,7 @@ theorem Relation.integralCoeffEmbedding_injective (R : Relation) :
   intro x y hxy
   apply Subtype.ext
   apply R.coeffEmbedding.injective
-  simpa [Relation.integralCoeffEmbedding] using hxy
+  simpa [Relation.integralCoeffEmbedding] using! hxy
 
 /-- The finite exponential polynomial attached to a Siegel-kernel coefficient vector. -/
 noncomputable def Relation.auxiliaryFunction (R : Relation) {L : ℕ}

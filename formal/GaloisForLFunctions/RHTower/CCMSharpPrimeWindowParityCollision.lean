@@ -80,7 +80,10 @@ theorem analyticOrderAt_shiftedRegularizedZeta_eq_xi_order
       (fun s : ℂ => regularizedRiemannZeta (s - 1 / 2)) p =
       analyticOrderAt regularizedRiemannZeta ρ := by
     rw [show shift p = ρ by simpa only [shift] using hpρ] at hshiftOrder
-    simpa only [shift, Function.comp_apply] using hshiftOrder
+    change analyticOrderAt
+      (fun s : ℂ => regularizedRiemannZeta (s - 1 / 2)) p =
+        analyticOrderAt regularizedRiemannZeta ρ at hshiftOrder
+    exact hshiftOrder
   calc
     analyticOrderAt
         (fun s : ℂ => regularizedRiemannZeta (s - 1 / 2))

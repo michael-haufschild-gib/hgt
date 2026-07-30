@@ -110,7 +110,7 @@ theorem cutoff_envelopes_tsupport_subset
       (realCompactIntervalCutoff R)
     have hs' : tsupport (M • realCompactIntervalCutoff R) ⊆
         tsupport (realCompactIntervalCutoff R) := by
-      simpa only [Pi.smul_apply, smul_eq_mul] using hs
+      simpa only [Pi.smul_apply, smul_eq_mul] using! hs
     exact hs'.trans hχ
   constructor
   · exact (tsupport_add (M • realCompactIntervalCutoff R) h).trans
@@ -187,4 +187,3 @@ theorem ContinuousSchwartzSesquilinearForm.compactIntervalDiagonalFunctional_nor
   exact abs_le.mpr ⟨halower, haupper⟩
 
 end SchwartzMap
-

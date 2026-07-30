@@ -69,7 +69,7 @@ theorem projectiveCompleteTailPair_algebraicIndependent (j : η) :
       (projectiveCompleteTailPairEmbedding (ι := ι) (η := η) j)
       (projectiveCompleteTailPairEmbedding (ι := ι) (η := η) j).injective
   simpa [projectiveCompleteTailPair, projectiveCompleteTailPairEmbedding,
-    projectiveCompleteTail, projectiveCompleteEmbedding] using h
+    projectiveCompleteTail, projectiveCompleteEmbedding] using! h
 
 /-- The basis wedge assigned to an oriented tail pair. -/
 def projectiveCompleteTailPairWedge (p : ι × ι) :
@@ -182,7 +182,7 @@ theorem decodedProjectiveCompleteCommutatorMap_eq_id
       ![Pi.basisFun K ι (f 1), Pi.basisFun K ι (f 0)] =
       -exteriorPower.ιMulti K 2
         ![Pi.basisFun K ι (f 0), Pi.basisFun K ι (f 1)] := by
-    simpa [Function.comp_def] using
+    simpa [Function.comp_def] using!
       (exteriorPower.ιMulti K 2).map_swap
         (![Pi.basisFun K ι (f 0), Pi.basisFun K ι (f 1)]) Fin.zero_ne_one
   rw [hswap, smul_neg, sub_neg_eq_add, ← add_smul]

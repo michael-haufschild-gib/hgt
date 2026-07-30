@@ -212,7 +212,7 @@ theorem xiTransverseShiftArithmetic_supportedOnPositivePrimePowers (a : ℕ) :
   refine ⟨x.1, x.2, ?_⟩
   have hx := congrArg Subtype.val
     (Nat.Primes.prodNatEquiv.apply_symm_apply ⟨n, hpow⟩)
-  simpa only [x, Nat.Primes.coe_prodNatEquiv_apply] using hx.symm
+  simpa only [x, Nat.Primes.coe_prodNatEquiv_apply] using! hx.symm
 
 /-- Distinct positive shifts give a tail-independent family of all finite
 logarithmic jets already on the prime layer. -/
@@ -344,7 +344,7 @@ theorem xiTransverseShiftArithmetic_clockTailIndependent
   change ev (∑ ak, c ak • primeProfileJetSource
     (fun a => xiTransverseShiftArithmetic (shift a)) m ak) ≠ 0
   rw [map_sum]
-  simpa only [ev, ArithmeticFunction.smul_map, smul_eq_mul] using hp
+  simpa only [ev, ArithmeticFunction.smul_map, smul_eq_mul] using! hp
 
 /-- **Finite transverse source-rank theorem.** Distinct positive filtered
 von-Mangoldt shift defects are differentially independent over `C`. -/

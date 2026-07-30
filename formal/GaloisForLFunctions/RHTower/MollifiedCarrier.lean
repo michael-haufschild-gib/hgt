@@ -158,7 +158,7 @@ private theorem hasDerivAt_re_completedMollG_line (b : ℕ → ℝ) (N : ℕ) (u
       ((mollLineSlope b N u).re) u := by
   have h := Complex.reCLM.hasFDerivAt.comp_hasDerivAt u
     (hasDerivAt_completedMollG_line b N u)
-  simpa using h
+  simpa using! h
 
 /-! ### §4 Closed-form budgets -/
 

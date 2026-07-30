@@ -45,7 +45,7 @@ theorem xiTransverseShiftPairDifferenceUpperEndCarrier_complete_differentialAdjo
     simp [x, hroot]
   have h := differentialAdjoin_range_pairwiseDifferences_eq_of_root_zero
     (F := upperEndRationalCoordinateField) (K := upperEndMeroField) root x hx0
-  simpa only [x, xiTransverseShiftPairDifferenceUpperEndCarrier] using h
+  simpa only [x, xiTransverseShiftPairDifferenceUpperEndCarrier] using! h
 
 /-! ## Rational-coordinate incidence matroid -/
 

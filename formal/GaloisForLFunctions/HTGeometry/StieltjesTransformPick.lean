@@ -112,7 +112,8 @@ theorem stieltjes_hasDerivAt {μ : Measure ℝ} [IsFiniteMeasure μ] (z₀ : ℂ
     have hf : HasDerivAt (fun w => (x : ℂ) - w) (-1) z := by
       simpa using (hasDerivAt_id z).const_sub (x : ℂ)
     have := hf.inv (hne x z hz)
-    convert this using 1; field_simp
+    convert! this using 1
+    field_simp
   have hcont : ∀ z ∈ s, Continuous (fun x : ℝ => ((x : ℂ) - z)⁻¹) := by
     intro z hz
     exact (continuous_ofReal.sub continuous_const).inv₀ (fun x => hne x z hz)
@@ -155,7 +156,9 @@ theorem stieltjesTransform_norm_le {μ : Measure ℝ} [IsFiniteMeasure μ] (z : 
     ‖∫ x, ((x : ℂ) - z)⁻¹ ∂μ‖ ≤ (μ Set.univ).toReal / z.im := by
   have hcont : Continuous (fun x : ℝ => ((x : ℂ) - z)⁻¹) := by
     refine (continuous_ofReal.sub continuous_const).inv₀ (fun x h0 => ?_)
-    have : (x : ℂ).im = z.im := by rw [← sub_eq_zero.mp h0]
+    have : (x : ℂ).im = z.im := by
+      change (x : ℂ) - z = 0 at h0
+      exact congrArg Complex.im (sub_eq_zero.mp h0)
     rw [Complex.ofReal_im] at this; linarith
   have hbound : ∀ x : ℝ, ‖((x : ℂ) - z)⁻¹‖ ≤ (z.im)⁻¹ := by
     intro x

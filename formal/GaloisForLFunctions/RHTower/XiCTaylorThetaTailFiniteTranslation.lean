@@ -213,7 +213,7 @@ theorem finiteCosinePolynomial_add_eq_trunc_product
       (4 : ℂ) • PowerSeries.trunc (2 * d + 1)
         ((finiteSinePolynomial d x * finiteSinePolynomial d a : Polynomial ℂ) :
           PowerSeries ℂ) := by
-    simpa only [neg_smul] using h
+    simpa only [sub_eq_add_neg, neg_smul] using h
   simpa [smul_sub] using h'
 
 /-- The untruncated two-component packet appearing in finite cosine translation. -/

@@ -136,7 +136,7 @@ theorem xiHurwitzOrientationFiberVector_mem_exteriorContinuedCauchyHilbertSubspa
   by_cases hoff : (ρ : ℂ).re ≠ 1 / 2
   · exact (xiWeilExteriorContinuedCauchyHilbertSubspace R).smul_mem _
       (by
-        simpa only [xiSpectralPoint_eq_support] using
+        simpa only [xiSpectralPoint_eq_support, xiFirstZeroCopy_fst] using
           xiWeilFiberIndicatorLp_mem_exteriorContinuedCauchyHilbertSubspace
             R hband (xiFirstZeroCopy ρ) (by simpa using hoff))
   · have hρ : (ρ : ℂ).re = 1 / 2 := not_ne_iff.mp hoff

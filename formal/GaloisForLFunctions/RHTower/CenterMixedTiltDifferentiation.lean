@@ -43,9 +43,9 @@ theorem hasDerivAt_integral_exp_tilt (F : ℝ → ℂ) {a : ℝ} {S : Set ℝ} (
       simpa using (Complex.ofRealCLM.hasDerivAt (x := b)).mul_const ((x : ℂ))
     have h2 : HasDerivAt (fun c : ℝ => Complex.exp ((c : ℂ) * (x : ℂ)))
         (Complex.exp ((b : ℂ) * (x : ℂ)) * (x : ℂ)) b := by
-      simpa using (Complex.hasDerivAt_exp ((b : ℂ) * (x : ℂ))).comp b h1
+      simpa using! (Complex.hasDerivAt_exp ((b : ℂ) * (x : ℂ))).comp b h1
     have h3 := h2.mul_const (F x)
-    convert h3 using 1
+    convert! h3 using 1
     ring
   exact (hasDerivAt_integral_of_dominated_loc_of_deriv_le hS
     (Filter.Eventually.of_forall hmeas) hint hmeas' hbound hbint hderiv).2
@@ -101,7 +101,7 @@ theorem hasDerivAt_thetaCuspTiltTransform (s : ℝ) {a : ℝ} (ha : |a| < 1) :
   -- integrability at the base point
   have hint : Integrable (fun x : ℝ => Complex.exp (a * x) * F x) := by
     have hbase : Integrable (fun x : ℝ => Real.exp (a * x) * thetaCuspFullSource x) := by
-      simpa only [thetaCuspTiltedSchwartzReal_apply, thetaCuspTiltedSource] using
+      simpa only [thetaCuspTiltedSchwartzReal_apply, thetaCuspTiltedSource] using!
         (thetaCuspTiltedSchwartzReal a ha).integrable (μ := (volume : Measure ℝ))
     refine hbase.mono (hmeas a) ?_
     filter_upwards with x

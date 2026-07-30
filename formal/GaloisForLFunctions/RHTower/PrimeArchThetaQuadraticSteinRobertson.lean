@@ -180,11 +180,13 @@ theorem thetaCuspFirstRadialQuadraticSteinScore_sq_le {x : ℝ} (hx : 0 < x) :
           thetaCuspBornWittenSuperpotential 1 x + x - 3 / 2| ≤
           |thetaCuspQuadraticSteinField x *
             thetaCuspBornWittenSuperpotential 1 x| + |x - 3 / 2| := by
-              have htri := abs_add_le
-                (thetaCuspQuadraticSteinField x *
-                  thetaCuspBornWittenSuperpotential 1 x) (x - 3 / 2)
-              convert htri using 1
-              all_goals ring
+              rw [show
+                thetaCuspQuadraticSteinField x *
+                    thetaCuspBornWittenSuperpotential 1 x + x - 3 / 2 =
+                  thetaCuspQuadraticSteinField x *
+                    thetaCuspBornWittenSuperpotential 1 x + (x - 3 / 2) by
+                ring]
+              exact abs_add_le _ _
       _ = |thetaCuspQuadraticSteinField x| *
             |thetaCuspBornWittenSuperpotential 1 x| + |x - 3 / 2| := by
               rw [abs_mul]
@@ -212,18 +214,22 @@ theorem hasDerivAt_thetaCuspFirstRadialDensity {x : ℝ} (hx : 0 < x) :
       (fun y : ℝ => thetaCuspBornWittenRadialAmplitude 1 1 y ^ 2)
       (-2 * thetaCuspBornWittenRadialSuperpotential 1 1 x *
         thetaCuspBornWittenRadialAmplitude 1 1 x ^ 2) x := by
-  convert (hasDerivAt_thetaCuspBornWittenRadialAmplitude
-    (k := 1) (n := 1) (by norm_num) hx).pow 2 using 1
-  ring
+  have hraw := (hasDerivAt_thetaCuspBornWittenRadialAmplitude
+    (k := 1) (n := 1) (by norm_num) hx).pow 2
+  simpa only [Pi.pow_apply] using!
+    hraw.congr_deriv
+      (g' := -2 * thetaCuspBornWittenRadialSuperpotential 1 1 x *
+        thetaCuspBornWittenRadialAmplitude 1 1 x ^ 2) (by ring)
 
 /-- The quadratic field has the displayed derivative. -/
 theorem hasDerivAt_thetaCuspQuadraticSteinField (x : ℝ) :
     HasDerivAt thetaCuspQuadraticSteinField
       (thetaCuspQuadraticSteinFieldDerivative x) x := by
   unfold thetaCuspQuadraticSteinField thetaCuspQuadraticSteinFieldDerivative
-  convert (hasDerivAt_id x).sub ((hasDerivAt_id x).pow 2 |>.div_const 2) using 1
-  simp only [id_eq]
-  ring
+  have hraw := (hasDerivAt_id x).sub
+    ((hasDerivAt_id x).pow 2 |>.div_const 2)
+  simpa only [Pi.sub_apply, Pi.pow_apply, id_eq] using!
+    hraw.congr_deriv (g' := 1 - x) (by norm_num)
 
 /-- The quadratic score energy is pointwise the radial curvature energy minus the derivative of
 one explicit virial current.  The identity removes the squared rational Born--Witten
@@ -237,8 +243,16 @@ theorem thetaCuspFirstRadialQuadraticStein_localVirial
           (1 / 4 : ℝ) * thetaCuspQuadraticSteinFieldDerivative x ^ 2) *
         thetaCuspBornWittenRadialAmplitude 1 1 x ^ 2 -
           (1 / 2 : ℝ) * deriv thetaCuspFirstRadialQuadraticVirialCurrent x := by
-  simpa only [thetaCuspFirstRadialQuadraticSteinScore,
-    thetaCuspFirstRadialQuadraticVirialCurrent] using
+  have hcurrent :
+      thetaCuspFirstRadialQuadraticVirialCurrent =
+        fun y : ℝ =>
+          thetaCuspQuadraticSteinField y ^ 2 *
+            thetaCuspBornWittenRadialSuperpotential 1 1 y *
+              thetaCuspBornWittenRadialAmplitude 1 1 y ^ 2 := by
+    funext y
+    rfl
+  rw [hcurrent]
+  simpa only [thetaCuspFirstRadialQuadraticSteinScore] using!
     HTGeometry.halfLineSteinScore_sq_mul_eq_curvature_sub_deriv
       (hasDerivAt_thetaCuspQuadraticSteinField x)
       (hasDerivAt_thetaCuspBornWittenRadialSuperpotential
@@ -288,7 +302,16 @@ theorem hasDerivAt_thetaCuspFirstRadialQuadraticVirialCurrent
             2 * thetaCuspQuadraticSteinField x ^ 2 *
               thetaCuspBornWittenRadialSuperpotential 1 1 x ^ 2) *
           thetaCuspBornWittenRadialAmplitude 1 1 x ^ 2) x := by
-  simpa only [thetaCuspFirstRadialQuadraticVirialCurrent] using
+  have hcurrent :
+      thetaCuspFirstRadialQuadraticVirialCurrent =
+        fun y : ℝ =>
+          thetaCuspQuadraticSteinField y ^ 2 *
+            thetaCuspBornWittenRadialSuperpotential 1 1 y *
+              thetaCuspBornWittenRadialAmplitude 1 1 y ^ 2 := by
+    funext y
+    rfl
+  rw [hcurrent]
+  simpa only using!
     HTGeometry.hasDerivAt_halfLineSteinVirialCurrent
       (hasDerivAt_thetaCuspQuadraticSteinField x)
       (hasDerivAt_thetaCuspBornWittenRadialSuperpotential
@@ -349,7 +372,7 @@ theorem thetaCuspFirstRadialQuadraticVirialCurrent_tendsto_atTop_zero :
     · funext x
       dsimp [A, thetaCuspQuadraticSteinField]
       ring
-    · ring
+    · ring_nf
   have hS3 : Tendsto (fun x : ℝ => x ^ 3 * S x) atTop (𝓝 0) := by
     simpa only [S, ← congrFun (thetaCuspSourceTerm_eq_polynomialAtom 1)] using
       pow_mul_thetaCuspPolynomialAtom_tendsto_atTop_zero_of_pos
@@ -370,7 +393,7 @@ theorem thetaCuspFirstRadialQuadraticVirialCurrent_tendsto_atTop_zero :
     · funext x
       dsimp [thetaCuspQuadraticSteinField]
       ring
-    · ring
+    · ring_nf
   have hg0 := (hfirst.const_mul (-(2 * Real.pi)⁻¹)).sub
     (hsecond.const_mul Real.pi⁻¹)
   have hg : Tendsto g atTop (𝓝 0) := by
@@ -378,7 +401,7 @@ theorem thetaCuspFirstRadialQuadraticVirialCurrent_tendsto_atTop_zero :
     · funext x
       dsimp [g]
       ring
-    · ring
+    · ring_nf
   apply Tendsto.congr' _ hg
   filter_upwards [eventually_gt_atTop (0 : ℝ)] with x hx
   exact (thetaCuspFirstRadialQuadraticVirialCurrent_eq hx).symm
@@ -579,8 +602,7 @@ theorem thetaCuspFirstRadialQuadraticVirialEnergy_integrand_le_majorant
   dsimp [P, P', K, t] at hmul
   rw [hamp] at hmul ⊢
   dsimp [thetaCuspFirstRadialQuadraticVirialEnergyMajorant]
-  convert hmul using 1
-  ring
+  exact hmul.trans (le_of_eq (by ring))
 
 /-- The curvature side of the local-virial law is integrable without an auxiliary hypothesis. -/
 theorem integrableOn_thetaCuspFirstRadialQuadraticVirialEnergy :
@@ -597,10 +619,14 @@ theorem integrableOn_thetaCuspFirstRadialQuadraticVirialEnergy :
     have hP' : Measurable thetaCuspQuadraticSteinFieldDerivative := by
       unfold thetaCuspQuadraticSteinFieldDerivative
       fun_prop
-    convert (((((hP.pow_const 2).mul measurable_thetaCuspFirstRadialCurvature).const_mul
-        (1 / 2 : ℝ)).add ((hP'.pow_const 2).const_mul (1 / 4 : ℝ))).mul
-      (measurable_thetaCuspFirstRadialAmplitude.pow_const 2)).aestronglyMeasurable using 1
-    funext x
+    have hmeas :=
+      (((((hP.pow_const 2).mul measurable_thetaCuspFirstRadialCurvature).const_mul
+          (1 / 2 : ℝ)).add ((hP'.pow_const 2).const_mul (1 / 4 : ℝ))).mul
+        (measurable_thetaCuspFirstRadialAmplitude.pow_const 2)).aestronglyMeasurable
+          (μ := volume.restrict (Ioi (0 : ℝ)))
+    apply hmeas.congr
+    filter_upwards [] with x
+    simp only [Pi.mul_apply, Pi.add_apply]
     ring
   · filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
     rw [Real.norm_eq_abs,
@@ -649,8 +675,7 @@ theorem thetaCuspFirstRadialQuadraticSteinEnergy_integrand_le_majorant
   norm_num only [Nat.reduceMul]
   rw [hamp]
   dsimp [thetaCuspFirstRadialQuadraticSteinEnergyMajorant]
-  convert hmul using 1
-  all_goals ring
+  exact hmul.trans (le_of_eq (by ring))
 
 /-- The quadratic generator has finite energy without an auxiliary assumption.  Its rational
 superpotential is absorbed into an explicit polynomial--Gaussian majorant. -/
@@ -771,7 +796,7 @@ theorem thetaCuspFirstRadialQuadraticSteinCurrent_tendsto_zero :
     fun_prop
   have h := (hcont.tendsto 0).mono_left
     (inf_le_left : 𝓝[>] (0 : ℝ) ≤ 𝓝 0)
-  simpa [thetaCuspQuadraticSteinField] using h
+  simpa [thetaCuspQuadraticSteinField] using! h
 
 /-- The same boundary current vanishes at infinity. -/
 theorem thetaCuspFirstRadialQuadraticSteinCurrent_tendsto_atTop_zero :
@@ -873,11 +898,13 @@ theorem integral_thetaCuspFirstRadialCentered_mul_quadraticSteinScore
     (W := thetaCuspBornWittenRadialSuperpotential 1 1)
     (fun x _ => by
       unfold f thetaCuspFirstRadialCenteredQuadratic
-      convert (((hasDerivAt_id x).pow 2 |>.const_mul
+      have hraw := (((hasDerivAt_id x).pow 2 |>.const_mul
         (thetaCuspBornWittenRadialPowerMoment 0 1 1)).sub_const
-          (thetaCuspBornWittenRadialPowerMoment 2 1 1)) using 1
-      all_goals simp only [id_eq]
-      all_goals ring)
+          (thetaCuspBornWittenRadialPowerMoment 2 1 1))
+      simpa only [Pi.pow_apply, id_eq] using!
+        hraw.congr_deriv
+          (g' := 2 * thetaCuspBornWittenRadialPowerMoment 0 1 1 * x)
+          (by norm_num; ring))
     (fun x _ => hasDerivAt_thetaCuspQuadraticSteinField x)
     (fun x hx => by
       simpa only [amp] using hasDerivAt_thetaCuspFirstRadialDensity hx)
@@ -1233,7 +1260,8 @@ theorem thetaCusp_firstRadial_upper_of_quadraticSteinEnergyCertificate
   have hunc' : J0 * C ^ 2 ≤ (J0 * J2 - J1 ^ 2) * E :=
     (mul_le_mul_iff_of_pos_left hJ0).mp huncFactor
   have hEnergy' : c * J1 ^ 2 * E ≤ 9 * J0 * C ^ 2 := by
-    simpa only [c, J0, J1, C, E] using hEnergy
+    simpa only [ThetaCuspFirstRadialQuadraticSteinEnergyCertificate,
+      c, J0, J1, C, E] using hEnergy
   have hchain : c * J1 ^ 2 * E ≤ 9 * ((J0 * J2 - J1 ^ 2) * E) := by
     calc
       c * J1 ^ 2 * E ≤ 9 * (J0 * C ^ 2) := by simpa only [mul_assoc] using hEnergy'

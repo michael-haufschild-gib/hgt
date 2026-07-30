@@ -117,7 +117,7 @@ theorem hasDerivAt_zetaPoleUnit_shift (z : ℂ) (ω : ℝ) :
   have hZ : HasDerivAt zetaPoleUnit (deriv zetaPoleUnit (1 + 2 * (ω : ℂ) + z))
       (1 + 2 * (ω : ℂ) + z) := (differentiable_zetaPoleUnit _).hasDerivAt
   have h := hZ.scomp ω hlin
-  simpa [Function.comp, smul_eq_mul] using h
+  simpa [Function.comp, smul_eq_mul] using! h
 
 /-- The parameter derivative of the shifted pole-unit quotient. -/
 def mobiusCausalQDeriv (ω : ℝ) (z : ℂ) : ℂ :=

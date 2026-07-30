@@ -385,7 +385,11 @@ theorem continuous_thetaCuspCenterMixedDensity
     dsimp [F]
     fun_prop (disch := aesop)
   have h := MeasureTheory.continuous_of_dominated hFmeas hle hbound hcont
-  simpa [thetaCuspCenterMixedDensity, F, mu] using h
+  change Continuous (fun t : ℝ =>
+    ∫ r : ℝ in Ioi 0,
+      r * Real.sinh (a * r) *
+        (thetaCuspFullSource (r / 2 + t) * thetaCuspFullSource (r / 2 - t)))
+  simpa [F, mu] using h
 
 /-- At every positive aperture below the critical boundary, the theta center-mixed density is
 strictly positive at every center.  The proof is genuinely analytic: domination supplies radial

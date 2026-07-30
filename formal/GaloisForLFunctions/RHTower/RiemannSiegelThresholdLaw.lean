@@ -82,12 +82,12 @@ theorem sinh_sub_self_le {ℓ : ℝ} (hℓ : 0 ≤ ℓ) :
       intro t
       have hcube : HasDerivAt (fun t : ℝ => t ^ 3 / 6) (t ^ 2 / 2) t := by
         have h := (hasDerivAt_pow 3 t).div_const 6
-        convert h using 1
+        convert! h using 1
         push_cast
         ring
       have h := ((hcube.mul (Real.hasDerivAt_cosh t)).sub (Real.hasDerivAt_sinh t)).add
         (hasDerivAt_id t)
-      convert h using 1
+      convert! h using 1
     refine monotoneOn_of_deriv_nonneg (convex_Ici 0) (by fun_prop)
       (fun t _ => (hderiv t).differentiableAt.differentiableWithinAt) ?_
     intro t ht

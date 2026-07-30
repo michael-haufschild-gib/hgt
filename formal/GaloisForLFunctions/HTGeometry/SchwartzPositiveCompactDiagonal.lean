@@ -159,7 +159,7 @@ theorem ContinuousSchwartzSesquilinearForm.compactIntervalDiagonalFunctional_non
       (fun n => (hpositive n).1)
   · have him := Complex.continuous_im.continuousAt.tendsto.comp hcomplex
     have him' : Tendsto (fun n => (A + (ε n : ℂ) * B).im) atTop (𝓝 A.im) := by
-      simpa only [Function.comp_apply] using him
+      simpa only [Function.comp_apply] using! him
     have hzero : Tendsto (fun _n : ℕ => (0 : ℝ)) atTop (𝓝 0) := tendsto_const_nhds
     have heq : (fun n => (A + (ε n : ℂ) * B).im) = fun _n : ℕ => (0 : ℝ) := by
       funext n
@@ -169,4 +169,3 @@ theorem ContinuousSchwartzSesquilinearForm.compactIntervalDiagonalFunctional_non
     exact tendsto_nhds_unique him' hzero
 
 end SchwartzMap
-

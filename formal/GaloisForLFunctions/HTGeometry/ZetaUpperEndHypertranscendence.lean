@@ -95,7 +95,7 @@ theorem vonMangoldtArith_supportedOnPositivePrimePowers :
   let x : PrimePowerClockIndex := Nat.Primes.prodNatEquiv.symm ⟨n, hpow⟩
   have hx := congrArg Subtype.val (Nat.Primes.prodNatEquiv.apply_symm_apply ⟨n, hpow⟩)
   have hnx : (x.1 : ℕ) ^ (x.2 + 1) = n := by
-    simpa only [x, Nat.Primes.coe_prodNatEquiv_apply] using hx
+    simpa only [x, Nat.Primes.coe_prodNatEquiv_apply] using! hx
   exact ⟨x.1, x.2, hnx.symm⟩
 
 theorem vonMangoldtArith_prime_ne_zero (p : Nat.Primes) : vonMangoldtArith p ≠ 0 := by

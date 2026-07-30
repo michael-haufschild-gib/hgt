@@ -182,17 +182,24 @@ theorem hasDerivAt_thetaXiHankelOrbit_normSq (a b : ℝ) :
   have hXi : HasDerivAt
       (fun t : ℝ => XiC ((b : ℂ) - (t : ℂ) * I))
       (deriv XiC z * (-I)) a := by
-    simpa [z] using
-      (XiC_differentiable.differentiableAt.hasDerivAt.comp a hz)
+    convert
+      XiC_differentiable.differentiableAt.hasDerivAt.comp a hz using 1 <;>
+        try rfl
   have hre := Complex.reCLM.hasFDerivAt.comp_hasDerivAt a hXi
   have him := Complex.imCLM.hasFDerivAt.comp_hasDerivAt a hXi
   have hsq := (hre.mul hre).add (him.mul him)
   rw [thetaXiHankelOrbit_kreinForm_eq]
   convert hsq using 1
-  dsimp [z]
-  simp only [thetaXiHankelOrbitValuePlus, thetaXiHankelOrbitTangentPlus,
-    mul_re, conj_re, conj_im, neg_re, neg_im, I_re, I_im]
-  ring_nf
+  · rfl
+  · apply Module.ext
+    funext r x
+    rfl
+  · funext t
+    rfl
+  · dsimp [z]
+    simp only [thetaXiHankelOrbitValuePlus, thetaXiHankelOrbitTangentPlus,
+      mul_re, conj_re, conj_im, neg_re, neg_im, I_re, I_im]
+    ring_nf
 
 /-- The Fourier transform of the actual theta autocorrelation tangent is exactly the Krein value
 of the pointed source orbit.  This closes the source-to-chamber incidence without any positivity

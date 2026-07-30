@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.SpectralClusterTransfer
 import Mathlib.Analysis.Analytic.IsolatedZeros
+import Mathlib.Analysis.Asymptotics.Lemmas
 
 /-!
 # Exact analytic birth valuation of observer-time sectors
@@ -16,7 +17,7 @@ Moreover, Boolean interaction selection proves that this exact depth cannot
 be smaller than the number of indispensable control labels.
 -/
 
-open Filter Topology
+open Filter Topology Asymptotics
 open scoped BigOperators
 open IncidenceAlgebra
 
@@ -81,8 +82,27 @@ theorem hasFPowerSeriesAt_packetRaySeries
           (HasFPowerSeriesAt.compContinuousLinearMap
             (u := scalarRayCLM (restrictInteractionPacket active z))
             (x := (0 : ℂ)) hf')
-      have hterm := hcomp.const_smul (c := mu ℂ active packet)
-      simpa [Finset.sum_insert hactive, Pi.add_apply] using hterm.add ih
+      have hterm :=
+        hcomp.const_smul (c := mu ℂ active packet)
+      have hsmulFun :
+          ((mu ℂ active packet) •
+              (fun g : ℂ =>
+                f (g • restrictInteractionPacket active z))) =
+            (fun g : ℂ =>
+              mu ℂ active packet *
+                f (g • restrictInteractionPacket active z)) := by
+        funext g
+        change
+          mu ℂ active packet •
+              f (g • restrictInteractionPacket active z) =
+            mu ℂ active packet *
+              f (g • restrictInteractionPacket active z)
+        exact smul_eq_mul _ _
+      rw [hsmulFun] at hterm
+      rw [Finset.sum_insert hactive]
+      convert hterm.add ih using 1
+      funext g
+      simp [Finset.sum_insert hactive]
 
 /-- The scalar coefficient of the packet-ray series is exactly the
 multivariate interaction Möbius coefficient evaluated on the ray. -/
@@ -331,5 +351,56 @@ theorem tendsto_norm_pow_div_norm_analyticBirthOrder
   rw [hfFactor, norm_mul, norm_pow]
   have hfNorm : ‖f g‖ ≠ 0 := norm_ne_zero_iff.mpr hfg
   field_simp
+
+/-- **Analytic onset rigidity.** If an active analytic response is
+`O (‖g‖ ^ r)`, its exact birth valuation is at least `r`. Thus a geometric
+or locality-derived Big-O onset cannot conceal an earlier Taylor birth. -/
+theorem le_analyticBirthOrder_of_isBigO_norm_pow
+    {f : ℂ → ℂ} {series : FormalMultilinearSeries ℂ ℂ ℂ}
+    (hf : HasFPowerSeriesAt f series 0)
+    (hactive : AnalyticSectorActive f)
+    (r : ℕ)
+    (hO : f =O[𝓝 0] fun g : ℂ => ‖g‖ ^ r) :
+    r ≤ analyticBirthOrder series := by
+  by_contra hnot
+  have hlt : analyticBirthOrder series < r := by
+    omega
+  have hlittle :
+      f =o[𝓝 0]
+        (fun g : ℂ =>
+          ‖g‖ ^ analyticBirthOrder series) :=
+    hO.trans_isLittleO
+      (isLittleO_norm_pow_norm_pow hlt)
+  have hlead :=
+    tendsto_norm_div_norm_pow_analyticBirthOrder hf
+  have hlead0 :
+      ‖analyticBirthUnit f series 0‖ ≠ 0 :=
+    norm_ne_zero_iff.mpr
+      (analyticBirthUnit_zero_ne hf hactive)
+  have hreverse :
+      (fun g : ℂ =>
+        ‖g‖ ^ analyticBirthOrder series)
+        =O[𝓝[≠] 0] fun g => ‖f g‖ :=
+    isBigO_of_div_tendsto_nhds_of_ne_zero
+      hlead hlead0
+  have hlittle' :
+      f =o[𝓝[≠] 0]
+        (fun g : ℂ =>
+          ‖g‖ ^ analyticBirthOrder series) :=
+    hlittle.mono inf_le_left
+  have hfreq :
+      ∃ᶠ g in 𝓝[≠] (0 : ℂ),
+        ‖g‖ ^ analyticBirthOrder series ≠ 0 := by
+    have hev :
+        ∀ᶠ g in 𝓝[≠] (0 : ℂ),
+          ‖g‖ ^ analyticBirthOrder series ≠ 0 := by
+      filter_upwards [self_mem_nhdsWithin] with g hg
+      exact
+        pow_ne_zero _
+          (norm_ne_zero_iff.mpr (by simpa using hg))
+    exact hev.frequently
+  exact
+    (hreverse.not_isLittleO hfreq)
+      hlittle'.norm_left
 
 end GaloisForLFunctions.HTGeometry

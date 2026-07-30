@@ -66,7 +66,7 @@ theorem tendsto_thetaLogDerivDefect_normalized_base {τ h : ℂ} (hτ : 0 < τ.i
     convert hzero.mul hreg using 1
     all_goals simp
   have hdiff := hregTerm.sub hsing
-  simpa [thetaLogDerivDefect, p, mul_sub] using hdiff
+  simpa [thetaLogDerivDefect, p, mul_sub] using! hdiff
 
 /-- The theta defect has residue `+1` on the shifted theta orbit. -/
 theorem tendsto_thetaLogDerivDefect_normalized_shifted {τ h : ℂ} (hτ : 0 < τ.im)
@@ -92,7 +92,7 @@ theorem tendsto_thetaLogDerivDefect_normalized_shifted {τ h : ℂ} (hτ : 0 < �
   have hfderiv : deriv f q = jacobiTheta₂' p τ := by
     have hadd : HasDerivAt (fun z : ℂ => z + h) 1 q := (hasDerivAt_id q).add_const h
     have hcomp := (hasDerivAt_jacobiTheta₂_fst (q + h) hτ).comp q hadd
-    simpa [f, hqh] using hcomp.deriv
+    simpa [f, hqh] using! hcomp.deriv
   have hfp : jacobiTheta₂' p τ ≠ 0 := by
     simpa [p] using jacobiTheta₂'_thetaHalfPeriod_add_lattice_ne_zero hτ m n
   have hsing0 := hfan.tendsto_mul_logDeriv_simple_zero hf0 (hfderiv.symm ▸ hfp)
@@ -101,7 +101,7 @@ theorem tendsto_thetaLogDerivDefect_normalized_shifted {τ h : ℂ} (hτ : 0 < �
     rw [logDeriv_apply, thetaLogDeriv]
     have hadd : HasDerivAt (fun w : ℂ => w + h) 1 z := (hasDerivAt_id z).add_const h
     have hd := (hasDerivAt_jacobiTheta₂_fst (z + h) hτ).comp z hadd
-    rw [show deriv f z = jacobiTheta₂' (z + h) τ by simpa [f] using hd.deriv]
+    rw [show deriv f z = jacobiTheta₂' (z + h) τ by simpa [f] using! hd.deriv]
   have hsing : Tendsto (fun z : ℂ => (z - q) * thetaLogDeriv (z + h) τ)
       (𝓝[≠] q) (𝓝 1) := by
     simpa only [hlogeq] using hsing0

@@ -147,7 +147,7 @@ theorem mobiusContactGamma_allMovingCenterCharts_algebraicIndependent :
   · rw [mobiusContactGammaInverseBranchCoefficientFamily_eq,
       algebraicIndependent_iff_injective_aeval]
     simpa [GaloisForLFunctions.gammaPoleScaleAndInverseBranchCoefficientRationalEval,
-      MvPolynomial.aeval_def] using
+      MvPolynomial.aeval_def] using!
       GaloisForLFunctions.gammaPoleScaleAndInverseBranchCoefficientRationalEval_injective
 
 /-- **Möbius-contact Gamma moving-center three-chart atlas universality law.** Finite parts,

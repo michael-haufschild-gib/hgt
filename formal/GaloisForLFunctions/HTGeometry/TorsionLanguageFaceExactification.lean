@@ -89,8 +89,9 @@ theorem face_weights_eq_zero_of_torsionLanguageUniversal
           w (q k) p * ∏ r : Fin M, u (q k + (r : ℕ)) ^ (p r : ℕ))
           atTop (𝓝 (ell p * ∏ r : Fin M, s r ^ (p r : ℕ))) := by
       intro p hp
-      simpa only [hqword] using
-        (((hw p hp).comp hqtop).mul tendsto_const_nhds)
+      have hwq := (hw p hp).comp hqtop
+      change Tendsto (fun k => w (q k) p) atTop (𝓝 (ell p)) at hwq
+      simpa only [hqword] using hwq.mul tendsto_const_nhds
     have hsum := tendsto_finsetSum F (fun p hp => hterm p hp)
     have hzero := hface.comp hqtop
     exact tendsto_nhds_unique hsum hzero

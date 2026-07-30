@@ -78,7 +78,7 @@ vector. -/
 theorem finiteOPUCPolynomial_ne_zero {N : ℕ} (c : ℤ → ℂ)
     (hG : (circleToeplitzGram N c).PosDef) : finiteOPUCPolynomial c hG ≠ 0 := by
   have hcoeff : (finiteOPUCPolynomial c hG).coeff N ≠ 0 := by
-    simpa [finiteOPUCPolynomial] using finiteOPUCVector_last_ne_zero c hG
+    simpa [finiteOPUCPolynomial] using! finiteOPUCVector_last_ne_zero c hG
   intro hp0
   apply hcoeff
   rw [hp0]

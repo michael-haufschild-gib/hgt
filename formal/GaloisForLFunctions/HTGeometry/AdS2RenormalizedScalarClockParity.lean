@@ -389,7 +389,7 @@ theorem exists_ads2NeutralScalarGammaNormalization_even_regularPart
   have hslope :
       Tendsto (fun epsilon => (extension epsilon - extension 0) / epsilon)
         (𝓝[≠] (0 : ℂ)) (𝓝 regular) := by
-    simpa only [regular, zero_add, div_eq_inv_mul, mul_comm, inv_smul_smul₀, one_smul] using
+    simpa only [regular, zero_add, div_eq_inv_mul, mul_comm, inv_smul_smul₀, one_smul] using!
       hdifferentiable.hasDerivAt.tendsto_slope_zero
   have hextension :=
     ads2NeutralScalarGammaNormalizationEvenExtension_eventuallyEq n
@@ -419,12 +419,14 @@ theorem hasDerivAt_ads2ScalarGammaGapQuotient
           Complex.digamma (z + (1 - gap) / 2)) / 2) gap := by
   have hupperArg :
       HasDerivAt (fun g : ℂ => z + (1 + g) / 2) (1 / 2) gap := by
-    convert (hasDerivAt_const gap z).add
-      (((hasDerivAt_const gap (1 : ℂ)).add (hasDerivAt_id gap)).div_const 2) using 1 <;> ring
+    convert! (hasDerivAt_const gap z).add
+      (((hasDerivAt_const gap (1 : ℂ)).add (hasDerivAt_id gap)).div_const 2) using 1
+    ring
   have hlowerArg :
       HasDerivAt (fun g : ℂ => z + (1 - g) / 2) (-1 / 2) gap := by
-    convert (hasDerivAt_const gap z).add
-      (((hasDerivAt_const gap (1 : ℂ)).sub (hasDerivAt_id gap)).div_const 2) using 1 <;> ring
+    convert! (hasDerivAt_const gap z).add
+      (((hasDerivAt_const gap (1 : ℂ)).sub (hasDerivAt_id gap)).div_const 2) using 1
+    ring
   have hnum :=
     (Complex.differentiableAt_Gamma (z + (1 + gap) / 2) hupper).hasDerivAt.comp
       gap hupperArg
@@ -448,7 +450,7 @@ theorem hasDerivAt_ads2ScalarGammaGapQuotient
         Complex.digamma (z + (1 - gap) / 2) *
           Complex.Gamma (z + (1 - gap) / 2) := by
     rw [Complex.digamma_def, logDeriv_apply, div_mul_cancel₀ _ hlower0]
-  convert hnum.div hden hlower0 using 1
+  convert! hnum.div hden hlower0 using 1
   rw [hdu, hdl]
   unfold ads2ScalarGammaGapQuotient
   simp only [Function.comp_apply]
@@ -481,7 +483,7 @@ theorem tendsto_simplePoleProduct_sub_principalPart
   have hslope :
       Tendsto (fun epsilon => (response epsilon - response 0) / epsilon)
         (𝓝[≠] (0 : ℂ)) (𝓝 responseDerivative) := by
-    simpa only [zero_add, inv_smul_smul₀, one_smul, div_eq_inv_mul, mul_comm] using
+    simpa only [zero_add, inv_smul_smul₀, one_smul, div_eq_inv_mul, mul_comm] using!
       hresponse.tendsto_slope_zero
   have hlimit :=
     (hresidue.mul hslope).add (hregular.mul_const (response 0))
@@ -585,9 +587,10 @@ theorem exists_tendsto_ads2EvenRenormalizedScalarResponse_finitePart
           evenResonantAdS2DigammaClockCore n z / 2) 0 := by
     have hinner :
         HasDerivAt (fun epsilon : ℂ => 2 * (n : ℂ) + epsilon) 1 0 := by
-      convert (hasDerivAt_const (0 : ℂ) (2 * (n : ℂ))).add
-        (hasDerivAt_id (0 : ℂ)) using 1 <;> ring
-    simpa only [add_zero, mul_one] using hgapDerivative'.comp 0 hinner
+      convert! (hasDerivAt_const (0 : ℂ) (2 * (n : ℂ))).add
+        (hasDerivAt_id (0 : ℂ)) using 1
+      ring
+    simpa only [add_zero, mul_one] using! hgapDerivative'.comp 0 hinner
   simpa only [add_zero] using
     (tendsto_simplePoleProduct_sub_principalPart
       (fun epsilon =>
@@ -692,7 +695,7 @@ theorem hypertranscendentalOver_evenResonantAdS2DigammaClockCoreMero
   have hsum :=
     hypertranscendentalOver_nonzeroDA_mul_add_local
       hlower htwoDA (by norm_num) hdiffDA
-  convert hsum using 1
+  convert! hsum using 1
   unfold evenResonantAdS2DigammaClockCoreMero
   ring
 

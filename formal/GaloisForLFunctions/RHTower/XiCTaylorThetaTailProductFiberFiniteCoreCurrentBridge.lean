@@ -89,7 +89,7 @@ theorem xiCTaylorThetaTailCoreProductFiberCompletedTwoPhaseCurrent_eq
     finiteCoreArithmeticTwoPhaseMomentValue_eq_completion]
   simpa only [xiCTaylorThetaTailCoreAtomPairMomentCurrent,
     xiCTaylorThetaTailCoreAtomPairComplexMomentCorrelation,
-    Prod.swap_prod_mk, Prod.fst, Prod.snd] using
+    Prod.swap_prod_mk, Prod.fst, Prod.snd] using!
       symmetricHermitianCurrent_two_mul_sq_completion z
         (thetaCuspTailSecondDensityAtomCoreDerivativeMomentPacket d z q.1)
         (thetaCuspTailSecondDensityAtomCoreValueMomentPacket d z q.1)

@@ -69,7 +69,6 @@ theorem metric_of_conjugate_selfAdjoint
     Q * Q * A = Aᴴ * (Q * Q) := by
   rw [Matrix.conjTranspose_mul, Matrix.conjTranspose_mul, hQ, hR] at hself
   have h2 := congrArg (fun M => Q * M * Q) hself
-  simp only [] at h2
   simpa [Matrix.mul_assoc, ← Matrix.mul_assoc Q R, hQR, ← Matrix.mul_assoc R Q, hRQ] using h2.symm
 
 end QuasiHermitian

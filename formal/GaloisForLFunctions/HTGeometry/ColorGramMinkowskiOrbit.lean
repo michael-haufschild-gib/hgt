@@ -200,7 +200,7 @@ theorem exists_colorEventMatrix_gram_eq
     CStarAlgebra.nonneg_iff_eq_star_mul_self.mp hH.nonneg
   refine ⟨colorEmbedSquare B, ?_⟩
   rw [colorEmbedSquare_gram]
-  simpa using hB.symm
+  simpa using! hB.symm
 
 /-- The cone of nonnegative two-by-two complex matrices. -/
 abbrev PositiveTwoCone :=
@@ -224,13 +224,13 @@ theorem continuous_colorEmbedSquare : Continuous colorEmbedSquare := by
   apply continuous_pi
   intro j
   fin_cases i
-  · simpa [colorEmbedSquare] using
+  · simpa [colorEmbedSquare] using!
       (show Continuous (fun B : Matrix (Fin 2) (Fin 2) ℂ => B 0 j) by
         fun_prop)
-  · simpa [colorEmbedSquare] using
+  · simpa [colorEmbedSquare] using!
       (show Continuous (fun B : Matrix (Fin 2) (Fin 2) ℂ => B 1 j) by
         fun_prop)
-  · simpa [colorEmbedSquare] using
+  · simpa [colorEmbedSquare] using!
       (show Continuous (fun _ : Matrix (Fin 2) (Fin 2) ℂ => (0 : ℂ)) by
         fun_prop)
 

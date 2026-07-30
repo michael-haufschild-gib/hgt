@@ -203,7 +203,7 @@ theorem scalarFiniteDifferentialScaleAction_surjective
     have hqeq := congrArg
       (fun tau : derivationPreservingAut (scalarLogCurrentField F q) T => tau.1 q) hu
     simpa [sigmaL, scalarDifferentialScaleAction_apply,
-      scalarDifferentialScaleEquivCurrent_apply_q] using hqeq.symm
+      scalarDifferentialScaleEquivCurrent_apply_q] using! hqeq.symm
   have hfixpow : sigma.1 (q ^ N) = q ^ N :=
     sigma.1.commutes
       ⟨q ^ N, subset_differentialAdjoin F ({q ^ N} : Set T) rfl⟩

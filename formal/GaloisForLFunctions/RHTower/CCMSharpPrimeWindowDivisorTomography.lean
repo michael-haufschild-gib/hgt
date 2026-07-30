@@ -146,7 +146,7 @@ theorem meromorphicOrderAt_shiftedRegularizedZeta_logDeriv_eq_neg_one
     hshiftAnalytic hshiftDeriv
   rw [show shift p = ρ by simpa only [shift] using hpρ,
     meromorphicOrderAt_logDeriv_regularizedRiemannZeta_eq_neg_one hzero] at hcomp
-  simpa only [shift, Function.comp_apply] using hcomp
+  simpa only [shift, Function.comp_def] using hcomp
 
 /-- The trailing coefficient of the shifted logarithmic derivative is the full analytic
 multiplicity, not merely a nonzero pole marker. -/
@@ -168,7 +168,7 @@ theorem meromorphicTrailingCoeffAt_shiftedRegularizedZeta_logDeriv
     have hcomp := MeromorphicAt.comp_analyticAt
       (f := logDeriv regularizedRiemannZeta) (g := shift)
       hbase hshiftAnalytic
-    simpa only [f, shift, Function.comp_apply] using hcomp
+    simpa only [f, shift, Function.comp_def] using hcomp
   have horder : meromorphicOrderAt f p = ((-1 : ℤ) : WithTop ℤ) := by
     simpa only [f, p] using
       meromorphicOrderAt_shiftedRegularizedZeta_logDeriv_eq_neg_one q
@@ -221,7 +221,7 @@ theorem meromorphicTrailingCoeffAt_dyadicSharpPrimeContinuedSource
     have hcomp := MeromorphicAt.comp_analyticAt
       (f := logDeriv regularizedRiemannZeta) (g := shift)
       hbase hshiftAnalytic
-    simpa only [shiftedLog, shift, Function.comp_apply] using hcomp
+    simpa only [shiftedLog, shift, Function.comp_def] using hcomp
   have hshiftedLogOrder : meromorphicOrderAt shiftedLog p =
       ((-1 : ℤ) : WithTop ℤ) := by
     simpa only [shiftedLog, p] using

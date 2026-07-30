@@ -68,8 +68,8 @@ private theorem hasDerivAt_inv_sub_one {z : ℂ} (hz : z ≠ 1) :
   have hz1 : z - 1 ≠ 0 := sub_ne_zero.mpr hz
   have hbase : HasDerivAt (fun w : ℂ => w - 1) 1 z := (hasDerivAt_id z).sub_const 1
   have h := hbase.inv hz1
-  convert h using 1
-  field_simp
+  simpa only [Pi.inv_apply] using! h.congr_deriv (by
+    simp only [div_eq_mul_inv, neg_one_mul])
 
 private theorem hasDerivAt_neg_inv_sq_sub_one {z : ℂ} (hz : z ≠ 1) :
     HasDerivAt (fun w : ℂ => -((w - 1) ^ 2)⁻¹) (2 * ((z - 1) ^ 3)⁻¹) z := by
@@ -77,8 +77,8 @@ private theorem hasDerivAt_neg_inv_sq_sub_one {z : ℂ} (hz : z ≠ 1) :
   have hbase : HasDerivAt (fun w : ℂ => w - 1) 1 z := (hasDerivAt_id z).sub_const 1
   have hsq : HasDerivAt (fun w : ℂ => (w - 1) ^ 2) (2 * (z - 1) ^ 1 * 1) z := hbase.pow 2
   have hneg := (hsq.inv (pow_ne_zero 2 hz1)).neg
-  convert hneg using 1
-  field_simp
+  simpa only [Pi.neg_apply, Pi.inv_apply] using! hneg.congr_deriv (by
+    field_simp [hz1])
 
 /-- The derivative of the shell source off its pole. -/
 theorem deriv_shellSource {m : ℕ} (hm : 12 ≤ m) {z : ℂ} (hz : z ≠ 1) (hre : 1 / 2 < z.re) :

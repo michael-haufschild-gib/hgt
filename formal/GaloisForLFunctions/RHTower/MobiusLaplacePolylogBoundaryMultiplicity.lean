@@ -28,7 +28,7 @@ private theorem tendsto_ofReal_nhdsGT_zero_nhds_zero :
 
 private theorem tendsto_critical_ray (rho : ℂ) :
     Tendsto (fun r : ℝ => rho + (r : ℂ)) (𝓝[>] 0) (𝓝 rho) := by
-  simpa using
+  simpa using!
     ((continuous_const.add Complex.continuous_ofReal).tendsto 0).mono_left
       nhdsWithin_le_nhds
 

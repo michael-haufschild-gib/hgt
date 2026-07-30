@@ -115,7 +115,7 @@ theorem nodalChargeModes_linearIndependent
   have hfrequency : Function.Injective
       (fun i : Fin n ↦ nodalChargeFrequency ω (charge i)) :=
     (nodalChargeFrequency_injective ω hω).comp hcharge
-  simpa [nodalChargeMode, physicalExponentialMode] using
+  simpa [nodalChargeMode, physicalExponentialMode] using!
     HurwitzExp.expLin_linearIndependent hfrequency
 
 /-- The genuine meromorphic representative of one nodal charge line. -/

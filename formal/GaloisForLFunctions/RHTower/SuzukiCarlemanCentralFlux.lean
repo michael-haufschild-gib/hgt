@@ -171,13 +171,19 @@ theorem tendsto_suzukiAffineSewnRightOddPart_div
     have hinner : HasDerivAt (fun z : ℂ => -z) (-1) 0 :=
       hasDerivAt_neg (0 : ℂ)
     have hcomp := hJ.comp_of_eq (0 : ℂ) hinner (by simp)
-    simpa only [Function.comp_apply, mul_neg, mul_one] using hcomp
+    have hcomp' := hcomp.congr_deriv
+      (g' := -(beta * b * rightAlpha 0 - alpha * a * rightBeta 0)) (by ring)
+    exact hcomp'.congr_of_eventuallyEq
+      (Eventually.of_forall fun _ => rfl)
   have hodd : HasDerivAt (suzukiReflectionOddPart J)
       (beta * b * rightAlpha 0 - alpha * a * rightBeta 0) 0 := by
     rw [show suzukiReflectionOddPart J =
         fun z => (J z - J (-z)) / 2 by rfl]
-    convert (hJ.sub hneg).div_const 2 using 1
-    ring
+    have hraw := (hJ.sub hneg).div_const 2
+    have hraw' := hraw.congr_deriv
+      (g' := beta * b * rightAlpha 0 - alpha * a * rightBeta 0) (by ring)
+    exact hraw'.congr_of_eventuallyEq
+      (Eventually.of_forall fun _ => rfl)
   have hodd0 : suzukiReflectionOddPart J 0 = 0 := by
     simp [suzukiReflectionOddPart]
   exact tendsto_div_self_of_hasDerivAt_zero hodd hodd0

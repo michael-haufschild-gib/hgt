@@ -164,7 +164,7 @@ theorem centeredQuartetGauge_concrete_hasDerivAt_zero :
     norm_num [centeredQuartetGauge]
     ring
   rw [hfun]
-  convert
+  convert!
     ((((hasDerivAt_id (𝕜 := ℂ) 0).sub_const (3 / 4)).pow 2).add_const 1).mul
       ((((hasDerivAt_id (𝕜 := ℂ) 0).sub_const (1 / 4)).pow 2).add_const 1)
     using 1

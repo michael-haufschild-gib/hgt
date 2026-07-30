@@ -91,7 +91,7 @@ theorem exists_positive_logConvex_not_hankelPosSemidef :
       ¬ (Matrix.of fun i j : Fin 3 => s ((i : ℕ) + (j : ℕ))).PosSemidef := by
   refine ⟨allOrderLogConvexCounterexample, allOrderLogConvexCounterexample_pos,
     allOrderLogConvexCounterexample_logConvex, ?_⟩
-  simpa [allOrderLogConvexCounterexampleHankel] using
+  simpa [allOrderLogConvexCounterexampleHankel] using!
     allOrderLogConvexCounterexampleHankel_not_posSemidef
 
 /-- A strictly positive coefficient sequence with a convergent power series near the origin. -/
@@ -106,8 +106,11 @@ theorem positiveCoefficientCounterexample_pos (n : ℕ) :
 /-- The counterexample's power series converges at the positive point `1/2`. -/
 theorem positiveCoefficientCounterexample_summable_half :
     Summable (fun n : ℕ => positiveCoefficientCounterexample n * (1 / 2 : ℝ) ^ n) := by
+  have hhalf : ‖(1 / 2 : ℝ)‖ < 1 := by norm_num
+  have hgeomBase : Summable (fun n : ℕ => (1 / 2 : ℝ) ^ n) :=
+    summable_geometric_of_norm_lt_one hhalf
   have hgeom : Summable (fun n : ℕ => (3 : ℝ) * (1 / 2 : ℝ) ^ n) :=
-    (summable_geometric_of_norm_lt_one (by norm_num)).mul_left 3
+    hgeomBase.mul_left 3
   refine Summable.of_nonneg_of_le (fun n => ?_) (fun n => ?_) hgeom
   · exact mul_nonneg (positiveCoefficientCounterexample_pos n).le (by positivity)
   · have ha : positiveCoefficientCounterexample n ≤ 3 := by
@@ -141,7 +144,7 @@ theorem positiveCoefficientCounterexample_not_momentSequence :
   rintro ⟨μ, hs, hint⟩
   have hpsd := hankelMatrix_posSemidef positiveCoefficientCounterexample hs hint 2
   exact positiveCoefficientCounterexampleHankel_not_posSemidef (by
-    simpa [positiveCoefficientCounterexampleHankel] using hpsd)
+    simpa [positiveCoefficientCounterexampleHankel] using! hpsd)
 
 /-- Strict coefficient positivity, local power-series convergence, and failure of the moment
 square-test cone occur simultaneously. -/
@@ -190,7 +193,7 @@ theorem reciprocalFactorialMoment_not_momentSequence :
   rintro ⟨μ, hs, hint⟩
   have hpsd := hankelMatrix_posSemidef reciprocalFactorialMoment hs hint 2
   exact reciprocalFactorialHankel_not_posSemidef (by
-    simpa [reciprocalFactorialHankel] using hpsd)
+    simpa [reciprocalFactorialHankel] using! hpsd)
 
 /-- Exact iterated derivatives of `s ↦ exp (-s)`. -/
 theorem iteratedDeriv_exp_neg (n : ℕ) :

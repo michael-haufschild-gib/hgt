@@ -554,10 +554,11 @@ theorem hasDerivAt_poissonKer {r : ℝ} (hr : |r| < 1) (t : ℝ) :
   have hden : HasDerivAt (fun t => 1 - 2 * r * Real.cos t + r ^ 2) (2 * r * Real.sin t) t := by
     have hc : HasDerivAt Real.cos (-Real.sin t) t := Real.hasDerivAt_cos t
     have hd0 := ((hasDerivAt_const t (1:ℝ)).sub (hc.const_mul (2 * r))).add_const (r ^ 2)
-    convert hd0 using 1; ring
+    apply hd0.congr_deriv
+    ring
   have hq := (hasDerivAt_const t (1 - r ^ 2)).div hden hden0
   show HasDerivAt (fun t => (1 - r ^ 2) / (1 - 2 * r * Real.cos t + r ^ 2)) _ t
-  convert hq using 1
+  apply hq.congr_deriv
   field_simp
   ring
 

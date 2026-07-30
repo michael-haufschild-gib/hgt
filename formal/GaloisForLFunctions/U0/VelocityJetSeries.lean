@@ -160,7 +160,8 @@ theorem coeff_recurrence {f : ℂ⟦X⟧} {p q : Polynomial ℂ} (hq0 : q.coeff 
   have hcoeff := congrArg (coeff n) hf
   rw [Polynomial.coeff_coe, Polynomial.coeff_eq_zero_of_natDegree_lt hn,
     PowerSeries.coeff_mul] at hcoeff
-  have hsum : ∑ ij ∈ Finset.antidiagonal n, (coeff ij.1) (q : ℂ⟦X⟧) * (coeff ij.2) f =
+  have hsum : ∑ ij ∈ Finset.HasAntidiagonal.antidiagonal n,
+      (coeff ij.1) (q : ℂ⟦X⟧) * (coeff ij.2) f =
       ∑ i ∈ Finset.range (n + 1), q.coeff i * (coeff (n - i)) f := by
     rw [Finset.Nat.sum_antidiagonal_eq_sum_range_succ
       (fun i k => (coeff i) (q : ℂ⟦X⟧) * (coeff k) f)]

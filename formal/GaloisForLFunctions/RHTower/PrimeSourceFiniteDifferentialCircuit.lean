@@ -35,7 +35,7 @@ theorem signedPrimeSource_hypertranscendentalOver
   have hsource := hpalette.comp (fun _ : Unit => 0) (by
     intro u v h
     exact Subsingleton.elim u v)
-  simpa only [Function.comp_apply] using hsource
+  simpa only [Function.comp_apply] using! hsource
 
 /-- **Oriented arithmetic source extraction.**  Every finite differential circuit reconstructing
 any signed-prime source contains a hypertranscendental atom over `ℂ`. -/

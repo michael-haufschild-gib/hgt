@@ -130,7 +130,7 @@ theorem monomialValue_powerGrid_update_succ {L : ℕ} (q : ι → ℂ)
 /-- Coefficientwise finite difference in a set of independent columns. -/
 def columnDifferenceSet {L : ℕ} (q : ι → ℂ) (S : Finset (Fin L))
     (P : MvPolynomial (ι × Fin L) ℂ) : MvPolynomial (ι × Fin L) ℂ :=
-  P.sum fun d c =>
+  (AddMonoidAlgebra.coeff P).sum fun d c =>
     MvPolynomial.monomial d (c * ∏ n ∈ S, (columnMonomialValue q n d - 1))
 
 theorem coeff_columnDifferenceSet {L : ℕ} (q : ι → ℂ) (S : Finset (Fin L))
@@ -338,7 +338,7 @@ theorem tensor_power_sum_coeff_zero (q : ι → ℂ) (hq : Function.Injective q)
       have h0 := h (fun n => Fin.elim0 n)
       have hf : f = default := Subsingleton.elim _ _
       rw [hf]
-      simpa only [Fintype.prod_empty, mul_one, Fintype.sum_unique] using h0
+      simpa only [Fintype.prod_empty, mul_one, Fintype.sum_unique] using! h0
   | succ L ih =>
       intro c h
       have hhead : ∀ mtail : Fin L → ℕ, ∀ m0 : ℕ,
@@ -353,7 +353,7 @@ theorem tensor_power_sum_coeff_zero (q : ι → ℂ) (hq : Function.Injective q)
             ∑ j : ι, ∑ g : Fin L → ι,
               c (Fin.cons j g) *
                 (q j ^ m0 * ∏ n : Fin L, q (g n) ^ mtail n) = 0 := by
-          simpa only [Fin.prod_univ_succ, Fin.cons_zero, Fin.cons_succ] using hm
+          simpa only [Fin.prod_univ_succ, Fin.cons_zero, Fin.cons_succ] using! hm
         calc
           ∑ j : ι,
               (∑ g : Fin L → ι,

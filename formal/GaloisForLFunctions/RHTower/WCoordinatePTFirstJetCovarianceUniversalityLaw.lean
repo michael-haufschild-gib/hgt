@@ -19,7 +19,7 @@ noncomputable section
 theorem hasDerivAt_wCoordinate {z : ℂ} (hz : z ≠ 0) :
     HasDerivAt wCoordinate (z⁻¹ ^ 2) z := by
   unfold wCoordinate
-  simpa [inv_pow] using
+  simpa [inv_pow] using!
     (hasDerivAt_const (x := z) (c := (1 : ℂ))).sub (hasDerivAt_inv hz)
 
 /-- The derivative weight at the reflected point factors into the Li-coordinate Jacobian and

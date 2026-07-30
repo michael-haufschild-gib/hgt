@@ -272,9 +272,9 @@ theorem isWeightedHomogeneous_bellJetWeight_sub_totalDegree
   have hdeg := hE hm
   have hweight := hW hm
   have hdeg' : (∑ i ∈ m.support, m i) = E := by
-    simpa [Finsupp.weight_apply, smul_eq_mul] using hdeg
+    simpa [Finsupp.weight_apply, Finsupp.sum, smul_eq_mul] using hdeg
   have hweight' : (∑ i ∈ m.support, m i * ((i : ℕ) + 1)) = W := by
-    simpa [Finsupp.weight_apply, smul_eq_mul, bellJetWeight] using hweight
+    simpa [Finsupp.weight_apply, Finsupp.sum, smul_eq_mul, bellJetWeight] using hweight
   change (∑ i ∈ m.support, m i * (((i : ℕ) + 1) - 1)) = W - E
   simp only [Nat.add_sub_cancel]
   have hexpand :
@@ -402,7 +402,7 @@ theorem finset_sum_laurent_single_ne_zero_of_bigraded_injOn
     (hhom : ∀ i ∈ s, (P i).IsWeightedHomogeneous w (degree i))
     (hne : ∀ i ∈ s, P i ≠ 0) :
     ∑ i ∈ s,
-      (Finsupp.single (exponent i) (P i) :
+      (AddMonoidAlgebra.single (exponent i) (P i) :
         LaurentPolynomial (MvPolynomial σ ℂ)) ≠ 0 := by
   classical
   obtain ⟨i, hi⟩ := hs
@@ -410,19 +410,14 @@ theorem finset_sum_laurent_single_ne_zero_of_bigraded_injOn
   have hsingle :
       MvPolynomial.weightedHomogeneousComponent w (degree i)
           ((∑ j ∈ s,
-            (Finsupp.single (exponent j) (P j) :
-              LaurentPolynomial (MvPolynomial σ ℂ))) (exponent i)) = P i := by
-    change MvPolynomial.weightedHomogeneousComponent w (degree i)
-      (Finsupp.applyAddHom (M := MvPolynomial σ ℂ) (exponent i)
-        (∑ j ∈ s, (Finsupp.single (exponent j) (P j) :
-          LaurentPolynomial (MvPolynomial σ ℂ)))) = P i
-    rw [map_sum]
-    rw [map_sum]
+            (AddMonoidAlgebra.single (exponent j) (P j) :
+              LaurentPolynomial (MvPolynomial σ ℂ))).coeff (exponent i)) = P i := by
+    rw [AddMonoidAlgebra.coeff_sum, Finset.sum_apply', map_sum]
     rw [Finset.sum_eq_single i]
     · change MvPolynomial.weightedHomogeneousComponent w (degree i)
-        ((Finsupp.single (exponent i) (P i) :
-          LaurentPolynomial (MvPolynomial σ ℂ)) (exponent i)) = P i
-      rw [Finsupp.single_eq_same,
+        ((AddMonoidAlgebra.single (exponent i) (P i) :
+          LaurentPolynomial (MvPolynomial σ ℂ)).coeff (exponent i)) = P i
+      rw [AddMonoidAlgebra.coeff_single, Finsupp.single_eq_same,
         MvPolynomial.weightedHomogeneousComponent_of_mem (hhom i hi), if_pos rfl]
     · intro j hj hji
       by_cases hexp : exponent j = exponent i
@@ -430,22 +425,22 @@ theorem finset_sum_laurent_single_ne_zero_of_bigraded_injOn
           intro hdeg
           exact hji (hgrade hj hi (Prod.ext hexp hdeg))
         change MvPolynomial.weightedHomogeneousComponent w (degree i)
-          ((Finsupp.single (exponent j) (P j) :
-            LaurentPolynomial (MvPolynomial σ ℂ)) (exponent i)) = 0
-        rw [← hexp, Finsupp.single_eq_same,
+          ((AddMonoidAlgebra.single (exponent j) (P j) :
+            LaurentPolynomial (MvPolynomial σ ℂ)).coeff (exponent i)) = 0
+        rw [AddMonoidAlgebra.coeff_single, ← hexp, Finsupp.single_eq_same,
           MvPolynomial.weightedHomogeneousComponent_of_mem (hhom j hj), if_neg]
         exact Ne.symm hdegree
       · change MvPolynomial.weightedHomogeneousComponent w (degree i)
-          ((Finsupp.single (exponent j) (P j) :
-            LaurentPolynomial (MvPolynomial σ ℂ)) (exponent i)) = 0
-        rw [Finsupp.single_eq_of_ne' hexp, map_zero]
+          ((AddMonoidAlgebra.single (exponent j) (P j) :
+            LaurentPolynomial (MvPolynomial σ ℂ)).coeff (exponent i)) = 0
+        rw [AddMonoidAlgebra.coeff_single, Finsupp.single_eq_of_ne' hexp, map_zero]
     · intro hnot
       exact (hnot hi).elim
   have hzero :
       MvPolynomial.weightedHomogeneousComponent w (degree i)
           ((∑ j ∈ s,
-            (Finsupp.single (exponent j) (P j) :
-              LaurentPolynomial (MvPolynomial σ ℂ))) (exponent i)) = 0 := by
+            (AddMonoidAlgebra.single (exponent j) (P j) :
+              LaurentPolynomial (MvPolynomial σ ℂ))).coeff (exponent i)) = 0 := by
     rw [hsum]
     simp
   rw [hsingle] at hzero
@@ -471,7 +466,7 @@ exponent records the inverse factorial scale power `-W`. -/
 def reciprocalBellNativeTopResidueSymbol (n D W : ℕ)
     (P : MvPolynomial (Fin (n + 2)) ℂ) :
     LaurentPolynomial (MvPolynomial ℕ ℂ) :=
-  Finsupp.single (-(W : ℤ))
+  AddMonoidAlgebra.single (-(W : ℤ))
     (reciprocalBellNativeTopResidueCoefficient n D W P)
 
 /-- **Finite cross-particle residue noncancellation.**  Consider distinct
@@ -640,9 +635,13 @@ theorem gammaPoleScaleAndCovariantResiduePolynomialEval_injective :
   have hfull : Function.Injective
       (MvPolynomial.eval₂Hom complexNatGerm
         gammaPoleScaleAndCovariantResidueFamily) := by
-    simpa [MvPolynomial.aeval_def] using
+    have h :=
       algebraicIndependent_iff_injective_aeval.mp
         algebraicIndependent_gammaPoleScaleAndCovariantResidueFamily
+    change Function.Injective
+      (MvPolynomial.eval₂Hom complexNatGerm
+        gammaPoleScaleAndCovariantResidueFamily) at h
+    exact h
   exact hfull.comp (MvPolynomial.optionEquivLeft ℂ ℕ).symm.injective
 
 /-- Laurent evaluation in the factorial scale with covariant-residue
@@ -666,9 +665,9 @@ def gammaPoleScaleAndCovariantResidueLaurentEval :
 theorem gammaPoleScaleAndCovariantResidueLaurentEval_single_neg
     (W : ℕ) (A : MvPolynomial ℕ ℂ) :
     gammaPoleScaleAndCovariantResidueLaurentEval
-        (Finsupp.single (-(W : ℤ)) A) =
+        (AddMonoidAlgebra.single (-(W : ℤ)) A) =
       signedFactorialGerm ^ W * gammaPoleCovariantResidueEval A := by
-  rw [show (Finsupp.single (-(W : ℤ)) A :
+  rw [show (AddMonoidAlgebra.single (-(W : ℤ)) A :
       LaurentPolynomial (MvPolynomial ℕ ℂ)) =
         LaurentPolynomial.C A * LaurentPolynomial.T (-(W : ℤ)) from
       LaurentPolynomial.single_eq_C_mul_T A (-(W : ℤ))]
@@ -1077,8 +1076,10 @@ theorem meromorphicAt_finset_sum
       simpa only [Finset.sum_empty] using
         (analyticAt_const : AnalyticAt ℂ (fun _ : ℂ => (0 : ℂ)) z).meromorphicAt
   | @insert i t hit ih =>
-      simpa only [Finset.sum_insert hit] using
-        (hf i (by simp)).add (ih fun j hj => hf j (by simp [hj]))
+      have hadd := (hf i (by simp)).add
+        (ih fun j hj => hf j (by simp [hj]))
+      change MeromorphicAt (fun x => f i x + ∑ j ∈ t, f j x) z at hadd
+      simpa only [Finset.sum_insert hit] using hadd
 
 theorem gammaAffineJetEval_eq_sum_bihomogeneousSupport
     (branch n : ℕ) (P : MvPolynomial (Fin (n + 2)) ℂ) :

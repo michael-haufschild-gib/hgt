@@ -80,7 +80,7 @@ theorem xiLogDeriv_split {s : ℂ} (hs : 1 < s.re) :
       ((analyticAt_Gamma (s / 2) hΓpoles).differentiableAt).hasDerivAt
     have hf : HasDerivAt (fun w : ℂ => w / 2) (1 / 2) s := by
       simpa using (hasDerivAt_id s).div_const 2
-    simpa using hg.comp s hf
+    simpa using! hg.comp s hf
   have hdΓℝ : HasDerivAt Gammaℝ
       ((Real.pi : ℂ) ^ (-s / 2) * Complex.log Real.pi * (-1 / 2)
           * Complex.Gamma (s / 2)

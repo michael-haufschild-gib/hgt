@@ -85,7 +85,7 @@ theorem ladder_adjacent_ratio_tendsto {A : ℕ → ℝ} (hA : ∀ j, 0 < A j) (k
         (ladderTwoModeRoot A k lam / fuchsRate (A (k + 1)) (4 * (k + 1)) lam))
       atTop (nhds (constrainedProlateHermiteTheta (k + 1) /
         constrainedProlateHermiteTheta k)) := by
-    simpa only [Pi.div_apply] using h
+    simpa only [Pi.div_apply] using! h
   refine hlim.congr' ?_
   filter_upwards [Filter.eventually_gt_atTop (0 : ℝ)] with lam hlam
   have hd1 : fuchsRate (A (k + 1)) (4 * (k + 1)) lam ≠ 0 :=

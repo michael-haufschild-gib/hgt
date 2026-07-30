@@ -90,7 +90,7 @@ theorem semCarrier_analyticAt {N : ℕ} (hN : 1 ≤ N) {z : ℂ}
       have := congrArg (fun w => 1 - w) h
       simpa using this
     have h := (emCarrier_analyticAt_of_ne_one hN h1z1).comp haff
-    simpa [Function.comp] using h
+    simpa [Function.comp] using! h
   have hχ : AnalyticAt ℂ zetaChi z := by
     apply zetaChi_analyticAt
     apply Gammaℝ_ne_zero_of_re_pos

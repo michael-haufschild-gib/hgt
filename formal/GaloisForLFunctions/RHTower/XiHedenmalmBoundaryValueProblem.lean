@@ -105,10 +105,18 @@ theorem hasDerivAt_xiHedenmalmBoundaryEigenfunction
       simpa using (Complex.ofRealCLM.hasDerivAt (x := x)).const_mul (I * (-alpha))
     exact hlin.cexp
   have hprod := hexp.mul hcumulative
+  have hprod' : HasDerivAt
+      (fun u : ℝ =>
+        Complex.exp (I * (-alpha) * (u : ℂ)) * cumulative u)
+      ((Complex.exp (I * (-alpha) * (x : ℂ)) * (I * (-alpha))) *
+          cumulative x +
+        Complex.exp (I * (-alpha) * (x : ℂ)) *
+          thetaCuspFourierLaplaceIntegrand (-alpha) x) x := by
+    simpa only [Pi.mul_apply] using! hprod
   rw [xiHedenmalmBoundaryEigenfunction, thetaCuspBoundaryPrimitive]
   change HasDerivAt (fun u : ℝ =>
       Complex.exp (I * -alpha * (u : ℂ)) * cumulative u) _ x
-  convert hprod using 1
+  convert hprod' using 1
   rw [thetaCuspFourierLaplaceIntegrand]
   have hexpCancel :
       Complex.exp (I * -alpha * (x : ℂ)) *
@@ -210,11 +218,20 @@ theorem xiHedenmalmBoundaryEquation_unique_of_atBot
     have hdiff := (hu x).sub
       (hasDerivAt_xiHedenmalmBoundaryEigenfunction hstrip x)
     have hprod := hexp.mul hdiff
+    have hprod' : HasDerivAt
+        (fun y : ℝ => Complex.exp (I * alpha * (y : ℂ)) *
+          (u y - xiHedenmalmBoundaryEigenfunction alpha y))
+        ((Complex.exp (I * alpha * (x : ℂ)) * (I * alpha)) *
+            (u x - xiHedenmalmBoundaryEigenfunction alpha x) +
+          Complex.exp (I * alpha * (x : ℂ)) *
+            ((-I * alpha * u x + (thetaCuspFullSource x : ℂ)) -
+              (-I * alpha * xiHedenmalmBoundaryEigenfunction alpha x +
+                (thetaCuspFullSource x : ℂ)))) x := by
+      simpa only [Pi.mul_apply, Pi.sub_apply] using! hprod
     change HasDerivAt
       (fun y : ℝ => Complex.exp (I * alpha * (y : ℂ)) *
         (u y - xiHedenmalmBoundaryEigenfunction alpha y)) 0 x
-    convert hprod using 1
-    simp only [Pi.sub_apply]
+    convert hprod' using 1
     ring
   have hqDiff : Differentiable ℝ q := fun x => (hqDeriv x).differentiableAt
   have hqConst (x : ℝ) : q x = q 0 :=
@@ -223,7 +240,7 @@ theorem xiHedenmalmBoundaryEquation_unique_of_atBot
       Tendsto
         (xiHedenmalmWeightedBoundaryGauge alpha
           (xiHedenmalmBoundaryEigenfunction alpha)) atBot (𝓝 0) := by
-    simpa only [xiHedenmalmWeightedBoundaryGauge, xiHedenmalmBoundaryGauge] using
+    simpa only [xiHedenmalmWeightedBoundaryGauge, xiHedenmalmBoundaryGauge] using!
       tendsto_xiHedenmalmBoundaryGauge_atBot (alpha := alpha)
   have hdiffBot :
       Tendsto
@@ -304,16 +321,16 @@ theorem existsUnique_xiHedenmalmNormalizedBoundaryValueProblem_iff
     have htop :
         Tendsto (xiHedenmalmBoundaryGauge alpha) atTop (𝓝 0) := by
       simpa only [huEq, xiHedenmalmWeightedBoundaryGauge,
-        xiHedenmalmBoundaryGauge] using hu.2.2
+        xiHedenmalmBoundaryGauge] using! hu.2.2
     exact (tendsto_xiHedenmalmBoundaryGauge_atTop_iff hstrip).mp htop
   · intro hzero
     refine ⟨xiHedenmalmBoundaryEigenfunction alpha, ?_, ?_⟩
     · refine ⟨xiHedenmalmBoundaryEigenfunction_satisfies_equation hstrip, ?_, ?_⟩
       · simpa only [xiHedenmalmWeightedBoundaryGauge,
-          xiHedenmalmBoundaryGauge] using
+          xiHedenmalmBoundaryGauge] using!
           tendsto_xiHedenmalmBoundaryGauge_atBot (alpha := alpha)
       · simpa only [xiHedenmalmWeightedBoundaryGauge,
-          xiHedenmalmBoundaryGauge] using
+          xiHedenmalmBoundaryGauge] using!
           (tendsto_xiHedenmalmBoundaryGauge_atTop_iff hstrip).mpr hzero
     · intro u hu
       exact xiHedenmalmBoundaryEquation_unique_of_atBot

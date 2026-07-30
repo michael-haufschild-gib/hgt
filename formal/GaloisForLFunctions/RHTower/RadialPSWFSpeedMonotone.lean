@@ -87,7 +87,7 @@ theorem hasDerivAt_radialPSWFExteriorSpeed {sigma z : ℝ} (hsigma : sigma ^ 2 �
   have hnum : (0 : ℝ) < z ^ 2 - sigma ^ 2 := by nlinarith
   have hSpos := radialPSWFExteriorSpeed_pos hsigma hz
   have hsq : HasDerivAt (fun y : ℝ => y ^ 2) (2 * z) z := by
-    simpa using (hasDerivAt_id z).pow 2
+    simpa using! (hasDerivAt_id z).pow 2
   have hnum' : HasDerivAt (fun y : ℝ => y ^ 2 - sigma ^ 2) (2 * z) z := hsq.sub_const _
   have hden' : HasDerivAt (fun y : ℝ => y ^ 2 - 1) (2 * z) z := hsq.sub_const _
   have hr : HasDerivAt (fun y : ℝ => (y ^ 2 - sigma ^ 2) / (y ^ 2 - 1))

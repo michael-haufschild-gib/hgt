@@ -250,7 +250,7 @@ theorem fieldOneFiniteBruhatToL2Linear_denseRange :
     eq_top_iff.mpr (fun f _ => hall f)
   rw [denseRange_iff_closure_range]
   simpa only [S, Submodule.topologicalClosure_coe,
-    Submodule.top_coe] using
+    Submodule.top_coe] using!
     congrArg
       (fun U :
         Submodule ℂ (Lp ℂ 2 fieldOneFiniteAdeleAddHaar) =>

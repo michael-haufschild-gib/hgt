@@ -38,7 +38,7 @@ theorem hasDerivAt_archFactorDeriv_line (u : ℝ) :
     norm_num
   have hcomp :=
     HasDerivAt.comp u (hasDerivAt_archFactorDeriv_of_re_pos hre) (hasDerivAt_linePt u)
-  simpa [Function.comp] using hcomp
+  simpa [Function.comp] using! hcomp
 
 /-- The complex winding datum `w = archFactor′/archFactor` along the line. -/
 noncomputable def archWinding (u : ℝ) : ℂ :=
@@ -77,7 +77,7 @@ theorem hasDerivAt_windingRate (u : ℝ) :
     HasDerivAt windingRate (windingRateDeriv u) u := by
   have h := Complex.reCLM.hasFDerivAt.comp_hasDerivAt u (hasDerivAt_archWinding u)
   unfold windingRate windingRateDeriv
-  simpa [Function.comp] using h
+  simpa [Function.comp] using! h
 
 theorem continuous_windingRate : Continuous windingRate := by
   rw [continuous_iff_continuousAt]
@@ -172,7 +172,7 @@ theorem norm_integral_archFactor_line_le_of_winding_floor
           (-(Complex.I * ((windingRate u : ℝ) : ℂ)))) u :=
       ((((hasDerivAt_windingPhase α u).ofReal_comp).const_mul Complex.I).neg).cexp
     have hprod := (hasDerivAt_archFactor_line u).mul hexp
-    convert hprod using 1
+    convert! hprod using 1
     ring
   have hg'norm : ∀ u ∈ Set.Icc α β,
       ‖Complex.exp (-(Complex.I * (windingPhase α u : ℂ))) *

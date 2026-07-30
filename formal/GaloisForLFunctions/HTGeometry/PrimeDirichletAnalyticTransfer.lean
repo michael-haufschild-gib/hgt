@@ -621,7 +621,7 @@ theorem signedPrimeArithmeticFunctions_algebraicIndependent_over_finitePrimeCoef
         (fun j => algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField
           (signedPrimeArithmeticFunction (ε j))) ↔
       PrimeOrientationTailIndependent ε := by
-  simpa only [signedPrimeArithmeticFunction] using
+  simpa only [signedPrimeArithmeticFunction] using!
     (algebraicIndependent_fractionPrimeColumns_over_finitePrimeCoefficientField_iff
       (fun j p => primeDirichletSign (ε j p)))
 

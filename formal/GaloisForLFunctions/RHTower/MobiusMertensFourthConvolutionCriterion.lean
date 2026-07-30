@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.MobiusMertensSelfConvolutionCriterion
+import Mathlib.Data.Finset.NatAntidiagonal
 
 /-!
 # Fourth additive Mertens convolution criterion
@@ -26,7 +27,7 @@ noncomputable section
 /-- Fourth additive convolution of Mertens partial sums, grouped as the self-convolution of the
 already formalized second-Cesaro sequence. -/
 def mobiusMertensFourthConvolution (N : ℕ) : ℂ :=
-  ∑ ab ∈ Finset.antidiagonal N,
+  ∑ ab ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) N,
     mobiusAdditiveTriangleSecondCesaro ab.1 *
       mobiusAdditiveTriangleSecondCesaro ab.2
 
@@ -38,14 +39,15 @@ theorem mobiusMertensFourthConvolution_im_eq_zero (N : ℕ) :
 
 private theorem sum_antidiagonal_secondCesaroWeighted_eq
     (q : ℂ) (N : ℕ) :
-    (∑ ab ∈ Finset.antidiagonal N,
+    (∑ ab ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) N,
       (mobiusAdditiveTriangleSecondCesaro ab.1 * q ^ ab.1) *
         (mobiusAdditiveTriangleSecondCesaro ab.2 * q ^ ab.2)) =
       mobiusMertensFourthConvolution N * q ^ N := by
   rw [mobiusMertensFourthConvolution, Finset.sum_mul]
   apply Finset.sum_congr rfl
   intro ab hab
-  have hsum : ab.1 + ab.2 = N := Finset.mem_antidiagonal.mp hab
+  have hsum : ab.1 + ab.2 = N :=
+    Finset.HasAntidiagonal.mem_antidiagonal.mp hab
   rw [← hsum, pow_add]
   ring
 
@@ -61,7 +63,7 @@ theorem summable_mobiusMertensFourthConvolution_mul_exp_neg
   have hconv :=
     summable_norm_sum_mul_antidiagonal_of_summable_norm hU.norm hU.norm
   apply Summable.of_norm
-  simpa only [sum_antidiagonal_secondCesaroWeighted_eq] using hconv
+  simpa only [sum_antidiagonal_secondCesaroWeighted_eq, q] using hconv
 
 /-- Cauchy product for the second-Cesaro series. -/
 theorem tsum_secondCesaro_mul_tsum_secondCesaro_eq_tsum_fourthConvolution
@@ -167,7 +169,7 @@ theorem norm_pow_four_mobiusDiscreteLaplaceTransform_le_of_fourthConvolutionUppe
     ring
   have hleft : (F ^ 4).re = ‖F‖ ^ 4 := by
     calc
-      (F ^ 4).re = ((F * F) * (F * F)).re := by ring
+      (F ^ 4).re = ((F * F) * (F * F)).re := by ring_nf
       _ = (F * F).re * (F * F).re := by
         rw [Complex.mul_re, hsqIm, zero_mul, sub_zero]
       _ = ‖F‖ ^ 4 := by rw [hsqRe]; ring
@@ -259,8 +261,8 @@ theorem norm_pow_four_mobiusDiscreteLaplaceTransform_le_of_fourthConvolutionSubp
   have hmoment := summable_natSucc_rpow_exp_neg_and_tsum_le hr hx
   have hb : Summable (fun N : ℕ => b N * Real.exp (-((N : ℝ) * x))) := by
     have hmul := hmoment.1.mul_left C
-    convert hmul using 1
-    funext N
+    apply hmul.congr
+    intro N
     dsimp [b]
     ring
   have hfour :=
@@ -299,7 +301,7 @@ theorem norm_pow_four_mobiusDiscreteLaplaceTransform_le_of_fourthConvolutionSubp
       _ = mobiusMertensFourthConvolutionSubpowerAbelConstant ε *
           (1 / x) ^ (r + 1) := by
         dsimp [mobiusMertensFourthConvolutionSubpowerAbelConstant, r]
-        ring
+        ring_nf
   have htsum :
       (∑' N : ℕ, b N * Real.exp (-((N : ℝ) * x))) ≤
         C * (mobiusMertensFourthConvolutionSubpowerAbelConstant ε *
@@ -437,16 +439,17 @@ theorem mobiusMertensAllStrictHalfPowerBound_implies_fourthConvolutionSubpowerUp
   calc
     (mobiusMertensFourthConvolution N).re ≤ ‖mobiusMertensFourthConvolution N‖ :=
       Complex.re_le_norm _
-    _ ≤ ∑ ab ∈ Finset.antidiagonal N,
+    _ ≤ ∑ ab ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) N,
         ‖mobiusAdditiveTriangleSecondCesaro ab.1 *
           mobiusAdditiveTriangleSecondCesaro ab.2‖ := by
       rw [mobiusMertensFourthConvolution]
       exact norm_sum_le _ _
-    _ ≤ ∑ _ab ∈ Finset.antidiagonal N,
+    _ ≤ ∑ _ab ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) N,
         C ^ 4 * X ^ (4 + 4 * δ) := by
       apply Finset.sum_le_sum
       intro ab hab
-      have hsum : ab.1 + ab.2 = N := Finset.mem_antidiagonal.mp hab
+      have hsum : ab.1 + ab.2 = N :=
+        Finset.HasAntidiagonal.mem_antidiagonal.mp hab
       have haN : ab.1 ≤ N := by omega
       have hbN : ab.2 ≤ N := by omega
       have haBase : (ab.1 : ℝ) + 1 ≤ X := by
@@ -477,7 +480,7 @@ theorem mobiusMertensAllStrictHalfPowerBound_implies_fourthConvolutionSubpowerUp
           exact (Real.rpow_add hX _ _).symm
         _ = C ^ 4 * X ^ (4 + 4 * δ) := by
           congr 1
-          ring
+          ring_nf
     _ = ((N : ℝ) + 1) * (C ^ 4 * X ^ (4 + 4 * δ)) := by
       rw [Finset.sum_const, Finset.Nat.card_antidiagonal, nsmul_eq_mul]
       norm_cast
@@ -490,7 +493,7 @@ theorem mobiusMertensAllStrictHalfPowerBound_implies_fourthConvolutionSubpowerUp
         _ = C ^ 4 * X ^ ((1 : ℝ) + (4 + ε)) := by
           congr 1
           exact (Real.rpow_add hX _ _).symm
-        _ = C ^ 4 * X ^ (5 + ε) := by ring
+        _ = C ^ 4 * X ^ (5 + ε) := by ring_nf
 
 /-- Exact conditional equivalence interface after supplying classical Littlewood. -/
 theorem mobiusMertensFourthConvolutionSubpowerUpperBound_iff_riemannHypothesis_of_mertens

@@ -1038,7 +1038,7 @@ theorem canonicalKrylovCompression_local_eq_of_moments_cross_of_sizes
   have hs : (R + 2) + l = s := by omega
   subst r
   subst s
-  simpa using
+  simpa using!
     (canonicalKrylovCompression_local_eq_of_moments_cross
       energy₁ weight₁ energy₂ weight₂
       henergy₁ henergy₂ hweight₁ hweight₂
@@ -1064,7 +1064,7 @@ theorem canonicalKrylovCompression_local_eq_of_moments_of_size
   generalize hk : r - (R + 2) = k
   have hr : (R + 2) + k = r := by omega
   subst r
-  simpa using
+  simpa using!
     (canonicalKrylovCompression_local_eq_of_moments
       energy weight₁ weight₂ henergy hweight₁ hweight₂
       hmoment i j hdegree)

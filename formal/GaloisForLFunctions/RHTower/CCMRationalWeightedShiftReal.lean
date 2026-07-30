@@ -96,7 +96,7 @@ theorem ccmRationalMoritaWeightedShiftFunction_memℓp
   have hg :
       Memℓp (fun q : CCMRationalUnit =>
         (C : ℂ) * ccmRationalMoritaHilbertLeftScale k f q) 2 := by
-    simpa only [Pi.smul_apply, smul_eq_mul] using
+    simpa only [Pi.smul_apply, smul_eq_mul] using!
       (lp.memℓp ((C : ℂ) • ccmRationalMoritaHilbertLeftScale k f))
   apply hg.mono'
   intro q

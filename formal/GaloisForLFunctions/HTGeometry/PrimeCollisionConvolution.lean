@@ -96,7 +96,6 @@ theorem swapped_distinct_prime_powers_force_equal_exponents
       (p : ℕ) ^ (e + 1) * (q : ℕ) ^ (f + 1)) : e = f := by
   have hfac := congrArg (fun n : ℕ => n.factorization (p : ℕ)) h
   have hpqNat : (p : ℕ) ≠ (q : ℕ) := fun hpq' => hpq (Subtype.ext hpq')
-  dsimp only at hfac
   rw [Nat.factorization_mul
       (pow_ne_zero _ q.2.ne_zero) (pow_ne_zero _ p.2.ne_zero),
     Nat.factorization_mul
@@ -280,10 +279,10 @@ theorem arithmeticOfPrimePowerColumn_mul_apply_distinct_equal
   change (∑ de ∈ Nat.divisorsAntidiagonal n,
     arithmeticOfPrimePowerColumn e c de.1 *
       arithmeticOfPrimePowerColumn e d de.2) = _
-  rw [Finset.sum_eq_add_sum_diff_singleton_of_mem hP]
+  rw [Finset.sum_eq_add_sum_sdiff_singleton_of_mem hP]
   have hQerase : Q ∈ Nat.divisorsAntidiagonal n \ {P} := by
     exact Finset.mem_sdiff.mpr ⟨hQ, by simpa using hQP⟩
-  rw [Finset.sum_eq_add_sum_diff_singleton_of_mem hQerase]
+  rw [Finset.sum_eq_add_sum_sdiff_singleton_of_mem hQerase]
   have hrest :
       ∑ de ∈ (Nat.divisorsAntidiagonal n \ {P}) \ {Q},
         arithmeticOfPrimePowerColumn e c de.1 *
@@ -324,4 +323,3 @@ theorem arithmeticOfPrimePowerColumn_mul_apply_distinct_equal
 end
 
 end GaloisForLFunctions.HTGeometry
-

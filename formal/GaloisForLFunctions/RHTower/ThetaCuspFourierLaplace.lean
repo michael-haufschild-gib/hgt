@@ -120,14 +120,28 @@ theorem hasDerivAt_thetaCuspFourierLaplaceIntegrand (w : ℂ) (x : ℝ) :
       (thetaCuspFourierLaplaceDerivativeIntegrand w x) w := by
   have hlin : HasDerivAt (fun z : ℂ => -I * z * (x : ℂ))
       (-I * (x : ℂ)) w := by
-    convert (((hasDerivAt_id w).const_mul (-I)).mul_const (x : ℂ)) using 1
-    all_goals ring_nf
+    simpa using! (((hasDerivAt_id w).const_mul (-I)).mul_const (x : ℂ))
   have hexp := hlin.cexp
-  convert hexp.mul_const (thetaCuspFullSource x : ℂ) using 1
-  all_goals
-    simp [thetaCuspFourierLaplaceIntegrand,
-      thetaCuspFourierLaplaceDerivativeIntegrand]
-    ring_nf
+  have hprod := hexp.mul_const (thetaCuspFullSource x : ℂ)
+  have hprod' : HasDerivAt
+      (fun z : ℂ =>
+        Complex.exp (-I * z * (x : ℂ)) * (thetaCuspFullSource x : ℂ))
+      (-(Complex.exp (-I * w * (x : ℂ)) * (I * (x : ℂ)) *
+        (thetaCuspFullSource x : ℂ))) w := by
+    simpa using! hprod
+  have hcoeff :
+      -(Complex.exp (-I * w * (x : ℂ)) * (I * (x : ℂ)) *
+          (thetaCuspFullSource x : ℂ)) =
+        (-I * (x : ℂ)) *
+          (Complex.exp (-I * w * (x : ℂ)) * (thetaCuspFullSource x : ℂ)) := by
+    ring
+  change HasDerivAt
+    (fun z : ℂ =>
+      Complex.exp (-I * z * (x : ℂ)) * (thetaCuspFullSource x : ℂ))
+    ((-I * (x : ℂ)) *
+      (Complex.exp (-I * w * (x : ℂ)) * (thetaCuspFullSource x : ℂ))) w
+  rw [← hcoeff]
+  exact hprod'
 
 /-- The `k`-th spectral jet integrand of the theta-cusp Fourier--Laplace transform. -/
 def thetaCuspFourierLaplaceJetIntegrand (k : ℕ) (w : ℂ) (x : ℝ) : ℂ :=
@@ -148,12 +162,15 @@ theorem hasDerivAt_thetaCuspFourierLaplaceJetIntegrand
     (k : ℕ) (w : ℂ) (x : ℝ) :
     HasDerivAt (fun z : ℂ => thetaCuspFourierLaplaceJetIntegrand k z x)
       (thetaCuspFourierLaplaceJetIntegrand (k + 1) w x) w := by
-  convert (hasDerivAt_thetaCuspFourierLaplaceIntegrand w x).const_mul
-    ((-I * (x : ℂ)) ^ k) using 1
-  all_goals
-    simp only [thetaCuspFourierLaplaceJetIntegrand,
-      thetaCuspFourierLaplaceDerivativeIntegrand]
-    ring_nf
+  have hjet := (hasDerivAt_thetaCuspFourierLaplaceIntegrand w x).const_mul
+    ((-I * (x : ℂ)) ^ k)
+  have hcoeff :
+      (-I * (x : ℂ)) ^ k * thetaCuspFourierLaplaceDerivativeIntegrand w x =
+        thetaCuspFourierLaplaceJetIntegrand (k + 1) w x := by
+    simp only [thetaCuspFourierLaplaceDerivativeIntegrand,
+      thetaCuspFourierLaplaceJetIntegrand, pow_succ]
+    ring
+  simpa only [thetaCuspFourierLaplaceJetIntegrand, hcoeff] using! hjet
 
 /-- Every polynomially weighted two-sided exponential is integrable. -/
 theorem integrable_abs_pow_mul_exp_neg_mul_abs (k : ℕ) {c : ℝ} (hc : 0 < c) :
@@ -320,7 +337,7 @@ theorem hasDerivAt_thetaCuspFourierLaplace
     HasDerivAt thetaCuspFourierLaplace
       (∫ x : ℝ, thetaCuspFourierLaplaceDerivativeIntegrand w₀ x) w₀ := by
   simpa [thetaCuspFourierLaplaceJetIntegrand,
-    thetaCuspFourierLaplace, thetaCuspFourierLaplaceDerivativeIntegrand] using
+    thetaCuspFourierLaplace, thetaCuspFourierLaplaceDerivativeIntegrand] using!
     (hasDerivAt_integral_thetaCuspFourierLaplaceJet 0 hw₀)
 
 /-- **All-order theta-source jet law.**  Every spectral derivative of the Fourier--Laplace

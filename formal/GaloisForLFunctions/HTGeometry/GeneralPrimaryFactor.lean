@@ -58,16 +58,18 @@ theorem primaryFactor_hasDerivAt (g : ℕ) (z : ℂ) :
   have hsub : HasDerivAt (fun w : ℂ => 1 - w) (-1) z := by
     simpa using (hasDerivAt_id z).const_sub 1
   have hexp := (primaryExponent_hasDerivAt g z).cexp
-  convert hsub.mul hexp using 1
+  change HasDerivAt
+    (fun w : ℂ => (1 - w) * Complex.exp (primaryExponent g w)) _ z
+  apply (hsub.mul hexp).congr_deriv
   have hg := geom_identity g z
   calc
-    -(z ^ g) * Complex.exp (primaryExponent g z) =
-        ((1 - z) * (∑ k ∈ Finset.range g, z ^ k) - 1) *
-          Complex.exp (primaryExponent g z) := by rw [hg]
-    _ = -1 * Complex.exp (primaryExponent g z) +
+    -1 * Complex.exp (primaryExponent g z) +
         (1 - z) *
           (Complex.exp (primaryExponent g z) *
-            ∑ k ∈ Finset.range g, z ^ k) := by ring
+            ∑ k ∈ Finset.range g, z ^ k) =
+        ((1 - z) * (∑ k ∈ Finset.range g, z ^ k) - 1) *
+          Complex.exp (primaryExponent g z) := by ring
+    _ = -(z ^ g) * Complex.exp (primaryExponent g z) := by rw [hg]
 
 @[simp] theorem primaryExponent_zero (z : ℂ) :
     primaryExponent 0 z = 0 := by
@@ -121,7 +123,9 @@ theorem primaryFactor_sub_one_norm_le (g : ℕ) {z : ℂ} (hz : ‖z‖ ≤ 1) :
     have hline : HasDerivAt (fun s : ℝ => (s : ℂ) * z) z t := by
       simpa using ((hasDerivAt_id t).ofReal_comp).mul_const z
     have hcomp := (primaryFactor_hasDerivAt g ((t : ℂ) * z)).comp t hline
-    convert hcomp using 1
+    change HasDerivAt
+      ((primaryFactor g) ∘ fun s : ℝ => (s : ℂ) * z) _ t
+    apply hcomp.congr_deriv
     simp only [hf'def, mul_pow]
     ring
   have hcont : Continuous f' := by

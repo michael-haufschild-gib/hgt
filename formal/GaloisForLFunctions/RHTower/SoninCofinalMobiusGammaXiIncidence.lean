@@ -225,7 +225,7 @@ theorem tendsto_fixedEulerCofinalSigma (s : ℝ) :
         atTop (𝓝 0) := by
     simpa using
       (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ)).const_mul (s - 1)
-  simpa only [fixedEulerCofinalSigma, div_eq_mul_inv, one_mul, add_zero] using
+  simpa only [fixedEulerCofinalSigma, div_eq_mul_inv, one_mul, add_zero] using!
     hone.add hzero
 
 theorem tendsto_fixedEulerCofinalSigma_nhdsWithin

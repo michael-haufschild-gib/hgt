@@ -40,7 +40,7 @@ theorem linearIndependent_circleMonomialLp_of_infiniteSupport
         fun z : Circle => ∑ n ∈ t, c n * (z : ℂ) ^ n := by
     intro t
     induction t using Finset.induction_on with
-    | empty => simpa using (Lp.coeFn_zero ℂ 2 mu)
+    | empty => simpa using! (Lp.coeFn_zero ℂ 2 mu)
     | @insert a u ha ih =>
         rw [Finset.sum_insert ha]
         filter_upwards [Lp.coeFn_add

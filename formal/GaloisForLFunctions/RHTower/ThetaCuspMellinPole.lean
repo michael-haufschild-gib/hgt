@@ -39,11 +39,15 @@ theorem hasDerivAt_finitePrimeCuspEulerFactor (p : ℕ) (s : ℂ) :
     HasDerivAt (finitePrimeCuspEulerFactor p)
       ((Real.log p : ℂ) * Complex.exp (-s * Real.log p)) s := by
   unfold finitePrimeCuspEulerFactor
-  convert (hasDerivAt_const s (1 : ℂ)).sub
-    ((Complex.hasDerivAt_exp (-s * Real.log p)).comp s
-      (((hasDerivAt_id s).neg).mul_const (Real.log p : ℂ))) using 1
-  all_goals simp
-  all_goals ring
+  have hinner : HasDerivAt (fun z : ℂ => -z * (Real.log p : ℂ))
+      (-(Real.log p : ℂ)) s := by
+    simpa only [Pi.neg_apply, id_eq, neg_mul, one_mul] using
+      (((hasDerivAt_id s).neg).mul_const (Real.log p : ℂ))
+  have hexp : HasDerivAt (fun z : ℂ => Complex.exp (-z * Real.log p))
+      (Complex.exp (-s * Real.log p) * (-(Real.log p : ℂ))) s :=
+    (Complex.hasDerivAt_exp (-s * Real.log p)).comp s hinner
+  apply ((hasDerivAt_const s (1 : ℂ)).sub hexp).congr_deriv
+  ring
 
 @[simp] theorem finitePrimeCuspEulerFactor_deriv_zero (p : ℕ) :
     deriv (finitePrimeCuspEulerFactor p) 0 = (Real.log p : ℂ) := by

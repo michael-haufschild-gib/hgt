@@ -125,7 +125,7 @@ theorem normalizedGammaRealConnectionJet_not_linearRecurrence
     E hsolution horder
   exact (ne_of_gt
     (det_normalizedGammaRealConnectionJet_hankel_pos (E.order + 1))) (by
-      simpa [HTGeometry.algebraicHankelMatrix, HTGeometry.momentHankelMatrix] using hzero)
+      simpa [HTGeometry.algebraicHankelMatrix, HTGeometry.momentHankelMatrix] using! hzero)
 
 end
 

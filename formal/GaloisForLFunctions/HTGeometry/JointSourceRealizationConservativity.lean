@@ -46,7 +46,7 @@ theorem CommutingDifferenceDifferentialField.familyRealizedBoundaryFingerprint_e
     apply Prod.ext
     · exact S.boundaryFingerprint_eq_iff_sub_jointFixed x y |>.mpr hfixed
     · funext r
-      exact sub_eq_zero.mp (by simpa using hrealization r)
+      exact sub_eq_zero.mp (by simpa using! hrealization r)
 
 /-- Exact joint-conservativity criterion: the family reconstructs every primitive together with
 its source boundary if and only if no nonzero joint-fixed gauge is invisible in every realization.

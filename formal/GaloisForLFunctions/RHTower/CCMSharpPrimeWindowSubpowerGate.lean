@@ -173,7 +173,11 @@ theorem differentiableOn_dyadicSharpPowerLandauContinuation_landauBall
   have hzeta : DifferentiableAt ℂ (fun z : ℂ => riemannZeta (z - alpha)) s :=
     (differentiableAt_riemannZeta hne).comp s
       (differentiableAt_id.sub (differentiableAt_const (c := (alpha : ℂ))))
-  simpa only [dyadicSharpPowerLandauContinuation] using
+  change DifferentiableWithinAt ℂ
+    (fun z : ℂ => dyadicSharpPrimeContinuedSource z +
+      (C : ℂ) * riemannZeta (z - (alpha : ℂ)))
+    (Metric.ball (((1 + delta : ℝ) : ℂ)) r) s
+  exact
     hsource.differentiableAt.differentiableWithinAt.add
       (hzeta.differentiableWithinAt.const_mul (C : ℂ))
 
@@ -219,7 +223,11 @@ theorem differentiableOn_dyadicSharpPowerLandauContinuation_rightOf
   have hzeta : DifferentiableAt ℂ (fun z : ℂ => riemannZeta (z - alpha)) s :=
     (differentiableAt_riemannZeta hne).comp s
       (differentiableAt_id.sub (differentiableAt_const (c := (alpha : ℂ))))
-  simpa only [dyadicSharpPowerLandauContinuation] using
+  change DifferentiableWithinAt ℂ
+    (fun z : ℂ => dyadicSharpPrimeContinuedSource z +
+      (C : ℂ) * riemannZeta (z - (alpha : ℂ)))
+    {z : ℂ | 1 + delta < z.re} s
+  exact
     hsource.differentiableAt.differentiableWithinAt.add
       (hzeta.differentiableWithinAt.const_mul (C : ℂ))
 

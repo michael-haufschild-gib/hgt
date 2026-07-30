@@ -80,7 +80,7 @@ theorem fieldOneRationalDiagonalBruhatWeylMultiplier_injective :
     apply fieldOneSemilocalBruhatWeylMultiplier_eq_imp_fst_eq
     simpa only [
       fieldOneRationalDiagonalBruhatWeylMultiplier,
-      fieldOneRationalDiagonalSemilocalParameter] using heq
+      fieldOneRationalDiagonalSemilocalParameter] using! heq
   change (q : ℝ) = (r : ℝ) at hreal
   exact_mod_cast hreal
 

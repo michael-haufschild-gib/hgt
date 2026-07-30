@@ -70,7 +70,7 @@ theorem primeArithmetic_rotatedLog_commutator
   rw [Derivation.commutator_apply]
   change primeDeriv p.1 (Complex.I • logWeight f) -
       Complex.I • logWeight (primeDeriv p.1 f) = _
-  simpa only [Derivation.smul_apply, Algebra.smul_def] using
+  simpa only [Derivation.smul_apply, Algebra.smul_def] using!
     primeDeriv_rotatedLogArithmetic_commutator p f
 
 /-- Complex-linear quotient-rule extension of the rotated logarithmic derivation.  Its

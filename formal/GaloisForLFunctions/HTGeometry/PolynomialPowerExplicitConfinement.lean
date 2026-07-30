@@ -37,7 +37,7 @@ theorem eventually_const_mul_rpow_le_polynomialPowerFiniteDifference_of_pos
   have hmul : (c₀ / 2) * x ^ (β - 2) ≤
       (c₀ / 2) * x ^ (β - j) :=
     mul_le_mul_of_nonneg_left hpow (by positivity)
-  exact hmul.trans (by convert hx using 1 <;> ring)
+  exact hmul.trans (by convert! hx using 1 <;> ring)
 
 /-- Every boundary-shell competitor has an explicit positive-power gap. -/
 theorem boundaryOffsetCandidate_eventually_const_mul_rpow_power_gap

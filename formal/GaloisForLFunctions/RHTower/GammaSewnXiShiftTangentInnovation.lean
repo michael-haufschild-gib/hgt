@@ -151,8 +151,7 @@ private theorem hasSum_gammaSewnXiShiftDepthCenteredHeight_sq
     intro e
     simp only [gammaSewnXiShiftJointDepthProbability]
     ring
-  simpa only [gammaSewnSynchronizedEulerHalfHeightVariance] using
-    hcentered.hasSum
+  exact hcentered.hasSum
 
 /-- Genuine second moment of the centered joined depth--sewing clock. -/
 def gammaSewnXiShiftJointClockVariance
@@ -214,8 +213,21 @@ theorem gammaSewnXiShiftJointClockVariance_eq_fisherCurvature
               gammaSewnXiShiftJointDepthProbability x p e := by ring
     _ = 16 * gammaSewnSynchronizedEulerHalfHeightVariance (2 * x) p +
         4 * L ^ 2 * B * (1 - B) := by
-      convert hsum.tsum_eq using 1
-      all_goals ring
+      have hsum' : HasSum
+          (fun e : ℕ =>
+            16 * (gammaSewnXiShiftJointDepthProbability x p e *
+              (xiGammaEulerBoundaryHalfHeight p e -
+                gammaSewnSynchronizedEulerHalfHeightBarycenter (2 * x) p) ^ 2) +
+            (4 * L ^ 2 * B * (1 - B)) *
+              gammaSewnXiShiftJointDepthProbability x p e)
+          (16 * gammaSewnSynchronizedEulerHalfHeightVariance (2 * x) p +
+            (4 * L ^ 2 * B * (1 - B)) * 1) := by
+        apply HasSum.congr_fun hsum
+        intro e
+        rfl
+      have hsumEq := hsum'.tsum_eq
+      rw [mul_one] at hsumEq
+      exact hsumEq
     _ = 16 * gammaSewnSynchronizedEulerHalfHeightVariance (2 * x) p +
         gammaSewnSewingBernoulliFisherCurvature x p := by
       congr 1
@@ -294,7 +306,7 @@ theorem gammaSewnXiShiftDepthCDF_eq_one_sub_pow
       rw [ih]
       simp only [gammaSewnXiShiftJointDepthProbability,
         gammaSewnSynchronizedEulerDepthProbability]
-      ring
+      ring_nf
 
 private theorem xiMobiusContinuousApertureDiskNode_two_pow_succ_eq_rpow
     (p : Nat.Primes) (e : ℕ) :
@@ -413,14 +425,25 @@ theorem hasSum_gammaSewnXiShiftDepthProbability_mul_endpointHeightLift
     hasSum_gammaSewnSynchronizedEulerDepthProbability_mul_halfHeight
       (x := 2) (by norm_num) p
   have hscaled := hheight.mul_left (2 * (1 - r) / (P * L))
-  convert hscaled using 1
-  · funext e
+  have hscaled' : HasSum
+      (fun e : ℕ => gammaSewnXiShiftJointDepthProbability 1 p e *
+        gammaSewnXiShiftEndpointHeightLift p e)
+      (2 * (1 - r) / (P * L) *
+        gammaSewnSynchronizedEulerHalfHeightBarycenter 2 p) := by
+    apply HasSum.congr_fun hscaled
+    intro e
     rw [gammaSewnXiShiftEndpointHeightLift_eq_eulerHeight]
     dsimp only [r, P, L, gammaSewnXiShiftJointDepthProbability]
-    ring
-  · unfold gammaSewnSynchronizedEulerHalfHeightBarycenter
+    ring_nf
+  have hvalue :
+      2 * (1 - r) / (P * L) *
+          gammaSewnSynchronizedEulerHalfHeightBarycenter 2 p =
+        (p : ℝ)⁻¹ := by
+    unfold gammaSewnSynchronizedEulerHalfHeightBarycenter
     dsimp only [r, P, L]
     field_simp [hP.ne', hL', sub_ne_zero.mpr hr1.ne']
+  rw [← hvalue]
+  exact hscaled'
 
 private theorem gammaSewnXiShiftEndpointHeightLift_sub_mean_eq
     (p : Nat.Primes) (e : ℕ) :
@@ -461,17 +484,29 @@ theorem hasSum_gammaSewnXiShiftDepthProbability_mul_endpointHeightLift_centered_
   have hcentered :=
     hasSum_gammaSewnXiShiftDepthCenteredHeight_sq (x := 1) (by norm_num) p
   have hscaled := hcentered.mul_left ((2 * (1 - r) / (P * L)) ^ 2)
-  convert hscaled using 1
-  · funext e
+  have hscaled' : HasSum
+      (fun e : ℕ => gammaSewnXiShiftJointDepthProbability 1 p e *
+        (gammaSewnXiShiftEndpointHeightLift p e - (p : ℝ)⁻¹) ^ 2)
+      ((2 * (1 - r) / (P * L)) ^ 2 *
+        gammaSewnSynchronizedEulerHalfHeightVariance (2 * 1) p) := by
+    apply HasSum.congr_fun hscaled
+    intro e
     rw [gammaSewnXiShiftEndpointHeightLift_sub_mean_eq]
     dsimp only [r, P, L]
-    ring
-  · rw [show (2 : ℝ) * 1 = 2 by norm_num,
+    ring_nf
+  have hvalue :
+      (2 * (1 - r) / (P * L)) ^ 2 *
+          gammaSewnSynchronizedEulerHalfHeightVariance (2 * 1) p =
+        xiMobiusContinuousApertureDiskNode 2 p / (p : ℝ) ^ 2 := by
+    rw [show (2 : ℝ) * 1 = 2 by norm_num,
       gammaSewnSynchronizedEulerHalfHeightVariance_eq
       (x := 2) (by norm_num)]
     dsimp only [r, P, L]
     field_simp [hP.ne', hL', sub_ne_zero.mpr hr1.ne']
     norm_num
+    ring
+  rw [← hvalue]
+  exact hscaled'
 
 theorem xiMobiusContinuousApertureDiskNode_two_eq_inv_sq
     (p : Nat.Primes) :
@@ -538,8 +573,12 @@ theorem hasSum_filteredVonMangoldtPrimePowerInnovation_mul_endpointHeightLift
     (hasSum_gammaSewnXiShiftDepthProbability_mul_endpointHeightLift p).mul_left
       (Real.log (p : ℝ))
   have hcomplex := hreal.map Complex.ofRealCLM Complex.ofRealCLM.continuous
-  convert hcomplex using 1
-  · funext e
+  have hcomplex' : HasSum
+      (fun e : ℕ => filteredVonMangoldtPrimePowerInnovation p e *
+        (gammaSewnXiShiftEndpointHeightLift p e : ℂ))
+      (Complex.ofRealCLM (Real.log (p : ℝ) * (p : ℝ)⁻¹)) := by
+    apply HasSum.congr_fun hcomplex
+    intro e
     rw [filteredVonMangoldtPrimePowerInnovation_eq_depthProbability]
     simp only [Function.comp_apply]
     change ((Real.log (p : ℝ) *
@@ -550,6 +589,14 @@ theorem hasSum_filteredVonMangoldtPrimePowerInnovation_mul_endpointHeightLift
           gammaSewnXiShiftEndpointHeightLift p e) : ℝ) : ℂ)
     push_cast
     ring
+  have hvalue :
+      Complex.ofRealCLM (Real.log (p : ℝ) * (p : ℝ)⁻¹) =
+        ((Real.log (p : ℝ) / (p : ℝ) : ℝ) : ℂ) := by
+    change ((Real.log (p : ℝ) * (p : ℝ)⁻¹ : ℝ) : ℂ) =
+      ((Real.log (p : ℝ) / (p : ℝ) : ℝ) : ℂ)
+    rw [div_eq_mul_inv]
+  rw [← hvalue]
+  exact hcomplex'
 
 end
 

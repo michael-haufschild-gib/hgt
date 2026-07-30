@@ -23,7 +23,8 @@ namespace GaloisForLFunctions
 the powers of `x` with those coefficients. -/
 theorem aeval_ofFinsupp_eq_linearCombination {R A : Type*} [CommRing R] [CommRing A]
     [Algebra R A] (x : A) (l : ℕ →₀ R) :
-    (aeval x) (⟨l⟩ : R[X]) = Finsupp.linearCombination R (fun n : ℕ => x ^ n) l := by
+    (aeval x) (⟨AddMonoidAlgebra.ofCoeff l⟩ : R[X]) =
+      Finsupp.linearCombination R (fun n : ℕ => x ^ n) l := by
   rw [Finsupp.linearCombination_apply, aeval_def, eval₂_eq_sum, Polynomial.sum]
   simp only [Polynomial.coeff_ofFinsupp, Polynomial.support]
   rw [Finsupp.sum]
@@ -37,9 +38,10 @@ theorem Transcendental.linearIndependent_pow {R A : Type*} [CommRing R] [CommRin
     LinearIndependent R (fun n : ℕ => x ^ n) := by
   rw [linearIndependent_iff]
   intro l hl
-  have hp : (aeval x) (⟨l⟩ : R[X]) = 0 := by
+  have hp : (aeval x) (⟨AddMonoidAlgebra.ofCoeff l⟩ : R[X]) = 0 := by
     rw [aeval_ofFinsupp_eq_linearCombination]; exact hl
-  have hz : (⟨l⟩ : R[X]) = 0 := (transcendental_iff.mp hx) _ hp
+  have hz : (⟨AddMonoidAlgebra.ofCoeff l⟩ : R[X]) = 0 :=
+    (transcendental_iff.mp hx) _ hp
   apply Finsupp.ext
   intro n
   have := congrArg (Polynomial.coeff · n) hz

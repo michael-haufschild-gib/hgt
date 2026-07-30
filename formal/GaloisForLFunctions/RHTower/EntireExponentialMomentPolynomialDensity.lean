@@ -81,7 +81,7 @@ def positiveDensityMeasure (mu : Measure ℝ) (g : ℝ → ℝ) : Measure ℝ :=
 
 /-- The negative density measure of a real function relative to a base measure. -/
 def negativeDensityMeasure (mu : Measure ℝ) (g : ℝ → ℝ) : Measure ℝ :=
-  mu.withDensity fun x => ENNReal.ofReal (-g x)
+  mu.withDensity fun x => ENNReal.ofReal ((-g) x)
 
 theorem positiveDensityMeasure_finite {mu : Measure ℝ} [IsFiniteMeasure mu]
     {g : ℝ → ℝ} (hg : Integrable g mu) :
@@ -252,12 +252,11 @@ theorem ae_eq_zero_of_all_moments_of_entireExponentialMoments
     simpa only [mup, mun] using
       positiveDensityMeasure_eq_negativeDensityMeasure_of_moments_zero hmu hgmeas hg hmom
   have hsing : mup ⟂ₘ mun := by
-    simpa only [mup, mun, positiveDensityMeasure, negativeDensityMeasure] using
+    simpa only [mup, mun, positiveDensityMeasure, negativeDensityMeasure] using!
       withDensity_ofReal_mutuallySingular hgmeas
   have hself : mup ⟂ₘ mup := by simpa [heq] using hsing
   have hmup : mup = 0 := by
-    have hdisjoint := hself.disjoint
-    simpa using hdisjoint
+    exact (Measure.MutuallySingular.self_iff mup).mp hself
   have hmun : mun = 0 := by rw [← heq, hmup]
   have hpzero : (fun x => ENNReal.ofReal (g x)) =ᵐ[mu] (fun _ => 0) :=
     (withDensity_eq_zero_iff hgmeas.ennreal_ofReal.aemeasurable).mp (by

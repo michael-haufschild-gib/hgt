@@ -37,7 +37,12 @@ theorem restrictCouplingToPacket_tendsto_zero
       (𝓝 0) (𝓝 0) := by
   have hc :=
     (restrictCouplingToPacket_analyticAt packet).continuousAt
-  simpa [restrictCouplingToPacket] using hc
+  have hz :
+      restrictCouplingToPacket packet (0 : E → ℂ) = 0 := by
+    funext e
+    rfl
+  rw [ContinuousAt] at hc
+  simpa only [hz] using hc
 
 variable
     {V E : Type*} [Fintype V] [DecidableEq V]

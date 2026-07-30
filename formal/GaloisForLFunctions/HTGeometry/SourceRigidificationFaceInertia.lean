@@ -162,10 +162,10 @@ theorem gammaPeriodicMode_not_periodic_of_im_ne_zero
 /-- Positive period-one Fourier modes of any prescribed finite rank are linearly independent. -/
 theorem gammaPositivePeriodicModes_linearIndependent (k : ℕ) :
     LinearIndependent ℂ (fun m : Fin k => gammaPeriodicMode ((m : ℕ) + 1)) := by
-  have hfreq : Function.Injective
-      (fun m : Fin k => gammaPeriodicFrequency m.succ) :=
-    gammaPeriodicFrequency_fin_injective.comp (Fin.succ_injective k)
-  simpa [gammaPeriodicMode] using HurwitzExp.expLin_linearIndependent hfreq
+  change LinearIndependent ℂ (fun m : Fin k =>
+    fun z : ℂ => Complex.exp (gammaPeriodicFrequency m.succ * z))
+  exact HurwitzExp.expLin_linearIndependent
+    (gammaPeriodicFrequency_fin_injective.comp (Fin.succ_injective k))
 
 /-- A finite packet in the positive period-one Fourier modes. -/
 def gammaPositivePeriodicFourierPacket {k : ℕ} (a : Fin k → ℂ) (z : ℂ) : ℂ :=

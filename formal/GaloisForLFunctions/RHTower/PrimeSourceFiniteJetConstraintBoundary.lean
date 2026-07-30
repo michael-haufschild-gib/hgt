@@ -55,7 +55,7 @@ theorem signedPrimeSource_finiteJetConstraint_forces_infinite_trdeg
   have hsource := hpalette.comp (fun _ : Unit => 0) (by
     intro u v huv
     exact Subsingleton.elim u v)
-  simpa only [Function.comp_apply] using hsource
+  simpa only [Function.comp_apply] using! hsource
 
 /-- If the coefficients of a finite jet constraint on an oriented signed-prime source come from
 the differential field of one input `h`, then `h` is hypertranscendental over `ℂ`. -/
@@ -86,7 +86,7 @@ theorem signedPrimeSource_finiteJetConstraint_forces_HT_input
   have hsource := hpalette.comp (fun _ : Unit => 0) (by
     intro u v huv
     exact Subsingleton.elim u v)
-  simpa only [Function.comp_apply] using hsource
+  simpa only [Function.comp_apply] using! hsource
 
 /-- A nonzero finite variable-coefficient differential filter cannot reduce an oriented
 signed-prime source to a differentially algebraic observation when all coefficients live in a
@@ -116,7 +116,7 @@ theorem signedPrimeSource_finsuppLinearDifferentialObservation_hypertranscendent
   have hsource := hpalette.comp (fun _ : Unit => 0) (by
     intro u v huv
     exact Subsingleton.elim u v)
-  simpa only [Function.comp_apply] using hsource
+  simpa only [Function.comp_apply] using! hsource
 
 end
 

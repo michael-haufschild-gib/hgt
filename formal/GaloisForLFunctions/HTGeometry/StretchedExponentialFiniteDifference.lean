@@ -59,8 +59,11 @@ lemma _root_.OrderedFinpartition.eq_atomic_of_length_eq {n : ℕ}
   have h₃ (i : Fin n) (j : Fin 1) : emb i j = i := by
     rw [Subsingleton.elim j 0]
     exact congrFun heq i
-  simpa [OrderedFinpartition.ext_iff, funext_iff, Fin.forall_fin_one] using
-    (fun i => h₃ i 0)
+  have hemb : emb = fun i (_ : Fin 1) => i := by
+    funext i j
+    exact h₃ i j
+  subst emb
+  rfl
 
 lemma _root_.OrderedFinpartition.length_lt_of_ne_atomic {n : ℕ}
     (c : OrderedFinpartition n) (hne : c ≠ OrderedFinpartition.atomic n) :

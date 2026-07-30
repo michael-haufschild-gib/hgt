@@ -110,11 +110,11 @@ theorem gammaPoleTriFlatten_monomial
             (LaurentPolynomial.C (MvPolynomial.monomial m c) *
               LaurentPolynomial.T l) *
           LaurentPolynomial.T q) =
-      Finsupp.single ((q, l), m) c := by
+      AddMonoidAlgebra.single ((q, l), m) c := by
   have hinner :
       LaurentPolynomial.C (MvPolynomial.monomial m c) *
           LaurentPolynomial.T l =
-        (Finsupp.single l (Finsupp.single m c) :
+        (AddMonoidAlgebra.single l (AddMonoidAlgebra.single m c) :
           GammaPoleScaleDerivativeSymbolic) :=
     (LaurentPolynomial.single_eq_C_mul_T (MvPolynomial.monomial m c) l).symm
   have hreplace :
@@ -125,7 +125,7 @@ theorem gammaPoleTriFlatten_monomial
           LaurentPolynomial.T q : GammaPoleMovingJetSymbolic) =
         ((LaurentPolynomial.C : GammaPoleScaleDerivativeSymbolic →+*
           GammaPoleMovingJetSymbolic)
-          (Finsupp.single l (Finsupp.single m c) :
+          (AddMonoidAlgebra.single l (AddMonoidAlgebra.single m c) :
             GammaPoleScaleDerivativeSymbolic) *
           LaurentPolynomial.T q : GammaPoleMovingJetSymbolic) :=
     congrArg (fun a : GammaPoleScaleDerivativeSymbolic =>
@@ -134,23 +134,25 @@ theorem gammaPoleTriFlatten_monomial
   have houter :
       (LaurentPolynomial.C : GammaPoleScaleDerivativeSymbolic →+*
           GammaPoleMovingJetSymbolic)
-          (Finsupp.single l (Finsupp.single m c) :
+          (AddMonoidAlgebra.single l (AddMonoidAlgebra.single m c) :
             GammaPoleScaleDerivativeSymbolic) *
           LaurentPolynomial.T q =
-        (Finsupp.single q (Finsupp.single l (Finsupp.single m c)) :
+        (AddMonoidAlgebra.single q
+          (AddMonoidAlgebra.single l (AddMonoidAlgebra.single m c)) :
           GammaPoleMovingJetSymbolic) :=
     (LaurentPolynomial.single_eq_C_mul_T
       (R := GammaPoleScaleDerivativeSymbolic)
-      (Finsupp.single l (Finsupp.single m c) :
+      (AddMonoidAlgebra.single l (AddMonoidAlgebra.single m c) :
         GammaPoleScaleDerivativeSymbolic) q).symm
   calc
     gammaPoleTriFlatten
         ((LaurentPolynomial.C : GammaPoleScaleDerivativeSymbolic →+*
             GammaPoleMovingJetSymbolic)
-          (Finsupp.single l (Finsupp.single m c) :
+          (AddMonoidAlgebra.single l (AddMonoidAlgebra.single m c) :
             GammaPoleScaleDerivativeSymbolic) * LaurentPolynomial.T q) =
       gammaPoleTriFlatten
-        (Finsupp.single q (Finsupp.single l (Finsupp.single m c))) :=
+        (AddMonoidAlgebra.single q
+          (AddMonoidAlgebra.single l (AddMonoidAlgebra.single m c))) :=
       congrArg gammaPoleTriFlatten houter
     _ = _ := by
       simp only [gammaPoleTriFlatten, RingEquiv.trans_apply,
@@ -313,14 +315,19 @@ theorem gammaPoleSymbolicRegularSummand_eq (j k : ℕ) :
   rw [map_mul]
   simp only [gammaPoleSymbolicUnitDerivativeBoundaryEval,
     MvPolynomial.eval₂Hom_C, MvPolynomial.eval₂Hom_X']
-  congr 1
-  change gammaPoleComplexScaleDerivativeInclude
-      (gammaPoleUniversalRegularScalar j k) *
-      gammaPoleSymbolicUnitDerivativeBoundaryFamily k = _
-  rw [gammaPoleSymbolicUnitDerivativeBoundaryFamily_eq_monomial]
-  simp [gammaPoleComplexScaleDerivativeInclude,
-    gammaPoleRationalScaleDerivativeInclude,
-    ← map_mul, MvPolynomial.C_mul_monomial]
+  apply LaurentPolynomial.ext
+  intro q
+  simp only [LaurentPolynomial.C_apply]
+  split_ifs with hq
+  · subst q
+    change gammaPoleComplexScaleDerivativeInclude
+        (gammaPoleUniversalRegularScalar j k) *
+        gammaPoleSymbolicUnitDerivativeBoundaryFamily k = _
+    rw [gammaPoleSymbolicUnitDerivativeBoundaryFamily_eq_monomial]
+    simp [gammaPoleComplexScaleDerivativeInclude,
+      gammaPoleRationalScaleDerivativeInclude,
+      ← map_mul, MvPolynomial.C_mul_monomial]
+  · rfl
 
 theorem gammaPoleSymbolicRegularSummand_trihomogeneous
     (j k : ℕ) (hk : k ≤ j) :
@@ -405,9 +412,8 @@ theorem gammaPoleTrihomogeneous_eval₂_of_isHomogeneous
     intro i hi
     simpa using (hg i).pow (m i)
   have hterm := (hf (P.coeff m)).mul hprod
-  have hdegNat : ∑ i ∈ m.support, m i = d := by
-    simpa [Finsupp.weight_apply, smul_eq_mul] using
-      hP (MvPolynomial.mem_support_iff.mp hm)
+  have hdegNat : ∑ i ∈ m.support, m i = d :=
+    (hP.degree_eq_sum_deg_support hm).symm
   have hdegInt : ∑ i ∈ m.support, (m i : ℤ) = (d : ℤ) := by
     exact_mod_cast hdegNat
   simpa [hdegInt] using hterm
@@ -420,7 +426,8 @@ theorem gammaPoleSymbolicPolynomialJetLaurentEval_trihomogeneous
     (hP : P.IsHomogeneous d) :
     GammaPoleTrihomogeneous (d : ℤ)
       (gammaPoleSymbolicPolynomialJetLaurentEval n P) := by
-  simpa only [gammaPoleSymbolicPolynomialJetLaurentEval] using
+  simpa only [gammaPoleSymbolicPolynomialJetLaurentEval,
+    MvPolynomial.coe_eval₂Hom] using
     gammaPoleTrihomogeneous_eval₂_of_isHomogeneous hP
       gammaPoleSymbolicMovingCoefficientLaurent
       (fun j : Fin (n + 1) =>
@@ -430,8 +437,8 @@ theorem gammaPoleSymbolicPolynomialJetLaurentEval_trihomogeneous
 
 @[simp] theorem gammaPoleTriFlatten_apply
     (F : GammaPoleMovingJetSymbolic) (q l : ℤ) (m : ℕ →₀ ℕ) :
-    gammaPoleTriFlatten F ((q, l), m) =
-      MvPolynomial.coeff m ((F q) l) := by
+    (gammaPoleTriFlatten F).coeff ((q, l), m) =
+      MvPolynomial.coeff m ((F.coeff q).coeff l) := by
   rfl
 
 /-- Coefficient form of tri-homogeneity: every nonzero symbolic monomial lies
@@ -440,9 +447,9 @@ theorem GammaPoleTrihomogeneous.support_weight
     {d : ℤ} {F : GammaPoleMovingJetSymbolic}
     (hF : GammaPoleTrihomogeneous d F)
     {q l : ℤ} {m : ℕ →₀ ℕ}
-    (hcoeff : MvPolynomial.coeff m ((F q) l) ≠ 0) :
+    (hcoeff : MvPolynomial.coeff m ((F.coeff q).coeff l) ≠ 0) :
     q + l + gammaPoleBoundaryDerivativeWeight m = d := by
-  have hsupp : ((q, l), m) ∈ (gammaPoleTriFlatten F).support := by
+  have hsupp : ((q, l), m) ∈ (gammaPoleTriFlatten F).coeff.support := by
     rw [Finsupp.mem_support_iff]
     simpa using hcoeff
   simpa [gammaPoleTriWeight] using hF ((q, l), m) hsupp
@@ -453,7 +460,7 @@ theorem gammaPoleSymbolicPolynomialJetLaurentEval_support_weight
     (hP : P.IsHomogeneous d)
     {q l : ℤ} {m : ℕ →₀ ℕ}
     (hcoeff : MvPolynomial.coeff m
-      ((gammaPoleSymbolicPolynomialJetLaurentEval n P q) l) ≠ 0) :
+      (((gammaPoleSymbolicPolynomialJetLaurentEval n P).coeff q).coeff l) ≠ 0) :
     q + l + gammaPoleBoundaryDerivativeWeight m = (d : ℤ) :=
   (gammaPoleSymbolicPolynomialJetLaurentEval_trihomogeneous hP).support_weight
     hcoeff
@@ -469,7 +476,7 @@ theorem universalSimplePoleJetProfile_coeff_one (j : ℕ) :
     HTGeometry.universalSimplePoleRegularProfile_eval_zero j
 
 theorem gammaPoleSymbolicDerivativeLaurentProfile_coeff_one (j : ℕ) :
-    gammaPoleSymbolicDerivativeLaurentProfile j 1 =
+    (gammaPoleSymbolicDerivativeLaurentProfile j).coeff 1 =
       gammaPoleSymbolicDerivativeScale j *
         gammaPoleSymbolicUnitDerivativeBoundaryFamily j := by
   have hboundary :
@@ -483,12 +490,12 @@ theorem gammaPoleSymbolicDerivativeLaurentProfile_coeff_one (j : ℕ) :
   change gammaPoleSymbolicDerivativeScale j *
       (Polynomial.toLaurent
         ((HTGeometry.universalSimplePoleJetProfile j).map
-          gammaPoleSymbolicUnitDerivativeBoundaryEval) 1) = _
+          gammaPoleSymbolicUnitDerivativeBoundaryEval)).coeff 1 = _
   congr 1
   rw [Polynomial.toLaurent_apply]
   change Finsupp.mapDomain (fun n : ℕ => (n : ℤ))
       ((HTGeometry.universalSimplePoleJetProfile j).map
-        gammaPoleSymbolicUnitDerivativeBoundaryEval).toFinsupp
+        gammaPoleSymbolicUnitDerivativeBoundaryEval).toFinsupp.coeff
         ((1 : ℕ) : ℤ) = _
   have hinj : Function.Injective (fun n : ℕ => (n : ℤ)) :=
     Int.ofNat_injective
@@ -555,12 +562,13 @@ derivative has the exact unit coefficient `-(-1)^j`. -/
 theorem gammaPoleSymbolicDerivativeLaurentProfile_bottom_scale_boundary
     (j : ℕ) :
     MvPolynomial.coeff (gammaPoleBoundaryExponent j)
-        ((gammaPoleSymbolicDerivativeLaurentProfile j 1) (-(j : ℤ))) =
+        (((gammaPoleSymbolicDerivativeLaurentProfile j).coeff 1).coeff (-(j : ℤ))) =
       RatFunc.C (-((-1 : ℂ) ^ j)) := by
   rw [gammaPoleSymbolicDerivativeLaurentProfile_coeff_one,
     gammaPoleSymbolicDerivativeScale_mul_boundaryFamily_eq]
   rw [← LaurentPolynomial.single_eq_C_mul_T]
-  rw [Finsupp.single_eq_same, MvPolynomial.coeff_monomial]
+  rw [AddMonoidAlgebra.coeff_single, Finsupp.single_eq_same,
+    MvPolynomial.coeff_monomial]
   simp
 
 /-- Symbolic counterpart of the actual monomial substitution formula. -/
@@ -579,10 +587,10 @@ no scale or positive-boundary content. -/
 theorem gammaPoleSymbolicMovingCoefficientLaurent_zero_scale_boundary
     (p : Polynomial ℂ) :
     MvPolynomial.coeff 0
-        ((gammaPoleSymbolicMovingCoefficientLaurent p 0) 0) =
+        (((gammaPoleSymbolicMovingCoefficientLaurent p).coeff 0).coeff 0) =
       gammaPoleCenterHasseRational p 0 := by
   have hzero :
-      gammaPoleSymbolicMovingCoefficientLaurent p 0 =
+      (gammaPoleSymbolicMovingCoefficientLaurent p).coeff 0 =
         gammaPoleRationalScaleDerivativeInclude
           (gammaPoleCenterHasseRational p 0) := by
     simpa using gammaPoleSymbolicMovingCoefficientLaurent_coeff_neg p 0
@@ -619,9 +627,8 @@ theorem isHomogeneous_eval₂_scale_general
       c ^ D * MvPolynomial.eval₂ f g P := by
   rw [MvPolynomial.eval₂_eq, MvPolynomial.eval₂_eq, Finset.mul_sum]
   refine Finset.sum_congr rfl fun m hm => ?_
-  have hdeg : ∑ i ∈ m.support, m i = D := by
-    simpa [Finsupp.weight_apply, smul_eq_mul] using
-      hP (MvPolynomial.mem_support_iff.mp hm)
+  have hdeg : ∑ i ∈ m.support, m i = D :=
+    (hP.degree_eq_sum_deg_support hm).symm
   have hpow : ∏ i ∈ m.support, (c * g i) ^ m i =
       c ^ D * ∏ i ∈ m.support, g i ^ m i := by
     simp_rw [mul_pow]
@@ -779,11 +786,15 @@ theorem gammaPoleSymbolicConstantJetLaurentEval_biscale_factor
       (fun j : Fin (n + 1) =>
         gammaPoleSymbolicDerivativeLaurentProfile (j : ℕ)) P = _
   simp_rw [gammaPoleSymbolicDerivativeLaurentProfile_biscale_factor]
-  exact isHomogeneous_isWeightedHomogeneous_eval₂_biscale hD hW
-    gammaPoleSymbolicConstantCoefficientInclude
-    (fun j : Fin (n + 1) =>
-      gammaPoleSymbolicUniversalDerivativeLaurentProfile (j : ℕ))
-    gammaPoleSymbolicParticleScale gammaPoleSymbolicDerivativeWeightScale
+  simpa only [gammaPoleSourceDerivativeWeight,
+    gammaPoleSymbolicUniversalJetLaurentEval,
+    MvPolynomial.coe_eval₂Hom] using
+    isHomogeneous_isWeightedHomogeneous_eval₂_biscale
+      (w := gammaPoleSourceDerivativeWeight) (P := P) hD hW
+      gammaPoleSymbolicConstantCoefficientInclude
+      (fun j : Fin (n + 1) =>
+        gammaPoleSymbolicUniversalDerivativeLaurentProfile (j : ℕ))
+      gammaPoleSymbolicParticleScale gammaPoleSymbolicDerivativeWeightScale
 
 theorem finiteUniversalSimplePoleProfileEval_coeff_particleNumber
     {n D : ℕ} {P : MvPolynomial (Fin (n + 1)) ℂ}
@@ -799,14 +810,14 @@ finite source polynomial evaluated on the normalized boundary family. -/
 theorem gammaPoleSymbolicUniversalJetLaurentEval_coeff_particleNumber
     {n D : ℕ} {P : MvPolynomial (Fin (n + 1)) ℂ}
     (hD : P.IsHomogeneous D) :
-    gammaPoleSymbolicUniversalJetLaurentEval n P (D : ℤ) =
+    (gammaPoleSymbolicUniversalJetLaurentEval n P).coeff (D : ℤ) =
       gammaPoleSymbolicUnitDerivativeBoundaryEval
         (HTGeometry.simplePoleFinToNat n P) := by
   rw [gammaPoleSymbolicUniversalJetLaurentEval_eq]
   rw [Polynomial.toLaurent_apply]
   change Finsupp.mapDomain (fun q : ℕ => (q : ℤ))
       (((HTGeometry.finiteUniversalSimplePoleProfileEval n P).map
-        gammaPoleSymbolicUnitDerivativeBoundaryEval).toFinsupp) (D : ℤ) = _
+        gammaPoleSymbolicUnitDerivativeBoundaryEval).toFinsupp.coeff) (D : ℤ) = _
   have hinj : Function.Injective (fun q : ℕ => (q : ℤ)) :=
     Int.ofNat_injective
   rw [Finsupp.mapDomain_apply hinj]
@@ -837,7 +848,7 @@ theorem gammaPoleSymbolicConstantJetLaurentEval_coeff_particleNumber
     (hD : P.IsHomogeneous D)
     (hW : MvPolynomial.IsWeightedHomogeneous
       gammaPoleSourceDerivativeWeight P W) :
-    gammaPoleSymbolicConstantJetLaurentEval n P (D : ℤ) =
+    (gammaPoleSymbolicConstantJetLaurentEval n P).coeff (D : ℤ) =
       gammaPoleSymbolicBiscaleFactor D W *
         gammaPoleSymbolicUnitDerivativeBoundaryEval
           (HTGeometry.simplePoleFinToNat n P) := by
@@ -845,7 +856,7 @@ theorem gammaPoleSymbolicConstantJetLaurentEval_coeff_particleNumber
     gammaPoleSymbolicBiscaleFactor_outer_eq,
     ← LaurentPolynomial.smul_eq_C_mul]
   change gammaPoleSymbolicBiscaleFactor D W *
-      (gammaPoleSymbolicUniversalJetLaurentEval n P (D : ℤ)) = _
+      (gammaPoleSymbolicUniversalJetLaurentEval n P).coeff (D : ℤ) = _
   rw [gammaPoleSymbolicUniversalJetLaurentEval_coeff_particleNumber hD]
 
 def gammaPoleSymbolicCenterCoefficientInclude :
@@ -871,7 +882,7 @@ def gammaPoleSymbolicCenterUniversalJetLaurentEval (n : ℕ) :
 
 theorem gammaPoleSymbolicMovingCoefficientLaurent_coeff_zero
     (p : Polynomial ℂ) :
-    gammaPoleSymbolicMovingCoefficientLaurent p 0 =
+    (gammaPoleSymbolicMovingCoefficientLaurent p).coeff 0 =
       gammaPoleRationalScaleDerivativeInclude
         (gammaPoleCenterRationalEval p) := by
   have h := gammaPoleSymbolicMovingCoefficientLaurent_coeff_neg p 0
@@ -896,11 +907,15 @@ theorem gammaPoleSymbolicCenterJetLaurentEval_biscale_factor
       (fun j : Fin (n + 1) =>
         gammaPoleSymbolicDerivativeLaurentProfile (j : ℕ)) P = _
   simp_rw [gammaPoleSymbolicDerivativeLaurentProfile_biscale_factor]
-  exact isHomogeneous_isWeightedHomogeneous_eval₂_biscale hD hW
-    gammaPoleSymbolicCenterCoefficientInclude
-    (fun j : Fin (n + 1) =>
-      gammaPoleSymbolicUniversalDerivativeLaurentProfile (j : ℕ))
-    gammaPoleSymbolicParticleScale gammaPoleSymbolicDerivativeWeightScale
+  simpa only [gammaPoleSourceDerivativeWeight,
+    gammaPoleSymbolicCenterUniversalJetLaurentEval,
+    MvPolynomial.coe_eval₂Hom] using
+    isHomogeneous_isWeightedHomogeneous_eval₂_biscale
+      (w := gammaPoleSourceDerivativeWeight) (P := P) hD hW
+      gammaPoleSymbolicCenterCoefficientInclude
+      (fun j : Fin (n + 1) =>
+        gammaPoleSymbolicUniversalDerivativeLaurentProfile (j : ℕ))
+      gammaPoleSymbolicParticleScale gammaPoleSymbolicDerivativeWeightScale
 
 end
 

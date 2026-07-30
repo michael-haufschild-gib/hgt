@@ -195,7 +195,6 @@ theorem summable_arcsineZetaDoubleTerm {s : ℂ} (hs : 0 < s.re) :
   let q : ℕ → ℝ := fun k => 1 / (k : ℝ) ^ (1 + eps)
   have hq : Summable q := by
     apply Real.summable_one_div_nat_rpow.mpr
-    dsimp only [q]
     linarith
   have hmajor : Summable (fun p : ℕ × ℕ => arcsinCoeff p.1 * q p.2) := by
     rw [summable_prod_of_nonneg (fun p => mul_nonneg (arcsinCoeff_nonneg p.1) (by
@@ -234,6 +233,7 @@ theorem arcsineZetaDoubleTerm_hasSum_column (s : ℂ) (k : ℕ) :
   rcases k.eq_zero_or_pos with rfl | hk
   · simp [arcsineZetaDoubleTerm, LSeries.term_zero]
   · have hk0 : k ≠ 0 := Nat.ne_of_gt hk
+    have hkC : (k : ℂ) ≠ 0 := by exact_mod_cast hk0
     have hkreal : 0 < (k : ℝ) := by exact_mod_cast hk
     have hk1 : 1 / (k : ℝ) ≤ 1 := by
       rw [div_le_one (by positivity)]
@@ -253,11 +253,11 @@ theorem arcsineZetaDoubleTerm_hasSum_column (s : ℂ) (k : ℕ) :
     apply HasSum.congr_fun hmul
     intro j
     rw [arcsineZetaDoubleTerm, LSeries.term_of_ne_zero hk0,
-      Pi.one_apply, Complex.cpow_add _ _ (by exact_mod_cast hk0),
+      Pi.one_apply, Complex.cpow_add _ _ hkC,
       Complex.cpow_natCast]
     push_cast
-    field_simp
-    ring
+    rw [one_div_pow]
+    field_simp [hkC]
 
 theorem arcsineZetaDoubleTerm_hasSum_row {s : ℂ} (hs : 0 < s.re) (j : ℕ) :
     HasSum (fun k : ℕ => arcsineZetaDoubleTerm s j k) (arcsineZetaTerm j s) := by

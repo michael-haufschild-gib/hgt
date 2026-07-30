@@ -185,6 +185,7 @@ theorem tendsto_thetaSquareBlaschkeFinite {z : ℂ} (hz : 0 < z.re) :
   have hsinh : Complex.sinh ((Real.pi : ℂ) * Complex.sqrt z) ≠ 0 :=
     sinh_pi_sqrt_ne_zero_of_re_pos hz
   have hdiv := hnum.div hden hsinh
+  rw [thetaSquareBlaschkeSymbol]
   convert hdiv using 1
   ext N
   rw [thetaSquareBlaschkeFinite]
@@ -336,7 +337,7 @@ theorem integral_sq_norm_thetaSquareBlaschkeReaderSymbol_line_le_cauchy
     have hlineAt : ContinuousAt (fun u : ℝ => (x : ℂ) + (u : ℂ) * I) t := by
       fun_prop
     have hcomp := hreaderAt.comp_of_eq hlineAt rfl
-    simpa [f, Function.comp_def] using hcomp.norm.pow 2
+    simpa [f, Function.comp_def] using! hcomp.norm.pow 2
   have ht0 : ∀ᵐ t : ℝ, t ≠ 0 := by simp [ae_iff, measure_singleton]
   have hfg : ∀ᵐ t : ℝ, f t ≤ g t := by
     filter_upwards [ht0] with t ht
@@ -471,7 +472,7 @@ theorem tendsto_integral_sq_norm_thetaSquareBlaschkeReaderSymbol_line_zero
           (fun u : ℝ => (((1 / ((k : ℝ) + 1) : ℝ) : ℂ) + (u : ℂ) * I)) t := by
         fun_prop
       have hcomp := hreaderAt.comp_of_eq hlineAt rfl
-      simpa [F, Function.comp_def] using hcomp.norm.pow 2
+      simpa [F, Function.comp_def] using! hcomp.norm.pow 2
     exact hcont.aestronglyMeasurable
   have hboundInt : Integrable bound := integrable_reader_boundary_majorant hn
   have ht0 : ∀ᵐ t : ℝ, t ≠ 0 := by simp [ae_iff, measure_singleton]

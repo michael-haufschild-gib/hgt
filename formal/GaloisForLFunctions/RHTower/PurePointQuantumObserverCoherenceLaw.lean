@@ -137,7 +137,7 @@ theorem purePointObserverPhaseEnergy_eq_zero_iff
       have hphase := hlocked p.1 p.2.1 p.2.2 hpos hblock
       simp [f, hphase]
     rw [purePointObserverPhaseEnergy]
-    simpa only [f, hfun] using (tsum_zero : ∑' _p : J × (ι × ι), (0 : ℝ) = 0)
+    simpa only [f, hfun] using! (tsum_zero : ∑' _p : J × (ι × ι), (0 : ℝ) = 0)
 
 /--
 Hamiltonian specialization: exact return occurs precisely when every visible

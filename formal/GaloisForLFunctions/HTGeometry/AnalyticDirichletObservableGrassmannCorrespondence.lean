@@ -338,7 +338,7 @@ theorem cofiniteTailDenseOn_analyticObservableCoordinateCarrier_relativeDI_of_qu
     GaloisForLFunctions.differentialIndependent_sum_right_over_left_differentialAdjoin
       oldCarrier newCarrier hjoint'
   simpa only [analyticObservableGrassmannField, analyticObservableShiftField,
-    oldCarrier, newCarrier, oldSource, newSource, oldBound, newBound] using hrelative
+    oldCarrier, newCarrier, oldSource, newSource, oldBound, newBound] using! hrelative
 
 theorem finsupp_linearMvPolynomial_sub_C_ne_zero
     {F I : Type*} [Field F] [Algebra ℂ F]
@@ -432,7 +432,7 @@ theorem cofiniteTailDenseOn_analyticObservableCoordinateCarrier_relativeDI_iff_q
       have hcomp := hAIall.comp (fun i : I ↦ (i, 0)) (by
         intro i j hij
         exact congrArg Prod.fst hij)
-      simpa only [carrier, F₀, GaloisForLFunctions.differentialJet_zero] using hcomp
+      simpa only [carrier, F₀, GaloisForLFunctions.differentialJet_zero] using! hcomp
     rw [linearIndependent_iff_injective_finsuppLinearCombination]
     intro c d hcd
     let e : I →₀ ℂ := c - d
@@ -914,8 +914,8 @@ theorem differentialJet_analyticObservableCoordinateCarrier
     (fun p ↦ by
       simp [analyticObservableCoordinateSource,
         Finsupp.linearCombination_apply, Finsupp.sum]) a k
-  simpa [analyticObservableCoordinateJetLinearMap,
-    Finsupp.linearCombination_apply, Finsupp.sum] using h
+  simpa [analyticObservableCoordinateJetLinearMap, Algebra.smul_def,
+    Finsupp.linearCombination_apply, Finsupp.sum] using! h
 
 /-- The canonical source subspace decoded from an arbitrary ambient intermediate field: a
 coordinate belongs exactly when the field contains every jet of its analytic carrier.  The
@@ -1002,7 +1002,7 @@ theorem analyticObservableGrassmann_galoisConnection
     rw [← differentialJet_analyticObservableCoordinateCarrier
       x f M hM a k (analyticObservableGrassmannCoordinate W i)] at hmem
     simpa only [analyticObservableGrassmannSource,
-      analyticObservableGrassmannBound] using hmem
+      analyticObservableGrassmannBound] using! hmem
 
 /-- **Exact source reconstruction from the represented field.** Under tail completeness and
 source independence, the canonical all-jet decoder is a left inverse to the analytic Grassmann

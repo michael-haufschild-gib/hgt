@@ -84,7 +84,7 @@ theorem xiExponentialRotatedUpperEndCarrier_ne_zero :
   apply xiExponentialRotatedUpperEndAnalytic_ne_zero
   apply IsFractionRing.injective upperEndAnalyticSubring upperEndMeroField
   simpa [xiExponentialRotatedUpperEndCarrier,
-    rotatedEntireUpperEndMero] using hzero
+    rotatedEntireUpperEndMero] using! hzero
 
 /-- The concrete exponential phase has logarithmic derivative equal to that of its latent
 rotated Xi clock. -/
@@ -96,7 +96,7 @@ theorem xiExponentialRotatedUpperEndCarrier_logDeriv :
       algebraMap upperEndAnalyticSubring upperEndMeroField
           xiExponentialRotatedUpperEndAnalytic ≠ 0 := by
     simpa [xiExponentialRotatedUpperEndCarrier,
-      rotatedEntireUpperEndMero] using
+      rotatedEntireUpperEndMero] using!
         xiExponentialRotatedUpperEndCarrier_ne_zero
   change
     Differential.deriv

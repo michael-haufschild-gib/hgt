@@ -90,7 +90,7 @@ theorem hasPuncturedMeromorphicRep_thetaLogDerivDefectMero
     simpa only [q, thetaLogDerivDefectDenominatorFun, mul_ne_zero_iff] using hqw
   have heval := univGermEval_thetaLogDerivDefect_div_eq hτ hθ.2 hθ.1
   change p w / q w = thetaLogDeriv (w + h) τ - thetaLogDeriv w τ
-  simpa only [hpRep, hqRep] using heval
+  simpa only [hpRep, hqRep] using! heval
 
 /-- Applying any constant-coefficient operator to the theta defect is represented by the
 ordinary differentiated theta-defect function on every punctured neighborhood. -/

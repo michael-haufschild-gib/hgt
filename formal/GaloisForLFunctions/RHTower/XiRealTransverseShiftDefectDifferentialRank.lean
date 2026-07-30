@@ -98,7 +98,9 @@ theorem xiRealTransverseShiftArithmetic_supportedOnPositivePrimePowers
   refine ⟨x.1, x.2, ?_⟩
   have hx := congrArg Subtype.val
     (Nat.Primes.prodNatEquiv.apply_symm_apply ⟨n, hpow⟩)
-  simpa only [x, Nat.Primes.coe_prodNatEquiv_apply] using hx.symm
+  change n = (x.1 : ℕ) ^ (x.2 + 1)
+  rw [← Nat.Primes.coe_prodNatEquiv_apply]
+  exact hx.symm
 
 /-- Distinct nonzero real shifts give a tail-independent family of all
 finite logarithmic jets already on the prime layer. -/
@@ -232,7 +234,7 @@ theorem xiRealTransverseShiftArithmetic_clockTailIndependent
   change ev (∑ ak, c ak • primeProfileJetSource
     (fun a => xiRealTransverseShiftArithmetic (shift a)) m ak) ≠ 0
   rw [map_sum]
-  simpa only [ev, ArithmeticFunction.smul_map, smul_eq_mul] using hp
+  simpa only [ev, ArithmeticFunction.smul_map, smul_eq_mul] using! hp
 
 /-- Formal arithmetic differential independence of distinct nonzero real
 transverse shifts. -/
@@ -418,7 +420,7 @@ theorem LSeries_xiRealTransverseShiftArithmetic
     exact LSeries_dirichletShift (a : ℂ) s vonMangoldtArithmetic] at hsub
   simpa [f, g, xiRealTransverseShiftArithmetic,
     xiRealTransverseShiftFiniteAbscissaSource,
-    vonMangoldtFiniteAbscissaSource, vonMangoldtArithmetic] using hsub
+    vonMangoldtFiniteAbscissaSource, vonMangoldtArithmetic] using! hsub
 
 /-- Exact archimedean logarithmic-derivative correction at a real shift. -/
 def xiRealTransverseShiftArchimedeanCorrection

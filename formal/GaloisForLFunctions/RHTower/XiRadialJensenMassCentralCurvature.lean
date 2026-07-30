@@ -61,7 +61,10 @@ theorem integral_Ioi_log_div_cube {a : ℝ} (ha : 0 < a) :
     have hsq := hasDerivAt_pow 2 x
     have hfirst := (hlog.const_mul (-(1 / 2 : ℝ))).div hsq (pow_ne_zero 2 hxpos.ne')
     have hsecond := (hasDerivAt_const x (1 / 4 : ℝ)).div hsq (pow_ne_zero 2 hxpos.ne')
-    convert hfirst.sub hsecond using 1 <;> field_simp <;> ring
+    convert hfirst.sub hsecond using 1
+    all_goals try rfl
+    field_simp [hxpos.ne']
+    ring
   have hint := integrableOn_log_sub_div_cube ha
   have htend : Tendsto F atTop (nhds 0) := by
     have hrpow : (fun x : ℝ => x ^ (2 : ℝ)) =ᶠ[atTop] fun x => x ^ (2 : ℕ) :=
@@ -77,7 +80,7 @@ theorem integral_Ioi_log_div_cube {a : ℝ} (ha : 0 < a) :
         simpa [div_eq_mul_inv] using hpowtop.inv_tendsto_atTop.const_mul (Real.log a)
       simpa [sub_div] using hbase.sub hconst
     have hsq : Tendsto (fun x : ℝ => 1 / x ^ 2) atTop (nhds 0) := by
-      simpa [one_div] using hpowtop.inv_tendsto_atTop
+      simpa [one_div] using! hpowtop.inv_tendsto_atTop
     have hcomb := (hlog.const_mul (-(1 / 2 : ℝ))).add (hsq.const_mul (-(1 / 4 : ℝ)))
     convert hcomb using 1
     · funext x

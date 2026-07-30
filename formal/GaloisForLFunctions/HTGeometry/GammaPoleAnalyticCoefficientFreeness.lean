@@ -114,7 +114,7 @@ theorem logDeriv_gammaPoleRegularUnit {n : ℕ} {x : ℂ}
       have h := (hasDerivAt_const x (1 : ℂ)).sub
         (((hasDerivAt_const x (reciprocalGammaFactorialScale n)).mul
           (hasDerivAt_id x)).div_const (((j + 1 : ℕ) : ℂ)))
-      convert h.deriv using 1
+      convert! h.deriv using 1
       all_goals ring_nf
     rw [hd]
     field_simp [hj0, hfac]

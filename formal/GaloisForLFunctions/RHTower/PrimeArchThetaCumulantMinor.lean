@@ -56,13 +56,18 @@ theorem hasDerivAt_thetaCuspCosineDerivativeIntegrand (n : ℕ) (t x : ℝ) :
     (t * x + (n : ℝ) * Real.pi / 2)).comp t
       (((hasDerivAt_id t).mul_const x).add_const ((n : ℝ) * Real.pi / 2))
   have h := hcos.const_mul (2 * x ^ n * thetaCuspFullSource x)
-  convert h using 1
-  rw [show t * x + ((n + 1 : ℕ) : ℝ) * Real.pi / 2 =
+  have hderiv :
+      2 * x ^ (n + 1) * thetaCuspFullSource x *
+          Real.cos (t * x + ((n + 1 : ℕ) : ℝ) * Real.pi / 2) =
+        2 * x ^ n * thetaCuspFullSource x *
+          (-Real.sin (t * x + (n : ℝ) * Real.pi / 2) * (1 * x)) := by
+    rw [show t * x + ((n + 1 : ℕ) : ℝ) * Real.pi / 2 =
         (t * x + (n : ℝ) * Real.pi / 2) + Real.pi / 2 by
       push_cast
       ring,
       Real.cos_add_pi_div_two, pow_succ]
-  ring
+    ring
+  simpa only [Function.comp_apply, id_eq] using! h.congr_deriv hderiv.symm
 
 theorem hasDerivAt_thetaCuspCosineDerivativeIntegral (n : ℕ) (t : ℝ) :
     HasDerivAt (thetaCuspCosineDerivativeIntegral n)
@@ -115,7 +120,7 @@ theorem hasDerivAt_thetaCuspCosineDerivativeIntegral (n : ℕ) (t : ℝ) :
       filter_upwards with x
       intro s hs
       exact hasDerivAt_thetaCuspCosineDerivativeIntegrand n s x)
-  simpa only [thetaCuspCosineDerivativeIntegral, F, F'] using hresult.2
+  simpa only [thetaCuspCosineDerivativeIntegral, F, F'] using! hresult.2
 
 theorem thetaCuspCosineDerivativeIntegral_zero (t : ℝ) :
     thetaCuspCosineDerivativeIntegral 0 t = thetaCuspCosineRepresentation t := by
@@ -234,7 +239,7 @@ theorem iteratedDeriv_normalizedPrimeArchMomentGerm_two_mul (n : ℕ) :
     rw [xiCentralMomentPowerSeries, FormalMultilinearSeries.ofScalars_apply_eq,
       one_pow, smul_eq_mul, mul_one, xiCentralMomentCoefficient_two_mul] at hfac
     rw [xiCentralMomentGerm]
-    simpa only [nsmul_eq_mul] using hfac.symm
+    simpa only [xiCentralMomentPowerSeries, nsmul_eq_mul] using hfac.symm
   rw [hderEq, hderiv, ← primeArchSourceMoment_eq_xiCentralReciprocalMoment]
   rfl
 
@@ -256,7 +261,7 @@ theorem iteratedDeriv_normalizedPrimeArchMomentGerm_odd_zero {n : ℕ} (hn : Odd
   rw [xiCentralMomentPowerSeries, FormalMultilinearSeries.ofScalars_apply_eq,
     one_pow, smul_eq_mul, mul_one, xiCentralMomentCoefficient, if_neg hnmod] at hfac
   rw [xiCentralMomentGerm]
-  simpa only [nsmul_eq_mul, mul_zero] using hfac.symm
+  simpa only [xiCentralMomentPowerSeries, nsmul_eq_mul, mul_zero] using hfac.symm
 
 def thetaCuspNormalizedEvenMoment (n : ℕ) : ℝ :=
   thetaCuspRawEvenMoment n / thetaCuspRawEvenMoment 0
@@ -567,7 +572,7 @@ theorem primeArchSourceTraceHankel_linear (a b : ℝ) :
     rw [hmap, hdeg, hsq]
     simp only [Finset.sum_range_succ, coeff_add, coeff_mul, coeff_C, coeff_X,
       coeff_X_pow]
-    norm_num [Finset.antidiagonal]
+    norm_num [Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk, Finset.sum_range_succ]
     rw [← Complex.ofReal_pow, ← Complex.ofReal_pow]
     simp only [Complex.ofReal_re]
     ring

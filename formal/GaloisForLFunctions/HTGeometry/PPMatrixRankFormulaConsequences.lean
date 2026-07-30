@@ -47,7 +47,7 @@ theorem exists_ppAdmissible (faces : A → Finset V) :
               simp only [μ, Option.elim_some] at hij
               omega
     have hlin := transcendental_pow_comp_linearIndependent hτ hμ
-    convert hlin using 1
+    convert! hlin using 1
     funext i
     cases i with
     | none => simp [μ]
@@ -280,7 +280,7 @@ theorem boundaryWedgePencilVector_linearIndependent {τ : ℂ}
   let e : (ℂ × ℂ) ≃ₗ[ℚ] (Fin 2 → ℂ) :=
     (LinearEquiv.piFinTwo ℚ (fun _ => ℂ)).symm
   have h := (wedge_realization_linearIndependent hτ r s).map' e.toLinearMap e.ker
-  simpa [e, boundaryWedgePencilVector] using h
+  simpa [e, boundaryWedgePencilVector] using! h
 
 theorem boundaryWedgePencil_evaluation (τ : ℂ) (r s : ℕ) :
     (fun B v => ∑ i, boundaryWedgePencilForm τ B i *

@@ -80,7 +80,7 @@ theorem fullRecurrentHilbertPivot_linearIndependent
     (LinearMap.ker_eq_bot.mpr Subtype.val_injective)
   change LinearIndependent ℂ (fun j : fullRecurrentHilbertIndex x m =>
     homogeneousRecurringEvaluation x m (fullRecurrentHilbertPivot x m j))
-  simpa only [homogeneousRecurringEvaluation_fullRecurrentHilbertPivot] using hLI
+  simpa only [homogeneousRecurringEvaluation_fullRecurrentHilbertPivot] using! hLI
 
 noncomputable def fullRecurrentHilbertCoefficient
     {P : Type*} {σ : Type u} [Fintype σ] (x : P → σ → ℂ) (m : ℕ)
@@ -107,7 +107,7 @@ theorem fullRecurrentHilbertPivot_spans
       (homogeneousRecurringEvaluation x m (fullRecurrentHilbertPivot x m j)) v
   simp_rw [homogeneousRecurringEvaluation_fullRecurrentHilbertPivot]
   simpa only [y, fullRecurrentHilbertCoefficient, Finset.sum_apply,
-    Pi.smul_apply, smul_eq_mul] using hv.symm
+    Pi.smul_apply, smul_eq_mul] using! hv.symm
 
 /-- The prime coefficient column obtained by evaluating a homogeneous observable on the source
 sequence. -/
@@ -169,7 +169,7 @@ theorem RecurrentHomogeneousValuationPresentation.mem_span_pivotRangeElement
     have hQv := congrFun hQ v
     rw [← hQv]
     simpa [RecurrentHomogeneousValuationPresentation.pivotRangeElement,
-      Finset.sum_apply, Pi.smul_apply, smul_eq_mul] using hz v
+      Finset.sum_apply, Pi.smul_apply, smul_eq_mul] using! hz v
   rw [hy]
   apply Submodule.sum_mem
   intro j hj

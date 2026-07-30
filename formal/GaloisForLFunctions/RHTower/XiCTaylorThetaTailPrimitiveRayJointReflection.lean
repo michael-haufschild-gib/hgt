@@ -45,8 +45,17 @@ private theorem intervalIntegrable_primitiveRayCoefficient_mul_corePolarWeight
       (thetaCuspPrimitiveRayCorePolarKernel d z r alpha beta) u :=
     (hasDerivAt_thetaCuspPrimitiveRayCorePolarKernel
       d z r alpha beta hui).continuousAt
-  simpa only [Pi.mul_apply, mul_assoc] using
+  have hcontinuous : ContinuousWithinAt
+      (C * ((fun t : ℝ =>
+        thetaCuspPrimitiveRayMoment t ^ (-(3 / 4 : ℝ))) *
+          thetaCuspPrimitiveRayCorePolarKernel d z r alpha beta))
+      (Set.uIcc a b) u :=
     (hC.continuousAt.mul (hweight.mul hkernel)).continuousWithinAt
+  refine hcontinuous.congr (fun y _hy => ?_) ?_
+  · simp only [Pi.mul_apply]
+    ring
+  · simp only [Pi.mul_apply]
+    ring
 
 /-- **Joint reflected primitive-ray identity.**  The growing completion character is eliminated
 by angular integration by parts only after the radial reflection has been inserted.  In

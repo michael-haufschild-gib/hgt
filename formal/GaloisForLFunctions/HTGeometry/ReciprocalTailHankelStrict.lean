@@ -69,7 +69,7 @@ theorem det_momentHankelMatrix_reciprocalTailClock_pos (n : ℕ) :
 theorem reciprocalTailClock_not_finiteModalWidthAtMost (d : ℕ) :
     ¬ FiniteModalWidthAtMost d reciprocalTailClock := by
   apply not_finiteModalWidthAtMost_of_det_ne_zero
-  simpa [algebraicHankelMatrix, momentHankelMatrix] using
+  simpa [algebraicHankelMatrix, momentHankelMatrix] using!
     ne_of_gt (det_momentHankelMatrix_reciprocalTailClock_pos (d + 1))
 
 /-- The reciprocal continuum clock satisfies no positive finite-order linear recurrence. -/
@@ -81,7 +81,7 @@ theorem reciprocalTailClock_not_linearRecurrence
     E hsolution horder
   have hpositive := det_momentHankelMatrix_reciprocalTailClock_pos (E.order + 1)
   exact (ne_of_gt hpositive) (by
-    simpa [algebraicHankelMatrix, momentHankelMatrix] using hzero)
+    simpa [algebraicHankelMatrix, momentHankelMatrix] using! hzero)
 
 /-- No uniformly bounded finite spectral palette can reproduce arbitrarily long reciprocal-tail
 windows, even when the approximating palette may change with the window. -/

@@ -292,14 +292,15 @@ theorem countablePatterns_positiveActualCarrier_relationFree_dense_residual
       0 < (projectiveNevanlinnaQuotient F.c F.d (zf i)).im := by
     simpa [quotient, projectiveNevanlinnaQuotient] using hupperf
   have habstract : Dense relationFree ∧ relationFree ∈ residual S := by
-    simpa [relationFree, frozen, S, amplitude, quotient,
-      projectiveNevanlinnaAmplitude, projectiveNevanlinnaQuotient] using
-      (countablePatterns_actualNevanlinna_relationFree_dense_residual
+    have hsource :=
+      countablePatterns_actualNevanlinna_relationFree_dense_residual
         row κ ι hCmin F.differentiable_d
         hnoCommon hCp hCc hupperMap' F.background F.contDiffOn_iteratedDeriv_background
         zf hqf_inj' hupperf'
         nf degree orders exponent hexponent hrows eta heta
-        (linftyOne eta) hdim)
+        (linftyOne eta) hdim
+    change Dense relationFree ∧ relationFree ∈ residual S at hsource
+    exact hsource
   exact F.normalizedPositiveChart_actualCarrier_relationFree_dense_residual
     zf nf eta hupperf row κ ι degree orders exponent hupperMap
     relationFree habstract.2 (by
@@ -360,9 +361,8 @@ theorem allFinitePatterns_abstractCarrier_fullRankWitness_dense_residual
   have hgoodPattern : ∀ p : FiniteDifferentialPattern Γ,
       Dense (goodPattern p) ∧ goodPattern p ∈ residual S := by
     intro p
-    simpa [goodPattern, frozen, S, amplitude, quotient,
-      projectiveNevanlinnaAmplitude, projectiveNevanlinnaQuotient] using
-      (global_injectiveShifts_actualNevanlinna_fullRankWitness_dense_residual
+    have hsource :=
+      global_injectiveShifts_actualNevanlinna_fullRankWitness_dense_residual
         (row := CarrierPatternRow p) (κ := CarrierPatternMonomial p)
         (ι := CarrierPatternShift p)
         hCmin F.differentiable_d
@@ -372,7 +372,9 @@ theorem allFinitePatterns_abstractCarrier_fullRankWitness_dense_residual
         (carrierPatternExponent_injective p)
         (carrierPattern_rows_strictly_dominate_columns p)
         eta heta (linftyOne eta)
-        (carrierPattern_shift_dimension_below_codimension p))
+        (carrierPattern_shift_dimension_below_codimension p)
+    change Dense (goodPattern p) ∧ goodPattern p ∈ residual S at hsource
+    exact hsource
   have hresidual : (⋂ p, goodPattern p) ∈ residual S :=
     countable_iInter_mem.mpr fun p => (hgoodPattern p).2
   have heq : (⋂ p, goodPattern p) = {w | ∀
@@ -645,9 +647,9 @@ theorem not_differentiallyAlgebraicOn_weightedBoundaryCarrierCauchy_of_allFinite
             (specializePolynomialCoefficients z Q0) := by
       simp only [Q, renameToSingleShiftJets, specializePolynomialCoefficients,
         MvPolynomial.eval_map]
-      simpa [Function.comp_def] using
+      convert
         (MvPolynomial.eval₂_rename (Polynomial.evalRingHom z)
-          (singleShiftJetEquiv (n + 1)).symm x Q0)
+          (singleShiftJetEquiv (n + 1)).symm x Q0) using 1 <;> rfl
     have hx : (fun j => x ((singleShiftJetEquiv (n + 1)).symm j)) =
         fun j : Fin (n + 1) => iteratedDeriv (j : ℕ) carrierTransform z := by
       funext j
@@ -677,7 +679,7 @@ theorem not_differentiallyAlgebraicOn_weightedBoundaryCarrierCauchy_of_allFinite
         intro b
         exact hpatternZero b)
   have hQ0 : Q0 = 0 := renameToSingleShiftJets_injective (n + 1) (by
-    simpa [Q, orders] using hQ)
+    simpa [Q, orders, renameToSingleShiftJets, MvPolynomial.rename_zero] using hQ)
   have hP : P = 0 := reshapeJet_injective n (by simpa [Q0] using hQ0)
   exact hPne hP
 
@@ -802,7 +804,7 @@ theorem positiveSingularContinuousCarrier_hypertranscendental_dense_residual
         let carrier := weightedBoundaryCarrier F.base.toBoundaryFamily mu density
         LinftyStrictlyPositive mu density ∧
           ∫ t, density t ∂mu = 1 ∧
-          IsProbabilityMeasure carrier ∧ NoAtoms carrier ∧
+          IsProbabilityMeasure carrier ∧ NullSingletonClass carrier ∧
           carrier ⟂ₘ (volume : Measure ℝ) ∧ HasHamburgerMoments s carrier := by
   dsimp only
   let mu : Measure (OnePoint ℝ) := eta

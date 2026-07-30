@@ -131,24 +131,26 @@ theorem completedHurwitzZetaOdd_orderOneEnvelope (a : UnitAddCircle) :
     OrderOneEnvelope (completedHurwitzZetaOdd a) := by
   obtain ⟨C, p, hC, hp, hbf, hbg⟩ :=
     exists_common_exp_bound (exists_oddKernel_bound a) (exists_sinKernel_bound a)
-  have hfval : ∀ t : ℝ, ‖(hurwitzOddFEPair a).toWeakFEPair.f t‖ = |oddKernel a t - 0| := by
+  have hfval : ∀ t : ℝ, ‖(hurwitzOddFEPair a).f t‖ = |oddKernel a t - 0| := by
     intro t
     show ‖((oddKernel a t : ℝ) : ℂ)‖ = _
     rw [Complex.norm_real, Real.norm_eq_abs, sub_zero]
-  have hgval : ∀ t : ℝ, ‖(hurwitzOddFEPair a).toWeakFEPair.g t‖ = |sinKernel a t - 0| := by
+  have hgval : ∀ t : ℝ, ‖(hurwitzOddFEPair a).g t‖ = |sinKernel a t - 0| := by
     intro t
     show ‖((sinKernel a t : ℝ) : ℂ)‖ = _
     rw [Complex.norm_real, Real.norm_eq_abs, sub_zero]
-  have hk : (1 : ℝ) / 2 ≤ (hurwitzOddFEPair a).toWeakFEPair.k := by
+  have hk : (1 : ℝ) / 2 ≤ (hurwitzOddFEPair a).k := by
     show (1 : ℝ) / 2 ≤ 3 / 2
     norm_num
   obtain ⟨C₀, q, hC₀, hq, htail, hhead⟩ :=
-    weakFEPair_f_decay (hurwitzOddFEPair a).toWeakFEPair hC hp hk
+    weakFEPair_f_decay (hurwitzOddFEPair a) hC hp hk
       (fun t ht => by rw [hfval t]; exact hbf t ht)
       (fun t ht => by rw [hgval t]; exact hbg t ht)
-  have hmel : OrderOneEnvelope (mellin (hurwitzOddFEPair a).toWeakFEPair.f) :=
+  have hmel : OrderOneEnvelope (mellin (hurwitzOddFEPair a).f) :=
     mellin_orderOneEnvelope_of_decay _ hq hC₀ htail hhead
-  have hΛ : OrderOneEnvelope (hurwitzOddFEPair a).Λ := hmel
+  have hΛ : OrderOneEnvelope (hurwitzOddFEPair a).Λ := by
+    rw [(isStrong_hurwitzOddFEPair a).Λ_eq]
+    exact hmel
   refine ((hΛ.comp_affine (1 / 2) (1 / 2)).const_mul (1 / 2)).congr fun s => ?_
   show (1 / 2 : ℂ) * (hurwitzOddFEPair a).Λ ((1 / 2 : ℂ) * s + 1 / 2) = _
   have harg : ((1 / 2 : ℂ) * s + 1 / 2) = (s + 1) / 2 := by ring

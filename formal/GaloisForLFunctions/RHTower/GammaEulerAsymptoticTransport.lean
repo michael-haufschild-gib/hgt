@@ -63,7 +63,7 @@ theorem gammaEulerOneDifference_asymptotic (r h : ℝ) :
     have hlin : HasDerivAt (fun e : ℝ => 1 + e * c) c 0 := by
       simpa using ((hasDerivAt_id (0:ℝ)).mul_const c).const_add 1
     have := (Real.hasDerivAt_rpow_const (p := -r) (Or.inl (by norm_num : (1:ℝ) + (0:ℝ) * c ≠ 0))).comp 0 hlin
-    simpa using this
+    simpa using! this
   have e1 : Real.exp (-r * h / 2) * Real.exp (-h) = Real.exp (-((r / 2 + 1) * h)) := by
     rw [← Real.exp_add]; congr 1; ring
   have e2 : Real.exp (r * h / 2) * Real.exp h = Real.exp ((r / 2 + 1) * h) := by
@@ -82,7 +82,7 @@ theorem gammaEulerOneDifference_asymptotic (r h : ℝ) :
     have h3 := (hterm (Real.exp h)).const_mul (Real.exp (r * h / 2))
     have hsum := (h1'.sub h2).sub h3
     rw [hFdef]
-    convert hsum using 1
+    convert! hsum using 1
     rw [heig_exp]
     linear_combination (-r) * e1 + (-r) * e2
   have hF0 : F 0 = 0 := by

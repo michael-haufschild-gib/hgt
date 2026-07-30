@@ -28,7 +28,7 @@ theorem deriv_neg_eq_zero_iff_of_reciprocal
     deriv f (-t) = 0 ↔ deriv f t = 0 := by
   have hneg :
       HasDerivAt (fun u : ℝ => f (-u)) (-deriv f (-t)) t := by
-    simpa using (hf (-t)).hasDerivAt.scomp t (hasDerivAt_id t).neg
+    simpa using! (hf (-t)).hasDerivAt.scomp t (hasDerivAt_id t).neg
   have hrecip :
       HasDerivAt (fun u : ℝ => lam / f u)
         ((0 * f t - lam * deriv f t) / f t ^ 2) t :=

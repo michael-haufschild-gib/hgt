@@ -32,7 +32,8 @@ theorem linearIndependent_rat_one_of_im_pos {ω : ℂ} (hω : 0 < ω.im) :
   have hR := linearIndependent_one_of_im_pos hω
   have hcast : Function.Injective (fun q : ℚ => q • (1 : ℝ)) := by
     intro a b hab
-    exact Rat.cast_injective (by simpa using hab)
+    exact Rat.cast_injective (α := ℝ)
+      (by simpa only [Rat.smul_one_eq_cast] using hab)
   exact hR.restrict_scalars hcast
 
 omit [Fintype ι] [DecidableEq ι] in

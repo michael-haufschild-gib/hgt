@@ -87,8 +87,12 @@ theorem tendsto_thetaProductFiberCenteredCorrectedPhaseSeamCurrent_atTop_actual
   have hnorm : Tendsto (fun c : ℝ =>
       Complex.normSq (thetaCuspTailSecondDensityAtomOnePhaseTail c z))
       atTop (nhds 0) := by
-    simpa only [Complex.normSq_zero] using
-      Complex.continuous_normSq.continuousAt.tendsto.comp htail
+    have hcomp := Complex.continuous_normSq.continuousAt.tendsto.comp htail
+    have hcomp' : Tendsto (fun c : ℝ =>
+        Complex.normSq (thetaCuspTailSecondDensityAtomOnePhaseTail c z))
+        atTop (nhds (Complex.normSq 0)) :=
+      hcomp.congr' (Eventually.of_forall fun _ => rfl)
+    simpa only [Complex.normSq_zero] using hcomp'
   let C : ℝ :=
     (thetaProductFiberCenteredPhaseDerivative k z *
       (starRingEnd ℂ) (thetaProductFiberCenteredPhase k z)).im

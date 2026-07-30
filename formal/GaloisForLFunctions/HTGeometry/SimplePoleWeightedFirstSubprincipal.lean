@@ -59,12 +59,19 @@ theorem hasDerivAt_simplePoleJetNormalizedExtension
     {U : ℂ → ℂ} (hU : AnalyticAt ℂ U 0) (q : ℕ) :
     HasDerivAt (simplePoleJetNormalizedExtension U q)
       (if q = 0 then simplePoleJetRegularRemainder U 0 0 else 0) 0 := by
+  change HasDerivAt
+    (fun x : ℂ => simplePoleJetPrincipalCoefficient U q +
+      x ^ (q + 1) * simplePoleJetRegularRemainder U q x)
+    (if q = 0 then simplePoleJetRegularRemainder U 0 0 else 0) 0
   have hpow := (hasDerivAt_id (x := (0 : ℂ))).pow (q + 1)
   have hR :=
     (analyticAt_simplePoleJetRegularRemainder hU q).differentiableAt.hasDerivAt
   have h := (hasDerivAt_const (x := (0 : ℂ))
     (simplePoleJetPrincipalCoefficient U q)).add (hpow.mul hR)
-  convert h using 1
+  change HasDerivAt
+    (fun x : ℂ => simplePoleJetPrincipalCoefficient U q +
+      x ^ (q + 1) * simplePoleJetRegularRemainder U q x) _ 0 at h
+  apply h.congr_deriv
   by_cases hq : q = 0
   · subst q
     simp
@@ -304,11 +311,18 @@ coordinate is normalized by its pole weight. -/
 theorem hasDerivAt_gammaPoleJetNormalizedExtension (branch q : ℕ) :
     HasDerivAt (gammaPoleJetNormalizedExtension branch q)
       (if q = 0 then gammaPoleJetRegularRemainder branch 0 0 else 0) 0 := by
+  change HasDerivAt
+    (fun x : ℂ => gammaPoleJetPrincipalCoefficient branch q +
+      x ^ (q + 1) * gammaPoleJetRegularRemainder branch q x)
+    (if q = 0 then gammaPoleJetRegularRemainder branch 0 0 else 0) 0
   have hpow := (hasDerivAt_id (x := (0 : ℂ))).pow (q + 1)
   have hR := (analyticAt_gammaPoleJetRegularRemainder branch q).differentiableAt.hasDerivAt
   have h := (hasDerivAt_const (x := (0 : ℂ))
     (gammaPoleJetPrincipalCoefficient branch q)).add (hpow.mul hR)
-  convert h using 1
+  change HasDerivAt
+    (fun x : ℂ => gammaPoleJetPrincipalCoefficient branch q +
+      x ^ (q + 1) * gammaPoleJetRegularRemainder branch q x) _ 0 at h
+  apply h.congr_deriv
   by_cases hq : q = 0
   · subst q
     simp

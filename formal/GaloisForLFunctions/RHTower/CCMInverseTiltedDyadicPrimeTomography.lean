@@ -341,7 +341,8 @@ theorem analyticAt_inverseTiltedDyadicContinuedSource_of_regularizedZeta_ne_zero
       hreg.deriv hshift
     have hden := AnalyticAt.comp (f := fun z : ℂ => z - 1 / 2) (x := s)
       hreg hshift
-    simpa only [Function.comp_apply] using hnum.div hden hz
+    refine (hnum.div hden hz).congr (Filter.Eventually.of_forall fun z => ?_)
+    simp only [Pi.div_apply, Function.comp_apply]
   have herr : AnalyticAt ℂ inverseTiltedDyadicErrorSeries s :=
     (differentiableOn_inverseTiltedDyadicErrorSeries_rightHalf.analyticOnNhd
       hUopen) s hs
@@ -474,16 +475,16 @@ theorem tsum_inverseTiltedDyadicDoubleTerm_right
 
 private theorem antidiagonal_inverseTiltedDoubleTerm_eq_LSeriesTerm_window
     (s : ℂ) (n : ℕ) :
-    (∑' p : ↥(Finset.antidiagonal n),
+    (∑' p : ↥(Finset.HasAntidiagonal.antidiagonal n),
         inverseTiltedDyadicDoubleTerm s p.1) =
       LSeries.term
         (fun m => ((inverseTiltedDyadicWeightedPrimeWindow m : ℝ) : ℂ)) s n := by
   rw [tsum_fintype]
-  rw [← Finset.sum_subtype (Finset.antidiagonal n) (fun _ => Iff.rfl)
+  rw [← Finset.sum_subtype (Finset.HasAntidiagonal.antidiagonal n) (fun _ => Iff.rfl)
     (fun p => inverseTiltedDyadicDoubleTerm s p)]
-  change (∑ a ∈ Finset.antidiagonal n,
+  change (∑ a ∈ Finset.HasAntidiagonal.antidiagonal n,
     inverseTiltedDyadicDoubleTerm s (a.1, a.2)) = _
-  rw [show (∑ a ∈ Finset.antidiagonal n,
+  rw [show (∑ a ∈ Finset.HasAntidiagonal.antidiagonal n,
       inverseTiltedDyadicDoubleTerm s (a.1, a.2)) =
       ∑ k ∈ range n.succ,
         inverseTiltedDyadicDoubleTerm s (k, n - k) by
@@ -542,23 +543,24 @@ theorem LSeries_inverseTiltedDyadicWeightedPrimeWindow_eq_kernelSeries
       ∑' k : ℕ,
         ((((ArithmeticFunction.vonMangoldt k / Real.sqrt k) * k : ℝ) : ℂ)) *
           dyadicSharpPrimeWindowKernel k (s + 1) := by
-  let e := (Finset.sigmaAntidiagonalEquivProd (A := ℕ))
+  let e := (Finset.HasAntidiagonal.sigmaAntidiagonalEquivProd (A := ℕ))
   have hdouble := summable_inverseTiltedDyadicDoubleTerm hs
-  have hsigma : Summable (fun p : (n : ℕ) × ↥(Finset.antidiagonal n) =>
+  have hsigma : Summable
+      (fun p : (n : ℕ) × ↥(Finset.HasAntidiagonal.antidiagonal n) =>
       inverseTiltedDyadicDoubleTerm s (e p)) := by
     exact e.summable_iff.mpr hdouble
   rw [LSeries]
   calc
     (∑' n : ℕ, LSeries.term
         (fun m => ((inverseTiltedDyadicWeightedPrimeWindow m : ℝ) : ℂ)) s n) =
-        ∑' n : ℕ, ∑' p : ↥(Finset.antidiagonal n),
+        ∑' n : ℕ, ∑' p : ↥(Finset.HasAntidiagonal.antidiagonal n),
           inverseTiltedDyadicDoubleTerm s p.1 := by
       apply tsum_congr
       intro n
       exact (antidiagonal_inverseTiltedDoubleTerm_eq_LSeriesTerm_window s n).symm
-    _ = ∑' p : (n : ℕ) × ↥(Finset.antidiagonal n),
+    _ = ∑' p : (n : ℕ) × ↥(Finset.HasAntidiagonal.antidiagonal n),
           inverseTiltedDyadicDoubleTerm s (e p) := by
-      change (∑' n : ℕ, ∑' p : ↥(Finset.antidiagonal n),
+      change (∑' n : ℕ, ∑' p : ↥(Finset.HasAntidiagonal.antidiagonal n),
         inverseTiltedDyadicDoubleTerm s (e ⟨n, p⟩)) = _
       rw [← hsigma.tsum_sigma]
     _ = ∑' kj : ℕ × ℕ, inverseTiltedDyadicDoubleTerm s kj :=
@@ -576,17 +578,19 @@ theorem inverseTiltedDyadicWeightedPrimeWindow_LSeriesSummable
     {s : ℂ} (hs : 3 / 2 < s.re) :
     LSeriesSummable
       (fun n => ((inverseTiltedDyadicWeightedPrimeWindow n : ℝ) : ℂ)) s := by
-  let e := (Finset.sigmaAntidiagonalEquivProd (A := ℕ))
+  let e := (Finset.HasAntidiagonal.sigmaAntidiagonalEquivProd (A := ℕ))
   have hdouble := summable_inverseTiltedDyadicDoubleTerm hs
-  have hsigma : Summable (fun p : (n : ℕ) × ↥(Finset.antidiagonal n) =>
+  have hsigma : Summable
+      (fun p : (n : ℕ) × ↥(Finset.HasAntidiagonal.antidiagonal n) =>
       inverseTiltedDyadicDoubleTerm s (e p)) := by
     exact e.summable_iff.mpr hdouble
-  have houter : Summable (fun n : ℕ =>
-      ∑' p : ↥(Finset.antidiagonal n),
-        inverseTiltedDyadicDoubleTerm s p.1) := by
-    convert hsigma.sigma using 1
-  exact houter.congr fun n =>
-    antidiagonal_inverseTiltedDoubleTerm_eq_LSeriesTerm_window s n
+  exact hsigma.sigma.congr fun n => by
+    change
+      (∑' p : ↥(Finset.HasAntidiagonal.antidiagonal n),
+        inverseTiltedDyadicDoubleTerm s p.1) =
+        LSeries.term
+          (fun m => ((inverseTiltedDyadicWeightedPrimeWindow m : ℝ) : ℂ)) s n
+    exact antidiagonal_inverseTiltedDoubleTerm_eq_LSeriesTerm_window s n
 
 private theorem inverseTilted_weightedKernel_eq_main_add_error
     (k : ℕ) (s : ℂ) :
@@ -999,7 +1003,7 @@ theorem meromorphicOrderAt_inverseTilted_shiftedLogDeriv_eq_neg_one
     hshiftAnalytic hshiftDeriv
   rw [show shift p = (rho : ℂ) by simpa only [shift] using hprho,
     meromorphicOrderAt_logDeriv_regularizedRiemannZeta_eq_neg_one hzero] at hcomp
-  simpa only [shift, Function.comp_apply, p] using hcomp
+  simpa only [shift, Function.comp_apply, p] using! hcomp
 
 theorem meromorphicTrailingCoeffAt_inverseTilted_shiftedLogDeriv
     (rho : XiDivisorSupport) :
@@ -1020,7 +1024,7 @@ theorem meromorphicTrailingCoeffAt_inverseTilted_shiftedLogDeriv
     have hcomp := MeromorphicAt.comp_analyticAt
       (f := logDeriv regularizedRiemannZeta) (g := shift)
       hbase hshiftAnalytic
-    simpa only [f, shift, Function.comp_apply] using hcomp
+    simpa only [f, shift, Function.comp_apply] using! hcomp
   have horder : meromorphicOrderAt f p = ((-1 : ℤ) : WithTop ℤ) := by
     simpa only [f, p] using
       meromorphicOrderAt_inverseTilted_shiftedLogDeriv_eq_neg_one rho
@@ -1080,7 +1084,7 @@ theorem meromorphicOrderAt_and_trailingCoeffAt_inverseTiltedDyadicContinuedSourc
     have hcomp := MeromorphicAt.comp_analyticAt
       (f := logDeriv regularizedRiemannZeta) (g := shift)
       hbase hshiftAnalytic
-    simpa only [shiftedLog, shift, Function.comp_apply] using hcomp
+    simpa only [shiftedLog, shift, Function.comp_apply] using! hcomp
   have hsingular : MeromorphicAt singular p := by
     dsimp only [singular]
     exact hfac.meromorphicAt.mul hshiftedLog

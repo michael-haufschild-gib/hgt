@@ -92,9 +92,8 @@ theorem hasDerivAt_suzukiOscillatoryKernel (z : ℂ) (x : ℝ) :
       ((I * z) * suzukiOscillatoryKernel z x) x := by
   have hlin : HasDerivAt (fun y : ℝ => (y : ℂ) * (I * z)) (I * z) x := by
     simpa using (Complex.ofRealCLM.hasDerivAt (x := x)).mul_const (I * z)
-  convert hlin.cexp using 1
-  · simp only [suzukiOscillatoryKernel]
-    ring
+  unfold suzukiOscillatoryKernel
+  simpa only [mul_comm] using hlin.cexp
 
 /-- Exact Fourier law for the inverse finite Neumann Laplacian.  The last term is endpoint flux;
 dropping it is precisely the invalid whole-line-multiplier substitution. -/
@@ -205,8 +204,9 @@ private theorem hasDerivAt_suzukiNeumannBoundaryClockCore (a A B z : ℂ) :
   have hsin := (Complex.hasDerivAt_sin (a * z)).comp z hlin
   convert (hcos.const_mul A).add (hsin.const_mul B) using 1
   all_goals
-    simp only [suzukiNeumannBoundaryClockCorePrime]
-    ring
+    first
+    | rfl
+    | (simp only [suzukiNeumannBoundaryClockCorePrime]; first | rfl | ring)
 
 private theorem hasDerivAt_suzukiNeumannBoundaryClockCorePrime (a A B z : ℂ) :
     HasDerivAt (suzukiNeumannBoundaryClockCorePrime a A B)
@@ -217,8 +217,9 @@ private theorem hasDerivAt_suzukiNeumannBoundaryClockCorePrime (a A B z : ℂ) :
   have hcos := (Complex.hasDerivAt_cos (a * z)).comp z hlin
   convert (((hsin.const_mul (-A)).add (hcos.const_mul B)).const_mul a) using 1
   all_goals
-    simp only [suzukiNeumannBoundaryClockCore]
-    ring
+    first
+    | rfl
+    | (simp only [suzukiNeumannBoundaryClockCore]; first | rfl | ring)
 
 private theorem hasDerivAt_suzukiNeumannBoundaryClock (a A B z : ℂ) :
     HasDerivAt (suzukiNeumannBoundaryClock a A B)
@@ -226,8 +227,9 @@ private theorem hasDerivAt_suzukiNeumannBoundaryClock (a A B z : ℂ) :
   convert (hasDerivAt_id z).mul
       (hasDerivAt_suzukiNeumannBoundaryClockCore a A B z) using 1
   all_goals
-    simp only [suzukiNeumannBoundaryClockPrime, id_eq]
-    ring
+    first
+    | rfl
+    | (simp only [suzukiNeumannBoundaryClockPrime, id_eq]; first | rfl | ring)
 
 private theorem hasDerivAt_suzukiNeumannBoundaryClockPrime (a A B z : ℂ) :
     HasDerivAt (suzukiNeumannBoundaryClockPrime a A B)
@@ -236,8 +238,9 @@ private theorem hasDerivAt_suzukiNeumannBoundaryClockPrime (a A B z : ℂ) :
       ((hasDerivAt_id z).mul
         (hasDerivAt_suzukiNeumannBoundaryClockCorePrime a A B z)) using 1
   all_goals
-    simp only [suzukiNeumannBoundaryClockSecond, id_eq]
-    ring
+    first
+    | rfl
+    | (simp only [suzukiNeumannBoundaryClockSecond, id_eq]; first | rfl | ring)
 
 /-- Polynomial second-order annihilator of the complete Neumann boundary-clock module. -/
 def suzukiNeumannBoundaryAnnihilator (a : ℂ) (H : ℂ → ℂ) (z : ℂ) : ℂ :=
@@ -269,28 +272,40 @@ theorem suzukiNeumannBoundaryAnnihilator_sq_mul
     funext w
     have hsq : HasDerivAt (fun v : ℂ => v ^ 2) (2 * w) w := by
       convert (hasDerivAt_id w).pow 2 using 1
-      simp only [id_eq]
-      ring
+      all_goals
+        first
+        | rfl
+        | (simp only [id_eq]; first | rfl | ring)
     exact (hsq.mul (hF w).differentiableAt.hasDerivAt).deriv
   rw [suzukiNeumannBoundaryAnnihilator, hfirstFun]
   have hsq : HasDerivAt (fun w : ℂ => w ^ 2) (2 * z) z := by
     convert (hasDerivAt_id z).pow 2 using 1
-    simp only [id_eq]
-    ring
+    all_goals
+      first
+      | rfl
+      | (simp only [id_eq]; first | rfl | ring)
   have hterm1 : HasDerivAt (fun w : ℂ => 2 * w * F w)
       (2 * F z + 2 * z * deriv F z) z := by
     convert (((hasDerivAt_id z).const_mul 2).mul
       (hF z).differentiableAt.hasDerivAt) using 1
     all_goals
-      simp only [id_eq]
-      ring
+      first
+      | rfl
+      | (simp only [id_eq]; first | rfl | ring)
   have hterm2 : HasDerivAt (fun w : ℂ => w ^ 2 * deriv F w)
       (2 * z * deriv F z + z ^ 2 * deriv (deriv F) z) z := by
     exact hsq.mul (hF z).deriv.differentiableAt.hasDerivAt
+  have hsumFun :
+      (fun w : ℂ => 2 * w * F w + w ^ 2 * deriv F w) =
+        (fun w : ℂ => 2 * w * F w) +
+          (fun w : ℂ => w ^ 2 * deriv F w) := by
+    funext w
+    simp only [Pi.add_apply]
   have hsecond : deriv (fun w : ℂ => 2 * w * F w + w ^ 2 * deriv F w) z =
       2 * F z + 4 * z * deriv F z + z ^ 2 * deriv (deriv F) z := by
+    rw [hsumFun]
     convert (hterm1.add hterm2).deriv using 1
-    ring
+    all_goals first | rfl | ring
   rw [hsecond]
   ring
 

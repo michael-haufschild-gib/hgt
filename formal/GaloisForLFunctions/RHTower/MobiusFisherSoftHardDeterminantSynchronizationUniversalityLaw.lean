@@ -68,7 +68,7 @@ theorem mobiusFisherQFIDeterminant_softHardBoundarySynchronization
   have hdet :
       Tendsto mobiusCriticalPointedFisherDeterminantBoundarySignal
         (nhdsWithin 1 (Set.Ioi 1)) (nhds (-8 : ℂ)) := by
-    simpa only [mobiusCriticalPointedFisherDeterminantBoundarySignal] using
+    simpa only [mobiusCriticalPointedFisherDeterminantBoundarySignal] using!
       squarefreeMobiusCritical_fisherQFIDeterminantUniversality.1
   have hdetPath := hdet.comp hsigma
   have hsoftHardPath :=

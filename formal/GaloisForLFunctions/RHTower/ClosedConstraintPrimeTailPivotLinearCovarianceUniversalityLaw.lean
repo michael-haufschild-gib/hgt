@@ -42,7 +42,7 @@ theorem differentialPolynomialEval_linearChange_of_coefficients_constant
       differentialJetLinearChangeAlgHom_X, differentialPolynomialEval_X]
     rw [differentialJet_matrixLinearForms_of_coefficients_constant
       M hMconst x i r]
-    simpa [differentialPolynomialEval] using
+    simpa [differentialPolynomialEval, jetwiseMatrixLinearForms, matrixLinearForms] using!
       (aeval_jetwiseMatrixLinearPolynomial M
         (fun p : n × ℕ => differentialJet p.2 (x p.1)) (i, r))
   exact AlgHom.congr_fun heq P

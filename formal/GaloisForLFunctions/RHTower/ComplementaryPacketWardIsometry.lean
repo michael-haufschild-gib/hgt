@@ -83,7 +83,8 @@ theorem integral_squarefreeMobiusCriticalClock_id {sigma : ℝ} (hsigma : 1 < si
 theorem ae_nonneg_squarefreeMobiusCriticalClockProbabilityMeasure {sigma : ℝ} (hsigma : 1 < sigma) :
     ∀ᵐ y ∂(squarefreeMobiusCriticalClockProbabilityMeasure sigma : Measure ℝ), 0 ≤ y := by
   rw [ae_iff]
-  simpa only [not_le] using squarefreeMobiusCriticalClockProbabilityMeasure_Iio_zero hsigma
+  simpa only [not_le] using!
+    squarefreeMobiusCriticalClockProbabilityMeasure_Iio_zero hsigma
 
 /-! ### The conditional edge flux -/
 

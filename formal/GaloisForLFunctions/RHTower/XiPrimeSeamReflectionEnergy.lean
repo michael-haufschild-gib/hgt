@@ -207,7 +207,7 @@ def primeLogSquareMoment (beta : ℝ) : ℝ :=
 theorem summable_primeLogSquareMoment {beta : ℝ} (hbeta : 1 < beta) :
     Summable (fun p : Nat.Primes =>
       (Real.log (p : ℝ)) ^ 2 * (p : ℝ) ^ (-beta)) := by
-  simpa only [sq_abs] using
+  simpa only [sq_abs] using!
     (summable_abs_log_natCast_pow_mul_rpow_neg 2 beta hbeta).comp_injective
       Subtype.coe_injective
 

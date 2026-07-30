@@ -36,7 +36,8 @@ theorem tendsto_integral_of_tendstoUniformlyOn {mu : Measure ℝ} [IsFiniteMeasu
   refine ⟨N, fun n hn => ?_⟩
   have hae : ∀ᵐ x ∂mu, x ∈ S := by
     rw [ae_iff]
-    simpa using hS
+    change mu Sᶜ = 0
+    exact hS
   have hbound : ∀ᵐ x ∂mu, ‖F n x - f x‖ ≤ e := by
     filter_upwards [hae] with x hx
     have hd := hN n hn x hx

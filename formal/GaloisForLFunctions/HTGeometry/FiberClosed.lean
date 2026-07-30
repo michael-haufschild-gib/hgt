@@ -76,6 +76,6 @@ theorem leaf_restrict_fiber (F : ClassicalNevanlinnaExtremalFamily s) (tau : ℝ
       = (F.leaf (tau : OnePoint ℝ) : Measure ℝ) := by
   refine Measure.restrict_eq_self_of_ae_mem ?_
   rw [ae_iff]
-  simpa using F.finite_carried tau
+  simpa using! F.finite_carried tau
 
 end HTGeometry

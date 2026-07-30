@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.MobiusMertensEvenConvolutionOrderLaw
+import Mathlib.Data.Finset.NatAntidiagonal
 
 /-!
 # Mixed additive-convolution law for complex reciprocal coefficients
@@ -21,20 +22,21 @@ noncomputable section
 /-- Hermitian mixed additive convolution of the `k`-fold additive power of `a` with its
 coefficientwise conjugate. -/
 def mixedAdditiveConvolutionPower (a : ℕ → ℂ) (k N : ℕ) : ℂ :=
-  ∑ ab ∈ Finset.antidiagonal N,
+  ∑ ab ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) N,
     additiveConvolutionPower a k ab.1 *
       (starRingEnd ℂ) (additiveConvolutionPower a k ab.2)
 
 private theorem sum_antidiagonal_mixedAdditiveConvolutionPower_weighted_eq
     (a : ℕ → ℂ) (q : ℂ) (k N : ℕ) :
-    (∑ ab ∈ Finset.antidiagonal N,
+    (∑ ab ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) N,
       (additiveConvolutionPower a k ab.1 * q ^ ab.1) *
         ((starRingEnd ℂ) (additiveConvolutionPower a k ab.2) * q ^ ab.2)) =
       mixedAdditiveConvolutionPower a k N * q ^ N := by
   rw [mixedAdditiveConvolutionPower, Finset.sum_mul]
   apply Finset.sum_congr rfl
   intro ab hab
-  have hsum : ab.1 + ab.2 = N := Finset.mem_antidiagonal.mp hab
+  have hsum : ab.1 + ab.2 = N :=
+    Finset.HasAntidiagonal.mem_antidiagonal.mp hab
   rw [← hsum, pow_add]
   ring_nf
 
@@ -47,13 +49,13 @@ theorem star_mixedAdditiveConvolutionPower
   simp only [map_mul, Complex.conj_conj]
   refine Finset.sum_nbij' Prod.swap Prod.swap ?_ ?_ ?_ ?_ ?_
   · intro ab hab
-    exact Finset.mem_antidiagonal.mpr (by
+    exact Finset.HasAntidiagonal.mem_antidiagonal.mpr (by
       rw [Prod.swap_prod_mk]
-      simpa [add_comm] using Finset.mem_antidiagonal.mp hab)
+      simpa [add_comm] using Finset.HasAntidiagonal.mem_antidiagonal.mp hab)
   · intro ab hab
-    exact Finset.mem_antidiagonal.mpr (by
+    exact Finset.HasAntidiagonal.mem_antidiagonal.mpr (by
       rw [Prod.swap_prod_mk]
-      simpa [add_comm] using Finset.mem_antidiagonal.mp hab)
+      simpa [add_comm] using Finset.HasAntidiagonal.mem_antidiagonal.mp hab)
   · intro ab _
     exact Prod.swap_swap ab
   · intro ab _
@@ -124,7 +126,8 @@ theorem pow_mul_star_pow_eq_tsum_mixedAdditiveConvolutionPower_mul_pow
           (∑' N : ℕ,
             (starRingEnd ℂ) (additiveConvolutionPower a k N) * q ^ N) := by
       rw [hpow, hstar]
-    _ = ∑' N : ℕ, ∑ ab ∈ Finset.antidiagonal N,
+    _ = ∑' N : ℕ,
+        ∑ ab ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) N,
         (additiveConvolutionPower a k ab.1 * q ^ ab.1) *
           ((starRingEnd ℂ) (additiveConvolutionPower a k ab.2) * q ^ ab.2) := by
       exact tsum_mul_tsum_eq_tsum_sum_antidiagonal_of_summable_norm hp hpStar
@@ -193,7 +196,7 @@ theorem norm_sq_pow_le_tsum_of_mixedAdditiveConvolutionPower_upper
 theorem mixedAdditiveConvolutionPower_one
     (a : ℕ → ℂ) (N : ℕ) :
     mixedAdditiveConvolutionPower a 1 N =
-      ∑ ab ∈ Finset.antidiagonal N,
+      ∑ ab ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) N,
         a ab.1 * (starRingEnd ℂ) (a ab.2) := by
   simp only [mixedAdditiveConvolutionPower, additiveConvolutionPower_one]
 
@@ -215,7 +218,7 @@ convolution of the `m`-fold and `n`-fold powers.  Immediate from `pow_add` on th
 series and the power-series coefficient product. -/
 theorem additiveConvolutionPower_add (a : ℕ → ℂ) (m n N : ℕ) :
     additiveConvolutionPower a (m + n) N
-      = ∑ ab ∈ Finset.antidiagonal N,
+      = ∑ ab ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) N,
           additiveConvolutionPower a m ab.1 * additiveConvolutionPower a n ab.2 := by
   rw [additiveConvolutionPower_eq_coeff_pow, pow_add, PowerSeries.coeff_mul]
   refine Finset.sum_congr rfl (fun ab _ => ?_)

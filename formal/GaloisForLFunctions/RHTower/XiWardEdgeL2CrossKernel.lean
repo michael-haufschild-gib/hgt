@@ -297,8 +297,7 @@ theorem hasDerivAt_halfLogShift {x : ℝ} (hx : 0 < x) (s : ℝ) :
   have hD : (0 : ℝ) < x ^ 2 + s ^ 2 := by positivity
   have h2 := (Real.hasDerivAt_log hD.ne').comp s h1
   have h3 := h2.const_mul (1 / 2 : ℝ)
-  convert h3 using 1
-  field_simp
+  exact h3.congr_deriv (by ring)
 
 /-- Vanishing of the shift-difference integral by the log-limit. -/
 theorem integral_shiftDiffPiece_zero {x : ℝ} (hx : 0 < x) (β₁ β₂ : ℝ)
@@ -883,17 +882,18 @@ theorem integral_sq_rightKernel_inv {x : ℝ} (hx : 0 < x) (β : ℝ) :
         ring
       rw [hfun]
       have hr : HasDerivAt (fun s : ℝ => ((s : ℝ) : ℂ)) 1 t := by
-        simpa using Complex.ofRealCLM.hasDerivAt (x := t)
+        simpa using! Complex.ofRealCLM.hasDerivAt (x := t)
       simpa using (hr.const_mul I).add_const
         (((x : ℝ) : ℂ) + I * ((β : ℝ) : ℂ))
     have hz := hasDerivAt_inv (hne t)
     have hcomp := hz.scomp t hinner
     have := hcomp.const_mul I
-    convert this using 1
-    have h := hne t
-    simp only [smul_eq_mul]
-    field_simp
-    simp [Complex.I_sq]
+    simpa using! this.congr_deriv (by
+      simp only [smul_eq_mul]
+      rw [← mul_assoc, Complex.I_mul_I]
+      simp only [neg_mul, one_mul, neg_neg]
+      push_cast
+      rfl)
   have hFTC : ∀ T : ℝ, (∫ t in (-T)..T,
       (((x : ℂ) + I * ((t + β : ℝ) : ℂ))⁻¹) ^ 2) =
       I * (((x : ℂ) + I * ((T + β : ℝ) : ℂ))⁻¹) -
@@ -1252,7 +1252,7 @@ theorem riemannHypothesis_iff_continuedXiWardEdgeQuadEnergyLaw
         = fun _ : ℝ => (0 : ENNReal) from funext fun t => by
       rw [hzero t]; simp]
     rw [lintegral_zero]
-    exact zero_le'
+    exact zero_le
 
   · intro hlaw
     by_contra hRH

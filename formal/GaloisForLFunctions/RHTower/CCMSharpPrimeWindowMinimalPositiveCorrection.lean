@@ -127,7 +127,7 @@ theorem dyadicSharpPrimeSourceNegativePart_abscissa_le_three_halves :
       (y : ℂ) := by
     have hsmul := hpower.smul (C : ℂ)
     unfold rectangularNegativeChannelCoefficient
-    simpa only [ofReal_mul] using hsmul
+    simpa only [ofReal_mul] using! hsmul
   apply LSeriesSummable_of_nonneg_of_le
     dyadicSharpPrimeSourceNegativePart_nonneg
     (fun n => mul_nonneg hC (powerCorrectionCoefficient_nonneg _ _))
@@ -257,7 +257,7 @@ theorem not_dyadicSharpPrimeSourceNegativePart_summable_below_transverseSup_of_n
     obtain ⟨q, rfl⟩ := hx
     apply xiRightCenteredZero_re_le_of_dyadicSharpPrimeSourceNegativePart_summable
       halpha
-    simpa only [rectangularNegativeChannelCoefficient] using hsum
+    simpa only [rectangularNegativeChannelCoefficient] using! hsum
   exact (not_le_of_gt hbelow) hsup
 
 /-- **Forced divergence spectrum.**  Under false RH, every admissible positive correction of the

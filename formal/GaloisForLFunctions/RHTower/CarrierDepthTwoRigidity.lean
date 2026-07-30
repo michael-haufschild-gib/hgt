@@ -71,14 +71,14 @@ theorem hasDerivAt_dirichletPoly_two (s : ℂ) :
   have h := (hasDerivAt_const s (1 : ℂ)).add hcpow
   rw [show dirichletPoly 2 = fun z => 1 + (2 : ℂ) ^ (-z) from
     funext dirichletPoly_two]
-  simpa only [Pi.add_apply, zero_add] using h
+  simpa only [Pi.add_apply, zero_add] using! h
 
 theorem hasDerivAt_log_norm_dirichletPoly_two_horizontal {σ τ : ℝ} (hσ : 0 < σ) :
     HasDerivAt (fun x : ℝ => Real.log ‖dirichletPoly 2 (stripPt x τ)‖)
       (((2 : ℂ) ^ (-stripPt σ τ) * Complex.log 2 * (-1)) /
         dirichletPoly 2 (stripPt σ τ)).re σ := by
   apply GaloisForLFunctions.HTGeometry.hasDerivAt_log_norm_complex
-  · simpa using (hasDerivAt_dirichletPoly_two (stripPt σ τ)).comp σ
+  · simpa using! (hasDerivAt_dirichletPoly_two (stripPt σ τ)).comp σ
       (hasDerivAt_stripPt_horizontal τ σ)
   · exact dirichletPoly_two_ne_zero (by simpa [stripPt_re] using hσ)
 
@@ -133,7 +133,7 @@ theorem exists_height_two_direct_horizontal_strictMono :
         (stripWindingRate σ τ +
           (((2 : ℂ) ^ (-stripPt σ τ) * Complex.log 2 * (-1)) /
             dirichletPoly 2 (stripPt σ τ)).re) σ := by
-      simpa only [Pi.add_apply] using hsum
+      simpa only [Pi.add_apply] using! hsum
     rw [hsum'.deriv]
     have hdpgt := deriv_log_norm_dirichletPoly_two_horizontal_gt (τ := τ) hσ.1
     rw [hdp.deriv] at hdpgt

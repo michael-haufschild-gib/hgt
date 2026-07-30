@@ -272,7 +272,7 @@ theorem projectiveHorizonJetParametrization_freeJetReciprocalJet
             (Set.range fun k : ℕ => differentialJet k x)) : E) =
         (differentialJet 0 x)⁻¹
       rw [map_inv₀]
-      simpa only [e] using congrArg Inv.inv
+      simpa only [e] using! congrArg Inv.inv
         (projectiveHorizonJetParametrization_freeCoordinate x hx 0)
   | succ k =>
       change ((e (freeCoordinate C ℕ (k + 1)) :

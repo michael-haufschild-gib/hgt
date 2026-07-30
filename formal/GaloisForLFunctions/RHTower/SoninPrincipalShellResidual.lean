@@ -34,7 +34,7 @@ theorem evenSoninPrincipalShellResidual_isCompactOperator
   change IsCompactOperator
     (evenCentralSoninQuadraticCorner a p p hp hp -
       evenTwoPolarizationShell a (p * a))
-  simpa only [CompactOperatorEq] using h
+  simpa only [CompactOperatorEq] using! h
 
 /-- The principal-shell residual is self-adjoint. -/
 theorem adjoint_evenSoninPrincipalShellResidual

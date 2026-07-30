@@ -258,7 +258,9 @@ theorem differentialIndependent_primeRadialSource_of_linearIndependent
         arithmeticFunctionFractionField (g ik)) :=
     (algebraicIndependent_fractionPrimeProfiles_iff_clockClassIndependent_arbitrary
       g hsupport).mpr (by
-        simpa only [g, primeProfileClockJetFamily] using hclock)
+        change LinearIndependent ℂ
+          (primeProfileClockJetFamily (fun i => primeRadialSource (u i)))
+        exact hclock)
   unfold GaloisForLFunctions.DifferentialIndependent
   simpa only [g, differentialJet_algebraMap_primeProfileRotatedLogJet] using hAI
 
@@ -279,7 +281,7 @@ theorem linearIndependent_primeRadialBasisProfile
     LinearIndependent ℂ (primeRadialBasisProfile W) := by
   let b := Module.Basis.ofVectorSpace ℂ W
   have hb := b.linearIndependent.map' W.subtype W.ker_subtype
-  simpa only [b, primeRadialBasisProfile] using hb
+  simpa only [b, PrimeRadialBasisIndex, primeRadialBasisProfile] using! hb
 
 theorem span_primeRadialBasisProfile
     (W : Submodule ℂ PrimeRadialProfile) :

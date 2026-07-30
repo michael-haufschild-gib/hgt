@@ -40,9 +40,10 @@ theorem hasDerivAt_compactMobiusFlux_zero (q : C(K, ℂ)) :
     simpa using hinvBase
   have hinv := hinvBase'.comp (0 : ℂ) hden.hasFDerivAt
   have hprod := hnum.hasFDerivAt.mul hinv
-  show HasFDerivAt (compactMobiusFlux q)
+  change HasFDerivAt (fun a : ℂ =>
+      (a • q) * Ring.inverse (1 - a • q))
     (ContinuousLinearMap.toSpanSingleton ℂ q) 0
-  convert hprod using 1
+  refine hprod.congr_fderiv ?_
   ext c
   simp
 
@@ -71,9 +72,12 @@ theorem hasDerivAt_compactDegreeOneEulerFEFlux_zero
       (compactDegreeOneEulerZeroFETangent q tau p) 0 := by
   have h := (hasDerivAt_compactDegreeOneEulerLocalFlux_zero q p).sub
       (hasDerivAt_compactDegreeOneEulerLocalFlux_zero (q.comp tau) p)
-  convert h using 1
-  simp only [compactDegreeOneEulerZeroFETangent]
-  module
+  change HasDerivAt (fun a : ℂ =>
+      compactDegreeOneEulerLocalFlux q p a -
+        compactDegreeOneEulerLocalFlux (q.comp tau) p a)
+    ((Real.log p : ℂ) • (q - q.comp tau)) 0
+  apply h.congr_deriv
+  rw [smul_sub]
 
 theorem compactDegreeOneEulerZeroFETangent_exponential_apply
     (s : C(K, ℂ)) (tau : C(K, K)) (p : ℕ) (k : K) :
@@ -99,8 +103,8 @@ private theorem hasDerivAt_scalarMobius_zero (q : ℂ) :
   have hden : HasDerivAt (fun a : ℂ => 1 - a * q) (-q) 0 := by
     simpa using hnum.const_sub 1
   have hdiv := hnum.div hden (by simp)
-  convert hdiv using 1
-  all_goals simp
+  apply hdiv.congr_deriv
+  simp
 
 /-- Exact first coefficient of the scalar FE-paired Euler source. -/
 theorem hasDerivAt_degreeOneEulerFEFlux_zero (p : ℕ) (s : ℂ) :

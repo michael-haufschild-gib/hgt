@@ -238,7 +238,7 @@ theorem arithmeticSchurRigging_no_bounded_firstValuationMarker_of_closable
   have hφzero : Tendsto
       (fun n => φ (T (primeFirstTraceNullSequence n))) atTop (nhds 0) := by
     have h := φ.continuous.continuousAt.tendsto.comp hTzero
-    simpa using h
+    simpa using! h
   have hmodel : Tendsto
       (fun n => inner ℝ (primeFirstTraceClock (primeFirstTraceNullSequence n)) e₁)
       atTop (nhds (inner ℝ e₁ e₁)) := by

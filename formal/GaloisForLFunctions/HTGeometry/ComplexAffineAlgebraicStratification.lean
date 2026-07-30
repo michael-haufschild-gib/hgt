@@ -104,7 +104,7 @@ theorem wellFounded_ssubset_complexAffineAlgebraicOfCodimAtLeast
   let f : {Z : Set (Fin n → ℂ) // IsComplexAffineAlgebraicOfCodimAtLeast Z c} →
       {Z : Set (Fin n → ℂ) // IsComplexAffineAlgebraic Z} :=
     fun Z ↦ ⟨Z.1, Z.2.1⟩
-  simpa [f] using
+  simpa [f] using!
     (wellFounded_ssubset_complexAffineAlgebraic (n := n)).onFun (f := f)
 
 set_option maxHeartbeats 4000000 in

@@ -43,7 +43,7 @@ private theorem norm_sq_projection_add_complement
     ‖e psi‖ ^ 2 + ‖(1 - e) psi‖ ^ 2 = ‖psi‖ ^ 2 := by
   have hstar : IsStarProjection e := by
     rw [isStarProjection_iff]
-    exact ⟨he, by simpa [star_eq_adjoint] using heAdj⟩
+    exact ⟨he, by simpa [IsSelfAdjoint, star_eq_adjoint] using heAdj⟩
   obtain ⟨hRange, heq⟩ := isStarProjection_iff_eq_starProjection_range.mp hstar
   letI : e.range.HasOrthogonalProjection := hRange
   have hdecomp := Submodule.norm_sq_eq_add_norm_sq_starProjection psi e.range

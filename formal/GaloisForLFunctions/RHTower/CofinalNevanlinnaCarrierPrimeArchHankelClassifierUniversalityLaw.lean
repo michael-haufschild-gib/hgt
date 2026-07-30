@@ -35,7 +35,7 @@ theorem cofinalNevanlinnaCarrier_primeArchHankelClassifierUniversality
         residual F.base.toBoundaryFamily.carrierRange ∧
       ∀ nu : F.base.toBoundaryFamily.carrierRange,
         nu ∈ F.cofinalCholeskyResidualPhase →
-          NoAtoms (nu.1 : Measure ℝ) ∧
+          NullSingletonClass (nu.1 : Measure ℝ) ∧
           (nu.1 : Measure ℝ) ⟂ₘ (volume : Measure ℝ) ∧
           MaximalTranslationDifferentialFree nu.1 ∧
           (¬ DifferentiallyAlgebraicOn

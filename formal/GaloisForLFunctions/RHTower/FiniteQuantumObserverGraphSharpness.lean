@@ -173,7 +173,7 @@ theorem exists_uniformPureObserver_avoiding_return_until
       ‖equalPhaseAmplitude
         (finiteObserverHamiltonianVertexPhase
           (((k.1 + 1 : ℕ) : ℝ)) energy)‖ < 1 - η := by
-    simpa only [finiteObserverHamiltonianVertexPhase] using hcoh
+    simpa only [finiteObserverHamiltonianVertexPhase] using! hcoh
   nlinarith [sq_nonneg
     (‖equalPhaseAmplitude
       (finiteObserverHamiltonianVertexPhase

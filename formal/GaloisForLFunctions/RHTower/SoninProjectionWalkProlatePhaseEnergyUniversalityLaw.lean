@@ -28,10 +28,10 @@ private theorem centralCutoffCommutator_isHilbertSchmidt
   have hL : IsHilbertSchmidt L := by
     simpa only [L, P, X] using centralProlateTransition_isHilbertSchmidt a ha
   have hPadj : adjoint P = P := by
-    simpa only [P] using
+    simpa only [P] using!
       (isSelfAdjoint_starProjection (centralFourierForbidden a)).star_eq
   have hXadj : adjoint X = X := by
-    simpa only [X] using
+    simpa only [X] using!
       (isSelfAdjoint_starProjection (centralPhysicalForbidden a)).star_eq
   have hAdjL : adjoint L = U := by
     dsimp only [L, U]

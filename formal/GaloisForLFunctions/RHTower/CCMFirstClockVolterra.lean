@@ -47,7 +47,8 @@ theorem integral_complex_sin_linear
       rw [mul_comm (i : ℂ) k]
       ring
     rw [hfun] at c
-    convert c using 1
+    apply c.congr_deriv
+    rw [mul_comm (t : ℂ) k]
     field_simp [hk]
   have hint : IntervalIntegrable
       (fun t : ℝ => Complex.sin (k * (t : ℂ))) volume 0 L := by
@@ -80,7 +81,7 @@ theorem integral_complex_sin_mul_cos_of_period
         (Complex.sin ((w + z) * (t : ℂ)) +
           Complex.sin ((w - z) * (t : ℂ))) / 2 := by
     rw [complex_sin_mul_cos_product_to_sum]
-    congr 2 <;> ring
+    congr 2 <;> ring_nf
   rw [intervalIntegral.integral_congr (fun t _ => hpoint t)]
   rw [intervalIntegral.integral_div]
   have hIntPlus : IntervalIntegrable
@@ -205,7 +206,7 @@ theorem rectangularTwoEdgeAutocorrelation_central_eq_triangle
     ring
   · rw [abs_of_nonneg (by linarith : 0 ≤ h - T / 2)]
     rw [max_eq_left (by linarith : T / 2 - h ≤ 0)]
-    ring
+    ring_nf
 
 /-- Rational-entire kernel selected by the first physical CCM clock frequency. -/
 def ccmFirstClockRationalKernel (L : ℝ) (z : ℂ) : ℂ :=
@@ -360,7 +361,7 @@ theorem ccmFirstClockRationalKernel_eq_screw_add_volterra
         intro t
         rw [hcast]
         unfold ccmFirstClockScrewKernel
-        ring]
+        ring_nf]
     rw [intervalIntegral.integral_const_mul,
       intervalIntegral.integral_sub
         ((by fun_prop : Continuous
@@ -574,7 +575,7 @@ theorem ccmFirstClockXiRationalDivisor_eq_screw_add_volterra
     have hint : IntervalIntegrable (F q) volume 0 L :=
       hcont.intervalIntegrable 0 L
     rw [intervalIntegrable_iff] at hint
-    simpa only [uIoc_of_le hLpos.le] using hint
+    simpa only [uIoc_of_le hLpos.le] using! hint
   have hnormInterval : Summable (fun q : XiZeroCopy =>
       ∫ t : ℝ in (0 : ℝ)..L, ‖F q t‖) := by
     apply Summable.of_norm_bounded
@@ -718,12 +719,17 @@ theorem ccmPhysicalSine_eq_triangleVolterra
     have hfirst := (hsub.mul hcos).neg.div_const xi
     have hsecond := hsin.div_const (xi ^ 2)
     have hsum := hfirst.add hsecond
-    convert hsum using 1
-    · funext x
+    have hfun :
+        ((fun x => (-((fun x => x - h) *
+            fun x => Real.cos (xi * x))) x / xi) +
+          fun x => Real.sin (xi * x) / xi ^ 2) = F := by
+      funext x
       simp only [Pi.add_apply, Pi.mul_apply, Pi.neg_apply, F]
       ring
-    · field_simp [hxi]
-      ring
+    rw [hfun] at hsum
+    apply hsum.congr_deriv
+    field_simp [hxi]
+    ring
   have hint : IntervalIntegrable
       (fun t : ℝ => Real.sin (xi * t) * (t - h)) volume h L :=
     (by fun_prop : Continuous
@@ -1046,7 +1052,7 @@ theorem ccmFirstClockPrimeAutocorrelation_superposition
       have hweight : w k = criticalMellinAtomWeight k := by
         dsimp only [w, criticalMellinAtomWeight]
         rw [Real.sqrt_eq_rpow, div_eq_mul_inv, ← Real.rpow_neg hk0]
-        ring
+        ring_nf
       rw [hweight]
       ring
 
@@ -1408,8 +1414,8 @@ theorem ccmFirstClockGammaCancellationKernel_fubini_and_integrable
     have htailExp :
         Integrable (fun s : ℝ => Real.exp (-(s / 4))) nu := by
       show IntegrableOn (fun s : ℝ => Real.exp (-(s / 4))) (Ioi 0)
-      convert (integrableOn_exp_mul_Ioi (a := (-1 / 4 : ℝ))
-        (by norm_num) 0) using 1 <;> ring
+      (convert (integrableOn_exp_mul_Ioi (a := (-1 / 4 : ℝ))
+        (by norm_num) 0) using 1; ring_nf)
     have htail :
         Integrable (fun s : ℝ =>
           (5 * (L / 2) / (1 - Real.exp (-1))) * Real.exp (-(s / 4))) nu :=
@@ -1708,7 +1714,7 @@ theorem rectangularEvenPolarFeature_central_sq
 
 /-- Universal twofold integration-by-parts law at one full physical period. -/
 theorem ccmFirstClockHyperbolicSecondPrimitive_superposition
-    {L xi : ℝ} (hL : 0 ≤ L) (hperiod : xi * L = 2 * Real.pi) :
+    {L xi : ℝ} (_hL : 0 ≤ L) (hperiod : xi * L = 2 * Real.pi) :
     xi * (8 * (Real.cosh (L / 2) - 1)) +
         xi ^ 2 * ∫ t : ℝ in (0 : ℝ)..L,
           Real.sin (xi * t) * (8 * (Real.cosh (t / 2) - 1)) =
@@ -1724,23 +1730,40 @@ theorem ccmFirstClockHyperbolicSecondPrimitive_superposition
   have hQ : ∀ t : ℝ, HasDerivAt Q (Q' t) t := by
     intro t
     dsimp only [Q, Q']
-    convert ((((hasDerivAt_id t).div_const 2).cosh.sub_const 1).const_mul 8) using 1 <;>
-      simp only [id_eq] <;> ring
+    have hraw :=
+      (((hasDerivAt_id t).div_const 2).cosh.sub_const 1).const_mul 8
+    have hraw' := hraw.congr_deriv
+      (g' := 4 * Real.sinh (t / 2)) (by
+        simp only [id_eq]
+        ring_nf)
+    simpa only [id_eq] using! hraw'
   have hQ' : ∀ t : ℝ, HasDerivAt Q' (Q'' t) t := by
     intro t
     dsimp only [Q', Q'']
-    convert (((hasDerivAt_id t).div_const 2).sinh.const_mul 4) using 1 <;>
-      simp only [id_eq] <;> ring
+    have hraw := ((hasDerivAt_id t).div_const 2).sinh.const_mul 4
+    have hraw' := hraw.congr_deriv
+      (g' := 2 * Real.cosh (t / 2)) (by
+        simp only [id_eq]
+        ring_nf)
+    simpa only [id_eq] using! hraw'
   have hS : ∀ t : ℝ, HasDerivAt S (S' t) t := by
     intro t
     dsimp only [S, S']
-    convert ((hasDerivAt_id t).const_mul xi).sin using 1 <;>
-      simp only [id_eq] <;> ring
+    have hraw := ((hasDerivAt_id t).const_mul xi).sin
+    have hraw' := hraw.congr_deriv
+      (g' := xi * Real.cos (xi * t)) (by
+        simp only [id_eq, mul_one]
+        ring)
+    simpa only [Function.comp_apply, id_eq] using! hraw'
   have hC : ∀ t : ℝ, HasDerivAt C (C' t) t := by
     intro t
     dsimp only [C, C']
-    convert ((hasDerivAt_id t).const_mul xi).cos using 1 <;>
-      simp only [id_eq] <;> ring
+    have hraw := ((hasDerivAt_id t).const_mul xi).cos
+    have hraw' := hraw.congr_deriv
+      (g' := -xi * Real.sin (xi * t)) (by
+        simp only [id_eq, mul_one]
+        ring)
+    simpa only [Function.comp_apply, id_eq] using! hraw'
   have hQInt : IntervalIntegrable Q volume 0 L :=
     (by dsimp only [Q]; fun_prop : Continuous Q).intervalIntegrable 0 L
   have hQ'Int : IntervalIntegrable Q' volume 0 L :=
@@ -1942,7 +1965,7 @@ theorem two_mul_xiScrewDivisor_re_eq_central_prime_add_arch
   rw [xiWeilPolarization_central_rectangular_eq_two_mul_screw] at hfull
   have hre := congrArg Complex.re hfull
   norm_num at hre
-  convert hre using 1 <;> ring
+  (convert hre using 1; ring)
 
 /-- Sine-weighted central prime autocorrelation is interval-integrable. -/
 theorem intervalIntegrable_sin_mul_centralPrimeAutocorrelation
@@ -2017,7 +2040,7 @@ theorem intervalIntegrable_sin_mul_centralNormalizedArchContribution
 
 /-- Literal real expansion of the polar--prime Stieltjes pairing on the physical sine test. -/
 theorem criticalMellinStieltjesPairing_sine_re
-    {L xi : ℝ} (hL : 0 ≤ L) :
+    {L xi : ℝ} (_hL : 0 ≤ L) :
     (criticalMellinStieltjesPairing (L / 2)
       (fun h => (Real.sin (xi * h) : ℂ))).re =
       (∫ h : ℝ in Ioc 0 L,

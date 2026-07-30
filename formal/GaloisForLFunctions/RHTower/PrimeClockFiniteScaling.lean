@@ -241,7 +241,7 @@ private theorem sum_logStep_sq_le (N : ℕ) (hN : 1 ≤ N) :
         ∑ n ∈ Finset.Ioc 0 (N - 1), logStep n := by
       apply Finset.sum_le_sum
       intro n hn
-      have hn1 : 1 ≤ n := by simpa using (Finset.mem_Ioc.mp hn).1
+      have hn1 : 1 ≤ n := by simpa using! (Finset.mem_Ioc.mp hn).1
       have h0 := logStep_nonneg hn1
       have h1 := logStep_le_one hn1
       nlinarith
@@ -352,7 +352,7 @@ private theorem primeLogSusceptibility_error_bound (N : ℕ) (hN : 1 ≤ N) :
       _ ≤ ∑ n ∈ Finset.Ioc 0 (N - 1), logStep n * primeMertensBound := by
         apply Finset.sum_le_sum
         intro n hn
-        have hn1 : 1 ≤ n := by simpa using (Finset.mem_Ioc.mp hn).1
+        have hn1 : 1 ≤ n := by simpa using! (Finset.mem_Ioc.mp hn).1
         have hstep : 0 ≤ logStep n := logStep_nonneg hn1
         rw [abs_mul, abs_of_nonneg hstep]
         exact mul_le_mul_of_nonneg_left (primeLogError_bound n hn1) hstep

@@ -107,7 +107,7 @@ theorem lipschitzOn_gammaCodePrefix
       (gammaCodePrefix N ω d) gammaExterior := by
   intro d
   induction d generalizing N ω with
-  | zero => simpa using (LipschitzWith.id :
+  | zero => simpa using! (LipschitzWith.id :
       LipschitzWith 1 (id : ℂ → ℂ)).lipschitzOnWith
   | succ d ih =>
       have hNshift : ∀ k, gammaCommonInverseCollar.threshold ≤ gammaCodeShift N k := by
@@ -128,10 +128,10 @@ theorem lipschitzOn_gammaCodePrefix
         calc
           gammaExteriorContraction (gammaCodeLabel N ω 0) * (1 / 2 : ℝ≥0) ^ d
               ≤ (1 / 2 : ℝ≥0) * (1 / 2 : ℝ≥0) ^ d :=
-            mul_le_mul_right' (gammaExteriorContraction_le_half
+            mul_le_mul_left (gammaExteriorContraction_le_half
               (gammaCodeLabel_late (ω := ω) hN 0)) _
           _ = (1 / 2 : ℝ≥0) ^ d * (1 / 2 : ℝ≥0) := mul_comm _ _
-      simpa [gammaCodePrefix_succ] using hcomp.weaken hconst
+      simpa [gammaCodePrefix_succ] using! hcomp.weaken hconst
 
 /-- Appending one sheet at the innermost end of a word. -/
 theorem gammaCodePrefix_succ_right
@@ -511,7 +511,7 @@ theorem continuousAt_Gamma_iterate_gammaBaireCode
         rw [hpoint]
         exact hGamma
       have hcomp := hGammaAt.comp' ih
-      simpa only [Function.iterate_succ'] using hcomp
+      simpa only [Function.iterate_succ'] using! hcomp
 
 /-- If the `k`-th Gamma iterates of two coded points are closer than `1/2`, then their `k`-th
 symbols agree. -/

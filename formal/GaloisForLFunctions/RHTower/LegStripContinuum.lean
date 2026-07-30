@@ -204,12 +204,12 @@ theorem tendsto_aheadShell {c : ℝ} (hc : 1 < c) (n : ℕ+) :
   · have hz : Tendsto (fun i:ℕ => Real.exp (-r/(2*(i:ℝ)))) atTop (𝓝 1) := by
       have h0 : Tendsto (fun i:ℕ => -r/(2*(i:ℝ))) atTop (𝓝 0) := by
         refine (tendsto_const_div_atTop_nhds_zero_nat (-r/2)).congr (fun i => ?_); ring
-      simpa using (Real.continuous_exp.tendsto 0).comp h0
+      simpa using! (Real.continuous_exp.tendsto 0).comp h0
     simpa using hz.mul hR
   · have hz : Tendsto (fun i:ℕ => Real.exp (r/(2*(i:ℝ)))) atTop (𝓝 1) := by
       have h0 : Tendsto (fun i:ℕ => r/(2*(i:ℝ))) atTop (𝓝 0) := by
         refine (tendsto_const_div_atTop_nhds_zero_nat (r/2)).congr (fun i => ?_); ring
-      simpa using (Real.continuous_exp.tendsto 0).comp h0
+      simpa using! (Real.continuous_exp.tendsto 0).comp h0
     simpa using hz.mul hR
   · filter_upwards [eventually_ge_atTop 1] with i hi
     have hlow : Real.exp (-r/(2*(i:ℝ))) * ∑' k:ℕ, f ((k:ℝ)/i)
@@ -308,7 +308,7 @@ theorem tendsto_behindShell {c : ℝ} (hc : 1 < c) (n : ℕ+) :
     have hz : Tendsto (fun i:ℕ => Real.exp (-r/(2*(i:ℝ)))) atTop (𝓝 1) := by
       have h0 : Tendsto (fun i:ℕ => -r/(2*(i:ℝ))) atTop (𝓝 0) := by
         refine (tendsto_const_div_atTop_nhds_zero_nat (-r/2)).congr (fun i => ?_); ring
-      simpa using (Real.continuous_exp.tendsto 0).comp h0
+      simpa using! (Real.continuous_exp.tendsto 0).comp h0
     simpa using hz.mul hgint
   have hEeqB : ∀ i:ℕ, 1 ≤ i → ∀ k, k < i →
       Real.exp (-(n:ℝ) * (c/(2*(i:ℝ)) + c * ∑ j ∈ Finset.range k, 1/((i:ℝ)-1-j)))
@@ -322,7 +322,7 @@ theorem tendsto_behindShell {c : ℝ} (hc : 1 < c) (n : ℕ+) :
       simp only [hg_def]
       rw [show (1:ℝ) - (k:ℝ)/i = ((i:ℝ)-k)/i by field_simp, Real.rpow_def_of_pos (by positivity),
         Real.log_div (by positivity) (ne_of_gt hi0), Real.log_div (ne_of_gt hi0) (ne_of_gt hik)]
-      ring
+      ring_nf
     rw [hprof, ← Real.exp_add, ← Real.exp_add]; congr 1; rw [hr_def]; ring
   refine tendsto_of_tendsto_of_tendsto_of_le_of_le'
     (g := fun i:ℕ => Real.exp (-r/(2*(i:ℝ))) *
@@ -359,7 +359,8 @@ theorem tendsto_behindShell {c : ℝ} (hc : 1 < c) (n : ℕ+) :
       have hbid : g ((k:ℝ)/i) * (r * (1/((i:ℝ)-k))) = (r/(i:ℝ)) * (1 - (k:ℝ)/i) ^ (r-1) := by
         rw [hgk, show (i:ℝ) - k = (i:ℝ) * (1 - (k:ℝ)/i) by field_simp,
           show r = (r-1)+1 by ring, Real.rpow_add hpos1, Real.rpow_one]
-        field_simp; ring
+        field_simp
+        ring_nf
       have hdev : Real.exp (-r/(2*(i:ℝ))) * g ((k:ℝ)/i)
           - Real.exp (-r/(2*(i:ℝ))) * (g ((k:ℝ)/i) * Real.exp (-r * err))
           ≤ (r/(i:ℝ)) * (1 - (k:ℝ)/i) ^ (r-1) := by

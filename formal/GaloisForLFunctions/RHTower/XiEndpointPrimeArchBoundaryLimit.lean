@@ -37,7 +37,7 @@ theorem tendsto_xiEndpointApproach :
     Tendsto xiEndpointApproach atTop (𝓝 (I / 2)) := by
   have h := (tendsto_xiEndpointEpsilon_zero.const_sub (1 / 2 : ℂ)).mul_const I
   have htarget : (1 / 2 : ℂ) * I = I / 2 := by ring
-  simpa only [xiEndpointApproach, sub_zero, htarget] using h
+  simpa only [xiEndpointApproach, sub_zero, htarget] using! h
 
 lemma xiEndpointApproach_source_eq (n : ℕ) :
     normalizedContinuedPrimeArchSource (xiEndpointApproach n) =

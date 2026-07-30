@@ -32,7 +32,10 @@ def derivationCommutatorAlternatingMap
   map_update_add' f i x y := by
     fin_cases i <;> simp
   map_update_smul' f i c x := by
-    fin_cases i <;> simp
+    fin_cases i <;> simp [smul_lie]
+    ext z
+    simp [Derivation.commutator_apply]
+    rw [smul_sub]
   map_eq_zero_of_eq' f i j hij hne := by
     fin_cases i <;> fin_cases j <;> simp_all
 
@@ -90,7 +93,7 @@ theorem lawPlane_escapingSecant_forces_noncommute
   obtain ⟨a, b, c, d, e, f, hp, hq, hHT⟩ := hsecant
   have hpq : Function.Commute
       (ρ (a • v + b • w)) (ρ (c • v + d • w)) := by
-    simpa only [map_add, map_smul] using
+    simpa only [map_add, map_smul] using!
       linearCombinations_commute_of_commute (ρ v) (ρ w) hcomm a b c d
   exact (hypertranscendental_chord_forces_noncommute ρ x hp hq hHT) hpq
 

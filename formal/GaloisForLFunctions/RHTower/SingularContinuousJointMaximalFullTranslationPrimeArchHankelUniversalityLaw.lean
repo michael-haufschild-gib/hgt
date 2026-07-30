@@ -80,7 +80,7 @@ theorem singularContinuous_jointMaximalFullTranslation_primeArchHankelUniversali
         let carrier := weightedBoundaryCarrier F.base.toBoundaryFamily mu density
         LinftyStrictlyPositive mu density ∧
           ∫ t, density t ∂mu = 1 ∧
-          IsProbabilityMeasure carrier ∧ NoAtoms carrier ∧
+          IsProbabilityMeasure carrier ∧ NullSingletonClass carrier ∧
           carrier ⟂ₘ (volume : Measure ℝ) ∧
           MaximallySeparatedFromAbsolutelyContinuousProbabilities carrier ∧
           HasHamburgerMoments s carrier ∧

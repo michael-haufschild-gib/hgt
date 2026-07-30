@@ -134,7 +134,7 @@ theorem ellipticGammaExternalDefectFamily_differentialMatroid_eq_periodCosetPart
         (ellipticGammaPeriodClass sigma tau ∘ h) 0 := by
   apply differentialFamilyMatroid_eq_affinePointedCollisionMatroid_of_parallel
   · intro I hframe hnonzero
-    simpa [ellipticGammaExternalDefectFamily] using
+    simpa [ellipticGammaExternalDefectFamily] using!
       ellipticGammaExternalDefectFamily_differentialIndependent
         (fun j : I ↦ h j) sigma tau hsigma htau hindependent
         (fun j ↦ (ellipticGammaPeriodClass_ne_zero_iff sigma tau (h j)).mp

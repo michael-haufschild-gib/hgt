@@ -564,14 +564,14 @@ theorem finiteBrolinNormalizedLogDerivative_zero_shiftedSubseq_tendsto_gapAMu
           ∫ w, ((z - w)⁻¹).re
             ∂preBrolinMeasure c (nseq k))
         atTop (𝓝 (∫ w, ((z - w)⁻¹).re ∂gapAMu c)) := by
-    simpa [nseq, η] using hbaseInt.1.comp hη
+    simpa [nseq, η] using! hbaseInt.1.comp hη
   have hbaseIntIm :
       Tendsto
         (fun k =>
           ∫ w, ((z - w)⁻¹).im
             ∂preBrolinMeasure c (nseq k))
         atTop (𝓝 (∫ w, ((z - w)⁻¹).im ∂gapAMu c)) := by
-    simpa [nseq, η] using hbaseInt.2.comp hη
+    simpa [nseq, η] using! hbaseInt.2.comp hη
   have hvalidBase :
       ∀ᶠ k in atTop, (quadratic c)^[nseq k] z ≠ 0 :=
     hnseq.eventually (eventually_iterate_ne_zero_of_not_mem_filledJulia hz)
@@ -602,9 +602,9 @@ theorem finiteBrolinNormalizedLogDerivative_zero_shiftedSubseq_tendsto_gapAMu
       finiteBrolinCauchyShiftFactor_tendsto_one
         (c := c) (z := z) hz (φ := nseq) hnseq
   have hfactorRe : Tendsto (fun k => (factor k).re) atTop (𝓝 1) := by
-    simpa [factor] using (Complex.continuous_re.tendsto (1 : ℂ)).comp hfactor
+    simpa [factor] using! (Complex.continuous_re.tendsto (1 : ℂ)).comp hfactor
   have hfactorIm : Tendsto (fun k => (factor k).im) atTop (𝓝 0) := by
-    simpa [factor] using (Complex.continuous_im.tendsto (1 : ℂ)).comp hfactor
+    simpa [factor] using! (Complex.continuous_im.tendsto (1 : ℂ)).comp hfactor
   have hprodRe :
       Tendsto
         (fun k =>

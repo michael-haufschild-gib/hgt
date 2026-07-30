@@ -54,7 +54,7 @@ theorem exists_injective_evaluation_minor_of_linearIndependent_profiles
     rw [← heval i, ← heval j, hij]
   let P : Matrix (Fin d) (Fin d) ℂ := Matrix.of fun r s => w r s
   have hProws : LinearIndependent ℂ P.row := by
-    simpa only [P, Matrix.row, Matrix.of_apply] using hwLI
+    simpa only [P, Matrix.row, Matrix.of_apply] using! hwLI
   obtain ⟨Q, hPQ⟩ := exists_matrix_rightInverse_of_linearIndependent_rows P hProws
   have hPdet : P.det ≠ 0 := Matrix.det_ne_zero_of_right_inverse hPQ
   refine ⟨e, P, he, isUnit_iff_ne_zero.mpr hPdet, ?_⟩

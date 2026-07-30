@@ -64,7 +64,7 @@ theorem hasDerivAt_nevanlinnaJetExpansion_of_contDiffOn
       ((contDiffOn_nevanlinnaJetCoeff hU ha hq r k).contDiffAt hznhds).differentiableAt
         (by simp) |>.hasDerivAt
     have hp := hasDerivAt_nevanlinnaCauchyPower hqderiv hden k
-    convert hb.mul hp using 1
+    convert! hb.mul hp using 1
     all_goals ring
   have hsum := HasDerivAt.fun_sum hterm
   have hzero : deriv (nevanlinnaJetCoeff a q r (r + 1)) z = 0 := by

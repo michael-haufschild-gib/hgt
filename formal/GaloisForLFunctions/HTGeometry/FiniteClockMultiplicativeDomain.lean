@@ -134,7 +134,7 @@ theorem re_inner_finiteCyclicObservableTwirlNumerator_quantumMasterConstraint_eq
     (ContinuousLinearMap.adjoint_inner_left (U ^ k)
       (D.adjoint (D ((U ^ (N - k)) ψ))) ψ).symm
   rw [hinter, hpowAdj]
-  simpa only using
+  simpa only using!
     (D.apply_norm_sq_eq_inner_adjoint_right ((U ^ (N - k)) ψ)).symm
 
 /-- **Faithfulness of finite clock twirling on positive effects.**  Twirling a master constraint

@@ -90,7 +90,7 @@ theorem exists_complex_of_ellipticMeroField_translation_fixed
       addTranslationMeroEquiv sigma (z : meroField Set.univ) = z := by
     have h := congrArg
       (fun w : ellipticMeroField tau => (w : meroField Set.univ)) hz
-    simpa using h
+    simpa using! h
   have hjoint : JointFixed
       (rankThreeGeneratorMeromorphicDifferenceDifferentialField
         (ellipticGammaSourcePeriods sigma tau))

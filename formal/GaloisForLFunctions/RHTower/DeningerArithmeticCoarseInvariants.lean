@@ -175,13 +175,15 @@ def invariantFlow
     intro x
     apply Subtype.ext
     have hx := LinearMap.congr_fun theta_commutes_d0 x.1
-    simpa [invariantD0, deningerInvariantLinearMap] using hx
+    change C.d0 (theta0 x.1) = theta1 (C.d0 x.1)
+    exact hx
   theta_commutes_d1 := by
     apply LinearMap.ext
     intro x
     apply Subtype.ext
     have hx := LinearMap.congr_fun theta_commutes_d1 x.1
-    simpa [invariantD1, deningerInvariantLinearMap] using hx
+    change C.d1 (theta1 x.1) = theta2 (C.d1 x.1)
+    exact hx
 
 end DeningerEquivariantThreeTermComplex
 

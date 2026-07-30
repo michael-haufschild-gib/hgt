@@ -114,7 +114,8 @@ theorem continuousAt_xiCompletedApertureRegularizedResonantTwoPointDet
     exact (xi_analyticOnNhd_univ _ (Set.mem_univ _)).deriv.div
       (xi_analyticOnNhd_univ _ (Set.mem_univ _)) hxi
   have hflux : AnalyticAt ℂ seamFluxCochain ((((rho : ℂ).re : ℝ) : ℂ)) := by
-    simpa only [seamFluxCochain] using hlog.neg
+    change AnalyticAt ℂ (fun z => -logDeriv xi z) _
+    exact hlog.neg
   have hdiagComplex : ContinuousAt
       (fun epsilon : ℝ =>
         seamFluxCochain ((((rho : ℂ).re + epsilon : ℝ) : ℂ))) 0 := by

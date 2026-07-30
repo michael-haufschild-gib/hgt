@@ -120,7 +120,7 @@ theorem pow_mul_thetaCuspPolynomialAtom_tendsto_zero_of_pos
     (continuous_id.pow k).mul hatom
   have h := (hc.tendsto 0).mono_left
     (inf_le_left : 𝓝[>] (0 : ℝ) ≤ 𝓝 0)
-  simpa [Nat.ne_of_gt hk] using h
+  simpa [nhdsWithin, Nat.ne_of_gt hk] using h
 
 /-- Raw moments of the positive Liouville Gibbs atom. -/
 def thetaCuspLiouvilleGibbsMoment (k n : ℕ) : ℝ :=
@@ -148,7 +148,9 @@ theorem thetaCuspAtomRawEvenMoment_zero_eq_liouvilleGibbs
       integrableOn_pow_mul_thetaCuspPolynomialAtom_Ioi_of_pos
         0 (thetaCuspLogDerivativeStep (X ^ 2)) hn
   have hbint : IntegrableOn b (Ioi 0) := by
-    simpa only [b, thetaCuspLiouvilleGibbsAtom, pow_zero, one_mul] using
+    change IntegrableOn
+      (fun x : ℝ => thetaCuspPolynomialAtom (X ^ 2) n x) (Ioi 0)
+    simpa only [pow_zero, one_mul] using
       integrableOn_pow_mul_thetaCuspPolynomialAtom_Ioi_of_pos 0 (X ^ 2) hn
   have hbcont : Continuous b :=
     continuous_iff_continuousAt.mpr fun x =>
@@ -175,8 +177,8 @@ theorem thetaCuspAtomRawEvenMoment_zero_eq_liouvilleGibbs
         (f₁ := b) (f₂ := (fun _ : ℝ => 1) * b)
         (Eventually.of_forall fun x => by simp)
         (by
-          simpa only [b, thetaCuspLiouvilleGibbsAtom] using
-            thetaCuspPolynomialAtom_tendsto_atTop_zero_of_pos (X ^ 2) hn))
+          change Tendsto (thetaCuspPolynomialAtom (X ^ 2) n) atTop (𝓝 0)
+          exact thetaCuspPolynomialAtom_tendsto_atTop_zero_of_pos (X ^ 2) hn))
   have hibp' : (∫ x : ℝ in Ioi 0, b' x) = -b 0 := by
     simpa only [Pi.mul_apply, one_mul, zero_mul, integral_zero, sub_zero,
       zero_sub] using hibp
@@ -323,7 +325,8 @@ theorem thetaCuspAtomRawEvenMoment_succ_eq_liouvilleGibbs
   rw [show (∫ x : ℝ in Ioi 0,
       x ^ (2 * j + 2) * deriv (thetaCuspLiouvilleGibbsAtom n) x) =
       -(2 * j + 2 : ℕ) * thetaCuspLiouvilleGibbsMoment (2 * j + 1) n by
-    convert hibp using 1]
+    simpa only [show 2 * (j + 1) = 2 * j + 2 by omega,
+      show 2 * j + 2 - 1 = 2 * j + 1 by omega] using hibp]
   push_cast
   ring
 
@@ -386,13 +389,36 @@ theorem forall_primeArchSourceTraceHankel_linear_nonneg_of_liouvilleWard
       thetaCuspAtomRawEvenMoment_one_eq_firstAtomWardMoment 3]
     have hscaled := mul_le_mul_of_nonneg_left hupper
       (sq_nonneg (2 * Real.pi))
-    convert hscaled using 1 <;> ring
+    calc
+      14 * ((3005 / 2997 : ℝ) *
+          (2 * Real.pi * thetaCuspFirstAtomWardMoment 2)) ^ 2 =
+          (2 * Real.pi) ^ 2 *
+            (14 * ((3005 / 2997 : ℝ) *
+              thetaCuspFirstAtomWardMoment 2) ^ 2) := by ring
+      _ ≤ (2 * Real.pi) ^ 2 *
+          (9 * thetaCuspFirstAtomWardMoment 1 *
+            thetaCuspFirstAtomWardMoment 3) := hscaled
+      _ = 9 * (2 * Real.pi * thetaCuspFirstAtomWardMoment 1) *
+          (2 * Real.pi * thetaCuspFirstAtomWardMoment 3) := by ring
   · rw [thetaCuspAtomRawEvenMoment_one_eq_firstAtomWardMoment 0,
       thetaCuspAtomRawEvenMoment_one_eq_firstAtomWardMoment 1,
       thetaCuspAtomRawEvenMoment_one_eq_firstAtomWardMoment 2]
     have hscaled := mul_le_mul_of_nonneg_left hrelaxed
       (sq_nonneg (2 * Real.pi))
-    convert hscaled using 1 <;> ring
+    calc
+      16 * ((3005 / 2997 : ℝ) *
+          (2 * Real.pi * thetaCuspFirstAtomWardMoment 0)) *
+          ((3005 / 2997 : ℝ) *
+            (2 * Real.pi * thetaCuspFirstAtomWardMoment 2)) =
+          (2 * Real.pi) ^ 2 *
+            (16 * ((3005 / 2997 : ℝ) *
+              thetaCuspFirstAtomWardMoment 0) *
+              ((3005 / 2997 : ℝ) *
+                thetaCuspFirstAtomWardMoment 2)) := by ring
+      _ ≤ (2 * Real.pi) ^ 2 *
+          (45 * thetaCuspFirstAtomWardMoment 1 ^ 2) := hscaled
+      _ = 45 * (2 * Real.pi *
+          thetaCuspFirstAtomWardMoment 1) ^ 2 := by ring
 
 end
 end RHTower

@@ -733,13 +733,13 @@ theorem finiteUniversalTimeChangeJet_embedding
         (timeChangeFiniteTargetIndexEmbedding p).1
         (timeChangeFiniteTargetIndexEmbedding p).2 := by
   rcases p with n | ⟨i, n⟩
-  · simpa [timeChangeFiniteTargetIndexEmbedding, timeChangeTargetClockIndex] using
+  · simpa [timeChangeFiniteTargetIndexEmbedding, timeChangeTargetClockIndex] using!
       (Classical.choose_spec <|
       exists_timeChangeFiniteSourcePolynomial_universalJet_of_le
         (K := K) (ι := ι) (Nat.lt_succ_iff.mp n.isLt)
           (Sum.inl (PUnit.unit : PUnit.{1})))
   · simpa [timeChangeFiniteTargetIndexEmbedding,
-      timeChangeTargetObservableIndex] using (Classical.choose_spec <|
+      timeChangeTargetObservableIndex] using! (Classical.choose_spec <|
       exists_timeChangeFiniteSourcePolynomial_universalJet_of_le
         (K := K) (ι := ι) (Nat.lt_succ_iff.mp n.isLt) (Sum.inr i))
 

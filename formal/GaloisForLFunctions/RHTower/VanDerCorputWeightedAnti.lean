@@ -54,7 +54,7 @@ theorem norm_integral_weight_cexp_le_anti
     have hinv : HasDerivAt (fun t => ((g' t : ℂ) * I)⁻¹)
         (-(((g'' x : ℂ) * I) / ((g' x : ℂ) * I) ^ 2)) x := by
       have h2 := (hasDerivAt_inv (hg'ne x hx)).comp x hden
-      convert h2 using 1; field_simp
+      (convert! h2 using 1; field_simp)
     exact ((hw x hx).ofReal_comp).mul hinv
   have hVnorm : ∀ t, ‖V t‖ = 1 := by intro t; rw [hVdef]; simp [Complex.norm_exp]
   have hUnorm : ∀ x ∈ Set.uIcc a b, ‖U x‖ = w x / g' x := by

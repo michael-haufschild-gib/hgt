@@ -157,7 +157,10 @@ theorem analyticOrderAt_dyadicSharpPrimeCancelledSource_eq_pred
         (m + 1 : ℕ) := by
     rw [show shift p = ρ by simpa only [shift] using hpρ,
       hregOrder] at hshiftOrder
-    simpa only [shift, Function.comp_apply] using hshiftOrder
+    change analyticOrderAt
+      (fun s : ℂ => regularizedRiemannZeta (s - 1 / 2)) p =
+        (m + 1 : ℕ) at hshiftOrder
+    exact hshiftOrder
   have hpHalf : 1 / 2 < p.re := by
     dsimp only [p]
     rw [xiRightShiftedPole, Complex.add_re, Complex.one_re]

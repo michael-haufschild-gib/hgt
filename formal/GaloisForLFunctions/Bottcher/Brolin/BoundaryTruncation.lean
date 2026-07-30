@@ -147,7 +147,7 @@ theorem integral_truncatedLogKernel_escapeDisk_lower_bound_of_probability
     integrable_const A
   have hfun :
       Integrable (fun w : escapeDisk c => truncatedLogKernel z δ (w : ℂ)) μK := by
-    simpa [truncatedLogKernelOnEscapeDisk] using
+    simpa [truncatedLogKernelOnEscapeDisk] using!
       (truncatedLogKernelOnEscapeDisk c z δ hδ).integrable μK
   have hmono :
       (fun _ : escapeDisk c => A) ≤
@@ -230,7 +230,7 @@ theorem escapeDisk_singleton_eq_zero_of_truncatedLogKernel_nonpos
     hconst.add hscaled
   have htruncInt :
       Integrable (fun w : escapeDisk c => truncatedLogKernel z δ (w : ℂ)) μK := by
-    simpa [truncatedLogKernelOnEscapeDisk] using
+    simpa [truncatedLogKernelOnEscapeDisk] using!
       (truncatedLogKernelOnEscapeDisk c z δ hδpos).integrable μK
   have hmono :
       (fun w : escapeDisk c => B + (A - B) * atomIndicator w) ≤
@@ -328,7 +328,7 @@ theorem escapeDisk_ball_pressure_of_truncatedLogKernel_nonpos
     hconst.add hscaled
   have htruncInt :
       Integrable (fun w : escapeDisk c => truncatedLogKernel z δ (w : ℂ)) μK := by
-    simpa [truncatedLogKernelOnEscapeDisk] using
+    simpa [truncatedLogKernelOnEscapeDisk] using!
       (truncatedLogKernelOnEscapeDisk c z δ hδ).integrable μK
   have hmono :
       (fun w : escapeDisk c => B + (A - B) * ballIndicator w) ≤
@@ -673,7 +673,7 @@ theorem integrable_logKernel_neg_right_shiftedLimitingBrolinMeasure
   have hzmap : Integrable (fun w => logKernel z w) (Measure.map Neg.neg ν) := by
     rw [hmap]
     exact hzint
-  simpa [ν] using
+  simpa [ν] using!
     (integrable_map_measure
       (logKernel_aestronglyMeasurable z (Measure.map Neg.neg ν))
       continuous_neg.measurable.aemeasurable).1 hzmap
@@ -832,7 +832,7 @@ theorem integrable_logKernel_shiftedLimitingBrolinMeasure_of_integrable_add_neg_
     have haddν :
         Integrable (fun w => logKernel z w + logKernel z (-w)) ν := by
       simpa [ν] using hadd
-    simpa [Pi.add_apply] using haddν.add hconst
+    simpa [Pi.add_apply] using! haddν.add hconst
   have hbranch_sum :
       Integrable
         ((fun w => logKernel z w + D) +

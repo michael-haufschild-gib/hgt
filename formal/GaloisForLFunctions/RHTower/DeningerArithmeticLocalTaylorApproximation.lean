@@ -107,7 +107,7 @@ theorem deningerLocalXiQuotientTaylorApprox_tendstoUniformlyOn
       exact_mod_cast hrR)
   simpa only [
     deningerLocalXiQuotientTaylorApprox,
-    sub_zero] using hconv
+    sub_zero] using! hconv
 
 /--
 Multiplying the Taylor approximants back by Xi gives locally uniform zero representatives.

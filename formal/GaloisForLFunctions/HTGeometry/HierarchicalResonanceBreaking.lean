@@ -402,7 +402,7 @@ def LogarithmicallyShiftSeparated (b : ℕ → ℝ) : Prop :=
         Real.log ((n : ℝ) + 2)) atTop atTop
 
 def polynomialRealCoeffFinsupp (Q : Polynomial ℤ) : ℕ →₀ ℝ :=
-  Q.toFinsupp.mapRange (fun z : ℤ => (z : ℝ)) (by simp)
+  Q.toFinsupp.coeff.mapRange (fun z : ℤ => (z : ℝ)) (by simp)
 
 @[simp]
 theorem polynomialRealCoeffFinsupp_apply (Q : Polynomial ℤ) (n : ℕ) :
@@ -610,7 +610,7 @@ theorem LogarithmicallyShiftSeparated.of_eventuallyEq {b b' : ℕ → ℝ}
       ∀ j ∈ Finset.range (Q.natDegree + 1), b' (n + j) = b (n + j) := by
     rw [Finset.eventually_all]
     intro j hj
-    simpa only [Function.comp_apply] using heq.comp_tendsto (tendsto_add_atTop_nat j)
+    simpa only [Function.comp_apply] using! heq.comp_tendsto (tendsto_add_atTop_nat j)
   filter_upwards [hall] with n hn
   congr 2
   apply Finset.sum_congr rfl
@@ -724,7 +724,7 @@ theorem exists_eventually_uniformGeometric_resonancePolynomial_of_differentially
       ∀ j ∈ Finset.range (Q.natDegree + 1), b' (q k + j) = b (q k + j) := by
     rw [Finset.eventually_all]
     intro j hj
-    simpa only [Function.comp_apply] using
+    simpa only [Function.comp_apply] using!
       heq.comp_tendsto ((tendsto_add_atTop_nat j).comp hq)
   filter_upwards [hall] with k hk
   have hsum : (∑ j ∈ Finset.range (Q.natDegree + 1),
@@ -1015,11 +1015,11 @@ theorem isIntegerMinimalPolynomialAt_rationalMinpolyIntegerNormalization
   have hma' : m.map (algebraMap ℤ ℚ) =
       Polynomial.C (a : ℚ) * minpoly ℚ lam := by
     simpa only [m, rationalMinpolyIntegerNormalization, Algebra.smul_def,
-      map_intCast, Polynomial.algebraMap_apply] using hma
+      map_intCast, Polynomial.algebraMap_apply] using! hma
   have hdR' : R.map (algebraMap ℤ ℚ) =
       Polynomial.C (d : ℚ) * U := by
     simpa only [R, Algebra.smul_def, map_intCast,
-      Polynomial.algebraMap_apply] using hdR
+      Polynomial.algebraMap_apply] using! hdR
   refine ⟨a * d, mul_ne_zero ha hd, R, hR, ?_⟩
   apply Polynomial.map_injective (algebraMap ℤ ℚ) Int.cast_injective
   rw [Polynomial.map_mul, Polynomial.map_C, Polynomial.map_mul]

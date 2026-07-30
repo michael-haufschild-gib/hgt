@@ -73,8 +73,15 @@ theorem smoothAFEZetaDualNumerator_analyticOnNhd
       DifferentiableAt ℂ (fun w : ℂ => Complex.exp (w ^ 2)) w :=
     Complex.differentiable_exp.differentiableAt.comp w
       (differentiableAt_id.pow 2)
-  simpa [smoothAFEZetaDualNumerator] using
-    ((hchi.mul hpow).mul hexp).differentiableWithinAt
+  have hfun :
+      smoothAFEZetaDualNumerator τ Y =
+        ((fun z : ℂ => smoothAFEZetaChiShiftRatio (linePt τ) (-z)) *
+          (fun z : ℂ => (Y : ℂ) ^ (-z))) *
+          (fun z : ℂ => Complex.exp (z ^ 2)) := by
+    funext z
+    simp only [smoothAFEZetaDualNumerator, Pi.mul_apply]
+  rw [hfun]
+  exact ((hchi.mul hpow).mul hexp).differentiableWithinAt
 
 theorem smoothAFEZetaDualIntegrand_eq_numerator_div
     (τ Y : ℝ) (w : ℂ) :

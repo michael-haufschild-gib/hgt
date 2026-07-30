@@ -56,7 +56,7 @@ lemma tendsto_stretchedIncrement_atTop {α : ℝ} (hα0 : 0 < α) (hα1 : α < 1
       (tendsto_rpow_atTop hα0)
     have hcore' : Tendsto
         (fun x : ℝ => Real.exp (x ^ α) / (x ^ α) ^ ((1 - α) / α))
-        atTop atTop := by simpa using hcore
+        atTop atTop := by simpa using! hcore
     have heq : (fun x : ℝ => stretchedFiniteDifferenceLeading α firstDifference 1 x) =ᶠ[atTop]
         fun x => α * (Real.exp (x ^ α) / (x ^ α) ^ ((1 - α) / α)) := by
       filter_upwards [eventually_gt_atTop (0 : ℝ)] with x hx
@@ -78,7 +78,7 @@ lemma tendsto_stretchedIncrement_atTop {α : ℝ} (hα0 : 0 < α) (hα1 : α < 1
   have hreal : Tendsto (fun x : ℝ => stretchedFiniteDifference α firstDifference x) atTop atTop :=
     hequiv.symm.tendsto_atTop hlead
   have hnat := hreal.comp tendsto_natCast_atTop_atTop
-  simpa [stretchedIncrement, stretchedFiniteDifference_firstDifference] using hnat
+  simpa [stretchedIncrement, stretchedFiniteDifference_firstDifference] using! hnat
 
 lemma eventually_pos_iteratedDeriv_two_stretchedExp {α : ℝ} (hα0 : 0 < α) :
     ∀ᶠ x : ℝ in atTop, 0 < (deriv^[2] (stretchedExp α)) x := by
@@ -178,9 +178,9 @@ lemma sum_eq_two_add_rest {D : ℕ} {A : Type*} [AddCommMonoid A]
     (f : Fin D → A) {lo hi : Fin D} (hne : lo ≠ hi) :
     ∑ i, f i = f lo + f hi + ∑ i ∈ (Finset.univ.erase lo).erase hi, f i := by
   classical
-  rw [Finset.sum_eq_add_sum_diff_singleton_of_mem (Finset.mem_univ lo)]
+  rw [Finset.sum_eq_add_sum_sdiff_singleton_of_mem (Finset.mem_univ lo)]
   simp only [Finset.sdiff_singleton_eq_erase]
-  rw [Finset.sum_eq_add_sum_diff_singleton_of_mem
+  rw [Finset.sum_eq_add_sum_sdiff_singleton_of_mem
     (Finset.mem_erase.mpr ⟨Ne.symm hne, Finset.mem_univ hi⟩)]
   simp only [Finset.sdiff_singleton_eq_erase]
   ac_rfl
@@ -204,7 +204,6 @@ lemma sum_smoothTuple {D : ℕ} (s : Fin D → ℕ) {lo hi : Fin D}
     ∑ i, smoothTuple s lo hi i = ∑ i, s i := by
   classical
   have hsmooth := sum_comp_smoothTuple s hne (fun n => n)
-  simp only at hsmooth
   rw [hsmooth, sum_eq_two_add_rest s hne]
   omega
 

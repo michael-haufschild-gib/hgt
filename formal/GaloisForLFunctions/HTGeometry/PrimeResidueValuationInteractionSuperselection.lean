@@ -64,7 +64,7 @@ theorem primeResidueInteractionCoefficient_tailIndependent
   rw [cofiniteTailDenseOn_tailCoefficientIndependent_iff y Set.univ hy
     (fun z => anchoredProductBasis A z)
     (fun _ => continuous_of_discreteTopology)]
-  simpa [anchoredRestrictedProductBasis, fullValueFunctionLinearEquiv] using
+  simpa [anchoredRestrictedProductBasis, fullValueFunctionLinearEquiv] using!
     (anchoredRestrictedProductBasis A).linearIndependent
 
 def primeResidueValuationInteractionCarrier
@@ -148,8 +148,11 @@ theorem cofiniteTailDenseOn_primeResidueValuationInteractionGrid_differentialInd
     cases hzw
     rfl
   have hsub := h.comp embed hembed
-  simpa [Function.comp_apply, embed,
-    primeResidueValuationInteractionGridCarrier,
+  change GaloisForLFunctions.DifferentialIndependent
+    finitePrimeRationalCoefficientField
+    (fun x : PrimeResidueValuationInteractionGridIndex d A =>
+      primeResidueValuationInteractionCarrier A y x.1 x.2 0)
+  simpa [Function.comp_def, embed,
     primeResidueValuationInteractionCarrier] using hsub
 
 abbrev PrimeResidueValuationGridSectorIndex
@@ -315,7 +318,9 @@ theorem cofiniteTailDenseOn_primeResidueValuationNextLayer_relativeHT_over_compl
       Nat.card (PrimeResidueValuationNextLayerIndex n A) =
         ∏ i, Fintype.card (A i) := by
   constructor
-  · simpa only [primeResidueValuationDepthPrefixField] using
+  · simpa only [primeResidueValuationDepthPrefixField,
+      primeResidueValuationDepthPrefixCarrier,
+      primeResidueValuationNextLayerCarrier] using!
       (cofiniteTailDenseOn_primeResidueValuationGridSector_relativeHT
         A y hy (by omega)
           (fun x : PrimeResidueValuationInteractionGridIndex (n + 2) A =>
@@ -339,12 +344,17 @@ theorem cofiniteTailDenseOn_primeResidueValuationNextLayer_not_mem_completePrefi
     (cofiniteTailDenseOn_primeResidueValuationNextLayer_relativeHT_over_completePrefix
       n A y hy).1
   unfold GaloisForLFunctions.DifferentialIndependent at hrel
+  have hout :
+      primeResidueValuationNextLayerCarrier (n := n) A y out =
+        primeResidueValuationInteractionCarrier A y (n + 1) z 0 := by
+    rfl
   have htrans : Transcendental (primeResidueValuationDepthPrefixField n A y)
-      (primeResidueValuationNextLayerCarrier (n := n) A y out) := by
+      (primeResidueValuationInteractionCarrier A y (n + 1) z 0) := by
+    rw [← hout]
     simpa using hrel.transcendental (out, 0)
   intro hmem
   apply htrans
-  simpa using isAlgebraic_algebraMap
+  exact isAlgebraic_algebraMap
     (R := primeResidueValuationDepthPrefixField n A y)
     (A := arithmeticFunctionRationalCoordinateField)
     (⟨primeResidueValuationInteractionCarrier A y (n + 1) z 0, hmem⟩ :

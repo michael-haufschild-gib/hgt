@@ -33,7 +33,7 @@ theorem nevLeaf_compactRestriction_eq_finiteDenominatorSection
           (nevLeaf h h0b h0 (tau : OnePoint ℝ) : Measure ℝ) := by
       refine Measure.restrict_eq_self_of_ae_mem ?_
       rw [ae_iff]
-      simpa only [fiber] using nevLeaf_finite_carried h h0b h0 tau
+      simpa only [fiber] using! nevLeaf_finite_carried h h0b h0 tau
     calc
       (nevLeaf h h0b h0 (tau : OnePoint ℝ) : Measure ℝ).restrict K =
           ((nevLeaf h h0b h0 (tau : OnePoint ℝ) : Measure ℝ).restrict fiber).restrict K := by

@@ -100,7 +100,7 @@ theorem hasDerivAt_semilocalArchimedeanPolynomialFourier
       simpa [mul_comm, mul_left_comm, mul_assoc] using hscaled)
   rw [show semilocalArchimedeanPolynomialFourier p = fun u =>
       ∫ s : ℝ, F u s ∂semilocalArchimedeanGammaMeasure by rfl]
-  convert hparam.2 using 1
+  apply hparam.2.congr_deriv
   rw [← integral_const_mul]
   apply integral_congr_ae
   filter_upwards with s
@@ -122,10 +122,10 @@ theorem hasDerivAt_semilocalArchimedeanJacobiFourier_succ_recurrence
             semilocalArchimedeanJacobiFourier (n + 2) t)) t := by
   have h := hasDerivAt_semilocalArchimedeanPolynomialFourier
     (semilocalArchimedeanJacobiPolynomial (n + 1)) t
-  convert h using 1
+  unfold semilocalArchimedeanJacobiFourier
+  apply h.congr_deriv
   congr 1
-  simp only [semilocalArchimedeanJacobiFourier,
-    semilocalArchimedeanPolynomialFourier]
+  simp only [semilocalArchimedeanPolynomialFourier]
   rw [← integral_const_mul, ← integral_const_mul, ← integral_add]
   · apply integral_congr_ae
     filter_upwards with s
@@ -154,11 +154,11 @@ theorem hasDerivAt_semilocalArchimedeanJacobiFourier_zero_recurrence (t : ℝ) :
         semilocalArchimedeanJacobiFourier 1 t) t := by
   have h := hasDerivAt_semilocalArchimedeanPolynomialFourier
     (semilocalArchimedeanJacobiPolynomial 0) t
-  convert h using 1
+  unfold semilocalArchimedeanJacobiFourier
+  apply h.congr_deriv
   rw [mul_assoc]
   congr 1
-  simp only [semilocalArchimedeanJacobiFourier,
-    semilocalArchimedeanPolynomialFourier]
+  simp only [semilocalArchimedeanPolynomialFourier]
   rw [← integral_const_mul]
   apply integral_congr_ae
   filter_upwards with s

@@ -94,7 +94,7 @@ theorem primeProfileJetCombination_layer_finite
         (c col • primeProfileJetSource G m col) (p, e) from
     map_sum ev _ Finset.univ]
   simpa only [primePowerCoordinateProfile_smul, primeProfileJetSource,
-    primePowerCoordinateProfile_primeProfileRotatedLogJet] using hp
+    primePowerCoordinateProfile_primeProfileRotatedLogJet] using! hp
 
 /-- The prime-power coordinate profile of an arbitrary source is its value on the corresponding
 prime power. -/
@@ -306,7 +306,7 @@ theorem analyticPrimeProfileCarrier_differentialIndependent_over_all_valuationLa
       rcases i with u | z
       · rfl
       · simpa only [sources, analyticScalarValuationLayerCarrier,
-          analyticScalarReplicatedCarrier] using hidxCarrier z
+          analyticScalarReplicatedCarrier] using! hidxCarrier z
     rw [hfamily] at hcombined
     have hrelative :=
       (GaloisForLFunctions.differentialIndependent_sumElim_right_iff
@@ -333,7 +333,7 @@ theorem analyticPrimeProfileCarrier_differentialIndependent_over_all_valuationLa
       (⟨y, Set.mem_singleton y⟩ : ({y} : Set upperEndMeroField)))
     (fun a b _ ↦ Subsingleton.elim a b)
   simpa [analyticScalarValuationLayerDifferentialField, G, y,
-    Function.comp_def] using hunit
+    Function.comp_def] using! hunit
 
 /-- **Prime-dependent hypertranscendence across the completion boundary.**  Under the same
 arithmetic hypotheses the carrier is hypertranscendental over the complete valuation-layer

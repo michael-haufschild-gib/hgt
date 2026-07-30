@@ -66,7 +66,7 @@ theorem not_aperiodicZeroAt_of_columnarAbsoluteProductRegion
   · exact div_pos (mul_pos (by norm_num) Real.pi_pos) (Real.log_pos hb1)
   · intro k
     simpa only [Int.cast_mul, Int.cast_ofNat, Nat.cast_ofNat, Complex.ofReal_div,
-      Complex.ofReal_mul, Complex.ofReal_natCast] using hclass.2 k
+      Complex.ofReal_mul, Complex.ofReal_natCast] using! hclass.2 k
 
 /-- The explicit linear aperiodic-zero carrier cannot admit both representations at its zero. -/
 theorem simpleZeroAt_columnarAbsoluteProductRegion_impossible

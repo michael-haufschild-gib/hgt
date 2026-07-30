@@ -69,7 +69,6 @@ theorem isLoop_divisor {ι : Type*} (s : Finset ι) (ρ : ι → ℂ) (m : ι �
       (fun i hi => pow_ne_zero _ ((isLoop_linear_enclosing hr (hin i hi)).nonzero θ))
   · refine Finset.prod_congr rfl (fun i hi => ?_)
     have h := (isLoop_linear_enclosing hr (hin i hi)).closed
-    simp only at h ⊢
     rw [h]
 
 /-- **The argument principle.**  For `f = (∏ᵢ (z − ρᵢ)^{mᵢ})·g` on `ball c R`, with all `ρᵢ` strictly

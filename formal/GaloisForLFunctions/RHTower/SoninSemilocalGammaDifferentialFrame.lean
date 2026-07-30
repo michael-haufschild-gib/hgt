@@ -22,25 +22,51 @@ namespace RHTower
 theorem hasDerivAt_semilocalGammaLogKernel (a x : ℝ) :
     HasDerivAt (semilocalGammaLogKernel a)
       (((-a + Real.exp (-x) : ℝ) : ℂ) * semilocalGammaLogKernel a x) x := by
+  have hlinear : HasDerivAt (fun y : ℝ => -a * y) (-a) x := by
+    exact ((hasDerivAt_id x).const_mul (-a)).congr_deriv (by ring)
   have hfirst : HasDerivAt (fun y : ℝ => Real.exp (-a * y))
       (-a * Real.exp (-a * x)) x := by
-    convert (Real.hasDerivAt_exp (-a * x)).comp x
-      ((hasDerivAt_const x (-a)).mul (hasDerivAt_id x)) using 1
-    all_goals ring
+    exact hlinear.exp.congr_deriv (by ring)
+  have hnegRaw := (hasDerivAt_id x).neg
+  have hnegFun : (-id : ℝ → ℝ) = fun y : ℝ => -y := by
+    funext y
+    rfl
+  rw [hnegFun] at hnegRaw
+  have hneg : HasDerivAt (fun y : ℝ => -y) (-1) x := hnegRaw
+  have hexpNeg : HasDerivAt (fun y : ℝ => Real.exp (-y))
+      (-Real.exp (-x)) x := by
+    exact hneg.exp.congr_deriv (by ring)
+  have hnegexpRaw := hexpNeg.neg
+  have hnegexpFun :
+      -(fun y : ℝ => Real.exp (-y)) = fun y : ℝ => -Real.exp (-y) := by
+    funext y
+    rfl
+  rw [hnegexpFun] at hnegexpRaw
   have hnegexp : HasDerivAt (fun y : ℝ => -Real.exp (-y))
       (Real.exp (-x)) x := by
-    convert (((Real.hasDerivAt_exp (-x)).comp x
-      (hasDerivAt_id x).neg).neg) using 1
-    all_goals ring
+    exact hnegexpRaw.congr_deriv (by ring)
   have hsecond : HasDerivAt (fun y : ℝ => Real.exp (-Real.exp (-y)))
       (Real.exp (-x) * Real.exp (-Real.exp (-x))) x := by
-    convert (Real.hasDerivAt_exp (-Real.exp (-x))).comp x hnegexp using 1
-    all_goals ring
+    exact hnegexp.exp.congr_deriv (by ring)
   have hreal := hfirst.mul hsecond
+  have hrealFun :
+      (fun y : ℝ => Real.exp (-a * y)) *
+          (fun y : ℝ => Real.exp (-Real.exp (-y))) =
+        fun y : ℝ => Real.exp (-a * y) * Real.exp (-Real.exp (-y)) := by
+    funext y
+    rfl
+  rw [hrealFun] at hreal
+  have hcomplex := hreal.ofReal_comp
+  have hkernelFun :
+      (fun y : ℝ => ((Real.exp (-a * y) * Real.exp (-Real.exp (-y)) : ℝ) : ℂ)) =
+        semilocalGammaLogKernel a := by
+    funext y
+    rfl
+  rw [hkernelFun] at hcomplex
+  apply hcomplex.congr_deriv
   unfold semilocalGammaLogKernel
-  convert hreal.ofReal_comp using 1
-  all_goals push_cast
-  all_goals ring
+  push_cast
+  ring
 
 /-- The polynomial update induced by one derivative of the quarter-Gamma log kernel. -/
 def semilocalGammaDifferentialStep (p : ℝ[X]) : ℝ[X] :=
@@ -58,21 +84,40 @@ def semilocalGammaDifferentialFrame (p : ℝ[X]) (x : ℝ) : ℂ :=
 theorem hasDerivAt_semilocalGammaDifferentialFrame (p : ℝ[X]) (x : ℝ) :
     HasDerivAt (semilocalGammaDifferentialFrame p)
       (semilocalGammaDifferentialFrame (semilocalGammaDifferentialStep p) x) x := by
+  have hnegRaw := (hasDerivAt_id x).neg
+  have hnegFun : (-id : ℝ → ℝ) = fun y : ℝ => -y := by
+    funext y
+    rfl
+  rw [hnegFun] at hnegRaw
+  have hneg : HasDerivAt (fun y : ℝ => -y) (-1) x := hnegRaw
   have hexpNeg : HasDerivAt (fun y : ℝ => Real.exp (-y))
       (-Real.exp (-x)) x := by
-    convert (Real.hasDerivAt_exp (-x)).comp x (hasDerivAt_id x).neg using 1
-    all_goals ring
+    exact hneg.exp.congr_deriv (by ring)
   have hpolyBase : HasDerivAt (fun y : ℝ => p.eval y)
       (p.derivative.eval (Real.exp (-x))) (Real.exp (-x)) :=
     Polynomial.hasDerivAt p (Real.exp (-x))
+  have hpolyRaw := hpolyBase.comp x hexpNeg
+  have hpolyFun :
+      (fun y : ℝ => p.eval y) ∘ (fun y : ℝ => Real.exp (-y)) =
+        fun y : ℝ => p.eval (Real.exp (-y)) := by
+    funext y
+    rfl
+  rw [hpolyFun] at hpolyRaw
   have hpolyReal : HasDerivAt (fun y : ℝ => p.eval (Real.exp (-y)))
       (p.derivative.eval (Real.exp (-x)) * (-Real.exp (-x))) x :=
-    by simpa only [Function.comp_apply] using hpolyBase.comp x hexpNeg
+    hpolyRaw
   have hproduct := hpolyReal.ofReal_comp.mul
     (hasDerivAt_semilocalGammaLogKernel (1 / 4) x)
-  convert hproduct using 1
+  have hproductFun :
+      (fun y : ℝ => ((p.eval (Real.exp (-y)) : ℝ) : ℂ)) *
+          semilocalGammaLogKernel (1 / 4) =
+        semilocalGammaDifferentialFrame p := by
+    funext y
+    rfl
+  rw [hproductFun] at hproduct
+  apply hproduct.congr_deriv
   unfold semilocalGammaDifferentialFrame semilocalGammaDifferentialStep
-    semilocalGammaQuarterKernel
+    semilocalGammaQuarterKernel semilocalGammaLogKernel
   simp only [eval_sub, eval_mul, eval_X, eval_C]
   push_cast
   ring_nf
@@ -150,11 +195,17 @@ theorem integrable_iteratedDeriv_semilocalGammaQuarterKernel (n : ℕ) :
 
 theorem contDiff_semilocalGammaQuarterKernel :
     ContDiff ℝ ⊤ semilocalGammaQuarterKernel := by
-  unfold semilocalGammaQuarterKernel semilocalGammaLogKernel
-  simpa only [Function.comp_apply] using
-    Complex.ofRealCLM.contDiff.comp
-      (show ContDiff ℝ ⊤
-        (fun x : ℝ => Real.exp (-(1 / 4) * x) * Real.exp (-Real.exp (-x))) by
-        fun_prop)
+  have hreal : ContDiff ℝ ⊤
+      (fun x : ℝ => Real.exp (-(1 / 4) * x) * Real.exp (-Real.exp (-x))) := by
+    fun_prop
+  have hcomplex := Complex.ofRealCLM.contDiff.comp hreal
+  have hfun :
+      Complex.ofRealCLM ∘
+          (fun x : ℝ => Real.exp (-(1 / 4) * x) * Real.exp (-Real.exp (-x))) =
+        semilocalGammaQuarterKernel := by
+    funext x
+    rfl
+  rw [hfun] at hcomplex
+  exact hcomplex
 
 end RHTower

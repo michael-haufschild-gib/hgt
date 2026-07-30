@@ -153,7 +153,7 @@ theorem hasDerivAt_completedDirectLine (N : ℕ) (τ : ℝ) :
       (deriv (dirichletPoly N) (linePt τ) * I) τ :=
     ((dirichletPoly_differentiable N (linePt τ)).hasDerivAt.comp τ
       (hasDerivAt_linePt τ))
-  simpa [completedDirectLine, completedDirectLineSlope, mul_assoc] using
+  simpa [completedDirectLine, completedDirectLineSlope, mul_assoc] using!
     (hasDerivAt_archFactor_line τ).mul hD
 
 theorem deriv_completedGN_line_mul_I (N : ℕ) (τ : ℝ) :
@@ -168,7 +168,7 @@ theorem deriv_completedGN_line_mul_I (N : ℕ) (τ : ℝ) :
   have hp := hasDerivAt_completedDirectLine N τ
   have hpc : HasDerivAt (fun u : ℝ => (starRingEnd ℂ) (completedDirectLine N u))
       ((starRingEnd ℂ) (completedDirectLineSlope N τ)) τ := by
-    simpa using ((Complex.conjCLE : ℂ ≃L[ℝ] ℂ).toContinuousLinearMap.hasFDerivAt.comp_hasDerivAt
+    simpa using! ((Complex.conjCLE : ℂ ≃L[ℝ] ℂ).toContinuousLinearMap.hasFDerivAt.comp_hasDerivAt
       τ hp)
   have hright : HasDerivAt (fun u : ℝ =>
       completedDirectLine N u + (starRingEnd ℂ) (completedDirectLine N u))
@@ -294,8 +294,8 @@ theorem deriv_completedGN_line_zero_lower_bound (N : ℕ) (τ d : ℝ)
   dsimp [D, q] at hmain hphase ⊢
   rw [hexact]
   have harch0 : 0 ≤ 2 * ‖archFactor (linePt τ)‖ := by positivity
-  convert mul_le_mul_of_nonneg_left hmain harch0 using 1
-  all_goals ring
+  convert! mul_le_mul_of_nonneg_left hmain harch0 using 1
+  ring
 
 /-- Above the explicit phase-dominance threshold, every critical-line carrier zero inside the
 Dirichlet floor is simple. -/

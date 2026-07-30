@@ -90,7 +90,7 @@ theorem monotoneOn_sub_one_mul_exp :
   have hderiv : ∀ t : ℝ, HasDerivAt (fun t : ℝ => (t - 1) * Real.exp t) (t * Real.exp t) t := by
     intro t
     have h := ((hasDerivAt_id t).sub_const (1 : ℝ)).mul (Real.hasDerivAt_exp t)
-    simpa using h.congr_deriv (by simp; ring)
+    simpa using! h.congr_deriv (by simp; ring)
   refine monotoneOn_of_deriv_nonneg (convex_Ici 0) (by fun_prop)
     (fun t _ => (hderiv t).differentiableAt.differentiableWithinAt) ?_
   intro t ht
@@ -142,10 +142,10 @@ theorem integral_realStrayDensity {w σ : ℝ} (hw0 : 0 ≤ w) (hw : w ≤ 1 / 2
   have I4 := hint _ hm
   have hA : IntegrableOn (fun u : ℝ =>
       Real.exp (-(σ * u)) * Real.exp ((1 : ℝ) * u)
-        + Real.exp (-(σ * u)) * Real.exp ((0 : ℝ) * u)) (Ioi 0) := by simpa using I1.add I2
+        + Real.exp (-(σ * u)) * Real.exp ((0 : ℝ) * u)) (Ioi 0) := by simpa using! I1.add I2
   have hB : IntegrableOn (fun u : ℝ =>
       Real.exp (-(σ * u)) * Real.exp ((1 / 2 + w) * u)
-        + Real.exp (-(σ * u)) * Real.exp ((1 / 2 - w) * u)) (Ioi 0) := by simpa using I3.add I4
+        + Real.exp (-(σ * u)) * Real.exp ((1 / 2 - w) * u)) (Ioi 0) := by simpa using! I3.add I4
   have hsplit : (fun u : ℝ => Real.exp (-(σ * u)) * realStrayDensity w u)
       = fun u : ℝ =>
         (Real.exp (-(σ * u)) * Real.exp ((1 : ℝ) * u)

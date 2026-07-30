@@ -37,7 +37,7 @@ theorem differentialIndependent_algebraicIndependent_finJetRectangle
     · exact Fin.ext hqz.2
   unfold GaloisForLFunctions.DifferentialIndependent at hx
   have h := AlgebraicIndependent.comp hx g hg
-  simpa only [Function.comp_apply, g] using h
+  simpa only [Function.comp_def, g] using! h
 
 /-! ## Observable prefix channels and the complete tail -/
 

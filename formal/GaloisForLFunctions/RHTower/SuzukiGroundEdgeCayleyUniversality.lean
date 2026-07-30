@@ -112,11 +112,11 @@ theorem deriv_suzukiFourierLivsic_disk_zero
       (suzukiFourierNumerator F) (suzukiFourierDenominator F)
       (suzukiUpperCayleyInv w)) 0 = F I / F (-I) := by
   have hsub : HasDerivAt (fun z : ℂ => z - I) 1 I := by
-    simpa only [Pi.sub_apply, id_eq, sub_zero] using
+    simpa only [Pi.sub_apply, id_eq, sub_zero] using!
       (hasDerivAt_id I).sub (hasDerivAt_const I I)
   have hnum : HasDerivAt (suzukiFourierNumerator F) (F I) I := by
     have h := hsub.mul hFi.hasDerivAt
-    simpa [suzukiFourierNumerator] using h
+    simpa [suzukiFourierNumerator] using! h
   have hdenDiff : DifferentiableAt ℂ (suzukiFourierDenominator F) I := by
     unfold suzukiFourierDenominator
     fun_prop
@@ -129,18 +129,18 @@ theorem deriv_suzukiFourierLivsic_disk_zero
       (suzukiLivsicQuotient (suzukiFourierNumerator F) (suzukiFourierDenominator F))
       (F I / (2 * I * F (-I))) I := by
     have h := hnum.div hdenDiff.hasDerivAt hden0
-    convert h using 1
+    convert! h using 1
     simp only [suzukiFourierNumerator, suzukiFourierDenominator, sub_self, zero_mul]
     norm_num
     field_simp
     ring
   have hadd : HasDerivAt (fun w : ℂ => 1 + w) 1 0 := by
-    simpa using (hasDerivAt_const 0 (1 : ℂ)).add (hasDerivAt_id 0)
+    simpa using! (hasDerivAt_const 0 (1 : ℂ)).add (hasDerivAt_id 0)
   have hsub' : HasDerivAt (fun w : ℂ => 1 - w) (-1) 0 := by
-    simpa using (hasDerivAt_const 0 (1 : ℂ)).sub (hasDerivAt_id 0)
+    simpa using! (hasDerivAt_const 0 (1 : ℂ)).sub (hasDerivAt_id 0)
   have hinv : HasDerivAt suzukiUpperCayleyInv (2 * I) 0 := by
     have h := (hadd.div hsub' (by norm_num : (1 : ℂ) - 0 ≠ 0)).const_mul I
-    convert h using 1
+    convert! h using 1
     ring
   have hquot' : HasDerivAt
       (suzukiLivsicQuotient (suzukiFourierNumerator F) (suzukiFourierDenominator F))
@@ -314,7 +314,7 @@ theorem suzukiGroundEdge_cayley_universality
   have hangle0C : Tendsto
       (fun j => (suzukiDefectAngle (evenEnergy j) (oddEnergy j) : ℂ))
       l (nhds 1) := by
-    simpa using Complex.continuous_ofReal.continuousAt.tendsto.comp hangle0
+    simpa using! Complex.continuous_ofReal.continuousAt.tendsto.comp hangle0
   have heq :
       (fun j => (suzukiDefectAngle (evenEnergy j) (oddEnergy j) : ℂ)) =ᶠ[l]
         (fun j => deriv (fun w => Θ j (suzukiUpperCayleyInv w)) 0) :=

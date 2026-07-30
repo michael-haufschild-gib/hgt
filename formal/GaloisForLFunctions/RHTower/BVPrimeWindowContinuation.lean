@@ -102,7 +102,7 @@ theorem analyticAt_continuedSource_of_regularizedZeta_ne_zero
       hreg.deriv hshift
     have hden := AnalyticAt.comp (f := fun z : ℂ => z - 1 / 2) (x := s)
       hreg hshift
-    simpa only [Function.comp_apply] using hnum.div hden hz
+    simpa only [Function.comp_apply] using! hnum.div hden hz
   have herr : AnalyticAt ℂ W.errorSeries s :=
     (W.differentiableOn_errorSeries_rightHalf.analyticOnNhd hUopen) s hs
   exact (hdiv.add ((analyticAt_const.mul hM).mul hlog)).sub
@@ -187,7 +187,7 @@ theorem weightedPrimeWindow_LSeriesSummable
     LSeriesSummable W.weightedPrimeWindow s := by
   have hdouble : Summable (W.doubleTerm s) := W.summable_doubleTerm hs
   have hswap : Summable (fun nk : ℕ × ℕ => W.doubleTerm s (nk.2, nk.1)) := by
-    simpa only [Function.comp_apply, Equiv.prodComm_apply] using
+    simpa only [Function.comp_apply, Equiv.prodComm_apply] using!
       hdouble.comp_injective (Equiv.prodComm ℕ ℕ).injective
   have houter : Summable
       (fun n : ℕ => ∑' k : ℕ, W.doubleTerm s (k, n)) := hswap.prod

@@ -379,7 +379,7 @@ theorem guardedClosureApproximant_global_certificate (a : ℝ) (ha : a ≠ 0) (N
       ∀ x : ℝ, R ≤ x → Klower * Real.exp (2 * x) ≤
         ‖guardedClosureApproximant a N (x : ℂ)‖ := by
   have hscale : 0 < guardedClosureScale N := Real.exp_pos _
-  simpa only [guardedClosureApproximant] using
+  simpa only [guardedClosureApproximant] using!
     polynomialXiEnvelope_global_certificate a ha
       (guardedClosurePolynomial a (N + 1) (guardedClosureScale N))
       (guardedClosurePolynomial_degree_pos hscale.ne' (Nat.succ_pos N))

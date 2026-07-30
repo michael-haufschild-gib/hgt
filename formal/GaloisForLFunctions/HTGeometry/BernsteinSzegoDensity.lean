@@ -49,9 +49,9 @@ theorem polynomial_eval_comp_analyticAt (p : Polynomial ℂ) {g : ℝ → ℂ} {
     AnalyticAt ℝ (fun y => p.eval (g y)) x := by
   induction p using Polynomial.induction_on' with
   | add p q hp hq =>
-      simpa only [Polynomial.eval_add] using hp.add hq
+      simpa only [Polynomial.eval_add] using! hp.add hq
   | monomial n a =>
-      simpa only [Polynomial.eval_monomial] using
+      simpa only [Polynomial.eval_monomial] using!
         (analyticAt_const.mul (hg.pow n))
 
 /-- The squared modulus of a polynomial along the standard circle is real analytic. -/

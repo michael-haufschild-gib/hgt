@@ -69,7 +69,6 @@ theorem norm_orientationDifference_div_sqrt_le_essentialNorm
     rw [finiteArchimedeanPrimeEulerGramCombination_eq_unitaryPush a r hr A,
       essentialNorm_unitaryPush]
     rw [finiteEvenPositiveEulerGramCombination_eq_dilation]
-    rfl
   have hrescale : ‖finiteEulerGramRescale r A l k‖ =
       ‖u l - u k‖ / (Real.sqrt (p l) * Real.sqrt (p k)) := by
     simpa [r, A] using norm_finiteEulerGramRescale_orientationMatrix p hp u k l

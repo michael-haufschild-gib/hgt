@@ -161,9 +161,11 @@ theorem integral_weight_mul_mobiusCriticalPrimeBlock_norm_sq_lower_on_gammaBand
       (fun t : ℝ => w t * ‖mobiusCriticalPrimeBlock y t‖ ^ 2)
       volume (Real.pi / Real.log y) (4 * Real.pi / (3 * Real.log y)) :=
     by
-      simpa only [Pi.mul_apply] using
-        (hw.mul hblockContinuous).intervalIntegrable
-          (Real.pi / Real.log y) (4 * Real.pi / (3 * Real.log y))
+      have hproduct := hw.mul hblockContinuous
+      change Continuous (fun t : ℝ =>
+        w t * ‖mobiusCriticalPrimeBlock y t‖ ^ 2) at hproduct
+      exact hproduct.intervalIntegrable
+        (Real.pi / Real.log y) (4 * Real.pi / (3 * Real.log y))
   have hconstIntegrable : IntervalIntegrable
       (fun _ : ℝ => c *
         (1 + 1 / Real.sqrt y) ^ (mobiusCriticalPrimeWindow y).card)

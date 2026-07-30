@@ -54,7 +54,7 @@ theorem completedFluxGermAt_analyticAt_zero (ρ : ℂ) :
   have hshift : AnalyticAt ℂ (fun x : ℂ => logDeriv h (ρ + x)) 0 := by
     have hcomp := AnalyticAt.comp_of_eq hlog
       (show AnalyticAt ℂ (fun x : ℂ => ρ + x) 0 by fun_prop) (by simp)
-    simpa [Function.comp] using hcomp
+    simpa [Function.comp] using! hcomp
   have hmodel : AnalyticAt ℂ
       (fun x : ℂ => -((analyticOrderAt xi ρ).toNat : ℂ) -
         x * logDeriv h (ρ + x)) 0 := by

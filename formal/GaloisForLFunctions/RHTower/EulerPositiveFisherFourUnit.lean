@@ -125,7 +125,7 @@ theorem tsum_squarefreePNat_probability_log_pow
         (fun n =>
           squarefreeMobiusProbability sigma n *
             Real.log n ^ k) n := by
-      simpa only using
+      simpa only using!
         (tsum_subtype {n : ℕ | Squarefree n}
           (fun n : ℕ =>
             squarefreeMobiusProbability sigma n *
@@ -212,7 +212,7 @@ private theorem summable_pnat_eulerSquareResidualProbability_log_pow
     Summable (fun m : ℕ+ =>
       eulerSquareResidualProbability sigma (m : ℕ) *
         Real.log (m : ℕ) ^ k) := by
-  simpa only [Function.comp_apply] using
+  simpa only [Function.comp_apply] using!
     (summable_eulerSquareResidualLogMoment k hsigma)
       |>.subtype (fun n : ℕ => 0 < n)
 
@@ -270,10 +270,10 @@ theorem eulerPositiveLogMoment_one_eq_affine
       simpa only [pow_one, pow_zero, mul_one] using
         ha1.mul_of_nonneg hb0
           (fun d => by
-            simpa only [pow_one] using
+            simpa only [pow_one] using!
               squarefreePNat_probability_log_pow_nonneg 1 hsigma d)
           (fun m => by
-            simpa only [pow_zero, mul_one] using
+            simpa only [pow_zero, mul_one] using!
               pnat_eulerSquareResidualProbability_log_pow_nonneg 0 hsigma m)
   have h01 : Summable (fun q : SquarefreePNat × ℕ+ =>
       squarefreeMobiusProbability sigma (q.1.1 : ℕ) *
@@ -283,10 +283,10 @@ theorem eulerPositiveLogMoment_one_eq_affine
       simpa only [pow_one, pow_zero, mul_one] using
         ha0.mul_of_nonneg hb1
           (fun d => by
-            simpa only [pow_zero, mul_one] using
+            simpa only [pow_zero, mul_one] using!
               squarefreePNat_probability_log_pow_nonneg 0 hsigma d)
           (fun m => by
-            simpa only [pow_one] using
+            simpa only [pow_one] using!
               pnat_eulerSquareResidualProbability_log_pow_nonneg 1 hsigma m)
   have h10raw : Summable (fun q : SquarefreePNat × ℕ+ =>
       (squarefreeMobiusProbability sigma (q.1.1 : ℕ) *

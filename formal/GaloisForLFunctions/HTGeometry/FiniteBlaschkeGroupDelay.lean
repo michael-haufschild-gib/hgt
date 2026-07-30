@@ -32,10 +32,10 @@ theorem hasDerivAt_blaschkeFactor {a z : ℂ}
   have hnum : HasDerivAt (fun w : ℂ => w - a) 1 z :=
     (hasDerivAt_id z).sub_const a
   have hden' : HasDerivAt (fun w : ℂ => 1 - star a * w) (-star a) z := by
-    convert (hasDerivAt_const z (1 : ℂ)).sub
+    convert! (hasDerivAt_const z (1 : ℂ)).sub
       ((hasDerivAt_const z (star a)).mul (hasDerivAt_id z)) using 1
     all_goals ring
-  convert hnum.div hden' hden using 1
+  convert! hnum.div hden' hden using 1
   all_goals ring
 
 /-- On the unit circle, the Poisson kernel is the squared-modulus ratio used by the all-pass
@@ -195,7 +195,7 @@ theorem deriv_finsetBlaschke_terminal_ne_zero
     linarith
   have hmul : HasDerivAt (fun w : ℂ => w * B w)
       (B z + z * deriv B z) z := by
-    simpa only [id_eq, one_mul] using
+    simpa only [id_eq, one_mul] using!
       (hasDerivAt_id z).mul hBdiff.hasDerivAt
   have hrewrite :
       B z + z * deriv B z = B z * (1 + z * logDeriv B z) := by

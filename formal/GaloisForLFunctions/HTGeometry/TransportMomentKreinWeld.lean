@@ -52,7 +52,7 @@ theorem intervalIntegral_exchangePair_transportDiracJet
   let dF : ℝ → ℝ := fun t => (((i + j + 2 : ℕ) : ℝ) * t ^ (i + j + 1))
   have hF (t : ℝ) : HasDerivAt F (dF t) t := by
     dsimp only [F, dF]
-    convert (hasDerivAt_id t).pow (i + j + 2) using 1
+    convert! (hasDerivAt_id t).pow (i + j + 2) using 1
     all_goals
       simp only [id_eq]
       push_cast

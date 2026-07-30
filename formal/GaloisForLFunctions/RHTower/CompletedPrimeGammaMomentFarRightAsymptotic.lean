@@ -48,7 +48,8 @@ theorem iteratedDeriv_completedRationalLeg (j : ℕ) (hj : 0 < j) {x : ℂ}
     iteratedDeriv_sub (hzero.add hone) contDiffAt_const
   rw [hsub, iteratedDeriv_add hzero hone]
   have h0 := GaloisForLFunctions.iteratedDeriv_inv_add_const 0 j x (by simpa using hx0)
-  have h1 := GaloisForLFunctions.iteratedDeriv_inv_add_const (-1) j x (by simpa using hxsub)
+  have h1 := GaloisForLFunctions.iteratedDeriv_inv_add_const (-1) j x
+    (by simpa [sub_eq_add_neg] using hxsub)
   rw [show iteratedDeriv j (fun w : ℂ => 1 / w) x =
       (-1 : ℂ) ^ j * (j.factorial : ℂ) * (x ^ (j + 1))⁻¹ by simpa [one_div] using h0]
   rw [show iteratedDeriv j (fun w : ℂ => 1 / (w - 1)) x =
@@ -68,14 +69,16 @@ theorem tendsto_scaled_completedRationalLeg (j : ℕ) (hj : 0 < j) :
       atTop (nhds 0) := by
   have hinv : Tendsto (fun x : ℝ => ((x : ℂ))⁻¹) atTop (nhds 0) := by
     convert Complex.continuous_ofReal.continuousAt.tendsto.comp
-        (tendsto_inv_atTop_zero : Tendsto (fun x : ℝ => x⁻¹) atTop (nhds 0)) using 1;
-      simp [Function.comp_def]
+        (tendsto_inv_atTop_zero : Tendsto (fun x : ℝ => x⁻¹) atTop (nhds 0)) using 1 <;>
+      try rfl
+    all_goals simp [Function.comp_def]
   have hshift : Tendsto (fun x : ℝ => ((x : ℂ) - 1)⁻¹) atTop (nhds 0) := by
     have hreal : Tendsto (fun x : ℝ => (x - 1)⁻¹) atTop (nhds 0) :=
       tendsto_inv_atTop_zero.comp
         (tendsto_atTop_add_const_right atTop (-1) tendsto_id)
-    convert Complex.continuous_ofReal.continuousAt.tendsto.comp hreal using 1;
-      simp [Function.comp_def]
+    convert Complex.continuous_ofReal.continuousAt.tendsto.comp hreal using 1 <;>
+      try rfl
+    all_goals simp [Function.comp_def]
   have hratio : Tendsto (fun x : ℝ => (x : ℂ) / ((x : ℂ) - 1)) atTop (nhds 1) := by
     have h : Tendsto (fun x : ℝ => 1 + ((x : ℂ) - 1)⁻¹) atTop (nhds (1 + 0)) :=
       tendsto_const_nhds.add hshift
@@ -278,6 +281,7 @@ theorem completedOddLogDerivMomentFarRightAsymptotic :
         _ = 0 := Complex.ofReal_im _
     rw [Complex.mul_re, hrePow, himPow]
     ring
+  · exact congrArg nhds (Complex.ofReal_re _).symm
 
 /-- The moving-polynomial far-right positivity interface follows unconditionally from the
 completed-source moment asymptotic. -/

@@ -51,6 +51,7 @@ theorem continuousAt_symmetricHalfEndpointPair
       exact Metric.mem_nhds_iff.mpr ⟨2 * A * b, hpos, by
         intro x hx
         change dist x 0 < 2 * A * b at hx
+        change |x| < 2 * A * b
         simpa only [Real.dist_eq, sub_zero] using hx⟩
     have hmodel : ContinuousAt (fun x : ℝ => G (A - |x| / b)) 0 := by
       have harg : Continuous (fun x : ℝ => A - |x| / b) :=
@@ -280,6 +281,7 @@ theorem continuousAt_l1Periodization_symmetricHalfEndpointCutoff_zero
     exact Metric.mem_nhds_iff.mpr ⟨1, by norm_num, by
       intro x hx
       change dist x 0 < 1 at hx
+      change |x| < 1
       simpa only [Real.dist_eq, sub_zero] using hx⟩
   have htail : ∀ᶠ x in 𝓝 (0 : ℝ),
       ∀ n : ℕ, N ≤ n → pair n x = 0 := by

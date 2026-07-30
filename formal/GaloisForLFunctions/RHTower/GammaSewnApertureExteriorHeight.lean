@@ -102,9 +102,11 @@ theorem hasDerivAt_gammaSewnMobiusValuationContractionMultiplier
   have hq : HasDerivAt q (-L * q x) x := by
     dsimp only [q, L]
     unfold xiMobiusContinuousApertureDiskNode
-    convert (Real.hasDerivAt_exp (-x * Real.log (p : ℝ))).comp x
-      ((hasDerivAt_neg x).mul_const (Real.log (p : ℝ))) using 1
-    all_goals ring
+    apply (((Real.hasDerivAt_exp (-x * Real.log (p : ℝ))).comp x
+      ((hasDerivAt_neg x).mul_const (Real.log (p : ℝ)))).congr_deriv (by
+        ring)).congr_of_eventuallyEq
+    exact Filter.Eventually.of_forall fun y => by
+      simp only [Function.comp_apply]
   have hCdiff : DifferentiableAt ℝ C x := by
     have hbase : DifferentiableAt ℝ
         (fun y : ℝ => Real.cosh (2 * y * Real.log (p : ℝ))) x := by
@@ -135,42 +137,53 @@ theorem hasDerivAt_gammaSewnMobiusValuationContractionMultiplier
   have hright : HasDerivAt (fun y => C y ^ 4)
       (4 * C x ^ 4 * L *
         (-q x / (1 + q x) + q x ^ 4 / (1 + q x ^ 4))) x := by
-    convert hrightRaw using 1
-    · funext y
-      simpa only [C, q] using
-        gammaSewnMobiusValuationContractionMultiplier_pow_four y p
-    · have hqpos := xiMobiusContinuousApertureDiskNode_pos x p
-      have hqplus : 1 + q x ≠ 0 := by positivity
-      have hqfourplus : 1 + q x ^ 4 ≠ 0 := by positivity
-      have hC4 := gammaSewnMobiusValuationContractionMultiplier_pow_four x p
-      change C x ^ 4 = (1 + q x) ^ 4 / (8 * (1 + q x ^ 4)) at hC4
-      rw [hC4]
-      field_simp [hqpos.ne', hqplus, hqfourplus]
-      ring
+    have hrightDeriv : HasDerivAt _
+        (4 * C x ^ 4 * L *
+          (-q x / (1 + q x) + q x ^ 4 / (1 + q x ^ 4))) x :=
+      hrightRaw.congr_deriv (by
+        have hqpos := xiMobiusContinuousApertureDiskNode_pos x p
+        have hqplus : 1 + q x ≠ 0 := by positivity
+        have hqfourplus : 1 + q x ^ 4 ≠ 0 := by positivity
+        have hC4 := gammaSewnMobiusValuationContractionMultiplier_pow_four x p
+        change C x ^ 4 = (1 + q x) ^ 4 / (8 * (1 + q x ^ 4)) at hC4
+        rw [hC4]
+        field_simp [hqpos.ne', hqplus, hqfourplus]
+        ring)
+    exact hrightDeriv.congr_of_eventuallyEq
+      (Filter.Eventually.of_forall fun y => by
+        simpa only [C, q, Pi.div_apply, Pi.pow_apply] using
+          gammaSewnMobiusValuationContractionMultiplier_pow_four y p)
   have hderiv := hCpow.unique hright
   have hCpos := gammaSewnMobiusValuationContractionMultiplier_pos x p
-  convert hCdiff.hasDerivAt using 1
-  dsimp only [C, q, L] at hderiv ⊢
-  have hfactor :
-      4 * gammaSewnMobiusValuationContractionMultiplier x p ^ 3 ≠ 0 := by
-    exact mul_ne_zero (by norm_num) (pow_ne_zero 3 hCpos.ne')
-  apply (mul_left_cancel₀ hfactor)
-  norm_num at hderiv
-  calc
-    4 * gammaSewnMobiusValuationContractionMultiplier x p ^ 3 *
-        (gammaSewnMobiusValuationContractionMultiplier x p * Real.log (p : ℝ) *
+  have htarget :
+      gammaSewnMobiusValuationContractionMultiplier x p * Real.log (p : ℝ) *
           (-xiMobiusContinuousApertureDiskNode x p /
               (1 + xiMobiusContinuousApertureDiskNode x p) +
             xiMobiusContinuousApertureDiskNode x p ^ 4 /
-              (1 + xiMobiusContinuousApertureDiskNode x p ^ 4))) =
-      4 * gammaSewnMobiusValuationContractionMultiplier x p ^ 4 *
-        Real.log (p : ℝ) *
-          (-xiMobiusContinuousApertureDiskNode x p /
-              (1 + xiMobiusContinuousApertureDiskNode x p) +
-            xiMobiusContinuousApertureDiskNode x p ^ 4 /
-              (1 + xiMobiusContinuousApertureDiskNode x p ^ 4)) := by ring
-    _ = 4 * gammaSewnMobiusValuationContractionMultiplier x p ^ 3 *
-        deriv (fun y => gammaSewnMobiusValuationContractionMultiplier y p) x := hderiv.symm
+              (1 + xiMobiusContinuousApertureDiskNode x p ^ 4)) =
+        deriv (fun y => gammaSewnMobiusValuationContractionMultiplier y p) x := by
+    dsimp only [C, q, L] at hderiv
+    have hfactor :
+        4 * gammaSewnMobiusValuationContractionMultiplier x p ^ 3 ≠ 0 := by
+      exact mul_ne_zero (by norm_num) (pow_ne_zero 3 hCpos.ne')
+    apply (mul_left_cancel₀ hfactor)
+    norm_num at hderiv
+    calc
+      4 * gammaSewnMobiusValuationContractionMultiplier x p ^ 3 *
+          (gammaSewnMobiusValuationContractionMultiplier x p * Real.log (p : ℝ) *
+            (-xiMobiusContinuousApertureDiskNode x p /
+                (1 + xiMobiusContinuousApertureDiskNode x p) +
+              xiMobiusContinuousApertureDiskNode x p ^ 4 /
+                (1 + xiMobiusContinuousApertureDiskNode x p ^ 4))) =
+        4 * gammaSewnMobiusValuationContractionMultiplier x p ^ 4 *
+          Real.log (p : ℝ) *
+            (-xiMobiusContinuousApertureDiskNode x p /
+                (1 + xiMobiusContinuousApertureDiskNode x p) +
+              xiMobiusContinuousApertureDiskNode x p ^ 4 /
+                (1 + xiMobiusContinuousApertureDiskNode x p ^ 4)) := by ring
+      _ = 4 * gammaSewnMobiusValuationContractionMultiplier x p ^ 3 *
+          deriv (fun y => gammaSewnMobiusValuationContractionMultiplier y p) x := hderiv.symm
+  simpa only [C] using hCdiff.hasDerivAt.congr_deriv htarget.symm
 
 /-- The closed cell velocity is the actual logarithmic aperture derivative of the literal
 Gamma-sewn prime/valuation feature. -/
@@ -188,13 +201,16 @@ theorem hasDerivAt_gammaSewnMobiusContinuousApertureFeature
   have hq : HasDerivAt q (-L * q x) x := by
     dsimp only [q, L]
     unfold xiMobiusContinuousApertureDiskNode
-    convert (Real.hasDerivAt_exp (-x * Real.log (p : ℝ))).comp x
-      ((hasDerivAt_neg x).mul_const (Real.log (p : ℝ))) using 1
-    all_goals ring
+    apply (((Real.hasDerivAt_exp (-x * Real.log (p : ℝ))).comp x
+      ((hasDerivAt_neg x).mul_const (Real.log (p : ℝ)))).congr_deriv (by
+        ring)).congr_of_eventuallyEq
+    exact Filter.Eventually.of_forall fun y => by
+      simp only [Function.comp_apply]
   have hC := hasDerivAt_gammaSewnMobiusValuationContractionMultiplier (x := x) p
   have hgap : HasDerivAt (fun y : ℝ => 1 - q y) (L * q x) x := by
-    convert (hasDerivAt_const (x := x) (c := (1 : ℝ))).sub hq using 1
-    all_goals ring
+    apply (((hasDerivAt_const (x := x) (c := (1 : ℝ))).sub hq).congr_deriv (by
+      ring)).congr_of_eventuallyEq
+    exact Filter.Eventually.of_forall fun _ => rfl
   have hqpos := xiMobiusContinuousApertureDiskNode_pos x p
   have hqone := xiMobiusContinuousApertureDiskNode_lt_one hx p
   have hqminus : 1 - q x ≠ 0 := (sub_pos.mpr hqone).ne'
@@ -203,47 +219,54 @@ theorem hasDerivAt_gammaSewnMobiusContinuousApertureFeature
   have hgeom : HasDerivAt
       (fun y : ℝ => (1 - q y) * q y ^ e)
       (L * (q x / (1 - q x) - e) * ((1 - q x) * q x ^ e)) x := by
-    convert hgeomRaw using 1
-    cases e with
-    | zero =>
-        simp only [Nat.cast_zero, sub_zero, pow_zero, mul_one]
-        field_simp [hqminus]
-        ring
-    | succ e =>
-        simp only [Nat.cast_succ, pow_succ, Nat.succ_sub_one]
-        field_simp [hqpos.ne', hqminus]
-        ring
+    have hgeomDeriv : HasDerivAt _
+        (L * (q x / (1 - q x) - e) * ((1 - q x) * q x ^ e)) x :=
+      hgeomRaw.congr_deriv (by
+        cases e with
+        | zero =>
+            simp only [Nat.cast_zero, sub_zero, pow_zero, mul_one]
+            field_simp [hqminus]
+            ring
+        | succ e =>
+            simp only [Nat.cast_succ, pow_succ, Nat.succ_sub_one]
+            field_simp [hqpos.ne', hqminus]
+            ring)
+    exact hgeomDeriv.congr_of_eventuallyEq
+      (Filter.Eventually.of_forall fun _ => rfl)
   have hsource := (hC.mul hgeom).const_mul a
   simp only [Pi.mul_apply] at hsource
-  convert hsource using 1
-  · funext y
-    rw [gammaSewnMobiusContinuousApertureFeature,
-      xiMobiusPrimeSchurContinuousForwardDifference_eq_geometric]
-    simp only [q, a]
-    ring
-  · have hqplus : 1 + q x ≠ 0 := by positivity
-    have hqfourplus : 1 + q x ^ 4 ≠ 0 := by positivity
-    have hqSq : 1 - q x ^ 2 ≠ 0 := by
-      have hprod : 0 < (1 - q x) * (1 + q x) :=
-        mul_pos (sub_pos.mpr hqone) (by linarith)
-      nlinarith
-    have hvelocity : gammaSewnMobiusApertureCellVelocity x p e =
-        L *
-          ((-q x / (1 + q x) + q x ^ 4 / (1 + q x ^ 4)) +
-            (q x / (1 - q x) - e)) := by
-      have hfrac :
-          -q x / (1 + q x) + q x / (1 - q x) =
-            2 * q x ^ 2 / (1 - q x ^ 2) := by
-        field_simp [hqminus, hqplus, hqSq]
+  have hsourceDeriv : HasDerivAt _
+      (gammaSewnMobiusApertureCellVelocity x p e *
+        gammaSewnMobiusContinuousApertureFeature x p e) x :=
+    hsource.congr_deriv (by
+      have hqplus : 1 + q x ≠ 0 := by positivity
+      have hqfourplus : 1 + q x ^ 4 ≠ 0 := by positivity
+      have hqSq : 1 - q x ^ 2 ≠ 0 := by
+        have hprod : 0 < (1 - q x) * (1 + q x) :=
+          mul_pos (sub_pos.mpr hqone) (by linarith)
+        nlinarith
+      have hvelocity : gammaSewnMobiusApertureCellVelocity x p e =
+          L *
+            ((-q x / (1 + q x) + q x ^ 4 / (1 + q x ^ 4)) +
+              (q x / (1 - q x) - e)) := by
+        have hfrac :
+            -q x / (1 + q x) + q x / (1 - q x) =
+              2 * q x ^ 2 / (1 - q x ^ 2) := by
+          field_simp [hqminus, hqplus, hqSq]
+          ring
+        unfold gammaSewnMobiusApertureCellVelocity
+        simp only [q, L]
+        rw [← hfrac]
         ring
-      unfold gammaSewnMobiusApertureCellVelocity
-      simp only [q, L]
-      rw [← hfrac]
-      ring
-    rw [hvelocity, gammaSewnMobiusContinuousApertureFeature,
-      xiMobiusPrimeSchurContinuousForwardDifference_eq_geometric]
-    simp only [q, L, a]
-    ring
+      rw [hvelocity, gammaSewnMobiusContinuousApertureFeature,
+        xiMobiusPrimeSchurContinuousForwardDifference_eq_geometric]
+      simp only [q, L, a]
+      ring)
+  exact hsourceDeriv.congr_of_eventuallyEq
+    (Filter.Eventually.of_forall fun y => by
+      simp only [gammaSewnMobiusContinuousApertureFeature,
+        xiMobiusPrimeSchurContinuousForwardDifference_eq_geometric, q, a]
+      ring)
 
 @[simp] theorem gammaSewnMobiusApertureExteriorCell_self
     (x : ℝ) (i : Nat.Primes × ℕ) :
@@ -416,7 +439,8 @@ theorem tendsto_gammaSewnMobiusContinuousApertureFeature_div_aperture
       (fun x : ℝ => gammaSewnMobiusContinuousApertureFeature x p e / x)
       (nhdsWithin (0 : ℝ) (Ioi 0))
       (nhds (gammaSewnMobiusApertureBoundaryAmplitude p)) := by
-  simpa [gammaSewnMobiusApertureBoundaryAmplitude] using
+  simpa [gammaSewnMobiusApertureBoundaryAmplitude,
+    gammaSewnMobiusContinuousApertureDepthDifference] using!
     (tendsto_gammaSewnMobiusContinuousApertureDepthDifference_div_pow 0 p e)
 
 /-- On one prime tower the renormalized exterior aperture current converges to the exact

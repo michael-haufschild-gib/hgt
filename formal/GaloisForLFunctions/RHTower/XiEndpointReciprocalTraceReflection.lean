@@ -50,7 +50,6 @@ theorem xiRawReciprocalCoordinate_reflect_eq_mobius (q : XiZeroCopy) :
   change (1 - (q.1 : ℂ))⁻¹ = -((q.1 : ℂ)⁻¹) / (1 - (q.1 : ℂ)⁻¹)
   field_simp [hrho, hrhoOne]
   rw [show (q.1 : ℂ) - 1 = -(1 - (q.1 : ℂ)) by ring]
-  rw [one_div, one_div, inv_neg, neg_neg]
 
 /-- Pointwise negative-binomial reconstruction of a reflected reciprocal power. -/
 theorem hasSum_xiRawReciprocalCoordinate_reflect_binomial
@@ -68,17 +67,20 @@ theorem hasSum_xiRawReciprocalCoordinate_reflect_binomial
   change HasSum (fun n : ℕ =>
       ((n + (k - 1)).choose (k - 1) : ℂ) * z ^ (k + n))
     ((-1 : ℂ) ^ k * (-z / (1 - z)) ^ k)
-  convert hmul using 1
-  · funext n
-    rw [pow_add]
-    ring
-  · have hk1 : k - 1 + 1 = k := by omega
+  have hvalue : (-1 : ℂ) ^ k * (-z / (1 - z)) ^ k =
+      z ^ k * (1 / (1 - z) ^ (k - 1 + 1)) := by
+    have hk1 : k - 1 + 1 = k := by omega
     rw [hk1, div_pow, neg_pow]
     ring_nf
     have hsign : (-1 : ℂ) ^ (k * 2) = 1 := by
       rw [mul_comm, pow_mul]
       norm_num
     rw [hsign, mul_one]
+  rw [hvalue]
+  apply HasSum.congr_fun hmul
+  intro n
+  rw [pow_add]
+  ring
 
 set_option maxHeartbeats 800000 in
 /-- The full binomially weighted trace carrier is absolutely summable over order and exact
@@ -101,8 +103,9 @@ theorem summable_xiRawReciprocalTraceReflection_double (k : ℕ) (hk : 2 ≤ k) 
       · intro n
         exact summable_norm_xiRawReciprocalCoordinate_sq.mul_left
           (((n + (k - 1)).choose (k - 1) : ℝ) * ratio ^ n)
-      · convert hcoeff.mul_right xiRawReciprocalHermitianMass using 1
-        funext n
+      · refine Summable.congr
+          (hcoeff.mul_right xiRawReciprocalHermitianMass) ?_
+        intro n
         rw [xiRawReciprocalHermitianMass, ← tsum_mul_left]
     · rintro ⟨n, q⟩
       positivity
@@ -155,8 +158,8 @@ theorem summable_xiRawReciprocalPowerTrace_reflectionSeries (k : ℕ) (hk : 2 �
       ((n + (k - 1)).choose (k - 1) : ℂ) *
         xiRawReciprocalPowerTrace (k + n)) := by
   have hf := (summable_xiRawReciprocalTraceReflection_double k hk).prod
-  convert hf using 1
-  funext n
+  refine Summable.congr hf ?_
+  intro n
   rw [xiRawReciprocalPowerTrace, ← tsum_mul_left]
 
 /-- **All-order Xi reciprocal-trace reflection law.**  Functional-equation reflection imposes

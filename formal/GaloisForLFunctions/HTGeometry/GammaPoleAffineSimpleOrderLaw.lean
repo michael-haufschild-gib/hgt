@@ -42,12 +42,12 @@ theorem gammaPoleAffineSource_order_eq_neg_one_iff
       (𝓝[≠] 0) (𝓝 (a.eval center)) := by
     have hcont : ContinuousAt (fun x : ℂ => a.eval (center + scale * x)) 0 := by
       fun_prop
-    simpa using hcont.tendsto.mono_left inf_le_left
+    simpa using! hcont.tendsto.mono_left inf_le_left
   have hb : Tendsto (fun x : ℂ => b.eval (center + scale * x))
       (𝓝[≠] 0) (𝓝 (b.eval center)) := by
     have hcont : ContinuousAt (fun x : ℂ => b.eval (center + scale * x)) 0 := by
       fun_prop
-    simpa using hcont.tendsto.mono_left inf_le_left
+    simpa using! hcont.tendsto.mono_left inf_le_left
   have hgamma : Tendsto
       (fun x : ℂ => x * gammaPoleCovariantJetValue branch 0 x)
       (𝓝[≠] 0) (𝓝 (-1)) := by

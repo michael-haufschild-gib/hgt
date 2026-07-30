@@ -69,12 +69,12 @@ theorem exists_common_subseq_tendsto_of_memℓp_two_of_tsum_le
     intro k
     have hk := tendsto_pi_nhds.mp hLA k
     have hcoe := (continuous_subtype_val.tendsto (L.1 k)).comp hk
-    simpa only [x, A] using hcoe
+    simpa only [x, A] using! hcoe
   have hBlim : ∀ k, Tendsto (fun j => b (subseq j) k) atTop (nhds (B k)) := by
     intro k
     have hk := tendsto_pi_nhds.mp hLB k
     have hcoe := (continuous_subtype_val.tendsto (L.2 k)).comp hk
-    simpa only [x, B] using hcoe
+    simpa only [x, B] using! hcoe
   have hApartial : ∀ M, ∑ k ∈ Finset.range M, ‖A k‖ ^ 2 ≤ C := by
     intro M
     have hlimSum : Tendsto (fun j => ∑ k ∈ Finset.range M, ‖a (subseq j) k‖ ^ 2)

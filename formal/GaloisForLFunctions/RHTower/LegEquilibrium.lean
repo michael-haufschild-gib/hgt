@@ -52,7 +52,7 @@ theorem lattice_constraint_hasDerivAt {δ : ℝ} (hδ0 : 0 < δ) (M N : ℕ) {ϑ
     have hin : HasDerivAt (fun y : ℝ => (1 - y + (k : ℝ)) * (δ / 2)) ((0 - 1) * (δ / 2)) ϑ :=
       (((hasDerivAt_const ϑ (1 : ℝ)).sub (hasDerivAt_id ϑ)).add_const (k : ℝ)).mul_const (δ / 2)
     have hcomp := (rcoth_hasDerivAt harg.ne').comp ϑ hin
-    convert hcomp using 1
+    apply hcomp.congr_deriv
     ring
   have ha : ∀ k ∈ range M, HasDerivAt (fun y => rcoth ((y + (k : ℝ)) * (δ / 2)))
       (-((δ / 2) * (rcsch ((ϑ + (k : ℝ)) * (δ / 2))) ^ 2)) ϑ := by
@@ -61,12 +61,12 @@ theorem lattice_constraint_hasDerivAt {δ : ℝ} (hδ0 : 0 < δ) (M N : ℕ) {ϑ
     have hin : HasDerivAt (fun y : ℝ => (y + (k : ℝ)) * (δ / 2)) (1 * (δ / 2)) ϑ :=
       ((hasDerivAt_id ϑ).add_const (k : ℝ)).mul_const (δ / 2)
     have hcomp := (rcoth_hasDerivAt harg.ne').comp ϑ hin
-    convert hcomp using 1
+    apply hcomp.congr_deriv
     ring
   have hbsum := HasDerivAt.fun_sum (fun k hk => hb k hk)
   have hasum := HasDerivAt.fun_sum (fun k hk => ha k hk)
   have h := hbsum.sub hasum
-  convert h using 1
+  apply h.congr_deriv
   rw [Finset.sum_neg_distrib, sub_neg_eq_add, mul_add, Finset.mul_sum, Finset.mul_sum]
 
 /-- **The equilibrium forces localization**: if `θ ∈ [1/8, 1/2)` satisfies the equilibrium

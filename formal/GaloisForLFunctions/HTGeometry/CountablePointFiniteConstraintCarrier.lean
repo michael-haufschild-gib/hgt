@@ -65,7 +65,7 @@ theorem linearIndependent_finsuppOperatorRows_iff
     have hq := congrArg (fun f : κ →₀ P => f q.1) hrel
     change (Finsupp.lapply (R := P) q.1) (∑ x, A x • Q x) = 0 at hq
     rw [map_sum] at hq
-    simpa only [map_smul] using hq
+    simpa only [map_smul] using! hq
   · intro h A hrel i
     apply h A
     apply Finsupp.ext
@@ -81,7 +81,7 @@ theorem linearIndependent_finsuppOperatorRows_iff
         finsuppOperatorRows, q'] at hq
       change (Finsupp.lapply (R := P) q) (∑ x, A x • Q x) = 0
       rw [map_sum]
-      simpa only [map_smul] using hq
+      simpa only [map_smul] using! hq
 
 /-- Acting with finite `Finsupp` polynomial rows on a differentially independent source packet
 produces the exact row differential matroid. -/

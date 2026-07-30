@@ -44,9 +44,7 @@ theorem summable_xiAperturePrimeFusedResponseGainSq_sub_boundary_sub_c_mul_iff
       have hscaled : Summable (fun p : Nat.Primes ↦
           c * xiTransversePrimeApertureDiskNode 1 p) := by
         have hdiff := hgain.sub hren
-        convert hdiff using 1
-        funext p
-        ring
+        exact hdiff.congr (fun p => by ring)
       by_contra hc
       have hnodes : Summable (fun p : Nat.Primes ↦
           xiTransversePrimeApertureDiskNode 1 p) :=

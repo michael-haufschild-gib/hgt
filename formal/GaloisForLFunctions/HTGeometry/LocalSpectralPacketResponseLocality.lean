@@ -110,8 +110,9 @@ theorem productEigenvalueBranch_spectralPacketResponse_germ_eq_of_eqOn
         (𝓝 (restrictInteractionPacket active 0)) at hc
       rw [hzero] at hc
       exact hc
-    simpa [branchX, branchY, D] using
-      hdiff.comp_tendsto htendsto
+    have hpull := hdiff.comp_tendsto htendsto
+    filter_upwards [hpull] with z hz
+    exact hz
   have hall :
       ∀ᶠ z : U → ℂ in 𝓝 0,
         ∀ active ∈ Finset.Iic (Finset.univ : Finset U),

@@ -48,7 +48,7 @@ theorem salemFermiKernel_hasSum {t : ℝ} (ht : 0 < t) :
   have hgeo : HasSum (fun n : ℕ => (-q : ℂ) ^ n) (1 - (-q : ℂ))⁻¹ :=
     hasSum_geometric_of_norm_lt_one hqnorm
   have hmul := hgeo.mul_left (q : ℂ)
-  convert hmul using 1
+  convert! hmul using 1
   · funext n
     have hexp : Real.exp (-(((n + 1 : ℕ) : ℝ) * t)) = q ^ (n + 1) := by
       rw [show q = Real.exp (-t) by rfl, ← Real.exp_nat_mul]

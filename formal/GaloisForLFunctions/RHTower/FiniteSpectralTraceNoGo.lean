@@ -40,7 +40,7 @@ theorem analyticAt_finiteSpectralTrace_of_not_mem
     AnalyticAt ℂ (finiteSpectralTrace S weight) ρ := by
   classical
   induction S using Finset.induction_on with
-  | empty => simpa [finiteSpectralTrace] using (analyticAt_const :
+  | empty => simpa [finiteSpectralTrace] using! (analyticAt_const :
       AnalyticAt ℂ (fun _ : ℂ => (0 : ℂ)) ρ)
   | @insert q S hq ih =>
       have hρq : ρ ≠ q := by

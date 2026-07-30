@@ -28,7 +28,8 @@ def gammaPolePrincipalReflectionSymbol (n : ℕ) :
     MvPolynomial (Fin (n + 1)) ℂ →+* GammaPoleScaleDerivativeSymbolic :=
   MvPolynomial.eval₂Hom gammaPoleComplexScaleDerivativeInclude
     (fun j : Fin (n + 1) =>
-      gammaPoleSymbolicDerivativeLaurentProfile (j : ℕ) (((j : ℕ) + 1 : ℕ) : ℤ))
+      (gammaPoleSymbolicDerivativeLaurentProfile (j : ℕ)).coeff
+        (((j : ℕ) + 1 : ℕ) : ℤ))
 
 /-- Actual pole-index germ of the symbolic principal reflection. -/
 def gammaPolePrincipalReflectionGerm (n : ℕ) :
@@ -40,7 +41,8 @@ def gammaPolePrincipalReflectionGerm (n : ℕ) :
 sequence. -/
 theorem gammaPolePrincipalCoefficientSymbol_eq_sequence (j : ℕ) :
     gammaPoleScaleAndUnitDerivativeLaurentEval
-        (gammaPoleSymbolicDerivativeLaurentProfile j ((j + 1 : ℕ) : ℤ)) =
+        ((gammaPoleSymbolicDerivativeLaurentProfile j).coeff
+          ((j + 1 : ℕ) : ℤ)) =
       (fun N : ℕ => gammaPoleJetPrincipalCoefficient (N - 1) j : NatGerm) := by
   rw [gammaPoleSymbolicDerivativeLaurentProfile_coeff_top, map_mul,
     gammaPoleScaleAndUnitDerivativeLaurentEval_derivativeScale]
@@ -82,7 +84,7 @@ theorem gammaPolePrincipalReflectionGerm_eq_sequence
         gammaPolePrincipalReflectionSymbol, RingHom.comp_apply,
         MvPolynomial.eval₂Hom_X']
       change gammaPoleScaleAndUnitDerivativeLaurentEval
-          (gammaPoleSymbolicDerivativeLaurentProfile (j : ℕ)
+          ((gammaPoleSymbolicDerivativeLaurentProfile (j : ℕ)).coeff
             (((j : ℕ) + 1 : ℕ) : ℤ)) =
         (fun N : ℕ => gammaPoleJetPrincipalCoefficient (N - 1) (j : ℕ) : NatGerm)
       exact gammaPolePrincipalCoefficientSymbol_eq_sequence (j : ℕ)

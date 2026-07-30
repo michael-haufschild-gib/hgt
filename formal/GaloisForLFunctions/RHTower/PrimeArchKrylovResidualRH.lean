@@ -76,7 +76,7 @@ theorem complexKrylovResidualNormSq_zero_eq_moment_zero
   apply Complex.ofReal_injective
   have h := hgram 0 0
   rw [inner_self_eq_norm_sq_to_K] at h
-  simpa only [Complex.ofReal_pow, zero_add] using h
+  simpa only [Complex.ofReal_pow, zero_add, Nat.bot_eq_zero] using! h
 
 /-- **Correct normalized Lanczos value formula for the source determinant tower.**  Under the
 normalized residual recurrence, the `j`-th Lanczos coefficient occurs with exponent

@@ -247,7 +247,7 @@ theorem exists_tower_ext_slit {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo
     induction n with
     | zero =>
         intro z hz
-        exact ⟨0, le_rfl, by simpa using hz⟩
+        exact ⟨0, le_rfl, by simpa using! hz⟩
     | succ n ih =>
         intro z hz
         rw [hConnsucc n] at hz
@@ -671,7 +671,7 @@ theorem exists_tower_ext_slit_s {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c r
     induction n with
     | zero =>
         intro z hz
-        exact ⟨0, le_rfl, by simpa using hz⟩
+        exact ⟨0, le_rfl, by simpa using! hz⟩
     | succ n ih =>
         intro z hz
         rw [hConnsucc n] at hz

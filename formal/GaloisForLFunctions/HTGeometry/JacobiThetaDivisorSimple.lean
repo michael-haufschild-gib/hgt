@@ -63,8 +63,16 @@ theorem thetaHalfPeriodDerivativePair_zero (τ : ℂ) :
 /-- The paired natural series is summable. -/
 theorem summable_thetaHalfPeriodDerivativePair {τ : ℂ} (hτ : 0 < τ.im) :
     Summable (thetaHalfPeriodDerivativePair τ) := by
-  simpa only [thetaHalfPeriodDerivativePair, neg_add_rev, sub_eq_add_neg, add_comm] using
-    (hasSum_jacobiTheta₂'_term (thetaHalfPeriod τ) hτ).summable.nat_add_neg_add_one
+  refine
+    (hasSum_jacobiTheta₂'_term (thetaHalfPeriod τ) hτ).summable.nat_add_neg_add_one.congr
+      (fun n ↦ ?_)
+  unfold thetaHalfPeriodDerivativePair
+  change
+    jacobiTheta₂'_term (n : ℤ) (thetaHalfPeriod τ) τ +
+        jacobiTheta₂'_term (-((n : ℤ) + 1)) (thetaHalfPeriod τ) τ =
+      jacobiTheta₂'_term (n : ℤ) (thetaHalfPeriod τ) τ +
+        jacobiTheta₂'_term (-(n : ℤ) - 1) (thetaHalfPeriod τ) τ
+  rw [show -((n : ℤ) + 1) = -(n : ℤ) - 1 by omega]
 
 /-- Isolating the leading pair leaves a shifted Gaussian tail. -/
 theorem thetaHalfPeriodDerivative_eq_leading_add_tail {τ : ℂ} (hτ : 0 < τ.im) :
@@ -88,7 +96,7 @@ theorem norm_thetaHalfPeriodDerivativePair_succ_le (τ : ℂ) (n : ℕ) :
   have hpos : 0 ≤ (n : ℝ) + 1 := by positivity
   have hneg : -((n : ℝ) + 1) - 1 ≤ 0 := by linarith
   rw [abs_of_nonneg hpos, abs_of_nonpos hneg]
-  ring
+  ring_nf
 
 /-- A fixed rational geometric series dominating the high-imaginary-part derivative tail sums to
 `13/32`. -/
@@ -138,8 +146,8 @@ theorem exp_neg_twentyFour_fifths_lt_one_ninth :
     rw [show (24 / 5 : ℝ) = 12 / 5 + 12 / 5 by norm_num, Real.exp_add]
     nlinarith [Real.exp_pos (12 / 5 : ℝ)]
   rw [Real.exp_neg, inv_lt_comm₀ (Real.exp_pos _) (by norm_num)]
-  convert he24 using 1
-  norm_num
+  norm_num only [one_div, inv_inv]
+  exact he24
 
 /-- On `im τ ≥ 4/5`, every paired tail term is dominated by the fixed rational geometric
 majorant with ratio `1/9`. -/
@@ -182,8 +190,12 @@ theorem norm_thetaHalfPeriodDerivativePair_succ_le_rational
       exp_neg_twentyFour_fifths_lt_one_ninth.le (n + 1)
   dsimp [r] at hexp
   gcongr
-  convert hexp.trans hpow using 1
-  ring
+  have harg :
+      -Real.pi * ((n + 1 : ℝ) * (n + 2 : ℝ)) * τ.im =
+        -Real.pi * ((n + 1 : ℝ) * ((n + 1 : ℝ) + 1)) * τ.im := by
+    ring
+  rw [harg]
+  exact hexp.trans hpow
 
 /-- The entire paired derivative tail has norm strictly smaller than the leading term `2*pi*i`
 throughout `im τ ≥ 4/5`. -/
@@ -330,8 +342,12 @@ theorem jacobiTheta₂'_thetaHalfPeriod_add_lattice_ne_zero
     (jacobiTheta₂_thetaHalfPeriod_eq_zero τ)
     (jacobiTheta₂'_thetaHalfPeriod_ne_zero hτ) n
   have hm := jacobiTheta₂'_ne_zero_add_int hn m
-  convert hm using 1
-  ring
+  have harg :
+      (thetaHalfPeriod τ + (n : ℂ) * τ) + (m : ℂ) =
+        thetaHalfPeriod τ + (m : ℂ) + (n : ℂ) * τ := by
+    ring
+  rw [harg] at hm
+  exact hm
 
 /-- **Residue-one local law.** The logarithmic derivative of theta has normalized punctured limit
 `1` at the odd half-period.  This is the analytic simple-pole coefficient consumed by the
@@ -360,8 +376,17 @@ theorem tendsto_thetaLogDeriv_normalized_halfPeriod {τ : ℂ} (hτ : 0 < τ.im)
     huan.continuousAt.continuousWithinAt
   have hquot : Tendsto (fun z ↦ jacobiTheta₂' z τ / u z)
       (𝓝[≠] z₀) (𝓝 1) := by
-    convert hnum.div hden hu0 using 1
-    rw [huval, hderiv, div_self (jacobiTheta₂'_thetaHalfPeriod_ne_zero hτ)]
+    have hquot' := hnum.div hden hu0
+    have hlimit : jacobiTheta₂' z₀ τ / u z₀ = 1 := by
+      rw [huval, hderiv, div_self (jacobiTheta₂'_thetaHalfPeriod_ne_zero hτ)]
+    rw [hlimit] at hquot'
+    have hfun :
+        (fun z : ℂ ↦ jacobiTheta₂' z τ) / u =
+          fun z : ℂ ↦ jacobiTheta₂' z τ / u z := by
+      funext z
+      rw [Pi.div_apply]
+    rw [hfun] at hquot'
+    exact hquot'
   apply hquot.congr'
   filter_upwards [self_mem_nhdsWithin] with z hz
   have hz0 : z - z₀ ≠ 0 := sub_ne_zero.mpr hz
@@ -401,8 +426,17 @@ theorem tendsto_thetaLogDeriv_normalized_lattice {τ : ℂ} (hτ : 0 < τ.im) (m
     huan.continuousAt.continuousWithinAt
   have hquot : Tendsto (fun z ↦ jacobiTheta₂' z τ / u z)
       (𝓝[≠] z₀) (𝓝 1) := by
-    convert hnum.div hden hu0 using 1
-    rw [huval, hderiv, div_self hθprime]
+    have hquot' := hnum.div hden hu0
+    have hlimit : jacobiTheta₂' z₀ τ / u z₀ = 1 := by
+      rw [huval, hderiv, div_self hθprime]
+    rw [hlimit] at hquot'
+    have hfun :
+        (fun z : ℂ ↦ jacobiTheta₂' z τ) / u =
+          fun z : ℂ ↦ jacobiTheta₂' z τ / u z := by
+      funext z
+      rw [Pi.div_apply]
+    rw [hfun] at hquot'
+    exact hquot'
   apply hquot.congr'
   filter_upwards [self_mem_nhdsWithin] with z hz
   have hz0 : z - z₀ ≠ 0 := sub_ne_zero.mpr hz

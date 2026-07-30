@@ -83,7 +83,7 @@ theorem tendsto_orientationVerticalMeshEpsilon_mul_re_canonicalOrientation_of_le
               (xiOrientationFrequencyOfPoint a (ρ + x n))).im)
       atTop (nhds (-((analyticOrderAt xi ρ).toNat : ℝ))) := by
     simpa [Function.comp_apply,
-      xiCanonicalOrientationBoundaryResidueGerm_zero] using him
+      xiCanonicalOrientationBoundaryResidueGerm_zero] using! him
   have hfun :
       (fun n : ℕ => orientationVerticalMeshEpsilon n *
         (xiCanonicalHorizontalOrientationMultiplier a

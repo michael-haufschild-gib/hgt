@@ -103,8 +103,8 @@ def threePointCorrelationDeterminantPathSecondJetY
 private theorem hasDerivAt_add_y
     {g g' : ℝ → ℝ} (hg : ∀ z, HasDerivAt g (g' z) z) (x y : ℝ) :
     HasDerivAt (fun z => g (x + z)) (g' (x + y)) y := by
-  convert (hg (x + y)).comp y ((hasDerivAt_const y x).add (hasDerivAt_id y)) using 1
-  all_goals (dsimp; ring)
+  convert! (hg (x + y)).comp y ((hasDerivAt_const y x).add (hasDerivAt_id y)) using 1
+  all_goals ring
 
 private theorem hasDerivAt_add_x
     {g g' : ℝ → ℝ} (hg : ∀ z, HasDerivAt g (g' z) z) (x y : ℝ) :
@@ -120,10 +120,10 @@ private theorem hasDerivAt_mixedSecondSum0_x
     HasDerivAt (mixedSecondSum0 f f₁ f₂ y)
       (mixedSecondSum1 f f₁ f₂ f₃ y x) x := by
   unfold mixedSecondSum0 mixedSecondSum1
-  convert (((hasDerivAt_add_x hf x y).mul_const (f₂ y)).add
+  convert! (((hasDerivAt_add_x hf x y).mul_const (f₂ y)).add
     ((hasDerivAt_add_x hf₁ x y).mul_const (2 * f₁ y))).add
       ((hasDerivAt_add_x hf₂ x y).mul_const (f y)) using 1 <;>
-    (try funext z) <;> dsimp <;> ring
+    (try funext z) <;> (try dsimp) <;> ring
 
 private theorem hasDerivAt_mixedSecondSum1_x
     {f f₁ f₂ f₃ f₄ : ℝ → ℝ}
@@ -133,10 +133,10 @@ private theorem hasDerivAt_mixedSecondSum1_x
     HasDerivAt (mixedSecondSum1 f f₁ f₂ f₃ y)
       (mixedSecondSum2 f f₁ f₂ f₃ f₄ y x) x := by
   unfold mixedSecondSum1 mixedSecondSum2
-  convert (((hasDerivAt_add_x hf₁ x y).mul_const (f₂ y)).add
+  convert! (((hasDerivAt_add_x hf₁ x y).mul_const (f₂ y)).add
     ((hasDerivAt_add_x hf₂ x y).mul_const (2 * f₁ y))).add
       ((hasDerivAt_add_x hf₃ x y).mul_const (f y)) using 1 <;>
-    (try funext z) <;> dsimp <;> ring
+    (try funext z) <;> (try dsimp) <;> ring
 
 private theorem hasDerivAt_mixedSecondSum2_x
     {f f₁ f₂ f₃ f₄ f₅ : ℝ → ℝ}
@@ -146,10 +146,10 @@ private theorem hasDerivAt_mixedSecondSum2_x
     HasDerivAt (mixedSecondSum2 f f₁ f₂ f₃ f₄ y)
       (mixedSecondSum3 f f₁ f₂ f₃ f₄ f₅ y x) x := by
   unfold mixedSecondSum2 mixedSecondSum3
-  convert (((hasDerivAt_add_x hf₂ x y).mul_const (f₂ y)).add
+  convert! (((hasDerivAt_add_x hf₂ x y).mul_const (f₂ y)).add
     ((hasDerivAt_add_x hf₃ x y).mul_const (2 * f₁ y))).add
       ((hasDerivAt_add_x hf₄ x y).mul_const (f y)) using 1 <;>
-    (try funext z) <;> dsimp <;> ring
+    (try funext z) <;> (try dsimp) <;> ring
 
 private theorem hasDerivAt_mixedSecondSum3_x
     {f f₁ f₂ f₃ f₄ f₅ f₆ : ℝ → ℝ}
@@ -159,10 +159,10 @@ private theorem hasDerivAt_mixedSecondSum3_x
     HasDerivAt (mixedSecondSum3 f f₁ f₂ f₃ f₄ f₅ y)
       (mixedSecondSum4 f f₁ f₂ f₃ f₄ f₅ f₆ y x) x := by
   unfold mixedSecondSum3 mixedSecondSum4
-  convert (((hasDerivAt_add_x hf₃ x y).mul_const (f₂ y)).add
+  convert! (((hasDerivAt_add_x hf₃ x y).mul_const (f₂ y)).add
     ((hasDerivAt_add_x hf₄ x y).mul_const (2 * f₁ y))).add
       ((hasDerivAt_add_x hf₅ x y).mul_const (f y)) using 1 <;>
-    (try funext z) <;> dsimp <;> ring
+    (try funext z) <;> (try dsimp) <;> ring
 
 private theorem hasDerivAt_mixedSecondSum0_y
     {f f₁ f₂ f₃ f₄ f₅ f₆ : ℝ → ℝ}
@@ -175,10 +175,10 @@ private theorem hasDerivAt_mixedSecondSum0_y
     HasDerivAt (fun z => mixedSecondSum0 f f₁ f₂ z x)
       (mixedThirdSum0 f f₁ f₂ f₃ y x) y := by
   unfold mixedSecondSum0 mixedThirdSum0
-  convert ((((hf₂ y).mul (hasDerivAt_add_y hf x y)).add
+  convert! ((((hf₂ y).mul (hasDerivAt_add_y hf x y)).add
     (((hf₁ y).mul (hasDerivAt_add_y hf₁ x y)).const_mul 2)).add
       ((hf y).mul (hasDerivAt_add_y hf₂ x y))) using 1 <;>
-    (try funext z) <;> dsimp <;> ring
+    (try funext z) <;> (try dsimp) <;> ring
 
 private theorem hasDerivAt_mixedSecondSum1_y
     {f f₁ f₂ f₃ f₄ : ℝ → ℝ}
@@ -189,10 +189,10 @@ private theorem hasDerivAt_mixedSecondSum1_y
     HasDerivAt (fun z => mixedSecondSum1 f f₁ f₂ f₃ z x)
       (mixedThirdSum1 f f₁ f₂ f₃ f₄ y x) y := by
   unfold mixedSecondSum1 mixedThirdSum1
-  convert ((((hf₂ y).mul (hasDerivAt_add_y hf₁ x y)).add
+  convert! ((((hf₂ y).mul (hasDerivAt_add_y hf₁ x y)).add
     (((hf₁ y).mul (hasDerivAt_add_y hf₂ x y)).const_mul 2)).add
       ((hf y).mul (hasDerivAt_add_y hf₃ x y))) using 1 <;>
-    (try funext z) <;> dsimp <;> ring
+    (try funext z) <;> (try dsimp) <;> ring
 
 private theorem hasDerivAt_mixedSecondSum2_y
     {f f₁ f₂ f₃ f₄ f₅ : ℝ → ℝ}
@@ -204,10 +204,10 @@ private theorem hasDerivAt_mixedSecondSum2_y
     HasDerivAt (fun z => mixedSecondSum2 f f₁ f₂ f₃ f₄ z x)
       (mixedThirdSum2 f f₁ f₂ f₃ f₄ f₅ y x) y := by
   unfold mixedSecondSum2 mixedThirdSum2
-  convert ((((hf₂ y).mul (hasDerivAt_add_y hf₂ x y)).add
+  convert! ((((hf₂ y).mul (hasDerivAt_add_y hf₂ x y)).add
     (((hf₁ y).mul (hasDerivAt_add_y hf₃ x y)).const_mul 2)).add
       ((hf y).mul (hasDerivAt_add_y hf₄ x y))) using 1 <;>
-    (try funext z) <;> dsimp <;> ring
+    (try funext z) <;> (try dsimp) <;> ring
 
 private theorem hasDerivAt_mixedSecondSum3_y
     {f f₁ f₂ f₃ f₄ f₅ f₆ : ℝ → ℝ}
@@ -220,10 +220,10 @@ private theorem hasDerivAt_mixedSecondSum3_y
     HasDerivAt (fun z => mixedSecondSum3 f f₁ f₂ f₃ f₄ f₅ z x)
       (mixedThirdSum3 f f₁ f₂ f₃ f₄ f₅ f₆ y x) y := by
   unfold mixedSecondSum3 mixedThirdSum3
-  convert ((((hf₂ y).mul (hasDerivAt_add_y hf₃ x y)).add
+  convert! ((((hf₂ y).mul (hasDerivAt_add_y hf₃ x y)).add
     (((hf₁ y).mul (hasDerivAt_add_y hf₄ x y)).const_mul 2)).add
       ((hf y).mul (hasDerivAt_add_y hf₅ x y))) using 1 <;>
-    (try funext z) <;> dsimp <;> ring
+    (try funext z) <;> (try dsimp) <;> ring
 
 private theorem hasDerivAt_diagonalFourthSum
     {f f₁ f₂ f₃ f₄ f₅ : ℝ → ℝ}
@@ -235,9 +235,9 @@ private theorem hasDerivAt_diagonalFourthSum
     HasDerivAt (diagonalFourthSum f f₁ f₂ f₃ f₄)
       (diagonalFifthSum f f₁ f₂ f₃ f₄ f₅ z) z := by
   unfold diagonalFourthSum diagonalFifthSum
-  convert (((((hf₂ z).mul (hf₂ z)).const_mul 3).add
+  convert! (((((hf₂ z).mul (hf₂ z)).const_mul 3).add
     (((hf₁ z).mul (hf₃ z)).const_mul 4)).add ((hf z).mul (hf₄ z))) using 1 <;>
-    (try funext w) <;> dsimp <;> ring
+    (try funext w) <;> (try dsimp) <;> ring
 
 private theorem hasDerivAt_diagonalFifthSum
     {f f₁ f₂ f₃ f₄ f₅ f₆ : ℝ → ℝ}
@@ -250,9 +250,9 @@ private theorem hasDerivAt_diagonalFifthSum
     HasDerivAt (diagonalFifthSum f f₁ f₂ f₃ f₄ f₅)
       (diagonalSixthSum f f₁ f₂ f₃ f₄ f₅ f₆ z) z := by
   unfold diagonalFifthSum diagonalSixthSum
-  convert (((((hf₂ z).mul (hf₃ z)).const_mul 10).add
+  convert! (((((hf₂ z).mul (hf₃ z)).const_mul 10).add
     (((hf₁ z).mul (hf₄ z)).const_mul 5)).add ((hf z).mul (hf₅ z))) using 1 <;>
-    (try funext w) <;> dsimp <;> ring
+    (try funext w) <;> (try dsimp) <;> ring
 
 theorem hasDerivAt_threePointCorrelationDeterminantPathMixedFourthJet_x
     {f f₁ f₂ f₃ f₄ f₅ : ℝ → ℝ}
@@ -270,9 +270,9 @@ theorem hasDerivAt_threePointCorrelationDeterminantPathMixedFourthJet_x
   have hS2 := hasDerivAt_mixedSecondSum2_x (f := f) (f₁ := f₁) hf₂ hf₃ hf₄ y x
   have hB := (hasDerivAt_diagonalFourthSum hf hf₁ hf₂ hf₃ hf₄ (x + y)).comp x
     ((hasDerivAt_id x).add_const y)
-  convert (((((hf₂ x).mul hS0).add (((hf₁ x).mul hS1).const_mul 2)).add
+  convert! (((((hf₂ x).mul hS0).add (((hf₁ x).mul hS1).const_mul 2)).add
     ((hf x).mul hS2)).const_mul 2).sub (hB.const_mul (2 * f 0)) using 1 <;>
-    (try funext z) <;> dsimp <;> ring
+    (try funext z) <;> (try dsimp) <;> ring
 
 theorem hasDerivAt_threePointCorrelationDeterminantPathMixedFourthJetX_x
     {f f₁ f₂ f₃ f₄ f₅ f₆ : ℝ → ℝ}
@@ -293,9 +293,10 @@ theorem hasDerivAt_threePointCorrelationDeterminantPathMixedFourthJetX_x
     hf₃ hf₄ hf₅ y x
   have hB := (hasDerivAt_diagonalFifthSum hf hf₁ hf₂ hf₃ hf₄ hf₅ (x + y)).comp x
     ((hasDerivAt_id x).add_const y)
-  convert ((((((hf₃ x).mul hS0).add (((hf₂ x).mul hS1).const_mul 3)).add
+  convert! ((((((hf₃ x).mul hS0).add (((hf₂ x).mul hS1).const_mul 3)).add
     (((hf₁ x).mul hS2).const_mul 3)).add ((hf x).mul hS3)).const_mul 2).sub
-      (hB.const_mul (2 * f 0)) using 1 <;> (try funext z) <;> dsimp <;> ring
+      (hB.const_mul (2 * f 0)) using 1 <;>
+    (try funext z) <;> (try dsimp) <;> ring
 
 theorem hasDerivAt_threePointCorrelationDeterminantPathMixedFourthJetX_y
     {f f₁ f₂ f₃ f₄ f₅ f₆ : ℝ → ℝ}
@@ -321,8 +322,8 @@ theorem hasDerivAt_threePointCorrelationDeterminantPathMixedFourthJetX_y
     ((hasDerivAt_const y (3 * f₂ x)).mul hS1)).add
       ((hasDerivAt_const y (3 * f₁ x)).mul hS2)).add
         ((hasDerivAt_const y (f x)).mul hS3)
-  convert (hmain.const_mul 2).sub (hB.const_mul (2 * f 0)) using 1
-  all_goals (dsimp; ring)
+  convert! (hmain.const_mul 2).sub (hB.const_mul (2 * f 0)) using 1
+  all_goals ring
 
 theorem threePointCorrelationDeterminantPathMixedFourthJet_comm
     (f f₁ f₂ f₃ f₄ : ℝ → ℝ) (y x : ℝ) :
@@ -350,8 +351,8 @@ theorem hasDerivAt_threePointCorrelationDeterminantPathSecondJet_y
   have hR := ((hc1.mul hc1).add (hc0.mul hc2)).const_mul (2 * f 0)
   have hmain := ((((hA.add hB).add hC).const_mul 2).sub hR).add_const
     (-2 * f 0 * (f₁ x ^ 2 + f x * f₂ x))
-  convert hmain using 1 <;>
-    (try funext z) <;> dsimp <;> ring
+  convert! hmain using 1 <;>
+    (try funext z) <;> (try dsimp) <;> ring
 
 theorem hasDerivAt_threePointCorrelationDeterminantPathSecondJetY_y
     {f f₁ f₂ f₃ f₄ : ℝ → ℝ}
@@ -372,8 +373,8 @@ theorem hasDerivAt_threePointCorrelationDeterminantPathSecondJetY_y
   have hB := (((hf₁ y).mul hc1).add ((hf y).mul hc2)).mul_const (2 * f₁ x)
   have hC := (((hf₁ y).mul hc2).add ((hf y).mul hc3)).mul_const (f x)
   have hR := (((hc1.mul hc2).const_mul 3).add (hc0.mul hc3)).const_mul (2 * f 0)
-  convert (((hA.add hB).add hC).const_mul 2).sub hR using 1 <;>
-    (try funext z) <;> dsimp <;> ring
+  convert! (((hA.add hB).add hC).const_mul 2).sub hR using 1 <;>
+    (try funext z) <;> (try dsimp) <;> ring
 
 /-- The `(2,4)` and `(4,2)` sixth mixed determinant jets at the doubly coalesced corner.  The
 sixth source jet cancels identically. -/
@@ -428,7 +429,7 @@ theorem exists_threePointCorrelationDeterminantPath_pos_uniform_square
       hf hf₁ hf₂ hf₃ hf₄ hf₅ y x
   have hC_y : ∀ y x, HasDerivAt (fun z => C z x) (Cx x y) y := by
     intro y x
-    convert hC_x x y using 1
+    convert! hC_x x y using 1
     · funext z
       exact threePointCorrelationDeterminantPathMixedFourthJet_comm f f₁ f₂ f₃ f₄ z x
   have hcont (g g' : ℝ → ℝ) (hg : ∀ z, HasDerivAt g (g' z) z) : Continuous g :=

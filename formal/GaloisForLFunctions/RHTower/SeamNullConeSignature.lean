@@ -101,8 +101,7 @@ theorem extend_Jinvariant_negdef {Q : LinearMap.BilinForm ℝ V} [FiniteDimensio
     intro a ha b hb
     have hbOW := hplane_le hb
     rw [LinearMap.BilinForm.mem_orthogonal_iff] at hbOW
-    have := hbOW a ha
-    rwa [LinearMap.BilinForm.isOrtho_def] at this
+    exact hbOW a ha
   refine ⟨W ⊔ plane, sup_Jinvariant P.complex hWJ hplaneJ,
     negDef_sup hQ hWneg hplaneNeg hcross, ?_⟩
   have hWplane_bot : (W ⊓ plane : Submodule ℝ V) = ⊥ := by

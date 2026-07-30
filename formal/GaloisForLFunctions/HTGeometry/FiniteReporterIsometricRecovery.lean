@@ -67,7 +67,7 @@ theorem finiteDerivativeReporter_isometricAdjointRecovery
     (fun T : Y →L[ℂ] Y => T (report g)) decode.adjoint_comp_self
   simpa only [ContinuousLinearMap.comp_apply, one_apply_eq_self,
     LinearMap.comp_apply, LinearIsometry.coe_toLinearMap,
-    LinearIsometry.coe_toContinuousLinearMap] using h
+    LinearIsometry.coe_toContinuousLinearMap] using! h
 
 /-- Coefficient packets are recovered exactly after isometric reporter postprocessing. -/
 theorem finiteDerivativeReporterMap_isometricAdjointRecovery

@@ -56,7 +56,7 @@ theorem soninLogPinching_zeroQFI_multiplicativeDomain_compression
     rw [GaloisForLFunctions.PhysicalState] at hψ ⊢
     have hfixed : soninLogFourierScattering ψ = ψ := by
       apply sub_eq_zero.mp
-      simpa only [_root_.sub_apply, one_apply_eq_self] using hψ
+      simpa only [_root_.sub_apply, one_apply_eq_self] using! hψ
     change soninLogFourierScattering (Y ψ) - Y ψ = 0
     rw [← mul_apply_eq_comp, hYcomm,
       mul_apply_eq_comp, hfixed, sub_self]

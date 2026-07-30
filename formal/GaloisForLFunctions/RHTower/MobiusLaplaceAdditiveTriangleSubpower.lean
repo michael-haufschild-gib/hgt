@@ -169,10 +169,7 @@ theorem norm_sq_mobiusDiscreteLaplaceTransform_le_of_additiveTriangleSubpowerUpp
   have hmoment := summable_natSucc_rpow_exp_neg_and_tsum_le hr hx
   have hb : Summable (fun N : ℕ => b N * Real.exp (-((N : ℝ) * x))) := by
     have hmul := hmoment.1.mul_left C
-    convert hmul using 1
-    funext N
-    dsimp [b]
-    ring
+    simpa only [b, mul_assoc] using! hmul
   have hsquare :=
     norm_sq_mobiusDiscreteLaplaceTransform_le_one_sub_exp_mul_tsum_of_triangleUpper
       b (by simpa only [b, r] using hsource) hx hb

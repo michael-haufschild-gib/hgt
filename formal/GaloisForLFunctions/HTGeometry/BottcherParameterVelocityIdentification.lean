@@ -89,11 +89,11 @@ theorem deriv_reciprocalOrbit_parameter_zero (t : ℂ) (k : ℕ) :
       simpa [u, ih] using huan.differentiableAt.hasDerivAt
     have hnum : HasDerivAt (fun c => (u c) ^ 2)
         (2 * t ^ (2 ^ k) * reciprocalOrbitFirstJet t k) 0 := by
-      convert hu.pow 2 using 1 <;> simp [u, reciprocalOrbit_zero_parameter] <;> ring
+      convert! hu.pow 2 using 1 <;> simp [u, reciprocalOrbit_zero_parameter] <;> ring
     have hden : HasDerivAt (fun c => 1 + c * (u c) ^ 2)
         (t ^ (2 ^ (k + 1))) 0 := by
       have hprod := (hasDerivAt_id' (0 : ℂ)).mul (hu.pow 2)
-      convert (hasDerivAt_const (x := (0 : ℂ)) (c := (1 : ℂ))).add hprod using 1 <;>
+      convert! (hasDerivAt_const (x := (0 : ℂ)) (c := (1 : ℂ))).add hprod using 1 <;>
         simp [u, reciprocalOrbit_zero_parameter] <;>
         try { rw [← pow_mul]; congr 1 <;> omega }
     have hquot := hnum.div hden (by simp [u, reciprocalOrbit_zero_parameter] :
@@ -132,12 +132,12 @@ theorem deriv_reciprocalBottcherLogTerm_parameter_zero (t : ℂ) (k : ℕ) :
   have hu : HasDerivAt u (reciprocalOrbitFirstJet t k) 0 := by
     simpa [u, deriv_reciprocalOrbit_parameter_zero] using huan.differentiableAt.hasDerivAt
   have hw : HasDerivAt (fun c => c * (u c) ^ 2) (t ^ (2 ^ (k + 1))) 0 := by
-    convert (hasDerivAt_id' (0 : ℂ)).mul (hu.pow 2) using 1 <;>
+    convert! (hasDerivAt_id' (0 : ℂ)).mul (hu.pow 2) using 1 <;>
       simp [u, reciprocalOrbit_zero_parameter] <;>
       try { rw [← pow_mul]; congr 1 <;> omega }
   have hlog : HasDerivAt (fun c => Complex.log (1 + c * (u c) ^ 2))
       (t ^ (2 ^ (k + 1))) 0 := by
-    convert (hasDerivAt_const (x := (0 : ℂ)) (c := (1 : ℂ))).add hw |>.clog using 1 <;> simp
+    convert! (hasDerivAt_const (x := (0 : ℂ)) (c := (1 : ℂ))).add hw |>.clog using 1 <;> simp
   unfold reciprocalBottcherLogTerm
   simpa [u] using (hlog.const_mul (2 ^ (k + 1) : ℂ)⁻¹).deriv
 
@@ -157,7 +157,7 @@ theorem iteratedDeriv_two_reciprocalBottcherLogTerm_parameter_zero
   have hu : HasDerivAt u (reciprocalOrbitFirstJet t k) 0 := by
     simpa [u, deriv_reciprocalOrbit_parameter_zero] using huan.differentiableAt.hasDerivAt
   have hw : HasDerivAt w (t ^ (2 ^ (k + 1))) 0 := by
-    convert (hasDerivAt_id' (0 : ℂ)).mul (hu.pow 2) using 1 <;>
+    convert! (hasDerivAt_id' (0 : ℂ)).mul (hu.pow 2) using 1 <;>
       simp [w, u, reciprocalOrbit_zero_parameter] <;>
       try { rw [← pow_mul]; congr 1 <;> omega }
   have hdu : HasDerivAt (deriv u) (deriv (deriv u) 0) 0 :=
@@ -165,7 +165,7 @@ theorem iteratedDeriv_two_reciprocalBottcherLogTerm_parameter_zero
   have hwd : HasDerivAt wd
       (4 * t ^ (2 ^ k) * reciprocalOrbitFirstJet t k) 0 := by
     have hv := (hu.const_mul 2).mul hdu
-    convert (hu.pow 2).add ((hasDerivAt_id' (0 : ℂ)).mul hv) using 1 <;>
+    convert! (hu.pow 2).add ((hasDerivAt_id' (0 : ℂ)).mul hv) using 1 <;>
       simp [wd, u, reciprocalOrbit_zero_parameter,
         deriv_reciprocalOrbit_parameter_zero] <;> ring
   have hargan : AnalyticAt ℂ (fun c => 1 + w c) 0 := by
@@ -178,7 +178,7 @@ theorem iteratedDeriv_two_reciprocalBottcherLogTerm_parameter_zero
       fun c => (2 ^ (k + 1) : ℂ)⁻¹ * (wd c / (1 + w c)) := by
     filter_upwards [huan.eventually_analyticAt, hslit] with c hc hmem
     have hwc : HasDerivAt w (wd c) c := by
-      convert (hasDerivAt_id' c).mul (hc.differentiableAt.hasDerivAt.pow 2) using 1 <;>
+      convert! (hasDerivAt_id' c).mul (hc.differentiableAt.hasDerivAt.pow 2) using 1 <;>
         simp [w, wd] <;> ring
     have hlog := ((hasDerivAt_const (x := c) (c := (1 : ℂ))).add hwc).clog hmem
     unfold reciprocalBottcherLogTerm
@@ -430,18 +430,15 @@ theorem hasSum_iteratedDeriv_two_reciprocalBottcherLogTerm_parameter_zero
     rw [(hfirst s).deriv_eq]
     exact deriv_fun_sum fun k _ =>
       (analyticAt_reciprocalBottcherLogTerm_parameter_zero t k).deriv.differentiableAt
-  rw [HasSum]
-  convert htend using 1
+  rw [HasSum, ← htotal]
+  convert! htend using 1
   · funext s
     rw [show (deriv ∘ deriv ∘ partials) s 0 = deriv (deriv (partials s)) 0 from rfl,
       hsecond]
     apply Finset.sum_congr rfl
     intro k _
     simp only [term, show 2 = 1 + 1 by omega, iteratedDeriv_succ, iteratedDeriv_zero]
-  · rw [show iteratedDeriv 2 (fun c => reciprocalBottcherLog c t) 0 =
-      deriv (deriv (fun c => reciprocalBottcherLog c t)) 0 by
-        simp only [show 2 = 1 + 1 by omega, iteratedDeriv_succ, iteratedDeriv_zero]]
-    rw [← htotal]
+  · simp only [show 2 = 1 + 1 by omega, iteratedDeriv_succ, iteratedDeriv_zero]
 
 /-! ## Identification with the existing Böttcher coordinate -/
 
@@ -614,7 +611,7 @@ theorem hasSum_iteratedDeriv_bottcherFirstLogVelocityTerm (n : ℕ) :
           have ha := (hpartialAnalytic s ht).iterated_deriv m
           simpa [iteratedDeriv_eq_iterate] using
             ha.differentiableAt.differentiableWithinAt
-        simpa only [iteratedDeriv_succ] using
+        simpa only [iteratedDeriv_succ] using!
           ih.deriv (Eventually.of_forall hdiffm) hopen
   have hfinite : ∀ (m : ℕ) (s : Finset ℕ),
       iteratedDeriv m (partials s) 0 =
@@ -632,8 +629,8 @@ theorem hasSum_iteratedDeriv_bottcherFirstLogVelocityTerm (n : ℕ) :
           ((hpartialAnalytic s hzero).contDiffAt.of_le (by exact_mod_cast le_top)),
           ih, Finset.sum_insert hk]
   have htend := (hconv n).tendsto_at hzero
-  rw [HasSum]
-  convert htend using 1
+  rw [HasSum, ← htotal]
+  convert! htend using 1
   funext s
   exact (hfinite n s).symm
 
@@ -957,7 +954,7 @@ theorem analyticAt_bottcherSecondLogVelocity :
   let U : Set ℂ := Metric.ball 0 (1 / 2)
   have hu : Summable (fun k : ℕ => 3 * (1 / 2 : ℝ) ^ (k + 1)) := by
     have hs := summable_geometric_of_lt_one (by norm_num : (0 : ℝ) ≤ 1 / 2) (by norm_num)
-    convert hs.mul_left (3 / 2 : ℝ) using 1
+    convert! hs.mul_left (3 / 2 : ℝ) using 1
     funext k
     rw [pow_succ]
     ring
@@ -984,7 +981,7 @@ theorem hasSum_iteratedDeriv_bottcherSecondLogVelocityTerm (n : ℕ) :
   have htotal : total = bottcherSecondLogVelocity := rfl
   have hu : Summable (fun k : ℕ => 3 * (1 / 2 : ℝ) ^ (k + 1)) := by
     have hs := summable_geometric_of_lt_one (by norm_num : (0 : ℝ) ≤ 1 / 2) (by norm_num)
-    convert hs.mul_left (3 / 2 : ℝ) using 1
+    convert! hs.mul_left (3 / 2 : ℝ) using 1
     funext k
     rw [pow_succ]
     ring
@@ -1025,7 +1022,7 @@ theorem hasSum_iteratedDeriv_bottcherSecondLogVelocityTerm (n : ℕ) :
           have ha := (hpartialAnalytic s ht).iterated_deriv m
           simpa [iteratedDeriv_eq_iterate] using
             ha.differentiableAt.differentiableWithinAt
-        simpa only [iteratedDeriv_succ] using
+        simpa only [iteratedDeriv_succ] using!
           ih.deriv (Eventually.of_forall hdiffm) hopen
   have hfinite : ∀ (m : ℕ) (s : Finset ℕ),
       iteratedDeriv m (partials s) 0 =
@@ -1043,10 +1040,10 @@ theorem hasSum_iteratedDeriv_bottcherSecondLogVelocityTerm (n : ℕ) :
           ((hpartialAnalytic s hzero).contDiffAt.of_le (by exact_mod_cast le_top)),
           ih, Finset.sum_insert hk]
   have htend := (hconv n).tendsto_at hzero
-  rw [HasSum]
-  convert htend using 1
-  · funext s
-    exact (hfinite n s).symm
+  rw [HasSum, ← htotal]
+  convert! htend using 1
+  funext s
+  exact (hfinite n s).symm
 
 /-! ## Identification of the analytic spatial Taylor series -/
 
@@ -1342,7 +1339,7 @@ theorem dyadicSubst_bottcherSecondLogVelocityTaylor :
   have he : Summable (fun k =>
       (coeff n) (2 * X ^ (2 ^ (k + 2) + 2) : PowerSeries ℂ)) := by
     have hdifference := hb.sub (hatail.mul_left 2)
-    convert hdifference using 1
+    convert! hdifference using 1
     funext k
     linear_combination -(heq k)
   have hsum :

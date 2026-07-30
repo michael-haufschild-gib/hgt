@@ -172,7 +172,7 @@ def xiWeilSchwarzLp (v : lp (fun _ : XiZeroCopy => ℂ) 2) :
       ‖(starRingEnd ℂ) (v q)‖ ^ 2) :=
     (HilbertSchmidt.summable_coe_sq v).congr fun q ↦ by
       rw [Complex.norm_conj]
-  simpa only [Function.comp_apply] using
+  simpa only [Function.comp_apply] using!
     (xiZeroCopyConjEquiv.summable_iff.mpr hbase)
 
 @[simp] theorem xiWeilSchwarzLp_apply
@@ -506,7 +506,7 @@ theorem xiHurwitzOrientationFiberPair_mem_positivePairedHilbertSubspace
           hgenClosure)
   · have hrho : (rho : ℂ).re = 1 / 2 := not_ne_iff.mp hoff
     have hconj : ((xiZeroConjEquiv rho : XiDivisorSupport) : ℂ).re = 1 / 2 := by
-      simpa using hrho
+      simpa using! hrho
     rw [xiHurwitzOrientationFiberVector,
       xiHurwitzOrientationFiberVector,
       xiHurwitzOrientationFiberCoefficient_eq_zero_of_re_eq_half rho hrho,
@@ -546,16 +546,16 @@ theorem hasSum_xiHurwitzOrientationPositivePairedFiberVector :
       f (xiZeroConjEquiv rho) else 0
   have hf : Summable f := hasSum_xiHurwitzOrientationFiberVector.summable
   have hfp : Summable fp := by
-    simpa [fp, Set.indicator] using
+    simpa [fp, Set.indicator] using!
       hf.indicator {rho | 0 < (xiSpectralPointSupport rho).re}
   have hfn : Summable fn := by
-    simpa [fn, Set.indicator] using
+    simpa [fn, Set.indicator] using!
       hf.indicator {rho | (xiSpectralPointSupport rho).re < 0}
   have hfc : Summable (fun rho ↦ f (xiZeroConjEquiv rho)) := by
-    simpa only [Function.comp_apply] using
+    simpa only [Function.comp_apply] using!
       (xiZeroConjEquiv.summable_iff.mpr hf)
   have hfcp : Summable fcp := by
-    simpa [fcp, Set.indicator] using
+    simpa [fcp, Set.indicator] using!
       hfc.indicator {rho | 0 < (xiSpectralPointSupport rho).re}
   have hsplitPoint : ∀ rho, fp rho + fn rho = f rho := by
     intro rho

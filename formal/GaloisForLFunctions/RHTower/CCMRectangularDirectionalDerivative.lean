@@ -26,8 +26,9 @@ theorem hasDerivWithinAt_max_zero_const_add_right (c : ℝ) :
   by_cases hc : 0 ≤ c
   · rw [if_pos hc]
     have hlin : HasDerivAt (fun t : ℝ => c + t) 1 0 := by
-      convert (hasDerivAt_const (x := (0 : ℝ)) c).add (hasDerivAt_id 0) using 1
-      simp
+      convert (hasDerivAt_const (x := (0 : ℝ)) c).add (hasDerivAt_id 0) using 1 <;>
+        try rfl
+      all_goals ring
     apply hlin.hasDerivWithinAt.congr
     · intro t ht
       rw [max_eq_right]
@@ -145,21 +146,23 @@ theorem hasDerivAt_rectangularAdjacentPolarValue_diagonal (L x : ℝ) :
         2 * (Real.exp L - 1) * Real.exp (-x / 2)) 0 := by
   unfold rectangularAdjacentPolarValue rectangularPolarAlpha rectangularPolarBeta
   have hLt : HasDerivAt (fun t : ℝ => L + t) 1 0 := by
-    convert (hasDerivAt_const (x := (0 : ℝ)) L).add (hasDerivAt_id 0) using 1
-    simp
+    convert (hasDerivAt_const (x := (0 : ℝ)) L).add (hasDerivAt_id 0) using 1 <;>
+      try rfl
+    all_goals ring
   have hXt : HasDerivAt (fun t : ℝ => x + t) 1 0 := by
-    convert (hasDerivAt_const (x := (0 : ℝ)) x).add (hasDerivAt_id 0) using 1
-    simp
+    convert (hasDerivAt_const (x := (0 : ℝ)) x).add (hasDerivAt_id 0) using 1 <;>
+      try rfl
+    all_goals ring
   have hα : HasDerivAt (fun t : ℝ => 1 - Real.exp (-(L + t) / 2))
       (Real.exp (-L / 2) / 2) 0 := by
     convert (hasDerivAt_const (x := (0 : ℝ)) (1 : ℝ)).sub
-      ((hLt.neg.div_const 2).exp) using 1
+      ((hLt.neg.div_const 2).exp) using 1 <;> try rfl
     all_goals simp
     all_goals ring
   have hβ : HasDerivAt (fun t : ℝ => Real.exp ((L + t) / 2) - 1)
       (Real.exp (L / 2) / 2) 0 := by
     convert ((hLt.div_const 2).exp).sub
-      (hasDerivAt_const (x := (0 : ℝ)) (1 : ℝ)) using 1
+      (hasDerivAt_const (x := (0 : ℝ)) (1 : ℝ)) using 1 <;> try rfl
     all_goals simp
     all_goals ring
   have hxpos : HasDerivAt (fun t : ℝ => Real.exp ((x + t) / 2))
@@ -174,7 +177,7 @@ theorem hasDerivAt_rectangularAdjacentPolarValue_diagonal (L x : ℝ) :
     all_goals ring
   have h := (((hα.pow 2).mul hxpos).const_mul 4).add
     (((hβ.pow 2).mul hxneg).const_mul 4)
-  convert h using 1
+  convert h using 1 <;> try rfl
   · funext t
     simp only [Pi.add_apply, Pi.mul_apply, Pi.pow_apply]
     ring
@@ -360,20 +363,21 @@ theorem hasDerivAt_rectangularFixedPrimePolarConstant_add
       (fun t : ℝ => rectangularFixedPrimePolarConstant (L + t))
       (8 * (Real.exp (L / 2) - Real.exp (-L / 2))) 0 := by
   have hLt : HasDerivAt (fun t : ℝ => L + t) 1 0 := by
-    convert (hasDerivAt_const (x := (0 : ℝ)) L).add (hasDerivAt_id 0) using 1
-    simp
+    convert (hasDerivAt_const (x := (0 : ℝ)) L).add (hasDerivAt_id 0) using 1 <;>
+      try rfl
+    all_goals ring
   have hα : HasDerivAt (fun t : ℝ => rectangularPolarAlpha (L + t))
       (Real.exp (-L / 2) / 2) 0 := by
     unfold rectangularPolarAlpha
     convert (hasDerivAt_const (x := (0 : ℝ)) (1 : ℝ)).sub
-      ((hLt.neg.div_const 2).exp) using 1
+      ((hLt.neg.div_const 2).exp) using 1 <;> try rfl
     all_goals simp
     all_goals ring
   have hβ : HasDerivAt (fun t : ℝ => rectangularPolarBeta (L + t))
       (Real.exp (L / 2) / 2) 0 := by
     unfold rectangularPolarBeta
     convert ((hLt.div_const 2).exp).sub
-      (hasDerivAt_const (x := (0 : ℝ)) (1 : ℝ)) using 1
+      (hasDerivAt_const (x := (0 : ℝ)) (1 : ℝ)) using 1 <;> try rfl
     all_goals simp
     all_goals ring
   have hpolar := (hα.mul hβ).const_mul 16
@@ -401,7 +405,7 @@ theorem hasDerivAt_rectangularFixedPrimePolarConstant_add
         rectangularPolarAlpha (L + 0) * (Real.exp (L / 2) / 2))) 0 := by
     simpa only [Pi.mul_apply] using hpolar
   have h := hpolar'.congr_of_eventuallyEq heq
-  convert h using 1
+  convert h using 1 <;> try rfl
   simp only [add_zero,
     rectangularPolarAlpha, rectangularPolarBeta]
   nlinarith [hcross]
@@ -477,7 +481,8 @@ theorem hasDerivWithinAt_dyadicPrimePolarSource_diagonal_logSample
         2 * dyadicAdjacentBlockDiagonalRightSlope n) (Ici 0) 0 := by
     have hquarter : Real.log 2 / 2 / 2 = Real.log 2 / 4 := by ring
     have hnegQuarter : -(Real.log 2 / 2) / 2 = -Real.log 2 / 4 := by ring
-    simpa only [Pi.add_apply, hquarter, hnegQuarter] using hsum
+    convert hsum using 1 <;> try rfl
+    all_goals simp only [hquarter, hnegQuarter]
   unfold dyadicPrimePolarSourceDiagonalRightSlope
   apply hsum'.congr_of_eventuallyEq heq
   simpa using rectangularPrimePolarSourceCoefficient_eq_fixedConstant_add_adjacentBlock

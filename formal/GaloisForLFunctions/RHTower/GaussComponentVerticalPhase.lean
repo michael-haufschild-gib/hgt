@@ -32,7 +32,7 @@ theorem digamma_lower_vertical_sub_log_I_tendsto_zero (σ : ℝ) (hσ : 0 ≤ σ
       (Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I) -
         ((Real.log t : ℂ) + (Real.pi / 2 : ℂ) * Complex.I)))
       atTop (nhds 0) := by
-    simpa only [Function.comp_apply, map_zero] using hconj
+    simpa only [Function.comp_apply, map_zero] using! hconj
   refine hconj'.congr' ?_
   filter_upwards with t
   rw [map_sub]
@@ -187,27 +187,27 @@ theorem gaussComponentVerticalAccumulatedError_tendsto_zero
     Tendsto (fun t : ℝ => gaussComponentVerticalAccumulatedError k t h)
       atTop (nhds 0) := by
   have herr : Tendsto (gaussComponentVerticalLogDerivError k) atTop (nhds 0) := by
-    simpa [gaussComponentVerticalLogDerivError, gaussComponentVerticalClock] using
+    simpa [gaussComponentVerticalLogDerivError, gaussComponentVerticalClock] using!
       gaussComponentVerticalLogDeriv_sub_clock_tendsto_zero hm k
   have hre : Tendsto (fun t : ℝ => (gaussComponentVerticalLogDerivError k t).re)
       atTop (nhds 0) := by
-    simpa using Complex.continuous_re.continuousAt.tendsto.comp herr
+    simpa using! Complex.continuous_re.continuousAt.tendsto.comp herr
   have him : Tendsto (fun t : ℝ => (gaussComponentVerticalLogDerivError k t).im)
       atTop (nhds 0) := by
-    simpa using Complex.continuous_im.continuousAt.tendsto.comp herr
+    simpa using! Complex.continuous_im.continuousAt.tendsto.comp herr
   have hreInt := intervalIntegral_add_tendsto_zero_of_tendsto_zero hre hh
   have himInt := intervalIntegral_add_tendsto_zero_of_tendsto_zero him hh
   have hreCast : Tendsto (fun t : ℝ =>
       ((∫ x in t..(t + h), (gaussComponentVerticalLogDerivError k x).re : ℝ) : ℂ))
       atTop (nhds 0) := by
-    simpa using Complex.continuous_ofReal.continuousAt.tendsto.comp hreInt
+    simpa using! Complex.continuous_ofReal.continuousAt.tendsto.comp hreInt
   have himCast : Tendsto (fun t : ℝ =>
       ((∫ x in t..(t + h), (gaussComponentVerticalLogDerivError k x).im : ℝ) : ℂ) *
         Complex.I) atTop (nhds 0) := by
     have hcast : Tendsto (fun t : ℝ =>
         ((∫ x in t..(t + h), (gaussComponentVerticalLogDerivError k x).im : ℝ) : ℂ))
         atTop (nhds 0) := by
-      simpa using Complex.continuous_ofReal.continuousAt.tendsto.comp himInt
+      simpa using! Complex.continuous_ofReal.continuousAt.tendsto.comp himInt
     simpa using hcast.mul_const Complex.I
   simpa [gaussComponentVerticalAccumulatedError] using hreCast.add himCast
 
@@ -257,7 +257,7 @@ theorem hasDerivAt_gaussComponentVerticalValue
     intro n
     exact gaussComponentVerticalLowerArg_ne_neg_nat hm k ht n
   have hu' : HasDerivAt (gaussComponentVerticalUpperArg k) β (t : ℂ) := by
-    simpa [gaussComponentVerticalUpperArg, β] using
+    simpa [gaussComponentVerticalUpperArg, β] using!
       (hasDerivAt_const (t : ℂ) (gaussComponentOffset k : ℂ)).add
         ((hasDerivAt_id (t : ℂ)).const_mul β)
   have hv' : HasDerivAt (gaussComponentVerticalLowerArg k) γ (t : ℂ) := by
@@ -271,18 +271,18 @@ theorem hasDerivAt_gaussComponentVerticalValue
         ((gaussComponentOffset k + gaussComponentDelta m : ℝ) : ℂ) -
           Complex.I / (2 * (m : ℂ)) * z)
       (-Complex.I / (2 * (m : ℂ))) (t : ℂ)
-    convert hraw using 1
+    convert! hraw using 1
     ring
   have hΓu : HasDerivAt
       (fun z => Complex.Gamma (gaussComponentVerticalUpperArg k z))
       (Complex.Gamma u * Complex.digamma u * β) (t : ℂ) := by
     have h := (Complex.differentiableAt_Gamma u huPole).hasDerivAt.comp (t : ℂ) hu'
-    simpa [deriv_Gamma_eq_mul_digamma huPole] using h
+    simpa [deriv_Gamma_eq_mul_digamma huPole] using! h
   have hΓv : HasDerivAt
       (fun z => Complex.Gamma (gaussComponentVerticalLowerArg k z))
       (Complex.Gamma v * Complex.digamma v * γ) (t : ℂ) := by
     have h := (Complex.differentiableAt_Gamma v hvPole).hasDerivAt.comp (t : ℂ) hv'
-    simpa [deriv_Gamma_eq_mul_digamma hvPole] using h
+    simpa [deriv_Gamma_eq_mul_digamma hvPole] using! h
   have hlin : HasDerivAt (fun z : ℂ => α * z) α (t : ℂ) := by
     simpa using (hasDerivAt_id (t : ℂ)).const_mul α
   have hE : HasDerivAt (fun z : ℂ => Complex.exp (α * z))
@@ -295,7 +295,7 @@ theorem hasDerivAt_gaussComponentVerticalValue
       (gaussComponentVerticalCarrier k (t : ℂ) *
         (α + β * (Complex.digamma u + Complex.digamma v))) (t : ℂ) := by
     have hquot := (hE.mul hΓu).div hΓv hv0
-    convert hquot using 1
+    convert! hquot using 1
     · simp only [gaussComponentVerticalCarrier, α, β, γ, u, v]
       simp only [Pi.mul_apply]
       field_simp [hv0']
@@ -304,10 +304,10 @@ theorem hasDerivAt_gaussComponentVerticalValue
       gaussComponentVerticalCarrier k (s : ℂ))
       (gaussComponentVerticalCarrier k (t : ℂ) *
         (α + β * (Complex.digamma u + Complex.digamma v))) t :=
-    by simpa [Function.comp_def] using
+    by simpa [Function.comp_def] using!
       hcarrier.comp t (hasDerivAt_id t).ofReal_comp
   simpa only [gaussComponentVerticalValue, gaussComponentVerticalLogDeriv,
-    α, β, u, v] using hreal
+    α, β, u, v] using! hreal
 
 /-- The actual vertical Gauss component has no zero at positive height. -/
 theorem gaussComponentVerticalValue_ne_zero

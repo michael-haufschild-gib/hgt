@@ -200,7 +200,8 @@ def pointFiniteFacetRow
     {R α : Type*} [CommRing R]
     (facets : Set (Finset α)) (hfacets : PointFiniteFacetFamily facets) :
     MvPolynomial α R →ₗ[R] (PointFiniteFacetIndex facets →₀ R) :=
-  Finsupp.linearCombination R (pointFiniteFacetPacket (R := R) facets hfacets)
+  Finsupp.linearCombination R (pointFiniteFacetPacket (R := R) facets hfacets) ∘ₗ
+    (AddMonoidAlgebra.coeffLinearEquiv R).toLinearMap
 
 /-- The constant monomial contributes one to the distinguished global coordinate. -/
 theorem pointFiniteFacetPacket_zero_apply_none
@@ -293,8 +294,8 @@ theorem pointFiniteFacetRow_apply_none
     pointFiniteFacetRow facets hfacets P none = coeff 0 P := by
   classical
   rw [pointFiniteFacetRow]
-  change (P.sum fun d c => c • pointFiniteFacetPacket (R := R) facets hfacets d) none =
-    coeff 0 P
+  change ((AddMonoidAlgebra.coeff P).sum fun d c =>
+    c • pointFiniteFacetPacket (R := R) facets hfacets d) none = coeff 0 P
   rw [Finsupp.sum_apply]
   change (∑ d ∈ P.support,
     (coeff d P • pointFiniteFacetPacket (R := R) facets hfacets d) none) = coeff 0 P
@@ -326,7 +327,8 @@ theorem pointFiniteFacetRow_apply_some_of_visible
     pointFiniteFacetRow facets hfacets P (some (F, d)) = coeff d P := by
   classical
   rw [pointFiniteFacetRow]
-  change (P.sum fun e c => c • pointFiniteFacetPacket (R := R) facets hfacets e)
+  change ((AddMonoidAlgebra.coeff P).sum fun e c =>
+    c • pointFiniteFacetPacket (R := R) facets hfacets e)
       (some (F, d)) = coeff d P
   rw [Finsupp.sum_apply]
   change (∑ e ∈ P.support,
@@ -359,7 +361,8 @@ theorem pointFiniteFacetRow_apply_some_of_not_visible
     pointFiniteFacetRow facets hfacets P (some (F, d)) = 0 := by
   classical
   rw [pointFiniteFacetRow]
-  change (P.sum fun e c => c • pointFiniteFacetPacket (R := R) facets hfacets e)
+  change ((AddMonoidAlgebra.coeff P).sum fun e c =>
+    c • pointFiniteFacetPacket (R := R) facets hfacets e)
       (some (F, d)) = 0
   rw [Finsupp.sum_apply]
   change (∑ e ∈ P.support,
@@ -379,7 +382,8 @@ theorem pointFiniteFacetRow_apply_some_zero
     pointFiniteFacetRow facets hfacets P (some (F, 0)) = 0 := by
   classical
   rw [pointFiniteFacetRow]
-  change (P.sum fun e c => c • pointFiniteFacetPacket (R := R) facets hfacets e)
+  change ((AddMonoidAlgebra.coeff P).sum fun e c =>
+    c • pointFiniteFacetPacket (R := R) facets hfacets e)
       (some (F, 0)) = 0
   rw [Finsupp.sum_apply]
   change (∑ e ∈ P.support,
@@ -461,7 +465,7 @@ theorem linearIndependent_pointFiniteFacetRow_iff
     let S : MvPolynomial α R := ∑ j, A j • P j
     have hmem : S ∈ setStanleyReisnerIdeal R facets := by
       apply Ideal.Quotient.eq_zero_iff_mem.mp
-      simpa [S, map_sum, map_smul] using hquot
+      simpa [S, map_sum, map_smul] using! hquot
     have hzero := (pointFiniteFacetRow_eq_zero_iff facets hne hfacets S).mpr hmem
     simpa [S, map_sum, map_smul, Function.comp_apply] using hzero
   · intro hquot A hrow i
@@ -470,7 +474,7 @@ theorem linearIndependent_pointFiniteFacetRow_iff
     have hzero : pointFiniteFacetRow facets hfacets S = 0 := by
       simpa [S, map_sum, map_smul, Function.comp_apply] using hrow
     have hmem := (pointFiniteFacetRow_eq_zero_iff facets hne hfacets S).mp hzero
-    simpa [S, map_sum, map_smul] using
+    simpa [S, map_sum, map_smul] using!
       (Ideal.Quotient.eq_zero_iff_mem.mpr hmem)
 
 end

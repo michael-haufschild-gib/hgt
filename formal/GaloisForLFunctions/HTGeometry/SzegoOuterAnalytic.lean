@@ -79,7 +79,7 @@ theorem hasDerivAt_szegoOuter {w : ℝ → ℝ}
       (szegoOuter w z₀ * ((1 / (4 * π) : ℂ) * ∫ θ in (0:ℝ)..(2 * π),
         2 * circleMap 0 1 θ / (z₀ - circleMap 0 1 θ) ^ 2 * (Real.log (w θ) : ℂ))) z₀ := by
   have hH := (hasDerivAt_szegoExponent hlog hz₀).const_mul (1 / (4 * π) : ℂ)
-  simpa only [szegoOuter] using hH.cexp
+  simpa only [szegoOuter] using! hH.cexp
 
 /-- The Szegő outer function is analytic on the open unit disk. -/
 theorem analyticOnNhd_szegoOuter {w : ℝ → ℝ}

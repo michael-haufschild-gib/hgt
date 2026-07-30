@@ -375,8 +375,11 @@ theorem hasDerivAt_eulerQuartetCore (a gam u : ℝ) :
   have hg :=
     (Real.hasDerivAt_cos (gam * u)).comp u
       ((hasDerivAt_id u).const_mul gam)
-  convert hhalf.sub (ha.mul hg) using 1 <;>
-    simp only [eulerQuartetCoreFirst, Function.comp_apply] <;> ring
+  simpa only [eulerQuartetCore, Function.comp_apply, id_eq] using!
+    (hhalf.sub (ha.mul hg)).congr_deriv (by
+      dsimp only [eulerQuartetCoreFirst]
+      simp only [Function.comp_apply]
+      ring)
 
 theorem hasDerivAt_eulerQuartetCoreFirst (a gam u : ℝ) :
     HasDerivAt (eulerQuartetCoreFirst a gam) (eulerQuartetCoreSecond a gam u) u := by
@@ -395,9 +398,13 @@ theorem hasDerivAt_eulerQuartetCoreFirst (a gam u : ℝ) :
   have hsg :=
     (Real.hasDerivAt_sin (gam * u)).comp u
       ((hasDerivAt_id u).const_mul gam)
-  convert (hhalf.div_const 2).sub
-    (((hsa.const_mul a).mul hcg).sub ((hca.const_mul gam).mul hsg)) using 1 <;>
-      simp only [eulerQuartetCoreSecond, Function.comp_apply] <;> ring
+  simpa only [eulerQuartetCoreFirst, Function.comp_apply, id_eq] using!
+    ((hhalf.div_const 2).sub
+      (((hsa.const_mul a).mul hcg).sub
+        ((hca.const_mul gam).mul hsg))).congr_deriv (by
+          dsimp only [eulerQuartetCoreSecond]
+          simp only [Function.comp_apply]
+          ring)
 
 /-- Inside the radius-one-half disc, the complex quartet core has nonnegative curvature on the
 positive logarithmic axis. -/

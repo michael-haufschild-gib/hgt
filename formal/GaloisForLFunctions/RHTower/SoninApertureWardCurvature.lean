@@ -112,7 +112,7 @@ theorem two_mul_re_opTrace_apertureCurvature_add_WardEnergy_eq_zero
   let Z := evenSoninApertureSuccessiveLayerTransition a b c r hr
   let X := evenSoninApertureSymmetricSuccessiveLayerChannel a b c r hr
   have hE : IsIdempotentElem E := by
-    simpa only [E] using evenSoninApertureLayer_mul_self hab.le
+    simpa only [E] using! evenSoninApertureLayer_mul_self hab.le
   have hEadj : ContinuousLinearMap.adjoint E = E := by
     simpa only [E] using adjoint_evenSoninApertureLayer a b
   have hXadj : ContinuousLinearMap.adjoint X = X := by

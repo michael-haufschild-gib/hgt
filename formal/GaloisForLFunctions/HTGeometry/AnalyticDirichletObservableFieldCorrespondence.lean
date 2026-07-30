@@ -44,8 +44,6 @@ def uniformlyBoundedPrimeFiniteAbscissa
     (c : Nat.Primes → ℂ) (M : ℝ) (hc : ∀ p, ‖c p‖ ≤ M) :
     finiteAbscissaArithmeticSubalgebra := by
   refine ⟨arithmeticOfPrimeColumn c, 1, ?_⟩
-  change ∀ y : ℝ, 1 < y →
-    LSeriesSummable (fun n => arithmeticOfPrimeColumn c n) (y : ℂ)
   intro y hy
   have hM0 : 0 ≤ M :=
     (norm_nonneg (c ⟨2, Nat.prime_two⟩)).trans (hc ⟨2, Nat.prime_two⟩)
@@ -243,7 +241,7 @@ theorem cofiniteTailDenseOn_analyticObservableShiftCarrier_differentialIndepende
         have hval := congrArg (fun z : J₀ × ℕ => (z.1.1, z.2)) hqr
         exact hval
       have hsub := hfinite.comp e he
-      simpa only [Function.comp_apply, e, f₀, M₀] using hsub
+      simpa only [Function.comp_apply, e, f₀, M₀] using! hsub
 
 /-! ## Source span versus generated field -/
 
@@ -415,7 +413,7 @@ theorem cofiniteTailDenseOn_analyticObservableShiftCarrier_relativeHT_of_not_mem
           (fun p => F (Fin.last d) (x p)) (bounds (Fin.last d)) _ a = right 0
         simp [F, bounds, right]
     rwa [hfamily] at hcomp
-  simpa only [analyticObservableShiftField, left, right] using
+  simpa only [analyticObservableShiftField, left, right] using!
     (GaloisForLFunctions.differentialIndependent_sum_right_over_left_differentialAdjoin
       left right hjoint)
 
@@ -493,7 +491,7 @@ theorem cofiniteTailDenseOn_analyticObservableShiftCarrier_relativeHT_of_not_mem
       · cases k
         simp [e, F, bounds, right]
     rwa [hfamily] at hcomp
-  simpa only [analyticObservableShiftField, left, right] using
+  simpa only [analyticObservableShiftField, left, right] using!
     (GaloisForLFunctions.differentialIndependent_sum_right_over_left_differentialAdjoin
       left right hjoint)
 
@@ -1199,7 +1197,7 @@ theorem cofiniteTailDenseOn_analyticObservableSubsetField_inf
       · rfl
       · rcases q with q | q <;> rfl
     rw [heq]
-    simpa only [Function.comp_apply] using hcomp
+    simpa only [Function.comp_apply] using! hcomp
   let carrier : J → upperEndMeroField := fun j =>
     analyticPrimeObservableShiftCarrier (fun p => f j (x p)) (M j) (hM j) a
   let cA : A → upperEndMeroField := fun i => carrier i.1

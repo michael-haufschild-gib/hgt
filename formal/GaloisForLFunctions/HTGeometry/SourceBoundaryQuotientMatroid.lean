@@ -139,7 +139,9 @@ noncomputable def differentialOperatorCoefficientEquiv
     {J C : Type*} [Field C] :
     (J × ℕ →₀ C) ≃ₗ[C] (J →₀ Polynomial C) :=
   (Finsupp.curryLinearEquiv C).trans
-    (Finsupp.mapRange.linearEquiv (Polynomial.toFinsuppIsoLinear C).symm)
+    (Finsupp.mapRange.linearEquiv
+      ((Polynomial.toFinsuppIsoLinear C).trans
+        (AddMonoidAlgebra.coeffLinearEquiv C)).symm)
 
 section OperatorModule
 
@@ -256,7 +258,7 @@ theorem differentialOperator_linearCombination_eq_jetLinearCombination
   rw [Finsupp.sum_mapRange_index (fun _ ↦ by simp)]
   simp only [smul_eq_mul]
   let f : J →₀ ℕ →₀ C :=
-    Finsupp.mapRange Polynomial.toFinsupp Polynomial.toFinsupp_zero c
+    Finsupp.mapRange (fun P : Polynomial C => P.toFinsupp.coeff) (by simp) c
   change (c.sum fun j P ↦ differentialOperatorApply P (omega j i)) =
     f.uncurry.sum
       (fun p a ↦ algebraMap C K a * differentialJet p.2 (omega p.1 i))
@@ -284,7 +286,7 @@ theorem sourceBoundaryQuotientMatroid_eRk_finset
       (Module.finrank (FractionRing (Polynomial C))
         (Submodule.span (FractionRing (Polynomial C))
           (sourceBoundaryQuotientFamily hconst tau omega '' (↑T : Set J))) : ℕ∞) := by
-  simpa [sourceBoundaryQuotientMatroid, sourceBoundaryQuotientFamily] using
+  simpa [sourceBoundaryQuotientMatroid, sourceBoundaryQuotientFamily] using!
     (localizedQuotientMatroid_eRk_finset
       (LinearMap.range (simultaneousCoboundaryLinearMap hconst tau))
       (fun j i ↦ differentialOperatorSpaceAddEquiv hconst (omega j i)) T)

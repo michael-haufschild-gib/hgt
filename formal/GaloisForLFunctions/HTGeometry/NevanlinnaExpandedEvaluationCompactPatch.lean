@@ -164,7 +164,6 @@ theorem compact_nevanlinnaExpandedEvaluation_has_dense_finiteProbe
         obtain ⟨h, rfl⟩ := hz
         exact hqdt h.1 h.2 i)
   refine ⟨V, hVfg, ?_⟩
-  dsimp only
   letI normedAddCommGroupV : NormedAddCommGroup V := Submodule.normedAddCommGroup V
   letI normedSpaceV : NormedSpace ℝ V := Submodule.normedSpace V
   let control := fun h =>
@@ -239,7 +238,7 @@ theorem compact_nevanlinnaExpandedEvaluation_has_dense_finiteProbe
             a q (nodes h) (fun _ : row => jetOrder))
           (memLp_projectiveNevanlinnaJetExpansionColumn
             η hη (fun _ : row => jetOrder) mu (nodeLift (⟨h, hh⟩ : K)))) v.1.1 = ys := by
-      simpa only [nodeLift] using hv
+      simpa only [nodeLift] using! hv
     rw [heq']
     rw [hv', hys]
   let Usurj : Set H := U ∩ {h | Function.Surjective (directionV h)}

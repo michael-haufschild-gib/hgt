@@ -75,7 +75,7 @@ theorem bindPointMap_mulPolynomialJetImage (n : ℕ) (a : Polynomial ℂ)
       rw [bindPointMap, eval_mulPolynomialJetImage_succ]
       simp only [Fin.cons_zero, Fin.cons_succ]
       have ha : ContDiffAt ℂ ((k : ℕ) : ℕ∞) (fun w : ℂ => Polynomial.eval w a) z := by
-        simpa only [Polynomial.coe_aeval_eq_eval] using
+        simpa only [Polynomial.coe_aeval_eq_eval] using!
           (Polynomial.contDiff_aeval a ((k : ℕ) : ℕ∞)).contDiffAt
       have hfz : ContDiffAt ℂ ((k : ℕ) : ℕ∞) f z :=
         hf.contDiffAt.of_le (by
@@ -196,7 +196,7 @@ theorem hypertranscendental_polynomialGauge {C m : ℂ → ℂ}
     (hC : ContDiff ℂ (⊤ : ℕ∞) C) (hHT : Hypertranscendental C) :
     Hypertranscendental m := by
   have haSmooth : ContDiff ℂ (⊤ : ℕ∞) (fun z : ℂ => Polynomial.eval z a) := by
-    simpa only [Polynomial.coe_aeval_eq_eval] using
+    simpa only [Polynomial.coe_aeval_eq_eval] using!
       Polynomial.contDiff_aeval a (⊤ : ℕ∞)
   have hmulSmooth : ContDiff ℂ (⊤ : ℕ∞)
       (fun z => Polynomial.eval z a * C z) := haSmooth.mul hC
@@ -214,7 +214,7 @@ theorem hypertranscendental_polynomialGauge {C m : ℂ → ℂ}
     · exact fun j => differentiable_iteratedDeriv_of_contDiff_top hmulSmooth j
     · intro c j
       have hcSmooth : ContDiff ℂ (⊤ : ℕ∞) (fun z : ℂ => Polynomial.eval z c) := by
-        simpa only [Polynomial.coe_aeval_eq_eval] using
+        simpa only [Polynomial.coe_aeval_eq_eval] using!
           Polynomial.contDiff_aeval c (⊤ : ℕ∞)
       exact differentiable_iteratedDeriv_of_contDiff_top (hmulSmooth.add hcSmooth) j
   rw [hfun]

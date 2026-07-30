@@ -62,7 +62,7 @@ def thetaCuspRightLineTangent (a : ℝ) (ha : |a| < 1) : SchwartzMap ℝ ℂ :=
   have hg : Function.HasTemperateGrowth (fun x : ℝ => -x) :=
     Function.HasTemperateGrowth.id'.neg
   rw [SchwartzMap.smulLeftCLM_apply_apply hg]
-  simp [smul_eq_mul]
+  simp
 
 theorem deriv_thetaCuspFourierLaplace_eq_integral
     {w : ℂ} (hw : |w.im| < 1) :
@@ -81,11 +81,12 @@ theorem deriv_thetaCuspFourierLaplace_eq_deriv_XiC
 theorem deriv_XiC_eq_deriv_xi_mul_I (w : ℂ) :
     deriv XiC w = deriv xi ((1 : ℂ) / 2 + w * I) * I := by
   have hinner : HasDerivAt (fun z : ℂ => (1 : ℂ) / 2 + z * I) I w := by
-    convert ((hasDerivAt_id w).mul_const I).const_add ((1 : ℂ) / 2) using 1 <;> ring
+    simpa [add_comm] using!
+      ((hasDerivAt_id w).mul_const I).const_add ((1 : ℂ) / 2)
   have hxi : HasDerivAt xi (deriv xi ((1 : ℂ) / 2 + w * I))
       ((1 : ℂ) / 2 + w * I) :=
     (xi_analyticOnNhd_univ _ (Set.mem_univ _)).differentiableAt.hasDerivAt
-  simpa only [XiC] using (hxi.comp w hinner).deriv
+  simpa only [XiC] using! (hxi.comp w hinner).deriv
 
 theorem fourier_thetaCuspRightLineTangent_scaled
     {a : ℝ} (ha : |a| < 1) (b : ℝ) :
@@ -97,8 +98,7 @@ theorem fourier_thetaCuspRightLineTangent_scaled
   let w : ℂ := (b : ℂ) - (a : ℂ) * I
   have hw : |w.im| < 1 := by
     dsimp [w]
-    simp only [sub_im, ofReal_im, mul_im, ofReal_re, I_im, I_re,
-      mul_one, zero_mul, sub_self, zero_add]
+    simp only [ofReal_im, mul_im, ofReal_re, I_im, I_re, mul_one, zero_mul]
     simpa using ha
   have hwmem : w ∈ thetaCuspFourierLaplaceStrip := abs_lt.mp hw
   have hint :
@@ -125,7 +125,7 @@ theorem fourier_thetaCuspRightLineTangent_scaled
       congr 1
       push_cast
       field_simp [Real.pi_ne_zero]
-      simp [mul_sub, mul_assoc, ← mul_assoc, I_mul_I]
+      simp [mul_sub, ← mul_assoc]
       rw [mul_assoc (x : ℂ) I I, I_mul_I]
       ring
     calc

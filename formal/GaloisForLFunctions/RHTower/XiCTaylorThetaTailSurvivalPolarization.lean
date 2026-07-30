@@ -11,9 +11,8 @@ def thetaCuspTailSurvival (x : ℝ) : ℝ :=
 
 theorem hasDerivAt_thetaCuspTailSurvival (x : ℝ) :
     HasDerivAt thetaCuspTailSurvival (-thetaCuspTailSecondDensity x) x := by
-  unfold thetaCuspTailSurvival thetaCuspTailSecondDensity
-  convert (hasDerivAt_thetaCuspTailDerivative 1 x).const_mul (-4) using 1
-  all_goals ring
+  simpa only [thetaCuspTailSurvival, thetaCuspTailSecondDensity] using!
+    ((hasDerivAt_thetaCuspTailDerivative 1 x).const_mul (-4)).congr_deriv (by ring)
 
 @[simp] theorem thetaCuspTailSurvival_zero : thetaCuspTailSurvival 0 = 1 := by
   simp [thetaCuspTailSurvival, thetaCuspTailDerivative_one_zero]
@@ -106,20 +105,23 @@ theorem integral_density_mul_coreAtom_eq_one_add_survival_sourceDerivative
   have hzero : Tendsto (u * v) (nhdsWithin 0 (Ioi 0)) (nhds 1) := by
     have hu0 : Tendsto u (nhdsWithin 0 (Ioi 0)) (nhds 1) := by
       have hc := (hasDerivAt_thetaCuspTailSurvival 0).ofReal_comp.continuousAt.tendsto
-      simpa only [u, thetaCuspTailSurvival_zero, Complex.ofReal_one] using
+      simpa only [u, thetaCuspTailSurvival_zero, Complex.ofReal_one] using!
         hc.mono_left inf_le_left
     have hv0 : Tendsto v (nhdsWithin 0 (Ioi 0)) (nhds 1) := by
       have h := (hasDerivAt_thetaCuspTailSecondCoreAtom_source d z 0).continuousAt.tendsto
-      convert h.mono_left inf_le_left using 1
-      simp [thetaCuspTailSecondCoreAtom, thetaCuspTailSecondSection]
-    simpa only [Pi.mul_apply, one_mul] using hu0.mul hv0
+      have h' : Tendsto v (nhdsWithin 0 (Ioi 0)) (nhds (v 0)) :=
+        h.mono_left inf_le_left
+      have hv0val : v 0 = 1 := by
+        simp [v, thetaCuspTailSecondCoreAtom, thetaCuspTailSecondSection]
+      simpa only [hv0val] using h'
+    simpa only [Pi.mul_apply, one_mul] using! hu0.mul hv0
   have htop : Tendsto (u * v) atTop (nhds 0) := by
-    simpa only [Pi.mul_apply, u, v] using
+    simpa only [Pi.mul_apply, u, v] using!
       thetaCuspTailSurvival_mul_coreAtom_tendsto_atTop_zero d z
   have hibp := MeasureTheory.integral_Ioi_mul_deriv_eq_deriv_mul
     (a := (0 : ℝ)) (u := u) (u' := u') (v := v) (v' := v')
     (fun x _ => hu x) (fun x _ => hv x)
-    (by simpa only [Pi.mul_apply, u, v'] using
+    (by simpa only [Pi.mul_apply, u, v'] using!
       integrableOn_thetaCuspTailSurvival_mul_coreAtomSourceDerivative d z)
     (by
       have h := (integrableOn_thetaCuspTailSecondDensity_mul_coreAtom d z).neg
@@ -157,11 +159,11 @@ theorem integral_pow_mul_thetaCuspTailSurvival_shift (m : ℕ) :
     (v := thetaCuspTailDerivative 1)
     (v' := thetaCuspTailDerivative 2)
     (fun x _ => by
-      convert hasDerivAt_pow (m + 1) x using 1)
+      simpa using! hasDerivAt_pow (m + 1) x)
     (fun x _ => hasDerivAt_thetaCuspTailDerivative 1 x)
     (integrableOn_pow_mul_thetaCuspTailDerivative (m + 1) 2)
     (by
-      simpa only [Pi.mul_apply, ← mul_assoc] using
+      simpa only [Pi.mul_apply, ← mul_assoc] using!
         (integrableOn_pow_mul_thetaCuspTailDerivative m 1).const_mul
           (((m + 1 : ℕ) : ℝ)))
     (pow_mul_thetaCuspTailDerivative_tendsto_zero_of_pos hm1 1)

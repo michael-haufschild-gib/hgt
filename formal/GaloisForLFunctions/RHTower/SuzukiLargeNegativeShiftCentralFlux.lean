@@ -62,7 +62,9 @@ theorem tendsto_suzukiDyadicNegativeShiftIntercept_atTop
   have h2 := hq.comp hnegTwo
   have hcomb := ((tendsto_const_nhds (x := (2 : ℝ))).mul h1).sub h2
   have hlim : 2 * edgeLimit - edgeLimit = edgeLimit := by ring
-  simpa only [Function.comp_apply, suzukiDyadicNegativeShiftIntercept, hlim] using hcomb
+  rw [hlim] at hcomb
+  exact hcomb.congr'
+    (Eventually.of_forall fun _ => rfl)
 
 /-- If the Neumann-dominated Euler--Gamma edge limit lies above the Xi curvature threshold, every
 sufficiently negative dyadic shift pair violates that necessary Herglotz sign. -/

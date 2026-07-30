@@ -69,11 +69,11 @@ theorem iteratedDeriv_two_mvPolynomial_eval_curve_complex {n : ℕ}
         (MvPolynomial.pderiv i P) g (fun j => deriv (g j) x) x
           (fun j => (hg j).differentiableAt.hasDerivAt)
       have hgi : HasDerivAt (deriv (g i)) (iteratedDeriv 2 (g i) x) x := by
-        simpa [iteratedDeriv_succ, iteratedDeriv_one] using
+        simpa [iteratedDeriv_succ, iteratedDeriv_one] using!
           (hg i).deriv.differentiableAt.hasDerivAt
       exact hp.mul hgi
     have hsum := HasDerivAt.sum (u := Finset.univ) (fun i _ => hi i)
-    convert hsum using 1
+    convert! hsum using 1
     · funext s
       simp only [Finset.sum_apply]
     · rw [Finset.sum_add_distrib, add_comm]
@@ -108,7 +108,7 @@ theorem tendsto_inv_sq_mul_mvPolynomial_eval_curve
             deriv (g j) 0 * deriv (g i) 0) / 2)) := by
   let F : ℂ → ℂ := fun z => MvPolynomial.eval (fun i => g i z) P
   have hF : AnalyticAt ℂ F 0 := by
-    simpa only [F, MvPolynomial.aeval_def] using
+    simpa only [F, MvPolynomial.aeval_def] using!
       (AnalyticAt.aeval_mvPolynomial (fun i => hg i) P)
   have hFderiv : deriv F 0 = 0 := by
     have hd := hasDerivAt_mvPolynomial_eval_curve_complex P g

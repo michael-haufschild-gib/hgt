@@ -27,7 +27,7 @@ theorem integral_truncatedLogKernel_limitingBrolinMeasureAt_nonpos_of_mem_fronti
   have hMpos : 0 < M := lt_of_lt_of_le two_pos (le_max_left _ _)
   have hzK : z ∈ filledJulia c := (isClosed_filledJulia c).frontier_subset hz
   have hKcarrier : ∀ᵐ w ∂μ, w ∈ filledJulia c := by
-    rw [ae_iff]; simpa using (limitingBrolinMeasureAt_isProbOn_filledJulia c a).2
+    rw [ae_iff]; simpa using! (limitingBrolinMeasureAt_isProbOn_filledJulia c a).2
   have hwball : ∀ᵐ w ∂μ, ‖w‖ ≤ M := by
     filter_upwards [hKcarrier] with w hw
     have h := mem_closedBall.mp (filledJulia_subset_closedBall c hw)

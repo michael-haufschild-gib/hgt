@@ -120,7 +120,7 @@ theorem meromorphicOn_ellipticThetaAdditiveLogKernel
   have hcomp := hmult.comp_analyticAt (analyticAt_ellipticThetaCoordinate τ z)
   have hc : MeromorphicAt (fun _ : ℂ => (2 * Real.pi * I : ℂ)) z :=
     analyticAt_const.meromorphicAt
-  simpa [ellipticThetaAdditiveLogKernel, Function.comp_def] using hc.mul hcomp
+  simpa [ellipticThetaAdditiveLogKernel, Function.comp_def] using! hc.mul hcomp
 
 end
 

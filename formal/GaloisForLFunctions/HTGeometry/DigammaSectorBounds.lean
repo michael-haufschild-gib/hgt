@@ -344,7 +344,7 @@ theorem analyticAt_halfDigammaJetEval_one_add (n : ℕ)
     (z := 1 + z) (fun p => halfShift_ne_neg_nat hz p)
   have hcomp := AnalyticAt.comp (f := fun w : ℂ => 1 + w) (x := z) houter
     (analyticAt_const.add analyticAt_id)
-  simpa [Function.comp] using hcomp
+  simpa [Function.comp] using! hcomp
 
 end GaloisForLFunctions.HTGeometry
 

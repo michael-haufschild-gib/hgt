@@ -86,7 +86,7 @@ theorem prescribedComplexEvaluationDualReconstruction_iff_det_ne_zero
     let D : Matrix κ κ ℂ := fun q i => dual q i
     have hleft : D * complexEvaluationMatrix u points = 1 := by
       ext q r
-      simpa [D, Matrix.mul_apply, complexEvaluationMatrix] using hdelta q r
+      simpa [D, Matrix.mul_apply, complexEvaluationMatrix] using! hdelta q r
     exact Matrix.det_ne_zero_of_left_inverse hleft
   · intro hdet
     let P : Matrix κ κ ℂ := complexEvaluationMatrix u points
@@ -97,7 +97,7 @@ theorem prescribedComplexEvaluationDualReconstruction_iff_det_ne_zero
       intro q r
       have hentry := congrArg (fun M : Matrix κ κ ℂ => M q r)
         (P.nonsing_inv_mul hunit)
-      simpa [dual, P, Matrix.mul_apply, complexEvaluationMatrix] using hentry
+      simpa [dual, P, Matrix.mul_apply, complexEvaluationMatrix] using! hentry
     refine ⟨dual, hdelta, ?_⟩
     intro a q
     calc

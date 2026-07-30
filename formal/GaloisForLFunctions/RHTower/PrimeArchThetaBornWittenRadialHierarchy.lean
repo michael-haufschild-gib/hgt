@@ -95,15 +95,20 @@ theorem hasDerivAt_thetaCuspBornWittenRadialAmplitude
   have hpow : HasDerivAt (fun y : ℝ => y ^ k)
       ((k : ℝ) * x ^ (k - 1)) x := hasDerivAt_pow k x
   have hamp := hasDerivAt_thetaCuspBornWittenAmplitude hn hx.le
-  convert hpow.mul hamp using 1
-  simp only [thetaCuspBornWittenRadialAmplitude,
-    thetaCuspBornWittenRadialSuperpotential]
-  field_simp [hx.ne']
-  cases k with
-  | zero => simp; ring
-  | succ k =>
-      simp only [Nat.cast_succ, Nat.succ_sub_one, pow_succ]
-      ring
+  have hraw := hpow.mul hamp
+  have hraw' := hraw.congr_deriv
+    (g' := -thetaCuspBornWittenRadialSuperpotential k n x *
+      thetaCuspBornWittenRadialAmplitude k n x) (by
+      simp only [thetaCuspBornWittenRadialAmplitude,
+        thetaCuspBornWittenRadialSuperpotential]
+      field_simp [hx.ne']
+      cases k with
+      | zero => simp; ring
+      | succ k =>
+          simp only [Nat.cast_succ, Nat.succ_sub_one, pow_succ]
+          ring)
+  exact hraw'.congr_of_eventuallyEq
+    (Eventually.of_forall fun _ => rfl)
 
 theorem thetaCuspBornWittenRadial_supercharge_zero
     {k n : ℕ} (hn : 0 < n) {x : ℝ} (hx : 0 < x) :
@@ -121,9 +126,13 @@ theorem hasDerivAt_thetaCuspBornWittenRadialSuperpotential
   have hB := hasDerivAt_thetaCuspBornWittenSuperpotential hn hx.le
   have hinv := (hasDerivAt_id x).inv hx.ne'
   have hkinv := hinv.const_mul (k : ℝ)
-  convert hB.sub hkinv using 1
-  simp only [thetaCuspBornWittenRadialCurvature, div_eq_mul_inv, id_eq]
-  ring
+  have hraw := hB.sub hkinv
+  have hraw' := hraw.congr_deriv
+    (g' := thetaCuspBornWittenRadialCurvature k n x) (by
+      simp only [thetaCuspBornWittenRadialCurvature, div_eq_mul_inv, id_eq]
+      ring)
+  exact hraw'.congr_of_eventuallyEq
+    (Eventually.of_forall fun _ => rfl)
 
 theorem deriv_thetaCuspBornWittenRadialSuperpotential
     {k n : ℕ} (hn : 0 < n) {x : ℝ} (hx : 0 < x) :
@@ -148,9 +157,13 @@ theorem hasDerivAt_thetaCuspBornWittenRadialLogDensityPotential
   have hamppos := thetaCuspBornWittenRadialAmplitude_pos (k := k) hn hx
   have hsq := hamp.pow 2
   have hlog := hsq.log (pow_ne_zero 2 hamppos.ne')
-  convert hlog.neg using 1
-  simp only [Pi.pow_apply, Nat.cast_ofNat, Nat.reduceSubDiff, pow_one]
-  field_simp [hamppos.ne']
+  have hraw := hlog.neg
+  have hraw' := hraw.congr_deriv
+    (g' := 2 * thetaCuspBornWittenRadialSuperpotential k n x) (by
+      simp only [Pi.pow_apply, Nat.cast_ofNat, Nat.reduceSubDiff, pow_one]
+      field_simp [hamppos.ne'])
+  exact hraw'.congr_of_eventuallyEq
+    (Eventually.of_forall fun _ => rfl)
 
 theorem hasDerivAt_two_thetaCuspBornWittenRadialSuperpotential
     {k n : ℕ} (hn : 0 < n) {x : ℝ} (hx : 0 < x) :
@@ -210,9 +223,14 @@ theorem hasDerivAt_neg_thetaCuspBornWittenRadialSuperpotential_mul_amplitude
         thetaCuspBornWittenRadialAmplitude k n x) x := by
   have hB := hasDerivAt_thetaCuspBornWittenRadialSuperpotential (k := k) hn hx
   have hamp := hasDerivAt_thetaCuspBornWittenRadialAmplitude (k := k) hn hx
-  convert hB.neg.mul hamp using 1
-  simp only [thetaCuspBornWittenRadialPotentialMinus, Pi.neg_apply]
-  ring
+  have hraw := hB.neg.mul hamp
+  have hraw' := hraw.congr_deriv
+    (g' := thetaCuspBornWittenRadialPotentialMinus k n x *
+      thetaCuspBornWittenRadialAmplitude k n x) (by
+      simp only [thetaCuspBornWittenRadialPotentialMinus, Pi.neg_apply]
+      ring)
+  exact hraw'.congr_of_eventuallyEq
+    (Eventually.of_forall fun _ => rfl)
 
 /-- Every radial member satisfies its exact factorized zero-energy Schrödinger equation. -/
 theorem thetaCuspBornWittenRadial_factorized_schrodinger_zero

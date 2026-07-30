@@ -20,17 +20,17 @@ namespace GaloisForLFunctions.RHTower
 
 /-- The literal action of a finite translation-algebra element on a function. -/
 def finiteTranslationAction (P : AddMonoidAlgebra ℂ ℂ) (f : ℂ → ℂ) (s : ℂ) : ℂ :=
-  ∑ h ∈ P.support, P h * f (s + h)
+  ∑ h ∈ P.coeff.support, P.coeff h * f (s + h)
 
 /-- A convenient common right-half-plane threshold for every shift in a finite operator. -/
 def finiteTranslationThreshold (P : AddMonoidAlgebra ℂ ℂ) (sigma : ℝ) : ℝ :=
-  sigma + ∑ h ∈ P.support, |h.re|
+  sigma + ∑ h ∈ P.coeff.support, |h.re|
 
 lemma finiteTranslationThreshold_le_re_add
     (P : AddMonoidAlgebra ℂ ℂ) (sigma x : ℝ) (hx : finiteTranslationThreshold P sigma ≤ x)
-    {h : ℂ} (hh : h ∈ P.support) :
+    {h : ℂ} (hh : h ∈ P.coeff.support) :
     sigma ≤ ((x : ℂ) + h).re := by
-  have habs : |h.re| ≤ ∑ u ∈ P.support, |u.re| := by
+  have habs : |h.re| ≤ ∑ u ∈ P.coeff.support, |u.re| := by
     exact Finset.single_le_sum (fun u hu => abs_nonneg u.re) hh
   rw [Complex.add_re, Complex.ofReal_re]
   dsimp [finiteTranslationThreshold] at hx
@@ -62,7 +62,7 @@ private lemma translatedCoefficient_weighted_eq_sum
     (P : AddMonoidAlgebra ℂ ℂ) (mu : ℕ → ℝ) (a : ℕ → ℂ) (x : ℝ) (n : ℕ) :
     translatedGeneralizedCoefficient P mu a n *
         Complex.exp (-(mu n : ℂ) * (x : ℂ)) =
-      ∑ h ∈ P.support, P h *
+      ∑ h ∈ P.coeff.support, P.coeff h *
         (a n * Complex.exp (-(mu n : ℂ) *
           ((x : ℂ) + h))) := by
   rw [translatedGeneralizedCoefficient, translationChar_apply]
@@ -87,13 +87,13 @@ theorem summable_translatedGeneralizedCoefficient
       Real.exp (-mu n * finiteTranslationThreshold P sigma)) := by
   have hmu_pos (n : ℕ) : 0 < mu n :=
     hmu0.trans_le (hmu.monotone (Nat.zero_le n))
-  have hshift (h : ℂ) (hh : h ∈ P.support) :
-      Summable (fun n => P h * (a n * Complex.exp (-(mu n : ℂ) *
+  have hshift (h : ℂ) (hh : h ∈ P.coeff.support) :
+      Summable (fun n => P.coeff h * (a n * Complex.exp (-(mu n : ℂ) *
         ((finiteTranslationThreshold P sigma : ℂ) + h)))) := by
     apply Summable.mul_left
     exact summable_generalizedDirichletTerm_of_re_ge hmu_pos ha
       (finiteTranslationThreshold_le_re_add P sigma _ le_rfl hh)
-  have hsum : Summable (fun n => ∑ h ∈ P.support, P h *
+  have hsum : Summable (fun n => ∑ h ∈ P.coeff.support, P.coeff h *
       (a n * Complex.exp (-(mu n : ℂ) *
         ((finiteTranslationThreshold P sigma : ℂ) + h)))) :=
     summable_sum fun h hh => hshift h hh
@@ -116,8 +116,8 @@ theorem finiteTranslationAction_generalizedDirichletSeries
       generalizedDirichletSeries mu (translatedGeneralizedCoefficient P mu a) x := by
   have hmu_pos (n : ℕ) : 0 < mu n :=
     hmu0.trans_le (hmu.monotone (Nat.zero_le n))
-  have hsummable (h : ℂ) (hh : h ∈ P.support) :
-      Summable (fun n => P h * (a n * Complex.exp (-(mu n : ℂ) * ((x : ℂ) + h)))) := by
+  have hsummable (h : ℂ) (hh : h ∈ P.coeff.support) :
+      Summable (fun n => P.coeff h * (a n * Complex.exp (-(mu n : ℂ) * ((x : ℂ) + h)))) := by
     apply Summable.mul_left
     exact summable_generalizedDirichletTerm_of_re_ge hmu_pos ha
       (finiteTranslationThreshold_le_re_add P sigma x hx hh)

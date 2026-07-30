@@ -97,7 +97,6 @@ theorem thetaFiniteBlaschkeProbe_self {n N : ℕ} (hn : 1 ≤ n) :
   have hadd : thetaSquare n + thetaSquare m ≠ 0 := thetaSquare_add_ne_zero hn hm1
   unfold thetaBlaschkeFactor thetaBlaschkeNormalize
   field_simp
-  rw [div_self (sub_ne_zero.mpr hsq)]
 
 /-- Every other theta square in the finite window is annihilated exactly. -/
 theorem thetaFiniteBlaschkeProbe_other {n m N : ℕ}

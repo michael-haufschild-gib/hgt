@@ -79,7 +79,7 @@ theorem compactLambertKernel_analyticAt
     (isUnit_one_sub_of_norm_lt_one hq).unit_spec
   have hinv0 : AnalyticAt ℂ (Ring.inverse : C(K, ℂ) → C(K, ℂ))
       (1 - compactExponentialTest s z) := by
-    convert analyticAt_inverse (𝕜 := ℂ) u using 1
+    simpa only [hu] using! analyticAt_inverse (𝕜 := ℂ) u
   have hinv : AnalyticAt ℂ
       (fun w => Ring.inverse (1 - compactExponentialTest s w)) z := by
     simpa [Function.comp_def] using hinv0.comp
@@ -93,7 +93,7 @@ theorem compactCarrierLambertTransform_analyticAt
     (L : C(K, ℂ) →L[ℂ] ℂ) (s : C(K, ℂ)) (z : ℂ)
     (hq : ‖compactExponentialTest s z‖ < 1) :
     AnalyticAt ℂ (compactCarrierLambertTransform L s) z := by
-  simpa [compactCarrierLambertTransform, Function.comp_def] using
+  simpa [compactCarrierLambertTransform, Function.comp_def] using!
     (L.analyticAt _).comp (compactLambertKernel_analyticAt s z hq)
 
 /-- A scalar geometric majorant bounds the compact Lambert kernel uniformly.
@@ -158,7 +158,7 @@ theorem compactLambertKernel_apply
       rw [← compactExponentialTest_apply s z k]
       exact (ContinuousMap.norm_coe_le_norm _ _).trans_lt hq)
   apply HasSum.unique hban
-  convert hscalar using 1
+  convert! hscalar using 1
   ext n
   change ((n : C(K, ℂ)) * (compactExponentialTest s z) ^ n) k =
     (n : ℂ) * Complex.exp (-z * s k) ^ n

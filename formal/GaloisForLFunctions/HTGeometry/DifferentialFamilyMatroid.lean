@@ -41,7 +41,7 @@ theorem differentialFamilyMatroid_indep_iff
     let e : I ≃ x '' I := Equiv.Set.imageOfInjOn x I hinj
     have h := (differentialIndependent_equiv e
       (Subtype.val : x '' I → E)).mpr himage
-    simpa [e, Equiv.Set.imageOfInjOn] using h
+    simpa [e, Equiv.Set.imageOfInjOn] using! h
   · intro h
     have hinjSubtype : Function.Injective (fun i : I => x i) := h.injective
     have hinj : Set.InjOn x I := fun _ hi _ hj hxy =>
@@ -49,7 +49,7 @@ theorem differentialFamilyMatroid_indep_iff
     let e : I ≃ x '' I := Equiv.Set.imageOfInjOn x I hinj
     have himage := (differentialIndependent_equiv e
       (Subtype.val : x '' I → E)).mp (by
-        simpa [e, Equiv.Set.imageOfInjOn] using h)
+        simpa [e, Equiv.Set.imageOfInjOn] using! h)
     exact ⟨himage, hinj⟩
 
 /-- A fully differentially independent family represents the free matroid on its index set. -/
@@ -107,7 +107,7 @@ theorem differentialFamilyMatroid_eq_freeOn_iff
     let e : ι ≃ (Set.univ : Set ι) := (Equiv.Set.univ ι).symm
     have he := (differentialIndependent_equiv e
       (fun i : (Set.univ : Set ι) => x i)).mpr hu
-    simpa [e, Equiv.Set.univ] using he
+    simpa [e, Equiv.Set.univ] using! he
   · exact differentialFamilyMatroid_eq_freeOn_of_differentialIndependent
 
 end

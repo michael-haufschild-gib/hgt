@@ -77,9 +77,9 @@ theorem finiteDivisorHeadTail_freeOrbitShadowUniversality
       change orbitQuartic ρ z * f₀ z = feBundle P z * (orbitQuartic ρ z * G z)
       rw [hGspec z]
       ring
-    · simpa only [g, finiteDivisorHeadTailFreeOrbitExtension] using
+    · simpa only [g, finiteDivisorHeadTailFreeOrbitExtension] using!
         eventuallyNonvanishing_orbitQuartic_mul (ρ₀ := ρ) hf₀nv
-    · simpa only [g, finiteDivisorHeadTailFreeOrbitExtension] using
+    · simpa only [g, finiteDivisorHeadTailFreeOrbitExtension] using!
         dlogTail_orbitQuartic_mul hf₀diff hf₀nv (dlogTail_self f₀)
   have hf₀rho : f₀ ρ ≠ 0 := by
     dsimp only [f₀, fixedOrbitExtension]

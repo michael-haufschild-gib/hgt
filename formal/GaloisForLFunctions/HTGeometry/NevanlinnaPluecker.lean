@@ -488,7 +488,7 @@ theorem tendsto_uniformCauchyBound_zero (f : ℕ → ℂ) {Kg : ℝ}
         - ∑ k ∈ Finset.range N, ‖f k‖ ^ 2 /
           momentInner s (monicOrtho s k) (monicOrtho s k))) atTop (nhds 0) := by
     have := (Real.continuous_sqrt.tendsto 0).comp htail
-    simpa using this
+    simpa using! this
   simpa using hsqrt.mul_const Kg
 
 /-- **Uniform Cauchy convergence.**  One threshold `N₀` works simultaneously for every upper index

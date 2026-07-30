@@ -24,6 +24,8 @@ noncomputable section
 
 variable (K : Type*) [Field K]
 
+attribute [local instance 100] LieRing.ofAssociativeRing
+
 /-- The polynomial translation mode `t^k e` in `sl₂(K[t])`. -/
 def sl2CurrentE (k : ℕ) : Matrix (Fin 2) (Fin 2) (Polynomial K) :=
   !![0, Polynomial.X ^ k; 0, 0]

@@ -101,7 +101,9 @@ theorem algebraicIndependent_gammaPoleFinitePartJetGerm_over_ratFunc :
     have hx' : Function.Injective
         (MvPolynomial.eval₂Hom ratNatEval
           gammaPoleUnitPositiveCoefficientGerm) := by
-      simpa [MvPolynomial.aeval_def] using hx
+      change Function.Injective
+        (MvPolynomial.aeval gammaPoleUnitPositiveCoefficientGerm)
+      exact hx
     rw [hcomp]
     exact hx'.comp hdiag
   have hfamily :
@@ -124,8 +126,11 @@ theorem gammaPoleFinitePartJetRationalEval_injective :
     Function.Injective gammaPoleFinitePartJetRationalEval := by
   have h := algebraicIndependent_iff_injective_aeval.mp
     algebraicIndependent_gammaPoleFinitePartJetGerm_over_ratFunc
-  simpa [gammaPoleFinitePartJetRationalEval,
-    MvPolynomial.aeval_def] using h
+  change Function.Injective
+    (MvPolynomial.eval₂Hom ratNatEval gammaPoleFinitePartJetGerm)
+  change Function.Injective
+    (MvPolynomial.aeval gammaPoleFinitePartJetGerm) at h
+  exact h
 
 end
 

@@ -84,7 +84,7 @@ theorem hutchinsonCap_tendsto_one : Tendsto hutchinsonCap atTop (𝓝 1) := by
       tendsto_const_nhds.div_atTop tendsto_id
     simpa using tendsto_const_nhds.sub h1
   have hdiv : Tendsto (fun n : ℝ => (1 + 3 / n + 2 / n ^ 2) / (1 - 1 / n)) atTop (𝓝 1) := by
-    simpa using hnum.div hden one_ne_zero
+    simpa using! hnum.div hden one_ne_zero
   refine hdiv.congr' ?_
   filter_upwards [eventually_ge_atTop (2 : ℝ)] with n hn
   have hn0 : (0 : ℝ) < n := by linarith

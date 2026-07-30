@@ -50,10 +50,10 @@ theorem continuous_complexRealChannelFeature
   rw [continuousAt_prod_of_discrete_right]
   cases sample.2 with
   | false =>
-      simpa [complexRealChannelFeature] using
+      simpa [complexRealChannelFeature] using!
         (Complex.continuous_re.comp (hu j)).continuousAt
   | true =>
-      simpa [complexRealChannelFeature] using
+      simpa [complexRealChannelFeature] using!
         (Complex.continuous_im.comp (hu j)).continuousAt
 
 /-- Full complex-coefficient realification preserves continuity. -/
@@ -64,10 +64,10 @@ theorem continuous_complexCoefficientRealChannelFeature
   rintro ⟨j, channel⟩
   cases channel with
   | false =>
-      simpa [complexCoefficientRealChannelFeature] using
+      simpa [complexCoefficientRealChannelFeature] using!
         continuous_complexRealChannelFeature u hu j
   | true =>
-      simpa [complexCoefficientRealChannelFeature] using
+      simpa [complexCoefficientRealChannelFeature] using!
         continuous_complexRealChannelFeature
           (fun j x => Complex.I * u j x)
           (fun j => continuous_const.mul (hu j)) j
@@ -110,13 +110,13 @@ theorem linearIndependent_complexCoefficientRealChannelFeature_of_complex
     funext x
     apply Complex.ext
     · have hre := congrFun hq (x, false)
-      convert hre using 1
+      convert! hre using 1
       simp [c, complexCoefficientRealChannelFeature, complexRealChannelFeature,
         Fintype.sum_prod_type, Finset.sum_apply, Pi.smul_apply,
         Complex.mul_re, Finset.sum_add_distrib]
       ring
     · have him := congrFun hq (x, true)
-      convert him using 1
+      convert! him using 1
       simp [c, complexCoefficientRealChannelFeature, complexRealChannelFeature,
         Fintype.sum_prod_type, Finset.sum_apply, Pi.smul_apply,
         Complex.mul_im, Finset.sum_add_distrib]
@@ -153,14 +153,14 @@ theorem linearIndependent_complexCoefficientRealChannelFeature_iff_complex
       cases channel with
       | false =>
           have hre := congrArg Complex.re (congrFun hc x)
-          convert hre using 1
+          convert! hre using 1
           simp [q, complexCoefficientRealChannelFeature, complexRealChannelFeature,
             Fintype.sum_prod_type, Finset.sum_apply, Pi.smul_apply,
             Complex.mul_re, Finset.sum_add_distrib]
           ring
       | true =>
           have him := congrArg Complex.im (congrFun hc x)
-          convert him using 1
+          convert! him using 1
           simp [q, complexCoefficientRealChannelFeature, complexRealChannelFeature,
             Fintype.sum_prod_type, Finset.sum_apply, Pi.smul_apply,
             Complex.mul_im, Finset.sum_add_distrib]
@@ -236,7 +236,7 @@ theorem
         intro hmem
         exact hximage ⟨(x, false), hmem, rfl⟩
       have hre := congrFun hq ⟨(x, false), hfalse⟩
-      convert hre using 1
+      convert! hre using 1
       simp [c, complexCoefficientRealChannelFeature, complexRealChannelFeature,
         Fintype.sum_prod_type, Finset.sum_apply, Pi.smul_apply,
         Complex.mul_re, Finset.sum_add_distrib]
@@ -245,7 +245,7 @@ theorem
         intro hmem
         exact hximage ⟨(x, true), hmem, rfl⟩
       have him := congrFun hq ⟨(x, true), htrue⟩
-      convert him using 1
+      convert! him using 1
       simp [c, complexCoefficientRealChannelFeature, complexRealChannelFeature,
         Fintype.sum_prod_type, Finset.sum_apply, Pi.smul_apply,
         Complex.mul_im, Finset.sum_add_distrib]

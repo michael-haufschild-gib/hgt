@@ -59,10 +59,9 @@ theorem summable_xiApertureOnePrimeFusedResponseGainSq_sub_one_sub_c_mul_iff
         (6 - c) * xiTransversePrimeApertureDiskNode 1 p) := by
       have hdiff := hsum.sub
         summable_xiApertureOnePrimeFusedResponseRenormalizedGain
-      convert hdiff using 1
-      funext p
-      rw [xiApertureOnePrimeFusedResponseRenormalizedGain]
-      ring
+      exact hdiff.congr fun p => by
+        rw [xiApertureOnePrimeFusedResponseRenormalizedGain]
+        ring
     by_contra hc
     have hcoeff : 6 - c ≠ 0 := sub_ne_zero.mpr (Ne.symm hc)
     have hnodes : Summable (fun p : Nat.Primes =>
@@ -71,7 +70,7 @@ theorem summable_xiApertureOnePrimeFusedResponseGainSq_sub_one_sub_c_mul_iff
     apply Nat.Primes.not_summable_one_div
     simpa [xiTransversePrimeApertureDiskNode_one_eq_inv, one_div] using hnodes
   · rintro rfl
-    simpa [xiApertureOnePrimeFusedResponseRenormalizedGain] using
+    simpa [xiApertureOnePrimeFusedResponseRenormalizedGain] using!
       summable_xiApertureOnePrimeFusedResponseRenormalizedGain
 
 /-- The response-correlation diagonal has summable energy. -/
@@ -198,7 +197,7 @@ theorem summable_xiApertureOnePrimeResponseCorrelationRemainder :
   have hnodes : Summable (fun p : Nat.Primes =>
       xiTransversePrimeApertureDiskNode 1 p ^ 2) := by
     simpa [xiTransversePrimeApertureDiskNode_one_eq_inv, inv_pow] using hprime
-  simpa [xiApertureOnePrimeResponseCorrelationRemainder] using
+  simpa [xiApertureOnePrimeResponseCorrelationRemainder] using!
     summable_xiApertureOnePrimeFusedResponseGainSq_sub_one_sq.sub
       (hnodes.mul_left 36)
 

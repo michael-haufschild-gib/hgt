@@ -49,7 +49,7 @@ lemma term_factor {s a : ℂ} (ha : 0 < a.im) (m : ℕ) :
         (1 + (a - 1) / ((m + 1 : ℕ) : ℂ)) ^ (-s) := by
   have h := term_split (c := -s) (x := a - 1) (by simpa using ha)
     (m := m + 1) (n := 0) (by omega)
-  convert h using 1
+  convert! h using 1
   · congr 1
     push_cast
     ring
@@ -166,7 +166,7 @@ lemma exists_binomial_remainder_bound (K : ℕ) (s : ℂ) :
   intro y hy
   have hymem : y ∈ Metric.ball (0 : ℂ) (r' : ℝ) := by
     rw [Metric.mem_ball, dist_zero_right]
-    simpa [r'] using hy
+    simpa [r'] using! hy
   have h := hbound y hymem (K + 1)
   simp only [zero_add] at h
   calc
@@ -191,7 +191,7 @@ theorem summable_remainder {K : ℕ} {s a : ℂ} (ha : 0 < a.im)
   have hy : Tendsto y atTop (𝓝 0) := by
     have hc : Tendsto (fun _ : ℕ => a - 1) atTop (𝓝 (a - 1)) := tendsto_const_nhds
     have h := hc.mul (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℂ))
-    convert h using 1 <;> simp [y, div_eq_mul_inv]
+    convert! h using 1 <;> simp [y, div_eq_mul_inv]
   obtain ⟨C, hC⟩ := (hO.comp_tendsto hy).bound
   have hsK : 1 < (s + (K + 1 : ℕ)).re := by
     rw [Complex.add_re, Complex.natCast_re]
@@ -243,7 +243,7 @@ noncomputable def continuedAt (K : ℕ) (s a : ℂ) : ℂ :=
 lemma taylorPoly_succ (K : ℕ) (s a : ℂ) (m : ℕ) :
     taylorPoly (K + 1) s a m = taylorPoly K s a m + taylorTerm s a (K + 1) m := by
   rw [taylorPoly, taylorPoly]
-  convert Finset.sum_range_succ (fun r => taylorTerm s a r m) (K + 1) using 1
+  convert! Finset.sum_range_succ (fun r => taylorTerm s a r m) (K + 1) using 1
 
 lemma remainder_succ (K : ℕ) (s a : ℂ) (m : ℕ) :
     remainder (K + 1) s a m = remainder K s a m - taylorTerm s a (K + 1) m := by
@@ -253,7 +253,7 @@ lemma remainder_succ (K : ℕ) (s a : ℂ) (m : ℕ) :
 lemma restoration_succ (K : ℕ) (s a : ℂ) :
     restoration (K + 1) s a = restoration K s a + restoreTerm s a (K + 1) := by
   rw [restoration, restoration]
-  convert Finset.sum_range_succ (fun r => restoreTerm s a r) (K + 1) using 1
+  convert! Finset.sum_range_succ (fun r => restoreTerm s a r) (K + 1) using 1
 
 lemma base_tsum_eq_riemannZeta {u : ℂ} (hu : 1 < u.re) :
     (∑' m : ℕ, (((m + 1 : ℕ) : ℂ) ^ (-u))) = riemannZeta u := by
@@ -269,7 +269,7 @@ lemma summable_taylorTerm {s a : ℂ} {r : ℕ} (hr : 1 < (s + r).re) :
     Summable (taylorTerm s a r) := by
   have hb : Summable (fun m : ℕ => (((m + 1 : ℕ) : ℂ) ^ (-(s + r)))) := by
     simpa [add_comm] using HurwitzZetaShift.summable_hurwitzSeries hr 1
-  convert hb.mul_left (Ring.choose (-s) r * (a - 1) ^ r) using 1
+  convert! hb.mul_left (Ring.choose (-s) r * (a - 1) ^ r) using 1
 
 lemma tsum_taylorTerm {s a : ℂ} {r : ℕ} (hr : 1 < (s + r).re) :
     (∑' m : ℕ, taylorTerm s a r m) = restoreTerm s a r := by
@@ -346,10 +346,10 @@ lemma taylorTerm_succ_hasDerivAt (s a : ℂ) (r m : ℕ) :
       (-s * taylorTerm (s + 1) a r m) a := by
   have hpow : HasDerivAt (fun w : ℂ => (w - 1) ^ (r + 1))
       (((r + 1 : ℕ) : ℂ) * (a - 1) ^ r) a := by
-    simpa [Nat.add_sub_cancel] using ((hasDerivAt_id a).sub_const 1).pow (r + 1)
+    simpa [Nat.add_sub_cancel] using! ((hasDerivAt_id a).sub_const 1).pow (r + 1)
   have h := hpow.const_mul
     (Ring.choose (-s) (r + 1) * (((m + 1 : ℕ) : ℂ) ^ (-(s + (r + 1 : ℕ)))))
-  convert h using 1
+  convert! h using 1
   · funext w
     rw [taylorTerm]
     ring
@@ -367,7 +367,7 @@ lemma rawTerm_hasDerivAt {s a : ℂ} (ha : a ∈ UHP) (m : ℕ) :
   have hb : ((m : ℂ) + a) ∈ Complex.slitPlane := natCast_add_mem_slitPlane ha m
   have h := (Complex.hasStrictDerivAt_cpow_const (c := -s) hb).hasDerivAt.comp a
     ((hasDerivAt_const a (m : ℂ)).add (hasDerivAt_id a))
-  convert h using 1 <;> ring
+  convert! h using 1 <;> ring
 
 /-- Derivative of a finite Taylor packet. -/
 lemma taylorPoly_succ_hasDerivAt (K : ℕ) (s a : ℂ) (m : ℕ) :
@@ -382,7 +382,7 @@ lemma taylorPoly_succ_hasDerivAt (K : ℕ) (s a : ℂ) (m : ℕ) :
     intro r hr
     exact taylorTerm_succ_hasDerivAt s a r m
   have h := hzero.add hsum
-  convert h using 1
+  convert! h using 1
   · funext w
     rw [taylorPoly]
     rw [Finset.sum_range_succ']
@@ -397,7 +397,7 @@ lemma remainder_succ_hasDerivAt {K : ℕ} {s a : ℂ} (ha : a ∈ UHP) (m : ℕ)
       (-s * remainder K (s + 1) a m) a := by
   have hraw := rawTerm_hasDerivAt (s := s) ha m
   have ht := taylorPoly_succ_hasDerivAt K s a m
-  convert hraw.sub ht using 1
+  convert! hraw.sub ht using 1
   rw [remainder]
   ring
 
@@ -413,9 +413,9 @@ lemma restoration_succ_hasDerivAt (K : ℕ) (s a : ℂ) :
     intro r hr
     have hpow : HasDerivAt (fun w : ℂ => (w - 1) ^ (r + 1))
         (((r + 1 : ℕ) : ℂ) * (a - 1) ^ r) a := by
-      simpa [Nat.add_sub_cancel] using ((hasDerivAt_id a).sub_const 1).pow (r + 1)
+      simpa [Nat.add_sub_cancel] using! ((hasDerivAt_id a).sub_const 1).pow (r + 1)
     have h := hpow.const_mul (Ring.choose (-s) (r + 1) * riemannZeta (s + (r + 1)))
-    convert h using 1
+    convert! h using 1
     · funext w
       rw [restoreTerm]
       rw [show s + (r + 1 : ℕ) = s + 1 + r by push_cast; ring]
@@ -425,7 +425,7 @@ lemma restoration_succ_hasDerivAt (K : ℕ) (s a : ℂ) :
       have hc := choose_deriv_coeff s r
       linear_combination -(a - 1) ^ r * riemannZeta (s + 1 + r) * hc
   have h := hzero.add hsum
-  convert h using 1
+  convert! h using 1
   · funext w
     rw [restoration]
     rw [Finset.sum_range_succ']
@@ -642,7 +642,7 @@ theorem continuedAt_succ_hasDerivAt {K : ℕ} {s a : ℂ} (ha : a ∈ UHP)
     (Metric.mem_ball_self hρpos)
   have hDerivSum' : HasSum
       (fun m : ℕ => -s * remainder K (s + 1) a (m + M)) (deriv tail a) := by
-    convert hDerivSum using 1
+    convert! hDerivSum using 1
     funext m
     exact (remainder_succ_hasDerivAt (K := K) (s := s) (a := a) ha (m + M)).deriv.symm
   have htailValue : deriv tail a =
@@ -677,7 +677,7 @@ theorem continuedAt_succ_hasDerivAt {K : ℕ} {s a : ℂ} (ha : a ∈ UHP)
     filter_upwards [Metric.isOpen_ball.mem_nhds (Metric.mem_ball_self hρpos)] with w hw
     exact heq w hw
   have hcont := hF.congr_of_eventuallyEq hev
-  convert hcont using 1
+  convert! hcont using 1
   have hsumShift := summable_remainder ha hshift
   rw [continuedAt]
   rw [← hsumShift.sum_add_tsum_nat_add M]
@@ -740,11 +740,11 @@ theorem continuedHzeta_hasDerivAt {s a : ℂ} (ha : a ∈ UHP) :
     rw [continuedHzeta]
     exact (continuedAt_succ hw hK).symm
   have h := hraw.congr_of_eventuallyEq hevent
-  convert h using 1
+  convert! h using 1
   have hshift : 0 < (s + 1).re + K := by
     rw [Complex.add_re, Complex.one_re]
     linarith
-  simpa [continuedHzeta] using congrArg (fun z : ℂ => -s * z)
+  simpa [continuedHzeta] using! congrArg (fun z : ℂ => -s * z)
     (continuedAt_eq_of_adequate (K := K) (L := regularizationOrder (s + 1))
       ha hshift (regularizationOrder_adequate (s + 1))).symm
 

@@ -98,10 +98,10 @@ theorem analyticAt_newton_quadratic_iterate (c A : ℂ) (q : ℕ) (z : ℂ) :
     AnalyticAt ℂ (fun w => w - A * ((quadratic c)^[q] w - w)) z := by
   have hF : AnalyticAt ℂ ((quadratic c)^[q]) z := analyticAt_quadratic_iterate c q z
   have hdiff : AnalyticAt ℂ (fun w => (quadratic c)^[q] w - w) z := by
-    simpa using hF.sub analyticAt_id
+    simpa using! hF.sub analyticAt_id
   have hmul : AnalyticAt ℂ (fun w => A * ((quadratic c)^[q] w - w)) z := by
-    simpa using (analyticAt_const (v := A) (x := z)).mul hdiff
-  simpa using analyticAt_id.sub hmul
+    simpa using! (analyticAt_const (v := A) (x := z)).mul hdiff
+  simpa using! analyticAt_id.sub hmul
 
 /-- Numeric center-fit estimate for a contraction closed ball. -/
 theorem center_add_mul_radius_le_of_le_one_sub_mul
@@ -471,7 +471,7 @@ theorem hasDerivAt_deriv_iterate_fixed
             (2 * (quadratic c)^[m] α) * fixedTailSecondCoeff lam m) α := by
         exact ((hF.const_mul 2).mul ih)
       rw [hderiv_succ]
-      convert hprod using 1
+      convert! hprod using 1
       simp [fixedTailSecondCoeff, lam, hDval, hFval]
       ring
 
@@ -513,7 +513,7 @@ theorem hasDerivAt_deriv_fixed_tail_of_iterate_eq_fixed
       (n := 0) (by rfl) hfix m)
   rw [hderiv_add]
   have hprod := hcomp.mul hB
-  convert hprod using 1
+  convert! hprod using 1
   simp [A, P, B, lam, hhit, hDtail]
   ring
 
@@ -796,7 +796,7 @@ theorem deriv_deriv_quadratic_iterate_succ_eq (c : ℂ) (m : ℕ) (w : ℂ) :
         (deriv (fun v => deriv ((quadratic c)^[m]) v) w) w :=
       (analyticAt_quadratic_iterate c m w).deriv.differentiableAt.hasDerivAt
     rw [hderiv_succ]
-    convert ((hF.const_mul 2).mul hB) using 1
+    convert! ((hF.const_mul 2).mul hB) using 1
     · ring_nf
   exact hD.deriv
 
@@ -834,7 +834,7 @@ theorem deriv_deriv_deriv_quadratic_iterate_succ_eq (c : ℂ) (m : ℕ) (w : ℂ
         (4 * deriv ((quadratic c)^[m]) w *
           deriv (fun v => deriv ((quadratic c)^[m]) v) w) w := by
       have hsq := hB.mul hB
-      convert hsq.const_mul 2 using 1
+      convert! hsq.const_mul 2 using 1
       · funext y
         simp [Pi.mul_apply, pow_two]
       · ring
@@ -847,9 +847,9 @@ theorem deriv_deriv_deriv_quadratic_iterate_succ_eq (c : ℂ) (m : ℕ) (w : ℂ
           2 * (quadratic c)^[m] w *
             deriv (fun x => deriv (fun v => deriv ((quadratic c)^[m]) v) x) w) w := by
       have hprod := (hF.const_mul 2).mul hC
-      convert hprod using 1
+      convert! hprod using 1
     rw [hsecond_succ]
-    convert hterm1.add hterm2 using 1
+    convert! hterm1.add hterm2 using 1
     ring
   exact hD.deriv
 
@@ -889,7 +889,7 @@ theorem hasDerivAt_deriv_deriv_iterate_fixed
           (fun w => 2 * (deriv ((quadratic c)^[m]) w) ^ 2)
           (4 * lam ^ m * B) α := by
         have hsq := hB.mul hB
-        convert hsq.const_mul 2 using 1
+        convert! hsq.const_mul 2 using 1
         · funext y
           simp [Pi.mul_apply, pow_two]
         · rw [hDval]
@@ -899,7 +899,7 @@ theorem hasDerivAt_deriv_deriv_iterate_fixed
             deriv (fun v => deriv ((quadratic c)^[m]) v) w)
           (2 * lam ^ m * B + lam * C) α := by
         have hprod := (hF.const_mul 2).mul hC
-        convert hprod using 1
+        convert! hprod using 1
         · simp [B, C, lam, hFval, hBval]
       have hsum := hterm1.add hterm2
       have hsecond_succ :
@@ -910,7 +910,7 @@ theorem hasDerivAt_deriv_deriv_iterate_fixed
         funext w
         exact deriv_deriv_quadratic_iterate_succ_eq c m w
       rw [hsecond_succ]
-      convert hsum using 1
+      convert! hsum using 1
       · simp [fixedTailThirdCoeff, B, C, lam]
         ring
 
@@ -961,7 +961,7 @@ theorem hasDerivAt_deriv_deriv_deriv_iterate_fixed
               deriv (fun v => deriv ((quadratic c)^[m]) v) w)
           (6 * B ^ 2 + 6 * lam ^ m * C) α := by
         have hprod := (hB.const_mul 6).mul hC
-        convert hprod using 1
+        convert! hprod using 1
         · rw [hDval, hBval]
           ring
       have hterm2 : HasDerivAt
@@ -970,7 +970,7 @@ theorem hasDerivAt_deriv_deriv_deriv_iterate_fixed
               deriv (fun x => deriv (fun v => deriv ((quadratic c)^[m]) v) x) w)
           (2 * lam ^ m * C + lam * Q) α := by
         have hprod := (hF.const_mul 2).mul hQ
-        convert hprod using 1
+        convert! hprod using 1
         · rw [hFval, hCval]
       have hsum := hterm1.add hterm2
       have hthird_succ :
@@ -983,7 +983,7 @@ theorem hasDerivAt_deriv_deriv_deriv_iterate_fixed
         funext w
         exact deriv_deriv_deriv_quadratic_iterate_succ_eq c m w
       rw [hthird_succ]
-      convert hsum using 1
+      convert! hsum using 1
       · simp [fixedTailFourthCoeff, B, C, Q, lam]
         ring
 
@@ -1049,7 +1049,7 @@ theorem deriv_deriv_iterate_add_eq (c : ℂ) (n m : ℕ) (w : ℂ) :
     (analyticAt_quadratic_iterate c n w).deriv.differentiableAt.hasDerivAt
   have hprod := hcomp.mul hB
   rw [hderiv_add]
-  convert hprod.deriv using 1
+  convert! hprod.deriv using 1
   ring
 
 /-- The third derivative of a fixed tail after a preperiodic hit.  This is the exact
@@ -1105,7 +1105,7 @@ theorem hasDerivAt_deriv_deriv_fixed_tail_of_iterate_eq_fixed
   have hP2 : HasDerivAt (fun w => (deriv ((quadratic c)^[n]) w) ^ 2)
       (2 * P * B) z := by
     have hsq := hP.mul hP
-    convert hsq using 1
+    convert! hsq using 1
     · funext y
       simp [Pi.mul_apply, pow_two]
     · simp [P, B]
@@ -1116,7 +1116,7 @@ theorem hasDerivAt_deriv_deriv_fixed_tail_of_iterate_eq_fixed
           (deriv ((quadratic c)^[n]) w) ^ 2)
       (A₃ * P ^ 3 + 2 * A₂ * P * B) z := by
     have hprod := hcompA₃.mul hP2
-    convert hprod using 1
+    convert! hprod using 1
     · rw [hhit, hA₂val]
       ring
   have hcompA₂ : HasDerivAt
@@ -1129,7 +1129,7 @@ theorem hasDerivAt_deriv_deriv_fixed_tail_of_iterate_eq_fixed
           deriv (fun v => deriv ((quadratic c)^[n]) v) w)
       (A₂ * P * B + lam ^ m * C) z := by
     have hprod := hcompA₂.mul hC
-    convert hprod using 1
+    convert! hprod using 1
     · rw [hTailDerivVal_at]
   have hsum := hterm1.add hterm2
   have hsecond_add :
@@ -1142,7 +1142,7 @@ theorem hasDerivAt_deriv_deriv_fixed_tail_of_iterate_eq_fixed
     funext w
     exact deriv_deriv_iterate_add_eq c n m w
   rw [hsecond_add]
-  convert hsum using 1
+  convert! hsum using 1
   · simp [A₂, A₃, P, B, C, lam]
     ring
 

@@ -408,7 +408,7 @@ theorem riemannHypothesis_iff_negativeChannelSpectrum_zero
       XiRectangularNegativeChannelEnergyAbove 0 a ∧
         XiRectangularSubpowerChannelAbove 0 b := by
   simpa only [XiRectangularNegativeChannelEnergyAbove,
-    XiRectangularSubpowerChannelAbove, zero_add, add_zero] using
+    XiRectangularSubpowerChannelAbove, zero_add, add_zero] using!
       riemannHypothesis_iff_negativeChannelEnergy_and_subpowerChannel
         hL hN hsplit
 

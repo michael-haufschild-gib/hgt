@@ -94,6 +94,6 @@ theorem smoothAFEZetaMellin_finite_contour_shift_line
     hx hs (by norm_num) (by norm_num) hTpos
     (by rw [hρre]; norm_num) (by rw [hρre]; norm_num)
     (by rw [hρim]; linarith) (by rw [hρim]; linarith)
-  simpa [rectIntegral] using hbox
+  simpa [rectIntegral] using! hbox
 
 end RHTower

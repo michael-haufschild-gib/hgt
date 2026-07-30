@@ -146,7 +146,7 @@ theorem upperEndRationalCoordinateField_map_translation (h : ℂ) :
           ({upperEndCoordinateMero + algebraMap ℂ upperEndMeroField h} :
             Set upperEndMeroField) :=
       IntermediateField.algebraMap_mem _ h
-    simpa only [add_sub_cancel_right] using
+    simpa only [add_sub_cancel_right] using!
       (IntermediateField.adjoin ℂ
         ({upperEndCoordinateMero + algebraMap ℂ upperEndMeroField h} :
           Set upperEndMeroField)).sub_mem hsum hc

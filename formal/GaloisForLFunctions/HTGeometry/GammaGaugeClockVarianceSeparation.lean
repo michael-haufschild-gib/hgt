@@ -199,7 +199,7 @@ theorem gammaPeriodicFourierRadialComponent_tendsto_zero
     have hmap' : Tendsto
         (fun n => (gammaPeriodicFourierJetContinuousLinearEquiv r).symm (block n))
         atTop (𝓝 0) := by
-      simpa only [Function.comp_apply, map_zero] using hmap
+      simpa only [Function.comp_apply, map_zero] using! hmap
     exact hmap'.congr' (Eventually.of_forall hrecover)
   exact (tendsto_pi_nhds.mp hcomponent) m
 
@@ -570,7 +570,7 @@ theorem summable_normSq_gammaRadialReporterCoefficient (rho : ℝ) :
   have htail : Summable
       (fun n : ℕ => (‖(rho : ℂ)‖ ^ 2) ^ (n + 1) /
         ((n + 1).factorial : ℝ)) := by
-    simpa [Nat.succ_eq_add_one] using hbase.comp_injective Nat.succ_injective
+    simpa [Nat.succ_eq_add_one] using! hbase.comp_injective Nat.succ_injective
   apply Summable.of_nonneg_of_le (fun n => by positivity) (fun n => ?_) htail
   rw [gammaRadialReporterCoefficient, norm_mul, norm_pow,
     gammaPeriodicConormalCoefficient, norm_div, norm_one, Complex.norm_natCast]

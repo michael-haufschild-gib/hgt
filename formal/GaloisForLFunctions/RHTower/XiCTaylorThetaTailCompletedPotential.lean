@@ -24,14 +24,21 @@ theorem hasDerivAt_thetaCuspCompletedTailPotential (x : ℝ) :
   unfold thetaCuspCompletedTailPotential
   have hexp : HasDerivAt (fun t : ℝ => Real.exp (-t / 2))
       (-(1 / 2 : ℝ) * Real.exp (-x / 2)) x := by
-    convert (Real.hasDerivAt_exp (-x / 2)).comp x
-      ((hasDerivAt_neg x).div_const 2) using 1
-    ring_nf
-  convert (hexp.const_mul (1 / 2 : ℝ)).sub
-    (hasDerivAt_thetaCuspTailDerivative 0 x) using 1
-  unfold thetaCuspCompletedSurvivalRemainder thetaCuspTailSurvival
-  norm_num
-  ring_nf
+    have hraw := (Real.hasDerivAt_exp (-x / 2)).comp x
+      ((hasDerivAt_neg x).div_const 2)
+    have hraw' := hraw.congr_deriv
+      (g' := -(1 / 2 : ℝ) * Real.exp (-x / 2)) (by ring)
+    exact hraw'.congr_of_eventuallyEq
+      (Eventually.of_forall fun _ => rfl)
+  have hraw := (hexp.const_mul (1 / 2 : ℝ)).sub
+    (hasDerivAt_thetaCuspTailDerivative 0 x)
+  have hraw' := hraw.congr_deriv
+    (g' := -(1 / 4 : ℝ) * thetaCuspCompletedSurvivalRemainder x) (by
+      unfold thetaCuspCompletedSurvivalRemainder thetaCuspTailSurvival
+      norm_num
+      ring)
+  exact hraw'.congr_of_eventuallyEq
+    (Eventually.of_forall fun _ => rfl)
 
 /-- The completed potential is the Green primitive of the negative even theta-cusp source. -/
 theorem thetaCuspCompletedTailPotential_secondOperator_eq_neg_fullSource
@@ -109,16 +116,23 @@ theorem hasDerivAt_thetaCuspCompletedSurvivalMonomial
     HasDerivAt (thetaCuspCompletedSurvivalMonomial d)
       (thetaCuspCompletedSurvivalMonomialDerivative d z) z := by
   have hbase : HasDerivAt (fun w : ℂ => -4 * w ^ 2) (-8 * z) z := by
-    convert (hasDerivAt_const z (-4 : ℂ)).mul ((hasDerivAt_id z).pow 2) using 1
-    simp only [Pi.pow_apply, id_eq]
-    ring
+    have hraw :=
+      (hasDerivAt_const z (-4 : ℂ)).mul ((hasDerivAt_id z).pow 2)
+    have hraw' := hraw.congr_deriv (g' := -8 * z) (by
+      simp only [id_eq]
+      ring)
+    exact hraw'.congr_of_eventuallyEq
+      (Eventually.of_forall fun _ => rfl)
   have hp := hbase.pow (d + 1)
-  unfold thetaCuspCompletedSurvivalMonomial
-    thetaCuspCompletedSurvivalMonomialDerivative
-  convert hp using 1
-  rw [show d + 1 - 1 = d by omega]
-  push_cast
-  ring
+  have hp' := hp.congr_deriv
+    (g' := thetaCuspCompletedSurvivalMonomialDerivative d z) (by
+      unfold thetaCuspCompletedSurvivalMonomialDerivative
+      rw [show d + 1 - 1 = d by omega]
+      push_cast
+      ring)
+  exact hp'.congr_of_eventuallyEq
+    (Eventually.of_forall fun w => by
+      simp only [Pi.pow_apply, thetaCuspCompletedSurvivalMonomial])
 
 def thetaCuspCompletedSurvivalDerivativeTransform
     (d : ℕ) (z : ℂ) : ℂ :=
@@ -146,8 +160,9 @@ theorem hasDerivAt_thetaCuspCompletedSurvivalValueTransform
     exact thetaCuspCompletedSurvivalValueTransform_eq_monomial_sub_two_core d w
   rw [hfun]
   unfold thetaCuspCompletedSurvivalDerivativeTransform
-  convert (hasDerivAt_thetaCuspCompletedSurvivalMonomial d z).sub
-    ((xiCTaylorThetaTailCorePolynomial d).hasDerivAt z |>.const_mul 2) using 1
+  exact ((hasDerivAt_thetaCuspCompletedSurvivalMonomial d z).sub
+    ((xiCTaylorThetaTailCorePolynomial d).hasDerivAt z |>.const_mul 2)).congr_of_eventuallyEq
+      (Eventually.of_forall fun _ => rfl)
 
 theorem xiCTaylorThetaTailCorePolynomial_derivative_eval_eq_completedSurvival
     (d : ℕ) (z : ℂ) :

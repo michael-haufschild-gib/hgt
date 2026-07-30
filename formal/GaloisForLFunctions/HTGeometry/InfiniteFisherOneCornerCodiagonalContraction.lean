@@ -39,7 +39,7 @@ private theorem projection_norm_sq_add_complement
     ‖e x‖ ^ 2 + ‖(1 - e) x‖ ^ 2 = ‖x‖ ^ 2 := by
   have hstar : IsStarProjection e := by
     rw [isStarProjection_iff]
-    exact ⟨he, by simpa [star_eq_adjoint] using heAdj⟩
+    exact ⟨he, ContinuousLinearMap.isSelfAdjoint_iff'.2 heAdj⟩
   obtain ⟨hRange, heq⟩ :=
     isStarProjection_iff_eq_starProjection_range.mp hstar
   letI : e.range.HasOrthogonalProjection := hRange

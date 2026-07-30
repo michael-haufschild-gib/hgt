@@ -124,7 +124,7 @@ theorem fieldOneSemilocalBruhatL2RangeToClosedImage_dense :
             (fieldOneSemilocalBruhatL2Range :
               Set (Lp ℂ 2 fieldOneSemilocalAddHaar)))
   simpa only [fieldOneSemilocalBruhatL2RangeToClosedImage,
-    Submodule.inclusion_apply] using h
+    Submodule.inclusion_apply] using! h
 
 theorem fieldOneSemilocalBruhatCompletionDenseNorm
     (t : FieldOneSemilocalBruhatSchwartz) :
@@ -184,7 +184,7 @@ theorem fieldOneSemilocalBruhatCompletionEquivClosedImage_coe
     fieldOneSemilocalBruhatL2RangeToClosedImage,
     Submodule.coe_inclusion,
     fieldOneSemilocalBruhatToL2LinearIsometry,
-    fieldOneSemilocalBruhatL2Range] using h'
+    fieldOneSemilocalBruhatL2Range] using! h'
 
 /-- Canonical faithful realization of the Hilbert completion in product-Haar
 `L²`. -/

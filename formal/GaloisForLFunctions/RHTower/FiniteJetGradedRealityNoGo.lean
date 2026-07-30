@@ -80,13 +80,13 @@ theorem flatLocalFactor_hasDerivAt (N : ℕ) (α x : ℂ) :
       ((finiteJetEscapeOrder N : ℂ) *
         (x * (2 * α + x)) ^ (2 * N) * (2 * (α + x))) x := by
   have hu : HasDerivAt (fun y : ℂ => y * (2 * α + y)) (2 * (α + x)) x := by
-    convert (hasDerivAt_id x).mul
+    convert! (hasDerivAt_id x).mul
       ((hasDerivAt_const (x := x) (c := 2 * α)).add (hasDerivAt_id x)) using 1
     all_goals simp
     all_goals ring
   have hp := hu.pow (finiteJetEscapeOrder N)
   have hs := (hasDerivAt_const (x := x) (c := (1 : ℂ))).add hp
-  simpa [flatLocalFactor, finiteJetEscapeOrder] using hs
+  simpa [flatLocalFactor, finiteJetEscapeOrder] using! hs
 
 /-- The correction is exactly `-x` times the logarithmic derivative of the flat factor. -/
 theorem flatLogFluxCorrection_eq_neg_mul_logDeriv (N : ℕ) (α x : ℂ) :
@@ -183,7 +183,7 @@ theorem flatZeroModel_hasDerivAt (N : ℕ) (α x : ℂ) :
         ((finiteJetEscapeOrder N : ℂ) *
           (x * (2 * α + x)) ^ (2 * N) * (2 * (α + x)))) x := by
   change HasDerivAt ((fun y : ℂ => y) * flatLocalFactor N α) _ x
-  simpa using
+  simpa using!
     (hasDerivAt_id x).mul (flatLocalFactor_hasDerivAt N α x)
 
 /-- The explicit residue-filled flux agrees locally with its analytic model. -/
@@ -290,7 +290,7 @@ theorem exists_analytic_reflection_germs_same_finite_jet_not_same_later (N : ℕ
     have hrefd :
         iteratedDeriv n (fun x : ℂ => flatZeroCompletedFlux N 1 (-x)) 0 =
           iteratedDeriv n (fun x : ℂ => finiteJetModelGerm N 1 (-x)) 0 := by
-      simpa only [Function.comp_apply] using href.iteratedDeriv_eq n
+      simpa only [Function.comp_apply] using! href.iteratedDeriv_eq n
     rw [heq, hrefd]
     exact finiteJetModelGerm_iteratedDeriv_eq_reflect_of_le (by norm_num) hn
   · have heq := (flatZeroCompletedFlux_eventuallyEq_model N 1).iteratedDeriv_eq
@@ -302,7 +302,7 @@ theorem exists_analytic_reflection_germs_same_finite_jet_not_same_later (N : ℕ
             (fun x : ℂ => flatZeroCompletedFlux N 1 (-x)) 0 =
           iteratedDeriv (finiteJetEscapeOrder N)
             (fun x : ℂ => finiteJetModelGerm N 1 (-x)) 0 := by
-      simpa only [Function.comp_apply] using
+      simpa only [Function.comp_apply] using!
         href.iteratedDeriv_eq (finiteJetEscapeOrder N)
     rw [heq, hrefd]
     exact finiteJetModelGerm_iteratedDeriv_ne_reflect_at_escape (by norm_num)

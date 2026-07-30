@@ -77,7 +77,7 @@ theorem integrable_bourgainLocalBoxCharacter
     by_cases hz : z ∈ S
     · simp [f, g, hz, norm_bourgainAdditiveCharacter]
     · simp [f, g, hz]
-  simpa [bourgainLocalBoxCharacter, f, S] using hf
+  simpa [bourgainLocalBoxCharacter, f, S] using! hf
 
 theorem integral_bourgainLocalBoxCharacterTerm
     {Y L x y : BourgainPhaseSpace}

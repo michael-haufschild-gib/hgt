@@ -93,10 +93,10 @@ private theorem hasDerivAt_xiRelativeResolventTerm
     (fun v => (xiSpectralPoint q)⁻¹ - (xiSpectralPoint q - v)⁻¹)
     (-((xiSpectralPoint q - u)⁻¹ ^ 2)) u
   have hsub : xiSpectralPoint q - u ≠ 0 := sub_ne_zero.mpr hqu
-  convert (hasDerivAt_const (x := u) (c := (xiSpectralPoint q)⁻¹)).sub
+  convert! (hasDerivAt_const (x := u) (c := (xiSpectralPoint q)⁻¹)).sub
     (((hasDerivAt_const (x := u) (c := xiSpectralPoint q)).sub
       (hasDerivAt_id (𝕜 := ℂ) (x := u))).inv hsub) using 1
-  all_goals simp
+  simp
 
 private theorem norm_xiRelativeResolventTerm_deriv_le
     (z : DeningerPrimeGammaLowerPoint) (q : XiZeroCopy) {u : ℂ}
@@ -117,7 +117,7 @@ private theorem norm_xiRelativeResolventTerm_deriv_le
         2 * ‖xiSpectralPoint q - (z : ℂ)‖⁻¹ := by
     have h := one_div_le_one_div_of_le (half_pos haz) hhalf
     rw [one_div, one_div, inv_div] at h
-    simpa [mul_comm] using h
+    simpa [mul_comm] using! h
   rw [norm_neg, norm_pow, norm_inv, xiWeilCauchyTest, norm_inv]
   calc
     ‖xiSpectralPoint q - u‖⁻¹ ^ 2 ≤

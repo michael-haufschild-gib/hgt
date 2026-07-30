@@ -104,7 +104,7 @@ theorem tendsto_suzukiFinitePhaseCarrier_bohrCoefficient
     by_cases hjm : j = m
     · subst j
       have hratio : q m * (q m)⁻¹ = 1 := mul_inv_cancel₀ hqm0
-      simpa only [hratio, one_pow, if_pos rfl, mul_one] using
+      simpa only [hratio, one_pow, if_pos rfl, mul_one] using!
         tendsto_const_nhds.mul tendsto_suzukiCesaroMean_geometric_one
     · have hratioNorm : ‖q j * (q m)⁻¹‖ = 1 := by
         rw [norm_mul, norm_inv, hqnorm j hj, hqmnorm]
@@ -212,7 +212,7 @@ theorem tendsto_suzukiFiniteSinePhaseCarrier_bohrCoefficient
           simpa using
             (tendsto_const_nhds : Tendsto (fun _ : ℕ => c m / (2 * I)) atTop
               (𝓝 (c m / (2 * I)))).mul tendsto_suzukiCesaroMean_geometric_one
-      simpa only [hratio, one_pow, if_pos rfl, mul_one, sub_zero] using
+      simpa only [hratio, one_pow, if_pos rfl, mul_one, sub_zero] using!
         hplusOne.sub hminusZero
     · have hplusNorm : ‖q j * (q m)⁻¹‖ = 1 := by
         rw [norm_mul, norm_inv, hqnorm j hj, hqmnorm]

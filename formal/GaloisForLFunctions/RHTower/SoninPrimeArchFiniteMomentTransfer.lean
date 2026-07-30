@@ -292,7 +292,7 @@ theorem soninPrimeArchPerTestCoupling_of_finiteMomentCoupling
       simpa only [hsource, htarget] using hsum
     have hre := Complex.continuous_re.continuousAt.tendsto.comp hfinal
     simpa only [soninPrimeArchPerTestApertureOfFiniteMoment, q, n, N,
-      Function.comp_apply] using hre
+      Function.comp_apply] using! hre
 
 /-- Finite moment-block closure subsumes the per-test scalar source-value closure interface. -/
 theorem soninPrimeArchPerTestValueClosure_of_finiteMomentClosure

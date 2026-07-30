@@ -46,15 +46,20 @@ theorem inner_xiPhysicalPrimeLogComplexApertureIndicator
     inner ℂ (xiPhysicalPrimeLogComplexApertureIndicator A m k p)
         (xiPhysicalPrimeLogComplexApertureIndicator A m k q) =
       (xiPhysicalPrimeLogApertureOverlap A m k p q : ℂ) := by
-  simpa only [xiPhysicalPrimeLogComplexApertureIndicator,
-      volume_real_xiPhysicalPrimeLogApertureSet_inter] using
-    (MeasureTheory.L2.inner_indicatorConstLp_one_indicatorConstLp_one
-      (μ := (volume : Measure ℝ))
-      (s := xiPhysicalPrimeLogApertureSet A m k p)
-      (t := xiPhysicalPrimeLogApertureSet A m k q)
-      measurableSet_Ioc measurableSet_Ioc
-      (measure_xiPhysicalPrimeLogApertureSet_ne_top A m k p)
-      (measure_xiPhysicalPrimeLogApertureSet_ne_top A m k q))
+  calc
+    inner ℂ (xiPhysicalPrimeLogComplexApertureIndicator A m k p)
+        (xiPhysicalPrimeLogComplexApertureIndicator A m k q) =
+        (RCLike.ofReal (xiPhysicalPrimeLogApertureOverlap A m k p q) : ℂ) := by
+      simpa only [xiPhysicalPrimeLogComplexApertureIndicator,
+        volume_real_xiPhysicalPrimeLogApertureSet_inter] using
+        (MeasureTheory.L2.inner_indicatorConstLp_one_indicatorConstLp_one
+          (μ := (volume : Measure ℝ))
+          (s := xiPhysicalPrimeLogApertureSet A m k p)
+          (t := xiPhysicalPrimeLogApertureSet A m k q)
+          measurableSet_Ioc measurableSet_Ioc
+          (measure_xiPhysicalPrimeLogApertureSet_ne_top A m k p)
+          (measure_xiPhysicalPrimeLogApertureSet_ne_top A m k q))
+    _ = (xiPhysicalPrimeLogApertureOverlap A m k p q : ℂ) := rfl
 
 theorem inner_xiPhysicalPrimeLogComplexApertureIndicator_aperture
     (A m k : ℝ) (p : Nat.Primes) :
@@ -65,16 +70,21 @@ theorem inner_xiPhysicalPrimeLogComplexApertureIndicator_aperture
       xiPhysicalLogApertureSet A =
       xiPhysicalPrimeLogApertureSet A m k p :=
     Set.inter_eq_left.mpr (xiPhysicalPrimeLogApertureSet_subset A m k p)
-  simpa only [xiPhysicalPrimeLogComplexApertureIndicator,
-      xiPhysicalLogComplexApertureIndicator, hinter,
-      volume_real_xiPhysicalPrimeLogApertureSet] using
-    (MeasureTheory.L2.inner_indicatorConstLp_one_indicatorConstLp_one
-      (μ := (volume : Measure ℝ))
-      (s := xiPhysicalPrimeLogApertureSet A m k p)
-      (t := xiPhysicalLogApertureSet A)
-      measurableSet_Ioc measurableSet_Ioc
-      (measure_xiPhysicalPrimeLogApertureSet_ne_top A m k p)
-      (measure_xiPhysicalLogApertureSet_ne_top A))
+  calc
+    inner ℂ (xiPhysicalPrimeLogComplexApertureIndicator A m k p)
+        (xiPhysicalLogComplexApertureIndicator A) =
+        (RCLike.ofReal (xiPhysicalPrimeLogApertureLength A m k p) : ℂ) := by
+      simpa only [xiPhysicalPrimeLogComplexApertureIndicator,
+        xiPhysicalLogComplexApertureIndicator, hinter,
+        volume_real_xiPhysicalPrimeLogApertureSet] using
+        (MeasureTheory.L2.inner_indicatorConstLp_one_indicatorConstLp_one
+          (μ := (volume : Measure ℝ))
+          (s := xiPhysicalPrimeLogApertureSet A m k p)
+          (t := xiPhysicalLogApertureSet A)
+          measurableSet_Ioc measurableSet_Ioc
+          (measure_xiPhysicalPrimeLogApertureSet_ne_top A m k p)
+          (measure_xiPhysicalLogApertureSet_ne_top A))
+    _ = (xiPhysicalPrimeLogApertureLength A m k p : ℂ) := rfl
 
 theorem inner_xiPhysicalLogComplexApertureIndicator_prime
     (A m k : ℝ) (p : Nat.Primes) :
@@ -94,14 +104,19 @@ theorem inner_xiPhysicalLogComplexApertureIndicator
     {A : ℝ} (hA : 0 < A) :
     inner ℂ (xiPhysicalLogComplexApertureIndicator A)
         (xiPhysicalLogComplexApertureIndicator A) = (A : ℂ) := by
-  simpa only [xiPhysicalLogComplexApertureIndicator, inter_self,
-      volume_real_xiPhysicalLogApertureSet hA] using
-    (MeasureTheory.L2.inner_indicatorConstLp_one_indicatorConstLp_one
-      (μ := (volume : Measure ℝ))
-      (s := xiPhysicalLogApertureSet A) (t := xiPhysicalLogApertureSet A)
-      measurableSet_Ioc measurableSet_Ioc
-      (measure_xiPhysicalLogApertureSet_ne_top A)
-      (measure_xiPhysicalLogApertureSet_ne_top A))
+  calc
+    inner ℂ (xiPhysicalLogComplexApertureIndicator A)
+        (xiPhysicalLogComplexApertureIndicator A) =
+        (RCLike.ofReal A : ℂ) := by
+      simpa only [xiPhysicalLogComplexApertureIndicator, inter_self,
+        volume_real_xiPhysicalLogApertureSet hA] using
+        (MeasureTheory.L2.inner_indicatorConstLp_one_indicatorConstLp_one
+          (μ := (volume : Measure ℝ))
+          (s := xiPhysicalLogApertureSet A) (t := xiPhysicalLogApertureSet A)
+          measurableSet_Ioc measurableSet_Ioc
+          (measure_xiPhysicalLogApertureSet_ne_top A)
+          (measure_xiPhysicalLogApertureSet_ne_top A))
+    _ = (A : ℂ) := rfl
 
 /-- The complex centered carrier has exactly the same real Gram kernel as the original carrier. -/
 theorem inner_xiPhysicalPrimeLogComplexCenteredApertureCarrier
@@ -346,7 +361,8 @@ theorem inner_xiPhysicalPrimeLogComplexApertureIndicator_character
       have hap := xiPhysicalPrimeLogApertureSet_subset A m k p hprime
       rw [indicator_of_mem hmem, hu]
       rw [xiPhysicalApertureCharacterFun, rectangularIntervalIndicator]
-      rw [indicator_of_mem (show u ∈ Ioc 0 (0 + A) by simpa using hap)]
+      rw [indicator_of_mem (show u ∈ Ioc 0 (0 + A) by
+        simpa only [xiPhysicalLogApertureSet, zero_add] using hap)]
       simp [rectangularIntervalIndicator, hmem]
     · simp [rectangularIntervalIndicator, hmem]]
   rw [integral_rectangularIntervalIndicator_mul_exp
@@ -775,8 +791,8 @@ private theorem xiPhysicalComplexL2_norm_sq_eq_integral
     norm_cast
   simp_rw [hpoint] at hinner
   rw [integral_complex_ofReal] at hinner
-  apply Complex.ofReal_injective
-  simpa only [Complex.ofReal_pow] using hinner
+  rw [← Complex.ofReal_inj, Complex.ofReal_pow]
+  exact hinner
 
 /-- The interval integral of the carrier's pointwise squared norm is its exact fusion energy. -/
 theorem intervalIntegral_norm_sq_xiPhysicalPrimeLogComplexAggregateApertureCarrier
@@ -812,8 +828,11 @@ theorem xiPhysicalPrimeLogAggregateConjugateFun_memLp
     (P : Finset Nat.Primes) (A m k : ℝ) :
     MemLp (xiPhysicalPrimeLogAggregateConjugateFun P A m k) 2
       (volume : Measure ℝ) := by
-  simpa only [xiPhysicalPrimeLogAggregateConjugateFun, starRingEnd_apply] using
-    (Lp.memLp (xiPhysicalPrimeLogComplexAggregateApertureCarrier P A m k)).star
+  change MemLp
+    (star ((xiPhysicalPrimeLogComplexAggregateApertureCarrier P A m k :
+      XiPhysicalComplexApertureL2) : ℝ → ℂ)) 2 (volume : Measure ℝ)
+  exact (Lp.memLp
+    (xiPhysicalPrimeLogComplexAggregateApertureCarrier P A m k)).star
 
 theorem fourier_coe_eq_xiPhysicalApertureCharacterExp
     {A : ℝ} (hA : 0 < A) (n : ℤ) (u : ℝ) :
@@ -902,7 +921,11 @@ theorem hasSum_normSq_xiPhysicalPrimeLogCenteredCharacterAmplitude_neg
     rw [hnorm] at hparseval
     simpa only [sub_zero, smul_eq_mul, inv_eq_one_div] using hparseval
   have hscaled := hbase.mul_left (A ^ 2)
-  convert hscaled using 1 <;> field_simp [hA.ne']
+  have hfactor : A ^ 2 * (1 / A) ^ 2 = 1 := by
+    field_simp [hA.ne']
+  have hvalue : A ^ 2 * (1 / A) = A := by
+    field_simp [hA.ne']
+  simpa only [← mul_assoc, hfactor, hvalue, one_mul] using hscaled
 
 /-- Tsum form of the complete CCM character Parseval law. -/
 theorem tsum_normSq_xiPhysicalPrimeLogCenteredCharacterAmplitude
@@ -933,7 +956,8 @@ theorem tsum_normSq_xiPhysicalPrimeLogCharacterAmplitude
     (xiPhysicalPrimeLogCenteredCharacterAmplitude P A n m k)
   let S : Set ℤ := {n | n ≠ 0}
   have hneg : Summable (F ∘ (Equiv.neg ℤ)) := by
-    simpa only [F, Function.comp_apply, Equiv.neg_apply] using
+    change Summable (fun n : ℤ => F (-n))
+    simpa only [F] using
       (hasSum_normSq_xiPhysicalPrimeLogCenteredCharacterAmplitude_neg P hA m k).summable
   have hsum : Summable F := ((Equiv.neg ℤ).summable_iff).mp hneg
   have hsplit := hsum.tsum_subtype_add_tsum_subtype_compl S

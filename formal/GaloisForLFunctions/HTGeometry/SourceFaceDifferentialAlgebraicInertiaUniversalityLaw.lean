@@ -18,7 +18,7 @@ noncomputable section
 theorem differentiallyAlgebraic_gammaPositivePeriodicFourierPacket
     {k : ℕ} (a : Fin k → ℂ) :
     DifferentiallyAlgebraic (gammaPositivePeriodicFourierPacket a) := by
-  simpa [gammaPositivePeriodicFourierPacket, gammaPeriodicMode] using
+  simpa [gammaPositivePeriodicFourierPacket, gammaPeriodicMode] using!
     (differentiallyAlgebraic_finset_expSum_general
       (Finset.univ : Finset (Fin k)) a
       (fun m : Fin k => gammaPeriodicFrequency ((m : ℕ) + 1)))

@@ -167,7 +167,7 @@ theorem continuous_nonnegative_of_ae [mu.IsOpenPosMeasure]
     {J : ℝ → ℝ} (hJ : Continuous J) (hae : 0 ≤ᵐ[mu] J) :
     ∀ x, 0 ≤ J x := by
   have hnull : mu {x | J x < 0} = 0 := by
-    simpa only [not_le] using (ae_iff.mp hae)
+    simpa only [not_le] using! (ae_iff.mp hae)
   intro x
   by_contra hx
   have hxneg : J x < 0 := lt_of_not_ge hx

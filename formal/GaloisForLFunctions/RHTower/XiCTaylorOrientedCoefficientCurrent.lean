@@ -46,11 +46,11 @@ theorem hasDerivAt_normSq_polynomial_vertical
   let z : ℂ := (x : ℂ) + (y : ℂ) * I
   have hz : HasDerivAt (fun t : ℝ => (x : ℂ) + (t : ℂ) * I) I y := by
     have h := (Complex.ofRealCLM.hasDerivAt (x := y)).mul_const I
-    simpa using h.const_add (x : ℂ)
+    simpa using! h.const_add (x : ℂ)
   have hf : HasDerivAt
       (fun t : ℝ => P.eval ((x : ℂ) + (t : ℂ) * I))
       (P.derivative.eval z * I) y := by
-    simpa [z] using (P.hasDerivAt z).comp y hz
+    simpa [z] using! (P.hasDerivAt z).comp y hz
   have hre := Complex.reCLM.hasFDerivAt.comp_hasDerivAt y hf
   have him := Complex.imCLM.hasFDerivAt.comp_hasDerivAt y hf
   have h := (hre.mul hre).add (him.mul him)
@@ -62,7 +62,7 @@ theorem hasDerivAt_normSq_polynomial_vertical
     funext t
     rw [Complex.normSq_apply]
     ring]
-  convert h using 1
+  convert! h using 1
   · funext t
     simp only [Function.comp_apply, Pi.add_apply, Pi.mul_apply, pow_two]
     change _ =
@@ -92,24 +92,24 @@ theorem hasDerivAt_orientedPolynomialCurrent_vertical
   let z : ℂ := (x : ℂ) + (y : ℂ) * I
   have hz : HasDerivAt (fun t : ℝ => (x : ℂ) + (t : ℂ) * I) I y := by
     have h := (Complex.ofRealCLM.hasDerivAt (x := y)).mul_const I
-    simpa using h.const_add (x : ℂ)
+    simpa using! h.const_add (x : ℂ)
   have hP : HasDerivAt
       (fun t : ℝ => P.eval ((x : ℂ) + (t : ℂ) * I))
       (P.derivative.eval z * I) y := by
-    simpa [z] using (P.hasDerivAt z).comp y hz
+    simpa [z] using! (P.hasDerivAt z).comp y hz
   have hPd : HasDerivAt
       (fun t : ℝ => P.derivative.eval ((x : ℂ) + (t : ℂ) * I))
       (P.derivative.derivative.eval z * I) y := by
-    simpa [z] using (P.derivative.hasDerivAt z).comp y hz
+    simpa [z] using! (P.derivative.hasDerivAt z).comp y hz
   have hconj : HasDerivAt
       (fun t : ℝ => (starRingEnd ℂ)
         (P.eval ((x : ℂ) + (t : ℂ) * I)))
       ((starRingEnd ℂ) (P.derivative.eval z * I)) y := by
-    simpa only [Complex.conjCLE_apply] using
+    simpa only [Complex.conjCLE_apply] using!
       Complex.conjCLE.hasFDerivAt.comp_hasDerivAt y hP
   have hprod := hPd.mul hconj
   have him := Complex.imCLM.hasFDerivAt.comp_hasDerivAt y hprod
-  convert him using 1
+  convert! him using 1
   dsimp [z]
   simp only [Complex.mul_re, Complex.mul_im, Complex.I_re, Complex.I_im,
     mul_zero, mul_one, Complex.conj_re, Complex.conj_im,

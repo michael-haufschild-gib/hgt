@@ -79,7 +79,7 @@ theorem meromorphicOrderAt_eq_neg_nat_of_tendsto_pow_mul
   rw [meromorphicOrderAt_mul hpow hf] at hzero
   have hpowOrder : meromorphicOrderAt (fun z : ℂ => (z - p) ^ k) p =
       ((k : ℤ) : WithTop ℤ) := by
-    simpa only using (meromorphicOrderAt_pow_id_sub_const (𝕜 := ℂ) (x := p) (n := k))
+    simpa only using! (meromorphicOrderAt_pow_id_sub_const (𝕜 := ℂ) (x := p) (n := k))
   rw [hpowOrder] at hzero
   have hfinite : meromorphicOrderAt f p ≠ ⊤ := by
     intro htop
@@ -103,7 +103,7 @@ theorem meromorphicOrderAt_eq_neg_nat_iff_limit_ne_zero
     have hprod : MeromorphicAt (fun z : ℂ => (z - p) ^ k * f z) p := hpow.mul hf
     have hpowOrder : meromorphicOrderAt (fun z : ℂ => (z - p) ^ k) p =
         ((k : ℤ) : WithTop ℤ) := by
-      simpa only using
+      simpa only using!
         (meromorphicOrderAt_pow_id_sub_const (𝕜 := ℂ) (x := p) (n := k))
     have hprodOrder :
         meromorphicOrderAt (fun z : ℂ => (z - p) ^ k * f z) p = 0 := by
@@ -129,7 +129,7 @@ theorem neg_nat_lt_meromorphicOrderAt_of_tendsto_pow_mul_zero
   rw [meromorphicOrderAt_mul hpow hf] at hpos
   have hpowOrder : meromorphicOrderAt (fun z : ℂ => (z - p) ^ k) p =
       ((k : ℤ) : WithTop ℤ) := by
-    simpa only using
+    simpa only using!
       (meromorphicOrderAt_pow_id_sub_const (𝕜 := ℂ) (x := p) (n := k))
   rw [hpowOrder] at hpos
   by_cases htop : meromorphicOrderAt f p = ⊤
@@ -257,7 +257,7 @@ theorem iteratedDeriv_div_id_sub_principal_eventuallyEq
       iteratedDeriv j (fun z : ℂ => U 0 * z⁻¹ + dslope U 0 z) x =
         iteratedDeriv j (fun z : ℂ => U 0 * z⁻¹) x +
           iteratedDeriv j (dslope U 0) x := by
-    simpa only [Pi.add_apply] using
+    simpa only [Pi.add_apply] using!
       iteratedDeriv_add (contDiffAt_const.mul hinv) hdsx
   rw [hder, hadd, hconstInv]
   ring
@@ -357,7 +357,7 @@ theorem analyticAt_constantCoeffDifferentialOperator_thetaLogDerivDefect_of_off_
     exact AnalyticAt.comp (x := z) (g := fun w => thetaLogDeriv w τ)
       (f := fun w : ℂ => w + h) hshiftBase hinner
   have hdefAn : AnalyticAt ℂ (thetaLogDerivDefect h · τ) z := by
-    simpa [thetaLogDerivDefect] using hshiftAn.sub hbaseAn
+    simpa [thetaLogDerivDefect] using! hshiftAn.sub hbaseAn
   exact analyticAt_constantCoeffDifferentialOperator (L := L) hdefAn
 
 /-- A common lower bound for the orders of finitely many meromorphic summands is a lower bound for
@@ -472,7 +472,7 @@ theorem constantCoeffDifferentialOperator_thetaLogDerivDefect_pole_iff
       exact AnalyticAt.comp (x := z) (g := fun w => thetaLogDeriv w τ)
         (f := fun w : ℂ => w + h) hshiftBase hinner
     have hdefAn : AnalyticAt ℂ (thetaLogDerivDefect h · τ) z := by
-      simpa [thetaLogDerivDefect] using hshiftAn.sub hbaseAn
+      simpa [thetaLogDerivDefect] using! hshiftAn.sub hbaseAn
     have hopAn := analyticAt_constantCoeffDifferentialOperator (L := L) hdefAn
     exact (not_lt_of_ge hopAn.meromorphicOrderAt_nonneg) hpole
   · rintro (⟨m, n, rfl⟩ | ⟨m, n, rfl⟩)

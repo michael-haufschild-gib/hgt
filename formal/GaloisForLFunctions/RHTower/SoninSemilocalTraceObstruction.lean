@@ -82,7 +82,7 @@ theorem norm_soninSemilocalGeometricTraceResponse_le
     calc
       hsNormSq (ContinuousLinearMap.adjoint P * R)
           ≤ ‖ContinuousLinearMap.adjoint P‖ ^ 2 * hsNormSq R := by
-            simpa only [ContinuousLinearMap.comp_def] using
+            simpa only [ContinuousLinearMap.mul_def] using
               hsNormSq_comp_left_le hR (ContinuousLinearMap.adjoint P)
       _ = ‖P‖ ^ 2 * hsNormSq R := by
         rw [(ContinuousLinearMap.adjoint :
@@ -95,7 +95,7 @@ theorem norm_soninSemilocalGeometricTraceResponse_le
     calc
       hsNormSq (ContinuousLinearMap.adjoint R * P)
           ≤ ‖P‖ ^ 2 * hsNormSq (ContinuousLinearMap.adjoint R) := by
-            simpa only [ContinuousLinearMap.comp_def] using
+            simpa only [ContinuousLinearMap.mul_def] using
               hsNormSq_comp_right_le hR.adjoint P
       _ = ‖P‖ ^ 2 * hsNormSq R := by rw [hR.hsNormSq_adjoint]
       _ ≤ 16 * hsNormSq R := by

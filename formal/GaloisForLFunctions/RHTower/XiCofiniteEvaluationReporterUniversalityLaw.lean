@@ -207,7 +207,7 @@ theorem xiCofiniteEvaluationReporter_isometricDataProcessingUniversality (N : �
           encode (report (finiteDerivativeReporterPacket c xi)) ≠ 0 := by
         intro hzeroEncoded
         apply hreport
-        exact encode.injective (by simpa using hzeroEncoded)
+        exact encode.injective (by simpa using! hzeroEncoded)
       refine ⟨c, hc, hpacket, hreport, hencoded, ?_⟩
       simpa only [totalDecode, LinearMap.comp_apply,
         LinearIsometry.coe_toLinearMap] using herase
@@ -238,7 +238,7 @@ theorem xiCofiniteEvaluationReporter_isometricDataProcessingUniversality (N : �
         encode (report (finiteDerivativeReporterPacket c xi)) ≠ 0 := by
       intro hzeroEncoded
       apply hreport
-      exact encode.injective (by simpa using hzeroEncoded)
+      exact encode.injective (by simpa using! hzeroEncoded)
     refine ⟨c, hc, hpacket, hreport, hencoded, ?_⟩
     simpa only [totalDecode, LinearMap.comp_apply,
       LinearIsometry.coe_toLinearMap] using herase

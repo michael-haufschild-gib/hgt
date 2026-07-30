@@ -107,10 +107,10 @@ theorem exists_mellinWeight_lipschitz_bound
   · subst s
     refine ⟨1, 0, by norm_num, ?_, ?_⟩
     · intro x
-      simp [mellinWeight, W.mellinBase_pos x |>.ne']
+      simp [mellinWeight]
     · have hconst : W.mellinWeight 0 = fun _ ↦ 1 := by
         funext x
-        simp [mellinWeight, W.mellinBase_pos x |>.ne']
+        simp [mellinWeight]
       rw [hconst]
       exact LipschitzWith.const 1
   · let F : ℝ → ℂ := fun x ↦ (x : ℂ) ^ (-s)
@@ -150,7 +150,7 @@ theorem exists_mellinWeight_lipschitz_bound
       intro x y
       change dist (F (W.mellinBase x)) (F (W.mellinBase y)) ≤ (C : ℝ) * dist x y
       have hprojDist : dist (W.mellinBase x) (W.mellinBase y) ≤ dist x y := by
-        simpa using hproj.dist_le_mul x y
+        simpa using! hproj.dist_le_mul x y
       exact (hFlip.dist_le_mul _ (W.mellinBase_mem x) _ (W.mellinBase_mem y)).trans
         (mul_le_mul_of_nonneg_left hprojDist C.coe_nonneg)
     let Mh : ℝ := ‖F W.lower‖ + (C : ℝ) * (W.upper - W.lower)
@@ -316,7 +316,7 @@ theorem exists_norm_gridError_le_div
       calc
         (eVariationOn (W.mellinIntegrand s) (Set.Icc 0 D)).toReal ≤
             Mh * (eVariationOn W (Set.Icc 0 D)).toReal + V * (C : ℝ) * D := by
-          simpa only [mellinIntegrand, sub_zero] using h
+          simpa only [mellinIntegrand, sub_zero] using! h
         _ ≤ Mh * V + V * (C : ℝ) * D := by
           gcongr
     · positivity
@@ -450,7 +450,7 @@ theorem exists_mellinWeight_uniform_lipschitz_bound
     apply LipschitzWith.of_dist_le_mul
     intro x y
     have hprojDist : dist (W.mellinBase x) (W.mellinBase y) ≤ dist x y := by
-      simpa using hproj.dist_le_mul x y
+      simpa using! hproj.dist_le_mul x y
     exact ((hFlip s hs).dist_le_mul _ (W.mellinBase_mem x) _
       (W.mellinBase_mem y)).trans
         (mul_le_mul_of_nonneg_left hprojDist C.coe_nonneg)
@@ -498,7 +498,7 @@ theorem exists_uniform_norm_gridError_le_div
       calc
         (eVariationOn (W.mellinIntegrand s) (Set.Icc 0 D)).toReal ≤
             Mh * (eVariationOn W (Set.Icc 0 D)).toReal + V * (C : ℝ) * D := by
-          simpa only [mellinIntegrand, sub_zero] using h
+          simpa only [mellinIntegrand, sub_zero] using! h
         _ ≤ Mh * V + V * (C : ℝ) * D := by gcongr
     · positivity
   calc

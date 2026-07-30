@@ -463,7 +463,7 @@ theorem bourgainA6RescaledMoment_eq_restrictedTail
     (H : ℕ) {A B : ℝ} (hA : 0 < A) (hB : 0 < B) :
     bourgainA6RescaledMoment H A B =
       A * B * bourgainA6RestrictedTailMoment H A B := by
-  simpa [bourgainA6RestrictedTailMoment] using
+  simpa [bourgainA6RestrictedTailMoment] using!
     (bourgainA6RescaledMoment_eq H hA hB)
 
 theorem bourgainA6CenteredFirstSpacingMoment_eq_tail

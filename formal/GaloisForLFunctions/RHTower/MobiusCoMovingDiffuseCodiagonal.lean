@@ -113,14 +113,14 @@ theorem coMovingSynthesis_analysis
   have hnorm : ∀ f : Lp ℂ 2 (volume : Measure ℝ),
       ‖coMovingAnalysis x f‖ = ‖f‖ := by
     intro f
-    simpa [coMovingAnalysis, hx] using norm_coMovingTensorLift x f
+    simpa [coMovingAnalysis, hx] using! norm_coMovingTensorLift x f
   let U : Lp ℂ 2 (volume : Measure ℝ) →ₗᵢ[ℂ] InfiniteMobiusShiftChannel :=
     { (coMovingAnalysis x).toLinearMap with norm_map' := hnorm }
   have hcomp := U.adjoint_comp_self
   have hcomp' :
       (ContinuousLinearMap.adjoint (coMovingAnalysis x)) ∘L
           coMovingAnalysis x = 1 := by
-    simpa only [U] using hcomp
+    simpa only [U] using! hcomp
   exact congrFun (congrArg DFunLike.coe hcomp') f
 
 theorem norm_coMovingSynthesis_le
@@ -422,7 +422,7 @@ theorem tendsto_extendedMobiusCriticalFisherTangentNorm :
               ‖infiniteMobiusCriticalFisherTangentLp sigma hsigma‖ ^ 2
             else 0))
         (nhdsWithin 1 (Set.Ioi 1)) (nhds (Real.sqrt 4)) := by
-    simpa only [Function.comp_apply] using hsqrt
+    simpa only [Function.comp_apply] using! hsqrt
   rw [hfun] at hsqrt'
   norm_num at hsqrt'
   exact hsqrt'
@@ -493,6 +493,7 @@ theorem diffuseFisherOffDiagonalCodiagonal_eq_score_sub_collision
     have h1 := hp.mul_left (p n * a n * d n)
     have h2 := hpa.mul_left (p n * d n)
     convert h1.add h2 using 1
+    all_goals try rfl
     funext m
     ring
   have hinnerValue (n : ℕ) :
@@ -1094,6 +1095,7 @@ private theorem tsum_squarefreeMobiusMass_mul_centeredLog
     have hz := (squarefreeMobiusTotal_pos htau).ne'
     have hscaled := hlog.mul_left (squarefreeMobiusTotal tau)
     convert hscaled using 1
+    all_goals try rfl
     funext n
     rw [squarefreeMobiusProbability]
     field_simp [hz]
@@ -1198,14 +1200,14 @@ theorem tendsto_inv_squarefreeMobiusTotal_div_sub_one :
   have hunit : Tendsto
       (fun sigma : ℝ => zetaResidueUnit (sigma : ℂ))
       (𝓝[>] (1 : ℝ)) (𝓝 (1 : ℂ)) := by
-    simpa using
+    simpa using!
       zetaResidueUnit_analyticAt.continuousAt.tendsto.comp hsigma
   have hquot : Tendsto
       (fun sigma : ℝ =>
         riemannZeta (2 * (sigma : ℂ)) /
           zetaResidueUnit (sigma : ℂ))
       (𝓝[>] (1 : ℝ)) (𝓝 (riemannZeta (2 : ℂ))) := by
-    simpa using hnum.div hunit (by norm_num : (1 : ℂ) ≠ 0)
+    simpa using! hnum.div hunit (by norm_num : (1 : ℂ) ≠ 0)
   have heq :
       (fun sigma : ℝ =>
         (((squarefreeMobiusTotal sigma)⁻¹ /
@@ -1238,7 +1240,7 @@ theorem tendsto_inv_squarefreeMobiusTotal_div_sub_one :
     hquot.congr' heq.symm
   have hre :=
     Complex.continuous_re.continuousAt.tendsto.comp hcast
-  convert hre using 1
+  convert hre using 1 <;> rfl
 
 theorem tendsto_mobiusDiffuseCollisionParameter
     (u : ℝ) :
@@ -1299,12 +1301,12 @@ private theorem tendsto_squarefreeMobiusLogMoment_collisionParameter
     Complex.continuous_ofReal.continuousAt.tendsto.comp htauR
   have hflux2 :
       DifferentiableAt ℂ infinitePrimeFlux (2 : ℂ) := by
-    simpa only [infinitePrimeFlux, logDeriv_apply, neg_div] using
+    simpa only [infinitePrimeFlux, logDeriv_apply, neg_div] using!
       (differentiableAt_neg_logDeriv_riemannZeta_of_one_lt_re
         (s := (2 : ℂ)) (by norm_num))
   have hflux4 :
       DifferentiableAt ℂ infinitePrimeFlux (4 : ℂ) := by
-    simpa only [infinitePrimeFlux, logDeriv_apply, neg_div] using
+    simpa only [infinitePrimeFlux, logDeriv_apply, neg_div] using!
       (differentiableAt_neg_logDeriv_riemannZeta_of_one_lt_re
         (s := (4 : ℂ)) (by norm_num))
   have hcomp : DifferentiableAt ℂ
@@ -1445,7 +1447,7 @@ theorem tendsto_mobiusDiffuseCollisionResidual_div_graphScale_zero
         (sigma - 1) : ℝ) : ℂ) /
         squarefreeMobiusBoundaryLayerLaplace sigma u)
       (𝓝[>] (1 : ℝ)) (𝓝 0) := by
-    simpa using hquot
+    simpa using! hquot
   apply hquot'.congr'
   filter_upwards [self_mem_nhdsWithin] with sigma hsigma
   change 1 < sigma at hsigma

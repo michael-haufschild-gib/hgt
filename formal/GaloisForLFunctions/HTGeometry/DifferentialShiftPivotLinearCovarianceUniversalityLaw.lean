@@ -37,7 +37,7 @@ theorem differentialPolynomialEval_linearChange
     simp only [left, right, AlgHom.coe_comp, Function.comp_apply,
       differentialJetLinearChangeAlgHom_X, differentialPolynomialEval_X]
     rw [differentialJet_matrixLinearForms hconst]
-    simpa [differentialPolynomialEval] using
+    simpa [differentialPolynomialEval] using!
       (aeval_jetwiseMatrixLinearPolynomial M
         (fun p : n × ℕ => differentialJet p.2 (x p.1)) (i, r))
   exact AlgHom.congr_fun heq P

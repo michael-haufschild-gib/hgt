@@ -26,7 +26,7 @@ theorem eval_complexMvPolynomialFamilyJacobianMinor {n m : ℕ}
   have h := (MvPolynomial.aeval x).toRingHom.map_det
     (Matrix.of fun i j => MvPolynomial.pderiv (cols j) (P i))
   simpa [complexMvPolynomialFamilyJacobianMinor,
-    complexMvPolynomialFamilyJacobian, MvPolynomial.aeval_def] using h
+    complexMvPolynomialFamilyJacobian, MvPolynomial.aeval_def] using! h
 
 /-- The locus where every maximal Jacobian minor vanishes. -/
 def complexMvPolynomialFamilyJacobianRankDefect {n m : ℕ}

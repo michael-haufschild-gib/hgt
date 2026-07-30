@@ -113,7 +113,7 @@ theorem topShiftJetSymbol_ne_zero {n : ℕ} {Q : MvPolynomial (Fin (n + 2)) ℂ}
           Equiv.sum_comp (topShiftJetCast m).symm
             (flatOrder (fun j => m.1 j.succ))
         _ = jetMonomialOrder n m.1 := by
-          simpa [jetMonomialOrder] using (flatOrder_sum (fun j => m.1 j.succ))]
+          simpa [jetMonomialOrder] using! (flatOrder_sum (fun j => m.1 j.succ))]
     rw [show ∑ t, topShiftJetOrder m0 t = jetMonomialOrder n m0.1 by
       calc
         ∑ t, topShiftJetOrder m0 t =
@@ -121,7 +121,7 @@ theorem topShiftJetSymbol_ne_zero {n : ℕ} {Q : MvPolynomial (Fin (n + 2)) ℂ}
           Equiv.sum_comp (topShiftJetCast m0).symm
             (flatOrder (fun j => m0.1 j.succ))
         _ = jetMonomialOrder n m0.1 := by
-          simpa [jetMonomialOrder] using (flatOrder_sum (fun j => m0.1 j.succ))]
+          simpa [jetMonomialOrder] using! (flatOrder_sum (fun j => m0.1 j.succ))]
     exact hm₀max m.1 m.2
   have hdist : ∀ m ∈ G.attach,
       (∃ σ : Equiv.Perm (Fin (jetMonomialDegree n anchor)),
@@ -162,4 +162,3 @@ theorem topShiftJetSymbol_ne_zero {n : ℕ} {Q : MvPolynomial (Fin (n + 2)) ℂ}
 end
 
 end GaloisForLFunctions
-

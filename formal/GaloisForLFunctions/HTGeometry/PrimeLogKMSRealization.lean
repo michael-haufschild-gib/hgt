@@ -285,7 +285,7 @@ theorem finitePrimeLogHerglotz_tendsto_primeLogHerglotz
     (z : ℂ) (hz : 0 < z.im) :
     Filter.Tendsto (fun P : Finset Nat.Primes => finitePrimeLogHerglotz P u z)
       Filter.atTop (nhds (primeLogHerglotz u z)) := by
-  simpa only [finitePrimeLogHerglotz, primeLogHerglotz, discreteHerglotz] using
+  simpa only [finitePrimeLogHerglotz, primeLogHerglotz, discreteHerglotz] using!
     (summable_discreteHerglotz_term primeLogSupport (primeDyadicWeight u) z hz
       (summable_norm_primeDyadicWeight u C hu)).hasSum
 
@@ -297,7 +297,7 @@ theorem finitePrimeLogHerglotz_tendstoLocallyUniformlyOn_primeLogHerglotz
       (fun P : Finset Nat.Primes => finitePrimeLogHerglotz P u)
       (primeLogHerglotz u) Filter.atTop upperHalfPlane := by
   simpa only [HasSumLocallyUniformlyOn, finitePrimeLogHerglotz,
-    primeLogHerglotz, discreteHerglotz] using
+    primeLogHerglotz, discreteHerglotz] using!
     (summableLocallyUniformlyOn_discreteHerglotz primeLogSupport
       (primeDyadicWeight u)
       (summable_norm_primeDyadicWeight u C hu)).hasSumLocallyUniformlyOn

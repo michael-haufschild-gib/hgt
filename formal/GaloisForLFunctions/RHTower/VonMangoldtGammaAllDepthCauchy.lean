@@ -187,7 +187,7 @@ def finiteVonMangoldtAllDepthBoundarySubspace (M N : ℕ) :
 /-- Canonical finite packet after removing both causal/polar boundary modes. -/
 def finiteVonMangoldtAllDepthBalancedCauchyVector
     (M N : ℕ) (w : ℂ) : EuclideanSpace ℂ (Fin M × Fin N) :=
-  ((finiteVonMangoldtAllDepthBoundarySubspace M N)ᗮ.orthogonalProjection
+  ((finiteVonMangoldtAllDepthBoundarySubspace M N)ᗮ.orthogonalProjectionOnto
     (finiteVonMangoldtAllDepthCauchyVector M N w) :
       EuclideanSpace ℂ (Fin M × Fin N))
 
@@ -201,7 +201,7 @@ theorem finiteVonMangoldtAllDepthBalancedCauchyVector_plus_half_eq_zero
     apply Submodule.subset_span
     simp
   have hproj :=
-    Submodule.orthogonalProjectionOnto_mem_subspace_orthogonalComplement_eq_zero hv
+    Submodule.orthogonalProjectionOnto_apply_of_mem_orthogonal hv
   exact congrArg Subtype.val hproj
 
 theorem finiteVonMangoldtAllDepthBalancedCauchyVector_neg_half_eq_zero
@@ -214,7 +214,7 @@ theorem finiteVonMangoldtAllDepthBalancedCauchyVector_neg_half_eq_zero
     apply Submodule.subset_span
     simp
   have hproj :=
-    Submodule.orthogonalProjectionOnto_mem_subspace_orthogonalComplement_eq_zero hv
+    Submodule.orthogonalProjectionOnto_apply_of_mem_orthogonal hv
   exact congrArg Subtype.val hproj
 
 /-- Every compressed source vector satisfies the positive-half boundary constraint. -/
@@ -227,7 +227,7 @@ theorem inner_balancedCauchyVector_boundary_plus_half_eq_zero
     apply Submodule.subset_span
     simp
   have hbal : finiteVonMangoldtAllDepthBalancedCauchyVector M N w ∈ Sᗮ := by
-    exact ((finiteVonMangoldtAllDepthBoundarySubspace M N)ᗮ.orthogonalProjection
+    exact ((finiteVonMangoldtAllDepthBoundarySubspace M N)ᗮ.orthogonalProjectionOnto
       (finiteVonMangoldtAllDepthCauchyVector M N w)).property
   exact Submodule.inner_left_of_mem_orthogonal hplus hbal
 
@@ -241,7 +241,7 @@ theorem inner_balancedCauchyVector_boundary_neg_half_eq_zero
     apply Submodule.subset_span
     simp
   have hbal : finiteVonMangoldtAllDepthBalancedCauchyVector M N w ∈ Sᗮ := by
-    exact ((finiteVonMangoldtAllDepthBoundarySubspace M N)ᗮ.orthogonalProjection
+    exact ((finiteVonMangoldtAllDepthBoundarySubspace M N)ᗮ.orthogonalProjectionOnto
       (finiteVonMangoldtAllDepthCauchyVector M N w)).property
   exact Submodule.inner_left_of_mem_orthogonal hminus hbal
 

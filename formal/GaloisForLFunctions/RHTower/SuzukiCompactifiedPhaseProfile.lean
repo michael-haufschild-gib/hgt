@@ -131,9 +131,9 @@ theorem hasDerivAt_suzukiCenteredInversePhase
     hphase.of_local_left_inverse φ.symm.continuous.continuousAt hphaseSpeed
       (Filter.Eventually.of_forall (fun z => φ.apply_symm_apply z))
   have hadd : HasDerivAt (fun z : ℝ => Real.pi + z) 1 y := by
-    simpa only [Pi.add_apply, id_eq, zero_add] using
+    simpa only [Pi.add_apply, id_eq, zero_add] using!
       (hasDerivAt_const y Real.pi).add (hasDerivAt_id y)
-  simpa [suzukiCenteredInversePhase] using hinv.comp y hadd
+  simpa [suzukiCenteredInversePhase] using! hinv.comp y hadd
 
 /-- Exact compactified inverse-phase derivative. -/
 theorem hasDerivAt_suzukiCompactifiedInversePhase
@@ -144,7 +144,7 @@ theorem hasDerivAt_suzukiCompactifiedInversePhase
       (1 / (phaseSpeed * (1 + suzukiCenteredInversePhase φ y ^ 2))) y := by
   have hinv := hasDerivAt_suzukiCenteredInversePhase hphase hphaseSpeed
   simpa [suzukiCompactifiedInversePhase, one_div, mul_comm, mul_left_comm, mul_assoc]
-    using hinv.arctan
+    using! hinv.arctan
 
 /-- The sharp anchored floor confines compactified inverse speed to `(0,1/2]`. -/
 theorem suzukiCompactifiedInversePhase_speed_mem

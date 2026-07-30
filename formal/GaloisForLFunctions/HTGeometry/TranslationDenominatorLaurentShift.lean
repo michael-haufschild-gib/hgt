@@ -73,14 +73,23 @@ def facetLaurentShift
     {R α : Type*} [CommRing R] [Fintype α] [DecidableEq α]
     (d : translationSubmonoid R α) (F : Finset α)
     (P : MvPolynomial α R) : (α → ℤ) →₀ R :=
-  Finsupp.mapDomain (facetLaurentExponentShift d F) P
+  Finsupp.mapDomain (facetLaurentExponentShift d F)
+    (AddMonoidAlgebra.coeff P)
 
 /-- Laurent denominator reindexing is injective on finite coefficient rows. -/
 theorem facetLaurentShift_injective
     {R α : Type*} [CommRing R] [Fintype α] [DecidableEq α]
     (d : translationSubmonoid R α) (F : Finset α) :
-    Function.Injective (facetLaurentShift d F) :=
-  Finsupp.mapDomain_injective (facetLaurentExponentShift_injective d F)
+    Function.Injective (facetLaurentShift d F) := by
+  intro P Q h
+  apply AddMonoidAlgebra.coeff_injective
+  change
+    Finsupp.mapDomain (facetLaurentExponentShift d F)
+        (AddMonoidAlgebra.coeff P) =
+      Finsupp.mapDomain (facetLaurentExponentShift d F)
+        (AddMonoidAlgebra.coeff Q) at h
+  exact Finsupp.mapDomain_injective
+    (facetLaurentExponentShift_injective d F) h
 
 end
 

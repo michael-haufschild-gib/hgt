@@ -145,11 +145,19 @@ theorem mellin_mobiusLaplaceComparisonCarrier {a K : ℝ} {s : ℂ}
   have hpower := mellinConvergent_mobiusLaplacePowerKernel (lt_trans ha hs)
   have hadd := hasMellin_add hsource (hpower.const_smul (K : ℂ))
   refine ⟨?_, ?_⟩
-  · simpa [mobiusLaplaceComparisonCarrier, Pi.add_apply, smul_eq_mul] using hadd.1
+  · change MellinConvergent
+      (fun t => mobiusDiscreteLaplaceTransform t +
+        (K : ℂ) * mobiusLaplacePowerKernel a t) s
+    simpa only [smul_eq_mul] using hadd.1
   · rw [show mellin (mobiusLaplaceComparisonCarrier a K) s =
         mellin mobiusDiscreteLaplaceTransform s +
           mellin (fun x => (K : ℂ) • mobiusLaplacePowerKernel a x) s by
-      simpa [mobiusLaplaceComparisonCarrier, Pi.add_apply, smul_eq_mul] using hadd.2]
+      change mellin
+        (fun t => mobiusDiscreteLaplaceTransform t +
+          (K : ℂ) * mobiusLaplacePowerKernel a t) s =
+        mellin mobiusDiscreteLaplaceTransform s +
+          mellin (fun x => (K : ℂ) • mobiusLaplacePowerKernel a x) s
+      simpa only [smul_eq_mul] using hadd.2]
     rw [mellin_mobiusDiscreteLaplaceTransform_eq_gamma_div_zeta hs,
       mellin_const_smul, mellin_mobiusLaplacePowerKernel (lt_trans ha hs)]
     simp [smul_eq_mul, div_eq_mul_inv]
@@ -164,9 +172,13 @@ theorem mobiusLaplaceComparisonCarrier_locallyIntegrableOn {a K : ℝ} (ha : a <
       (fun x => (K : ℂ) • mobiusLaplacePowerKernel a x) (Ioi 0) := by
     intro x hx
     rcases hpower.locallyIntegrableOn x hx with ⟨u, hu, hint⟩
-    exact ⟨u, hu, by simpa [smul_eq_mul] using hint.const_mul (K : ℂ)⟩
+    refine ⟨u, hu, ?_⟩
+    change Integrable
+      (fun x => (K : ℂ) * mobiusLaplacePowerKernel a x) (volume.restrict u)
+    exact hint.const_mul (K : ℂ)
   have hadd := mobiusDiscreteLaplaceTransform_locallyIntegrableOn.add hscaled
-  simpa [mobiusLaplaceComparisonCarrier, Pi.add_apply, smul_eq_mul] using hadd
+  exact LocallyIntegrableOn.congr
+    (Filter.Eventually.of_forall fun _ => rfl) hadd
 
 /-- Above a positive cutoff, the comparison tail is a globally Mellin-flat correction. -/
 theorem mobiusLaplaceComparisonTail_isMellinFlatKernel {a K d : ℝ}
@@ -214,11 +226,19 @@ theorem mellin_mobiusLaplaceComparisonCutoff {a K d : ℝ} {s : ℂ}
     (mobiusLaplaceComparisonTail_isMellinFlatKernel (K := K) ha hd).mellinConvergent s
   have hsub := hasMellin_sub hcarrier.1 htail
   refine ⟨?_, ?_⟩
-  · simpa [mobiusLaplaceComparisonCutoff, Pi.sub_apply] using hsub.1
+  · change MellinConvergent
+      (fun t => mobiusLaplaceComparisonCarrier a K t -
+        mobiusLaplaceComparisonTail a K d t) s
+    exact hsub.1
   · rw [show mellin (mobiusLaplaceComparisonCutoff a K d) s =
         mellin (mobiusLaplaceComparisonCarrier a K) s -
           mellin (mobiusLaplaceComparisonTail a K d) s by
-      simpa [mobiusLaplaceComparisonCutoff, Pi.sub_apply] using hsub.2]
+      change mellin
+        (fun t => mobiusLaplaceComparisonCarrier a K t -
+          mobiusLaplaceComparisonTail a K d t) s =
+        mellin (mobiusLaplaceComparisonCarrier a K) s -
+          mellin (mobiusLaplaceComparisonTail a K d) s
+      exact hsub.2]
     rw [hcarrier.2]
 
 /-- The unconditional low-height Xi gap makes the residue unit nonzero. -/
@@ -468,9 +488,8 @@ theorem differentiableOn_mobiusLaplaceLandauContinuation_closedBall
   have haffine : AnalyticAt ℂ (fun w : ℂ => (mobiusLaplaceLandauCenter : ℂ) - w) z :=
     analyticAt_const.sub analyticAt_id
   have hcomp := houter.comp haffine
-  exact (by
-    simpa [mobiusLaplaceLandauContinuation, Function.comp_def] using
-      hcomp.differentiableAt.differentiableWithinAt)
+  exact hcomp.differentiableAt.differentiableWithinAt.congr
+    (fun _ _ => rfl) rfl
 
 /-- At the MGF origin, the translated continuation and positive-measure MGF have the same germ. -/
 theorem mobiusLaplaceLandauContinuation_eventuallyEq_complexMGF
@@ -481,9 +500,13 @@ theorem mobiusLaplaceLandauContinuation_eventuallyEq_complexMGF
   have hmap : Tendsto
       (fun z : ℂ => (mobiusLaplaceLandauCenter : ℂ) - z)
       (𝓝 0) (𝓝 (mobiusLaplaceLandauCenter : ℂ)) := by
-    simpa using
-      ((continuousAt_const.sub continuousAt_id : ContinuousAt
-        (fun z : ℂ => (mobiusLaplaceLandauCenter : ℂ) - z) 0).tendsto)
+    have hpi : Tendsto
+        ((fun _ : ℂ => (mobiusLaplaceLandauCenter : ℂ)) - fun z => z)
+        (𝓝 0) (𝓝 (mobiusLaplaceLandauCenter : ℂ)) := by
+      simpa only [Pi.sub_apply, sub_zero] using
+        ((continuousAt_const.sub continuousAt_id : ContinuousAt
+          ((fun _ : ℂ => (mobiusLaplaceLandauCenter : ℂ)) - fun z => z) 0).tendsto)
+    exact hpi.congr (fun _ => rfl)
   have hopen : {s : ℂ | 1 < s.re} ∈ 𝓝 (mobiusLaplaceLandauCenter : ℂ) :=
     (isOpen_lt continuous_const Complex.continuous_re).mem_nhds (by
       rw [mobiusLaplaceLandauCenter]
@@ -794,9 +817,13 @@ theorem mobiusLaplaceNegativeLandauContinuation_eventuallyEq_complexMGF
   have hmap : Tendsto
       (fun z : ℂ => (mobiusLaplaceLandauCenter : ℂ) - z)
       (𝓝 0) (𝓝 (mobiusLaplaceLandauCenter : ℂ)) := by
-    simpa using
-      ((continuousAt_const.sub continuousAt_id : ContinuousAt
-        (fun z : ℂ => (mobiusLaplaceLandauCenter : ℂ) - z) 0).tendsto)
+    have hpi : Tendsto
+        ((fun _ : ℂ => (mobiusLaplaceLandauCenter : ℂ)) - fun z => z)
+        (𝓝 0) (𝓝 (mobiusLaplaceLandauCenter : ℂ)) := by
+      simpa only [Pi.sub_apply, sub_zero] using
+        ((continuousAt_const.sub continuousAt_id : ContinuousAt
+          ((fun _ : ℂ => (mobiusLaplaceLandauCenter : ℂ)) - fun z => z) 0).tendsto)
+    exact hpi.congr (fun _ => rfl)
   have hopen : {s : ℂ | 1 < s.re} ∈ 𝓝 (mobiusLaplaceLandauCenter : ℂ) :=
     (isOpen_lt continuous_const Complex.continuous_re).mem_nhds (by
       rw [mobiusLaplaceLandauCenter]

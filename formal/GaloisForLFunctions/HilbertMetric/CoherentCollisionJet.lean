@@ -191,7 +191,7 @@ private theorem coherentCollisionExponent_isBigO_sq (a b : ℝ) :
     simpa using hca
   have h := (isBigO_refl (fun e : ℝ => e ^ 2) (nhds 0)).mul
     (hfactor.isBigO_one ℝ)
-  convert h using 1
+  convert! h using 1
   · funext e
     unfold coherentCollisionExponent
     ring
@@ -218,8 +218,7 @@ private theorem exp_collision_value_isLittleO (a b : ℝ) :
     exact (hrem.trans_isBigO hy5).congr'
       (Eventually.of_forall fun e => rfl)
       (Eventually.of_forall hpows)
-  convert hrem'.add (collisionCross_isLittleO a b) using 1
-  · funext e
+  exact (hrem'.add (collisionCross_isLittleO a b)).congr_left fun e => by
     ring
 
 private theorem exp_collision_first_isLittleO (a b : ℝ) :
@@ -239,8 +238,9 @@ private theorem exp_collision_first_isLittleO (a b : ℝ) :
       (fun e => coherentCollisionExponent a b e *
         (Real.exp (coherentCollisionExponent a b e) - taylorFour (coherentCollisionExponent a b e)))
         =o[nhds 0] (fun e => coherentCollisionExponent a b e ^ 5) := by
-    convert (isBigO_refl (coherentCollisionExponent a b) (nhds 0)).mul_isLittleO hrem using 1
-    funext e
+    refine ((isBigO_refl (coherentCollisionExponent a b) (nhds 0)).mul_isLittleO hrem).congr
+      (fun _ => rfl) ?_
+    intro e
     simp only [Function.comp_apply]
     ring
   have hpows (e : ℝ) : (e ^ 2) ^ 5 = e ^ 10 := by ring
@@ -251,8 +251,7 @@ private theorem exp_collision_first_isLittleO (a b : ℝ) :
     exact (hmul.trans_isBigO (hyO.pow 5)).congr'
       (Eventually.of_forall fun e => rfl)
       (Eventually.of_forall hpows)
-  convert hrem'.add (collisionFirstCross_isLittleO a b) using 1
-  · funext e
+  exact (hrem'.add (collisionFirstCross_isLittleO a b)).congr_left fun e => by
     ring
 
 private theorem exp_collision_second_isLittleO (a b : ℝ) :
@@ -272,8 +271,10 @@ private theorem exp_collision_second_isLittleO (a b : ℝ) :
       (fun e => coherentCollisionExponent a b e ^ 2 *
         (Real.exp (coherentCollisionExponent a b e) - taylorThree (coherentCollisionExponent a b e)))
         =o[nhds 0] (fun e => coherentCollisionExponent a b e ^ 5) := by
-    convert (isBigO_refl (fun e => coherentCollisionExponent a b e ^ 2) (nhds 0)).mul_isLittleO hrem using 1
-    funext e
+    refine
+      ((isBigO_refl (fun e => coherentCollisionExponent a b e ^ 2) (nhds 0)).mul_isLittleO hrem).congr
+        (fun _ => rfl) ?_
+    intro e
     simp only [Function.comp_apply]
     ring
   have hpows (e : ℝ) : (e ^ 2) ^ 5 = e ^ 10 := by ring
@@ -284,8 +285,7 @@ private theorem exp_collision_second_isLittleO (a b : ℝ) :
     exact (hmul.trans_isBigO (hyO.pow 5)).congr'
       (Eventually.of_forall fun e => rfl)
       (Eventually.of_forall hpows)
-  convert hrem'.add (collisionSecondCross_isLittleO a b) using 1
-  · funext e
+  exact (hrem'.add (collisionSecondCross_isLittleO a b)).congr_left fun e => by
     ring
 
 /-- The coherent Gram entry has its exact degree-five value jet through order ten. -/

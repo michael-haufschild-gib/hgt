@@ -237,3 +237,36 @@ theorem riemannHypothesis_of_xiPrimeSeamChargesCoherent
 end
 
 end RHTower
+
+namespace RHTower
+
+noncomputable section
+
+/-- The centered prime-clock mismatch between functional-equation inverse transport and
+Schwarz-adjoint transport, written without an inverse so its relation to the existing seam charge
+is algebraically transparent. -/
+def primeCpowDualityAdjunctionFracture (p : ℕ) (rho : ℂ) : ℂ :=
+  (p : ℂ) ^ (rho - 1 / 2) -
+    (p : ℂ) ^ (1 / 2 - (starRingEnd ℂ) rho)
+
+/-- The canonical FE--Schwarz prime seam is exactly the half-density-renormalized
+duality--adjunction fracture. -/
+theorem orbitwiseNatPrimeSeamCharge_eq_cpow_fracture
+    (p : ℕ) (hp : 0 < p) (rho : ℂ) :
+    orbitwiseNatPrimeSeamCharge p rho =
+      -((Real.log (p : ℝ) : ℂ) * (p : ℂ) ^ (-(1 / 2 : ℂ))) *
+        primeCpowDualityAdjunctionFracture p rho := by
+  have hpC : (p : ℂ) ≠ 0 := by exact_mod_cast hp.ne'
+  unfold orbitwiseNatPrimeSeamCharge orbitwiseScaleSeamCharge
+    primeCpowDualityAdjunctionFracture
+  have hpCast : ((p : ℝ) : ℂ) = (p : ℂ) := by norm_num
+  rw [hpCast]
+  rw [show -(starRingEnd ℂ) rho =
+        -(1 / 2 : ℂ) + (1 / 2 - (starRingEnd ℂ) rho) by ring_nf,
+      show -(1 - rho) = -(1 / 2 : ℂ) + (rho - 1 / 2) by ring_nf,
+      Complex.cpow_add _ _ hpC, Complex.cpow_add _ _ hpC]
+  ring_nf
+
+end
+
+end RHTower

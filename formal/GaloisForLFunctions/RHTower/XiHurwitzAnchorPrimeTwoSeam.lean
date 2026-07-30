@@ -180,7 +180,7 @@ theorem tendsto_two_cpow_mul_normalizedHurwitzAnchorTail
       (nhds ((2 : ℂ) ^ (-s))) := by
   have h := (tendsto_two_cpow_mul_riemannZeta_shift_sub_one s).comp
     tendsto_natCast_atTop_atTop
-  convert h using 1
+  convert! h using 1
   funext r
   rw [normalizedHurwitzAnchorTail_eq r hs]
   norm_num
@@ -204,7 +204,7 @@ theorem tendsto_xiHurwitzAnchorPrimeTwoSeam
       simp only [Complex.sub_re, Complex.one_re]
       linarith)
   have h := (hconj.sub href).const_mul (Real.log 2 : ℂ)
-  convert h using 1
+  convert! h using 1
   · funext r
     simp only [xiHurwitzAnchorPrimeTwoSeam]
     ring
@@ -220,7 +220,7 @@ theorem tendsto_xiPrimeFluxPrimeTwoSeam (rho : ℂ) :
       (nhds (orbitwiseFirstPrimeSeamCharge rho)) := by
   have h := (tendsto_orbitwiseFirstPrimeSeamCharge_infinitePrimeFlux rho).comp
     tendsto_natCast_atTop_atTop
-  convert h using 1
+  convert! h using 1
 
 /-- **Common-seam theorem.**  The local Hurwitz anchor coefficient channel and the far-right
 all-prime flux channel agree asymptotically after first-prime normalization. -/

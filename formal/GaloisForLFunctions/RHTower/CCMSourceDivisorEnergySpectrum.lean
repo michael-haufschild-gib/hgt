@@ -208,7 +208,7 @@ theorem xiZeroHalfPlaneBound_of_summableNegativeChannelCover_aggregate_abscissa
       ((1 + alpha : ℝ) : EReal) <
         ((1 + alpha + epsilon : ℝ) : EReal) := by
     exact_mod_cast (by linarith : 1 + alpha < 1 + alpha + epsilon)
-  simpa only [ofReal_re] using hcarrier.trans_lt hstrict
+  simpa only [ofReal_re] using! hcarrier.trans_lt hstrict
 
 /-- At the critical aggregate abscissa, one pointwise-summable positive channel cover proves RH. -/
 theorem riemannHypothesis_of_summableNegativeChannelCover_aggregate_abscissa_le_one

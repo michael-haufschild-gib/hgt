@@ -1,6 +1,6 @@
 import Mathlib.Analysis.SpecialFunctions.Complex.Log
 import Mathlib.MeasureTheory.Measure.CharacteristicFunction.Basic
-import Mathlib.MeasureTheory.Measure.Typeclasses.NoAtoms
+import Mathlib.MeasureTheory.Measure.Typeclasses.NullSingletonClass
 
 /-!
 # Exact-return classification for arbitrary spectral measures
@@ -183,7 +183,7 @@ theorem exact_return_has_countable_spectral_carrier
 /-- An atomless probability spectral measure has strictly subunit survival
 at every nonzero time. -/
 theorem atomless_spectral_measure_never_exactly_returns
-    (μ : Measure ℝ) [IsProbabilityMeasure μ] [NoAtoms μ]
+    (μ : Measure ℝ) [IsProbabilityMeasure μ] [NullSingletonClass μ]
     {t : ℝ} (ht : t ≠ 0) :
     ‖charFun μ t‖ < 1 := by
   by_contra hnot
@@ -199,7 +199,7 @@ theorem atomless_spectral_measure_never_exactly_returns
 exactly at a nonzero time, every atomless submeasure is zero.  Thus any
 continuous component, however small, forbids exact return. -/
 theorem exact_return_has_no_atomless_submeasure
-    (μ ν : Measure ℝ) [IsProbabilityMeasure μ] [NoAtoms ν]
+    (μ ν : Measure ℝ) [IsProbabilityMeasure μ] [NullSingletonClass ν]
     {t : ℝ} (ht : t ≠ 0) (hreturn : ‖charFun μ t‖ = 1)
     (hνμ : ν ≤ μ) :
     ν = 0 := by

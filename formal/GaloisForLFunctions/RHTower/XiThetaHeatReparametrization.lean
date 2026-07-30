@@ -106,7 +106,7 @@ private theorem expSubOne_image : expSubOne '' Ioi (0 : ℝ) = Ioi (0 : ℝ) := 
   · rintro ⟨u, hu, rfl⟩
     rw [mem_Ioi]
     have := Real.exp_lt_exp.mpr hu
-    simpa only [Real.exp_zero] using sub_pos.mpr this
+    simpa only [Real.exp_zero] using! sub_pos.mpr this
   · intro hy
     have hy1 : 0 < 1 + y := by linarith [show 0 < y from hy]
     refine ⟨Real.log (1 + y), ?_, ?_⟩

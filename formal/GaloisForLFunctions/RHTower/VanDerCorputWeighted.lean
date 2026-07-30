@@ -60,7 +60,7 @@ theorem norm_integral_weight_cexp_le
     have hinv : HasDerivAt (fun t => ((g' t : ℂ) * I)⁻¹)
         (-(((g'' x : ℂ) * I) / ((g' x : ℂ) * I) ^ 2)) x := by
       have h2 := (hasDerivAt_inv (hg'ne x hx)).comp x hden
-      convert h2 using 1; field_simp
+      (convert! h2 using 1; field_simp)
     exact ((hw x hx).ofReal_comp).mul hinv
   have hVnorm : ∀ t, ‖V t‖ = 1 := by intro t; rw [hVdef]; simp [Complex.norm_exp]
   have hUnorm : ∀ x ∈ Set.uIcc a b, ‖U x‖ = w x / g' x := by
@@ -149,7 +149,7 @@ theorem norm_integral_weight_cexp_le
   have hderivInv : ∀ x ∈ Set.uIcc a b, HasDerivAt (fun t => -(g' t)⁻¹) (g'' x / g' x ^ 2) x := by
     intro x hx
     have hi := ((hg' x hx).inv (hg'pos x hx).ne').neg
-    convert hi using 1; rw [neg_div, neg_neg]
+    simpa only [neg_div, neg_neg] using! hi
   have hFTCg : (∫ x in a..b, g'' x / g' x ^ 2) = (g' a)⁻¹ - (g' b)⁻¹ := by
     have hint : IntervalIntegrable (fun x => g'' x / g' x ^ 2) volume a b :=
       (hg''c.div (hg'c.pow 2) (fun x hx => pow_ne_zero _ (hg'pos x hx).ne')).intervalIntegrable

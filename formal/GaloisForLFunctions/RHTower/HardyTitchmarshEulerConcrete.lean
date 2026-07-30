@@ -430,7 +430,7 @@ theorem archimedeanPrimeEuler_projectionCommutator_not_isCompactOperator
   have hleft := hcomm.clm_comp (1 - Q)
   have hcornerComm : IsCompactOperator ((1 - Q) * (Q * G - G * Q) :
       ArchimedeanWeightedL2 →L[ℂ] ArchimedeanWeightedL2) := by
-    simpa only [mul_apply_eq_comp, Function.comp_apply] using hleft
+    simpa only [mul_apply_eq_comp, Function.comp_apply] using! hleft
   have hcorner : IsCompactOperator (crossBoundary Q G :
       ArchimedeanWeightedL2 →L[ℂ] ArchimedeanWeightedL2) := by
     rw [crossBoundary_eq_corner_commutator hQ]

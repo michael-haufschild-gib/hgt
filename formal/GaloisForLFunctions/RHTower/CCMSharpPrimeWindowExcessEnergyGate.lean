@@ -314,8 +314,11 @@ theorem differentiableOn_dyadicSharpNegativePartLandauContinuation_rightOf
       (LSeries
         (fun n => ((dyadicSharpPrimeSourceNegativePart n : ℝ) : ℂ))) s :=
     (LSeries_hasDerivAt habslt).differentiableAt
-  simpa only [dyadicSharpNegativePartLandauContinuation] using
-    hsource.add hcorrDiff.differentiableWithinAt
+  change DifferentiableWithinAt ℂ
+    (dyadicSharpPrimeContinuedSource +
+      LSeries (fun n => ((dyadicSharpPrimeSourceNegativePart n : ℝ) : ℂ)))
+    {s : ℂ | 1 + delta < s.re} s
+  exact hsource.add hcorrDiff.differentiableWithinAt
 
 /-- A narrow real-centered Landau ball misses every Xi zero, while the correction series stays
 inside its half-plane of convergence. -/
@@ -365,8 +368,11 @@ theorem differentiableOn_dyadicSharpNegativePartLandauContinuation_landauBall
       (LSeries
         (fun n => ((dyadicSharpPrimeSourceNegativePart n : ℝ) : ℂ))) s :=
     (LSeries_hasDerivAt habslt).differentiableAt
-  simpa only [dyadicSharpNegativePartLandauContinuation] using
-    hsource.add hcorrDiff.differentiableWithinAt
+  change DifferentiableWithinAt ℂ
+    (dyadicSharpPrimeContinuedSource +
+      LSeries (fun n => ((dyadicSharpPrimeSourceNegativePart n : ℝ) : ℂ)))
+    (Metric.ball (((1 + delta : ℝ) : ℂ)) r) s
+  exact hsource.add hcorrDiff.differentiableWithinAt
 
 /-- Analytic continuation propagates the far-right corrected Dirichlet identity throughout any
 right half-plane on which the corrected series is known to converge. -/

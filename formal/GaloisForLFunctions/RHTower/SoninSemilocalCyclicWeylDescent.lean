@@ -94,10 +94,10 @@ theorem soninLogPositionPhaseCLM_mul_translation
     HTGeometry.scalarWeylCharacter h (t : ℂ) *
       U (MellinL2.fourierPhaseMulAux a f) x
   rw [show U f x = f (x + h) by
-      simpa [U, MellinL2.realTranslationEquiv, Function.comp_apply] using htranslate,
+      simpa [U, MellinL2.realTranslationEquiv, Function.comp_apply] using! htranslate,
     show U (MellinL2.fourierPhaseMulAux a f) x =
         MellinL2.fourierPhaseMulAux a f (x + h) by
-      simpa [U, MellinL2.realTranslationEquiv, Function.comp_apply] using htranslatedPhase,
+      simpa [U, MellinL2.realTranslationEquiv, Function.comp_apply] using! htranslatedPhase,
     show MellinL2.fourierPhaseMulAux a f (x + h) =
         MellinL2.fourierPhase a (x + h) * f (x + h) by
       simpa [U, MellinL2.realTranslationEquiv, Function.comp_apply] using hphaseShift,
@@ -345,7 +345,7 @@ theorem I_mul_deriv_soninSemilocalCyclicWeylFluxContinuation_zero
     Complex.I * deriv (soninSemilocalCyclicWeylFluxContinuation pk) 0 =
       soninSemilocalPrimeFluxCoefficient pk := by
   simpa only [soninSemilocalCyclicWeylFluxContinuation,
-    soninSemilocalCyclicWeylContinuation, soninSemilocalWeylFluxOrbit] using
+    soninSemilocalCyclicWeylContinuation, soninSemilocalWeylFluxOrbit] using!
       I_mul_deriv_soninSemilocalWeylFluxOrbit_zero pk
 
 /-! ## Critical all-prime obstruction -/

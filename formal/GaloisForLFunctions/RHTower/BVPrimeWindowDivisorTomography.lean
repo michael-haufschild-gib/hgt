@@ -78,7 +78,7 @@ theorem meromorphicOrderAt_shiftedRegularizedZeta_logDeriv_eq_neg_one_of_zero
     hshiftAnalytic hshiftDeriv
   rw [show shift (rho + 1 / 2) = rho by dsimp only [shift]; ring,
     meromorphicOrderAt_logDeriv_regularizedRiemannZeta_eq_neg_one hzero] at hcomp
-  simpa only [shift, Function.comp_apply] using hcomp
+  simpa only [shift, Function.comp_def] using hcomp
 
 /-- Away from `1`, pole filling does not change the analytic multiplicity of a zeta zero. -/
 theorem analyticOrderAt_regularizedRiemannZeta_eq_riemannZeta
@@ -145,7 +145,8 @@ theorem tendsto_continuedSource_residue_of_regularizedZeta_zero
     dsimp only [correction]
     exact (hdiv.sub (analyticAt_const.mul herr)).continuousAt
   have hlinear : Tendsto (fun s : ℂ => s - p) (𝓝[≠] p) (𝓝 0) :=
-    ((continuous_id.sub continuous_const).tendsto' p 0 (by simp)).mono_left
+    ((continuous_id.sub continuous_const).tendsto' p 0
+      (by simp [p])).mono_left
       nhdsWithin_le_nhds
   have hcorrZero : Tendsto (fun s : ℂ => (s - p) * correction s)
       (𝓝[≠] p) (𝓝 0) :=
@@ -219,7 +220,7 @@ theorem meromorphicOrderAt_continuedSource_eq_neg_one_of_mellin_ne_zero
     have hcomp := MeromorphicAt.comp_analyticAt
       (f := logDeriv regularizedRiemannZeta) (g := shift)
       hbase hshiftAnalytic
-    simpa only [shiftedLog, shift, Function.comp_apply] using hcomp
+    simpa only [shiftedLog, shift, Function.comp_def] using hcomp
   have hshiftedLogOrder : meromorphicOrderAt shiftedLog p =
       ((-1 : ℤ) : WithTop ℤ) := by
     simpa only [shiftedLog, p] using

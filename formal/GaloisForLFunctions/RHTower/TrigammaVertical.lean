@@ -107,7 +107,7 @@ theorem deriv_digamma_apply_add_nat {z : ℂ} (hz : 0 < z.re) (N : ℕ) :
   have hL : HasDerivAt (fun w : ℂ => Complex.digamma (w + (N : ℂ)))
       (deriv Complex.digamma (z + (N : ℂ))) z := by
     have hcomp := HasDerivAt.comp z (hψdiff hzN) ((hasDerivAt_id z).add_const (N : ℂ))
-    simpa [Function.comp] using hcomp
+    simpa [Function.comp] using! hcomp
   have hne : ∀ n : ℕ, z + (n : ℂ) ≠ 0 := by
     intro n h0
     have h := congrArg Complex.re h0
@@ -123,7 +123,7 @@ theorem deriv_digamma_apply_add_nat {z : ℂ} (hz : 0 < z.re) (N : ℕ) :
     rw [hfun]
     refine HasDerivAt.sum fun n _ => ?_
     have h := ((hasDerivAt_id z).add_const (n : ℂ)).inv (hne n)
-    simpa using h
+    simpa using! h
   have hR := (hψdiff hz).add hsum
   have hEq : (fun w : ℂ => Complex.digamma (w + (N : ℂ))) =ᶠ[nhds z]
       (fun w : ℂ => Complex.digamma w + ∑ n ∈ Finset.range N, (w + (n : ℂ))⁻¹) := by
@@ -210,7 +210,7 @@ theorem hasDerivAt_re_digamma_ofReal {x : ℝ} (hx : 0 < x) :
   have houter :=
     (digamma_analyticOnNhd_re_pos (x : ℂ) (by simpa using hx)).differentiableAt.hasDerivAt
   have hinner : HasDerivAt (fun y : ℝ => (y : ℂ)) 1 x := by
-    simpa using Complex.ofRealCLM.hasFDerivAt.hasDerivAt
+    simpa using! Complex.ofRealCLM.hasFDerivAt.hasDerivAt
   have hcomp := (houter.hasFDerivAt.restrictScalars ℝ).comp x hinner.hasFDerivAt
   have hpsi : HasDerivAt (fun y : ℝ => Complex.digamma (y : ℂ))
       (deriv Complex.digamma (x : ℂ)) x := by

@@ -196,6 +196,12 @@ theorem tendsto_polynomialPatternPower_cluster_defect
       (OrderIso.addLeft (polynomialPatternPowerValuation β p₀ x)) hC
       (fun r => polynomialPatternPowerValuation β r x -
         polynomialPatternPowerValuation β p₀ x)
+    change polynomialPatternPowerValuation β p₀ x +
+          C.inf' hC (fun r => polynomialPatternPowerValuation β r x -
+            polynomialPatternPowerValuation β p₀ x) =
+        C.inf' hC (fun r => polynomialPatternPowerValuation β p₀ x +
+          (polynomialPatternPowerValuation β r x -
+            polynomialPatternPowerValuation β p₀ x)) at hmap
     calc
       C.inf' hC (fun r => polynomialPatternPowerValuation β r x) =
           C.inf' hC (fun r => polynomialPatternPowerValuation β p₀ x +
@@ -207,7 +213,7 @@ theorem tendsto_polynomialPatternPower_cluster_defect
       _ = polynomialPatternPowerValuation β p₀ x +
           C.inf' hC (fun r => polynomialPatternPowerValuation β r x -
             polynomialPatternPowerValuation β p₀ x) := by
-        simpa only [Function.comp_apply] using hmap.symm
+        exact hmap.symm
   rw [htranslate]
   ring
 
@@ -305,13 +311,16 @@ theorem tendsto_normalizedPolynomialTailWeight
       Real.exp (-(B * (polynomialPatternPowerValuation β p t -
         polynomialPatternClusterMinValuation β C hC t)))) atTop
       (𝓝 (Real.exp (-(B * polynomialPatternClusterDefectLimit β C hC p)))) := by
-    simpa only using (hdefReal.const_mul B).neg.rexp
+    convert (hdefReal.const_mul B).neg.rexp using 1
+    funext t
+    rfl
   have hexp : Tendsto (fun t : ℕ =>
       (Real.exp (-(B * (polynomialPatternPowerValuation β p t -
         polynomialPatternClusterMinValuation β C hC t))) : ℂ)) atTop
       (𝓝 (Real.exp (-(B * polynomialPatternClusterDefectLimit β C hC p)) : ℂ)) := by
-    simpa only [Function.comp_apply] using
-      Complex.continuous_ofReal.continuousAt.tendsto.comp hexpReal
+    convert Complex.continuous_ofReal.continuousAt.tendsto.comp hexpReal using 1
+    funext t
+    rfl
   simpa only [normalizedPolynomialTailWeight, polynomialTailWeightLimit] using
     hpoly'.mul hexp
 

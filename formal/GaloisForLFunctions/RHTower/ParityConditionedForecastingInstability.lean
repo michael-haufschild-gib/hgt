@@ -785,7 +785,6 @@ theorem parityWeight_ne_fullWeight {n : ℕ} (hn : 0 < n) :
       ∑ j : Fin (n + 1),
         (weight j : ℂ) * halfLatticePhase n 1 j)
     hweight
-  dsimp at hsum
   rw [parity_weighted_phase_sum, full_weighted_phase_sum,
     parityAmplitude_one hn, fullAmplitude_one hn] at hsum
   have hnonzero : ((-1 : ℂ) ^ n) ≠ 0 := pow_ne_zero _ (by norm_num)

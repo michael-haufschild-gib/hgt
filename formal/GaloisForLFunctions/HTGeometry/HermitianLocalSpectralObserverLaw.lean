@@ -110,7 +110,12 @@ theorem productEigenvalueBranch_im_eq_zero_eventually_realCoupling
         Complex.ofRealCLM.analyticAt 0
       simpa [complexCoupling] using
         hout.comp_of_eq' hproj rfl
-    simpa using ha.continuousAt
+    have hcont := ha.continuousAt
+    have hz : complexCoupling (0 : E → ℝ) = 0 := by
+      funext e
+      simp [complexCoupling]
+    rw [ContinuousAt] at hcont
+    simpa only [hz] using hcont
   filter_upwards [hc.eventually hroot] with coupling hcouplingRoot
   exact matrixCharpolyRelation_im_eq_zero_of_isHermitian
     _ (L.affineMatrixFamily_complexOnsite_complexCoupling_isHermitian

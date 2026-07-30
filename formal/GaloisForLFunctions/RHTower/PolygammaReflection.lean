@@ -94,17 +94,17 @@ theorem trigamma_reflection {z : ℂ} (hz : ∀ m : ℤ, z ≠ (m : ℂ)) :
     simpa using (hasDerivAt_id z).const_mul (Real.pi : ℂ)
   have hcos : HasDerivAt (fun w : ℂ => Complex.cos ((Real.pi : ℂ) * w))
       (-(Real.pi : ℂ) * Complex.sin ((Real.pi : ℂ) * z)) z := by
-    convert (Complex.hasDerivAt_cos ((Real.pi : ℂ) * z)).comp z harg using 1
-    all_goals ring
+    apply ((Complex.hasDerivAt_cos ((Real.pi : ℂ) * z)).comp z harg).congr_deriv
+    ring
   have hsine : HasDerivAt (fun w : ℂ => Complex.sin ((Real.pi : ℂ) * w))
       ((Real.pi : ℂ) * Complex.cos ((Real.pi : ℂ) * z)) z := by
-    convert (Complex.hasDerivAt_sin ((Real.pi : ℂ) * z)).comp z harg using 1
-    all_goals ring
+    apply ((Complex.hasDerivAt_sin ((Real.pi : ℂ) * z)).comp z harg).congr_deriv
+    ring
   have hcot : HasDerivAt
       (fun w : ℂ => Complex.cos ((Real.pi : ℂ) * w) /
         Complex.sin ((Real.pi : ℂ) * w))
       (-(Real.pi : ℂ) / Complex.sin ((Real.pi : ℂ) * z) ^ 2) z := by
-    convert hcos.div hsine hsin using 1
+    apply (hcos.div hsine hsin).congr_deriv
     field_simp
     rw [← Complex.sin_sq_add_cos_sq ((Real.pi : ℂ) * z)]
     ring

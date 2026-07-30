@@ -1,0 +1,7 @@
+2026-07-30 exact paper theorem added at `docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge/equivariant-causal-hessian-kernel-fidelity-rigidity.md`, linked from active `self-noncontainment-minimal-repair-law.md`.
+
+For r>=1,n>=2, any sesquilinear Phi on M_{r,n}(C) with left U(r) invariance and right U(n) covariance factors as Phi(X,Y)=a X†Y+b tr(X†Y) I. Proof: left commutant factors through X†Y; conjugation-equivariant linear endomorphisms of M_n are scalar on CI and sl_n, hence two parameters. Hermitian diagonal gives real a,b. Positivity of q(X)=Phi(X,X) for all X iff b>=0 and a+b>=0. Exact kernel fidelity Xv=0 iff q(X)v=0 for all X,v iff b=0 and a>0, so q=c X†X, c>0. Rank-one witness proves necessity; Gram norm identity proves converse.
+
+Status `[PAPER-PROVED] [REDISCOVERED] [BRIDGE] [LEAN OPEN]`; classical unitary invariant theory, no novelty claim. Physical meaning: local no-erasure/no-spectator fidelity selects causal ray direction but not positive scale. Complete history must select calibration; causalization descent must supply topology, curvature, dynamics.
+
+Planned Lean module `HTGeometry/EquivariantCausalHessianKernelFidelity.lean`, but no Lean started because many unrelated Lean processes active. Full equivariant classification, not only assumed two-parameter family, required before Stage3. No numerical computation/native_decide.

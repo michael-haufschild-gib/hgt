@@ -42,16 +42,20 @@ private theorem tendsto_sinh_sub_self_div_cube_zero :
       (f' := fun y : ℝ => Real.sinh y) (g' := fun y : ℝ => y * 6) ?_ ?_ ?_ ?_ ?_ hbase
     · exact Filter.Eventually.of_forall fun y => (Real.hasDerivAt_cosh y).sub_const 1
     · exact Filter.Eventually.of_forall fun y => by
-        convert ((hasDerivAt_id y).pow 2).const_mul 3 using 1
-        simp only [Function.id_def]
-        ring
+        exact (((hasDerivAt_id y).pow 2).const_mul 3).congr_deriv (by
+          simp only [Function.id_def]
+          ring)
     · filter_upwards [self_mem_nhdsWithin] with y hy
       simp only [mem_compl_iff, mem_singleton_iff] at hy
       exact mul_ne_zero hy (by norm_num)
     · have hcont : ContinuousAt (fun y : ℝ => Real.cosh y - 1) 0 := by fun_prop
-      simpa using hcont.tendsto.mono_left inf_le_left
+      have ht : Tendsto (fun y : ℝ => Real.cosh y - 1) (𝓝 0) (𝓝 0) := by
+        simpa using hcont.tendsto
+      exact ht.mono_left nhdsWithin_le_nhds
     · have hcont : ContinuousAt (fun y : ℝ => 3 * y ^ 2) 0 := by fun_prop
-      simpa using hcont.tendsto.mono_left inf_le_left
+      have ht : Tendsto (fun y : ℝ => 3 * y ^ 2) (𝓝 0) (𝓝 0) := by
+        simpa using hcont.tendsto
+      exact ht.mono_left nhdsWithin_le_nhds
   refine HasDerivAt.lhopital_zero_nhdsNE
     (f' := fun y : ℝ => Real.cosh y - 1) (g' := fun y : ℝ => 3 * y ^ 2) ?_ ?_ ?_ ?_ ?_ hcosh
   · exact Filter.Eventually.of_forall fun y =>
@@ -61,9 +65,13 @@ private theorem tendsto_sinh_sub_self_div_cube_zero :
     simp only [mem_compl_iff, mem_singleton_iff] at hy
     exact mul_ne_zero (by norm_num) (pow_ne_zero 2 hy)
   · have hcont : ContinuousAt (fun y : ℝ => Real.sinh y - y) 0 := by fun_prop
-    simpa using hcont.tendsto.mono_left inf_le_left
+    have ht : Tendsto (fun y : ℝ => Real.sinh y - y) (𝓝 0) (𝓝 0) := by
+      simpa using hcont.tendsto
+    exact ht.mono_left nhdsWithin_le_nhds
   · have hcont : ContinuousAt (fun y : ℝ => y ^ 3) 0 := by fun_prop
-    simpa using hcont.tendsto.mono_left inf_le_left
+    have ht : Tendsto (fun y : ℝ => y ^ 3) (𝓝 0) (𝓝 0) := by
+      simpa using hcont.tendsto
+    exact ht.mono_left nhdsWithin_le_nhds
 
 /-- Finite part of the double pole of `csch^2` at the origin. -/
 private theorem tendsto_inv_sinh_sq_sub_inv_sq_zero :
@@ -97,7 +105,10 @@ private theorem tendsto_gammaSewnApertureRenormalizedKernel_zero :
       have hcosh : ContinuousAt (fun y : ℝ => Real.cosh (2 * y)) 0 :=
         (Real.continuous_cosh.comp (continuous_const.mul continuous_id)).continuousAt
       exact continuousAt_const.div (hcosh.pow 2) (by norm_num)
-    simpa using hcont.tendsto.mono_left inf_le_left
+    have ht : Tendsto (fun y : ℝ => 1 / Real.cosh (2 * y) ^ 2)
+        (𝓝 0) (𝓝 1) := by
+      simpa using hcont.tendsto
+    exact ht.mono_left nhdsWithin_le_nhds
   convert tendsto_inv_sinh_sq_sub_inv_sq_zero.add hsech using 1
   · funext y
     ring
@@ -175,7 +186,9 @@ theorem tendsto_gammaSewnMobiusApertureRenormalizedFisherCurvature_zero
   have hscale : Tendsto (fun x : ℝ => x * L) (𝓝[≠] 0) (𝓝[≠] 0) := by
     apply tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within
     · have hid : Tendsto (fun x : ℝ => x) (𝓝 0) (𝓝 0) := tendsto_id
-      simpa using (hid.mul_const L).mono_left inf_le_left
+      have ht : Tendsto (fun x : ℝ => x * L) (𝓝 0) (𝓝 0) := by
+        simpa using hid.mul_const L
+      exact ht.mono_left nhdsWithin_le_nhds
     · filter_upwards [self_mem_nhdsWithin] with x hx
       simp only [mem_compl_iff, mem_singleton_iff] at hx ⊢
       exact mul_ne_zero hx hL.ne'
@@ -257,9 +270,11 @@ theorem hasDerivAt_gammaSewnMobiusApertureCellVelocity
   have hq : HasDerivAt q (-L * q x) x := by
     dsimp only [q, L]
     unfold xiMobiusContinuousApertureDiskNode
-    convert (Real.hasDerivAt_exp (-x * Real.log (p : ℝ))).comp x
-      ((hasDerivAt_neg x).mul_const (Real.log (p : ℝ))) using 1
-    all_goals ring
+    apply (((Real.hasDerivAt_exp (-x * Real.log (p : ℝ))).comp x
+      ((hasDerivAt_neg x).mul_const (Real.log (p : ℝ)))).congr_deriv (by
+        ring)).congr_of_eventuallyEq
+    exact Filter.Eventually.of_forall fun y => by
+      simp only [Function.comp_apply]
   have hq0 : 0 < q x := xiMobiusContinuousApertureDiskNode_pos x p
   have hq1 : q x < 1 := xiMobiusContinuousApertureDiskNode_lt_one hx p
   have hminus : 1 - q x ^ 2 ≠ 0 := by
@@ -273,11 +288,17 @@ theorem hasDerivAt_gammaSewnMobiusApertureCellVelocity
   have hsecond := (hq.pow 4).div
     ((hasDerivAt_const (x := x) (c := (1 : ℝ))).add (hq.pow 4)) hplus
   have hvelocity := ((hfirst.add hsecond).sub_const (e : ℝ)).const_mul L
-  convert hvelocity using 1
-  unfold gammaSewnMobiusApertureFisherCurvature
-  simp only [q, L, Pi.pow_apply, Pi.sub_apply, Pi.add_apply]
-  field_simp [hminus, hplus]
-  ring
+  have hvelocityDeriv : HasDerivAt _
+      (-gammaSewnMobiusApertureFisherCurvature x p) x :=
+    hvelocity.congr_deriv (by
+      unfold gammaSewnMobiusApertureFisherCurvature
+      simp only [q, L, Pi.pow_apply, Pi.sub_apply, Pi.add_apply]
+      field_simp [hminus, hplus]
+      ring)
+  exact hvelocityDeriv.congr_of_eventuallyEq
+    (Filter.Eventually.of_forall fun y => by
+      simp only [gammaSewnMobiusApertureCellVelocity, q, L,
+        Pi.pow_apply, Pi.sub_apply, Pi.add_apply, Pi.div_apply])
 
 /-- The regular prime-centering error is an exact potential for the renormalized Fisher
 curvature.  This separates the universal pole from the source-specific seam before any norm is
@@ -289,15 +310,21 @@ theorem hasDerivAt_gammaSewnMobiusAperturePrimeCenteringError
       (-gammaSewnMobiusApertureRenormalizedFisherCurvature x p) x := by
   have hvelocity := hasDerivAt_gammaSewnMobiusApertureCellVelocity hx p 0
   have hinv : HasDerivAt (fun y : ℝ => 1 / y) (-1 / x ^ 2) x := by
-    convert
-      (hasDerivAt_const (x := x) (c := (1 : ℝ))).div (hasDerivAt_id x) hx.ne'
-      using 1
-    simp only [Function.id_def]
-    ring
+    apply ((((hasDerivAt_const (x := x) (c := (1 : ℝ))).div
+      (hasDerivAt_id x) hx.ne').congr_deriv (by
+        simp only [Function.id_def]
+        ring))).congr_of_eventuallyEq
+    exact Filter.Eventually.of_forall fun _ => rfl
   have hcenter := (hvelocity.sub hinv).add_const ((1 / 2) * Real.log (p : ℝ))
-  convert hcenter using 1
-  unfold gammaSewnMobiusApertureRenormalizedFisherCurvature
-  ring
+  have hcenterDeriv : HasDerivAt _
+      (-gammaSewnMobiusApertureRenormalizedFisherCurvature x p) x :=
+    hcenter.congr_deriv (by
+      unfold gammaSewnMobiusApertureRenormalizedFisherCurvature
+      ring)
+  exact hcenterDeriv.congr_of_eventuallyEq
+    (Filter.Eventually.of_forall fun _ => by
+      simp only [gammaSewnMobiusAperturePrimeCenteringError,
+        Pi.sub_apply])
 
 /-- Lossless-boundary normalization of the literal Gamma-sewn feature. -/
 def gammaSewnMobiusApertureNormalizedReesFeature
@@ -314,10 +341,17 @@ theorem hasDerivAt_gammaSewnMobiusApertureNormalizedReesFeature
         gammaSewnMobiusApertureNormalizedReesFeature x p e) x := by
   have hsource := hasDerivAt_gammaSewnMobiusContinuousApertureFeature hx p e
   have hquot := hsource.div (hasDerivAt_id x) hx.ne'
-  convert hquot using 1
-  unfold gammaSewnMobiusApertureNormalizedReesFeature
-  simp only [Function.id_def]
-  field_simp [hx.ne']
+  have hquotDeriv : HasDerivAt _
+      ((gammaSewnMobiusApertureCellVelocity x p e - 1 / x) *
+        gammaSewnMobiusApertureNormalizedReesFeature x p e) x :=
+    hquot.congr_deriv (by
+      unfold gammaSewnMobiusApertureNormalizedReesFeature
+      simp only [Function.id_def]
+      field_simp [hx.ne'])
+  exact hquotDeriv.congr_of_eventuallyEq
+    (Filter.Eventually.of_forall fun _ => by
+      simp only [gammaSewnMobiusApertureNormalizedReesFeature,
+        Function.id_def, Pi.div_apply])
 
 /-- The rescaled exterior current is literally the Wronskian of the two normalized Rees source
 features. -/
@@ -446,10 +480,10 @@ theorem hasDerivAt_gammaSewnMobiusApertureNormalizedExteriorReporter
       (gammaSewnMobiusApertureFisherSeam x i j) x := by
   unfold gammaSewnMobiusApertureNormalizedExteriorReporter
     gammaSewnMobiusApertureFisherSeam
-  convert
-    (hasDerivAt_gammaSewnMobiusApertureCellVelocity hx j.1 j.2).sub
-      (hasDerivAt_gammaSewnMobiusApertureCellVelocity hx i.1 i.2) using 1
-  ring
+  apply (((hasDerivAt_gammaSewnMobiusApertureCellVelocity hx j.1 j.2).sub
+    (hasDerivAt_gammaSewnMobiusApertureCellVelocity hx i.1 i.2)).congr_deriv
+      (by ring)).congr_of_eventuallyEq
+  exact Filter.Eventually.of_forall fun _ => rfl
 
 /-- The cross-prime seam is independent of valuation depth on both legs. -/
 theorem gammaSewnMobiusApertureFisherSeam_depth_independent

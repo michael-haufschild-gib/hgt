@@ -170,7 +170,7 @@ theorem finiteIndexDiagonal_exp_apply
           ((m.factorial : ℂ)⁻¹ * (c * (energy i : ℂ)) ^ m) *
             x i)
         (Complex.exp (c * energy i) * x i) := by
-    simpa only [Complex.exp_eq_exp_ℂ] using hscalar.mul_right (x i)
+    simpa only [Complex.exp_eq_exp_ℂ] using! hscalar.mul_right (x i)
   have hop' :
       HasSum
         (fun m : ℕ =>
@@ -179,15 +179,17 @@ theorem finiteIndexDiagonal_exp_apply
         ((NormedSpace.exp
           (c • finiteIndexDiagonalHamiltonian energy)) x i) := by
     convert hop using 1
-    funext m
-    unfold φ
-    simp only [Function.comp_apply, ContinuousLinearMap.comp_apply,
-      ContinuousLinearMap.apply_apply, EuclideanSpace.coe_proj,
-      _root_.smul_apply, smul_pow,
-      PiLp.smul_apply, smul_eq_mul]
-    rw [mul_pow]
-    rw [finiteIndexDiagonalHamiltonian_pow_apply]
-    ring
+    · funext m
+      unfold φ
+      simp only [Function.comp_apply, ContinuousLinearMap.comp_apply,
+        ContinuousLinearMap.apply_apply, EuclideanSpace.coe_proj,
+        _root_.smul_apply, smul_pow,
+        PiLp.smul_apply, smul_eq_mul]
+      rw [mul_pow]
+      rw [finiteIndexDiagonalHamiltonian_pow_apply]
+      ring
+    · simp only [φ, ContinuousLinearMap.comp_apply,
+        ContinuousLinearMap.apply_apply, EuclideanSpace.coe_proj]
   exact hop'.unique hscalar'
 
 /-- The explicit spectral trajectory is the literal exponential orbit of
@@ -461,7 +463,7 @@ theorem exists_linearEnergy_completeLocalFutureSet
           baseline.returnProbability_eq hT (by norm_num) (by norm_num)]
         simpa [scaledInterpolatedProbability,
           interpolatedProbability, interpolatedAmplitude,
-          interpolatedWeight] using hwindow t ht
+          interpolatedWeight] using! hwindow t ht
       · rw [M.returnProbability_eq hT
           (Real.sqrt_nonneg 1) (Real.sqrt_le_one.mpr (by norm_num))]
         exact htarget
@@ -554,7 +556,7 @@ theorem exists_linearEnergy_completeLocalFutureSet
           baseline.returnProbability_eq hT (by norm_num) (by norm_num)]
         simpa [scaledInterpolatedProbability,
           interpolatedProbability, interpolatedAmplitude,
-          interpolatedWeight] using hwindow t ht
+          interpolatedWeight] using! hwindow t ht
       · rw [M.returnProbability_eq hT hθ0 hθle]
         exact htarget
       · exact (fixedProtocolHamiltonian_centered_norm_le

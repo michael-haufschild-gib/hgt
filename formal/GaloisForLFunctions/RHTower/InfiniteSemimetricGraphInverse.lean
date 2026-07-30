@@ -133,7 +133,7 @@ theorem closedSupportInverse_rightInverse
   have hinv : (supportRestriction T).inverse y = x :=
     LinearPMap.inverse_apply_eq (supportRestriction_toFun_ker_eq_bot T) hx
   rw [hinv]
-  simpa [supportRestriction] using hx
+  simpa [supportRestriction] using! hx
 
 theorem closedSupportInverse_apply_eq_algebraicSupportRangeEquiv_symm
     (T : E →L[ℝ] E) (y : (closedSupportInverse T).domain) :
@@ -356,7 +356,7 @@ theorem graphSemimetricSymmetrization_metricSymmetric
       inner ℝ (D (kernelSupportProjection T x)) (T y) :=
     hT.isSymmetric _ _
   have hL2 : inner ℝ (star D (T x)) (y : E) = inner ℝ (T x) (D y) := by
-    simpa using ContinuousLinearMap.adjoint_inner_left D (y : E) (T x)
+    simpa using! ContinuousLinearMap.adjoint_inner_left D (y : E) (T x)
   have hPTx : kernelSupportProjection T (T x) = T x := by
     have hmul := congrArg (fun A : E →L[ℝ] E => A (x : E))
       (kernelSupportProjection_mul_metric T hT)
@@ -387,7 +387,7 @@ theorem graphSemimetricSymmetrization_metricSymmetric
       _ = inner ℝ (kernelSupportProjection T x) (star D (T y)) := by
         rw [closedSupportInverse_metric_apply]
       _ = inner ℝ (D (kernelSupportProjection T x)) (T y) := by
-        simpa using ContinuousLinearMap.adjoint_inner_right D
+        simpa using! ContinuousLinearMap.adjoint_inner_right D
           (kernelSupportProjection T x) (T y)
   have hincX : inner ℝ (T x) (D y) =
       inner ℝ (T x) (D (kernelSupportProjection T y)) := by
@@ -398,12 +398,12 @@ theorem graphSemimetricSymmetrization_metricSymmetric
     calc
       inner ℝ (T x) (D y) = inner ℝ (star D (T x)) (y : E) := by
         symm
-        simpa using ContinuousLinearMap.adjoint_inner_left D (y : E) (T x)
+        simpa using! ContinuousLinearMap.adjoint_inner_left D (y : E) (T x)
       _ = inner ℝ (kernelSupportProjection T (star D (T x))) (y : E) := by rw [hPz]
       _ = inner ℝ (star D (T x)) (kernelSupportProjection T y) :=
         (kernelSupportProjection_isSelfAdjoint T).isSymmetric _ _
       _ = inner ℝ (T x) (D (kernelSupportProjection T y)) := by
-        simpa using ContinuousLinearMap.adjoint_inner_left D
+        simpa using! ContinuousLinearMap.adjoint_inner_left D
           (kernelSupportProjection T y) (T x)
   rw [metric_graphSemimetricSymmetrization_apply,
     graphSemimetricSymmetrization_apply]

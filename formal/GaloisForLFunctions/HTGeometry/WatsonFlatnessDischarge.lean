@@ -190,7 +190,7 @@ private theorem rotatedWatsonWeight_analyticAt (n : ℕ)
   change AnalyticAt ℂ (fun w : ℂ =>
     halfDigammaJetEval n P (1 + Complex.exp w) *
       Complex.exp ((((c / 2 : ℝ) : ℂ) * rot) * Complex.exp w)) z
-  simpa only [Function.comp_apply] using hsource.mul hweight
+  simpa only [Function.comp_apply] using! hsource.mul hweight
 
 private theorem upper_rotatedWatsonWeight_diffContOnCl (n : ℕ)
     (P : MvPolynomial (Fin (n + 2)) ℂ) (c : ℝ) :
@@ -855,7 +855,7 @@ private theorem watsonCpowPullback_analyticAt (n : ℕ)
     (cpow_watsonKappa_mem_sector hw.le)
   have hcomp := AnalyticAt.comp (f := fun z : ℂ => z ^ (watsonKappa : ℂ))
     (x := w) houter hcpow
-  simpa [watsonCpowPullback, Function.comp_def] using hcomp
+  simpa [watsonCpowPullback, Function.comp_def] using! hcomp
 
 private theorem watsonCpowPullback_diffContOnCl (n : ℕ)
     (P : MvPolynomial (Fin (n + 2)) ℂ) :
@@ -872,7 +872,7 @@ private theorem watsonCpowPullback_diffContOnCl (n : ℕ)
       (cpow_watsonKappa_mem_sector hw)).continuousAt
     have hcomp := ContinuousAt.comp
       (f := fun z : ℂ => z ^ (watsonKappa : ℂ)) (x := w) houter hcpow
-    simpa [watsonCpowPullback, Function.comp_def] using hcomp.continuousWithinAt
+    simpa [watsonCpowPullback, Function.comp_def] using! hcomp.continuousWithinAt
 
 private theorem exists_watsonCpowPullback_bound (n : ℕ)
     (P : MvPolynomial (Fin (n + 2)) ℂ) {c : ℝ} (hc : 0 < c)

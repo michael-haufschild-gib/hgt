@@ -20,8 +20,8 @@ open BourgainEisensteinInt
 noncomputable section
 
 local instance instEisensteinNormalizationMonoidBound :
-    NormalizationMonoid BourgainEisensteinInt :=
-  UniqueFactorizationMonoid.normalizationMonoid
+    StrongNormalizationMonoid BourgainEisensteinInt :=
+  UniqueFactorizationMonoid.strongNormalizationMonoid
 
 /-- Per-factor constant in the Eisenstein divisor bound. -/
 noncomputable def eisensteinDvbConst

@@ -71,7 +71,7 @@ theorem HasSchattenLogResidue.not_memSchattenClass
   intro hsum
   have hpartial : Tendsto (schattenPowerPartialSum p T) atTop
       (nhds (∑' n : ℕ, approxNumber T n ^ p)) := by
-    simpa [schattenPowerPartialSum] using hsum.hasSum.tendsto_sum_nat
+    simpa [schattenPowerPartialSum] using! hsum.hasSum.tendsto_sum_nat
   have hlog : Tendsto (fun N : ℕ => Real.log (N + 1)) atTop atTop := by
     apply Real.tendsto_log_atTop.comp
     simpa [Function.comp_def, Nat.cast_add, Nat.cast_one] using

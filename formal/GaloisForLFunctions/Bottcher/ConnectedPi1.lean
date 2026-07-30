@@ -48,6 +48,8 @@ theorem isCoveringMap_quadratic_escapeLevel_succ (c : ℂ) (n : ℕ)
   have hcov : IsCoveringMap (((escapeLevel c n).restrictPreimage (quadratic c)) ∘ e) :=
     (isCoveringMap_quadratic_escapeLevel c n hc).comp_homeomorph e
   convert hcov using 1
+  funext z
+  rfl
 
 /-- **The connected escape-level quadratic map is locally a homeomorphism.** This is the local
 unbranched part of the connected-level covering, in the exact subtype form used downstream. -/
@@ -95,7 +97,7 @@ far-field exterior. -/
 theorem rho_covering_zero (c : ℂ) (hc : ∀ n, c ∉ escapeLevel c n) :
     IsCoveringMap (fun t : {t : ℂ // t ∈ coverPlane c} =>
       (⟨rho c 0 (t : ℂ), rho_mem_escapeLevel c hc 0 t.2⟩ : escapeLevel c 0)) := by
-  simpa [coverPlane, rho_zero, escapeLevel_zero] using isCoveringMap_exp_escapeOpen c
+  simpa [coverPlane, rho_zero, escapeLevel_zero] using! isCoveringMap_exp_escapeOpen c
 
 /-- **Continuity of the explicit `ρ_n` subtype map.** This packages the analytic-on-neighbourhood
 property of `ρ_n` into the topological map used by the covering route. -/

@@ -30,7 +30,7 @@ theorem cyclicWallGaugePacket_eq_gammaPositivePeriodicFourierPacket
 /-- Every gauge along the shrinking cyclic wall is differentially algebraic. -/
 theorem differentiallyAlgebraic_cyclicWallGauge (n : ℕ) :
     DifferentiallyAlgebraic (cyclicWallGauge n) := by
-  simpa [cyclicWallGauge, gammaPeriodicMode] using
+  simpa [cyclicWallGauge, gammaPeriodicMode] using!
     differentiallyAlgebraic_cexp_linear (gammaPeriodicFrequency (n + 1))
 
 /-- Every finite wall slice is an independent DA packet phase, destroyed by any nonreal
@@ -43,7 +43,7 @@ theorem nonreal_cyclicWall_arbitraryDifferentialAlgebraicGaugeBirth
         Function.Periodic (cyclicWallGaugePacket a) 1 ∧
         (a ≠ 0 → ¬ Function.Periodic (cyclicWallGaugePacket a) tau) := by
   simpa [cyclicWallGaugePacket, cyclicWallGauge,
-    gammaPositivePeriodicFourierPacket] using
+    gammaPositivePeriodicFourierPacket] using!
     nonreal_sourceFace_arbitraryDifferentialAlgebraicGaugeBirth tau htau k
 
 /-- **Cyclic DA-gauge wall-attainment universality.** Arbitrary-rank source-face gauge birth,

@@ -6,7 +6,7 @@ This is the bottom-most load-bearing block of the q62 formalization
 purely the algebra that turns "one coordinate is moved by arbitrarily high-order
 scalar monodromy while the other is fixed" into "no nonzero polynomial relation".
 
-Built bottom-up; each lemma compiles against Mathlib (lean4 v4.30.0).
+Built bottom-up; each lemma compiles against the repository-pinned Lean and Mathlib toolchain.
 -/
 import Mathlib.Algebra.Polynomial.Roots
 import Mathlib.GroupTheory.OrderOfElement

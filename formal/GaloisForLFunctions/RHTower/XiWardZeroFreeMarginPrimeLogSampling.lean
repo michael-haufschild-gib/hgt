@@ -477,7 +477,7 @@ theorem exists_cutoff_xiWardDetectionCover_primeLogSampleSet :
       have hcomp' : Tendsto
           (fun u : ℝ => (2 * c₂ * u) * Real.exp (-(2 * c₂ * u)))
           atTop (nhds 0) := by
-        simpa [Function.comp, pow_one] using hcomp
+        simpa [Function.comp, pow_one] using! hcomp
       have hscaled := hcomp'.const_mul (1 / (2 * c₂))
       rw [mul_zero] at hscaled
       apply hscaled.congr
@@ -489,7 +489,7 @@ theorem exists_cutoff_xiWardDetectionCover_primeLogSampleSet :
     have hcomp' : Tendsto
         (fun y : ℝ => y ^ ((1 : ℝ) / 10) *
           Real.exp (-(2 * c₂ * y ^ ((1 : ℝ) / 10)))) atTop (nhds 0) := by
-      simpa [Function.comp] using hcomp
+      simpa [Function.comp] using! hcomp
     have hfinal := hcomp'.const_mul (4 * K ^ 2 * 100 ^ (9 : ℕ))
     rw [mul_zero] at hfinal
     exact hfinal

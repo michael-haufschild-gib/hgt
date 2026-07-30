@@ -94,7 +94,7 @@ theorem differentialAlgebraicOver_of_iteratedMeroTranslationDefect_eq_zero
     linearIndependent_one_of_im_pos hβ
   have hcast : Function.Injective (fun q : ℚ => q • (1 : ℝ)) := by
     intro a b hab
-    exact Rat.cast_injective (by simpa using hab)
+    exact Rat.cast_injective (by simpa using! hab)
   have hindepQ : LinearIndependent ℚ ![(1 : ℂ), β] :=
     hindepR.restrict_scalars hcast
   let v : Fin (N + 1) → meroField (Set.univ : Set ℂ) :=
@@ -104,7 +104,7 @@ theorem differentialAlgebraicOver_of_iteratedMeroTranslationDefect_eq_zero
   haveI hfd : FiniteDimensional ℂ W :=
     FiniteDimensional.span_of_finite ℂ (Set.finite_range v)
   have hfinrank : Module.finrank ℂ W ≤ N + 1 := by
-    simpa [W] using finrank_range_le_card (R := ℂ) v
+    simpa [W] using! finrank_range_le_card (R := ℂ) v
   have hxW : x ∈ W := by
     apply Submodule.subset_span
     exact ⟨0, rfl⟩

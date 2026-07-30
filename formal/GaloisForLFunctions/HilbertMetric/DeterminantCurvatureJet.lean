@@ -52,7 +52,7 @@ theorem hasDerivAt_matrixDet {ι : Type*} [Fintype ι] [DecidableEq ι]
   unfold detFirstJet
   apply HasDerivAt.fun_sum
   intro σ hσ
-  convert ((HasDerivAt.fun_finsetProd fun i hi => hA (σ i) i).const_mul
+  convert! ((HasDerivAt.fun_finsetProd fun i hi => hA (σ i) i).const_mul
     (((Equiv.Perm.sign σ : ℤ) : ℝ))) using 1
 
 /-- Differentiating the first determinant jet produces the second determinant jet. -/
@@ -117,8 +117,8 @@ theorem hasDerivAt_det_one_add_smul {ι : Type*} [Fintype ι] [DecidableEq ι]
     ((1 : Matrix ι ι (Polynomial ℝ)) + (Polynomial.X : Polynomial ℝ) •
       B.map (Polynomial.C : ℝ →+* Polynomial ℝ))
   have hpoly : HasDerivAt (fun t : ℝ => P.eval t) (Matrix.trace B) 0 := by
-    convert P.hasDerivAt 0 using 1
-    simpa [P] using (Matrix.derivative_det_one_add_X_smul B).symm
+    convert! P.hasDerivAt 0 using 1
+    simpa [P] using! (Matrix.derivative_det_one_add_X_smul B).symm
   convert hpoly using 1
   funext t
   simp [P, eval_det, ← Matrix.smul_eq_mul_diagonal]
@@ -132,16 +132,16 @@ theorem detFirstJet_eq_det_mul_trace_inv_mul
       HasDerivAt (fun t : ℝ => (A + t • A₁).det) (detFirstJet A A₁) 0 := by
     have hentry (i j : ι) :
         HasDerivAt (fun t : ℝ => (A + t • A₁) i j) (A₁ i j) 0 := by
-      convert
+      convert!
         (hasDerivAt_const (x := 0) (A i j)).add
           ((hasDerivAt_id (x := 0)).mul_const (A₁ i j)) using 1
-      all_goals simp
+      simp only [zero_add, one_mul]
     convert hasDerivAt_matrixDet
       (fun t : ℝ => A + t • A₁) A₁ 0 hentry using 1
     all_goals simp
   have hright := (hasDerivAt_det_one_add_smul (A⁻¹ * A₁)).const_mul A.det
   apply hleft.unique
-  convert hright using 1
+  convert! hright using 1
   funext t
   calc
     (A + t • A₁).det = (A * (1 + t • (A⁻¹ * A₁))).det := by
@@ -224,16 +224,16 @@ theorem detSecondJet_eq_det_mul_trace_sq_add_gram
   let Q : ℝ → Matrix ι ι ℝ := fun t => A₁ + t • A₂
   have hP (i j : ι) : HasDerivAt (fun t => P t i j) (A₁ i j) 0 := by
     dsimp [P]
-    convert
+    convert!
       (hasDerivAt_const (x := 0) (A i j)).add
         ((hasDerivAt_id (x := 0)).mul_const (A₁ i j)) using 1
-    all_goals simp
+    simp only [zero_add, one_mul]
   have hQ (i j : ι) : HasDerivAt (fun t => Q t i j) (A₂ i j) 0 := by
     dsimp [Q]
-    convert
+    convert!
       (hasDerivAt_const (x := 0) (A₁ i j)).add
         ((hasDerivAt_id (x := 0)).mul_const (A₂ i j)) using 1
-    all_goals simp
+    simp only [zero_add, one_mul]
   have hleft : HasDerivAt (fun t => detFirstJet (P t) (Q t))
       (detSecondJet A A₁ A₂) 0 := by
     convert hasDerivAt_matrixDetFirstJet P Q A₂ 0
@@ -246,9 +246,9 @@ theorem detSecondJet_eq_det_mul_trace_sq_add_gram
   have htraceRaw : HasDerivAt (fun t => Matrix.trace ((P t)⁻¹ * Q t))
       (Matrix.trace ((-(A⁻¹ * A₁ * A⁻¹)) * A₁ + A⁻¹ * A₂)) 0 := by
     unfold Matrix.trace
-    convert HasDerivAt.fun_sum (fun i _ =>
+    convert! HasDerivAt.fun_sum (fun i _ =>
       (by
-        simpa [Matrix.mul_apply, Finset.sum_add_distrib, P, Q] using
+        simpa [Matrix.mul_apply, Finset.sum_add_distrib, P, Q] using!
           (HasDerivAt.fun_sum fun k _ => (hinv i k).mul (hQ k i)) :
         HasDerivAt (fun t => ((P t)⁻¹ * Q t) i i)
           (((-(A⁻¹ * A₁ * A⁻¹)) * A₁ + A⁻¹ * A₂) i i) 0)) using 1

@@ -1,274 +1,87 @@
-# Proof audit: global-completion law for quantum recurrence
+# Proof audit: universal quantum-recurrence information law
 
-## Scope
+Internal audit only. Public manuscript does not mention formal verification.
 
-Internal dependency-closed claim map for `main.tex`. Manuscript does not
-mention formal verification. Novelty or significance receives no credit from
-formalization. All mathematical results advertised in title, abstract,
-theorems, figure, conclusions, and physical interpretation map to declarations
-below.
+## Release rule
 
-Capstone audit surface:
+Every mathematical statement in `main.tex` must be an exact restatement,
+specialization, or elementary interpretation of a declaration below. Formal
+proof supplies correctness only; it supplies no novelty or significance.
 
-- `GaloisForLFunctions.RHTower.QuantumRecurrenceGlobalCompletionLaw`
-- theorem `quantumRecurrenceGlobalCompletionWitness`
+## Master-law claims
 
-## Spectral realization and return law
+| ID | Manuscript claim | Exact declaration | Domain |
+|---|---|---|---|
+| P1 | Every sampled return moment equals the Fourier pairing of clock law and the corresponding convolution power of the energy-gap law | `clockSampledSpectralReturnMoment_eq_clockTransferCollision` | Every probability measure on real energy, every probability clock on real time, every natural moment order |
+| P2 | All sampled moments determine the complete probability law of return, and equality of laws is equivalent to equality of all moments | `clockSampledSpectralReturnProbabilityMeasure_eq_iff_moments` | Arbitrary two system–clock pairs; return lies in `[0,1]` |
+| P3 | Clock reflection leaves every return moment unchanged | `clockSampledSpectralReturnMoment_reflected` | Every probability clock, spectrum, and order |
+| P4 | Clock symmetrization has characteristic function equal to the real part of the original characteristic function | `charFun_clockOrientationQuotient_eq_re` | Every probability clock |
+| P5 | Two balanced energy levels give mean return `(1 + Re φρ(Ω))/2` | `clockSampledSpectralReturnMoment_balancedTwoLevel` | Every probability clock and every real gap |
 
-For every probability spectrum:
+## Exact maximal quotients
 
-\[
-A_\mu(t)=\int e^{itE}\,d\mu(E),\qquad F_\mu(t)=|A_\mu(t)|^2.
-\]
+| ID | Manuscript claim | Exact declaration | Domain |
+|---|---|---|---|
+| Q1 | Two clocks give the same complete return law for every probability spectrum iff their orientation quotients agree | `clockOrientationQuotient_eq_iff_allReturnLaws` | Arbitrary signed real probability clock laws |
+| Q2 | Balanced two-level first moments for every gap distinguish exactly the same clock quotient | `clockOrientationQuotient_eq_iff_twoLevelMoments` | Arbitrary signed real probability clock laws |
+| Q3 | Two spectra give the same complete return law under every probability clock iff their energy-gap laws agree | `spectralDifferenceMeasure_eq_iff_allClockReturnLaws` | Arbitrary real probability energy laws |
+| Q4 | Deterministic first-return moments for every time distinguish exactly the energy-gap quotient | `spectralDifferenceMeasure_eq_iff_deterministicFirstMoments` | Arbitrary real probability energy laws |
+| Q5 | Complete universal system equivalence collapses to deterministic first moments | `allClockReturnLaws_eq_iff_deterministicFirstMoments` | Arbitrary real probability energy laws |
+| Q6 | Complete universal clock equivalence collapses to balanced two-level first moments | `allReturnLaws_eq_iff_balancedTwoLevelFirstMoments` | Arbitrary signed real probability clock laws |
+| Q7 | Rational deterministic times already decide complete universal system equivalence | `allClockReturnLaws_eq_iff_rationalDeterministicFirstMoments` | Arbitrary real probability energy laws |
+| Q8 | Rational two-level gaps already decide complete universal clock equivalence | `allReturnLaws_eq_iff_rationalTwoLevelFirstMoments` | Arbitrary signed real probability clock laws |
 
-Every probability spectrum has normalized stationary Hilbert clock realization.
-Long-time fidelity mean is collision mass of independent energy differences.
+## Pure-point clock transfer and temporal rank
 
-Declarations:
+| ID | Manuscript claim | Exact declaration | Domain |
+|---|---|---|---|
+| C1 | A finite sampled phase law exists uniquely iff every projective-character clock coefficient converges | `existsUnique_finiteClockSampledPhaseLimit_iff_complete` | Finite real pure-point spectrum, arbitrary probability clocks |
+| C2 | Countable analogue with all finite-support characters | `existsUnique_countableClockSampledPhaseLimit_iff_complete` | Countable real pure-point spectrum, arbitrary probability clocks |
+| C3 | Temporal dimension plus exact clock-alias rank equals full projective capacity | `finiteClockSampled_temporalDimension_add_aliasRank` | Nonempty finite spectrum |
+| C4 | Same two-level spectrum has full revival and temporal dimension zero under deterministic revival sampling, but dimension one under every nonzero continuous uniform window | `unitGapTwoLevelSpectrum_fullRevival_vs_continuous_dimensions` | Explicit unit-gap two-level spectrum |
 
-- `probabilitySpectrumHilbertClock`
-- `every_probability_spectrum_has_cyclicStationaryHilbertClock`
-- `inner_realProbCharacterLp_eq_charFun`
-- `survivalFormFactor_eq_hilbertClock_overlap_normSq`
-- `spectralReturnMeanReal_tendsto_collision`
-- `spectralDifferenceMeasure_singleton_zero_iff_noAtoms`
-- `recurrencePlateau`
-- `HasPersistentMeanRecurrence`
+## Analytic, local, and replica refinements
 
-## Theorem 2.1: temporal alternatives
+| ID | Manuscript claim | Exact declaration | Domain |
+|---|---|---|---|
+| R1 | Every active analytic relation has one exact locked/critical/dephased sinc wall crossing, and the all-horizon atlas reconstructs birth order and critical magnitude | `existsUnique_completeObserverTimeFourierValuationAtlas`; `completeObserverTimeAtlas_uniqueCriticalProfile` | Finite analytic real spectral branches |
+| R2 | A balanced character has positive coefficient in the `m`th fidelity moment iff it is realized by two size-`m` multisets; its minimum order is its positive mass | `fidelityReplicaCharacterCoefficient_pos_iff_realizes`; `fidelityReplicaCharacterCoefficient_pos_iff_positiveMass_le` | Finite full-support positive weights |
+| R3 | Full multinomial expansion used for the exact coefficient formula | `complexFidelityReplicaMultiplicityExpansion` | Finite spectrum |
+| R4 | Phase and fidelity visibility occupy the exact northeast cone above the attained valuation/replica corner | `phaseReplicaCharacterVisible_iff_corner_le`; `fidelityMomentCharacterVisible_iff_corner_le` | Active finite analytic character |
+| R5 | Hermitian local interactions impose the connected-spanning lower face and attain the explicit local fidelity corner | `exists_localSiteMobiusExplicitFidelityVisibilityCone` | Finite local alphabets and interactions, simple uncoupled product spectrum, active nondegenerate site contrast |
+| R6 | Six-level benchmark has the stated first- and second-order birth profiles | `conditionedQubitLayerOne_profile`; `conditionedQubitLayerTwo_profile` and the corresponding conditioned-qubit wall-crossing declarations | Explicit affine Hermitian `6 × 6` family |
 
-Projective temporal dimension is rational rank of visible energy gaps. For
-every probability measure it is at most countable or continuum. Atomless
-spectra have continuum dimension, zero mean return, and zero density at every
-positive return threshold. Positive exact projective return is equivalent to a
-cyclic visible gap group.
+## Long-time and infinite-spectrum claims
 
-Declarations:
+| ID | Manuscript claim | Exact declaration | Domain |
+|---|---|---|---|
+| I1 | Symmetric-window moment is the sinc transform of the gap-sum law and converges to its zero atom | `spectralReturnMomentMean_eq_integral_sinc`; `spectralReturnMomentMean_tendsto_collisionHierarchy` | Every probability energy law and every positive order |
+| I2 | Every continuous statistic of fidelity has a long-time mean determined by collision moments | `exists_tendsto_spectralReturnStatisticMeanReal` | Every probability energy law |
+| I3 | Atomless spectra send every continuous statistic to its value at zero fidelity | `spectralReturnStatisticMeanReal_tendsto_eval_zero_of_noAtoms` | Every atomless probability energy law, including singular-continuous laws |
+| I4 | Projective temporal dimension is either at most countable or continuum; no intermediate uncountable value occurs | `projectiveObserverTemporalDimension_le_aleph0_or_eq_continuum` | Every real probability energy law |
+| I5 | Arbitrary real observer spectra obey the stated cyclic/aperiodic/atomless phase classification | `universalObserverTemporalPhaseClassification` | Every real probability energy law |
+| I6 | Atomless spectra spend asymptotic density zero above every fixed positive fidelity threshold | `highFidelityWindowDensity_tendsto_zero_of_noAtoms` | Every atomless probability energy law |
 
-- `projectiveObserverTemporalDimension`
-- `projectiveObserverTemporalDimension_le_aleph0_or_eq_continuum`
-- `exists_positive_projectiveMeasureExactReturn_iff_cyclic`
-- `atomlessProjectiveObserverTemporalPhaseLaw`
-- `measureTemporalDimension_eq_continuum_of_noAtoms`
-- `spectralReturnMeanReal_tendsto_zero_of_noAtoms`
-- `highFidelityWindowDensity_tendsto_zero_of_noAtoms`
+## Interpretation boundaries
 
-## Theorem 3.1: all-depth local agreement, opposite recurrence
+- “Clock orientation” means sign of the real sampling coordinate as seen by
+  survival fidelity. It is not a thermodynamic, cosmological, causal, or
+  measurement arrow.
+- “Temporal dimension” means rational rank/cardinality of the projective
+  phase hull visible to the stated probe. It is not extra relativistic
+  spacetime dimension.
+- “Locality” means the exact connected-packet lower bound in a finite
+  Hermitian perturbation family. No Lieb–Robinson velocity or thermodynamic
+  limit is claimed.
+- Black holes and quantum gravity appear only as motivation. No gravitational
+  theorem is claimed.
+- The manuscript does not contain the paper-proved but not yet formally
+  closed generic nearest-neighbour rank-explosion theorem.
 
-Complete polynomial local data are
+## Current verification status
 
-\[
-G_\mu(p,q)=\int pq\,d\mu,\qquad
-J_\mu(p,q)=\int Epq\,d\mu.
-\]
-
-Any two representing measures of one Hamburger moment sequence have identical
-`G` and `J`. Every normalized indeterminate class in the bounded-kernel
-Nevanlinna regime supplies:
-
-- one countably carried spectrum with positive collision mass and temporal
-  dimension at most countable;
-- one atomless barycentric spectrum with continuum temporal dimension, zero
-  mean return, and zero density at all positive thresholds;
-- equality of all local characteristic-function derivatives;
-- one common connected Jacobi law at every depth.
-
-Declarations:
-
-- `spectralPolynomialGram`
-- `spectralPolynomialEnergyMatrix`
-- `spectralPolynomialGram_eq_of_hasHamburgerMoments`
-- `spectralPolynomialEnergyMatrix_eq_of_hasHamburgerMoments`
-- `CompletePolynomialLocalData`
-- `completePolynomialLocalData_eq_of_hasHamburgerMoments`
-- `InfiniteJetQuantumRecurrenceSeparation`
-- `exists_infiniteJetQuantumRecurrenceSeparation`
-- `momentJacobiDiagonal`
-- `momentJacobiLower`
-- `momentJacobiLower_pos`
-- `momentJacobi_threeTerm`
-- `CompleteLocalJacobiRecurrenceSeparation`
-- `exists_completeLocalJacobiRecurrenceSeparation`
-
-No arbitrary classifier on complete polynomial data decides recurrence
-throughout strictly positive spectra with all moments:
-
-- `no_universal_positiveEnergy_completePolynomialLocalData_recurrenceClassifier`
-- capstone alias `globalCompletion_no_completeLocal_recurrenceClassifier`
-
-Manuscript caveat is essential: atomless barycenter is not claimed to be an
-ordinary self-adjoint extension on same polynomial `ℓ²` closure. Claim is
-inequivalent global Hilbert-space completions with identical polynomial local
-data.
-
-## Explicit strictly positive pair
-
-For every `v > 0`, discrete positive geometric spectrum and positive lognormal
-spectrum have:
-
-- all moments equal to `exp(v n² / 2)`;
-- all local derivatives equal;
-- strictly positive energy;
-- discrete positive collision mass and arbitrarily late full phase recurrence;
-- atomless continuous zero mean and zero positive-threshold density;
-- identical polynomial Gram and energy-multiplication data;
-- identical connected Jacobi rule at every depth.
-
-Declarations:
-
-- `positiveGeometricSpectrum`
-- `positiveLognormalSpectrum`
-- `integral_pow_positiveGeometricSpectrum`
-- `integral_pow_positiveLognormalSpectrum`
-- `allLocalDerivativesEqual_positiveSpectra`
-- `exists_arbitrarilyLate_positiveGeometricPhaseRecurrence`
-- `PositiveEnergyInfiniteJetRecurrenceSeparation`
-- `positiveEnergyInfiniteJetRecurrenceSeparation`
-- `PositiveEnergyCompleteLocalJacobiRecurrenceSeparation`
-- `positiveEnergy_completeLocalJacobiRecurrenceSeparation`
-
-## Compact exact-moment boundary
-
-If one representative of a common moment sequence is carried by a
-nondegenerate compact interval, every other representative is carried there
-and equals it. Therefore exact compact moment data determine recurrence.
-
-Declarations:
-
-- `measure_compl_Icc_eq_zero_of_moments_eq`
-- `measure_eq_of_moments_eq_of_one_carried`
-- `compactExactMoments_determine_spectrum`
-- `compactExactMoments_determine_recurrencePlateau`
-
-## Theorem 4.1: compact nonperturbative separation
-
-Both families are supported in fixed positive compact interval `[1,2]`.
-Recurrent family has one atom of flat mass `exp(-1/g)` for `g > 0`; dispersive
-family is uniform atomless measure. Every coupling derivative at zero of every
-bounded continuous spectral observable agrees. Complete all-times
-spectral-form-factor jets agree. Exact plateaux are `exp(-2/g)` and zero.
-Both exact laws have connected Jacobi realizations.
-
-Declarations:
-
-- `compactPositiveContinuumSpectrum`
-- `compactPositiveAtomSpectrum`
-- `recurrentCompactSpectrumFamily`
-- `dispersiveCompactSpectrumFamily`
-- `recurrentCompactSpectrumFamily_uniformlyCompactPositive`
-- `dispersiveCompactSpectrumFamily_uniformlyCompactPositive`
-- `perturbativeBoundedSpectralObservableJet_compactFamilies_eq`
-- `perturbativeSpectralFormFactorJet_compactFamilies_eq`
-- `nonperturbativeAtomicCompletion_plateau_instanton_exact`
-- `recurrentCompactSpectrumFamily_plateau_exact`
-- `dispersiveCompactSpectrumFamily_plateau_zero`
-- `every_compact_atomlessSpectrum_has_local_perturbativelyInvisible_recurrence`
-- `no_universal_compactPositive_completePerturbativeSpectralTheory_recurrenceClassifier`
-- `no_universal_compactPositive_completePerturbativeSFF_recurrenceClassifier`
-- capstone aliases `globalCompletion_no_completePerturbativeTheory_recurrenceClassifier`
-  and `globalCompletion_no_completePerturbativeSFF_recurrenceClassifier`
-
-## Theorem 5.1: complete long-time recurrence law
-
-For every probability spectrum and every natural `n`:
-
-\[
-\frac1{2T}\int_{-T}^{T}F_\mu(t)^n\,dt
-\longrightarrow ((\Delta\mu)^{*n})(\{0\}).
-\]
-
-Every continuous statistic on `[0,1]` has a long-time mean. Polynomial means
-are exactly the collision hierarchy; uniform polynomial approximation
-determines the continuous-statistic mean. Atomless spectra give evaluation at
-zero.
-
-Declarations:
-
-- `charFun_convPow_spectralDifferenceMeasure`
-- `spectralReturnMomentMean_eq_integral_sinc`
-- `spectralReturnMomentMeanReal_tendsto_collisionHierarchy`
-- `spectralCollisionPolynomialMean`
-- `spectralReturnStatisticMeanReal_polynomial_tendsto_collisionHierarchy`
-- `spectralReturnStatisticMeanReal_dist_le_of_uniform`
-- `exists_tendsto_spectralReturnStatisticMeanReal`
-- `spectralReturnStatisticMeanReal_tendsto_eval_zero_of_noAtoms`
-- capstone aliases `globalCompletion_returnMoments_eq_additiveCollisions`
-  and `globalCompletion_everyContinuousReturnStatistic_hasMean`
-
-## Theorem 6.1: complete finite local future set
-
-For every finite radius, positive target time, strict prior window, and
-positive tolerance, one finite isospectral self-adjoint connected
-nearest-neighbour family:
-
-- agrees exactly on endpoint-local matrix data;
-- agrees uniformly within tolerance throughout prior window;
-- realizes every target return probability in `[0,1]`.
-
-For fixed target/window/tolerance, one constant `a` works at every radius:
-
-\[
-n_R\le 4R+2a+5,\qquad
-\Lambda_R\le \pi(4R+2a+5)/(2T).
-\]
-
-Thus full ambiguity is achievable with chain length and centred energy-time
-cost linear in hidden distance.
-
-Declarations:
-
-- `localHorizon_every_future_probability`
-- `localCompatibleFutureSet`
-- `exists_localCompatibleFutureSet_eq_Icc`
-- `exists_uniformWindowExponent_endpointN_record`
-- `FixedEndpointPathModel.norm_le`
-- `energyBoundedLocalCompatibleFutureSet`
-- `exists_linearEnergy_completeLocalFutureSet`
-
-## Causal bound and matching necessity
-
-For self-adjoint nearest-neighbour Hamiltonians with common radius `R` and
-common centred norm bound `Λ`:
-
-\[
-|P_A(t)-P_B(t)|
-\le 4e^{|t|\Lambda}
-\frac{(|t|\Lambda)^{2R+3}}{(2R+3)!}.
-\]
-
-At critical action `|t|Λ ≤ (2R+3)/e`, discrepancy is at most
-`8 / sqrt(2π(2R+3))`. Persistent cofinal positive discrepancy therefore forces
-`|T|Λ_R > (2R+3)/e` eventually. Combined with achievability above, linear
-scaling is necessary and sufficient up to universal constants.
-
-Declarations:
-
-- `localCausalHorizon_probability_bound_gauge`
-- `localCausalHorizon_probability_bound_critical_gauge`
-- `persistentCofinalSeparation_forces_linear_centeredEnergyTime`
-- `persistentCofinalSeparation_forces_critical_centeredEnergyTime`
-
-## Thermal spectral-form-factor interpretation
-
-For any normalized thermal spectral probability law, normalized spectral form
-factor is `F_mu`; therefore plateau and all long-time continuous statistics are
-instances of Theorem 5.1. This is direct substitution into the universal
-probability-spectrum theorem, not an additional gravity hypothesis.
-
-Physics conclusion is logical insufficiency only:
-
-- complete local polynomial data do not universally certify recurrence;
-- complete perturbative spectral data do not universally certify recurrence;
-- exact global spectral completion supplies missing collision data.
-
-## Explicit exclusions
-
-- No claim that an astrophysical black hole realizes constructed spectra.
-- No claim that positive plateau equals full information recovery.
-- No claim that all model-specific plateaux are nonperturbative.
-- No claim that ordinary self-adjoint extensions of one indeterminate Jacobi
-  operator include atomless members.
-- No claim about gravity equations, black-hole evaporation, entropy value,
-  arrow of time, or cosmological initial conditions.
-- No novelty or significance claim based on proof formalization.
-- No conjecture or open mathematical question appears in manuscript.
+- `lake env lean GaloisForLFunctions/RHTower/ObserverRecurrenceDistributionLaw.lean`
+  passed after adding Q4–Q8.
+- Earlier direct module checks passed for the clock, replica, visibility,
+  valuation, and temporal-dimension files.
+- Final lint, axiom audit, and `lake build <module>` remain release gates.

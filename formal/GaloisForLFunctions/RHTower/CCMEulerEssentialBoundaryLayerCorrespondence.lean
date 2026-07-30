@@ -79,7 +79,7 @@ private theorem tendsto_realEulerParameter_nhdsNE :
       (nhdsWithin 1 (Ioi 1)) (𝓝[≠] (1 : ℂ)) := by
   rw [tendsto_nhdsWithin_iff]
   constructor
-  · simpa using
+  · simpa using!
       Complex.continuous_ofReal.continuousAt.tendsto.mono_left
         nhdsWithin_le_nhds
   · filter_upwards [self_mem_nhdsWithin] with sigma hsigma
@@ -147,7 +147,7 @@ theorem tendsto_ccmEulerPrimeCurrentClockResponse (t : ℝ) :
         (nhdsWithin 1 (Ioi 1)) (nhds q⁻¹) := by
     have h := hresParam.div (hresReal.mul_const q)
       (mul_ne_zero one_ne_zero hq)
-    simpa [q, hq] using h
+    simpa [q, hq, Pi.div_apply] using! h
   apply hregularized.congr'
   filter_upwards [self_mem_nhdsWithin] with sigma hsigma
   change 1 < sigma at hsigma
@@ -264,7 +264,7 @@ theorem tendsto_ccmEssentialBoundaryLayerClockResponse (t : ℝ) :
     Complex.continuous_ofReal.continuousAt.tendsto.comp hdenReal
   have h := hnum.div (tendsto_const_nhds.mul hdenComplex)
     (mul_ne_zero hq one_ne_zero)
-  simpa [ccmEssentialBoundaryLayerClockResponse, q, hq] using h
+  simpa [ccmEssentialBoundaryLayerClockResponse, q, hq, Pi.div_apply] using! h
 
 /-- **Prime-current/essential-cusp complex correspondence.**  The actual von Mangoldt current and
 the essential Hilbert boundary layer have asymptotically identical full complex clock response,

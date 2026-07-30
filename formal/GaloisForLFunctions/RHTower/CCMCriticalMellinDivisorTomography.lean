@@ -54,7 +54,7 @@ theorem meromorphicOn_regularizedCriticalMellinDefect_rightNegOne :
       (fun z : ℂ => logDeriv regularizedRiemannZeta (z + 1)) u :=
     MeromorphicAt.comp_analyticAt
       (meromorphicAt_logDeriv_regularizedRiemannZeta (u + 1)) hshift
-  simpa only [regularizedCriticalMellinDefect] using hrat.meromorphicAt.add hlog
+  simpa only [regularizedCriticalMellinDefect] using! hrat.meromorphicAt.add hlog
 
 /-- Away from a zero of the regularized zeta, the critical-Mellin defect is holomorphic. -/
 theorem analyticAt_regularizedCriticalMellinDefect_of_regularizedZeta_ne_zero
@@ -84,8 +84,8 @@ theorem analyticAt_regularizedCriticalMellinDefect_of_regularizedZeta_ne_zero
           regularizedRiemannZeta (z + 1) by
       funext z
       rw [logDeriv_apply]]
-    simpa only [Function.comp_apply] using hnum.div hden hz
-  simpa only [regularizedCriticalMellinDefect] using hrat.add hlog
+    simpa only [Function.comp_apply] using! hnum.div hden hz
+  simpa only [regularizedCriticalMellinDefect] using! hrat.add hlog
 
 /-- The residue of the translated logarithmic derivative is the exact Xi multiplicity. -/
 theorem tendsto_criticalMellin_shiftedLogDeriv_residue
@@ -168,7 +168,7 @@ theorem meromorphicOrderAt_criticalMellin_shiftedLogDeriv_eq_neg_one
     hshiftAnalytic hshiftDeriv
   rw [show shift p = (rho : ℂ) by simpa only [shift] using hprho,
     meromorphicOrderAt_logDeriv_regularizedRiemannZeta_eq_neg_one hzero] at hcomp
-  simpa only [shift, Function.comp_apply, p] using hcomp
+  simpa only [shift, Function.comp_apply, p] using! hcomp
 
 /-- Every Xi point gives a simple pole of the full regularized critical-Mellin defect. -/
 theorem meromorphicOrderAt_regularizedCriticalMellinDefect_eq_neg_one
@@ -200,7 +200,7 @@ theorem meromorphicOrderAt_regularizedCriticalMellinDefect_eq_neg_one
     have hcomp := MeromorphicAt.comp_analyticAt
       (f := logDeriv regularizedRiemannZeta) (g := shift)
       (meromorphicAt_logDeriv_regularizedRiemannZeta (shift p)) hshift
-    simpa only [singular, shift, Function.comp_apply] using hcomp
+    simpa only [singular, shift, Function.comp_apply] using! hcomp
   have hsingularOrder : meromorphicOrderAt singular p =
       ((-1 : ℤ) : WithTop ℤ) := by
     simpa only [singular, p] using
@@ -247,7 +247,7 @@ theorem meromorphicTrailingCoeffAt_regularizedCriticalMellinDefect
     have hcomp := MeromorphicAt.comp_analyticAt
       (f := logDeriv regularizedRiemannZeta) (g := shift)
       (meromorphicAt_logDeriv_regularizedRiemannZeta (shift p)) hshift
-    simpa only [singular, shift, Function.comp_apply] using hcomp
+    simpa only [singular, shift, Function.comp_apply] using! hcomp
   have hsingularOrder : meromorphicOrderAt singular p =
       ((-1 : ℤ) : WithTop ℤ) := by
     simpa only [singular, p] using

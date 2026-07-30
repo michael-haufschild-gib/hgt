@@ -55,7 +55,7 @@ theorem riemannHypothesis_of_rhLadder_of_xiZerosSimple
       dsimp only [g]
       convert (hasDerivAt_const (x := z) (c := (1 / 2 : ℂ))).add
         ((hasDerivAt_id z).mul_const I) using 1
-      ring
+      all_goals first | rfl | ring
     rw [hg'.deriv]
     exact I_ne_zero
   have hcomp := analyticOrderAt_comp_of_deriv_ne_zero (f := xi) hg_an hg_deriv

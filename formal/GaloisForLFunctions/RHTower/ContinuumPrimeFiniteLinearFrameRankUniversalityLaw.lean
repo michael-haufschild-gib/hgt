@@ -58,7 +58,7 @@ theorem
   have hselected :
       DifferentialIndependent finitePrimeRationalCoefficientField
         (fun i => family (coord i)) := by
-    simpa only [Function.comp_apply] using hdiff.comp coord hcoord
+    simpa only [Function.comp_apply] using! hdiff.comp coord hcoord
   calc
     differentialRelationIdeal
           (C := finitePrimeRationalCoefficientField)

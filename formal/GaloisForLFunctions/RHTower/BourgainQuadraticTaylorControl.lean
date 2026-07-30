@@ -27,7 +27,7 @@ theorem bourgain_quadraticTaylorWithin_remainder
       ‖iteratedDerivWithin 3 f (Icc a b) y‖ ≤ C) :
     ‖f x - taylorWithinEval f 2 (Icc a b) a x‖
       ≤ C * (x - a) ^ (3 : ℕ) / 2 := by
-  simpa only [Nat.factorial, Nat.cast_ofNat] using
+  simpa only [Nat.factorial, Nat.cast_ofNat] using!
     (taylor_mean_remainder_bound (n := 2) hab hf hx hC)
 
 /-- Localized version of the quadratic remainder bound on an interval of

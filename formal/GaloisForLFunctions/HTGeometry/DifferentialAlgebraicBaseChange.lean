@@ -121,7 +121,7 @@ theorem DifferentialIndependent.extendScalarsDifferentialAdjoin
   have hRangeBase :=
     diffIndepOn_differentialAdjoin_of_differentialAlgebraicOver hRange hG
   have h := hRangeBase.comp e e.injective
-  simpa [e] using h
+  simpa [e] using! h
 
 /-- **Exact family-level differential-algebraic base change.** Adjoining an arbitrary set of
 differentially algebraic coefficients preserves and reflects joint differential independence of
@@ -156,7 +156,7 @@ theorem DifferentialIndependent.extendScalarsDifferentialAdjoinSingleton
       DiffIndepOn (differentialAdjoin F ({g} : Set E)) (Set.range x) :=
     diffIndepOn_differentialAdjoin_singleton_of_differentialAlgebraicOver hg hRange
   have h := hRangeBase.comp e e.injective
-  simpa [e] using h
+  simpa [e] using! h
 
 /-- Hypertranscendence is unchanged after adjoining an arbitrary set of differentially algebraic
 coefficients. -/

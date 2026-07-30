@@ -97,7 +97,9 @@ theorem tendsto_mul_squarefreeMobiusLogMoment :
     rw [tendsto_nhdsWithin_iff]
     constructor
     · have hc : Tendsto (fun ε : ℝ => 1 + ε) (nhds 0) (nhds 1) := by
-        simpa using (continuous_const.add continuous_id).tendsto (0 : ℝ)
+        simpa only [Pi.add_apply, id_eq, add_zero] using!
+          ((continuous_const : Continuous (fun _ : ℝ => (1 : ℝ))).add
+            continuous_id).tendsto (0 : ℝ)
       exact hc.mono_left nhdsWithin_le_nhds
     · filter_upwards [self_mem_nhdsWithin] with ε hε
       have hpos : (0 : ℝ) < ε := hε

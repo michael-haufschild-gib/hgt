@@ -37,9 +37,10 @@ theorem hasDerivAt_thetaCuspMorseScale (n : ℕ) (x : ℝ) :
   have hu : HasDerivAt (fun y : ℝ => (n : ℝ) * Real.exp y)
       ((n : ℝ) * Real.exp x) x :=
     (Real.hasDerivAt_exp x).const_mul (n : ℝ)
-  convert (hu.pow 2).const_mul Real.pi using 1
-  all_goals simp only [thetaCuspMorseScale]
-  all_goals ring
+  simpa only [thetaCuspMorseScale, Pi.pow_apply, Pi.mul_apply] using!
+    ((hu.pow 2).const_mul Real.pi).congr_deriv (by
+      norm_num
+      ring)
 
 theorem hasDerivAt_thetaCuspMorseSuperpotential
     (A : ℝ) (n : ℕ) (x : ℝ) :
@@ -56,21 +57,21 @@ theorem hasDerivAt_thetaCuspMorseZeroMode (A : ℝ) (n : ℕ) (x : ℝ) :
     by simpa using (hasDerivAt_id x).const_mul A
   have hA : HasDerivAt (fun y : ℝ => Real.exp (A * y))
       (A * Real.exp (A * x)) x := by
-    convert (Real.hasDerivAt_exp (A * x)).comp x hlin using 1
-    all_goals ring
+    exact ((Real.hasDerivAt_exp (A * x)).comp x hlin).congr_deriv (by ring)
   have hneg : HasDerivAt (fun y : ℝ => -thetaCuspMorseScale n y / 2)
       (-thetaCuspMorseScale n x) x := by
-    convert hscale.neg.div_const 2 using 1
-    all_goals ring
+    simpa only [Pi.neg_apply, Pi.div_apply] using!
+      (hscale.neg.div_const 2).congr_deriv (by ring)
   have hB : HasDerivAt
       (fun y : ℝ => Real.exp (-thetaCuspMorseScale n y / 2))
       (-thetaCuspMorseScale n x *
         Real.exp (-thetaCuspMorseScale n x / 2)) x := by
-    convert (Real.hasDerivAt_exp (-thetaCuspMorseScale n x / 2)).comp x hneg using 1
-    all_goals ring
-  convert (hA.const_mul (n : ℝ)).mul hB using 1
-  all_goals simp only [thetaCuspMorseZeroMode, thetaCuspMorseSuperpotential]
-  all_goals ring
+    apply ((Real.hasDerivAt_exp (-thetaCuspMorseScale n x / 2)).comp x hneg).congr_deriv
+    ring
+  simpa only [thetaCuspMorseZeroMode, Pi.mul_apply] using!
+    ((hA.const_mul (n : ℝ)).mul hB).congr_deriv (by
+      simp only [thetaCuspMorseSuperpotential]
+      ring)
 
 theorem hasDerivAt_thetaCuspMorseGroundState (n : ℕ) (x : ℝ) :
     HasDerivAt (thetaCuspMorseGroundState n)
@@ -125,9 +126,10 @@ theorem hasDerivAt_neg_morseSuperpotential_mul_zeroMode
       (thetaCuspMorsePotentialMinus A n x * thetaCuspMorseZeroMode A n x) x := by
   have hW := hasDerivAt_thetaCuspMorseSuperpotential A n x
   have hψ := hasDerivAt_thetaCuspMorseZeroMode A n x
-  convert hW.neg.mul hψ using 1
-  all_goals simp only [thetaCuspMorsePotentialMinus, Pi.neg_apply]
-  all_goals ring
+  simpa only [Pi.neg_apply, Pi.mul_apply] using!
+    (hW.neg.mul hψ).congr_deriv (by
+      simp only [thetaCuspMorsePotentialMinus, Pi.neg_apply]
+      ring)
 
 theorem secondDeriv_thetaCuspMorseZeroMode (A : ℝ) (n : ℕ) (x : ℝ) :
     deriv (deriv (thetaCuspMorseZeroMode A n)) x =
@@ -198,8 +200,9 @@ theorem thetaCuspSourceTerm_eq_morseBornObservable (n : ℕ) (x : ℝ) :
       (2 * thetaCuspMorseGroundState n x *
         (-thetaCuspMorseSuperpotential (5 / 4 : ℝ) n x *
           thetaCuspMorseGroundState n x)) x := by
-    convert (hasDerivAt_thetaCuspMorseGroundState n x).pow 2 using 1
-    all_goals simp only [Nat.cast_ofNat, Nat.reduceSubDiff, pow_one]
+    simpa only [Pi.pow_apply] using!
+      ((hasDerivAt_thetaCuspMorseGroundState n x).pow 2).congr_deriv (by
+        norm_num)
   rw [hsq.deriv]
   simp only [thetaCuspMorseSuperpotential]
   ring

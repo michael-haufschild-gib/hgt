@@ -196,7 +196,8 @@ theorem localDivisorJetBoundaryCoordinateMap_surjective
         by_cases hnm : n < m
         · exact Finset.mem_range.mpr hnm
         · simp [hnm] at hn)
-  let P : Polynomial K := Polynomial.ofFinsupp a
+  let P : Polynomial K :=
+    Polynomial.ofFinsupp (AddMonoidAlgebra.ofCoeff a)
   refine ⟨P, ?_⟩
   ext i
   simp [localDivisorJetBoundaryCoordinateMap, P, a, i.isLt]

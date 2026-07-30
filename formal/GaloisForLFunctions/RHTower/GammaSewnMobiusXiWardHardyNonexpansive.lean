@@ -417,7 +417,7 @@ theorem rightHalfPlanePickDefect_finsetProd_posSemidef
       (fun i => ∏ q ∈ S, f q i)).PosSemidef := by
   induction S using Finset.induction_on with
   | empty =>
-      simpa using rightHalfPlanePickDefect_one_posSemidef w
+      simpa using! rightHalfPlanePickDefect_one_posSemidef w
   | @insert q S hq ih =>
       have hqpsd :
           (rightHalfPlanePickDefect w (f q)).PosSemidef :=
@@ -440,7 +440,7 @@ theorem rightHalfPlanePickDefect_cayley_posSemidef
     (ha : 0 ≤ alpha) :
     (rightHalfPlanePickDefect w
       (fun i => xiWardHalfPlaneCayleyFactor lam (w i) alpha)).PosSemidef := by
-  simpa only [rightHalfPlanePickDefect, xiWardCayleyPickDefect] using
+  simpa only [rightHalfPlanePickDefect, xiWardCayleyPickDefect] using!
     (xiWardCayleyPickDefect_posSemidef hw hlam ha)
 
 theorem Matrix.PosSemidef.of_tendsto_complex
@@ -492,7 +492,7 @@ theorem tendsto_rightHalfPlanePickDefect
   have hentry : Continuous entry := by
     dsimp [entry]
     fun_prop
-  simpa only [rightHalfPlanePickDefect, entry] using
+  simpa only [rightHalfPlanePickDefect, entry] using!
     hentry.continuousAt.tendsto.comp hij
 
 theorem rightHalfPlanePickDefect_schwarzPair_posSemidef
@@ -504,17 +504,17 @@ theorem rightHalfPlanePickDefect_schwarzPair_posSemidef
   have hupper :
       (rightHalfPlanePickDefect w
         (fun i => xiWardCayleyFactor q.1 (w i) alpha)).PosSemidef := by
-    simpa only [xiWardCayleyFactor] using
+    simpa only [xiWardCayleyFactor] using!
       (rightHalfPlanePickDefect_cayley_posSemidef
         hw q.1.2 ha)
   have hlower :
       (rightHalfPlanePickDefect w
         (fun i => xiWardCayleyFactor
           (xiRightZeroCopyConjEquiv q.1) (w i) alpha)).PosSemidef := by
-    simpa only [xiWardCayleyFactor] using
+    simpa only [xiWardCayleyFactor] using!
       (rightHalfPlanePickDefect_cayley_posSemidef
         hw (xiRightZeroCopyConjEquiv q.1).2 ha)
-  simpa only [xiWardSchwarzPairCayleyFactor, Pi.mul_apply] using
+  simpa only [xiWardSchwarzPairCayleyFactor, Pi.mul_apply] using!
     rightHalfPlanePickDefect_mul_posSemidef hupper hlower
 
 theorem rightHalfPlanePickDefect_finiteXiProduct_posSemidef

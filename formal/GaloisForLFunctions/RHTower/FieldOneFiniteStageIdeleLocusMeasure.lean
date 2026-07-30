@@ -155,7 +155,7 @@ theorem fieldOneFiniteStageIdeleLocus_compl_null
     fieldOneFiniteStageProductAddHaar S
       (fieldOneFiniteStageIdeleLocus S)ᶜ = 0 := by
   rw [← compl_mem_ae_iff]
-  simpa only [compl_compl] using
+  simpa only [compl_compl] using!
     (fieldOneFiniteStageIdeleLocus_ae S)
 
 end

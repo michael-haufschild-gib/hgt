@@ -283,7 +283,7 @@ theorem analyticAt_comp_add_iff (f : ℂ → ℂ) (c ρ : ℂ) :
   · intro h
     have hshift : AnalyticAt ℂ (fun z : ℂ => z + c) ρ := by fun_prop
     have hcomp := AnalyticAt.comp_of_eq h hshift (by ring)
-    simpa [Function.comp] using hcomp
+    simpa [Function.comp] using! hcomp
 
 /-- Eventual statements transport across the shift homeomorphism `z ↦ z + c`. -/
 theorem eventually_comp_add_iff (c ρ : ℂ) (P : ℂ → Prop) :
@@ -392,7 +392,7 @@ theorem meromorphicOrderAt_comp_add (f : ℂ → ℂ) (c ρ : ℂ) :
     meromorphicOrderAt (fun z => f (z + c)) ρ = meromorphicOrderAt f (ρ + c) := by
   have hg : AnalyticAt ℂ (fun z : ℂ => z + c) ρ := by fun_prop
   have hg' : deriv (fun z : ℂ => z + c) ρ ≠ 0 := by rw [deriv_add_const, deriv_id'']; norm_num
-  simpa [Function.comp] using meromorphicOrderAt_comp_of_deriv_ne_zero (f := f) hg hg'
+  simpa [Function.comp] using! meromorphicOrderAt_comp_of_deriv_ne_zero (f := f) hg hg'
 
 /-- **Meromorphic difference-recurrence.**  For meromorphic `f`, `M` with `f(s+1) = M(s)·f(s)`, once the
 multiplier is a unit (order `0`) at every orbit point beyond `N`, the meromorphic order is constant

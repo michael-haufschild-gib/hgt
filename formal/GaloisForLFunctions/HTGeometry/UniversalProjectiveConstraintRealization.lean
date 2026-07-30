@@ -24,7 +24,7 @@ theorem eval_denseConstraintProfile_eq_zero_iff
   · intro hzero
     let g : K → ℂ := fun v => eval v.1 Q
     have hg : Continuous g := by
-      simpa only [g] using
+      simpa only [g] using!
         (MvPolynomial.continuous_eval Q).comp
           (continuous_subtype_val : Continuous (fun v : K => v.1))
     have heq : g = fun _ => 0 := by

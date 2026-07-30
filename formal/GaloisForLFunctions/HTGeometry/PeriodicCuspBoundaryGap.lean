@@ -60,7 +60,7 @@ theorem differentiableAt_normedPeriodicCuspFunction
   let q := Function.Periodic.qParam h z
   have qdiff : HasStrictDerivAt (Function.Periodic.qParam h)
       (q * (2 * Real.pi * I / h)) z := by
-    simpa only [id_eq, mul_one] using
+    simpa only [id_eq, mul_one] using!
       (((hasStrictDerivAt_id z).const_mul _).div_const _).cexp
   have diff_ne : q * (2 * Real.pi * I / h) ≠ 0 :=
     mul_ne_zero (exp_ne_zero _)
@@ -124,7 +124,7 @@ theorem differentiableAt_normedPeriodicCuspFunction_zero
     simp only [mem_upperBounds, Set.mem_image, Set.mem_sdiff,
       forall_exists_index, and_imp]
     intro y q hq hq2 hy
-    simpa only [← hy, norm_one, mul_one] using (hS1 q hq hq2).2
+    simpa only [← hy, norm_one, mul_one] using! (hS1 q hq hq2).2
   have hrem := Complex.differentiableOn_update_limUnder_of_bddAbove
     (IsOpen.mem_nhds hS2 hS3) hdiff hFbd
   rw [← normedPeriodicCuspFunction_zero_eq_limUnder_nhds_ne,

@@ -28,7 +28,7 @@ theorem cofinalCholeskyResidualPhase_isSingularContinuous_maximalTranslation_hyp
     (hD : AnalyticOnNhd ℝ F.base.toBoundaryFamily.matrix.d univ)
     (nu : F.base.toBoundaryFamily.carrierRange)
     (hnu : nu ∈ F.cofinalCholeskyResidualPhase) :
-    NoAtoms (nu.1 : Measure ℝ) ∧
+    NullSingletonClass (nu.1 : Measure ℝ) ∧
       (nu.1 : Measure ℝ) ⟂ₘ (volume : Measure ℝ) ∧
       MaximalTranslationDifferentialFree nu.1 ∧
       Hypertranscendental

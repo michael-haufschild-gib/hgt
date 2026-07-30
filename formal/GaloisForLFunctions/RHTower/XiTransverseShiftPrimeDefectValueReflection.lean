@@ -49,7 +49,7 @@ theorem LSeries_xiTransverseShiftArithmetic (a : ℕ) {s : ℂ} (hs : 1 < s.re) 
     exact LSeries_dirichletShift (a : ℂ) s vonMangoldtArithmetic] at hsub
   simpa [f, g, xiTransverseShiftArithmetic,
     xiTransverseShiftFiniteAbscissaSource, vonMangoldtFiniteAbscissaSource,
-    vonMangoldtArithmetic] using hsub
+    vonMangoldtArithmetic] using! hsub
 
 /-- Exact archimedean/boundary logarithmic-derivative correction at shift `a`. -/
 def xiTransverseShiftArchimedeanCorrection (a : ℕ) (s : ℂ) : ℂ :=

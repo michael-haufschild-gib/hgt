@@ -205,12 +205,13 @@ lemma SR_analyticOn_evaluationPoints_compl :
     exact sub_ne_zero_of_mem_evaluationPoints_compl h7 hz _
   · apply Finset.analyticOn_fun_prod
     intros u hu
-    simp only [mem_sdiff, Finset.mem_range, Finset.mem_singleton] at hu
+    have hu_lt : u < h7.m :=
+      List.mem_range.mp ((List.nodup_range (n := h7.m)).mem_sdiff_iff.mp hu).1
     apply AnalyticOn.fun_pow
     refine AnalyticOn.div (analyticOn_const) ?_ ?_
     · refine DifferentiableOn.analyticOn ?_ (S_U_isOpen h7)
       fun_prop
-    · exact fun z hz ↦ sub_ne_zero_of_mem_evaluationPoints_compl h7 hz ⟨u, hu.1⟩
+    · exact fun z hz ↦ sub_ne_zero_of_mem_evaluationPoints_compl h7 hz ⟨u, hu_lt⟩
 
 lemma SR_AnalyticAt (z : ℂ) (hz : z ∈ evaluationPoints_compl h7) :
     AnalyticAt ℂ (h7.SR q hq0 h2mq) z :=
@@ -299,7 +300,6 @@ lemma SR_eq_SRl {z : ℂ} (l' : Fin (h7.m)) (hl : l' ≠ h7.l₀' q hq0 h2mq) :
     Set.mem_image, Set.mem_Iio, not_exists,
     not_and] at hz
   have := R_eq_pow_mul_R' h7 q hq0 h2mq l' z
-  simp only at this
   rw [this]; clear this
   simp only [← mul_assoc]
   nth_rw 8 [mul_comm]
@@ -309,7 +309,6 @@ lemma SR_eq_SRl {z : ℂ} (l' : Fin (h7.m)) (hl : l' ≠ h7.l₀' q hq0 h2mq) :
   simp only [mul_assoc]
   have : l' < h7.m := by simp only [Fin.is_lt]
   have H := (hz l' this)
-  simp only at H
   have : 1 =  (z - (↑↑(h7.l₀' q hq0 h2mq) + 1)) ^ ↑(h7.r q hq0 h2mq) *
       (z - (↑↑(h7.l₀' q hq0 h2mq) + 1)) ^ (-↑((h7.r q hq0 h2mq) : ℤ)) := by
     simp only [zpow_neg, zpow_natCast]
@@ -423,7 +422,6 @@ lemma SRl_is_analytic_at_ball_of_radius_one (l' : Fin (h7.m)) (hl : l' ≠ h7.l�
   · apply AnalyticOn.mul ?_ ?_
     · apply AnalyticOn.mul ?_ ?_
       · have := h7.R'_analyticAt q hq0 h2mq
-        simp only at this
         apply AnalyticOn.mul (AnalyticOnNhd.analyticOn fun x a ↦ this l' x) analyticOn_const
       · apply AnalyticOn.fun_zpow
         · apply AnalyticOn.mono
@@ -451,25 +449,21 @@ lemma SRl_is_analytic_at_ball_of_radius_one (l' : Fin (h7.m)) (hl : l' ≠ h7.l�
           aesop
     · apply Finset.analyticOn_fun_prod
       intros u hu
-      simp only at hu
       apply AnalyticOn.fun_pow (AnalyticOn.div analyticOn_const
          (DifferentiableOn.analyticOn (by fun_prop) Metric.isOpen_ball) (fun x hx ↦ ?_))
       · simp only [Metric.mem_ball] at hx
-        simp only [Finset.mem_union, mem_sdiff,
-          Finset.mem_range, Finset.mem_singleton] at hu
-        cases' hu with h1 h2
-        · intros HC
-          simp only [not_or] at h2
-          obtain ⟨hu, hul0⟩ := h2
-          rw [sub_eq_zero] at HC
-          rw [HC] at hx
-          simp only [dist_add_right] at hx
-          rw [← ne_eq] at *
-          have Hdist := ( dist_nat_cast_lt_one u ↑↑l').1
-          have Hdist := Hdist hx
-          rw [Hdist] at hx
-          simp only [dist_self, zero_lt_one] at hx
-          exact hul0 Hdist
+        have hu_not :
+            u ∉ (({↑(h7.l₀' q hq0 h2mq : ℕ)} ∪ {↑(l' : ℕ)} : Finset ℕ).val) :=
+          ((List.nodup_range (n := h7.m)).mem_sdiff_iff.mp hu).2
+        intros HC
+        have hu_ne :
+            u ≠ ↑(h7.l₀' q hq0 h2mq : ℕ) ∧ u ≠ ↑(l' : ℕ) := by
+          simpa using hu_not
+        obtain ⟨hu, hul0⟩ := hu_ne
+        rw [sub_eq_zero] at HC
+        rw [HC] at hx
+        simp only [dist_add_right] at hx
+        exact hul0 ((dist_nat_cast_lt_one u ↑↑l').1 hx)
   · exact analyticOn_const
 
 
@@ -483,7 +477,6 @@ lemma SRl0_is_analytic_at_ball_of_radius_one :
     exact AnalyticOnNhd.analyticOn (fun z hz ↦ hA (h7.l₀' q hq0 h2mq) z)
   · apply Finset.analyticOn_fun_prod
     intro u hu
-    simp only [mem_sdiff, Finset.mem_range, Finset.mem_singleton] at hu
     refine (AnalyticOn.fun_pow (𝕜 := ℂ) (n := h7.r q hq0 h2mq) ?_)
     refine AnalyticOn.div (𝕜 := ℂ) analyticOn_const
       (AnalyticOn.sub analyticOn_id analyticOn_const) ?_
@@ -495,7 +488,11 @@ lemma SRl0_is_analytic_at_ball_of_radius_one :
       simpa [dist_add_right] using hz1
     have hu' : u = (h7.l₀' q hq0 h2mq : ℕ) :=
       (dist_nat_cast_lt_one u (h7.l₀' q hq0 h2mq : ℕ)).1 hz0
-    exact hu.2 hu'
+    have hu_not : u ∉ [↑(h7.l₀' q hq0 h2mq : ℕ)] :=
+      ((List.nodup_range (n := h7.m)).mem_sdiff_iff.mp hu).2
+    have hu_ne : u ≠ ↑(h7.l₀' q hq0 h2mq : ℕ) := by
+      simpa using hu_not
+    exact hu_ne hu'
 
 lemma AnalyticAtEq (f g : ℂ → ℂ) (U : Set ℂ) (z : ℂ) :
   (hU : U ∈ nhds z) → z ∈ U → (∀ z ∈ U, f z = g z) →

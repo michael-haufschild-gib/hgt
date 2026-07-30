@@ -106,7 +106,7 @@ theorem continuumSparsePrimeOrientation_boundedTailClass_linearIndependent
   have hsum' :
       ∑ z : s, c z.1 • boundedPrimeOrientationTailClass (epsilon z) = 0 := by
     rw [← s.sum_attach] at hsum
-    simpa only [Finset.attach_eq_univ, epsilon] using hsum
+    simpa only [Finset.attach_eq_univ, epsilon] using! hsum
   exact Fintype.linearIndependent_iff.mp hlinear (fun z : s => c z.1)
     hsum' ⟨i, hi⟩
 

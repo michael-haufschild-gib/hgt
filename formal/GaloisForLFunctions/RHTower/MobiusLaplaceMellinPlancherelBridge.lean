@@ -638,7 +638,7 @@ theorem differentiableAt_mellin_mobiusDiscreteLaplaceTransform_of_base
       (‖mobiusLaplaceLogMellinLineSource (s.re - 2 * v) u‖ +
         ‖mobiusLaplaceLogMellinLineSource (s.re + 2 * v) u‖)
   have hbound : Integrable bound := by
-    simpa only [bound] using (hminus.norm.add hplus.norm).const_mul (1 / v)
+    simpa only [bound] using! (hminus.norm.add hplus.norm).const_mul (1 / v)
   have hFmeas : ∀ᶠ z in 𝓝 s,
       AEStronglyMeasurable (mobiusLaplaceMellinLogIntegrand z) := by
     filter_upwards with z
@@ -671,8 +671,9 @@ theorem differentiableAt_mellin_mobiusDiscreteLaplaceTransform_of_base
     have hinner : HasDerivAt (fun q : ℂ => -q * (u : ℂ)) (-(u : ℂ)) z := by
       simpa using (hasDerivAt_id z).neg.mul_const (u : ℂ)
     unfold mobiusLaplaceMellinLogIntegrand mobiusLaplaceMellinLogIntegrandDeriv
-    convert hinner.cexp.mul_const
-      (mobiusDiscreteLaplaceTransform (Real.exp (-u))) using 1 <;> ring_nf
+    simpa using!
+      (hinner.cexp.mul_const
+        (mobiusDiscreteLaplaceTransform (Real.exp (-u)))).congr_deriv (by ring)
   have hmain := hasDerivAt_integral_of_dominated_loc_of_deriv_le
     (F := mobiusLaplaceMellinLogIntegrand)
     (F' := mobiusLaplaceMellinLogIntegrandDeriv)
@@ -925,7 +926,7 @@ theorem exists_uniform_integral_norm_sq_mobiusLaplaceLogMellinLineSource_of_base
         (fun u : ℝ => Real.exp ((2 * (1 - (sigma + r₀))) * u))) :=
     (integrableOn_exp_mul_Iic (by linarith) 0).integrable_indicator measurableSet_Iic
   have hmajor : Integrable major := by
-    simpa only [major] using hposMajor.add hnegMajor
+    simpa only [major] using! hposMajor.add hnegMajor
   refine ⟨∫ u : ℝ, major u, ?_⟩
   intro r hr hrr
   have har : sigma + r < 1 :=
@@ -1245,10 +1246,10 @@ theorem mobiusLaplaceFiniteSectionLogMellinLineSource_memLp_two
     MemLp (mobiusLaplaceFiniteSectionLogMellinLineSource N sigma) 2 volume := by
   rw [memLp_two_iff_integrable_sq_norm
     (continuous_mobiusLaplaceFiniteSectionLogMellinLineSource N sigma).aestronglyMeasurable]
-  convert integrable_log_finiteMobiusLaplacePencil_sq N
-    (by linarith : 0 < 2 * sigma) using 1
-  funext u
-  exact norm_sq_mobiusLaplaceFiniteSectionLogMellinLineSource_eq N sigma u
+  apply (integrable_log_finiteMobiusLaplacePencil_sq N
+    (by linarith : 0 < 2 * sigma)).congr
+  filter_upwards with u
+  exact (norm_sq_mobiusLaplaceFiniteSectionLogMellinLineSource_eq N sigma u).symm
 
 /-- Finite, source-pure approximation frontier.  Arbitrarily close to `1/2`, the logarithmic
 finite Gamma--Hankel sections have one common finite `L²` ceiling.  The ceiling may depend on the

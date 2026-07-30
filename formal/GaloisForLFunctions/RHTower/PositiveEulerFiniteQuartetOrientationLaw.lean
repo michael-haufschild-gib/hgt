@@ -81,7 +81,7 @@ theorem integrableOn_finiteQuartetPrimeLogDensity_Icc
       have hiint :=
         integrableOn_quartetPrimeLogDensity_Icc
           (ha i) (hgam i) (hradius i) (R := R)
-      simpa [Finset.sum_insert hi] using hiint.add ih
+      simpa [Finset.sum_insert hi] using! hiint.add ih
 
 /-- The prime-power series of one positive quartet density is absolutely
 summable at every nonnegative logarithmic coordinate. -/

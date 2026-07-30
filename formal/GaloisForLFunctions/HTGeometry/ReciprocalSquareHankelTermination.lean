@@ -73,7 +73,7 @@ theorem algebraicHankelMatrix_mulVec_matrixPower_relation_eq_zero
   have htrace' :
       (∑ j : Fin (d * d + 1),
         c j * (A ^ ((r : ℕ) + 1) * A ^ (j : ℕ)).trace) = 0 := by
-    simpa only [Matrix.trace_sum, Matrix.trace_smul, Matrix.trace_zero] using htrace
+    simpa only [Matrix.trace_sum, Matrix.trace_smul, Matrix.trace_zero] using! htrace
   calc
     ∑ j : Fin (d * d + 1),
         (A ^ ((r : ℕ) + (j : ℕ) + 1)).trace * c j =

@@ -119,7 +119,7 @@ theorem upperNormalizedLogGrowth_mul_const
         limsup (fun n => normalizedLogCard (C n) n + normalizedLogCard A n) atTop :=
       limsup_congr (Eventually.of_forall hpoint)
     _ = limsup (fun n => normalizedLogCard (C n) n) atTop := by
-      simpa only [Pi.add_apply] using
+      simpa only [Pi.add_apply] using!
         (ENNReal.limsup_add_of_right_tendsto_zero hzero
           (fun n => normalizedLogCard (C n) n))
 
@@ -141,7 +141,7 @@ theorem lowerNormalizedLogGrowth_mul_const
         liminf (fun n => normalizedLogCard (C n) n + normalizedLogCard A n) atTop :=
       liminf_congr (Eventually.of_forall hpoint)
     _ = liminf (fun n => normalizedLogCard (C n) n) atTop := by
-      simpa only [Pi.add_apply] using
+      simpa only [Pi.add_apply] using!
         (ENNReal.liminf_add_of_right_tendsto_zero hzero
           (fun n => normalizedLogCard (C n) n))
 

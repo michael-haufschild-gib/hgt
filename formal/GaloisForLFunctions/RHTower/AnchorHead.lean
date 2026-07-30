@@ -51,7 +51,7 @@ private theorem hasDerivAt_eulerFactor {p : ℕ} (hp : (p : ℂ) ≠ 0) (s : ℂ
   have hcpow : HasDerivAt (fun s : ℂ => (p : ℂ) ^ (-s))
       ((p : ℂ) ^ (-s) * Complex.log p * (-1)) s := HasDerivAt.const_cpow hns (Or.inl hp)
   have h3 := hcpow.const_sub 1
-  convert h3 using 1
+  convert! h3 using 1
   ring
 
 /-- Each Euler factor is entire. -/

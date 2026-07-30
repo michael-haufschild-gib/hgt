@@ -216,7 +216,7 @@ theorem exists_xiReciprocalSquareUpperSector_neg_near_of_zero
       dsimp only [s]
       ring
     rw [hfun]
-    simpa only [m, Function.comp_apply] using hnormalized
+    simpa only [m, Function.comp_apply] using! hnormalized
   have hquot : Tendsto
       (fun n => (t n : ℂ) * (-logDeriv XiC (z n) / z n))
       atTop (nhds (-((m : ℂ) / alpha))) := by

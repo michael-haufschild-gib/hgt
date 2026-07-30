@@ -246,7 +246,7 @@ theorem tendsto_thetaSquareBlaschkeFinite_mul_I {t : ℝ} (ht : t ≠ 0) :
   have hsinh : Complex.sinh ((Real.pi : ℂ) * Complex.sqrt z) ≠ 0 := by
     exact sinh_pi_sqrt_pureImag_ne_zero ht
   have hdiv := hnum.div hden hsinh
-  convert hdiv using 1
+  convert! hdiv using 1
   ext N
   rw [thetaSquareBlaschkeFinite]
   have hroot : (Complex.sqrt z) ^ 2 = z := complex_sqrt_sq z
@@ -681,4 +681,3 @@ theorem thetaHeatRateSourceReaderL2_hasAELowerSupport
 
 
 end RHTower
-

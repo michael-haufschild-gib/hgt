@@ -55,7 +55,7 @@ theorem reflectedPhaseDeriv_hasDerivAt {T : ℝ} {k : ℕ} {x : ℝ} (hx : x ≠
   have hT : HasDerivAt (fun y : ℝ => T * y⁻¹) (T * (-(x ^ 2)⁻¹)) x := hinv.const_mul T
   have hconst : HasDerivAt (fun _y : ℝ => -(2 * Real.pi * ((k + 1 : ℕ) : ℝ))) 0 x :=
     hasDerivAt_const x _
-  convert hconst.add hT using 1
+  convert! hconst.add hT using 1
   simp [reflectedPhaseSecond, mul_neg]
 
 /-- The reflected-block curvature is independent of the Fourier mode. -/

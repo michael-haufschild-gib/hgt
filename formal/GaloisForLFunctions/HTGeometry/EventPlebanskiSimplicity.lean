@@ -323,7 +323,7 @@ theorem eventPlebanskiVolume_ne_zero : eventPlebanskiVolume ≠ 0 := by
 theorem eventSigma_euclidean_simplicity (i j : Fin 3) :
     eventSigma 1 i * eventSigma 1 j =
       if i = j then 2 • eventPlebanskiVolume else 0 := by
-  simpa using eventSigma_simplicity 1 i j
+  simpa using! eventSigma_simplicity 1 i j
 
 /--
 Complex chiral endpoint used in Lorentzian Plebanski formulations.  A physical Lorentzian metric

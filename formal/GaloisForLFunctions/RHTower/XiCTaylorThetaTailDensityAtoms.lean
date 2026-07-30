@@ -105,7 +105,7 @@ theorem integral_thetaCuspTailSecondDensityAtom (n : ℕ) (hn : 0 < n) :
       continuous_const.mul (continuous_iff_continuousAt.mpr fun x =>
         (hasDerivAt_thetaCuspPolynomialAtom
           (thetaCuspTailDerivativePolynomial 1) n x).continuousAt)
-    simpa using (hc.continuousAt : Tendsto _ (𝓝 (0 : ℝ)) _).mono_left inf_le_left
+    simpa using! (hc.continuousAt : Tendsto _ (𝓝 (0 : ℝ)) _).mono_left inf_le_left
   have htop : Tendsto
       (fun x : ℝ => (1 : ℝ) *
         thetaCuspPolynomialAtom (thetaCuspTailDerivativePolynomial 1) n x)
@@ -281,7 +281,7 @@ def thetaCuspTailSecondDensityAtomMoment (n m : ℕ) : ℝ :=
 theorem integrableOn_pow_mul_thetaCuspTailSecondDensity (m : ℕ) :
     IntegrableOn (fun x : ℝ => x ^ m * thetaCuspTailSecondDensity x) (Ioi 0) := by
   have h := (integrableOn_pow_mul_thetaCuspTailDerivative m 2).const_mul 4
-  simpa only [thetaCuspTailSecondDensity, mul_assoc, mul_left_comm, mul_comm] using h
+  simpa only [thetaCuspTailSecondDensity, mul_assoc, mul_left_comm, mul_comm] using! h
 
 /-- Every positive-index density atom has moments of all orders. -/
 theorem integrableOn_pow_mul_thetaCuspTailSecondDensityAtom

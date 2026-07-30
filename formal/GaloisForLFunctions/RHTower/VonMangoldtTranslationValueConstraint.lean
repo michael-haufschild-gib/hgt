@@ -91,9 +91,10 @@ theorem vonMangoldtTranslationValueConstraint_iff (h : ℂ) :
     change (AddMonoidAlgebra.single h 1 - 1 : AddMonoidAlgebra ℂ ℂ) = 0 at hP
     have hsingle : (AddMonoidAlgebra.single h 1 : AddMonoidAlgebra ℂ ℂ) = 1 :=
       sub_eq_zero.mp hP
-    have heval := congrArg (fun Q : AddMonoidAlgebra ℂ ℂ => Q h) hsingle
+    have heval := congrArg (fun Q : AddMonoidAlgebra ℂ ℂ => Q.coeff h) hsingle
     rw [AddMonoidAlgebra.one_def] at heval
-    simp only [AddMonoidAlgebra.single_apply, if_neg (Ne.symm hh)] at heval
+    simp only [AddMonoidAlgebra.coeff_single, Finsupp.single_apply,
+      if_neg (Ne.symm hh)] at heval
     exact one_ne_zero heval
   · rintro rfl
     filter_upwards with x

@@ -97,7 +97,7 @@ theorem tendsto_xiMobiusContinuousApertureNormalizedMeshGram_dyadic_apply
       (nhdsWithin (0 : ℝ) (Set.Ioi 0)) :=
     tendsto_nhdsWithin_iff.mpr ⟨hzero, hpos⟩
   simpa only [xiMobiusContinuousApertureNormalizedMeshGram,
-    xiMobiusContinuousApertureSlopeTangentGram] using
+    xiMobiusContinuousApertureSlopeTangentGram] using!
       (tendsto_xiMobiusContinuousApertureKernel_mul_div_nhdsGT_zero
         (ha i) (ha j)).comp hmesh
 

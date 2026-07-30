@@ -125,7 +125,7 @@ theorem finiteShiftedTraceHankelVector_smul
 
 private theorem denseRange_ratCast_fin (n : ℕ) :
     DenseRange (fun a : Fin n → ℚ => fun i => (a i : ℝ)) := by
-  simpa [Pi.map_apply] using
+  simpa [Pi.map_apply] using!
     (DenseRange.piMap (fun _ : Fin n => Rat.denseRange_cast))
 
 /-- Integer-polynomial positivity already gives every real-polynomial finite shifted
@@ -499,7 +499,7 @@ theorem normalized_symmetricPrimeArchHermiteContour_eq_closedRectangleTraceHanke
     intro x hx
     have hx' : x ∈ Set.uIcc (-R) R := by
       simpa [z₁, z₂, symmetricRectangleLower, symmetricRectangleUpper] using hx
-    simpa [z₁, symmetricRectangleLower] using hadm.1 x hx'
+    simpa [z₁, symmetricRectangleLower, sub_eq_add_neg] using! hadm.1 x hx'
   have htop : ∀ x ∈ Set.uIcc z₁.re z₂.re,
       XiExplicitAdmissible ((x : ℂ) + z₂.im * I) := by
     intro x hx
@@ -635,7 +635,7 @@ theorem riemannHypothesis_of_symmetricPrimeArchTraceHankelNonnegative
     intro x hx
     have hx' : x ∈ Set.uIcc (-R) R := by
       simpa [z₁, z₂, symmetricRectangleLower, symmetricRectangleUpper] using hx
-    simpa [z₁, symmetricRectangleLower] using hadm.1 x hx'
+    simpa [z₁, symmetricRectangleLower, sub_eq_add_neg] using! hadm.1 x hx'
   have htop : ∀ x ∈ Set.uIcc z₁.re z₂.re,
       XiExplicitAdmissible ((x : ℂ) + z₂.im * I) := by
     intro x hx

@@ -115,7 +115,8 @@ lemma xiZeroCopy_conj_ne_lineConjConj_of_re_ne_half (q : XiZeroCopy)
     xiZeroCopyConjEquiv q ≠
       xiZeroCopyLineConjEquiv (xiZeroCopyConjEquiv q) := by
   exact xiZeroCopy_ne_lineConj_of_re_ne_half (xiZeroCopyConjEquiv q) (by
-    simpa using hoff)
+    change ((starRingEnd ℂ) (q.1 : ℂ)).re ≠ 1 / 2
+    simpa only [conj_re] using hoff)
 
 /-- **Quartet mass bound.**  The functional-equation/Schwarz orbit `{q, Jq, Cq, JCq}` of a zero copy
 off the critical line has four distinct elements, so any nonnegative summable weight invariant under

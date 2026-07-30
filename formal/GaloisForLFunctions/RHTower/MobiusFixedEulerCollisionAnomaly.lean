@@ -121,16 +121,21 @@ private theorem tendsto_squarefreeMobiusLogMoment_fixedEulerCollision
         (fixedEulerCofinalSigma s n) (fixedEulerCofinalDamping n) : ℝ) : ℂ))
       atTop (𝓝 ((s + 1 : ℝ) : ℂ)) :=
     Complex.continuous_ofReal.continuousAt.tendsto.comp htauR
+  have hflux_eq :
+      infinitePrimeFlux =
+        fun z : ℂ => -deriv riemannZeta z / riemannZeta z := by
+    funext z
+    simp only [infinitePrimeFlux, logDeriv_apply, neg_div]
   have hflux :
       DifferentiableAt ℂ infinitePrimeFlux (((s + 1 : ℝ) : ℂ)) := by
-    simpa only [infinitePrimeFlux, logDeriv_apply, neg_div] using
-      (differentiableAt_neg_logDeriv_riemannZeta_of_one_lt_re
-        (s := ((s + 1 : ℝ) : ℂ)) (by simp; linarith))
+    rw [hflux_eq]
+    exact differentiableAt_neg_logDeriv_riemannZeta_of_one_lt_re
+      (s := ((s + 1 : ℝ) : ℂ)) (by simp; linarith)
   have hfluxTwo :
       DifferentiableAt ℂ infinitePrimeFlux (2 * (((s + 1 : ℝ) : ℂ))) := by
-    simpa only [infinitePrimeFlux, logDeriv_apply, neg_div] using
-      (differentiableAt_neg_logDeriv_riemannZeta_of_one_lt_re
-        (s := 2 * (((s + 1 : ℝ) : ℂ))) (by simp; linarith))
+    rw [hflux_eq]
+    exact differentiableAt_neg_logDeriv_riemannZeta_of_one_lt_re
+      (s := 2 * (((s + 1 : ℝ) : ℂ))) (by simp; linarith)
   have hcomp : DifferentiableAt ℂ
       (fun z : ℂ => infinitePrimeFlux (2 * z)) (((s + 1 : ℝ) : ℂ)) :=
     hfluxTwo.comp (((s + 1 : ℝ) : ℂ)) (by fun_prop)
@@ -209,8 +214,14 @@ theorem tendsto_fixedEuler_diffuseFisherCollisionResidual_div_graphScale
       Tendsto (fun n =>
         epsilon n * squarefreeMobiusLogMoment 1 (sigma n))
         atTop (𝓝 1) := by
-    simpa only [epsilon] using
+    change Tendsto (fun n =>
+      (sigma n - 1) * squarefreeMobiusLogMoment 1 (sigma n))
+      atTop (𝓝 1)
+    convert
       tendsto_squarefreeMobiusLogMoment_one_critical.comp hsigmaWithin
+        using 1
+    funext n
+    rfl
   have hmomentDifference :
       Tendsto (fun n =>
         epsilon n *
@@ -223,8 +234,14 @@ theorem tendsto_fixedEuler_diffuseFisherCollisionResidual_div_graphScale
       Tendsto (fun n =>
         (squarefreeMobiusTotal (sigma n))⁻¹ / epsilon n)
         atTop (𝓝 (riemannZeta (2 : ℂ)).re) := by
-    simpa only [epsilon] using
+    change Tendsto (fun n =>
+      (squarefreeMobiusTotal (sigma n))⁻¹ / (sigma n - 1))
+      atTop (𝓝 (riemannZeta (2 : ℂ)).re)
+    convert
       tendsto_inv_squarefreeMobiusTotal_div_sub_one.comp hsigmaWithin
+        using 1
+    funext n
+    rfl
   have htwo :
       Tendsto (fun _ : ℕ => (-2 : ℝ)) atTop (𝓝 (-2 : ℝ)) :=
     tendsto_const_nhds

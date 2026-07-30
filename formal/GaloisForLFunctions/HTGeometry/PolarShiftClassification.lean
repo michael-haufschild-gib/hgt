@@ -194,7 +194,6 @@ theorem deriv_polarTerm (hx : Transcendental ℂ x) (hδx : (x)′ = algebraMap 
     have hD : (x - algebraMap ℂ K α) * ((x - algebraMap ℂ K α)⁻¹)′
         = -((x - algebraMap ℂ K α)⁻¹ * algebraMap ℂ K d) := by linear_combination hd
     have hmul := congrArg (fun z : K => (x - algebraMap ℂ K α)⁻¹ * z) hD
-    simp only at hmul
     rw [← mul_assoc, inv_mul_cancel₀ hne, one_mul] at hmul
     rw [hmul, map_neg]
     ring

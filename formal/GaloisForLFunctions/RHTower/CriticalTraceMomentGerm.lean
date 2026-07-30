@@ -67,6 +67,7 @@ theorem dslope_mul_self
   by_cases hz : z = 0
   · subst z
     rw [dslope_same]
+    change deriv (id * g) 0 = g 0
     simpa using ((hasDerivAt_id (0 : ℂ)).mul hg.hasDerivAt).deriv
   · rw [dslope_of_ne _ hz, slope_def_module]
     simp [hz, smul_eq_mul]
@@ -80,7 +81,8 @@ theorem normalizedTraceMomentGerm_oddTracePreimage
   by_cases hz : z = 0
   · subst z
     rw [dslope_same]
-    have hder := ((hasDerivAt_id (0 : ℂ)).mul hg.hasDerivAt).neg.deriv
+    rw [show (fun z : ℂ => -z * g z) = (-id) * g by rfl]
+    have hder := ((hasDerivAt_id (0 : ℂ)).neg.mul hg.hasDerivAt).deriv
     simpa using congrArg Neg.neg hder
   · rw [dslope_of_ne _ hz, slope_def_module]
     simp [hz, smul_eq_mul]
@@ -107,7 +109,8 @@ theorem analyticAt_normalizedTraceMomentGerm
       ((-1 : ℂ) • dslope T 0) ((-1 : ℂ) • p.fslope) 0 :=
     hs.const_smul
   exact ⟨-p.fslope, by
-    simpa [normalizedTraceMomentGerm] using hneg⟩
+    change HasFPowerSeriesAt (-dslope T 0) (-p.fslope) 0
+    simpa only [neg_smul, one_smul] using hneg⟩
 
 /-!
 ## Exact Euler-orbit to trace-moment coupling
@@ -233,7 +236,10 @@ theorem diffContOnCl_remoteEvenPerturbation
       (ball 0 r) := by
     apply Differentiable.diffContOnCl
     fun_prop
-  simpa only [remoteEvenPerturbation] using hf.sub hpoly
+  change DiffContOnCl ℂ
+    (f - fun z : ℂ ↦ (analyticTraceMoments f (2 * N) + 1 : ℝ) * z ^ (4 * N))
+    (ball 0 r)
+  exact hf.sub hpoly
 
 /-- Every compact-open neighborhood of an even Schwarz trace-moment target contains a normalized
 moment germ which fails trace-Hankel positivity and whose critical trace lies in the closure of the

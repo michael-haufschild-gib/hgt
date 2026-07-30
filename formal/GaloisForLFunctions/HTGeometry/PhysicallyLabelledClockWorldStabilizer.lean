@@ -34,6 +34,15 @@ def labelledCoordinateObservable (label : world → 𝕜) :
 def completeCouplingObservable : Matrix world world 𝕜 :=
   fun _ _ => 1
 
+/--
+Rank-one coupling with a marked nonzero weight on every physical
+label.  Positive shell-fusion weights are the intended arithmetic
+specialization.
+-/
+def weightedCompleteCouplingObservable (weight : world → 𝕜) :
+    Matrix world world 𝕜 :=
+  fun i j => weight i * weight j
+
 /-- Commutation with a nondegenerate coordinate observable kills every
 off-diagonal matrix entry. -/
 theorem offDiagonal_eq_zero_of_commutes_labelledCoordinate
@@ -113,6 +122,67 @@ theorem eq_scalar_of_commutes_two_completeObservables
         exact (ha (Finset.mem_univ anchor)).elim
     rw [hdiagSum, hanchorSum] at hentry
     simp [Matrix.scalar, hentry]
+  · have hzero :=
+      offDiagonal_eq_zero_of_commutes_labelledCoordinate
+        label hlabel X hcoordinate hij
+    simp [Matrix.scalar, hij, hzero]
+
+/--
+**Full-support fusion commutant rigidity.**  A simple diagonal label
+and one rank-one coupling whose weights are all nonzero have scalar
+common commutant.
+
+This weighted form applies to finite positive shell packets: shell
+depth gives the simple diagonal label and square-root source mass
+gives the full-support coupling vector.
+-/
+theorem
+    eq_scalar_of_commutes_labelledCoordinate_weightedCompleteCoupling
+    (label weight : world → 𝕜)
+    (hlabel : Function.Injective label)
+    (hweight : ∀ i, weight i ≠ 0)
+    (X : Matrix world world 𝕜)
+    (hcoordinate :
+      X * labelledCoordinateObservable label =
+        labelledCoordinateObservable label * X)
+    (hcoupling :
+      X * weightedCompleteCouplingObservable weight =
+        weightedCompleteCouplingObservable weight * X)
+    [Nonempty world] :
+    ∃ c : 𝕜, X = Matrix.scalar world c := by
+  let anchor : world := Classical.choice inferInstance
+  refine ⟨X anchor anchor, Matrix.ext fun i j => ?_⟩
+  by_cases hij : i = j
+  · subst j
+    have hentry := congr_fun (congr_fun hcoupling i) anchor
+    simp only [Matrix.mul_apply, weightedCompleteCouplingObservable] at hentry
+    have hleft :
+        ∑ x, X i x * (weight x * weight anchor) =
+          X i i * (weight i * weight anchor) := by
+      apply Finset.sum_eq_single i
+      · intro b _ hbi
+        rw [offDiagonal_eq_zero_of_commutes_labelledCoordinate
+          label hlabel X hcoordinate hbi.symm]
+        simp
+      · intro hi
+        exact (hi (Finset.mem_univ i)).elim
+    have hright :
+        ∑ x, weight i * weight x * X x anchor =
+          weight i * weight anchor * X anchor anchor := by
+      apply Finset.sum_eq_single anchor
+      · intro b _ hba
+        rw [offDiagonal_eq_zero_of_commutes_labelledCoordinate
+          label hlabel X hcoordinate hba]
+        simp
+      · intro ha
+        exact (ha (Finset.mem_univ anchor)).elim
+    rw [hleft, hright] at hentry
+    have hnonzero : weight i * weight anchor ≠ 0 :=
+      mul_ne_zero (hweight i) (hweight anchor)
+    have hdiag : X i i = X anchor anchor := by
+      apply mul_right_cancel₀ hnonzero
+      simpa only [mul_assoc, mul_comm, mul_left_comm] using hentry
+    simp [Matrix.scalar, hdiag]
   · have hzero :=
       offDiagonal_eq_zero_of_commutes_labelledCoordinate
         label hlabel X hcoordinate hij

@@ -182,7 +182,7 @@ theorem differentiableOn_coPoissonCancelledSource_rightHalf
   have hTwo : AnalyticAt ℂ (fun _ : ℂ => (2 : ℂ)) s := analyticAt_const
   have hSource : AnalyticAt ℂ W.coPoissonCancelledSource s := by
     simpa only [coPoissonCancelledSource, coPoissonMultiplier,
-      coPoissonNormalClass] using
+      coPoissonNormalClass] using!
       ((hΛ.mul hD).add ((hTwo.mul hM).mul hDΛ)).sub
         ((hTwo.mul hΛ).mul hE)
   exact hSource.differentiableWithinAt

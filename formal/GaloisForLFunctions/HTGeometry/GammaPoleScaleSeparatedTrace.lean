@@ -200,7 +200,7 @@ theorem gammaPoleScaleAndUnitDerivativeEval_injective :
 theorem algebraicIndependent_gammaPoleScaleAndUnitDerivativeFamily :
     AlgebraicIndependent ℂ gammaPoleScaleAndUnitDerivativeFamily := by
   rw [algebraicIndependent_iff_injective_aeval]
-  simpa [gammaPoleScaleAndUnitDerivativeEval, MvPolynomial.aeval_def] using
+  simpa [gammaPoleScaleAndUnitDerivativeEval, MvPolynomial.aeval_def] using!
     gammaPoleScaleAndUnitDerivativeEval_injective
 
 /-- Evaluate the scale-separated boundary on the actual factorially scaled Gamma pole family. -/

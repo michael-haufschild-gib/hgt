@@ -44,14 +44,14 @@ theorem hasDerivAt_blackHoleHigherMultipoleCommonPhase
       (blackHoleHigherMultipoleCommonPhase nu tau eta *
         (2 * nu * (2 * eta * tau eta + eta ^ 2 * tau'))) eta := by
   have hetaSq : HasDerivAt (fun z : ℂ => z ^ 2) (2 * eta) eta := by
-    simpa [mul_comm] using (hasDerivAt_id eta).pow 2
+    simpa [mul_comm] using! (hasDerivAt_id eta).pow 2
   have hproduct : HasDerivAt (fun z : ℂ => z ^ 2 * tau z)
       (2 * eta * tau eta + eta ^ 2 * tau') eta := by
-    simpa only [Pi.mul_apply] using hetaSq.mul htau
+    simpa only [Pi.mul_apply] using! hetaSq.mul htau
   have harg : HasDerivAt (fun z : ℂ => 2 * nu * z ^ 2 * tau z)
       (2 * nu * (2 * eta * tau eta + eta ^ 2 * tau')) eta := by
-    simpa only [mul_assoc] using hproduct.const_mul (2 * nu)
-  simpa [blackHoleHigherMultipoleCommonPhase] using harg.cexp
+    simpa only [mul_assoc] using! hproduct.const_mul (2 * nu)
+  simpa [blackHoleHigherMultipoleCommonPhase] using! harg.cexp
 
 /-- **Universal normalized Newtonian clock.** Every nonzero-rate channel has normalized
 logarithmic slope `(eta^2*tau)'`, independent of spin and multipole data. -/

@@ -68,7 +68,7 @@ theorem integrableOn_thetaCuspTailSecondDensityDerivative_mul_id :
     IntegrableOn (fun x : ℝ =>
       x * thetaCuspTailSecondDensityDerivative x) (Ioi 0) := by
   unfold thetaCuspTailSecondDensityDerivative
-  simpa only [pow_one, mul_assoc, mul_left_comm, mul_comm] using
+  simpa only [pow_one, mul_assoc, mul_left_comm, mul_comm] using!
     (integrableOn_pow_mul_thetaCuspTailDerivative 1 3).const_mul 4
 
 theorem integral_Ioi_thetaCuspTailSecondDensityDerivative_mul_id :
@@ -300,18 +300,15 @@ theorem integral_Ioi_density_id_mul_coreAtomSourceDerivative_eq_neg_score
   let v' : ℝ → ℂ := fun x => thetaCuspTailSecondCoreAtomSourceDerivative d z x
   have hu (x : ℝ) : HasDerivAt u (u' x) x := by
     have hx : HasDerivAt (fun t : ℝ => (t : ℂ)) 1 x := by
-      simpa using Complex.ofRealCLM.hasDerivAt
+      simpa using! Complex.ofRealCLM.hasDerivAt
     have hrho : HasDerivAt
         (fun t : ℝ => (thetaCuspTailSecondDensity t : ℂ))
         (thetaCuspTailSecondDensityDerivative x : ℂ) x := by
       exact (hasDerivAt_thetaCuspTailSecondDensity x).ofReal_comp
     dsimp [u, u', thetaCuspTailSecondScoreDensity]
     have hmul := hx.mul hrho
-    convert hmul using 1
-    · funext t
-      simp
-    · push_cast
-      ring
+    simpa only [Pi.mul_apply, Complex.ofReal_add, Complex.ofReal_mul,
+      one_mul] using! hmul
   have hv (x : ℝ) : HasDerivAt v (v' x) x := by
     exact hasDerivAt_thetaCuspTailSecondCoreAtom_source d z x
   have hzero : Tendsto (u * v) (nhdsWithin 0 (Ioi 0)) (nhds 0) := by
@@ -327,24 +324,28 @@ theorem integral_Ioi_density_id_mul_coreAtomSourceDerivative_eq_neg_score
       have hscalar0 : Tendsto
           (fun x : ℝ => 4 * (x ^ 1 * thetaCuspTailDerivative 2 x))
           (nhdsWithin 0 (Ioi 0)) (nhds 0) := by
-        convert hscalar using 1 <;> norm_num
-      convert (Complex.ofRealCLM.continuous.tendsto 0).comp hscalar0 using 1
-      funext t
-      simp only [Function.comp_apply,
-        Complex.ofRealCLM_apply, pow_one, Complex.ofReal_mul, Complex.ofReal_ofNat]
-      ring
-    simpa only [Pi.mul_apply, zero_mul] using hu0.mul hcore
+        simpa only [mul_zero] using! hscalar
+      have hcomplex : Tendsto
+          (fun x : ℝ =>
+            ((4 * (x ^ 1 * thetaCuspTailDerivative 2 x) : ℝ) : ℂ))
+          (nhdsWithin 0 (Ioi 0)) (nhds 0) := by
+        simpa only [Function.comp_apply, Complex.ofRealCLM_apply, map_zero] using!
+          ((Complex.ofRealCLM.continuous.tendsto 0).comp hscalar0)
+      exact hcomplex.congr' (Filter.Eventually.of_forall (fun t => by
+        simp only [pow_one, Complex.ofReal_mul, Complex.ofReal_ofNat]
+        ring))
+    simpa only [Pi.mul_apply, zero_mul] using! hu0.mul hcore
   have htop : Tendsto (u * v) atTop (nhds 0) := by
-    simpa only [Pi.mul_apply, u, v] using
+    simpa only [Pi.mul_apply, u, v] using!
       id_mul_density_mul_coreAtom_tendsto_atTop_zero d z
   have hibp := integral_Ioi_mul_deriv_eq_deriv_mul
     (a := (0 : ℝ)) (u := u) (u' := u') (v := v) (v' := v')
     (fun x _ => hu x) (fun x _ => hv x)
     (by
-      simpa only [Pi.mul_apply, u, v'] using
+      simpa only [Pi.mul_apply, u, v'] using!
         integrableOn_id_mul_density_mul_coreAtomSourceDerivative d z)
     (by
-      simpa only [Pi.mul_apply, u', v] using
+      simpa only [Pi.mul_apply, u', v] using!
         integrableOn_thetaCuspTailSecondScoreDensity_mul_coreAtom d z)
     hzero htop
   simpa only [Pi.mul_apply, u, u', v, v', zero_sub, sub_zero] using hibp
@@ -457,7 +458,7 @@ theorem integral_Ioi_pow_mul_thetaCuspTailSecondScoreDensity (m : ℕ) :
   have hderivInt : IntegrableOn (fun x : ℝ =>
       x ^ (m + 1) * thetaCuspTailSecondDensityDerivative x) (Ioi 0) := by
     unfold thetaCuspTailSecondDensityDerivative
-    simpa only [mul_assoc, mul_left_comm, mul_comm] using
+    simpa only [mul_assoc, mul_left_comm, mul_comm] using!
       (integrableOn_pow_mul_thetaCuspTailDerivative (m + 1) 3).const_mul 4
   have hbase := integrableOn_pow_mul_thetaCuspTailSecondDensity m
   have hibp := integral_Ioi_mul_deriv_eq_deriv_mul

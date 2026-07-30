@@ -315,36 +315,36 @@ theorem eulerDeriv_mul (f g : HahnSeries ℚ (RatFunc ℂ)) :
   rw [HahnSeries.coeff_add, eulerDeriv_coeff, HahnSeries.coeff_mul,
     HahnSeries.coeff_mul (x := eulerDeriv f) (y := g),
     HahnSeries.coeff_mul (x := f) (y := eulerDeriv g), Finset.mul_sum]
-  have hsub1 : Finset.addAntidiagonal (eulerDeriv f).isPWO_support g.isPWO_support a ⊆
-      Finset.addAntidiagonal f.isPWO_support g.isPWO_support a := by
+  have hsub1 : Finset.antidiagonal (eulerDeriv f).isPWO_support g.isPWO_support a ⊆
+      Finset.antidiagonal f.isPWO_support g.isPWO_support a := by
     intro x hx
-    rw [Finset.mem_addAntidiagonal] at hx ⊢
+    rw [Finset.mem_antidiagonal] at hx ⊢
     exact ⟨eulerDeriv_support_subset f hx.1, hx.2.1, hx.2.2⟩
-  have hsub2 : Finset.addAntidiagonal f.isPWO_support (eulerDeriv g).isPWO_support a ⊆
-      Finset.addAntidiagonal f.isPWO_support g.isPWO_support a := by
+  have hsub2 : Finset.antidiagonal f.isPWO_support (eulerDeriv g).isPWO_support a ⊆
+      Finset.antidiagonal f.isPWO_support g.isPWO_support a := by
     intro x hx
-    rw [Finset.mem_addAntidiagonal] at hx ⊢
+    rw [Finset.mem_antidiagonal] at hx ⊢
     exact ⟨hx.1, eulerDeriv_support_subset g hx.2.1, hx.2.2⟩
   rw [Finset.sum_subset hsub1 (by
     intro x hx hnx
-    rw [Finset.mem_addAntidiagonal] at hx
+    rw [Finset.mem_antidiagonal] at hx
     have hz : (eulerDeriv f).coeff x.1 = 0 := by
       by_contra hc
-      exact hnx (Finset.mem_addAntidiagonal.mpr
+      exact hnx (Finset.mem_antidiagonal.mpr
         ⟨(HahnSeries.mem_support _ _).mpr hc, hx.2.1, hx.2.2⟩)
     rw [hz, zero_mul])]
   rw [Finset.sum_subset hsub2 (by
     intro x hx hnx
-    rw [Finset.mem_addAntidiagonal] at hx
+    rw [Finset.mem_antidiagonal] at hx
     have hz : (eulerDeriv g).coeff x.2 = 0 := by
       by_contra hc
-      exact hnx (Finset.mem_addAntidiagonal.mpr
+      exact hnx (Finset.mem_antidiagonal.mpr
         ⟨hx.1, (HahnSeries.mem_support _ _).mpr hc, hx.2.2⟩)
     rw [hz, mul_zero])]
   rw [← Finset.sum_add_distrib]
   apply Finset.sum_congr rfl
   intro x hx
-  rw [Finset.mem_addAntidiagonal] at hx
+  rw [Finset.mem_antidiagonal] at hx
   rw [eulerDeriv_coeff, eulerDeriv_coeff, ← hx.2.2, map_add]
   ring
 

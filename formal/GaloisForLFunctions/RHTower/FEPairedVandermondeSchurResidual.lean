@@ -59,7 +59,7 @@ theorem canonicalFiniteOriginPacket_matches {k : ℕ} {f : Fin k → ℂ}
   have happ : (A *ᵥ (A⁻¹ *ᵥ finiteOriginTarget)) j = finiteOriginTarget j := by
     rw [Matrix.mulVec_mulVec, hmul, Matrix.one_mulVec]
   simpa [A, finiteMomentSamplingMatrix, canonicalFiniteOriginPacket,
-    finiteOriginTarget, Matrix.mulVec, mul_comm] using happ
+    finiteOriginTarget, Matrix.mulVec, mul_comm] using! happ
 
 /-- The scalar Schur complement is the first omitted origin target minus its interpolated value. -/
 theorem finiteOriginSchurResidual_apply {k : ℕ} (f : Fin k → ℂ) :

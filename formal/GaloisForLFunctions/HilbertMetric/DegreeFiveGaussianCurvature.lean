@@ -407,7 +407,8 @@ theorem tendsto_degreeFiveNormalizedValueEntry {d : ℕ}
     Tendsto (fun e => degreeFiveNormalizedValueEntry lam nodes c e q r) (nhds 0)
       (nhds (if q = r then degreeFiveValueLimit lam q else 0)) := by
   have hrem : degreeFiveValueRemainder lam nodes c q r =o[nhds 0] (fun e : ℝ => e ^ 10) := by
-    simpa only [degreeFiveValueRemainder] using degreeFive_gaussianValueJet lam nodes c hdelta q r
+    simpa only [degreeFiveValueRemainder] using!
+      degreeFive_gaussianValueJet lam nodes c hdelta q r
   simpa only [degreeFiveNormalizedValueEntry] using
     tendsto_degreeFiveNormalizedEntry (if q = r then degreeFiveValueLimit lam q else 0)
       (degreeFiveValueRemainder lam nodes c q r) hrem q r
@@ -421,7 +422,8 @@ theorem tendsto_degreeFiveNormalizedFirstEntry {d : ℕ}
     Tendsto (fun e => degreeFiveNormalizedFirstEntry lam nodes c e q r) (nhds 0)
       (nhds (if q = r then degreeFiveFirstLimit lam q else 0)) := by
   have hrem : degreeFiveFirstRemainder lam nodes c q r =o[nhds 0] (fun e : ℝ => e ^ 10) := by
-    simpa only [degreeFiveFirstRemainder] using degreeFive_gaussianFirstJet lam nodes c hdelta q r
+    simpa only [degreeFiveFirstRemainder] using!
+      degreeFive_gaussianFirstJet lam nodes c hdelta q r
   simpa only [degreeFiveNormalizedFirstEntry] using
     tendsto_degreeFiveNormalizedEntry (if q = r then degreeFiveFirstLimit lam q else 0)
       (degreeFiveFirstRemainder lam nodes c q r) hrem q r
@@ -435,7 +437,8 @@ theorem tendsto_degreeFiveNormalizedSecondEntry {d : ℕ}
     Tendsto (fun e => degreeFiveNormalizedSecondEntry lam nodes c e q r) (nhds 0)
       (nhds (if q = r then degreeFiveSecondLimit q else 0)) := by
   have hrem : degreeFiveSecondRemainder lam nodes c q r =o[nhds 0] (fun e : ℝ => e ^ 10) := by
-    simpa only [degreeFiveSecondRemainder] using degreeFive_gaussianSecondJet lam nodes c hdelta q r
+    simpa only [degreeFiveSecondRemainder] using!
+      degreeFive_gaussianSecondJet lam nodes c hdelta q r
   simpa only [degreeFiveNormalizedSecondEntry] using
     tendsto_degreeFiveNormalizedEntry (if q = r then degreeFiveSecondLimit q else 0)
       (degreeFiveSecondRemainder lam nodes c q r) hrem q r
@@ -1094,11 +1097,13 @@ theorem secondDerivative_affine_add
         fun t => deriv f t - c := by
     filter_upwards [hf] with t ht
     have hlin : HasDerivAt (fun s : ℝ => -s * c) (-c) t := by
-      convert (hasDerivAt_id (x := t)).neg.mul_const c using 1
-      all_goals ring_nf
+      convert! ((hasDerivAt_id (x := t)).mul_const c).neg using 1
+      · funext s
+        simp only [Pi.neg_apply, id_eq]
+        ring
+      · ring
     have hadd := hlin.add ht.hasDerivAt
-    convert hadd.deriv using 1
-    all_goals ring_nf
+    simpa only [Pi.add_apply, sub_eq_add_neg, add_comm] using! hadd.deriv
   calc
     deriv (deriv (fun t => -t * c + f t)) x =
         deriv (fun t => deriv f t - c) x := hfirst.deriv_eq
@@ -1236,8 +1241,8 @@ theorem hasDerivAt_degreeFiveGaussianBandwidthFirstMatrix {d : ℕ}
     by simpa only [id_eq, one_mul] using (hasDerivAt_id (x := t)).mul_const z
   change HasDerivAt (fun s => z * Real.exp (s * z))
     (z ^ 2 * Real.exp (t * z)) t
-  convert hz.exp.const_mul z using 1
-  all_goals ring_nf
+  simpa only [pow_two, mul_assoc, mul_comm, mul_left_comm] using!
+    hz.exp.const_mul z
 
 theorem degreeFiveGaussianBandwidthMatrix_one {d : ℕ}
     (lam : ℝ) (nodes : DegreeFiveIndex d → (Fin d → ℝ)) (e : ℝ) :
@@ -1323,7 +1328,7 @@ theorem exists_finiteExponentialInnerGram_positiveLogDetCurvature :
     exists_distinct_degreeFiveSixteen_gaussianPositiveLogDetCurvature
   let x := degreeFiveCollisionPoint degreeFiveBalancedAmplitude nodes e
   refine ⟨x, hx, ?_⟩
-  simpa [finiteExponentialInnerGram, degreeFiveGaussianBandwidthMatrix, x] using hpos
+  simpa [finiteExponentialInnerGram, degreeFiveGaussianBandwidthMatrix, x] using! hpos
 
 /-- Universal log-concavity fails for finite Gaussian distance matrices: there is a finite
 injective Euclidean configuration whose literal `log det` has positive second derivative. -/

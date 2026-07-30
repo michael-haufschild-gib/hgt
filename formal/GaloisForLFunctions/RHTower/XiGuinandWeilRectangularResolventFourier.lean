@@ -110,7 +110,8 @@ theorem integral_rectangularEulerFourierKernel_mul_verticalResolvent
       · simp [K, e, ht]
     _ = ∫ t : ℝ, ∫ ξ : ℝ, K (t, ξ) := by
       apply integral_integral_swap
-      simpa only [Function.comp_apply] using hK.swap
+      change Integrable (K ∘ Prod.swap) (volume.prod volume)
+      exact hK.swap
     _ = ∫ t : ℝ in Ioi 0,
         Complex.exp (-(c : ℂ) * (t : ℂ)) *
           ((rectangularTwoEdgeAutocorrelation L a (t / 2) : ℂ) *

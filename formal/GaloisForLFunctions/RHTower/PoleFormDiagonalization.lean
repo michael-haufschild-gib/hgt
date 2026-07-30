@@ -79,8 +79,7 @@ theorem sinh_le_self_mul_cosh {x : ℝ} (hx : 0 ≤ x) :
         (t * Real.sinh t) t := by
       intro t
       have h := ((hasDerivAt_id t).mul (Real.hasDerivAt_cosh t)).sub (Real.hasDerivAt_sinh t)
-      convert h using 1
-      simp
+      convert! h using 1 <;> simp <;> ring
     refine monotoneOn_of_deriv_nonneg (convex_Ici 0) (by fun_prop)
       (fun t _ => (hderiv t).differentiableAt.differentiableWithinAt) ?_
     intro t ht

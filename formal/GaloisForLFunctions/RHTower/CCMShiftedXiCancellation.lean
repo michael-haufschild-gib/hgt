@@ -171,13 +171,13 @@ theorem differentiable_xiShiftedZetaCancelledTerm
           continuousAt_dslope_same.mpr hxiDiff
         have hu : ContinuousAt (fun z : ℂ => z - 1 / 2)
             (xiRightShiftedPole q) := continuousAt_id.sub_const _
-        simpa only [Function.comp_apply] using
+        simpa only [Function.comp_apply] using!
           hds.comp_of_eq hu (xiRightShiftedPole_sub_half q)
       · have hzcont : ContinuousAt regularizedRiemannZeta 1 :=
           differentiable_regularizedRiemannZeta.continuous.continuousAt
         have hu : ContinuousAt (fun z : ℂ => z - xiRightCenteredZero q)
             (xiRightShiftedPole q) := continuousAt_id.sub_const _
-        simpa only [Function.comp_apply] using
+        simpa only [Function.comp_apply] using!
           hzcont.comp_of_eq hu (xiRightShiftedPole_sub_centeredZero q)
   · have hraw : DifferentiableAt ℂ
         (fun z => xi (z - 1 / 2) *

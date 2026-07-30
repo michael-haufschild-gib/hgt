@@ -201,8 +201,14 @@ theorem hasDerivAt_xiNormalizedApertureCorrelation (a t : ℝ) :
     HasDerivAt (fun u : ℝ => xiNormalizedApertureCorrelation u t)
       (xiNormalizedApertureRelativeKreinNumerator a t /
         xiApertureModulusSq a 0 ^ 2) a := by
-  simpa only [xiNormalizedApertureCorrelation,
-      xiNormalizedApertureRelativeKreinNumerator] using
+  have hfun :
+      (fun u : ℝ => xiNormalizedApertureCorrelation u t) =
+        (fun u : ℝ => xiApertureModulusSq u t) /
+          fun u : ℝ => xiApertureModulusSq u 0 := by
+    funext u
+    rfl
+  rw [hfun]
+  simpa only [xiNormalizedApertureRelativeKreinNumerator] using!
     (hasDerivAt_xiApertureModulusSq a t).div
       (hasDerivAt_xiApertureModulusSq a 0)
       (xiApertureModulusSq_zero_pos a).ne'
@@ -261,35 +267,51 @@ theorem hasDerivAt_xiOnLineZeroNormalizedFactor
         (gamma ^ 2 + a ^ 2) ^ 3) a := by
   have hden : gamma ^ 2 + a ^ 2 ≠ 0 := by positivity
   have hbase : HasDerivAt (fun u : ℝ => gamma ^ 2 + u ^ 2) (2 * a) a := by
-    convert (hasDerivAt_const (x := a) (c := gamma ^ 2)).add
-      ((hasDerivAt_id a).pow 2) using 1
-    all_goals simp [id_eq]
+    simpa using! (hasDerivAt_pow 2 a).const_add (gamma ^ 2)
   have hshift :
       HasDerivAt (fun u : ℝ => gamma ^ 2 + u ^ 2 - t ^ 2) (2 * a) a := by
-    convert hbase.sub_const (t ^ 2) using 1
+    simpa using! hbase.sub_const (t ^ 2)
   have hquadratic : HasDerivAt
       (fun u : ℝ => 4 * u ^ 2 * t ^ 2) ((4 * t ^ 2) * (2 * a)) a := by
-    convert (HasDerivAt.const_mul (4 * t ^ 2) ((hasDerivAt_id a).pow 2)) using 1
-    · funext u
-      simp [id_eq]
-      ring
-    · simp [id_eq]
+    have hraw :=
+      ((hasDerivAt_pow 2 a).const_mul (4 : ℝ)).mul_const (t ^ 2)
+    have hraw' := hraw.congr_deriv
+      (g' := (4 * t ^ 2) * (2 * a)) (by
+        norm_num
+        ring)
+    simpa only [Pi.mul_apply, Pi.pow_apply, id_eq] using! hraw'
   have hnum : HasDerivAt
       (fun u : ℝ =>
         (gamma ^ 2 + u ^ 2 - t ^ 2) ^ 2 + 4 * u ^ 2 * t ^ 2)
       (2 * (gamma ^ 2 + a ^ 2 - t ^ 2) * (2 * a) +
         (4 * t ^ 2) * (2 * a)) a := by
-    convert (hshift.pow 2).add hquadratic using 1
-    norm_num
+    have hraw := (hshift.pow 2).add hquadratic
+    have hraw' := hraw.congr_deriv
+      (g' := 2 * (gamma ^ 2 + a ^ 2 - t ^ 2) * (2 * a) +
+        (4 * t ^ 2) * (2 * a)) (by norm_num)
+    simpa only [Pi.add_apply, Pi.pow_apply] using! hraw'
   have hdenDeriv : HasDerivAt
       (fun u : ℝ => (gamma ^ 2 + u ^ 2) ^ 2)
       (2 * (gamma ^ 2 + a ^ 2) * (2 * a)) a := by
-    convert hbase.pow 2 using 1
-    ring
-  unfold xiOnLineZeroNormalizedFactor
-  convert hnum.div hdenDeriv (pow_ne_zero 2 hden) using 1
-  field_simp [hden]
-  ring
+    have hraw := hbase.pow 2
+    have hraw' := hraw.congr_deriv
+      (g' := 2 * (gamma ^ 2 + a ^ 2) * (2 * a)) (by norm_num)
+    simpa only [Pi.pow_apply] using! hraw'
+  have hquot := hnum.div hdenDeriv (pow_ne_zero 2 hden)
+  have hquot' := hquot.congr_deriv
+    (g' := 4 * a * t ^ 2 * (3 * gamma ^ 2 - a ^ 2 - t ^ 2) /
+      (gamma ^ 2 + a ^ 2) ^ 3) (by
+        field_simp [hden]
+        ring)
+  have hfun :
+      (fun u : ℝ => xiOnLineZeroNormalizedFactor gamma u t) =
+        (fun u : ℝ =>
+          (gamma ^ 2 + u ^ 2 - t ^ 2) ^ 2 + 4 * u ^ 2 * t ^ 2) /
+          fun u : ℝ => (gamma ^ 2 + u ^ 2) ^ 2 := by
+    funext u
+    rfl
+  rw [hfun]
+  exact hquot'
 
 theorem xiOnLineZeroNormalizedFactor_deriv_pos_iff
     {gamma a t : ℝ} (ha : 0 < a) (ht : t ≠ 0) :

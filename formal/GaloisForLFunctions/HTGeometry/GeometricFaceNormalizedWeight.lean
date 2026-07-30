@@ -109,12 +109,13 @@ theorem tendsto_normalizedGeometricPolynomialFaceWeight
     have hzero : Tendsto (fun t : ℕ =>
         -(geometricPatternRemainder c (t + K) K p - D * c0))
         atTop (𝓝 0) := by
-      simpa only [sub_self, neg_zero] using (hrem.sub_const (D * c0)).neg
+      simpa only [Function.comp_apply, sub_self, neg_zero] using
+        (hrem.sub_const (D * c0)).neg
     simpa only [Real.exp_zero] using hzero.rexp
   have hexp : Tendsto (fun t : ℕ =>
       (Real.exp (-(geometricPatternRemainder c (t + K) K p - D * c0)) : ℂ))
       atTop (𝓝 1) := by
-    simpa only [Function.comp_apply, Complex.ofReal_one] using
+    simpa only [Function.comp_apply, Complex.ofReal_one] using!
       Complex.continuous_ofReal.continuousAt.tendsto.comp hreal
   simpa only [normalizedGeometricPolynomialFaceWeight, H, ell, mul_one] using
     hweight.mul hexp

@@ -16,6 +16,19 @@ open scoped Differential
 
 noncomputable section
 
+/-- Finitely supported coefficient rows of complete facet translation coordinates.
+
+`MvPolynomial` is represented by `AddMonoidAlgebra`; extracting its coefficient Finsupp makes the
+finite operator support explicit. -/
+def stanleyReisnerNumeratorRows
+    {C α ι : Type*} [Field C] [DecidableEq α]
+    (facets : Finset (Finset α))
+    (N : ι → MvPolynomial α (Polynomial C) ⧸
+      stanleyReisnerIdeal (Polynomial C) facets) :
+    ι → (F : facets) → (α →₀ ℕ) →₀ Polynomial C :=
+  fun i F => AddMonoidAlgebra.coeff
+    (stanleyReisnerFacetTranslationCoordinates facets (N i) F)
+
 /-- **Exact Stanley--Reisner numerator matroid law.**  The structural outputs attached to a finite
 family of Stanley--Reisner numerator classes are differentially independent exactly when those
 classes are linearly independent over `C[D]`. -/
@@ -27,18 +40,32 @@ theorem differentialIndependent_stanleyReisnerNumeratorRows_iff
     (facets : Finset (Finset α))
     (N : ι → MvPolynomial α (Polynomial C) ⧸
       stanleyReisnerIdeal (Polynomial C) facets)
-    (x : FiniteFinsuppRowIndex
-      (fun i => stanleyReisnerFacetTranslationCoordinates facets (N i)) → K)
+    (x : FiniteFinsuppRowIndex (stanleyReisnerNumeratorRows facets N) → K)
     (hx : DifferentialIndependent C x) :
     DifferentialIndependent C
         (differentialOperatorRowApply
-          (finiteFinsuppOperatorRows
-            (fun i => stanleyReisnerFacetTranslationCoordinates facets (N i))) x) ↔
+          (finiteFinsuppOperatorRows (stanleyReisnerNumeratorRows facets N)) x) ↔
       LinearIndependent (Polynomial C) N := by
   classical
   rw [differentialIndependent_finiteFinsuppOperatorRows_iff hconst
-    (fun i => stanleyReisnerFacetTranslationCoordinates facets (N i)) x hx]
-  exact linearIndependent_stanleyReisnerFacetTranslationCoordinates_iff facets N
+    (stanleyReisnerNumeratorRows facets N) x hx]
+  rw [← linearIndependent_stanleyReisnerFacetTranslationCoordinates_iff facets N]
+  let e :
+      ((F : facets) → MvPolynomial α (Polynomial C)) ≃ₗ[Polynomial C]
+        ((F : facets) → (α →₀ ℕ) →₀ Polynomial C) :=
+    LinearEquiv.piCongrRight fun _ =>
+      AddMonoidAlgebra.coeffLinearEquiv (Polynomial C)
+  have hrows :
+      stanleyReisnerNumeratorRows facets N =
+        e ∘ ((stanleyReisnerFacetTranslationCoordinates facets) ∘ N) := by
+    rfl
+  rw [hrows]
+  constructor
+  · intro h
+    exact h.of_comp e.toLinearMap
+  · intro h
+    exact h.map' e.toLinearMap
+      (LinearMap.ker_eq_bot.mpr e.injective)
 
 end
 

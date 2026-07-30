@@ -65,11 +65,10 @@ theorem hasDerivAt_xiTransversePrimePowerContinuousLaplacePrimitive
     simpa using (hasDerivAt_id a).neg.mul_const r
   have hexp : HasDerivAt (fun u : ℝ => Real.exp (-u * r))
       (-r * Real.exp (-a * r)) a := by
-    simpa [mul_comm] using (Real.hasDerivAt_exp (-a * r)).comp a harg
+    simpa [mul_comm] using! (Real.hasDerivAt_exp (-a * r)).comp a harg
   have hnum : HasDerivAt (fun u : ℝ => 1 - Real.exp (-u * r))
       (r * Real.exp (-a * r)) a := by
-    convert (hasDerivAt_const a (1 : ℝ)).sub hexp using 1
-    all_goals ring_nf
+    simpa using! ((hasDerivAt_const a (1 : ℝ)).sub hexp).congr_deriv (by ring)
   have hquot := hnum.div_const r
   simpa [xiTransversePrimePowerContinuousLaplacePrimitive, r, hr.ne'] using hquot
 
@@ -251,7 +250,7 @@ private theorem boseApertureFactor_hasDerivAt
       ((Real.exp x - 1 - x * Real.exp x) / (Real.exp x - 1) ^ 2) x := by
   have hden : Real.exp x - 1 ≠ 0 := by
     exact (sub_pos.mpr (Real.one_lt_exp_iff.mpr hx)).ne'
-  simpa [boseApertureFactor] using
+  simpa [boseApertureFactor] using!
     (hasDerivAt_id x).div ((Real.hasDerivAt_exp x).sub_const 1) hden
 
 private theorem boseApertureFactor_deriv_neg

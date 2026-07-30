@@ -177,8 +177,9 @@ theorem xiHedenmalmBezoutian_self (z : ℂ) :
     XiC_differentiable.differentiableAt.hasDerivAt
   have hXi' : HasDerivAt (deriv XiC) (deriv (deriv XiC) z) z :=
     ((XiC_analytic z (Set.mem_univ z)).deriv).differentiableAt.hasDerivAt
-  convert ((hXi.const_mul (deriv XiC z)).sub (hXi'.const_mul (XiC z))).deriv using 1
-  ring
+  simpa [pow_two] using!
+    ((hXi.const_mul (deriv XiC z)).sub
+      (hXi'.const_mul (XiC z))).deriv
 
 /-- At a Xi zero, the diagonal Bezoutian is exactly the square of the first derivative. -/
 theorem xiHedenmalmBezoutian_self_of_zero {z : ℂ} (hz : XiC z = 0) :

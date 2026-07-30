@@ -211,7 +211,7 @@ theorem denseRange_gaussianRatPoint : DenseRange gaussianRatPoint := by
   have hsymm : DenseRange Complex.equivRealProdCLM.symm :=
     Complex.equivRealProdCLM.symm.surjective.denseRange
   have hcomp := hsymm.comp hprod Complex.equivRealProdCLM.symm.continuous
-  simpa [gaussianRatPoint, Function.comp_def, Complex.equivRealProdCLM_symm_apply] using hcomp
+  simpa [gaussianRatPoint, Function.comp_def, Complex.equivRealProdCLM_symm_apply] using! hcomp
 
 /-- The completed continued prime--Gamma flux in the original `s` coordinate. -/
 def completedPrimeGammaFlux (s : ℂ) : ℂ :=
@@ -238,7 +238,7 @@ theorem continuousAt_completedPrimeGammaFlux {s : ℂ}
       funext z
       rw [logDeriv_apply]]
     exact harch.deriv.continuousAt.div harch.continuousAt harch0
-  simpa [completedPrimeGammaFlux, infinitePrimeFlux] using hlogz.neg.sub hloga
+  simpa [completedPrimeGammaFlux, infinitePrimeFlux] using! hlogz.neg.sub hloga
 
 /-- Countable source accretivity: only Gaussian-rational values in the left half-strip are tested. -/
 def CompletedPrimeGammaGaussianRatLeftHalfAccretive : Prop :=

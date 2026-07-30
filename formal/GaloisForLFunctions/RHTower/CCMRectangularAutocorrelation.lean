@@ -374,7 +374,7 @@ theorem rectangularTwoEdgeLaplaceIntegral_eq_transform
           Complex.exp (w * x)) +
         (∫ x : ℝ, (rectangularIntervalIndicator (-a) L x : ℂ) *
           Complex.exp (w * x)) := by
-          simpa only [Pi.add_apply] using integral_add hright hleft
+          simpa only [Pi.add_apply] using! integral_add hright hleft
     _ = Complex.exp ((((a - L) + L : ℝ) : ℂ) * w) *
           rectangularWindowAmplitude L w +
         Complex.exp (((-a + L : ℝ) : ℂ) * w) *
@@ -505,7 +505,7 @@ theorem rectangularEvenPolarFeature_eq
   calc
     _ = (∫ x : ℝ, rectangularIntervalIndicator (a - L) L x * Real.cosh (x / 2)) +
         (∫ x : ℝ, rectangularIntervalIndicator (-a) L x * Real.cosh (x / 2)) := by
-          simpa only [Pi.add_apply] using integral_add hr hl
+          simpa only [Pi.add_apply] using! integral_add hr hl
     _ = _ := by
       rw [integral_rectangularIntervalIndicator_mul_cosh_half hL,
         integral_rectangularIntervalIndicator_mul_cosh_half hL]
@@ -530,7 +530,7 @@ theorem rectangularOddPolarFeature_eq_zero
   calc
     _ = (∫ x : ℝ, rectangularIntervalIndicator (a - L) L x * Real.sinh (x / 2)) +
         (∫ x : ℝ, rectangularIntervalIndicator (-a) L x * Real.sinh (x / 2)) := by
-          simpa only [Pi.add_apply] using integral_add hr hl
+          simpa only [Pi.add_apply] using! integral_add hr hl
     _ = _ := by
       rw [integral_rectangularIntervalIndicator_mul_sinh_half hL,
         integral_rectangularIntervalIndicator_mul_sinh_half hL]

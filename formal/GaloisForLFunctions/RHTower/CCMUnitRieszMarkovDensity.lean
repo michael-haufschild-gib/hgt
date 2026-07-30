@@ -71,15 +71,15 @@ theorem hasDerivAt_unitRieszCellProfile (m : ℕ) (v : ℝ) :
     HasDerivAt (unitRieszCellProfile m) (unitRieszCellMarkovDensity m v) v := by
   unfold unitRieszCellProfile unitRieszCellMarkovDensity
   have h1 : HasDerivAt (fun x : ℝ => Real.exp (-x)) (-Real.exp (-v)) v := by
-    simpa only [Function.comp_apply, mul_neg, mul_one] using
+    simpa only [Function.comp_apply, mul_neg, mul_one] using!
       (Real.hasDerivAt_exp (-v)).comp v (hasDerivAt_neg v)
   have h2 : HasDerivAt (fun x : ℝ => Real.exp (-3 * x / 2))
       ((-3 / 2) * Real.exp (-3 * v / 2)) v := by
-    convert
+    convert!
       (Real.hasDerivAt_exp (-3 * v / 2)).comp v
         (((hasDerivAt_id v).const_mul (-3)).div_const 2) using 1
     all_goals ring_nf
-  convert (h1.const_mul (3 * (m : ℝ))).sub
+  convert! (h1.const_mul (3 * (m : ℝ))).sub
     (h2.const_mul (3 * unitRieszSqrtPrefixMass m)) using 1
   all_goals ring_nf
 

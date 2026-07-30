@@ -347,7 +347,7 @@ theorem fermatCubicWeylCommutatorDecoder_shift_third
 theorem fermatCubicBasisWedge_swap (i j : Fin 3) :
     fermatCubicBasisWedge (K := K) j i =
       -fermatCubicBasisWedge (K := K) i j := by
-  simpa [fermatCubicBasisWedge, Function.comp_def] using
+  simpa [fermatCubicBasisWedge, Function.comp_def] using!
     (exteriorPower.ιMulti K 2).map_swap
       (![Pi.basisFun K (Fin 3) i, Pi.basisFun K (Fin 3) j]) Fin.zero_ne_one
 

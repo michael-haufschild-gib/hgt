@@ -169,7 +169,6 @@ theorem two_I_logDeriv_XiC_I_mul_eq (w : ℂ) :
     ring
   rw [hXiC]
   rw [hcomp]
-  dsimp only
   rw [harg, logDeriv_xi_one_sub ((1 / 2 : ℂ) + w)]
   ring_nf
   rw [Complex.I_sq]
@@ -442,8 +441,15 @@ theorem re_two_I_logDeriv_nonright_nonneg {w : ℂ} (hw : 1 / 2 < w.re)
     simp only [Complex.mul_re, Complex.mul_im, Complex.sub_re,
       Complex.sub_im]
     ring
-  rw [hexpand, hreF, hreR, ← hsplit]
-  simpa using hnonneg
+  rw [hexpand, hreF, hreR]
+  have hright_eq :
+      (∑' q : XiRightZeroCopy,
+          (2 * I * xiRelativeResolventTerm (I * w) q.1).re) =
+        ∑' q : ↑{q : XiZeroCopy |
+            0 < (I * xiSpectralPoint q).re},
+          (2 * I * xiRelativeResolventTerm (I * w) q.1).re := rfl
+  rw [hright_eq]
+  linarith [hsplit, hnonneg]
 
 /-- **UNCONDITIONAL ARITHMETIC UPPER BOUND on the Ward response** at
 interior points: discarding the nonnegative complementary spectral mass

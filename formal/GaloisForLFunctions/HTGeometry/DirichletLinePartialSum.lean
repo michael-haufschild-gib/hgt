@@ -34,19 +34,27 @@ theorem hasDerivAt_gpow (α : ℝ) {x : ℝ} (hx : 0 < x) :
     HasDerivAt (gpow α) (gpow α x * (-1 + α * Complex.I) / x) x := by
   have hlog := (Real.hasDerivAt_log hx.ne').ofReal_comp
   have hg := (hlog.const_mul (-1 + α * Complex.I)).cexp
-  convert hg using 1
-  rw [gpow, Complex.ofReal_inv]; ring
+  change HasDerivAt
+    (fun y : ℝ => Complex.exp ((-1 + α * Complex.I) * (Real.log y : ℂ)))
+    (Complex.exp ((-1 + α * Complex.I) * (Real.log x : ℂ)) *
+      (-1 + α * Complex.I) / x) x
+  apply hg.congr_deriv
+  rw [Complex.ofReal_inv]
+  ring
 
 theorem hasDerivAt_Gpow (α : ℝ) (hα : α ≠ 0) {x : ℝ} (hx : 0 < x) :
     HasDerivAt (Gpow α) (gpow α x) x := by
   have hw : (α : ℂ) * Complex.I ≠ 0 := mul_ne_zero (by exact_mod_cast hα) Complex.I_ne_zero
   have hlog := (Real.hasDerivAt_log hx.ne').ofReal_comp
   have hG := ((hlog.const_mul (α * Complex.I)).cexp).div_const (α * Complex.I)
-  convert hG using 1
+  change HasDerivAt
+    (fun y : ℝ =>
+      Complex.exp ((α * Complex.I) * (Real.log y : ℂ)) / (α * Complex.I))
+    (Complex.exp ((-1 + α * Complex.I) * (Real.log x : ℂ))) x
+  apply hG.congr_deriv
   have hxc : (↑x : ℂ) ≠ 0 := by exact_mod_cast hx.ne'
   have hexp : Complex.exp (-(↑(Real.log x) : ℂ)) = (↑x : ℂ)⁻¹ := by
     rw [Complex.exp_neg, ← Complex.ofReal_exp, Real.exp_log hx]
-  rw [gpow]
   have hsplit : (-1 + (α:ℂ) * Complex.I) * ↑(Real.log x)
       = (α:ℂ) * Complex.I * ↑(Real.log x) + (-(↑(Real.log x))) := by ring
   rw [hsplit, Complex.exp_add, hexp, Complex.ofReal_inv, mul_div_assoc]

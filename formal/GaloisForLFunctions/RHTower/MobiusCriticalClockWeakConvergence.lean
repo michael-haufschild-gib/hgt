@@ -121,7 +121,7 @@ theorem tendsto_squarefreeMobiusCriticalTruncatedIndexProbabilityMeasure
     intro a b hab n hn
     exact hn.trans_le (Nat.add_le_add_right hab 2)
   have hmass : Tendsto (fun N : ℕ => μ (Iio (N + 2))) atTop (nhds 1) := by
-    simpa only [Function.comp_apply, iUnion_Iio_add_two_nat, measure_univ] using
+    simpa only [Function.comp_def, iUnion_Iio_add_two_nat, measure_univ] using
       (tendsto_measure_iUnion_atTop (μ := μ) hmono)
   have hcoefficient :
       Tendsto (fun N : ℕ => (μ (Iio (N + 2))).toReal⁻¹) atTop (nhds 1) := by
@@ -156,8 +156,10 @@ theorem tendsto_squarefreeMobiusCriticalTruncatedClockProbabilityMeasure
     (ProbabilityMeasure.continuous_map
       (f := squarefreeMobiusCriticalClock sigma) (by fun_prop)).continuousAt.tendsto
       |>.comp hsource
-  simpa [squarefreeMobiusCriticalTruncatedClockProbabilityMeasure,
-    squarefreeMobiusCriticalClockProbabilityMeasure] using hmap
+  change Tendsto
+    (squarefreeMobiusCriticalTruncatedClockProbabilityMeasure sigma hsigma)
+    atTop (nhds (squarefreeMobiusCriticalClockProbabilityMeasure sigma)) at hmap
+  exact hmap
 
 /-- The unit-rate exponential law selected by the squarefree critical clock. -/
 def mobiusCriticalExponentialProbabilityMeasure : ProbabilityMeasure ℝ :=
@@ -321,12 +323,14 @@ theorem tendsto_charFun_squarefreeMobiusCriticalClockProbabilityMeasure
   have hunitSigma : Tendsto
       (fun sigma : ℝ => zetaResidueUnit (sigma : ℂ))
       (nhdsWithin 1 (Ioi 1)) (nhds (1 : ℂ)) := by
-    simpa using zetaResidueUnit_analyticAt.continuousAt.tendsto.comp hsigma
+    simpa only [Function.comp_def, zetaResidueUnit_one] using
+      zetaResidueUnit_analyticAt.continuousAt.tendsto.comp hsigma
   have hunitParam : Tendsto
       (fun sigma : ℝ =>
         zetaResidueUnit (squarefreeMobiusCriticalClockParameter sigma t))
       (nhdsWithin 1 (Ioi 1)) (nhds (1 : ℂ)) := by
-    simpa using zetaResidueUnit_analyticAt.continuousAt.tendsto.comp hparamReal
+    simpa only [Function.comp_def, zetaResidueUnit_one] using
+      zetaResidueUnit_analyticAt.continuousAt.tendsto.comp hparamReal
   have hzetaTwo : riemannZeta (2 : ℂ) ≠ 0 :=
     riemannZeta_ne_zero_of_one_lt_re (by norm_num)
   have hregularized : Tendsto
@@ -344,7 +348,14 @@ theorem tendsto_charFun_squarefreeMobiusCriticalClockProbabilityMeasure
       field_simp [hzetaTwo, hq]
     simp only [one_mul] at h
     rw [htarget] at h
-    simpa [q, hq] using h
+    change Tendsto
+      (fun sigma : ℝ =>
+        zetaResidueUnit (squarefreeMobiusCriticalClockParameter sigma t) *
+            riemannZeta (2 * (sigma : ℂ)) /
+          ((zetaResidueUnit (sigma : ℂ) *
+              riemannZeta (2 * squarefreeMobiusCriticalClockParameter sigma t)) * q))
+      (nhdsWithin 1 (Ioi 1)) (nhds q⁻¹) at h
+    exact h
   apply hregularized.congr'
   filter_upwards [self_mem_nhdsWithin] with sigma hsigmaGt
   change 1 < sigma at hsigmaGt
@@ -466,7 +477,7 @@ theorem tendsto_squarefreeMobiusCriticalClockProbabilityMeasure :
   have hchar :=
     (tendsto_charFun_squarefreeMobiusCriticalClockProbabilityMeasure t).comp hsigma
   rw [charFun_mobiusCriticalExponentialProbabilityMeasure]
-  simpa only [Function.comp_apply] using hchar
+  simpa only [Function.comp_def] using hchar
 
 /-- Oriented difference of two independent squarefree critical clocks. -/
 def squarefreeMobiusCriticalGapProbabilityMeasure (sigma : ℝ) : ProbabilityMeasure ℝ :=
@@ -513,8 +524,10 @@ theorem tendsto_squarefreeMobiusCriticalTruncatedGapProbabilityMeasure
   have hgap :=
     (ProbabilityMeasure.continuous_map (continuous_fst.sub continuous_snd)).continuousAt.tendsto
       |>.comp hprod
-  simpa [squarefreeMobiusCriticalTruncatedGapProbabilityMeasure,
-    squarefreeMobiusCriticalGapProbabilityMeasure] using hgap
+  change Tendsto
+    (squarefreeMobiusCriticalTruncatedGapProbabilityMeasure sigma hsigma)
+    atTop (nhds (squarefreeMobiusCriticalGapProbabilityMeasure sigma)) at hgap
+  exact hgap
 
 /-- Oriented difference of two independent unit-rate exponential clocks. -/
 def mobiusCriticalExponentialGapProbabilityMeasure : ProbabilityMeasure ℝ :=
@@ -731,6 +744,7 @@ theorem charFun_mobiusCriticalExponentialGapProbabilityMeasure (t : ℝ) :
   rw [integral_map
     ((continuous_fst.sub continuous_snd).measurable.aemeasurable)
     (by fun_prop)]
+  simp only [Pi.sub_apply]
   rw [show (fun p : ℝ × ℝ =>
       Complex.exp ((t : ℂ) * ((p.1 - p.2 : ℝ) : ℂ) * Complex.I)) =
       fun p : ℝ × ℝ =>

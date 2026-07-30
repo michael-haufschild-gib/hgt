@@ -14,9 +14,9 @@ theorem differentiable_mvPolynomial_eval_complex {n : ℕ}
   induction P using MvPolynomial.induction_on with
   | C c => simpa using (differentiable_const c :
       Differentiable ℂ (fun _ : Fin n → ℂ => c))
-  | add P Q hP hQ => simpa using hP.add hQ
+  | add P Q hP hQ => simpa using! hP.add hQ
   | mul_X P i hP =>
-      simpa using hP.mul (differentiable_apply (𝕜 := ℂ) i)
+      simpa using! hP.mul (differentiable_apply (𝕜 := ℂ) i)
 
 /-- The complex Fréchet derivative of polynomial evaluation is its formal gradient. -/
 theorem fderiv_mvPolynomial_eval_complex_apply {n : ℕ}
@@ -26,7 +26,7 @@ theorem fderiv_mvPolynomial_eval_complex_apply {n : ℕ}
   let curve : ℂ → (Fin n → ℂ) := fun t j => x j + t * v j
   have hcurveCoord : ∀ j, HasDerivAt (fun t => curve t j) (v j) 0 := by
     intro j
-    convert (hasDerivAt_const (x := 0) (x j)).add
+    convert! (hasDerivAt_const (x := 0) (x j)).add
       ((hasDerivAt_id 0).mul_const (v j)) using 1 <;> simp [curve]
   have hcurveValue : curve 0 = x := by
     funext j
@@ -132,7 +132,7 @@ theorem matrix_linearIndependent_rows_of_submatrix_det_ne_zero
     (hdet : (A.submatrix id cols).det ≠ 0) :
     LinearIndependent ℂ A.row := by
   apply LinearIndependent.of_comp (LinearMap.funLeft ℂ ℂ cols)
-  simpa [Function.comp_def, Matrix.row, Matrix.submatrix] using
+  simpa [Function.comp_def, Matrix.row, Matrix.submatrix] using!
     (Matrix.linearIndependent_rows_of_det_ne_zero hdet)
 
 theorem matrix_mulVec_surjective_of_submatrix_det_ne_zero
@@ -185,7 +185,7 @@ theorem matrix_exists_submatrix_det_ne_zero_of_mulVec_surjective
   have hselected : LinearIndependent ℂ (fun i : Fin m => A.col (cols i)) := by
     exact hsLI.comp (fun i => (e i : s)) e.injective
   have hcols : LinearIndependent ℂ (A.submatrix id cols).col := by
-    simpa [Matrix.col, Matrix.submatrix, cols] using hselected
+    simpa [Matrix.col, Matrix.submatrix, cols] using! hselected
   have hunit : IsUnit (A.submatrix id cols) :=
     Matrix.linearIndependent_cols_iff_isUnit.mp hcols
   rw [Matrix.isUnit_iff_isUnit_det, isUnit_iff_ne_zero] at hunit

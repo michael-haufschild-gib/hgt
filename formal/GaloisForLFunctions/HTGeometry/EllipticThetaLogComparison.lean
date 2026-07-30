@@ -200,7 +200,7 @@ theorem analyticAt_ellipticThetaAdditiveLogKernel_of_jacobiTheta₂_ne
       (ellipticThetaCoordinate_ne_zero τ z) hfree
   have hcomp := hkernel.comp (analyticAt_ellipticThetaCoordinate τ z)
   have hc : AnalyticAt ℂ (fun _ : ℂ => (2 * Real.pi * I : ℂ)) z := analyticAt_const
-  simpa [ellipticThetaAdditiveLogKernel, Function.comp_def] using hc.mul hcomp
+  simpa [ellipticThetaAdditiveLogKernel, Function.comp_def] using! hc.mul hcomp
 
 /-- Away from the theta divisor, both logarithmic kernels are analytic, hence so is their
 comparison discrepancy. -/
@@ -212,7 +212,7 @@ theorem analyticAt_ellipticThetaLogComparison_of_jacobiTheta₂_ne
   have hnum := (jacobiTheta₂'_analyticOnNhd_fst τ hτ) z (Set.mem_univ z)
   have hden := (jacobiTheta₂_analyticOnNhd_fst τ hτ) z (Set.mem_univ z)
   have hanalytic : AnalyticAt ℂ (thetaLogDeriv · τ) z := by
-    simpa [thetaLogDeriv] using hnum.div hden hz
+    simpa [thetaLogDeriv] using! hnum.div hden hz
   exact hconstructed.sub hanalytic
 
 /-- The constructed-versus-analytic theta discrepancy has no poles anywhere. On the theta divisor

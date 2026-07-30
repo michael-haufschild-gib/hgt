@@ -161,7 +161,7 @@ theorem hypertranscendentalOver_centeredZetaGammaPhase_mul_intensity_sq :
   have h := hypertranscendentalOver_gammaFintypeNegativeOrbitProductMero_of_pos
     (fun _ : Fin 1 => (1 / 4 : ℂ)) (fun _ : Fin 1 => (4 : ℤ))
     (by intro i; norm_num)
-  simpa [gammaFintypeNegativeOrbitProductMero] using h
+  simpa [gammaFintypeNegativeOrbitProductMero] using! h
 
 /-- The positive-frequency amplitude recovered from joint phase--intensity data remains
 hypertranscendental. -/
@@ -173,7 +173,7 @@ theorem hypertranscendentalOver_centeredZetaGammaIntensity_sq_div_phase :
   have h := hypertranscendentalOver_gammaFintypeOrbitProductMero_of_pos
     (fun _ : Fin 1 => (1 / 4 : ℂ)) (fun _ : Fin 1 => (4 : ℤ))
     (by intro i; norm_num)
-  simpa [gammaFintypeOrbitProductMero] using h
+  simpa [gammaFintypeOrbitProductMero] using! h
 
 /-- **Centered Gamma joint tomography profile.**  Phase and shifted intensity together recover
 both oriented quarter-shifted Gamma amplitudes up to fourth power, and neither recovered channel

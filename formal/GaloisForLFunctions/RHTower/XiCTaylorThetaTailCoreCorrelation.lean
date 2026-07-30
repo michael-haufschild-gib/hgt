@@ -26,8 +26,11 @@ theorem hasDerivAt_thetaCuspTailSecondSection
       have hscaled :=
         (HasDerivAt.const_mul ((-1 : ℂ) ^ k) hpow).mul_const
           ((x : ℂ) ^ (2 * k + 2) / (2 * k + 2).factorial)
-      convert hscaled using 1 <;> ring)
+      convert hscaled using 1
+      all_goals try rfl
+      all_goals ring)
   convert hsum using 1
+  all_goals try rfl
   funext w
   simp only [Finset.sum_apply]
 
@@ -42,9 +45,13 @@ theorem hasDerivAt_thetaCuspTailSecondCoreAtom
       (thetaCuspTailSecondCoreAtomDerivative d z x) z := by
   unfold thetaCuspTailSecondCoreAtom thetaCuspTailSecondCoreAtomDerivative
   have hquad : HasDerivAt (fun w : ℂ => w ^ 2 + 1 / 4) (2 * z) z := by
-    convert (hasDerivAt_pow 2 z).add_const (1 / 4 : ℂ) using 1 <;> ring
+    convert (hasDerivAt_pow 2 z).add_const (1 / 4 : ℂ) using 1
+    all_goals try rfl
+    all_goals ring
   convert (hasDerivAt_const z (1 : ℂ)).sub
-    (hquad.mul (hasDerivAt_thetaCuspTailSecondSection d z x)) using 1 <;> ring
+    (hquad.mul (hasDerivAt_thetaCuspTailSecondSection d z x)) using 1
+  all_goals try rfl
+  all_goals ring
 
 theorem integrableOn_thetaCuspTailSecondDensity_mul_sectionDerivative
     (d : ℕ) (z : ℂ) :
@@ -143,12 +150,15 @@ theorem evenMagnitudeLift_thetaCuspTailEvenPolynomial_derivative_eval
     (fun k _hk => by
       have hpow := hasDerivAt_pow (2 * k) z
       convert HasDerivAt.const_mul
-        ((thetaCuspTailEvenCoefficient k : ℂ) * (-1 : ℂ) ^ k) hpow using 1 <;> ring)
+        ((thetaCuspTailEvenCoefficient k : ℂ) * (-1 : ℂ) ^ k) hpow using 1
+      all_goals try rfl
+      all_goals ring)
   have hsum' : HasDerivAt (fun w : ℂ => A.eval w)
       (thetaCuspTailSecondAverageSectionDerivative d z) z := by
     rw [hfun]
     unfold thetaCuspTailSecondAverageSectionDerivative
     convert hsum using 1
+    all_goals try rfl
     funext w
     simp only [Finset.sum_apply]
   simpa only [A] using (A.hasDerivAt z).unique hsum'
@@ -230,13 +240,17 @@ theorem xiCTaylorThetaTailCorePolynomial_derivative_eval
     push_cast
     ring
   have hquad : HasDerivAt (fun w : ℂ => w ^ 2 + 1 / 4) (2 * z) z := by
-    convert (hasDerivAt_pow 2 z).add_const (1 / 4 : ℂ) using 1 <;> ring
+    convert (hasDerivAt_pow 2 z).add_const (1 / 4 : ℂ) using 1
+    all_goals try rfl
+    all_goals ring
   have hformula : HasDerivAt (fun w : ℂ =>
       1 / 2 - (w ^ 2 + 1 / 4) * A.eval w)
       (-2 * z * A.eval z -
         (z ^ 2 + 1 / 4) * A.derivative.eval z) z := by
     convert (hasDerivAt_const z (1 / 2 : ℂ)).sub
-      (hquad.mul (A.hasDerivAt z)) using 1 <;> ring
+      (hquad.mul (A.hasDerivAt z)) using 1
+    all_goals try rfl
+    all_goals ring
   have hU : HasDerivAt (fun w : ℂ => U.eval w)
       (-2 * z * A.eval z -
         (z ^ 2 + 1 / 4) * A.derivative.eval z) z := by
@@ -386,11 +400,9 @@ theorem xiCTaylorThetaTailCoreSymmetricCorrelationKernel_eq_density_mul
   unfold xiCTaylorThetaTailCoreSymmetricCorrelationKernel
     xiCTaylorThetaTailCoreCorrelationKernel
     xiCTaylorThetaTailCorePairCurrent
-  simp only [Prod.swap_prod_mk, Prod.fst, Prod.snd, map_mul,
+  simp only [Prod.swap_prod_mk, map_mul,
     Complex.conj_ofReal, Complex.mul_im, Complex.mul_re,
-    Complex.ofReal_re, Complex.ofReal_im, zero_mul, add_zero,
-    zero_sub, mul_zero]
-  push_cast
+    Complex.ofReal_re, Complex.ofReal_im, zero_mul, add_zero]
   ring
 
 theorem integral_coreCorrelationKernel_eq_symmetric
@@ -435,7 +447,7 @@ theorem integral_coreCorrelationKernel_eq_symmetric
       (RCLike.conjCLE : ℂ ≃L[ℝ] ℂ).toContinuousLinearMap.integrable_comp hg
     have hprod := hf.mul_prod hgconj
     have him := hprod.im
-    convert him using 1
+    simpa only [K, xiCTaylorThetaTailCoreCorrelationKernel] using! him
   · have hf : Integrable (fun x : ℝ =>
         (thetaCuspTailSecondDensity x : ℂ) *
           thetaCuspTailSecondCoreAtomDerivative d z x)

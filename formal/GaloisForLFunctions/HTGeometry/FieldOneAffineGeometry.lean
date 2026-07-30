@@ -43,7 +43,7 @@ namespace MonoidZeroIdeal
 
 instance {A : Type*} [CommMonoidWithZero A] : SetLike (MonoidZeroIdeal A) A where
   coe := carrier
-  coe_injective' P Q h := by
+  coe_injective P Q h := by
     cases P
     cases Q
     cases h
@@ -138,7 +138,7 @@ theorem coordinateMonomial_eq_prod {I : Type*} (e : I →₀ ℕ) :
       ∏ i ∈ e.support, coordinateVariable i ^ e i := by
   classical
   rw [coordinateExponent_eq_prod e]
-  simpa only [coordinateVariable, map_pow] using
+  simpa only [coordinateVariable, map_pow] using!
     map_prod (WithZero.coeMonoidHom (α := Multiplicative (I →₀ ℕ)))
       (fun i => (Multiplicative.ofAdd (Finsupp.single i 1) :
         Multiplicative (I →₀ ℕ)) ^ e i) e.support

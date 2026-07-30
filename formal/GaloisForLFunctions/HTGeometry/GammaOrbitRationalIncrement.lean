@@ -98,7 +98,7 @@ theorem gammaOrbitCommonDenominator_orbit_zero_iff
     by_cases hcc : c = c0
     · subst c
       have hcast : (n : ℂ) = 0 := by linear_combination hc
-      exact Int.cast_injective (by simpa using hcast)
+      exact_mod_cast hcast
     · exfalso
       apply hsep c hcc (-n)
       push_cast
@@ -211,7 +211,7 @@ theorem ratShift_sub_gammaOrbitIncrement_combination
           w
         rw [h, hfrac]
       let delta' : Fin N → ℂ := fun j => delta j.castSucc
-      have hlast : delta (Fin.last N) = 0 := by simpa using htop
+      have hlast : delta (Fin.last N) = 0 := by simpa using! htop
       have hlower : ratShift w - w =
           ∑ j : Fin N,
             algebraMap ℂ (RatFunc ℂ) (delta' j) *
@@ -223,7 +223,7 @@ theorem ratShift_sub_gammaOrbitIncrement_combination
       intro j
       by_cases hj : (j : ℕ) = N
       · have hjeq : j = Fin.last N := Fin.ext (by simpa using hj)
-        simpa [hjeq] using htop
+        simpa [hjeq] using! htop
       · have hjlt : (j : ℕ) < N := by omega
         let k : Fin N := ⟨j, hjlt⟩
         simpa [delta', k] using hz k

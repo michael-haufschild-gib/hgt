@@ -1151,7 +1151,7 @@ theorem exists_initial_separant_powers_mem_differentialIntermediatePolynomialIte
   apply exists_initial_separant_powers_mem_differentialPolynomialIterateIdeal
     (differentialIntermediateRelationIdeal_ne_top G y) hP
   · intro R hR
-    simpa [differentialIntermediatePolynomialDerivation] using
+    simpa [differentialIntermediatePolynomialDerivation] using!
       differentialIntermediatePolynomialDerivation_mem_relationIdeal G hG y hR
   · exact hQ
 

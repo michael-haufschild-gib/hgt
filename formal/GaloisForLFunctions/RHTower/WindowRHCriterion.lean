@@ -95,7 +95,9 @@ theorem RH_of_sharpWindow_regular (L : ℝ) (hL : 0 < L)
     rw [show (1 / 2 : ℂ) = ((1 / 2 : ℝ) : ℂ) by norm_num, Complex.ofReal_re]
   have hre : ((ρ + 1 / 2 : ℂ) - 1).re = ρ.re - 1 / 2 := by
     rw [Complex.sub_re, Complex.add_re, Complex.one_re, e2]; ring
-  (try simp only [id_eq]); rw [hre]; linarith
+  change 0 < ((ρ + 1 / 2 : ℂ) - 1).re
+  rw [hre]
+  linarith
 
 /-- **Converse (satisfiability under RH).**  If `ζ` has no zeros with `Re > ½`, then for any *continuous*
 window `W` the observable `windowObservable W` is regular (has a finite limit — indeed is continuous) at

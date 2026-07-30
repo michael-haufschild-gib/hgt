@@ -152,7 +152,7 @@ theorem primeLaplaceCauchyResolventClass_linearIndependent
   simpa only [Pi.neg_apply,
     primeLaplaceCauchyResolventClass_eq_reflectedCauchyClass b
       (primeLaplaceCanonicalParameter _)
-      (primeLaplaceCanonicalParameter_re_pos _)] using hneg
+      (primeLaplaceCanonicalParameter_re_pos _)] using! hneg
 
 /-- No finite-dimensional source can repair every canonical prime-semigroup Laplace resolvent. -/
 theorem primeLaplaceCauchyResolvent_no_finiteDimensional_repair

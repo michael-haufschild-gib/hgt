@@ -21,9 +21,9 @@ theorem iteratedDeriv_bourgainAffineRpow_one
   unfold bourgainAffineRpow
   have haffine :
       HasDerivAt (fun y : ℝ => 1 + q * y) q t := by
-    convert (hasDerivAt_const t (1 : ℝ)).add
+    convert! (hasDerivAt_const t (1 : ℝ)).add
       ((hasDerivAt_id t).const_mul q) using 1 <;> ring_nf
-  convert (haffine.rpow_const (p := r) (Or.inl hbase.ne')).deriv using 1
+  convert! (haffine.rpow_const (p := r) (Or.inl hbase.ne')).deriv using 1
 
 /-- Second derivative of a translated and scaled real power. -/
 theorem iteratedDeriv_bourgainAffineRpow_two
@@ -53,7 +53,7 @@ theorem iteratedDeriv_bourgainThreeHalvesTaylorPolynomial_one
       (3 / 2 : ℝ) * q + (3 / 4 : ℝ) * q ^ (2 : ℕ) * t := by
   rw [iteratedDeriv_one]
   unfold bourgainThreeHalvesTaylorPolynomial
-  convert
+  convert!
     (((hasDerivAt_const t (1 : ℝ)).add
       ((hasDerivAt_id t).const_mul ((3 / 2 : ℝ) * q))).add
         (((hasDerivAt_id t).pow 2).const_mul
@@ -78,7 +78,7 @@ theorem iteratedDeriv_bourgainThreeHalvesTaylorPolynomial_two
     funext x
     exact iteratedDeriv_bourgainThreeHalvesTaylorPolynomial_one q x
   rw [heq]
-  convert
+  convert!
     ((hasDerivAt_const t ((3 / 2 : ℝ) * q)).add
       ((hasDerivAt_id t).const_mul
         ((3 / 4 : ℝ) * q ^ (2 : ℕ)))).deriv using 1 <;> ring
@@ -138,7 +138,7 @@ theorem iteratedDeriv_bourgainHalfTaylorPolynomial_one
       (1 / 2 : ℝ) * q - (1 / 4 : ℝ) * q ^ (2 : ℕ) * t := by
   rw [iteratedDeriv_one]
   unfold bourgainHalfTaylorPolynomial
-  convert
+  convert!
     (((hasDerivAt_const t (1 : ℝ)).add
       ((hasDerivAt_id t).const_mul ((1 / 2 : ℝ) * q))).sub
         (((hasDerivAt_id t).pow 2).const_mul
@@ -162,7 +162,7 @@ theorem iteratedDeriv_bourgainHalfTaylorPolynomial_two
     funext x
     exact iteratedDeriv_bourgainHalfTaylorPolynomial_one q x
   rw [heq]
-  convert
+  convert!
     ((hasDerivAt_const t ((1 / 2 : ℝ) * q)).sub
       ((hasDerivAt_id t).const_mul
         ((1 / 4 : ℝ) * q ^ (2 : ℕ)))).deriv using 1 <;> ring

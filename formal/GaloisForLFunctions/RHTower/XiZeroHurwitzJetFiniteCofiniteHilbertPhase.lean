@@ -124,14 +124,18 @@ theorem exists_injective_xiZeroHurwitzJetRectangleHilbertReconstruction_iff_inje
     fun q => ρ (finProdFinEquiv.symm q).1
   let order : Fin (N * (m + 1)) → ℕ :=
     fun q => ((finProdFinEquiv.symm q).2 : ℕ)
+  have hfamily :
+      xiZeroHurwitzJetFamily support order = xiZeroHurwitzJetRectangle ρ m := by
+    rfl
   calc
     _ ↔ Function.Injective (xiZeroHurwitzJetIndex support order) := by
-      simpa [support, order, xiZeroHurwitzJetRectangle,
-        xiZeroHurwitzJetFamily, xiZeroHurwitzJetEvaluationGram] using
+      simpa only [xiZeroHurwitzJetEvaluationGram, hfamily] using
         exists_injective_xiZeroHurwitzJetEvaluationHilbertReconstruction_iff
           support order
     _ ↔ Function.Injective ρ := by
-      simpa [support, order, xiZeroHurwitzJetIndex] using
+      change Function.Injective (fun q => (support q, order q)) ↔
+        Function.Injective ρ
+      simpa only [support, order] using
         xiZeroHurwitzJetRectangle_index_injective_iff ρ m
 
 /-- **Exact cofinite rectangular reconstruction classification.**  Exact dual reconstruction,
@@ -158,14 +162,18 @@ theorem xiZeroHurwitzJetRectangleCofiniteHilbertReconstruction_iff_injective
     fun q => ρ (finProdFinEquiv.symm q).1
   let order : Fin (N * (m + 1)) → ℕ :=
     fun q => ((finProdFinEquiv.symm q).2 : ℕ)
+  have hfamily :
+      xiZeroHurwitzJetFamily support order = xiZeroHurwitzJetRectangle ρ m := by
+    rfl
   calc
     _ ↔ Function.Injective (xiZeroHurwitzJetIndex support order) := by
-      simpa [support, order, xiZeroHurwitzJetRectangle,
-        xiZeroHurwitzJetFamily] using
+      simpa only [hfamily] using
         xiZeroHurwitzJetCofiniteHilbertReconstruction_iff_injective
           support order
     _ ↔ Function.Injective ρ := by
-      simpa [support, order, xiZeroHurwitzJetIndex] using
+      change Function.Injective (fun q => (support q, order q)) ↔
+        Function.Injective ρ
+      simpa only [support, order] using
         xiZeroHurwitzJetRectangle_index_injective_iff ρ m
 
 /-- For full Xi-zero Hurwitz jet rectangles, one finite exact Hilbert reconstruction packet exists

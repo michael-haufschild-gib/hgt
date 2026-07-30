@@ -302,7 +302,7 @@ theorem l2Reflection_centralSoninProjection (a : ℝ) (f : SoninL2) :
   apply (centralSoninCarrier a).eq_starProjection_of_mem_orthogonal
   · exact l2Reflection_mem_centralSoninCarrier a
       ((centralSoninCarrier a).starProjection_apply_mem f)
-  · simpa only [map_sub] using l2Reflection_mem_centralSoninCarrier_orthogonal a
+  · simpa only [map_sub] using! l2Reflection_mem_centralSoninCarrier_orthogonal a
       ((centralSoninCarrier a).sub_starProjection_mem_orthogonal f)
 
 theorem centralSoninProjection_mapsTo_evenSubspace (a : ℝ) :

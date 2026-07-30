@@ -135,10 +135,14 @@ theorem primeProfileCarrierPullback_inf
       primeProfileClockClass_representative q, ?_, ?_⟩
     · apply (primeProfileCarrier_mem_differentialAdjoin_iff_intrinsicClockClass_mem
         c hcsupport _ (primeProfileClockRepresentative_supportedOnPositivePrimePowers q)).mpr
-      simpa only [primeProfileClockClass_representative] using hqc
+      rw [primeProfileClockClass_representative]
+      change q ∈ (primeProfileClockSubmodule c : Set PrimeProfileClockQuotient)
+      exact hqc
     · apply (primeProfileCarrier_mem_differentialAdjoin_iff_intrinsicClockClass_mem
         d hdsupport _ (primeProfileClockRepresentative_supportedOnPositivePrimePowers q)).mpr
-      simpa only [primeProfileClockClass_representative] using hqd
+      rw [primeProfileClockClass_representative]
+      change q ∈ (primeProfileClockSubmodule d : Set PrimeProfileClockQuotient)
+      exact hqd
 
 /-- The embedded differential field of a source family is the Grassmann field of its complete
 clock submodule.  The submodule is clock-invariant, so its represented basis field is already

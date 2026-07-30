@@ -119,15 +119,14 @@ theorem one_sub_cos_eq (u : ℝ) : 1 - Real.cos u = 2 * Real.sin (u / 2) ^ 2 := 
 theorem sin_half_lower {u : ℝ} (h1 : 1 < |u|) (h2 : |u| < 2) :
     (7 : ℝ) / 15 < Real.sin (|u| / 2) := by
   have hx0 : (0 : ℝ) < (1 : ℝ) / 2 := by norm_num
-  have hx1 : (1 : ℝ) / 2 ≤ 1 := by norm_num
-  have hcube : (1 : ℝ) / 2 - (1 / 2) ^ 3 / 4 < Real.sin (1 / 2) :=
-    Real.sin_gt_sub_cube hx0 hx1
+  have hcube : (1 : ℝ) / 2 - (1 / 2) ^ 3 / 6 < Real.sin (1 / 2) :=
+    Real.sin_gt_sub_cube hx0
   have hmono : Real.sin (1 / 2) ≤ Real.sin (|u| / 2) := by
     refine Real.sin_le_sin_of_le_of_le_pi_div_two (by nlinarith [Real.pi_pos]) ?_ (by linarith)
     have hpi : (2 : ℝ) / 2 ≤ Real.pi / 2 := by
       have := Real.pi_gt_three; linarith
     linarith
-  have : (7 : ℝ) / 15 < 1 / 2 - (1 / 2) ^ 3 / 4 := by norm_num
+  have : (7 : ℝ) / 15 < 1 / 2 - (1 / 2) ^ 3 / 6 := by norm_num
   linarith
 
 /-- **The witness is nonnegative on `ℝ`.** -/

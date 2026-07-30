@@ -142,7 +142,7 @@ theorem chirotopeBlind_physicalHolomorphicPeriodIncidence_fracture
   have hphysical := rankThreePhysicalOsculation_effectivity_fracture
     irrationalConicParameter irrationalConicSource_linearIndependent
   have hno : ¬ (periodIncidenceMultiplier irrationalConicPeriodGroup).HasLeftInverse := by
-    simpa [irrationalConicPeriodGroup] using hphysical.2.2
+    simpa [irrationalConicPeriodGroup] using! hphysical.2.2
   have hnondiscrete : ¬ DiscreteTopology irrationalConicPeriodGroup := by
     intro hdiscrete
     exact hno ((periodIncidenceMultiplier_hasLeftInverse_iff_discrete

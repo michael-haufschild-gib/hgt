@@ -343,7 +343,7 @@ theorem hasSumLocallyUniformlyOn_signedDigammaCompletionTerm
     HasSumLocallyUniformlyOn
       (fun n z => signedDigammaCompletionTerm ε z n)
       (signedDigammaCompletion ε) Set.univ := by
-  simpa only [signedDigammaCompletion] using
+  simpa only [signedDigammaCompletion] using!
     (summableLocallyUniformlyOn_signedDigammaCompletionTerm ε hε).hasSumLocallyUniformlyOn
 
 /-- Every bounded signed completion is holomorphic on the upper half-plane. -/

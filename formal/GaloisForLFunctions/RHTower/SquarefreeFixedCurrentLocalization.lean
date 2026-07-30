@@ -140,7 +140,7 @@ theorem differentiableAt_infinitePrimeFlux_two_mul
     norm_num only [mul_re, Complex.re_ofNat, Complex.im_ofNat, zero_mul, sub_zero]
     linarith
   have houter : DifferentiableAt ℂ RHTower.infinitePrimeFlux (2 * s) := by
-    simpa only [RHTower.infinitePrimeFlux, logDeriv_apply, neg_div] using
+    simpa only [RHTower.infinitePrimeFlux, logDeriv_apply, neg_div] using!
       RHTower.differentiableAt_neg_logDeriv_riemannZeta_of_one_lt_re h2re
   exact houter.comp s (show DifferentiableAt ℂ (fun z : ℂ => 2 * z) s by fun_prop)
 
@@ -184,15 +184,15 @@ theorem deriv_squarefreeBoundaryOverlap_eq_neg_mul_fixedCurrent
   have houter : HasDerivAt squarefreePartition (deriv squarefreePartition s) s :=
     (differentiableAt_squarefreePartition hshift).hasDerivAt
   have hinner : HasDerivAt (fun v : ℂ => sigma + v * epsilon) epsilon u := by
-    convert (hasDerivAt_const (x := u) (c := sigma)).add
+    convert! (hasDerivAt_const (x := u) (c := sigma)).add
       ((hasDerivAt_id u).mul_const epsilon) using 1
-    all_goals ring
+    ring
   have hcomp : HasDerivAt (fun v : ℂ => squarefreePartition (sigma + v * epsilon))
       (deriv squarefreePartition s * epsilon) u := by
-    simpa only [s] using houter.comp u hinner
+    simpa only [s] using! houter.comp u hinner
   have hquot : HasDerivAt (squarefreeBoundaryOverlap sigma epsilon)
       ((deriv squarefreePartition s * epsilon) / squarefreePartition sigma) u := by
-    simpa [squarefreeBoundaryOverlap] using hcomp.div_const (squarefreePartition sigma)
+    simpa [squarefreeBoundaryOverlap] using! hcomp.div_const (squarefreePartition sigma)
   rw [hquot.deriv]
   have hlog := neg_logDeriv_squarefreePartition_eq_squarefreeFixedCurrent hshift
   rw [logDeriv_apply] at hlog

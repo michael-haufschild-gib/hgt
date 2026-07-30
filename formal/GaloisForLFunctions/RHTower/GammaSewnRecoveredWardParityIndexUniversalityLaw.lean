@@ -65,7 +65,11 @@ private theorem tendsto_signedJuliaDefect_div_of_tendsto_quotient
   have hnormA :
       Tendsto (fun a : ℝ => ‖A a‖)
         (𝓝[>] (0 : ℝ)) (𝓝 0) := by
-    simpa using (continuous_norm.tendsto (0 : ℂ)).comp hA
+    have hcomp := (continuous_norm.tendsto (0 : ℂ)).comp hA
+    have hcomp' : Tendsto (fun a : ℝ => ‖A a‖)
+        (𝓝[>] (0 : ℝ)) (𝓝 ‖(0 : ℂ)‖) :=
+      hcomp.congr' (Eventually.of_forall fun _ => rfl)
+    simpa only [norm_zero] using hcomp'
   have hnormTerm :
       Tendsto (fun a : ℝ => Complex.normSq (A a) / a)
         (𝓝[>] (0 : ℝ)) (𝓝 0) := by
@@ -141,10 +145,21 @@ theorem gammaSewnRecoveredWardSignedDefect_slope_zero_right
       (A := gammaSewnRecoveredWardAmplitude nu P w)
       (L := ((((-1 : ℝ) ^ P.card : ℝ) : ℂ)) *
         continuedXiAntiCausalWardResponse w) hquotient
-  convert hdefect using 1
-  simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
-    zero_mul, sub_zero]
-  ring_nf
+  change Tendsto
+    (fun a : ℝ =>
+      (2 * (gammaSewnRecoveredWardAmplitude nu P w a).re -
+        Complex.normSq (gammaSewnRecoveredWardAmplitude nu P w a)) / a)
+    (𝓝[>] (0 : ℝ)) _
+  have hlimit :
+      2 * (((((-1 : ℝ) ^ P.card : ℝ) : ℂ)) *
+          continuedXiAntiCausalWardResponse w).re =
+        ((-1 : ℝ) ^ P.card) *
+          (2 * (continuedXiAntiCausalWardResponse w).re) := by
+    simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
+      zero_mul, sub_zero]
+    ring
+  rw [← hlimit]
+  exact hdefect
 
 /-- Euler-edge density of the recovered infinitesimal Ward defect. -/
 def gammaSewnRecoveredWardInfinitesimalDensity

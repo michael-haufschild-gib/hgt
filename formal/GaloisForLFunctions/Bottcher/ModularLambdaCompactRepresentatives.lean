@@ -65,7 +65,7 @@ theorem exists_compact_lambdaPunct_representatives {K : Set Punctured} (hK : IsC
   · exact Set.mem_iUnion.mpr ⟨cq, g • z, hgS, rfl⟩
   · have hlambda : lambdaPunct (c • (g • z)) = lambdaPunct z := by
       have hbar : lambdaBar (qmk (c • (g • z))) = lambdaBar (qmk z) := by rw [hqeq]
-      simpa [lambdaBar_comp_mk] using hbar
+      simpa [lambdaBar_comp_mk] using! hbar
     rw [hlambda, hz]
 
 /-- Compact base values have uniformly Cayley-bounded modular representatives. -/

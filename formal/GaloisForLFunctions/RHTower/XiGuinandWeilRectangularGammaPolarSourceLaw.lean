@@ -163,7 +163,7 @@ theorem riemannHypothesis_iff_rectangularPrimePolarSource_uniformlyBounded
           (xiRectangularTwoEdgeTransform L a)).re| +
             |rectangularGammaPolarCorrection L a| := by
       rw [heq]
-      simpa only [add_sub_cancel_right] using
+      simpa only [add_sub_cancel_right] using!
         abs_sub
           (rectangularPrimePolarSourceCoefficient L a +
             rectangularGammaPolarCorrection L a)
@@ -443,7 +443,7 @@ theorem all_xiZeros_re_le_iff_rectangularPrimePolarSource_negativeAbscissa_le
         ((1 + alpha : ℝ) : EReal) <
           ((1 + alpha + epsilon : ℝ) : EReal) := by
       exact_mod_cast (by linarith : 1 + alpha < 1 + alpha + epsilon)
-    simpa only [ofReal_re] using habscissa.trans_lt hstrict
+    simpa only [ofReal_re] using! habscissa.trans_lt hstrict
 
 /-- **Critical prime--polar source abscissa law.**  RH is equivalent to the negative part of one
 finite prime--polar source sequence having absolute-convergence abscissa at most one.  No Gamma
@@ -473,6 +473,6 @@ theorem riemannHypothesis_iff_rectangularPrimePolarSource_negativeAbscissa_le_on
     apply LSeriesSummable_of_abscissaOfAbsConv_lt_re
     have hstrict : ((1 : ℝ) : EReal) < ((1 + epsilon : ℝ) : EReal) := by
       exact_mod_cast (by linarith : (1 : ℝ) < 1 + epsilon)
-    simpa only [ofReal_re] using habscissa.trans_lt hstrict
+    simpa only [ofReal_re] using! habscissa.trans_lt hstrict
 
 end RHTower

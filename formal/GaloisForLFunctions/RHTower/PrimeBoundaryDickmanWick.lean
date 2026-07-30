@@ -53,7 +53,7 @@ private theorem iteratedDeriv_wickTerm_even (a p : ℂ) (m : ℕ) (hm : 0 < m) :
       iteratedDeriv (2 * m) (fun z : ℂ => Complex.cosh (z * a) - 1) 0 =
         iteratedDeriv (2 * m) (fun z : ℂ => Complex.cosh (z * a)) 0 -
           iteratedDeriv (2 * m) (fun _z : ℂ => (1 : ℂ)) 0 := by
-    simpa only [Pi.sub_apply] using
+    simpa only [Pi.sub_apply] using!
       iteratedDeriv_sub (n := 2 * m) (x := (0 : ℂ))
         (f := fun z : ℂ => Complex.cosh (z * a))
         (g := fun _z : ℂ => (1 : ℂ)) (by fun_prop) (by fun_prop)
@@ -71,7 +71,7 @@ private theorem iteratedDeriv_wickTerm_odd (a p : ℂ) (m : ℕ) :
       iteratedDeriv (2 * m + 1) (fun z : ℂ => Complex.cosh (z * a) - 1) 0 =
         iteratedDeriv (2 * m + 1) (fun z : ℂ => Complex.cosh (z * a)) 0 -
           iteratedDeriv (2 * m + 1) (fun _z : ℂ => (1 : ℂ)) 0 := by
-    simpa only [Pi.sub_apply] using
+    simpa only [Pi.sub_apply] using!
       iteratedDeriv_sub (n := 2 * m + 1) (x := (0 : ℂ))
         (f := fun z : ℂ => Complex.cosh (z * a))
         (g := fun _z : ℂ => (1 : ℂ)) (by fun_prop) (by fun_prop)

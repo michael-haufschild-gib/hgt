@@ -70,7 +70,7 @@ theorem hasDerivAt_archFactor_strip {σ : ℝ} (hσ : 0 < σ) (τ : ℝ) :
       (archFactorDeriv (stripPt σ τ) * Complex.I) τ := by
   have hre : 0 < (stripPt σ τ).re := by rw [stripPt_re]; exact hσ
   have hcomp := HasDerivAt.comp τ (hasDerivAt_archFactor_of_re_pos hre) (hasDerivAt_stripPt σ τ)
-  simpa [Function.comp] using hcomp
+  simpa [Function.comp] using! hcomp
 
 /-! ### The strip winding datum and its digamma form -/
 
@@ -447,7 +447,7 @@ theorem path_transport_exp_logDeriv {G ω : ℝ → ℂ} {U : Set ℝ} {a b : �
     have hexp : HasDerivAt (fun u => Complex.exp (-(M u)))
         (Complex.exp (-(M u)) * -(ω u)) u := ((hM' u hu).neg).cexp
     have h := (hG u hu).mul hexp
-    convert h using 1
+    convert! h using 1
     ring
   have huIcc : Set.uIcc a τ ⊆ Set.Icc a b := by
     rw [Set.uIcc_of_le hτ.1]
@@ -564,7 +564,7 @@ theorem archFactor_lateral_polar {σ a b : ℝ} (hσ : 0 < σ) (ha : 0 < a) :
       (archFactor (stripPt σ t) * (stripWinding σ t * Complex.I)) t := fun t ht =>
     hasDerivAt_archFactor_strip_logDeriv hσ (ne_of_gt (hsub ht))
   have h := polar_presentation_of_logDeriv isOpen_Ioi hsub hG hωc τ hτ
-  simpa only [Complex.mul_I_re, Complex.mul_I_im] using h
+  simpa only [Complex.mul_I_re, Complex.mul_I_im] using! h
 
 /-! ### The lateral-edge event theorem -/
 

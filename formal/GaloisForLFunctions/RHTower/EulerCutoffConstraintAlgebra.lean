@@ -31,10 +31,12 @@ theorem rayPeriodFactor_ne_zero (lam : ℝ) (hlam : 0 < lam) :
   have hh0 : h ≠ 0 := div_ne_zero h2pi hlamC
   rw [rayPeriodFactor, sub_ne_zero]
   intro heq
-  have hcoe : (AddMonoidAlgebra.single h (1 : ℂ)) h =
-      (1 : AddMonoidAlgebra ℂ ℂ) h := congrArg (fun f => f h) heq
-  rw [AddMonoidAlgebra.single_apply, AddMonoidAlgebra.one_def,
-    AddMonoidAlgebra.single_apply, if_pos rfl, if_neg hh0.symm] at hcoe
+  have hcoe : (AddMonoidAlgebra.single h (1 : ℂ)).coeff h =
+      (1 : AddMonoidAlgebra ℂ ℂ).coeff h :=
+    congrArg (fun f : AddMonoidAlgebra ℂ ℂ => f.coeff h) heq
+  rw [AddMonoidAlgebra.coeff_single, AddMonoidAlgebra.one_def,
+    AddMonoidAlgebra.coeff_single, Finsupp.single_apply, Finsupp.single_apply,
+    if_pos rfl, if_neg hh0.symm] at hcoe
   exact one_ne_zero hcoe
 
 theorem translationChar_rayPeriodFactor_eq_zero

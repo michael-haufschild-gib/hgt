@@ -147,7 +147,7 @@ theorem contDiff_projectiveResolventBanachDenominator :
     C.contDiff.comp (contDiff_const.sub contDiff_id)
   have hplus : ContDiff ℝ ⊤ (fun x : ℂ => C (Complex.I + x)) :=
     C.contDiff.comp (contDiff_const.add contDiff_id)
-  simpa only [projectiveResolventBanachDenominator, C] using
+  simpa only [projectiveResolventBanachDenominator, C] using!
     hminus.add (hplus.mul contDiff_const)
 
 /-- Banach-algebra inversion of the denominator is smooth on the open upper half-plane. -/

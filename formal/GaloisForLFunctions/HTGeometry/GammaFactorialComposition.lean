@@ -123,7 +123,7 @@ theorem exists_eventually_differentiable_outerGammaZoom_near
   have huDiff : DifferentiableAt ℂ u gammaValue :=
     (hu gammaValue hgammaRe).differentiableAt
   have hcomp := huDiff.comp y hGammaDiff
-  simpa [factorialBlowUpZoom, input, gammaValue, Function.comp_def] using
+  simpa [factorialBlowUpZoom, input, gammaValue, Function.comp_def] using!
     hcomp.differentiableWithinAt
 
 theorem iteratedDeriv_outerGamma_factorialBlowUp_tendsto
@@ -189,7 +189,7 @@ theorem iteratedDeriv_outerReciprocalLimit_neg_inv_eq_mobiusJetExpansion_local
           (iteratedDeriv (j + 1) (outerReciprocalLimit u) x) x := by
         simpa [iteratedDeriv_succ] using hFj.differentiableAt.hasDerivAt
       have hphi : HasDerivAt (fun w : ℂ => -w⁻¹) (z⁻¹ ^ 2) z := by
-        simpa [inv_pow] using (hasDerivAt_inv hz0).neg
+        simpa [inv_pow] using! (hasDerivAt_inv hz0).neg
       have hcomp : HasDerivAt
           (fun w : ℂ => iteratedDeriv j (outerReciprocalLimit u) (-w⁻¹))
           (iteratedDeriv (j + 1) (outerReciprocalLimit u) x * z⁻¹ ^ 2) z := by
@@ -310,7 +310,7 @@ theorem locallyPolynomialJetRigidAt_digamma :
     have hpnonneg : (0 : ℝ) ≤ p := Nat.cast_nonneg p
     linarith
   apply polyJetEval_eq_zero_of_eventually G honeOff
-  simpa [polyJetEval, digammaJet] using hlocal
+  simpa [polyJetEval, digammaJet] using! hlocal
 
 theorem hypertranscendental_digamma_comp_Gamma_via_factorialComposition :
     Hypertranscendental (fun z => Complex.digamma (Complex.Gamma z)) := by

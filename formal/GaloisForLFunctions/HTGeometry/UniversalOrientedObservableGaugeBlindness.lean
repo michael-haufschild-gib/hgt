@@ -43,7 +43,7 @@ theorem universalFacetOrbitRationalGaugeSource_familyObservableField_eq
     algebraMap (RatFunc ℂ) upperEndMeroField (r q)
   have h := differentialFamilyObservableField_addOfJetsInBase_eq base correction
     (fun q n => upperEndRatfunc_allJets_closed (r q) n) N
-  simpa [base, correction, universalFacetOrbitRationalGaugeSource] using h
+  simpa [base, correction, universalFacetOrbitRationalGaugeSource] using! h
 
 /-- Every finite orientation chamber has the same field of observables at every resolution as the
 underlying universal source. -/
@@ -60,7 +60,7 @@ theorem universalFacetOrbitOrientedSource_familyObservableField_eq
   letI := isDomain_upperEndAnalyticSubring
   letI : Algebra (RatFunc ℂ) upperEndMeroField := upperEndRatfuncToMero.toAlgebra
   letI := upperEndMeroFieldDifferential
-  simpa [universalFacetOrbitOrientedSource] using
+  simpa [universalFacetOrbitOrientedSource] using!
     universalFacetOrbitRationalGaugeSource_familyObservableField_eq
       (universalOrientedPaletteGauge S J) N
 

@@ -69,11 +69,9 @@ theorem strongConvex_lower {V : ℝ → ℝ} {c m h : ℝ}
   have hWderiv : HasDerivAt (fun y => V y - c / 2 * y ^ 2) (h - c * m) m := by
     have hsq : HasDerivAt (fun y : ℝ => c / 2 * y ^ 2) (c / 2 * (2 * m)) m := by
       simpa using ((hasDerivAt_pow 2 m).const_mul (c / 2))
-    have := hV.sub hsq
-    convert this using 1
-    ring
+    simpa only [Pi.sub_apply] using!
+      (hV.sub hsq).congr_deriv (by ring)
   have htan := convex_tangent_line hW hWd hWderiv x
-  simp only at htan
   nlinarith [htan]
 
 /-- **Uniform Gaussian domination of the tilted exponent.**  Every tilt is bounded by a Gaussian of

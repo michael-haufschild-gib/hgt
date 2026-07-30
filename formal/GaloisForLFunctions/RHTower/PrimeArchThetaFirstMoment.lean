@@ -122,9 +122,10 @@ theorem re_fourier_xiThetaPositiveSource_eq_four_mul_tail_cos (t : ℝ) :
       have hre : (((phase v : ℂ) * I).re) = 0 := by simp
       rw [hre]
       norm_num
-    simpa only [Pi.smul_apply] using
-      xiThetaPositiveSource_integrable.bdd_smul 1
-        hphi_meas hphi_norm
+    have h := xiThetaPositiveSource_integrable.bdd_smul 1
+      hphi_meas hphi_norm
+    change Integrable (fun v : ℝ => phi v • xiThetaPositiveSource v) at h
+    simpa only [phi, phase] using h
   change RCLike.re (∫ v : ℝ,
       Complex.exp (↑(-2 * Real.pi * v * (t / (4 * Real.pi))) * I) •
         xiThetaPositiveSource v) = _
@@ -263,16 +264,22 @@ theorem hasDerivAt_thetaCuspCosineRepresentation (t : ℝ) :
       filter_upwards with x
       intro s hs
       dsimp [F, F']
-      convert ((Real.hasDerivAt_cos (s * x)).comp s
-        ((hasDerivAt_id s).mul_const x)).const_mul
-          (2 * thetaCuspFullSource x) using 1
-      all_goals ring)
-  have h := hresult.2
+      have hcos : HasDerivAt
+          (fun y : ℝ => Real.cos (y * x))
+          (-Real.sin (s * x) * x) s := by
+        simpa only [Function.comp_def, id_eq, one_mul] using
+          (Real.hasDerivAt_cos (s * x)).comp s
+            ((hasDerivAt_id s).mul_const x)
+      exact ((hasDerivAt_const s (2 * thetaCuspFullSource x)).mul hcos).congr_deriv
+        (by ring))
   change HasDerivAt
-    (fun s => ∫ x : ℝ in Ioi 0, F s x)
-    (∫ x : ℝ in Ioi 0, F' t x) t at h
+    (fun s : ℝ =>
+      2 * ∫ x : ℝ in Ioi 0,
+        thetaCuspFullSource x * Real.cos (s * x))
+    (∫ x : ℝ in Ioi 0,
+      -2 * x * thetaCuspFullSource x * Real.sin (t * x)) t
   simpa only [thetaCuspCosineRepresentation, F, F', integral_const_mul,
-    mul_assoc, neg_mul] using h
+    mul_assoc, neg_mul] using hresult.2
 
 theorem hasDerivAt_thetaCuspCosineRepresentation_derivative (t : ℝ) :
     HasDerivAt
@@ -332,11 +339,20 @@ theorem hasDerivAt_thetaCuspCosineRepresentation_derivative (t : ℝ) :
       filter_upwards with x
       intro s hs
       dsimp [F, F']
-      convert ((Real.hasDerivAt_sin (s * x)).comp s
-        ((hasDerivAt_id s).mul_const x)).const_mul
-          (-2 * x * thetaCuspFullSource x) using 1
-      all_goals ring)
-  simpa only [F, F'] using hresult.2
+      have hsin : HasDerivAt
+          (fun y : ℝ => Real.sin (y * x))
+          (Real.cos (s * x) * x) s := by
+        simpa only [Function.comp_def, id_eq, one_mul] using
+          (Real.hasDerivAt_sin (s * x)).comp s
+            ((hasDerivAt_id s).mul_const x)
+      exact
+        ((hasDerivAt_const s (-2 * x * thetaCuspFullSource x)).mul hsin).congr_deriv
+          (by ring))
+  have h := hresult.2
+  change HasDerivAt
+    (fun s => ∫ x : ℝ in Ioi 0, F s x)
+    (∫ x : ℝ in Ioi 0, F' t x) t at h
+  simpa only [F, F'] using h
 
 theorem deriv_thetaCuspCosineRepresentation (t : ℝ) :
     deriv thetaCuspCosineRepresentation t =
@@ -405,8 +421,8 @@ theorem analyticTraceMoments_normalizedPrimeArchSource_zero_eq_Xi_ratio :
   have hlog : deriv (logDeriv XiC) 0 =
       (deriv (deriv XiC) 0 * XiC 0 - deriv XiC 0 * deriv XiC 0) /
         XiC 0 ^ 2 := by
-    rw [show logDeriv XiC = fun z => deriv XiC z / XiC z by rfl]
-    simpa only using hquot.deriv
+    rw [show logDeriv XiC = deriv XiC / XiC by rfl]
+    exact hquot.deriv
   have h2 : deriv (deriv XiC) 0 = ((deriv (deriv Xi) 0 : ℝ) : ℂ) := by
     simpa using XiC_secondDeriv_ofReal 0
   have h1 : deriv XiC 0 = ((deriv Xi 0 : ℝ) : ℂ) := by

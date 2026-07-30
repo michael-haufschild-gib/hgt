@@ -151,7 +151,7 @@ theorem constrainedProjectiveNevanlinnaPolynomialDefect_isClosed_nowhereDense
   let S := LinearMap.ker frozen.toLinearMap
   have hsurj : Function.Surjective (target.domRestrict S) := by
     simpa [frozen, target, S,
-      projectiveNevanlinnaJetLinftyContinuousControl_toLinearMap] using
+      projectiveNevanlinnaJetLinftyContinuousControl_toLinearMap] using!
       (constrainedProjectiveNevanlinnaJet_linftyControl_surjective
         a q zf zt hqf_inj hqt_inj hcross hupperf huppert nf nt
         haf hat hqdf hqdt mu hmu)

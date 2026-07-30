@@ -121,7 +121,7 @@ theorem tendsto_xiWardDiagonalPoleEnergy_zero (rho : ℂ)
     have : 0 < 1 - rho.re := by linarith
     positivity
   have := hnum.div hden hdenne
-  simpa [xiWardDiagonalPoleEnergy, zero_div] using this
+  simpa [xiWardDiagonalPoleEnergy, zero_div] using! this
 
 /-- Instance on the actual strict-right Xi divisor: every copy sits left of
 the Euler edge. -/

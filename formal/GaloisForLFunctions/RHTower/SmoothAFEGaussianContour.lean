@@ -82,7 +82,7 @@ theorem integral_smoothAFEMellinIntegrand_eq_of_le
     intro T
     have h := Complex.integral_boundary_rect_eq_zero_of_differentiableOn F
       ((a : ℂ) - (T : ℂ) * I) ((b : ℂ) + (T : ℂ) * I) ?_
-    · simpa using h
+    · simpa using! h
     · apply hFdiff.mono
       intro z hz
       rcases hz with ⟨hzre, _⟩
@@ -123,7 +123,7 @@ theorem integral_smoothAFEMellinIntegrand_eq_of_le
         have := (by simpa [Set.mem_uIoc, hab] using hu : a < u ∧ u ≤ b)
         exact ⟨this.1.le, this.2⟩
       have h := norm_smoothAFEMellinIntegrand_horizontal_le hx ha hu'.1 hu'.2 (-T)
-      simpa [F, neg_sq] using h
+      simpa [F, neg_sq] using! h
     calc
       ‖∫ u : ℝ in a..b, F ((u : ℂ) - (T : ℂ) * I)‖
           ≤ (Real.exp (|Real.log x| * b) * (Real.exp (b ^ 2) / a)) *

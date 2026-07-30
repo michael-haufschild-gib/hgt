@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.MobiusMertensPrimeRemovalTentLaw
 import GaloisForLFunctions.RHTower.MobiusMertensReversalEnergyCriterion
+import Mathlib.Data.Finset.NatAntidiagonal
 
 open scoped BigOperators
 
@@ -12,7 +13,8 @@ noncomputable section
 /-- Positive palindromic reversal energy expressed entirely through one prime-free Mertens
 window. -/
 def mobiusPrimeWindowPalindromicEnergy (p : Nat.Primes) (N : ℕ) : ℝ :=
-  (1 / 4 : ℝ) * ∑ ab ∈ Finset.antidiagonal N,
+  (1 / 4 : ℝ) *
+    ∑ ab ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) N,
     ((mobiusPrimeWindowPartialSum p ab.1).re +
       (mobiusPrimeWindowPartialSum p ab.2).re) ^ 2
 

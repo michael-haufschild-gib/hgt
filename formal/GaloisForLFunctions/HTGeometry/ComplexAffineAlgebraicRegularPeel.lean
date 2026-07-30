@@ -48,7 +48,7 @@ theorem exists_regularPeel_complex_zeroLocus_of_localJacobianChart {n m : ℕ}
   have hker : RingHom.ker (algebraMap P S) =
       I.map (algebraMap (MvPolynomial (Fin n) ℂ) P) := by
     rw [Localization.AtPrime.IsLiesOverAlgebra.algebraMap_eq]
-    simpa using IsLocalization.ker_map S (Ideal.Quotient.mk I) hT
+    simpa using! IsLocalization.ker_map S (Ideal.Quotient.mk I) hT
   let J : Ideal (MvPolynomial (Fin n) ℂ) :=
     Ideal.span (Set.range relation)
   have hJmap : J.map (algebraMap (MvPolynomial (Fin n) ℂ) P) =
@@ -106,7 +106,7 @@ theorem exists_regularPeel_complex_zeroLocus_of_localJacobianChart {n m : ℕ}
     hzero_of_mem_I hxI
   have hrow : LinearIndependent ℂ
       (complexMvPolynomialFamilyJacobian relation x).row := by
-    simpa [complexMvPolynomialFamilyJacobian, Matrix.row] using hgrad
+    simpa [complexMvPolynomialFamilyJacobian, Matrix.row] using! hgrad
   have hjac : Function.Surjective
       (complexMvPolynomialFamilyJacobian relation x).mulVec :=
     (matrix_mulVec_surjective_iff_linearIndependent_rows _).mpr hrow

@@ -71,7 +71,7 @@ def xiThermalEnumeration (j : ℕ) : XiZeroCopy :=
 /-- The fixed thermal enumeration visits every multiplicity copy exactly once. -/
 theorem xiThermalEnumeration_bijective :
     Function.Bijective xiThermalEnumeration := by
-  simpa only [xiThermalEnumeration] using
+  simpa only [xiThermalEnumeration] using!
     (Denumerable.eqv XiZeroCopy).symm.bijective
 
 /-- The `N`-atom reciprocal-square moment truncation.  The extra factor `lambda_j` makes its
@@ -622,7 +622,7 @@ theorem hasSum_xiThermalEnumeration_positiveMoment (n : ℕ) :
   have hsumNat : HasSum
       (fun j : ℕ => xiThermalNode (e.symm j) ^ (n + 1))
       (xiThermalPositiveMoment n) := e.symm.hasSum_iff.mpr hsum
-  simpa [xiThermalEnumeration, e] using hsumNat
+  simpa [xiThermalEnumeration, e] using! hsumNat
 
 /-- The complete finite KMS tower converges unconditionally to its positive thermodynamic moment
 tower; no RH input is needed for existence of the thermodynamic limit. -/

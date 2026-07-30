@@ -146,6 +146,8 @@ theorem infiniteVonMangoldtGammaRawGram_posDef_of_injective
   have hH := infiniteVonMangoldtGammaRawHankel_posDef hx K
   have hsub := hH.submatrix he
   convert hsub using 1
+  ext i j
+  rfl
 
 /-- **Universal strict cofinal Bianchi law.**  Positive displacement and distinct depth labels
 make the analytic Euler realization of the pointed Gamma--Bianchi current positive definite. -/

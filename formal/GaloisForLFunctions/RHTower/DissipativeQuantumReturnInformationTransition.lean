@@ -662,7 +662,7 @@ theorem tendsto_pow_atTop_nhds_zero_of_spectralRadius_lt_one
           (norm_nonneg _) (pow_nonneg (norm_nonneg _) _)
   rw [tendsto_zero_iff_norm_tendsto_zero]
   refine squeeze_zero (fun n => norm_nonneg (a ^ n)) hbound ?_
-  simpa only [zero_mul] using
+  simpa only [Function.comp_apply, zero_mul] using
     ((tendsto_pow_atTop_nhds_zero_of_lt_one
       (norm_nonneg (a ^ N)) hNnorm).comp
         (Nat.tendsto_div_const_atTop hNne)).mul_const C
@@ -1042,8 +1042,11 @@ theorem tendsto_finiteContractionTransientReturnAmplitude_zero
   have hinner := Filter.Tendsto.inner (𝕜 := ℂ) hxconstant
     (tendsto_finiteContraction_pow_apply_transient_zero T hT
       (finiteContractionTransientComponent T x))
-  simpa only [finiteContractionTransientReturnAmplitude, inner_zero_right]
-    using hinner
+  change Tendsto
+    (fun n : ℕ => inner ℂ x
+      ((T ^ n) (finiteContractionTransientComponent T x : H)))
+    atTop (𝓝 0)
+  simpa only [inner_zero_right] using hinner
 
 /-- Exact persistent-plus-transient spectral decomposition of every
 state autocorrelation under every finite contraction. -/
@@ -1112,7 +1115,8 @@ theorem finiteContractionPersistentMass_eq_norm_sq_projection
           (finiteContractionPeripheralSubspace T).starProjection x
     exact sum_finiteContractionPeripheralComponent T hT x
   rw [hsum] at hnorm
-  simpa [finiteContractionPersistentMass] using hnorm.symm
+  simpa [finiteContractionPersistentMass,
+    finiteContractionPeripheralComponent] using hnorm.symm
 
 /-- The surviving mass cannot exceed the squared norm of the initial
 vector. -/

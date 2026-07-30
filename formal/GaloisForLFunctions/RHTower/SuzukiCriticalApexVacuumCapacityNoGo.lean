@@ -45,7 +45,7 @@ def suzukiCriticalApexVacuumMeasure (c : ℝ) : Measure ℝ :=
     volume.restrict (Ioi c)
 
 instance suzukiCriticalApexVacuumMeasure_noAtoms (c : ℝ) :
-    NoAtoms (suzukiCriticalApexVacuumMeasure c) := by
+    NullSingletonClass (suzukiCriticalApexVacuumMeasure c) := by
   refine ⟨fun x => ?_⟩
   simp [suzukiCriticalApexVacuumMeasure, Measure.add_apply, Measure.smul_apply]
 

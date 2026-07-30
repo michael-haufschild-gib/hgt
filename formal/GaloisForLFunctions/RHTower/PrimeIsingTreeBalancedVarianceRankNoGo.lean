@@ -825,7 +825,7 @@ theorem vertexCount_mul_logTwo_sq_div_four_le_neg_re_iteratedDeriv_two_balanced
       -(iteratedDeriv 2 (balancedPrimeIsingTreePartition T) 0).re := by
   rw [neg_re_iteratedDeriv_two_balancedPrimeIsingTreePartition_zero]
   apply (le_div_iff₀ (mul_pos (by norm_num) (bondMixtureWeight_pos T))).2
-  convert vertexCount_mul_logTwo_sq_mul_bondMixtureWeight_le_sqMassWeight T using 1 <;>
+  convert! vertexCount_mul_logTwo_sq_mul_bondMixtureWeight_le_sqMassWeight T using 1 <;>
     ring
 
 /-! ## Critical rescaling law
@@ -850,7 +850,7 @@ theorem differentiable_rescaledBalancedPrimeIsingTreePartition
     (T : PrimeIsingTree) (a : ℝ) :
     Differentiable ℂ (rescaledBalancedPrimeIsingTreePartition T a) := by
   have hscale : Differentiable ℂ (fun z : ℂ => (a : ℂ) * z) := by fun_prop
-  simpa [rescaledBalancedPrimeIsingTreePartition, Function.comp_def] using
+  simpa [rescaledBalancedPrimeIsingTreePartition, Function.comp_def] using!
     (differentiable_balancedPrimeIsingTreePartition T).comp hscale
 
 /-- Exact all-order jet scaling for the balanced finite source. -/
@@ -916,7 +916,7 @@ theorem eventually_scale_sq_mul_vertexCount_real_bounded_of_rescaled_tendstoLoca
       (fun n => -(iteratedDeriv 2
         (rescaledBalancedPrimeIsingTreePartition (T n) (a n)) 0).re) atTop
       (nhds (-(iteratedDeriv 2 unitCentralXiC 0).re)) := by
-    simpa only [Function.comp_apply] using
+    simpa only [Function.comp_apply] using!
       ((continuous_neg.comp Complex.continuous_re).continuousAt.tendsto.comp hjet)
   let K : ℝ := -(iteratedDeriv 2 unitCentralXiC 0).re + 1
   have hevent : ∀ᶠ n in atTop,
@@ -993,7 +993,7 @@ theorem eventually_vertexCount_real_bounded_of_balanced_tendstoLocallyUniformly
       (fun n => -(iteratedDeriv 2
         (balancedPrimeIsingTreePartition (T n)) 0).re) atTop
       (nhds (-(iteratedDeriv 2 unitCentralXiC 0).re)) := by
-    simpa only [Function.comp_apply] using
+    simpa only [Function.comp_apply] using!
       ((continuous_neg.comp Complex.continuous_re).continuousAt.tendsto.comp hjet)
   let K : ℝ := -(iteratedDeriv 2 unitCentralXiC 0).re + 1
   have hevent : ∀ᶠ n in atTop,

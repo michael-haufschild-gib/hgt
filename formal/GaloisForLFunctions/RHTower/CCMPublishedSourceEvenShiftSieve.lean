@@ -128,26 +128,26 @@ theorem hasDerivAt_ccmPublishedDampedSinePrimitive
       (Real.exp (-kappa * h) * Real.sin (xi * h)) h := by
   have hE : HasDerivAt (fun x : ℝ => Real.exp (-kappa * x))
       (-kappa * Real.exp (-kappa * h)) h := by
-    convert (Real.hasDerivAt_exp (-kappa * h)).comp h
+    convert! (Real.hasDerivAt_exp (-kappa * h)).comp h
       ((hasDerivAt_id h).const_mul (-kappa)) using 1
     all_goals ring
   have hsin : HasDerivAt (fun x : ℝ => Real.sin (xi * x))
       (xi * Real.cos (xi * h)) h := by
-    convert (Real.hasDerivAt_sin (xi * h)).comp h
+    convert! (Real.hasDerivAt_sin (xi * h)).comp h
       ((hasDerivAt_id h).const_mul xi) using 1
     all_goals ring
   have hcos : HasDerivAt (fun x : ℝ => Real.cos (xi * x))
       (-xi * Real.sin (xi * h)) h := by
-    convert (Real.hasDerivAt_cos (xi * h)).comp h
+    convert! (Real.hasDerivAt_cos (xi * h)).comp h
       ((hasDerivAt_id h).const_mul xi) using 1
     all_goals ring
   have hnum : HasDerivAt
       (fun x : ℝ => -kappa * Real.sin (xi * x) - xi * Real.cos (xi * x))
       (-kappa * (xi * Real.cos (xi * h)) - xi * (-xi * Real.sin (xi * h))) h :=
     (hsin.const_mul (-kappa)).sub (hcos.const_mul xi)
-  convert (hE.mul hnum).div_const (kappa ^ 2 + xi ^ 2) using 1
+  convert! (hE.mul hnum).div_const (kappa ^ 2 + xi ^ 2) using 1
   all_goals
-    dsimp only [ccmPublishedDampedSinePrimitive]
+    try dsimp only [ccmPublishedDampedSinePrimitive]
     field_simp
     ring
 
@@ -177,21 +177,21 @@ theorem hasDerivAt_ccmPublishedEvenShiftSievedTest
       (ccmPublishedEvenShiftSievedTestDeriv sigma xi h) h := by
   have hA : HasDerivAt (fun x : ℝ => Real.exp (-sigma * x))
       (-sigma * Real.exp (-sigma * h)) h := by
-    convert (Real.hasDerivAt_exp (-sigma * h)).comp h
+    convert! (Real.hasDerivAt_exp (-sigma * h)).comp h
       ((hasDerivAt_id h).const_mul (-sigma)) using 1
     all_goals ring
   have hB : HasDerivAt (fun x : ℝ => 1 - Real.exp (-2 * x))
       (2 * Real.exp (-2 * h)) h := by
-    convert (hasDerivAt_const h 1).sub
+    convert! (hasDerivAt_const h 1).sub
       ((Real.hasDerivAt_exp (-2 * h)).comp h
         ((hasDerivAt_id h).const_mul (-2))) using 1
     all_goals ring
   have hC : HasDerivAt (fun x : ℝ => Real.sin (xi * x))
       (xi * Real.cos (xi * h)) h := by
-    convert (Real.hasDerivAt_sin (xi * h)).comp h
+    convert! (Real.hasDerivAt_sin (xi * h)).comp h
       ((hasDerivAt_id h).const_mul xi) using 1
     all_goals ring
-  convert (hA.mul hB).mul hC using 1
+  convert! (hA.mul hB).mul hC using 1
   all_goals
     simp only [ccmPublishedEvenShiftSievedTestDeriv, Pi.mul_apply]
     ring
@@ -267,7 +267,7 @@ theorem ccmPublishedEvenShiftSievedPolarPrimeCoefficient_eq_completedErrorMoment
       (Complex.ofRealCLM.hasFDerivAt.comp x hr.hasFDerivAt).hasDerivAt
     simpa only [F, F', Function.comp_apply, ContinuousLinearMap.coe_comp,
       ContinuousLinearMap.comp_apply, ContinuousLinearMap.toSpanSingleton_apply,
-      one_smul] using hc
+      one_smul] using! hc
   have hF' : IntervalIntegrable F' volume 0 (2 * a) := by
     have hc : Continuous F' := by
       dsimp only [F', ccmPublishedEvenShiftSievedTestDeriv]

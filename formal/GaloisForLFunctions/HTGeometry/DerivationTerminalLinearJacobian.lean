@@ -291,7 +291,7 @@ theorem algebraicIndependent_derivationIterates_of_det_ne_zero
     (fun j ↦ partials j)
     (fun j a b ↦ map_add (partials j) a b)
     (fun j a b ↦ by
-      simpa only [Algebra.smul_def] using (partials j).leibniz a b)
+      simpa only [Algebra.smul_def] using! (partials j).leibniz a b)
     (fun j c ↦ (partials j).map_algebraMap c)
     M hM ?_
   intro j i

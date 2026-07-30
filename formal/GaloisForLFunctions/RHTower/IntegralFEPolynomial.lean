@@ -110,24 +110,25 @@ theorem eq_zero_of_int_of_infinite_support_of_eq_zero_of_one_le_re
     (hinf : (Function.support (fun n => a n)).Infinite)
     (hge1 : ∀ z : ℂ, 1 ≤ z.re → f z = 0) :
     ∀ s, f s = 0 := by
-have hev : (fun x : ℝ => LSeries (fun n => a n) x) =ᶠ[atTop] 0 := by
-  filter_upwards [eventually_ge_atTop (1 : ℝ)] with x hx
-  simp only [Pi.zero_apply]
-  rw [← hrep (x : ℂ)]
-  exact hge1 (x : ℂ) (by rw [Complex.ofReal_re]; exact hx)
-rcases LSeries_eventually_eq_zero_iff'.mp hev with hall | htop
-· exfalso
-  apply hinf
-  have hsupp : Function.support (fun n => a n) = ∅ := by
-    ext n
-    simp only [Function.mem_support, Set.mem_empty_iff_false, iff_false, not_not]
-    rcases eq_or_ne n 0 with rfl | hn0
-    · exact a.map_zero
-    · exact hall n hn0
-  rw [hsupp]; exact Set.finite_empty
-· intro z
-  rw [hrep z]
-  exact congrFun (LSeries_eq_zero_of_abscissaOfAbsConv_eq_top htop) z
+  have hev : (fun x : ℝ => LSeries (fun n => a n) x) =ᶠ[atTop] 0 := by
+    filter_upwards [eventually_ge_atTop (1 : ℝ)] with x hx
+    simp only [Pi.zero_apply]
+    rw [← hrep (x : ℂ)]
+    exact hge1 (x : ℂ) (by rw [Complex.ofReal_re]; exact hx)
+  rcases LSeries_eventually_eq_zero_iff'.mp hev with hall | htop
+  · exfalso
+    apply hinf
+    have hsupp : Function.support (fun n => a n) = ∅ := by
+      ext n
+      simp only [Function.mem_support, Set.mem_empty_iff_false, iff_false, not_not]
+      rcases eq_or_ne n 0 with rfl | hn0
+      · exact a.map_zero
+      · exact hall n hn0
+    rw [hsupp]
+    exact Set.finite_empty
+  · intro z
+    rw [hrep z]
+    exact congrFun (LSeries_eq_zero_of_abscissaOfAbsConv_eq_top htop) z
 
 /-- **Integrality forces finite support or collapse.**  A member of the integral multiplicative
 functional-equation class is either identically zero or is the `L`-series of an integer-valued

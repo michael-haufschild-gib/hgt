@@ -87,7 +87,7 @@ theorem tendsto_mobiusContactGammaCrossParityRatio
       -2 * riemannZeta ((2 * r + 2 : ℕ) : ℂ) := by
     field_simp [hfactorial]
   rw [hvalue] at hdiv
-  simpa only [mobiusContactGammaCrossParityRatio] using hdiv
+  simpa only [mobiusContactGammaCrossParityRatio] using! hdiv
 
 theorem mobiusContactGammaCrossParityRatio_limit_ne_zero (r : ℕ) :
     -2 * riemannZeta ((2 * r + 2 : ℕ) : ℂ) ≠ 0 := by

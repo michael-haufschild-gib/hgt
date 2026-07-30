@@ -53,7 +53,8 @@ theorem meromorphicOrderAt_suzukiEulerDefect_zero_eq
     simpa only [Int.cast_sub, Int.cast_one, zero_mul, add_zero] using
       (mul_ne_zero hn1 hg0)
   have hfg' : f =ᶠ[𝓝[≠] 0] fun w => w ^ n * g w := by
-    simpa only [sub_zero, smul_eq_mul] using hfg
+    filter_upwards [hfg] with w hw
+    simpa only [sub_zero, smul_eq_mul] using hw
   have hfactorDeriv :
       deriv (fun w : ℂ => w ^ n * g w) =ᶠ[𝓝[≠] 0]
         fun w => (n : ℂ) * w ^ (n - 1) * g w +
@@ -78,7 +79,9 @@ theorem meromorphicOrderAt_suzukiEulerDefect_zero_eq
   have hE : MeromorphicAt (suzukiEulerDefect f) 0 :=
     ((MeromorphicAt.id 0).mul hf.deriv).sub hf
   apply (meromorphicOrderAt_eq_int_iff hE).mpr
-  exact ⟨G, hG, hG0, by simpa only [sub_zero, smul_eq_mul] using hEeq⟩
+  refine ⟨G, hG, hG0, ?_⟩
+  filter_upwards [hEeq] with w hw
+  simpa only [sub_zero, smul_eq_mul] using hw
 
 /-- Multiplication by the center coordinate raises the origin order by one.  In particular,
 `suzukiCenteredEulerDefect` makes every simple pole at zero removable. -/

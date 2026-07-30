@@ -76,7 +76,7 @@ theorem all_xiLocalJordanMatrix_isHermitian_iff_rh_and_simple :
       intro q
       refine ⟨(xiSpectralPointSupport q.1).re, ?_⟩
       have hreal := RCLike.conj_eq_iff_re.mp (hlocal q.1).1
-      simpa only [xiSpectralPoint_eq_support] using hreal.symm
+      simpa only [xiSpectralPoint_eq_support] using! hreal.symm
     · intro alpha halpha
       obtain ⟨q, hq⟩ := (XiC_eq_zero_iff_exists_xiZeroCopy alpha).mp halpha
       have hm := (hlocal q.1).2

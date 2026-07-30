@@ -349,12 +349,12 @@ theorem integral_xiCTaylorThetaTailCoreAtomPairCorrelationKernel_eq_momentPacket
       ((∫ x : ℝ, f₁ x ∂mu) *
         (starRingEnd ℂ) (∫ y : ℝ, g₂ y ∂mu)).im := by
     rw [← hmul₁]
-    simpa only [H₁] using integral_im hprod₁
+    simpa only [H₁, RCLike.im_eq_complex_im] using integral_im hprod₁
   have him₂ : (∫ p : ℝ × ℝ, H₂ p ∂mu.prod mu) =
       ((∫ y : ℝ, f₂ y ∂mu) *
         (starRingEnd ℂ) (∫ x : ℝ, g₁ x ∂mu)).im := by
     rw [← hmul₂]
-    simpa only [H₂] using integral_im hprod₂
+    simpa only [H₂, RCLike.im_eq_complex_im] using integral_im hprod₂
   have hf₁int : (∫ x : ℝ, f₁ x ∂mu) =
       thetaCuspTailSecondDensityAtomCoreDerivativeMomentPacket d z q.1 := by
     exact integral_thetaCuspTailSecondDensityAtom_mul_coreAtomDerivative d z q.1
@@ -409,7 +409,7 @@ theorem integral_xiCTaylorThetaTailCoreAtomPairCorrelationKernel_eq_pairMomentCu
       xiCTaylorThetaTailCoreAtomPairMomentCurrent d z q := by
   simpa only [xiCTaylorThetaTailCoreAtomPairMomentCurrent,
     xiCTaylorThetaTailCoreAtomPairComplexMomentCorrelation,
-    Prod.swap_prod_mk, Prod.fst, Prod.snd] using
+    Prod.swap_prod_mk, Prod.fst, Prod.snd] using!
       integral_xiCTaylorThetaTailCoreAtomPairCorrelationKernel_eq_momentPackets d z q
 
 /-- Absolute summability of the unsymmetrized complex atom correlation. -/
@@ -436,11 +436,11 @@ theorem summable_xiCTaylorThetaTailCoreAtomPairMomentCurrent
   have hA : Summable A :=
     summable_xiCTaylorThetaTailCoreAtomPairComplexMomentCorrelation d z
   have hAim : Summable (fun q : ℕ × ℕ => (A q).im) := by
-    simpa only [Function.comp_apply] using
+    simpa only [Function.comp_apply] using!
       hA.map Complex.imCLM Complex.imCLM.continuous
   have hswap : Summable (fun q : ℕ × ℕ => (A q.swap).im) := by
     have h := hAim.comp_injective Prod.swap_injective
-    simpa only [Function.comp_apply] using h
+    simpa only [Function.comp_apply] using! h
   have hcurrent := (hAim.add hswap).mul_left (1 / 2 : ℝ)
   change Summable (fun q : ℕ × ℕ =>
     ((A q).im + (A q.swap).im) / 2)

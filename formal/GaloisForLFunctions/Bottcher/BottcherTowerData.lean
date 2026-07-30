@@ -481,7 +481,8 @@ theorem exists_tower_ext {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo R₀
     induction n with
     | zero =>
         intro z hz
-        exact ⟨0, le_rfl, by simpa using hz⟩
+        change z ∈ P0 at hz
+        exact ⟨0, le_rfl, hz⟩
     | succ n ih =>
         intro z hz
         rw [hConnsucc n] at hz

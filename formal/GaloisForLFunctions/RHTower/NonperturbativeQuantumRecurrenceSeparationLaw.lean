@@ -74,8 +74,8 @@ def compactPositiveAtomSpectrum : ProbabilityMeasure ℝ :=
     Measure.dirac.isProbabilityMeasure⟩
 
 instance compactPositiveContinuumSpectrum_noAtoms :
-    NoAtoms (compactPositiveContinuumSpectrum : Measure ℝ) := by
-  change NoAtoms (volume.restrict (Icc (1 : ℝ) 2))
+    NullSingletonClass (compactPositiveContinuumSpectrum : Measure ℝ) := by
+  change NullSingletonClass (volume.restrict (Icc (1 : ℝ) 2))
   infer_instance
 
 /-- Smooth nonperturbative coupling weight.  It is zero to all orders at
@@ -204,7 +204,7 @@ theorem spectralDifferenceMeasure_singleton_zero_of_uniqueAtom
 exactly one atom, at the selected energy. -/
 theorem nonperturbativeAtomicCompletion_singleton_formula
     (base : ProbabilityMeasure ℝ)
-    [NoAtoms (base : Measure ℝ)] (energy g x : ℝ) :
+    [NullSingletonClass (base : Measure ℝ)] (energy g x : ℝ) :
     (nonperturbativeAtomicCompletion base energy g : Measure ℝ) {x} =
       if x = energy then nonperturbativeCouplingWeight g else 0 := by
   rw [nonperturbativeAtomicCompletion,
@@ -223,7 +223,7 @@ return plateau of its nonperturbative completion is universal: it is the
 square of the flat coupling weight and is independent of the base spectrum. -/
 theorem nonperturbativeAtomicCompletion_plateau_exact
     (base : ProbabilityMeasure ℝ)
-    [NoAtoms (base : Measure ℝ)] (energy g : ℝ) :
+    [NullSingletonClass (base : Measure ℝ)] (energy g : ℝ) :
     recurrencePlateau
         (nonperturbativeAtomicCompletion base energy g : Measure ℝ) =
       (expNegInvGlue g) ^ 2 := by
@@ -241,7 +241,7 @@ theorem nonperturbativeAtomicCompletion_plateau_exact
 scale `exp (-2 / g)`. -/
 theorem nonperturbativeAtomicCompletion_plateau_instanton_exact
     (base : ProbabilityMeasure ℝ)
-    [NoAtoms (base : Measure ℝ)] (energy : ℝ)
+    [NullSingletonClass (base : Measure ℝ)] (energy : ℝ)
     {g : ℝ} (hg : 0 < g) :
     recurrencePlateau
         (nonperturbativeAtomicCompletion base energy g : Measure ℝ) =
@@ -255,7 +255,7 @@ theorem nonperturbativeAtomicCompletion_plateau_instanton_exact
 
 theorem nonperturbativeAtomicCompletion_plateau_pos
     (base : ProbabilityMeasure ℝ)
-    [NoAtoms (base : Measure ℝ)] (energy : ℝ)
+    [NullSingletonClass (base : Measure ℝ)] (energy : ℝ)
     {g : ℝ} (hg : 0 < g) :
     HasPersistentMeanRecurrence
       (nonperturbativeAtomicCompletion base energy g : Measure ℝ) := by
@@ -265,7 +265,7 @@ theorem nonperturbativeAtomicCompletion_plateau_pos
 
 theorem constantSpectrumFamily_plateau_zero
     (base : ProbabilityMeasure ℝ)
-    [NoAtoms (base : Measure ℝ)] (g : ℝ) :
+    [NullSingletonClass (base : Measure ℝ)] (g : ℝ) :
     recurrencePlateau
         (constantSpectrumFamily base g : Measure ℝ) = 0 := by
   rw [constantSpectrumFamily, recurrencePlateau, Measure.real,
@@ -287,9 +287,9 @@ theorem nonperturbativeAtomicCompletion_carried
 
 theorem recurrentCompactSpectrumFamily_not_noAtoms
     {g : ℝ} (hg : 0 < g) :
-    ¬ NoAtoms (recurrentCompactSpectrumFamily g : Measure ℝ) := by
+    ¬ NullSingletonClass (recurrentCompactSpectrumFamily g : Measure ℝ) := by
   intro hno
-  letI : NoAtoms (recurrentCompactSpectrumFamily g : Measure ℝ) :=
+  letI : NullSingletonClass (recurrentCompactSpectrumFamily g : Measure ℝ) :=
     hno
   have hzero :
       (recurrentCompactSpectrumFamily g : Measure ℝ)
@@ -872,7 +872,7 @@ one, although the two exact return plateaus are respectively positive and
 zero. -/
 theorem every_atomlessSpectrum_has_perturbativelyInvisible_recurrentCompletion
     (base : ProbabilityMeasure ℝ)
-    [NoAtoms (base : Measure ℝ)] (energy : ℝ)
+    [NullSingletonClass (base : Measure ℝ)] (energy : ℝ)
     {g : ℝ} (hg : 0 < g) :
     perturbativeBoundedSpectralObservableJet
         (nonperturbativeAtomicCompletion base energy) =

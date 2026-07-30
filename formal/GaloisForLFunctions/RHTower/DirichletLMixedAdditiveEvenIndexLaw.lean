@@ -52,27 +52,23 @@ theorem add_pos_neg_hermitianAbel_eq_two_mul_tsum_evenIndex
     exact (summable_norm_mixedAdditiveConvolutionPower_mul_pow
       a (-(r : ℂ)) haNeg k).of_norm
   have hcEven : Summable (fun q : ℕ => c (2 * q)) := by
-    simpa only [Function.comp_apply] using
-      hc.comp_injective (by
+    refine (hc.comp_injective (by
         intro x y h
-        exact Nat.mul_left_cancel (by norm_num) h)
+        exact Nat.mul_left_cancel (by norm_num) h)).congr fun _ => rfl
   have hcOdd : Summable (fun q : ℕ => c (2 * q + 1)) := by
-    simpa only [Function.comp_apply] using
-      hc.comp_injective (by
+    refine (hc.comp_injective (by
         intro x y h
         have hmul : 2 * x = 2 * y := Nat.add_right_cancel h
-        exact Nat.mul_left_cancel (by norm_num) hmul)
+        exact Nat.mul_left_cancel (by norm_num) hmul)).congr fun _ => rfl
   have hdEven : Summable (fun q : ℕ => d (2 * q)) := by
-    simpa only [Function.comp_apply] using
-      hd.comp_injective (by
+    refine (hd.comp_injective (by
         intro x y h
-        exact Nat.mul_left_cancel (by norm_num) h)
+        exact Nat.mul_left_cancel (by norm_num) h)).congr fun _ => rfl
   have hdOdd : Summable (fun q : ℕ => d (2 * q + 1)) := by
-    simpa only [Function.comp_apply] using
-      hd.comp_injective (by
+    refine (hd.comp_injective (by
         intro x y h
         have hmul : 2 * x = 2 * y := Nat.add_right_cancel h
-        exact Nat.mul_left_cancel (by norm_num) hmul)
+        exact Nat.mul_left_cancel (by norm_num) hmul)).congr fun _ => rfl
   have hcSplit := tsum_even_add_odd hcEven hcOdd
   have hdSplit := tsum_even_add_odd hdEven hdOdd
   have hEvenEq : (∑' q : ℕ, d (2 * q)) = ∑' q : ℕ, c (2 * q) := by

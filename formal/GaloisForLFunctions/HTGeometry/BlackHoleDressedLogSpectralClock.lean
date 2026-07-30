@@ -212,7 +212,7 @@ theorem hasDerivAt_blackHoleHigherMultipoleRGKernel
   have hlin : HasDerivAt (fun z : ℂ => -4 * nu * z) (-4 * nu) y := by
     simpa using (hasDerivAt_id y).const_mul (-4 * nu)
   have hraw := (hlin.cexp.sub_const 1).const_mul (seed / (-4 * nu))
-  convert hraw using 1
+  convert! hraw using 1
   field_simp [hnu]
 
 /-- The paper's complete normalized response for `ell >= 1`, after the dressed running variable

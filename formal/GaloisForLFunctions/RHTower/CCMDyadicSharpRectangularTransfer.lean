@@ -50,7 +50,7 @@ private theorem dyadicTransfer_integrableOn_comp_sub_Ioc
     simp only [Set.mem_preimage, Set.mem_Ioc]
     constructor <;> intro hh <;> constructor <;> linarith [hh.1, hh.2]
   rw [hpre] at hi
-  simpa only [Function.comp_apply, sub_eq_add_neg] using hi
+  simpa only [Function.comp_def, sub_eq_add_neg] using hi
 
 private theorem dyadicTransfer_integrableOn_sharpPlusEndpoint_Ioc
     (L a b : ℝ) :

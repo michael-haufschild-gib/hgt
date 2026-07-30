@@ -127,7 +127,8 @@ theorem thermalProjectiveCofinalSection_tendsto_atTop_of_not_riemannHypothesis
         (fun j => Real.exp
           ((cold j : ℝ) * xiEndpointProjectiveReflectionDisplacement q))
         atTop atTop := by
-      simpa only [Function.comp_apply] using Real.tendsto_exp_atTop.comp hscaled
+      exact (Real.tendsto_exp_atTop.comp hscaled).congr'
+        (Eventually.of_forall fun _ => rfl)
     simpa only [atom] using hexp.const_mul_atTop (xiThermalNode_pos q)
   have hatom_le : ∀ᶠ j : ℕ in atTop,
       atom j ≤ xiThermalProjectiveColdTruncation (size j) (cold j) := by

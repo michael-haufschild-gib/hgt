@@ -396,12 +396,11 @@ theorem tendsto_xiMobiusContinuousApertureReflectedDyadicInnovation_div_cube
       xiMobiusPrimeContinuousApertureCubicSlopeTerm p *
         normalizedScaleSeamEnergy (p : ℕ) rho) := by
     have hscaled := hreflected.mul_left 32
-    convert hscaled using 1
-    funext p
-    rw [xiMobiusPrimeContinuousApertureCubicNormalizedReflectionEnergy,
-      xiMobiusPrimeContinuousApertureCubicCoefficient_eq_slope
-        (by norm_num) (by norm_num)]
-    ring
+    exact hscaled.congr (fun p => by
+      rw [xiMobiusPrimeContinuousApertureCubicNormalizedReflectionEnergy,
+        xiMobiusPrimeContinuousApertureCubicCoefficient_eq_slope
+          (by norm_num) (by norm_num)]
+      ring)
   have h :=
     tendsto_xiMobiusContinuousApertureWeightedDyadicInnovation_div_cube_of_summable
       ha hb (w := fun p => normalizedScaleSeamEnergy (p : ℕ) rho)

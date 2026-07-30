@@ -109,7 +109,10 @@ theorem analyticAt_quadratic (b w : ℂ) : AnalyticAt ℂ (quadratic b) w := by
 theorem analyticAt_iterate (b : ℂ) (N : ℕ) (w : ℂ) :
     AnalyticAt ℂ (fun u => (quadratic b)^[N] u) w := by
   induction N generalizing w with
-  | zero => simpa using analyticAt_id
+  | zero =>
+    refine AnalyticAt.congr analyticAt_id ?_
+    filter_upwards with u
+    rfl
   | succ k ih =>
     have hcomp : (fun u => (quadratic b)^[k + 1] u)
         = (quadratic b) ∘ (fun u => (quadratic b)^[k] u) := by

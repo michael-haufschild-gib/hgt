@@ -203,8 +203,8 @@ theorem thetaCuspExpTaylorFive_nonneg {u : ℝ} (hu : 0 ≤ u) :
 theorem thetaCuspExpTaylorFive_le_exp {u : ℝ} (hu : 0 ≤ u) :
     thetaCuspExpTaylorFive u ≤ Real.exp u := by
   have h := Real.sum_le_exp_of_nonneg hu 6
-  norm_num [Finset.sum_range_succ] at h ⊢
-  convert h using 1 <;> ring
+  norm_num [Finset.sum_range_succ] at h
+  simpa only [thetaCuspExpTaylorFive] using h
 
 theorem thetaCuspExpTaylorThree_nonneg {u : ℝ} (hu : 0 ≤ u) :
     0 ≤ thetaCuspExpTaylorThree u := by
@@ -214,8 +214,8 @@ theorem thetaCuspExpTaylorThree_nonneg {u : ℝ} (hu : 0 ≤ u) :
 theorem thetaCuspExpTaylorThree_le_exp {u : ℝ} (hu : 0 ≤ u) :
     thetaCuspExpTaylorThree u ≤ Real.exp u := by
   have h := Real.sum_le_exp_of_nonneg hu 4
-  norm_num [Finset.sum_range_succ] at h ⊢
-  convert h using 1 <;> ring
+  norm_num [Finset.sum_range_succ] at h
+  simpa only [thetaCuspExpTaylorThree] using h
 
 /-- A sharp exact boundary floor used to remove the only transcendental prefactor. -/
 theorem three_div_seventy_lt_exp_neg_pi :

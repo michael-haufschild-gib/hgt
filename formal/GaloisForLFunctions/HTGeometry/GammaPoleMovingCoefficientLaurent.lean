@@ -95,12 +95,12 @@ def gammaPoleMovingCoefficientLaurent :
 
 theorem gammaPoleMovingCoefficientLaurent_coeff_neg
     (p : Polynomial ℂ) (b : ℕ) :
-    gammaPoleMovingCoefficientLaurent p (-(b : ℤ)) =
+    (gammaPoleMovingCoefficientLaurent p).coeff (-(b : ℤ)) =
       ratNatEval (gammaPoleCenterHasseRational p b) *
         gammaPolePhysicalScaleGerm ^ b := by
   rw [gammaPoleMovingCoefficientLaurent, RingHom.comp_apply]
-  change movingPoleTaylorLaurent gammaPoleCenterGerm
-      gammaPolePhysicalScaleGerm (p.map complexNatGerm) (-(b : ℤ)) = _
+  change (movingPoleTaylorLaurent gammaPoleCenterGerm
+      gammaPolePhysicalScaleGerm (p.map complexNatGerm)).coeff (-(b : ℤ)) = _
   rw [movingPoleTaylorLaurent_coeff_neg]
   change (Polynomial.hasseDeriv b
       (p.map (ratNatEval.comp RatFunc.C))).eval
@@ -113,7 +113,7 @@ theorem gammaPoleMovingCoefficientLaurent_coeff_neg
 
 theorem gammaPoleMovingCoefficientLaurent_coeff_zero
     (p : Polynomial ℂ) :
-    gammaPoleMovingCoefficientLaurent p 0 =
+    (gammaPoleMovingCoefficientLaurent p).coeff 0 =
       ratNatEval (gammaPoleCenterRationalEval p) := by
   have h := gammaPoleMovingCoefficientLaurent_coeff_neg p 0
   simpa [gammaPoleCenterHasseRational,
@@ -122,7 +122,7 @@ theorem gammaPoleMovingCoefficientLaurent_coeff_zero
 
 theorem gammaPoleMovingCoefficientLaurent_coeff_zero_ne_zero
     {p : Polynomial ℂ} (hp : p ≠ 0) :
-    gammaPoleMovingCoefficientLaurent p 0 ≠ 0 := by
+    (gammaPoleMovingCoefficientLaurent p).coeff 0 ≠ 0 := by
   rw [gammaPoleMovingCoefficientLaurent_coeff_zero]
   simpa using
     ratNatEval_injective.ne (gammaPoleCenterRationalEval_injective.ne hp)
@@ -134,7 +134,7 @@ theorem gammaPoleMovingCoefficientLaurent_injective :
   apply ratNatEval_injective
   rw [← gammaPoleMovingCoefficientLaurent_coeff_zero,
     ← gammaPoleMovingCoefficientLaurent_coeff_zero]
-  exact congrArg (fun f : NatGerm[T;T⁻¹] => f 0) hpq
+  exact congrArg (fun f : NatGerm[T;T⁻¹] => f.coeff 0) hpq
 
 end
 

@@ -52,7 +52,7 @@ section TiltInvariance
 tilted potential `V - h·x` has derivative `d - h`. -/
 theorem tilt_hasDerivAt {V : ℝ → ℝ} {x d h : ℝ} (hV : HasDerivAt V d x) :
     HasDerivAt (fun y => V y - h * y) (d - h) x := by
-  simpa using hV.sub ((hasDerivAt_id x).const_mul h)
+  simpa using! hV.sub ((hasDerivAt_id x).const_mul h)
 
 /-- **The curvature is tilt-invariant.**  The derivative of the tilted first derivative is the
 untilted second derivative: subtracting the constant `h` changes nothing. -/

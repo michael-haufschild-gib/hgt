@@ -80,7 +80,7 @@ theorem symmetrize_differentiable {Φ : ℂ → ℂ} (hΦ : Differentiable ℂ �
     Differentiable ℂ (symmetrize Φ) := by
   have h1 : Differentiable ℂ fun s : ℂ => Φ (1 - s) := by
     have h := hΦ.comp ((differentiable_const (1 : ℂ)).sub differentiable_id)
-    simpa [Function.comp] using h
+    simpa [Function.comp] using! h
   exact (hΦ.add h1).div_const 2
 
 /-- FE pairing of orders for the symmetrized carrier: ord_{1−ρ} = ord_ρ — the

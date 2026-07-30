@@ -157,7 +157,7 @@ theorem firstJetBoundaryRemainderEmbedding_ne_zero
     · change Sum.inr a = Sum.inr b at hab
       cases hab
       rfl
-  · simpa [firstJetBoundaryRemainderEmbedding, E, L, Q, e] using hzero
+  · simpa [firstJetBoundaryRemainderEmbedding, E, L, Q, e] using! hzero
 
 def gammaFirstJetBoundaryRestTuple (k : ℕ) (a : ℂ) : Fin k × Fin 2 → ℂ :=
   fun i => gammaFirstJetBoundaryTail k a (i.1.succ, i.2)

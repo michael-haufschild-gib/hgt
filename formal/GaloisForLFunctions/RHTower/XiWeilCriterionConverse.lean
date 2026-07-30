@@ -91,7 +91,7 @@ theorem logDeriv_XiC_eq_pole_add {pt₀ : ℂ} {R : ℝ} {g : ℂ → ℂ}
   have hderiv : HasDerivAt (fun w : ℂ => (w - pt₀) ^ m)
       ((m : ℂ) * (z - pt₀) ^ (m - 1)) z := by
     have h := ((hasDerivAt_id z).sub_const pt₀).pow m
-    simpa using h
+    simpa using! h
   rw [logDeriv, Pi.div_apply, hderiv.deriv]
   rcases Nat.eq_zero_or_pos m with hm0 | hmpos
   · simp [hm0]
@@ -282,7 +282,7 @@ theorem exists_neg_weilDiagonal_of_offAxis_zero {pt₀ : ℂ}
         (𝓝[>] 0) (𝓝 (A₀ / A₀)) := hA.div_const A₀
     rw [div_self hA₀ne] at hq
     have hre := (Complex.continuous_re.tendsto (1 : ℂ)).comp hq
-    simpa [hu, Function.comp] using hre
+    simpa [hu, Function.comp] using! hre
   have hvtend : Tendsto v (𝓝[>] 0) (𝓝 (A₀ * logDeriv g pt₀).re) := by
     have hA : Tendsto (fun t : ℝ => xiWeilDiagonalCoeff (ray t)) (𝓝[>] 0)
         (𝓝 A₀) := hAcont.tendsto.comp hrayt
@@ -290,7 +290,7 @@ theorem exists_neg_weilDiagonal_of_offAxis_zero {pt₀ : ℂ}
         (𝓝 (logDeriv g pt₀)) := hlogg.tendsto.comp hrayt
     have hre := (Complex.continuous_re.tendsto
       (A₀ * logDeriv g pt₀)).comp (hA.mul hL)
-    simpa [hv, Function.comp] using hre
+    simpa [hv, Function.comp] using! hre
   have hform : ∀ᶠ t : ℝ in 𝓝[>] 0,
       (xiWeilPolarization (xiCauchyRegularizedKernel (ray t))
         (xiCauchyRegularizedKernel (ray t))).re =

@@ -148,7 +148,7 @@ theorem cofinitePrimeProfileJetPacket_at_of_rayTailIndependent
   have hdetUnit : IsUnit (primeProfileJetPacketMatrix g m q e).det := by
     apply (Matrix.isUnit_iff_isUnit_det _).mp
     simpa [primeProfileJetPacketMatrix, primeProfileJetRayCoefficient,
-      Matrix.of_apply] using hunit
+      Matrix.of_apply] using! hunit
   exact hdetUnit.ne_zero
 
 /-- A cofinite packet at one jet order forces ray-tail independence at that order. -/
@@ -223,7 +223,7 @@ theorem differentialIndependent_fractionPrimeProfiles_iff_clockTailIndependent
         (fun col : I × Fin (m + 1) =>
           algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField
             (primeProfileJetSource g m col)) := by
-      simpa only [j, primeProfileJetSource] using hrect
+      simpa only [j, primeProfileJetSource] using! hrect
     exact primeProfileTailIndependent_of_algebraicIndependent
       (primeProfileJetSource g m)
       (primeProfileJetSource_supportedOnPositivePrimePowers g hsupport m) hAI
@@ -277,7 +277,7 @@ theorem primeProfileTailIndependent_iff_linearIndependent_clockClass
       change primePowerCoordinateProfile (∑ j, c j • g j) ∈
         rayLocalSubmodule primePowerClockRay
       simpa only [primeProfileClockClass, LinearMap.comp_apply,
-        Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero] using hclass
+        Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero] using! hclass
     exact congrFun (htail c hlocal) i
   · intro hlinear c hlocal
     funext i
@@ -359,7 +359,7 @@ theorem algebraicIndependent_fractionPrimeProfiles_iff_clockClassIndependent
         intro a b hab
         apply Prod.ext hab
         exact Subsingleton.elim _ _)
-      simpa [primeProfileJetSource, primeProfileRotatedLogJet] using hcomp
+      simpa [primeProfileJetSource, primeProfileRotatedLogJet] using! hcomp
     have hrectTail : PrimeProfileTailIndependent (primeProfileJetSource g 0) :=
       (primeProfileTailIndependent_iff_linearIndependent_clockClass
         (primeProfileJetSource g 0)).mpr hrectLinear
@@ -376,7 +376,7 @@ theorem algebraicIndependent_fractionPrimeProfiles_iff_clockClassIndependent
       intro i j hij
       exact congrArg Prod.fst hij
     have hsub := hAIrect.comp e he
-    simpa [e, primeProfileJetSource, primeProfileRotatedLogJet] using hsub
+    simpa [e, primeProfileJetSource, primeProfileRotatedLogJet] using! hsub
 
 /-- **Arbitrary-family static prime-profile matroid.**  The exact quotient classification has
 finite character: no global cardinality restriction on the source family is needed. -/
@@ -472,7 +472,7 @@ theorem primeProfileClockIndependent_iff_finiteTailIndependent
       simp only [j, Prod.mk.injEq] at h ⊢
       exact ⟨h.1, Fin.ext h.2⟩
     have hrect := hclock.comp j hj
-    simpa only [primeProfileClockJetFamily, j, primeProfileJetSource] using hrect
+    simpa only [primeProfileClockJetFamily, j, primeProfileJetSource] using! hrect
   · intro htail
     apply linearIndependent_prod_nat_of_fin
       (fun i n => primeProfileClockClass (primeProfileRotatedLogJet n (g i)))
@@ -574,7 +574,7 @@ theorem carrier_mem_differentialAdjoin_of_primeProfileClockClass_mem
     change primePowerCoordinateProfile residual ∈
       rayLocalSubmodule primePowerClockRay
     simpa only [LinearMap.comp_apply, Submodule.mkQ_apply,
-      Submodule.Quotient.mk_eq_zero] using hresidualClass
+      Submodule.Quotient.mk_eq_zero] using! hresidualClass
   have holdSupport : ∀ ik,
       PrimeProfileSupportedOnPositivePrimePowers (oldProfile ik) := by
     intro ik
@@ -632,7 +632,7 @@ theorem carrier_mem_differentialAdjoin_of_primeProfileClockClass_mem
       ((a ik) • oldProfile ik) ∈ K
     rw [Algebra.smul_def, map_mul]
     apply IntermediateField.mul_mem
-    · simpa only [map_algebraMap] using
+    · simpa only [map_algebraMap] using!
         (IntermediateField.algebraMap_mem K
           (algebraMap ℂ finitePrimeCoefficientField (a ik)))
     · have hjet :
@@ -649,7 +649,7 @@ theorem carrier_mem_differentialAdjoin_of_primeProfileClockClass_mem
   have hresidualMem :
       algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField residual ∈ K := by
     have hr := IntermediateField.algebraMap_mem K r
-    simpa only [r] using hr
+    simpa only [r] using! hr
   have hdecomp : f = combo + residual := by
     simp [residual]
   rw [hdecomp, map_add]
@@ -1093,7 +1093,7 @@ theorem arithmeticFunctionOfPrimePowerProfile_supportedOnPositivePrimePowers
     refine ⟨x.1, x.2, ?_⟩
     have hx := congrArg Subtype.val
       (Nat.Primes.prodNatEquiv.apply_symm_apply ⟨n, hpow⟩)
-    simpa only [x, Nat.Primes.coe_prodNatEquiv_apply] using hx.symm
+    simpa only [x, Nat.Primes.coe_prodNatEquiv_apply] using! hx.symm
   · exact (hn (by simp [arithmeticFunctionOfPrimePowerProfile, hpow])).elim
 
 /-- Every vector of the prime-clock quotient has a canonical positive-prime-power source
@@ -1200,7 +1200,7 @@ theorem scalarReplicatedPrimeProfile_supportedOnPositivePrimePowers
     refine ⟨x.1, x.2, ?_⟩
     have hx := congrArg Subtype.val
       (Nat.Primes.prodNatEquiv.apply_symm_apply ⟨n, hpow⟩)
-    simpa only [x, Nat.Primes.coe_prodNatEquiv_apply] using hx.symm
+    simpa only [x, Nat.Primes.coe_prodNatEquiv_apply] using! hx.symm
   · exact (hn (by simp [scalarReplicatedPrimeProfile, hpow])).elim
 
 @[simp]
@@ -1350,7 +1350,7 @@ theorem scalarReplicatedPrimeProfile_clockIndependent_iff
                 (fun i => scalarReplicatedPrimeProfile (u i)) m col) (p, e) by
           exact map_sum ev _ Finset.univ]
         simpa only [primePowerCoordinateProfile_smul, primeProfileJetSource,
-          primePowerCoordinateProfile_scalarReplicatedPrimeProfile_jet] using hp
+          primePowerCoordinateProfile_scalarReplicatedPrimeProfile_jet] using! hp
       have hset :
           {p : Nat.Primes |
             ∑ k, d k *
@@ -1542,7 +1542,7 @@ theorem scalarReplicatedPrimeProfile_differentialIndependent_over_all_valuationL
   have hunit := hset.comp (fun _ : Unit =>
       (⟨y, Set.mem_singleton y⟩ : ({y} : Set arithmeticFunctionFractionField)))
     (fun a b _ => Subsingleton.elim a b)
-  simpa [scalarValuationLayerDifferentialField, G, y, Function.comp_def] using hunit
+  simpa [scalarValuationLayerDifferentialField, G, y, Function.comp_def] using! hunit
 
 /-- A finitely supported scalar profile already belongs to the differential field generated by
 the individual valuation layers.  This is the finite-algebra half of the completion boundary. -/
@@ -1590,7 +1590,7 @@ theorem scalarReplicatedPrimeProfile_mem_all_valuationLayers_of_support_finite
   apply IntermediateField.sum_mem
   intro e he
   apply IntermediateField.mul_mem
-  · simpa only [map_algebraMap] using
+  · simpa only [map_algebraMap] using!
       (IntermediateField.algebraMap_mem scalarValuationLayerDifferentialField
         (algebraMap ℂ finitePrimeCoefficientField (u e)))
   · exact hlayer e

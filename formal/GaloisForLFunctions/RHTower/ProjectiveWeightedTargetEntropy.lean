@@ -179,7 +179,9 @@ theorem measureReal_torusProjectiveWeightedCoherenceTarget_waterEntropy_le
           (Real.pi / 4) * (d - 1 : ℕ) := by
       have hpi : 0 ≤ Real.pi / 4 := by positivity
       have hscaled := mul_le_mul_of_nonneg_left (hbudget k) hpi
-      convert hscaled using 1 <;> ring
+      calc
+        _ = (Real.pi / 4) * (lam k * η) := by ring
+        _ ≤ _ := hscaled
     calc
       Real.exp (4 * ((Real.pi / 16) * lam k) * η) *
           (∏ j, if j = k then 1 else

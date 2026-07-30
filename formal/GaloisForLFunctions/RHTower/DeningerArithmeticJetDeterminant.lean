@@ -208,7 +208,7 @@ theorem deningerArithmeticJetLocalRegularizedDeterminant_hasProd
   apply hprod.sigma
   intro rho
   rw [deningerArithmeticJetLocalRegularizedDeterminant_eq]
-  simpa [xiSpectralPoint_eq_support, xiSupportMultiplicity] using
+  simpa [xiSpectralPoint_eq_support, xiSupportMultiplicity] using!
     (hasProd_fintype
       (fun k : DeningerArithmeticJetIndex rho =>
         weierstrassE1

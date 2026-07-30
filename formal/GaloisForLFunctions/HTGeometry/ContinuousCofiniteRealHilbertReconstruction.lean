@@ -115,7 +115,7 @@ theorem exists_injective_cofiniteRealEvaluationHilbertReconstruction_of_linearIn
     linearIndependent_restrict_compl_of_continuous u hu hlin F hF
   simpa only [cofiniteRealEvaluationGram, cofiniteRealEvaluationColumn,
     GaloisForLFunctions.HilbertMetric.realEvaluationGram,
-    GaloisForLFunctions.HilbertMetric.realEvaluationColumn] using
+    GaloisForLFunctions.HilbertMetric.realEvaluationColumn] using!
     GaloisForLFunctions.HilbertMetric.exists_injective_realEvaluationHilbertReconstruction
       (fun j => fun x : {x : X // x ∉ F} => u j x) hlinCompl
 
@@ -146,7 +146,7 @@ theorem exists_injective_cofiniteComplexRealChannelHilbertReconstruction_of_tail
       u htail F hF
   simpa only [cofiniteRealEvaluationGram, cofiniteRealEvaluationColumn,
     GaloisForLFunctions.HilbertMetric.realEvaluationGram,
-    GaloisForLFunctions.HilbertMetric.realEvaluationColumn] using
+    GaloisForLFunctions.HilbertMetric.realEvaluationColumn] using!
     GaloisForLFunctions.HilbertMetric.exists_injective_realEvaluationHilbertReconstruction
       (fun j => fun sample : {sample : X × Bool // sample ∉ F} =>
         complexRealChannelFeature u j sample) hlin
@@ -200,7 +200,7 @@ theorem
       u htail F hF
   simpa only [cofiniteRealEvaluationGram, cofiniteRealEvaluationColumn,
     GaloisForLFunctions.HilbertMetric.realEvaluationGram,
-    GaloisForLFunctions.HilbertMetric.realEvaluationColumn] using
+    GaloisForLFunctions.HilbertMetric.realEvaluationColumn] using!
     GaloisForLFunctions.HilbertMetric.exists_injective_realEvaluationHilbertReconstruction
       (fun index => fun sample : {sample : X × Bool // sample ∉ F} =>
         complexCoefficientRealChannelFeature u index sample) hlin
@@ -248,13 +248,13 @@ theorem
       cases channel with
       | false =>
           have hre := congrArg Complex.re (hcomplex i)
-          convert hre using 1
+          convert! hre using 1
           simp [q, complexCoefficientRealChannelFeature, complexRealChannelFeature,
             Fintype.sum_prod_type, Complex.mul_re, Finset.sum_add_distrib, hs]
           ring
       | true =>
           have him := congrArg Complex.im (hcomplex i)
-          convert him using 1
+          convert! him using 1
           simp [q, complexCoefficientRealChannelFeature, complexRealChannelFeature,
             Fintype.sum_prod_type, Complex.mul_im, Finset.sum_add_distrib, hs]
           ring

@@ -248,7 +248,7 @@ theorem coeffPoly_comp_X_add_one (P : DirPoly) (m : ℕ) :
       | zero =>
           rw [Polynomial.monomial_zero_left, Polynomial.C_comp, pow_zero, mul_one]
           have h0 : (Polynomial.C a : DirPoly) = Polynomial.monomial 0 a :=
-            (Polynomial.monomial_zero_left a).symm
+            by rw [Polynomial.monomial_zero_left]
           conv_lhs => rw [h0]
           rw [coeffPoly_monomial]
           simp

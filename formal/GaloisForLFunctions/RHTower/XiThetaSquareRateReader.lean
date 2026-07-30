@@ -78,7 +78,7 @@ lemma hasDerivAt_thetaSquareBlaschkeSymbol {n : ℕ} (hn : 1 ≤ n) :
       ((Real.pi : ℂ) * (thetaSquare n ^ ((-1 : ℂ) / 2) / 2)) (thetaSquare n) :=
     hsqrt.const_mul (Real.pi : ℂ)
   have hquot := harg.csin.div harg.csinh (thetaSquareBlaschkeDen_ne_zero hn)
-  convert hquot using 1
+  convert! hquot using 1
   simp only [thetaSquareBlaschkeNodeSlope, sqrt_thetaSquare]
   rw [show (Real.pi : ℂ) * (n : ℂ) = (n : ℂ) * Real.pi by ring]
   rw [Complex.sin_nat_mul_pi, zero_mul, sub_zero]

@@ -199,7 +199,7 @@ theorem quadraticCongruenceRootSum_mul_alias
           ZMod.stdAddChar ((a : ZMod q) * (e r).1.1) := by
             apply Fintype.sum_congr
             intro r
-            simpa [e, quadraticCongruenceRootChineseRemainderEquiv] using
+            simpa [e, quadraticCongruenceRootChineseRemainderEquiv] using!
               stdAddChar_mul_complement_chineseRemainder hcop a r.1
     _ = ∑ r : quadraticCongruenceRoots q h × quadraticCongruenceRoots d h,
           ZMod.stdAddChar ((a : ZMod q) * r.1.1) := by
@@ -346,7 +346,7 @@ theorem quadraticCongruencePrimeSurvivalFactor_eq_zero_iff
     · intro hz
       have hnum : (p : ℂ) - 1 = 0 := (div_eq_zero_iff.mp hz).resolve_right hpC
       have hp1C : (p : ℂ) = 1 := sub_eq_zero.mp hnum
-      have hp1 : p = 1 := Nat.cast_inj.mp (by simpa using hp1C)
+      have hp1 : p = 1 := Nat.cast_inj.mp (by simpa using! hp1C)
       exact (hp.ne_one hp1).elim
     · rintro ⟨_, hnot⟩
       exact (hnot hph).elim

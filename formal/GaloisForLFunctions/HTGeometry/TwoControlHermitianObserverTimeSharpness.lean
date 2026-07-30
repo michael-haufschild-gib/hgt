@@ -153,7 +153,7 @@ theorem twoControlSharpBothRay_tendsto :
   apply tendsto_pi_nhds.2
   intro i
   fin_cases i <;>
-    simpa [twoControlSharpBothRay] using
+    simpa [twoControlSharpBothRay] using!
       (tendsto_id : Tendsto (fun t : ℂ => t) (𝓝 0) (𝓝 0))
 
 theorem twoControlSharpLeftRay_tendsto :
@@ -161,7 +161,7 @@ theorem twoControlSharpLeftRay_tendsto :
   apply tendsto_pi_nhds.2
   intro i
   fin_cases i
-  · simpa [twoControlSharpLeftRay] using
+  · simpa [twoControlSharpLeftRay] using!
       (tendsto_id : Tendsto (fun t : ℂ => t) (𝓝 0) (𝓝 0))
   · simp [twoControlSharpLeftRay]
 
@@ -171,7 +171,7 @@ theorem twoControlSharpRightRay_tendsto :
   intro i
   fin_cases i
   · simp [twoControlSharpRightRay]
-  · simpa [twoControlSharpRightRay] using
+  · simpa [twoControlSharpRightRay] using!
       (tendsto_id : Tendsto (fun t : ℂ => t) (𝓝 0) (𝓝 0))
 
 @[simp]

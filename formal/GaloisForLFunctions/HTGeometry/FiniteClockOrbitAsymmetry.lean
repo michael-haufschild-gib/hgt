@@ -46,7 +46,7 @@ theorem norm_pow_apply_sq_eq_of_adjoint_mul_self
   calc
     ‖(U ^ k) x‖ ^ 2 =
         RCLike.re (inner 𝕜 x (((U ^ k).adjoint * U ^ k) x)) := by
-          simpa only [mul_apply_eq_comp] using
+          simpa only [mul_apply_eq_comp] using!
             (U ^ k).apply_norm_sq_eq_inner_adjoint_right x
     _ = ‖x‖ ^ 2 := by rw [hk]; simp
 

@@ -335,9 +335,12 @@ theorem ae_logarithmicallyShiftSeparated_roughPolynomialProfile
     {α : ℝ} (hα : 1 < α) (β : ℝ) :
     ∀ᵐ u ∂intervalUnitProductProbability,
       LogarithmicallyShiftSeparated (roughPolynomialProfile β α u) := by
-  let encode : Polynomial ℤ → (ℕ →₀ ℤ) := fun Q => Q.toFinsupp
+  let encode : Polynomial ℤ → (ℕ →₀ ℤ) := fun Q => Q.toFinsupp.coeff
   letI : Countable (Polynomial ℤ) :=
-    (show Function.Injective encode from Polynomial.toFinsupp_injective).countable
+    (show Function.Injective encode from by
+      intro P Q h
+      apply Polynomial.toFinsupp_injective
+      exact AddMonoidAlgebra.coeff_injective h).countable
   simp only [LogarithmicallyShiftSeparated]
   rw [ae_all_iff]
   intro Q

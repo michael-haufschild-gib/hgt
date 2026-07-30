@@ -212,7 +212,7 @@ theorem familyDifferentiallyAlgebraicOn_of_affine {m : ℕ} {U : Set ℂ}
       ContDiffAt ℂ (⊤ : ℕ∞) (fun w => Polynomial.eval w (a i) * g i w) z := by
     intro z hz i
     have haz : ContDiffAt ℂ (⊤ : ℕ∞) (fun w : ℂ => Polynomial.eval w (a i)) z := by
-      simpa only [Polynomial.coe_aeval_eq_eval] using
+      simpa only [Polynomial.coe_aeval_eq_eval] using!
         (Polynomial.contDiff_aeval (a i) (⊤ : ℕ∞)).contDiffAt
     exact haz.mul (hg z hz i)
   refine familyDifferentiallyAlgebraicOn_of_mul_polynomial g a ha hg ?_

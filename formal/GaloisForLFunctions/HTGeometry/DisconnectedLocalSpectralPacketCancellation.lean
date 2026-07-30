@@ -99,7 +99,8 @@ theorem disconnectedPacketBranch_mobius_germ_eq_zero
           (relabelCoupling q.symm z))
   have hsource :
       finsetMobiusResponse fullP responseP = 0 := by
-    simpa [fullP, responseP, P, q, Function.comp_apply] using hz
+    change finsetMobiusResponse fullP responseP = 0 at hz
+    exact hz
   have hrename := finsetMobiusResponse_equiv q fullP responseP
   rw [hsource] at hrename
   have hfullP : fullP = (Finset.univ : Finset P) := by

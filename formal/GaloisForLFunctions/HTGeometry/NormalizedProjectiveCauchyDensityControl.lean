@@ -307,7 +307,7 @@ theorem normalizedProjectiveCauchyJetLinftyContinuousControl_surjective
         (fun t : finiteProjectiveSupport mu => K (t.1 : OnePoint ℝ))) := by
     simpa [K, normalizedCauchyJetRealLinearCombination,
       normalizedCauchyJetColumn, projectiveCauchyJetColumn,
-      projectiveCauchyPower, cauchyJetColumn] using
+      projectiveCauchyPower, cauchyJetColumn] using!
       (normalizedCauchyJetRealLinearCombination_surjective
         x hx hupper n (fun t : finiteProjectiveSupport mu => t.1)
           (fun _ _ h => Subtype.ext h))
@@ -464,7 +464,7 @@ theorem constrainedNormalizedProjectiveCauchyFrozenNevanlinnaTarget_linftyContro
   simpa [frozenCauchy, targetCauchy, targetEquiv,
     projectiveNevanlinnaJetLinftyContinuousControl,
     projectiveNevanlinnaJetLinftyControl,
-    projectiveNevanlinnaJetLinftyContinuousControl_toLinearMap] using hconverted
+    projectiveNevanlinnaJetLinftyContinuousControl_toLinearMap] using! hconverted
 
 /-- The normalized genuine Nevanlinna frozen control: total mass together with a finite analytic
 Nevanlinna-jet packet. -/
@@ -530,7 +530,7 @@ theorem constrainedNormalizedProjectiveNevanlinnaJet_linftyControl_surjective
     normalizedProjectiveNevanlinnaJetLinftyContinuousControl,
     projectiveNevanlinnaJetLinftyContinuousControl,
     projectiveNevanlinnaJetLinftyControl,
-    projectiveNevanlinnaJetLinftyContinuousControl_toLinearMap] using hconverted
+    projectiveNevanlinnaJetLinftyContinuousControl_toLinearMap] using! hconverted
 
 end
 

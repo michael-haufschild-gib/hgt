@@ -63,7 +63,7 @@ theorem scalarReplicatedPrimeProfile_eulerLogValuationProfile :
     have hx := congrArg Subtype.val
       (Nat.Primes.prodNatEquiv.apply_symm_apply ⟨n, hpow⟩)
     have hn : (x.1 : Nat) ^ (x.2 + 1) = n := by
-      simpa only [x, Nat.Primes.coe_prodNatEquiv_apply] using hx
+      simpa only [x, Nat.Primes.coe_prodNatEquiv_apply] using! hx
     rw [← hn]
     have hcoord :=
       primePowerCoordinateProfile_scalarReplicatedPrimeProfile
@@ -121,7 +121,7 @@ theorem differentialIndependent_finiteAbscissaPrimeProfiles_of_formal
     apply (AlgHom.algebraicIndependent_iff arithmeticIncl
       (FaithfulSMul.algebraMap_injective (ArithmeticFunction ℂ)
         arithmeticFunctionFractionField)).mp
-    simpa only [arithmeticIncl] using hformalC
+    simpa only [arithmeticIncl] using! hformalC
   let finiteIncl : finiteAbscissaArithmeticSubalgebra →ₐ[ℂ]
       ArithmeticFunction ℂ := finiteAbscissaArithmeticSubalgebra.val
   have hfiniteIncl : Function.Injective finiteIncl := by
@@ -216,7 +216,7 @@ theorem scalarReplicatedPrimeProfile_scalarValuationBasisProfile
     have hx := congrArg Subtype.val
       (Nat.Primes.prodNatEquiv.apply_symm_apply ⟨n, hpow⟩)
     have hn : (x.1 : Nat) ^ (x.2 + 1) = n := by
-      simpa only [x, Nat.Primes.coe_prodNatEquiv_apply] using hx
+      simpa only [x, Nat.Primes.coe_prodNatEquiv_apply] using! hx
     rw [← hn]
     have hcoord :=
       primePowerCoordinateProfile_scalarReplicatedPrimeProfile
@@ -233,7 +233,7 @@ theorem scalarReplicatedPrimeProfile_scalarValuationBasisProfile
         have heq : Nat.Primes.prodNatEquiv x =
             Nat.Primes.prodNatEquiv (q, e) := by
           apply Subtype.ext
-          simpa only [Nat.Primes.coe_prodNatEquiv_apply] using hq
+          simpa only [Nat.Primes.coe_prodNatEquiv_apply] using! hq
         exact hxe (congrArg Prod.snd (Nat.Primes.prodNatEquiv.injective heq))
       change scalarValuationBasisProfile e x.2 =
         (if h : ∃ q : Nat.Primes,
@@ -406,7 +406,7 @@ theorem analyticEulerLogReplicatedCarrier_differentialIndependent_over_all_valua
       · apply congrArg finiteAbscissaLSeriesToUpperEndMero
         apply Subtype.ext
         rfl
-      · simpa only [profiles, oldProfile, analyticScalarValuationLayerCarrier] using
+      · simpa only [profiles, oldProfile, analyticScalarValuationLayerCarrier] using!
           hidxCarrier z
     rw [hfamily] at hcombined
     have hrelative :=
@@ -434,7 +434,7 @@ theorem analyticEulerLogReplicatedCarrier_differentialIndependent_over_all_valua
       (⟨y, Set.mem_singleton y⟩ : ({y} : Set upperEndMeroField)))
     (fun a b _ ↦ Subsingleton.elim a b)
   simpa [analyticScalarValuationLayerDifferentialField, G, y,
-    analyticEulerLogReplicatedCarrier, Function.comp_def] using hunit
+    analyticEulerLogReplicatedCarrier, Function.comp_def] using! hunit
 
 end
 

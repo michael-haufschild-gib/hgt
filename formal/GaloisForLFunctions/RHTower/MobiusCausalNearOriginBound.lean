@@ -106,16 +106,20 @@ theorem hasDerivAt_shift (c : ℂ) (z : ℂ) : HasDerivAt (fun w : ℂ => c + w)
 theorem hasDerivAt_zetaPoleUnit_comp (ω : ℝ) (z : ℂ) :
     HasDerivAt (fun w : ℂ => zetaPoleUnit (1 + 2 * (ω : ℂ) + w))
       (deriv zetaPoleUnit (1 + 2 * (ω : ℂ) + z)) z := by
-  have h := ((differentiable_zetaPoleUnit (1 + 2 * (ω : ℂ) + z)).hasDerivAt).comp z
-    (hasDerivAt_shift (1 + 2 * (ω : ℂ)) z)
-  simpa [Function.comp] using h
+  have hbase : HasDerivAt zetaPoleUnit
+      (deriv zetaPoleUnit (1 + 2 * (ω : ℂ) + z))
+      (1 + 2 * (ω : ℂ) + z) :=
+    (differentiable_zetaPoleUnit (1 + 2 * (ω : ℂ) + z)).hasDerivAt
+  exact HasDerivAt.comp_const_add (1 + 2 * (ω : ℂ)) z hbase
 
 theorem hasDerivAt_deriv_zetaPoleUnit_comp (ω : ℝ) (z : ℂ) :
     HasDerivAt (fun w : ℂ => deriv zetaPoleUnit (1 + 2 * (ω : ℂ) + w))
       (deriv (deriv zetaPoleUnit) (1 + 2 * (ω : ℂ) + z)) z := by
-  have h := ((differentiable_deriv_zetaPoleUnit (1 + 2 * (ω : ℂ) + z)).hasDerivAt).comp z
-    (hasDerivAt_shift (1 + 2 * (ω : ℂ)) z)
-  simpa [Function.comp] using h
+  have hbase : HasDerivAt (deriv zetaPoleUnit)
+      (deriv (deriv zetaPoleUnit) (1 + 2 * (ω : ℂ) + z))
+      (1 + 2 * (ω : ℂ) + z) :=
+    (differentiable_deriv_zetaPoleUnit (1 + 2 * (ω : ℂ) + z)).hasDerivAt
+  exact HasDerivAt.comp_const_add (1 + 2 * (ω : ℂ)) z hbase
 
 theorem hasDerivAt_poleQNum (ω : ℝ) (z : ℂ) :
     HasDerivAt (fun w : ℂ => poleQNum ω w) (poleQNumDeriv ω z) z := by
@@ -142,8 +146,9 @@ theorem hasDerivAt_poleQDen (ω : ℝ) (z : ℂ) :
 
 theorem hasDerivAt_zetaPoleUnit_one_add (z : ℂ) :
     HasDerivAt (fun w : ℂ => zetaPoleUnit (1 + w)) (deriv zetaPoleUnit (1 + z)) z := by
-  have h := ((differentiable_zetaPoleUnit (1 + z)).hasDerivAt).comp z (hasDerivAt_shift 1 z)
-  simpa [Function.comp] using h
+  have hbase : HasDerivAt zetaPoleUnit (deriv zetaPoleUnit (1 + z)) (1 + z) :=
+    (differentiable_zetaPoleUnit (1 + z)).hasDerivAt
+  exact HasDerivAt.comp_const_add 1 z hbase
 
 /-! ### The uniform bound -/
 

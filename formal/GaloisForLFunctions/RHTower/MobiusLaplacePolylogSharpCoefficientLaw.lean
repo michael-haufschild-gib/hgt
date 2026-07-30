@@ -21,7 +21,7 @@ private theorem exact_log_mellin_moment
     intro u hu
     apply HasDerivAt.hasDerivWithinAt
     dsimp only [f]
-    convert (Real.hasDerivAt_exp (-u)).comp u (hasDerivAt_neg u) using 1
+    convert! (Real.hasDerivAt_exp (-u)).comp u (hasDerivAt_neg u) using 1
     all_goals ring
   have hfinj : Set.InjOn f (Ioi (0 : ℝ)) := by
     intro u hu v hv huv
@@ -365,7 +365,7 @@ theorem eventually_norm_scaled_mellin_le_halfPolylogConstant
 
 private theorem tendsto_critical_ray (rho : ℂ) :
     Tendsto (fun r : ℝ => rho + (r : ℂ)) (𝓝[>] 0) (𝓝 rho) := by
-  simpa using
+  simpa using!
     ((continuous_const.add Complex.continuous_ofReal).tendsto 0).mono_left
       nhdsWithin_le_nhds
 

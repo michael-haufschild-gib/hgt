@@ -116,7 +116,7 @@ theorem algebraicIndependent_gammaPoleUnitPositiveCoefficientGerm_over_ratFunc_f
       (fun j : Fin (n + 1) => gammaPoleUnitPositiveCoefficientGerm (j : ℕ)) := by
   rw [algebraicIndependent_iff_injective_aeval]
   simpa [gammaPoleUnitPositiveCoefficientRationalEvalFin,
-    MvPolynomial.aeval_def] using
+    MvPolynomial.aeval_def] using!
       gammaPoleUnitPositiveCoefficientRationalEvalFin_injective n
 
 /-- The complete positive-unit coefficient family remains algebraically independent over
@@ -147,7 +147,7 @@ theorem gammaPoleUnitPositiveCoefficientRationalEval_injective :
   have h := algebraicIndependent_iff_injective_aeval.mp
     algebraicIndependent_gammaPoleUnitPositiveCoefficientGerm_over_ratFunc
   simpa [gammaPoleUnitPositiveCoefficientRationalEval,
-    MvPolynomial.aeval_def] using h
+    MvPolynomial.aeval_def] using! h
 
 end
 

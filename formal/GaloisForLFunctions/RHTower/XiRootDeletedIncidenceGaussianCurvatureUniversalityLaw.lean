@@ -68,7 +68,7 @@ theorem xiMobiusRootDeletedIncidenceGram_eq_one_and_two_le_iff_gaussianCurvature
         2 ≤ N :=
       and_congr
         (by
-          simpa [xiTransverseRootDeletedShift] using
+          exact
             (xiMobiusRootDeletedPrimeIntegralApertureDyadicCofiniteHilbertReconstruction_iff_rootedStarIncidenceGram_eq_one
               root shift hroot sourcePrime).symm)
         Iff.rfl
@@ -95,7 +95,7 @@ theorem xiMobiusRootDeletedIncidenceGram_det_eq_one_and_two_le_iff_gaussianCurva
         2 ≤ N :=
       and_congr
         (by
-          simpa [xiTransverseRootDeletedShift] using
+          exact
             (xiMobiusRootDeletedPrimeIntegralApertureDyadicCofiniteHilbertReconstruction_iff_rootedStarIncidenceGram_det_eq_one
               root shift hroot sourcePrime).symm)
         Iff.rfl
@@ -240,15 +240,14 @@ theorem
       have htwo : 2 ≤ N := by omega
       exact hn (hphase.1 ⟨hdyadic, htwo⟩)
     · left
-      simpa [xiTransverseRootDeletedShift] using hfailure.1 hdyadic
+      exact hfailure.1 hdyadic
   · rintro (hzero | hsmall)
     · intro hcurvature
       have hdyadic := (hphase.2 hcurvature).1
       have hnotDyadic :
           ¬ XiMobiusRootDeletedPrimeIntegralApertureDyadicCofiniteHilbertReconstruction
             root shift sourcePrime :=
-        hfailure.2 (by
-          simpa [xiTransverseRootDeletedShift] using hzero)
+        hfailure.2 hzero
       exact hnotDyadic hdyadic
     · intro hcurvature
       have htwo := (hphase.2 hcurvature).2
@@ -274,7 +273,7 @@ theorem
         2 ≤ N :=
       and_congr
         (by
-          simpa [xiTransverseRootDeletedShift] using
+          exact
             (xiMobiusRootDeletedPrimeIntegralApertureDyadicCofiniteHilbertReconstruction_iff_rawRootedStarCofiniteHilbertReconstruction
               root shift hroot sourcePrime))
         Iff.rfl
@@ -333,7 +332,7 @@ theorem
         2 ≤ N :=
       and_congr
         (by
-          simpa [xiTransverseRootDeletedShift] using
+          exact
             (xiMobiusRootDeletedPrimeIntegralApertureDyadicCofiniteHilbertReconstruction_iff_rootedStarIncidenceGram_det_eq_one
               root shift hroot sourcePrime).symm)
         Iff.rfl

@@ -82,7 +82,7 @@ theorem tendsto_squarefreeMicroscopicHeightOverlap
           squarefreeHeightParameter sigma delta ((sigma - 1) * eta)) 1 := by
       unfold squarefreeHeightParameter
       fun_prop
-    simpa [squarefreeHeightParameter] using hcont.tendsto.mono_left inf_le_left
+    simpa [squarefreeHeightParameter] using! hcont.tendsto.mono_left inf_le_left
   have hzetaTwoSigma : Tendsto
       (fun sigma : ℝ => riemannZeta (2 * (sigma : ℂ)))
       (𝓝[>] (1 : ℝ)) (𝓝 (riemannZeta (2 : ℂ))) := by
@@ -95,13 +95,15 @@ theorem tendsto_squarefreeMicroscopicHeightOverlap
     simpa using tendsto_riemannZeta_two_mul_comp (by norm_num : (2 : ℂ) * 1 ≠ 1) hparam
   have hunitSigma : Tendsto (fun sigma : ℝ => zetaResidueUnit (sigma : ℂ))
       (𝓝[>] (1 : ℝ)) (𝓝 (1 : ℂ)) := by
-    simpa using zetaResidueUnit_analyticAt.continuousAt.tendsto.comp hsigma
+    simpa only [Function.comp_def, zetaResidueUnit_one] using!
+      zetaResidueUnit_analyticAt.continuousAt.tendsto.comp hsigma
   have hunitParam : Tendsto
       (fun sigma : ℝ =>
         zetaResidueUnit
           (squarefreeHeightParameter sigma delta ((sigma - 1) * eta)))
       (𝓝[>] (1 : ℝ)) (𝓝 (1 : ℂ)) := by
-    simpa using zetaResidueUnit_analyticAt.continuousAt.tendsto.comp hparam
+    simpa only [Function.comp_def, zetaResidueUnit_one] using!
+      zetaResidueUnit_analyticAt.continuousAt.tendsto.comp hparam
   have hzetaTwo : riemannZeta (2 : ℂ) ≠ 0 :=
     riemannZeta_ne_zero_of_one_lt_re (by norm_num)
   have hregularized := (hunitParam.mul hzetaTwoSigma).div
@@ -121,7 +123,7 @@ theorem tendsto_squarefreeMicroscopicHeightOverlap
       (𝓝[>] (1 : ℝ)) (𝓝 q⁻¹) := by
     simp only [one_mul] at hregularized
     rw [htarget] at hregularized
-    simpa using hregularized
+    simpa using! hregularized
   apply hlimit.congr'
   filter_upwards [self_mem_nhdsWithin] with sigma hsigmaGt
   change 1 < sigma at hsigmaGt
@@ -195,7 +197,7 @@ theorem tendsto_squarefreeMacroscopicHeightOverlap
         (fun sigma : ℝ => squarefreeHeightParameter sigma delta gamma) 1 := by
       unfold squarefreeHeightParameter
       fun_prop
-    simpa [squarefreeHeightParameter, t] using hcont.tendsto.mono_left inf_le_left
+    simpa [squarefreeHeightParameter, t] using! hcont.tendsto.mono_left inf_le_left
   have htwoParam : Tendsto
       (fun sigma : ℝ => 2 * squarefreeHeightParameter sigma delta gamma)
       (𝓝[>] (1 : ℝ)) (𝓝 (2 * t)) :=
@@ -221,7 +223,8 @@ theorem tendsto_squarefreeMacroscopicHeightOverlap
     (differentiableAt_riemannZeta htwoTOne).continuousAt.tendsto.comp htwoParam
   have hunitSigma : Tendsto (fun sigma : ℝ => zetaResidueUnit (sigma : ℂ))
       (𝓝[>] (1 : ℝ)) (𝓝 (1 : ℂ)) := by
-    simpa using zetaResidueUnit_analyticAt.continuousAt.tendsto.comp hsigma
+    simpa only [Function.comp_def, zetaResidueUnit_one] using!
+      zetaResidueUnit_analyticAt.continuousAt.tendsto.comp hsigma
   have hzetaTwoT : riemannZeta (2 * t) ≠ 0 :=
     riemannZeta_ne_zero_of_one_lt_re htwoTRe
   have hregularized := (hzetaParam.mul hzetaTwoSigma).div
@@ -289,7 +292,7 @@ theorem tendsto_squarefreeHeightOverlap_fixed_nonzero
       (𝓝[>] (1 : ℝ)) (𝓝 0) := by
     have hcont : ContinuousAt (fun sigma : ℝ => ((sigma - 1 : ℝ) : ℂ)) 1 := by
       fun_prop
-    simpa using hcont.tendsto.mono_left inf_le_left
+    simpa using! hcont.tendsto.mono_left inf_le_left
   have hprod := hmacro.mul hepsilon
   have hprod0 : Tendsto
       (fun sigma : ℝ => squarefreeMacroscopicHeightOverlap sigma delta gamma *

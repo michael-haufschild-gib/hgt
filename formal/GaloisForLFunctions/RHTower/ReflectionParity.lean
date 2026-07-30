@@ -100,7 +100,7 @@ theorem neg_one_pow_orderAt_of_signed_reflection_eventually {f : ℂ → ℂ} {c
   have hεsq : ε * ε = 1 := by rcases hε with h1 | h1 <;> rw [h1] <;> ring
   have hrefl_nhds : Tendsto (fun s : ℂ => 2 * c - s) (𝓝 c) (𝓝 c) := by
     have h := (continuousAt_const (x := c) (y := 2 * c)).sub continuousAt_id
-    simpa [h2cc] using h.tendsto
+    simpa [h2cc] using! h.tendsto
   have hrefl_within : Tendsto (fun s : ℂ => 2 * c - s) (𝓝[≠] c) (𝓝 c) :=
     hrefl_nhds.mono_left nhdsWithin_le_nhds
   have hfact_ref : ∀ᶠ s in 𝓝[≠] c, f (2 * c - s) = (2 * c - s - c) ^ m * p (2 * c - s) := by

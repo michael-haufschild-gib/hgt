@@ -514,7 +514,7 @@ theorem graphRelativeEnergy_linearIndependent_of_energy
     exact hinc
   have hmapped := hrel.map' S.subtype (by simp)
   simpa only [Function.comp_apply, rel, eS, graphRelativeEnergy,
-    Submodule.coe_sub] using hmapped
+    Submodule.coe_sub] using! hmapped
 
 /-- A rationally independent full energy family simultaneously saturates
 the temporal capacity of every observer graph on the system. -/
@@ -1028,7 +1028,7 @@ theorem noAtoms_iff_of_all_returnAmplitudes_eq
     (mu nu : Measure ℝ)
     [IsProbabilityMeasure mu] [IsProbabilityMeasure nu]
     (hreturn : ∀ t : ℝ, charFun mu t = charFun nu t) :
-    NoAtoms mu ↔ NoAtoms nu := by
+    NullSingletonClass mu ↔ NullSingletonClass nu := by
   rw [spectralMeasure_eq_of_all_returnAmplitudes_eq mu nu hreturn]
 
 /-- Away from zero frequency, the rescaled sinc kernel vanishes at large
@@ -1072,7 +1072,7 @@ lemma tendsto_integral_sinc_mul {nu : Measure ℝ} [IsFiniteMeasure nu] :
   have hi :
       (∫ x, Set.indicator ({0} : Set ℝ) (fun _ ↦ (1 : ℝ)) x ∂nu) =
         nu.real {0} := by
-    simpa only [Pi.one_apply] using
+    simpa only [Pi.one_apply] using!
       (integral_indicator_one (μ := nu) (s := ({0} : Set ℝ))
         (measurableSet_singleton 0))
   convert h using 1
@@ -1085,7 +1085,7 @@ lemma tendsto_integral_complex_sinc_mul
       (𝓝 (nu.real {0} : ℂ)) := by
   have h := (Complex.continuous_ofReal.tendsto (nu.real {0})).comp
     (tendsto_integral_sinc_mul (nu := nu))
-  simpa only [Function.comp_apply, integral_complex_ofReal] using h
+  simpa only [Function.comp_def, integral_complex_ofReal] using h
 
 /-- Distribution of the difference of two independent samples from the same
 spectral measure. -/
@@ -1145,7 +1145,7 @@ lemma spectralDifferenceMeasure_singleton_zero (mu : Measure ℝ) :
 
 /-- Atomless spectra have zero spectral collision mass. -/
 lemma spectralDifferenceMeasure_singleton_zero_of_noAtoms
-    (mu : Measure ℝ) [IsFiniteMeasure mu] [NoAtoms mu] :
+    (mu : Measure ℝ) [IsFiniteMeasure mu] [NullSingletonClass mu] :
     spectralDifferenceMeasure mu {0} = 0 := by
   rw [spectralDifferenceMeasure_singleton_zero,
     Measure.prod_apply measurableSet_diagonal]
@@ -1159,7 +1159,7 @@ lemma spectralDifferenceMeasure_singleton_zero_of_noAtoms
 equivalent to absence of atoms. -/
 theorem spectralDifferenceMeasure_singleton_zero_iff_noAtoms
     (mu : Measure ℝ) [IsFiniteMeasure mu] :
-    spectralDifferenceMeasure mu {0} = 0 ↔ NoAtoms mu := by
+    spectralDifferenceMeasure mu {0} = 0 ↔ NullSingletonClass mu := by
   constructor
   · intro hzero
     rw [spectralDifferenceMeasure_singleton_zero] at hzero
@@ -1173,7 +1173,7 @@ theorem spectralDifferenceMeasure_singleton_zero_iff_noAtoms
     rw [Measure.prod_prod] at hprod
     exact mul_self_eq_zero.mp hprod
   · intro h
-    letI : NoAtoms mu := h
+    letI : NullSingletonClass mu := h
     exact spectralDifferenceMeasure_singleton_zero_of_noAtoms mu
 
 /-- Symmetric-window normalized mean survival fidelity, as a complex
@@ -1244,7 +1244,7 @@ theorem spectralReturnMeanReal_tendsto_collision
 /-- Every atomless probability spectrum has vanishing normalized mean
 fidelity, without any absolute-continuity assumption. -/
 theorem spectralReturnMean_tendsto_zero_of_noAtoms
-    (mu : Measure ℝ) [IsProbabilityMeasure mu] [NoAtoms mu] :
+    (mu : Measure ℝ) [IsProbabilityMeasure mu] [NullSingletonClass mu] :
     Tendsto (spectralReturnMean mu) atTop (𝓝 0) := by
   have h := spectralReturnMean_tendsto_collision mu
   have hzero : (spectralDifferenceMeasure mu).real {0} = 0 := by
@@ -1255,7 +1255,7 @@ theorem spectralReturnMean_tendsto_zero_of_noAtoms
 
 /-- Real form of atomless mean-fidelity escape. -/
 theorem spectralReturnMeanReal_tendsto_zero_of_noAtoms
-    (mu : Measure ℝ) [IsProbabilityMeasure mu] [NoAtoms mu] :
+    (mu : Measure ℝ) [IsProbabilityMeasure mu] [NullSingletonClass mu] :
     Tendsto (spectralReturnMeanReal mu) atTop (𝓝 0) := by
   have h := spectralReturnMeanReal_tendsto_collision mu
   have hzero : (spectralDifferenceMeasure mu).real {0} = 0 := by
@@ -1371,7 +1371,7 @@ lemma highFidelityWindowDensity_le_mean_div
 /-- For every atomless spectrum—including singular-continuous spectra—the
 time density of every fixed positive-fidelity return threshold vanishes. -/
 theorem highFidelityWindowDensity_tendsto_zero_of_noAtoms
-    (mu : Measure ℝ) [IsProbabilityMeasure mu] [NoAtoms mu]
+    (mu : Measure ℝ) [IsProbabilityMeasure mu] [NullSingletonClass mu]
     {eta : ℝ} (heta : 0 < eta) :
     Tendsto (highFidelityWindowDensity mu eta) atTop (𝓝 0) := by
   refine squeeze_zero'
@@ -1448,7 +1448,7 @@ theorem absolutelyContinuousObserverFidelity_tendsto_zero_cocompact
         density).norm
   have hsq := hnorm.pow 2
   simpa [absolutelyContinuousObserverFidelity,
-    Complex.sq_norm] using hsq
+    Complex.sq_norm] using! hsq
 
 /-- In particular, absolutely continuous observer fidelity vanishes along
 the positive time ray. -/
@@ -1625,14 +1625,14 @@ theorem schwartzObserverProbabilityMeasure_toMeasure
 /-- Atomlessness of the underlying stationary spectrum survives probe
 selection and normalization. -/
 theorem schwartzObserverProbabilityMeasure_noAtoms
-    (mu : Measure ℝ) [mu.HasTemperateGrowth] [NoAtoms mu]
+    (mu : Measure ℝ) [mu.HasTemperateGrowth] [NullSingletonClass mu]
     (probe : SchwartzMap ℝ ℂ)
     (hprobe :
       0 < ∫ x, pointwiseNormSqReal probe x ∂mu) :
-    NoAtoms
+    NullSingletonClass
       (schwartzObserverProbabilityMeasure mu probe :
         Measure ℝ) := by
-  letI : NoAtoms (schwartzObserverSpectralMeasure mu probe) := by
+  letI : NullSingletonClass (schwartzObserverSpectralMeasure mu probe) := by
     rw [schwartzObserverSpectralMeasure]
     infer_instance
   rw [schwartzObserverProbabilityMeasure_toMeasure mu probe hprobe]
@@ -1699,7 +1699,7 @@ threshold. -/
 theorem stationarySchwartzObserverHighFidelityDensity_tendsto_zero
     (Q : ContinuousSchwartzSesquilinearForm)
     (hQ : Q.MomentumSymmetric) (hQnonneg : Q.IsNonnegative)
-    [NoAtoms (Q.compactSpectralRieszMeasure hQ hQnonneg)]
+    [NullSingletonClass (Q.compactSpectralRieszMeasure hQ hQnonneg)]
     (probe : SchwartzMap ℝ ℂ)
     (hprobe :
       0 < (Q.fourierPullback probe probe).re)
@@ -1715,7 +1715,7 @@ theorem stationarySchwartzObserverHighFidelityDensity_tendsto_zero
   letI :
       (Q.compactSpectralRieszMeasure hQ hQnonneg).HasTemperateGrowth :=
     Q.compactSpectralRieszMeasure_hasTemperateGrowth hQ hQnonneg
-  letI : NoAtoms
+  letI : NullSingletonClass
       (schwartzObserverProbabilityMeasure
         (Q.compactSpectralRieszMeasure hQ hQnonneg) probe :
           Measure ℝ) :=
@@ -1912,7 +1912,7 @@ theorem oneStationaryForm_twoObserverTemporalPhases :
       charFun_dirac]
     norm_num
   · intro eta heta
-    haveI : NoAtoms
+    haveI : NullSingletonClass
         (schwartzObserverProbabilityMeasure
           observerPhaseSeparatedSpectrum
           dispersivePhaseObserverProbe : Measure ℝ) := by
@@ -1932,11 +1932,11 @@ theorem noAtoms_map_prod_of_countable_fibers
     {α β γ : Type*}
     [MeasurableSpace α] [MeasurableSpace β] [MeasurableSpace γ]
     [MeasurableSingletonClass γ]
-    (mu : Measure α) (nu : Measure β) [NoAtoms nu]
+    (mu : Measure α) (nu : Measure β) [NullSingletonClass nu]
     (dispersion : α × β → γ) (hdispersion : Measurable dispersion)
     (hfiber :
       ∀ a energy, {b | dispersion (a, b) = energy}.Countable) :
-    NoAtoms ((mu.prod nu).map dispersion) where
+    NullSingletonClass ((mu.prod nu).map dispersion) where
   measure_singleton energy := by
     rw [Measure.map_apply hdispersion
       (measurableSet_singleton energy)]
@@ -1952,13 +1952,13 @@ theorem noAtoms_map_of_absolutelyContinuous_prod_of_countable_fibers
     {α β γ : Type*}
     [MeasurableSpace α] [MeasurableSpace β] [MeasurableSpace γ]
     [MeasurableSingletonClass γ]
-    (mu : Measure α) (nu : Measure β) [NoAtoms nu]
+    (mu : Measure α) (nu : Measure β) [NullSingletonClass nu]
     (source : Measure (α × β))
     (hsource : source ≪ mu.prod nu)
     (dispersion : α × β → γ) (hdispersion : Measurable dispersion)
     (hfiber :
       ∀ a energy, {b | dispersion (a, b) = energy}.Countable) :
-    NoAtoms (source.map dispersion) where
+    NullSingletonClass (source.map dispersion) where
   measure_singleton energy := by
     rw [Measure.map_apply hdispersion
       (measurableSet_singleton energy)]
@@ -1973,12 +1973,12 @@ theorem noAtoms_map_withDensity_prod_of_countable_fibers
     {α β γ : Type*}
     [MeasurableSpace α] [MeasurableSpace β] [MeasurableSpace γ]
     [MeasurableSingletonClass γ]
-    (mu : Measure α) (nu : Measure β) [NoAtoms nu]
+    (mu : Measure α) (nu : Measure β) [NullSingletonClass nu]
     (weight : α × β → ENNReal)
     (dispersion : α × β → γ) (hdispersion : Measurable dispersion)
     (hfiber :
       ∀ a energy, {b | dispersion (a, b) = energy}.Countable) :
-    NoAtoms
+    NullSingletonClass
       (((mu.prod nu).withDensity weight).map dispersion) :=
   noAtoms_map_of_absolutelyContinuous_prod_of_countable_fibers
     mu nu ((mu.prod nu).withDensity weight)
@@ -2030,9 +2030,9 @@ has atomless observed relativistic energy, after every nonnegative
 observer weighting. -/
 theorem noAtoms_relativisticEnergy_weighted_product
     (massMeasure momentumMeasure : Measure ℝ)
-    [NoAtoms momentumMeasure]
+    [NullSingletonClass momentumMeasure]
     (weight : ℝ × ℝ → ENNReal) :
-    NoAtoms
+    NullSingletonClass
       (((massMeasure.prod momentumMeasure).withDensity weight).map
         relativisticEnergy) :=
   noAtoms_map_withDensity_prod_of_countable_fibers
@@ -2052,7 +2052,7 @@ open scoped Cardinal
 /-- An atomless probability spectrum cannot have countable topological
 support. -/
 theorem support_not_countable_of_noAtoms
-    (mu : Measure ℝ) [IsProbabilityMeasure mu] [NoAtoms mu] :
+    (mu : Measure ℝ) [IsProbabilityMeasure mu] [NullSingletonClass mu] :
     ¬mu.support.Countable := by
   intro hcount
   have hzero : mu mu.support = 0 :=
@@ -2088,7 +2088,7 @@ theorem mk_support_eq_continuum_of_not_countable
 /-- Closed support of every atomless probability law on the real line has
 exactly continuum cardinality. -/
 theorem mk_support_eq_continuum_of_noAtoms
-    (mu : Measure ℝ) [IsProbabilityMeasure mu] [NoAtoms mu] :
+    (mu : Measure ℝ) [IsProbabilityMeasure mu] [NullSingletonClass mu] :
     #(mu.support) = Cardinal.continuum :=
   mk_support_eq_continuum_of_not_countable mu
     (support_not_countable_of_noAtoms mu)
@@ -2140,7 +2140,7 @@ theorem measureTemporalDimension_eq_continuum_of_not_countable
 /-- Universal cardinal jump: every atomless probability spectrum has
 observer temporal dimension exactly continuum, not merely infinite. -/
 theorem measureTemporalDimension_eq_continuum_of_noAtoms
-    (mu : Measure ℝ) [IsProbabilityMeasure mu] [NoAtoms mu] :
+    (mu : Measure ℝ) [IsProbabilityMeasure mu] [NullSingletonClass mu] :
     measureTemporalDimension mu =
       Cardinal.continuum :=
   measureTemporalDimension_eq_continuum_of_not_countable mu
@@ -2166,7 +2166,7 @@ theorem measureTemporalDimension_le_aleph0_or_eq_continuum
 density of every fixed positive-fidelity return threshold hold together for
 every probability spectrum on the real line. -/
 theorem atomlessObserverTemporalPhaseLaw
-    (mu : Measure ℝ) [IsProbabilityMeasure mu] [NoAtoms mu] :
+    (mu : Measure ℝ) [IsProbabilityMeasure mu] [NullSingletonClass mu] :
     measureTemporalDimension mu = Cardinal.continuum ∧
       ∀ eta : ℝ, 0 < eta →
         Tendsto (highFidelityWindowDensity mu eta)
@@ -2187,7 +2187,7 @@ zero-density returns above every fixed positive fidelity. -/
 theorem dispersiveSpatialObserverTemporalPhaseLaw
     {α β : Type*}
     [MeasurableSpace α] [MeasurableSpace β]
-    (mu : Measure α) (nu : Measure β) [NoAtoms nu]
+    (mu : Measure α) (nu : Measure β) [NullSingletonClass nu]
     (source : Measure (α × β))
     (hsource : source ≪ mu.prod nu)
     (dispersion : α × β → ℝ)
@@ -2203,7 +2203,7 @@ theorem dispersiveSpatialObserverTemporalPhaseLaw
           (highFidelityWindowDensity
             (source.map dispersion) eta)
           atTop (𝓝 0) := by
-  letI : NoAtoms (source.map dispersion) :=
+  letI : NullSingletonClass (source.map dispersion) :=
     noAtoms_map_of_absolutelyContinuous_prod_of_countable_fibers
       mu nu source hsource dispersion hdispersion hfiber
   exact SpectralMemory.atomlessObserverTemporalPhaseLaw
@@ -2214,7 +2214,7 @@ every normalized correlated joint law absolutely continuous with respect
 to an arbitrary mass law times an atomless momentum law. -/
 theorem relativisticSpatialObserverTemporalPhaseLaw
     (massMeasure momentumMeasure : Measure ℝ)
-    [NoAtoms momentumMeasure]
+    [NullSingletonClass momentumMeasure]
     (source : Measure (ℝ × ℝ))
     (hsource :
       source ≪ massMeasure.prod momentumMeasure)
@@ -2243,7 +2243,7 @@ returns. -/
 theorem stationarySchwartzObserverTemporalPhaseLaw
     (Q : ContinuousSchwartzSesquilinearForm)
     (hQ : Q.MomentumSymmetric) (hQnonneg : Q.IsNonnegative)
-    [NoAtoms (Q.compactSpectralRieszMeasure hQ hQnonneg)]
+    [NullSingletonClass (Q.compactSpectralRieszMeasure hQ hQnonneg)]
     (probe : SchwartzMap ℝ ℂ)
     (hprobe :
       0 < (Q.fourierPullback probe probe).re) :
@@ -2264,7 +2264,7 @@ theorem stationarySchwartzObserverTemporalPhaseLaw
   letI :
       (Q.compactSpectralRieszMeasure hQ hQnonneg).HasTemperateGrowth :=
     Q.compactSpectralRieszMeasure_hasTemperateGrowth hQ hQnonneg
-  letI : NoAtoms
+  letI : NullSingletonClass
       (schwartzObserverProbabilityMeasure
         (Q.compactSpectralRieszMeasure hQ hQnonneg) probe :
           Measure ℝ) :=

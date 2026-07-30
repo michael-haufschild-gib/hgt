@@ -51,7 +51,7 @@ theorem norm_cpow_sub_cpow_le (n : ℕ) (hn : 1 ≤ n) {sm : ℝ} {z w : ℂ}
       (Complex.exp (-(c * u)) * (-c)) u := by
     intro u
     have h1 : HasDerivAt (fun v : ℂ => -(c * v)) (-c) u := by
-      simpa using ((hasDerivAt_id u).const_mul c).neg
+      simpa using! ((hasDerivAt_id u).const_mul c).neg
     exact h1.cexp
   have hbound : ∀ u ∈ {v : ℂ | sm ≤ v.re},
       ‖Complex.exp (-(c * u)) * (-c)‖ ≤ Real.log n * (n : ℝ) ^ (-sm) := by

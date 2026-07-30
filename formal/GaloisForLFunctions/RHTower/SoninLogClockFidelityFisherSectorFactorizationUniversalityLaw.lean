@@ -36,6 +36,7 @@ theorem soninLogClock_homogeneousFidelityDeficit_eq_invariantWeight_mul_erasedQF
         (2 : ℂ) • ((1 - soninLogFourierInvariantAverage) (X ψ)) := by
     have hfixed : soninLogFourierScattering ψ = ψ := by
       rw [GaloisForLFunctions.PhysicalState] at hψ
+      change (soninLogFourierScattering - 1) ψ = 0 at hψ
       apply sub_eq_zero.mp
       simpa only [_root_.sub_apply, one_apply_eq_self] using hψ
     rw [_root_.sub_apply, mul_apply_eq_comp,

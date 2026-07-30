@@ -170,7 +170,7 @@ theorem Relation.coeff_div_coeff_conj_eq_of_supportMinimal
         (IsFractionRing.isAlgebraic_iff ℤ ℚ ℂ).mp (R.coeff_algebraic j)
       have hp : IsAlgebraic ℚ (R.coeff pivot) :=
         (IsFractionRing.isAlgebraic_iff ℤ ℚ ℂ).mp (R.coeff_algebraic pivot)
-      simpa [div_eq_mul_inv] using hj.mul hp.inv
+      simpa [div_eq_mul_inv] using! hj.mul hp.inv
     have hconjQ : IsAlgebraic ℚ (starRingEnd ℂ (ratio j)) := by
       have := hjQ.algHom (Complex.conjAe.restrictScalars ℚ).toAlgHom
       simpa [Complex.conjAe_coe] using this

@@ -194,7 +194,7 @@ theorem differentiableOn_xiRectangularPowerLandauContinuation_landauBall
   have hzeta : DifferentiableAt ℂ (fun z : ℂ => riemannZeta (z - alpha)) s :=
     (differentiableAt_riemannZeta hne).comp s
       (differentiableAt_id.sub (differentiableAt_const (c := (alpha : ℂ))))
-  simpa only [xiRectangularPowerLandauContinuation] using
+  simpa only [xiRectangularPowerLandauContinuation] using!
     ((hshift s hs).const_mul (2 : ℂ)).add
       (hzeta.differentiableWithinAt.const_mul (C : ℂ))
 

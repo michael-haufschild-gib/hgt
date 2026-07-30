@@ -39,7 +39,7 @@ theorem integral_verticalCauchyKernel {σ t a b : ℝ} (ht : 0 < t) :
   · intro x hx
     have hlin : HasDerivAt (fun y : ℝ => (σ + y) / t) (1 / t) x := by
       simpa using ((hasDerivAt_const x σ).add (hasDerivAt_id x)).div_const t
-    convert hlin.arctan using 1
+    convert! hlin.arctan using 1
     unfold verticalCauchyKernel
     field_simp [ht.ne']
     ring
@@ -143,7 +143,7 @@ theorem im_digamma_vertical_sandwich {σ t : ℝ} (hσ : 0 ≤ σ) (ht : 0 < t) 
       simpa [Nat.cast_zero, zero_add] using add_le_add_left htail (f 0)
     have hpartialSucc : Tendsto (fun N : ℕ => digammaImaginaryPartialSum σ t (N + 1))
         atTop (nhds (Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)).im) := by
-      simpa [add_comm] using hpartial.comp (tendsto_add_atTop_nat 1)
+      simpa [add_comm] using! hpartial.comp (tendsto_add_atTop_nat 1)
     have hright : Tendsto (fun N : ℕ => f 0 + ∫ x in (0 : ℝ)..N, f x)
         atTop (nhds (f 0 + (Real.pi / 2 - Real.arctan (σ / t)))) :=
       tendsto_const_nhds.add hInt
@@ -166,7 +166,7 @@ theorem im_digamma_vertical_tendsto_pi_div_two (σ : ℝ) (hσ : 0 ≤ σ) :
   have hratio : Tendsto (fun t : ℝ => σ / t) atTop (nhds 0) := by
     simpa [div_eq_mul_inv] using hinv.const_mul σ
   have hatan : Tendsto (fun t : ℝ => Real.arctan (σ / t)) atTop (nhds 0) := by
-    simpa using Real.continuous_arctan.continuousAt.tendsto.comp hratio
+    simpa using! Real.continuous_arctan.continuousAt.tendsto.comp hratio
   have hlower : Tendsto (fun t : ℝ => Real.pi / 2 - Real.arctan (σ / t))
       atTop (nhds (Real.pi / 2)) := by simpa using tendsto_const_nhds.sub hatan
   have hone : Tendsto (fun t : ℝ => 1 / t) atTop (nhds 0) := by
@@ -191,7 +191,7 @@ theorem digamma_vertical_sub_log_I_tendsto_zero (σ : ℝ) (hσ : 0 ≤ σ) :
       Complex.ofReal
         ((Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)).re - Real.log t))
       atTop (nhds 0) := by
-    simpa only [Complex.ofReal_zero] using
+    simpa only [Complex.ofReal_zero] using!
       Complex.continuous_ofReal.continuousAt.tendsto.comp hre
   have him := (im_digamma_vertical_tendsto_pi_div_two σ hσ).sub_const (Real.pi / 2)
   have himC : Tendsto (fun t : ℝ =>
@@ -202,7 +202,7 @@ theorem digamma_vertical_sub_log_I_tendsto_zero (σ : ℝ) (hσ : 0 ≤ σ) :
         Complex.ofReal
           ((Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)).im - Real.pi / 2))
         atTop (nhds 0) := by
-      simpa only [sub_self, Complex.ofReal_zero] using
+      simpa only [sub_self, Complex.ofReal_zero] using!
         Complex.continuous_ofReal.continuousAt.tendsto.comp him
     simpa using hcast.mul_const Complex.I
   have hsum := hreC.add himC

@@ -374,7 +374,7 @@ theorem depthSecularRoot_ratio_tendsto
   have hl0D : Tendsto (fun lam => flattenedCoords (ℓ lam) k 0) atTop
       (nhds (Real.sqrt S)) := by
     have hcomp := (Real.continuous_sqrt.tendsto S).comp hsumlim
-    simpa [Function.comp_def] using hcomp
+    simpa [Function.comp_def] using! hcomp
   have hl1D : Tendsto (fun lam => flattenedCoords (ℓ lam) k 1) atTop (nhds (a (k + 1))) :=
     hl (k + 1) le_rfl
   -- eventual hypotheses of the flattened families

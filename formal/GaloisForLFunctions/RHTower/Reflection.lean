@@ -222,7 +222,7 @@ theorem analyticOrderAt_comp_one_sub {f : ℂ → ℂ} (hf : Differentiable ℂ 
     (differentiable_const (1 : ℂ)).sub differentiable_id
   have hFd : Differentiable ℂ F := by
     have h := hf.comp haff
-    simpa [hFdef, Function.comp] using h
+    simpa [hFdef, Function.comp] using! h
   have hfa : AnalyticAt ℂ f z :=
     (hf.differentiableOn.analyticOnNhd isOpen_univ) z (Set.mem_univ z)
   have hFa : AnalyticAt ℂ F (1 - z) :=
@@ -248,7 +248,7 @@ theorem analyticOrderAt_comp_one_sub {f : ℂ → ℂ} (hf : Differentiable ℂ 
         simpa using hp
       have hconst : AnalyticAt ℂ (fun _ : ℂ => ((-1 : ℂ)) ^ n) (1 - z) := analyticAt_const
       have h := hconst.mul hcomp
-      simpa [hPdef, Function.comp] using h
+      simpa [hPdef, Function.comp] using! h
     have hPz : P (1 - z) ≠ 0 := by
       simp only [hPdef]
       have h1 : (1 : ℂ) - (1 - z) = z := by ring

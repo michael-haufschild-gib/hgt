@@ -112,7 +112,7 @@ theorem finite_exactGeometricLevel_cascade_of_remainder
               atTop (nhds 0) := by
             change Tendsto (Complex.ofReal ∘ fun q : ℕ =>
               ((q : ℝ) ^ d) * Real.exp (-gamma * lam ^ q)) atTop (nhds 0)
-            simpa only [map_zero] using
+            simpa only [map_zero] using!
               Complex.continuous_ofReal.continuousAt.tendsto.comp hdecayR
           have hmul := (hpoly.mul hdecayC).mul
             (tendsto_const_nhds : Tendsto (fun _ : ℕ => phase a) atTop (nhds (phase a)))

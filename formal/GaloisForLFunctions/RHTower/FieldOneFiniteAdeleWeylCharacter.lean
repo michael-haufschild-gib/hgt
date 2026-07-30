@@ -243,7 +243,7 @@ theorem fieldOneFiniteAdeleStandardUnitAddCircleCharacter_ne_zero :
       fieldOneFiniteAdeleStandardUnitAddCircleCharacter
         (fieldOneFiniteAdeleSingle v
           (fieldOneFiniteAdeleLocalPrincipalPart v)) = 0 := by
-    simpa only [Pi.zero_apply] using
+    simpa only [Pi.zero_apply] using!
       DFunLike.congr_fun h
         (fieldOneFiniteAdeleSingle v
           (fieldOneFiniteAdeleLocalPrincipalPart v))
@@ -261,7 +261,7 @@ theorem fieldOneFiniteAdeleStandardAddChar_isLocallyConstant :
     IsLocallyConstant fieldOneFiniteAdeleStandardAddChar := by
   simpa only [fieldOneFiniteAdeleStandardAddChar,
     AddChar.compAddMonoidHom_apply,
-    MonoidHom.compAddChar_apply] using
+    MonoidHom.compAddChar_apply] using!
       fieldOneFiniteAdeleStandardUnitAddCircleCharacter_isLocallyConstant.comp
         (fun z : UnitAddCircle => (AddCircle.toCircle z : ℂ))
 
@@ -275,7 +275,7 @@ theorem fieldOneFiniteAdeleStandardAddChar_ne_one :
       (AddCircle.toCircle
         (fieldOneFiniteAdeleStandardUnitAddCircleCharacter x) : ℂ) = 1 := by
     simpa only [fieldOneFiniteAdeleStandardAddChar, Pi.one_apply,
-      AddChar.compAddMonoidHom_apply, MonoidHom.compAddChar_apply] using
+      AddChar.compAddMonoidHom_apply, MonoidHom.compAddChar_apply] using!
         DFunLike.congr_fun h x
   have hcircle :
       AddCircle.toCircle

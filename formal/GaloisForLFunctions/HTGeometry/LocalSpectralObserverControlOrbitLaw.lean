@@ -121,8 +121,8 @@ theorem linearSpectralObserverRestrictedResponse_eq_sum_connectedSubpackets_germ
     rcases hnot with hemptyPacket | hdisconnected
     · have hp : packet = ∅ :=
         Finset.not_nonempty_iff_eq_empty.mp hemptyPacket
-      simpa [hp] using Filter.Eventually.of_forall
-        (fun z => congrFun hempty z)
+      filter_upwards [] with z
+      simpa [hp] using congrFun hempty z
     · exact
         L.linearSpectralObserverPacketResponse_germ_eq_zero_of_disconnected
           onsite hinj observer packet (not_not.mp hdisconnected)

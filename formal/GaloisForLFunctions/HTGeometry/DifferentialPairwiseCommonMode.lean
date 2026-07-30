@@ -121,8 +121,10 @@ theorem differentialAdjoin_range_pairwiseDifferences_eq_rootedDifferences
         · exact subset_differentialAdjoin F _
             (Set.mem_range_self (⟨q, hq⟩ : ↑({z | z ≠ root} : Set V)))
       have h := IntermediateField.sub_mem _ (hstar v) (hstar w)
-      convert h using 1
-      ring
+      change x v - x w ∈ differentialAdjoin F
+        (Set.range fun z : ↑({z | z ≠ root} : Set V) ↦ x z - x root)
+      rw [show x v - x w = (x v - x root) - (x w - x root) by ring]
+      exact h
     · exact derivationClosed_differentialAdjoin F _
   · apply differentialAdjoin_le F
     · rintro _ ⟨v, rfl⟩
@@ -297,7 +299,7 @@ theorem hypertranscendentalOver_anchor_pairwiseDifferences
   rw [differentialAdjoin_range_pairwiseDifferences_eq_rootedDifferences root x]
   let y : V → K := fun i ↦ if i = root then x root else x i - x root
   have hy : DifferentialIndependent F y := by
-    simpa [y, anchorDifferenceGaugeFamily] using
+    simpa [y, anchorDifferenceGaugeFamily] using!
       differentialIndependent_anchorDifferenceGauge root x hx
   let left : Unit → K := fun _ ↦ x root
   let right : ↑({v | v ≠ root} : Set V) → K := fun v ↦ x v - x root
@@ -541,7 +543,7 @@ theorem hypertranscendentalOver_anchor_pairwiseDifferences_iff_loop_not_mem_rang
       exact congrArg Subtype.val hij
     have hx : DifferentialIndependent F x := by
       have hcomp := hnonloop.comp embed hembed
-      simpa only [embed] using hcomp
+      simpa only [embed] using! hcomp
     exact hypertranscendentalOver_anchor_pairwiseDifferences anchor x hx
 
 /-- **Pointed-matroid common-mode spectrum.** If a represented differential family is exactly a
@@ -648,7 +650,7 @@ theorem hypertranscendentalOver_gradedPairwiseDifferences_of_loop_not_mem_range
   have hxOccupied : DifferentialIndependent F
       (fun q : ↑occupied ↦ x q) := by
     have hcomp := hx.comp toSupport htoSupport
-    simpa only [support, occupied, toSupport] using hcomp
+    simpa only [support, occupied, toSupport] using! hcomp
   let occupiedAnchor : ↑occupied :=
     ⟨frame anchor, Set.mem_range_self anchor⟩
   have hht :=
@@ -686,7 +688,7 @@ theorem differentialAdjoin_range_gradedPairwiseDifferences_eq_iff_loop_mem_range
     have hxOccupied : DifferentialIndependent F
         (fun q : ↑occupied ↦ x q) := by
       have hcomp := hx.comp toSupport htoSupport
-      simpa only [support, occupied, toSupport] using hcomp
+      simpa only [support, occupied, toSupport] using! hcomp
     let occupiedAnchor : ↑occupied :=
       ⟨frame anchor, Set.mem_range_self anchor⟩
     have hstrict :=

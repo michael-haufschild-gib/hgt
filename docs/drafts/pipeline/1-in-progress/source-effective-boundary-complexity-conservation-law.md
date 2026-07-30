@@ -797,3 +797,54 @@ irrelevant to RH.
   beyond-all-orders-flat face is a ghost: the formalized Euler flat tower makes it maximal hidden
   arithmetic state.  Isolated pointed strict gluing, not positivity or suppression of flat terms,
   as the RH-bearing source theorem.
+
+## Correction: bilateral regularity does not imply purity
+
+The paragraph above claiming that a finite-order bilateral prime-circle record forces
+\(\lvert p^{\rho-1/2}\rvert=1\) is false without a multiplicativity hypothesis.  Let
+\[
+ w_{p,\rho}:=p^{1/2-\rho},\qquad |w_{p,\rho}|<1
+\]
+for a strict-right point \(\rho\).  The Poisson measure of the disk point \(w_{p,\rho}\) defines a
+smooth positive state on \(C^*(\mathbb Z)\cong C(\mathbb T)\) with moments
+\[
+ \varphi_{p,\rho}(U^m)=w_{p,\rho}^{\,m},
+ \qquad
+ \varphi_{p,\rho}(U^{-m})=\overline{w_{p,\rho}}^{\,m}.
+ \tag{C1}
+\]
+Thus reflection can glue the two one-sided radial characters into a finite-order bilateral record
+at every strict-right point.  Its exact star-Kadison defect is
+\[
+ \varphi_{p,\rho}(U^{-m}U^m)
+ -
+ \varphi_{p,\rho}(U^{-m})\varphi_{p,\rho}(U^m)
+ =
+ 1-p^{m(1-2\operatorname{Re}\rho)}.
+ \tag{C2}
+\]
+Consequently the critical line is characterized not by bilateral regularity but by
+**multiplicativity**, equivalently purity of this prime-angle state:
+\[
+ \operatorname{Re}\rho=\frac12
+ \quad\Longleftrightarrow\quad
+ \varphi_{p,\rho}\text{ is a character}
+ \quad\Longleftrightarrow\quad
+ U_p\text{ lies in its multiplicative domain}.
+ \tag{C3}
+\]
+
+The source polarization--record conjecture and proof program must therefore be read with the
+following replacement for its load-bearing assertion:
+
+> Source localization of the Xi principal conormal must preserve the **multiplicative domain** of
+> the ordinary-integer prime-angle generators.  Finite-order distributionality, bilateral
+> reflection, positivity, or a unitary dilation do not imply this.  The complementary record must
+> be retained and its vanishing on the landed conormal proved from the source correspondence.
+
+The exact Poisson-state/Kadison/Stokes identity and the sharpened producer are recorded in
+`source-localization-modular-defect-conservation-law.md`, equations `(154)`--`(160)`.
+
+- 2026-07-30 — Retracted the finite-order-bilateral-record implication.  Replaced it by the exact
+  multiplicative-domain criterion `(C1)`--`(C3)`: off-line conormals are smooth positive mixed
+  Poisson states, while critical-line conormals are precisely the pure characters.

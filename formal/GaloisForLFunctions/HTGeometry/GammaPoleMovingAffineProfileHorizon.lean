@@ -33,7 +33,7 @@ noncomputable section
 `r`. -/
 def LaurentPoleGradeAtMost {R : Type*} [Semiring R]
     (r : ℕ) (F : LaurentPolynomial R) : Prop :=
-  ∀ q : ℤ, (r : ℤ) < q → F q = 0
+  ∀ q : ℤ, (r : ℤ) < q → F.coeff q = 0
 
 namespace LaurentPoleGradeAtMost
 
@@ -54,7 +54,7 @@ theorem add {R : Type*} [Semiring R] {r : ℕ}
     (hG : LaurentPoleGradeAtMost r G) :
     LaurentPoleGradeAtMost r (F + G) := by
   intro q hq
-  change F q + G q = 0
+  change F.coeff q + G.coeff q = 0
   rw [hF q hq, hG q hq, add_zero]
 
 theorem mono {R : Type*} [Semiring R] {r s : ℕ}
@@ -72,11 +72,11 @@ theorem mul {R : Type*} [Semiring R] {r s : ℕ}
     (hG : LaurentPoleGradeAtMost s G) :
     LaurentPoleGradeAtMost (r + s) (F * G) := by
   intro q hq
-  rw [AddMonoidAlgebra.mul_apply_left]
+  rw [AddMonoidAlgebra.coeff_mul_apply_left]
   classical
   apply Finset.sum_eq_zero
   intro a ha
-  change F a * G (-a + q) = 0
+  change F.coeff a * G.coeff (-a + q) = 0
   by_cases har : (r : ℤ) < a
   · rw [hF a har, zero_mul]
   · have hsq : (s : ℤ) < -a + q := by
@@ -128,13 +128,13 @@ def GammaPoleProfileAtMostSimple
 relation. -/
 theorem gammaPolePolynomialJetLaurentEval_coeff_eq_symbolic_eval
     (n : ℕ) (P : MvPolynomial (Fin (n + 1)) (Polynomial ℂ)) (q : ℤ) :
-    gammaPolePolynomialJetLaurentEval n P q =
+    (gammaPolePolynomialJetLaurentEval n P).coeff q =
       gammaPoleScaleAndUnitDerivativeLaurentEval
-        (gammaPoleSymbolicPolynomialJetLaurentEval n P q) := by
-  have h := congrArg (fun F : NatGerm[T;T⁻¹] => F q)
+        ((gammaPoleSymbolicPolynomialJetLaurentEval n P).coeff q) := by
+  have h := congrArg (fun F : NatGerm[T;T⁻¹] => F.coeff q)
     (gammaPoleSymbolicToActual_polynomialJetLaurentEval n P)
   simpa [gammaPoleSymbolicToActual,
-    AddMonoidAlgebra.mapRingHom_apply] using h.symm
+    AddMonoidAlgebra.coeff_mapRingHom] using! h.symm
 
 /-- Every actual outer pole-cutoff proposition reflects exactly to the
 faithful symbolic proposition. -/
@@ -196,12 +196,12 @@ theorem gammaPoleSymbolicProfileAtMostSimple_totalDegree_le_one
 /-- A moving polynomial coefficient has no positive outer pole grades. -/
 theorem gammaPoleSymbolicMovingCoefficientLaurent_coeff_pos
     (p : Polynomial ℂ) (q : ℤ) (hq : 0 < q) :
-    gammaPoleSymbolicMovingCoefficientLaurent p q = 0 := by
+    (gammaPoleSymbolicMovingCoefficientLaurent p).coeff q = 0 := by
   rw [gammaPoleSymbolicMovingCoefficientLaurent, RingHom.comp_apply]
-  change movingPoleTaylorLaurent
+  change (movingPoleTaylorLaurent
     (gammaPoleRationalScaleDerivativeInclude gammaPoleCenterRational)
     gammaPoleSymbolicPhysicalScale
-    (p.map gammaPoleComplexScaleDerivativeInclude) q = 0
+    (p.map gammaPoleComplexScaleDerivativeInclude)).coeff q = 0
   exact movingPoleTaylorLaurent_coeff_pos _ _ _ q hq
 
 /-- **Moving Gamma vacuum horizon.**  A symbolic profile with no positive
@@ -233,7 +233,7 @@ theorem gammaPoleProfilePoleGradeAtMost_zero_iff_constant
 /-- A moving polynomial coefficient has no negative signed-scale grades. -/
 theorem gammaPoleSymbolicMovingCoefficientLaurent_inner_coeff_neg
     (p : Polynomial ℂ) (q l : ℤ) (hl : l < 0) :
-    (gammaPoleSymbolicMovingCoefficientLaurent p q) l = 0 := by
+    ((gammaPoleSymbolicMovingCoefficientLaurent p).coeff q).coeff l = 0 := by
   ext m
   by_contra hcoeff
   have hfilter :=
@@ -255,18 +255,18 @@ theorem gammaPoleSymbolicMovingCoefficientLaurent_inner_coeff_neg
 profile cannot create a grade below the pure factor's grade. -/
 theorem gammaPoleInnerLower_mul_eq_zero
     {A B : GammaPoleMovingJetSymbolic} {r l : ℤ}
-    (hA : ∀ q s : ℤ, s < 0 → (A q) s = 0)
+    (hA : ∀ q s : ℤ, s < 0 → (A.coeff q).coeff s = 0)
     (hB : GammaPoleInnerPure r B) (hlr : l < r) (q : ℤ) :
-    ((A * B) q) l = 0 := by
+    ((A * B).coeff q).coeff l = 0 := by
   ext m
   by_contra hcoeff
   have hsupp : ((q, l), m) ∈
-      (gammaPoleTriFlatten (A * B)).support := by
+      (gammaPoleTriFlatten (A * B)).coeff.support := by
     rw [Finsupp.mem_support_iff]
-    change MvPolynomial.coeff m (((A * B) q) l) ≠ 0
+    change MvPolynomial.coeff m (((A * B).coeff q).coeff l) ≠ 0
     exact hcoeff
   rw [map_mul] at hsupp
-  have hsupp' := AddMonoidAlgebra.support_mul
+  have hsupp' := AddMonoidAlgebra.support_coeff_mul_subset
     (gammaPoleTriFlatten A) (gammaPoleTriFlatten B) hsupp
   rcases Finset.mem_add.mp hsupp' with ⟨x, hx, y, hy, hxy⟩
   have hinner := congrArg (fun a : GammaPoleTriIndex => a.1.2) hxy
@@ -274,7 +274,7 @@ theorem gammaPoleInnerLower_mul_eq_zero
   have hxinner : x.1.2 < 0 := by
     rw [hB y hy] at hinner
     omega
-  have hxne : gammaPoleTriFlatten A x ≠ 0 :=
+  have hxne : (gammaPoleTriFlatten A).coeff x ≠ 0 :=
     Finsupp.mem_support_iff.mp hx
   apply hxne
   rcases x with ⟨⟨xq, xl⟩, xm⟩
@@ -285,10 +285,12 @@ theorem gammaPoleInnerLower_mul_eq_zero
 most `j + 1`. -/
 theorem gammaPoleSymbolicDerivativeLaurentProfile_coeff_eq_zero_of_gt
     (j : ℕ) (q : ℤ) (hq : ((j + 1 : ℕ) : ℤ) < q) :
-    gammaPoleSymbolicDerivativeLaurentProfile j q = 0 := by
+    (gammaPoleSymbolicDerivativeLaurentProfile j).coeff q = 0 := by
   by_contra hcoeffOuter
-  obtain ⟨l, hl⟩ := Finsupp.support_nonempty_iff.mpr hcoeffOuter
-  have hlne : gammaPoleSymbolicDerivativeLaurentProfile j q l ≠ 0 :=
+  obtain ⟨l, hl⟩ := Finsupp.support_nonempty_iff.mpr
+    (show ((gammaPoleSymbolicDerivativeLaurentProfile j).coeff q).coeff ≠ 0 by
+      simpa using hcoeffOuter)
+  have hlne : ((gammaPoleSymbolicDerivativeLaurentProfile j).coeff q).coeff l ≠ 0 :=
     Finsupp.mem_support_iff.mp hl
   obtain ⟨m, hm⟩ := MvPolynomial.exists_coeff_ne_zero hlne
   have htri :=
@@ -296,7 +298,8 @@ theorem gammaPoleSymbolicDerivativeLaurentProfile_coeff_eq_zero_of_gt
   have hfilter :=
     (gammaPoleSymbolicDerivativeLaurentProfile_boundaryFiltered j).coeff_weight hm
   have hsupp : ((q, l), m) ∈
-      (gammaPoleTriFlatten (gammaPoleSymbolicDerivativeLaurentProfile j)).support := by
+      (gammaPoleTriFlatten
+        (gammaPoleSymbolicDerivativeLaurentProfile j)).coeff.support := by
     rw [Finsupp.mem_support_iff]
     simpa using hm
   have hpure : l = -(j : ℤ) := by
@@ -314,10 +317,10 @@ slice of a moving coefficient can contribute. -/
 theorem gammaPoleSymbolicMovingCoefficient_mul_derivativeProfile_coeff_top
     (p : Polynomial ℂ) (j : ℕ) :
     (gammaPoleSymbolicMovingCoefficientLaurent p *
-        gammaPoleSymbolicDerivativeLaurentProfile j) ((j + 1 : ℕ) : ℤ) =
-      gammaPoleSymbolicMovingCoefficientLaurent p 0 *
-        gammaPoleSymbolicDerivativeLaurentProfile j ((j + 1 : ℕ) : ℤ) := by
-  rw [AddMonoidAlgebra.mul_apply_left]
+        gammaPoleSymbolicDerivativeLaurentProfile j).coeff ((j + 1 : ℕ) : ℤ) =
+      (gammaPoleSymbolicMovingCoefficientLaurent p).coeff 0 *
+        (gammaPoleSymbolicDerivativeLaurentProfile j).coeff ((j + 1 : ℕ) : ℤ) := by
+  rw [AddMonoidAlgebra.coeff_mul_apply_left]
   classical
   rw [Finsupp.sum_eq_single 0]
   · simp
@@ -339,22 +342,21 @@ theorem gammaPoleSymbolicMovingCoefficient_mul_derivativeProfile_top_scale_bound
     (p : Polynomial ℂ) (j : ℕ) :
     MvPolynomial.coeff 0
         (((gammaPoleSymbolicMovingCoefficientLaurent p *
-            gammaPoleSymbolicDerivativeLaurentProfile j)
-          ((j + 1 : ℕ) : ℤ)) (-(j : ℤ))) =
+            gammaPoleSymbolicDerivativeLaurentProfile j).coeff
+          ((j + 1 : ℕ) : ℤ)).coeff (-(j : ℤ))) =
       gammaPoleCenterRationalEval p * RatFunc.C (-(j.factorial : ℂ)) := by
   rw [gammaPoleSymbolicMovingCoefficient_mul_derivativeProfile_coeff_top,
     gammaPoleSymbolicMovingCoefficientLaurent_coeff_zero]
   change MvPolynomial.coeff 0
     (((LaurentPolynomial.C (MvPolynomial.C
         (gammaPoleCenterRationalEval p)) *
-      gammaPoleSymbolicDerivativeLaurentProfile j ((j + 1 : ℕ) : ℤ)) :
-        GammaPoleScaleDerivativeSymbolic)
-        (-(j : ℤ))) = _
+      (gammaPoleSymbolicDerivativeLaurentProfile j).coeff ((j + 1 : ℕ) : ℤ)) :
+        GammaPoleScaleDerivativeSymbolic).coeff (-(j : ℤ))) = _
   rw [← LaurentPolynomial.smul_eq_C_mul]
   change MvPolynomial.coeff 0
     (MvPolynomial.C (gammaPoleCenterRationalEval p) *
-      (gammaPoleSymbolicDerivativeLaurentProfile j ((j + 1 : ℕ) : ℤ))
-        (-(j : ℤ))) = _
+      ((gammaPoleSymbolicDerivativeLaurentProfile j).coeff
+        ((j + 1 : ℕ) : ℤ)).coeff (-(j : ℤ))) = _
   rw [MvPolynomial.coeff_C_mul,
     gammaPoleSymbolicDerivativeLaurentProfile_top_scale_boundary]
 
@@ -364,8 +366,8 @@ theorem gammaPoleSymbolicMovingCoefficient_mul_derivativeProfile_coeff_eq_zero_o
     (p : Polynomial ℂ) (j : ℕ) (q : ℤ)
     (hq : ((j + 1 : ℕ) : ℤ) < q) :
     (gammaPoleSymbolicMovingCoefficientLaurent p *
-        gammaPoleSymbolicDerivativeLaurentProfile j) q = 0 := by
-  rw [AddMonoidAlgebra.mul_apply_left]
+        gammaPoleSymbolicDerivativeLaurentProfile j).coeff q = 0 := by
+  rw [AddMonoidAlgebra.coeff_mul_apply_left]
   classical
   apply Finset.sum_eq_zero
   intro r hr
@@ -375,8 +377,8 @@ theorem gammaPoleSymbolicMovingCoefficient_mul_derivativeProfile_coeff_eq_zero_o
     exact (Finsupp.mem_support_iff.mp hr)
       (gammaPoleSymbolicMovingCoefficientLaurent_coeff_pos p r hrpos)
   have hderiv : ((j + 1 : ℕ) : ℤ) < -r + q := by omega
-  change gammaPoleSymbolicMovingCoefficientLaurent p r *
-    gammaPoleSymbolicDerivativeLaurentProfile j (-r + q) = 0
+  change (gammaPoleSymbolicMovingCoefficientLaurent p).coeff r *
+    (gammaPoleSymbolicDerivativeLaurentProfile j).coeff (-r + q) = 0
   rw [gammaPoleSymbolicDerivativeLaurentProfile_coeff_eq_zero_of_gt
       j _ hderiv,
     mul_zero]
@@ -398,8 +400,8 @@ theorem gammaPoleSymbolicPolynomialJetLaurentEval_linear_maximal_diagonal
     (hmax : ∀ i : Fin (n + 1), (j : ℕ) < (i : ℕ) →
       (MvPolynomial.pderiv i P).coeff 0 = 0) :
     MvPolynomial.coeff 0
-        ((gammaPoleSymbolicPolynomialJetLaurentEval n P
-          (((j : ℕ) + 1 : ℕ) : ℤ)) (-((j : ℕ) : ℤ))) =
+        (((gammaPoleSymbolicPolynomialJetLaurentEval n P).coeff
+          (((j : ℕ) + 1 : ℕ) : ℤ)).coeff (-((j : ℕ) : ℤ))) =
       gammaPoleCenterRationalEval ((MvPolynomial.pderiv j P).coeff 0) *
         RatFunc.C (-((j : ℕ).factorial : ℂ)) := by
   have hpderivC (i : Fin (n + 1)) :
@@ -422,16 +424,16 @@ theorem gammaPoleSymbolicPolynomialJetLaurentEval_linear_maximal_diagonal
       change MvPolynomial.coeff 0
         (((gammaPoleSymbolicPolynomialJetLaurentEval n
           (MvPolynomial.X j * MvPolynomial.C
-            ((MvPolynomial.pderiv j P).coeff 0)))
-          (((j : ℕ) + 1 : ℕ) : ℤ)) (-((j : ℕ) : ℤ))) = _
+            ((MvPolynomial.pderiv j P).coeff 0))).coeff
+          (((j : ℕ) + 1 : ℕ) : ℤ)).coeff (-((j : ℕ) : ℤ))) = _
       rw [map_mul]
       simp only [gammaPoleSymbolicPolynomialJetLaurentEval,
         MvPolynomial.eval₂Hom_X', MvPolynomial.eval₂Hom_C]
       change MvPolynomial.coeff 0
         (((gammaPoleSymbolicDerivativeLaurentProfile (j : ℕ) *
           gammaPoleSymbolicMovingCoefficientLaurent
-          ((MvPolynomial.pderiv j P).coeff 0))
-          (((j : ℕ) + 1 : ℕ) : ℤ)) (-((j : ℕ) : ℤ))) = _
+          ((MvPolynomial.pderiv j P).coeff 0)).coeff
+          (((j : ℕ) + 1 : ℕ) : ℤ)).coeff (-((j : ℕ) : ℤ))) = _
       rw [mul_comm (gammaPoleSymbolicDerivativeLaurentProfile (j : ℕ))
         (gammaPoleSymbolicMovingCoefficientLaurent
           ((MvPolynomial.pderiv j P).coeff 0))]
@@ -443,8 +445,8 @@ theorem gammaPoleSymbolicPolynomialJetLaurentEval_linear_maximal_diagonal
       change MvPolynomial.coeff 0
         (((gammaPoleSymbolicPolynomialJetLaurentEval n
           (MvPolynomial.X i * MvPolynomial.C
-            ((MvPolynomial.pderiv i P).coeff 0)))
-          (((j : ℕ) + 1 : ℕ) : ℤ)) (-((j : ℕ) : ℤ))) = 0
+            ((MvPolynomial.pderiv i P).coeff 0))).coeff
+          (((j : ℕ) + 1 : ℕ) : ℤ)).coeff (-((j : ℕ) : ℤ))) = 0
       rw [map_mul]
       simp only [gammaPoleSymbolicPolynomialJetLaurentEval,
         MvPolynomial.eval₂Hom_X', MvPolynomial.eval₂Hom_C]
@@ -459,8 +461,8 @@ theorem gammaPoleSymbolicPolynomialJetLaurentEval_linear_maximal_diagonal
         change MvPolynomial.coeff 0
           (((gammaPoleSymbolicDerivativeLaurentProfile (i : ℕ) *
             gammaPoleSymbolicMovingCoefficientLaurent
-              ((MvPolynomial.pderiv i P).coeff 0))
-            (((j : ℕ) + 1 : ℕ) : ℤ)) (-((j : ℕ) : ℤ))) = 0
+              ((MvPolynomial.pderiv i P).coeff 0)).coeff
+            (((j : ℕ) + 1 : ℕ) : ℤ)).coeff (-((j : ℕ) : ℤ))) = 0
         rw [mul_comm (gammaPoleSymbolicDerivativeLaurentProfile (i : ℕ))
           (gammaPoleSymbolicMovingCoefficientLaurent
             ((MvPolynomial.pderiv i P).coeff 0)), hzero]
@@ -470,7 +472,6 @@ theorem gammaPoleSymbolicPolynomialJetLaurentEval_linear_maximal_diagonal
           omega
         rw [hmax i hjilt]
         simp
-        rfl
     · intro hnot
       exact (hnot (Finset.mem_univ j)).elim
   calc
@@ -561,8 +562,8 @@ theorem gammaPoleSymbolicProfileAtMostSimple_iff_affine
           (neg_ne_zero.mpr hfactorComplex)
       have hdiagNe :
           MvPolynomial.coeff 0
-              ((gammaPoleSymbolicPolynomialJetLaurentEval n P₁
-                (((J : ℕ) + 1 : ℕ) : ℤ)) (-((J : ℕ) : ℤ))) ≠ 0 := by
+              (((gammaPoleSymbolicPolynomialJetLaurentEval n P₁).coeff
+                (((J : ℕ) + 1 : ℕ) : ℤ)).coeff (-((J : ℕ) : ℤ))) ≠ 0 := by
         rw [hdiag]
         have hcenter := gammaPoleCenterRationalEval_injective.ne hJcoeff
         exact mul_ne_zero (by simpa using hcenter) hfactor
@@ -571,26 +572,26 @@ theorem gammaPoleSymbolicProfileAtMostSimple_iff_affine
       have hqpos : (0 : ℤ) < (((J : ℕ) + 1 : ℕ) : ℤ) := by omega
       have hqgt : (1 : ℤ) < (((J : ℕ) + 1 : ℕ) : ℤ) := by omega
       have hPzero :
-          gammaPoleSymbolicPolynomialJetLaurentEval n P
+          (gammaPoleSymbolicPolynomialJetLaurentEval n P).coeff
               (((J : ℕ) + 1 : ℕ) : ℤ) = 0 :=
         hprofile _ hqgt
       have hP₀zero :
-          gammaPoleSymbolicPolynomialJetLaurentEval n P₀
+          (gammaPoleSymbolicPolynomialJetLaurentEval n P₀).coeff
               (((J : ℕ) + 1 : ℕ) : ℤ) = 0 := by
         rw [isHomogeneous_zero_eq_C_coeff_zero_polynomial hP₀]
         simpa [gammaPoleSymbolicPolynomialJetLaurentEval] using
           gammaPoleSymbolicMovingCoefficientLaurent_coeff_pos
             (P₀.coeff 0) _ hqpos
       have hP₁zero :
-          gammaPoleSymbolicPolynomialJetLaurentEval n P₁
+          (gammaPoleSymbolicPolynomialJetLaurentEval n P₁).coeff
               (((J : ℕ) + 1 : ℕ) : ℤ) = 0 := by
         have hsum :
-            gammaPoleSymbolicPolynomialJetLaurentEval n P₀
+            (gammaPoleSymbolicPolynomialJetLaurentEval n P₀).coeff
                 (((J : ℕ) + 1 : ℕ) : ℤ) +
-              gammaPoleSymbolicPolynomialJetLaurentEval n P₁
+              (gammaPoleSymbolicPolynomialJetLaurentEval n P₁).coeff
                 (((J : ℕ) + 1 : ℕ) : ℤ) = 0 := by
           change ((gammaPoleSymbolicPolynomialJetLaurentEval n P₀ +
-            gammaPoleSymbolicPolynomialJetLaurentEval n P₁)
+            gammaPoleSymbolicPolynomialJetLaurentEval n P₁).coeff
               (((J : ℕ) + 1 : ℕ) : ℤ)) = 0
           rw [← map_add, hdecomp, hPzero]
         rwa [hP₀zero, zero_add] at hsum
@@ -627,9 +628,9 @@ theorem gammaPoleSymbolicProfileAtMostSimple_iff_affine
     rw [map_add, map_mul]
     simp only [gammaPoleSymbolicPolynomialJetLaurentEval,
       MvPolynomial.eval₂Hom_C, MvPolynomial.eval₂Hom_X']
-    change gammaPoleSymbolicMovingCoefficientLaurent a q +
+    change (gammaPoleSymbolicMovingCoefficientLaurent a).coeff q +
       (gammaPoleSymbolicMovingCoefficientLaurent b *
-        gammaPoleSymbolicDerivativeLaurentProfile 0) q = 0
+        gammaPoleSymbolicDerivativeLaurentProfile 0).coeff q = 0
     rw [gammaPoleSymbolicMovingCoefficientLaurent_coeff_pos a q (by omega),
       gammaPoleSymbolicMovingCoefficient_mul_derivativeProfile_coeff_eq_zero_of_gt
         b 0 q (by simpa using hq)]

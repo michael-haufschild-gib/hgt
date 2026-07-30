@@ -205,7 +205,7 @@ theorem not_regular_linear_zeroSymbol_of_selectedDerivation_lowerLaw
   have hsymbolZero : symbol 0 e = 0 := by
     rw [hzero, hS, map_zero]
   rw [hsymbolZero] at he
-  exact he (Matrix.det_zero inferInstance)
+  exact he Matrix.det_zero
 
 end
 

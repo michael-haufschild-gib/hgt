@@ -79,10 +79,11 @@ theorem continuousAt_exponentialChordFactor_zero :
     ContinuousAt exponentialChordFactor 0 := by
   let g : ℝ → ℝ := fun x => 1 - Real.exp (-x)
   have hg : HasDerivAt g 1 0 := by
-    unfold g
-    convert (hasDerivAt_const (x := (0 : ℝ)) (c := (1 : ℝ))).sub
-      ((Real.hasDerivAt_exp (-0)).comp 0 (hasDerivAt_neg 0)) using 1
-    all_goals norm_num
+    have hraw :=
+      (hasDerivAt_const (x := (0 : ℝ)) (c := (1 : ℝ))).sub
+        ((Real.hasDerivAt_exp (-0)).comp 0 (hasDerivAt_neg 0))
+    have hraw' := hraw.congr_deriv (g' := (1 : ℝ)) (by norm_num)
+    simpa only [g, Function.comp_apply, Pi.sub_apply] using! hraw'
   have heq : exponentialChordFactor = dslope g 0 := by
     funext x
     by_cases hx : x = 0
@@ -103,7 +104,8 @@ theorem hasDerivAt_exponentialChordFactor_zero :
     have hcont :
         ContinuousAt (fun y : ℝ => -Real.exp (-y) / 2) 0 := by
       fun_prop
-    simpa using hcont.tendsto.mono_left inf_le_left
+    simpa using! hcont.tendsto.mono_left
+      (show 𝓝[≠] (0 : ℝ) ≤ 𝓝 (0 : ℝ) from nhdsWithin_le_nhds)
   have hfirst :
       Tendsto
         (fun y : ℝ => (Real.exp (-y) - 1) / (2 * y))
@@ -112,21 +114,24 @@ theorem hasDerivAt_exponentialChordFactor_zero :
       (f' := fun y : ℝ => -Real.exp (-y))
       (g' := fun _y : ℝ => 2) ?_ ?_ ?_ ?_ ?_ hbase
     · exact Filter.Eventually.of_forall fun y => by
-        convert
-          (((Real.hasDerivAt_exp (-y)).comp y (hasDerivAt_neg y)).sub_const 1)
-            using 1
-        all_goals simp
+        have hraw :=
+          ((Real.hasDerivAt_exp (-y)).comp y
+            (hasDerivAt_neg y)).sub_const 1
+        have hraw' := hraw.congr_deriv
+          (g' := -Real.exp (-y)) (by ring)
+        simpa only [Function.comp_apply] using! hraw'
     · exact Filter.Eventually.of_forall fun y => by
-        convert (hasDerivAt_id y).const_mul 2 using 1
-        all_goals simp
+        simpa using! (hasDerivAt_id y).const_mul 2
     · exact Filter.Eventually.of_forall fun _ => by norm_num
     · have hcont :
           ContinuousAt (fun y : ℝ => Real.exp (-y) - 1) 0 := by
         fun_prop
-      simpa using hcont.tendsto.mono_left inf_le_left
+      simpa using! hcont.tendsto.mono_left
+        (show 𝓝[≠] (0 : ℝ) ≤ 𝓝 (0 : ℝ) from nhdsWithin_le_nhds)
     · have hcont : ContinuousAt (fun y : ℝ => 2 * y) 0 := by
         fun_prop
-      simpa using hcont.tendsto.mono_left inf_le_left
+      simpa using! hcont.tendsto.mono_left
+        (show 𝓝[≠] (0 : ℝ) ≤ 𝓝 (0 : ℝ) from nhdsWithin_le_nhds)
   have hmain :
       Tendsto
         (fun y : ℝ => (1 - Real.exp (-y) - y) / y ^ 2)
@@ -135,24 +140,27 @@ theorem hasDerivAt_exponentialChordFactor_zero :
       (f' := fun y : ℝ => Real.exp (-y) - 1)
       (g' := fun y : ℝ => 2 * y) ?_ ?_ ?_ ?_ ?_ hfirst
     · exact Filter.Eventually.of_forall fun y => by
-        convert
+        have hraw :=
           ((hasDerivAt_const (x := y) (c := (1 : ℝ))).sub
               ((Real.hasDerivAt_exp (-y)).comp y (hasDerivAt_neg y))).sub
-            (hasDerivAt_id y) using 1
-        all_goals simp
+            (hasDerivAt_id y)
+        have hraw' := hraw.congr_deriv
+          (g' := Real.exp (-y) - 1) (by ring)
+        simpa only [Function.comp_apply, Pi.sub_apply] using! hraw'
     · exact Filter.Eventually.of_forall fun y => by
-        convert hasDerivAt_pow 2 y using 1
-        simp
+        simpa using! hasDerivAt_pow 2 y
     · filter_upwards [self_mem_nhdsWithin] with y hy
       simp only [mem_compl_iff, mem_singleton_iff] at hy
       exact mul_ne_zero (by norm_num) hy
     · have hcont :
           ContinuousAt (fun y : ℝ => 1 - Real.exp (-y) - y) 0 := by
         fun_prop
-      simpa using hcont.tendsto.mono_left inf_le_left
+      simpa using! hcont.tendsto.mono_left
+        (show 𝓝[≠] (0 : ℝ) ≤ 𝓝 (0 : ℝ) from nhdsWithin_le_nhds)
     · have hcont : ContinuousAt (fun y : ℝ => y ^ 2) 0 := by
         fun_prop
-      simpa using hcont.tendsto.mono_left inf_le_left
+      simpa using! hcont.tendsto.mono_left
+        (show 𝓝[≠] (0 : ℝ) ≤ 𝓝 (0 : ℝ) from nhdsWithin_le_nhds)
   rw [hasDerivAt_iff_tendsto_slope]
   apply hmain.congr'
   filter_upwards [self_mem_nhdsWithin] with y hy
@@ -657,9 +665,8 @@ theorem tendsto_gammaSewnMobiusValuationContraction_sub_one_div_zero
     have h : Tendsto g (𝓝 (0 : ℝ))
         (𝓝 (gammaSewnMobiusValuationQuadraticDefectGain 0 p)) :=
       (continuousAt_gammaSewnMobiusValuationQuadraticDefectGain_zero p).tendsto
-    have h' := h.mono_left
-      (inf_le_left : 𝓝[>] (0 : ℝ) ≤ 𝓝 0)
-    simpa only [g, gammaSewnMobiusValuationQuadraticDefectGain_zero] using h'
+    simpa only [g, gammaSewnMobiusValuationQuadraticDefectGain_zero] using!
+      h.mono_left nhdsWithin_le_nhds
   have hid :
       Tendsto (fun x : ℝ => x) (𝓝[>] (0 : ℝ)) (𝓝 0) :=
     tendsto_id.mono_left nhdsWithin_le_nhds
@@ -696,9 +703,8 @@ theorem tendsto_gammaSewn_localChord_sub_one_div_zero
           (𝓝 (0 : ℝ))
           (𝓝 (gammaSewnMobiusValuationContractionMultiplier 0 p)) :=
       (continuousAt_gammaSewnMobiusValuationContractionMultiplier_zero p).tendsto
-    have h' := h.mono_left
-      (inf_le_left : 𝓝[>] (0 : ℝ) ≤ 𝓝 0)
-    simpa [gammaSewnMobiusValuationContractionMultiplier_zero] using h'
+    simpa only [gammaSewnMobiusValuationContractionMultiplier_zero] using!
+      h.mono_left nhdsWithin_le_nhds
   have hfDeriv :
       HasDerivAt
         (fun x : ℝ =>
@@ -708,9 +714,11 @@ theorem tendsto_gammaSewn_localChord_sub_one_div_zero
         HasDerivAt exponentialChordFactor (-1 / 2)
           ((0 : ℝ) * Real.log (p : ℝ)) := by
       simpa using hasDerivAt_exponentialChordFactor_zero
-    convert hout.comp 0
-      ((hasDerivAt_id (0 : ℝ)).mul_const (Real.log (p : ℝ))) using 1
-    all_goals simp
+    have hraw := hout.comp 0
+      ((hasDerivAt_id (0 : ℝ)).mul_const (Real.log (p : ℝ)))
+    have hraw' := hraw.congr_deriv
+      (g' := (-1 / 2) * Real.log (p : ℝ)) (by ring)
+    simpa only [Function.comp_apply] using! hraw'
   have hf :
       Tendsto
         (fun x : ℝ =>
@@ -736,7 +744,7 @@ theorem tendsto_gammaSewn_localChord_sub_one_div_zero
     ring
   have hfinal := hsum.congr' heq
   convert hfinal using 1
-  ring
+  ring_nf
 
 private theorem tendsto_finset_prod_sub_one_div_zero
     {α : Type*} [DecidableEq α]
@@ -776,7 +784,7 @@ private theorem tendsto_finset_prod_sub_one_div_zero
         ring
       have hfinal := hlim.congr' heq
       convert hfinal using 1
-      ring
+      ring_nf
 
 /-- The all-support recovery multiplier is cofinally lossless: every fixed finite support tends
 to the signed physical boundary with multiplier one. -/
@@ -845,7 +853,9 @@ theorem tendsto_gammaSewnSynchronizedRecoveryRatio_zero
               (x * ∑ p ∈ P, Real.log (p : ℝ)))
         (𝓝 (0 : ℝ)) (𝓝 1) := by
     convert hnum.div hden one_ne_zero using 1
-    all_goals norm_num
+    · ext x
+      rfl
+    · norm_num
   apply (hquot.mono_left nhdsWithin_le_nhds).congr'
   filter_upwards [self_mem_nhdsWithin] with x hx
   change 0 < x at hx
@@ -939,9 +949,11 @@ theorem tendsto_gammaSewnSynchronizedRecoveryRatio_sub_one_div_zero
         HasDerivAt
           (fun x : ℝ => exponentialChordFactor (x * totalLog))
           ((-1 / 2) * totalLog) 0 := by
-      convert hout.comp 0
-        ((hasDerivAt_id (0 : ℝ)).mul_const totalLog) using 1
-      all_goals simp
+      have hraw := hout.comp 0
+        ((hasDerivAt_id (0 : ℝ)).mul_const totalLog)
+      have hraw' := hraw.congr_deriv
+        (g' := (-1 / 2) * totalLog) (by ring)
+      simpa only [Function.comp_apply] using! hraw'
     simpa [exponentialChordFactor, div_eq_inv_mul, mul_comm, mul_left_comm,
       mul_assoc] using hderiv.tendsto_slope_zero_right
   have hdiff :
@@ -951,7 +963,7 @@ theorem tendsto_gammaSewnSynchronizedRecoveryRatio_sub_one_div_zero
             (exponentialChordFactor (x * totalLog) - 1) / x)
         (𝓝[>] (0 : ℝ)) (𝓝 0) := by
     convert hnumJet.sub hdenJet using 1
-    ring
+    ring_nf
   have hquot :
       Tendsto
         (fun x : ℝ =>
@@ -959,8 +971,8 @@ theorem tendsto_gammaSewnSynchronizedRecoveryRatio_sub_one_div_zero
               (exponentialChordFactor (x * totalLog) - 1) / x) /
             exponentialChordFactor (x * totalLog))
         (𝓝[>] (0 : ℝ)) (𝓝 0) := by
-    convert hdiff.div hden0 one_ne_zero using 1
-    norm_num
+    simpa only [Pi.div_apply, zero_div] using!
+      hdiff.div hden0 one_ne_zero
   apply hquot.congr'
   filter_upwards [self_mem_nhdsWithin] with x hx
   change 0 < x at hx
@@ -1125,7 +1137,7 @@ theorem tendsto_gammaSewnSynchronizedSignedRecoveryAmplitude_zero
         (fun x ↦ Real.sqrt
           (gammaSewnSynchronizedRecoveryRatio nu x P))
         (𝓝[>] (0 : ℝ)) (𝓝 1) := by
-    simpa using
+    simpa only [Function.comp_def, Real.sqrt_one] using!
       (Real.continuous_sqrt.continuousAt.tendsto.comp
         (tendsto_gammaSewnSynchronizedRecoveryRatio_zero nu hnu P))
   have hconst :
@@ -1150,7 +1162,8 @@ theorem tendsto_sqrt_gammaSewnSynchronizedRecoveryRatio_sub_one_div_zero
         (fun x : ℝ =>
           Real.sqrt (gammaSewnSynchronizedRecoveryRatio nu x P))
         (𝓝[>] (0 : ℝ)) (𝓝 1) := by
-    simpa using Real.continuous_sqrt.continuousAt.tendsto.comp hratio
+    simpa only [Function.comp_def, Real.sqrt_one] using!
+      Real.continuous_sqrt.continuousAt.tendsto.comp hratio
   have hden :
       Tendsto
         (fun x : ℝ =>
@@ -1164,10 +1177,9 @@ theorem tendsto_sqrt_gammaSewnSynchronizedRecoveryRatio_sub_one_div_zero
           ((gammaSewnSynchronizedRecoveryRatio nu x P - 1) / x) /
             (Real.sqrt (gammaSewnSynchronizedRecoveryRatio nu x P) + 1))
         (𝓝[>] (0 : ℝ)) (𝓝 0) := by
-    convert
+    simpa only [Pi.div_apply, zero_div] using!
       (tendsto_gammaSewnSynchronizedRecoveryRatio_sub_one_div_zero
-        nu hnu P).div hden (by norm_num : (2 : ℝ) ≠ 0) using 1
-    norm_num
+        nu hnu P).div hden (by norm_num : (2 : ℝ) ≠ 0)
   apply hquot.congr'
   filter_upwards [self_mem_nhdsWithin] with x hx
   change 0 < x at hx
@@ -1463,9 +1475,11 @@ theorem gammaSewnSynchronizedRecoveredXiWardNormalized_nonexpansive
     exact xiWardNormalizedTransport_nonexpansive hw hx.le
   have hprod :=
     rightHalfPlanePickDefect_mul_posSemidef hconst hward
-  simpa only [
-    gammaSewnSynchronizedRecoveredXiWardNormalizedMultiplier,
-    Pi.mul_apply, c] using hprod
+  change
+    (rightHalfPlanePickDefect w
+      ((fun _ : Fin n => c) *
+        xiWardNormalizedTransportMultiplier w x)).PosSemidef
+  exact hprod
 
 end
 

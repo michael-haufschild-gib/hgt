@@ -42,7 +42,7 @@ theorem positivePrimePowerProjection_eq_self
     have hx := congrArg Subtype.val
       (Nat.Primes.prodNatEquiv.apply_symm_apply ⟨n, hpow⟩)
     have hnrep : n = (x.1 : Nat) ^ (x.2 + 1) := by
-      simpa only [x, Nat.Primes.coe_prodNatEquiv_apply] using hx.symm
+      simpa only [x, Nat.Primes.coe_prodNatEquiv_apply] using! hx.symm
     calc
       positivePrimePowerProjection A n =
           primePowerCoordinateProfile (positivePrimePowerProjection A) x := by
@@ -67,7 +67,7 @@ theorem positivePrimePowerProjection_eq_self
 theorem divisorsAntidiagonal_prime_pow
     (p : Nat.Primes) (n : Nat) :
     ((p : Nat) ^ n).divisorsAntidiagonal =
-      (Finset.antidiagonal n).map
+      (Finset.HasAntidiagonal.antidiagonal n).map
         (.prodMap ⟨fun k => (p : Nat) ^ k, Nat.pow_right_injective p.2.one_lt⟩
           ⟨fun k => (p : Nat) ^ k, Nat.pow_right_injective p.2.one_lt⟩) := by
   apply Finset.Subset.antisymm
@@ -83,7 +83,8 @@ theorem divisorsAntidiagonal_prime_pow
         exact hmul
       exact Nat.eq_of_mul_eq_mul_left (pow_pos p.2.pos i) hcancel
     apply Finset.mem_map.mpr
-    refine ⟨(i, n - i), Finset.mem_antidiagonal.mpr (Nat.add_sub_of_le hi), ?_⟩
+    refine ⟨(i, n - i),
+      Finset.HasAntidiagonal.mem_antidiagonal.mpr (Nat.add_sub_of_le hi), ?_⟩
     exact Prod.ext hai.symm hb.symm
   · exact Nat.antidiagonal_map_subset_divisorsAntidiagonal_pow p.2.one_lt n
 

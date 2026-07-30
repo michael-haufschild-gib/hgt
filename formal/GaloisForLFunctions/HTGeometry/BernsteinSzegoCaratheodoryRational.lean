@@ -119,7 +119,7 @@ theorem bernsteinSzego_reversedPolynomial_tail_orthogonal
               (star (z ^ k) * star (p.eval z)) := by ring
     _ = star (Real.circleAverage f 0 1) := by
       have hcomm := (Complex.conjCLE : ℂ →L[ℝ] ℂ).circleAverage_comp_comm hf
-      simpa only [Function.comp_apply] using hcomm
+      simpa only [Function.comp_apply] using! hcomm
     _ = 0 := by
       rw [bernsteinSzego_polynomial_forwardShift_orthogonal hN c hG k]
       simp
@@ -259,7 +259,7 @@ theorem circleCaratheodoryKernel_sub_one_hasSum
     simp only [x, norm_div, Circle.norm_coe, div_one]
     exact hw
   have hsum := (hasSum_geometric_of_norm_lt_one hxnorm).mul_left (2 * x)
-  convert hsum using 1
+  convert! hsum using 1
   · funext n
     dsimp only [x]
     rw [pow_succ']
@@ -309,7 +309,7 @@ theorem circleCaratheodoryTransform_eq_tsum
   have hIntSum : HasSum (fun n => ∫ z, T n z ∂(mu : Measure Circle))
       (∫ z, circleCaratheodoryKernel w z - 1 ∂(mu : Measure Circle)) := by
     have hraw := hasSum_integral_of_summable_integral_norm hTint hnormSummable
-    convert hraw using 1
+    convert! hraw using 1
     apply integral_congr_ae
     filter_upwards [] with z
     exact (circleCaratheodoryKernel_sub_one_hasSum hw z).tsum_eq.symm
@@ -407,7 +407,7 @@ theorem bernsteinSzegoCaratheodoryConvolutionCoefficient_eq_zero
     apply Finset.sum_subset hsubset
     intro k hkbig hksmall
     have hkgt : q.natDegree < k := by
-      simpa only [Finset.mem_range, not_lt] using hksmall
+      simpa only [Finset.mem_range, not_lt] using! hksmall
     rw [q.coeff_eq_zero_of_natDegree_lt hkgt, zero_mul]
   change (∑ k ∈ Finset.range (n + 1), q.coeff k *
     circleCaratheodorySeriesCoefficient (nu : Measure Circle) (n - k)) = 0
@@ -461,12 +461,12 @@ theorem bernsteinSzegoProbabilityApproximation_caratheodory_eq_polynomial_div
     apply summable_of_ne_finset_zero (s := Finset.range (q.natDegree + 1))
     intro n hn
     have hnlarge : q.natDegree < n := by
-      simpa only [Finset.mem_range, not_lt] using hn
+      simpa only [Finset.mem_range, not_lt] using! hn
     rw [q.coeff_eq_zero_of_natDegree_lt hnlarge, zero_mul, norm_zero]
   have hqsum : (∑' n : ℕ, q.coeff n * w ^ n) = q.eval w := by
     rw [tsum_eq_sum (s := Finset.range (q.natDegree + 1)) (fun n hn => by
       have hnlarge : q.natDegree < n := by
-        simpa only [Finset.mem_range, not_lt] using hn
+        simpa only [Finset.mem_range, not_lt] using! hn
       rw [q.coeff_eq_zero_of_natDegree_lt hnlarge, zero_mul])]
     exact (Polynomial.eval_eq_sum_range w).symm
   have hanorm : Summable (fun n : ℕ => ‖a n * w ^ n‖) := by

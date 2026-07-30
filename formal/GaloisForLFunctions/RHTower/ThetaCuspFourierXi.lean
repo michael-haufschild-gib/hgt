@@ -84,11 +84,11 @@ theorem integral_Ioi_thetaCuspFullSource_mul_cos (t : ℝ) :
         ∫ x : ℝ in Ioi 0, thetaCuspTailDerivative 0 x * Real.cos (t * x) := by
   have hsinDeriv (x : ℝ) :
       HasDerivAt (fun y : ℝ => Real.sin (t * y)) (t * Real.cos (t * x)) x := by
-    convert (Real.hasDerivAt_sin (t * x)).comp x ((hasDerivAt_id x).const_mul t) using 1
+    convert! (Real.hasDerivAt_sin (t * x)).comp x ((hasDerivAt_id x).const_mul t) using 1
     ring
   have hcosDeriv (x : ℝ) :
       HasDerivAt (fun y : ℝ => Real.cos (t * y)) (-t * Real.sin (t * x)) x := by
-    convert (Real.hasDerivAt_cos (t * x)).comp x ((hasDerivAt_id x).const_mul t) using 1
+    convert! (Real.hasDerivAt_cos (t * x)).comp x ((hasDerivAt_id x).const_mul t) using 1
     ring
   have hsinZero : Tendsto
       (fun x : ℝ => Real.sin (t * x) * thetaCuspTailDerivative 0 x)
@@ -97,7 +97,7 @@ theorem integral_Ioi_thetaCuspFullSource_mul_cos (t : ℝ) :
         Real.sin (t * x) * thetaCuspTailDerivative 0 x) :=
       (by fun_prop : Continuous (fun x : ℝ => Real.sin (t * x))).mul
         (differentiable_thetaCuspTailDerivative 0).continuous
-    simpa using (hc.continuousAt : Tendsto _ (𝓝 (0 : ℝ)) _).mono_left inf_le_left
+    simpa using! (hc.continuousAt : Tendsto _ (𝓝 (0 : ℝ)) _).mono_left inf_le_left
   have hcosZero : Tendsto
       (fun x : ℝ => Real.cos (t * x) * thetaCuspTailDerivative 1 x)
       (𝓝[>] 0) (𝓝 (-(1 / 4 : ℝ))) := by
@@ -105,7 +105,7 @@ theorem integral_Ioi_thetaCuspFullSource_mul_cos (t : ℝ) :
         Real.cos (t * x) * thetaCuspTailDerivative 1 x) :=
       (by fun_prop : Continuous (fun x : ℝ => Real.cos (t * x))).mul
         (differentiable_thetaCuspTailDerivative 1).continuous
-    simpa [thetaCuspTailDerivative_one_zero] using
+    simpa [thetaCuspTailDerivative_one_zero] using!
       (hc.continuousAt : Tendsto _ (𝓝 (0 : ℝ)) _).mono_left inf_le_left
   have hsinIBP := integral_Ioi_mul_deriv_eq_deriv_mul
     (a := (0 : ℝ))
@@ -117,7 +117,7 @@ theorem integral_Ioi_thetaCuspFullSource_mul_cos (t : ℝ) :
     (fun x _ => hasDerivAt_thetaCuspTailDerivative 0 x)
     (integrableOn_sin_mul_thetaCuspTailDerivative 1 t)
     (by
-      simpa only [Pi.mul_apply, ← mul_assoc] using
+      simpa only [Pi.mul_apply, ← mul_assoc] using!
         (integrableOn_cos_mul_thetaCuspTailDerivative 0 t).const_mul t)
     hsinZero (sin_mul_thetaCuspTailDerivative_tendsto_atTop_zero 0 t)
   have hsinIdentity :
@@ -145,7 +145,7 @@ theorem integral_Ioi_thetaCuspFullSource_mul_cos (t : ℝ) :
     (fun x _ => hasDerivAt_thetaCuspTailDerivative 1 x)
     (integrableOn_cos_mul_thetaCuspTailDerivative 2 t)
     (by
-      simpa only [Pi.mul_apply, ← mul_assoc] using
+      simpa only [Pi.mul_apply, ← mul_assoc] using!
         (integrableOn_sin_mul_thetaCuspTailDerivative 1 t).const_mul (-t))
     hcosZero (cos_mul_thetaCuspTailDerivative_tendsto_atTop_zero 1 t)
   have hcosIdentity :

@@ -108,7 +108,7 @@ theorem even_section_winding_ne {a b : ℝ} {s : ℂ → ℂ} (ha : 0 < a)
       have h3 : HasDerivAt s (deriv s (-w)) (-w) :=
         (hs_an _ (hnegmem w hw)).differentiableAt.hasDerivAt
       have h4 : HasDerivAt (fun z : ℂ => -z) (-1) w := by
-        simpa using (hasDerivAt_id w).neg
+        simpa only [id_eq] using! (hasDerivAt_id w).neg
       have h6 : HasDerivAt (s ∘ fun z : ℂ => -z) (deriv s (-w) * (-1)) w :=
         HasDerivAt.comp w h3 h4
       have h7 : HasDerivAt (fun z => s (-z)) (deriv s (-w) * (-1)) w := h6
@@ -171,7 +171,7 @@ theorem even_section_winding_ne {a b : ℝ} {s : ℂ → ℂ} (ha : 0 < a)
             (((1 / 2 : ℝ) : ℂ) * (circleMap 0 ρ (u / 2) * Complex.I)) u := by
           have h2 := hasDerivAt_circleMap 0 ρ (u / 2)
           have h3 := h2.scomp u (hhalfdiff u)
-          simpa [Complex.real_smul] using h3
+          simpa only [Complex.real_smul, Function.comp_apply] using! h3
         have h4 : HasDerivAt s (deriv s (circleMap 0 ρ (u / 2))) (circleMap 0 ρ (u / 2)) :=
           (hs_an _ (hcm _)).differentiableAt.hasDerivAt
         exact h4.comp u h1

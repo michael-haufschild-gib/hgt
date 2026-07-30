@@ -68,7 +68,7 @@ theorem facePalette_differentialIndependent_of_deeper
   have hfamily :=
     (show DifferentialIndependent ↥(differentialAdjoin ℂ B)
       (Subtype.val : P → meroField (Set.univ : Set ℂ)) from hrel).comp e he
-  simpa [e, K, P, B] using hfamily
+  simpa [e, K, P, B] using! hfamily
 
 set_option maxHeartbeats 1600000 in
 theorem faceLayer_star_exponent_eq
@@ -390,7 +390,7 @@ theorem facePalette_differentialIndependent_of_deeper_with_boundary
   have hfamily :=
     (show DifferentialIndependent ↥(differentialAdjoin ℂ (N0 ∪ BB))
       (Subtype.val : P → meroField (Set.univ : Set ℂ)) from hsetUnion).comp e he
-  simpa [e, K, P] using hfamily
+  simpa [e, K, P] using! hfamily
 
 set_option maxHeartbeats 3000000 in
 set_option synthInstance.maxHeartbeats 1200000 in
@@ -705,5 +705,4 @@ theorem multipleEllipticGammaProperFacePackets_diffIndepOn
 end
 
 end GaloisForLFunctions
-
 

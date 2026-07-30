@@ -122,7 +122,8 @@ theorem vanishCost_tendsto_zero (fw : ℝ) :
         have hcont : Continuous (fun sigma : ℝ => 4 * Real.pi * sigma) := by fun_prop
         simpa using hcont.tendsto 0
       exact this.mono_left nhdsWithin_le_nhds
-    simpa using (Real.continuous_sqrt.tendsto 0).comp hc
+    simpa only [Function.comp_def, Real.sqrt_zero] using
+      (Real.continuous_sqrt.tendsto 0).comp hc
   simpa using h.const_mul |fw|
 
 /-- **Interior zeros are not free.**  For a point at positive distance from the boundary and a

@@ -181,7 +181,7 @@ theorem centralSoninFullCounting_pair_isTraceClass (a : ℝ) (ha : 0 < a) :
         (centralFourierForbidden a).starProjection) := by
     simpa only [centralPhysicalForbidden, centralFourierForbidden,
       indicatorCutoff_eq_physicalForbidden_starProjection,
-      fourierCutoff_eq_fourierForbidden_starProjection] using
+      fourierCutoff_eq_fourierForbidden_starProjection] using!
       isHilbertSchmidt_indicatorCutoff_fourierCutoff_central a a ha
   have hExterior := centralSoninExteriorOverlap_isHilbertSchmidt a ha
   constructor
@@ -206,7 +206,7 @@ theorem opTrace_centralSoninAlternatingBlock_eq_exteriorCompression
   have hS : IsHilbertSchmidt S := by
     simpa only [S, centralPhysicalForbidden, centralFourierForbidden,
       indicatorCutoff_eq_physicalForbidden_starProjection,
-      fourierCutoff_eq_fourierForbidden_starProjection] using
+      fourierCutoff_eq_fourierForbidden_starProjection] using!
       isHilbertSchmidt_indicatorCutoff_fourierCutoff_central a a ha
   have hD : IsHilbertSchmidt D := by
     simpa only [D] using

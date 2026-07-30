@@ -39,7 +39,7 @@ theorem eval_sumAlgEquiv
   | add p q hp hq => simpa using congrArg₂ (· + ·) hp hq
   | mul_X p i hp =>
       change MvPolynomial.eval₂ (MvPolynomial.eval (w ∘ Sum.inr)) (w ∘ Sum.inl)
-          (MvPolynomial.sumToIter ℂ σ τ p) = MvPolynomial.eval w p at hp
+          (MvPolynomial.sumAlgEquiv ℂ σ τ p) = MvPolynomial.eval w p at hp
       rcases i with i | i
       · simp [hp]
       · simp [hp]

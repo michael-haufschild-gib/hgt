@@ -242,7 +242,7 @@ theorem deningerArithmeticTopologicalH1Compact_finiteJetSupport
                   rho.1 k))
   simpa only [L, ContinuousLinearMap.comp_apply,
     deningerCompactOpenJetProductToH1_allJets,
-    deningerCompactOpenH1AllJets_apply] using hformula
+    deningerCompactOpenH1AllJets_apply] using! hformula
 
 end
 

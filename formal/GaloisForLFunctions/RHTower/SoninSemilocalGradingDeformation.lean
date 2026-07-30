@@ -74,7 +74,7 @@ theorem summable_semilocalOnePrimeEvenJacobiTerm
   simpa [semilocalOnePrimeEvenJacobiTerm,
     semilocalOnePrimePoissonWeight,
     semilocalOnePrimeLogFrequency,
-    Equiv.funUnique_symm_apply] using hcomp
+    Equiv.funUnique_symm_apply] using! hcomp
 
 def semilocalOnePrimePositiveEvenJacobiSeries (k p : ℕ) : ℝ :=
   ∑' m : ℕ, semilocalOnePrimeEvenJacobiTerm k p ((m : ℤ) + 1)

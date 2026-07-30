@@ -39,7 +39,7 @@ noncomputable def continuousMapIntegral (mu : Measure X) [IsFiniteMeasure mu] :
     (mu.real Set.univ)
     (fun f => by
       simpa only [BoundedContinuousFunction.norm_mkOfCompact]
-        using (BoundedContinuousFunction.mkOfCompact f).norm_integral_le_mul_norm mu)
+        using! (BoundedContinuousFunction.mkOfCompact f).norm_integral_le_mul_norm mu)
 
 @[simp]
 theorem continuousMapIntegral_apply (mu : Measure X) [IsFiniteMeasure mu]

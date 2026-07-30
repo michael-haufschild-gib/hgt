@@ -264,19 +264,22 @@ def analyticPulledFinitePrimeCoordinateComplexField :
     change finiteAbscissaFractionToUpperEndMero
         (algebraMap ℂ finiteAbscissaDirichletFractionField z) ∈
       analyticPulledFinitePrimeCoordinateField at hz
-    convert hz using 1
-    change algebraMap ℂ upperEndMeroField z =
-      finiteAbscissaFractionToUpperEndMero
-        (algebraMap ℂ finiteAbscissaDirichletFractionField z)
-    symm
-    rw [show algebraMap ℂ finiteAbscissaDirichletFractionField z =
-        algebraMap finiteAbscissaArithmeticSubalgebra
-          finiteAbscissaDirichletFractionField
-            (algebraMap ℂ finiteAbscissaArithmeticSubalgebra z) from
-        (IsScalarTower.algebraMap_apply ℂ finiteAbscissaArithmeticSubalgebra
-          finiteAbscissaDirichletFractionField z).symm,
-      finiteAbscissaFractionToUpperEndMero_algebraMap]
-    exact finiteAbscissaLSeriesToUpperEndMero.commutes z
+    have hmap : algebraMap ℂ upperEndMeroField z =
+        finiteAbscissaFractionToUpperEndMero
+          (algebraMap ℂ finiteAbscissaDirichletFractionField z) := by
+      symm
+      rw [show algebraMap ℂ finiteAbscissaDirichletFractionField z =
+          algebraMap finiteAbscissaArithmeticSubalgebra
+            finiteAbscissaDirichletFractionField
+              (algebraMap ℂ finiteAbscissaArithmeticSubalgebra z) from
+          (IsScalarTower.algebraMap_apply ℂ finiteAbscissaArithmeticSubalgebra
+            finiteAbscissaDirichletFractionField z).symm,
+        finiteAbscissaFractionToUpperEndMero_algebraMap]
+      exact finiteAbscissaLSeriesToUpperEndMero.commutes z
+    change algebraMap ℂ upperEndMeroField z ∈
+      analyticPulledFinitePrimeCoordinateField
+    rw [hmap]
+    exact hz
 
 theorem upperEndRationalCoordinateField_le_pulledFinitePrimeCoordinate :
     upperEndRationalCoordinateField ≤
@@ -421,7 +424,7 @@ theorem analyticPrimeObservableShiftCarrier_algebraicIndependent_over_eulerBase
     c i p * primeShiftFactor a p
   have hf : ∀ i, (f i).1 = arithmeticOfPrimeColumn (d i) := by
     intro i
-    simpa only [f, d, pow_zero, mul_one] using
+    simpa only [f, d, Function.iterate_zero_apply, pow_zero, mul_one] using
       (analyticPrimeObservableShiftJetSource_eq_arithmeticOfPrimeColumn
         (c i) (M i) (hM i) a 0)
   have hdtail : TailCoefficientIndependent d := by
@@ -530,7 +533,7 @@ theorem linearIndependent_analyticEulerTailAllJetRealization
   have hmap := hv.map' (analyticEulerTailAllJetRealization a)
     (LinearMap.ker_eq_bot.mpr
       (analyticEulerTailAllJetRealization_injective a))
-  simpa only [Function.comp_apply] using hmap
+  simpa only [Function.comp_apply] using! hmap
 
 /-- **Analytic Euler-tail exact faithfulness universality law.**  The order-zero kernel on
 bounded sources is exactly finite support; after descent, both order zero and the entire all-jet

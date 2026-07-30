@@ -164,7 +164,7 @@ theorem weierstrassE1_div_analyticOrderAt (a : ℂ) (ha : a ≠ 0) :
     have hraw :=
       ((hasDerivAt_const (x := (1 : ℂ)) (c := (1 : ℂ))).sub (hasDerivAt_id 1)).mul
         (Complex.hasDerivAt_exp 1)
-    convert hraw using 1
+    convert! hraw using 1
     simp
   have hdiv : HasDerivAt (fun z : ℂ => z / a) (1 / a) a := by
     simpa using (hasDerivAt_id a).div_const a
@@ -223,7 +223,7 @@ theorem XiC_analyticOrderAt_support (ρ : XiDivisorSupport) :
   have hg_deriv : deriv g a ≠ 0 := by
     have hg' : HasDerivAt g I a := by
       dsimp only [g]
-      convert (hasDerivAt_const (x := a) (c := (1 / 2 : ℂ))).add
+      convert! (hasDerivAt_const (x := a) (c := (1 / 2 : ℂ))).add
         ((hasDerivAt_id a).mul_const I) using 1
       ring
     rw [hg'.deriv]
@@ -267,7 +267,7 @@ theorem XiC_order_ne_top (z : ℂ) : analyticOrderAt XiC z ≠ ⊤ := by
   have hg_deriv : deriv g z ≠ 0 := by
     have hg' : HasDerivAt g I z := by
       dsimp only [g]
-      convert (hasDerivAt_const (x := z) (c := (1 / 2 : ℂ))).add
+      convert! (hasDerivAt_const (x := z) (c := (1 / 2 : ℂ))).add
         ((hasDerivAt_id z).mul_const I) using 1
       ring
     rw [hg'.deriv]

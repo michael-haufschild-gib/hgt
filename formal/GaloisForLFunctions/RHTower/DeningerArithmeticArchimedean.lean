@@ -565,7 +565,7 @@ theorem integrable_deningerTimeTest_norm
       HasCompactSupport (fun t : ℝ => ‖(φ t : ℂ)‖) := by
     have hφ :
         HasCompactSupport (fun t : ℝ => (φ t : ℂ)) := by
-      simpa only [Function.comp_apply] using
+      simpa only [Function.comp_apply] using!
         (φ.hasCompactSupport.comp_left
           (g := fun r : ℝ => (r : ℂ)) rfl)
     exact hφ.norm
@@ -594,7 +594,7 @@ theorem integrable_deningerNegativeEvenLaplaceIntegrand
     fun_prop
   have hφ :
       HasCompactSupport (fun t : ℝ => (φ t : ℂ)) := by
-    simpa only [Function.comp_apply] using
+    simpa only [Function.comp_apply] using!
       (φ.hasCompactSupport.comp_left
         (g := fun r : ℝ => (r : ℂ)) rfl)
   exact hcont.integrable_of_hasCompactSupport hφ.mul_right

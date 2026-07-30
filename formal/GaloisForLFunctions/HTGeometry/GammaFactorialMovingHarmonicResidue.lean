@@ -220,7 +220,7 @@ theorem tendsto_reciprocalGammaNormalizedProduct_first_harmonic
 theorem differentiableAt_reciprocalGammaTangent_zero :
     DifferentiableAt ℂ reciprocalGammaTangent 0 := by
   have hdiff : Differentiable ℂ reciprocalGammaEntire := by
-    simpa [reciprocalGammaEntire] using Complex.differentiable_one_div_Gamma
+    simpa [reciprocalGammaEntire] using! Complex.differentiable_one_div_Gamma
   have han : AnalyticAt ℂ reciprocalGammaEntire 0 :=
     (Complex.analyticOnNhd_univ_iff_differentiable.mpr hdiff) 0 (Set.mem_univ 0)
   rcases han with ⟨p, hp⟩

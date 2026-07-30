@@ -226,7 +226,7 @@ theorem algebraicIndependent_of_cofinitePrimeProfileJetPacket_zero
     algebraicIndependent_fractionPrimeProfileJets_over_finitePrimeCoefficientField
       g hsupport hpacket 0
   have hsub := hrect.comp e he
-  simpa [e, primeProfileJetSource, primeProfileRotatedLogJet] using hsub
+  simpa [e, primeProfileJetSource, primeProfileRotatedLogJet] using! hsub
 
 /-- Cofinite separated packets imply the expected linear independence in the finite-prime-ray
 quotient. -/

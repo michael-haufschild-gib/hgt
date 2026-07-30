@@ -116,7 +116,7 @@ theorem tendsto_realTrigamma_add_nat (x : ℝ) :
     Tendsto (fun n : ℕ => realTrigamma (x + (n : ℝ))) atTop (𝓝 0) := by
   have h := Complex.continuous_re.continuousAt.tendsto.comp
     (RHTower.deriv_digamma_add_nat_tendsto (x : ℂ))
-  simpa [realTrigamma] using h
+  simpa [realTrigamma] using! h
 
 /-- The first positive summand gives the elementary lower bound `1/x² ≤ ψ'(x)`. -/
 theorem one_div_sq_le_realTrigamma {x : ℝ} (hx : 0 < x) :
@@ -160,7 +160,9 @@ theorem gammaLocalGauge_hasDerivAt (B x : ℝ) :
   have hcore := (hasDerivAt_const x 1).sub
     ((Real.hasDerivAt_cos (a * x)).comp x hinner)
   have h := hcore.const_mul c
-  convert h using 1 <;> (simp only [a, c]; ring)
+  convert! h using 1
+  simp only [a, c]
+  ring
 
 theorem gammaLocalGauge_hasDerivAt_deriv (B x : ℝ) :
     HasDerivAt (deriv (gammaLocalGauge B))
@@ -177,7 +179,7 @@ theorem gammaLocalGauge_hasDerivAt_deriv (B x : ℝ) :
   have hinner : HasDerivAt (fun y : ℝ => a * y) a x :=
     by simpa only [id_eq, mul_one] using (hasDerivAt_id x).const_mul a
   have h := ((Real.hasDerivAt_sin (a * x)).comp x hinner).const_mul (c * a)
-  convert h using 1 <;>
+  convert! h using 1 <;>
     simp only [a, c, Function.comp_def] <;> ring
 
 theorem gammaLocalGauge_deriv2 (B x : ℝ) :
@@ -385,7 +387,7 @@ theorem gammaCofinalRadial_iff (f : ℝ → ℝ) :
   · rintro rfl
     refine ⟨1, one_pos, ?_⟩
     intro B _
-    simpa using zero_mem_gammaCurvatureHorizon B
+    simpa using! zero_mem_gammaCurvatureHorizon B
 
 /-- **Gamma radial quantifier-exchange defect.**  Every nonzero regular periodic direction with
 locally bounded curvature is admissible after a horizon-dependent rescaling, but no single positive

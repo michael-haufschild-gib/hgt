@@ -2,7 +2,7 @@ import Mathlib.Analysis.Analytic.Order
 import Mathlib.Analysis.Calculus.InverseFunctionTheorem.Analytic
 import Mathlib.Analysis.Calculus.MeanValue
 import Mathlib.MeasureTheory.Function.Jacobian
-import Mathlib.MeasureTheory.Measure.Typeclasses.NoAtoms
+import Mathlib.MeasureTheory.Measure.Typeclasses.NullSingletonClass
 import Mathlib.Topology.Compactness.Lindelof
 
 /-!

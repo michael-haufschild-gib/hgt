@@ -152,8 +152,7 @@ theorem cothField_hasDerivAt {ι : Type*} (s : Finset ι) (t : ι → ℝ) {a b 
     have hin : HasDerivAt (fun y : ℝ => (y - t k) / 2) (1 / 2) x := by
       simpa using ((hasDerivAt_id x).sub_const (t k)).div_const 2
     have := (rcoth_hasDerivAt hne).comp x hin
-    convert this using 1
-    ring
+    simpa only [Function.comp_apply] using! this.congr_deriv (by ring)
   have hsum := HasDerivAt.fun_sum (fun k hk => hterm k hk)
   have hval : (-2 : ℝ) * spurLatticeEnergy s t x
       = ∑ k ∈ s, -(1 / 2) * (rcsch ((x - t k) / 2)) ^ 2 := by
@@ -179,8 +178,7 @@ theorem spurLatticeEnergy_hasDerivAt {ι : Type*} (s : Finset ι) (t : ι → �
     have hin : HasDerivAt (fun y : ℝ => (y - t k) / 2) (1 / 2) x := by
       simpa using ((hasDerivAt_id x).sub_const (t k)).div_const 2
     have hcmp := (rcsch_sq_hasDerivAt hne).comp x hin
-    convert hcmp using 1
-    ring
+    simpa only [Function.comp_apply] using! hcmp.congr_deriv (by ring)
   have hsum := HasDerivAt.fun_sum (fun k hk => hterm k hk)
   have hval : (-(1 / 4 : ℝ)) * ∑ k ∈ s, rphi ((x - t k) / 2)
       = (1 / 4 : ℝ) * ∑ k ∈ s, -rphi ((x - t k) / 2) := by
@@ -198,8 +196,7 @@ theorem cothField_secondDeriv {ι : Type*} (s : Finset ι) (t : ι → ℝ) {a b
     HasDerivAt (fun y => -2 * spurLatticeEnergy s t y)
       ((1 / 2) * ∑ k ∈ s, rphi ((x - t k) / 2)) x := by
   have h := (spurLatticeEnergy_hasDerivAt s t hpoles hx).const_mul (-2 : ℝ)
-  convert h using 1
-  ring
+  exact h.congr_deriv (by ring)
 
 /-- **The march mechanism (pure monotonicity).** If two strictly-decreasing fields `F, G`
 on a common gap have equilibria `xF, xG` at the same level `c`, and `G` sits strictly below
@@ -293,7 +290,7 @@ theorem latticeEnergyS_hasDerivAt {δ : ℝ} {M N : ℕ} {s : ℝ} (hδ : 0 < δ
     have hin : HasDerivAt (fun y : ℝ => (y + m * δ) / 2) (1 / 2) s := by
       simpa using ((hasDerivAt_id s).add_const (m * δ)).div_const 2
     have := (rcsch_sq_hasDerivAt hne).comp s hin
-    convert this using 1; ring
+    simpa only [Function.comp_apply] using! this.congr_deriv (by ring)
   have hbehind : ∀ n ∈ Finset.range N, HasDerivAt (fun y => (rcsch ((δ - y + n * δ) / 2)) ^ 2)
       (rphi ((δ - s + n * δ) / 2)) s := by
     intro n _
@@ -304,14 +301,18 @@ theorem latticeEnergyS_hasDerivAt {δ : ℝ} {M N : ℕ} {s : ℝ} (hδ : 0 < δ
         simpa using ((hasDerivAt_id s).const_sub δ).add_const (n * δ)
       simpa using h0.div_const 2
     have := (rcsch_sq_hasDerivAt hne).comp s hin
-    convert this using 1; ring
+    simpa only [Function.comp_apply] using! this.congr_deriv (by ring)
   have hA := HasDerivAt.fun_sum (fun m hm => hahead m hm)
   have hB := HasDerivAt.fun_sum (fun n hn => hbehind n hn)
   have hsum := (hA.add hB).const_mul (1 / 4 : ℝ)
-  unfold latticeEnergyS
-  convert hsum using 1
-  rw [Finset.sum_neg_distrib]
-  ring
+  have hcoef :
+      (1 / 4 : ℝ) * ((∑ m ∈ Finset.range M, -rphi ((s + m * δ) / 2)) +
+        ∑ n ∈ Finset.range N, rphi ((δ - s + n * δ) / 2)) =
+        (1 / 4) * ((∑ n ∈ Finset.range N, rphi ((δ - s + n * δ) / 2)) -
+          ∑ m ∈ Finset.range M, rphi ((s + m * δ) / 2)) := by
+    rw [Finset.sum_neg_distrib]
+    ring
+  simpa only [latticeEnergyS, Pi.add_apply] using! hsum.congr_deriv hcoef
 
 /-- **`dW/ds < 0` when `M ≥ N ≥ 1`** — the unconditional (no far-behind overhang) case: the
 ahead spectator sum strictly exceeds the behind one (paired sum + the extra ahead charges),

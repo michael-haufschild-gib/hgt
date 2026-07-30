@@ -47,8 +47,7 @@ theorem doublyExp_hasDerivAt (c w : ℝ) :
     (Real.hasDerivAt_exp w).const_mul 2
   have h2 := h1.exp
   have h3 := h2.const_mul c
-  convert h3 using 1
-  ring
+  simpa [mul_assoc, mul_comm, mul_left_comm] using! h3
 
 /-- **The second derivative in terms of the first.**  The exact identity that carries the mechanism. -/
 theorem doublyExp_second_identity (c w : ℝ) :

@@ -80,7 +80,7 @@ theorem natCast_le_analyticOrderAt_tsum_of_summableLocallyUniformlyOn
             dsimp only [F]
             exact Finset.analyticAt_fun_sum t fun i _ => hfa i z hz
           exact (hFan.iterated_deriv j).differentiableAt.differentiableWithinAt
-        simpa only [Function.iterate_succ_apply'] using ih.deriv hdiff hU
+        simpa only [Function.iterate_succ_apply'] using! ih.deriv hdiff hU
   have hpoint := (hconv k).tendsto_at hz0
   have hpartial : ∀ t : Finset iota, (deriv^[k]) (F t) z0 = 0 := by
     intro t
@@ -246,7 +246,7 @@ theorem xiRectangularCancelledSeries_eventuallyEq_same_add_other
   change (∑' r : XiRightZeroCopy, xiRectangularCancelledTerm L r s) =
     (∑' r : XiRightSupportFiber q, xiRectangularCancelledTerm L r.1 s) +
       ∑' r : XiRightOtherSupport q, xiRectangularCancelledTerm L r.1 s
-  simpa only [P, Set.mem_setOf_eq, Set.mem_compl_iff] using hsplit.symm
+  simpa only [P, Set.mem_setOf_eq, Set.mem_compl_iff] using! hsplit.symm
 
 /-- The complete cancelled rectangular carrier loses exactly one order at
 an actual right Xi pole, independently of the zero multiplicity. -/

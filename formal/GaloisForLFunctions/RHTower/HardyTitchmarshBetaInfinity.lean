@@ -36,8 +36,14 @@ theorem archimedeanEulerFactor_continuous : Continuous archimedeanEulerFactor :=
     Complex.differentiable_Gammaℝ_inv.continuous.continuousAt
   have hne : (Complex.Gammaℝ (criticalLineArgument s))⁻¹ ≠ 0 :=
     inv_ne_zero (archimedeanEulerFactor_ne_zero s)
-  simpa [archimedeanEulerFactor, inv_inv] using
-    (hinv.comp' harg).inv₀ hne
+  have hcont := (hinv.comp' harg).inv₀ hne
+  have hfun :
+      (fun x : ℝ => (Complex.Gammaℝ (criticalLineArgument x))⁻¹)⁻¹ =
+        archimedeanEulerFactor := by
+    funext x
+    simp [archimedeanEulerFactor]
+  rw [hfun] at hcont
+  exact hcont
 
 /-- The critical-line density `|E_infinity(s)|^{-2}`. -/
 def archimedeanEulerWeight (s : ℝ) : ℝ≥0 := (‖archimedeanEulerFactor s‖₊)⁻¹ ^ 2
@@ -96,9 +102,13 @@ theorem memLp_archimedeanEulerFactor_mul (f : SpectralL2) :
       archimedeanEulerWeight_measurable]
     have hf : Integrable (fun s => ‖f s‖ ^ 2) (volume : Measure ℝ) :=
       (memLp_two_iff_integrable_sq_norm (Lp.memLp f).1).mp (Lp.memLp f)
-    convert hf using 1
-    ext s
-    simpa [NNReal.smul_def] using archimedeanEulerWeight_mul_norm_sq s (f s)
+    have hfun :
+        (fun s => archimedeanEulerWeight s • ‖archimedeanEulerFactor s * f s‖ ^ 2) =
+          fun s => ‖f s‖ ^ 2 := by
+      funext s
+      simpa [NNReal.smul_def] using archimedeanEulerWeight_mul_norm_sq s (f s)
+    rw [hfun]
+    exact hf
   · exact archimedeanEulerFactor_continuous.aestronglyMeasurable.mul
       (AEStronglyMeasurable.mono_ac archimedeanWeightedMeasure_absolutelyContinuous
         (Lp.memLp f).1)
@@ -111,9 +121,13 @@ theorem memLp_archimedeanEulerFactor_inv_mul (g : ArchimedeanWeightedL2) :
     unfold archimedeanWeightedMeasure at hgWeighted
     rw [integrable_withDensity_iff_integrable_smul (E := ℝ)
       archimedeanEulerWeight_measurable] at hgWeighted
-    convert hgWeighted using 1
-    ext s
-    simpa [NNReal.smul_def] using norm_archimedeanEulerFactor_inv_mul_sq s (g s)
+    have hfun :
+        (fun s => ‖(archimedeanEulerFactor s)⁻¹ * g s‖ ^ 2) =
+          fun s => archimedeanEulerWeight s • ‖g s‖ ^ 2 := by
+      funext s
+      simpa [NNReal.smul_def] using norm_archimedeanEulerFactor_inv_mul_sq s (g s)
+    rw [hfun]
+    exact hgWeighted
   · exact (archimedeanEulerFactor_continuous.inv₀ archimedeanEulerFactor_ne_zero).aestronglyMeasurable.mul
       (AEStronglyMeasurable.mono_ac volume_absolutelyContinuous_archimedeanWeightedMeasure
         (Lp.memLp g).1)

@@ -444,7 +444,7 @@ theorem omegaLeadingJets_algebraicIndependent
           ∑ k : A r, c k * a r k p := by
       simp only [c', a, A, primeShiftFactor, neg_zero, zero_mul,
         Complex.exp_zero, one_mul, hlevel]
-      simpa only [E, Equiv.coe_fn_mk] using
+      simpa only [E, Equiv.coe_fn_mk] using!
         E.sum_comp (fun k : A r =>
           c k * ((level r : ℂ) * rotatedPrimeLogClock p) ^ (k : ℕ))
     have hc'finite :
@@ -536,7 +536,7 @@ theorem omegaLeadingJets_algebraicIndependent
     cases h
     rfl
   have hsub := hAI.comp embed hembed
-  simpa only [Function.comp_apply, embed, sourceJet] using hsub
+  simpa only [Function.comp_apply, embed, sourceJet] using! hsub
 
 /-- Every finite rectangle of jets of distinct positive shell levels is algebraically
 independent in the native Dirichlet-convolution algebra. -/
@@ -597,7 +597,7 @@ theorem highExponentShellArithmetic_differentialIndependent
       arithmeticFunctionFractionField)
     (IsFractionRing.injective (ArithmeticFunction ℂ)
       arithmeticFunctionFractionField)
-  simpa only [Function.comp_apply, x] using hmap
+  simpa only [Function.comp_apply, x] using! hmap
 
 /-- Zeta together with any distinct positive shell levels is differentially independent in the
 Dirichlet-convolution fraction field. -/
@@ -621,7 +621,7 @@ theorem zetaShellArithmetic_differentialIndependent
       arithmeticFunctionFractionField)
     (IsFractionRing.injective (ArithmeticFunction ℂ)
       arithmeticFunctionFractionField)
-  simpa only [Function.comp_apply, x] using hmap
+  simpa only [Function.comp_apply, x] using! hmap
 
 /-- Arbitrary finite-index form of zeta/shell differential independence. -/
 theorem zetaShellArithmetic_differentialIndependent_fintype

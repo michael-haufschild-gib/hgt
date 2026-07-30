@@ -219,7 +219,7 @@ theorem integral_sq_mul_semilocalFinitePrimeEulerDensity_pos
   rw [semilocalArchimedeanGammaMeasure,
     integral_withDensity_eq_integral_smul
       continuous_semilocalArchimedeanGammaDensityNNReal.measurable]
-  simpa [NNReal.smul_def, mul_assoc] using hposVol
+  simpa [NNReal.smul_def, mul_assoc] using! hposVol
 
 theorem semilocalFinitePrimeNormalizedSecondMoment_pos
     {n : ℕ} (p : Fin (n + 1) → ℕ) (hprime : ∀ i, (p i).Prime) :

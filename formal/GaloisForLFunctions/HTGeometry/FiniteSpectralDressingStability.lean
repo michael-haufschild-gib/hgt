@@ -198,7 +198,7 @@ theorem constantCoefficientDifferentiallyTranscendental_add_finiteComplexGibbsPa
     ConstantCoefficientDifferentiallyTranscendental
       (f + finiteComplexGibbsPartition energy) := by
   classical
-  simpa only [finiteComplexGibbsPartition, one_mul] using
+  simpa only [finiteComplexGibbsPartition, one_mul] using!
     (constantCoefficientDifferentiallyTranscendental_add_finset_expSum
       hf hfSmooth (Finset.univ : Finset α) (fun _ => (1 : ℂ))
       (fun a => -(energy a : ℂ)))
@@ -212,7 +212,7 @@ theorem constantCoefficientDifferentiallyTranscendental_add_finiteComplexGibbsPa
     ConstantCoefficientDifferentiallyTranscendental
       (f + finiteComplexGibbsPartition energy) := by
   classical
-  simpa only [finiteComplexGibbsPartition, one_mul] using
+  simpa only [finiteComplexGibbsPartition, one_mul] using!
     (constantCoefficientDifferentiallyTranscendental_add_finset_expSum_of_simplePole
       hf horder (Finset.univ : Finset α) (fun _ => (1 : ℂ))
       (fun a => -(energy a : ℂ)))

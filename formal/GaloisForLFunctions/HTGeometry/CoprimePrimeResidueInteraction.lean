@@ -65,7 +65,11 @@ theorem cofiniteTailDenseOn_coprimePrimeUnitResidueProfile
     (primeUnitResidueProfile (m * n)) Set.univ
     (cofiniteTailDenseOn_primeUnitResidueProfile (m * n))
     e continuous_of_discreteTopology
-  simpa [coprimePrimeUnitResidueProfile, e, Function.comp_def] using ht
+  have he : e '' Set.univ = Set.univ := by simp
+  rw [he] at ht
+  change CofiniteTailDenseOn
+    (e ∘ primeUnitResidueProfile (m * n)) Set.univ
+  exact ht
 
 def productFstSetoid (A B : Type*) : Setoid (A × B) := Setoid.ker Prod.fst
 

@@ -363,7 +363,7 @@ theorem evenProlateLeakageValue_tendsto_zero (n : ℕ) :
         ‖hermiteEvenUnit (j : ℕ) - evenIndicatorCutoff a (hermiteEvenUnit (j : ℕ))‖) atTop
         (nhds (∑ _j : Fin (n + 1), (0 : ℝ))) :=
       tendsto_finsetSum _ fun j _ => tendsto_norm_sub_cut (hermiteEvenUnit (j : ℕ))
-    simpa using h
+    simpa using! h
   have hbound : Tendsto (fun a : ℝ => 1 - (1 - Real.sqrt ((n : ℝ) + 1) * (2 * η a)) ^ 2) atTop
       (nhds 0) := by
     have h1 : Tendsto (fun a : ℝ => 1 - Real.sqrt ((n : ℝ) + 1) * (2 * η a)) atTop (nhds 1) := by

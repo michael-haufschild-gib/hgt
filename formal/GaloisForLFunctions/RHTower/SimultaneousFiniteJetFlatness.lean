@@ -84,11 +84,11 @@ theorem hermiteFlatFluxCorrection_eventuallyEq_neg_mul_logDeriv
     hfac.continuousAt.eventually_ne (by simp [hermiteFlatFactor, hM.ne'])
   filter_upwards [hu.eventually_analyticAt, hne] with x hux hx
   have hpow : HasDerivAt (fun y : ℂ => y ^ M) ((M : ℂ) * x ^ (M - 1)) x := by
-    simpa using (hasDerivAt_id x).pow M
+    simpa using! (hasDerivAt_id x).pow M
   have hfactor : HasDerivAt (hermiteFlatFactor M u)
       (((M : ℂ) * x ^ (M - 1)) * u x + x ^ M * deriv u x) x := by
     change HasDerivAt (fun y : ℂ => 1 + y ^ M * u y) _ x
-    convert (hasDerivAt_const (x := x) (c := (1 : ℂ))).add
+    convert! (hasDerivAt_const (x := x) (c := (1 : ℂ))).add
       (hpow.mul hux.differentiableAt.hasDerivAt) using 1
     all_goals ring
   rw [hermiteFlatFluxCorrection, hermiteFlatFluxUnit, hfactor.deriv]

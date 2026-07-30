@@ -263,7 +263,7 @@ theorem norm_archFactorDeriv_reflected_line_eq (u : ℝ) :
   have hright0 := hasDerivAt_archFactor_line u
   have hconj : HasDerivAt (fun v : ℝ => (starRingEnd ℂ) (archFactor (linePt v)))
       ((starRingEnd ℂ) (archFactorDeriv (linePt u) * Complex.I)) u := by
-    simpa using
+    simpa using!
       ((Complex.conjCLE : ℂ ≃L[ℝ] ℂ).toContinuousLinearMap.hasFDerivAt.comp_hasDerivAt
         u hright0)
   have hright : HasDerivAt (fun v : ℝ => archFactor (1 - linePt v))

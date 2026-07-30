@@ -28,8 +28,11 @@ def unitCircleHaarProbability : ProbabilityMeasure UnitAddCircle :=
       AddCircle.haarAddCircle := rfl
 
 local instance unitCircleHaarProbability_noAtoms :
-    NoAtoms (unitCircleHaarProbability : Measure UnitAddCircle) :=
-  unitAddCircleHaarNoAtoms
+    NullSingletonClass (unitCircleHaarProbability : Measure UnitAddCircle) :=
+  { measure_singleton := fun x => by
+      have h := AddCircle.volume_closedBall (1 : ℝ) (x := x) 0
+      rw [AddCircle.volume_eq_smul_haarAddCircle] at h
+      simpa using h }
 
 /-- Circle laws that are simultaneously atomless and singular to Haar. -/
 def circleSingularContinuousProbabilityLaws :

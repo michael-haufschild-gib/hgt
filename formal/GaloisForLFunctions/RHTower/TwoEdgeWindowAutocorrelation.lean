@@ -68,13 +68,13 @@ theorem twoEdge_apertureAutocorrelation_eq (L a h : ℝ) :
           (Icc (a - L) a).indicator (fun _ => (1 : ℂ)) x
         + (Icc (a - L) a).indicator (fun _ => (1 : ℂ)) (x + h) *
           (Icc (-a) (-a + L)).indicator (fun _ => (1 : ℂ)) x) := by
-    simpa using hAA.add hAB
+    simpa using! hAA.add hAB
   have h34 : Integrable (fun x : ℝ =>
       (Icc (-a) (-a + L)).indicator (fun _ => (1 : ℂ)) (x + h) *
           (Icc (a - L) a).indicator (fun _ => (1 : ℂ)) x
         + (Icc (-a) (-a + L)).indicator (fun _ => (1 : ℂ)) (x + h) *
           (Icc (-a) (-a + L)).indicator (fun _ => (1 : ℂ)) x) := by
-    simpa using hBA.add hBB
+    simpa using! hBA.add hBB
   rw [apertureAutocorrelation, funext hpt,
     integral_add h12 h34, integral_add hAA hAB, integral_add hBA hBB,
     integral_indicator_Icc_shift_mul_Icc_complex (a - L) a (a - L) a h,

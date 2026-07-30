@@ -79,7 +79,6 @@ theorem xi_secular_moment_conj_parity (R : ℝ) (n : ℕ) :
   · intro ρ _; simp only [map_sub, map_one, Complex.conj_conj]; ring
   · intro ρ _; simp only [map_sub, map_one, Complex.conj_conj]; ring
   · intro ρ _
-    dsimp only
     have hord : analyticOrderAt xi (1 - (starRingEnd ℂ) ρ) = analyticOrderAt xi ρ := by
       rw [hrefl ρ, xi_orderAt_conj, xi_orderAt_one_sub]
     rw [map_mul, map_natCast, map_pow, hord, hkey ρ, mul_left_comm, ← mul_pow, neg_mul_neg,

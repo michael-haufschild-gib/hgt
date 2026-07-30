@@ -105,12 +105,16 @@ private theorem hasProd_primeSquarefreeLoschmidtPurityFactor
   have hbaseProd :
       HasProd (primeSquarefreeEulerFactor (sigma : ℂ))
         (riemannZeta (sigma : ℂ) / riemannZeta (2 * (sigma : ℂ))) := by
-    simpa only [primeSquarefreeEulerFactor, hbaseValue] using hbase.hasProd
+    change HasProd (fun p : Nat.Primes =>
+      1 + ((p : ℕ) : ℂ) ^ (-(sigma : ℂ))) _
+    simpa only [hbaseValue] using hbase.hasProd
   have htwoProd :
       HasProd (primeSquarefreeEulerFactor (2 * (sigma : ℂ)))
         (riemannZeta (2 * (sigma : ℂ)) /
           riemannZeta (2 * (2 * (sigma : ℂ)))) := by
-    simpa only [primeSquarefreeEulerFactor, htwoValue] using htwoBase.hasProd
+    change HasProd (fun p : Nat.Primes =>
+      1 + ((p : ℕ) : ℂ) ^ (-(2 * (sigma : ℂ)))) _
+    simpa only [htwoValue] using htwoBase.hasProd
   have hdenProd := hbaseProd.mul hbaseProd
   have hbaseZeta : riemannZeta (sigma : ℂ) ≠ 0 :=
     riemannZeta_ne_zero_of_one_lt_re hs

@@ -108,7 +108,7 @@ theorem relabelCoupling_tendsto_zero
     Tendsto (relabelCoupling e : (P → ℂ) → Q → ℂ)
       (𝓝 0) (𝓝 0) := by
   have hc := (relabelCoupling_analyticAt e).continuousAt
-  simpa using hc
+  simpa [ContinuousAt, relabelCoupling] using hc
 
 namespace FiniteLocalInteractionFamily
 

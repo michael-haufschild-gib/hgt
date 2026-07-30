@@ -140,7 +140,7 @@ theorem hasDerivAt_gammaVerticalLinearPhaseSlope
     (RHTower.digamma_analyticOnNhd_re_pos _ hpos).differentiableAt.hasDerivAt
   have hinner : HasDerivAt
       (fun u : ℝ => (sigma : ℂ) + (u : ℂ) * Complex.I) Complex.I x := by
-    convert (((Complex.ofRealCLM.hasDerivAt (x := x)).mul_const Complex.I).const_add
+    convert! (((Complex.ofRealCLM.hasDerivAt (x := x)).mul_const Complex.I).const_add
       (sigma : ℂ)) using 1
     simp
   have hcomp := (houter.hasFDerivAt.restrictScalars ℝ).comp x hinner.hasFDerivAt
@@ -151,7 +151,7 @@ theorem hasDerivAt_gammaVerticalLinearPhaseSlope
     simpa [Function.comp_def, mul_comm] using hcomp.hasDerivAt
   have hre := Complex.reCLM.hasFDerivAt.comp_hasDerivAt x hpsi
   unfold gammaVerticalLinearPhaseSlope
-  convert hre.sub_const calibration using 1
+  convert! hre.sub_const calibration using 1
   change -(deriv Complex.digamma (↑sigma + ↑x * I)).im =
     (deriv Complex.digamma (↑sigma + ↑x * I) * I).re
   rw [Complex.mul_re]
@@ -193,7 +193,7 @@ theorem gammaVerticalLinearPhaseSlope_tendsto_atTop
   have h :=
     re_digamma_vertical_tendsto_atTop (le_of_lt hsigma)
   have hsum := h.atTop_add (tendsto_const_nhds (x := -calibration))
-  simpa [gammaVerticalLinearPhaseSlope, sub_eq_add_neg] using hsum
+  simpa [gammaVerticalLinearPhaseSlope, sub_eq_add_neg] using! hsum
 
 /-- **Universal one-turn Gamma phase law.**  For every positive real shift and every linear phase
 calibration, a positive stationary frequency exists uniquely exactly when the calibration exceeds
@@ -286,7 +286,7 @@ theorem hasDerivAt_horizonBogoliubovPhaseCarrier {rho x : ℝ} (hx : x ≠ 0) :
       Complex.ofReal_re, zero_mul, one_mul, Complex.neg_im, Complex.natCast_im, neg_zero] at him
     exact hx (by simpa using him)
   have hinner : HasDerivAt (fun u : ℝ => Complex.I * (u : ℂ)) Complex.I x := by
-    convert Complex.ofRealCLM.hasFDerivAt.hasDerivAt.const_mul Complex.I using 1
+    convert! Complex.ofRealCLM.hasFDerivAt.hasDerivAt.const_mul Complex.I using 1
     simp
   have hGammaOuter :=
     (Complex.differentiableAt_Gamma z hpole).hasDerivAt
@@ -299,7 +299,7 @@ theorem hasDerivAt_horizonBogoliubovPhaseCarrier {rho x : ℝ} (hx : x ≠ 0) :
   have hphaseArg : HasDerivAt
       (fun u : ℝ => -(Complex.I * (u : ℂ)) * (Real.log rho : ℂ))
       (-(Complex.I) * (Real.log rho : ℂ)) x := by
-    convert hinner.neg.mul_const (Real.log rho : ℂ) using 1
+    convert! hinner.neg.mul_const (Real.log rho : ℂ) using 1
   have hExp : HasDerivAt
       (fun u : ℝ =>
         Complex.exp (-(Complex.I * (u : ℂ)) * (Real.log rho : ℂ)))
@@ -307,7 +307,7 @@ theorem hasDerivAt_horizonBogoliubovPhaseCarrier {rho x : ℝ} (hx : x ≠ 0) :
         (-(Complex.I) * (Real.log rho : ℂ))) x := by
     have h := (Complex.hasDerivAt_exp
       (-(Complex.I * (x : ℂ)) * (Real.log rho : ℂ))).scomp x hphaseArg
-    simpa [mul_comm] using h
+    simpa [mul_comm] using! h
   have hmul := hExp.mul hGamma
   have hlog :
       deriv Complex.Gamma z =
@@ -316,7 +316,7 @@ theorem hasDerivAt_horizonBogoliubovPhaseCarrier {rho x : ℝ} (hx : x ≠ 0) :
     field_simp [Complex.Gamma_ne_zero hpole]
   unfold horizonBogoliubovPhaseCarrier
   rw [hlog] at hmul
-  convert hmul using 1
+  convert! hmul using 1
   ring
 
 /-- The regularized intrinsic slope is exactly the physical imaginary-axis digamma slope away
@@ -363,7 +363,7 @@ theorem hasDerivAt_intrinsicHorizonGammaPhaseSlope (x : ℝ) :
     (RHTower.digamma_analyticOnNhd_re_pos _ hpos).differentiableAt.hasDerivAt
   have hinner : HasDerivAt
       (fun u : ℝ => (1 : ℂ) + (u : ℂ) * Complex.I) Complex.I x := by
-    convert ((Complex.ofRealCLM.hasFDerivAt.hasDerivAt.mul_const Complex.I).const_add 1) using 1
+    convert! ((Complex.ofRealCLM.hasFDerivAt.hasDerivAt.mul_const Complex.I).const_add 1) using 1
     simp
   have hcomp := (houter.hasFDerivAt.restrictScalars ℝ).comp x hinner.hasFDerivAt
   have hpsi : HasDerivAt
@@ -372,7 +372,7 @@ theorem hasDerivAt_intrinsicHorizonGammaPhaseSlope (x : ℝ) :
     simpa [Function.comp_def, mul_comm] using hcomp.hasDerivAt
   have hre := Complex.reCLM.hasFDerivAt.comp_hasDerivAt x hpsi
   unfold intrinsicHorizonGammaPhaseSlope
-  convert hre using 1
+  convert! hre using 1
   change -(deriv Complex.digamma (1 + ↑x * I)).im =
     (deriv Complex.digamma (1 + ↑x * I) * I).re
   rw [Complex.mul_re]
@@ -419,7 +419,7 @@ theorem horizonBogoliubovChannelPhaseSlope_tendsto_atTop (rho : ℝ) :
     Tendsto (horizonBogoliubovChannelPhaseSlope rho) atTop atTop := by
   have hsum := intrinsicHorizonGammaPhaseSlope_tendsto_atTop.atTop_add
     (tendsto_const_nhds (x := -Real.log rho))
-  simpa [horizonBogoliubovChannelPhaseSlope] using hsum
+  simpa [horizonBogoliubovChannelPhaseSlope] using! hsum
 
 /-- Every physical channel phase slope is strictly increasing, independently of its
 channel-dependent linear time-origin calibration. -/

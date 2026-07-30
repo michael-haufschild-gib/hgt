@@ -20,7 +20,7 @@ theorem xiCTaylorApprox_tendstoLocallyUniformly :
   have hconv := hpow.tendstoLocallyUniformlyOn'
   rw [Metric.eball_top] at hconv
   rw [← tendstoLocallyUniformlyOn_univ]
-  simpa only [xiCTaylorApprox, sub_zero] using hconv
+  simpa only [xiCTaylorApprox, sub_zero] using! hconv
 
 /-- Every canonical Taylor approximant is entire. -/
 theorem xiCTaylorApprox_differentiable (n : ℕ) : Differentiable ℂ (xiCTaylorApprox n) := by

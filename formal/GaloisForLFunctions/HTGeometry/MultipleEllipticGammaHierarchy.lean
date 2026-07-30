@@ -91,11 +91,11 @@ theorem multipleEllipticGammaLogSummand_tsum_mul_coordinate_fiber
   have hmulProd : Summable (fun km : ℕ × ({i : ι // i ≠ q} → ℕ) =>
       multipleEllipticGammaLogSummand p (p q * x)
         (multipleEllipticGammaMergeIndex q km.1 km.2)) := by
-    simpa [e] using ((e.symm.summable_iff).2 hmulGlobal)
+    simpa [e] using! ((e.symm.summable_iff).2 hmulGlobal)
   have hbaseProd : Summable (fun km : ℕ × ({i : ι // i ≠ q} → ℕ) =>
       multipleEllipticGammaLogSummand p x
         (multipleEllipticGammaMergeIndex q km.1 km.2)) := by
-    simpa [e] using ((e.symm.summable_iff).2 hbaseGlobal)
+    simpa [e] using! ((e.symm.summable_iff).2 hbaseGlobal)
   have hmul := hmulProd.prod_symm.prod_factor m
   have hbase := hbaseProd.prod_symm.prod_factor m
   have hL : Tendsto
@@ -112,8 +112,8 @@ theorem multipleEllipticGammaLogSummand_tsum_mul_coordinate_fiber
         ∑' k : ℕ, multipleEllipticGammaLogSummand p x
           (multipleEllipticGammaMergeIndex q k m))) := by
     apply Tendsto.sub
-    · simpa only using hmul.hasSum.tendsto_sum_nat.comp (tendsto_add_atTop_nat 1)
-    · simpa only using hbase.hasSum.tendsto_sum_nat.comp (tendsto_add_atTop_nat 1)
+    · simpa only using! hmul.hasSum.tendsto_sum_nat.comp (tendsto_add_atTop_nat 1)
+    · simpa only using! hbase.hasSum.tendsto_sum_nat.comp (tendsto_add_atTop_nat 1)
   have hR : Tendsto
       (fun N => multipleEllipticGammaLogSummand
           (fun i : {i : ι // i ≠ q} => p i) x m +
@@ -146,7 +146,7 @@ theorem multipleEllipticGammaLogKernel_eq_tsum_coordinate_fibers
   have hprod : Summable (fun mk : ({i : ι // i ≠ q} → ℕ) × ℕ =>
       multipleEllipticGammaLogSummand p x
         (multipleEllipticGammaMergeIndex q mk.2 mk.1)) := by
-    simpa [e] using ((e.summable_iff).2 hglobal)
+    simpa [e] using! ((e.summable_iff).2 hglobal)
   rw [multipleEllipticGammaLogKernel]
   rw [← e.tsum_eq (multipleEllipticGammaLogSummand p x)]
   simpa [e] using hprod.tsum_prod
@@ -172,11 +172,11 @@ theorem multipleEllipticGammaLogKernel_mul_coordinate_sub
   have hmulProd : Summable (fun mk : ({i : ι // i ≠ q} → ℕ) × ℕ =>
       multipleEllipticGammaLogSummand p (p q * x)
         (multipleEllipticGammaMergeIndex q mk.2 mk.1)) := by
-    simpa [e] using ((e.summable_iff).2 hmulGlobal)
+    simpa [e] using! ((e.summable_iff).2 hmulGlobal)
   have hbaseProd : Summable (fun mk : ({i : ι // i ≠ q} → ℕ) × ℕ =>
       multipleEllipticGammaLogSummand p x
         (multipleEllipticGammaMergeIndex q mk.2 mk.1)) := by
-    simpa [e] using ((e.summable_iff).2 hbaseGlobal)
+    simpa [e] using! ((e.summable_iff).2 hbaseGlobal)
   rw [← hmulProd.prod.tsum_sub hbaseProd.prod]
   apply tsum_congr
   intro m

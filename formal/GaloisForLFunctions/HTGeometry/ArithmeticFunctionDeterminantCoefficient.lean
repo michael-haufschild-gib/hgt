@@ -111,7 +111,9 @@ theorem factorial_le_fin_prod_of_injective {q : ℕ} (v : Fin q → ℕ)
     intro i
     generalize hm : (i : ℕ) = m
     induction m generalizing i with
-    | zero => simpa [hm] using hepos i
+    | zero =>
+        have := hepos i
+        omega
     | succ m ih =>
         let j : Fin q := ⟨m, by omega⟩
         have hj : (j : ℕ) + 1 ≤ (e j : ℕ) := ih j rfl
@@ -122,8 +124,6 @@ theorem factorial_le_fin_prod_of_injective {q : ℕ} (v : Fin q → ℕ)
         have hlt : (e j : ℕ) < (e i : ℕ) := (e.lt_iff_lt).2 hji
         omega
   have hprodle : (∏ i : Fin q, ((i : ℕ) + 1)) ≤ ∏ i : Fin q, (e i : ℕ) := by
-    change (∏ i ∈ (Finset.univ : Finset (Fin q)), ((i : ℕ) + 1)) ≤
-      ∏ i ∈ (Finset.univ : Finset (Fin q)), (e i : ℕ)
     exact Finset.prod_le_prod (s := (Finset.univ : Finset (Fin q)))
         (fun i hi => Nat.zero_le ((i : ℕ) + 1))
         (fun i hi => hpoint i)
@@ -167,7 +167,9 @@ theorem exists_perm_eq_add_one_of_fin_prod_eq_factorial {q : ℕ} (v : Fin q →
     intro i
     generalize hm : (i : ℕ) = m
     induction m generalizing i with
-    | zero => simpa [hm] using hepos i
+    | zero =>
+        have := hepos i
+        omega
     | succ m ih =>
         let j : Fin q := ⟨m, by omega⟩
         have hj : (j : ℕ) + 1 ≤ (e j : ℕ) := ih j rfl
@@ -196,8 +198,6 @@ theorem exists_perm_eq_add_one_of_fin_prod_eq_factorial {q : ℕ} (v : Fin q →
     · by_contra hnot
       have hstrict : (i : ℕ) + 1 < (e i : ℕ) := Nat.lt_of_not_ge hnot
       have hprodlt : (∏ j : Fin q, ((j : ℕ) + 1)) < ∏ j : Fin q, (e j : ℕ) := by
-        change (∏ j ∈ (Finset.univ : Finset (Fin q)), ((j : ℕ) + 1)) <
-          ∏ j ∈ (Finset.univ : Finset (Fin q)), (e j : ℕ)
         exact Finset.prod_lt_prod
           (fun j hj => by omega)
           (fun j hj => hpoint j)
@@ -325,7 +325,8 @@ theorem arithmeticFunction_fin_prod_apply {R : Type*} [CommRing R]
           f 0 de.1 * (∏ i : Fin q, f i.succ) de.2) =
         ∑ d : (Σ de : {de : ℕ × ℕ // de ∈ n.divisorsAntidiagonal},
           DirichletFactorData q de.1.2),
-          ∏ i, f i (DirichletFactorData.factors d i)
+          ∏ i, f i
+            (DirichletFactorData.factors (q := q + 1) (n := n) d i)
       rw [Fintype.sum_sigma]
       simp_rw [Fin.prod_univ_succ]
       simp_rw [DirichletFactorData.factors]

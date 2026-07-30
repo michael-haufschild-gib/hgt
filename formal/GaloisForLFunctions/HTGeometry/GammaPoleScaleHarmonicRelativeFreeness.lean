@@ -70,7 +70,7 @@ theorem algebraicIndependent_gammaPoleScaleAndHarmonicFamily (m : ℕ) :
     AlgebraicIndependent GammaPoleRationalBase
       (gammaPoleScaleAndHarmonicFamily m) := by
   rw [algebraicIndependent_iff_injective_aeval]
-  simpa [gammaPoleScaleAndHarmonicEval, MvPolynomial.aeval_def] using
+  simpa [gammaPoleScaleAndHarmonicEval, MvPolynomial.aeval_def] using!
     gammaPoleScaleAndHarmonicEval_injective m
 
 end

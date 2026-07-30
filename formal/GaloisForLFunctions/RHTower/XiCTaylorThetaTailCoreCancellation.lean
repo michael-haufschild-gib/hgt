@@ -23,7 +23,7 @@ theorem hasDerivAt_thetaCuspTailSecondSection_source
       (thetaCuspTailSecondSectionSourceDerivative d z x) x := by
   unfold thetaCuspTailSecondSection
     thetaCuspTailSecondSectionSourceDerivative
-  have hsum := HasDerivAt.sum (u := Finset.range (d + 1))
+  have hsum := HasDerivAt.fun_sum (u := Finset.range (d + 1)) (x := x)
     (A := fun (k : ℕ) (t : ℝ) =>
       (-1 : ℂ) ^ k * z ^ (2 * k) *
         ((t : ℂ) ^ (2 * k + 2) / (2 * k + 2).factorial))
@@ -31,23 +31,14 @@ theorem hasDerivAt_thetaCuspTailSecondSection_source
       (-1 : ℂ) ^ k * z ^ (2 * k) * ((2 * k + 2 : ℕ) : ℂ) *
         ((x : ℂ) ^ (2 * k + 1) / (2 * k + 2).factorial))
     (fun k _hk => by
-      have hbase : HasDerivAt (fun t : ℝ => (t : ℂ)) 1 x := by
-        simpa using Complex.ofRealCLM.hasDerivAt
-      have hpow := hbase.pow (2 * k + 2)
+      have hpow := (Complex.ofRealCLM.hasDerivAt (x := x)).pow (2 * k + 2)
       have hscaled :=
         (HasDerivAt.const_mul ((-1 : ℂ) ^ k * z ^ (2 * k)) hpow).mul_const
           (((2 * k + 2).factorial : ℂ)⁻¹)
       have hsub : 2 * k + 2 - 1 = 2 * k + 1 := by omega
-      convert hscaled using 1
-      · funext y
-        simp only [Pi.pow_apply, div_eq_mul_inv]
-        ring
-      · rw [hsub]
-        simp only [div_eq_mul_inv]
-        ring)
-  convert hsum using 1
-  funext t
-  simp only [Finset.sum_apply]
+      simpa only [Complex.ofRealCLM_apply, ofReal_one, Pi.pow_apply,
+        div_eq_mul_inv, hsub, one_mul, mul_one, mul_assoc] using! hscaled)
+  exact hsum
 
 theorem hasDerivAt_thetaCuspTailSecondSectionSourceDerivative
     (d : ℕ) (z : ℂ) (x : ℝ) :
@@ -56,7 +47,7 @@ theorem hasDerivAt_thetaCuspTailSecondSectionSourceDerivative
       (thetaCuspTailSecondSectionSourceSecondDerivative d z x) x := by
   unfold thetaCuspTailSecondSectionSourceDerivative
     thetaCuspTailSecondSectionSourceSecondDerivative
-  have hsum := HasDerivAt.sum (u := Finset.range (d + 1))
+  have hsum := HasDerivAt.fun_sum (u := Finset.range (d + 1)) (x := x)
     (A := fun (k : ℕ) (t : ℝ) =>
       (-1 : ℂ) ^ k * z ^ (2 * k) * ((2 * k + 2 : ℕ) : ℂ) *
         ((t : ℂ) ^ (2 * k + 1) / (2 * k + 2).factorial))
@@ -65,24 +56,15 @@ theorem hasDerivAt_thetaCuspTailSecondSectionSourceDerivative
         ((2 * k + 1 : ℕ) : ℂ) *
           ((x : ℂ) ^ (2 * k) / (2 * k + 2).factorial))
     (fun k _hk => by
-      have hbase : HasDerivAt (fun t : ℝ => (t : ℂ)) 1 x := by
-        simpa using Complex.ofRealCLM.hasDerivAt
-      have hpow := hbase.pow (2 * k + 1)
+      have hpow := (Complex.ofRealCLM.hasDerivAt (x := x)).pow (2 * k + 1)
       have hscaled :=
         (HasDerivAt.const_mul
           ((-1 : ℂ) ^ k * z ^ (2 * k) * ((2 * k + 2 : ℕ) : ℂ)) hpow).mul_const
             (((2 * k + 2).factorial : ℂ)⁻¹)
       have hsub : 2 * k + 1 - 1 = 2 * k := by omega
-      convert hscaled using 1
-      · funext y
-        simp only [Pi.pow_apply, div_eq_mul_inv]
-        ring
-      · rw [hsub]
-        simp only [div_eq_mul_inv]
-        ring)
-  convert hsum using 1
-  funext t
-  simp only [Finset.sum_apply]
+      simpa only [Complex.ofRealCLM_apply, ofReal_one, Pi.pow_apply,
+        div_eq_mul_inv, hsub, one_mul, mul_one, mul_assoc] using! hscaled)
+  exact hsum
 
 theorem thetaCuspTailSecondSectionSourceSecondDerivative_eq_truncatedCosine
     (d : ℕ) (z : ℂ) (x : ℝ) :
@@ -133,7 +115,6 @@ theorem thetaCuspTailSecondSectionSourceSecondDerivative_eq_truncatedCosine
           (1 / (((2 * k).factorial : ℕ) : ℂ)) := by rw [hratio]
     _ = (-1 : ℂ) ^ k * (z ^ (2 * k) * (x : ℂ) ^ (2 * k)) /
           (2 * k).factorial := by
-      push_cast
       ring
 
 def thetaCuspTailSecondCoreAtomSourceDerivative
@@ -147,9 +128,13 @@ theorem hasDerivAt_thetaCuspTailSecondCoreAtom_source
       (thetaCuspTailSecondCoreAtomSourceDerivative d z x) x := by
   unfold thetaCuspTailSecondCoreAtom
     thetaCuspTailSecondCoreAtomSourceDerivative
-  convert (hasDerivAt_const x (1 : ℂ)).sub
+  have hraw := (hasDerivAt_const x (1 : ℂ)).sub
     ((hasDerivAt_thetaCuspTailSecondSection_source d z x).const_mul
-      (z ^ 2 + 1 / 4)) using 1 <;> ring
+      (z ^ 2 + 1 / 4))
+  have hclean : HasDerivAt _
+      (-(z ^ 2 + 1 / 4) * thetaCuspTailSecondSectionSourceDerivative d z x) x :=
+    hraw.congr_deriv (by ring)
+  simpa only [Pi.sub_apply] using! hclean
 
 theorem hasDerivAt_thetaCuspTailSecondCoreAtomSourceDerivative
     (d : ℕ) (z : ℂ) (x : ℝ) :
@@ -373,8 +358,7 @@ theorem integrableOn_thetaCuspTailDerivative_mul_truncatedCosineSection
     have hscaled := hbase.const_mul
       (((-1 : ℂ) ^ k * z ^ (2 * k)) /
         (((2 * k).factorial : ℕ) : ℂ))
-    convert hscaled using 1
-    funext x
+    refine hscaled.congr (Filter.Eventually.of_forall fun x => ?_)
     push_cast
     rw [mul_pow]
     ring

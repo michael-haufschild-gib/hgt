@@ -89,7 +89,7 @@ theorem integrable_circleLebesgue_of_intervalIntegrable (F : ℂ → ℝ) (hFm :
       integrable_map_measure hmeasAC.aestronglyMeasurable AddCircle.measurable_mk'.aemeasurable]
     have h1 : (0 : ℝ) + 1 = 1 := by norm_num
     rw [h1] at *
-    simpa [Function.comp] using hstep
+    simpa [Function.comp] using! hstep
   have hvh : (AddCircle.haarAddCircle : Measure (AddCircle (1 : ℝ))) = volume := by
     rw [AddCircle.volume_eq_smul_haarAddCircle]; simp
   have hmeasC : Measurable (fun z : Circle => F (z : ℂ)) :=
@@ -126,8 +126,8 @@ theorem integrable_normSq_revPoly (c : ℕ → ℂ) (N : ℕ) :
   exact hcont.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
 
 /-- The normalized Haar (Lebesgue) probability measure on the circle has no atoms. -/
-instance circleLebesgue_noAtoms : NoAtoms circleLebesgue := by
-  haveI hna : NoAtoms (AddCircle.haarAddCircle : Measure (AddCircle (1 : ℝ))) := ⟨fun x => by
+instance circleLebesgue_noAtoms : NullSingletonClass circleLebesgue := by
+  haveI hna : NullSingletonClass (AddCircle.haarAddCircle : Measure (AddCircle (1 : ℝ))) := ⟨fun x => by
     have h := AddCircle.volume_closedBall (1 : ℝ) (x := x) 0
     rw [AddCircle.volume_eq_smul_haarAddCircle] at h
     simpa using h⟩

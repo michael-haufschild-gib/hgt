@@ -41,7 +41,7 @@ theorem differentialFamilyMatroid_matrixLinearForms_eq_linearFamilyMatroid
     letI : Fintype I := Fintype.ofFinite I
     rw [differentialFamilyMatroid_indep_iff,
       linearFamilyMatroid_indep_iff]
-    simpa only [] using
+    simpa only [] using!
       (differentialIndependent_matrixLinearForms_iff_rowIndependent
         (fun i : I ↦ M i) (fun i j ↦ hMconst i j) x hx)
 

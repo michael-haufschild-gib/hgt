@@ -66,7 +66,7 @@ theorem singularContinuousCarrier_maximalTranslation_cauchyHerglotzFreeness_dens
         let carrier := weightedBoundaryCarrier F.base.toBoundaryFamily mu density
         LinftyStrictlyPositive mu density ∧
           ∫ t, density t ∂mu = 1 ∧
-          IsProbabilityMeasure carrier ∧ NoAtoms carrier ∧
+          IsProbabilityMeasure carrier ∧ NullSingletonClass carrier ∧
           carrier ⟂ₘ (volume : Measure ℝ) ∧ HasHamburgerMoments s carrier ∧
           (w ∈ universalPhase →
             (∀ (hpositive : LinftyStrictlyPositive mu density)
@@ -173,7 +173,7 @@ theorem singularContinuousCarrier_maximalTranslation_cauchyHerglotzFreeness_dens
       mu density hp hi hfree
   have hcauchy :
       ¬ DifferentiallyAlgebraicOn (cauchyTransform carrier) upperHalfPlane := by
-    simpa only [carrier, density] using hw.2
+    simpa only [carrier, density] using! hw.2
   letI : IsProbabilityMeasure carrier := hstructure.1
   have hpresentation : ∀ M : ℂ,
       ¬ DifferentiallyAlgebraicOn

@@ -337,7 +337,7 @@ theorem smoothAFEZetaMellinIntegrand_left_one_verticalIntegrable
       unfold smoothAFEGaussianKernel
       exact (Complex.continuous_exp.comp (hw.pow 2)).div hw hwne
     unfold smoothAFEZetaMellinIntegrand
-    simpa only [w] using
+    simpa only [w, Pi.mul_apply] using!
       ((hzetaContinuous.mul hpow).mul hkernel).aestronglyMeasurable
   · exact Filter.Eventually.of_forall fun v => by
       simpa using norm_smoothAFEZetaMellinIntegrand_left_one_le hx τ v

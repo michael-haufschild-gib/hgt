@@ -65,7 +65,6 @@ theorem harmMid_far_dist_lower {c : ℝ} (hc : 0 < c) {i j : ℕ} (hj : i + 2 �
     rw [harmPole, harmPole, ← mul_sub]
     congr 1
     have h := Finset.sum_range_add_sum_Ico (fun l => 1/((l:ℝ)+1)) (by omega : i+1 ≤ j)
-    simp only [] at h
     linarith
   have hre : (∑ l ∈ Finset.Ico (i+1) j, 1/((l:ℝ)+1))
       = ∑ p ∈ Finset.range (j-(i+1)), 1/(((i+2:ℕ):ℝ)+p) := by

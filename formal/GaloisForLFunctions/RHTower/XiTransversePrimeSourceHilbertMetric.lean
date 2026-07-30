@@ -57,7 +57,7 @@ theorem exists_xiTransversePrimeJetApertureGram_posDef
       (xiTransversePrimeJetApertureGram shift m forbidden points).PosDef := by
   have htail : TailCoefficientIndependent
       (xiTransversePrimeJetApertureCoefficient shift m) := by
-    simpa only [xiTransversePrimeJetApertureCoefficient] using
+    simpa only [xiTransversePrimeJetApertureCoefficient] using!
       xiTransverseShift_primeJets_tailIndependent shift hpos hinj m
   obtain ⟨points, hgram⟩ :=
     htail.exists_cofinite_posDef_evaluationGram
@@ -149,7 +149,7 @@ theorem exists_injective_xiTransversePrimeJetApertureCofiniteHilbertReconstructi
         shift m forbidden points).det := by
   have htail : TailCoefficientIndependent
       (xiTransversePrimeJetApertureCoefficient shift m) := by
-    simpa only [xiTransversePrimeJetApertureCoefficient] using
+    simpa only [xiTransversePrimeJetApertureCoefficient] using!
       xiTransverseShift_primeJets_tailIndependent shift hpos hinj m
   simpa only [xiTransversePrimeJetApertureGram] using
     exists_injective_cofiniteEvaluationHilbertReconstruction_of_tailCoefficientIndependent

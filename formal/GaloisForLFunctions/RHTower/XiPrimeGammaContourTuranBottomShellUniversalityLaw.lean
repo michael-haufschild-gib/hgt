@@ -66,8 +66,10 @@ theorem exists_admissible_gaussianSource_contour_approximates_heatMomentPacket
     have hball : Metric.ball (∑' q, f i q) epsilon ∈ nhds (∑' q, f i q) :=
       Metric.ball_mem_nhds _ hepsilon
     have hpartial := (hsum i).hasSum.eventually hball
-    simpa only [Metric.mem_ball, xiGaussianHeatMomentPacket,
-      xiGaussianHeatMoment, f] using hpartial
+    change ∀ᶠ s : Finset XiZeroCopy in
+      (SummationFilter.unconditional XiZeroCopy).filter,
+      dist (∑ q ∈ s, f i q) (∑' q, f i q) < epsilon
+    exact hpartial
   have heventAll : ∀ᶠ s : Finset XiZeroCopy in atTop,
       ∀ i : Fin 3,
         dist (∑ q ∈ s, f i q) (xiGaussianHeatMomentPacket t i) < epsilon :=

@@ -246,11 +246,11 @@ theorem boundedRelationShiftedPolynomialProfile_firstDifference_isEquivalent
     Filter.tendsto_atTop_add_const_right atTop 1 tendsto_natCast_atTop_atTop
   have hbase := (polynomialPower_firstDifference_isEquivalent_of_one_lt hβ).comp_tendsto hshift
   have hmul := IsEquivalent.mul (IsEquivalent.refl (u := fun _ : ℕ => B)) hbase
-  convert hmul using 1
-  ext n
-  simp [boundedRelationFirstDifference, boundedRelationShiftedPolynomialProfile,
-    Function.comp_apply, Nat.cast_add, Pi.mul_apply]
-  ring_nf
+  convert! hmul using 1 <;>
+    ext n <;>
+    simp [boundedRelationFirstDifference, boundedRelationShiftedPolynomialProfile,
+      Function.comp_apply, Nat.cast_add, Pi.mul_apply] <;>
+    ring
 
 /-- Second differences of the positive shifted polynomial profile have their expected leading
 asymptotic throughout the full range `β > 1`, including `1 < β < 2`. -/
@@ -263,11 +263,11 @@ theorem boundedRelationShiftedPolynomialProfile_secondDifference_isEquivalent
     Filter.tendsto_atTop_add_const_right atTop 1 tendsto_natCast_atTop_atTop
   have hbase := (polynomialPower_secondDifference_isEquivalent_of_one_lt hβ).comp_tendsto hshift
   have hmul := IsEquivalent.mul (IsEquivalent.refl (u := fun _ : ℕ => B)) hbase
-  convert hmul using 1
-  ext n
-  simp [boundedRelationSecondDifference, boundedRelationShiftedPolynomialProfile,
-    Function.comp_apply, Nat.cast_add, Pi.mul_apply]
-  ring_nf
+  convert! hmul using 1 <;>
+    ext n <;>
+    simp [boundedRelationSecondDifference, boundedRelationShiftedPolynomialProfile,
+      Function.comp_apply, Nat.cast_add, Pi.mul_apply] <;>
+    ring
 
 /-- Pointwise approximation errors give the exact induced first-difference error bound. -/
 theorem IsPrivatePrimeSuperlinearApproximation.firstDifference_error_lt
@@ -329,7 +329,7 @@ private theorem expNeg_isLittleO_shiftedRpow
   have hexp : (fun n : ℕ => Real.exp (-(n : ℝ))) =o[atTop]
       fun n : ℕ => (((n : ℝ) + 1) ^ γ) := by
     have hscaled := hbase.const_mul_left (Real.exp 1)
-    convert hscaled using 1
+    convert! hscaled using 1
     ext n
     simp only [Function.comp_apply]
     rw [← Real.exp_add]
@@ -410,7 +410,7 @@ theorem IsPrivatePrimeSuperlinearApproximation.isEquivalent_shiftedPolynomialPro
       boundedRelationShiftedPolynomialProfile B β := by
   have herr : (fun n => (b n : ℝ) - boundedRelationShiftedPolynomialProfile B β n)
       =o[atTop] boundedRelationShiftedPolynomialProfile B β := by
-    simpa [boundedRelationShiftedPolynomialProfile] using
+    simpa [boundedRelationShiftedPolynomialProfile] using!
       (expError_isLittleO_shiftedRpow h.2.2.2.1
         (c := B) (γ := β) hB.ne')
   refine ((IsEquivalent.refl (u := boundedRelationShiftedPolynomialProfile B β)).add_isLittleO

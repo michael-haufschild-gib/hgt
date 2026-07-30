@@ -48,10 +48,10 @@ def multivariateEntireSubmodule (d : ℕ) :
       Differentiable ℂ (fun _ : ℂ => 0))
   add_mem' := by
     intro f g hf hg x v
-    simpa using (hf x v).add (hg x v)
+    simpa using! (hf x v).add (hg x v)
   smul_mem' := by
     intro c f hf x v
-    simpa using (hf x v).const_smul c
+    simpa using! (hf x v).const_smul c
 
 /-- Compact-open multivariate entire sources, in the coordinate-line model. -/
 abbrev MultivariateEntire (d : ℕ) := multivariateEntireSubmodule d

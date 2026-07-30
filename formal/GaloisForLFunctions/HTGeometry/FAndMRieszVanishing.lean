@@ -66,7 +66,7 @@ theorem exists_hardy_l2_convolution_with_zero_of_equal_analytic_moments
   · intro n hn
     have hfinite : Tendsto (fun j => (p (subseq j)).coeff n) atTop
         (nhds ((starRingEnd ℂ) (fAndMRemainingMoment mu nu f g n))) := by
-      simpa only [p] using
+      simpa only [p] using!
         (tendsto_fAndMFejerPolynomial_coeff_of_pos mu nu f g n hn).comp
           hsubseq.tendsto_atTop
     exact (tendsto_nhds_unique (hcoeff n) hfinite).symm

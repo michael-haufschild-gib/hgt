@@ -173,7 +173,7 @@ theorem lattice_energy_hasDerivAt {δ : ℝ} (hδ0 : 0 < δ) (M N : ℕ) {ϑ : �
     have hin : HasDerivAt (fun y : ℝ => (1 - y + (k : ℝ)) * (δ / 2)) ((0 - 1) * (δ / 2)) ϑ :=
       (((hasDerivAt_const ϑ (1 : ℝ)).sub (hasDerivAt_id ϑ)).add_const (k : ℝ)).mul_const (δ / 2)
     have hcomp := (rcsch_sq_hasDerivAt harg.ne').comp ϑ hin
-    convert hcomp using 1
+    apply hcomp.congr_deriv
     ring
   have ha : ∀ k ∈ range M, HasDerivAt (fun y => (rcsch ((y + (k : ℝ)) * (δ / 2))) ^ 2)
       (-(δ * rphi ((ϑ + (k : ℝ)) * (δ / 2)))) ϑ := by
@@ -182,12 +182,12 @@ theorem lattice_energy_hasDerivAt {δ : ℝ} (hδ0 : 0 < δ) (M N : ℕ) {ϑ : �
     have hin : HasDerivAt (fun y : ℝ => (y + (k : ℝ)) * (δ / 2)) (1 * (δ / 2)) ϑ :=
       ((hasDerivAt_id ϑ).add_const (k : ℝ)).mul_const (δ / 2)
     have hcomp := (rcsch_sq_hasDerivAt harg.ne').comp ϑ hin
-    convert hcomp using 1
+    apply hcomp.congr_deriv
     ring
   have hbsum := HasDerivAt.fun_sum (fun k hk => hb k hk)
   have hasum := HasDerivAt.fun_sum (fun k hk => ha k hk)
   have h := (hbsum.add hasum).const_mul (1 / 4 : ℝ)
-  convert h using 1
+  apply h.congr_deriv
   rw [Finset.sum_neg_distrib, ← Finset.mul_sum, ← Finset.mul_sum]
   ring
 

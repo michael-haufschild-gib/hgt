@@ -530,7 +530,7 @@ theorem xiTransversePrimeValuationCorrectedGaussianBandwidthLogDet_concaveOn_of_
   have hconcave :
       ConcaveOn ℝ (Set.Ioi 0)
         (xiTransversePrimeValuationCorrectedGaussianDimensionPowerLogDet shift p) := by
-    simpa [xiTransversePrimeValuationCorrectedGaussianDimensionPowerLogDet] using
+    simpa [xiTransversePrimeValuationCorrectedGaussianDimensionPowerLogDet] using!
       (gaussianCorrectedLogScale_convex_and_dimensionPower_concave_of_card_gt_one
         (xiTransversePrimeFirstValuationIntrinsicHilbertConfiguration shift p)
         hx (by omega)).2
@@ -592,7 +592,7 @@ theorem correctedLogScaleConvex_and_dimensionPowerConcave
       shift p).2 hcertificate.injective
   have htwo : 2 ≤ N := hcertificate.rankTwo
   simpa [xiTransversePrimeValuationCorrectedGaussianLogScale,
-    xiTransversePrimeValuationCorrectedGaussianDimensionPowerLogDet] using
+    xiTransversePrimeValuationCorrectedGaussianDimensionPowerLogDet] using!
     (gaussianCorrectedLogScale_convex_and_dimensionPower_concave_of_card_gt_one
       (xiTransversePrimeFirstValuationIntrinsicHilbertConfiguration shift p)
       hx (by omega))

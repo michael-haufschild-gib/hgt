@@ -47,7 +47,7 @@ theorem xiRightSpectralPoint_ne_zero (q : XiRightZeroCopy) :
 half without an enumeration. -/
 theorem xiRightSpectralPoint_inv_sq_summable :
     Summable (fun q : XiRightZeroCopy => 1 / ‖xiRightSpectralPoint q‖ ^ 2) := by
-  simpa only [xiRightSpectralPoint] using
+  simpa only [xiRightSpectralPoint] using!
     xiSpectralPoint_inv_sq_summable.subtype
       (fun q : XiZeroCopy => 0 < (I * xiSpectralPoint q).re)
 
@@ -151,7 +151,7 @@ def xiRightRelativeResolventTerm (z : ℂ) (q : XiRightZeroCopy) : ℂ :=
 theorem summable_xiRight_relativeResolventTerms (z : ℂ) :
     Summable (fun q : XiRightZeroCopy =>
       -z / (xiRightSpectralPoint q * (xiRightSpectralPoint q - z))) := by
-  simpa only [xiRightSpectralPoint] using
+  simpa only [xiRightSpectralPoint] using!
     (summable_xi_relativeResolventTerms z).subtype
       (fun q : XiZeroCopy => 0 < (I * xiSpectralPoint q).re)
 
@@ -221,7 +221,7 @@ theorem logDeriv_xiRightCanonicalProduct_eq_relativeResolventTrace
         ∑' q : XiRightZeroCopy,
           logDeriv
             (fun w : ℂ => weierstrassE1 (w / xiRightSpectralPoint q)) z := by
-      simpa only [xiRightCanonicalProduct, canonicalProductE1Indexed] using hlog
+      simpa only [xiRightCanonicalProduct, canonicalProductE1Indexed] using! hlog
     _ = ∑' q : XiRightZeroCopy,
           -z /
             (xiRightSpectralPoint q * (xiRightSpectralPoint q - z)) := by
@@ -403,7 +403,7 @@ theorem summable_xiAntiCausalWardBoundaryPairTerm :
   have hbase : Summable (fun q : XiRightUpperZeroCopy =>
       1 / ‖xiRightCenteredZero q.1‖ ^ 2) := by
     simpa only [xiRightCenteredZero, norm_mul, norm_I, one_mul,
-      xiRightSpectralPoint] using
+      xiRightSpectralPoint] using!
       xiRightSpectralPoint_inv_sq_summable.subtype
         (fun q : XiRightZeroCopy => 0 < (xiRightCenteredZero q).im)
   apply Summable.of_norm_bounded (hbase.mul_left 2)
@@ -477,7 +477,7 @@ theorem continuedXiCenteredAntiCausalWardResponse_eq_tsum_schwarzPairs
   have hinl :
       Summable (fun q : XiRightUpperZeroCopy =>
         f (xiRightSchwarzPairEquiv (Sum.inl q))) := by
-    simpa only [xiRightSchwarzPairEquiv_inl] using
+    simpa only [xiRightSchwarzPairEquiv_inl] using!
       hfull.comp_injective Subtype.val_injective
   have hinr :
       Summable (fun q : XiRightUpperZeroCopy =>
@@ -620,14 +620,12 @@ theorem hasDerivAt_xiRightWardSourcePhase_zero
     HasDerivAt (xiRightWardSourcePhase z)
       (-2 * I * logDeriv xiRightCanonicalProduct z) 0 := by
   have hminus : HasDerivAt (fun alpha : ℂ => z - alpha * I) (-I) 0 := by
-    simpa using
+    simpa using!
       (hasDerivAt_const (x := (0 : ℂ)) (c := z)).sub
         ((hasDerivAt_id (𝕜 := ℂ) (x := (0 : ℂ))).mul_const I)
   have hplus : HasDerivAt (fun alpha : ℂ => z + alpha * I) I 0 := by
-    convert
-      (hasDerivAt_const (x := (0 : ℂ)) (c := z)).add
-        ((hasDerivAt_id (𝕜 := ℂ) (x := (0 : ℂ))).mul_const I) using 1
-    all_goals ring_nf
+    simpa only [id_eq, one_mul] using
+      ((hasDerivAt_id (𝕜 := ℂ) (x := (0 : ℂ))).mul_const I).const_add z
   have hnum :
       HasDerivAt
         (fun alpha : ℂ => xiRightCanonicalProduct (z - alpha * I))
@@ -639,7 +637,7 @@ theorem hasDerivAt_xiRightWardSourcePhase_zero
     have hF' : HasDerivAt xiRightCanonicalProduct
         (deriv xiRightCanonicalProduct z) (z - 0 * I) := by
       simpa using hF
-    simpa using hF'.comp 0 hminus
+    simpa using! hF'.comp 0 hminus
   have hden :
       HasDerivAt
         (fun alpha : ℂ => xiRightCanonicalProduct (z + alpha * I))
@@ -651,12 +649,12 @@ theorem hasDerivAt_xiRightWardSourcePhase_zero
     have hF' : HasDerivAt xiRightCanonicalProduct
         (deriv xiRightCanonicalProduct z) (z + 0 * I) := by
       simpa using hF
-    simpa using hF'.comp 0 hplus
+    simpa using! hF'.comp 0 hplus
   have hquot := hnum.div hden (by simpa using hz)
-  simpa only [xiRightWardSourcePhase, logDeriv_apply] using
+  simpa only [xiRightWardSourcePhase, logDeriv_apply] using!
     hquot.congr_deriv (by
       field_simp [hz]
-      ring)
+      ring_nf)
 
 /-- Analytic two-node sharp ratio of the strict-right phase. -/
 def xiRightWardSourcePhaseCrossRatio (z w alpha : ℂ) : ℂ :=
@@ -694,7 +692,7 @@ theorem hasDerivAt_xiRightWardSourcePhaseCrossRatio_zero
   have hquot := hzphase.div hwphase hwzero
   rw [xiRightWardSourcePhase_zero hz, xiRightWardSourcePhase_zero hw] at hquot
   simpa only [xiRightWardSourcePhaseCrossRatio, one_pow, mul_one, one_mul,
-    div_one] using hquot.congr_deriv (by ring)
+    div_one] using! hquot.congr_deriv (by ring)
 
 /-- The Julia cross-defect tangent is the divided difference of the strict-right relative trace,
 so causal and critical-line factors have already been removed. -/
@@ -712,7 +710,7 @@ theorem hasDerivAt_xiRightWardJuliaCrossDefect_zero
       (2 * I * (z - (starRingEnd ℂ) w))
   rw [logDeriv_xiRightCanonicalProduct_eq_relativeResolventTrace hz,
     logDeriv_xiRightCanonicalProduct_eq_relativeResolventTrace hw] at h
-  simpa only [xiRightWardJuliaCrossDefect] using
+  simpa only [xiRightWardJuliaCrossDefect] using!
     h.congr_deriv (by
       field_simp [I_ne_zero, sub_ne_zero.mpr hzw])
 
@@ -763,7 +761,7 @@ theorem hasDerivAt_xiAntiCausalWardBoundarySourcePhase_zero :
       (hasDerivAt_id (𝕜 := ℂ) (x := (0 : ℂ))).mul_const
         xiAntiCausalWardBoundarySelfSymbol
   simpa only [xiAntiCausalWardBoundarySourcePhase, zero_mul,
-    Complex.exp_zero, one_mul] using
+    Complex.exp_zero, one_mul] using!
     (Complex.hasDerivAt_exp
       (0 * xiAntiCausalWardBoundarySelfSymbol)).comp 0 hlinear
 
@@ -807,7 +805,7 @@ theorem hasDerivAt_xiRightWardBoundarySourcePhaseCrossRatio_zero
   rw [xiRightWardSourcePhase_zero hz,
     xiAntiCausalWardBoundarySourcePhase_zero] at hquot
   simpa only [xiRightWardBoundarySourcePhaseCrossRatio, one_pow,
-    mul_one, one_mul, div_one] using hquot.congr_deriv (by ring)
+    mul_one, one_mul, div_one] using! hquot.congr_deriv (by ring)
 
 theorem hasDerivAt_xiRightWardBoundaryJuliaCrossDefect_zero
     {z : ℂ} (hz : xiRightCanonicalProduct z ≠ 0) :
@@ -820,7 +818,7 @@ theorem hasDerivAt_xiRightWardBoundaryJuliaCrossDefect_zero
   have h :=
     (hcross.sub_const 1).div_const (2 * I * z)
   rw [logDeriv_xiRightCanonicalProduct_eq_relativeResolventTrace hz] at h
-  simpa only [xiRightWardBoundaryJuliaCrossDefect] using h
+  simpa only [xiRightWardBoundaryJuliaCrossDefect] using! h
 
 /-- Boundary-anchored non-diagonal source transport before the spectral-to-Laplace rotation. -/
 def xiRightWardBoundaryAnchoredSourceTransportV
@@ -1077,7 +1075,7 @@ theorem hasDerivAt_mobiusGammaXiAntiCausalWardPacketTransportV_zero
       (continuedXiAntiCausalWardColumn node i) 0 :=
   by
     simpa only [mobiusGammaXiAntiCausalWardPacketTransportV,
-      mobiusGammaXiAntiCausalWardMatrixTransportV_boundaryColumn] using
+      mobiusGammaXiAntiCausalWardMatrixTransportV_boundaryColumn] using!
       hasDerivAt_mobiusGammaXiAntiCausalWardTransportV_zero (hnode i)
 
 /-- Complete source-transport package.  The same actual Möbius Fisher tangent has the four-unit

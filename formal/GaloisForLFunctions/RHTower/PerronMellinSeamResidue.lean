@@ -395,7 +395,7 @@ theorem coefficient_eq_sourceCharge_add_seamResidue_of_defectAt
     simpa only [E] using
       (perronEAt_left_flank_memLp_and_lpNorm_le hn hM hδ0 hδn).1
   have hlineDef : line =ᵐ[volume] fun t => T t + D t := by
-    simpa only [line, T, D] using hdef
+    simpa only [line, T, D] using! hdef
   have hlineLp : MemLp line 2 volume := (hTLp.add hDLp).ae_eq hlineDef.symm
   have hleftInt : Integrable (fun t => line t * E t) := hlineLp.integrable_mul hELp
   have hsourceInt : Integrable (fun t => T t * E t) := hTLp.integrable_mul hELp

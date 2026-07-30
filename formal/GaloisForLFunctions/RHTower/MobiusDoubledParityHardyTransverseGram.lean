@@ -359,7 +359,7 @@ theorem infiniteMobiusDoubledParityAugmentedGram_detail
         (infiniteMobiusDoubledParityFisherDetail sigma hsigma) =
       (‖infiniteMobiusCriticalFisherTangentLp sigma hsigma‖ ^ 2 : ℂ)
   rw [inner_self_eq_norm_sq_to_K]
-  simpa only [Complex.ofReal_pow] using
+  simpa only [Complex.ofReal_pow] using!
     congrArg (fun x : ℝ => (x : ℂ))
       (norm_infiniteMobiusDoubledParityFisherDetail_sq hsigma)
 

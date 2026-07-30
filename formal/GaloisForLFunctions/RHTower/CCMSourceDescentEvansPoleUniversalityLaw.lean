@@ -125,8 +125,9 @@ theorem ccmActiveEven_sourceDescent_forces_sourcePencilCoeff_zero
     rw [hBcStar, ← Matrix.map_mul]
     simp [T, Q, hGram]
   have hAmap : Areal.map (algebraMap ℝ ℂ) = A := by
-    simpa only [Areal, A, D, Dreal, ec, eta] using
-      ccmEvenBoundaryCompletion_map_complex Dreal ccmConstantBoundary e
+    dsimp only [Areal, A, D, ec, eta]
+    rw [ccmEvenBoundaryCompletion_map_complex]
+    rfl
   have hradical : Bc * A * (1 - Rc * Bc) = 0 := by
     have hmap := congrArg
       (fun M : Matrix m n ℝ => M.map (algebraMap ℝ ℂ)) hradicalReal

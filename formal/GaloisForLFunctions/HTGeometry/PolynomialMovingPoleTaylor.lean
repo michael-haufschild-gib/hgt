@@ -94,13 +94,13 @@ theorem movingPoleTaylorLaurent_apply
 
 theorem movingPoleTaylorLaurent_coeff_neg
     {R : Type*} [CommRing R] (a s : R) (p : R[X]) (b : ℕ) :
-    movingPoleTaylorLaurent a s p (-(b : ℤ)) =
+    (movingPoleTaylorLaurent a s p).coeff (-(b : ℤ)) =
       (Polynomial.hasseDeriv b p).eval a * s ^ b := by
   rw [movingPoleTaylorLaurent_apply, LaurentPolynomial.invert_apply,
     neg_neg]
-  rw [Polynomial.toLaurent_apply]
+  rw [LaurentPolynomial.coeff_toLaurent]
   change Finsupp.mapDomain (fun n : ℕ => (n : ℤ))
-      (scaledTaylorAlgHom a s p).toFinsupp (b : ℤ) = _
+      (scaledTaylorAlgHom a s p).toFinsupp.coeff (b : ℤ) = _
   have hinj : Function.Injective (fun n : ℕ => (n : ℤ)) :=
     Int.ofNat_injective
   rw [Finsupp.mapDomain_apply hinj]
@@ -109,16 +109,18 @@ theorem movingPoleTaylorLaurent_coeff_neg
 theorem movingPoleTaylorLaurent_coeff_pos
     {R : Type*} [CommRing R] (a s : R) (p : R[X])
     (q : ℤ) (hq : 0 < q) :
-    movingPoleTaylorLaurent a s p q = 0 := by
+    (movingPoleTaylorLaurent a s p).coeff q = 0 := by
   rw [movingPoleTaylorLaurent_apply, LaurentPolynomial.invert_apply,
-    Polynomial.toLaurent_apply]
+    LaurentPolynomial.coeff_toLaurent]
   apply Finsupp.mapDomain_notin_range
   rintro ⟨b, hb⟩
+  change (b : ℤ) = -q at hb
+  have hb_nonneg : (0 : ℤ) ≤ (b : ℤ) := Int.natCast_nonneg b
   omega
 
 theorem movingPoleTaylorLaurent_coeff_zero
     {R : Type*} [CommRing R] (a s : R) (p : R[X]) :
-    movingPoleTaylorLaurent a s p 0 = p.eval a := by
+    (movingPoleTaylorLaurent a s p).coeff 0 = p.eval a := by
   simpa using movingPoleTaylorLaurent_coeff_neg a s p 0
 
 theorem movingPoleTaylorLaurent_injective

@@ -60,7 +60,7 @@ theorem commutingCyclicObservableJet_algebraicIndependent_iff_transcendental
     AlgebraicIndependent K (commutingCyclicObservableJet I c) ↔
       Transcendental K (Ideal.Quotient.mk I (lawLinearForm c)) := by
   simpa [commutingCyclicObservableJet, cyclicSymmetricObservableJet,
-    cyclicPowerState] using
+    cyclicPowerState] using!
       symmetricPowerObservable_algebraicIndependent_iff_transcendental
         (K := K) (A := MvPolynomial ι K ⧸ I)
         (Ideal.Quotient.mk I (lawLinearForm c))

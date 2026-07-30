@@ -119,7 +119,7 @@ theorem summable_xiSquaredEulerOrbitResponse {u : ℝ} (hu : 0 ≤ u) :
   have hsum := summable_xiReciprocalSquareResolventTerm (XiC_neg_mul_I_ne x)
   have hsumre : Summable (fun q : XiZeroCopy =>
       (xiReciprocalSquareResolventTerm (-(x : ℂ) * I) q).re) := by
-    simpa only [Function.comp_apply] using hsum.mapL Complex.reCLM
+    exact (hsum.mapL Complex.reCLM).congr (fun _ => rfl)
   apply hsumre.congr
   intro q
   rw [xiReciprocalSquareResolventTerm_neg_mul_I_re_eq q x, hx2]

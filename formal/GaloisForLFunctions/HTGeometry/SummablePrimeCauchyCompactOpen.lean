@@ -41,7 +41,7 @@ theorem hasSumLocallyUniformlyOn_summablePrimeCauchyTransition
   have h := hB.sub hA
   simpa only [HasSumLocallyUniformlyOn, summablePrimeCauchyTransitionTerm,
     summablePrimeCauchyCarrier, discreteHerglotz, Finset.sum_sub_distrib,
-    Pi.sub_apply, Complex.ofReal_sub, sub_mul] using h
+    Pi.sub_apply, Complex.ofReal_sub, sub_mul] using! h
 
 /-- A finite rational transition between two summable residue assignments. -/
 def summablePrimeCauchyFiniteTransition

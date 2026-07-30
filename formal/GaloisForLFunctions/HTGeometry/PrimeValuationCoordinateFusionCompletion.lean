@@ -173,7 +173,7 @@ theorem cofiniteTailDenseOn_primeResidueValuationUpperEndAllLayerCarrier_differe
       (d := d + 1) (m := m) A y hy
   have hsub := hrect.comp embed hembed
   simpa [embed, primeResidueValuationUpperEndAllLayerCarrier,
-    primeResidueValuationUpperEndGridCarrier] using hsub
+    primeResidueValuationUpperEndGridCarrier] using! hsub
 
 /-! ## Coordinate-relative frontiers -/
 
@@ -254,7 +254,9 @@ theorem cofiniteTailDenseOn_primeResidueValuationUpperEndNextLayer_relativeHT_ov
       Nat.card (PrimeResidueValuationNextLayerIndex n A) =
         ∏ i, Fintype.card (A i) := by
   constructor
-  · simpa only [primeResidueValuationUpperEndCoordinateDepthPrefixField] using
+  · simpa only [primeResidueValuationUpperEndCoordinateDepthPrefixField,
+      primeResidueValuationUpperEndDepthPrefixCarrier,
+      primeResidueValuationUpperEndNextLayerCarrier] using!
       (cofiniteTailDenseOn_primeResidueValuationUpperEndGridSector_relativeHT_over_coordinate
         A y hy (fun x : PrimeResidueValuationInteractionGridIndex (n + 2) A =>
           x.1.1 = n + 1))
@@ -275,13 +277,18 @@ theorem cofiniteTailDenseOn_primeResidueValuationUpperEndNextLayer_not_mem_coord
     (cofiniteTailDenseOn_primeResidueValuationUpperEndNextLayer_relativeHT_over_coordinate
       n A y hy).1
   unfold GaloisForLFunctions.DifferentialIndependent at hrel
+  have hout :
+      primeResidueValuationUpperEndNextLayerCarrier (n := n) A y out =
+        primeResidueValuationUpperEndCarrier A y (n + 1) z := by
+    rfl
   have htrans : Transcendental
       (primeResidueValuationUpperEndCoordinateDepthPrefixField n A y)
-      (primeResidueValuationUpperEndNextLayerCarrier (n := n) A y out) := by
+      (primeResidueValuationUpperEndCarrier A y (n + 1) z) := by
+    rw [← hout]
     simpa using hrel.transcendental (out, 0)
   intro hmem
   apply htrans
-  simpa using isAlgebraic_algebraMap
+  exact isAlgebraic_algebraMap
     (R := primeResidueValuationUpperEndCoordinateDepthPrefixField n A y)
     (A := upperEndMeroField)
     (⟨primeResidueValuationUpperEndCarrier A y (n + 1) z, hmem⟩ :

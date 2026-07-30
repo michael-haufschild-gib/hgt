@@ -303,9 +303,9 @@ theorem dzoQuarticCoordinate_hasDerivAt (s : ℂ) :
   rw [hfun]
   have hinner : HasDerivAt (fun z : ℂ => Complex.log 16 * (-2 * z))
       (Complex.log 16 * -2) s := by
-    convert ((hasDerivAt_id s).const_mul (-2 : ℂ)).const_mul (Complex.log 16) using 1
+    convert! ((hasDerivAt_id s).const_mul (-2 : ℂ)).const_mul (Complex.log 16) using 1
     all_goals ring
-  convert hinner.cexp using 1
+  convert! hinner.cexp using 1
   all_goals ring
 
 theorem dzoQuartic_hasDerivAt (s : ℂ) :
@@ -319,7 +319,7 @@ theorem dzoQuartic_hasDerivAt (s : ℂ) :
       256 * dzoQuarticCoordinate z ^ 2 by
     funext z
     exact dzoQuartic_eq_coordinate z]
-  convert h using 1
+  convert! h using 1
   all_goals ring
 
 theorem dzoQuartic_deriv_ρ :

@@ -508,7 +508,11 @@ def squarefreeMobiusCriticalRelativeClockEnergy (sigma : ℝ) : ℝ :=
 theorem tendsto_squarefreeMobiusCriticalRelativeClockEnergy :
     Tendsto squarefreeMobiusCriticalRelativeClockEnergy
       (nhdsWithin 1 (Ioi 1)) (nhds 4) := by
-  simpa [squarefreeMobiusCriticalRelativeClockEnergy] using
+  change Tendsto (fun sigma : ℝ =>
+    4 * ∫ x : ℝ, |x|
+      ∂(squarefreeMobiusCriticalGapProbabilityMeasure sigma : Measure ℝ))
+      (nhdsWithin 1 (Ioi 1)) (nhds 4)
+  simpa using
     tendsto_const_nhds.mul
       tendsto_integral_abs_squarefreeMobiusCriticalGapProbabilityMeasure
 
@@ -525,7 +529,11 @@ theorem tendsto_squarefreeMobiusCriticalClockVariance :
     (tendsto_squarefreeMobiusLogMoment_one_critical.pow 2)
   have hvalue : (2 : ℝ) - 1 ^ 2 = 1 := by norm_num
   rw [hvalue] at h
-  simpa [squarefreeMobiusCriticalClockVariance] using h
+  change Tendsto (fun sigma : ℝ =>
+    (sigma - 1) ^ 2 * squarefreeMobiusLogMoment 2 sigma -
+      ((sigma - 1) * squarefreeMobiusLogMoment 1 sigma) ^ 2)
+      (nhdsWithin 1 (Ioi 1)) (nhds 1)
+  exact h
 
 /-- Projective Fisher energy of the squarefree critical source. -/
 def squarefreeMobiusCriticalProjectiveFisherEnergy (sigma : ℝ) : ℝ :=
@@ -535,7 +543,10 @@ def squarefreeMobiusCriticalProjectiveFisherEnergy (sigma : ℝ) : ℝ :=
 theorem tendsto_squarefreeMobiusCriticalProjectiveFisherEnergy :
     Tendsto squarefreeMobiusCriticalProjectiveFisherEnergy
       (nhdsWithin 1 (Ioi 1)) (nhds 4) := by
-  simpa [squarefreeMobiusCriticalProjectiveFisherEnergy] using
+  change Tendsto
+    (fun sigma : ℝ => 4 * squarefreeMobiusCriticalClockVariance sigma)
+      (nhdsWithin 1 (Ioi 1)) (nhds 4)
+  simpa using
     tendsto_const_nhds.mul tendsto_squarefreeMobiusCriticalClockVariance
 
 /-- Fisher and incidence curvature energies collide at the critical clock law. -/
@@ -566,14 +577,19 @@ theorem tendsto_squarefreeMobiusCriticalClockCDF (y : ℝ) :
     ProbabilityMeasure.tendsto_measure_of_null_frontier_of_tendsto
       tendsto_squarefreeMobiusCriticalClockProbabilityMeasure hnull
   have hreal := NNReal.continuous_coe.continuousAt.tendsto.comp hmeasure
+  change Tendsto (fun sigma : ℝ =>
+      ((squarefreeMobiusCriticalClockProbabilityMeasure sigma) (Iic y) : ℝ))
+    (nhdsWithin 1 (Ioi 1))
+    (nhds ((mobiusCriticalExponentialProbabilityMeasure (Iic y) : ℝ))) at hreal
   have hreal' : Tendsto (fun sigma : ℝ =>
       ProbabilityTheory.cdf
         (squarefreeMobiusCriticalClockProbabilityMeasure sigma : Measure ℝ) y)
       (nhdsWithin 1 (Ioi 1))
       (nhds (ProbabilityTheory.cdf
         (mobiusCriticalExponentialProbabilityMeasure : Measure ℝ) y)) := by
-    simpa [Function.comp_apply, ProbabilityTheory.cdf_eq_real, Measure.real,
-      ProbabilityMeasure.coe_mk] using hreal
+    simpa only [ProbabilityTheory.cdf_eq_real, Measure.real,
+      ← ProbabilityMeasure.ennreal_coeFn_eq_coeFn_toMeasure,
+      ENNReal.coe_toReal] using hreal
   have hlimit := ProbabilityTheory.cdf_expMeasure_eq (r := (1 : ℝ))
     (by norm_num) y
   simpa [squarefreeMobiusCriticalClockCDF,
@@ -596,7 +612,7 @@ private theorem integral_Ioc_exponentialCDF_mul_one_sub
     intro x
     have hq := (hasDerivAt_const x (1 : ℝ)).sub ((hasDerivAt_id x).neg.exp)
     have hp := (hq.pow 2).const_mul (1 / 2 : ℝ)
-    convert hp using 1
+    convert hp using 1 <;> try rfl
     simp only [Pi.sub_apply, Pi.neg_apply, Function.id_def]
     ring
   have hint : IntervalIntegrable

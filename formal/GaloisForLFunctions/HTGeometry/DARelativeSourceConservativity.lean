@@ -84,7 +84,7 @@ theorem CommutingDifferenceDifferentialField.mem_ker_familyRealizedBoundaryLinea
     · funext r
       simp [familyRealizedBoundaryFingerprint]
   rw [← hzero]
-  simpa [familyRealizedBoundaryLinearMap] using h
+  simpa [familyRealizedBoundaryLinearMap] using! h
 
 /-- Descend the complete source/reporter fingerprint through a prescribed invisible gauge
 submodule. -/
@@ -138,7 +138,7 @@ theorem CommutingDifferenceDifferentialField.quotientFamilyRealizedBoundaryLinea
     | _ z =>
         have hzker : z ∈ (S.familyRealizedBoundaryLinearMap realization).ker := by
           rw [LinearMap.mem_ker]
-          simpa using hq
+          simpa using! hq
         exact Submodule.Quotient.mk_eq_zero D |>.2 (hkernel hzker)
 
 /-- **DA-relative joint conservativity.**  The descended observation reconstructs classes modulo
@@ -242,7 +242,7 @@ theorem daPointedExponentialTwist_ne :
 /-- The untwisted elementary representative is differentially algebraic. -/
 theorem differentiallyAlgebraic_daPointedExponential :
     DifferentiallyAlgebraic daPointedExponential := by
-  simpa [daPointedExponential] using differentiallyAlgebraic_exp
+  simpa [daPointedExponential] using! differentiallyAlgebraic_exp
 
 /-- The periodically twisted elementary representative is also differentially algebraic. -/
 theorem differentiallyAlgebraic_daPointedExponentialTwist :

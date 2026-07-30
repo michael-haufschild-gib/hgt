@@ -228,8 +228,7 @@ theorem twoMassCalibrationMetricData_injective
     mul_left_cancel₀ hmassDifference hfirst
   apply Prod.ext
   · exact hcalibration
-  · dsimp
-    rw [hcalibration] at hsecond
+  · rw [hcalibration] at hsecond
     exact mul_left_cancel₀ hcalibration₂ hsecond
 
 /-! ## Continuum metric and nonlinear gravity-operator rigidity -/

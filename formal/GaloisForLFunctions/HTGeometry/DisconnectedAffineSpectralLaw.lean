@@ -295,7 +295,7 @@ theorem disconnectedAffineEigenvalueBranch_crossPacket_eq_zero
       obtain ⟨e, he⟩ := hrightPacketNonempty
       obtain ⟨er, her, rfl⟩ :
           ∃ er ∈ right, Sum.inr er = e := by
-        simpa [rightPacket] using he
+        simpa [rightPacket] using! he
       apply finsetMobiusResponse_eq_zero_of_insert_invariant
         (Finset.mem_union_right leftPacket he)
       intro active
@@ -307,7 +307,7 @@ theorem disconnectedAffineEigenvalueBranch_crossPacket_eq_zero
       obtain ⟨e, he⟩ := hleftPacketNonempty
       obtain ⟨el, hel, rfl⟩ :
           ∃ el ∈ left, Sum.inl el = e := by
-        simpa [leftPacket] using he
+        simpa [leftPacket] using! he
       apply finsetMobiusResponse_eq_zero_of_insert_invariant
         (Finset.mem_union_left rightPacket he)
       intro active

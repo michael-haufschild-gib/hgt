@@ -166,6 +166,7 @@ theorem integral_shellGap_sq_le {m : ℕ} (hm : m ≠ 0) {σ : ℝ} (hσ : 1 < �
     simp only [ProbabilityMeasure.coe_mk, ProbabilityMeasure.toMeasure_prod]
     rw [integral_map (continuous_fst.sub continuous_snd).aemeasurable
       (continuous_pow 2).aestronglyMeasurable]
+    rfl
   rw [hgap, ← integral_shellClock_sq hm hσ]
   calc (∫ p : ℝ × ℝ, (p.1 - p.2) ^ 2 ∂(μ.prod μ))
       ≤ ∫ p : ℝ × ℝ, (2 * p.1 ^ 2 + 2 * p.2 ^ 2) ∂(μ.prod μ) := hmono

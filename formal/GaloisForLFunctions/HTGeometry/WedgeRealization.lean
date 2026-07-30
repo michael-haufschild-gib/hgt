@@ -163,14 +163,14 @@ theorem boundaryWedgeDeletedFace_iff {r s : ℕ} (J : Finset (Fin r ⊕ Fin s)) 
       intro v hv
       rcases Finset.mem_map.mp hv with ⟨w, hw, rfl⟩
       rcases w with i | j <;>
-        simpa [boundaryWedgeLeft, boundaryWedgeDeletedLeft] using hleft _ hw
+        simpa [boundaryWedgeLeft, boundaryWedgeDeletedLeft] using! hleft _ hw
     · right
       refine ⟨?_, none, by simp [boundaryWedgeRight], by
         simp [boundaryWedgeDeleteCenterEmbedding]⟩
       intro v hv
       rcases Finset.mem_map.mp hv with ⟨w, hw, rfl⟩
       rcases w with i | j <;>
-        simpa [boundaryWedgeRight, boundaryWedgeDeletedRight] using hright _ hw
+        simpa [boundaryWedgeRight, boundaryWedgeDeletedRight] using! hright _ hw
 
 /-- Every finite subset of the left block is a deleted-centre face. -/
 theorem boundaryWedgeDeletedFace_left {r s : ℕ} (J : Finset (Fin r)) :
@@ -254,7 +254,7 @@ centre by an edge. -/
 theorem boundaryWedgeFace_center_left {r s : ℕ} (hr : 2 ≤ r) (i : Fin r) :
     boundaryWedgeFace
       ({none, some (Sum.inl i)} : Finset (BoundaryWedgeVertex r s)) := by
-  have hcard : 1 < Fintype.card (Fin r) := by simpa using hr
+  have hcard : 1 < Fintype.card (Fin r) := by simpa using! hr
   obtain ⟨k, hki⟩ := Fintype.exists_ne_of_one_lt_card hcard i
   left
   refine ⟨?_, some (Sum.inl k), by simp [boundaryWedgeLeft], ?_⟩
@@ -268,7 +268,7 @@ common centre by an edge. -/
 theorem boundaryWedgeFace_center_right {r s : ℕ} (hs : 2 ≤ s) (j : Fin s) :
     boundaryWedgeFace
       ({none, some (Sum.inr j)} : Finset (BoundaryWedgeVertex r s)) := by
-  have hcard : 1 < Fintype.card (Fin s) := by simpa using hs
+  have hcard : 1 < Fintype.card (Fin s) := by simpa using! hs
   obtain ⟨k, hkj⟩ := Fintype.exists_ne_of_one_lt_card hcard j
   right
   refine ⟨?_, some (Sum.inr k), by simp [boundaryWedgeRight], ?_⟩

@@ -37,16 +37,14 @@ theorem integral_exp_neg_two_div
   have hderiv : ∀ t : ℝ, HasDerivAt F (Real.exp (-2 * t / u)) t := by
     intro t
     have hlin : HasDerivAt (fun x : ℝ => -2 * x / u) (-2 / u) t := by
-      convert (hasDerivAt_id t).const_mul (-2 / u) using 1
-      · funext x
-        dsimp
-        ring
-      · ring
+      simpa only [id_eq, mul_one] using!
+        ((hasDerivAt_id t).const_mul (-2 : ℝ)).div_const u
     have hexp := hlin.exp
-    convert hexp.const_mul (-(u / 2)) using 1
-    all_goals
-      dsimp [F]
-      field_simp [hu]
+    have hraw := hexp.const_mul (-(u / 2))
+    have hraw' := hraw.congr_deriv
+      (g' := Real.exp (-2 * t / u)) (by
+        field_simp [hu])
+    simpa only [F, Function.comp_apply] using! hraw'
   rw [intervalIntegral.integral_eq_sub_of_hasDerivAt
     (fun t _ht => hderiv t)
     ((by fun_prop : Continuous (fun t : ℝ => Real.exp (-2 * t / u))).intervalIntegrable a b)]
@@ -139,7 +137,7 @@ theorem ccmEssentialBoundaryLayerTailEnergy_eq
     ring
   rw [hfun, intervalIntegral.integral_const_mul,
     integral_exp_neg_two_div hu.ne']
-  ring
+  ring_nf
 
 theorem tendsto_exp_neg_two_mul_div_nhdsGT_zero
     {δ : ℝ} (hδ : 0 < δ) :
@@ -331,7 +329,7 @@ theorem norm_ccmEssentialLogCuspBCF_imaginary
   rw [ccmEssentialBoundaryLayer]
   congr 2
   rw [div_eq_mul_inv, ← Real.exp_neg]
-  ring
+  ring_nf
 
 theorem norm_ccmEssentialLogCusp_imaginary_sq (y : ℝ) :
     ‖ccmEssentialLogCusp (Complex.I * y)‖ ^ 2 =

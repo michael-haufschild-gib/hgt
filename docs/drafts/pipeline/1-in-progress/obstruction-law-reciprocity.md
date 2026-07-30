@@ -1502,7 +1502,7 @@ than a Nature claim.
 ## Eleventh exact discriminator: spatial change is only reciprocally spectral-blind
 
 `[PAPER-PROVED — REDISCOVERED BRIDGE; LEAN TARGET IN`
-`../2-fully-proven/not_new_scientific_knowledge/fixed-carrier-spatial-reciprocal-blindness.md]`
+`../3-formalized/not_new_scientific_knowledge/fixed-carrier-spatial-reciprocal-blindness.md]`
 
 For a rectangular transfer \(D\) and skew-adjoint coefficient generators \(A,B\), put
 \[
@@ -1596,3 +1596,95 @@ realization. Failure at item 5 returns to parent gauge/embedding geometry.
   order forgotten by isolated positive squares.
 - 2026-07-29 — subordinated arbitrary obstruction completion to the sharper loss--future physical
   identity; fixed point is now a proposed realization, not the source law.
+
+## Transcategorical correction: the differential must change the law
+
+The combined no-go record now excludes every fixed-category substitute:
+
+- local Hermitian and skew responses are independently prescribable;
+- finite histories retain simultaneous-similarity gauge;
+- minimal completion selects no behavior;
+- modular succession admits tensor spectators;
+- finite comparison arity is incomplete;
+- fixed ternary closure is not time; and
+- spatial TRO derivations are reciprocal-spectrally blind.
+
+The surviving mathematical hunch is therefore a **source-causalizing law-valued differential**
+\[
+\mathbf D_e:\mathcal L_e\longrightarrow\mathcal L_{e^+},
+\]
+where the source obstruction generates the new operation types of
+\(\mathcal L_{e^+}\). Its non-tautological core is the no-surplus equivalence
+\[
+\operatorname{NewRule}_{e}
+\bigl(\mathcal L_{e^+}/\operatorname{Cont}_e\mathcal L_e\bigr)
+\simeq
+\mathsf{Lost}_{e}(\mathcal L_e).
+\]
+This is the mathematical form currently capable of realizing the loss--future identity. It is
+not yet a definition or theorem.
+
+Alternative local causalization orders should produce an object-changing successor curvature.
+The physical conjecture is that one exceptional regular phase splits this single curvature into
+the three internal Standard Model responses, one external Lorentz/gravity response, and mixed
+Higgs/soldering data, with no fifth response.
+
+Public consequence:
+
+> **Every force is a disagreement about what the universe can make happen next.**
+
+Ordinary categorical curvature, higher gauge theory, and noncommuting covariant derivatives are
+parents. Novelty requires deriving the successor objects and operation types themselves from the
+source loss, excluding spectators, and producing a finite prediction.
+
+## Twelfth exact discriminator: the obstruction returns quadratically
+
+`[PAPER-PROVED — STANDARD BRIDGE; LEAN TARGET EXTENDED IN`
+`../3-formalized/not_new_scientific_knowledge/fixed-carrier-spatial-reciprocal-blindness.md]`
+
+At an isometric transfer \(D^\dagger D=I\), every variation has the unique decomposition
+\[
+E=DH+DS+N,\qquad
+H^\dagger=H,\quad S^\dagger=-S,\quad D^\dagger N=0.
+\]
+The transverse obstruction \(N\) is absent from the first Gram derivative but not destroyed:
+\[
+(D+tN)^\dagger(D+tN)
+=I+|t|^2N^\dagger N.
+\]
+It re-enters as a forced positive second-order record.  In the primitive \(3\times2\) carrier the
+Hermitian, skew, and transverse sectors are each four real dimensional.  Moreover the transverse
+square has rank at most one and is therefore a future-null \(H_2(\mathbb C)\) record; positive
+sums of such rays generate the complete Lorentz future cone.
+
+This changes the proposed reciprocity.  The false linear local identity
+\[
+\ker d\operatorname{Gram}\simeq H_2(\mathbb C)
+\]
+is replaced by the candidate extreme-ray law
+\[
+\mathsf{Lost}^{\perp}_e/U(1)
+\simeq
+\operatorname{ExtRay}(\mathsf{Future}_e),
+\qquad [N]\mapsto N^\dagger N.
+\]
+The physical conjecture is now:
+
+> **An obstruction does not disappear.  Reality squares it into an elementary future.**
+
+This is compatible with the exact corpus in a way arbitrary completion was not:
+
+- positive squaring creates the record without choosing its sign;
+- square-root nonuniqueness retains the phase/frame information missed by reciprocal spectra;
+- one null square is massless, while non-collinear sums have the exact minor-energy mass;
+- connection data live on comparisons of square-root torsors, not on the isolated positive
+  record; and
+- iterated source-selected squaring can remain non-finitely horizontalizable even though each
+  local carrier is finite.
+
+Purification geometry and the Uhlmann connection already own positive square roots, their unitary
+ambiguity, metrics, and holonomy.  Therefore the square itself is not the discovery.  The open
+new-mathematics target is a source-positive causal Hessian which proves that operational
+obstruction classes are exactly the square roots of successor causal rays and derives their
+composition, exceptional symmetry, dynamics, and one finite prediction without supplied
+spacetime or state factorization.

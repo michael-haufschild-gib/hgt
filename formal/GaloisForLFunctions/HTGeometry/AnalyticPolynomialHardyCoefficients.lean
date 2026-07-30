@@ -26,7 +26,7 @@ private theorem continuousOn_multiset_prod_coeff {ι : Type*} (s : Multiset ι)
   induction s using Multiset.induction_on with
   | empty => simpa using (continuousOn_const : ContinuousOn (fun _ : ℂ => (1 : ℂ)) t)
   | @cons a s ih =>
-      simpa using (hf a (by simp)).mul
+      simpa using! (hf a (by simp)).mul
         (ih (fun x hx => hf x (by simp [hx])))
 
 /-- The finite Blaschke product is continuous on the closed unit disk. -/

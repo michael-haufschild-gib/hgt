@@ -149,12 +149,7 @@ theorem fullRectangleKernelOperatorMap_tensor_apply
   let ell : RealL2 →L[ℂ] ℂ := precompRestrict (pairing vLp)
   let uBCF : ℝ →ᵇ ℂ := projectClosedIntervalBCFCLM a b hab ℂ u
   let ellBCF : ℝ →ᵇ (RealL2 →L[ℂ] ℂ) :=
-    BoundedContinuousFunction.ofNormedAddCommGroup
-      (fun x => uBCF x • ell) (uBCF.continuous.smul continuous_const)
-      (‖uBCF‖ * ‖ell‖) (fun x => by
-        exact (norm_smul_le _ _).trans
-          (mul_le_mul (uBCF.norm_coe_le_norm x) le_rfl
-            (norm_nonneg ell) (norm_nonneg uBCF)))
+    uBCF • BoundedContinuousFunction.const ℝ ell
   let field : Lp (RealL2 →L[ℂ] ℂ) 2
       ((volume : Measure ℝ).restrict (Set.Icc a b)) :=
     BoundedContinuousFunction.toLp 2

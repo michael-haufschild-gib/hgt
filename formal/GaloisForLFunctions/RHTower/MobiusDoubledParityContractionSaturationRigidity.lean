@@ -62,10 +62,15 @@ theorem contractionGramDefect_posSemidef
   have hop :=
     Matrix.posSemidef_opNorm_smul_gram_sub_gram v T
   have hsum := hsource.add hop
-  convert hsum using 1
-  ext i j
-  simp [contractionGramDefect, c]
-  ring
+  have heq : contractionGramDefect T v =
+      (c : ℂ) • Matrix.gram ℂ v +
+        (((‖T‖ ^ 2 : ℝ) : ℂ) • Matrix.gram ℂ v -
+          Matrix.gram ℂ (T ∘ v)) := by
+    ext i j
+    simp [contractionGramDefect, c]
+    ring
+  rw [heq]
+  exact hsum
 
 /-- Saturating one vector forces the adjoint defect to vanish on that vector. -/
 theorem adjoint_apply_apply_eq_of_contraction_saturates
@@ -371,7 +376,7 @@ theorem tendsto_mobiusParityCriticalSigmaSequence :
         Filter.Tendsto (fun n : ℕ => (1 : ℝ) / (n + 1))
           Filter.atTop (nhds 0) :=
       tendsto_one_div_add_atTop_nhds_zero_nat
-    simpa only [mobiusParityCriticalSigmaSequence, add_zero] using
+    simpa only [mobiusParityCriticalSigmaSequence, add_zero] using!
       tendsto_const_nhds.add hzero
   · exact Filter.Eventually.of_forall
       mobiusParityCriticalSigmaSequence_gt_one

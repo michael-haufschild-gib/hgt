@@ -109,7 +109,7 @@ theorem deriv_scaled_displacement
       scale * (deriv ((quadratic c)^[q]) (z + scale * τ) - 1) := by
   have hL0 := (hasDerivAt_const τ z).add (hasDerivAt_const_mul (x := τ) scale)
   have hL : HasDerivAt (fun t : ℂ => z + scale * t) scale τ := by
-    simpa only [Pi.add_apply, zero_add] using hL0
+    simpa only [Pi.add_apply, zero_add] using! hL0
   have hF : HasDerivAt ((quadratic c)^[q])
       (deriv ((quadratic c)^[q]) (z + scale * τ)) (z + scale * τ) :=
     ((differentiable_quadratic_iterate c q).differentiableAt).hasDerivAt
@@ -120,7 +120,7 @@ theorem deriv_scaled_displacement
   have hderiv :
       deriv (fun t => (quadratic c)^[q] (z + scale * t) - (z + scale * t)) τ =
         (deriv ((quadratic c)^[q]) (z + scale * τ) - 1) * scale := by
-    simpa only [Function.comp_apply] using hcomp.deriv
+    simpa only [Function.comp_apply] using! hcomp.deriv
   rw [hderiv]
   ring
 

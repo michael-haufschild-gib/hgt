@@ -94,7 +94,8 @@ theorem differentialAdjoin_fixed_of_generators (g : ℂ) (T : Set (meroField (Se
   · rintro y ⟨y₀, hy₀, n, rfl⟩
     have hjet : addTranslationMeroEquiv g (differentialJet n y₀) =
         differentialJet n (addTranslationMeroEquiv g y₀) := by
-      simpa using (addTranslationMeroDifferentialAlgEquiv g).map_differentialJet n y₀
+      simpa using!
+        (addTranslationMeroDifferentialAlgEquiv g).map_differentialJet n y₀
     show addTranslationMeroEquiv g (differentialJet n y₀) = differentialJet n y₀
     rw [hjet, hgen y₀ hy₀]
   · intro c

@@ -47,8 +47,11 @@ private theorem hasSum_nat_sq_mul_geometric
   have hgeom := hasSum_geometric_of_norm_lt_one (K := ℝ) hr
   have hraw := ((hchoose.mul_left 2).sub (hlinear.mul_left 3)).sub
     (hgeom.mul_left 2)
-  convert hraw using 1
-  · funext e
+  have hraw' : HasSum (fun e : ℕ => (e : ℝ) ^ 2 * r ^ e)
+      (2 * (1 / (1 - r) ^ (2 + 1)) -
+        3 * (r / (1 - r) ^ 2) - 2 * (1 - r)⁻¹) := by
+    apply HasSum.congr_fun hraw
+    intro e
     have hchooseTwo :
         (2 : ℝ) * ((((e + 2).choose 2 : ℕ) : ℝ)) - 3 * (e : ℝ) - 2 =
           (e : ℝ) ^ 2 := by
@@ -67,13 +70,19 @@ private theorem hasSum_nat_sq_mul_geometric
       ring
     rw [← hchooseTwo]
     ring
-  · have hne : 1 - r ≠ 0 := by
-      intro h
-      have : r = 1 := by linarith
-      subst r
-      norm_num at hr
+  have hne : 1 - r ≠ 0 := by
+    intro h
+    have : r = 1 := by linarith
+    subst r
+    norm_num at hr
+  have hvalue :
+      2 * (1 / (1 - r) ^ (2 + 1)) -
+          3 * (r / (1 - r) ^ 2) - 2 * (1 - r)⁻¹ =
+        r * (1 + r) / (1 - r) ^ 3 := by
     field_simp [hne]
-    ring
+    ring_nf
+  rw [← hvalue]
+  exact hraw'
 
 /-- The actual centered height coordinate embedded by the square root of the Xi-shift depth law.
 The inverse-prime parameter is source-forced by the completed `+2` shift. -/
@@ -177,8 +186,13 @@ theorem hasSum_gammaSewnXiShiftEndpointTangentFeature_mul
   let D := Real.sqrt (1 - a ^ 2) * Real.sqrt (1 - b ^ 2) * a * b
   have hpoly := ((htwo.mul_left A).add (hone.mul_left B)).add (hzero.mul_left C)
   have hscaled := hpoly.mul_left D
-  convert hscaled using 1
-  · funext e
+  have hscaled' : HasSum
+      (fun e : ℕ => gammaSewnXiShiftEndpointTangentFeature p e *
+        gammaSewnXiShiftEndpointTangentFeature q e)
+      (D * (A * (u * (1 + u) / (1 - u) ^ 3) +
+        B * (u / (1 - u) ^ 2) + C * (1 - u)⁻¹)) := by
+    apply HasSum.congr_fun hscaled
+    intro e
     change (Real.sqrt (1 - a ^ 2) * a ^ (e + 1) *
         ((1 - a ^ 2) * (e : ℝ) - a ^ 2)) *
       (Real.sqrt (1 - b ^ 2) * b ^ (e + 1) *
@@ -190,8 +204,12 @@ theorem hasSum_gammaSewnXiShiftEndpointTangentFeature_mul
       B * ((e : ℝ) * (a * b) ^ e) + C * (a * b) ^ e)
     rw [mul_pow]
     dsimp only [A, B, C, D]
-    ring
-  · dsimp only [gammaSewnXiShiftEndpointTangentKernelClosed,
+    ring_nf
+  have hvalue :
+      gammaSewnXiShiftEndpointTangentKernelClosed p q =
+        D * (A * (u * (1 + u) / (1 - u) ^ 3) +
+          B * (u / (1 - u) ^ 2) + C * (1 - u)⁻¹) := by
+    dsimp only [gammaSewnXiShiftEndpointTangentKernelClosed,
       u]
     have hden : 1 - a * b ≠ 0 := sub_ne_zero.mpr hu1.ne'
     have haSq : 0 ≤ 1 - a ^ 2 := by
@@ -205,7 +223,9 @@ theorem hasSum_gammaSewnXiShiftEndpointTangentFeature_mul
     rw [Real.sqrt_mul haSq]
     dsimp only [A, B, C, D, u]
     field_simp [hden]
-    ring
+    ring_nf
+  rw [hvalue]
+  exact hscaled'
 
 theorem gammaSewnXiShiftEndpointTangentKernel_eq_closed
     (p q : Nat.Primes) :
@@ -290,12 +310,23 @@ theorem hasSum_gammaSewnXiShiftEndpointUnitTangentFeature_mul
       (gammaSewnXiShiftEndpointUnitTangentKernel p q) := by
   have h := (hasSum_gammaSewnXiShiftEndpointTangentFeature_mul p q).mul_left
     ((p : ℝ) ^ 2 * (q : ℝ) ^ 2)
-  convert h using 1
-  · funext e
+  have h' : HasSum
+      (fun e : ℕ => gammaSewnXiShiftEndpointUnitTangentFeature p e *
+        gammaSewnXiShiftEndpointUnitTangentFeature q e)
+      ((p : ℝ) ^ 2 * (q : ℝ) ^ 2 *
+        gammaSewnXiShiftEndpointTangentKernelClosed p q) := by
+    apply HasSum.congr_fun h
+    intro e
     simp only [gammaSewnXiShiftEndpointUnitTangentFeature]
-    ring
-  · rw [gammaSewnXiShiftEndpointUnitTangentKernel,
+    ring_nf
+  have hvalue :
+      gammaSewnXiShiftEndpointUnitTangentKernel p q =
+        (p : ℝ) ^ 2 * (q : ℝ) ^ 2 *
+          gammaSewnXiShiftEndpointTangentKernelClosed p q := by
+    rw [gammaSewnXiShiftEndpointUnitTangentKernel,
       gammaSewnXiShiftEndpointTangentKernel_eq_closed]
+  rw [hvalue]
+  exact h'
 
 /-- Every normalized prime tangent has unit all-depth mass. -/
 theorem gammaSewnXiShiftEndpointUnitTangentKernel_self
@@ -341,7 +372,7 @@ theorem gammaSewnXiShiftEndpointUnitTangentDistanceSq_eq
           2 * gammaSewnXiShiftEndpointUnitTangentKernel p q) := by
     apply hsum.congr
     intro e
-    ring
+    ring_nf
   exact hsum'.tsum_eq
 
 /-- The actual cross-prime tangent correlation is contractive without an assumed colligation. -/
@@ -475,8 +506,8 @@ theorem gammaSewnXiShiftEndpointTangentGeneratingFunction_eq
       (fun e : ℕ => gammaSewnXiShiftEndpointTangentFeature p e * z ^ e)
       (Real.sqrt (1 - a ^ 2) * a *
         ((1 - a ^ 2) * (u / (1 - u) ^ 2) - a ^ 2 * (1 - u)⁻¹)) := by
-    convert hsum using 1
-    funext e
+    apply HasSum.congr_fun hsum
+    intro e
     change (Real.sqrt (1 - a ^ 2) * a ^ (e + 1) *
         ((1 - a ^ 2) * (e : ℝ) - a ^ 2)) * z ^ e =
       Real.sqrt (1 - a ^ 2) * a *
@@ -485,7 +516,7 @@ theorem gammaSewnXiShiftEndpointTangentGeneratingFunction_eq
     change _ = Real.sqrt (1 - a ^ 2) * a *
       ((1 - a ^ 2) * ((e : ℝ) * (a * z) ^ e) - a ^ 2 * (a * z) ^ e)
     rw [mul_pow]
-    ring
+    ring_nf
   rw [hsum'.tsum_eq]
   change Real.sqrt (1 - a ^ 2) * a *
       ((1 - a ^ 2) * (a * z / (1 - a * z) ^ 2) -

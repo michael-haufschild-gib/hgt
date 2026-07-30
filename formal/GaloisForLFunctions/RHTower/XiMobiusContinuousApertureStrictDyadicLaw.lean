@@ -146,6 +146,7 @@ theorem xiMobiusPrimeContinuousApertureDyadicInnovationFeatureLp_linearIndepende
     simp only [lp.coeFn_sum, lp.coeFn_smul, Finset.sum_apply,
       Pi.smul_apply, smul_eq_mul, lp.coeFn_zero, Pi.zero_apply] at he
     simpa [A, xiMobiusPrimeContinuousApertureDyadicInnovationSamplingMatrix,
+      xiMobiusPrimeContinuousApertureDyadicInnovationFeatureLp,
       Matrix.mulVec, dotProduct, mul_comm] using he
   have hunit : IsUnit A := by
     rw [Matrix.isUnit_iff_isUnit_det, isUnit_iff_ne_zero]

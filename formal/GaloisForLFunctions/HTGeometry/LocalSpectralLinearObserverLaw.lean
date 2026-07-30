@@ -72,7 +72,8 @@ theorem linearSpectralObserverResponse_analyticAt
     (observer.analyticAt
       (L.productSpectralInteractionShiftVector onsite hinj 0)).comp
         (L.productSpectralInteractionShiftVector_analyticAt onsite hinj)
-  simpa [linearSpectralObserverResponse, Function.comp_def] using h
+  unfold linearSpectralObserverResponse
+  exact h
 
 /-- Irreducible interaction-packet sector of a linear observer response. -/
 noncomputable def linearSpectralObserverPacketResponse

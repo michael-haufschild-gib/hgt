@@ -420,7 +420,7 @@ theorem upperEndFiniteShift_differentialIndependent
     1 + ∑ p ∈ ht.toFinset, if p.1 = i then p.2 else 0
   have horder : ∀ p : t, p.1.2 < orders p.1.1 := by
     intro p
-    have hpMem : p.1 ∈ ht.toFinset := by simpa using p.2
+    have hpMem : p.1 ∈ ht.toFinset := ht.mem_toFinset.mpr p.2
     have hle : p.1.2 ≤ ∑ q ∈ ht.toFinset,
         if q.1 = p.1.1 then q.2 else 0 := by
       let f : Fin m × ℕ → ℕ := fun q => if q.1 = p.1.1 then q.2 else 0
@@ -439,7 +439,7 @@ theorem upperEndFiniteShift_differentialIndependent
   have hrect := upperEndFiniteRectangle_algebraicIndependent
     shiftValue shiftCode hshiftCode orders u hfree
   have hcomp := hrect.comp e he
-  simpa [e, upperEndFieldJetAssignment, boundedGaugeTranslatedPrimeLogUpperEnd] using hcomp
+  simpa [e, upperEndFieldJetAssignment, boundedGaugeTranslatedPrimeLogUpperEnd] using! hcomp
 
 /-- **Countable-shift upper-end differential independence.** Functional pattern freeness is exactly
 genuine differential independence of the complete translated source family in the upper-end
@@ -486,7 +486,7 @@ theorem upperEndShift_differentialIndependent
     · exact congrArg (fun x : s × ℕ => x.1.1) hpq
     · exact congrArg (fun x : s × ℕ => x.2) hpq
   have hcomp := hsDI.comp et het
-  simpa [et, s] using hcomp
+  simpa [et, s] using! hcomp
 
 /-- Every countable injective shift palette admits a bounded prime-log source whose entire
 translation family is differentially independent over `C(z)` in the upper-end field. -/

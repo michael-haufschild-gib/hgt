@@ -402,8 +402,12 @@ theorem integral_Ioi_one_exp_neg_pi :
         (Real.exp (-Real.pi * t) * (-Real.pi)) t :=
       (Real.hasDerivAt_exp (-Real.pi * t)).comp t h0
     have h2 := (h1.neg).div_const Real.pi
-    convert h2 using 1
-    field_simp
+    have h2' : HasDerivAt
+        (fun u : ℝ => -(Real.exp (-Real.pi * u)) / Real.pi)
+        (-(Real.exp (-Real.pi * t) * (-Real.pi)) / Real.pi) t :=
+      h2.congr_of_eventuallyEq
+        (Filter.Eventually.of_forall fun _ => rfl)
+    exact h2'.congr_deriv (by field_simp)
   have hcont : ContinuousWithinAt
       (fun u : ℝ => -(Real.exp (-Real.pi * u)) / Real.pi) (Set.Ici 1) 1 := by
     apply Continuous.continuousWithinAt
@@ -671,17 +675,26 @@ theorem hasDerivAt_xi_one :
         ((1 : ℂ) * ((1 : ℂ) - 1) + 1 * 1) 1 :=
       (hasDerivAt_id (1 : ℂ)).mul ((hasDerivAt_id (1 : ℂ)).sub_const 1)
     have h2 := h.div_const 2
-    convert h2 using 1
-    ring
+    have h2' : HasDerivAt (fun s : ℂ => s * (s - 1) / 2)
+        (((1 : ℂ) * ((1 : ℂ) - 1) + 1 * 1) / 2) 1 :=
+      h2.congr_of_eventuallyEq
+        (Filter.Eventually.of_forall fun _ => rfl)
+    exact h2'.congr_deriv (by norm_num)
   have hz : HasDerivAt completedRiemannZeta₀
       (deriv completedRiemannZeta₀ 1) 1 :=
     (differentiable_completedZeta₀ 1).hasDerivAt
   have hadd := (hp.mul hz).add_const ((1 : ℂ) / 2)
+  have hadd' : HasDerivAt
+      (fun s : ℂ =>
+        s * (s - 1) / 2 * completedRiemannZeta₀ s + 1 / 2)
+      ((1 : ℂ) / 2 * completedRiemannZeta₀ 1 +
+        1 * (1 - 1) / 2 * deriv completedRiemannZeta₀ 1) 1 :=
+    hadd.congr_of_eventuallyEq
+      (Filter.Eventually.of_forall fun _ => rfl)
   have hxi : xi = fun s : ℂ =>
       s * (s - 1) / 2 * completedRiemannZeta₀ s + 1 / 2 := rfl
   rw [hxi]
-  convert hadd using 1
-  ring
+  exact hadd'.congr_deriv (by ring)
 
 /-- **The strip-edge budget identity**: `logDeriv ξ(1) = Λ₀(1)`. -/
 theorem logDeriv_xi_one : logDeriv xi 1 = completedRiemannZeta₀ 1 := by

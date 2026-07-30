@@ -725,8 +725,8 @@ theorem integral_mul_re_xiPairs (q q' : XiRightUpperZeroCopy) :
     2 2 ((xiRightCenteredZero q.1).im) ((xiRightCenteredZero q'.1).im)
     (f := fun t => (xiAntiCausalWardSchwarzPairResponse q ((1 / 2 : ℂ) + I * (t : ℂ))).re)
     (f' := fun t => (xiAntiCausalWardSchwarzPairResponse q' ((1 / 2 : ℂ) + I * (t : ℂ))).re)
-    (fun t => by dsimp only; rw [re_xiAntiCausalWardSchwarzPairResponse_eulerEdge_eq]; ring)
-    (fun t => by dsimp only; rw [re_xiAntiCausalWardSchwarzPairResponse_eulerEdge_eq]; ring)
+    (fun t => by rw [re_xiAntiCausalWardSchwarzPairResponse_eulerEdge_eq]; ring)
+    (fun t => by rw [re_xiAntiCausalWardSchwarzPairResponse_eulerEdge_eq]; ring)
   rw [h]
   ring
 

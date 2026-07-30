@@ -107,7 +107,9 @@ theorem xiDescent_continuousAt_zero : ContinuousAt xiDescent 0 := by
       simpa using continuous_norm.tendsto (0 : ℂ)
     exact h.mono_left nhdsWithin_le_nhds
   have hsqrt : Tendsto (fun w : ℂ => Real.sqrt ‖w‖) (𝓝[≠] (0 : ℂ)) (𝓝 0) := by
-    simpa using (Real.continuous_sqrt.tendsto 0).comp hnorm
+    change Tendsto ((fun x : ℝ => Real.sqrt x) ∘ fun w : ℂ => ‖w‖)
+      (𝓝[≠] (0 : ℂ)) (𝓝 0)
+    simpa only [Real.sqrt_zero] using (Real.continuous_sqrt.tendsto 0).comp hnorm
   have husq : Tendsto uSqrt (𝓝[≠] (0 : ℂ)) (𝓝 0) := by
     rw [tendsto_zero_iff_norm_tendsto_zero]
     refine hsqrt.congr' ?_
@@ -348,15 +350,10 @@ theorem analyticOrderAt_xiDescent_center_sq {s : ℂ} (hs : s ∈ rightHalf) :
     rw [hs_eq] at hright
     norm_num at hright
   have hbase : HasDerivAt (fun z : ℂ => z - (1 / 2 : ℂ)) 1 s := by
-    convert ((hasDerivAt_id s).sub (hasDerivAt_const s (1 / 2 : ℂ))) using 1
-    ring
+    exact (hasDerivAt_id s).sub_const (1 / 2 : ℂ)
   have hderiv_at : HasDerivAt φ (2 * (s - (1 / 2 : ℂ))) s := by
     dsimp [φ]
-    convert hbase.mul hbase using 1
-    · funext z
-      simp only [Pi.mul_apply]
-      ring_nf
-    · ring
+    simpa using hbase.fun_pow 2
   have hφ' : deriv φ s ≠ 0 := by
     rw [hderiv_at.deriv]
     exact mul_ne_zero two_ne_zero hsne

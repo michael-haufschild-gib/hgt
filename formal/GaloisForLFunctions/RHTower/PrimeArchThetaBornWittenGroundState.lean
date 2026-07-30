@@ -90,15 +90,19 @@ theorem hasDerivAt_thetaCuspBornWittenAmplitude
   have hq := hasDerivAt_thetaCuspBornWittenWeight n x
   have hsqrt := hq.sqrt hqpos.ne'
   have hpsi := hasDerivAt_thetaCuspMorseGroundState n x
-  convert (hsqrt.const_mul 2).mul hpsi using 1
-  simp only [thetaCuspBornWittenAmplitude, thetaCuspBornWittenSuperpotential]
-  have hsqrtPos : 0 < Real.sqrt (thetaCuspBornWittenWeight n x) :=
-    Real.sqrt_pos.2 hqpos
-  have hsqrtSq : Real.sqrt (thetaCuspBornWittenWeight n x) ^ 2 =
-      thetaCuspBornWittenWeight n x := Real.sq_sqrt hqpos.le
-  field_simp [hsqrtPos.ne', hqpos.ne']
-  rw [hsqrtSq]
-  ring
+  have hraw := (hsqrt.const_mul 2).mul hpsi
+  have hraw' := hraw.congr_deriv
+    (g' := -thetaCuspBornWittenSuperpotential n x *
+      thetaCuspBornWittenAmplitude n x) (by
+      simp only [thetaCuspBornWittenAmplitude, thetaCuspBornWittenSuperpotential]
+      have hsqrtPos : 0 < Real.sqrt (thetaCuspBornWittenWeight n x) :=
+        Real.sqrt_pos.2 hqpos
+      have hsqrtSq : Real.sqrt (thetaCuspBornWittenWeight n x) ^ 2 =
+          thetaCuspBornWittenWeight n x := Real.sq_sqrt hqpos.le
+      field_simp [hsqrtPos.ne', hqpos.ne']
+      rw [hsqrtSq]
+      ring)
+  simpa only [thetaCuspBornWittenAmplitude, Pi.mul_apply] using! hraw'
 
 theorem thetaCuspBornWitten_supercharge_zero
     {n : ℕ} (hn : 0 < n) {x : ℝ} (hx : 0 ≤ x) :
@@ -118,12 +122,16 @@ theorem hasDerivAt_thetaCuspBornWittenSuperpotential
   have hweight := hasDerivAt_thetaCuspBornWittenWeight n x
   have hquot := hscale.div hweight hqpos.ne'
   have hW := hasDerivAt_thetaCuspMorseSuperpotential (5 / 4 : ℝ) n x
-  convert hW.sub hquot using 1
-  simp only [thetaCuspBornWittenCurvature]
-  rw [thetaCuspBornWittenWeight_eq]
-  field_simp [show thetaCuspMorseScale n x - 3 / 2 ≠ 0 by
-    simpa only [← thetaCuspBornWittenWeight_eq] using hqpos.ne']
-  ring
+  have hraw := hW.sub hquot
+  have hraw' := hraw.congr_deriv
+    (g' := thetaCuspBornWittenCurvature n x) (by
+      simp only [thetaCuspBornWittenCurvature]
+      rw [thetaCuspBornWittenWeight_eq]
+      field_simp [show thetaCuspMorseScale n x - 3 / 2 ≠ 0 by
+        simpa only [← thetaCuspBornWittenWeight_eq] using hqpos.ne']
+      ring)
+  simpa only [thetaCuspBornWittenSuperpotential, Pi.sub_apply,
+    Pi.div_apply] using! hraw'
 
 theorem deriv_thetaCuspBornWittenSuperpotential
     {n : ℕ} (hn : 0 < n) {x : ℝ} (hx : 0 ≤ x) :
@@ -173,9 +181,13 @@ theorem hasDerivAt_neg_thetaCuspBornWittenSuperpotential_mul_amplitude
         thetaCuspBornWittenAmplitude n x) x := by
   have hB := hasDerivAt_thetaCuspBornWittenSuperpotential hn hx
   have hchi := hasDerivAt_thetaCuspBornWittenAmplitude hn hx
-  convert hB.neg.mul hchi using 1
-  simp only [thetaCuspBornWittenPotentialMinus, Pi.neg_apply]
-  ring
+  have hraw := hB.neg.mul hchi
+  have hraw' := hraw.congr_deriv
+    (g' := thetaCuspBornWittenPotentialMinus n x *
+      thetaCuspBornWittenAmplitude n x) (by
+      simp only [thetaCuspBornWittenPotentialMinus, Pi.neg_apply]
+      ring)
+  simpa only [Pi.neg_apply, Pi.mul_apply] using! hraw'
 
 /-- Factorized zero-energy equation for the observable-weighted theta source.  The differentiated
 first-order right-hand side is exactly the lower Witten Hamiltonian term. -/
@@ -195,8 +207,11 @@ theorem hasDerivAt_thetaCuspBornWittenAmplitude_sq
     HasDerivAt (fun y : ℝ => thetaCuspBornWittenAmplitude n y ^ 2)
       (-2 * thetaCuspBornWittenSuperpotential n x *
         thetaCuspBornWittenAmplitude n x ^ 2) x := by
-  convert (hasDerivAt_thetaCuspBornWittenAmplitude hn hx).pow 2 using 1
-  all_goals ring
+  have hraw := (hasDerivAt_thetaCuspBornWittenAmplitude hn hx).pow 2
+  have hraw' := hraw.congr_deriv
+    (g' := -2 * thetaCuspBornWittenSuperpotential n x *
+      thetaCuspBornWittenAmplitude n x ^ 2) (by ring)
+  simpa only [Pi.pow_apply] using! hraw'
 
 /-- Existing Morse Born moments are ordinary position moments of the exact pure Witten state. -/
 theorem thetaCuspMorseBornMoment_eq_integral_bornWittenAmplitude_sq

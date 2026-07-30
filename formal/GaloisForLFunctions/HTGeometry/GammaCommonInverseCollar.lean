@@ -116,7 +116,7 @@ private theorem eventually_gammaPoleCollarGood :
       rw [hder]
       exact_mod_cast (le_of_lt (by simpa [dist_eq_norm] using hderiv x hx) :
         ‖deriv (gammaPoleMicroscope n) x - 1‖ ≤ (1 / 2 : ℝ))
-  simpa [gammaPoleIdentity] using hlip
+  simpa [gammaPoleIdentity] using! hlip
 
 private theorem gammaPoleApproximation_small :
     Subsingleton ℂ ∨
@@ -139,7 +139,7 @@ private theorem gammaPole_closedBall_target
     (show (0 : ℝ) ≤ 1 / 2 by norm_num)
     (show Metric.closedBall (0 : ℂ) (1 / 2) ⊆ Metric.ball 0 1 by
       exact Metric.closedBall_subset_ball (by norm_num))
-  convert ht using 1
+  convert! ht using 1
   norm_num [gammaPolePartialHomeomorph, gammaPoleIdentity,
     gammaPoleMicroscope_zero]
 
@@ -461,7 +461,7 @@ theorem tendsto_gammaMovingBaseShell_zero :
     have hreal : Tendsto (fun n : ℕ => ((n : ℝ)⁻¹)) atTop (nhds 0) :=
       tendsto_inv_atTop_zero.comp tendsto_natCast_atTop_atTop
     simpa using hreal.ofReal
-  simpa [gammaMovingBaseShell, div_eq_mul_inv] using
+  simpa [gammaMovingBaseShell, div_eq_mul_inv] using!
     tendsto_reciprocalGammaFactorialScale_zero.mul hinv
 
 /-- The moving-base and normalized-branch charts become uniformly identical on their common

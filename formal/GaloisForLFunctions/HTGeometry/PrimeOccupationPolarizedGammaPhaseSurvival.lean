@@ -190,7 +190,7 @@ theorem primeLinearCompletion_eq_gamma (t : ℂ) :
         (Complex.Gamma (-t))⁻¹ =
           (-t) *
             Complex.exp (-((Real.eulerMascheroniConstant : ℂ) * t)) * W := by
-      simpa [W, neg_div] using hW
+      simpa [W, neg_div] using! hW
     have hrec :
         (Complex.Gamma (-t))⁻¹ =
           (-t) * (Complex.Gamma (1 - t))⁻¹ := by
@@ -233,7 +233,7 @@ theorem primeLinearCompletion_mul_reflection_mul_eq_sin (t : ℂ) :
     (1 - (-t) / ((n : ℂ) + 1)) *
       Complex.exp ((-t) / ((n : ℂ) + 1))
   have hf : Multipliable f := by
-    simpa [f, neg_div] using
+    simpa [f, neg_div] using!
       (HilbertSchmidt.multipliable_weierstrassFactor (-t))
   have hg : Multipliable g := by
     simpa [g, neg_div] using

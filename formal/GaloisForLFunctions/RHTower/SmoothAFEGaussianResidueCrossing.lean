@@ -194,7 +194,7 @@ theorem integral_smoothAFEMellinIntegrand_residue_crossing
       have h := Complex.integral_boundary_rect_eq_zero_of_differentiableOn R
         ((a : ℂ) - (T : ℂ) * I) ((b : ℂ) + (T : ℂ) * I)
         hRdiff.differentiableOn
-      simpa using h
+      simpa using! h
     have hbot : (∫ u : ℝ in a..b, F ((u : ℂ) - (T : ℂ) * I))
         = (∫ u : ℝ in a..b, J ((u : ℂ) - (T : ℂ) * I))
           + ∫ u : ℝ in a..b, R ((u : ℂ) - (T : ℂ) * I) := by
@@ -206,7 +206,7 @@ theorem integral_smoothAFEMellinIntegrand_residue_crossing
           intro hzero
           have him := congrArg Complex.im hzero
           simp [hT0] at him)
-      · simpa [J] using ((by fun_prop : Continuous fun u : ℝ =>
+      · simpa [J] using! ((by fun_prop : Continuous fun u : ℝ =>
           (u : ℂ) - (T : ℂ) * I).inv₀ (fun u hzero => by
             have him := congrArg Complex.im hzero
             simp [hT0] at him)).intervalIntegrable a b
@@ -222,7 +222,7 @@ theorem integral_smoothAFEMellinIntegrand_residue_crossing
           intro hzero
           have him := congrArg Complex.im hzero
           simp [hT0] at him)
-      · simpa [J] using ((by fun_prop : Continuous fun u : ℝ =>
+      · simpa [J] using! ((by fun_prop : Continuous fun u : ℝ =>
           (u : ℂ) + (T : ℂ) * I).inv₀ (fun u hzero => by
             have him := congrArg Complex.im hzero
             simp [hT0] at him)).intervalIntegrable a b
@@ -239,7 +239,7 @@ theorem integral_smoothAFEMellinIntegrand_residue_crossing
           have hre := congrArg Complex.re hzero
           have : b = 0 := by simpa using hre
           exact hb.ne' this)
-      · simpa [J] using ((by fun_prop : Continuous fun t : ℝ =>
+      · simpa [J] using! ((by fun_prop : Continuous fun t : ℝ =>
           (b : ℂ) + (t : ℂ) * I).inv₀ (fun t hzero => by
             have hre := congrArg Complex.re hzero
             have : b = 0 := by simpa using hre
@@ -257,7 +257,7 @@ theorem integral_smoothAFEMellinIntegrand_residue_crossing
           have hre := congrArg Complex.re hzero
           have : a = 0 := by simpa using hre
           exact ha.ne this)
-      · simpa [J] using ((by fun_prop : Continuous fun t : ℝ =>
+      · simpa [J] using! ((by fun_prop : Continuous fun t : ℝ =>
           (a : ℂ) + (t : ℂ) * I).inv₀ (fun t hzero => by
             have hre := congrArg Complex.re hzero
             have : a = 0 := by simpa using hre

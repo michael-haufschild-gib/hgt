@@ -141,7 +141,7 @@ theorem joint_hurwitz_ladder_rational_independence_on_finset
   let sJ : J → ℂ := fun j => s j.1
   have hs1J : ∀ j, 1 < (sJ j).re := fun j => hs1 j.1
   have hsQJ : LinearIndependent ℚ (exponentFamily sJ) := by
-    simpa [sJ] using exponentFamily_linearIndependent_comp s hsQ
+    simpa [sJ] using! exponentFamily_linearIndependent_comp s hsQ
       (fun j : J => j.1) Subtype.val_injective
   exact joint_hurwitz_ladder_rational_independence_of_linearIndependent
     hs1J hsQJ N Q hrel
@@ -163,7 +163,7 @@ theorem joint_hzeta_rational_hypertranscendental_on_finset
   let sJ : J → ℂ := fun j => s j.1
   have hs1J : ∀ j, 1 < (sJ j).re := fun j => hs1 j.1
   have hsQJ : LinearIndependent ℚ (exponentFamily sJ) := by
-    simpa [sJ] using exponentFamily_linearIndependent_comp s hsQ
+    simpa [sJ] using! exponentFamily_linearIndependent_comp s hsQ
       (fun j : J => j.1) Subtype.val_injective
   exact joint_hzeta_rational_hypertranscendental_in_shift_of_linearIndependent
     hs1J hsQJ N Q hrel

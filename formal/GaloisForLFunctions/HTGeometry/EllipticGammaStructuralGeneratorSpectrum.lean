@@ -254,7 +254,7 @@ theorem differentialAlgebraicOver_ellipticGammaExternalLogDerivDefectMero_iff_re
         (meromorphicEllipticCompositum sigma tau)
         (ellipticGammaExternalLogDerivDefectMero h sigma tau hsigma htau) := by
       rw [hypertranscendentalOver_iff_differentialIndependent_singleton]
-      simpa [ellipticGammaExternalDefectFamily] using hDI
+      simpa [ellipticGammaExternalDefectFamily] using! hDI
     exact hHT hDA
   · rintro ⟨a, b, n, rfl⟩
     exact differentialAlgebraicOver_ellipticGammaExternalLogDerivDefectMero_of_resonant

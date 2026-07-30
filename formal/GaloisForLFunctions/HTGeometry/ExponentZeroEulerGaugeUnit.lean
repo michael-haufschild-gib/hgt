@@ -203,7 +203,7 @@ theorem hasProdLocallyUniformlyOn_exponentZeroEulerGaugeFactor
       (fun p => ((differentiableOn_exponentZeroEulerGaugeFactor eta omega p).continuousOn.mono
         hKsub).sub continuousOn_const)
     simpa only [one_add_exponentZeroEulerGaugeFactor_sub_one,
-      exponentZeroEulerGaugeUnit] using hprod
+      exponentZeroEulerGaugeUnit] using! hprod
 
 /-- The infinite Euler-ratio product is holomorphic on the positive half-plane. -/
 theorem differentiableOn_exponentZeroEulerGaugeUnit

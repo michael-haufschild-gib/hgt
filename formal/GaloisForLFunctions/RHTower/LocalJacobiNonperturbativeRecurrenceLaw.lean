@@ -39,7 +39,7 @@ theorem spectralMomentSequence_eq_integral
 set. -/
 theorem atomlessProbability_compl_finset_pos
     (mu : ProbabilityMeasure ℝ)
-    [NoAtoms (mu : Measure ℝ)] (F : Finset ℝ) :
+    [NullSingletonClass (mu : Measure ℝ)] (F : Finset ℝ) :
     0 < (mu : Measure ℝ) {x : ℝ | x ∉ F} := by
   have hF : (mu : Measure ℝ) (F : Set ℝ) = 0 := by
     induction F using Finset.induction_on with
@@ -81,7 +81,7 @@ theorem integrable_pow_of_compact_carried
 moment forms. -/
 theorem positiveMomentForm_spectralMomentSequence_of_compact_atomless
     (base : ProbabilityMeasure ℝ)
-    [NoAtoms (base : Measure ℝ)]
+    [NullSingletonClass (base : Measure ℝ)]
     {K : Set ℝ} (hK : IsCompact K)
     (hbase : (base : Measure ℝ) Kᶜ = 0) :
     HTGeometry.PositiveMomentForm
@@ -96,7 +96,7 @@ theorem positiveMomentForm_spectralMomentSequence_of_compact_atomless
 every atomless base spectrum. -/
 theorem nonperturbativeAtomicCompletion_compl_finset_pos
     (base : ProbabilityMeasure ℝ)
-    [NoAtoms (base : Measure ℝ)] (energy : ℝ)
+    [NullSingletonClass (base : Measure ℝ)] (energy : ℝ)
     (g : ℝ) (F : Finset ℝ) :
     0 <
       (nonperturbativeAtomicCompletion
@@ -121,7 +121,7 @@ theorem nonperturbativeAtomicCompletion_compl_finset_pos
 strictly positive moment form. -/
 theorem positiveMomentForm_nonperturbativeAtomicCompletion
     (base : ProbabilityMeasure ℝ)
-    [NoAtoms (base : Measure ℝ)]
+    [NullSingletonClass (base : Measure ℝ)]
     (energy : ℝ) {K : Set ℝ}
     (hK : IsCompact K)
     (hbase : (base : Measure ℝ) Kᶜ = 0)
@@ -150,7 +150,7 @@ theorem positiveMomentForm_nonperturbativeAtomicCompletion
 compact atomless base spectrum. -/
 theorem atomlessCompactSpectrum_energyMultiplication_remote_zero
     (base : ProbabilityMeasure ℝ)
-    [NoAtoms (base : Measure ℝ)]
+    [NullSingletonClass (base : Measure ℝ)]
     {K : Set ℝ} (hK : IsCompact K)
     (hbase : (base : Measure ℝ) Kᶜ = 0)
     {n k : ℕ} (hk : k + 1 < n) :
@@ -169,7 +169,7 @@ theorem atomlessCompactSpectrum_energyMultiplication_remote_zero
 nonperturbative atomic completion. -/
 theorem atomicCompletion_energyMultiplication_remote_zero
     (base : ProbabilityMeasure ℝ)
-    [NoAtoms (base : Measure ℝ)]
+    [NullSingletonClass (base : Measure ℝ)]
     (energy : ℝ) {K : Set ℝ}
     (hK : IsCompact K)
     (hbase : (base : Measure ℝ) Kᶜ = 0)
@@ -193,7 +193,7 @@ strictly positive, so its nearest-neighbour chain is connected rather than a
 direct sum with a decoupled recurrent site. -/
 theorem atomicCompletion_Jacobi_lowerCoefficient_pos
     (base : ProbabilityMeasure ℝ)
-    [NoAtoms (base : Measure ℝ)]
+    [NullSingletonClass (base : Measure ℝ)]
     (energy : ℝ) {K : Set ℝ}
     (hK : IsCompact K)
     (hbase : (base : Measure ℝ) Kᶜ = 0)
@@ -222,7 +222,7 @@ theorem atomicCompletion_Jacobi_lowerCoefficient_pos
 /-- Exact connected three-term Jacobi law for the completed spectrum. -/
 theorem atomicCompletion_energyMultiplication_threeTerm
     (base : ProbabilityMeasure ℝ)
-    [NoAtoms (base : Measure ℝ)]
+    [NullSingletonClass (base : Measure ℝ)]
     (energy : ℝ) {K : Set ℝ}
     (hK : IsCompact K)
     (hbase : (base : Measure ℝ) Kᶜ = 0)
@@ -261,7 +261,7 @@ not, and the completed cyclic energy law is a connected nearest-neighbour
 Jacobi chain. -/
 theorem every_compact_atomlessSpectrum_has_local_perturbativelyInvisible_recurrence
     (base : ProbabilityMeasure ℝ)
-    [NoAtoms (base : Measure ℝ)]
+    [NullSingletonClass (base : Measure ℝ)]
     (energy : ℝ) {K : Set ℝ}
     (hK : IsCompact K)
     (hbase : (base : Measure ℝ) Kᶜ = 0)

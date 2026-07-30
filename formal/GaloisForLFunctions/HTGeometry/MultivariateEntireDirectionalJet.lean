@@ -31,7 +31,7 @@ theorem directionalJetEval_add {d : ℕ} (n : ℕ) (x v : Fin d → ℂ)
     (f g : MultivariateEntire d) :
     directionalJetEval n x v (f + g) =
       directionalJetEval n x v f + directionalJetEval n x v g := by
-  simpa [directionalJetEval, affineLineRestriction] using
+  simpa [directionalJetEval, affineLineRestriction] using!
     (iteratedDeriv_add (n := n) (x := (0 : ℂ))
       ((f.property x v).contDiff.contDiffAt)
       ((g.property x v).contDiff.contDiffAt))
@@ -60,7 +60,7 @@ theorem continuous_directionalJetEval {d : ℕ} (n : ℕ) (x v : Fin d → ℂ) 
       (Filter.Eventually.of_forall fun k ↦ ((u k).property x v).differentiableOn)
       n (Set.mem_univ (0 : ℂ))
   simpa [directionalJetEval, affineLineRestriction, line,
-    affineComplexLine, Function.comp_def] using hjet
+    affineComplexLine, Function.comp_def] using! hjet
 
 /-- A fixed directional jet, bundled as a continuous complex-linear observation of the source. -/
 def directionalJetEvalCLM {d : ℕ} (n : ℕ) (x v : Fin d → ℂ) :

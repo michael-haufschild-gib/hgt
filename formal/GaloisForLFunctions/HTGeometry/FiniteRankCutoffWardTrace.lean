@@ -38,7 +38,7 @@ theorem mul_finiteRankProbe_mul
   apply Finset.sum_congr rfl
   intro i hi
   ext z
-  simp only [mul_apply, smul_apply, rankOne_apply, map_smul]
+  simp only [mul_apply_eq_comp, smul_apply, rankOne_apply, map_smul]
   rw [adjoint_inner_left]
 
 /-- The adjoint of a finite-rank packet conjugates its coefficients and exchanges its two vector
@@ -411,7 +411,7 @@ theorem finiteRankCutoffWardTrace_eq_adjointCurvature_values
         inner ℂ (x i) (cutoffWardAdjointCurvature e T (y i)) := by
   rw [finiteRankCutoffWardTrace_eq_opTrace_adjointCurvature,
     adjoint_finiteRankProbe]
-  simpa only [one_mul] using
+  simpa only [one_mul] using!
     opTrace_mul_finiteRankProbe_mul
       (1 : H →L[ℂ] H) (cutoffWardAdjointCurvature e T)
         (fun i ↦ (starRingEnd ℂ) (c i)) y x

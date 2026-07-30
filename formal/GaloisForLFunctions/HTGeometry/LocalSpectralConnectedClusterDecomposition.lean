@@ -68,7 +68,9 @@ theorem globalBranch_spectralPacketResponse_germ_eq_zero_of_disconnected
     L.globalBranch_disconnectedPacket_mobius_germ_eq_zero
       onsite hinj left right hlabel hleft hright hsite x
       branch hbranch hbranch0 hbranchRoot
-  simpa [spectralPacketResponse, hunion] using hzero
+  unfold spectralPacketResponse
+  rw [← hunion]
+  exact hzero
 
 /-- **Packet-depth law.**  The irreducible response of every interaction
 packet is `O(|g|^|packet|)` along every scalar coupling ray. -/

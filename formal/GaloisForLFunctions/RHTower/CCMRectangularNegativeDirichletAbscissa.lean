@@ -109,7 +109,7 @@ theorem xiRectangularNegativePart_summable_above_transverseSup
   have harg : 1 + xiRightTransverseSup + epsilon = sigma := by
     dsimp only [epsilon]
     ring
-  simpa only [harg] using hsum
+  simpa only [harg] using! hsum
 
 /-- The negative-mass series diverges at every real abscissa strictly between one and
 `1 + xiRightTransverseSup`.  The hypotheses themselves force a positive transverse supremum. -/
@@ -447,7 +447,7 @@ theorem xiRightTransverseSup_le_iff_exists_twoChannelEnergyCoverAbove
     have hsum : LSeriesSummable
         (fun n => (((a n + b n : ℝ) : ℝ) : ℂ))
         (((1 + alpha + epsilon : ℝ) : ℂ)) := by
-      simpa only [Pi.add_apply, ofReal_add] using hab
+      simpa only [Pi.add_apply, ofReal_add] using! hab
     exact LSeriesSummable_of_nonneg_of_le
       (xiRectangularWeilTailNegativePart_nonneg L N)
       (fun n => add_nonneg (hcover n).1 (hcover n).2.1)

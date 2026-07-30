@@ -54,7 +54,7 @@ theorem xiCanonicalProduct_eq_right_mul_trueComplement (z : ℂ) :
       xiRightCanonicalProduct z * xiRightComplementCanonicalProduct z := by
   simpa only [xiCanonicalProduct, xiRightCanonicalProduct,
     xiRightSpectralPoint, xiRightComplementCanonicalProduct,
-    canonicalProductE1IndexedSelected] using
+    canonicalProductE1IndexedSelected] using!
     canonicalProductE1Indexed_eq_selected_mul_complement
       xiSpectralPoint
       (fun q => 0 < (I * xiSpectralPoint q).re)
@@ -280,7 +280,7 @@ theorem analyticOrderAt_XiC_eq_xiRightCanonicalProduct_at_right
         analyticOrderAt xiRightCanonicalProduct (xiRightSpectralPoint q) +
           analyticOrderAt xiRightComplementSourceFactor
             (xiRightSpectralPoint q) := by
-    simpa only [Pi.mul_apply] using
+    simpa only [Pi.mul_apply] using!
       analyticOrderAt_mul hright hcomplement
   rw [← hfun, hord,
     hcomplement.analyticOrderAt_eq_zero.mpr

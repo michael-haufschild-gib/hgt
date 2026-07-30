@@ -33,9 +33,9 @@ theorem selfAdjointCompression_noDeparture_iff_adjoint_noReturn
     simpa [ContinuousLinearMap.star_eq_adjoint] using hP.star_eq
   constructor <;> intro h
   · have hadj := congrArg ContinuousLinearMap.adjoint h
-    simpa [ContinuousLinearMap.mul_def, hPadj] using hadj
+    simpa [ContinuousLinearMap.mul_def, hPadj, ContinuousLinearMap.comp_assoc] using hadj
   · have hadj := congrArg ContinuousLinearMap.adjoint h
-    simpa [ContinuousLinearMap.mul_def, hPadj] using hadj
+    simpa [ContinuousLinearMap.mul_def, hPadj, ContinuousLinearMap.comp_assoc] using hadj
 
 /-- For a self-adjoint observable, no departure and no return are the same condition. -/
 theorem selfAdjointCompression_noDeparture_iff_noReturn
@@ -43,9 +43,9 @@ theorem selfAdjointCompression_noDeparture_iff_noReturn
     (1 - P) * A * P = 0 ↔ P * A * (1 - P) = 0 := by
   constructor <;> intro h
   · have hadj := congrArg star h
-    simpa [hP.star_eq, hA.star_eq] using hadj
+    simpa [hP.star_eq, hA.star_eq, mul_assoc] using hadj
   · have hadj := congrArg star h
-    simpa [hP.star_eq, hA.star_eq] using hadj
+    simpa [hP.star_eq, hA.star_eq, mul_assoc] using hadj
 
 /-- Left and right annihilation of a self-adjoint constraint by a self-adjoint compression are
 equivalent.  A consumer need not supply both hypotheses. -/

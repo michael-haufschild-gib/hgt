@@ -104,7 +104,7 @@ lemma hasDerivAt_tiltedTentUpperProfile
       (Real.exp (beta * (L - d)) / L * (1 - beta * d)) d := by
   change HasDerivAt
     (fun x : ℝ => Real.exp (beta * (L - x)) * (x / L)) _ d
-  convert (((((hasDerivAt_const d L).sub (hasDerivAt_id d)).const_mul beta).exp).mul
+  convert! (((((hasDerivAt_const d L).sub (hasDerivAt_id d)).const_mul beta).exp).mul
     ((hasDerivAt_id d).div_const L)) using 1
   · simp only [Pi.sub_apply, id_eq]
     ring

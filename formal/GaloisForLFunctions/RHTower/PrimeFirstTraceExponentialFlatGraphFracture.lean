@@ -327,7 +327,7 @@ theorem tendsto_log_norm_primeFirstTraceClock_error_div_log_prime_neg_one :
       lp.single 2 1 1‖
   let L : ℕ → ℝ := fun n => Real.log ((nthPrimePoint n).1 : ℝ)
   have hLtop : Tendsto L atTop atTop := by
-    simpa [L] using Real.tendsto_log_atTop.comp tendsto_nthPrimePoint_cast_atTop
+    simpa [L] using! Real.tendsto_log_atTop.comp tendsto_nthPrimePoint_cast_atTop
   have hinvL : Tendsto (fun n => (L n)⁻¹) atTop (𝓝 0) :=
     tendsto_inv_atTop_zero.comp hLtop
   have hupperT : Tendsto
@@ -422,7 +422,7 @@ theorem tendsto_primeFirstTrace_error_div_source_pow_zero (N : ℕ) :
   have hcore : Tendsto (fun n => L n ^ N / P n) atTop (𝓝 0) := by
     have h :=
       (Real.tendsto_pow_log_div_mul_add_atTop 1 0 N one_ne_zero).comp hPtop
-    simpa [L] using h
+    simpa [L] using! h
   have hupper : Tendsto
       (fun n => (8 * 2 ^ N : ℝ) * (L n ^ N / P n))
       atTop (𝓝 0) := by

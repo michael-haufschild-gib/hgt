@@ -22,7 +22,7 @@ theorem summable_eulerPositiveMass
   have hnat :
       Summable (fun n : ℕ => (n : ℝ) ^ (-sigma)) :=
     Real.summable_nat_rpow.mpr (by linarith)
-  simpa only [eulerPositiveMass, Function.comp_apply] using
+  simpa only [eulerPositiveMass, Function.comp_apply] using!
     hnat.subtype (fun n : ℕ => 0 < n)
 
 def eulerPositiveTotal (sigma : ℝ) : ℝ :=
@@ -97,7 +97,7 @@ theorem summable_eulerPositiveLogMoment
   have hmajor :
       Summable (fun n : ℕ+ =>
         |Real.log (n : ℕ)| ^ k * ((n : ℕ) : ℝ) ^ (-sigma)) := by
-    simpa only [Function.comp_apply] using
+    simpa only [Function.comp_apply] using!
       hmajorNat.subtype (fun n : ℕ => 0 < n)
   have hmajor' := hmajor.div_const (eulerPositiveTotal sigma)
   refine Summable.of_nonneg_of_le ?_ ?_ hmajor'

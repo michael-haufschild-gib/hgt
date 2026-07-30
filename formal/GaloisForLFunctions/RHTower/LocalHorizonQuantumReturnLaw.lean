@@ -903,7 +903,7 @@ theorem localHorizon_every_strict_future_probability
     rw [hprob t, hprob₀ t]
     simpa [scaledInterpolatedProbability,
       interpolatedProbability, interpolatedAmplitude,
-      interpolatedWeight] using hwindow t ht
+      interpolatedWeight] using! hwindow t ht
   · rw [hprob T]
     exact htarget
 
@@ -1034,7 +1034,7 @@ theorem localHorizon_every_future_probability
         baseline.returnProbability_eq hT (by norm_num) (by norm_num)]
       simpa [scaledInterpolatedProbability,
         interpolatedProbability, interpolatedAmplitude,
-        interpolatedWeight] using hwindow t ht
+        interpolatedWeight] using! hwindow t ht
     · rw [M.returnProbability_eq hT
         (Real.sqrt_nonneg 1) (Real.sqrt_le_one.mpr (by norm_num))]
       exact htarget
@@ -1103,7 +1103,7 @@ theorem localHorizon_every_future_probability
         baseline.returnProbability_eq hT (by norm_num) (by norm_num)]
       simpa [scaledInterpolatedProbability,
         interpolatedProbability, interpolatedAmplitude,
-        interpolatedWeight] using hwindow t ht
+        interpolatedWeight] using! hwindow t ht
     · rw [M.returnProbability_eq hT hθ0 hθle]
       exact htarget
 
@@ -1118,7 +1118,7 @@ theorem cofinalLocalTolerance_pos (R : ℕ) :
 
 theorem cofinalLocalTolerance_tendsto_zero :
     Filter.Tendsto cofinalLocalTolerance Filter.atTop (nhds 0) := by
-  simpa only [cofinalLocalTolerance] using
+  simpa only [cofinalLocalTolerance] using!
     (tendsto_one_div_add_atTop_nhds_zero_nat :
       Filter.Tendsto (fun R : ℕ => 1 / ((R : ℝ) + 1))
         Filter.atTop (nhds 0))

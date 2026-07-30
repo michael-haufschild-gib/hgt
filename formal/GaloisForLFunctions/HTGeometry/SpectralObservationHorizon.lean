@@ -36,7 +36,7 @@ theorem observationPhase_tendsto_one_of_isBigO
     simpa only [mul_zero] using hconst.mul hproduct
   have hexp :=
     Complex.continuous_exp.continuousAt.tendsto.comp hphaseArgument
-  simpa using hexp
+  simpa using! hexp
 
 /-- **Packet birth-depth/observation-horizon law.** For every analytic response on a finite
 interaction-coordinate space, every packet remains phase-indistinguishable from its uncoupled

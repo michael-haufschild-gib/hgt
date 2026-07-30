@@ -63,9 +63,9 @@ theorem summable_normSq_gammaPrimeHybridEigenvalue
     Summable (fun i : ℕ ⊕ Nat.Primes =>
       ‖gammaPrimeHybridEigenvalue sigma i‖ ^ 2) := by
   apply Summable.sum _
-  · simpa only [Function.comp_apply, gammaPrimeHybridEigenvalue] using
+  · simpa only [Function.comp_apply, gammaPrimeHybridEigenvalue] using!
       summable_normSq_gammaWeierstrassEigenvalue sigma
-  · simpa only [Function.comp_apply, gammaPrimeHybridEigenvalue] using
+  · simpa only [Function.comp_apply, gammaPrimeHybridEigenvalue] using!
       summable_normSq_gammaPrimeHybrid_prime hsigma
 
 /-- Hybrid Gamma/Euler diagonal kernel. -/
@@ -282,7 +282,7 @@ theorem fredholmDet_gammaPrimeHybridKernel_eq_gamma_mul_zeta_mul_primeTrace
   have hprimeExp :
       HasProd (fun p : Nat.Primes => Complex.exp (primeEigenvalue p))
         (Complex.exp (∑' p : Nat.Primes, primeEigenvalue p)) := by
-    simpa only [Function.comp_apply] using hprimeSummable.hasSum.cexp
+    simpa only [Function.comp_apply] using! hprimeSummable.hasSum.cexp
   have hprimeHas :
       HasProd (fun p : Nat.Primes => factor (Sum.inr p))
         (fredholmDet1 (diagMul primeEigenvalue) 1 *

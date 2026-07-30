@@ -22,7 +22,7 @@ theorem dense_offCriticalLine :
   have hreal : Dense ({(1 / 2 : ℝ)}ᶜ) := dense_compl_singleton (1 / 2 : ℝ)
   have hpull : Dense (Complex.re ⁻¹' ({(1 / 2 : ℝ)}ᶜ)) :=
     hreal.preimage Complex.isOpenMap_re
-  simpa [Set.mem_compl_iff, Set.mem_singleton_iff] using hpull
+  simpa [Set.mem_compl_iff, Set.mem_singleton_iff] using! hpull
 
 /-- A continuous family supported only on the critical line vanishes identically. -/
 theorem continuous_eq_zero_of_eq_zero_offCriticalLine

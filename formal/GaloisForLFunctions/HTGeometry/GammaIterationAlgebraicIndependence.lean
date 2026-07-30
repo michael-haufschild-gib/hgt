@@ -43,12 +43,12 @@ theorem analyticAt_gammaIterateTupleCoordinate {k : ℕ} {z : ℂ}
     (hz : z ∈ gammaIterateRegularSet k) (i : Fin (k + 1)) :
     AnalyticAt ℂ (fun w => gammaIterateTuple k w i) z := by
   induction i using Fin.cases with
-  | zero => simpa [gammaIterateTuple] using (analyticAt_id : AnalyticAt ℂ id z)
+  | zero => simpa [gammaIterateTuple] using! (analyticAt_id : AnalyticAt ℂ id z)
   | succ j =>
       have hj : (j : ℕ) + 1 ≤ k := by omega
       have hzj : z ∈ gammaIterateRegularSet ((j : ℕ) + 1) :=
         gammaIterateRegularSet_antitone hj hz
-      simpa [gammaIterateTuple] using analyticAt_gammaIterate hzj
+      simpa [gammaIterateTuple] using! analyticAt_gammaIterate hzj
 
 theorem analyticAt_gammaIterateTupleEval {k : ℕ}
     (P : MvPolynomial (Fin (k + 1)) ℂ) {z : ℂ}
@@ -299,7 +299,7 @@ theorem tendsto_gammaIterate_succ_factorialBlowUp
   have hGamma :=
     tendsto_Gamma_factorialBlowUp_locallyUniformlyOn_ne_zero.tendsto_at hx.1
   have hcomp := (analyticAt_gammaIterate hxj).continuousAt.tendsto.comp hGamma
-  simpa [gammaIterate] using hcomp
+  simpa [gammaIterate] using! hcomp
 
 theorem locallyAlgebraicallyIndependentGammaIterates_succ
     {k : ℕ} (hk : 1 ≤ k)

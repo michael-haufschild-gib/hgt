@@ -522,7 +522,7 @@ theorem exists_mvPolynomial_bezout_clear_away_from_variable
   obtain ⟨M, n, hn, hbezout⟩ :=
     exists_distinguishedVariable_bezout_clear (R := R) (K := K) H hcommon
   rw [Fin.sum_univ_two] at hbezout
-  simp only [H, Fin.cases_zero, Fin.cases_succ] at hbezout
+  simp [H] at hbezout
   let U : MvPolynomial σ F := e.symm (M 0)
   let V : MvPolynomial σ F := e.symm (M 1)
   let N : MvPolynomial σ F := e.symm (Polynomial.C n)
@@ -545,7 +545,7 @@ theorem exists_mvPolynomial_bezout_clear_away_from_variable
     simpa [MvPolynomial.mem_vars_iff_degreeOf_ne_zero, hdegree]
   refine ⟨U, V, N, hN0, hNx, ?_⟩
   apply e.injective
-  simpa [U, V, N] using hbezout
+  simpa [U, V, N] using! hbezout
 
 /-! ## The coefficient cross-relation and characteristic saturation -/
 
@@ -839,7 +839,7 @@ theorem PrimitiveTwoBlockDifferentialCharacteristic.irreducible_factor_right_var
     · exact hBP
   letI : Algebra G K := φ.toRingHom.toAlgebra
   have hBdivAlgebraMap : B ∣ MvPolynomial.map (algebraMap G K) P := by
-    simpa [φ] using hBdivMapP
+    simpa [φ] using! hBdivMapP
   have hright : P.vars ⊆ B.vars :=
     irreducible_map_factor_vars_subset hPirreducible hBirreducible hBdivAlgebraMap
   have hBvars : B.vars ⊆ A₁.vars :=
@@ -896,9 +896,9 @@ theorem MvPolynomialPrimitive.map_C_of_ne_zero
         (MvPolynomial.C : F →+* MvPolynomial τ F) P) := by
   intro r hr
   rw [MvPolynomial.C_dvd_iff_dvd_coeff] at hr
-  obtain ⟨m, hm⟩ := Finsupp.ne_iff.mp hP0
+  obtain ⟨m, hm⟩ := MvPolynomial.exists_coeff_ne_zero hP0
   have hrd : r ∣ MvPolynomial.C (P.coeff m) := by
-    simpa using hr m
+    simpa using! hr m
   exact isUnit_of_dvd_unit hrd
     (IsUnit.map (MvPolynomial.C : F →+* MvPolynomial τ F) hm.isUnit)
 
@@ -937,7 +937,7 @@ theorem differentialPolynomialCrossDifference_eq_zero_iff
       ∃ c : F, P = MvPolynomial.C c * Q := by
   constructor
   · intro hzero
-    obtain ⟨m, hm⟩ := Finsupp.ne_iff.mp hQ0
+    obtain ⟨m, hm⟩ := MvPolynomial.exists_coeff_ne_zero hQ0
     have hcoeff := congrArg
       (differentialPolynomialTwoBlockCoefficient m) hzero
     rw [differentialPolynomialTwoBlockCoefficient_crossDifference] at hcoeff

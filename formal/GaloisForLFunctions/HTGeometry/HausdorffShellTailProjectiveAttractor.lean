@@ -512,9 +512,9 @@ theorem tendsto_exp_shellTailPhase (hf : PositiveShellFamily w y) (θ : ℝ) :
   have hfun : Continuous fun z : ℂ => Complex.exp (Complex.I * z) :=
     Complex.continuous_exp.comp (continuous_const.mul continuous_id)
   have hcast : Tendsto (fun N => ((shellTailPhase w y N θ : ℝ) : ℂ)) atTop (𝓝 (0 : ℂ)) := by
-    simpa using Complex.continuous_ofReal.continuousAt.tendsto.comp (tendsto_shellTailPhase hf θ)
+    simpa using! Complex.continuous_ofReal.continuousAt.tendsto.comp (tendsto_shellTailPhase hf θ)
   have hlim := (hfun.continuousAt.tendsto).comp hcast
-  simpa using hlim
+  simpa using! hlim
 
 end
 

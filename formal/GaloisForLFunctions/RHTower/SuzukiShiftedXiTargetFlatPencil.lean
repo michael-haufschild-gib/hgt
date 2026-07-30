@@ -219,7 +219,7 @@ theorem exists_multiplicity_meromorphicTrailingCoeffAt_suzukiShiftedXiTarget
         ((m : ℂ) * (w - z) ^ k) w := by
       have hbase : HasDerivAt (fun u : ℂ => u - z) 1 w :=
         (hasDerivAt_id w).sub_const z
-      convert hbase.pow m using 1
+      convert! hbase.pow m using 1
       simp [m]
     change deriv (((fun u : ℂ => (u - z) ^ m) * g)) w = _
     rw [(hp.mul hgw.differentiableAt.hasDerivAt).deriv]
@@ -288,14 +288,14 @@ theorem hasDerivAt_suzukiShiftedXiTarget_parameter {eta z : ℂ}
     hasDerivAt_const _ _
   have hden' : HasDerivAt (fun tau : ℂ => suzukiShiftedXiDenominator tau z)
       (-XiC z) eta := by
-    simpa [suzukiShiftedXiDenominator] using
+    simpa [suzukiShiftedXiDenominator] using!
       (hasDerivAt_const (x := eta) (c := deriv XiC z)).sub
         ((hasDerivAt_id eta).mul_const (XiC z))
   have hquot := hnum.div hden' hden
   change HasDerivAt
     (fun tau : ℂ => z ^ 2 * XiC z / suzukiShiftedXiDenominator tau z)
       (z ^ 2 * XiC z ^ 2 / suzukiShiftedXiDenominator eta z ^ 2) eta
-  convert hquot using 1
+  convert! hquot using 1
   ring
 
 /-- At every nonzero spectral point, the shift parameter evolves by an exact Riccati law. -/
@@ -303,7 +303,7 @@ theorem hasDerivAt_suzukiShiftedXiTarget_parameter_riccati {eta z : ℂ}
     (hz : z ≠ 0) (hden : suzukiShiftedXiDenominator eta z ≠ 0) :
     HasDerivAt (fun tau => suzukiShiftedXiTarget tau z)
       (suzukiShiftedXiTarget eta z ^ 2 / z ^ 2) eta := by
-  convert hasDerivAt_suzukiShiftedXiTarget_parameter hden using 1
+  convert! hasDerivAt_suzukiShiftedXiTarget_parameter hden using 1
   simp only [suzukiShiftedXiTarget]
   field_simp
 
@@ -316,18 +316,18 @@ theorem hasDerivAt_suzukiShiftedXiTarget_of_simple_XiC_zero
   have hXi' : HasDerivAt (deriv XiC) (deriv (deriv XiC) z) z :=
     ((XiC_analytic z (Set.mem_univ z)).deriv).differentiableAt.hasDerivAt
   have hsq : HasDerivAt (fun w : ℂ => w ^ 2) (2 * z) z := by
-    simpa [id, mul_comm] using (hasDerivAt_id z).pow 2
+    simpa [id, mul_comm] using! (hasDerivAt_id z).pow 2
   have hnum := hsq.mul hXi
   have hden : HasDerivAt (suzukiShiftedXiDenominator eta)
       (deriv (deriv XiC) z - eta * deriv XiC z) z := by
-    simpa [suzukiShiftedXiDenominator] using
+    simpa [suzukiShiftedXiDenominator] using!
       hXi'.sub ((hasDerivAt_const (x := z) (c := eta)).mul hXi)
   have hdenne : suzukiShiftedXiDenominator eta z ≠ 0 := by
-    simpa [suzukiShiftedXiDenominator, hz] using hsimple
+    simpa [suzukiShiftedXiDenominator, hz] using! hsimple
   have hquot := hnum.div hden hdenne
   change HasDerivAt
     (fun w : ℂ => w ^ 2 * XiC w / suzukiShiftedXiDenominator eta w) (z ^ 2) z
-  convert hquot using 1
+  convert! hquot using 1
   simp only [hz, mul_zero, suzukiShiftedXiDenominator, Pi.mul_apply]
   field_simp [hsimple]
   ring

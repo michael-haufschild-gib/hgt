@@ -275,8 +275,8 @@ theorem exists_distinguishedVariable_bezout_clear
     ∃ M : ι → Polynomial R, ∃ N : R, N ≠ 0 ∧
       ∑ i, M i * H i = Polynomial.C N := by
   classical
-  letI : NormalizationMonoid R :=
-    UniqueFactorizationMonoid.normalizationMonoid
+  letI : StrongNormalizationMonoid R :=
+    UniqueFactorizationMonoid.strongNormalizationMonoid
   letI : NormalizedGCDMonoid R :=
     UniqueFactorizationMonoid.toNormalizedGCDMonoid R
   let HK : ι → Polynomial K :=
@@ -512,7 +512,7 @@ theorem irreducible_map_factor_vars_subset
   have hcoeff (n : ℕ) :
       A₀ ∣ MvPolynomial.map (algebraMap F K) (P₁.coeff n) := by
     have hn := (Polynomial.C_dvd_iff_dvd_coeff A₀ _).mp hdiv₁ n
-    simpa using hn
+    simpa using! hn
 
   obtain ⟨M, N, hN0, hbezout⟩ :=
     Polynomial.IsPrimitive.exists_coeff_bezout_clear hP₂primitive
@@ -524,7 +524,7 @@ theorem irreducible_map_factor_vars_subset
     dsimp [B] at hn
     rw [hmap] at hn
     dsimp [B, P₂]
-    simpa using hn
+    simpa using! hn
 
   let ψ : MvPolynomial {z : {j : σ // j ≠ x} // z ≠ y} F →+*
       MvPolynomial {z : {j : σ // j ≠ x} // z ≠ y} K :=

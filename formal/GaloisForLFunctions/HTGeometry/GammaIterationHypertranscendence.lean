@@ -275,7 +275,7 @@ theorem exists_eventually_differentiable_outerGammaZoom_near_local
   have huDiff : DifferentiableAt ℂ u gammaValue :=
     (huBall gammaValue hgammaBall).differentiableAt
   have hcomp := huDiff.comp y hGammaDiff
-  simpa [factorialBlowUpZoom, input, gammaValue, Function.comp_def] using
+  simpa [factorialBlowUpZoom, input, gammaValue, Function.comp_def] using!
     hcomp.differentiableWithinAt
 
 theorem iteratedDeriv_outerGamma_factorialBlowUp_tendsto_local

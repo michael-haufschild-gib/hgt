@@ -26,12 +26,12 @@ noncomputable section
 /-- A finite Laurent gauge extends through the zero face when it has no negative modes. -/
 def LaurentRegularAtZero {R : Type*} [Semiring R]
     (f : R[T;T⁻¹]) : Prop :=
-  ∀ n : ℤ, n < 0 → f n = 0
+  ∀ n : ℤ, n < 0 → f.coeff n = 0
 
 /-- A finite Laurent gauge extends through the infinity face when it has no positive modes. -/
 def LaurentRegularAtInfinity {R : Type*} [Semiring R]
     (f : R[T;T⁻¹]) : Prop :=
-  ∀ n : ℤ, 0 < n → f n = 0
+  ∀ n : ℤ, 0 < n → f.coeff n = 0
 
 /-- A Laurent character extends through zero exactly when its weight is nonnegative. -/
 theorem laurentRegularAtZero_T_iff
@@ -84,7 +84,7 @@ theorem laurent_eq_C_coeff_zero_of_biFace
     {R : Type*} [Semiring R] (f : R[T;T⁻¹])
     (hzero : LaurentRegularAtZero f)
     (hinfinity : LaurentRegularAtInfinity f) :
-    f = C (f 0) := by
+    f = C (f.coeff 0) := by
   ext n
   rcases lt_trichotomy n 0 with hn | hn | hn
   · rw [hzero n hn]
@@ -101,7 +101,7 @@ theorem laurent_biFace_iff_eq_C
       ∃ c : R, f = C c := by
   constructor
   · rintro ⟨hzero, hinfinity⟩
-    exact ⟨f 0, laurent_eq_C_coeff_zero_of_biFace f hzero hinfinity⟩
+    exact ⟨f.coeff 0, laurent_eq_C_coeff_zero_of_biFace f hzero hinfinity⟩
   · rintro ⟨c, rfl⟩
     constructor <;> intro n hn <;> simp [C_apply, ne_of_lt hn, ne_of_gt hn]
 
@@ -127,7 +127,7 @@ theorem laurent_biFace_normalized_eq_zero
     {R : Type*} [Semiring R] (f : R[T;T⁻¹])
     (hzero : LaurentRegularAtZero f)
     (hinfinity : LaurentRegularAtInfinity f)
-    (hnormalized : f 0 = 0) :
+    (hnormalized : f.coeff 0 = 0) :
     f = 0 := by
   rw [laurent_eq_C_coeff_zero_of_biFace f hzero hinfinity, hnormalized]
   exact map_zero C
@@ -136,29 +136,27 @@ theorem laurent_biFace_normalized_eq_zero
 theorem laurent_zeroFace_not_rigid
     {R : Type*} [Semiring R] [Nontrivial R] :
     LaurentRegularAtZero (T 1 : R[T;T⁻¹]) ∧
-      (T 1 : R[T;T⁻¹]) ≠ C ((T 1 : R[T;T⁻¹]) 0) := by
+      (T 1 : R[T;T⁻¹]) ≠ C ((T 1 : R[T;T⁻¹]).coeff 0) := by
   constructor
   · exact (laurentRegularAtZero_T_iff 1).2 (by omega)
   · intro h
-    have hzero : ((T 1 : R[T;T⁻¹]) 0) = 0 := by simp
+    have hzero : (T 1 : R[T;T⁻¹]).coeff 0 = 0 := by simp
     rw [hzero, map_zero] at h
-    have hT : (Finsupp.single (1 : ℤ) (1 : R) : ℤ →₀ R) ≠ 0 :=
-      Finsupp.single_ne_zero.mpr one_ne_zero
-    exact hT h
+    have hcoeff := congrArg (fun p : R[T;T⁻¹] => p.coeff 1) h
+    simp at hcoeff
 
 /-- The infinity face alone retains a nonconstant negative mode. -/
 theorem laurent_infinityFace_not_rigid
     {R : Type*} [Semiring R] [Nontrivial R] :
     LaurentRegularAtInfinity (T (-1) : R[T;T⁻¹]) ∧
-      (T (-1) : R[T;T⁻¹]) ≠ C ((T (-1) : R[T;T⁻¹]) 0) := by
+      (T (-1) : R[T;T⁻¹]) ≠ C ((T (-1) : R[T;T⁻¹]).coeff 0) := by
   constructor
   · exact (laurentRegularAtInfinity_T_iff (-1)).2 (by omega)
   · intro h
-    have hzero : ((T (-1) : R[T;T⁻¹]) 0) = 0 := by simp
+    have hzero : (T (-1) : R[T;T⁻¹]).coeff 0 = 0 := by simp
     rw [hzero, map_zero] at h
-    have hT : (Finsupp.single (-1 : ℤ) (1 : R) : ℤ →₀ R) ≠ 0 :=
-      Finsupp.single_ne_zero.mpr one_ne_zero
-    exact hT h
+    have hcoeff := congrArg (fun p : R[T;T⁻¹] => p.coeff (-1)) h
+    simp at hcoeff
 
 end
 

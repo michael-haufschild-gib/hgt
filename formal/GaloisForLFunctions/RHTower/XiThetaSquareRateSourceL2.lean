@@ -50,7 +50,7 @@ private lemma integrable_sq_norm_thetaSquareBlaschkeReaderSymbol_boundary
       have hline : ContinuousAt (fun u : ℝ => (u : ℂ) * I) t := by fun_prop
       have hcomp :=
         (thetaSquareBlaschkeReaderSymbol_continuousAt_mul_I hn ht).comp_of_eq hline rfl
-      simpa [Function.comp_def] using hcomp.norm.pow 2
+      simpa [Function.comp_def] using! hcomp.norm.pow 2
   refine hgInt.congr ?_
   have ht0 : ∀ᵐ t : ℝ, t ≠ 0 := by simp [ae_iff, measure_singleton]
   filter_upwards [ht0] with t ht

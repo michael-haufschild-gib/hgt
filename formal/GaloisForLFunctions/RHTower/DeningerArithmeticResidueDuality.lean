@@ -59,7 +59,7 @@ def deningerArithmeticEvaluation
         (fun H : DeningerEntire =>
           H (xiSpectralPointSupport rho)) hG
       simpa only [deningerEntire_mul_apply, deningerEntireXi_apply,
-        XiC_xiSpectralPointSupport_eq_zero_source rho, mul_zero] using
+        XiC_xiSpectralPointSupport_eq_zero_source rho, mul_zero] using!
         heval.symm)
 
 @[simp]

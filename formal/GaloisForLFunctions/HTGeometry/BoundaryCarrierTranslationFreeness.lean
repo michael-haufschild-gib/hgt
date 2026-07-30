@@ -151,7 +151,7 @@ theorem probabilityCarrierExpandedFullRankWitness_weightedBoundaryProbabilityCar
   have hpacket :=
     F.weightedBoundaryCarrierExpandedPacketValue_eq_actualNevanlinnaExpandedPacketValue
       eta baseDensity S w hw hint orders packet shift hupperMap hupper
-  simpa only [probabilityCarrierExpandedPacketValue] using
+  simpa only [probabilityCarrierExpandedPacketValue] using!
     (show Function.Injective
         (expandedDifferentialEvaluationMatrix degree
           (Fintype.card (Σ i, Fin (orders i))) packet.1 exponent

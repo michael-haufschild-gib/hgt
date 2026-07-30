@@ -76,7 +76,7 @@ theorem hasDerivAt_mobiusMovingMultiplier {σ ε : ℝ} (hσ : 1 < σ) (hε : 0 
   have hcomp : HasDerivAt (fun v : ℝ => riemannZeta ((σ : ℂ) + (v : ℂ) * (ε : ℂ)))
       ((ε : ℂ) * deriv riemannZeta ((σ : ℂ) + (u : ℂ) * (ε : ℂ))) u := by
     have h := hζ.scomp u hlin
-    simpa [Function.comp, smul_eq_mul, mul_comm] using h
+    simpa [Function.comp, smul_eq_mul, mul_comm] using! h
   have hden : HasDerivAt (fun v : ℝ =>
       riemannZeta (σ : ℂ) * riemannZeta ((σ : ℂ) + (v : ℂ) * (ε : ℂ)))
       (riemannZeta (σ : ℂ) * ((ε : ℂ) * deriv riemannZeta ((σ : ℂ) + (u : ℂ) * (ε : ℂ)))) u := by
@@ -142,7 +142,7 @@ theorem hasDerivAt_suzukiPacketDirichlet {s : ℂ} (hs : 1 < s.re) :
       exact hζ
     have h := HasDerivAt.scomp (h := fun a : ℝ => s - (a : ℂ)) 0 hζ' hlin1
     have h0 : s - ((0 : ℝ) : ℂ) = s := by push_cast; ring
-    simpa [Function.comp, smul_eq_mul, h0] using h
+    simpa [Function.comp, smul_eq_mul, h0] using! h
   have hden : HasDerivAt (fun a : ℝ => riemannZeta (s + (a : ℂ)))
       (deriv riemannZeta s) 0 := by
     have hζ' : HasDerivAt riemannZeta (deriv riemannZeta (s + ((0 : ℝ) : ℂ)))
@@ -152,7 +152,7 @@ theorem hasDerivAt_suzukiPacketDirichlet {s : ℂ} (hs : 1 < s.re) :
       exact hζ
     have h := HasDerivAt.scomp (h := fun a : ℝ => s + (a : ℂ)) 0 hζ' hlin2
     have h0 : s + ((0 : ℝ) : ℂ) = s := by push_cast; ring
-    simpa [Function.comp, smul_eq_mul, h0] using h
+    simpa [Function.comp, smul_eq_mul, h0] using! h
   have hzero : riemannZeta (s + ((0 : ℝ) : ℂ)) ≠ 0 := by
     have h0 : s + ((0 : ℝ) : ℂ) = s := by push_cast; ring
     rw [h0]
@@ -418,8 +418,9 @@ theorem deriv_vonMangoldtCurrent_of_mem {s : ℂ} (hs : s ∈ eulerCurrentLauren
 theorem hasDerivAt_neg_inv_sq {s : ℂ} (hs : s - 1 ≠ 0) :
     HasDerivAt (fun z : ℂ => -1 / (z - 1) ^ 2) (2 / (s - 1) ^ 3) s := by
   have hbase : HasDerivAt (fun z : ℂ => (z - 1) ^ 2) (2 * (s - 1)) s := by
-    have h := ((hasDerivAt_id s).sub_const 1).pow 2
-    simpa using h
+    have hlinear : HasDerivAt (fun z : ℂ => z - 1) 1 s :=
+      (hasDerivAt_id s).sub_const 1
+    exact (hlinear.pow 2).congr_deriv (by ring)
   have hne : ((s - 1) ^ 2) ≠ 0 := pow_ne_zero 2 hs
   have hinv := hbase.inv hne
   have hneg := hinv.neg

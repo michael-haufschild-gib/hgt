@@ -1304,7 +1304,7 @@ theorem localCausalFactorialBound_tendsto_zero
       Filter.Tendsto
         (fun R : ℕ => x ^ (2 * R + 3) / (2 * R + 3).factorial)
         Filter.atTop (nhds 0) := by
-    simpa only [Function.comp_apply] using
+    simpa only [Function.comp_apply] using!
       (FloorSemiring.tendsto_pow_div_factorial_atTop x).comp hindex
   unfold localCausalFactorialBound
   convert htail.const_mul (4 * Real.exp (|t| * Λ)) using 1

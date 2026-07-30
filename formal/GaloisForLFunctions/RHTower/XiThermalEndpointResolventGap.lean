@@ -70,7 +70,7 @@ theorem norm_quarterResolventScatteringPhase {z : ℂ} (hz : 0 < z.re) :
     ‖quarterResolventScatteringPhase z‖ = 1 := by
   rw [quarterResolventScatteringPhase, norm_div]
   have hnorm : ‖(starRingEnd ℂ) (1 + z / 4)‖ = ‖1 + z / 4‖ := by
-    simpa only using norm_star (1 + z / 4 : ℂ)
+    exact RCLike.norm_conj _
   rw [hnorm]
   exact div_self (norm_ne_zero_iff.mpr (one_add_quarter_ne_zero hz))
 
@@ -245,7 +245,8 @@ theorem tendsto_xiThermalEndpointResolventTruncation :
       xiThermalNode (e j) / (1 + xiThermalNode (e j) / 4))
       xiThermalEndpointResolventValue := e.hasSum_iff.mpr hsum
   have ht := hsumNat.tendsto_sum_nat
-  simpa [xiThermalEndpointResolventTruncation, e] using ht
+  exact ht.congr'
+    (Eventually.of_forall fun _ => rfl)
 
 theorem xiThermalEndpointResolventValue_pos :
     0 < xiThermalEndpointResolventValue := by

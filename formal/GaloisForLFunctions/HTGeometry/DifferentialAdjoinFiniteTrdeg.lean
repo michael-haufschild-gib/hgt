@@ -49,11 +49,25 @@ theorem differentialAdjoin_trdeg_lt_aleph0_of_finite_jetSet
       change algebraMap k F c ∈ J
       exact IntermediateField.algebraMap_mem J c
     · intro u v hu hv huJ hvJ
-      simpa only [p, Subtype.coe_eta] using J.add_mem huJ hvJ
+      change (⟨u + v, F.add_mem hu hv⟩ : F) ∈ J
+      rw [show (⟨u + v, F.add_mem hu hv⟩ : F) =
+          (⟨u, hu⟩ : F) + ⟨v, hv⟩ by
+        apply Subtype.ext
+        rfl]
+      exact J.add_mem huJ hvJ
     · intro u hu huJ
-      simpa only [p, Subtype.coe_eta] using J.inv_mem huJ
+      change (⟨u⁻¹, F.inv_mem hu⟩ : F) ∈ J
+      rw [show (⟨u⁻¹, F.inv_mem hu⟩ : F) = (⟨u, hu⟩ : F)⁻¹ by
+        apply Subtype.ext
+        rfl]
+      exact J.inv_mem huJ
     · intro u v hu hv huJ hvJ
-      simpa only [p, Subtype.coe_eta] using J.mul_mem huJ hvJ
+      change (⟨u * v, F.mul_mem hu hv⟩ : F) ∈ J
+      rw [show (⟨u * v, F.mul_mem hu hv⟩ : F) =
+          (⟨u, hu⟩ : F) * ⟨v, hv⟩ by
+        apply Subtype.ext
+        rfl]
+      exact J.mul_mem huJ hvJ
   letI : Algebra.IsAlgebraic (Algebra.adjoin k (Set.range jT)) F :=
     HTGeometry.isAlgebraic_adjoin_of_intermediate_adjoin_eq_top jT hFtop
   calc
@@ -107,7 +121,13 @@ theorem differentialAlgebraicOver_of_intermediate_trdeg_lt_aleph0
     have h := hyLind.comp (fun n : ℕ => ((), n)) (by
       intro m n hmn
       exact congrArg Prod.snd hmn)
-    simpa using h
+    rw [show
+      ((fun p : Unit × ℕ => differentialJet p.2 yL) ∘
+          fun n : ℕ => ((), n)) =
+        (fun n : ℕ => differentialJet n yL) by
+      funext n
+      rfl] at h
+    exact h
   have haleph : Cardinal.aleph0 ≤ Algebra.trdeg k L := by
     have h := hjets.lift_cardinalMk_le_trdeg
     simpa using h

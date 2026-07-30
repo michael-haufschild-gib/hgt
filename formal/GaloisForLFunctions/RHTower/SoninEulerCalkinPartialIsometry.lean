@@ -169,7 +169,7 @@ theorem fourierUnitary_dilation
     rw [hFdx, hrightx]
     have hFgx' : fourierUnitary g2 (r⁻¹ * xi) =
         Real.Lp.fourierTransform g1 (r⁻¹ * xi) := by
-      simpa only [Function.comp_apply] using hFgx
+      simpa only [Function.comp_apply] using! hFgx
     rw [hFgx']
     simp only [Real.Lp.fourierTransform_apply]
     rw [Real.fourier_congr_ae hd1ae xi,
@@ -339,7 +339,7 @@ theorem isCompactOperator_fourierCutoff_indicatorCutoff_central
   have hcompact := isCompactOperator_cutoffFourierCutoff (-s) s (-t) t (by linarith)
   have hpull := hcompact.clm_comp
     fourierUnitary.symm.toLinearIsometry.toContinuousLinearMap
-  simpa [fourierCutoff, cutoffFourierCutoff, Function.comp_def] using hpull
+  simpa [fourierCutoff, cutoffFourierCutoff, Function.comp_def] using! hpull
 
 theorem isCompactOperator_indicatorCutoff_fourierCutoff_central
     (s t : ℝ) (hs : 0 < s) :
@@ -772,7 +772,7 @@ theorem evenCentralSoninProjection_mul_evenIndicatorCutoff (a : ℝ) :
     ContinuousLinearMap.adjoint 0 at h
   rw [ContinuousLinearMap.adjoint_comp, adjoint_evenIndicatorCutoff,
     adjoint_evenCentralSoninProjection, ContinuousLinearMap.adjoint.map_zero] at h
-  simpa using h
+  simpa using! h
 
 theorem evenCentralSoninProjection_mul_evenFourierCutoff (a : ℝ) :
     evenCentralSoninProjection a * evenFourierCutoff a = 0 := by
@@ -783,7 +783,7 @@ theorem evenCentralSoninProjection_mul_evenFourierCutoff (a : ℝ) :
     ContinuousLinearMap.adjoint 0 at h
   rw [ContinuousLinearMap.adjoint_comp, adjoint_evenFourierCutoff,
     adjoint_evenCentralSoninProjection, ContinuousLinearMap.adjoint.map_zero] at h
-  simpa using h
+  simpa using! h
 
 theorem evenIndicatorCutoff_mul_inverseDilation_mul_soninProjection
     (a p : ℝ) (ha : 0 < a) (hp : 1 < p) :
@@ -827,7 +827,7 @@ theorem evenSoninProjection_mul_dilation_mul_indicatorCutoff
   rw [ContinuousLinearMap.adjoint_comp, ContinuousLinearMap.adjoint_comp,
     adjoint_evenCentralSoninProjection, adjoint_evenDilationCLM,
     adjoint_evenIndicatorCutoff, ContinuousLinearMap.adjoint.map_zero] at h
-  simpa only [inv_inv] using h
+  simpa only [inv_inv] using! h
 
 theorem evenSoninProjection_mul_inverseDilation_mul_fourierCutoff
     (a p : ℝ) (ha : 0 < a) (hp : 1 < p) :

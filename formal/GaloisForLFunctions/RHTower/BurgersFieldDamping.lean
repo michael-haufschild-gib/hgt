@@ -98,7 +98,7 @@ theorem riccati_solution {v₀ : ℝ} (hv : 0 < v₀) (τ : ℝ) (hτ : 0 ≤ τ
     simpa using (HasDerivAt.const_mul (2 * v₀) (hasDerivAt_id τ)).const_add 1
   have hinv := (h.inv hden).const_mul v₀
   simp only [div_eq_mul_inv]
-  convert hinv using 1
+  convert! hinv using 1
   field_simp
 
 /-- The comparison solution is nonincreasing: the field strength cannot grow. -/
@@ -116,10 +116,10 @@ theorem frozen_gap_solution {D u₀ : ℝ} (hD : 0 < D) (τ : ℝ) :
     HasDerivAt (fun s : ℝ => 2 / D + (u₀ - 2 / D) * Real.exp (4 * D * s))
       (4 * D * (2 / D + (u₀ - 2 / D) * Real.exp (4 * D * τ)) - 8) τ := by
   have h : HasDerivAt (fun s : ℝ => Real.exp (4 * D * s)) (Real.exp (4 * D * τ) * (4 * D)) τ := by
-    simpa using
+    simpa using!
       (Real.hasDerivAt_exp (4 * D * τ)).comp τ (HasDerivAt.const_mul (4 * D) (hasDerivAt_id τ))
   have h2 := (h.const_mul (u₀ - 2 / D)).const_add (2 / D)
-  convert h2 using 1
+  convert! h2 using 1
   field_simp
   ring
 

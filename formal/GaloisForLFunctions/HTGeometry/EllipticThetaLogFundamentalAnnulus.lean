@@ -154,7 +154,7 @@ theorem analyticAt_ellipticThetaLogKernel_of_norm_between {q x : ℂ}
     AnalyticAt ℂ (ellipticThetaLogKernel q) x := by
   have h := analyticAt_ellipticThetaLogShift_of_norm_pow_between (m := 1) hq0
     (by simpa using hqx) hx1
-  simpa [ellipticThetaLogKernel, ellipticThetaLogSummand] using h
+  simpa [ellipticThetaLogKernel, ellipticThetaLogSummand] using! h
 
 theorem analyticAt_ellipticThetaLogRemainder_of_norm_sq_between {q x : ℂ}
     (hq0 : q ≠ 0) (hq2x : ‖q‖ ^ 2 < ‖x‖) (hx1 : ‖x‖ < 1) :

@@ -246,12 +246,12 @@ private theorem rootProduct_balance_of_finiteParaorthogonalPolynomial_isRoot
   have hnumMap :
       ‖(p.roots.map fun a => z - a).prod‖ =
         (p.roots.map fun a => ‖z - a‖).prod := by
-    simpa only [Multiset.map_map, Function.comp_apply] using
+    simpa only [Multiset.map_map, Function.comp_apply] using!
       map_multiset_prod (normHom : ℂ →*₀ ℝ) (p.roots.map fun a => z - a)
   have hdenMap :
       ‖(p.roots.map fun a => 1 - star a * z).prod‖ =
         (p.roots.map fun a => ‖1 - star a * z‖).prod := by
-    simpa only [Multiset.map_map, Function.comp_apply] using
+    simpa only [Multiset.map_map, Function.comp_apply] using!
       map_multiset_prod (normHom : ℂ →*₀ ℝ)
         (p.roots.map fun a => 1 - star a * z)
   have hnorm := congrArg norm heq
@@ -331,7 +331,7 @@ theorem finiteOPUCParaorthogonalPolynomial_isRoot_norm_eq_one
     ‖z‖ = 1 := by
   have hp : finiteOPUCPolynomial c hG ≠ 0 := by
     have hcoeff : (finiteOPUCPolynomial c hG).coeff N ≠ 0 := by
-      simpa [finiteOPUCPolynomial] using finiteOPUCVector_last_ne_zero c hG
+      simpa [finiteOPUCPolynomial] using! finiteOPUCVector_last_ne_zero c hG
     intro hp0
     apply hcoeff
     rw [hp0]

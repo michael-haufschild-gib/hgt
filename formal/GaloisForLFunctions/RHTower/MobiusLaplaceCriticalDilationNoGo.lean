@@ -85,7 +85,7 @@ cancellation and cannot be bounded by the weights alone. -/
 theorem not_summable_prime_mobiusLaplaceCriticalRenewalWeight :
     ¬ Summable (fun p : Nat.Primes =>
       mobiusLaplaceCriticalRenewalWeight (primeAsPositiveDilation p)) := by
-  simpa [mobiusLaplaceCriticalRenewalWeight_eq_rpow] using
+  simpa [mobiusLaplaceCriticalRenewalWeight_eq_rpow] using!
     not_summable_primeCriticalDilationWeight
 
 end

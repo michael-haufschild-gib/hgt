@@ -1067,7 +1067,6 @@ theorem primeMass_upper_one {N : ℕ} (hN : 2 ≤ N) :
       have h := sum_Icc_sub_telescope (fun k => 1 / Real.log k)
         (a := p) (b := N) (by omega) (by omega)
       exact Eq.trans (Finset.sum_congr rfl fun k _ => by
-        simp only []
         push_cast
         ring_nf) h
     rw [htel]
@@ -1174,7 +1173,6 @@ theorem primeMass_upper_one {N : ℕ} (hN : 2 ≤ N) :
       have h := sum_Icc_sub_telescope (fun k => 1 / Real.log k)
         (a := 2) (b := N) (by omega) (by omega)
       exact Eq.trans (Finset.sum_congr rfl fun k _ => by
-        simp only []
         push_cast
         ring_nf) h
     rw [htel1, htel2]

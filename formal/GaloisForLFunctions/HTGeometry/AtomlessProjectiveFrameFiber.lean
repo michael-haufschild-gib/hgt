@@ -281,7 +281,7 @@ distinct positive carriers.  Every carrier in the cube has the common complete H
 sequence and measure class, the same level-`N` Gram section, and the same regular Cauchy jet through
 order `N-1`. -/
 theorem exists_closedEmbeddedHilbertCube_in_exactCayleyFrameFiber
-    [NoAtoms eta] (N : ℕ) {delta : ℝ} (hdelta0 : 0 < delta) (hdelta1 : delta < 1) :
+    [NullSingletonClass eta] (N : ℕ) {delta : ℝ} (hdelta0 : 0 < delta) (hdelta1 : delta < 1) :
     ∃ v : ℕ → Lp ℝ ⊤ eta,
       ∃ carrier : SignedHilbertCube → ProbabilityMeasure ℝ,
       Topology.IsClosedEmbedding

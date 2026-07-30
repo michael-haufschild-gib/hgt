@@ -37,7 +37,7 @@ theorem re_inner_soninLogFourierObservableTwirlStarKadisonDefect_eq_quarter_comm
   have hfixed : soninLogFourierScattering ψ = ψ := by
     apply sub_eq_zero.mp
     simpa using hψ
-  simpa only [soninLogFourierObservableTwirlStarKadisonDefect] using
+  simpa only [soninLogFourierObservableTwirlStarKadisonDefect] using!
     HTGeometry.re_inner_finiteInvolutiveObservableTwirlStarKadisonDefect_eq_quarter_commutatorNormSq_of_fixed
       soninLogFourierScattering X soninLogFourierScattering_adjoint_mul_self
       soninLogFourierScattering_sq_eq_one hfixed
@@ -60,7 +60,7 @@ theorem soninLogClock_erasedPureStateQuantumFisherValue_eq_four_mul_starObservab
     apply sub_eq_zero.mp
     simpa using hψ
   simpa only [soninLogFourierInvariantAverage,
-    soninLogFourierObservableTwirlStarKadisonDefect] using
+    soninLogFourierObservableTwirlStarKadisonDefect] using!
       (HTGeometry.finiteClock_erasedPureStateQuantumFisherValue_eq_four_mul_starObservabilityEnergy
         soninLogFourierScattering X 2 two_ne_zero
         soninLogFourierScattering_adjoint_mul_self
@@ -108,7 +108,7 @@ theorem soninLogClock_erasedQuantumFisherClockLineValue_eq_starObservabilityLine
     apply sub_eq_zero.mp
     simpa using hψ
   simpa only [soninLogFourierInvariantAverage,
-    soninLogFourierObservableTwirlStarKadisonDefect] using
+    soninLogFourierObservableTwirlStarKadisonDefect] using!
       (HTGeometry.finiteClock_erasedQuantumFisherClockLineValue_eq_starObservabilityLineValue
         soninLogFourierScattering X 2 two_ne_zero
         soninLogFourierScattering_adjoint_mul_self

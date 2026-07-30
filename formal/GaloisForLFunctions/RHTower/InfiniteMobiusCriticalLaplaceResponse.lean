@@ -47,12 +47,12 @@ theorem tendsto_infiniteMobiusLaplaceMultiplier_div_sub_one
     (differentiableAt_riemannZeta (by norm_num : (2 : ℂ) ≠ 1)).continuousAt.tendsto.comp htwoArg
   have hresidue : Tendsto (fun sigma : ℝ => zetaResidueUnit (sigma : ℂ))
       (𝓝[>] (1 : ℝ)) (𝓝 (1 : ℂ)) := by
-    simpa using zetaResidueUnit_analyticAt.continuousAt.tendsto.comp hsigma
+    simpa using! zetaResidueUnit_analyticAt.continuousAt.tendsto.comp hsigma
   have hshiftArg : Tendsto
       (fun sigma : ℝ => ((sigma + Real.pi * x : ℝ) : ℂ))
       (𝓝[>] (1 : ℝ))
       (𝓝 (((1 + Real.pi * x : ℝ) : ℂ))) := by
-    simpa only [Complex.ofReal_add] using
+    simpa only [Complex.ofReal_add] using!
       hsigma.add_const ((Real.pi * x : ℝ) : ℂ)
   have hshiftPoint : (((1 + Real.pi * x : ℝ) : ℂ)) ≠ 1 := by
     intro h

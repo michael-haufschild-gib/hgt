@@ -196,7 +196,7 @@ theorem matrixWignerSmith_entry_mem_matrixFiniteJetField_one
         differentialFamilyVisibleJetIndices
           (fun _ : Fin (n + 1) × Fin (n + 1) => 1 + 1))
       ⟨((k, b), 1), by simp [differentialFamilyVisibleJetIndices], rfl⟩
-    simpa [differentialJet] using hjet
+    simpa [differentialJet] using! hjet
   rw [matrixWignerSmith]
   apply B.mul_mem (B.neg_mem (B.algebraMap_mem ι))
   simpa [Matrix.mul_apply, matrixDifferential] using

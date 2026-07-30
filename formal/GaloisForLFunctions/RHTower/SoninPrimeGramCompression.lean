@@ -326,6 +326,7 @@ theorem finitePrimeGram_pairedCombination_inner_tendsto_bilinear
             (real_prime_one_lt p hp) hcd k m) : evenSubspace) : SoninL2)
     rw [inner_smul_left, inner_smul_right, starRingEnd_apply]
     ring
+  · rfl
 
 /-- **Full finite prime Gram compression modulo compacts.**  A zero-diagonal matrix is detected
 through every finite sesquilinear test, with the Euclidean input norms and no loss depending on the

@@ -56,10 +56,10 @@ theorem hasSum_primeLaplaceEvenFactorialJetEnergy
   have h := (Real.hasSum_cosh (primeLogSupport p)).mul_left
     (semilocalArchimedeanCharacteristic (2 * primeLogSupport p) *
       (p : ℝ) ^ (-2 * x))
-  convert h using 1
-  · funext j
-    unfold primeLaplaceEvenFactorialJetEnergy
-    ring
+  refine h.congr ?_
+  intro j
+  unfold primeLaplaceEvenFactorialJetEnergy
+  ring
 
 theorem tsum_primeLaplaceEvenFactorialJetEnergy
     (x : ℝ) (p : Nat.Primes) :

@@ -70,7 +70,7 @@ theorem conductorCocycle_logDeriv {Q : ℕ} (hQ : 2 ≤ Q) (s : ℂ) :
       have h1 : HasDerivAt (fun z : ℂ => 2 * z - 1) 2 s := by
         simpa using ((hasDerivAt_id s).const_mul (2 : ℂ)).sub_const 1
       simpa using h1.mul_const (Complex.log Q)
-    simpa using (Complex.hasDerivAt_exp ((2 * s - 1) * Complex.log Q)).comp s hg
+    simpa using! (Complex.hasDerivAt_exp ((2 * s - 1) * Complex.log Q)).comp s hg
   rw [hfun, logDeriv_apply, hd.deriv]
   have hval : Complex.exp ((2 * s - 1) * Complex.log Q) ≠ 0 := Complex.exp_ne_zero _
   rw [show Complex.exp ((2 * s - 1) * Complex.log Q) * (2 * Complex.log Q)

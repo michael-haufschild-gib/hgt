@@ -20,7 +20,7 @@ theorem hasDerivAt_log_norm_archFactor_horizontal {σ τ : ℝ}
   have hre : 0 < (stripPt σ τ).re := by rw [stripPt_re]; exact hσ
   have harch : HasDerivAt (fun x : ℝ => archFactor (stripPt x τ))
       (archFactorDeriv (stripPt σ τ)) σ := by
-    simpa using (hasDerivAt_archFactor_of_re_pos hre).comp σ
+    simpa using! (hasDerivAt_archFactor_of_re_pos hre).comp σ
       (hasDerivAt_stripPt_horizontal τ σ)
   have h := GaloisForLFunctions.HTGeometry.hasDerivAt_log_norm_complex harch (archFactor_stripPt_ne_zero hσ hτ)
   simpa [stripWindingRate, stripWinding] using h

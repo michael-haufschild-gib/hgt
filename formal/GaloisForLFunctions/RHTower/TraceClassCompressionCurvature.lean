@@ -177,7 +177,7 @@ theorem re_opTrace_compression_sub_self_eq_neg_hsNormSq
   have hZhs : Z.IsHilbertSchmidt :=
     isHilbertSchmidt_of_adjoint_mul_self_memSchattenClass_one Z hZtc
   rw [opTrace_compression_sub_self_eq_neg_complement P T hP hK, hBgram]
-  simpa only [Complex.neg_re, Z, R] using
+  simpa only [Complex.neg_re, Z, R, ContinuousLinearMap.mul_def] using!
     congrArg Neg.neg (ContinuousLinearMap.re_opTrace_adjoint_comp_self hZhs)
 
 /-- **Faithfulness of positive compression curvature.**  Once the compression defect is

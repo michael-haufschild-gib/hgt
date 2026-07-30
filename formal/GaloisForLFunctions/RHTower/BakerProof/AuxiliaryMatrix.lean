@@ -548,7 +548,7 @@ theorem Relation.exists_auxiliary_coefficients (R : Relation) (c : ℤ)
       (R.auxiliaryMatrix_ne_zero c hint pivot L S T hL hS hT) hrow hcard rfl
       (R.auxiliaryEntry_house_le_height c hint pivot L S T) rfl
   refine ⟨η, hη, hker, ?_⟩
-  simpa [Relation.auxiliaryCoefficientBound] using hbound
+  simpa [Relation.auxiliaryCoefficientBound] using! hbound
 
 /-- The fully discharged construction: the common integral scale and the nonzero auxiliary
 coefficient vector are both produced from the reduced relation itself. -/

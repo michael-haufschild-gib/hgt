@@ -160,7 +160,7 @@ theorem continuousAt_universalOrientedHerglotzRegular
           exact Complex.ofReal_injective (sub_eq_zero.mp heq)
         exact hqn (orientationPole_injective hpole)
       have hsum := hterm.add (ih hnT)
-      simpa [Finset.sum_insert hq] using hsum
+      simpa [Finset.sum_insert hq] using! hsum
 
 theorem universalOrientedHerglotz_eq_regular_sub_atom
     {S J : Finset ℕ} {n : ℕ} (hnS : n ∈ S) (hnJ : n ∈ J) (z : ℂ) :

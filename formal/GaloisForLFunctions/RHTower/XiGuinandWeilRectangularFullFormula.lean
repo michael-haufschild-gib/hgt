@@ -167,7 +167,7 @@ theorem tendsto_normalizedRectangularTruncatedBottomXiContribution_atTop
       (tendsto_neg_atBot_iff.mpr tendsto_id) tendsto_id
   have hscaled := (hraw.const_mul (2 : ℂ)).const_mul (2 * Real.pi * I)⁻¹
   simpa only [normalizedRectangularTruncatedBottomXiContribution,
-    normalizedRectangularBottomXiContribution] using hscaled
+    normalizedRectangularBottomXiContribution] using! hscaled
 
 /-- Symmetric depth-one spectral rectangles exhaust the complete sharp rectangular Xi value. -/
 theorem tendsto_symmetric_xiZeroCopy_rectangular_sum_atTop (L a : ℝ) :

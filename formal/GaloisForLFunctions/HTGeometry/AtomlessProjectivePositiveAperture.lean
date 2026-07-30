@@ -1,5 +1,5 @@
 import Mathlib.Probability.CDF
-import Mathlib.MeasureTheory.Measure.Typeclasses.NoAtoms
+import Mathlib.MeasureTheory.Measure.Typeclasses.NullSingletonClass
 import Mathlib.Order.SuccPred.IntervalSucc
 import GaloisForLFunctions.HTGeometry.NevanlinnaBoundaryAlgebra
 import GaloisForLFunctions.HTGeometry.LinftyPositiveAperture
@@ -9,7 +9,7 @@ open scoped ENNReal Topology
 noncomputable section
 open ProbabilityTheory
 
-variable (μ : Measure ℝ) [IsProbabilityMeasure μ] [NoAtoms μ]
+variable (μ : Measure ℝ) [IsProbabilityMeasure μ] [NullSingletonClass μ]
 
 theorem continuous_cdf_of_noAtoms : Continuous (cdf μ) := by
   rw [continuous_iff_continuousAt]
@@ -35,7 +35,7 @@ open MeasureTheory Filter Set
 open scoped ENNReal Topology
 noncomputable section
 open ProbabilityTheory
-variable (μ : Measure ℝ) [IsProbabilityMeasure μ] [NoAtoms μ]
+variable (μ : Measure ℝ) [IsProbabilityMeasure μ] [NullSingletonClass μ]
 
 theorem exists_cdf_eq_of_mem_Ioo {q : ℝ} (hq : q ∈ Ioo (0 : ℝ) 1) :
     ∃ x : ℝ, cdf μ x = q := by
@@ -73,7 +73,7 @@ lemma partitionQuantile_strictMono : StrictMono partitionQuantile := by
   have hcast : (n : ℝ) < (m : ℝ) := by exact_mod_cast hnm
   nlinarith
 
-variable (μ : Measure ℝ) [IsProbabilityMeasure μ] [NoAtoms μ]
+variable (μ : Measure ℝ) [IsProbabilityMeasure μ] [NullSingletonClass μ]
 
 noncomputable def cdfPartitionCut (n : ℕ) : ℝ :=
   Classical.choose (exists_cdf_eq_of_mem_Ioo μ (partitionQuantile_mem_Ioo n))
@@ -116,7 +116,7 @@ open MeasureTheory Filter Set
 open scoped ENNReal Topology
 noncomputable section
 open ProbabilityTheory
-variable (μ : Measure ℝ) [IsProbabilityMeasure μ] [NoAtoms μ]
+variable (μ : Measure ℝ) [IsProbabilityMeasure μ] [NullSingletonClass μ]
 
 noncomputable def realCdfBlockPiece {k : ℕ} (j : ℕ) (l : Fin (k + 1)) : Set ℝ :=
   cdfPartitionPiece μ (Nat.pair j l)
@@ -153,7 +153,7 @@ lemma onePoint_coe_measurableEmbedding :
     MeasurableEmbedding ((↑) : ℝ → OnePoint ℝ) :=
   OnePoint.isOpenEmbedding_coe.measurableEmbedding
 
-variable (η : Measure (OnePoint ℝ)) [IsProbabilityMeasure η] [NoAtoms η]
+variable (η : Measure (OnePoint ℝ)) [IsProbabilityMeasure η] [NullSingletonClass η]
 
 omit [IsProbabilityMeasure η] in
 lemma onePointRealPart_ae_range : ∀ᵐ t ∂η, t ∈ Set.range ((↑) : ℝ → OnePoint ℝ) := by
@@ -162,12 +162,14 @@ lemma onePointRealPart_ae_range : ∀ᵐ t ∂η, t ∈ Set.range ((↑) : ℝ �
   rw [OnePoint.compl_range_coe]
   exact measure_singleton (∞ : OnePoint ℝ)
 
-@[reducible] noncomputable def onePointRealPart_isProbabilityMeasure :
+theorem onePointRealPart_isProbabilityMeasure :
     IsProbabilityMeasure (onePointRealPartMeasure η) :=
   onePoint_coe_measurableEmbedding.isProbabilityMeasure_comap
     (onePointRealPart_ae_range η)
 
-@[reducible] noncomputable def onePointRealPart_noAtoms : NoAtoms (onePointRealPartMeasure η) where
+omit [IsProbabilityMeasure η] in
+theorem onePointRealPart_noAtoms :
+    NullSingletonClass (onePointRealPartMeasure η) where
   measure_singleton x := by
     rw [onePointRealPartMeasure, Measure.comap_apply _ (onePoint_coe_measurableEmbedding.injective)
       onePoint_coe_measurableEmbedding.measurableSet_image' _ (measurableSet_singleton x)]
@@ -178,7 +180,7 @@ noncomputable def onePointCdfBlockPiece {k : ℕ} (j : ℕ) (l : Fin (k + 1)) :
     Set (OnePoint ℝ) := by
   letI : IsProbabilityMeasure (onePointRealPartMeasure η) :=
     onePointRealPart_isProbabilityMeasure η
-  letI : NoAtoms (onePointRealPartMeasure η) := onePointRealPart_noAtoms η
+  letI : NullSingletonClass (onePointRealPartMeasure η) := onePointRealPart_noAtoms η
   exact ((↑) : ℝ → OnePoint ℝ) '' realCdfBlockPiece (onePointRealPartMeasure η) j l
 
 lemma measurableSet_onePointCdfBlockPiece {k : ℕ} (j : ℕ) (l : Fin (k + 1)) :
@@ -186,14 +188,14 @@ lemma measurableSet_onePointCdfBlockPiece {k : ℕ} (j : ℕ) (l : Fin (k + 1)) 
   apply onePoint_coe_measurableEmbedding.measurableSet_image'
   letI : IsProbabilityMeasure (onePointRealPartMeasure η) :=
     onePointRealPart_isProbabilityMeasure η
-  letI : NoAtoms (onePointRealPartMeasure η) := onePointRealPart_noAtoms η
+  letI : NullSingletonClass (onePointRealPartMeasure η) := onePointRealPart_noAtoms η
   exact measurableSet_realCdfBlockPiece (onePointRealPartMeasure η) j l
 
 lemma measure_onePointCdfBlockPiece_ne_zero {k : ℕ} (j : ℕ) (l : Fin (k + 1)) :
     η (onePointCdfBlockPiece η j l) ≠ 0 := by
   letI : IsProbabilityMeasure (onePointRealPartMeasure η) :=
     onePointRealPart_isProbabilityMeasure η
-  letI : NoAtoms (onePointRealPartMeasure η) := onePointRealPart_noAtoms η
+  letI : NullSingletonClass (onePointRealPartMeasure η) := onePointRealPart_noAtoms η
   rw [onePointCdfBlockPiece, ← Measure.comap_apply _
     onePoint_coe_measurableEmbedding.injective
     onePoint_coe_measurableEmbedding.measurableSet_image' _
@@ -205,7 +207,7 @@ lemma onePointCdfBlockPiece_disjoint {k : ℕ}
     Disjoint (onePointCdfBlockPiece η j l) (onePointCdfBlockPiece η m r) := by
   letI : IsProbabilityMeasure (onePointRealPartMeasure η) :=
     onePointRealPart_isProbabilityMeasure η
-  letI : NoAtoms (onePointRealPartMeasure η) := onePointRealPart_noAtoms η
+  letI : NullSingletonClass (onePointRealPartMeasure η) := onePointRealPart_noAtoms η
   exact Set.disjoint_image_of_injective onePoint_coe_measurableEmbedding.injective
     (realCdfBlockPiece_disjoint (onePointRealPartMeasure η) j m l r h)
 
@@ -221,7 +223,7 @@ noncomputable section
 real projective line, every finite continuous-linear constraint fiber through density one contains
 a closed embedded Hilbert cube of strictly positive densities. -/
 theorem exists_positive_closedEmbeddedHilbertCube_in_atomlessProjectiveConstraintFiber
-    (η : Measure (OnePoint ℝ)) [IsProbabilityMeasure η] [NoAtoms η]
+    (η : Measure (OnePoint ℝ)) [IsProbabilityMeasure η] [NullSingletonClass η]
     {k : ℕ} (T : (Lp ℝ ⊤ η) →L[ℝ] (Fin k → ℝ))
     {delta : ℝ} (hdelta0 : 0 < delta) (hdelta1 : delta < 1) :
     ∃ v : ℕ → Lp ℝ ⊤ η,

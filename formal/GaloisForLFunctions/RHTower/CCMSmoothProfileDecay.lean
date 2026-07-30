@@ -76,16 +76,17 @@ theorem smoothProfileLaplaceAmplitude_mul
   let v' : ℝ → ℂ := fun x => -w * smoothProfileLaplaceWeight w x
   have hu : ∀ x, HasDerivAt u (u' x) x := by
     intro x
-    simpa only [u, u', smoothProfileComplex, smoothProfileComplexDeriv] using
+    simpa only [u, u', smoothProfileComplex, smoothProfileComplexDeriv] using!
       ((f.contDiff.differentiable (by simp)).differentiableAt.hasDerivAt).ofReal_comp
   have hv : ∀ x, HasDerivAt v (v' x) x := by
     intro x
     have hlin : HasDerivAt (fun y : ℝ => -(y : ℂ) * w) (-w) x := by
-      convert (((hasDerivAt_id x).ofReal_comp.neg).mul_const w) using 1
-      all_goals simp
-    dsimp only [v, v', smoothProfileLaplaceWeight]
-    convert hlin.cexp using 1
-    all_goals ring
+      simpa using!
+        (((hasDerivAt_id x).ofReal_comp.neg).mul_const w)
+    change HasDerivAt (fun y : ℝ => Complex.exp (-(y : ℂ) * w))
+      (-w * Complex.exp (-(x : ℂ) * w)) x
+    convert! hlin.cexp using 1
+    ring
   have huCont : Continuous u := continuous_smoothProfileComplex f
   have hu'Cont : Continuous u' := continuous_smoothProfileComplexDeriv f
   have hvCont : Continuous v := continuous_smoothProfileLaplaceWeight w

@@ -1,189 +1,163 @@
-# Hostile general-journal review
+# Hostile Nature editorial review
+
+Manuscript: **A universal information law for quantum recurrence**  
+Standard: Nature editorial criteria and a hostile general-science referee.  
+Formal verification receives zero novelty or significance credit.
 
 ## Recommendation
 
-**Publish after minor editorial revision.**
+**Reject in present form.**
 
-This recommendation concerns scientific case, not a guarantee of an editorial
-decision. Nature’s breadth judgement remains subjective. Under its stated
-criteria, manuscript now reports an original result, makes an arresting
-conclusion, and has immediate implications across quantum recurrence, inverse
-spectral theory, quantum simulation, spectral form factors, and holographic
-late-time inference.
+The manuscript is mathematically controlled and its strongest theorem is
+clean. It does not yet clear Nature’s stated thresholds of outstanding
+importance, an arresting conclusion with immediate and far-reaching
+implications, and broad scientific interest. Correctness is not the failure;
+scientific consequence is.
 
-## What paper proves
+## What survives hostile reading
 
-Paper answers one broad question: which information determines whether quantum
-history returns?
+The paper proves a complete inverse classification for survival-return
+experiments:
 
-Answer has four exact parts:
+- system information is exactly the energy autocorrelation;
+- clock information is exactly the symmetrized signed-time law;
+- all return moments obey one system–clock Fourier pairing;
+- the complete universal equivalence tests collapse to deterministic and
+  balanced-two-level first moments.
 
-1. Complete polynomial Krylov geometry and energy action do not universally
-   determine recurrence. Every normalized indeterminate moment class contains
-   completions with opposite recurrence phases and different temporal
-   dimensions.
-2. Boundary is exact. Compact support makes exact moment data determinate, but
-   compactness does not rescue all-orders perturbative data.
-3. Completed additive gap-collision hierarchy determines every continuous
-   long-time fidelity statistic for every probability spectrum.
-4. Finite local systems have quantitative prediction horizon. Full future
-   interval `[0,1]` is achievable with centred energy–time cost `O(R)`, while
-   any persistent hidden distinction costs `Ω(R)`.
+Quantifiers are broad: arbitrary probability spectral type, arbitrary
+probability clock, every moment order. The caveats about time orientation,
+gravity, continuous spectra, and locality are honest.
 
-This is one local-to-global law, not collection of unrelated recurrence facts.
+## Nature criteria
 
-## Nature editorial criteria
+Nature’s public criteria ask for original research of outstanding scientific
+importance, an interdisciplinary conclusion, novelty, an arresting or
+surprising result, immediate and far-reaching implications, and readability
+outside the specialty:
+<https://www.nature.com/nature/for-authors/editorial-criteria-and-processes>.
 
-| Criterion | Hostile assessment |
-|---|---|
-| Original scientific research | Pass. Prior work covers moment indeterminacy, Jacobi boundary theory, Wiener plateau, finite recurrence times, and black-hole spectral form factors separately. Manuscript’s recurrence-phase classifier obstruction, exact compact/noncompact boundary, complete collision hierarchy, and matching local-horizon scaling are not supplied by those results. |
-| Outstanding scientific importance | Pass. Result identifies universal information boundary on long-time quantum prediction. It says exactly which complete descriptions fail, what global datum succeeds, and physical resource scaling needed to hide a future distinction. |
-| Interdisciplinary conclusion | Pass. Directly connects harmonic analysis, moment problems, operator theory, quantum dynamics, quantum simulation, quantum chaos, and late-time holographic inference. |
-| Novel, arresting, surprising | Pass. “Two histories can share every polynomial local energy rule yet occupy opposite recurrence phases” is surprising; `[0,1]` complete future set and `Θ(R)` prediction-horizon cost make it quantitative. |
-| Immediate and far-reaching implications | Pass with bounded wording. Immediate implication is a certification no-go for normalized spectral form factors and all-orders perturbative spectral data. Far-reaching implication is that global completion is necessary relative to local/perturbative descriptions. Paper does not claim to solve black-hole information loss. |
-| Readability for nonspecialists | Pass. Abstract, one-sentence summary, schematic, determinacy table, and explicit exclusions state conclusion without requiring moment-problem expertise. |
-| Technical soundness and evidence | Pass. Exact constructions, universal quantifiers, converse compact determinacy, collision sufficiency, and matching energy-distance bounds are proved. No numerical evidence or uncontrolled approximation supports theorem statements. |
+| Criterion | Hostile verdict | Reason |
+|---|---|---|
+| Original research | Uncertain | No exact prior double-quotient theorem was located, but proof is a short synthesis of known Fourier-magnitude, characteristic-function, and moment-determinacy facts. |
+| Outstanding importance | Fail | Manuscript classifies information in one observable family. It does not yet alter a central physical prediction, experimental interpretation, or model class. |
+| Interdisciplinary conclusion | Partial | Links probability, harmonic analysis, recurrence, and metrology, but downstream consequences remain mostly reformulations inside survival fidelity. |
+| Arresting or surprising | Partial | “Return has no intrinsic clock orientation” sounds arresting, but evenness of survival probability is familiar and the paper correctly narrows orientation to sign of a sampling coordinate. |
+| Immediate implications | Fail | Proposed qubit scan is a transform-tomography protocol without finite-sample error, bandwidth, noise, or device analysis. |
+| Far-reaching implications | Fail | Black holes and holography are motivation only. No quantum-gravity, many-body-locality, thermodynamic-limit, or open-system theorem follows. |
+| Readable to nonspecialists | Pass | Abstract, summary, diagram, exact exclusions, and theorem statements are clear. |
+| Technical credibility | Pass provisionally | Claims are exact and scoped, but specialist priority review remains necessary. |
 
-## Strongest rejection attacks and disposition
+## Fatal objections
 
-### 1. “This is classical moment indeterminacy with quantum vocabulary.”
+### 1. Central theorem may be an elegant repackaging
 
-Would reject if true. Same-moment distributions and Nevanlinna families are
-classical and cited as inputs. Novel claim is recurrence classification:
-opposite mean-return phases, threshold-density separation, temporal-dimension
-separation, equality of both polynomial Gram and energy matrices, arbitrary
-classifier impossibility, and global collision completion. Manuscript now
-states this distinction explicitly.
+For fixed spectrum, survival fidelity is already the characteristic function
+of the energy-difference law. It is even. Characteristic functions uniquely
+determine probability measures. `[0,1]` moment sequences determine return
+laws. A referee can derive both maximal quotients quickly from those facts.
 
-**Disposition: answered.**
+The manuscript must demonstrate a consequence that was not already
+conceptually available from phase retrieval, Wiener–Khinchin theory, or qubit
+noise spectroscopy. “No exact joined theorem was found” is insufficient for
+Nature.
 
-### 2. “Same local Hamiltonian is false because atomless representative has
-nondense polynomial sector.”
+### 2. “Universal” quantifies inputs, not physical phenomena
 
-Would reject any claim that both are ordinary self-adjoint extensions on same
-`ℓ²` closure. Manuscript says exactly what agrees—every polynomial Krylov inner
-product and energy-multiplication matrix element—and explicitly says atomless
-completion is not ordinary self-adjoint extension on same polynomial closure.
-Title says “not locally determined,” while abstract qualifies “polynomial
-local.”
+The theorem is universal within stationary survival-return experiments. It
+does not cover transition probabilities, phase-sensitive observables,
+nonstationary generators, generic open dynamics, thermodynamic limits, or
+gravity. The title is mathematically defensible only with its subtitle-level
+scope; editorially it risks sounding broader than the discovery.
 
-**Disposition: answered.**
+### 3. Time-orientation headline collapses under the caveat
 
-### 3. “Finite observations are doing all work.”
+If laboratory time is known to be nonnegative, symmetrization determines the
+original clock law. If a phase reference is available, the imaginary
+characteristic function is measurable. Thus the theorem does not show that
+physical time lacks an arrow. It shows that an even observable cannot infer a
+sign that was not supplied. This is exact but not a worldview shift by itself.
 
-Would reject a finite-data identifiability truism. All-depth theorem preserves
-every polynomial depth and every derivative at present. Compact theorem
-preserves every perturbative order of every bounded continuous spectral probe
-at every physical time.
+### 4. Manuscript still reads as a collage
 
-**Disposition: answered.**
+The double quotient, pure-point alias rank, weak-interaction valuation,
+local connected-cluster cone, six-level example, collision hierarchy, and
+cardinal gap are individually related through characters, but only the first
+two are necessary for the headline theorem. Later sections feel like a
+catalogue of corpus results rather than unavoidable consequences of one new
+physical principle.
 
-### 4. “Examples need unbounded energy and pathological tails.”
+### 5. No decisive experiment or model prediction
 
-Exact same-moment separation does use noncompact moment indeterminacy, and
-paper identifies that boundary rather than hiding it. Independent
-nonperturbative theorem uses fixed compact positive interval `[1,2]`.
+The two-level protocol estimates a cosine transform. There is no:
 
-**Disposition: answered.**
+- finite set of gaps sufficient at stated resolution;
+- sample-complexity or stability bound;
+- robustness analysis under preparation and readout error;
+- comparison with Ramsey noise spectroscopy;
+- device parameter estimate;
+- experimental signature distinguishing this law from known dephasing.
 
-### 5. “Flat `e^{-1/g}` terms are textbook and not a discovery.”
+### 6. No black-hole or many-body advance
 
-Flatness alone is not sold as novelty. New result is universal no-classifier
-statement on complete spectral-observable theory, exact plateau
-`e^{-2/g}`, fixed compact support, and connected Jacobi realizability.
+The paper cites black-hole spectral form factors but makes no new statement
+about their plateau, ramp, discreteness, information recovery, or recurrence
+time. A Nature referee would remove those citations unless a theorem changes
+one of those inferences.
 
-**Disposition: answered.**
+## Questions the paper does not yet answer
 
-### 6. “Paper is purely negative.”
+1. What previously unresolved experimental or theoretical decision becomes
+   possible because of the double quotient?
+2. Which published claim about recurrence, timing noise, or spectral
+   inference is corrected or sharpened?
+3. Can one finite-resolution experiment distinguish quotient classes with a
+   quantitative stability guarantee?
+4. What does locality do to the quotient in a genuine many-body Hamiltonian,
+   beyond perturbative visibility lower bounds?
+5. Does generic local interaction force a universal return law, and if so,
+   what is its exact finite-size and thermodynamic consequence?
+6. Which part of the result remains surprising after replacing “orientation
+   of time” by “sign information in an even survival observable”?
 
-It contains three positive classification laws: compact exact-moment
-determinacy, additive-collision determination of every continuous long-time
-statistic, and linear achievability matching linear causal necessity.
+## Required scientific upgrade
 
-**Disposition: answered.**
+The corpus contains a substantially stronger candidate:
 
-### 7. “Local ambiguity ignores physical cost and is therefore engineered.”
+> For generic static nearest-neighbour `q`-level chains, any nonexceptional
+> arbitrarily weak interaction opens the full `q^n - 1` projective temporal
+> dimension, removes every nontrivial finite replica collision, and makes
+> recurrence attain the minimum allowed by the spectral weights at every
+> order, while all fixed finite-horizon observations remain continuous as the
+> coupling tends to zero.
 
-Paper proves both sides. Persistent hidden gap beyond radius `R` forces
-`|T|Λ_R>(2R+3)/e` eventually. Full `[0,1]` future interval is achieved with
-chain index at most `4R+2a+5` and centred norm at most
-`π(4R+2a+5)/(2T)`. Scaling is `Θ(R)`.
+That theorem would supply:
 
-**Disposition: answered.**
+- a new local-Hamiltonian mechanism;
+- an exponential many-body law;
+- a striking noncommutation of weak-coupling and infinite-observation limits;
+- exact consequences for every spectral-form-factor moment;
+- a lay summary with genuine physical content.
 
-### 8. “Black-hole claim is hype.”
+It is not available to the manuscript until the local maximal-rank generator,
+collision-floor classification, and finite-horizon operational bridge are
+fully proven in the required formal corpus. A model-specific or experimental
+finite-resolution prediction would still strengthen the Nature case.
 
-Paper makes no black-hole realization, information-recovery, entropy, gravity,
-or astrophysical prediction claim. It proves an inference no-go for any
-normalized thermal spectral law and explains relevance to literature where
-continuum semiclassical spectra, discrete microscopic spectra, and
-non-unique nonperturbative completions are central. It distinguishes fixed
-spectrum from annealed or quenched ensemble averages.
+## Rejection triggers even after upgrade
 
-**Disposition: answered.**
+- presenting exact rational rank as directly measurable at finite time;
+- reversing the long-time and thermodynamic limits;
+- claiming genericity for translation-invariant or prescribed couplings;
+- calling temporal-hull dimension a new spacetime dimension;
+- inferring black-hole information recovery or a cosmological time arrow;
+- treating known independent-phase or exponential spectral-form-factor laws
+  as new rather than claiming only the local premise discharge.
 
-### 9. “Recent recurrence literature already solves this.”
+## Final verdict
 
-Recent work bounds recurrence times for specified finite systems or classifies
-exact finite Floquet recurrence. Manuscript asks inverse identifiability:
-whether complete local or perturbative descriptions determine recurrence
-phase before recurrence time can be asked. Related-results section now states
-this difference and cites 2023–2026 work.
-
-**Disposition: answered.**
-
-### 10. “No experiment or device connection.”
-
-No empirical discovery is claimed. Finite theorem gives explicit isospectral
-nearest-neighbour family, uniform pre-target tolerance, full target interval,
-linear dimension and norm ceilings, and dimension-free causal upper bound.
-This is a concrete simulator benchmark. Spectral-form-factor measurement on
-superconducting processors establishes platform relevance; paper does not
-claim implementation already occurred.
-
-**Disposition: answered for theoretical Article; an editor may still prefer
-experimental validation as a matter of journal mix.**
-
-## Questions a specialist referee should still verify
-
-These are checks, not open scientific questions left by manuscript:
-
-1. Nevanlinna barycenter construction is atomless under stated
-   normalized positive/bounded-kernel conditions.
-2. Explicit positive geometric and lognormal spectra have exact common moment
-   sequence `exp(v n²/2)`.
-3. Equality of moment functional gives both Gram and energy-multiplication
-   tensors and positive Jacobi lower coefficients.
-4. Collision convolution identity includes `n=0` convention.
-5. Local walk agreement order is exactly `2R+3`, and energy-origin gauge shift
-   leaves return probability invariant.
-6. Linear achievability constant and chain-index convention match theorem
-   statement.
-
-Internal proof audit maps each item to dependency-closed theorem.
-
-## What would still force rejection
-
-- Reintroducing claims about full local observable algebra instead of
-  polynomial Krylov data.
-- Calling atomless completion ordinary self-adjoint boundary condition on same
-  polynomial `ℓ²`.
-- Claiming black-hole information paradox is solved.
-- Claiming all spectral-form-factor plateaux are nonperturbative.
-- Omitting recent recurrence-time literature.
-- Removing compact determinacy or matching `Θ(R)` cost, which would reduce
-  paper to negative examples.
-- Treating proof formalization as scientific novelty.
-
-None appears in current manuscript.
-
-## Final hostile verdict
-
-Technical and conceptual claims survive strongest obvious attacks. Manuscript
-answers its stated question without a conjectural remainder: local and
-perturbative data fail in precisely identified regimes; compact exact data and
-global collision data succeed; finite ambiguity has matching linear cost.
-Headline is understandable outside specialty and implications are
-interdisciplinary. I would recommend publication, while expecting editor to
-seek one moment-problem referee, one quantum-dynamics referee, and one
-quantum-gravity/chaos referee.
+Paper is a credible mathematical-physics theorem paper, not yet a Nature
+paper. Current double quotient should remain the kinematic foundation. The
+scientific center must become a new physical mechanism with a nontrivial
+many-body consequence; otherwise Nature’s hostile editor can reject it as
+beautiful, correct, and insufficiently consequential.

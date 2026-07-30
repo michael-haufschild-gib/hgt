@@ -39,10 +39,10 @@ theorem centralProlateTransition_isHilbertSchmidt
   have hPR : IsSoninTimeBandIdeal (P * R) := by
     simpa [P, R, A, B, centralPhysicalForbidden, centralFourierForbidden,
       indicatorCutoff_eq_physicalForbidden_starProjection,
-      fourierCutoff_eq_fourierForbidden_starProjection] using
+      fourierCutoff_eq_fourierForbidden_starProjection] using!
       IsSoninTimeBandIdeal.indicatorFourier a a ha ha
   have hPRhs : IsHilbertSchmidt (P * R) := hPR.isHilbertSchmidt
-  simpa only [P, R, A, B, crossBoundary, mul_assoc] using
+  simpa only [P, R, A, B, crossBoundary, mul_assoc] using!
     hPRhs.comp_left (1 - R)
 
 /-- **Central Shannon-number value.**  The operator trace of the actual central prolate
@@ -67,7 +67,7 @@ theorem re_opTrace_centralProlateBlock_eq_four_mul_sq
   have hRP : IsHilbertSchmidt (R * P) := by
     simpa only [P, R, A, B, centralPhysicalForbidden, centralFourierForbidden,
       indicatorCutoff_eq_physicalForbidden_starProjection,
-      fourierCutoff_eq_fourierForbidden_starProjection] using
+      fourierCutoff_eq_fourierForbidden_starProjection] using!
       isHilbertSchmidt_indicatorCutoff_fourierCutoff_central a a ha
   have hAdj : ContinuousLinearMap.adjoint (R * P) = P * R := by
     change ContinuousLinearMap.adjoint (R ∘L P) = P ∘L R
@@ -167,7 +167,7 @@ theorem hsNormSq_commutator_eq_two_mul_crossBoundary_of_selfAdjoint_hilbertSchmi
     (hX : IsHilbertSchmidt X) :
     hsNormSq (ccmCommutator X e) = 2 * hsNormSq (crossBoundary e X) := by
   have hL : IsHilbertSchmidt (crossBoundary e X) := by
-    simpa only [crossBoundary, mul_assoc] using (hX.comp_right e).comp_left (1 - e)
+    simpa only [crossBoundary, mul_assoc] using! (hX.comp_right e).comp_left (1 - e)
   exact hsNormSq_commutator_eq_two_mul_crossBoundary_of_selfAdjoint
     e X he heAdj hXAdj hL
 

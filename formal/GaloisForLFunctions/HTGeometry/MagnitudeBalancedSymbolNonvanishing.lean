@@ -39,7 +39,7 @@ theorem balancedJetSymbol_ne_zero {n N D : ℕ}
           ∑ t : Fin (jetMonomialDegree n m.1), flatOrder (fun j => m.1 j.succ) t :=
         Equiv.sum_comp (balancedJetCast m).symm (flatOrder (fun j => m.1 j.succ))
       _ = jetMonomialOrder n m.1 := by
-        simpa [jetMonomialOrder] using (flatOrder_sum (fun j => m.1 j.succ))
+        simpa [jetMonomialOrder] using! (flatOrder_sum (fun j => m.1 j.succ))
   have hOle : ∀ m ∈ G.attach, ∑ t, ν m t ≤ ∑ t, ν m0 t := by
     intro m hm
     rw [hsum m, hsum m0]

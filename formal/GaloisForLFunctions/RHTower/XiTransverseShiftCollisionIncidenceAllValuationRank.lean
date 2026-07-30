@@ -217,7 +217,7 @@ theorem xiTransverseShiftPairDifferenceUpperEndCarrier_allValuation_differential
   have hx :=
     xiTransverseShiftUpperEndCarrier_allValuation_pointedCollisionSupport_differentialIndependent
       shift
-  simpa [xiTransverseShiftPairDifferenceUpperEndCarrier] using
+  simpa [xiTransverseShiftPairDifferenceUpperEndCarrier] using!
     (differentialFamilyMatroid_gradedPairwiseDifferences_eq_pointedCollisionIncidenceMatroid
       (C := analyticScalarValuationLayerDifferentialField) shift 0 tail head
       xiTransverseShiftUpperEndCarrier hx0 hx)

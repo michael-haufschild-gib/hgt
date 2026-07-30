@@ -38,8 +38,10 @@ theorem additiveTranslationUnitary_neg_ae
     (h : ℝ) (f : Lp ℂ 2 (volume : Measure ℝ)) :
     (fun t : ℝ => MellinL2.additiveTranslationUnitary (-h) f t) =ᵐ[volume]
       fun t : ℝ => f (t - h) := by
+  change (fun t : ℝ => MellinL2.additiveTranslationUnitary (-h) f t) =ᵐ[volume]
+    fun t : ℝ => f (t + -h)
   simpa [MellinL2.additiveTranslationUnitary,
-    MellinL2.lpCompMeasurePreservingEquiv, Function.comp_apply,
+    MellinL2.lpCompMeasurePreservingEquiv, Function.comp_def,
     MellinL2.realTranslationEquiv] using
     (Lp.coeFn_compMeasurePreserving f
       (MellinL2.realTranslation_measurePreserving (-h)))

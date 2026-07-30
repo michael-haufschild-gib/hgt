@@ -44,7 +44,7 @@ theorem fourier_bilin_convolution_eq_integral_L1
       refine integral_integral_swap ?_
       have hconv : Integrable
           (fun p : ℝ × ℝ => B (f₁ (p.1 - p.2)) (f₂ p.2)) := by
-        simpa only [flip_apply] using
+        simpa only [flip_apply] using!
           hf₂.convolution_integrand B.flip hf₁
       have hchar : AEStronglyMeasurable
           (fun p : ℝ × ℝ => ((𝐞 (-inner ℝ p.1 ξ) : Circle) : ℂ)) := by
@@ -53,7 +53,7 @@ theorem fourier_bilin_convolution_eq_integral_L1
           ‖((𝐞 (-inner ℝ p.1 ξ) : Circle) : ℂ)‖ ≤ 1 := by
         filter_upwards with p
         simp
-      simpa only [Pi.smul_apply, Circle.smul_def] using
+      simpa only [Pi.smul_apply, Circle.smul_def] using!
         hconv.bdd_smul 1 hchar hbound
     _ = ∫ y, ∫ x, 𝐞 (-inner ℝ (y + x) ξ) • B (f₁ x) (f₂ y) := by
       congr
@@ -135,14 +135,14 @@ theorem integrable_rectangularTwoEdgeProfile_mul_exp
 
 theorem integrable_rectangularEulerTilt (L a : ℝ) :
     Integrable (rectangularEulerTilt L a) := by
-  simpa only [rectangularEulerTilt, one_mul, ofReal_one] using
+  simpa only [rectangularEulerTilt, one_mul, ofReal_one] using!
     integrable_rectangularTwoEdgeProfile_mul_exp L a 1
 
 theorem integrable_rectangularEulerReflectedTilt (L a : ℝ) :
     Integrable (rectangularEulerReflectedTilt L a) := by
   have h := (integrable_rectangularTwoEdgeProfile_mul_exp L a (-1)).comp_neg
   simpa only [rectangularEulerReflectedTilt, Function.comp_apply, ofReal_neg,
-    ofReal_one, neg_mul, one_mul, neg_neg] using h
+    ofReal_one, neg_mul, one_mul, neg_neg] using! h
 
 theorem fourier_rectangularEulerTilt
     {L : ℝ} (hL : 0 ≤ L) (a ξ : ℝ) :

@@ -68,13 +68,12 @@ theorem conj_completedHurwitzZetaEven₀ (a : UnitAddCircle) (s : ℂ) :
 theorem conj_completedHurwitzZetaOdd (a : UnitAddCircle) (s : ℂ) :
     completedHurwitzZetaOdd a ((starRingEnd ℂ) s)
       = (starRingEnd ℂ) (completedHurwitzZetaOdd a s) := by
-  have hreal : ∀ t : ℝ, (starRingEnd ℂ) ((hurwitzOddFEPair a).toWeakFEPair.f t)
-      = (hurwitzOddFEPair a).toWeakFEPair.f t := fun t => Complex.conj_ofReal (oddKernel a t)
+  have hreal : ∀ t : ℝ, (starRingEnd ℂ) ((hurwitzOddFEPair a).f t)
+      = (hurwitzOddFEPair a).f t := fun t => Complex.conj_ofReal (oddKernel a t)
   have hm := mellin_conj_of_conj_invariant hreal ((s + 1) / 2)
   have hcs : (starRingEnd ℂ) ((s + 1) / 2) = ((starRingEnd ℂ) s + 1) / 2 := by simp [conj_two]
   rw [hcs] at hm
-  show mellin ((hurwitzOddFEPair a).toWeakFEPair.f) (((starRingEnd ℂ) s + 1) / 2) / 2
-      = (starRingEnd ℂ) (mellin ((hurwitzOddFEPair a).toWeakFEPair.f) ((s + 1) / 2) / 2)
+  simp only [completedHurwitzZetaOdd, (isStrong_hurwitzOddFEPair a).Λ_eq]
   rw [hm]
   simp [conj_two]
 

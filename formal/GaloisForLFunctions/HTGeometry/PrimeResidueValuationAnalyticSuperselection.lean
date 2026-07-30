@@ -249,13 +249,30 @@ theorem cofiniteTailDenseOn_primeResidueAnalyticJetCoefficient_tailIndependent
   have hf : ∀ z, Continuous (f z) := fun _ => continuous_of_discreteTopology
   have hlinear : LinearIndependent ℂ
       (fun z => fun v : FullValueSubtype (∀ i, A i) => f z v.1) := by
-    simpa [f, anchoredRestrictedProductBasis, fullValueFunctionLinearEquiv] using
-      (anchoredRestrictedProductBasis A).linearIndependent
-  have h := cofiniteTailDenseOn_primePowerShiftedRotatedJet_tailIndependent
-    0 y Set.univ hy f hf hlinear (fun _ : Unit => 0)
-      (fun _ _ _ => Subsingleton.elim _ _) m
-  simpa [primeResidueAnalyticJetCoefficient, f, primeResidueInteractionCoefficient,
-    primeShiftFactor] using h
+    have hfamily :
+        (fun z => fun v : FullValueSubtype (∀ i, A i) => f z v.1) =
+          (anchoredRestrictedProductBasis A :
+            (∀ i, A i) → FullValueSubtype (∀ i, A i) → ℂ) := by
+      funext z v
+      rfl
+    rw [hfamily]
+    exact (anchoredRestrictedProductBasis A).linearIndependent
+  let raw : ((∀ i, A i) × (Unit × Fin (m + 1))) → Nat.Primes → ℂ :=
+    fun jak p =>
+      f jak.1 (y p) *
+        primeShiftFactor ((fun _ : Unit => (0 : ℂ)) jak.2.1) p *
+          ((((0 + 1 : ℕ) : ℂ) * rotatedPrimeLogClock p) ^ (jak.2.2 : ℕ))
+  have hraw : TailCoefficientIndependent raw := by
+    exact cofiniteTailDenseOn_primePowerShiftedRotatedJet_tailIndependent
+      0 y Set.univ hy f hf hlinear (fun _ : Unit => 0)
+        (fun _ _ _ => Subsingleton.elim _ _) m
+  have hfamily :
+      raw = primeResidueAnalyticJetCoefficient (m := m) A y := by
+    funext jak p
+    simp [raw, f, primeShiftFactor, primeResidueAnalyticJetCoefficient,
+      primeResidueInteractionCoefficient]
+  rw [← hfamily]
+  exact hraw
 
 /-- Every finite valuation--residue--derivative rectangle is algebraically independent as an
 actual upper-end meromorphic germ family. -/
@@ -302,7 +319,7 @@ theorem cofiniteTailDenseOn_primeResidueValuationUpperEndCarrier_jets_algebraicI
     exact pow_ne_zero _ (by exact_mod_cast Nat.succ_ne_zero q.1.1.1)
   have hscaled :=
     AlgebraicIndependent.const_mul_coordinates hsub scale hscale
-  convert hscaled using 1
+  convert! hscaled using 1
   funext q
   change GaloisForLFunctions.differentialJet q.2
       (finiteAbscissaLSeriesToUpperEndMero
@@ -476,7 +493,9 @@ theorem cofiniteTailDenseOn_primeResidueValuationUpperEndNextLayer_relativeHT
       Nat.card (PrimeResidueValuationNextLayerIndex n A) =
         ∏ i, Fintype.card (A i) := by
   constructor
-  · simpa only [primeResidueValuationUpperEndDepthPrefixField] using
+  · simpa only [primeResidueValuationUpperEndDepthPrefixField,
+      primeResidueValuationUpperEndDepthPrefixCarrier,
+      primeResidueValuationUpperEndNextLayerCarrier] using!
       (cofiniteTailDenseOn_primeResidueValuationUpperEndGridSector_relativeHT
         A y hy (fun x : PrimeResidueValuationInteractionGridIndex (n + 2) A =>
           x.1.1 = n + 1))
@@ -497,12 +516,17 @@ theorem cofiniteTailDenseOn_primeResidueValuationUpperEndNextLayer_not_mem_prefi
     (cofiniteTailDenseOn_primeResidueValuationUpperEndNextLayer_relativeHT
       n A y hy).1
   unfold GaloisForLFunctions.DifferentialIndependent at hrel
+  have hout :
+      primeResidueValuationUpperEndNextLayerCarrier (n := n) A y out =
+        primeResidueValuationUpperEndCarrier A y (n + 1) z := by
+    rfl
   have htrans : Transcendental (primeResidueValuationUpperEndDepthPrefixField n A y)
-      (primeResidueValuationUpperEndNextLayerCarrier (n := n) A y out) := by
+      (primeResidueValuationUpperEndCarrier A y (n + 1) z) := by
+    rw [← hout]
     simpa using hrel.transcendental (out, 0)
   intro hmem
   apply htrans
-  simpa using isAlgebraic_algebraMap
+  exact isAlgebraic_algebraMap
     (R := primeResidueValuationUpperEndDepthPrefixField n A y)
     (A := upperEndMeroField)
     (⟨primeResidueValuationUpperEndCarrier A y (n + 1) z, hmem⟩ :

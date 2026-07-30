@@ -70,7 +70,7 @@ theorem compact_regularNevanlinnaTargetFamily_has_uniform_finiteProbe
           a q (fun i => (z i).1) nt (hat z hz) (hqdt z hz) mu
             (fun i => hη.trans_le (z i).2)).domRestrict S) := by
       simpa [frozen, S,
-        projectiveNevanlinnaJetLinftyContinuousControl_toLinearMap] using
+        projectiveNevanlinnaJetLinftyContinuousControl_toLinearMap] using!
         (constrainedProjectiveNevanlinnaJet_linftyControl_surjective
           a q zf (fun i => (z i).1) hqf_inj (hqt_inj z hz)
           (hcross z hz) hupperf (fun i => hη.trans_le (z i).2)

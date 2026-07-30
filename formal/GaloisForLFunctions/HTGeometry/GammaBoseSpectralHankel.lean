@@ -215,7 +215,7 @@ theorem signedNormalizedDigammaJet_not_linearRecurrence
     E hsolution horder
   exact (ne_of_gt
     (det_signedNormalizedDigammaJet_hankel_pos ha (E.order + 1))) (by
-      simpa [algebraicHankelMatrix, momentHankelMatrix] using hzero)
+      simpa [algebraicHankelMatrix, momentHankelMatrix] using! hzero)
 
 end
 

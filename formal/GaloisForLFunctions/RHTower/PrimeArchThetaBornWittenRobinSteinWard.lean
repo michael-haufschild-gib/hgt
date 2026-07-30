@@ -131,8 +131,11 @@ theorem thetaCuspBornWitten_monomial_anomalousSteinWard
         x ^ m * 1 * thetaCuspBornWittenAmplitude n x ^ 2) 0 :=
       ((continuousAt_id.pow m).mul continuousAt_const).mul
         ((hasDerivAt_thetaCuspBornWittenAmplitude hn (by norm_num)).continuousAt.pow 2)
-    have ht := hcont.tendsto.mono_left
-      (inf_le_left : nhdsWithin (0 : ℝ) (Ioi 0) ≤ nhds 0)
+    have ht : Tendsto (fun x : ℝ =>
+        x ^ m * 1 * thetaCuspBornWittenAmplitude n x ^ 2)
+        (nhdsWithin 0 (Ioi 0))
+        (nhds (0 ^ m * 1 * thetaCuspBornWittenAmplitude n 0 ^ 2)) :=
+      hcont.tendsto.mono_left nhdsWithin_le_nhds
     cases m with
     | zero => simpa using ht
     | succ m => simpa using ht

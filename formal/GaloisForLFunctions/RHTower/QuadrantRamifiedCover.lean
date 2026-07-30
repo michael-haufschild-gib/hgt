@@ -51,9 +51,8 @@ theorem analyticOrderAt_ram_pullback {f : ℂ → ℂ} {ρ : ℂ} {n : ℕ} (hn 
   have hgc : AnalyticAt ℂ (fun w : ℂ => ρ + w ^ n) 0 := analyticAt_const.add (analyticAt_id.pow _)
   have hh_an : AnalyticAt ℂ (fun w : ℂ => h (ρ + w ^ n)) 0 := by
     have := AnalyticAt.comp (g := h) (f := fun w : ℂ => ρ + w ^ n)
-      (by rw [show (fun w : ℂ => ρ + w ^ n) 0 = ρ by simp [zero_pow hn.ne']]
-          exact hhan ρ (Set.mem_univ ρ)) hgc
-    simpa [Function.comp] using this
+      (by simpa [zero_pow hn.ne'] using hhan ρ (Set.mem_univ ρ)) hgc
+    simpa [Function.comp] using! this
   have hh0' : (fun w : ℂ => h (ρ + w ^ n)) 0 ≠ 0 := by
     show h (ρ + (0 : ℂ) ^ n) ≠ 0; rw [zero_pow hn.ne', add_zero]; exact hh0
   have hh_ord : analyticOrderAt (fun w : ℂ => h (ρ + w ^ n)) 0 = 0 :=

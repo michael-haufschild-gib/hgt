@@ -333,7 +333,7 @@ theorem exists_neg_xiPolynomialGaussianHeatTraceReal_of_spectralSq_im_pos
     have hKt : K < Real.exp t := lt_trans htK hexpt
     have hprod : Real.exp R * C < Real.exp t * ((S₁.card : ℝ) * ‖c‖) := by
       rw [hKdef] at hKt
-      rw [div_lt_iff₀ (by positivity)] at hKt
+      rw [div_lt_iff₀ (mul_pos hcardpos hcn)] at hKt
       linarith
     have hfac : Real.exp t * Real.exp (-(t * R)) = Real.exp (-(t * z₀.re)) := by
       rw [← Real.exp_add]

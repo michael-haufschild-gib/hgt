@@ -156,7 +156,7 @@ theorem tendsto_scale_gammaSimpleZeroCovariantJet (branch k : ℕ) :
       (𝓝[≠] 0)
       (𝓝 (iteratedDeriv (k + 1) (gammaPoleSimpleZeroSection branch) 0 /
         deriv (gammaPoleSimpleZeroSection branch) 0)) := by
-    convert (hDan.continuousAt.neg.mul hUan.continuousAt).tendsto.mono_left
+    convert! (hDan.continuousAt.neg.mul hUan.continuousAt).tendsto.mono_left
       inf_le_left using 1
     apply congrArg nhds
     change iteratedDeriv (k + 1) (gammaPoleSimpleZeroSection branch) 0 /
@@ -386,7 +386,7 @@ theorem neg_nat_le_meromorphicOrderAt_of_tendsto_pow_mul
     rw [meromorphicOrderAt_mul hpow hf] at hpos
     have hpowOrder : meromorphicOrderAt (fun z : ℂ => (z - p) ^ k) p =
         ((k : ℤ) : WithTop ℤ) := by
-      simpa only using
+      simpa only using!
         (meromorphicOrderAt_pow_id_sub_const (𝕜 := ℂ) (x := p) (n := k))
     rw [hpowOrder] at hpos
     by_cases htop : meromorphicOrderAt f p = ⊤

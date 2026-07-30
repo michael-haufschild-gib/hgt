@@ -425,8 +425,9 @@ theorem directionalPairReturnRecord_secondDeriv_zero
       (Real.hasDerivAt_cos (s * a)).comp s
         ((hasDerivAt_id s).mul_const a)
     have hsum := (hasDerivAt_const s (1 : ℝ)).add hcos
-    convert (hsum.div_const 2).deriv using 1
-    all_goals ring
+    exact (((hsum.div_const 2).congr_deriv (by ring)).congr_of_eventuallyEq (by
+      filter_upwards with x
+      simp only [Pi.add_apply, Function.comp_apply, id_eq])).deriv
   rw [hfirst]
   have hsin :=
     (Real.hasDerivAt_sin (0 * a)).comp 0

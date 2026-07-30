@@ -48,7 +48,7 @@ theorem gamma_vertical_ratio_conj_norm_rpow_tendsto {a δ : ℝ}
           Real.log ‖Complex.Gamma (((a + δ : ℝ) : ℂ) - (τ : ℂ) * Complex.I)‖) +
           δ * Real.log τ))
       atTop (nhds 1) := by
-    simpa using (Real.continuous_exp.continuousAt.tendsto.comp hmain)
+    simpa using! (Real.continuous_exp.continuousAt.tendsto.comp hmain)
   refine hexp.congr' ?_
   filter_upwards [eventually_gt_atTop (0 : ℝ)] with τ hτ
   rw [Real.exp_add, Real.rpow_def_of_pos hτ]

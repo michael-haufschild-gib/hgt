@@ -127,7 +127,7 @@ theorem mixedSpikeState_inner_re
     (b c : ℝ) (ψ x : E) :
     (inner ℂ x (mixedSpikeState b c ψ x)).re =
       b * ‖x‖ ^ 2 + c * ‖inner ℂ ψ x‖ ^ 2 := by
-  simp only [mixedSpikeState, add_apply, smul_apply, one_apply,
+  simp only [mixedSpikeState, add_apply, smul_apply,
     InnerProductSpace.rankOne_apply, inner_add_right, inner_smul_right,
     ]
   rw [← inner_conj_symm ψ x]
@@ -137,7 +137,8 @@ theorem mixedSpikeState_inner_re
     zero_mul, sub_zero, neg_mul, mul_neg, neg_neg]
   have hxx : (inner ℂ x x).re = ‖x‖ ^ 2 :=
     inner_self_eq_norm_sq (𝕜 := ℂ) x
-  rw [hxx]
+  have hone : (1 : E →L[ℂ] E) x = x := rfl
+  rw [hone, hxx]
   ring
 
 /--
@@ -253,9 +254,8 @@ theorem mixedSpikeSymmetricLogDerivative_equation
           ((b : ℂ) • 1 + (c : ℂ) • P)) =
         (2 * I * (c : ℂ) / ((2 * b + c : ℝ) : ℂ)) •
           (((2 * b : ℝ) : ℂ) • K + (c : ℂ) • (P * K + K * P)) := by
-    ext x
-    simp only [mul_apply, smul_apply, one_apply, add_apply,
-      map_smul, map_add]
+    simp only [mul_add, add_mul, smul_mul_assoc, mul_smul_comm,
+      one_mul, mul_one]
     module
   rw [hanti, hPK]
   have hsum :

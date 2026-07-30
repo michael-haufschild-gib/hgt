@@ -221,7 +221,7 @@ theorem tendsto_heatAperturePrimePowerRecoveredValue
     rw [← Complex.cpow_add _ _ hN0]
     norm_num
   rw [hlimit] at h
-  simpa [heatAperturePrimePowerRecoveredValue] using h
+  simpa [heatAperturePrimePowerRecoveredValue] using! h
 
 /-- At `N = p^(r+1)`, the recovered value is exactly `1/(r+1)`. -/
 theorem tendsto_heatAperturePrimePowerRecoveredValue_prime_pow

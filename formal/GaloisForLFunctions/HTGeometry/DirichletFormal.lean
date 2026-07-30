@@ -54,7 +54,7 @@ theorem ord_pos' {f : DirFormal} (hf : f ≠ 0) : 0 < ord f := by
 @[simp] theorem lead_zero' : lead (0 : DirFormal) = 0 := rfl
 
 /-- Below the product of the two least indices every convolution term vanishes. -/
-theorem mul_coeff_eq_zero_of_lt {f g : DirFormal} (hf : f ≠ 0) (hg : g ≠ 0)
+theorem mul_coeff_eq_zero_of_lt {f g : DirFormal} (_hf : f ≠ 0) (_hg : g ≠ 0)
     {n : ℕ} (hn : n < ord f * ord g) : (f * g) n = 0 := by
   classical
   rw [ArithmeticFunction.mul_apply]
@@ -293,7 +293,8 @@ noncomputable def dirichletLead : DirichletLead DirFormal where
   lead_eq_of_ord_lt := by
     intro f g hf hg hord hlt
     have h0 : (f - g) (ord f) = 0 := coeff_eq_zero_of_lt hlt
-    have : f (ord f) - g (ord f) = 0 := by simpa using h0
+    have : f (ord f) - g (ord f) = 0 := by
+      simpa only [sub_apply'] using! h0
     rw [lead, lead, ← hord]
     linear_combination this
   sigma_emb := by

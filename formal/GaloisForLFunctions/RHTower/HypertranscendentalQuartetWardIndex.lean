@@ -236,19 +236,21 @@ theorem centeredQuartetGauge_hasDerivAt_zero (a b : ℝ) :
     funext s
     simp only [centeredQuartetGauge]
   rw [hfun]
-  convert
+  have hderiv :=
     (((((hasDerivAt_id (𝕜 := ℂ) 0).sub_const (1 / 2)).sub_const (a : ℂ)).pow 2).add_const
         ((b ^ 2 : ℝ) : ℂ)).mul
       (((((hasDerivAt_id (𝕜 := ℂ) 0).sub_const (1 / 2)).add_const (a : ℂ)).pow 2).add_const
         ((b ^ 2 : ℝ) : ℂ))
-    using 1
-  · funext x
+  have hderiv' := hderiv.congr_deriv
+    (g' := (-2 : ℂ) * (1 / 4 + (b : ℂ) ^ 2 - (a : ℂ) ^ 2)) (by
+      simp only [Pi.pow_apply, id_eq]
+      push_cast
+      ring)
+  exact hderiv'.congr_of_eventuallyEq (by
+    filter_upwards with x
     simp only [Pi.mul_apply, Pi.pow_apply, id_eq]
     push_cast
-    ring
-  · simp only [Pi.pow_apply, id_eq]
-    push_cast
-    ring
+    ring)
 
 theorem centeredQuartetGauge_logDeriv_zero (a b : ℝ) :
     logDeriv (centeredQuartetGauge a b) 0 =

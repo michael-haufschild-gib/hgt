@@ -248,7 +248,7 @@ def inverseDilatedEvenShell
   have hbase := evenShellVector_orthonormal c d hc hcd
   have hmap := hbase.comp_linearIsometryEquiv
     (dilationUnitary r⁻¹ (inv_pos.mpr (zero_lt_one.trans hr)))
-  simpa [inverseDilatedEvenShell, Function.comp_def] using hmap
+  simpa [inverseDilatedEvenShell, Function.comp_def] using! hmap
 
  theorem centralSoninProjection_inverseDilatedEvenShell_tendsto
     (a c d r : ℝ) (ha : 0 < a) (hc : 0 < c) (hcd : c < d) (hr : 1 < r)
@@ -298,7 +298,7 @@ def inverseDilatedEvenShell
     congr 2
     module
   have hfirst : Tendsto (fun n => B (D (e n - g n))) atTop (𝓝 0) := by
-    simpa only [map_zero] using
+    simpa only [map_zero] using!
       (B ∘L D).continuous.continuousAt.tendsto.comp hge
   have hsum : Tendsto (fun n => B (D (e n - g n)) + (w n - Q (w n)))
       atTop (𝓝 0) := by
@@ -325,16 +325,29 @@ def inverseDilatedEvenShell
   have hvec : Tendsto (fun n =>
       (crossBoundary Q D : SoninL2 →L[ℂ] SoninL2) (e n) - v n)
       atTop (𝓝 0) := by
-    convert hsum using 1
-    funext n
-    simp only [crossBoundary, mul_apply_eq_comp,
-      one_apply_eq_self, _root_.sub_apply]
-    rw [hQe n]
-    have hDe : D (e n) = D (e n - g n) + D (g n) := by
-      rw [map_sub, sub_add_cancel]
-    rw [hDe, hDg n, map_add, map_add, hQv n]
-    dsimp [B]
-    module
+    apply hsum.congr'
+    exact Filter.Eventually.of_forall fun n => by
+      have hDe : D (e n) = D (e n - g n) + D (g n) := by
+        rw [map_sub, sub_add_cancel]
+      have hBv : B (v n) = v n := by
+        dsimp [B]
+        simp only [one_apply_eq_self, _root_.sub_apply, hQv n, sub_zero]
+      have hBw : B (w n) = w n - Q (w n) := by
+        dsimp [B]
+        simp only [one_apply_eq_self, _root_.sub_apply]
+      calc
+        B (D (e n - g n)) + (w n - Q (w n)) =
+            B (D (e n - g n)) + B (w n) := by rw [hBw]
+        _ = B (D (e n - g n)) + B (v n + w n) - v n := by
+          rw [map_add, hBv]
+          abel
+        _ = B (D (e n - g n)) + B (D (g n)) - v n := by rw [hDg n]
+        _ = B (D (e n - g n) + D (g n)) - v n := by rw [map_add]
+        _ = B (D (e n)) - v n := by rw [hDe]
+        _ = B (D (Q (e n))) - v n := by rw [hQe n]
+        _ = (crossBoundary Q D : SoninL2 →L[ℂ] SoninL2) (e n) - v n := by
+          dsimp [B]
+          simp only [crossBoundary, mul_apply_eq_comp]
   exact tendsto_zero_iff_norm_tendsto_zero.mp hvec
 
 end RHTower
@@ -446,7 +459,7 @@ theorem IsCompactOperator.norm_apply_tendsto_zero_of_bounded_weakly_null
     have hnot := not_isCompactOperator_of_weakly_tendsto_zero_of_image_norm_ge
       K (f ∘ φ) R b (fun n => by simpa [Function.comp_apply] using hf_bound (φ n))
       (fun ℓ => by
-        simpa [Function.comp_apply] using (hf_weak ℓ).comp hφ.tendsto_atTop)
+        simpa [Function.comp_apply] using! (hf_weak ℓ).comp hφ.tendsto_atTop)
       hb hφlower
     exact hnot hK
 
@@ -593,7 +606,7 @@ def inverseDilatedEvenShellEven
   have hbase := evenShellVectorEven_orthonormal c d hc hcd
   have hmap := hbase.comp_linearIsometryEquiv
     (evenDilationUnitary r⁻¹ (inv_pos.mpr (zero_lt_one.trans hr)))
-  simpa [inverseDilatedEvenShellEven, Function.comp_def] using hmap
+  simpa [inverseDilatedEvenShellEven, Function.comp_def] using! hmap
 
  theorem evenCentralSoninProjection_inverseDilatedEvenShell_tendsto
     (a c d r : ℝ) (ha : 0 < a) (hc : 0 < c) (hcd : c < d) (hr : 1 < r)

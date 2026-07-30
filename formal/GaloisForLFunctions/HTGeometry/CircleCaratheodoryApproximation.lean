@@ -52,10 +52,10 @@ theorem continuous_circleCaratheodoryTransform_probability {w : ℂ} (hw : ‖w�
   have hkernel := continuous_circleCaratheodoryKernel hw
   let fre : C(Circle, ℝ) :=
     ⟨fun z => (circleCaratheodoryKernel w z).re, by
-      simpa only [Function.comp_apply] using Complex.continuous_re.comp hkernel⟩
+      simpa only [Function.comp_apply] using! Complex.continuous_re.comp hkernel⟩
   let fim : C(Circle, ℝ) :=
     ⟨fun z => (circleCaratheodoryKernel w z).im, by
-      simpa only [Function.comp_apply] using Complex.continuous_im.comp hkernel⟩
+      simpa only [Function.comp_apply] using! Complex.continuous_im.comp hkernel⟩
   have hre := ProbabilityMeasure.continuous_integral_boundedContinuousFunction
     (BoundedContinuousFunction.mkOfCompact fre)
   have him := ProbabilityMeasure.continuous_integral_boundedContinuousFunction

@@ -147,8 +147,8 @@ theorem integral_mul_mellin_smoothWeight_shift {N H : ℝ} (hN : 0 < N) (hH : 0 
     (integrable_mul_mellin_smoothWeight_line hN hH hc hFdiff.continuousOn hK hA hFbd hcd le_rfl)
     ?_ ?_
   · have h := tendsto_horizontal_mul_mellin_smoothWeight hN hH hc hcd hK hA hFbd (-1) (Or.inr rfl)
-    simpa only [neg_one_mul] using h
+    simpa only [neg_one_mul] using! h
   · have h := tendsto_horizontal_mul_mellin_smoothWeight hN hH hc hcd hK hA hFbd 1 (Or.inl rfl)
-    simpa only [one_mul] using h
+    simpa only [one_mul] using! h
 
 end GaloisForLFunctions.HTGeometry

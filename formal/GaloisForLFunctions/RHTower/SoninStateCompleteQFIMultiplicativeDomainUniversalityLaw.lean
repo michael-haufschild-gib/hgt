@@ -100,7 +100,7 @@ theorem
           simpa only [ψ, map_smul] using hcompψ
         have hcompy : (1 - P) (X y) = 0 :=
           (smul_eq_zero.mp hscaled).resolve_left hc
-        simpa only [y] using hcompy
+        simpa only [y] using! hcompy
     have hPcomm : P * X = X * P :=
       (HTGeometry.orthogonalProjection_noDeparture_iff_commutes_selfAdjoint
         P X hP2 hPadj hX).mp hdepart

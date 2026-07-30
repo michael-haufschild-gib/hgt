@@ -66,7 +66,7 @@ theorem norm_lower_bound_of_anchor {f : ℂ → ℂ} {c : ℂ} {R r M m : ℝ}
     have h1 : DifferentiableAt ℂ (fun w : ℂ => L (c + w)) w := by
       have h2 := ((hLan (c + w) (hmem w hw)).differentiableAt).comp w
         ((differentiableAt_const c).add differentiableAt_id)
-      simpa [Function.comp] using h2
+      simpa [Function.comp] using! h2
     exact (h1.sub_const (L c)).differentiableWithinAt
   have hgmaps : Set.MapsTo g (ball 0 R) {z | z.re ≤ A} := by
     intro w hw

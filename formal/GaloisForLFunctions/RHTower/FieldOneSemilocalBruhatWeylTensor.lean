@@ -75,7 +75,7 @@ theorem fieldOneSemilocalArchimedeanWeylMultiplier_add
         2 * Real.pi * h + 2 * Real.pi * k := by
     ring
   simpa only [fieldOneSemilocalArchimedeanWeylMultiplier,
-    hscaled] using congrArg ContinuousLinearMap.toLinearMap
+    hscaled] using! congrArg ContinuousLinearMap.toLinearMap
       (HTGeometry.FieldOneCore.fieldOneArchimedeanWeylMultiplier_add
         (2 * Real.pi * h) (2 * Real.pi * k))
 
@@ -84,7 +84,7 @@ theorem fieldOneSemilocalArchimedeanWeylMultiplier_zero :
     fieldOneSemilocalArchimedeanWeylMultiplier 0 =
       LinearMap.id := by
   simpa only [fieldOneSemilocalArchimedeanWeylMultiplier,
-    mul_zero] using congrArg ContinuousLinearMap.toLinearMap
+    mul_zero] using! congrArg ContinuousLinearMap.toLinearMap
       HTGeometry.FieldOneCore.fieldOneArchimedeanWeylMultiplier_zero
 
 /-- Addition in the semilocal parameter group becomes composition on the
@@ -104,7 +104,7 @@ theorem fieldOneSemilocalBruhatWeylMultiplier_add
   have hfinite :=
     DFunLike.congr_fun
       (fieldOneFiniteAdeleStandardWeylMultiplier_add a.2 b.2) g
-  simpa only [Prod.fst_add, Prod.snd_add] using
+  simpa only [Prod.fst_add, Prod.snd_add] using!
     congrArg₂ (fun u v => u ⊗ₜ[ℂ] v) harch hfinite
 
 @[simp]

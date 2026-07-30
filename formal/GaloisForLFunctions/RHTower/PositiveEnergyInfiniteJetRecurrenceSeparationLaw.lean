@@ -89,7 +89,7 @@ theorem integerLogGaussianPartition_pos {v : NNReal} (hv : 0 < v) :
 
 theorem summable_normalizedIntegerLogGaussianWeight {v : NNReal} (hv : 0 < v) :
     Summable (normalizedIntegerLogGaussianWeight v) := by
-  simpa [normalizedIntegerLogGaussianWeight, div_eq_mul_inv] using
+  simpa [normalizedIntegerLogGaussianWeight, div_eq_mul_inv] using!
     (summable_integerLogGaussianWeight hv).mul_right
       (integerLogGaussianPartition v)⁻¹
 
@@ -100,8 +100,8 @@ theorem hasSum_normalizedIntegerLogGaussianWeight_one {v : NNReal} (hv : 0 < v) 
     (summable_integerLogGaussianWeight hv).hasSum.mul_right
       (integerLogGaussianPartition v)⁻¹
   convert hscaled using 1
-  rw [← integerLogGaussianPartition]
-  exact (mul_inv_cancel₀ hZne).symm
+  all_goals try rfl
+  simpa only [integerLogGaussianPartition] using (mul_inv_cancel₀ hZne).symm
 
 theorem normalizedIntegerLogGaussianWeight_nonneg {v : NNReal} (hv : 0 < v) (k : ℤ) :
     0 ≤ normalizedIntegerLogGaussianWeight v k := by
@@ -392,10 +392,10 @@ theorem positiveLognormalSpectrum_Iic_zero
 /-- The lognormal spectrum is atomless at every positive variance. -/
 theorem noAtoms_positiveLognormalSpectrum
     {v : NNReal} (hv : 0 < v) :
-    NoAtoms (positiveLognormalSpectrum v : Measure ℝ) := by
+    NullSingletonClass (positiveLognormalSpectrum v : Measure ℝ) := by
   have hvne : v ≠ 0 := ne_of_gt hv
-  letI : NoAtoms (ProbabilityTheory.gaussianReal 0 v) :=
-    ProbabilityTheory.noAtoms_gaussianReal hvne
+  letI : NullSingletonClass (ProbabilityTheory.gaussianReal 0 v) :=
+    ProbabilityTheory.nullSingletonClass_gaussianReal hvne
   constructor
   intro x
   change
@@ -430,9 +430,9 @@ theorem positiveGeometricSpectrum_atom_pos
 
 theorem not_noAtoms_positiveGeometricSpectrum
     {v : NNReal} (hv : 0 < v) :
-    ¬NoAtoms (positiveGeometricSpectrum v hv : Measure ℝ) := by
+    ¬NullSingletonClass (positiveGeometricSpectrum v hv : Measure ℝ) := by
   intro hno
-  letI : NoAtoms (positiveGeometricSpectrum v hv : Measure ℝ) :=
+  letI : NullSingletonClass (positiveGeometricSpectrum v hv : Measure ℝ) :=
     hno
   exact
     (ne_of_gt (positiveGeometricSpectrum_atom_pos hv))
@@ -574,7 +574,7 @@ theorem positiveEnergyInfiniteJetRecurrenceSeparation
       (measure_ne_top _ _)
   have hcontinuousNoAtoms :=
     noAtoms_positiveLognormalSpectrum hv
-  letI : NoAtoms (positiveLognormalSpectrum v : Measure ℝ) :=
+  letI : NullSingletonClass (positiveLognormalSpectrum v : Measure ℝ) :=
     hcontinuousNoAtoms
   exact {
     allEnergyMomentsEqual := fun n =>

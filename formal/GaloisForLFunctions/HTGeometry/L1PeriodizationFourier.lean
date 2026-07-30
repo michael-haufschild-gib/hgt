@@ -280,12 +280,13 @@ theorem integrableOn_Ioc_realL1Periodization
   have hc := integrableOn_Ioc_l1Periodization
     (hf.ofReal : Integrable fun x => (f x : ℂ))
   have hr := hc.re
-  rw [show
+  have hfun :
       (fun x => Complex.re (l1Periodization (fun y => (f y : ℂ)) x)) =
-        realL1Periodization f by
+        realL1Periodization f := by
     funext x
     rw [← ofReal_realL1Periodization]
-    exact Complex.ofReal_re _] at hr
+    exact Complex.ofReal_re _
+  rw [← hfun]
   exact hr
 
 /-- Real L1 periodizations are interval-integrable on every unit cell. -/

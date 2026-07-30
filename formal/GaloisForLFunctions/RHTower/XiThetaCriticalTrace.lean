@@ -108,7 +108,8 @@ theorem integrable_logMellinPullback_of_mellinConvergent
 
 theorem xiThetaLogSource_integrable : Integrable xiThetaLogSource := by
   have hm : MellinConvergent modifiedEvenKernel (((1 : ℝ) / 4 : ℝ) : ℂ) :=
-    ((hurwitzEvenFEPair 0).toStrongFEPair.hasMellin (((1 : ℝ) / 4 : ℝ) : ℂ)).1
+    ((hurwitzEvenFEPair 0).isStrongFEPair_toStrongFEPair.hasMellin
+      (((1 : ℝ) / 4 : ℝ) : ℂ)).1
   have hi := integrable_logMellinPullback_of_mellinConvergent
     modifiedEvenKernel ((1 : ℝ) / 4) hm
   apply hi.congr

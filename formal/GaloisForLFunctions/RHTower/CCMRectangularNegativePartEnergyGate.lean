@@ -143,7 +143,12 @@ theorem differentiableOn_xiRectangularNegativePartLandauContinuation_landauBall
   have hcorrDiff : DifferentiableAt ℂ
       (LSeries (fun n => ((xiRectangularRightNegativePart L n : ℝ) : ℂ))) s :=
     (LSeries_hasDerivAt habslt).differentiableAt
-  simpa only [xiRectangularNegativePartLandauContinuation] using
+  change DifferentiableWithinAt ℂ
+    (fun z : ℂ => 2 * xiRectangularShiftedZetaSeries L z +
+      LSeries
+        (fun n => ((xiRectangularRightNegativePart L n : ℝ) : ℂ)) z)
+    (Metric.ball (((1 + delta : ℝ) : ℂ)) r) s
+  exact
     ((hshift s hs).const_mul (2 : ℂ)).add hcorrDiff.differentiableWithinAt
 
 /-- The rectangular Landau correction only needs to converge at one abscissa strictly to the

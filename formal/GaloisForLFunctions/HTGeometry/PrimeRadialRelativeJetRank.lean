@@ -35,7 +35,7 @@ theorem trdeg_intermediateFieldAdjoin_range_eq_cardinalMk_of_algebraicIndependen
     ⟨x i, IntermediateField.subset_adjoin F (Set.range x) (Set.mem_range_self i)⟩
   have hxL : AlgebraicIndependent F xL := by
     apply AlgebraicIndependent.of_comp (L.val : L →ₐ[F] E)
-    simpa only [Function.comp_apply, L, xL] using hx
+    simpa only [Function.comp_apply, L, xL] using! hx
   have htop : IntermediateField.adjoin F (Set.range xL) = ⊤ := by
     let J := IntermediateField.adjoin F (Set.range xL)
     apply top_unique
@@ -51,11 +51,11 @@ theorem trdeg_intermediateFieldAdjoin_range_eq_cardinalMk_of_algebraicIndependen
       change algebraMap F L c ∈ J
       exact IntermediateField.algebraMap_mem J c
     · intro a b ha hb haJ hbJ
-      simpa only [p, Subtype.coe_eta] using J.add_mem haJ hbJ
+      simpa only [p, Subtype.coe_eta] using! J.add_mem haJ hbJ
     · intro a ha haJ
-      simpa only [p, Subtype.coe_eta] using J.inv_mem haJ
+      simpa only [p, Subtype.coe_eta] using! J.inv_mem haJ
     · intro a b ha hb haJ hbJ
-      simpa only [p, Subtype.coe_eta] using J.mul_mem haJ hbJ
+      simpa only [p, Subtype.coe_eta] using! J.mul_mem haJ hbJ
   have halg : Algebra.IsAlgebraic (Algebra.adjoin F (Set.range xL)) L := by
     apply (IntermediateField.isAlgebraic_adjoin_iff_top
       (F := F) (s := Set.range xL) (S := L)).mp
@@ -280,7 +280,7 @@ theorem algebraicIndependent_primeRadialPrefixJetFamily
     (W : Submodule ℂ PrimeRadialProfile) (N r : Nat) :
     AlgebraicIndependent (primeRadialTailDifferentialField W N)
       (primeRadialPrefixJetFamily W N r) := by
-  simpa only [primeRadialPrefixJetFamily] using
+  simpa only [primeRadialPrefixJetFamily] using!
     algebraicIndependent_primeRadialPrefixChannelJetRectangle W N r
 
 /-- **Intrinsic finite-jet rank law.**  The ordinary transcendence degree of the generated

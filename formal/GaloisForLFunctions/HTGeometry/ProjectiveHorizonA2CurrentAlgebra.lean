@@ -21,6 +21,8 @@ namespace GaloisForLFunctions
 
 noncomputable section
 
+attribute [local instance 100] LieRing.ofAssociativeRing
+
 variable (K : Type*) [Field K]
 
 /-! ## The missing `A₂` modes -/

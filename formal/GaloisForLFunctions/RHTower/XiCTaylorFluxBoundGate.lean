@@ -41,7 +41,7 @@ theorem xiCTaylorApprox_logDeriv_tendsto {z : ℂ} (hz : XiC z ≠ 0) :
   have hd :=
     xiCTaylorApprox_deriv_tendstoLocallyUniformly.tendstoLocallyUniformlyOn.tendsto_at
       (Set.mem_univ z)
-  simpa only [Function.comp_apply, logDeriv_apply] using hd.div hv hz
+  simpa only [Function.comp_apply, logDeriv_apply] using! hd.div hv hz
 
 /-- Original-strip to centered Xi coordinate. -/
 def xiCTaylorCenteredPoint (s : ℂ) : ℂ := (s - 1 / 2) * (-I)

@@ -330,9 +330,18 @@ theorem gaussianOffsetPatternWindow_source
           ((gaussianOffsetPatternWindow a
             (gaussianOffsetFace_totalCount ha) R j : ℕ) : ℤ)) =
         gaussianOffsetSource a := by
-    simpa only [centeredIndexEquiv, gaussianOffsetSource] using
-      (sum_gaussianOffsetPatternWindow_eq_finsuppSum
-        (ha := ha) (f := fun z k => z * (k : ℤ)) (by simp))
+    have hsum := sum_gaussianOffsetPatternWindow_eq_finsuppSum
+      (ha := ha) (f := fun z k => z * (k : ℤ)) (by simp)
+    change
+      (∑ j : Fin (2 * R + 1),
+        (centeredIndexEquiv R j).1 *
+          ((gaussianOffsetPatternWindow a
+            (gaussianOffsetFace_totalCount ha) R j : ℕ) : ℤ)) =
+        gaussianOffsetSource a at hsum
+    convert hsum using 1
+    apply Finset.sum_congr rfl
+    intro j _hj
+    rfl
   have hsource := (mem_gaussianOffsetFace.mp ha).2.2
   rw [polynomialPatternSourceSum]
   push_cast
@@ -363,9 +372,18 @@ theorem gaussianOffsetPatternWindow_energy
         ((gaussianOffsetPatternWindow a
           (gaussianOffsetFace_totalCount ha) R j : ℕ) : ℤ)) =
       gaussianOffsetPatternEnergy a := by
-  simpa only [centeredIndexEquiv, gaussianOffsetPatternEnergy] using
-    (sum_gaussianOffsetPatternWindow_eq_finsuppSum
-      (ha := ha) (f := fun z k => z ^ 2 * (k : ℤ)) (by simp))
+  have hsum := sum_gaussianOffsetPatternWindow_eq_finsuppSum
+    (ha := ha) (f := fun z k => z ^ 2 * (k : ℤ)) (by simp)
+  change
+    (∑ j : Fin (2 * R + 1),
+      (centeredIndexEquiv R j).1 ^ 2 *
+        ((gaussianOffsetPatternWindow a
+          (gaussianOffsetFace_totalCount ha) R j : ℕ) : ℤ)) =
+      gaussianOffsetPatternEnergy a at hsum
+  convert hsum using 1
+  apply Finset.sum_congr rfl
+  intro j _hj
+  rfl
 
 /-- Signed offset corresponding to a nonnegative coordinate in a window centered at `K`. -/
 def centeredNatOffset (K r : ℕ) : ℤ :=
@@ -849,7 +867,7 @@ theorem atomValuation_gaussianOffsetShiftedKey
           ((j : ℤ) ^ 2 * ((p j : ℕ) : ℤ)) := by
     rw [polynomialPatternMoment]
     push_cast
-    simpa only [mul_comm]
+    simp only [mul_comm]
   have hmoment1Int :
       (polynomialPatternSourceSum p : ℤ) =
         ∑ j : Fin (2 * R + 1),
@@ -951,7 +969,7 @@ theorem natDegree_polynomialPatternAssignmentPoly_le
         _ = flatOrder (fun j => m.1 j.succ) t := by
           rw [descPochhammer_natDegree, Polynomial.natDegree_X_add_C, mul_one]
     _ = jetMonomialOrder n m.1 := by
-      simpa [jetMonomialOrder] using
+      simpa [jetMonomialOrder] using!
         (flatOrder_sum (fun j => m.1 j.succ))
 
 /-- A common order bound for the active jet group is also a degree bound for its grouped pattern
@@ -1016,7 +1034,8 @@ theorem complexPolynomial_eq_of_eventually_eval_nat_eq
   apply Polynomial.eq_of_infinite_eval_eq P Q
   apply (Set.infinite_range_of_injective horbit).mono
   rintro z ⟨k, rfl⟩
-  simpa only [orbit] using hN (N + k) (by omega)
+  change P.eval ((N + k : ℕ) : ℂ) = Q.eval ((N + k : ℕ) : ℂ)
+  exact hN (N + k) (by omega)
 
 /-- The grouped ADE weight of one global offset pattern has the same value in every larger
 centered display window, once the translation is large enough for both polynomial presentations.
@@ -1673,7 +1692,7 @@ theorem gaussianInteriorActiveAtoms_eq_filter_image_face
       have hcountZ : (ν.sum (fun _ k => k) : ℤ) = (D : ℤ) := by
         exact_mod_cast hcount
       rw [gaussianOffsetSource_patternOfKey, hcountZ]
-      simpa only [gaussianAtomSignedSource, mul_comm] using hsourceKey
+      simpa only [gaussianAtomSignedSource, Nat.cast_mul, mul_comm] using hsourceKey
     have ha : a ∈ gaussianOffsetFace D S R :=
       gaussianOffsetPatternOfKey_mem_face hcount hsource hRq hwindow
     let p := gaussianOffsetPatternWindow a (gaussianOffsetFace_totalCount ha) R
@@ -2049,7 +2068,9 @@ theorem centeredPolynomialPatternRadius_gaussianOffsetPatternWindow_le
     exact habsInt
   have hnat : (centeredIndexEquiv R j).1.natAbs ≤ R := by
     exact_mod_cast hnatCast
-  simpa only [centeredIndexEquiv] using hnat
+  change (((j : ℕ) : ℤ) - (R : ℤ)).natAbs ≤ R
+  change (((j : ℕ) : ℤ) - (R : ℤ)).natAbs ≤ R at hnat
+  exact hnat
 
 theorem atomPatternAssignment_mem_polynomialPatternSupport
     {M D : ℕ} {p : Fin M → Fin (D + 1)}
@@ -3371,7 +3392,7 @@ theorem norm_normalized_gaussianExteriorAtom_le
     have hcountZ : (ν.sum (fun _ k => k) : ℤ) = (D : ℤ) := by
       exact_mod_cast hcountν
     rw [gaussianOffsetSource_patternOfKey, hcountZ]
-    simpa only [gaussianAtomSignedSource, mul_comm] using hsourceν
+    simpa only [gaussianAtomSignedSource, Nat.cast_mul, mul_comm] using hsourceν
   have hsuppa : a.support ⊆ gaussianOffsetInterval A := by
     simpa only [A, z] using integerTupleOfFinsupp_support_subset_box a D hcounta
   have haA : a ∈ gaussianOffsetFace D S A := by
@@ -3638,7 +3659,8 @@ theorem sum_norm_normalized_gaussianExteriorActiveAtoms_le_tail
             Real.exp (-B *
               ((gaussianOffsetPatternEnergy
                 (gaussianOffsetPatternOfKey q ν.1) : ℝ) - Q₀)) := by
-      simpa only [E] using (Finset.sum_attach
+      rw [Finset.univ_eq_attach]
+      exact (Finset.sum_attach
         (gaussianExteriorActiveAtoms n D τ Q S q R)
         (fun ν => ‖aevalWeight n (D * q + τ) Q ν / (q : ℂ) ^ H‖ *
           Real.exp (-B *
@@ -3695,8 +3717,15 @@ theorem tendsto_gaussianFaceWeight
   have hpoly := (tendsto_complexPolynomial_eval_nat_div_pow
     (polynomialPatternWeightPoly n D K τ Q p) hdegree).comp
       (tendsto_add_atTop_nat K)
-  simpa only [gaussianFaceWeight, gaussianFaceWeightLimit, E] using
-    hpoly.mul_const E
+  change Tendsto
+    (fun t : ℕ =>
+      (polynomialPatternWeightPoly n D K τ Q p).eval ((t + K : ℕ) : ℂ) /
+          ((t + K : ℕ) : ℂ) ^ H * E)
+    atTop
+    (𝓝 ((polynomialPatternWeightPoly n D K τ Q p).coeff H * E))
+  convert hpoly.mul_const E using 1
+  funext t
+  rfl
 
 /-- A least-source finite-window term is exactly its term in the normalized ADE identity. -/
 theorem gaussianFaceWeight_mul_phase_eq_normalizedADETerm
@@ -3821,7 +3850,7 @@ theorem norm_gaussianNormalizedADETerm_of_leastSource
     have hcountZ : (ν.sum (fun _ k => k) : ℤ) = (D : ℤ) := by
       exact_mod_cast hcount
     rw [gaussianOffsetSource_patternOfKey, hcountZ]
-    simpa only [gaussianAtomSignedSource, mul_comm] using hsource
+    simpa only [gaussianAtomSignedSource, Nat.cast_mul, mul_comm] using hsource
   have hvaluation := atomValuation_gaussianOffsetPatternOfKey B hcount hsourcePattern
   rw [gaussianNormalizedADETerm, norm_mul, norm_mul, Complex.norm_real,
     Real.norm_eq_abs, abs_of_pos (Real.exp_pos _),
@@ -3994,7 +4023,11 @@ theorem exists_eventually_norm_gaussianFaceCluster_le_tail
   have hgapShift : Tendsto (fun t : ℕ =>
       ‖gaussianGapResidual F n D τ Q B S H R₀ a₀ (t + R)‖)
       atTop (𝓝 0) := by
-    simpa only [norm_zero] using hgap.norm.comp (tendsto_add_atTop_nat R)
+    have hshift := hgap.norm.comp (tendsto_add_atTop_nat R)
+    simp only [norm_zero] at hshift
+    convert hshift using 1
+    funext t
+    rfl
   have hgapSmall : ∀ᶠ t : ℕ in atTop,
       ‖gaussianGapResidual F n D τ Q B S H R₀ a₀ (t + R)‖ ≤ Tail :=
     (hgapShift.eventually_lt_const hTail).mono fun _ ht => ht.le
@@ -4338,8 +4371,9 @@ theorem norm_face_weight_le_of_torsionLanguageUniversal
         w (q k) p * ∏ r : Fin M, u (q k + (r : ℕ)) ^ (p r : ℕ))
         atTop (𝓝 (ell p * ∏ r : Fin M, s r ^ (p r : ℕ))) := by
     intro p hp
-    simpa only [hqword] using
-      (((hw p hp).comp hqtop).mul tendsto_const_nhds)
+    have hwq := (hw p hp).comp hqtop
+    change Tendsto (fun k => w (q k) p) atTop (𝓝 (ell p)) at hwq
+    simpa only [hqword] using hwq.mul tendsto_const_nhds
   have hsum := tendsto_finsetSum F (fun p hp => hterm p hp)
   exact le_of_tendsto hsum.norm (hqtop.eventually hface)
 
@@ -4520,7 +4554,7 @@ theorem false_of_integerADE_gaussian_torsionLanguageUniversal
               (gaussianOffsetPatternWindow a₀
                 (gaussianOffsetFace_totalCount haR) K) : ℝ) - Q₀)) : ℂ) = ell
     rw [hcoeffStable, henergy]
-    simp only [Q₀, sub_self, mul_zero, neg_zero, Real.exp_zero,
+    simp only [Q₀, sub_self, mul_zero, Real.exp_zero,
       Complex.ofReal_one, mul_one]
   exact false_of_torsionLanguageUniversal_gaussianTailLock
     (Fin D) (D := D) (J := J) (B := B / 2) (by linarith)
@@ -4613,7 +4647,8 @@ theorem analyticOnNhd_gaussianPhaseFunction
   have hr : p.radius = ⊤ := gaussianPhaseSeries_radius_eq_top hB hu
   have hp : HasFPowerSeriesOnBall p.sum p 0 p.radius :=
     p.hasFPowerSeriesOnBall (by rw [hr]; simp)
-  simpa [gaussianPhaseFunction, p, hr] using hp.analyticOnNhd
+  change AnalyticOnNhd ℂ p.sum Set.univ
+  simpa [hr] using hp.analyticOnNhd
 
 theorem contDiff_gaussianPhaseFunction
     {B : ℝ} (hB : 0 < B) {u : ℕ → ℂ} (hu : ∀ n, ‖u n‖ = 1) :

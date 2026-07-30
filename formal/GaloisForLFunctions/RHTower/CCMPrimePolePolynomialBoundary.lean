@@ -69,8 +69,7 @@ theorem tendsto_operatorPolynomialEval_apply_sub_boundary_smul
       let b : ℂ := operatorPolynomialBoundary B
       have hleft : Tendsto (fun n => EA (EB (f n) - b • f n)) atTop (𝓝 0) := by
         have hcont := EA.continuous.continuousAt.tendsto.comp hB
-        convert hcont using 1
-        simp [EA]
+        simpa only [Function.comp_apply, map_zero] using! hcont
       have hright : Tendsto (fun n => b • (EA (f n) - a • f n)) atTop (𝓝 0) := by
         simpa [EA, a, b] using hA.const_smul b
       have hsum := hleft.add hright
@@ -233,11 +232,11 @@ def ccmPrimePolePolynomialCompactIdeal
     Ideal (CCMPrimePoleOperatorPolynomial d) where
   carrier := {Q | IsCompactOperator (ccmPrimePoleOperatorPolynomialEval L hL Q)}
   zero_mem' := by
-    simpa using (isCompactOperator_zero : IsCompactOperator
+    simpa using! (isCompactOperator_zero : IsCompactOperator
       (0 : CCMPrimePoleHilbert →L[ℂ] CCMPrimePoleHilbert))
   add_mem' := by
     intro Q R hQ hR
-    simpa using hQ.add hR
+    simpa using! hQ.add hR
   smul_mem' := by
     intro Q R hR
     change IsCompactOperator

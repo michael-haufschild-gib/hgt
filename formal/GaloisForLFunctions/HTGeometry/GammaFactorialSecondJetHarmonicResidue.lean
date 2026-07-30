@@ -87,7 +87,8 @@ theorem iteratedDeriv_one_digamma_neg_nat_add_of_ne_int (z : ℂ)
     iteratedDeriv 1 Complex.digamma (-(n : ℂ) + z) =
       iteratedDeriv 1 Complex.digamma (1 + z) + z⁻¹ ^ 2 +
         shiftedHarmonicSquareSum n z := by
-  simpa using iteratedDeriv_digamma_neg_nat_add_of_ne_int 1 z hz n
+  simpa [shiftedHarmonicSquareSum, shiftedHarmonicPowerSum] using!
+    iteratedDeriv_digamma_neg_nat_add_of_ne_int 1 z hz n
 
 theorem norm_shiftedInverse_le {z : ℂ} (hz : ‖z‖ ≤ 1 / 2) (j : ℕ) :
     ‖(((j + 1 : ℕ) : ℂ) - z)⁻¹‖ ≤ 2 / ((j + 1 : ℕ) : ℝ) := by

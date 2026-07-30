@@ -88,7 +88,7 @@ private theorem asymptoticScale_coefficients_zero_on_finset
           intro i hi
           by_cases hii₀ : i = i₀
           · subst i
-            simpa [hw.1] using (hg i₀).tendsto v |>.comp hxv
+            simpa [hw.1] using! (hg i₀).tendsto v |>.comp hxv
           · have hratio := tendsto_clusterPullbackFilter_of_cofinite x v
                 (hdominates i hi hii₀)
             have hcoeff := (hg i).tendsto v |>.comp hxv
@@ -138,7 +138,6 @@ private theorem asymptoticScale_coefficients_zero_on_finset
           apply Finset.sum_eq_zero
           intro j _
           rw [hc₀ j, zero_mul]
-        dsimp only at hsplit
         rw [hi₀zero, zero_mul, zero_add] at hsplit
         exact hsplit.trans hp
       have hrest := ih (s.erase i₀) (Finset.erase_ssubset hi₀) c hrelationErase

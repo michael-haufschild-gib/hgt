@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.MobiusMertensFourthConvolutionCriterion
+import Mathlib.Data.Finset.NatAntidiagonal
 
 /-!
 # Möbius even-additive convolution order law
@@ -21,19 +22,21 @@ noncomputable section
 /-- Additive Cauchy-convolution powers, with the zeroth power equal to the delta sequence. -/
 def additiveConvolutionPower (a : ℕ → ℂ) : ℕ → ℕ → ℂ
   | 0, N => if N = 0 then 1 else 0
-  | k + 1, N => ∑ ab ∈ Finset.antidiagonal N,
+  | k + 1, N =>
+    ∑ ab ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) N,
       additiveConvolutionPower a k ab.1 * a ab.2
 
 private theorem sum_antidiagonal_additiveConvolutionPower_weighted_eq
     (a : ℕ → ℂ) (q : ℂ) (k N : ℕ) :
-    (∑ ab ∈ Finset.antidiagonal N,
+    (∑ ab ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) N,
       (additiveConvolutionPower a k ab.1 * q ^ ab.1) *
         (a ab.2 * q ^ ab.2)) =
       additiveConvolutionPower a (k + 1) N * q ^ N := by
   rw [additiveConvolutionPower, Finset.sum_mul]
   apply Finset.sum_congr rfl
   intro ab hab
-  have hsum : ab.1 + ab.2 = N := Finset.mem_antidiagonal.mp hab
+  have hsum : ab.1 + ab.2 = N :=
+    Finset.HasAntidiagonal.mem_antidiagonal.mp hab
   rw [← hsum, pow_add]
   ring_nf
 
@@ -94,7 +97,8 @@ theorem additiveConvolutionPower_one (a : ℕ → ℂ) (N : ℕ) :
   rw [Finset.sum_eq_single (0, N)]
   · simp [additiveConvolutionPower]
   · intro ab hab habNe
-    have habSum : ab.1 + ab.2 = N := Finset.mem_antidiagonal.mp hab
+    have habSum : ab.1 + ab.2 = N :=
+      Finset.HasAntidiagonal.mem_antidiagonal.mp hab
     have haNe : ab.1 ≠ 0 := by
       intro ha
       apply habNe
@@ -120,16 +124,17 @@ theorem norm_additiveConvolutionPower_succ_le
       rw [show j + 1 + 1 = j + 2 by omega]
       rw [additiveConvolutionPower]
       calc
-        ‖∑ ab ∈ Finset.antidiagonal N,
+        ‖∑ ab ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) N,
             additiveConvolutionPower a (j + 1) ab.1 * a ab.2‖ ≤
-            ∑ ab ∈ Finset.antidiagonal N,
+            ∑ ab ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) N,
               ‖additiveConvolutionPower a (j + 1) ab.1 * a ab.2‖ :=
           norm_sum_le _ _
-        _ ≤ ∑ _ab ∈ Finset.antidiagonal N,
+        _ ≤ ∑ _ab ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) N,
             A ^ (j + 2) * X ^ (((j + 2 : ℕ) : ℝ) * α + j) := by
           apply Finset.sum_le_sum
           intro ab hab
-          have habSum : ab.1 + ab.2 = N := Finset.mem_antidiagonal.mp hab
+          have habSum : ab.1 + ab.2 = N :=
+            Finset.HasAntidiagonal.mem_antidiagonal.mp hab
           have haN : ab.1 ≤ N := by omega
           have hbN : ab.2 ≤ N := by omega
           have haBase : (ab.1 : ℝ) + 1 ≤ X := by
@@ -413,8 +418,8 @@ theorem norm_pow_even_mobiusDiscreteLaplaceTransform_le_of_evenConvolutionSubpow
   have hmoment := summable_natSucc_rpow_exp_neg_and_tsum_le hr hx
   have hb : Summable (fun N : ℕ => b N * Real.exp (-((N : ℝ) * x))) := by
     have hmul := hmoment.1.mul_left C
-    convert hmul using 1
-    funext N
+    apply hmul.congr
+    intro N
     dsimp [b]
     ring_nf
   have heven :=
@@ -644,12 +649,13 @@ theorem mobiusMertensEvenConvolution_one (N : ℕ) :
 
 theorem mobiusMertensEvenConvolution_two (N : ℕ) :
     mobiusMertensEvenConvolution 2 N = mobiusMertensFourthConvolution N := by
-  change (∑ ab ∈ Finset.antidiagonal N,
-    additiveConvolutionPower mobiusAdditiveTriangleSecondCesaro 1 ab.1 *
-      mobiusAdditiveTriangleSecondCesaro ab.2) =
-    ∑ ab ∈ Finset.antidiagonal N,
-      mobiusAdditiveTriangleSecondCesaro ab.1 *
-        mobiusAdditiveTriangleSecondCesaro ab.2
+  change
+    (∑ ab ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) N,
+      additiveConvolutionPower mobiusAdditiveTriangleSecondCesaro 1 ab.1 *
+        mobiusAdditiveTriangleSecondCesaro ab.2) =
+      ∑ ab ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) N,
+        mobiusAdditiveTriangleSecondCesaro ab.1 *
+          mobiusAdditiveTriangleSecondCesaro ab.2
   apply Finset.sum_congr rfl
   intro ab _hab
   rw [additiveConvolutionPower_one]

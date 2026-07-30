@@ -243,7 +243,7 @@ theorem fieldOneFiniteStageIdeleClassToClassSpace_continuous
     Continuous (fieldOneFiniteStageIdeleClassToClassSpace S) := by
   rw [(QuotientGroup.isQuotientMap_mk
     (fieldOneFiniteStageSUnitImage S)).continuous_iff]
-  simpa [Function.comp_def] using
+  simpa [Function.comp_def] using!
     continuous_quotient_mk'.comp
       (fieldOneFiniteStageIdeleVal_continuous S)
 

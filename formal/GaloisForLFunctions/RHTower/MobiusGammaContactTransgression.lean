@@ -40,22 +40,33 @@ theorem hasDerivAt_completedMobiusGammaContactDerivative (n : ℕ) (z : ℂ) :
     HasDerivAt (completedMobiusGammaContactDerivative n)
       (completedMobiusGammaContactDerivative (n + 1) z) z := by
   have hlin : HasDerivAt (fun w : ℂ => ((n + 1 : ℕ) : ℂ) - w) (-1) z := by
-    convert (hasDerivAt_const z (((n + 1 : ℕ) : ℂ))).sub (hasDerivAt_id z) using 1 <;>
-      simp
+    have hraw :=
+      (hasDerivAt_const z (((n + 1 : ℕ) : ℂ))).sub (hasDerivAt_id z)
+    apply (hraw.congr_deriv (by simp)).congr_of_eventuallyEq
+    filter_upwards with w
+    rfl
   have hneg : HasDerivAt (fun w : ℂ => -w) (-1) z := by
-    convert (hasDerivAt_id z).neg using 1 <;> simp
+    simpa only [Pi.neg_apply, id_eq] using! (hasDerivAt_id z).neg
   have hexp : HasDerivAt (fun w : ℂ => Complex.exp (-w))
       (-Complex.exp (-z)) z := by
-    convert (Complex.hasDerivAt_exp (-z)).comp z hneg using 1 <;> simp
+    have hraw := (Complex.hasDerivAt_exp (-z)).comp z hneg
+    apply (hraw.congr_deriv (by ring)).congr_of_eventuallyEq
+    filter_upwards with w
+    rfl
   have hprod := hlin.mul hexp
   have h := hprod.const_mul (2 * (-1 : ℂ) ^ n)
-  convert h using 1
-  · funext w
-    simp only [completedMobiusGammaContactDerivative, Pi.mul_apply]
-    ring
-  · simp only [completedMobiusGammaContactDerivative]
+  have hderiv :
+      2 * (-1 : ℂ) ^ n *
+          (-1 * Complex.exp (-z) +
+            (((n + 1 : ℕ) : ℂ) - z) * -Complex.exp (-z)) =
+        completedMobiusGammaContactDerivative (n + 1) z := by
+    simp only [completedMobiusGammaContactDerivative, pow_succ]
     push_cast
     ring
+  apply (h.congr_deriv hderiv).congr_of_eventuallyEq
+  filter_upwards with w
+  simp only [completedMobiusGammaContactDerivative, Pi.mul_apply]
+  ring
 
 /-- The displayed closed formula is the complete derivative tower of the contact germ. -/
 theorem iteratedDeriv_completedMobiusGammaContactGerm (n : ℕ) :
@@ -172,8 +183,17 @@ theorem mobiusGammaContactJet_conormal_hasSum :
     simpa [e] using h
   have hdiff : HasSum (fun n => 2 * (e (n + 1) - e n)) (-2) := by
     have h := (htail.sub hexp).mul_left 2
-    convert h using 1
-    · ring
+    have hvalue :
+        2 * (NormedSpace.exp (-1 : ℂ) - 1 - NormedSpace.exp (-1 : ℂ)) =
+          (-2 : ℂ) := by
+      have hcancel :
+          NormedSpace.exp (-1 : ℂ) - 1 - NormedSpace.exp (-1 : ℂ) =
+            (-1 : ℂ) := by
+        abel
+      rw [hcancel]
+      norm_num
+    rw [← hvalue]
+    exact h
   apply hdiff.congr_fun
   intro n
   simp only [HTGeometry.gammaPeriodicConormalCoefficient, mobiusGammaContactJet, e, one_div]
@@ -203,9 +223,17 @@ theorem shifted_completedMobiusGammaContact_conormal_hasSum (k : ℕ) :
       (fun n => 2 * (-1 : ℂ) ^ k * (((k + 1 : ℕ) : ℂ) * e (n + 1) - e n))
       (2 * (-1 : ℂ) ^ k *
         ((k : ℂ) * NormedSpace.exp (-1 : ℂ) - (k + 1 : ℕ))) := by
-    convert hcomb using 1
-    push_cast
-    ring
+    have hvalue :
+        2 * (-1 : ℂ) ^ k *
+            ((((k + 1 : ℕ) : ℂ) *
+                (NormedSpace.exp (-1 : ℂ) - 1)) -
+              NormedSpace.exp (-1 : ℂ)) =
+          2 * (-1 : ℂ) ^ k *
+            ((k : ℂ) * NormedSpace.exp (-1 : ℂ) - (k + 1 : ℕ)) := by
+      push_cast
+      ring
+    rw [← hvalue]
+    exact hcomb
   apply htarget.congr_fun
   intro n
   rw [iteratedDeriv_completedMobiusGammaContactGerm_zero]

@@ -39,7 +39,7 @@ theorem universalFacetOrbitOrientedSource_differentialIndependent (S J : Finset 
     letI : Algebra (RatFunc ℂ) upperEndMeroField := upperEndRatfuncToMero.toAlgebra
     letI := upperEndMeroFieldDifferential
     DifferentialIndependent (RatFunc ℂ) (universalFacetOrbitOrientedSource S J) := by
-  simpa [universalFacetOrbitOrientedSource] using
+  simpa [universalFacetOrbitOrientedSource] using!
     universalFacetOrbitRationalGaugeSource_differentialIndependent
       (universalOrientedPaletteGauge S J)
 
@@ -52,7 +52,7 @@ theorem universalFacetOrbitOrientedSource_differentialAdjoin_eq (S J : Finset �
       differentialAdjoin (RatFunc ℂ)
         (Set.range (boundedGaugeTranslatedPrimeLogUpperEnd universalFacetOrbitShift
           universalFacetOrbitGauge)) := by
-  simpa [universalFacetOrbitOrientedSource] using
+  simpa [universalFacetOrbitOrientedSource] using!
     universalFacetOrbitRationalGaugeSource_differentialAdjoin_eq
       (universalOrientedPaletteGauge S J)
 

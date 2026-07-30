@@ -48,6 +48,11 @@ theorem tendsto_pow_nhdsGT_zero
   · have h :=
       (continuousAt_id.pow q).tendsto.mono_left
         (show 𝓝[>] (0 : ℝ) ≤ 𝓝 0 from inf_le_left)
+    have hid :
+        (id ^ q : ℝ → ℝ) = fun g : ℝ => g ^ q := by
+      funext g
+      rfl
+    rw [hid] at h
     have hz : (0 : ℝ) ^ q = 0 := zero_pow hq.ne'
     simpa [hz] using h
   · filter_upwards [self_mem_nhdsWithin] with g hg
@@ -64,8 +69,12 @@ theorem tendsto_ofReal_nhdsGT_zero_nhdsNE_zero :
     Tendsto (fun g : ℝ => (g : ℂ)) (𝓝[>] 0) (𝓝[≠] 0) := by
   rw [tendsto_nhdsWithin_iff]
   constructor
-  · simpa using
-      Complex.continuous_ofReal.continuousAt.tendsto.mono_left inf_le_left
+  · have h :=
+      Complex.continuous_ofReal.continuousAt.tendsto.mono_left
+        (show 𝓝[>] (0 : ℝ) ≤ 𝓝 0 from inf_le_left)
+    apply h.congr'
+    filter_upwards [] with g
+    rfl
   · filter_upwards [self_mem_nhdsWithin] with g hg
     change 0 < g at hg
     simpa using (Complex.ofReal_ne_zero.mpr (ne_of_gt hg))
@@ -161,8 +170,17 @@ theorem spectralCharacterReporter_wallCrossing
   · intro r hr
     have harg :=
       (tendsto_scaledDetuning_zero_of_lt_birth hprofile hr).const_mul τ
-    simpa using
-      (Real.continuous_sinc.continuousAt.tendsto.comp harg)
+    have hsinc :=
+      Real.continuous_sinc.continuousAt.tendsto.comp harg
+    have hsinc' :
+        Tendsto
+          (fun g =>
+            Real.sinc (τ * (detuning g / g ^ r)))
+          (𝓝[>] 0) (𝓝 (Real.sinc (τ * 0))) := by
+      apply hsinc.congr'
+      filter_upwards [] with g
+      rfl
+    simpa using hsinc'
   constructor
   · have harg := hprofile.1.const_mul τ
     exact Real.continuous_sinc.continuousAt.tendsto.comp harg

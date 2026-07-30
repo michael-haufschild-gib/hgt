@@ -70,11 +70,11 @@ theorem subsingleton_end_of_finiteBoundaryOneEnded
   let C₁ : G.ComponentCompl K.unop := e₁.val K
   let C₂ : G.ComponentCompl K.unop := e₂.val K
   have hC₁neC₂ : C₁ ≠ C₂ := by
-    simpa only [C₁, C₂] using hne
+    simpa only [C₁, C₂] using! hne
   have hC₁inf : (C₁ : Set V).Infinite := by
-    simpa only [C₁] using SimpleGraph.end_componentCompl_infinite G e₁ K
+    simpa only [C₁] using! SimpleGraph.end_componentCompl_infinite G e₁ K
   have hC₂inf : (C₂ : Set V).Infinite := by
-    simpa only [C₂] using SimpleGraph.end_componentCompl_infinite G e₂ K
+    simpa only [C₂] using! SimpleGraph.end_componentCompl_infinite G e₂ K
   have hdisjoint : Disjoint (C₁ : Set V) (C₂ : Set V) :=
     SimpleGraph.ComponentCompl.pairwise_disjoint hC₁neC₂
   have hC₂sub : (C₂ : Set V) ⊆ (C₁ : Set V)ᶜ := by
@@ -137,7 +137,7 @@ theorem exists_infinite_component_meeting
       exact hxy
     · intro x
       have hxcomp : comp x.1 = C := by
-        simpa only [Set.mem_preimage, Set.mem_singleton_iff] using x.2
+        simpa only [Set.mem_preimage, Set.mem_singleton_iff] using! x.2
       rw [← hxcomp]
       exact G.componentComplMk_mem (hTK x.1.2)
   refine ⟨C, hCinf, ?_⟩
@@ -241,4 +241,3 @@ theorem finiteBoundaryOneEnded_iff_subsingleton_end
   · exact finiteBoundaryOneEnded_of_subsingleton_end G
 
 end GaloisForLFunctions.HTGeometry
-

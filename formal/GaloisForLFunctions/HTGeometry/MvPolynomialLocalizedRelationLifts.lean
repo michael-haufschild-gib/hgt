@@ -80,7 +80,7 @@ theorem exists_originalRelations_of_localized_generators
     calc
       locKer (relationKer i) =
           (denominator i : MvPolynomial σ ℂ) • v i := by
-        simpa only [relationKer, denominator] using (hliftData i).symm
+        simpa only [relationKer, denominator] using! (hliftData i).symm
       _ = algebraMap (MvPolynomial σ ℂ) P
           (denominator i : MvPolynomial σ ℂ) • v i := by
         rw [IsScalarTower.algebraMap_smul]

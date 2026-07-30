@@ -86,9 +86,8 @@ theorem deriv_eulerAffineBoundaryOverlap_eq_neg_mul_current
     (differentiableAt_riemannZeta hs1).hasDerivAt
   have hinner : HasDerivAt (fun v : ℂ => sigma + v * epsilon)
       epsilon u := by
-    convert (hasDerivAt_const (x := u) (c := sigma)).add
-      ((hasDerivAt_id u).mul_const epsilon) using 1
-    all_goals ring
+    simpa using
+      ((hasDerivAt_id u).mul_const epsilon).const_add sigma
   have hcomp :
       HasDerivAt (fun v : ℂ => riemannZeta (sigma + v * epsilon))
         (deriv riemannZeta (sigma + u * epsilon) * epsilon) u :=

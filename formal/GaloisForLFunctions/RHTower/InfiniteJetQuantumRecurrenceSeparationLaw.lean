@@ -61,9 +61,9 @@ theorem not_noAtoms_of_probability_carried_countable
     (mu : Measure ℝ) [IsProbabilityMeasure mu]
     {carrier : Set ℝ} (hcarrier : carrier.Countable)
     (hcarried : mu carrierᶜ = 0) :
-    ¬NoAtoms mu := by
+    ¬NullSingletonClass mu := by
   intro hnoAtoms
-  letI : NoAtoms mu := hnoAtoms
+  letI : NullSingletonClass mu := hnoAtoms
   have hzero : mu carrier = 0 :=
     hcarrier.measure_zero mu
   have hone : mu carrier = 1 := by
@@ -136,7 +136,7 @@ theorem exists_infiniteJetQuantumRecurrenceSeparation
   obtain ⟨eta, heta⟩ :=
     GaloisForLFunctions.HTGeometry.projectiveSingularContinuousProbabilityLaws_dense.nonempty
   have hetaNoAtoms :
-      NoAtoms (eta : Measure (OnePoint ℝ)) :=
+      NullSingletonClass (eta : Measure (OnePoint ℝ)) :=
     heta.1
   let dispersive : ProbabilityMeasure ℝ :=
     boundary.barycenter eta
@@ -150,8 +150,8 @@ theorem exists_infiniteJetQuantumRecurrenceSeparation
         (dispersive : Measure ℝ) :=
     boundary.barycenter_hasHamburgerMoments eta
   have hdispersiveNoAtoms :
-      NoAtoms (dispersive : Measure ℝ) := by
-    letI : NoAtoms (eta : Measure (OnePoint ℝ)) :=
+      NullSingletonClass (dispersive : Measure ℝ) := by
+    letI : NullSingletonClass (eta : Measure (OnePoint ℝ)) :=
       hetaNoAtoms
     exact boundary.barycenter_noAtoms eta
   let recurrentCarrier : Set ℝ :=
@@ -163,7 +163,7 @@ theorem exists_infiniteJetQuantumRecurrenceSeparation
       (recurrent : Measure ℝ) recurrentCarrierᶜ = 0 :=
     HTGeometry.nevLeaf_finite_carried h h0b h0 0
   have hrecurrentNotNoAtoms :
-      ¬NoAtoms (recurrent : Measure ℝ) :=
+      ¬NullSingletonClass (recurrent : Measure ℝ) :=
     not_noAtoms_of_probability_carried_countable
       (recurrent : Measure ℝ)
       hrecurrentCarrierCountable hrecurrentCarried
@@ -189,7 +189,7 @@ theorem exists_infiniteJetQuantumRecurrenceSeparation
     rw [Measure.real]
     exact ENNReal.toReal_pos hrecurrentCollisionNe
       (measure_ne_top _ _)
-  letI : NoAtoms (dispersive : Measure ℝ) :=
+  letI : NullSingletonClass (dispersive : Measure ℝ) :=
     hdispersiveNoAtoms
   refine ⟨{
     recurrentSpectrum := recurrent

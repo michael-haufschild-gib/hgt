@@ -49,18 +49,18 @@ theorem hasDerivAt_mvPolynomial_eval_curve_complex {n : ℕ}
         funext s
         simp
       rw [hf]
-      convert hp.add hq using 1
-      simp only [map_add, add_mul, Finset.sum_add_distrib]
+      convert! hp.add hq using 1 <;>
+        simp only [map_add, add_mul, Finset.sum_add_distrib]
   | mul_X p i hp =>
       have hfun : (fun s => MvPolynomial.eval (fun j => g j s) (p * MvPolynomial.X i)) =
           fun s => MvPolynomial.eval (fun j => g j s) p * g i s := by
         funext s
         simp [MvPolynomial.eval_mul, MvPolynomial.eval_X]
       rw [hfun]
-      convert hp.mul (hg i) using 1
-      simp only [MvPolynomial.pderiv_mul, map_add, MvPolynomial.eval_mul,
-        MvPolynomial.eval_X, MvPolynomial.pderiv_X, Pi.single_apply, mul_ite,
-        mul_one, mul_zero, add_mul, Finset.sum_add_distrib]
+      convert! hp.mul (hg i) using 1 <;>
+        simp only [MvPolynomial.pderiv_mul, map_add, MvPolynomial.eval_mul,
+          MvPolynomial.eval_X, MvPolynomial.pderiv_X, Pi.single_apply, mul_ite,
+          mul_one, mul_zero, add_mul, Finset.sum_add_distrib]
       congr 1
       · rw [Finset.sum_mul]
         exact Finset.sum_congr rfl (fun j _ => by ring)
@@ -80,7 +80,7 @@ theorem surjective_fderiv_mvPolynomial_eval_complex_real_of_pderiv_ne_zero
     intro j
     by_cases hji : j = i
     · subst j
-      simpa [curve] using (hasDerivAt_id (x i))
+      simpa [curve] using! (hasDerivAt_id (x i))
     · simpa [curve, hji] using (hasDerivAt_const (x i) (x j))
   have hcurveValue : curve (x i) = x := by
     funext j
@@ -165,7 +165,7 @@ theorem complexMvPolynomialRegularZeroLocus_isLocalRegularLevelSetOfCodimAtLeast
       (fun y : Fin n → ℂ => MvPolynomial.eval y P)
       (by rw [Complex.finrank_real_complex])
       (contDiff_mvPolynomial_eval_complex_real P) hO hsurj
-  convert hreg using 1
+  simpa [complexMvPolynomialRegularZeroLocus, O] using! hreg
 
 def complexMvPolynomialFamilyEval {n m : ℕ}
     (P : Fin m → MvPolynomial (Fin n) ℂ) (x : Fin n → ℂ) : Fin m → ℂ :=
@@ -202,7 +202,7 @@ theorem complexMvPolynomialFamilyRegularZeroLocus_isLocalRegularLevelSetOfCodimA
   have hreg :=
     isLocalRegularLevelSetOfCodimAtLeast_zeroSet_inter_isOpen_finiteDimensional
       F hcodim hF hO hsurj
-  convert hreg using 1
+  simpa [complexMvPolynomialFamilyRegularZeroLocus, F, O] using! hreg
 
 end
 

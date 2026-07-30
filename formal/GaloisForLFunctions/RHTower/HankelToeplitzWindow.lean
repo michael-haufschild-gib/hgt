@@ -94,7 +94,10 @@ theorem windowRatio_tendsto_one : Tendsto windowRatio atTop (𝓝 1) := by
         simpa using tendsto_const_nhds.add hz
       have hden : Tendsto (fun n : ℕ => 1 + (3 : ℝ) / (n : ℝ)) atTop (𝓝 1) := by
         simpa using tendsto_const_nhds.add hz3
-      simpa using hnum.div hden one_ne_zero
+      have hdiv := hnum.div hden one_ne_zero
+      rw [div_one] at hdiv
+      refine hdiv.congr fun n => ?_
+      simp only [Pi.div_apply]
     refine this.congr' ?_
     filter_upwards [eventually_ge_atTop 1] with n hn
     have hnpos : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn
@@ -109,7 +112,10 @@ theorem windowRatio_tendsto_one : Tendsto windowRatio atTop (𝓝 1) := by
         simpa using tendsto_const_nhds.add hz
       have hden : Tendsto (fun n : ℕ => 1 + (4 : ℝ) / (n : ℝ)) atTop (𝓝 1) := by
         simpa using tendsto_const_nhds.add hz4
-      simpa using hnum.div hden one_ne_zero
+      have hdiv := hnum.div hden one_ne_zero
+      rw [div_one] at hdiv
+      refine hdiv.congr fun n => ?_
+      simp only [Pi.div_apply]
     refine this.congr' ?_
     filter_upwards [eventually_ge_atTop 1] with n hn
     have hnpos : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn

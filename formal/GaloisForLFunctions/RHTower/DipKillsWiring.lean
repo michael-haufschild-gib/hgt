@@ -82,6 +82,7 @@ theorem dipKills_of_carrierData {pushes : List ℝ} {births : List CascadeBirth}
     induction l with
     | nil =>
       intro d hk
+      change d ≤ 0 at hk
       exact ⟨[], List.nil_prefix, by simpa [pushSum] using hk⟩
     | cons q qs ih =>
       intro d hk

@@ -242,10 +242,9 @@ theorem tendsto_xiMobiusContinuousApertureTotalNormalizedReflectionEnergy_div_nh
       xiMobiusPrimeContinuousApertureSlopeTerm p *
         normalizedScaleSeamEnergy (p : ℕ) rho) := by
     have htwo := htangent.mul_left 2
-    convert htwo using 1
-    funext p
-    simp only [xiMobiusPrimeContinuousApertureTangentNormalizedReflectionEnergy]
-    ring
+    exact htwo.congr (fun p => by
+      simp only [xiMobiusPrimeContinuousApertureTangentNormalizedReflectionEnergy]
+      ring)
   have hpoint (p : Nat.Primes) :=
     tendsto_xiMobiusPrimeContinuousApertureDiagonalNormalizedReflectionEnergy_div rho p
   have hbound : ∀ᶠ a : ℝ in nhdsWithin (0 : ℝ) (Set.Ioi 0),

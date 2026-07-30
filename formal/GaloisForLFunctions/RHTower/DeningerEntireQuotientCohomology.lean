@@ -277,7 +277,7 @@ theorem deningerEntireTheta_dividedChainClass
   rw [← deningerEntireH1Class_thetaCoordinate]
   have h := congrArg deningerEntireH1Class
     (deningerEntireThetaCoordinate_mul_dividedChain rho hk)
-  simpa only [map_mul, map_add, Algebra.smul_def, AlgHom.commutes] using h
+  simpa only [map_mul, map_add, Algebra.smul_def, AlgHom.commutes] using! h
 
 /--
 The terminal multiplicity-depth divided chain is a nonzero cohomology class.  Evaluation at its

@@ -197,7 +197,7 @@ theorem canonicalNthPrime_injective : Function.Injective canonicalNthPrime :=
 
 theorem range_canonicalNthPrime :
     Set.range canonicalNthPrime = {p : ℕ | Nat.Prime p} := by
-  simpa [canonicalNthPrime] using
+  simpa [canonicalNthPrime] using!
     (Nat.range_nth_of_infinite Nat.infinite_setOf_prime)
 
 /-- The difference of the two canonical FE--Schwarz prime seam values on one fibre. -/

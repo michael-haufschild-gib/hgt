@@ -183,7 +183,7 @@ theorem evenCentralSoninQuadraticCorner_restrictionDefect
   rw [hcompress]
   apply ContinuousLinearMap.ext
   intro x
-  simp only [mul_apply_eq_comp, sub_apply, one_apply, map_sub]
+  simp only [mul_apply_eq_comp, sub_apply, one_apply_eq_self, map_sub]
   abel
 
 /-- **Positive diagonal restriction defect.**  At one scale the aperture defect is exactly the
@@ -480,10 +480,10 @@ theorem evenCentralSoninQuadraticCorner_restrictionDefect_compactEq_shell
   have hra : 0 < r * a := mul_pos (zero_lt_one.trans hr) ha
   have hrb : 0 < r * b := mul_pos (zero_lt_one.trans hr) hb
   have hGa : Ga =ₖ Sa := by
-    simpa only [Ga, Sa, evenCentralSoninQuadraticCorner] using
+    simpa only [Ga, Sa, evenCentralSoninQuadraticCorner] using!
       evenCentralSoninDilationCorner_adjoint_mul_compactEq_shell a r ha hr
   have hGb : Gb =ₖ Sb := by
-    simpa only [Gb, Sb, evenCentralSoninQuadraticCorner] using
+    simpa only [Gb, Sb, evenCentralSoninQuadraticCorner] using!
       evenCentralSoninDilationCorner_adjoint_mul_compactEq_shell b r hb hr
   have hQb : Qb =ₖ E := by
     simpa only [Qb, E] using evenCentralSoninProjection_compactEq_complement b hb
@@ -727,7 +727,7 @@ theorem evenSoninApertureLostTransition_pairedShell_tendsto
     apply ContinuousLinearMap.ext
     intro x
     change (Qa - Qb) (D (Qb x)) = Qa ((1 - Qb) (D (Qb x)))
-    simp only [sub_apply, one_apply, map_sub, hQaQb_apply]
+    simp only [sub_apply, one_apply_eq_self, map_sub, hQaQb_apply]
   have hB : Tendsto (fun n => ‖B (f n) - v n‖) atTop (𝓝 0) := by
     have h := evenCentralSoninDilationCorner_pairedShell_tendsto
       b a d r hb ha had hdb hr hbr

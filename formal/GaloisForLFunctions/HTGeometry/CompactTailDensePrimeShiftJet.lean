@@ -39,7 +39,7 @@ theorem tendsto_primeReal_cofinite_atTop :
 /-- The real prime logarithm tends to infinity on the cofinite prime filter. -/
 theorem tendsto_primeRealLog_cofinite_atTop :
     Tendsto (fun p : Nat.Primes => Real.log (p : ℝ)) cofinite atTop := by
-  simpa only [Function.comp_apply] using
+  simpa only [Function.comp_apply] using!
     Real.tendsto_log_atTop.comp tendsto_primeReal_cofinite_atTop
 
 /-- A strictly lower logarithmic degree is asymptotically negligible. -/
@@ -51,7 +51,7 @@ theorem tendsto_primeLogClock_pow_div_pow_of_lt {k l : ℕ} (hkl : k < l) :
       cofinite (𝓝 0) :=
     (tendsto_pow_div_pow_atTop_zero hkl).comp tendsto_primeRealLog_cofinite_atTop
   have hcomplex := Complex.continuous_ofReal.continuousAt.tendsto.comp hreal
-  convert hcomplex using 1
+  convert! hcomplex using 1
   funext p
   change ((Real.log (p : ℝ) : ℂ) ^ k / (Real.log (p : ℝ) : ℂ) ^ l) =
     ((Real.log (p : ℝ) ^ k / Real.log (p : ℝ) ^ l : ℝ) : ℂ)

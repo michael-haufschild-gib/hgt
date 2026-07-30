@@ -45,7 +45,7 @@ theorem
       0 < (cofiniteEvaluationGram u F points).det := by
   have hlin := htail.linearIndependent_on_compl u F hF
   simpa only [cofiniteEvaluationGram, cofiniteEvaluationColumn,
-    finiteEvaluationGram, finiteEvaluationColumn] using
+    finiteEvaluationGram, finiteEvaluationColumn] using!
     exists_injective_finiteEvaluationHilbertReconstruction_of_linearIndependent
       (fun j => fun x : {x : X // x ∉ F} => u j x) hlin
 

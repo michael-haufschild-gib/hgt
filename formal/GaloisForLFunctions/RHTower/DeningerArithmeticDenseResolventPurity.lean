@@ -58,7 +58,7 @@ theorem deningerLinearMap_pow_surjective
   intro n
   induction n with
   | zero =>
-      simpa using
+      simpa using!
         (Function.surjective_id : Function.Surjective (id : E → E))
   | succ n ih =>
       rw [pow_succ]
@@ -196,6 +196,141 @@ theorem riemannHypothesis_of_hodgeSchwartzResolventXiSpectrum
     norm_num [Complex.mul_re] at hhalf
     linarith
   exact (ne_of_gt (mem_rightHalf.mp hz)) hzhalf
+
+section TopologicalDenseRange
+
+variable [TopologicalSpace E]
+
+/--
+`DAC_SOURCE_DENSE_RANGE_TRANSPOSE_PURITY`, topological kernel.
+
+For a continuous transpose eigenfunctional, dense range of the
+operator difference is enough to force vanishing.  Surjectivity is
+not needed.
+-/
+theorem
+    deningerContinuousTransposeEigenfunctional_eq_zero_of_sub_denseRange
+    (T : E →ₗ[ℂ] E)
+    {lambda : ℂ}
+    (ell : E →ₗ[ℂ] ℂ)
+    (hell_continuous : Continuous ell)
+    (heigen : ∀ x : E, ell (T x) = lambda * ell x)
+    (hdense :
+      DenseRange
+        (T - lambda • (LinearMap.id : E →ₗ[ℂ] E))) :
+    ell = 0 := by
+  have hfun : (ell : E → ℂ) = fun _ => 0 := by
+    apply hdense.equalizer hell_continuous continuous_const
+    funext x
+    change ell (T x - lambda • x) = 0
+    rw [map_sub, heigen, map_smul]
+    simp
+  ext x
+  exact congrFun hfun x
+
+/--
+A nonzero continuous transpose eigenfunctional obstructs dense range
+of its operator difference.  Off-axis dense range therefore forces
+the centered eigenvalue onto the imaginary axis.
+-/
+theorem deningerSourceDenseRange_transposeEigenvalue_re_eq_zero
+    (T : E →ₗ[ℂ] E)
+    {lambda : ℂ}
+    (ell : E →ₗ[ℂ] ℂ)
+    (hell : ell ≠ 0)
+    (hell_continuous : Continuous ell)
+    (hresolvent :
+      lambda.re ≠ 0 →
+        DenseRange
+          (T - lambda • (LinearMap.id : E →ₗ[ℂ] E)))
+    (heigen : ∀ x : E, ell (T x) = lambda * ell x) :
+    lambda.re = 0 := by
+  by_contra hre
+  exact hell
+    (deningerContinuousTransposeEigenfunctional_eq_zero_of_sub_denseRange
+      T ell hell_continuous heigen (hresolvent hre))
+
+/--
+Weight-one form of source dense-range transpose purity.
+
+Here `T` is the source-topology realization of `Theta - 1/2`.
+-/
+theorem deningerSourceDenseRange_transposeEigenvalue_re_eq_half
+    (T : E →ₗ[ℂ] E)
+    {rho : ℂ}
+    (ell : E →ₗ[ℂ] ℂ)
+    (hell : ell ≠ 0)
+    (hell_continuous : Continuous ell)
+    (hresolvent :
+      (rho - 1 / 2).re ≠ 0 →
+        DenseRange
+          (T - (rho - 1 / 2) •
+            (LinearMap.id : E →ₗ[ℂ] E)))
+    (heigen :
+      ∀ x : E,
+        ell (T x) = (rho - 1 / 2) * ell x) :
+    rho.re = 1 / 2 := by
+  have hcenter : (rho - 1 / 2).re = 0 :=
+    deningerSourceDenseRange_transposeEigenvalue_re_eq_zero
+      T ell hell hell_continuous hresolvent heigen
+  norm_num [Complex.sub_re] at hcenter ⊢
+  linarith
+
+/--
+Source-topological spectral comparison for Deninger's centered
+generator.  Unlike `DeningerHodgeSchwartzResolventXiSpectrum`, this
+structure asks only for dense range in the source topology and
+records continuity of each divisor functional.
+-/
+structure DeningerHodgeSchwartzDenseRangeXiSpectrum
+    (E : Type*) [TopologicalSpace E] [AddCommGroup E] [Module ℂ E] where
+  centeredGenerator : E →ₗ[ℂ] E
+  offAxis_resolvent_denseRange :
+    ∀ z : ℂ,
+      z.re ≠ 0 →
+        DenseRange
+          (centeredGenerator -
+            z • (LinearMap.id : E →ₗ[ℂ] E))
+  evaluation :
+    XiDivisorSupport → E →ₗ[ℂ] ℂ
+  evaluation_ne_zero :
+    ∀ q : XiDivisorSupport, evaluation q ≠ 0
+  evaluation_continuous :
+    ∀ q : XiDivisorSupport, Continuous (evaluation q)
+  transpose_centeredGenerator :
+    ∀ (q : XiDivisorSupport) (x : E),
+      evaluation q (centeredGenerator x) =
+        ((1 / 2 + Complex.I * xiSpectralPointSupport q) - 1 / 2) *
+          evaluation q x
+
+/--
+A source topology with dense range for every off-axis centered
+operator difference proves the Riemann hypothesis.
+-/
+theorem riemannHypothesis_of_hodgeSchwartzDenseRangeXiSpectrum
+    (Spectrum : DeningerHodgeSchwartzDenseRangeXiSpectrum E) :
+    RiemannHypothesis := by
+  rw [rh_iff_xi_ne_zero_right]
+  intro z hz hzero
+  let q : XiDivisorSupport :=
+    ⟨z, mem_xi_divisor_support_of_eq_zero hzero⟩
+  have hhalf :
+      (1 / 2 + Complex.I * xiSpectralPointSupport q).re = 1 / 2 :=
+    deningerSourceDenseRange_transposeEigenvalue_re_eq_half
+      Spectrum.centeredGenerator
+      (Spectrum.evaluation q)
+      (Spectrum.evaluation_ne_zero q)
+      (Spectrum.evaluation_continuous q)
+      (Spectrum.offAxis_resolvent_denseRange
+        ((1 / 2 + Complex.I * xiSpectralPointSupport q) - 1 / 2))
+      (Spectrum.transpose_centeredGenerator q)
+  have hzhalf : z.re = 1 / 2 := by
+    dsimp only [q, xiSpectralPointSupport] at hhalf
+    norm_num [Complex.mul_re] at hhalf
+    linarith
+  exact (ne_of_gt (mem_rightHalf.mp hz)) hzhalf
+
+end TopologicalDenseRange
 
 end
 

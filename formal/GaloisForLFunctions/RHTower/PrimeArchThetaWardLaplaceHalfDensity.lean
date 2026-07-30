@@ -195,14 +195,14 @@ theorem integral_exp_mul_deriv_thetaCuspWardGibbsAtom_eq
   have huderiv : ∀ x ∈ Ioi (0 : ℝ), HasDerivAt u (u' x) x := by
     intro x _hx
     dsimp [u, u']
-    convert (Real.hasDerivAt_exp (z * x)).comp x
-      ((hasDerivAt_id x).const_mul z) using 1
-    ring
+    simpa only [Function.comp_apply, id_eq, one_mul, mul_one, mul_comm] using!
+      (Real.hasDerivAt_exp (z * x)).comp x
+        ((hasDerivAt_id x).const_mul z)
   have hbderiv : ∀ x ∈ Ioi (0 : ℝ), HasDerivAt b (b' x) x := by
     intro x _hx
     exact hasDerivAt_thetaCuspWardGibbsAtom n x
   have hub'int : IntegrableOn (u * b') (Ioi 0) := by
-    simpa only [u, b', Pi.mul_apply] using
+    simpa only [u, b', Pi.mul_apply] using!
       integrableOn_exp_mul_thetaCuspPolynomialAtom_of_lt_one
         (thetaCuspLogDerivativeStep (X ^ 2)) hn hz
   have hbase : IntegrableOn (fun x : ℝ =>
@@ -227,8 +227,7 @@ theorem integral_exp_mul_deriv_thetaCuspWardGibbsAtom_eq
     (by
       have h := ((hucont.mul hbcont).tendsto 0).mono_left
         (inf_le_left : 𝓝[>] (0 : ℝ) ≤ 𝓝 0)
-      convert h using 1
-      simp [u, b])
+      simpa only [u, Pi.mul_apply, mul_zero, Real.exp_zero, one_mul] using! h)
     (by
       exact Filter.Tendsto.congr'
         (f₁ := fun x : ℝ =>
@@ -966,7 +965,7 @@ theorem thetaCuspFirstAtomMomentPair_le_halfDensityBudget :
 theorem integrable_exp_mul_thetaCuspFullSource_of_abs_lt_one
     {a : ℝ} (ha : |a| < 1) :
     Integrable (fun x : ℝ => Real.exp (a * x) * thetaCuspFullSource x) := by
-  simpa only [thetaCuspTiltedSchwartzReal_apply, thetaCuspTiltedSource] using
+  simpa only [thetaCuspTiltedSchwartzReal_apply, thetaCuspTiltedSource] using!
     (thetaCuspTiltedSchwartzReal a ha).integrable (μ := (volume : Measure ℝ))
 
 /-- The positive half-density tilt of the completed source is the endpoint value `XiC (I/2)`. -/

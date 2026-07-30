@@ -34,7 +34,7 @@ theorem xiWeilEvaluationFiberVector_mem_continuedCauchyHilbertSubspace
     xiWeilEvaluationFiberVector F ρ ∈
       xiWeilContinuedCauchyHilbertSubspace := by
   apply xiWeilContinuedCauchyHilbertSubspace.smul_mem
-  simpa only [xiSpectralPoint_eq_support] using
+  simpa only [xiSpectralPoint_eq_support] using!
     xiWeilFiberIndicatorLp_mem_continuedCauchyHilbertSubspace
       (xiFirstZeroCopy ρ)
 

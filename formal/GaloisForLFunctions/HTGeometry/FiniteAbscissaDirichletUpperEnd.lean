@@ -186,7 +186,7 @@ noncomputable def finiteAbscissaLSeriesToUpperEndGerm :
   map_zero' := by
     change Germ.coeRingHom upperEndFilter
       (fun z : ℂ => LSeries (0 : ℕ → ℂ) (-Complex.I * z)) = 0
-    simpa only [LSeries_zero, Pi.zero_apply] using
+    simpa only [LSeries_zero, Pi.zero_apply] using!
       (Germ.coeRingHom upperEndFilter).map_zero
   map_one' := by
     change Germ.coeRingHom upperEndFilter
@@ -363,13 +363,13 @@ theorem upperEndGermDeriv_finiteAbscissaLSeries
     (s := -Complex.I * z) (f := fun n => f.1 n)
     (by simpa only using hlt)
   have hinner : HasDerivAt (fun w : ℂ => -Complex.I * w) (-Complex.I) z := by
-    simpa only [mul_one] using (hasDerivAt_id z).const_mul (-Complex.I)
+    simpa only [mul_one] using! (hasDerivAt_id z).const_mul (-Complex.I)
   have hcomp := houter.comp z hinner
   have hderiv :
       deriv (fun w : ℂ => LSeries (fun n => f.1 n) (-Complex.I * w)) z =
         (-LSeries (LSeries.logMul (fun n => f.1 n)) (-Complex.I * z)) *
           (-Complex.I) := by
-    simpa only [Function.comp_apply] using hcomp.deriv
+    simpa only [Function.comp_apply] using! hcomp.deriv
   rw [hderiv]
   have hcoeff : (fun n => (finiteAbscissaRotatedDeriv f).1 n) =
       Complex.I • (fun n => logWeight f.1 n) := by

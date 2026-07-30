@@ -74,8 +74,9 @@ theorem continuedHzeta_analyticAt_one_and_hasDerivAt {s : ℂ} (hs : 0 < s.re) :
         fun w => ((m : ℂ) + w) ^ (-s) - (((m + 1 : ℕ) : ℂ) ^ (-s)) by
       funext w
       rw [remainder, taylorPoly_zero]]
-    convert hraw.sub hconst using 1
-    all_goals ring_nf
+    convert! hraw.sub hconst using 1
+    rw [show -(s + 1) = -s - 1 by ring]
+    simp
   have hbound : ∀ m : ℕ, ∀ a ∈ Metric.ball (1 : ℂ) (1 / 2 : ℝ),
       ‖-s * ((m : ℂ) + a) ^ (-(s + 1))‖ ≤ u m := by
     intro m a ha

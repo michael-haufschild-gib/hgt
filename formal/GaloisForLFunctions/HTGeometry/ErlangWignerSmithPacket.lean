@@ -148,9 +148,9 @@ theorem hasDerivAt_erlangWaveAmplitude_of_pos {ε : ℝ} (hε : 0 < ε)
       ((1 * Real.exp (-s / (2 * ε)) +
         s * (Real.exp (-s / (2 * ε)) * (-1 / (2 * ε)))) /
           (Real.sqrt 2 * ε ^ (3 / 2 : ℝ))) s := by
-    simpa only [id_eq, Function.comp_apply] using hcore
+    simpa only [id_eq, Function.comp_apply] using! hcore
   have hfinal := hcore'.congr_of_eventuallyEq hlocal
-  convert hfinal using 1
+  convert! hfinal using 1
   simp [erlangWaveAmplitudeDerivative, hs]
   field_simp [hε.ne']
   ring
@@ -277,9 +277,9 @@ theorem hasDerivAt_powExpKernel {ε : ℝ} (hε : ε ≠ 0) (k : ℕ) (c : ℝ) 
     simpa using (hasDerivAt_id s).neg.div_const ε
   have hexp : HasDerivAt (fun t : ℝ => Real.exp (-t / ε))
       (Real.exp (-s / ε) * (-1 / ε)) s := by
-    simpa using (Real.hasDerivAt_exp (-s / ε)).comp s harg
+    simpa using! (Real.hasDerivAt_exp (-s / ε)).comp s harg
   have h := ((hasDerivAt_pow k s).mul hexp).div_const c
-  convert h using 1
+  convert! h using 1
   rcases Nat.eq_zero_or_pos k with rfl | hk
   · simp
     field_simp
@@ -296,7 +296,7 @@ theorem hasDerivAt_erlangOneKernel {ε : ℝ} (hε : 0 < ε) (s : ℝ) :
   have hfun : (fun t : ℝ => t ^ 0 * Real.exp (-t / ε) / ε) = erlangOneKernel ε := by
     funext t; simp [erlangOneKernel]
   rw [hfun] at h
-  convert h using 1
+  convert! h using 1
   simp [erlangOneKernel]
   field_simp
 
@@ -307,7 +307,7 @@ theorem hasDerivAt_erlangTwoKernel {ε : ℝ} (hε : 0 < ε) (s : ℝ) :
   have hfun : (fun t : ℝ => t ^ 1 * Real.exp (-t / ε) / ε ^ 2) = erlangTwoKernel ε := by
     funext t; simp [erlangTwoKernel]
   rw [hfun] at h
-  convert h using 1
+  convert! h using 1
   simp only [erlangOneKernel, erlangTwoKernel, pow_one, Nat.cast_one, one_mul,
     Nat.sub_self, pow_zero]
   field_simp
@@ -320,7 +320,7 @@ theorem hasDerivAt_erlangThreeKernel {ε : ℝ} (hε : 0 < ε) (s : ℝ) :
       erlangThreeKernel ε := by
     funext t; simp [erlangThreeKernel]
   rw [hfun] at h
-  convert h using 1
+  convert! h using 1
   simp only [erlangTwoKernel, erlangThreeKernel, Nat.cast_ofNat]
   field_simp
   ring
@@ -377,8 +377,8 @@ private theorem hasDerivAt_shift
     {f f' : ℝ → ℝ} (hf : ∀ x, HasDerivAt f (f' x) x) (x s : ℝ) :
     HasDerivAt (fun t => f (x + t)) (f' (x + s)) s := by
   have hadd : HasDerivAt (fun t : ℝ => x + t) 1 s := by
-    simpa using (hasDerivAt_const s x).add (hasDerivAt_id s)
-  simpa only [Function.comp_apply, mul_one] using (hf (x + s)).comp s hadd
+    simpa using! (hasDerivAt_const s x).add (hasDerivAt_id s)
+  simpa only [Function.comp_apply, mul_one] using! (hf (x + s)).comp s hadd
 
 theorem erlangAverageOne_integral_recovery
     {ε : ℝ} (hε : 0 < ε) {f f' : ℝ → ℝ}
@@ -388,7 +388,7 @@ theorem erlangAverageOne_integral_recovery
   have hu'v : IntegrableOn
       (fun s => u' s * f (x + s)) (Ioi 0) := by
     have hi := (h.integrable_one x).const_mul (-1 / ε)
-    simpa [u', div_eq_mul_inv, mul_assoc, mul_comm, mul_left_comm] using hi
+    simpa [u', div_eq_mul_inv, mul_assoc, mul_comm, mul_left_comm] using! hi
   have hibp := MeasureTheory.integral_Ioi_mul_deriv_eq_deriv_mul
     (a := (0 : ℝ)) (a' := f x / ε) (b' := 0)
     (u := erlangOneKernel ε) (u' := u')

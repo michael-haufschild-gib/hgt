@@ -63,14 +63,14 @@ theorem tendsto_digammaGammaClusterPole (n : ℕ) :
   have hinv := tendsto_natCast_inv_complex.comp (tendsto_digammaGammaClusterIndex n)
   have hbranch := (chosenReciprocalGammaPoleBranch n).analyticAt_zero.continuousAt.tendsto.comp hinv
   have hzero := (chosenReciprocalGammaPoleBranch n).map_zero
-  simpa [digammaGammaClusterPole, Function.comp_apply, hzero] using hbranch
+  simpa [digammaGammaClusterPole, Function.comp_apply, hzero] using! hbranch
 
 theorem tendsto_digammaGammaClusterResidue_zero (n : ℕ) :
     Tendsto (digammaGammaClusterResidue n) atTop (𝓝 0) := by
   have hinv := tendsto_natCast_inv_complex.comp (tendsto_digammaGammaClusterIndex n)
   have hres := (analyticAt_inverseGammaBranchResidueInterpolation
     (chosenReciprocalGammaPoleBranch n)).continuousAt.tendsto.comp hinv
-  simpa [digammaGammaClusterResidue, inverseGammaBranchResidueInterpolation] using hres
+  simpa [digammaGammaClusterResidue, inverseGammaBranchResidueInterpolation] using! hres
 
 theorem digammaGammaCluster_good (n m : ℕ) :
     digammaGammaClusterResidue n m ≠ 0 ∧

@@ -124,7 +124,7 @@ private theorem tendsto_mobiusCriticalBoundaryParameter_ofReal (u : ℝ) :
     unfold mobiusCriticalBoundaryParameter
     fun_prop
   exact Complex.continuous_ofReal.continuousAt.tendsto.comp
-    (by simpa [mobiusCriticalBoundaryParameter] using hcont.tendsto.mono_left inf_le_left)
+    (by simpa [mobiusCriticalBoundaryParameter] using! hcont.tendsto.mono_left inf_le_left)
 
 /-- Zeta composed with twice any approach converges, provided the doubled limit avoids the pole. -/
 theorem tendsto_riemannZeta_two_mul_comp {f : ℝ → ℂ} {Lim : ℂ} (hLim : 2 * Lim ≠ 1)
@@ -139,7 +139,7 @@ theorem tendsto_riemannZeta_two_mul_comp {f : ℝ → ℂ} {Lim : ℂ} (hLim : 2
 private theorem tendsto_zetaResidueUnit_comp {f : ℝ → ℂ}
     (hf : Tendsto f (𝓝[>] (1 : ℝ)) (𝓝 (1 : ℂ))) :
     Tendsto (fun sigma : ℝ => zetaResidueUnit (f sigma)) (𝓝[>] (1 : ℝ)) (𝓝 (1 : ℂ)) := by
-  simpa using zetaResidueUnit_analyticAt.continuousAt.tendsto.comp hf
+  simpa using! zetaResidueUnit_analyticAt.continuousAt.tendsto.comp hf
 
 
 /-- The rescaled logarithmic coordinate of the positive squarefree channel has the mean-one
@@ -181,7 +181,7 @@ theorem tendsto_squarefreeMobiusBoundaryLayerLaplace
       (𝓝[>] (1 : ℝ)) (𝓝 ((((1 + u : ℝ) : ℂ))⁻¹)) := by
     simp only [one_mul] at hlimit
     rw [htarget] at hlimit
-    simpa using hlimit
+    simpa using! hlimit
   apply hlimit'.congr'
   filter_upwards [self_mem_nhdsWithin] with sigma hsigmaGt
   change 1 < sigma at hsigmaGt
@@ -253,7 +253,7 @@ theorem tendsto_infiniteMobiusLaplaceMultiplier_moving_boundary
             zetaResidueUnit ((mobiusCriticalBoundaryParameter sigma u : ℝ) : ℂ)))
       (𝓝[>] (1 : ℝ))
       (𝓝 (riemannZeta (2 : ℂ) * (((1 + u : ℝ) : ℂ)))) := by
-    simpa using hlimit
+    simpa using! hlimit
   apply hlimit'.congr'
   filter_upwards [self_mem_nhdsWithin] with sigma hsigmaGt
   change 1 < sigma at hsigmaGt

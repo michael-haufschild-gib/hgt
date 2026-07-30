@@ -161,7 +161,7 @@ theorem gamma_positiveJet_bellGenerated_by_mixedBasis
           (fun j : Fin (n + 1) =>
             gammaDigammaMixedJetBasis (some (j : ℕ)) s)
           (bellAt n ((k : ℕ) + 1) k.isLt) := by
-  simpa [gammaDigammaMixedJetBasis, digammaJet] using
+  simpa [gammaDigammaMixedJetBasis, digammaJet] using!
     gamma_iteratedDeriv_eq_bellAt ((k : ℕ) + 1) k.isLt hs
 
 /-- Gamma's first derivative is globally the product of Gamma and digamma, including

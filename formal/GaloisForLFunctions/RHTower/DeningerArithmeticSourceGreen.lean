@@ -75,7 +75,7 @@ def deningerArithmeticSourceGreen :
               deningerArithmeticJetCompactToHilbert ell) =
           c • deningerArithmeticOrientedHodgeLp
             (deningerArithmeticJetCompactToHilbert ell) := by
-      simpa only [starRingEnd_self_apply] using
+      simpa only [starRingEnd_self_apply] using!
         (map_smulₛₗ deningerArithmeticOrientedHodgeLpSigma
           ((starRingEnd ℂ) c)
           (deningerArithmeticJetCompactToHilbert ell))
@@ -188,7 +188,7 @@ theorem deningerArithmeticSourceGreen_cup
           (deningerArithmeticOrientedHodgeLpSigma
             (deningerArithmeticJetCompactToHilbert ell)) =
         -deningerArithmeticJetCompactToHilbert ell := by
-    simpa only [kRealParityAction, if_true] using
+    simpa only [kRealParityAction, if_true] using!
       deningerArithmeticOrientedHilbertHodge.sq
         (deningerArithmeticJetCompactToHilbert ell)
   have hgreen :
@@ -219,7 +219,7 @@ theorem deningerArithmeticOrientedHodgeLp_surjective :
   have hsq :
       deningerArithmeticOrientedHodgeLpSigma
           (deningerArithmeticOrientedHodgeLpSigma y) = -y := by
-    simpa only [kRealParityAction, if_true] using
+    simpa only [kRealParityAction, if_true] using!
       deningerArithmeticOrientedHilbertHodge.sq y
   calc
     -deningerArithmeticOrientedHodgeLpSigma
@@ -251,7 +251,7 @@ theorem deningerArithmeticSourceGreen_dense :
           (Equiv.neg DeningerArithmeticCompletedH1).surjective.denseRange)
         hcomp
         continuous_neg
-  simpa only [deningerArithmeticSourceGreen_apply, Function.comp_apply] using hneg
+  simpa only [deningerArithmeticSourceGreen_apply, Function.comp_apply] using! hneg
 
 /-- Weight-one compact-support Frobenius on the source associated graded. -/
 def deningerArithmeticGradedThetaCompact :

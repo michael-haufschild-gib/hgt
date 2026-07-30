@@ -42,15 +42,13 @@ theorem hasDerivAt_threePointCorrelationDeterminantPath
   have hmain := (((hx.const_mul 2).mul_const (f y)).mul hxy)
   have hsquares := ((hx.mul hx).add_const (f y ^ 2)).add (hxy.mul hxy)
   have h := (hmain.sub (hsquares.const_mul (f 0))).add_const (f 0 ^ 3)
-  unfold threePointCorrelationDeterminantPath
-    threePointCorrelationDeterminantPathFirstJet
-    threePointCorrelationDeterminant
-  convert h using 1
-  · funext z
-    dsimp only [Function.comp_apply]
-    simp [add_comm]
-    ring
-  · ring
+  apply (h.congr_deriv (by
+    unfold threePointCorrelationDeterminantPathFirstJet
+    ring)).congr_of_eventuallyEq
+  filter_upwards with z
+  unfold threePointCorrelationDeterminantPath threePointCorrelationDeterminant
+  simp only [Pi.mul_apply, Pi.add_apply, Pi.sub_apply]
+  ring
 
 theorem hasDerivAt_threePointCorrelationDeterminantPathFirstJet
     {f f' f'' : ℝ → ℝ}
@@ -70,10 +68,12 @@ theorem hasDerivAt_threePointCorrelationDeterminantPathFirstJet
   have hB := (((hx.const_mul 2).mul_const (f y)).mul hxy')
   have hC := ((hx.mul hx').add (hxy.mul hxy')).const_mul (2 * f 0)
   have h := (hA.add hB).sub hC
+  apply (h.congr_deriv (by
+    unfold threePointCorrelationDeterminantPathSecondJet
+    ring)).congr_of_eventuallyEq
+  filter_upwards with z
   unfold threePointCorrelationDeterminantPathFirstJet
-    threePointCorrelationDeterminantPathSecondJet
-  convert h using 1
-  all_goals ring
+  simp only [Pi.mul_apply, Pi.add_apply, Pi.sub_apply]
 
 /-- If a twice differentiable path has zero value and first jet at the left endpoint and a
 strictly positive second jet throughout an interval, then it is strictly positive inside that
@@ -191,7 +191,7 @@ theorem exists_threePointCorrelationDeterminantPath_pos_right
     ring
   apply exists_pos_right_of_secondJet_pos hD hD' hD'' hDzero hD'zero
   rw [hD''zero]
-  positivity
+  exact mul_pos (by norm_num) hwall
 
 /-- A radial profile with negative center curvature and vanishing first two tail jets has a
 uniform coalescing-node determinant chamber for every sufficiently remote second gap. -/
@@ -219,11 +219,11 @@ theorem exists_uniform_threePointCorrelationDeterminantPath_pos_right_atTop
     Filter.Tendsto.comp hf''.continuousAt hx
   have hfy : Tendsto (fun p : ℝ × ℝ => f p.1) l (nhds 0) := htail.comp hy
   have hfxy : Tendsto (fun p : ℝ × ℝ => f (p.2 + p.1)) l (nhds 0) := by
-    simpa only [Function.comp_apply, add_comm] using htail.comp hyx
+    simpa only [Function.comp_apply, add_comm] using! htail.comp hyx
   have hf'xy : Tendsto (fun p : ℝ × ℝ => f' (p.2 + p.1)) l (nhds 0) := by
-    simpa only [Function.comp_apply, add_comm] using htail'.comp hyx
+    simpa only [Function.comp_apply, add_comm] using! htail'.comp hyx
   have hf''xy : Tendsto (fun p : ℝ × ℝ => f'' (p.2 + p.1)) l (nhds 0) := by
-    simpa only [Function.comp_apply, add_comm] using htail''.comp hyx
+    simpa only [Function.comp_apply, add_comm] using! htail''.comp hyx
   have hleft := (((hfx''.mul hfy).mul hfxy).add
       (((hfx'.mul hfy).mul hf'xy).const_mul 2) |>.add
         ((hfx.mul hfy).mul hf''xy)).const_mul 2
@@ -237,7 +237,8 @@ theorem exists_uniform_threePointCorrelationDeterminantPath_pos_right_atTop
     convert hlimRaw using 1
     · funext p
       ring
-    · rw [hfirst_zero]
+    · congr 1
+      rw [hfirst_zero]
       ring
   have hlimit_pos : 0 < -2 * f 0 ^ 2 * f'' 0 := by
     have hsquare : 0 < f 0 ^ 2 := sq_pos_of_pos hcenter_pos

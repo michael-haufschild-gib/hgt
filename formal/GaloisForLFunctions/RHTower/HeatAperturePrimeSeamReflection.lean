@@ -45,10 +45,10 @@ theorem log_mul_heatAperturePrimePowerCoeff_FE_sub_Schwarz_eq_seam
     heatAperturePrimePowerCoeff_prime ((starRingEnd ℂ) rho) p hp]
   have hFE :
       (starRingEnd ℂ) (1 - rho) - 1 = -((starRingEnd ℂ) rho) := by
-    apply Complex.ext <;> simp <;> ring
+    apply Complex.ext <;> simp
   have hSchwarz :
       (starRingEnd ℂ) ((starRingEnd ℂ) rho) - 1 = -(1 - rho) := by
-    apply Complex.ext <;> simp <;> ring
+    apply Complex.ext <;> simp
   rw [hFE, hSchwarz]
   simp [RHTower.orbitwiseNatPrimeSeamCharge, RHTower.orbitwiseScaleSeamCharge]
 
@@ -187,9 +187,12 @@ private theorem hasDerivAt_natPrime_cpow_neg
       (-(Real.log p : ℂ) * (p : ℂ) ^ (-s)) s := by
   have h := ((hasDerivAt_id s).neg).const_cpow
     (c := (p : ℂ)) (Or.inl (Nat.cast_ne_zero.mpr hp.ne_zero))
-  convert h using 1 <;>
+  convert h using 1
+  all_goals try rfl
+  all_goals
     simp [Complex.ofReal_log (show (0 : ℝ) ≤ p by positivity),
-      Function.id_def] <;> ring
+      Function.id_def]
+  all_goals ring
 
 /-- **Connection-curvature/tangent identity.**  Spectral differentiation of the genuine local
 Euler connection returns the actual Euler-parameter tangent, up to the nonzero factor `-log p`. -/
@@ -206,15 +209,16 @@ theorem hasDerivAt_degreeOneEulerLocalFlux_spectral
     exact RHTower.one_sub_prime_cpow_neg_ne_zero hp.two_le hs
   have hdenDeriv : HasDerivAt (fun z : ℂ => 1 - (p : ℂ) ^ (-z))
       ((Real.log p : ℂ) * q) s := by
-    convert hq.const_sub 1 using 1 <;> ring
+    simpa using! hq.const_sub 1
   have hquot := hq.div hdenDeriv hden
   have hscaled := hquot.const_mul (Real.log p : ℂ)
   convert hscaled using 1
+  all_goals try rfl
   · funext z
     simp only [RHTower.degreeOneEulerLocalFlux, one_mul]
     simp only [div_eq_mul_inv, Pi.mul_apply, Pi.inv_apply]
     ring
-  · dsimp only [q]
+  · try dsimp only [q]
     unfold RHTower.primeEulerUnitTangent
     field_simp [hden]
     ring

@@ -128,8 +128,7 @@ theorem differentialAlgebraicOver_blackHoleFarZoneTimeAntisymmetricDressedLogMer
           (gammaOppositeShiftProductMero (1 : ℂ) 1)) := by
     have hsum := HTGeometry.differentialAlgebraicOver_add hlog hlog
     have hneg := HTGeometry.differentialAlgebraicOver_neg hsum
-    convert hneg using 1
-    ring
+    convert! hneg using 1 <;> ring
   exact
     (blackHoleFarZoneTimeAntisymmetricDressedLogMero_eq_productLogDeriv
       scaleLog).symm ▸ hscaled

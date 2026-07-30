@@ -105,7 +105,7 @@ theorem hilbertExponentialInnerMatrix_fin_posSemidef
   let xs : Fin n → S := fun i =>
     ⟨x i, Submodule.subset_span (Set.mem_range_self i)⟩
   have h := hilbertExponentialInnerMatrix_fin_posSemidef_of_finiteDimensional xs t ht
-  simpa [hilbertExponentialInnerMatrix, xs] using h
+  simpa [hilbertExponentialInnerMatrix, xs] using! h
 
 /-- Universal positive semidefiniteness of the exponential inner-product kernel on a finite real
 Hilbert configuration. -/
@@ -283,7 +283,7 @@ theorem tendsto_exp_mul_sub_one_div (a : ℝ) :
   have hlinear : HasDerivAt (fun h : ℝ => h * a) a 0 := by
     simpa using (hasDerivAt_id (0 : ℝ)).mul_const a
   have hexp : HasDerivAt (fun h : ℝ => Real.exp (h * a)) a 0 := by
-    simpa using (Real.hasDerivAt_exp (0 * a)).comp 0 hlinear
+    simpa using! (Real.hasDerivAt_exp (0 * a)).comp 0 hlinear
   have hslope := hexp.tendsto_slope_zero
   convert hslope using 1
   funext h
@@ -329,7 +329,7 @@ theorem tendsto_mixed_exp_difference_quotient (a b c : ℝ) :
       have hid : Tendsto (fun h : ℝ => h) (nhdsWithin 0 {0}ᶜ) (nhds 0) :=
         tendsto_id.mono_left inf_le_left
       simpa using hid.mul_const (a + b)
-    simpa [E] using (Real.continuous_exp.tendsto 0).comp hzero
+    simpa [E] using! (Real.continuous_exp.tendsto 0).comp hzero
   have hsum := hA.mul hB |>.add (hE.mul hC)
   have hsum' : Tendsto (fun h => A h * B h + E h * C h)
       (nhdsWithin 0 {0}ᶜ) (nhds (a * b + c)) := by simpa using hsum
@@ -1486,7 +1486,7 @@ theorem hasDerivAt_gaussianCoherentLogScaleFirst {d n : ℕ}
       (Real.exp s * coordinateDot y p q) s :=
     (Real.hasDerivAt_exp s).mul_const _
   have he := hasDerivAt_gaussianCoherentLogScaleGram y s p q
-  convert ha.mul he using 1
+  convert! ha.mul he using 1
   simp only [gaussianCoherentLogScaleFirst, gaussianCoherentLogScaleSecond,
     gaussianCoherentLogScaleGram]
   ring
@@ -2135,12 +2135,12 @@ theorem hasDerivAt_gaussianDimensionPowerLogDet
   have hd0 : (d : ℝ) ≠ 0 := by exact_mod_cast (Nat.ne_of_gt hd)
   have hg : HasDerivAt (fun v : ℝ => Real.log v / (d : ℝ))
       (1 / ((d : ℝ) * u)) u := by
-    convert (Real.hasDerivAt_log hu.ne').div_const (d : ℝ) using 1
+    convert! (Real.hasDerivAt_log hu.ne').div_const (d : ℝ) using 1
     field_simp [hd0, hu.ne']
   have hH := hasDerivAt_gaussianCoherentLogScale_logDet y hy
     (Real.log u / (d : ℝ))
   have hcomp := hH.comp u hg
-  convert hcomp using 1
+  convert! hcomp using 1
   simp only [gaussianDimensionPowerLogDetFirst]
   field_simp [hd0, hu.ne']
 
@@ -2153,23 +2153,20 @@ theorem hasDerivAt_gaussianDimensionPowerLogDetFirst
   have hu0 : u ≠ 0 := hu.ne'
   have hg : HasDerivAt (fun v : ℝ => Real.log v / (d : ℝ))
       (1 / ((d : ℝ) * u)) u := by
-    convert (Real.hasDerivAt_log hu0).div_const (d : ℝ) using 1
+    convert! (Real.hasDerivAt_log hu0).div_const (d : ℝ) using 1
     field_simp [hd0, hu0]
   have hH₁ := hasDerivAt_gaussianCoherentLogScale_logDetDerivative y hy
     (Real.log u / (d : ℝ))
   have hcomp := hH₁.comp u hg
   have hinv : HasDerivAt (fun v : ℝ => v⁻¹) (-1 / u ^ 2) u := by
-    simpa using (hasDerivAt_id u).inv hu0
+    simpa using! (hasDerivAt_id u).inv hu0
   have hscaled := (hinv.mul hcomp).const_mul (1 / (d : ℝ))
-  convert hscaled using 1
-  · funext v
-    simp only [gaussianDimensionPowerLogDetFirst, Pi.mul_apply, Function.comp_apply,
-      div_eq_mul_inv, mul_inv_rev]
-    ring
-  · simp only [gaussianDimensionPowerLogDetSecond]
-    simp only [Function.comp_apply, div_eq_mul_inv]
+  convert! hscaled using 1 <;>
+    (try funext v) <;>
+    simp only [gaussianDimensionPowerLogDetFirst, gaussianDimensionPowerLogDetSecond,
+      Pi.mul_apply, Function.comp_apply, div_eq_mul_inv, mul_inv_rev] <;>
     field_simp [hd0, hu0]
-    ring
+  all_goals ring
 
 /-- **Global Gaussian dimension-power concavity.**  For every injective finite configuration in
 positive ambient dimension, the coherent Gaussian log determinant is concave after the universal

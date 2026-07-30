@@ -83,15 +83,19 @@ theorem hasDerivAt_radialInteractionPlus {c x : ℝ} (hc : c ≠ 0)
   have hsum := hW.add (hV.div_const (Complex.I * (c : ℂ)))
   have hprod := hexp.mul hsum
   have hfull := hprod.const_mul (1 / 2 : ℂ)
-  convert hfull using 1
-  · ext y
-    simp [radialInteractionPlus]
-    ring
-  · simp only [Pi.add_apply]
-    field_simp [hcℂ, Complex.I_ne_zero]
-    ring_nf
-    rw [Complex.I_sq]
-    ring
+  have hfun : radialInteractionPlus c W V =
+      fun y : ℝ => (1 / 2 : ℂ) *
+        (Complex.exp (-Complex.I * (c : ℂ) * (y : ℂ)) *
+          (W y + V y / (Complex.I * (c : ℂ)))) := by
+    funext y
+    simp only [radialInteractionPlus, mul_assoc]
+  rw [hfun]
+  apply hfull.congr_deriv
+  simp only [Pi.add_apply]
+  field_simp [hcℂ, Complex.I_ne_zero]
+  ring_nf
+  rw [Complex.I_sq]
+  ring
 
 /-- Exact transport of the negative-frequency amplitude. -/
 theorem hasDerivAt_radialInteractionMinus {c x : ℝ} (hc : c ≠ 0)
@@ -112,15 +116,19 @@ theorem hasDerivAt_radialInteractionMinus {c x : ℝ} (hc : c ≠ 0)
   have hdiff := hW.sub (hV.div_const (Complex.I * (c : ℂ)))
   have hprod := hexp.mul hdiff
   have hfull := hprod.const_mul (1 / 2 : ℂ)
-  convert hfull using 1
-  · ext y
-    simp [radialInteractionMinus]
-    ring
-  · simp only [Pi.sub_apply]
-    field_simp [hcℂ, Complex.I_ne_zero]
-    ring_nf
-    rw [Complex.I_sq]
-    ring
+  have hfun : radialInteractionMinus c W V =
+      fun y : ℝ => (1 / 2 : ℂ) *
+        (Complex.exp (Complex.I * (c : ℂ) * (y : ℂ)) *
+          (W y - V y / (Complex.I * (c : ℂ)))) := by
+    funext y
+    simp only [radialInteractionMinus, mul_assoc]
+  rw [hfun]
+  apply hfull.congr_deriv
+  simp only [Pi.sub_apply]
+  field_simp [hcℂ, Complex.I_ne_zero]
+  ring_nf
+  rw [Complex.I_sq]
+  ring
 
 end
 

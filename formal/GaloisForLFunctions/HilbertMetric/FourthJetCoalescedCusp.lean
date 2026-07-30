@@ -50,7 +50,10 @@ theorem hasDerivAt_threePointCoalescedWall
     (((hf₁ y).mul (hf₁ y)).const_mul (f 0))).add_const
       ((-f₂ 0) * f 0 ^ 2)
   unfold threePointCoalescedWall threePointCoalescedWallFirstJet
-  convert h using 1 <;> (try funext x) <;> dsimp <;> ring
+  convert! h using 1 <;>
+    (try funext x) <;>
+    (try simp only [Pi.mul_apply, Pi.sub_apply]) <;>
+    ring
 
 theorem hasDerivAt_threePointCoalescedWallFirstJet
     {f f₁ f₂ f₃ : ℝ → ℝ}
@@ -77,9 +80,9 @@ theorem hasDerivAt_threePointCoalescedWallSecondJet
   have hB := ((hf₁ y).const_mul 2).mul
     (((hf₁ y).const_mul (f₂ 0)).sub ((hf₃ y).const_mul (f 0)))
   unfold threePointCoalescedWallSecondJet threePointCoalescedWallThirdJet
-  convert hA.add hB using 1
-  dsimp
-  ring
+  convert! hA.add hB using 1 <;>
+    (try simp only [Pi.mul_apply, Pi.sub_apply]) <;>
+    ring
 
 theorem hasDerivAt_threePointCoalescedWallThirdJet
     {f f₁ f₂ f₃ f₄ f₅ : ℝ → ℝ}
@@ -97,9 +100,9 @@ theorem hasDerivAt_threePointCoalescedWallThirdJet
   have hC := ((hf₁ y).const_mul 2).mul
     (((hf₂ y).const_mul (f₂ 0)).sub ((hf₄ y).const_mul (f 0)))
   unfold threePointCoalescedWallThirdJet threePointCoalescedWallFourthJet
-  convert (hA.add hB).add hC using 1
-  dsimp
-  ring
+  convert! (hA.add hB).add hC using 1 <;>
+    (try simp only [Pi.mul_apply, Pi.sub_apply]) <;>
+    ring
 
 theorem threePointCoalescedWallFourthJet_zero
     {f f₁ f₂ f₃ f₄ f₅ : ℝ → ℝ}

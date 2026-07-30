@@ -47,7 +47,7 @@ theorem differentiable_zetaPoleFree : Differentiable ℂ zetaPoleFree := by
         Complex.differentiable_Gammaℝ_inv s
       have hd : DifferentiableAt ℂ (fun z : ℂ => 1 / (z - 1)) s :=
         DifferentiableAt.div (differentiableAt_const 1) (by fun_prop) (sub_ne_zero.mpr hs)
-      simpa [div_eq_mul_inv] using hd.mul hinv
+      simpa [div_eq_mul_inv] using! hd.mul hinv
     exact h1.sub h2
 
 theorem analyticAt_zetaPoleFree (s : ℂ) : AnalyticAt ℂ zetaPoleFree s :=

@@ -102,7 +102,7 @@ theorem norm_riemannZeta_le_sqrt_norm_add_two
   have hNupper : (N : ℝ) ≤ ‖s‖ + 2 := by
     have h := (Nat.ceil_lt_add_one hxnonneg).le
     dsimp [N]
-    convert h using 1
+    convert! h using 1
     ring
   have hspos : 0 < s.re := by linarith
   have hs1 : s ≠ 1 := by
@@ -193,7 +193,7 @@ theorem norm_riemannZeta_le_sqrt_norm_add_two_half
   have hNupper : (N : ℝ) ≤ ‖s‖ + 2 := by
     have h := (Nat.ceil_lt_add_one hxnonneg).le
     dsimp [N]
-    convert h using 1
+    convert! h using 1
     ring
   have hspos : 0 < s.re := by linarith
   have hs1 : s ≠ 1 := by

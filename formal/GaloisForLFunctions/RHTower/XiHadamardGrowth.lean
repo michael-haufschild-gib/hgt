@@ -77,7 +77,7 @@ theorem realPart_le_three_proximity_of_exp
       exact hqanalytic.meromorphicOn z (Set.mem_univ z)
     have hi : CircleIntegrable (fun z => Real.posLog ‖q z‖) 0 R :=
       hqmerSphere.circleIntegrable_posLog_norm
-    simpa only [smul_eq_mul] using
+    simpa only [smul_eq_mul] using!
       (CircleIntegrable.const_smul (a := (3 : ℝ)) hi)
   calc
     (g w).re = Real.circleAverage
@@ -272,7 +272,7 @@ theorem XiC_proximity_isLittleO_sq :
 theorem xiHadamardQuotient_eq_mul_inv_codiscrete :
     xiHadamardQuotient =ᶠ[codiscrete ℂ] XiC * xiCanonicalProduct⁻¹ := by
   have hraw : xiHadamardRawQuotient =ᶠ[codiscrete ℂ] xiHadamardQuotient := by
-    simpa only [xiHadamardQuotient] using
+    simpa only [xiHadamardQuotient] using!
       (toMeromorphicNFOn_eqOn_codiscrete xiHadamardRawQuotient_meromorphic)
   exact hraw.symm.trans (Filter.Eventually.of_forall fun z => by
     simp only [xiHadamardRawQuotient, Pi.div_apply, Pi.mul_apply, Pi.inv_apply,
@@ -412,7 +412,7 @@ theorem entire_log_affine_of_proximity_isLittleO_sq
     have hm : (fun r : ℝ => proximity q ⊤ (S r)) =o[atTop]
         (fun r : ℝ => r ^ 2) := by
       have := hcomp.trans_isBigO hSbig
-      simpa only [Function.comp_apply] using this
+      simpa only [Function.comp_apply] using! this
     have hratio : Tendsto (fun r : ℝ => proximity q ⊤ (S r) / r ^ 2)
         atTop (𝓝 0) := by
       apply (isLittleO_iff_tendsto' ?_).mp hm

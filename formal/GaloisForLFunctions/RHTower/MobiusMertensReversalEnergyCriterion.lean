@@ -1,3 +1,4 @@
+import Mathlib.Data.Finset.NatAntidiagonal
 import GaloisForLFunctions.RHTower.MobiusMertensSelfConvolutionCriterion
 
 /-!
@@ -17,12 +18,12 @@ noncomputable section
 
 /-- Energy of the palindromic (`+1` reversal) component of the finite Mertens vector. -/
 def mobiusMertensPalindromicEnergy (N : ℕ) : ℝ :=
-  (1 / 4 : ℝ) * ∑ ab ∈ Finset.antidiagonal N,
+  (1 / 4 : ℝ) * ∑ ab ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) N,
     ((mobiusMertensPartialSum ab.1).re + (mobiusMertensPartialSum ab.2).re) ^ 2
 
 /-- Energy of the anti-palindromic (`-1` reversal) component. -/
 def mobiusMertensAntipalindromicEnergy (N : ℕ) : ℝ :=
-  (1 / 4 : ℝ) * ∑ ab ∈ Finset.antidiagonal N,
+  (1 / 4 : ℝ) * ∑ ab ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) N,
     ((mobiusMertensPartialSum ab.1).re - (mobiusMertensPartialSum ab.2).re) ^ 2
 
 theorem mobiusMertensPalindromicEnergy_nonneg (N : ℕ) :
@@ -45,7 +46,7 @@ theorem mobiusMertensSelfConvolution_re_eq_palindromic_sub_antipalindromic (N : 
     (mobiusMertensSelfConvolution N).re =
       mobiusMertensPalindromicEnergy N - mobiusMertensAntipalindromicEnergy N := by
   have hre : (mobiusMertensSelfConvolution N).re =
-      ∑ ab ∈ Finset.antidiagonal N,
+      ∑ ab ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) N,
         (mobiusMertensPartialSum ab.1).re * (mobiusMertensPartialSum ab.2).re := by
     simp [mobiusMertensSelfConvolution, Complex.mul_re,
       mobiusMertensPartialSum_im_eq_zero]
@@ -99,11 +100,12 @@ theorem mobiusMertensAllStrictHalfPowerBound_implies_palindromicEnergySubpowerUp
   let θ : ℝ := (1 / 2 : ℝ) + δ
   have hX : 0 < X := by dsimp [X]; positivity
   have hθ : 0 ≤ θ := by dsimp [θ]; linarith
-  have hpoint : ∀ ab ∈ Finset.antidiagonal N,
+  have hpoint : ∀ ab ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) N,
       ((mobiusMertensPartialSum ab.1).re + (mobiusMertensPartialSum ab.2).re) ^ 2 ≤
         (2 * C * X ^ θ) ^ 2 := by
     intro ab hab
-    have habSum : ab.1 + ab.2 = N := Finset.mem_antidiagonal.mp hab
+    have habSum : ab.1 + ab.2 = N :=
+      Finset.HasAntidiagonal.mem_antidiagonal.mp hab
     have haN : ab.1 ≤ N := by omega
     have hbN : ab.2 ≤ N := by omega
     have haBase : (ab.1 : ℝ) + 1 ≤ X := by
@@ -146,10 +148,10 @@ theorem mobiusMertensAllStrictHalfPowerBound_implies_palindromicEnergySubpowerUp
       (mobiusMertensPartialSum ab.2).re)]
   rw [mobiusMertensPalindromicEnergy]
   calc
-    (1 / 4 : ℝ) * ∑ ab ∈ Finset.antidiagonal N,
+    (1 / 4 : ℝ) * ∑ ab ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) N,
         ((mobiusMertensPartialSum ab.1).re +
           (mobiusMertensPartialSum ab.2).re) ^ 2 ≤
-      (1 / 4 : ℝ) * ∑ _ab ∈ Finset.antidiagonal N,
+      (1 / 4 : ℝ) * ∑ _ab ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) N,
         (2 * C * X ^ θ) ^ 2 := by
       apply mul_le_mul_of_nonneg_left _ (by norm_num)
       apply Finset.sum_le_sum

@@ -69,7 +69,7 @@ theorem exists_deriv_eq_const_mul_of_quasiperiods {f : ℂ → ℂ} (hd : Differ
     ((hd.analyticAt z).deriv).differentiableAt
   have hL : Differentiable ℂ (logDeriv f) := by
     have : Differentiable ℂ fun z => deriv f z / f z := fun z => (hd' z).div (hd z) (hne z)
-    simpa [logDeriv] using this
+    simpa [logDeriv] using! this
   have hspan : ∀ p ∈ Submodule.span ℤ (Set.range ![w₁, w₂]),
       Function.Periodic (logDeriv f) p := by
     refine periodic_of_mem_span_range ![w₁, w₂] (fun i => ?_)

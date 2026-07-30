@@ -671,8 +671,9 @@ theorem semilocalOnePrimeEvenJacobiMagnitudeSeries_pow_four_bounds
         (12 * (k : ℝ))⁻¹ * (64 * (p : ℝ) ^ 4 * k ^ 2)⁻¹ ≤
           c ^ 4 * (x ^ 4)⁻¹ :=
       mul_le_mul hc4Lower hxinv (by positivity) (by positivity)
-    convert mul_le_mul_of_nonneg_left hmul (show (0 : ℝ) ≤ 1 / 16 by norm_num) using 1 <;>
-      field_simp <;> ring
+    convert! mul_le_mul_of_nonneg_left hmul
+      (show (0 : ℝ) ≤ 1 / 16 by norm_num) using 1 <;>
+      (try field_simp) <;> ring
   have hseriesUpper : S ≤ 2 * c * b := by
     dsimp [S, c, b, x]
     exact semilocalOnePrimeEvenJacobiMagnitudeSeries_upper_at hk hp

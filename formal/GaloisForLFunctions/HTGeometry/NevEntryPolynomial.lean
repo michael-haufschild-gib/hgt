@@ -72,7 +72,7 @@ theorem nevDtruncC_eq_aeval (s : ℕ → ℝ) (n : ℕ) (z : ℂ) :
     intro k
     rw [show Polynomial.aeval (0 : ℂ) (monicOrtho s k)
         = (((monicOrtho s k).eval 0 : ℝ) : ℂ) from by
-      simpa using (monicOrthoC_at_zero s k)]
+      simpa using! (monicOrthoC_at_zero s k)]
     push_cast
     ring
   rw [Finset.sum_congr rfl fun k _ => hterm k]

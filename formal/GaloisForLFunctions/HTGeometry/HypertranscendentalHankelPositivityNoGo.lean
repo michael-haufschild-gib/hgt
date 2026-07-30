@@ -36,7 +36,7 @@ def HasStrictSignedJetHankelTower (f : ℂ → ℂ) : Prop :=
 theorem digamma_hasStrictSignedJetHankelTower :
     HasStrictSignedJetHankelTower Complex.digamma := by
   intro a ha n
-  simpa only [HasStrictSignedJetHankelTower, signedNormalizedDigammaJet] using
+  simpa only [HasStrictSignedJetHankelTower, signedNormalizedDigammaJet] using!
     signedNormalizedDigammaJet_hankel_posDef ha n
 
 /-- **Hölder/Hankel no-go.**  There exists a hypertranscendental function whose naturally signed

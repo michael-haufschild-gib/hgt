@@ -26,7 +26,8 @@ theorem vec_zero_of_det_ne_zero
   classical
   have hmul : M *ᵥ w = 0 := by
     funext i
-    simpa [Matrix.mulVec] using h i
+    change ∑ j, M i j * w j = 0
+    exact h i
   intro j
   by_contra hw
   have hreg : w j ∈ nonZeroDivisors R :=

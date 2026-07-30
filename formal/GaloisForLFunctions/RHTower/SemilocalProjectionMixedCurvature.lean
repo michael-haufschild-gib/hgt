@@ -235,7 +235,7 @@ theorem selfAdjointIdempotentFamily_normalGram_isCompact
   have hidentity := selfAdjointIdempotentFamily_mixed_normalGram_identity
     F Dt Ds Dst ht hidem hs hst hPadj hDsadj hDtadj
   have hcorner : IsCompactOperator (F 0 0 * Dst * F 0 0) := by
-    simpa only [mul_assoc] using (hDst.comp_clm (F 0 0)).clm_comp (F 0 0)
+    simpa only [mul_assoc] using! (hDst.comp_clm (F 0 0)).clm_comp (F 0 0)
   have hEq : G = -(F 0 0 * Dst * F 0 0) := by
     have hneg := congrArg Neg.neg hidentity
     change -(F 0 0 * Dst * F 0 0) = -(-G) at hneg

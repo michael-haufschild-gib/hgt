@@ -134,11 +134,11 @@ theorem xiCofiniteEvaluationReporter_boundedRecoverableBlindnessUniversality
         rw [hzero']
         exact map_zero recover
       refine ⟨c, hc, hpacket, hreport, hencoded, ?_⟩
-      simpa only [totalDecode, LinearMap.comp_apply] using herase
+      simpa only [totalDecode, LinearMap.comp_apply] using! herase
     · rintro ⟨c, hc, hpacket, hreport, _hencoded, herase⟩
       have htotalErase :
           totalDecode (report (finiteDerivativeReporterPacket c xi)) = 0 := by
-        simpa only [totalDecode, LinearMap.comp_apply] using herase
+        simpa only [totalDecode, LinearMap.comp_apply] using! herase
       have hdet' := hbase.mpr ⟨c, hc, hpacket, hreport, htotalErase⟩
       simpa only [totalDecode, LinearMap.comp_assoc] using hdet'
   have hstrictEncoded :
@@ -173,7 +173,7 @@ theorem xiCofiniteEvaluationReporter_boundedRecoverableBlindnessUniversality
       rw [hzero']
       exact map_zero recover
     refine ⟨c, hc, hpacket, hreport, hencoded, ?_⟩
-    simpa only [totalDecode, LinearMap.comp_apply] using herase
+    simpa only [totalDecode, LinearMap.comp_apply] using! herase
   exact ⟨hpostGram, hblind, hexact, hstrictEncoded⟩
 
 end

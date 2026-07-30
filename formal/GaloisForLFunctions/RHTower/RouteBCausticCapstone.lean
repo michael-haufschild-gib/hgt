@@ -329,12 +329,53 @@ theorem annulus_lintegral_le {B C c : ℂ} {ρ r σ0 : ℝ} {J : ℕ}
       (fun _ : ℝ => ENNReal.ofReal (2 * Real.pi
         * Real.sqrt (2 * (r * (2 * ρ + r) / ((ρ - ‖B‖) / 2 * ‖B‖)))))) :=
     measurable_const.indicator (measurableSet_coreSetP c C B ρ r σ0)
+  let shellTerm : ℕ → ℝ → ENNReal := fun j η =>
+    (shellSetP c C B ρ (2 ^ j * σ0)).indicator
+      (fun _ => ENNReal.ofReal (2 * Real.pi
+        * (r * (2 * ρ + r) / ((ρ - ‖B‖) / 2 * ‖B‖))
+        / Real.sqrt (min (2 ^ j * σ0 * causticKappa ρ ‖B‖ / 2)
+          (1 / 2)))) η
+    + (shellSetM c C B ρ (2 ^ j * σ0)).indicator
+      (fun _ => ENNReal.ofReal (2 * Real.pi
+        * (r * (2 * ρ + r) / ((ρ - ‖B‖) / 2 * ‖B‖))
+        / Real.sqrt (min (2 ^ j * σ0 * causticKappa ρ ‖B‖ / 2)
+          (1 / 2)))) η
+  let shellBound : ℝ → ENNReal := fun η =>
+    ∑ j ∈ Finset.range J, shellTerm j η
+  let coreMBound : ℝ → ENNReal := (coreSetM c C B ρ r σ0).indicator
+    (fun _ => ENNReal.ofReal (2 * Real.pi
+      * Real.sqrt (2 * (r * (2 * ρ + r) / ((ρ - ‖B‖) / 2 * ‖B‖)))))
+  let corePBound : ℝ → ENNReal := (coreSetP c C B ρ r σ0).indicator
+    (fun _ => ENNReal.ofReal (2 * Real.pi
+      * Real.sqrt (2 * (r * (2 * ρ + r) / ((ρ - ‖B‖) / 2 * ‖B‖)))))
+  let midBound : ℝ → ENNReal := (midSet c C B ρ).indicator
+    (fun _ => ENNReal.ofReal (2 * Real.pi
+      * (r * (2 * ρ + r) / ((ρ - ‖B‖) / 2 * ‖B‖))
+      / Real.sqrt (min (((ρ + ‖B‖) ^ 2 - (ρ - ‖B‖) ^ 2) / 3
+          * causticKappa ρ ‖B‖ / 2) (1 / 2))))
+  have hmShellBound : Measurable shellBound := by
+    simpa only [shellBound, shellTerm] using hmS
+  have hmShellTerm : ∀ j : ℕ, Measurable (shellTerm j) := fun j => by
+    simpa only [shellTerm] using! (hmP j).add (hmM j)
+  have hmCoreMBound : Measurable coreMBound := by
+    simpa only [coreMBound] using hmCM
+  have hmCorePBound : Measurable corePBound := by
+    simpa only [corePBound] using hmCP
+  have hmShellCoreM :
+      Measurable (fun η => shellBound η + coreMBound η) :=
+    hmShellBound.add hmCoreMBound
+  have hmShellCores :
+      Measurable (fun η => shellBound η + coreMBound η + corePBound η) :=
+    hmShellCoreM.add hmCorePBound
   refine le_trans (setLIntegral_mono' measurableSet_Icc hpt) ?_
   refine le_trans (setLIntegral_le_lintegral _ _) ?_
-  rw [lintegral_add_left ((hmS.add hmCM).add hmCP),
-    lintegral_add_left (hmS.add hmCM), lintegral_add_left hmS,
-    MeasureTheory.lintegral_finsetSum' _ (fun j _ =>
-      ((hmP j).add (hmM j)).aemeasurable)]
+  change (∫⁻ η, shellBound η + coreMBound η + corePBound η + midBound η) ≤ _
+  rw [lintegral_add_left hmShellCores, lintegral_add_left hmShellCoreM,
+    lintegral_add_left hmShellBound]
+  dsimp only [shellBound]
+  rw [MeasureTheory.lintegral_finsetSum' _ (fun j _ =>
+    (hmShellTerm j).aemeasurable)]
+  dsimp only [shellTerm, coreMBound, corePBound, midBound]
   refine add_le_add (add_le_add (add_le_add ?_ ?_) ?_) ?_
   · -- shells
     have hterm : ∀ j ∈ Finset.range J,

@@ -65,13 +65,18 @@ theorem hasSum_xiZeroCopyReciprocalSquare_pow_rawDyadicTraces
         ((n + (2 * m + 1)).choose (2 * m + 1) : ℂ) *
           (2 : ℂ)⁻¹ ^ n * z ^ (n + (2 * m + 2)))
     ((-(z ^ 2) / (1 - z / 2) ^ 2) ^ (m + 1))
-  convert hmul using 1
-  · funext n
-    rw [div_pow, pow_add, div_eq_mul_inv, ← inv_pow]
-    ring
-  · have hexp : 2 * m + 1 + 1 = 2 * (m + 1) := by omega
+  have hvalue :
+      ((-(z ^ 2) / (1 - z / 2) ^ 2) ^ (m + 1)) =
+        (-1 : ℂ) ^ (m + 1) * z ^ (2 * m + 2) *
+          (1 / (1 - z / 2) ^ (2 * m + 1 + 1)) := by
+    have hexp : 2 * m + 1 + 1 = 2 * (m + 1) := by omega
     rw [hexp, div_pow, neg_pow, pow_mul, pow_mul]
     ring
+  rw [hvalue]
+  apply HasSum.congr_fun hmul
+  intro n
+  rw [div_pow, pow_add, div_eq_mul_inv, ← inv_pow]
+  ring
 
 set_option maxHeartbeats 800000 in
 /-- Absolute summability of the complete dyadic transform over expansion order and exact Xi-divisor

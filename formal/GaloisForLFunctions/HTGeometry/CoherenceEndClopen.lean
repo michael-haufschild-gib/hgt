@@ -459,13 +459,13 @@ def finiteBoundarySubring (G : SimpleGraph V) : Subring (AsBoolRing (Set V)) whe
   one_mem' := by simp
   add_mem' := by
     intro A B hA hB
-    simpa only [ofBoolRing_add] using edgeBoundary_symmDiff_finite G hA hB
+    simpa only [ofBoolRing_add] using! edgeBoundary_symmDiff_finite G hA hB
   mul_mem' := by
     intro A B hA hB
-    simpa only [ofBoolRing_mul] using edgeBoundary_inter_finite G hA hB
+    simpa only [ofBoolRing_mul] using! edgeBoundary_inter_finite G hA hB
   neg_mem' := by
     intro A hA
-    simpa only [ofBoolRing_neg] using hA
+    simpa only [ofBoolRing_neg] using! hA
 
 /-- The ideal of finite vertex sets inside the finite-boundary Boolean ring. -/
 def finiteVertexSetIdeal (G : SimpleGraph V) : Ideal (finiteBoundarySubring G) where
@@ -473,10 +473,10 @@ def finiteVertexSetIdeal (G : SimpleGraph V) : Ideal (finiteBoundarySubring G) w
   zero_mem' := by simp
   add_mem' := by
     intro A B hA hB
-    simpa only [Subring.coe_add, ofBoolRing_add] using hA.symmDiff hB
+    simpa only [Subring.coe_add, ofBoolRing_add] using! hA.symmDiff hB
   smul_mem' := by
     intro A B hB
-    simpa only [smul_eq_mul, Subring.coe_mul, ofBoolRing_mul] using
+    simpa only [smul_eq_mul, Subring.coe_mul, ofBoolRing_mul] using!
       hB.inter_of_right (ofBoolRing A.1)
 
 def finiteBoundaryEmpty (G : SimpleGraph V) : FiniteBoundarySet G :=

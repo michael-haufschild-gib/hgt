@@ -61,9 +61,7 @@ theorem diffuseFisherOffDiagonalCodiagonalOn_eq_score_sub_collision
       Summable (fun j : ι => p i * p j * (a i + a j) * d i) := by
     have h₁ := hp.mul_left (p i * a i * d i)
     have h₂ := hpa.mul_left (p i * d i)
-    convert h₁.add h₂ using 1
-    funext j
-    ring
+    exact (h₁.add h₂).congr (fun j => by ring)
   have hinnerValue (i : ι) :
       (∑' j : ι, p i * p j * (a i + a j) * d i) =
         p i * a i * d i := by
@@ -252,9 +250,7 @@ private theorem summable_cofinalReplica
     (hasSum_fintype (fun _ : Fin k => (1 : ℝ))).summable
   have hprod :=
     summable_mul_of_summable_norm hfin.norm (hf.div_const k).norm
-  convert hprod using 1
-  funext q
-  simp
+  exact hprod.congr (fun q => by simp)
 
 private theorem tsum_cofinalReplica
     {k : ℕ} (hk : 0 < k) {f : ℕ → ℝ} (hf : Summable f) :
@@ -314,8 +310,7 @@ theorem cofinalReplicaFisherOneCornerCodiagonal_eq_score_sub_collision
         (2 / k) * diffuseFisherCollisionResidual p a d := by
   have hpR :
       Summable (cofinalReplicaProbability k p) := by
-    simpa only [cofinalReplicaProbability] using
-      summable_cofinalReplica (k := k) hp
+    exact (summable_cofinalReplica (k := k) hp).congr (fun q => rfl)
   have hpaR :
       Summable (fun q : Fin k × ℕ =>
         cofinalReplicaProbability k p q *
@@ -564,8 +559,8 @@ theorem tendsto_ofReal_mobiusCofinalReplicaFisherOneCornerCodiagonal
         (inner_fisherTangent_damped_eq_coefficient hsigma hu).symm
       _ = _ :=
         inner_fisherTangent_damped_eq_squarefreeFisherScore hsigma hu
-  simpa only [mobiusCofinalReplicaFisherOneCornerCodiagonal,
-    hscore, hcoefficient] using hcast
+  rw [hscore, hcoefficient] at hcast
+  exact hcast.congr' (Filter.Eventually.of_forall (fun k => rfl))
 
 /-- Singular Gamma graph fed by the replicated strict-lower source. -/
 def squarefreeMobiusCofinalReplicaGammaCurrentTransportV

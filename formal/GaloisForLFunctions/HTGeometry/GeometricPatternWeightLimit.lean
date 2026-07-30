@@ -24,7 +24,7 @@ theorem tendsto_complexPolynomial_eval_div_pow_natDegree (P : ℂ[X]) :
       Complex.continuous_ofReal.continuousAt.tendsto.comp tendsto_inv_atTop_zero
   have hrev : Tendsto (fun t : ℝ => P.reverse.eval ((t⁻¹ : ℝ) : ℂ))
       atTop (𝓝 P.leadingCoeff) := by
-    convert P.reverse.continuous.continuousAt.tendsto.comp hinv using 1
+    convert! P.reverse.continuous.continuousAt.tendsto.comp hinv using 1
     rw [← Polynomial.coeff_zero_eq_eval_zero, Polynomial.coeff_zero_reverse]
   apply hrev.congr'
   filter_upwards [eventually_gt_atTop (0 : ℝ)] with t ht

@@ -66,7 +66,7 @@ theorem no_finitePole_solution_digammaShiftDerivative
     change meromorphicOrderAt ((fun z : ℂ => z ^ 2)⁻¹) 0 < 0
     rw [meromorphicOrderAt_inv]
     have hpow : meromorphicOrderAt (fun z : ℂ => z ^ 2) 0 = 2 := by
-      simpa only [sub_zero] using
+      simpa only [sub_zero] using!
         (meromorphicOrderAt_pow_id_sub_const (𝕜 := ℂ) (x := 0) (n := 2))
     rw [hpow]
     change (-(2 : WithTop ℤ)) < 0
@@ -123,7 +123,7 @@ theorem inv_digamma_vertical_tendsto_zero {σ : ℝ} (hσ : 0 ≤ σ) :
     refine tendsto_atTop_mono' atTop ?_ hre
     exact Filter.Eventually.of_forall (fun _ => Complex.re_le_norm _)
   rw [tendsto_zero_iff_norm_tendsto_zero]
-  simpa only [norm_inv] using hnorm.inv_tendsto_atTop
+  simpa only [norm_inv] using! hnorm.inv_tendsto_atTop
 
 /-- A fixed constant for the logarithmic upper bound on vertical digamma growth. -/
 def digammaVerticalLogConstant : ℝ := 2 + 2 * Real.pi + Real.log 2
@@ -567,7 +567,7 @@ theorem deriv_Gamma_div_second_vertical_tendsto_zero {σ : ℝ} (hσ : 0 < σ) :
     simpa using tendsto_const_nhds.add hcorr
   have hmodel : Tendsto (fun t => (ψ t)⁻¹ / (1 + ψ' t * (ψ t)⁻¹ ^ 2))
       atTop (nhds 0) := by
-    simpa using hinv.div hden (by norm_num : (1 : ℂ) ≠ 0)
+    simpa using! hinv.div hden (by norm_num : (1 : ℂ) ≠ 0)
   apply hmodel.congr'
   have hre := re_digamma_vertical_tendsto_atTop hσ.le
   filter_upwards [hre.eventually_gt_atTop 0,

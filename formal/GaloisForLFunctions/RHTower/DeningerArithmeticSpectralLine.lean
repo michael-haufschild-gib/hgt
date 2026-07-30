@@ -232,7 +232,7 @@ theorem integral_deningerTimeTestLaplace_mul_complexVerticalResolvent
       · simp [K, e, ht]
     _ = ∫ t : ℝ, ∫ ξ : ℝ, K (t, ξ) := by
       apply integral_integral_swap
-      simpa only [Function.comp_apply] using hK.swap
+      simpa only [Function.comp_apply] using! hK.swap
     _ = ∫ t : ℝ,
         Complex.exp (-a * (t : ℂ)) *
           deningerExponentiallyTiltedTimeTest φ c t := by

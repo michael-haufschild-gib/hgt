@@ -73,7 +73,7 @@ theorem exists_deningerCompactOpenFiniteJetPeeling
         ‖xiSpectralPointSupport rho‖ ≤ (n + 2 : ℝ) :=
       le_of_lt (by
         simpa only [Nat.cast_add, Nat.cast_ofNat,
-          NNReal.coe_natCast] using hrho)
+          NNReal.coe_natCast, NNReal.coe_add] using! hrho)
     have hrhoMem :
         rho ∈ packet := by
       change
@@ -140,7 +140,7 @@ theorem deningerCompactOpenFiniteJetRepresentative_peeling
       ‖xiSpectralPointSupport rho‖ ≤ (n + 2 : ℝ) :=
     le_of_lt (by
       simpa only [Nat.cast_add, Nat.cast_ofNat,
-        NNReal.coe_natCast] using hrho)
+        NNReal.coe_natCast, NNReal.coe_add] using! hrho)
   have hrhoMem :
       rho ∈ packet := by
     change

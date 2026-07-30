@@ -78,11 +78,11 @@ theorem re_inner_finiteCyclicObservableTwirlStarKadisonDefect_eq_erasedNormSq
     U (X.adjoint * X) N hN hψleft hψ
   have hXnorm :
       RCLike.re (inner 𝕜 ψ ((X.adjoint * X) ψ)) = ‖X ψ‖ ^ 2 := by
-    simpa only [mul_apply_eq_comp] using
+    simpa only [mul_apply_eq_comp] using!
       (X.apply_norm_sq_eq_inner_adjoint_right ψ).symm
   have hPhinorm :
       RCLike.re (inner 𝕜 ψ ((Phi.adjoint * Phi) ψ)) = ‖Phi ψ‖ ^ 2 := by
-    simpa only [mul_apply_eq_comp] using
+    simpa only [mul_apply_eq_comp] using!
       (Phi.apply_norm_sq_eq_inner_adjoint_right ψ).symm
   have hPhiApply :
       Phi ψ = finiteCyclicGaugeAverage U N (X ψ) := by

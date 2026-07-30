@@ -284,7 +284,6 @@ theorem p_series_tail_le {r : ℝ} (hr : 1 < r) {M : ℕ} (hM : 2 ≤ M) :
     · filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx using hnnF x (le_of_lt hx)
     · refine Filter.Eventually.of_forall (fun x hx => ?_)
       exact hMcast ▸ hx.1
-  simp only at hsli
   rw [hLHSeq] at hsli
   linarith [hsli, hRHSle]
 

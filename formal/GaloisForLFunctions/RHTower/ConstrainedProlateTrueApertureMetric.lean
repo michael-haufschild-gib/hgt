@@ -93,7 +93,7 @@ theorem trueApertureMuntzMap_ae (a b : ℝ) (N : ℕ) (f : SoninL2) :
             (trueApertureRawDilation n f) x := by
       classical
       induction (Finset.Icc 1 N) using Finset.induction_on with
-      | empty => simpa using (Lp.coeFn_zero ℂ 2 volume)
+      | empty => simpa using! (Lp.coeFn_zero ℂ 2 volume)
       | @insert n s hn ih =>
           rw [Finset.sum_insert hn]
           filter_upwards [Lp.coeFn_add (trueApertureRawDilation n f)

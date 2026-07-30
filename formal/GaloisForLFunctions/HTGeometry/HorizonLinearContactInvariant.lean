@@ -113,7 +113,7 @@ theorem linearContactPlane_of_commute
     obtain ⟨γ, δ, hq'⟩ := Submodule.mem_span_pair.mp hq
     have hpq_comm : Function.Commute (ρ p) (ρ q) := by
       rw [← hp', ← hq']
-      simpa only [map_add, map_smul] using
+      simpa only [map_add, map_smul] using!
         linearCombinations_commute_of_commute (ρ v) (ρ w) hcomm α β γ δ
     exact commuting_horizon_chord ρ x hpH hqH hpq_comm a b
 

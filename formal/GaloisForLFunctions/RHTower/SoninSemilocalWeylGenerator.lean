@@ -137,7 +137,7 @@ theorem hasDerivAt_normalizedDilationWeylCharacterOrbit
       ((-Complex.I * (Real.log p : ℂ) *
           HTGeometry.scalarWeylCharacter (Real.log p) z) *
         normalizedDilationFunction p f x) z := by
-  simpa only [normalizedDilationWeylCharacterOrbit] using
+  simpa only [normalizedDilationWeylCharacterOrbit] using!
     (HTGeometry.hasDerivAt_scalarWeylCharacter (Real.log p) z).mul_const
       (normalizedDilationFunction p f x)
 
@@ -186,7 +186,7 @@ theorem soninSemilocalWignerSmithCharge_eq_log_scale
     (pk : Nat.Primes × ℕ) (t : ℝ) :
     soninSemilocalWignerSmithCharge pk t =
       (Real.log (soninSemilocalPrimePowerScale pk) : ℂ) := by
-  simpa only [soninSemilocalWignerSmithCharge, soninSemilocalWeylCharacter] using
+  simpa only [soninSemilocalWignerSmithCharge, soninSemilocalWeylCharacter] using!
     HTGeometry.scalarWeylWignerSmithValue_eq
       (Real.log (soninSemilocalPrimePowerScale pk)) t
 
@@ -251,7 +251,7 @@ theorem hasDerivAt_soninSemilocalWeylFluxOrbit
         (-Complex.I *
           (Real.log (soninSemilocalPrimePowerScale pk) : ℂ) *
             soninSemilocalWeylCharacter pk z)) z := by
-  simpa only [soninSemilocalWeylFluxOrbit, soninSemilocalWeylCharacter] using
+  simpa only [soninSemilocalWeylFluxOrbit, soninSemilocalWeylCharacter] using!
     (HTGeometry.hasDerivAt_scalarWeylCharacter
       (Real.log (soninSemilocalPrimePowerScale pk)) z).const_mul
         (soninSemilocalLogPrimePowerCoefficient pk)

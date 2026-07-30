@@ -150,8 +150,8 @@ theorem enumeratedClosedConstraintPrimeWalsh_differentialBasis_and_rank
           (Set.range (primeTailPatternDeltaShiftPalette e epsilon alpha)) =
         GaloisForLFunctions.differentialAdjoin finitePrimeRationalCoefficientField
           (Set.range (primeWalshShiftPalette epsilon alpha)) ∧
-      Fintype.card (primeRecurringPatternChamber e epsilon × A) =
-        Fintype.card A * Fintype.card (orientationRestriction I '' K) := by
+      Nat.card (primeRecurringPatternChamber e epsilon × A) =
+        Nat.card A * Nat.card (orientationRestriction I '' K) := by
   dsimp only
   have hbasis := primeWalshShiftPalette_differentialBasis e
     (fun i : I => enumeratedClosedConstraintPrimeOrientation e K i.1) alpha hdistinct

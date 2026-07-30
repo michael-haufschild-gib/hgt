@@ -159,8 +159,17 @@ theorem tendsto_sub_one_mul_lSeries_gammaDampedCoeff :
   have hinv : Tendsto (fun s : ℂ => (riemannZeta (2 * s))⁻¹)
       (nhdsWithin 1 {s : ℂ | 1 < s.re}) (nhds (riemannZeta 2)⁻¹) := by
     have h := (hcont.inv₀ (by simpa using hne)).tendsto
-    simp only [mul_one] at h
-    exact h.mono_left nhdsWithin_le_nhds
+    have ht :
+        Tendsto ((fun s : ℂ => riemannZeta (2 * s))⁻¹)
+          (nhdsWithin 1 {s : ℂ | 1 < s.re})
+          (nhds (riemannZeta 2)⁻¹) := by
+      simpa only [Pi.inv_apply, mul_one] using
+        h.mono_left
+          (nhdsWithin_le_nhds :
+            nhdsWithin (1 : ℂ) {s : ℂ | 1 < s.re} ≤ nhds 1)
+    apply ht.congr'
+    filter_upwards with s
+    rfl
   have hH : Tendsto (fun s : ℂ => (s - 1) * gammaDampedCorrectionLSeries s)
       (nhdsWithin 1 {s : ℂ | 1 < s.re}) (nhds 0) := by
     have hc := analyticAt_gammaDampedCorrectionLSeries_one.continuousAt

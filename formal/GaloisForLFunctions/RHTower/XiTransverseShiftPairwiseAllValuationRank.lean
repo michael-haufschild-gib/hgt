@@ -38,7 +38,7 @@ theorem xiTransverseShiftPairDifferenceUpperEndCarrier_complete_allValuation_dif
     simp [x, hroot]
   have h := differentialAdjoin_range_pairwiseDifferences_eq_of_root_zero
     (F := analyticScalarValuationLayerDifferentialField) (K := upperEndMeroField) root x hx0
-  simpa only [x, xiTransverseShiftPairDifferenceUpperEndCarrier] using h
+  simpa only [x, xiTransverseShiftPairDifferenceUpperEndCarrier] using! h
 
 /-- **All-valuation all-integral pairwise Xi incidence law.** The corrected completed-Xi
 pairwise differences represent exactly the rooted incidence matroid after every scalar valuation

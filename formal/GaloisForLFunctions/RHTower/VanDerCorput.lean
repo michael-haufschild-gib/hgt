@@ -625,7 +625,19 @@ theorem norm_integral_cexp_ofReal_mul_I_le_mono
     have hw : HasDerivAt (fun t => (g' t : ℂ) * I) ((g'' x : ℂ) * I) x :=
       ((hg' x hx).ofReal_comp).mul_const I
     have h2 := (hasDerivAt_inv (hg'ne x hx)).comp x hw
-    rw [hU'def, hUdef]; convert h2 using 1; field_simp
+    rw [hU'def, hUdef]
+    change HasDerivAt (fun t : ℝ => ((g' t : ℂ) * I)⁻¹)
+      (-(((g'' x : ℂ) * I) / ((g' x : ℂ) * I) ^ 2)) x
+    have hfun :
+        (fun t : ℝ => ((g' t : ℂ) * I)⁻¹) =
+          (fun y : ℂ => y⁻¹) ∘ fun t : ℝ => (g' t : ℂ) * I := rfl
+    have hcoeff :
+        -(((g'' x : ℂ) * I) / ((g' x : ℂ) * I) ^ 2) =
+          -(((g' x : ℂ) * I) ^ 2)⁻¹ * ((g'' x : ℂ) * I) := by
+      rw [div_eq_mul_inv]
+      ring
+    rw [hfun, hcoeff]
+    exact h2
   have hVnorm : ∀ t, ‖V t‖ = 1 := by intro t; rw [hVdef]; simp [Complex.norm_exp]
   have hUnorm : ∀ x ∈ Set.uIcc a b, ‖U x‖ = (g' x)⁻¹ := by
     intro x hx; rw [hUdef, norm_inv, norm_mul, Complex.norm_I, mul_one, Complex.norm_real,
@@ -677,8 +689,12 @@ theorem norm_integral_cexp_ofReal_mul_I_le_mono
       HasDerivAt (fun t => -(g' t)⁻¹) (g'' x / (g' x) ^ 2) x := by
     intro x hx
     have hi := ((hg' x hx).inv (hg'pos x hx).ne').neg
-    convert hi using 1
-    field_simp
+    have hfun : (fun t : ℝ => -(g' t)⁻¹) = -g'⁻¹ := by
+      funext t
+      rfl
+    have hcoeff : g'' x / (g' x) ^ 2 = -(-g'' x / (g' x) ^ 2) := by ring
+    rw [hfun, hcoeff]
+    exact hi
   have hFTCint : IntervalIntegrable (fun t => g'' t / (g' t) ^ 2) volume a b := by
     apply ContinuousOn.intervalIntegrable
     exact ContinuousOn.div hg''c (hg'c.pow 2) (fun x hx => pow_ne_zero _ (hg'pos x hx).ne')

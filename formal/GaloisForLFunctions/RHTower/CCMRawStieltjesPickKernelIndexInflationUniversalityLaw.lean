@@ -56,7 +56,7 @@ theorem integrable_regularizedHerglotzKernel_criticalMellinPolarMeasure
     rw [Complex.norm_real, Real.norm_eq_abs]
     simpa [abs_div, abs_of_nonneg (show 0 ≤ 1 + t ^ 2 by positivity)] using
       (div_le_one (show 0 < 1 + t ^ 2 by positivity)).2 ht
-  simpa only [regularizedHerglotzKernel, one_div] using
+  simpa only [regularizedHerglotzKernel, one_div] using!
     (integrable_cauchyKernel (criticalMellinPolarMeasure A) hz).sub hregularizer
 
 /-- The raw RHT Gram is exactly the actual Pick kernel scaled by squared boundary height. -/

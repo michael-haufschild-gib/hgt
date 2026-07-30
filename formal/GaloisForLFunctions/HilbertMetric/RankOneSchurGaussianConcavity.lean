@@ -476,12 +476,12 @@ theorem hasDerivAt_rankOneSchurExponentialPath {n : ℕ}
       (rankOneSchurExponentialFirst C a t i j) t := by
   have harg0 := (hasDerivAt_id (x := t)).mul_const (a i * a j)
   have harg : HasDerivAt (fun s : ℝ => s * a i * a j) (a i * a j) t := by
-    convert harg0 using 1
+    convert! harg0 using 1
     · funext s
       simp only [id_eq]
       ring
     · ring
-  convert harg.exp.const_mul (C i j) using 1
+  convert! harg.exp.const_mul (C i j) using 1
   simp [rankOneSchurExponentialFirst]
   ring
 
@@ -491,12 +491,12 @@ theorem hasDerivAt_rankOneSchurExponentialFirst {n : ℕ}
       (rankOneSchurExponentialSecond C a t i j) t := by
   have harg0 := (hasDerivAt_id (x := t)).mul_const (a i * a j)
   have harg : HasDerivAt (fun s : ℝ => s * a i * a j) (a i * a j) t := by
-    convert harg0 using 1
+    convert! harg0 using 1
     · funext s
       simp only [id_eq]
       ring
     · ring
-  convert harg.exp.const_mul (C i j * (a i * a j)) using 1
+  convert! harg.exp.const_mul (C i j * (a i * a j)) using 1
   simp [rankOneSchurExponentialSecond]
   ring
 
@@ -508,7 +508,7 @@ theorem rankOneExponentialTail_posSemidef {n : ℕ}
       Matrix (Fin n) (Fin n) ℝ) := by
   let y : Fin n → Fin 1 → ℝ := fun i _ => Real.sqrt t * a i
   have htail := gaussianCoherentGram_sub_truncation_posSemidef y 0
-  convert htail using 1
+  convert! htail using 1
   ext i j
   simp [gaussianCoherentGram, truncatedExponentialInnerMatrix,
     truncatedExpSeries, coordinateDot, y]
@@ -528,7 +528,7 @@ theorem rankOneSchurExponentialPath_posDef {n : ℕ}
   have hP : P.PosSemidef := rankOneExponentialTail_posSemidef a t ht
   have hCP : (C ⊙ P).PosSemidef := hC.posSemidef.hadamard hP
   have hadd := hC.add_posSemidef hCP
-  convert hadd using 1
+  convert! hadd using 1
   ext i j
   simp [rankOneSchurExponentialPath, P, Matrix.hadamard]
   ring
@@ -830,7 +830,8 @@ theorem rankOneSchurGaussian_logDet_secondDerivative_eq {n : ℕ}
     (matrixSelfCommutator
       (matrixSqrtSimilarity (H (2 * t)) (rankOneLabelDiagonal a)))
   have hscale (s : ℝ) : HasDerivAt (fun u : ℝ => 2 * u) 2 s := by
-    convert (hasDerivAt_id (x := s)).const_mul 2 using 1 <;> simp
+    convert! (hasDerivAt_id (x := s)).const_mul 2 using 1
+    simp
   have hpos : (H (2 * t)).PosDef := by
     exact rankOneSchurExponentialPath_posDef C a hC (2 * t) (by linarith)
   have hdetAt := hasDerivAt_matrixDet H (H₁ (2 * t)) (2 * t)
@@ -857,7 +858,8 @@ theorem rankOneSchurGaussian_logDet_secondDerivative_eq {n : ℕ}
       hasDerivAt_rankOneSchurExponential_logDetDerivative C a hC (2 * t) (by linarith)
   have hmodel : HasDerivAt (fun s => 2 * deriv f (2 * s)) (-2 * E) t := by
     have hcomp := hfsecond.comp t (hscale t)
-    convert hcomp.const_mul 2 using 1 <;> ring
+    convert! hcomp.const_mul 2 using 1
+    ring
   have hgsecond : HasDerivAt (deriv g) (-2 * E) t :=
     hmodel.congr_of_eventuallyEq hfirst
   have hlog : k =ᶠ[nhds t] fun s => -2 * s * S + g s := by
@@ -871,13 +873,14 @@ theorem rankOneSchurGaussian_logDet_secondDerivative_eq {n : ℕ}
     filter_upwards [hgdiff] with s hs
     have haffine : HasDerivAt (fun u : ℝ => -2 * u * S) (-2 * S) s := by
       have hbase := (hasDerivAt_id (x := s)).const_mul (-2 * S)
-      convert hbase using 1
+      convert! hbase using 1
       · funext u
         simp only [id_eq]
         ring
       · ring
     have hadd := haffine.add hs.hasDerivAt
-    convert hadd.deriv using 1 <;> ring
+    convert! hadd.deriv using 1
+    ring
   have hkFirst : deriv k =ᶠ[nhds t] fun s => deriv g s - 2 * S :=
     hlog.deriv.trans hrhsFirst
   have hkSecond : HasDerivAt (deriv k) (-2 * E) t :=
@@ -959,7 +962,9 @@ theorem rankOneSchurGaussian_logDet_concaveOn {n : ℕ}
       (show 2 * y ∈ Set.Ici (0 : ℝ) by
         simpa only [Set.mem_Ici] using mul_nonneg (by norm_num : (0 : ℝ) ≤ 2) hy)
       hp hq hpq
-    convert h using 1 <;> simp only [smul_eq_mul] <;> ring
+    convert! h using 1
+    simp only [smul_eq_mul]
+    ring
   have haffine : ConcaveOn ℝ (Set.Ici 0) (fun t => -2 * t * S) := by
     refine ⟨convex_Ici 0, ?_⟩
     intro x hx y hy p q hp hq hpq
@@ -967,7 +972,7 @@ theorem rankOneSchurGaussian_logDet_concaveOn {n : ℕ}
     rw [show -2 * (p * x + q * y) * S =
         p * (-2 * x * S) + q * (-2 * y * S) by ring]
   have hsum : ConcaveOn ℝ (Set.Ici 0) (fun t => -2 * t * S + f (2 * t)) := by
-    simpa only [Pi.add_apply] using haffine.add hcomp
+    simpa only [Pi.add_apply] using! haffine.add hcomp
   apply hsum.congr
   intro t ht
   exact (rankOneSchurGaussian_logDet_eq_affine_add C a hC t ht).symm

@@ -10643,7 +10643,7 @@ lemma exists_preconnected_nontrivial_subset_closedBall_of_compact_preconnected
             exact ⟨z, hzC, rfl⟩
           simpa [C] using this
         have hzp : (z : α) = p := hCsub hzCimg hpC
-        have hdist : dist (z : α) p = r := by simpa [Metric.mem_sphere] using hzF
+        have hdist : dist (z : α) p = r := by simpa [Metric.mem_sphere] using! hzF
         rw [hzp, dist_self] at hdist
         linarith
       obtain ⟨E, hEclopen, hpE, hdisjFE⟩ :=
@@ -10694,7 +10694,7 @@ lemma filledJulia_boundaryBumpingCore_of_preconnected
   · rintro z ⟨x, hx, rfl⟩
     have hxρ := hA₀ρ hx
     change dist (x : ℂ) p ≤ ρ
-    simpa [Metric.mem_closedBall] using hxρ
+    simpa [Metric.mem_closedBall] using! hxρ
 
 /-- Local-tip absorption of the punctured exterior ball into the selected common exterior component.
 This is the Lean form of the first half of the boundary-slice reduction: once `p` lies in the

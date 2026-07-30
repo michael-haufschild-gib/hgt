@@ -164,7 +164,12 @@ theorem finiteAbscissaCoordinateCoefficient_summable
       (fun i _ => by positivity) hkmem
   have hHlt : H k < x₀ := lt_of_lt_of_le (by linarith [le_abs_self (H k)]) hterm
   have hs := hH k x₀ hHlt
-  simpa only [finiteAbscissaCoordinateCoefficient] using hs.smul (Complex.I ^ k)
+  refine (LSeriesSummable_congr (x₀ : ℂ)
+    (f := (Complex.I ^ k) • fun n => (P.coeff k).1 n)
+    (g := finiteAbscissaCoordinateCoefficient P k) ?_).mp
+      (hs.smul (Complex.I ^ k))
+  intro n _
+  simp [finiteAbscissaCoordinateCoefficient, Pi.smul_apply, smul_eq_mul]
 
 theorem upperEndAnalyticPolynomialRelation_coeff_eq_zero
     (P : Polynomial finiteAbscissaArithmeticSubalgebra)

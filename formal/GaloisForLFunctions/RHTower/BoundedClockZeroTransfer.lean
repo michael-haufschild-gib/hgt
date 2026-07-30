@@ -149,7 +149,7 @@ theorem bounded_periodic_zero_limit {Ω : Set ℂ}
     apply hnotVertical
     apply shrinking_periodic_zero_limit_vertical hΩshift hconv' hFc hz hzn' hznΩ'
       hTpos'
-    · simpa [hTzero] using hTlim
+    · simpa [hTzero] using! hTlim
     · exact hper'
   · have hTstrict : 0 < T := lt_of_le_of_ne hTmem.1 (Ne.symm hTzero)
     refine ⟨T, hTstrict, hTmem.2, ?_⟩

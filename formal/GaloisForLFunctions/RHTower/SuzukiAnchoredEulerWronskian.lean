@@ -134,7 +134,7 @@ theorem suzukiEulerDefect_suzukiShiftedXiTarget
   have hdenAn : AnalyticAt ℂ (_root_.RHTower.suzukiShiftedXiDenominator eta) z := by
     exact hXi.deriv.sub (analyticAt_const.mul hXi)
   simpa only [_root_.RHTower.suzukiShiftedXiTarget,
-    suzukiShiftedXiEulerWronskian] using
+    suzukiShiftedXiEulerWronskian] using!
     suzukiEulerDefect_div (fun w : ℂ => w ^ 2 * _root_.RHTower.XiC w)
       (_root_.RHTower.suzukiShiftedXiDenominator eta) z hnum hdenAn hden
 
@@ -148,7 +148,7 @@ theorem hasDerivAt_suzukiDonoghueKernel
   have hnum : HasDerivAt (fun w : ℂ => w ^ 2 + 1) (2 * z) z := by
     simpa [id_eq, mul_comm] using ((hasDerivAt_id z).pow 2).add_const 1
   have hden : HasDerivAt (fun w : ℂ => (t : ℂ) - w) (-1) z := by
-    simpa using (hasDerivAt_const z (t : ℂ)).sub (hasDerivAt_id z)
+    simpa using! (hasDerivAt_const z (t : ℂ)).sub (hasDerivAt_id z)
   have hkernel := (hasDerivAt_id z).add (hnum.div hden h)
   have hcoeff :
       1 + (2 * z * ((t : ℂ) - z) - (z ^ 2 + 1) * (-1)) / ((t : ℂ) - z) ^ 2 =
@@ -156,7 +156,7 @@ theorem hasDerivAt_suzukiDonoghueKernel
     field_simp [h]
     ring
   rw [← hcoeff]
-  simpa only [suzukiDonoghueKernel, id_eq] using hkernel
+  simpa only [suzukiDonoghueKernel, id_eq] using! hkernel
 
 /-- The Euler defect of the Donoghue kernel is the endpoint-regular kernel above. -/
 theorem suzukiEulerDefect_donoghueKernel
@@ -264,12 +264,12 @@ theorem eqOn_upperHalfPlane_of_suzukiEulerDefect_eq_of_eq_I
         (((deriv m z - deriv n z) * z - (m z - n z)) / z ^ 2) := by
       have hsub : HasDerivAt (fun w => m w - n w)
           (deriv m z - deriv n z) z := by
-        simpa only [Pi.sub_apply] using hmz.hasDerivAt.sub hnz.hasDerivAt
+        simpa only [Pi.sub_apply] using! hmz.hasDerivAt.sub hnz.hasDerivAt
       have hid : HasDerivAt (fun w : ℂ => w) 1 z := by
-        simpa only [id_eq] using hasDerivAt_id z
+        simpa only [id_eq] using! hasDerivAt_id z
       have hdiv := (hsub.div hid (hz_ne z hz)).deriv
       change deriv (fun w => (m w - n w) / w) z = _
-      simpa only [mul_one] using hdiv
+      simpa only [mul_one] using! hdiv
     rw [hformula]
     have he := hdefect hz
     rw [suzukiEulerDefect, suzukiEulerDefect] at he

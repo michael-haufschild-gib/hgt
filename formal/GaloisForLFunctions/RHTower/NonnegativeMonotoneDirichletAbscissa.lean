@@ -238,7 +238,7 @@ theorem eq_zero_of_monotone_nonnegative_isBigO_negative_rpow
   have hpTendsto : Tendsto (fun n : ℕ => (n : ℝ) ^ p) atTop (𝓝 0) := by
     have h := (tendsto_rpow_neg_atTop (neg_pos.mpr hp)).comp
       tendsto_natCast_atTop_atTop
-    simpa only [neg_neg] using h
+    simpa only [neg_neg] using! h
   have hbTendsto : Tendsto b atTop (𝓝 0) := hO.trans_tendsto hpTendsto
   funext n
   simp only [Pi.zero_apply]

@@ -332,8 +332,8 @@ theorem finitePrimeLogHermitianKMSCarrier_tendsto_primeLogHermitianKMSCarrier
     rw [show -(primeLogSupport p : ℂ) - z =
         -((primeLogSupport p : ℂ) + z) by ring, inv_neg]
     ring
-  simpa only [finitePrimeLogHermitianKMSCarrier, primeLogHermitianKMSCarrier,
-    discreteHerglotz] using hsum
+  simpa only [HasSum, finitePrimeLogHermitianKMSCarrier, primeLogHermitianKMSCarrier,
+    discreteHerglotz] using! hsum
 
 /-- Thermodynamic limit of the explicit Hermitian finite KMS responses. -/
 theorem finiteHermitianKMSWightmanResponse_tendsto_primeLogHermitianKMSCarrier

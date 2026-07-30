@@ -43,7 +43,7 @@ theorem analyticAt_eventuallyEq_zero_of_deriv_eq_mul
     analyticOrderAt_deriv_of_pos hh hm'
   have hmulord : analyticOrderAt (fun w => a w * h w) z =
       analyticOrderAt a z + analyticOrderAt h z := by
-    simpa only [Pi.mul_apply] using analyticOrderAt_mul ha hh
+    simpa only [Pi.mul_apply] using! analyticOrderAt_mul ha hh
   have hordEq : analyticOrderAt (deriv h) z =
       analyticOrderAt (fun w => a w * h w) z :=
     analyticOrderAt_congr hode

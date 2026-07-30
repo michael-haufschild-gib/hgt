@@ -62,7 +62,7 @@ def reflCocycleMonoidWithZeroHom (s : ℂ) : (ℂ → ℂ) →*₀ ℂ where
   toFun F := reflCocycle F s
   map_one' := by simp [reflCocycle]
   map_mul' F G := by
-    simpa only [Pi.mul_apply] using (reflCocycle_mul (F := F) (G := G) (s := s))
+    simpa only [Pi.mul_apply] using! (reflCocycle_mul (F := F) (G := G) (s := s))
   map_zero' := by simp [reflCocycle]
 
 /-- **The reflection cocycle sends carrier quotients to cocycle quotients unconditionally.**

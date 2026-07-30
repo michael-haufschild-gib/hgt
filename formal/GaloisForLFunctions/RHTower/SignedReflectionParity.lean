@@ -60,7 +60,7 @@ theorem deriv_signed_reflection {f : ℂ → ℂ} {c ε : ℂ}
     ∀ s, deriv f (2 * c - s) = -ε * deriv f s := by
   intro s
   have hg : HasDerivAt (fun s : ℂ => 2 * c - s) (-1) s := by
-    simpa using (hasDerivAt_const s (2 * c)).sub (hasDerivAt_id s)
+    simpa using! (hasDerivAt_const s (2 * c)).sub (hasDerivAt_id s)
   have hcomp : HasDerivAt (fun s => f (2 * c - s)) (deriv f (2 * c - s) * (-1)) s :=
     (hf (2 * c - s)).hasDerivAt.comp s hg
   have heqfun : (fun s => f (2 * c - s)) = (fun s => ε * f s) := funext hsym
@@ -303,7 +303,7 @@ theorem even_descent {Y : ℂ → ℂ} (hY : AnalyticOnNhd ℂ Y Set.univ) (hev 
   have hrt_tendsto : Tendsto rt (𝓝 0) (𝓝 0) := by
     rw [tendsto_zero_iff_norm_tendsto_zero]
     rw [show (fun u => ‖rt u‖) = fun u => Real.sqrt ‖u‖ from funext hnorm]
-    simpa using (Real.continuous_sqrt.comp continuous_norm).tendsto (0 : ℂ)
+    simpa using! (Real.continuous_sqrt.comp continuous_norm).tendsto (0 : ℂ)
   have hcont0 : ContinuousAt X 0 := by
     have hcomp0 : Tendsto (fun u => Y (rt u)) (𝓝 0) (𝓝 (Y 0)) :=
       (hY 0 (Set.mem_univ 0)).continuousAt.tendsto.comp hrt_tendsto

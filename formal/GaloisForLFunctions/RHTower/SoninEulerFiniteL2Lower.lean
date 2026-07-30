@@ -207,7 +207,7 @@ theorem centralSoninDilationCorner_commonExteriorShell_tendsto
     congr 2
     module
   have hfirst : Tendsto (fun m => B (D (e m - g m))) atTop (𝓝 0) := by
-    simpa only [map_zero] using (B ∘L D).continuous.continuousAt.tendsto.comp hge
+    simpa only [map_zero] using! (B ∘L D).continuous.continuousAt.tendsto.comp hge
   have hsum : Tendsto (fun m => B (D (e m - g m)) + (w m - Q (w m)))
       atTop (𝓝 0) := by
     simpa only [add_zero] using hfirst.add hw
@@ -230,7 +230,7 @@ theorem centralSoninDilationCorner_commonExteriorShell_tendsto
   have hvec : Tendsto (fun m =>
       (crossBoundary Q D : SoninL2 →L[ℂ] SoninL2) (e m) - v m)
       atTop (𝓝 0) := by
-    convert hsum using 1
+    convert! hsum using 1
     funext m
     simp only [crossBoundary, mul_apply_eq_comp,
       one_apply_eq_self, _root_.sub_apply]
@@ -239,6 +239,7 @@ theorem centralSoninDilationCorner_commonExteriorShell_tendsto
       rw [map_sub, sub_add_cancel]
     rw [hDe, hDg m, map_add, map_add, hQv m]
     dsimp [B]
+    simp only [one_apply_eq_self, _root_.sub_apply]
     module
   exact tendsto_zero_iff_norm_tendsto_zero.mp hvec
 
@@ -510,7 +511,7 @@ theorem IsCompactOperator.unitaryPush
     (u : H ≃ₗᵢ[ℂ] K) (T : H →L[ℂ] H) (hT : IsCompactOperator T) :
     IsCompactOperator (unitaryPush u T) := by
   have h := (hT.comp_clm (u.symm : K →L[ℂ] H)).clm_comp (u : H →L[ℂ] K)
-  simpa [unitaryPush, Function.comp_def] using h
+  simpa [unitaryPush, Function.comp_def] using! h
 
 /-- **Concrete source `l2` lower bound.** The weighted Euclidean coefficient norm survives every
 compact perturbation of the literal finite positive Euler corner combination on the archimedean

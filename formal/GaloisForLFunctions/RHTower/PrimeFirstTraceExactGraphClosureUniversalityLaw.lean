@@ -83,7 +83,7 @@ theorem primeFirstTraceClock_graphClosure_mem_iff
     have hw' : w ∈ closure
         (realLinearGraphSubmodule primeHardyKernelMap primeFirstTraceClock :
           Set (WithLp 2 (PrimeHardy × PrimeHardy))) := by
-      simpa only [Submodule.topologicalClosure_coe] using hw
+      simpa only [Submodule.topologicalClosure_coe] using! hw
     exact closure_minimal hsubset hclosed hw'
   · intro hw
     let C : PrimeHardy →L[ℝ] PrimeHardy := hardyPrependZeroCLM

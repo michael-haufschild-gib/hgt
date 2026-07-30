@@ -132,8 +132,8 @@ theorem exists_pos_kaehlerLie_recurrence
       apply hfullNotLI
       rw [linearIndependent_finSucc']
       constructor
-      · simpa [Fin.init] using hprevLI
-      · simpa using hnot
+      · simpa [Fin.init] using! hprevLI
+      · simpa using! hnot
     exact ⟨m, hmpos, hlast⟩
 
 /-- The mixed Kähler jet obtained by first applying the `E`-connection `j` times and then the
@@ -478,7 +478,7 @@ theorem finrank_kaehlerJetRectangle_le
     dsimp [kaehlerJetRectangle]
     exact Module.Finite.span_of_finite L (Set.finite_range fun q : Fin m × Fin n ↦
       kaehlerMixedJet D E x q.1 q.2)
-  simpa [kaehlerJetRectangle] using
+  simpa [kaehlerJetRectangle] using!
     (finrank_range_le_card (R := L)
       (fun q : Fin m × Fin n ↦ kaehlerMixedJet D E x q.1 q.2))
 

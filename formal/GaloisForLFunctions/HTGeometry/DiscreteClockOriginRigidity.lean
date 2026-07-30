@@ -630,7 +630,7 @@ theorem discreteLiftedClockOperator_injective [Nonempty world] :
   have hentry :=
     congr_fun (LinearMap.congr_fun h f) (a, anchor)
   simpa [discreteLiftedClockOperator, discreteWorldFiber, f]
-    using hentry
+    using! hentry
 
 /-- **Cardinality-free physical clock--world stabilizer.**  For every
 discrete clock group of any cardinality and every nonempty finite world, two

@@ -70,7 +70,7 @@ theorem continuumSparsePrimeNaturalShiftPalette_differentialIndependent
         · exact congrArg (fun u : (S × ℕ) × ℕ => u.2) hzw
       have hsub := hdiff.comp f hf
       simpa only [Function.comp_apply, f, epsilon,
-        continuumSparsePrimeOrientation] using hsub
+        continuumSparsePrimeOrientation] using! hsub
 
 /-- Infinite Boolean sequences have exactly continuum cardinality. -/
 theorem mk_boolSequence_eq_continuum :

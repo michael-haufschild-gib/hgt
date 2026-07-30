@@ -194,7 +194,7 @@ lemma integral_inv_sq_add_sq_univ {a : ℝ} (ha : 0 < a) :
       rw [MeasureTheory.integral_const_mul]
     _ = a⁻¹ ^ 2 * (|a| * ∫ t : ℝ, (1 + t ^ 2)⁻¹) := by
       congr 1
-      simpa only [smul_eq_mul] using
+      simpa only [smul_eq_mul] using!
         (MeasureTheory.Measure.integral_comp_div (fun t : ℝ => (1 + t ^ 2)⁻¹) a)
     _ = Real.pi / a := by
       rw [integral_univ_inv_one_add_sq, abs_of_pos ha]

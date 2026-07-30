@@ -42,7 +42,7 @@ theorem hasSumLocallyUniformlyOn_universalPrimeOrientationTransition
   have h := hδ.sub hε
   simpa only [HasSumLocallyUniformlyOn, universalPrimeOrientationTransitionTerm,
     universalPrimeOrientationLimit, discreteHerglotz, Finset.sum_sub_distrib,
-    Pi.sub_apply, Complex.ofReal_sub, sub_mul] using h
+    Pi.sub_apply, Complex.ofReal_sub, sub_mul] using! h
 
 /-- A finite rational transition from the `ε` carrier toward the `δ` carrier. -/
 def universalPrimeOrientationFiniteTransition
@@ -125,7 +125,7 @@ theorem tendsto_universalPrimeOrientationFiniteTransitionContinuous
   have h := tendstoLocallyUniformlyOn_universalPrimeOrientationFiniteTransition ε δ
   rw [tendstoLocallyUniformlyOn_iff_tendstoLocallyUniformly_comp_coe] at h
   simpa [Function.comp_def,
-    coe_universalPrimeOrientationFiniteTransitionContinuous] using h
+    coe_universalPrimeOrientationFiniteTransitionContinuous] using! h
 
 /-- Common rational generators: all complex constants and all prime-pole atoms. -/
 def primeOrientationCommonGenerators : Set C(PrimeOrientationDomain, ℂ) :=

@@ -91,7 +91,7 @@ theorem linearIndependent_xiZeroHurwitzJetUpperEndAnalytic_iff_injective
       · exact congrArg (fun p : I × ℕ => (p.1 : XiDivisorSupport)) hij
       · exact congrArg (fun p : I × ℕ => p.2) hij
     have hmeroLI := (hmeroDI.comp e he).linearIndependent
-    simpa [e, differentialJet_continuedHzetaUpperEndMero] using hmeroLI
+    simpa [e, Function.comp_def, differentialJet_continuedHzetaUpperEndMero] using! hmeroLI
 
 /-- **Exact Xi-zero Hurwitz jet collision law.** Arbitrary literal continued-Hurwitz derivatives
 are linearly independent exactly when their `(Xi support point, derivative order)` labels are
@@ -229,10 +229,13 @@ theorem exists_injective_xiZeroHurwitzJetRectangleHilbertReconstruction
   let order : Fin (N * (m + 1)) → ℕ :=
     fun q => ((finProdFinEquiv.symm q).2 : ℕ)
   have hindex : Function.Injective (xiZeroHurwitzJetIndex support order) := by
-    simpa [support, order, xiZeroHurwitzJetIndex] using
+    change Function.Injective (fun q => (support q, order q))
+    simpa only [support, order] using
       xiZeroHurwitzJetRectangle_index_injective ρ m hρ
-  simpa [support, order, xiZeroHurwitzJetRectangle, xiZeroHurwitzJetFamily,
-    xiZeroHurwitzJetEvaluationGram] using
+  have hfamily :
+      xiZeroHurwitzJetFamily support order = xiZeroHurwitzJetRectangle ρ m := by
+    rfl
+  simpa only [xiZeroHurwitzJetEvaluationGram, hfamily] using
       exists_injective_xiZeroHurwitzJetEvaluationHilbertReconstruction
         support order hindex
 

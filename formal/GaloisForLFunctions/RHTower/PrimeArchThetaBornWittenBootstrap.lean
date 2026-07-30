@@ -68,9 +68,15 @@ theorem hasDerivAt_thetaCuspBornWittenLogDensityPotential
   have hχpos := thetaCuspBornWittenAmplitude_pos hn hx
   have hsq := hχ.pow 2
   have hlog := hsq.log (pow_ne_zero 2 hχpos.ne')
-  convert hlog.neg using 1
-  simp only [Pi.pow_apply, Nat.cast_ofNat, Nat.reduceSubDiff, pow_one]
-  field_simp [hχpos.ne']
+  change HasDerivAt
+    (-(fun y : ℝ =>
+      Real.log ((thetaCuspBornWittenAmplitude n ^ 2) y)))
+    (2 * thetaCuspBornWittenSuperpotential n x) x
+  exact hlog.neg.congr_deriv
+    (g' := 2 * thetaCuspBornWittenSuperpotential n x) (by
+      field_simp [hχpos.ne']
+      simp only [Pi.pow_apply]
+      ring)
 
 theorem hasDerivAt_two_thetaCuspBornWittenSuperpotential
     {n : ℕ} (hn : 0 < n) {x : ℝ} (hx : 0 ≤ x) :
@@ -94,9 +100,15 @@ theorem hasDerivAt_thetaCuspBornWittenDressedPolynomial
           thetaCuspBornWittenDressedPolynomial n P x) x := by
   have hP := P.hasDerivAt x
   have hχ := hasDerivAt_thetaCuspBornWittenAmplitude hn hx
-  convert hP.mul hχ using 1
-  simp only [thetaCuspBornWittenDressedPolynomial]
-  ring
+  change HasDerivAt
+    (fun y : ℝ => P.eval y * thetaCuspBornWittenAmplitude n y)
+    (P.derivative.eval x * thetaCuspBornWittenAmplitude n x -
+      thetaCuspBornWittenSuperpotential n x *
+        (P.eval x * thetaCuspBornWittenAmplitude n x)) x
+  exact (hP.mul hχ).congr_deriv
+    (g' := P.derivative.eval x * thetaCuspBornWittenAmplitude n x -
+      thetaCuspBornWittenSuperpotential n x *
+        (P.eval x * thetaCuspBornWittenAmplitude n x)) (by ring)
 
 theorem thetaCuspBornWitten_supercharge_dressedPolynomial
     {n : ℕ} (hn : 0 < n) (P : ℝ[X]) {x : ℝ} (hx : 0 ≤ x) :

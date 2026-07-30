@@ -171,7 +171,7 @@ theorem integrableOn_squarefreeMobiusCriticalFisherLowerBoundaryLimit :
             (4 * Real.exp (-(2 * u)) +
               8 * (u ^ 2 * Real.exp (-((2 : ℝ) * u))))) (Ioi 0) :=
     by
-      simpa only [Pi.add_apply, Pi.sub_apply] using
+      simpa only [Pi.add_apply, Pi.sub_apply] using!
         ((h01.const_mul 4).add (h21.const_mul 2)).sub
           ((h02.const_mul 4).add (h22.const_mul 8))
   apply hsum.congr
@@ -205,14 +205,14 @@ theorem integral_squarefreeMobiusCriticalFisherLowerBoundaryLimit :
       IntegrableOn
         (fun u : ℝ =>
           4 * Real.exp (-u) + 2 * (u ^ 2 * Real.exp (-u))) (Ioi 0) := by
-    simpa only [Pi.add_apply] using
+    simpa only [Pi.add_apply] using!
       (h01.const_mul 4).add (h21.const_mul 2)
   have hright :
       IntegrableOn
         (fun u : ℝ =>
           4 * Real.exp (-(2 * u)) +
             8 * (u ^ 2 * Real.exp (-(2 * u)))) (Ioi 0) := by
-    simpa only [Pi.add_apply] using
+    simpa only [Pi.add_apply] using!
       (h02.const_mul 4).add (h22.const_mul 8)
   have hsplit :
       (∫ u : ℝ in Ioi 0,

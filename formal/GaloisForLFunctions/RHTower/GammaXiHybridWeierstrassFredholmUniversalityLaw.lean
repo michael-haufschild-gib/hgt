@@ -50,9 +50,9 @@ theorem summable_normSq_gammaXiHybridWeierstrassEigenvalue (s : ℝ) :
     Summable (fun i : ℕ ⊕ XiZeroCopy =>
       ‖gammaXiHybridWeierstrassEigenvalue s i‖ ^ 2) := by
   apply Summable.sum _
-  · simpa only [Function.comp_apply, gammaXiHybridWeierstrassEigenvalue] using
+  · simpa only [Function.comp_def, gammaXiHybridWeierstrassEigenvalue] using
       summable_normSq_gammaWeierstrassEigenvalue s
-  · simpa only [Function.comp_apply, gammaXiHybridWeierstrassEigenvalue] using
+  · simpa only [Function.comp_def, gammaXiHybridWeierstrassEigenvalue] using
       summable_norm_xiSpectralPoint_inv_sq
 
 /-- Hybrid diagonal kernel. -/

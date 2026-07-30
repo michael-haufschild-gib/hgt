@@ -45,7 +45,7 @@ theorem conicRankThree_physicalHolomorphicPeriodIncidenceUniversality
   have hphysical := rankThreePhysicalOsculation_effectivity_fracture α hlin
   have hno : ¬ (periodIncidenceMultiplier
       (conicRankThreePeriodGroup α)).HasLeftInverse := by
-    simpa [conicRankThreePeriodGroup] using hphysical.2.2
+    simpa [conicRankThreePeriodGroup] using! hphysical.2.2
   have hnondiscrete : ¬ DiscreteTopology (conicRankThreePeriodGroup α) := by
     intro hdiscrete
     exact hno

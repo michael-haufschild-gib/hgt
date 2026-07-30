@@ -260,24 +260,34 @@ theorem tendsto_gammaSewnMobiusJuliaDefect_div_nhdsGT_zero
       tendsto_one_sub_xiMobiusContinuousApertureDiskNode_mul_div_nhdsGT_zero
         1 p
   have hc : Tendsto c (nhdsWithin (0 : ℝ) (Ioi 0)) (nhds 1) := by
-    have h :=
-      (continuousAt_gammaSewnMobiusValuationContractionMultiplier_zero p).tendsto
-    have h' := h.mono_left
-      (inf_le_left : nhdsWithin (0 : ℝ) (Ioi 0) ≤ nhds 0)
-    simpa only [c, gammaSewnMobiusValuationContractionMultiplier_zero] using h'
+    dsimp only [c]
+    rw [← gammaSewnMobiusValuationContractionMultiplier_zero p]
+    exact
+      (continuousAt_gammaSewnMobiusValuationContractionMultiplier_zero p).tendsto.mono_left
+        inf_le_left
   have hg : Tendsto g (nhdsWithin (0 : ℝ) (Ioi 0)) (nhds (3 / 8 : ℝ)) := by
-    have h :=
-      (continuousAt_gammaSewnMobiusValuationQuadraticDefectGain_zero p).tendsto
-    have h' := h.mono_left
-      (inf_le_left : nhdsWithin (0 : ℝ) (Ioi 0) ≤ nhds 0)
-    simpa only [g, gammaSewnMobiusValuationQuadraticDefectGain_zero] using h'
+    dsimp only [g]
+    rw [← gammaSewnMobiusValuationQuadraticDefectGain_zero p]
+    exact
+      (continuousAt_gammaSewnMobiusValuationQuadraticDefectGain_zero p).tendsto.mono_left
+        inf_le_left
   have hsqrt : Tendsto
       (fun x : ℝ => Real.sqrt (g x * (1 + c x)))
       (nhdsWithin (0 : ℝ) (Ioi 0))
       (nhds (Real.sqrt (3 / 4 : ℝ))) := by
-    convert (Real.continuous_sqrt.continuousAt.tendsto.comp
-      (hg.mul (tendsto_const_nhds.add hc))) using 1
-    all_goals norm_num
+    have hone : Tendsto (fun _ : ℝ => (1 : ℝ))
+        (nhdsWithin (0 : ℝ) (Ioi 0)) (nhds 1) :=
+      tendsto_const_nhds
+    have hinside : Tendsto (fun x : ℝ => g x * (1 + c x))
+        (nhdsWithin (0 : ℝ) (Ioi 0))
+        (nhds ((3 / 8 : ℝ) * (1 + 1))) :=
+      hg.mul (hone.add hc)
+    have hsqrt' : Tendsto (fun x : ℝ => Real.sqrt (g x * (1 + c x)))
+        (nhdsWithin (0 : ℝ) (Ioi 0))
+        (nhds (Real.sqrt ((3 / 8 : ℝ) * (1 + 1)))) :=
+      Real.continuous_sqrt.continuousAt.tendsto.comp hinside
+    have hthree : (3 / 8 : ℝ) * (1 + 1) = 3 / 4 := by norm_num
+    simpa only [hthree] using hsqrt'
   have hmul := hgap.mul hsqrt
   apply hmul.congr'
   filter_upwards [self_mem_nhdsWithin] with x hx
@@ -645,10 +655,12 @@ theorem tendsto_gammaSewnMobiusJuliaHardMassCoefficient_nhdsGT_zero
   · let pe : Nat.Primes × ℕ := Nat.Primes.prodNatEquiv.symm ⟨n, hpow⟩
     have hn :
         xiGammaEulerValuationNat pe = n := by
-      have hx := congrArg Subtype.val
-        (Nat.Primes.prodNatEquiv.apply_symm_apply ⟨n, hpow⟩)
-      simpa only [pe, xiGammaEulerValuationNat,
-        Nat.Primes.coe_prodNatEquiv_apply] using hx
+      have hx : (Nat.Primes.prodNatEquiv pe : ℕ) = n := by
+        exact congrArg Subtype.val
+          (Nat.Primes.prodNatEquiv.apply_symm_apply ⟨n, hpow⟩)
+      rw [xiGammaEulerValuationNat,
+        ← Nat.Primes.coe_prodNatEquiv_apply]
+      exact hx
     have hlim :=
       (tendsto_gammaSewnMobiusJuliaHardHalfWeightTransport_nhdsGT_zero
         u pe).pow 2
@@ -663,7 +675,15 @@ theorem tendsto_gammaSewnMobiusJuliaHardMassCoefficient_nhdsGT_zero
           gammaSewnMobiusJuliaMellinBoundaryMass u n := by
       rw [gammaSewnMobiusJuliaMellinBoundaryMass, hvm, hn]
     rw [htarget] at hlim
-    simpa only [gammaSewnMobiusJuliaHardMassCoefficient, hpow, pe] using hlim
+    have hcoefficient :
+        (fun x : ℝ => gammaSewnMobiusJuliaHardMassCoefficient x u n) =
+          (fun x : ℝ =>
+            gammaSewnMobiusJuliaHardHalfWeightTransport x u pe ^ 2) := by
+      funext x
+      unfold gammaSewnMobiusJuliaHardMassCoefficient
+      rw [dif_pos hpow]
+    rw [hcoefficient]
+    exact hlim
   · have hvm : ArithmeticFunction.vonMangoldt n = 0 :=
       ArithmeticFunction.vonMangoldt_eq_zero_iff.mpr hpow
     simp only [gammaSewnMobiusJuliaHardMassCoefficient, hpow, hvm,

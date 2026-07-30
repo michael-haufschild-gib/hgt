@@ -78,7 +78,7 @@ theorem algebraicIndependent_linearFormPolynomial_iff_linearIndependent
     let M : Matrix ι κ K := v
     have hpoly := algebraicIndependent_matrixLinearForms_of_linearIndependent_rows
       M h MvPolynomial.X (MvPolynomial.algebraicIndependent_X κ K)
-    simpa [M, matrixLinearForms, linearFormPolynomial] using hpoly
+    simpa [M, matrixLinearForms, linearFormPolynomial] using! hpoly
 
 /-- The ordinary vector matroid represented by a family of finite-dimensional rows.
 
@@ -274,7 +274,7 @@ theorem differentialFamilyMatroid_differentialOperatorRows_eq
   · intro I _
     rw [differentialFamilyMatroid_indep_iff,
       differentialOperatorRowMatroid_indep_iff]
-    simpa only [differentialOperatorRowApply] using
+    simpa only [differentialOperatorRowApply] using!
       (differentialIndependent_differentialOperatorRows_iff
         hconst (fun i : I => L i) x hx)
 

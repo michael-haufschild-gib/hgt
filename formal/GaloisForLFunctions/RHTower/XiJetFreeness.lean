@@ -124,9 +124,9 @@ theorem exists_injective_xiInitialJetEvaluationHilbertReconstruction (n : ℕ) :
       (algebraicIndependent_xi_initialJets n).linearIndependent
   refine ⟨points, dual, hinj, hdelta, hrecovery, ?_, ?_⟩
   · simpa [xiInitialJetEvaluationGram, xiInitialJetEvaluationColumn,
-      HTGeometry.finiteEvaluationGram, HTGeometry.finiteEvaluationColumn] using hgram
+      HTGeometry.finiteEvaluationGram, HTGeometry.finiteEvaluationColumn] using! hgram
   · simpa [xiInitialJetEvaluationGram, xiInitialJetEvaluationColumn,
-      HTGeometry.finiteEvaluationGram, HTGeometry.finiteEvaluationColumn] using hdet
+      HTGeometry.finiteEvaluationGram, HTGeometry.finiteEvaluationColumn] using! hdet
 
 /-- **Unconditional completed-Xi finite-sample Hilbert metric.** Every finite initial derivative
 jet admits distinct complex sample points on which its actual evaluation Gram is strictly positive
@@ -176,7 +176,7 @@ real/imaginary observation channels. -/
 theorem linearIndependent_xiInitialJetRealChannelFeature (n : ℕ) :
     LinearIndependent ℝ (xiInitialJetRealChannelFeature n) := by
   simpa [xiInitialJetRealChannelFeature,
-    GaloisForLFunctions.HTGeometry.complexRealChannelFeature] using
+    GaloisForLFunctions.HTGeometry.complexRealChannelFeature] using!
     GaloisForLFunctions.HTGeometry.linearIndependent_complexRealChannelFeature_of_complex
       (fun j : Fin (n + 1) => iteratedDeriv (j : ℕ) xi)
       (algebraicIndependent_xi_initialJets n).linearIndependent
@@ -228,7 +228,7 @@ theorem exists_injective_xiInitialJetRealChannelEvaluationHilbertReconstruction 
   simpa only [xiInitialJetRealChannelEvaluationGram,
     xiInitialJetRealChannelEvaluationColumn,
     GaloisForLFunctions.HilbertMetric.realEvaluationGram,
-    GaloisForLFunctions.HilbertMetric.realEvaluationColumn] using
+    GaloisForLFunctions.HilbertMetric.realEvaluationColumn] using!
     GaloisForLFunctions.HilbertMetric.exists_injective_realEvaluationHilbertReconstruction
       (xiInitialJetRealChannelFeature n)
       (linearIndependent_xiInitialJetRealChannelFeature n)
@@ -288,7 +288,7 @@ noncomputable def xiPointInitialJetMonomial
 complex-valued functions. -/
 theorem linearIndependent_xiPointInitialJetMonomial (n M : ℕ) :
     LinearIndependent ℂ (xiPointInitialJetMonomial n M) := by
-  simpa only [xiPointInitialJetMonomial] using
+  simpa only [xiPointInitialJetMonomial] using!
     GaloisForLFunctions.RHTower.monomial_linearIndependent_of_algebraicIndependent
       (pointJetFunctionTuple xi n)
       (algebraicIndependent_xi_pointInitialJets n)

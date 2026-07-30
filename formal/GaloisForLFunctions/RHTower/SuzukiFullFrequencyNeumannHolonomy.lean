@@ -250,13 +250,20 @@ theorem tendsto_suzukiDyadicReciprocalSecant
   have hhalfInv' : HasDerivAt
       (fun epsilon : ℂ => (F (epsilon / 2))⁻¹)
       (-(d / 2) / (F 0) ^ 2) 0 := by
-    simpa using hhalfInv
+    have hhalfInv'' := hhalfInv.congr_deriv
+      (g' := -(d / 2) / (F 0) ^ 2) (by norm_num)
+    exact hhalfInv''.congr_of_eventuallyEq
+      (Eventually.of_forall fun _ => rfl)
   have hdiff : HasDerivAt
       (fun epsilon : ℂ => (F (epsilon / 2))⁻¹ - (F epsilon)⁻¹)
       (d / (2 * (F 0) ^ 2)) 0 := by
-    convert hhalfInv'.sub hInv using 1
-    field_simp [hzero]
-    ring
+    have hraw := hhalfInv'.sub hInv
+    have hraw' := hraw.congr_deriv
+      (g' := d / (2 * (F 0) ^ 2)) (by
+        field_simp [hzero]
+        ring)
+    exact hraw'.congr_of_eventuallyEq
+      (Eventually.of_forall fun _ => rfl)
   simpa [div_eq_inv_mul] using hdiff.tendsto_slope_zero
 
 /-! ## Projective cancellation rigidity -/

@@ -644,7 +644,7 @@ theorem integral_tsum_xiRectangularVerticalRawTerm_eq_tsum_integral
     have houtside :
         ∀ᶠ q : XiZeroCopy in Filter.cofinite,
           3 * |R| < ‖xiSpectralPoint q‖ := by
-      simpa only [Set.compl_setOf, Set.mem_setOf_eq, not_le] using
+      simpa only [Set.compl_setOf, Set.mem_setOf_eq, not_le] using!
         hfinite.compl_mem_cofinite
     filter_upwards [houtside] with q hq
     exact le_of_lt hq
@@ -669,7 +669,7 @@ theorem integral_tsum_xiRectangularVerticalRawTerm_eq_tsum_integral
     have hint : IntervalIntegrable (xiRectangularVerticalRawTerm L a R q)
         volume (-1 : ℝ) 1 := hcontu.intervalIntegrable
     rw [intervalIntegrable_iff] at hint
-    simpa only [uIoc_of_le (by norm_num : (-1 : ℝ) ≤ 1)] using hint
+    simpa only [uIoc_of_le (by norm_num : (-1 : ℝ) ≤ 1)] using! hint
   have hnormSumRestrict : Summable (fun q : XiZeroCopy =>
       ∫ y in Ioc (-1 : ℝ) 1, ‖xiRectangularVerticalRawTerm L a R q y‖) := by
     apply hnormSum.congr

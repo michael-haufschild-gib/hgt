@@ -58,7 +58,7 @@ theorem eval_mvPolynomialMatrixColumnMinor {r c : ℕ} {σ : Type*}
       ((mvPolynomialMatrixEval A x).submatrix rows id).det := by
   have h := (MvPolynomial.aeval x).toRingHom.map_det (A.submatrix rows id)
   simpa [mvPolynomialMatrixColumnMinor, mvPolynomialMatrixEval,
-    MvPolynomial.aeval_def] using h
+    MvPolynomial.aeval_def] using! h
 
 /-- The pointwise loss-of-column-rank locus of a polynomial matrix. -/
 def mvPolynomialMatrixColumnRankDefect {r c : ℕ} {σ : Type*}

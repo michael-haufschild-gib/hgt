@@ -79,8 +79,7 @@ theorem map_sub_C_mul_map_ne_zero_of_not_mem_bot
     MvPolynomial.map (algebraMap F G) p -
         MvPolynomial.C u * MvPolynomial.map (algebraMap F G) q ≠ 0 := by
   intro hzero
-  obtain ⟨s, hs⟩ := Finsupp.ne_iff.mp hq
-  have hqs : q.coeff s ≠ 0 := by simpa using hs
+  obtain ⟨s, hqs⟩ := MvPolynomial.exists_coeff_ne_zero hq
   have hcoeff := congrArg (MvPolynomial.coeff s) hzero
   simp only [MvPolynomial.coeff_sub, MvPolynomial.coeff_map,
     MvPolynomial.coeff_C_mul, MvPolynomial.coeff_zero] at hcoeff

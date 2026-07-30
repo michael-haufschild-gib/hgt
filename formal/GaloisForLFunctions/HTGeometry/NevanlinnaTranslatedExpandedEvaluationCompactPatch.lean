@@ -204,7 +204,7 @@ theorem compact_translatedNevanlinnaExpandedEvaluation_has_dense_finiteProbe
           a q (fun x => (z x).1) (fun x : row × ι => orders x.2)
           hat_z hqdt_z mu (fun x => hη.trans_le (z x).2)).domRestrict S) := by
       simpa [frozen, S,
-        projectiveNevanlinnaJetLinftyContinuousControl_toLinearMap] using
+        projectiveNevanlinnaJetLinftyContinuousControl_toLinearMap] using!
         (constrainedNormalizedProjectiveCauchyFrozenNevanlinnaTarget_linftyControl_surjective
           a q (fun i => q (zf i)) hqf_inj (fun x => (z x).1) hqt_z hcross_z
           hupperf (fun x => hη.trans_le (z x).2)
@@ -214,7 +214,6 @@ theorem compact_translatedNevanlinnaExpandedEvaluation_has_dense_finiteProbe
     compact_surjectiveControls_have_uniform_finiteProbe_of_continuousOn
       L Knode hKnode hLOn hLsurj
   refine ⟨V, hVfg, ?_⟩
-  dsimp only
   letI normedAddCommGroupV : NormedAddCommGroup V := Submodule.normedAddCommGroup V
   letI : NormedSpace ℝ V := Submodule.normedSpace V
   let control := fun h =>
@@ -279,7 +278,9 @@ theorem compact_translatedNevanlinnaExpandedEvaluation_has_dense_finiteProbe
           (memLp_projectiveNevanlinnaJetExpansionColumn η hη
             (fun x : row × ι => orders x.2) mu
             (nodeLift (⟨h, hh⟩ : K)))) v.1.1 = ys := by
-      simpa only [L, target, nodeLift, heq] using hv
+      simpa only [L, target, nodeLift, heq,
+        ContinuousLinearMap.domRestrict, ContinuousLinearMap.comp_apply,
+        Submodule.subtypeL_apply] using hv
     rw [heq', hv', hys]
   let Usurj : Set H := U ∩ {h | Function.Surjective (directionV h)}
   have hUsurj : IsOpen Usurj :=

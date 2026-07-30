@@ -108,7 +108,7 @@ theorem infinitePrimeFluxGermAt_analyticAt_zero {ρ : ℂ}
   have hshift : AnalyticAt ℂ (fun x : ℂ => logDeriv h (ρ + x)) 0 := by
     have hcomp := AnalyticAt.comp_of_eq hlog
       (show AnalyticAt ℂ (fun x : ℂ => ρ + x) 0 by fun_prop) (by simp)
-    simpa [Function.comp] using hcomp
+    simpa [Function.comp] using! hcomp
   have hmodel : AnalyticAt ℂ
       (fun x : ℂ => -((analyticOrderAt xi ρ).toNat : ℂ) -
         x * logDeriv h (ρ + x)) 0 :=
@@ -148,7 +148,7 @@ theorem archimedeanBoundaryFluxGermAt_analyticAt_zero {ρ : ℂ}
   have hshift : AnalyticAt ℂ (fun x : ℂ => logDeriv archFactor (ρ + x)) 0 := by
     have hcomp := AnalyticAt.comp_of_eq hlog
       (show AnalyticAt ℂ (fun x : ℂ => ρ + x) 0 by fun_prop) (by simp)
-    simpa [Function.comp] using hcomp
+    simpa [Function.comp] using! hcomp
   exact analyticAt_id.mul hshift.neg
 
 /-- Local analytic-germ identity attaching the completed flux to the actual continued prime source

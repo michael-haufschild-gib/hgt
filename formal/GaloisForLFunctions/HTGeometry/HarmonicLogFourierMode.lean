@@ -74,7 +74,7 @@ theorem harmonicLogCircleAverage_fourier (β θ : ℝ) (hβ : β ≠ 0) (j : ℤ
     have hreal := tendsto_harmonic_div_log
     have hcomplex' : Tendsto
         (fun N : ℕ => (((harmonic N : ℝ) / Real.log N : ℝ) : ℂ)) atTop (nhds 1) := by
-      simpa only [Complex.ofReal_one] using
+      simpa only [Complex.ofReal_one] using!
         Complex.continuous_ofReal.continuousAt.tendsto.comp hreal
     have hcomplex : Tendsto
         (fun N : ℕ => ((harmonic N : ℝ) : ℂ) / (Real.log N : ℂ)) atTop (nhds 1) := by

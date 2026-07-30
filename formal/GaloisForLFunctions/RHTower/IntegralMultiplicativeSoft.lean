@@ -180,7 +180,7 @@ theorem wit_order_one : analyticOrderAt wit ρwit = 1 := by
       (-(2 * (Complex.exp (-(((Real.log 3 : ℝ) : ℂ) * ρwit)) * (-((Real.log 3 : ℝ) : ℂ))))) ρwit := by
     have h1 : HasDerivAt (fun s : ℂ => -(((Real.log 3 : ℝ) : ℂ) * s)) (-((Real.log 3 : ℝ) : ℂ))
         ρwit := by
-      simpa using ((hasDerivAt_id ρwit).const_mul ((Real.log 3 : ℝ) : ℂ)).neg
+      simpa using! ((hasDerivAt_id ρwit).const_mul ((Real.log 3 : ℝ) : ℂ)).neg
     exact ((h1.cexp).const_mul 2).const_sub 1
   have hderiv : deriv (fun s => 1 - 2 * Complex.exp (-(((Real.log 3 : ℝ) : ℂ) * s))) ρwit
       = ((Real.log 3 : ℝ) : ℂ) := by

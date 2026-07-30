@@ -142,7 +142,7 @@ theorem hasDerivAt_suzukiShiftedCoefficient {n : ℕ} (hn : 1 ≤ n) :
         (isPrimePow_iff_card_primeFactors_eq_one).mpr (by rw [← hP, h1.symm])
       have hLam : Λ n = Real.log p := by
         rw [ArithmeticFunction.vonMangoldt_apply, if_pos hpp, hmin]
-      convert hmul using 1
+      convert! hmul using 1
       rw [hprod0, hD, hLam]
       norm_num
     · have hD : (∑ q ∈ P, (∏ j ∈ P.erase q, (1 - (j : ℝ) ^ (-2 * (0 : ℝ)))) *
@@ -164,7 +164,7 @@ theorem hasDerivAt_suzukiShiftedCoefficient {n : ℕ} (hn : 1 ≤ n) :
       have hLam : Λ n = 0 := by
         by_contra h
         exact hnpp ((ArithmeticFunction.vonMangoldt_ne_zero_iff).mp h)
-      convert hmul using 1
+      convert! hmul using 1
       rw [hprod0, hD, hLam]
       norm_num
 
@@ -176,7 +176,7 @@ theorem hasDerivAt_suzukiShiftedSummatory (X : ℕ) :
   rw [Finset.mul_sum]
   have hsum := HasDerivAt.sum (u := Finset.Icc 1 X) fun n hn =>
     hasDerivAt_suzukiShiftedCoefficient (Finset.mem_Icc.mp hn).1
-  convert hsum using 1
+  convert! hsum using 1
   funext ω
   simp
 
@@ -200,7 +200,7 @@ theorem tendsto_omega_mul_riemannZeta_re_one_add_two_mul :
     rw [tendsto_nhdsWithin_iff]
     constructor
     · have hcont : Tendsto (fun ω : ℝ => (1 : ℝ) + 2 * ω) (𝓝 0) (𝓝 1) := by
-        convert (tendsto_const_nhds.add
+        convert! (tendsto_const_nhds.add
           (tendsto_const_nhds.mul (tendsto_id : Tendsto (fun x : ℝ => x) (𝓝 0) (𝓝 0))))
           using 1 <;> norm_num
       have hcomp := (Complex.continuous_ofReal.tendsto 1).comp hcont
@@ -229,7 +229,7 @@ theorem tendsto_omega_mul_riemannZeta_re_one_add_two_mul :
     simp [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im]
     ring
   have h6 := h5.const_mul (1 / 2 : ℝ)
-  convert h6 using 1
+  convert! h6 using 1
   · funext ω
     ring
   · norm_num
@@ -241,7 +241,7 @@ theorem suzukiMainTerm_tendsto_ratio (X : ℕ) (hX : 1 ≤ X) :
   have hzeta := tendsto_omega_mul_riemannZeta_re_one_add_two_mul
   have hpow : Tendsto (fun ω : ℝ => (X : ℝ) ^ (1 + ω)) (𝓝[>] 0) (𝓝 X) := by
     have h1 : Tendsto (fun ω : ℝ => Real.log X * (1 + ω)) (𝓝 0) (𝓝 (Real.log X)) := by
-      convert (tendsto_const_nhds.mul
+      convert! (tendsto_const_nhds.mul
         (tendsto_const_nhds.add
           (tendsto_id : Tendsto (fun x : ℝ => x) (𝓝 0) (𝓝 0)))) using 1 <;>
         norm_num

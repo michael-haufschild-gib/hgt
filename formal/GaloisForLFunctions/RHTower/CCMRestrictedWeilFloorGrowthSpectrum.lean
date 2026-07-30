@@ -43,7 +43,7 @@ theorem restrictedWeilFloor_abscissa_lower_of_not_rh
         LSeriesSummable_of_abscissaOfAbsConv_lt_re (by
           simpa only [ofReal_re] using hsigma)
       have hscaled := heta.smul (((2 * L : ℝ) : ℂ))
-      simpa only [Pi.smul_apply, smul_eq_mul, ofReal_mul] using hscaled
+      simpa only [Pi.smul_apply, smul_eq_mul, ofReal_mul] using! hscaled
 
 theorem inwardRestrictedWeilFloor_abscissa_lower_of_not_rh
     {L : ℝ} (hL : 0 < L) {N : ℕ}

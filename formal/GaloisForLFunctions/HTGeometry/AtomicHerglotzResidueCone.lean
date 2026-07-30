@@ -72,7 +72,7 @@ theorem continuousAt_universalResidueConeRegular
         have hpole : orientationPole q = orientationPole n := by
           exact Complex.ofReal_injective (sub_eq_zero.mp heq)
         exact hqn (orientationPole_injective hpole)
-      simpa [Finset.sum_insert hq] using hterm.add (ih hnT)
+      simpa [Finset.sum_insert hq] using! hterm.add (ih hnT)
 
 theorem universalResidueConeHerglotz_eq_regular_add_atom
     {S : Finset ℕ} {a : ℕ → ℝ} {n : ℕ} (hnS : n ∈ S) (z : ℂ) :

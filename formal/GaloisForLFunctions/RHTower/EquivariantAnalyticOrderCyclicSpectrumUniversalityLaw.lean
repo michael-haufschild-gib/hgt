@@ -152,7 +152,7 @@ theorem finiteCenteredSpectralProduct_cyclic_covariant
   have hp' : (∏ i, (ζ * z - (f i - c))) =
       ∏ i, ζ * (z - (f i - c)) := by
     dsimp [A] at hp
-    simpa only [Multiset.map_map, Function.comp_apply, mul_sub] using hp.symm
+    simpa only [Multiset.map_map, Function.comp_apply, mul_sub] using! hp.symm
   unfold finiteCenteredSpectralProduct
   rw [hp', Finset.prod_mul_distrib]
   simp

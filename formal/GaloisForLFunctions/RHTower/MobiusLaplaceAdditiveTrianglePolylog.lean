@@ -99,8 +99,8 @@ theorem tsum_natSucc_mul_scaledMoment_exp_le (p : ℕ) {x : ℝ}
   have hright : Summable (fun N : ℕ =>
       K * ((N : ℝ) + 1) * Real.exp (-(((N : ℝ) * x) / 2))) := by
     have hmul := hsucc.mul_left K
-    convert hmul using 1
-    funext N
+    apply hmul.congr
+    intro N
     have hexp : Real.exp (-(((N : ℝ) * x) / 2)) = r ^ N := by
       dsimp [r]
       rw [← Real.exp_nat_mul]
@@ -145,8 +145,7 @@ theorem tsum_natSucc_mul_scaledMoment_exp_le (p : ℕ) {x : ℝ}
   have hinv : (1 - r)⁻¹ ≤ (x / 4)⁻¹ := by
     apply (inv_le_inv₀ hdenPos (by positivity)).2
     dsimp [r]
-    convert hden using 1
-    all_goals ring_nf
+    linarith [hden]
   have hinvSq : (1 - r)⁻¹ ^ 2 ≤ (x / 4)⁻¹ ^ 2 := by
     gcongr
   have hK : 0 ≤ K := by dsimp [K]; positivity
@@ -308,8 +307,8 @@ theorem tsum_natSucc_mul_logPow_exp_le (p : ℕ) {x : ℝ}
     have hp := summable_pow_mul_exp_neg p hx
     have hp1 := summable_pow_mul_exp_neg (p + 1) hx
     have hs := (hp1.add hp).mul_left (x ^ p)
-    convert hs using 1
-    funext N
+    apply hs.congr
+    intro N
     rw [mul_pow]
     ring
   have hmajor : Summable (fun N : ℕ =>
@@ -468,8 +467,8 @@ theorem norm_sq_mobiusDiscreteLaplaceTransform_le_of_additiveTriangleLinearPolyl
   have hlogSum := summable_natSucc_mul_logPow_exp (2 * q) hx
   have hb : Summable (fun N : ℕ => b N * Real.exp (-((N : ℝ) * x))) := by
     have hmul := hlogSum.mul_left C
-    convert hmul using 1
-    funext N
+    apply hmul.congr
+    intro N
     dsimp [b]
     ring
   have hsquare :=

@@ -6,10 +6,15 @@
   RECURRENCE / ANALYTIC INTERACTION
 - **Source:** higher-conjecture gate above
   `interaction-generated-observer-time-universality.md`
-- **Scientific status:** `[NEW CONJECTURAL INTERPRETATION]`
-  `[ABSTRACT WALL-CROSSING AND LOCALITY THEOREMS PAPER-PROVED BELOW]`
-  `[GRAPH-DISTANCE CONTRAST CORE LEAN-PROVED]`
-  `[NOVELTY AUDIT OPEN] [LOCAL-HAMILTONIAN JET TRANSFER OPEN]`
+- **Scientific status:** `[MASTER INTERPRETATION PROVISIONAL]`
+  `[VALUATION, INTEGER/RATIONAL BRIDGE, OBSERVER RANK CONSERVATION,
+  UNITARY CHARACTER WALL CROSSING, AND CONTRACTIVE MODE WALL CROSSING
+  LEAN-PROVED]`
+  `[FINITE AND COUNTABLY INFINITE FULL TORUS WEAK-ENSEMBLE LIMIT
+  LEAN-PROVED]`
+  `[ACTUAL UNIFORM-TIME PHASE PUSHFORWARD LEAN-PROVED]`
+  `[LOCAL CONNECTED-SECTOR DIRECT SUM LEAN-PROVED]`
+  `[ROOTED LOCAL SHARPNESS OPEN] [SPECIALIST NOVELTY AUDIT OPEN]`
 
 ## Public law
 
@@ -235,9 +240,12 @@ multiplies the surviving coefficient by
 \(m_{K_{r+1}}\). \(\square\)
 
 For finite \(I\), character convergence implies weak convergence for every
-continuous phase reporter. For arbitrary discrete \(I\), the same theorem
-holds for every cylinder-continuous reporter and hence for every finite
-state, observable, or replica experiment.
+continuous phase reporter. For every countable \(I\), finite-support
+characters are uniformly dense in all continuous functions on the full
+compact product torus. Their convergence therefore forces weak convergence
+of the complete probability law, not only of cylinder reporters. The
+uniform-time ensemble and its sinc coefficients are constructed directly as
+a pushforward probability measure on that infinite torus.
 
 ## Theorem C — exact detector/perturbation/time trinity
 

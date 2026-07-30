@@ -589,6 +589,7 @@ private theorem hasDerivAt_finiteIncidencePartition
   have hsum : HasDerivAt (fun t : ℝ => ∑ i, (d i : ℝ) ^ (-t))
       (∑ i, -((d i : ℝ) ^ (-sigma) * Real.log (d i))) sigma := by
     convert hsum0 using 1
+    all_goals try rfl
     funext t
     simp
   convert hsum using 1
@@ -615,6 +616,7 @@ private theorem hasDerivAt_finiteIncidenceProbability
   have hquot := hmass.div hpartition hpartitionNe
   unfold finiteIncidenceProbability
   convert hquot using 1
+  all_goals try rfl
   unfold finiteIncidenceLogMean finiteIncidenceProbability
   rw [show (fun j : α => (d j : ℝ) ^ (-sigma) /
       finiteIncidencePartition sigma d * Real.log (d j)) =
@@ -662,6 +664,7 @@ private theorem hasDerivAt_finiteMobiusSourceWeight
     (((ArithmeticFunction.moebius
       (squarefreeMobiusCriticalFiniteIndexValue i) : ℤ) : ℂ))
   convert hmul using 1
+  all_goals try rfl
   unfold finiteMobiusSourceWeight finiteMobiusLogMean
     finiteIncidenceLogMean
   dsimp [d]

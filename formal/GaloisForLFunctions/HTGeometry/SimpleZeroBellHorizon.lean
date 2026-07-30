@@ -271,6 +271,8 @@ theorem simpleZeroRawJetPrincipalProfile_natDegree_le_one_iff
     {n : ℕ} (P : MvPolynomial (Fin (n + 1)) ℂ) :
     (simpleZeroRawJetPrincipalProfile n P).natDegree ≤ 1 ↔
       ((bellCoefficientEquiv n).symm P).totalDegree ≤ 1 := by
+  change (simpleZeroPrincipalProfile n ((bellCoefficientEquiv n).symm P)).natDegree ≤ 1 ↔
+    ((bellCoefficientEquiv n).symm P).totalDegree ≤ 1
   exact simpleZeroPrincipalProfile_natDegree_le_one_iff _
 
 /-- **Complete raw-jet classification.**  A raw logarithmic-derivative jet polynomial lies on the

@@ -175,7 +175,7 @@ theorem bernsteinSzegoProbabilityApproximation_moment_eventuallyEq
   | negSucc n =>
       filter_upwards [eventually_ge_atTop (n + 1)] with N hN
       let k : Fin (N + 2) := ⟨n + 1, by omega⟩
-      simpa only [Int.ofNat_eq_natCast, Int.reduceNegSucc] using
+      simpa only [Int.ofNat_eq_natCast, Int.reduceNegSucc] using!
         (bernsteinSzegoProbabilityApproximation_moment_prefix mu hmu N k).2
 
 /-- The actual Bernstein--Szegő probability measure reproduces the full finite Toeplitz section
@@ -241,10 +241,10 @@ theorem continuous_circleMeasureMomentZ (q : ℤ) :
     (continuousOn_zpow₀ (-q)).comp_continuous continuous_subtype_val fun z => by simp
   let fre : C(Circle, ℝ) :=
     ⟨fun z => ((z : ℂ) ^ (-q)).re, by
-      simpa only [Function.comp_apply] using Complex.continuous_re.comp hpow⟩
+      simpa only [Function.comp_apply] using! Complex.continuous_re.comp hpow⟩
   let fim : C(Circle, ℝ) :=
     ⟨fun z => ((z : ℂ) ^ (-q)).im, by
-      simpa only [Function.comp_apply] using Complex.continuous_im.comp hpow⟩
+      simpa only [Function.comp_apply] using! Complex.continuous_im.comp hpow⟩
   have hre := ProbabilityMeasure.continuous_integral_boundedContinuousFunction
     (BoundedContinuousFunction.mkOfCompact fre)
   have him := ProbabilityMeasure.continuous_integral_boundedContinuousFunction
@@ -451,7 +451,7 @@ theorem bernsteinSzegoApproximationLpNorm_tendsto_atTop_of_mutuallySingular
   have hεseq : Tendsto εseq atTop (𝓝 0) := by
     have hnn : Tendsto (fun n : ℕ => 1 / ((n : NNReal) + 1)) atTop (𝓝 0) :=
       tendsto_one_div_add_atTop_nhds_zero_nat
-    simpa only [εseq, ENNReal.coe_zero] using
+    simpa only [εseq, ENNReal.coe_zero] using!
       (ENNReal.continuous_coe.tendsto (0 : NNReal)).comp hnn
   have hsmall : Tendsto (fun n => c * (εseq n) ^ a) atTop (𝓝 0) :=
     hsmallAtZero.comp hεseq

@@ -82,7 +82,11 @@ theorem tendsto_pow_mul_analyticAt_zero
     {R : ℂ → ℂ} (hR : AnalyticAt ℂ R 0) {p : ℕ} (hp : 0 < p) :
     Tendsto (fun x : ℂ => x ^ p * R x) (𝓝[≠] 0) (𝓝 0) := by
   have h := (continuousAt_id.pow p).mul hR.continuousAt
-  simpa [zero_pow hp.ne'] using h.mono_left inf_le_left
+  change ContinuousAt (fun x : ℂ => x ^ p * R x) 0 at h
+  have h' : Tendsto (fun x : ℂ => x ^ p * R x) (𝓝[≠] 0)
+      (𝓝 (0 ^ p * R 0)) :=
+    h.mono_left nhdsWithin_le_nhds
+  simpa [zero_pow hp.ne'] using h'
 
 /-- **Universal one-grade binomial descent.**  After top-grade cancellation, the normalized
 quadratic packet converges to the principal coefficient of `J_{j+k}` times the finite part of

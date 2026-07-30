@@ -183,6 +183,7 @@ theorem continuedJointRelA_move {s : ι → ℂ} {M : ℕ}
     have hzshift : z + 2 * (Real.pi : ℂ) * Complex.I ∈
         HurwitzN2BlockAnalytic.region := by
       show (z + 2 * (Real.pi : ℂ) * Complex.I).re < -Real.log 2
+      change z.re < -Real.log 2 at hz
       simpa using hz
     have h0 := hregion _ hzshift
     rwa [continuedJointRelZ_shift] at h0

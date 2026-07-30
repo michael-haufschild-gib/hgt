@@ -59,7 +59,7 @@ private theorem not_linearIndependent_iteratedDeriv_of_forall_mem_finiteDimensio
   let jets : ℕ → V := fun n => ⟨iteratedDeriv n f, hmem n⟩
   have hjets : LinearIndependent ℂ jets := by
     apply LinearIndependent.of_comp V.subtype
-    simpa only [Function.comp_apply, jets] using hli
+    simpa only [Function.comp_apply, jets] using! hli
   have hfinite : LinearIndependent ℂ
       (fun i : Fin (finrank ℂ V + 1) => jets i) :=
     hjets.comp (fun i : Fin (finrank ℂ V + 1) => (i : ℕ)) Fin.val_injective

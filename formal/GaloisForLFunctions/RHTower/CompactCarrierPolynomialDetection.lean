@@ -28,7 +28,7 @@ the negative coordinate. -/
 theorem compactExponentialSlope_tendsto (s : C(K, ℂ)) :
     Tendsto (compactExponentialSlope s) (nhdsWithin 0 ({0} : Set ℂ)ᶜ)
       (nhds (-s)) := by
-  simpa [compactExponentialSlope] using
+  simpa [compactExponentialSlope] using!
     (compactExponentialTest_hasDerivAt_zero s).tendsto_slope_zero
 
 /-- If a functional kills every compact exponential, it kills every power of

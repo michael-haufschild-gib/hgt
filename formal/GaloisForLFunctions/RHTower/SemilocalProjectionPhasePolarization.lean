@@ -376,13 +376,14 @@ theorem selfAdjointIdempotentFamily_phaseRotated_normalSkewGram_isCompact
     F Dt D Dst ht hidem hs hst hPadj hDadj hDtadj
   have hscaled := hcompressed.smul Complex.I
   have hEq : Complex.I • (F 0 0 * Dst * F 0 0) = O := by
-    change Complex.I • (F 0 0 * Dst * F 0 0) = _
     rw [hmixed]
     dsimp only [O]
     simp only [smul_neg, smul_smul, Complex.I_mul_I, neg_smul, one_smul, neg_neg]
   change IsCompactOperator (O : H → H)
   rw [← hEq]
-  simpa only [ContinuousLinearMap.coe_smul] using hscaled
+  change IsCompactOperator (fun x =>
+    Complex.I • ((F 0 0 * Dst * F 0 0) x))
+  exact hscaled
 
 /-- Full mixed compactness is a sufficient, but not necessary, source input. -/
 theorem selfAdjointIdempotentFamily_phaseRotated_normalSkewGram_isCompact_of_mixed
@@ -404,7 +405,8 @@ theorem selfAdjointIdempotentFamily_phaseRotated_normalSkewGram_isCompact_of_mix
           projectionNormalCorner (F 0 0) (Dt 0)) := by
   apply selfAdjointIdempotentFamily_phaseRotated_normalSkewGram_isCompact
     F Dt D Dst ht hidem hs hst hPadj hDadj hDtadj
-  simpa only [mul_assoc] using (hDst.comp_clm (F 0 0)).clm_comp (F 0 0)
+  change IsCompactOperator (fun x => F 0 0 (Dst (F 0 0 x)))
+  exact (hDst.comp_clm (F 0 0)).clm_comp (F 0 0)
 
 end
 

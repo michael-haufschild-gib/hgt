@@ -226,10 +226,10 @@ theorem re_inner_soninLogFourierObservableTwirlKadisonDefect_eq_transitionNormSq
         (inner ℂ psi (soninLogFourierObservableTwirlKadisonDefect X psi)) =
       ‖HTGeometry.twoOutcomeLowerTransition
           soninLogFourierInvariantAverage X psi‖ ^ 2 +
-        ‖HTGeometry.twoOutcomeUpperTransition
+      ‖HTGeometry.twoOutcomeUpperTransition
           soninLogFourierInvariantAverage X psi‖ ^ 2 := by
   simpa only [soninLogFourierObservableTwirlKadisonDefect,
-    soninLogFourierInvariantAverage] using
+    soninLogFourierInvariantAverage] using!
       HTGeometry.re_inner_finiteInvolutiveObservableTwirlKadisonDefect_eq_transitionNormSq_add
         soninLogFourierScattering X soninLogFourierScattering_adjoint_mul_self
         soninLogFourierScattering_sq_eq_one hXAdj psi

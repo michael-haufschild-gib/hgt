@@ -101,9 +101,12 @@ theorem meromorphic_boundaryDensity_chargeLaw
   have horder : meromorphicOrderAt F 0 = (n : WithTop ℤ) := hn.symm
   obtain ⟨G, hGan, hG0, hfactor⟩ :=
     (meromorphicOrderAt_eq_int_iff hF).mp horder
+  have hfactor' : F =ᶠ[𝓝[≠] 0] fun z => z ^ n • G z := by
+    filter_upwards [hfactor] with z hz
+    simpa only [sub_zero] using hz
   obtain ⟨hGlim, hmult⟩ :=
     normedAnalyticShiftMultiplier_eventually_factor_zpow
-      hq hGan.continuousAt (by simpa only [sub_zero] using hfactor)
+      hq hGan.continuousAt hfactor'
   let U : ℝ → ℝ := fun h =>
     normedAnalyticShiftMultiplier q G h ^ 2 *
       (Real.exp (-h) / (1 - Real.exp (-Real.exp (-h))))

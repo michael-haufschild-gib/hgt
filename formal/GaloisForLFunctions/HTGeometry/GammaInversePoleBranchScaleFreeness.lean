@@ -116,8 +116,11 @@ def weightedScaleAffineMap {K : Type*} [Field K]
 theorem weightedScaleAffineMap_injective {K : Type*} [Field K]
     (m : ℕ) {alpha beta : Fin m → K}
     (halpha : ∀ j, alpha j ≠ 0) :
-    Function.Injective (weightedScaleAffineMap m alpha beta) :=
-  (optionTailAffineMap_injective m halpha).comp (optionTailScaleMap_injective m)
+    Function.Injective (weightedScaleAffineMap m alpha beta) := by
+  intro P Q hPQ
+  apply optionTailScaleMap_injective m
+  apply optionTailAffineMap_injective m halpha
+  simpa [weightedScaleAffineMap] using hPQ
 
 theorem weightedScaleAffineMap_none {K : Type*} [Field K]
     (m : ℕ) (alpha beta : Fin m → K) :
@@ -198,7 +201,7 @@ theorem gammaPoleScaleAndLogCoefficientEval_injective (m : ℕ) :
 theorem algebraicIndependent_gammaPoleScaleAndLogCoefficientFamily (m : ℕ) :
     AlgebraicIndependent ℂ (gammaPoleScaleAndLogCoefficientFamily m) := by
   rw [algebraicIndependent_iff_injective_aeval]
-  simpa [gammaPoleScaleAndLogCoefficientEval, MvPolynomial.aeval_def] using
+  simpa [gammaPoleScaleAndLogCoefficientEval, MvPolynomial.aeval_def] using!
     gammaPoleScaleAndLogCoefficientEval_injective m
 
 /-- Extend a tail coordinate map by fixing one distinguished head variable. -/
@@ -282,7 +285,7 @@ theorem gammaPoleScaleAndLogDerivativeEval_injective (m : ℕ) :
 theorem algebraicIndependent_gammaPoleScaleAndLogDerivativeFamily (m : ℕ) :
     AlgebraicIndependent ℂ (gammaPoleScaleAndLogDerivativeFamily m) := by
   rw [algebraicIndependent_iff_injective_aeval]
-  simpa [gammaPoleScaleAndLogDerivativeEval, MvPolynomial.aeval_def] using
+  simpa [gammaPoleScaleAndLogDerivativeEval, MvPolynomial.aeval_def] using!
     gammaPoleScaleAndLogDerivativeEval_injective m
 
 def gammaPoleRegularBellScale (n : ℕ) (j : Fin (n + 1)) : ℂ :=
@@ -370,7 +373,7 @@ theorem gammaPoleScaleAndRegularCoefficientEval_injective (n : ℕ) :
 theorem algebraicIndependent_gammaPoleScaleAndRegularCoefficientFamily (n : ℕ) :
     AlgebraicIndependent ℂ (gammaPoleScaleAndRegularCoefficientFamily n) := by
   rw [algebraicIndependent_iff_injective_aeval]
-  simpa [gammaPoleScaleAndRegularCoefficientEval, MvPolynomial.aeval_def] using
+  simpa [gammaPoleScaleAndRegularCoefficientEval, MvPolynomial.aeval_def] using!
     gammaPoleScaleAndRegularCoefficientEval_injective n
 
 def gammaPoleScaleAndUnitPositiveCoefficientFamilyFin (n : ℕ) :
@@ -420,7 +423,7 @@ theorem gammaPoleScaleAndUnitPositiveCoefficientEvalFin_injective (n : ℕ) :
 theorem algebraicIndependent_gammaPoleScaleAndUnitPositiveCoefficientFamilyFin (n : ℕ) :
     AlgebraicIndependent ℂ (gammaPoleScaleAndUnitPositiveCoefficientFamilyFin n) := by
   rw [algebraicIndependent_iff_injective_aeval]
-  simpa [gammaPoleScaleAndUnitPositiveCoefficientEvalFin, MvPolynomial.aeval_def] using
+  simpa [gammaPoleScaleAndUnitPositiveCoefficientEvalFin, MvPolynomial.aeval_def] using!
     gammaPoleScaleAndUnitPositiveCoefficientEvalFin_injective n
 
 def optionNatValue : Option ℕ → ℕ
@@ -489,7 +492,7 @@ theorem gammaPoleScaleAndUnitPositiveCoefficientEval_injective :
   have h := algebraicIndependent_iff_injective_aeval.mp
     algebraicIndependent_gammaPoleScaleAndUnitPositiveCoefficientFamily
   simpa [gammaPoleScaleAndUnitPositiveCoefficientEval,
-    MvPolynomial.aeval_def] using h
+    MvPolynomial.aeval_def] using! h
 
 def gammaPoleScaleAndReciprocalUnitCoefficientFamily : Option ℕ → NatGerm
   | none => reciprocalSignedFactorialGerm
@@ -544,7 +547,7 @@ theorem algebraicIndependent_gammaPoleScaleAndReciprocalUnitCoefficientFamily :
     AlgebraicIndependent ℂ gammaPoleScaleAndReciprocalUnitCoefficientFamily := by
   rw [algebraicIndependent_iff_injective_aeval]
   simpa [gammaPoleScaleAndReciprocalUnitCoefficientEval,
-    MvPolynomial.aeval_def] using
+    MvPolynomial.aeval_def] using!
       gammaPoleScaleAndReciprocalUnitCoefficientEval_injective
 
 /-- The reciprocal factorial scale together with every nonlinear inverse-Gamma branch
@@ -605,7 +608,7 @@ theorem algebraicIndependent_gammaPoleScaleAndInverseBranchCoefficientFamily :
     AlgebraicIndependent ℂ gammaPoleScaleAndInverseBranchCoefficientFamily := by
   rw [algebraicIndependent_iff_injective_aeval]
   simpa [gammaPoleScaleAndInverseBranchCoefficientEval,
-    MvPolynomial.aeval_def] using
+    MvPolynomial.aeval_def] using!
       gammaPoleScaleAndInverseBranchCoefficientEval_injective
 
 end

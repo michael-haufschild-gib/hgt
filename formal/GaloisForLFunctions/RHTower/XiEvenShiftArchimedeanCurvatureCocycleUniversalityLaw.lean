@@ -80,7 +80,7 @@ private theorem hasDerivAt_one_div_add_const
     HasDerivAt (fun z : ℂ => 1 / (z + a)) (-1 / (s + a) ^ 2) s := by
   have hbase : HasDerivAt (fun z : ℂ => z + a) 1 s :=
     (hasDerivAt_id s).add_const a
-  simpa only [one_div, one_mul, neg_div, add_comm] using hbase.inv h
+  simpa only [one_div, one_mul, neg_div, add_comm] using! hbase.inv h
 
 /-- The derivative of the arbitrary-even Xi prime correction is its accumulated rational
 archimedean-curvature response. -/
@@ -122,13 +122,12 @@ theorem hasDerivAt_xiEvenShiftPrimeCorrection
     have hdm1 := hasDerivAt_one_div_add_const
       s (((2 * j : ℕ) : ℂ) - 1) (by
         simpa [sub_eq_add_neg, add_assoc] using hm1)
-    convert (hd2.add hd1).sub hdm1 using 1
-    · funext z
-      simp only [Pi.add_apply, Pi.neg_apply, sub_eq_add_neg]
-      congr 1 <;> simp [add_comm, add_left_comm]
-    · simp only [
-        GaloisForLFunctions.RHTower.completedZetaArchimedeanShiftRational]
-      ring
+    simpa only [Pi.add_apply, Pi.neg_apply, sub_eq_add_neg, add_assoc] using!
+      ((hd2.add hd1).sub hdm1).congr_deriv (by
+        simp only [
+          GaloisForLFunctions.RHTower.completedZetaArchimedeanShiftRational,
+          sub_eq_add_neg, add_assoc]
+        ring)
   have hsum := HasDerivAt.sum (u := Finset.range m) hterm
   change HasDerivAt
     (fun z : ℂ => ∑ j ∈ Finset.range m,
@@ -136,9 +135,10 @@ theorem hasDerivAt_xiEvenShiftPrimeCorrection
         1 / (z + (2 * j : ℕ) - 1)))
     (xiEvenShiftArchimedeanCurvatureResponse m s) s
   rw [xiEvenShiftArchimedeanCurvatureResponse]
-  convert hsum using 1
-  funext z
-  simp
+  simpa only using!
+    hsum.congr_of_eventuallyEq (by
+      filter_upwards with z
+      simp only [Finset.sum_apply])
 
 /-- **Xi even-shift archimedean-curvature cocycle universality law.**  On the right half-plane,
 the derivative of the arbitrary-even Xi prime correction is exactly the genuine completed-zeta

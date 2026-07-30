@@ -279,7 +279,7 @@ theorem tendsto_pow_succ_mul_gammaPoleCovariantJetValue (branch j : ℕ) :
       (fun x => c * (x ^ (j + 1) *
         simplePoleCovariantJetValue (gammaPoleRegularUnit branch) j x)) :=
     Filter.Eventually.of_forall fun x => by ring
-  simpa only [gammaPoleRegularUnit_zero, one_mul] using
+  simpa only [gammaPoleRegularUnit_zero, one_mul] using!
     h.congr' (hev.mono fun _ hx => hx.symm)
 
 /-- Every normalized Gamma covariant jet has exact pole order `-(j+1)`. -/

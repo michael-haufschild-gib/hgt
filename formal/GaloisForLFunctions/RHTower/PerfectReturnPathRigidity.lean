@@ -444,7 +444,7 @@ theorem fixedProtocolHamiltonian_krylov_forwardConnected
       (fixedProtocolHamiltonian T n
         (finiteKrylovUnitary (angularEnergy T n)
           (interpolatedWeight n θ))) := by
-  simpa [fixedProtocolHamiltonian] using
+  simpa [fixedProtocolHamiltonian] using!
     finiteKrylov_conjugate_forwardConnected
       (angularEnergy_injective hT n)
       (interpolatedWeight_pos n hθ0 hθ1)

@@ -174,7 +174,7 @@ theorem xiWeilPolarization_diagonal_nonneg_of_riemannHypothesis
   have hsumC : Summable (fun q : XiZeroCopy =>
       ((‖F (xiSpectralPoint q)‖ ^ 2 : ℝ) : ℂ)) :=
     by
-      simpa only [Function.comp_apply] using
+      simpa only [Function.comp_apply] using!
         hsum.map Complex.ofRealCLM Complex.ofRealCLM.continuous
   rw [Complex.re_tsum hsumC]
   apply tsum_nonneg
@@ -197,7 +197,7 @@ theorem xiThetaEigenFourier_analytic (alpha : ℂ) :
   have hdslope : DifferentiableOn ℂ (dslope XiC alpha) Set.univ :=
     (differentiableOn_dslope (isOpen_univ.mem_nhds (Set.mem_univ alpha))).mpr hdiff
   intro z _hz
-  simpa only [xiThetaEigenFourier] using
+  simpa only [xiThetaEigenFourier] using!
     (analyticAt_const.mul
       (hdslope.analyticAt (isOpen_univ.mem_nhds (Set.mem_univ z))))
 

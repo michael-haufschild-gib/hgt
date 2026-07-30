@@ -35,7 +35,7 @@ theorem universalPrimeLogFiniteHermitianGibbsJet_tendstoLocallyUniformlyOn
       (universalPrimeLogFiniteHermitianGibbsJet m)
       (iteratedDeriv m (primeLogHerglotz (fun q => universalFacetOrbitGauge q)))
       Filter.atTop upperHalfPlane := by
-  simpa only [universalPrimeLogFiniteHermitianGibbsJet] using
+  simpa only [universalPrimeLogFiniteHermitianGibbsJet] using!
     universalFacetOrbitGauge_iteratedDeriv_finiteHermitianGibbsResponse_tendstoLocallyUniformlyOn_joint
       m
 

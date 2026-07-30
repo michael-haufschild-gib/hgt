@@ -431,7 +431,7 @@ theorem continuous_causalLaplaceWeightPositive :
     congr 1
     exact norm_causalLaplaceWeightL2_sub_sq x.2 a.2
   rw [heq]
-  simpa using hsqrt
+  simpa using! hsqrt
 
 def positiveApproach (a : Set.Ioi (0 : ℝ)) (N : ℕ) : Set.Ioi (0 : ℝ) :=
   ⟨a.1 + 1 / ((N : ℝ) + 1),
@@ -467,7 +467,7 @@ theorem causalLaplacePairing_thetaHeatRateSourceReaderL2_self
       (𝓝 (thetaSquare n)) := by
     have hreal := (tendsto_subtype_rng.mp hq)
     have hcomplex := Complex.continuous_ofReal.continuousAt.tendsto.comp hreal
-    simpa [a, thetaSquare] using hcomplex
+    simpa [a, thetaSquare] using! hcomplex
   have hnodeMem : thetaSquare n ∈ {z : ℂ | 0 < z.re} := by
     norm_num [thetaSquare, pow_two, Complex.mul_re]
     omega

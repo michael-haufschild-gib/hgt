@@ -99,13 +99,13 @@ theorem primeCoefficientTailPairDependent_iff_projectivelyEquivalent
       apply hd
       have hbd : {p | b * d p ≠ 0}.Finite := by
         simpa [ha] using hsupp
-      simpa [hb] using hbd
+      simpa [hb] using! hbd
     have hb : b ≠ 0 := by
       intro hb
       apply hc
       have hac : {p | a * c p ≠ 0}.Finite := by
         simpa [hb] using hsupp
-      simpa [ha] using hac
+      simpa [ha] using! hac
     refine ⟨-(b / a), neg_ne_zero.mpr (div_ne_zero hb ha), ?_⟩
     apply hsupp.subset
     intro p hp
@@ -131,7 +131,7 @@ theorem tailCoefficientIndependent_unit_iff (c : Nat.Primes → ℂ) :
   constructor
   · intro htail hzero
     let u : Unit → ℂ := fun _ => 1
-    have hu : u = 0 := htail u (by simpa [u] using hzero)
+    have hu : u = 0 := htail u (by simpa [u] using! hzero)
     have := congrFun hu ()
     norm_num [u] at this
   · intro hnonzero u hsupp
@@ -239,7 +239,7 @@ theorem primeCoefficientShiftPalette_differentialIndependent_iff
               (primeCoefficientShiftedRotatedJet
                 (c jak.1) (alpha jak.2.1) jak.2.2))) := by
       simpa only [Function.comp_apply, f,
-        differentialJet_primeCoefficientShiftCarrier] using hzero
+        differentialJet_primeCoefficientShiftCarrier] using! hzero
     exact (primeCoefficientShiftedRotatedJets_algebraicIndependent_iff
       c alpha hdistinct hrange 0).mp hjets
   · intro htail
@@ -260,7 +260,7 @@ theorem primeCoefficientShiftPalette_differentialIndependent_iff
     have hrect := (primeCoefficientShiftedRotatedJets_algebraicIndependent_iff
       c alpha hdistinct hrange m).mpr htail
     have hsub := hrect.comp f hf
-    simpa only [Function.comp_apply, f, x] using hsub
+    simpa only [Function.comp_apply, f, x] using! hsub
 
 /-- **Complete natural-shift criterion.** The complete nonnegative-integer shift palette of a
 finite bounded finite-range family is differentially independent exactly when the coefficient
@@ -290,7 +290,7 @@ theorem primeCoefficientNaturalShiftPalette_differentialIndependent_iff
               (primeCoefficientShiftedRotatedJet
                 (c jak.1) ((jak.2.1 : ℕ) : ℂ) jak.2.2))) := by
       simpa only [Function.comp_apply, f, primeCoefficientNaturalShiftPalette,
-        differentialJet_primeCoefficientShiftCarrier] using hzero
+        differentialJet_primeCoefficientShiftCarrier] using! hzero
     exact (primeCoefficientShiftedRotatedJets_algebraicIndependent_iff c
       (fun a : Fin 1 => ((a : ℕ) : ℂ)) (by
         intro a b h
@@ -322,7 +322,7 @@ theorem primeCoefficientNaturalShiftPalette_differentialIndependent_iff
         apply Fin.ext
         exact natCastComplex_re_injective h) hrange qk.2).mpr htail
     have hsub := hrect.comp f hf
-    simpa only [Function.comp_apply, f] using hsub
+    simpa only [Function.comp_apply, f] using! hsub
 
 /-- The projective residual of two shifted jets is again a single prime-supported column. -/
 theorem primeCoefficientShiftedRotatedJet_sub_smul_eq_arithmeticOfPrimeColumn
@@ -542,7 +542,7 @@ theorem primeCoefficientNaturalShiftPalette_differentialAdjoin_ne_bot
     exact congrArg Prod.snd h)
   apply differentialIndependent_differentialAdjoin_ne_bot
     (primeCoefficientNaturalShiftPalette c)
-  simpa only using hsingle
+  simpa only using! hsingle
 
 theorem coefficientPattern_unit_range_finite_of_range_finite
     {c : Nat.Primes → ℂ} (hc : (Set.range c).Finite) :

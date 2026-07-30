@@ -48,7 +48,7 @@ theorem differentialIndependent_of_forall_finite_subfamily
   let e : ι ≃ (Set.univ : Set ι) := (Equiv.Set.univ ι).symm
   have hall := (differentialIndependent_equiv e
     (fun i : (Set.univ : Set ι) ↦ x i)).mpr hsubtype
-  simpa [e, Equiv.Set.univ] using hall
+  simpa [e, Equiv.Set.univ] using! hall
 
 /-- A differentially independent family cannot contain two distinct entries whose difference is
 differentially algebraic over the base. -/
@@ -208,11 +208,11 @@ theorem affinePointedCollisionMatroid_pair_isCircuit_iff
   constructor
   · intro hC
     have hiIndep : M.Indep ({i} : Set Λ) := by
-      have h := hC.diff_singleton_indep (show j ∈ ({i, j} : Set Λ) by simp)
-      simpa [Set.pair_diff_right hij] using h
+      have h := hC.sdiff_singleton_indep (show j ∈ ({i, j} : Set Λ) by simp)
+      simpa [Set.pair_sdiff_right hij] using h
     have hjIndep : M.Indep ({j} : Set Λ) := by
-      have h := hC.diff_singleton_indep (show i ∈ ({i, j} : Set Λ) by simp)
-      simpa [Set.pair_diff_left hij] using h
+      have h := hC.sdiff_singleton_indep (show i ∈ ({i, j} : Set Λ) by simp)
+      simpa [Set.pair_sdiff_left hij] using h
     have hi : M.IsNonloop i := by rwa [← Matroid.indep_singleton]
     have hj : M.IsNonloop j := by rwa [← Matroid.indep_singleton]
     have hclosure : M.closure {i} = M.closure {j} :=

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HilbertMetric.PolynomialFockRecombination
-import Mathlib.Data.Real.Sqrt
+import Mathlib.Analysis.Real.Sqrt
 
 /-!
 # Transverse coherent-collision graph
@@ -196,7 +196,7 @@ theorem recombined_transverseCollisionGramEntry_diagonal {d M : ℕ}
           dsimp at htop
           subst qn
           rw [if_pos ⟨rfl, rfl⟩]
-          simpa [gradedIndex] using
+          simpa [gradedIndex] using!
             recombined_transverseCollisionGramEntry_top lam nodes c hdelta qa qa
     · rw [if_neg (fun h => htop h.2)]
       rw [recombined_transverseCollisionGramEntry lam nodes c hdelta]

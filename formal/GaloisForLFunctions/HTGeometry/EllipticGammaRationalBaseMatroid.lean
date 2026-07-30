@@ -135,7 +135,8 @@ noncomputable def addTranslationMeroDifferentialAlgEquiv (q : ℂ) :
     HTGeometry.DifferentialAlgEquiv ℂ (meroField Set.univ) where
   toAlgEquiv := addTranslationMeroAlgEquiv q
   map_deriv' x := by
-    simpa using addTranslationMeroEquiv_deriv q x
+    simpa [addTranslationMeroAlgEquiv] using!
+      addTranslationMeroEquiv_deriv q x
 
 /-- The enlarged rank-three period lattice is countable, so it always admits an external shift. -/
 theorem exists_thetaTranslationNonresonant (tau sigma : ℂ) :
@@ -209,7 +210,7 @@ theorem hypertranscendentalOver_ellipticGammaExternalLogDerivDefectMero
     HypertranscendentalOver meromorphicRationalCoordinateField
       (ellipticGammaExternalLogDerivDefectMero h sigma tau hsigma htau) := by
   rw [hypertranscendentalOver_iff_differentialIndependent_singleton]
-  simpa [ellipticGammaExternalDefectFamily] using
+  simpa [ellipticGammaExternalDefectFamily] using!
     ellipticGammaExternalDefectFamily_differentialIndependent_rationalBase
       (fun _ : Unit ↦ h) sigma tau hsigma htau hindependent
       (fun _ ↦ hnonres) (by simp)
@@ -235,7 +236,8 @@ theorem hypertranscendentalOver_ellipticGammaLogDerivMero_rationalBase
       (ellipticGammaLogDerivMero sigma tau hsigma htau) := by
     apply (addTranslationMeroDifferentialAlgEquiv h).hypertranscendentalOver_of_sub_self
     simpa [addTranslationMeroDifferentialAlgEquiv,
-      ellipticGammaExternalLogDerivDefectMero] using hdefectConstants
+      addTranslationMeroAlgEquiv,
+      ellipticGammaExternalLogDerivDefectMero] using! hdefectConstants
   exact hypertranscendentalOver_meromorphicRationalCoordinateField_iff.mpr hlogConstants
 
 /-- **Natural-base elliptic-gamma hypertranscendence.**  For rationally independent rank-three

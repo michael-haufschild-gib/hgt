@@ -386,7 +386,7 @@ theorem exists_disconnected_canonical_circle_window {c : ℂ} (hc : Disconnected
   obtain ⟨y, hyW, hyd⟩ := Metric.mem_closure_iff.mp hz₀clW r hr
   have hyball : y ∈ ball (γ t₀) r := by rwa [mem_ball, dist_comm]
   have hlensc : IsPreconnected (ball (γ t₀) r ∩ U0NaturalBoundary.Ext) :=
-    by simpa [inter_comm] using
+    by simpa [inter_comm, U0NaturalBoundary.Ext] using!
       U0Transcendence.lens_preconnected (γ t₀) hz₀norm hr hrhalf
   have hlensSub : ball (γ t₀) r ∩ U0NaturalBoundary.Ext ⊆
       Ωtower ∩ U0NaturalBoundary.Ext := fun z hz => ⟨hballΩ hz.1, hz.2⟩

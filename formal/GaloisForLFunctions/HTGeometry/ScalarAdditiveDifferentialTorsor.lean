@@ -80,7 +80,7 @@ theorem scalarDerivativeField_adjoin_amplitude_eq_top (q : T)
     have hxq : x = q := Set.mem_singleton_iff.mp hx
     subst x
     rcases n with _ | n
-    · simpa using hqA
+    · simpa using! hqA
     · have hjet : differentialJet (n + 1) q ∈ L := by
         rw [show differentialJet (n + 1) q = differentialJet n q′ by
           simpa using differentialJet_add n 1 q]

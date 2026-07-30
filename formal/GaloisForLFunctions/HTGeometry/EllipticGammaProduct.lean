@@ -78,9 +78,12 @@ theorem hasProdLocallyUniformlyOn_ellipticGammaForwardFactor
     simp only [norm_neg, ellipticGammaForwardArgument, div_eq_mul_inv, norm_mul,
       norm_pow]
     nlinarith
-  convert Summable.hasProdUniformlyOn_one_add hK hu hbound (fun jk => by
-    simpa [ellipticGammaForwardArgument, div_eq_mul_inv] using
-      ((continuous_const.mul continuous_const).mul hInvCont).neg.continuousOn) using 1
+  convert! Summable.hasProdUniformlyOn_one_add hK hu hbound (fun jk => by
+    have hcont : Continuous (fun x : ℂ =>
+        -(ellipticNome σ ^ (jk.1 + 1) * ellipticNome τ ^ (jk.2 + 1) *
+          (ellipticThetaCoordinate τ x)⁻¹)) :=
+      ((continuous_const.mul continuous_const).mul hInvCont).neg
+    exact hcont.continuousOn) using 1
 
 /-- The denominator double product converges locally uniformly on the whole additive plane. -/
 theorem hasProdLocallyUniformlyOn_ellipticGammaBackwardFactor
@@ -119,9 +122,12 @@ theorem hasProdLocallyUniformlyOn_ellipticGammaBackwardFactor
         (pow_nonneg (norm_nonneg (ellipticNome τ)) jk.2)
     simp only [norm_neg, ellipticGammaBackwardArgument, norm_mul, norm_pow]
     nlinarith
-  convert Summable.hasProdUniformlyOn_one_add hK hu hbound (fun jk => by
-    simpa [ellipticGammaBackwardArgument] using
-      ((continuous_const.mul continuous_const).mul hCoordCont).neg.continuousOn) using 1
+  convert! Summable.hasProdUniformlyOn_one_add hK hu hbound (fun jk => by
+    have hcont : Continuous (fun x : ℂ =>
+        -(ellipticNome σ ^ jk.1 * ellipticNome τ ^ jk.2 *
+          ellipticThetaCoordinate τ x)) :=
+      ((continuous_const.mul continuous_const).mul hCoordCont).neg
+    exact hcont.continuousOn) using 1
 
 /-- Every numerator factor is entire. -/
 theorem differentiable_ellipticGammaForwardFactor :
@@ -258,16 +264,16 @@ theorem exists_ellipticGammaProducts_ne_zero
       (f := fun jk : ℕ × ℕ =>
         -ellipticGammaForwardArgument (ellipticNome σ) (ellipticNome τ)
           (ellipticThetaCoordinate τ z) jk.1 jk.2)
-      (fun jk => by simpa [ellipticGammaForwardFactor] using hzF jk)
+      (fun jk => by simpa [ellipticGammaForwardFactor] using! hzF jk)
       (by simpa only [norm_neg] using hsumF)
-    simpa [ellipticGammaForwardProduct, ellipticGammaForwardFactor] using hprod
+    simpa [ellipticGammaForwardProduct, ellipticGammaForwardFactor] using! hprod
   · have hprod := tprod_one_add_ne_zero_of_summable
       (f := fun jk : ℕ × ℕ =>
         -ellipticGammaBackwardArgument (ellipticNome σ) (ellipticNome τ)
           (ellipticThetaCoordinate τ z) jk.1 jk.2)
-      (fun jk => by simpa [ellipticGammaBackwardFactor] using hzB jk)
+      (fun jk => by simpa [ellipticGammaBackwardFactor] using! hzB jk)
       (by simpa only [norm_neg] using hsumB)
-    simpa [ellipticGammaBackwardProduct, ellipticGammaBackwardFactor] using hprod
+    simpa [ellipticGammaBackwardProduct, ellipticGammaBackwardFactor] using! hprod
 
 /-- The logarithmic derivative of one numerator factor is the positive rational atom. -/
 theorem logDeriv_ellipticGammaForwardFactor
@@ -283,14 +289,12 @@ theorem logDeriv_ellipticGammaForwardFactor
   have hX := hasDerivAt_ellipticThetaCoordinate τ z
   have harg : HasDerivAt (fun w => c / X w)
       (-(2 * Real.pi * I) * (c / X z)) z := by
-    convert (hasDerivAt_const z c).div hX hX0 using 1
-    dsimp [X]
-    field_simp [hX0]
-    ring
+    convert! (hasDerivAt_const z c).div hX hX0 using 1
+    simp only [X] at hX0 ⊢
+    field_simp [hX0] <;> ring
   have hfac : HasDerivAt (ellipticGammaForwardFactor σ τ jk)
       (2 * Real.pi * I * (c / X z)) z := by
-    convert (hasDerivAt_const z 1).sub harg using 1
-    ring
+    convert! (hasDerivAt_const z 1).sub harg using 1 <;> ring
   rw [logDeriv_apply, hfac.deriv]
   rw [ellipticGammaForwardFactor, ellipticGammaForwardArgument,
     ellipticGammaLogAtom]
@@ -310,12 +314,10 @@ theorem logDeriv_ellipticGammaBackwardFactor
   have hX := hasDerivAt_ellipticThetaCoordinate τ z
   have harg : HasDerivAt (fun w => c * X w)
       (2 * Real.pi * I * (c * X z)) z := by
-    convert hX.const_mul c using 1
-    ring
+    convert! hX.const_mul c using 1 <;> ring
   have hfac : HasDerivAt (ellipticGammaBackwardFactor σ τ jk)
       (-(2 * Real.pi * I) * (c * X z)) z := by
-    convert (hasDerivAt_const z 1).sub harg using 1
-    ring
+    convert! (hasDerivAt_const z 1).sub harg using 1 <;> ring
   rw [logDeriv_apply, hfac.deriv]
   rw [ellipticGammaBackwardFactor, ellipticGammaBackwardArgument,
     ellipticGammaLogAtom]
@@ -344,9 +346,8 @@ theorem logDeriv_ellipticGammaForwardProduct
   have hsumAtom := summable_ellipticGammaLogAtom_of_summable_norm hsumArg
   have hsumLD : Summable (fun jk : ℕ × ℕ =>
       logDeriv (ellipticGammaForwardFactor σ τ jk) z) := by
-    convert hsumAtom.mul_left (2 * Real.pi * I) using 1
-    ext jk
-    exact logDeriv_ellipticGammaForwardFactor σ τ jk z
+    simpa only [logDeriv_ellipticGammaForwardFactor] using!
+      hsumAtom.mul_left (2 * Real.pi * I)
   have hprod : MultipliableLocallyUniformlyOn (ellipticGammaForwardFactor σ τ) Set.univ :=
     ⟨_, hasProdLocallyUniformlyOn_ellipticGammaForwardFactor hσ hτ⟩
   change logDeriv (fun x => ∏' jk : ℕ × ℕ,
@@ -381,9 +382,8 @@ theorem logDeriv_ellipticGammaBackwardProduct
   have hsumAtom := summable_ellipticGammaLogAtom_of_summable_norm hsumArg
   have hsumLD : Summable (fun jk : ℕ × ℕ =>
       logDeriv (ellipticGammaBackwardFactor σ τ jk) z) := by
-    convert hsumAtom.mul_left (-(2 * Real.pi * I)) using 1
-    ext jk
-    exact logDeriv_ellipticGammaBackwardFactor σ τ jk z
+    simpa only [logDeriv_ellipticGammaBackwardFactor] using!
+      hsumAtom.mul_left (-(2 * Real.pi * I))
   have hprod : MultipliableLocallyUniformlyOn (ellipticGammaBackwardFactor σ τ) Set.univ :=
     ⟨_, hasProdLocallyUniformlyOn_ellipticGammaBackwardFactor hσ hτ⟩
   change logDeriv (fun x => ∏' jk : ℕ × ℕ,

@@ -155,7 +155,7 @@ theorem
         2 ≤ N :=
       and_congr
         (by
-          simpa [xiTransverseRootDeletedShift] using
+          exact
             (xiMobiusRootDeletedPrimeIntegralApertureDyadicCofiniteHilbertReconstruction_iff_rootedStarIncidenceGram_det_eq_one
               root shift hroot sourcePrime).symm)
         Iff.rfl

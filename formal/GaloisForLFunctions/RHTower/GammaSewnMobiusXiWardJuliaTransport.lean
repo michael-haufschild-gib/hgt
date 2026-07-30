@@ -43,27 +43,39 @@ def xiWardSourcePhase (z alpha : ℂ) : ℂ :=
 theorem hasDerivAt_xiWardSourcePhase_zero {z : ℂ} (hz : XiC z ≠ 0) :
     HasDerivAt (xiWardSourcePhase z) (-2 * I * logDeriv XiC z) 0 := by
   have hminus : HasDerivAt (fun alpha : ℂ => z - alpha * I) (-I) 0 := by
-    simpa using
+    convert
       (hasDerivAt_const (x := (0 : ℂ)) (c := z)).sub
-        ((hasDerivAt_id (𝕜 := ℂ) (x := (0 : ℂ))).mul_const I)
+        ((hasDerivAt_id (𝕜 := ℂ) (x := (0 : ℂ))).mul_const I) using 1 <;> try rfl
+    all_goals ring_nf
   have hplus : HasDerivAt (fun alpha : ℂ => z + alpha * I) I 0 := by
     convert
       (hasDerivAt_const (x := (0 : ℂ)) (c := z)).add
-        ((hasDerivAt_id (𝕜 := ℂ) (x := (0 : ℂ))).mul_const I) using 1
+        ((hasDerivAt_id (𝕜 := ℂ) (x := (0 : ℂ))).mul_const I) using 1 <;> try rfl
     all_goals ring_nf
   have hnum :
       HasDerivAt (fun alpha : ℂ => XiC (z - alpha * I))
         (deriv XiC z * (-I)) 0 := by
-    simpa using XiC_differentiable.differentiableAt.hasDerivAt.comp 0 hminus
+    convert XiC_differentiable.differentiableAt.hasDerivAt.comp 0 hminus using 1 <;>
+      try rfl
+    all_goals ring_nf
   have hden :
       HasDerivAt (fun alpha : ℂ => XiC (z + alpha * I))
         (deriv XiC z * I) 0 := by
-    simpa using XiC_differentiable.differentiableAt.hasDerivAt.comp 0 hplus
+    convert XiC_differentiable.differentiableAt.hasDerivAt.comp 0 hplus using 1 <;>
+      try rfl
+    all_goals ring_nf
   have hquot := hnum.div hden (by simpa using hz)
-  simpa only [xiWardSourcePhase, logDeriv_apply] using
+  rw [logDeriv_apply]
+  have hquot' :
+      HasDerivAt
+        ((fun alpha : ℂ => XiC (z - alpha * I)) /
+          (fun alpha : ℂ => XiC (z + alpha * I)))
+        (-2 * I * (deriv XiC z / XiC z)) 0 :=
     hquot.congr_deriv (by
       field_simp [hz]
       ring)
+  convert hquot' using 1
+  all_goals rfl
 
 /-- Analytic sharp ratio of two Xi phase cells.  For real aperture this is
 `Theta(z) * conj(Theta(w))`, but the displayed formula remains holomorphic in the aperture. -/
@@ -91,8 +103,14 @@ theorem hasDerivAt_xiWardSourcePhaseCrossRatio_zero
     exact one_ne_zero
   have hquot := hzphase.div hwphase hwzero
   rw [xiWardSourcePhase_zero hz, xiWardSourcePhase_zero hw] at hquot
-  simpa only [xiWardSourcePhaseCrossRatio, one_pow, mul_one, one_mul,
-    div_one] using hquot.congr_deriv (by ring)
+  have hquot' :
+      HasDerivAt
+        (xiWardSourcePhase z / xiWardSourcePhase ((starRingEnd ℂ) w))
+        (2 * I *
+          (logDeriv XiC ((starRingEnd ℂ) w) - logDeriv XiC z)) 0 :=
+    hquot.congr_deriv (by ring)
+  convert hquot' using 1
+  all_goals rfl
 
 /-- Cauchy Gram cell in the normalization adapted to the Xi phase aperture. -/
 def xiWardCauchyGramCell (z w : ℂ) : ℂ :=
@@ -128,9 +146,17 @@ theorem hasDerivAt_xiWardJuliaCrossDefect_zero
   have h :=
     (hcross.sub_const 1).div_const
       (2 * I * (z - (starRingEnd ℂ) w))
-  simpa only [xiWardJuliaCrossDefect] using
+  have h' :
+      HasDerivAt
+        (fun alpha =>
+          (xiWardSourcePhaseCrossRatio z w alpha - 1) /
+            (2 * I * (z - (starRingEnd ℂ) w)))
+        ((logDeriv XiC ((starRingEnd ℂ) w) - logDeriv XiC z) /
+          (z - (starRingEnd ℂ) w)) 0 :=
     h.congr_deriv (by
       field_simp [I_ne_zero, sub_ne_zero.mpr hzw])
+  convert h' using 1
+  all_goals rfl
 
 /-- On the continued source domain, the centered source trace is the Xi logarithmic current. -/
 theorem continuedPrimeArchSourceRelativeTrace_eq_logDeriv_XiC_of_domain
@@ -330,7 +356,8 @@ theorem inner_fisherTangent_damped_eq_squarefreeFisherScore
     rw [harg]
     ring
   · simpa using hsigma
-  · simpa [hcoord] using hshift
+  · norm_num
+    simpa only [mobiusCriticalBoundaryParameter] using hshift
 
 /-- Applying the singular graph transport to the actual Möbius four-unit Fisher tangent
 coefficient reconstructs the completed squarefree current on every safe source ray. -/
@@ -355,7 +382,8 @@ theorem squarefreeMobiusGammaCurrentTransportV_actualTangent
   simpa only [hcoord] using
     squarefreeMobiusGammaCurrentTransportV_eq_completedCurrent
     (sigma := (sigma : ℂ)) (epsilon := ((sigma - 1 : ℝ) : ℂ))
-    (u := (u : ℂ)) (by simpa using hsigma) (by simpa using hshift)
+    (u := (u : ℂ)) (by simpa using hsigma)
+      (by simpa [mobiusCriticalBoundaryParameter] using hshift)
     (by exact_mod_cast sub_ne_zero.mpr hsigma.ne')
 
 /-! ## Exact composition from the Möbius tangent graph to the Xi phase column -/
@@ -436,7 +464,8 @@ theorem squarefreeMobiusGammaXiWardTransportV_actualTangent
   simpa only [hcoord] using
     squarefreeMobiusGammaXiWardTransportV_eq_continuedSource
       (sigma := (sigma : ℂ)) (epsilon := ((sigma - 1 : ℝ) : ℂ))
-      (u := (u : ℂ)) (by simpa using hsigma) (by simpa using hshift)
+      (u := (u : ℂ)) (by simpa using hsigma)
+        (by simpa [mobiusCriticalBoundaryParameter] using hshift)
       (by exact_mod_cast sub_ne_zero.mpr hsigma.ne')
 
 /-- At every safe point of the actual moving source ray, the common-anchor Julia transport has

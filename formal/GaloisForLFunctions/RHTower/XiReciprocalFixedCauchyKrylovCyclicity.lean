@@ -55,7 +55,7 @@ def xiReciprocalSpectralSupport (rho : XiDivisorSupport) : ℂ :=
 theorem xiReciprocalSpectralSupport_ne_zero (rho : XiDivisorSupport) :
     xiReciprocalSpectralSupport rho ≠ 0 := by
   exact inv_ne_zero (by
-    simpa only [xiSpectralPoint_eq_support] using
+    simpa only [xiSpectralPoint_eq_support] using!
       xiSpectralPoint_ne_zero (xiFirstZeroCopy rho))
 
 theorem xiReciprocalSpectralSupport_injective :

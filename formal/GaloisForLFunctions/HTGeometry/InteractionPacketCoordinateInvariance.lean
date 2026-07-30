@@ -58,7 +58,7 @@ theorem diagonalRescaleCoupling_analyticAt
       (diagonalRescaleCoupling scale : (E → ℂ) → E → ℂ) 0 := by
   apply AnalyticAt.pi
   intro e
-  simpa [diagonalRescaleCoupling] using
+  simpa [diagonalRescaleCoupling] using!
     (analyticAt_const.mul
       ((ContinuousLinearMap.proj (R := ℂ)
         (φ := fun _ : E => ℂ) e).analyticAt 0))

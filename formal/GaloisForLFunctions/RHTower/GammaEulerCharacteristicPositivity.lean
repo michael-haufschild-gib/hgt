@@ -50,7 +50,7 @@ theorem euler_ratio_core {c s r : ℝ} (hs : 0 < s) (hsc : 0 < c - s) (hr : 0 < 
     have hd1 := (Real.hasDerivAt_rpow_const (p := -r) (Or.inl hp.ne')).comp t hl1
     have hd2 := (Real.hasDerivAt_rpow_const (p := -r) (Or.inl hm.ne')).comp t hl2
     have hsum := hd1.add hd2
-    convert hsum using 1
+    convert! hsum using 1
     ring
   have hmono : StrictMonoOn f (Icc 0 1) := by
     apply strictMonoOn_of_deriv_pos (convex_Icc 0 1) hcont

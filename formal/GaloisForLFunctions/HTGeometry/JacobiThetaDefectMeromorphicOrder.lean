@@ -116,7 +116,7 @@ theorem thetaLogDerivDefect_pole_iff
       exact AnalyticAt.comp (x := z) (g := fun w => thetaLogDeriv w τ)
         (f := fun w : ℂ => w + h) hshiftBase hinner
     have hdefAn : AnalyticAt ℂ (thetaLogDerivDefect h · τ) z := by
-      simpa [thetaLogDerivDefect] using hshiftAn.sub hbaseAn
+      simpa [thetaLogDerivDefect] using! hshiftAn.sub hbaseAn
     exact (not_lt_of_ge hdefAn.meromorphicOrderAt_nonneg) hpole
   · rintro (⟨m, n, rfl⟩ | ⟨m, n, rfl⟩)
     · rw [meromorphicOrderAt_thetaLogDerivDefect_base hτ hh m n]

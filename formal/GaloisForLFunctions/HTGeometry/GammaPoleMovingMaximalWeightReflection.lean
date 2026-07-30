@@ -31,7 +31,7 @@ def gammaPoleBoundaryDerivativeWeightNat : (ℕ →₀ ℕ) →+ ℕ :=
 
 def GammaPoleBoundaryFiltered (W : ℕ)
     (F : GammaPoleMovingJetSymbolic) : Prop :=
-  ∀ a ∈ (gammaPoleTriFlatten F).support,
+  ∀ a ∈ (gammaPoleTriFlatten F).coeff.support,
     gammaPoleBoundaryDerivativeWeightNat a.2 ≤ W
 
 theorem GammaPoleBoundaryFiltered.zero (W : ℕ) :
@@ -64,7 +64,7 @@ theorem GammaPoleBoundaryFiltered.mul {V W : ℕ}
     GammaPoleBoundaryFiltered (V + W) (F * G) := by
   intro a ha
   rw [map_mul] at ha
-  have ha' := AddMonoidAlgebra.support_mul
+  have ha' := AddMonoidAlgebra.support_coeff_mul_subset
     (gammaPoleTriFlatten F) (gammaPoleTriFlatten G) ha
   rcases Finset.mem_add.mp ha' with ⟨x, hx, y, hy, rfl⟩
   change gammaPoleBoundaryDerivativeWeightNat (x.2 + y.2) ≤ V + W
@@ -129,7 +129,7 @@ theorem gammaPoleBoundaryFiltered_monomial
   by_cases hc : c = 0
   · exact (Finsupp.mem_support_iff.mp ha (by simp [hc])).elim
   · have haeq : a = ((q, l), m) := by
-      simpa only [Finsupp.support_single _ hc,
+      simpa only [AddMonoidAlgebra.coeff_single, Finsupp.support_single _ hc,
         Finset.mem_singleton] using ha
     subst a
     exact le_rfl
@@ -322,7 +322,8 @@ theorem gammaPoleSymbolicPolynomialJetLaurentEval_boundaryFiltered
       gammaPoleSourceDerivativeWeight P W) :
     GammaPoleBoundaryFiltered W
       (gammaPoleSymbolicPolynomialJetLaurentEval n P) := by
-  simpa only [gammaPoleSymbolicPolynomialJetLaurentEval] using
+  simpa only [gammaPoleSymbolicPolynomialJetLaurentEval,
+    MvPolynomial.coe_eval₂Hom] using
     gammaPoleBoundaryFiltered_eval₂_of_isWeightedHomogeneous hW
       gammaPoleSymbolicMovingCoefficientLaurent
       (fun j : Fin (n + 1) =>
@@ -335,7 +336,7 @@ theorem GammaPoleBoundaryFiltered.coeff_weight
     {W : ℕ} {F : GammaPoleMovingJetSymbolic}
     (hF : GammaPoleBoundaryFiltered W F)
     {q l : ℤ} {m : ℕ →₀ ℕ}
-    (hcoeff : MvPolynomial.coeff m ((F q) l) ≠ 0) :
+    (hcoeff : MvPolynomial.coeff m ((F.coeff q).coeff l) ≠ 0) :
     gammaPoleBoundaryDerivativeWeightNat m ≤ W := by
   apply hF ((q, l), m)
   rw [Finsupp.mem_support_iff]
@@ -351,7 +352,7 @@ theorem gammaPoleSymbolicPolynomialJetLaurentEval_coeff_eq_zero_of_weight_lt
       gammaPoleSourceDerivativeWeight P V)
     (hVW : V < W) (m : ℕ →₀ ℕ) :
     MvPolynomial.coeff m
-        ((gammaPoleSymbolicPolynomialJetLaurentEval n P (D : ℤ))
+        (((gammaPoleSymbolicPolynomialJetLaurentEval n P).coeff (D : ℤ)).coeff
           (-(W : ℤ))) = 0 := by
   by_contra hcoeff
   have htri := gammaPoleSymbolicPolynomialJetLaurentEval_support_weight
@@ -369,7 +370,7 @@ theorem gammaPoleSymbolicPolynomialJetLaurentEval_coeff_eq_zero_of_weight_lt
 /-- Exact purity in the signed factorial-scale coordinate. -/
 def GammaPoleInnerPure (l : ℤ)
     (F : GammaPoleMovingJetSymbolic) : Prop :=
-  ∀ a ∈ (gammaPoleTriFlatten F).support, a.1.2 = l
+  ∀ a ∈ (gammaPoleTriFlatten F).coeff.support, a.1.2 = l
 
 theorem GammaPoleInnerPure.zero (l : ℤ) :
     GammaPoleInnerPure l 0 := by
@@ -406,7 +407,7 @@ theorem GammaPoleInnerPure.mul {l r : ℤ}
     GammaPoleInnerPure (l + r) (F * G) := by
   intro a ha
   rw [map_mul] at ha
-  have ha' := AddMonoidAlgebra.support_mul
+  have ha' := AddMonoidAlgebra.support_coeff_mul_subset
     (gammaPoleTriFlatten F) (gammaPoleTriFlatten G) ha
   rcases Finset.mem_add.mp ha' with ⟨x, hx, y, hy, rfl⟩
   change x.1.2 + y.1.2 = l + r
@@ -459,7 +460,7 @@ theorem gammaPoleInnerPure_monomial
   by_cases hc : c = 0
   · exact (Finsupp.mem_support_iff.mp ha (by simp [hc])).elim
   · have haeq : a = ((q, l), m) := by
-      simpa only [Finsupp.support_single _ hc,
+      simpa only [AddMonoidAlgebra.coeff_single, Finsupp.support_single _ hc,
         Finset.mem_singleton] using ha
     subst a
     rfl
@@ -552,18 +553,18 @@ theorem gammaPoleSymbolicDerivativeMonomialProduct_innerPure
 create the packet's inner degree. -/
 theorem gammaPoleInnerZero_mul_eq_zero
     {A B : GammaPoleMovingJetSymbolic} {l : ℤ}
-    (hA : ∀ q : ℤ, (A q) 0 = 0)
+    (hA : ∀ q : ℤ, (A.coeff q).coeff 0 = 0)
     (hB : GammaPoleInnerPure l B) (q : ℤ) :
-    ((A * B) q) l = 0 := by
+    ((A * B).coeff q).coeff l = 0 := by
   ext m
   by_contra hcoeff
   have hsupp : ((q, l), m) ∈
-      (gammaPoleTriFlatten (A * B)).support := by
+      (gammaPoleTriFlatten (A * B)).coeff.support := by
     rw [Finsupp.mem_support_iff]
-    change MvPolynomial.coeff m (((A * B) q) l) ≠ 0
+    change MvPolynomial.coeff m (((A * B).coeff q).coeff l) ≠ 0
     exact hcoeff
   rw [map_mul] at hsupp
-  have hsupp' := AddMonoidAlgebra.support_mul
+  have hsupp' := AddMonoidAlgebra.support_coeff_mul_subset
     (gammaPoleTriFlatten A) (gammaPoleTriFlatten B) hsupp
   rcases Finset.mem_add.mp hsupp' with ⟨x, hx, y, hy, hxy⟩
   have hinner := congrArg (fun a : GammaPoleTriIndex => a.1.2) hxy
@@ -571,7 +572,7 @@ theorem gammaPoleInnerZero_mul_eq_zero
   have hxinner : x.1.2 = 0 := by
     rw [hB y hy] at hinner
     omega
-  have hxne : gammaPoleTriFlatten A x ≠ 0 :=
+  have hxne : (gammaPoleTriFlatten A).coeff x ≠ 0 :=
     Finsupp.mem_support_iff.mp hx
   apply hxne
   rcases x with ⟨⟨xq, xl⟩, xm⟩
@@ -582,7 +583,7 @@ theorem gammaPoleInnerZero_mul_eq_zero
 center value; all nonzero Taylor orders occupy nonzero inner scale degree. -/
 theorem gammaPoleSymbolicMovingCoefficientLaurent_inner_coeff_zero
     (p : Polynomial ℂ) (q : ℤ) :
-    (gammaPoleSymbolicMovingCoefficientLaurent p q) 0 =
+    ((gammaPoleSymbolicMovingCoefficientLaurent p).coeff q).coeff 0 =
       if q = 0 then MvPolynomial.C (gammaPoleCenterRationalEval p) else 0 := by
   by_cases hq : q = 0
   · subst q
@@ -606,13 +607,14 @@ theorem gammaPoleSymbolicMovingCoefficientLaurent_inner_coeff_zero
 
 theorem gammaPoleSymbolicMovingCoefficientLaurent_inner_coeff_zero_eq_center
     (p : Polynomial ℂ) (q : ℤ) :
-    (gammaPoleSymbolicMovingCoefficientLaurent p q) 0 =
-      (gammaPoleSymbolicCenterCoefficientInclude p q) 0 := by
+    ((gammaPoleSymbolicMovingCoefficientLaurent p).coeff q).coeff 0 =
+      ((gammaPoleSymbolicCenterCoefficientInclude p).coeff q).coeff 0 := by
   rw [gammaPoleSymbolicMovingCoefficientLaurent_inner_coeff_zero]
   change (if q = 0 then MvPolynomial.C (gammaPoleCenterRationalEval p) else 0) =
     ((LaurentPolynomial.C
       (gammaPoleRationalScaleDerivativeInclude
-        (gammaPoleCenterRationalEval p)) : GammaPoleMovingJetSymbolic) q) 0
+        (gammaPoleCenterRationalEval p)) :
+          GammaPoleMovingJetSymbolic).coeff q).coeff 0
   by_cases hq : q = 0
   · subst q
     simp [gammaPoleRationalScaleDerivativeInclude]
@@ -622,21 +624,21 @@ theorem gammaPoleSymbolicMovingCoefficientLaurent_inner_coeff_zero_eq_center
 theorem gammaPoleSymbolicMovingCoefficient_sub_center_inner_coeff_zero
     (p : Polynomial ℂ) (q : ℤ) :
     ((gammaPoleSymbolicMovingCoefficientLaurent p -
-        gammaPoleSymbolicCenterCoefficientInclude p) q) 0 = 0 := by
-  change (gammaPoleSymbolicMovingCoefficientLaurent p q) 0 -
-      (gammaPoleSymbolicCenterCoefficientInclude p q) 0 = 0
+        gammaPoleSymbolicCenterCoefficientInclude p).coeff q).coeff 0 = 0 := by
+  change ((gammaPoleSymbolicMovingCoefficientLaurent p).coeff q).coeff 0 -
+      ((gammaPoleSymbolicCenterCoefficientInclude p).coeff q).coeff 0 = 0
   rw [gammaPoleSymbolicMovingCoefficientLaurent_inner_coeff_zero_eq_center]
   exact sub_self _
 
 def gammaPoleOuterInnerCoefficient (q l : ℤ) :
     GammaPoleMovingJetSymbolic →+ MvPolynomial ℕ GammaPoleRationalBase where
-  toFun F := (F q) l
+  toFun F := (F.coeff q).coeff l
   map_zero' := rfl
   map_add' _ _ := rfl
 
 @[simp] theorem gammaPoleOuterInnerCoefficient_apply
     (q l : ℤ) (F : GammaPoleMovingJetSymbolic) :
-    gammaPoleOuterInnerCoefficient q l F = (F q) l := rfl
+    gammaPoleOuterInnerCoefficient q l F = (F.coeff q).coeff l := rfl
 
 /-- **Moving-center maximal-weight reflection.** On a fixed derivative-weight
 sector, the full moving Taylor evaluation and the frozen center evaluation
@@ -645,8 +647,8 @@ theorem gammaPoleSymbolicPolynomialJetLaurentEval_inner_coeff_eq_center
     {n W : ℕ} {P : MvPolynomial (Fin (n + 1)) (Polynomial ℂ)}
     (hW : MvPolynomial.IsWeightedHomogeneous
       gammaPoleSourceDerivativeWeight P W) (q : ℤ) :
-    (gammaPoleSymbolicPolynomialJetLaurentEval n P q) (-(W : ℤ)) =
-      (gammaPoleSymbolicCenterJetLaurentEval n P q) (-(W : ℤ)) := by
+    ((gammaPoleSymbolicPolynomialJetLaurentEval n P).coeff q).coeff (-(W : ℤ)) =
+      ((gammaPoleSymbolicCenterJetLaurentEval n P).coeff q).coeff (-(W : ℤ)) := by
   change gammaPoleOuterInnerCoefficient q (-(W : ℤ))
       (MvPolynomial.eval₂ gammaPoleSymbolicMovingCoefficientLaurent
       (fun j : Fin (n + 1) =>
@@ -664,7 +666,7 @@ theorem gammaPoleSymbolicPolynomialJetLaurentEval_inner_coeff_eq_center
         gammaPoleSymbolicDerivativeLaurentProfile (j : ℕ) ^ α j) -
     gammaPoleSymbolicCenterCoefficientInclude (P.coeff α) *
       ∏ j ∈ α.support,
-        gammaPoleSymbolicDerivativeLaurentProfile (j : ℕ) ^ α j) q)
+        gammaPoleSymbolicDerivativeLaurentProfile (j : ℕ) ^ α j).coeff q).coeff
           (-(W : ℤ)) = 0
   have hpure := gammaPoleSymbolicDerivativeMonomialProduct_innerPure α
     (hW (MvPolynomial.mem_support_iff.mp hαSupport))
@@ -698,7 +700,8 @@ theorem gammaPoleSymbolicPolynomialJetLaurentEval_particle_derivative_coeff
     (hD : P.IsHomogeneous D)
     (hW : MvPolynomial.IsWeightedHomogeneous
       gammaPoleSourceDerivativeWeight P W) :
-    (gammaPoleSymbolicPolynomialJetLaurentEval n P (D : ℤ)) (-(W : ℤ)) =
+    ((gammaPoleSymbolicPolynomialJetLaurentEval n P).coeff (D : ℤ)).coeff
+        (-(W : ℤ)) =
       MvPolynomial.C (RatFunc.C ((-1 : ℂ) ^ (D + W))) *
         gammaPoleCenterBoundaryPolynomialEval n P := by
   rw [gammaPoleSymbolicPolynomialJetLaurentEval_inner_coeff_eq_center hW,
@@ -713,7 +716,8 @@ theorem gammaPoleSymbolicPolynomialJetLaurentEval_particle_derivative_coeff_ne_z
     (hW : MvPolynomial.IsWeightedHomogeneous
       gammaPoleSourceDerivativeWeight P W)
     (hP : P ≠ 0) :
-    (gammaPoleSymbolicPolynomialJetLaurentEval n P (D : ℤ)) (-(W : ℤ)) ≠ 0 := by
+    ((gammaPoleSymbolicPolynomialJetLaurentEval n P).coeff (D : ℤ)).coeff
+        (-(W : ℤ)) ≠ 0 := by
   rw [gammaPoleSymbolicPolynomialJetLaurentEval_inner_coeff_eq_center hW]
   exact gammaPoleSymbolicCenterJetLaurentEval_particle_derivative_coeff_ne_zero
     hD hW hP
@@ -778,7 +782,7 @@ def gammaPoleSymbolicPolynomialJetOuterInnerCoefficient
     (n : ℕ) (q l : ℤ)
     (P : MvPolynomial (Fin (n + 1)) (Polynomial ℂ)) :
     gammaPoleSymbolicPolynomialJetOuterInnerCoefficient n q l P =
-      (gammaPoleSymbolicPolynomialJetLaurentEval n P q) l := rfl
+      ((gammaPoleSymbolicPolynomialJetLaurentEval n P).coeff q).coeff l := rfl
 
 theorem gammaPoleSymbolicPolynomialJetLaurentEval_inner_coeff_eq_zero_of_weight_lt
     {n D V W : ℕ}
@@ -787,7 +791,7 @@ theorem gammaPoleSymbolicPolynomialJetLaurentEval_inner_coeff_eq_zero_of_weight_
     (hV : MvPolynomial.IsWeightedHomogeneous
       gammaPoleSourceDerivativeWeight P V)
     (hVW : V < W) :
-    (gammaPoleSymbolicPolynomialJetLaurentEval n P (D : ℤ))
+    ((gammaPoleSymbolicPolynomialJetLaurentEval n P).coeff (D : ℤ)).coeff
       (-(W : ℤ)) = 0 := by
   ext m
   exact gammaPoleSymbolicPolynomialJetLaurentEval_coeff_eq_zero_of_weight_lt
@@ -800,7 +804,7 @@ theorem gammaPoleSymbolicPolynomialJetLaurentEval_maximalWeight_coeff_ne_zero
     {P : MvPolynomial (Fin (n + 1)) (Polynomial ℂ)}
     (hD : P.IsHomogeneous D) (hP : P ≠ 0) :
     let W := P.weightedTotalDegree gammaPoleSourceDerivativeWeight
-    (gammaPoleSymbolicPolynomialJetLaurentEval n P (D : ℤ))
+    ((gammaPoleSymbolicPolynomialJetLaurentEval n P).coeff (D : ℤ)).coeff
       (-(W : ℤ)) ≠ 0 := by
   let W := P.weightedTotalDegree gammaPoleSourceDerivativeWeight
   let Q := MvPolynomial.weightedHomogeneousComponent
@@ -849,7 +853,7 @@ def gammaPoleSymbolicPolynomialJetTriCoefficient
     (P : MvPolynomial (Fin (n + 1)) (Polynomial ℂ)) :
     gammaPoleSymbolicPolynomialJetTriCoefficient n q l m P =
       MvPolynomial.coeff m
-        ((gammaPoleSymbolicPolynomialJetLaurentEval n P q) l) := rfl
+        (((gammaPoleSymbolicPolynomialJetLaurentEval n P).coeff q).coeff l) := rfl
 
 /-- Every nonzero polynomial-coefficient differential source has a surviving
 joint particle/scale coefficient.  The selected source sector is the top
@@ -858,7 +862,8 @@ component. -/
 theorem gammaPoleSymbolicPolynomialJetLaurentEval_leadingParticleMaximalWeight_coeff_ne_zero
     (n : ℕ) {P : MvPolynomial (Fin (n + 1)) (Polynomial ℂ)}
     (hP : P ≠ 0) :
-    (gammaPoleSymbolicPolynomialJetLaurentEval n P (P.totalDegree : ℤ))
+    ((gammaPoleSymbolicPolynomialJetLaurentEval n P).coeff
+      (P.totalDegree : ℤ)).coeff
       (-(((MvPolynomial.homogeneousComponent P.totalDegree P).weightedTotalDegree
         gammaPoleSourceDerivativeWeight : ℕ) : ℤ)) ≠ 0 := by
   let D := P.totalDegree
@@ -868,10 +873,10 @@ theorem gammaPoleSymbolicPolynomialJetLaurentEval_leadingParticleMaximalWeight_c
   have hHD : H.IsHomogeneous D := by
     exact MvPolynomial.homogeneousComponent_isHomogeneous D P
   let W := H.weightedTotalDegree gammaPoleSourceDerivativeWeight
-  change (gammaPoleSymbolicPolynomialJetLaurentEval n P (D : ℤ))
+  change ((gammaPoleSymbolicPolynomialJetLaurentEval n P).coeff (D : ℤ)).coeff
     (-(W : ℤ)) ≠ 0
   have hHdiag :
-      (gammaPoleSymbolicPolynomialJetLaurentEval n H (D : ℤ))
+      ((gammaPoleSymbolicPolynomialJetLaurentEval n H).coeff (D : ℤ)).coeff
         (-(W : ℤ)) ≠ 0 := by
     exact gammaPoleSymbolicPolynomialJetLaurentEval_maximalWeight_coeff_ne_zero
       hHD hH
@@ -894,8 +899,8 @@ theorem gammaPoleSymbolicPolynomialJetLaurentEval_leadingParticleMaximalWeight_c
     · intro e he heD
       by_contra hecoeff
       change MvPolynomial.coeff m
-        ((gammaPoleSymbolicPolynomialJetLaurentEval n
-          (MvPolynomial.homogeneousComponent e P) (D : ℤ))
+        (((gammaPoleSymbolicPolynomialJetLaurentEval n
+          (MvPolynomial.homogeneousComponent e P)).coeff (D : ℤ)).coeff
             (-(W : ℤ))) ≠ 0 at hecoeff
       have heweight := gammaPoleSymbolicPolynomialJetLaurentEval_support_weight
         (MvPolynomial.homogeneousComponent_isHomogeneous e P) hecoeff
@@ -910,7 +915,7 @@ theorem gammaPoleSymbolicPolynomialJetLaurentEval_leadingParticleMaximalWeight_c
   intro hzero
   apply hsourceCoeff
   change MvPolynomial.coeff m
-    ((gammaPoleSymbolicPolynomialJetLaurentEval n P (D : ℤ))
+    (((gammaPoleSymbolicPolynomialJetLaurentEval n P).coeff (D : ℤ)).coeff
       (-(W : ℤ))) = 0
   rw [hzero]
   rfl

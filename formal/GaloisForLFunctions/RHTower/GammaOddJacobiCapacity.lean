@@ -269,7 +269,7 @@ theorem hasSum_gammaOddJacobiCoefficient_mul
             (Real.tanh t * Real.tanh u) ^ (2 * k + 1)) by ring,
       hsign, mul_one]
   rw [hterms]
-  convert hscaled using 1
+  convert! hscaled using 1
   rw [gammaOddCovarianceKernel,
     semilocalArchimedeanCharacteristic_sub_factorization ht hu,
     semilocalArchimedeanCharacteristic_add_factorization ht hu]

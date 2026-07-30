@@ -306,8 +306,7 @@ theorem deningerTimeTestLaplace_mul
     intro t
     have hlin :
         HasDerivAt (fun x : ℝ => (x : ℂ) * s) s t := by
-      convert ((hasDerivAt_id t).ofReal_comp.mul_const s) using 1
-      all_goals simp
+      simpa using! ((hasDerivAt_id t).ofReal_comp.mul_const s)
     simpa only [v, v', mul_comm] using hlin.cexp
   have huCont : Continuous u := by
     exact Complex.continuous_ofReal.comp φ.continuous
@@ -321,11 +320,11 @@ theorem deningerTimeTestLaplace_mul
     dsimp only [v']
     fun_prop
   have huCompact : HasCompactSupport u := by
-    simpa only [u, Function.comp_apply] using
+    simpa only [u, Function.comp_apply] using!
       (φ.hasCompactSupport.comp_left
         (g := fun r : ℝ => (r : ℂ)) rfl)
   have hu'Compact : HasCompactSupport u' := by
-    simpa only [u', Function.comp_apply] using
+    simpa only [u', Function.comp_apply] using!
       ((deningerTimeTestDerivative φ).hasCompactSupport.comp_left
         (g := fun r : ℝ => (r : ℂ)) rfl)
   have huv : Integrable (u * v) :=
@@ -395,7 +394,7 @@ theorem analyticOnNhd_deningerTimeTestLaplace
         (|t| * Real.exp (|t| * (‖s₀‖ + 1)))
   have hφCompact :
       HasCompactSupport (fun t : ℝ => (φ t : ℂ)) := by
-    simpa only [Function.comp_apply] using
+    simpa only [Function.comp_apply] using!
       (φ.hasCompactSupport.comp_left
         (g := fun r : ℝ => (r : ℂ)) rfl)
   have hFCont : ∀ s : ℂ, Continuous (F s) := by
@@ -489,7 +488,7 @@ theorem analyticOnNhd_deningerTimeTestLaplace
         (fun s => ∫ t : ℝ, F s t)
         (∫ t : ℝ, F' s₀ t) s₀ :=
     hderiv.2
-  simpa only [deningerTimeTestLaplace, F] using
+  simpa only [deningerTimeTestLaplace, F] using!
     hderivAt.differentiableAt
 
 /-- Deninger's test amplitude in the centered Xi contour coordinate. -/
@@ -562,7 +561,7 @@ theorem contDiff_deningerExponentiallyTiltedTimeTest
         (fun t : ℝ => (Real.exp (c * t) : ℂ)) :=
     Complex.ofRealCLM.contDiff.comp hexpR
   simpa only [deningerExponentiallyTiltedTimeTest,
-    Complex.ofReal_exp] using hφC.mul hexpC
+    Complex.ofReal_exp] using! hφC.mul hexpC
 
 theorem hasCompactSupport_deningerExponentiallyTiltedTimeTest
     (φ : DeningerTimeTestFunction) (c : ℝ) :
@@ -570,7 +569,7 @@ theorem hasCompactSupport_deningerExponentiallyTiltedTimeTest
       (deningerExponentiallyTiltedTimeTest φ c) := by
   have hφCompact :
       HasCompactSupport (fun t : ℝ => (φ t : ℂ)) := by
-    simpa only [Function.comp_apply] using
+    simpa only [Function.comp_apply] using!
       (φ.hasCompactSupport.comp_left
         (g := fun r : ℝ => (r : ℂ)) rfl)
   exact hφCompact.mul_right
@@ -631,7 +630,7 @@ theorem integrable_fourier_deningerExponentiallyTiltedTimeTest
             SchwartzMap ℝ ℂ) ξ) :=
     (𝓕 (deningerExponentiallyTiltedTimeSchwartz φ c) :
       SchwartzMap ℝ ℂ).integrable
-  simpa only [SchwartzMap.fourier_coe] using hSchwartz
+  simpa only [SchwartzMap.fourier_coe] using! hSchwartz
 
 /--
 Vertical Fourier inversion for Deninger's Laplace amplitude:
@@ -924,7 +923,7 @@ theorem integral_deningerTimeTestLaplace_mul_verticalResolvent
       · simp [K, e, ht]
     _ = ∫ t : ℝ, ∫ ξ : ℝ, K (t, ξ) := by
       apply integral_integral_swap
-      simpa only [Function.comp_apply] using hK.swap
+      simpa only [Function.comp_apply] using! hK.swap
     _ = ∫ t : ℝ,
         Complex.exp (-(a : ℂ) * (t : ℂ)) *
           deningerExponentiallyTiltedTimeTest φ c t := by
@@ -1632,7 +1631,7 @@ private theorem deningerTimeTestSecondDerivativeExponentialIntegrable
               Real.exp |t|) := by
     fun_prop
   have hd2Compact : HasCompactSupport d2 := by
-    simpa only [d2, Function.comp_apply] using
+    simpa only [d2, Function.comp_apply] using!
       ((deningerTimeTestDerivative
         (deningerTimeTestDerivative φ)).hasCompactSupport.comp_left
           (g := fun r : ℝ => (r : ℂ)) rfl)
@@ -1665,7 +1664,7 @@ theorem norm_deningerTimeTestLaplace_secondDerivative_le
     dsimp only [e]
     fun_prop
   have hd2Compact : HasCompactSupport d2 := by
-    simpa only [d2, Function.comp_apply] using
+    simpa only [d2, Function.comp_apply] using!
       ((deningerTimeTestDerivative
         (deningerTimeTestDerivative φ)).hasCompactSupport.comp_left
           (g := fun r : ℝ => (r : ℂ)) rfl)
@@ -1895,7 +1894,7 @@ private theorem deningerH1RegularizedTraceTerm_integrable
         (fun t : ℝ =>
           (deningerTimeTestDerivative
             (deningerTimeTestDerivative φ) t : ℂ)) := by
-    simpa only [Function.comp_apply] using
+    simpa only [Function.comp_apply] using!
       ((deningerTimeTestDerivative
         (deningerTimeTestDerivative φ)).hasCompactSupport.comp_left
           (g := fun r : ℝ => (r : ℂ)) rfl)
@@ -2092,7 +2091,7 @@ theorem deningerArithmeticH0TraceFunction_locallyIntegrableOn :
     LocallyIntegrableOn
       deningerArithmeticH0TraceFunction (Ioi 0) volume := by
   apply ContinuousOn.locallyIntegrableOn
-  · simpa [deningerArithmeticH0TraceFunction] using
+  · simpa [deningerArithmeticH0TraceFunction] using!
       (continuous_const : Continuous
         (fun _ : ℝ => (1 : ℂ))).continuousOn
   · exact isOpen_Ioi.measurableSet
@@ -2227,7 +2226,7 @@ theorem deningerEulerPrimePowerIndex_injective :
         (deningerEulerPrimePowerIndex y : ℕ) :=
     congrArg (fun z : DeningerPrimePowerIndex => (z : ℕ)) h
   simpa [deningerEulerPrimePowerIndex,
-    Nat.Primes.prodNatEquiv_apply] using hv
+    Nat.Primes.prodNatEquiv_apply] using! hv
 
 /-- A prime-power atom has Deninger's orbit time `(k+1) log p`. -/
 theorem deningerPrimePowerTime_euler
@@ -2455,7 +2454,7 @@ theorem tsum_vonMangoldt_timeTest_eq_deningerPrimePower
   have hsub :=
     tsum_subtype_eq_of_support_subset hsupp
   simpa only [f, deningerPrimePowerWeight,
-    deningerPrimePowerTime] using hsub.symm
+    deningerPrimePowerTime] using! hsub.symm
 
 /--
 Euler-line source evaluation in the exact finite-place distribution coordinates used by

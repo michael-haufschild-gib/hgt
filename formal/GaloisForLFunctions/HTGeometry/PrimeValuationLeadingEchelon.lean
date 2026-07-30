@@ -285,7 +285,7 @@ theorem primeValuationLeadingEchelonJets_algebraicIndependent_of_primeDependent
     cases h
     rfl
   have hsub := hAI.comp f hf
-  simpa only [Function.comp_apply, f, sourceJet] using hsub
+  simpa only [Function.comp_apply, f, sourceJet] using! hsub
 
 /-- Constant private coefficients are the prime-independent specialization of the
 prime-dependent finite leading-echelon theorem. -/
@@ -334,7 +334,7 @@ theorem primeValuationLeadingEchelon_differentialIndependent_of_primeDependent
       arithmeticFunctionFractionField)
     (IsFractionRing.injective (ArithmeticFunction ℂ)
       arithmeticFunctionFractionField)
-  simpa only [Function.comp_apply, x] using hmap
+  simpa only [Function.comp_apply, x] using! hmap
 
 /-- **Constant-coefficient prime-valuation leading-echelon law.**  This preserves the original
 interface while the stronger theorem permits nonzero private coefficients to vary with the

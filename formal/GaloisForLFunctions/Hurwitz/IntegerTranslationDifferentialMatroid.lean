@@ -136,8 +136,8 @@ theorem continued_hurwitz_integerTranslation_differentialMatroid_law
     let base : J → ℂ := fun j => t (classOf (f j))
     let shift : J → ℕ := fun j => offset (f j)
     have hbase : LinearIndependent ℚ (exponentFamily base) := by
-      simpa [base, Function.comp_apply] using
-        exponentFamily_linearIndependent_comp t htQ (classOf ∘ f) hclass
+      change LinearIndependent ℚ (exponentFamily (t ∘ classOf ∘ f))
+      exact exponentFamily_linearIndependent_comp t htQ (classOf ∘ f) hclass
     have hsJ : LinearIndependent ℚ
         (exponentFamily (fun j => base j + shift j)) :=
       exponentFamily_linearIndependent_natShift base shift hbase

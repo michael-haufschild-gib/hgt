@@ -50,7 +50,7 @@ theorem diffIndepOn_union_of_base
     have hUnit : DifferentialIndependent ↥(differentialAdjoin k B) (fun _ : Unit => x) := by
       have h := (differentialIndependent_equiv e
         (Subtype.val : ({x} : Set K) → K)).mpr hsingle
-      simpa [e] using h
+      simpa [e] using! h
     exact differentialAlgebraicOver_algebraMap
       (E := K) (⟨x, hxK⟩ : ↥(differentialAdjoin k B)) hUnit
   exact (diffIndepOn_union_iff hdisj).mpr ⟨hB, hA⟩

@@ -26,7 +26,7 @@ theorem rectangularSchurToeplitz_reflection_eq_conjugate
           rectangularSchurToeplitz h n m *
           diagonal (fun i : Fin m => (-1 : K) ^ (i : ℕ))) := by
   ext r i
-  rw [smul_apply, Matrix.mul_diagonal, Matrix.diagonal_mul]
+  rw [Matrix.smul_apply, Matrix.mul_diagonal, Matrix.diagonal_mul]
   simp only [rectangularSchurToeplitz]
   split_ifs with hri
   · have hsign :

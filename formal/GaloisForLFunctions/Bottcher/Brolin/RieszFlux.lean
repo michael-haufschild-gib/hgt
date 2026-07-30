@@ -125,10 +125,10 @@ theorem hasDerivAt_radial (φ : ℂ → ℝ) (hφ : ContDiff ℝ 1 φ) (u : ℂ)
     HasDerivAt (fun s : ℝ => φ (s • u)) (fderiv ℝ φ (ρ • u) u) ρ := by
   have hcurve : HasDerivAt (fun s : ℝ => s • u) u ρ := by
     have h := ((ContinuousLinearMap.toSpanSingleton ℝ u).hasFDerivAt (x := ρ)).hasDerivAt
-    simpa [ContinuousLinearMap.toSpanSingleton_apply] using h
+    simpa [ContinuousLinearMap.toSpanSingleton_apply] using! h
   have hφd : HasFDerivAt φ (fderiv ℝ φ (ρ • u)) (ρ • u) :=
     (hφ.differentiable (by norm_num)).differentiableAt.hasFDerivAt
-  simpa using hφd.comp_hasDerivAt ρ hcurve
+  simpa using! hφd.comp_hasDerivAt ρ hcurve
 
 /-- **Radius derivative of `circleMap`.** `∂_r (circleMap 0 r θ) = circleMap 0 1 θ = e^{iθ}`.
 The map `r ↦ r·e^{iθ}` is linear in `r`, so its derivative is the unit vector `e^{iθ}`. -/
@@ -360,8 +360,15 @@ theorem hasDerivAt_B_eq_shell (φ : ℂ → ℝ) (hφ : ContDiff ℝ 2 φ) {ρ :
       funext θ
       congr 1
       rw [congrArg (fderiv ℝ (fderiv ℝ φ) (z θ) (w θ)) (hzw θ), ContinuousLinearMap.map_smul]]
-    rw [intervalIntegral.integral_add ((hca.const_smul ρ).intervalIntegrable _ _)
-      (hccc.intervalIntegrable _ _), intervalIntegral.integral_smul]
+    calc
+      (∫ θ in (0 : ℝ)..(2 * π), ρ • a θ + cc θ) =
+          (∫ θ in (0 : ℝ)..(2 * π), ρ • a θ) +
+            ∫ θ in (0 : ℝ)..(2 * π), cc θ := by
+        simpa only using! intervalIntegral.integral_add
+          ((hca.const_smul ρ).intervalIntegrable _ _) (hccc.intervalIntegrable _ _)
+      _ = (ρ • ∫ θ in (0 : ℝ)..(2 * π), a θ) +
+            ∫ θ in (0 : ℝ)..(2 * π), cc θ := by
+        rw [intervalIntegral.integral_smul]
   have hper : Function.Periodic (fun θ => Δ φ (z θ)) (2*π) :=
     fun θ => congrArg (Δ φ) (by rw [hz]; exact periodic_circleMap 0 ρ θ)
   have hRHS : (ρ • ∫ θ in Set.Ioo (-π) π, Δ φ (z θ))

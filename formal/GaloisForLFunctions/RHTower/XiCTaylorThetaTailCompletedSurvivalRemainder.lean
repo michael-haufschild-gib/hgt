@@ -101,11 +101,15 @@ theorem thetaCuspCompletedSurvivalRemainder_nonneg
         ((1 / 2 : ℝ) * thetaCuspTailSurvival t -
           thetaCuspTailSecondDensity t)) t := by
     dsimp [f]
-    convert
+    have hproduct :=
       ((Real.hasDerivAt_exp (t / 2)).comp t ((hasDerivAt_id t).div_const 2)).mul
-        (hasDerivAt_thetaCuspTailSurvival t) using 1
-    all_goals simp only [Function.comp_apply, id_eq]
-    ring
+        (hasDerivAt_thetaCuspTailSurvival t)
+    exact hproduct.congr_deriv
+      (g' := Real.exp (t / 2) *
+        ((1 / 2 : ℝ) * thetaCuspTailSurvival t -
+          thetaCuspTailSecondDensity t)) (by
+            simp only [Function.comp_apply, id_eq]
+            ring)
   have hfanti : AntitoneOn f (Ici 0) := by
     apply antitoneOn_of_deriv_nonpos (convex_Ici 0)
     · exact (continuous_iff_continuousAt.mpr fun t =>

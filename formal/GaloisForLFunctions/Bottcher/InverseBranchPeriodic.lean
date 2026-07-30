@@ -421,7 +421,7 @@ theorem exists_closedBall_localInverse_iterate_branch_data
   have hg_an : AnalyticAt ℂ g (F z) := by
     simpa [g] using hFan.analyticAt_localInverse hcritF
   have hright : (fun y => F (g y)) =ᶠ[𝓝 (F z)] id := by
-    simpa [g] using hstrict.eventually_right_inverse hcritF
+    simpa [g] using! hstrict.eventually_right_inverse hcritF
   have hgderiv : HasStrictDerivAt g (deriv F z)⁻¹ (F z) := by
     simpa [g] using hstrict.to_localInverse hcritF
   have hKcenter : ‖deriv g (F z)‖ < K := by

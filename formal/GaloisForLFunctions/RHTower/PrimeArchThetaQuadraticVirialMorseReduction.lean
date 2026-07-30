@@ -67,10 +67,14 @@ theorem hasDerivAt_thetaCuspFirstRadialQuadraticMorseField (x : ℝ) :
       (thetaCuspFirstRadialQuadraticMorseFieldDerivative x) x := by
   have hx2 := (hasDerivAt_pow 2 x)
   have hP := hasDerivAt_thetaCuspQuadraticSteinField x
-  convert hx2.mul (hP.pow 2) using 1
-  simp only [Pi.pow_apply,
-    thetaCuspFirstRadialQuadraticMorseFieldDerivative]
-  ring
+  have hraw := hx2.mul (hP.pow 2)
+  have hraw' := hraw.congr_deriv
+    (g' := thetaCuspFirstRadialQuadraticMorseFieldDerivative x) (by
+      simp only [Pi.pow_apply,
+        thetaCuspFirstRadialQuadraticMorseFieldDerivative]
+      ring)
+  exact hraw'.congr_of_eventuallyEq
+    (Eventually.of_forall fun _ => rfl)
 
 theorem thetaCuspFirstRadialQuadraticMorseField_eq (x : ℝ) :
     thetaCuspFirstRadialQuadraticMorseField x =
@@ -118,14 +122,24 @@ theorem hasDerivAt_thetaCuspFirstAtomMorseShiftDensity (x : ℝ) :
   have hb : HasDerivAt (thetaCuspLiouvilleGibbsAtom 1)
       (((5 / 2 : ℝ) - 2 * thetaCuspMorseScale 1 x) *
         thetaCuspLiouvilleGibbsAtom 1 x) x := by
-    convert hb0 using 1
-    simp only [thetaCuspLiouvilleGibbsAtom, thetaCuspLogDerivativeStep,
-      thetaCuspPolynomialAtom, thetaCuspMorseScale, derivative_pow,
-      derivative_X, Nat.cast_ofNat, mul_one, eval_add, eval_sub, eval_mul,
-      eval_C, eval_X, eval_pow, Nat.cast_one, one_mul]
-    ring
-  convert hq.mul hb using 1
-  ring
+    have hb0' := hb0.congr_deriv
+      (g' := ((5 / 2 : ℝ) - 2 * thetaCuspMorseScale 1 x) *
+        thetaCuspLiouvilleGibbsAtom 1 x) (by
+          simp only [thetaCuspLiouvilleGibbsAtom, thetaCuspLogDerivativeStep,
+            thetaCuspPolynomialAtom, thetaCuspMorseScale, derivative_pow,
+            derivative_X, Nat.cast_ofNat, mul_one, eval_add, eval_sub, eval_mul,
+            eval_C, eval_X, eval_pow, Nat.cast_one, one_mul]
+          ring)
+    exact hb0'.congr_of_eventuallyEq
+      (Eventually.of_forall fun _ => rfl)
+  have hraw := hq.mul hb
+  have hraw' := hraw.congr_deriv
+    (g' := (5 / 2 : ℝ) * (thetaCuspBornWittenWeight 1 x + 1) *
+        thetaCuspLiouvilleGibbsAtom 1 x -
+      2 * thetaCuspMorseScale 1 x * thetaCuspBornWittenWeight 1 x *
+        thetaCuspLiouvilleGibbsAtom 1 x) (by ring)
+  exact hraw'.congr_of_eventuallyEq
+    (Eventually.of_forall fun _ => rfl)
 
 /-- Sharp half-line bound for the Fisher multiplier introduced by the square-root observable
 reweighting.  Equality is attained at the endpoint `x=0`. -/

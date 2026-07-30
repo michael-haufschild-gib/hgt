@@ -143,15 +143,15 @@ theorem tsum_dyadicSharpPrimeWindowDoubleTerm_right
 
 private theorem antidiagonal_doubleTerm_eq_LSeriesTerm_window
     (s : ℂ) (n : ℕ) :
-    (∑' p : ↥(Finset.antidiagonal n),
+    (∑' p : ↥(Finset.HasAntidiagonal.antidiagonal n),
         dyadicSharpPrimeWindowDoubleTerm s p.1) =
       LSeries.term (fun m => ((dyadicWeightedPrimeWindow m : ℝ) : ℂ)) s n := by
   rw [tsum_fintype]
-  rw [← Finset.sum_subtype (Finset.antidiagonal n) (fun _ => Iff.rfl)
+  rw [← Finset.sum_subtype (Finset.HasAntidiagonal.antidiagonal n) (fun _ => Iff.rfl)
     (fun p => dyadicSharpPrimeWindowDoubleTerm s p)]
-  change (∑ a ∈ Finset.antidiagonal n,
+  change (∑ a ∈ Finset.HasAntidiagonal.antidiagonal n,
     dyadicSharpPrimeWindowDoubleTerm s (a.1, a.2)) = _
-  rw [show (∑ a ∈ Finset.antidiagonal n,
+  rw [show (∑ a ∈ Finset.HasAntidiagonal.antidiagonal n,
       dyadicSharpPrimeWindowDoubleTerm s (a.1, a.2)) =
       ∑ k ∈ range n.succ,
         dyadicSharpPrimeWindowDoubleTerm s (k, n - k) by
@@ -202,23 +202,25 @@ theorem LSeries_dyadicWeightedPrimeWindow_eq_kernelSeries
       ∑' k : ℕ,
         ((ArithmeticFunction.vonMangoldt k / Real.sqrt k : ℝ) : ℂ) *
           dyadicSharpPrimeWindowKernel k s := by
-  let e := (Finset.sigmaAntidiagonalEquivProd (A := ℕ))
+  let e := (Finset.HasAntidiagonal.sigmaAntidiagonalEquivProd (A := ℕ))
   have hdouble := summable_dyadicSharpPrimeWindowDoubleTerm hs
-  have hsigma : Summable (fun p : (n : ℕ) × ↥(Finset.antidiagonal n) =>
+  have hsigma : Summable
+      (fun p : (n : ℕ) × ↥(Finset.HasAntidiagonal.antidiagonal n) =>
       dyadicSharpPrimeWindowDoubleTerm s (e p)) := by
     exact e.summable_iff.mpr hdouble
   rw [LSeries]
   calc
     (∑' n : ℕ,
         LSeries.term (fun m => ((dyadicWeightedPrimeWindow m : ℝ) : ℂ)) s n) =
-        ∑' n : ℕ, ∑' p : ↥(Finset.antidiagonal n),
+        ∑' n : ℕ, ∑' p : ↥(Finset.HasAntidiagonal.antidiagonal n),
           dyadicSharpPrimeWindowDoubleTerm s p.1 := by
       apply tsum_congr
       intro n
       exact (antidiagonal_doubleTerm_eq_LSeriesTerm_window s n).symm
-    _ = ∑' p : (n : ℕ) × ↥(Finset.antidiagonal n),
+    _ = ∑' p : (n : ℕ) × ↥(Finset.HasAntidiagonal.antidiagonal n),
           dyadicSharpPrimeWindowDoubleTerm s (e p) := by
-      change (∑' n : ℕ, ∑' p : ↥(Finset.antidiagonal n),
+      change (∑' n : ℕ,
+        ∑' p : ↥(Finset.HasAntidiagonal.antidiagonal n),
         dyadicSharpPrimeWindowDoubleTerm s (e ⟨n, p⟩)) = _
       rw [← hsigma.tsum_sigma]
     _ = ∑' kj : ℕ × ℕ, dyadicSharpPrimeWindowDoubleTerm s kj :=
@@ -236,17 +238,18 @@ theorem dyadicWeightedPrimeWindow_LSeriesSummable
     {s : ℂ} (hs : 3 / 2 < s.re) :
     LSeriesSummable
       (fun n => ((dyadicWeightedPrimeWindow n : ℝ) : ℂ)) s := by
-  let e := (Finset.sigmaAntidiagonalEquivProd (A := ℕ))
+  let e := (Finset.HasAntidiagonal.sigmaAntidiagonalEquivProd (A := ℕ))
   have hdouble := summable_dyadicSharpPrimeWindowDoubleTerm hs
-  have hsigma : Summable (fun p : (n : ℕ) × ↥(Finset.antidiagonal n) =>
+  have hsigma : Summable
+      (fun p : (n : ℕ) × ↥(Finset.HasAntidiagonal.antidiagonal n) =>
       dyadicSharpPrimeWindowDoubleTerm s (e p)) := by
     exact e.summable_iff.mpr hdouble
-  have houter : Summable (fun n : ℕ =>
-      ∑' p : ↥(Finset.antidiagonal n),
-        dyadicSharpPrimeWindowDoubleTerm s p.1) := by
-    convert hsigma.sigma using 1
-  exact houter.congr fun n =>
-    antidiagonal_doubleTerm_eq_LSeriesTerm_window s n
+  exact hsigma.sigma.congr fun n => by
+    change
+      (∑' p : ↥(Finset.HasAntidiagonal.antidiagonal n),
+        dyadicSharpPrimeWindowDoubleTerm s p.1) =
+        LSeries.term (fun m => ((dyadicWeightedPrimeWindow m : ℝ) : ℂ)) s n
+    exact antidiagonal_doubleTerm_eq_LSeriesTerm_window s n
 
 private theorem weighted_dyadicKernel_eq_main_add_error
     (k : ℕ) (s : ℂ) :

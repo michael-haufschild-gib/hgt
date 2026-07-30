@@ -28,7 +28,7 @@ def continuousLinearEquivOfContinuousAffineEquiv (e : E ≃ᴬ[ℂ] E) : E ≃L[
   toLinearEquiv := e.linear
   continuous_toFun := e.toContinuousAffineMap.contLinear.continuous
   continuous_invFun := by
-    simpa using e.symm.toContinuousAffineMap.contLinear.continuous
+    simpa using! e.symm.toContinuousAffineMap.contLinear.continuous
 
 @[simp]
 theorem coe_continuousLinearEquivOfContinuousAffineEquiv (e : E ≃ᴬ[ℂ] E) :
@@ -71,7 +71,7 @@ theorem iteratedFDeriv_comp_continuousAffineEquiv
   have hi' : (i : WithTop ℕ∞) ≤ (n : WithTop ℕ∞) := by
     exact_mod_cast hi
   have hfShift : ContDiff ℂ n (fun z ↦ f (a + z)) := by
-    simpa only [Function.comp_apply, id_eq] using
+    simpa only [Function.comp_apply, id_eq] using!
       hf.comp (contDiff_const.add contDiff_id)
   rw [hfun, L.iteratedFDeriv_comp_right (f := fun z ↦ f (a + z)) hfShift x hi']
   rw [iteratedFDeriv_comp_add_left]

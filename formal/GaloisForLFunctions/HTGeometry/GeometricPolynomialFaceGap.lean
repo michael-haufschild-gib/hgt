@@ -210,8 +210,9 @@ theorem exists_geometricPolynomialFace_activeAtom_gap
         _ = A / 2 * lam ^ t := by ring
         _ ≤ _ := hcenter'
     have hadd := add_le_add hwBaseline.le hcenterGamma
-    convert hadd.trans hfar using 1 <;>
-      dsimp [geometricPolynomialFaceBaseline, S] <;> ring
+    convert hadd.trans hfar using 1
+    all_goals try dsimp [geometricPolynomialFaceBaseline, S]
+    all_goals first | rfl | ring
 
 end
 

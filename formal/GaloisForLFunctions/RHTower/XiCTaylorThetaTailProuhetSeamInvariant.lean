@@ -48,11 +48,10 @@ theorem hasDerivAt_thetaCuspCompletedSurvivalRemainder
   unfold thetaCuspCompletedSurvivalRemainder thetaCuspTailSecondEvenRemainder
   have hexp : HasDerivAt (fun t : ℝ => Real.exp (-t / 2))
       (-(1 / 2 : ℝ) * Real.exp (-x / 2)) x := by
-    convert (Real.hasDerivAt_exp (-x / 2)).comp x
-      ((hasDerivAt_neg x).div_const 2) using 1
-    ring
-  convert hexp.sub (hasDerivAt_thetaCuspTailSurvival x) using 1
-  ring
+    simpa only [Function.comp_apply] using!
+      ((Real.hasDerivAt_exp (-x / 2)).comp x
+        ((hasDerivAt_neg x).div_const 2)).congr_deriv (by ring)
+  exact (hexp.sub (hasDerivAt_thetaCuspTailSurvival x)).congr_deriv (by ring)
 
 /-- The invariant even remainder and the completed potential are not independent errors: their
 sum is exactly four times the canonical completed theta source.  This is the pointwise source

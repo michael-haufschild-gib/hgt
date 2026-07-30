@@ -33,7 +33,7 @@ theorem summable_normSq_gammaPeriodicConormalCoefficient :
   have hbase : Summable (fun n : ℕ ↦ (1 : ℝ) / (n.factorial : ℝ)) := by
     simpa using Real.summable_pow_div_factorial 1
   have htail : Summable (fun n : ℕ ↦ (1 : ℝ) / ((n + 1).factorial : ℝ)) := by
-    simpa [Nat.succ_eq_add_one] using hbase.comp_injective Nat.succ_injective
+    simpa [Nat.succ_eq_add_one] using! hbase.comp_injective Nat.succ_injective
   apply Summable.of_nonneg_of_le (fun n ↦ by positivity) (fun n ↦ ?_) htail
   rw [gammaPeriodicConormalCoefficient, norm_div, norm_one, Complex.norm_natCast]
   have hfac : (1 : ℝ) ≤ ((n + 1).factorial : ℝ) := by
@@ -141,7 +141,7 @@ theorem tendsto_norm_gammaPeriodicConormalCoefficient_zero :
     simpa using Real.summable_pow_div_factorial 1
   have htailSum : Summable
       (fun n : ℕ ↦ (1 : ℝ) / ((n + 1).factorial : ℝ)) := by
-    simpa [Nat.succ_eq_add_one] using hbase.comp_injective Nat.succ_injective
+    simpa [Nat.succ_eq_add_one] using! hbase.comp_injective Nat.succ_injective
   have htail : Tendsto
       (fun n : ℕ ↦ (1 : ℝ) / ((n + 1).factorial : ℝ)) atTop (nhds 0) :=
     htailSum.tendsto_atTop_zero

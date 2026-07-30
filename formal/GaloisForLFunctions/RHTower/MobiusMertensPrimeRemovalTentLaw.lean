@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.MobiusMertensSelfConvolutionCriterion
+import Mathlib.Data.Finset.NatAntidiagonal
 
 /-!
 # Prime-removal tent law for signed Mertens antidiagonals
@@ -214,13 +215,14 @@ theorem mobiusMertensPartialSum_eq_primeWindow
 
 /-- Self-convolution of the exact prime-free Mertens windows. -/
 def mobiusPrimeWindowSelfConvolution (p N : ℕ) : ℂ :=
-  ∑ ab ∈ Finset.antidiagonal N,
+  ∑ ab ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) N,
     mobiusPrimeWindowPartialSum p ab.1 * mobiusPrimeWindowPartialSum p ab.2
 
 /-- The signed Mertens antidiagonal is exactly its one-prime window convolution. -/
 theorem mobiusMertensSelfConvolution_eq_primeWindow
     {p : ℕ} (hp : p.Prime) (N : ℕ) :
     mobiusMertensSelfConvolution N = mobiusPrimeWindowSelfConvolution p N := by
+  rw [mobiusMertensSelfConvolution, mobiusPrimeWindowSelfConvolution]
   apply Finset.sum_congr rfl
   intro ab _hab
   rw [mobiusMertensPartialSum_eq_primeWindow hp,
@@ -291,7 +293,7 @@ theorem mertensTwoPrimeUnitTransferKernel_two_three :
 /-- Antidiagonal count of a doubly half-lined lattice equals a window hinge:
 `∑_{a+b=N} 1_{α≤a} 1_{β≤b} = (N + 1 - (α + β))₊`. -/
 private theorem antidiagonalHalfLineCount (N α β : ℕ) :
-    (∑ ab ∈ Finset.antidiagonal N,
+    (∑ ab ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) N,
       (if α ≤ ab.1 then (1 : ℤ) else 0) * (if β ≤ ab.2 then 1 else 0))
       = mertensWindowHinge (N + 1) (α + β) := by
   rw [Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk]
@@ -329,7 +331,7 @@ private theorem twoSidedWindowIndicator {p : ℕ} (hp : 1 ≤ p) (x c : ℕ) :
 /-- The antidiagonal count of the two paired window indicators is exactly the one-prime transfer
 kernel, by inclusion–exclusion over the four half-line counts. -/
 private theorem antidiagonalWindowKernelCount {p : ℕ} (hp : 1 ≤ p) (N r s : ℕ) :
-    (∑ ab ∈ Finset.antidiagonal N,
+    (∑ ab ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) N,
       (if r ≤ ab.1 ∧ ab.1 < p * r then (1 : ℤ) else 0)
         * (if s ≤ ab.2 ∧ ab.2 < p * s then 1 else 0))
       = mertensOnePrimeTransferKernel p (N + 1) r s := by
@@ -351,7 +353,7 @@ private theorem antidiagonalWindowKernelCount {p : ℕ} (hp : 1 ≤ p) (N r s : 
 
 /-- Complex form of the window-kernel count. -/
 private theorem antidiagonalWindowKernelCount_complex {p : ℕ} (hp : 1 ≤ p) (N r s : ℕ) :
-    (∑ ab ∈ Finset.antidiagonal N,
+    (∑ ab ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) N,
       (if r ≤ ab.1 ∧ ab.1 < p * r then (1 : ℂ) else 0)
         * (if s ≤ ab.2 ∧ ab.2 < p * s then 1 else 0))
       = ((mertensOnePrimeTransferKernel p (N + 1) r s : ℤ) : ℂ) := by
@@ -390,13 +392,13 @@ theorem mobiusMertensSelfConvolution_eq_primeKernelDoubleSum {p : ℕ} (hp : p.P
           mobiusPrimeFreeCoefficient p r * mobiusPrimeFreeCoefficient p s
             * ((mertensOnePrimeTransferKernel p (N + 1) r s : ℤ) : ℂ) := by
   rw [mobiusMertensSelfConvolution_eq_primeWindow hp, mobiusPrimeWindowSelfConvolution]
-  have hexp : ∀ ab ∈ Finset.antidiagonal N,
+  have hexp : ∀ ab ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) N,
       mobiusPrimeWindowPartialSum p ab.1 * mobiusPrimeWindowPartialSum p ab.2
       = ∑ r ∈ Finset.range (N + 1), ∑ s ∈ Finset.range (N + 1),
           ((if r ≤ ab.1 ∧ ab.1 < p * r then (1 : ℂ) else 0) * mobiusPrimeFreeCoefficient p r)
             * ((if s ≤ ab.2 ∧ ab.2 < p * s then (1 : ℂ) else 0) * mobiusPrimeFreeCoefficient p s) := by
     intro ab hab
-    rw [Finset.mem_antidiagonal] at hab
+    rw [Finset.HasAntidiagonal.mem_antidiagonal] at hab
     rw [primeWindowPartialSum_flat hp N ab.1 (by omega),
       primeWindowPartialSum_flat hp N ab.2 (by omega), Finset.sum_mul_sum]
   rw [Finset.sum_congr rfl hexp, Finset.sum_comm]

@@ -114,7 +114,7 @@ theorem le_liftedConfocalBranch_of_snd_lt_radius
   have hRx : 0 ≤ R - q.1 := by linarith
   have hsq : q.1 ^ 2 ≤ q.2 ^ 2 := by
     rw [sq_le_sq]
-    simpa only [abs_of_nonneg ha0] using hq
+    simpa only [abs_of_nonneg ha0] using! hq
   have hrad := liftedConfocalRadicand_nonneg hq R
   have hsqrt2 := Real.sq_sqrt hrad
   have hsqrt0 := Real.sqrt_nonneg ((R - q.1) ^ 2 + (q.2 ^ 2 - q.1 ^ 2))

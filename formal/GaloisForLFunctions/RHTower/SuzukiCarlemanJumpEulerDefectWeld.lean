@@ -56,7 +56,8 @@ theorem meromorphicOrderAt_suzukiEulerDefect_eq_sub_one
     simpa only [sub_self, zero_mul, add_zero, sub_zero, mul_assoc] using
       (mul_ne_zero (mul_ne_zero hz hn0) hg0)
   have hfg' : f =ᶠ[𝓝[≠] z] fun w => (w - z) ^ n * g w := by
-    simpa only [smul_eq_mul] using hfg
+    filter_upwards [hfg] with w hw
+    simpa only [smul_eq_mul] using hw
   have hfactorDeriv :
       deriv (fun w : ℂ => (w - z) ^ n * g w) =ᶠ[𝓝[≠] z]
         fun w => (n : ℂ) * (w - z) ^ (n - 1) * g w +
@@ -66,9 +67,12 @@ theorem meromorphicOrderAt_suzukiEulerDefect_eq_sub_one
     have hw0 : w - z ≠ 0 := sub_ne_zero.mpr hw
     have hpow : HasDerivAt (fun u : ℂ => (u - z) ^ n)
         ((n : ℂ) * (w - z) ^ (n - 1)) w := by
-      convert (hasDerivAt_zpow n (w - z) (Or.inl hw0)).comp w
-        ((hasDerivAt_id w).sub_const z) using 1
-      all_goals ring
+      have hraw := (hasDerivAt_zpow n (w - z) (Or.inl hw0)).comp w
+        ((hasDerivAt_id w).sub_const z)
+      have hraw' := hraw.congr_deriv
+        (g' := (n : ℂ) * (w - z) ^ (n - 1)) (by ring)
+      exact hraw'.congr_of_eventuallyEq
+        (Eventually.of_forall fun _ => rfl)
     exact (hpow.mul hgw.differentiableAt.hasDerivAt).deriv
   have hEeq : suzukiEulerDefect f =ᶠ[𝓝[≠] z]
       fun w => (w - z) ^ (n - 1) * G w := by

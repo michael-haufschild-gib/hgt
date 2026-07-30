@@ -87,7 +87,7 @@ theorem continuedHzetaUpperEndAnalyticJet_eq (s : ℂ) (n : ℕ) :
         ((-1 : ℂ) ^ n * (ascPochhammer ℂ n).eval s) * continuedHzeta (s + n) a := by
     rw [upperEndFilter_basis.eventually_iff]
     exact ⟨0, trivial, fun _ ha => continuedHzeta_iteratedDeriv n ha⟩
-  simpa [upperEndPolyToAnalytic] using h
+  simpa [upperEndPolyToAnalytic] using! h
 
 /-- Differential jets in the meromorphic field obey the unrestricted Hurwitz ladder. -/
 theorem differentialJet_continuedHzetaUpperEndMero_eq (s : ℂ) (n : ℕ) :

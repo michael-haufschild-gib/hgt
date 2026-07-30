@@ -73,7 +73,7 @@ theorem mobiusCriticalReporterDeterminantBlindSynchronizationUniversality
     have hboundary :
         Tendsto mobiusCriticalPointedFisherDeterminantBoundarySignal
           (nhdsWithin 1 (Set.Ioi 1)) (nhds (-8 : ℂ)) := by
-      simpa only [mobiusCriticalPointedFisherDeterminantBoundarySignal] using
+      simpa only [mobiusCriticalPointedFisherDeterminantBoundarySignal] using!
         squarefreeMobiusCritical_fisherQFIDeterminantUniversality.1
     exact hboundary.comp hsigma
   have hsoftHard :

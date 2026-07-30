@@ -45,7 +45,7 @@ theorem analyticAt_gammaIterateFirstJetTupleCoordinate {k : ℕ} {z : ℂ}
     (hz : z ∈ gammaIterateRegularSet k) (i : GammaIterateFirstJetIndex k) :
     AnalyticAt ℂ (fun w => gammaIterateFirstJetTuple k w i) z := by
   rcases i with (j | ⟨j, slot⟩)
-  · simpa [gammaIterateFirstJetTuple] using
+  · simpa [gammaIterateFirstJetTuple] using!
       (analyticAt_id : AnalyticAt ℂ id z)
   · have hj : (j : ℕ) + 1 ≤ k := by omega
     have hzj : z ∈ gammaIterateRegularSet ((j : ℕ) + 1) :=
@@ -57,7 +57,7 @@ theorem analyticAt_gammaIterateFirstJetTupleCoordinate {k : ℕ} {z : ℂ}
     | succ slot =>
         have hslot : slot = 0 := Subsingleton.elim _ _
         subst slot
-        simpa [gammaIterateFirstJetTuple] using
+        simpa [gammaIterateFirstJetTuple] using!
           analyticAt_gammaIterate hzj
 
 def gammaIterateScaledFirstJetData (k : ℕ) (s z : ℂ) : Fin k × Fin 2 → ℂ
@@ -143,7 +143,7 @@ theorem tendsto_gammaIterateScaledFirstJetTail_factorialBlowUp
         subst slot
         have hvalue := (analyticAt_gammaIterate hregj).continuousAt.tendsto.comp hA
         simpa [gammaFirstJetCompositionTail, gammaFirstJetCompositionData,
-          gammaFirstJetBoundaryTail] using hvalue
+          gammaFirstJetBoundaryTail] using! hvalue
   apply hcomp.congr'
   filter_upwards [eventually_factorialBlowUp_input_gammaIterateRegular hk hx]
     with n hn

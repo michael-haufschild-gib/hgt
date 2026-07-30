@@ -38,6 +38,8 @@ Then Lean proves unconditionally:
 Together with
 `formal/GaloisForLFunctions/HTGeometry/ColorGramMinkowskiCone.lean`, this formalizes the complete
 paper theorem identifying the left-unitary orbit space with the closed Minkowski future cone.
+On the regular locus, unitary orbit existence is sharpened to special-unitary orbit existence in
+`color-gram-special-unitary-orbit.md`.
 
 ## Proof architecture
 

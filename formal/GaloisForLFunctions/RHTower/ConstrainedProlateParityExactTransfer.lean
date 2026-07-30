@@ -307,7 +307,7 @@ theorem ccm_fuchsModel_parity_floor_ratio_tendsto_zero
         (fuchsRate (P 1) (4 * 1) lam / fuchsRate (M 1) (4 * 1 + 2) lam) /
         (infiniteSecularRoot (fun j => fuchsRate (M j) (4 * j + 2) lam) (ℓm lam) /
           fuchsRate (M 1) (4 * 1 + 2) lam)) atTop (nhds 0) := by
-    simpa using h2
+    simpa using! h2
   have ha0m : ((2 : ℝ) ^ (-(1 : ℝ) / 4)) ≠ 0 := ne_of_gt (by positivity)
   have ha1m : Real.sqrt 5 / (2 : ℝ) ^ ((7 : ℝ) / 4) ≠ 0 := ne_of_gt (by positivity)
   refine h3.congr' ?_

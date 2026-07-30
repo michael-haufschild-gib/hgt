@@ -34,17 +34,14 @@ private theorem tendsto_one_sub_exp_neg_mul_div_self_nhdsGT_zero (L : ℝ) :
       (nhdsWithin (0 : ℝ) (Ioi 0)) (𝓝 L) := by
   have hderiv : HasDerivAt (fun x : ℝ => 1 - Real.exp (-(L * x))) L 0 := by
     have hlinear : HasDerivAt (fun x : ℝ => -(L * x)) (-L) 0 := by
-      convert (hasDerivAt_id (𝕜 := ℝ) 0).const_mul (-L) using 1
-      · funext x
-        simp only [id_eq]
-        ring
-      · ring
-    convert (hasDerivAt_const (x := 0) (c := (1 : ℝ))).sub
-      ((Real.hasDerivAt_exp (-(L * 0))).comp 0 hlinear) using 1
-    all_goals norm_num
+      simpa only [id_eq, neg_mul, mul_one] using!
+        (hasDerivAt_id (𝕜 := ℝ) 0).const_mul (-L)
+    have hraw := (hasDerivAt_const (x := 0) (c := (1 : ℝ))).sub
+      ((Real.hasDerivAt_exp (-(L * 0))).comp 0 hlinear)
+    simpa only [Function.comp_apply] using! hraw.congr_deriv (by norm_num)
   have hslope := hderiv.tendsto_slope_zero_right
-  convert hslope using 1
-  funext x
+  apply hslope.congr'
+  filter_upwards with x
   simp only [zero_add, mul_zero, neg_zero, Real.exp_zero, sub_self, sub_zero,
     smul_eq_mul, div_eq_mul_inv]
   ring
@@ -145,7 +142,7 @@ theorem not_exists_gammaSewnMobius_basisMarginal_commonAperturePickFamily
   let l : Filter ℝ := nhdsWithin (0 : ℝ) (Ioi 0)
   have hq : Tendsto (fun y : ℝ => Real.exp (-y)) l (𝓝 1) := by
     have hcont : ContinuousAt (fun y : ℝ => Real.exp (-y)) 0 := by fun_prop
-    simpa only [Real.exp_zero, neg_zero] using hcont.tendsto.mono_left inf_le_left
+    simpa only [Real.exp_zero, neg_zero] using! hcont.tendsto.mono_left inf_le_left
   have hqone : Real.exp (-(1 : ℝ)) ≠ 1 := by
     have hlt : Real.exp (-(1 : ℝ)) < 1 := by
       rw [← Real.exp_zero]
@@ -209,7 +206,7 @@ theorem not_exists_continuous_gammaSewnMobius_basisMarginal_commonAperturePickFa
     hTcont.tendsto.mono_left inf_le_left
   have heval :=
     (ContinuousLinearMap.apply ℝ E (b i)).continuous.continuousAt.tendsto.comp hTop
-  simpa only [hT0, ContinuousLinearMap.id_apply] using heval
+  simpa only [hT0, ContinuousLinearMap.id_apply] using! heval
 
 end
 

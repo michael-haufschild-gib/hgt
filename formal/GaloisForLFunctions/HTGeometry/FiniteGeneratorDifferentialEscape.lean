@@ -47,11 +47,11 @@ theorem adjoin_range_trdeg_lt_aleph0
       change algebraMap F S c ∈ J
       exact IntermediateField.algebraMap_mem J c
     · intro u v hu hv huJ hvJ
-      simpa only [p, Subtype.coe_eta] using J.add_mem huJ hvJ
+      simpa only [p, Subtype.coe_eta] using! J.add_mem huJ hvJ
     · intro u hu huJ
-      simpa only [p, Subtype.coe_eta] using J.inv_mem huJ
+      simpa only [p, Subtype.coe_eta] using! J.inv_mem huJ
     · intro u v hu hv huJ hvJ
-      simpa only [p, Subtype.coe_eta] using J.mul_mem huJ hvJ
+      simpa only [p, Subtype.coe_eta] using! J.mul_mem huJ hvJ
   letI : Algebra.IsAlgebraic (Algebra.adjoin F (Set.range sS)) S :=
     isAlgebraic_adjoin_of_intermediate_adjoin_eq_top sS hStop
   letI : Fintype (Set.range sS) := Set.finite_range sS |>.fintype

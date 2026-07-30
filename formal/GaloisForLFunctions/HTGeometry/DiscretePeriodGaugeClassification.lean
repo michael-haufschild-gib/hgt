@@ -191,7 +191,7 @@ theorem exists_nonconstant_fixed_cyclicPeriod
       rw [harg, Complex.exp_two_pi_mul_I]
       simp
     have hgen : ({omega} : Set ℂ) ⊆ meromorphicTranslationStabilizer z := by
-      simpa using homegaFix
+      simpa using! homegaFix
     have hspan : Submodule.span ℤ ({omega} : Set ℂ) ≤
         (meromorphicTranslationStabilizer z).toIntSubmodule :=
       Submodule.span_le.mpr hgen

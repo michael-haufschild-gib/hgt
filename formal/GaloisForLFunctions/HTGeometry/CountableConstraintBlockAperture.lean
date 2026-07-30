@@ -45,7 +45,7 @@ theorem exists_biorthogonal_constraint_kernel_directions_of_blocks
   have hvT (j : ℕ) : T (v j) = 0 := by
     simp only [v]
     have hrawT : T (raw j) = 0 := by
-      simpa only [raw] using hcT j
+      simpa only [raw] using! hcT j
     rw [map_smul, hrawT, smul_zero]
   have hPraw (j m : ℕ) : P j (raw m) = if j = m then raw m else 0 := by
     simp only [raw, Fintype.linearCombination_apply, map_sum, map_smul, hP]

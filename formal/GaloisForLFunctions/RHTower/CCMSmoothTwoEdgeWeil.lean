@@ -447,7 +447,7 @@ theorem xiSmoothProfileTwoEdgeTransform_sq_summable
     Summable (fun q : XiZeroCopy =>
       xiSmoothProfileTwoEdgeTransform f a (xiSpectralPoint q) ^ 2) := by
   apply Summable.of_norm
-  simpa only [norm_pow] using
+  simpa only [XiWeilSquareSummable, norm_pow] using
     xiSmoothProfileTwoEdgeTransform_squareSummable heta hwindow f a
 
 theorem xiSmoothProfileTwoEdgeDominant_summable

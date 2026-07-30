@@ -37,7 +37,7 @@ theorem tendsto_modularLambda_atImInfty :
   have h : Tendsto (fun τ => (thetaTwo τ / thetaThree τ) ^ 4)
       (comap Complex.im atTop) (𝓝 ((0 / 1) ^ 4)) :=
     (tendsto_thetaTwo_atImInfty.div tendsto_thetaThree_atImInfty (by norm_num)).pow 4
-  simpa [modularLambda] using h
+  simpa [modularLambda] using! h
 
 /-- **`1 − λ → 1`, i.e. `λ → 0`, restated via the omitted value `1`.** Packaged for the `S`-cusp: under
 `τ ↦ −1/τ` the value `1 − λ(τ)` is `λ(−1/τ)` (`modularLambda_S'`), so as `τ → i∞` (where `λ(τ) → 0`)
@@ -331,7 +331,7 @@ images tend to `0`/`1`; the `TS`/`STS` images blow up in norm. -/
 theorem tendsto_modularLambda_div_sub_one :
     Tendsto (fun σ : ℂ => modularLambda σ / (modularLambda σ - 1)) (comap Complex.im atTop) (𝓝 0) := by
   have h := tendsto_modularLambda_atImInfty
-  simpa using h.div (h.sub_const 1) (by norm_num : (0 : ℂ) - 1 ≠ 0)
+  simpa using! h.div (h.sub_const 1) (by norm_num : (0 : ℂ) - 1 ≠ 0)
 
 /-- `ST`-value `1 − λ/(λ−1) → 1`. -/
 theorem tendsto_one_sub_modularLambda_div_sub_one :
@@ -784,7 +784,7 @@ theorem injOn_arc {p pd : ℝ → ℂ} {s : Set ℝ}
       filter_upwards [hsopen.mem_nhds hθ] with u hu using hreal u hu
     have hd_im : HasDerivAt (fun u : ℝ => (modularLambda (p u)).im)
         ((pd θ • deriv modularLambda (p θ)).im) θ := by
-      simpa using Complex.imCLM.hasFDerivAt.comp_hasDerivAt θ (hγ' θ hθ)
+      simpa using! Complex.imCLM.hasFDerivAt.comp_hasDerivAt θ (hγ' θ hθ)
     have hd0 : HasDerivAt (fun u : ℝ => (modularLambda (p u)).im) 0 θ :=
       (hasDerivAt_const θ (0:ℝ)).congr_of_eventuallyEq hev
     simpa using hd_im.unique hd0
@@ -794,7 +794,7 @@ theorem injOn_arc {p pd : ℝ → ℂ} {s : Set ℝ}
     apply injOn_of_real_deriv_ne_zero (g' := g') hconv
     · intro θ hθ
       simpa only [Function.comp, Complex.reCLM_apply, smul_eq_mul, hg'def]
-        using Complex.reCLM.hasFDerivAt.comp_hasDerivAt θ (hγ' θ hθ)
+        using! Complex.reCLM.hasFDerivAt.comp_hasDerivAt θ (hγ' θ hθ)
     · have hdml : ContinuousOn (fun θ => deriv modularLambda (p θ)) s :=
         continuousOn_deriv_modularLambda.comp hcont_p (fun θ hθ => him θ hθ)
       exact Complex.continuous_re.comp_continuousOn (hcont_pd.mul hdml)
@@ -853,7 +853,7 @@ theorem modularLambda_injOn_circle :
     have hexp : HasDerivAt (fun u:ℝ => Complex.exp (Complex.I*(u:ℂ))) (Complex.I * Complex.exp (Complex.I*(θ:ℂ))) θ := by
       have h1 : HasDerivAt (fun u:ℝ => Complex.I*(u:ℂ)) Complex.I θ := by
         simpa using (Complex.ofRealCLM.hasDerivAt (x:=θ)).const_mul Complex.I
-      simpa using (Complex.hasDerivAt_exp (Complex.I*(θ:ℂ))).scomp θ h1
+      simpa using! (Complex.hasDerivAt_exp (Complex.I*(θ:ℂ))).scomp θ h1
     have h := ((hasDerivAt_const θ (1:ℂ)).add hexp).div_const 2
     simpa using h
   · intro θ _

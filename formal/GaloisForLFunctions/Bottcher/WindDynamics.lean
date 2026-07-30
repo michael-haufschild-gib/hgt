@@ -283,9 +283,9 @@ theorem normalized_square_range_of_even_winding {X : Type*} [TopologicalSpace X]
   obtain ⟨p, hp⟩ := Path.Homotopic.Quotient.mk_surjective (FundamentalGroup.toPath δ)
   have hδ : δ = FundamentalGroup.fromPath (.mk p) := hp.symm
   subst δ
-  rw [FundamentalGroup.mapOfEq_apply]
   apply Pi1CMinusZero.mem_sq_range_of_even_deg
-  rw [normalizeToOne_path_eq_transLoop]
+  rw [FundamentalGroup.mapOfEq_apply, ← Path.Homotopic.Quotient.mk_map,
+    ← Path.Homotopic.Quotient.mk_cast, normalizeToOne_path_eq_transLoop]
   exact hwind p
 
 /-- Multiplying a transported loop by its basepoint recovers the original image loop, allowing a
@@ -336,6 +336,6 @@ theorem square_range_of_even_winding {X : Type*} [TopologicalSpace X]
   rw [map_mulBase_sqLoop_eq_scaled_sq e₀ q] at hhomCast
   have hfinal := Path.Homotopic.pathCast hhomCast he.symm he.symm
   apply Quotient.sound
-  simpa using hfinal.symm
+  simpa using! hfinal.symm
 
 end Bottcher

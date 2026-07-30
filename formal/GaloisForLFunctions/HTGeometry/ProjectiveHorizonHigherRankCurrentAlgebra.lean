@@ -21,6 +21,8 @@ noncomputable section
 
 variable (K : Type*) [Field K]
 
+attribute [local instance 100] LieRing.ofAssociativeRing
+
 /-! The first two modes are the `sl₂` block. The `U,V` modes are the two lower-row shears. -/
 
 /-- The polynomial upper-root mode `t^k E₀₁`. -/

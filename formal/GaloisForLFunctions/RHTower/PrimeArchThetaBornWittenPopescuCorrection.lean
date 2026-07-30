@@ -105,17 +105,16 @@ theorem hasDerivAt_thetaCuspBornWittenLogCurvature
   have hprofile : HasDerivAt
       (fun y : ℝ => 4 * t y + 6 * t y / q y ^ 2)
       (thetaCuspBornWittenLogThirdDerivative n x) x := by
-    convert (ht.const_mul 4).add (hquot.const_mul 6) using 1
-    · funext y
-      simp only [Pi.add_apply, Pi.div_apply, Pi.pow_apply]
-      ring
-    · dsimp only [thetaCuspBornWittenLogThirdDerivative, q]
+    simpa only [Pi.add_apply, Pi.div_apply, Pi.pow_apply, mul_div_assoc] using!
+      ((ht.const_mul 4).add (hquot.const_mul 6)).congr_deriv (by
+      symm
+      dsimp only [thetaCuspBornWittenLogThirdDerivative, q]
       dsimp only [q, t] at htq ⊢
       rw [htq]
       field_simp [hqpos.ne']
       ring_nf
       field_simp [hqpos.ne']
-      ring
+      ring)
   convert hprofile using 1
   funext y
   dsimp only [q, t]
@@ -150,14 +149,14 @@ theorem hasDerivAt_thetaCuspBornWittenLogThirdDerivative
   have hprofile : HasDerivAt
       (fun y : ℝ => 4 * r y - 6 * r y / q y ^ 2 - 18 * r y / q y ^ 3)
       (thetaCuspBornWittenLogFourthDerivative n x) x := by
-    convert (hr.const_mul 4).sub (hrq2.const_mul 6) |>.sub (hrq3.const_mul 18) using 1
-    · funext y
-      simp only [Pi.sub_apply, Pi.div_apply, Pi.pow_apply]
-      ring
-    · dsimp only [thetaCuspBornWittenLogFourthDerivative, r, q]
+    simpa only [Pi.sub_apply, Pi.div_apply, Pi.pow_apply, mul_div_assoc] using!
+      (((hr.const_mul 4).sub (hrq2.const_mul 6)).sub
+        (hrq3.const_mul 18)).congr_deriv (by
+      symm
+      dsimp only [thetaCuspBornWittenLogFourthDerivative, r, q]
       dsimp only [r, q] at hqpos ⊢
       field_simp [hqpos.ne']
-      ring
+      ring)
   convert hprofile using 1
   funext y
   simp only [thetaCuspBornWittenLogThirdDerivative, r, q]

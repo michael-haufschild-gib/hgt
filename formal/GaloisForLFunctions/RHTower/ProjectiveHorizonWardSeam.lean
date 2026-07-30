@@ -48,7 +48,7 @@ theorem hypertranscendentalOver_projectiveHorizon_reciprocalTransition
     (x : K) (hx : HypertranscendentalOver F x) :
     (x⁻¹)′ / x′ = -x⁻¹ ^ 2 := by
   apply projectiveHorizon_reciprocalTransition x
-  simpa only [differentialJet_succ] using
+  simpa only [differentialJet_succ] using!
     hypertranscendentalOver_differentialJet_ne_zero hx 1
 
 /-- Hypertranscendence discharges both nonvanishing hypotheses in the reciprocal projective
@@ -60,7 +60,7 @@ theorem hypertranscendentalOver_projectiveHorizon_reciprocalConnection
   apply projectiveHorizon_reciprocalConnection x
   · simpa only [differentialJet_zero] using
       hypertranscendentalOver_differentialJet_ne_zero hx 0
-  · simpa only [differentialJet_succ] using
+  · simpa only [differentialJet_succ] using!
       hypertranscendentalOver_differentialJet_ne_zero hx 1
 
 end

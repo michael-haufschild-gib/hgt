@@ -340,7 +340,7 @@ theorem freeJetRawTailField_eq_jetTailField
   apply le_antisymm
   · rw [freeJetRawTailField, IntermediateField.adjoin_le_iff]
     rintro _ ⟨k, hk, rfl⟩
-    simpa only [differentialJet_freeCoordinate_zero] using
+    simpa only [differentialJet_freeCoordinate_zero] using!
       differentialJet_mem_jetTailField C
         (freeCoordinate C ℕ 0) (n := n) (m := k) hk
   · rw [jetTailField, IntermediateField.adjoin_le_iff]

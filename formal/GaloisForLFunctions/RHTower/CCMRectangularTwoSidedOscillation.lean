@@ -120,12 +120,16 @@ theorem differentiableOn_xiRectangularPowerUpperLandauContinuation_landauBall
   have hpower := differentiableOn_xiRectangularPowerLandauContinuation_landauBall
     L (-C) alpha hdelta0 hdeltahalf heta hr hrquarter hreta halpha hzeros hordinate
   have hneg := hpower.neg
-  convert hneg using 1
-  funext s
-  simp only [Pi.neg_apply, xiRectangularPowerLandauContinuation,
-    xiRectangularPowerUpperLandauContinuation]
-  push_cast
-  ring
+  have hfun :
+      xiRectangularPowerUpperLandauContinuation L C alpha =
+        -xiRectangularPowerLandauContinuation L (-C) alpha := by
+    funext s
+    simp only [Pi.neg_apply, xiRectangularPowerLandauContinuation,
+      xiRectangularPowerUpperLandauContinuation]
+    push_cast
+    ring
+  rw [hfun]
+  exact hneg
 
 /-- Landau transfer for an eventual upper power budget: the dual nonnegative series converges at
 a real point strictly left of the transverse boundary. -/

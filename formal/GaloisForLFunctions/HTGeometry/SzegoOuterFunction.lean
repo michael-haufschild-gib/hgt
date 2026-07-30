@@ -57,7 +57,7 @@ theorem hasDerivAt_neg_herglotz (a z : ℂ) (hz : z ≠ a) :
   have hnum : (1 * (z - a) - (z + a) * 1) / (z - a) ^ 2 = -(2 * a / (z - a) ^ 2) := by
     rw [show (1 * (z - a) - (z + a) * 1) = -(2 * a) from by ring, neg_div]
   rw [hnum] at hq
-  simpa using hq.neg
+  simpa using! hq.neg
 
 /-- Uniform bound on the kernel `z`-derivative for `‖z‖ ≤ r < 1` and a boundary point `‖a‖ = 1`:
 `‖2a/(z-a)²‖ ≤ 2/(1-r)²`.  Combined with integrability of `log w` this dominates the parametric

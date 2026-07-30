@@ -41,7 +41,14 @@ lemma integrableOn_thetaCuspTailSecondDensityAtomOne_tailMass
   have h := (integrableOn_thetaCuspTailSecondDensityAtom_mul_complexPower 0 0).re
   have hcsub : Ioi c ⊆ Ioi 0 := Ioi_subset_Ioi hc
   have h' := h.mono_measure (Measure.restrict_mono hcsub le_rfl)
-  simpa only [pow_zero, mul_one, Complex.ofReal_re] using h'
+  change Integrable (fun x : ℝ => thetaCuspTailSecondDensityAtom 1 x)
+    (volume.restrict (Ioi c))
+  apply h'.congr
+  filter_upwards with x
+  simp only [Nat.zero_add, pow_zero, mul_one]
+  change ((thetaCuspTailSecondDensityAtom 1 x : ℂ).re) =
+    thetaCuspTailSecondDensityAtom 1 x
+  rfl
 
 lemma integrableOn_thetaCuspTailSecondDensityAtomOne_tailFirstMoment
     {c : ℝ} (hc : 0 ≤ c) :

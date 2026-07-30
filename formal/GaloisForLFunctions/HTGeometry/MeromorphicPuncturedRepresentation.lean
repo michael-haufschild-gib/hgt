@@ -229,7 +229,7 @@ theorem hasPuncturedMeromorphicRep_differentialOperatorApply_fraction
       hb hf hg hfa hgb n).const_mul (L.coeff n)
   have hsum := hasPuncturedMeromorphicRep_sum L.support hterm
   simpa only [differentialOperatorApply, Polynomial.sum_def,
-    constantCoeffDifferentialOperator, x, φ] using hsum
+    constantCoeffDifferentialOperator, x, φ] using! hsum
 
 /-- Punctured-local equality is preserved by every iterated derivative. -/
 theorem EventuallyEq.nhdsNE_iteratedDeriv

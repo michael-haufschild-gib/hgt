@@ -381,7 +381,7 @@ Current Nature verdict: `[DO NOT WRITE MANUSCRIPT]`.
 ## Fixed-carrier reciprocal-blindness bridge
 
 The paper theorem in
-`../2-fully-proven/not_new_scientific_knowledge/fixed-carrier-spatial-reciprocal-blindness.md`
+`../3-formalized/not_new_scientific_knowledge/fixed-carrier-spatial-reciprocal-blindness.md`
 adds an independent representation boundary.  A skew two-sided spatial variation
 \(E=AD+DB\) changes \(D^\dagger D\) and \(DD^\dagger\) only by commutators, so every cyclic
 power reporter is blind to it.  Pluta--Russo's spatiality theorem places every TRO derivation in

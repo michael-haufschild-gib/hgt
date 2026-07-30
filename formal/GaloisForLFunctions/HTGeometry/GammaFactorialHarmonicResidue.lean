@@ -66,7 +66,7 @@ theorem tendsto_inv_harmonic_cast_complex_zero :
   have heq : (fun n : ℕ => ((harmonic n : ℂ)⁻¹)) =
       fun n : ℕ => Complex.ofReal ((harmonic n : ℝ)⁻¹) := by
     funext n
-    simpa only using (Complex.ofReal_inv (harmonic n : ℝ)).symm
+    simpa only using! (Complex.ofReal_inv (harmonic n : ℝ)).symm
   rw [heq]
   exact hcast
 
@@ -145,8 +145,8 @@ theorem tendsto_deriv_reciprocalGammaFactorialZoom_add_one_div (n : ℕ) :
       (2 * reciprocalGammaFactorialScale n *
         Complex.digamma ((n : ℂ) + 1)) 0 := by
     have h := han.deriv.differentiableAt.hasDerivAt
-    convert h using 1
-    simpa [show 2 = 1 + 1 by omega, iteratedDeriv_succ', iteratedDeriv_one] using
+    convert! h using 1
+    simpa [show 2 = 1 + 1 by omega, iteratedDeriv_succ', iteratedDeriv_one] using!
       (iteratedDeriv_two_reciprocalGammaFactorialZoom_zero n).symm
   have h := hder.tendsto_slope_zero
   rw [deriv_reciprocalGammaFactorialZoom_zero] at h

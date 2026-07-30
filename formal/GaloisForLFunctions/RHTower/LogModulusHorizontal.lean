@@ -43,13 +43,13 @@ theorem hasDerivAt_log_norm_comp {g : ℝ → ℂ} {g' : ℂ} {u : ℝ}
           + ((fun v => (g v).im) * fun v => (g v).im) := by
       funext v; simp [Complex.normSq_apply]
     rw [hfun]
-    convert h using 1
+    convert! h using 1
     ring
   have hnspos : Complex.normSq (g u) ≠ 0 := by
     simpa [Complex.normSq_eq_zero] using hne
   have hlog : HasDerivAt (fun v => Real.log (Complex.normSq (g v)))
       ((Complex.normSq (g u))⁻¹ * (2 * ((g u).re * g'.re) + 2 * ((g u).im * g'.im))) u := by
-    simpa [Function.comp] using (Real.hasDerivAt_log hnspos).comp u hns
+    simpa [Function.comp] using! (Real.hasDerivAt_log hnspos).comp u hns
   have hhalf := hlog.const_mul (1 / 2 : ℝ)
   have hfun2 : (fun v => (1 / 2 : ℝ) * Real.log (Complex.normSq (g v)))
       = fun v => Real.log ‖g v‖ := by
@@ -58,7 +58,7 @@ theorem hasDerivAt_log_norm_comp {g : ℝ → ℂ} {g' : ℂ} {u : ℝ}
     push_cast
     ring
   rw [hfun2] at hhalf
-  convert hhalf using 1
+  convert! hhalf using 1
   rw [Complex.div_re]
   field_simp
 
@@ -81,7 +81,7 @@ theorem integral_re_logDeriv_horizontal {f : ℂ → ℂ} {t σ₀ σ₁ : ℝ}
     intro σ hσmem
     have hcomp : HasDerivAt (fun v : ℝ => f ((v : ℂ) + t * I))
         (deriv f ((σ : ℂ) + t * I)) σ := by
-      simpa using (hd σ hσmem).comp σ (hpath σ)
+      simpa using! (hd σ hσmem).comp σ (hpath σ)
     exact hasDerivAt_log_norm_comp hcomp (hne σ hσmem)
   exact intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv hint
 

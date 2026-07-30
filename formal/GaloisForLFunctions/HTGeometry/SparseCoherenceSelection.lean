@@ -108,7 +108,7 @@ theorem exists_sparsePrefixEmbedding_of_cofinally_small
     simpa only [geom] using summable_geometric_two' (B / 2)
   have hv : Summable v := by
     have hcomp := hgeom.comp_injective hk
-    convert hcomp using 1
+    convert! hcomp using 1
     funext n
     simp only [v, geom, Function.comp_apply]
     ring

@@ -72,7 +72,7 @@ private theorem I_mul_integral_vertical_cauchyKernel_eq_log_sub_of_lt
       simpa using hmul.const_add (R : ℂ)
     have hout : HasDerivAt (fun z : ℂ => Complex.log (z - p))
         (((R : ℂ) + y * I - p)⁻¹) ((R : ℂ) + y * I) := by
-      simpa using (Complex.hasDerivAt_log (hslit y)).comp
+      simpa using! (Complex.hasDerivAt_log (hslit y)).comp
         ((R : ℂ) + y * I) ((hasDerivAt_id _).sub_const p)
     have hchain := (hout.comp y hin).const_mul (-I)
     have hval : -I * ((((R : ℂ) + y * I - p)⁻¹) * I) =
@@ -82,7 +82,7 @@ private theorem I_mul_integral_vertical_cauchyKernel_eq_log_sub_of_lt
             ((-I) * I) * (((R : ℂ) + y * I - p)⁻¹) := by ring
         _ = (((R : ℂ) + y * I - p)⁻¹) := by
           rw [neg_mul, Complex.I_mul_I, neg_neg, one_mul]
-    simpa only [hval] using hchain
+    simpa only [hval] using! hchain
   have hcont : ContinuousOn
       (fun y : ℝ => (((R : ℂ) + y * I) - p)⁻¹) (uIcc a b) :=
     (continuousOn_of_forall_continuousAt (fun y => by fun_prop)).inv₀
@@ -129,7 +129,7 @@ private theorem I_mul_integral_vertical_cauchyKernel_eq_log_neg_sub_of_gt
           (((R : ℂ) + y * I) - p)⁻¹ := by
         rw [inv_neg]
         ring
-      simpa only [hval] using hout0
+      simpa only [hval] using! hout0
     have hchain := (hout.comp y hin).const_mul (-I)
     have hval : -I * ((((R : ℂ) + y * I - p)⁻¹) * I) =
         (((R : ℂ) + y * I - p)⁻¹) := by
@@ -138,7 +138,7 @@ private theorem I_mul_integral_vertical_cauchyKernel_eq_log_neg_sub_of_gt
             ((-I) * I) * (((R : ℂ) + y * I - p)⁻¹) := by ring
         _ = (((R : ℂ) + y * I - p)⁻¹) := by
           rw [neg_mul, Complex.I_mul_I, neg_neg, one_mul]
-    simpa only [hval] using hchain
+    simpa only [hval] using! hchain
   have hcont : ContinuousOn
       (fun y : ℝ => (((R : ℂ) + y * I) - p)⁻¹) (uIcc a b) :=
     (continuousOn_of_forall_continuousAt (fun y => by fun_prop)).inv₀

@@ -512,8 +512,8 @@ theorem exists_primitiveTwoBlockDifferentialCharacteristic
     apply hP0
     apply MvPolynomial.map_injective φ.toRingHom φ.injective
     simpa using hzero
-  letI : NormalizationMonoid R :=
-    UniqueFactorizationMonoid.normalizationMonoid
+  letI : StrongNormalizationMonoid R :=
+    UniqueFactorizationMonoid.strongNormalizationMonoid
   letI : NormalizedGCDMonoid R :=
     UniqueFactorizationMonoid.toNormalizedGCDMonoid R
   obtain ⟨Q, hQ0, hQprimitive, a, hQclear⟩ :=
@@ -679,7 +679,7 @@ theorem IsMinimalScalarDifferentialPolynomialRank.dvd_of_relation_order_le
   have hdivProduct :
       P ∣ scalarDifferentialPolynomialInitial P ^ d.exponent * Q := by
     refine ⟨d.quotient, ?_⟩
-    simpa [hRzero] using d.eq_mul_add
+    simpa [hRzero] using! d.eq_mul_add
   rcases hPirreducible.prime.dvd_mul.mp hdivProduct with hpow | hdiv
   · have hdivInitial := hPirreducible.prime.dvd_of_dvd_pow hpow
     apply (hInitialNot ?_).elim
@@ -761,7 +761,7 @@ theorem exists_differentialRelation_coefficientRatio_not_mem_bot
   classical
   by_contra hnone
   push Not at hnone
-  obtain ⟨n, hn⟩ := Finsupp.ne_iff.mp hP0
+  obtain ⟨n, hn⟩ := MvPolynomial.exists_coeff_ne_zero hP0
   have hnSupport : n ∈ P.support := by
     simpa [MvPolynomial.mem_support_iff] using hn
   have hratioBot (m : (Unit × ℕ) →₀ ℕ) :

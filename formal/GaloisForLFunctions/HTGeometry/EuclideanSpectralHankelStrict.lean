@@ -90,9 +90,12 @@ theorem euclideanSpectralMoments_not_finiteModalWidthAtMost
     (d : ℕ) :
     ¬ FiniteModalWidthAtMost d (euclideanSpectralMoments mu tau) := by
   apply not_finiteModalWidthAtMost_of_det_ne_zero
-  simpa [algebraicHankelMatrix, momentHankelMatrix] using
-    ne_of_gt (det_momentHankelMatrix_euclideanSpectralMoments_pos
-      htau hint hmuinf (d + 1))
+  have hmatrix :
+      algebraicHankelMatrix (euclideanSpectralMoments mu tau) (d + 1) =
+        momentHankelMatrix (euclideanSpectralMoments mu tau) (d + 1) := rfl
+  rw [hmatrix]
+  exact ne_of_gt (det_momentHankelMatrix_euclideanSpectralMoments_pos
+    htau hint hmuinf (d + 1))
 
 /-- An infinite positive Euclidean spectrum satisfies no positive finite-order linear recurrence. -/
 theorem euclideanSpectralMoments_not_linearRecurrence
@@ -106,8 +109,11 @@ theorem euclideanSpectralMoments_not_linearRecurrence
     E hsolution horder
   have hpositive := det_momentHankelMatrix_euclideanSpectralMoments_pos
     htau hint hmuinf (E.order + 1)
-  exact (ne_of_gt hpositive) (by
-    simpa [algebraicHankelMatrix, momentHankelMatrix] using hzero)
+  have hmatrix :
+      algebraicHankelMatrix (euclideanSpectralMoments mu tau) (E.order + 1) =
+        momentHankelMatrix (euclideanSpectralMoments mu tau) (E.order + 1) := rfl
+  rw [hmatrix] at hzero
+  exact (ne_of_gt hpositive) hzero
 
 /-- An infinite positive Euclidean spectrum escapes every uniformly bounded local linear
 hidden-state model. -/

@@ -279,7 +279,7 @@ theorem hypertranscendentalOver_multipleEllipticGammaLogDerivFaceMero_of_insert
           multipleEllipticGammaLogDerivFaceMero τ hτ J) := by
       rw [multipleEllipticGammaLogDerivFaceMero_addTranslation_sub τ hτ J q hq]
       exact hcofaceC
-    simpa only [addTranslationMeroDifferentialAlgEquiv] using hdefect
+    simpa only [addTranslationMeroDifferentialAlgEquiv] using! hdefect
   exact hypertranscendentalOver_meromorphicRationalCoordinateField_iff.mpr hfaceC
 
 theorem hypertranscendentalOver_multipleEllipticGammaLogDerivFaceMero_empty
@@ -379,7 +379,18 @@ theorem hypertranscendentalOver_multipleEllipticGammaLogDerivMero_of_rankThreeMi
       (multipleEllipticGammaLogDerivMero
         (fun k => multipleEllipticGammaFaceParameters τ J (e k))
         (fun k => hτ (e k).1)) := by
-    convert hpair using 1
+    have hparams :
+        (fun k : Fin 2 => multipleEllipticGammaFaceParameters τ J (e k)) =
+          ![τ q, τ r] := by
+      funext k
+      fin_cases k
+      · simp [e, multipleEllipticGammaPairComplementEquiv,
+          multipleEllipticGammaPairComplementQ,
+          multipleEllipticGammaFaceParameters]
+      · simp [e, multipleEllipticGammaPairComplementEquiv,
+          multipleEllipticGammaPairComplementR,
+          multipleEllipticGammaFaceParameters]
+    simpa only [hparams] using! hpair
   have hface : HypertranscendentalOver meromorphicRationalCoordinateField
       (multipleEllipticGammaLogDerivFaceMero τ hτ J) := by
     rw [multipleEllipticGammaLogDerivMero_reindex e

@@ -233,6 +233,7 @@ theorem deriv_riemannZeta_ne_zero_of_mobiusLaplaceCriticalAbelBound
     have hproduct : HasDerivAt (fun z : ℂ => (z - 1) * riemannZeta z) 0 rho := by
       convert ((hasDerivAt_id rho).sub_const 1).mul
         (differentiableAt_riemannZeta hrhoOne).hasDerivAt using 1
+      all_goals try rfl
       all_goals simp [hzero, hderivZero]
     exact hproduct.congr_of_eventuallyEq (zetaResidueUnit_eventuallyEq hrhoOne)
   have hslopeComplex := hunitDeriv.tendsto_slope_zero
@@ -240,7 +241,7 @@ theorem deriv_riemannZeta_ne_zero_of_mobiusLaplaceCriticalAbelBound
       (fun r : ℝ => (r : ℂ)⁻¹ * zetaResidueUnit (rho + (r : ℂ)))
       (𝓝[>] 0) (𝓝 0) := by
     have h := hslopeComplex.comp tendsto_ofReal_nhdsGT_zero_nhdsNE_zero
-    simpa [hunitZero, smul_eq_mul] using h
+    simpa [hunitZero, smul_eq_mul] using! h
   have hproductZero : Tendsto
       (fun r : ℝ =>
         ((r : ℂ) * mellin mobiusDiscreteLaplaceTransform (rho + (r : ℂ))) *
@@ -276,7 +277,7 @@ theorem deriv_riemannZeta_ne_zero_of_mobiusLaplaceCriticalAbelBound
     have hm : 0 ≤ (m : ℝ) := Nat.cast_nonneg m
     linarith
   have hray : Tendsto (fun r : ℝ => rho + (r : ℂ)) (𝓝[>] 0) (𝓝 rho) := by
-    simpa using
+    simpa using!
       ((continuous_const.add Complex.continuous_ofReal).tendsto 0).mono_left
         nhdsWithin_le_nhds
   have hrightActual : Tendsto
@@ -379,6 +380,7 @@ theorem mobiusDiscreteLaplaceHalfDecay_implies_riemannHypothesis_and_xiZerosSimp
       (archFactor rho * deriv riemannZeta rho) rho := by
     convert harch.differentiableAt.hasDerivAt.mul
       hzetaAnalytic.differentiableAt.hasDerivAt using 1
+    all_goals try rfl
     all_goals simp [hzeta]
   have hxiDeriv : deriv xi rho = archFactor rho * deriv riemannZeta rho :=
     (hproduct.congr_of_eventuallyEq heq).deriv

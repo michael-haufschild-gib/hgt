@@ -122,11 +122,11 @@ theorem criticalDisc_connectionReader_isCompact_of_primeEulerTangent_compactness
       ?_ ?_ ?_ ?_ hx
     · rintro x ⟨p, rfl⟩
       exact hL p
-    · simpa using (isCompactOperator_zero : IsCompactOperator (0 : H →L[ℂ] H))
+    · simpa using! (isCompactOperator_zero : IsCompactOperator (0 : H →L[ℂ] H))
     · intro x y hx hy hcx hcy
-      simpa using hcx.add hcy
+      simpa using! hcx.add hcy
     · intro c x hx hcx
-      simpa using hcx.smul c
+      simpa using! hcx.smul c
   have hclosed : IsClosed {x : C(CriticalClosedDisc r₀, ℂ) |
       IsCompactOperator (L x)} := by
     exact isClosed_setOf_isCompactOperator.preimage L.continuous

@@ -170,68 +170,32 @@ def deningerCompactOpenXiRange :
     Submodule ℂ DeningerCompactOpenEntire :=
   LinearMap.range deningerCompactOpenXiMul.toLinearMap
 
-/-!
-Pin the subtype negation to the one inherited through its additive-group structure.  Mathlib also
-provides a shortcut negation for submodules; the two are propositionally equal but not
-definitionally equal, which otherwise obstructs quotient relation proofs.
--/
-local instance deningerCompactOpenCompatibleNeg :
-    Neg DeningerCompactOpenEntire :=
-  (inferInstance :
-    SubtractionMonoid DeningerCompactOpenEntire).toSubNegMonoid.toNeg
-
-/-- Quotient relation attached to a compact-open complex submodule. -/
-def deningerCompactOpenQuotientRel
-    (S : Submodule ℂ DeningerCompactOpenEntire) :
-    Setoid DeningerCompactOpenEntire :=
-  QuotientAddGroup.leftRel S.toAddSubgroup
-
 /--
 Topological complex quotient by a compact-open submodule.
 
-This local quotient wrapper avoids a definitional diamond between mathlib's shortcut
-`Semiring ℂ` instance and the semiring inherited through `Ring ℂ`.  The quotient relation is the
-ordinary additive-group quotient relation; scalar multiplication descends because `S` is a
-complex submodule.
+The additive quotient supplies its group structure and quotient topology.  Scalar multiplication
+descends because `S` is a complex submodule.
 -/
-def DeningerCompactOpenQuotient
+abbrev DeningerCompactOpenQuotient
     (S : Submodule ℂ DeningerCompactOpenEntire) :=
-  Quotient (deningerCompactOpenQuotientRel S)
+  DeningerCompactOpenEntire ⧸ S.toAddSubgroup
 
 namespace DeningerCompactOpenQuotient
 
 variable (S : Submodule ℂ DeningerCompactOpenEntire)
 
-instance instTopologicalSpace :
-    TopologicalSpace (DeningerCompactOpenQuotient S) :=
-  instTopologicalSpaceQuotient
-
-instance instAddCommGroup :
-    AddCommGroup (DeningerCompactOpenQuotient S) :=
-  inferInstanceAs
-    (AddCommGroup
-      (DeningerCompactOpenEntire ⧸ S.toAddSubgroup))
-
-instance instIsTopologicalAddGroup :
-    IsTopologicalAddGroup (DeningerCompactOpenQuotient S) :=
-  inferInstanceAs
-    (IsTopologicalAddGroup
-      (DeningerCompactOpenEntire ⧸ S.toAddSubgroup))
-
 instance instSMul :
     SMul ℂ (DeningerCompactOpenQuotient S) where
   smul c :=
     Quotient.map' (c • ·) fun x y hxy => by
-      have hrel :
-          QuotientAddGroup.leftRel S.toAddSubgroup x y :=
-        hxy
       apply QuotientAddGroup.leftRel_apply.mpr
       have hmem :=
-        QuotientAddGroup.leftRel_apply.mp hrel
+        QuotientAddGroup.leftRel_apply.mp hxy
       change -x + y ∈ S at hmem
       change -(c • x) + c • y ∈ S
-      have hneg : c • (-x) = -(c • x) :=
-        @smul_neg ℂ DeningerCompactOpenEntire _ _ c x
+      have hneg : c • (-x) = -(c • x) := by
+        ext z
+        simp
       have hscaled := S.smul_mem c hmem
       rw [smul_add, hneg] at hscaled
       exact hscaled
@@ -239,7 +203,7 @@ instance instSMul :
 /-- Canonical quotient map. -/
 def mk (F : DeningerCompactOpenEntire) :
     DeningerCompactOpenQuotient S :=
-  Quotient.mk (deningerCompactOpenQuotientRel S) F
+  QuotientAddGroup.mk F
 
 /-- The canonical class map is an open quotient map. -/
 theorem isOpenQuotientMap_mk :
@@ -259,41 +223,8 @@ theorem mk_smul (c : ℂ) (F : DeningerCompactOpenEntire) :
 @[simp]
 theorem mk_eq_zero_iff_mem
     (F : DeningerCompactOpenEntire) :
-    mk S F = 0 ↔ F ∈ S := by
-  constructor
-  · intro hzero
-    change mk S F = mk S 0 at hzero
-    have hrel :
-        (deningerCompactOpenQuotientRel S) F 0 :=
-      Quotient.exact hzero
-    have hneg : -F ∈ S := by
-      have :=
-        QuotientAddGroup.leftRel_apply.mp
-          (show QuotientAddGroup.leftRel
-              S.toAddSubgroup F 0 from hrel)
-      change -F + 0 ∈ S at this
-      simpa using this
-    have hneg' : -F ∈ S.toAddSubgroup :=
-      hneg
-    have hpos : -(-F) ∈ S.toAddSubgroup :=
-      neg_mem hneg'
-    change -(-F) ∈ S at hpos
-    have hnn : -(-F) = F := by
-      ext z
-      simp
-    rw [hnn] at hpos
-    exact hpos
-  · intro hF
-    change mk S F = mk S 0
-    apply Quotient.sound
-    apply QuotientAddGroup.leftRel_apply.mpr
-    change -F + 0 ∈ S
-    have hF' : F ∈ S.toAddSubgroup :=
-      hF
-    have hneg : -F ∈ S.toAddSubgroup :=
-      neg_mem hF'
-    change -F ∈ S at hneg
-    simpa using hneg
+    mk S F = 0 ↔ F ∈ S :=
+  QuotientAddGroup.eq_zero_iff F
 
 instance instModule :
     Module ℂ (DeningerCompactOpenQuotient S) :=
@@ -344,8 +275,9 @@ def mapL
       have himg : f (-x + y) ∈ S :=
         hf hmem
       have hneg : f (-x) = -f x := by
-        apply eq_neg_of_add_eq_zero_left
-        rw [← f.map_add, neg_add_cancel, f.map_zero]
+        rw [show -x = (-1 : ℂ) • x by ext z; simp, f.map_smul]
+        ext z
+        simp
       have heq : f (-x + y) = -f x + f y := by
         rw [f.map_add, hneg]
       rw [heq] at himg
@@ -390,8 +322,8 @@ def liftL
       have hzero : f (-x + y) = 0 :=
         hf hmem
       have hneg : f (-x) = -f x := by
-        apply eq_neg_of_add_eq_zero_left
-        rw [← f.map_add, neg_add_cancel, f.map_zero]
+        rw [show -x = (-1 : ℂ) • x by ext z; simp, f.map_smul,
+          neg_one_smul]
       rw [f.map_add, hneg] at hzero
       exact neg_add_eq_zero.mp hzero
   map_add' := by

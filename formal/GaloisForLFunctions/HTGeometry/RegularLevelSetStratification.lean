@@ -51,7 +51,7 @@ theorem isLocalRegularLevelSetOfCodimAtLeast_zeroSet
   · intro x _
     rfl
   · intro x hx
-    simpa only [fderivWithin_of_isOpen hU hx] using hx
+    simpa only [fderivWithin_of_isOpen hU hx] using! hx
 
 theorem isLocalRegularLevelSetOfCodimAtLeast_zeroSet_inter_isOpen
     {Y : Type*} [NormedAddCommGroup Y] [NormedSpace ℝ Y]
@@ -69,7 +69,7 @@ theorem isLocalRegularLevelSetOfCodimAtLeast_zeroSet_inter_isOpen
   · intro x hx
     exact and_iff_left hx.1
   · intro x hx
-    simpa only [fderivWithin_of_isOpen hU hx] using hx.2
+    simpa only [fderivWithin_of_isOpen hU hx] using! hx.2
 
 theorem isLocalRegularLevelSetOfCodimAtLeast_zeroSet_finiteDimensional
     {Y Z : Type*}
@@ -202,7 +202,7 @@ def FiniteRegularStratification.cons
       exact tail.pairwise_disjoint (mem_univ i) (mem_univ j) hij
   cover := by
     rw [iUnion_fin_add_one_eq_iUnion_succ]
-    simpa only [tail.cover] using hS
+    simpa only [tail.cover] using! hS
   regular := by
     intro i
     refine Fin.cases hR (fun j => tail.regular j) i

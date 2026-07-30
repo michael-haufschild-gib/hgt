@@ -50,7 +50,7 @@ lemma gammaConductorSchurResidualBracket_pos
   have hlinear : 0 < 1 - x / 2 := by linarith
   have hinv : (1 - x / 2)⁻¹ < ((1 - x) ^ (1 / 2 : ℝ))⁻¹ := by
     apply (inv_lt_inv₀ hlinear hsqrt).2
-    convert hbern using 1
+    convert! hbern using 1
     ring_nf
   have hlinearInv : 1 + x / 2 < (1 - x / 2)⁻¹ := by
     rw [← one_div]

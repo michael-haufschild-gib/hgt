@@ -682,7 +682,7 @@ theorem evenSoninWindowTranslation_adjoint_mul_compactEq_shell
   dsimp only [evenSoninWindowTranslation, evenPhysicalWindowTranslation,
     evenFourierWindowTranslation, evenTwoPolarizationShell]
   rw [adjoint_add_clm, add_mul, mul_add, mul_add]
-  simpa only [add_zero, zero_add] using hsum
+  simpa only [add_zero, zero_add] using! hsum
 
 /-- Every canonical live window is noncompact. -/
 theorem SoninLiveWindow.not_isCompactOperator {a : ℝ} (ha : 0 < a)

@@ -183,7 +183,7 @@ theorem xi_circleAverage_sub_eq_divisor_sum (ρ : ℂ) {r₁ r₂ : ℝ}
       push_cast
       ring
   by_cases hρT : ρ ∈ T
-  · rw [Finset.sum_eq_sum_diff_singleton_add hρT, Finset.sum_eq_sum_diff_singleton_add hρT
+  · rw [Finset.sum_eq_sum_sdiff_singleton_add hρT, Finset.sum_eq_sum_sdiff_singleton_add hρT
       (fun u => ((MeromorphicOn.divisor xi (closedBall ρ r₂)) u : ℝ) *
         (if ‖u - ρ‖ ≤ r₁ then Real.log r₂ - Real.log r₁
           else Real.log r₂ - Real.log ‖u - ρ‖))]

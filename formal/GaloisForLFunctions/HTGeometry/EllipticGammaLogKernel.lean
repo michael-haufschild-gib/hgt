@@ -246,7 +246,7 @@ theorem ellipticGammaLogAtom_tendsto_zero :
     Filter.Tendsto ellipticGammaLogAtom (nhds (0 : ℂ)) (nhds 0) := by
   have hcont : ContinuousAt (fun t : ℂ => t / (1 - t)) 0 :=
     continuousAt_id.div (continuousAt_const.sub continuousAt_id) (by norm_num)
-  simpa [ellipticGammaLogAtom] using hcont.tendsto
+  simpa [ellipticGammaLogAtom] using! hcont.tendsto
 
 theorem ellipticGammaForwardArgument_tendsto_zero_first
     {p q x : ℂ} (hp : ‖p‖ < 1) (k : ℕ) :
@@ -443,8 +443,8 @@ theorem ellipticGammaLogSummand_tsum_mul_p_fiber
       (nhds ((∑' j : ℕ, ellipticGammaLogSummand p q (p * x) j k) -
         ∑' j : ℕ, ellipticGammaLogSummand p q x j k)) := by
     apply Filter.Tendsto.sub
-    · simpa only using hmul.hasSum.tendsto_sum_nat.comp (Filter.tendsto_add_atTop_nat 1)
-    · simpa only using hbase.hasSum.tendsto_sum_nat.comp (Filter.tendsto_add_atTop_nat 1)
+    · simpa only using! hmul.hasSum.tendsto_sum_nat.comp (Filter.tendsto_add_atTop_nat 1)
+    · simpa only using! hbase.hasSum.tendsto_sum_nat.comp (Filter.tendsto_add_atTop_nat 1)
   have hR : Filter.Tendsto
       (fun N => ellipticGammaLogAtom (q ^ (k + 1) / x) -
         ellipticGammaLogAtom (ellipticGammaBackwardArgument p q x 0 k) +

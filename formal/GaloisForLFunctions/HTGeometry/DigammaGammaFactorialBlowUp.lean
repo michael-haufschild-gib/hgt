@@ -184,7 +184,7 @@ def reciprocalGammaTangent (z : ℂ) : ℂ :=
 
 theorem reciprocalGammaTangent_zero : reciprocalGammaTangent 0 = 1 := by
   rw [reciprocalGammaTangent, dslope_same]
-  simpa [reciprocalGammaEntire] using (hasDerivAt_oneDivGamma_neg_nat 0).deriv
+  simpa [reciprocalGammaEntire] using! (hasDerivAt_oneDivGamma_neg_nat 0).deriv
 
 theorem continuousAt_reciprocalGammaTangent_zero :
     ContinuousAt reciprocalGammaTangent 0 := by
@@ -359,7 +359,7 @@ theorem tendsto_Gamma_factorialBlowUp_locallyUniformlyOn_ne_zero :
     (φ := fun z : ℂ => z⁻¹)
     (fun x hx => continuousAt_inv₀ (neg_ne_zero.mpr hx))
     continuous_neg.continuousOn hH
-  simpa only [reciprocalGammaEntire, inv_inv] using hinv
+  simpa only [reciprocalGammaEntire, inv_inv] using! hinv
 
 def reciprocalGammaBlowUpDisk : Set ℂ :=
   Metric.ball (-1 : ℂ) (1 / 4 : ℝ)
@@ -752,7 +752,7 @@ theorem iteratedDeriv_factorialBlowUpZoom
     (fun w => h (w + (-(n : ℂ)))) (reciprocalGammaFactorialScale n) j x]
   rw [iteratedDeriv_comp_add_const]
   congr 2
-  ring
+  ring_nf
 
 theorem differentialFullMonomial_split {r : ℕ}
     (z : ℂ) (y : Fin (r + 1) → ℂ) (α : Fin (r + 2) →₀ ℕ) :
@@ -964,7 +964,7 @@ theorem exists_eventually_differentiable_digammaGammaZoom_near
   have hDigammaDiff : DifferentiableAt ℂ Complex.digamma gammaValue :=
     (contDiffAt_digamma_n gammaValue hgammaRegular 1).differentiableAt (by norm_num)
   have hcomp := hDigammaDiff.comp y hGammaDiff
-  simpa [factorialBlowUpZoom, input, gammaValue, Function.comp_def] using
+  simpa [factorialBlowUpZoom, input, gammaValue, Function.comp_def] using!
     hcomp.differentiableWithinAt
 
 def digammaReciprocalLimit (x : ℂ) : ℂ :=
@@ -1222,7 +1222,7 @@ theorem neg_inv_neg_inv {z : ℂ} (hz : z ≠ 0) :
 theorem analyticAt_digamma_of_offPoles {z : ℂ}
     (hz : ∀ p : ℕ, z ≠ -(p : ℂ)) : AnalyticAt ℂ Complex.digamma z := by
   have h := analyticAt_iteratedDeriv_logDeriv 0 z hz
-  simpa [iteratedDeriv_zero, Complex.digamma_def, logDeriv_apply] using h
+  simpa [iteratedDeriv_zero, Complex.digamma_def, logDeriv_apply] using! h
 
 theorem analyticAt_digammaReciprocalLimit_neg_inv {z : ℂ}
     (hz : ∀ p : ℕ, z ≠ -(p : ℂ)) (hz0 : z ≠ 0) :
@@ -1267,7 +1267,7 @@ theorem iteratedDeriv_digammaReciprocalLimit_neg_inv_eq_mobiusJetExpansion :
           (iteratedDeriv (j + 1) digammaReciprocalLimit x) x := by
         simpa [iteratedDeriv_succ] using hFj.differentiableAt.hasDerivAt
       have hphi : HasDerivAt (fun w : ℂ => -w⁻¹) (z⁻¹ ^ 2) z := by
-        simpa [inv_pow] using (hasDerivAt_inv hz0).neg
+        simpa [inv_pow] using! (hasDerivAt_inv hz0).neg
       have hcomp : HasDerivAt
           (fun w : ℂ => iteratedDeriv j digammaReciprocalLimit (-w⁻¹))
           (iteratedDeriv (j + 1) digammaReciprocalLimit x * z⁻¹ ^ 2) z := by
@@ -1403,7 +1403,8 @@ theorem hypertranscendental_digamma_comp_Gamma :
     have hpnonneg : (0 : ℝ) ≤ p := Nat.cast_nonneg p
     linarith
   have hphiCont : ContinuousAt (fun z : ℂ => -z⁻¹) 1 := by
-    simpa using (ContinuousAt.inv₀ continuousAt_id
+    simpa only [Pi.neg_apply, Pi.inv_apply, id_eq] using!
+      (ContinuousAt.inv₀ continuousAt_id
       (one_ne_zero : (1 : ℂ) ≠ 0)).neg
   have hcenter : -((1 : ℂ)⁻¹) ∈ reciprocalGammaBlowUpDisk := by
     simp [reciprocalGammaBlowUpDisk]

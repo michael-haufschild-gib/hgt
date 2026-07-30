@@ -248,7 +248,7 @@ theorem cofiniteTailDenseOn_distinctConfigurationProfile
     let T : Set P := f '' {i | i ≠ i₀}
     have hT : T.Finite := (Set.toFinite {i | i ≠ i₀}).image f
     let B : Set P := A i₀ \ T
-    have hB : B.Infinite := (hA i₀).diff hT
+    have hB : B.Infinite := (hA i₀).sdiff hT
     let g : B → DistinctConfiguration P I := fun p =>
       ⟨Function.update f i₀ p.1, by
         intro i j hij
@@ -280,8 +280,8 @@ theorem cofiniteTailDenseOn_distinctConfigurationProfile
     change x ((g p).1 i) ∈ U i
     by_cases hii : i = i₀
     · subst i
-      simpa [g] using p.2.1
-    · simpa [g, Function.update_of_ne hii] using hfA i
+      simpa [g] using! p.2.1
+    · simpa [g, Function.update_of_ne hii] using! hfA i
 
 /-- **Maximal-independent/arbitrary-coupled joining dichotomy.** For every nonempty countable
 subdirect relation `C`, one prime source has full local recurrent geometry; sampling all disjoint
@@ -336,7 +336,7 @@ theorem cofiniteTailDenseOn_distinctPairProfile
       exact mapClusterPt_iff_frequently.mp (hx.2 w hw) t ht
     obtain ⟨q, hq⟩ := hBt.nonempty
     let A : Set P := {p | x p ∈ u} \ {q}
-    have hA : A.Infinite := hAu.diff (Set.finite_singleton q)
+    have hA : A.Infinite := hAu.sdiff (Set.finite_singleton q)
     let f : A → DistinctPair P := fun p =>
       ⟨(p.1, q), by
         intro hpq
@@ -357,4 +357,3 @@ theorem cofiniteTailDenseOn_distinctPairProfile
 end
 
 end GaloisForLFunctions.HTGeometry
-

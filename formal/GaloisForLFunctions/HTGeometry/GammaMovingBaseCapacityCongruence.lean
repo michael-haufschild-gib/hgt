@@ -24,9 +24,11 @@ theorem hasDerivAt_mobiusTangentGerm
     HasDerivAt (mobiusTangentGerm a) ((1 - a * z)⁻¹ ^ 2) z := by
   have hnum : HasDerivAt (fun w : ℂ => w) 1 z := hasDerivAt_id z
   have hden' : HasDerivAt (fun w : ℂ => 1 - a * w) (-a) z := by
-    convert (hasDerivAt_const z (1 : ℂ)).sub
-      ((hasDerivAt_const z a).mul (hasDerivAt_id z)) using 1 <;> ring
-  convert hnum.div hden' hden using 1
+    simpa using!
+      (hasDerivAt_const z (1 : ℂ)).sub
+        ((hasDerivAt_const z a).mul (hasDerivAt_id z))
+  change HasDerivAt (fun w : ℂ => w / (1 - a * w)) ((1 - a * z)⁻¹ ^ 2) z
+  convert! hnum.div hden' hden using 1
   field_simp [hden]
   ring
 
@@ -38,7 +40,7 @@ theorem hasDerivAt_gammaMovingBaseTransition_of_branch
     HasDerivAt (gammaMovingBaseTransition n)
       ((1 - gammaMovingBaseShell n * gammaCommonInverseCollar.branch n t)⁻¹ ^ 2 * v) t := by
   have hmobius := hasDerivAt_mobiusTangentGerm hden
-  simpa [gammaMovingBaseTransition, mobiusTangentGerm] using hmobius.comp t hbranch
+  simpa [gammaMovingBaseTransition, mobiusTangentGerm] using! hmobius.comp t hbranch
 
 /-- Exact conformal change of the squared tangent metric under a Möbius comparison chart. -/
 theorem norm_sq_mobiusTangentDifferential

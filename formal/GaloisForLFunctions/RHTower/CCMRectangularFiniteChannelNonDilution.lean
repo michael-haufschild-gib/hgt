@@ -67,7 +67,9 @@ private theorem abscissaOfAbsConv_finsetSum_le
   intro sigma hsigma
   induction s using Finset.induction_on with
   | empty =>
-      simpa only [Finset.sum_empty] using (LSeriesSummable_zero (s := (sigma : ℂ)))
+      simp only [Finset.sum_empty]
+      change LSeriesSummable (0 : ℕ → ℂ) (sigma : ℂ)
+      exact LSeriesSummable_zero
   | @insert i s hi ih =>
       simp only [Finset.sum_insert hi]
       apply LSeriesSummable.add
@@ -158,6 +160,9 @@ theorem xiRightTransverseSup_le_of_finiteNegativeChannelCover_abscissa
   apply (xiRightTransverseSup_le_iff_negativePartEnergyAbove
     hL halpha hN).mpr
   intro epsilon hepsilon
+  change LSeriesSummable
+    (xiRectangularWeilTailNegativeDirichletCoefficient L N)
+    ((1 + alpha + epsilon : ℝ) : ℂ)
   apply LSeriesSummable_of_abscissaOfAbsConv_lt_re
   have hstrict :
       ((1 + alpha : ℝ) : EReal) <

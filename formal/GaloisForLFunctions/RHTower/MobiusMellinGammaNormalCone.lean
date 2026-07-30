@@ -122,7 +122,8 @@ theorem mobiusCompletedNormalConeTransfer_analyticAt_one
     zetaResidueUnit_analyticAt.mul analyticAt_const
   have hne : zetaResidueUnit 1 * X s ≠ 0 := by
     simpa using hX
-  simpa only [mobiusCompletedNormalConeTransfer] using hprod.inv hne
+  change AnalyticAt ℂ ((fun base => zetaResidueUnit base * X s)⁻¹) 1
+  exact hprod.inv hne
 
 /-- Hence the ordinary transfers divided by their Euler normal parameter converge to the
 reciprocal exceptional section. -/

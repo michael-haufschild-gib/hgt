@@ -58,8 +58,9 @@ theorem continuedCauchyPacketEpsilon_pos (n : ℕ) :
 
 theorem tendsto_continuedCauchyPacketEpsilon :
     Tendsto continuedCauchyPacketEpsilon atTop (nhds 0) := by
-  simpa [continuedCauchyPacketEpsilon] using
-    (tendsto_const_div_atTop_nhds_zero_nat 1).comp (tendsto_add_atTop_nat 1)
+  change Tendsto (fun n : ℕ => 1 / ((n + 1 : ℕ) : ℝ)) atTop (nhds 0)
+  simpa only [Function.comp_def, Nat.cast_add, Nat.cast_one] using!
+    (tendsto_const_div_atTop_nhds_zero_nat (1 : ℝ)).comp (tendsto_add_atTop_nat 1)
 
 /-- Move every pole by the same vanishing complex offset. -/
 def continuedCauchyPacketPerturbation

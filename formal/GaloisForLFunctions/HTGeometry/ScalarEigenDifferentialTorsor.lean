@@ -103,7 +103,7 @@ theorem DifferentialAlgEquiv.toLogCurrentAut_eq_scalarDifferentialScaleAction
       scalarDifferentialScaleAction q hq hq0 hgen hconst u := by
   apply derivationPreservingAut_eq_scaleAction_of_apply_q
     q hq hq0 hgen hconst
-  simpa using hsigma
+  simpa using! hsigma
 
 /-- Finite-order fixed field for an arbitrary original-base differential eigen-automorphism. -/
 theorem DifferentialAlgEquiv.fixedField_zpowers_of_unit_eigenvector_of_finite_order

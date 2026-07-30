@@ -67,7 +67,8 @@ theorem projectionNormalCorner_isCompact_of_compact_relative_family
     IsCompactOperator (projectionNormalCorner P D) := by
   have hD := isCompactOperator_deriv_of_compact_relative_family F D hF hrelative
   unfold projectionNormalCorner
-  simpa only [mul_assoc] using (hD.comp_clm P).clm_comp (1 - P)
+  change IsCompactOperator (fun x => (1 - P) (D (P x)))
+  exact (hD.comp_clm P).clm_comp (1 - P)
 
 /-- The actual central Sonin prime-dilation corner is a projection normal corner. -/
 theorem evenCentralSoninDilationCorner_eq_projectionNormalCorner
@@ -230,7 +231,13 @@ theorem mixedDerivative_not_isCompact_of_actualSoninPrimeNormals
   have hcompactQ : IsCompactOperator
       (evenCentralSoninQuadraticCorner a p p hp hp : evenSubspace → evenSubspace) := by
     rw [← heq]
-    simpa only [ContinuousLinearMap.coe_smul] using hscaled
+    change IsCompactOperator (fun x =>
+      ((2 : ℂ)⁻¹) •
+        ((adjoint (evenCentralSoninDilationCorner a p hp) *
+            evenCentralSoninDilationCorner a p hp +
+          adjoint (evenCentralSoninDilationCorner a p hp) *
+            evenCentralSoninDilationCorner a p hp) x))
+    exact hscaled
   exact evenCentralSoninQuadraticCorner_not_isCompactOperator
     a p p ha hp hp hcompactQ
 

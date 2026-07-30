@@ -50,7 +50,7 @@ theorem localizedMvPolynomialResidue_algebraMap_eq_eval
         (MvPolynomial.X i - MvPolynomial.C (x i)) = 0 :=
       Ideal.algebraMap_residueField_eq_zero.mpr hmem
     rw [map_sub, sub_eq_zero] at hz
-    simpa using hz
+    simpa using! hz
   change (IsScalarTower.toAlgHom ℂ (MvPolynomial σ ℂ) K) r = _
   rw [hhom]
   change MvPolynomial.eval₂Hom (algebraMap ℂ K)

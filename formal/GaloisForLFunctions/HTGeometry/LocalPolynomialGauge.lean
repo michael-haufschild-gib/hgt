@@ -27,7 +27,7 @@ theorem iteratedDeriv_mul_polynomial_at {f : ℂ → ℂ} {z : ℂ}
           ((k.choose i : ℕ) : ℂ) * Polynomial.eval z (Polynomial.derivative^[i] a)
             * iteratedDeriv (k - i) f z := by
   have ha : ContDiffAt ℂ ((k : ℕ) : ℕ∞) (fun w : ℂ => Polynomial.eval w a) z := by
-    simpa only [Polynomial.coe_aeval_eq_eval] using
+    simpa only [Polynomial.coe_aeval_eq_eval] using!
       (Polynomial.contDiff_aeval a ((k : ℕ) : ℕ∞)).contDiffAt
   have hfz : ContDiffAt ℂ ((k : ℕ) : ℕ∞) f z :=
     hf.of_le (by exact_mod_cast (le_top : ((k : ℕ) : ℕ∞) ≤ ⊤))
@@ -68,7 +68,7 @@ theorem iteratedDeriv_add_polynomial_at {f : ℂ → ℂ} {z : ℂ}
     iteratedDeriv k (fun w => f w + Polynomial.eval w b) z
       = iteratedDeriv k f z + Polynomial.eval z (Polynomial.derivative^[k] b) := by
   have hb : ContDiffAt ℂ ((k : ℕ) : ℕ∞) (fun w : ℂ => Polynomial.eval w b) z := by
-    simpa only [Polynomial.coe_aeval_eq_eval] using
+    simpa only [Polynomial.coe_aeval_eq_eval] using!
       (Polynomial.contDiff_aeval b ((k : ℕ) : ℕ∞)).contDiffAt
   have hfz : ContDiffAt ℂ ((k : ℕ) : ℕ∞) f z :=
     hf.of_le (by exact_mod_cast (le_top : ((k : ℕ) : ℕ∞) ≤ ⊤))
@@ -122,7 +122,7 @@ theorem not_differentiallyAlgebraicOn_polynomialGauge {C m : ℂ → ℂ} {U : S
   have hmulSmooth : ∀ z ∈ U, ContDiffAt ℂ (⊤ : ℕ∞) (fun w => Polynomial.eval w a * C w) z := by
     intro z hz
     have haz : ContDiffAt ℂ (⊤ : ℕ∞) (fun w : ℂ => Polynomial.eval w a) z := by
-      simpa only [Polynomial.coe_aeval_eq_eval] using
+      simpa only [Polynomial.coe_aeval_eq_eval] using!
         (Polynomial.contDiff_aeval a (⊤ : ℕ∞)).contDiffAt
     exact haz.mul (hC z hz)
   have hEq : ∀ z ∈ U,

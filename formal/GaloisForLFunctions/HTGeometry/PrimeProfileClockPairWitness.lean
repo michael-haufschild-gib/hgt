@@ -21,7 +21,7 @@ namespace GaloisForLFunctions.HTGeometry
 independent, and over a one-element index the jet family is that orbit reindexed. -/
 theorem primeClockUnitSource_clockIndependent :
     PrimeProfileClockIndependent (fun _ : Unit => primeClockUnitSource) := by
-  simpa [PrimeProfileClockIndependent, primeProfileClockJetFamily] using
+  simpa [PrimeProfileClockIndependent, primeProfileClockJetFamily] using!
     primeClockUnitSource_clockOrbit_linearIndependent.comp
       (fun ik : Unit × Nat => ik.2)
       (by

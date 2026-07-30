@@ -182,7 +182,7 @@ theorem aeval_genericFormalJetsOver_ne_zero
       (fun i => PowerSeries.mapAlgHom f
         (formalJetsOver n (genericCoefficientPowerSeriesOver K) i)) =
         formalJetsOver n G := by
-    simpa only [PowerSeries.mapAlgHom_apply, hgen] using
+    simpa only [PowerSeries.mapAlgHom_apply, hgen] using!
       map_formalJetsOver f.toRingHom n (genericCoefficientPowerSeriesOver K)
   rw [hjets] at hmap
   exact hmap
@@ -222,7 +222,7 @@ theorem aeval_formalJetsOver_ne_zero_of_coeff_algebraicIndependent_over
         (fun i => PowerSeries.mapAlgHom f
           (formalJetsOver n (genericCoefficientPowerSeriesOver K) i)) =
           formalJetsOver n (PowerSeries.mk a) := by
-      simpa only [PowerSeries.mapAlgHom_apply, hgen] using
+      simpa only [PowerSeries.mapAlgHom_apply, hgen] using!
         map_formalJetsOver f.toRingHom n (genericCoefficientPowerSeriesOver K)
     rw [hjets]
   have hmap : PowerSeries.mapAlgHom f U = 0 := hnat.trans hzero
@@ -244,7 +244,7 @@ theorem
       gammaPoleScaleAndInverseBranchCoefficientFamily := by
   rw [algebraicIndependent_iff_injective_aeval]
   simpa [gammaPoleScaleAndInverseBranchCoefficientRationalEval,
-    MvPolynomial.aeval_def] using
+    MvPolynomial.aeval_def] using!
       gammaPoleScaleAndInverseBranchCoefficientRationalEval_injective
 
 /-- Enumerate the scale head followed by every nonlinear inverse-branch coefficient. -/

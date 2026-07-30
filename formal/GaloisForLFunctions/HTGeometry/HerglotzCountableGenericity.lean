@@ -109,7 +109,7 @@ theorem dense_countable_nondegenerate_herglotzJetMap
   have hnd : ∀ k, IsNowhereDense (D k) := fun k =>
     isNowhereDense_of_isClosed_of_interior_eq_empty (hclosed k) (hinterior k)
   have hdense := dense_setOf_forall_notMem_of_isNowhereDense D hnd
-  convert hdense using 2 with u
+  convert! hdense using 2 with u
 
 end
 

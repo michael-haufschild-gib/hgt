@@ -48,7 +48,7 @@ theorem archWindingDeriv_eq (u : ℝ) :
         (1 * (linePt u - 1) + linePt u * 1) (linePt u) :=
       (hasDerivAt_id (linePt u)).mul ((hasDerivAt_id (linePt u)).sub_const 1)
     have hdiv := hnum.div hden hprod_ne
-    convert hdiv using 1
+    convert! hdiv using 1
     field_simp
     ring
   have hψat : HasDerivAt Complex.digamma
@@ -61,7 +61,7 @@ theorem archWindingDeriv_eq (u : ℝ) :
       (deriv Complex.digamma ((linePt u) / 2) / 4) (linePt u) := by
     have hcomp := HasDerivAt.comp (linePt u) hψat hhalf
     have h := (hcomp.div_const (2 : ℂ)).sub_const ((Real.log Real.pi : ℂ) / 2)
-    convert h using 1
+    convert! h using 1
     ring
   have hsum_s := hrat_s.add hΨ_s
   have hcomp := HasDerivAt.comp u hsum_s (hasDerivAt_linePt u)
@@ -73,7 +73,7 @@ theorem archWindingDeriv_eq (u : ℝ) :
           (Complex.digamma ((linePt u) / 2) / 2 - (Real.log Real.pi : ℂ) / 2) :=
       funext archWinding_eq
     rw [hfun]
-    simpa [Function.comp] using hcomp
+    simpa [Function.comp] using! hcomp
   exact (hasDerivAt_archWinding u).unique hwind
 
 /-- **Explicit curvature bound for the winding rate:**

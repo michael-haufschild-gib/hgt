@@ -265,7 +265,7 @@ theorem continued_joint_hzeta_upperEnd_differentialIndependent_finite
       (congrArg (fun z : ι × Fin (N + 1) => z.2.1) hpq)
   have hrect := continued_joint_hzeta_upperEnd_rectangle_algebraicIndependent hsQ N
   have hcomp := hrect.comp e he
-  simpa [e, continuedJointHzetaUpperEndFieldJet] using hcomp
+  simpa [e, continuedJointHzetaUpperEndFieldJet] using! hcomp
 
 /-- Every finite jet rectangle for nonintegral, pairwise residue-separated exponents is
 algebraically independent over `ℂ(a)`. -/
@@ -329,7 +329,7 @@ theorem continued_joint_hzeta_upperEnd_differentialIndependent_finite_of_integer
     continued_joint_hzeta_upperEnd_rectangle_algebraicIndependent_of_integerResidueSeparated
       hnonintegral hseparated N
   have hcomp := hrect.comp e he
-  simpa [e, continuedJointHzetaUpperEndFieldJet] using hcomp
+  simpa [e, continuedJointHzetaUpperEndFieldJet] using! hcomp
 
 end
 

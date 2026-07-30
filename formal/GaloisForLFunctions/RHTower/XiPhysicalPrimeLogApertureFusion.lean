@@ -1340,7 +1340,7 @@ theorem not_exists_local_quadratic_bound_xiPhysicalPrimeLogBulkCrossDefect_compe
     have hcross : |K| * w < w * (|K| + 1) := by
       nlinarith
     have hdiv := (div_lt_iff₀ hden).2 hcross
-    convert hdiv using 1
+    convert! hdiv using 1
     · ring
   have hKlt : K * h < 2 * w := by
     nlinarith [hKle, habsle, hratio, hw]

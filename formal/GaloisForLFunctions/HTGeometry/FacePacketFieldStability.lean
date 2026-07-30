@@ -84,7 +84,8 @@ theorem differentialAdjoin_facePacketUnion_translate_stable (τ : ι → ℂ) (h
       facePacketUnion_translate_mem τ hτ q hS hy₀
     have hjet : addTranslationMeroEquiv (τ q) (differentialJet n y₀) =
         differentialJet n (addTranslationMeroEquiv (τ q) y₀) := by
-      simpa using (addTranslationMeroDifferentialAlgEquiv (τ q)).map_differentialJet n y₀
+      simpa using!
+        (addTranslationMeroDifferentialAlgEquiv (τ q)).map_differentialJet n y₀
     show addTranslationMeroEquiv (τ q) (differentialJet n y₀) ∈ K
     rw [hjet]
     exact hKclosed.differentialJet_mem hy₀' n

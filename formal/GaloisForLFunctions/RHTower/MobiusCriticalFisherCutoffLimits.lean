@@ -73,10 +73,14 @@ private theorem intervalIntegral_id_mul_exp_neg (u : ℝ) :
       (fun y : ℝ => -(y + 1) * Real.exp (-y))
       (x * Real.exp (-x)) x := by
     intro x
-    convert (((hasDerivAt_id x).add_const 1).neg.mul
-      (hasDerivAt_id x).neg.exp) using 1
-    all_goals simp only [Function.id_def, Pi.neg_apply]
-    all_goals ring_nf
+    have hraw := ((hasDerivAt_id x).add_const 1).neg.mul
+      (hasDerivAt_id x).neg.exp
+    have hclean : HasDerivAt _ (x * Real.exp (-x)) x :=
+      hraw.congr_deriv (by
+        simp only [Function.id_def, Pi.neg_apply]
+        ring)
+    simpa only [Function.id_def, Function.comp_apply, Pi.neg_apply,
+      Pi.add_apply, Pi.mul_apply] using! hclean
   have hint : IntervalIntegrable (fun x : ℝ => x * Real.exp (-x)) volume 0 u :=
     (by fun_prop : Continuous (fun x : ℝ => x * Real.exp (-x))).intervalIntegrable 0 u
   rw [intervalIntegral.integral_eq_sub_of_hasDerivAt
@@ -91,11 +95,15 @@ private theorem intervalIntegral_sq_mul_exp_neg (u : ℝ) :
       (fun y : ℝ => -(y ^ 2 + 2 * y + 2) * Real.exp (-y))
       (x ^ 2 * Real.exp (-x)) x := by
     intro x
-    convert (((((hasDerivAt_id x).pow 2).add
+    have hraw := ((((hasDerivAt_id x).pow 2).add
       ((hasDerivAt_id x).const_mul 2)).add_const 2).neg.mul
-        (hasDerivAt_id x).neg.exp) using 1
-    all_goals simp only [Function.id_def, Pi.neg_apply, Pi.add_apply, Pi.pow_apply]
-    all_goals ring_nf
+        (hasDerivAt_id x).neg.exp
+    have hclean : HasDerivAt _ (x ^ 2 * Real.exp (-x)) x :=
+      hraw.congr_deriv (by
+        simp only [Function.id_def, Pi.neg_apply, Pi.add_apply, Pi.pow_apply]
+        ring)
+    simpa only [Function.id_def, Function.comp_apply, Pi.neg_apply,
+      Pi.add_apply, Pi.mul_apply, Pi.pow_apply] using! hclean
   have hint : IntervalIntegrable (fun x : ℝ => x ^ 2 * Real.exp (-x)) volume 0 u :=
     (by fun_prop : Continuous (fun x : ℝ => x ^ 2 * Real.exp (-x))).intervalIntegrable 0 u
   rw [intervalIntegral.integral_eq_sub_of_hasDerivAt
@@ -247,9 +255,13 @@ theorem integral_positiveClockCap_pow_squarefreeMobiusCriticalClock
   unfold squarefreeMobiusCriticalClockProbabilityMeasure
     squarefreeMobiusCriticalIndexProbabilityMeasure ProbabilityMeasure.map
   simp only [ProbabilityMeasure.coe_mk]
+  have htarget : AEStronglyMeasurable
+      (fun y : ℝ => positiveClockCap u y ^ k) (Measure.map Y p.toMeasure) := by
+    simpa only [Pi.pow_apply] using!
+      ((continuous_positiveClockCap u).pow k).aestronglyMeasurable
   rw [integral_map
     (Measurable.of_discrete.aemeasurable : AEMeasurable Y p.toMeasure)
-    ((continuous_positiveClockCap u).pow k).aestronglyMeasurable]
+    htarget]
   rw [PMF.integral_eq_tsum p _ hsource]
   simp only [smul_eq_mul, p, squarefreeMobiusCriticalPMF_toReal hsigma]
   rfl
@@ -774,9 +786,12 @@ theorem tendsto_squarefreeMobiusCriticalFisherCutoffWardLimit_div_two_mul :
     have hleft := ((hid.pow 2).add_const 2).mul hid.neg.exp
     have hright := ((((hid.pow 2).const_mul 2).add_const 1).mul
       (hid.const_mul (-2)).exp).const_mul 2
-    convert (hleft.sub hright).const_mul 4 using 1
-    all_goals norm_num
-    all_goals ring_nf
+    have hraw := (hleft.sub hright).const_mul 4
+    have hclean : HasDerivAt _ (8 : ℝ) (0 : ℝ) :=
+      hraw.congr_deriv (by norm_num [Function.id_def])
+    simpa only [Function.id_def, Function.comp_apply, Pi.neg_apply,
+      Pi.add_apply, Pi.sub_apply, Pi.mul_apply, Pi.pow_apply, add_comm,
+      neg_mul, mul_assoc] using! hclean
   have hslope := hderiv.tendsto_slope_zero_right
   have hhalf : Tendsto (fun _ : ℝ => (2 : ℝ)⁻¹)
       (nhdsWithin 0 (Ioi 0)) (nhds (2 : ℝ)⁻¹) := tendsto_const_nhds
@@ -795,9 +810,11 @@ theorem tendsto_mobiusCriticalExponentialCDF_div :
     Tendsto (fun u : ℝ => (1 - Real.exp (-u)) / u)
       (nhdsWithin 0 (Ioi 0)) (nhds 1) := by
   have hderiv : HasDerivAt (fun u : ℝ => 1 - Real.exp (-u)) 1 0 := by
-    convert (hasDerivAt_const (x := (0 : ℝ)) 1).sub
-      (hasDerivAt_id (x := (0 : ℝ))).neg.exp using 1
-    all_goals norm_num
+    have hraw := (hasDerivAt_const (x := (0 : ℝ)) 1).sub
+      (hasDerivAt_id (x := (0 : ℝ))).neg.exp
+    simpa only [Function.id_def, Function.comp_apply, Pi.neg_apply,
+      Pi.sub_apply] using!
+        hraw.congr_deriv (by norm_num)
   have h := hderiv.tendsto_slope_zero_right
   apply h.congr'
   filter_upwards [self_mem_nhdsWithin] with u hu

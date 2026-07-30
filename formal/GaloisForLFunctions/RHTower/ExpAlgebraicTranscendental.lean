@@ -97,8 +97,8 @@ theorem exp_aggregate_integral_relation_ne {ι : Type*} [Fintype ι]
       (mul_eq_zero.mp hfr).resolve_left (pow_ne_zero _ hne)
     rw [Polynomial.mem_aroots]
     refine ⟨hgne, ?_⟩
-    rw [Polynomial.aeval_def, Polynomial.eval₂_eq_eval_map]
-    convert hgr using 2
+    simpa only [Polynomial.aeval_def, Polynomial.eval₂_eq_eval_map,
+      algebraMap_int_eq] using hgr
   have hg0e : g.eval 0 ≠ 0 := by
     rw [← Polynomial.coeff_zero_eq_eval_zero]
     exact hg0

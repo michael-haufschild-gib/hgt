@@ -259,7 +259,7 @@ theorem liftFormalPointRow_ne_zero {n : ℕ}
   apply hR
   apply MvPolynomial.map_injective formalPointRowEmbedding
     (by
-      simpa [formalPointRowEmbedding] using
+      simpa [formalPointRowEmbedding] using!
         (Polynomial.algebraMap_hahnSeries_injective (R := ℂ) (Γ := ℤ)))
   simpa only [map_zero] using hmap
 

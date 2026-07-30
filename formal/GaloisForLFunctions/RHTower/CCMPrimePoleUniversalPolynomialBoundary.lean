@@ -155,11 +155,11 @@ def ccmPrimePoleFamilyPolynomialCompactIdeal
     (L : ι → ℝ) (hL : ∀ i, 0 < L i) : Ideal (OperatorPolynomial ι) where
   carrier := {Q | IsCompactOperator (ccmPrimePoleFamilyOperatorPolynomialEval L hL Q)}
   zero_mem' := by
-    simpa using (isCompactOperator_zero : IsCompactOperator
+    simpa using! (isCompactOperator_zero : IsCompactOperator
       (0 : CCMPrimePoleHilbert →L[ℂ] CCMPrimePoleHilbert))
   add_mem' := by
     intro Q R hQ hR
-    simpa using hQ.add hR
+    simpa using! hQ.add hR
   smul_mem' := by
     intro Q R hR
     change IsCompactOperator (ccmPrimePoleFamilyOperatorPolynomialEval L hL (Q * R))

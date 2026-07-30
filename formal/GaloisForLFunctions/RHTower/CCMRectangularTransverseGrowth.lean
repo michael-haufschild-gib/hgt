@@ -137,9 +137,26 @@ theorem norm_xiWeilPolarization_rectangular_logSample_le_transverse_power
           (xiRectangularTwoEdgeTransform L (Real.log n / 2))
           (xiRectangularTwoEdgeTransform L (Real.log n / 2))‖ ≤
         K + |xiRectangularRightDirichletCoefficientReal L n| := by
-    convert htri.trans (add_le_add hrem (le_refl _)) using 1
-    · ring
-    · rw [Complex.norm_real, Real.norm_eq_abs]
+    calc
+      ‖xiWeilPolarization
+          (xiRectangularTwoEdgeTransform L (Real.log n / 2))
+          (xiRectangularTwoEdgeTransform L (Real.log n / 2))‖ =
+          ‖(xiWeilPolarization
+              (xiRectangularTwoEdgeTransform L (Real.log n / 2))
+              (xiRectangularTwoEdgeTransform L (Real.log n / 2)) -
+                (xiRectangularRightDirichletCoefficientReal L n : ℂ)) +
+              (xiRectangularRightDirichletCoefficientReal L n : ℂ)‖ := by
+            congr 1
+            ring
+      _ ≤ ‖xiWeilPolarization
+              (xiRectangularTwoEdgeTransform L (Real.log n / 2))
+              (xiRectangularTwoEdgeTransform L (Real.log n / 2)) -
+                (xiRectangularRightDirichletCoefficientReal L n : ℂ)‖ +
+            ‖(xiRectangularRightDirichletCoefficientReal L n : ℂ)‖ := htri
+      _ ≤ K + |xiRectangularRightDirichletCoefficientReal L n| := by
+            simpa only [Complex.norm_real, Real.norm_eq_abs] using
+              add_le_add hrem (le_refl
+                |xiRectangularRightDirichletCoefficientReal L n|)
   dsimp only [K] at hK ⊢
   calc
     ‖xiWeilPolarization

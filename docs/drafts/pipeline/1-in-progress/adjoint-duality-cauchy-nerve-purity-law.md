@@ -5443,3 +5443,3911 @@ at each zero would be an RH-equivalent restatement.
 4. Functional equation symmetry conserves the reflected likelihood product but reverses the
    defect.  This explains, in one formula, why reflection and positive orientation permit
    off-line quartets while a positive source-Born realization would not.
+
+## 33. Scale--phase complementarity of the source conormal
+
+The likelihood slope has a stronger projective meaning.  Fix \(M\geq12\), put
+\[
+ r_m(s):={|H_m(s)|^2\over h_m},
+ \qquad
+ Z_N(s):=\sum_{m=M}^{N}r_m(s),
+ \qquad
+ \nu_{N,s}(m):={r_m(s)\over Z_N(s)},                     \tag{240}
+\]
+and regard \(\nu_{N,s}\) as the Born distribution of the conormal over the first \(N\)
+source shells.  This normalization is projective: rescaling the conormal line changes neither
+\(\nu_{N,s}\) nor any conclusion below.
+
+Let
+\[
+ q(s):=2^{1-2\Re s},
+ \qquad
+ C(s):=2|1-2^{-s}|^2.
+\]
+Sections 31--32 give the exact tail form
+\[
+ r_m(s)=C(s)q(s)^m(1+o(1)).                              \tag{241}
+\]
+
+`[PAPER-PROVED] [SOURCE_CONORMAL_PROJECTIVE_DEPTH_TRICHOTOMY]`
+
+For every fixed \(s\) with \(0<\Re s<1\), the projective shell law has exactly one of the
+following three completion phases.
+
+1. If \(\Re s>1/2\), then \(q(s)<1\), \(Z_N(s)\) converges, and \(\nu_{N,s}\) converges in total
+   variation to the probability
+   \[
+   \nu_{\infty,s}(m)
+   ={r_m(s)\over\sum_{j=M}^{\infty}r_j(s)}.              \tag{242}
+   \]
+   Conormal information remains localized at the finite entrance of the shell tower.
+2. If \(\Re s=1/2\), then \(q(s)=1\), and the pushforward of \(\nu_{N,s}\) by \(m\mapsto m/N\)
+   converges weakly to Lebesgue probability on \([0,1]\):
+   \[
+   (m/N)_*\nu_{N,s}\Longrightarrow{\rm Unif}[0,1].       \tag{243}
+   \]
+   No fixed entrance packet and no fixed terminal packet retains positive mass.
+3. If \(\Re s<1/2\), then \(q(s)>1\).  In the terminal coordinate \(k=N-m\),
+   \(\nu_{N,s}\) converges in total variation to the geometric law
+   \[
+   \nu_{N,s}(N-k)
+   \longrightarrow
+   (1-q(s)^{-1})q(s)^{-k},
+   \qquad k\geq0.                                        \tag{244}
+   \]
+   Conormal information is localized at the moving cutoff rather than at any intrinsic finite
+   shell.
+
+To prove the theorem, use `(241)`.  For \(q<1\), its geometric tail is summable and truncation
+gives `(242)`.  For \(q=1\), \(r_m(s)\to C(s)>0\), so
+\[
+ Z_N(s)\sim C(s)N
+\]
+and weighted Riemann sums give `(243)`.  For \(q>1\), divide numerator and denominator by
+\(r_N(s)\).  For each fixed \(k\),
+\[
+ {r_{N-k}(s)\over r_N(s)}\longrightarrow q(s)^{-k},
+\]
+while eventual two-sided geometric bounds dominate the reversed tail.  Normalizing its sum
+\(\sum_{k\geq0}q^{-k}=(1-q^{-1})^{-1}\) proves `(244)` and total-variation convergence.
+
+This trichotomy has two intrinsic information formulations.  Define projective participation
+and Shannon information by
+\[
+ D_N(s):={1\over\sum_m\nu_{N,s}(m)^2}
+ ={Z_N(s)^2\over\sum_{m=M}^{N}r_m(s)^2},
+ \qquad
+ {\cal H}_N(s):=-\sum_m\nu_{N,s}(m)\log\nu_{N,s}(m).     \tag{245}
+\]
+Then
+\[
+ \boxed{\quad
+ \Re s=\frac12
+ \quad\Longleftrightarrow\quad
+ {D_N(s)\over N}\longrightarrow1
+ \quad\Longleftrightarrow\quad
+ {{\cal H}_N(s)\over\log N}\longrightarrow1
+ \quad\Longleftrightarrow\quad
+ \max_m\nu_{N,s}(m)\longrightarrow0.
+ \quad}                                                   \tag{246}
+\]
+Off the line, \(D_N\) and \({\cal H}_N\) remain bounded.  On the left, `(244)` gives the explicit
+participation limit
+\[
+ D_N(s)\longrightarrow{q(s)+1\over q(s)-1}.             \tag{247}
+\]
+On the right the finite limit depends on the complete entrance profile `(242)`, not merely its
+tail ratio.
+
+### The dual phase completion
+
+The same theorem has a complementary Hardy/Wold face.  Put
+\[
+ z(s):=2^{1/2-s};
+ \qquad |z(s)|^2=q(s).                                   \tag{248}
+\]
+For \(|z|\leq1\), let \(\mu_z\) be the unique probability measure on \(\mathbb T\) with
+\[
+ \int_{\mathbb T}\xi^n\,d\mu_z(\xi)=z^n,
+ \qquad n\geq0.                                          \tag{249}
+\]
+If \(|z|<1\), \(\mu_z\) is the atomless Poisson measure of \(z\).  If \(|z|=1\), equality in
+the triangle inequality gives \(\mu_z=\delta_z\).  Its first collision mass
+\[
+ \kappa_1(\mu_z)
+ :=\sum_{\xi\in\mathbb T}\mu_z(\{\xi\})^2
+ \]
+therefore satisfies
+\[
+ \kappa_1(\mu_z)>0
+ \quad\Longleftrightarrow\quad
+ |z|=1.                                                  \tag{250}
+\]
+
+For \(\Re s\geq1/2\), use \(z(s)\).  For \(\Re s\leq1/2\), use the reflected interior
+character
+\[
+ z(1-\overline s)={1\over\overline{z(s)}}.
+\]
+Both have phase \(e^{-i(\Im s)\log2}\).  Combining `(243)` and `(250)` gives the exact
+scale--phase complementarity:
+
+```text
+critical conormal:
+  diffuse through the entire exhaustive shell depth
+  + atomic in the completed unitary phase
+  + positive long-time collision plateau;
+
+off-line conormal:
+  localized at one shell endpoint
+  + atomless Poisson phase storage
+  + zero long-time collision plateau;
+
+reflection:
+  swaps entrance and terminal localization
+  + preserves the atomless nature of off-line phase storage.
+```
+
+The uniformly invertible gauge of Section 31 does not alter this classification.  It tends to
+one, so it preserves the projective limits `(242)`--`(247)` and the asymptotic character `(248)`.
+The actual positive-shell conormal is therefore in the same scale--phase completion class as the
+pure Szegő character \(z(s)^m\).
+
+### Universal law suggested by the conjunction
+
+The parent mathematics is classical separately: geometric endpoint limits, Szegő kernels,
+Poisson representing measures, Wiener collision mass, and projective participation.  The
+source-specific conjunction is new to this corpus:
+
+> one and the same Wold-calibrated Xi conormal has a depth law and a phase law which exchange
+> localization under passage from the Hardy interior to its recurrent boundary.
+
+This changes the interpretation of the desired third completion.  It must not merely keep a
+graded vector or a reflected pairing.  It must retain, for the same principal conormal class,
+both:
+
+1. its projective distribution over every exhaustive positive source frame; and
+2. the collision hierarchy of its minimal unitary phase completion.
+
+`[BOLD CONJECTURE] [SOURCE_EFFECTIVE_SCALE_PHASE_PURITY]`
+
+For every source-minimal integral self-dual constrained HT object with an exact positive fusion,
+the relative completion Bockstein of its principal divisor is **scale--phase pure**: it is
+projectively non-atomic on every bornologically cofinal source-depth exhaustion and
+collision-atomic in the corresponding unitary phase completion.  Both properties are transported
+by one source morphism constructed before divisor specialization.
+
+For the ordinary-prime source, either conclusion in this conjecture forces `(246)` or `(250)`,
+hence
+\[
+ \Re\rho=\frac12
+\]
+for every nontrivial zero.  Stating either property only after choosing \(\rho\) is therefore
+RH-equivalent and forbidden.  The content to prove is the joint source morphism: the positive
+exponent shells already provide the depth distribution, while the CRT/Wold/Gamma/co-Poisson
+Bockstein must prove that its completion is the same recurrent phase object.
+
+### What this explains, and what it does not
+
+This law joins results that previously appeared contradictory.
+
+- The positive shell Gibbs bulk is atomless in clock time, yet a critical principal conormal may
+  be phase-atomic: the atom is born in the relative completion, not inherited from the bulk.
+- Ambient adelic \(L^2\) loses divisor points because it retains phase continuum without the
+  nonzero shell-corona class.
+- A Julia/Blaschke colligation retains an off-line zero because it converts endpoint-localized
+  depth into atomless Poisson storage.
+- Finite truncations always recur because they cannot distinguish bulk delocalization from
+  endpoint localization before \(N\to\infty\).
+- Hypertranscendence supplies unbounded transverse depth, but does not by itself force the
+  projective distribution to use that depth.  The missing source theorem is precisely
+  nonlocalization of the relative conormal, not another finite-rank or finite-jet estimate.
+
+Equations `(240)`--`(250)` are unconditional.  They are more informative than the scalar slope
+`(239)`, but they still classify rather than exclude a hypothetical off-line zero.  External
+search found the classical Hardy/Poisson and product-measure parents, but no literature theorem
+combining the largest-prime-exponent Wold law, positive HT common-divisor frame, projective depth
+limit, and collision phase of the same Xi conormal.  This is a provisional noncollision statement,
+not a priority claim.
+
+## 34. Divisor--clock tame transgression: the missing interaction is secondary
+
+The preceding mechanisms all attach the same centered prime character to a divisor conormal, but
+none explained why an analytic divisor and an arithmetic clock should meet in one source
+operation.  The interaction is not a primary tensor term in the relevant complex.  It is a
+Milnor-\(K_2\) boundary.
+
+### Universal divisor--clock theorem
+
+Let \(X\) be a connected Riemann surface, \(M(X)\) its meromorphic function field, \(A\) an
+abelian group, and
+\[
+ g:A\longrightarrow {\cal O}(X)^\times
+ \qquad (a\longmapsto g_a)
+\]
+a group homomorphism into the nowhere-vanishing holomorphic functions.  For
+\(f\in M(X)^\times\), define
+\[
+ \kappa_f(a):=\{f,g_a\}\in K_2^M(M(X)).                    \tag{251}
+\]
+
+`[PAPER-PROVED] [DIVISOR_CLOCK_TAME_TRANSGRESSION]`
+
+For every \(x\in X\), with \(m_x=\operatorname{ord}_x(f)\), the tame boundary of `(251)` is
+\[
+ \boxed{\qquad
+  \partial_x\kappa_f(a)=g_a(x)^{-m_x}.
+ \qquad}                                                   \tag{252}
+\]
+Consequently \(a\mapsto\partial_x\kappa_f(a)\) is a character
+\[
+ A\longrightarrow\mathbb C^\times.                         \tag{253}
+\]
+If \(u\) is a meromorphic unit at \(x\), replacing \(f\) by \(uf\) does not change `(252)`.
+Thus the boundary depends on the local divisor conormal and clock, not on a local equation chosen
+for the divisor.
+
+Indeed, the tame-symbol formula is
+\[
+ \partial_x\{f,g\}
+ =
+ (-1)^{v_x(f)v_x(g)}
+ \left.
+ {f^{v_x(g)}\over g^{v_x(f)}}
+ \right|_x .
+\]
+Here \(v_x(g_a)=0\), giving `(252)`.  Multiplicativity of the Milnor symbol in its second
+argument and \(g_{a+b}=g_ag_b\) give `(253)`.  If \(v_x(u)=0\), then
+\(\partial_x\{u,g_a\}=1\), proving equation-independence.
+
+The theorem is standard local \(K\)-theory.  Its source specialization below, and especially its
+completed all-prime landing, are the new content of this route.
+
+### The Riemann source specialization
+
+Use the completed Riemann function in the uncentered variable, so
+\[
+ \Xi(s)=\Xi(1-s),
+\]
+and take the rational clock group
+\[
+ A=\mathbb Q_{>0}^{\times}
+ \cong\bigoplus_p\mathbb Z[p].
+\]
+Its centered source clock is the nowhere-vanishing entire character
+\[
+ g_n(s):=n^{s-1/2}
+ =\exp((s-\tfrac12)\log n).                                \tag{254}
+\]
+Define before choosing a zero
+\[
+ \boxed{\qquad
+ \kappa_\Xi(n):=\{\Xi(s),n^{s-1/2}\}.
+ \qquad}                                                   \tag{255}
+\]
+This is one multiplicative natural transformation in \(n\), not a list of zero-indexed
+constructions.
+
+If \(\rho\) is a zero of multiplicity \(m_\rho\), `(252)` gives
+\[
+ \boxed{\qquad
+ \partial_\rho\kappa_\Xi(n)
+ =
+ n^{-m_\rho(\rho-1/2)}.
+ \qquad}                                                   \tag{256}
+\]
+In particular, at a prime,
+\[
+ \partial_\rho\kappa_\Xi(p)
+ =
+ p^{m_\rho(1/2-\rho)},\qquad
+ \log\left|\partial_\rho\kappa_\Xi(p)\right|
+ =
+ -m_\rho(\operatorname{Re}\rho-\tfrac12)\log p.            \tag{257}
+\]
+
+Equation `(257)` closes the **local analytic divisor--clock comparison**:
+the centered prime holonomy is the actual tame boundary of one globally written analytic
+divisor--clock symbol.  It also retains multiplicity and is independent of a local divisor
+equation.  It does not yet identify this analytic \(K_2\) class with Deninger's arithmetic
+Tate--Milnor coefficient; that source comparison remains open.  Taking an \(m_\rho\)-th root is
+unnecessary: every completion selector below vanishes at slope
+\(m_\rho(\operatorname{Re}\rho-\tfrac12)\) exactly when it vanishes at
+\(\operatorname{Re}\rho-\tfrac12\).
+
+This does not by itself prove RH.  Formula `(257)` exists for every entire function and every
+zero.  Its value is the local datum which the missing source completion must conserve.
+
+### Reflection is boundary inversion
+
+The holomorphic reflection \(j(s)=1-s\) satisfies
+\[
+ g_n\circ j=g_n^{-1}.
+\]
+Therefore the symbols and their divisor boundaries obey
+\[
+ j^*\kappa_\Xi(n)=\kappa_\Xi(n)^{-1},\qquad
+ \partial_{1-\rho}\kappa_\Xi(n)
+ =
+ \partial_\rho\kappa_\Xi(n)^{-1}.                         \tag{258}
+\]
+Including conjugation gives
+\[
+ \partial_{1-\overline\rho}\kappa_\Xi(n)
+ =
+ \overline{\partial_\rho\kappa_\Xi(n)}^{-1}.               \tag{259}
+\]
+Thus a reflected divisor point is fixed exactly when its tame clock character is unitary:
+\[
+ \rho=1-\overline\rho
+ \quad\Longleftrightarrow\quad
+ \left|\partial_\rho\kappa_\Xi(p)\right|=1
+ \quad\Longleftrightarrow\quad
+ \operatorname{Re}\rho=\frac12.                            \tag{260}
+\]
+Again `(260)` is a classification, not the source theorem forcing fixedness.
+
+### The missing harmonic \(H^1\) channel is the real regulator of `(255)`
+
+On Deninger's transverse orbit
+\[
+ S_p=\mathbb R/(\log p)\mathbb Z,
+\]
+the character `(257)` is the holonomy of a rank-one flat system.  Its real harmonic period is
+\[
+ b_{\rho,p}
+ :=
+ \log\left|\partial_\rho\kappa_\Xi(p)\right|
+ =
+ -m_\rho(\operatorname{Re}\rho-\tfrac12)\log p.             \tag{261}
+\]
+The exact local Dirichlet theorem of
+`infinite-prime-wold-higgs-energy-purity` shows that the Tate-normalized minimum harmonic energy
+of this period is \(b_{\rho,p}^2\); the Wold refinement multiplies it by
+\(\delta_p=1-p^{-1}\).  Hence `(255)` gives, without adding a new primary cohomology summand,
+\[
+ {\cal E}_{P}^{W}(\partial_\rho\kappa_\Xi)
+ =
+ m_\rho^2(\operatorname{Re}\rho-\tfrac12)^2
+ \sum_{p\in P}(1-p^{-1})(\log p)^2.                       \tag{262}
+\]
+
+`[PAPER-PROVED] [TAME_TRANSGRESSION_WOLD_ENERGY_PURITY]`
+
+For cofinal finite prime sets \(P\),
+\[
+ \sup_P{\cal E}_{P}^{W}(\partial_\rho\kappa_\Xi)<\infty
+ \quad\Longleftrightarrow\quad
+ \operatorname{Re}\rho=\frac12.                            \tag{263}
+\]
+No prime number theorem is needed: every summand in `(262)` is at least
+\(\tfrac12(\log2)^2\) times the fixed squared slope.
+
+Equivalently, the tame boundary character belongs to the already-constructed third character
+completion
+\[
+ \operatorname{Char}_W
+ =
+ \left\{
+  \chi:
+  \sum_p(\log|\chi(p)|)^2<\infty
+ \right\}
+ \quad\Longleftrightarrow\quad
+ \operatorname{Re}\rho=\frac12.                            \tag{264}
+\]
+The finite mixed-Kummer Riesz regulator of `(257)` is exactly the coherent regulator of
+`source-effective-polar-kummer-conormal-purity` with
+\[
+ c=-m_\rho(\operatorname{Re}\rho-\tfrac12).
+\]
+Its finite representatives have bounded bare Hilbert behavior but form a strict mixed-Cauchy
+net only for \(c=0\).  Thus Wold energy divergence and prime-infinity Kummer leakage are two
+different completion tests applied to the same tame boundary.  They have the same coherent-power
+purity locus; their ambient completed spaces are not identified.
+
+### Why the square-zero amalgamation was right
+
+The Poisson radial ideal and the Tate--Milnor ideal cannot be joined by a raw tensor product:
+that creates the forbidden primary term
+\[
+ P_{\mathbb Q}\widehat\otimes M_\zeta.
+\]
+Equation `(255)` does not revive that term.  A Milnor symbol is a secondary product, and `(256)`
+is its localization boundary.  Any comparison with the arithmetic relevant complex can only
+land at the cup/\(k\)-invariant level
+\[
+ H^1_{\rm radial}\times H^1_{\rm clock}
+ \longrightarrow H^2_{\rm boundary},                      \tag{265}
+\]
+after the two primary ideals have been amalgamated over their common unit.  This is exactly where
+the square-zero construction already said the missing interaction must live.  Constructing that
+comparison is Clause 5 of `(266)`, not a consequence of the local tame formula.
+
+The same observation identifies the harmonic-\(H^1\) issue correctly.  One must not append an
+independent copy of \(H^1(S_p)\) to the three-term complex.  The constant harmonic form is the
+real regulator of the secondary boundary `(256)`.  Its existence should follow from the global
+cup/Green enhancement, while its energy is `(262)`.
+
+### What the corpus is saying
+
+The preceding dead ends become shadows of one law.
+
+```text
+finite jets and finite prime packets are freely controllable
+  -> every finite restriction of the tame boundary is admissible;
+
+ambient adelic L2 erases point fibres
+  -> it completes primary functions rather than relative K2 boundaries;
+
+positive Euler, Julia orientation, and hypertranscendence allow off-line systems
+  -> they do not force continuity of the divisor--clock regulator;
+
+Wold/Higgs energy rejects coherent off-line rays
+  -> it is the harmonic norm of the tame boundary;
+
+mixed Kummer completion detects mass at prime infinity
+  -> it is the strong regulator topology of the same boundary;
+
+functional equation reverses the radial defect
+  -> it inverts the second entry of the Milnor symbol;
+
+Meyer Toeplitz--Green cross-ray terms
+  -> they are the analytic transgression needed to realize the secondary product;
+
+Gamma and local Stokes data alone do not close the source
+  -> the clock is essential at infinity and needs the global Ext/regulator seam.
+```
+
+The candidate universal interpretation is therefore:
+
+> **Divisors do not acquire purity from a sign.  A constrained HT divisor is pure when its
+> source clock symbol has a continuous global secondary regulator in the source-forced
+> all-boundary topology.**
+
+Critical-line purity is the unitary boundary of that conservation law.
+
+### Exact new open core
+
+`[BOLD CONJECTURE] [XI_SOURCE_DIFFERENTIAL_K2_TAME_LANDING]`
+
+Let \(U_\Xi=\mathbb C\setminus\operatorname{div}(\Xi)\).  The completed
+Euler--Gamma/co-Poisson source has a presentation-independent relative analytic/differential
+\(K_2\) class
+\[
+ \mathfrak K_\Xi:
+ \mathbb Q_{>0}^{\times}
+ \longrightarrow
+ \widehat K_{2,\mathrm{rel}}^{\rm src}
+ \bigl(U_\Xi,\partial_{\rm ar}\cup\partial_\infty\bigr)      \tag{266}
+\]
+with the following properties.
+
+1. **Finite-clock restriction.**  On every finite rational clock packet, `(266)` is the
+   Beilinson/Deligne regulator class of \(\{\Xi(s),n^{s-1/2}\}\).
+2. **Localization.**  Its finite divisor boundary is exactly `(256)`, including multiplicity.
+3. **Source completion.**  The boundary map lands continuously in the Wold finite-energy
+   harmonic character completion before any zero is selected.  A stronger alternative is a
+   compatible landing in the strict polar Kummer--Arakelov completion.  These receivers have the
+   same coherent-power purity locus but are not asserted to be equivalent spaces.
+4. **Archimedean seam.**  The essential singularity of \(n^{s-1/2}\) at the compactified spectral
+   infinity is repaired by the global Gamma/real \(\operatorname{Ext}^1\) regulator.  Local
+   Stokes multipliers alone are insufficient and are not substituted for this clause.
+5. **Derived typing.**  The class realizes the cup/\(k\)-invariant `(265)` in the shifted
+   analytic-graph/Milnor-conormal intersection, not a forbidden primary tensor cross term.
+6. **Conormal conservativity.**  Every nonzero top principal divisor jet has nonzero boundary;
+   changing the source determinant by a nowhere-vanishing factor changes `(266)` by a
+   boundary-trivial symbol.
+7. **Presentation independence.**  Euler windows, Gamma gauges, co-Poisson models, and
+   source-equivalent prime exhaustions give the same completed class.
+
+The analytic local models required by Clauses 1--2, including equation-independence, have now been
+proved by `(251)`--`(257)`.  Their lift to the completed arithmetic source in `(266)` has not.
+Clause 3 is the RH-bearing theorem.  Stating it separately at a chosen \(\rho\) is equivalent to
+RH by `(263)` and is forbidden.  Candidate-new mathematics begins with construction of the one
+global source class `(266)`, comparison of its analytic and arithmetic \(K\)-theory readings, and
+proof that its localization is continuous in the independently constructed source topology.
+
+If `(266)` exists, every nontrivial zero has a tame boundary in \(\operatorname{Char}_W\).
+Equation `(264)` then gives
+\[
+ \operatorname{Re}\rho=\frac12
+\]
+for every nontrivial zero, hence RH.
+
+### First construction target
+
+For a finite prime packet \(P\), construct the relative Deligne regulator currents
+\[
+ {\cal R}_{P}
+ =
+ \left(
+  r_D\{\Xi,p^{s-1/2}\}
+ \right)_{p\in P},                                         \tag{267}
+\]
+where \(r_D\) is the standard regulator of a Milnor symbol.  Prove simultaneously:
+
+1. its divisor current is `(257)`;
+2. its real period on \(S_p\) is `(261)`;
+3. its Green boundary pairing is Meyer's cutoff-independent Toeplitz transgression;
+4. its Kummer boundary is the finite strict pro-log residue;
+5. finite-set enlargement is the restriction of one nested Wold-sieve/Rees cocycle, with the
+   global Gamma \(\operatorname{Ext}^1\) seam supplying the infinity correction.
+
+Items 1--2 are closed above.  Existing corpus theorems separately supply the target in items 3--4.
+The first non-immediate obstacle is item 5: construct one chain-level regulator whose Green and
+Kummer readings are those already-proved maps.  This is narrower than constructing an arbitrary
+Hodge star or postulating source-effectivity of every conormal.
+
+### Hostile audit
+
+1. The local tame formula is standard and is not an RH advance by itself.
+2. Any entire function admits `(251)`; arithmetic content begins only with the completed
+   ordinary-prime source landing.
+3. Assuming Clause 3 at each zero is RH in different notation.
+4. \(\Xi\) is an analytic determinant, not an algebraic unit of the original arithmetic field.
+   A comparison to Deninger's Tate--Milnor coefficient must be constructed, not inferred.
+5. The exponential clock has an essential singularity at compactified infinity.  Ordinary Weil
+   reciprocity on a compact algebraic curve does not apply.
+6. The corpus proves that local archimedean Stokes multipliers are Tate-local; the missing seam is
+   a global regulator.  A local wild-monodromy argument cannot prove Clause 4.
+7. The tame symbol records multiplicity but not the entire nilpotent jet tower.  RH needs only
+   nonzero support; any stronger simplicity claim requires additional faithfulness.
+8. An off-line generalized-prime Euler system automatically has local symbols like `(255)`.
+   It falsifies the universal law only if it also carries the same literal ordinary-prime source
+   completion, global Gamma regulator, strict Kummer boundary, and continuous secondary landing.
+9. A raw all-prime product of symbols diverges.  The source object must use the nested
+   Wold-sieve/Rees completion already forced by the corpus.
+10. No positivity, self-adjointness, or reflected norm equality may be inserted to prove
+    continuity; those would import the conclusion.
+
+### Literature boundary and anti-theatre verdict
+
+Milnor \(K_2\), tame symbols, localization sequences, Deligne/Beilinson regulators, and regulator
+currents of pairs of meromorphic functions are parent mathematics.  Targeted corpus and primary
+literature searches found no use of the specific source family
+\[
+ \{\Xi(s),n^{s-1/2}\}
+\]
+to realize the centered prime conormal character, and no completed ordinary-prime
+differential-\(K\) landing whose continuity gives Riemann purity.  Search noncollision is not a
+priority proof.
+
+The non-theatrical advance is exact:
+
+```text
+previously conjectural:
+  why the Xi divisor conormal has the ordinary-prime centered character;
+  where the missing harmonic-H1 mode belongs;
+  what operation can couple square-zero radial and Kummer sectors;
+
+now paper-proved:
+  all three are the tame boundary / real regulator of one secondary K2 symbol;
+
+remaining:
+  construct its one global completed source regulator and prove continuous localization.
+```
+
+No Lean formalization is started here.  The local theorem is standard and the global
+source-landing theorem is still open; formalizing the former alone would not move the RH frontier.
+
+### Determinant central extension: one object behind four reporters
+
+There is a canonical determinant central extension of the local Tate loop group
+\[
+ 1\longrightarrow\mathbb C^\times
+ \longrightarrow\widehat{\mathbb C((z))^\times}
+ \longrightarrow\mathbb C((z))^\times
+ \longrightarrow1.                                          \tag{268}
+\]
+A classical theorem identifies the commutator of lifts in `(268)` with the
+Contou--Carrère symbol; over the field \(\mathbb C\), this is the ordinary tame symbol, up to the
+fixed convention for inversion.
+
+At a zero \(\rho\), choose \(z=s-\rho\) and write
+\[
+ \Xi(s)=z^{m_\rho}u_\rho(z),\qquad u_\rho(0)\ne0,
+\]
+while
+\[
+ p^{s-1/2}
+ =
+ p^{\rho-1/2}\exp(z\log p).                                  \tag{269}
+\]
+The determinant commutator of these two local loop multipliers is therefore
+\[
+ [\widehat\Xi,\widehat g_p]_{\det}
+ =
+ p^{-m_\rho(\rho-1/2)},                                     \tag{270}
+\]
+which is `(256)`.
+
+The real regulator form of the same symbol is
+\[
+ \eta(f,g)
+ =
+ \log|f|\,d\arg g-\log|g|\,d\arg f.                          \tag{271}
+\]
+For the Riemann clock,
+\[
+ \boxed{\quad
+ \eta(\Xi,p^{s-1/2})
+ =
+ \log p\left(
+  \log|\Xi|\,d\,\operatorname{Im}s
+  -(\operatorname{Re}s-\tfrac12)d\arg\Xi
+ \right).
+ \quad}                                                      \tag{272}
+\]
+Hence every prime regulator is one scalar evaluation of the universal rank-one field
+\[
+ \eta_\Xi
+ :=
+ \log|\Xi|\,d\,\operatorname{Im}s
+ -(\operatorname{Re}s-\tfrac12)d\arg\Xi.                    \tag{273}
+\]
+For a sufficiently small positive loop \(\gamma_\rho\),
+\[
+ {1\over2\pi}\int_{\gamma_\rho}\eta(\Xi,p^{s-1/2})
+ =
+ -m_\rho(\operatorname{Re}\rho-\tfrac12)\log p
+ =
+ \log\left|\partial_\rho\kappa_\Xi(p)\right|.                \tag{274}
+\]
+The first term in `(272)` has vanishing limiting loop integral; the second uses
+\(\int_{\gamma_\rho}d\arg\Xi=2\pi m_\rho\).
+
+Thus the corpus's proposed one-field phenomenon is literal here:
+
+```text
+group-level commutator:
+  Contou--Carrère / tame character (270);
+
+real differential regulator:
+  harmonic-H1 period (274);
+
+infinitesimal central-extension cocycle:
+  residue / first-trace boundary;
+
+operator realization:
+  determinant and Toeplitz--Green transgression.
+```
+
+Only the first two identifications are closed for the Riemann symbol.  The last two are a sharply
+typed comparison target, not yet a theorem: one must show that the already-constructed nested
+Wold determinant extension and Meyer's Toeplitz extension pull back to the same determinant
+central-extension class as `(268)`, with the BV term supplying the singular first-trace
+correction.
+
+This replaces the vague instruction “integrate the Wold determinant and BV trace into one
+differential character” by the following cocycle comparison.
+
+`[OPEN CORE] [XI_WOLD_CONTOU_CARRERE_EXTENSION_COMPARISON]`
+
+Construct a morphism of source-defined central extensions
+\[
+ \widehat{\mathcal G}_{\rm Wold/Gamma/BV}^{\rm src}
+ \longrightarrow
+ \widehat{\mathcal G}_{\rm CC}^{\rm rel}                       \tag{275}
+\]
+such that:
+
+1. the prime-dilation generator maps to \(p^{s-1/2}\);
+2. the distinguished determinant section maps to the local multiplier \(\Xi(s)\);
+3. the group commutator maps to `(270)`;
+4. differentiation of `(275)` maps the BV/renormalized first trace to the residue cocycle of
+   `(268)`;
+5. the Green realization maps Meyer's cutoff-independent Toeplitz cocycle to the real regulator
+   `(271)`;
+6. the nested prime-sieve/Rees filtration makes `(275)` a morphism of restricted, not direct
+   product, extensions.
+
+Parent theory proves that determinant extensions, Contou--Carrère symbols, Deligne pairings, and
+their local reciprocity laws fit this architecture.  It does not construct `(275)` for the
+Euler--Gamma/co-Poisson HT source.  If `(275)` is built, Clauses 1--2 of `(266)` and the
+chain-level typing in Clause 5 become consequences of one extension comparison.  The remaining
+RH-bearing step is still restricted implementability/continuity of its principal conormal
+commutator in the all-prime completion.
+
+This also locates the third completion more precisely.  It is not merely a Hilbert space or a
+measure sector.  It should be the restricted determinant/Heisenberg extension in which:
+
+```text
+unitary prime phase remains an actual central character;
+localized square-summable radial displacement remains implementable;
+coherent off-line radial displacement is non-implementable;
+the source principal conormal nevertheless has a canonical lift.
+```
+
+The last line is the new source theorem.  Declaring that lift implementable after choosing a zero
+would again restate RH.
+
+### Local Wold-defect determinant retains every multiplicity jet
+
+The determinant interpretation can be proved without invoking an abstract central extension.
+Let \({\cal O}_\rho\) be the local analytic ring at a zero \(\rho\), and put
+\[
+ A_\rho:={\cal O}_\rho/(\Xi).
+                                                               \tag{276}
+\]
+If \(m=m_\rho\), choose \(z=s-\rho\).  Since
+\(\Xi=z^m u\) with \(u\) a local unit,
+\[
+ A_\rho\cong\mathbb C[z]/(z^m).                                \tag{277}
+\]
+Let \(N_\rho\) be multiplication by \(z\) on \(A_\rho\), so
+\[
+ N_\rho^m=0.
+\]
+
+`[PAPER-PROVED] [LOCAL_XI_CLOCK_WOLD_DEFECT_DETERMINANT]`
+
+The prime clock acts on the complete local divisor jet by
+\[
+ \boxed{\qquad
+ G_{p,\rho}
+ :=
+ M_{p^{s-1/2}}\big|_{A_\rho}
+ =
+ p^{\rho-1/2}\exp((\log p)N_\rho).
+ \qquad}                                                       \tag{278}
+\]
+Consequently
+\[
+ \det G_{p,\rho}
+ =
+ p^{m_\rho(\rho-1/2)},\qquad
+ \partial_\rho\kappa_\Xi(p)
+ =
+ (\det G_{p,\rho})^{-1}.                                      \tag{279}
+\]
+
+To prove `(278)`, reduce the identity
+\[
+ p^{s-1/2}
+ =
+ p^{\rho-1/2}\exp((s-\rho)\log p)
+\]
+modulo \(z^m\).  The exponential becomes the finite polynomial
+\[
+ \exp((\log p)N_\rho)
+ =
+ \sum_{j=0}^{m-1}{(\log p)^j\over j!}N_\rho^j.
+\]
+It is unipotent upper triangular in the basis
+\((1,z,\ldots,z^{m-1})\), so its determinant is one.  This proves the first equation in `(279)`;
+the second is `(257)`.
+
+There is also a literal Wold-defect model.  On a local Hardy germ, multiplication by \(z^m\) has
+range \(z^mH^2\) and defect quotient
+\[
+ H^2/z^mH^2
+ \cong
+ \operatorname{span}\{1,z,\ldots,z^{m-1}\}
+ \cong A_\rho.                                                \tag{280}
+\]
+Multiplication by the analytic unit \(p^{s-1/2}\) preserves the range and induces `(278)` on the
+defect.  Its determinant-line action is `(279)`.  Thus the local tame symbol, the prime-dilation
+jet, and determinant holonomy on a Wold defect are one exact object.
+
+This corrects the earlier concern that the tame boundary sees multiplicity but not the nilpotent
+jet.  The scalar boundary `(279)` sees only the determinant, but its canonical lift `(278)` retains
+the complete length-\(m_\rho\) local algebra and its nilpotent clock action.  Any global restricted
+extension comparison should transport `(278)`, not only `(279)`.
+
+The remaining infinity problem is now exact:
+
+```text
+finite divisor point:
+  canonical Wold defect A_rho and full prime-clock jet G_(p,rho);
+
+all divisor points and all primes:
+  construct one source-restricted determinant/Fock module containing these defects;
+
+purity:
+  prove every source-produced defect is implementable in that fixed module.
+```
+
+Every finite family of operators `(278)` is implementable for every \(\rho\).  Only the
+all-prime restricted determinant extension can force the radial semisimple part to be unitary.
+
+### Global analytic localization produces every divisor jet at once
+
+The local algebras `(276)` are the stalks of one source-defined coherent torsion sheaf.  Let
+\[
+ D_\Xi:=V(\Xi)\subset\mathbb C,\qquad
+ U_\Xi:=\mathbb C\setminus D_\Xi,\qquad
+ {\cal O}_{D_\Xi}:={\cal O}_{\mathbb C}/\Xi{\cal O}_{\mathbb C}.  \tag{281}
+\]
+Multiplication by \(\Xi\) is a global analytic Cartier equation, so
+\({\cal O}_{D_\Xi}\) is defined without enumerating its support.
+
+Use the localization boundary from analytic \(K\)-theory of the complement to coherent
+\(K\)-theory with support,
+\[
+ \partial_{D_\Xi}:
+ K_2(U_\Xi)\longrightarrow K_1^{D_\Xi}(\mathbb C).             \tag{282}
+\]
+
+`[PUBLISHED LOCALIZATION THEOREM, SPECIALIZED HERE]`
+`[GLOBAL_XI_CLOCK_SUPPORTED_K1_CLASS]`
+
+With the tame-symbol convention of `(252)`,
+\[
+ \boxed{\qquad
+ \partial_{D_\Xi}
+ \{\Xi(s),n^{s-1/2}\}
+ =
+ \left[
+  M_{n^{1/2-s}}:
+  {\cal O}_{D_\Xi}\xrightarrow{\sim}{\cal O}_{D_\Xi}
+ \right].
+ \qquad}                                                       \tag{283}
+\]
+The right side is one global supported \(K_1\)-class.  Its stalk at a zero \(\rho\) is
+\[
+ G_{n,\rho}^{-1}
+ =
+ n^{1/2-\rho}\exp(-(\log n)N_\rho)                              \tag{284}
+\]
+on the complete local divisor algebra \(A_\rho\).  Its local determinant is
+\[
+ \det(G_{n,\rho}^{-1})
+ =
+ n^{-m_\rho(\rho-1/2)},                                        \tag{285}
+\]
+the tame boundary `(256)`.
+
+Equation `(283)` is the \(K\)-theoretic localization description of the tame symbol.  It can also
+be checked from the two-term perfect complex
+\[
+ [{\cal O}_{\mathbb C}\xrightarrow{\Xi}{\cal O}_{\mathbb C}]
+\]
+supported on \(D_\Xi\): the global unit \(n^{1/2-s}\) acts on its support cohomology
+\({\cal O}_{D_\Xi}\), and devissage gives `(283)`.  Localizing and taking determinants gives
+`(285)`.
+
+Several formerly separate source requirements now close at the analytic \(K\)-theory level.
+
+1. **Source-first production.**  The class `(283)` is written on the whole divisor sheaf before
+   a zero is selected.
+2. **Multiplicity-jet conservativity.**  Every stalk contains its full nilpotent operator
+   `(284)`, not only its determinant.
+3. **Clock coherence.**  The assignment
+   \[
+    n\longmapsto
+    [M_{n^{1/2-s}}|_{{\cal O}_{D_\Xi}}]
+   \]
+   is a group homomorphism from \(\mathbb Q_{>0}^{\times}\) to supported \(K_1\).
+4. **Equation independence.**  Replacing \(\Xi\) by a nowhere-vanishing multiple gives the same
+   divisor sheaf and the same supported boundary.
+5. **Reflection.**  Pullback by \(s\mapsto1-s\) inverts the supported clock automorphism.
+
+This does not yet prove the arithmetic source landing.  The coherent analytic divisor sheaf and
+Deninger's Tate--Milnor/Wold coefficient live in different realizations.  The exact remaining
+comparison is now a realization functor, not construction of a zero-indexed character:
+\[
+ \boxed{\qquad
+ {\cal R}_{\rm ar/Wold}:
+ \operatorname{Hom}\!\left(
+  \mathbb Q_{>0}^{\times},K_1^{D_\Xi}(\mathbb C)
+ \right)_{\rm src}
+ \longrightarrow
+ \Gamma\!\left(
+  D_\Xi,\mathscr{Char}_{W}^{\,\rm rel}
+ \right).
+ \qquad}                                                       \tag{286}
+\]
+Here \(\mathscr{Char}_{W}^{\,\rm rel}\) denotes the sheaf of restricted determinant/Wold
+characters along the divisor, not a Hilbert completion of the exponent lattice
+\(\mathbb Q_{>0}^{\times}\).  The latter completion would be wrongly typed: the logarithm map on
+clock exponents need not be continuous for an unweighted \(\ell^2\) norm.
+
+The functor `(286)` must be induced by the Euler--Gamma/co-Poisson source, preserve the local
+operators `(284)`, and be continuous for the independently constructed topology on the **target
+character field**.  Membership of every stalk of its output is `(263)` and therefore
+RH-equivalent.  Frontier content is a single global functor on the supported clock homomorphism
+`(283)`, together with its source construction and strict target landing before support
+decomposition.
+
+This also eliminates the divergent-symbol-product mistake.  One never multiplies
+\(\{\Xi,p^{s-1/2}\}\) over all primes.  The algebraic source is the homomorphism in item 3 on the
+finite-support clock group.  Infinity enters only when asking whether its polar boundary defines a
+section of the restricted Wold or Kummer **character** completion.
+
+### Meyer's Green cocycle is the infinitesimal determinant cocycle
+
+The operator/Green realization in `(275)` can be identified on Meyer's proved source test algebra.
+Use the Mellin convention
+\[
+ \widehat F(s)
+ =
+ \int_0^\infty F(x)x^s\,d^\times x.                           \tag{287}
+\]
+Then multiplicative convolution becomes multiplication and
+\[
+ \widehat{\partial G}(s)
+ =
+ {d\over ds}\widehat G(s),
+ \qquad
+ \partial G(x)=G(x)\log x.                                    \tag{288}
+\]
+Mellin inversion at \(x=1\) gives, on any vertical line in the common holomorphy strip,
+\[
+ \boxed{\qquad
+ \omega_{\rm mult}(F,G)
+ =
+ \tau(F*\partial G)
+ =
+ {1\over2\pi i}
+ \int_{\sigma-i\infty}^{\sigma+i\infty}
+ \widehat F(s)\,d\widehat G(s).
+ \qquad}                                                       \tag{289}
+\]
+With the opposite Mellin convention, both derivative and orientation introduce the corresponding
+fixed sign.  Schwartz decay makes the endpoint term vanish, so integration by parts gives the
+antisymmetry already proved by Meyer.
+
+`[PAPER-PROVED FROM MELLIN INVERSION]`
+`[MEYER_GREEN_IS_INFINITESIMAL_DETERMINANT_COCYCLE]`
+
+Equation `(289)` is the standard Heisenberg/determinant Lie-algebra cocycle
+\[
+ (a,b)\longmapsto {1\over2\pi i}\int a\,db,                  \tag{290}
+\]
+the infinitesimal form of the Contou--Carrère commutator.  Thus Meyer's source Green form and the
+local determinant extension `(268)` are already the same parent cocycle on their common smooth
+domain.
+
+The Riemann specialization makes the group-level boundary visible.  Put
+\[
+ \ell_p(s):=\log g_p(s)=(s-\tfrac12)\log p.
+\]
+On a small positive loop around a multiplicity-\(m_\rho\) zero,
+\[
+ \boxed{\qquad
+ {1\over2\pi i}
+ \int_{\gamma_\rho}
+ \ell_p(s)\,d\log\Xi(s)
+ =
+ m_\rho(\rho-\tfrac12)\log p.
+ \qquad}                                                       \tag{291}
+\]
+Indeed \(d\log\Xi=m_\rho\,ds/(s-\rho)+d\log u_\rho\), and the unit term has zero residue.
+Exponentiating the negative of `(291)` gives
+\[
+ \exp\!\left(
+  -{1\over2\pi i}\int_{\gamma_\rho}\ell_p\,d\log\Xi
+ \right)
+ =
+ p^{-m_\rho(\rho-1/2)},
+ \]
+which is simultaneously `(256)`, `(270)`, and `(285)`.
+
+This closes the comparison on finite contours:
+
+```text
+Meyer Green cocycle on Mellin test packets
+  = infinitesimal determinant cocycle;
+
+Xi log connection paired with prime log clock
+  = logarithm of the tame/determinant commutator;
+
+local residue
+  = full prime-clock determinant on the Xi Wold defect.
+```
+
+It does not yet justify inserting \(\ell_p\) and \(\log\Xi\) directly into Meyer's nuclear
+Schwartz algebra.  They are logarithmic relative currents, not compactly supported test packets.
+The next analytic theorem is therefore exact:
+
+`[OPEN CORE] [MEYER_GREEN_LOGARITHMIC_RELATIVE_EXTENSION]`
+
+Extend `(289)` from the nuclear Mellin test algebra to the relative pair
+\[
+ (\ell_p,d\log\Xi)
+\]
+so that:
+
+1. excision around \(D_\Xi\) has local boundary `(291)`;
+2. Meyer's \(Z\)-conjugation supplies the finite Euler logarithmic connection;
+3. Fourier reflection and the Gamma factor supply the global real/\(\operatorname{Ext}^1\)
+   boundary at spectral infinity;
+4. the extension is cutoff-independent and agrees with the supported class `(283)`;
+5. nested prime-sieve enlargement is continuous in the restricted determinant topology, uniformly
+   on the source principal-conormal sheaf.
+
+Items 1 and the test-domain identity are closed by `(289)`--`(291)`.  Meyer's published trace
+theorem supplies source nuclearity after convolution by admissible packets, but it does not state
+the logarithmic relative extension above.  Item 5 remains the all-prime RH-bearing landing.
+
+## 35. Polarized tame base change: localize first, then complete
+
+The previous section still leaves one dangerous ambiguity.  A single global determinant central
+extension is not enough.  Reflection can pair two nonunitary local determinant characters whose
+product is unitary.  Thus a global \(U(1)\)-valued determinant can coexist with an off-line zero.
+The missing structure must retain the centre **over divisor support**, before taking a determinant
+product or trace.
+
+### The factorized radial obstruction
+
+Let \(D_f\) be the divisor of a meromorphic function \(f\) on a Riemann surface, and let
+\[
+ {\cal A}_x={\cal O}_x/(f),\qquad
+ \lambda_x:=\det_{\mathbb C}{\cal A}_x
+ \]
+at a zero \(x\) of multiplicity \(m_x\).  The supported boundary of the divisor--clock symbol
+\(\{f,g_a\}\) acts on \(\lambda_x\) by the scalar
+\[
+ c_{x,a}:=g_a(x)^{-m_x}.                                    \tag{292}
+\]
+Do not multiply these scalars over \(x\).  Retain them as a section of the factorized centre
+\[
+ c_{f,g}(a)\in
+ \Gamma\!\left(D_f,\underline{\mathbb C^\times}_{D_f}\right). \tag{293}
+\]
+Quotienting each local centre by its maximal compact subgroup gives the radial-obstruction sheaf
+\[
+ \underline{\mathbb C^\times/U(1)}_{D_f}
+ \cong\underline{\mathbb R}_{D_f},
+ \qquad
+ [z]\longmapsto\log|z|.
+\]
+The factorized radial obstruction is therefore
+\[
+ {\mathfrak a}_{f,g}(a)_x
+ :=
+ \log|c_{x,a}|
+ =
+ -m_x\log|g_a(x)|.                                         \tag{294}
+\]
+
+`[PAPER-PROVED] [FACTORIZED_TAME_RADIAL_OBSTRUCTION]`
+
+Equations `(292)`--`(294)` are natural under restriction to an open subset, independent of the
+local equation of the divisor, additive in the clock variable, and preserved by analytic
+localization.  The obstruction vanishes at \(x\) exactly when the tame boundary acts isometrically
+on the one-dimensional determinant line \(\lambda_x\), for one—and hence every—positive
+Hermitian norm on that line.
+
+For the Riemann clock,
+\[
+ {\mathfrak a}_{\Xi}(p)_\rho
+ =
+ -m_\rho(\operatorname{Re}\rho-\tfrac12)\log p.             \tag{295}
+\]
+This is simultaneously the real regulator period `(274)`, the logarithm of the local determinant
+commutator `(270)`, and the real Higgs displacement `(261)`.
+
+The determinant line is essential here.  Requiring the complete jet operator `(278)` to be unitary
+would also kill its nontrivial unipotent part and would force simplicity of every zero.  That is
+stronger than RH and is neither needed nor justified.  The proposed polarization acts on the
+factorized determinant/associated-graded line while the nilpotent multiplicity filtration remains
+present as filtered data.
+
+### Global pushforward blindness
+
+`[PAPER-PROVED] [REFLECTED_GLOBAL_DETERMINANT_RADIAL_BLINDNESS]`
+
+On one reflected-conjugate pair \(\{\rho,1-\overline\rho\}\), functional-equation symmetry gives
+\[
+ {\mathfrak a}_{\Xi}(p)_{1-\overline\rho}
+ =
+ -{\mathfrak a}_{\Xi}(p)_\rho.                              \tag{296}
+\]
+Consequently
+\[
+ \left|
+ \partial_\rho\kappa_\Xi(p)\,
+ \partial_{1-\overline\rho}\kappa_\Xi(p)
+ \right|=1                                                  \tag{297}
+\]
+even when \(\operatorname{Re}\rho\ne1/2\).
+
+Thus every reporter which first pushes the local centres to one scalar by the reflection-invariant
+product, determinant, or additive trace annihilates the radial obstruction on each off-line
+pair.  This is an exact no-go, not merely an insufficiency observed so far:
+
+```text
+factorized local centre:
+  remembers a_rho and -a_rho separately;
+
+global determinant / trace:
+  sees only a_rho + (-a_rho) = 0;
+
+functional equation:
+  guarantees the cancellation but not either local vanishing.
+```
+
+This explains why global self-duality, a Krein-unitary pairing, determinant modulus one, and
+reflection-positive quartet data can all hold off the critical line.  A global projective-unitary
+commutator is still too coarse if its centre has already been pushed forward from divisor support.
+
+### Universal polarized-localization theorem
+
+Let a source object produce:
+
+1. a divisor \(D_f\) and the divisor--clock \(K_2\) class before support decomposition;
+2. its supported localization `(293)`;
+3. a factorized Hermitian determinant line
+   \[
+   (\lambda_{D_f}^{\rm fac},h_{D_f})
+   =
+   \{(\lambda_x,h_x)\}_{x\in D_f};
+   \]
+4. a source clock action on these lines agreeing with `(292)`.
+
+`[PAPER-PROVED ABSTRACT IMPLICATION] [POLARIZED_TAME_BASE_CHANGE_PURITY]`
+
+If the clock action is supportwise isometric,
+\[
+ h_x(c_{x,a}v,c_{x,a}v)=h_x(v,v)
+ \qquad
+ (x\in D_f,\;v\in\lambda_x),                               \tag{298}
+\]
+then
+\[
+ {\mathfrak a}_{f,g}(a)_x=0
+ \qquad (x\in D_f).                                        \tag{299}
+\]
+
+Indeed, choose \(v\ne0\).  Since \(\lambda_x\) is one-dimensional, `(298)` gives
+\[
+ |c_{x,a}|^2h_x(v,v)=h_x(v,v).
+\]
+Positivity permits cancellation, so \(|c_{x,a}|=1\), which is `(299)`.
+
+For `(255)`, one prime clock already gives
+\[
+ 1
+ =
+ \left|p^{-m_\rho(\rho-1/2)}\right|
+ =
+ p^{-m_\rho(\operatorname{Re}\rho-1/2)}.
+\]
+Since \(p>1\) and \(m_\rho>0\),
+\[
+ \operatorname{Re}\rho=\frac12.                            \tag{300}
+\]
+Therefore supportwise polarized tame base change for the source-produced Riemann class proves RH.
+
+The theorem is elementary after its hypotheses are typed.  The research content is the
+source-natural base-change law producing `(298)` before any zero is selected:
+\[
+\boxed{\qquad
+ {\rm Pol}_{D_\Xi}^{\rm fac}\circ\partial_{D_\Xi}
+ \;\simeq\;
+ \partial_{D_\Xi}^{\,U(1),{\rm fac}}\circ{\rm Pol}_{\rm src}.
+\qquad}                                                     \tag{301}
+\]
+Here \({\rm Pol}_{\rm src}\) is the completed Euler--Gamma/co-Poisson polarization, while the
+right boundary is a factorized \(U(1)\)-central determinant boundary.  Equation `(301)` says:
+
+> **positive completion commutes with secondary divisor localization before global
+> pushforward.**
+
+This is the sharper universal law.  Purity is not positivity of a global scalar.  It is exactness
+of polarization under localization, with the factorized centre retained.
+
+### The reporters are shadows of one obstruction
+
+For the coherent Riemann power character, the corpus now gives the following implications from one
+local section `(295)`:
+\[
+\begin{array}{c}
+ {\mathfrak a}_{\Xi}(p)_\rho=0\ \text{for one prime}\\
+ \Updownarrow\\
+ \text{factorized tame commutator lies in }U(1)\\
+ \Updownarrow\\
+ \text{real divisor--clock regulator period vanishes}\\
+ \Updownarrow\\
+ \text{cofinal Wold--Higgs energy is finite}\\
+ \Updownarrow\\
+ \text{strict mixed-Kummer mass does not leak to prime infinity}\\
+ \Updownarrow\\
+ \text{Kakutani radial sector equals the critical sector}\\
+ \Updownarrow\\
+ \operatorname{Re}\rho=\tfrac12 .
+\end{array}                                                  \tag{302}
+\]
+The equivalences in `(302)` concern this coherent one-parameter character.  They do not identify
+the ambient Wold, Kummer, and Kakutani completions.  Those are distinct realizations of the same
+factorized radial obstruction.
+
+Equation `(302)` changes the role of the earlier selectors.  None is the cause of purity.  Each is
+a norm, boundary, or measure-class reporter of failure of `(301)`.  The cause would be
+source-effective polarized localization.
+
+### What all the no-go results mean
+
+```text
+finite truncations:
+  localize divisor jets, but do not retain a source-cofinal polarization;
+
+ambient adelic L2:
+  retains unitary source covariance, but localization is nonconservative;
+
+global determinant and functional equation:
+  push factorized centres together and cancel opposite radial defects;
+
+positive Euler / Julia / hypertranscendental off-line models:
+  possess analytic divisor localization but not the literal source-polarized base change (301);
+
+Wold energy, Kummer leakage, and Kakutani singularity:
+  retain the local radial obstruction after different infinite completions;
+
+Meyer nuclear trace:
+  gives global traceability modulo nuclear defects, but not a supportwise positive projector;
+
+square-zero radial--Kummer amalgamation:
+  correctly forbids a fake primary tensor; tame localization supplies the secondary interaction;
+
+the missing harmonic H1 channel:
+  is the real part of the factorized determinant commutator, not a free cohomology summand.
+```
+
+The “third completion” is therefore not one more ambient Hilbert space.  It is a factorization
+determinant/Heisenberg boundary with:
+
+1. analytic \(K_2\) localization retaining every support and multiplicity filtration;
+2. a source-produced positive metric on every local determinant line;
+3. a restricted all-prime topology on the radial obstruction sheaf;
+4. a global Gamma/real seam;
+5. pushforward only after local \(U(1)\)-reduction.
+
+This order of operations is load-bearing:
+\[
+ \text{localize}\longrightarrow\text{polarize}\longrightarrow\text{push forward},
+\]
+not
+\[
+ \text{polarize globally}\longrightarrow\text{push forward}\longrightarrow\text{infer locality}.
+\]
+
+### Exact RH-bearing open core
+
+`[BOLD CONJECTURE] [XI_SOURCE_POLARIZED_TAME_BASE_CHANGE]`
+
+The Euler--Gamma/co-Poisson source admits a factorization-natural refinement of `(275)` and `(286)`
+for which:
+
+1. the analytic symbol `(255)` maps to the source residue-corrected Wold--Gamma/BV determinant
+   character;
+2. localization is the supported \(K_1\)-class `(283)` before any support pushforward;
+3. the factorized determinant line of every local multiplicity filtration receives a positive
+   source metric, without requiring the full nilpotent jet operator to be unitary;
+4. the clock action on that determinant line is isometric and agrees with `(284)` on its
+   determinant;
+5. Meyer Green, BV first trace, strict Kummer boundary, and Gamma reflection are comparison
+   realizations of the same factorized class;
+6. the construction is strict under nested ordinary-prime and source-jet enlargement;
+7. no divisor stalk is killed, paired with its reflection before polarization, or renormed using
+   its zero coordinate.
+
+Clauses 1--2 are proved at the analytic/localization level in Section 34.  The finite-contour
+infinitesimal comparison is `(289)`--`(291)`.  The corpus separately supplies the Wold/BV source
+character, Meyer nuclear relation, and the target radial reporters.  Clauses 3--7—the
+factorized positive base-change morphism—are the remaining theorem.
+
+If this conjecture is proved, `(298)`--`(300)` give RH without a separate finite-energy assumption.
+Wold energy finiteness then becomes a corollary of local unitarity, not the load-bearing premise.
+
+### Hostile audit
+
+1. A single determinant line, global \(U(1)\) extension, or global Krein pairing does not imply
+   `(298)`; `(296)`--`(297)` give an explicit off-line cancellation.
+2. A Hermitian metric selected after choosing \(\rho\) is circular.  The metric and localization
+   comparison must be natural on the entire source divisor object.
+3. Positivity before localization does not automatically descend through a quotient.  Exactness
+   of `(301)` is the theorem, not category notation for a presumed fact.
+4. Meyer's almost-projector is idempotent only modulo nuclear defects.  Nuclear traceability does
+   not supply the supportwise positive determinant lines in Clause 3.
+5. Requiring the full jet clock `(278)` to be unitary would silently assert zero simplicity.
+   Only its determinant/associated-graded line is polarized here.
+6. A factorization determinant gerbe exists in parent mathematics, but its \(U(1)\) reduction for
+   this Euler--Gamma/co-Poisson source is not automatic.
+7. Clause 7 is indispensable.  Pairing \(\rho\) with \(1-\overline\rho\) first collapses exactly
+   the obstruction that must be shown to vanish.
+8. Rephrasing \(\operatorname{Char}_W\)-membership as “polarized localization” without constructing
+   `(301)` is still RH-equivalent theatre.
+
+### Literature boundary
+
+Localization in algebraic/analytic \(K\)-theory, determinant lines and gerbes, factorization
+extensions, Contou--Carrère symbols, Deligne pairings, and unitary reductions of Hermitian lines
+are parent mathematics.  The generalized Contou--Carrère symbol as a \(K\)-theory boundary and
+higher commutator is treated by Braunling--Groechenig--Wolfson
+(<https://arxiv.org/abs/1410.3451>); determinant bundles and Deligne pairings are compared by
+Biswas--Schumacher--Weng (<https://arxiv.org/abs/1106.0255>).
+
+The candidate-new content is not those constructions.  It is the source-specific law `(301)`:
+factorized positive completion of the ordinary-prime Euler--Gamma/co-Poisson determinant character
+commutes with its Xi tame localization, and therefore reduces every local divisor-clock
+commutator to \(U(1)\).  No located source proves this.  Search noncollision is not a priority
+certificate.
+
+## 36. The universal primitive-torsor law
+
+The factorized base-change law has an equivalent global form which exposes the missing
+hypertranscendental object: one real primitive.
+
+### Centered divisor regulator exactness
+
+Let \(f\) be a nonzero entire function, let \(D_f\) be its zero divisor, put
+\[
+ U_f=\mathbb C\setminus D_f,
+\]
+and fix \(c\in\mathbb R\).  Write \(s=x+iy\).  On \(U_f\), the one-form
+\[
+ d\arg f:=\operatorname{Im}(d\log f)
+\]
+is globally defined even though \(\arg f\) need not be.  Define the centered divisor regulator
+\[
+ \boxed{\qquad
+ \eta_{f,c}
+ :=
+ \log|f(s)|\,dy-(x-c)\,d\arg f(s).
+ \qquad}                                                     \tag{303}
+\]
+
+`[PAPER-PROVED] [CENTERED_DIVISOR_REGULATOR_EXACTNESS]`
+
+The form `(303)` is closed.  If \(\rho\) is a zero of multiplicity \(m_\rho\), then for a
+sufficiently small positive loop \(\gamma_\rho\),
+\[
+ {1\over2\pi}\int_{\gamma_\rho}\eta_{f,c}
+ =
+ -m_\rho(\operatorname{Re}\rho-c).                         \tag{304}
+\]
+Consequently the following are equivalent:
+\[
+\boxed{\quad
+ D_f\subset\{s:\operatorname{Re}s=c\}
+ \quad\Longleftrightarrow\quad
+ [\eta_{f,c}]=0\text{ in }H^1_{\rm dR}(U_f;\mathbb R)
+ \quad\Longleftrightarrow\quad
+ \exists\Phi_{f,c}:U_f\to\mathbb R,\ d\Phi_{f,c}=\eta_{f,c}.
+\quad}                                                       \tag{305}
+\]
+
+To prove closedness, choose a local holomorphic logarithm
+\[
+ \log f=u+i\theta.
+\]
+The Cauchy--Riemann equations give
+\[
+ du\wedge dy=dx\wedge d\theta,
+\]
+hence \(d\eta_{f,c}=0\).  Near \(\rho\),
+\[
+ \log|f|=m_\rho\log|s-\rho|+O(1),\qquad
+ \int_{\gamma_\rho}d\arg f=2\pi m_\rho.
+\]
+The first term of `(303)` has loop integral
+\(O(r|\log r|)\to0\), while the second tends to the right side of `(304)`.
+
+Every singular one-cycle in the complement of a locally finite divisor is compact and homologous
+to a finite sum of small divisor loops.  Thus `(304)` proves `(305)` by the real de Rham theorem.
+No growth condition at spectral infinity is needed for this ordinary exactness statement; such a
+condition becomes essential only for source-effective continuation in the completed arithmetic
+category.
+
+This theorem is universal: any vertical-line zero problem is a primitive-effectivity problem for
+one centered real regulator.
+
+### Explicit local primitives and their monodromy
+
+On a simply connected \(V\subset U_f\), choose
+\[
+ L=\log f=u+i\theta
+\]
+and a holomorphic antiderivative \(F\) with \(F'=L\).  Then
+\[
+ \boxed{\qquad
+ \Phi_V
+ =
+ \operatorname{Im}F-(x-c)\theta
+ \qquad}                                                     \tag{306}
+\]
+satisfies
+\[
+ d\Phi_V=\eta_{f,c}.                                        \tag{307}
+\]
+Indeed
+\[
+ d\,\operatorname{Im}F=\theta\,dx+u\,dy,
+\]
+and subtracting \(d((x-c)\theta)\) gives `(303)`.
+
+Changing \(L\) by \(2\pi i k\) changes `(306)` only by a real constant.  Therefore the local
+primitives form a canonical affine real local system
+\[
+ \mathscr{Prim}_{f,c}
+ :=
+ \{\Phi:d\Phi=\eta_{f,c}\}.                                 \tag{308}
+\]
+Its monodromy is
+\[
+ \operatorname{mon}_{\mathscr{Prim}_{f,c}}(\gamma_\rho)
+ =
+ -2\pi m_\rho(\operatorname{Re}\rho-c).                    \tag{309}
+\]
+Thus `(305)` says that the divisor is boundary-pure exactly when the centered regulator primitive
+torsor has a global section.
+
+This is the precise source-effectivity object which the general HT architecture had left
+unnamed.  It is not the entire function, its divisor, a zero-indexed character, or a postulated
+Hilbert norm.  It is the torsor of compatible local real primitives of the Hermitian/analytic
+tame-symbol mismatch.
+
+### Hermitian--holomorphic parent and the exact correction
+
+Aldrovandi's Hermitian-holomorphic tame-symbol theorem supplies a canonical Hermitian metric on
+the Deligne/Heisenberg line of two holomorphic units.  It also separates:
+
+1. the analytic Deligne connection; and
+2. the Chern connection of the Hermitian metric.
+
+Their difference is represented, up to the fixed convention for imaginary forms, by Goncharov's
+regulator
+\[
+ r_2(f,g)
+ =
+ \operatorname{Im}(d\log f)\log|g|
+ -
+ \log|f|\operatorname{Im}(d\log g).                       \tag{310}
+\]
+For \(g(s)=e^{s-c}\), `(310)` is \(-\eta_{f,c}\).  Thus the existence of a Hermitian tame-symbol
+line is parent mathematics and does **not** imply `(305)`.  The obstruction is the connection
+mismatch itself.
+
+Requiring `(310)` to vanish pointwise on \(U_f\) would be much stronger than vertical-line purity
+and is generally false.  The correct requirement is only that its real local system have trivial
+monodromy, equivalently that `(303)` be exact.  A global primitive changes the Hermitian gauge so
+that the flat clock holonomy is unitary supportwise; it need not annihilate the full regulator
+field.
+
+This corrects Clause 3 of the preceding conjecture: the frontier is not construction of some
+positive metric.  A canonical Hermitian parent exists.  The frontier is source-effective
+trivialization of the factorized **analytic--Hermitian connection-difference torsor**.
+
+### Riemann specialization
+
+For the completed Riemann function, set
+\[
+ \eta_\Xi:=\eta_{\Xi,1/2}
+ =
+ \log|\Xi|\,d\,\operatorname{Im}s
+ -
+ (\operatorname{Re}s-\tfrac12)d\arg\Xi.                   \tag{311}
+\]
+This is exactly the universal field `(273)`.  Equations `(304)` and `(305)` give:
+\[
+\boxed{\qquad
+ \mathrm{RH}
+ \quad\Longleftrightarrow\quad
+ [\eta_\Xi]=0
+ \quad\Longleftrightarrow\quad
+ \mathscr{Prim}_{\Xi,1/2}(U_\Xi)\ne\varnothing.
+\qquad}                                                     \tag{312}
+\]
+Moreover
+\[
+ \eta(\Xi,p^{s-1/2})=(\log p)\eta_\Xi,
+\]
+so all prime clocks are scalar readings of this one torsor.  No all-prime product is required to
+define the obstruction.  The all-prime Wold/Kummer/Kakutani completions test whether the same
+monodromy can survive their independently forced source topologies.
+
+Equation `(312)` is an exact RH criterion, not yet a proof.  Its advance is to identify one global
+geometric object whose effectivity simultaneously implies every local unitarity condition and to
+show that this object is the standard Hermitian tame-symbol connection mismatch.
+
+### Safe-half-plane source section
+
+The primitive torsor is already source-effectively pointed where the Euler product converges.
+Write
+\[
+ A(s)
+ =
+ \frac12s(s-1)\pi^{-s/2}\Gamma(s/2),
+ \qquad
+ \Xi(s)=A(s)\zeta(s).
+\]
+Fix a real \(s_0>1\) and the real-positive logarithmic branches there.  On
+\(\operatorname{Re}s>1\), define
+\[
+\begin{aligned}
+ F_\Xi^{>}(s)
+ &:=
+ \int_{s_0}^{s}\log A(w)\,dw\\
+ &\quad
+ -
+ \sum_{n\ge2}
+ {\Lambda(n)\over(\log n)^2}
+ \bigl(n^{-s}-n^{-s_0}\bigr).                              \tag{313}
+\end{aligned}
+\]
+The series converges normally on every closed sub-half-plane
+\(\operatorname{Re}s\ge1+\varepsilon\), and
+\[
+ {d\over ds}F_\Xi^{>}(s)
+ =
+ \log A(s)
+ +
+ \sum_{n\ge2}{\Lambda(n)\over\log n}n^{-s}
+ =
+ \log\Xi(s).                                               \tag{314}
+\]
+The Gamma integral in `(313)` is a Barnes-type primitive; the Euler term is the prime-power
+dilogarithmic primitive
+\[
+ -\sum_{p}\sum_{k\ge1}{p^{-ks}\over k^2\log p}
+\text{ calibration}.
+\]
+
+Hence
+\[
+ \Phi_\Xi^{>}(s)
+ :=
+ \operatorname{Im}F_\Xi^{>}(s)
+ -
+ (\operatorname{Re}s-\tfrac12)\arg\Xi(s)                  \tag{315}
+\]
+is a canonical source-pointed section of \(\mathscr{Prim}_{\Xi,1/2}\) on the safe Euler
+half-plane, with
+\[
+ d\Phi_\Xi^{>}=\eta_\Xi.                                   \tag{316}
+\]
+This section is built from prime powers, Gamma completion, and one real calibration before any
+zero is selected.
+
+The RH problem is now a continuation problem of a named object:
+
+> continue `(315)` through the completed co-Poisson/Meyer source as one single-valued real
+> primitive on \(U_\Xi\), without choosing paths from the zero divisor.
+
+Ordinary analytic continuation only produces the local system `(308)` and permits nonzero
+translation constants `(309)`.  The new theorem must show that the source continuation kills
+those constants.
+
+### Positive HT shells carry one common regulator class
+
+The publication-ready positive divisor-frame theorem supplies, for every \(m\ge12\),
+\[
+ S_m^\#(s)=\zeta(s)H_m(s)
+\]
+on \(\operatorname{Re}s>1/2\), where \(H_m\) is holomorphic and zero-free.  Restrict to the strict
+right strip
+\[
+ \mathcal S^+=\{s:\tfrac12<\operatorname{Re}s<1\}.
+\]
+The completion factor \(A(s)\) is also holomorphic and zero-free there.  Regulator additivity
+gives
+\[
+ \eta_{S_m^\#,1/2}
+ =
+ \eta_{\zeta,1/2}+\eta_{H_m,1/2}.                          \tag{317}
+\]
+Because \(\mathcal S^+\) is simply connected and \(H_m\) is zero-free, \(H_m\) has a global
+holomorphic logarithm there.  Formula `(306)` supplies a global primitive for
+\(\eta_{H_m,1/2}\).  Likewise the completion factor changes the regulator only by an exact form.
+Therefore
+\[
+\boxed{\qquad
+ [\eta_{S_m^\#,1/2}]
+ =
+ [\eta_{\zeta,1/2}]
+ =
+ [\eta_{\Xi,1/2}]
+ \quad\text{on }\mathcal S^+\setminus D_\Xi
+ \qquad(m\ge12).
+\qquad}                                                     \tag{318}
+\]
+
+`[PAPER-PROVED] [POSITIVE_HT_SHELL_REGULATOR_CLASS_REPLICATION]`
+
+This is what the positive HT divisor frame means at the secondary level:
+
+```text
+disjoint positive coefficient sources
+  + maximally differentially independent zero-free multipliers
+  + one common divisor
+  =
+infinitely many exact regulator gauges around one identical primitive-torsor obstruction.
+```
+
+The transverse \(H_m\) directions are not candidate causes of the zero location: they change the
+regulator only by exact potentials.  The nontrivial information is the shared class `(318)`.
+Positive fusion and hypertranscendence can coexist with an off-line zero because neither forces
+that common class to vanish.  This explains the explicit generalized-prime counterexamples and the
+shell theorem in one statement.
+
+It also identifies how the HT theory can matter.  A valid proof must construct a **source-selected
+common primitive** compatible with the countably free exact gauges, not derive a finite
+differential identity among the shells.  The latter is impossible by their proved maximal
+relative differential rank.
+
+### Exact new open core
+
+`[BOLD CONJECTURE] [XI_SOURCE_REGULATOR_PRIMITIVE_DESCENT]`
+
+The safe source section `(315)` extends through the completed ordinary-prime
+Euler--Gamma/co-Poisson object to a section
+\[
+ \Phi_\Xi^{\rm src}\in
+ \mathscr{Prim}_{\Xi,1/2}(U_\Xi)                            \tag{319}
+\]
+such that:
+
+1. it is constructed from the Euler prime-power primitive, Barnes/Gamma primitive, Meyer
+   Poisson relation, BV first-trace correction, and source calibration before divisor
+   specialization;
+2. its local analytic differential is `(311)`;
+3. its continuation constants are the factorized tame boundaries `(309)`, and source descent
+   proves every such constant zero rather than cancelling reflected pairs;
+4. on the right strip it is compatible with all shell gauges in `(317)`--`(318)`;
+5. the resulting section is strict under both ordinary-prime enlargement and positive-shell/source
+   depth;
+6. its Gamma reflection is the same pointed primitive, not an independently renormalized
+   reflected copy.
+
+If `(319)` is constructed, `(312)` proves RH immediately.  Conversely, RH makes the ordinary real
+primitive torsor trivial, but it does not automatically provide the source formula or strict
+comparison required in Clauses 1 and 4--6.  Thus the conjecture contains an RH-equivalent
+existence conclusion plus additional source-effectivity content.
+
+The first non-immediate obstacle is now narrower than “construct a Hodge theory”:
+
+\[
+\boxed{\quad
+\text{prove source path-independence of the explicitly pointed safe-half-plane potential `(315)`.}
+\quad}                                                       \tag{320}
+\]
+
+Equivalently, extend Meyer's logarithmic Green cocycle to the relative pair and prove that its
+real connection-difference class has zero factorized boundary before global trace.  This is the
+same open theorem as `(301)`, expressed as primitive descent.
+
+### Hostile audit
+
+1. Every entire function has local primitives `(306)`.  Only source-selected global gluing is
+   RH-bearing.
+2. Integrating \(\log\Xi\) along a path and declaring that path canonical is circular unless
+   source continuation proves path independence.
+3. The canonical Hermitian tame-symbol metric does not prove exactness; its analytic/Chern
+   mismatch is precisely `(310)`.
+4. Pointwise vanishing of `(310)` is unnecessary and generally too strong.  Only monodromy
+   vanishing is claimed.
+5. The shell equality `(318)` does not force its common class to be zero.  It proves why infinitely
+   many positive HT channels can all fail together.
+6. Reflection sends the period at \(\rho\) to its negative.  Summing or multiplying before
+   factorized localization again produces a false zero.
+7. A source potential fitted by dividing by \(\Xi\), enumerating zeros, or selecting branch cuts
+   from their locations is rejected.
+8. No Lean formalization should begin with `(312)` alone.  The universal theorem `(303)`--`(305)`
+   is elementary; the source descent `(319)` is the mathematical frontier.
+
+### Literature boundary
+
+The real regulator form, Deligne tame-symbol torsor, Heisenberg line, Hermitian-holomorphic metric,
+and analytic/Chern compatibility obstruction are parent mathematics; see Aldrovandi,
+*Hermitian-holomorphic (2)-Gerbes and tame symbols*
+(<https://arxiv.org/abs/math/0310027>).  Barnes-type primitives and the absolutely convergent
+Euler logarithm are also standard.
+
+The candidate-new exact consequences are the centered divisor-regulator theorem `(303)`--`(305)`
+as a universal vertical-line criterion, its source-pointed Riemann potential `(313)`--`(316)`, and
+the positive-HT shell regulator-class replication `(318)`.  Their ingredients are elementary or
+published parent mathematics; priority is claimed only provisionally for the conjunction and
+interpretation.  The proof-producing theorem `(319)` is open.
+
+## 37. The factorized conormal-anomaly index
+
+Sections 35--36 and the earlier prime-Schwartz moderation theorem have one common numerical
+invariant.  Making it explicit separates the universal theorem from the source theorem still
+needed for RH.
+
+### One local index, five exact realizations
+
+Let \(f\) be a nonzero entire function, let \(\rho\) be a zero of multiplicity \(m_\rho\), fix a
+real centre \(c\), and put
+\[
+ {\cal I}_{f,c}(\rho)
+ :=
+ m_\rho(\operatorname{Re}\rho-c).                       \tag{321}
+\]
+This is the **factorized conormal-anomaly index**.  It is retained at \(\rho\), before summing
+over the divisor or pairing \(\rho\) with a reflected point.
+
+Fix a clock base \(b>1\).  The determinant tame boundary of
+\(\{f,b^{s-c}\}\) is
+\[
+ \partial_\rho\{f,b^{s-c}\}
+ =
+ b^{-m_\rho(\rho-c)}.                                   \tag{322}
+\]
+Its bilateral powers form the explicit record
+\[
+ R_{\rho,b}(k)
+ :=
+ b^{-k m_\rho(\rho-c)},
+ \qquad k\in\mathbb Z.                                  \tag{323}
+\]
+
+`[PAPER-PROVED] [FACTORIZED_CONORMAL_ANOMALY_INDEX_LAW]`
+
+The following quantities are equal readings of `(321)`:
+\[
+\begin{aligned}
+ {1\over2\pi}\int_{\gamma_\rho}\eta_{f,c}
+   &=-{\cal I}_{f,c}(\rho),                              \tag{324}\\
+ {1\over\log b}\log\left|
+   \partial_\rho\{f,b^{s-c}\}\right|
+   &=-{\cal I}_{f,c}(\rho),                              \tag{325}\\
+ \lim_{k\to+\infty}{1\over k\log b}\log|R_{\rho,b}(k)|
+   &=-{\cal I}_{f,c}(\rho),                              \tag{326}\\
+ \operatorname{mon}_{\mathscr{Prim}_{f,c}}(\gamma_\rho)
+   &=-2\pi{\cal I}_{f,c}(\rho).                          \tag{327}
+\end{aligned}
+\]
+Equations `(324)`, `(325)`, and `(327)` are respectively `(304)`, `(294)`, and `(309)`;
+`(326)` is immediate from `(323)`.  Thus de Rham period, Hermitian--analytic connection
+mismatch, tame-symbol radial modulus, and bilateral exponential slope are not analogous
+obstructions.  They are one indexed local class.
+
+There is a fifth exact realization.  A distribution on the circle has polynomially growing
+Fourier coefficients, and every polynomially growing bilateral sequence defines a distribution.
+Therefore
+\[
+\boxed{\quad
+ R_{\rho,b}\text{ is the Fourier-coefficient record of a circle distribution}
+ \quad\Longleftrightarrow\quad
+ {\cal I}_{f,c}(\rho)=0.
+\quad}                                                   \tag{328}
+\]
+Indeed, if \(\operatorname{Re}\rho\ne c\), one of the two directions in `(323)` grows
+exponentially.  If \(\operatorname{Re}\rho=c\), the coefficients are bounded.  Multiplicity jets
+only multiply `(323)` by polynomials in \(k\), so `(328)` retains every finite multiplicity
+grade and does not imply simplicity.
+
+To avoid a category overclaim, `(323)` is called an exponential record here.  Off the line it is
+not an ordinary periodic hyperfunction on the fixed real circle: the multiplier
+\(z-b^{-m_\rho(\rho-c)}\) is invertible near that circle.  Retaining it requires a moving-annulus
+or enhanced exponential/Stokes category.  On the line it descends to an ordinary finite-order
+distribution.
+
+### The HT shell rate is the same index
+
+For the Riemann divisor put \(c=1/2\).  The entire high-shell completion graph already constructs
+\[
+ A_m(s)
+ =
+ (ms-1)((m+1)s-1)
+ \bigl(\zeta(ms)-\zeta((m+1)s)\bigr)
+\]
+and its functional-equation-odd quotient
+\[
+ U_m(s)={A_m(s)\over A_m(1-s)}.
+\]
+Prime-two domination gives
+\[
+ {U_{m+1}(s)\over U_m(s)}
+ \longrightarrow
+ 2^{1-2s}.                                               \tag{329}
+\]
+At a zero \(\rho\) of multiplicity \(m_\rho\),
+\[
+ \boxed{\quad
+ \log\left|
+ \lim_{m\to\infty}{U_{m+1}(\rho)\over U_m(\rho)}
+ \right|
+ =
+ -{2\log2\over m_\rho}\,
+ {\cal I}_{\Xi,1/2}(\rho).
+ \quad}                                                  \tag{330}
+\]
+Thus the cofinal projective boundary of the countably maximal positive HT shell frame is the
+multiplicity-normalized version of the same tame-regulator index.  Infinite relative
+differential rank lives in the transverse bulk; the entire RH-bearing horizontal information
+survives in one rank-one projective boundary slope.
+
+Equation `(330)` explains why more finite differential algebra cannot prove purity.  The
+decisive invariant appears only after an infinite shell-depth limit, and every uniformly
+invertible zero-free shell gauge leaves it unchanged.
+
+### Ward charge supplies multiplicity, not displacement
+
+The Julia--Euler--Weil index law assigns an off-line quartet of multiplicity \(m_\rho\) the
+nonnegative charge
+\[
+ Q_{\rm Ward}(\rho)=8\pi m_\rho.                         \tag{331}
+\]
+It is independent of horizontal displacement.  Combining `(324)` and `(331)` recovers that
+missing coordinate:
+\[
+ \operatorname{Re}\rho-c
+ =
+ -4\,{\displaystyle\int_{\gamma_\rho}\eta_{f,c}
+       \over\displaystyle Q_{\rm Ward}(\rho)}.           \tag{332}
+\]
+Here the Ward charge uses the corresponding reflected quartet, while the regulator loop retains
+one oriented local factor.  Formula `(332)` is the exact reason Ward positivity can be fully
+realized off line: it records \(m_\rho\), whereas the regulator records
+\(m_\rho(\operatorname{Re}\rho-c)\).  Taking charge without the oriented regulator forgets the
+coordinate that RH must kill.
+
+### The third completion is now forced
+
+The five representations of `(321)` classify the earlier completion failures:
+
+```text
+finite truncation:
+  every finite record has finite support and cannot see exponential type;
+
+one-sided Hardy completion:
+  retains one off-line half because exponential decay in one direction is allowed;
+
+ambient bilateral L2:
+  restores unitary covariance but loses even unit-circle point fibres to continuous spectrum;
+
+circle-distribution rigging:
+  retains every unitary point fibre as a generalized eigenvector
+  and excludes every nonzero exponential slope;
+
+moving-annulus / enhanced completion:
+  retains off-line exponential records but therefore cannot prove purity;
+
+global determinant or reflection pushforward:
+  adds opposite local indices and returns zero before either index vanishes.
+```
+
+This identifies the “third completion” at the prime-clock boundary:
+\[
+ {\cal S}(\mathbb Z)
+ \subset
+ \ell^2(\mathbb Z)
+ \subset
+ {\cal S}'(\mathbb Z),                                  \tag{333}
+\]
+factorized over divisor support and tensored with an enhanced Euler/Gamma-time direction.
+The anisotropy is essential.  The all-order Mertens/Gamma direction may require an enhanced
+object, while each fixed compact prime-angle grade must land in the distributional dual in
+`(333)`.
+
+The ambient distribution space in `(333)` is parent mathematics and `(328)` is the already-known
+moderation selector.  The new synthesis is the exact index identification
+`(324)`--`(330)` with the tame-regulator primitive torsor and the positive HT shell completion
+graph.
+
+### Universal law and Riemann source specialization
+
+The corpus now suggests a law broader than a positivity or boundedness assertion.
+
+`[BOLD CONJECTURE] [SOURCE_FACTORIZED_MODERATE_LOCALIZATION_LAW]`
+
+> For a source-minimal self-dual constrained hypertranscendental analytic object, perform
+> secondary divisor localization before scalar completion or reflection pushforward.  The
+> resulting factorized conormal, with its analytic--Hermitian tame connection, has a
+> source-effective continuation--record realization.  In every compact source-clock direction
+> that realization lands conservatively and grade by grade in the distributional boundary
+> module; enhanced exponential growth is permitted only in the common irregular source-time
+> direction.  Source duality acts on this one factorized record rather than on two independently
+> renormalized chiral records.
+
+For Xi this asks for one pre-divisor morphism
+\[
+ {\cal N}^{\rm src}_\Xi
+ \longrightarrow
+ \prod_{\rho\in D_\Xi}^{\rm fac}
+ {\cal S}'(\mathbb Z)_{\rho}                             \tag{334}
+\]
+with all of the following properties:
+
+1. it is constructed from the ordinary-prime Euler object, Gamma/Barnes completion, Meyer
+   co-Poisson quotient, BV first trace, and the distinguished safe-half-plane primitive `(315)`;
+2. it is nonzero on every top principal-conormal jet of \(I_\Xi/I_\Xi^2\);
+3. prime dilation acts by the bilateral shift and its local determinant boundary is `(322)`;
+4. the induced connection-difference torsor is \(\mathscr{Prim}_{\Xi,1/2}\);
+5. it is strict under finite-prime and positive-HT-shell enlargement;
+6. reflection exchanges the two orientations inside the same distributional record and never
+   pushes opposite support factors together first.
+
+If `(334)` exists, `(328)` gives
+\[
+ {\cal I}_{\Xi,1/2}(\rho)=0
+\]
+for every nontrivial zero, and RH follows.  Equivalently, `(334)` supplies the source
+path-independence required in `(319)` and the factorized polarized base change required in
+`(301)`.
+
+This conjecture is not claimed as proved or as weaker than RH in the natural analytic quotient.
+Without the source-effective construction, its nonzero specialized distributional landing is
+RH-equivalent.  Its value is that it states one pre-specialization universal law whose shadows
+are exactly the regulator, shell, Wold, Kummer, Kakutani, and Hausdorff-collapse obstructions.
+
+### Superseding correction to Section 35
+
+Clause 3 of `XI_SOURCE_POLARIZED_TAME_BASE_CHANGE` should not be read as asking for an arbitrary
+new positive metric.  Aldrovandi's Hermitian tame-symbol line already supplies the canonical
+metric.  The corrected Clauses 3--4 are:
+
+3. identify that canonical factorized Hermitian metric with the literal source polarization,
+   without requiring the full nilpotent jet operator to be unitary;
+4. prove that the analytic Deligne connection and its Chern connection differ by the
+   source-exact primitive `(319)`, equivalently that their determinant holonomy is unitary
+   supportwise.
+
+The frontier is the source-effective connection comparison, not metric existence.
+
+### Hostile audit
+
+1. `(321)`--`(330)` identify one obstruction but do not make it vanish.
+2. Distributional landing read directly at a chosen zero is exactly the old temperedness
+   criterion.  Only a construction of `(334)` before divisor specialization can count as a
+   creator theorem.
+3. A hyperfunction or enhanced exponential target in every variable is too large: it retains
+   `(323)` off the line and has no purity consequence.
+4. Plain bilateral \(\ell^2\) is too small: it loses bounded unitary characters and therefore all
+   critical-line point fibres.
+5. One-sided Hardy continuity is oriented the wrong way; it makes every strict-right shell
+   conormal bounded.
+6. A global determinant, trace, or reflected product annihilates
+   \({\cal I}(\rho)+{\cal I}(1-\overline\rho)\) identically.
+7. The canonical Hermitian metric alone does not imply unitary analytic holonomy.  Its
+   connection mismatch is exactly `(324)`.
+8. Positive HT shell replication does not force distributional descent.  It supplies the actual
+   source cofinal record `(329)` whose landing must be proved.
+9. Generalized-prime off-line Euler systems falsify every version omitting literal
+   ordinary-integer source incidence: their nonzero indices simply remain enhanced exponential
+   records.
+
+### Literature and priority boundary
+
+Fourier characterization of circle distributions, moderate/enhanced boundary categories,
+Hermitian tame-symbol lines, regulator forms, and conormal determinant characters are parent
+mathematics.  The corpus already contained the prime-Schwartz moderation criterion and the
+high-shell bipolar rate separately.  Targeted corpus and arXiv searches found no statement
+identifying those quantities with the centered tame-regulator primitive-torsor period and the
+factorized determinant modulus as one local index.  This is negative collision evidence, not a
+priority certificate.  The RH-producing source law `(334)` remains open.
+
+## 38. Cofinal Euler--Gamma boundary dipole and conormal proper base change
+
+The target-side third completion is no longer missing.  The mixed Kummer space, the
+prime-valuation Kakutani sector, the source-normal Wold blow-up, and the factorized clock
+distribution all exist.  What is missing is a theorem that an operation commutes with that
+completion.  The operation is principal-conormal localization.
+
+This changes the interpretation:
+
+```text
+the third completion is not one more ambient function space;
+it is a completion together with a proper-base-change law for factorized conormals.
+```
+
+The failure of that base-change law has a concrete boundary measure.
+
+### Exact two-infinity limit of the finite Kummer regulators
+
+Let \(\mathcal P\) be the rational primes and let
+\(\mathcal P^\ast=\mathcal P\sqcup\{\omega_{\rm pr}\}\) be their one-point compactification.
+Keep the Arakelov place \(\infty_{\rm ar}\) distinct from the cofinal prime end
+\(\omega_{\rm pr}\), and put
+\[
+ B_{\rm EP}
+ =
+ \{\infty_{\rm ar}\}\sqcup\mathcal P^\ast .
+                                                               \tag{335}
+\]
+For a finite prime packet \(P\), \(n=|P|\), and a coherent real radial exponent \(c\), the
+component-constant Kummer Riesz regulator of Section 3 of
+`source-effective-polar-kummer-conormal-purity` is the signed measure
+\[
+ \nu_{P,c}
+ =
+ {nc\over n+1}\delta_{\infty_{\rm ar}}
+ -
+ {c\over n+1}\sum_{p\in P}\delta_p .
+                                                               \tag{336}
+\]
+It has total mass zero and is the measure reading of
+\[
+ h_{P,c}={c\over n+1}\sum_{p\in P}
+ \bigl(1_{Y(\mathbb Q,\infty)}-1_{Y(\mathbb Q,p)}\bigr).
+\]
+
+`[PAPER-PROVED] [COFINAL_EULER_GAMMA_BOUNDARY_DIPOLE_LAW]`
+
+As \(P\) runs through the directed set of finite prime packets,
+\[
+ \boxed{\quad
+ \nu_{P,c}
+ \stackrel{w^\ast}{\longrightarrow}
+ c\bigl(\delta_{\infty_{\rm ar}}-\delta_{\omega_{\rm pr}}\bigr).
+ \quad}                                                        \tag{337}
+\]
+Moreover,
+\[
+ \|\nu_{P,c}\|_{\rm TV}
+ =
+ {2n\over n+1}|c|
+ \longrightarrow2|c|.                                        \tag{338}
+\]
+
+To prove `(337)`, let \(\varphi\in C(B_{\rm EP})\).  Continuity at
+\(\omega_{\rm pr}\) says that for every \(\epsilon>0\), all but finitely many primes satisfy
+\[
+ |\varphi(p)-\varphi(\omega_{\rm pr})|<\epsilon.
+\]
+The exceptional finite set contributes \(o(1)\) to the packet average, uniformly over the
+directed cofinal net.  Hence
+\[
+ {1\over |P|}\sum_{p\in P}\varphi(p)
+ \longrightarrow\varphi(\omega_{\rm pr}),
+\]
+and substitution in `(336)` proves `(337)`.  Formula `(338)` is immediate because the two
+supports in `(336)` are disjoint.
+
+Thus the \(L^2\) limit
+\[
+ h_{P,c}\longrightarrow c\,1_{Y(\mathbb Q,\infty)}
+\]
+does not destroy the missing finite-place mass.  It sends it outside the uncompactified
+Hilbert receiver.  The compactified weak limit retains the exact oriented dipole between two
+different infinities.  The strict mixed \(L^1/L^2\) topology refuses this escape because its
+total variation stays \(2|c|\).
+
+### The dipole coefficient is the factorized conormal-anomaly index
+
+For a zero \(\rho\) of \(f\) with multiplicity \(m_\rho\), use the full tame-clock radial
+exponent
+\[
+ c_\rho
+ =
+ -{\cal I}_{f,c_0}(\rho)
+ =
+ -m_\rho(\operatorname{Re}\rho-c_0).                         \tag{339}
+\]
+Then `(337)` becomes
+\[
+ \Delta_{f,c_0}(\rho)
+ :=
+ -{\cal I}_{f,c_0}(\rho)
+ \bigl(\delta_{\infty_{\rm ar}}-\delta_{\omega_{\rm pr}}\bigr).
+                                                               \tag{340}
+\]
+The boundary dipole vanishes exactly when the regulator period, tame-symbol modulus,
+bilateral exponential slope, primitive-torsor monodromy, and HT shell reflection rate in
+Section 37 vanish:
+\[
+ \boxed{\quad
+ \Delta_{f,c_0}(\rho)=0
+ \quad\Longleftrightarrow\quad
+ {\cal I}_{f,c_0}(\rho)=0.
+ \quad}                                                        \tag{341}
+\]
+
+The Wold--Gamma irregular coordinate is another exact scalar reading.  Put
+\(\epsilon_P=\prod_{p\in P}(1-p^{-1})\).  The two reflected Gamma branches with the
+multiplicity-weighted parameter \(t_\rho=m_\rho(\rho-c_0)\) obey
+\[
+ \lim_P{\epsilon_P\over2}
+ \log\left|\exp\left(\pm{2t_\rho\over\epsilon_P}\right)\right|
+ =
+ \pm{\cal I}_{f,c_0}(\rho).                                  \tag{342}
+\]
+Equation `(342)` does not identify the scalar Gamma parameter with the \(\Xi\) conormal; that
+identification remains source-bearing.  It proves that once the source transgression is made,
+its Gamma Stokes slope and its Kummer boundary dipole carry the same coefficient.
+
+### The completion--localization fracture square
+
+There are two orders of operation:
+
+```text
+finite Euler--Gamma source --principal-conormal localization--> finite Kummer regulators
+          |                                                        |
+   source-normal cofinal completion                         strict mixed completion
+          |                                                        |
+completed source section  --principal-conormal localization--> completed conormal
+```
+
+On the coherent rank-one radial sector, `(337)`--`(341)` calculate the entire
+Beck--Chevalley obstruction of this square:
+\[
+ \operatorname{BCDef}_\rho
+ =
+ \Delta_{f,c_0}(\rho).                                      \tag{343}
+\]
+More explicitly, localization followed by weak cofinal completion produces `(340)`.
+Localization followed by strict mixed completion exists exactly when this boundary class is
+zero.  Therefore
+\[
+ \boxed{\quad
+ \text{strict factorized conormal base change exists at }\rho
+ \quad\Longleftrightarrow\quad
+ {\cal I}_{f,c_0}(\rho)=0.
+ \quad}                                                        \tag{344}
+\]
+This is a target theorem, not yet a source theorem.  It neither asserts that the lower
+horizontal arrow exists for \(\Xi\) nor obtains it from entire continuation.
+
+### Universal source law suggested by all obstructions
+
+`[BOLD CONJECTURE] [SOURCE_EFFECTIVE_CONORMAL_PROPER_BASE_CHANGE]`
+
+> Let a source-minimal constrained HT analytic object be given with:
+>
+> 1. a distinguished source-effective section;
+> 2. an ordinary-integral prime action and its finite valuation residues;
+> 3. a self-dual Gamma/real boundary;
+> 4. a source-normal relative character whose regular and singular cofinal increments have
+>    finite total variation;
+> 5. a factorized analytic/differential \(K_2\) principal conormal, retained before reflection
+>    pushforward.
+>
+> Then source-normal cofinal completion commutes with calibrated principal-conormal
+> localization in the strict Deligne--Kummer boundary category.  Equivalently, the
+> Beck--Chevalley morphism in `(343)` exists before divisor specialization and is conservative
+> on every top conormal jet.
+
+For the Riemann source, Items 1--4 are supplied separately by the pointed
+Euler--Gamma/co-Poisson section, the ordinary-prime Wold/BV valuation law, the real Kummer
+boundary, and the nested sieve relative character.  Section 36 constructs the local
+differential \(K_2\) symbol required in Item 5.  What is not proved is their assembly into the
+one proper-base-change morphism.
+
+If the conjecture holds for that assembled source, `(344)` gives
+\[
+ {\cal I}_{\Xi,1/2}(\rho)=0
+ \qquad\text{for every nontrivial zero }\rho,
+\]
+and therefore RH.
+
+The conjecture says what the corpus was missing at a higher level:
+
+```text
+finite arguments see no obstruction because the dipole is supported at the cofinal prime end;
+
+bare Hilbert completion loses one pole of the dipole;
+
+global reflection or determinant pushforward adds the opposite dipole and reports zero;
+
+one-sided Hardy theory admits one orientation of the dipole;
+
+enhanced/Stokes theory retains both nonzero orientations but does not demand descent;
+
+mixed Kummer and Kakutani sectors detect the dipole but do not create the source comparison;
+
+positive HT shells carry the same dipole coefficient to infinite differential depth;
+
+the missing mathematics is proper base change for a source-effective HT conormal across an
+infinite arithmetic completion.
+```
+
+This is the proposed universal law: purity is not primarily positivity, self-adjointness,
+temperedness, or a favorable topology.  Purity is **properness of factorized conormal
+localization at source infinity**.  The critical line is the zero-dipole locus of that
+properness law.
+
+### New consequences and research reduction
+
+1. **Two infinities are load-bearing.**  Identifying
+   \(\infty_{\rm ar}\) and \(\omega_{\rm pr}\) before taking the factorized boundary kills
+   `(340)` for every \(c\) and is nonconservative.  A valid completion must retain both faces and
+   prove descent between them.
+2. **The next theorem is functorial, not spectral.**  It is enough to construct a continuous
+   regulator functor from the source-normal relative determinant/\(K_2\) category to the strict
+   mixed Kummer category and prove that summable Wold--BV source increments remain summable after
+   principal-conormal localization.  This implies the contractive transgression estimate of
+   `prime-sieve-wold-gamma-bv-relative-character`.
+3. **The law extends beyond \(\Xi\).**  Any self-dual completed Euler object with the same proper
+   source comparison has every divisor conormal on its symmetry line.  The conclusion is a
+   generalized RH for that object; the difficult hypothesis is the source proper-base-change
+   theorem, not the target selector.
+4. **Finite HT data cannot decide purity.**  The dipole is zero on every finite-prime
+   compactification boundary because \(\omega_{\rm pr}\) is absent.  Maximal finite differential
+   rank, all finite jets, and every finite occupation determinant can therefore agree while
+   `(340)` differs.
+5. **A proof can now fail at one typed place.**  Either the Riemann principal conormal is not the
+   differential \(K_2\) localization of the nested source character, or the regulator fails to
+   preserve its summable cofinal variation.  Every other target-side purity test is redundant.
+
+### Hostile audit
+
+1. `(337)`--`(344)` are an exact reinterpretation and reduction, not an RH proof.
+2. Declaring the lower horizontal arrow in `(343)` continuous is exactly the missing theorem.
+3. Calling an object “proper” because its divisor dipoles vanish is circular.  Properness must be
+   proved from the five pre-divisor source clauses in the conjecture.
+4. Ordinary proper-base-change theorems do not automatically apply: the source is infinite,
+   bornological, singularly normalized by \(\epsilon_P^{-1}\), and carries a first-trace residue.
+5. Differential cohomology or a determinant line without the distinguished section and BV
+   residue remains divisor-blind.
+6. A generalized-prime Euler system may have an analogous target dipole.  It is a falsifier only
+   if it also satisfies the literal ordinary-integer source incidence and the same
+   source-normal proper-base-change hypotheses.
+7. The weak compactification `(337)` retains off-line dipoles; it does not exclude them.  The
+   purity conclusion comes only from source-effective strict descent.
+8. No Lean formalization of the elementary compactification theorem should be prioritized until
+   the source proper-base-change morphism is constructed.  Formalizing another selector would be
+   theatre.
+
+### Literature boundary
+
+One-point compactification and weak convergence of escaping empirical measures, Kakutani product
+sector theory, proper base change, determinant-line gluing, differential characters, and tame
+regulators are parent mathematics.  Dai--Freed's determinant-line gluing and variation theorem
+and Aldrovandi's Hermitian tame-symbol construction are relevant parent structures, but neither
+supplies the infinite ordinary-prime source-normal comparison in `(343)`.  Targeted corpus and
+arXiv searches found no theorem identifying the two-infinity dipole `(340)` simultaneously with
+the Riemann tame-regulator index, Wold--Gamma Stokes slope, HT shell reflection rate, and failure
+of strict principal-conormal base change.  This is provisional noncollision evidence only.  The
+source law remains conjectural.
+
+## 39. Normalization-amplification no-go and the nearby-cycle correction
+
+Section 38 still permits a dangerous weakening.  Ordinary continuity of a regulator on the
+coarse source completion cannot prove purity, even if the unnormalized source increments have
+finite total variation.  The conormal lives in the normal cone of a class which vanishes at the
+coarse endpoint.  The regulator must commute with that normal-cone specialization.
+
+### Coarse continuity erases every radial exponent
+
+Let
+\[
+ a_P=\prod_{p\in P}(1-p^{-1}),
+ \qquad
+ \xi_P=J(E_Pp_a)=a_PJ(p_a),                              \tag{345}
+\]
+and let
+\[
+ \eta_P=a_P^{-1}\xi_P=J(p_a)                             \tag{346}
+\]
+be the paper-proved source-normal Rees section.  At a coherent radial exponent \(c\), the finite
+mixed-Kummer representative is \(h_{P,c}\) from `(336)`.  An additive regulator compatible with
+the scalar source coefficient in `(345)` necessarily has the coarse radial shadow
+\[
+ \operatorname{Reg}^{\rm coarse}_P(\xi_P)
+ =
+ a_Ph_{P,c}.                                             \tag{347}
+\]
+The exact finite norms give
+\[
+ \|a_Ph_{P,c}\|_1
+ =
+ {2|P|\over |P|+1}|c|a_P
+ \longrightarrow0,
+\qquad
+ \|a_Ph_{P,c}\|_2
+ \le |c|a_P
+ \longrightarrow0.                                      \tag{348}
+\]
+Thus the unnormalized regulator is strongly continuous at the coarse endpoint for every
+\(c\), including every off-critical \(c\ne0\).  Ordinary completion sees only zero.
+
+After source-normal blow-up,
+\[
+ a_P^{-1}\operatorname{Reg}^{\rm coarse}_P(\xi_P)
+ =
+ h_{P,c}.                                                \tag{349}
+\]
+For nested packets \(P_n\subset P_m\), \(|P_j|=j\), the exact transition law is
+\[
+ \|h_{P_m,c}-h_{P_n,c}\|_1
+ =
+ 2|c|{m-n\over m+1}.                                     \tag{350}
+\]
+Hence the normalized target family is strict mixed-Cauchy exactly when \(c=0\).
+
+`[PAPER-PROVED] [COARSE_CONTINUITY_NORMAL_CONE_FRACTURE]`
+
+\[
+\boxed{
+\begin{aligned}
+ a_Ph_{P,c}&\longrightarrow0
+ &&\text{strictly for every }c,\\
+ (h_{P,c})_P&\text{ is strict mixed-Cauchy}
+ &&\Longleftrightarrow c=0.
+\end{aligned}}
+                                                               \tag{351}
+\]
+
+This is the exact normalization amplification which defeated earlier Hilbert, determinant, and
+bounded-regulator arguments.  A map may be perfectly continuous before blow-up and completely
+non-strict on the retained conormal direction.
+
+### The correct universal law is a nearby-cycle theorem
+
+The degeneration \(a_P\to0\), together with `(345)`--`(346)`, is a cofinal Rees deformation:
+the coarse endpoint kills \(\xi_P\), while its source-normal associated-graded class is the
+nonzero principal conormal \(\eta\).  In geometric language, \(\eta\) is a nearby/vanishing-cycle
+direction of the nested arithmetic sieve.
+
+Therefore `SOURCE_EFFECTIVE_CONORMAL_PROPER_BASE_CHANGE` from Section 38 must be read in the
+following stronger form.
+
+`[BOLD CONJECTURE] [SOURCE_EFFECTIVE_REES_CONORMAL_NEARBY_CYCLE_BASE_CHANGE]`
+
+> The completed ordinary-prime Euler--Gamma/co-Poisson source carries a pointed,
+> residue-corrected differential determinant/\(K_2\) character over the cofinal Rees parameter
+> \(a_P\).  Its strict Deligne--Kummer regulator:
+>
+> 1. is constructed on the unnormalized source character before divisor specialization;
+> 2. extends to the source-normal deformation to the cone at \(a_P=0\);
+> 3. commutes with principal-conormal localization and source reflection on the associated
+>    graded/nearby-cycle object;
+> 4. is strict, presentation-independent, and conservative on every top principal-conormal jet.
+
+The order of operations is load-bearing:
+
+```text
+source character
+  -> regulator on the Rees deformation
+  -> source-normal nearby cycle
+  -> factorized divisor localization
+  -> strict mixed boundary
+```
+
+Taking the coarse endpoint before the nearby cycle gives `(348)` and loses all horizontal
+information.  Normalizing an already scalarized determinant gives `(349)` without strictness.
+Only a regulator constructed on the Rees deformation can compare the retained source conormal
+with the two-infinity dipole.
+
+For a Riemann zero, use
+\[
+ c=-{\cal I}_{\Xi,1/2}(\rho)
+\]
+in the multiplicity-retaining tame normalization.  Clauses 2--4 make the normalized family in
+`(349)` a strict mixed nearby cycle.  Equation `(351)` then forces
+\[
+ {\cal I}_{\Xi,1/2}(\rho)=0.
+\]
+Thus the conjecture proves RH.
+
+### What this corrects
+
+1. Finite total variation of the Wold--BV source character does not by itself control the
+   normalized conormal.  Division by \(a_P\) is singular.
+2. A continuous regulator on the coarse determinant line is insufficient.  It maps every
+   coherent radial class to zero at the endpoint.
+3. A regulator defined only after blow-up can be target-fed.  The Rees extension before
+   specialization is the non-circular content.
+4. The third completion is therefore a **deformation-to-the-normal-cone package with strict
+   nearby-cycle base change**, not a bare test-function space.
+5. The first genuinely new construction target is now exact: build the finite-packet
+   residue-corrected regulator on \((a_P,\xi_P)\), prove its prime-enlargement cocycle is a
+   morphism of Rees objects, and show the induced associated-graded map lands in the mixed
+   Kummer boundary without losing the BV principal conormal.
+
+### Universal meaning
+
+The corpus obstructions are shadows of failure to commute three nonexact operations:
+
+```text
+infinite source completion;
+normal-cone/nearby-cycle specialization;
+factorized divisor localization.
+```
+
+Reflection adds a fourth operation which reverses the resulting dipole.  Performing reflection
+or scalar completion first makes the anomaly disappear.  Performing localization first retains
+an off-line exponential record but does not prove it descends.  The sought law says that a
+source-effective HT object admits one joint order-independent realization of all four
+operations.  In its coherent radial rank-one sector, the obstruction to that order independence
+is exactly \({\cal I}_{f,c_0}(\rho)\).
+
+This is sharper than “zeros should be spectral” or “the completion should be unitary.”  It says:
+
+> **critical-line purity is strict nearby-cycle properness of the factorized source conormal.**
+
+### Hostile audit
+
+1. The nearby-cycle conjecture is unproved and remains RH-strength for the Riemann source.
+2. The word “Rees” does not solve the problem: `(345)`--`(346)` construct the algebraic normal
+   direction, while strictness of its Hermitian regulator is the open analytic theorem.
+3. Standard algebraic nearby-cycle proper base change cannot be cited directly.  The parameter
+   is a cofinal arithmetic net, the normalization is singular, and the target is bornological.
+4. If the differential determinant character is constructed only from \(\det_2\), it omits the
+   degree-one first trace which defines \(a_P\) and cannot recover `(346)`.
+5. If the associated-graded regulator is defined by prescribing \(h_{P,c}\) at a chosen zero,
+   the construction is circular.
+6. The conjecture must be tested first on a non-RH HT model with a genuine source-normal
+   degeneration.  Failure there would kill universality before any Riemann claim.
+
+## 40. Corpus collision correction
+
+The normalization-amplification mechanism in Section 39 is not new to the corpus.
+`prime-valuation-conditioning-normalization-amplification-no-go` already proves the stronger
+exact total-variation identities
+\[
+ d_{\rm TV}(\nu_P,\nu_{P\cup\{p\}})=p^{-1},
+ \qquad
+ d_{\rm TV}(\nu_P,\delta_{\mathbf0})=1,
+\]
+and already concludes that a Rees/mapping-cone/local-cohomology boundary is required.
+`polarized-critical-rees-corona-transgression-rh` constructs the same general Rees-corona
+architecture, while `source-effective-boundary-complexity-conservation-law` already formulates
+the producer--reporter Beck--Chevalley cone and identifies completion curvature as the missing
+comparison object.
+
+Accordingly:
+
+1. `(345)`--`(351)` are a Kummer-regulator restatement of an existing corpus no-go, not a novelty
+   claim.
+2. `SOURCE_EFFECTIVE_REES_CONORMAL_NEARBY_CYCLE_BASE_CHANGE` is a sharpening of the existing
+   Rees-corona/completion-curvature program to the factorized tame-regulator target, not an
+   independent route.
+3. The exact positive survivor new to this card is `(337)`--`(342)`: the compactified
+   two-infinity dipole and its coefficientwise identification with the factorized
+   conormal-anomaly index and the candidate Gamma Stokes slope.
+4. The live frontier remains the one already isolated by the recent corpus: identify the
+   projective producer--reporter Weyl comparison with the additive Poisson/Tate intertwiner, then
+   land the pre-divisor \(\Xi\) conormal conservatively in the resulting strict graph.
+
+This collision strengthens rather than weakens the interpretation.  Independent regulator,
+Rees-corona, Hellinger, projective-Weyl, and HT-boundary analyses have converged to the same typed
+missing morphism.
+
+## 41. Local Tate--Julia seam factorization
+
+The first part of the remaining projective-Weyl/Poisson comparison is local and exact.  It is
+classical after the correct half-density coordinate is exposed.
+
+For a rational prime \(p\), put
+\[
+ q=p^{-1/2},
+ \qquad
+ z=p^{\,s-1/2}.                                         \tag{352}
+\]
+The normalized finite-place Fourier/Tate multiplier is
+\[
+ U_p(s)
+ =
+ {1-p^{-(1-s)}\over1-p^{-s}}
+ =
+ {1-qz\over1-qz^{-1}}.                                  \tag{353}
+\]
+Connes--Consani recall that the additive Fourier transform, after passage to the multiplicative
+spectral coordinate, is inversion followed by multiplication by this ratio of local
+\(L\)-factors.
+
+Now form the scalar half-density Julia colligation
+\[
+ {\mathcal J}_q
+ =
+ \begin{pmatrix}
+ q&\sqrt{1-q^2}\\
+ \sqrt{1-q^2}&-q
+ \end{pmatrix}.                                         \tag{354}
+\]
+It is a real orthogonal involution.  With the first coordinate as state and the second as
+input/output, its transfer function is
+\[
+\begin{aligned}
+ \Theta_q(z)
+ &=
+ -q+
+ z(1-q^2)(1-qz)^{-1}\\
+ &=
+ {z-q\over1-qz}.                                       \tag{355}
+\end{aligned}
+\]
+This is the scalar Blaschke factor of the source half-density contraction \(q=p^{-1/2}\).
+
+`[PAPER-PROVED] [LOCAL_TATE_JULIA_CLOCK_SEAM]`
+
+Equations `(353)`--`(355)` give the exact factorization
+\[
+ \boxed{\quad
+ U_p(s)\,\Theta_{p^{-1/2}}\!\left(p^{s-1/2}\right)
+ =
+ p^{s-1/2}.
+ \quad}                                                  \tag{356}
+\]
+
+The proof is one cancellation:
+\[
+ {1-qz\over1-qz^{-1}}\,
+ {z-q\over1-qz}
+ =
+ z.
+\]
+Reflection is equally exact:
+\[
+ U_p(1-s)=U_p(s)^{-1},
+ \qquad
+ \Theta_q(z^{-1})=\Theta_q(z)^{-1}.                     \tag{357}
+\]
+
+### Meaning
+
+The local additive and multiplicative polarizations are not supposed to agree.  Their
+source-normalized comparison leaves precisely the centered prime clock:
+
+```text
+additive Fourier/Tate Weyl multiplier
+  x half-density Julia scattering factor
+  = centered multiplicative clock.
+```
+
+This is the local seam/Bianchi identity which the broader completion-curvature language had not
+written explicitly.  On the critical line, \(|z|=1\), and all three factors in `(356)` are
+unitary.  Off the line, the residual clock has radial modulus
+\[
+ \log|z|
+ =
+ (\operatorname{Re}s-\tfrac12)\log p.                   \tag{358}
+\]
+For a divisor point of multiplicity \(m_\rho\), the top conormal clock is \(z^{m_\rho}\), so
+\[
+ {1\over\log p}\log|z^{m_\rho}|
+ =
+ {\cal I}_{\Xi,1/2}(\rho).                              \tag{359}
+\]
+Thus the factorized conormal-anomaly index is exactly the radial part of the local
+Poisson-versus-Euler seam, not an external critical-line coordinate.
+
+The parameter \(q=p^{-1/2}\) is source-forced in three already-proved ways:
+
+1. it is the square root of the critical squarefree odds \(p^{-1}\);
+2. it is the half-density of one Bruhat--Tits radial edge;
+3. its square is the magnitude of the transverse projective producer--reporter overlap
+   \(-p^{-1}\).
+
+The colligation `(354)` is the minimal conservative dilation of that scalar half-density
+contraction.  What is not yet proved is that the full projective boundary Weyl correspondence,
+including its complementary record and Möbius phase, reduces to this minimal colligation in a
+way compatible with all prime-power cylinders and the additive Schwartz--Bruhat carrier.
+
+### Consequences for the next construction
+
+Equation `(356)` narrows the adelic comparison problem.
+
+1. The local comparison map must not annihilate its defect.  It must output the clock
+   \(z=p^{s-1/2}\).
+2. The ordinary-prime restricted product must retain the collection of these local clock defects
+   as one factorized conormal record.  Taking their scalar product is undefined or cancels after
+   reflection.
+3. The compact prime-angle direction may retain the record only distributionally.  Polynomial
+   bilateral growth of \(z^{m_\rho k}\) forces `(359)` to vanish.
+4. Gamma supplies the archimedean factor of the Fourier/Tate multiplier; the two-infinity dipole
+   `(340)` is the real boundary of the same clock seam after cofinal completion.
+5. The remaining source theorem is no longer an unspecified equality between projective Weyl and
+   Poisson Fourier.  It is a strict global lift of the local factorization `(356)`, conservative
+   on the Meyer/BV principal conormal and its multiplicity jets.
+
+### Hostile audit
+
+1. The local \(L\)-factor ratio, Julia colligation, Blaschke transfer function, and algebraic
+   identity `(356)` are parent mathematics.  Novelty can lie only in their source-geometric
+   conjunction with the projective-prime comparison and conormal index.
+2. `(356)` is not RH.  It calculates the residual clock but does not prove that a \(\Xi\)
+   conormal is a finite-order record of the strict global comparison.
+3. A scalar colligation is not the full \(\mathbb P^1(\mathbb Q_p)\) boundary representation.
+   The prime-power cylinder filtration, complementary record, Möbius determinant torsor, and
+   regular dyadic tower remain to be attached.
+4. Infinite tensoring of the scalar transfer functions is not licensed.  The restricted adelic
+   object must be constructed at correspondence level before applying any state or determinant.
+5. On an enhanced/Stokes target, off-unit \(z\) remains admissible.  The source theorem must land
+   compact prime-clock directions in a finite-order distributional boundary.
+
+### Literature boundary
+
+Connes--Consani, *The Scaling Hamiltonian* (arXiv:1910.14368), Lemma 2.3 and Section 4, give the
+additive-Fourier decomposition into multiplicative inversion and the product of local
+\(L\)-factor ratios.  Conservative Julia colligations and scalar Blaschke transfer functions are
+classical operator-model theory.  Targeted corpus and arXiv searches found no statement of
+`(356)` as the local seam between the projective-prime half-density comparison and the
+factorized Riemann conormal anomaly.  This is negative collision evidence only.
+
+## 42. Transverse metaplectic square root and the all-prime phase obstruction
+
+There is a nontrivial projective--Julia bridge, but it is not the unitary equivalence of two
+rank-one reflections.  That equivalence exists for every reflection and would insert
+\(p^{-1/2}\) only through an arbitrary basis choice.  The source-marked bridge instead starts
+from the negative transverse Gram coefficient.
+
+Put \(q=p^{-1/2}\).  The projective producer and reporter transverse unit vectors satisfy
+\[
+ \langle v_{\infty,p},v_{0,p}\rangle=-q^2,
+ \qquad
+ w_pv_{\infty,p}=v_{0,p},
+ \qquad
+ w_pv_{0,p}=v_{\infty,p}.                               \tag{360}
+\]
+Let \({\cal S}_p\) be the two-dimensional Hermitian space generated by unit vectors \(a_p,b_p\)
+with
+\[
+ \langle a_p,b_p\rangle=q.                              \tag{361}
+\]
+Since \(0<q<1\), this Gram matrix is positive definite.  Define
+\[
+ M_pa_p=i\,b_p,\qquad M_pb_p=i\,a_p.                    \tag{362}
+\]
+The equality of the Gram matrices before and after `(362)` proves that \(M_p\) is unitary, and
+\[
+ M_p^2=-1.                                              \tag{363}
+\]
+In the symmetric square put
+\[
+ A_p=a_p^{\odot2},\qquad B_p=-b_p^{\odot2}.             \tag{364}
+\]
+Then
+\[
+ \langle A_p,B_p\rangle=-q^2,
+ \qquad
+ \operatorname{Sym}^2(M_p)A_p=B_p,
+ \qquad
+ \operatorname{Sym}^2(M_p)B_p=A_p.                     \tag{365}
+\]
+Consequently the marked isometry
+\[
+ A_p\longmapsto v_{\infty,p},\qquad
+ B_p\longmapsto v_{0,p}                                \tag{366}
+\]
+intertwines the symmetric-square spin lift with projective Weyl on the two transverse source
+lines.
+
+`[PAPER-PROVED] [TRANSVERSE_PROJECTIVE_WEYL_METAPLECTIC_LIFT]`
+
+Equations `(360)`--`(366)` prove:
+
+> The negative projective overlap \(-p^{-1}\) is the signed symmetric square of the positive
+> source half-density overlap \(p^{-1/2}\).  Its source-faithful square root is an order-four
+> unitary, not an involution.
+
+The phase in `(362)` is forced up to sign.  Indeed, without an \(i\)-phase, a pure square cannot
+map to the negative pure square in `(364)`.  This gives an exact local meeting of four corpus
+features:
+
+```text
+projective transverse overlap  -p^(-1);
+Tate--Julia source coordinate   p^(-1/2);
+metaplectic/quaternionic lift   M_p^2=-1;
+projective Weyl shadow          Sym^2(M_p)^2=1.
+```
+
+The lift exposes a new obstruction at infinity.  Its normalized symmetric spin vacuum is
+\[
+ r_p^+={a_p+b_p\over\sqrt{2(1+q)}},
+ \qquad
+ M_pr_p^+=i\,r_p^+.                                     \tag{367}
+\]
+For a finite prime packet \(P\),
+\[
+ M_P:=\bigotimes_{p\in P}M_p,\qquad
+ r_P^+:=\bigotimes_{p\in P}r_p^+,
+ \qquad
+ M_Pr_P^+=i^{|P|}r_P^+.                                 \tag{368}
+\]
+The phase net \(i^{|P|}\) has no limit over the directed set of finite prime packets: adjoining
+one new prime changes it by the fixed factor \(i\).  Replacing \(M_p\) by a phase
+\(\lambda_pM_p\) still covers the marked projective Weyl swap in `(365)` only if
+\(\lambda_p^2=1\).  Its vacuum coefficient is then still \(\pm i\), so it cannot approach one.
+Rephasing by \(-i\) fixes the vacuum, but
+\[
+ \operatorname{Sym}^2((-i)M_p)
+ =
+ -\operatorname{Sym}^2(M_p),                            \tag{369}
+\]
+and therefore changes the marked projective Weyl lift by its central sign.
+
+`[PAPER-PROVED] [ALL_PRIME_METAPLECTIC_VACUUM_PHASE_OBSTRUCTION]`
+
+Thus the honest all-prime projective Weyl unitary can exist while no source-faithful choice of
+its marked half-density lifts has an ordinary incomplete tensor product on the spin vacuum.
+The missing all-prime lift is necessarily central-extension-valued: a phase torsor,
+metaplectic line, or equivalent \(2\)-descent object must be retained before scalarization.
+
+### Hostile audit
+
+1. The Gram-plane construction is elementary spin/symmetric-square linear algebra.  Candidate
+   new content is only its exact source conjunction with the projective-prime overlap,
+   Tate--Julia coordinate, and all-prime vacuum obstruction.
+2. `(366)` covers the producer/reporter transverse pair, not the full three-dimensional
+   continuation--record cyclic space.  The complementary symmetric-square line has different
+   eigenvalue bookkeeping and must not be silently identified with the projective common line.
+3. A central phase torsor does not force its radial character to be unitary.  The theorem
+   identifies the correct category of the missing lift; it does not prove critical-line purity.
+4. The earlier metaplectic/Steinberg corpus conjectures anticipated a square-root coefficient
+   extension.  Equations `(360)`--`(369)` add a source-marked local realization and a precise
+   all-prime tensor obstruction; they do not construct the global Steinberg descent.
+
+## 43. The polarization \(2\)-curvature law
+
+The strongest HTGeometry input changes the type of the sought completion.  Multiple-elliptic-
+Gamma mixed-constraint classes are:
+
+1. detected on rank-two faces;
+2. glued by rank-three compatibility;
+3. noncompressible to any proper collection of pair faces.
+
+HT status itself is not completion-stable, so it cannot be the line selector.  The structural
+survivor is instead the complete pair-face nerve.  Tame symbols, Steinberg \(K_2\), determinant
+torsors, the metaplectic phase obstruction `(368)`, and producer--reporter comparison all live
+naturally one categorical level above a scalar Hilbert completion.
+
+This suggests that the three source polarizations should be organized as
+\[
+ {\sf E}=\text{multiplicative Euler},\qquad
+ {\sf P}=\text{additive Poisson},\qquad
+ {\sf G}=\text{archimedean Gamma}.                       \tag{370}
+\]
+The three pair faces carry conservative continuation--record correspondences
+\[
+ {\cal C}_{{\sf E}{\sf P}},\qquad
+ {\cal C}_{{\sf P}{\sf G}},\qquad
+ {\cal C}_{{\sf G}{\sf E}},                             \tag{371}
+\]
+and their triple compatibility is the chain-level Poisson/Tate/product-formula
+\(2\)-isomorphism.  For a divisor conormal at \(\rho\), the local seam `(356)` leaves the
+factorized clock holonomy
+\[
+ h_{p,\rho}
+ =
+ p^{\,m_\rho(\rho-1/2)}.                                \tag{372}
+\]
+Its normalized real \(2\)-curvature is
+\[
+ \kappa_{p,\rho}
+ :=
+ {1\over\log p}\log|h_{p,\rho}|
+ =
+ m_\rho(\operatorname{Re}\rho-\tfrac12)
+ =
+ {\cal I}_{\Xi,1/2}(\rho).                              \tag{373}
+\]
+The right side is independent of \(p\).  The Kummer two-infinity dipole, tame-regulator period,
+Wold--Gamma Stokes slope, bilateral clock growth, projective leakage, and Julia residual are
+therefore scalar shadows of one candidate real \(2\)-curvature.
+
+`[BOLD CONJECTURE] [SOURCE_PRINCIPAL_POLARIZATION_2_CURVATURE_UNITARY_REDUCTION]`
+
+> The completed Riemann source admits a source-fixed Hermitian continuation--record
+> \(2\)-descent field on the complete pair-face nerve `(370)`--`(371)`, constructed before
+> divisor localization from the additive Schwartz--Bruhat Poisson carrier, the multiplicative
+> Euler/projective carrier, and the Gamma/metaplectic carrier.  Strict source-normal
+> factorized-conormal localization preserves its triple \(2\)-isomorphism and multiplicity
+> filtration.  Every principal \(\Xi\)-conormal then has a unitary reduction in this fixed
+> Hermitian \(2\)-descent field.  Equivalently, its real \(2\)-curvature `(373)` vanishes
+> supportwise.
+
+This is a conjecture in the strong sense: current evidence gives a hunch that it is true, while
+no proof of the unitary-reduction clause is known.  The clause must be derived from the
+source-first triple comparison; it may not be imposed as a topology selected after the zero is
+known.
+
+### Conditional purity theorem
+
+If the conjecture holds, RH follows immediately.  Unitary reduction gives
+\[
+ |h_{p,\rho}|=1.
+\]
+Using `(372)`, any single prime gives
+\[
+ 0=\log|h_{p,\rho}|
+  =m_\rho(\operatorname{Re}\rho-\tfrac12)\log p.
+\]
+Since \(m_\rho>0\) and \(\log p>0\),
+\[
+ \operatorname{Re}\rho=\frac12.                         \tag{374}
+\]
+This deduction is elementary; all RH-strength lies in constructing the source-fixed
+\(2\)-descent field and proving unitary reduction after strict factorized localization.
+
+### Why this subsumes the obstruction corpus
+
+```text
+finite Hilbert truncation
+  = one face retained, complementary record deleted;
+
+projective all-prime Weyl
+  = projective shadow exists, metaplectic 2-phase omitted;
+
+Kummer mixed completion
+  = real regulator face retained, triple descent not constructed;
+
+Rees / Beck--Chevalley fracture
+  = conormal localization fails to commute with 2-descent;
+
+HT pair noncompression
+  = no proper face subcollection can carry the complete source;
+
+off-line generalized Euler systems
+  = Euler/Gamma target data exist, but no source-chain additive Poisson triple lift is supplied;
+
+critical-line purity
+  = principal conormal 2-holonomy admits source-fixed unitary reduction.
+```
+
+The proposed “third completion” is therefore not primarily a third normed space.  It is a
+Hausdorff Hermitian \(2\)-descent completion whose objects are source polarizations, whose
+pairwise \(1\)-morphisms retain continuation plus record, and whose \(2\)-morphisms retain the
+Steinberg/metaplectic phase and factorized conormal curvature.
+
+### Exact proof obligations
+
+1. Construct `(371)` on one common source Schwartz--Bruhat/prime-power cylinder category, with
+   the already-proved prime-square Fourier/projective Weyl equivalence as its finite shadow.
+2. Lift `(360)`--`(369)` to the universal Steinberg extension; derive the global central-phase
+   cancellation from Poisson summation and the archimedean Weil/Gamma factor.
+3. Prove the resulting triple comparison is Hermitian and source-fixed, rather than unitarized
+   separately for each spectral parameter.
+4. Construct strict Rees/nearby-cycle localization of this \(2\)-descent field and prove that the
+   full \(\Xi\) principal conormal and all multiplicity jets land conservatively.
+5. Derive unitary reduction of a principal conormal from those chain-level source properties.
+   This is the first genuinely RH-strength theorem and must survive the explicit off-line
+   generalized-Euler countermodels.
+6. Only after Items 1--5 are dependency-closed should `(373)`--`(374)` be formalized as the final
+   Lean selector.
+
+### Two false shortcuts ruled out
+
+1. **Ordinary adelic restrictedness.**  The quasicharacter
+   \(|\cdot|^{c+it}\) is unramified and defines a restricted idele-class character for every
+   real \(c\).  Restricted tensor products do not force unitary Satake parameters.  Replacing
+   the coefficient group by a restricted product relative to \(U(1)\) would assume the desired
+   temperedness.
+2. **Abstract gerbe language.**  A flat complex gerbe may have nonunitary holonomy.  Merely
+   renaming the completion a \(2\)-descent field proves nothing.  Frontier content is the
+   source-derived Hermitian unitary-reduction theorem in Item 5.
+
+### Literature and corpus boundary
+
+Metaplectic covers, Weil representations, Steinberg symbols, \(K_2\)-central extensions,
+Hermitian tame-symbol lines, gerbes, and adelic Poisson splitting are parent mathematics.  The
+corpus already conjectured metaplectic--Steinberg coefficient descent and independently proved
+HT pair localization/triple gluing/noncompression.  Targeted corpus and arXiv searches found no
+source asserting the conjunction `(370)`--`(373)` or its principal-conormal unitary-reduction
+law.  This is negative collision evidence, not a priority claim.
+
+The supplied arXiv identifier `1707.06610` is *Quark matter may not be strange* and contains no
+Riemann, hypertranscendence, Poisson, or tame-regulator input for this route.
+
+## 44. Correction: curvature is a reporter, not the producer
+
+The hostile audit of Section 43 changes the logical order.  A Hermitian \(2\)-descent field can
+have nonunitary radial holonomy, and requiring its principal conormals to have unitary reduction
+is exactly the desired conclusion.  Thus the curvature formula
+\[
+ \kappa_{p,\rho}=m_\rho(\operatorname {Re}\rho-\tfrac12)                 \tag{375}
+\]
+is an exact reporter, but the unitary-reduction clause of the conjecture in Section 43 is not yet
+a source theorem.
+
+The corpus gives a more precise diagnosis.  It repeatedly constructs unconditional positivity on
+one fibre:
+
+```text
+absolute-Euler Carathéodory kernels;
+moving theta hyperbolic carriers;
+all-prime Sonin positive master effects;
+finite von Mangoldt--Gamma joint Grams;
+positive projective Julia defect channels.
+```
+
+None supplies the cross-fibre identification required when aperture, Gamma depth, prime cutoff, or
+polarization changes.  The failures are all losses of cross terms:
+
+```text
+finite truncation                 loses prime-dilation covariance;
+ambient infinite L2              loses divisor evaluation fibres;
+freezing the theta carrier       deletes the replicator covariance;
+factorial trace normalization    replaces a Gram by an unoriented Beta cross-pairing;
+scalarizing metaplectic lifts    loses the all-prime phase record;
+positive Sonin replica moments   leave their Bernstein mismatch with the Xi source uncontrolled.
+```
+
+This suggests a sharper universal principle:
+
+> Fibrewise positivity is not the missing law.  The missing law is complete positivity of the
+> source comparison *between every pair of fibres*, coherent under triple composition.
+
+The complete pair-face nerve from HTGeometry is then not decorative categorical language.  It is
+the natural domain of a two-parameter positive kernel.  Rank-three compatibility is the
+composition law for the pairwise transports.  The scalar curvature `(375)` is what remains after
+that coherent comparison is localized at a divisor and scalarized.
+
+`[CORRECTION]` The source-first order must therefore be
+
+```text
+pairwise source Gram + triple coherence
+  -> one positive resolvent cocycle
+  -> fixed Markov/Thorin carrier
+  -> unitary principal-conormal holonomy
+  -> curvature (375) vanishes
+  -> RH.
+```
+
+It may not begin by postulating the fourth line.
+
+## 45. Exact covariant calculus of the moving theta carrier
+
+The theta boundary source makes the missing coherence explicit.  Put \(q=t^2\), let
+\[
+ p_q(x)\,dx={2\cosh(\sqrt q\,x)\Phi(x)\over Z(\sqrt q)}\,dx,\qquad
+ K_q(x)={x\tanh(\sqrt q\,x)\over\sqrt q},\qquad
+ F(q)=\mathbb E_qK_q.                                    \tag{376}
+\]
+Here \(\Phi\) is the positive theta-cusp source on the positive half-line.  The formalized
+hyperbolic source law identifies \(F(q)\) with the genuine inward Cassini response.
+
+Direct differentiation gives
+\[
+ \partial_q\log p_q(x)={K_q(x)-F(q)\over2}.               \tag{377}
+\]
+For every differentiable observable \(f_q\) for which differentiation under the integral is
+valid,
+\[
+ {d\over dq}\mathbb E_qf_q
+ =
+ \mathbb E_q(\partial_qf_q)
+ +{1\over2}\operatorname {Cov}_q(f_q,K_q).                \tag{378}
+\]
+This is the exact replicator connection already visible at first order.
+
+There is also a canonical spatial transport form.  Define the theta Stein kernel
+\[
+ \tau_q(x)
+ =
+ {1\over p_q(x)}
+ \int_x^\infty\bigl(K_q(y)-F(q)\bigr)p_q(y)\,dy.           \tag{379}
+\]
+Since \(K_q\) is increasing in \(x\), the centered tail integral in `(379)` is nonnegative.
+Moreover,
+\[
+ \partial_x(\tau_qp_q)=-(K_q-F(q))p_q,\qquad
+ \partial_qp_q=-{1\over2}\partial_x(\tau_qp_q).            \tag{380}
+\]
+Thus \(v_q=\tau_q/2\) is a positive velocity for the continuity equation.  Integration by parts
+in `(378)` gives the covariant expectation law
+\[
+ {d\over dq}\mathbb E_qf_q
+ =
+ \mathbb E_q\!\left[(\partial_q+v_q\partial_x)f_q\right]. \tag{381}
+\]
+Writing \(\nabla_q=\partial_q+v_q\partial_x\), one obtains recursively
+\[
+ F^{(n)}(q)=\mathbb E_q\!\left[\nabla_q^{\,n}K_q\right].   \tag{382}
+\]
+
+`[PAPER-PROVED] [EXACT_THETA_COVARIANT_TRANSPORT_BRIDGE]`
+
+Equations `(377)`--`(382)` follow from the positive source law, monotonicity of \(K_q\), and the
+theta decay already established in the corpus.  The generic continuity-equation/Stein-transport
+mechanism is parent mathematics and is not claimed as new.  Its exact role here is diagnostic:
+ordinary derivatives inspect a moving fibre, whereas the RH-bearing signs are covariant
+derivatives of the transported observable.
+
+The fixed-carrier target has an equally exact local dictionary.  If
+\[
+ F(q)=\int_{[0,B]}{d\nu(y)\over1+qy},                     \tag{383}
+\]
+then at any \(q_0\ge0\)
+\[
+ {(-1)^n\over n!}F^{(n)}(q_0)
+ =
+ \int_{[0,B]}
+ \left({y\over1+q_0y}\right)^n{d\nu(y)\over1+q_0y}.       \tag{384}
+\]
+Consequently the full covariant jet in `(382)`, after alternating factorial normalization, must
+be one Hausdorff moment sequence on
+\[
+ \left[0,{B\over1+q_0B}\right].                          \tag{385}
+\]
+Conversely, compact Hausdorff determinacy and analyticity recover the local germ `(383)` from
+`(384)`.  The remaining source theorem is therefore not an unspecified inequality: it is the
+simultaneous Hausdorff hierarchy for the covariant theta observables
+\(\nabla_q^{\,n}K_q\), with one compatible measure.
+
+There is a cross-aperture form that exposes the pair-face geometry.  A representation `(383)`
+gives two positive kernels
+\[
+ {\mathsf A}_F(q,r)
+ =
+ {F(q)-F(r)\over r-q}
+ =
+ \int {y\,d\nu(y)\over(1+qy)(1+ry)},                     \tag{386}
+\]
+\[
+ {\mathsf B}_F(q,r)
+ =
+ {qF(q)-rF(r)\over q-r}
+ =
+ \int {d\nu(y)\over(1+qy)(1+ry)},                        \tag{387}
+\]
+with the diagonal values supplied by derivatives.  These are Gram kernels of the two resolvent
+features
+\[
+ {y^{1/2}\over1+qy},\qquad {1\over1+qy}.                 \tag{388}
+\]
+Thus the all-order one-fibre hierarchy `(384)` and the complete pair-fibre positivity
+`(386)`--`(387)` are two shadows of one resolvent object.
+
+### What the recent Sonin Hausdorff theorem does and does not supply
+
+`SoninCoupledQuantumHausdorff.lean` unconditionally proves a complete Hausdorff hierarchy for the
+density-replica moments of the actual all-prime Sonin master effect.  This is important evidence
+that the corpus already possesses positive compact spectral fibres.  It does **not** identify
+their moments with `(384)`.  The formalized Bernstein comparison isolates the exact remaining
+quantity as the source/target mismatch.  Hence the theorem says:
+
+```text
+positive compact generator exists on the Sonin face;
+Xi Cassini response exists on the theta face;
+the missing mathematics is the coherent source intertwiner between those faces.
+```
+
+Calling the Sonin moment measure the desired \(\nu\) without proving this intertwiner would merely
+rename the open core.
+
+## 46. The Euler--Poisson--Gamma covariant resolvent law
+
+The preceding analysis suggests the following stronger replacement for Section 43.
+
+`[BOLD CONJECTURE] [EULER_POISSON_GAMMA_COVARIANT_RESOLVENT_COMPLETION]`
+
+> There is a source-defined pointed rigged Hilbert module
+> \(({\cal H}_{\mathrm{EPG}},\Omega)\) and a positive self-adjoint generator \(Y\), constructed
+> as the closable cofinal integration of the finite theta-shell, von Mangoldt prime-power,
+> Gamma/polar, and complementary-record blocks, such that:
+>
+> 1. the moving theta fibres \(L^2(P_q)\) have source-defined isometric transports into
+>    \({\cal H}_{\mathrm{EPG}}\) whose infinitesimal compression is the exact connection
+>    `(380)`--`(381)`;
+> 2. the transported completed response vectors are
+>    \(u_q=(1+qY)^{-1}\Omega\);
+> 3. their scalar response is the genuine Cassini source,
+>    \[
+>      F(q)=\langle\Omega,(1+qY)^{-1}\Omega\rangle;        \tag{389}
+>    \]
+> 4. the finite source transports retain the Euler--Gamma and Poisson--Gamma cross terms, obey
+>    the resolvent cocycle before scalarization, and converge in a Hausdorff rigged topology
+>    retaining every principal \(\Xi\)-conormal evaluation.
+
+The operative identity is
+\[
+ (1+qY)^{-1}-(1+rY)^{-1}
+ =
+ (r-q)(1+qY)^{-1}Y(1+rY)^{-1}.                           \tag{390}
+\]
+Its two compressions are exactly the Gram kernels `(386)`--`(387)`.  This makes “triple
+coherence” testable: the transport from \(q\) to \(r\) and then \(r\) to \(s\) must agree with
+the direct transport and preserve `(390)`.  It also makes “third completion” precise.  The
+completion is the reproducing/rigged module generated by the whole resolvent history
+\(\{u_q\}\), not a finite truncation and not ambient adelic \(L^2\).
+
+### Why this would force the critical line
+
+The compact version of `(389)`, with the corpus support aperture, is exactly the local
+theta-boundary Markov premise already transported in Lean to the centered completed-seam germ.
+The existing unconditional consumer then yields RH.  Equivalently, the squared centered divisor
+is the singular support of a positive self-adjoint resolvent, hence lies on the real
+nonpositive spectral ray.  Therefore every centered divisor coordinate is purely imaginary,
+and localization of `(390)` gives
+\[
+ |p^{m_\rho(\rho-1/2)}|=1,\qquad
+ \kappa_{p,\rho}=0.                                      \tag{391}
+\]
+Thus principal-conormal unitarity and Section 43's curvature law are consequences of the
+resolvent completion, not hypotheses inserted into it.
+
+### New universal interpretation
+
+The conjecture asserts a general mechanism beyond this one function:
+
+> Temperedness is source resolvent coherence.  A completed Euler--Poisson--Gamma object is
+> tempered when its positive local polarizations integrate to one self-adjoint resolvent
+> history; nontempered divisor curvature is the obstruction to that integration.
+
+This interpretation simultaneously explains:
+
+```text
+Euler positivity               = positivity of one convergence-side fibre;
+theta positivity               = positivity of a moving additive fibre;
+Gamma/polar completion         = cross-term orienting the fibre comparison;
+Sonin master effects           = finite positive spectral models;
+HT rank-two detection          = pairwise resolvent Gram detection;
+HT rank-three gluing           = resolvent-cocycle composition;
+metaplectic phase obstruction  = failure of scalar rather than module-valued coherence;
+projective leakage             = norm lost after deleting the complementary record;
+off-line generalized systems   = local positive fibres without the EPG coherent intertwiner;
+critical-line purity           = self-adjoint spectral support after coherent integration.
+```
+
+### Finite-stage construction obligations
+
+For a prime packet \(P\) and Gamma depth \(N\), the conjecture demands explicit objects, not
+abstract dilation language:
+
+1. construct a joint completed source block \(Y_{P,N}\) from theta integer shells, von Mangoldt
+   prime powers, incomplete-Gamma packets, polar cancellation, and the complementary record;
+2. prove \(Y_{P,N}\ge0\) only after the polar--zeta cancellation and Beta-reflection orientation
+   have been included;
+3. construct the finite resolvent vectors \(u^{P,N}_q\) and prove the exact analogue of `(390)`
+   for all pairs \(q,r\) in one source interval;
+4. prove compatibility under \(P\subset P'\) and \(N\le N'\), including the mixed cross terms,
+   rather than only convergence of diagonal moments;
+5. prove closability, tight spectral support, and convergence of the two Gram kernels
+   `(386)`--`(387)` to the genuine theta response;
+6. identify the limit on an open source domain without using Xi zeros, target Hankel
+   determinants, target Jacobi parameters, or a post-selected unitarization.
+
+The existing finite von Mangoldt--Gamma joint Grams address pieces of Items 1--2.  The exact theta
+transport `(380)` addresses the infinitesimal form of Item 3.  The Sonin master effect supplies a
+candidate positive generator for Item 1.  No corpus theorem currently proves their common
+intertwiner or the cofinal resolvent identity.
+
+### Falsifiers
+
+The route fails if any one of the following occurs:
+
+1. some completed finite pair kernel corresponding to `(386)` or `(387)` has a negative Gram
+   matrix after all forced source cross terms are included;
+2. the finite transports are positive but violate the three-aperture cocycle;
+3. the cofinal operator is nonclosable or loses the pointed vector;
+4. spectral tightness requires a measure read from the Xi divisor;
+5. the limit matches only finitely many derivatives rather than an analytic source germ;
+6. the proposed generator is merely the positive Sonin master effect with the unresolved
+   Bernstein mismatch renamed.
+
+### Novelty calibration
+
+Stein transport for changing probability laws, Hausdorff moment theory, positive self-adjoint
+resolvents, Loewner kernels, GGC/Thorin representations, Stinespring dilation, and Hilbert-module
+completion are parent mathematics.  Targeted corpus and arXiv searches found these ingredients
+separately, including Stein transport along tempered probability curves and the known
+Thorin/RH equivalence.  No located source supplies the exact EPG conjunction `(376)`--`(390)` or
+constructs its generator from divisor-free Riemann source data.  This is negative collision
+evidence, not a priority claim.
+
+Most importantly, `(389)` remains an RH-strength conjecture.  The advance here is not a proof of
+its positivity.  It replaces a circular unitary-reduction hunch by one exact cross-aperture source
+law, exposes its finite falsifiers, and shows which existing positive corpus objects must be
+intertwined rather than accumulated independently.
+
+## 47. Reversibility is insufficient; the equilibrium sector must be source-pinned
+
+A natural attempted interpretation of Section 46 is that Euler prime powers are forward jumps,
+Poisson reflection supplies reversed jumps, and Gamma/polar completion enforces detailed balance.
+This is too weak.
+
+For a centered radial exponent \(c<1/2\), the proved prime-valuation law is
+\[
+ \mu_{p,c}(k)=(1-b_{p,c})b_{p,c}^{\,k},\qquad
+ b_{p,c}=p^{-(1-2c)}.                                    \tag{392}
+\]
+On \(\mathbb N_0\), consider the birth--death rates
+\[
+ k\longrightarrow k+1\quad\hbox{at rate }b_{p,c},\qquad
+ k+1\longrightarrow k\quad\hbox{at rate }1.              \tag{393}
+\]
+Then
+\[
+ \mu_{p,c}(k)b_{p,c}=\mu_{p,c}(k+1),                      \tag{394}
+\]
+so `(392)` is reversible for `(393)` for **every** \(c<1/2\).  Taking products gives a reversible
+prime-valuation process in every radial sector.  Abstract detailed balance therefore does not
+select the critical line; it allows the equilibrium state to move with the conormal.
+
+`[PAPER-PROVED] [RADIAL_DETAILED_BALANCE_NONSELECTIVITY]`
+
+This is the stochastic version of two existing corpus countermodels:
+
+```text
+diag(exp(delta t),exp(-delta t)) with reflected time reversal
+  is reversible for every delta;
+
+the Kakutani product sector mu_c
+  is internally well-defined for every c<1/2,
+  but is normal to the critical sector mu_0 only for c=0.
+```
+
+Thus neither reflection, reversibility, a self-adjoint realization in a conormal-dependent
+metric, nor zero cycle affinity proves RH.
+
+The adjective **source-defined** in `(389)` is consequently load-bearing.  The conjecture must
+produce one pointed state \(\Omega\), one generator \(Y\), and one spectral measure before divisor
+localization.  It must then prove strict source-normal base change:
+\[
+ \operatorname{Loc}_{\rho}
+   \bigl(\operatorname{Completion}_{\rm EPG}(\text{source})\bigr)
+ \;\cong\;
+ \operatorname{Completion}_{\rm EPG}
+   \bigl(\operatorname{Loc}_{\rho}(\text{source conormal})\bigr),       \tag{395}
+\]
+with the right side normal in the same pointed sector for every \(\rho\).  A metric, invariant
+measure, or self-adjoint extension allowed to depend on \(\rho\) makes `(395)` vacuous.
+
+Equation `(395)` is exactly where the infinity problem lives:
+
+```text
+finite level:
+  localization exists, but completion covariance leaks;
+
+ambient infinite L2:
+  completion exists, but localization fibre vanishes;
+
+prime-valuation sector field:
+  both objects exist, but source-normal base change is unproved;
+
+covariant EPG resolvent completion:
+  conjecturally makes completion and principal-conormal localization commute.
+```
+
+The Kakutani theorem then becomes the radial selector rather than the producer.  If `(395)` puts
+the fibre at \(\rho\) normally in the source-pinned critical sector, its exponent
+\(c=1/2-\operatorname{Re}\rho\) must be zero.  But source-normality in `(395)` remains RH-strength;
+it cannot be inferred from internal reversibility of the fibre.
+
+### Revised universal-law statement
+
+The strongest surviving interpretation is therefore:
+
+> **Temperedness is source-pinned resolvent base change.**  A completed arithmetic object is
+> tempered when its divisor localization commutes with one divisor-independent, record-complete
+> positive resolvent completion.  Off-line curvature is the Radon--Nikodym/Kakutani obstruction
+> to that base change.
+
+This law is sharper than “zeros are eigenvalues of a self-adjoint operator.”  It says why the
+inner product and operator cannot be selected after seeing the zeros, why finite truncations and
+ambient \(L^2\) fail in opposite ways, and why a generalized off-line Euler system is not a
+counterexample unless its conormals also satisfy the same literal ordinary-prime EPG base-change
+theorem.
+
+It also identifies the first genuinely proof-bearing lemma more precisely than Section 46:
+
+`[OPEN CORE] [SOURCE_PINNED_EPG_RESOLVENT_BASE_CHANGE]`
+
+Construct the finite completed EPG resolvent comparison on the source-normal blow-up and prove
+that its pointed spectral state is independent of prime cutoff, Gamma depth, theta aperture, and
+eventual conormal specialization.  The cofinal limit must carry the BV/Mertens principal normal
+class normally in that one state.  Once this is proved, the existing Kakutani, compact-Markov,
+and principal-curvature consumers give three independent routes to `(391)`.
+
+## 48. The quasianalytic jump is false: flatness is a retained face, not a vanishing criterion
+
+One tempting attempt to strengthen `(395)` is:
+
+```text
+finite divisor multiplicity + membership in every powered prime range
+  ==> zero.
+```
+
+The internal HT corpus rules this out.  The multiple-elliptic-Gamma flat-phase-reversal theorem
+constructs a nonzero hypertranscendental source section whose difference from the
+differential-algebraic boundary is flat to every order.  More decisively, the unconditional Lean
+theorems
+
+```text
+periodIncidenceFlatTarget_mem_all_poweredRanges
+periodIncidenceFlatTarget_ne_zero_of_not_discrete
+```
+
+in `HTGeometry/PeriodIncidenceFlatIntersection.lean` exhibit a nonzero target in every powered
+range; the same formal development separates exact ranges while their norm closures collapse.
+
+`[CORPUS-PROVED] [ALL_ORDERS_FLAT_NONVANISHING]`
+
+Therefore neither Krull-intersection rhetoric, norm-closure separation, finite spectral
+multiplicity, nor hypertranscendence alone can delete an off-line conormal.  A source topology
+fine enough to remember the HT flat face is necessary.  What must vanish is not the flat vector
+but a **resolvent defect carried by it**.
+
+This also sharpens the role of the multiple-elliptic-Gamma rank dichotomy.  Rational-rank
+arithmetic may determine which seminorms and incidence directions the source topology must see;
+it does not by itself turn that topology quasianalytic.  Any proof using it as a bare
+flat-implies-zero principle contradicts the formal corpus.
+
+Thus `[SOURCE_PINNED_EPG_RESOLVENT_BASE_CHANGE]` in Section 47 is still too compressed.  It hides
+three noncommuting operations:
+
+```text
+form source cohomology;
+complete in a positive metric;
+localize at a divisor conormal.
+```
+
+The corpus says that completing first loses the conormal, while localizing first permits a
+conormal-dependent metric.  The missing construction must fix the order rather than identify a
+single miraculous ambient Hilbert space.
+
+## 49. The third completion is a rigged cohomology sequence
+
+The proposed universal reinterpretation is:
+
+> **Constraints before completion; purity by source-topology resolvent exactness.**
+> Form the strict source cohomology before metric completion.  Use its positive Hodge completion
+> only to produce unitary dynamics, while retaining the original nuclear topology as the test
+> topology on which arithmetic conormals live in the continuous dual.
+
+The required object is consequently a sequence, not one space:
+\[
+ C^\bullet_{\rm src}
+ \ \longmapsto\
+ E:=H^1_{\rm str}(C^\bullet_{\rm src})
+ \ \supset\
+ D_{\rm src}
+ \ \hookrightarrow\
+ H_{\rm Hdg}
+ \ \hookrightarrow\
+ D_{\rm src}',                                                   \tag{396}
+\]
+where:
+
+1. \(C^\bullet_{\rm src}\) is built from Euler, Gamma, Poisson, and Cauchy data before zero
+   localization;
+2. \(E\) is Hausdorff strict nuclear cohomology;
+3. \(D_{\rm src}\) is nuclear-dense in \(E\), invariant under the centered flow
+   \(A=\Theta-\tfrac12\), and fine enough that every nonzero divisor conormal remains nonzero on
+   \(D_{\rm src}\);
+4. a source-defined positive Green form embeds \(D_{\rm src}\) densely into
+   \(H_{\rm Hdg}\);
+5. \(A\) extends to a skew-adjoint operator on \(H_{\rm Hdg}\).
+
+The divisor points need not be vectors of \(H_{\rm Hdg}\).  They are allowed, and expected, to be
+continuous transpose eigenfunctionals in \(D_{\rm src}'\).  This simultaneously avoids the two
+known failures:
+
+```text
+finite truncation:
+  conormals remain, covariance leaks;
+
+ambient adelic L2:
+  covariance and self-adjointness remain, conormals disappear;
+
+rigged source cohomology:
+  conormals remain in D_src', while H_Hdg supplies the unitary axis.
+```
+
+### Exact defect law
+
+For \(z\in\mathbb C\), define the reduced source resolvent cohomology
+\[
+ {\mathfrak R}_z(D_{\rm src})
+ :=
+ D_{\rm src}/\overline{(A-z)D_{\rm src}}^{\,D_{\rm src}}.          \tag{397}
+\]
+Continuous linear duality gives the exact identity
+\[
+ {\mathfrak R}_z(D_{\rm src})'
+ \cong
+ \ker\!\left((A-z)' : D_{\rm src}'\longrightarrow D_{\rm src}'\right).
+                                                                    \tag{398}
+\]
+Indeed, both sides are exactly the continuous functionals annihilating
+\((A-z)D_{\rm src}\).  No positivity, compactness, or spectral theorem is used in `(398)`.
+
+If the Riemann conormal \(\lambda_\rho\) satisfies
+\[
+ \Theta'\lambda_\rho=\rho\lambda_\rho ,
+\]
+then its nonzero restriction to \(D_{\rm src}\) gives
+\[
+ 0\ne[\lambda_\rho]\in
+ {\mathfrak R}_{\,\rho-1/2}(D_{\rm src})'.                         \tag{399}
+\]
+Thus a zero is not fundamentally a point eigenvector.  It is a nonzero topological obstruction
+to solving the source-normal equation
+\[
+ (A-(\rho-\tfrac12))u=f.                                          \tag{400}
+\]
+
+This yields a strictly weaker proof obligation than source-core automorphy: dense range is enough.
+If
+\[
+ \overline{(A-z)D_{\rm src}}^{\,D_{\rm src}}=D_{\rm src}
+ \qquad(\operatorname{Re}z\ne0),                                  \tag{401}
+\]
+then `(398)` forbids every off-axis divisor conormal.  Consequently `(399)` and `(401)` give
+\[
+ \operatorname{Re}(\rho-\tfrac12)=0,
+ \qquad\text{hence}\qquad
+ \operatorname{Re}\rho=\tfrac12.                                  \tag{402}
+\]
+
+`[PAPER-PROVED] [REDUCED_RESOLVENT_COHOMOLOGY_DUALITY]`
+
+`[CONDITIONAL] [SOURCE_DENSE_RANGE_PURITY]`
+
+The algebraic implication is exact.  The arithmetic premise `(401)` is the RH-strength step.
+
+### Bold source law
+
+`[BOLD CONJECTURE] [SOURCE_COHOMOLOGY_FIRST_POLARIZED_RESOLVENT_EXACTNESS]`
+
+The literal Riemann Euler--Gamma--Poisson source admits `(396)` such that
+\[
+ \operatorname{supp}_{\mathbb C}{\mathfrak R}_\bullet(D_{\rm src})
+ \subset i\mathbb R.                                               \tag{403}
+\]
+Equivalently, every off-axis centered Hilbert resolvent has dense source-topology range, even
+though its inverse need not preserve every source seminorm continuously.
+
+This is a conjecture in the intended strong sense: the corpus gives reasons to expect it, but no
+present proof of its arithmetic premise.  It is also falsifiable.  A single off-axis \(z\) and a
+nonzero continuous source functional annihilating \((A-z)D_{\rm src}\) refutes `(403)`.
+
+The conjecture is not asserted for arbitrary hypertranscendental functions or arbitrary
+self-dual entire functions; the explicit generalized-prime off-line systems forbid that.  Its
+domain is the source-minimal, self-dual, polarizable Euler--Gamma--Poisson complex with the
+literal ordinary-prime source.
+
+### What the earlier laws become
+
+Under `(396)`--`(403)`, the major corpus phenomena are shadows of one order-of-operations law:
+
+```text
+Kakutani singularity:
+  radial image of a nonzero source resolvent defect;
+
+Ward/Cauchy orientation:
+  scalar boundary report of the defect, not its sign-producing cause;
+
+principal conormal curvature:
+  local geometric image of failure of source exactness;
+
+all-orders-flat HT sections:
+  legitimate D_src directions invisible to coarser Hilbert closure;
+
+finite propagation/leakage:
+  failure of finite source stages to be resolvent invariant;
+
+continuous-spectrum disappearance:
+  result of completing before taking strict cohomology;
+
+Meyer divisor module:
+  strong-dual support of reduced source resolvent cohomology;
+
+critical line:
+  unitary boundary on which skew-adjoint dynamics may support that cohomology.
+```
+
+The scalar Stieltjes/Markov conjecture of Section 46 is therefore demoted: a scalar Cassini
+response need not itself be a positive resolvent transform.  EPG data should construct the
+chain-level Green operator and the topology of \(D_{\rm src}\); scalar transforms are
+compressions that report whether `(401)` holds.
+
+### Immediate new corollaries and audit gates
+
+If `(403)` is proved, then:
+
+1. every continuous generalized eigenfunctional of the source complex lies on the unitary axis,
+   not only those already identified with zeta zeros;
+2. no all-orders-flat HT direction can carry an off-axis continuous resolvent defect;
+3. any off-axis resonance in an analytically continued Hilbert resolvent proves failure of the
+   proposed source topology or polarization, rather than merely failure of self-adjointness;
+4. RH reduces to topological dense range, not construction of zero-indexed Hilbert eigenvectors
+   or a compact operator with prescribed spectrum.
+
+The construction is circular unless all of the following are source-side:
+
+```text
+positive complex structure / second Riemann bilinear relation;
+global all-place Green form and full Cauchy boundary classification;
+strict nuclear Poisson comparison before divisor localization;
+strong compatibility of centered resolvents with source regularity and boundary conditions;
+proof that every Meyer divisor functional is continuous and nonzero on D_src.
+```
+
+Local Hodge stars, target-indexed polarizations, or metrics selected after observing
+\(\rho\) do not satisfy these gates.  Skew-adjointness on \(H_{\rm Hdg}\) alone is also
+insufficient: it gives off-axis inversion in the Hilbert topology, while `(401)` concerns the
+strictly finer source topology.
+
+`[OPEN CORE] [GLOBAL_SOURCE_POLARIZATION_AND_DENSE_RESOLVENT_RANGE]`
+
+Construct the source-positive complex structure and prove `(401)` directly from its
+Euler--Gamma--Poisson boundary calculus.  This is now the unique nonformal mathematical producer.
+The divisor comparison, reduced-defect duality, and critical-line deduction are consumers.
+
+## 50. Collision correction: dense range is a weakening, not the universal jump
+
+Sections 28--29 and `deninger-tate-poisson-pro-hodge-rigging` already identified the essential
+locally convex/directed-Hilbert alternatives to one ambient Hilbert space.  In particular, they
+already proved the forward equicontinuous and directed-conormal purity consumers and proposed a
+positive-collar pro-Hodge family retaining strong-dual conormals.
+
+Therefore Section 49 contributes only the following genuine refinement:
+
+```text
+old source-resolvent consumer:
+  every off-axis operator difference is surjective;
+
+new source-resolvent consumer:
+  every off-axis operator difference merely has dense range
+  in the topology on which divisor conormals are continuous.
+```
+
+The Lean theorems
+
+```text
+deningerContinuousTransposeEigenfunctional_eq_zero_of_sub_denseRange
+deningerSourceDenseRange_transposeEigenvalue_re_eq_zero
+deningerSourceDenseRange_transposeEigenvalue_re_eq_half
+riemannHypothesis_of_hodgeSchwartzDenseRangeXiSpectrum
+```
+
+now formalize that weakening unconditionally.  It is useful, but it does not construct the source
+topology or its polarization.  Calling `(396)` itself the missing universal law would rediscover
+the earlier pro-Hodge work.
+
+The producer still has to explain why one source-positive structure controls all shell/prime/HT
+directions simultaneously.  The next synthesis uses a different corpus ingredient: scalar
+commutant rigidity of a complete labelled observation.
+
+## 51. Complete-observation unitarization: fusion turns Hodge naturality into a two-generator law
+
+The positive HT divisor frame gives more than many copies of the same zero.  It canonically gives
+an irreducible **source observation pair**.
+
+Fix \(M\ge12\) and put
+\[
+ h_m:=H_m(1)
+ =
+ {1\over\zeta(m+1)}-{1\over\zeta(m)}>0,
+ \qquad m\ge M.                                           \tag{404}
+\]
+For a finite shell aperture \(I_N=\{M,\ldots,N\}\), let
+\[
+ \Omega_N=(\sqrt{h_m})_{m\in I_N},\qquad
+ L_N=\operatorname{diag}(m)_{m\in I_N},\qquad
+ P_N=\Omega_N\Omega_N^\ast.                              \tag{405}
+\]
+Here \(L_N\) remembers which positive source shell is being observed, while \(P_N\) remembers
+that all shells fuse into one pointed source.  Neither uses a zero.
+
+`[PAPER-PROVED] [FULL_SUPPORT_FUSION_COMMUTANT_RIGIDITY]`
+
+If \(X\in\operatorname{End}(\mathbb C^{I_N})\) commutes with both \(L_N\) and \(P_N\), then
+\[
+ X=c\,1.                                                  \tag{406}
+\]
+Indeed, the simple spectrum of \(L_N\) makes \(X\) diagonal.  The
+\((m,n)\)-entry of \([X,P_N]\) is
+\[
+ (X_{mm}-X_{nn})\sqrt{h_mh_n}.
+\]
+Every \(h_m\) is nonzero, so all diagonal entries agree.
+
+`[LEAN-FORMALIZED]`
+
+The theorem
+
+```text
+eq_scalar_of_commutes_labelledCoordinate_weightedCompleteCoupling
+```
+
+formalizes `(406)` over an arbitrary field and arbitrary nonzero full-support weights.
+
+### Polar-defect commutant law
+
+Let \(\mathcal A_N\) be the algebra generated by \(L_N\) and \(P_N\), and let \(C_N\) be
+invertible.  Suppose spatial continuation
+\[
+ \alpha_N(A)=C_NAC_N^{-1}                                \tag{407}
+\]
+preserves adjoints on \(\mathcal A_N\):
+\[
+ \alpha_N(A^\ast)=\alpha_N(A)^\ast.
+                                                                    \tag{408}
+\]
+Taking adjoints in `(407)` and comparing with `(408)` gives
+\[
+ A^\ast C_N^\ast C_N=C_N^\ast C_NA^\ast
+ \qquad(A\in\mathcal A_N).                               \tag{409}
+\]
+Thus \(C_N^\ast C_N\) lies in the commutant of \(\mathcal A_N\), and `(406)` forces
+\[
+ C_N^\ast C_N=c_N1,\qquad c_N>0.                         \tag{410}
+\]
+So a spatial continuation that is natural for only the two source observables in `(405)` is
+already conformal.  No zero-indexed inner product or full list of Hodge matrix coefficients is
+needed.
+
+This is parent Schur/multiplicative-domain mathematics.  The arithmetic content is the proposed
+choice of the two generators from the positive shell source.
+
+### Exact shell-purity consequence
+
+For \(\Re s>1/2\), the positive divisor frame provides the nonzero diagonal continuation
+coordinates
+\[
+ c_m(s):={H_m(s)\over\sqrt{h_m}},
+ \qquad
+ C_N(s)=\operatorname{diag}(c_m(s))_{m\in I_N}.           \tag{411}
+\]
+Its polar defect is
+\[
+ C_N(s)^\ast C_N(s)
+ =
+ \operatorname{diag}\left(
+   {|H_m(s)|^2\over h_m}
+ \right)_{m\in I_N}.                                     \tag{412}
+\]
+If the source continuation on the principal divisor conormal satisfies `(408)` compatibly for
+all \(N\), then `(410)` makes the ratios in `(412)` independent of \(m\).  But the proved shell
+likelihood-rate theorem gives
+\[
+ \lim_{m\to\infty}{1\over m\log2}
+ \log {|H_m(s)|^2\over h_m}
+ =
+ 1-2\Re s.                                                \tag{413}
+\]
+A constant positive sequence has rate zero.  Hence
+\[
+ (408)\quad\Longrightarrow\quad
+ \Re s=\frac12.                                          \tag{414}
+\]
+If RH is false, the functional equation supplies a zero in
+\(\Re s>1/2\), where `(411)` is available.  Therefore a source-global version of `(408)` on the
+Riemann principal conormal proves RH.
+
+This deduction is different from demanding a scalar sign.  Off-line displacement is the
+non-scalar positive operator `(412)`.  The critical line is exactly the locus where the polar
+defect can belong to the scalar commutant of the complete source observation.
+
+### Universal interpretation
+
+> **A complete source observation turns covariance into unitarity.**
+> Analytic continuation may preserve an indefinite pairing while acquiring a non-scalar polar
+> defect.  If it is adjoint-natural for a source-labelled observable and one full-support fusion
+> coupling, that defect has nowhere to live: irreducibility makes it scalar.  Source asymptotics
+> then force zero modular drift.
+
+This reinterprets the obstruction corpus as follows:
+
+```text
+finite truncation leakage:
+  adjoint-natural similarities exist separately, but their scalar rays
+  need not be compatible under aperture enlargement;
+
+ambient adelic L2:
+  covariance exists after the fusion conormal has disappeared, so the
+  full-support rank-one generator is absent;
+
+off-line generalized-prime Euler systems:
+  retain diagonal positivity and reflection, but their polar defect is
+  non-scalar and therefore fails full-fusion adjoint naturality;
+
+all-orders-flat HT directions:
+  remain legitimate source directions; they are not killed, but a
+  natural metric defect cannot assign them an independent positive weight;
+
+positive shell frame:
+  supplies the simple label and full-support coupling before localization;
+
+Wold likelihood slope:
+  is the asymptotic spectrum of the polar defect;
+
+Hodge/Green positivity:
+  is no longer an arbitrary global matrix construction; it is the
+  assertion that continuation preserves the star on two source generators;
+
+critical line:
+  is scalarity of the continuation polar defect.
+```
+
+The HT role is therefore not “hypertranscendence implies a zero.”  The disjoint positive shell
+channels and their transverse differential independence prevent the complete source observation
+from collapsing to a finite redundant channel.  The Kähler--Tate clock supplies the Ind--Pro
+boundary on which the infinite labelled observation should live.  The fusion projector supplies
+the missing coupling that a diagonal or fibrewise metric never sees.
+
+### Bold source conjecture
+
+`[BOLD CONJECTURE] [XI_SHELL_FUSION_STAR_COVARIANT_CONTINUATION]`
+
+The ordinary-prime Euler--Gamma/co-Poisson continuation of the principal Xi conormal admits a
+source-defined compatible spatial lift on every finite positive-shell packet such that:
+
+1. its shell-coordinate restriction is `(411)`;
+2. it intertwines the labelled shell observable \(L_N\);
+3. conjugation by the lift preserves the adjoint of the source fusion projector \(P_N\);
+4. the lifts commute with aperture enlargement, Gamma transgression, the Rees boundary map, and
+   functional-equation reflection; and
+5. all structures are constructed on the principal conormal module before divisor
+   specialization.
+
+Clause 3 is the sole new metric equation.  Since the diagonal relation in Clause 2 is automatic,
+it is enough to prove
+\[
+ \left(C_NP_NC_N^{-1}\right)^\ast
+ =
+ C_NP_NC_N^{-1}                                         \tag{415}
+\]
+as a source-cohomological identity.  Equivalently, in a unital completely positive realization,
+\(P_N\) lies in the multiplicative domain of continuation.  Equations `(406)`--`(414)` then prove
+RH.
+
+This conjecture is a truth hunch, not a disguised claim of proof.  It is motivated by the exact
+positive fusion, full-support Wold weights, finite Hodge chain maps, and scalar-commutant theorem.
+Its provability is unknown.
+
+### Hostile audit
+
+1. Coefficientwise positive fusion does not itself construct the operator lift `(407)`.
+2. Analytic continuation is not generally positive or completely positive.
+3. Verifying `(415)` after choosing a zero and fitting a metric is exactly circular.
+4. Multiplicativity on the diagonal shell algebra is useless; the rank-one fusion projector must
+   lie in the same multiplicative domain.
+5. A separate star on each aperture is insufficient.  Compatibility of the scalar rays in
+   `(410)` is load-bearing.
+6. Indefinite reflection pairing gives
+   \(H_m(s)\overline{H_m(1-\overline s)}\), not the positive defect `(412)`, and permits every
+   off-line quartet.
+7. Tomita--Takesaki positivity or abstract unitarization does not prove `(415)`; the failed
+   modular routes remain failed.
+8. The full-support commutant theorem is classical.  Frontier movement occurs only if the
+   Euler--Gamma/co-Poisson source proves the fusion star-covariance.
+
+`[OPEN CORE] [XI_POSITIVE_SHELL_FUSION_MULTIPLICATIVE_DOMAIN]`
+
+Construct the fusion projector as a class in the source Rees/Calderón boundary complex and prove
+that its Kadison defect under Gamma--Poisson continuation vanishes compatibly with aperture:
+\[
+ \Phi_N(P_N^\ast P_N)-\Phi_N(P_N)^\ast\Phi_N(P_N)=0,
+ \qquad
+ \Phi_N(P_NP_N^\ast)-\Phi_N(P_N)\Phi_N(P_N)^\ast=0.       \tag{416}
+\]
+This is a sharper producer than scalar orientation or off-axis resolvent preservation.  It asks
+one source-global operator equation whose failure is measured exactly by the already computed
+shell likelihood drift.
+
+## 52. Correction: raw fusion covariance is too rigid; the gauge-reduced shift is only a selector
+
+### Withdrawal of the raw critical-locus interpretation
+
+Section 51 overstates what the shell likelihood-rate theorem proves.  Equations `(410)`--`(413)`
+do prove the one-way implication
+\[
+ \text{raw fusion star-covariance}\Longrightarrow\Re s=\frac12,
+                                                               \tag{417}
+\]
+but they do **not** identify the critical line with raw scalarity of `(412)`.  Even when
+\(\Re s=1/2\), the finite-shell ratios in `(412)` retain a generally nonconstant transverse
+zero-free gauge.  Rate zero is necessary for a constant sequence, not sufficient.
+
+The conjecture `XI_SHELL_FUSION_STAR_COVARIANT_CONTINUATION`, if read as an exact raw identity on
+all critical divisor fibres, is therefore unsupported and probably false.  It is withdrawn in
+that form.  The scalar-commutant theorem `(406)` remains valid, but it is a selector and not a
+source producer.
+
+### Exact source gauge
+
+Recall the uniformly invertible shell gauge
+\[
+ G_m(s)=\frac{2^{ms}H_m(s)}{1-2^{-s}},
+ \qquad \Re s>\frac12.
+                                                               \tag{418}
+\]
+At \(s=1\),
+\[
+ h_m=H_m(1)=2^{-m-1}G_m(1).
+                                                               \tag{419}
+\]
+Hence, with the positive square root of \(G_m(1)\),
+\[
+\begin{aligned}
+ c_m(s)
+ &=\frac{H_m(s)}{\sqrt{h_m}}\\
+ &=\sqrt2(1-2^{-s})\,
+   \frac{G_m(s)}{\sqrt{G_m(1)}}\,
+   2^{-m(s-1/2)}.                                         \tag{420}
+\end{aligned}
+\]
+Put
+\[
+ Q_m(s):=\frac{G_m(s)}{\sqrt{G_m(1)}},
+ \qquad
+ z(s):=2^{-(s-1/2)}.
+                                                               \tag{421}
+\]
+The uniform gauge theorem gives \(Q_m(s)\to1\) for fixed \(s\), and \(Q_m(s)\) is uniformly
+bounded and bounded away from zero on the source tail.  Removing \(Q_m(s)\) leaves the exact
+pure character
+\[
+ \widetilde c_m(s)
+ =\sqrt2(1-2^{-s})z(s)^m.                                \tag{422}
+\]
+Thus transverse shell variation is a zero-rate gauge.  The only gauge-invariant radial datum is
+\[
+ |z(s)|=2^{-(\Re s-1/2)}.                                \tag{423}
+\]
+
+### Weighted-shift and Toeplitz boundary law
+
+Let \(S e_m=e_{m+1}\) be the unilateral shell shift.  On the eventual tail define
+\[
+ w_m(s):=\frac{c_{m+1}(s)}{c_m(s)}
+ =z(s)\frac{Q_{m+1}(s)}{Q_m(s)},
+ \qquad
+ W_s e_m=w_m(s)e_{m+1}.                                  \tag{424}
+\]
+Then
+\[
+ w_m(s)\longrightarrow z(s).                            \tag{425}
+\]
+Consequently the diagonal defects of the weighted shift satisfy
+\[
+\begin{aligned}
+ W_s^\ast W_s-I&=\operatorname{diag}(|w_m(s)|^2-1),\\
+ W_sW_s^\ast-I&=
+ \operatorname{diag}(-1,|w_0(s)|^2-1,|w_1(s)|^2-1,\ldots).
+                                                               \tag{426}
+\end{aligned}
+\]
+Both are compact exactly when \(|w_m(s)|\to1\).  Therefore:
+
+`[PAPER-PROVED] [GAUGE_REDUCED_SHELL_SHIFT_ESSENTIAL_UNITARITY]`
+\[
+ \boxed{\quad
+ W_s\text{ is essentially unitary}
+ \quad\Longleftrightarrow\quad
+ \Re s=\frac12.
+ \quad}                                                     \tag{427}
+\]
+
+Equivalently, in the Toeplitz/Calkin boundary,
+\[
+ [W_s]=z(s)[S],
+ \qquad
+ [S]\text{ unitary},
+                                                               \tag{428}
+\]
+so \([W_s]\) is unitary exactly when \(|z(s)|=1\).
+
+The exact algebraic version needs only one adjoint identity.  If the gauge-reduced continuation
+acts on the Toeplitz generator by
+\[
+ \alpha_s(S)=z(s)S,\qquad
+ \alpha_s(S^\ast)=z(s)^{-1}S^\ast,
+                                                               \tag{429}
+\]
+then star preservation gives
+\[
+ z(s)^{-1}S^\ast
+ =\alpha_s(S^\ast)
+ =\alpha_s(S)^\ast
+ =\overline{z(s)}S^\ast.
+                                                               \tag{430}
+\]
+Since \(S^\ast\ne0\), `(430)` is equivalent to \(|z(s)|=1\), hence to the critical line.
+
+### Corpus collision and anti-theatre verdict
+
+The elementary implication `(427)` is not frontier movement.  Sections 16--17 already identify
+the Wold--Toeplitz carrier, Sections 28--29 already prove reflected power-equicontinuous purity,
+Sections 30--33 already construct the shell corona, uniform gauge, likelihood rate, and
+scale--phase completion, and the failed Calkin cards already prove that imposing a compactness or
+essential-unitarity condition only after Xi-fibre specialization is an RH-equivalent endpoint.
+
+The positive correction is therefore only a cleaner dictionary:
+
+```text
+finite truncation leakage:
+  the terminal defect of the unilateral shift;
+
+uniform transverse shell gauge:
+  compact/zero-rate perturbation of the shift weights;
+
+strict-right off-line fibre:
+  a proper contraction character in the Toeplitz interior;
+
+critical fibre:
+  a unitary character in the Toeplitz boundary;
+
+ambient Hilbert completion:
+  restores the shift but loses divisor point fibres;
+
+source-relative completion:
+  must retain the conormal and prove that its character reaches the
+  selfadjoint boundary before fibre specialization.
+```
+
+No new Toeplitz conjecture is opened here.  The live producer remains the corpus's existing
+source-first additive--multiplicative comparison: identify the projective producer--reporter Weyl
+relation with the Poisson/Tate intertwiner, construct the strict enhanced Fourier--Mellin graph,
+and prove conservative principal-conormal base change.  In operator-algebra language this is the
+already isolated relative-hyperrigidity/multiplicative-domain theorem; in nearby-cycle language it
+is strict factorized Rees base change.  Naming either property on a chosen zero is theatre.

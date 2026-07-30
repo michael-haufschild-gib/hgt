@@ -63,7 +63,7 @@ theorem arakelovPowerOrbit_tendsto_one {n : ℕ} (hn : 2 ≤ n) {rho : ℂ}
     tendsto_pow_atTop_nhds_zero_of_norm_lt_one hcontract
   have hsub : Tendsto (fun k : ℕ => 1 - arakelovW rho ^ (n ^ k)) atTop (𝓝 1) := by
     simpa using tendsto_const_nhds.sub (hpow.comp hindex)
-  simpa [arakelovPowerOrbit] using hsub.inv₀ (by norm_num : (1 : ℂ) ≠ 0)
+  simpa [arakelovPowerOrbit] using! hsub.inv₀ (by norm_num : (1 : ℂ) ≠ 0)
 
 /-- Forward invariance of the actual Xi zero set under one Arakelov power lift. -/
 def XiArakelovPowerStable (n : ℕ) : Prop :=

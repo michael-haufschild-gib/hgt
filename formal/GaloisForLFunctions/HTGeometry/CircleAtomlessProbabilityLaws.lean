@@ -21,8 +21,8 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-local instance unitAddCircleHaarNoAtoms :
-    NoAtoms (AddCircle.haarAddCircle : Measure UnitAddCircle) where
+local instance unitAddCircleHaarNullSingletonClass :
+    NullSingletonClass (AddCircle.haarAddCircle : Measure UnitAddCircle) where
   measure_singleton x := by
     have h := AddCircle.volume_closedBall (1 : ℝ) (x := x) 0
     rw [AddCircle.volume_eq_smul_haarAddCircle] at h
@@ -87,7 +87,7 @@ theorem circleApproximateIdentityLaw_ball (n : ℕ) :
   · exact measure_ne_top _ _
 
 theorem circleApproximateIdentityLaw_noAtoms (n : ℕ) :
-    NoAtoms (circleApproximateIdentityLaw n : Measure UnitAddCircle) := by
+    NullSingletonClass (circleApproximateIdentityLaw n : Measure UnitAddCircle) := by
   constructor
   intro x
   change ((circleApproximateIdentityFiniteMeasure n).normalize :
@@ -105,9 +105,8 @@ theorem circleApproximateIdentityLaw_noAtoms (n : ℕ) :
 
 theorem circleApproximateIdentityRadius_tendsto_zero :
     Tendsto circleApproximateIdentityRadius atTop (𝓝 0) := by
-  simpa only [circleApproximateIdentityRadius] using
-    (tendsto_one_div_add_atTop_nhds_zero_nat :
-      Tendsto (fun n : ℕ => 1 / ((n : ℝ) + 1)) atTop (𝓝 0))
+  change Tendsto (fun n : ℕ => 1 / ((n : ℝ) + 1)) atTop (𝓝 0)
+  exact tendsto_one_div_add_atTop_nhds_zero_nat
 
 theorem circleApproximateIdentityLaw_tendsto_dirac :
     Tendsto circleApproximateIdentityLaw atTop (𝓝 (diracProba 0)) := by
@@ -149,8 +148,8 @@ theorem circleProbabilityConvolution_dirac_zero
 
 theorem circleProbabilityConvolution_noAtoms_right
     (mu nu : ProbabilityMeasure UnitAddCircle)
-    (hnu : NoAtoms (nu : Measure UnitAddCircle)) :
-    NoAtoms (circleProbabilityConvolution mu nu : Measure UnitAddCircle) := by
+    (hnu : NullSingletonClass (nu : Measure UnitAddCircle)) :
+    NullSingletonClass (circleProbabilityConvolution mu nu : Measure UnitAddCircle) := by
   constructor
   intro z
   change (((mu.prod nu).map continuous_add.measurable.aemeasurable :
@@ -180,7 +179,7 @@ theorem circleProbabilityConvolution_approximateIdentity_tendsto
       (𝓝 (mu, diracProba 0)) :=
     tendsto_const_nhds.prodMk_nhds circleApproximateIdentityLaw_tendsto_dirac
   have hmap := Filter.Tendsto.comp circleProbabilityConvolution_continuous.continuousAt hpair
-  simpa only [circleProbabilityConvolution_dirac_zero] using hmap
+  simpa only [Function.comp_def, circleProbabilityConvolution_dirac_zero] using hmap
 
 /-- Atomless probability laws are dense on the circle. -/
 theorem circle_atomlessProbabilityLaws_dense :

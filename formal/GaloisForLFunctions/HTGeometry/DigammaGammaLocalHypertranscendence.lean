@@ -281,8 +281,8 @@ theorem autonomous_annihilator_digammaReciprocalLimit_eq_zero {r : ℕ}
     have hpnonneg : (0 : ℝ) ≤ p := Nat.cast_nonneg p
     linarith
   have hphiCont : ContinuousAt (fun z : ℂ => -z⁻¹) 1 := by
-    simpa using (ContinuousAt.inv₀ continuousAt_id
-      (one_ne_zero : (1 : ℂ) ≠ 0)).neg
+    exact ContinuousAt.comp continuous_neg.continuousAt
+      (ContinuousAt.inv₀ continuousAt_id (one_ne_zero : (1 : ℂ) ≠ 0))
   have hcenter : -((1 : ℂ)⁻¹) ∈ reciprocalGammaBlowUpDisk := by
     simp [reciprocalGammaBlowUpDisk]
   have hpre : ∀ᶠ z : ℂ in 𝓝 1, -z⁻¹ ∈ reciprocalGammaBlowUpDisk :=

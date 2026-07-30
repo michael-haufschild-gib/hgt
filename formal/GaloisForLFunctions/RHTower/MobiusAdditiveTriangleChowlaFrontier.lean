@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.MobiusLaplaceAdditiveTriangleSubpower
+import Mathlib.Data.Finset.NatAntidiagonal
 
 /-!
 # Binary-Chowla decomposition of the additive Möbius triangle
@@ -16,17 +17,17 @@ noncomputable section
 
 /-- Equal-coordinate part of one additive Möbius antidiagonal. -/
 def mobiusAdditiveDiagonalConvolution (k : ℕ) : ℂ :=
-  ∑ mn ∈ (Finset.antidiagonal k).filter (fun mn => mn.1 = mn.2),
+  ∑ mn ∈ (Finset.HasAntidiagonal.antidiagonal k).filter (fun mn => mn.1 = mn.2),
     mobiusComplexCoefficient mn.1 * mobiusComplexCoefficient mn.2
 
 /-- One strict-order half of one additive Möbius antidiagonal. -/
 def mobiusAdditiveStrictOffDiagonalConvolution (k : ℕ) : ℂ :=
-  ∑ mn ∈ (Finset.antidiagonal k).filter (fun mn => mn.1 < mn.2),
+  ∑ mn ∈ (Finset.HasAntidiagonal.antidiagonal k).filter (fun mn => mn.1 < mn.2),
     mobiusComplexCoefficient mn.1 * mobiusComplexCoefficient mn.2
 
 /-- The two strict-order halves have equal sums by coordinate exchange. -/
 theorem sum_mobiusAdditiveConvolution_gt_eq_strictOffDiagonal (k : ℕ) :
-    (∑ mn ∈ (Finset.antidiagonal k).filter (fun mn => mn.2 < mn.1),
+    (∑ mn ∈ (Finset.HasAntidiagonal.antidiagonal k).filter (fun mn => mn.2 < mn.1),
       mobiusComplexCoefficient mn.1 * mobiusComplexCoefficient mn.2) =
         mobiusAdditiveStrictOffDiagonalConvolution k := by
   rw [mobiusAdditiveStrictOffDiagonalConvolution]
@@ -34,10 +35,10 @@ theorem sum_mobiusAdditiveConvolution_gt_eq_strictOffDiagonal (k : ℕ) :
   · intro mn
     constructor
     · intro h
-      simp only [Finset.mem_filter, Finset.mem_antidiagonal] at h ⊢
+      simp only [Finset.mem_filter, Finset.HasAntidiagonal.mem_antidiagonal] at h ⊢
       exact ⟨by simpa [add_comm] using h.1, h.2⟩
     · intro h
-      simp only [Finset.mem_filter, Finset.mem_antidiagonal] at h ⊢
+      simp only [Finset.mem_filter, Finset.HasAntidiagonal.mem_antidiagonal] at h ⊢
       exact ⟨by simpa [add_comm] using h.1, h.2⟩
   · intro mn _hmn
     rcases mn with ⟨m, n⟩
@@ -50,7 +51,7 @@ theorem mobiusAdditiveConvolution_eq_diagonal_add_two_mul_strictOffDiagonal (k :
     mobiusAdditiveConvolution k =
       mobiusAdditiveDiagonalConvolution k +
         2 * mobiusAdditiveStrictOffDiagonalConvolution k := by
-  let A := Finset.antidiagonal k
+  let A := Finset.HasAntidiagonal.antidiagonal k
   let f : ℕ × ℕ → ℂ := fun mn =>
     mobiusComplexCoefficient mn.1 * mobiusComplexCoefficient mn.2
   have hfirst := Finset.sum_filter_add_sum_filter_not A (fun mn => mn.1 < mn.2) f
@@ -117,12 +118,12 @@ theorem mobiusAdditiveTriangle_eq_diagonal_add_two_mul_strictOffDiagonal (N : �
 /-- Each antidiagonal contains at most one diagonal pair, whose Möbius-square norm is at most one. -/
 theorem norm_mobiusAdditiveDiagonalConvolution_le_one (k : ℕ) :
     ‖mobiusAdditiveDiagonalConvolution k‖ ≤ 1 := by
-  let D := (Finset.antidiagonal k).filter (fun mn => mn.1 = mn.2)
+  let D := (Finset.HasAntidiagonal.antidiagonal k).filter (fun mn => mn.1 = mn.2)
   have hcard : D.card ≤ 1 := by
     apply Finset.card_le_one.mpr
     intro a ha b hb
     dsimp [D] at ha hb
-    simp only [Finset.mem_filter, Finset.mem_antidiagonal] at ha hb
+    simp only [Finset.mem_filter, Finset.HasAntidiagonal.mem_antidiagonal] at ha hb
     apply Prod.ext
     · omega
     · omega

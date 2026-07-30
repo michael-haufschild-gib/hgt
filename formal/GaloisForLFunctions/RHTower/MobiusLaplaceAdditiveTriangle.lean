@@ -27,7 +27,7 @@ def mobiusComplexCoefficient (n : ℕ) : ℂ :=
 
 /-- Additive self-convolution coefficient `sum_{m+n=k} mu(m)mu(n)`. -/
 def mobiusAdditiveConvolution (k : ℕ) : ℂ :=
-  ∑ mn ∈ Finset.antidiagonal k,
+  ∑ mn ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) k,
     mobiusComplexCoefficient mn.1 * mobiusComplexCoefficient mn.2
 
 /-- Cumulative additive self-convolution over the lattice triangle `m+n<=N`. -/
@@ -45,12 +45,12 @@ theorem norm_mobiusAdditiveConvolution_le (k : ℕ) :
     ‖mobiusAdditiveConvolution k‖ ≤ (k + 1 : ℕ) := by
   rw [mobiusAdditiveConvolution]
   calc
-    ‖∑ mn ∈ Finset.antidiagonal k,
+    ‖∑ mn ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) k,
         mobiusComplexCoefficient mn.1 * mobiusComplexCoefficient mn.2‖ ≤
-        ∑ mn ∈ Finset.antidiagonal k,
+        ∑ mn ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) k,
           ‖mobiusComplexCoefficient mn.1 * mobiusComplexCoefficient mn.2‖ :=
       norm_sum_le _ _
-    _ ≤ ∑ _mn ∈ Finset.antidiagonal k, (1 : ℝ) := by
+    _ ≤ ∑ _mn ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) k, (1 : ℝ) := by
       apply Finset.sum_le_sum
       intro mn _hmn
       rw [norm_mul]
@@ -166,13 +166,14 @@ theorem tsum_natSucc_mul_pow_eq_inv_sq {r : ℝ} (hr : |r| < 1) :
 
 private theorem sum_antidiagonal_mobiusDiscreteLaplaceTerm_eq
     (x : ℝ) (k : ℕ) :
-    (∑ mn ∈ Finset.antidiagonal k,
+    (∑ mn ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) k,
       mobiusDiscreteLaplaceTerm x mn.1 * mobiusDiscreteLaplaceTerm x mn.2) =
       mobiusAdditiveConvolution k * Complex.exp (-((k : ℝ) * x : ℝ)) := by
   rw [mobiusAdditiveConvolution, Finset.sum_mul]
   apply Finset.sum_congr rfl
   intro mn hmn
-  have hsum : mn.1 + mn.2 = k := Finset.mem_antidiagonal.mp hmn
+  have hsum : mn.1 + mn.2 = k :=
+    Finset.HasAntidiagonal.mem_antidiagonal.mp hmn
   rw [mobiusDiscreteLaplaceTerm, mobiusDiscreteLaplaceTerm]
   change (mobiusComplexCoefficient mn.1 *
       Complex.exp (-((mn.1 : ℝ) * x : ℝ))) *
@@ -200,7 +201,8 @@ theorem summable_additiveConvolution_mul_exp_neg_nat
     (summable_mobiusDiscreteLaplaceTerm hx).norm
   have hconv := summable_norm_sum_mul_antidiagonal_of_summable_norm hnorm hnorm
   apply Summable.of_norm
-  simpa only [sum_antidiagonal_mobiusDiscreteLaplaceTerm_eq] using hconv
+  exact hconv.congr (fun k => by
+    rw [sum_antidiagonal_mobiusDiscreteLaplaceTerm_eq])
 
 /-- Exponential weights at integral multiples are geometric powers. -/
 theorem exp_neg_nat_mul_eq_pow (x : ℝ) (k : ℕ) :

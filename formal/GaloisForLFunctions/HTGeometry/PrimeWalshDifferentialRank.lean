@@ -205,7 +205,7 @@ theorem boundedPrimeShiftPalette_differentialIndependent
   have hrect := boundedPrimeShiftedRotatedJets_algebraicIndependent
     c hc alpha hdistinct hrange htail m
   have hsub := hrect.comp f hf
-  simpa only [Function.comp_apply, f, x] using hsub
+  simpa only [Function.comp_apply, f, x] using! hsub
 
 /-- The recurring finite pattern chamber of a prime orientation family, relative to an explicit
 enumeration of the primes. -/
@@ -823,11 +823,10 @@ the number of recurring finite Boolean patterns.  Together with
 theorem primeWalshDifferentialBasis_card
     {I A : Type*} [Fintype I] [Fintype A]
     (e : ℕ ≃ Nat.Primes) (ε : I → Nat.Primes → Bool) :
-    Fintype.card (primeRecurringPatternChamber e ε × A) =
-      Fintype.card A * Fintype.card (primeRecurringPatternChamber e ε) := by
+    Nat.card (primeRecurringPatternChamber e ε × A) =
+      Nat.card A * Nat.card (primeRecurringPatternChamber e ε) := by
   classical
-  letI : Fintype (primeRecurringPatternChamber e ε) := Fintype.ofFinite _
-  rw [Fintype.card_prod, Nat.mul_comm]
+  rw [Nat.card_prod, Nat.mul_comm]
 
 end
 

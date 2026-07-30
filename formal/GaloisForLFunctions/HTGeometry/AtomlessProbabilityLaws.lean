@@ -62,7 +62,7 @@ theorem finiteClosedCoverMassBelow_isOpen (a : ℝ≥0∞) :
 
 /-- The weak-topological set of atomless probability laws. -/
 def atomlessProbabilityLaws : Set (ProbabilityMeasure X) :=
-  {mu | NoAtoms (mu : Measure X)}
+  {mu | NullSingletonClass (mu : Measure X)}
 
 /-- The reciprocal thresholds used in the countable atomlessness test. -/
 def diffuseThreshold (n : ℕ) : ℝ≥0∞ :=
@@ -76,7 +76,7 @@ theorem diffuseThreshold_tendsto_zero :
   exact ENNReal.tendsto_inv_nat_nhds_zero.comp (tendsto_add_atTop_nat 1)
 
 theorem atomless_exists_small_closedBall
-    (mu : ProbabilityMeasure X) (hmu : NoAtoms (mu : Measure X))
+    (mu : ProbabilityMeasure X) (hmu : NullSingletonClass (mu : Measure X))
     (x : X) {a : ℝ≥0∞} (ha : 0 < a) :
     ∃ r : ℝ, 0 < r ∧ (mu : Measure X) (closedBall x r) < a := by
   let s : ℕ → Set X := fun n => closedBall x (1 / ((n : ℝ) + 1))
@@ -109,7 +109,7 @@ theorem atomless_exists_small_closedBall
 
 theorem atomless_mem_finiteClosedCoverMassBelow
     [CompactSpace X] (mu : ProbabilityMeasure X)
-    (hmu : NoAtoms (mu : Measure X))
+    (hmu : NullSingletonClass (mu : Measure X))
     {a : ℝ≥0∞} (ha : 0 < a) :
     mu ∈ finiteClosedCoverMassBelow (X := X) a := by
   choose r hrpos hrmass using fun x => atomless_exists_small_closedBall mu hmu x ha

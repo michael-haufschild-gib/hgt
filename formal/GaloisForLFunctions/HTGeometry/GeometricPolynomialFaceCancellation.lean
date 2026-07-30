@@ -123,7 +123,8 @@ theorem exists_normalizedGeometricPolynomialFaceCluster_tendsto_zero
       (fun ν => atomValuation (fun i => A * lam ^ i + c i) ν)
       m (γ * lam ^ t) ((q : ℝ) ^ P)
       (by simpa [fscaled] using hbalance) hphase
-      (by simpa [T, Ckey, q, m] using hgapq) hmassScaled
+      (by simpa [T, Ckey, Face, geometricPolynomialPatternFace, q, m] using hgapq)
+      hmassScaled
     rw [sum_image_shiftedAtomPatternKey Face (fun ν =>
       (aevalWeight n (D * q + τ) Q ν / den) *
         (Real.exp (-(atomValuation (fun i => A * lam ^ i + c i) ν - m)) : ℂ) *

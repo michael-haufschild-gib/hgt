@@ -30,12 +30,12 @@ lemma tendsto_shiftedRiemannZeta_residue_one (q : XiRightZeroCopy) :
       (𝓝[≠] (xiRightShiftedPole q)) (𝓝[≠] 1) := by
     apply tendsto_nhdsWithin_iff.2
     constructor
-    · have hc : ContinuousAt (fun _ : ℂ => xiRightCenteredZero q)
-          (xiRightShiftedPole q) := continuousAt_const
+    · have hc : ContinuousAt (fun s : ℂ => s - xiRightCenteredZero q)
+          (xiRightShiftedPole q) := continuousAt_id.sub_const _
       have hle : 𝓝[≠] (xiRightShiftedPole q) ≤
           𝓝 (xiRightShiftedPole q) := inf_le_left
-      simpa only [id_eq, xiRightShiftedPole_sub_centeredZero] using
-        (continuousAt_id.sub hc).tendsto.mono_left hle
+      simpa only [xiRightShiftedPole_sub_centeredZero] using
+        hc.tendsto.mono_left hle
     · filter_upwards [self_mem_nhdsWithin] with s hs
       change s - xiRightCenteredZero q ≠ 1
       intro heq

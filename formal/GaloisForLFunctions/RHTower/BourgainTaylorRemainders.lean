@@ -176,7 +176,7 @@ theorem contDiffAt_bourgainAffineRpow
   have hout : ContDiffAt ℝ n (fun u : ℝ => u ^ r) (1 + q * t) :=
     Real.contDiffAt_rpow_const_of_ne hbase.ne'
   have hinn : ContDiffAt ℝ n (fun x : ℝ => 1 + q * x) t := by fun_prop
-  simpa [bourgainAffineRpow, Function.comp_def] using
+  simpa [bourgainAffineRpow, Function.comp_def] using!
     hout.comp t hinn
 
 theorem contDiffAt_bourgainNormalizedCubicRemainder
@@ -209,9 +209,9 @@ theorem iteratedDeriv_bourgainAffineRpow_four
   rw [heq.deriv_eq]
   have haffine :
       HasDerivAt (fun y : ℝ => 1 + q * y) q t := by
-    convert (hasDerivAt_const t (1 : ℝ)).add
-      ((hasDerivAt_id t).const_mul q) using 1
-    all_goals ring_nf
+    apply ((hasDerivAt_const t (1 : ℝ)).add
+      ((hasDerivAt_id t).const_mul q)).congr_deriv
+    ring
   have hpow :
       HasDerivAt (fun y : ℝ => (1 + q * y) ^ (r - 3))
         (q * (r - 3) * (1 + q * t) ^ (r - 4)) t := by

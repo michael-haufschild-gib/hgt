@@ -442,7 +442,7 @@ theorem continuesAcross_h_of_localInverse {h ψ γ : ℂ → ℂ} {t₀ w₀ : �
   set G : ℂ → ℂ := fun t => t * γ (1 / t) with hGdef
   -- `G` is analytic at `t₀`
   have hinvAn : AnalyticAt ℂ (fun t : ℂ => 1 / t) t₀ := by
-    simpa only [one_div] using analyticAt_id.inv ht₀0
+    simpa only [one_div] using! analyticAt_id.inv ht₀0
   have hγAn' : AnalyticAt ℂ γ (1 / t₀) := by rw [hinv_eq]; exact hγAn
   have hγcompAn : AnalyticAt ℂ (fun t : ℂ => γ (1 / t)) t₀ := hγAn'.comp hinvAn
   have hGAn : AnalyticAt ℂ G t₀ := analyticAt_id.mul hγcompAn
@@ -451,7 +451,6 @@ theorem continuesAcross_h_of_localInverse {h ψ γ : ℂ → ℂ} {t₀ w₀ : �
     have hcont : ContinuousAt (fun t : ℂ => 1 / t) t₀ :=
       (continuousAt_const : ContinuousAt (fun _ : ℂ => (1 : ℂ)) t₀).div continuousAt_id ht₀0
     have h := hcont.tendsto
-    simp only at h
     rwa [hinv_eq] at h
   have hne0 : ∀ᶠ t : ℂ in 𝓝 t₀, t ≠ 0 := isOpen_compl_singleton.eventually_mem ht₀0
   -- eventual package near `t₀`

@@ -67,7 +67,7 @@ theorem xiCofiniteEvaluationReporterHilbertReconstruction (N : ℕ) :
     simpa [report, finiteDerivativeReporterGram_finiteEvaluationReporter,
       cofiniteEvaluationGram, cofiniteEvaluationColumn,
       finiteEvaluationGram, finiteEvaluationColumn,
-      xiDerivativeOrderFamily] using hgram
+      xiDerivativeOrderFamily] using! hgram
   have hreportDetPos :
       0 < (finiteDerivativeReporterGram N xi report).det :=
     hreportGram.det_pos

@@ -145,7 +145,7 @@ theorem projectiveSeparationProduct_differentiable
       funext z
       simp only [Finset.prod_apply]]
     exact Differentiable.finsetProd fun i (_hi : i ∈ (Finset.univ : Finset ι)) => by
-      simpa only [Function.comp_apply, id_eq] using
+      simpa only [Function.comp_apply, id_eq] using!
         hC.comp (differentiable_id.add_const (shift i))
   · rw [show (fun z =>
         ∏ x : {x : ι × ι // x.1 ≠ x.2},
@@ -173,7 +173,7 @@ theorem projectiveSeparationProduct_ne_zero
       funext z
       simp only [Finset.prod_apply]]
     exact Differentiable.finsetProd fun i (_hi : i ∈ (Finset.univ : Finset ι)) => by
-      simpa only [Function.comp_apply, id_eq] using
+      simpa only [Function.comp_apply, id_eq] using!
         hCmin.1.comp (differentiable_id.add_const (shift i))
   · rw [show (fun z =>
         ∏ x : {x : ι × ι // x.1 ≠ x.2},

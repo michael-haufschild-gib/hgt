@@ -189,9 +189,9 @@ theorem weightedBoundaryCarrier_noAtoms_of_base
     {s : ℕ → ℝ} (F : NevanlinnaBoundaryFamily s)
     (eta : Measure (OnePoint ℝ)) [IsFiniteMeasure eta]
     (w : Lp ℝ (⊤ : ENNReal) eta) (hw : LinftyStrictlyPositive eta w)
-    (hbase : NoAtoms
+    (hbase : NullSingletonClass
       (boundaryBarycenter eta (fun t => (F.leaf t : Measure ℝ)))) :
-    NoAtoms (weightedBoundaryCarrier F eta w) := by
+    NullSingletonClass (weightedBoundaryCarrier F eta w) := by
   have hac := (weightedBoundaryCarrier_mutuallyAbsolutelyContinuous F eta hw).1
   constructor
   intro x
@@ -225,13 +225,13 @@ theorem weightedBoundaryCarrier_singularContinuous_probability
     (hw : LinftyStrictlyPositive (eta : Measure (OnePoint ℝ)) w)
     (hint : ∫ t, w t ∂(eta : Measure (OnePoint ℝ)) = 1) :
     IsProbabilityMeasure (weightedBoundaryCarrier F (eta : Measure (OnePoint ℝ)) w) ∧
-      NoAtoms (weightedBoundaryCarrier F (eta : Measure (OnePoint ℝ)) w) ∧
+      NullSingletonClass (weightedBoundaryCarrier F (eta : Measure (OnePoint ℝ)) w) ∧
       weightedBoundaryCarrier F (eta : Measure (OnePoint ℝ)) w ⟂ₘ
         (volume : Measure ℝ) ∧
       HasHamburgerMoments s
         (weightedBoundaryCarrier F (eta : Measure (OnePoint ℝ)) w) := by
   letI : IsProbabilityMeasure (eta : Measure (OnePoint ℝ)) := eta.prop
-  letI : NoAtoms (eta : Measure (OnePoint ℝ)) := heta.1
+  letI : NullSingletonClass (eta : Measure (OnePoint ℝ)) := heta.1
   letI : IsProbabilityMeasure
       (linftyDensityMeasure (eta : Measure (OnePoint ℝ)) w) :=
     linftyDensityMeasure_isProbabilityMeasure
@@ -243,7 +243,7 @@ theorem weightedBoundaryCarrier_singularContinuous_probability
       (linftyDensityMeasure (eta : Measure (OnePoint ℝ)) w)
       (fun t => (F.leaf t : Measure ℝ)) F.measurable_leaf
       (fun t => (F.leaf t).prop)
-  have hbaseAtoms : NoAtoms
+  have hbaseAtoms : NullSingletonClass
       (boundaryBarycenter (eta : Measure (OnePoint ℝ))
         (fun t => (F.leaf t : Measure ℝ))) := by
     simpa [NevanlinnaBoundaryFamily.barycenter, probabilityBoundaryBarycenter] using

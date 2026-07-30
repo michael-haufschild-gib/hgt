@@ -51,7 +51,7 @@ theorem hasDerivAt_arsinh_edge {h δ : ℝ} (hh : 0 < h) (y : ℝ) :
   have hinner : HasDerivAt (fun t : ℝ => (t - δ) / h) (1 / h) y := by
     simpa using ((hasDerivAt_id y).sub_const δ).div_const h
   have hcomp := (Real.hasDerivAt_arsinh ((y - δ) / h)).comp y hinner
-  convert hcomp using 1
+  convert! hcomp using 1
   have hs : Real.sqrt (1 + ((y - δ) / h) ^ 2) * h = Real.sqrt (h ^ 2 + (y - δ) ^ 2) := by
     rw [show Real.sqrt (1 + ((y - δ) / h) ^ 2) * h
         = Real.sqrt ((1 + ((y - δ) / h) ^ 2) * h ^ 2) from by

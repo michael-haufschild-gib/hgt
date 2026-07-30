@@ -55,7 +55,7 @@ theorem cosh_le_one_add_cubic {y : ℝ} (hy : 0 ≤ y) :
           (2 * u / 6 * Real.cosh u + u ^ 2 / 6 * Real.sinh u) u :=
         hp.mul (Real.hasDerivAt_cosh u)
       have h3 := ((h1.const_add 1).add h2).sub (Real.hasDerivAt_cosh u)
-      convert h3 using 1
+      apply h3.congr_deriv
       ring
     rw [hd.deriv]
     have hsc : Real.sinh u ≤ u * Real.cosh u := sinh_le_mul_cosh hu.1.le
@@ -87,7 +87,7 @@ theorem sinh_mul_one_sub_le {v : ℝ} (hv : 0 ≤ v) :
           (2 * u / 6 * Real.sinh u + u ^ 2 / 6 * Real.cosh u) u :=
         hp.mul (Real.hasDerivAt_sinh u)
       have h3 := ((hasDerivAt_id u).add h2).sub (Real.hasDerivAt_sinh u)
-      convert h3 using 1
+      apply h3.congr_deriv
       ring
     rw [hd.deriv]
     have haux := cosh_le_one_add_cubic hu.1.le

@@ -57,7 +57,7 @@ theorem continuous_thetaCuspCenterMixedFourierCurrent
       (continuous_id.div_const (2 * Real.pi))
   have hre := Complex.continuous_re.comp hfourier
   simpa only [thetaCuspCenterMixedFourierCurrent, f,
-    SchwartzMap.fourierTransformCLM_apply] using hre
+    SchwartzMap.fourierTransformCLM_apply] using! hre
 
 theorem thetaCuspCenterMixedFourierCurrent_memLp_top
     (tau a : ℝ) (ha : |a| < 1) :

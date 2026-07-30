@@ -160,7 +160,7 @@ theorem threeControlCyclePositiveRay_tendsto :
   apply tendsto_pi_nhds.2
   intro i
   fin_cases i <;>
-    simpa [threeControlCyclePositiveRay] using
+    simpa [threeControlCyclePositiveRay] using!
       (tendsto_id : Tendsto (fun t : ℂ => t) (𝓝 0) (𝓝 0))
 
 theorem threeControlCycleNegativeRay_tendsto :

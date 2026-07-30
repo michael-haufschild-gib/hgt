@@ -39,10 +39,18 @@ theorem hasDerivAt_truncatedCosineSection (d : ℕ) (z : ℂ) (x : ℝ) :
         ((HasDerivAt.const_mul ((-1 : ℂ) ^ k) hpow).mul_const
           ((x : ℂ) ^ (2 * k))).div_const
           (((2 * k).factorial : ℕ) : ℂ)
-      convert hscaled using 1; ring)
-  convert hsum using 1
-  funext w
-  simp only [Finset.sum_apply]
+      simpa only [Pi.mul_apply, Pi.div_apply] using!
+        hscaled.congr_deriv (by ring))
+  rw [show
+    (∑ k ∈ Finset.range (d + 1), fun w : ℂ =>
+      (-1 : ℂ) ^ k * w ^ (2 * k) * (x : ℂ) ^ (2 * k) /
+        (2 * k).factorial) =
+      fun w : ℂ => ∑ k ∈ Finset.range (d + 1),
+        (-1 : ℂ) ^ k * w ^ (2 * k) * (x : ℂ) ^ (2 * k) /
+          (2 * k).factorial by
+    funext w
+    simp only [Finset.sum_apply]] at hsum
+  exact hsum
 
 theorem integrableOn_thetaCuspFullSource_mul_truncatedCosineSectionDerivative
     (d : ℕ) (z : ℂ) :
@@ -117,17 +125,25 @@ theorem xiCTaylorPolynomial_oddCutoff_derivative_eval_sum (d : ℕ) (z : ℂ) :
         (-1 : ℂ) ^ k * ((2 * k : ℕ) : ℂ) * z ^ (2 * k - 1)))
     (fun k _hk => by
       have hpow := hasDerivAt_pow (2 * k) z
-      convert HasDerivAt.const_mul
-        ((((thetaCuspRawEvenMoment k / (2 * k).factorial : ℝ) : ℂ) *
-          (-1 : ℂ) ^ k)) hpow using 1; ring)
+      simpa only [Pi.mul_apply] using!
+        (HasDerivAt.const_mul
+          ((((thetaCuspRawEvenMoment k / (2 * k).factorial : ℝ) : ℂ) *
+            (-1 : ℂ) ^ k)) hpow).congr_deriv (by ring))
   have hsum' : HasDerivAt (fun w : ℂ => P.eval w)
       (∑ k ∈ Finset.range (d + 1),
         (((thetaCuspRawEvenMoment k / (2 * k).factorial : ℝ) : ℂ) *
           (-1 : ℂ) ^ k * ((2 * k : ℕ) : ℂ) * z ^ (2 * k - 1))) z := by
     rw [hfun]
-    convert hsum using 1
-    funext w
-    simp only [Finset.sum_apply]
+    rw [show
+      (∑ k ∈ Finset.range (d + 1), fun w : ℂ =>
+        (((thetaCuspRawEvenMoment k / (2 * k).factorial : ℝ) : ℂ) *
+          (-1 : ℂ) ^ k * w ^ (2 * k))) =
+        fun w : ℂ => ∑ k ∈ Finset.range (d + 1),
+          (((thetaCuspRawEvenMoment k / (2 * k).factorial : ℝ) : ℂ) *
+            (-1 : ℂ) ^ k * w ^ (2 * k)) by
+      funext w
+      simp only [Finset.sum_apply]] at hsum
+    exact hsum
   simpa only [P] using (P.hasDerivAt z).unique hsum'
 
 /-- The derivative of every odd Xi Taylor section is the derivative cosine transform of the same
@@ -275,16 +291,19 @@ theorem sq_mul_tailSecondCoreAtomDerivative_add
       (z ^ 2 * thetaCuspTailSecondCoreAtomDerivative d z x +
         2 * z * thetaCuspTailSecondCoreAtom d z x) z := by
     dsimp only [f]
-    convert (hasDerivAt_pow 2 z).mul
-      (hasDerivAt_thetaCuspTailSecondCoreAtom d z x) using 1 <;> ring
+    simpa only [Pi.mul_apply] using!
+      ((hasDerivAt_pow 2 z).mul
+        (hasDerivAt_thetaCuspTailSecondCoreAtom d z x)).congr_deriv (by ring)
   have hg : HasDerivAt g
       ((z ^ 2 + 1 / 4) * truncatedCosineSectionDerivative (d + 1) z x +
         2 * z * truncatedCosineSection (d + 1) z x) z := by
     dsimp only [g]
     have hquad : HasDerivAt (fun w : ℂ => w ^ 2 + 1 / 4) (2 * z) z := by
-      convert (hasDerivAt_pow 2 z).add_const (1 / 4 : ℂ) using 1; ring
-    convert (hquad.mul (hasDerivAt_truncatedCosineSection (d + 1) z x)).sub_const
-      (1 / 4 : ℂ) using 1; ring
+      simpa only [Pi.add_apply] using!
+        ((hasDerivAt_pow 2 z).add_const (1 / 4 : ℂ)).congr_deriv (by ring)
+    simpa only [Pi.mul_apply, Pi.sub_apply] using!
+      ((hquad.mul (hasDerivAt_truncatedCosineSection (d + 1) z x)).sub_const
+        (1 / 4 : ℂ)).congr_deriv (by ring)
   rw [hfun] at hf
   exact hf.unique hg
 

@@ -251,9 +251,9 @@ theorem iteratedDeriv_leafCauchy_eq_background_add_expansion
   have hcoords := contDiffOn_projectiveNevanlinna_coordinates
     F.differentiable_c F.differentiable_d
   have hamp : ContDiffOn ℂ ⊤ F.amplitude U := by
-    simpa [amplitude, U] using hcoords.1
+    simpa [amplitude, U] using! hcoords.1
   have hquot : ContDiffOn ℂ ⊤ F.quotient U := by
-    simpa [quotient, U] using hcoords.2
+    simpa [quotient, U] using! hcoords.2
   have hbackground : ContDiffOn ℂ ⊤ F.background U := by
     have ha : ContDiff ℂ ⊤ F.a := F.differentiable_a.contDiff
     have hcDiff : ContDiff ℂ ⊤ F.c := F.differentiable_c.contDiff
@@ -467,8 +467,9 @@ theorem weightedBoundaryCarrier_cauchy_eq_parameterIntegral
       (weightedBoundaryCarrier F.base.toBoundaryFamily eta w) z hz
   have hkernelContinuous : Continuous (fun x : ℝ => ((x : ℂ) - z)⁻¹) := by
     exact (continuous_ofReal.sub continuous_const).inv₀ (fun x hzero => by
+      change (x : ℂ) - z = 0 at hzero
       have him := congrArg Complex.im hzero
-      simp only [sub_im, ofReal_im, zero_sub, zero_im] at him
+      simp only [sub_im, ofReal_im, zero_im] at him
       linarith)
   apply Complex.ext
   · have hrecarrier := integral_re hcarrier
@@ -584,8 +585,9 @@ theorem iteratedDeriv_weightedBoundaryCarrier_cauchy_eq_background_add_control
   have hf : Continuous f := by
     apply Continuous.const_mul
     exact ((continuous_ofReal.sub continuous_const).inv₀ (fun x hzero => by
+      change (x : ℂ) - z = 0 at hzero
       have him := congrArg Complex.im hzero
-      simp only [sub_im, ofReal_im, zero_sub, zero_im] at him
+      simp only [sub_im, ofReal_im, zero_im] at him
       linarith)).pow (n + 1)
   have hfcarrier : Integrable f muw :=
     (integrable_cauchyKernel_pow_of_im_pos muw z hz (n + 1)).const_mul
@@ -912,7 +914,7 @@ theorem weightedBoundaryCarrierExpandedPacketValue_eq_actualNevanlinnaExpandedPa
   rw [hjet]
   congr 1
   symm
-  simpa [reshapeCombinedJetsFinCLM, s] using hcoord
+  simpa [reshapeCombinedJetsFinCLM, s, z] using! hcoord
 
 /-- The centered order-zero projective Nevanlinna control at one analytic node. -/
 def projectiveNevanlinnaValueLinftyControl

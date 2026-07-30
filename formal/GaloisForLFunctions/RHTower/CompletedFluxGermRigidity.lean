@@ -52,7 +52,7 @@ theorem xi_shift_eq_const_mul_of_seamFlux_germ_eq
       differentiableAt_const (c := a) |>.add differentiableAt_id
     have hdb : DifferentiableAt ℂ (fun y : ℂ => b + y) x :=
       differentiableAt_const (c := b) |>.add differentiableAt_id
-    simpa only [ratio, Function.comp_apply, Pi.div_apply] using
+    simpa only [ratio, Function.comp_apply, Pi.div_apply] using!
       ((xi_differentiable.differentiableAt.comp x hda).div
         (xi_differentiable.differentiableAt.comp x hdb) hne).differentiableWithinAt
   have hratio_deriv : ∀ x ∈ ball (0 : ℂ) r, deriv ratio x = 0 := by
@@ -60,19 +60,19 @@ theorem xi_shift_eq_const_mul_of_seamFlux_germ_eq
     obtain ⟨hfluxx, hax, hbx⟩ := hrsub hx
     have hfa : HasDerivAt (fun y : ℂ => xi (a + y)) (deriv xi (a + x)) x := by
       have hadd : HasDerivAt (fun y : ℂ => a + y) 1 x := by
-        convert (hasDerivAt_const (x := x) (c := a)).add (hasDerivAt_id x) using 1
-        all_goals ring
-      simpa using xi_differentiable.differentiableAt.hasDerivAt.comp x hadd
+        convert! (hasDerivAt_const (x := x) (c := a)).add (hasDerivAt_id x) using 1
+        ring
+      simpa using! xi_differentiable.differentiableAt.hasDerivAt.comp x hadd
     have hfb : HasDerivAt (fun y : ℂ => xi (b + y)) (deriv xi (b + x)) x := by
       have hadd : HasDerivAt (fun y : ℂ => b + y) 1 x := by
-        convert (hasDerivAt_const (x := x) (c := b)).add (hasDerivAt_id x) using 1
-        all_goals ring
-      simpa using xi_differentiable.differentiableAt.hasDerivAt.comp x hadd
+        convert! (hasDerivAt_const (x := x) (c := b)).add (hasDerivAt_id x) using 1
+        ring
+      simpa using! xi_differentiable.differentiableAt.hasDerivAt.comp x hadd
     have hdiv := hfa.div hfb hbx
     have hdiv' : deriv ratio x =
         (deriv xi (a + x) * xi (b + x) - xi (a + x) * deriv xi (b + x)) /
           xi (b + x) ^ 2 := by
-      simpa only [ratio, Pi.div_apply] using hdiv.deriv
+      simpa only [ratio, Pi.div_apply] using! hdiv.deriv
     rw [hdiv']
     have hlog : deriv xi (a + x) / xi (a + x) =
         deriv xi (b + x) / xi (b + x) := by

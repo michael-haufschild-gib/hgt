@@ -284,7 +284,7 @@ theorem riemannHypothesis_of_primeArchSourceTraceHankelIntDegreeTwoTailNonnegati
 theorem primeArchSourceTraceHankelIntDegreeTwoTailNonnegative_iff_riemannHypothesis :
     PrimeArchSourceTraceHankelIntDegreeTwoTailNonnegative ↔
       RiemannHypothesis := by
-  simpa only [PrimeArchSourceTraceHankelIntDegreeTailNonnegativeFrom] using
+  simpa only [PrimeArchSourceTraceHankelIntDegreeTailNonnegativeFrom] using!
     primeArchSourceTraceHankelIntDegreeTailNonnegativeFrom_iff_riemannHypothesis 2
 
 end
@@ -574,8 +574,7 @@ theorem primeArch_twoEisenstein_plus (p : Polynomial ℤ) (d N : ℕ)
       ring
     have hdiff := dvd_sub hfour hterm
     have : ((2 : ℤ) * 2) ∣ 2 := by
-      convert hdiff using 1
-      ring
+      simpa only [add_sub_cancel_right] using hdiff
     norm_num at this
   simpa only [lower, add_assoc] using
     hmonic.isEisensteinAt_of_mem_of_notMem hne hmem hnotMem

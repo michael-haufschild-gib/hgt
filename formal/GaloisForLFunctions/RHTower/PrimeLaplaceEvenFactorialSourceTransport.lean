@@ -52,7 +52,7 @@ theorem hasSum_primeLaplaceRawJet_translate
     rw [primeLogSupport]
     ring
   rw [hexp] at hsum
-  convert hsum using 1
+  convert! hsum using 1
   · funext h
     unfold primeLaplaceRawJet
     rw [pow_add]
@@ -65,7 +65,7 @@ theorem hasSum_primeLaplaceRawJet_unitTranslate
     (p : Nat.Primes) (i : ℕ) :
     HasSum (fun h : ℕ ↦ primeLaplaceRawJet p (i + h) / (h.factorial : ℝ))
       ((p : ℝ)⁻¹ * primeLaplaceRawJet p i) := by
-  simpa [Real.rpow_neg_one] using hasSum_primeLaplaceRawJet_translate p i 1
+  simpa [Real.rpow_neg_one] using! hasSum_primeLaplaceRawJet_translate p i 1
 
 /-- The critical half-unit source transport has multiplier `p⁻¹˲²` on every prime column. -/
 theorem hasSum_primeLaplaceRawJet_halfTranslate

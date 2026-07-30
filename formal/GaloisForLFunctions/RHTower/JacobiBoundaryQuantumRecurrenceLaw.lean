@@ -240,7 +240,7 @@ theorem positiveMomentForm_positiveRecurrenceSeparationMoments
     {v : NNReal} (hv : 0 < v) :
     HTGeometry.PositiveMomentForm
       (positiveRecurrenceSeparationMoments v) := by
-  letI : NoAtoms (positiveLognormalSpectrum v : Measure ℝ) :=
+  letI : NullSingletonClass (positiveLognormalSpectrum v : Measure ℝ) :=
     noAtoms_positiveLognormalSpectrum hv
   exact HTGeometry.positiveMomentForm_of_infiniteSupport
     (positiveRecurrenceSeparationMoments v)

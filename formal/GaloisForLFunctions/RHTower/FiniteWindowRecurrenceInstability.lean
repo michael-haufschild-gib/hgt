@@ -564,7 +564,8 @@ theorem exists_finite_positive_clocks_uniformly_indistinguishable
   have hden :
       (1 : ℝ) / (4 * (n + 1) + 2 : ℕ) ≤
         1 / (n + 1 : ℕ) := by
-    gcongr
+    apply one_div_le_one_div_of_le (by positivity)
+    norm_cast
     omega
   have hn' :
       (1 : ℝ) / (n + 1 : ℕ) < ε ^ 2 := by
@@ -635,7 +636,8 @@ theorem exists_finite_positive_clocks_indistinguishable_before_return
         have hden :
             (1 : ℝ) / (4 * N + 2 : ℕ) ≤
               1 / (n + 1 : ℕ) := by
-          gcongr
+          apply one_div_le_one_div_of_le (by positivity)
+          norm_cast
           omega
         have hn' :
             (1 : ℝ) / (n + 1 : ℕ) < ε ^ 2 := by

@@ -380,7 +380,7 @@ theorem fieldOnePadicStandardAddChar_isLocallyConstant :
     IsLocallyConstant (fieldOnePadicStandardAddChar p) := by
   simpa only [fieldOnePadicStandardAddChar,
     AddChar.compAddMonoidHom_apply,
-    MonoidHom.compAddChar_apply] using
+    MonoidHom.compAddChar_apply] using!
       (fieldOnePadicStandardUnitAddCircleCharacter_isLocallyConstant p).comp
         (fun z : UnitAddCircle => (AddCircle.toCircle z : ℂ))
 
@@ -418,7 +418,7 @@ theorem fieldOnePadicStandardAddChar_ne_one :
     fieldOnePadicStandardAddChar p ≠ 1 := by
   intro h
   exact fieldOnePadicStandardAddChar_inv_p_ne_one p <| by
-    simpa only [Pi.one_apply] using
+    simpa only [Pi.one_apply] using!
       DFunLike.congr_fun h (p : ℚ_[p])⁻¹
 
 /-- Standard locally constant additive character packaged for the generic

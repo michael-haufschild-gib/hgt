@@ -627,7 +627,7 @@ theorem integrable_logKernel_limitingBrolinMeasureAt_of_integrable_add_neg_right
     have haddμ :
         Integrable (fun w => logKernel z w + logKernel z (-w)) μ := by
       simpa [μ] using hadd
-    simpa [Pi.add_apply] using haddμ.add hconst
+    simpa [Pi.add_apply] using! haddμ.add hconst
   have hbranch_sum :
       Integrable
         ((fun w => logKernel z w + D) +
@@ -725,7 +725,7 @@ theorem logPotential_limitingBrolinMeasureAt_quadratic_eq_two_of_map_quadratic_o
           Integrable (fun w => logKernel z w) (Measure.map Neg.neg μ) := by
         rw [hmap]
         exact hzint
-      simpa [μ] using
+      simpa [μ] using!
         (integrable_map_measure
           (logKernel_aestronglyMeasurable z (Measure.map Neg.neg μ))
           continuous_neg.measurable.aemeasurable).1 hzmap
@@ -1150,7 +1150,7 @@ theorem preBrolinMeasureAt_subseq_singleton_toReal_tendsto_zero_of_criticalOrbit
           ({z} : Set ℂ)).toReal)
       atTop (𝓝 0) := by
   have hpow : Tendsto (fun n : ℕ => (2 ^ n : ℝ)⁻¹) atTop (𝓝 0) := by
-    simpa using (tendsto_inv_atTop_zero.comp
+    simpa using! (tendsto_inv_atTop_zero.comp
       (tendsto_pow_atTop_atTop_of_one_lt (by norm_num : (1 : ℝ) < 2)))
   refine squeeze_zero (fun _ => ENNReal.toReal_nonneg) (fun k => ?_)
     (g := fun k => (2 ^ brolinLimitAtSubsequence c a k : ℝ)⁻¹) ?_
@@ -1234,7 +1234,7 @@ theorem limitingBrolinMeasureAt_singleton_eq_zero_of_truncatedLogKernel_nonpos
     hconst.add hscaled
   have htruncInt :
       Integrable (fun w : targetEscapeDisk c a => truncatedLogKernel z δ (w : ℂ)) μT := by
-    simpa [truncatedLogKernelOnTargetEscapeDisk, μT] using
+    simpa [truncatedLogKernelOnTargetEscapeDisk, μT] using!
       (truncatedLogKernelOnTargetEscapeDisk c a z δ hδpos).integrable μT
   have hKcompl :
       μT (((fun w : targetEscapeDisk c a => (w : ℂ)) ⁻¹'

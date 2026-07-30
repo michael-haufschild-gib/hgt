@@ -46,7 +46,7 @@ theorem linearIndependent_xiZeroHurwitzJetRealChannelFeature_iff_injective
     simp [xiZeroHurwitzJetRealChannelFeature, complexRealChannelFeature,
       xiZeroHurwitzJetFamily, hρ, horder]
   · intro hindex
-    simpa only [xiZeroHurwitzJetRealChannelFeature] using
+    simpa only [xiZeroHurwitzJetRealChannelFeature] using!
       linearIndependent_complexRealChannelFeature_of_complex
         (xiZeroHurwitzJetFamily ρ order)
         ((linearIndependent_xiZeroHurwitzJetFamily_iff_injective
@@ -188,7 +188,7 @@ theorem exists_injective_xiZeroHurwitzJetRealChannelCofiniteHilbertReconstructio
         (xiZeroHurwitzJetRealChannelFeature ρ order) F points).PosDef ∧
       0 < (cofiniteRealEvaluationGram
         (xiZeroHurwitzJetRealChannelFeature ρ order) F points).det := by
-  simpa only [xiZeroHurwitzJetRealChannelFeature] using
+  simpa only [xiZeroHurwitzJetRealChannelFeature] using!
     exists_injective_cofiniteComplexRealChannelHilbertReconstruction_of_tailCoefficientIndependent
       (xiZeroHurwitzJetFamily ρ order)
       ((tailCoefficientIndependent_xiZeroHurwitzJetFamily_iff_injective

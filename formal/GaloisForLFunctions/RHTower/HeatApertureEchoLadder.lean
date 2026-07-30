@@ -145,12 +145,10 @@ theorem riemannZeta_sub_nat_ne_zero_of_criticalStrip
   have hw0 : w ≠ 0 := by
     intro h
     have : w.re = 0 := congrArg Complex.re h
-    simp at this
     linarith
   have hu0 : u ≠ 0 := by
     intro h
     have : u.re = 0 := congrArg Complex.re h
-    simp at this
     linarith
   have hGammaU : Gammaℝ u ≠ 0 := Gammaℝ_ne_zero_of_re_pos (lt_trans zero_lt_one hure)
   have hGammaW : Gammaℝ w ≠ 0 := by

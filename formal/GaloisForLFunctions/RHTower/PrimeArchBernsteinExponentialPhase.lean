@@ -128,7 +128,12 @@ theorem xiBernsteinAffineBase_tendsto_cofinite_one
   have hone : Tendsto (fun _ : XiZeroCopy => (1 : ℂ)) cofinite (nhds 1) :=
     tendsto_const_nhds
   have h := (hone.sub hscaled).add (hscaled.mul_const w)
-  simpa only [xiBernsteinAffineBase, zero_mul, sub_zero, add_zero] using h
+  change Tendsto
+    (fun q : XiZeroCopy =>
+      1 - xiZeroCopyReciprocalSquare q / (R : ℂ) +
+        xiZeroCopyReciprocalSquare q / (R : ℂ) * w)
+    cofinite (nhds 1)
+  exact h
 
 /-- Above every threshold larger than one, only finitely many affine Bernstein modes remain. -/
 theorem xiBernsteinAffineBase_finite_norm_ge

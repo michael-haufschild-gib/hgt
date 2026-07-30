@@ -620,7 +620,7 @@ theorem xiRectangularTwoEdgeTransform_sq_summable (L a : ℝ) :
     Summable (fun q : XiZeroCopy =>
       xiRectangularTwoEdgeTransform L a (xiSpectralPoint q) ^ 2) := by
   apply Summable.of_norm
-  simpa only [norm_pow] using
+  simpa only [norm_pow] using!
     (xiRectangularTwoEdgeTransform_squareSummable L a)
 
 /-- The selected dominant-edge series is summable at every fixed aperture. -/

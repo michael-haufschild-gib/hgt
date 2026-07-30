@@ -214,7 +214,7 @@ theorem tendsto_inwardRegularizedTwoEdgeSquaredMass_zero
       fun_prop
     have ht : Tendsto (fun epsilon : ℝ => 2 * (L - epsilon / 3))
         (𝓝 (0 : ℝ)) (𝓝 (2 * (L - 0 / 3))) := hcontinuous.continuousAt
-    simpa using ht.mono_left inf_le_left
+    simpa using! ht.mono_left inf_le_left
   exact hformula.congr' (hevent.mono fun epsilon he =>
     (inwardRegularizedTwoEdgeSquaredMass_eq he.1 he.2).symm)
 
@@ -364,7 +364,7 @@ theorem tendsto_xiWeilPolarization_inwardRegularized_zero (L a : ℝ) :
       (tendsto_inwardRegularizedXiTwoEdgeTransform_zero
         L a ((starRingEnd ℂ) (xiSpectralPoint q))).mono_left inf_le_left
     have hright := Complex.continuous_conj.continuousAt.tendsto.comp hright0
-    simpa only [xiWeilSharp] using hleft.mul hright
+    simpa only [xiWeilSharp] using! hleft.mul hright
   have hbound : ∀ᶠ epsilon : ℝ in 𝓝[>] 0, ∀ q : XiZeroCopy,
       ‖inwardRegularizedXiTwoEdgeTransform L a epsilon (xiSpectralPoint q) *
           xiWeilSharp (inwardRegularizedXiTwoEdgeTransform L a epsilon)

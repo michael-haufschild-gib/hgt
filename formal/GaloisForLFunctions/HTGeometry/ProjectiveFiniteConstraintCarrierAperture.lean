@@ -211,7 +211,7 @@ theorem weightedBoundaryCarrier_hasHamburgerMoments
   let rho : ProbabilityMeasure (OnePoint ℝ) :=
     linftyDensityProbabilityMeasure eta w hw hint
   simpa [weightedBoundaryCarrier, NevanlinnaBoundaryFamily.barycenter,
-    probabilityBoundaryBarycenter, rho] using F.barycenter_hasHamburgerMoments rho
+    probabilityBoundaryBarycenter, rho] using! F.barycenter_hasHamburgerMoments rho
 
 noncomputable def weightedBoundaryProbabilityCarrier
     (w : Lp ℝ ⊤ eta) (hw : LinftyStrictlyPositive eta w)
@@ -263,7 +263,7 @@ constraints on an atomless projective parameter law admits a closed Hilbert cube
 normalized densities.  The induced Nevanlinna boundary carriers are pairwise distinct and all
 retain the complete Hamburger moment sequence. -/
 theorem exists_positiveHilbertCube_weightedBoundaryCarriers
-    [NoAtoms eta] {k : ℕ} (g : Fin k → Lp ℝ 1 eta)
+    [NullSingletonClass eta] {k : ℕ} (g : Fin k → Lp ℝ 1 eta)
     {delta : ℝ} (hdelta0 : 0 < delta) (hdelta1 : delta < 1) :
     ∃ v : ℕ → Lp ℝ ⊤ eta, ∃ ell : ℕ → (Lp ℝ ⊤ eta) →L[ℝ] ℝ,
       (∀ n, ‖v n‖ = 1) ∧

@@ -89,13 +89,13 @@ theorem fieldOneSemilocalBruhatToFunction_continuous
     Continuous (fieldOneSemilocalBruhatToFunction t) := by
   induction t using TensorProduct.induction_on with
   | zero =>
-      simpa using (continuous_const : Continuous
+      simpa using! (continuous_const : Continuous
         (fun _ : ℝ × FieldOneFiniteAdele => (0 : ℂ)))
   | tmul f g =>
-      simpa only [fieldOneSemilocalBruhatToFunction_tmul] using
+      simpa only [fieldOneSemilocalBruhatToFunction_tmul] using!
         fieldOneSemilocalPureTensorFun_continuous f g
   | add x y hx hy =>
-      simpa only [map_add] using hx.add hy
+      simpa only [map_add] using! hx.add hy
 
 /-- The product-Haar `L²` realization has the pointwise tensor function as a
 continuous representative. -/
@@ -106,11 +106,11 @@ theorem fieldOneSemilocalBruhatToL2_ae
         fieldOneSemilocalBruhatToFunction t := by
   induction t using TensorProduct.induction_on with
   | zero =>
-      simpa using
+      simpa using!
         (Lp.coeFn_zero ℂ 2 fieldOneSemilocalAddHaar)
   | tmul f g =>
       simpa only [fieldOneSemilocalBruhatToL2_tmul,
-        fieldOneSemilocalBruhatToFunction_tmul] using
+        fieldOneSemilocalBruhatToFunction_tmul] using!
         fieldOneSemilocalPureTensorToL2_ae f g
   | add x y hx hy =>
       filter_upwards [

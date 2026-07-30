@@ -171,7 +171,7 @@ theorem memLp_primeEulerFactor_inv_mul (p : ℝ) (hp : 1 < p) (g : SemilocalWeig
       (semilocalPrimeWeight_measurable p hp)] at hg
     convert hg using 1
     ext s
-    simpa [NNReal.smul_def] using norm_primeEulerFactor_inv_mul_sq p s (g s)
+    simpa [NNReal.smul_def] using! norm_primeEulerFactor_inv_mul_sq p s (g s)
   · exact ((primeEulerFactor_continuous p hp).inv₀
       (fun s => primeEulerFactor_ne_zero p hp s)).aestronglyMeasurable.mul
       (AEStronglyMeasurable.mono_ac
@@ -354,10 +354,10 @@ theorem archimedeanPrimeEulerGram_mul_not_isCompactOperator
     change (↑(u⁻¹ * u) : ArchimedeanWeightedL2 →L[ℂ] ArchimedeanWeightedL2) = 1
     simp
   have hcomp : IsCompactOperator (R * T) := by
-    simpa [mul_apply_eq_comp, Function.comp_def] using hcompact.clm_comp R
+    simpa [mul_apply_eq_comp, Function.comp_def] using! hcompact.clm_comp R
   have hid : IsCompactOperator (id : ArchimedeanWeightedL2 → ArchimedeanWeightedL2) := by
     rw [hRT] at hcomp
-    simpa using hcomp
+    simpa using! hcomp
   exact archimedeanWeightedL2_not_finiteDimensional
     (isCompactOperator_id_iff_finiteDimensional.mp hid)
 

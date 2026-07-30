@@ -94,7 +94,7 @@ theorem allReports_allFiniteLinearHistories_similarity_invariant
           (S x)) =
       report r
         (applyLinearHistory (word.map instrument) x) := by
-  simpa only [List.map_map, Function.comp_apply] using
+  simpa only [List.map_map, Function.comp_apply] using!
     allFiniteLinearHistoryReports_similarity_invariant
       S (report r) (word.map instrument) x
 

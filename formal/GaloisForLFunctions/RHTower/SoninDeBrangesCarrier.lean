@@ -228,6 +228,7 @@ theorem soninMellin_integrableOn {a : ℝ} (ha : 0 < a) {f : SoninL2}
       · linarith [h2.1]
       · exact h2.2
     rw [h1 htc, mul_zero]
+    rfl
   have hIoi : IntegrableOn (fun t : ℝ => (t : ℂ) ^ (-z) * f t) (Ioi a) :=
     (memLp_two_cpow_kernel_Ioi ha hz).integrable_mul ((Lp.memLp f).restrict _)
   have hunion := hIoc.union hIoi

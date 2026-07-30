@@ -131,8 +131,7 @@ theorem integrableOn_thetaCuspFullSource_mul_truncatedCosineSection
     have hscaled := hbase.const_mul
       (((-1 : ℂ) ^ k * z ^ (2 * k)) /
         (((2 * k).factorial : ℕ) : ℂ))
-    convert hscaled using 1
-    funext x
+    refine hscaled.congr (Filter.Eventually.of_forall fun x => ?_)
     push_cast
     rw [mul_pow]
     ring
@@ -239,7 +238,7 @@ theorem thetaCuspTailEvenCoefficient_pos (n : ℕ) :
       (differentiable_thetaCuspTailDerivative 2).continuous).div_const _
   have hfint : IntegrableOn f (Ioi 0) := by
     have h := integrableOn_pow_mul_thetaCuspTailDerivative (2 * n + 2) 2
-    simpa [f, div_eq_mul_inv] using h.mul_const
+    simpa [f, div_eq_mul_inv] using! h.mul_const
       (((2 * n + 2).factorial : ℝ)⁻¹)
   have hfnn : 0 ≤ᵐ[volume.restrict (Ioi 0)] f := by
     filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx

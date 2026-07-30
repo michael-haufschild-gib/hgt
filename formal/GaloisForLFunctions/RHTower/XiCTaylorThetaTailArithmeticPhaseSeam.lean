@@ -485,7 +485,7 @@ theorem criticalLogPhasePrefixDerivative_eq_reverseCriticalPhaseDerivative
       (criticalLogPhasePrefixDerivative L N z) z := by
     unfold criticalLogPhasePrefix criticalLogPhasePrefixDerivative
       criticalLogPhaseCoefficient criticalLogPhaseCoefficientDerivative
-    convert HasDerivAt.sum (u := Finset.range N)
+    have hsum := HasDerivAt.sum (u := Finset.range N)
       (A := fun j (u : ℂ) =>
         (Real.exp (-((j : ℝ) * L) / 2) : ℂ) *
           spectralTranslationPhase (-((j : ℝ) * L)) u)
@@ -494,11 +494,15 @@ theorem criticalLogPhasePrefixDerivative_eq_reverseCriticalPhaseDerivative
           ((Real.exp (-((j : ℝ) * L) / 2) : ℂ) *
             spectralTranslationPhase (-((j : ℝ) * L)) z))
       (fun j _hj => by
-        convert (hasDerivAt_spectralTranslationPhase (-((j : ℝ) * L)) z).const_mul
-          (Real.exp (-((j : ℝ) * L) / 2) : ℂ) using 1
-        push_cast
-        ring) using 1
-    funext u
+        have hraw :=
+          (hasDerivAt_spectralTranslationPhase (-((j : ℝ) * L)) z).const_mul
+            (Real.exp (-((j : ℝ) * L) / 2) : ℂ)
+        simpa only [Pi.mul_apply] using!
+          hraw.congr_deriv (by
+            push_cast
+            ring))
+    apply hsum.congr_of_eventuallyEq
+    filter_upwards with u
     simp only [Finset.sum_apply]
   have hr := hasDerivAt_reverseCriticalUnitCirclePolynomialPhase
     (finiteGeometricPolynomial N) L z

@@ -152,8 +152,8 @@ theorem analyticSubringDeriv_gammaReflectionSineAnalytic (b : ℂ) :
         -Complex.cos ((Real.pi : ℂ) * (-z + b))
     have hu : HasDerivAt (fun z : ℂ => (Real.pi : ℂ) * (-z + b))
         (-(Real.pi : ℂ)) z := by
-      convert ((hasDerivAt_id z).neg.add_const b).const_mul (Real.pi : ℂ) using 1
-      all_goals ring
+      convert! ((hasDerivAt_id z).neg.add_const b).const_mul (Real.pi : ℂ) using 1
+      ring
     rw [(hu.csin.div_const (Real.pi : ℂ)).deriv]
     field_simp [show (Real.pi : ℂ) ≠ 0 by exact_mod_cast Real.pi_ne_zero]
 
@@ -185,8 +185,8 @@ theorem analyticSubringDeriv_gammaReflectionCosineAnalytic (b : ℂ) :
         (Complex.sin ((Real.pi : ℂ) * (-z + b)) / (Real.pi : ℂ))
     have hu : HasDerivAt (fun z : ℂ => (Real.pi : ℂ) * (-z + b))
         (-(Real.pi : ℂ)) z := by
-      convert ((hasDerivAt_id z).neg.add_const b).const_mul (Real.pi : ℂ) using 1
-      all_goals ring
+      convert! ((hasDerivAt_id z).neg.add_const b).const_mul (Real.pi : ℂ) using 1
+      ring
     convert hu.ccos.deriv using 1
     field_simp [show (Real.pi : ℂ) ≠ 0 by exact_mod_cast Real.pi_ne_zero]
 

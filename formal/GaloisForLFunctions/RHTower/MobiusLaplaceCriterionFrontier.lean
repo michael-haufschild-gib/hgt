@@ -325,7 +325,7 @@ private theorem mobiusLaplaceLambertPair_antidiagonal (x : ℝ) (b : ℕ+) :
     let d := divisorsAntidiagonalFactors b z
     have hval : d.1.1 * d.2.1 = (b : ℕ) := divisorsAntidiagonalFactors_eq z
     have hvalR : (d.1 : ℝ) * (d.2 : ℝ) = (b : ℝ) := by
-      simpa only [Nat.cast_mul] using congrArg (fun n : ℕ => (n : ℝ)) hval
+      simpa only [Nat.cast_mul] using! congrArg (fun n : ℕ => (n : ℝ)) hval
     change ((ArithmeticFunction.moebius d.2 : ℤ) : ℂ) *
       Complex.exp (-((d.1 : ℝ) * (d.2 : ℝ) * x : ℝ)) = _
     have hd2 : d.2.1 = z.1.2 := rfl

@@ -21,7 +21,8 @@ def facetLaurentShiftLinearMap
     {R α : Type*} [CommRing R] [Fintype α] [DecidableEq α]
     (d : translationSubmonoid R α) (F : Finset α) :
     MvPolynomial α R →ₗ[R] ((α → ℤ) →₀ R) :=
-  Finsupp.lmapDomain R R (facetLaurentExponentShift d F)
+  (Finsupp.lmapDomain R R (facetLaurentExponentShift d F)).comp
+    (AddMonoidAlgebra.coeffLinearEquiv R).toLinearMap
 
 /-- The linear-map implementation agrees with coefficient reindexing. -/
 theorem facetLaurentShiftLinearMap_apply

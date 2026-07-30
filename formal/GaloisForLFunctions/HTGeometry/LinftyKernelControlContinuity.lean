@@ -37,7 +37,7 @@ theorem continuous_linftyLpPairingRight_of_continuous_kernel
     [TopologicalSpace H] (μ : Measure α) (K : H → Lp V 1 μ)
     (hK : Continuous K) :
     Continuous (fun h => linftyLpPairingRight μ (K h)) := by
-  simpa only [← linftyLpKernelControl_apply] using
+  simpa only [← linftyLpKernelControl_apply] using!
     (linftyLpKernelControl μ).continuous.comp hK
 
 /-- Pointwise kernels may be used directly once their canonical `L¹` classes vary continuously. -/

@@ -70,7 +70,7 @@ theorem inv_not_continuousAt_zero :
   have hlim : Tendsto (fun s : ℂ => 1 / s) (𝓝 0) (𝓝 0) := by
     have h2 := h.tendsto; simp only [div_zero] at h2; exact h2
   have hid : Tendsto (fun s : ℂ => s) (𝓝 0) (𝓝 0) := by
-    simpa using (continuous_id.tendsto (0 : ℂ))
+    simpa using! (continuous_id.tendsto (0 : ℂ))
   have hprod : Tendsto (fun s : ℂ => s * (1 / s)) (𝓝 0) (𝓝 (0 * 0)) := hid.mul hlim
   rw [mul_zero] at hprod
   have hpunc : Tendsto (fun s : ℂ => s * (1 / s)) (𝓝[≠] 0) (𝓝 1) := by

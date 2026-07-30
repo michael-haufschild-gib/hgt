@@ -58,8 +58,14 @@ theorem norm_thetaCuspTailSecondSection_le
           have hdiv : A / ((2 * k + 2).factorial : ℝ) ≤
               A / ((2 * k).factorial : ℝ) :=
             div_le_div_of_nonneg_left (by positivity) hfac0 hfac
-          dsimp [A] at hdiv
-          convert hdiv using 1 <;> ring
+          calc
+            _ = A / ((2 * k + 2).factorial : ℝ) := by
+              dsimp [A]
+              ring
+            _ ≤ A / ((2 * k).factorial : ℝ) := hdiv
+            _ = _ := by
+              dsimp [A]
+              ring
         _ = |x| ^ 2 * ∑ k ∈ Finset.range (d + 1),
             r ^ (2 * k) / ((2 * k).factorial : ℝ) := by rw [Finset.mul_sum]
     _ ≤ |x| ^ 2 * Real.cosh r := by gcongr
@@ -263,7 +269,7 @@ private theorem integrableOn_pow_mul_exp_two_neg (m : ℕ) :
   have hi := integral_pow_mul_exp_nat_neg m 2 (by omega)
   rw [show (∫ x : ℝ in Ioi 0, x ^ m * Real.exp (-2 * x)) =
       (m.factorial : ℝ) / (2 : ℝ) ^ (m + 1) by
-        convert hi using 1]
+        simpa using! hi]
   positivity
 
 theorem norm_thetaSquareIndexDyadicCoreAtomAverage_le
@@ -339,7 +345,7 @@ theorem norm_thetaSquareIndexDyadicCoreAtomAverage_le
         ring]
       rw [integral_const_mul, integral_add, integral_const_mul, hi0, hi2]
       · ring
-      · simpa using h0
+      · simpa using! h0
       · exact h2.const_mul q
     _ = _ := by rfl
 

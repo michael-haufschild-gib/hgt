@@ -51,8 +51,7 @@ theorem integral_cos_freq {γ : ℝ} (hγ : γ ≠ 0) (X : ℝ) :
       simpa using (hasDerivAt_id x).const_mul γ
     have h2 := h1.sin
     have h3 := h2.div_const γ
-    convert h3 using 1
-    field_simp
+    simpa [hγ] using! h3
   have hint : IntervalIntegrable (fun x : ℝ => Real.cos (γ * x))
       MeasureTheory.volume 0 X :=
     (Real.continuous_cos.comp (continuous_id.const_mul γ)).intervalIntegrable _ _
@@ -78,8 +77,7 @@ theorem integral_exp_rate {a : ℝ} (ha : a ≠ 0) (X : ℝ) :
     have h1 : HasDerivAt (fun u : ℝ => a * u) a x := by
       simpa using (hasDerivAt_id x).const_mul a
     have h3 := (h1.exp).div_const a
-    convert h3 using 1
-    field_simp
+    simpa [ha] using! h3
   have hint : IntervalIntegrable (fun x : ℝ => Real.exp (a * x))
       MeasureTheory.volume 0 X :=
     (Real.continuous_exp.comp (continuous_id.const_mul a)).intervalIntegrable _ _

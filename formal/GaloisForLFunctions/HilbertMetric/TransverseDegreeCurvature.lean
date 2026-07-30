@@ -69,41 +69,41 @@ theorem hasDerivAt_fifthDegreeBalancedLogModel (B k : ℕ) (t : ℝ)
   have hinner :
       HasDerivAt (fun s : ℝ => s ^ 5 + (5 / 3 : ℝ) * s)
         ((5 : ℝ) * t ^ 4 + 5 / 3) t := by
-    simpa only [id_eq, mul_one, Nat.cast_ofNat] using
+    simpa only [id_eq, mul_one, Nat.cast_ofNat] using!
       (((hasDerivAt_id t).pow 5).add
         ((hasDerivAt_id t).const_mul (5 / 3 : ℝ)))
   have hleft := (Real.hasDerivAt_log ht).const_mul (B : ℝ)
   have hright := (hinner.log hh).const_mul (k : ℝ)
   unfold fifthDegreeBalancedLogModel fifthDegreeBalancedLogDerivative
-  convert hleft.add hright using 1
-  ring
+  simpa only [Pi.add_apply] using!
+    (hleft.add hright).congr_deriv (by ring)
 
 theorem hasDerivAt_fifthDegreeBalancedLogDerivative_one (B k : ℕ) :
     HasDerivAt (fifthDegreeBalancedLogDerivative B k)
       (-(B : ℝ) + (5 / 4 : ℝ) * (k : ℝ)) 1 := by
   have hleft : HasDerivAt (fun t : ℝ => (B : ℝ) / t) (-(B : ℝ)) 1 := by
-    simpa only [id_eq, one_mul, mul_one, one_pow, zero_mul, zero_sub, div_one] using
+    simpa only [id_eq, one_mul, mul_one, one_pow, zero_mul, zero_sub, div_one] using!
       ((hasDerivAt_const (1 : ℝ) (B : ℝ)).div (hasDerivAt_id 1) one_ne_zero)
   have hnum :
       HasDerivAt (fun t : ℝ => (5 : ℝ) * t ^ 4 + 5 / 3) 20 1 := by
-    convert ((((hasDerivAt_id (1 : ℝ)).pow 4).const_mul 5).add_const (5 / 3)) using 1
-    simp only [id_eq, one_pow, mul_one, Nat.cast_ofNat]
-    ring
+    simpa only [Pi.pow_apply, id_eq] using!
+      (((((hasDerivAt_id (1 : ℝ)).pow 4).const_mul 5).add_const (5 / 3)).congr_deriv
+        (by norm_num))
   have hden :
       HasDerivAt (fun t : ℝ => t ^ 5 + (5 / 3 : ℝ) * t) (20 / 3) 1 := by
-    convert ((hasDerivAt_id (1 : ℝ)).pow 5).add
-      ((hasDerivAt_id 1).const_mul (5 / 3 : ℝ)) using 1
-    · simp only [id_eq, one_pow, mul_one, Nat.cast_ofNat]
-      ring
+    simpa only [Pi.add_apply, Pi.pow_apply, id_eq] using!
+      ((((hasDerivAt_id (1 : ℝ)).pow 5).add
+        ((hasDerivAt_id 1).const_mul (5 / 3 : ℝ))).congr_deriv (by norm_num))
   have hden_ne : (1 : ℝ) ^ 5 + (5 / 3 : ℝ) * 1 ≠ 0 := by
     positivity
   have hright := (hnum.div hden hden_ne).const_mul (k : ℝ)
-  convert hleft.add hright using 1
-  · funext t
-    unfold fifthDegreeBalancedLogDerivative
+  unfold fifthDegreeBalancedLogDerivative
+  apply ((hleft.add hright).congr_deriv ?_).congr_of_eventuallyEq
+  · filter_upwards with t
     simp only [Pi.add_apply, Pi.div_apply]
     ring
-  · ring_nf
+  · norm_num
+    ring
 
 /-- The expanded degree-five logarithmic model has curvature `-B + 5k/4` at unit scale. -/
 theorem fifthDegreeBalancedLogModel_secondDerivative_one (B k : ℕ) :

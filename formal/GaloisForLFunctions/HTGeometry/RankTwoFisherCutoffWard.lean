@@ -210,10 +210,10 @@ private theorem inner_complement_projection
     simpa only [heAdj] using adjoint_inner_left e y x
   have he_apply : e (e y) = e y := by
     have h := congrArg (fun f : H →L[ℂ] H => f y) he
-    simpa only [mul_apply] using h
+    simpa only [mul_apply] using! h
   have hproj : inner ℂ (e x) (e y) = inner ℂ x (e y) := by
     simpa only [heAdj, he_apply] using adjoint_inner_left e (e y) x
-  simp only [sub_apply, one_apply, inner_sub_left, inner_sub_right]
+  simp only [sub_apply, one_apply_eq_self, inner_sub_left, inner_sub_right]
   rw [hxy, hproj]
   ring
 
@@ -224,7 +224,7 @@ private theorem norm_sq_projection_add_complement
     ‖e x‖ ^ 2 + ‖(1 - e) x‖ ^ 2 = ‖x‖ ^ 2 := by
   have hstar : IsStarProjection e := by
     rw [isStarProjection_iff]
-    exact ⟨he, by simpa [star_eq_adjoint] using heAdj⟩
+    exact ⟨he, by simpa [star_eq_adjoint] using! heAdj⟩
   obtain ⟨hRange, heq⟩ := isStarProjection_iff_eq_starProjection_range.mp hstar
   letI : e.range.HasOrthogonalProjection := hRange
   have hdecomp := Submodule.norm_sq_eq_add_norm_sq_starProjection x e.range

@@ -96,8 +96,7 @@ theorem laplace_const {s X : ℝ} (hs : s ≠ 0) :
       simpa using (hasDerivAt_id x).const_mul (-s)
     have h2 := h1.exp
     have h3 := (h2.neg).div_const s
-    convert h3 using 1
-    field_simp
+    simpa [hs] using h3
   have hint : IntervalIntegrable (fun u : ℝ => Real.exp (-s * u))
       MeasureTheory.volume 0 X :=
     (Real.continuous_exp.comp (continuous_id.const_mul (-s))).intervalIntegrable _ _

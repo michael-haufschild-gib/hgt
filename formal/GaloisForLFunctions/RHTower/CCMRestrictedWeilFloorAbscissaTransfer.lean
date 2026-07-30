@@ -76,7 +76,7 @@ theorem restrictedWeilFloorPrimePolarCarrier_LSeriesSummable
   have hscaled : LSeriesSummable
       (fun n => (((2 * L : ℝ) : ℂ) * ((eta n : ℝ) : ℂ))) (sigma : ℂ) :=
     by
-      simpa only [Pi.smul_apply, smul_eq_mul] using
+      simpa only [Pi.smul_apply, smul_eq_mul] using!
         (heta.smul (((2 * L : ℝ) : ℂ)))
   have hconstant : LSeriesSummable
       (fun _n : ℕ => ((rectangularGammaPolarUniformBound L : ℝ) : ℂ))
@@ -90,7 +90,7 @@ theorem restrictedWeilFloorPrimePolarCarrier_LSeriesSummable
       exact hsigma
   have hadd := hscaled.add hconstant
   simpa only [restrictedWeilFloorPrimePolarCarrier, ofReal_add, ofReal_mul,
-    ofReal_ofNat, Pi.add_apply] using hadd
+    ofReal_ofNat, Pi.add_apply] using! hadd
 
 /-- **Restricted-floor half-plane transfer.**  If the sampled negative restricted-Weil floor has
 absolute-convergence abscissa at most `1 + alpha`, then every Xi zero lies in the horizontal strip

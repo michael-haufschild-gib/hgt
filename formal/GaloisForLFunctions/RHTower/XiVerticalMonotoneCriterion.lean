@@ -111,12 +111,14 @@ theorem riemannHypothesis_of_norm_XiC_vertical_monotone
 /-- Real-part derivative of a complex path. -/
 private theorem hasDerivAt_re {f : ℝ → ℂ} {f' : ℂ} {y : ℝ}
     (h : HasDerivAt f f' y) : HasDerivAt (fun t => (f t).re) f'.re y := by
-  simpa using (Complex.reCLM.hasFDerivAt.comp_hasDerivAt y h)
+  exact (Complex.reCLM.hasFDerivAt.comp_hasDerivAt y h).congr_of_eventuallyEq
+    (Eventually.of_forall fun _ => rfl)
 
 /-- Imaginary-part derivative of a complex path. -/
 private theorem hasDerivAt_im {f : ℝ → ℂ} {f' : ℂ} {y : ℝ}
     (h : HasDerivAt f f' y) : HasDerivAt (fun t => (f t).im) f'.im y := by
-  simpa using (Complex.imCLM.hasFDerivAt.comp_hasDerivAt y h)
+  exact (Complex.imCLM.hasFDerivAt.comp_hasDerivAt y h).congr_of_eventuallyEq
+    (Eventually.of_forall fun _ => rfl)
 
 /-- The vertical path and its derivative. -/
 private theorem hasDerivAt_verticalPath (x y : ℝ) :
@@ -140,8 +142,9 @@ theorem hasDerivAt_normSq_vertical {x y : ℝ}
   have hpath := hasDerivAt_verticalPath x y
   have hcomp : HasDerivAt (fun t : ℝ => XiC ((x : ℂ) + (t : ℂ) * Complex.I))
       (Complex.I • deriv XiC z) y := by
-    have := hXan.scomp y hpath
-    simpa [Function.comp] using this
+    have hraw := hXan.scomp y hpath
+    exact hraw.congr_of_eventuallyEq
+      (Eventually.of_forall fun _ => rfl)
   have hd : Complex.I • deriv XiC z = Complex.I * (logDeriv XiC z * w) := by
     rw [smul_eq_mul]
     congr 1
@@ -165,8 +168,11 @@ theorem hasDerivAt_normSq_vertical {x y : ℝ}
     have h1 := hre.mul hre
     have h2 := him.mul him
     have h := h1.add h2
-    convert h using 1
-    ring
+    have h' := h.congr_deriv
+      (g' := 2 * w.re * (Complex.I * (logDeriv XiC z * w)).re +
+        2 * w.im * (Complex.I * (logDeriv XiC z * w)).im) (by ring)
+    exact h'.congr_of_eventuallyEq
+      (Eventually.of_forall fun _ => rfl)
   convert hsq using 1
   have hkey : 2 * w.re * (Complex.I * (logDeriv XiC z * w)).re +
       2 * w.im * (Complex.I * (logDeriv XiC z * w)).im =

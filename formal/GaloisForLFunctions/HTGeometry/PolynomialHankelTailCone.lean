@@ -69,10 +69,12 @@ theorem abs_coeff_sq_le_two_mul_polynomialCoeffSqEnergy
     |(p ^ 2).coeff n| ≤ 2 * polynomialCoeffSqEnergy p := by
   rw [pow_two, Polynomial.coeff_mul]
   calc
-    |∑ x ∈ Finset.antidiagonal n, p.coeff x.1 * p.coeff x.2| ≤
-        ∑ x ∈ Finset.antidiagonal n, |p.coeff x.1 * p.coeff x.2| :=
+    |∑ x ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) n,
+        p.coeff x.1 * p.coeff x.2| ≤
+        ∑ x ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) n,
+          |p.coeff x.1 * p.coeff x.2| :=
       Finset.abs_sum_le_sum_abs _ _
-    _ ≤ ∑ x ∈ Finset.antidiagonal n,
+    _ ≤ ∑ x ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) n,
           ((p.coeff x.1) ^ 2 + (p.coeff x.2) ^ 2) := by
       apply Finset.sum_le_sum
       intro x hx

@@ -451,7 +451,7 @@ theorem SoninWindowState.operator_compactEq_iff
           · intro h
             cases h
       | live e =>
-          simpa only [SoninWindowState.operator_live, SoninWindowState.live.injEq] using
+          simpa only [SoninWindowState.operator_live, SoninWindowState.live.injEq] using!
             d.operator_compactEq_iff ha e
 
 /-- **Faithful finite-word normal-form theorem.**  Two nonempty canonical Sonin-window words

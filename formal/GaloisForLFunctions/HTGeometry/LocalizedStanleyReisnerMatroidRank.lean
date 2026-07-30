@@ -47,7 +47,7 @@ theorem linearIndependent_restrict_finiteFinsuppOperatorRows_iff
     change (Finsupp.lapply (R := P) q.1.2)
       (∑ x, A x • Q x q.1.1) = 0 at hs
     rw [map_sum] at hs
-    simpa only [map_smul, finiteFinsuppOperatorRows] using hs
+    simpa only [map_smul, finiteFinsuppOperatorRows] using! hs
   · intro h A hrel i
     apply h A
     funext s
@@ -67,7 +67,7 @@ theorem linearIndependent_restrict_finiteFinsuppOperatorRows_iff
       simp only [Pi.zero_apply, Finsupp.zero_apply]
       change (Finsupp.lapply (R := P) g) (∑ x, A x • Q x s) = 0
       rw [map_sum]
-      simpa only [map_smul] using hq
+      simpa only [map_smul] using! hq
 
 /-- The localized linear row matroid of one finite family of facetwise finitely supported
 polynomial operators. -/

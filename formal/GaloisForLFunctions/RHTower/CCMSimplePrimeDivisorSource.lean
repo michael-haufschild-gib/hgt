@@ -127,7 +127,7 @@ theorem LSeries_simplePrimeDivisorSourceCoefficient_eq_zetaLogDeriv
     _ = LSeries (fun n => (ArithmeticFunction.vonMangoldt n : ℂ)) (s - 1 / 2) -
         riemannZeta (s - 1 / 2) := by
       rw [LSeries_shiftedVonMangoldtCoeff, lseries_cpow_eq_zeta]
-      · ring
+      · ring_nf
       · norm_num [Complex.sub_re]
         linarith
     _ = -zetaLogDeriv (s - 1 / 2) - riemannZeta (s - 1 / 2) := by
@@ -238,7 +238,7 @@ theorem meromorphicOrderAt_simplePrimeDivisorContinuedSource_eq_neg_one
       hshiftAnalytic hshiftDeriv
     rw [show shift p = rho by simpa only [shift] using hpρ,
       meromorphicOrderAt_logDeriv_regularizedRiemannZeta_eq_neg_one hregZero] at hcomp
-    simpa only [shift, Function.comp_apply] using hcomp
+    simpa only [shift, Function.comp_apply] using! hcomp
   let singular : ℂ → ℂ := fun z =>
     (-1 : ℂ) * logDeriv regularizedRiemannZeta (z - 1 / 2)
   have hfac : AnalyticAt ℂ (fun _z : ℂ => (-1 : ℂ)) p := analyticAt_const
@@ -251,7 +251,7 @@ theorem meromorphicOrderAt_simplePrimeDivisorContinuedSource_eq_neg_one
     have hbase : MeromorphicAt (logDeriv regularizedRiemannZeta) (shift p) := by
       rw [show shift p = rho by simpa only [shift] using hpρ]
       exact meromorphicAt_logDeriv_regularizedRiemannZeta rho
-    simpa only [shift, Function.comp_apply] using
+    simpa only [shift, Function.comp_apply] using!
       MeromorphicAt.comp_analyticAt hbase hshiftAnalytic
   have hsingOrder : meromorphicOrderAt singular p =
       ((-1 : ℤ) : WithTop ℤ) := by

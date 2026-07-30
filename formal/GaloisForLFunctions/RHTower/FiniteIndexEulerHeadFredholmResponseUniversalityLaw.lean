@@ -76,7 +76,7 @@ theorem finitePrimeFredholmDet1_eq_eulerHeadAnchor
   rw [HilbertSchmidt.fredholmDet1_diagMul
     (fun p : P => (p.1 : ℂ) ^ (-s)) Finset.univ (by simp) R hR 1 h1]
   simpa only [one_mul, RHTower.eulerHeadAnchor] using
-    (Finset.prod_attach P (fun p : ℕ => 1 - (p : ℂ) ^ (-s)))
+    (Finset.prod_coe_sort P (fun p : ℕ => 1 - (p : ℂ) ^ (-s)))
 
 /-- One finite-prime determinant carries both Euler-head value and additive resolvent response. -/
 theorem finitePrimeEulerHead_fredholm_value_and_response

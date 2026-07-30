@@ -231,7 +231,7 @@ theorem pointedCutoffWardTrace_eq_adjointCurvature_values
         (inner ℂ psi (cutoffWardAdjointCurvature e T chi) +
           inner ℂ chi (cutoffWardAdjointCurvature e T psi)) := by
   rw [pointedCutoffWardTrace_eq_opTrace_adjointCurvature]
-  simpa only [one_mul] using
+  simpa only [one_mul] using!
     opTrace_mul_pointedFisherConnection_mul
       (1 : H →L[ℂ] H) (cutoffWardAdjointCurvature e T) psi chi
 

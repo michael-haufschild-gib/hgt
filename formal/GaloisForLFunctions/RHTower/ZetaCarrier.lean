@@ -62,7 +62,7 @@ theorem analyticOrderAt_one_sub (f : ℂ → ℂ) (z : ℂ) :
     rw [hd.deriv]; norm_num
   have h := analyticOrderAt_comp_of_deriv_ne_zero (f := f) hg hg'
   rw [show (1 : ℂ) - (1 - z) = z from by ring] at h
-  simpa [Function.comp] using h
+  simpa [Function.comp] using! h
 
 /-! ### §2 The concrete truncation -/
 
@@ -138,7 +138,7 @@ theorem zetaChi_analyticAt {z : ℂ} (hz : Gammaℝ (1 - z) ≠ 0) : AnalyticAt 
   have haff : AnalyticAt ℂ (fun s : ℂ => 1 - s) z := analyticAt_const.sub analyticAt_id
   have h1 : AnalyticAt ℂ (fun s : ℂ => Gammaℝ (1 - s)) z := by
     have h := (Gammaℝ_analyticAt hz).comp haff
-    simpa [Function.comp] using h
+    simpa [Function.comp] using! h
   have h2 : AnalyticAt ℂ (fun s => (Gammaℝ s)⁻¹) z :=
     (differentiable_Gammaℝ_inv.differentiableOn.analyticOnNhd isOpen_univ) z (Set.mem_univ z)
   have h := h1.mul h2
@@ -185,7 +185,7 @@ theorem gN_analyticAt {N : ℕ} {z : ℂ} (hz : Gammaℝ (1 - z) ≠ 0) :
   have hpoly' : AnalyticAt ℂ (fun s : ℂ => dirichletPoly N (1 - s)) z := by
     have h := (((dirichletPoly_differentiable N).differentiableOn.analyticOnNhd
       isOpen_univ) (1 - z) (Set.mem_univ _)).comp haff
-    simpa [Function.comp] using h
+    simpa [Function.comp] using! h
   have h := hpoly.add ((zetaChi_analyticAt hz).mul hpoly')
   exact h
 
@@ -216,7 +216,7 @@ theorem gN_orderAt_one_sub {N : ℕ} {z : ℂ} (h0 : 0 < z.re) (h1 : z.re < 1) :
     have hg : AnalyticAt ℂ (gN N) ((fun w : ℂ => 1 - w) (1 - z)) := by
       simpa [show (1 : ℂ) - (1 - z) = z from by ring] using gN_analyticAt (N := N) hG1z
     have h := hg.comp haff
-    simpa [Function.comp] using h
+    simpa [Function.comp] using! h
   have hmul : (fun w : ℂ => zetaChi w * gN N (1 - w))
       = zetaChi * fun w : ℂ => gN N (1 - w) := rfl
   rw [analyticOrderAt_congr hev, hmul, analyticOrderAt_mul hχa hga]

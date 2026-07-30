@@ -40,7 +40,7 @@ theorem fieldOneArchimedeanSchwartzToL2_denseRange :
     DenseRange
       (fun f : FieldOneArchimedeanSchwartz =>
         f.toLp 2 (volume : Measure ℝ))
-  simpa only [SchwartzMap.toLpCLM_apply] using
+  simpa only [SchwartzMap.toLpCLM_apply] using!
     (SchwartzMap.denseRange_toLpCLM
       (F := ℂ) (E := ℝ) (p := 2) ENNReal.ofNat_ne_top)
 
@@ -81,7 +81,7 @@ theorem fieldOneSemilocalProductToExistingL2_surjective :
   have hright :
       R y =ᵐ[fieldOneSemilocalAddHaar] y := by
     rw [congrArg ae fieldOneSemilocalAddHaar_eq_prod]
-    simpa only [R, Function.comp_apply, id_eq] using
+    simpa only [R, Function.comp_apply, id_eq] using!
       Lp.coeFn_compMeasurePreserving y
         ({ measurable := measurable_id
            map_eq := by
@@ -100,7 +100,7 @@ theorem fieldOneSemilocalProductToExistingL2_surjective :
     hright]
       with x hleft hright
   simpa only [fieldOneSemilocalProductToExistingL2, R,
-    Function.comp_apply, id_eq] using hleft.trans hright
+    Function.comp_apply, id_eq] using! hleft.trans hright
 
 def fieldOneSemilocalTransportedBruhatToL2 :
     FieldOneSemilocalBruhatSchwartz →ₗ[ℂ]
@@ -179,7 +179,7 @@ theorem fieldOneSemilocalBruhatToL2_eq_transported :
           LinearMap.comp_apply,
           fieldOneSemilocalProductToExistingL2,
           LinearIsometry.coe_toLinearMap,
-          Function.comp_apply, id_eq] using htransport]
+          Function.comp_apply, id_eq] using! htransport]
       rw [show
         fieldOneSemilocalProductBruhatToL2
             (f ⊗ₜ[ℂ] g) x =
@@ -204,7 +204,7 @@ theorem fieldOneSemilocalBruhatL2ClosedImage_eq_top :
     fieldOneSemilocalBruhatL2ClosedImage = ⊤ := by
   apply Submodule.dense_iff_topologicalClosure_eq_top.mp
   simpa only [fieldOneSemilocalBruhatL2ClosedImage,
-    fieldOneSemilocalBruhatL2Range, DenseRange] using
+    fieldOneSemilocalBruhatL2Range, DenseRange] using!
     fieldOneSemilocalBruhatToL2_denseRange
 
 theorem fieldOneSemilocalBruhatCompletionToL2_surjective :

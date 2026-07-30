@@ -69,7 +69,7 @@ theorem primeLogPhaseClockPair_two_three_comp_injective_iff
     {X : Type*} (clock : X → ℝ) :
     Function.Injective (fun x => primeLogPhaseClockPair 2 3 (clock x)) ↔
       Function.Injective clock := by
-  simpa only [primeLogPhaseClockPair] using
+  simpa only [primeLogPhaseClockPair] using!
     (HTGeometry.phaseClockPair_comp_injective_iff
       (rate₁ := Real.log 2) (rate₂ := Real.log 3)
       (ne_of_gt (Real.log_pos (by norm_num)))

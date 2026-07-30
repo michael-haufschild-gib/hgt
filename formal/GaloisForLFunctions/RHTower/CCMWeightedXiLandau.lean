@@ -702,7 +702,7 @@ theorem differentiableOn_xiWeightedLandauContinuation_landauBall
       (xiWeightedLandauPrefixSeries D C N)
       (Metric.ball (((1 + δ : ℝ) : ℂ)) r) s :=
     (differentiable_xiWeightedLandauPrefixSeries D C N s).differentiableWithinAt
-  simpa only [xiWeightedLandauContinuation] using
+  simpa only [xiWeightedLandauContinuation] using!
     (((hshift s hs).const_mul (2 : ℂ)).add
       (hzeta.const_mul (C : ℂ))).sub hprefix
 
@@ -1113,7 +1113,7 @@ theorem xiWeightedCancelledSeries_eventuallyEq_same_add_other
   change (∑' r : XiRightZeroCopy, xiWeightedCancelledTerm D r s) =
     (∑' r : XiRightSupportFiber q, xiWeightedCancelledTerm D r.1 s) +
       ∑' r : XiRightOtherSupport q, xiWeightedCancelledTerm D r.1 s
-  simpa only [P, Set.mem_setOf_eq, Set.mem_compl_iff] using hsplit.symm
+  simpa only [P, Set.mem_setOf_eq, Set.mem_compl_iff] using! hsplit.symm
 
 theorem xiWeightedCancelledSeries_order
     (D : XiRightCoefficientSystem) (q : XiRightZeroCopy) :
@@ -1163,7 +1163,7 @@ theorem differentiableOn_xiWeightedLandauAnalyticShiftedSeries
     linarith
   have hzeta := differentiableAt_riemannZeta hsone
   have hprefix := differentiable_xiWeightedLandauPrefixSeries D C N s
-  simpa only [xiWeightedLandauAnalyticShiftedSeries] using
+  simpa only [xiWeightedLandauAnalyticShiftedSeries] using!
     (((hL.sub (hzeta.const_mul (C : ℂ))).add hprefix).div_const (2 : ℂ)).differentiableWithinAt
 
 theorem xiWeightedLandauAnalyticShiftedSeries_eq_shiftedZeta

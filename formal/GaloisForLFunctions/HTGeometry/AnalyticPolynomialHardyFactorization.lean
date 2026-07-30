@@ -145,7 +145,7 @@ private theorem differentiable_multiset_prod {ι : Type*} (s : Multiset ι)
   induction s using Multiset.induction_on with
   | empty => simp
   | @cons a s ih =>
-      simpa using (hf a).mul ih
+      simpa using! (hf a).mul ih
 
 /-- The outerization is an entire function. -/
 theorem differentiable_polynomialOuterization (p : ℂ[X]) :
@@ -212,7 +212,7 @@ private theorem differentiableOn_multiset_prod {ι : Type*} (s : Multiset ι)
   induction s using Multiset.induction_on with
   | empty => simp
   | @cons a s ih =>
-      simpa using (hf a (by simp)).mul
+      simpa using! (hf a (by simp)).mul
         (ih (fun x hx => hf x (by simp [hx])))
 
 /-- The finite Blaschke factor of a polynomial is holomorphic on the open unit disk. -/

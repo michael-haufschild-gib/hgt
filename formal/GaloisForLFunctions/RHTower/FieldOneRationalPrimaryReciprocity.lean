@@ -69,7 +69,7 @@ theorem Rat.addMonoidHom_ext_primePowers
   have hdenprodNat :
       ∏ p ∈ t, p ^ d.factorization p = d := by
     simpa only [t] using
-      (Nat.prod_factorization_pow_eq_self hd0)
+      (Nat.prod_primeFactors_pow_factorization hd0).symm
   have hdenprod :
       ∏ p ∈ t, s p = (d : ℤ) := by
     change
@@ -99,7 +99,7 @@ theorem Rat.addMonoidHom_ext_primePowers
           (show (s p : ℚ) ≠ 0 by exact_mod_cast hs_ne p hp)).2
         norm_cast
         rw [← hdenprod,
-          Finset.prod_eq_prod_diff_singleton_mul hp s]
+          Finset.prod_eq_prod_sdiff_singleton_mul hp s]
         ring
   have hreciprocal :
       f ((1 : ℚ) / d) = g ((1 : ℚ) / d) := by

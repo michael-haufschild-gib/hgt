@@ -31,7 +31,6 @@ theorem soninAllPrimeTraceHankel_monomial_eq_energyMoment
   rw [soninAllPrimeTraceHankel_eq_energyMoment_sum a ha]
   rw [support_X_pow]
   simp [two_mul]
-  norm_num
 
 /-- The adjacent-binomial norm contains exactly the two neighboring even moments and twice the
 intervening odd moment. -/

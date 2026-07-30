@@ -50,7 +50,7 @@ theorem physicalForbidden_inf_fourierForbidden_eq_bot (a : ℝ) :
       intro houtside
       rw [hfourierCutoff] at hw
       simpa [houtside] using hw
-    exact l2_fourier_uncertainty f hsupp (by simpa [fourierUnitary] using hFsupp)
+    exact l2_fourier_uncertainty f hsupp (by simpa [fourierUnitary] using! hFsupp)
   · exact bot_le
 
 /-- At positive aperture, no nonzero physically supported vector can have a Fourier transform

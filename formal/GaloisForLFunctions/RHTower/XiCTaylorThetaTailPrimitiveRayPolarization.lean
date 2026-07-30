@@ -142,9 +142,10 @@ theorem hasDerivAt_thetaCuspPrimitiveRayJacobiPotential (u : ℝ) :
   have hsq := (hlin.pow 2).const_mul (7 / 16 : ℝ)
   have hfour := (hlin.pow 4).const_mul (15 / 64 : ℝ)
   have hfull := hsq.sub hfour
-  convert hfull using 1
-  simp
-  ring
+  have hfull' := hfull.congr_deriv
+    (g' := (2 * u - 1) *
+      (-(1 / 8 : ℝ) + (15 / 2 : ℝ) * (u * (1 - u)))) (by ring)
+  simpa only [Pi.sub_apply, Pi.pow_apply] using! hfull'
 
 /-- **Primitive-ray completion-character collapse.**  Reflection of the five radial derivative
 modes produces two elementary characters.  Their complete joint coefficient simplifies so that
@@ -188,10 +189,12 @@ theorem hasDerivAt_thetaCuspPrimitiveRayAngularFlux
     mul_pos hu.1 (sub_pos.mpr hu.2)
   have hwd : HasDerivAt thetaCuspPrimitiveRayMoment (1 - 2 * u) u := by
     unfold thetaCuspPrimitiveRayMoment
-    convert (hasDerivAt_id u).mul
-      ((hasDerivAt_const u 1).sub (hasDerivAt_id u)) using 1
-    simp
-    ring
+    have hraw := (hasDerivAt_id u).mul
+      ((hasDerivAt_const u 1).sub (hasDerivAt_id u))
+    have hraw' := hraw.congr_deriv (g' := 1 - 2 * u) (by
+      simp only [Pi.sub_apply, id_eq]
+      ring)
+    simpa only [Pi.mul_apply, Pi.sub_apply, id_eq] using! hraw'
   have ht : HasDerivAt (fun y : ℝ => 2 * y - 1) 2 u := by
     simpa using ((hasDerivAt_id u).const_mul 2).sub_const 1
   have hpow := hwd.rpow_const (p := (1 / 4 : ℝ)) (Or.inl hw.ne')
@@ -217,11 +220,14 @@ theorem hasDerivAt_thetaCuspPrimitiveRayAngularFlux
       _ = thetaCuspPrimitiveRayMoment u *
           (thetaCuspPrimitiveRayMoment u) ^ (-(3 / 4 : ℝ)) := by
         rw [Real.rpow_one]
-  convert hfull using 1
-  simp only [Pi.mul_apply]
-  rw [hexp, hrpow]
-  unfold thetaCuspPrimitiveRayGrowingCoefficient thetaCuspPrimitiveRayMoment
-  ring
+  have hfull' := hfull.congr_deriv
+    (g' := thetaCuspPrimitiveRayGrowingCoefficient u *
+      (thetaCuspPrimitiveRayMoment u) ^ (-(3 / 4 : ℝ))) (by
+      simp only [Pi.mul_apply]
+      rw [hexp, hrpow]
+      unfold thetaCuspPrimitiveRayGrowingCoefficient thetaCuspPrimitiveRayMoment
+      ring)
+  simpa only [thetaCuspPrimitiveRayAngularFlux, Pi.mul_apply] using! hfull'
 
 @[simp] theorem thetaCuspPrimitiveRayAngularFlux_zero :
     thetaCuspPrimitiveRayAngularFlux 0 = 0 := by
@@ -317,9 +323,14 @@ theorem hasDerivAt_thetaCuspReflectionModeIterate (m : ℕ) (x : ℝ) :
     ((hasDerivAt_id x).div_const 2)).const_mul ((1 / 2 : ℝ) ^ m)
   have hneg := ((Real.hasDerivAt_exp (-x / 2)).comp x
     (((hasDerivAt_id x).neg).div_const 2)).const_mul ((-1 / 2 : ℝ) ^ m)
-  convert (hpos.sub hneg).div_const 2 using 1
-  all_goals rw [pow_succ]
-  all_goals ring
+  have hraw := (hpos.sub hneg).div_const 2
+  have hraw' := hraw.congr_deriv
+    (g' := thetaCuspReflectionModeIterate (m + 1) x) (by
+      simp only [thetaCuspReflectionModeIterate]
+      rw [pow_succ]
+      ring)
+  simpa only [thetaCuspReflectionModeIterate, Function.comp_apply,
+    Pi.sub_apply, Pi.div_apply, id_eq] using! hraw'
 
 /-- Reflection of every derivative of the positive theta tail.  The parity sign and the complete
 elementary defect are kept in one formula, so higher radial packets can be reflected without
@@ -421,11 +432,11 @@ theorem exp_half_mul_thetaCuspPrimitiveRayRadialPacket_eq_reflected
         thetaCuspPrimitiveRayGrowingCoefficient u *
           (Real.exp (r / 2) * Real.exp (-r / 2)) -
         (1 / 32 : ℝ) *
-          (Real.exp (r / 2) * Real.exp (r / 2)) := by ring
+          (Real.exp (r / 2) * Real.exp (r / 2)) := by ring_nf
     _ = _ := by
       rw [← Real.exp_add, ← Real.exp_add]
-      rw [show r / 2 + -r / 2 = 0 by ring, Real.exp_zero, mul_one]
-      ring
+      rw [show r / 2 + -r / 2 = 0 by ring_nf, Real.exp_zero, mul_one]
+      ring_nf
 
 /-- Atomwise form of the five-mode decomposition. -/
 theorem thetaCuspPrimitiveRayPolynomialAtom_eq_derivative_packet
@@ -696,7 +707,7 @@ private theorem hasDerivAt_star_of_real
   have hc : HasDerivAt c 0 x := hasDerivAt_const x _
   have h := hc.clm_apply hf
   simpa only [c, Pi.zero_apply, _root_.zero_apply, zero_add,
-    RCLike.conjCLE_apply] using h
+    RCLike.conjCLE_apply] using! h
 
 theorem continuous_thetaCuspTailSecondSectionSourceSpectralDerivative
     (d : ℕ) (z : ℂ) :
@@ -773,9 +784,11 @@ theorem hasDerivAt_xiCTaylorThetaTailCorePairCurrent_firstSource
   have hsum := hterm1.add hterm2
   have him := (hasDerivAt_const x Complex.imCLM).clm_apply hsum
   have hhalf := him.div_const 2
-  convert hhalf using 1
-  unfold thetaCuspPrimitiveRayCorePairFirstSourceCurrent
-  simp
+  have hhalf' := hhalf.congr_deriv
+    (g' := thetaCuspPrimitiveRayCorePairFirstSourceCurrent d z x y) (by
+      unfold thetaCuspPrimitiveRayCorePairFirstSourceCurrent
+      simp)
+  simpa [xiCTaylorThetaTailCorePairCurrent] using! hhalf'
 
 /-- First logarithmic source coordinate on a fixed primitive radial fibre. -/
 def thetaCuspPrimitiveRayCorePolarX (r alpha u : ℝ) : ℝ :=
@@ -839,57 +852,57 @@ theorem hasDerivAt_thetaCuspPrimitiveRayCorePolarKernel
       (thetaCuspPrimitiveRayCorePolarKernelDerivative d z r alpha beta u) u := by
   have hx : HasDerivAt (thetaCuspPrimitiveRayCorePolarX r alpha)
       (1 / (2 * u)) u := by
-    unfold thetaCuspPrimitiveRayCorePolarX
-    convert ((Real.hasDerivAt_log hu.1.ne').div_const 2).const_add r |>.add_const alpha using 1
-    field_simp
+    have hraw :=
+      (((Real.hasDerivAt_log hu.1.ne').div_const 2).const_add r).add_const alpha
+    have hraw' := hraw.congr_deriv (g' := 1 / (2 * u)) (by field_simp)
+    simpa only [thetaCuspPrimitiveRayCorePolarX, Pi.add_apply,
+      Pi.div_apply] using! hraw'
   have hy : HasDerivAt (thetaCuspPrimitiveRayCorePolarY r beta)
       (-(1 / (2 * (1 - u)))) u := by
-    unfold thetaCuspPrimitiveRayCorePolarY
     have hsub : HasDerivAt (fun t : ℝ => 1 - t) (-1) u := by
-      simpa using (hasDerivAt_const u 1).sub (hasDerivAt_id u)
+      simpa using! (hasDerivAt_const u 1).sub (hasDerivAt_id u)
     have hlog := (Real.hasDerivAt_log (sub_pos.mpr hu.2).ne').comp u hsub
-    convert (hlog.div_const 2).const_add r |>.add_const beta using 1
-    field_simp
+    have hraw := ((hlog.div_const 2).const_add r).add_const beta
+    have hraw' := hraw.congr_deriv
+      (g' := -(1 / (2 * (1 - u)))) (by field_simp)
+    simpa only [thetaCuspPrimitiveRayCorePolarY, Pi.add_apply,
+      Pi.div_apply] using! hraw'
   have hDx : HasDerivAt
       (fun t : ℝ => thetaCuspTailSecondCoreAtomDerivative d z
         (thetaCuspPrimitiveRayCorePolarX r alpha t))
       (((1 / (2 * u) : ℝ) : ℂ) *
         thetaCuspTailSecondCoreAtomSourceSpectralDerivative d z
           (thetaCuspPrimitiveRayCorePolarX r alpha u)) u := by
-    convert ((hasDerivAt_thetaCuspTailSecondCoreAtomDerivative_source d z
+    simpa using! ((hasDerivAt_thetaCuspTailSecondCoreAtomDerivative_source d z
       (thetaCuspPrimitiveRayCorePolarX r alpha u)).hasFDerivAt.comp
-        u hx.hasFDerivAt).hasDerivAt using 1
-    simp
+        u hx.hasFDerivAt).hasDerivAt
   have hDy : HasDerivAt
       (fun t : ℝ => thetaCuspTailSecondCoreAtomDerivative d z
         (thetaCuspPrimitiveRayCorePolarY r beta t))
       (((-(1 / (2 * (1 - u))) : ℝ) : ℂ) *
         thetaCuspTailSecondCoreAtomSourceSpectralDerivative d z
           (thetaCuspPrimitiveRayCorePolarY r beta u)) u := by
-    convert ((hasDerivAt_thetaCuspTailSecondCoreAtomDerivative_source d z
+    simpa using! ((hasDerivAt_thetaCuspTailSecondCoreAtomDerivative_source d z
       (thetaCuspPrimitiveRayCorePolarY r beta u)).hasFDerivAt.comp
-        u hy.hasFDerivAt).hasDerivAt using 1
-    simp
+        u hy.hasFDerivAt).hasDerivAt
   have hVx : HasDerivAt
       (fun t : ℝ => thetaCuspTailSecondCoreAtom d z
         (thetaCuspPrimitiveRayCorePolarX r alpha t))
       (((1 / (2 * u) : ℝ) : ℂ) *
         thetaCuspTailSecondCoreAtomSourceDerivative d z
           (thetaCuspPrimitiveRayCorePolarX r alpha u)) u := by
-    convert ((hasDerivAt_thetaCuspTailSecondCoreAtom_source d z
+    simpa using! ((hasDerivAt_thetaCuspTailSecondCoreAtom_source d z
       (thetaCuspPrimitiveRayCorePolarX r alpha u)).hasFDerivAt.comp
-        u hx.hasFDerivAt).hasDerivAt using 1
-    simp
+        u hx.hasFDerivAt).hasDerivAt
   have hVy : HasDerivAt
       (fun t : ℝ => thetaCuspTailSecondCoreAtom d z
         (thetaCuspPrimitiveRayCorePolarY r beta t))
       (((-(1 / (2 * (1 - u))) : ℝ) : ℂ) *
         thetaCuspTailSecondCoreAtomSourceDerivative d z
           (thetaCuspPrimitiveRayCorePolarY r beta u)) u := by
-    convert ((hasDerivAt_thetaCuspTailSecondCoreAtom_source d z
+    simpa using! ((hasDerivAt_thetaCuspTailSecondCoreAtom_source d z
       (thetaCuspPrimitiveRayCorePolarY r beta u)).hasFDerivAt.comp
-        u hy.hasFDerivAt).hasDerivAt using 1
-    simp
+        u hy.hasFDerivAt).hasDerivAt
   have hcVx := hasDerivAt_star_of_real hVx
   have hcVy := hasDerivAt_star_of_real hVy
   have hterm1 := hDx.mul hcVy
@@ -897,12 +910,17 @@ theorem hasDerivAt_thetaCuspPrimitiveRayCorePolarKernel
   have hsum := hterm1.add hterm2
   have him := (hasDerivAt_const u Complex.imCLM).clm_apply hsum
   have hhalf := him.div_const 2
-  convert hhalf using 1
-  unfold thetaCuspPrimitiveRayCorePolarKernelDerivative
-    thetaCuspPrimitiveRayCorePairFirstSourceCurrent
-  simp [Complex.normSq_apply]
-  field_simp [hu.1.ne', (sub_pos.mpr hu.2).ne']
-  ring
+  have hhalf' := hhalf.congr_deriv
+    (g' := thetaCuspPrimitiveRayCorePolarKernelDerivative d z r alpha beta u) (by
+      unfold thetaCuspPrimitiveRayCorePolarKernelDerivative
+        thetaCuspPrimitiveRayCorePairFirstSourceCurrent
+      simp [Complex.normSq_apply]
+      field_simp [hu.1.ne', (sub_pos.mpr hu.2).ne']
+      ring)
+  exact hhalf'.congr_of_eventuallyEq (by
+    filter_upwards with t
+    simp [thetaCuspPrimitiveRayCorePolarKernel,
+      xiCTaylorThetaTailCorePairCurrent])
 
 /-- **Canonical seam-preserving primitive-ray bridge.**  The growing reflection character paired
 with the actual finite theta-tail core equals the two swept endpoint values and the single signed
@@ -953,7 +971,7 @@ theorem integral_thetaCuspPrimitiveRayGrowingCoefficient_mul_corePolarKernel
         have hcomp :=
           (continuous_thetaCuspPrimitiveRayCorePairFirstSourceCurrent d z).continuousAt.comp
             (hx.prodMk hy)
-        simpa only [Function.comp_apply] using hcomp
+        simpa only [Function.comp_apply] using! hcomp
     have hyx : ContinuousAt (fun t : ℝ =>
         thetaCuspPrimitiveRayCorePairFirstSourceCurrent d z
           (thetaCuspPrimitiveRayCorePolarY r beta t)
@@ -962,7 +980,7 @@ theorem integral_thetaCuspPrimitiveRayGrowingCoefficient_mul_corePolarKernel
         have hcomp :=
           (continuous_thetaCuspPrimitiveRayCorePairFirstSourceCurrent d z).continuousAt.comp
             (hy.prodMk hx)
-        simpa only [Function.comp_apply] using hcomp
+        simpa only [Function.comp_apply] using! hcomp
     have hcoefx : ContinuousAt (fun t : ℝ => 1 / (2 * t)) u :=
       continuousAt_const.div (continuousAt_const.mul continuousAt_id) htwo_u
     have hcoefy : ContinuousAt (fun t : ℝ => 1 / (2 * (1 - t))) u :=

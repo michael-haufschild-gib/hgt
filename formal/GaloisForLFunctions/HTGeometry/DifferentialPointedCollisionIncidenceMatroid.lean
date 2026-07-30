@@ -190,19 +190,16 @@ theorem pointedCollisionIncidenceMatroid_eq_rootedIncidenceMatroid_of_injective
     · intro hcollision
       have hmap := hcollision.map' T.symm.toLinearMap
         (LinearMap.ker_eq_bot.mpr T.symm.injective)
-      convert hmap using 1
-      funext i
-      change rootedIncidenceMatrix (C := C) root tail head i =
+      change LinearIndependent C (fun i : I =>
         T.symm (pointedCollisionIncidenceMatrix
-          (C := C) frame (frame root) tail head i)
-      rw [← hrow i]
-      exact (T.symm_apply_apply _).symm
+          (C := C) frame (frame root) tail head i)) at hmap
+      simpa only [← hrow, T.symm_apply_apply] using! hmap
     · intro hroot
       have hmap := hroot.map' T.toLinearMap
         (LinearMap.ker_eq_bot.mpr T.injective)
-      convert hmap using 1
-      funext i
-      exact (hrow i).symm
+      change LinearIndependent C (fun i : I =>
+        T (rootedIncidenceMatrix (C := C) root tail head i)) at hmap
+      simpa only [hrow] using! hmap
 
 /-- Independence in the collision-quotient incidence matroid is ordinary row independence. -/
 theorem pointedCollisionIncidenceMatroid_indep_iff

@@ -214,7 +214,7 @@ theorem xiTransverseShiftPairDifferenceUpperEndCarrier_differentialMatroid_eq_po
     xiTransverseShiftUpperEndCarrier_zero
   have hx :=
     xiTransverseShiftUpperEndCarrier_pointedCollisionSupport_differentialIndependent shift
-  simpa [xiTransverseShiftPairDifferenceUpperEndCarrier] using
+  simpa [xiTransverseShiftPairDifferenceUpperEndCarrier] using!
     (differentialFamilyMatroid_gradedPairwiseDifferences_eq_pointedCollisionIncidenceMatroid
       (C := upperEndRationalCoordinateField) shift 0 tail head
       xiTransverseShiftUpperEndCarrier hx0 hx)

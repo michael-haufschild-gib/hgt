@@ -106,7 +106,7 @@ theorem linearIndependent_circleMonomialLp_fin_of_infiniteSupport
     simp_rw [Polynomial.eval_finsetSum, Polynomial.eval_mul, Polynomial.eval_C,
       Polynomial.eval_pow, Polynomial.eval_X]
     induction (Finset.univ : Finset (Fin (N + 1))) using Finset.induction_on with
-    | empty => simpa using (Lp.coeFn_zero ℂ 2 mu)
+    | empty => simpa using! (Lp.coeFn_zero ℂ 2 mu)
     | @insert a S ha ih =>
         rw [Finset.sum_insert ha]
         filter_upwards [Lp.coeFn_add
@@ -285,7 +285,7 @@ theorem hasSzegoNormalizedGramVanishingConclusion_of_classicalSzego
     consecutiveGramDeterminantRatio_tendsto_zero_of_szego_of_mutuallySingular
       (circleMeasureGramTower mu) mu circleLebesgue hsing hszego
   have hroot := tendsto_rpow_inv_succ_zero_of_ratio_zero a ha (by
-    simpa only [a, consecutiveGramDeterminantRatio] using hratio)
+    simpa only [a, consecutiveGramDeterminantRatio] using! hratio)
   change Tendsto (fun N => (circleMeasureGramTower mu N).det.re ^
     (((N + 1 : ℕ) : ℝ)⁻¹)) atTop (𝓝 0)
   simpa only [a, Nat.cast_add, Nat.cast_one] using hroot

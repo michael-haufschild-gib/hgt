@@ -1030,7 +1030,7 @@ theorem q62_disconnected_of_zeroCircleLift_escape
       (fun t : ℝ => (quadratic c₁)^[d+1] (ι (circleMap (0 : ℂ) R t)))
       ((∏ j ∈ Finset.range (d+1),
         2 * (quadratic c₁)^[j] (ι (circleMap (0 : ℂ) R θ))) * γ' θ) θ := by
-    simpa only [Function.comp_apply] using hcomp₀
+    simpa only [Function.comp_apply] using! hcomp₀
   have hbase : HasDerivAt
       (fun t : ℝ => (quadratic c₁)^[d+1] (ι (circleMap (0 : ℂ) R t)))
       (deriv (circleMap (0 : ℂ) R) θ) θ := by

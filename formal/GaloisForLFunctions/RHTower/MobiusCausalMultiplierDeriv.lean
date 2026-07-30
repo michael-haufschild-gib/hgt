@@ -48,7 +48,7 @@ theorem hasDerivAt_zeta_shift {ω : ℝ} (hω : 0 < ω) {z : ℂ} (hz : 0 ≤ z.
       (1 + 2 * (ω : ℂ) + z) :=
     (differentiableAt_riemannZeta (one_add_two_mul_add_ne_one hω hz)).hasDerivAt
   have h := hζ.scomp ω hlin
-  simpa [Function.comp, smul_eq_mul] using h
+  simpa [Function.comp, smul_eq_mul] using! h
 
 /-- **The card's `(5)`--`(6)`: the parameter derivative of `M_ω`.** -/
 theorem hasDerivAt_mobiusCausalMultiplier {ω : ℝ} (hω : 0 < ω) {z : ℂ} (hz : 0 ≤ z.re)

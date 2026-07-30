@@ -33,7 +33,7 @@ theorem continuous_xiDerivativeOrderRealChannelFeature
     {d : ℕ} (order : Fin d → ℕ) :
     ∀ j, Continuous (xiDerivativeOrderRealChannelFeature order j) := by
   simpa [xiDerivativeOrderRealChannelFeature, complexRealChannelFeature,
-    xiDerivativeOrderFamily] using
+    xiDerivativeOrderFamily] using!
     continuous_complexRealChannelFeature
       (xiDerivativeOrderFamily order)
       (fun j => (differentiable_iteratedDeriv_of_entire
@@ -53,7 +53,7 @@ theorem linearIndependent_xiDerivativeOrderRealChannelFeature_iff_injective
     simp [xiDerivativeOrderRealChannelFeature, hij]
   · intro horder
     simpa [xiDerivativeOrderRealChannelFeature,
-      complexRealChannelFeature, xiDerivativeOrderFamily] using
+      complexRealChannelFeature, xiDerivativeOrderFamily] using!
       linearIndependent_complexRealChannelFeature_of_complex
         (xiDerivativeOrderFamily order)
         ((linearIndependent_xiDerivativeOrderFamily_iff_injective
@@ -75,7 +75,7 @@ theorem linearIndependent_xiDerivativeOrderRealChannelFeature_on_compl_iff_injec
     simp [xiDerivativeOrderRealChannelFeature, hij]
   · intro horder
     simpa [xiDerivativeOrderRealChannelFeature,
-      complexRealChannelFeature, xiDerivativeOrderFamily] using
+      complexRealChannelFeature, xiDerivativeOrderFamily] using!
       linearIndependent_complexRealChannelFeature_restrict_compl_of_complex
         (xiDerivativeOrderFamily order)
         (fun j => (differentiable_iteratedDeriv_of_entire
@@ -196,7 +196,7 @@ theorem exists_injective_xiDerivativeOrderRealChannelCofiniteHilbertReconstructi
       0 < (cofiniteRealEvaluationGram
         (xiDerivativeOrderRealChannelFeature order) F points).det := by
   simpa [xiDerivativeOrderRealChannelFeature,
-    complexRealChannelFeature, xiDerivativeOrderFamily] using
+    complexRealChannelFeature, xiDerivativeOrderFamily] using!
     exists_injective_cofiniteComplexRealChannelHilbertReconstruction_of_linearIndependent_of_continuous
       (xiDerivativeOrderFamily order)
       (fun j => (differentiable_iteratedDeriv_of_entire

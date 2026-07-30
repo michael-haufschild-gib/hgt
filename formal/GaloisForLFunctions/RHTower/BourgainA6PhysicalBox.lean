@@ -174,7 +174,7 @@ theorem bourgainA6PhysicalMoment_eq
               (y₂ / (H : ℝ) ^ (2 : ℕ))
               (y₃ / (H : ℝ) ^ (2 : ℕ))
               (y₄ / (H : ℝ)) := by
-    simpa only [zero_div, div_self hH0] using
+    simpa only [zero_div, div_self hH0, smul_eq_mul] using!
       (intervalIntegral.integral_comp_div
         (fun x₁ : ℝ =>
           F x₁

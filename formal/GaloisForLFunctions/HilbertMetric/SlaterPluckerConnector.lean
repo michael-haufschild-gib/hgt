@@ -116,12 +116,12 @@ theorem hasDerivAt_exponentialFeatureGram
   apply HasDerivAt.fun_sum
   intro k _
   have hlinear : HasDerivAt (fun s => s * (degree k : ℝ)) (degree k : ℝ) t := by
-    simpa using (hasDerivAt_id t).mul_const (degree k : ℝ)
+    simpa using! (hasDerivAt_id t).mul_const (degree k : ℝ)
   have hexp : HasDerivAt (fun s => Real.exp (s * (degree k : ℝ)))
       (Real.exp (t * (degree k : ℝ)) * (degree k : ℝ)) t := by
-    simpa only [Function.comp_apply] using
+    simpa only [Function.comp_apply] using!
       (Real.hasDerivAt_exp (t * (degree k : ℝ))).comp t hlinear
-  simpa only [mul_assoc, mul_comm, mul_left_comm] using
+  simpa only [mul_assoc, mul_comm, mul_left_comm] using!
     hexp.mul_const (evaluation i k * evaluation j k)
 
 /-- Literal second entrywise derivative of the exponential Gram path. -/
@@ -134,12 +134,12 @@ theorem hasDerivAt_exponentialFeatureGramFirst
   apply HasDerivAt.fun_sum
   intro k _
   have hlinear : HasDerivAt (fun s => s * (degree k : ℝ)) (degree k : ℝ) t := by
-    simpa using (hasDerivAt_id t).mul_const (degree k : ℝ)
+    simpa using! (hasDerivAt_id t).mul_const (degree k : ℝ)
   have hexp : HasDerivAt (fun s => Real.exp (s * (degree k : ℝ)))
       (Real.exp (t * (degree k : ℝ)) * (degree k : ℝ)) t := by
-    simpa only [Function.comp_apply] using
+    simpa only [Function.comp_apply] using!
       (Real.hasDerivAt_exp (t * (degree k : ℝ))).comp t hlinear
-  simpa only [mul_assoc, mul_comm, mul_left_comm, pow_two] using
+  simpa only [mul_assoc, mul_comm, mul_left_comm, pow_two] using!
     (hexp.const_mul (degree k : ℝ)).mul_const
       (evaluation i k * evaluation j k)
 
@@ -149,7 +149,7 @@ theorem exponentialFeatureGram_zero
     (hframe : IsOrthonormalCoordinateFrame evaluation) :
     exponentialFeatureGram evaluation degree 0 = 1 := by
   ext i j
-  simpa [exponentialFeatureGram] using hframe i j
+  simpa [exponentialFeatureGram] using! hframe i j
 
 /-- The first exponential Gram jet at zero is the compressed degree observable. -/
 theorem exponentialFeatureGramFirst_zero

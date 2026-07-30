@@ -393,7 +393,7 @@ theorem primePowerCoefficientShiftPalettes_differentialIndependent
   have hrect := primePowerCoefficientShiftedJets_algebraicIndependent
     J B c alpha hdistinct hrange htail (fun _ ↦ m)
   have hsub := hrect.comp f hf
-  simpa only [Function.comp_apply, f, x] using hsub
+  simpa only [Function.comp_apply, f, x] using! hsub
 
 end
 

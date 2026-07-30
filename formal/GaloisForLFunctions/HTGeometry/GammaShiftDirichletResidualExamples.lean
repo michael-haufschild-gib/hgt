@@ -63,7 +63,8 @@ theorem gammaJetAnnihilatorCoeff_pair_one (s lambda1 lambda2 : ℂ) :
     simp only [pairGammaMult, pow_one, Fin.prod_univ_two,
       pairGammaShift_zero, pairGammaShift_one]
     rw [Polynomial.coeff_mul]
-    rw [show Finset.antidiagonal 1 = {(0, 1), (1, 0)} by rfl]
+    rw [show Finset.HasAntidiagonal.antidiagonal (A := ℕ) 1 =
+      {(0, 1), (1, 0)} by rfl]
     simp
     ring
   change (gammaJetRootPolynomial ℂ s
@@ -88,7 +89,8 @@ theorem gammaJetAnnihilatorCoeff_pair_one (s lambda1 lambda2 : ℂ) :
   change ascPochhammerCoeff ℂ
     (gammaJetRootPolynomial ℂ s (pairGammaShift lambda1 lambda2) pairGammaMult) 1 = _
   simp only [ascPochhammer_succ_left, Polynomial.coeff_mul] at hc
-  rw [show Finset.antidiagonal 1 = {(0, 1), (1, 0)} by rfl] at hc
+  rw [show Finset.HasAntidiagonal.antidiagonal (A := ℕ) 1 =
+    {(0, 1), (1, 0)} by rfl] at hc
   norm_num [Polynomial.coeff_one] at hc
   linear_combination -hc
 
@@ -114,7 +116,7 @@ theorem det_confluentGammaShiftMatrix_pair (s lambda1 lambda2 : ℂ)
     (pairGammaShift lambda1 lambda2) pairGammaMult hpole]
   simp only [pairGammaMult, pow_one, Fin.prod_univ_two,
     pairGammaShift_zero, pairGammaShift_one]
-  norm_num [Finset.prod_eq_mul_prod_diff_singleton (i := (0 : Fin 2))]
+  norm_num [Finset.prod_eq_mul_prod_sdiff_singleton (i := (0 : Fin 2))]
   have hlast : Finset.Ioi (1 : Fin 2) = ∅ := by
     ext j
     fin_cases j <;> simp

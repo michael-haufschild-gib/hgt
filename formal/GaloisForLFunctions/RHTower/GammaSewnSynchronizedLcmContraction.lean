@@ -402,7 +402,6 @@ theorem gammaSewnSynchronizedLcmReesBoundary_pair_det_ne_zero
   · exact hspec hi
   · exact hspec hj
   all_goals
-    dsimp only [spectral]
     exact (add_pos (hlog _) (hlog _)).ne'
 
 /-- State-dependent gain for adjoining a new prime to a nonempty lcm support. -/

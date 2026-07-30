@@ -46,13 +46,14 @@ with the polynomial coefficient packet. -/
 theorem constantCoeffDifferentialOperator_eq_linearCombination
     (L : Polynomial ℂ) (f : ℂ → ℂ) :
     constantCoeffDifferentialOperator L f =
-      Finsupp.linearCombination ℂ (fun j : ℕ => iteratedDeriv j f) L.toFinsupp := by
+      Finsupp.linearCombination ℂ (fun j : ℕ => iteratedDeriv j f)
+        L.toFinsupp.coeff := by
   funext z
   rw [constantCoeffDifferentialOperator, Finsupp.linearCombination_apply,
     Finsupp.sum_apply']
   change (∑ j ∈ L.support, L.coeff j * iteratedDeriv j f z) =
-    ∑ j ∈ L.toFinsupp.support,
-      (L.toFinsupp j • iteratedDeriv j f) z
+    ∑ j ∈ L.toFinsupp.coeff.support,
+      (L.toFinsupp.coeff j • iteratedDeriv j f) z
   rw [Polynomial.support_toFinsupp]
   apply Finset.sum_congr rfl
   intro j _
@@ -67,17 +68,22 @@ theorem constantCoefficientDifferentiallyTranscendental_iff_linearIndependent_it
   rw [linearIndependent_iff]
   constructor
   · intro hf l hl
-    have hpoly : (⟨l⟩ : Polynomial ℂ) = 0 := by
+    have hpoly :
+        (⟨AddMonoidAlgebra.ofCoeff l⟩ : Polynomial ℂ) = 0 := by
       apply hf
       rw [constantCoeffDifferentialOperator_eq_linearCombination]
-      exact hl
-    have hcoeff := congrArg Polynomial.toFinsupp hpoly
+      simpa using hl
+    have hcoeff :=
+      congrArg (fun P : Polynomial ℂ => P.toFinsupp.coeff) hpoly
     simpa using hcoeff
   · intro hlin L hzero
+    have hcoeff : L.toFinsupp.coeff = 0 := by
+      apply hlin
+      rw [← constantCoeffDifferentialOperator_eq_linearCombination]
+      exact hzero
     apply Polynomial.toFinsupp_eq_zero.mp
-    apply hlin
-    rw [← constantCoeffDifferentialOperator_eq_linearCombination]
-    exact hzero
+    apply AddMonoidAlgebra.coeff_injective
+    simpa using hcoeff
 
 /-- Applying a constant-coefficient differential operator to a finite exponential spectrum
 multiplies each spectral line by the operator symbol evaluated at its frequency. -/
@@ -143,7 +149,7 @@ theorem differentiallyAlgebraic_of_constantCoeffDifferentialOperator_eq_zero
     rw [Finset.sum_eq_single (Fin.last L.natDegree)] at hev
     · apply hlead
       simpa only [map_mul, MvPolynomial.eval_C, MvPolynomial.eval_X,
-        if_pos, mul_one] using hev
+        Fin.val_last, if_pos, mul_one] using hev
     · intro b hb hblast
       simp [map_mul, MvPolynomial.eval_C, MvPolynomial.eval_X, hblast]
     · intro h
@@ -343,7 +349,9 @@ theorem iteratedDeriv_finiteComplexGibbsPartition
       ∑ a, (-(energy a : ℂ)) ^ j *
         Complex.exp (-(energy a : ℂ) * z) := by
   classical
-  simpa only [finiteComplexGibbsPartition, one_mul] using
+  change iteratedDeriv j
+      (fun x : ℂ => ∑ a, Complex.exp (-(energy a : ℂ) * x)) z = _
+  simpa only [one_mul] using
     (iteratedDeriv_finset_expSum (Finset.univ : Finset α)
       (fun _ => (1 : ℂ)) (fun a => -(energy a : ℂ)) j z)
 
@@ -352,7 +360,9 @@ theorem differentiallyAlgebraic_finiteComplexGibbsPartition
     {α : Type*} [Fintype α] (energy : α → ℝ) :
     DifferentiallyAlgebraic (finiteComplexGibbsPartition energy) := by
   classical
-  simpa only [finiteComplexGibbsPartition, one_mul] using
+  change DifferentiallyAlgebraic
+    (fun x : ℂ => ∑ a, Complex.exp (-(energy a : ℂ) * x))
+  simpa only [one_mul] using
     (differentiallyAlgebraic_finset_expSum_general
       (Finset.univ : Finset α) (fun _ => (1 : ℂ))
       (fun a => -(energy a : ℂ)))

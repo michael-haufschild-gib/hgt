@@ -142,8 +142,8 @@ private theorem re_boundary_le_left_tsum
     exact (xiRightLeftReflectEquiv.summable_iff).mpr hsumLeft
   have hinl : Summable (fun q : XiRightUpperZeroCopy =>
       G (xiRightSchwarzPairEquiv (Sum.inl q))) := by
-    simpa only [xiRightSchwarzPairEquiv_inl] using
-      hsumG.comp_injective Subtype.val_injective
+    exact (hsumG.comp_injective Subtype.val_injective).congr
+      (fun q => rfl)
   have hinr : Summable (fun q : XiRightUpperZeroCopy =>
       G (xiRightSchwarzPairEquiv (Sum.inr q))) := by
     apply hsumG.comp_injective

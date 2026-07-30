@@ -235,8 +235,7 @@ theorem entireFluxCoboundary_of_entireHermitianDiagonalLaw_explicit
     entire_eq_zero_of_zero_on_real_tail H 0 hHan (fun x _hx => hHreal x)
   let E : ℂ → ℂ := fun z => -Q (-I * (z - c))
   refine ⟨?_, ?_⟩
-  · dsimp only [E]
-    have hinner : Differentiable ℂ (fun z : ℂ => -I * (z - c)) := by fun_prop
+  · have hinner : Differentiable ℂ (fun z : ℂ => -I * (z - c)) := by fun_prop
     exact (hlaw.1.comp hinner).neg
   · intro z hz hzshift
     let b : ℂ := -I * (z - c)

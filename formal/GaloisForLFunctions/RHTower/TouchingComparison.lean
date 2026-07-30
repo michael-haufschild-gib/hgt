@@ -57,7 +57,7 @@ theorem touching_comparison {f : ℝ → ℝ} {c T : ℝ}
   obtain ⟨g, g', hge, heq, hderiv, hle⟩ := htouch x hx
   have hslope : Tendsto (slope g x) (𝓝[>] x) (𝓝 g') := by
     have := hasDerivWithinAt_iff_tendsto_slope.mp hderiv
-    simpa [Ici_diff_left] using this
+    simpa [Ici_sdiff_left] using this
   have hgr : g' < r := lt_of_le_of_lt hle hr
   have hev : ∀ᶠ z in 𝓝[>] x, slope g x z < r := hslope.eventually (eventually_lt_nhds hgr)
   have hmono : ∀ᶠ z in 𝓝[>] x, slope f x z ≤ slope g x z := by

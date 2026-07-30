@@ -61,7 +61,7 @@ theorem IsComplexAffineAlgebraicSet.image_finitePiCongrLeft
     have hEp : E p ∈ J := Ideal.mem_map_of_mem E hp
     have := hy (E p) hEp
     simpa [E, MvPolynomial.renameEquiv_apply, MvPolynomial.eval_rename,
-      Function.comp_def] using this
+      Function.comp_def] using! this
 
 /-- Every complex affine algebraic set in an arbitrary finite coordinate type has a finite
 regular stratification, before imposing any positive global codimension bound. -/

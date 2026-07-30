@@ -90,8 +90,7 @@ theorem cos_mul_eq_cos_mul_all_imp_sq_eq
     have hc :=
       (Real.hasDerivAt_cos (t * c)).comp t
         ((hasDerivAt_id t).mul_const c)
-    convert hc.deriv using 1
-    all_goals ring
+    simpa only [Function.comp_apply, id_eq, one_mul] using! hc.deriv
   have hsecond (c : ℝ) :
       deriv (deriv (fun t : ℝ => Real.cos (t * c))) 0 =
         -c ^ 2 := by
@@ -240,7 +239,7 @@ theorem labelledPairReturnRecord_translation_reflection_invariant
     labelledPairReturnRecord_eq_cos]
   rcases hsign with rfl | rfl
   · congr 2
-    ring
+    ring_nf
   · rw [show
       t * ((-1 : ℝ) * energy i + shift -
         ((-1 : ℝ) * energy j + shift)) =

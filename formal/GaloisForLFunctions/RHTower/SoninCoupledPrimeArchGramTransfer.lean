@@ -43,7 +43,7 @@ private theorem matrixOfRect_isHS
     exact ⟨fun j => hcols j, henergy⟩
   have h : Summable
       (fun p : κ × ι => ‖T (lp.single 2 p.2 (1 : ℂ)) p.1‖ ^ 2) := by
-    simpa only [Function.comp_apply] using
+    simpa only [Function.comp_apply] using!
       hswap.comp_injective (Equiv.prodComm κ ι).injective
   exact h.congr fun _ => rfl
 
@@ -231,7 +231,7 @@ theorem re_opTrace_soninAllPrimeCoupledChannelAugmentedEnergy_sq
           (HTGeometry.quantumChannelEffect B) := by
   simpa only [soninAllPrimeCoupledChannelAugmentedEnergy,
     soninAllPrimeCoupledCoordinateEnergy,
-    HTGeometry.quantumChannelEffect] using
+    HTGeometry.quantumChannelEffect] using!
       HTGeometry.re_opTrace_augmentedQuantumChannelEffect_sq
         (HilbertSchmidt.isHilbertSchmidt_toOperatorRect
           (soninAllPrimeColumnKernel_isHSRect a.1 a.2)) hB
@@ -816,7 +816,7 @@ private theorem hsNormSq_soninAllPrimeBlockOutputEnergyOperator_eq_diagonal
             (soninPrimePowerCrossOverlap a α α
               (ContinuousLinearMap.hsBasis ℂ SoninL2 j)) by
         dsimp [M, S]
-        simpa using matrix_soninAllPrimeBlockOutputEnergyOperator a ha α α i j]
+        simpa using! matrix_soninAllPrimeBlockOutputEnergyOperator a ha α α i j]
     · rw [if_neg hβ]
       have hne : α ≠ β := Ne.symm hβ
       have hzero : (fun ji : SoninHilbertIndex × SoninHilbertIndex =>
@@ -824,7 +824,7 @@ private theorem hsNormSq_soninAllPrimeBlockOutputEnergyOperator_eq_diagonal
         funext ji
         rw [show M (soninAllPrimeBlockSecondMomentEquiv ((α, β), ji)) = 0 by
           dsimp [M, S]
-          simpa [hne] using
+          simpa [hne] using!
             matrix_soninAllPrimeBlockOutputEnergyOperator a ha α β ji.2 ji.1]
         simp
       rw [hzero]
@@ -2308,6 +2308,7 @@ theorem
   have ht :=
     tendsto_soninAllPrimeCoupledProjectivePolynomialGramValue hgram p
   convert ht using 1
+  all_goals try rfl
 
 /-- Restricting a real-polynomial per-test schedule to integer polynomials supplies the original
 scalar coupling interface. -/

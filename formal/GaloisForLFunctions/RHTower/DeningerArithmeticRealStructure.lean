@@ -31,9 +31,9 @@ def deningerEntireFunctionalEquationSigma :
   toFun F :=
     ⟨fun z => (starRingEnd ℂ) (F (-(starRingEnd ℂ) z)), by
       have hneg : Differentiable ℂ (fun w : ℂ => F (-w)) := by
-        simpa only [Function.comp_apply] using
+        simpa only [Function.comp_apply] using!
           F.2.comp differentiable_neg
-      simpa only using differentiable_conj_reflect hneg⟩
+      simpa only using! differentiable_conj_reflect hneg⟩
   map_add' F G := by
     apply DeningerEntire.ext
     intro z

@@ -82,37 +82,38 @@ def twoStepTranslationOperator : AddMonoidAlgebra ℂ ℂ :=
 theorem twoStepTranslationOperator_ne_zero : twoStepTranslationOperator ≠ 0 := by
   rw [twoStepTranslationOperator, sub_ne_zero]
   intro h
-  have hcoe : (AddMonoidAlgebra.single (2 : ℂ) (1 : ℂ)) (2 : ℂ) =
-      (1 : AddMonoidAlgebra ℂ ℂ) (2 : ℂ) := congrArg (fun f => f (2 : ℂ)) h
-  rw [AddMonoidAlgebra.single_apply, AddMonoidAlgebra.one_def,
-    AddMonoidAlgebra.single_apply, if_pos rfl, if_neg (by norm_num : ¬ (0 : ℂ) = 2)] at hcoe
-  exact one_ne_zero hcoe
+  have hcoe := congrArg
+    (fun f : AddMonoidAlgebra ℂ ℂ => f.coeff (2 : ℂ)) h
+  simp [AddMonoidAlgebra.one_def] at hcoe
 
 private theorem finiteTranslationAction_twoStep_sub_one
     (f : ℂ → ℂ) (s : ℂ) :
     finiteTranslationAction twoStepTranslationOperator f s = f (s + 2) - f s := by
   rw [finiteTranslationAction]
-  change twoStepTranslationOperator.sum (fun h c => c * f (s + h)) = _
+  change twoStepTranslationOperator.coeff.sum (fun h c => c * f (s + h)) = _
   have hop : twoStepTranslationOperator =
       AddMonoidAlgebra.single (2 : ℂ) 1 + AddMonoidAlgebra.single 0 (-1) := by
     rw [twoStepTranslationOperator, AddMonoidAlgebra.one_def, sub_eq_add_neg]
     congr 1
-    exact (Finsupp.single_neg (0 : ℂ) (1 : ℂ)).symm
+    exact (AddMonoidAlgebra.single_neg (0 : ℂ) (1 : ℂ)).symm
   rw [hop]
   calc
     (AddMonoidAlgebra.single (2 : ℂ) (1 : ℂ) +
-        AddMonoidAlgebra.single 0 (-1 : ℂ)).sum
+        AddMonoidAlgebra.single 0 (-1 : ℂ)).coeff.sum
           (fun h c => c * f (s + h)) =
-        (AddMonoidAlgebra.single (2 : ℂ) (1 : ℂ)).sum (fun h c => c * f (s + h)) +
-          (AddMonoidAlgebra.single (0 : ℂ) (-1 : ℂ)).sum
+        (AddMonoidAlgebra.single (2 : ℂ) (1 : ℂ)).coeff.sum
+            (fun h c => c * f (s + h)) +
+          (AddMonoidAlgebra.single (0 : ℂ) (-1 : ℂ)).coeff.sum
             (fun h c => c * f (s + h)) := by
+      rw [AddMonoidAlgebra.coeff_add]
       apply Finsupp.sum_add_index'
       · intro h
         simp
       · intro h b₁ b₂
         ring
     _ = f (s + 2) - f s := by
-      rw [Finsupp.sum_single_index, Finsupp.sum_single_index]
+      rw [AddMonoidAlgebra.coeff_single, AddMonoidAlgebra.coeff_single,
+        Finsupp.sum_single_index, Finsupp.sum_single_index]
       · ring
       · simp
       · simp
@@ -303,7 +304,7 @@ theorem twoStepTranslation_completedZetaCurvatureModel_not_eventually_rational :
   have hsigma : 1 < sigma := by dsimp [sigma]; linarith [le_max_right B 2]
   have htau (x : ℝ) (hx : finiteTranslationThreshold twoStepTranslationOperator sigma ≤ x) :
       B ≤ x := by
-    have hsum : 0 ≤ ∑ h ∈ twoStepTranslationOperator.support, |h.re| :=
+    have hsum : 0 ≤ ∑ h ∈ twoStepTranslationOperator.coeff.support, |h.re| :=
       Finset.sum_nonneg fun h hh => abs_nonneg h.re
     have hsigma_le : sigma ≤ finiteTranslationThreshold twoStepTranslationOperator sigma := by
       dsimp [finiteTranslationThreshold]

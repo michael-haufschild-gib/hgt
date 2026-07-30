@@ -116,7 +116,7 @@ theorem deriv_neg_eq_neg_conj_of_conj_neg {f : ℝ → ℂ}
     simpa [Function.comp_def] using (hf (-x)).hasDerivAt.scomp x hneg
   have hright : HasDerivAt (fun y : ℝ => (starRingEnd ℂ) (f y))
       ((starRingEnd ℂ) (deriv f x)) x := by
-    simpa using Complex.conjCLE.hasFDerivAt.comp_hasDerivAt x (hf x).hasDerivAt
+    simpa using! Complex.conjCLE.hasFDerivAt.comp_hasDerivAt x (hf x).hasDerivAt
   have heq : (fun y : ℝ => f (-y)) = fun y => (starRingEnd ℂ) (f y) := funext href
   rw [heq] at hleft
   have hu := hleft.unique hright

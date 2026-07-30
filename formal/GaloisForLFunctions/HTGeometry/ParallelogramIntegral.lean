@@ -54,7 +54,7 @@ theorem parallelogramIntegral_eq_zero_of_continuousOn_of_differentiableAt
   have hdg : ∀ p ∈ parallelogramOpenSquare,
       HasFDerivAt (fun p => g (A p)) (dg p) p := by
     intro p hp
-    simpa only [Function.comp_apply] using
+    simpa only [Function.comp_apply] using!
       ((((hgd p hp).hasDerivAt.hasFDerivAt.restrictScalars ℝ)).comp p (hA p))
   have hf : ∀ p ∈ parallelogramOpenSquare, HasFDerivAt f (f' p) p := by
     intro p hp
@@ -65,7 +65,7 @@ theorem parallelogramIntegral_eq_zero_of_continuousOn_of_differentiableAt
   have hdiv : ∀ p, f' p (1, 0) + q' p (0, 1) = 0 := by
     intro p
     simp only [f', q', dg, _root_.smul_apply,
-      ContinuousLinearMap.neg_apply, ContinuousLinearMap.comp_apply,
+      neg_apply, ContinuousLinearMap.comp_apply,
       parallelogramCLM_apply]
     have hspan (z : ℂ) :
         (ContinuousLinearMap.restrictScalars ℝ
@@ -75,9 +75,11 @@ theorem parallelogramIntegral_eq_zero_of_continuousOn_of_differentiableAt
     simp only [ofReal_one, ofReal_zero, zero_mul, add_zero, one_mul, zero_add, smul_eq_mul]
     ring
   have hfc : ContinuousOn f parallelogramSquare := by
-    simpa [f, A] using (continuousOn_const.mul hgc)
+    simpa [f, A] using! (continuousOn_const.mul hgc)
   have hqc : ContinuousOn q parallelogramSquare := by
-    simpa [q, A] using hgc.neg
+    change ContinuousOn (-(fun p : ℝ × ℝ => g (a + parallelogramCLM τ p)))
+      parallelogramSquare
+    exact hgc.neg
   have hzeroInt : IntegrableOn (fun _ : ℝ × ℝ => (0 : ℂ))
       (uIcc (0 : ℝ) 1 ×ˢ uIcc (0 : ℝ) 1) volume := MeasureTheory.integrableOn_zero
   have hmain := MeasureTheory.integral2_divergence_prod_of_hasFDerivAt_off_countable

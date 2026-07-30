@@ -230,7 +230,7 @@ theorem singularContinuousParameterCarrierPhase_isSingularContinuous_of_analytic
     (hD : AnalyticOnNhd ℝ F.matrix.d univ)
     (nu : F.carrierRange)
     (hnu : nu ∈ F.singularContinuousParameterCarrierPhase) :
-    NoAtoms (nu.1 : Measure ℝ) ∧
+    NullSingletonClass (nu.1 : Measure ℝ) ∧
       (nu.1 : Measure ℝ) ⟂ₘ (volume : Measure ℝ) :=
   ⟨F.singularContinuousParameterCarrierPhase_noAtoms nu hnu,
     F.singularContinuousParameterCarrierPhase_mutuallySingular_volume_of_analytic

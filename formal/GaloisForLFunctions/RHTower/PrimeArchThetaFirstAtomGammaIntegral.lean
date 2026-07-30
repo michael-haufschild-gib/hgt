@@ -139,7 +139,7 @@ theorem thetaCuspAtomRawEvenMoment_one_eq_gammaIntegral (j : ℕ) :
     have hlin : HasDerivAt (fun y : ℝ => 2 * y) 2 x :=
       by simpa using (hasDerivAt_id x).const_mul 2
     have h := (Real.hasDerivAt_exp (2 * x)).comp x hlin
-    convert h.hasDerivWithinAt using 1 <;> simp only [f'] <;> ring
+    simpa only [f, f', Function.comp_def, mul_comm] using! h.hasDerivWithinAt
   have himageIoi : f '' Ioi (0 : ℝ) ⊆ Ioi 1 := by
     rintro t ⟨x, hx, rfl⟩
     dsimp [f]

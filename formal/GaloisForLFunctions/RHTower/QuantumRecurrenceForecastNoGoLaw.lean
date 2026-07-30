@@ -125,7 +125,7 @@ theorem recurrencePlateau_positiveLognormal_eq_zero
     {v : NNReal} (hv : 0 < v) :
     recurrencePlateau
         (positiveLognormalSpectrum v : Measure ℝ) = 0 := by
-  letI : NoAtoms
+  letI : NullSingletonClass
       (positiveLognormalSpectrum v : Measure ℝ) :=
     noAtoms_positiveLognormalSpectrum hv
   rw [recurrencePlateau, Measure.real,

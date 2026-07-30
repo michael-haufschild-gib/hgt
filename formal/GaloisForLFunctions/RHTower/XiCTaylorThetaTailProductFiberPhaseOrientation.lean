@@ -35,7 +35,7 @@ theorem hasDerivAt_thetaProductFiberCenteredPhase (k : ℕ) (z : ℂ) :
     HasDerivAt (thetaProductFiberCenteredPhase k)
       (thetaProductFiberCenteredPhaseDerivative k z) z := by
   unfold thetaProductFiberCenteredPhase thetaProductFiberCenteredPhaseDerivative
-  have hsum := HasDerivAt.sum (u := thetaPositiveFactorPairs k)
+  have hsum := HasDerivAt.fun_sum (u := thetaPositiveFactorPairs k) (x := z)
     (A := fun q (u : ℂ) =>
       Complex.exp (I * (thetaFactorPairLogDisplacement q : ℂ) * u))
     (A' := fun q =>
@@ -43,13 +43,11 @@ theorem hasDerivAt_thetaProductFiberCenteredPhase (k : ℕ) (z : ℂ) :
         Complex.exp (I * (thetaFactorPairLogDisplacement q : ℂ) * z))
     (fun q _hq => by
       let a : ℂ := I * (thetaFactorPairLogDisplacement q : ℂ)
-      convert (Complex.hasDerivAt_exp (a * z)).comp z
-        ((hasDerivAt_id z).const_mul a) using 1
-      all_goals dsimp [a]
-      all_goals ring)
-  convert hsum using 1
-  funext u
-  simp only [Finset.sum_apply]
+      have hinner : HasDerivAt (fun u : ℂ => a * u) a z := by
+        simpa using (hasDerivAt_id z).const_mul a
+      have hcomp := (Complex.hasDerivAt_exp (a * z)).comp z hinner
+      simpa only [a] using! hcomp.congr_deriv (by ring))
+  exact hsum
 
 def thetaPositiveFactorPairSuccEmbedding : (ℕ × ℕ) ↪ (ℕ × ℕ) :=
   ⟨fun q => (q.1 + 1, q.2 + 1), by

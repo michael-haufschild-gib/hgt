@@ -214,7 +214,7 @@ theorem kapustin_horizontalHedenmalmBosonicUniversality
       hhorizontal ρ hzero
     refine ⟨R, hR, U, hU, hU0, ?_, ?_, ?_⟩
     · simpa only [hone] using hfactor
-    · simpa only [hone] using hwinding
+    · simpa only [hone] using! hwinding
     · simpa only [hone] using hbosonic
   · rintro ⟨hcertificate, _hfingerprint⟩
     exact

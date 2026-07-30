@@ -50,7 +50,8 @@ theorem differentialAdjoin_translate_stable_of_generators
     have hy₀' : addTranslationMeroEquiv g y₀ ∈ K := hgen y₀ hy₀
     have hjet : addTranslationMeroEquiv g (differentialJet n y₀) =
         differentialJet n (addTranslationMeroEquiv g y₀) := by
-      simpa using (addTranslationMeroDifferentialAlgEquiv g).map_differentialJet n y₀
+      simpa using!
+        (addTranslationMeroDifferentialAlgEquiv g).map_differentialJet n y₀
     show addTranslationMeroEquiv g (differentialJet n y₀) ∈ K
     rw [hjet]
     exact hKclosed.differentialJet_mem hy₀' n

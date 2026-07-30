@@ -112,7 +112,7 @@ theorem tendsto_deriv_modularLambda_atImInfty :
   have hden : Tendsto (fun τ => thetaThree τ ^ 4) (comap Complex.im atTop) (𝓝 ((1 : ℂ) ^ 4)) :=
     tendsto_thetaThree_atImInfty.pow 4
   have h := hnum.div hden (by norm_num)
-  simpa using h
+  simpa using! h
 
 /-- **Top-segment (cusp-`∞` truncation) winding vanishes.** The horizontal segment `τ = t + iY`,
 `t ∈ [0,1]`, at truncation height `Y`: its winding integral `∫₀¹ λ'(t+iY)/(λ(t+iY)−w) dt → 0` as `Y→∞`,

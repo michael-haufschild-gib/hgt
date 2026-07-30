@@ -220,7 +220,7 @@ theorem finiteGaussianDistanceGram_rank_eq_image_card_of_pos
       exact ⟨rep a, rfl⟩
   have hupper : M.rank ≤ S.card := by
     rw [M.rank_eq_finrank_span_row, hrange]
-    simpa using
+    simpa only [Set.finrank, Fintype.card_coe] using
       (finrank_range_le_card (R := ℝ) (fun a : S => M.row (rep a)))
   change M.rank = S.card
   exact le_antisymm hupper hlower

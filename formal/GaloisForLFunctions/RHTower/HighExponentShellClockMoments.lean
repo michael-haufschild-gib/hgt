@@ -144,7 +144,7 @@ private theorem tendsto_ofReal_of_tendsto_ofReal {f : ℝ → ℝ} {l : Filter �
     (h : Tendsto (fun σ : ℝ => ((f σ : ℝ) : ℂ)) l (𝓝 ((c : ℝ) : ℂ))) :
     Tendsto f l (𝓝 c) := by
   have hre := ((Complex.continuous_re.continuousAt).tendsto).comp h
-  simpa using hre
+  simpa using! hre
 
 /-- **First critical clock moment of the shell.**  `(σ-1)·E[log n] → 1` as `σ ↓ 1`. -/
 theorem tendsto_shellLogMoment_one {m : ℕ} (hm : 12 ≤ m) :

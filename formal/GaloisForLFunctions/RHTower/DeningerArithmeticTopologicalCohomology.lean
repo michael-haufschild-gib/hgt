@@ -204,7 +204,7 @@ theorem deningerCompactOpenThetaMul_dividedChain
   apply deningerCompactOpenEntireEquiv.injective
   simpa [deningerCompactOpenThetaMul,
     deningerCompactOpenThetaCoordinate,
-    deningerCompactOpenDividedChain] using
+    deningerCompactOpenDividedChain] using!
       deningerEntireThetaCoordinate_mul_dividedChain rho hk
 
 /-- Multiplicity-exact Jordan recurrence in compact-open middle cohomology. -/
@@ -225,7 +225,7 @@ theorem deningerCompactOpenTheta_dividedChainClass
   have h :=
     congrArg deningerArithmeticCompactOpenH1Class
       (deningerCompactOpenThetaMul_dividedChain rho hk)
-  simpa only [map_add, map_smul] using h
+  simpa only [map_add, map_smul] using! h
 
 /-- Terminal multiplicity-depth divided chain is nonzero in compact-open cohomology. -/
 theorem deningerCompactOpenDividedChainClass_multiplicity_ne_zero

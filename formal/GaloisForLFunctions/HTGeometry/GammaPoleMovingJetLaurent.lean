@@ -81,7 +81,7 @@ theorem gammaPolePolynomialJetLaurentEval_monomial
 /-- Exact coefficient reflection for the polynomial-coefficient subring. -/
 theorem gammaPolePolynomialJetLaurentEval_C_coeff_neg
     (n b : ℕ) (p : Polynomial ℂ) :
-    gammaPolePolynomialJetLaurentEval n (MvPolynomial.C p) (-(b : ℤ)) =
+    (gammaPolePolynomialJetLaurentEval n (MvPolynomial.C p)).coeff (-(b : ℤ)) =
       ratNatEval (gammaPoleCenterHasseRational p b) *
         gammaPolePhysicalScaleGerm ^ b := by
   rw [gammaPolePolynomialJetLaurentEval_C,

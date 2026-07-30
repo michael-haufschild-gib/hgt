@@ -70,7 +70,7 @@ theorem deningerCompactOpen_tendstoLocallyUniformly_iteratedDeriv
           (deningerCompactOpenEntire_iteratedDeriv_differentiable
             (u n) k).differentiableOn
       have hnext := hk.deriv hdiff isOpen_univ
-      simpa only [Function.comp_apply, iteratedDeriv_succ] using
+      simpa only [Function.comp_apply, iteratedDeriv_succ] using!
         hnext
 
 /-- A fixed point jet is continuous in the compact-open entire-source topology. -/

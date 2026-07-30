@@ -150,7 +150,7 @@ private theorem hasDerivAt_re_completedGN_line (N : ℕ) (u : ℝ) :
     HasDerivAt (fun v : ℝ => (completedGN N (linePt v)).re)
       ((carrierLineSlope N u).re) u := by
   have h := Complex.reCLM.hasFDerivAt.comp_hasDerivAt u (hasDerivAt_completedGN_line N u)
-  simpa using h
+  simpa using! h
 
 /-! ### §3 The closed-form slope bound -/
 

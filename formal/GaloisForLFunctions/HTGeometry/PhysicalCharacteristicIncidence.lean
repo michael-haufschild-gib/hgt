@@ -500,7 +500,7 @@ theorem unitScaledCofaceKoszulRowEquiv_functional
   have hrhs : (∑ i, v i * (if i = 0 then a ^ r else 0)) = v 0 * a ^ r := by
     simp
   rw [hrhs]
-  have hsplit := Finset.sum_eq_add_sum_diff_singleton
+  have hsplit := Finset.sum_eq_add_sum_sdiff_singleton
     (s := (Finset.univ : Finset (Fin (r + 1)))) (0 : Fin (r + 1))
     (fun i ↦ unitScaledCofaceKoszulRowReduce r u v i *
       unitScaledCofaceGenerator r a u i)

@@ -93,7 +93,9 @@ theorem harmonicAt_reflectCircle_inner {u₀ : ℂ → ℝ} {w : ℂ} (hw : ‖w
     apply harmonicAt_comp_conj
     rw [map_inv₀]; exact hσ
   have hinv : AnalyticAt ℂ (fun z : ℂ => z⁻¹) w := by
-    simpa using (analyticAt_id (𝕜 := ℂ) (z := w)).inv hwne
+    refine AnalyticAt.congr ((analyticAt_id (𝕜 := ℂ) (z := w)).inv hwne) ?_
+    filter_upwards with z
+    simp only [Pi.inv_apply, id_eq]
   have hcomp := harmonicAt_comp_analytic hcc hinv
   have hneg := hcomp.neg
   refine (harmonicAt_congr_nhds ?_).mpr hneg
@@ -122,7 +124,11 @@ theorem analyticAt_reflTransport (t : ℂ) : AnalyticAt ℂ reflTransport t := b
 theorem hasDerivAt_reflTransport (t : ℂ) :
     HasDerivAt reflTransport (reflTransport t * (-Complex.I)) t := by
   have h1 : HasDerivAt (fun t : ℂ => -(Complex.I * t)) (-Complex.I) t := by
-    simpa using ((hasDerivAt_id t).const_mul Complex.I).neg
+    have hbase : HasDerivAt (-fun y : ℂ => Complex.I * id y) (-Complex.I) t :=
+      (((hasDerivAt_id t).const_mul Complex.I).neg).congr_deriv (by rw [mul_one])
+    refine hbase.congr_of_eventuallyEq ?_
+    filter_upwards with y
+    simp only [Pi.neg_apply, id_eq]
   exact h1.cexp
 
 theorem deriv_reflTransport_ne_zero (t : ℂ) : deriv reflTransport t ≠ 0 := by

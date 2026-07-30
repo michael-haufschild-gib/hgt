@@ -116,10 +116,13 @@ theorem logWeight_hasDerivAt {tk t : ℝ} (h : t ≠ tk) :
     simpa using ((hasDerivAt_id t).sub_const tk).div_const 2
   have hcomp : HasDerivAt (fun t => rcoth ((t - tk) / 2))
       (-(rcsch ((t - tk) / 2)) ^ 2 * (1 / 2)) t := by
-    simpa [Function.comp] using (rcoth_hasDerivAt hu).comp t hinner
+    have hraw := (rcoth_hasDerivAt hu).comp t hinner
+    refine hraw.congr_of_eventuallyEq ?_
+    filter_upwards with u
+    rfl
   have hL : HasDerivAt (logWeight tk)
       ((1 / 2) * (-(rcsch ((t - tk) / 2)) ^ 2 * (1 / 2))) t :=
     (hcomp.const_mul (1 / 2 : ℝ)).const_add (1 / 2 : ℝ)
   rw [logWeight_mul_one_sub h]
-  convert hL using 1
+  apply hL.congr_deriv
   ring

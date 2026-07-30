@@ -554,7 +554,7 @@ theorem signedFactorialEval_injective (m : ℕ) :
     intro P hP
     apply factorialSquareEval_injective m
     rw [map_zero]
-    simpa [factorialSquareEval, Polynomial.aeval_def] using hP
+    simpa [factorialSquareEval, Polynomial.aeval_def] using! hP
   have hsigned : Transcendental (MvPolynomial (Fin m) (RatFunc ℂ))
       signedFactorialGerm := by
     intro halg
@@ -604,7 +604,7 @@ theorem reciprocalSignedFactorialEval_injective (m : ℕ) :
     intro P hP
     apply signedFactorialEval_injective m
     rw [map_zero]
-    simpa [signedFactorialEval, Polynomial.aeval_def] using hP
+    simpa [signedFactorialEval, Polynomial.aeval_def] using! hP
   have hinv : ⅟ signedFactorialGerm = reciprocalSignedFactorialGerm := by
     apply signedFactorialGerm_isUnit.mul_left_cancel
     rw [mul_invOf_self, signedFactorialGerm_mul_reciprocal]
@@ -761,7 +761,7 @@ theorem gammaPoleLogSlope_ne_zero (j : ℕ) : gammaPoleLogSlope j ≠ 0 := by
 theorem algebraicIndependent_gammaPoleLogCoefficientGerm_fin (m : ℕ) :
     AlgebraicIndependent ℂ
       (fun j : Fin m => gammaPoleLogCoefficientGerm (j : ℕ)) := by
-  simpa [gammaPoleLogCoefficientGerm, weightedAffineGerm] using
+  simpa [gammaPoleLogCoefficientGerm, weightedAffineGerm] using!
     (algebraicIndependent_weightedAffineGerm m
       (hα := fun j => gammaPoleLogSlope_ne_zero (j : ℕ))
       (β := fun j => gammaPoleLogConstant (j : ℕ)))

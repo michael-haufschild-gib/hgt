@@ -52,6 +52,10 @@ theorem TorsionLanguageUniversal.exists_strictMono_occurrences
   obtain ⟨q, hqmono, hqP⟩ := Nat.exists_strictMono_subsequence hP
   exact ⟨q, hqmono, hqmono.tendsto_atTop, hqP⟩
 
+noncomputable local instance rootsOfUnityFintype (m : ℕ+) :
+    Fintype (rootsOfUnity (m : ℕ) ℂ) :=
+  Fintype.ofFinite _
+
 noncomputable local instance rootsOfUnityEncodable (m : ℕ+) :
     Encodable (rootsOfUnity (m : ℕ) ℂ) :=
   Fintype.toEncodable _

@@ -173,7 +173,7 @@ theorem projectiveCompleteGenerator_algebraicIndependent :
     AlgebraicIndependent K
       (fun g : ProjectiveCompleteGenerator ι η ↦
         projectiveCompleteEmbedding (K := K) (ι := ι) (η := η) (MvPolynomial.X g)) := by
-  simpa only [Function.comp_apply] using
+  simpa only [Function.comp_apply] using!
     (MvPolynomial.algebraicIndependent_X (ProjectiveCompleteGenerator ι η) K).map'
       (projectiveCompleteEmbedding_injective (K := K) (ι := ι) (η := η))
 
@@ -310,7 +310,7 @@ theorem projectiveCompleteJetPacket_algebraicIndependent
     cases t with
     | inl r =>
         simpa [projectiveCompleteJetPacket, σ, u, x, generatorEmbedding, prefixEmbedding,
-          tailEquiv, Algebra.smul_def] using
+          tailEquiv, Algebra.smul_def] using!
           (directionalJet_projectiveCompleteRoot_of_lt a (n + 1) (r : ℕ) r.isLt c).symm
     | inr r =>
         rw [projectiveCompleteJetPacket,

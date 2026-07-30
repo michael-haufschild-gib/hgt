@@ -280,7 +280,7 @@ theorem tendsto_shellClockProbabilityMeasure {m : ℕ} (hm : 12 ≤ m) :
   intro t
   have hchar := (tendsto_charFun_shellClockProbabilityMeasure hm t).comp hσ
   rw [charFun_mobiusCriticalExponentialProbabilityMeasure]
-  simpa only [Function.comp_apply] using hchar
+  simpa only [Function.comp_apply] using! hchar
 
 /-! ## The oriented gap of two independent shell clocks -/
 

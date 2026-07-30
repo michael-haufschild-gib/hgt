@@ -65,7 +65,7 @@ theorem blaschke_lift_norm_le_dist_div {g : ℂ → ℂ} {c z : ℂ} {R : ℝ}
   have hB0 : B (g c) = 0 := by
     dsimp [B]
     simp
-  simpa [B, hB0, one_div, mul_comm, mul_left_comm, mul_assoc] using hschwarz
+  simpa [B, hB0, one_div, mul_comm, mul_left_comm, mul_assoc] using! hschwarz
 
 /-- The boundary-one Poisson kernel on the unit disk.  Under `cayleyInv`, this is exactly the
 upper-half-plane height. -/

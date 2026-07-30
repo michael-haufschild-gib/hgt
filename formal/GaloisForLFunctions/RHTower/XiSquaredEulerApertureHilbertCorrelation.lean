@@ -130,7 +130,9 @@ theorem xiSquaredEulerApertureHankelTerm_eq_hilbert_sub_transverse
   simpa only [xiSquaredEulerApertureHankelTerm,
     xiSquaredEulerApertureHilbertTerm,
     xiSquaredEulerApertureTransverseTerm,
-    xiSquaredEulerApertureShearedEvaluation, lam, w] using
+    xiSquaredEulerApertureShearedEvaluation,
+    HTGeometry.orientedComplexSquareHilbertTerm,
+    HTGeometry.orientedComplexSquareTransverseTerm, lam, w] using
     HTGeometry.re_mul_sq_eq_orientedHilbert_sub_transverse lam w hlam
 
 /-- The positive aperture term is the squared real response amplitude divided by the positive

@@ -153,7 +153,7 @@ theorem map_universalTangentInversePowerSeries :
           (universalTangentPowerSeries.subst
             universalTangentInversePowerSeries) := by
         symm
-        simpa only [R] using hnat
+        simpa only [R] using! hnat
       _ = PowerSeries.X := by
         rw [universalTangent_subst_inverse, PowerSeries.map_X]
   exact powerSeries_subst_rightInverse_unique
@@ -177,7 +177,7 @@ theorem universalTangentInverseCoefficientMap_involutive :
   have hc := congrArg (PowerSeries.coeff (n + 2))
     map_universalTangentInversePowerSeries
   simpa only [PowerSeries.coeff_map,
-    universalTangentPowerSeries_coeff_add_two] using hc
+    universalTangentPowerSeries_coeff_add_two] using! hc
 
 theorem universalTangentInverseCoefficientMap_injective :
     Function.Injective universalTangentInverseCoefficientMap := by

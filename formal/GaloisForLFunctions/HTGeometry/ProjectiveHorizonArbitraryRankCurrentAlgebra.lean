@@ -21,6 +21,8 @@ namespace GaloisForLFunctions
 
 noncomputable section
 
+attribute [local instance 100] LieRing.ofAssociativeRing
+
 variable (K ι : Type*) [Field K] [Fintype ι] [DecidableEq ι]
 
 /-- Matrix indices split into the two-dimensional normal quotient and arbitrary transverse

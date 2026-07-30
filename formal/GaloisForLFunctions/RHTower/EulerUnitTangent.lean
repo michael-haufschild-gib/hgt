@@ -58,7 +58,7 @@ theorem hasDerivAt_degreeOneEulerLocalFlux_one {p : ℕ} (hp : 2 ≤ p)
         (Real.log p : ℂ) * q / (1 - q) ^ 2 := by
     field_simp [hden]
     ring
-  convert hscaled.congr_deriv hderiv using 1
+  convert! hscaled.congr_deriv hderiv using 1
   funext a
   unfold degreeOneEulerLocalFlux
   dsimp only [q]
@@ -77,7 +77,7 @@ theorem primeEulerUnitTangent_hasSum {p : ℕ} (hp : 2 ≤ p)
   have hgeom := hasSum_coe_mul_geometric_of_norm_lt_one
     (norm_natCast_cpow_neg_lt_one hp hs)
   have hscaled := hgeom.mul_left (Real.log p : ℂ)
-  convert hscaled using 1
+  convert! hscaled using 1
   · funext m
     ring
   · unfold primeEulerUnitTangent

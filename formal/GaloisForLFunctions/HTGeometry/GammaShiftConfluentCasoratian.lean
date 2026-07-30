@@ -155,7 +155,7 @@ theorem prod_gammaJetSlot_Iio {r : ℕ} (mult : Fin r → ℕ)
                 constructor
                 · rintro (ha | ⟨heq, hq⟩)
                   · exact (lt_irrefl a ha).elim
-                  · simpa using hq
+                  · simpa using! hq
                 · intro hq
                   exact Or.inr ⟨rfl, hq⟩
               simp only [lt_self_iff_false, ↓reduceIte, hcond]
@@ -451,7 +451,7 @@ theorem iteratedDeriv_Gamma_add_nat_eq_sum (z : ℂ) (n m : ℕ)
       iteratedDeriv m (fun w : ℂ => Complex.Gamma (w + n)) z :=
     (congrFun (iteratedDeriv_comp_add_const m Complex.Gamma n) z).symm
   have hpoly : ContDiffAt ℂ m (fun w : ℂ => (ascPochhammer ℂ n).eval w) z := by
-    simpa [Polynomial.aeval_def] using
+    simpa [Polynomial.aeval_def] using!
       ((Polynomial.contDiff_aeval (ascPochhammer ℂ n) (m : WithTop ℕ∞)).contDiffAt)
   rw [hshift, hEq.iteratedDeriv_eq,
     iteratedDeriv_mul (𝕜 := ℂ) hpoly (contDiffAt_Gamma z hz m)]

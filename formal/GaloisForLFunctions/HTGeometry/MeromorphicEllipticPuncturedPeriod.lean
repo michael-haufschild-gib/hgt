@@ -96,7 +96,7 @@ theorem analyticFraction_eventually_periodic_of_field_fixed
     exact hfixed
   have hlocal := analyticSubring_fraction_eventuallyEq_of_field_eq
     hTba hb hgq hg hfqa hgqb hfa hgb hfield p
-  simpa only [fq, gq] using hlocal
+  simpa only [fq, gq] using! hlocal
 
 /-! ## Integer elliptic periods in the concrete field -/
 
@@ -165,8 +165,8 @@ theorem poleIndexSet_finite_of_ellipticField_fraction
         simpa only [r, period, A, B, zsmul_eq_mul, mul_one, add_assoc] using hdecomp
       change meromorphicOrderAt phi (r n) < 0
       rw [← hord]
-      convert hn using 2
-      exact hdecomp'.symm
+      rw [← hdecomp']
+      exact hn
   have himage : (r '' poleIndexSet phi p q).Finite :=
     hT.subset (Set.image_subset_iff.mpr hmap)
   apply himage.of_finite_image

@@ -12,7 +12,7 @@
 \usepackage{tikz}
 \usepackage[hidelinks]{hyperref}
 
-\usetikzlibrary{arrows.meta,positioning,fit}
+\usetikzlibrary{arrows.meta,positioning,fit,patterns,decorations.pathreplacing}
 \setlist{nosep,leftmargin=*}
 \setlength{\parindent}{1.05em}
 \setlength{\parskip}{0.12em}
@@ -32,703 +32,995 @@
 \newcommand{\N}{\mathbb N}
 \newcommand{\Z}{\mathbb Z}
 \newcommand{\Q}{\mathbb Q}
+\newcommand{\T}{\mathbb T}
 \newcommand{\dd}{\mathrm d}
-\newcommand{\supp}{\operatorname{supp}}
-\newcommand{\spanQ}{\operatorname{span}_{\Q}}
-\newcommand{\card}{\operatorname{card}}
 \newcommand{\I}{\mathrm i}
+\newcommand{\sinc}{\operatorname{sinc}}
+\newcommand{\rank}{\operatorname{rank}}
+\newcommand{\supp}{\operatorname{supp}}
+\newcommand{\Law}{\operatorname{Law}}
+\newcommand{\E}{\mathbb E}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
 
-\title{\bfseries Whether quantum history repeats is not locally determined}
+\definecolor{visible}{RGB}{219,238,255}
+\definecolor{hidden}{RGB}{244,244,244}
+\definecolor{accent}{RGB}{20,88,145}
+\definecolor{local}{RGB}{170,55,45}
+
+\title{\bfseries A universal information law for quantum recurrence}
 \author{Michael Haufschild}
-\date{July 29, 2026}
+\date{July 30, 2026}
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-Does complete polynomial local dynamical information determine whether a
-quantum history will return?  We prove that it does not.  Every normalized
-indeterminate moment class contains two stationary quantum histories with
-identical polynomial Krylov inner products, identical energy-multiplication
-matrix elements and therefore the same connected nearest-neighbour Jacobi rule
-at every depth.  Nevertheless, one has positive long-time return, at-most
-countable temporal dimension and a pure-point completion, whereas the other has
-zero long-time return, continuum temporal dimension and zero time density above
-every positive return threshold.  An explicit strictly-positive-energy pair
-has equal energy moments of every order and equal survival-amplitude derivatives
-of every order; one undergoes arbitrarily late full phase recurrences while the
-other almost never returns.  This is not a finite-data effect.  At the
-exact-theory level, compact support restores uniqueness from exact moments, locating the
-sharp boundary.  Yet on the fixed compact interval \([1,2]\), even the all-orders coupling expansion of every
-bounded continuous spectral observable, at every physical time, admits
-opposite exact recurrence phases; the missing plateau is exactly
-\(e^{-2/g}\).  We then identify the global datum that is sufficient: the
-\(n\)-th long-time fidelity moment equals the probability that \(n\)
-independently sampled visible energy gaps sum to zero.  This additive collision
-hierarchy determines the long-time mean of every continuous fidelity statistic
-for every probability spectrum.  In finite connected chains, one local record
-can admit every target return probability in \([0,1]\); preserving this full
-future ambiguity through radius \(R\) has necessary and sufficient centred
-energy--time cost linear in \(R\).  Applied to spectral form factors, the result
-places a model-independent limit on what local or perturbative descriptions of
-late-time quantum systems, including black-hole models, can establish without
-a global spectral completion.
+What can a quantum return reveal about the system that returned and the clock
+that observed it?  We prove that all survival-return experiments factor
+through two exact and maximal information quotients.  An arbitrary probability
+energy spectrum \(\nu\) is visible precisely through its energy-gap law
+\(A\nu\); an arbitrary probability law \(\rho\) of signed clock readings is
+visible precisely through its orientation quotient
+\(S\rho=(\rho+(-\mathrm{id})_\#\rho)/2\).  Two spectra give identical complete
+return distributions under every clock if and only if their gap laws agree.
+Two clocks give identical complete return distributions for every spectrum if
+and only if their orientation quotients agree.  Balanced two-level systems
+alone reconstruct \(S\rho\) by scanning their gap.  More strongly, the
+infinite hierarchy of universal equivalence tests collapses to first moments:
+deterministic first-return curves decide universal system equivalence, and
+two-level first-return means decide universal clock equivalence.  Thus
+survival recurrence cannot recover spectral information beyond
+autocorrelation or determine clock orientation without an external
+orientation reference, and these are the entire universal losses.
+
+The quotient law follows from a system--clock reciprocity valid for every
+spectral type and every clock.  If \(\Gamma_n(\nu)\) is the law of the sum of
+\(n\) independent energy gaps, then the \(n\)-th sampled survival-fidelity
+moment is exactly
+\[
+ \mathcal M_n(\nu,\rho)
+ =\int \varphi_\rho(x)\,\dd\Gamma_n(\nu)(x)
+ =\int \varphi_{\Gamma_n(\nu)}(t)\,\dd\rho(t).
+\]
+This holds for every \(n\), without finiteness, discreteness, absolute
+continuity, nonresonance or a long-time limit.  The full sequence
+\(\{\mathcal M_n\}\) determines the entire probability law of observed
+return; two arbitrary system--clock pairs have the same return law if and
+only if all clock--collision moments agree.  Pure-point phase laws, sampling
+aliases, observer-dependent temporal dimension, weak-interaction
+wall-crossings, local detector cost and long-time collision plateaux then
+become refinements or projections of this one information law.
 \end{abstract}
 
 \noindent\textbf{One-sentence summary.}
-Two quantum histories can obey the same polynomial local energy rule at every
-algebraic depth while one keeps returning and the other escapes for almost all
-time; recurrence is fixed by global spectral completion, not by those local
-data alone.
+All possible survival-return experiments are classified by two objects: the
+autocorrelation of energy and the unoriented probability law of clock time.
 
-\section{The question and the answer}
+\section{The return-information problem}
 
-Quantum recurrence is often presented as a consequence of finite Hilbert
-space, discrete spectrum or compact motion \cite{BocchieriLoinger1957}.
-Late-time return has also become a diagnostic of quantum chaos and of proposed
-microscopic descriptions of black holes
-\cite{Cotler2017,BarbonRabinovici2003,Saad2019}.  These uses hide a prior
-identifiability question:
+Temporal ensembles are normally defined by averaging uniformly over a long
+interval.  That convention hides a prior physical choice: which times the
+clock samples and with what probability.  Pulsed, stroboscopic, randomly
+jittered and continuous clocks need not identify the same phase history,
+even for one unchanged Hamiltonian.  Imperfect clock readings are already
+known to induce energy-basis dephasing and limit quantum control
+\cite{Xuereb2023,Xu2021}; the characteristic function of a tick
+distribution filters individual energy gaps.  Fixed-period quantum
+detection is known
+to exhibit sampling resonances and dark states \cite{Friedman2017}; finite
+uniform temporal ensembles expose sinc-filtered energy sums
+\cite{Mark2024}.  Higher-order no-resonance conditions are fragile because
+sums of energies develop pseudo-resonances that remain unresolved for
+extremely long times \cite{RiddellPagliaroli2024}.  These are usually treated
+as different effects.
+
+For a fixed clock time, the survival probability and the autocorrelation of
+the energy distribution are a cosine-transform pair; its evenness is a
+Wiener--Khinchin consequence \cite{RamirezKelkar2021}.  That known observation
+does not answer the inverse question with both sides variable: what is the
+largest system information and the largest clock information that the
+\emph{complete distribution} of survival return can determine, across all
+spectra, all probability clocks and all moment orders?
+
+Weak integrability breaking produces further hierarchies of long relaxation
+scales \cite{SuraceMotrunich2023}, while spectral-form-factor theories
+identify hydrodynamic or random-matrix times in specified models
+\cite{WinerSwingle2022,Cotler2017}.  What these approaches do not supply is
+one characterwise answer to the prior question:
 \begin{quote}
-\emph{Which part of a quantum law decides whether the observed history
-returns?}
+\emph{Given any quantum spectrum and any statistical law of clock readings,
+what is the complete probability law of return, and exactly which information
+about the system and clock is fundamentally identifiable from return alone?}
 \end{quote}
-The answer proved here is a sharp local--global dichotomy.  Complete local
-Krylov data do not decide recurrence.  Complete perturbation theory does not
-decide it, even with compact positive energy.  Global additive collisions in
-the completed spectral measure do decide every continuous long-time return
-statistic.  At finite depth the transition is quantitative: local agreement
-creates a factorially protected prediction horizon, while the entire future
-probability interval becomes achievable at centred energy--time action linear
-in hidden distance.  The lower and upper scalings match.
 
-This distinction is stronger than the familiar observation that finitely many
-measurements do not determine an infinite-dimensional system.  Our first
-separation preserves all polynomial matrix elements at every depth.  Our
-second preserves every perturbative coefficient of every bounded continuous
-spectral observable and of the full time-dependent spectral form factor.  No
-regularity, continuity or computability assumption on a proposed recurrence
-classifier is used.
+The missing object is a \emph{double information quotient} generated by the
+clock--collision pairing.  At moment order \(n\), the system supplies the
+additive law of \(n\) energy gaps and the clock supplies its characteristic
+function.  The pairing sees the spectrum only after energy autocorrelation
+and sees the clock only after orientation symmetrization.  These quotients are
+not merely sufficient; each is maximal when the probes on the other side may
+vary.  For pure-point spectra the same pairing lifts character by character
+to a filtered projective lattice.  Interaction valuation, local
+connected-cluster cancellation and fidelity-moment order then grade those
+characters.  Uniform-window dephasing, sampling aliasing, weak-interaction
+resolution, recurrence and long-time information become shadows of one law.
 
-\subsection*{Relation to prior results}
+\paragraph{Meaning of temporal dimension.}
+Throughout, temporal dimension means the number of rationally independent
+relative phase directions supporting the observer's limiting phase law.  It
+does not mean the coordinate dimension of relativistic spacetime.  The
+distinction is essential: a single Hamiltonian trajectory is parametrized by
+one laboratory time, yet its closure can contain many independent phase
+directions.  A clock law determines which directions remain distinct and
+which are identified as aliases.  The resulting dimension is operational:
+it counts independent relative phases in the probability law of histories
+that this clock can produce.
 
-Moment-indeterminate probability laws can share every moment while having
-different characteristic functions, including in quantum constructions
-\cite{SalaMayato2020,LoughlinCohen2022}.  Indeterminate Jacobi operators
-require boundary data at infinity \cite{Yafaev2021,BergSzwarc2023}.  The
-one-power long-time return formula is a form of Wiener's theorem
-\cite{Wiener1933}.  These facts are inputs, not the claimed discovery.  The
-new result is their exact recurrence completion: equality of the full
-polynomial Hilbert geometry and energy action is compatible with opposite
-recurrence phases and different temporal dimensions; no classifier on those
-complete local data exists.  Independently, compact positive spectra show the
-same logical failure for the complete perturbative theory of every continuous
-spectral probe.  The collision hierarchy then supplies the missing positive
-classification for every continuous long-time statistic, and the finite-chain
-theorem gives matching linear necessary and sufficient resource scaling.
+\section{The universal system--clock reciprocity law}
 
-Recent recurrence theory obtains upper and lower recurrence-time bounds for
-specified finite systems and arithmetic criteria for exact finite-dimensional
-Floquet recurrence
-\cite{Riddell2023,Anand2026,Kotowski2026,GuptaShort2026}.  Those works ask
-\emph{when a given spectrum returns}.  We ask the logically prior inverse
-question: \emph{which incomplete descriptions determine whether the exact
-spectrum belongs to a returning phase at all?}  Our results include arbitrary
-probability spectra, an exact local-data no-go, and a matching local
-prediction-horizon construction; they do not replace finite-dimensional
-recurrence-time estimates.
+Let \(\nu\) be an arbitrary probability measure on the real energy line and
+write
+\begin{equation}
+ a_\nu(t)=\int_\R e^{-\I tE}\,\dd\nu(E),
+ \qquad F_\nu(t)=|a_\nu(t)|^2.
+\end{equation}
+No spectral type is prescribed.  Let \(X_\ell,Y_\ell\) be independent with
+law \(\nu\), and let \(\Gamma_n(\nu)\) denote the probability law of
+\[
+ G_n=\sum_{\ell=1}^{n}(X_\ell-Y_\ell).
+\]
+For probability measures \(\alpha,\beta\) on \(\R\), define their Fourier
+pairing
+\begin{equation}
+ B(\alpha,\beta)
+   =\int_\R\varphi_\alpha(x)\,\dd\beta(x).
+ \label{eq:fourier-pairing}
+\end{equation}
+Fubini's theorem makes this pairing symmetric:
+\(B(\alpha,\beta)=B(\beta,\alpha)\).
+
+\begin{theorem}[System--clock reciprocity and complete return law]
+\label{thm:reciprocity}
+For every probability energy spectrum \(\nu\), every probability clock
+\(\rho\), and every \(n\in\N\),
+\begin{equation}
+ \boxed{\quad
+ \mathcal M_n(\nu,\rho)
+ :=\int_\R F_\nu(t)^n\,\dd\rho(t)
+ =B\!\left(\rho,\Gamma_n(\nu)\right)
+ =\int_\R\varphi_\rho(x)\,\dd\Gamma_n(\nu)(x).
+ \quad}
+ \label{eq:reciprocity}
+\end{equation}
+The sequence \((\mathcal M_n)_{n\ge0}\) uniquely determines the complete
+probability distribution of \(F_\nu(T)\) for \(T\sim\rho\).  Two arbitrary
+system--clock pairs \((\nu_1,\rho_1)\) and \((\nu_2,\rho_2)\) produce
+identical return distributions if and only if
+\[
+ \mathcal M_n(\nu_1,\rho_1)=\mathcal M_n(\nu_2,\rho_2)
+ \quad\hbox{for every }n\ge0.
+\]
+\end{theorem}
+
+Theorem~\ref{thm:reciprocity} is the master law.  The system and clock enter
+through mathematically interchangeable probability laws: additive spectral
+collisions on one side and observation times on the other.  Completeness is
+not an approximation.  Return fidelity lies in the compact interval
+\([0,1]\), so its full moment sequence determines its probability law.
+Every result below identifies what \eqref{eq:reciprocity} becomes when more
+structure is resolved.
+
+\subsection{The two maximal information quotients}
+
+Let \(\widetilde\nu=(-\mathrm{id})_\#\nu\).  The system autocorrelation
+quotient is its energy-gap law
+\begin{equation}
+ A\nu=\nu*\widetilde\nu=\Gamma_1(\nu).
+ \label{eq:system-quotient}
+\end{equation}
+For a clock law \(\rho\), define its reflection
+\(\rho^\leftarrow=(-\mathrm{id})_\#\rho\) and orientation quotient
+\begin{equation}
+ S\rho=\frac{\rho+\rho^\leftarrow}{2}.
+ \label{eq:clock-quotient}
+\end{equation}
+Every \(\Gamma_n(\nu)\) is symmetric, so
+\(B(\rho,\Gamma_n)=B(S\rho,\Gamma_n)\).  Sufficiency is immediate from
+\eqref{eq:reciprocity}; the converse statements are the substantive
+identifiability result.
+
+\begin{theorem}[Double maximality of return information]
+\label{thm:maximal-quotients}
+For arbitrary probability energy spectra \(\nu_1,\nu_2\) and arbitrary
+probability clock laws \(\rho_1,\rho_2\):
+\begin{align}
+ A\nu_1=A\nu_2
+ &\quad\Longleftrightarrow\quad
+ \Law_{\rho}\!\bigl(F_{\nu_1}(T)\bigr)
+ =\Law_{\rho}\!\bigl(F_{\nu_2}(T)\bigr)
+ \quad\text{for every probability clock }\rho ,
+ \label{eq:max-system}\\
+ S\rho_1=S\rho_2
+ &\quad\Longleftrightarrow\quad
+ \Law_{\rho_1}\!\bigl(F_{\nu}(T)\bigr)
+ =\Law_{\rho_2}\!\bigl(F_{\nu}(T)\bigr)
+ \quad\text{for every probability spectrum }\nu .
+ \label{eq:max-clock}
+\end{align}
+The second equivalence is already decided by balanced two-level spectra
+\(\nu_\Omega=\tfrac12(\delta_0+\delta_\Omega)\): for every
+\(\Omega\in\R\),
+\begin{equation}
+ \E_{\rho}F_{\nu_\Omega}(T)
+ =\frac{1+\operatorname{Re}\varphi_\rho(\Omega)}{2},
+ \label{eq:two-level-clock-tomography}
+\end{equation}
+and equality of these means for all \(\Omega\) is equivalent to equality of
+\(S\rho\).  Likewise, deterministic clocks at all \(t\) reconstruct
+\(\varphi_{A\nu}(t)=F_\nu(t)\), proving the converse in
+\eqref{eq:max-system}.
+\end{theorem}
+
+\begin{corollary}[Universal collapse to minimal probes]
+\label{cor:minimal-probes}
+The two universal equivalence problems in
+Theorem~\ref{thm:maximal-quotients} require no higher moments:
+\begin{align}
+ &\Law_{\rho}\!\bigl(F_{\nu_1}(T)\bigr)
+   =\Law_{\rho}\!\bigl(F_{\nu_2}(T)\bigr)
+   \quad\text{for every probability clock }\rho
+ \nonumber\\[-2pt]
+ &\hspace{4.5cm}\Longleftrightarrow\quad
+ F_{\nu_1}(t)=F_{\nu_2}(t)\quad\text{for every }t\in\R ,
+ \label{eq:minimal-system}\\
+ &\Law_{\rho_1}\!\bigl(F_{\nu}(T)\bigr)
+   =\Law_{\rho_2}\!\bigl(F_{\nu}(T)\bigr)
+   \quad\text{for every probability spectrum }\nu
+ \nonumber\\[-2pt]
+ &\hspace{4.5cm}\Longleftrightarrow\quad
+ \E_{\rho_1}F_{\nu_\Omega}(T)
+   =\E_{\rho_2}F_{\nu_\Omega}(T)
+   \quad\text{for every }\Omega\in\R .
+ \label{eq:minimal-clock}
+\end{align}
+In both equivalences, ``every real \(t\)'' and ``every real \(\Omega\)''
+may be replaced by ``every rational \(q\)''.  A countable dense deterministic
+schedule and a countable dense two-level gap scan are therefore complete.
+Hence deterministic one-time probes classify the complete universal return
+behaviour of a system, while one tunable balanced two-level probe classifies
+the complete universal return behaviour of a clock.  Higher moments remain
+necessary to reconstruct the return distribution of one fixed
+system--clock pair, but add no universal identification power.
+\end{corollary}
 
 \begin{figure}[t]
 \centering
 \begin{tikzpicture}[
-  node distance=8mm and 13mm,
-  box/.style={draw,rounded corners,align=center,inner sep=5pt,
-    text width=38mm},
-  result/.style={draw,very thick,rounded corners,align=center,inner sep=5pt,
-    text width=40mm},
-  arr/.style={-{Latex[length=2.2mm]},thick}
+  >=Latex,
+  node distance=0.75cm and 1.05cm,
+  box/.style={draw,rounded corners,align=center,minimum height=0.85cm,
+    inner xsep=8pt,fill=hidden},
+  quotient/.style={box,fill=visible,draw=accent,thick},
+  law/.style={box,fill=white,draw=local,thick}
 ]
-\node[box] (local) {same polynomial Krylov geometry\\
-same energy matrix elements\\same connected Jacobi rule at every depth};
-\node[result,below left=of local] (return) {pure-point completion\\
-positive mean return\\at-most countable temporal dimension};
-\node[result,below right=of local] (escape) {atomless completion\\
-zero mean return\\continuum temporal dimension};
-\draw[arr] (local) -- node[left,align=right,font=\small]
-  {global\\completion A} (return);
-\draw[arr] (local) -- node[right,align=left,font=\small]
-  {global\\completion B} (escape);
-\node[box,below=15mm of local,text width=58mm] (global)
-  {global collision hierarchy\\
-  \(\kappa_n=(\Delta\mu)^{*n}(\{0\})\)\\
-  determines every continuous long-time return statistic};
-\draw[arr] (return) -- (global);
-\draw[arr] (escape) -- (global);
+\node[box] (system) {energy law\\ \(\nu\)};
+\node[quotient,right=of system] (gap) {maximal system quotient\\
+  \(A\nu=\Law(X-Y)\)};
+\node[law,right=1.25cm of gap] (return) {all moments and complete law\\
+  \(\{\mathcal M_n\}_{n\ge0}\Longleftrightarrow
+    \Law(F_\nu(T))\)};
+\node[box,below=of system] (clock) {signed clock law\\ \(\rho\)};
+\node[quotient,right=of clock] (sym) {maximal clock quotient\\
+  \(S\rho=(\rho+\rho^\leftarrow)/2\)};
+\draw[->,thick] (system) -- (gap);
+\draw[->,thick] (clock) -- (sym);
+\draw[->,thick] (gap.east) -- (return.west);
+\draw[->,thick] (sym.east) -- (return.south west);
 \end{tikzpicture}
-\caption{\textbf{Global-completion law.}  Infinite agreement of polynomial
-local dynamics does not select a recurrence phase.  The completed
-spectral gap law does.}
-\label{fig:law}
+\caption{\textbf{Universal factorization of survival-return information.}
+Every system enters through its full energy-gap law; every clock enters
+through its orientation quotient.  Theorem~\ref{thm:maximal-quotients}
+proves that neither arrow can be factored through a strictly coarser
+universal quotient.}
+\label{fig:double-quotient}
 \end{figure}
 
-\section{Observer time and its global invariants}
+The theorem says precisely what recurrence forgets.  Translating every
+energy by one constant, reflecting the energy axis, or replacing a spectrum
+by any homometric spectrum with the same gap law leaves all survival-return
+experiments unchanged.  On the clock side, recurrence cannot distinguish a
+signed timing law from its reflection or, more generally, two laws with the
+same symmetrization.  It loses no further clock information universally:
+two-level gap scans recover the entire cosine transform.  These are
+maximality statements, not a claim that one fixed system identifies its
+clock or that one fixed clock identifies its system.
 
-Let \(H\) be self-adjoint, let \(\psi\) be normalized and let \(\mu\) be the
-probability spectral measure selected by the pair \((H,\psi)\).  The survival
-amplitude and fidelity are
-\begin{equation}
- A_\mu(t)=\langle\psi,e^{\I tH}\psi\rangle
- =\int_{\R}e^{\I tE}\,\dd\mu(E),
- \qquad F_\mu(t)=|A_\mu(t)|^2\in[0,1].
-\label{eq:survival}
-\end{equation}
-Every probability measure on \(\R\) occurs in this way: take multiplication by
-\(E\) on \(L^2(\mu)\) and the constant unit vector.  Thus statements below
-cover finite, countably infinite, singular-continuous and absolutely
-continuous stationary quantum histories without a dimension assumption.
+\paragraph{Operational two-level protocol.}
+Prepare an equal superposition of two energy eigenstates separated by a
+tunable gap \(\Omega\), let the clock signal terminate the evolution, and
+project onto the prepared state.  The mean success probability is exactly
+\eqref{eq:two-level-clock-tomography}.  Repeating this binary measurement at
+each selected gap estimates one cosine-transform coordinate of the clock;
+scanning all gaps determines \(S\rho\).  No many-body simulator,
+long-time limit or spectral reconstruction is required for each coordinate.
+Exact nonparametric reconstruction needs only a countable dense gap schedule,
+although a finite noisy scan recovers only finite-band information unless a
+separate stability theorem is supplied.
 
-Only energy gaps affect projective return.  Write
-\begin{equation}
- \Delta\mu=(E-E')_\#(\mu\otimes\mu)
-\label{eq:gaplaw}
-\end{equation}
-for the distribution of a difference of two independent visible energies.
-We define the \emph{temporal dimension}
-\begin{equation}
- d_{\rm time}(\mu)=
- \dim_{\Q}\spanQ\{E-E':E,E'\in\supp\mu\}.
-\label{eq:dimension}
-\end{equation}
-It counts rationally independent phase directions, not spatial coordinates
-or Hilbert-space basis states.  It is invariant under a common shift and a
-nonzero rescaling of energy.
+\paragraph{What ``orientation'' does and does not mean.}
+The quotient \(S\rho\) concerns the sign of the clock coordinate available
+to the survival observable.  It does not assert that thermodynamic,
+cosmological or measurement arrows are absent.  If independent information
+already restricts a clock to nonnegative times, that support condition
+supplies an orientation reference and its symmetrization determines the
+original law.  Phase-sensitive observables can also access the imaginary
+part of \(\varphi_\rho\).  The result is sharper: \emph{return alone} cannot
+supply that external reference, and the theorem identifies its complete
+information content.
 
-\begin{theorem}[Universal temporal alternatives]
-\label{thm:dimension}
-For every probability spectrum \(\mu\):
-\begin{enumerate}
-\item \(d_{\rm time}(\mu)\le\aleph_0\) or
-      \(d_{\rm time}(\mu)=2^{\aleph_0}\); no intermediate uncountable value
-      occurs.
-\item A positive exact projective return exists if and only if the additive
-      group generated by the visible gaps is cyclic.
-\item If \(\mu\) is atomless, then
-      \(d_{\rm time}(\mu)=2^{\aleph_0}\), the mean of \(F_\mu\) is zero and,
-      for every \(\eta>0\), the symmetric time density of
-      \(\{t:F_\mu(t)\ge\eta\}\) tends to zero.
-\end{enumerate}
+\subsection{Phase-resolved refinement for pure-point spectra}
+
+Let \(I\) be finite or countable, let
+\(\omega=(\omega(i))_{i\in I}\) be a real pure-point spectrum, and let
+\(\rho\) be an arbitrary probability measure on laboratory time.  It may be
+continuous, discrete, singular or mixed.  Sampling \(t\sim\rho\) and
+following the Hamiltonian orbit induces the phase-history law
+\begin{equation}
+ \mu_{\rho,\omega}
+   =\bigl[t\mapsto(t\omega(i)\bmod2\pi)_{i\in I}\bigr]_{\#}\rho .
+ \label{eq:phase-law}
+\end{equation}
+Every relative-phase relation is a finitely supported integer vector
+\(k=(k_i)\) of total charge zero,
+\begin{equation}
+  k\in\Lambda_I:=
+  \left\{k\in\Z^{(I)}:\sum_i k_i=0\right\}.
+\end{equation}
+Its spectral detuning is
+\begin{equation}
+  \Delta_k=\sum_i k_i\omega(i).
+  \label{eq:detuning}
+\end{equation}
+Write
+\(\varphi_\rho(\xi)=\int_{\R}e^{\I t\xi}\,\dd\rho(t)\) for the characteristic
+function of the clock.  Pushforward gives the exact character transform
+\begin{equation}
+  \boxed{\quad
+  \widehat\mu_{\rho,\omega}(k)
+   =\int e^{\,\I\langle k,\theta\rangle}\,
+      \dd\mu_{\rho,\omega}(\theta)
+   =\varphi_\rho(\Delta_k).\quad}
+  \label{eq:master-coefficient}
+\end{equation}
+
+\begin{theorem}[System--clock duality and completeness]
+\label{thm:action}
+Equation~\eqref{eq:master-coefficient} holds for every probability clock and
+every finite or countably infinite real pure-point spectrum.  For arbitrary
+scaling families \((\rho_x,\omega_x)\), the complete phase laws
+\(\mu_{\rho_x,\omega_x}\) have a weak limit if and only if
+\(\varphi_{\rho_x}(\Delta_k(x))\) converges for every finite-support integer
+character \(k\).  Whenever the limit exists it is unique and fixes the limit
+of every continuous phase statistic.
 \end{theorem}
 
-The word ``dimension'' in the title therefore has an operational meaning.
-It is the number of independent visible phase clocks.  The same ambient
-Hamiltonian can expose different dimensions to different spectral probes;
-more strongly, Section~\ref{sec:localglobal} shows that even the complete
-polynomial local rule of one probe need not select between the countable and
-continuum phases.
-
-\section{The global-completion theorem}
-\label{sec:localglobal}
-
-For polynomials \(p,q\in\R[E]\), define the polynomial Krylov data
-\begin{align}
- G_\mu(p,q)&=\int p(E)q(E)\,\dd\mu(E),\\
- J_\mu(p,q)&=\int E\,p(E)q(E)\,\dd\mu(E).
-\label{eq:localdata}
-\end{align}
-\(G_\mu\) is the full Gram geometry generated algebraically from the observed
-state; \(J_\mu\) is the complete polynomial matrix of energy multiplication.
-If \(P_n\) are the associated monic orthogonal polynomials, positivity gives
-the connected Jacobi rule
+The theorem does not require a density for \(\rho\), periodic sampling,
+analyticity, nonresonance, a power-law limit or finite dimension.  It says
+that a quantum system supplies detunings while a clock supplies a transfer
+function; only their composition is observable.  A centered uniform clock
+on \([-T,T]\) has
 \begin{equation}
- E P_{n+1}=P_{n+2}+a_{n+1}P_{n+1}+b_nP_n,
- \qquad b_n>0,
-\label{eq:jacobi}
+ \varphi_{\rho_T}(\xi)=\sinc(T\xi),\qquad
+ \sinc u=\begin{cases}\sin u/u,&u\ne0,\\1,&u=0,\end{cases}
+ \label{eq:sinc-specialization}
 \end{equation}
-at every \(n\).  Thus equality of all moments implies equality of
-\emph{both} tensors in \eqref{eq:localdata}, not merely equality of a short
-time series.
+so the usual observer action \(A_k=T\Delta_k\) is one specialization of
+\eqref{eq:master-coefficient}, not the master law itself.
 
-\begin{theorem}[All-depth local agreement, opposite recurrence]
-\label{thm:all-depth}
-Every normalized indeterminate Hamburger moment class contains probability
-spectra \(\mu_{\rm r}\) and \(\mu_{\rm e}\) such that:
-\begin{enumerate}
-\item \(G_{\mu_{\rm r}}=G_{\mu_{\rm e}}\) and
-      \(J_{\mu_{\rm r}}=J_{\mu_{\rm e}}\) for all polynomial pairs.  Hence
-      both induce the same coefficients \(a_n,b_n\), with \(b_n>0\), at every
-      Jacobi depth.
-\item Every derivative of \(A_{\mu_{\rm r}}\) and \(A_{\mu_{\rm e}}\) at
-      \(t=0\) agrees.
-\item \(\mu_{\rm r}\) has positive mean fidelity and at-most countable
-      temporal dimension.
-\item \(\mu_{\rm e}\) has zero mean fidelity, continuum temporal dimension
-      and zero time density above every positive fidelity threshold.
-\end{enumerate}
-Consequently, no predicate of the complete data
-\((G_\mu,J_\mu)\) classifies positive-mean recurrence for all
-strictly-positive-energy probability spectra with moments of every order.
+\subsection{Time as a clock-dependent conserved quotient}
+
+For a finite spectrum, the clock-alias space is
+\begin{equation}
+ Z_{\rho,\omega}
+ =\operatorname{span}_{\Q}
+   \{k\in\Lambda_I:\varphi_\rho(\Delta_k)=1\}.
+\end{equation}
+The equality to one is exact: it means the corresponding phase character is
+almost surely locked under the sampled history.  Define
+\begin{equation}
+ d_{\mathrm{time}}(\rho,\omega)
+   =\dim_{\Q}\bigl((\Lambda_I\otimes\Q)/Z_{\rho,\omega}\bigr).
+ \label{eq:temporal-dimension}
+\end{equation}
+
+\begin{theorem}[Clock-alias rank conservation]
+\label{thm:rank}
+For every probability clock and every finite spectrum,
+\begin{equation}
+ d_{\mathrm{time}}(\rho,\omega)+\dim_{\Q}Z_{\rho,\omega}
+   =\dim_{\Q}(\Lambda_I\otimes\Q)=|I|-1.
+ \label{eq:rank-conservation}
+\end{equation}
+For one fixed rationally independent finite spectrum, a clock concentrated
+at \(t=0\) gives \(d_{\mathrm{time}}=0\), whereas every centered uniform
+clock on a nonzero interval gives
+\(d_{\mathrm{time}}=|I|-1\).  Spectrum and dynamics are identical; only the
+sampling law changes.  This separation is not a time-zero artefact.  For the
+fixed two-level spectrum \(\{0,1\}\), a deterministic clock at the nonzero
+full-revival time \(2\pi\) aliases every projective character and gives
+\(d_{\mathrm{time}}=0\); every nonzero centered continuous uniform window
+gives \(d_{\mathrm{time}}=1\).
 \end{theorem}
 
-The two histories are inequivalent global Hilbert-space completions of the
-same polynomial rule.  In the language of indeterminate Jacobi operators, the
-minimal recurrence relation is in the limit-circle regime and requires data
-at infinity \cite{Yafaev2021,BergSzwarc2023}.  One must not confuse the
-atomless completion above with an ordinary self-adjoint extension on the same
-\(\ell^2\) polynomial closure: the latter extremal extensions are pure point.
-The exact statement is equality of all polynomial Krylov data with different
-global spectral completions.
+Equation~\eqref{eq:rank-conservation} is the first central interpretation.
+Observation does not create or destroy projective spectral rank.  It transfers
+rank between clock-hidden relations and resolved phase directions.  ``How
+many dimensions of time are visible?'' is therefore a property of the
+system--clock pair, answered by a quotient rather than by assigning more
+coordinate times to the underlying dynamics.
 
-\subsection{A positive-energy witness}
+\section{Weak interaction creates a temporal atlas}
 
-The phenomenon has an explicit one-parameter realization.  Fix \(v>0\) and
-write
-\begin{align}
- \mu_{\rm d}
- &=\frac1{Z_v}\sum_{k\in\Z}e^{-vk^2/2}\,
-        \delta_{e^{vk}},&
- Z_v&=\sum_{k\in\Z}e^{-vk^2/2},\label{eq:discrete}\\
- \dd\mu_{\rm c}(E)
- &=\frac{\mathbf1_{E>0}}{E\sqrt{2\pi v}}\,
-   \exp\!\left[-\frac{(\log E)^2}{2v}\right]\dd E .
-\label{eq:continuous}
-\end{align}
-Both spectra are strictly positive.  Completing the square and translating
-the integer summation index give, for every \(n\in\N\),
+We now specialize the arbitrary clock law to centered uniform windows whose
+width is coupled to an interaction strength.  Suppose every spectral branch
+is real analytic near \(g=0\).  For an active relation \(k\), analyticity
+gives a unique first nonzero order
 \begin{equation}
- \int E^n\,\dd\mu_{\rm d}(E)
- =e^{vn^2/2}
- =\int E^n\,\dd\mu_{\rm c}(E).
-\label{eq:moments}
+ \Delta_k(g)=c_k g^{v(k)}+o(g^{v(k)}),
+ \qquad c_k\ne0,\quad v(k)\in\N.
+ \label{eq:valuation}
 \end{equation}
-Therefore their data \eqref{eq:localdata}, their Jacobi rule
-\eqref{eq:jacobi} and all derivatives \(A^{(n)}(0)=\I^n e^{vn^2/2}\)
-coincide.  Yet
+The integer \(v(k)\) is its \emph{activation valuation}.  Observe on the
+inverse-power horizon \(T_g=\tau g^{-r}\), with \(\tau>0\).  Then
 \begin{equation}
- \lim_{T\to\infty}\frac1{2T}\int_{-T}^{T}F_{\mu_{\rm d}}(t)\,\dd t
- =\sum_{k\in\Z}\left(\frac{e^{-vk^2/2}}{Z_v}\right)^2>0,
- \qquad
- \lim_{T\to\infty}\frac1{2T}\int_{-T}^{T}F_{\mu_{\rm c}}(t)\,\dd t=0.
-\label{eq:opposite}
-\end{equation}
-The discrete history admits arbitrarily late times at which its total
-weighted phase error is arbitrarily small.  For the continuous history, every
-set \(\{t:F_{\mu_{\rm c}}(t)\ge\eta\}\), \(\eta>0\), has asymptotic density
-zero.
-
-Equation~\eqref{eq:moments} alone is a classical moment-indeterminacy
-mechanism.  Quantum constructions of moment-indeterminate densities and
-characteristic functions are known
-\cite{SalaMayato2020,LoughlinCohen2022}.  The advance in
-Theorem~\ref{thm:all-depth} is the recurrence classification consequence:
-complete polynomial Hilbert geometry and energy action, including the
-connected Jacobi rule at every depth, still leave the global recurrence phase
-undecided; this failure holds against an arbitrary classifier.
-
-\subsection{The exact compact boundary}
-
-\begin{corollary}[Compact exact-moment determinacy]
-\label{cor:compact-determinate}
-If two probability spectra have the same moment of every natural order and
-one is supported in a compact interval, then the spectra are equal.  Hence
-their recurrence law and every long-time fidelity statistic are equal.
-\end{corollary}
-
-Equality of moments gives equality against every polynomial.  Compact support
-of one representative forces every other representative into the same
-interval; uniform polynomial approximation of continuous functions then gives
-equality of the measures.  Thus Theorem~\ref{thm:all-depth} locates the exact
-fixed-theory failure at moment-indeterminate noncompact completion.
-Section~\ref{sec:compact} shows that compactness does \emph{not} rescue a
-theory known only perturbatively.
-
-\section{Compact spectra and the failure of all-orders perturbation theory}
-\label{sec:compact}
-
-Heavy tails and moment indeterminacy are not required for the perturbative
-obstruction.  Let \(\lambda\) be normalized Lebesgue measure on \([1,2]\),
-let \(E_\star=3/2\), and define the smooth flat weight
-\begin{equation}
- \eta(g)=
+ \widehat\mu_r(k)=
  \begin{cases}
- 0,&g\le0,\\ e^{-1/g},&g>0.
+   1, & r<v(k),\\[2pt]
+   \sinc(\tau|c_k|), & r=v(k),\\[2pt]
+   0, & r>v(k).
  \end{cases}
-\label{eq:flat}
+ \label{eq:wall-crossing}
 \end{equation}
-Consider
-\begin{equation}
- \mu_{\rm r}(g)=\eta(g)\delta_{E_\star}+
-       (1-\eta(g))\lambda,\qquad
- \mu_{\rm e}(g)=\lambda .
-\label{eq:compactfamilies}
-\end{equation}
-Both families remain supported in the same positive compact interval.
+Every analytic relation therefore has one exact wall-crossing: locked,
+critical, then dephased.
 
-\begin{theorem}[Nonperturbative recurrence separation]
-\label{thm:nonpert}
-For every bounded continuous \(f:\R\to\C\) and every \(n\in\N\),
-\begin{equation}
- \left.\frac{\dd^n}{\dd g^n}\int f\,\dd\mu_{\rm r}(g)\right|_{g=0}
- =
- \left.\frac{\dd^n}{\dd g^n}\int f\,\dd\mu_{\rm e}(g)\right|_{g=0}.
-\label{eq:allobservables}
-\end{equation}
-The equality includes the complete coupling jet of \(A(t)\) and \(F(t)\) for
-every physical time \(t\).  Nevertheless, for every \(g>0\),
-\begin{equation}
- \overline F_{\mu_{\rm r}(g)}=e^{-2/g}>0,
- \qquad
- \overline F_{\mu_{\rm e}(g)}=0.
-\label{eq:instanton}
-\end{equation}
-Both exact spectra have connected Jacobi realizations.  No predicate receiving
-the all-orders jets in \eqref{eq:allobservables}, simultaneously for every
-bounded continuous \(f\), can correctly classify recurrence for every family
-supported in \([1,2]\).  The same impossibility holds when the input is the
-all-orders coupling jet of the full time-dependent spectral form factor.
+\begin{theorem}[Fourier--valuation atlas]
+\label{thm:atlas}
+Every finite analytic real spectrum has one unique phase-probability law at
+every inverse-power horizon and every positive prefactor \(\tau\).
+The collection of those laws reconstructs the exact activation order and
+critical magnitude of every active projective character.  The same statement
+holds for every countable analytic real spectrum, character by
+finite-support character.
 \end{theorem}
 
-This theorem does not say that every resummation or microscopic prescription
-fails.  It says that perturbative coefficients alone possess no universal
-logical power to choose the completion: analyticity, quasianalyticity,
-resurgent boundary data, an exact microscopic Hamiltonian or a direct
-late-time measurement is additional information.  The flat function in
-\eqref{eq:flat} is elementary; the result is the exact compact-spectrum
-recurrence no-go and the universal quantification over all bounded continuous
-spectral probes and all classifiers.
+The joint limit resolves the apparent paradox between perturbation theory and
+late-time dynamics.  For every positive \(v\),
+\begin{equation}
+ \lim_{g\downarrow0}\sinc(Tg^v)=1
+ \quad\text{at fixed }T,\qquad
+ \lim_{T\to\infty}\sinc(Tg^v)=0
+ \quad\text{at fixed }g>0,
+ \label{eq:noncommute}
+\end{equation}
+whereas \(T=\tau g^{-v}\) gives the nontrivial exact boundary
+\(\sinc\tau\).  Neither sequential limit is wrong; each lies on a different
+face of the observer--action boundary.
+
+\section{The space--time--detector visibility cone}
+
+The activation valuation becomes physical once the Hamiltonian is local.
+Consider a finite set of sites with finite local state spaces, a Hermitian
+Hamiltonian whose uncoupled product energies are simple, and finite local
+interaction terms indexed by edges \(e\).  Switch on edge \(e\) as
+\(g^{w(e)}z_e\), where \(w(e)\) is a positive integer.  For a nonempty set
+\(S\) of queried sites, form the Boolean M\"obius relation \(k_S\) by
+alternating the \(2^{|S|}\) product configurations obtained by changing
+exactly the sites in each subset of \(S\).
+
+Let \(C_w(S)\) be the minimum total edge weight of a connected interaction
+packet spanning \(S\).  If no such packet contributes, the relation remains
+exact.  If it is active, connected-cluster cancellation gives
+\begin{equation}
+  v(k_S)\ge C_w(S).
+  \label{eq:steiner}
+\end{equation}
+This is a spectral causality law: a local interaction cannot unlock a
+multi-site phase relation before an interaction packet has connected all
+sites seen by that relation.
+
+There is a second, independent observation cost, and it is present in an
+actual survival-fidelity observable.  Give every spectral branch positive
+weight \(w_i>0\).  After collecting the multinomial expansion of the
+\(m\)-th fidelity moment, the coefficient of a balanced character \(k\) is
+\begin{equation}
+ C_m(k)=
+ \sum_{\substack{p,q\in\N^I\\
+                  \sum_i p_i=\sum_iq_i=m\\
+                  p-q=k}}
+ \binom{m}{p}\binom{m}{q}
+ \prod_i w_i^{p_i+q_i}.
+ \label{eq:actual-coefficient}
+\end{equation}
+Every summand is strictly positive.  Thus \(C_m(k)>0\) exactly when \(k\)
+can be written
+\begin{equation}
+ k_i=p_i-q_i,\qquad \sum_i p_i=\sum_i q_i=m,
+ \qquad p_i,q_i\in\N.
+\end{equation}
+Its exact minimum order is
+\begin{equation}
+ h(k)=\sum_i (k_i)_+ .
+ \label{eq:height}
+\end{equation}
+Every larger order is obtained by adding identical dummy labels to the
+positive and negative multisets.
+
+\begin{theorem}[Exact visibility cone]
+\label{thm:cone}
+For every active projective character \(k\) of a nonempty finite analytic
+spectrum with full-support positive spectral weights, the character is
+unlocked at observation order \(r\) and has a strictly positive coefficient
+in the \(m\)-th survival-fidelity moment exactly when
+\begin{equation}
+  r\ge v(k),\qquad m\ge h(k).
+  \label{eq:cone}
+\end{equation}
+The lower-left corner \((v(k),h(k))\) is attained.  For a nondegenerate
+Boolean relation on \(s\) genuinely changed sites,
+\begin{equation}
+  h(k_S)=2^{s-1}.
+  \label{eq:mobius-height}
+\end{equation}
+For every finite Hermitian local interaction family described above, its
+active local relation therefore has the exact attained corner
+\begin{equation}
+  \bigl(v(k_S),2^{s-1}\bigr),
+  \qquad v(k_S)\ge C_w(S).
+  \label{eq:local-corner}
+\end{equation}
+\end{theorem}
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[x=0.92cm,y=0.72cm,>=Latex]
+  \fill[hidden] (0,0) rectangle (8.4,5.7);
+  \fill[visible] (3.2,3.0) rectangle (8.4,5.7);
+  \draw[->,thick] (0,0) -- (8.8,0)
+    node[right] {observation order \(r\)};
+  \draw[->,thick] (0,0) -- (0,6.1)
+    node[above] {replica order \(m\)};
+  \draw[local,dashed,very thick] (1.7,0) -- (1.7,5.7);
+  \node[local,rotate=90,anchor=south] at (1.55,2.7)
+    {locality floor \(C_w(S)\)};
+  \draw[accent,dashed,thick] (3.2,0) -- (3.2,5.7);
+  \draw[accent,dashed,thick] (0,3.0) -- (8.4,3.0);
+  \fill[accent] (3.2,3.0) circle (2.7pt);
+  \node[accent,anchor=south west] at (3.3,3.08)
+    {attained corner \((v(k),h(k))\)};
+  \node at (6.25,4.45) {\large character occurs};
+  \node at (5.9,1.5) {insufficient replica order};
+  \node[rotate=90] at (0.9,3.7) {too early};
+  \node[below] at (3.2,0) {\(v(k)\)};
+  \node[left] at (0,3.0) {\(h(k)\)};
+  \draw[decorate,decoration={brace,amplitude=5pt}]
+    (1.7,-0.55) -- (3.2,-0.55)
+    node[midway,below=5pt] {dynamical delay};
+\end{tikzpicture}
+\caption{\textbf{One relation, two exact observation costs.}
+Observation time resolves activation valuation; replica order supplies a
+strictly positive fidelity coefficient.  Local connected-spanning geometry
+gives the lower face \(C_w(S)\le v(k_S)\).  For a nondegenerate
+\(s\)-site Boolean relation, \(h(k_S)=2^{s-1}\).}
+\label{fig:cone}
+\end{figure}
+
+Theorem~\ref{thm:cone} is the first nontrivial consequence of the
+system--clock quotient.  Low-order perturbation theory, short observation
+histories and low-order fidelity moments fail for the same reason: they query
+characters outside the accessible cone.  The failure is not an unspecified
+lack of information.  It has two exact integer coordinates and a local
+geometric lower face.
+
+\section{An exact six-level benchmark}
+
+The wall crossings do not require a many-body limit.  Consider a qutrit
+sector \(s=0,1,2\) conditioning a qubit,
+\begin{equation}
+ H_s(g)=a_s\mathbf 1+(1+c_sg)\sigma_z+h_sg\,\sigma_x ,
+ \quad
+ (a_s)=(0,4,9),\quad(c_s)=(0,1,2),\quad(h_s)=(1,1,2).
+ \label{eq:benchmark-H}
+\end{equation}
+The direct sum \(H(g)=\bigoplus_s H_s(g)\) is a Hermitian \(6\times6\)
+Hamiltonian, exactly affine in \(g\).  Its six exact eigenvalue branches are
+\begin{equation}
+ E_{s,\pm}(g)=a_s\pm
+ \sqrt{(1+c_sg)^2+(h_sg)^2}.
+\end{equation}
+Let \(D_s=E_{s,+}-E_{s,-}\).  Two actual spectral relations have the
+profiles
+\begin{equation}
+ \frac{D_1-D_0}{g}\longrightarrow2,\qquad
+ \frac{D_0-2D_1+D_2}{g^2}\longrightarrow3.
+ \label{eq:benchmark-profiles}
+\end{equation}
+They therefore cross at different observation horizons:
+\begin{align}
+ T=\tau g^{-1}:&\quad
+ \widehat\mu(k_1)\longrightarrow\sinc(2\tau),
+ & h(k_1)&=2,\\
+ T=\tau g^{-2}:&\quad
+ \widehat\mu(k_2)\longrightarrow\sinc(3\tau),
+ & h(k_2)&=4.
+ \label{eq:benchmark-crossings}
+\end{align}
+Below each horizon the corresponding coefficient tends to \(1\); above it,
+to \(0\).  This provides an exact finite-dimensional falsifier for the law:
+the same tunable Hamiltonian contains a first-order/two-replica relation and
+a second-order/four-replica relation.  No random-matrix, thermodynamic or
+semiclassical approximation enters the prediction.
+
+\section{Recurrence and spectral form factors are projections}
+
+For finite weights \(p_i\), the survival amplitude and fidelity are
+\begin{equation}
+  a(t)=\sum_i p_i e^{-\I t\omega_i},
+  \qquad F(t)=|a(t)|^2
+  =\sum_{i,j}p_ip_j e^{-\I t(\omega_i-\omega_j)}.
+\end{equation}
+Each ordered gap \(\omega_i-\omega_j\) is the action of the projective
+character \(e_i-e_j\).  Therefore an arbitrary clock law gives the exact
+recurrence projection
+\begin{equation}
+  \E_{\rho}F
+   =\sum_{i,j}p_ip_j\,
+     \varphi_\rho(\omega_i-\omega_j).
+ \label{eq:arbitrary-clock-fidelity}
+\end{equation}
+For a centered uniform clock this becomes
+\begin{equation}
+  \E_{\mu_x}F
+   =\sum_{i,j}p_ip_j\,
+     \sinc\!\left(T_x(\omega_x(i)-\omega_x(j))\right).
+ \label{eq:fidelity-projection}
+\end{equation}
+Whenever the full phase law converges, every finite weighted return statistic
+converges to the corresponding polynomial evaluated on the same action
+profile.  Recurrence is therefore not an additional law placed beside
+Theorem~\ref{thm:action}; it is a polynomial projection of it.  In
+particular, sampling resonances are clock aliases of pair characters, not a
+separate mechanism.
+
+For an arbitrary probability energy measure \(\nu\), including continuous
+and singular-continuous spectra, the same window kernel gives a complete
+long-time recurrence statement.  Let \(X_i,Y_i\) be independent with law
+\(\nu\).  The \(n\)-th symmetric-window fidelity moment satisfies
+\begin{equation}
+ \frac{1}{2T}\int_{-T}^{T}
+   \left|\int e^{-\I tE}\,\dd\nu(E)\right|^{2n}\dd t
+ =
+ \E\,\sinc\!\left(
+ T\sum_{\ell=1}^{n}(X_\ell-Y_\ell)\right),
+ \label{eq:collision-finite}
+\end{equation}
+and hence
+\begin{equation}
+ \lim_{T\to\infty}\frac{1}{2T}\int_{-T}^{T}F(t)^n\,\dd t
+ =
+ \Pr\!\left[\sum_{\ell=1}^{n}(X_\ell-Y_\ell)=0\right].
+ \label{eq:collision}
+\end{equation}
+This additive collision hierarchy determines the long-time mean of every
+continuous function of fidelity.  If \(\nu\) is atomless, every positive
+collision moment is zero and every continuous statistic converges in mean to
+its value at zero fidelity, even when pointwise decay is absent.  Equation
+\eqref{eq:collision} extends the recurrence projection beyond pure-point
+phase tori without pretending that a continuous spectrum is a countable
+torus.
+
+\section{Finite endings and two forms of infinity}
+
+For a finite analytic spectrum, only finitely many independent relations can
+be born.  There is therefore a finite terminal horizon after which the
+limiting projective Fourier transform equals Haar measure on the terminal
+observable quotient: exact relations retain coefficient \(1\), and every
+active relation has coefficient \(0\).
+
+Infinite systems behave differently.  One fixed countable analytic spectrum,
+\begin{equation}
+  \omega_0(g)=0,\qquad \omega_{n+1}(g)=g^{n+1},
+ \label{eq:infinite-staircase}
+\end{equation}
+has a character of exact birth order \(n+1\) for every \(n\).  Each one obeys
+the complete locked--sinc--dephased crossing, and the full countable phase law
+exists uniquely at every horizon.  Consequently there is no final temporal
+layer: longer inverse-power observations continue to expose new independent
+phase directions without end.  This proves possibility, not a claim that
+every infinite system has unbounded temporal dimension.
+
+Countable labels are not the only infinite regime.  For an arbitrary real
+probability energy law \(\nu\), let \(d_{\mathrm{proj}}(\nu)\) be the
+rational rank of the topological support of its energy-gap law
+\((E,E')\mapsto E-E'\).  There is a universal cardinal gap:
+\begin{equation}
+ d_{\mathrm{proj}}(\nu)\le\aleph_0
+ \quad\hbox{or}\quad
+ d_{\mathrm{proj}}(\nu)=2^{\aleph_0}.
+ \label{eq:cardinal-gap}
+\end{equation}
+No intermediate uncountable value occurs.  Every atomless probability
+spectrum lies in the continuum phase.  Moreover, for every fidelity
+threshold \(\eta>0\),
+\begin{equation}
+ \lim_{T\to\infty}\frac{1}{2T}
+   \bigl|\{t\in[-T,T]:F(t)\ge\eta\}\bigr|=0.
+ \label{eq:zero-density-return}
+\end{equation}
+Thus infinity has two sharply different manifestations in the same
+framework: a countable spectrum can keep adding new temporal layers without
+end, while an atomless spectrum already carries continuum projective
+capacity and spends asymptotically zero time above every fixed positive
+return threshold.
+
+\section{What previous descriptions were missing}
 
 \begin{table}[t]
 \centering
 \small
-\begin{tabular}{@{}
-  >{\raggedright\arraybackslash}p{0.35\linewidth}
-  >{\raggedright\arraybackslash}p{0.20\linewidth}
-  >{\raggedright\arraybackslash}p{0.34\linewidth}@{}}
+\begin{tabular}{P{0.23\linewidth}P{0.31\linewidth}P{0.37\linewidth}}
 \toprule
-\textbf{Information supplied} & \textbf{Spectrum class} &
-\textbf{What is determined universally}\\
+Description & What it determines & Missing datum supplied here\\
 \midrule
-all exact energy moments & one compact representative &
-the entire spectrum and recurrence law\\
-all exact polynomial Krylov and energy data & positive indeterminate &
-not the recurrence phase\\
-all perturbative coefficients of every continuous spectral probe &
-compact \([1,2]\) & not the recurrence phase\\
-completed gap-collision hierarchy & every probability spectrum &
-every continuous long-time fidelity statistic\\
+Fixed-time survival/Wiener--Khinchin
+ & One survival curve as cosine transform of one energy autocorrelation
+ & Exact maximal system and clock quotients, arbitrary clocks, all orders
+ and complete return laws\\
+Imperfect-clock dephasing
+ & Clock filtering of individual coherences and control fidelity
+ & All-order clock--collision reciprocity and the complete return
+ distribution for every spectral type\\
+Infinite-time random-phase ensemble
+ & Terminal phase law under no-resonance conditions
+ & Arbitrary probability-clock transfer and the exact clock-alias
+ quotient\\
+Near-resonance analysis
+ & Existence and consequences of pseudo-resonances
+ & Exact valuation of every relation and its full limiting coefficient\\
+Weak-coupling relaxation theory
+ & Model-dependent quasi-conservation and thermalization scales
+ & Observation scale of spectral relations, independent of a thermalization
+ claim\\
+Hydrodynamic or random-matrix SFF
+ & Collective ramp and Thouless scales in specified ensembles
+ & Exact pre-ensemble action profile and first strictly positive
+ fidelity-moment coefficient of each character\\
+Local perturbation expansion
+ & Coefficients through a chosen order
+ & Connected-spanning lower face and the exact reason a relation remains
+ invisible\\
 \bottomrule
 \end{tabular}
-\caption{\textbf{Recurrence determinacy boundary.}  Compact support restores
-determinacy for exact moment data, but not for an all-orders perturbative
-description.  Global collision data are sufficient without a spectrum-class
-restriction.}
-\label{tab:boundary}
+\caption{\textbf{The new organizing object.}  Existing theories answer
+different projected questions.  The double maximal quotient specifies the
+system and clock data retained by return; the filtered
+projective-character lattice resolves its pure-point structure.}
+\label{tab:comparison}
 \end{table}
 
-\section{What does determine every long-time return statistic?}
-\label{sec:collision}
+The central change of interpretation is now exact.  Recurrence is not a
+property of a bare energy list evaluated against an external parameter.  It
+is a bilinear observation law on two quotient objects: energy
+autocorrelation \(A\nu\) and unoriented clock statistics \(S\rho\).  A near
+resonance is not merely a small denominator awaiting a sufficiently late
+time.  It is a character in this system--clock quotient.  The system
+supplies its detuning; the clock supplies the transfer function evaluated at
+that detuning.
+Observation time is dual to activation valuation.  Fidelity-moment order is
+dual to positive character mass.  Local interaction geometry bounds the
+valuation.  The limiting phase law is the complete transform of this
+composition.  Temporal dimension is the quotient rank left after
+clock-aliased relations are removed.
 
-The obstruction has a complete positive counterpart.  Define the additive
-collision hierarchy
-\begin{equation}
- \kappa_n(\mu)=
- \bigl((\Delta\mu)^{*n}\bigr)(\{0\}),\qquad n\in\N,
-\label{eq:collision}
-\end{equation}
-where the zeroth convolution power is \(\delta_0\).  Thus \(\kappa_1\) is the
-probability that two visible energies coincide, while higher orders count
-exact cancellations among independent gaps.
+This also explains earlier local--global recurrence obstructions.  Complete
+local moment or perturbative records can fail to decide recurrence because
+they need not determine the global gap law or character-action profile.
+Homometric spectra are exactly indistinguishable when the former agrees.
+Once the latter profile and the clock law are supplied,
+Theorem~\ref{thm:action} fixes the phase law and
+\eqref{eq:arbitrary-clock-fidelity} fixes every finite recurrence polynomial.
+For general spectral measures, \eqref{eq:collision} supplies the corresponding
+complete long-time fidelity distribution.  The obstruction and the positive
+classification are therefore opposite sides of the same missing object.
 
-\begin{theorem}[Complete long-time recurrence law]
-\label{thm:complete}
-For every probability spectrum \(\mu\) and every \(n\in\N\),
-\begin{equation}
- \lim_{T\to\infty}\frac1{2T}\int_{-T}^{T}F_\mu(t)^n\,\dd t
- =\kappa_n(\mu).
-\label{eq:hierarchy}
-\end{equation}
-For every continuous \(h:[0,1]\to\R\), the limit
-\begin{equation}
- \lim_{T\to\infty}\frac1{2T}
- \int_{-T}^{T}h(F_\mu(t))\,\dd t
-\label{eq:statistic}
-\end{equation}
-exists and is uniquely determined by the sequence
-\(\{\kappa_n(\mu)\}_{n\ge0}\).  If \(\mu\) is atomless, this limit is \(h(0)\).
-\end{theorem}
+\section{Scope and conclusion}
 
-The law is universal: no discreteness, absolute continuity, finite dimension
-or spectral regularity is assumed.  It also shows why the plateau is global.
-For a pure-point spectrum with weights \(w_j\),
-\(\kappa_1=\sum_jw_j^2\); for an atomless spectrum it is zero.  The higher
-\(\kappa_n\) contain additive gap degeneracies invisible to the one-number
-plateau.  The \(n=1\) identity is the classical Wiener collision law
-\cite{Wiener1933}; the complete hierarchy and continuous-statistic closure are
-the content used here.
-
-\section{A finite causal shadow and an exact cost of hiding the future}
-\label{sec:causal}
-
-The all-depth theorem is not directly an experimental construction because
-its two completions need not have the same Hilbert-space closure.  A separate
-finite theorem supplies its operational shadow.  Prepare the endpoint vector
-\(e_0\) of a finite connected self-adjoint nearest-neighbour chain \(H\) and
-measure
-\begin{equation}
- P_H(t)=|\langle e_0,e^{\I tH}e_0\rangle|^2.
-\end{equation}
-
-\begin{theorem}[Complete local future set]
-\label{thm:future}
-Fix a local radius \(R\), a target time \(T>0\), a prior horizon
-\(0\le H_0<T\), and a tolerance \(\delta>0\).  There exists one finite
-isospectral connected nearest-neighbour family with:
+No dynamical conjecture, random-matrix ansatz, thermodynamic approximation or
+genericity premise enters the results.  Their four exact domains are:
 \begin{enumerate}
-\item exactly the same endpoint matrix entries through radius \(R\);
-\item return records differing by less than \(\delta\) for every
-      \(|t|\le H_0\);
-\item target-time probabilities \(P_H(T)\) filling exactly the full physical
-      interval \([0,1]\).
+\item arbitrary probability clocks and arbitrary probability energy spectra
+for system--clock reciprocity, both maximal information quotients and the
+complete survival-return distribution;
+\item arbitrary clocks and finite or countable real pure-point spectra for
+the complete phase-history law and alias quotient;
+\item analytic weak-interaction paths for the valuation atlas and temporal
+rank cascade;
+\item finite Hermitian local interaction families with simple uncoupled
+product spectrum for the connected-spanning visibility cone;
 \end{enumerate}
-Moreover, for fixed \(T,H_0,\delta\), there is one integer \(a\), independent
-of \(R\), for which the construction can be chosen with chain index
-\begin{equation}
- n_R\le 4R+2a+5
-\label{eq:linear-dimension}
-\end{equation}
-and, after a common energy-origin shift, the uniform norm certificate
-\begin{equation}
- \Lambda_R\le\frac{\pi(4R+2a+5)}{2T}.
-\label{eq:linear-energy}
-\end{equation}
-\end{theorem}
+Continuous-spectrum phase tori, thermodynamic-limit locality, open
+nonunitary dynamics and gravity are distinct observables or dynamical
+settings, not consequences silently inferred from survival return.
+Black-hole spectral form factors motivate the importance of late-time information
+\cite{BarbonRabinovici2003,Cotler2017,Saad2019}, but no statement about
+quantum gravity follows without a model satisfying the stated spectral and
+local hypotheses.
 
-Local agreement nevertheless has a sharp causal effect.  If two such
-Hamiltonians agree through radius \(R\), and after one common energy-origin
-shift both norms are at most \(\Lambda\), then
-\begin{equation}
- |P_A(t)-P_B(t)|
- \le
- 4\,\frac{(|t|\Lambda)^{2R+3}}{(2R+3)!}\,e^{|t|\Lambda}.
-\label{eq:causalbound}
-\end{equation}
-Consequently, if a fixed positive return-probability gap persists while the
-common radius tends to infinity, then eventually
-\begin{equation}
- |T|\Lambda_R>\frac{2R+3}{e}.
-\label{eq:criticalcost}
-\end{equation}
-The obstruction is therefore compatible with locality, but not free:
-\eqref{eq:linear-energy} and \eqref{eq:criticalcost} make linear
-energy--time versus hidden-distance scaling sufficient and necessary, up to
-universal constants.  At the critical value on the right of
-\eqref{eq:criticalcost}, the universal probability discrepancy is at most
-\(8/\sqrt{2\pi(2R+3)}\).
+The question posed at the outset now has a complete answer.  At every moment
+order, a system supplies an additive energy-collision law and a clock pairs
+with it through its characteristic function.  All orders determine the
+entire observed return distribution.  Across all clocks, the exact maximal
+system datum is the energy-gap law \(A\nu\).  Across all spectra, the exact
+maximal clock datum is the orientation quotient \(S\rho\).  Deterministic
+clocks and balanced two-level systems attain the two converses; their first
+moments already decide the corresponding complete universal equivalence
+classes.  Absolute
+energy origin, homometric spectral information and signed clock orientation
+are therefore absent from return data for one structural reason, and no
+coarser universal quotient is possible.
 
-Theorem~\ref{thm:future} and bound \eqref{eq:causalbound} define a direct
-quantum-simulator benchmark: reconstruct a common endpoint block, compare the
-pre-target return record, and then resolve the target-time spread.  Spectral
-form factors and their ramp--plateau structure are already measurable on
-superconducting quantum processors \cite{Dong2025}; the theorem identifies a
-specific local-identifiability stress test rather than claiming that the
-particular extremal family has already been implemented.
+For pure-point spectra, phase-sensitive measurement lifts the survival
+quotient to every projective character; exact clock aliases then determine
+temporal dimension.  Analytic weak interaction assigns each active relation
+one birth horizon.  Locality prevents a relation spanning a region from
+appearing before interactions connect that region, and fidelity-moment order
+supplies a second exact detector coordinate.  Long uniform clocks reduce the
+same hierarchy to additive zero-sum collision probabilities.  Finite,
+countably layered and atomless regimes are therefore not separate recurrence
+mechanisms; they are different structures carried by \(A\nu\) and sampled
+through \(S\rho\).
 
-\section{Consequence for black-hole spectral form factors}
-\label{sec:blackholes}
+The resulting worldview shift is precise: quantum recurrence is a relational
+property of a system, a clock and a probe, not an intrinsic timestamp stored
+by a Hamiltonian.  Return to a state can certify repetition but cannot by
+itself supply the orientation in which time was traversed.  That orientation
+must enter through prior support information or a phase-sensitive observable.
+Sampling resonance, weak-interaction wall crossing, local spectral causality
+and observer-dependent temporal dimension are refinements of this one
+system--clock information law.
 
-For a normalized thermal energy law, the spectral form factor
-\(|Z(\beta+\I t)|^2/Z(\beta)^2\) is precisely a fidelity of the form
-\eqref{eq:survival}.  Its plateau is therefore \(\kappa_1\), and all of its
-continuous long-time statistics are fixed by the hierarchy
-\eqref{eq:collision}.  This applies to each fixed spectrum wherever the
-thermal weights define a probability measure.  An annealed or quenched
-ensemble average is an additional operation and is not identified here with
-the single-spectrum limit.
+\section*{Methods}
 
-The distinction matters in black-hole theory.  Semiclassical horizon
-descriptions can produce continuum spectra and decaying late-time
-correlators, while unitary microscopic descriptions motivate discrete
-late-time structure \cite{BarbonRabinovici2003}.  Random-matrix behaviour in
-black-hole models is diagnosed by spectral form factors
-\cite{Cotler2017}, and matrix-integral completions of JT gravity are
-explicitly non-unique and sensitive to eigenvalue discreteness
-\cite{Saad2019}.
+\subsection*{System--clock reciprocity and completeness}
 
-Theorems~\ref{thm:all-depth} and \ref{thm:nonpert} give a precise
-model-independent statement:
-\begin{quote}
-\emph{Neither complete polynomial local dynamics nor complete all-orders
-perturbative spectral data can, by itself, certify the exact late-time
-recurrence phase.  A global spectral completion is additional input relative
-to either description.}
-\end{quote}
-\begin{corollary}[Spectral-form-factor certification no-go]
-Fix any positive target coupling.  No decision rule whose only input is the
-complete all-orders coupling jet of the normalized spectral form factor at
-every physical time can correctly decide whether the exact plateau is positive
-for every compact positive normalized spectral family.  This remains true
-when the input is enlarged to the jets of all bounded continuous spectral
-observables.
-\end{corollary}
-This answers an inference problem; it does not assert that an astrophysical
-black hole realizes either constructed spectrum, that a positive plateau
-equals full information recovery, or that gravity selects no completion.
-It separates what a semiclassical or perturbative calculation can establish
-universally from what must enter through microscopic or nonperturbative
-physics.  In particular, the result does not rely on the claim that every
-plateau in every model is nonperturbative; some model-specific observables can
-expose one.  The theorem is that no universally valid classifier can do so
-from perturbative data alone.
-
-\section{Proofs}
-\label{sec:proofs}
-
-\subsection{Collision hierarchy}
-
-The characteristic function of \(\Delta\mu\) is
+The spectral difference \(X-Y\) has characteristic function
+\(|\varphi_\nu(t)|^2=F_\nu(t)\).  Independence therefore makes
+\(F_\nu(t)^n\) the characteristic function of the \(n\)-fold gap-sum law
+\(\Gamma_n(\nu)\).  Integrating against \(\rho\) and applying Fubini gives
 \[
- \widehat{\Delta\mu}(t)
- =A_\mu(t)\overline{A_\mu(t)}=F_\mu(t).
+ \int\!\int e^{\I tx}\,\dd\Gamma_n(\nu)(x)\,\dd\rho(t)
+ =
+ \int\!\int e^{\I tx}\,\dd\rho(t)\,\dd\Gamma_n(\nu)(x),
 \]
-Hence \(F_\mu(t)^n\) is the characteristic function of
-\((\Delta\mu)^{*n}\).  For \(T>0\), Fubini's theorem gives
+which is \eqref{eq:reciprocity}.  The integrand has modulus one, so no
+additional integrability premise is needed.  The observed return law is the
+pushforward of \(\rho\) under the continuous map \(F_\nu:\R\to[0,1]\).
+Equality of all moments implies equality of integrals for polynomials;
+uniform polynomial approximation on \([0,1]\) then implies equality for
+every continuous function and hence equality of the probability measures.
+
+\subsection*{Maximality of the system and clock quotients}
+
+If \(A\nu_1=A\nu_2\), then every convolution power
+\(\Gamma_n(\nu_1)=\Gamma_n(\nu_2)\), so
+\eqref{eq:reciprocity} gives equality of all moments for every clock and
+hence equality of complete return laws.  Conversely, take the clock
+\(\rho=\delta_t\).  Equality of complete return laws implies equality of
+their first moments for every \(t\):
 \[
- \frac1{2T}\int_{-T}^{T}F_\mu(t)^n\,\dd t
- =\int_{\R}\operatorname{sinc}(Tx)\,
-       \dd(\Delta\mu)^{*n}(x).
+ F_{\nu_1}(t)=F_{\nu_2}(t).
 \]
-The integrand is bounded by one, converges to one at \(x=0\), and converges to
-zero elsewhere.  Dominated convergence proves \eqref{eq:hierarchy}.
+These are the characteristic functions of \(A\nu_1\) and \(A\nu_2\).
+Uniqueness of characteristic functions proves \(A\nu_1=A\nu_2\).
 
-For a polynomial \(p(x)=\sum_na_nx^n\), linearity gives
+Every survival fidelity is even.  Integration against \(\rho\) therefore
+equals integration against \(S\rho\), proving the forward direction of
+\eqref{eq:max-clock}.  For the converse, the balanced two-level spectrum
+has
 \[
- \lim_{T\to\infty}\frac1{2T}\int_{-T}^{T}p(F_\mu(t))\,\dd t
- =\sum_na_n\kappa_n(\mu).
+ F_{\nu_\Omega}(t)=\frac{1+\cos(\Omega t)}2 .
 \]
-Every continuous \(h\) on \([0,1]\) is uniformly approximable by polynomials.
-Because \(F_\mu(t)\in[0,1]\), the same uniform error bounds every finite-window
-mean.  The polynomial limits are Cauchy and determine
-\eqref{eq:statistic}.  If \(\mu\) is atomless then \(\Delta\mu\), and every
-positive convolution power of it, is atomless.  Thus
-\(\kappa_n=0\) for \(n>0\), while \(\kappa_0=1\); polynomial approximation
-then gives the limit \(h(0)\).
+Equality of its first sampled moment for every \(\Omega\) gives equality of
+the cosine transforms, equivalently equality of the real parts of the two
+clock characteristic functions.  The characteristic function of
+\(S\rho\) is exactly this real part.  Characteristic-function uniqueness
+therefore gives \(S\rho_1=S\rho_2\).
 
-\subsection{Temporal alternatives}
+\subsection*{Clock transfer, completeness and rank}
 
-The visible gap span is a \(\Q\)-vector subspace of \(\R\).  A countable
-support gives countable rank.  An uncountable closed support contains a
-perfect subset and therefore has cardinality continuum.  Translating it by
-one support point injects it into the gap set.  Because \(\Q\) is countable,
-the cardinality of an infinite-dimensional \(\Q\)-vector space is the maximum
-of its basis cardinality and \(\aleph_0\).  The gap span is contained in
-\(\R\), so its rank is exactly continuum.  This proves the dichotomy.  Exact projective
-return at \(t>0\) means \(t(E-E')\in2\pi\Z\) for all visible gaps.  This is
-equivalent to containment in one cyclic frequency lattice; conversely, a
-cyclic gap group gives a common period.  An atomless probability measure has
-uncountable support and continuum rational span.  Its mean-return and
-threshold-density statements follow from Theorem~\ref{thm:complete} using,
-respectively, \(h(x)=x\) and continuous majorants of
-\(\mathbf1_{[\eta,1]}\).
+For any probability clock \(\rho\), pull one torus character back along the
+phase orbit.  It becomes \(t\mapsto e^{\I t\Delta_k}\); integration is
+exactly \(\varphi_\rho(\Delta_k)\), proving
+\eqref{eq:master-coefficient}.  On a finite torus, convergence of all
+character integrals is equivalent to weak convergence of probability
+measures because trigonometric polynomials are uniformly dense in the
+continuous functions.  On a countable product torus, every character has
+finite support; the same compactness and density argument applies to
+cylinder trigonometric polynomials.  Necessity is continuity of each
+character integral, and Fourier uniqueness gives uniqueness.
 
-\subsection{All-depth separation}
+A unit-modulus random variable has expectation \(1\) exactly when it equals
+\(1\) almost surely.  Hence the relations aliased by the clock are exactly
+those with \(\varphi_\rho(\Delta_k)=1\).  Passing from the full projective
+character space to the quotient by their rational span proves
+\eqref{eq:rank-conservation}.  For the unit-gap two-level spectrum every
+projective detuning is an integer.  At deterministic time \(2\pi\) every
+character is therefore \(1\); a nonzero continuous uniform window has sinc
+transfer equal to \(1\) only at zero detuning.  The two dimensions are
+respectively zero and one.
 
-Let \(s_n\) be a normalized indeterminate Hamburger sequence and
-\(\mathcal L(E^n)=s_n\) its positive moment functional.  Gram--Schmidt applied
-to \(1,E,E^2,\ldots\) produces monic \(P_n\).  Strict positivity of
-\(\mathcal L(p^2)\) gives the three-term law \eqref{eq:jacobi} and \(b_n>0\).
-The Nevanlinna family supplies pure-point extremal representing measures
-\(\mu_\theta\) with the same moments.  Choose one as \(\mu_{\rm r}\).  Averaging
-the mutually disjoint extremal measures over a continuous boundary parameter
-produces an atomless representing probability measure \(\mu_{\rm e}\).
+\subsection*{Analytic wall crossing and rank}
 
-For any polynomials \(p,q\), both integrands in \eqref{eq:localdata} are
-polynomials.  Their integrals depend only on \(s_n\), so all \(G\) and \(J\)
-entries agree.  Differentiating the characteristic functions at zero is
-justified by finiteness of every moment and gives the same derivatives.  The
-pure-point measure has positive collision mass and at-most countable temporal
-dimension.  The atomless conclusions follow from
-Theorems~\ref{thm:dimension} and \ref{thm:complete}.
+For an active analytic detuning, divide its Taylor series by its first
+nonzero power to obtain \(|\Delta_k(g)|/g^{v(k)}\to|c_k|>0\).
+Multiplication by \(T_g=\tau g^{-r}\) gives limits \(0\), \(\tau|c_k|\), or
+unbounded magnitude according as \(r<v(k)\), \(r=v(k)\), or \(r>v(k)\).
+Continuity of sinc and its decay at infinity yield
+\eqref{eq:wall-crossing}.  A phase character is almost surely constant
+exactly when its Fourier coefficient is \(1\).  Since \(\sinc a=1\) exactly
+at \(a=0\), the constraint space is the rational span of zero-action
+characters.  Equation~\eqref{eq:rank-conservation} is rank--nullity for the
+projective character map.
 
-For the no-classifier statement, suppose a predicate \(C(G,J)\) classified
-positive-mean recurrence throughout the stated positive-energy class.  Apply
-it to the explicit measures \eqref{eq:discrete}--\eqref{eq:continuous}.
-Their inputs are equal, while \eqref{eq:opposite} gives opposite truth values,
-a contradiction.
+\subsection*{Connected-cluster lower face}
 
-\subsection{Compact nonperturbative separation}
+Simple uncoupled product energies give analytic eigenvalue branches under a
+finite Hermitian local perturbation.  At weighted order \(n\), each spectral
+coefficient decomposes into interaction packets of total edge weight at most
+\(n\).  A Boolean M\"obius contrast supported on \(S\) annihilates every
+packet that misses a queried site and every packet disconnected across a
+partition of \(S\).  Only connected packets spanning \(S\) survive.
+Therefore all coefficients below \(C_w(S)\) vanish, which proves
+\eqref{eq:steiner}.
 
-Every derivative of \(\eta\) in \eqref{eq:flat} vanishes at zero.  For bounded
-continuous \(f\),
-\[
- \int f\,\dd\mu_{\rm r}(g)
- =\int f\,\dd\lambda+
-   \eta(g)\left(f(E_\star)-\int f\,\dd\lambda\right),
-\]
-which proves \eqref{eq:allobservables}.  Taking
-\(f(E)=e^{\I tE}\) and differentiating products gives equality of all
-spectral-form-factor jets.  The recurrent measure has exactly one atom of
-mass \(\eta(g)\); the comparison measure is atomless.  The first collision
-law therefore gives \eqref{eq:instanton}.  The continuum component preserves
-infinite support, so its orthogonal-polynomial Jacobi coefficient \(b_n\)
-remains strictly positive at every depth.  Any universal classifier would
-receive identical inputs for these two families and return both opposite
-answers, which is impossible.
+\subsection*{Exact fidelity coefficient and replica height}
 
-\subsection{Local causal horizon}
+If \(k\) is balanced and realized by \(m\) positive and \(m\) negative
+labels, then \(\sum_i(k_i)_+\le m\).  Equality is attained by taking
+\(p_i=(k_i)_+\) and \(q_i=(-k_i)_+\); higher orders are obtained by adding
+the same dummy label to both multisets.  This proves
+\eqref{eq:height}.  Expanding both factors of the \(m\)-th fidelity moment
+multinomially and collecting equal characters gives
+\eqref{eq:actual-coefficient}.  Full-support weights make every summand
+strictly positive, so this coefficient is nonzero exactly when a realizing
+pair exists; this proves the exact cone.  For a nondegenerate \(s\)-site
+Boolean contrast, the \(2^s\) updated configurations are distinct and carry
+alternating coefficients \(\pm1\).  Exactly half are positive, giving
+\(h(k_S)=2^{s-1}\).
 
-For nearest-neighbour matrices agreeing through radius \(R\), every endpoint
-closed walk of length below \(2R+3\) remains inside the common block.  Hence
-\(\langle e_0,A^me_0\rangle=\langle e_0,B^me_0\rangle\) for
-\(m<2R+3\).  Expanding both operator exponentials, bounding the remaining
-tails by the common centred norm \(\Lambda\), and using
-\(|\,|z|^2-|w|^2|\le2|z-w|\) for \(|z|,|w|\le1\) gives
-\eqref{eq:causalbound}.  The critical bound follows from the factorial lower
-estimate at \(|t|\Lambda\le(2R+3)/e\); its right side tends to zero, proving
-\eqref{eq:criticalcost} for any persistent positive gap.
+\subsection*{Collision extension}
 
-For Theorem~\ref{thm:future}, put \(n=2q+1\), use the common angular spectrum
-\(E_j=\pi j/T\), and let
-\(w_j=2^{-n}\binom nj\).  The parity-conditioned weights are
-\(\widetilde w_j=w_j(1+(-1)^{n-j})\), and the interpolating weights are
-\(w_j(\theta)=(1-\theta)w_j+\theta\widetilde w_j\).
-Finite-difference cancellation makes every energy moment below order \(n\)
-independent of \(\theta\).  At the target time, the corresponding amplitude
-is \(\theta\), while on \(|t|\le H_0<T\) its difference from the
-\(\theta=0\) amplitude is bounded by a power of
-\(\sin(\pi H_0/(2T))<1\).  Choose \(q\) large enough to make this bound less
-than \(\delta/2\), and set \(\theta=\sqrt p\) for a requested
-\(p\in[0,1]\).
+Expand \(F(t)^n\) using \(2n\) independent spectral samples.  Fubini's
+theorem changes the time integral into the sinc transform of the random
+gap sum, proving \eqref{eq:collision-finite}.  As \(T\to\infty\), sinc
+converges to the indicator of zero and is bounded by one, so dominated
+convergence gives \eqref{eq:collision}.  Polynomial approximation on
+\([0,1]\) then extends moment convergence to every continuous fidelity
+statistic.
 
-Unitary Krylov changes of basis preserve the common spectrum and convert each
-positive spectral packet to a self-adjoint tridiagonal Jacobi matrix.  Equality
-of the first \(2R+2\) moments fixes the radius-\(R\) endpoint block.  Choosing
-\(q\le 2R+2+a\), with \(a\) fixed solely by \(H_0/T\) and \(\delta\), gives
-\eqref{eq:linear-dimension}.  The common centred angular spectrum lies in an
-interval of half-width \(\pi n/(2T)\), which gives
-\eqref{eq:linear-energy}.  Thus the compatible set is exactly \([0,1]\).
+\subsection*{Projective cardinal gap}
 
-\section{Conclusion}
+The support of every real energy-gap measure is closed.  If it is countable,
+its rational span has rank at most \(\aleph_0\).  If it is uncountable, every
+uncountable closed subset of the real line has cardinality continuum; its
+inclusion into its rational span gives the matching lower bound, while
+\(\R\) gives the upper bound.  This proves \eqref{eq:cardinal-gap}.
+Atomlessness passes from an energy law to its difference law, so the latter
+has uncountable support and continuum projective rank.  Markov's inequality
+bounds \eqref{eq:zero-density-return} by mean fidelity divided by \(\eta\);
+the collision law sends that mean to zero.
 
-The central question has a complete answer.  Local polynomial dynamics,
-however deep, need not decide whether history returns.  Perturbation theory,
-however many orders and spectral probes it contains, need not decide either.
-The missing information is not another finite coefficient: it is the global
-spectral completion.  Once that completion is supplied, its additive gap
-collisions determine every continuous long-time fidelity statistic.
-
-At finite depth, this statement has an exact causal scale.  A common local
-radius protects near-future return with a factorial remainder; every target
-probability becomes compatible once centred energy--time action grows linearly
-with that radius, and linear growth is necessary.  The quantum prediction
-horizon is therefore neither metaphor nor asymptotic slogan: it is a
-dimension-free inequality with a matching construction.
-
-The worldview shift is precise rather than metaphoric.  ``How many independent
-times does this observer see?'' and ``does this history return?'' are not
-properties of polynomial local recurrence data alone.  They are global properties of
-the completed system--observer spectrum.  In black-hole and quantum-chaos
-settings, this identifies exactly why a late-time plateau can carry information
-that no universally valid local or all-orders perturbative analysis contains.
-
+\small
 \begin{thebibliography}{99}
 
 \bibitem{BocchieriLoinger1957}
@@ -736,20 +1028,53 @@ P.~Bocchieri and A.~Loinger,
 Quantum recurrence theorem,
 \emph{Phys.\ Rev.} \textbf{107}, 337--338 (1957).
 
-\bibitem{Riddell2023}
-J.~Riddell, N.~J.~Pagliaroli and A.~M.~Alhambra,
-Concentration of quantum equilibration and an estimate of the recurrence time,
-\emph{SciPost Phys.} \textbf{15}, 165 (2023).
+\bibitem{Xuereb2023}
+J.~Xuereb, P.~Erker, F.~Meier, M.~T.~Mitchison and M.~Huber,
+Impact of imperfect timekeeping on quantum control,
+\emph{Phys.\ Rev.\ Lett.} \textbf{131}, 160204 (2023).
 
-\bibitem{Anand2026}
-A.~Anand, D.~Valluri, J.~Davis and S.~Ghose,
-Quantum recurrences and the arithmetic of Floquet dynamics,
-\emph{Quantum} \textbf{10}, 2074 (2026).
+\bibitem{Xu2021}
+S.~Xu, W.-J.~Gong, H.~Z.~Shen and X.~X.~Yi,
+Effective decoherence of realistic clocks: General theory and application
+to a topological insulator,
+\emph{Phys.\ Rev.\ A} \textbf{103}, 032207 (2021).
+
+\bibitem{Friedman2017}
+H.~Friedman, D.~A.~Kessler and E.~Barkai,
+Quantum walks: The first detected passage time problem,
+\emph{Phys.\ Rev.\ E} \textbf{95}, 032141 (2017).
+
+\bibitem{Mark2024}
+D.~K.~Mark, F.~Surace, A.~Elben, A.~L.~Shaw, J.~Choi, G.~Refael,
+M.~Endres and S.~Choi,
+A maximum entropy principle in deep thermalization and in Hilbert-space
+ergodicity,
+\emph{Phys.\ Rev.\ X} \textbf{14}, 041051 (2024).
+
+\bibitem{RiddellPagliaroli2024}
+J.~Riddell and N.~Pagliaroli,
+No-resonance conditions, random matrices, and quantum chaotic models,
+\emph{J.\ Stat.\ Phys.} \textbf{191}, article 144 (2024).
+
+\bibitem{SuraceMotrunich2023}
+F.~M.~Surace and O.~Motrunich,
+Weak integrability breaking perturbations of integrable models,
+\emph{Phys.\ Rev.\ Research} \textbf{5}, 043019 (2023).
+
+\bibitem{WinerSwingle2022}
+M.~Winer and B.~Swingle,
+Hydrodynamic theory of the connected spectral form factor,
+\emph{Phys.\ Rev.\ X} \textbf{12}, 021009 (2022).
+
+\bibitem{CamposVenuti2015}
+L.~Campos Venuti,
+The recurrence time in quantum mechanics,
+arXiv:1509.04352 (2015).
 
 \bibitem{Kotowski2026}
 M.~Kotowski and M.~Oszmaniec,
 Tight bounds on recurrence time in closed quantum systems,
-arXiv:2601.10409; accepted in \emph{Phys.\ Rev.\ Lett.} (2026).
+arXiv:2601.10409 (2026).
 
 \bibitem{GuptaShort2026}
 C.~Gupta and A.~J.~Short,
@@ -760,6 +1085,11 @@ arXiv:2604.14995 (2026).
 N.~Wiener,
 \emph{The Fourier Integral and Certain of Its Applications}
 (Cambridge University Press, 1933).
+
+\bibitem{RamirezKelkar2021}
+D.~F.~Ram\'irez Jim\'enez and N.~G.~Kelkar,
+Formal aspects of quantum decay,
+\emph{Phys.\ Rev.\ A} \textbf{104}, 022214 (2021).
 
 \bibitem{BarbonRabinovici2003}
 J.~L.~F.~Barbon and E.~Rabinovici,
@@ -775,34 +1105,6 @@ Black holes and random matrices,
 P.~Saad, S.~H.~Shenker and D.~Stanford,
 JT gravity as a matrix integral,
 arXiv:1903.11115 (2019).
-
-\bibitem{Yafaev2021}
-D.~R.~Yafaev,
-Self-adjoint Jacobi operators in the limit circle case,
-\emph{J.\ Operator Theory} \textbf{89}, 411--450 (2023).
-
-\bibitem{BergSzwarc2023}
-C.~Berg and R.~Szwarc,
-Indeterminate Jacobi operators,
-\emph{Math.\ Nachr.} \textbf{296}, 4962--4980 (2023).
-
-\bibitem{SalaMayato2020}
-R.~Sala Mayato, P.~Loughlin and L.~Cohen,
-Generating moment-indeterminate probability densities by way of quantum
-mechanics,
-\emph{J.\ Theor.\ Probab.} \textbf{35}, 133--153 (2022).
-
-\bibitem{LoughlinCohen2022}
-P.~Loughlin and L.~Cohen,
-Characteristic function and operator approach to moment-indeterminate
-probability densities,
-\emph{J.\ Math.\ Anal.\ Appl.} \textbf{516}, 126519 (2022).
-
-\bibitem{Dong2025}
-H.~Dong \emph{et al.},
-Measuring the spectral form factor in many-body chaotic and localized phases
-of quantum processors,
-\emph{Phys.\ Rev.\ Lett.} \textbf{134}, 010402 (2025).
 
 \end{thebibliography}
 

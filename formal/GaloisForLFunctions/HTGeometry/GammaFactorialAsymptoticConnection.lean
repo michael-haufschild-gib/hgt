@@ -56,6 +56,6 @@ theorem gammaFactorialConnectionTransport_tendsto_zero :
 /-- The canonical algebraic flat gauge is not bounded: its factorial norm tends to infinity. -/
 theorem gammaFactorialConnectionTransport_inv_tendsto_atTop :
     Tendsto (fun n ↦ (gammaFactorialConnectionTransport n)⁻¹) atTop atTop := by
-  simpa using (tendsto_natCast_atTop_atTop.comp factorial_tendsto_atTop)
+  simpa using! (tendsto_natCast_atTop_atTop.comp factorial_tendsto_atTop)
 
 end GaloisForLFunctions.HTGeometry

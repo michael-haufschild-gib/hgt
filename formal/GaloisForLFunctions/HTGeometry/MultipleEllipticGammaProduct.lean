@@ -27,14 +27,14 @@ theorem hasDerivAt_multipleEllipticGammaCoordinate (z : ℂ) :
     simpa only [id_eq, mul_one] using
       (hasDerivAt_id z).const_mul (2 * Real.pi * I)
   have hexp := (Complex.hasDerivAt_exp (2 * Real.pi * I * z)).comp z hlin
-  convert hexp using 1
-  all_goals (simp [multipleEllipticGammaCoordinate]; ring)
+  simpa only [multipleEllipticGammaCoordinate] using!
+    hexp.congr_deriv (by ring)
 
 theorem analyticAt_multipleEllipticGammaCoordinate (z : ℂ) :
     AnalyticAt ℂ multipleEllipticGammaCoordinate z := by
   have hlin : AnalyticAt ℂ (fun w : ℂ => 2 * Real.pi * I * w) z :=
     analyticAt_const.mul analyticAt_id
-  simpa [multipleEllipticGammaCoordinate, Function.comp_def] using
+  simpa [multipleEllipticGammaCoordinate, Function.comp_def] using!
     analyticAt_cexp.comp hlin
 
 /-- One forward entire factor of the multiple elliptic gamma product. -/
@@ -92,10 +92,13 @@ theorem hasProdLocallyUniformlyOn_multipleEllipticGammaForwardFactor
     simp only [norm_neg, multipleEllipticGammaForwardArgument, div_eq_mul_inv,
       norm_mul, norm_pow, norm_prod]
     nlinarith
-  convert Summable.hasProdUniformlyOn_one_add hK hu hbound (fun n => by
-    have hcoord : Continuous (fun z => (multipleEllipticGammaCoordinate z)⁻¹) := hInvCont
-    simpa [multipleEllipticGammaForwardArgument, div_eq_mul_inv] using
-      (continuous_const.mul hcoord).neg.continuousOn) using 1
+  have hprod := Summable.hasProdUniformlyOn_one_add hK hu hbound (fun n => by
+    have hconst : Continuous (fun _ : ℂ =>
+        ∏ i, ellipticNome (τ i) ^ (n i + 1)) := continuous_const
+    simpa only [multipleEllipticGammaForwardArgument, div_eq_mul_inv] using!
+      (hconst.mul hInvCont).neg.continuousOn)
+  simpa only [multipleEllipticGammaForwardFactor,
+    multipleEllipticGammaForwardProduct, sub_eq_add_neg] using! hprod
 
 /-- The backward product converges locally uniformly on the additive plane. -/
 theorem hasProdLocallyUniformlyOn_multipleEllipticGammaBackwardFactor
@@ -114,7 +117,7 @@ theorem hasProdLocallyUniformlyOn_multipleEllipticGammaBackwardFactor
     exact (hC (mem_image_of_mem _ hz)).trans (le_max_left _ _)
   have hweights : Summable (fun n : ι → ℕ =>
       ∏ i, ‖ellipticNome (τ i)‖ ^ n i) := by
-    simpa [multipleEllipticGammaBackwardArgument] using
+    simpa [multipleEllipticGammaBackwardArgument] using!
       (summable_norm_multipleEllipticGammaBackwardArgument
         (p := fun i => ellipticNome (τ i)) (x := (1 : ℂ))
         (fun i => norm_ellipticNome_lt_one (hτ i)))
@@ -132,9 +135,13 @@ theorem hasProdLocallyUniformlyOn_multipleEllipticGammaBackwardFactor
     simp only [norm_neg, multipleEllipticGammaBackwardArgument, norm_mul,
       norm_pow, norm_prod]
     nlinarith
-  convert Summable.hasProdUniformlyOn_one_add hK hu hbound (fun n => by
-    simpa [multipleEllipticGammaBackwardArgument] using
-      (continuous_const.mul hCoordCont).neg.continuousOn) using 1
+  have hprod := Summable.hasProdUniformlyOn_one_add hK hu hbound (fun n => by
+    have hconst : Continuous (fun _ : ℂ =>
+        ∏ i, ellipticNome (τ i) ^ n i) := continuous_const
+    simpa only [multipleEllipticGammaBackwardArgument] using!
+      (hconst.mul hCoordCont).neg.continuousOn)
+  simpa only [multipleEllipticGammaBackwardFactor,
+    multipleEllipticGammaBackwardProduct, sub_eq_add_neg] using! hprod
 
 theorem differentiable_multipleEllipticGammaForwardFactor
     (τ : ι → ℂ) (n : ι → ℕ) :
@@ -258,18 +265,18 @@ theorem exists_multipleEllipticGammaProducts_ne_zero
       (f := fun n : ι → ℕ =>
         -multipleEllipticGammaForwardArgument (fun i => ellipticNome (τ i))
           (multipleEllipticGammaCoordinate z) n)
-      (fun n => by simpa [multipleEllipticGammaForwardFactor] using hzF n)
+      (fun n => by simpa [multipleEllipticGammaForwardFactor] using! hzF n)
       (by simpa only [norm_neg] using hsumF)
-    simpa [multipleEllipticGammaForwardProduct,
-      multipleEllipticGammaForwardFactor] using hprod
+    simpa only [multipleEllipticGammaForwardProduct,
+      multipleEllipticGammaForwardFactor, sub_eq_add_neg] using! hprod
   · have hprod := tprod_one_add_ne_zero_of_summable
       (f := fun n : ι → ℕ =>
         -multipleEllipticGammaBackwardArgument (fun i => ellipticNome (τ i))
           (multipleEllipticGammaCoordinate z) n)
-      (fun n => by simpa [multipleEllipticGammaBackwardFactor] using hzB n)
+      (fun n => by simpa [multipleEllipticGammaBackwardFactor] using! hzB n)
       (by simpa only [norm_neg] using hsumB)
-    simpa [multipleEllipticGammaBackwardProduct,
-      multipleEllipticGammaBackwardFactor] using hprod
+    simpa only [multipleEllipticGammaBackwardProduct,
+      multipleEllipticGammaBackwardFactor, sub_eq_add_neg] using! hprod
 
 theorem multipleEllipticGammaForwardProduct_ne_zero
     {τ : ι → ℂ} (hτ : ∀ i, 0 < (τ i).im) :
@@ -299,13 +306,14 @@ theorem logDeriv_multipleEllipticGammaForwardFactor
   have hX := hasDerivAt_multipleEllipticGammaCoordinate z
   have harg : HasDerivAt (fun w => c / X w)
       (-(2 * Real.pi * I) * (c / X z)) z := by
-    convert (hasDerivAt_const z c).div hX hX0 using 1
-    dsimp [X]
+    convert! (hasDerivAt_const z c).div hX hX0 using 1
+    simp only [X]
     field_simp [hX0]
     ring
   have hfac : HasDerivAt (multipleEllipticGammaForwardFactor τ n)
       (2 * Real.pi * I * (c / X z)) z := by
-    (convert (hasDerivAt_const z 1).sub harg using 1; ring)
+    convert! (hasDerivAt_const z 1).sub harg using 1
+    ring
   rw [logDeriv_apply, hfac.deriv]
   rw [multipleEllipticGammaForwardFactor,
     multipleEllipticGammaForwardArgument, ellipticGammaLogAtom]
@@ -325,11 +333,12 @@ theorem logDeriv_multipleEllipticGammaBackwardFactor
   have hX := hasDerivAt_multipleEllipticGammaCoordinate z
   have harg : HasDerivAt (fun w => c * X w)
       (2 * Real.pi * I * (c * X z)) z := by
-    convert hX.const_mul c using 1
+    convert! hX.const_mul c using 1
     ring
   have hfac : HasDerivAt (multipleEllipticGammaBackwardFactor τ n)
       (-(2 * Real.pi * I) * (c * X z)) z := by
-    (convert (hasDerivAt_const z 1).sub harg using 1; ring)
+    convert! (hasDerivAt_const z 1).sub harg using 1
+    ring
   rw [logDeriv_apply, hfac.deriv]
   rw [multipleEllipticGammaBackwardFactor,
     multipleEllipticGammaBackwardArgument, ellipticGammaLogAtom]
@@ -357,8 +366,8 @@ theorem logDeriv_multipleEllipticGammaForwardProduct
   have hsumAtom := summable_ellipticGammaLogAtom_of_summable_norm hsumArg
   have hsumLD : Summable (fun n : ι → ℕ =>
       logDeriv (multipleEllipticGammaForwardFactor τ n) z) := by
-    convert hsumAtom.mul_left (2 * Real.pi * I) using 1
-    ext n
+    convert! hsumAtom.mul_left (2 * Real.pi * I) using 1
+    funext n
     exact logDeriv_multipleEllipticGammaForwardFactor τ n z
   have hprod : MultipliableLocallyUniformlyOn
       (multipleEllipticGammaForwardFactor τ) Set.univ :=
@@ -394,8 +403,8 @@ theorem logDeriv_multipleEllipticGammaBackwardProduct
   have hsumAtom := summable_ellipticGammaLogAtom_of_summable_norm hsumArg
   have hsumLD : Summable (fun n : ι → ℕ =>
       logDeriv (multipleEllipticGammaBackwardFactor τ n) z) := by
-    convert hsumAtom.mul_left (-(2 * Real.pi * I)) using 1
-    ext n
+    convert! hsumAtom.mul_left (-(2 * Real.pi * I)) using 1
+    funext n
     exact logDeriv_multipleEllipticGammaBackwardFactor τ n z
   have hprod : MultipliableLocallyUniformlyOn
       (multipleEllipticGammaBackwardFactor τ) Set.univ :=

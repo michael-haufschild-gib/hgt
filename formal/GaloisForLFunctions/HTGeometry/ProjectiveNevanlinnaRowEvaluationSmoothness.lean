@@ -167,7 +167,7 @@ theorem contDiffOn_projectiveNevanlinnaJetExpansionBanachMap
       exact (contDiffOn_projectiveCauchyPowerBanach k.1).comp hqz.contDiffOn
         (fun z hz => hz s.1)
     exact hconst.contDiffOn.mul hpower
-  simpa only [projectiveNevanlinnaJetExpansionBanachMap, Function.comp_apply] using
+  simpa only [projectiveNevanlinnaJetExpansionBanachMap, Function.comp_apply] using!
     (projectiveContinuousMapPiCLM.restrictScalars ℝ).contDiff.comp_contDiffOn hpi
 
 /-- The actual forward Nevanlinna kernel is smooth on an arbitrary open regular locus.  This is
@@ -219,7 +219,7 @@ theorem contDiffOn_projectiveNevanlinnaJetExpansionBanachMap_within
       (contDiffOn_projectiveCauchyPowerBanach k.1).comp hqz
         (fun z hzmem => hzmem.1 s.1)
     exact hconst.mul hpower
-  simpa only [projectiveNevanlinnaJetExpansionBanachMap, Function.comp_apply] using
+  simpa only [projectiveNevanlinnaJetExpansionBanachMap, Function.comp_apply] using!
     (projectiveContinuousMapPiCLM.restrictScalars ℝ).contDiff.comp_contDiffOn hpi
 
 /-- The genuine bounded-density control obtained from the smooth Banach kernel. -/

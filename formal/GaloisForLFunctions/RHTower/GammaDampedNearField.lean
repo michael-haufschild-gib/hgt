@@ -1190,7 +1190,7 @@ theorem tendsto_gammaDampedNormalisedEnergy :
     rw [tendsto_nhdsWithin_iff]
     constructor
     · have hc : Tendsto (fun ε : ℝ => 1 + ε) (nhds 0) (nhds 1) := by
-        simpa using (continuous_const.add continuous_id).tendsto (0 : ℝ)
+        simpa using! (continuous_const.add continuous_id).tendsto (0 : ℝ)
       exact hc.mono_left nhdsWithin_le_nhds
     · filter_upwards [self_mem_nhdsWithin] with ε hε
       have : (0 : ℝ) < ε := hε

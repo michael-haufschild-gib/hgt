@@ -403,7 +403,7 @@ theorem hliftF_of_dyadic_verticalStrip_zfixing_deck
     exact eventually_principal.mpr (fun z hz => hπfix z hz)
   refine ⟨ζ₀, g, g', hg, hg', hmaps, hmaps', hgg', hg'g, hord, hscale_germ, hinv_germ, ?_⟩
   intro k
-  simpa using precompMeroEquiv_ratfuncToMeroVia_fix hg hg' hmaps hmaps' hgg' hg'g
+  simpa using! precompMeroEquiv_ratfuncToMeroVia_fix hg hg' hmaps hmaps' hgg' hg'g
     hUo hUc hUne hp0 hπinf hpfix k
 
 /-- **The vertical-strip z-fixing deck as `hliftG`.**  A dyadic vertical-strip deck that scales
@@ -453,7 +453,7 @@ theorem hliftG_of_dyadic_verticalStrip_zfixing_deck
     exact eventually_principal.mpr (fun z hz => hπfix z hz)
   refine ⟨ζ₀, g, g', hg, hg', hmaps, hmaps', hgg', hg'g, hord, hscale_germ, ?_⟩
   intro k
-  simpa using precompMeroEquiv_ratfuncToMeroVia_fix hg hg' hmaps hmaps' hgg' hg'g
+  simpa using! precompMeroEquiv_ratfuncToMeroVia_fix hg hg' hmaps hmaps' hgg' hg'g
     hUo hUc hUne hp0 hπinf hpfix k
 
 /-- **Vertical-strip z-fixing decks imply transcendence of the scaled coordinate.**  If `a` is
@@ -1128,7 +1128,7 @@ theorem hliftF_of_dyadic_additive_zfixing_deck
     exact eventually_principal.mpr (fun z hz => hπfix z hz)
   refine ⟨ζ₀, g, g', hg, hg', hmaps, hmaps', hgg', hg'g, hord, hscale_germ, hinv_germ, ?_⟩
   intro k
-  simpa using precompMeroEquiv_ratfuncToMeroVia_fix hg hg' hmaps hmaps' hgg' hg'g
+  simpa using! precompMeroEquiv_ratfuncToMeroVia_fix hg hg' hmaps hmaps' hgg' hg'g
     hUo hUc hUne hp0 hπinf hpfix k
 
 /-- **Generic dyadic additive z-fixing deck as `hliftG`.** -/
@@ -1178,7 +1178,7 @@ theorem hliftG_of_dyadic_additive_zfixing_deck
     exact eventually_principal.mpr (fun z hz => hπfix z hz)
   refine ⟨ζ₀, g, g', hg, hg', hmaps, hmaps', hgg', hg'g, hord, hscale_germ, ?_⟩
   intro k
-  simpa using precompMeroEquiv_ratfuncToMeroVia_fix hg hg' hmaps hmaps' hgg' hg'g
+  simpa using! precompMeroEquiv_ratfuncToMeroVia_fix hg hg' hmaps hmaps' hgg' hg'g
     hUo hUc hUne hp0 hπinf hpfix k
 
 /-- **Generic dyadic additive `q62_independence` disconnected close.**  The two additive z-fixing
@@ -1776,7 +1776,7 @@ theorem exists_constructed_cover_annulus_hliftF_data (c₁ c₂ : ℂ) (d : ℕ)
           (algebraMap (RatFunc ℂ) (meroField U) k)
         = algebraMap (RatFunc ℂ) (meroField U) k := by
     intro k
-    simpa using precompMeroEquiv_ratfuncToMeroVia_fix
+    simpa using! precompMeroEquiv_ratfuncToMeroVia_fix
       (analyticOnNhd_rotation ζ₀ U) (analyticOnNhd_rotation ζ₀⁻¹ U)
       hrot hrot' hcomp hcomp' isOpen_exterior
       (isPreconnected_exterior hR'pos) (nonempty_exterior hR'pos)
@@ -2847,7 +2847,7 @@ theorem concreteAnnulusHLiftFOutputWithFixedInverse_of_projection_data
         (algebraMap (RatFunc ℂ) (meroField U) k)
       = algebraMap (RatFunc ℂ) (meroField U) k := by
     intro k
-    simpa using precompMeroEquiv_ratfuncToMeroVia_fix
+    simpa using! precompMeroEquiv_ratfuncToMeroVia_fix
       (analyticOnNhd_rotation ζ₀ U) (analyticOnNhd_rotation ζ₀⁻¹ U)
       hrot hrot' hcomp hcomp' isOpen_exterior
       (isPreconnected_exterior hR'pos) (nonempty_exterior hR'pos)
@@ -3251,7 +3251,8 @@ theorem isOpen_far_high_bottcher_value {c : ℂ} {R Λ : ℝ}
     exact lt_trans hR hz
   have hcont : ContinuousOn (fun z : ℂ => ‖bottcherCoord c z‖) E :=
     ((analyticOnNhd_bottcherCoord_full c).continuousOn.mono hEsub).norm
-  simpa [E] using hcont.isOpen_inter_preimage hEopen isOpen_Ioi
+  change IsOpen (E ∩ (fun z : ℂ => ‖bottcherCoord c z‖) ⁻¹' Set.Ioi Λ)
+  exact hcont.isOpen_inter_preimage hEopen isOpen_Ioi
 
 /-- **Radius-package form of `isOpen_far_high_bottcher_value`.** -/
 theorem isOpen_far_high_bottcher_value_of_coverAnnulusRadiusIneqs

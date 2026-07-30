@@ -54,7 +54,7 @@ theorem exists_continuous_lift_disk {c : ℂ} {R : ℝ} (hR : 0 < R)
   haveI : ContractibleSpace ↥(ball c R) :=
     (convex_ball c R).contractibleSpace (nonempty_ball.mpr hR)
   haveI : SimplyConnectedSpace ↥(ball c R) := inferInstance
-  haveI : LocPathConnectedSpace ↥(ball c R) := isOpen_ball.locPathConnectedSpace
+  haveI : LocallyPathConnectedSpace ↥(ball c R) := isOpen_ball.locallyPathConnectedSpace
   haveI : Nonempty ↥(ball c R) := (nonempty_ball.mpr hR).to_subtype
   obtain ⟨a₀⟩ := (inferInstance : Nonempty ↥(ball c R))
   obtain ⟨e₀, he₀⟩ := lambdaPunct_surjective (F a₀)
@@ -73,7 +73,7 @@ theorem exists_continuous_lift_disk_based {c : ℂ} {R : ℝ} (hR : 0 < R)
   haveI : ContractibleSpace ↥(ball c R) :=
     (convex_ball c R).contractibleSpace (nonempty_ball.mpr hR)
   haveI : SimplyConnectedSpace ↥(ball c R) := inferInstance
-  haveI : LocPathConnectedSpace ↥(ball c R) := isOpen_ball.locPathConnectedSpace
+  haveI : LocallyPathConnectedSpace ↥(ball c R) := isOpen_ball.locallyPathConnectedSpace
   obtain ⟨G, hG, _⟩ :=
     isCoveringMap_lambdaPunct.existsUnique_continuousMap_lifts F a₀ e₀ he₀
   exact ⟨G, hG⟩

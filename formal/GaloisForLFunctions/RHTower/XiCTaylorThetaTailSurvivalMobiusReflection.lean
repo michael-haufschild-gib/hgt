@@ -24,7 +24,7 @@ theorem thetaCuspTailSurvival_neg (x : ℝ) :
   have hr' : HasDerivAt
       (fun y : ℝ => thetaCuspTailDerivative 0 y + thetaCuspReflectionMode y)
       (thetaCuspTailDerivative 1 x + thetaCuspReflectionModeDeriv x) x := by
-    simpa using hr
+    simpa using! hr
   rw [hreflection] at hl'
   have h := hl'.unique hr'
   unfold thetaCuspTailSurvival

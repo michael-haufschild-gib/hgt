@@ -363,7 +363,7 @@ theorem zetaNegativeDilatedMoebiusArithmetic_differentialIndependent
       arithmeticFunctionFractionField)
     (IsFractionRing.injective (ArithmeticFunction ℂ)
       arithmeticFunctionFractionField)
-  simpa only [Function.comp_apply, x] using hmap
+  simpa only [Function.comp_apply, x] using! hmap
 
 theorem zetaNegativeDilatedMoebiusArithmetic_differentialIndependent_fintype
     {I : Type*} [Fintype I] [Nonempty I]

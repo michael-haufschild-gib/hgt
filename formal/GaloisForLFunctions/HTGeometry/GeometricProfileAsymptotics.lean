@@ -74,7 +74,7 @@ theorem tendsto_natAdd_pow_mul_exp_neg_geometric
     tendsto_rpow_mul_exp_neg_mul_atTop_nhds_zero (P : ℝ) γ hγ
   have hcore : Tendsto (fun t : ℕ =>
       (lam ^ t) ^ P * Real.exp (-γ * lam ^ t)) atTop (nhds 0) := by
-    simpa only [Real.rpow_natCast] using hcoreReal.comp hpowTop
+    simpa only [Function.comp_def, Real.rpow_natCast] using hcoreReal.comp hpowTop
   obtain ⟨T, hT⟩ := exists_const_mul_pow_lt_of_geometric_lower
     (b := fun t : ℕ => lam ^ t)
     (fun t => pow_pos (zero_lt_one.trans hlam) t) hlam (N := 0)

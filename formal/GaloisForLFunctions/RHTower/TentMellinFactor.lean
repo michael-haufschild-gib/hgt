@@ -36,8 +36,8 @@ theorem integral_id_mul_cexp (c : ℂ) (hc : c ≠ 0) (a b : ℝ) :
         (Complex.exp (c * (x : ℂ)) * c) x := hx.cexp
     have hprod := (hx.sub_const (1 : ℂ)).mul hexp
     have hfin := hprod.div_const (c ^ 2)
-    convert hfin using 1
-    field_simp
+    convert! hfin using 1
+    field_simp [hc]
     ring
   have hcont : Continuous (fun x : ℝ => (x : ℂ) * Complex.exp (c * (x : ℂ))) :=
     Complex.continuous_ofReal.mul ((Complex.continuous_ofReal.const_mul c).cexp)

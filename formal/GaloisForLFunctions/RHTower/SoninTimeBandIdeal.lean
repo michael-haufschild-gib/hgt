@@ -240,12 +240,12 @@ theorem centralSoninProjectionCorrection_mem_timeBandIdeal
   have hAB : IsSoninTimeBandIdeal (A.starProjection * B.starProjection) := by
     simpa [A, B, centralPhysicalForbidden, centralFourierForbidden,
       indicatorCutoff_eq_physicalForbidden_starProjection,
-      fourierCutoff_eq_fourierForbidden_starProjection] using
+      fourierCutoff_eq_fourierForbidden_starProjection] using!
       IsSoninTimeBandIdeal.indicatorFourier a a ha ha
   have hBA : IsSoninTimeBandIdeal (B.starProjection * A.starProjection) := by
     simpa [A, B, centralPhysicalForbidden, centralFourierForbidden,
       indicatorCutoff_eq_physicalForbidden_starProjection,
-      fourierCutoff_eq_fourierForbidden_starProjection] using
+      fourierCutoff_eq_fourierForbidden_starProjection] using!
       IsSoninTimeBandIdeal.fourierIndicator a a ha ha
   have hT : IsSoninTimeBandIdeal T := by
     have h := hBA.rightMul B.starProjection
@@ -556,7 +556,7 @@ theorem centralSoninCornerCorrectionResponse_one_eq_anticommutator (a : ℝ) :
       fourierCutoff_eq_fourierForbidden_starProjection]
   change centralSoninCornerCorrectionResponse a 1 = P * R + R * P
   rw [centralSoninCornerCorrectionResponse, crossBoundary_one hQ, hformal]
-  simp only [zero_sub, crossBoundary, one_mul, mul_one]
+  simp only [zero_sub, crossBoundary, mul_one]
   noncomm_ring [hPP, hRR]
 
 /-- The principal lower Sonin dilation corner obtained from the formal complement cutoff. -/

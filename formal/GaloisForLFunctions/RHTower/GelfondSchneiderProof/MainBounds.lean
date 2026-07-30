@@ -396,8 +396,8 @@ lemma abs_denom : norm (((z - (h7.l₀' q hq0 h2mq + 1 : ℂ)) ^ (-(h7.r q hq0 h
                 apply mul_le_mul
                 · simp
                 · simp only [norm_inv]
-                  simp only [mem_sdiff, Finset.mem_range, Finset.mem_singleton] at hx
-                  let x' : Fin h7.m := ⟨x, hx.1⟩
+                  let x' : Fin h7.m :=
+                    ⟨x, Finset.mem_range.mp (Finset.mem_sdiff.mp hx).1⟩
                   have hxnorm := norm_z_minus_km_lower_bound_on_sphere h7 q hq0 h2mq hz x'
                   unfold x' at hxnorm
                   simp only at hxnorm
@@ -452,12 +452,12 @@ lemma abs_denom : norm (((z - (h7.l₀' q hq0 h2mq + 1 : ℂ)) ^ (-(h7.r q hq0 h
             unfold C
             refine (pow_le_pow_iff_left₀ (by positivity) (by positivity)
               (r_ne_zero h7 q hq0 h2mq)).mpr ?_
-            simp only [mem_sdiff, Finset.mem_range, Finset.mem_singleton] at hx
+            have hx1 : x < h7.m :=
+              Finset.mem_range.mp (Finset.mem_sdiff.mp hx).1
             have : ‖(h7.l₀' q hq0 h2mq : ℂ) + 1 - (↑x + 1)‖ ≤ (h7.m : ℝ) := by
               simp only [add_sub_add_right_eq_sub]
               rw [← Complex.norm_natCast]
               obtain ⟨y, hy⟩ := (h7.l₀' q hq0 h2mq)
-              obtain ⟨hx1, hx2⟩ := hx
               simp only [RCLike.norm_natCast]
               by_cases H : x ≤ y
               · have : ‖(y : ℂ) - (x : ℂ)‖ = ((y - x) : ℕ) := by
@@ -762,8 +762,8 @@ def systemCoeffsff_foo_S : ρᵣ h7 q hq0 h2mq =
     simp only [one_pow]
     have : ∀ x ∈ Finset.range h7.m \ {↑(h7.l₀' q hq0 h2mq)},
       ↑↑(h7.l₀' q hq0 h2mq) ≠ x := by
-        intros x hx
-        grind only [= mem_sdiff, = Finset.mem_singleton]
+        intro x hx heq
+        exact (Finset.mem_sdiff.mp hx).2 (Finset.mem_singleton.mpr heq.symm)
     have := this x hx
     intros HC
     rw [sub_eq_zero] at HC

@@ -429,7 +429,7 @@ theorem xiRightWardBoundarySourcePhaseCrossRatio_hasProd_cayley
             ((alpha : ℂ) * xiAntiCausalWardBoundaryPairTerm q))
         (Complex.exp
           ((alpha : ℂ) * xiAntiCausalWardBoundarySelfSymbol)) := by
-    simpa only [Function.comp_apply, ← Complex.exp_eq_exp_ℂ] using
+    simpa only [Function.comp_apply, ← Complex.exp_eq_exp_ℂ] using!
       hsum.exp
   have hexp_ne :
       Complex.exp

@@ -178,12 +178,13 @@ theorem integral_entireFEDensity {a0 gam σ : ℝ} (ha0 : 0 < a0) (ha1 : a0 < 1 
   have I4 := (hbound (1/2 - a0) (by linarith)).const_mul (2 : ℝ)
   have hA : IntegrableOn
       (fun u : ℝ => 2 * (Real.exp (-(σ * u)) * Real.exp ((1:ℝ) * u)) +
-        2 * (Real.exp (-(σ * u)) * Real.exp ((0:ℝ) * u))) (Ioi 0) := by simpa using I1.add I2
+        2 * (Real.exp (-(σ * u)) * Real.exp ((0:ℝ) * u))) (Ioi 0) := by
+    simpa using! I1.add I2
   have hB : IntegrableOn
       (fun u : ℝ =>
         2 * (Real.exp (-(σ * u)) * (Real.cos (gam * u) * Real.exp ((1/2 + a0) * u))) +
         2 * (Real.exp (-(σ * u)) * (Real.cos (gam * u) * Real.exp ((1/2 - a0) * u))))
-      (Ioi 0) := by simpa using I3.add I4
+      (Ioi 0) := by simpa using! I3.add I4
   rw [hsplit, integral_sub hA hB, integral_add I1 I2, integral_add I3 I4,
     integral_const_mul, integral_const_mul, integral_const_mul, integral_const_mul,
     key 1 (by linarith), key 0 (by linarith),
@@ -223,7 +224,7 @@ theorem entireFETransform_antisymm (a0 gam : ℝ) (s : ℂ) :
   rw [e0] at hp
   rw [e1] at hq
   rw [e2] at hr
-  simp only [entireFETransform, sub_zero]
+  simp only [entireFETransform]
   linear_combination (2 : ℂ) * hp - hq - hr
 
 /-! ## The gauge, its entirety, and its off-critical zeros -/

@@ -208,7 +208,7 @@ theorem projectiveWordGenerator_algebraicIndependent :
     AlgebraicIndependent K
       (fun g : ProjectiveWordGenerator ι η ↦
         projectiveWordEmbedding (K := K) (ι := ι) (η := η) (MvPolynomial.X g)) := by
-  simpa only [Function.comp_apply] using
+  simpa only [Function.comp_apply] using!
     (MvPolynomial.algebraicIndependent_X (ProjectiveWordGenerator ι η) K).map'
       (projectiveWordEmbedding_injective (K := K) (ι := ι) (η := η))
 
@@ -299,13 +299,13 @@ theorem projectiveFiniteJetPacket_algebraicIndependent
     cases t with
     | inl r =>
         simpa [projectiveFiniteJetPacket, σ, u, x, generatorEmbedding, prefixEmbedding,
-          terminalEquiv, Algebra.smul_def] using
+          terminalEquiv, Algebra.smul_def] using!
           (directionalJet_projectiveWordRoot_of_lt a (n + 1) (r : ℕ) r.isLt c).symm
     | inr z =>
         have hz : z = () := Subsingleton.elim _ _
         subst z
         simpa [projectiveFiniteJetPacket, σ, u, x, generatorEmbedding, prefixEmbedding,
-          terminalEquiv, Algebra.smul_def] using
+          terminalEquiv, Algebra.smul_def] using!
           (directionalJet_projectiveWordRoot_of_eq a (n + 1) n rfl c).symm
   rw [← hpacket]
   exact hforms

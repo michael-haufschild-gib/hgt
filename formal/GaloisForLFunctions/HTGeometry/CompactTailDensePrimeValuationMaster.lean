@@ -101,7 +101,7 @@ theorem fullConstraintHilbertPivot_linearIndependent
     (LinearMap.ker_eq_bot.mpr Subtype.val_injective)
   change LinearIndependent ℂ (fun j : fullConstraintHilbertIndex K m =>
     homogeneousConstraintEvaluation K m (fullConstraintHilbertPivot K m j))
-  simpa only [homogeneousConstraintEvaluation_fullConstraintHilbertPivot] using hLI
+  simpa only [homogeneousConstraintEvaluation_fullConstraintHilbertPivot] using! hLI
 
 /-- Coordinates of a homogeneous observable in the full constraint-Hilbert basis. -/
 noncomputable def fullConstraintHilbertCoefficient
@@ -130,7 +130,7 @@ theorem fullConstraintHilbertPivot_spans
       (homogeneousConstraintEvaluation K m (fullConstraintHilbertPivot K m j)) v
   simp_rw [homogeneousConstraintEvaluation_fullConstraintHilbertPivot]
   simpa only [y, fullConstraintHilbertCoefficient, Finset.sum_apply,
-    Pi.smul_apply, smul_eq_mul] using hv.symm
+    Pi.smul_apply, smul_eq_mul] using! hv.symm
 
 /-- The full constraint-Hilbert pivot presentation in a finite prime-valuation window. -/
 noncomputable def fullConstraintHilbertPrimeValuationPresentation

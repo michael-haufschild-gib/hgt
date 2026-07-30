@@ -50,7 +50,7 @@ theorem integral_scaled_sq_pow_le {mu nu : Measure ℝ} [IsFiniteMeasure mu]
   -- on the carrying set the integrand is at most one
   have hae : ∀ᵐ x ∂mu, (((x - c) / r) ^ 2) ^ n ≤ 1 := by
     have hS : ∀ᵐ x ∂mu, x ∈ S := by
-      rw [ae_iff]; simpa using hmus
+      rw [ae_iff]; simpa using! hmus
     filter_upwards [hS] with x hx
     exact pow_le_one₀ (sq_nonneg _) (hSb x hx)
   have hintg : Integrable (fun x : ℝ => (((x - c) / r) ^ 2) ^ n) mu := by

@@ -61,10 +61,12 @@ noncomputable def translationChar (l : ℝ) : AddMonoidAlgebra ℂ ℂ →ₐ[�
 
 /-- Explicit value of the translation character as the finite exponential sum over the support. -/
 lemma translationChar_apply (l : ℝ) (P : AddMonoidAlgebra ℂ ℂ) :
-    translationChar l P = ∑ h ∈ P.support, P h * Complex.exp (-(l : ℂ) * h) := by
+    translationChar l P =
+      ∑ h ∈ P.coeff.support, P.coeff h * Complex.exp (-(l : ℂ) * h) := by
   rw [translationChar, AddMonoidAlgebra.lift_apply]
-  rw [show (Finsupp.sum P fun a b => b • (transChar l) (Multiplicative.ofAdd a))
-        = ∑ h ∈ P.support, (P h) • (transChar l) (Multiplicative.ofAdd h) from rfl]
+  rw [show (Finsupp.sum P.coeff fun a b => b • (transChar l) (Multiplicative.ofAdd a))
+        = ∑ h ∈ P.coeff.support,
+            (P.coeff h) • (transChar l) (Multiplicative.ofAdd h) from rfl]
   refine Finset.sum_congr rfl (fun h _ => ?_)
   rw [transChar_ofAdd, smul_eq_mul]
 
@@ -191,9 +193,10 @@ theorem translationChar_moments_eq_zero {ι : Type*} [Infinite ι] (l : ι → �
     (hvanish : ∀ (p : ι) (m : ℕ), 1 ≤ m → translationChar ((m : ℝ) * l p) P = 0) :
     P = 0 := by
   classical
-  obtain ⟨p, hinj⟩ := exists_injective_ray l hpos hirr P.support
+  obtain ⟨p, hinj⟩ := exists_injective_ray l hpos hirr P.coeff.support
   have hmom : ∀ m : ℕ, 1 ≤ m →
-      ∑ h ∈ P.support, P h * (Complex.exp (-(l p : ℂ) * h)) ^ m = 0 := by
+      ∑ h ∈ P.coeff.support,
+        P.coeff h * (Complex.exp (-(l p : ℂ) * h)) ^ m = 0 := by
     intro m hm
     have h0 := hvanish p m hm
     rw [translationChar_apply] at h0
@@ -203,17 +206,21 @@ theorem translationChar_moments_eq_zero {ι : Type*} [Infinite ι] (l : ι → �
     rw [← Complex.exp_nat_mul]
     congr 1
     push_cast; ring
-  have hall : ∀ h ∈ P.support, P h * Complex.exp (-(l p : ℂ) * h) = 0 := by
+  have hall : ∀ h ∈ P.coeff.support,
+      P.coeff h * Complex.exp (-(l p : ℂ) * h) = 0 := by
     refine finset_moments_eq_zero (fun h => Complex.exp (-(l p : ℂ) * h))
-      (fun h => P h * Complex.exp (-(l p : ℂ) * h)) hinj ?_
+      (fun h => P.coeff h * Complex.exp (-(l p : ℂ) * h)) hinj ?_
     intro k _
-    have hstep : ∑ h ∈ P.support,
-          (P h * Complex.exp (-(l p : ℂ) * h)) * (Complex.exp (-(l p : ℂ) * h)) ^ k
-        = ∑ h ∈ P.support, P h * (Complex.exp (-(l p : ℂ) * h)) ^ (k + 1) := by
+    have hstep : ∑ h ∈ P.coeff.support,
+          (P.coeff h * Complex.exp (-(l p : ℂ) * h)) *
+            (Complex.exp (-(l p : ℂ) * h)) ^ k
+        = ∑ h ∈ P.coeff.support,
+            P.coeff h * (Complex.exp (-(l p : ℂ) * h)) ^ (k + 1) := by
       refine Finset.sum_congr rfl (fun h _ => ?_)
       rw [pow_succ]; ring
     rw [hstep]
     exact hmom (k + 1) (Nat.succ_le_succ (Nat.zero_le k))
+  apply AddMonoidAlgebra.coeff_injective
   refine Finsupp.support_eq_empty.mp (Finset.eq_empty_of_forall_notMem ?_)
   intro h hh
   rcases mul_eq_zero.mp (hall h hh) with h1 | h2
@@ -271,9 +278,11 @@ theorem annIdeal_single_ray_ne_bot (lam : ℝ) (hlam : 0 < lam) :
   have hne : g ≠ 0 := by
     rw [hg, sub_ne_zero]
     intro heq
-    have hcoe : (AddMonoidAlgebra.single h (1 : ℂ)) h = (1 : AddMonoidAlgebra ℂ ℂ) h :=
-      congrArg (fun f => f h) heq
-    rw [AddMonoidAlgebra.single_apply, AddMonoidAlgebra.one_def, AddMonoidAlgebra.single_apply,
+    have hcoe : (AddMonoidAlgebra.single h (1 : ℂ)).coeff h =
+        (1 : AddMonoidAlgebra ℂ ℂ).coeff h :=
+      congrArg (fun f : AddMonoidAlgebra ℂ ℂ => f.coeff h) heq
+    rw [AddMonoidAlgebra.coeff_single, AddMonoidAlgebra.one_def,
+      AddMonoidAlgebra.coeff_single, Finsupp.single_apply, Finsupp.single_apply,
       if_pos rfl, if_neg hh0.symm] at hcoe
     exact one_ne_zero hcoe
   intro hbot
@@ -398,9 +407,11 @@ theorem completedZeta_nonzero_class (a_inf e : V)
   have hne : (AddMonoidAlgebra.single (2 : ℂ) (1 : ℂ) - 1 : AddMonoidAlgebra ℂ ℂ) ≠ 0 := by
     rw [sub_ne_zero]
     intro h
-    have hcoe : (AddMonoidAlgebra.single (2 : ℂ) (1 : ℂ)) (2 : ℂ)
-        = (1 : AddMonoidAlgebra ℂ ℂ) (2 : ℂ) := congrArg (fun f => f (2 : ℂ)) h
-    rw [AddMonoidAlgebra.single_apply, AddMonoidAlgebra.one_def, AddMonoidAlgebra.single_apply,
+    have hcoe : (AddMonoidAlgebra.single (2 : ℂ) (1 : ℂ)).coeff (2 : ℂ)
+        = (1 : AddMonoidAlgebra ℂ ℂ).coeff (2 : ℂ) :=
+      congrArg (fun f : AddMonoidAlgebra ℂ ℂ => f.coeff (2 : ℂ)) h
+    rw [AddMonoidAlgebra.coeff_single, AddMonoidAlgebra.one_def,
+      AddMonoidAlgebra.coeff_single, Finsupp.single_apply, Finsupp.single_apply,
       if_pos rfl, if_neg (by norm_num : ¬ (0 : ℂ) = 2)] at hcoe
     exact one_ne_zero hcoe
   apply hne

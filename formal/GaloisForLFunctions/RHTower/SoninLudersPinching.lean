@@ -273,7 +273,7 @@ theorem ludersPinching_apply_twice
 theorem range_ludersPinching_eq_commutant
     {e : R} (he : IsIdempotentElem e) :
     Set.range (ludersPinching e) = {X : R | X * e = e * X} := by
-  simpa only [ludersPinching, HTGeometry.twoOutcomePinching] using
+  simpa only [ludersPinching, HTGeometry.twoOutcomePinching] using!
     (HTGeometry.range_twoOutcomePinching_eq_commutant he)
 
 /-- **One-corner Lüders fixed-point classification.**  For self-adjoint cutoff and source, the
@@ -318,7 +318,7 @@ theorem isCompactOperator_crossBoundary_of_compact_cutoffCommutator
     (e X : H →L[ℂ] H) (he : IsIdempotentElem e)
     (hcomm : IsCompactOperator (ccmCommutator X e : H →L[ℂ] H)) :
     IsCompactOperator (crossBoundary e X : H →L[ℂ] H) := by
-  simpa only [crossBoundary_eq_ccmCommutator_mul_cutoff he] using hcomm.comp_clm e
+  simpa only [crossBoundary_eq_ccmCommutator_mul_cutoff he] using! hcomm.comp_clm e
 
 /-- Essential commutation with a projection also makes its upper Lüders disturbance corner
 compact. -/
@@ -326,7 +326,7 @@ theorem isCompactOperator_upperBoundary_of_compact_cutoffCommutator
     (e X : H →L[ℂ] H) (he : IsIdempotentElem e)
     (hcomm : IsCompactOperator (ccmCommutator X e : H →L[ℂ] H)) :
     IsCompactOperator (upperBoundary e X : H →L[ℂ] H) := by
-  simpa only [upperBoundary_eq_neg_cutoff_mul_ccmCommutator he] using
+  simpa only [upperBoundary_eq_neg_cutoff_mul_ccmCommutator he] using!
     (hcomm.clm_comp e).neg
 
 variable [CompleteSpace H]
@@ -383,7 +383,7 @@ theorem re_inner_centralSoninDilation_ludersPinchingKadisonDefect_eq_transitionN
   dsimp
   simpa only [ludersPinching_eq_twoOutcomePinching, crossBoundary, upperBoundary,
     HTGeometry.twoOutcomeLowerTransition, HTGeometry.twoOutcomeUpperTransition,
-    HTGeometry.twoOutcomePinchingKadisonDefect] using
+    HTGeometry.twoOutcomePinchingKadisonDefect] using!
       (HTGeometry.re_inner_twoOutcomePinchingKadisonDefect_eq_transitionNormSq_add
         (centralSoninProjection a) (dilationSum p hp)
         (centralSoninCarrier a).isIdempotentElem_starProjection

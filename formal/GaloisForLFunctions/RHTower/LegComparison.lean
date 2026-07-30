@@ -286,14 +286,17 @@ theorem rcoth_lt_inv_add_one {s : ℝ} (hs : 0 < s) : rcoth s < 1 / s + 1 := by
     intro t
     have h1 : HasDerivAt (fun t : ℝ => (1 + t) * Real.sinh t)
         (1 * Real.sinh t + (1 + t) * Real.cosh t) t := by
-      simpa using ((hasDerivAt_id t).const_add (1 : ℝ)).mul (Real.hasDerivAt_sinh t)
+      simpa using! ((hasDerivAt_id t).const_add (1 : ℝ)).mul (Real.hasDerivAt_sinh t)
     have h2 : HasDerivAt (fun t : ℝ => t * Real.cosh t)
         (1 * Real.cosh t + t * Real.sinh t) t := by
-      simpa using (hasDerivAt_id t).mul (Real.hasDerivAt_cosh t)
+      simpa using! (hasDerivAt_id t).mul (Real.hasDerivAt_cosh t)
     have h3 := h1.sub h2
-    simp only [hg_def]
-    convert h3 using 1
-    ring
+    have hcoef :
+        (1 * Real.sinh t + (1 + t) * Real.cosh t) -
+            (1 * Real.cosh t + t * Real.sinh t) =
+          Real.sinh t + t * Real.cosh t - t * Real.sinh t := by
+      ring
+    simpa only [hg_def] using! h3.congr_deriv hcoef
   have hmono : StrictMonoOn g (Set.Ici 0) := by
     apply strictMonoOn_of_deriv_pos (convex_Ici 0)
       (fun x _ => ((hderiv x).continuousAt).continuousWithinAt)

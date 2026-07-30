@@ -44,7 +44,9 @@ theorem verticalDigammaIm_pos (sigma t : ℝ) (ht : 0 < t) :
     have hs := Finset.single_le_sum
       (s := Finset.range N)
       (f := fun n : ℕ => t / ((sigma + n) ^ 2 + t ^ 2))
-      (fun n hn => by positivity) (show 0 ∈ Finset.range N by simpa using hN)
+      (fun n hn => by positivity) (show 0 ∈ Finset.range N by
+        simp only [Finset.mem_range]
+        omega)
     simpa using hs
   exact lt_of_lt_of_le hfirst (ge_of_tendsto hlim hbound)
 
@@ -147,7 +149,7 @@ private theorem continuousAt_finset_sum
   | @insert i s hi ih =>
       have hsum := (h i (Finset.mem_insert_self i s)).add
         (ih fun j hj => h j (Finset.mem_insert_of_mem hj))
-      simpa [Finset.sum_insert hi] using hsum
+      simpa [Finset.sum_insert hi] using! hsum
 
 /-- The regular background is continuous at the selected half-integer pole. -/
 theorem continuousAt_explicitDigammaFiniteOrientationRegular (J : Finset ℕ) (k : ℕ) :
@@ -173,7 +175,7 @@ theorem continuousAt_explicitDigammaFiniteOrientationRegular (J : Finset ℕ) (k
       (f := fun z : ℂ => z + (1 / 2 : ℂ) + ((k + 1 : ℕ) : ℂ))
       (g := Complex.digamma) (x := a)
       (GaloisForLFunctions.continuousAt_digamma _ havoid) hinner
-    simpa only [Function.comp_apply] using hcomp
+    simpa only [Function.comp_apply] using! hcomp
   have hregularSum : ContinuousAt
       (fun z : ℂ => ∑ j ∈ Finset.range k,
         (z + (1 / 2 : ℂ) + (j : ℂ))⁻¹) a := by

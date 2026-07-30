@@ -238,7 +238,7 @@ theorem tendsto_inv_squarefreeMobiusTotal_zero :
     (differentiableAt_riemannZeta (by norm_num : (2 : ℂ) ≠ 1)).continuousAt.tendsto.comp htwoArg
   have hunit : Tendsto (fun sigma : ℝ => zetaResidueUnit (sigma : ℂ))
       (𝓝[>] (1 : ℝ)) (𝓝 (1 : ℂ)) := by
-    simpa using zetaResidueUnit_analyticAt.continuousAt.tendsto.comp hsigma
+    simpa using! zetaResidueUnit_analyticAt.continuousAt.tendsto.comp hsigma
   have hsub : Tendsto (fun sigma : ℝ => ((sigma - 1 : ℝ) : ℂ))
       (𝓝[>] (1 : ℝ)) (𝓝 0) := by
     simpa using hsigma.sub_const (1 : ℂ)
@@ -246,7 +246,7 @@ theorem tendsto_inv_squarefreeMobiusTotal_zero :
       (fun sigma : ℝ => ((sigma - 1 : ℝ) : ℂ) *
         riemannZeta (2 * (sigma : ℂ)) / zetaResidueUnit (sigma : ℂ))
       (𝓝[>] (1 : ℝ)) (𝓝 0) := by
-    simpa using (hsub.mul hnum).div hunit (by norm_num : (1 : ℂ) ≠ 0)
+    simpa using! (hsub.mul hnum).div hunit (by norm_num : (1 : ℂ) ≠ 0)
   have heq :
       (fun sigma : ℝ => (((squarefreeMobiusTotal sigma)⁻¹ : ℝ) : ℂ)) =ᶠ[𝓝[>] (1 : ℝ)]
         fun sigma : ℝ => ((sigma - 1 : ℝ) : ℂ) *
@@ -285,7 +285,7 @@ theorem tendsto_squarefreeMobiusProbability_zero (n : ℕ) :
           exact not_squarefree_zero hn
         have hnpos : 0 < (n : ℝ) := by exact_mod_cast Nat.pos_of_ne_zero hn0
         have hnreal : (n : ℝ) ≠ 0 := ne_of_gt hnpos
-        simpa using ((Real.continuous_const_rpow hnreal).comp continuous_neg).continuousAt
+        simpa using! ((Real.continuous_const_rpow hnreal).comp continuous_neg).continuousAt
       · fun_prop
     exact hcont.tendsto.mono_left inf_le_left
   simpa only [squarefreeMobiusProbability, div_eq_mul_inv, mul_zero] using
@@ -499,7 +499,7 @@ theorem mobiusCriticalShiftChannel_weakly_tendsto_zero
               (mobiusCriticalShiftChannel sigma f n))
             (𝓝[>] (1 : ℝ)) (𝓝 0) := by
         intro n hn
-        simpa only [innerSL_apply_apply, map_zero] using
+        simpa only [innerSL_apply_apply, map_zero] using!
           (innerSL ℂ (y n)).continuous.continuousAt.tendsto.comp
             (tendsto_mobiusCriticalShiftChannel_apply_zero n f)
       have hsum := tendsto_finsetSum (Finset.range N) hterm
@@ -553,7 +553,7 @@ theorem mobiusCriticalShiftChannel_not_strongly_tendsto_zero
   intro hstrong
   have hnorm : Tendsto (fun sigma : ℝ => ‖mobiusCriticalShiftChannel sigma f‖)
       (𝓝[>] (1 : ℝ)) (𝓝 0) := by
-    simpa only [norm_zero] using continuous_norm.continuousAt.tendsto.comp hstrong
+    simpa only [norm_zero] using! continuous_norm.continuousAt.tendsto.comp hstrong
   have hsq : Tendsto (fun sigma : ℝ => ‖mobiusCriticalShiftChannel sigma f‖ ^ 2)
       (𝓝[>] (1 : ℝ)) (𝓝 0) := by
     simpa using hnorm.pow 2

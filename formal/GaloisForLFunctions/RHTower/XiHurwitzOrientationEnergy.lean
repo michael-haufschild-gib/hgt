@@ -127,7 +127,7 @@ theorem xiHurwitzOrientationWeight_pos (ρ : XiDivisorSupport) :
 
 theorem xiHurwitzOrientationWeight_summable :
     Summable xiHurwitzOrientationWeight := by
-  simpa only [xiHurwitzOrientationWeight] using
+  simpa only [xiHurwitzOrientationWeight] using!
     xi_zero_multiplicity_centered_inv_sq_summable
 
 /-- The nonnegative contribution of one Xi zero, with its exact divisor multiplicity retained. -/

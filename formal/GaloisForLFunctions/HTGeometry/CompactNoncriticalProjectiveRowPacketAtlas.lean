@@ -66,14 +66,13 @@ theorem exists_rowOffsets_combined_injective
       rw [show offset x.1 - offset y.1 =
           ((M * (((e x.1).1 : ℤ) - ((e y.1).1 : ℤ)) : ℝ) : ℂ) by
         simp [offset]
-        norm_num
         ring]
       rw [Complex.norm_real, Real.norm_eq_abs, abs_mul, abs_of_pos hM]
       have honeR : (1 : ℝ) ≤
           |(((((e x.1).1 : ℤ) - ((e y.1).1 : ℤ) : ℤ) : ℝ))| := by
         rw [← Int.cast_abs]
         exact_mod_cast hone
-      convert mul_le_mul_of_nonneg_left honeR hM.le using 1 <;> norm_num
+      convert! mul_le_mul_of_nonneg_left honeR hM.le using 1 <;> norm_num
     have hxS : ‖shift x.2‖ ≤ S := by
       apply Finset.single_le_sum (fun _ _ => norm_nonneg _)
       exact Finset.mem_univ _

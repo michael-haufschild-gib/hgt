@@ -82,8 +82,6 @@ theorem summable_squarefreeMobiusLogMoment
     unfold squarefreeMobiusProbability squarefreeMobiusMass
     by_cases hsq : Squarefree n
     · rw [if_pos hsq]
-      change (n : ℝ) ^ (-sigma) / squarefreeMobiusTotal sigma * Real.log n ^ m ≤
-        |Real.log n| ^ m * (n : ℝ) ^ (-sigma) / squarefreeMobiusTotal sigma
       rw [abs_of_nonneg (Real.log_natCast_nonneg n)]
       ring_nf
       exact le_rfl
@@ -164,7 +162,7 @@ theorem ofReal_squarefreeMobiusLogMoment_one_eq_fixedCurrent
 private theorem tendsto_ofReal_nhdsWithin_one : Tendsto
     (fun sigma : ℝ => (sigma : ℂ))
     (nhdsWithin 1 (Ioi 1)) (nhds (1 : ℂ)) := by
-  simpa using Complex.continuous_ofReal.continuousAt.tendsto.mono_left nhdsWithin_le_nhds
+  simpa using! Complex.continuous_ofReal.continuousAt.tendsto.mono_left nhdsWithin_le_nhds
 
 private theorem tendsto_ofReal_nhdsWithin_one_nhdsNE : Tendsto
     (fun sigma : ℝ => (sigma : ℂ))
@@ -184,14 +182,14 @@ theorem tendsto_squarefreeMobiusLogMoment_one_critical :
   have hmain : Tendsto (fun sigma : ℝ =>
       ((sigma - 1 : ℝ) : ℂ) * infinitePrimeFlux sigma)
       (nhdsWithin 1 (Ioi 1)) (nhds 1) := by
-    simpa [infinitePrimeFlux, logDeriv_apply, neg_div] using hprime
+    simpa [infinitePrimeFlux, logDeriv_apply, neg_div] using! hprime
   have htwo : Tendsto (fun sigma : ℝ => 2 * (sigma : ℂ))
       (nhdsWithin 1 (Ioi 1)) (nhds (2 : ℂ)) := by
     simpa using tendsto_const_nhds.mul tendsto_ofReal_nhdsWithin_one
   have hfluxContinuous : ContinuousAt infinitePrimeFlux (2 : ℂ) := by
     have hdiff := differentiableAt_neg_logDeriv_riemannZeta_of_one_lt_re
       (s := (2 : ℂ)) (by norm_num)
-    simpa [infinitePrimeFlux, logDeriv_apply, neg_div] using hdiff.continuousAt
+    simpa [infinitePrimeFlux, logDeriv_apply, neg_div] using! hdiff.continuousAt
   have hfluxTwo := hfluxContinuous.tendsto.comp htwo
   have hepsilon : Tendsto (fun sigma : ℝ => ((sigma - 1 : ℝ) : ℂ))
       (nhdsWithin 1 (Ioi 1)) (nhds 0) := by
@@ -227,6 +225,9 @@ theorem tendsto_squarefreeMobiusLogMoment_one_critical :
       ofReal_squarefreeMobiusLogMoment_one_eq_fixedCurrent hsigma]
   have hre := Complex.continuous_re.continuousAt.tendsto.comp hmoment
   convert hre using 1
+  · funext sigma
+    norm_num
+  · norm_num
 
 private theorem analyticAt_squarefreePartition_of_one_lt_re
     {s : ℂ} (hs : 1 < s.re) :
@@ -308,7 +309,7 @@ private theorem analyticAt_squarefreeMobiusRegularCurrent_one :
     rw [zetaResidueUnit_one]
     norm_num
   have hlog : AnalyticAt ℂ (logDeriv zetaResidueUnit) 1 := by
-    simpa [logDeriv_apply] using
+    simpa [logDeriv_apply] using!
       zetaResidueUnit_analyticAt.deriv.div zetaResidueUnit_analyticAt hGne
   have hflux : AnalyticAt ℂ (fun z : ℂ => infinitePrimeFlux (2 * z)) 1 :=
     _root_.GaloisForLFunctions.analyticOnNhd_infinitePrimeFlux_two_mul_rightHalf
@@ -409,5 +410,8 @@ theorem tendsto_squarefreeMobiusLogMoment_two_critical :
     ring
   have hre := Complex.continuous_re.continuousAt.tendsto.comp hcomplex
   convert hre using 1
+  · funext sigma
+    simp only [Function.comp_apply, Complex.ofReal_re, pow_two]
+  · norm_num
 
 end RHTower

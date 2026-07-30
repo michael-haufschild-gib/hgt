@@ -53,7 +53,7 @@ theorem signedPrimeSource_polynomialFirstOrder_law_forces_HT_input
   have hsource := hpalette.comp (fun _ : Unit => 0) (by
     intro u v huv
     exact Subsingleton.elim u v)
-  simpa only [Function.comp_apply] using hsource
+  simpa only [Function.comp_apply] using! hsource
 
 /-- The canonical all-positive prime source is the unsigned specialization. -/
 theorem allPositiveSignedPrimeSource_polynomialFirstOrder_law_forces_HT_input

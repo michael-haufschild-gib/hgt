@@ -324,7 +324,7 @@ theorem escapingQuartetGaugedXi_tendstoLocallyUniformly
   change TendstoLocallyUniformly
       (fun n s => normalizedEscapingQuartetGauge a n s * xi s)
       (fun s => 1 * xi s) atTop at hprod
-  simpa only [escapingQuartetGaugedXi, one_mul] using hprod
+  simpa only [escapingQuartetGaugedXi, one_mul] using! hprod
 
 /-- Every holomorphic jet of the escaping countermodels converges compact-open to the
 corresponding Xi jet. -/
@@ -356,7 +356,8 @@ theorem quartetWardInfinitesimalDensity_window_bound
     quartetWardInfinitesimalDensity a b t ≤ 8 / (b - R) ^ 2 := by
   have hx0 : 0 < a + 1 / 2 := by linarith
   have hx1 : a + 1 / 2 < 1 := by linarith
-  have hgap : 0 < b - R := sub_pos.mpr hbR
+  have hbounds : 0 ≤ R ∧ 0 < b - R := ⟨hR, sub_pos.mpr hbR⟩
+  have hgap := hbounds.2
   have htlo : -R ≤ t := (abs_le.mp ht).1
   have hthi : t ≤ R := (abs_le.mp ht).2
   have hplus : b - R ≤ t + b := by linarith
@@ -408,7 +409,6 @@ theorem escapingQuartetWard_window_tendstoUniformly
     convert h using 1
     funext n
     dsimp [escapingQuartetHeight]
-    push_cast
     ring
   have hboundZero : Tendsto
       (fun n : ℕ => 8 / (escapingQuartetHeight n - R) ^ 2)
@@ -574,7 +574,7 @@ theorem multiplicityEscapingQuartetGauge_tendstoLocallyUniformly
       (fun _ : ℂ => 1) atTop := by
   induction N with
   | zero =>
-      simpa [multiplicityEscapingQuartetGauge] using
+      simpa [multiplicityEscapingQuartetGauge] using!
         (tendstoLocallyUniformly_const_sequence (fun _ : ℂ => 1))
   | succ N ih =>
       have hmul := ih.mul₀
@@ -611,7 +611,7 @@ theorem multiplicityEscapingQuartetGaugedXi_tendstoLocallyUniformly
   change TendstoLocallyUniformly
       (fun n s => multiplicityEscapingQuartetGauge a N n s * xi s)
       (fun s => 1 * xi s) atTop at hprod
-  simpa only [multiplicityEscapingQuartetGaugedXi, one_mul] using hprod
+  simpa only [multiplicityEscapingQuartetGaugedXi, one_mul] using! hprod
 
 /-- Every holomorphic jet converges compact-open even at arbitrarily prescribed finite divisor
 multiplicity. -/
@@ -664,10 +664,10 @@ theorem multiplicityEscapingQuartetWard_window_tendstoUniformly
         quartetWardInfinitesimalDensity a (escapingQuartetHeight n) t :=
       mul_nonneg (Nat.cast_nonneg N) hnonneg
     have hdist := hn t ht
-    simp only [Real.dist_eq, zero_sub, abs_neg, sub_zero,
+    simp only [Real.dist_eq, zero_sub, abs_neg,
       abs_of_nonneg hnonneg] at hdist
     simp only [multiplicityEscapingQuartetWardDensity, Real.dist_eq,
-      zero_sub, abs_neg, sub_zero, abs_of_nonneg hprodnonneg]
+      zero_sub, abs_neg, abs_of_nonneg hprodnonneg]
     calc
       (N : ℝ) * quartetWardInfinitesimalDensity a
           (escapingQuartetHeight n) t <
@@ -1068,7 +1068,7 @@ theorem escapingQuartetGaugedXi_analyticOrderAt_ne_top
       analyticOrderAt
           (fun z => Polynomial.eval z (normalizedEscapingQuartetPolynomial a n)) ρ +
         analyticOrderAt xi ρ := by
-    simpa only [Pi.mul_apply] using analyticOrderAt_mul hPan hxi
+    simpa only [Pi.mul_apply] using! analyticOrderAt_mul hPan hxi
   rw [hord,
     Bottcher.analyticOrderAt_polynomial_eval_eq_rootMultiplicity hP]
   exact WithTop.add_ne_top.mpr

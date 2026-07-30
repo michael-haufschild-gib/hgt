@@ -74,7 +74,6 @@ theorem xiRawReciprocalCoordinate_lineConj_eq_mobius (q : XiZeroCopy) :
   field_simp [hstar, hstarOne]
   rw [show (starRingEnd ℂ) (q.1 : ℂ) - 1 =
       -(1 - (starRingEnd ℂ) (q.1 : ℂ)) by ring]
-  rw [one_div, one_div, inv_neg, neg_neg]
 
 /-- **Cofinal pointwise reflection reconstruction.** -/
 theorem hasSum_xiRawReciprocalCoordinate_lineConj_neumann (q : XiZeroCopy) :
@@ -89,6 +88,7 @@ theorem hasSum_xiRawReciprocalCoordinate_lineConj_neumann (q : XiZeroCopy) :
   rw [xiRawReciprocalCoordinate_lineConj_eq_mobius]
   change HasSum (fun n : ℕ => -(z ^ (n + 1))) (-z / (1 - z))
   convert hmul using 1
+  all_goals try rfl
   funext n
   rw [pow_succ]
   ring
@@ -125,6 +125,7 @@ theorem hasSum_xiEndpointCrossTerm_holomorphicPowers (q : XiZeroCopy) :
   rw [xiEndpointCrossTerm_eq_holomorphic_mobius]
   change HasSum (fun n : ℕ => -(z ^ (n + 2))) (-(z ^ 2) / (1 - z))
   convert hmul using 1
+  all_goals try rfl
   funext n
   rw [show n + 2 = 2 + n by omega, pow_add]
   ring
@@ -178,6 +179,7 @@ theorem summable_xiRawReciprocalNeumann_double :
             mul_nonneg (pow_nonneg hratio0 _) (sq_nonneg _))
           (fun _ => le_rfl)
       convert hgeom.mul_right xiRawReciprocalHermitianMass using 1
+      all_goals try rfl
       funext n
       rw [xiRawReciprocalHermitianMass, ← tsum_mul_left]
   apply Summable.of_norm_bounded hmajor
@@ -217,7 +219,7 @@ theorem hasSum_xiEndpointCrossTrace_allOrder :
         symm
         have hfiber : ∀ n : ℕ, Summable (fun q : XiZeroCopy => f (n, q)) := by
           intro n
-          simpa only [Function.comp_apply] using
+          simpa only [Function.comp_apply] using!
             hf.comp_injective (fun q₁ q₂ h => Prod.mk.inj h |>.2)
         exact (hf.hasSum.prod_fiberwise (fun n => (hfiber n).hasSum)).tsum_eq
       _ = ∑' q : XiZeroCopy, ∑' n : ℕ, f (n, q) :=
@@ -265,7 +267,8 @@ theorem hasSum_xiEndpointCompletedCurvature_holomorphicTraces :
       xiEndpointCompletedCurvature := by
   have h := Complex.reCLM.hasSum hasSum_xiEndpointCrossTrace_allOrder
   convert h using 1
-  simpa using xiEndpointCompletedCurvature_eq_cross_re
+  all_goals try rfl
+  simpa using! xiEndpointCompletedCurvature_eq_cross_re
 
 end
 

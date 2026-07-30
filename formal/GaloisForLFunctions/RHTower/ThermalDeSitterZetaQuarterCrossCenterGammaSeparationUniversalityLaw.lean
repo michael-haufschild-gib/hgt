@@ -50,7 +50,7 @@ theorem hypertranscendentalOver_thermalDeSitterZetaQuarter_crossCenterGammaRatio
       fin_cases i
       · exact (hi rfl).elim
       · simpa [shifts] using complex_quarter_sub_nat_ne_integer (ell + 1) k
-  simpa [gammaOrbitProductMero, shifts, charges, div_eq_mul_inv] using hproduct
+  simpa [gammaOrbitProductMero, shifts, charges, div_eq_mul_inv] using! hproduct
 
 /-- Quotient of the thermal/de Sitter positive-amplitude reconstruction by the centered-zeta
 positive-amplitude reconstruction. -/

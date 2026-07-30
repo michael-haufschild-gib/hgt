@@ -343,7 +343,7 @@ theorem ContinuousSchwartzSesquilinearForm.compactSpectralRieszMeasure_fourierPu
   have hfR : tsupport f ⊆ {t : ℝ | |t| ≤ R} := by
     intro t ht
     have hnorm : ‖t‖ ≤ B := hB t ht
-    simpa only [Real.norm_eq_abs] using hnorm.trans (le_max_left _ _)
+    simpa only [Real.norm_eq_abs] using! hnorm.trans (le_max_left _ _)
   have hreQ := Q.integral_pointwiseNormSqReal_compactSpectralRieszMeasure
     hQ hQnonneg f hR hfR
   have hreM := spectralMeasureForm_fourierPullback_diag_re μ f

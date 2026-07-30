@@ -64,10 +64,27 @@ theorem exists_deningerCompactOpen_small_Xi_correction
         F r
     dsimp only at hpeel
     rw [hsource] at hpeel
-    simpa only [G, Q,
-      deningerCompactOpenXiMul_apply,
-      deningerCompactOpenLocalXiQuotientTaylorApprox_apply,
-      Pi.sub_apply] using hpeel
+    have hfun :
+        (fun j z => G j z) =
+          fun j z =>
+            F z -
+              XiC z *
+                deningerLocalXiQuotientTaylorApprox
+                  F (r + 1) j z := by
+      funext j z
+      change
+        F z -
+            deningerCompactOpenXiMul
+              (deningerCompactOpenLocalXiQuotientTaylorApprox
+                F (r + 1) j) z =
+          F z -
+            XiC z *
+              deningerLocalXiQuotientTaylorApprox
+                F (r + 1) j z
+      rw [deningerCompactOpenXiMul_apply,
+        deningerCompactOpenLocalXiQuotientTaylorApprox_apply]
+    rw [hfun]
+    exact hpeel
   obtain ⟨j, hj⟩ :=
     (hr G hGconv).exists
   exact ⟨Q j, hj⟩

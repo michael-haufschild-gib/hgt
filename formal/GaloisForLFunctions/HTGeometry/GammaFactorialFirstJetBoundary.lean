@@ -26,7 +26,7 @@ theorem iteratedDeriv_one_outerReciprocalLimit_id (x : ℂ) (hx : x ≠ 0) :
       outerReciprocalLimit id x ^ 2 := by
   rw [iteratedDeriv_one]
   have h : HasDerivAt (fun x : ℂ => (-x)⁻¹) (x⁻¹ ^ 2) x := by
-    simpa [inv_pow] using (hasDerivAt_inv hx).neg
+    simpa [inv_pow] using! (hasDerivAt_inv hx).neg
   rw [show outerReciprocalLimit id = fun x : ℂ => (-x)⁻¹ by
     funext y
     simp [outerReciprocalLimit]]

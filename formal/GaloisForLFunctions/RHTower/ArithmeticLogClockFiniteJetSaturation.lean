@@ -69,7 +69,7 @@ theorem inner_hardyKernel_recurrence (q : ℝ) (hq : |q| < 1) (x : PrimeHardy) :
 
 theorem tendsto_primeReciprocal_nthPrimePoint_zero :
     Tendsto (fun n => primeReciprocal (nthPrimePoint n)) atTop (𝓝 0) := by
-  simpa [primeReciprocal] using
+  simpa [primeReciprocal] using!
     (tendsto_inv_atTop_zero.comp tendsto_nthPrimePoint_cast_atTop)
 
 theorem tendsto_log_nthPrimePoint_atTop :
@@ -81,7 +81,7 @@ theorem tendsto_log_mul_primeReciprocal_nthPrimePoint_zero :
       primeReciprocal (nthPrimePoint n)) atTop (𝓝 0) := by
   have h := (Real.tendsto_pow_log_div_mul_add_atTop 1 0 1 one_ne_zero).comp
     tendsto_nthPrimePoint_cast_atTop
-  simpa [primeReciprocal, div_eq_mul_inv] using h
+  simpa [primeReciprocal, div_eq_mul_inv] using! h
 
 theorem tendsto_primeLogTailWeight_succ_zero (m : ℕ) :
     Tendsto (fun n => Real.log ((nthPrimePoint n).1 : ℝ) *

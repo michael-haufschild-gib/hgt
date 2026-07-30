@@ -106,7 +106,7 @@ theorem xiTransversePrimeProfileJetCombination_layer_finite
         (c col • primeProfileJetSource G m col) (p, e) from
     map_sum ev _ Finset.univ]
   simpa only [primePowerCoordinateProfile_smul, primeProfileJetSource,
-    primePowerCoordinateProfile_primeProfileRotatedLogJet] using hp
+    primePowerCoordinateProfile_primeProfileRotatedLogJet] using! hp
 
 theorem xiTransverse_cpowWeight_primePow (a e : ℕ) (p : Nat.Primes) :
     cpowWeight (a : ℂ) ((p : ℕ) ^ (e + 1)) =
@@ -439,7 +439,7 @@ theorem xiTransverseShiftUpperEndCarrier_differentialIndependent_over_all_valuat
         rcases i with a | z
         · rfl
         · simpa only [sources, analyticScalarValuationLayerCarrier,
-            analyticScalarReplicatedCarrier] using hidxCarrier z
+            analyticScalarReplicatedCarrier] using! hidxCarrier z
       rw [hfamily] at hcombined
       have hrelative :=
         (differentialIndependent_sumElim_right_iff y (fun z : G0 => z.1)).mp
@@ -447,13 +447,13 @@ theorem xiTransverseShiftUpperEndCarrier_differentialIndependent_over_all_valuat
       rw [Subtype.range_val] at hrelative
       unfold DiffIndepOn
       have h := hrelative.comp equivRange.symm equivRange.symm.injective
-      simpa [equivRange] using h
+      simpa [equivRange] using! h
     have hset : DiffIndepOn
         (differentialAdjoin upperEndRationalCoordinateField G) (Set.range y) :=
       diffIndepOn_differentialAdjoin_of_forall_finite_subset hstages
     unfold DiffIndepOn at hset
     have h := hset.comp equivRange equivRange.injective
-    simpa [analyticScalarValuationLayerDifferentialField, G, y, equivRange] using h
+    simpa [analyticScalarValuationLayerDifferentialField, G, y, equivRange] using! h
 
 /-! ## Exact arbitrary-family completion law -/
 

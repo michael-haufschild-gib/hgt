@@ -39,23 +39,34 @@ private theorem green_endpoint_identity
   have hk : ∀ u : ℝ, HasDerivAt k (kp u) u := by
     intro u
     dsimp [k, kp]
-    convert (((hasDerivAt_const u L).sub
-      (hasDerivAt_id u)).div_const 2).sinh.const_mul 2 using 1
-    all_goals simp only [id_eq, Pi.sub_apply]
-    all_goals ring
+    have hraw := (((hasDerivAt_const u L).sub
+      (hasDerivAt_id u)).div_const 2).sinh.const_mul 2
+    have hraw' := hraw.congr_deriv
+      (g' := -Real.cosh ((L - u) / 2)) (by
+        simp only [Pi.sub_apply, id_eq]
+        ring)
+    exact hraw'.congr_of_eventuallyEq
+      (Filter.Eventually.of_forall fun _ => rfl)
   have hkp : ∀ u : ℝ, HasDerivAt kp ((1 / 4 : ℝ) * k u) u := by
     intro u
     dsimp [k, kp]
-    convert ((((hasDerivAt_const u L).sub
-      (hasDerivAt_id u)).div_const 2).cosh).neg using 1
-    all_goals simp only [id_eq, Pi.sub_apply]
-    all_goals ring
+    have hraw := ((((hasDerivAt_const u L).sub
+      (hasDerivAt_id u)).div_const 2).cosh).neg
+    have hraw' := hraw.congr_deriv
+      (g' := (1 / 4 : ℝ) * (2 * Real.sinh ((L - u) / 2))) (by
+        simp only [Pi.sub_apply, id_eq]
+        ring)
+    exact hraw'.congr_of_eventuallyEq
+      (Filter.Eventually.of_forall fun _ => rfl)
   have hF : ∀ u : ℝ, HasDerivAt F (k u * q u) u := by
     intro u
     dsimp [F]
-    convert ((hk u).neg.mul (hfp u)).add ((hkp u).mul (hf u)) using 1
-    simp only [Pi.neg_apply]
-    ring_nf
+    have hraw := ((hk u).neg.mul (hfp u)).add ((hkp u).mul (hf u))
+    have hraw' := hraw.congr_deriv (g' := k u * q u) (by
+      simp only [Pi.neg_apply]
+      ring)
+    exact hraw'.congr_of_eventuallyEq
+      (Filter.Eventually.of_forall fun _ => rfl)
   have hderiv : deriv F = fun u => k u * q u := by
     funext u
     exact (hF u).deriv
@@ -72,7 +83,7 @@ private theorem green_endpoint_identity
   dsimp [F, k, kp]
   simp only [sub_self, zero_div, Real.sinh_zero, mul_zero, neg_zero,
     Real.cosh_zero]
-  ring
+  ring_nf
 
 /-- The reflection-balanced translate packet of the completed potential. -/
 def thetaCuspCompletedTailPotentialCenteredDifference (L x : ℝ) : ℝ :=
@@ -96,17 +107,23 @@ theorem thetaCuspCompletedTailPotential_centeredDifference_eq_integral
     (fun u : ℝ => -(1 / 4 : ℝ) * S (x + u))
     (fun u : ℝ => Phi (x + u))
     (fun u => by
-      convert (hasDerivAt_thetaCuspCompletedTailPotential (x + u)).comp u
-        ((hasDerivAt_const u x).add (hasDerivAt_id u)) using 1
-      all_goals simp only [S]
-      all_goals ring)
+      have hraw := (hasDerivAt_thetaCuspCompletedTailPotential (x + u)).comp u
+        ((hasDerivAt_const u x).add (hasDerivAt_id u))
+      have hraw' := hraw.congr_deriv
+        (g' := -(1 / 4 : ℝ) * S (x + u)) (by ring)
+      exact hraw'.congr_of_eventuallyEq
+        (Filter.Eventually.of_forall fun _ => rfl))
     (fun u => by
       have h := (hasDerivAt_thetaCuspCompletedSurvivalRemainder (x + u)).comp u
         ((hasDerivAt_const u x).add (hasDerivAt_id u))
-      convert h.const_mul (-(1 / 4 : ℝ)) using 1
-      norm_num
-      dsimp [V, Phi]
-      linarith [thetaCuspTailSecondEvenRemainder_add_completedTailPotential (x + u)])
+      have hraw := h.const_mul (-(1 / 4 : ℝ))
+      have hraw' := hraw.congr_deriv
+        (g' := (1 / 4 : ℝ) * thetaCuspCompletedTailPotential (x + u) -
+          thetaCuspFullSource (x + u)) (by
+          linarith [
+            thetaCuspTailSecondEvenRemainder_add_completedTailPotential (x + u)])
+      exact hraw'.congr_of_eventuallyEq
+        (Filter.Eventually.of_forall fun _ => rfl))
     (contDiff_thetaCuspFullSource.continuous.comp
       (continuous_const.add continuous_id)) L
   have hminus := green_endpoint_identity
@@ -114,17 +131,23 @@ theorem thetaCuspCompletedTailPotential_centeredDifference_eq_integral
     (fun u : ℝ => (1 / 4 : ℝ) * S (x - u))
     (fun u : ℝ => Phi (x - u))
     (fun u => by
-      convert (hasDerivAt_thetaCuspCompletedTailPotential (x - u)).comp u
-        ((hasDerivAt_const u x).sub (hasDerivAt_id u)) using 1
-      all_goals simp only [S]
-      all_goals ring)
+      have hraw := (hasDerivAt_thetaCuspCompletedTailPotential (x - u)).comp u
+        ((hasDerivAt_const u x).sub (hasDerivAt_id u))
+      have hraw' := hraw.congr_deriv
+        (g' := (1 / 4 : ℝ) * S (x - u)) (by ring)
+      exact hraw'.congr_of_eventuallyEq
+        (Filter.Eventually.of_forall fun _ => rfl))
     (fun u => by
       have h := (hasDerivAt_thetaCuspCompletedSurvivalRemainder (x - u)).comp u
         ((hasDerivAt_const u x).sub (hasDerivAt_id u))
-      convert h.const_mul (1 / 4 : ℝ) using 1
-      norm_num
-      dsimp [V, Phi]
-      linarith [thetaCuspTailSecondEvenRemainder_add_completedTailPotential (x - u)])
+      have hraw := h.const_mul (1 / 4 : ℝ)
+      have hraw' := hraw.congr_deriv
+        (g' := (1 / 4 : ℝ) * thetaCuspCompletedTailPotential (x - u) -
+          thetaCuspFullSource (x - u)) (by
+          linarith [
+            thetaCuspTailSecondEvenRemainder_add_completedTailPotential (x - u)])
+      exact hraw'.congr_of_eventuallyEq
+        (Filter.Eventually.of_forall fun _ => rfl))
     (contDiff_thetaCuspFullSource.continuous.comp
       (continuous_const.sub continuous_id)) L
   rw [show (fun u : ℝ => 2 * Real.sinh ((L - u) / 2) *

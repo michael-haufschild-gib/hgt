@@ -253,7 +253,7 @@ theorem purePairAgreement_range_eq_ker_difference
   · exact purePairAgreement_range_le_ker_difference J₁ J₂ hJ₁ hJ₂ hcomm
   · intro x hx
     have hx0 : (J₁ - J₂).mulVec x = 0 := by
-      simpa only [Matrix.toLin'_apply] using hx
+      simpa only [Matrix.toLin'_apply] using! hx
     have hD :
         (purePairDisagreementProjection J₁ J₂).toLin' x = 0 := by
       rw [purePairDisagreement_factor_difference J₁ J₂ hJ₁]
@@ -281,7 +281,7 @@ theorem purePairDisagreement_range_eq_ker_sum
   · exact purePairDisagreement_range_le_ker_sum J₁ J₂ hJ₁ hJ₂ hcomm
   · intro x hx
     have hx0 : (J₁ + J₂).mulVec x = 0 := by
-      simpa only [Matrix.toLin'_apply] using hx
+      simpa only [Matrix.toLin'_apply] using! hx
     have hA :
         (purePairAgreementProjection J₁ J₂).toLin' x = 0 := by
       rw [purePairAgreement_factor_sum J₁ J₂ hJ₁]

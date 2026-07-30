@@ -67,7 +67,7 @@ theorem deningerCompactOpenThetaMul_iteratedDeriv
   · have h1mem : 1 ∈ Finset.range (n + 1) := by
       simp
       omega
-    rw [Finset.sum_eq_add_sum_diff_singleton_of_mem h1mem]
+    rw [Finset.sum_eq_add_sum_sdiff_singleton_of_mem h1mem]
     simp only [if_true, Nat.choose_one_right]
     have hrest :
         ∑ i ∈ Finset.range (n + 1) \ {1},

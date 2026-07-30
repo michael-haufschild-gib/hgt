@@ -143,10 +143,10 @@ theorem logHalflineCutoff_mul_logTranslationCLM (b h : ℝ) :
     logHalflineCutoff (b + h) f (x + h)
   rw [show logHalflineCutoff (b + h) f (x + h) =
       (Iic (b + h)).indicator (fun y => f y) (x + h) by
-        simpa only [Function.comp_apply, MellinL2.realTranslationEquiv] using hcut]
+        simpa only [Function.comp_apply, MellinL2.realTranslationEquiv] using! hcut]
   have htrans' : logTranslationCLM h f x = f (x + h) := by
     simpa [logTranslationCLM, MellinL2.additiveTranslationUnitary,
-      MellinL2.realTranslationEquiv] using htrans
+      MellinL2.realTranslationEquiv] using! htrans
   by_cases hx : x ≤ b
   · have hxh : x + h ≤ b + h := by linarith
     simp [hx, hxh, htrans']
@@ -176,7 +176,7 @@ theorem logTranslationCLM_neg_mul (h : ℝ) :
   change logTranslationCLM h f (x + -h) = f x
   have hinner'' : logTranslationCLM h f (x + -h) = f ((x + -h) + h) := by
     simpa [logTranslationCLM, MellinL2.additiveTranslationUnitary,
-      MellinL2.realTranslationEquiv, Function.comp_apply] using hinner'
+      MellinL2.realTranslationEquiv, Function.comp_apply] using! hinner'
   rw [hinner'']
   congr 2
   ring

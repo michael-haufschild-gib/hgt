@@ -88,7 +88,7 @@ theorem scaleSeparatedSimplePoleJetProfileMV_isWeightedHomogeneous
     universalToScaleSeparatedFlatten (by
       intro o
       rcases o with (_ | k) <;> rfl)
-  simpa [scaleSeparatedFlattenWeight] using hS.mul hU
+  simpa [scaleSeparatedFlattenWeight] using! hS.mul hU
 
 /-- The complete finite scale-separated profile in the flattened coordinate ring. -/
 def finiteScaleSeparatedSimplePoleProfileEvalMV (n : ℕ) :
@@ -99,7 +99,7 @@ theorem finiteScaleSeparatedSimplePoleProfileEvalMV_isWeightedHomogeneous
     {n d : ℕ} {P : MvPolynomial (Fin (n + 1)) ℂ} (hP : P.IsHomogeneous d) :
     MvPolynomial.IsWeightedHomogeneous scaleSeparatedFlattenWeight
       (finiteScaleSeparatedSimplePoleProfileEvalMV n P) d := by
-  simpa using isWeightedHomogeneous_eval₂_of_isHomogeneous_mul hP
+  simpa using! isWeightedHomogeneous_eval₂_of_isHomogeneous_mul hP
     scaleSeparatedFlattenWeight (scaleSeparatedSimplePoleJetProfileMV n)
     (scaleSeparatedSimplePoleJetProfileMV_isWeightedHomogeneous n)
 

@@ -144,11 +144,11 @@ theorem summable_primeSeamMeanMajorant
     1 (2 - rho.re) (by linarith)
   have hleft : Summable (fun p : Nat.Primes =>
       |Real.log (p : ℝ)| * (p : ℝ) ^ (-(1 + rho.re))) := by
-    simpa only [pow_one] using
+    simpa only [pow_one] using!
       hleftNat.comp_injective Subtype.coe_injective
   have hright : Summable (fun p : Nat.Primes =>
       |Real.log (p : ℝ)| * (p : ℝ) ^ (-(2 - rho.re))) := by
-    simpa only [pow_one] using
+    simpa only [pow_one] using!
       hrightNat.comp_injective Subtype.coe_injective
   exact hleft.add hright
 
@@ -269,19 +269,23 @@ theorem tendsto_orbitwisePrimeSeamPairEnergy_div_mass
     change Filter.Tendsto
       (fun s : Finset Nat.Primes => ∑ p ∈ s, ‖a p‖ ^ 2 / (p : ℝ))
       Filter.atTop (nhds (∑' p : Nat.Primes, ‖a p‖ ^ 2 / (p : ℝ))) at hShas
-    convert hShas using 1
-    · ext s
+    have hS' : Filter.Tendsto (fun s : Finset Nat.Primes =>
+        primePairWeightedNormSq a s) Filter.atTop
+        (nhds (∑' p : Nat.Primes, ‖a p‖ ^ 2 / (p : ℝ))) := by
+      apply hShas.congr'
+      filter_upwards with s
       unfold primePairWeightedNormSq
       apply Finset.sum_congr rfl
       intro p hp
       ring
+    simpa only [orbitwisePrimeSeamWeightedNormSq, a] using! hS'
   have hAsum : Summable (fun p : Nat.Primes =>
       (((1 / (p : ℝ) : ℝ) : ℂ) * a p)) := by
     simpa only [a] using summable_orbitwisePrimeSeam_weightedMean hstrip
   have hA : Filter.Tendsto (fun s : Finset Nat.Primes =>
       primePairWeightedMean a s) Filter.atTop
       (nhds (∑' p : Nat.Primes, (((1 / (p : ℝ) : ℝ) : ℂ) * a p))) := by
-    simpa only [primePairWeightedMean] using hAsum.hasSum
+    simpa only [primePairWeightedMean] using! hAsum.hasSum
   have hAdiv : Filter.Tendsto (fun s : Finset Nat.Primes =>
       ‖primePairWeightedMean a s‖ ^ 2 / primeReciprocalMass s)
       Filter.atTop (nhds 0) :=

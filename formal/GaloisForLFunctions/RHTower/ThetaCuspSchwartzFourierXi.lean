@@ -39,7 +39,7 @@ theorem fourier_thetaCuspSchwartz_scaled (t : ℝ) :
     field_simp [Real.pi_ne_zero]
   rw [hfun]
   have hPhi : Integrable (fun x : ℝ => (thetaCuspFullSource x : ℂ)) := by
-    simpa only [thetaCuspSchwartz_apply] using
+    simpa only [thetaCuspSchwartz_apply] using!
       (thetaCuspSchwartz.integrable (μ := (volume : Measure ℝ)))
   have hF : Integrable F := by
     apply hPhi.bdd_mul (c := 1)

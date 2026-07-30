@@ -98,7 +98,7 @@ private theorem hasDerivAt_realAperture_of_complex_zero
   have hcomp := houter.comp (0 : ℝ) Complex.ofRealCLM.hasFDerivAt
   show HasFDerivAt (fun x : ℝ => f x)
     (ContinuousLinearMap.toSpanSingleton ℝ f') 0
-  convert hcomp using 1
+  simpa using! hcomp
 
 /-- **Infinitesimal Julia-defect law.**  The aperture derivative of the
 phase defect is exactly twice the real Ward response. -/
@@ -115,7 +115,7 @@ theorem hasDerivAt_xiWardBoundaryPhaseDefect_zero
     exact mobiusGammaXiAntiCausalWardTransportV_zero hw
   have hre : HasDerivAt (fun a : ℝ => (V a).re)
       (continuedXiAntiCausalWardResponse w).re 0 := by
-    simpa only [Function.comp_apply] using
+    simpa only [Function.comp_apply] using!
       Complex.reCLM.hasFDerivAt.comp_hasDerivAt 0 hV
   have hnorm :
       HasDerivAt (fun a : ℝ => Complex.normSq (V a)) 0 0 := by
@@ -127,16 +127,14 @@ theorem hasDerivAt_xiWardBoundaryPhaseDefect_zero
           (V a).re * (V a).re + (V a).im * (V a).im) by
       funext a
       rw [Complex.normSq_apply]]
-    convert h using 1
-    simp [hV0]
+    simpa [hV0] using! h
   have hcalc := (hre.const_mul 2).sub hnorm
   rw [show xiWardBoundaryPhaseDefect w =
       fun a : ℝ =>
         2 * (V a).re - Complex.normSq (V a) by
     funext a
     exact xiWardBoundaryPhaseDefect_eq_transport hw a]
-  convert hcalc using 1
-  ring
+  simpa using! hcalc
 
 /-- Pointwise Euler-edge density of the infinitesimal Julia defect. -/
 def xiWardInfinitesimalDefectDensity (t : ℝ) : ℝ :=

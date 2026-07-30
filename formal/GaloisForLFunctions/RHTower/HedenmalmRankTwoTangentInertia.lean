@@ -45,7 +45,7 @@ theorem thetaCuspRightLine_source_tangent_linearIndependent
           t • thetaCuspRightLineTangent a ha = 0 := by
     apply SchwartzMap.injective_toLp (F := ℂ) 2 (volume : Measure ℝ)
     simpa [thetaCuspRightLineSourceL2,
-      thetaCuspRightLineTangentL2] using hrel
+      thetaCuspRightLineTangentL2] using! hrel
   have h1 := congrArg (fun f : SchwartzMap ℝ ℂ => f 1) hschwartz
   have h2 := congrArg (fun f : SchwartzMap ℝ ℂ => f 2) hschwartz
   simp only [_root_.add_apply, _root_.smul_apply,

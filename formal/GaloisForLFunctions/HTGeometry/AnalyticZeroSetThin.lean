@@ -34,7 +34,7 @@ theorem dense_compl_zeroSet_of_analytic
     {z₁ : ℂ} (hfz₁ : f z₁ ≠ 0) :
     Dense {z : ℂ | f z ≠ 0} := by
   have h := interior_eq_empty_iff_dense_compl.1 (interior_zeroSet_eq_empty_of_analytic hf hfz₁)
-  simpa using h
+  simpa using! h
 
 /-- **A single analytic degeneracy cannot block a whole line.**  If a quantity restricted to a
 translation line is analytic and nonzero somewhere, the shifts of that line at which it degenerates

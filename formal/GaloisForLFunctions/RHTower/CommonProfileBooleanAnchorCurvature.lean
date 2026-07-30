@@ -431,7 +431,7 @@ theorem rankOneCommonGramCurvature_eq_one_add_two_mul
   have hsum : (∑ d ∈ P, (-1 : ℝ) ^ d.card) = 0 := by
     simpa [P] using sum_powerset_neg_one_pow_eq_zero_of_nonempty hanchor
   have htail : (∑ d ∈ P \ {∅}, (-1 : ℝ) ^ d.card) = -1 := by
-    rw [Finset.sum_eq_add_sum_diff_singleton_of_mem hempty] at hsum
+    rw [Finset.sum_eq_add_sum_sdiff_singleton_of_mem hempty] at hsum
     simp only [Finset.card_empty, pow_zero] at hsum
     linarith
   rw [rankOneCommonGramCurvature]
@@ -439,7 +439,7 @@ theorem rankOneCommonGramCurvature_eq_one_add_two_mul
     (-1 : ℝ) ^ d.card *
       commonProfileSiftedEnergy (Finset.univ : Finset (Fin 2)) d
         rankOneCurvatureCoordinate (rankOneCurvaturePacket t)) = 1 + 2 * t
-  rw [Finset.sum_eq_add_sum_diff_singleton_of_mem hempty]
+  rw [Finset.sum_eq_add_sum_sdiff_singleton_of_mem hempty]
   rw [commonProfileSiftedEnergy_rankOneCurvature_empty]
   simp only [Finset.card_empty, pow_zero, one_mul]
   have htailEnergy :

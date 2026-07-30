@@ -73,7 +73,7 @@ theorem mobiusCriticalContinuousCalibrationDeterminantBlindSynchronizationUniver
   have hcalibrated :
       Tendsto (fun a => phi (ell (mobiusCriticalShiftChannel (sigma a) f)))
         l (nhds 0) := by
-    simpa [hphi0] using hphi.tendsto.comp hweak
+    simpa [hphi0] using! hphi.tendsto.comp hweak
   have hpointed :
       Tendsto
         (fun a => mobiusCriticalPointedFisherDeterminantBoundarySignal (sigma a))
@@ -81,7 +81,7 @@ theorem mobiusCriticalContinuousCalibrationDeterminantBlindSynchronizationUniver
     have hboundary :
         Tendsto mobiusCriticalPointedFisherDeterminantBoundarySignal
           (nhdsWithin 1 (Set.Ioi 1)) (nhds (-8 : ℂ)) := by
-      simpa only [mobiusCriticalPointedFisherDeterminantBoundarySignal] using
+      simpa only [mobiusCriticalPointedFisherDeterminantBoundarySignal] using!
         squarefreeMobiusCritical_fisherQFIDeterminantUniversality.1
     exact hboundary.comp hsigma
   have hsoftHard :

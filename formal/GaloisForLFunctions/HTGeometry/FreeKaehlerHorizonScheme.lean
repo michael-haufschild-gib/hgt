@@ -88,7 +88,8 @@ theorem pretemporalPrincipalLowerRowIdeal
         · simp [hq]
   · apply Ideal.span_le.2
     rintro q ⟨s, hs, rfl⟩
-    have hsdegree : s.sum (fun _ e ↦ e) = (r : ℕ) := by simpa using hs
+    have hsdegree : s.sum (fun _ e ↦ e) = (r : ℕ) := by
+      simpa [Finsupp.degree_apply, Finsupp.sum] using hs
     obtain ⟨w, hw⟩ := exists_projectiveWordExponent_eq s (r : ℕ) hsdegree
     rw [← hw]
     change MvPolynomial.monomial (projectiveWordExponent w) 1 ∈ _

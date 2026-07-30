@@ -272,7 +272,7 @@ theorem phaseWeightedSignedPrimeNaturalShiftPalette_differentialIndependent
       apply Fin.ext
       exact natCastComplex_re_injective h) htail qk.2
   have hsub := hrect.comp f hf
-  simpa only [Function.comp_apply, f] using hsub
+  simpa only [Function.comp_apply, f] using! hsub
 
 theorem maximalIsodivisorialNaturalShiftPalette_differentialIndependent
     (eta : PrimePhase Nat.Primes) (F : Finset Nat.Primes) :
@@ -320,7 +320,7 @@ theorem maximalIsodivisorialNaturalShiftPalette_differentialIndependent
           · exact congrArg (fun u : (S × ℕ) × ℕ => u.1.2) hzw
         · exact congrArg (fun u : (S × ℕ) × ℕ => u.2) hzw
       have hsub := hdiff.comp f hf
-      simpa only [Function.comp_apply, f, epsilon] using hsub
+      simpa only [Function.comp_apply, f, epsilon] using! hsub
 
 theorem prefixFunctionOrientation_injective :
     Function.Injective prefixFunctionOrientation := by

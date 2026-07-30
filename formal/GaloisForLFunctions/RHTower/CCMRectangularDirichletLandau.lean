@@ -974,7 +974,7 @@ theorem differentiableOn_xiRectangularLandauContinuation_landauBall
       (xiRectangularLandauPrefixSeries L C N)
       (Metric.ball (((1 + δ : ℝ) : ℂ)) r) s :=
     (differentiable_xiRectangularLandauPrefixSeries L C N s).differentiableWithinAt
-  simpa only [xiRectangularLandauContinuation] using
+  simpa only [xiRectangularLandauContinuation] using!
     (((hshift s hs).const_mul (2 : ℂ)).add
       (hzeta.const_mul (C : ℂ))).sub hprefix
 

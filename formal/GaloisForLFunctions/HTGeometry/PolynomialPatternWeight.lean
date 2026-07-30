@@ -397,7 +397,7 @@ theorem polynomialPatternSigma_mem_fiber {n D K τ M q : ℕ}
     refine ⟨Finset.mem_filter.mpr ⟨hmQ, hmN⟩, ?_⟩
     rw [Finset.mem_finsuppAntidiag]
     refine ⟨?_, ?_⟩
-    simpa using hsplitLevel
+    simpa using! hsplitLevel
     intro a ha
     exact Finset.mem_univ a
   · change key (fun t => polynomialPatternSplit (q := q) y t + μ t) = _
@@ -466,7 +466,7 @@ theorem exists_polynomialPatternPair_of_mem_fiber {n D K τ M q : ℕ}
   have hμsum : ∑ t, μ t = jetMonomialOrder n x.1 := by
     exact flatOrder_sum (fun j => x.1 j.succ)
   have hsrcKey : key src = shiftedAtomPatternKey q K p := by
-    simpa [src, μ, atomKeyOf] using hxKey
+    simpa [src, μ, atomKeyOf] using! hxKey
   have hsrcSumLevel : (∑ t, src t) =
       D * q + τ - x.1 0 + jetMonomialOrder n x.1 := by
     dsimp [src]

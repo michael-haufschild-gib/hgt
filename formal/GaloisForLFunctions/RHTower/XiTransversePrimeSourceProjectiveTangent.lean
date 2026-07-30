@@ -76,7 +76,7 @@ theorem tendsto_xiTransversePrimeApertureRatio_cofinite_one
       (1 : ℂ) - primeShiftFactor (b : ℂ) p) cofinite (𝓝 ((1 : ℂ) - 0)) :=
     tendsto_const_nhds.sub hb0
   have h := hnum.div hden (by norm_num : (1 : ℂ) - 0 ≠ 0)
-  simpa [xiTransversePrimeApertureRatio] using h
+  simpa [xiTransversePrimeApertureRatio] using! h
 
 /-- If `a<b`, the first projective defect occurs at the smaller shift grade `a` and has
 orientation `-1`. -/
@@ -113,7 +113,7 @@ theorem tendsto_xiTransversePrimeApertureRatio_firstDefect_of_lt
   have hden : Tendsto (fun p : Nat.Primes =>
       (1 : ℂ) - primeShiftFactor (b : ℂ) p) cofinite (𝓝 ((1 : ℂ) - 0)) :=
     tendsto_const_nhds.sub hb0
-  simpa using hnum.div hden (by norm_num : (1 : ℂ) - 0 ≠ 0)
+  simpa using! hnum.div hden (by norm_num : (1 : ℂ) - 0 ≠ 0)
 
 /-- If `b<a`, the first projective defect occurs at the smaller shift grade `b` and has
 orientation `+1`. -/
@@ -150,7 +150,7 @@ theorem tendsto_xiTransversePrimeApertureRatio_firstDefect_of_gt
   have hden : Tendsto (fun p : Nat.Primes =>
       (1 : ℂ) - primeShiftFactor (b : ℂ) p) cofinite (𝓝 ((1 : ℂ) - 0)) :=
     tendsto_const_nhds.sub hb0
-  simpa using hnum.div hden (by norm_num : (1 : ℂ) - 0 ≠ 0)
+  simpa using! hnum.div hden (by norm_num : (1 : ℂ) - 0 ≠ 0)
 
 /-- Unified first-defect law: the normalization grade is exactly `min a b`, and the limiting
 orientation records which aperture is smaller. -/

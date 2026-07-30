@@ -31,7 +31,7 @@ theorem finiteOPUCReversedPolynomial_ne_zero_on_closedBall
   · subst z
     have hlead : (finiteOPUCPolynomial c hG).leadingCoeff ≠ 0 := by
       rw [Polynomial.leadingCoeff, finiteOPUCPolynomial_natDegree c hG]
-      simpa [finiteOPUCPolynomial] using finiteOPUCVector_last_ne_zero c hG
+      simpa [finiteOPUCPolynomial] using! finiteOPUCVector_last_ne_zero c hG
     have hmaplead :
         ((finiteOPUCPolynomial c hG).map (starRingEnd ℂ)).leadingCoeff ≠ 0 := by
       rw [Polynomial.leadingCoeff_map_of_injective (starRingEnd ℂ).injective]

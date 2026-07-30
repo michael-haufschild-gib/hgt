@@ -18,14 +18,14 @@ theorem additiveTranslationUnitary_hasAELowerSupport_zero
         fun t : ℝ => f (t - h) := by
     simpa [MellinL2.additiveTranslationUnitary,
       MellinL2.lpCompMeasurePreservingEquiv, Function.comp_apply,
-      MellinL2.realTranslationEquiv] using hcoe
+      MellinL2.realTranslationEquiv] using! hcoe
   have hfshift :=
     (MellinL2.realTranslation_measurePreserving (-h)).quasiMeasurePreserving.ae hf
   filter_upwards [htrans, hfshift] with t ht hsupp
   intro ht0
   rw [ht]
   have hsupp' : t - h < 0 → f (t - h) = 0 := by
-    simpa [MellinL2.realTranslationEquiv] using hsupp
+    simpa [MellinL2.realTranslationEquiv] using! hsupp
   exact hsupp' (by linarith)
 
 theorem infiniteMobiusShiftTerm_hasAELowerSupport_zero

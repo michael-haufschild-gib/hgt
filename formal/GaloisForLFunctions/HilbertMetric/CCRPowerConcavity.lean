@@ -244,9 +244,9 @@ theorem hasDerivAt_dimensionPowerReparametrization
   have hpow := Real.hasDerivAt_rpow_const
     (p := (1 / d : ℝ)) (Or.inl hu.ne')
   have hcomp := hF.comp u hpow
-  convert hcomp using 1
-  simp only [dimensionPowerFirstDerivative]
-  ring
+  convert! hcomp using 1 <;>
+    simp only [dimensionPowerFirstDerivative] <;>
+    ring
 
 /-- Second chain rule for the reciprocal-dimension power reparametrization. -/
 theorem hasDerivAt_dimensionPowerFirstDerivative
@@ -261,11 +261,10 @@ theorem hasDerivAt_dimensionPowerFirstDerivative
   have hcomp := hF₁.comp u hpow
   have hmul := hpow'.mul hcomp
   have hscaled := hmul.const_mul (1 / d)
-  convert hscaled using 1
-  · funext y
-    simp only [dimensionPowerFirstDerivative, Pi.mul_apply, Function.comp_apply]
-    ring
-  · simp only [dimensionPowerSecondDerivative, Function.comp_apply]
+  convert! hscaled using 1 <;>
+    (try funext y) <;>
+    simp only [dimensionPowerFirstDerivative, dimensionPowerSecondDerivative,
+      Pi.mul_apply, Function.comp_apply] <;>
     ring
 
 /-- Mean of a log-volume under logarithmic scale differentiation. -/
@@ -293,9 +292,9 @@ theorem hasDerivAt_logarithmicReparametrization
     HasDerivAt (logarithmicReparametrization F)
       (logarithmicFirstDerivative F₁ s) s := by
   have hcomp := hF.comp s (Real.hasDerivAt_exp s)
-  convert hcomp using 1
-  simp only [logarithmicFirstDerivative]
-  ring
+  convert! hcomp using 1 <;>
+    simp only [logarithmicFirstDerivative] <;>
+    ring
 
 /-- Second chain rule for logarithmic bandwidth. -/
 theorem hasDerivAt_logarithmicFirstDerivative
@@ -305,9 +304,9 @@ theorem hasDerivAt_logarithmicFirstDerivative
       (logarithmicSecondDerivative F₁ F₂ s) s := by
   have hcomp := hF₁.comp s (Real.hasDerivAt_exp s)
   have hmul := (Real.hasDerivAt_exp s).mul hcomp
-  convert hmul using 1
-  simp only [logarithmicSecondDerivative, Function.comp_apply]
-  ring
+  convert! hmul using 1 <;>
+    simp only [logarithmicSecondDerivative, Function.comp_apply] <;>
+    ring
 
 theorem logarithmicSecondDerivative_eq_scaleVariance
     (F₁ F₂ : ℝ → ℝ) (s : ℝ) :

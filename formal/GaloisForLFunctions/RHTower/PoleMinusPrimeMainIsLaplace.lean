@@ -74,11 +74,12 @@ theorem integral_exp_neg_half (L : ℝ) :
       HasDerivAt (fun u : ℝ => -2 * Real.exp (-(u / 2))) (Real.exp (-(x / 2))) x := by
     intro x _
     have h1 : HasDerivAt (fun u : ℝ => -(u / 2)) (-(1 / 2)) x := by
-      simpa using ((hasDerivAt_id x).div_const 2).neg
+      simpa using! ((hasDerivAt_id x).div_const 2).neg
     have h2 := h1.exp
     have h3 := h2.const_mul (-2 : ℝ)
     convert h3 using 1
-    ring
+    all_goals try rfl
+    all_goals ring
   have hint : IntervalIntegrable (fun u : ℝ => Real.exp (-(u / 2)))
       MeasureTheory.volume 0 L :=
     (Real.continuous_exp.comp (continuous_id.div_const 2).neg).intervalIntegrable _ _
@@ -95,13 +96,14 @@ theorem integral_id_mul_exp_neg_half (L : ℝ) :
         (x * Real.exp (-(x / 2))) x := by
     intro x _
     have h1 : HasDerivAt (fun u : ℝ => -(u / 2)) (-(1 / 2)) x := by
-      simpa using ((hasDerivAt_id x).div_const 2).neg
+      simpa using! ((hasDerivAt_id x).div_const 2).neg
     have h2 := h1.exp
     have h3 : HasDerivAt (fun u : ℝ => -2 * u - 4) (-2) x := by
       simpa using ((hasDerivAt_id x).const_mul (-2 : ℝ)).sub_const 4
     have h := h3.mul h2
     convert h using 1
-    ring
+    all_goals try rfl
+    all_goals ring
   have hint : IntervalIntegrable (fun u : ℝ => u * Real.exp (-(u / 2)))
       MeasureTheory.volume 0 L :=
     (continuous_id.mul

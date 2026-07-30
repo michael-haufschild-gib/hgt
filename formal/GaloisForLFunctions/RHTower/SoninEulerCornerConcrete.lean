@@ -81,7 +81,7 @@ theorem isCompactOperator_centralFourierPhysicalBlock (a : ℝ) (ha : 0 < a) :
   have hcompact := isCompactOperator_cutoffFourierCutoff (-a) a (-a) a (by linarith)
   have hpull := hcompact.clm_comp
     fourierUnitary.symm.toLinearIsometry.toContinuousLinearMap
-  simpa [fourierCutoff, cutoffFourierCutoff, Function.comp_def] using hpull
+  simpa [fourierCutoff, cutoffFourierCutoff, Function.comp_def] using! hpull
 
 /-- The central time-frequency alternating block is a strict contraction. -/
 theorem norm_centralSoninAlternatingBlock_lt_one (a : ℝ) (ha : 0 < a) :

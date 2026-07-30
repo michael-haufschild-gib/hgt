@@ -50,7 +50,7 @@ theorem rectangularWindowAmplitude_differentiable (L : ℝ) :
     exact ⟨htend, by simpa [hval] using tendsto_pure_nhds (rectangularWindowAmplitude L) 0⟩
   have hmem : (Set.univ : Set ℂ) ∈ 𝓝 (0 : ℂ) := Filter.univ_mem
   have := (Complex.differentiableOn_compl_singleton_and_continuousAt_iff hmem).mp
-    ⟨by simpa [Set.compl_eq_univ_diff] using hoff, hcontAt⟩
+    ⟨by simpa [Set.compl_eq_univ_sdiff] using hoff, hcontAt⟩
   simpa [differentiableOn_univ] using this
 
 /-- The sharp-window Mellin factor `s ↦ rectangularWindowAmplitude L (s - 1)` is entire. -/
@@ -58,6 +58,6 @@ theorem sharpPrimeWindowMellin_differentiable (L : ℝ) :
     Differentiable ℂ (sharpPrimeWindowMellin L) := by
   have h := (rectangularWindowAmplitude_differentiable L).comp
     (differentiable_id.sub_const (1 : ℂ))
-  simpa [sharpPrimeWindowMellin, Function.comp_def] using h
+  simpa [sharpPrimeWindowMellin, Function.comp_def] using! h
 
 end RHTower

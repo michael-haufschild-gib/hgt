@@ -47,18 +47,20 @@ theorem hasDerivAt_criticalLogPhaseTranslatedDensityProfile
       (criticalLogPhaseTranslatedDensityProfileDerivative L N t) t := by
   unfold criticalLogPhaseTranslatedDensityProfile
     criticalLogPhaseTranslatedDensityProfileDerivative
-  convert HasDerivAt.sum (u := Finset.range N)
+  have hsum := HasDerivAt.sum (u := Finset.range N)
     (A := fun j (x : ℝ) => Real.exp (-((j : ℝ) * L) / 2) *
       thetaCuspTailSecondDensityAtom 1 (x + (j : ℝ) * L))
     (A' := fun j => Real.exp (-((j : ℝ) * L) / 2) *
       (4 * thetaCuspPolynomialAtom
         (thetaCuspTailDerivativePolynomial 3) 1 (t + (j : ℝ) * L)))
     (fun j _hj => by
-      convert ((hasDerivAt_thetaCuspTailSecondDensityAtom 1
+      have hraw := ((hasDerivAt_thetaCuspTailSecondDensityAtom 1
         (t + (j : ℝ) * L)).comp t
           ((hasDerivAt_id t).add_const ((j : ℝ) * L))).const_mul
-            (Real.exp (-((j : ℝ) * L) / 2)) using 1 <;> ring)
-  simp only [Finset.sum_apply]
+            (Real.exp (-((j : ℝ) * L) / 2))
+      exact hraw.congr_deriv (by ring))
+  exact hsum.congr_of_eventuallyEq
+    (Eventually.of_forall fun _ => by simp only [Finset.sum_apply])
 
 theorem neg_criticalLogPhaseTranslatedDensityProfileDerivative_nonneg
     {L : ℝ} (hL : 0 ≤ L) (N : ℕ) {t : ℝ} (ht : 0 ≤ t) :
@@ -465,8 +467,11 @@ theorem positiveTailCompletion_neg_profileDerivative_eq
     (fun t _ht => hasDerivAt_const t 1)
     (fun t _ht => (hg t).ofReal_comp)
     (by
-      change IntegrableOn (fun t : ℝ => (1 : ℂ) * (g' t : ℂ)) (Ioi 0)
-      simpa using hg'int.ofReal)
+      change Integrable (fun t : ℝ => (1 : ℂ) * (g' t : ℂ))
+        (volume.restrict (Ioi 0))
+      apply hg'int.ofReal.congr
+      filter_upwards with t
+      simp)
     (by
       have hzero : IntegrableOn (fun _t : ℝ => (0 : ℂ)) (Ioi 0) :=
         integrableOn_zero
@@ -497,8 +502,15 @@ theorem positiveTailCompletion_neg_profileDerivative_eq
       _ = |g t| := by simp only [Complex.norm_real, Real.norm_eq_abs]
   have hpgzero : Tendsto (fun t : ℝ => p t * (g t : ℂ))
       (𝓝[>] 0) (nhds (g 0 : ℂ)) := by
-    have h := (hp 0).continuousAt.mul (hg 0).ofReal_comp.continuousAt
-    simpa [p, spectralTranslationPhase] using h.tendsto.mono_left inf_le_left
+    have hfull : Tendsto (fun t : ℝ => p t * (g t : ℂ)) (nhds 0)
+        (nhds (p 0 * (g 0 : ℂ))) := by
+      apply ((hp 0).continuousAt.mul
+        (hg 0).ofReal_comp.continuousAt).tendsto.congr'
+      exact Eventually.of_forall fun _ => rfl
+    have hp0 : p 0 = 1 := by
+      simp [p, spectralTranslationPhase]
+    rw [hp0, one_mul] at hfull
+    exact hfull.mono_left nhdsWithin_le_nhds
   have hphase := integral_Ioi_mul_deriv_eq_deriv_mul
     (a := (0 : ℝ)) (a' := (g 0 : ℂ)) (b' := (0 : ℂ))
     (u := p) (u' := p')
@@ -509,13 +521,17 @@ theorem positiveTailCompletion_neg_profileDerivative_eq
       (∫ t : ℝ in Ioi 0, (g' t : ℂ) * p t) =
         -(g 0 : ℂ) - (I * z) *
           (∫ t : ℝ in Ioi 0, (g t : ℂ) * p t) := by
-    rw [show (fun t : ℝ => (g' t : ℂ) * p t) = p * fun t => (g' t : ℂ) by
-      funext t; simp only [Pi.mul_apply]; ring]
     rw [show (fun t : ℝ => p' t * (g t : ℂ)) =
         fun t => (I * z) * ((g t : ℂ) * p t) by
       funext t; simp only [p']; ring,
       integral_const_mul] at hphase
-    simpa only [zero_sub] using hphase
+    calc
+      (∫ t : ℝ in Ioi 0, (g' t : ℂ) * p t) =
+          ∫ t : ℝ in Ioi 0, p t * (g' t : ℂ) := by
+            apply integral_congr_ae
+            filter_upwards with t
+            ring
+      _ = _ := by simpa only [zero_sub] using hphase
   unfold positiveTailCompletion
   rw [show (fun t : ℝ =>
       ((-criticalLogPhaseTranslatedDensityProfileDerivative L N t : ℝ) : ℂ) *
@@ -555,14 +571,23 @@ theorem positiveTailCompletionDerivative_neg_profileDerivative_eq
     hasDerivAt_criticalLogPhaseTranslatedDensityProfile L N t
   have hq (t : ℝ) : HasDerivAt q (q' t) t := by
     have hlin : HasDerivAt (fun u : ℝ => -((u : ℂ) * I)) (-I) t := by
-      convert ((Complex.ofRealCLM.hasDerivAt.mul_const I).neg) using 1
-      simp [Complex.ofRealCLM_apply]
+      have hraw : HasDerivAt
+          (fun u : ℝ => -(Complex.ofRealCLM u * I))
+          (-(Complex.ofRealCLM 1 * I)) t :=
+        (Complex.ofRealCLM.hasDerivAt.mul_const I).neg
+      have hraw' := hraw.congr_deriv (g' := -I)
+        (by simp [Complex.ofRealCLM_apply])
+      exact hraw'.congr_of_eventuallyEq
+        (Eventually.of_forall fun u => by simp [Complex.ofRealCLM_apply])
     have hp := hasDerivAt_spectralTranslationPhase_source z t
-    convert hlin.mul hp using 1
-    dsimp only [q, q']
-    ring_nf
-    rw [I_sq]
-    ring
+    have hprod := hlin.mul hp
+    have hprod' := hprod.congr_deriv (g' := q' t) (by
+      dsimp only [q']
+      ring_nf
+      rw [I_sq]
+      ring)
+    exact hprod'.congr_of_eventuallyEq
+      (Eventually.of_forall fun _ => rfl)
   have hg'int : IntegrableOn g' (Ioi 0) :=
     integrableOn_criticalLogPhaseTranslatedDensityProfileDerivative hL N
   have ht_g'int : IntegrableOn (fun t : ℝ => t * g' t) (Ioi 0) :=
@@ -595,12 +620,18 @@ theorem positiveTailCompletionDerivative_neg_profileDerivative_eq
   have hqgzero : Tendsto (fun t : ℝ => q t * (g t : ℂ))
       (𝓝[>] 0) (nhds 0) := by
     have hcont := (hq 0).continuousAt.mul (hg 0).ofReal_comp.continuousAt
-    convert hcont.tendsto.mono_left inf_le_left using 1 <;>
-      simp [Pi.mul_apply, q, spectralTranslationPhase]
+    have hfull : Tendsto (fun t : ℝ => q t * (g t : ℂ)) (nhds 0)
+        (nhds (q 0 * (g 0 : ℂ))) := by
+      apply hcont.tendsto.congr'
+      exact Eventually.of_forall fun _ => rfl
+    have hq0 : q 0 = 0 := by
+      simp [q, spectralTranslationPhase]
+    rw [hq0, zero_mul] at hfull
+    exact hfull.mono_left nhdsWithin_le_nhds
   have hqgtop : Tendsto (fun t : ℝ => q t * (g t : ℂ)) atTop (nhds 0) := by
     rw [tendsto_zero_iff_norm_tendsto_zero]
     have hmajor : Tendsto (fun t : ℝ => ((t * g t : ℝ) : ℂ)) atTop (nhds 0) := by
-      simpa only [g] using
+      simpa only [Complex.ofReal_zero] using
         (tendsto_mul_criticalLogPhaseTranslatedDensityProfile_atTop_zero L N).ofReal
     have hmajorNorm : Tendsto (fun t : ℝ => ‖((t * g t : ℝ) : ℂ)‖)
         atTop (nhds 0) := by

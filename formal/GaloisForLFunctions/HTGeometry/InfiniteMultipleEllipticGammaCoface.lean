@@ -26,7 +26,7 @@ private theorem summable_option_elim {ι : Type*} (c : ℝ) {f : ι → ℝ}
     have hsome : Function.Injective (Option.some : ι → Option ι) :=
       fun _ _ h => Option.some.inj h
     apply (hsome.summable_iff (f := f₁) ?_).mp
-    · simpa [f₁] using hf
+    · simpa [f₁] using! hf
     · intro o ho
       cases o with
       | none => rfl

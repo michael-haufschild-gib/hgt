@@ -53,7 +53,7 @@ theorem deriv_pow_mul_iteratedDeriv_shift
       ((m : ℝ) * w ^ (m - 1) * iteratedDeriv j L (1 / 2 + w) +
         w ^ m * iteratedDeriv (j + 1) L (1 / 2 + w)) w := by
     have h := hpow.mul hshift
-    convert h using 1
+    convert! h using 1
   exact hmul.deriv
 
 /-- HasDerivAt form of the single-term radial derivative. -/
@@ -73,7 +73,7 @@ theorem hasDerivAt_pow_mul_iteratedDeriv_shift
     have h := hg.hasDerivAt
     rwa [deriv_iteratedDeriv_shift hL j (1 / 2) w] at h
   have h := hpow.mul hshift
-  convert h using 1
+  convert! h using 1
 
 /-- Radial jet sum with abstract real coefficients (for a fixed order): `∑_{j≤N} c j·w^j·L^(j)(1/2+w)`. -/
 noncomputable def jetSum (L : ℝ → ℝ) (c : ℕ → ℝ) (N : ℕ) (w : ℝ) : ℝ :=

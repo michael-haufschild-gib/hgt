@@ -149,9 +149,8 @@ theorem frequencyCayley_defect_not_summable
   have hone : Summable (fun i : FrequencyBeyond lambda R ↦
       (1 / ((lambda (i : ι) - R) ^ n + 1) : ℝ)) := by
     have hs := htwo.mul_left (1 / 2 : ℝ)
-    convert hs using 1
-    funext i
-    ring
+    exact hs.congr fun i ↦ by
+      ring
   exact hdiv hone
 
 /-- A bounded nonzero analytic function on the unit disc cannot vanish on an
@@ -303,24 +302,26 @@ theorem strongSectorBlaschkeComplete_compl_finset
     exact (hcomplete n hn).1 hij
   refine ⟨hlambdaS, fun R hRR₀ ↦ ?_⟩
   intro hsum
-  let T : Set (FrequencyBeyond lambda R) :=
-    {i | (i : ι) ∈ S}
-  let Tcomp := {i : FrequencyBeyond lambda R // i ∉ T}
   let emb : FrequencyBeyond lambda R ↪ ι :=
     ⟨fun i ↦ (i : ι), Subtype.val_injective⟩
+  let T : Set (FrequencyBeyond lambda R) :=
+    emb ⁻¹' (S : Set ι)
+  let Tcomp : Set (FrequencyBeyond lambda R) := Tᶜ
   have hT : T.Finite := by
-    have hpre := S.finite_toSet.preimage_embedding emb
-    simpa [T, emb] using hpre
+    simpa only [T] using S.finite_toSet.preimage_embedding emb
   let e : FrequencyBeyond lambdaS R ≃ Tcomp :=
     { toFun := fun i ↦
         ⟨⟨((i : FrequencyBeyond lambdaS R).1 : ι), by
             exact i.prop⟩, by
           have hiS := (i : FrequencyBeyond lambdaS R).1.prop
-          simpa [T] using hiS⟩
+          simpa [Tcomp, T, emb] using hiS⟩
       invFun := fun i ↦
         ⟨⟨((i : Tcomp).1 : ι), by
-            have hi := (i : Tcomp).prop
-            simpa [T] using hi⟩, by
+            have hiT : (i : Tcomp).1 ∉ T := (i : Tcomp).prop
+            intro hiS
+            apply hiT
+            change emb (i : Tcomp).1 ∈ (S : Set ι)
+            simpa only [emb] using! hiS⟩, by
           exact (i : Tcomp).1.prop⟩
       left_inv := by
         intro i
@@ -333,9 +334,10 @@ theorem strongSectorBlaschkeComplete_compl_finset
   have hsumT : Summable (fun i : Tcomp ↦
       f (i : FrequencyBeyond lambda R)) := by
     apply (Equiv.summable_iff e).mp
-    simpa [lambdaS, f, e] using hsum
+    simpa [lambdaS, f, e] using! hsum
   have hsumAll : Summable f := by
-    exact hT.summable_compl_iff.mp (by simpa [Tcomp] using hsumT)
+    exact hT.summable_compl_iff.mp
+      (by simpa only [Tcomp, Function.comp_apply] using! hsumT)
   exact (hcomplete n hn).2 R hRR₀ hsumAll
 
 /-! ## Arithmetic instance: cofinite prime logarithms -/
@@ -375,26 +377,27 @@ theorem cofinitePrimeLog_strongSectorBlaschkeComplete
     exact primeLog_injective hpq
   refine ⟨hlambda, fun R hRR₀ ↦ ?_⟩
   intro hsum
-  let T : Set (PrimeLogBeyond R) :=
-    {p | (p : Nat.Primes) ∈ S}
-  let Tcomp := {p : PrimeLogBeyond R // p ∉ T}
   let emb : PrimeLogBeyond R ↪ Nat.Primes :=
     ⟨fun p ↦ (p : Nat.Primes), Subtype.val_injective⟩
+  let T : Set (PrimeLogBeyond R) :=
+    emb ⁻¹' (S : Set Nat.Primes)
+  let Tcomp : Set (PrimeLogBeyond R) := Tᶜ
   have hT : T.Finite := by
-    have hpre :=
-      S.finite_toSet.preimage_embedding emb
-    simpa [T, emb] using hpre
+    simpa only [T] using S.finite_toSet.preimage_embedding emb
   let e : FrequencyBeyond lambda R ≃ Tcomp :=
     { toFun := fun i ↦
       ⟨⟨((i : FrequencyBeyond lambda R).1 : Nat.Primes), by
           have hi := i.prop
           simpa [lambda, smallPrimeLogs] using hi⟩, by
         have hiS := (i : FrequencyBeyond lambda R).1.prop
-        simpa [T] using hiS⟩
+        simpa [Tcomp, T, emb] using hiS⟩
       invFun := fun p ↦
       ⟨⟨((p : Tcomp).1 : PrimeLogBeyond R), by
-          have hp := (p : Tcomp).prop
-          simpa [T] using hp⟩, by
+          have hpT : (p : Tcomp).1 ∉ T := (p : Tcomp).prop
+          intro hpS
+          apply hpT
+          change emb (p : Tcomp).1 ∈ (S : Set Nat.Primes)
+          simpa only [emb] using! hpS⟩, by
         have hp :
             (((p : Tcomp).1 : Nat.Primes) : Nat.Primes) ∈
               (smallPrimeLogs R)ᶜ :=
@@ -413,9 +416,10 @@ theorem cofinitePrimeLog_strongSectorBlaschkeComplete
       1 / ((Real.log (((p : PrimeLogBeyond R) : Nat.Primes) : ℝ) - R) ^ n + 1)
   have hsumT : Summable (fun p : Tcomp ↦ f (p : PrimeLogBeyond R)) := by
     apply (Equiv.summable_iff e).mp
-    simpa [lambda, f, e] using hsum
+    simpa [lambda, f, e] using! hsum
   have hsumAll : Summable f := by
-    exact hT.summable_compl_iff.mp (by simpa [Tcomp] using hsumT)
+    exact hT.summable_compl_iff.mp
+      (by simpa only [Tcomp, Function.comp_apply] using! hsumT)
   exact prime_shifted_log_power_recip_beyond_not_summable
     n R (hR₀.trans hRR₀) hsumAll
 
@@ -433,7 +437,9 @@ theorem cofinitePrimeLog_positive
 theorem cofinitePrimeLog_strongSectorBlaschkeComplete'
     (S : Finset Nat.Primes) (R₀ : ℝ) (hR₀ : 0 ≤ R₀) :
     StrongSectorBlaschkeComplete (cofinitePrimeLog S) R₀ := by
-  simpa [cofinitePrimeLog] using
-    cofinitePrimeLog_strongSectorBlaschkeComplete S R₀ hR₀
+  change StrongSectorBlaschkeComplete
+    (fun p : {p : Nat.Primes // p ∉ S} ↦
+      Real.log (((p : {p : Nat.Primes // p ∉ S}) : Nat.Primes) : ℝ)) R₀
+  exact cofinitePrimeLog_strongSectorBlaschkeComplete S R₀ hR₀
 
 end RHTower

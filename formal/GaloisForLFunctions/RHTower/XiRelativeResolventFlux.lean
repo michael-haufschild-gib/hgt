@@ -20,9 +20,9 @@ noncomputable section
 theorem logDeriv_XiC_eq_mul_I_logDeriv_xi (z : ℂ) :
     logDeriv XiC z = Complex.I * logDeriv xi (1 / 2 + z * Complex.I) := by
   have haff : HasDerivAt (fun w : ℂ => 1 / 2 + w * Complex.I) Complex.I z := by
-    convert (hasDerivAt_const (x := z) (c := (1 / 2 : ℂ))).add
+    convert! (hasDerivAt_const (x := z) (c := (1 / 2 : ℂ))).add
       ((hasDerivAt_id (𝕜 := ℂ) (x := z)).mul_const Complex.I) using 1
-    all_goals ring
+    ring
   have hderiv : deriv XiC z =
       deriv xi (1 / 2 + z * Complex.I) * Complex.I := by
     exact (xi_differentiable.differentiableAt.hasDerivAt.comp z haff).deriv

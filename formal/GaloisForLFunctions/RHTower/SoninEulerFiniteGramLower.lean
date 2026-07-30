@@ -235,7 +235,7 @@ theorem centralSoninDilationCorner_inverseDilatedEvenShell_tendsto_ratio_of_le
     congr 2
     module
   have hfirst : Tendsto (fun m => B (D (e m - g m))) atTop (𝓝 0) := by
-    simpa only [map_zero] using (B ∘L D).continuous.continuousAt.tendsto.comp hge
+    simpa only [map_zero] using! (B ∘L D).continuous.continuousAt.tendsto.comp hge
   have hsum : Tendsto (fun m => B (D (e m - g m)) + (w m - Q (w m)))
       atTop (𝓝 0) := by
     simpa only [add_zero] using hfirst.add hw
@@ -278,6 +278,7 @@ theorem centralSoninDilationCorner_inverseDilatedEvenShell_tendsto_ratio_of_le
       rw [map_sub, sub_add_cancel]
     rw [hDe, hDg m, map_add, map_add, hQt m]
     dsimp [B]
+    simp only [one_apply_eq_self, _root_.sub_apply]
     module
   exact tendsto_zero_iff_norm_tendsto_zero.mp hvec
 
@@ -342,7 +343,7 @@ theorem centralSoninDilationCorner_inverseDilatedEvenShell_tendsto_zero_of_lt
     congr 2
     module
   have hfirst : Tendsto (fun m => B (D (e m - g m))) atTop (𝓝 0) := by
-    simpa only [map_zero] using (B ∘L D).continuous.continuousAt.tendsto.comp hge
+    simpa only [map_zero] using! (B ∘L D).continuous.continuousAt.tendsto.comp hge
   have hsum : Tendsto (fun m =>
       B (D (e m - g m)) + (t m - Q (t m)) + (w m - Q (w m)))
       atTop (𝓝 0) := by
@@ -375,6 +376,7 @@ theorem centralSoninDilationCorner_inverseDilatedEvenShell_tendsto_zero_of_lt
       rw [map_sub, sub_add_cancel]
     rw [hDe, hDg m, map_add, map_add]
     dsimp [B]
+    simp only [one_apply_eq_self, _root_.sub_apply]
     module
   exact tendsto_zero_iff_norm_tendsto_zero.mp hvec
 
@@ -1218,7 +1220,7 @@ theorem finitePrimeEvenDilationGram_isCompactOperator_iff
     exact finitePrimeEvenDilationGram_not_isCompactOperator_of_ne_zero
       a ha p hp hinj A hA hcompact
   · rintro rfl
-    simpa [finiteEvenDilationGramCombination] using
+    simpa [finiteEvenDilationGramCombination] using!
       (isCompactOperator_zero : IsCompactOperator
         (0 : evenSubspace →L[ℂ] evenSubspace))
 

@@ -174,7 +174,21 @@ theorem noncriticalProjectiveUpperGoodCombinedRowPacket_complete_data
         (combinedProjectiveRowShiftPacket packet shift x) ≠ 0) := by
   have hdata := noncriticalProjectiveSeparationProduct_complete_data
     hC hD forbidden (combinedProjectiveRowShiftPacket packet shift) hgood.1
-  simpa [projectiveNevanlinnaQuotient] using hdata
+  simp only [zero_add] at hdata
+  refine ⟨hdata.1, ?_, ?_, ?_⟩
+  · change Function.Injective (fun x =>
+      -D (combinedProjectiveRowShiftPacket packet shift x) /
+        C (combinedProjectiveRowShiftPacket packet shift x))
+    exact hdata.2.1
+  · intro x k
+    change
+      -D (combinedProjectiveRowShiftPacket packet shift x) /
+          C (combinedProjectiveRowShiftPacket packet shift x) ≠ forbidden k
+    exact hdata.2.2.1 x k
+  · intro x
+    change deriv (fun w => -D w / C w)
+      (combinedProjectiveRowShiftPacket packet shift x) ≠ 0
+    exact hdata.2.2.2 x
 
 /-- The literal affine node family on the ambient finite-dimensional shift packet space. -/
 def ambientCombinedProjectiveNodes
@@ -423,8 +437,13 @@ theorem compact_completeProjectiveRowPiece_has_dense_actualNevanlinna_finiteProb
     intro h hh
     have hdata := noncriticalProjectiveUpperGoodCombinedRowPacket_complete_data
       hC hD (fun i => q (zf i)) packet (hchartU0 h hh)
-    simpa [nodes, ambientCombinedProjectiveNodes, q,
-      projectiveNevanlinnaQuotient] using hdata
+    have hnodesEq :
+        combinedProjectiveRowShiftPacket packet
+            (⟨h, hh.2⟩ : InjectiveShiftConfiguration ι) =
+          nodes h := by
+      funext x
+      rfl
+    simpa only [hnodesEq] using hdata
   have hnodesOmegaU0 : ∀ h ∈ U0, ∀ x, nodes h x ∈ Omega := by
     intro h hh x
     exact (hdataU0 h hh).1 x
@@ -484,8 +503,13 @@ theorem compact_completeProjectiveRowPiece_has_dense_actualNevanlinna_finiteProb
         (contDiff_const.add (contDiff_apply ℝ ℂ s.1))
     have hjetReal : ContDiffOn ℝ ⊤ (iteratedDeriv s.2 m0) Omega :=
       contDiffOn_real_of_contDiffOn_complex_of_isOpen hOmega (hm0 s.2)
-    simpa [background, s] using hjetReal.comp hnode.contDiffOn
-      (fun h hh => hnodesOmega h hh (p.1, s.1))
+    change ContDiffOn ℝ ⊤
+      (fun h : ι → ℂ =>
+        iteratedDeriv s.2 m0 (nodes h (p.1, s.1))) U
+    convert hjetReal.comp hnode.contDiffOn
+      (fun h hh => hnodesOmega h hh (p.1, s.1)) using 1
+    funext h
+    rfl
   have hupper : ∀ h ∈ U, ∀ x, η ≤ (q (nodes h x)).im := by
     intro h hh x
     have hx := Set.mem_iInter.mp hh.2 x

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.MobiusLaplaceAdditiveTriangleSubpower
+import Mathlib.Data.Finset.NatAntidiagonal
 import Mathlib.RingTheory.PowerSeries.Basic
 
 /-!
@@ -27,7 +28,7 @@ def mobiusMertensPartialSum (N : ℕ) : ℂ :=
 
 /-- Additive self-convolution of the Mertens partial sums. -/
 def mobiusMertensSelfConvolution (N : ℕ) : ℂ :=
-  ∑ ab ∈ Finset.antidiagonal N,
+  ∑ ab ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) N,
     mobiusMertensPartialSum ab.1 * mobiusMertensPartialSum ab.2
 
 private theorem mk_partialSums_eq_mul_geometricPowerSeries (c : ℕ → ℂ) :
@@ -54,14 +55,20 @@ theorem mobiusAdditiveTriangleSecondCesaro_eq_mobiusMertensSelfConvolution (N : 
     simp only [C, A, PowerSeries.coeff_mk, PowerSeries.coeff_mul,
       mobiusAdditiveConvolution]
   have hT : T = C * G := by
-    simpa only [T, C, G, mobiusAdditiveTriangle] using
-      mk_partialSums_eq_mul_geometricPowerSeries mobiusAdditiveConvolution
+    change PowerSeries.mk (fun N =>
+      ∑ k ∈ Finset.range (N + 1), mobiusAdditiveConvolution k) =
+        PowerSeries.mk mobiusAdditiveConvolution * PowerSeries.mk (fun _n => (1 : ℂ))
+    exact mk_partialSums_eq_mul_geometricPowerSeries mobiusAdditiveConvolution
   have hU : U = T * G := by
-    simpa only [U, T, G, mobiusAdditiveTriangleSecondCesaro] using
-      mk_partialSums_eq_mul_geometricPowerSeries mobiusAdditiveTriangle
+    change PowerSeries.mk (fun N =>
+      ∑ k ∈ Finset.range (N + 1), mobiusAdditiveTriangle k) =
+        PowerSeries.mk mobiusAdditiveTriangle * PowerSeries.mk (fun _n => (1 : ℂ))
+    exact mk_partialSums_eq_mul_geometricPowerSeries mobiusAdditiveTriangle
   have hM : M = A * G := by
-    simpa only [M, A, G, mobiusMertensPartialSum] using
-      mk_partialSums_eq_mul_geometricPowerSeries mobiusComplexCoefficient
+    change PowerSeries.mk (fun N =>
+      ∑ k ∈ Finset.range (N + 1), mobiusComplexCoefficient k) =
+        PowerSeries.mk mobiusComplexCoefficient * PowerSeries.mk (fun _n => (1 : ℂ))
+    exact mk_partialSums_eq_mul_geometricPowerSeries mobiusComplexCoefficient
   have hseries : U = M * M := by
     rw [hU, hT, hC, hM]
     ring
@@ -109,11 +116,6 @@ theorem summable_mobiusAdditiveTriangleSecondCesaro_mul_exp_neg
     have hs := h3.add ((h2.mul_left 3).add ((h1.mul_left 3).add h0))
     convert hs using 1
     funext N
-    change (((N : ℝ) + 1) ^ 3) * Real.exp (-((N : ℝ) * x)) =
-      (N : ℝ) ^ 3 * Real.exp (-((N : ℝ) * x)) +
-        (3 * ((N : ℝ) ^ 2 * Real.exp (-((N : ℝ) * x))) +
-          (3 * ((N : ℝ) ^ 1 * Real.exp (-((N : ℝ) * x))) +
-            (N : ℝ) ^ 0 * Real.exp (-((N : ℝ) * x))))
     ring
   apply Summable.of_norm
   refine Summable.of_nonneg_of_le (fun N => norm_nonneg _) (fun N => ?_) hmajor
@@ -289,15 +291,17 @@ theorem norm_mobiusAdditiveTriangleSecondCesaro_le_of_mertensBound
   have hθ : 0 ≤ (1 / 2 : ℝ) + δ := by linarith
   rw [mobiusAdditiveTriangleSecondCesaro_eq_mobiusMertensSelfConvolution]
   calc
-    ‖mobiusMertensSelfConvolution N‖ ≤ ∑ ab ∈ Finset.antidiagonal N,
+    ‖mobiusMertensSelfConvolution N‖ ≤
+        ∑ ab ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) N,
         ‖mobiusMertensPartialSum ab.1 * mobiusMertensPartialSum ab.2‖ := by
       rw [mobiusMertensSelfConvolution]
       exact norm_sum_le _ _
-    _ ≤ ∑ _ab ∈ Finset.antidiagonal N,
+    _ ≤ ∑ _ab ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) N,
         C ^ 2 * X ^ (1 + 2 * δ) := by
       apply Finset.sum_le_sum
       intro ab hab
-      have habSum : ab.1 + ab.2 = N := Finset.mem_antidiagonal.mp hab
+      have habSum : ab.1 + ab.2 = N :=
+        Finset.HasAntidiagonal.mem_antidiagonal.mp hab
       have haN : ab.1 ≤ N := by omega
       have hbN : ab.2 ≤ N := by omega
       have haBase : (ab.1 : ℝ) + 1 ≤ X := by
@@ -329,7 +333,7 @@ theorem norm_mobiusAdditiveTriangleSecondCesaro_le_of_mertensBound
           exact (Real.rpow_add hX _ _).symm
         _ = C ^ 2 * X ^ (1 + 2 * δ) := by
           congr 1
-          ring
+          ring_nf
     _ = ((N : ℝ) + 1) * (C ^ 2 * X ^ (1 + 2 * δ)) := by
       rw [Finset.sum_const, Finset.Nat.card_antidiagonal, nsmul_eq_mul]
       norm_cast
@@ -342,7 +346,7 @@ theorem norm_mobiusAdditiveTriangleSecondCesaro_le_of_mertensBound
         _ = C ^ 2 * X ^ ((1 : ℝ) + (1 + 2 * δ)) := by
           congr 1
           exact (Real.rpow_add hX _ _).symm
-        _ = C ^ 2 * X ^ (2 + 2 * δ) := by ring
+        _ = C ^ 2 * X ^ (2 + 2 * δ) := by ring_nf
 
 /-- The classical Mertens half-power family gives the second-Cesàro source family by the exact
 self-convolution identity. -/
@@ -385,8 +389,8 @@ theorem norm_sq_mobiusDiscreteLaplaceTransform_le_of_secondCesaroSubpowerUpperBo
   have hmoment := summable_natSucc_rpow_exp_neg_and_tsum_le hr hx
   have hb : Summable (fun N : ℕ => b N * Real.exp (-((N : ℝ) * x))) := by
     have hmul := hmoment.1.mul_left C
-    convert hmul using 1
-    funext N
+    apply hmul.congr
+    intro N
     dsimp [b]
     ring
   have hsquare :=
@@ -425,7 +429,7 @@ theorem norm_sq_mobiusDiscreteLaplaceTransform_le_of_secondCesaroSubpowerUpperBo
       _ = mobiusAdditiveTriangleSecondCesaroSubpowerAbelConstant ε *
           (1 / x) ^ (r + 1) := by
         dsimp [mobiusAdditiveTriangleSecondCesaroSubpowerAbelConstant, r]
-        ring
+        ring_nf
   have htsum :
       (∑' N : ℕ, b N * Real.exp (-((N : ℝ) * x))) ≤
         C * (mobiusAdditiveTriangleSecondCesaroSubpowerAbelConstant ε *

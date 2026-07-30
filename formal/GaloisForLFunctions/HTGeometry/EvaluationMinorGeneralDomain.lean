@@ -49,7 +49,7 @@ theorem exists_injective_evaluation_minor_of_linearIndependent
     rw [← heval i, ← heval j, hij]
   let P : Matrix J J ℂ := Matrix.of fun r s => w r s
   have hProws : LinearIndependent ℂ P.row := by
-    simpa only [P, Matrix.row, Matrix.of_apply] using hwLI
+    simpa only [P, Matrix.row, Matrix.of_apply] using! hwLI
   obtain ⟨Q, hPQ⟩ := exists_matrix_rightInverse_of_linearIndependent_rows P hProws
   have hPdet : P.det ≠ 0 := Matrix.det_ne_zero_of_right_inverse hPQ
   refine ⟨e, P, he, isUnit_iff_ne_zero.mpr hPdet, ?_⟩
@@ -93,7 +93,7 @@ theorem exists_injective_finiteEvaluationHilbertReconstruction_of_linearIndepend
     intro q r
     have hentry := congrArg (fun M : Matrix J J ℂ => M q r)
       (P.nonsing_inv_mul hdet)
-    simpa [dual, Matrix.mul_apply, hP] using hentry
+    simpa [dual, Matrix.mul_apply, hP, Matrix.one_apply] using! hentry
   have hrecovery : ∀ (a : J → ℂ) q,
       ∑ i, dual q i * (∑ r, a r * u r (points i)) = a q := by
     intro a q

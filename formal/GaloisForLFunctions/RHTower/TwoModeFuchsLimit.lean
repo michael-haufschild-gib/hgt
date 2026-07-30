@@ -236,7 +236,7 @@ theorem ccm_twoMode_parity_floor_ratio_tendsto_zero
             (fuchsRate A₂ 2 lam) (fuchsRate A₆ 6 lam) (Real.sqrt 8) (Real.sqrt 5) /
           fuchsRate A₆ 6 lam))
       Filter.atTop (nhds 0) := by
-    simpa only [Pi.mul_apply, Pi.div_apply, Nat.reduceAdd] using h
+    simpa only [Pi.mul_apply, Pi.div_apply, Nat.reduceAdd] using! h
   refine hlim.congr' ?_
   filter_upwards [Filter.eventually_gt_atTop (0 : ℝ)] with lam hlam
   have hd₄ : fuchsRate A₄ 4 lam ≠ 0 := (fuchsRate_pos hA₄ 4 hlam).ne'
@@ -302,7 +302,7 @@ theorem ccm_twoMode_parity_floor_scaled_ratio
             (fuchsRate A₂ 2 lam) (fuchsRate A₆ 6 lam) (Real.sqrt 8) (Real.sqrt 5) /
           fuchsRate A₆ 6 lam))
       Filter.atTop (nhds (13 * A₄ / (11 * A₆))) := by
-    simpa only [Pi.mul_apply, Pi.div_apply] using h
+    simpa only [Pi.mul_apply, Pi.div_apply] using! h
   refine hlim.congr' ?_
   filter_upwards [Filter.eventually_gt_atTop (0 : ℝ)] with lam hlam
   have hd₄ : fuchsRate A₄ 4 lam ≠ 0 := (fuchsRate_pos hA₄ 4 hlam).ne'

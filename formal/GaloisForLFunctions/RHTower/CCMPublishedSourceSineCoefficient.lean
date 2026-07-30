@@ -58,14 +58,23 @@ theorem ccmPublishedPolarPrimeSineCoefficient_eq_completedErrorCosineMoment
     intro x _hx
     have hr : HasDerivAt (fun h : ℝ => Real.sin (ξ * h))
         (ξ * Real.cos (ξ * x)) x := by
-      simpa only [Function.comp_apply, mul_one, mul_comm] using
-        (Real.hasDerivAt_sin (ξ * x)).comp x
-          ((hasDerivAt_id x).const_mul ξ)
+      have hcomp := (Real.hasDerivAt_sin (ξ * x)).comp x
+        ((hasDerivAt_id x).const_mul ξ)
+      have hcomp' := hcomp.congr_deriv
+        (show Real.cos (ξ * x) * (ξ * 1) = ξ * Real.cos (ξ * x) by ring)
+      refine hcomp'.congr_of_eventuallyEq ?_
+      filter_upwards with h
+      rfl
     have hc :=
       (Complex.ofRealCLM.hasFDerivAt.comp x hr.hasFDerivAt).hasDerivAt
-    simpa only [F, F', Function.comp_apply, ContinuousLinearMap.coe_comp,
-      ContinuousLinearMap.comp_apply, ContinuousLinearMap.toSpanSingleton_apply,
-      one_smul] using hc
+    have hc' : HasDerivAt (Complex.ofRealCLM ∘ fun h => Real.sin (ξ * h))
+        (F' x) x := by
+      apply hc.congr_deriv
+      simp only [F', ContinuousLinearMap.comp_apply, ContinuousLinearMap.toSpanSingleton_apply,
+        one_smul, Complex.ofRealCLM_apply]
+    apply hc'.congr_of_eventuallyEq
+    filter_upwards with h
+    rfl
   have hF' : IntervalIntegrable F' volume 0 (2 * a) := by
     have hc : Continuous F' := by
       dsimp only [F']

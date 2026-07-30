@@ -116,7 +116,7 @@ theorem projectiveCauchyJet_linftyBochnerControl_surjective
     (fun k => (t k : OnePoint ℝ)) htsupport
   have hsurj := cauchyJetRealLinearCombination_surjective x hx hupper n t ht
   simpa [K, projectiveCauchyJetColumn, projectiveCauchyPower,
-    cauchyJetRealLinearCombination, cauchyJetColumn] using hsurj
+    cauchyJetRealLinearCombination, cauchyJetColumn] using! hsurj
 
 /-- Finite real parameters belonging to the topological support of a projective measure. -/
 def finiteProjectiveSupport (mu : Measure (OnePoint ℝ)) : Type :=

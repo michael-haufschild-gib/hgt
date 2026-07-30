@@ -33,15 +33,18 @@ theorem exponentialRemainderMoment_pointedWard (rate : ℝ) (b : ℕ) :
   have hF (u : ℝ) : HasDerivAt F (F' u) u := by
     have hpow : HasDerivAt (fun v : ℝ ↦ v ^ (b + 1))
         ((b + 1 : ℝ) * u ^ b) u := by
-      convert (hasDerivAt_id u).pow (b + 1) using 1 <;> simp [id_eq]
+      convert! (hasDerivAt_id u).pow (b + 1) using 1
+      simp [id_eq]
     have hphase : HasDerivAt (fun v : ℝ ↦ -rate * (1 - v)) rate u := by
-      convert (hasDerivAt_const u (-rate)).mul
-          ((hasDerivAt_const u 1).sub (hasDerivAt_id u)) using 1 <;> ring
+      convert! (hasDerivAt_const u (-rate)).mul
+          ((hasDerivAt_const u 1).sub (hasDerivAt_id u)) using 1
+      ring
     have hexp : HasDerivAt (fun v : ℝ ↦ Real.exp (-rate * (1 - v)))
         (Real.exp (-rate * (1 - u)) * rate) u :=
       (Real.hasDerivAt_exp _).comp u hphase
     dsimp only [F, F']
-    convert hpow.mul hexp using 1 <;> ring
+    convert! hpow.mul hexp using 1
+    ring
   have hderiv : deriv F = F' := by
     funext u
     exact (hF u).deriv

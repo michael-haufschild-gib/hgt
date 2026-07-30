@@ -116,8 +116,27 @@ theorem deningerCompactOpenH1AllJets_local_zero_control
       TendstoLocallyUniformlyOn
         (fun j z => G j z) (fun _ => 0)
         atTop (Metric.ball 0 n) := by
-    simpa only [G, Q, deningerCompactOpenXiMul_apply,
-      Pi.sub_apply] using
+    have hfun :
+        (fun j z => G j z) =
+          fun j z =>
+            (F - P) z -
+              XiC z *
+                deningerLocalXiQuotientTaylorApprox
+                  (F - P) (n + 1) j z := by
+      funext j z
+      change
+        (F z - P z) -
+            deningerCompactOpenXiMul
+              (deningerCompactOpenLocalXiQuotientTaylorApprox
+                (F - P) (n + 1) j) z =
+          (F z - P z) -
+            XiC z *
+              deningerLocalXiQuotientTaylorApprox
+                (F - P) (n + 1) j z
+      rw [deningerCompactOpenXiMul_apply,
+        deningerCompactOpenLocalXiQuotientTaylorApprox_apply]
+    rw [hfun]
+    simpa only [P, S] using
       deningerCompactOpenFiniteJetRepresentative_peeling F n
   obtain ⟨j, hGjA⟩ :=
     (hn G hGconv).exists

@@ -27,7 +27,7 @@ variable {R α : Type*} [CommRing R] [DecidableEq α]
 pair is a face (an edge of the complex). -/
 def oneSkeletonGraph (facets : Finset (Finset α)) : SimpleGraph α where
   Adj u v := u ≠ v ∧ IsFaceOf (↑facets : Set (Finset α)) {u, v}
-  symm := fun _ _ h => ⟨h.1.symm, by rw [Finset.pair_comm]; exact h.2⟩
+  symm := ⟨fun _ _ h => ⟨h.1.symm, by rw [Finset.pair_comm]; exact h.2⟩⟩
   loopless := ⟨fun _ h => h.1 rfl⟩
 
 /-- Two vertices in different connected components of the 1-skeleton form a nonface pair: were their
@@ -37,7 +37,9 @@ theorem not_isFace_of_not_reachable (facets : Finset (Finset α)) {v₀ w : α}
     ¬ IsFaceOf (↑facets : Set (Finset α)) {w, v₀} := by
   intro hf
   have hne : w ≠ v₀ := by rintro rfl; exact hnr (Reachable.refl _)
-  have hadj : (oneSkeletonGraph facets).Adj w v₀ := ⟨hne, hf⟩
+  have hadj : (oneSkeletonGraph facets).Adj w v₀ := by
+    change w ≠ v₀ ∧ IsFaceOf (↑facets : Set (Finset α)) {w, v₀}
+    exact ⟨hne, hf⟩
   exact hnr hadj.reachable.symm
 
 variable [Fintype α]

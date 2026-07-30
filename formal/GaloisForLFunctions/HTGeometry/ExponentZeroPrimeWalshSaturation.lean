@@ -302,8 +302,8 @@ theorem sparseClosedConstraintPrimeWalsh_differentialBasis_and_rank
           (Set.range (primeTailPatternDeltaShiftPalette pi epsilon alpha)) =
         GaloisForLFunctions.differentialAdjoin finitePrimeRationalCoefficientField
           (Set.range (primeWalshShiftPalette epsilon alpha)) ∧
-      Fintype.card (primeRecurringPatternChamber pi epsilon × A) =
-        Fintype.card A * Fintype.card (orientationRestriction I '' K) := by
+      Nat.card (primeRecurringPatternChamber pi epsilon × A) =
+        Nat.card A * Nat.card (orientationRestriction I '' K) := by
   dsimp only
   have hbasis := primeWalshShiftPalette_differentialBasis pi
     (fun i : I => sparseClosedConstraintPrimeOrientation K i.1) alpha hdistinct

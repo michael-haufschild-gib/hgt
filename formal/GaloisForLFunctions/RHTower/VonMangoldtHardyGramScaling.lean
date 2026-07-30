@@ -55,7 +55,7 @@ theorem tendsto_scaled_vonMangoldtPrimeLaplaceChannelComplex
     rw [tendsto_nhdsWithin_iff]
     refine ⟨?_, ?_⟩
     · have hnhds : Tendsto (fun t : ℝ => (t : ℂ) * s) (nhds 0) (nhds 0) := by
-        simpa using (Complex.continuous_ofReal.mul continuous_const).tendsto 0
+        simpa using! (Complex.continuous_ofReal.mul continuous_const).tendsto 0
       exact hnhds.mono_left nhdsWithin_le_nhds
     · filter_upwards [self_mem_nhdsWithin] with t ht
       simp only [Set.mem_compl_iff, Set.mem_singleton_iff]

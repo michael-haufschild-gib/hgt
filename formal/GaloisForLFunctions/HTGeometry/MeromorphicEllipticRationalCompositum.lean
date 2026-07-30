@@ -127,7 +127,7 @@ theorem ratFuncAddTranslation_algebraMap
   have h := RatFunc.liftRingHom_apply_div
     (ratFuncAddTranslationCompHom q)
     (ratFuncAddTranslationCompHom_mem_nonZeroDivisors q) p 1
-  simpa only [map_one, div_one] using h
+  simpa only [map_one, div_one] using! h
 
 /-- Global meromorphic translation intertwines arbitrary rational-coordinate translation. -/
 theorem addTranslationMeroEquiv_ratfuncToMero_addTranslation

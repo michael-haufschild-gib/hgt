@@ -253,7 +253,6 @@ theorem lead_shift_identity (Dat : GradedLeadOver C Λ D)
       rwa [Dat.lead_mul (Dat.emb_ne_zero hrd) hu, Dat.lead_emb hrd,
         Dat.lead_mul (Dat.emb_ne_zero hrn) hQQ, Dat.lead_emb hrn] at this
     have hscaled := congrArg (fun p : C[X] => Polynomial.C (Dat.chi m) * p) hmain
-    simp only at hscaled
     calc ((Dat.lead P).comp (X + 1) * Dat.lead Q
             - Dat.lead P * (Dat.lead Q).comp (X + 1)) * rd
         = rd * (Polynomial.C (Dat.chi m) *

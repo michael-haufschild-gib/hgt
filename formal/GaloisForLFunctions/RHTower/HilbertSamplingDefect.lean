@@ -26,11 +26,11 @@ variable {𝕜 H Y : Type*} [RCLike 𝕜]
 
 /-- The component of a Riesz representer lying in the kernel of the sampling operator. -/
 def hilbertSamplingInvisiblePart (S : H →L[𝕜] Y) (h : H) : H :=
-  S.ker.orthogonalProjection h
+  S.ker.orthogonalProjectionOnto h
 
 /-- The norm of the sampling-invisible component of a Riesz representer. -/
 def hilbertSamplingDefect (S : H →L[𝕜] Y) (h : H) : ℝ :=
-  ‖S.ker.orthogonalProjection h‖
+  ‖S.ker.orthogonalProjectionOnto h‖
 
 /-- Zero Hilbert defect is exactly membership in the closure of the adjoint range. -/
 theorem hilbertSamplingDefect_eq_zero_iff [CompleteSpace Y]
@@ -38,14 +38,14 @@ theorem hilbertSamplingDefect_eq_zero_iff [CompleteSpace Y]
     hilbertSamplingDefect S h = 0 ↔
       h ∈ (ContinuousLinearMap.adjoint S).range.topologicalClosure := by
   rw [hilbertSamplingDefect, norm_eq_zero]
-  rw [Submodule.orthogonalProjectionOntoOnto_eq_zero_iff]
+  rw [Submodule.orthogonalProjectionOnto_eq_zero_iff]
   rw [S.orthogonal_ker]
 
 /-- The canonical invisible component really is killed by the sampling operator. -/
 theorem hilbertSamplingInvisiblePart_mem_ker
     (S : H →L[𝕜] Y) (h : H) :
     hilbertSamplingInvisiblePart S h ∈ S.ker := by
-  exact (S.ker.orthogonalProjection h).property
+  exact (S.ker.orthogonalProjectionOnto h).property
 
 /-- Every sample-invisible test pairs with the representer by at most its norm times the canonical
 Hilbert defect. -/
@@ -53,10 +53,10 @@ theorem norm_inner_le_norm_mul_hilbertSamplingDefect
     (S : H →L[𝕜] Y) (h x : H) (hx : S x = 0) :
     ‖inner 𝕜 x h‖ ≤ ‖x‖ * hilbertSamplingDefect S h := by
   let u : S.ker := ⟨x, hx⟩
-  have hinner : inner 𝕜 u (S.ker.orthogonalProjection h) = inner 𝕜 x h :=
+  have hinner : inner 𝕜 u (S.ker.orthogonalProjectionOnto h) = inner 𝕜 x h :=
     Submodule.inner_orthogonalProjectionOnto_eq_of_mem_left u h
   rw [← hinner]
-  exact norm_inner_le_norm u (S.ker.orthogonalProjection h)
+  exact norm_inner_le_norm u (S.ker.orthogonalProjectionOnto h)
 
 /-- The invisible component attains the squared defect, certifying sharpness without a supremum
 construction. -/
@@ -64,13 +64,13 @@ theorem norm_inner_invisiblePart_eq_defect_sq
     (S : H →L[𝕜] Y) (h : H) :
     ‖inner 𝕜 (hilbertSamplingInvisiblePart S h) h‖ =
       hilbertSamplingDefect S h ^ 2 := by
-  let u : S.ker := S.ker.orthogonalProjection h
-  have hinner : inner 𝕜 u (S.ker.orthogonalProjection h) =
+  let u : S.ker := S.ker.orthogonalProjectionOnto h
+  have hinner : inner 𝕜 u (S.ker.orthogonalProjectionOnto h) =
       inner 𝕜 (hilbertSamplingInvisiblePart S h) h := by
     simp [u, hilbertSamplingInvisiblePart]
   calc
     ‖inner 𝕜 (hilbertSamplingInvisiblePart S h) h‖ =
-        ‖inner 𝕜 u (S.ker.orthogonalProjection h)‖ := congrArg norm hinner.symm
+        ‖inner 𝕜 u (S.ker.orthogonalProjectionOnto h)‖ := congrArg norm hinner.symm
     _ = ‖inner 𝕜 u u‖ := by rfl
     _ = ‖u‖ ^ 2 := by rw [inner_self_eq_norm_sq_to_K]; simp
     _ = hilbertSamplingDefect S h ^ 2 := by rfl

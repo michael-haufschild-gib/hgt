@@ -159,7 +159,7 @@ theorem iteratedFDeriv_mvPolynomial_eval_coordinate_word {d n : ℕ}
         rw [fderiv_mvPolynomial_eval_complex_apply]
         simp [coordinateJetDirection, Pi.single_apply]
       rw [hcoord]
-      simpa [iteratedPDerivWord] using
+      simpa [iteratedPDerivWord] using!
         ih (MvPolynomial.pderiv (word (Fin.last n)) P) (Fin.init word)
 
 /-- Ordered coordinate Frechet jets are centered coefficients with their exact factorial

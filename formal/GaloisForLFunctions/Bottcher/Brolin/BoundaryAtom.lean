@@ -54,7 +54,7 @@ theorem brolinLimitOnEscapeDisk_atom_pressure_of_mem_filledJulia_of_disconnected
     hconst.add hscaled
   have htruncInt :
       Integrable (fun w : escapeDisk c => truncatedLogKernel z δ (w : ℂ)) μK := by
-    simpa [truncatedLogKernelOnEscapeDisk, μK] using
+    simpa [truncatedLogKernelOnEscapeDisk, μK] using!
       (truncatedLogKernelOnEscapeDisk c z δ hδ).integrable μK
   have hmono :
       (fun w : escapeDisk c => B + (A - B) * atomIndicator w) ≤
@@ -158,7 +158,7 @@ theorem brolinLimitOnEscapeDisk_ball_pressure_of_mem_filledJulia_of_disconnected
     hconst.add hscaled
   have htruncInt :
       Integrable (fun w : escapeDisk c => truncatedLogKernel z δ (w : ℂ)) μK := by
-    simpa [truncatedLogKernelOnEscapeDisk, μK] using
+    simpa [truncatedLogKernelOnEscapeDisk, μK] using!
       (truncatedLogKernelOnEscapeDisk c z δ hδ).integrable μK
   have hmono :
       (fun w : escapeDisk c => B + (A - B) * ballIndicator w) ≤
@@ -306,7 +306,7 @@ theorem brolinLimitOnEscapeDisk_closedBall_pressure_of_mem_filledJulia_of_discon
     hconst.add hscaled
   have htruncInt :
       Integrable (fun w : escapeDisk c => truncatedLogKernel z δ (w : ℂ)) μK := by
-    simpa [truncatedLogKernelOnEscapeDisk, μK] using
+    simpa [truncatedLogKernelOnEscapeDisk, μK] using!
       (truncatedLogKernelOnEscapeDisk c z δ hδ).integrable μK
   have hmono :
       (fun w : escapeDisk c => B + (A - B) * ballIndicator w) ≤

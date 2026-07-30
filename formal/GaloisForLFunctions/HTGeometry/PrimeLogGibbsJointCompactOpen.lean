@@ -250,8 +250,10 @@ theorem universalPrimeOrientationHermitianGibbsJointCompactOpenLimit_iff
     rw [heq]
     exact universalFacetOrbitGauge_primeLogHerglotz_im_nonneg hz
   · rintro rfl
-    simpa only [universalPrimeOrientationLimit_empty] using
-      universalFacetOrbitGauge_finiteHermitianGibbsResponse_tendstoLocallyUniformlyOn_joint
+    unfold UniversalPrimeOrientationHermitianGibbsJointCompactOpenLimit
+    exact
+      universalFacetOrbitGauge_finiteHermitianGibbsResponse_tendstoLocallyUniformlyOn_joint.congr_right
+        (fun z _ => (universalPrimeOrientationLimit_empty z).symm)
 
 /-- Compact-open and pointwise joint selectors impose the same canonical orientation, while the
 compact-open form additionally supplies every analytic jet. -/

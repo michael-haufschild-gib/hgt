@@ -81,8 +81,9 @@ theorem tendsto_gammaSewnMobiusJuliaEulerLogCoefficient_nhdsGT_zero
         xiGammaEulerValuationNat pe = n := by
       have hx := congrArg Subtype.val
         (Nat.Primes.prodNatEquiv.apply_symm_apply ⟨n, hpow⟩)
-      simpa only [pe, xiGammaEulerValuationNat,
-        Nat.Primes.coe_prodNatEquiv_apply] using hx
+      change (pe.1 : ℕ) ^ (pe.2 + 1) = n
+      rw [← Nat.Primes.coe_prodNatEquiv_apply]
+      exact hx
     have hlim :=
       (tendsto_gammaSewnMobiusJuliaHardHalfWeightTransport_nhdsGT_zero
         (-1) pe).pow 2
@@ -115,7 +116,10 @@ theorem tendsto_gammaSewnMobiusJuliaEulerLogCoefficient_nhdsGT_zero
         pe.1 pe.2 pe.1.property]
       norm_num
     rw [htarget] at hcast
-    simpa only [gammaSewnMobiusJuliaEulerLogCoefficient, hpow, pe] using hcast
+    apply hcast.congr'
+    filter_upwards with x
+    simp only [gammaSewnMobiusJuliaEulerLogCoefficient, dif_pos hpow, pe,
+      Function.comp_apply]
   · rw [eulerLogDirichletCoeff_eq_zero_of_not_primePower hpow]
     simp only [gammaSewnMobiusJuliaEulerLogCoefficient, hpow]
     exact tendsto_const_nhds

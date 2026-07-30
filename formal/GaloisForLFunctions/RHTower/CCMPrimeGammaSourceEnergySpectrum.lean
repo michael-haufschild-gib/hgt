@@ -41,7 +41,7 @@ theorem xiRectangularPrimeGammaLogCoefficient_eq_weilLogCoefficient_re
       (xiRectangularWeilLogCoefficient L n).re := by
   unfold xiRectangularPrimeGammaLogCoefficient xiRectangularWeilLogCoefficient
   simpa only [Complex.add_re, Complex.mul_re, Complex.ofReal_re,
-    Complex.ofReal_im, Complex.neg_re, mul_zero, sub_zero] using
+    Complex.ofReal_im, Complex.neg_re, mul_zero, sub_zero] using!
     congrArg Complex.re
       (xiWeilPolarization_rectangular_eq_prime_add_arch hL hLn).symm
 

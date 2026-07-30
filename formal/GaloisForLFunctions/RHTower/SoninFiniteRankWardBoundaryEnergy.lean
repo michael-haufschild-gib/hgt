@@ -35,10 +35,10 @@ theorem hsNormSq_commutator_eq_boundary_sum_of_hilbertSchmidt
   let L : H →L[ℂ] H := crossBoundary e X
   let U : H →L[ℂ] H := upperBoundary e X
   have hL : IsHilbertSchmidt L := by
-    simpa only [L, crossBoundary, mul_assoc] using
+    simpa only [L, crossBoundary, mul_assoc] using!
       (hX.comp_right e).comp_left (1 - e)
   have hU : IsHilbertSchmidt U := by
-    simpa only [U, upperBoundary, mul_assoc] using
+    simpa only [U, upperBoundary, mul_assoc] using!
       (hX.comp_right (1 - e)).comp_left e
   have hAdjL : adjoint L = upperBoundary e (adjoint X) := by
     dsimp only [L]
@@ -89,9 +89,9 @@ theorem finiteRankCutoffWardForm_self_eq_zero_iff_boundaries
         upperBoundary e (finiteRankProbe c x y) = 0 := by
   have hP := finiteRankProbe_isHilbertSchmidt c x y
   have hL : IsHilbertSchmidt (crossBoundary e (finiteRankProbe c x y)) := by
-    simpa only [crossBoundary, mul_assoc] using (hP.comp_right e).comp_left (1 - e)
+    simpa only [crossBoundary, mul_assoc] using! (hP.comp_right e).comp_left (1 - e)
   have hU : IsHilbertSchmidt (upperBoundary e (finiteRankProbe c x y)) := by
-    simpa only [upperBoundary, mul_assoc] using (hP.comp_right (1 - e)).comp_left e
+    simpa only [upperBoundary, mul_assoc] using! (hP.comp_right (1 - e)).comp_left e
   rw [finiteRankCutoffWardForm_self_eq_boundary_energy_sum e he heAdj c x y,
     Complex.ofReal_eq_zero,
     add_eq_zero_iff_of_nonneg (hsNormSq_nonneg _) (hsNormSq_nonneg _),
@@ -169,7 +169,7 @@ theorem finiteRankCutoffWardForm_self_eq_two_mul_crossBoundary
   let P := finiteRankProbe c x y
   have hP : IsHilbertSchmidt P := finiteRankProbe_isHilbertSchmidt c x y
   have hL : IsHilbertSchmidt (crossBoundary e P) := by
-    simpa only [crossBoundary, mul_assoc] using (hP.comp_right e).comp_left (1 - e)
+    simpa only [crossBoundary, mul_assoc] using! (hP.comp_right e).comp_left (1 - e)
   have henergy := hsNormSq_commutator_eq_two_mul_crossBoundary_of_selfAdjoint
     e P he heAdj hPAdj hL
   rw [finiteRankCutoffWardForm_self_eq_hsNormSq]
@@ -188,7 +188,7 @@ theorem finiteRankCutoffWardForm_self_eq_zero_iff_crossBoundary
   simp only [OfNat.ofNat_ne_zero, false_or]
   exact hsNormSq_eq_zero_iff (by
     have hP := finiteRankProbe_isHilbertSchmidt c x y
-    simpa only [crossBoundary, mul_assoc] using (hP.comp_right e).comp_left (1 - e))
+    simpa only [crossBoundary, mul_assoc] using! (hP.comp_right e).comp_left (1 - e))
 
 /-- Real diagonal packets on the actual even position cutoff satisfy the exact one-way Sonin
 boundary-energy law with no remaining structural hypothesis. -/
@@ -256,7 +256,7 @@ theorem finiteRankCutoffWardForm_evenFourier_reflected_ofReal_self_eq_zero_iff
   simp only [OfNat.ofNat_ne_zero, false_or]
   exact hsNormSq_eq_zero_iff (by
     have hP := finiteRankProbe_isHilbertSchmidt (fun i ↦ (r i : ℂ)) x x
-    simpa only [crossBoundary, mul_assoc] using
+    simpa only [crossBoundary, mul_assoc] using!
       (hP.comp_right (evenIndicatorCutoff a)).comp_left (1 - evenIndicatorCutoff a))
 
 end RHTower

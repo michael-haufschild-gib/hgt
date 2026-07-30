@@ -24,7 +24,7 @@ noncomputable section
 theorem continuous_xiInitialJetRealChannelFeature (n : ℕ) :
     ∀ j, Continuous (xiInitialJetRealChannelFeature n j) := by
   simpa only [xiInitialJetRealChannelFeature,
-    xiDerivativeOrderRealChannelFeature] using
+    xiDerivativeOrderRealChannelFeature] using!
     continuous_xiDerivativeOrderRealChannelFeature
       (fun j : Fin (n + 1) => (j : ℕ))
 
@@ -36,7 +36,7 @@ theorem linearIndependent_xiInitialJetRealChannelFeature_on_compl
       (fun j => fun sample : {sample : ℂ × Bool // sample ∉ F} =>
         xiInitialJetRealChannelFeature n j sample) := by
   simpa only [xiInitialJetRealChannelFeature,
-    xiDerivativeOrderRealChannelFeature] using
+    xiDerivativeOrderRealChannelFeature] using!
     (linearIndependent_xiDerivativeOrderRealChannelFeature_on_compl_iff_injective
       (fun j : Fin (n + 1) => (j : ℕ)) F hF).2 Fin.val_injective
 
@@ -75,15 +75,15 @@ theorem exists_injective_xiInitialJetRealChannelCofiniteHilbertReconstruction
       (fun j : Fin (n + 1) => (j : ℕ)) Fin.val_injective F hF
   refine ⟨points, dual, hinj, ?_, ?_, ?_, ?_⟩
   · simpa only [xiInitialJetRealChannelFeature,
-      xiDerivativeOrderRealChannelFeature] using hdelta
+      xiDerivativeOrderRealChannelFeature] using! hdelta
   · simpa only [xiInitialJetRealChannelFeature,
-      xiDerivativeOrderRealChannelFeature] using hrecovery
-  · simpa only [xiInitialJetRealChannelFeature,
-      xiDerivativeOrderRealChannelFeature,
-      cofiniteRealEvaluationGram_xiInitialJetRealChannel] using hgram
+      xiDerivativeOrderRealChannelFeature] using! hrecovery
   · simpa only [xiInitialJetRealChannelFeature,
       xiDerivativeOrderRealChannelFeature,
-      cofiniteRealEvaluationGram_xiInitialJetRealChannel] using hdet
+      cofiniteRealEvaluationGram_xiInitialJetRealChannel] using! hgram
+  · simpa only [xiInitialJetRealChannelFeature,
+      xiDerivativeOrderRealChannelFeature,
+      cofiniteRealEvaluationGram_xiInitialJetRealChannel] using! hdet
 
 /-- **Finite/cofinite initial-jet tagged-real connector.** One finite exact real-channel packet
 exists exactly when exact reconstruction survives every finite deletion of tagged observations. -/

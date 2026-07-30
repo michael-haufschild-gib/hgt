@@ -335,7 +335,7 @@ theorem joint_hzeta_upperEnd_differentialIndependent_finite
       (congrArg (fun z : ι × Fin (N + 1) => z.2.1) hpq)
   have hrect := joint_hzeta_upperEnd_rectangle_algebraicIndependent hs1 hmono N
   have hcomp := hrect.comp e he
-  simpa [e, jointHzetaUpperEndFieldJet] using hcomp
+  simpa [e, jointHzetaUpperEndFieldJet] using! hcomp
 
 /-- Rational linear independence gives finite-family object-level joint hypertranscendence. -/
 theorem joint_hzeta_upperEnd_differentialIndependent_finite_of_linearIndependent
@@ -375,7 +375,7 @@ theorem joint_hzeta_upperEnd_differentialIndependent
   let sJ : J → ℂ := fun j => s j.1
   have hs1J : ∀ j, 1 < (sJ j).re := fun j => hs1 j.1
   have hsQJ : LinearIndependent ℚ (exponentFamily sJ) := by
-    simpa [sJ] using exponentFamily_linearIndependent_comp s hsQ
+    simpa [sJ] using! exponentFamily_linearIndependent_comp s hsQ
       (fun j : J => j.1) Subtype.val_injective
   have hfin :=
     joint_hzeta_upperEnd_differentialIndependent_finite_of_linearIndependent hs1J hsQJ
@@ -389,7 +389,7 @@ theorem joint_hzeta_upperEnd_differentialIndependent
     · exact congrArg (fun z : J × ℕ => z.1.1) hpq
     · exact congrArg (fun z : J × ℕ => z.2) hpq
   have hcomp := hfin.comp et het
-  simpa [et, sJ] using hcomp
+  simpa [et, sJ] using! hcomp
 
 end
 

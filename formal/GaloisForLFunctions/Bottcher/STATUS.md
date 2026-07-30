@@ -4,7 +4,7 @@ Goal: build, from Mathlib up, a machine-checked proof of
 `q62-bottcher-independence-n2-all-parameters` (Nguyen Q6.2, quadratic nonexceptional).
 The q62 card statement is NOT to be altered; the Lean tower must reach exactly it.
 
-Toolchain: `leanprover/lean4:v4.30.0`, Mathlib pinned. Iterate with
+Toolchain: `leanprover/lean4:v4.32.2`, Mathlib pinned. Iterate with
 `lake env lean GaloisForLFunctions/Bottcher/<File>.lean` (and `lake build <module>` for oleans).
 Discipline: ZERO sorries (verified by grep on every checkpoint). Finite-energy /
 analytic side-conditions ride as explicit hypotheses, never as sorries.

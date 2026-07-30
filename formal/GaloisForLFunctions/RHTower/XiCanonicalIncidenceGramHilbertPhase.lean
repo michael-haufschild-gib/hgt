@@ -362,8 +362,13 @@ theorem xiRootedStarCanonicalIncidenceGram_eq_one_iff
     have hlabel :
         Function.Injective (xiShiftRootedStarLabel shift) :=
       (xiShiftRootedStarLabel_injective_iff shift).2 hcollisionFree
-    simpa [xiShiftRootedStarLabel, xiShiftRootedStarTail,
-      xiShiftRootedStarHead] using
+    change
+      pointedCollisionIncidenceGram
+          (xiShiftRootedStarLabel shift)
+          ((xiShiftRootedStarLabel shift) none)
+          (fun _ : Fin d => none) (fun i : Fin d => some i) =
+        (1 : Matrix (Fin d) (Fin d) ℝ)
+    exact
       pointedCollisionIncidenceGram_rootedStar_eq_one_of_injective
         (xiShiftRootedStarLabel shift) hlabel
 

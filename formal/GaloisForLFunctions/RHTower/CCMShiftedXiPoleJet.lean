@@ -164,7 +164,7 @@ theorem exists_xiShiftedZetaCancelledTerm_off_support_factorization
           (f := fun s : ℂ => s - xiRightCenteredZero r)
           (y := xiRightShiftedPole q - xiRightCenteredZero r)
           (x := xiRightShiftedPole q) houter hinner rfl
-      simpa only [Function.comp_apply] using hcomp
+      simpa only [Function.comp_apply] using! hcomp
   · have hpoleball : xiRightShiftedPole q - 1 / 2 ∈ ball (q.1.1 : ℂ) R := by
       rw [hshift]
       exact hball
@@ -220,12 +220,12 @@ theorem exists_xiShiftedZetaCancelledTerm_local_factorization
     | zero =>
         rw [hderiv]
         have hh := (hhan (q.1.1 : ℂ) hball).differentiableAt.hasDerivAt
-        simpa using
+        simpa using!
           ((((hasDerivAt_id (q.1.1 : ℂ)).sub_const (q.1.1 : ℂ)).pow 1).mul hh).deriv
     | succ k =>
         rw [hderiv]
         have hh := (hhan (q.1.1 : ℂ) hball).differentiableAt.hasDerivAt
-        simpa using
+        simpa using!
           ((((hasDerivAt_id (q.1.1 : ℂ)).sub_const (q.1.1 : ℂ)).pow (k + 2)).mul hh).deriv
   · rw [xiShiftedZetaCancelledTerm, Function.update_of_ne hsp,
       hfact (s - 1 / 2) hs, regularizedRiemannZeta_of_ne_one]

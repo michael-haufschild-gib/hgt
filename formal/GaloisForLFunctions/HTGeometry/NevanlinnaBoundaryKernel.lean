@@ -119,8 +119,8 @@ theorem boundaryBarycenter_withDensity_projective
 
 /-- An atomless projective parameter law produces an atomless real carrier. -/
 theorem barycenter_noAtoms (eta : ProbabilityMeasure (OnePoint ℝ))
-    [NoAtoms (eta : Measure (OnePoint ℝ))] :
-    NoAtoms (F.barycenter eta : Measure ℝ) := by
+    [NullSingletonClass (eta : Measure (OnePoint ℝ))] :
+    NullSingletonClass (F.barycenter eta : Measure ℝ) := by
   exact boundaryBarycenter_noAtoms (eta : Measure (OnePoint ℝ))
     (fun t => (F.leaf t : Measure ℝ)) F.matrix.projectiveLabel F.measurable_leaf
     (F.matrix.continuous_projectiveLabel F.continuous_c F.continuous_d).measurable

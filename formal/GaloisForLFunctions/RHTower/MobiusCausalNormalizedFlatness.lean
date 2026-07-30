@@ -50,7 +50,8 @@ theorem hasDerivAt_zeta_two_add_four_mul {ω : ℝ} (hω : 0 < ω) :
   have hζ : HasDerivAt riemannZeta (deriv riemannZeta (2 + 4 * (ω : ℂ))) (2 + 4 * (ω : ℂ)) :=
     (differentiableAt_riemannZeta (two_add_four_mul_ne_one ω hω)).hasDerivAt
   have h := hζ.scomp ω hlin
-  simpa [Function.comp, smul_eq_mul, mul_comm] using h
+  exact h.congr_of_eventuallyEq
+    (Filter.Eventually.of_forall fun _ => rfl)
 
 theorem hasDerivAt_zeta_one_add_two_mul {ω : ℝ} (hω : 0 < ω) :
     HasDerivAt (fun w : ℝ => riemannZeta (1 + 2 * (w : ℂ)))

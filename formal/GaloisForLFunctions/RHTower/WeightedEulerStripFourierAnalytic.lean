@@ -198,7 +198,7 @@ theorem hasDerivAt_stripFourier {g : ℂ → ℂ} (hg : Differentiable ℂ g)
       congr 2
       ring
     rw [hfun] at h3
-    convert h3 using 1
+    convert! h3 using 1
     ring
 
 /-- The strip Fourier transform is analytic on the open strip. -/

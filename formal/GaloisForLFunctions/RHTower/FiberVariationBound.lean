@@ -124,7 +124,6 @@ theorem sum_mul_abs_fiber_diff_le (N : ℕ) (hN : 1 ≤ N) :
     (fun u => (N : ℝ) / u * (vonMangoldt u + 1))
     (fun k => N / (k + 1)) N
     (fun k _ => Nat.div_le_div_left (by omega) (by omega))
-  dsimp only at hpart
   have hd0 : N / (0 + 1) = N := by norm_num
   have hdN : N / (N + 1) = 0 := Nat.div_eq_of_lt (by omega)
   rw [hd0, hdN] at hpart

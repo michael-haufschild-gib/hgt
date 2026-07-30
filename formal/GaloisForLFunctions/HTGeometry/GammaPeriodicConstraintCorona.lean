@@ -156,11 +156,11 @@ theorem gammaPeriodicMode_shiftedTaylorConormal_hasSum (m k : ℕ) :
       gammaPeriodicFrequency m ^ (n + k + 1) / (n + 1).factorial) 0 := by
   have h := (gammaPeriodicMode_taylorConormal_hasSum m).mul_left
     (gammaPeriodicFrequency m ^ k)
-  convert h using 1
-  · funext n
-    rw [show n + k + 1 = k + (n + 1) by omega, pow_add]
-    ring
-  · simp
+  simp only [mul_zero] at h
+  apply HasSum.congr_fun h
+  intro n
+  rw [show n + k + 1 = k + (n + 1) by omega, pow_add]
+  ring
 
 /-- **Cyclic source-conormal law.**  Every finite period-one Fourier packet is annihilated by
 every shifted factorial-tail conormal `D^k (exp D - 1)`.  These infinitely many constant-field

@@ -775,21 +775,25 @@ theorem hasDerivAt_xiMobiusPrimeContinuousApertureDiagonal_zero
   have harg : HasDerivAt (fun a : ℝ => -a * L) (-L) 0 := by
     simpa using (hasDerivAt_id (0 : ℝ)).neg.mul_const L
   have hr : HasDerivAt (fun a : ℝ => Real.exp (-a * L)) (-L) 0 := by
-    simpa using (Real.hasDerivAt_exp (-0 * L)).comp 0 harg
+    simpa using! (Real.hasDerivAt_exp (-0 * L)).comp 0 harg
   have hnum : HasDerivAt (fun a : ℝ => 1 - Real.exp (-a * L)) L 0 := by
-    simpa using (hasDerivAt_const (0 : ℝ) (1 : ℝ)).sub hr
+    simpa using! (hasDerivAt_const (0 : ℝ) (1 : ℝ)).sub hr
   have hden : HasDerivAt (fun a : ℝ => 1 + Real.exp (-a * L)) (-L) 0 := by
-    convert (hasDerivAt_const (0 : ℝ) (1 : ℝ)).add hr using 1
-    all_goals simp
+    simpa using! hr.const_add (1 : ℝ)
   have hquot : HasDerivAt
       (fun a : ℝ => (1 - Real.exp (-a * L)) / (1 + Real.exp (-a * L)))
       (L / 2) 0 := by
-    convert hnum.div hden (by norm_num) using 1
-    all_goals norm_num
-    all_goals ring
-  convert hquot.const_mul (d ^ 2) using 1
-  all_goals simp [xiMobiusPrimeContinuousApertureSlopeTerm, L, d]
-  all_goals ring
+    have hraw := hnum.div hden (by norm_num)
+    simpa using! hraw.congr_deriv (by
+      norm_num [div_eq_mul_inv]
+      ring)
+  have hscaled := hquot.const_mul (d ^ 2)
+  have hscaled' := hscaled.congr_deriv
+    (g' := xiMobiusPrimeContinuousApertureSlopeTerm p / 2) (by
+      simp only [xiMobiusPrimeContinuousApertureSlopeTerm, L, d]
+      ring)
+  simpa only [xiMobiusPrimeContinuousApertureDiagonal,
+    xiMobiusContinuousApertureDiskNode, L, d] using! hscaled'
 
 /-- A single summable logarithmic sequence dominates every positive aperture difference quotient. -/
 theorem norm_xiMobiusPrimeContinuousApertureDiagonal_div_le_slopeTerm
@@ -901,14 +905,11 @@ theorem tendsto_one_sub_xiMobiusContinuousApertureDiskNode_mul_div_nhdsGT_zero
       (nhds (c * Real.log (p : ℝ))) := by
   let L := Real.log (p : ℝ)
   have harg : HasDerivAt (fun t : ℝ => -(t * c) * L) (-(c * L)) 0 := by
-    convert ((hasDerivAt_id (0 : ℝ)).mul_const c).neg.mul_const L using 1
-    all_goals simp
+    simpa using! ((hasDerivAt_id (0 : ℝ)).mul_const c).neg.mul_const L
   have hr : HasDerivAt (fun t : ℝ => Real.exp (-(t * c) * L)) (-(c * L)) 0 := by
-    convert (Real.hasDerivAt_exp (-(0 * c) * L)).comp 0 harg using 1
-    all_goals simp
+    simpa using! (Real.hasDerivAt_exp (-(0 * c) * L)).comp 0 harg
   have hgap : HasDerivAt (fun t : ℝ => 1 - Real.exp (-(t * c) * L)) (c * L) 0 := by
-    convert (hasDerivAt_const (0 : ℝ) (1 : ℝ)).sub hr using 1
-    all_goals simp
+    simpa using! (hasDerivAt_const (0 : ℝ) (1 : ℝ)).sub hr
   have hslope := hgap.tendsto_slope_zero_right
   simpa [xiMobiusContinuousApertureDiskNode, L, div_eq_inv_mul, mul_comm] using hslope
 

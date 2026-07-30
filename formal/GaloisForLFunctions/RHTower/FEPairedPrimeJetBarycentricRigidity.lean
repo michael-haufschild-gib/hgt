@@ -60,7 +60,13 @@ theorem originInterpolationWeight_moments {k : ℕ} (x : Fin k → ℂ)
     exact_mod_cast j.isLt
   have hpoly := Lagrange.eq_interpolate (s := Finset.univ) (v := x)
     hinj.injOn hdeg
-  have heval := congrArg (Polynomial.eval 0) hpoly
+  have hpolySum :
+      P = ∑ i ∈ (Finset.univ : Finset (Fin k)),
+        Polynomial.C (Polynomial.eval (x i) P) * Lagrange.basis Finset.univ x i := by
+    calc
+      P = (Lagrange.interpolate Finset.univ x) (fun i => Polynomial.eval (x i) P) := hpoly
+      _ = _ := by rw [Lagrange.interpolate_apply]
+  have heval := congrArg (Polynomial.eval 0) hpolySum
   dsimp [P] at heval
   rw [Polynomial.eval_finsetSum] at heval
   simp only [Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_pow,

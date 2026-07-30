@@ -95,7 +95,7 @@ theorem positiveTailCompletion_neg_profileDerivative_re_pos
     (h t : ℂ) * (1 - spectralTranslationPhase t z)
   let mu : Measure ℝ := volume.restrict (Ioi 0)
   have hf : Integrable f mu := by
-    simpa only [f, h, mu] using
+    simpa only [f, h, mu] using!
       integrableOn_neg_profileDerivative_mul_one_sub_phase hL N hz.le
   have hfre : Integrable (fun t => (f t).re) mu := hf.re
   have hnonneg : 0 ≤ᵐ[mu] fun t => (f t).re := by

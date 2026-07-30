@@ -29,7 +29,7 @@ theorem integral_abs_pow_mul_thetaCuspTailDerivative_zero_le_nat_rate
   let C : ℝ := thetaCuspTailNatExpConstant p
   have hf : IntegrableOn
       (fun x : ℝ => |x ^ m * thetaCuspTailDerivative 0 x|) (Ioi 0) := by
-    simpa only [Real.norm_eq_abs] using
+    simpa only [Real.norm_eq_abs] using!
       (integrableOn_pow_mul_thetaCuspTailDerivative m 0).norm
   have hbase : IntegrableOn
       (fun x : ℝ => x ^ m * Real.exp (-(p : ℝ) * x)) (Ioi 0) := by

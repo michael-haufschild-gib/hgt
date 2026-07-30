@@ -118,7 +118,7 @@ theorem algebraicIndependent_gammaPoleScaleAndReciprocalUnitCoefficient_over_rat
       gammaPoleScaleAndReciprocalUnitCoefficientFamily := by
   rw [algebraicIndependent_iff_injective_aeval]
   simpa [gammaPoleScaleAndReciprocalUnitCoefficientRationalEval,
-    MvPolynomial.aeval_def] using
+    MvPolynomial.aeval_def] using!
       gammaPoleScaleAndReciprocalUnitCoefficientRationalEval_injective
 
 def gammaPoleCovariantResidueRationalScale :
@@ -180,7 +180,7 @@ theorem algebraicIndependent_gammaPoleScaleAndCovariantResidue_over_ratFunc :
       gammaPoleScaleAndCovariantResidueFamily := by
   rw [algebraicIndependent_iff_injective_aeval]
   simpa [gammaPoleScaleAndCovariantResidueRationalEval,
-    MvPolynomial.aeval_def] using
+    MvPolynomial.aeval_def] using!
       gammaPoleScaleAndCovariantResidueRationalEval_injective
 
 def gammaPoleCovariantResidueRationalEval :

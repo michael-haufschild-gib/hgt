@@ -292,7 +292,9 @@ theorem not_differentiableAt_mobiusIncidenceUniversalGapResponse_zero :
           (Complex.I * eta))
       (nhdsWithin 0 (Ioi 0))
       (nhds (deriv mobiusIncidenceUniversalGapResponse 0)) := by
-    simpa only [Function.comp_apply, sub_zero] using hfinite.comp hmap
+    convert hfinite.comp hmap using 1
+    funext eta
+    simp only [Function.comp_apply, sub_zero]
   exact
     (not_tendsto_mobiusIncidenceUniversalGapResponse_I_mul_div_nhds
       (deriv mobiusIncidenceUniversalGapResponse 0)) hquot

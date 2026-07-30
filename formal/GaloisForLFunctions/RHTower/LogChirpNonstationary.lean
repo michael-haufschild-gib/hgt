@@ -42,7 +42,7 @@ theorem norm_integral_logChirp_le {c T R : ℝ} (hc : 0 < c) (hT : 0 < T) (hTR :
     have hx0 : 0 < x := hpos x hx
     have h1 : HasDerivAt (fun t : ℝ => t * Real.log t) (Real.log x + 1) x := by
       have h := (hasDerivAt_id x).mul (Real.hasDerivAt_log hx0.ne')
-      simpa [mul_inv_cancel₀ hx0.ne'] using h
+      simpa [mul_inv_cancel₀ hx0.ne'] using! h
     exact h1.const_mul c
   have hφ' : ∀ x ∈ Icc T R,
       HasDerivAt (fun t : ℝ => c * (Real.log t + 1)) (c / x) x := by
@@ -110,7 +110,7 @@ theorem norm_integral_logChirp_const_le_of_one_le {c T R : ℝ} (hc : 0 < c) (hT
     have hx0 : 0 < x := hpos x hx
     have h1 : HasDerivAt (fun t : ℝ => t * Real.log t) (Real.log x + 1) x := by
       have h := (hasDerivAt_id x).mul (Real.hasDerivAt_log hx0.ne')
-      simpa [mul_inv_cancel₀ hx0.ne'] using h
+      simpa [mul_inv_cancel₀ hx0.ne'] using! h
     exact h1.const_mul c
   have hφ' : ∀ x ∈ Icc T R, HasDerivAt (fun t : ℝ => c * (Real.log t + 1)) (c / x) x := by
     intro x hx

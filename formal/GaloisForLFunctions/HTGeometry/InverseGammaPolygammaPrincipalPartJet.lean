@@ -148,7 +148,7 @@ theorem exists_inverseGammaResidueGerm
     norm_num [Finset.sum_range_succ, iteratedDeriv_zero, hu0]
   have hV0 : V 0 = d := by
     have hprod : HasDerivAt (fun t : ℂ => t * V t) (V 0) 0 := by
-      simpa using (hasDerivAt_id (0 : ℂ)).mul hVAn.differentiableAt.hasDerivAt
+      simpa using! (hasDerivAt_id (0 : ℂ)).mul hVAn.differentiableAt.hasDerivAt
     have hprodD : HasDerivAt (fun t : ℂ => t * V t) d 0 :=
       hUV'.hasDerivAt_iff.mp huDer
     exact hprod.unique hprodD
@@ -190,8 +190,7 @@ theorem exists_inverseGammaResidueGerm
         funext t
         simp [R, div_eq_mul_inv]
       rw [hfun]
-      convert h using 1
-      ring
+      simpa only [neg_div, neg_neg] using! h
     rw [hRhas.deriv, hVder, hV0]
     ring
   refine ⟨R, hRAn, by simp [R, hV0], hRder, ?_⟩
@@ -275,16 +274,12 @@ theorem principalPartJetExtension_deriv_zero
       (fun t : ℂ => (q.factorial : ℂ) * R t ^ (q + 1))
       ((q.factorial : ℂ) * ((q + 1 : ℕ) : ℂ) * R 0 ^ q * deriv R 0) 0 := by
     have h := (hRhas.pow (q + 1)).const_mul (q.factorial : ℂ)
-    convert h using 1
-    rw [Nat.add_sub_cancel]
-    ring
+    simpa only [Nat.add_sub_cancel, mul_assoc] using! h
   have hq0 : q ≠ 0 := by omega
   have htpow : HasDerivAt (fun t : ℂ => t ^ (q + 1)) 0 0 := by
-    convert hasDerivAt_pow (q + 1) (0 : ℂ) using 1
-    simp [hq0]
+    simpa [Nat.add_sub_cancel, hq0] using! hasDerivAt_pow (q + 1) (0 : ℂ)
   have hsecond : HasDerivAt (fun t : ℂ => t ^ (q + 1) * A t) 0 0 := by
-    convert htpow.mul hAAn.differentiableAt.hasDerivAt using 1
-    ring
+    simpa using! htpow.mul hAAn.differentiableAt.hasDerivAt
   have hsum := hfirst.add hsecond
   have hfun : (fun t : ℂ => (q.factorial : ℂ) * R t ^ (q + 1) +
       t ^ (q + 1) * A t) =
@@ -468,12 +463,12 @@ theorem ReciprocalGammaPoleBranch.residueInterpolation_cubic
         (-reciprocalGammaBranchLinearCoeff n +
           2 * reciprocalGammaBranchQuadraticCoeff n * x +
             3 * x ^ 2 * R x + x ^ 3 * deriv R x) x := by
-      convert (((hasDerivAt_const x (-(n : ℂ))).sub
+      simpa only [Pi.sub_apply, Pi.add_apply, Pi.mul_apply, id_eq] using!
+        ((((hasDerivAt_const x (-(n : ℂ))).sub
           ((hasDerivAt_id x).const_mul (reciprocalGammaBranchLinearCoeff n))).add
             ((hasDerivAt_pow 2 x).const_mul
               (reciprocalGammaBranchQuadraticCoeff n))).add
-                ((hasDerivAt_pow 3 x).mul hRder) using 1
-      all_goals ring
+                ((hasDerivAt_pow 3 x).mul hRder)).congr_deriv (by ring)
     exact hright.deriv
   simp only [inverseGammaBranchResidueInterpolation, S]
   rw [hformula]
@@ -506,16 +501,15 @@ theorem ReciprocalGammaPoleBranch.polygammaCoeffInterpolation_asymptotic
   have hFAn : AnalyticAt ℂ F 0 := hBAn.pow (q + 1)
   have hBder : HasDerivAt B (-2 * A) 0 := by
     have hSder : HasDerivAt S (deriv S 0) 0 := hSAn.differentiableAt.hasDerivAt
-    convert ((hasDerivAt_const (x := (0 : ℂ)) r).sub
+    simpa [B] using! ((hasDerivAt_const (x := (0 : ℂ)) r).sub
       ((hasDerivAt_id (0 : ℂ)).const_mul (2 * A))).add
-        ((hasDerivAt_pow 2 (0 : ℂ)).mul hSder) using 1
-    all_goals simp
+        ((hasDerivAt_pow 2 (0 : ℂ)).mul hSder)
   have hF0 : F 0 = r ^ (q + 1) := by simp [F, B]
   have hFder : deriv F 0 = ((q + 1 : ℕ) : ℂ) * r ^ q * (-2 * A) := by
     have h := hBder.pow (q + 1)
     have h' : HasDerivAt F
         (((q + 1 : ℕ) : ℂ) * B 0 ^ (q + 1 - 1) * (-2 * A)) 0 := by
-      simpa [F] using h
+      simpa [F] using! h
     rw [h'.deriv]
     rw [Nat.add_sub_cancel]
     norm_num [B]

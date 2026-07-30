@@ -170,7 +170,7 @@ theorem tendsto_pow_weightedTotalDegree_mul_gammaPoleCovariantPolynomialJetEval
         (fun x : ℂ => p.eval
           (-(branch : ℂ) + reciprocalGammaFactorialScale branch * x)) 0 := by
       fun_prop
-    simpa using hcont.tendsto.mono_left inf_le_left
+    simpa using hcont.tendsto.mono_left nhdsWithin_le_nhds
   · intro j
     simpa [bellJetWeight, gammaPoleCovariantTopResidueValue] using
       tendsto_pow_succ_mul_gammaPoleCovariantJetValue branch (j : ℕ)
@@ -195,10 +195,19 @@ theorem meromorphicAt_gammaPoleCenterFrozenCovariantPolynomialJetEval
       exact hconst.congr (Filter.Eventually.of_forall fun x => by
         simp [gammaPoleCenterFrozenCovariantPolynomialJetEval])
   | add P Q hP hQ =>
-      simpa only [map_add, Pi.add_apply] using hP.add hQ
+      have h := hP.add hQ
+      change MeromorphicAt
+        (fun x =>
+          gammaPoleCenterFrozenCovariantPolynomialJetEval branch n x P +
+            gammaPoleCenterFrozenCovariantPolynomialJetEval branch n x Q) 0 at h
+      simpa only [map_add] using h
   | mul_X P i hP =>
-      simpa [gammaPoleCenterFrozenCovariantPolynomialJetEval] using
-        hP.mul (meromorphicAt_gammaPoleCovariantJetValue branch (i : ℕ))
+      have h := hP.mul (meromorphicAt_gammaPoleCovariantJetValue branch (i : ℕ))
+      change MeromorphicAt
+        (fun x =>
+          gammaPoleCenterFrozenCovariantPolynomialJetEval branch n x P *
+            gammaPoleCovariantJetValue branch (i : ℕ) x) 0 at h
+      simpa [gammaPoleCenterFrozenCovariantPolynomialJetEval] using h
 
 /-- The center-frozen packet has the same maximal weighted boundary as the running packet. -/
 theorem tendsto_pow_weightedTotalDegree_mul_gammaPoleCenterFrozenCovariantPolynomialJetEval

@@ -80,7 +80,7 @@ theorem hasDerivAt_Gammaℝ_of_re_pos {s : ℂ} (hs : 0 < s.re) :
   have hΓcomp : HasDerivAt (fun z : ℂ => Complex.Gamma (z / 2))
       (Complex.Gamma (s / 2) * Complex.digamma (s / 2) * ((1 : ℂ) / 2)) s := by
     have hcomp := HasDerivAt.comp s hGdiff.hasDerivAt hhalf
-    simpa [Function.comp, hψ] using hcomp
+    simpa [Function.comp, hψ] using! hcomp
   have hπ0 : (Real.pi : ℂ) ≠ 0 := by
     exact_mod_cast Real.pi_ne_zero
   have hlin : HasDerivAt (fun z : ℂ => Complex.log (Real.pi : ℂ) * (-z / 2))
@@ -124,11 +124,9 @@ theorem hasDerivAt_archFactor_of_re_pos {s : ℂ} (hs : 0 < s.re) :
     have h1 : HasDerivAt (fun z : ℂ => z * (z - 1)) (1 * (s - 1) + s * 1) s :=
       (hasDerivAt_id s).mul ((hasDerivAt_id s).sub_const 1)
     have h2 := h1.div_const (2 : ℂ)
-    convert h2 using 1
-    ring
+    simpa only [Pi.div_apply] using! h2.congr_deriv (by ring)
   have hmul := hpoly.mul (hasDerivAt_Gammaℝ_of_re_pos hs)
-  unfold archFactor
-  convert hmul using 1
+  simpa only [archFactor, archFactorDeriv, Pi.mul_apply] using! hmul
 
 /-- The completed archimedean envelope is analytic on the open right half plane. -/
 theorem archFactor_analyticOnNhd_re_pos :
@@ -169,7 +167,7 @@ theorem hasDerivAt_archFactor_line (u : ℝ) :
     rw [linePt_re]
     norm_num
   have hcomp := HasDerivAt.comp u (hasDerivAt_archFactor_of_re_pos hre) (hasDerivAt_linePt u)
-  simpa [Function.comp] using hcomp
+  simpa [Function.comp] using! hcomp
 
 /-- Line derivative of the reflected envelope. -/
 theorem hasDerivAt_archFactor_line_reflected (u : ℝ) :
@@ -181,7 +179,7 @@ theorem hasDerivAt_archFactor_line_reflected (u : ℝ) :
   have hinner : HasDerivAt (fun u : ℝ => 1 - linePt u) (-Complex.I) u :=
     (hasDerivAt_linePt u).const_sub 1
   have hcomp := HasDerivAt.comp u (hasDerivAt_archFactor_of_re_pos hre) hinner
-  simpa [Function.comp] using hcomp
+  simpa [Function.comp] using! hcomp
 
 /-- **First-moment bound for the completed carrier from sup data only.**  All
 differentiability faces are discharged by the canonical envelope calculus: the certificate
@@ -332,7 +330,7 @@ theorem hasDerivAt_archFactorDeriv_of_re_pos {s : ℂ} (hs : 0 < s.re) :
   have hψcomp : HasDerivAt (fun z : ℂ => Complex.digamma (z / 2))
       (deriv Complex.digamma (s / 2) * ((1 : ℂ) / 2)) s := by
     have hcomp := HasDerivAt.comp s hψat hhalf
-    simpa [Function.comp] using hcomp
+    simpa [Function.comp] using! hcomp
   have hΨ : HasDerivAt
       (fun z : ℂ => Complex.digamma (z / 2) / 2 - (Real.log Real.pi : ℂ) / 2)
       (deriv Complex.digamma (s / 2) * ((1 : ℂ) / 2) / 2) s :=
@@ -346,15 +344,14 @@ theorem hasDerivAt_archFactorDeriv_of_re_pos {s : ℂ} (hs : 0 < s.re) :
     have h1 : HasDerivAt (fun z : ℂ => z * (z - 1)) (1 * (s - 1) + s * 1) s :=
       (hasDerivAt_id s).mul ((hasDerivAt_id s).sub_const 1)
     have h2' := h1.div_const (2 : ℂ)
-    convert h2' using 1
-    ring
+    simpa only [Pi.div_apply] using! h2'.congr_deriv (by ring)
   have hA := hpoly1.mul hG'
   have hB := hpoly2.mul (hG'.mul hΨ)
   have htotal := hA.add hB
-  unfold archFactorDeriv
-  convert htotal using 1
-  unfold archFactorDeriv2
-  simp only [Pi.mul_apply]
-  ring
+  simpa only [archFactorDeriv, Pi.add_apply, Pi.mul_apply] using!
+    htotal.congr_deriv (by
+      simp only [Pi.mul_apply]
+      unfold archFactorDeriv2
+      ring)
 
 end RHTower

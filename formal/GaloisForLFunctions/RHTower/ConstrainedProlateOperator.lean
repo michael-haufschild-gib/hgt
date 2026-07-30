@@ -71,7 +71,6 @@ theorem cutoffFourierCutoff_central_mapsTo_evenSubspace (a : ℝ) :
   exact indicatorCutoff_central_mapsTo_evenSubspace a
     ((by
       apply (mem_evenSubspace_iff _).mpr
-      change l2Reflection (fourierUnitary _) = fourierUnitary _
       rw [← fourierUnitary_l2Reflection, (mem_evenSubspace_iff _).mp
         (indicatorCutoff_central_mapsTo_evenSubspace a hf)]) :
       fourierUnitary
@@ -156,7 +155,7 @@ theorem evenIndicatorCutoff_idempotent (a : ℝ) :
     indicatorCutoff (centralInterval a) (measurableSet_centralInterval a) ∘L
         indicatorCutoff (centralInterval a) (measurableSet_centralInterval a) =
       indicatorCutoff (centralInterval a) (measurableSet_centralInterval a) by
-      simpa only [ContinuousLinearMap.mul_def] using h) (f : SoninL2)
+      simpa only [ContinuousLinearMap.mul_def] using! h) (f : SoninL2)
 
 /-- The paper's even time-limited carrier: the range of the physical aperture projection. -/
 def evenTimeLimitedSubspace (a : ℝ) : Submodule ℂ evenSubspace :=
@@ -262,20 +261,20 @@ theorem mem_constrainedProlateSubspace_iff (a : ℝ) (f : evenSubspace) :
 /-- The concentration operator compressed to the exact zero-integral subspace. -/
 def constrainedProlateConcentration (a : ℝ) :
     constrainedProlateSubspace a →L[ℂ] constrainedProlateSubspace a :=
-  (constrainedProlateSubspace a).orthogonalProjection ∘L
+  (constrainedProlateSubspace a).orthogonalProjectionOnto ∘L
     evenProlateConcentration a ∘L (constrainedProlateSubspace a).subtypeL
 
 theorem constrainedProlateConcentration_isPositive (a : ℝ) :
     ContinuousLinearMap.IsPositive (𝕜 := ℂ) (E := constrainedProlateSubspace a)
       (constrainedProlateConcentration a) := by
-  exact (evenProlateConcentration_isPositive a).orthogonalProjection_comp
+  exact (evenProlateConcentration_isPositive a).orthogonalProjectionOnto_comp
     (constrainedProlateSubspace a)
 
 theorem isCompactOperator_constrainedProlateConcentration (a : ℝ) (ha : 0 < a) :
     IsCompactOperator (constrainedProlateConcentration a) := by
   exact ((isCompactOperator_evenProlateConcentration a ha).comp_clm
     (constrainedProlateSubspace a).subtypeL).clm_comp
-      (constrainedProlateSubspace a).orthogonalProjection
+      (constrainedProlateSubspace a).orthogonalProjectionOnto
 
 /-- The actual constrained prolate leakage operator: identity minus the compressed concentration. -/
 def constrainedProlateLeakage (a : ℝ) :
@@ -285,7 +284,7 @@ def constrainedProlateLeakage (a : ℝ) :
 
 theorem constrainedProlateLeakage_eq_compression (a : ℝ) :
     constrainedProlateLeakage a =
-      (constrainedProlateSubspace a).orthogonalProjection ∘L
+      (constrainedProlateSubspace a).orthogonalProjectionOnto ∘L
         evenProlateLeakage a ∘L (constrainedProlateSubspace a).subtypeL := by
   apply ContinuousLinearMap.ext
   intro f
@@ -294,13 +293,13 @@ theorem constrainedProlateLeakage_eq_compression (a : ℝ) :
     ContinuousLinearMap.comp_apply]
   rw [map_sub]
   rw [Submodule.subtypeL_apply]
-  rw [(constrainedProlateSubspace a).orthogonalProjection_mem_subspace_eq_self]
+  rw [(constrainedProlateSubspace a).orthogonalProjectionOnto_mem_subspace_eq_self]
 
 theorem constrainedProlateLeakage_isPositive (a : ℝ) :
     ContinuousLinearMap.IsPositive (𝕜 := ℂ) (E := constrainedProlateSubspace a)
       (constrainedProlateLeakage a) := by
   rw [constrainedProlateLeakage_eq_compression]
-  exact (evenProlateLeakage_isPositive a).orthogonalProjection_comp
+  exact (evenProlateLeakage_isPositive a).orthogonalProjectionOnto_comp
     (constrainedProlateSubspace a)
 
 /-- On the actual constrained carrier, the compressed quadratic form is exactly the physical
@@ -312,9 +311,9 @@ theorem constrainedProlateLeakage_inner_eq (a : ℝ)
       ((‖f‖ ^ 2 - ‖evenTimeBandFourier a (f : evenSubspace)‖ ^ 2 : ℝ) : ℂ) := by
   rw [constrainedProlateLeakage_eq_compression]
   change inner ℂ
-      ((constrainedProlateSubspace a).orthogonalProjection
+      ((constrainedProlateSubspace a).orthogonalProjectionOnto
         (evenProlateLeakage a (f : evenSubspace))) f = _
-  rw [(constrainedProlateSubspace a).inner_orthogonalProjection_eq_of_mem_right]
+  rw [(constrainedProlateSubspace a).inner_orthogonalProjectionOnto_eq_of_mem_right]
   exact evenProlateLeakage_inner_eq a (f : evenSubspace)
 
 theorem constrainedProlateLeakage_inner_nonneg (a : ℝ)
@@ -448,7 +447,7 @@ theorem evenProlateLeakageValue_monotone (a : ℝ) :
 
 theorem evenProlateLeakageValue_tendsto_one (a : ℝ) (ha : 0 < a) :
     Filter.Tendsto (evenProlateLeakageValue a) Filter.atTop (nhds 1) := by
-  simpa [evenProlateLeakageValue] using
+  simpa [evenProlateLeakageValue] using!
     (tendsto_const_nhds.sub (evenProlateConcentrationValue_tendsto_zero a ha))
 
 /-- The concentration modes diagonalize the full even leakage operator with complementary

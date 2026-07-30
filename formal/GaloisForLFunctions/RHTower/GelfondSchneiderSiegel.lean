@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 
 The explicit constants follow the Mathlib Gelfond--Schneider development by
 Michail Karatarakis and Freek Wiedijk.  This module only exposes, under public project names,
-constants that Mathlib 4.30 leaves private in the conclusion of its proved number-field
+constants that Mathlib leaves private in the conclusion of its proved number-field
 Siegel lemma.
 -/
 import Mathlib.NumberTheory.NumberField.House
@@ -57,10 +57,10 @@ abbrev c₂ : ℝ := max 1 (c K) * supOfBasis K
 /-- The explicit uniform constant occurring in `exists_ne_zero_int_vec_house_le`. -/
 def c₁ : ℝ := finrank ℚ K * c₂ K
 
-/-- **Explicit-constant number-field Siegel bridge.** Mathlib proves this theorem, but in version
-4.30 the constant in its public conclusion has a private name.  The formula above is definitionally
-the same constant, so this bridge makes the bound usable by the Gelfond--Schneider growth argument
-without reproving Siegel's lemma or introducing a hypothesis. -/
+/-- **Explicit-constant number-field Siegel bridge.** Mathlib proves this theorem, but the constant
+in its public conclusion has a private name.  The formula above is definitionally the same constant,
+so this bridge makes the bound usable by the Gelfond--Schneider growth argument without reproving
+Siegel's lemma or introducing a hypothesis. -/
 theorem exists_ne_zero_int_vec_house_le {α : Type*} {β : Type*}
     (a : Matrix α β (𝓞 K)) (ha : a ≠ 0) {p q : ℕ} (h0p : 0 < p) (hpq : p < q)
     [Fintype β] (cardβ : Fintype.card β = q) {A : ℝ}

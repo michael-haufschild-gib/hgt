@@ -5,6 +5,7 @@
 - **Type:** MIXED-POLAR THIRD-COMPLETION THEOREM / SOURCE-LANDING CONJECTURE
 - **Scientific status:** `[PAPER-PROVED CHARACTER SELECTOR]`
   `[FINITE PRIME-INFINITY LEAKAGE CLASSIFIED]`
+  `[ALL-LQ SOURCE-MEMORY WALL PAPER-PROVED]`
   `[PRIME-VALUATION SCREEN RETIRED AFTER CORPUS COLLISION]`
   `[EXISTING HT SHELL BIPOLAR GRAPH ADOPTED]`
   `[SCALAR HELLINGER GAP LEAN-FORMALIZED]`
@@ -356,6 +357,61 @@ Moreover,
 \]
 
 so the mixed topology detects the escape exactly.
+
+### Sharp all-\(L^q\) source-memory wall
+
+`[PROVED HERE] [COFINAL_SOURCE_MEMORY_EXPONENT_WALL]`
+
+The Hilbert failure in `(14)` is not specific to \(q=2\).  In the rational-place
+component-constant chart, let \(1\leq q<\infty\).  Since the difference
+\[
+ h_{P,c}-c1_{Y(\mathbb Q,\infty)}
+\]
+has value \(-c/(n+1)\) on the archimedean component and on each of the \(n=|P|\)
+finite-place components in \(P\), and vanishes on every other component,
+\[
+ \boxed{\quad
+ \left\|h_{P,c}-c1_{Y(\mathbb Q,\infty)}\right\|_q^q
+ =
+ |c|^q(n+1)^{1-q}.
+ \quad}                                                       \tag{15a}
+\]
+For the supremum norm,
+\[
+ \left\|h_{P,c}-c1_{Y(\mathbb Q,\infty)}\right\|_\infty
+ =
+ \frac{|c|}{n+1}.                                            \tag{15b}
+\]
+Consequently,
+\[
+ \begin{aligned}
+ h_{P,c}&\longrightarrow c1_{Y(\mathbb Q,\infty)}
+ &&\text{strongly in every }L^q,\quad 1<q\leq\infty,\\
+ \left\|h_{P,c}-c1_{Y(\mathbb Q,\infty)}\right\|_1&=|c|
+ &&\text{for every finite }P.
+ \end{aligned}                                               \tag{15c}
+\]
+Every finite regulator has product-formula integral zero, whereas the strong
+\(L^q\), \(q>1\), limit has integral \(c\).  Thus the product-formula degree is
+not closed in any bare \(L^q\) source completion above exponent one.  Exponent
+one is the sharp source-memory wall on the coherent radial sector.
+
+This gives a route-wide no-go and a positive capability criterion:
+
+```text
+bare Lq energy or boundedness, q>1
+  admits every coherent off-critical radial charge;
+
+complete place-record control in l1
+  keeps the product-formula conservation law closed.
+```
+
+The conclusion is not that every viable space must literally be \(L^1\).
+It must dominate the complete place-average record on this sector, or retain an
+equivalent invariant such as the prime-valuation measure class or the irregular
+Rees/Stokes charge.  A Hilbert rigging may still provide energy in its middle
+space, but its source test topology cannot be reconstructed from a bare
+\(L^q\), \(q>1\), norm.
 
 Equations `(10)`--`(15)` identify the missing infinite datum:
 
@@ -715,6 +771,7 @@ as an RH mechanism.  This is a provisional noncollision result, not a priority c
 - [x] 0 \(\to\) 1: source-pure target, exact receiver, selector, and falsifiers stated
 - [x] infinite mixed place-average selector paper-proved
 - [x] finite symmetric packet and exact prime-infinity leakage paper-proved
+- [x] sharp all-\(L^q\), \(q>1\), source-memory failure paper-proved
 - [x] full-holonomy algebraization firewall identified
 - [ ] specialist audit of the strict polar receiver and leakage mechanism
 - [ ] finite source polar regulator `(17)` constructed
@@ -773,3 +830,8 @@ as an RH mechanism.  This is a provisional noncollision result, not a priority c
   target must be a singular relative/Rees or Bockstein transgression retaining the vanishing
   scale and its presentation maps, not ordinary mixed-Cauchy convergence of normalized states
   obtained from `(16b)`.
+- 2026-07-30 — Strengthened the prime-infinity leakage theorem from the \(L^1/L^2\) comparison
+  to the exact all-\(L^q\) wall `(15a)`--`(15c)`.  Every bare \(L^q\) completion with \(q>1\)
+  strongly absorbs a nonzero coherent radial charge into the archimedean component, while
+  \(L^1\) retains a fixed distance \(|c|\).  The third completion must therefore preserve the
+  complete place record, not merely improve Hilbert integrability.

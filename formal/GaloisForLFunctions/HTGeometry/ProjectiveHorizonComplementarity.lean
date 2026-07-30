@@ -83,7 +83,7 @@ theorem hypertranscendentalOver_mem_sup_firstJetTail_inv
     simpa only [differentialJet_zero] using
       hypertranscendentalOver_differentialJet_ne_zero hx 0
   have hdx : x′ ≠ 0 := by
-    simpa only [differentialJet_succ] using
+    simpa only [differentialJet_succ] using!
       hypertranscendentalOver_differentialJet_ne_zero hx 1
   have hdinv : (x⁻¹)′ ≠ 0 := by
     rw [deriv_inv_eq_neg_inv_sq_mul_deriv]
@@ -149,7 +149,7 @@ theorem hypertranscendentalOver_schwarzian_mem_inf_firstJetTail_inv
     simpa only [differentialJet_zero] using
       hypertranscendentalOver_differentialJet_ne_zero hx 0
   have hdx : x′ ≠ 0 := by
-    simpa only [differentialJet_succ] using
+    simpa only [differentialJet_succ] using!
       hypertranscendentalOver_differentialJet_ne_zero hx 1
   rw [IntermediateField.mem_inf]
   refine ⟨schwarzian_mem_jetTailField_one F x, ?_⟩

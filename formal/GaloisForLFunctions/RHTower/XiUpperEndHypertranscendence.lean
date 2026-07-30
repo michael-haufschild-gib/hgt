@@ -50,7 +50,7 @@ noncomputable def xiLogDerivRotatedUpperEndAnalytic : upperEndAnalyticSubring :=
   refine ⟨((fun z : ℂ ↦ logDeriv xi (-I * z)) : Germ upperEndFilter ℂ), ?_⟩
   refine ⟨fun z : ℂ ↦ logDeriv xi (-I * z), 1, ?_, rfl⟩
   intro z hz
-  have hs : 1 < (-I * z).re := by simpa [rotated_re] using hz
+  have hs : 1 < (-I * z).re := by simpa [rotated_re] using! hz
   have hxi : AnalyticAt ℂ xi (-I * z) :=
     xi_analyticOnNhd_univ _ (Set.mem_univ _)
   have hlog : AnalyticAt ℂ (logDeriv xi) (-I * z) := by
@@ -289,7 +289,7 @@ private noncomputable def xiRotatedReciprocalUpperEndAnalytic :
   · exact (xi_analyticOnNhd_univ _ (Set.mem_univ _)).comp
       (analyticAt_const.mul analyticAt_id)
   · apply xi_ne_zero_of_one_lt_re
-    simpa [rotated_re] using hz
+    simpa [rotated_re] using! hz
 
 private theorem xiRotatedReciprocal_mul_xiRotated :
     xiRotatedReciprocalUpperEndAnalytic * xiRotatedUpperEndAnalytic = 1 := by
@@ -301,7 +301,7 @@ private theorem xiRotatedReciprocal_mul_xiRotated :
   rw [upperEndFilter_basis.eventually_iff]
   refine ⟨1, trivial, fun z hz ↦ ?_⟩
   have hne : xi (-I * z) ≠ 0 := xi_ne_zero_of_one_lt_re (by
-    simpa [rotated_re] using hz)
+    simpa [rotated_re] using! hz)
   simpa [one_div] using inv_mul_cancel₀ hne
 
 /-- Actual upper-end carrier of the rotated completed function `z ↦ xi(-I*z)`. -/

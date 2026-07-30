@@ -63,7 +63,7 @@ theorem exists_finite_maximal_norm_packet_uniformly_separated
         apply lt_of_not_ge
         intro hai
         apply hiS
-        simpa only [S, Set.Finite.mem_toFinset] using hai
+        simpa only [S, Set.Finite.mem_toFinset] using! hai
       exact hia.le.trans (le_max_left _ _)
   · have hbound : ∀ i ∉ D, ‖b i‖ ≤ a := by
       intro i hiD
@@ -74,7 +74,7 @@ theorem exists_finite_maximal_norm_packet_uniformly_separated
         apply lt_of_not_ge
         intro hai
         apply hiS
-        simpa only [S, Set.Finite.mem_toFinset] using hai
+        simpa only [S, Set.Finite.mem_toFinset] using! hai
       exact hia.le
     exact ⟨D, r, a, hr, ha1, har, hDne, hD, hbound⟩
 

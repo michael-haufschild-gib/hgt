@@ -94,7 +94,7 @@ theorem circle_winding {w : ℂ} (hw : w.im ≠ 0) {θ₁ θ₂ : ℝ}
         (Complex.I * Complex.exp (Complex.I*(θ:ℂ))) θ := by
       have h1 : HasDerivAt (fun u:ℝ => Complex.I*(u:ℂ)) Complex.I θ := by
         simpa using (Complex.ofRealCLM.hasDerivAt (x:=θ)).const_mul Complex.I
-      simpa using (Complex.hasDerivAt_exp (Complex.I*(θ:ℂ))).scomp θ h1
+      simpa using! (Complex.hasDerivAt_exp (Complex.I*(θ:ℂ))).scomp θ h1
     have h := ((hasDerivAt_const θ (1:ℂ)).add hexp).div_const 2
     simpa using h
   · intro θ hθ

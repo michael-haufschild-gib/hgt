@@ -39,7 +39,7 @@ theorem ae_eq_evenTimeLimitedFourierRepresentative
     (a : ℝ) (f : evenSubspace) (hf : f ∈ evenTimeLimitedSubspace a) :
     ((fourierUnitary (f : SoninL2) : SoninL2) : ℝ → ℂ) =ᵐ[volume]
       evenTimeLimitedFourierRepresentative a f hf := by
-  simpa [evenTimeLimitedFourierRepresentative] using
+  simpa [evenTimeLimitedFourierRepresentative] using!
     l2_fourier_coeFn_eq_l1_fourier_of_integrable (f : SoninL2)
       (integrable_coe_of_mem_evenTimeLimitedSubspace a f hf)
 
@@ -424,9 +424,9 @@ theorem fourier_timeBandTwoModeConstrainedSource_eq
     simp only [smul_eq_mul]
     ring
   have hterm₀ : Integrable (fun x => c₀ * (φ x * g₀ x)) := by
-    simpa only [Pi.smul_apply, smul_eq_mul] using hφg₀.const_mul c₀
+    simpa only [Pi.smul_apply, smul_eq_mul] using! hφg₀.const_mul c₀
   have hterm₁ : Integrable (fun x => c₁ * (φ x * g₁ x)) := by
-    simpa only [Pi.smul_apply, smul_eq_mul] using hφg₁.const_mul c₁
+    simpa only [Pi.smul_apply, smul_eq_mul] using! hφg₁.const_mul c₁
   rw [hpoint, integral_sub hterm₀ hterm₁,
     integral_const_mul, integral_const_mul]
   have hFg₀ : (∫ x : ℝ, φ x * g₀ x) = 𝓕 g₀ w := by

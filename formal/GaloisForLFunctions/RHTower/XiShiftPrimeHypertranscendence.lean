@@ -68,7 +68,7 @@ theorem filteredVonMangoldtArithmetic_supportedOnPositivePrimePowers :
   have hx := congrArg Subtype.val
     (Nat.Primes.prodNatEquiv.apply_symm_apply ⟨n, hpow⟩)
   have hn : (x.1 : ℕ) ^ (x.2 + 1) = n := by
-    simpa only [x, Nat.Primes.coe_prodNatEquiv_apply] using hx
+    simpa only [x, Nat.Primes.coe_prodNatEquiv_apply] using! hx
   exact ⟨x.1, x.2, hn.symm⟩
 
 /-- At every prime, the filtered von Mangoldt coefficient is nonzero. -/
@@ -166,7 +166,7 @@ theorem filteredVonMangoldtUpperEndGerm_eq_xiLogDerivShiftTwoPrimeDefect :
   have h := xi_logDeriv_shift_two_exposes_prime_source
     (s := -Complex.I * z) hs
   simpa [xiLogDerivShiftTwoPrimeDefectUpperEndGerm,
-    filteredVonMangoldtCoeff] using h.symm
+    filteredVonMangoldtCoeff] using! h.symm
 
 end
 

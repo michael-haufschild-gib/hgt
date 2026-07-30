@@ -357,23 +357,222 @@ fibre.  Normalized boundary conditioning erases the vanishing scale and is not s
 The Hellinger--Rees object retains bulk, half-normal boundary, and the infinitely flat face
 simultaneously.
 
+## Theorem: finite multiplicity jets do not mask the reflection fracture
+
+`[PROVED HERE]`
+
+For an integer \(m\geq1\), retain the full radial jet packet
+\[
+ {\cal J}_{x,m}(c)
+ :=
+ \left(
+   \sum_{j=0}^{m-1}
+   \left|\partial_c^j{\cal H}_x(c)\right|^2
+ \right)^{1/2}.                                          \tag{11j}
+\]
+Then:
+
+1. for every fixed \(c<0\),
+   \[
+    0<
+    \liminf_{x\to\infty}
+      \frac{{\cal J}_{x,m}(c)}{a_x^{1/2}}
+    \leq
+    \limsup_{x\to\infty}
+      \frac{{\cal J}_{x,m}(c)}{a_x^{1/2}}
+    <\infty;                                             \tag{11k}
+   \]
+2. for every fixed \(0<c<\tfrac12\) and every \(N>0\),
+   \[
+    \frac{{\cal J}_{x,m}(c)}{a_x^N}\longrightarrow0;     \tag{11l}
+   \]
+3. at \(c=0\), the packet has finite Rees grade:
+   \[
+    1\leq{\cal J}_{x,m}(0)
+    \leq C_m a_x^{-(m-1)}
+    \qquad(x\ \hbox{sufficiently large}).                \tag{11m}
+   \]
+
+Thus a finite valuation-depth or finite analytic-multiplicity packet preserves the distinction
+between the finite Rees part and the all-orders-flat radical.  In particular, no finite
+nilpotent thickening of a radial character can turn a noncritical reflected pair into two
+finite-grade packets.
+
+### Proof
+
+For \(c<0\), factor
+\[
+ {\cal H}_x(c)=a_x^{1/2}C_x(c),\qquad
+ C_x(c)=
+ \prod_{p\leq x}
+ \frac{\sqrt{1-p^{-(1-2c)}}}{1-p^{-(1-c)}}.              \tag{11n}
+\]
+On every compact subinterval of \((-\tfrac12,0)\), the logarithm of this product and each of its
+\(c\)-derivatives converge uniformly.  Indeed, after differentiating \(r\) times, the local
+majorants are finite sums of
+\[
+ (\log p)^r k^{r-1}p^{-k(1-2c)}
+ \quad\hbox{and}\quad
+ (\log p)^r k^{r-1}p^{-k(1-c)},
+\]
+whose prime sums converge uniformly there because both exponents stay strictly above one.
+Consequently every \(C_x^{(j)}(c)\), \(0\leq j<m\), is bounded, while
+\(C_x(c)\to C_-(c)>0\).  Since \(a_x\) is independent of \(c\), equations `(11j)` and `(11n)`
+give both bounds in `(11k)`.
+
+For \(c>0\), put \(L_x(c)=\log{\cal H}_x(c)\).  Direct differentiation of the Euler factors gives,
+for \(r\geq1\),
+\[
+ L_x^{(r)}(c)
+ =
+ \sum_{p\leq x}\left[
+ -\frac{(2\log p)^r}{2}
+   \sum_{k\geq1}k^{r-1}p^{-k(1-2c)}
+ +(\log p)^r
+   \sum_{k\geq1}k^{r-1}p^{-k(1-c)}
+ \right].                                                \tag{11o}
+\]
+For fixed \(c\in(0,\tfrac12)\) and fixed \(r\), this has at most polynomial growth in \(x\).
+Faà di Bruno's formula therefore writes
+\[
+ \partial_c^j{\cal H}_x(c)
+ =
+ {\cal H}_x(c)\,
+ B_j\!\left(L_x'(c),\ldots,L_x^{(j)}(c)\right),          \tag{11p}
+\]
+where the Bell-polynomial factor also has at most polynomial growth.  The exponential decay in
+`(5)` dominates that factor and every power of \(a_x^{-1}\asymp\log x\).  This proves `(11l)`
+simultaneously for the finitely many \(j<m\).
+
+Finally, \({\cal H}_x(0)=1\) and \(L_x'(0)=0\).  Formula `(11o)` at \(c=0\), together with
+\[
+ \sum_{p\leq x}\frac{(\log p)^r}{p}=O((\log x)^r),
+\]
+gives \(L_x^{(r)}(0)=O((\log x)^r)\).  A second use of `(11p)` yields
+\(\partial_c^j{\cal H}_x(0)=O((\log x)^j)\).  Mertens' theorem
+\(a_x\asymp(\log x)^{-1}\), and the zeroth coordinate \({\cal H}_x(0)=1\), now give `(11m)`.
+
+The statement concerns the complete finite jet packet.  A source-selected scalar combination of
+its coordinates could still cancel.  What the theorem removes is the analytic possibility that
+finite multiplicity itself erases the Rees fracture; nonvanishing of the source-selected top
+conormal coordinate remains a separate faithfulness problem.
+
+## Theorem: finite-Rees sewing preserves the flat radical
+
+`[PROVED HERE]` `[LEAN-PROVED: ABSTRACT ASYMPTOTIC ALGEBRA]`
+
+Let \(a_x>0\) tend to zero and, for a finite-dimensional normed space \(E\), define
+\[
+ {\mathfrak F}_\infty(a;E)
+ :=
+ \left\{v=(v_x):
+   \|v_x\|=o(a_x^N)\ \hbox{for every }N\in{\mathbb N}
+ \right\}.                                               \tag{11q}
+\]
+If \(R_x:E\to F\) is a finite matrix whose coefficients have some fixed finite Rees bound
+\[
+ (R_x)_{ki}=O(a_x^{-K}),                                 \tag{11r}
+\]
+then
+\[
+ R{\mathfrak F}_\infty(a;E)
+ \subseteq{\mathfrak F}_\infty(a;F).                     \tag{11s}
+\]
+If \(R_x\) has a left inverse \(S_x\) and the coefficients of both \(R_x\) and \(S_x\) have
+finite Rees bounds, then
+\[
+ v\in{\mathfrak F}_\infty(a;E)
+ \quad\Longleftrightarrow\quad
+ Rv\in{\mathfrak F}_\infty(a;F).                         \tag{11t}
+\]
+More generally, finite dimension is unnecessary.  If \(E,F\) are arbitrary normed spaces and
+\[
+ \|R_x\|_{\mathrm{op}}=O(a_x^{-K}),                       \tag{11u}
+\]
+then `(11s)` still holds.  Hence infinite rank is not itself an escape; only failure of every
+finite Rees bound for the full operator norm can cross the flat radical.
+
+### Proof
+
+For one coefficient \(r_x=O(a_x^{-K})\) and
+\(f\in{\mathfrak F}_\infty(a)\), fix \(N\).  All-orders flatness at grade \(N+K\) gives
+\[
+ r_xf_x
+ =
+ O(a_x^{-K})\,o(a_x^{N+K})
+ =
+ o(a_x^N).
+\]
+Finite sums prove `(11s)`.  Under `(11u)`, the operator inequality
+\(\|R_xv_x\|\leq\|R_x\|_{\rm op}\|v_x\|\) gives the same proof without a dimension assumption.
+Apply `(11s)` first to \(R\), then to \(S\), and use \(SR=1\) to obtain `(11t)`.
+
+The Lean theorem
+`RHTower.reesAllOrdersFlat_finiteReesJetTransform_iff_of_inverse` proves exactly this
+finite-packet statement from `IsBigO.mul_isLittleO`; it assumes only eventual nonvanishing of
+the scale.  `RHTower.reesAllOrdersFlat_apply_reesOperatorGradeAtMost` proves the
+arbitrary-dimensional operator-norm form `(11u)`.  The analytic placement of the Hellinger jets
+into the two Rees sectors remains the separate input `(11k)`--`(11l)`.
+
+### Corollary: off-line reflection requires essential boundary singularity
+
+For \(0<c<\tfrac12\), write
+\[
+ V_{x,m}(c)
+ =
+ \bigl(\partial_c^j{\cal H}_x(c)\bigr)_{0\leq j<m}.
+\]
+Equation `(11l)` says
+\(V_m(c)\in{\mathfrak F}_\infty(a;\mathbb C^m)\), whereas `(11k)` says
+\(V_m(-c)\notin{\mathfrak F}_\infty(a;\mathbb C^m)\).  Therefore no finite-Rees-order matrix can
+send \(V_m(c)\) to \(V_m(-c)\).  In particular, no reflection equivalence whose two directions
+have finite Rees order can sew the two packets.
+
+Thus an off-critical reflected Xi fibre forces at least one of the following:
+
+1. **essential operator singularity:** the reflection operator norm grows faster than
+   \(a_x^{-K}\) for every finite \(K\);
+2. **loss of bounded-operator realization:** reflection survives only as a discontinuous,
+   distributional, or nonclosable inter-sector correspondence, so no operator norm in `(11u)`
+   exists;
+3. **source nonfaithfulness:** the proposed source comparison does not retain the
+   distinguished Xi conormal jet.
+
+This is the precise content of “we need infinity.”  No finite nilpotent thickening, finite jet
+coordinate change, or finite-order renormalization can repair the reflected asymptotic mismatch.
+Only an essentially singular or non-operator sewing operation can do so.  Merely declaring the
+completion infinite-dimensional changes nothing.  Conversely, a source theorem excluding all
+three escape clauses forces \(c=0\).
+
+The result also sharpens the sought third completion.  It must retain
+\({\mathfrak F}_\infty\) as a nonzero separated Stokes sector while making source reflection
+bi-moderate.  If it instead quotients out the flat radical, it loses conormal faithfulness; if its
+reflection uses essential singularities or uncontrolled infinite sums, positivity and
+Hausdorffness no longer supply a critical-line selector.
+
 ## RH-bearing source conjecture
 
 > **[CONJECTURE -- SOURCE-CALIBRATED REES-MODERATE REFLECTION.]**
 > The completed ordinary-prime Euler--Gamma/co-Poisson source constructs, before divisor
 > specialization, a presentation-independent reflection involution on its prime-valuation
-> half-density conormal pro-object.  Relative to the exact Wold/BV source scale \(a_x^{1/2}\), both
-> the involution and its inverse have Rees order zero.  Its distinguished conormal section is
-> nonzero on the top multiplicity jet of every nontrivial \(\Xi\)-divisor fibre.
+> half-density conormal pro-object.  Relative to the exact Wold/BV source scale \(a_x^{1/2}\),
+> both the involution and its inverse have some finite Rees order, uniformly on every fixed finite
+> multiplicity packet.  Its distinguished conormal section is nonzero on the top multiplicity jet
+> of every nontrivial \(\Xi\)-divisor fibre.
 
-“Rees order zero” may be stated on finite-prime representatives \(R_x\) as
+The minimal moderation conclusion needed after `(11t)` is
+\[
+ \|R_x\|=O(a_x^{-K}),\qquad
+ \|R_x^{-1}\|=O(a_x^{-L})                                \tag{13f}
+\]
+for some finite \(K,L\).  A stronger and more canonical “Rees order zero” form is
 \[
  \log\|R_x\|+\log\|R_x^{-1}\|
  =
  o(|\log a_x|),                                          \tag{13}
 \]
-after the Hermitian scale is fixed by the source differential determinant character.  Uniform
-boundedness is sufficient but not required.
+after the Hermitian scale is fixed by the source differential determinant character; `(13)`
+implies `(13f)`.  Uniform boundedness is sufficient but not required.
 
 If the conjecture holds and \(\Xi(\rho)=0\), the involution identifies the \(\rho\) and
 \(1-\rho\) top conormal jets without changing their Rees order.  Equation `(12)` forces
@@ -384,9 +583,10 @@ If the conjecture holds and \(\Xi(\rho)=0\), the involution identifies the \(\rh
 Thus the conjecture implies RH.
 
 The conjecture is narrower than “every Xi conormal is normal in the critical GNS sector.”  It does
-not require an ordinary strong limit of normalized states.  It asks for moderate transport of the
-unnormalized half-density/Rees object, exactly the structure that survives the
-normalization-amplification no-go.
+not require an ordinary strong limit of normalized states.  It asks for finite-order transport of
+the unnormalized half-density/Rees object, exactly the structure that survives the
+normalization-amplification no-go.  The theorem above shows that order zero is not load-bearing:
+any finite order suffices.
 
 An equivalent sufficient determinant formulation is useful.  For a reflected semisimple pair,
 the finite-prime Hellinger determinant is
@@ -436,12 +636,17 @@ This separates the precise source problem from the already false normalized-Cauc
 5. **Generalized-prime countermodels are not excluded by vocabulary.**  They falsify the mechanism
    unless they fail the literal ordinary-prime Wold index, residue-corrected Gamma/BV differential
    character, or source-calibrated moderation `(13)`.
-6. **Multiplicity is not silently discharged.**  Equations `(3)`--`(12)` classify the semisimple
-   prime character.  Polynomial valuation-depth jets preserve Kakutani measure class, but their
-   exact Hellinger--Rees order has not been proved here.  The source comparison must establish the
-   top multiplicity jet separately.
-7. **The conjecture remains RH-bearing.**  No current corpus theorem proves `(13)`.  It must not be
-   inferred from scalar FE, finite CP maps, \(\det_2\) alone, or hypertranscendence alone.
+6. **Multiplicity is only partly discharged.**  Equations `(11j)`--`(11m)` prove that every full
+   finite radial jet packet retains the finite-grade/all-orders-flat fracture.  They do not prove
+   that the source-selected scalar top conormal coordinate is nonzero; that faithfulness statement
+   remains separate and load-bearing.
+7. **Infinite rank is not an escape.**  Equation `(11u)` controls arbitrary-dimensional operator
+   families.  A growing matrix can evade it only when the full operator norm has essential Rees
+   growth or the proposed sewing is not a bounded operator at all.  Calling an arbitrary pro-map
+   “moderate” without one of these estimates would conceal the load-bearing step.
+8. **The conjecture remains RH-bearing.**  No current corpus theorem proves `(13f)`, much less
+   `(13)`.  It must not be inferred from scalar FE, finite CP maps, \(\det_2\) alone, or
+   hypertranscendence alone.
 
 ## Literature boundary
 
@@ -482,6 +687,10 @@ Primary parents:
 - [x] crossover orientation and both endpoint asymptotics paper-proved
 - [x] exact valuation-Hellinger/squarefree-Fisher metric comparison paper-proved
 - [x] reflection fracture and exact selector paper-proved
+- [x] finite multiplicity-jet stability of the Rees fracture paper-proved
+- [x] finite-Rees sewing invariance of the all-orders-flat radical paper- and Lean-proved
+- [x] arbitrary-dimensional finite-Rees operator-norm invariance paper- and Lean-proved
+- [x] exact essential-singularity/non-operator/nonfaithfulness trilemma extracted
 - [x] normalization-amplification no-go incorporated
 - [x] preliminary corpus and literature noncollision search
 - [ ] independent analytic-number-theory audit of `(5)`
@@ -498,3 +707,15 @@ Primary parents:
   existing codiagonal and normalization-amplification theorems.  Retaining the vanishing Wold/BV
   scale exposed the Hellinger--Rees trichotomy `(3)`--`(7)`.  Froze source-calibrated
   Rees-moderate reflection as the new RH-bearing theorem.
+- 2026-07-30 — Closed the finite-multiplicity analytic gap.  The full radial \(m\)-jet packet has
+  half-normal order for \(c<0\), is flat beyond every Rees grade for \(c>0\), and remains within a
+  finite Rees band at \(c=0\).  This rules out finite nilpotent masking of the reflection fracture
+  while leaving source-selected top-jet faithfulness explicitly open.
+- 2026-07-30 — Proved the finite-Rees sewing law: every finite matrix of finite Rees grade preserves
+  the all-orders-flat radical, and every bi-moderate finite jet equivalence preserves radical
+  membership in both directions.  Hence an off-line reflected Xi packet forces essential
+  beyond-all-orders coefficient growth, a non-operator inter-sector correspondence, or source
+  nonfaithfulness.  Extended the theorem to arbitrary-dimensional operator families under a
+  finite Rees bound on their full operator norm; infinite rank alone is irrelevant.  Formalized
+  the abstract laws in
+  `RHTower.PrimeValuationHellingerReesJetStability`.

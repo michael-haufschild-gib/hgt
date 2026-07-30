@@ -115,7 +115,7 @@ theorem isCompactOperator_soninIntersectionProjection_sub_complement
   let E : H →L[Complex] H := A.orthogonal.starProjection
   have hTcompact : IsCompactOperator T := by
     have h := hBA.comp_clm B.starProjection
-    simpa [T, soninAlternatingBlock, Function.comp_def] using h
+    simpa [T, soninAlternatingBlock, Function.comp_def] using! h
   have hVmul : V * (1 - T) = 1 := by
     change (↑(e⁻¹) : H →L[Complex] H) * (↑e : H →L[Complex] H) = 1
     rw [← Units.val_mul]
@@ -134,7 +134,8 @@ theorem isCompactOperator_soninIntersectionProjection_sub_complement
       ((E * (V - 1) * B.starProjection * E) : H →L[Complex] H) := by
     have hright := hVsubCompact.comp_clm (B.starProjection * E)
     have hleft := hright.clm_comp E
-    simpa [mul_assoc, Function.comp_def] using hleft
+    simpa only [mul_apply_eq_comp, _root_.sub_apply, one_apply_eq_self,
+      map_sub] using! hleft
   rw [soninIntersectionProjection_eq_resolventFormula A B hT]
   have hE : E = 1 - A.starProjection := by
     simpa [E] using A.starProjection_orthogonal'
@@ -238,7 +239,7 @@ theorem isCompactOperator_centralSoninProjection_sub_complement
     (isCompactOperator_centralFourierPhysicalBlock a ha)
   simpa [centralPhysicalForbidden, centralFourierForbidden,
     indicatorCutoff_eq_physicalForbidden_starProjection,
-    fourierCutoff_eq_fourierForbidden_starProjection] using h
+    fourierCutoff_eq_fourierForbidden_starProjection] using! h
 
 /-- The same compact-complement identity on the actual even Sonin Hilbert carrier. -/
 theorem isCompactOperator_evenCentralSoninProjection_sub_complement

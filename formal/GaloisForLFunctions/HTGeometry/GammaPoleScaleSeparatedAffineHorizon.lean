@@ -115,7 +115,7 @@ theorem dehomogenizedScaleSeparatedSimplePoleProfileEvalMV_isWeightedHomogeneous
     {n d : ℕ} {P : MvPolynomial (Fin (n + 1)) ℂ} (hP : P.IsHomogeneous d) :
     MvPolynomial.IsWeightedHomogeneous gammaScaleSeparatedProfileWeight
       (dehomogenizedScaleSeparatedSimplePoleProfileEvalMV n P) ((n + 1) * d) := by
-  simpa [mul_comm] using isWeightedHomogeneous_eval₂_of_isHomogeneous_mul hP
+  simpa [mul_comm] using! isWeightedHomogeneous_eval₂_of_isHomogeneous_mul hP
     gammaScaleSeparatedProfileWeight
     (dehomogenizedScaleSeparatedSimplePoleJetProfileMV n)
     (dehomogenizedScaleSeparatedSimplePoleJetProfileMV_isWeightedHomogeneous n)

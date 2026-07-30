@@ -84,7 +84,7 @@ theorem universalWeightedShiftDerivation_ancestor
 theorem universalShiftAncestor_algebraicIndependent :
     AlgebraicIndependent K
       (fun p : ℕ × ι ↦ universalShiftAncestor (K := K) p.1 p.2) := by
-  simpa only [universalShiftAncestor, Function.comp_apply] using
+  simpa only [universalShiftAncestor, Function.comp_apply] using!
     (MvPolynomial.algebraicIndependent_X (ℕ × ι) K).map'
       (universalShiftEmbedding_injective (K := K) (ι := ι))
 

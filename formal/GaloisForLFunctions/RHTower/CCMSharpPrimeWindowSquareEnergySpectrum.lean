@@ -156,7 +156,7 @@ theorem two_mul_xi_zero_re_le_squarePrimeWindowPositiveExcess_abscissa
         squarePrimeWindowPositiveExcessDirichletCoefficient (sigma : ℂ) :=
       LSeriesSummable_of_abscissaOfAbsConv_lt_re (by
         simpa only [ofReal_re] using habsSigma)
-    simpa only [squarePrimeWindowPositiveExcessDirichletCoefficient] using hsum
+    simpa only [squarePrimeWindowPositiveExcessDirichletCoefficient] using! hsum
   let alpha : ℝ := (sigma - 1) / 2
   have halpha : 0 < alpha := by
     dsimp only [alpha]
@@ -217,7 +217,7 @@ theorem four_mul_xi_zero_re_sub_one_le_squarePrimeWindowPositiveExcessSquare_abs
         squarePrimeWindowPositiveExcessSquareDirichletCoefficient (sigma : ℂ) :=
       LSeriesSummable_of_abscissaOfAbsConv_lt_re (by
         simpa only [ofReal_re] using habsSigma)
-    simpa only [squarePrimeWindowPositiveExcessSquareDirichletCoefficient] using hsum
+    simpa only [squarePrimeWindowPositiveExcessSquareDirichletCoefficient] using! hsum
   have hSquare : Summable
       (realDirichletWeightedTerm
         (fun m => (dyadicWeightedPrimeWindowPositiveExcess (m ^ 2)) ^ 2)

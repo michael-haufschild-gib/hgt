@@ -142,7 +142,7 @@ theorem finiteClassDeltaRestricted_linearIndependent (r : Setoid W)
     (finiteClassDeltaObservable_linearIndependent r)) c
   funext w
   have hw := congrFun h ⟨w, Set.mem_univ _⟩
-  simpa only [Finset.sum_apply, Pi.smul_apply] using hw
+  simpa only [Finset.sum_apply, Pi.smul_apply] using! hw
 
 theorem finiteClassDeltaRestricted_mem_span_iff_respects
     (r : Setoid W) [Fintype (FiniteQuotientType r)] (f : W → ℂ) :

@@ -124,7 +124,7 @@ theorem pointedStoneConstraintHomeomorph_base (S : LightProfinite) (base : S) :
       ⟨allPositiveOrientationPattern,
         allPositiveOrientationPattern_mem_pointedStoneConstraint S base⟩ := by
   apply Subtype.ext
-  simpa [pointedStoneConstraintHomeomorph] using pointedStoneOrientation_base S base
+  simpa [pointedStoneConstraintHomeomorph] using! pointedStoneOrientation_base S base
 
 /-- Linear independence of the coordinate sign functions on the prescribed finite projection
 forces tail independence of the corresponding sparse prime orientations. -/
@@ -147,7 +147,7 @@ theorem sparseClosedConstraint_tailIndependent_of_coordinateSigns
     exact hx
   have hinf := primeRecurringPatternChamber_fiber_infinite pi
     (fun i : I => sparseClosedConstraintPrimeOrientation K i.1) ⟨x, hr⟩
-  exact hrec x (by simpa [primeOrientationPattern] using hinf)
+  exact hrec x (by simpa [primeOrientationPattern] using! hinf)
 
 /-- Every finite shift rectangle of a coordinate-independent closed constraint is differentially
 independent over the finite-prime rational differential field. -/

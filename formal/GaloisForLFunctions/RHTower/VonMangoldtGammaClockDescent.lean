@@ -88,7 +88,7 @@ theorem finiteExponentialGammaAnomaly_bianchi {P : Type*} [Fintype P]
       finiteExponentialGammaAnomaly weight frequency x N =
     (gammaClockCurvature N).comp
       (finiteExponentialJetObservation weight frequency x (N + 1)) := by
-  simpa [finiteExponentialGammaAnomaly, clockAnomalyCoherenceDefect] using
+  simpa [finiteExponentialGammaAnomaly, clockAnomalyCoherenceDefect] using!
     clockAnomalyCoherenceDefect_eq_shadowCurvature_comp
       (finiteExponentialSourceShift frequency)
       (finiteExponentialJetObservation weight frequency x N)

@@ -70,7 +70,7 @@ theorem xiNormalizedVerticalEulerCurrent_tendsto_atTop
   have h :=
     (re_logDeriv_xi_vertical_tendsto_atTop (h := x) hx).atTop_div_const
       hxpos
-  simpa only [xiNormalizedVerticalEulerCurrent] using h
+  simpa only [xiNormalizedVerticalEulerCurrent] using! h
 
 private theorem continuousOn_xiNormalizedVerticalEulerCurrent
     {x T : ℝ} (hx : 1 / 2 < x) :

@@ -225,8 +225,9 @@ theorem hasDerivAt_ellipticThetaCoordinate (τ z : ℂ) :
     by simpa only [id_eq, mul_one] using (hasDerivAt_id z).const_mul (2 * Real.pi * I)
   have hexp := (Complex.hasDerivAt_exp (2 * Real.pi * I * z)).comp z hlin
   have hmul := hexp.const_mul (-Complex.exp (Real.pi * I * τ))
-  convert hmul using 1
-  all_goals (simp [ellipticThetaCoordinate]; ring)
+  convert! hmul using 1
+  simp only [ellipticThetaCoordinate]
+  ring_nf
 
 theorem tendsto_ellipticThetaAdditiveLogKernel_normalized_halfPeriod {τ : ℂ} (hτ : 0 < τ.im) :
     Tendsto
@@ -250,8 +251,9 @@ theorem tendsto_ellipticThetaAdditiveLogKernel_normalized_halfPeriod {τ : ℂ} 
     have hquot : Tendsto
         (fun z : ℂ => (2 * Real.pi * I * q) / slope X z₀ z)
         (𝓝[≠] z₀) (𝓝 1) := by
-      convert tendsto_const_nhds.div hslope hderiv0 using 1
-      field_simp [hderiv0]
+      have hconst : Tendsto (fun _ : ℂ => (2 * Real.pi * I * q : ℂ))
+          (𝓝[≠] z₀) (𝓝 (2 * Real.pi * I * q : ℂ)) := tendsto_const_nhds
+      simpa only [div_self hderiv0] using! hconst.div hslope hderiv0
     have hmap := hderiv.tendsto_nhdsNE hderiv0
     have hXne : ∀ᶠ z in 𝓝[≠] z₀, X z ≠ q :=
       by simpa only [hX0, Set.mem_singleton_iff] using

@@ -146,8 +146,9 @@ theorem isWeightedHomogeneous_eval₂_of_isHomogeneous_mul
       (fun i _ => (hg i).pow (m i))
   convert hprod using 1
   have hdeg : ∑ i ∈ m.support, m i = d := by
-    simpa [Finsupp.weight_apply, smul_eq_mul] using
-      hP (MvPolynomial.mem_support_iff.mp hm)
+    by_contra hne
+    exact (MvPolynomial.mem_support_iff.mp hm)
+      (hP.coeff_eq_zero (by simpa [Finsupp.degree] using hne))
   calc
     d * e = (∑ i ∈ m.support, m i) * e := congrArg (· * e) hdeg.symm
     _ = ∑ i ∈ m.support, m i * e := by rw [Finset.sum_mul]

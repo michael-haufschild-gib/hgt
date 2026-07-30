@@ -117,7 +117,7 @@ theorem linearIndependent_cayleyConjugateMonomialLp_of_infiniteSupport
     simp_rw [Polynomial.eval_finsetSum, Polynomial.eval_mul, Polynomial.eval_C,
       Polynomial.eval_pow, Polynomial.eval_X]
     induction (Finset.univ : Finset (Fin (N + 1))) using Finset.induction_on with
-    | empty => simpa using (Lp.coeFn_zero ℂ 2 mu)
+    | empty => simpa using! (Lp.coeFn_zero ℂ 2 mu)
     | @insert a S ha ih =>
         rw [Finset.sum_insert ha]
         filter_upwards [Lp.coeFn_add

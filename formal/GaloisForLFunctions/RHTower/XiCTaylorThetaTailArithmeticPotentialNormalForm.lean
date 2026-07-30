@@ -117,26 +117,39 @@ theorem criticalNormalized_densityPhaseTailDerivative_eq_endpoint_sub_sq_potenti
         (thetaCuspTailDerivativePolynomial 1) 1 u).const_mul 4).ofReal_comp
   have hg (u : ℝ) : HasDerivAt g (g' u) u := by
     have hlinear : HasDerivAt (fun v : ℝ => (((v - a : ℝ) : ℂ) * I)) I u := by
-      convert (((Complex.ofRealCLM.hasDerivAt (x := u)).sub_const (a : ℂ)).mul_const I)
-        using 1 <;>
-        simp [Complex.ofRealCLM_apply]
-    convert hlinear.mul (hasDerivAt_spectralTranslationPhase_source z u) using 1
-    dsimp [g, g']
-    ring_nf
-    rw [I_sq]
-    ring
+      have hraw :=
+        ((Complex.ofRealCLM.hasDerivAt (x := u)).sub_const (a : ℂ)).mul_const I
+      have hraw' := hraw.congr_deriv (g' := I)
+        (by simp [Complex.ofRealCLM_apply])
+      exact hraw'.congr_of_eventuallyEq
+        (Eventually.of_forall fun v => by simp [Complex.ofRealCLM_apply])
+    have hraw := hlinear.mul
+      (hasDerivAt_spectralTranslationPhase_source z u)
+    have hraw' := hraw.congr_deriv (g' := g' u) (by
+      dsimp [g']
+      ring_nf
+      rw [I_sq]
+      ring)
+    exact hraw'.congr_of_eventuallyEq
+      (Eventually.of_forall fun _ => rfl)
   have hg' (u : ℝ) : HasDerivAt g' (g'' u) u := by
     have hp := hasDerivAt_spectralTranslationPhase_source z u
     have hlinear : HasDerivAt
         (fun v : ℝ => (((v - a : ℝ) : ℂ) * z)) z u := by
-      convert (((Complex.ofRealCLM.hasDerivAt (x := u)).sub_const (a : ℂ)).mul_const z)
-        using 1 <;>
-        simp [Complex.ofRealCLM_apply]
-    convert (hp.const_mul I).sub (hlinear.mul hp) using 1
-    dsimp [g', g'']
-    ring_nf
-    rw [I_sq]
-    ring
+      have hraw :=
+        ((Complex.ofRealCLM.hasDerivAt (x := u)).sub_const (a : ℂ)).mul_const z
+      have hraw' := hraw.congr_deriv (g' := z)
+        (by simp [Complex.ofRealCLM_apply])
+      exact hraw'.congr_of_eventuallyEq
+        (Eventually.of_forall fun v => by simp [Complex.ofRealCLM_apply])
+    have hraw := (hp.const_mul I).sub (hlinear.mul hp)
+    have hraw' := hraw.congr_deriv (g' := g'' u) (by
+      dsimp [g'']
+      ring_nf
+      rw [I_sq]
+      ring)
+    exact hraw'.congr_of_eventuallyEq
+      (Eventually.of_forall fun _ => rfl)
   have hmoment (m k : ℕ) : IntegrableOn (fun u : ℝ =>
       ((u ^ k * (4 * thetaCuspPolynomialAtom
         (thetaCuspTailDerivativePolynomial m) 1 u) : ℝ) : ℂ) *
@@ -171,11 +184,23 @@ theorem criticalNormalized_densityPhaseTailDerivative_eq_endpoint_sub_sq_potenti
     ring
   have hzero1 : Tendsto (g * f') (nhdsWithin a (Ioi a)) (nhds 0) := by
     have h := (hg a).continuousAt.mul (hf' a).continuousAt
-    simpa [g] using h.tendsto.mono_left inf_le_left
+    have ht : Tendsto (g * f') (nhdsWithin a (Ioi a))
+        (nhds ((g * f') a)) :=
+      h.tendsto.mono_left nhdsWithin_le_nhds
+    have hvalue : (g * f') a = 0 := by simp [g]
+    rw [hvalue] at ht
+    exact ht
   have hzero2 : Tendsto (g' * f) (nhdsWithin a (Ioi a))
       (nhds (I * spectralTranslationPhase a z * f a)) := by
     have h := (hg' a).continuousAt.mul (hf a).continuousAt
-    simpa [g'] using h.tendsto.mono_left inf_le_left
+    have ht : Tendsto (g' * f) (nhdsWithin a (Ioi a))
+        (nhds ((g' * f) a)) :=
+      h.tendsto.mono_left nhdsWithin_le_nhds
+    have hvalue : (g' * f) a =
+        I * spectralTranslationPhase a z * f a := by
+      simp [g']
+    rw [hvalue] at ht
+    exact ht
   have htail (m k : ℕ) : Tendsto (fun u : ℝ =>
       spectralTranslationPhase u z *
         ((u ^ k * (4 * thetaCuspPolynomialAtom

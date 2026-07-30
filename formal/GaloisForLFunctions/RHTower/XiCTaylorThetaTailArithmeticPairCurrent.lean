@@ -134,11 +134,11 @@ theorem integrable_xiCTaylorThetaTailCoreSymmetricCorrelationKernel
     have hprod : Integrable (fun p : ℝ × ℝ =>
         f p.1 * (starRingEnd ℂ) (g p.2)) (mu.prod mu) :=
       hf.mul_prod hgconj
-    simpa only [f, g, xiCTaylorThetaTailCoreCorrelationKernel] using hprod.im
+    simpa only [f, g, xiCTaylorThetaTailCoreCorrelationKernel] using! hprod.im
   have hswap : Integrable
       (fun p : ℝ × ℝ => xiCTaylorThetaTailCoreCorrelationKernel d z p.swap)
       (mu.prod mu) := by
-    simpa only [Function.comp_apply] using hcorr.swap
+    simpa only [Function.comp_apply] using! hcorr.swap
   rw [show xiCTaylorThetaTailCoreSymmetricCorrelationKernel d z =
       fun p => (1 / 2 : ℝ) *
         (xiCTaylorThetaTailCoreCorrelationKernel d z p +

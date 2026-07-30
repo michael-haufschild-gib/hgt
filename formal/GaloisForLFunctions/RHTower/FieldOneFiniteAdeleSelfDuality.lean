@@ -33,7 +33,7 @@ theorem fieldOneFiniteAdeleStandardAddChar_single_principalPart_ne_one
   apply Subtype.ext
   simpa only [fieldOneFiniteAdeleStandardAddChar,
     AddChar.compAddMonoidHom_apply, MonoidHom.compAddChar_apply,
-    AddCircle.toCircle_zero] using h
+    AddCircle.toCircle_zero] using! h
 
 /-- The standard finite-adele additive character is primitive under
 multiplicative shifts. -/
@@ -82,7 +82,7 @@ theorem fieldOneFiniteAdeleStandardAddChar_isPrimitive :
   have hvalue := DFunLike.congr_fun hshift b
   have hone :
       fieldOneFiniteAdeleStandardAddChar (a * b) = 1 := by
-    simpa only [AddChar.mulShift_apply, Pi.one_apply] using hvalue
+    simpa only [AddChar.mulShift_apply, Pi.one_apply] using! hvalue
   rw [hab] at hone
   exact
     fieldOneFiniteAdeleStandardAddChar_single_principalPart_ne_one v hone

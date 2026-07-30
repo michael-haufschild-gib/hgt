@@ -60,7 +60,7 @@ theorem hasDerivAt_thetaCuspTailDerivative (m : ℕ) (x : ℝ) :
       rw [Real.norm_eq_abs]
       exact abs_thetaCuspPolynomialAtom_le_majorant _ (Ioo_subset_Icc_self hy) (n + 1))
     hx (summable_thetaCuspTailDerivative m x) hx
-  simpa [thetaCuspTailDerivative, thetaCuspTailDerivativePolynomial, u] using key
+  simpa [thetaCuspTailDerivative, thetaCuspTailDerivativePolynomial, u] using! key
 
 theorem differentiable_thetaCuspTailDerivative (m : ℕ) :
     Differentiable ℝ (thetaCuspTailDerivative m) :=
@@ -90,7 +90,7 @@ theorem thetaCuspTailDerivative_zero_eq_evenKernel (x : ℝ) :
       rw [show Real.exp (x * 2) = Real.exp (2 * x) by
         congr 1
         ring]
-      ring
+      ring_nf
     _ = Real.exp (x / 2) / 2 *
         (cosKernel 0 (Real.exp (2 * x)) - 1) := hs.tsum_eq
     _ = Real.exp (x / 2) * (evenKernel 0 (Real.exp (2 * x)) - 1) / 2 := by
@@ -186,69 +186,60 @@ def thetaCuspReflectionModeDeriv (x : ℝ) : ℝ :=
 theorem hasDerivAt_thetaCuspReflectionMode (x : ℝ) :
     HasDerivAt thetaCuspReflectionMode (thetaCuspReflectionModeDeriv x) x := by
   unfold thetaCuspReflectionMode thetaCuspReflectionModeDeriv
-  convert (((Real.hasDerivAt_exp (x / 2)).comp x
+  have hraw := (((Real.hasDerivAt_exp (x / 2)).comp x
     ((hasDerivAt_id x).div_const 2)).sub
       ((Real.hasDerivAt_exp (-x / 2)).comp x
-        (((hasDerivAt_id x).neg).div_const 2))).div_const 2 using 1
-  all_goals ring
+        (((hasDerivAt_id x).neg).div_const 2))).div_const 2
+  simpa only [Pi.sub_apply, Pi.div_apply] using!
+    hraw.congr_deriv (by ring)
 
 theorem hasDerivAt_thetaCuspReflectionModeDeriv (x : ℝ) :
     HasDerivAt thetaCuspReflectionModeDeriv
       ((1 / 4 : ℝ) * thetaCuspReflectionMode x) x := by
   unfold thetaCuspReflectionMode thetaCuspReflectionModeDeriv
-  convert (((Real.hasDerivAt_exp (x / 2)).comp x
+  have hraw := (((Real.hasDerivAt_exp (x / 2)).comp x
     ((hasDerivAt_id x).div_const 2)).add
       ((Real.hasDerivAt_exp (-x / 2)).comp x
-        (((hasDerivAt_id x).neg).div_const 2))).div_const 4 using 1
-  all_goals ring
+        (((hasDerivAt_id x).neg).div_const 2))).div_const 4
+  simpa only [Pi.add_apply, Pi.div_apply] using!
+    hraw.congr_deriv (by ring)
 
 /-- The one-sided theta tail has the exact cusp slope which supplies the constant term of `Xi`. -/
 theorem thetaCuspTailDerivative_one_zero :
     thetaCuspTailDerivative 1 0 = -(1 / 4 : ℝ) := by
-  have hreflection : (fun y : ℝ => thetaCuspTailDerivative 0 (-y)) =
-      fun y => thetaCuspTailDerivative 0 y + thetaCuspReflectionMode y := by
+  have hreflection : thetaCuspTailDerivative 0 ∘ Neg.neg =
+      thetaCuspTailDerivative 0 + thetaCuspReflectionMode := by
     funext y
-    simpa [thetaCuspReflectionMode] using thetaCuspTailDerivative_zero_neg y
+    simpa [Function.comp_apply, thetaCuspReflectionMode] using
+      thetaCuspTailDerivative_zero_neg y
   have hl := (hasDerivAt_thetaCuspTailDerivative 0 (-(0 : ℝ))).comp (0 : ℝ)
     (hasDerivAt_neg (0 : ℝ))
   have hr := (hasDerivAt_thetaCuspTailDerivative 0 (0 : ℝ)).add
     (hasDerivAt_thetaCuspReflectionMode (0 : ℝ))
-  have hl' : HasDerivAt (fun y : ℝ => thetaCuspTailDerivative 0 (-y))
-      (-thetaCuspTailDerivative 1 0) 0 := by
-    simpa [Function.comp_def] using hl
-  have hr' : HasDerivAt
-      (fun y : ℝ => thetaCuspTailDerivative 0 y + thetaCuspReflectionMode y)
-      (thetaCuspTailDerivative 1 0 + 1 / 2) 0 := by
-    convert hr using 1 <;> norm_num [thetaCuspReflectionModeDeriv]
-  rw [hreflection] at hl'
-  have h := hl'.unique hr'
+  rw [hreflection] at hl
+  have h := hl.unique hr
+  norm_num [thetaCuspReflectionModeDeriv] at h
   linarith
 
 /-- **Theta-cusp reflection law.** The elementary reflection defect of the Gaussian tail is
 annihilated by `d²/dx² - 1/4`, so the actual all-integer cusp source is even. -/
 theorem thetaCuspFullSource_neg (x : ℝ) :
     thetaCuspFullSource (-x) = thetaCuspFullSource x := by
-  have hreflection : (fun y : ℝ => thetaCuspTailDerivative 0 (-y)) =
-      fun y => thetaCuspTailDerivative 0 y + thetaCuspReflectionMode y := by
+  have hreflection : thetaCuspTailDerivative 0 ∘ Neg.neg =
+      thetaCuspTailDerivative 0 + thetaCuspReflectionMode := by
     funext y
-    simpa [thetaCuspReflectionMode] using thetaCuspTailDerivative_zero_neg y
+    simpa [Function.comp_apply, thetaCuspReflectionMode] using
+      thetaCuspTailDerivative_zero_neg y
   have hfirst (y : ℝ) :
       -thetaCuspTailDerivative 1 (-y) =
         thetaCuspTailDerivative 1 y + thetaCuspReflectionModeDeriv y := by
     have hl := (hasDerivAt_thetaCuspTailDerivative 0 (-y)).comp y (hasDerivAt_neg y)
     have hr := (hasDerivAt_thetaCuspTailDerivative 0 y).add
       (hasDerivAt_thetaCuspReflectionMode y)
-    have hl' : HasDerivAt (fun z : ℝ => thetaCuspTailDerivative 0 (-z))
-        (-thetaCuspTailDerivative 1 (-y)) y := by
-      simpa [Function.comp_def] using hl
-    have hr' : HasDerivAt
-        (fun z : ℝ => thetaCuspTailDerivative 0 z + thetaCuspReflectionMode z)
-        (thetaCuspTailDerivative 1 y + thetaCuspReflectionModeDeriv y) y := by
-      simpa using hr
-    rw [hreflection] at hl'
-    exact hl'.unique hr'
-  have hfirstFun : (fun y : ℝ => -thetaCuspTailDerivative 1 (-y)) =
-      fun y => thetaCuspTailDerivative 1 y + thetaCuspReflectionModeDeriv y :=
+    rw [hreflection] at hl
+    simpa using hl.unique hr
+  have hfirstFun : -(thetaCuspTailDerivative 1 ∘ Neg.neg) =
+      thetaCuspTailDerivative 1 + thetaCuspReflectionModeDeriv :=
     funext hfirst
   have hsecond : thetaCuspTailDerivative 2 (-x) =
       thetaCuspTailDerivative 2 x +
@@ -257,16 +248,8 @@ theorem thetaCuspFullSource_neg (x : ℝ) :
       (hasDerivAt_neg x)).neg
     have hr := (hasDerivAt_thetaCuspTailDerivative 1 x).add
       (hasDerivAt_thetaCuspReflectionModeDeriv x)
-    have hl' : HasDerivAt (fun z : ℝ => -thetaCuspTailDerivative 1 (-z))
-        (thetaCuspTailDerivative 2 (-x)) x := by
-      simpa [Function.comp_def] using hl
-    have hr' : HasDerivAt
-        (fun z : ℝ => thetaCuspTailDerivative 1 z + thetaCuspReflectionModeDeriv z)
-        (thetaCuspTailDerivative 2 x +
-          (1 / 4 : ℝ) * thetaCuspReflectionMode x) x := by
-      simpa using hr
-    rw [hfirstFun] at hl'
-    exact hl'.unique hr'
+    rw [hfirstFun] at hl
+    simpa using hl.unique hr
   rw [thetaCuspFullSource_eq_tail_second_sub,
     thetaCuspFullSource_eq_tail_second_sub, hsecond,
     thetaCuspTailDerivative_zero_neg]

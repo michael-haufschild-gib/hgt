@@ -242,7 +242,8 @@ theorem differentialAlgebraicOver_of_mem_shiftStable {α β : ℂ}
           rw [hbot, Submodule.mem_bot] at hker
           exact one_ne_zero (congrArg (Subtype.val : W' → meroField (Set.univ : Set ℂ)) hker)
         haveI : Nontrivial (LinearMap.ker δ) := Submodule.nontrivial_iff_ne_bot.mpr hkerne
-        have hpos : 0 < Module.finrank ℂ (LinearMap.ker δ) := Module.finrank_pos
+        have hpos : 0 < Module.finrank ℂ (LinearMap.ker δ) :=
+          Module.finrank_pos (R := ℂ) (M := LinearMap.ker δ)
         have hsum : Module.finrank ℂ (LinearMap.range δ) + Module.finrank ℂ (LinearMap.ker δ) =
             Module.finrank ℂ W' := LinearMap.finrank_range_add_finrank_ker δ
         have hW'rank : Module.finrank ℂ W' ≤ n + 1 :=

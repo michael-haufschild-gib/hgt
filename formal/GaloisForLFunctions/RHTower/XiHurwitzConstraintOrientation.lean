@@ -162,7 +162,9 @@ theorem xi_zero_hurwitz_differentialIndependent_all :
       (congrArg (fun z : S × ℕ => (z.1 : XiDivisorSupport)) hpq)
       (congrArg (fun z : S × ℕ => z.2) hpq)
   have hcomp := hDI.comp e he
-  simpa only [Function.comp_apply, e] using hcomp
+  convert hcomp using 1
+  funext p
+  rfl
 
 /-- The negative-real orientation chamber of the complete Xi-indexed Hurwitz family. -/
 def XiHurwitzNegativeCharacterChamber : Prop :=

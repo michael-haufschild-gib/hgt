@@ -208,7 +208,7 @@ theorem xiThetaDividedChain_jordan_step
         xiThetaDividedChain (xiSpectralPointSupport rho) (k + 1) z := by
   have hzero := xiThetaDividedChain_vanish_before_multiplicity rho hk
   simp only [xiThetaDividedChain, Function.iterate_succ_apply']
-  simpa only [smul_eq_mul] using
+  simpa only [smul_eq_mul] using!
     (sub_smul_dslope_of_zero hzero z).symm
 
 theorem xiSupportMultiplicity_pos (rho : XiDivisorSupport) :

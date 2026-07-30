@@ -187,9 +187,8 @@ theorem xiCentralMomentGerm_eq_reciprocalSquareResolvent
     · apply Summable.of_nonneg_of_le
         (fun n => tsum_nonneg fun _ => mul_nonneg (pow_nonneg hratio0 _) (norm_nonneg _))
         (fun n => le_rfl)
-      convert hgeom.mul_right (∑' q : XiZeroCopy, ‖lam q‖) using 1
-      funext n
-      rw [← tsum_mul_left]
+      exact (hgeom.mul_right (∑' q : XiZeroCopy, ‖lam q‖)).congr
+        (fun n => by rw [← tsum_mul_left])
   have huncurry : Summable (Function.uncurry
       (fun (n : ℕ) (q : XiZeroCopy) => z ^ (2 * n) * lam q ^ (n + 1))) := by
     apply Summable.of_norm_bounded hnorm
@@ -239,7 +238,7 @@ theorem analyticTraceMoments_xiCentralMomentGerm (n : ℕ) :
       Finset.prod_const_one, one_smul] at hfac
     rw [xiCentralMomentPowerSeries, FormalMultilinearSeries.ofScalars_apply_eq,
       one_pow, smul_eq_mul, mul_one, xiCentralMomentCoefficient_two_mul] at hfac
-    rw [xiCentralMomentGerm]
+    rw [xiCentralMomentGerm, xiCentralMomentPowerSeries]
     simpa only [nsmul_eq_mul] using hfac.symm
   rw [analyticTraceMoments, hderiv]
   have hfacne : (((2 * n).factorial : ℕ) : ℂ) ≠ 0 := by

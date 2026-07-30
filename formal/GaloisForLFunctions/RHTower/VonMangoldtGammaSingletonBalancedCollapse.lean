@@ -107,7 +107,7 @@ theorem finiteVonMangoldtAllDepthCauchyVector_one_mem_boundary
     apply (finiteVonMangoldtAllDepthBoundarySubspace 1 N).le_orthogonal_orthogonal
     exact finiteVonMangoldtAllDepthCauchyVector_one_mem_boundary N w
   have hproj :=
-    Submodule.orthogonalProjectionOnto_mem_subspace_orthogonalComplement_eq_zero hv
+    Submodule.orthogonalProjectionOnto_apply_of_mem_orthogonal hv
   exact congrArg Subtype.val hproj
 
 /-- Every finite Cauchy-point Gram of the balanced singleton source is the zero matrix. -/

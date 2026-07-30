@@ -111,7 +111,7 @@ private theorem logWeibullPartitionTerm_isEquivalent_model
       ~[atTop] fun x : ℝ => logPartitionCoefficient c * x ^ (-(k : ℤ)) :=
     IsEquivalent.refl
   simpa only [logWeibullPartitionTerm, logWeibullPartitionModel,
-    Function.comp_apply] using houter.mul hfactor
+    Function.comp_apply] using! houter.mul hfactor
 
 private theorem logWeibullPartitionModel_isLittleO_leading
     {γ : ℝ} (hγ : 1 < γ) {k : ℕ}
@@ -225,7 +225,7 @@ lemma hasDerivAt_logWeibullExponent
   have hout := Real.hasDerivAt_rpow_const (x := Real.log x) (p := γ)
     (Or.inl hlogpos.ne')
   have hin := Real.hasDerivAt_log (by linarith : x ≠ 0)
-  simpa [logWeibullExponent, div_eq_mul_inv, mul_assoc] using hout.comp x hin
+  simpa [logWeibullExponent, div_eq_mul_inv, mul_assoc] using! hout.comp x hin
 
 lemma tendsto_logWeibullExponent_deriv_zero
     {γ : ℝ} (hγ : 1 < γ) :
@@ -290,7 +290,7 @@ lemma tendsto_logWeibull_fixedShift_ratio
   have hexp : Tendsto (fun x : ℝ => Real.exp
       (logWeibullExponent γ (x + r) - logWeibullExponent γ x))
       atTop (𝓝 1) := by
-    simpa using Real.continuous_exp.continuousAt.tendsto.comp hdiff
+    simpa using! Real.continuous_exp.continuousAt.tendsto.comp hdiff
   refine hexp.congr' ?_
   filter_upwards [eventually_gt_atTop (1 : ℝ)] with x hx
   dsimp [logWeibull, stretchedExp, logWeibullExponent] at *
@@ -368,7 +368,7 @@ private theorem logWeibullDerivativeEnvelope_succ_isLittleO_leading
       have hp : ContinuousAt (fun y : ℝ => y ^ e) 1 :=
         continuousAt_id.rpow_const (Or.inl one_ne_zero)
       have hc := hp.tendsto.comp hlog
-      simpa [e] using hc
+      simpa [e] using! hc
     have hcore := tendsto_log_rpow_div_id_zero (γ - 1)
     have htotal : Tendsto (fun x : ℝ =>
         γ * (logWeibull γ (x + r) / logWeibull γ x) *

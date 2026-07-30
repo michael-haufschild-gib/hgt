@@ -96,7 +96,7 @@ theorem tendsto_mobiusGevreyMultiplier_atTop
   have hpow : Tendsto (fun k : ℕ ↦ ((k + 2 : ℕ) : ℝ) ^ (1 - sigma))
       atTop atTop :=
     (tendsto_rpow_atTop (sub_pos.mpr hsigma)).comp hbase
-  simpa only [mobiusGevreyMultiplier] using
+  simpa only [mobiusGevreyMultiplier] using!
     hpow.atTop_mul_const (norm_pos_iff.mpr ha)
 
 theorem tendsto_mobiusGevreyMultiplier_zero
@@ -139,7 +139,7 @@ theorem tendsto_mobiusGevreyProfile_atTop_of_lt_one
     exact mul_le_mul_of_nonneg_right (hN (k + N) (by omega))
       (mobiusGevreyProfile_nonneg sigma a (k + N))
   rw [← map_add_atTop_eq_nat N]
-  simpa only [tendsto_map'_iff, Function.comp_apply] using htail
+  simpa only [tendsto_map'_iff, Function.comp_apply] using! htail
 
 theorem mobiusGevreyProfile_not_uniformlyBounded_of_lt_one
     {sigma : ℝ} (hsigma : sigma < 1) {a : ℂ} (ha : a ≠ 0) :

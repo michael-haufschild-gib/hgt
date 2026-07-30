@@ -148,7 +148,7 @@ theorem algebraicIndependent_gammaPoleScaleAndUnitPositiveCoefficient_over_ratFu
       (gammaPoleScaleAndUnitPositiveCoefficientRationalFamilyFin n) := by
   rw [algebraicIndependent_iff_injective_aeval]
   simpa [gammaPoleScaleAndUnitPositiveCoefficientRationalEvalFin,
-    MvPolynomial.aeval_def] using
+    MvPolynomial.aeval_def] using!
       gammaPoleScaleAndUnitPositiveCoefficientRationalEvalFin_injective n
 
 theorem algebraicIndependent_gammaPoleScaleAndUnitPositiveCoefficient_over_ratFunc :
@@ -175,7 +175,7 @@ theorem gammaPoleScaleAndUnitPositiveCoefficientRationalEval_injective :
   have h := algebraicIndependent_iff_injective_aeval.mp
     algebraicIndependent_gammaPoleScaleAndUnitPositiveCoefficient_over_ratFunc
   simpa [gammaPoleScaleAndUnitPositiveCoefficientRationalEval,
-    MvPolynomial.aeval_def] using h
+    MvPolynomial.aeval_def] using! h
 
 def gammaPoleUnitDerivativeRationalScale : Option ℕ → GammaPoleRationalBase
   | none => 1
@@ -257,7 +257,7 @@ theorem algebraicIndependent_gammaPoleScaleAndUnitDerivative_over_ratFunc :
       gammaPoleScaleAndUnitDerivativeRationalFamily := by
   rw [algebraicIndependent_iff_injective_aeval]
   simpa [gammaPoleScaleAndUnitDerivativeRationalEval,
-    MvPolynomial.aeval_def] using
+    MvPolynomial.aeval_def] using!
       gammaPoleScaleAndUnitDerivativeRationalEval_injective
 
 def gammaPoleScaleAndActualUnitDerivativeFamily : Option ℕ → NatGerm

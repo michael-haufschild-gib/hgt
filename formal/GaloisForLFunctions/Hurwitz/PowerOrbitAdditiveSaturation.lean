@@ -72,7 +72,7 @@ def translationInvariantAddSubgroup {σ : Type*} (P : MvPolynomial σ ℂ) :
   neg_mem' {v} hv := by
     have h := congrArg (mvTranslate (fun i => -v i)) hv
     rw [mvTranslate_add] at h
-    simpa using h.symm
+    simpa using! h.symm
 
 /-- Restriction of a multivariate polynomial to the affine line `x + t v`. -/
 def linePolynomial {σ : Type*} (x v : σ → ℂ) (P : MvPolynomial σ ℂ) : Polynomial ℂ :=
@@ -210,7 +210,7 @@ theorem totalDegree_pderiv_lt {σ : Type*} [DecidableEq σ]
   by_cases hi : d i = 0
   · simp [hi, hD]
   · have hdrop : (d - Finsupp.single i 1).degree + 1 = d.degree := by
-      simpa [Finsupp.degree_eq_weight_one] using
+      simpa [Finsupp.degree_eq_weight_one] using!
         (Finsupp.weight_sub_single_add (w := (1 : σ → ℕ)) hi)
     calc
       (MvPolynomial.monomial (d - Finsupp.single i 1)
@@ -282,7 +282,7 @@ theorem totalDegree_lt_of_pderiv_small {σ : Type*} [Fintype σ]
     rw [hzero, MvPolynomial.totalDegree_zero] at hDQ
     omega
   obtain ⟨d, hd, hdeg⟩ := Q.support.exists_mem_eq_sup
-    (Finsupp.support_nonempty_iff.mpr hQ)
+    (MvPolynomial.support_nonempty.mpr hQ)
     (fun m : σ →₀ ℕ => Multiset.card (Finsupp.toMultiset m))
   have hdegree : d.degree = Q.totalDegree := by
     calc
@@ -306,7 +306,7 @@ theorem totalDegree_lt_of_pderiv_small {σ : Type*} [Fintype σ]
     MvPolynomial.mem_support_iff.mpr hcoeff
   have hedegree : e.degree + 1 = d.degree := by
     dsimp only [e]
-    simpa [Finsupp.degree_eq_weight_one] using
+    simpa [Finsupp.degree_eq_weight_one] using!
       (Finsupp.weight_sub_single_add (w := (1 : σ → ℕ)) hi)
   have hlarge : D - 1 ≤ (MvPolynomial.pderiv i Q).totalDegree := by
     calc
@@ -375,7 +375,7 @@ theorem additiveGridPoint_update (base : σ → ℂ) (u : β → ℕ → σ → 
     · simp [Function.update_of_ne hcb, f]
   rw [hupdate, Finset.sum_update_of_mem (Finset.mem_univ b)]
   dsimp only [f]
-  rw [Finset.sum_eq_add_sum_diff_singleton_of_mem (Finset.mem_univ b)]
+  rw [Finset.sum_eq_add_sum_sdiff_singleton_of_mem (Finset.mem_univ b)]
   ring
 
 theorem additiveGridPoint_zeroColumn (base : σ → ℂ) (u : β → ℕ → σ → ℂ)
@@ -388,7 +388,7 @@ theorem additiveGridPoint_zeroColumn (base : σ → ℂ) (u : β → ℕ → σ 
   rw [additiveGridPoint_update]
   have hskip : (∑ c : β, if c = b then 0 else u c (m c) i) =
       (∑ c : β, u c (m c) i) - u b (m b) i := by
-    conv_lhs => rw [Finset.sum_eq_add_sum_diff_singleton_of_mem (Finset.mem_univ b)]
+    conv_lhs => rw [Finset.sum_eq_add_sum_sdiff_singleton_of_mem (Finset.mem_univ b)]
     rw [if_pos rfl, zero_add]
     have hrest :
         (∑ x ∈ (Finset.univ : Finset β) \ {b}, if x = b then 0 else u x (m x) i) =
@@ -398,7 +398,7 @@ theorem additiveGridPoint_zeroColumn (base : σ → ℂ) (u : β → ℕ → σ 
       rw [if_neg]
       simpa using (Finset.mem_sdiff.mp hx).2
     rw [hrest]
-    rw [Finset.sum_eq_add_sum_diff_singleton_of_mem (Finset.mem_univ b)]
+    rw [Finset.sum_eq_add_sum_sdiff_singleton_of_mem (Finset.mem_univ b)]
     ring
   rw [hskip]
   change _ = additiveGridPoint base u m i - u b (m b) i + u b r i

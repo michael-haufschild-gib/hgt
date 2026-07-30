@@ -50,12 +50,12 @@ theorem completedFluxTaylorCoeff_two_of_ne_zero {ρ : ℂ} (hρ : xi ρ ≠ 0) :
   have hshiftDeriv : deriv (fun x : ℂ => seamFluxCochain (ρ + x)) 0 =
       deriv seamFluxCochain ρ := by
     have hadd : HasDerivAt (fun x : ℂ => ρ + x) 1 0 := by
-      convert (hasDerivAt_const (x := (0 : ℂ)) (c := ρ)).add
+      convert! (hasDerivAt_const (x := (0 : ℂ)) (c := ρ)).add
         (hasDerivAt_id (𝕜 := ℂ) (x := 0)) using 1
       all_goals ring
     have houter : HasDerivAt seamFluxCochain (deriv seamFluxCochain ρ) (ρ + 0) := by
       simpa using hseam.differentiableAt.hasDerivAt
-    simpa using (houter.comp 0 hadd).deriv
+    simpa using! (houter.comp 0 hadd).deriv
   have hmul := iteratedDeriv_mul (n := 2) (x := (0 : ℂ))
     (analyticAt_id.contDiffAt (n := 2)) (hshift.contDiffAt (n := 2))
   have htwo : iteratedDeriv 2 (fun x : ℂ => x * seamFluxCochain (ρ + x)) 0 =
@@ -69,7 +69,7 @@ theorem completedFluxTaylorCoeff_two_of_ne_zero {ρ : ℂ} (hρ : xi ρ ≠ 0) :
 private theorem XiC_deriv_eq_xi_deriv_mul_I (z : ℂ) :
     deriv XiC z = deriv xi (1 / 2 + z * I) * I := by
   have haff : HasDerivAt (fun w : ℂ => 1 / 2 + w * I) I z := by
-    convert (hasDerivAt_const (x := z) (c := (1 / 2 : ℂ))).add
+    convert! (hasDerivAt_const (x := z) (c := (1 / 2 : ℂ))).add
       ((hasDerivAt_id (𝕜 := ℂ) (x := z)).mul_const I) using 1
     all_goals ring
   exact (xi_differentiable.differentiableAt.hasDerivAt.comp z haff).deriv
@@ -81,14 +81,14 @@ private theorem XiC_secondDeriv_eq_neg_xi_secondDeriv (z : ℂ) :
     exact XiC_deriv_eq_xi_deriv_mul_I w
   rw [hfun]
   have haff : HasDerivAt (fun w : ℂ => 1 / 2 + w * I) I z := by
-    convert (hasDerivAt_const (x := z) (c := (1 / 2 : ℂ))).add
+    convert! (hasDerivAt_const (x := z) (c := (1 / 2 : ℂ))).add
       ((hasDerivAt_id (𝕜 := ℂ) (x := z)).mul_const I) using 1
     all_goals ring
   have hxi2 : HasDerivAt (deriv xi) (deriv (deriv xi) (1 / 2 + z * I))
       (1 / 2 + z * I) :=
     (xi_analyticOnNhd_univ (1 / 2 + z * I) (Set.mem_univ _)).deriv.differentiableAt.hasDerivAt
   have hcomp := (hxi2.comp z haff).mul_const I
-  convert hcomp.deriv using 1
+  convert! hcomp.deriv using 1
   rw [mul_assoc, I_mul_I]
   ring
 
@@ -103,7 +103,7 @@ private theorem seamFluxCochain_deriv_eq_xi_laguerre_div {ρ : ℂ} (hρ : xi ρ
   rw [show logDeriv xi = fun z => deriv xi z / xi z by rfl]
   have hder : deriv (fun z => -(deriv xi z / xi z)) ρ =
       -((deriv (deriv xi) ρ * xi ρ - deriv xi ρ * deriv xi ρ) / xi ρ ^ 2) := by
-    simpa only [Pi.neg_apply, Pi.div_apply] using hquot.neg.deriv
+    simpa only [Pi.neg_apply, Pi.div_apply] using! hquot.neg.deriv
   rw [hder]
   field_simp
   ring

@@ -250,7 +250,7 @@ theorem rankThreeGeneratorMultiplicativeBoundary_eq_iff_div_jointFixed
       (div_eq_div_iff hx hy).mp hi
     apply (div_eq_div_iff
       ((addTranslationMeroEquiv (v i)).map_ne_zero_iff.mpr hy) hy).mpr
-    simpa [mul_comm] using hcross
+    simpa [mul_comm] using! hcross
   · intro h
     funext i
     have hi := h i
@@ -259,7 +259,7 @@ theorem rankThreeGeneratorMultiplicativeBoundary_eq_iff_div_jointFixed
         addTranslationMeroEquiv (v i) y * x := by
       have := (div_eq_div_iff
         ((addTranslationMeroEquiv (v i)).map_ne_zero_iff.mpr hy) hy).mp hi
-      simpa [mul_comm] using this
+      simpa [mul_comm] using! this
     exact (div_eq_div_iff hx hy).mpr hcross
 
 /-- **Unpointed multiplicative reconstruction.**  For a rationally independent rank-three
@@ -312,7 +312,7 @@ theorem rankThreeGeneratorPointedMultiplicativeBoundary_injOn
   obtain ⟨c, hc0, hc⟩ :=
     (rankThreeGeneratorMultiplicativeBoundary_eq_iff_constant_multiple
       v hv x y hx hy).mp hboundary
-  have hc1 : c = 1 := hcalibration c y hc0 hy (by simpa [hc] using hpoint)
+  have hc1 : c = 1 := hcalibration c y hc0 hy (by simpa [hc] using! hpoint)
   rw [hc, hc1]
   change algebraMap ℂ (meroField Set.univ) 1 * y = y
   rw [map_one, one_mul]
@@ -392,7 +392,7 @@ theorem value_eq_constant_mul_of_toMero_eq
   have hdiv : algebraMap A F X.numerator / algebraMap A F X.denominator =
       algebraMap A F (constToAnalytic Set.univ c * Y.numerator) /
         algebraMap A F Y.denominator := by
-    simpa [toMero, meromorphicConstantEmbedding, map_mul, mul_div_assoc] using h
+    simpa [toMero, meromorphicConstantEmbedding, map_mul, mul_div_assoc] using! h
   have hcrossF := (div_eq_div_iff hxd hyd).mp hdiv
   have hcrossA : X.numerator * Y.denominator =
       (constToAnalytic Set.univ c * Y.numerator) * X.denominator := by

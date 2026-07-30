@@ -154,7 +154,7 @@ theorem riemannHypothesis_iff_primeGammaCumulativeNegativeMassCriticalGrowth
     intro n
     exact negPart_nonneg _
   rw [← abscissaOfAbsConv_le_iff_nonnegativeDirichletSummatoryGrowthAt hnonneg zero_le_one]
-  simpa only [xiRectangularPrimeGammaTailNegativeDirichletCoefficient] using
+  simpa only [xiRectangularPrimeGammaTailNegativeDirichletCoefficient] using!
     riemannHypothesis_iff_primeGammaTailNegativePart_abscissa_le_one hL hN
 
 /-- Under false RH, the cumulative-growth threshold is exactly the shifted right-transverse
@@ -173,7 +173,7 @@ theorem primeGammaCumulativeNegativeMassGrowth_iff_transverseSup_le_of_not_rh
   rw [show LSeries.abscissaOfAbsConv
       (fun n => ((xiRectangularPrimeGammaTailNegativePart L N n : ℝ) : ℂ)) =
         ((1 + xiRightTransverseSup : ℝ) : EReal) by
-    simpa only [xiRectangularPrimeGammaTailNegativeDirichletCoefficient] using
+    simpa only [xiRectangularPrimeGammaTailNegativeDirichletCoefficient] using!
       xiRectangularPrimeGammaTailNegativePart_abscissa_eq_transverseSup_of_not_rh
         hL hN hnot]
   exact EReal.coe_le_coe_iff
@@ -203,7 +203,7 @@ theorem primeGammaCumulativeNegativeMassGrowth_dichotomy
       hnonneg hsigma).mp
     rw [show LSeries.abscissaOfAbsConv
         (fun n => ((xiRectangularPrimeGammaTailNegativePart L N n : ℝ) : ℂ)) = ⊥ by
-      simpa only [xiRectangularPrimeGammaTailNegativeDirichletCoefficient] using
+      simpa only [xiRectangularPrimeGammaTailNegativeDirichletCoefficient] using!
         xiRectangularPrimeGammaTailNegativePart_abscissa_eq_bot_of_rh hL hN hRH]
     exact bot_le
   · right
@@ -247,7 +247,7 @@ theorem primeGammaCumulativeNegativeMass_exactPowerOrder_of_not_rh
   have habscissaEq : LSeries.abscissaOfAbsConv
       (fun n => ((xiRectangularPrimeGammaTailNegativePart L N n : ℝ) : ℂ)) =
         ((1 + xiRightTransverseSup : ℝ) : EReal) := by
-    simpa only [xiRectangularPrimeGammaTailNegativeDirichletCoefficient] using
+    simpa only [xiRectangularPrimeGammaTailNegativeDirichletCoefficient] using!
       xiRectangularPrimeGammaTailNegativePart_abscissa_eq_transverseSup_of_not_rh
         hL hN hnot
   rw [habscissaEq] at habscissa
@@ -267,7 +267,7 @@ theorem all_xiZeros_re_le_iff_rectangularPrimePolarSource_cumulativeNegativeMass
     rectangularPrimePolarSourceTailNegativePart_nonneg L N
   rw [← abscissaOfAbsConv_le_iff_nonnegativeDirichletSummatoryGrowthAt
     hnonneg (by linarith : 0 ≤ 1 + alpha)]
-  simpa only [rectangularPrimePolarSourceTailNegativeDirichletCoefficient] using
+  simpa only [rectangularPrimePolarSourceTailNegativeDirichletCoefficient] using!
     all_xiZeros_re_le_iff_rectangularPrimePolarSource_negativeAbscissa_le
       hL halpha hN
 
@@ -282,7 +282,7 @@ theorem riemannHypothesis_iff_rectangularPrimePolarSource_cumulativeNegativeMass
   have hnonneg : ∀ n, 0 ≤ rectangularPrimePolarSourceTailNegativePart L N n :=
     rectangularPrimePolarSourceTailNegativePart_nonneg L N
   rw [← abscissaOfAbsConv_le_iff_nonnegativeDirichletSummatoryGrowthAt hnonneg zero_le_one]
-  simpa only [rectangularPrimePolarSourceTailNegativeDirichletCoefficient] using
+  simpa only [rectangularPrimePolarSourceTailNegativeDirichletCoefficient] using!
     riemannHypothesis_iff_rectangularPrimePolarSource_negativeAbscissa_le_one hL hN
 
 /-- The cumulative negative finite prime--polar mass has exact transverse power order

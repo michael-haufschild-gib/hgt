@@ -49,13 +49,10 @@ theorem analyticOrderAt_xiDescent_sq_of_ne_center {s : ℂ} (hs : s ≠ (1 / 2 :
   let φ : ℂ → ℂ := fun z => (z - (1 / 2 : ℂ)) ^ 2
   have hφ : AnalyticAt ℂ φ s := (analyticAt_id.sub analyticAt_const).pow 2
   have hsne : s - (1 / 2 : ℂ) ≠ 0 := sub_ne_zero.mpr hs
-  have hbase : HasDerivAt (fun z : ℂ => z - (1 / 2 : ℂ)) 1 s := by
-    convert ((hasDerivAt_id s).sub (hasDerivAt_const s (1 / 2 : ℂ))) using 1; ring
+  have hbase : HasDerivAt (fun z : ℂ => z - (1 / 2 : ℂ)) 1 s :=
+    (hasDerivAt_id s).sub_const (1 / 2 : ℂ)
   have hderiv_at : HasDerivAt φ (2 * (s - (1 / 2 : ℂ))) s := by
-    dsimp [φ]
-    convert hbase.mul hbase using 1
-    · funext z; simp only [Pi.mul_apply]; ring
-    · ring
+    simpa [φ] using! hbase.pow 2
   have hφ' : deriv φ s ≠ 0 := by
     rw [hderiv_at.deriv]; exact mul_ne_zero two_ne_zero hsne
   have hcomp := analyticOrderAt_comp_of_deriv_ne_zero (f := xiDescent) hφ hφ'

@@ -45,12 +45,12 @@ theorem logDeriv_weierstrassE1_div {a z : ℂ} (ha : a ≠ 0) (hz : z ≠ a) :
       (-(z / a) * Complex.exp (z / a)) (z / a) := by
     have hraw := ((hasDerivAt_const (x := z / a) (c := (1 : ℂ))).sub
       (hasDerivAt_id (z / a))).mul (Complex.hasDerivAt_exp (z / a))
-    convert hraw using 1
-    simp
+    convert! hraw using 1
+    simp only [Pi.sub_apply, id_eq, zero_sub, neg_mul, one_mul]
     ring
   have hderiv : deriv (fun w : ℂ => weierstrassE1 (w / a)) z =
       (-(z / a) * Complex.exp (z / a)) * (1 / a) := by
-    simpa only [Function.comp_apply] using (hE.comp z hlin).deriv
+    simpa only [Function.comp_apply] using! (hE.comp z hlin).deriv
   rw [logDeriv_apply, hderiv, weierstrassE1]
   have hden : (1 - z / a) * Complex.exp (z / a) ≠ 0 :=
     mul_ne_zero hone (Complex.exp_ne_zero _)
@@ -163,7 +163,7 @@ theorem logDeriv_xiCanonicalProduct_eq_relativeResolventTrace
     logDeriv xiCanonicalProduct z =
         ∑' q : XiZeroCopy,
           logDeriv (fun w : ℂ => weierstrassE1 (w / xiSpectralPoint q)) z := by
-      simpa only [xiCanonicalProduct, canonicalProductE1Indexed] using hlog
+      simpa only [xiCanonicalProduct, canonicalProductE1Indexed] using! hlog
     _ =
         ∑' q : XiZeroCopy,
           -z / (xiSpectralPoint q * (xiSpectralPoint q - z)) := by

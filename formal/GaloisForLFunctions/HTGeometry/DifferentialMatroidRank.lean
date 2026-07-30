@@ -50,7 +50,7 @@ theorem diffIndepOn_image
   have hmap := σ.differentialIndependent_map hS
   apply (differentialIndependent_equiv e
     (Subtype.val : σ.toAlgEquiv '' S → E)).mp
-  simpa [e, Equiv.Set.imageOfInjOn] using hmap
+  simpa [e, Equiv.Set.imageOfInjOn] using! hmap
 
 /-- Differential independence is invariant under a coefficient-fixing differential automorphism. -/
 theorem diffIndepOn_image_iff

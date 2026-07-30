@@ -82,12 +82,12 @@ theorem ker_deningerPrimeGammaUpperToH1MinusDual :
   constructor
   · intro hy x
     have h := LinearMap.congr_fun hy (deningerPrimeGammaH1MinusClass x)
-    simpa using h
+    simpa using! h
   · intro hy
     apply LinearMap.ext
     intro q
     obtain ⟨x, rfl⟩ := deningerPrimeGammaLeftRadical.mkQ_surjective q
-    simpa using hy x
+    simpa using! hy x
 
 /-- Perfect source pairing as an injective map from the upper quotient to the lower dual. -/
 def deningerPrimeGammaH1PlusToH1MinusDual :
@@ -136,7 +136,7 @@ theorem deningerPrimeGammaPoincarePairing_separatingLeft
   apply (mem_deningerPrimeGammaLeftRadical_iff x).2
   intro y
   have h := hx (deningerPrimeGammaH1PlusClass y)
-  simpa using h
+  simpa using! h
 
 theorem deningerPrimeGammaPoincarePairing_separatingRight
     {y : DeningerPrimeGammaH1Plus}
@@ -147,7 +147,7 @@ theorem deningerPrimeGammaPoincarePairing_separatingRight
   apply (mem_deningerPrimeGammaRightRadical_iff y).2
   intro x
   have h := hy (deningerPrimeGammaH1MinusClass x)
-  simpa using h
+  simpa using! h
 
 /-- Algebraic degree-one source cohomology before topological completion. -/
 abbrev DeningerPrimeGammaH1 :=

@@ -48,10 +48,18 @@ theorem primeEulerFEHigherGradeCoefficient_hasSum (p : Nat.Primes) {s : ℂ}
   have hright := primeEulerUnitTangentHigherTail_hasSum p.prop.two_le (s := 1 - s) (by
     simp only [Complex.sub_re, Complex.one_re]
     linarith)
-  convert hleft.sub hright using 1
-  · funext j
+  have hcoeff :
+      primeEulerFEHigherGradeCoefficient p s =
+        fun j =>
+          (Real.log (p : ℝ) : ℂ) * ((j + 2 : ℕ) : ℂ) *
+              ((((p : ℕ) : ℂ) ^ (-s)) ^ (j + 2)) -
+            (Real.log (p : ℝ) : ℂ) * ((j + 2 : ℕ) : ℂ) *
+              ((((p : ℕ) : ℂ) ^ (-(1 - s))) ^ (j + 2)) := by
+    funext j
     simp only [primeEulerFEHigherGradeCoefficient]
     ring
+  rw [hcoeff, primeEulerUnitFEHigherTail]
+  exact hleft.sub hright
 
 /-- Absolute summability of the exact FE-paired higher-grade coefficients. -/
 theorem summable_norm_primeEulerFEHigherGradeCoefficient (p : Nat.Primes) {s : ℂ}

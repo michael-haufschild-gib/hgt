@@ -29,7 +29,7 @@ private lemma hasDerivAt_tiltedTentLeftPrimitive
     {beta L x : ℝ} (hbeta : beta ≠ 0) (hL : L ≠ 0) :
     HasDerivAt (tiltedTentLeftPrimitive beta L)
       (Real.exp (beta * x) * (1 + x / L)) x := by
-  convert ((((hasDerivAt_id x).const_mul beta).exp).mul
+  convert! ((((hasDerivAt_id x).const_mul beta).exp).mul
     ((((hasDerivAt_const x 1).add ((hasDerivAt_id x).div_const L)).div_const beta).sub
       (hasDerivAt_const x (1 / (L * beta ^ 2))))) using 1
   all_goals (dsimp; field_simp [hbeta, hL]; ring_nf)
@@ -38,7 +38,7 @@ private lemma hasDerivAt_tiltedTentRightPrimitive
     {beta L x : ℝ} (hbeta : beta ≠ 0) (hL : L ≠ 0) :
     HasDerivAt (tiltedTentRightPrimitive beta L)
       (Real.exp (beta * x) * (1 - x / L)) x := by
-  convert ((((hasDerivAt_id x).const_mul beta).exp).mul
+  convert! ((((hasDerivAt_id x).const_mul beta).exp).mul
     ((((hasDerivAt_const x 1).sub ((hasDerivAt_id x).div_const L)).div_const beta).add
       (hasDerivAt_const x (1 / (L * beta ^ 2))))) using 1
   all_goals (dsimp; field_simp [hbeta, hL]; ring_nf)

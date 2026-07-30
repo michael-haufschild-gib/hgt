@@ -66,7 +66,7 @@ private theorem complex_tsum_pi_geometric_fin :
       constructor
       · rw [← (Fin.consEquiv fun _ : Fin (n + 1) => ℕ).summable_iff]
         simpa only [Fin.prod_univ_succ, Fin.consEquiv_apply, Fin.cons_zero, Fin.cons_succ,
-          norm_mul, a, b, v] using habNormReal
+          norm_mul, a, b, v] using! habNormReal
       · rw [← (Fin.consEquiv fun _ : Fin (n + 1) => ℕ).tsum_eq]
         simpa only [Fin.prod_univ_succ, Fin.consEquiv_apply, Fin.cons_zero, Fin.cons_succ,
           a, b, v] using habSum.tsum_eq

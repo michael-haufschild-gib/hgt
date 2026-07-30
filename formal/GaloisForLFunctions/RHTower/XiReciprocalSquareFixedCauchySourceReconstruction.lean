@@ -141,7 +141,7 @@ theorem eq_cauchyAdjointResponse_of_sourcePolarization_moments
       rw [xiWeilContinuedCauchyAlgebraicSubspace, Submodule.span_le]
       rintro _ ⟨w, rfl⟩
       simpa only [LinearMap.mem_ker, ContinuousLinearMap.coe_coe,
-        innerSL_apply_apply] using hgen w
+        innerSL_apply_apply] using! hgen w
     have hu' := hker hu
     simpa only [LinearMap.mem_ker, ContinuousLinearMap.coe_coe,
       innerSL_apply_apply] using hu'

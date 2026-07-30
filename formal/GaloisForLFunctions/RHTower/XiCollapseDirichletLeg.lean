@@ -99,7 +99,7 @@ theorem iteratedDeriv_half_digamma (j : ℕ) :
           h1.differentiableAt.hasDerivAt
         have hf : HasDerivAt (fun w : ℂ => w / 2) (1 / 2) s := by
           simpa using (hasDerivAt_id s).div_const 2
-        simpa using hg.comp s hf
+        simpa using! hg.comp s hf
       have hmul : HasDerivAt (fun w : ℂ => (1 / 2 : ℂ) ^ j
             * iteratedDeriv j Complex.digamma (w / 2))
           ((1 / 2 : ℂ) ^ j * (deriv (iteratedDeriv j Complex.digamma) (s / 2) * (1 / 2)))
@@ -146,7 +146,7 @@ theorem iteratedDeriv_xiLogDeriv_split (j : ℕ) {s : ℂ} (hs : 1 < s.re) :
     have hhalf : AnalyticAt ℂ (fun w : ℂ => w / 2) s :=
       analyticAt_id.div analyticAt_const (by norm_num)
     have hcomp := AnalyticAt.comp (f := fun w : ℂ => w / 2) (x := s) hdg hhalf
-    exact analyticAt_const.mul (by simpa [Function.comp] using hcomp)
+    exact analyticAt_const.mul (by simpa [Function.comp] using! hcomp)
   have hζan : AnalyticAt ℂ riemannZeta s := by
     have hopen : IsOpen {w : ℂ | w ≠ 1} := isOpen_ne
     have hdiff : DifferentiableOn ℂ riemannZeta {w : ℂ | w ≠ 1} := fun w hw =>

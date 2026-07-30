@@ -131,7 +131,7 @@ theorem ReciprocalGammaPoleBranch.digamma_comp_Gamma_not_locallyMeromorphicallyA
   let ρ : ℕ → ℂ := fun m => inverseGammaBranchResidueInterpolation zn ((m : ℂ)⁻¹)
   have hcNhds : Tendsto c atTop (nhds (-(n : ℂ))) := by
     have h := zn.analyticAt_zero.continuousAt.tendsto.comp tendsto_natCast_inv_complex
-    simpa [c, zn.map_zero] using h
+    simpa [c, zn.map_zero] using! h
   have hcNe : ∀ᶠ m : ℕ in atTop, c m ∈ ({-(n : ℂ)}ᶜ : Set ℂ) := by
     filter_upwards [zn.factorial_cluster_eventually,
       eventually_atTop.2 ⟨1, fun _ hm => hm⟩] with m hmCluster hm

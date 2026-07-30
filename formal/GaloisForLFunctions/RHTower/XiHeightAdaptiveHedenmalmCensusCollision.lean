@@ -47,7 +47,8 @@ theorem analyticOrderAt_XiC_centeredCoordinate (z : ℂ) :
       dsimp only [g]
       convert (hasDerivAt_const (x := a) (c := (1 / 2 : ℂ))).add
         ((hasDerivAt_id a).mul_const I) using 1
-      ring
+      all_goals try rfl
+      all_goals ring
     rw [hg'.deriv]
     exact I_ne_zero
   have hcomp := analyticOrderAt_comp_of_deriv_ne_zero

@@ -198,7 +198,9 @@ theorem phaseAdaptedTwoEndpointProuhetPolynomial_exponential_sum_eq_zero
     ∑ i ∈ (phaseAdaptedTwoEndpointProuhetPolynomial m u q r τ).support,
         ((phaseAdaptedTwoEndpointProuhetPolynomial m u q r τ).coeff i : ℂ) * u ^ i = 0 := by
   have hroot := phaseAdaptedTwoEndpointProuhetPolynomial_phaseRoot m u q r τ
-  simpa [eval_map, eval₂_eq_sum] using hroot
+  simp only [eval_map, eval₂_eq_sum] at hroot
+  rw [Polynomial.sum] at hroot
+  exact hroot
 
 /-- The double phase root annihilates the logarithmically weighted exponential packet as well. -/
 theorem phaseAdaptedTwoEndpointProuhetPolynomial_exponential_index_sum_eq_zero
@@ -404,7 +406,6 @@ theorem phaseAdaptedProuhet_cosine_sum_eq_zero
     simpa only [P] using
       phaseAdaptedTwoEndpointProuhetPolynomial_exponential_sum_eq_zero m u q r τ
   have hmul := congrArg Complex.re (congrArg (fun w : ℂ => v * w) hroot)
-  dsimp only at hmul
   simp only [mul_zero, zero_re] at hmul
   rw [Finset.mul_sum] at hmul
   rw [Complex.re_sum] at hmul

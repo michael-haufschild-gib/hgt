@@ -1084,7 +1084,7 @@ theorem shiftedBrolinProbabilityOnEscapeDisk_subseq_tendsto (c : ℂ) :
         preBrolinProbabilityOnEscapeDisk c
           (shiftedBrolinIndex c k))
       atTop (𝓝 (shiftedBrolinLimitOnEscapeDisk c)) := by
-  simpa [shiftedBrolinIndex] using (Classical.choose_spec
+  simpa [shiftedBrolinIndex, shiftedBrolinLimitSubsequence] using (Classical.choose_spec
     (shiftedBrolinLimitOnEscapeDisk_spec c)).2
 
 /-- Plane measure induced by the shifted compactness limit. -/

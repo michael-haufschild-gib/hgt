@@ -73,8 +73,6 @@ lemma exists_analyticOrderAt_R_eq_some (z : ℂ) :
 
 def R_order (z : ℂ) : ℕ := (exists_analyticOrderAt_R_eq_some h7 q hq0 h2mq z).choose
 
-def R_order_prop {z : ℂ} := (exists_analyticOrderAt_R_eq_some h7 q hq0 h2mq z).choose_spec
-
 lemma R_order_eq (z) : (analyticOrderAt (h7.R q hq0 h2mq) z) = h7.R_order q hq0 h2mq z :=
   (exists_analyticOrderAt_R_eq_some h7 q hq0 h2mq z).choose_spec
 
@@ -212,7 +210,7 @@ lemma systemCoeffs_map_eq_exp_mul_r :
       simp [hmul]
     · exact h7.htriv.1
 
-def deriv_R_k_eval_at_l0' :
+theorem deriv_R_k_eval_at_l0' :
   deriv^[h7.r q hq0 h2mq] (h7.R q hq0 h2mq) (h7.l₀' q hq0 h2mq + 1) =
   ∑ t, h7.σ ((h7.η q hq0 h2mq) t) *
   cexp (h7.ρ q t * (h7.l₀' q hq0 h2mq + 1)) * (h7.ρ q t) ^ (h7.r q hq0 h2mq) := by
@@ -234,7 +232,7 @@ lemma systemCoeffs_deriv_r :
 
 def rho := ∑ t : Fin (q * q), (h7.η q hq0 h2mq t) * (h7.systemCoeffs_r q hq0 t h2mq)
 
-def rho_eq_ρᵣ : h7.σ (rho h7 q hq0 h2mq) = ρᵣ h7 q hq0 h2mq := by
+theorem rho_eq_ρᵣ : h7.σ (rho h7 q hq0 h2mq) = ρᵣ h7 q hq0 h2mq := by
   unfold rho ρᵣ
   rw [systemCoeffs_deriv_r]
   simp only [map_sum, map_mul, nsmul_eq_mul, map_pow, map_add, map_natCast]
@@ -376,8 +374,8 @@ lemma ρ_is_int :
                 h7.γ' ^ (b q x * (h7.l₀' q hq0 h2mq + 1)))) *
             (↑((h7.η q hq0 h2mq) x) : h7.K)) := by
       exact IsIntegral.mul hnegScaled hη
-    convert hmulInt using 1
-    ac_rfl
+    rw [mul_comm (↑((h7.η q hq0 h2mq) x) : h7.K), ← mul_assoc]
+    exact hmulInt
 
 def c1ρ : 𝓞 h7.K := RingOfIntegers.restrict _
   (fun _ => (ρ_is_int h7 q hq0 h2mq)) ℤ

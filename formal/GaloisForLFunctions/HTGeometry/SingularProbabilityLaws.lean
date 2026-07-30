@@ -212,7 +212,7 @@ theorem map_mutuallySingular_of_countable_range
     [BorelSpace X]
     (reference mu : ProbabilityMeasure X)
     (q : X → X) (hq : Measurable q) (hrange : (Set.range q).Countable)
-    [NoAtoms (reference : Measure X)] :
+    [NullSingletonClass (reference : Measure X)] :
     ((mu.map hq.aemeasurable : ProbabilityMeasure X) : Measure X) ⟂ₘ
       (reference : Measure X) := by
   let R : Set X := Set.range q
@@ -261,7 +261,7 @@ theorem levyProkhorovEDist_map_le_of_forall_dist_le
 theorem exists_mutuallySingular_levyProkhorovEDist_le
     [OpensMeasurableSpace X] [SeparableSpace X] [Nonempty X] [BorelSpace X]
     (reference mu : ProbabilityMeasure X)
-    [NoAtoms (reference : Measure X)]
+    [NullSingletonClass (reference : Measure X)]
     {epsilon : ℝ} (hepsilon : 0 < epsilon) :
     ∃ nu : ProbabilityMeasure X,
       (nu : Measure X) ⟂ₘ (reference : Measure X) ∧
@@ -285,7 +285,7 @@ theorem probabilityQuantizationRadius_pos (n : ℕ) :
 
 theorem probabilityQuantizationRadius_tendsto_zero :
     Tendsto probabilityQuantizationRadius atTop (𝓝 0) := by
-  simpa only [probabilityQuantizationRadius] using
+  simpa only [probabilityQuantizationRadius] using!
     (tendsto_one_div_add_atTop_nhds_zero_nat :
       Tendsto (fun n : ℕ => 1 / ((n : ℝ) + 1)) atTop (𝓝 0))
 
@@ -294,7 +294,7 @@ weak topology. -/
 theorem singularProbabilityLaws_dense
     [OpensMeasurableSpace X] [SeparableSpace X] [Nonempty X] [BorelSpace X]
     (reference : ProbabilityMeasure X)
-    [NoAtoms (reference : Measure X)] :
+    [NullSingletonClass (reference : Measure X)] :
     Dense (singularProbabilityLaws reference) := by
   rw [dense_iff_closure_eq]
   apply Set.eq_univ_of_forall

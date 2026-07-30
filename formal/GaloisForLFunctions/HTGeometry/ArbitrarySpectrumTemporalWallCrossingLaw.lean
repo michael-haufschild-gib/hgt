@@ -54,8 +54,19 @@ theorem hasFPowerSeriesAt_projectiveCharacterResponse
           (c := (0 : ℂ)) (e := (0 : ℂ)))
   | @insert a s ha ih =>
       simp only [Finset.sum_insert ha]
-      simpa [Pi.smul_apply, smul_eq_mul] using
-        ((henergy a).const_smul (c := (k.1 a : ℂ))).add ih
+      have hterm :=
+        (henergy a).const_smul (c := (k.1 a : ℂ))
+      have hsmulFun :
+          ((k.1 a : ℂ) • energy a) =
+            (fun g => (k.1 a : ℂ) * energy a g) := by
+        funext g
+        change (k.1 a : ℂ) • energy a g =
+          (k.1 a : ℂ) * energy a g
+        exact smul_eq_mul _ _
+      rw [hsmulFun] at hterm
+      convert hterm.add ih using 1
+      funext g
+      rfl
 
 /-- Scalar Taylor coefficient of one spectral branch. -/
 def spectralTaylorJet

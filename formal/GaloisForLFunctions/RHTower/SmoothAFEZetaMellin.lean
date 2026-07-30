@@ -182,7 +182,7 @@ theorem smoothAFEZetaMellinTerm_verticalIntegrable
           have hre : (((c : ℂ) + (t : ℂ) * I)).re = c := by simp
           rw [← hre] at hc
           exact (hc.ne' (congrArg Complex.re hzero)).elim)
-    simpa [smoothAFEZetaMellinTerm, one_div] using
+    simpa [smoothAFEZetaMellinTerm, one_div] using!
       (((hpowN.inv₀ (fun _ => Complex.cpow_ne_zero_iff.mpr (Or.inl hn))).mul hpowX).mul
         hkernel).aestronglyMeasurable
   · exact Filter.Eventually.of_forall fun t => by

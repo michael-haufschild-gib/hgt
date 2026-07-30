@@ -66,7 +66,7 @@ theorem deningerArithmeticPoincarePairing_separatingLeft
     b.repr.map_eq_zero_iff.not.mpr hx0
   obtain ⟨i, hi⟩ := Finsupp.ne_iff.mp hrepr
   have hcoord : b.coord i x ≠ 0 := by
-    simpa only [b.coord_apply] using hi
+    simpa only [b.coord_apply] using! hi
   exact hcoord (hx (b.coord i))
 
 /-- The canonical pairing separates compact-support middle cohomology. -/

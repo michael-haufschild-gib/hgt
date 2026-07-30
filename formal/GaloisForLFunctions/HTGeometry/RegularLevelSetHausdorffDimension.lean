@@ -144,14 +144,14 @@ theorem finrank_ker_le_dimH_of_mem_regularLevelSet
   have hpsiStrict : HasStrictFDerivAt psi L.ker.subtypeL 0 := by
     simpa only [psi] using hstrict.to_implicitFunction hrange
   have hInducing : Topology.IsInducing (L.ker.subtypeL : L.ker → E) := by
-    simpa only [Submodule.coe_subtypeL] using
+    simpa only [Submodule.coe_subtypeL] using!
       (isometry_subtype_coe : Isometry ((↑) : L.ker → E)).isUniformInducing.isInducing
   have hTheta := hpsiStrict.isTheta_sub hInducing
   obtain ⟨C, hCpos, hC⟩ := hTheta.isBigO_symm.exists_pos
   obtain ⟨V0, hV0open, h0V0, hV0bound⟩ := exists_nhds_square hC.bound
   have hpsiU : psi ⁻¹' U ∈ 𝓝 0 := by
     have hpsiT : Tendsto psi (𝓝 0) (𝓝 x) := by
-      simpa only [psi] using
+      simpa only [psi] using!
         hstrict.tendsto_implicitFunction hrange tendsto_const_nhds tendsto_id
     exact hpsiT (hUopen.mem_nhds hxU)
   have hmap : ∀ᶠ v in 𝓝 (0 : L.ker), g (psi v) = g x := by
@@ -168,7 +168,7 @@ theorem finrank_ker_le_dimH_of_mem_regularLevelSet
     have huv := hV0bound (show (u.1, v.1) ∈ V0 ×ˢ V0 from
       ⟨u.2.1.1, v.2.1.1⟩)
     simpa only [Set.restrict_apply, dist_eq_norm, Subtype.dist_eq,
-      NNReal.smul_def, NNReal.coe_mk] using huv
+      NNReal.smul_def, NNReal.coe_mk] using! huv
   have hpsiS : psi '' V ⊆ S := by
     rintro y ⟨v, hv, rfl⟩
     have hxzero : g x = 0 := (hS x hxU).mp hx

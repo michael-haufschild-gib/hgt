@@ -272,7 +272,8 @@ theorem disconnectedLocalBranch_crossPacket_iteratedDeriv_eq_zero
           (fun active =>
             branch (restrictInteractionPacket active (g • z))))
         =ᶠ[𝓝 0] (fun _ : ℂ => (0 : ℂ)) := by
-    simpa only [Function.comp_apply, ray] using hpull
+    filter_upwards [hpull] with g hg
+    exact hg
   rw [Filter.EventuallyEq.iteratedDeriv_eq n heq]
   simp
 

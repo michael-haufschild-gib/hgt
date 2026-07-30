@@ -70,10 +70,10 @@ theorem integral_exp_neg_half_shift (a b : ℝ) :
       HasDerivAt (fun u : ℝ => -2 * Real.exp (-(u / 2))) (Real.exp (-(x / 2))) x := by
     intro x _
     have h1 : HasDerivAt (fun u : ℝ => -(u / 2)) (-(1 / 2)) x := by
-      simpa using ((hasDerivAt_id x).div_const 2).neg
+      simpa using! ((hasDerivAt_id x).div_const 2).neg
     have h3 := (h1.exp).const_mul (-2 : ℝ)
     convert h3 using 1
-    ring
+    all_goals first | rfl | ring
   have hint : IntervalIntegrable (fun u : ℝ => Real.exp (-(u / 2)))
       MeasureTheory.volume a b :=
     (Real.continuous_exp.comp (continuous_id.div_const 2).neg).intervalIntegrable _ _

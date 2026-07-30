@@ -327,7 +327,7 @@ theorem tsum_semilocalFinitePrimeEvenJacobiFullTerm_eq_numerator
       _ = 0 := tsum_zero
   have hsplit := hsum.tsum_subtype_add_tsum_subtype_compl s
   rw [hcomp, add_zero] at hsplit
-  simpa [s, f, semilocalFinitePrimeEvenJacobiNumerator] using hsplit.symm
+  simpa [s, f, semilocalFinitePrimeEvenJacobiNumerator] using! hsplit.symm
 
 theorem integral_semilocalFinitePrimeEulerDensity_mul_evenJacobi_eq_numerator
     {n k : ℕ} (hk : 0 < k)

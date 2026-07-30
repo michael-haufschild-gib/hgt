@@ -137,12 +137,11 @@ theorem digamma_two_eq :
         rw [show ((1 : ℂ) + 1) = 2 from by norm_num]
         exact Complex.differentiableAt_Gamma _ hne2)
       ((differentiableAt_id.add_const 1))
-    have hg1 : ((fun z : ℂ => z + 1) 1) = 2 := by norm_num
     have hd : deriv (fun z : ℂ => z + 1) 1 = 1 :=
       ((hasDerivAt_id (1 : ℂ)).add_const 1).deriv
     rw [show (fun z : ℂ => Complex.Gamma (z + 1)) =
-        Complex.Gamma ∘ (fun z : ℂ => z + 1) from rfl, hcomp, hg1, hd,
-      mul_one]
+        Complex.Gamma ∘ (fun z : ℂ => z + 1) from rfl, hcomp, hd, mul_one]
+    rw [show (1 : ℂ) + 1 = 2 by norm_num]
     rfl
   have hrhs : logDeriv (fun z : ℂ => z * Complex.Gamma z) 1 =
       1 + Complex.digamma 1 := by

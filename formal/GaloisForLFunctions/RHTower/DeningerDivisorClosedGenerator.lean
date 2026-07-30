@@ -56,7 +56,7 @@ def deningerDivisorThetaDomain : Submodule ℂ XiDivisorL2 where
     exact ha.add hb
   smul_mem' := by
     intro c a ha
-    simpa [smul_eq_mul, mul_assoc, mul_comm, mul_left_comm] using
+    simpa [smul_eq_mul, mul_assoc, mul_comm, mul_left_comm] using!
       ha.const_smul c
 
 /-- Closed maximal diagonal realization of the arithmetic divisor generator. -/

@@ -77,7 +77,7 @@ theorem pow_mul_thetaCuspTailDerivative_tendsto_zero_of_pos
     (continuous_id.pow k).mul (differentiable_thetaCuspTailDerivative m).continuous
   have h := (hc.tendsto 0).mono_left
     (inf_le_left : 𝓝[>] (0 : ℝ) ≤ 𝓝 0)
-  simpa [Nat.ne_of_gt hk] using h
+  simpa [Nat.ne_of_gt hk] using! h
 
 theorem integral_pow_mul_thetaCuspTailDerivative_two
     {k : ℕ} (hk : 2 ≤ k) :
@@ -96,7 +96,7 @@ theorem integral_pow_mul_thetaCuspTailDerivative_two
     (fun x _ => hasDerivAt_thetaCuspTailDerivative 1 x)
     (integrableOn_pow_mul_thetaCuspTailDerivative k 2)
     (by
-      simpa only [Pi.mul_apply, ← mul_assoc] using
+      simpa only [Pi.mul_apply, ← mul_assoc] using!
         (integrableOn_pow_mul_thetaCuspTailDerivative (k - 1) 1).const_mul (k : ℝ))
     (pow_mul_thetaCuspTailDerivative_tendsto_zero_of_pos hk0 1)
     (pow_mul_thetaCuspTailDerivative_tendsto_atTop_zero k 1)
@@ -107,11 +107,12 @@ theorem integral_pow_mul_thetaCuspTailDerivative_two
     (v := thetaCuspTailDerivative 0)
     (v' := thetaCuspTailDerivative 1)
     (fun x _ => by
-      convert hasDerivAt_pow (k - 1) x using 1)
+      simpa only [show k - 1 - 1 = k - 2 by omega] using!
+        hasDerivAt_pow (k - 1) x)
     (fun x _ => hasDerivAt_thetaCuspTailDerivative 0 x)
     (integrableOn_pow_mul_thetaCuspTailDerivative (k - 1) 1)
     (by
-      simpa only [Pi.mul_apply, ← mul_assoc] using
+      simpa only [Pi.mul_apply, ← mul_assoc] using!
         (integrableOn_pow_mul_thetaCuspTailDerivative (k - 2) 0).const_mul
           ((k - 1 : ℕ) : ℝ))
     (pow_mul_thetaCuspTailDerivative_tendsto_zero_of_pos hk1 0)

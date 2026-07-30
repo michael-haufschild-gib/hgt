@@ -236,7 +236,7 @@ theorem dzo_order_one : analyticOrderAt dzo ρdzo = 1 := by
          (1 - 4 * Complex.exp (-(((Real.log 8 : ℝ) : ℂ) * ρdzo))) = 0
     rw [dzo_cexp_half]; ring
   have h1 : HasDerivAt (fun s : ℂ => -(((Real.log 8 : ℝ) : ℂ) * s)) (-((Real.log 8 : ℝ) : ℂ)) ρdzo := by
-    simpa using ((hasDerivAt_id ρdzo).const_mul ((Real.log 8 : ℝ) : ℂ)).neg
+    simpa using! ((hasDerivAt_id ρdzo).const_mul ((Real.log 8 : ℝ) : ℂ)).neg
   have hd : HasDerivAt (fun s => (1 - 2 * Complex.exp (-(((Real.log 8 : ℝ) : ℂ) * s))) *
       (1 - 4 * Complex.exp (-(((Real.log 8 : ℝ) : ℂ) * s))))
       ((-(2 * (Complex.exp (-(((Real.log 8 : ℝ) : ℂ) * ρdzo)) * (-((Real.log 8 : ℝ) : ℂ))))) *

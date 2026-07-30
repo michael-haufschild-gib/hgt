@@ -170,12 +170,12 @@ theorem memLp_id_semilocalArchimedeanGammaMeasure (n : ℕ) :
         integrable_withDensity_iff_integrable_smul
           continuous_semilocalArchimedeanGammaDensityNNReal.measurable]
       have h := integrable_abs_pow_mul_semilocalArchimedeanGammaDensity (n + 1)
-      convert h using 1
-      funext x
+      apply h.congr
+      filter_upwards with x
       simp only [id_eq, ENNReal.toReal_natCast, Real.norm_eq_abs,
-        Real.rpow_natCast, NNReal.smul_def]
-      change semilocalArchimedeanGammaDensity x * |x| ^ (n + 1) =
-        |x| ^ (n + 1) * semilocalArchimedeanGammaDensity x
+        Real.rpow_natCast]
+      change |x| ^ (n + 1) * semilocalArchimedeanGammaDensity x =
+        semilocalArchimedeanGammaDensity x * |x| ^ (n + 1)
       ring
 
 end RHTower

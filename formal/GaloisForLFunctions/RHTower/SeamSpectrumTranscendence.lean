@@ -101,8 +101,8 @@ theorem exp_relation_ne {d : ℕ} (μ : ℤ[X]) (β : Fin d → ℂ)
       (mul_eq_zero.mp hfr).resolve_left (pow_ne_zero _ hne)
     rw [Polynomial.mem_aroots]
     refine ⟨hgne, ?_⟩
-    rw [Polynomial.aeval_def, Polynomial.eval₂_eq_eval_map]
-    convert hgr using 2
+    rw [Polynomial.aeval_def, Polynomial.eval₂_eq_eval_map, algebraMap_int_eq]
+    exact hgr
   set a0 : ℤ := ∑ S ∈ (Finset.univ : Finset (Fin d)).powerset.filter
       (fun S => (∑ j ∈ S, β j) = wc), cf S.card with ha0def
   have hsplit : (a0 : ℂ) + ∑ S ∈ (Finset.univ : Finset (Fin d)).powerset.filter

@@ -110,8 +110,7 @@ theorem confocalDefect_sub_transverseDefect_bounds
   have hnorm : ‖(R : ℂ) - z‖ = Real.sqrt (a ^ 2 + b ^ 2) := by
     rw [Complex.norm_def]
     congr 1
-    simp only [Complex.normSq_apply, map_sub, Complex.ofReal_re, Complex.ofReal_im,
-      sub_zero]
+    simp only [Complex.normSq_apply]
     dsimp [a, b]
     ring
   have hsqrt := sqrt_sq_add_sq_sub_le (b := b) ha
@@ -389,8 +388,8 @@ theorem confocalAbelRadius_eq_one_iff
 private theorem tendsto_confocal_collar_zero (M : ℝ) :
     Tendsto (fun R : ℝ => M ^ 2 / (2 * (R - M))) atTop (nhds 0) := by
   have hshift : Tendsto (fun R : ℝ => R - M) atTop atTop := by
-    simpa only [sub_eq_add_neg] using
-      (tendsto_atTop_add_const_right atTop (-M) tendsto_id)
+    change Tendsto (fun R : ℝ => id R + -M) atTop atTop
+    exact tendsto_atTop_add_const_right atTop (-M) tendsto_id
   have hden : Tendsto (fun R : ℝ => 2 * (R - M)) atTop atTop :=
     hshift.const_mul_atTop (by norm_num)
   simpa only [Function.comp_apply, div_eq_mul_inv, zero_mul, mul_zero] using
@@ -425,7 +424,9 @@ theorem tendsto_confocalAmplitudeEnvelope_atTop
     Tendsto (confocalAmplitudeEnvelope S) atTop (nhds 1) := by
   have hD := tendsto_confocalDefectEnvelope_atTop hne hM hbound
   have hinv : Tendsto (fun R : ℝ => R⁻¹) atTop (nhds 0) := tendsto_inv_atTop_zero
-  simpa only [confocalAmplitudeEnvelope, div_eq_mul_inv, mul_zero, add_zero] using
+  change Tendsto
+    (fun R : ℝ => 1 + confocalDefectEnvelope S R / R) atTop (nhds 1)
+  simpa only [div_eq_mul_inv, mul_zero, add_zero] using
     tendsto_const_nhds.add (hD.mul hinv)
 
 /-- First-order recession of the squared affine-amplitude envelope. -/
@@ -454,7 +455,9 @@ theorem tendsto_confocalAbelRadius_atTop
     (hbound : ∀ z ∈ S, ‖z‖ ≤ M) :
     Tendsto (confocalAbelRadius S) atTop (nhds 1) := by
   have hB := tendsto_confocalAmplitudeEnvelope_atTop hne hM hbound
-  simpa only [confocalAbelRadius, one_pow, inv_one] using
+  change Tendsto
+    (fun R : ℝ => (confocalAmplitudeEnvelope S R ^ 2)⁻¹) atTop (nhds 1)
+  simpa only [one_pow, inv_one] using
     (hB.pow 2).inv₀ (pow_ne_zero 2 (by norm_num : (1 : ℝ) ≠ 0))
 
 /-- First-order recession of the Abel-radius defect. -/

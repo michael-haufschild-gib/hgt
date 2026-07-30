@@ -145,7 +145,7 @@ def UniversalSpectralPhaseClassificationLaw : Prop :=
       ∃ omega : ℝ,
         measureVisibleFrequencyGroup (spectralDifferenceMeasure mu) =
           AddSubgroup.zmultiples omega) ∧
-  (∀ (mu : Measure ℝ) [IsProbabilityMeasure mu] [NoAtoms mu],
+  (∀ (mu : Measure ℝ) [IsProbabilityMeasure mu] [NullSingletonClass mu],
     projectiveObserverTemporalDimension mu = Cardinal.continuum ∧
       ∀ eta : ℝ, 0 < eta →
         Tendsto (highFidelityWindowDensity mu eta)

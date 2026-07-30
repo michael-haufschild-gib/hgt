@@ -205,7 +205,7 @@ theorem centralSoninProjection_cofinalEmbedding_tendsto
     (T := centralSoninProjection a)
   intro i
   apply tendsto_zero_iff_norm_tendsto_zero.mpr
-  simpa [cofinalInverseDilatedEvenShell] using
+  simpa [cofinalInverseDilatedEvenShell] using!
     (centralSoninProjection_inverseDilatedEvenShell_tendsto
       a c d r ha hc hcd hr harc).comp (tendsto_add_atTop_nat i)
 
@@ -228,7 +228,7 @@ theorem centralSoninDilationCorner_cofinalEmbedding_tendsto
       centralSoninProjection a)
   intro i
   apply tendsto_zero_iff_norm_tendsto_zero.mpr
-  simpa [cofinalInverseDilatedEvenShell, cofinalEvenShell] using
+  simpa [cofinalInverseDilatedEvenShell, cofinalEvenShell] using!
     (centralSoninDilationCorner_inverseDilatedEvenShell_tendsto
       a c d r ha hc hcd hda hr harc).comp (tendsto_add_atTop_nat i)
 
@@ -783,7 +783,7 @@ theorem exists_centralSoninProjection_singularDiagonal
     (hbasis := by
       intro i
       apply tendsto_zero_iff_norm_tendsto_zero.mpr
-      simpa [cofinalInverseDilatedEvenShell] using
+      simpa [cofinalInverseDilatedEvenShell] using!
         (centralSoninProjection_inverseDilatedEvenShell_tendsto
           a c d r ha hc hcd hr harc).comp (tendsto_add_atTop_nat i))
     (x := x) (epsilon := epsilon) hepsilon hepsilonZero
@@ -815,7 +815,7 @@ theorem exists_centralSoninDilationCorner_singularDiagonal
     (hbasis := by
       intro i
       apply tendsto_zero_iff_norm_tendsto_zero.mpr
-      simpa [cofinalInverseDilatedEvenShell, cofinalEvenShell] using
+      simpa [cofinalInverseDilatedEvenShell, cofinalEvenShell] using!
         (centralSoninDilationCorner_inverseDilatedEvenShell_tendsto
           a c d r ha hc hcd hda hr harc).comp
             (tendsto_add_atTop_nat i))
@@ -859,7 +859,7 @@ theorem exists_centralSoninDilationCorner_singularDiagonal_pair
     (hbasis := by
       intro i
       apply tendsto_zero_iff_norm_tendsto_zero.mpr
-      simpa [cofinalInverseDilatedEvenShell, cofinalEvenShell] using
+      simpa [cofinalInverseDilatedEvenShell, cofinalEvenShell] using!
         (centralSoninDilationCorner_inverseDilatedEvenShell_tendsto
           a c d r ha hc hcd hda hr harc).comp
             (tendsto_add_atTop_nat i))
@@ -915,7 +915,7 @@ theorem exists_centralSoninDilationCorner_singularDiagonal_pair_codiagonal
     (hbasis := by
       intro i
       apply tendsto_zero_iff_norm_tendsto_zero.mpr
-      simpa [cofinalInverseDilatedEvenShell, cofinalEvenShell] using
+      simpa [cofinalInverseDilatedEvenShell, cofinalEvenShell] using!
         (centralSoninDilationCorner_inverseDilatedEvenShell_tendsto
           a c d r ha hc hcd hda hr harc).comp
             (tendsto_add_atTop_nat i))
@@ -951,7 +951,7 @@ theorem exists_centralSoninDilationCorner_singularDiagonal_finite
     (hbasis := by
       intro i
       apply tendsto_zero_iff_norm_tendsto_zero.mpr
-      simpa [cofinalInverseDilatedEvenShell, cofinalEvenShell] using
+      simpa [cofinalInverseDilatedEvenShell, cofinalEvenShell] using!
         (centralSoninDilationCorner_inverseDilatedEvenShell_tendsto
           a c d r ha hc hcd hda hr harc).comp
             (tendsto_add_atTop_nat i))

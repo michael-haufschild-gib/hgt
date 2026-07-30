@@ -506,7 +506,7 @@ theorem quiet_crossing_rigidity_gaussian {F : ℂ → ℂ} {a : ℕ → ℂ} {c 
             simp only [norm_div, Complex.norm_real, Real.norm_natCast]
             exact tendsto_const_div_atTop_nhds_zero_nat _
           have := (Complex.continuous_exp.tendsto 0).comp h0
-          simpa [gaussWeight, Complex.exp_zero] using this
+          simpa [gaussWeight, Complex.exp_zero] using! this
         have := hgw.const_mul (F (↑c + ↑t * I) * perronE n (↑c + ↑t * I))
         simpa using this
       have := tendsto_integral_of_dominated_convergence
@@ -522,7 +522,7 @@ theorem quiet_crossing_rigidity_gaussian {F : ℂ → ℂ} {a : ℕ → ℂ} {c 
       have hexp1 : Tendsto (fun j : ℕ => Real.exp ((M : ℝ) ^ 2 / (j : ℝ))) atTop (nhds 1) := by
         have : Tendsto (fun j : ℕ => (M : ℝ) ^ 2 / (j : ℝ)) atTop (nhds 0) :=
           tendsto_const_div_atTop_nhds_zero_nat _
-        simpa using (Real.continuous_exp.tendsto 0).comp this
+        simpa using! (Real.continuous_exp.tendsto 0).comp this
       simpa using hexp1.const_mul (4 * Real.pi * B * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ)))
     refine le_of_tendsto_of_tendsto hnorm hbndlim ?_
     filter_upwards [eventually_ge_atTop 1] with j hj

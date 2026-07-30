@@ -69,15 +69,15 @@ theorem gammaEulerProfileStep_hasDerivAt {r h : ℝ} {H : ℝ → ℝ} {c : ℝ}
     have hlin : HasDerivAt (fun e : ℝ => e * Real.exp (-h)) (Real.exp (-h)) 0 := by
       simpa using (hasDerivAt_id (0:ℝ)).mul_const (Real.exp (-h))
     have hH0 : HasDerivAt H c ((fun e : ℝ => e * Real.exp (-h)) 0) := by simpa using hH
-    simpa using hH0.comp 0 hlin
+    simpa using! hH0.comp 0 hlin
   have hd2 : HasDerivAt (fun e => H (e * Real.exp h)) (c * Real.exp h) 0 := by
     have hlin : HasDerivAt (fun e : ℝ => e * Real.exp h) (Real.exp h) 0 := by
       simpa using (hasDerivAt_id (0:ℝ)).mul_const (Real.exp h)
     have hH0 : HasDerivAt H c ((fun e : ℝ => e * Real.exp h) 0) := by simpa using hH
-    simpa using hH0.comp 0 hlin
+    simpa using! hH0.comp 0 hlin
   have hsum := ((hH.const_mul (2 * Real.cosh (r * h / 2))).sub
     (hd1.const_mul (Real.exp (-(r * h / 2))))).sub (hd2.const_mul (Real.exp (r * h / 2)))
-  convert hsum using 1
+  convert! hsum using 1
   rw [gammaEulerCentralDifferenceEigenvalue,
     show Real.cosh ((r / 2 + 1) * h)
       = (Real.exp ((r / 2 + 1) * h) + Real.exp (-((r / 2 + 1) * h))) / 2 from Real.cosh_eq _]
@@ -117,7 +117,7 @@ theorem gammaEulerTwoDifference_asymptotic (r h₁ h₂ : ℝ) :
     have hlin : HasDerivAt (fun e : ℝ => 1 + e) 1 0 := by
       simpa using (hasDerivAt_id (0:ℝ)).const_add 1
     have := (Real.hasDerivAt_rpow_const (p := -r) (Or.inl (by norm_num : (1:ℝ) + (0:ℝ) ≠ 0))).comp 0 hlin
-    simpa using this
+    simpa using! this
   have hH₁' : HasDerivAt H₁ (eig₂ * (-r)) 0 := by
     rw [hH₁, heig₂]; exact gammaEulerProfileStep_hasDerivAt hH₀'
   have hK' : HasDerivAt K (eig₁ * (eig₂ * (-r))) 0 := by
@@ -207,7 +207,7 @@ theorem gammaEulerProfileList_hasDerivAt (r : ℝ) (L : List ℝ) {H : ℝ → �
     HasDerivAt (gammaEulerProfileList r L H)
       ((L.map (fun h => gammaEulerCentralDifferenceEigenvalue r h (r / 2 + 1))).prod * c) 0 := by
   induction L with
-  | nil => simpa using hH
+  | nil => simpa using! hH
   | cons h t ih =>
     have key := gammaEulerProfileStep_hasDerivAt (r := r) (h := h) ih
     rw [List.map_cons, List.prod_cons, mul_assoc]
@@ -238,7 +238,7 @@ theorem gammaEulerDifferenceList_asymptotic (r : ℝ) {L : List ℝ} (hL : L ≠
     have hlin : HasDerivAt (fun e : ℝ => 1 + e) 1 0 := by
       simpa using (hasDerivAt_id (0:ℝ)).const_add 1
     have := (Real.hasDerivAt_rpow_const (p := -r) (Or.inl (by norm_num : (1:ℝ) + (0:ℝ) ≠ 0))).comp 0 hlin
-    simpa using this
+    simpa using! this
   have hK' : HasDerivAt K (P * (-r)) 0 := by
     rw [hK, hP]; exact gammaEulerProfileList_hasDerivAt r L hH₀'
   have hslope : Tendsto (fun e => K e / e) (𝓝[≠] 0) (𝓝 (P * (-r))) := by

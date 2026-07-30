@@ -102,7 +102,7 @@ theorem seam_deriv_eq_zero_iff_incidence_deriv_zero {Λ₁ Λ₂ : ℂ → ℂ} 
     have h1 : HasDerivAt (fun τ : ℝ => (incidence Λ₁ Λ₂ (linePt τ)).im)
         (iotaDeriv Λ₁ Λ₂ d₁ d₂ (linePt τ₀) * I).im τ₀ := by
       have := Complex.imCLM.hasFDerivAt.comp_hasDerivAt τ₀ hfc
-      simpa using this
+      simpa using! this
     have h2 : HasDerivAt (fun τ : ℝ => (incidence Λ₁ Λ₂ (linePt τ)).im) 0 τ₀ := by
       have he : (fun τ : ℝ => (incidence Λ₁ Λ₂ (linePt τ)).im) = fun _ => (0 : ℝ) := by
         funext τ; exact hreal τ
@@ -112,7 +112,7 @@ theorem seam_deriv_eq_zero_iff_incidence_deriv_zero {Λ₁ Λ₂ : ℂ → ℂ} 
   have hseam : HasDerivAt (seamIncidence Λ₁ Λ₂)
       (iotaDeriv Λ₁ Λ₂ d₁ d₂ (linePt τ₀) * I).re τ₀ := by
     have := Complex.reCLM.hasFDerivAt.comp_hasDerivAt τ₀ hfc
-    simpa [seamIncidence] using this
+    simpa [seamIncidence] using! this
   rw [hseam.deriv]
   constructor
   · intro h

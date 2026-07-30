@@ -88,7 +88,7 @@ theorem fieldOneFiniteStageIdeleClassGroup_const_smul_continuous
     Continuous fun x : FieldOneFiniteStageClassSpace S => c • x := by
   refine Quotient.inductionOn c ?_
   intro u
-  simpa only [fieldOneFiniteStageIdeleClassGroup_mk_smul] using
+  simpa only [fieldOneFiniteStageIdeleClassGroup_mk_smul] using!
     (fieldOneFiniteStageIdeleClassAction_continuous S u)
 
 /-- The factored idele-class action is continuous in the class-space variable. -/

@@ -704,7 +704,7 @@ theorem integrableOn_rectangularGammaCancellationKernel
       hexp.const_mul C
     refine hmajor.mono' hmeas.restrict ?_
     filter_upwards [self_mem_ae_restrict measurableSet_Ioi] with t ht
-    simpa only [C] using
+    simpa only [C, Real.norm_eq_abs] using
       abs_rectangularGammaCancellationKernel_le_tail hL ha ht.le
   have hcover : Ioc (0 : ℝ) 1 ∪ Ioi 1 = Ioi 0 := by
     ext t

@@ -143,8 +143,11 @@ theorem hasDerivAt_spectralTranslationPhase (a : ℝ) (z : ℂ) :
     HasDerivAt (spectralTranslationPhase a)
       (((a : ℂ) * I) * spectralTranslationPhase a z) z := by
   unfold spectralTranslationPhase
-  convert (Complex.hasDerivAt_exp (((a : ℂ) * I) * z)).comp z
-    ((hasDerivAt_id z).const_mul ((a : ℂ) * I)) using 1 <;> ring
+  have hlinear : HasDerivAt
+      (fun w : ℂ => ((a : ℂ) * I) * w) ((a : ℂ) * I) z := by
+    simpa only [id_eq, mul_one] using
+      (hasDerivAt_id z).const_mul ((a : ℂ) * I)
+  simpa only [mul_comm] using hlinear.cexp
 
 /-- Multiplication by a spectral translation phase changes oriented current only by the explicit
 phase drift `a |F|²`, up to the positive squared modulus of the phase itself. -/
@@ -299,7 +302,7 @@ theorem thetaSquareIndexEvenDensity_eq_dyadic_translate (x : ℝ) :
       (2 : ℝ) ^ (-(1 / 2 : ℝ)) *
         thetaCuspTailSecondDensity (x + Real.log 2) := by
   unfold thetaSquareIndexEvenDensity
-  simpa only [PNat.val_ofNat] using
+  simpa only [PNat.val_ofNat, Nat.cast_ofNat] using
     (tsum_thetaCuspTailSecondDensityAtom_pnat_mul (2 : ℕ+) x)
 
 theorem thetaSquareIndexEven_add_odd (x : ℝ) :
@@ -1576,12 +1579,13 @@ theorem tendsto_thetaSquareIndexDyadicWeightedComplexMomentProduct_zero
   have h := Complex.continuous_ofReal.continuousAt.tendsto.comp
     (tendsto_thetaSquareIndexDyadicWeightedMomentProduct_zero m n)
   convert h using 1
-  funext k
-  unfold thetaSquareIndexDyadicComplexMoment
-    thetaSquareIndexDyadicWeightedMomentProduct
-  simp only [Function.comp_apply]
-  push_cast
-  ring
+  · funext k
+    unfold thetaSquareIndexDyadicComplexMoment
+      thetaSquareIndexDyadicWeightedMomentProduct
+    simp only [Function.comp_apply]
+    push_cast
+    ring
+  · norm_num
 
 /-- An arbitrary finite complex linear packet of dyadic top-row moments. -/
 def thetaSquareIndexDyadicFiniteMomentPacket {ι : Type*}
@@ -1615,8 +1619,8 @@ theorem tendsto_thetaSquareIndexDyadicWeightedFiniteMomentPacketProduct_zero
           ((2 : ℂ) ^ k * thetaSquareIndexDyadicComplexMoment (m i) k *
             thetaSquareIndexDyadicComplexMoment (n j) k))
       atTop (nhds 0) := by
-    simpa using tendsto_finset_sum t (fun j hj =>
-      tendsto_finset_sum s (fun i hi => hpair i hi j hj))
+    simpa using tendsto_finsetSum t (fun j hj =>
+      tendsto_finsetSum s (fun i hi => hpair i hi j hj))
   convert hsum using 1
   funext k
   unfold thetaSquareIndexDyadicFiniteMomentPacket
@@ -2051,7 +2055,7 @@ theorem integral_xiCTaylorThetaTailCoreDyadicHaarRemainderKernel_eq
       ((∫ x : ℝ, f x ∂mu) *
         (starRingEnd ℂ) (∫ y : ℝ, g y ∂mu)).im := by
     rw [← hmul]
-    simpa only [H] using integral_im hfg
+    simpa only [H, RCLike.im_eq_complex_im] using integral_im hfg
   rw [show (fun p : ℝ × ℝ =>
       xiCTaylorThetaTailCoreDyadicHaarRemainderKernel d z k p) =
       fun p : ℝ × ℝ => (H p + H p.swap) / 2 by
@@ -2059,11 +2063,9 @@ theorem integral_xiCTaylorThetaTailCoreDyadicHaarRemainderKernel_eq
     rcases p with ⟨x, y⟩
     unfold xiCTaylorThetaTailCoreDyadicHaarRemainderKernel
       xiCTaylorThetaTailCorePairCurrent H f g c
-    simp only [Prod.fst, Prod.snd, Prod.swap_prod_mk, map_mul,
+    simp only [Prod.swap_prod_mk, map_mul,
       Complex.conj_ofReal, Complex.mul_im, Complex.mul_re,
-      Complex.ofReal_re, Complex.ofReal_im, zero_mul, add_zero,
-      zero_sub, mul_zero]
-    push_cast
+      Complex.ofReal_re, Complex.ofReal_im, zero_mul, add_zero]
     ring]
   rw [hsymm, him]
   have hfint : (∫ x : ℝ, f x ∂mu) =
@@ -2092,9 +2094,10 @@ theorem tendsto_integral_xiCTaylorThetaTailCoreDyadicHaarRemainderKernel_zero
   have h := Complex.continuous_im.continuousAt.tendsto.comp
     (tendsto_thetaSquareIndexDyadicWeightedCoreAverages_zero d z)
   convert h using 1
-  funext k
-  rw [integral_xiCTaylorThetaTailCoreDyadicHaarRemainderKernel_eq]
-  rfl
+  · funext k
+    rw [integral_xiCTaylorThetaTailCoreDyadicHaarRemainderKernel_eq]
+    rfl
+  · norm_num
 
 /-- Pointwise current-source polarization into cofinal dyadic Haar layers and one shifted top
 row. -/

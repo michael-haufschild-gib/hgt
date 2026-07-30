@@ -64,7 +64,8 @@ theorem tendsto_symmetricLebesgueAverage_of_continuousAt
       (𝓝[>] (0 : ℝ)) (𝓝 0) := by
   let q : ℝ → ℝ := fun t => |φ t - φ 0| + |φ (-t) - φ 0|
   have hnegφ : ContinuousAt (fun t => φ (-t)) 0 := by
-    convert hφ.comp_of_eq continuousAt_neg neg_zero using 1
+    simpa only [Function.comp_apply] using!
+      hφ.comp_of_eq continuousAt_neg neg_zero
   have hq : ContinuousAt q 0 := by
     dsimp only [q]
     exact (hφ.sub continuousAt_const).abs.add
@@ -108,7 +109,7 @@ theorem tendsto_poissonMuntz_symmetricLebesgueAverage_of_continuousAt
   unfold poissonMuntzAngularDatum
   have hscale : ContinuousAt (fun t : ℝ => t / (2 * Real.pi)) 0 :=
     continuousAt_id.div_const (2 * Real.pi)
-  simpa only [Function.comp_apply] using
+  simpa only [Function.comp_apply] using!
     hcont.comp_of_eq hscale (by norm_num)
 
 /-- On the angular scale, the integer Fourier character is the ordinary phase
@@ -311,10 +312,10 @@ theorem tsum_poissonMuntzBilateralSampleTerm_eq_zero_add_two_mul_abel
   have hbil := summable_poissonMuntzBilateralSampleTerm f a hr0 hr1
   have hpos : Summable fun n : ℕ =>
       poissonMuntzBilateralSampleTerm f a r (n : ℤ) := by
-    simpa only [Function.comp_apply] using hbil.comp_injective (fun m n h => by omega)
+    simpa only [Function.comp_apply] using! hbil.comp_injective (fun m n h => by omega)
   have hneg : Summable fun n : ℕ =>
       poissonMuntzBilateralSampleTerm f a r (-((n : ℤ) + 1)) := by
-    simpa only [Function.comp_apply] using hbil.comp_injective (fun m n h => by omega)
+    simpa only [Function.comp_apply] using! hbil.comp_injective (fun m n h => by omega)
   have hsplit :
       (∑' n : ℕ, poissonMuntzBilateralSampleTerm f a r (n : ℤ)) =
         poissonMuntzBilateralSampleTerm f a r 0 +
@@ -369,7 +370,7 @@ theorem summable_poissonMuntzAbelTerm
   have hbil := summable_poissonMuntzBilateralSampleTerm f a hr0 hr1
   have hshift : Summable fun n : ℕ =>
       poissonMuntzBilateralSampleTerm f a r ((n + 1 : ℕ) : ℤ) := by
-    simpa only [Function.comp_apply] using
+    simpa only [Function.comp_apply] using!
       hbil.comp_injective (fun m n h => by omega)
   have hscaled := hshift.mul_left (a : ℂ)⁻¹
   apply hscaled.congr

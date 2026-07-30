@@ -28,6 +28,7 @@ def liftedConfocalBranch (q : ℝ × ℝ) (R : ℝ) : ℝ :=
 theorem liftedConfocalRadicand_nonneg
     {q : ℝ × ℝ} (hq : q ∈ confocalLorentzCone) (R : ℝ) :
     0 ≤ (R - q.1) ^ 2 + (q.2 ^ 2 - q.1 ^ 2) := by
+  change |q.1| ≤ q.2 at hq
   have ha : 0 ≤ q.2 := (abs_nonneg q.1).trans hq
   have hsq : q.1 ^ 2 ≤ q.2 ^ 2 := by
     rw [sq_le_sq]

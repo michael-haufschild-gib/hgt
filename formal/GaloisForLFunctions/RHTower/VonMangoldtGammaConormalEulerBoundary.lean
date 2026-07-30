@@ -47,14 +47,18 @@ theorem gammaFactorialPowerCompression_eq_exp_sub_div
   have hscaled' : HasSum
       (fun n : ℕ => L ^ n / ((n + 1).factorial : ℝ))
       ((Real.exp L - 1) / L) := by
-    convert hscaled using 1
-    · funext n
+    have hterm : (fun n : ℕ => L⁻¹ * e (n + 1)) =
+        fun n : ℕ => L ^ n / ((n + 1).factorial : ℝ) := by
+      funext n
       dsimp [e]
       rw [Nat.factorial_succ]
       push_cast
       field_simp [hL]
       ring
-    · rw [div_eq_mul_inv, mul_comm]
+    have hlimit : L⁻¹ * (Real.exp L - 1) = (Real.exp L - 1) / L := by
+      rw [div_eq_mul_inv, mul_comm]
+    rw [hterm, hlimit] at hscaled
+    exact hscaled
   exact hscaled'.tsum_eq
 
 /-- At one Euler coordinate the raw conormal amplification is `(m-1)/log m`. -/

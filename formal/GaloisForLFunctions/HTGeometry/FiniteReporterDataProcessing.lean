@@ -79,7 +79,7 @@ theorem finiteDerivativeReporterConditionalInformation_postcomp_eq_zero_iff
     have heq : y = report (iteratedDeriv N f) := by
       apply hdecode
       exact hyeq
-    simpa only [heq] using hy
+    simpa only [heq] using! hy
   · exact finiteDerivativeReporterConditionalInformation_eq_zero_postcomp decode
 
 /-- Injective postprocessing preserves strict conditional observability exactly. -/

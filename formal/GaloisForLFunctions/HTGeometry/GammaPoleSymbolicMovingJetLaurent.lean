@@ -85,15 +85,15 @@ def gammaPoleSymbolicPolynomialJetLaurentEval (n : ℕ) :
 
 theorem gammaPoleSymbolicMovingCoefficientLaurent_coeff_neg
     (p : Polynomial ℂ) (b : ℕ) :
-    gammaPoleSymbolicMovingCoefficientLaurent p (-(b : ℤ)) =
+    (gammaPoleSymbolicMovingCoefficientLaurent p).coeff (-(b : ℤ)) =
       gammaPoleRationalScaleDerivativeInclude
           (gammaPoleCenterHasseRational p b) *
         gammaPoleSymbolicPhysicalScale ^ b := by
   rw [gammaPoleSymbolicMovingCoefficientLaurent, RingHom.comp_apply]
-  change movingPoleTaylorLaurent
+  change (movingPoleTaylorLaurent
       (gammaPoleRationalScaleDerivativeInclude gammaPoleCenterRational)
       gammaPoleSymbolicPhysicalScale
-      (p.map gammaPoleComplexScaleDerivativeInclude) (-(b : ℤ)) = _
+      (p.map gammaPoleComplexScaleDerivativeInclude)).coeff (-(b : ℤ)) = _
   rw [movingPoleTaylorLaurent_coeff_neg]
   change (Polynomial.hasseDeriv b
       (p.map (gammaPoleRationalScaleDerivativeInclude.comp RatFunc.C))).eval
@@ -112,7 +112,7 @@ def gammaPoleSymbolicToActual :
 
 theorem gammaPoleSymbolicToActual_injective :
     Function.Injective gammaPoleSymbolicToActual := by
-  simpa [gammaPoleSymbolicToActual] using
+  simpa [gammaPoleSymbolicToActual, AddMonoidAlgebra.coe_mapRingHom] using!
     AddMonoidAlgebra.map_injective
       (M := ℤ) gammaPoleScaleAndUnitDerivativeLaurentEval.toAddMonoidHom
       gammaPoleScaleAndUnitDerivativeLaurentEval_injective
@@ -143,7 +143,7 @@ theorem gammaPoleSymbolicToActual_injective :
         (gammaPoleScaleAndUnitDerivativeLaurentEval a) := by
   ext q
   by_cases hq : q = 0 <;>
-    simp [gammaPoleSymbolicToActual, AddMonoidAlgebra.mapRingHom_apply, hq]
+    simp [gammaPoleSymbolicToActual, AddMonoidAlgebra.coeff_mapRingHom, hq]
 
 theorem gammaPoleSymbolicToActual_movingCoefficient
     (p : Polynomial ℂ) :
@@ -152,14 +152,14 @@ theorem gammaPoleSymbolicToActual_movingCoefficient
       gammaPoleMovingCoefficientLaurent p := by
   ext q
   change gammaPoleScaleAndUnitDerivativeLaurentEval
-      (gammaPoleSymbolicMovingCoefficientLaurent p q) =
-    gammaPoleMovingCoefficientLaurent p q
+      ((gammaPoleSymbolicMovingCoefficientLaurent p).coeff q) =
+    (gammaPoleMovingCoefficientLaurent p).coeff q
   cases q with
   | ofNat b =>
       rcases b with (_ | b)
       · change gammaPoleScaleAndUnitDerivativeLaurentEval
-          (gammaPoleSymbolicMovingCoefficientLaurent p (-(0 : ℤ))) =
-            gammaPoleMovingCoefficientLaurent p (-(0 : ℤ))
+          ((gammaPoleSymbolicMovingCoefficientLaurent p).coeff (-(0 : ℤ))) =
+            (gammaPoleMovingCoefficientLaurent p).coeff (-(0 : ℤ))
         calc
           _ = gammaPoleScaleAndUnitDerivativeLaurentEval
               (gammaPoleRationalScaleDerivativeInclude
@@ -169,26 +169,26 @@ theorem gammaPoleSymbolicToActual_movingCoefficient
               (gammaPoleSymbolicMovingCoefficientLaurent_coeff_neg p 0)
           _ = ratNatEval (gammaPoleCenterHasseRational p 0) *
               gammaPolePhysicalScaleGerm ^ 0 := by simp
-          _ = gammaPoleMovingCoefficientLaurent p (-(0 : ℤ)) :=
+          _ = (gammaPoleMovingCoefficientLaurent p).coeff (-(0 : ℤ)) :=
             (gammaPoleMovingCoefficientLaurent_coeff_neg p 0).symm
       · have hpos : (0 : ℤ) < Int.ofNat (b + 1) := by simp
         change gammaPoleScaleAndUnitDerivativeLaurentEval
-            (movingPoleTaylorLaurent
+            ((movingPoleTaylorLaurent
               (gammaPoleRationalScaleDerivativeInclude gammaPoleCenterRational)
               gammaPoleSymbolicPhysicalScale
-              (p.map gammaPoleComplexScaleDerivativeInclude)
-              (Int.ofNat (b + 1))) =
-          movingPoleTaylorLaurent gammaPoleCenterGerm
-            gammaPolePhysicalScaleGerm (p.map complexNatGerm)
+              (p.map gammaPoleComplexScaleDerivativeInclude)).coeff
+                (Int.ofNat (b + 1))) =
+          (movingPoleTaylorLaurent gammaPoleCenterGerm
+            gammaPolePhysicalScaleGerm (p.map complexNatGerm)).coeff
               (Int.ofNat (b + 1))
         rw [movingPoleTaylorLaurent_coeff_pos _ _ _ _ hpos,
           movingPoleTaylorLaurent_coeff_pos _ _ _ _ hpos]
         simp
   | negSucc b =>
       change gammaPoleScaleAndUnitDerivativeLaurentEval
-          (gammaPoleSymbolicMovingCoefficientLaurent p
+          ((gammaPoleSymbolicMovingCoefficientLaurent p).coeff
             (-((b + 1 : ℕ) : ℤ))) =
-        gammaPoleMovingCoefficientLaurent p (-((b + 1 : ℕ) : ℤ))
+        (gammaPoleMovingCoefficientLaurent p).coeff (-((b + 1 : ℕ) : ℤ))
       rw [gammaPoleSymbolicMovingCoefficientLaurent_coeff_neg,
         gammaPoleMovingCoefficientLaurent_coeff_neg]
       simp
@@ -232,9 +232,9 @@ theorem gammaPoleScaleAndUnitDerivativeLaurentEval_boundaryEval :
   ext m
   change (AddMonoidAlgebra.mapRingHom ℤ
       gammaPoleScaleAndUnitDerivativeLaurentEval
-        (LaurentPolynomial.T q)) m =
-    (LaurentPolynomial.T q : NatGerm[T;T⁻¹]) m
-  rw [AddMonoidAlgebra.mapRingHom_apply]
+        (LaurentPolynomial.T q)).coeff m =
+    (LaurentPolynomial.T q : NatGerm[T;T⁻¹]).coeff m
+  rw [AddMonoidAlgebra.coeff_mapRingHom]
   by_cases hqm : q = m <;>
     simp [LaurentPolynomial.T_apply, hqm]
 
@@ -345,7 +345,7 @@ theorem universalSimplePoleJetProfile_coeff_top (j : ℕ) :
   · simp
 
 theorem gammaPoleSymbolicDerivativeLaurentProfile_coeff_top (j : ℕ) :
-    gammaPoleSymbolicDerivativeLaurentProfile j ((j + 1 : ℕ) : ℤ) =
+    (gammaPoleSymbolicDerivativeLaurentProfile j).coeff ((j + 1 : ℕ) : ℤ) =
       gammaPoleSymbolicDerivativeScale j *
         gammaPoleComplexScaleDerivativeInclude
           (((-1 : ℂ) ^ j) * (j.factorial : ℂ)) := by
@@ -362,13 +362,13 @@ theorem gammaPoleSymbolicDerivativeLaurentProfile_coeff_top (j : ℕ) :
   change gammaPoleSymbolicDerivativeScale j *
       (Polynomial.toLaurent
         ((HTGeometry.universalSimplePoleJetProfile j).map
-          gammaPoleSymbolicUnitDerivativeBoundaryEval)
-        ((j + 1 : ℕ) : ℤ)) = _
+          gammaPoleSymbolicUnitDerivativeBoundaryEval)).coeff
+        ((j + 1 : ℕ) : ℤ) = _
   congr 1
-  rw [Polynomial.toLaurent_apply]
+  rw [LaurentPolynomial.coeff_toLaurent]
   change Finsupp.mapDomain (fun n : ℕ => (n : ℤ))
       ((HTGeometry.universalSimplePoleJetProfile j).map
-        gammaPoleSymbolicUnitDerivativeBoundaryEval).toFinsupp
+        gammaPoleSymbolicUnitDerivativeBoundaryEval).toFinsupp.coeff
         ((j + 1 : ℕ) : ℤ) = _
   have hinj : Function.Injective (fun n : ℕ => (n : ℤ)) :=
     Int.ofNat_injective
@@ -381,7 +381,7 @@ exactly `-j!`. -/
 theorem gammaPoleSymbolicDerivativeLaurentProfile_top_scale_boundary
     (j : ℕ) :
     MvPolynomial.coeff 0
-        ((gammaPoleSymbolicDerivativeLaurentProfile j ((j + 1 : ℕ) : ℤ))
+        (((gammaPoleSymbolicDerivativeLaurentProfile j).coeff ((j + 1 : ℕ) : ℤ)).coeff
           (-(j : ℤ))) =
       RatFunc.C (-(j.factorial : ℂ)) := by
   rw [gammaPoleSymbolicDerivativeLaurentProfile_coeff_top]
@@ -390,12 +390,13 @@ theorem gammaPoleSymbolicDerivativeLaurentProfile_top_scale_boundary
     rw [← mul_pow]
     simp
   have hinner :
-      (gammaPoleSymbolicDerivativeScale j *
+      ((gammaPoleSymbolicDerivativeScale j *
         gammaPoleComplexScaleDerivativeInclude
-          (((-1 : ℂ) ^ j) * (j.factorial : ℂ))) (-(j : ℤ)) =
+          (((-1 : ℂ) ^ j) * (j.factorial : ℂ))) :
+        GammaPoleScaleDerivativeSymbolic).coeff (-(j : ℤ)) =
         MvPolynomial.C (RatFunc.C (-(j.factorial : ℂ))) := by
     have hscaleCoeff :
-        gammaPoleSymbolicDerivativeScale j (-(j : ℤ)) =
+        (gammaPoleSymbolicDerivativeScale j).coeff (-(j : ℤ)) =
           -MvPolynomial.C ((-1 : GammaPoleRationalBase) ^ j) := by
       rw [gammaPoleSymbolicDerivativeScale]
       have hpow :
@@ -411,34 +412,29 @@ theorem gammaPoleSymbolicDerivativeLaurentProfile_top_scale_boundary
               ((-1 : GammaPoleRationalBase) ^ j) := by rw [map_pow]
           _ = _ := rfl
       rw [hpow]
-      change (-((LaurentPolynomial.C
-          (MvPolynomial.C ((-1 : GammaPoleRationalBase) ^ j)) *
-            LaurentPolynomial.T (-(j : ℤ)) :
-          GammaPoleScaleDerivativeSymbolic) (-(j : ℤ)))) = _
-      congr 1
-      calc
-        (LaurentPolynomial.C
+      change
+        (-(LaurentPolynomial.C
             (MvPolynomial.C ((-1 : GammaPoleRationalBase) ^ j)) *
-              LaurentPolynomial.T (-(j : ℤ)) :
-            GammaPoleScaleDerivativeSymbolic) (-(j : ℤ)) =
-            (Finsupp.single (-(j : ℤ))
-              (MvPolynomial.C ((-1 : GammaPoleRationalBase) ^ j)) :
-                GammaPoleScaleDerivativeSymbolic) (-(j : ℤ)) :=
-          congrArg (fun f : GammaPoleScaleDerivativeSymbolic => f (-(j : ℤ)))
-            (LaurentPolynomial.single_eq_C_mul_T
-              (MvPolynomial.C ((-1 : GammaPoleRationalBase) ^ j))
-              (-(j : ℤ))).symm
-        _ = MvPolynomial.C ((-1 : GammaPoleRationalBase) ^ j) :=
-          Finsupp.single_eq_same
+          LaurentPolynomial.T (-(j : ℤ))) :
+          GammaPoleScaleDerivativeSymbolic).coeff (-(j : ℤ)) =
+            -MvPolynomial.C ((-1 : GammaPoleRationalBase) ^ j)
+      rw [AddMonoidAlgebra.coeff_neg]
+      rw [← LaurentPolynomial.single_eq_C_mul_T,
+        AddMonoidAlgebra.coeff_single]
+      simp
     rw [mul_comm]
-    change (((LaurentPolynomial.C
-          (MvPolynomial.C (RatFunc.C (((-1 : ℂ) ^ j) * (j.factorial : ℂ)))) *
-            gammaPoleSymbolicDerivativeScale j) :
-          GammaPoleScaleDerivativeSymbolic) (-(j : ℤ))) = _
+    change
+      ((LaurentPolynomial.C
+        (MvPolynomial.C (RatFunc.C (((-1 : ℂ) ^ j) * (j.factorial : ℂ)))) *
+          gammaPoleSymbolicDerivativeScale j) :
+        GammaPoleScaleDerivativeSymbolic).coeff (-(j : ℤ)) =
+          MvPolynomial.C (RatFunc.C (-(j.factorial : ℂ)))
     rw [← LaurentPolynomial.smul_eq_C_mul]
-    change MvPolynomial.C
-        (RatFunc.C (((-1 : ℂ) ^ j) * (j.factorial : ℂ))) *
-          gammaPoleSymbolicDerivativeScale j (-(j : ℤ)) = _
+    change
+      MvPolynomial.C
+          (RatFunc.C (((-1 : ℂ) ^ j) * (j.factorial : ℂ))) *
+        (gammaPoleSymbolicDerivativeScale j).coeff (-(j : ℤ)) =
+          MvPolynomial.C (RatFunc.C (-(j.factorial : ℂ)))
     rw [hscaleCoeff]
     rw [mul_neg]
     have hbase :

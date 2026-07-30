@@ -23,16 +23,21 @@ def thetaCuspTailPotentialAtomOnePhaseTail (a : ℝ) (z : ℂ) : ℂ :=
 lemma hasDerivAt_spectralTranslationPhase_source (z : ℂ) (x : ℝ) :
     HasDerivAt (fun u : ℝ => spectralTranslationPhase u z)
       (I * z * spectralTranslationPhase x z) x := by
-  unfold spectralTranslationPhase
-  convert (Complex.hasDerivAt_exp (((x : ℂ) * I) * z)).comp x
-    ((Complex.ofRealCLM.hasDerivAt.mul_const I).mul_const z) using 1 <;>
-      simp [Complex.ofRealCLM_apply] <;> ring
+  have hraw :=
+    (Complex.hasDerivAt_exp (((x : ℂ) * I) * z)).comp x
+      ((Complex.ofRealCLM.hasDerivAt.mul_const I).mul_const z)
+  have hraw' := hraw.congr_deriv
+    (g' := I * z * Complex.exp (((x : ℂ) * I) * z)) (by
+      simpa [Complex.ofRealCLM_apply] using
+        (mul_comm (Complex.exp (((x : ℂ) * I) * z)) (I * z)))
+  simpa only [spectralTranslationPhase, Complex.ofRealCLM_apply,
+    Function.comp_apply] using! hraw'
 
 lemma hasDerivAt_spectralTranslationPhase_sourceDerivative (z : ℂ) (x : ℝ) :
     HasDerivAt (fun u : ℝ => I * z * spectralTranslationPhase u z)
       (-(z ^ 2) * spectralTranslationPhase x z) x := by
   have h := (hasDerivAt_spectralTranslationPhase_source z x).const_mul (I * z)
-  convert h using 1
+  apply h.congr_deriv
   rw [show I * z * (I * z * spectralTranslationPhase x z) =
       I * I * z ^ 2 * spectralTranslationPhase x z by ring, I_mul_I]
   ring
@@ -155,8 +160,10 @@ theorem thetaCuspTailSecondDensityAtomOnePhaseTail_eq_boundary_sub_sq_potential
   have hzero2 : Tendsto (g' * f) (𝓝[>] a) (nhds (g' a * f a)) := by
     exact ((hg' a).continuousAt.mul (hf a).continuousAt).tendsto.mono_left inf_le_left
   have hinfty1 : Tendsto (g * f') atTop (nhds 0) := by
-    simpa [g, f'] using
-      tendsto_four_thetaCuspTailDerivativeAtom_one_mul_phase_atTop_zero 1 hz
+    apply
+      (tendsto_four_thetaCuspTailDerivativeAtom_one_mul_phase_atTop_zero
+        1 hz).congr'
+    exact Eventually.of_forall fun _ => rfl
   have hinfty2 : Tendsto (g' * f) atTop (nhds 0) := by
     have h :=
       (tendsto_four_thetaCuspTailDerivativeAtom_one_mul_phase_atTop_zero 0 hz).const_mul
@@ -186,7 +193,7 @@ theorem thetaCuspTailSecondDensityAtomOnePhaseTail_eq_boundary_sub_sq_potential
           (thetaCuspTailDerivativePolynomial 0) 1 x : ℝ) : ℂ) *
             spectralTranslationPhase x z) by funext x; ring,
     integral_const_mul] at h
-  convert h using 1 <;> ring
+  (convert h using 1; ring)
 
 end
 end RHTower
@@ -286,7 +293,7 @@ theorem criticalNormalized_densityPhaseTail_eq_endpoint_sub_sq_potential
     exp_neg_half_mul_thetaCuspTailPotentialAtom_zero,
     exp_neg_half_mul_thetaCuspTailPotentialAtom_one]
   push_cast
-  ring
+  ring_nf
 
 end
 end RHTower

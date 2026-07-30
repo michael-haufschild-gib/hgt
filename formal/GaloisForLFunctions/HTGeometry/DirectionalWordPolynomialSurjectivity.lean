@@ -46,7 +46,7 @@ theorem toMultiset_projectiveWordExponent : ∀ {n : ℕ} (w : Fin n → ι),
 theorem projectiveWordExponent_sum {n : ℕ} (w : Fin n → ι) :
     (projectiveWordExponent w).sum (fun _ e ↦ e) = n := by
   have hcard := congrArg Multiset.card (toMultiset_projectiveWordExponent w)
-  simpa using hcard
+  simpa using! hcard
 
 /-- The commutative monomial attached to a word is the monomial of its exponent vector. -/
 theorem projectiveWordMonomial_eq_monomial {n : ℕ} (w : Fin n → ι) :

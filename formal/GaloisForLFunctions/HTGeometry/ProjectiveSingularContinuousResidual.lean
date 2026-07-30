@@ -110,8 +110,8 @@ theorem probabilityMeasure_map_noAtoms
     [TopologicalSpace B] [MeasurableSpace B] [BorelSpace B]
     [MeasurableSingletonClass B]
     (e : A ≃ₜ B) (mu : ProbabilityMeasure A)
-    (hmu : NoAtoms (mu : Measure A)) :
-    NoAtoms ((mu.map e.continuous.measurable.aemeasurable :
+    (hmu : NullSingletonClass (mu : Measure A)) :
+    NullSingletonClass ((mu.map e.continuous.measurable.aemeasurable :
       ProbabilityMeasure B) : Measure B) := by
   constructor
   intro y
@@ -129,7 +129,7 @@ theorem probabilityMeasure_map_noAtoms
   rw [hpre, hmu.measure_singleton]
 
 local instance standardCauchyNoAtoms :
-    NoAtoms (ProbabilityTheory.cauchyMeasure 0 1) := by
+    NullSingletonClass (ProbabilityTheory.cauchyMeasure 0 1) := by
   rw [ProbabilityTheory.cauchyMeasure_of_scale_ne_zero 0 (γ := 1) (by norm_num)]
   infer_instance
 
@@ -148,7 +148,7 @@ theorem projectiveLebesgueProbability_toMeasure :
         (ProbabilityTheory.cauchyMeasure 0 1) := rfl
 
 local instance projectiveLebesgueProbability_noAtoms :
-    NoAtoms (projectiveLebesgueProbability : Measure (OnePoint ℝ)) := by
+    NullSingletonClass (projectiveLebesgueProbability : Measure (OnePoint ℝ)) := by
   constructor
   intro x
   change (Measure.map ((↑) : ℝ → OnePoint ℝ)
@@ -182,9 +182,9 @@ theorem projective_atomlessProbabilityLaws_dense :
     circle_atomlessProbabilityLaws_dense.preimage E.isOpenMap
   apply hDense.mono
   intro mu hmu
-  change NoAtoms ((E mu : ProbabilityMeasure UnitAddCircle) :
+  change NullSingletonClass ((E mu : ProbabilityMeasure UnitAddCircle) :
     Measure UnitAddCircle) at hmu
-  change NoAtoms (mu : Measure (OnePoint ℝ))
+  change NullSingletonClass (mu : Measure (OnePoint ℝ))
   have hBack := probabilityMeasure_map_noAtoms
     onePointRealUnitAddCircleHomeomorph.symm (E mu) hmu
   have hInv : E.symm (E mu) = mu := E.left_inv mu
@@ -287,9 +287,9 @@ theorem singularContinuousParameterCarrierPhase_dense_gdelta :
 theorem singularContinuousParameterCarrierPhase_noAtoms
     (nu : F.carrierRange)
     (hnu : nu ∈ F.singularContinuousParameterCarrierPhase) :
-    NoAtoms (nu.1 : Measure ℝ) := by
+    NullSingletonClass (nu.1 : Measure ℝ) := by
   rcases hnu with ⟨eta, heta, hEq⟩
-  have hetaNoAtoms : NoAtoms (eta : Measure (OnePoint ℝ)) := heta.1
+  have hetaNoAtoms : NullSingletonClass (eta : Measure (OnePoint ℝ)) := heta.1
   letI := hetaNoAtoms
   have hcarrier := F.barycenter_noAtoms eta
   have hval : F.barycenter eta = nu.1 := congrArg Subtype.val hEq

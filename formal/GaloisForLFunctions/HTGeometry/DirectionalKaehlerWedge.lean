@@ -42,12 +42,13 @@ theorem exteriorPower_ιMulti_eq_zero_of_not_linearIndependent
     dsimp [W]
     exact FiniteDimensional.span_of_finite K (Set.finite_range v)
   have hdim_le : Module.finrank K W ≤ n := by
-    simpa [W] using (finrank_range_le_card (R := K) v)
+    simpa only [W, Set.finrank, Fintype.card_fin] using
+      (finrank_range_le_card (R := K) v)
   have hdim_ne : Module.finrank K W ≠ n := by
     intro h
     apply hv
     apply (linearIndependent_iff_card_eq_finrank_span (R := K)).2
-    simpa [W] using h.symm
+    simpa only [W, Set.finrank, Fintype.card_fin] using h.symm
   have hdim_lt : Module.finrank K W < n := lt_of_le_of_ne hdim_le hdim_ne
   have hfin : Module.finrank K (⋀[K]^n W) = 0 := by
     rw [exteriorPower.finrank_eq, Nat.choose_eq_zero_of_lt hdim_lt]

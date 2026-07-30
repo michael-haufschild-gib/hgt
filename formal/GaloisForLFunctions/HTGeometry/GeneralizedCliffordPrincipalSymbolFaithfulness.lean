@@ -18,6 +18,8 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
+attribute [local instance 100] LieRing.ofAssociativeRing
+
 open scoped TensorProduct
 
 universe u v w
@@ -320,7 +322,7 @@ theorem generalizedCliffordDoubleShiftOperatorLinearMap_injective :
   have hcoord := congrFun hlevel 2
   simpa [generalizedCliffordDoubleShiftOperator,
     generalizedCliffordShiftOperator, periodicUnilateralShift,
-    periodicPointwiseEnd, periodicLevel] using hcoord
+    periodicPointwiseEnd, periodicLevel] using! hcoord
 
 /-- **General principal-symbol factorization.**  The exterior commutator law on the rational
 observable field factors exactly through the internal endomorphism commutator, followed by a

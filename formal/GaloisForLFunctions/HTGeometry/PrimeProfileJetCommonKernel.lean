@@ -39,7 +39,7 @@ theorem algebraicIndependent_fractionPrimeProfileJets_over_commonKernel
     (fun row => primeCommonKernelDerivation q row)
     (fun row x y => map_add (primeCommonKernelDerivation q row) x y)
     (fun row x y => by
-      simpa only [Algebra.smul_def] using
+      simpa only [Algebra.smul_def] using!
         (primeCommonKernelDerivation q row).leibniz x y)
     (fun row c => (primeCommonKernelDerivation q row).map_algebraMap c)
     M hM ?_

@@ -876,7 +876,7 @@ noncomputable def hypertranscendentalKaehlerAbsoluteDecomposition
             jetObservableFieldInfinity F x)) =
       Finsupp.single n 1 := by
   simpa [hypertranscendentalKaehlerClockEquiv,
-    kaehlerD_adjoin_coordinates_basis] using
+    kaehlerD_adjoin_coordinates_basis] using!
       (Module.Basis.repr_self
         (kaehlerD_adjoin_coordinates_basis
           (algebraicIndependent_differentialJet_of_hypertranscendentalOver hx)) n)

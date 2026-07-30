@@ -237,7 +237,7 @@ theorem xiEvenShiftRawPairDifferenceUpperEndCarrier_complete_differentialAdjoin_
     simp [x, hroot]
   have h := differentialAdjoin_range_pairwiseDifferences_eq_of_root_zero
     (F := upperEndRationalCoordinateField) (K := upperEndMeroField) root x hx0
-  simpa only [x, xiEvenShiftRawPairDifferenceUpperEndCarrier] using h
+  simpa only [x, xiEvenShiftRawPairDifferenceUpperEndCarrier] using! h
 
 /-- The complete pairwise Xi generated-field law remains exact after every scalar valuation layer
 has been adjoined to the base. -/
@@ -253,7 +253,7 @@ theorem xiEvenShiftRawPairDifferenceUpperEndCarrier_complete_allValuation_differ
     simp [x, hroot]
   have h := differentialAdjoin_range_pairwiseDifferences_eq_of_root_zero
     (F := analyticScalarValuationLayerDifferentialField) (K := upperEndMeroField) root x hx0
-  simpa only [x, xiEvenShiftRawPairDifferenceUpperEndCarrier] using h
+  simpa only [x, xiEvenShiftRawPairDifferenceUpperEndCarrier] using! h
 
 /-! ## Exact matroid over the rational coordinate field -/
 
@@ -501,7 +501,7 @@ theorem xiEvenShiftRawLogDerivDefectUpperEndCarrier_pointedOccupiedLabelSupport_
   have hembed : Function.Injective embed := by
     intro i j hij
     exact congrArg Subtype.val hij
-  simpa only [support, embed] using hfull.comp embed hembed
+  simpa only [support, embed] using! hfull.comp embed hembed
 
 /-- The arbitrary occupied nonzero raw even-shift family remains jointly differentially
 independent over the complete scalar valuation-layer field. -/
@@ -526,7 +526,7 @@ theorem xiEvenShiftRawLogDerivDefectUpperEndCarrier_allValuation_pointedOccupied
   have hembed : Function.Injective embed := by
     intro i j hij
     exact congrArg Subtype.val hij
-  simpa only [support, embed] using hfull.comp embed hembed
+  simpa only [support, embed] using! hfull.comp embed hembed
 
 /-- Raw even completed-Xi values at the occupied nonzero grades are jointly differentially
 independent over the rational coordinate field. -/
@@ -550,7 +550,7 @@ theorem xiEvenShiftRawLogDerivDefectUpperEndCarrier_pointedCollisionSupport_diff
   have hembed : Function.Injective embed := by
     intro i j hij
     exact congrArg Subtype.val hij
-  simpa only [support, embed] using hfull.comp embed hembed
+  simpa only [support, embed] using! hfull.comp embed hembed
 
 /-- Raw even completed-Xi values at the occupied nonzero grades remain jointly differentially
 independent over the complete scalar valuation-layer field. -/
@@ -575,7 +575,7 @@ theorem xiEvenShiftRawLogDerivDefectUpperEndCarrier_allValuation_pointedCollisio
   have hembed : Function.Injective embed := by
     intro i j hij
     exact congrArg Subtype.val hij
-  simpa only [support, embed] using hfull.comp embed hembed
+  simpa only [support, embed] using! hfull.comp embed hembed
 
 /-- **Exact raw-Xi common-mode classifier.** For every finite inhabited grade family, including
 repetitions, all ordered pairwise raw completed-Xi differences recover the vertex field over the
@@ -852,7 +852,7 @@ theorem xiEvenShiftRawPairDifferenceUpperEndCarrier_differentialMatroid_eq_point
   have hx :=
     xiEvenShiftRawLogDerivDefectUpperEndCarrier_pointedCollisionSupport_differentialIndependent
       grade
-  simpa [xiEvenShiftRawPairDifferenceUpperEndCarrier] using
+  simpa [xiEvenShiftRawPairDifferenceUpperEndCarrier] using!
     (differentialFamilyMatroid_gradedPairwiseDifferences_eq_pointedCollisionIncidenceMatroid
       (C := upperEndRationalCoordinateField) grade 0 tail head
       xiEvenShiftRawLogDerivDefectUpperEndCarrier
@@ -915,7 +915,7 @@ theorem xiEvenShiftRawPairDifferenceUpperEndCarrier_allValuation_differentialMat
   have hx :=
     xiEvenShiftRawLogDerivDefectUpperEndCarrier_allValuation_pointedCollisionSupport_differentialIndependent
       grade
-  simpa [xiEvenShiftRawPairDifferenceUpperEndCarrier] using
+  simpa [xiEvenShiftRawPairDifferenceUpperEndCarrier] using!
     (differentialFamilyMatroid_gradedPairwiseDifferences_eq_pointedCollisionIncidenceMatroid
       (C := analyticScalarValuationLayerDifferentialField) grade 0 tail head
       xiEvenShiftRawLogDerivDefectUpperEndCarrier

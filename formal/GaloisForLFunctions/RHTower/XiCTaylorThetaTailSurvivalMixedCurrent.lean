@@ -29,22 +29,18 @@ theorem hasDerivAt_thetaCuspTailSecondSectionDerivative_source
           ((x : ℂ) ^ (2 * k + 1) / (2 * k + 2).factorial))
     (fun k _hk => by
       have hbase : HasDerivAt (fun t : ℝ => (t : ℂ)) 1 x := by
-        simpa using Complex.ofRealCLM.hasDerivAt
+        simpa using! Complex.ofRealCLM.hasDerivAt
       have hpow := hbase.pow (2 * k + 2)
       have hscaled :=
-        (HasDerivAt.const_mul
-          ((-1 : ℂ) ^ k * ((2 * k : ℕ) : ℂ) * z ^ (2 * k - 1)) hpow).mul_const
-            (((2 * k + 2).factorial : ℂ)⁻¹)
+        (hpow.div_const ((2 * k + 2).factorial : ℂ)).const_mul
+          ((-1 : ℂ) ^ k * ((2 * k : ℕ) : ℂ) * z ^ (2 * k - 1))
       have hsub : 2 * k + 2 - 1 = 2 * k + 1 := by omega
-      convert hscaled using 1
-      · funext y
-        simp only [Pi.pow_apply, div_eq_mul_inv]
-        ring
-      · rw [hsub]
-        simp only [div_eq_mul_inv]
-        ring)
-  convert hsum using 1
-  funext t
+      simpa only [Pi.pow_apply, Pi.div_apply] using!
+        hscaled.congr_deriv (by
+          rw [hsub]
+          ring))
+  apply hsum.congr_of_eventuallyEq
+  filter_upwards with t
   simp only [Finset.sum_apply]
 
 def thetaCuspTailSecondCoreAtomSourceSpectralDerivative
@@ -59,10 +55,10 @@ theorem hasDerivAt_thetaCuspTailSecondCoreAtomDerivative_source
       (thetaCuspTailSecondCoreAtomSourceSpectralDerivative d z x) x := by
   unfold thetaCuspTailSecondCoreAtomDerivative
     thetaCuspTailSecondCoreAtomSourceSpectralDerivative
-  convert
+  simpa only [Pi.sub_apply] using!
     ((hasDerivAt_thetaCuspTailSecondSection_source d z x).const_mul (-2 * z)).sub
       ((hasDerivAt_thetaCuspTailSecondSectionDerivative_source d z x).const_mul
-        (z ^ 2 + 1 / 4)) using 1
+        (z ^ 2 + 1 / 4))
 
 theorem integrableOn_thetaCuspTailSurvival_mul_sectionSourceDerivative
     (d : ℕ) (z : ℂ) :
@@ -243,21 +239,21 @@ theorem integral_density_mul_coreAtomDerivative_eq_survival_sourceSpectralDeriva
   have hzero : Tendsto (u * v) (nhdsWithin 0 (Ioi 0)) (nhds 0) := by
     have hu0 : Tendsto u (nhdsWithin 0 (Ioi 0)) (nhds 1) := by
       have hc := (hasDerivAt_thetaCuspTailSurvival 0).ofReal_comp.continuousAt.tendsto
-      simpa only [u, thetaCuspTailSurvival_zero, Complex.ofReal_one] using
+      simpa only [u, thetaCuspTailSurvival_zero, Complex.ofReal_one] using!
         hc.mono_left inf_le_left
     have hv0 : Tendsto v (nhdsWithin 0 (Ioi 0)) (nhds 0) := by
       have h :=
         (hasDerivAt_thetaCuspTailSecondCoreAtomDerivative_source d z 0).continuousAt.tendsto
-      simpa only [v, thetaCuspTailSecondCoreAtomDerivative_zero] using
+      simpa only [v, thetaCuspTailSecondCoreAtomDerivative_zero] using!
         h.mono_left inf_le_left
-    simpa only [Pi.mul_apply, one_mul] using hu0.mul hv0
+    simpa only [Pi.mul_apply, one_mul] using! hu0.mul hv0
   have htop : Tendsto (u * v) atTop (nhds 0) := by
-    simpa only [Pi.mul_apply, u, v] using
+    simpa only [Pi.mul_apply, u, v] using!
       thetaCuspTailSurvival_mul_coreAtomDerivative_tendsto_atTop_zero d z
   have hibp := MeasureTheory.integral_Ioi_mul_deriv_eq_deriv_mul
     (a := (0 : ℝ)) (u := u) (u' := u') (v := v) (v' := v')
     (fun x _ => hu x) (fun x _ => hv x)
-    (by simpa only [Pi.mul_apply, u, v'] using
+    (by simpa only [Pi.mul_apply, u, v'] using!
       integrableOn_thetaCuspTailSurvival_mul_coreAtomSourceSpectralDerivative d z)
     (by
       have h :=
@@ -346,4 +342,3 @@ theorem xiCTaylorThetaTailCore_current_eq_survival_seam_add_cross
 end
 
 end RHTower
-

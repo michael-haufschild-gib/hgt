@@ -139,8 +139,8 @@ theorem tsum_xiUnitDoubleRefinementValuationCoefficient
 theorem summable_xiPhysicalEndpointValuationAtom
     (p : Nat.Primes) :
     Summable (xiPhysicalEndpointValuationAtom p) := by
-  simpa [xiPhysicalEndpointValuationAtom] using
-    (hasSum_ite_eq (0 : ℕ) ((p : ℝ))⁻¹).summable
+  exact (hasSum_ite_eq (0 : ℕ) ((p : ℝ))⁻¹).summable.congr (fun e => by
+    simp [xiPhysicalEndpointValuationAtom])
 
 theorem tsum_xiPhysicalEndpointValuationAtom
     (p : Nat.Primes) :
@@ -237,11 +237,9 @@ theorem summable_xiPhysicalEndpointValuationCorrectionMajorant
   have hgeom : Summable (fun e : ℕ => q ^ e) :=
     summable_geometric_of_norm_lt_one hqnorm
   apply (summable_nat_add_iff 1).mp
-  convert hgeom.mul_left (3 * q ^ 2) using 1
-  apply funext
-  intro e
-  simp [xiPhysicalEndpointValuationCorrectionMajorant, q, pow_add]
-  ring
+  exact (hgeom.mul_left (3 * q ^ 2)).congr (fun e => by
+    simp [xiPhysicalEndpointValuationCorrectionMajorant, q, pow_add]
+    ring)
 
 /-- The complete absolute correction fibre is uniformly of inverse-square prime order. -/
 theorem tsum_xiPhysicalEndpointValuationCorrectionMajorant_le
