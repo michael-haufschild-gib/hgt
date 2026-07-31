@@ -266,9 +266,16 @@ provisional pending expert/literature review.
 | G.4 cyclicity | `SoninPrincipalRelativeOperator.extendedTrace_compose_comm` |
 | G.4 bilinear cyclicity | `soninPrincipalRelativePairTrace_comm` |
 | `(8)` single-corner anomaly | `SoninPrincipalRelativeOperator.extendedTrace_ofGramFactor` |
+| aperture defect as presentation | `soninApertureRestrictionDefectPresentation` |
+| aperture defect value | `extendedTrace_soninApertureRestrictionDefectPresentation` |
+| `(14)` flag law | `extendedTrace_soninApertureRestrictionDefect_flag` |
+| `(15)` exact scalar defect | `re_extendedTrace_soninApertureRestrictionDefect_flag` |
+| `(16)` one-sided law | `re_extendedTrace_soninApertureRestrictionDefect_flag_le` |
+| equality case | `re_extendedTrace_soninApertureRestrictionDefect_flag_eq_iff` |
 
 Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninPrincipalRelativeCyclicExtension.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninPrincipalRelativeCyclicExtension.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninApertureExtendedTraceFlagLaw.lean`.
 All declarations depend only on `propext`, `Classical.choice`, `Quot.sound`.
 
 Novelty split for Theorem G: `(7)` was already in the corpus
