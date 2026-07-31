@@ -747,12 +747,82 @@ band as the exact rectangle area, so for a nondegenerate rectangle
 || timeBand(a,b;c,d) ||_HS^2 = (b-a)(d-c) > 0,   hence  timeBand != 0.     (56)
 ```
 
-Each of the four blocks in `(55)` is therefore individually nonzero.  Cancellation of four nonzero
-time-band blocks would be a coincidence rather than a structural identity — but it is not excluded,
-and the ideal-valued corrections in the congruence are of the same size, so nothing here decides
-it.  What `(56)` supplies is the missing input any non-cancellation argument must start from, and
-the energy is strictly monotone in the rectangle, so the four blocks have genuinely different
-sizes.
+Each of the four blocks in `(55)` is therefore individually nonzero, and the energy is strictly
+monotone in the rectangle, so the four have genuinely different sizes.  Theorem S below settles the
+cancellation question outright.
+
+## Theorem S: the four mixed blocks do not cancel
+
+Group the four blocks of `(55)` by the polarization of their *range*:
+
+```text
+M_phys = (A_b - A_a) D_r (R_c - R_b),      M_four = (R_b - R_a) D_r (A_c - A_b).
+```
+
+`M_phys` absorbs `A_b` on the left and `M_four` absorbs `R_b` on the left, so their values at a
+common vector lie in the physical band `(a,b]` and the Fourier band `(a,b]` respectively.  A vector
+in both bands is zero — the qualitative uncertainty principle — hence
+
+```text
+M_phys + M_four = 0   <=>   M_phys = 0  and  M_four = 0.                   (57)
+```
+
+The two polarizations therefore *cannot* cancel each other; they can only vanish separately.  And
+the physical one does not vanish:
+
+```text
+M_phys != 0        whenever 0 < a < b < c and r > 1.                       (58)
+```
+
+Consequently
+
+```text
+M_phys + M_four != 0,                                                      (59)
+```
+
+so the four-block expansion of `(55)` is a nonzero operator: the blocks do not cancel.
+
+### Proof of `(58)`
+
+Suppose `M_phys = 0`.  Fix `w` and put `v = (R_c - R_b) w`, `y = D_r v`.
+
+*Step 1 — `y` is band-limited at `r c`.*  Conjugating the Fourier cutoff through the two dilations
+gives `R_{rc} U_r = U_r R_c` and `R_{rc} U_{r^{-1}} = U_{r^{-1}} R_{r^2 c}`, and both `R_c` and
+`R_{r^2 c}` fix `R_c`, so `R_{rc} D_r R_c = D_r R_c`.  Since `R_c v = v`, `R_{rc} y = y`.
+
+*Step 2 — `y = 0`.*  By hypothesis `(A_b - A_a) y = 0`, i.e. `y` vanishes a.e. on the shell
+`(a,b)`.  On the even subspace the Fourier transform is an *involution* (it squares to reflection,
+and reflection is the identity there), so `y` is itself the Fourier transform of a boundedly
+supported vector.  The one-interval uncertainty theorem — a boundedly supported `L^2` function whose
+Fourier transform vanishes on a nondegenerate open interval is zero — then gives `y = 0`.  Note the
+sharpness: only one interval of vanishing is used, not a whole complementary band.
+
+*Step 3 — `v = 0`.*  So `D_r v = 0`, i.e. `U_r v = -U_{r^{-1}} v`, i.e. `U_{r^{-2}} v = -v`.  The
+same Fourier covariance now shrinks the band: from `R_t v = v` it follows that
+`R_{t r^{-2}} v = R_{t r^{-2}} (-U_{r^{-2}} v) = -U_{r^{-2}} R_t v = -U_{r^{-2}} v = v`.  Iterating
+from `t = c`, the vector `v` is band-limited at `c r^{-2n}` for every `n`; choose `n` with
+`c r^{-2n} <= b`.  But `R_b v = 0`, and `R_b R_{c r^{-2n}} = R_{c r^{-2n}}`, so `v = 0`.  No limit
+argument is needed — one aperture below `b` suffices.
+
+*Step 4 — contradiction.*  Hence `R_c - R_b = 0`.  But a nondegenerate Fourier annulus is nonzero:
+the Fourier transform of a symmetric physical shell vector is a unit vector on which `R_c - R_b`
+acts as the identity, because the Fourier transform preserves evenness and squares to the identity
+there.  Contradiction.
+
+### What `(59)` does and does not settle
+
+It closes the cancellation question that `(55)` opened: **the blocks do not cancel**.  It does not
+by itself give `Z != 0`, because `(55)` is a congruence modulo the relative ideal, not an equality.
+What it does give is an exact criterion, replacing a vanishing question by a membership question:
+
+```text
+Z = 0   =>   M_phys + M_four  in  I_a.                                     (60)
+```
+
+Equivalently, if the four mixed time-band blocks are *not* in the relative ideal then `Z != 0`.  The
+open core of the coupling problem is therefore now completely explicit: decide whether one named,
+nonzero, finite sum of physical-band-times-Fourier-band operators lies in `I_a`.  Nothing about the
+Sonin projections is involved any more.
 
 ### Proof
 
@@ -934,6 +1004,15 @@ provisional pending expert/literature review.
 | `(55)` coupling form | `evenSoninApertureSuccessiveLayerTransition_principalRelativeEq_mixed` |
 | `(56)` time band nonzero | `fullTimeBandFourier_ne_zero` |
 | `(56)` positive energy | `hsNormSq_fullTimeBandFourier_pos` |
+| Fourier squares to reflection | `l2_fourier_fourier` |
+| even uncertainty | `eq_zero_of_evenIndicatorCutoff_eq_self_of_evenFourierCutoff_eq_self` |
+| band-limited shell vanishing | `eq_zero_of_evenFourierCutoff_eq_self_of_shell_apply_eq_zero` |
+| annulus injectivity of `D_r` | `eq_zero_of_evenDilationSum_apply_eq_zero_of_fourierAnnulus` |
+| Fourier annulus nonzero | `evenFourierCutoff_sub_ne_zero` |
+| `(57)` polarization split | `soninMixedPhysicalBlock_add_soninMixedFourierBlock_eq_zero_iff` |
+| `(58)` physical block nonzero | `soninMixedPhysicalBlock_ne_zero` |
+| `(59)` blocks do not cancel | `soninApertureCouplingMixedTerms_ne_zero` |
+| `(60)` ideal criterion | `evenSoninApertureSuccessiveLayerTransition_ne_zero_of_polarizedBlocks_notMem_ideal` |
 | energy strictly monotone | `hsNormSq_fullTimeBandFourier_lt_of_lt` |
 
 Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
@@ -964,7 +1043,11 @@ Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninShellProductIdeal.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninApertureLayerExtendedTrace.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninShellProductMixedTerms.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninTimeBandNonvanishing.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninTimeBandNonvanishing.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninMixedBlockPolarizationSplit.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninBandLimitedShellVanishing.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninDilationSumFourierInjective.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninMixedPhysicalBlockNonvanishing.lean`.
 All declarations depend only on `propext`, `Classical.choice`, `Quot.sound`.
 
 Novelty split for Theorem G: `(7)` was already in the corpus
@@ -974,6 +1057,13 @@ mechanism `(11)`--`(12)`, the directness/uniqueness of the presentation, the glu
 cyclicity, and the single-corner formula `(8)`.
 
 ## Log
+
+- 2026-07-31 — Theorem S: the four mixed blocks do **not** cancel.  Range polarization plus the
+  qualitative uncertainty principle splits the sum `(57)`, and the physical half is nonzero `(58)`
+  by band-limitedness plus one-interval uncertainty plus a band-shrinking iteration that makes the
+  dilation sum injective on a Fourier annulus.  Consequence `(60)`: `Z = 0` would force the four
+  named time-band blocks into the relative ideal, so the coupling problem is now a single explicit
+  ideal-membership question with no Sonin projection left in it.
 
 - 2026-07-31 — time-band nonvanishing proved from the corpus's rectangle-area formula, so the four
   blocks carrying the coupling are individually nonzero and of strictly different sizes.  This is

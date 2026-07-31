@@ -3121,12 +3121,13 @@ what the Gauss-channel asymptotic still needs is one concrete diagonal model, no
 Nothing in the corpus had constructed a bounded operator on that space, so this is groundwork, not
 a restatement.
 
-**Stopped deliberately short.**  The operator-norm bound `‖diag f‖ ≤ C ‖f‖` needs
-`lp.norm_rpow_eq_tsum` with the `ENNReal.toReal 2` versus literal `2` mismatch resolved, and a
-base-monotonicity step (`pow_le_pow_iff_left` on natural powers, not the `Real.rpow_le_rpow_iff_left`
-that does not exist).  Three further steps, none conceptual.  Rather than leave a fragile proof in
-the tree the module was trimmed to the part that is finished; the bound and the promotion to
-`EllTwo →L[ℂ] EllTwo` are the next increment.
+**Step 4 done in the following batch.**  `norm_diagonalLinearMap_le` and `diagonalOperator` now
+complete the construction: the diagonal multiplication is a bounded operator on `ℓ²` with
+`‖diagonalOperator lam hC‖ ≤ C`.  Three name traps were in the way and are recorded:
+`lp.norm_rpow_eq_tsum` must be given `p := 2` explicitly and cleaned with `simpa` (the literal `2`
+does not unify with `ENNReal.toReal ?p`); `Real.rpow_le_rpow_iff_left` does not exist — go through
+`Real.rpow_natCast` and `Real.sqrt_sq` instead; and `tsum_le_tsum` is now
+`Summable.tsum_le_tsum`.
 
 Sequence of increments for the Gauss-channel row, for whoever continues:
 1. approximation-number **lower** bound — done (`le_approxNumber_of_subspace`);
@@ -3135,3 +3136,52 @@ Sequence of increments for the Gauss-channel row, for whoever continues:
 4. the operator-norm bound and the `ContinuousLinearMap` — next;
 5. `approxNumber (diagonalOperator lam) n = lam n` for antitone nonnegative `lam`, via 1 + 2;
 6. choose `lam n = (R/(n+1))^{1/p}` and the Gauss-channel asymptotic premise is produced.
+
+**Lane status after step 4.**  Steps 1–4 of the Gauss-channel sequence are done: the
+approximation-number lower bound, the finite-rank algebra with the two-sided pin, and the diagonal
+`ℓ²` operator with its norm bound.  Step 5 — `approxNumber (diagonalOperator lam) n = lam n` for an
+antitone nonnegative multiplier — is now a direct application of the pin: the truncation is the
+projection onto the first `n` coordinates, and the expanded subspace is the span of the first
+`n + 1`.  Step 6 then chooses `lam n = (R/(n+1))^{1/p}`.
+
+### The diagonal operator norm, computed
+
+`RHTower/DiagonalEllTwoOperator.lean` extended (built, registered, axioms clean):
+
+* `diagonalOperator_single` — the operator acts on a coordinate vector by its multiplier,
+  `diag lam (e_m) = lam m • e_m`;
+* `le_norm_diagonalOperator` — hence every multiplier value is bounded by the operator norm, by
+  testing on the unit coordinate vector;
+* **`norm_diagonalOperator_eq`** — with the upper bound of the previous batch, the operator norm of
+  a diagonal operator **is** the supremum of its multipliers whenever that supremum is attained.
+
+This is the computation the approximation-number pin consumes: the distance from `T` to its
+`n`-th truncation is the operator norm of the tail diagonal, which this identifies as the `n`-th
+multiplier when the multiplier sequence is antitone.
+
+One more name trap, recorded: `lp.norm_single` needs *both* `(E := fun _ : ℕ => ℂ)` and `(p := 2)`
+given explicitly, otherwise the family metavariable blocks both the rewrite and the argument
+elaboration.
+
+**Remaining for step 5**: the truncation `diag (fun k => if k < n then lam k else 0)` has rank
+`≤ n` — needs the span of the first `n` coordinate vectors and `finrank_span_le_card` — and the
+span of the first `n + 1` is uniformly expanded by `lam n`.  Both are finite-support statements
+about `lp.single`, no new analysis.
+
+### The truncation has rank `n`
+
+`RHTower/DiagonalEllTwoOperator.lean` extended again (built, registered, axioms clean):
+
+* `finrank_span_range_le` — the span of finitely many vectors has dimension at most their number
+  (`finrank_span_le_card` composed with `Set.toFinset_range` and `Finset.card_image_le`);
+* `truncMultiplier`, `norm_truncMultiplier_le` — the `n`-th coordinate truncation of a multiplier
+  keeps its bound;
+* **`hasRankLE_diagonalOperator_trunc`** — the truncated diagonal operator is the finite
+  combination `∑_{k < n} (lam k · f k) • e_k` of the first `n` coordinate vectors, hence has rank at
+  most `n`.  The identity is proved pointwise through `lp.coeFn_sum` and `Finset.sum_eq_single`,
+  splitting on whether the evaluation index is below the cutoff.
+
+This is the upper-bound half of step 5.  What remains is the expansion statement: the span of the
+first `n + 1` coordinate vectors is uniformly expanded by `lam n` for an antitone nonnegative
+multiplier, which feeds `le_approxNumber_of_subspace` and closes
+`approxNumber (diagonalOperator lam) n = lam n`.

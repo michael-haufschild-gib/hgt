@@ -7,9 +7,9 @@
 - **Parents:** `sonin-principal-shell-cyclic-trace.md`,
   `SoninCouplingBranchEstimate.lean`, `SoninProjectionCorrection.lean`
 - **Statement:** Every strict Sonin aperture shell has a cofinal family of normalized,
-  Poisson-admissible, essential-phase wavepackets on which the successive-layer coupling tends
-  isometrically to the inverse-dilated packet. In particular, the coupling is nonzero for every
-  sufficiently large dilation scale.
+  Poisson-admissible, essential-phase wavepackets on which the successive-layer coupling and its
+  adjoint become inverse isometries. In particular, the coupling is nonzero for every sufficiently
+  large dilation scale.
 
 ## Goal
 
@@ -90,6 +90,37 @@ and \(Z_r\ne0\) for every sufficiently large \(r\). In particular, every fixed s
 
 The conclusions remain true along the integer clock \(r=N\to\infty\), along every prime-power
 clock \(r=p^k\to\infty\), and along every other cofinal subnet.
+
+### Adjoint theorem
+
+For the same packets \(v_r=U_{1/r}w_r\),
+\[
+\left\|Z_r^*v_r-w_r\right\|_2\longrightarrow0.
+\tag{4a}
+\]
+Consequently
+\[
+\|Z_r^*Z_rw_r-w_r\|_2\longrightarrow0,\qquad
+\|Z_rZ_r^*v_r-v_r\|_2\longrightarrow0.
+\tag{4b}
+\]
+Thus the cofinal boundary transition is a genuine partial unitary on the two nonzero packet
+classes, and its Hilbert adjoint is its inverse there.
+
+### Mellin-blindness theorem
+
+Let
+\[
+\mathcal M w_r(s)=\int_0^\infty w_r(x)x^{-s}\,dx.
+\]
+For every fixed \(s\in\mathbb C\) and every \(N\ge0\),
+\[
+r^N\mathcal M w_r(s)\longrightarrow0.
+\tag{4c}
+\]
+Thus this strict Sonin boundary sector is all-orders invisible to every fixed Mellin evaluation
+and hence to every fixed Xi conormal. The theorem closes the Sonin sharpness question but also
+proves that smooth essential-phase packets alone cannot be the source-to-Xi landing.
 
 ## Proof
 
@@ -204,6 +235,65 @@ Equations `(8)`, `(16)`, `(17)`, and `(18)` prove `(3)`. Unitarity gives
 \(\|U_{1/r}w_r\|_2=1\), so `(4)` follows. The curvature identity already proved in the corpus gives
 `(5)`.
 
+### 5. The adjoint returns the packet
+
+Since the layers and \(D_r\) are self-adjoint,
+\[
+Z_r^*=L_{b,c}D_rL_{a,b}.
+\tag{19a}
+\]
+Equation `(16)` and the uniform bound \(\|D_r\|\le2\) reduce `(4a)` to the action of
+\(L_{b,c}D_r\) on \(v_r\). The two dilation branches are
+\[
+D_rv_r=w_r+z_r,\qquad z_r=U_{1/r^2}w_r.
+\tag{19b}
+\]
+The original packet obeys
+\[
+Q_bw_r\longrightarrow w_r,\qquad Q_cw_r=0,
+\]
+because \(A_bw_r=0\), \(R_bw_r\to0\), \(C_bw_r\to0\), and \(A_cw_r=w_r\).
+Hence
+\[
+L_{b,c}w_r\longrightarrow w_r.
+\tag{19c}
+\]
+
+The support of \(z_r\) escapes at radius \(r^2\), so \(A_bz_r=A_cz_r=0\) and
+\(z_r\rightharpoonup0\). Its Fourier packets are centred at
+\(\pm q/r\), with width \(O(r^{-2})\), so
+\[
+R_bz_r-z_r\longrightarrow0,\qquad R_cz_r-z_r\longrightarrow0.
+\]
+Compactness gives \(C_bz_r,C_cz_r\to0\). Therefore
+\[
+L_{b,c}z_r
+=(A_c-A_b)z_r+(R_c-R_b)z_r+(C_b-C_c)z_r
+\longrightarrow0.
+\tag{19d}
+\]
+Equations `(19a)`--`(19d)` prove `(4a)`.
+
+For `(4b)`, use `(3)`, `(4a)`, and the uniform operator bounds
+\(\|Z_r\|,\|Z_r^*\|\le2\):
+\[
+\|Z_r^*Z_rw_r-w_r\|
+\le2\|Z_rw_r-v_r\|+\|Z_r^*v_r-w_r\|\to0,
+\]
+and similarly in the other order.
+
+### 6. Fixed Mellin conormals cannot see the packet
+
+On the compact support of \(\phi\), \(x^{-s}\) is smooth. Repeated integration by parts in the
+oscillatory integral gives, for every \(N\),
+\[
+\int_0^\infty\phi(x)x^{-s}\cos(2\pi rqx)\,dx=O_{s,N}(r^{-N}).
+\tag{19e}
+\]
+The same argument without \(x^{-s}\) gives
+\(\mu_r=O_N(r^{-N})\). Equation `(6)` keeps the normalization bounded away from zero, proving
+`(4c)`.
+
 No zero, divisor point, numerical experiment, unproved positivity, or RH premise occurs.
 
 ## Boundary interpretation
@@ -225,6 +315,13 @@ are nonzero, and `(3)` says that the cofinal coupling family has the exact nonze
 [(Z_rw_r)]=[v].
 \tag{20}
 \]
+The adjoint theorem gives the reverse value
+\[
+[(Z_r^*v_r)]=[w],
+\tag{21}
+\]
+so the boundary operator and its Hilbert adjoint are mutually inverse on these source-pointed
+classes.
 Every fixed compact correction vanishes on these weakly escaping packets, while the Sonin coupling
 survives. The phase
 \[
@@ -245,8 +342,14 @@ This theorem proves three facts that were previously open in the Sonin lane:
 
 1. successive-layer curvature is genuinely strict, not merely nonpositive;
 2. exact Poisson-source tests, rather than generic Hilbert vectors, reach the strict boundary;
-3. the required singularity can be exhibited concretely as a frequency-locked
+3. source inverse and Hilbert adjoint are one internal partial-unitary boundary transition on
+   these packets;
+4. the required singularity can be exhibited concretely as a frequency-locked
    \(e^{iqx/h}\) phase at the scattering corner.
+
+It also proves a route closure: the strict high-frequency Sonin face and the fixed-indicial Xi
+face are disjoint. A successful source boundary must use the nonsmooth/irregular ordinary-prime
+sector, whose jumps survive fixed Mellin testing, rather than a smooth wavepacket completion.
 
 It does **not** prove:
 
@@ -279,6 +382,12 @@ doublet and is another restatement of the functional equation.
   \(\widehat u_r(0)=\int u_r=0\).
 - **Does the corona itself prove RH?** No. It retains source modes but permits distinct reflected
   indicial grades. Same-grade reflection remains the source-specific open theorem.
+- **Does `(21)` supply the missing Xi dagger?** No. It supplies a genuine dagger on explicit
+  Poisson wavepackets. A separate source-normal theorem must identify the prime-tail Xi indicial
+  germs with these classes. Declaring that identification would restate the open cross-landing.
+- **Can such an identification be continuous for the ordinary Mellin topology?** Not on this
+  packet sector: `(4c)` proves every fixed Mellin conormal vanishes to all Rees orders. The
+  ordinary-prime jump/irregular sector must enter essentially.
 - **Could a finite-Rees construction reproduce the witness?** No. Its \(h\)-dependence contains
   \(e^{\pm2\pi iqx/h}\), which has no finite-order expansion at \(h=0\).
 

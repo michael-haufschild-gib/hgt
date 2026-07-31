@@ -60,14 +60,15 @@ theorem suzukiKreinResolventWeight_resolventNode
   have hd : t - rho ≠ 0 := sub_ne_zero.mpr htr
   have hta' : t - alpha ≠ 0 := sub_ne_zero.mpr hta
   have htb' : t - beta ≠ 0 := sub_ne_zero.mpr htb
+  have hinv : (t - rho)⁻¹ * (t - rho) = 1 := inv_mul_cancel₀ hd
   have h1 : rho * (t - rho)⁻¹ + 1 = t / (t - rho) := by
-    field_simp
+    rw [eq_div_iff hd, add_mul, mul_assoc, hinv]
     ring
   have h2 : (rho - alpha) * (t - rho)⁻¹ + 1 = (t - alpha) / (t - rho) := by
-    field_simp
+    rw [eq_div_iff hd, add_mul, mul_assoc, hinv]
     ring
   have h3 : (rho - beta) * (t - rho)⁻¹ + 1 = (t - beta) / (t - rho) := by
-    field_simp
+    rw [eq_div_iff hd, add_mul, mul_assoc, hinv]
     ring
   have key : t / (t - rho) * ((t - alpha) / (t - rho)) * ((t - beta) / (t - rho))
       = t * (t - alpha) * (t - beta) / (t - rho) ^ 3 := by
@@ -257,9 +258,10 @@ theorem pow_apply_of_eigenvector {R : H →L[ℂ] H} {x : ℝ} {v : H}
       have hstep : (R ^ (k + 1)) v = (R ^ k) (R v) := by
         rw [pow_succ]
         rfl
-      rw [hstep, hv, ContinuousLinearMap.map_smul, ih, smul_smul]
-      push_cast
-      ring_nf
+      have hsc : ((x : ℝ) : ℂ) * (((x ^ k : ℝ)) : ℂ) = (((x ^ (k + 1) : ℝ)) : ℂ) := by
+        push_cast
+        ring
+      rw [hstep, hv, ContinuousLinearMap.map_smul, ih, smul_smul, hsc]
 
 omit [CompleteSpace H] in
 /-- Real scalars act on a complex space through the coercion. -/
@@ -285,9 +287,10 @@ theorem aeval_apply_of_eigenvector {q : ℝ[X]} {R : H →L[ℂ] H} {x : ℝ} {v
     intro i
     have hpow : (R ^ i) v = (((x ^ i : ℝ)) : ℂ) • v := pow_apply_of_eigenvector hv i
     have h1 : (q.coeff i • R ^ i : H →L[ℂ] H) v = q.coeff i • ((R ^ i) v) := rfl
-    rw [h1, hpow, real_smul_complex_smul]
-    push_cast
-    ring_nf
+    have hsc : ((q.coeff i : ℝ) : ℂ) * (((x ^ i : ℝ)) : ℂ) = (((q.coeff i * x ^ i : ℝ)) : ℂ) := by
+      push_cast
+      ring
+    rw [h1, hpow, real_smul_complex_smul, hsc]
   have hsumapp : (∑ i ∈ Finset.range (q.natDegree + 1), q.coeff i • R ^ i : H →L[ℂ] H) v
       = ∑ i ∈ Finset.range (q.natDegree + 1), (q.coeff i • R ^ i : H →L[ℂ] H) v := by
     simp
@@ -303,10 +306,11 @@ theorem suzukiResolventJetSquare_apply_of_eigenvector {q : ℝ[X]} {R : H →L[�
       = (Polynomial.aeval R q) ((Polynomial.aeval R q) v) := by
     rw [suzukiResolventJetSquare, pow_two]
     rfl
+  have hsc : ((q.eval x : ℝ) : ℂ) * ((q.eval x : ℝ) : ℂ) = (((q.eval x ^ 2 : ℝ)) : ℂ) := by
+    push_cast
+    ring
   rw [hstep, aeval_apply_of_eigenvector hv, ContinuousLinearMap.map_smul,
-    aeval_apply_of_eigenvector hv, smul_smul]
-  push_cast
-  ring_nf
+    aeval_apply_of_eigenvector hv, smul_smul, hsc]
 
 omit [CompleteSpace H] in
 theorem real_smul_left_cancel {c d : ℝ} {v : H} (hv : v ≠ 0)
@@ -406,6 +410,50 @@ theorem suzukiFiniteMorse_kreinResolventWeight_pos
   rw [suzukiKreinResolventWeight_resolventNode (ne_of_lt hab) (ne_of_gt htpos) hta htb htr]
   exact (suzukiAffineResolventKreinDefect_pos_iff hab hb0 (lt_trans hb0 htpos)
     (ne_of_gt htpos)).2 htpos
+
+/-! ## Riesz–Schauder: the spectral hypothesis reduces to eigenvectors -/
+
+/-- **Every nonzero real spectral point of a compact operator is an eigenvalue.**  This is the
+Fredholm alternative read in the resolvent coordinate. -/
+theorem exists_eigenvector_of_mem_spectrum_real
+    {R : H →L[ℂ] H} (hcomp : IsCompactOperator ⇑R) {x : ℝ}
+    (hx : x ∈ spectrum ℝ R) (hx0 : x ≠ 0) :
+    ∃ v : H, v ≠ 0 ∧ R v = ((x : ℝ) : ℂ) • v := by
+  have hc : ((x : ℝ) : ℂ) ∈ spectrum ℂ R := by
+    have h := (spectrum.algebraMap_mem_iff ℂ (a := R) (r := x)).mpr hx
+    simpa using h
+  have hne : ((x : ℝ) : ℂ) ≠ 0 := by
+    simpa using hx0
+  have heig := (hcomp.hasEigenvalue_iff_mem_spectrum hne).mpr hc
+  obtain ⟨v, hv⟩ := heig.exists_hasEigenvector
+  exact ⟨v, hv.2, Module.End.mem_eigenspace_iff.mp hv.1⟩
+
+/-- **`(T1)` from the spectral levels themselves.**  If every eigenvector of the compact
+below-spectrum resolvent sits at the compactification point, at one of the finitely many negative
+spectral levels, or at a positive spectral level, then the finite-Morse interpolant completes the
+affine Krein defect to a positive operator. -/
+theorem suzukiFiniteMorse_operatorCompletion_nonneg_of_eigenvectors
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    {alpha beta rho : ℝ} {negativeLevel : ι → ℝ} {R : H →L[ℂ] H} (hR : IsSelfAdjoint R)
+    (hcomp : IsCompactOperator ⇑R)
+    (hab : alpha < beta) (hb0 : beta < 0) (hrho0 : rho < 0)
+    (hbt : ∀ i, beta < negativeLevel i) (hnegative : ∀ i, negativeLevel i < 0)
+    (hrho : ∀ i, rho < negativeLevel i) (hinjective : Function.Injective negativeLevel)
+    (hden : ∀ x ∈ spectrum ℝ R,
+      (rho * x + 1) * ((rho - alpha) * x + 1) * ((rho - beta) * x + 1) ≠ 0)
+    (heigen : ∀ (x : ℝ) (v : H), v ≠ 0 → R v = ((x : ℝ) : ℂ) • v →
+      (∃ i, x = suzukiFiniteMorseResolventNode rho (negativeLevel i)) ∨
+      (∃ t : ℝ, 0 < t ∧ x = suzukiFiniteMorseResolventNode rho t)) :
+    0 ≤ suzukiOperatorKreinDefect alpha beta rho R
+      + suzukiResolventJetSquare
+          (suzukiFiniteMorseKreinInterpolant alpha beta rho negativeLevel) R := by
+  refine suzukiFiniteMorse_operatorCompletion_nonneg hR hab hb0 hrho0 hbt hnegative hrho
+    hinjective hden ?_
+  intro x hx
+  by_cases hx0 : x = 0
+  · exact Or.inl hx0
+  · obtain ⟨v, hv0, hveig⟩ := exists_eigenvector_of_mem_spectrum_real hcomp hx hx0
+    exact Or.inr (heigen x v hv0 hveig)
 
 end
 

@@ -53,6 +53,221 @@ SOURCE_SYMBOL_RE = re.compile(
     r"mobius|mertens|primeArch|zetaUpperEndMero)\b",
     re.IGNORECASE,
 )
+
+DECLARATION_MECHANISMS: dict[str, tuple[str, ...]] = {
+    "differential-algebra": (
+        "Differential",
+        "deriv",
+        "Deriv",
+        "jet",
+        "Jet",
+        "hypertrans",
+        "Hypertrans",
+        "algebraicIndependent",
+        "DifferentiallyAlgebraic",
+        "Kolchin",
+    ),
+    "gamma-special-functions": (
+        "Gamma",
+        "gamma",
+        "digamma",
+        "Digamma",
+        "polygamma",
+        "Polygamma",
+        "Barnes",
+        "theta",
+        "Theta",
+        "Hurwitz",
+    ),
+    "integral-transforms": (
+        "Fourier",
+        "Mellin",
+        "Laplace",
+        "Poisson",
+        "Cauchy",
+        "transform",
+        "Transform",
+        "convolution",
+    ),
+    "moment-positivity": (
+        "moment",
+        "Moment",
+        "Hankel",
+        "Toeplitz",
+        "positiveDefinite",
+        "PositiveDefinite",
+        "nonneg",
+        "Nonneg",
+        "Gram",
+        "Stieltjes",
+        "Hausdorff",
+        "Bernstein",
+    ),
+    "spectral-operator": (
+        "spectrum",
+        "Spectrum",
+        "spectral",
+        "Spectral",
+        "Operator",
+        "operator",
+        "resolvent",
+        "Resolvent",
+        "eigen",
+        "Eigen",
+        "trace",
+        "Trace",
+        "Fredholm",
+        "Krein",
+    ),
+    "measure-functional-analysis": (
+        "Measure",
+        "measure",
+        "integral",
+        "Integral",
+        "Lp",
+        "Hilbert",
+        "Banach",
+        "Schwartz",
+        "weak",
+        "Weak",
+        "tight",
+        "Tight",
+        "functional",
+        "Functional",
+    ),
+    "complex-analysis": (
+        "Analytic",
+        "analytic",
+        "Holomorphic",
+        "holomorphic",
+        "Meromorphic",
+        "meromorphic",
+        "Entire",
+        "entire",
+        "Herglotz",
+        "Nevanlinna",
+        "Pick",
+        "Hardy",
+        "Blaschke",
+    ),
+    "arithmetic-dirichlet": (
+        "Prime",
+        "prime",
+        "Dirichlet",
+        "Euler",
+        "Mobius",
+        "mobius",
+        "Mertens",
+        "Valuation",
+        "valuation",
+        "vonMangoldt",
+        "divisor",
+        "Divisor",
+    ),
+    "algebraic-combinatorial": (
+        "Polynomial",
+        "MvPolynomial",
+        "Matrix",
+        "det",
+        "Det",
+        "rank",
+        "Rank",
+        "span",
+        "Span",
+        "Linear",
+        "Finite",
+        "finset",
+        "Finset",
+        "graph",
+        "Graph",
+        "matroid",
+        "Matroid",
+    ),
+    "projective-geometric": (
+        "Projective",
+        "projective",
+        "Horizon",
+        "horizon",
+        "Plucker",
+        "Grassmann",
+        "incidence",
+        "Incidence",
+        "coframe",
+        "Coframe",
+        "facet",
+        "Facet",
+    ),
+    "asymptotic-order": (
+        "Tendsto",
+        "tendsto",
+        "IsBigO",
+        "IsLittleO",
+        "Asymptotic",
+        "asymptotic",
+        "cofinal",
+        "Cofinal",
+        "eventually",
+        "atTop",
+        "summable",
+        "Summable",
+    ),
+    "topology-compactness": (
+        "Continuous",
+        "continuous",
+        "Compact",
+        "compact",
+        "closure",
+        "Closure",
+        "Dense",
+        "dense",
+        "Connected",
+        "connected",
+        "homeomorph",
+        "Homeomorph",
+    ),
+    "dynamics-quantum": (
+        "Dynamics",
+        "dynamics",
+        "orbit",
+        "Orbit",
+        "Quantum",
+        "quantum",
+        "KMS",
+        "Thermal",
+        "Clock",
+        "clock",
+        "Wigner",
+        "Hamilton",
+    ),
+}
+
+DECLARATION_SHAPES: dict[str, re.Pattern[str]] = {
+    "iff-classification": re.compile(r"↔|<->"),
+    "equality-identity": re.compile(r"(?<![<>!])=(?!=)|\brfl\b"),
+    "inequality-order": re.compile(r"≤|≥|<|>|\bStrict(?:Anti|Mono)\b"),
+    "existence-construction": re.compile(r"∃|Exists|Nonempty"),
+    "universal-law": re.compile(r"∀|forall"),
+    "negation-no-go": re.compile(r"¬|not_|_ne\b|≠|False"),
+    "convergence-asymptotic": re.compile(
+        r"Tendsto|IsBigO|IsLittleO|Summable|CauchySeq|atTop|eventually"
+    ),
+    "positivity-moment": re.compile(
+        r"Positive|positive|Nonneg|nonneg|pos\b|Hankel|Moment|moment|Gram"
+    ),
+    "independence-transcendence": re.compile(
+        r"[Ii]ndependent|[Tt]ranscend|DifferentiallyAlgebraic|DA\b"
+    ),
+    "regularity-analyticity": re.compile(
+        r"Analytic|Holomorphic|Meromorphic|Entire|Continuous|Differentiable"
+    ),
+    "injectivity-equivalence": re.compile(
+        r"Injective|Surjective|Bijective|Equiv|Embedding|Isometry"
+    ),
+    "rank-support-dimension": re.compile(
+        r"rank|Rank|finrank|support|Support|dimension|Dimension|card|Card"
+    ),
+    "membership-span": re.compile(r"∈|∉|SetLike|span|Span|range|Range"),
+}
 RH_RE = re.compile(r"\bRiemannHypothesis\b")
 RH_IFF_RE = re.compile(
     r"(?:↔|<->)[^:\n]*\bRiemannHypothesis\b"
@@ -309,6 +524,7 @@ FAMILIES: dict[str, dict[str, tuple[str, ...]]] = {
 class Declaration:
     kind: str
     name: str
+    line: int
     header: str
 
 
@@ -326,6 +542,7 @@ class ModuleRow:
     families: tuple[str, ...]
     roles: tuple[str, ...]
     stages: tuple[str, ...]
+    declarations: tuple[Declaration, ...]
 
 
 def strip_comments_and_strings(source: str) -> str:
@@ -412,10 +629,28 @@ def declarations(source: str) -> list[Declaration]:
             Declaration(
                 kind=match.group(1),
                 name=match.group(2),
+                line=code.count("\n", 0, match.start()) + 1,
                 header=declaration_header(code[match.start() : end]),
             )
         )
     return result
+
+
+def declaration_mechanisms(header: str) -> tuple[str, ...]:
+    """Overlapping mathematical mechanisms visible in one exact declaration header."""
+    return tuple(
+        mechanism
+        for mechanism, needles in DECLARATION_MECHANISMS.items()
+        if any(needle in header for needle in needles)
+    )
+
+
+def declaration_shapes(header: str) -> tuple[str, ...]:
+    """Overlapping logical/conclusion shapes visible in one exact declaration header."""
+    shapes = tuple(
+        shape for shape, pattern in DECLARATION_SHAPES.items() if pattern.search(header)
+    )
+    return shapes or ("other",)
 
 
 def title_of(source: str, fallback: str) -> str:
@@ -572,7 +807,11 @@ def audit_rows() -> list[ModuleRow]:
         scores = family_scores(area, tokens)
         ranked = sorted(scores, key=lambda family: (-scores[family], family))
         positive = tuple(family for family in ranked if scores[family] > 0)
-        primary = ranked[0] if scores[ranked[0]] > 0 else "uncategorized"
+        primary = (
+            ranked[0]
+            if scores[ranked[0]] > 0
+            else "cross-cutting-foundational"
+        )
         imports = len(graph[(area, suffix)])
         rows.append(
             ModuleRow(
@@ -588,6 +827,7 @@ def audit_rows() -> list[ModuleRow]:
                 families=positive,
                 roles=module_roles(suffix, title, source, decls),
                 stages=tuple(sorted(stage_refs.get((area, suffix), set()))),
+                declarations=tuple(decls),
             )
         )
     return rows
@@ -636,6 +876,94 @@ def write_manifest(rows: list[ModuleRow], path: Path) -> None:
             )
 
 
+def rh_declaration_roles(header: str) -> tuple[str, ...]:
+    roles: list[str] = []
+    if RH_IFF_RE.search(header):
+        roles.append("rh-equivalence")
+    if re.search(r":\s*RiemannHypothesis\s*$", header):
+        roles.append("rh-conclusion")
+    if re.search(r":\s*¬\s*RiemannHypothesis\s*$", header):
+        roles.append("anti-rh-conclusion")
+    if re.search(r"\([^)]*:\s*RiemannHypothesis[^)]*\)", header):
+        roles.append("rh-premise")
+    if re.search(r"\([^)]*:\s*¬\s*RiemannHypothesis[^)]*\)", header):
+        roles.append("anti-rh-premise")
+    if not roles:
+        roles.append("rh-embedded")
+    if SOURCE_SYMBOL_RE.search(header):
+        roles.append("literal-source-in-statement")
+    else:
+        roles.append("named-interface-only")
+    return tuple(roles)
+
+
+def write_rh_declarations(rows: list[ModuleRow], path: Path) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.writer(handle, delimiter="\t", lineterminator="\n")
+        writer.writerow(
+            (
+                "module",
+                "declaration",
+                "line",
+                "roles",
+                "pipeline_stages",
+                "statement",
+            )
+        )
+        for row in rows:
+            if row.area != "RHTower":
+                continue
+            for declaration in row.declarations:
+                if declaration.kind not in ("theorem", "lemma"):
+                    continue
+                if not RH_RE.search(declaration.header):
+                    continue
+                writer.writerow(
+                    (
+                        row.module,
+                        declaration.name,
+                        declaration.line,
+                        ",".join(rh_declaration_roles(declaration.header)),
+                        ",".join(row.stages),
+                        declaration.header,
+                    )
+                )
+
+
+def write_declarations(rows: list[ModuleRow], path: Path) -> None:
+    """Write every parsed declaration without using import or prior-use relevance."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.writer(handle, delimiter="\t", lineterminator="\n")
+        writer.writerow(
+            (
+                "area",
+                "module",
+                "declaration",
+                "kind",
+                "line",
+                "mechanisms",
+                "shapes",
+                "statement",
+            )
+        )
+        for row in rows:
+            for declaration in row.declarations:
+                writer.writerow(
+                    (
+                        row.area,
+                        row.module,
+                        declaration.name,
+                        declaration.kind,
+                        declaration.line,
+                        ",".join(declaration_mechanisms(declaration.header)),
+                        ",".join(declaration_shapes(declaration.header)),
+                        declaration.header,
+                    )
+                )
+
+
 def summary(rows: list[ModuleRow]) -> str:
     lines = ["# Whole formal corpus audit summary", ""]
     for area in AREAS:
@@ -649,8 +977,9 @@ def summary(rows: list[ModuleRow]) -> str:
                 "",
                 f"- modules: {len(area_rows)}",
                 f"- directly parsed declarations: {declarations_total}",
-                f"- uncategorized primary family: "
-                f"{sum(row.primary_family == 'uncategorized' for row in area_rows)}",
+                f"- cross-cutting foundational primary family: "
+                f"{sum(row.primary_family == 'cross-cutting-foundational' for row in area_rows)}"
+                "",
                 f"- umbrella reachable: "
                 f"{sum(row.umbrella_reachable for row in area_rows)}",
                 f"- umbrella unreachable: "
@@ -685,11 +1014,17 @@ def summary(rows: list[ModuleRow]) -> str:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--manifest", type=Path)
+    parser.add_argument("--declarations", type=Path)
+    parser.add_argument("--rh-declarations", type=Path)
     parser.add_argument("--summary", type=Path)
     args = parser.parse_args()
     rows = audit_rows()
     if args.manifest:
         write_manifest(rows, args.manifest)
+    if args.declarations:
+        write_declarations(rows, args.declarations)
+    if args.rh_declarations:
+        write_rh_declarations(rows, args.rh_declarations)
     rendered = summary(rows)
     if args.summary:
         args.summary.parent.mkdir(parents=True, exist_ok=True)

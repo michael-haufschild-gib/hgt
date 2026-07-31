@@ -2,15 +2,67 @@
 
 - **ID:** time-return-duality-law
 - **Stage:** 1-in-progress
-- **Type:** CONJECTURE
+- **Type:** MASTER CONJECTURE / UNIVERSAL STATIONARY RECURRENCE QUOTIENT
 - **Source:** recurrence corpus synthesis
-- **Statement:** A recurrence Weyl law makes observer-visible temporal dimension the small-defect return-volume exponent, its temporal metric the prefactor, and exact relation rank the complementary projective capacity.
+- **Statement:** Every stationary quantum return experiment factors through one maximal
+  unoriented system--clock quotient.  Uniform long-time sampling then retains exactly the
+  recurrent atomic hull.  In finite rank, the dimension of that hull is twice the
+  small-defect return-volume exponent and the complement of exact relation rank.
 
 ## Goal
 
 Replace novelty-by-assembly with one operational law whose shadows are the
 existing constraint-conversion, observer-quotient, water-entropy,
 interaction, countable-depth and peripheral-carrier results.
+
+The candidate primitive is no longer the finite-dimensional Weyl exponent.
+For an arbitrary probability energy law \(\mu\) and probability clock law
+\(\rho\), put
+\[
+  \nu_\mu=\mu*\widetilde\mu,\qquad
+  \sigma_\rho=\frac{\rho+\widetilde\rho}{2},
+\]
+and define the complete sampled recurrence law
+\[
+  \mathfrak R(\mu,\rho)
+  =
+  \bigl(\widehat{\nu_\mu}\bigr)_*\sigma_\rho.
+  \tag{URQ}
+\]
+Here \(\widehat{\nu_\mu}(t)=|\widehat\mu(t)|^2\in[0,1]\).
+The corpus already proves that the two quotient maps in `(URQ)` are maximal
+under universal cross-testing: systems are indistinguishable to every clock
+exactly when their difference laws agree, and clocks are indistinguishable
+to every system exactly when their orientation quotients agree.
+
+The missing stationary-completion theorem is the single weak limit
+\[
+  \mathfrak R(\mu,\rho_T)
+  \Longrightarrow
+  \left(
+    \left|\sum_jw_jz_j\right|^2
+  \right)_*m_{K_\mu},
+  \qquad
+  \rho_T=\operatorname{Unif}[-T,T],
+  \tag{SC}
+\]
+where \((w_j,E_j)\) are the atoms of \(\mu\), \(K_\mu\) is their compact
+relation hull and \(m_{K_\mu}\) its invariant probability law.  Thus the
+continuous spectral part disappears from the complete long-time return
+distribution without disappearing from the underlying unitary evolution.
+The finite Weyl law below is a local geometric corollary of `(SC)`, not the
+master law.
+
+The intended physical sentence is:
+
+> **Quantum recurrence reveals the geometry of stationary time, but its
+> maximal observable is intrinsically unoriented.**
+
+This wording has two exact obligations.  “Geometry” means the recurrent
+atomic relation hull, its observer quotient, target volumes and finite-rank
+metric.  “Unoriented” means the proved maximal clock quotient
+\(\rho\mapsto\sigma_\rho\), not a claim that all causal observables or all
+experiments are time-reversal blind.
 
 For a finite probability-weighted quantum spectrum, let \(K\) be the exact
 projective orbit hull, let \(\nu_K\) be Haar measure on \(K\), and let
@@ -94,6 +146,60 @@ decay.
 - Rank–nullity alone is not novelty. Operational return-volume identity and
   physical interaction conversion are required.
 
+## RH-corpus stress test: the same quotient boundary
+
+The RH corpus was audited as a hostile test of the interpretation, not as a
+source of an RH claim for this paper.
+
+The repeated exact pattern is:
+
+1. reflection-invariant positive, quadratic or intensity readers can be
+   complete for their even quotient;
+2. the source-facing orientation lives in an odd phase/character lift;
+3. passing to the quotient preserves collision location or magnitude while
+   erasing the first oriented jet;
+4. adding more equivalent positive criteria does not recreate the erased
+   coordinate.
+
+The clearest formal instances are:
+
+- `Oriented reflection quotient law`: channel exchange sends the odd Cayley
+  coordinate \(J\) to \(-J\); invariant entire readers descend through
+  \(J^2\) and every differentiable even reader has zero first jet at the
+  collision.
+- `HedenmalmOrientationUpperSingularityCeilingRH`: the exact RH-facing
+  criterion is analyticity of a canonical *oriented* multiplier, not merely
+  positivity of a symmetric scalar.
+- `SuzukiVolterraCartesianPhaseDefect`: keeping the symmetric Cartesian
+  response fixed leaves a nonzero phase half-difference.
+- `HorizonBogoliubovGammaObservability`: the reflected intensity core is
+  differentially algebraic while the orientation-sensitive phase quotient
+  and Wigner--Smith logarithmic delay are hypertranscendental and cannot be
+  recovered by a finite differential circuit from intensity.
+- `riemann-source-modular-superselection/main.tex`: source clock, collision
+  geometry, global magnitude, diagonal positivity, odd orientation and
+  global common-test positivity form a strict observable hierarchy.  Its
+  central warning is that “complete” must name the quotient for which it is
+  complete.
+
+The recurrence corpus has the same architecture in an exact, non-analogical
+form:
+\[
+  \rho\longmapsto\sigma_\rho
+  \quad\text{erases clock orientation},\qquad
+  \mu\longmapsto\nu_\mu
+  \quad\text{erases energy origin and phase-retrieval representatives}.
+\]
+All return laws factor through these maps, and each map is maximal against
+the opposite universal probe family.  Therefore the paper must never call
+return data complete for the Hamiltonian, state, clock orientation or causal
+arrow.  The allowed statement is stronger and more precise: return data are
+complete for the maximal stationary recurrence quotient.
+
+No connection to RH is authorized for the public manuscript unless a new
+formal theorem explicitly connects an RH carrier to `(URQ)`.  The present
+audit supplies the missing conceptual distinction, not an RH consequence.
+
 ## Log
 
 - 2026-07-31 — created in 1-in-progress after rejecting novelty by conjunction.
@@ -121,3 +227,9 @@ decay.
   neighborhood of the exact-return set. Foreground compiles passed; axiom
   audit of the new coercivity and automatic local-volume theorems uses only
   `propext`, `Classical.choice`, and `Quot.sound`.
+- 2026-07-31 — RH-wide corpus audit and
+  `riemann-source-modular-superselection/main.tex` forced a stronger master:
+  recurrence is a maximal unoriented quotient followed by stationary atomic
+  completion.  The finite recurrence Weyl law is now a corollary.  The audit
+  also forbids calling recurrence complete for the source, Hamiltonian or
+  arrow of time.
