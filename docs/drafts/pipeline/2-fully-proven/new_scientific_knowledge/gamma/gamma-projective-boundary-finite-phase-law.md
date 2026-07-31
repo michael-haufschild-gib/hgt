@@ -631,6 +631,37 @@ gives the second fully unconditional instance of eq. (8): a holomorphic Bohr alm
 the strip satisfying `∑_α (P_α/Q_α)(Γ)·M_α(f) = 0`, with `β` of minimal valuation, satisfies the
 autonomous relation with coefficients `0^{n_α}·(residue_α/residue_β)` and `β`-entry `1`.
 
+`formal/GaloisForLFunctions/HTGeometry/BohrMeanValue.lean` proves the **existence of the Bohr mean
+value** `M(f) = lim_{T→∞}(1/T)∫₀ᵀ f` for every continuous Bohr almost-periodic function into a
+Banach space (`exists_tendsto_windowAverage`), together with the boundedness of such a function
+(`exists_bound_of_isBohrAlmostPeriodic`) and the packaged `bohrMean` with its defining limit and
+uniqueness.  The proof is Bohr's: relative density transports the fixed window `[0,T]` into every
+block `[jT,(j+1)T]` at a cost `εT + 2CL`, and summing over the `⌊T'/T⌋` blocks gives
+`‖m(T') − m(T)‖ ≤ ε + 2CL/T + 2CT/T'`; choosing `T` large against the inclusion length `L` and then
+`T'` large against `T` makes the window averages Cauchy along `atTop`.
+
+`formal/GaloisForLFunctions/HTGeometry/BohrBochnerEquivalence.lean` proves the **Bohr–Bochner
+equivalence** in an elementary form (`isBohrAlmostPeriodic_iff_hasTotallyBoundedOrbit`).
+`HasTotallyBoundedOrbit f` says finitely many sample times approximate every translate uniformly.
+Bohr ⟹ Bochner uses that a continuous almost-periodic function is uniformly continuous
+(`uniformContinuous_of_isBohrAlmostPeriodic`, itself proved by transporting any point into the fixed
+compact window `[-1, L+1]`), so the compact parameter window `[0,L]` reduces to a finite grid;
+Bochner ⟹ Bohr reads the differences `a − s` between a shifted parameter and its approximating
+sample as almost periods, relatively dense with inclusion length the diameter of the sample set.
+
+`formal/GaloisForLFunctions/HTGeometry/BohrSpectrum.lean` builds the **Bohr spectrum**.  The pair
+`t ↦ (f t, g t)` has a totally bounded orbit as soon as both factors do
+(`hasTotallyBoundedOrbit_prod`: a translate is classified by the pair of approximating sample times,
+and there are finitely many such pairs), so two almost-periodic functions have a relatively dense set
+of *common* almost periods (`exists_common_almostPeriods`) — the step Bohr's definition cannot see and
+Bochner's makes immediate.  Hence products of almost-periodic functions are almost periodic
+(`isBohrAlmostPeriodic_mul`), and since the character `t ↦ e^{-iλt}` is periodic for `λ ≠ 0` and
+constant for `λ = 0` (`isBohrAlmostPeriodic_bohrChar`), the modulated function `f(t)e^{-iλt}` is
+almost periodic.  Its mean is the **Bohr coefficient** `bohrCoefficient f λ`, the **spectrum**
+`bohrSpectrum f` is the set of frequencies with nonzero coefficient, and the **frequency module**
+`bohrFrequencyModule f` is its `ℚ`-span — the object whose rational rank eq. (9) bounds, which until
+now did not exist in the tree at all.
+
 `formal/GaloisForLFunctions/HTGeometry/IsometricRecurrence.lean` abstracts the recurrence to any
 relatively-compact isometric `ℝ`-action (`isometricAction_recurrence`, `isometricAction_return_seq`),
 so it instantiates both to `ℝ →ᵇ ℂ` and to vertical translation of holomorphic functions on a strip.
@@ -650,8 +681,8 @@ finite frequency packet is `ℚ`-linearly independent.
 whose frequency module is the prime-log module cannot be differentially algebraic over the Gamma
 field (with the finite-phase conclusion as the explicit interface).
 
-Still genuinely open (mathlib-absent, being built incrementally): the mean value / Bohr spectrum on
-the hull; the *topological heart* of eq. (9) — the finite jet-sample embedding `hull ↪ ℂ^N`,
+Still genuinely open (mathlib-absent, being built incrementally): the *topological heart* of eq. (9)
+— the finite jet-sample embedding `hull ↪ ℂ^N`,
 covering-dimension `≤ 2N`, and Pontryagin–van Kampen (mathlib has only the `PontryaginDual`
 definition, not the duality theorem) — which supplies the finite frequency generators consumed by
 `FrequencyRank`; the analytic Poincaré transfer promoting eq. (19) to unconditional analytic

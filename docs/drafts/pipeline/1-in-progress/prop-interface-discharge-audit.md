@@ -2336,3 +2336,28 @@ existence-of-limit condition nobody can check — but "what is the exact critica
 approximation numbers", a single asymptotic.  Connes measurability was never an independent
 hypothesis: on this scale it is implied by the critical asymptotic, and so is the weak endpoint
 bound.
+
+### The Suzuki finite-shift row: smallness, and the finite/infinitesimal bridge
+
+`suzukiFiniteShiftSource F J δ (-z) ≠ 0` — nonvanishing of the *shifted* source — is the standing
+hypothesis of the exact finite-shift carrier identities.  It is not independent of the rest.
+
+`RHTower/SuzukiFiniteShiftGeneratorLimit.lean` (built, registered, axioms clean):
+
+* **`suzukiFiniteShiftSource_ne_zero`** — a shift strictly smaller in norm than the endpoint value
+  cannot cancel it: `‖δ‖ ‖J w‖ < ‖F w‖ → F w + δ J w ≠ 0`.  No hypothesis on `F w` is needed; when
+  `F w = 0` the bound is already impossible;
+* `eventually_suzukiFiniteShiftSource_ne_zero` — hence the premise holds for **all sufficiently
+  small shifts** whenever the unshifted source is nonzero at that point;
+* `tendsto_suzukiFiniteShiftSource` — and the shifted source tends to the unshifted one;
+* **`tendsto_suzukiFourierLivsic_finiteShift_dividedDifference`** — on the punctured neighbourhood
+  where both `δ ≠ 0` and the premise hold, the exact divided difference of the Fourier--Livšic
+  carrier converges to `lineCayley z · (reflected tangent numerator) / F(−z)²`;
+* **`tendsto_suzukiFourierLivsic_finiteShift_dividedDifference_generator`** — and that limit *is*
+  the logarithmic source generator, dressed by the Cayley factor and the reflection ratio:
+  `−lineCayley z · (gen · F z / F(−z))`.
+
+The module already had both halves — an exact finite identity and an infinitesimal generator — and
+no theorem linking them.  The link is now proved, so the finite identity is the global form of the
+infinitesimal one with no remainder at either end, and its hypothesis is a smallness condition
+rather than an assumption.

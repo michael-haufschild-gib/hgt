@@ -13,6 +13,11 @@ import GaloisForLFunctions.RHTower.HypertranscendentalDivisorInformationLocaliza
 import GaloisForLFunctions.RHTower.HedenmalmThetaNullTemperedDenseRadicalUniversalityLaw
 import GaloisForLFunctions.RHTower.XiPrimeSeamCalkinUniversalityLaw
 import GaloisForLFunctions.RHTower.GammaSewnMobiusXiWardEulerEdgeCompleteness
+import GaloisForLFunctions.RHTower.XiDyadicDescentLevelUniversalityLaw
+import GaloisForLFunctions.RHTower.XiDefectPersistentLocalLoopUniversalityLaw
+import GaloisForLFunctions.RHTower.XiSpectralApertureConservationUniversalityLaw
+import GaloisForLFunctions.RHTower.XiThetaHeatNodeObstruction
+import GaloisForLFunctions.HTGeometry.BifilteredScalarizationNoGo
 import GaloisForLFunctions.HTGeometry.PrimeResidueValuationInteractionSuperselection
 import GaloisForLFunctions.HTGeometry.PrimeValuationCoordinateFusionCompletion
 
@@ -313,6 +318,147 @@ theorem xiBoundaryCharacterFracture_law :
       orbitwisePrimeSeamChargesCoherent_iff_re_eq_half
         (rho := rho) hstrip
 
+/-- A norm-conservative real-linear action cannot have a nonzero positive
+real eigenvector with eigenvalue other than one. -/
+theorem normConservative_realEigenvector_eigenvalue_eq_one
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (S : E →ₗ[ℝ] E) (x : E) (hx : x ≠ 0) (lam : ℝ)
+    (hlam : 0 ≤ lam)
+    (hconservative : ∀ y : E, ‖S y‖ = ‖y‖)
+    (heigen : S x = lam • x) :
+    lam = 1 := by
+  have hxnorm : 0 < ‖x‖ := norm_pos_iff.mpr hx
+  have hnorm := hconservative x
+  rw [heigen, norm_smul, Real.norm_eq_abs, abs_of_nonneg hlam] at hnorm
+  nlinarith
+
+/-- A nonzero exponential character in a norm-conservative representation
+has zero real rate. -/
+theorem normConservative_expCharacter_forces_zero
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (S : E →ₗ[ℝ] E) (x : E) (hx : x ≠ 0) (nu : ℝ)
+    (hconservative : ∀ y : E, ‖S y‖ = ‖y‖)
+    (heigen : S x = Real.exp nu • x) :
+    nu = 0 := by
+  have hone : Real.exp nu = 1 :=
+    normConservative_realEigenvector_eigenvalue_eq_one
+      S x hx (Real.exp nu) (Real.exp_nonneg nu) hconservative heigen
+  apply Real.exp_injective
+  simpa using hone
+
+/-- **Conservative character-descent law.** If an equivariant map does not
+erase an exponential source eigenvector, descent into a norm-conservative
+target forces its real character rate to vanish. -/
+theorem normConservative_equivariantDescent_forces_zero
+    {E F : Type*}
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    (U : E →ₗ[ℝ] E) (V : F →ₗ[ℝ] F) (T : E →ₗ[ℝ] F)
+    (x : E) (hx : T x ≠ 0) (nu : ℝ)
+    (hsource : U x = Real.exp nu • x)
+    (hintertwine : ∀ y : E, V (T y) = T (U y))
+    (hconservative : ∀ y : F, ‖V y‖ = ‖y‖) :
+    nu = 0 := by
+  apply normConservative_expCharacter_forces_zero
+    V (T x) hx nu hconservative
+  rw [hintertwine, hsource, map_smul]
+
+/-- Critical-line reflection sends the real-ray modular character to its
+conjugate inverse, not merely to a reciprocal norm. -/
+theorem centeredComplexModularCharacter_reflection_real
+    (rho : ℂ) (t : ℝ) :
+    centeredComplexModularCharacter
+        (criticalLineReflectionPoint rho) (t : ℂ) =
+      (starRingEnd ℂ
+        (centeredComplexModularCharacter rho (t : ℂ)))⁻¹ := by
+  rw [centeredComplexModularCharacter, centeredComplexModularCharacter]
+  rw [← Complex.exp_conj, ← Complex.exp_neg]
+  congr 1
+  apply Complex.ext
+  all_goals
+    simp [criticalLineReflectionPoint, mul_re, mul_im] <;> ring
+
+/-- At any nonzero real time, unitarity of the centered modular character is
+exactly the critical-line equalizer. -/
+theorem norm_centeredComplexModularCharacter_eq_one_iff
+    (rho : ℂ) {t : ℝ} (ht : t ≠ 0) :
+    ‖centeredComplexModularCharacter rho (t : ℂ)‖ = 1 ↔
+      rho.re = 1 / 2 := by
+  rw [norm_centeredComplexModularCharacter_ofReal, ← Real.exp_zero,
+    Real.exp_eq_exp]
+  constructor
+  · intro h
+    rcases mul_eq_zero.mp h with htzero | hweight
+    · exact absurd htzero ht
+    · linarith
+  · intro h
+    rw [h]
+    ring
+
+/-- Exact continuous and ramified character data attached to one Xi divisor
+point. The complex character retains the centered point, while the dyadic
+deck tower retains the two-adic divisibility profile of its multiplicity. -/
+structure XiRamifiedDivisorCharacterCertificate (rho : ℂ) : Prop where
+  additiveCharacter :
+    ∀ z w : ℂ,
+      centeredComplexModularCharacter rho (z + w) =
+        centeredComplexModularCharacter rho z *
+          centeredComplexModularCharacter rho w
+  realRayNorm :
+    ∀ t : ℝ,
+      ‖centeredComplexModularCharacter rho (t : ℂ)‖ =
+        Real.exp (t * (rho.re - 1 / 2))
+  reflectedConjugateInverse :
+    ∀ t : ℝ,
+      centeredComplexModularCharacter
+          (criticalLineReflectionPoint rho) (t : ℂ) =
+        (starRingEnd ℂ
+          (centeredComplexModularCharacter rho (t : ℂ)))⁻¹
+  unitaryEqualizer :
+    ∀ {t : ℝ}, t ≠ 0 →
+      (‖centeredComplexModularCharacter rho (t : ℂ)‖ = 1 ↔
+        rho.re = 1 / 2)
+  dyadicRootOfUnity :
+    ∀ k : ℕ, xiDeckCharge k rho ^ (2 ^ k) = 1
+  dyadicTrivialityReadsMultiplicity :
+    ∀ k : ℕ,
+      xiDeckCharge k rho = 1 ↔
+        2 ^ k ∣ (analyticOrderAt xi rho).toNat
+  innerOuterInfinitesimalCharge :
+    let m := (analyticOrderAt xi rho).toNat
+    Tendsto
+        (fun w : ℂ =>
+          w⁻¹ *
+            (depthSuccessorNearbyCycle (rho - 1 / 2) m w⁻¹ - 1))
+        (𝓝[≠] 0)
+        (𝓝 (-((rho - 1 / 2) * (m : ℂ)))) ∧
+      Tendsto
+        (fun s : ℂ =>
+          (s - rho) * xiExceptionalAffineDivisorCurrent s)
+        (𝓝[≠] rho)
+        (𝓝 (-((rho - 1 / 2) * (m : ℂ))))
+
+/-- **Ramified divisor-character law.** Every Xi divisor point carries one
+complex reflection character and one coherent dyadic ramification tower.
+Their common infinitesimal coupling is the multiplicity-weighted centered
+residue of the source-generated Xi connection. -/
+theorem xiRamifiedDivisorCharacter_law (rho : ℂ) :
+    XiRamifiedDivisorCharacterCertificate rho where
+  additiveCharacter :=
+    centeredComplexModularCharacter_add rho
+  realRayNorm :=
+    norm_centeredComplexModularCharacter_ofReal rho
+  reflectedConjugateInverse :=
+    centeredComplexModularCharacter_reflection_real rho
+  unitaryEqualizer :=
+    norm_centeredComplexModularCharacter_eq_one_iff rho
+  dyadicRootOfUnity :=
+    fun k => xiDeckCharge_pow k rho
+  dyadicTrivialityReadsMultiplicity :=
+    fun k => xiDeckCharge_eq_one_iff_toNat_dvd k rho
+  innerOuterInfinitesimalCharge :=
+    xiDepthNearby_outerCharge_and_affineResidue_match rho
+
 /-- Global neutrality of the inner duality--adjunction boundary character. -/
 def XiBoundaryCharacterNeutral : Prop :=
   ∀ rho : XiDivisorSupport,
@@ -492,6 +638,76 @@ theorem xiSingularEqualizerBoundary_law :
     exact ⟨h.2.1, h.2.2.1, h.2.2.2.2⟩
   horizontalRegularityEqualizer :=
     xiBoundaryCharacterNeutral_iff_regularBoundaryConsumers
+
+/-- Complete boundary architecture after restoring the independent source
+bigrading and the divisor's ramification coordinate. -/
+structure XiRamifiedSingularBoundaryCertificate : Prop where
+  singularEqualizer :
+    XiSingularEqualizerBoundaryCertificate
+  noFaithfulAdditiveSourceScalarization :
+    ∀ w : (ℕ × ℕ) →+ ℕ, ¬ Function.Injective w
+  pairedSourceScalarizationFaithful :
+    Function.Injective transverseScalarDegrees
+  noEntireHeatNodeDeltaReader :
+    ∀ (F : ℂ → ℂ), Differentiable ℂ F →
+      ∀ {n : ℕ}, 1 ≤ n →
+        F (thetaHeatNode n) = 1 →
+        (∀ m : ℕ, 1 ≤ m → m ≠ n →
+          F (thetaHeatNode m) = 0) →
+        False
+  ramifiedDivisorCharacter :
+    ∀ rho : ℂ, XiRamifiedDivisorCharacterCertificate rho
+  dyadicLevelwiseDescent :
+    ∀ k : ℕ,
+      RHLadder k ↔ XiDyadicDescentLevelUniversalCertificate k
+  allDyadicLevels :
+    RiemannHypothesis ↔
+      ∀ k : ℕ, XiDyadicDescentLevelUniversalCertificate k
+  persistentOddDefectLoops :
+    ∀ rho : ℂ,
+      XiDefect rho ↔
+        rho.re ∈ Set.Ioo (1 / 2 : ℝ) 1 ∧
+        xi rho = 0 ∧
+        PersistentXiDefectLoop rho ∧
+        Odd (analyticOrderAt xi rho).toNat
+  fullApertureSpectrum :
+    ∀ {tau L : ℝ}, 0 < tau → 0 < L →
+      ∀ {N : ℕ},
+        (∀ n : ℕ, N ≤ n →
+          1 ≤ n ∧ L ≤ Real.log n / 2) →
+        XiSpectralApertureSpectrum tau L N =
+          Set.Ici xiProjectiveReflectionRadius
+
+/-- **Bifiltered ramified-character boundary law.** The Riemann source
+cannot be faithfully reduced to one additive grading or one analytic
+heat-node reader. Its exact divisor output is the ramified character pair:
+the continuous modular character controls horizontal aperture and
+conservative descent, while the deck-character tower controls multiplicity
+divisibility and local root descent. -/
+theorem xiRamifiedSingularBoundary_law :
+    XiRamifiedSingularBoundaryCertificate where
+  singularEqualizer :=
+    xiSingularEqualizerBoundary_law
+  noFaithfulAdditiveSourceScalarization :=
+    natProd_addMonoidHom_not_injective
+  pairedSourceScalarizationFaithful :=
+    transverseScalarDegrees_injective
+  noEntireHeatNodeDeltaReader :=
+    fun F hF {_n} hn hself hother =>
+      no_entire_thetaHeatNode_delta F hF hn hself hother
+  ramifiedDivisorCharacter :=
+    xiRamifiedDivisorCharacter_law
+  dyadicLevelwiseDescent :=
+    rhLadder_iff_dyadicDescentLevelUniversalCertificate
+  allDyadicLevels :=
+    riemannHypothesis_iff_forall_dyadicDescentLevelUniversalCertificate
+  persistentOddDefectLoops :=
+    xiDefect_persistentLoop_openStrip_oddOrderUniversality
+  fullApertureSpectrum := by
+    intro tau L htau hL N hN
+    exact
+      xiSpectralApertureSpectrum_eq_Ici_projectiveReflectionRadius
+        htau hL hN
 
 /-- Critical activation certificate showing why its divisor transport cannot
 be compressed into a finite recurrence or bounded positive Gram completion. -/

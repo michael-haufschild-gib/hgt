@@ -274,9 +274,34 @@ transverse subspace `W=K^kappa`:
 All four theorems are unconditional; their axiom audit is `propext`, `Classical.choice`,
 `Quot.sound`.
 
-The remaining paper-level layers are the rational invariant field `(3)`, `(6)`, the Rosenlicht
-transcendence-degree count `(11)`, and the injectivity of `S |-> mathcal I_S`; they await formal
-rational invariant fields for algebraic group actions and are not represented by assumptions.
+`formal/GaloisForLFunctions/HTGeometry/ProjectiveHorizonChartSubsetStabilizer.lean` transports
+`(14)` to a covector span indexed by an arbitrary set `s` of coordinate directions, using the
+reindexing isomorphism `slReindex` of special linear groups along an index splitting.  This gives
+the whole observer-group lattice:
+
+- `closure_chartSubsetTransvectionSet_eq_chartSubsetStabilizer`: subset form of the generation law;
+- `chartSubsetStabilizer_union`: the span-to-join law `G_(S+T) = <G_S, G_T>`;
+- `chartSubsetStabilizer_mono`: order reversal;
+- `chartSubsetStabilizer_injective`: `S |-> G_S` is injective, which is the group-level half of
+  the injectivity in `(10)`;
+- `forall_smul_eq_self_chartSubsetStabilizer_iff`: on any set carrying an `SL(V)` action,
+  invariance under `G_S` is invariance under the chart transvections indexed by `s`.  This is
+  exactly the step of `(5)--(6)` identifying the intersection of hyperplane horizons with the
+  fixed set of the generated group;
+- `forall_smul_eq_self_chartSubsetStabilizer_union`: the span-to-intersection law `(9)`,
+  `mathcal I_(S+T) = mathcal I_S intersection mathcal I_T`, for every `SL(V)`-set.
+
+The chart-translation half of `(3)` is already unconditional in the corpus:
+`formal/GaloisForLFunctions/HTGeometry/FreeJetTranslationFixedField.lean` proves
+`freeJetLowTranslationFixedField_eq_tail`, that the common fixed field of all independent
+translations of the jet coordinates below depth `n` is exactly the depth-`n` tail field, and
+`freeCoordinateCommonKernelField_eq_freeCoordinateField` gives the general rational
+invariant-field identification for coordinate currents.
+
+What remains paper-level is the prolonged `SL(V)` action itself on the projective jet field --
+the `MulAction` instance that turns the abstract invariant laws above into statements about
+`mathcal I_S` -- together with the Rosenlicht transcendence-degree count `(11)`.  Neither is
+represented by an assumption.
 
 ## RH impact audit
 
@@ -294,7 +319,12 @@ so this currently gives neither a zero-free region nor a critical-line implicati
 - [x] 2 -> 3b: elementary transvections generate `SL(V)` over any field (new infrastructure)
 - [x] 2 -> 3c: unipotent generation law `(14)`, the block description of `G_S`, its
       `SL_r x Hom(K^r,W)` parametrisation, and its semidirect-product law formalized
-- [ ] 2 -> 3d: rational invariant fields `(3)`, `(6)` and the Rosenlicht rank count `(11)`
+- [x] 2 -> 3d: subset form of the generation law, the span-to-join law, order reversal, and
+      injectivity of `S |-> G_S`
+- [x] 2 -> 3e: the generator criterion for `(6)` and the span-to-intersection law `(9)` for every
+      `SL(V)`-set; the chart-translation rational fixed field of `(3)`
+- [ ] 2 -> 3f: the prolonged `SL(V)` action on the projective jet field, and the Rosenlicht
+      transcendence-degree count `(11)`
 - [ ] 3 -> 4: specialist audit in projective differential invariants and building theory
 
 ## References
@@ -314,3 +344,7 @@ so this currently gives neither a zero-free region nor a critical-line implicati
   together with the block description of `G_S`, its `SL_r x Hom(K^r,W)` parametrisation, its
   semidirect-product law, and the general theorem that elementary transvections generate `SL(V)`
   over any field.
+- 2026-07-31 — transported the generation law to arbitrary coordinate subsets and formalized the
+  observer-group lattice: span-to-join `G_(S+T) = <G_S, G_T>`, order reversal, injectivity of
+  `S |-> G_S`, the generator criterion for the horizon field, and the span-to-intersection law
+  `(9)` for every `SL(V)`-set.
