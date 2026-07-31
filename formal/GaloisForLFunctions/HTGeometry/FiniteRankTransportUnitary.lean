@@ -1,5 +1,6 @@
 import Mathlib.Analysis.InnerProductSpace.Projection.Submodule
 import Mathlib.Analysis.InnerProductSpace.PiL2
+import GaloisForLFunctions.HTGeometry.NestedProjectionConvergence
 
 /-!
 # Uniform transport between nearby finite-dimensional subspaces
@@ -78,17 +79,17 @@ end FiniteDomain
 section RankOne
 
 /-- The transported unit vector: the normalized image of a unit vector under a projection. -/
-noncomputable def lineTransport (F : E →L[𝕜] E) (e : E) : E := (‖F e‖)⁻¹ • F e
+noncomputable def lineTransport (F : E →L[𝕜] E) (e : E) : E := (((‖F e‖ : ℝ) : 𝕜))⁻¹ • F e
 
 theorem norm_lineTransport {F : E →L[𝕜] E} {e : E} (h : F e ≠ 0) :
     ‖lineTransport F e‖ = 1 := by
-  rw [lineTransport, norm_smul]
-  simp only [norm_inv, Real.norm_eq_abs, abs_norm]
+  rw [lineTransport, norm_smul, norm_inv, RCLike.norm_ofReal, abs_norm]
   exact inv_mul_cancel₀ (norm_ne_zero_iff.mpr h)
 
 theorem lineTransport_mem_range {F : E →L[𝕜] E} {e : E} {K : Submodule 𝕜 E}
-    (h : F e ∈ K) : lineTransport F e ∈ K :=
-  K.smul_mem _ h
+    (h : F e ∈ K) : lineTransport F e ∈ K := by
+  rw [lineTransport]
+  exact K.smul_mem _ h
 
 /-- **Rank-one transport is automatic.**  If the projections converge strongly, the normalized
 images of a fixed unit vector converge to it. -/
@@ -98,8 +99,12 @@ theorem tendsto_lineTransport {ι : Type*} {l : Filter ι} (F : ι → E →L[�
   have hnorm : Tendsto (fun i => ‖F i e‖) l (𝓝 1) := by
     have := h.norm
     rwa [he] at this
-  have hinv : Tendsto (fun i => (‖F i e‖)⁻¹) l (𝓝 1) := by
-    simpa using hnorm.inv₀ (by norm_num)
+  have hcast : Tendsto (fun i => ((‖F i e‖ : ℝ) : 𝕜)) l (𝓝 ((1 : ℝ) : 𝕜)) :=
+    (RCLike.continuous_ofReal (K := 𝕜)).continuousAt.tendsto.comp hnorm
+  have hinv : Tendsto (fun i => (((‖F i e‖ : ℝ) : 𝕜))⁻¹) l (𝓝 1) := by
+    have h1 : ((1 : ℝ) : 𝕜) ≠ 0 := by simp
+    have := hcast.inv₀ h1
+    simpa using this
   have := hinv.smul h
   simpa [lineTransport] using this
 
@@ -116,7 +121,7 @@ theorem rankOneTransport_self_eq_starProjection {e : E} (he : ‖e‖ = 1)
     rankOneTransport (𝕜 := 𝕜) e e = (𝕜 ∙ e).starProjection := by
   ext x
   rw [rankOneTransport_apply, starProjection_singleton, he]
-  simp
+  norm_num
 
 /-- **Uniform transport in the rank-one case.**  Convergence of the transported unit vectors is
 convergence of the transport operators in operator norm. -/
@@ -133,8 +138,7 @@ theorem tendsto_opNorm_rankOneTransport {ι : Type*} {l : Filter ι} (u : ι →
       - rankOneTransport (𝕜 := 𝕜) e e‖ ≤ ‖e‖ * ‖u i - e‖ := by
     intro i
     rw [hsub i]
-    refine le_trans (ContinuousLinearMap.opNorm_smulRight_le _ _) ?_
-    exact mul_le_mul_of_nonneg_right (innerSL_apply_norm_le 𝕜 e) (norm_nonneg _)
+    rw [ContinuousLinearMap.norm_smulRight_apply, innerSL_apply_norm]
   have hzero : Tendsto (fun i => ‖e‖ * ‖u i - e‖) l (𝓝 0) := by
     have : Tendsto (fun i => ‖u i - e‖) l (𝓝 0) := by
       simpa using (h.sub (tendsto_const_nhds (x := e))).norm
@@ -142,5 +146,37 @@ theorem tendsto_opNorm_rankOneTransport {ι : Type*} {l : Filter ι} (u : ι →
   exact squeeze_zero (fun i => norm_nonneg _) hbound hzero
 
 end RankOne
+
+/-! ## Deficiency transport of a nested exhaustion at index one -/
+
+/-- **Automatic boundary transport at deficiency index one.**  For a nested exhaustion whose
+global deficiency space is the line through a unit vector `e`, the normalized images of `e` under
+the stagewise deficiency projections converge to `e`, and the associated rank-one transports
+converge to the global deficiency projection in operator norm. -/
+theorem tendsto_opNorm_deficiency_rankOneTransport
+    {ι : Type*} [Preorder ι] (HS M : ι → Submodule 𝕜 E)
+    [∀ i, (HS i).HasOrthogonalProjection] [∀ i, (M i).HasOrthogonalProjection]
+    [∀ i, (HS i ⊓ (M i)ᗮ).HasOrthogonalProjection]
+    [(⨆ i, HS i).topologicalClosure.HasOrthogonalProjection]
+    [(⨆ i, M i).topologicalClosure.HasOrthogonalProjection]
+    [((⨆ i, M i).topologicalClosure)ᗮ.HasOrthogonalProjection]
+    (hHS : Monotone HS) (hM : Monotone M) (hle : ∀ i, M i ≤ HS i)
+    (hdense : (⨆ i, HS i).topologicalClosure = ⊤)
+    {e : E} (he : ‖e‖ = 1) [(𝕜 ∙ e).HasOrthogonalProjection]
+    (hline : ((⨆ i, M i).topologicalClosure)ᗮ = 𝕜 ∙ e) :
+    Tendsto (fun i => ‖rankOneTransport (𝕜 := 𝕜) e
+        (lineTransport ((HS i ⊓ (M i)ᗮ).starProjection) e)
+      - (𝕜 ∙ e).starProjection‖) atTop (𝓝 0) := by
+  have hpt : Tendsto (fun i => (HS i ⊓ (M i)ᗮ).starProjection e) atTop
+      (𝓝 (((⨆ i, M i).topologicalClosure)ᗮ.starProjection e)) :=
+    tendsto_deficiency_starProjection HS M hHS hM hle hdense e
+  have hlim : ((⨆ i, M i).topologicalClosure)ᗮ.starProjection e = e := by
+    rw [starProjection_eq_self_iff, hline]
+    exact Submodule.mem_span_singleton_self e
+  rw [hlim] at hpt
+  have hu := tendsto_lineTransport (𝕜 := 𝕜) (fun i => (HS i ⊓ (M i)ᗮ).starProjection) he hpt
+  have hop := tendsto_opNorm_rankOneTransport (𝕜 := 𝕜)
+    (fun i => lineTransport ((HS i ⊓ (M i)ᗮ).starProjection) e) e hu
+  rwa [rankOneTransport_self_eq_starProjection he] at hop
 
 end GaloisForLFunctions.HTGeometry

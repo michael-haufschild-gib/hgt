@@ -84,12 +84,16 @@ theorem dist_expChar_mul_bohrCoefficient_le (hfa : HTGeometry.IsBohrAlmostPeriod
   rw [BohrLine.dist_eq, dist_comm]
   exact hd
 
-/-- The exponential attached to a Bohr frequency is uniformly continuous for the translation
-distance. -/
-theorem uniformContinuous_expChar_bohrLine
+/-- `mu` is a **frequency of the hull** of `f` when the exponential `t ↦ e^{iμt}` is uniformly
+continuous for the translation distance of `f`, hence extends to the hull. -/
+def IsBohrHullFrequency (f : ℝ →ᵇ ℂ) (mu : ℝ) : Prop :=
+  UniformContinuous (fun t : BohrLine f => expChar mu t.val)
+
+/-- **Every frequency in the Bohr spectrum is a frequency of the hull.** -/
+theorem isBohrHullFrequency_of_bohrCoefficient_ne_zero
     (hfa : HTGeometry.IsBohrAlmostPeriodic (fun x => f x)) {mu : ℝ}
     (hmu : bohrCoefficient (fun x => f x) mu ≠ 0) :
-    UniformContinuous (fun t : BohrLine f => expChar mu t.val) := by
+    IsBohrHullFrequency f mu := by
   set c : ℂ := bohrCoefficient (fun x => f x) mu with hc
   have hcpos : 0 < ‖c‖ := norm_pos_iff.mpr hmu
   refine (LipschitzWith.of_dist_le_mul (K := Real.toNNReal ‖c‖⁻¹) fun s t => ?_).uniformContinuous
@@ -109,18 +113,15 @@ theorem uniformContinuous_expChar_bohrLine
 def bohrHullChar (f : ℝ →ᵇ ℂ) (mu : ℝ) : BohrHull f → ℂ :=
   UniformSpace.Completion.extension (fun t : BohrLine f => expChar mu t.val)
 
-@[simp] theorem bohrHullChar_bohrIota (hfa : HTGeometry.IsBohrAlmostPeriodic (fun x => f x))
-    {mu : ℝ} (hmu : bohrCoefficient (fun x => f x) mu ≠ 0) (t : ℝ) :
+@[simp] theorem bohrHullChar_bohrIota {mu : ℝ} (hmu : IsBohrHullFrequency f mu) (t : ℝ) :
     bohrHullChar f mu (bohrIota f t) = expChar mu t :=
-  UniformSpace.Completion.extension_coe (uniformContinuous_expChar_bohrLine hfa hmu)
-    (BohrLine.of f t)
+  UniformSpace.Completion.extension_coe hmu (BohrLine.of f t)
 
 theorem continuous_bohrHullChar (f : ℝ →ᵇ ℂ) (mu : ℝ) : Continuous (bohrHullChar f mu) :=
   UniformSpace.Completion.continuous_extension
 
 /-- The extension is multiplicative: it is a character of the hull group. -/
-theorem bohrHullChar_add (hfa : HTGeometry.IsBohrAlmostPeriodic (fun x => f x))
-    {mu : ℝ} (hmu : bohrCoefficient (fun x => f x) mu ≠ 0) (x y : BohrHull f) :
+theorem bohrHullChar_add {mu : ℝ} (hmu : IsBohrHullFrequency f mu) (x y : BohrHull f) :
     bohrHullChar f mu (x + y) = bohrHullChar f mu x * bohrHullChar f mu y := by
   have hcont := continuous_bohrHullChar f mu
   have h1 : Continuous fun p : BohrHull f × BohrHull f => bohrHullChar f mu (p.1 + p.2) :=
@@ -136,8 +137,8 @@ theorem bohrHullChar_add (hfa : HTGeometry.IsBohrAlmostPeriodic (fun x => f x))
       (Set.range (bohrIota f) ×ˢ Set.range (bohrIota f)) := by
     rintro ⟨x, y⟩ ⟨⟨s, rfl⟩, ⟨t, rfl⟩⟩
     simp only
-    rw [← bohrIota_add, bohrHullChar_bohrIota hfa hmu, bohrHullChar_bohrIota hfa hmu,
-      bohrHullChar_bohrIota hfa hmu]
+    rw [← bohrIota_add, bohrHullChar_bohrIota hmu, bohrHullChar_bohrIota hmu,
+      bohrHullChar_bohrIota hmu]
     unfold expChar
     rw [← Complex.exp_add]
     congr 1
@@ -145,25 +146,23 @@ theorem bohrHullChar_add (hfa : HTGeometry.IsBohrAlmostPeriodic (fun x => f x))
     ring
   exact congrFun (Continuous.ext_on hdense h1 h2 heq) (x, y)
 
-@[simp] theorem bohrHullChar_zero (hfa : HTGeometry.IsBohrAlmostPeriodic (fun x => f x))
-    {mu : ℝ} (hmu : bohrCoefficient (fun x => f x) mu ≠ 0) :
+@[simp] theorem bohrHullChar_zero {mu : ℝ} (hmu : IsBohrHullFrequency f mu) :
     bohrHullChar f mu 0 = 1 := by
-  have h := bohrHullChar_bohrIota hfa hmu (0 : ℝ)
+  have h := bohrHullChar_bohrIota hmu (0 : ℝ)
   rw [bohrIota_zero] at h
   rw [h]
   unfold expChar
   norm_num
 
 /-- The character has unit modulus. -/
-theorem norm_bohrHullChar (hfa : HTGeometry.IsBohrAlmostPeriodic (fun x => f x))
-    {mu : ℝ} (hmu : bohrCoefficient (fun x => f x) mu ≠ 0) (x : BohrHull f) :
+theorem norm_bohrHullChar {mu : ℝ} (hmu : IsBohrHullFrequency f mu) (x : BohrHull f) :
     ‖bohrHullChar f mu x‖ = 1 := by
   have hcont := continuous_bohrHullChar f mu
   have heq : Set.EqOn (fun x : BohrHull f => ‖bohrHullChar f mu x‖) (fun _ : BohrHull f => (1 : ℝ))
       (Set.range (bohrIota f)) := by
     rintro x ⟨t, rfl⟩
     simp only
-    rw [bohrHullChar_bohrIota hfa hmu]
+    rw [bohrHullChar_bohrIota hmu]
     unfold expChar
     exact Complex.norm_exp_ofReal_mul_I _
   exact congrFun (Continuous.ext_on (denseRange_bohrIota f) hcont.norm continuous_const heq) x

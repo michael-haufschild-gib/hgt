@@ -1,14 +1,17 @@
-# Recurrence–time conversion law
+# Stationary recurrence completion and conversion law
 
 - **ID:** time-return-duality-law
 - **Stage:** 1-in-progress
-- **Type:** MASTER CONJECTURE / UNIVERSAL STATIONARY RECURRENCE QUOTIENT
+- **Type:** MASTER THEOREM PROGRAM / UNIVERSAL STATIONARY RECURRENCE LAW
 - **Source:** recurrence corpus synthesis
 - **Statement:** Every stationary quantum return experiment factors through one maximal
   unoriented system--clock quotient.  On its recurrent carrier, one projective detuning map
   splits phase capacity exactly into recurrence constraints and observable temporal directions.
   In finite rank, temporal dimension is twice the small-defect return-volume exponent.
-  Interaction converts constraints into temporal directions one-for-one.
+  Centered complete-time sampling has one unique return law for every
+  probability spectrum; its moments are exactly additive energy-gap
+  collision probabilities. Interaction converts constraints into temporal
+  directions one-for-one.
 
 ## Goal
 
@@ -69,23 +72,34 @@ under universal cross-testing: systems are indistinguishable to every clock
 exactly when their difference laws agree, and clocks are indistinguishable
 to every system exactly when their orientation quotients agree.
 
-The missing stationary-completion theorem is the single weak limit
+The stationary-completion theorem is the single weak limit
 \[
   \mathfrak R(\mu,\rho_T)
-  \Longrightarrow
-  \left(
-    \left|\sum_jw_jz_j\right|^2
-  \right)_*m_{K_\mu},
+  \Longrightarrow \mathfrak R_\infty(\mu),
   \qquad
   \rho_T=\operatorname{Unif}[-T,T],
   \tag{SC}
 \]
-where \((w_j,E_j)\) are the atoms of \(\mu\), \(K_\mu\) is their compact
-relation hull and \(m_{K_\mu}\) its invariant probability law.  Thus the
-continuous spectral part disappears from the complete long-time return
-distribution without disappearing from the underlying unitary evolution.
-The finite Weyl law below is a local geometric corollary of `(SC)`, not the
-master law.
+which now exists uniquely for every probability energy law, without a
+finite, pure-point or absolute-continuity premise, and obeys the complete
+moment identity
+\[
+  \boxed{
+  \int_0^1 x^n\,d\mathfrak R_\infty(\mu)(x)
+  =
+  \bigl(\nu_\mu^{*n}\bigr)(\{0\})
+  \quad(n\geq0).
+  }
+  \tag{M}
+\]
+Hence the stationary recurrence law is exactly the additive collision
+hierarchy of the spectral difference law.  If \(\mu\) is atomless then
+\(\mathfrak R_\infty(\mu)=\delta_0\), including singular-continuous spectra
+whose pointwise fidelity need not decay.  For countable pure-point packets,
+the corpus separately constructs Haar measure on the exact relation hull;
+the remaining pure-point bridge is to identify its fidelity pushforward
+with this canonical law in one capstone theorem.  The finite Weyl law below
+is a local geometric corollary of `(SC)`--`(M)`, not the master law.
 
 The intended physical sentence is:
 
@@ -153,17 +167,19 @@ decay.
 1. Kill-test against quantitative recurrence/local-dimension literature.
    Existing mixing theorems do not cover nonmixing quasiperiodic quantum
    phase flows or the exact constraint-conversion identity.
-2. Represent the finite orbit hull as the image of a full-rank integer map
+2. Identify the countable pure-point stationary law with the fidelity
+   pushforward of Haar measure on its exact relation hull.
+3. Represent the finite orbit hull as the image of a full-rank integer map
    from a \(\tau\)-torus after choosing a rational gap basis and clearing
    denominators.
-3. Pull the fidelity defect back to that torus. Positive spectral weights
+4. Pull the fidelity defect back to that torus. Positive spectral weights
    make its Hessian positive definite modulo the finite kernel. Prove
    two-sided quadratic comparison on a small fundamental neighborhood.
-4. Convert quadratic comparison to two-sided Haar-volume bounds
+5. Convert quadratic comparison to two-sided Haar-volume bounds
    \(c\eta^{\tau/2}\le V(\eta)\le C\eta^{\tau/2}\).
-5. Join with projective rank–nullity, observer action, weak interaction and
+6. Join with projective rank–nullity, observer action, weak interaction and
    fixed-hopping realization.
-6. Recover the existing water entropy as the relation-free finite-resolution
+7. Recover the existing water entropy as the relation-free finite-resolution
    form and spectral-depth entropy as its countable running form.
 
 ## Kill tests
@@ -323,3 +339,10 @@ results.
   significance gate is the Lean closure of the dependency-closed
   nearest-neighbour qudit-chain induction and its exact return-scarcity
   consequence.
+- 2026-07-31 — closed arbitrary-spectrum stationary completion in
+  `StationaryRecurrenceCompletionLaw.lean`.  Centered uniform time sampling
+  converges weakly on the exact compact fidelity carrier for every
+  probability energy law; every moment of the unique limit is the
+  corresponding additive gap-collision probability.  The same module proves
+  the full atomless collapse to `δ₀`, including singular-continuous spectra.
+  Foreground `lake env lean` verification passed.

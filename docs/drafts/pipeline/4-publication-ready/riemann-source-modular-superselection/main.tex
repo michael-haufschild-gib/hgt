@@ -38,8 +38,8 @@
 \newcommand{\cS}{\mathcal S}
 \newcommand{\dd}{\,\mathrm d}
 
-\title{\textbf{The pointed-observability law for the Riemann divisor}\\
-\large Bifiltered source acquisition, a strict positive hierarchy,
+\title{\textbf{The source-completion law for the Riemann divisor}\\
+\large Bifiltered pointing, singular common-test reconstruction,
 and ramified-character descent}
 \author{Michael Haufschild}
 \date{}
@@ -81,6 +81,15 @@ every off-axis zero by a negative diagonal value.  Source pointing, finite colli
 global magnitude, atomwise orientation, and global common-test positivity are therefore
 strictly different observables.
 
+The global level is nevertheless reached from the arithmetic source.  Every square-summable
+test on the multiplicity-exact Xi divisor is the Hilbert limit of finite, pairwise-separated
+continued prime--Gamma packets, and their explicit source energies converge to its Weil
+quadratic value.  For the canonical Xi--Hurwitz orientation vector, one such source sequence
+has energies converging to the negative transverse-orientation energy; eventual nonnegativity
+of that single sequence is equivalent to RH.  This is an unconditional common-test
+reconstruction, not a sign theorem: the approximating section is selected through divisor-side
+Hilbert closure.
+
 Before these quotients, the Gamma--Julia normal lift recovers an odd prime-log first jet and
 its pointed Fisher--Ward trace remains odd.  Squaring completed Xi preserves
 hypertranscendence and the full logarithmic-current differential field but loses this
@@ -92,9 +101,13 @@ orientation.  Singular acquisition packages surviving local divisor data as
 whose continuous rate and dyadic ramification tower govern every later consumer developed here:
 Wold and Poisson transport, Sonin and Calkin seams, Ward and Rees obstructions, thermal deck
 descent, and mass deformation.  The result does not prove RH.
-It identifies the missing proof architecture: global test transgression must preserve source
-pointing and incidence before passage to critical clock, diagonal Hilbert response, separated
-cylinder, or even character erases orientation.
+Reflection itself can be folded inside Hedenmalm's pencil as a two-component Dirac system whose
+only inhomogeneous defect is the literal completed theta source.  At the same boundary, the exact
+Gamma/co-Poisson interval cell has a negative symmetric determinant, while its canonical
+critical rooted correction is square-summable after scalar renormalization only for the zero
+scalar.  Thus the remaining proof architecture is exact: a source-only selection/sign theorem
+must act through singular cross-source coupling before critical clock, diagonal Hilbert response,
+separated cylinder, or even character erases orientation.
 \end{abstract}
 
 \medskip
@@ -433,6 +446,24 @@ response while leaving positive transverse charge, so even atom-dependent finite
 domination is equivalent to RH; a mixed reflection-positive exponential polynomial has a
 negative separated cylinder lift and no finite sum-of-squares lift; while one global rank-one
 resolvent test detects every off-axis zero by a negative Weil value;
+\item every finite lower/upper prime--Gamma source cup is exactly the multiplicity-exact Xi--Weil
+polarization of its two Cauchy tests.  More generally, every square-summable divisor test is the
+norm limit of pairwise-separated finite continued-source packets and their source energies
+converge to its Weil quadratic value.  One such sequence converges to the Xi--Hurwitz orientation
+vector and its energies converge to \(-\mathcal E_H\), where \(\mathcal E_H\ge0\) is the
+orientation energy; eventual nonnegativity of this single source sequence is equivalent to RH,
+but no eventual sign is asserted;
+\item if \(\Xi(\alpha)=0\), the two reflected Hedenmalm quotients fold into nonzero components
+\(E_\alpha,O_\alpha\) satisfying
+\[
+ zE_\alpha=\alpha O_\alpha,\qquad
+ zO_\alpha=\alpha E_\alpha+i\Xi(z).
+\]
+For every \(L,d>0\), the exact Gamma/co-Poisson interval cell on
+\(\tfrac12\pm d\) has a strictly negative quadratic direction and determinant.  Its canonical
+critical rooted prime coordinate is square-summable after a prime-independent scalar
+renormalization exactly for the zero scalar; the uncorrected negative packet therefore cannot be
+repaired within this scalar actionwise class;
 \item no entire compactified moment symbol can equal one at one positive theta heat node and zero
 at every other positive heat node;
 \item if
@@ -1535,6 +1566,104 @@ shrinking the neighbourhood, which proves \eqref{eq:rank-one-weil} and the state
 implication.
 \end{proof}
 
+\begin{theorem}[Singular source completion of the common-test Weil form]
+\label{thm:source-weil-completion}
+Let \(\mathscr Z_\Xi\) denote the centered Xi divisor with every point repeated according to
+analytic multiplicity, and define
+\[
+ \mathcal W_\Xi(F,G)
+ =\sum_{\lambda\in\mathscr Z_\Xi}
+ F(\lambda)\overline{G(\overline\lambda)}.
+ \tag{4.C1}\label{eq:weil-polarization}
+\]
+Write
+\[
+ Q_\Xi(v)=\Rea\sum_{\lambda\in\mathscr Z_\Xi}
+ v(\lambda)\overline{v(\overline\lambda)}
+\]
+for the induced continuous real quadratic form on \(\ell^2(\mathscr Z_\Xi)\).
+For a regular continued-source pole \(z\), put
+\[
+ k_z(\lambda)=\lambda^{-1}-(\lambda-z)^{-1},
+\]
+and let
+\[
+ \mathscr K(z,w)=
+ \frac{\mathscr R(\overline w)-\mathscr R(z)}{z-\overline w},
+ \tag{4.C2}\label{eq:continued-source-kernel}
+\]
+where \(\mathscr R\) is the continued prime--archimedean relative trace.  If
+\(P=((c_j,z_j))_{j\in J}\) is finite and
+\(z_i\ne\overline{z_j}\) for every \(i,j\), define
+\[
+ v_P=\sum_{j\in J}c_j k_{z_j}|_{\mathscr Z_\Xi},\qquad
+ S(P)=\Rea\sum_{i,j\in J}c_i\overline{c_j}\,\mathscr K(z_i,z_j).
+ \tag{4.C3}\label{eq:source-packet-energy}
+\]
+Then:
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item every finite lower/upper prime--Gamma source cup equals exactly
+\(\mathcal W_\Xi(F_x,G_y)\) for the Cauchy tests represented by the two source packets;
+\item for every \(F\) with
+\(\sum_{\lambda\in\mathscr Z_\Xi}|F(\lambda)|^2<\infty\), there is a sequence of finite
+pairwise-separated continued-source packets \(P_n\) such that
+\[
+ v_{P_n}\longrightarrow F|_{\mathscr Z_\Xi}\quad\text{in }\ell^2(\mathscr Z_\Xi),
+ \qquad
+ S(P_n)\longrightarrow\Rea\mathcal W_\Xi(F,F);
+ \tag{4.C4}\label{eq:universal-source-completion}
+\]
+\item for the canonical Xi--Hurwitz orientation vector \(h_\Xi\), one may choose \(P_n\) so that
+\[
+ v_{P_n}\longrightarrow h_\Xi,\qquad
+ S(P_n)\longrightarrow-\mathcal E_H,
+ \tag{4.C5}\label{eq:orientation-source-completion}
+\]
+where \(\mathcal E_H\ge0\) is the Xi--Hurwitz orientation energy.  For that sequence,
+\[
+ \mathrm{RH}\quad\Longleftrightarrow\quad
+ S(P_n)\ge0\ \text{eventually}.
+ \tag{4.C6}\label{eq:one-source-sequence-gate}
+\]
+\end{enumerate}
+No eventual sign is asserted in \eqref{eq:one-source-sequence-gate}.  The sequence in
+\eqref{eq:orientation-source-completion} is selected through the divisor-side Hilbert closure,
+not by a source-only rule.
+\end{theorem}
+
+\begin{proof}
+For finite lower and upper packets, the continued prime--Gamma kernel equals the Cauchy
+polarization at every off-diagonal pair.  On the reflected diagonal, termwise differentiation of
+the locally normally convergent relative-resolvent series gives the squared-Cauchy value.  Finite
+bilinearity and absolute summability then give (i).
+
+For (ii), normalized regular Cauchy poles exhaust each multiplicity fibre of
+\(\ell^2(\mathscr Z_\Xi)\).  Hence every fibre indicator lies in the Hilbert closure of the
+continued Cauchy source span.  Regrouping the square-summable coordinate expansion of
+\(F|_{\mathscr Z_\Xi}\) by fibres puts the full evaluation vector in the same closed span.
+Finite algebraic packets approximate it in norm.  Arbitrarily small pole perturbations make every
+finite packet pairwise separated while preserving its evaluation vector in the limit.  For a
+separated packet the source identity gives
+\[
+ S(P)=Q_\Xi(v_P).
+\]
+Continuity of the Hilbert quadratic form proves \eqref{eq:universal-source-completion}.
+
+The canonical orientation vector is square-summable and its unconditional Weil value is
+\(-\mathcal E_H\), so (iii) is the corresponding specialization.  Under RH the Weil Hilbert
+quadratic is nonnegative on every \(\ell^2\) vector, hence on every packet.  Conversely, eventual
+nonnegativity and \eqref{eq:orientation-source-completion} imply
+\(-\mathcal E_H\ge0\); since \(\mathcal E_H\ge0\), this forces
+\(\mathcal E_H=0\), which is equivalent to RH.
+\end{proof}
+
+Theorem~\ref{thm:source-weil-completion} closes an important ambiguity in the hierarchy.
+Global common-test coupling is not an abstract missing space: the full square-summable Weil form
+is the completion of explicit finite prime--Gamma source energies.  What remains missing is much
+narrower---a source-only rule selecting the orientation section together with an unconditional
+eventual sign.  The target-selected existence theorem does not supply either datum, and
+\eqref{eq:one-source-sequence-gate} shows that the sign itself is exactly the unsolved content.
+
 Theorem~\ref{thm:bifilter} changes the interpretation of
 Theorems~\ref{thm:relative-ht}, \ref{thm:projective-pointing}, and
 \ref{thm:finite-positive-collapse}.  Theorem~\ref{thm:positive-hierarchy} then identifies
@@ -2144,6 +2273,68 @@ distinct reciprocal primes cannot be roots of a nonzero polynomial.  Formula
 boundedness.
 \end{proof}
 
+\begin{theorem}[Exact reflection-completion trilemma]
+\label{thm:reflection-completion}
+Let
+\[
+ \Phi(u)=
+ \begin{cases}
+ (e^u-1)/u,&u\ne0,\\
+ 1,&u=0,
+ \end{cases}
+ \qquad
+ K_L(z,w)=e^{(w-1/2)L}L\,\Phi((z-w)L).
+ \tag{6.K1}\label{eq:copoisson-cell}
+\]
+For \(L,d>0\), restrict \(K_L\) to
+\(z_\pm=\tfrac12\pm d\).  Then the coefficient vector
+\((1,-e^{dL})\) has quadratic value
+\[
+ 2e^{dL}\left(L-\frac{\sinh(dL)}d\right)<0,
+ \tag{6.K2}\label{eq:copoisson-negative-vector}
+\]
+and the \(2\times2\) determinant is
+\[
+ L^2-\left(\frac{\sinh(dL)}d\right)^2<0.
+ \tag{6.K3}\label{eq:copoisson-negative-det}
+\]
+Thus the exact Gamma/co-Poisson interval cell is not positive semidefinite on any nontrivial
+symmetric real packet.
+
+At the critical inverse displacement, the canonical rooted prime coordinate is
+\[
+ a_p=\left(\frac{\log p}{\sqrt p}\right)^{1/2}.
+ \tag{6.K4}\label{eq:critical-rooted-coordinate}
+\]
+For every prime-independent scalar \(c\in\R\),
+\[
+ \sum_p(ca_p)^2<\infty\quad\Longleftrightarrow\quad c=0.
+ \tag{6.K5}\label{eq:scalar-critical-rigidity}
+\]
+Consequently the zero scalar leaves \eqref{eq:copoisson-negative-vector} unchanged, while every
+nonzero scalar multiple of the canonical critical rooted correction leaves the ordinary cofinal
+Hilbert space.
+\end{theorem}
+
+\begin{proof}
+The diagonal entries of the symmetric packet are \(Le^{\pm dL}\), while both off-diagonal entries
+equal \(\sinh(dL)/d\).  Direct expansion gives
+\eqref{eq:copoisson-negative-vector} and \eqref{eq:copoisson-negative-det}.  Since
+\(\sinh x>x\) for \(x>0\), both are strictly negative.
+
+For a prime \(p\), the von Mangoldt weight is \(\log p\), so
+\(a_p^2=\log p/\sqrt p\).  This dominates
+\((\log2)/p\).  Euler's divergence of \(\sum_p1/p\) therefore excludes square summability when
+\(c\ne0\), while \(c=0\) is immediate.
+\end{proof}
+
+The theorem identifies the positive survivor of the local Krein obstruction.  Exact reflection
+is available action by action, but only as an indefinite interval cell.  The canonical critical
+Gamma boundary coordinate is also available, but no nonzero prime-independent scalar places it
+in the cofinal Hilbert norm.  Hence a positive completion, if it exists, must cancel or mix prime
+coordinates before the cofinal norm is taken.  The conclusion is deliberately restricted to the
+canonical scalar actionwise class; it does not exclude singular cross-prime completion.
+
 The algebraic completion has an independent infinite frontier.  Let \(I\) be finite, let
 \(A=\prod_{i\in I}A_i\) be a finite product of pointed sets, and let
 \(y:\mathcal P\to A\) be tail-complete, where \(\mathcal P\) is the set of rational primes:
@@ -2629,6 +2820,50 @@ nonvanishing energy, which is exactly failure of sequential closability.
 Put \(\Xi(t)=\xi(\tfrac12+it)\), and let \(k\in\mathcal S(\R)\) be the completed theta source
 normalized by \(\widehat k=\Xi\).  Hedenmalm's theta pair pulls back to momentum symmetry and
 theta nullity for a source-core form \cite{Hedenmalm2026}.
+
+\begin{theorem}[Reflection-folded Dirac source normal form]
+\label{thm:hedenmalm-fold}
+For every \(\alpha\in\C\) with \(\Xi(\alpha)=0\), let \(U_\alpha\) be the unique entire
+removable solution of
+\[
+ (\alpha-z)U_\alpha(z)=-i\Xi(z),
+ \tag{9.D1}\label{eq:hedenmalm-source-equation}
+\]
+and put
+\[
+ E_\alpha=\frac{U_\alpha-U_{-\alpha}}2,\qquad
+ O_\alpha=\frac{U_\alpha+U_{-\alpha}}2.
+ \tag{9.D2}\label{eq:hedenmalm-fold}
+\]
+Then
+\[
+ zE_\alpha(z)=\alpha O_\alpha(z),\qquad
+ zO_\alpha(z)=\alpha E_\alpha(z)+i\Xi(z),
+ \tag{9.D3}\label{eq:folded-dirac}
+\]
+and therefore
+\[
+ (z^2-\alpha^2)E_\alpha(z)=i\alpha\Xi(z),\qquad
+ (z^2-\alpha^2)O_\alpha(z)=iz\Xi(z).
+ \tag{9.D4}\label{eq:folded-helmholtz}
+\]
+Moreover \(\alpha\ne0\) and \(E_\alpha\) is not identically zero.
+\end{theorem}
+
+\begin{proof}
+Evenness of \(\Xi\) sends a zero \(\alpha\) to \(-\alpha\).  Subtracting and adding
+\eqref{eq:hedenmalm-source-equation} at these two parameters gives
+\eqref{eq:folded-dirac}; one further substitution gives \eqref{eq:folded-helmholtz}.
+The completed centered function does not vanish at zero, so \(\alpha\ne0\).  If
+\(E_\alpha\equiv0\), evaluating the second equation in \eqref{eq:folded-dirac} at \(z=0\)
+would give \(i\Xi(0)=0\), a contradiction.
+\end{proof}
+
+The theorem removes reflection as a missing identification: both reflected parameters already
+form one parity-graded source system.  What remains in this exact normal form is the single
+inhomogeneous term \(i\Xi\).  Squaring the spectral coordinate produces the forced equations
+\eqref{eq:folded-helmholtz}, not homogeneous eigenvalue equations; it therefore preserves the
+zero location while hiding the first-order source orientation.
 
 \begin{theorem}[Theta-divisor rigging classification]\label{thm:theta-rigging}
 Let \(Q:\mathcal S(\R)\times\mathcal S(\R)\to\C\) be jointly Schwartz-continuous,
@@ -3460,7 +3695,11 @@ The Riemann source has a four-stage boundary architecture.
 \item \emph{Bifiltered singular acquisition.}  Valuation depth and prime-normal breadth admit no
 faithful additive scalarization.  Every nonzero positive momentum-symmetric theta-divisor
 detector is a singular atomic rigging and is nonclosable through ordinary \(L^2\); no entire
-heat-node symbol isolates one source atom.
+heat-node symbol isolates one source atom.  Reflection is already internal in the folded
+Hedenmalm source system, whose sole inhomogeneous defect is the completed theta source.
+Every finite prime--Gamma source cup equals the Xi--Weil polarization, and finite separated
+continued-source packets complete the full square-summable common-test Weil form.  The canonical
+orientation section exists in this completion but is selected through divisor-side closure.
 \item \emph{Odd orientation jet.}  The unique positive Julia lift restores the prime logarithmic
 normal derivative erased by the scalar Gamma contraction.  Its finite packets converge to the
 maximally singular prime clock, and the pointed Fisher--Ward trace is odd in this unsquared
@@ -3486,6 +3725,9 @@ Theorem~\ref{thm:trichotomy}.
 The reflected pair has only a hyperbolic nonzero invariant quadratic form; finite-packet
 Euler pole excess, Ward charge, and Weil negative index are the same charge, and positive
 two-channel completion must pay both Krein debt and Schur coupling tax.
+Already before this finite debt calculation, the exact local Gamma/co-Poisson interval cell has
+negative determinant on every nontrivial reflected real pair, while its canonical critical rooted
+correction is cofinally square-summable after scalar renormalization only when the scalar is zero.
 Every faithful norm-conservative equivariant descendant forces the continuous rate to
 vanish.  Compact finite-factor-invariant local quotients erase the analytic orientation fibre,
 whereas Poisson-normalized source time and one fixed-width global prime--Gamma tail retain it
@@ -3502,7 +3744,8 @@ orientation jet, and the ramified character module
 \end{theorem}
 
 \begin{proof}
-Part (i) combines Theorems~\ref{thm:bifilter}, \ref{thm:theta-rigging}, and
+Part (i) combines Theorems~\ref{thm:bifilter}, \ref{thm:source-weil-completion},
+\ref{thm:hedenmalm-fold}, \ref{thm:theta-rigging}, and
 \ref{thm:heat-node}.  Part (ii) is
 Theorems~\ref{thm:odd-orientation} and \ref{thm:parity-splitting}, together with
 Corollary~\ref{cor:finite-reader}.
@@ -3515,7 +3758,7 @@ Theorems~\ref{thm:dyadic-descent} and \ref{thm:density-monodromy}.  Part (iv) co
 Theorem~\ref{thm:character-energy}, the strict versions of the continuous consumer theorems,
 Corollary~\ref{cor:xi-superselection}, and
 Theorems~\ref{thm:hyperbolic-uniqueness}, \ref{thm:charge-conversion},
-\ref{thm:schur-tax}, \ref{thm:conservative-descent},
+\ref{thm:reflection-completion}, \ref{thm:schur-tax}, \ref{thm:conservative-descent},
 \ref{thm:source-horizon}, \ref{thm:local-global}, and
 \ref{thm:aperture-spectrum}, with Corollary~\ref{cor:mass-distortion}.
 \end{proof}
@@ -3523,7 +3766,8 @@ Theorems~\ref{thm:hyperbolic-uniqueness}, \ref{thm:charge-conversion},
 \section{Interpretation for RH}\label{sec:interpretation}
 
 Theorems~\ref{thm:inner-outer}, \ref{thm:duality-fracture},
-\ref{thm:critical-resolution}, \ref{thm:ht-creation}, \ref{thm:graph-weld},
+\ref{thm:source-weil-completion}, \ref{thm:critical-resolution},
+\ref{thm:reflection-completion}, \ref{thm:ht-creation}, \ref{thm:graph-weld},
 \ref{thm:trichotomy}, \ref{thm:essential}, and \ref{thm:singular-equalizer} identify a common
 mechanism behind several earlier obstructions.
 
@@ -3541,12 +3785,16 @@ projective prime-tail field & shift--jet constraints & literal Euler sign\\
 scalar valuation adjunction & pointed incidence matroid & new breadth relations\\
 finite positive source kernels & collision-free labels & divisor orientation\\
 faithful Xi evaluation panel & finite Xi jet carrier & logarithmic-current circuit\\
+finite prime--Gamma source cup & exact Xi--Weil polarization & source-only global sign\\
+continued-source Hilbert closure & every square-summable Weil test & canonical source selection\\
 Gamma scalar contraction & quadratic contact & prime-log first jet\\
 positive Julia lift & oriented prime-log jet & bounded global recovery\\
 pointed Fisher--Ward trace & signed cutoff curvature & quadratic energy\\
 squared completed carrier & divisor/log current & odd reflection lift\\
 finite jet reporter & selected derivative packet & complete current tower\\
 score/overlap graph & Xi outer connection & bounded positive completion\\
+Gamma/co-Poisson interval cell & exact reflected incidence & Hilbert positivity\\
+critical rooted correction & canonical boundary coordinate & cofinal \(\ell^2\) norm\\
 two-endpoint normal blow-up & inner pole orientation & global normalization\\
 centered Euler contraction & affine residue & uniform Herglotz sign\\
 continuous modular character & full spectral point & divisor multiplicity\\
@@ -3561,6 +3809,7 @@ Gamma sewing & every finite prime packet & bounded Hilbertization\\
 finite-Rees transport & each Rees grade & all-orders type crossing\\
 comoving clock restriction & finite traveling profile & independent-quadrant rate\\
 ordinary \(L^2\) closure & cyclic theta source & nonzero divisor rigging\\
+Hedenmalm reflection fold & internal reflected pair & homogeneous eigen-equation\\
 entire heat-node symbol & boundary accumulation & single-node separation\\
 Sonin Calkin quotient & coherent prime seams & off-equalizer compactness\\
 Ward Schur complement & four-unit boundary ball & strict-right character\\
@@ -3588,7 +3837,9 @@ observability, and divisor orientation are therefore three distinct levels.  Alr
 first-prime layer, differential-field type identifies opposite tail orientations while positive
 definiteness selects the literal all-positive source above that quotient.  Source orientation is
 pointing data before completion, just as divisor orientation is lift data before evenization.
-The Julia normal
+The full common-test Weil form is itself the Hilbert completion of finite prime--Gamma source
+energies, but the orientation section supplied by closure is target-selected and its eventual
+source sign is exactly the RH boundary.  The Julia normal
 derivative and pointed Fisher--Ward transgression retain the
 unsquared prime-log direction; its even square retains the logarithmic current but not the
 reflection lift.  Singular theta and squarefree graphs acquire the divisor.  The continuous character
@@ -3664,6 +3915,24 @@ detection because one common meromorphic test sees the pole across the complete 
 The missing route is therefore not ``more positivity.''  It is a source-pointed,
 incidence-preserving global transgression which reaches the common-test resolvent level before
 the clock, diagonal, cylinder, or even-character quotient discards its input.
+
+Theorem~\ref{thm:source-weil-completion} now constructs that transgression at the level of
+representation.  Deninger's finite source cup is already the exact Xi--Weil polarization, and
+the separated continued prime--Gamma core is dense enough to recover every square-summable Weil
+test together with its quadratic value.  The formerly missing common-test factorization is
+therefore not missing.  What the construction does not provide is a source-only choice of the
+canonical orientation section or its eventual sign.  For the target-selected section the limit
+is \(-\mathcal E_H\), and eventual nonnegativity is equivalent to RH.  This locates the unresolved
+content without disguising it as either an absent Hilbert space or an asserted inequality.
+
+Theorems~\ref{thm:hedenmalm-fold} and \ref{thm:reflection-completion} explain why regular scalar
+repairs do not supply that sign.  Hedenmalm reflection is already internal after parity folding;
+the residual object is one affine theta-source defect.  Exact Gamma/co-Poisson reflection is
+already available as well, but its two-point cell is Krein, and the canonical critical rooted
+coordinate has no nonzero scalar cofinal \(\ell^2\) renormalization.  Thus the surviving
+possibility is singular cross-prime selection before the norm, not another actionwise positive
+factor.  This conclusion is a classification of the audited scalar completion class, not a
+no-go for arbitrary Hilbert--Pólya constructions.
 
 The carrier/current clause prevents the opposite overstatement.  Finite positivity is not
 ``blind to everything'': the same evaluation panel can be fully faithful to the chosen Xi jet
@@ -3821,6 +4090,14 @@ collision geometry, defect magnitude, diagonal response, and global divisor posi
 strict observable hierarchy.  The surviving proof architecture must transport pointing and
 incidence to the global common-test level before positive scalarization.
 
+That global level is now constructed, not postulated.  Every finite Deninger prime--Gamma source
+cup is exactly a Xi--Weil polarization, and every square-summable Weil test is the Hilbert limit
+of finite separated continued-source packets whose explicit source energies converge to its
+quadratic value.  A single such sequence converges to the canonical orientation vector and has
+limit energy \(-\mathcal E_H\).  The sequence is selected through target closure; eventual source
+nonnegativity is equivalent to RH and is not proved.  Thus missing content is source-only
+selection plus sign, not existence of common-test factorization.
+
 The source also supplies the orientation that its even quotients conceal.  The Gamma scalar
 contraction approaches its lossless edge quadratically; the positive Julia lift restores the
 first normal jet \(\log p\), and the pointed Fisher--Ward trace is odd in that jet.  Globally,
@@ -3837,6 +4114,13 @@ Reflection then exposes a genuine type fracture.  At every hypothetical right-ha
 corresponding prime-valuation sector is flat beyond all finite Rees orders, while its reflected
 partner is half-normal.  The flat radical is invariant under arbitrary-dimensional bounded
 finite-Rees transport, and exact sewing has essential operator norm.
+
+The same boundary has an exact local obstruction.  The Gamma/co-Poisson interval cell on every
+nontrivial reflected real pair has a negative determinant.  Its canonical critical rooted
+prime coordinate admits a square-summable prime-independent scalar renormalization only at
+scalar zero.  Zero leaves the negative packet; nonzero scalar leaves the cofinal Hilbert norm.
+This does not eliminate singular cross-prime completion, but it proves that the common-test sign
+cannot be manufactured by an actionwise scalar Hilbert repair.
 
 The broader law is an oriented bifiltered ramified-character law.  Before the divisor, valuation
 depth and prime-normal breadth are independent and no one additive total degree is faithful.
@@ -3859,6 +4143,12 @@ reader.  Singular divisor rigging is necessary even when horizontal rate vanishe
 independent multiplicity \(m_\rho\) then controls the full dyadic root/deck phase and its exact
 sharp breakdown level.  Divisor detection is not a bounded precursor of reflection positivity,
 and reflection positivity is not a way to create or ramify the divisor.
+
+Hedenmalm's reflected pair itself has no missing reflection identification: parity folding gives
+one two-component Dirac system with the literal completed theta function as its sole affine
+defect.  The corresponding second-order equations are forced resolvent equations, not
+homogeneous eigenvalue equations.  This explains simultaneously why squaring retains divisor
+location and why free self-adjointness of the squared operator does not orient the zero.
 
 Continuous density and discrete ramification meet in a second universal charge relation.
 Positive finite thermal density at rate \(q\) forces \(2qm=1\); finite-sheeted realizations
@@ -3888,7 +4178,8 @@ projective positive pointing, pointed collision matroid, finite-positive/current
 strict positive-observable hierarchy, unconditional cubic defect budget, odd orientation jet,
 continuous character, discrete ramification, their
 multiplicity-weighted inner--outer coupling, parity split, thermal charge relation, quadratic
-detector, hyperbolic conservation law, exact completion debt, source horizon, nonlocal
+detector, exact source completion of the common-test Weil form, reflection-folded source defect,
+hyperbolic conservation law, exact completion debt, source horizon, nonlocal
 tomography, and universal conservative-descent equalizer.  Within the stated source classes,
 the correct object is not one Hilbert completion but a bifiltered singular source, its odd
 normal jet, and its ramified character module, together with countably free

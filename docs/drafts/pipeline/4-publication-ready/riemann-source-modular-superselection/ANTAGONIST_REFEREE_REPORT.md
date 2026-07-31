@@ -1,7 +1,7 @@
 # Antagonist referee report
 
-Manuscript: **The pointed-observability law for the Riemann divisor:
-Bifiltered source acquisition, a strict positive hierarchy, and
+Manuscript: **The source-completion law for the Riemann divisor:
+Bifiltered pointing, singular common-test reconstruction, and
 ramified-character descent**
 
 Standard: hostile referee at a renowned broad mathematics or mathematical
@@ -58,10 +58,19 @@ Manuscript proves one strict positive-observability hierarchy.
    separated-cylinder lift.
 7. One shared rank-one resolvent test does detect every off-axis zero through
    negative diagonal Weil value.
-8. Before these quotients, Gamma--Julia lift restores odd prime-log jet and
+8. Every finite Deninger prime--Gamma source cup is exactly a Xi--Weil
+   polarization. Every square-summable Weil test is a Hilbert limit of finite
+   separated continued-source packets whose explicit source energies converge
+   to its quadratic value. One target-selected packet sequence converges to
+   canonical orientation vector with energy limit \(-\mathcal E_H\).
+9. Hedenmalm reflection folds into one nonzero two-component source system
+   with sole affine defect \(i\Xi\). Exact Gamma/co-Poisson interval reflection
+   has negative two-point determinant, while canonical critical rooted
+   coordinate has nonzero scalar cofinal norm divergence.
+10. Before these quotients, Gamma--Julia lift restores odd prime-log jet and
    Fisher--Ward trace remains odd. Squaring preserves logarithmic-current
    differential field and hypertranscendence while erasing orientation.
-9. Singular acquisition packages remaining divisor data as
+11. Singular acquisition packages remaining divisor data as
    \[
      (m_\rho,\chi_\rho),\qquad
      \chi_\rho(z)=e^{z(\rho-\tfrac12)},
@@ -161,11 +170,15 @@ couple divisor globally before scalarization. It does not construct source-to-
 resolvent correspondence whose unconditional positivity forces
 \(\mathcal E_\perp=0\).
 
-**Finding.** Correct and strongest remaining mathematical objection. Paper
-answers why audited regular routes fail and what information next route must
-retain. It does not complete route or prove zero exclusion.
+**Finding.** Attack now lands only at sign. Paper constructs source-to-Weil
+correspondence exactly: finite source cups equal Weil polarization, separated
+finite source packets complete every square-summable Weil test, and one
+packet sequence converges to canonical orientation sector. It does not select
+that sequence by source data alone or prove eventual nonnegativity; latter is
+equivalent to RH. Surviving arrow exists as representation, not as positive
+selection theorem.
 
-**Verdict:** hard ceiling on significance.
+**Verdict:** material strengthening; zero-exclusion/sign remains hard ceiling.
 
 ### 1. “This is a 55-page collage”
 
@@ -279,7 +292,9 @@ different exact mechanism:
 - Rees reflection distinguishes finite/half-normal behavior from
   all-orders-flat behavior;
 - Hedenmalm's theta-null form supplies singular divisor acquisition and a
-  dense nonclosed radical rather than an ordinary Hilbert completion.
+  dense nonclosed radical rather than an ordinary Hilbert completion; its
+  reflected quotient pair also folds into one exact affine Dirac source
+  system, so reflection identification itself is not missing.
 
 These results become shadows of one character only after their maps are
 proved. They are no longer presented as independent evidence for RH.
@@ -366,6 +381,12 @@ Pending final build, the declaration-level claim trace covers:
 - physical-line positive mixed cone and failed finite separated SOS lift;
 - vertical divergence of scalarized source Ward majorant;
 - rank-one global Weil detection;
+- exact finite Deninger source-cup/Weil polarization identity;
+- universal separated prime--Gamma source completion of every square-summable
+  Weil test and one target-selected orientation sequence;
+- reflection-folded Hedenmalm source system;
+- Gamma/co-Poisson negative interval determinant and scalar critical
+  completion trilemma;
 - source bifiltration and paired recovery;
 - positive shell and relative hypertranscendence;
 - Julia normal lift, prime-log limit, dense graph, and recovery blow-up;
@@ -390,9 +411,9 @@ conditionals. The manuscript contains no claim about its verification method.
 | Criterion | Verdict | Hostile reason |
 |---|---|---|
 | Unconditional correctness | Provisional pass after final mechanical audit | One notation error was caught and corrected; every remaining theorem has declaration-level trace, but independent proof reading remains necessary |
-| Genuine mathematical object | Pass | Strict positive hierarchy plus ramified character and odd source lift, not decorative equivalence |
+| Genuine mathematical object | Pass | Singular source completion of full Weil form plus reflected source-defect normal form, strict hierarchy, ramified character, and odd source lift |
 | High-interest progress toward RH | Borderline | Gives unconditional global defect budget and exact obstruction to local positivity closure, but no zero exclusion |
-| Novel route | Provisional pass | Source-pointed global common-test transgression is coherent route class; paper diagnoses it but does not construct closing inequality |
+| Novel route | Provisional pass | Global common-test transgression is now constructed as singular prime--Gamma source completion; source-only selector and sign inequality remain absent |
 | Famous-route death theorem | Fail and not claimed | Excluded classes are narrower than CCM/Hilbert--Pólya |
 | Universality | Pass within stated corridor | Laws are carrier-, dimension-, or consumer-independent where claimed; not a law for all 1,000-plus corpus modules |
 | Internal closure | Pass | Every question posed by paper is answered; RH is explicitly outside theorem |
@@ -406,13 +427,15 @@ manuscript. Its “wow” claim is:
 > positive Riemann-source information is strictly stratified: clock and finite
 > Gram positivity can be completely divisor-blind; completed source still
 > forces cubic global defect smallness; every atomwise positive comparison
-> fails off line; one global common-test resolvent succeeds; odd source
-> pointing is exact datum erased between these levels.
+> fails off line; finite prime--Gamma packets nevertheless complete the full
+> common-test Weil form; one target-selected sequence reaches canonical
+> orientation sector; regular scalar reflection is either Krein or divergent;
+> odd source pointing is exact datum erased between lower levels.
 
-This is potentially credible broad-journal mathematics, not yet an honest
-accept recommendation. Central hierarchy occupies small fraction of a
-55-page synthesis and relies on several elementary witnesses. External
-priority and proof review could still reduce novelty score. It is not RH
+This is materially closer to credible broad-journal mathematics, but still
+not an honest accept recommendation. Central theorem remains buried in a
+long synthesis and several separators are elementary. External priority and
+proof review could still reduce novelty score. It is not RH
 proof, competitive zero-free result, general CCM/Hilbert--Pólya no-go, or
 Nature/Science-level result.
 

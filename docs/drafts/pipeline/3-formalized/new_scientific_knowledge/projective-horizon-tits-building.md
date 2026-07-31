@@ -633,12 +633,36 @@ observable of that span.  The corpus already owns the Jacobian criterion for alg
 (`algebraicIndependent_of_domain_jacobian`), and it accepts an arbitrary base field, so what is left
 of the lower bound is the nondegeneracy of one explicit Jacobian.
 
-Two limits are worth stating exactly.  The independence is over the horizon algebra rather than the
-horizon field; the two are equivalent, but the field form goes through
-`IntermediateField.algebraicIndependent_adjoin_iff`, whose elaboration on this type exceeds a
-million heartbeats, so it is not shipped.  And the general-rank statement of `(11)` for `r >= 2`
-needs an explicit description of `mathcal I_S` for spans of rank at least two, which the present
-model does not provide; that is the one remaining paper-level item on this card.  Neither is represented by an assumption.
+`formal/GaloisForLFunctions/HTGeometry/ProjectiveHorizonObserverJacobian.lean` and
+`formal/GaloisForLFunctions/HTGeometry/ProjectiveHorizonRankLowerBound.lean` close the count.  A
+basis of the observer Lie algebra is indexed by the reduced block itself (`reducedGen`): an
+off-diagonal index gives an elementary transvection, a diagonal index gives the traceless diagonal
+pairing that direction with the omitted one, and `reducedGen_mem_span` checks that these are
+infinitesimal observers of the span.  Applying them to the reduced block gives the observer
+Jacobian, whose entries `observerJacobian_apply` identifies as entries of the jet frame.
+
+`observerJacobian_det_ne_zero` proves it nondegenerate.  A vector in the kernel of the transpose is
+a combination of infinitesimal observers annihilating the whole reduced block; over the jet frame
+the equations say that the combination, read as a matrix, has vanishing product with the frame off
+the omitted entry.  Multiplying by the inverse frame concentrates the combination on the omitted
+row, the traceless condition then makes it a multiple of the omitted coordinate, and the diagonal
+entry of the inverse frame -- nonzero precisely because the diagonal cofactor is
+(`jetFrame_inv_diag_ne_zero`) -- forces that multiple to vanish.
+
+The corpus already owns the Jacobian criterion for algebraic independence
+(`algebraicIndependent_of_domain_jacobian`), and it accepts an arbitrary base field, so
+`algebraicIndependent_reducedFamily` concludes that the reduced block is algebraically independent
+over the horizon field.  With the reconstruction this gives `horizonField_transcendence_degree`:
+for a covector span of rank `r` in `N` directions the horizon field together with `rN-1` jet
+coordinates generates the whole jet field, and those `rN-1` coordinates are algebraically
+independent over it.  That is `(11)` at every rank, unconditionally.
+
+One limit is worth stating exactly.  In the rank-one chart statement the independence is over the
+horizon algebra rather than the horizon field; the two are equivalent, but the field form goes
+through `IntermediateField.algebraicIndependent_adjoin_iff`, whose elaboration on this type exceeds
+a million heartbeats, so it is not shipped.  The general-rank statement of `(11)` does not use that
+route: it is proved over the horizon field itself, through the observer Jacobian.  Nothing on this
+card is represented by an assumption.
 
 ## RH impact audit
 
@@ -712,11 +736,10 @@ so this currently gives neither a zero-free region nor a critical-line implicati
       horizon observable is killed by the infinitesimal transvections of the span
 - [x] 2 -> 3z'': the observer Lie algebra -- the derivation bracket is the matrix commutator, and
       the traceless diagonals of the span, being brackets, also kill its horizon field
-- [ ] 2 -> 3z: the matching lower bound of `(11)` for `r >= 2`.  What is now left is exactly the
-      nondegeneracy of one explicit Jacobian: with the observer Lie algebra of a rank-`r` span
-      acting on the reduced block, the Jacobian is block triangular over the jet frame, with the
-      frame determinant on `N-1` diagonal blocks and its diagonal cofactor on the last, both
-      already proved nonzero.  Not needed for any other part of the card.
+- [x] 2 -> 3z: the matching lower bound of `(11)` for `r >= 2` -- the observer Jacobian on the
+      reduced block is nondegenerate, so the reduced block is algebraically independent over the
+      horizon field.  With the reconstruction this gives the transcendence degree `rN-1` at every
+      rank.
 - [ ] 3 -> 4: specialist audit in projective differential invariants and building theory
 
 ## References
@@ -805,3 +828,8 @@ so this currently gives neither a zero-free region nor a critical-line implicati
   of a span is killed by the infinitesimal transvections of the span, and by the traceless
   diagonals, which are their brackets.  The lower bound of the general-rank number is now reduced to
   the nondegeneracy of a single explicit Jacobian.
+- 2026-08-01 — closed the general-rank transcendence-degree number `(11)`: the observer Jacobian on
+  the reduced block is nondegenerate, so the reduced block is algebraically independent over the
+  horizon field, and with the reconstruction the transcendence degree of the jet field over the
+  horizon field of a rank-`r` span is exactly `rN-1`.  Every `2 -> 3` gate on this card is now
+  closed and nothing is represented by an assumption.

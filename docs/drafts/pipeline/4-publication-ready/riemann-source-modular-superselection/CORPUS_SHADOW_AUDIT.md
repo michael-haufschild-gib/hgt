@@ -19,7 +19,10 @@ Corpus now supports:
 > the character rate is transverse displacement. Positive descendants form
 > a strict hierarchy: critical clock, finite collision geometry, global
 > magnitude budget, atomwise diagonal response, and global common-test
-> resolvent positivity are not interchangeable. Conservative descent forces
+> resolvent positivity are not interchangeable. The common-test Weil form is
+> nevertheless the singular Hilbert completion of finite prime--Gamma source
+> energies; what remains is source-only selection and sign, not construction
+> of the form. Conservative descent forces
 > character unitarity; away from it, only a hyperbolic cross pairing is
 > invariant and every Hilbert-positive invariant form vanishes.
 
@@ -44,6 +47,10 @@ zero exclusion.
 | Spectral-budget probes give unconditional low-height zero exclusion | Positive divisor budget | Structural shadow; cubic endpoint law is cleaner headline instance |
 | Fixed-width prime–Gamma tail reconstructs full off-line divisor and multiplicity | Global nonlocal positive consumer | Direct theorem |
 | Filled aperture collision equals \(-4m_\rho^2\) and value \(-4\) detects simplicity | Exact ramification tomography | Direct theorem |
+| Every finite Deninger prime--Gamma source cup equals the multiplicity-exact Xi--Weil polarization | Exact finite common-test source factorization | Direct theorem |
+| Every square-summable Weil test is a Hilbert limit of finite separated continued-source packets with convergent source energies | Singular infinite completion of whole common-test form | Direct theorem |
+| One separated packet sequence converges to Xi--Hurwitz orientation vector with energy limit \(-\mathcal E_H\) | Exact one-sequence source gate; selection remains target-side | Direct theorem |
+| Hedenmalm reflected quotients fold into one nonzero two-component system with sole affine defect \(i\Xi\) | Reflection is internal; missing datum is source-defect completion | Direct theorem |
 
 The height floor is not sold as competitive numerical zero verification.
 Its value is conceptual: the same analytic endpoint charge which bounds total
@@ -66,6 +73,10 @@ transverse energy also forces a per-quartet cost without using a zero table.
 | No bounded finite-Rees operator sews reflected valuation sectors | Regular reflection transport preserves all-orders-flat radical | Direct theorem |
 | Positive density forces sign monodromy, incompatible with full deck descent | Continuous rate and discrete order couple through \(2qm=1\) | Direct theorem |
 | Compact finite-factor-invariant germ reader is constant | Local quotient removes global divisor fibre | Direct theorem |
+| Exact Gamma/co-Poisson interval cell has a negative reflected two-point determinant | Actionwise exact reflection is intrinsically Krein | Direct theorem |
+| Canonical critical rooted Gamma coordinate is cofinally square-summable after scalar renormalization only for scalar zero | Zero leaves Krein negativity; nonzero scalar leaves ordinary Hilbert norm | Direct theorem |
+| Fixed singular Xi graph is not nonexpansive in ambient source norm, and Euler normal blow-up squares the gain | Target Hardy contractivity cannot replace source graph norm | Direct theorem |
+| Simultaneous complex-aperture Cayley contractivity holds exactly on nonnegative real ray | Holomorphic Schwarz--Pick aperture cannot create Ward sign | Direct theorem |
 
 ## Previously absorbed shadows
 
@@ -142,14 +153,18 @@ negative. Finite sums of squared moduli are therefore excluded at that level.
 Its zero-locus equivalence is classical in spirit, but here it has a precise
 architectural role: a single common-test resolvent detects every off-axis pole
 where source-clock, collision, magnitude, and atomwise-diagonal levels fail to
-determine orientation. The paper does not count the equivalence as novelty.
+determine orientation. More strongly, finite Deninger prime--Gamma cups
+factor this Weil form exactly and separated continued-source packets complete
+every square-summable test. Paper does not count zero-locus equivalence as
+novelty; contribution is source factorization plus exact selection boundary.
 
 ## Results deliberately outside direct scope
 
 - general HTGeometry recurrence, QED, black-hole, elliptic-gamma, and
   Nevanlinna models without a proved Xi specialization;
 - full 28-chart and larger RH-equivalence packages;
-- every CCM, Hilbert–Pólya, Sonin, or Deninger realization;
+- operator realizations beyond exact Deninger source cup and continued-source
+  Weil completion proved here;
 - numerical zero tables and computation-based verification;
 - conjectural cofinal positivity propagation.
 
@@ -159,11 +174,14 @@ similarity as mathematical implication.
 
 ## Remaining mathematical boundary
 
-No theorem in corpus supplies a source-pointed, incidence-preserving global
-common-test inequality which forces \(\mathcal E_\perp=0\). The paper answers
-why lower positive levels cannot supply it and proves exact positive and
-negative boundaries at each level. It does not prove RH or kill all
-Hilbert–Pólya/CCM routes.
+Corpus does supply a singular, infinite common-test factorization: entire
+square-summable Weil form is completed from finite prime--Gamma source
+energies, and one target-selected source sequence converges to canonical
+orientation vector. No theorem supplies a source-only selection of that
+sequence or proves its eventual nonnegative sign. Sign is equivalent to RH.
+Paper answers why regular scalar, actionwise, diagonal, finite-Rees, and
+holomorphic-aperture repairs cannot supply it. It does not prove RH or kill
+all Hilbert–Pólya/CCM routes.
 
 ## Verdict
 
@@ -172,9 +190,10 @@ theorems and no-gos now have an exact place in one hierarchy. Most important
 new synthesis is:
 
 > positive arithmetic is not one cone. It is a tower of non-faithful
-> quotients, and orientation survives only if source pointing and incidence
-> reach global common-test coupling before scalar clock, diagonal Hilbert,
-> separated-cylinder, or even-character collapse.
+> quotients terminating in a singular source completion of the Weil form.
+> Orientation survives to that completion, but canonical section is
+> target-selected and its source sign is RH boundary. Regular scalar
+> completions cannot replace missing source-only selector.
 
 This is a coherent new route boundary. Whether it meets flagship-journal
 significance remains a separate referee question, not something corpus

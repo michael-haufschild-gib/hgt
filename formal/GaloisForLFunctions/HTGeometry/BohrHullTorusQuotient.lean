@@ -34,17 +34,16 @@ theorem continuous_bohrHullCharPacket (f : ℝ →ᵇ ℂ) {ι : Type*} [Fintype
     Continuous (bohrHullCharPacket f lam) :=
   continuous_pi fun j => continuous_bohrHullChar f (lam j)
 
-theorem bohrHullCharPacket_bohrIota (hfa : HTGeometry.IsBohrAlmostPeriodic (fun x => f x))
-    {ι : Type*} {lam : ι → ℝ} (hne : ∀ j, bohrCoefficient (fun x => f x) (lam j) ≠ 0) (t : ℝ) :
+theorem bohrHullCharPacket_bohrIota
+    {ι : Type*} {lam : ι → ℝ} (hne : ∀ j, IsBohrHullFrequency f (lam j)) (t : ℝ) :
     bohrHullCharPacket f lam (bohrIota f t) = fun j => expChar (lam j) t := by
   funext j
-  exact bohrHullChar_bohrIota hfa (hne j) t
+  exact bohrHullChar_bohrIota (hne j) t
 
 /-- **The phase carrier covers the torus of an independent frequency packet.** -/
-theorem exists_bohrHull_charPacket_eq (hfa : HTGeometry.IsBohrAlmostPeriodic (fun x => f x))
-    (htb : HasTotallyBoundedOrbit (fun x => f x))
+theorem exists_bohrHull_charPacket_eq (htb : HasTotallyBoundedOrbit (fun x => f x))
     {ι : Type*} [Fintype ι] [DecidableEq ι] {lam : ι → ℝ} (hind : LinearIndependent ℚ lam)
-    (hne : ∀ j, bohrCoefficient (fun x => f x) (lam j) ≠ 0) (θ : ι → ℝ) :
+    (hne : ∀ j, IsBohrHullFrequency f (lam j)) (θ : ι → ℝ) :
     ∃ x : BohrHull f, ∀ j : ι,
       bohrHullChar f (lam j) x = Complex.exp ((θ j : ℝ) * Complex.I) := by
   haveI : CompactSpace (BohrHull f) := compactSpace_bohrHull htb
@@ -59,7 +58,7 @@ theorem exists_bohrHull_charPacket_eq (hfa : HTGeometry.IsBohrAlmostPeriodic (fu
     refine ⟨bohrHullCharPacket f lam (bohrIota f t), Set.mem_range_self _, ?_⟩
     rw [dist_pi_lt_iff hε]
     intro j
-    rw [bohrHullCharPacket_bohrIota hfa hne t]
+    rw [bohrHullCharPacket_bohrIota hne t]
     rw [dist_eq_norm, hy, norm_sub_rev]
     exact ht j
   obtain ⟨x, hx⟩ := hmem
@@ -68,13 +67,12 @@ theorem exists_bohrHull_charPacket_eq (hfa : HTGeometry.IsBohrAlmostPeriodic (fu
 
 /-- The same statement with the target given by unit complex numbers. -/
 theorem exists_bohrHull_charPacket_eq_of_norm_one
-    (hfa : HTGeometry.IsBohrAlmostPeriodic (fun x => f x))
     (htb : HasTotallyBoundedOrbit (fun x => f x))
     {ι : Type*} [Fintype ι] [DecidableEq ι] {lam : ι → ℝ} (hind : LinearIndependent ℚ lam)
-    (hne : ∀ j, bohrCoefficient (fun x => f x) (lam j) ≠ 0) (z : ι → ℂ)
+    (hne : ∀ j, IsBohrHullFrequency f (lam j)) (z : ι → ℂ)
     (hz : ∀ j, ‖z j‖ = 1) :
     ∃ x : BohrHull f, ∀ j : ι, bohrHullChar f (lam j) x = z j := by
-  obtain ⟨x, hx⟩ := exists_bohrHull_charPacket_eq hfa htb hind hne (fun j => (z j).arg)
+  obtain ⟨x, hx⟩ := exists_bohrHull_charPacket_eq htb hind hne (fun j => (z j).arg)
   refine ⟨x, fun j => ?_⟩
   rw [hx j]
   have h := Complex.norm_mul_exp_arg_mul_I (z j)

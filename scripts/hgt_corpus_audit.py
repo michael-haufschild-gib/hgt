@@ -288,6 +288,7 @@ DECLARATION_CAPABILITIES: dict[str, re.Pattern[str]] = {
     "quantitative-bound": re.compile(
         r"\b(?:IsBigO|IsLittleO|Bounded|Semibounded|Summable|"
         r"PolynomiallyModerate|Subpower|Decay|Coercive)\b"
+        r"|(?:Subpower|Sublinear|Bounded|Semibounded|Summable|Decay|Coercive)"
         r"|(?:_le|_lt|_ge|_gt|Bound|bound|estimate|Estimate)"
     ),
     "limit-compactness": re.compile(
@@ -341,6 +342,140 @@ DECLARATION_CAPABILITIES: dict[str, re.Pattern[str]] = {
         r"Mertens|Valuation|valuation|divisor|Divisor"
     ),
 }
+
+RH_OBSTRUCTION_MECHANISMS: dict[str, re.Pattern[str]] = {
+    "literal-zero-divisor-location": re.compile(
+        r"XiZero|xi(?:C)?\s+[^ ]+\s*=\s*0|zero(?:s|Free|Set)?|"
+        r"Zero(?:s|Free|Set)?|divisor|Divisor|RHLadder|criticalLine|rightHalf"
+    ),
+    "completed-prime-arch-sign": re.compile(
+        r"CompletedPrimeGamma|PrimeArch|primeArch|continuedPrimeArch|"
+        r"infinitePrimeFlux|archFactor|AntiHerglotz|Accretive"
+    ),
+    "positive-form-moment": re.compile(
+        r"Hankel|Moment|moment|Weil|Gram|PositiveForm|Nonnegative|"
+        r"Bernstein|Stieltjes|Hausdorff|KMS|Pick|Herglotz"
+    ),
+    "arithmetic-cancellation-growth": re.compile(
+        r"Mobius|mobius|Mertens|vonMangoldt|PrimeWindow|primeWindow|"
+        r"Euler|Dirichlet|Subpower|HalfPower|Polylog|Laplace|Decay"
+    ),
+    "sonin-source-comparison": re.compile(r"Sonin|sonin"),
+    "suzuki-hermite-biehler": re.compile(
+        r"Suzuki|suzuki|HermiteBiehler|deBranges"
+    ),
+    "analytic-continuation": re.compile(
+        r"Analytic|Holomorphic|Meromorphic|Continuation|pole|Pole"
+    ),
+    "spectral-realization": re.compile(
+        r"SelfAdjoint|Spectrum|Spectral|Resolvent|Deninger|Hodge|Connes|"
+        r"Operator|Eigen"
+    ),
+    "reflection-phase": re.compile(
+        r"Reflection|Reflected|Phase|Born|Hurwitz|Ward|Cayley|Gauge|Charge"
+    ),
+    "taylor-tail-approximation": re.compile(
+        r"Taylor|ThetaTail|CoreCurrent|Prouhet|Approximation|Remainder"
+    ),
+    "arithmetic-geometry-integrality": re.compile(
+        r"Arakelov|Integral|ConjugateRoots|Kronecker|Kummer|minpoly"
+    ),
+    "finite-window-limit": re.compile(
+        r"Finite|Window|Height|Cofinal|Aperture|Limit|Tendsto|Eventually"
+    ),
+    "differential-transcendence": re.compile(
+        r"Differential|Hypertranscend|Kolchin|AlgebraicIndependent"
+    ),
+    "dynamical-geometric-reencoding": re.compile(
+        r"Bottcher|Julia|Projective|Tropical|Deck|Orbit|Dynamical|"
+        r"Arakelov|Cohomolog|Matroid"
+    ),
+}
+
+# These are not selected routes.  They are the source-facing quotient of the
+# current compiler-derived minimal cuts, plus the two canonical RH-equivalent
+# prime--archimedean source walls through which many cuts factor.  Every named
+# definition is expanded before matching.  Divisor-mirror packaging remains in
+# the list so it is audited explicitly instead of silently promoted.
+PRIMITIVE_RH_OBSTRUCTIONS: tuple[
+    tuple[str, str, tuple[str, ...]], ...
+] = (
+    (
+        "completed-prime-gamma-sign",
+        "source-wall",
+        (
+            "CompletedPrimeGammaLeftHalfAccretive",
+            "ContinuedPrimeArchUpperAntiHerglotz",
+        ),
+    ),
+    (
+        "prime-arch-source-positive-form",
+        "source-wall",
+        ("PrimeArchSourceTraceHankelIntNonnegative",),
+    ),
+    (
+        "hedenmalm-weil-positive-form",
+        "divisor-explicit-formula-wall",
+        ("HedenmalmXiPositiveFormWall",),
+    ),
+    (
+        "mobius-critical-cancellation",
+        "source-wall-family",
+        (
+            "MobiusMertensAllStrictHalfPowerBound",
+            "MobiusAdditiveStrictOffDiagonalSubpowerUpperBound",
+            "MobiusAdditiveTriangleLinearPolylogUpperBound",
+            "MobiusAdditiveStrictOffDiagonalLinearPolylogUpperBound",
+            "MobiusLaplaceCofinalGammaHankelOffDiagonalFrequentlyUpperBounded",
+            "MobiusDiscreteLaplaceHalfPolylogDecay",
+        ),
+    ),
+    (
+        "sonin-prime-arch-value-transfer",
+        "source-wall-family",
+        (
+            "SoninCoupledPrimeArchPerTestNormalizedValueCoupling",
+            "SoninCoupledPrimeArchRealPerTestNormalizedValueCoupling",
+            "SoninPrimeArchPerTestTraceHankelCoupling",
+            "SoninCoupledPrimeArchValuationAtMostSixResidualVariationalUpperBound",
+            "SoninCoupledPrimeArchValuationSixResidualVariationalUpperBound",
+            "SoninPrimeArchCofinalBlockApproximation",
+            "SoninPrimeArchFiniteMomentCoupling",
+        ),
+    ),
+    (
+        "dyadic-prime-window-subpower",
+        "source-wall",
+        ("DyadicWeightedPrimeWindowSubpowerUpper",),
+    ),
+    (
+        "suzuki-hermite-biehler",
+        "global-source-wall",
+        ("SuzukiHermiteBiehler",),
+    ),
+    (
+        "moving-polynomial-even-factorization",
+        "source-wall",
+        ("CompletedOddLogDerivPolynomialRightEvenFactorization",),
+    ),
+    (
+        "xi-taylor-core-current",
+        "source-wall-family",
+        (
+            "XiCTaylorThetaTailCoreCurrentSublinearUpper",
+            "XiCTaylorThetaTailCoreCurrentJointSublinearUpper",
+            "XiCTaylorThetaTailCoreCurrentTwoTermBridge",
+        ),
+    ),
+    (
+        "arakelov-integral-contractive-chamber",
+        "divisor-mirror",
+        (
+            "XiArakelovCoordinatesIntegral",
+            "XiArakelovConjugateRootsContractive",
+        ),
+    ),
+)
 
 MATCH_STOPWORDS = {
     "a",
@@ -641,6 +776,7 @@ class Declaration:
     name: str
     line: int
     header: str
+    body: str = ""
 
 
 @dataclass
@@ -734,6 +870,16 @@ def declaration_header(segment: str) -> str:
     return re.sub(r"\s+", " ", segment).strip()
 
 
+def declaration_body(segment: str, kind: str) -> str:
+    """Return a normalized direct definition body, excluding proof-producing defs."""
+    if kind not in ("def", "abbrev") or ":=" not in segment:
+        return ""
+    body = segment.split(":=", 1)[1].strip()
+    if re.match(r"by(?:\s|$)", body):
+        return ""
+    return re.sub(r"\s+", " ", body).strip()
+
+
 def declaration_parts(header: str) -> tuple[str, str]:
     """Split a declaration header into binder/premise text and result text.
 
@@ -768,12 +914,14 @@ def declarations(source: str) -> list[Declaration]:
     result: list[Declaration] = []
     for index, match in enumerate(matches):
         end = matches[index + 1].start() if index + 1 < len(matches) else len(code)
+        segment = code[match.start() : end]
         result.append(
             Declaration(
                 kind=match.group(1),
                 name=match.group(2),
                 line=code.count("\n", 0, match.start()) + 1,
-                header=declaration_header(code[match.start() : end]),
+                header=declaration_header(segment),
+                body=declaration_body(segment, match.group(1)),
             )
         )
     return result
@@ -1095,6 +1243,378 @@ def write_rh_declarations(rows: list[ModuleRow], path: Path) -> None:
                 )
 
 
+def prop_definition_index(
+    rows: list[ModuleRow],
+) -> dict[str, tuple[ModuleRow, Declaration]]:
+    """Index direct `Prop` definitions for named-interface expansion."""
+    result: dict[str, tuple[ModuleRow, Declaration]] = {}
+    for row in rows:
+        for declaration in row.declarations:
+            if declaration.kind not in ("def", "abbrev") or not declaration.body:
+                continue
+            _, conclusion = declaration_parts(declaration.header)
+            if conclusion != "Prop":
+                continue
+            result.setdefault(declaration.name, (row, declaration))
+    return result
+
+
+def expanded_prop_definitions(
+    text: str,
+    index: dict[str, tuple[ModuleRow, Declaration]],
+    *,
+    seeds: tuple[str, ...] = (),
+    depth: int = 2,
+) -> tuple[tuple[str, ...], str]:
+    """Expand referenced named `Prop` interfaces to expose their exact source content."""
+    pending: list[tuple[str, int]] = [(name, 0) for name in seeds]
+    pending.extend((identifier.split(".")[-1], 0) for identifier in IDENTIFIER_RE.findall(text))
+    seen: set[str] = set()
+    expanded: list[str] = [text]
+    while pending:
+        name, level = pending.pop(0)
+        if name in seen or name not in index or level > depth:
+            continue
+        seen.add(name)
+        _row, declaration = index[name]
+        definition = f"{declaration.header} := {declaration.body}"
+        expanded.append(definition)
+        if level < depth:
+            pending.extend(
+                (identifier.split(".")[-1], level + 1)
+                for identifier in IDENTIFIER_RE.findall(declaration.body)
+            )
+    return tuple(sorted(seen)), " ".join(expanded)
+
+
+def obstruction_mechanisms(text: str) -> tuple[str, ...]:
+    mechanisms = tuple(
+        mechanism
+        for mechanism, pattern in RH_OBSTRUCTION_MECHANISMS.items()
+        if pattern.search(text)
+    )
+    return mechanisms or ("logical-reencoding-only",)
+
+
+def write_rh_obstruction_clusters(rows: list[ModuleRow], path: Path) -> None:
+    """Resolve and classify every exact RH-equivalent interface."""
+    definitions = prop_definition_index(rows)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.writer(handle, delimiter="\t", lineterminator="\n")
+        writer.writerow(
+            (
+                "module",
+                "declaration",
+                "line",
+                "expanded_definitions",
+                "obstruction_mechanisms",
+                "required_capabilities",
+                "statement",
+                "expanded_statement",
+            )
+        )
+        for row in rows:
+            if row.area != "RHTower":
+                continue
+            for declaration in row.declarations:
+                if declaration.kind not in ("theorem", "lemma"):
+                    continue
+                if not RH_IFF_RE.search(declaration.header):
+                    continue
+                names, expanded = expanded_prop_definitions(
+                    declaration.header, definitions
+                )
+                writer.writerow(
+                    (
+                        row.module,
+                        declaration.name,
+                        declaration.line,
+                        ",".join(names),
+                        ",".join(obstruction_mechanisms(expanded)),
+                        ",".join(declaration_capabilities(expanded)),
+                        declaration.header,
+                        expanded,
+                    )
+                )
+
+
+def primitive_obstruction_entries(
+    rows: list[ModuleRow],
+) -> list[tuple[str, str, tuple[str, ...], str, tuple[str, ...], tuple[str, ...]]]:
+    definitions = prop_definition_index(rows)
+    result: list[
+        tuple[str, str, tuple[str, ...], str, tuple[str, ...], tuple[str, ...]]
+    ] = []
+    for identifier, status, names in PRIMITIVE_RH_OBSTRUCTIONS:
+        missing = tuple(name for name in names if name not in definitions)
+        if missing:
+            raise RuntimeError(
+                f"primitive obstruction {identifier!r} has missing definitions: "
+                f"{', '.join(missing)}"
+            )
+        expanded_parts: list[str] = []
+        reached: set[str] = set()
+        for name in names:
+            found, expanded = expanded_prop_definitions(
+                "", definitions, seeds=(name,), depth=2
+            )
+            reached.update(found)
+            expanded_parts.append(expanded)
+        expanded_text = " ".join(expanded_parts)
+        result.append(
+            (
+                identifier,
+                status,
+                names,
+                expanded_text,
+                obstruction_mechanisms(expanded_text),
+                declaration_capabilities(expanded_text),
+            )
+        )
+    return result
+
+
+def write_primitive_obstructions(rows: list[ModuleRow], path: Path) -> None:
+    """Write exact expanded source content for the manually audited primitive quotient."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.writer(handle, delimiter="\t", lineterminator="\n")
+        writer.writerow(
+            (
+                "primitive_obstruction",
+                "status",
+                "interface_definitions",
+                "obstruction_mechanisms",
+                "required_capabilities",
+                "expanded_source_statement",
+            )
+        )
+        for identifier, status, names, expanded, mechanisms, capabilities in (
+            primitive_obstruction_entries(rows)
+        ):
+            writer.writerow(
+                (
+                    identifier,
+                    status,
+                    ",".join(names),
+                    ",".join(mechanisms),
+                    ",".join(capabilities),
+                    expanded,
+                )
+            )
+
+
+def ht_producers(
+    rows: list[ModuleRow],
+) -> list[
+    tuple[
+        ModuleRow,
+        Declaration,
+        set[str],
+        set[str],
+        set[str],
+        tuple[str, ...],
+    ]
+]:
+    result: list[
+        tuple[
+            ModuleRow,
+            Declaration,
+            set[str],
+            set[str],
+            set[str],
+            tuple[str, ...],
+        ]
+    ] = []
+    for row in rows:
+        if row.area != "HTGeometry":
+            continue
+        for declaration in row.declarations:
+            if declaration.kind not in ("theorem", "lemma"):
+                continue
+            premises, conclusion = declaration_parts(declaration.header)
+            premise_capabilities = set(declaration_capabilities(premises))
+            conclusion_capabilities = set(declaration_capabilities(conclusion))
+            produced = conclusion_capabilities - premise_capabilities
+            if not produced:
+                continue
+            tokens = match_tokens(
+                f"{row.module} {row.title} {declaration.name} {conclusion}"
+            )
+            lanes = declaration_mechanisms(
+                f"{row.module} {row.title} {declaration.header}"
+            ) or ("cross-cutting-foundational",)
+            result.append(
+                (
+                    row,
+                    declaration,
+                    produced,
+                    conclusion_capabilities,
+                    tokens,
+                    lanes,
+                )
+            )
+    return result
+
+
+def rht_direct_use_evidence(
+    rows: list[ModuleRow],
+) -> tuple[collections.Counter[str], collections.Counter[str]]:
+    """Collect post-relevance evidence that RHTower directly names HT material.
+
+    Identifier mentions and direct module imports are intentionally computed
+    only after the HT declaration inventory and primitive-wall compatibility.
+    They annotate prior application; they never decide mathematical relevance.
+    """
+    identifier_mentions: collections.Counter[str] = collections.Counter()
+    direct_imports: collections.Counter[str] = collections.Counter()
+    for row in rows:
+        if row.area != "RHTower":
+            continue
+        path = ROOT / row.relpath
+        source = strip_comments_and_strings(
+            path.read_text(encoding="utf-8", errors="replace")
+        )
+        for identifier in IDENTIFIER_RE.findall(source):
+            identifier_mentions[identifier.split(".")[-1]] += 1
+        for area, suffix in IMPORT_RE.findall(source):
+            if area == "HTGeometry":
+                direct_imports[suffix.replace(".", "/")] += 1
+    return identifier_mentions, direct_imports
+
+
+def declaration_supply_capabilities(
+    declaration: Declaration,
+) -> tuple[str, tuple[str, ...], tuple[str, ...], tuple[str, ...]]:
+    """Normalize what one HT declaration supplies without prior-use filtering."""
+    premises, conclusion = declaration_parts(declaration.header)
+    premise_capabilities = declaration_capabilities(premises)
+    conclusion_capabilities = declaration_capabilities(conclusion)
+    if declaration.kind in ("theorem", "lemma"):
+        supplied = tuple(
+            sorted(set(conclusion_capabilities) - set(premise_capabilities))
+        )
+        mode = "proved-conclusion"
+    elif declaration.kind in ("def", "abbrev"):
+        supplied = tuple(
+            sorted(
+                set(
+                    declaration_capabilities(
+                        f"{declaration.name} {conclusion} {declaration.body}"
+                    )
+                )
+            )
+        )
+        mode = "defined-object"
+    else:
+        supplied = tuple(
+            sorted(
+                set(
+                    declaration_capabilities(
+                        f"{declaration.name} {declaration.header}"
+                    )
+                )
+            )
+        )
+        mode = "declared-structure"
+    return mode, premise_capabilities, conclusion_capabilities, supplied
+
+
+def write_ht_knowledge_transfer(rows: list[ModuleRow], path: Path) -> None:
+    """Retain every HT declaration, then annotate RH compatibility and prior use.
+
+    This is the anti-card-picking audit.  It starts from the complete HTGeometry
+    theorem/object reservoir.  Compatibility with the primitive RHT quotient is
+    computed from exact supplied conclusion capabilities.  Only afterward are
+    direct RHT identifier mentions and imports attached as historical evidence.
+    """
+    primitive_entries = primitive_obstruction_entries(rows)
+    primitive_capabilities = {
+        identifier: set(capabilities)
+        for identifier, _status, _names, _expanded, _mechanisms, capabilities
+        in primitive_entries
+    }
+    identifier_mentions, direct_imports = rht_direct_use_evidence(rows)
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.writer(handle, delimiter="\t", lineterminator="\n")
+        writer.writerow(
+            (
+                "ht_module",
+                "ht_declaration",
+                "kind",
+                "line",
+                "supply_mode",
+                "mechanism_lanes",
+                "shapes",
+                "premise_capabilities",
+                "conclusion_capabilities",
+                "supplied_capabilities",
+                "compatible_primitive_walls",
+                "wall_capability_intersections",
+                "rht_exact_identifier_mentions",
+                "rht_direct_module_imports",
+                "application_evidence",
+                "statement",
+            )
+        )
+        for row in rows:
+            if row.area != "HTGeometry":
+                continue
+            for declaration in row.declarations:
+                mode, premises, conclusions, supplied = (
+                    declaration_supply_capabilities(declaration)
+                )
+                supplied_set = set(supplied)
+                intersections = {
+                    identifier: tuple(
+                        sorted(supplied_set & required_capabilities)
+                    )
+                    for identifier, required_capabilities
+                    in primitive_capabilities.items()
+                    if supplied_set & required_capabilities
+                }
+                mentions = identifier_mentions[declaration.name]
+                imports = direct_imports[row.module]
+                if mentions:
+                    evidence = "exact-identifier-mentioned"
+                elif imports:
+                    evidence = "module-imported-no-exact-identifier-mention"
+                else:
+                    evidence = "no-direct-rht-use-evidence"
+                writer.writerow(
+                    (
+                        row.module,
+                        declaration.name,
+                        declaration.kind,
+                        declaration.line,
+                        mode,
+                        ",".join(
+                            declaration_mechanisms(
+                                f"{row.module} {row.title} "
+                                f"{declaration.header} {declaration.body}"
+                            )
+                            or ("cross-cutting-foundational",)
+                        ),
+                        ",".join(declaration_shapes(declaration.header)),
+                        ",".join(premises),
+                        ",".join(conclusions),
+                        ",".join(supplied),
+                        ",".join(intersections),
+                        ";".join(
+                            f"{identifier}:{','.join(capabilities)}"
+                            for identifier, capabilities in intersections.items()
+                        ),
+                        mentions,
+                        imports,
+                        evidence,
+                        declaration.header,
+                    )
+                )
+
+
 def write_declarations(rows: list[ModuleRow], path: Path) -> None:
     """Write every parsed declaration without using import or prior-use relevance."""
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -1145,29 +1665,13 @@ def write_crossmatches(rows: list[ModuleRow], path: Path, limit: int) -> None:
     Output is a search surface; exact hypothesis compatibility still requires
     mathematical audit.
     """
-    ht_entries: list[
-        tuple[ModuleRow, Declaration, set[str], set[str], set[str]]
-    ] = []
+    ht_entries = ht_producers(rows)
     document_frequency: collections.Counter[str] = collections.Counter()
-    for row in rows:
-        if row.area != "HTGeometry":
-            continue
-        for declaration in row.declarations:
-            if declaration.kind not in ("theorem", "lemma"):
-                continue
-            premises, conclusion = declaration_parts(declaration.header)
-            premise_capabilities = set(declaration_capabilities(premises))
-            conclusion_capabilities = set(declaration_capabilities(conclusion))
-            produced = conclusion_capabilities - premise_capabilities
-            if not produced:
-                continue
-            tokens = match_tokens(
-                f"{row.module} {row.title} {declaration.name} {conclusion}"
-            )
-            document_frequency.update(tokens)
-            ht_entries.append((row, declaration, produced, conclusion_capabilities, tokens))
+    for _row, _declaration, _produced, _conclusions, tokens, _lanes in ht_entries:
+        document_frequency.update(tokens)
 
-    walls: list[tuple[ModuleRow, Declaration, set[str], set[str]]] = []
+    definitions = prop_definition_index(rows)
+    walls: list[tuple[ModuleRow, Declaration, set[str], set[str], str]] = []
     for row in rows:
         if row.area != "RHTower":
             continue
@@ -1176,12 +1680,14 @@ def write_crossmatches(rows: list[ModuleRow], path: Path, limit: int) -> None:
                 continue
             if not RH_IFF_RE.search(declaration.header):
                 continue
-            _, conclusion = declaration_parts(declaration.header)
-            capabilities = set(declaration_capabilities(conclusion))
-            tokens = match_tokens(
-                f"{row.module} {row.title} {declaration.name} {conclusion}"
+            _names, expanded = expanded_prop_definitions(
+                declaration.header, definitions
             )
-            walls.append((row, declaration, capabilities, tokens))
+            capabilities = set(declaration_capabilities(expanded))
+            tokens = match_tokens(
+                f"{row.module} {row.title} {declaration.name} {expanded}"
+            )
+            walls.append((row, declaration, capabilities, tokens, expanded))
 
     corpus_size = max(1, len(ht_entries))
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -1205,7 +1711,13 @@ def write_crossmatches(rows: list[ModuleRow], path: Path, limit: int) -> None:
                 "wall_statement",
             )
         )
-        for wall_row, wall_declaration, wall_capabilities, wall_tokens in walls:
+        for (
+            wall_row,
+            wall_declaration,
+            wall_capabilities,
+            wall_tokens,
+            wall_expanded,
+        ) in walls:
             scored: list[
                 tuple[
                     float,
@@ -1222,6 +1734,7 @@ def write_crossmatches(rows: list[ModuleRow], path: Path, limit: int) -> None:
                 produced,
                 _conclusion_capabilities,
                 ht_tokens,
+                _lanes,
             ) in ht_entries:
                 shared_capabilities = tuple(sorted(wall_capabilities & produced))
                 if not shared_capabilities:
@@ -1272,9 +1785,152 @@ def write_crossmatches(rows: list[ModuleRow], path: Path, limit: int) -> None:
                         ht_declaration.line,
                         ",".join(sorted(produced)),
                         ht_declaration.header,
-                        wall_declaration.header,
+                        wall_expanded,
                     )
                 )
+
+
+def write_primitive_crossmatches(
+    rows: list[ModuleRow], path: Path, limit: int
+) -> None:
+    """Cross-match every primitive wall against every HT mechanism lane."""
+    entries = ht_producers(rows)
+    document_frequency: collections.Counter[str] = collections.Counter()
+    for _row, _declaration, _produced, _conclusions, tokens, _lanes in entries:
+        document_frequency.update(tokens)
+    corpus_size = max(1, len(entries))
+    all_lanes = tuple(DECLARATION_MECHANISMS) + ("cross-cutting-foundational",)
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.writer(handle, delimiter="\t", lineterminator="\n")
+        writer.writerow(
+            (
+                "primitive_obstruction",
+                "status",
+                "interface_definitions",
+                "required_capabilities",
+                "ht_mechanism_lane",
+                "candidate_count",
+                "rank_in_lane",
+                "score",
+                "shared_capabilities",
+                "shared_tokens",
+                "ht_module",
+                "ht_declaration",
+                "ht_line",
+                "ht_produced_capabilities",
+                "ht_statement",
+                "expanded_source_statement",
+            )
+        )
+        for identifier, status, names, expanded, _mechanisms, capabilities in (
+            primitive_obstruction_entries(rows)
+        ):
+            wall_capabilities = set(capabilities)
+            wall_tokens = match_tokens(f"{identifier} {expanded}")
+            for lane in all_lanes:
+                scored: list[
+                    tuple[
+                        float,
+                        tuple[str, ...],
+                        tuple[str, ...],
+                        ModuleRow,
+                        Declaration,
+                        set[str],
+                    ]
+                ] = []
+                for (
+                    ht_row,
+                    ht_declaration,
+                    produced,
+                    _conclusion_capabilities,
+                    ht_tokens,
+                    lanes,
+                ) in entries:
+                    if lane not in lanes:
+                        continue
+                    shared_capabilities = tuple(
+                        sorted(wall_capabilities & produced)
+                    )
+                    if not shared_capabilities:
+                        continue
+                    shared_tokens = tuple(sorted(wall_tokens & ht_tokens))
+                    token_score = sum(
+                        math.log(
+                            (corpus_size + 1)
+                            / (document_frequency[token] + 1)
+                        )
+                        for token in shared_tokens
+                    )
+                    score = 4.0 * len(shared_capabilities) + token_score
+                    scored.append(
+                        (
+                            score,
+                            shared_capabilities,
+                            shared_tokens,
+                            ht_row,
+                            ht_declaration,
+                            produced,
+                        )
+                    )
+                scored.sort(
+                    key=lambda item: (
+                        -item[0],
+                        item[3].module,
+                        item[4].name,
+                    )
+                )
+                if not scored:
+                    writer.writerow(
+                        (
+                            identifier,
+                            status,
+                            ",".join(names),
+                            ",".join(sorted(wall_capabilities)),
+                            lane,
+                            0,
+                            "",
+                            "",
+                            "",
+                            "",
+                            "",
+                            "",
+                            "",
+                            "",
+                            "",
+                            expanded,
+                        )
+                    )
+                    continue
+                for rank, (
+                    score,
+                    shared_capabilities,
+                    shared_tokens,
+                    ht_row,
+                    ht_declaration,
+                    produced,
+                ) in enumerate(scored[:limit], start=1):
+                    writer.writerow(
+                        (
+                            identifier,
+                            status,
+                            ",".join(names),
+                            ",".join(sorted(wall_capabilities)),
+                            lane,
+                            len(scored),
+                            rank,
+                            f"{score:.6f}",
+                            ",".join(shared_capabilities),
+                            ",".join(shared_tokens),
+                            ht_row.module,
+                            ht_declaration.name,
+                            ht_declaration.line,
+                            ",".join(sorted(produced)),
+                            ht_declaration.header,
+                            expanded,
+                        )
+                    )
 
 
 def summary(rows: list[ModuleRow]) -> str:
@@ -1329,8 +1985,13 @@ def main() -> int:
     parser.add_argument("--manifest", type=Path)
     parser.add_argument("--declarations", type=Path)
     parser.add_argument("--rh-declarations", type=Path)
+    parser.add_argument("--rh-obstruction-clusters", type=Path)
+    parser.add_argument("--primitive-obstructions", type=Path)
     parser.add_argument("--crossmatches", type=Path)
     parser.add_argument("--crossmatch-limit", type=int, default=12)
+    parser.add_argument("--primitive-crossmatches", type=Path)
+    parser.add_argument("--primitive-crossmatch-limit", type=int, default=5)
+    parser.add_argument("--ht-knowledge-transfer", type=Path)
     parser.add_argument("--summary", type=Path)
     args = parser.parse_args()
     rows = audit_rows()
@@ -1340,8 +2001,18 @@ def main() -> int:
         write_declarations(rows, args.declarations)
     if args.rh_declarations:
         write_rh_declarations(rows, args.rh_declarations)
+    if args.rh_obstruction_clusters:
+        write_rh_obstruction_clusters(rows, args.rh_obstruction_clusters)
+    if args.primitive_obstructions:
+        write_primitive_obstructions(rows, args.primitive_obstructions)
     if args.crossmatches:
         write_crossmatches(rows, args.crossmatches, args.crossmatch_limit)
+    if args.primitive_crossmatches:
+        write_primitive_crossmatches(
+            rows, args.primitive_crossmatches, args.primitive_crossmatch_limit
+        )
+    if args.ht_knowledge_transfer:
+        write_ht_knowledge_transfer(rows, args.ht_knowledge_transfer)
     rendered = summary(rows)
     if args.summary:
         args.summary.parent.mkdir(parents=True, exist_ok=True)

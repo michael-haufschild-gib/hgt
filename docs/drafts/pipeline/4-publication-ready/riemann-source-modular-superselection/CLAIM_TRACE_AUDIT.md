@@ -293,6 +293,19 @@ Audit date: 2026-07-31.
 | Every off-axis centered Xi zero is detected by one negative rank-one diagonal Weil value | `exists_neg_weilDiagonal_of_offAxis_zero`; `riemannHypothesis_of_weilDiagonal_nonneg` | `formal/GaloisForLFunctions/RHTower/XiWeilCriterionConverse.lean` |
 | Bundled hierarchy law | `xiPositiveObservableHierarchy_law` | capstone |
 
+## Singular source completion and reflected defect normal forms
+
+| Manuscript claim | Checked declaration | Module |
+|---|---|---|
+| Every finite lower/upper prime--Gamma source cup equals the multiplicity-exact Xi--Weil polarization of represented Cauchy tests | deningerPrimeGammaSourceCup_eq_xiWeilPolarization | formal/GaloisForLFunctions/RHTower/DeningerPrimeGammaReflectedDiagonal.lean |
+| Every square-summable Xi-divisor evaluation is a norm limit of pairwise-separated finite continued-source packets and source energies converge to its Weil value | xiWeilPolarization_separatedContinuedSource_reconstruction | formal/GaloisForLFunctions/RHTower/CCMUniversalWeilSourceReconstruction.lean |
+| One separated source sequence converges to the Xi--Hurwitz orientation vector with source energies tending to negative orientation energy | xiHurwitzOrientationEnergy_separatedContinuedSource_reconstruction | formal/GaloisForLFunctions/RHTower/XiHurwitzOrientationSeparatedSourceReconstruction.lean |
+| Eventual nonnegativity of that target-selected sequence is equivalent to RH | exists_separatedContinuedSource_sequence_eventually_nonnegative_iff_riemannHypothesis | same |
+| Hedenmalm reflection folds into the exact two-component first-order source system | xiHedenmalmEvenFold_equation; xiHedenmalmOddFold_equation | formal/GaloisForLFunctions/RHTower/XiHedenmalmReflectionFoldedDirac.lean |
+| Folded components satisfy the forced quadratic equations and the even fold is nonzero | xiHedenmalmEvenFold_quadratic; xiHedenmalmOddFold_quadratic; xiHedenmalmEvenFold_ne_zero; ne_zero_of_XiC_eq_zero | same |
+| Exact Gamma/co-Poisson reflected interval packet has a negative quadratic direction and determinant | gammaCoPoissonSymmetricPacketValue_re_neg; gammaCoPoissonSymmetricPacketDeterminant_re_neg | formal/GaloisForLFunctions/RHTower/GammaCoPoissonIntervalKreinNoGo.lean |
+| Canonical critical rooted prime coordinate is square-summable after scalar renormalization iff scalar is zero | summable_const_mul_sq_suzukiCriticalRootedBianchiPrimeAmplitude_iff; gammaCoPoissonCriticalCompletionTrilemma | formal/GaloisForLFunctions/RHTower/SuzukiCriticalRootedBianchiCofinalNoGo.lean; formal/GaloisForLFunctions/RHTower/GammaCoPoissonCriticalCompletionTrilemma.lean |
+
 ## Hyperbolic reflection, quantized debt, and Schur tax
 
 | Manuscript claim | Checked declaration | Module |

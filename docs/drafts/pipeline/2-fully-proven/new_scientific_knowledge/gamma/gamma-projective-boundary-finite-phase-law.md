@@ -991,6 +991,39 @@ Pontryagin half of eq. (9) that does not need the duality theorem.  A continuous
 function is packaged for this machinery by `toBC`, using that a totally bounded translation orbit
 forces boundedness (`exists_norm_le_of_hasTotallyBoundedOrbit`).
 
+`formal/GaloisForLFunctions/HTGeometry/BohrHullTorusQuotient.lean` proves the **positive carrier
+law** for an independent frequency packet, and it needs no duality theorem.  The joint character map
+`x ↦ (χ_{λ_j}(x))_j` is continuous on the compact hull, so its range is closed; Kronecker's theorem
+(`kronecker_approx`) makes the image of the line dense in the torus; hence the range is the *whole*
+torus (`exists_bohrHull_charPacket_eq`, and `…_of_norm_one` with the target given by unit complex
+numbers).  So `r` rationally independent frequencies force the phase carrier to cover `𝕋^r` — the
+positive direction of eq. (9) and of the §7 prime-torus statement.
+
+`formal/GaloisForLFunctions/HTGeometry/BohrHullPullback.lean` identifies the hull with the space of
+uniform translation limits and makes it a source of almost-periodic observables.  A hull point `x` is
+described by the function `t ↦ ev (x + ι t)`; for `x = ι s` this is the translate `f(· + s)`, and the
+description is *isometric* (`dist_bohrHullBC`), because the hull metric is translation invariant
+(`dist_add_bohrIota`) and the evaluation is `1`-Lipschitz (`dist_bohrEval_le`).  In particular hull
+points are separated by evaluations (`bohrHull_ext`).  Conversely every continuous `F` on the hull
+pulls back to a Bohr almost-periodic function on the line
+(`isBohrAlmostPeriodic_comp_bohrIota`): the `ε`-almost periods of `f` are exactly the times at which
+`ι` returns close to the origin of the hull.
+
+`formal/GaloisForLFunctions/HTGeometry/BohrHullFrequency.lean` turns the frequencies into a group and
+proves the **observable law** (25).  `IsBohrHullFrequency f μ` says `t ↦ e^{iμt}` is uniformly
+continuous for the translation distance, i.e. extends to the hull; this is closed under `0`, `neg`
+and `add` (unit modulus makes the product estimate elementary), so the hull frequencies form an
+additive subgroup `bohrHullFrequencies f ≤ ℝ` — the character group of the carrier read inside the
+line — containing the Bohr spectrum and hence the whole group it generates
+(`closure_bohrSpectrum_le_bohrHullFrequencies`).  For a continuous observable `F` of the hull, the
+translation distance of `t ↦ F(ι t)` is dominated by that of `f`
+(`uniformContinuous_compare_observableBC`), so frequencies transport backwards and
+
+`Γ(F ∘ ι) ⊆ bohrHullFrequencies f`  (`bohrSpectrum_observable_subset_bohrHullFrequencies`),
+
+which is exactly eq. (25): a continuous translation-equivariant observable — the divisor observable
+included — creates no phase beyond the carrier's character group.
+
 `formal/GaloisForLFunctions/HTGeometry/IsometricRecurrence.lean` abstracts the recurrence to any
 relatively-compact isometric `ℝ`-action (`isometricAction_recurrence`, `isometricAction_return_seq`),
 so it instantiates both to `ℝ →ᵇ ℂ` and to vertical translation of holomorphic functions on a strip.

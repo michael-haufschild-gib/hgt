@@ -821,18 +821,40 @@ where the shell vector is the witness with no Fourier transform taken.
 ### What `(59)` does and does not settle
 
 It closes the cancellation question that `(55)` opened: **the blocks do not cancel**.  It does not
-by itself give `Z != 0`, because `(55)` is a congruence modulo the relative ideal, not an equality.
-What it does give is an exact criterion, replacing a vanishing question by a membership question:
+give `Z != 0`, and — this is the point worth recording — it *cannot*.  From `(55)` one gets
 
 ```text
 in the crossing chamber 0 < a < b < c <= r a:
-  Z = 0   =>   M_phys + M_four  in  I_a.                                   (60)
+  Z = 0   =>   M_phys + M_four  in  I_a,                                   (60)
 ```
 
-Equivalently, if the four mixed time-band blocks are *not* in the relative ideal then `Z != 0`.  The
-open core of the coupling problem is therefore now completely explicit: decide whether one named,
-nonzero, finite sum of physical-band-times-Fourier-band operators lies in `I_a`.  Nothing about the
-Sonin projections is involved any more.
+but the hypothesis of the contrapositive is unsatisfiable: `M_phys + M_four` is exactly the shell
+product `S(a,b) D_r S(b,c)`, and that product was already proved to lie in `I_a` — it is how `(53)`
+was obtained in the first place.  So `(60)` is a true statement with a vacuous useful direction.
+Every object the congruence route produces lies in the ideal, on both sides, and the ideal is
+exactly what the congruence forgets.  **The congruence route cannot decide `Z = 0` at all.**
+
+The durable content of Theorem S is therefore not `(60)` but `(58)`: the two polarized blocks are
+individually nonzero, together with the uncertainty machinery that proves it — qualitative
+uncertainty on the even subspace, the Fourier involution there, one-interval vanishing, and
+injectivity of the dilation sum on both a Fourier and a physical annulus.  Those apply to any
+operator, not only to congruence classes.
+
+## The open core, stated exactly
+
+Both aperture layers are self-adjoint, so the coupling is zero exactly when the dilation sum carries
+one layer into the orthogonal complement of the other:
+
+```text
+Z = 0   <=>   < (Q_a - Q_b) u ,  D_r (Q_b - Q_c) v >  =  0   for all u, v.  (61)
+```
+
+`(61)` has no algebra left in it: `K_a ⊖ K_b` and `K_b ⊖ K_c` are two nonzero Sonin layers, and the
+question is whether the dilation group moves one into the orthogonal complement of the other.  That
+would be a rigidity with no evident source, since the layers are not dilation-invariant and the
+dilation sum is injective on the bands that surround them.  It remains open, but this is the
+statement to attack, and it is the first form of the question that mentions neither the relative
+ideal nor any approximation.
 
 ### Proof
 
@@ -1027,7 +1049,9 @@ provisional pending expert/literature review.
 | annulus injectivity, physical | `eq_zero_of_evenDilationSum_apply_eq_zero_of_physicalAnnulus` |
 | physical annulus nonzero | `evenIndicatorCutoff_sub_ne_zero` |
 | `(59)` blocks do not cancel | `soninApertureCouplingMixedTerms_ne_zero` |
-| `(60)` ideal criterion | `evenSoninApertureSuccessiveLayerTransition_ne_zero_of_polarizedBlocks_notMem_ideal` |
+| `(60)` ideal criterion (vacuous) | `evenSoninApertureSuccessiveLayerTransition_ne_zero_of_polarizedBlocks_notMem_ideal` |
+| `(61)` orthogonality criterion | `evenSoninApertureSuccessiveLayerTransition_eq_zero_iff_layers_orthogonal` |
+| `(61)` on the projections | `evenSoninApertureSuccessiveLayerTransition_eq_zero_iff_projection_orthogonal` |
 | energy strictly monotone | `hsNormSq_fullTimeBandFourier_lt_of_lt` |
 
 Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
@@ -1063,7 +1087,8 @@ Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninBandLimitedShellVanishing.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninDilationSumFourierInjective.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninMixedPhysicalBlockNonvanishing.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninMixedFourierBlockNonvanishing.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninMixedFourierBlockNonvanishing.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCouplingLayerOrthogonality.lean`.
 All declarations depend only on `propext`, `Classical.choice`, `Quot.sound`.
 
 Novelty split for Theorem G: `(7)` was already in the corpus
@@ -1074,6 +1099,10 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-08-01 — correction to the previous entry: `(60)` is vacuous.  `M_phys + M_four` is the shell
+  product, which is already known to lie in `I_a`, so no congruence-level statement can separate
+  `Z` from zero.  Replaced by `(61)`, the exact orthogonality criterion on the two Sonin layers —
+  the first formulation of the coupling question free of the ideal and of any approximation.
 - 2026-07-31 — both polarized halves proved nonzero, not just their sum; the Fourier half needs no
   involution step because its image is compactly supported outright.
 - 2026-07-31 — Theorem S: the four mixed blocks do **not** cancel.  Range polarization plus the

@@ -432,24 +432,87 @@ formalization is therefore split by proof phase and does not require an unbounde
 
 Targeted build green; axiom audit `[propext, Classical.choice, Quot.sound]`.
 
-**Module 2 (NEXT)** finite-rank transport unitary, i.e. `(3.3)-(3.4)`.
+**Module 2 (DONE at index one; general `k` still open)**
+`formal/GaloisForLFunctions/HTGeometry/FiniteRankTransportUnitary.lean`, i.e. `(3.3)-(3.4)`.
 
-Required content: for a fixed `k`-dimensional `N` and `k`-dimensional `N_a` whose projections
-converge strongly, the compression `T_a = E_a|N : N -> N_a` converges to the inclusion in operator
-norm (finite-dimensional domain upgrades pointwise to uniform), is invertible for large `a`, and
-its polar factor `J_a = T_a (T_a^* T_a)^(-1/2)` is a unitary `N -> N_a` converging in norm to the
-inclusion.  Route settled: `A_a = T_a^* T_a` is a positive invertible element of the C*-algebra
-`N ->L N` with `A_a -> 1` in norm, so mathlib's `continuousOn_cfc` applied to `t |-> t^(-1/2)` on a
-compact neighbourhood of `1` gives `A_a^(-1/2) -> 1` in norm.  At deficiency `(1,1)` this reduces to
-normalizing `E_a e_+`, which is elementary and suffices for the Suzuki application.
+- `opNorm_le_sum_orthonormalBasis`: on a finite-dimensional domain the operator norm is bounded by
+  the sum of the norms of the images of an orthonormal basis, because every orthonormal coordinate
+  functional has norm at most one.
+- `tendsto_opNorm_sub_of_tendsto_pointwise`: pointwise convergence of continuous linear maps on a
+  finite-dimensional domain is already convergence in operator norm.  This is the "strong
+  convergence of projections of constant finite rank upgrades to norm convergence" step of `(3.2)`.
+- `lineTransport`, `norm_lineTransport`, `tendsto_lineTransport`: at deficiency index one the polar
+  factor is the normalized image `E_a e / ‖E_a e‖`, which is a unit vector of `N_a` and converges to
+  `e`.
+- `rankOneTransport`, `rankOneTransport_self_eq_starProjection`,
+  `tendsto_opNorm_rankOneTransport`: the induced transport operators converge to the global
+  deficiency projection in operator norm.
+- `tendsto_opNorm_deficiency_rankOneTransport`: the composite with Module 1 — for a nested
+  exhaustion whose global deficiency space is a line, the boundary transport is automatic and
+  norm-convergent.  This is exactly `(3.3)-(3.4)` at `k = 1`, the deficiency index of Suzuki's
+  finite-aperture operators.
 
-**Module 3** Cayley assembly `(4.1)-(4.14)`.  Pure algebra given Modules 1-2: the embedded finite
-Cayley transform is `V Q_(a,+) + W_a E_(a,+)`, both summands converge strongly, and the resolvent
-identity `(A+i)^(-1) = (1/2i)(I - C_A)` transports the conclusion.  The converse `(4.12)` subtracts
-the automatic base convergence and tests on `J_(a,+)x -> x`.  The `k = 1` specialization is the
-scalar phase lock `(4.13)-(4.14)`.
+Targeted build green; axiom audit `[propext, Classical.choice, Quot.sound]`.
 
-**Module 4** spectral inclusion `(5.1)` from generalized strong resolvent convergence.
+Remaining in Module 2 for general `1 <= k < infinity`: the polar factor
+`J_a = T_a (T_a^* T_a)^(-1/2)`.  Route settled: `A_a = T_a^* T_a` is a positive invertible element
+of the C*-algebra `N ->L N` with `A_a -> 1` in norm, so mathlib's `continuousOn_cfc` applied to
+`t |-> t^(-1/2)` on a compact neighbourhood of `1` gives `A_a^(-1/2) -> 1` in norm; `J_a` is then an
+isometry between spaces of equal finite dimension, hence unitary.
+
+**Module 3 (DONE)** Cayley assembly `(4.1)-(4.14)`:
+`formal/GaloisForLFunctions/HTGeometry/NestedExhaustionCayleyLimit.lean`.
+
+- `cayleyAssembly V W Q E = V Q + W E` is the embedded Cayley transform of `(4.7)`.
+- `tendsto_cayleyAssembly`: strong convergence of the range and deficiency projections plus norm
+  convergence of the boundary blocks gives strong convergence of the assembled Cayley transforms.
+  This is Theorem 4.1 `(4.8)`.
+- `tendsto_boundary_of_tendsto_cayleyAssembly`: the converse direction of Theorem 4.2 — once the
+  automatic base part `V Q_a` is subtracted, strong convergence of the Cayley transforms is exactly
+  strong convergence of the boundary parts.
+- `cayleyResolvent`, `tendsto_cayleyResolvent`: the Cayley resolvent formula `(4.9)-(4.10)` and the
+  transfer of the conclusion to generalized strong resolvent convergence `(4.5)`.  The scalar
+  `(2i)^(-1)` is kept abstract so the statement is independent of the Cayley sign convention.
+- `norm_rankOneTransport`, `tendsto_opNorm_rankOneTransport_two`, `tendsto_opNorm_phaseBlock`,
+  `tendsto_phase_of_tendsto_opNorm`: at deficiency index one the boundary block is one unit scalar
+  times a rank-one transport, and norm convergence of the blocks is *equivalent* to convergence of
+  the scalar phase.  This is `(4.12) <-> (4.14)`.
+
+**Module 4 (DONE, elementary form)** spectral inclusion `(5.1)`:
+`formal/GaloisForLFunctions/HTGeometry/StrongResolventSpectralInclusion.lean`.
+
+- `eventually_norm_sub_smul_lt`: strong convergence transports approximate eigenvectors.
+- `one_div_lt_norm_resolvent`: a unit vector moved less than `epsilon` by `T - mu` forces
+  `mu` into the spectrum or the resolvent norm above `1/epsilon`; the resolvent recovers the vector
+  from its own image.
+- `eventually_mem_spectrum_or_norm_resolvent_gt`: the combination — near every spectral point of the
+  limit, every sufficiently late approximant either has `mu` in its spectrum or an exploding
+  resolvent there.
+
+This is the target-spectral-inclusion content of `(5.1)` without any functional calculus.  Turning
+"exploding resolvent" into "the spectrum meets every neighbourhood" needs the normal-element
+identity `‖(T - mu)^(-1)‖ = dist(mu, spectrum T)^(-1)`, which mathlib does not yet carry; that
+identity is the one remaining step of Module 4.
+
+**Module 5 (DONE)** Suzuki-facing assembly:
+`formal/GaloisForLFunctions/RHTower/SuzukiFiniteApertureBoundaryPhaseLocking.lean`.
+
+- `apertureDeficiencyProjection`, `apertureBoundaryBlock`, `globalBoundaryBlock`.
+- `tendsto_apertureTransport`: `(3.3)-(3.4)` for the aperture chain.
+- `tendsto_opNorm_apertureBoundaryBlock_iff`: Theorem 4.2 at deficiency index one, as an
+  equivalence between block convergence and the scalar phase lock `zeta_a -> zeta`.
+- `tendsto_apertureCayley_of_phaseLock`: Theorem 4.1 for the aperture chain — from nesting,
+  density, the two deficiency lines, and a converging phase schedule, the embedded finite Cayley
+  transforms converge strongly.
+- `tendsto_apertureResolvent_of_phaseLock`: the generalized strong resolvent limit `(4.5)`.
+
+All modules wired into the area umbrellas, targeted builds green, axiom audit
+`[propext, Classical.choice, Quot.sound]` for every declaration listed.
+
+**Remaining Lean work.**  (i) the general-`k` polar factor of Module 2; (ii) the normal-element
+resolvent-distance identity closing Module 4; (iii) the last step of the Theorem 4.2 converse,
+which tests the boundary convergence on the transported vectors to upgrade strong convergence of
+`Z_a E_a` to norm convergence of the transported blocks.
 
 **Explicitly out of scope for the Lean gate.**  Section 6 is `[PROVED FROM RH]` and stays out: the
 global positive Weil space and the target self-adjoint generator are downstream of RH, and the
@@ -472,3 +535,10 @@ universal law of Sections 2-5.
 - 2026-08-01 — Lean formalization started.  Module 1 (deficiency-projection convergence, equations
   `(3.1)`, `(3.2)`, `(3.7)`) is formalized, wired, built, and axiom-audited.  Modules 2-4 are
   specified above with their proof routes settled.
+- 2026-08-01 — Module 2 formalized at deficiency index one (finite-dimensional uniformity, line
+  transport, rank-one transport operators, and the composite with Module 1).  General-`k` polar
+  factor and Modules 3-4 remain.
+- 2026-08-01 — Modules 3, 4 and the Suzuki-facing assembly formalized: embedded Cayley assembly and
+  its convergence, the base-subtraction converse, the Cayley resolvent transfer, the deficiency-one
+  phase-lock equivalence, elementary spectral inclusion, and the aperture-chain statement of
+  Theorems 4.1 and 4.2.
