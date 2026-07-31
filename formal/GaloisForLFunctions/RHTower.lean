@@ -3608,3 +3608,4 @@ import GaloisForLFunctions.RHTower.SoninAperturePacketCurvatureTrace
 import GaloisForLFunctions.RHTower.SoninApertureLayerAlgebra
 import GaloisForLFunctions.RHTower.SoninBurnolApertureCancellation
 import GaloisForLFunctions.RHTower.RectangularGammaIntervalCellBridge
+import GaloisForLFunctions.RHTower.SoninInnerBandAnnihilation

@@ -445,11 +445,23 @@ Re rho(x_0,x_m) = sum_i Re rho(x_i,x_(i+1))
   <->  Z(x_0, x_j, x_(j+1)) = 0 for every 1 <= j < m.                     (34)
 ```
 
-Whether `Z` is ever nonzero in a crossing chamber is **not proved here**.  The corpus's
-noncompactness witness is built for the pair `(a,b)` and lives in `ran Q_b` with no control of
-`Q_c`, so it does not transfer; a witness family inside `K_b (-) K_c` would be a new construction.
-Until that is settled, `(32)` and `(33)` are exact identities and valid inequalities, but the loss
-they describe is not known to be positive.
+Whether `Z` is ever nonzero in a crossing chamber is **not proved here**, and the two obvious
+witness families provably fail.
+
+*Outer family.*  The corpus's noncompactness witness for the pair `(a,b)` is supported in the
+annulus `(r a, r d)`, which lies outside `[-c,c]`, so it is asymptotically fixed by `Q_c` and
+`Z f_n = Y f_n - Y Q_c f_n -> 0`.  It carries no information about `Z`.
+
+*Inner family.*  Shells supported in `(b,c)` are annihilated exactly by `Q_c`
+(`evenCentralSoninProjection_eq_zero_of_indicatorCutoff_eq_self`), so they do sit in the range of
+`Q_b - Q_c`.  But the dilation moves that annulus to `(r b, r c)` or `(b/r, c/r)`, and inside the
+crossing chamber `c < r a` neither image meets `(a,b)`: the first has `r b > b`, and the second has
+`c/r < a`.  So `(Q_a - Q_b) D_r` sees nothing of it either, at the level of physical support.
+
+Both failures are geometric: in the crossing chamber the dilation simply does not carry the `(b,c)`
+annulus into the `(a,b)` annulus.  Any witness must therefore exploit the **Fourier tails** of the
+Sonin projections rather than physical support, and any proof that `Z = 0` must control exactly
+those tails.  That is the precise shape of the remaining question.
 
 ### Proof
 
@@ -576,6 +588,7 @@ provisional pending expert/literature review.
 | `(32)` accumulated loss | `re_soninApertureResidualTrace_chain` |
 | `(33)` chain subadditivity | `re_soninApertureResidualTrace_chain_le` |
 | chain equality characterization | `re_soninApertureResidualTrace_chain_eq_iff` |
+| exact inner-band annihilation | `evenCentralSoninProjection_eq_zero_of_indicatorCutoff_eq_self` |
 
 Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninPrincipalRelativeCyclicExtension.lean`,
@@ -587,7 +600,8 @@ Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
 `formal/GaloisForLFunctions/RHTower/EvenBoundedMultiplier.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninBurnolLogBandComparison.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninBandSupportedDense.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninApertureFlagChain.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninApertureFlagChain.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninInnerBandAnnihilation.lean`.
 All declarations depend only on `propext`, `Classical.choice`, `Quot.sound`.
 
 Novelty split for Theorem G: `(7)` was already in the corpus
@@ -598,6 +612,10 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-07-31 — both obvious witness families for the coupling ruled out, and the exact tool for the
+  inner one formalized: shells inside the window are annihilated exactly, not asymptotically, by the
+  Sonin projection.  In the crossing chamber the dilation does not carry the (b,c) annulus into the
+  (a,b) annulus, so any witness must live in the Fourier tails of the projections.
 - 2026-07-31 — sharpness isolated.  Equality in the chain law holds exactly when every coupling of
   the chain vanishes.  Whether any coupling is nonzero is open: the corpus's noncompactness witness
   is built for the wrong pair and lives in `ran Q_b` with no control of `Q_c`.  Recorded so the
