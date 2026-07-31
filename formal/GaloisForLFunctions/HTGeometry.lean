@@ -2712,3 +2712,5 @@ import GaloisForLFunctions.HTGeometry.AnalyticGermMaximalIdeal
 import GaloisForLFunctions.HTGeometry.BoundaryWedgeExponentialRealization
 import GaloisForLFunctions.HTGeometry.CoordinateCorankDirectedSup
 import GaloisForLFunctions.HTGeometry.RelationLatticeCorank
+import GaloisForLFunctions.HTGeometry.PencilExponentialSeed
+import GaloisForLFunctions.HTGeometry.PencilSRRealization

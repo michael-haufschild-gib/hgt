@@ -19,6 +19,7 @@ why the construction preserves kernels and limits but not cokernels.
 namespace RHTower
 
 open CategoryTheory TopologicalSpace Opposite TopCat
+open scoped AlgebraicGeometry
 
 universe u
 
@@ -112,6 +113,26 @@ theorem invariantPresheaf_isSheaf (hF : F.IsSheaf) : (invariantPresheaf F act).I
     apply Subtype.ext
     exact htuniq s.val (fun k => congrArg Subtype.val (hs k))
 
+/-- The invariance condition is exactly the equalizer condition of the family of operators
+against the constant family. -/
+theorem mem_invariantSubmodule_iff_equalizer (U : (Opens X)ᵒᵖ) (s : F.obj U) :
+    s ∈ invariantSubmodule F act U ↔ (fun i => ((act i).app U).hom s) = fun _ => s := by
+  constructor
+  · intro hs
+    funext i
+    exact hs i
+  · intro hs i
+    exact congrFun hs i
+
+/-- **Coarse invariant sheaf.**  Invariant sections of the direct image of a sheaf along any
+continuous map, under any family of natural operators on the direct image, form a sheaf on the
+base.  This is Deninger's coarse coefficient `𝒜ⁿ_X(U) = 𝒜̃ⁿ(π⁻¹U)^G`. -/
+theorem invariantPresheaf_pushforward_isSheaf {Y : TopCat.{u}} (π : Y ⟶ X)
+    (E : TopCat.Presheaf (ModuleCat.{u} R) Y) (hE : E.IsSheaf)
+    (actE : ι → ((π _* E) ⟶ (π _* E))) :
+    (invariantPresheaf (π _* E) actE).IsSheaf :=
+  invariantPresheaf_isSheaf _ actE (TopCat.Sheaf.pushforward_sheaf_of_sheaf π hE)
+
 end InvariantSheaf
 
 section Functoriality
@@ -125,9 +146,10 @@ theorem map_mem_invariantSubmodule_of_intertwines
     (s : F.obj U) (hs : s ∈ invariantSubmodule F actF U) :
     (φ.app U).hom s ∈ invariantSubmodule G actG U := by
   intro i
-  have hstep := congrArg (fun f : F.obj U ⟶ G.obj U => f.hom s) (hφ i)
-  simp only [NatTrans.comp_app, ModuleCat.hom_comp, LinearMap.coe_comp,
-    Function.comp_apply] at hstep
+  have happ : (actF i).app U ≫ φ.app U = φ.app U ≫ (actG i).app U :=
+    NatTrans.congr_app (hφ i) U
+  have hstep := congrArg (fun f : F.obj U ⟶ G.obj U => f.hom s) happ
+  simp only [ModuleCat.hom_comp, LinearMap.coe_comp, Function.comp_apply] at hstep
   rw [← hstep, hs i]
 
 /-- **Functorial descent.**  Every morphism intertwining the two operator families descends to
@@ -143,7 +165,8 @@ def invariantMap (φ : F ⟶ G) (hφ : ∀ i, actF i ≫ φ = φ ≫ actG i) :
     ext s
     apply Subtype.ext
     have hstep := congrArg (fun f : F.obj U ⟶ G.obj V => f.hom s.val) (φ.naturality h)
-    simpa [LinearMap.restrict_apply] using hstep
+    simp only [ModuleCat.hom_comp, LinearMap.coe_comp, Function.comp_apply] at hstep
+    exact hstep
 
 @[simp]
 theorem invariantMap_app_coe (φ : F ⟶ G) (hφ : ∀ i, actF i ≫ φ = φ ≫ actG i)

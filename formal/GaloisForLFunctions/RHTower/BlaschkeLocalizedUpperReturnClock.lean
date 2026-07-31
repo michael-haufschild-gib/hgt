@@ -258,4 +258,81 @@ theorem exists_blaschkeLocalizedCoherenceDeadline_activeWater
       show blaschkeActiveTailRadius a L + 2 - 1 =
         blaschkeActiveTailRadius a L + 1 by omega] using hlog
 
+/--
+Actual-first-return form of the constructive Blaschke clock. The same
+finite deadline bounds the first coherence time of every countable torus
+packet at the exact active-water defect.
+-/
+theorem exists_blaschkeFirstCoherenceTimeDeadline_activeWater
+    (a : ℝ) (ha0 : 0 < a) (ha1 : a < 1)
+    {L : ℝ}
+    (hLtail : blaschkeSpectralOffset a ≤ L)
+    (hLzero : blaschkeSpectralSlope a ≤ L) :
+    ∃ T : ℕ,
+      (∀ x : ℕ → UnitAddCircle,
+        countableTorusWeightedFirstCoherenceTime
+            (blaschkeLocalizedWeight a) x
+            (blaschkeActiveWaterReturnDefect a L) ≤ T) ∧
+      Real.log (T : ℝ) ≤
+        blaschkeDepthWaterEntropy a L +
+          (blaschkeActiveTailRadius a L + 1 : ℕ) *
+            Real.log projectivePhaseResolutionConstant := by
+  obtain ⟨T, hreturn, hlog⟩ :=
+    exists_blaschkeLocalizedCoherenceDeadline_activeWater
+      a ha0 ha1 hLtail hLzero
+  refine ⟨T, ?_, hlog⟩
+  intro x
+  obtain ⟨n, hn0, hnT, hnreturn⟩ :=
+    hreturn (fun k => torusRealFrequency (x k))
+  have hn :
+      CountableTorusWeightedCoherenceAt
+        (blaschkeLocalizedWeight a) x
+        (blaschkeActiveWaterReturnDefect a L) n := by
+    refine ⟨hn0, ?_⟩
+    simpa only [exp_torusRealFrequency_eq_fourier_zsmul] using hnreturn
+  exact
+      (countableTorusWeightedFirstCoherenceTime_le_of
+      (blaschkeLocalizedWeight a) x
+      (blaschkeActiveWaterReturnDefect a L) hn).trans
+      (by exact_mod_cast hnT)
+
+/--
+Any target defect above the active-water defect inherits the same actual
+first-return deadline.
+-/
+theorem exists_blaschkeFirstCoherenceTimeDeadline_of_activeWaterDefect_le
+    (a : ℝ) (ha0 : 0 < a) (ha1 : a < 1)
+    {L η : ℝ}
+    (hLtail : blaschkeSpectralOffset a ≤ L)
+    (hLzero : blaschkeSpectralSlope a ≤ L)
+    (hdefect : blaschkeActiveWaterReturnDefect a L ≤ η) :
+    ∃ T : ℕ,
+      (∀ x : ℕ → UnitAddCircle,
+        countableTorusWeightedFirstCoherenceTime
+            (blaschkeLocalizedWeight a) x η ≤ T) ∧
+      Real.log (T : ℝ) ≤
+        blaschkeDepthWaterEntropy a L +
+          (blaschkeActiveTailRadius a L + 1 : ℕ) *
+            Real.log projectivePhaseResolutionConstant := by
+  obtain ⟨T, hreturn, hlog⟩ :=
+    exists_blaschkeLocalizedCoherenceDeadline_activeWater
+      a ha0 ha1 hLtail hLzero
+  refine ⟨T, ?_, hlog⟩
+  intro x
+  obtain ⟨n, hn0, hnT, hnreturn⟩ :=
+    hreturn (fun k => torusRealFrequency (x k))
+  have hn :
+      CountableTorusWeightedCoherenceAt
+        (blaschkeLocalizedWeight a) x η n := by
+    refine ⟨hn0, ?_⟩
+    have htarget :
+        1 - η ≤ 1 - blaschkeActiveWaterReturnDefect a L :=
+      sub_le_sub_left hdefect 1
+    apply htarget.trans
+    simpa only [exp_torusRealFrequency_eq_fourier_zsmul] using hnreturn
+  exact
+    (countableTorusWeightedFirstCoherenceTime_le_of
+      (blaschkeLocalizedWeight a) x η hn).trans
+      (by exact_mod_cast hnT)
+
 end RHTower

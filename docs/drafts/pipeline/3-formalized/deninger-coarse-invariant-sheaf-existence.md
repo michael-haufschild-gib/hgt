@@ -1,7 +1,7 @@
 # Deninger coarse invariant-sheaf existence and functoriality
 
 - **ID:** `deninger-coarse-invariant-sheaf-existence`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Label:** `DAC_COARSE_INVARIANT_SHEAF_EXISTENCE`
 - **Parent:** `deninger-coarse-invariant-sheaf-rost-schmid-descent`
@@ -126,9 +126,9 @@ sequence.  Those are the source-native open gates.
 
 - [x] 0 → 1 in-progress: source-pure and well posed
 - [x] 1 → 2 fully-proven: complete limit/equalizer proof
-- [ ] 2 → 3 formalized: invariant subcomplex and descended-flow
-  theorem written in Lean; categorical sheaf theorem and final audit
-  remain
+- [x] 2 → 3 formalized: invariant subcomplex, descended-flow theorem, and the categorical
+  sheaf theorem (`invariantPresheaf_isSheaf`, `invariantPresheaf_pushforward_isSheaf`,
+  `invariantMap`, kernel preservation, `invariantSubring`) all build unconditionally
 - [ ] 3 → 4 publication-ready: standalone source note and Lean audit
 
 ## Novelty audit
@@ -164,3 +164,51 @@ remains to be formalized.
 
 - 2026-07-27 — source existence and operation descent isolated and
   proved; derived quotient explicitly removed from the construction.
+
+## Unconditional Lean formalization
+
+Two modules.  Axiom audit for every declaration: `propext, Classical.choice, Quot.sound`
+(the ring-level ones need only `propext`).
+
+### The categorical sheaf theorem
+
+`formal/GaloisForLFunctions/RHTower/DeningerCoarseInvariantSheaf.lean`
+
+- `invariantSubmodule F act U` — formula `(1)`: sections of `F` over `U` fixed by every operator
+  of an arbitrary family `act : ι → (F ⟶ F)` of natural endomorphisms.
+- `mem_invariantSubmodule_iff_equalizer` — formula `(2)`: invariance is exactly the equalizer
+  condition against the constant family.
+- `map_mem_invariantSubmodule`, `invariantPresheaf`, `invariantInclusion` — restriction preserves
+  invariance (naturality), so the invariants form a presheaf with an inclusion into `F`.
+- `invariantPresheaf_isSheaf` — **clause 1**: if `F` is a sheaf so is the invariant presheaf.  The
+  proof is the card's: a compatible family of invariant sections glues in `F`, and each operator
+  applied to the gluing is again a gluing of the same family, hence equal to it by separatedness.
+- `invariantPresheaf_pushforward_isSheaf` — the card's coefficient itself: for any continuous
+  `π : Y ⟶ X`, any sheaf `E` on `Y`, and any family of natural operators on `π _* E`, the
+  invariants of the direct image form a sheaf on `X`.  Direct-image sheafiness is
+  `TopCat.Sheaf.pushforward_sheaf_of_sheaf`, exactly the right-adjoint step of the proof.
+- `map_mem_invariantSubmodule_of_intertwines`, `invariantMap`, `invariantMap_id`,
+  `invariantMap_comp` — **clauses 3 and 4**: every morphism intertwining the two families
+  descends, functorially.  Flow, Galois action, Frobenius/Verschiebung, residue and trace maps
+  are all instances, since the only hypothesis is commutation with the family.
+- `invariantMap_app_eq_zero_iff`, `invariantMap_app_injective` — **clause 5**, positive half:
+  invariants commute with kernels and preserve injectivity, i.e. are left exact.  Nothing in the
+  development gives right exactness, matching the card's warning.
+
+No group structure, finiteness, or exactness of the family is used; the theorem is proved for an
+arbitrary index family of natural endomorphisms, of which a `G`-action is the special case.
+
+### The algebra clause
+
+Same module, section `InvariantAlgebra`:
+
+- `invariantSubring act` — **clause 2**: for a family of ring endomorphisms of a section ring the
+  unit and multiplication restrict to the fixed sections.
+- `differential_mem_invariantSubring` — a differential commuting with the family restricts.
+- `differential_sq_zero_on_invariantSubring` — squaring to zero is inherited.
+
+Scope note: the dg-algebra assertion is assembled from clause 1 (the sheaf of modules) together
+with these section-level restriction statements, rather than as a single bundled
+"sheaf of unital dg `R`-algebras" object; and clause 5 is formalized as the equalizer description
+plus kernel/left-exactness preservation rather than as an abstract preservation-of-all-limits
+statement about a functor between sheaf categories.

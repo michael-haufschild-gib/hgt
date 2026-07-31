@@ -23,7 +23,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 3542 | `formal/GaloisForLFunctions/RHTower.lean` |
 | 3468 | `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean` |
 | 2721 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranch.lean` |
-| 2712 | `formal/GaloisForLFunctions/HTGeometry.lean` |
+| 2714 | `formal/GaloisForLFunctions/HTGeometry.lean` |
 | 2671 | `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean` |
 | 2627 | `formal/GaloisForLFunctions/RHTower/DpolyBallFloor.lean` |
 | 2587 | `formal/GaloisForLFunctions/RHTower/DeningerArithmeticTimeDistribution.lean` |

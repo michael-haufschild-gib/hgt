@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.BlaschkeLocalizedInfinitePhaseQuantile
 import GaloisForLFunctions.RHTower.CountableWeightedBorelCantelli
+import GaloisForLFunctions.RHTower.CountableWeightedFirstReturn
 import Mathlib.Probability.ProductMeasure
 
 /-!
@@ -576,5 +577,36 @@ theorem
       (fun _ => (1 : NNReal))
       (blaschkeHaarSubentropyDeadline a K delta)
       hhead hdeadline
+
+/--
+Actual-first-return form of the product-Haar lower clock. Almost every
+packet eventually has first coherence time strictly beyond the explicit
+subentropy deadline.
+-/
+theorem
+    ae_eventually_blaschkeHaarSubentropyDeadline_lt_firstCoherenceTime
+    (a : ℝ) (ha0 : 0 < a) (ha1 : a < 1)
+    {K : ℝ}
+    (hKtail : blaschkeSpectralOffset a ≤ K)
+    (hKzero : blaschkeSpectralSlope a ≤ K)
+    (hKnonneg : 0 ≤ K)
+    {delta : ℝ} (hdelta : 0 < delta) :
+    ∀ᵐ x ∂Measure.infinitePi (fun _ : ℕ =>
+          (volume : Measure UnitAddCircle)),
+      ∀ᶠ k in Filter.atTop,
+        (blaschkeHaarSubentropyDeadline a K delta k :
+            WithTop ℕ) <
+          countableTorusWeightedFirstCoherenceTime
+            (blaschkeLocalizedWeight a) x
+            (Real.exp (-blaschkeShiftedScale K k)) := by
+  filter_upwards [
+    ae_eventually_not_countableTorusWeightedCoherenceHitUnion_blaschke_haar
+      a ha0 ha1 hKtail hKzero hKnonneg hdelta] with x hx
+  filter_upwards [hx] with k hk
+  exact
+    (not_mem_hitUnion_iff_deadline_lt_firstCoherenceTime
+      (blaschkeLocalizedWeight a) x
+      (blaschkeHaarSubentropyDeadline a K delta k)
+      (Real.exp (-blaschkeShiftedScale K k))).mp hk
 
 end RHTower

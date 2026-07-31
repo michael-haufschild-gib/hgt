@@ -216,6 +216,7 @@ theorem node_injective (S : PencilSeparation facets E) {A : Finset α} (hA : A �
   by_cases hvA : v ∈ A
   · have hgv := hzero v hvA
     rw [hg] at hgv
+    have hgv' : (ν v : ℤ) - (ν' v : ℤ) = 0 := hgv
     omega
   · have h1 : ν v = 0 := Finsupp.notMem_support_iff.mp fun hc => hvA (hν hc)
     have h2 : ν' v = 0 := Finsupp.notMem_support_iff.mp fun hc => hvA (hν' hc)
@@ -352,6 +353,40 @@ theorem exists_ne_seedCarrierPoly (S : PencilSeparation facets E)
   have hc0 : coeff d₀ P = 0 := by
     rw [← coeff_restrictPoly P hd₀A, ← hQ, hQ0, coeff_zero]
   exact (MvPolynomial.mem_support_iff.mp hd₀P) hc0
+
+/-! ### The entire realization -/
+
+omit [DecidableEq α] in
+/-- The pencil source is entire when every facet phase is. -/
+theorem differentiable_seed {d : ℕ} (S : PencilSeparation facets (Fin d → ℂ))
+    (hdiff : ∀ A ∈ facets, Differentiable ℂ fun z : Fin d → ℂ => S.phase A z) :
+    Differentiable ℂ S.seed := by
+  show Differentiable ℂ fun z : Fin d → ℂ => ∑ A ∈ facets, expSeedHom (S.phase A) z
+  refine Differentiable.fun_sum fun A hA => ?_
+  exact Complex.differentiable_exp.comp (Complex.differentiable_exp.comp (hdiff A hA))
+
+/-- **A periodic-pencil separation in `d` variables realizes the complex entirely in `d`
+variables.**  The carriers are entire, the vertex coordinates act as difference operators along the
+`ℚ`-independent steps, and a nonzero Stanley–Reisner class has a nonconstant carrier. -/
+def entireSRRealization {d : ℕ} (S : PencilSeparation facets (Fin d → ℂ))
+    (hindep : LinearIndependent ℚ S.ω)
+    (hdiff : ∀ A ∈ facets, Differentiable ℂ fun z : Fin d → ℂ => S.phase A z)
+    (hanti : FacetAntichain (↑facets : Set (Finset α))) :
+    EntireSRRealization d facets where
+  ω := S.ω
+  indep := hindep
+  carrier := seedCarrier S.ω facets S.seed S.seedAnnihilates
+  carrier_entire := fun q =>
+    differentiable_seedCarrier _ _ (S.differentiable_seed hdiff) _ q
+  carrier_zero := map_zero _
+  carrier_vertex := fun v q => seedCarrier_srVertexX_mul _ _ _ _ v q
+  carrier_nonconstant := by
+    intro q hq
+    obtain ⟨P, rfl⟩ := Ideal.Quotient.mk_surjective
+      (I := stanleyReisnerIdeal ℂ facets) q
+    have hPI : P ∉ stanleyReisnerIdeal ℂ facets := fun hP =>
+      hq ((Submodule.Quotient.mk_eq_zero _).mpr hP)
+    exact S.exists_ne_seedCarrierPoly hanti P hPI
 
 end PencilSeparation
 

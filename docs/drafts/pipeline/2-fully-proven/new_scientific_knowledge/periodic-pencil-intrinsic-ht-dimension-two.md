@@ -495,3 +495,51 @@ Stanley--Reisner differential-matroid realization, and the analytic definition a
 - [x] strict geometry gap `htDim=ppDim=2<ffsDim=4` proved
 - [ ] independent specialist proof and novelty audit
 - [ ] complete unconditional Lean formalization before stage 3
+
+## Lean progress — the exact Stanley--Reisner kernel `(8)`, with an explicit source
+
+`GaloisForLFunctions/HTGeometry/PencilExponentialSeed.lean` and
+`GaloisForLFunctions/HTGeometry/PencilSRRealization.lean` (axiom-clean, build green,
+umbrella-registered) formalize the annihilator statement `(8)` unconditionally, and replace the
+generic Baire--Runge source by an explicit one for that half of the theorem.
+
+**The datum.**  `PencilSeparation facets E` packages exactly conditions `(2)`--`(3)` in exponentiated
+form: steps `ω : α → E`, one additive phase `L_A : E →+ ℂ` per facet (`L_A = 2πi·ell_A/omega_A`), with
+
+- `phase_surjective` — each `L_A` covers `ℂ` (automatic for a nonzero linear form);
+- `outside` — `exp (L_A (ω v)) = 1` for `v ∉ A`, i.e. `(2)`;
+- `inside` — `exp(∑_{v ∈ A} g_v L_A (ω v)) = 1` with `g ∈ ℤ^A` forces `g = 0`, i.e. `(3)`.
+
+**The source.**  `PencilSeparation.seed S z = ∑_{A ∈ Fac} exp (exp (L_A z))`, one exponential seed per
+facet.  It is entire whenever the phases are (`differentiable_seed`), so no Runge approximation and
+no Fréchet-space parameter is used.
+
+**The kernel, both inclusions.**
+
+- `seedAnnihilates` — every nonface product of difference operators annihilates the source: a nonface
+  escapes every facet, and the escaping step is a period of that facet's seed.  This is
+  `I_Δ ⊆ Ann(F)`.
+- `exists_ne_seedCarrierPoly` — conversely, a polynomial whose carrier is **constant** lies in
+  `I_Δ`.  The proof isolates one facet by multiplying by one escaping variable per *other* facet
+  (available because the facets form an antichain), uses that `exp ∘ L_A` covers `ℂ∖{0}` to force
+  every positive-level Taylor coefficient of the surviving dilate combination to vanish, and reads
+  those coefficients as the *symbols* `P(exp(m·L_A(ω v)) − 1)`.  Condition `inside` makes the symbol
+  nodes `∏_v exp(L_A(ω v))^{ν_v}` pairwise distinct on exponents supported in `A`, so a Vandermonde
+  induction kills every coefficient supported in `A`; as `A` ranges over the facets this says exactly
+  that every monomial of `P` has nonface support.
+
+Together these give `Ann(F) = I_Δ` in the difference-operator ring `ℂ[X_v]`, `X_v ↦ T_{ω v} − 1` —
+statement `(8)` with constant coefficients, and in the sharper form "constant carrier, not merely
+zero carrier".
+
+- `entireSRRealization` — consequently a periodic-pencil separation in `d` variables produces an
+  `EntireSRRealization d` of the complex: entire carriers, vertex coordinates acting as difference
+  operators along `ℚ`-independent steps, nonconstant carriers for nonzero classes.  This is
+  `htDim ≤ ppDim` in the entire/nonconstant realization sense, for **every** complex, not only the
+  boundary wedge.
+
+**What is still paper-level.**  The differential-matroid statement `(9)` — the transcendence-degree
+formula over `D = ℂ(z₁,…,z_d)` with the derivation `δ = D_w` — is untouched: it needs the orbit
+lemma `(11)` in its full joint-differential-independence form, not only the annihilator.  The
+explicit source above is differentially algebraic (`exp∘exp` satisfies `y y'' − y y' − y'² = 0`), so
+it cannot serve `(9)`; what it shows is that `(8)` never needed genericity.

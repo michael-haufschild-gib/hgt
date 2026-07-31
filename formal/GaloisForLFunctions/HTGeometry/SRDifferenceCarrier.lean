@@ -31,16 +31,16 @@ variable {E : Type*} [AddCommMonoid E]
 /-! ### The translation action -/
 
 /-- Translation of functions on `E` by a step. -/
-def shiftEnd (e : E) : Module.End ℂ (E → ℂ) where
+def translationEnd (e : E) : Module.End ℂ (E → ℂ) where
   toFun f := fun z => f (z + e)
   map_add' _ _ := rfl
   map_smul' _ _ := rfl
 
-@[simp] theorem shiftEnd_apply (e : E) (f : E → ℂ) (z : E) : shiftEnd e f z = f (z + e) := rfl
+@[simp] theorem translationEnd_apply (e : E) (f : E → ℂ) (z : E) : translationEnd e f z = f (z + e) := rfl
 
 /-- Translations form a multiplicative family indexed by the additive group of steps. -/
 def shiftMonoidHom : Multiplicative E →* Module.End ℂ (E → ℂ) where
-  toFun e := shiftEnd (Multiplicative.toAdd e)
+  toFun e := translationEnd (Multiplicative.toAdd e)
   map_one' := by
     ext f z
     show f (z + 0) = f z
@@ -60,14 +60,14 @@ theorem shiftAlgHom_apply (a : AddMonoidAlgebra ℂ E) (f : E → ℂ) (z : E) :
   rw [shiftAlgHom, AddMonoidAlgebra.lift_apply, Finsupp.sum, LinearMap.sum_apply,
     Finset.sum_apply]
   refine Finset.sum_congr rfl fun e _ => ?_
-  show (a.coeff e • shiftEnd e) f z = _
-  simp [shiftEnd, smul_eq_mul]
+  show (a.coeff e • translationEnd e) f z = _
+  simp [translationEnd, smul_eq_mul]
 
 @[simp] theorem shiftAlgHom_single (e : E) (c : ℂ) (f : E → ℂ) :
     shiftAlgHom (AddMonoidAlgebra.single e c) f = fun z => c * f (z + e) := by
   rw [shiftAlgHom, AddMonoidAlgebra.lift_single]
   funext z
-  show (c • shiftEnd e) f z = c * f (z + e)
+  show (c • translationEnd e) f z = c * f (z + e)
   simp [smul_eq_mul]
 
 /-! ### Difference operators attached to steps -/
