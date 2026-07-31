@@ -602,3 +602,143 @@ So the corrected reduction is:
 - [x] §9 stands as a theorem about weighted completions
 - [x] `hdetects` correctly identified as the polarization condition `psi(h, C h) = 0 => h = 0`
 - [ ] is `C` constructed anywhere in the tree, or is it also a hypothesis?
+
+## 12. Gate answers: `C` is constructed, and the whole gauge freedom obeys one Ward identity
+
+### 12.1 Gate: "is `C` constructed anywhere in the tree, or is it also a hypothesis?"
+
+Answered from the Lean, and the answer restructures the card's conclusion. The odd Hodge star **is
+constructed**, twice, on the arithmetic divisor carrier:
+
+- `RHTower/DeningerArithmeticOrientedHodge.lean` — on graded `H¹ = XiZeroCopy →₀ ℂ`, the
+  FE-orientation star. `deningerArithmetic_orientedHodge_package` proves *unconditionally*: cup
+  alternating, nondegenerate, `σ² = −1`, **positivity**, and the weight-one derivation law — and
+  proves `[θ, σ] = 0 ↔ RiemannHypothesis`.
+- `RHTower/DeningerArithmeticOrientedHilbertHodge.lean` — the same on the Hilbert completion with
+  the closed unbounded `θ` (`deningerDivisorClosedTheta_orientedHodge_iff_riemannHypothesis`), and
+  `deningerArithmeticOrientedClosedPolarization` — the full weight-one package **from RH**.
+
+So the corrected reduction of §11 is: on the **source/assembly model** the debt is positivity
+(`hdetects`, the second bilinear relation) with equivariance free; on the **divisor model** the debt
+is the commutation `[θ, C] = 0` with positivity free. Two models, complementary single-clause
+isolations of the same debt. Neither model's `C` is a hypothesis; what is hypothetical is only ever
+*one* of {positivity, equivariance} at a time.
+
+### 12.2 The displacement Ward identity (new; proved; Lean target)
+
+The complementarity of 12.1 is not an accident of two constructions. It is an exact identity valid
+for **every** gauge at once. Work on the divisor carrier `H¹ = XiZeroCopy →₀ ℂ` with
+`θ = diag(ρ)` (`deningerDivisorTheta`, honest uncentered eigenvalues) and the cup trace
+`ψ(δ_q, y) = y(Rq)`, `R : ρ ↦ 1−ρ` (`deningerDivisorCupTrace`, `xiZeroCopyReflectEquiv`).
+
+`[THEOREM] [DISPLACEMENT_WARD_IDENTITY]` For every **anti-linear** map
+`σ : H¹ → H¹` (no axioms: not injective, not `σ²=−1`, arbitrary block-mixing), all `q, r`, all `c`:
+
+```text
+psi( delta_q , [theta, sigma] (c*delta_r) )
+    = ( lambda_{Rq} - conj(lambda_r) ) * psi( delta_q , sigma (c*delta_r) ).
+```
+
+For the diagonal `r = q` the factor is `(1−ρ) − conj ρ = −2(Re ρ − 1/2)` — the critical-line
+displacement. For a **linear** gauge `T` the same computation gives factor
+`lambda_{Rq} − lambda_r`, whose diagonal is `1 − 2ρ`.
+
+*Proof.* `ψ(δ_q, ·)` reads only the `Rq`-coefficient, on which `θ` acts by the scalar `λ_{Rq}`;
+hence `ψ(δ_q, θy) = λ_{Rq} ψ(δ_q, y)` for every `y`. Anti-linearity gives
+`σ(θ(cδ_r)) = conj(λ_r) · σ(cδ_r)`. Subtract. ∎  (Numerically pre-certified on an FE-closed
+4-zero configuration with random block-mixing gauges, including off-line zeros.)
+
+### 12.3 What the identity settles
+
+1. **Per-zero purity from one Gram entry.** If any anti-linear `σ` commutes with `θ` *at the single
+   vector* `δ_q` and `ψ(δ_q, σδ_q) ≠ 0`, then `Re ρ_q = 1/2`. No positivity, no `σ²=−1`, no
+   nondegeneracy, no global package: **one nonvanishing Gram diagonal entry against a locally
+   equivariant gauge is the entire demand.** Positivity was never the point.
+2. **Equivariant invisibility (anti-linear).** Every flow-commuting anti-linear gauge has
+   identically vanishing `ψ`-diagonal at every off-line zero. Off-line zeros are `ψ`-diagonally
+   invisible to the entire equivariant gauge class.
+3. **Linear blindness (unconditional and total).** Since `1/2` is not a Xi zero
+   (`xi_divisor_support_ne_half`), every flow-commuting **linear** gauge has identically vanishing
+   `ψ`-diagonal at *every* zero. This is the operator-level, all-gauges form of the corpus no-go
+   "conjugation symmetry gives no positivity": the visibility locus of linear gauges is the point
+   `ρ = 1/2`; of anti-linear gauges, exactly the critical line. The critical line is literally
+   *where anti-linearity sees*.
+4. **The debt is gauge-invariant.** The two constructions of 12.1 are the two extremal gauges:
+   the reflect gauge `σ_R x = conj ∘ x ∘ R` has `ψ`-diagonal `≡ 1` unconditionally and defect
+   vector of size exactly `2|Re ρ − 1/2|` per zero; the Schwarz gauge (index map `ρ ↦ conj ρ`)
+   commutes unconditionally and its `ψ`-diagonal dies off-line. No gauge choice interpolates out of
+   the identity: displacement × diagonal = defect pairing, always. **The lane's "one clause" is a
+   conserved quantity of the gauge orbit, not a removable modelling choice.**
+5. **RH as a gauge statement.** `RiemannHypothesis ⟺ some anti-linear gauge is flow-commuting on
+   basis vectors with nowhere-vanishing ψ-diagonal` (⟸ by the Ward identity + the divisor
+   endgame; ⟹ by the reflect gauge, whose diagonal is `1` and whose defect factor vanishes on the
+   line). This is a re-encoding (group 3 of the criterion classification) and is *labelled* as
+   such; the content of this section is items 1–4, which are unconditional.
+
+### 12.4 Gates 2 and 3 of the earlier passes, closed by supersession
+
+- *"verify the arithmetic multiplier χ explicitly"* — moot after §11: the polarization is not
+  diagonal in orbit coordinates, so no multiplier computation decides anything (recorded 2026-07-27;
+  confirmed today by 12.2: the polarization pairing lives on the `R`-antidiagonal, not the orbit
+  diagonal).
+- *"does RH-detection require uniform sensitivity along the period orbit?"* — final form: detection
+  through the `ψ`-diagonal of an equivariant gauge is **impossible off the line** (12.3.2–3); any
+  detection must carry a commutation defect exactly proportional to displacement × diagonal. The
+  sensitivity is not "uniform vs non-uniform along the orbit"; it is *equivariance itself* that
+  must break, by the exact amount the Ward identity prescribes.
+
+### 12.5 Lean status
+
+`RHTower/DeningerDivisorGaugeWardIdentity.lean` — built green, umbrella-registered, lint-clean,
+all ten theorems axiom-clean `[propext, Classical.choice, Quot.sound]`:
+
+```text
+deningerDivisor_antilinearGauge_ward            the displacement Ward identity (anti-linear)
+deningerDivisor_linearGauge_ward                the linear-gauge version (factor 1 - 2rho on diagonal)
+deningerDivisorThetaEigen_re_eq_half_of_antilinearGauge     per-zero purity from one Gram entry
+deningerDivisor_antilinearGauge_diag_eq_zero_of_offline     equivariant invisibility (anti-linear)
+deningerDivisor_linearGauge_diag_eq_zero        total linear blindness (uses xi_divisor_support_ne_half)
+deningerDivisorReflectGauge{_apply,_single,_diag,_defect}   the positivity-extremal gauge, diag = 1
+deningerDivisorReflectGauge_comm_of_riemannHypothesis       RH makes the reflect gauge equivariant
+riemannHypothesis_of_forall_deningerDivisorThetaEigen_re_eq_half    divisor endgame
+riemannHypothesis_iff_exists_antilinearGauge    RH <=> equivariant gauge with nowhere-zero diagonal
+```
+
+Numerically pre-certified (FE-closed 4-zero configuration, random block-mixing gauges, off-line
+and on-line zeros) before formalization.
+
+## Gates (final)
+
+- [x] read the global Calderón–Koszul module line by line rather than trusting labels
+- [x] reduction: the global layer rests on `hdetects` alone (assembly model)
+- [x] blind spot (c) of the discharge audit identified
+- [x] no-go question decided — not a no-go; exact weight criterion, Lean-proved
+- [x] the global interface is satisfiable and non-vacuous — explicit witness, Lean-proved
+- [x] §11: the arithmetic middle pairing is skew; `hdetects` is the polarization condition
+- [x] **gate: is `C` constructed? — YES, twice** (§12.1); the debt is one of
+      {positivity, equivariance} per model, never both free
+- [x] **the displacement Ward identity** — proved on paper (§12.2), numerically pre-certified,
+      formalized axiom-clean (§12.5); the debt is a gauge-invariant of `(θ, ψ)`
+- [x] gate: arithmetic multiplier `χ` — superseded (§12.4): polarization is not orbit-diagonal
+- [x] gate: uniform sensitivity — final form (§12.4): equivariance itself must break, by exactly
+      displacement × diagonal
+- [ ] independent audit (Codex — the Ward identity reads his lane and grades the gauge freedom
+      as exhausted; he should contest it)
+- [ ] a mechanism forcing the surviving clause from arithmetic input — the lane's one wall,
+      now provably outside the gauge freedom
+
+## Log (continued)
+
+- 2026-07-31 (Claude): answered the final structural gates. `C` is constructed twice
+  (`DeningerArithmeticOrientedHodge`, `DeningerArithmeticOrientedHilbertHodge`) with positivity
+  unconditional and commutation ⟺ RH — complementary to the assembly model where equivariance is
+  free and positivity is the debt. Proved the **displacement Ward identity**: for every anti-linear
+  gauge σ (no axioms), ψ(δ_q, [θ,σ]δ_r) = (λ_{Rq} − conj λ_r)·ψ(δ_q, σδ_r), diagonal factor
+  −2(Re ρ − ½). Corollaries, all unconditional: per-zero purity from a single nonvanishing Gram
+  entry (positivity was never the point); off-line zeros are diagonally invisible to every
+  equivariant anti-linear gauge; linear gauges are diagonally blind at every zero
+  (the visibility locus of anti-linearity is exactly the critical line); the reflect gauge is the
+  positivity-extremal point with diagonal ≡ 1 and defect exactly 2|Re ρ − ½| per zero. The lane's
+  "one clause" is therefore a conserved quantity of the gauge orbit — no model choice, weight, or
+  Hodge-gauge can shrink it. Formalized axiom-clean in
+  `RHTower/DeningerDivisorGaugeWardIdentity.lean` (10 theorems).

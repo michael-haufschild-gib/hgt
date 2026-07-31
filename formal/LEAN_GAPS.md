@@ -20,10 +20,10 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 3711 | `formal/GaloisForLFunctions/HTGeometry/GammaDifferentialFE.lean` |
 | 3644 | `formal/GaloisForLFunctions/U0/U0SliceViableB.lean` |
 | 3594 | `formal/GaloisForLFunctions/Bottcher/HDiscLoopDeck.lean` |
-| 3496 | `formal/GaloisForLFunctions/RHTower.lean` |
+| 3526 | `formal/GaloisForLFunctions/RHTower.lean` |
 | 3468 | `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean` |
 | 2721 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranch.lean` |
-| 2683 | `formal/GaloisForLFunctions/HTGeometry.lean` |
+| 2702 | `formal/GaloisForLFunctions/HTGeometry.lean` |
 | 2671 | `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean` |
 | 2627 | `formal/GaloisForLFunctions/RHTower/DpolyBallFloor.lean` |
 | 2587 | `formal/GaloisForLFunctions/RHTower/DeningerArithmeticTimeDistribution.lean` |
