@@ -9,6 +9,13 @@
 - **Computation used:** no
 - **Primary source problem:** Suzuki 2023, Section 7.1, determination of
   `liminf Psi(t)` and `limsup Psi(t)` under RH
+- **Formal modules:**
+  `formal/GaloisForLFunctions/HTGeometry/SummableSpectrumScrewHull.lean`;
+  `formal/GaloisForLFunctions/HTGeometry/SummableSpectrumScrewValue.lean`;
+  `formal/GaloisForLFunctions/HTGeometry/SummableSpectrumScrewRecurrence.lean`;
+  `formal/GaloisForLFunctions/HTGeometry/SummableSpectrumScrewDistribution.lean`;
+  `formal/GaloisForLFunctions/HTGeometry/SummableSpectrumScrewHilbert.lean`;
+  `formal/GaloisForLFunctions/RHTower/SuzukiScrewCompactHullParityLaw.lean`
 
 ## 1. Significance and exact novelty boundary
 
@@ -369,5 +376,97 @@ Verdict: `SURVIVES HOSTILE ATTACK`.
 - [x] significance and hostile audits
 - [x] internal/current-primary-source collision audit
 - [ ] manuscript completed
-- [ ] exact Lean formalization
+- [x] exact Lean formalization of the universal laws and their ordinate specialization
 - [ ] independent specialist novelty review
+
+## 11. Lean formalization
+
+All of Sections 2--5 are formalized unconditionally, with no `sorry`, `admit`, `axiom`,
+`opaque`, or `unsafe` declaration; every listed theorem's axiom audit returns exactly
+`[propext, Classical.choice, Quot.sound]`.  The countable index hypothesis of `(2.1)` is
+carried as `[Countable I]`; the product torus is `I → UnitAddCircle` and the screw line is
+the one-parameter subgroup `screwPhase omega t i = omega i * t / (2 * pi)`.
+
+### Universal compact-hull law `(3.1)`
+
+`screwHull_eq_screwAnnihilator` : the closure of the screw line equals the common kernel of
+the finite-support characters whose detuning vanishes.  Supporting statements:
+`isCompact_screwHull`, `isConnected_screwHull`, `screwHullSubgroup` with
+`add_mem_screwHull`, `neg_mem_screwHull`, `sub_mem_screwHull`.
+
+The proof avoids Pontryagin duality.  Uniform time sampling on `[-A,A]` has finite-support
+Fourier coefficients equal to sinc kernels (existing corpus module
+`InfiniteTorusFourierWeakConvergenceLaw`); letting `A -> infinity` selects the unique
+probability law `screwHaar` whose coefficients are the indicator of the relation lattice
+(`existsUnique_screwHaar`, `screwHaar_fourier`).  Portmanteau gives
+`screwHaar_measure_hull : mu (hull) = 1`, and Fourier uniqueness gives
+`screwHaar_map_add_self`: `mu` is invariant under translation by every annihilator point.
+Invariance forces `hull` and `hull - z` both to have full mass, so they meet, and the group
+law returns `z` to the hull.
+
+### Tail density and the no-gap cofinal value law `(3.3)`
+
+`closure_screwPhase_image_Ici` : every forward tail of the screw line is dense in the hull.
+Its engine is `neg_mem_screwForwardHull`, the compact-semigroup inversion argument, proved
+by extracting a convergent subsequence of iterates and passing to the gap iterates.
+
+`screwValue_image_screwHull` : the phase-defect energy image of the hull is `Icc 0 M`;
+`closure_screwSeries_image_Ici` : the same interval is the closure of the image of every
+cofinal tail.  Consequences `screwSeries_liminf_eq_zero` and
+`screwSeries_limsup_eq_screwHullMax` are exactly `(6.4)` and `(6.5)` at the universal level.
+
+### Relative density `(3.4)`, `(3.5)`
+
+`exists_window_screwPhase_mem_of_isOpen` : any open set meeting the hull is entered inside
+one fixed time window from any starting time.  `exists_window_screwSeries_near` and
+`exists_window_screwSeries_eq` are the approximate and exact level-set versions; the second
+uses the intermediate value theorem between a sub-level and a super-level visit.
+
+### Haar value distribution `(3.7)`, `(3.8)`
+
+`screwHaar_pos_of_isOpen` : any open set meeting the hull carries positive invariant mass
+(finitely many hull translates of it cover the hull, and all translates have equal mass).
+`screwHaar_support` : the invariant law is supported exactly on the hull.
+`screwValueLaw` is its pushforward along the energy; `tendsto_timeAverage_screwSeries` is
+the value-distribution law in explicit time-average form, and `screwValueLaw_support` is
+`(3.8)`.
+
+### Parity law `(4.1)`
+
+`infiniteTorusFourier_screwAntipode` : the antipodal phase evaluates a character to
+`(-1)^(total coefficient)`.  `screwAntipode_mem_screwAnnihilator_iff` converts hull
+membership of the antipode into the even-total-coefficient criterion, and
+`screwHullMax_eq_two_mul_tsum_iff` is `(4.1)` itself: for strictly positive summable
+weights, `M = 2 * sum a` exactly when every finite integer relation has even total
+coefficient.  `parity_of_screwRelationLattice_trivial` records that rational independence is
+sufficient but not necessary.
+
+### Hilbert screw law `(5.1)`--`(5.3)`
+
+`screwEmbed` is the `lp _ 2` embedding `z |-> sqrt(a i / 2) * (1 - z i)`;
+`sq_norm_screwEmbed_sub` is `(5.2)` and `sq_norm_screwEmbed_screwPhase_sub` is `(5.3)`.
+`screwEmbed_injective` gives injectivity for strictly positive weights.
+
+### Suzuki specialization
+
+`RHTower/SuzukiScrewCompactHullParityLaw.lean` instantiates the universal laws at the
+Suzuki weights `a_gamma = 2 m_gamma / gamma^2`, giving
+`suzukiScrewFunction_liminf_eq_zero`, `suzukiScrewFunction_limsup_eq`,
+`closure_suzukiScrewFunction_image_Ici`, `exists_window_suzukiScrewFunction_near`,
+`exists_window_suzukiScrewFunction_eq`, `tendsto_timeAverage_suzukiScrewFunction`,
+`suzukiScrewFunction_law_support`, `suzukiScrewFunction_limsup_eq_absolute_bound_iff`, and
+`sq_norm_suzukiScrewEmbed_sub`.
+
+### What is deliberately outside the formal tree
+
+Three inputs of Section 6 are quoted external analysis, not corpus theorems, and therefore
+appear only as the hypotheses of the specialization (a countable family of nonzero real
+ordinates with positive multiplicities and summable weights):
+
+1. Suzuki's exact screw expansion `Psi(t) = sum_gamma a_gamma (1 - cos(gamma t))`;
+2. reality of the ordinates, which under RH is what makes the family real at all;
+3. Suzuki's criterion `RH iff Psi is bounded`, used only for the geometric restatement
+   `(6.8)`.
+
+Granting `(1)` and `(2)`, statements `(6.4)`--`(6.7)` are exactly the specialization
+theorems listed above.  `(6.8)` remains outside because it consumes `(3)`.

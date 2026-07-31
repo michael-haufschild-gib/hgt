@@ -38,8 +38,9 @@
 \newcommand{\cS}{\mathcal S}
 \newcommand{\dd}{\,\mathrm d}
 
-\title{\textbf{Boundary-character conservation for the Riemann divisor}\\
-\large An inner--outer source law, hypertranscendental shells, and asymptotic superselection}
+\title{\textbf{Singular equalizers for the Riemann divisor}\\
+\large Boundary-character conservation, hypertranscendental source creation,
+and the failure of regular descent}
 \author{Michael Haufschild}
 \date{}
 
@@ -122,6 +123,26 @@ tail-complete prime-residue fusion forces a countably free hypertranscendental v
 while differentiation at a divisor lowers overlap grade by one and forces inverse-square Gram
 blow-up.  Thus finite differential closure, bounded positive completion, and finite-Rees
 reflection fail at three distinct stages of one source.
+
+These failures are governed by a two-axis law.  The horizontal character rate
+\[
+ \nu(\rho)=2(\Rea\rho-\tfrac12)
+\]
+is simultaneously the inner duality--adjunction fracture and the Wold-depth/Poisson-time
+transport rate.  Independent-quadrant boundedness holds exactly when \(\nu=0\).  On the same
+equalizer, every seam-weighted two-prime Sonin corner becomes compact; away from it, some corner
+has nonzero essential norm.  For the actual Xi divisor, global character neutrality is also
+equivalent to positivity of the four-unit Ward boundary Gram on the fixed Euler edge, and every
+strict-right zero gives a one-node negative Schur witness.
+
+Divisor detection is independent of that horizontal equalizer and is necessarily singular.
+Every nonzero nonnegative momentum-symmetric Schwartz form annihilating the Riemann theta source
+is an atomic sampler of the real Xi divisor; its ordinary-\(L^2\) radical is dense and nonclosed,
+and the form is not closable through ordinary \(L^2\).  Thus the missing source object cannot be
+one regular Hilbert completion.  It must be a singular vertical divisor rigging followed by a
+horizontal character equalizer.  This singular-equalizer law simultaneously explains the
+Hedenmalm dense radical, Wold--Poisson ancestry, Sonin/Calkin noncompactness, Ward positivity
+failure, and the finite-Rees type fracture.
 
 These results do not prove the Riemann hypothesis.  They change its source-side formulation:
 horizontal displacement is a conserved asymptotic character, while bounded finite-order
@@ -280,6 +301,20 @@ division is forced.  After reflection, any exact sewing has essential Rees order
 differential, positive, and operator shadows of one fact: the ordinary-prime source has no finite
 completion compatible with fusion, divisor transgression, and internal reflection.
 
+That statement is incomplete unless topology and the final analytic consumer are included.
+The corpus reveals two independent axes.  Along the vertical axis, any nonzero positive
+translation-covariant form which detects the theta divisor is forced out of ordinary \(L^2\):
+its radical is dense and its form graph is nonclosable.  Along the horizontal axis, the single
+rate
+\[
+ \nu(\rho)=2(\Rea\rho-\tfrac12)
+ \tag{1.11}\label{eq:rate-intro}
+\]
+governs every regularity test: independent Wold--Poisson boundedness, compactness of the
+seam-weighted Sonin corners, and positivity of the fixed-edge four-unit Ward Gram.  The first
+axis remains singular even when \(\nu=0\); the second is regular exactly when \(\nu=0\).
+Theorems below prove that one regular Hilbert completion cannot perform both jobs.
+
 \subsection*{Main result}
 
 The paper proves the following closed theorem package.
@@ -321,6 +356,22 @@ sewing \(R_N\) satisfies
 \[
  a_N^{-K}=o(\|R_N\|)\qquad\text{for every }K\in\N.
 \]
+\item the Wold-depth/Poisson-time rate is the same number
+\(\nu(\rho)=2c_\rho\); the two-clock energy has a finite nonzero profile on every comoving
+characteristic, but is uniformly bounded on the independent nonnegative quadrant exactly when
+\(\nu=0\);
+\item at every positive Sonin aperture the seam-weighted two-prime Calkin corner has essential
+norm
+\[
+ |\kappa_p(\rho)-\kappa_q(\rho)|\,(\sqrt p\sqrt q)^{-1};
+\]
+hence all such corners are compact exactly on the horizontal equalizer;
+\item for an upper Schwarz representative of every strict-right zero, the continued Xi Ward
+response violates the four-unit bound at one adapted point of the fixed Euler edge, and its
+one-node boundary Gram is not positive semidefinite;
+\item independently, every nonzero nonnegative momentum-symmetric Schwartz form annihilating the
+Riemann theta source is an atomic real-divisor rigging with dense nonclosed ordinary-\(L^2\)
+radical and is not sequentially closable through ordinary \(L^2\).
 \end{enumerate}
 The source graph, character families, activation law, and residue-refined valuation towers in
 \textup{(ii)}--\textup{(x)} are defined before the zero set is read; \(\rho\) enters only when
@@ -332,6 +383,12 @@ the missing oriented object and proves its conservation across independent sourc
 also proves a sharp negative result: after passage to the flat radical, neither a larger finite
 matrix nor an arbitrary-dimensional bounded finite-Rees operator can recover the reflected
 sector.
+
+The last four clauses give the stronger phase diagram.  Wold, Calkin, Ward, and Rees failures are
+horizontal shadows of one nonzero character.  Hedenmalm's dense radical is not another
+horizontal shadow: it proves that the vertical divisor detector is singular even on the neutral
+locus.  Together they rule out the widespread assumption that one regular Hilbert completion
+can both acquire the divisor and orient its reflection.
 
 \subsection*{What is and is not claimed}
 
@@ -354,11 +411,16 @@ clocks exponentiate its two branches;
 residue;
 \item compact prime windows and Hurwitz monodromy recover the same character independently;
 \item Fisher whitening and Gamma sewing retain the valuation source as a summability-rigid
-infinite Rees resolution of unbounded exact rank; and
+infinite Rees resolution of unbounded exact rank;
 \item finite recurrence, finite differential closure, bounded positive Gram completion, and
-finite-Rees reflection all fail at distinct stages of the same source; and
+finite-Rees reflection all fail at distinct stages of the same source;
 \item reflected valuation sectors realize its sign as a finite-versus-flat asymptotic
-superselection law.
+superselection law;
+\item the same charge is the Wold--Poisson transport rate and the coefficient of every
+seam-weighted Sonin/Calkin corner, while the fixed-edge Ward Gram is its exact final positive
+consumer; and
+\item positive theta-divisor detection is singular through ordinary \(L^2\), independently of
+the horizontal charge.
 \end{enumerate}
 
 No assertion is made that the modular charge vanishes.  Thus RH is not proved.  What is proved is
@@ -1749,12 +1811,276 @@ not show that any named spectral program must fail.  It proves an information bo
 criterion continuous only in those local reporters cannot distinguish the escaping quartet.  It
 must include a noncompact character coordinate or an equivalent singular boundary datum.
 
+\section{The singular-equalizer boundary law}\label{sec:equalizer}
+
+The preceding results still leave four apparently external phenomena: the dense radical in the
+theta spectral model, Wold--Poisson ancestry, Sonin/Calkin compactness, and the four-unit Ward
+consumer.  They fit one phase diagram once divisor acquisition and reflection orientation are
+separated.
+
+\subsection{The vertical axis: a divisor detector is necessarily singular}
+
+We first record the topological mechanism without zeta functions.
+
+\begin{proposition}[Cyclic-null collapse]\label{prop:cyclic-null}
+Let \(\mathcal D\) be a complex vector space, let \(j:\mathcal D\to\mathcal H\) be an injective
+linear map into a Hilbert space, and let \(Q\) be a Hermitian sesquilinear form on
+\(\mathcal D\).  Suppose a family \((v_i)_{i\in I}\) lies in the left radical of \(Q\) and
+\[
+ \overline{\operatorname{span}\{j(v_i):i\in I\}}=\mathcal H.
+ \tag{9.1}\label{eq:cyclic-null}
+\]
+Then for every \(u\in\mathcal D\) there is a sequence \(z_n\in\mathcal D\) such that
+\[
+ j(z_n)\longrightarrow0,\qquad
+ Q(z_m-z_n,z_m-z_n)=0,\qquad
+ Q(z_n,z_n)=Q(u,u).
+ \tag{9.2}\label{eq:constant-energy-null}
+\]
+If \(Q\ne0\), its radical image is dense, proper, and nonclosed in \(\mathcal H\), and \(Q\)
+is not sequentially closable through \(j\).
+\end{proposition}
+
+\begin{proof}
+Choose \(r_n\) in the algebraic span of the \(v_i\) with \(j(r_n)\to j(u)\), and put
+\(z_n=u-r_n\).  Hermitian symmetry makes the left radical two-sided.  Expansion gives
+\eqref{eq:constant-energy-null}.  Cyclicity makes the radical image dense; injectivity and
+\(Q\ne0\) make it proper, hence nonclosed.  Choosing \(u\) with \(Q(u,u)\ne0\) makes
+\eqref{eq:constant-energy-null} a form-Cauchy sequence converging to zero in \(\mathcal H\) with
+nonvanishing energy, which is exactly failure of sequential closability.
+\end{proof}
+
+Put \(\Xi(t)=\xi(\tfrac12+it)\), and let \(k\in\mathcal S(\R)\) be the completed theta source
+normalized by \(\widehat k=\Xi\).  Hedenmalm's theta pair pulls back to momentum symmetry and
+theta nullity for a source-core form \cite{Hedenmalm2026}.
+
+\begin{theorem}[Theta-divisor rigging classification]\label{thm:theta-rigging}
+Let \(Q:\mathcal S(\R)\times\mathcal S(\R)\to\C\) be jointly Schwartz-continuous,
+sesquilinear, nonnegative, and momentum-symmetric:
+\[
+ Q(-i\partial_xf,g)=Q(f,-i\partial_xg).
+ \tag{9.3}\label{eq:momentum-symmetry}
+\]
+If \(Q(k,k)=0\), there is a unique positive Borel measure \(\mu\) of temperate growth such that
+\[
+ Q(f,g)=\int_{\R}\widehat f(t)\overline{\widehat g(t)}\,\dd\mu(t),
+ \qquad
+ \supp\mu\subseteq\{t\in\R:\Xi(t)=0\}.
+ \tag{9.4}\label{eq:theta-divisor-measure}
+\]
+The measure is atomic.  Conversely every positive temperate measure with this support defines
+such a form.  If \(Q\ne0\), its ordinary-\(L^2\) radical image is dense and nonclosed and \(Q\)
+is not sequentially closable through
+\(\mathcal S(\R)\hookrightarrow L^2(\R)\).  In particular, within this source-core class,
+\[
+ Q\text{ is closable through }L^2(\R)
+ \quad\Longleftrightarrow\quad Q=0.
+ \tag{9.5}\label{eq:theta-closable-zero}
+\]
+\end{theorem}
+
+\begin{proof}
+Equation \eqref{eq:momentum-symmetry} makes \(Q\) invariant under simultaneous translation.
+The Bochner--Schwartz theorem gives \eqref{eq:theta-divisor-measure}
+\cite{Schwartz1966}.  Nonnegativity supplies Cauchy--Schwarz, so \(Q(k,k)=0\) puts \(k\) in both
+radicals.  Hence
+\[
+ 0=Q(k,k)=\int_{\R}|\Xi(t)|^2\,\dd\mu(t),
+\]
+which forces the stated support.  Real zeros of the nonzero entire function \(\Xi\) are
+discrete, so \(\mu\) is atomic; the converse is immediate.
+
+Every real translate of \(k\) lies in the radical.  Since \(\Xi\) is nonzero almost everywhere
+on \(\R\), Wiener's theorem makes those translates cyclic in ordinary \(L^2\)
+\cite{Wiener1932}.  Proposition~\ref{prop:cyclic-null} gives the dense radical,
+nonclosedness, and nonclosability.  The zero form is closable, proving
+\eqref{eq:theta-closable-zero}.
+\end{proof}
+
+This is the vertical obstruction.  It persists on the real Xi divisor, where horizontal
+character rate is already zero.  It therefore cannot be explained as an off-line orientation
+defect.
+
+\subsection{The horizontal axis: one rate, three regular consumers}
+
+For \(0<\Rea\rho<1\), put
+\[
+ \nu(\rho)=2\Rea\rho-1.
+ \tag{9.6}\label{eq:boundary-rate}
+\]
+Theorem~\ref{thm:duality-fracture} says that \(\nu(\rho)=\Delta(\rho)\).  The same number is the
+transport rate of the independent Wold-depth and Poisson-time coordinates.
+
+Let \(M_n=\Rea H_n(1)>0\), where \(H_n\) is the shell multiplier from
+\eqref{eq:shell-factor}, and define
+\[
+ \mathcal E_n(\rho;\tau)
+ =\frac{|H_n(\rho)|^2}{M_n}e^{\nu(\rho)\tau}.
+ \tag{9.7}\label{eq:two-clock-energy}
+\]
+
+\begin{theorem}[Wold--Poisson characteristic and quadrant law]\label{thm:wold-poisson}
+For every \(\Rea\rho>0\) and \(u\in\R\),
+\[
+ \mathcal E_n(\rho;n\log2+u)
+ \longrightarrow
+ 2|1-2^{-\rho}|^2e^{\nu(\rho)u}.
+ \tag{9.8}\label{eq:two-clock-characteristic}
+\]
+For an arbitrary real rate \(\nu\), the conjugate two-clock character
+\[
+ C_\nu(\tau,d)=e^{\nu(\tau-d)}
+ \tag{9.9}\label{eq:two-clock-character}
+\]
+is uniformly bounded on the independent quadrant \(\tau,d\ge0\) if and only if \(\nu=0\).
+\end{theorem}
+
+\begin{proof}
+The least-atom and source-mass asymptotics are
+\[
+ 2^{n\rho}H_n(\rho)\to1-2^{-\rho},
+ \qquad
+ 2^nM_n\to\frac12.
+ \]
+Since \(e^{\nu(\rho)n\log2}=2^{n(2\Rea\rho-1)}\), substitution gives
+\eqref{eq:two-clock-characteristic}.  On a characteristic line
+\(\tau=d+u\), equation \eqref{eq:two-clock-character} equals \(e^{\nu u}\) for every \(\nu\).
+If \(\nu>0\), it diverges along \((\tau,d)=(x,0)\); if \(\nu<0\), it diverges along
+\((0,x)\).  For \(\nu=0\) it is identically one.
+\end{proof}
+
+Thus a comoving characteristic retains a finite nonzero profile even off the critical line.
+The failed ancestry-purity argument had collapsed the two clocks before testing their independent
+quadrant.  The missing information was not ancestry itself but the transverse character rate.
+
+The same rate controls the Calkin quotient.  At positive Sonin aperture \(a\), let
+\(\mathcal E_{p,q}^{(a)}\) be the ordered two-prime Euler Gram corner.  Its exact essential norm is
+\[
+ \|\mathcal E_{p,q}^{(a)}\|_{\rm ess}
+ =(\sqrt p\sqrt q)^{-1}.
+ \tag{9.10}\label{eq:sonin-corner-norm}
+\]
+Weight it by the prime seam from Theorem~\ref{thm:duality-fracture}:
+\[
+ \mathcal K_{p,q}^{(a)}(\rho)
+ =(\kappa_p(\rho)-\kappa_q(\rho))\mathcal E_{p,q}^{(a)}.
+ \tag{9.11}\label{eq:seam-calkin-corner}
+\]
+
+\begin{theorem}[Sonin--Calkin equalizer]\label{thm:calkin-equalizer}
+For every pair of primes \(p,q\), every \(a>0\), and every
+\(0<\Rea\rho<1\),
+\[
+ \|\mathcal K_{p,q}^{(a)}(\rho)\|_{\rm ess}
+ =|\kappa_p(\rho)-\kappa_q(\rho)|(\sqrt p\sqrt q)^{-1}.
+ \tag{9.12}\label{eq:seam-essential-norm}
+\]
+Consequently
+\[
+ \bigl[\mathcal K_{p,q}^{(a)}(\rho)\text{ is compact for all }p,q\bigr]
+ \quad\Longleftrightarrow\quad
+ \nu(\rho)=0.
+ \tag{9.13}\label{eq:calkin-equalizer}
+\]
+\end{theorem}
+
+\begin{proof}
+Essential norm is homogeneous, so \eqref{eq:sonin-corner-norm} gives
+\eqref{eq:seam-essential-norm}.  All corners are compact exactly when all prime seams are equal.
+Theorem~\ref{thm:duality-fracture} proves that prime coherence is equivalent to
+\(\Rea\rho=\tfrac12\), which is \(\nu(\rho)=0\).
+\end{proof}
+
+Finally let \(\mathcal D_R^+\) contain one upper Schwarz representative
+\(\lambda=(\rho-\tfrac12)\) from every strict-right Xi zero pair and put, for \(\Rea w>0\),
+\[
+ \mathcal R_\Xi(w)
+ =2\sum_{\lambda\in\mathcal D_R^+}
+ \left(\frac1{w+\lambda}+\frac1{w+\overline\lambda}\right).
+ \tag{9.14}\label{eq:ward-response}
+\]
+The Schwarz-paired sum is the continued anti-causal Ward response.  For a finite packet
+\(w_i=\tfrac12+it_i\), let
+\[
+ G_{ij}=\frac1{w_i+\overline{w_j}},\qquad
+ \mathcal W(t_1,\ldots,t_n)=
+ \begin{pmatrix}
+ G&(\mathcal R_\Xi(w_i))_i\\
+ (\mathcal R_\Xi(w_i))_i^*&4
+ \end{pmatrix}.
+ \tag{9.15}\label{eq:ward-boundary-gram}
+\]
+
+\begin{theorem}[Ward equalizer and one-node witness]\label{thm:ward-equalizer}
+The following global conditions are equivalent:
+\[
+ \begin{aligned}
+ &\Delta(\rho)=0\quad\text{for every nontrivial Xi zero};\\
+ &\mathcal W(t_1,\ldots,t_n)\succeq0
+   \quad\text{for every finite real packet};\\
+ &|\mathcal R_\Xi(\tfrac12+it)|^2\le4
+   \quad\text{for every }t\in\R.
+ \end{aligned}
+ \tag{9.16}\label{eq:ward-equalizer}
+\]
+More locally, if \(\lambda=c+i\gamma\in\mathcal D_R^+\), then
+\[
+ \Rea\mathcal R_\Xi(\tfrac12-i\gamma)>2,\qquad
+ |\mathcal R_\Xi(\tfrac12-i\gamma)|^2>4,
+ \tag{9.17}\label{eq:ward-local-failure}
+\]
+so the corresponding one-node matrix in \eqref{eq:ward-boundary-gram} is not positive
+semidefinite.
+\end{theorem}
+
+\begin{proof}
+If every fracture vanishes, there are no strict-right zeros, the sum
+\eqref{eq:ward-response} is empty, and the matrices are positive.  Conversely, at
+\(w=\tfrac12-i\gamma\), the selected pair contributes a real part strictly larger than \(2\):
+the term with \(w+\lambda=c+\tfrac12\) already contributes
+\(2/(c+\tfrac12)>2\), while its Schwarz mate and every other pair have positive real part.
+This proves \eqref{eq:ward-local-failure}.  At this node \(G_{11}=1\), and the Schur complement
+of \eqref{eq:ward-boundary-gram} is \(4-|\mathcal R_\Xi(w)|^2<0\).  Hence any strict-right zero
+violates both global conditions.  Functional-equation and Schwarz symmetry turn every off-line
+zero into such an upper strict-right representative.
+\end{proof}
+
+\begin{theorem}[Singular-equalizer boundary law]\label{thm:singular-equalizer}
+The Riemann source has two independent boundary axes.
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item \emph{Vertical divisor acquisition.}  Every nonzero positive momentum-symmetric
+theta-divisor detector in Theorem~\ref{thm:theta-rigging} is a singular atomic rigging and is
+nonclosable through ordinary \(L^2\), including on the neutral critical-line divisor.
+\item \emph{Horizontal reflection regularity.}  Global neutrality of the inner
+duality--adjunction fracture is equivalent simultaneously to independent-quadrant
+Wold--Poisson boundedness on every divisor fibre, compactness of every seam-weighted
+Sonin/Calkin chart, and positivity of every fixed-edge four-unit Ward Gram.
+\item Every strict-right zero has one positive rate \(\nu=2c\) which simultaneously produces
+Wold--Poisson quadrant blow-up, prime-seam incoherence, a noncompact Sonin/Calkin corner, the
+one-node Ward failure \eqref{eq:ward-local-failure}, and the finite-versus-flat Rees fracture of
+Theorem~\ref{thm:trichotomy}.
+\end{enumerate}
+Therefore no single regular ordinary-Hilbert completion in the stated source-core and consumer
+classes can both acquire the Xi divisor and perform its reflection.  The exact surviving
+architecture is a singular vertical divisor rigging followed by a horizontal character
+equalizer.
+\end{theorem}
+
+\begin{proof}
+Part (i) is Theorem~\ref{thm:theta-rigging}.  The Wold equivalence in part (ii) is
+Theorem~\ref{thm:wold-poisson}; the Calkin equivalence is
+Theorem~\ref{thm:calkin-equalizer}; the Ward equivalence is
+Theorem~\ref{thm:ward-equalizer}.  Their equalizer is the common identity
+\(\Delta(\rho)=\nu(\rho)=2(\Rea\rho-\tfrac12)\).  Part (iii) combines the strict versions of
+those theorems with Corollary~\ref{cor:xi-superselection}.
+\end{proof}
+
 \section{Interpretation for RH}\label{sec:interpretation}
 
 Theorems~\ref{thm:inner-outer}, \ref{thm:duality-fracture},
 \ref{thm:critical-resolution}, \ref{thm:ht-creation}, \ref{thm:graph-weld},
-\ref{thm:trichotomy}, and \ref{thm:essential} identify a common mechanism behind several
-earlier obstructions.
+\ref{thm:trichotomy}, \ref{thm:essential}, and \ref{thm:singular-equalizer} identify a common
+mechanism behind several earlier obstructions.
 
 \begin{center}
 \begin{tabular}{@{}lll@{}}
@@ -1772,6 +2098,10 @@ even scalarization & divisor magnitude & reflection orientation\\
 Kakutani quotient & singularity & finite versus flat face\\
 Gamma sewing & every finite prime packet & bounded Hilbertization\\
 finite-Rees transport & each Rees grade & all-orders type crossing\\
+comoving clock restriction & finite traveling profile & independent-quadrant rate\\
+ordinary \(L^2\) closure & cyclic theta source & nonzero divisor rigging\\
+Sonin Calkin quotient & coherent prime seams & off-equalizer compactness\\
+Ward Schur complement & four-unit boundary ball & strict-right character\\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -1782,11 +2112,13 @@ The unifying statement is:
 \emph{Horizontal zero displacement is the additive fracture between source inverse and analytic
 adjoint on one inner normal layer.  Prime clocks exponentiate the same two branches, the singular
 squarefree graph carries them to the outer Xi connection, and divisor residue records their
-first transition coefficient.  Before the divisor, fusion forces a countably free
+first transition coefficient.  Divisor acquisition and reflection regularity are independent
+axes.  Vertically, every nonzero positive theta-divisor detector is a singular nonclosable
+rigging.  Horizontally, one character rate controls Wold--Poisson boundedness, Sonin/Calkin
+compactness, Ward positivity, and Rees type.  Before the divisor, fusion forces a countably free
 hypertranscendental tower; at the divisor, grade loss forces singular overlap division; after
-reflection, exact sewing has essential Rees order.  Finite differential closure, bounded positive
-completion, and finite-Rees transport are three quotient shadows of one source-completeness
-boundary.}
+reflection, exact sewing has essential Rees order.  These are quotient shadows of one
+singular-equalizer boundary.}
 \end{quote}
 
 This statement answers several no-go results without turning them into slogans.  The balanced
@@ -1800,23 +2132,43 @@ division whose inverse-square cost is \eqref{eq:gram-blowup}.  Finally, every sc
 depending only on \(a^2\) or \(|a|\) is invariant under \(a\mapsto-a\), so it factors through an
 even quotient of the duality--adjunction fracture.
 
+Theorem~\ref{thm:singular-equalizer} also explains the obstructions that this source-completeness
+statement previously left outside.  Wold--Poisson ancestry is a two-clock representation of the
+same additive fracture; locking the clocks to a characteristic makes every rate look finite.
+Sonin/Calkin compactness is the quotient norm of prime-seam incoherence, not an independent
+spectral condition.  The four-unit Ward law is the final Schur consumer: a strict-right rate
+produces a one-node negative diagonal.  Hedenmalm's dense radical lives on the orthogonal axis:
+even a neutral real-divisor sampler cannot descend to ordinary \(L^2\).  Hence neither adding
+more finite source coordinates nor changing only the final positivity test can repair the
+architecture.
+
 The result gives a closed categorical restriction on arguments implemented through these
-reflected valuation sectors: work must be performed before scalarization, on the complete chain
+source cores and reflected valuation sectors.  The complete architecture is
 \[
- \begin{aligned}
- \text{positive exponent-depth source}
- &\longrightarrow \text{countably free valuation--residue fusion tower}\\
- &\longrightarrow \text{squarefree score/overlap graph}\\
- &\longrightarrow \text{singular corrected Xi outer connection}\\
- &\longleftrightarrow \text{rational inner nearby profile}\\
- &\longrightarrow \text{additive/exponential boundary character}\\
- &\longrightarrow \text{Fisher--Gamma infinite Rees resolution}\\
- &\longrightarrow \text{finite-versus-flat reflection type}.
- \end{aligned}
- \tag{9.1}\label{eq:architecture}
+ \begin{array}{c}
+ \text{theta source}\longrightarrow
+ \text{singular real-divisor rigging}\\[1mm]
+ \text{positive exponent-depth source}\longrightarrow
+ \text{countably free valuation--residue fusion tower}\\
+ \hspace{17mm}\longrightarrow\text{squarefree score/overlap graph}
+ \longrightarrow\text{singular Xi outer connection}\\
+ \hspace{17mm}\longleftrightarrow\text{rational inner nearby profile}
+ \longrightarrow\text{additive/exponential boundary character}\\
+ \hspace{17mm}\longrightarrow
+ \left\{
+ \begin{array}{c}
+ \text{Wold--Poisson quadrant}\\
+ \text{Sonin/Calkin quotient}\\
+ \text{four-unit Ward Gram}\\
+ \text{Fisher--Gamma/Rees type}
+ \end{array}\right.
+ \end{array}
+ \tag{10.1}\label{eq:architecture}
 \]
 Theorem~\ref{thm:main} ties every arrow in \eqref{eq:architecture} to the same exponent source and
-identifies the common divisor coordinate in its inner, outer, and character charts.
+identifies the common divisor coordinate in its inner, outer, clock, quotient, and character
+charts.  The theta leg proves why divisor acquisition must be a singular rigging rather than
+another bounded completion.
 Corollary~\ref{cor:xi-superselection} proves the exhaustive conclusion for the stated transport
 class: no bounded finite-Rees completion can perform the reflection step.
 
@@ -1857,13 +2209,28 @@ corresponding prime-valuation sector is flat beyond all finite Rees orders, whil
 partner is half-normal.  The flat radical is invariant under arbitrary-dimensional bounded
 finite-Rees transport, and exact sewing has essential operator norm.
 
+The broader law is two-axis.  The horizontal displacement
+\(\nu(\rho)=2(\Rea\rho-\tfrac12)\) is simultaneously the inner pole fracture, independent-clock
+rate, prime-seam Calkin coefficient, and obstruction seen by the fixed-edge Ward Schur
+complement.  A nonzero rate does not produce four unrelated failures: it produces one failure in
+four regular consumer categories.  A comoving Wold--Poisson profile hides it, a flat prime
+coboundary detects but does not kill it, a Calkin corner records it as noncompact essential norm,
+and one Ward node records it as a negative Schur complement.
+
+Vertical divisor acquisition behaves differently.  A nonzero positive theta-null form is forced
+onto the real Xi divisor, but the theta source is cyclic in ordinary \(L^2\).  Its radical is
+therefore dense and its form nonclosable.  Singular divisor rigging is necessary even when
+horizontal rate vanishes.  This is the missing organizational fact: divisor detection is not a
+bounded precursor of reflection positivity, and reflection positivity is not a way to create the
+divisor.  They are consecutive, categorically different operations.
+
 The Riemann hypothesis remains the assertion that every nontrivial divisor charge is neutral.
 The contribution here is to locate that charge before zero selection, prove its conservation,
 identify its additive and exponential duality--adjunction forms, prove its complete two-prime
-observability, and classify the finite completions that cannot contain or transport it.  Within
-this source class, the correct object is the singular inner--outer boundary-character
-correspondence together with its countably free hypertranscendental and infinite-Rees
-resolutions.
+observability, and classify the regular descents that cannot contain or transport it.  Within
+the stated source classes, the correct object is not one Hilbert completion but a singular
+inner--outer divisor correspondence, a nonclosable vertical rigging, and a horizontal character
+equalizer, together with their countably free hypertranscendental and infinite-Rees resolutions.
 
 \begin{thebibliography}{99}
 
@@ -1954,10 +2321,20 @@ H.~N.~Shapiro and G.~H.~Sparer,
 \newblock \emph{Comm. Pure Appl. Math.} \textbf{39} (1986), 695--745.
 \newblock \url{https://doi.org/10.1002/cpa.3160390602}.
 
+\bibitem{Schwartz1966}
+L.~Schwartz,
+\newblock \emph{Th\'eorie des distributions},
+\newblock Hermann, Paris, 1966.
+
 \bibitem{Titchmarsh1986}
 E.~C.~Titchmarsh,
 \newblock \emph{The Theory of the Riemann Zeta-Function}, 2nd ed.,
 \newblock revised by D.~R.~Heath-Brown, Oxford University Press, 1986.
+
+\bibitem{Wiener1932}
+N.~Wiener,
+\newblock Tauberian theorems,
+\newblock \emph{Ann. of Math. (2)} \textbf{33} (1932), 1--100.
 
 \end{thebibliography}
 
