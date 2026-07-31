@@ -9,7 +9,8 @@
   `formal/GaloisForLFunctions/HTGeometry/CofinalConvexRecurrence.lean`;
   `formal/GaloisForLFunctions/HTGeometry/WaveTraceSpectrum.lean`;
   `formal/GaloisForLFunctions/HTGeometry/WaveTraceConvexRecurrence.lean`;
-  `formal/GaloisForLFunctions/HTGeometry/WaveTraceLaplace.lean`
+  `formal/GaloisForLFunctions/HTGeometry/WaveTraceLaplace.lean`;
+  `formal/GaloisForLFunctions/HTGeometry/WaveTracePoleTransform.lean`
 - **Statement:** Every finite vector of odd inverse-power Xi-zero traces has the origin in the
   interior of the closed convex hull of each cofinal tail; equivalently, finitely many arbitrarily
   late apertures support a positive quadrature annihilating the whole vector exactly.
@@ -333,23 +334,51 @@ uniform horizontal width, and summable inverse squares `(U1)`.
   of every nonzero polynomial weight) the full conclusion follows — at most `K + 1` distinct
   later times with positive probability weights annihilating `H_1, ..., H_K` exactly.
 
-### Elementary Laplace kernel — `HTGeometry/WaveTraceLaplace.lean`
+### Laplace transform `(U4)` — `HTGeometry/WaveTraceLaplace.lean`
 
-- `sin_mul_exp_eq`, `integrableOn_sin_mul_exp` : the damped sine of a complex frequency splits
-  into two decaying exponentials and is integrable on `(0, ∞)` whenever `|Im gamma| < Re s`.
+- `sin_mul_exp_eq`, `integrableOn_sin_mul_exp_Ioi` : the damped sine of a complex frequency
+  splits into two decaying exponentials and is integrable on `(T, ∞)` whenever
+  `|Im gamma| < Re s`.
 - `sq_add_sq_ne_zero` : on that half-plane the resolvent denominator `s ^ 2 + gamma ^ 2` does
   not vanish, because `s = ± i gamma` would force `Re s = ∓ Im gamma`.
-- `integral_sin_mul_exp` : the exact kernel
-  `∫₀^∞ sin (gamma t) e^{-s t} dt = gamma / (s ^ 2 + gamma ^ 2)`, the single-frequency case of
-  `(U4)`.
+- `integral_sin_mul_exp_Ioi` : the exact shifted kernel
+  `∫_T^∞ sin (gamma t) e^{-s t} dt
+     = e^{-sT} (s sin (gamma T) + gamma cos (gamma T)) / (s ^ 2 + gamma ^ 2)`.
+  Starting at `T` instead of `0` keeps the resolvent denominator and replaces the numerator
+  `gamma` by a phase factor that again equals `gamma` at `s = ± i gamma`.  This is what makes
+  the eventual-positivity hypothesis of Section 3 usable without an entire correction term:
+  the shifted transform has exactly the same pole divisor as the unshifted one.
+- `integral_dampedTerm`, `integral_norm_dampedTerm_le`,
+  `summable_integral_norm_dampedTerm`, `hasSum_integral_dampedTerm` : termwise integration
+  against the polynomial weight, giving `(U4)` in shifted form —
+  `∫_T^∞ H_P(t) e^{-st} dt = ∑_gamma traceCoeff * poleNumer / (s ^ 2 + gamma ^ 2)`.
+
+### Holomorphy of the active-pole transform — `HTGeometry/WaveTracePoleTransform.lean`
+
+- `norm_ccos_le_exp_abs_im`, `norm_traceCoeff_le`, `norm_poleNumer_le`, `norm_poleTerm_le` :
+  on any region of norm at most `M` whose distance to the pole divisor is at least `d > 0`,
+  the resolvent terms are dominated by `C (M ‖gamma‖⁻³ + ‖gamma‖⁻²)/d`, which is summable by
+  `(U1)`.
+- `differentiableOn_poleTransform` : consequently the transform is holomorphic on every such
+  region (Weierstrass, via `differentiableOn_tsum_of_summable_norm`).
+- `poleTransform_eq_integral` : to the right of the horizontal width the transform is the
+  Laplace transform itself.
+
+Note the majorant needs no local finiteness of the divisor: a positive uniform distance to the
+pole divisor suffices.  Local finiteness is needed only to produce such a distance and to
+isolate a single pole.
 
 ### Remaining formal work
 
-The single analytic input still to be formalized is the Landau half of Section 3: eventual
-one-sidedness of a nonzero wave trace forces a purely imaginary active edge frequency, hence
-`CofinalWaveSignEscape` holds whenever the spectrum contains no purely imaginary frequency.
-The remaining steps are termwise integration of `(U4)` against the polynomial weight,
-meromorphic continuation of the resulting active-pole sum (tail terms are `O(|gamma|^{-4})`,
-hence locally uniformly convergent off the pole set), the genuine-pole argument at the
-convergence abscissa, and the transfer through the corpus's continuous Landau engine
-`RHTower/LandauIntegralTransfer.lean` (`landau_complexMGF_integrable_transfer`).
+Two steps remain in the Landau half of Section 3:
+
+1. the genuine-pole argument — at an active `gamma_0` the terms with `gamma ^ 2 = gamma_0 ^ 2`
+   all carry the same coefficient (it depends on `gamma` only through `gamma ^ 2`), so their
+   residues reinforce and cannot cancel; the rest of the series is holomorphic there;
+2. the Landau transfer itself, through the corpus's continuous engine
+   `RHTower/LandauIntegralTransfer.lean` (`landau_complexMGF_integrable_transfer`), pushing the
+   convergence abscissa left past every real point and contradicting the pole.
+
+Together these give `CofinalWaveSignEscape` for any spectrum without a purely imaginary
+frequency, which is the last hypothesis of
+`exists_cofinal_positive_quadrature_waveTrace`.

@@ -155,6 +155,14 @@ theorem differentiableOn_poleTerm (P : Polynomial ℝ) (T : ℝ) {U : Set ℂ} (
     hA.div hB hne
   exact hdiv
 
+
+/-- To the right of the horizontal width the active-pole transform is exactly the Laplace
+transform of the wave trace started at time `T`. -/
+theorem poleTransform_eq_integral (P : Polynomial ℝ) {s : ℂ} (hs : S.width < s.re)
+    {T : ℝ} (hT : 0 ≤ T) :
+    S.poleTransform P T s = ∫ t in Ioi T, S.waveTrace P t * Complex.exp (-s * t) :=
+  (S.hasSum_integral_dampedTerm P hs hT).tsum_eq
+
 omit [Countable G] in
 /-- **Holomorphy of the active-pole transform.** On any bounded region whose distance to the
 resolvent pole set is positive, the transform is holomorphic. -/
