@@ -1,15 +1,17 @@
 import GaloisForLFunctions.RHTower.SoninApertureFourierParityNoGo
+import GaloisForLFunctions.RHTower.SoninEulerCalkinPartialIsometry
 
 /-!
-# Vectors inside the aperture window are annihilated by the Sonin projection
+# Vectors inside either aperture window are annihilated by the Sonin projection
 
-Every vector of the Sonin carrier at aperture `c` vanishes on the central window `[-c,c]`, so a
-vector supported inside that window is orthogonal to the whole carrier and the Sonin projection
-kills it exactly — not merely asymptotically.
+The Sonin projection at aperture `c` is orthogonal to both forbidden cutoffs, so it annihilates
+every vector fixed by the physical cutoff and every vector fixed by the Fourier cutoff — exactly,
+not asymptotically.  The two statements are duals of each other under the cosine Fourier
+involution.
 
-This is the exact counterpart of the asymptotic statement that shells far outside the window are
-nearly fixed by the projection, and it is what makes inner-band shells usable as test vectors for
-the aperture layers.
+Physical-band vectors are the ones supported inside `[-c,c]`; Fourier-band vectors are the ones
+band-limited to `[-c,c]`.  The second family lives in the Fourier tails, where the physical
+geometry gives no information.
 -/
 
 noncomputable section
@@ -37,45 +39,59 @@ theorem inner_eq_zero_of_mem_evenCentralSoninCarrier_of_indicatorCutoff_eq_self
         ContinuousLinearMap.adjoint_inner_right (evenIndicatorCutoff c) g w
     _ = 0 := by rw [hgc, inner_zero_left]
 
-/-- **Exact inner-band annihilation.**  The Sonin projection at aperture `c` annihilates every
-vector supported inside the central window `[-c,c]`. -/
+/-- A vector fixed by the Fourier cutoff at `c` is orthogonal to the Sonin carrier at `c`. -/
+theorem inner_eq_zero_of_mem_evenCentralSoninCarrier_of_fourierCutoff_eq_self
+    (c : ℝ) {w : evenSubspace} (hw : evenFourierCutoff c w = w)
+    {g : evenSubspace} (hg : g ∈ evenCentralSoninCarrier c) :
+    inner ℂ g w = 0 := by
+  have hgc : evenFourierCutoff c g = 0 :=
+    ((mem_evenCentralSoninCarrier_iff_cutoffs_zero c g).mp hg).2
+  have hadj : ContinuousLinearMap.adjoint (evenFourierCutoff c) =
+      evenFourierCutoff c := adjoint_evenFourierCutoff c
+  calc
+    inner ℂ g w = inner ℂ g (evenFourierCutoff c w) := by rw [hw]
+    _ = inner ℂ g (ContinuousLinearMap.adjoint (evenFourierCutoff c) w) := by rw [hadj]
+    _ = inner ℂ (evenFourierCutoff c g) w :=
+        ContinuousLinearMap.adjoint_inner_right (evenFourierCutoff c) g w
+    _ = 0 := by rw [hgc, inner_zero_left]
+
+/-- **Exact physical-band annihilation.**  The Sonin projection at aperture `c` annihilates every
+vector supported inside the central window. -/
 theorem evenCentralSoninProjection_eq_zero_of_indicatorCutoff_eq_self
     (c : ℝ) {w : evenSubspace} (hw : evenIndicatorCutoff c w = w) :
     evenCentralSoninProjection c w = 0 := by
-  have hPP : evenCentralSoninProjection c * evenCentralSoninProjection c =
-      evenCentralSoninProjection c := by
-    rw [evenCentralSoninProjection_eq_starProjection]
-    exact (evenCentralSoninCarrier c).isIdempotentElem_starProjection
-  have hidem : evenCentralSoninProjection c (evenCentralSoninProjection c w) =
-      evenCentralSoninProjection c w := by
-    simpa using DFunLike.congr_fun hPP w
-  have hmem : evenCentralSoninProjection c w ∈ evenCentralSoninCarrier c := by
-    rw [evenCentralSoninProjection_eq_starProjection]
-    exact Submodule.starProjection_apply_mem _ _
-  have hadjP : ContinuousLinearMap.adjoint (evenCentralSoninProjection c) =
-      evenCentralSoninProjection c := adjoint_evenCentralSoninProjection c
-  have hself : inner ℂ (evenCentralSoninProjection c w)
-      (evenCentralSoninProjection c w) =
-      inner ℂ (evenCentralSoninProjection c w) w := by
-    calc
-      inner ℂ (evenCentralSoninProjection c w) (evenCentralSoninProjection c w) =
-          inner ℂ (evenCentralSoninProjection c w)
-            (ContinuousLinearMap.adjoint (evenCentralSoninProjection c) w) := by rw [hadjP]
-      _ = inner ℂ (evenCentralSoninProjection c (evenCentralSoninProjection c w)) w :=
-        ContinuousLinearMap.adjoint_inner_right (evenCentralSoninProjection c)
-          (evenCentralSoninProjection c w) w
-      _ = inner ℂ (evenCentralSoninProjection c w) w := by rw [hidem]
-  have hzero : inner ℂ (evenCentralSoninProjection c w) w = 0 :=
-    inner_eq_zero_of_mem_evenCentralSoninCarrier_of_indicatorCutoff_eq_self c hw hmem
-  exact inner_self_eq_zero.mp (hself.trans hzero)
+  calc
+    evenCentralSoninProjection c w
+        = evenCentralSoninProjection c (evenIndicatorCutoff c w) := by rw [hw]
+    _ = (evenCentralSoninProjection c * evenIndicatorCutoff c) w := rfl
+    _ = 0 := by rw [evenCentralSoninProjection_mul_evenIndicatorCutoff]; rfl
 
-/-- Consequently the aperture-layer projection acts on an inner-band vector through the outer
-aperture alone. -/
+/-- **Exact Fourier-band annihilation.**  The Sonin projection at aperture `c` annihilates every
+vector band-limited to the central window.  This is the dual of the physical statement and reaches
+the vectors the physical geometry cannot see. -/
+theorem evenCentralSoninProjection_eq_zero_of_fourierCutoff_eq_self
+    (c : ℝ) {w : evenSubspace} (hw : evenFourierCutoff c w = w) :
+    evenCentralSoninProjection c w = 0 := by
+  calc
+    evenCentralSoninProjection c w
+        = evenCentralSoninProjection c (evenFourierCutoff c w) := by rw [hw]
+    _ = (evenCentralSoninProjection c * evenFourierCutoff c) w := rfl
+    _ = 0 := by rw [evenCentralSoninProjection_mul_evenFourierCutoff]; rfl
+
+/-- On a physical-band vector the aperture layer sees only the outer aperture. -/
 theorem evenSoninApertureLayer_eq_of_indicatorCutoff_eq_self
     (b c : ℝ) {w : evenSubspace} (hw : evenIndicatorCutoff c w = w) :
     evenSoninApertureLayer b c w = evenCentralSoninProjection b w := by
   unfold evenSoninApertureLayer
   rw [sub_apply,
     evenCentralSoninProjection_eq_zero_of_indicatorCutoff_eq_self c hw, sub_zero]
+
+/-- On a Fourier-band vector the aperture layer sees only the outer aperture. -/
+theorem evenSoninApertureLayer_eq_of_fourierCutoff_eq_self
+    (b c : ℝ) {w : evenSubspace} (hw : evenFourierCutoff c w = w) :
+    evenSoninApertureLayer b c w = evenCentralSoninProjection b w := by
+  unfold evenSoninApertureLayer
+  rw [sub_apply,
+    evenCentralSoninProjection_eq_zero_of_fourierCutoff_eq_self c hw, sub_zero]
 
 end RHTower

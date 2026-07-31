@@ -452,9 +452,9 @@ witness families provably fail.
 annulus `(r a, r d)`, which lies outside `[-c,c]`, so it is asymptotically fixed by `Q_c` and
 `Z f_n = Y f_n - Y Q_c f_n -> 0`.  It carries no information about `Z`.
 
-*Inner family.*  Shells supported in `(b,c)` are annihilated exactly by `Q_c`
-(`evenCentralSoninProjection_eq_zero_of_indicatorCutoff_eq_self`), so they do sit in the range of
-`Q_b - Q_c`.  But the dilation moves that annulus to `(r b, r c)` or `(b/r, c/r)`, and inside the
+*Inner family.*  Shells supported in `(b,c)` are annihilated exactly by `Q_c`, so they do sit in
+the range of `Q_b - Q_c`.  Both this and its Fourier dual are immediate from the corpus's exact
+orthogonality identities `Q_c A_c = 0` and `Q_c R_c = 0`.  But the dilation moves that annulus to `(r b, r c)` or `(b/r, c/r)`, and inside the
 crossing chamber `c < r a` neither image meets `(a,b)`: the first has `r b > b`, and the second has
 `c/r < a`.  So `(Q_a - Q_b) D_r` sees nothing of it either, at the level of physical support.
 
@@ -462,6 +462,11 @@ Both failures are geometric: in the crossing chamber the dilation simply does no
 annulus into the `(a,b)` annulus.  Any witness must therefore exploit the **Fourier tails** of the
 Sonin projections rather than physical support, and any proof that `Z = 0` must control exactly
 those tails.  That is the precise shape of the remaining question.
+
+The dual annihilation law supplies the first handle on that side: vectors *band-limited* to
+`[-c,c]` are also killed exactly by `Q_c`, so the range of `Q_b - Q_c` contains a second, purely
+spectral family whose physical support is unconstrained.  Whether the dilation moves that family
+into the `(a,b)` layer is the next thing to test.
 
 ### Proof
 
@@ -588,7 +593,8 @@ provisional pending expert/literature review.
 | `(32)` accumulated loss | `re_soninApertureResidualTrace_chain` |
 | `(33)` chain subadditivity | `re_soninApertureResidualTrace_chain_le` |
 | chain equality characterization | `re_soninApertureResidualTrace_chain_eq_iff` |
-| exact inner-band annihilation | `evenCentralSoninProjection_eq_zero_of_indicatorCutoff_eq_self` |
+| exact physical-band annihilation | `evenCentralSoninProjection_eq_zero_of_indicatorCutoff_eq_self` |
+| exact Fourier-band annihilation | `evenCentralSoninProjection_eq_zero_of_fourierCutoff_eq_self` |
 
 Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninPrincipalRelativeCyclicExtension.lean`,
@@ -612,6 +618,10 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-07-31 — dual annihilation added and a self-duplication corrected: the physical-band
+  annihilation is one line from the corpus's `Q_c A_c = 0`, which the previous session's thirty-line
+  proof had not used.  The Fourier dual then comes free from `Q_c R_c = 0` and opens the spectral
+  side of the witness search.
 - 2026-07-31 — both obvious witness families for the coupling ruled out, and the exact tool for the
   inner one formalized: shells inside the window are annihilated exactly, not asymptotically, by the
   Sonin projection.  In the crossing chamber the dilation does not carry the (b,c) annulus into the
