@@ -31,8 +31,9 @@ spectral information.
 - [x] 0 -> 1 in-progress: exact source-pure conjecture and Landau/separation attack identified
 - [x] 1 -> 2 fully-proven: convergence, active-pole, scalar half-space escape, convex separation,
       and finite positive quadrature proofs dependency-closed
-- [ ] 2 -> 3 formalized: exact universal theorem and Xi specialization proved in Lean; targeted
-      module build, axiom audit, and lint pass
+- [x] 2 -> 3 formalized (universal theorem): `exists_cofinal_positive_quadrature_of_no_imaginary`
+      proved unconditionally; targeted module build, axiom audit, and lint pass
+- [ ] 2 -> 3 formalized (Xi instantiation): supply the four divisor hypotheses for `XiC`
 - [ ] 3 -> 4 publication-ready: standalone theoretical paper, primary-source novelty audit, and
       reproducible Lean certificate
 
@@ -419,11 +420,48 @@ weight kills, and the surviving residues are shown to reinforce rather than canc
   integral of the wave trace, read backwards from the real base point `sigma`.  This is the
   bridge to `landau_complexMGF_integrable_transfer`.
 
+- `TailConv`, `tailConv_mono`, `tailConv_base` : convergence of the tail Laplace integral at a
+  real abscissa; monotone in the abscissa because the trace is nonnegative on the tail, and
+  valid at `width + 1` because the trace has exponential order `width`.
+- `abs_im_ge_of_mem_poleSet` : a pole is `± i gamma`, so its distance to the real axis is
+  exactly `|Re gamma|`.
+- `tailConv_step` : **one Landau step.**  Holomorphy of the transform on the pole-free disc
+  `closedBall sigma (r/2)` supplies the continuation, and the identity theorem on the *convex*
+  set `{|Im z| < rho/2} ∩ {Re z < sigma - sigma_0}` supplies the germ agreement at the origin.
+  Working in the reflected coordinate `z = sigma - s` is what makes every identity-theorem
+  application land on a convex set.  The corpus engine
+  `landau_complexMGF_integrable_transfer` then moves the abscissa strictly left, by `r/8`.
+- `tailConv_iterate`, `tailConv_all` : induction marching the abscissa to `-∞`.  The step size
+  is fixed because the real-part gap `rho` is uniform, so no accumulation of poles can stall
+  the march.
+- `exists_active_of_ne_zero` : a nonzero weight cannot kill every frequency, since it has
+  finitely many roots while the frequency squares are infinite.  This is the
+  active-frontier recomputation the hostile audit demands.
+- `cofinalWaveSignEscape` and `exists_pos_realWaveTrace` : **the universal theorem's part 3.**
+  With no purely imaginary frequency, every nonzero polynomial wave trace assumes both strict
+  signs after every time.  The Laplace transform is entire, the identity theorem on the
+  connected `poleSetᶜ` transports it onto the active-pole transform, and continuity at an
+  active pole contradicts `exists_norm_poleTransform_gt`.
+- `exists_cofinal_positive_quadrature_of_no_imaginary` : **the card's headline theorem, now
+  unconditional.**  For a locally finite conjugation-stable spectrum with infinitely many
+  distinct frequency squares and no purely imaginary frequency, after every time at most
+  `K + 1` distinct later times carry a positive probability weight annihilating
+  `H_1, ..., H_K` exactly.
+
+### One hypothesis of the paper theorem turned out to be unnecessary
+
+The paper statement assumes the divisor is invariant under `gamma ↦ -gamma` as well as under
+conjugation.  The formalization never uses the first invariance.  Conjugation stability is
+needed (it is what makes the trace real); the sign symmetry is not, because
+`traceCoeff_mul_poleNumer_eq_of_mem_squareFiber` handles the whole square fibre
+`{g : gamma_g ^ 2 = gamma_0 ^ 2}` whether or not `-gamma_0` is present in the family.  The
+universal theorem therefore holds under strictly weaker hypotheses than `(U1)` states.
+
 ### Remaining formal work
 
-The assembly: one Landau step (holomorphy of `poleTransform` on `closedBall sigma (rho/2)`
-supplies the continuation; the identity theorem on the convex set
-`{|Im z| < rho/2} ∩ {Re z < sigma - sigma_0}` supplies the germ agreement), then induction
-marching the abscissa left by a fixed amount `rho/8` per step, then the endgame: the Laplace
-transform becomes entire, the identity theorem on `poleSetᶜ` transports it onto
-`poleTransform`, and continuity at the pole contradicts `exists_norm_poleTransform_gt`.
+Only the Xi--Suzuki instantiation.  Its four hypotheses are classical facts about the
+completed zeta divisor rather than new mathematics: local finiteness of the `XiC` divisor,
+infinitude of the distinct squares, summability of the inverse squares, and absence of a
+purely imaginary ordinate (equivalently, no real zero of `zeta` in `(0,1)`).  Each has to be
+supplied from the corpus's Xi analytic layer before the universal theorem can be applied to
+`XiC`.
