@@ -11,7 +11,8 @@
   `formal/GaloisForLFunctions/HTGeometry/WaveTraceConvexRecurrence.lean`;
   `formal/GaloisForLFunctions/HTGeometry/WaveTraceLaplace.lean`;
   `formal/GaloisForLFunctions/HTGeometry/WaveTracePoleTransform.lean`;
-  `formal/GaloisForLFunctions/HTGeometry/WaveTracePoleDivergence.lean`
+  `formal/GaloisForLFunctions/HTGeometry/WaveTracePoleDivergence.lean`;
+  `formal/GaloisForLFunctions/RHTower/WaveTraceLandauRecurrence.lean`
 - **Statement:** Every finite vector of odd inverse-power Xi-zero traces has the origin in the
   interior of the closed convex hull of each cofinal tail; equivalently, finitely many arbitrarily
   late apertures support a positive quadrature annihilating the whole vector exactly.
@@ -391,15 +392,38 @@ weight kills, and the surviving residues are shown to reinforce rather than canc
 - `exists_norm_poleTransform_gt` : consequently, on every punctured neighbourhood of the pole
   of an active frequency the transform exceeds any prescribed bound.  The pole is genuine.
 
+### Pole domain — same file
+
+- `poleSet`, `exists_denominator_lower_bound`, `exists_ball_denominator_bound`,
+  `isOpen_compl_poleSet` : local finiteness makes the resolvent divisor closed and keeps every
+  non-pole at a positive distance from the whole denominator family.
+- `differentiableOn_poleTransform_compl` : the transform is holomorphic on the entire
+  complement of the divisor.
+- `countable_poleSet`, `isPreconnected_compl_poleSet` : the divisor is countable, so its
+  complement in `ℂ` is connected (`Set.Countable.isConnected_compl_of_one_lt_rank`).  This is
+  the domain on which the identity theorem will transport the Laplace transform onto the
+  transform, all the way to the pole.
+- `exists_re_lower_bound` : with no purely imaginary frequency, local finiteness gives a
+  uniform gap `rho > 0` with `rho ≤ |Re gamma|` for every frequency.  Since a pole is
+  `± i gamma`, its distance to the real axis is exactly `|Re gamma|`, so the horizontal strip
+  `|Im s| < rho / 2` is pole-free — this is what lets the Landau abscissa march left along the
+  real axis without ever meeting a singularity.
+
+### Landau transfer — `RHTower/WaveTraceLandauRecurrence.lean`
+
+- `traceDensity`, `traceMeasure` : an eventually nonnegative wave trace is the density of a
+  positive measure on the time tail `(T, ∞)`.
+- `integrable_exp_traceMeasure_iff` : integrability of `exp (rho t)` against that measure is
+  exactly convergence of the Laplace integral at abscissa `sigma - rho`.
+- `complexMGF_traceMeasure` : its complex moment generating function is the shifted Laplace
+  integral of the wave trace, read backwards from the real base point `sigma`.  This is the
+  bridge to `landau_complexMGF_integrable_transfer`.
+
 ### Remaining formal work
 
-One step remains: the Landau transfer itself, through the corpus's continuous engine
-`RHTower/LandauIntegralTransfer.lean` (`landau_complexMGF_integrable_transfer`).  Eventual
-one-sidedness makes the wave trace the density of a positive measure whose complex
-moment-generating function is `poleTransform` composed with a reflection; holomorphy of
-`poleTransform` on balls centred on the real axis (available because no frequency is purely
-imaginary, so no pole is real) pushes the convergence abscissa left indefinitely, and the
-resulting entire Laplace transform contradicts `exists_norm_poleTransform_gt`.
-
-That gives `CofinalWaveSignEscape` for any spectrum without a purely imaginary frequency,
-which is the last hypothesis of `exists_cofinal_positive_quadrature_waveTrace`.
+The assembly: one Landau step (holomorphy of `poleTransform` on `closedBall sigma (rho/2)`
+supplies the continuation; the identity theorem on the convex set
+`{|Im z| < rho/2} ∩ {Re z < sigma - sigma_0}` supplies the germ agreement), then induction
+marching the abscissa left by a fixed amount `rho/8` per step, then the endgame: the Laplace
+transform becomes entire, the identity theorem on `poleSetᶜ` transports it onto
+`poleTransform`, and continuity at the pole contradicts `exists_norm_poleTransform_gt`.
