@@ -320,7 +320,16 @@ trace-class restriction compatibility unconditionally in the chamber relevant to
 - [x] prove exact compressed cocycle, additive principal cocycle, and logarithmic aperture character
 - [x] prove exact retained/lost operator and cyclic orbital-mass conservation
 - [x] isolate all remaining aperture curvature in the trace-class relative ideal
-- [ ] compute the ordinary trace of the aperture curvature
+- [x] compute the ordinary trace of the aperture curvature —
+      `re_opTrace_evenSoninApertureRestrictionCurvature_eq_neg_hsNormSq` in
+      `SoninApertureCurvatureTrace.lean` identifies it exactly as minus the squared
+      Hilbert--Schmidt norm of the successive-lost-layer coupling, hence
+      `re_opTrace_evenSoninApertureRestrictionCurvature_nonpos`.  This is an exact structural
+      identification and a definite sign, not a closed form in `a,b,c,r`.
+- [x] one-sided flag consequence for the completed reader —
+      `re_extendedTrace_soninApertureRestrictionDefect_flag_le` in
+      `SoninApertureExtendedTraceFlagLaw.lean`: the extended trace is subadditive along every
+      strict aperture flag, so the aperture tower cannot supply a lower floor.
 - [ ] prove exact cancellation by the cutoff-dependent Burnol conductor on the semilocal graph
 - [ ] prove completed coercivity or terminally retire the source class
 

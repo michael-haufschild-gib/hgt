@@ -223,6 +223,11 @@ Still open:
 - attach Burnol archimedean conductor finite part;
 - prove completed one-sided lower floor and RH.
 
+Newly ruled out: obtaining the lower floor from the aperture tower.  By `(16)` the real extended
+trace is subadditive along every strict aperture flag, with defect exactly minus the successive
+lost-layer coupling energy, so refinement can only push it down.  The floor, if it exists, is an
+archimedean statement.
+
 Settled negatively elsewhere: aperture-restriction compatibility of the relative extension fails at
 every strict aperture pair (`sonin-aperture-area-rigidity-and-restriction-defect`, Theorem D), so
 the surviving route must carry the aperture cocycle rather than assume invariance.
@@ -247,6 +252,8 @@ provisional pending expert/literature review.
 - [x] exact prime-power flux coefficient
 - [x] relative-ideal trace extension
 - [x] unconditional Lean formalization of `(1)`--`(4)` and Theorem G
+- [x] one-sided aperture flag law for the extended trace (Theorem H)
+- [x] proof that the aperture tower alone cannot supply the lower floor
 - [ ] Burnol completion and completed lower floor
 
 ## Lean
@@ -286,6 +293,10 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-07-31 — one-sided aperture flag law proved and formalized.  All three defects of a strict
+  flag are presented at one base aperture, the logarithmic weights cancel as a coboundary, and the
+  whole scalar defect is minus the successive-layer coupling energy.  Consequence: the aperture
+  tower is subadditive, so it cannot supply the completed lower floor; that debt is archimedean.
 - 2026-07-31 — relative-ideal trace extension closed and formalized.  New mechanism: a physical
   window and a Fourier window, each cut down to its own band, form a Hilbert--Schmidt pair whose
   two products recover the two orders of the noncompact cross product, giving `Tr(PF)=Tr(FP)`.
