@@ -5,6 +5,10 @@
 - **Type:** THEOREM (paper) / PUBLICATION LANE
 - **Scientific status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED] [NOT AN RH PROOF]`
 - **Source:** `suzuki-screw-cesaro-curvature-recurrence.md`; Suzuki's Xi screw function and zero expansion
+- **Formal modules (in progress):**
+  `formal/GaloisForLFunctions/HTGeometry/CofinalConvexRecurrence.lean`;
+  `formal/GaloisForLFunctions/HTGeometry/WaveTraceSpectrum.lean`;
+  `formal/GaloisForLFunctions/HTGeometry/WaveTraceConvexRecurrence.lean`
 - **Statement:** Every finite vector of odd inverse-power Xi-zero traces has the origin in the
   interior of the closed convex hull of each cofinal tail; equivalently, finitely many arbitrarily
   late apertures support a positive quadrature annihilating the whole vector exactly.
@@ -278,3 +282,62 @@ application, not the definition of the abstraction.
 - 2026-07-22 -- Hostile audit exposed the sharp purely imaginary edge obstruction.  Replaced the
   naive universal claim by the recurrence-versus-real-edge-divisor dichotomy; completed the
   normal-convergence, genuine-pole, Landau, separation, relative-interior, and Caratheodory proof.
+
+## Lean formalization — Sections 4 and 5 COMPLETE
+
+Unconditional, no `sorry`/`admit`/`axiom`/`opaque`/`unsafe`; axiom audit of every listed
+theorem returns exactly `[propext, Classical.choice, Quot.sound]`.
+
+### Universal convex recurrence `(U8)` and exact quadrature — `HTGeometry/CofinalConvexRecurrence.lean`
+
+`CofinalHalfSpaceEscape V` says every nonzero continuous linear observable of the path `V`
+becomes strictly negative after every time.
+
+- `zero_mem_interior_convexHull_image_Ioi` : under that hypothesis the origin lies in the
+  interior of the convex hull of every cofinal tail `V '' Ioi T`.  The proof compactifies the
+  dual sphere: finitely many tail points already make every unit observable strictly
+  negative, so a uniform margin `δ` exists, and strict separation of a vector of norm `< δ`
+  from the hull of those finitely many points contradicts the margin.  This is the
+  `[CLOSURE TEST]` of the hostile audit discharged directly, with no closure/relative-interior
+  step needed: interiority is proved for the honest convex hull, not its closure.
+- `exists_cofinal_positive_quadrature` : Carathéodory (`eq_pos_convex_span_of_mem_convexHull`)
+  then produces `nodes : Finset ℝ` with `nodes.card ≤ finrank + 1`, all nodes later than `T`,
+  strictly positive weights summing to one, and `∑ w t • V t = 0`.  Node distinctness is
+  automatic: the Carathéodory points are affinely independent, hence distinct, and their
+  chosen time preimages are therefore distinct.
+
+### Wave traces `(U2)` — `HTGeometry/WaveTraceSpectrum.lean`
+
+`WaveSpectrum G` bundles a conjugation-stable frequency family: an index involution realizing
+`gamma -> conj gamma`, a uniform lower modulus bound (local finiteness away from zero), a
+uniform horizontal width, and summable inverse squares `(U1)`.
+
+- `summable_traceTerm`, `norm_traceTerm_le`, `norm_waveTrace_le` : the series `(U2)` converges
+  absolutely for every real polynomial weight, with the exponential bound
+  `C_P * exp (width * |t|)` of Section 1.
+- `conj_waveTrace`, `waveTrace_im`, `realWaveTrace`, `ofReal_realWaveTrace` : conjugation
+  symmetry of the spectrum makes the trace real, by reindexing the sum along the involution.
+- `waveTrace_add`, `waveTrace_smul`, `realWaveTrace_sum` : linearity in the polynomial weight.
+
+### Polynomial half-space escape `(U6)`, `(U7)` — `HTGeometry/WaveTraceConvexRecurrence.lean`
+
+- `tracePath` : the vector `V_K(t) = (H_1(t), ..., H_K(t))` realized by monomial weights.
+- `observablePolynomial`, `coeff_observablePolynomial`, `observablePolynomial_ne_zero`,
+  `apply_tracePath` : every linear observable of the path is the wave trace of the polynomial
+  carrying its coordinates, and a nonzero observable yields a nonzero polynomial.  This is the
+  `[CONVEXITY TEST]` of the hostile audit: sign change is established for every nonzero linear
+  combination, not coordinatewise.
+- `cofinalHalfSpaceEscape_tracePath` and
+  `exists_cofinal_positive_quadrature_waveTrace` : from `CofinalWaveSignEscape` (sign escape
+  of every nonzero polynomial weight) the full conclusion follows — at most `K + 1` distinct
+  later times with positive probability weights annihilating `H_1, ..., H_K` exactly.
+
+### Remaining formal work
+
+The single analytic input still to be formalized is the Landau half of Section 3: eventual
+one-sidedness of a nonzero wave trace forces a purely imaginary active edge frequency, hence
+`CofinalWaveSignEscape` holds whenever the spectrum contains no purely imaginary frequency.
+The corpus already owns the continuous Landau engine
+(`RHTower/LandauIntegralTransfer.lean`, `landau_complexMGF_integrable_transfer`); what remains
+is the Laplace-transform identity `(U4)` for the wave trace and the genuine-pole argument at
+the convergence abscissa.
