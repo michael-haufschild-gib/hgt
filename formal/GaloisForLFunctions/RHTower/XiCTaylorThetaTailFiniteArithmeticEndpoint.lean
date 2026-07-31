@@ -86,7 +86,8 @@ theorem tendsto_thetaCuspTailSecondDensityFiniteAtomPhaseValue
   let bound : ℝ → ℝ := fun x => thetaCuspTailSecondDensity x
   have hboundInt : Integrable bound mu := by
     have h := integrableOn_pow_mul_thetaCuspTailSecondDensity 0
-    simpa only [bound, mu, pow_zero, one_mul] using h
+    simp only [pow_zero, one_mul] at h
+    exact h
   have hFmeas : ∀ᶠ M : ℕ in atTop, AEStronglyMeasurable (F M) mu := by
     filter_upwards with M
     exact ((by
@@ -140,7 +141,8 @@ theorem tendsto_thetaCuspTailSecondDensityFiniteAtomPhaseDerivative
     x * thetaCuspTailSecondDensity x
   have hboundInt : Integrable bound mu := by
     have h := integrableOn_pow_mul_thetaCuspTailSecondDensity 1
-    simpa only [bound, mu, pow_one] using h
+    simp only [pow_one] at h
+    exact h
   have hFmeas : ∀ᶠ M : ℕ in atTop, AEStronglyMeasurable (F M) mu := by
     filter_upwards with M
     exact ((by

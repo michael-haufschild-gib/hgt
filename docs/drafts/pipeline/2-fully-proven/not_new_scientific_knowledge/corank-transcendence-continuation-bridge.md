@@ -303,3 +303,85 @@ so that the auxiliary polynomial can be taken monic), expand `∏_{i}(e^{α_i} �
 because the `i = 1` factor vanishes — into a relation `b + ∑_{r ∈ h.aroots ℂ} e^r = 0` with `b ∈ ℤ`,
 `b ≠ 0`, `h ∈ ℤ[X]` monic and `h(0) ≠ 0`.  Steps 1 and 2 then close it: Step 1's skeleton supplies
 the prime argument and Step 2 supplies the integrality of `∑_r g_p(r)`.
+
+### The Lindemann–Weierstrass core is now a single unconditional theorem (2026-07-31)
+
+`formal/GaloisForLFunctions/HTGeometry/ExpRelationNoGo.lean`, `lake build` green and
+`#print axioms` clean:
+
+> `no_int_exp_relation {h : ℤ[X]} (hm : h.Monic) (h0 : h.eval 0 ≠ 0) {b : ℤ} (hb : b ≠ 0) :`
+> `(b : ℂ) + ((h.aroots ℂ).map Complex.exp).sum ≠ 0`
+
+Proof: feed `h` to `LindemannWeierstrass.exp_polynomial_approx`; sum the errors over the root
+multiset; the result is the integer `−b·nₚ − p·Gz`, where `Gz` is an integer by Step 2
+(`sum_aeval_aroots_isInt`); it is bounded in absolute value by `(deg h)·|c|ᵖ/(p−1)!`, which is less
+than one for a large prime `p`, so it vanishes, giving `p ∣ b·nₚ` — impossible for
+`p > |b|` with `p ∤ nₚ`.
+
+This packages Steps 1 and 2 into the form Step 3 consumes, so the only work left on this card is
+**purely algebraic**: produce, from `e^α = q` with `α = log q` algebraic, a monic `h ∈ ℤ[X]` with
+`h(0) ≠ 0` and a nonzero integer `b` with `b + ∑_{r ∈ h.aroots ℂ} e^r = 0`.  The recipe is the one
+recorded above — scale `α` to an algebraic integer, take `h` from the nonzero subset sums
+`∑_{i∈S} α_i` of its conjugates, and read off `b = (−q)^n` from the empty subset — and no further
+analysis is required.
+
+### The grouped Lindemann–Weierstrass core, and a correction to the Step 3 plan (2026-07-31)
+
+Two additions, both green and `#print axioms` clean.
+
+`SymmetricSumOverRoots.lean` gained the general form that the construction needs:
+
+> `aeval_isInt_of_isSymmetric (hm : h.Monic) (hn : h.natDegree = n)`
+> `(hρ : h.aroots ℂ = Multiset.map ρ univ.val) (hP : P.IsSymmetric) : ∃ z : ℤ, aeval ρ P = z`
+
+— **any** symmetric integer polynomial in the roots of a monic integer polynomial is an integer, not
+just `∑ᵢ g(Xᵢ)`.  `sum_aeval_aroots_isInt` is now a corollary.  This is what will give the derived
+polynomials of Step 3 integer coefficients.
+
+`ExpRelationNoGo.lean` gained the grouped core:
+
+> `no_int_grouped_exp_relation (hm : ∀ j, (H j).Monic) (h0 : (∏ j, H j).eval 0 ≠ 0) (β : Fin k → ℤ)`
+> `(hb : b ≠ 0) : (b : ℂ) + ∑ j, (β j : ℂ) * (((H j).aroots ℂ).map Complex.exp).sum ≠ 0`
+
+The single-polynomial `no_int_exp_relation` is the case `k = 1`, `β = 1`.
+
+**Correction to the Step 3 recipe recorded earlier.**  The earlier note said the expansion of
+`∏_i (e^{α_i} − Q) = 0` yields a relation with `b = (−Q)^n`.  That is wrong as stated: the subset
+sums `γ_S = ∑_{i∈S} α_i` need not be nonzero for `S ≠ ∅`, and every vanishing one contributes
+`(−Q)^{n−|S|}` to the constant term, so the constant is `∑_{S : γ_S = 0} (−Q)^{n−|S|}` and its
+nonvanishing is not automatic — this is the classical obstruction in the Lindemann–Weierstrass proof.
+
+The fix, which is available here because the exponential base is an integer: replace `α` by `Nα`.
+Then `e^{Nα} = Q^N`, the vanishing pattern of the subset sums is unchanged (`γ_S = 0 ⟺ Nγ_S = 0`),
+and the constant becomes `∑_{S : γ_S = 0} (−1)^{n−|S|} Q^{N(n−|S|)}`, whose `S = ∅` term has
+exponent `Nn` while every other has exponent at most `N(n−1)`.  Choosing `N` with `Q^N > 2^n` makes
+the `S = ∅` term dominate the at most `2^n` others, so the constant is nonzero.  Grouping the
+remaining terms by `|S|` gives the monic integer polynomials `H_s = ∏_{|S| = s, γ_S ≠ 0}(X − γ_S)`
+— integer coefficients by `aeval_isInt_of_isSymmetric`, since that root family is permutation-stable
+— with coefficients `β s = (−1)^{n−s} Q^{N(n−s)}`, exactly the shape `no_int_grouped_exp_relation`
+consumes.
+
+Remaining for this card: that construction, plus the reduction of `α = log q` to an algebraic
+integer (scale by a denominator, `e^{dα} = q^d`).  No analysis is left; all three analytic
+ingredients are proved.
+
+### The construction tool (2026-07-31)
+
+`formal/GaloisForLFunctions/HTGeometry/InvariantRootFamily.lean`, green and `#print axioms` clean.
+
+| Declaration | Statement |
+|---|---|
+| `esymm_map_ringHom` | a ring homomorphism commutes with the elementary symmetric functions of a multiset |
+| `isSymmetric_esymm_of_invariant` | if a multiset `T` of integer polynomials in the roots satisfies `T.map (rename e) = T` for every permutation `e`, its elementary symmetric functions are symmetric |
+| `coeff_prod_X_sub_C_isInt` | **every coefficient of `∏_{q ∈ T} (X − q(ρ))` is an integer**, for `ρ` indexing the complex roots of a monic integer polynomial and `T` rename-invariant |
+
+This is the step that gives the derived polynomials of the symmetrisation integer coefficients: with
+`T` the multiset of the subset sums `∑_{i ∈ S} X_i` over the subsets `S` of a fixed size, `T` is
+rename-invariant (a permutation of the roots permutes the subsets), so `∏_{|S| = s}(X − Nγ_S)` has
+integer coefficients — for **all** subsets of that size, including those with `γ_S = 0`, which is
+what keeps the family permutation-stable.  The zero roots are then divided out as a power of `X`,
+which preserves integrality and makes the constant term nonzero.
+
+Remaining: assemble the coefficients into `H_s : ℤ[X]`, divide out `X^{z_s}`, verify the expansion
+`∏_i (exp(Nρ_i) − Q^N) = 0` via `Finset.prod_add` and `Complex.exp_sum`, choose `N` with
+`Q^N > 2^n` so the constant term is nonzero, and apply `no_int_grouped_exp_relation`.

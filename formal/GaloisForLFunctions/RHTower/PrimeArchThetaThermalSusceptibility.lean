@@ -303,7 +303,7 @@ theorem thetaCuspRawEvenMoment_cross_le (k n : ℕ) :
     | zero => simp
     | succ n ih =>
         exact ih.trans (by
-          convert thetaCuspRawEvenMoment_ratio_mono (k + n) using 1 <;> omega)
+          convert thetaCuspRawEvenMoment_ratio_mono (k + n) using 1 <;> first | rfl | omega)
   rw [div_le_div_iff₀ (thetaCuspRawEvenMoment_pos k)
     (thetaCuspRawEvenMoment_pos (k + n))] at hratio
   nlinarith
@@ -609,7 +609,7 @@ theorem thetaCuspSizeBiasedSusceptibility_one_lower_of_firstRadial
     thetaCuspAtomRawEvenMoment_eq_radialBornWittenRawMoment 2 1 1]
   norm_num only [Nat.reduceAdd]
   have hscaled := mul_le_mul_of_nonneg_right hupper (sq_nonneg (2 * Real.pi))
-  convert hscaled using 1 <;> ring
+  convert hscaled using 1 <;> first | rfl | ring
 
 /-- A first-atom `k=0` radial fluctuation bound transfers to the full-source upper
 susceptibility bound. -/
@@ -629,7 +629,7 @@ theorem thetaCuspSizeBiasedSusceptibility_zero_upper_of_firstRadial
     thetaCuspAtomRawEvenMoment_eq_radialBornWittenRawMoment 1 0 1]
   norm_num only [Nat.reduceAdd]
   have hscaled := mul_le_mul_of_nonneg_right hrelaxed (sq_nonneg (2 * Real.pi))
-  convert hscaled using 1 <;> ring
+  convert hscaled using 1 <;> first | rfl | ring
 
 /-- The existing two-channel Robertson/Rayleigh--Ritz certificate supplies exactly the lower
 half of the full-source susceptibility window. -/

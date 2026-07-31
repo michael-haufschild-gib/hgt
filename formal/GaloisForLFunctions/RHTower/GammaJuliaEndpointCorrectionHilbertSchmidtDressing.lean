@@ -436,7 +436,8 @@ theorem not_summable_abs_gammaJuliaEndpointCorrectionMultiplier :
     exact (Prod.mk.inj hpq).1
   have hslice : Summable (fun p : Nat.Primes =>
       |gammaJuliaEndpointCorrectionMultiplier p 1|) := by
-    simpa only [Prod.fst, Prod.snd] using h.comp_injective hinj
+    have hcomp := h.comp_injective hinj
+    simpa only [Function.comp_def] using hcomp
   have hhalf : Summable (fun p : Nat.Primes => (1 / (2 * (p : ℝ)))) :=
     Summable.of_nonneg_of_le
       (fun p => by positivity)

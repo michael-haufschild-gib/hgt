@@ -65,27 +65,24 @@ theorem aeval_sumEvalPoly {n : ℕ} (g : ℤ[X]) (ρ : Fin n → ℂ) :
     Polynomial.algHom_ext_iff.mpr (by simp)
   exact congrArg (fun F : Polynomial ℤ →ₐ[ℤ] ℂ => F g) hEq
 
-/-- **The sum of an integer polynomial over the complex roots of a monic integer polynomial is an
-integer.** -/
-theorem sum_aeval_aroots_isInt {h : ℤ[X]} (hm : h.Monic) (g : ℤ[X]) :
-    ∃ z : ℤ, ((h.aroots ℂ).map (fun r => Polynomial.aeval r g)).sum = (z : ℂ) := by
+/-- **A symmetric integer polynomial evaluated at the complex roots of a monic integer polynomial is
+an integer.**  By the fundamental theorem of symmetric polynomials it is an integer polynomial in
+the elementary symmetric functions of the roots, which Vieta identifies with the coefficients. -/
+theorem aeval_isInt_of_isSymmetric {h : ℤ[X]} (hm : h.Monic) {n : ℕ} (hn : h.natDegree = n)
+    {ρ : Fin n → ℂ} (hρ : h.aroots ℂ = Multiset.map ρ (Finset.univ : Finset (Fin n)).val)
+    {P : MvPolynomial (Fin n) ℤ} (hP : P.IsSymmetric) :
+    ∃ z : ℤ, MvPolynomial.aeval ρ P = (z : ℂ) := by
   classical
-  set n := h.natDegree with hn
   have hmapmonic : (h.map (algebraMap ℤ ℂ)).Monic := Monic.map (algebraMap ℤ ℂ) hm
-  have hmapdeg : (h.map (algebraMap ℤ ℂ)).natDegree = n := hm.natDegree_map (algebraMap ℤ ℂ)
+  have hmapdeg : (h.map (algebraMap ℤ ℂ)).natDegree = n := by
+    rw [hm.natDegree_map (algebraMap ℤ ℂ), hn]
   have hcardmap : Multiset.card (h.aroots ℂ) = (h.map (algebraMap ℤ ℂ)).natDegree := by
     rw [Polynomial.aroots]
     exact Polynomial.splits_iff_card_roots.mp (IsAlgClosed.splits _)
-  have hcard : Multiset.card (h.aroots ℂ) = n := by rw [hcardmap, hmapdeg]
-  obtain ⟨ρ, hρ⟩ := exists_index_of_multiset (h.aroots ℂ) n hcard
-  have hsum : ((h.aroots ℂ).map (fun r => Polynomial.aeval r g)).sum
-      = ∑ i : Fin n, Polynomial.aeval (ρ i) g := by
-    rw [hρ, Multiset.map_map]
-    rfl
   obtain ⟨Q, hQ⟩ := MvPolynomial.esymmAlgHom_surjective (σ := Fin n) ℤ
-    (le_of_eq (Fintype.card_fin n)) ⟨sumEvalPoly n g, isSymmetric_sumEvalPoly n g⟩
+    (le_of_eq (Fintype.card_fin n)) ⟨P, hP⟩
   have hQ' : MvPolynomial.aeval (fun j : Fin n => MvPolynomial.esymm (Fin n) ℤ ((j : ℕ) + 1)) Q
-      = sumEvalPoly n g := by
+      = P := by
     have hv := congrArg Subtype.val hQ
     simpa [MvPolynomial.esymmAlgHom_apply] using hv
   set c : Fin n → ℤ := fun j => (-1) ^ ((j : ℕ) + 1) * h.coeff (n - ((j : ℕ) + 1)) with hc
@@ -122,6 +119,27 @@ theorem sum_aeval_aroots_isInt {h : ℤ[X]} (hm : h.Monic) (g : ℤ[X]) :
       simp
     rw [hEq]
     simp
-  rw [hsum, ← aeval_sumEvalPoly g ρ, ← hQ', ← AlgHom.comp_apply, hcomp, hcast]
+  rw [← hQ', ← AlgHom.comp_apply, hcomp, hcast]
+
+/-- **The sum of an integer polynomial over the complex roots of a monic integer polynomial is an
+integer.** -/
+theorem sum_aeval_aroots_isInt {h : ℤ[X]} (hm : h.Monic) (g : ℤ[X]) :
+    ∃ z : ℤ, ((h.aroots ℂ).map (fun r => Polynomial.aeval r g)).sum = (z : ℂ) := by
+  classical
+  have hmapdeg : (h.map (algebraMap ℤ ℂ)).natDegree = h.natDegree :=
+    hm.natDegree_map (algebraMap ℤ ℂ)
+  have hcard : Multiset.card (h.aroots ℂ) = h.natDegree := by
+    rw [Polynomial.aroots, ← hmapdeg]
+    exact Polynomial.splits_iff_card_roots.mp (IsAlgClosed.splits _)
+  obtain ⟨ρ, hρ⟩ := exists_index_of_multiset (h.aroots ℂ) h.natDegree hcard
+  obtain ⟨z, hz⟩ := aeval_isInt_of_isSymmetric hm rfl hρ
+    (isSymmetric_sumEvalPoly h.natDegree g)
+  refine ⟨z, ?_⟩
+  rw [hρ, Multiset.map_map]
+  rw [show (Multiset.map ((fun r => Polynomial.aeval r g) ∘ ρ)
+      (Finset.univ : Finset (Fin h.natDegree)).val).sum
+      = ∑ i : Fin h.natDegree, Polynomial.aeval (ρ i) g from rfl]
+  rw [← aeval_sumEvalPoly g ρ]
+  exact hz
 
 end GaloisForLFunctions.HTGeometry

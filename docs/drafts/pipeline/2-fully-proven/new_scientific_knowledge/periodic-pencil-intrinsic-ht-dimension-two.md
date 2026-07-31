@@ -801,3 +801,184 @@ the `ℂ[δ]`-kernel is purely polynomial bookkeeping: substitute
 `∑_ν p_ν(m) Z_ν^m = 0` with `p_ν(X) = ∑_r coeff ν (Qt_r) (L_A w)^r X^r`, and apply
 `expPolySum_eq_zero`; with `L_A w ≠ 0` this forces every `coeff ν (Qt_r) = 0`, i.e. every
 `P_r ∈ I_Δ`.
+
+## Lean progress — the `C[delta]`-coefficient kernel and the operator matroid
+
+`GaloisForLFunctions/HTGeometry/PencilOperatorKernel.lean` and
+`GaloisForLFunctions/HTGeometry/PencilOperatorMatroid.lean` (axiom-clean, build green,
+umbrella-registered) close the *operator-coefficient* layer of `(9)`: everything in the
+Smith-normal-form step of the card's proof except the differential transcendence of the orbit.
+
+**The kernel with derivation coefficients.**
+
+> **`operatorKernel`.**  Let `S` be a periodic-pencil separation on an antichain of facets, `Lin A`
+> the linear form of the facet phase, and `w` a direction with `Lin A w != 0` for every facet.  If
+> the operator carrier `sum_r delta^r (P_r(T)F)` is constant, then `P_r in I_Delta` for every `r`.
+
+Mechanism, in the exact shape predicted by the previous two modules.  Isolating one facet `A`
+(possible because the facets form an antichain) and reading the constancy through
+`inner_iteratedDeriv_eq_zero_of_const` gives, at every level `m >= 1`,
+
+```text
+sum_r (m·Lin A w)^r · symb_A(m,P_r) = 0.                    (K1)
+```
+
+Restricting each `P_r` to `A` and substituting `Y = X+1` turns `symb_A(m,P_r)` into
+`eval_(Z^m)(Qt_r)` (`eval_ratio_pow_bind`), whose node expansion `eval_ratio_pow_eq_sum_node`
+rewrites `(K1)` over the common exponent set `T = union_r supp(Qt_r)` as
+
+```text
+sum_(nu in T) p_nu(m)·Z_nu^m = 0,
+p_nu(X) = sum_r coeff_nu(Qt_r)·(Lin A w)^r·X^r.             (K2)
+```
+
+The nodes `Z_nu = prod_v ratio_A(v)^(nu_v)` are pairwise distinct and nonzero on exponents supported
+in `A` — this is condition `(3)` — so `expPolySum_eq_zero` forces every `p_nu = 0`.  Reading the
+`r`-th coefficient of `p_nu` and using `Lin A w != 0` kills every `coeff_nu(Qt_r)`, hence
+`Qt_r = 0`, hence `restrictPoly A (P_r) = 0`; as `A` ranges over the facets, every monomial of
+every `P_r` has nonface support.
+
+This is the exact `C[delta]`-analogue of the `C`-coefficient kernel: the annihilator of `F` in the
+*operator* ring `C[delta][X_v]` is again `C[delta] ⊗ I_Delta`, and the hypothesis is constancy of
+the carrier, not vanishing.
+
+**The matroid over the operator ring.**  `PencilOperatorMatroid.lean` reads this across a family.
+`operatorFamily_eq` collects powers of `delta`: for `D_i = sum_r c_(i,r) delta^r`,
+
+```text
+sum_i D_i (Q_i(T)F) = sum_r delta^r ((sum_i c_(i,r) Q_i)(T)F),   (K3)
+```
+
+which needs only linearity of the carrier assignment (`seedCarrierPoly_sum_smul`) and of the
+iterated derivation (`dirDeriv_iterate_const_mul`, `dirDeriv_iterate_sum`, whose side conditions are
+supplied by `differentiable_dirDeriv_iterate_seedCarrierPoly`).  Feeding `(K3)` to the kernel gives
+
+- **`operatorFamily_kernel`** — a constant `C[delta]`-combination of carriers has every coefficient
+  combination `sum_i c_(i,r) Q_i` in `I_Delta`;
+- **`operatorFamily_coeff_eq_zero`** — hence if the Stanley--Reisner classes of `Q_1,...,Q_m` are
+  `C`-linearly independent, no nonzero `C[delta]`-combination of their carriers is constant.
+
+Equivalently: the `C[delta]`-module map
+
+```text
+C[delta] ⊗_C (C[x_v]/I_Delta) --> {entire functions}/{constants}                (K4)
+```
+
+is injective.  Since `R/I_Delta = C[delta] ⊗_C (C[t^(+-1)]/I_Delta)` is `C[delta]`-free, `(K4)` is
+exactly the statement that the row rank over `C(delta)` of the coefficient matrix of `(20)` equals
+`dim_(C(delta)) span{Pbar_i}` — the Smith-normal-form input of `(9)`.
+
+**What `(9)` still needs, exactly.**  Only the last step of the card's argument: that a nonzero
+diagonal differential operator applied to an orbit element preserves differential transcendence.
+That is the orbit lemma `(11)`, and it is not a formality for this source: `exp∘exp` is
+differentially algebraic, so the explicit seed used for `(8)`, `(K1)`--`(K4)` gives differential
+transcendence degree zero.  The `C[delta]`-layer is the exact boundary of what a differentially
+algebraic source can prove.
+
+## Lean progress — multi-node separation, and the programme for the orbit lemma `(11)`
+
+`GaloisForLFunctions/HTGeometry/ExponentialPolynomialVandermondeMulti.lean` (axiom-clean, build
+green, umbrella-registered) proves the multi-index form of the separation theorem:
+
+> **`expPolySumMulti_eq_zero`.**  Let `Z i : Fin r -> C` be tuples of nonzero nodes, pairwise
+> distinct as tuples, and let each coefficient be a polynomial expression
+> `sum_e a(i,e) prod_s m_s^(e_s)` in `r` integer parameters.  If
+> `sum_i (sum_e a(i,e) prod_s m_s^(e_s)) prod_s Z(i,s)^(m_s) = 0` for every tuple `m` of positive
+> integers, then every `a(i,e)` vanishes.
+
+The proof peels the last parameter: for fixed values of the first `r` the identity is a one-variable
+exponential sum whose nodes are the last coordinates, so `expPolySum_eq_zero` kills the resulting
+polynomial; each of its coefficients is an `r`-parameter identity over the fibre of tuples sharing
+that last coordinate, and tuples in one fibre are still distinct in their first `r` coordinates.
+
+### Why the orbit lemma needs exactly this
+
+`(11)` asks for entire `1`-periodic `h_j` whose full translation orbits are jointly differentially
+independent.  Writing `h_j(u) = H_j(e^(2 pi i u))` and `Y_(j,alpha)(z) = H_j(q_alpha xi_j)` with
+`xi_j = e^(2 pi i u_j(z))` and `q_alpha = e^(2 pi i alpha)`, the derivation `delta = D_w` acts on the
+`n`-th Taylor coefficient of `H_j` by multiplication by `2 pi i n u_j(w)` — diagonally, exactly as
+`EulerOperatorDiagonal.lean` records.  So a differential monomial of degree `D` in the jets of the
+orbit expands, for each choice of `D` Taylor indices `n_1,...,n_D`, into
+
+```text
+(prod_s a_(n_s) q_s^(n_s) n_s^(m_s)) · e^(2 pi i sum_s n_s u_(j_s)(z)).      (O1)
+```
+
+Two facts are needed to conclude, and they are independent of each other.
+
+1. **Character separation.**  Terms with different frequency vectors must not be allowed to cancel.
+   Choosing a direction `b` outside countably many real hyperplanes makes the real parts of the
+   frequencies of distinct integer vectors pairwise distinct, and then the corpus's
+   `PrimeExpLogFiberRigidity.expPoly_rigidity` — finite exponential-polynomial rigidity for shifts
+   with pairwise distinct real parts — separates them.  This also disposes of the polynomial
+   coefficients coming from `C(z_1,...,z_d)` after clearing denominators.
+2. **Orbit separation.**  Terms with the *same* frequency vector but different translates
+   `q_alpha` differ only through the factors `q_alpha^(n_s)`; no growth argument can see them,
+   because the profile is `|a_n| = exp(-b_n)` with `b_n` superlinear while `log|q|·n` is linear.
+   They must be separated arithmetically, by letting the `D` Taylor indices vary independently.
+   That identity is exactly `expPolySumMulti_eq_zero`, with node tuple `(q_(alpha_1),...,q_(alpha_D))`
+   and polynomial part `prod_s n_s^(m_s)` recording the jet orders.
+
+### The remaining bricks, and the corpus assets that already cover them
+
+- **The source.**  `HTGeometry/BoundedRelationProfileRealization.lean` already constructs, for every
+  positive superlinear profile `g`, a private-prime rational profile whose exponential series
+  `boundedRelationExponentialFunction` is entire, has **every** Taylor coefficient nonzero, and is
+  hypertranscendental **for every algebraic unit-modulus phase sequence**.  Since `q^n · u_n` is
+  again an algebraic unit-modulus phase when `q` is an algebraic unit, each individual orbit element
+  of such a source is already hypertranscendental in the corpus.  Full support is what `(11)` needs
+  in order that no monomial of the expansion `(O1)` be empty.
+- **Diagonality of the derivation** — done (`EulerOperatorDiagonal.lean`,
+  `PencilDirectionalDerivation.lean`).
+- **What is genuinely open**: the passage from "each orbit element is hypertranscendental" to
+  "the whole orbit is jointly differentially independent".  The corpus's dominance capstone
+  (`BoundedRelationLogMagnitudeHypertranscendence`, `MagnitudeIntegerDominance`) is written for the
+  jets of a *single* series; the joint statement needs the same dominance run on the jet ring of a
+  family, with the two separations above supplying the coefficient nonvanishing.  This is the one
+  remaining mathematical core of `(11)`, and hence of `(9)`.
+
+Note that a Baire-category proof, as on the paper card, is not the route being formalized: the
+explicit private-prime profile source replaces genericity here exactly as the exponential seed
+replaced it for `(8)`.
+
+### Lean progress — the generic direction, and the reduction structure for `(11)`
+
+`GaloisForLFunctions/HTGeometry/GenericDirectionRatIndependence.lean` (axiom-clean, build green,
+umbrella-registered) supplies the first half of the character separation:
+
+> **`exists_direction_ratIndependent_re`.**  If `v_1,...,v_L` are `Q`-linearly independent
+> `C`-linear forms on `C^d`, there is a direction `b` with `Re(v_1 b),...,Re(v_L b)` `Q`-linearly
+> independent.
+
+Mechanism: for each nonzero rational vector `c` the obstruction locus is the kernel of the real part
+of the nonzero form `sum_l c_l v_l`; `reLm_comp_ne_zero` shows that real part is a nonzero real
+functional (test at `b` and at `i·b`), so the locus is a proper real subspace and hence Haar-null.
+Countably many rational vectors give a null union, and the ambient space is not null.
+`intVector_injective_of_ratIndependent` then records the consequence actually used: distinct integer
+frequency vectors have distinct real parts, which is precisely the hypothesis of the corpus's finite
+exponential-polynomial rigidity theorem `PrimeExpLogFiberRigidity.expPoly_rigidity`.
+
+**The reduction structure this fixes.**  Three points, none of them evident from the card's Baire
+proof, now determine the shape of the remaining work.
+
+1. *The base field collapses to one variable.*  With `delta = D_w`, every coordinate transverse to
+   `w` is a `delta`-constant, so `C(z_1,...,z_d)` is `C(transverse)(t)` with `delta t = 1`.
+   Restricting to a line `z = z_0 + t w` turns `delta` into `d/dt` and any relation over
+   `C(z_1,...,z_d)` into one over `C(t)` for the restricted family — which is again a family of the
+   same shape, with the transverse data absorbed into the constants `x_j = e^(2 pi i u_j(z_0))`.
+   So `(11)` in `d` variables reduces to `(11)` in one variable.
+2. *The corpus's apparatus already carries the base variable.*  `FormalMahlerDescent.formalJets n F
+   = Fin.cons X (jets of F)` puts the point slot `X` alongside the jets, so
+   `Hypertranscendental` is hypertranscendence over `C(z)`, not over `C`.  Polynomial coefficients
+   are therefore not an extra obstacle; what is missing is only the *family* jet vector
+   `Fin 1 (+) (iota x Fin (n+1))`.
+3. *The two separations are genuinely different problems.*  Distinct frequency vectors are separated
+   by growth (dominance) or by `expPoly_rigidity` after choosing `b` as above.  Equal frequency
+   vectors with different translates `q_alpha` can **never** be separated by growth: the profile is
+   `|a_n| = exp(-b_n)` with `b_n` superlinear while `log|q|·n` is only linear, so all translates of
+   one source share a magnitude profile to leading order.  They are separated only by letting the
+   Taylor indices vary independently, which is `expPolySumMulti_eq_zero`.
+
+The single remaining core is therefore: run the corpus's magnitude-dominance capstone on the jet
+ring of a *family* of dilated sources, with `expPolySumMulti_eq_zero` supplying the nonvanishing of
+the surviving coefficient.  Everything else `(11)` needs is now in the tree.

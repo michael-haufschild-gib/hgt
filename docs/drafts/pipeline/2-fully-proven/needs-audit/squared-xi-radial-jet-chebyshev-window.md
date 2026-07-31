@@ -4,8 +4,8 @@
 - **Stage:** 2-fully-proven / needs-audit
 - **Type:** THEOREM (paper) / cancellation-preserving moving-source reduction
 - **Scientific status:** `[PROVED HERE] [NOVELTY UNAUDITED]`
-  `[EQUATIONS (2), (3), (4) AND THE MODAL SCALE (8)-(10) FORMALIZED, AXIOMS CLEAN;`
-  `CONCENTRATION (11) NOT YET FORMALIZED]`
+  `[EQUATIONS (2), (3), (4), THE MODAL SCALE (8)-(10), THE CONCENTRATION (11) AND THE`
+  `WINDOW (12) FORMALIZED, AXIOMS CLEAN; ONLY THE OPEN CORE REMAINS]`
 - **Parents:** `squared-xi-radial-jet-reverse-bessel-source-alignment.md`; `reverse-bessel-fixed-frequency-blindness.md`
 - **Statement:** The polar jet and the sign-aligned von Mangoldt jet are the Lebesgue and Chebyshev--Stieltjes integrals of one positive reverse-Bessel kernel; at fixed Euler base point, its normalized polar mass concentrates at `log x = n/(s(s-1))`.
 
@@ -286,6 +286,35 @@ The two mechanisms of the concentration `(11)`, both unconditional.
   **for every** `eps > 0`: the bad set is monotone in `eps`, so the small-scale statement transfers
   to all scales.  **The concentration `(11)` is complete and unconditional.**
 
+### `GaloisForLFunctions/RHTower/CompletedChebyshevJet.lean`
+
+Equation `(4)` in the form the card states it: as the alternating radial jet of the pole-corrected
+logarithmic derivative, not merely as a difference of two integrals in closed form.
+
+- `radialJet n s g = sum_j b_{n,j} (s-1/2)^j (-1)^j (d/ds)^j g` — the alternating reverse-Bessel
+  radial jet of a real function at the base point `s`; `radialJet_add` splits it over a sum of two
+  functions smooth at `s`.
+- **`iteratedDeriv_poleTerm`** — the `j`-fold derivative of the simple pole,
+  `(d/ds)^j (s-1)^{-1} = (-1)^j j!/(s-1)^{j+1}`, by induction through the eventual equality on the
+  ray.
+- **`radialJet_poleTerm`** — the polar half of the jet is exactly the closed form of the Lebesgue
+  integral `(2)`: the two alternating signs cancel.
+- `realZetaLogDeriv_eq`, **`contDiffAt_realZetaLogDeriv`** — `zeta'/zeta` is the real trace of a
+  function holomorphic on `Re z > 1` (where `zeta` has no zero and `deriv zeta` is analytic), hence
+  real-smooth at every order on the ray.  This is what licenses splitting the jet of the sum.
+- `contDiffAt_poleTerm` — the polar term is smooth at every `s > 1`.
+- **`iteratedDeriv_realZetaLogDeriv`** — `(d/ds)^j (zeta'/zeta) = (-1)^{j+1} sum_m Lambda m
+  (log m)^j m^{-s}`: the logarithmic derivative is one derivative of `log zeta`, so the corpus's
+  termwise-differentiated Dirichlet series supplies every order.
+- **`sum_radialJetWeight_vonMangoldtLogSeries`** — the exchange of the finite radial sum with the
+  Dirichlet sum, valid termwise because each log-weighted von Mangoldt series is summable on the
+  ray; the result is the von Mangoldt series of the radial reverse-Bessel kernel.
+- **`radialJet_logDeriv`** — the arithmetic half of the jet is minus the Chebyshev--Stieltjes
+  integral.
+- **`radialJet_poleCorrectedLogDeriv`** — **equation `(4)`**:
+  `radialJet n s (1/(s-1) + zeta'/zeta) = ∫_1^∞ f_{n,s} dx - ∫_[1,∞) f_{n,s} d psi`.
+  No estimate and no separation of divergent boundary pieces occurs.
+
 The remaining gates are the card's own open core: the completed signed asymptotic on the window
 `(12)` and the strict negative source witness.
 
@@ -329,3 +358,12 @@ The remaining gates are the card's own open core: the completed signed asymptoti
   monotonicity of the bad set in `eps` with no further analysis.  The normalized radial mixture
   therefore concentrates unconditionally at the modal ray `L = 1/(s(s-1))`; only the card's two
   open-core gates remain.
+- 2026-07-31 — Window `(12)` and the jet form of `(4)` formalized.  `(12)` is `(11)` transported by
+  `x = exp t`: the radial bad set is exactly the exponential preimage of the complement of the
+  window `exp((L±eps) n)`, so no new analysis is needed.  `(4)` had been machine-checked only as a
+  difference of two integrals in closed form; it is now proved in the form the card states, as the
+  alternating radial jet of `1/(s-1) + zeta'/zeta`.  The two halves are the `j`-fold derivative of
+  the simple pole and the termwise-differentiated von Mangoldt series, and the jet of the sum
+  splits because `zeta'/zeta` is the real trace of a function holomorphic on `Re z > 1`.  Every
+  proved statement of this card is now formalized unconditionally with clean axioms; the two
+  remaining gates are the declared open core.

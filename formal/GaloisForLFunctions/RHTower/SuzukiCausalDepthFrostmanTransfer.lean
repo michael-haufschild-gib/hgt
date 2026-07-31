@@ -357,9 +357,9 @@ theorem suzukiCriticalApertureDepthFrostmanPairProfile_eq_two_iff
     have hpair : primeLogPhaseClockPair (p : ℕ) (q : ℕ) (t / 2) =
         primeLogPhaseClockPair (p : ℕ) (q : ℕ) 0 := by
       apply Prod.ext
-      · simpa [primeLogPhaseClockPair,
+      · simpa [primeLogPhaseClockPair, HTGeometry.phaseClockPair,
           suzukiCriticalApertureDepthFusionPhase] using hp_phase
-      · simpa [primeLogPhaseClockPair,
+      · simpa [primeLogPhaseClockPair, HTGeometry.phaseClockPair,
           suzukiCriticalApertureDepthFusionPhase] using hq_phase
     have htime := primeLogPhaseClockPair_injective p.property q.property
       (fun h => hpq (Subtype.ext h)) hpair

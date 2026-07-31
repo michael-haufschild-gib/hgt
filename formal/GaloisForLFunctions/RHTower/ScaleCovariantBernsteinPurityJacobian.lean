@@ -97,7 +97,7 @@ private theorem deriv_bernsteinPurityJet_positive_slice
     rw [hself, hzero]
   rw [hfun]
   have hderiv := (((hasDerivAt_id (m r)).const_mul c).add_const q).deriv
-  simpa only [mul_one, add_zero, c] using hderiv
+  simpa only [mul_one, add_zero, c, id_eq] using hderiv
 
 /-- Uniform diagonal law for the purity-jet Jacobian. -/
 theorem bernsteinPurityJetJacobian_diagonal

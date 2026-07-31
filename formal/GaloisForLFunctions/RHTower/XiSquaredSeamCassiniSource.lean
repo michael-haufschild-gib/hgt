@@ -156,7 +156,7 @@ theorem analyticOrderAt_xiSquaredSeamCassiniSource_cassiniZero
   have hsqDeriv : HasDerivAt sq (2 * a) a := by
     dsimp only [sq]
     convert hasDerivAt_pow 2 a using 1
-    all_goals ring
+    all_goals first | rfl | ring
   have hsqAnalytic : AnalyticAt ℂ sq a := by
     dsimp only [sq]
     fun_prop

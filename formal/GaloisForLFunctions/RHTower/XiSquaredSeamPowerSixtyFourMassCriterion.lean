@@ -45,7 +45,7 @@ theorem summable_xiSquaredSeamOneCoordinate_pow_sixtyFour :
 
 theorem summable_xiSquaredSeamOneCoordinate_pow_sixtyFour_re :
     Summable (fun q : XiZeroCopy => (xiSquaredSeamOneCoordinate q ^ 64).re) := by
-  simpa using summable_xiSquaredSeamOneCoordinate_pow_sixtyFour.map
+  exact summable_xiSquaredSeamOneCoordinate_pow_sixtyFour.map
     Complex.reCLM Complex.reCLM.continuous
 
 theorem summable_xiSquaredSeamPowerSixtyFourDefect :

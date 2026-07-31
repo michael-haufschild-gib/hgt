@@ -1922,3 +1922,104 @@ numeral normalization, `convert` goal order, `ring`-through-`exp`, and renamed `
 
 Next failure named by the build: `PrimeArchThetaSingleGibbsGammaCoordinate` (`simp` made no
 progress).  The `RHTower` premise measurement remains deferred until the area builds.
+
+### Repair wave, round four: seventeen modules green
+
+`PrimeArchThetaSingleGibbsGammaCoordinate`, `XiShiftedReciprocalHankelTailCriterion`,
+`SuzukiCriticalEntryWallQuarterShiftGreenLaw`, `ScaleCovariantBernsteinPurityJacobian`,
+`PrimeArchThetaGibbsEquipartition`, `PrimeArchThetaTwoChannelSteinRobertson`.
+
+The `convert` class is now fully characterised.  `convert X using n` on a `HasDerivAt`, `HasSum` or
+`Tendsto` goal emits an **instance-equality goal first** — for example
+`instAddCommMonoid = instNonUnitalCommRing.…toAddCommMonoid` — which the following tactic script was
+never written to see.  Three repairs cover every occurrence:
+
+* value-only sites → `HasDerivAt.congr_deriv` (or `HasDerivWithinAt.congr_deriv`), which never
+  produces the spurious goal;
+* sites that also adjust the function → keep `convert`, but raise the depth (`using 2`) and discharge
+  the instance goal with `exact rfl`; at depth 2 the function goal arrives already beta-reduced, so
+  the old `funext` step must be dropped;
+* `all_goals ring` scripts → `all_goals first | rfl | ring`.
+
+Two further classes appeared and are recorded:
+
+* `simpa` failing where the residue is only `id x` versus `x` (add `id_eq`), or a partially applied
+  definition that `simp only` cannot delta-unfold (use `exact`, which sees through delta and eta);
+* a `Tendsto` whose limit *value* is no longer normalized — `𝓝 (f 0 * (a·0 + b·0²) * …)` against
+  `𝓝 0` — where the fix is to prove the value is zero and rewrite, not to fight the filter
+  (`𝓝[>] 0` and `𝓝 0 ⊓ 𝓟 (Ioi 0)` are already defeq).
+
+Seventeen modules green.  The wave is mechanical from here: every failure so far falls into one of
+eight recorded classes.  `RHTower` still does not build, so its premise measurement remains deferred.
+
+### Repair wave, round five: twenty-two modules green
+
+`XiSquaredSeamPowerSixtyFourMassCriterion`, `GammaSewnJuliaRectangularDivisorTransgression`,
+`SuzukiCausalDepthFrostmanTransfer`, `PrimeArchThetaThermalSusceptibility`,
+`GammaXiResponseGapOneCutSpectrum`.
+
+Refinement of the `convert` recipe, learned here: the number of spurious instance goals is **not
+always one**.  `GammaXiResponseGapOneCutSpectrum` emits two — an `AddCommGroup` equality and a
+`Module` equality (`Semiring.toModule = RCLike.toInnerProductSpaceReal.toModule`) — so the repair is
+to prepend one `· exact rfl` bullet per instance goal and leave the original bullets untouched.
+Reading the goal the failing tactic actually saw is the only reliable way to count them.
+
+Three further small classes, all `simpa → exact` in effect:
+
+* `Complex.ofRealCLM.hasDerivAt` and `HasDerivAt.comp` now land on a different
+  `AddCommGroup`/`Module` path than the goal; `exact` crosses it, `simpa` does not;
+* `Summable.map … reCLM` produces `⇑reCLM ∘ f` where the goal has `fun q => (f q).re` — again `exact`;
+* a `Prop`-valued certificate definition (`ThetaCuspFirstRadialQuadraticSteinEnergyCertificate`) must
+  be unfolded in the hypothesis before `simpa`, since `simp only` will not delta-unfold it.
+
+Twenty-two modules green.  Every failure in five rounds has fallen into the recorded classes; none
+has needed new mathematics.  `RHTower` premise measurement still deferred.
+
+### Repair wave, round six: twenty-six modules green
+
+`XiSquaredSeamPowerSixtyFourJensenKernel`, `XiCTaylorThetaTailPhaseAdaptedProuhetRankTwoCurrent`,
+`XiCTaylorThetaTailPhaseAdaptedProuhetHalfLine` (seven separate sites),
+plus the earlier ones.
+
+Everything this round was the **`simpa` → `exact` class**, in five new spellings.  The pattern is
+always the same: `simp` normalizes the *statement it is given* into a form that no longer matches the
+goal syntactically, while the two remain definitionally equal, so `exact` succeeds where `simpa`
+fails.  The spellings seen so far:
+
+| hypothesis shape | goal shape |
+|---|---|
+| `(fun x => x ^ 64)⁻¹` (`Pi.inv`) | `fun x => (x ^ 64)⁻¹` |
+| `f / g` (`Pi.div`) | `fun N => f N / g N` |
+| `ofReal ∘ f` | `fun a => ↑(f a)` |
+| `⇑reCLM ∘ f` | `fun q => (f q).re` |
+| `RCLike.im (∫ …)` | `(∫ …).im` |
+| `Integrable f (volume.restrict (Ioi 0))` | `IntegrableOn f (Ioi 0) volume` |
+
+The reliable repair is to bind the term with `have`, run whatever `simp only` normalization the
+original `simpa` intended *on the hypothesis*, and finish with `exact`.  One extra wrinkle:
+`Complex.continuous_ofReal…comp` now produces the limit `𝓝 ↑0` rather than `𝓝 0`, so
+`rw [Complex.ofReal_zero]` is needed on the hypothesis before `exact`.
+
+Twenty-six modules green over six rounds, nine failure classes recorded, no new mathematics needed at
+any point.  `RHTower` premise measurement still deferred.
+
+### Repair wave, round seven: thirty-three modules green
+
+`PrimeArchThetaAtomLikelihoodRatio`, `GammaJuliaEndpointCorrectionHilbertSchmidtDressing`,
+`XiCTaylorThetaTailPhaseAdaptedProuhetTopRow`, `XiSquaredSeamCassiniSource`,
+`XiCTaylorThetaTailFiniteArithmeticEndpoint`, `SuzukiCausalDepthRectangularCaratheodoryGrowth`,
+`XiSquaredSeamPowerSixtyFourJensenKernel`.
+
+**Important correction to the `simpa` → `exact` recipe.**  `exact` is not always the right tool: on
+`Summable.comp_injective` with a composed index map it made the elaborator unfold far enough to hit
+a `whnf` heartbeat timeout.  The cheap and reliable repair for a *composition* mismatch is
+`simp only [Function.comp_def]`, which turns `f ∘ g` into `fun x => f (g x)` syntactically; reserve
+`exact` for small definitional gaps such as `IntegrableOn f s μ` versus `Integrable f (μ.restrict s)`
+or `Pi.sub`/`Pi.pow` against an explicit lambda.
+
+Two more value-normalization cases: `(hasDerivAt_const x 1).sub (hasDerivAt_id x)` now reports its
+derivative as `0 - 1` rather than `-1` (`simp only [zero_sub]` on the hypothesis), and
+`Complex.continuous_ofReal…comp` needs `Function.comp_def` *and* `Complex.ofReal_zero` together.
+
+Thirty-three modules green over seven rounds.  Still no new mathematics anywhere in the wave;
+`RHTower` premise measurement remains deferred.

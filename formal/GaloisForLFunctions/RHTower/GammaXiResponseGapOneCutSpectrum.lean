@@ -163,14 +163,14 @@ theorem hasDerivAt_log_norm_Gamma_vertical {a t : ℝ} (ha : 0 < a) :
   have harg : HasDerivAt
       (fun u : ℝ => (a : ℂ) + (u : ℂ) * Complex.I) Complex.I t := by
     have hu : HasDerivAt (fun u : ℝ => (u : ℂ)) 1 t := by
-      simpa using Complex.ofRealCLM.hasDerivAt (x := t)
+      exact Complex.ofRealCLM.hasDerivAt (x := t)
     simpa using hu.mul_const Complex.I |>.const_add (a : ℂ)
   have hΓd : HasDerivAt Complex.Gamma (deriv Complex.Gamma z) z :=
     (Complex.differentiableAt_Gamma z hz).hasDerivAt
   have hu : HasDerivAt
       (fun u : ℝ => Complex.Gamma ((a : ℂ) + (u : ℂ) * Complex.I))
       (deriv Complex.Gamma z * Complex.I) t := by
-    simpa [z] using hΓd.comp t harg
+    exact hΓd.comp t harg
   have hure : HasDerivAt
       (fun u : ℝ => (Complex.Gamma ((a : ℂ) + (u : ℂ) * Complex.I)).re)
       (deriv Complex.Gamma z * Complex.I).re t :=
@@ -195,6 +195,8 @@ theorem hasDerivAt_log_norm_Gamma_vertical {a t : ℝ} (ha : 0 < a) :
       rw [Complex.normSq_apply]
       ring]
     convert h using 1
+    · exact rfl
+    · exact rfl
     · funext u
       simp only [Pi.add_apply, Pi.mul_apply, pow_two]
     · dsimp [B]
@@ -240,6 +242,8 @@ theorem hasDerivAt_gammaXiResponseSpectralLogRatio {s : ℝ} :
   unfold gammaXiResponseSpectralLogRatio
   convert (hhalf.sub hquarter).const_mul 2 |>.const_add
     (Real.log (Real.sqrt (2 * Real.pi))) using 1
+  · exact rfl
+  · exact rfl
   · funext u
     simp only [Function.comp_apply, Pi.sub_apply, id_eq]
     congr 3 <;> push_cast <;> ring

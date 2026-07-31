@@ -613,8 +613,9 @@ theorem thetaCuspTailSecondEvenRemainder_tendsto_atTop_zero :
       atTop (nhds 0) := by
     simpa using
       (Real.tendsto_exp_atBot.comp hlin).const_mul (1 / 2 : ℝ)
-  simpa only [thetaCuspTailSecondEvenRemainder, thetaCuspTailSecondDensity,
-    sub_zero] using htail.sub hexp
+  have hcomb := htail.sub hexp
+  simp only [sub_zero] at hcomb
+  exact hcomb
 
 /-- Polynomial moments against an arbitrary strictly decaying real exponential are integrable
 on the positive half-line. -/
@@ -644,8 +645,9 @@ theorem integrableOn_thetaCuspTailSecondEvenRemainder_mul_negPhase
   have hc : 0 < c := by dsimp only [c]; linarith
   have hmajorReal : IntegrableOn (fun x : ℝ => C * Real.exp (-c * x)) (Ioi 0) :=
     by
-      simpa only [pow_zero, one_mul] using
-        (integrableOn_pow_mul_exp_neg_real 0 hc).const_mul C
+      have hI := (integrableOn_pow_mul_exp_neg_real 0 hc).const_mul C
+      simp only [pow_zero, one_mul] at hI
+      exact hI
   change Integrable (fun x : ℝ =>
     (thetaCuspTailSecondEvenRemainder x : ℂ) *
       spectralTranslationPhase (-x) z) (volume.restrict (Ioi 0))
@@ -926,7 +928,7 @@ private theorem thetaCuspTailSecondEvenRemainderReturned_tendsto_atTop_zero_of_w
       thetaCuspTailSecondEvenRemainder_tendsto_atTop_zero.comp hshift
     have hg : Tendsto (fun a : ℝ =>
         (thetaCuspTailSecondEvenRemainder (x + a) : ℂ)) atTop (nhds 0) := by
-      simpa using Complex.continuous_ofReal.continuousAt.tendsto.comp hgReal
+      exact Complex.continuous_ofReal.continuousAt.tendsto.comp hgReal
     simpa only [F, zero_mul] using
       hg.mul_const (w x * spectralTranslationPhase (-x) z)
   have hDCT := tendsto_integral_filter_of_dominated_convergence
@@ -1178,7 +1180,7 @@ theorem phaseAdaptedProuhetCoefficientPairing_tendsto_of_endpoint_tendsto_zero
   have hP0 := realPolynomialComplexCoefficientPairing_tendsto_atTop_zero P0 B hB
   have hS := realPolynomialComplexCoefficientPairing_tendsto_atTop_zero S B hB
   have htauC : Tendsto (fun N : ℕ => (tau N : ℂ)) atTop (nhds 0) := by
-    simpa using Complex.continuous_ofReal.continuousAt.tendsto.comp htau
+    exact Complex.continuous_ofReal.continuousAt.tendsto.comp htau
   have htotal := hP0.add (htauC.mul hS)
   convert htotal using 1
   · funext N
@@ -1351,8 +1353,9 @@ theorem integrableOn_thetaCuspTailSecondDensity_shift_mul_negPhase
   let c := (1 : ℝ) - z.im
   have hc : 0 < c := by dsimp only [c]; linarith
   have hmajor : IntegrableOn (fun x : ℝ => C * Real.exp (-c * x)) (Ioi 0) := by
-    simpa only [pow_zero, one_mul] using
-      (integrableOn_pow_mul_exp_neg_real 0 hc).const_mul C
+    have hI := (integrableOn_pow_mul_exp_neg_real 0 hc).const_mul C
+    simp only [pow_zero, one_mul] at hI
+    exact hI
   change Integrable (fun x : ℝ =>
     (thetaCuspTailSecondDensity (x + a) : ℂ) *
       spectralTranslationPhase (-x) z) (volume.restrict (Ioi 0))
@@ -1563,8 +1566,9 @@ private theorem thetaCuspTailSecondDensityReturned_scaled_tendsto_zero_of_weight
     have hcplx : Tendsto (fun a : ℝ =>
         ((Real.exp (a / 2) * thetaCuspTailSecondDensity (x + a) : ℝ) : ℂ))
         atTop (nhds 0) := by
-      simpa only [Function.comp_apply] using
-        Complex.continuous_ofReal.continuousAt.tendsto.comp hreal
+      have hc0 := Complex.continuous_ofReal.continuousAt.tendsto.comp hreal
+      rw [Complex.ofReal_zero] at hc0
+      exact hc0
     simpa only [F, zero_mul] using
       hcplx.mul_const (w x * spectralTranslationPhase (-x) z)
   have hDCT := tendsto_integral_filter_of_dominated_convergence
@@ -2137,8 +2141,9 @@ theorem dyadicAffineCancellationEndpoint_tendsto_zero
     simpa only [neg_mul, mul_zero, neg_zero] using hJ₀.neg.mul hgeo
   have hden := dyadicAffineCurrentDenominator_tendsto Jₛ Q hJₛ
   have hlimit : Q / 2 ≠ 0 := div_ne_zero hQ (by norm_num)
-  simpa only [dyadicAffineCancellationEndpoint, Pi.div_apply, zero_div] using
-    hnum.div hden hlimit
+  have hdiv := hnum.div hden hlimit
+  simp only [Pi.div_apply, zero_div] at hdiv
+  exact hdiv
 
 def phaseAdaptedReturnedSourceBaseCurrent
     (V₀ D₀ R R' E E' : ℂ) : ℝ :=

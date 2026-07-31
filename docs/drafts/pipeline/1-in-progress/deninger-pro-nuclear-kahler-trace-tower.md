@@ -133,3 +133,63 @@ TRACE-NORM ESTIMATE`.
 
 - 2026-07-26 — Extracted as positive survivor of
   `DAC_SINGLE_FINITE_TRANSVERSE_LAMINATION_NO_GO`.
+
+## Lean status (2026-07-31): the compact-support stabilization half is formalized
+
+`RHTower/DeningerPrimePowerOrbitStabilization.lean` — built green, umbrella-registered, zero
+warnings, axiom-clean — formalizes the arithmetic half of this card's `[PROVED HERE]` limit
+theorem:
+
+- `primePow_injOn` — `(p, k) ↦ p^(k+1)` is injective (unique factorization);
+- `primePowBall_finite` — only finitely many prime powers lie below any real bound;
+- `orbitTerm_eq_zero_of_notMem_ball` — a test function supported in `(-∞, B]` kills every
+  orbit term outside the `e^B` prime-power ball;
+- `orbitSum_stabilizes` — **any two stages containing the ball have equal orbit sums**: the
+  finite-stage orbit sums are eventually constant along any directed exhaustion, exactly as
+  the card's proof argues. Infinite-dimensional `H¹` creates no orbit-side convergence
+  problem on compact test support.
+
+Not formalized, stated plainly: the trace-norm half ("`K_a → K` in trace norm ⟹ `K` trace
+class and `Tr K_a → Tr K`") — mathlib has no Schatten-1/trace-class theory, so that half is a
+genuine missing-in-mathlib functional-analysis development (Banach-space completeness of the
+trace ideal and trace continuity), recorded as this card's remaining formalization
+obligation. The card's source conjecture (the arithmetic tower construction and uniform heat
+bounds) remains open research.
+
+## Log (continued)
+
+- 2026-07-31 (Claude): formalized the compact-support stabilization half
+  (`DeningerPrimePowerOrbitStabilization`, 4 theorems, axiom-clean). The remaining
+  formalization debt is exactly the Schatten-1 continuity statement (missing in mathlib);
+  the remaining research debt is the tower construction, as the card records.
+
+## Lean status (2026-07-31, second pass): the trace-norm half is formalized — the limit theorem is COMPLETE
+
+The "missing in mathlib" assessment was too pessimistic about the corpus: repo-state search
+found an extensive existing Schatten framework (`SchattenApproximation`, `TraceNorm`,
+`TraceClassOperatorTrace`, `TraceClassCyclicity`, `TraceNormBound`, `HilbertSchmidt*`),
+including `norm_opTrace_le_traceNorm`. What was genuinely missing is now added in
+`RHTower/TraceNormLimit.lean` — built green, umbrella-registered, zero warnings, axiom-clean:
+
+- `HasRankLE.add` + `approxNumber_add_le` — **Ky Fan subadditivity**
+  `a_{m+n}(S+T) ≤ a_m(S) + a_n(T)` (finite-rank ε-approximants, rank bound via
+  `finrank_sup_add_finrank_inf_eq`);
+- `MemSchattenClass.one_add / one_neg / one_sub` — the Schatten-1 class is an additive group
+  (even/odd interleaving against the doubled Ky Fan bound);
+- `memSchattenClass_one_of_traceNorm_limit` — a trace-norm limit of Schatten-1 operators is
+  Schatten-1;
+- `opTrace_tendsto_of_traceNorm_tendsto` — the trace passes to the limit;
+- `traceTower_limit` — **the packaged abstract half of `DAC_PRO_NUCLEAR_KAHLER_TRACE_LIMIT`**.
+
+Together with `DeningerPrimePowerOrbitStabilization` (first pass), the card's `[PROVED HERE]`
+limit theorem is now **fully formalized**: trace-norm convergence yields a trace-class limit
+with converging traces, and the orbit side stabilizes on compact test support. The remaining
+items are exactly the card's declared open research: the arithmetic tower construction,
+uniform heat bounds, the trace-norm Cauchy estimate, and archimedean convergence.
+
+## Log (continued)
+
+- 2026-07-31 (Claude, second pass): completed the limit theorem's formalization
+  (`TraceNormLimit`, 8 theorems, axiom-clean) on top of the corpus's existing Schatten
+  framework — the corpus search prevented a duplicate multi-fire Schatten build. Card's
+  provable layer: DONE. Remaining: the source conjecture (tower construction), open by design.

@@ -95,8 +95,9 @@ theorem two_mul_thetaCuspLiouvilleGibbsMorseMoment_zero_eq
   let b : ℝ → ℝ := thetaCuspLiouvilleGibbsAtom n
   have hraw := thetaCuspAtomRawEvenMoment_zero_eq_liouvilleGibbs hn
   have hL : IntegrableOn b (Ioi 0) := by
-    simpa only [b, thetaCuspLiouvilleGibbsAtom, pow_zero, one_mul] using
-      integrableOn_pow_mul_thetaCuspPolynomialAtom_Ioi_of_pos 0 (X ^ 2) hn
+    have hraw' := integrableOn_pow_mul_thetaCuspPolynomialAtom_Ioi_of_pos 0 (X ^ 2) hn
+    simp only [pow_zero, one_mul] at hraw'
+    exact hraw'
   have hT : IntegrableOn (fun x : ℝ =>
       thetaCuspMorseScale n x * b x) (Ioi 0) := by
     simpa only [b, pow_zero, one_mul] using

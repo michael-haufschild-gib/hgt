@@ -72,7 +72,7 @@ theorem integral_Ioi_log_div_pow_sixtyFive {a : ℝ} (ha : 0 < a) :
     have hsecond := (hasDerivAt_const x (1 / 4096 : ℝ)).div hpow
       (pow_ne_zero 64 hxpos.ne')
     convert hfirst.sub hsecond using 1
-    all_goals field_simp
+    all_goals first | rfl | field_simp
     all_goals ring_nf
   have hint := integrableOn_log_sub_div_pow_sixtyFive ha
   have htend : Tendsto F atTop (nhds 0) := by
@@ -94,7 +94,8 @@ theorem integral_Ioi_log_div_pow_sixtyFive {a : ℝ} (ha : 0 < a) :
         simpa [div_eq_mul_inv] using hpowtop.inv_tendsto_atTop.const_mul (Real.log a)
       simpa [sub_div] using hbase.sub hconst
     have hpowzero : Tendsto (fun x : ℝ => 1 / x ^ 64) atTop (nhds 0) := by
-      simpa [one_div] using hpowtop.inv_tendsto_atTop
+      simp only [one_div]
+      exact hpowtop.inv_tendsto_atTop
     have hcomb := (hlog.const_mul (-(1 / 64 : ℝ))).add
       (hpowzero.const_mul (-(1 / 4096 : ℝ)))
     convert hcomb using 1

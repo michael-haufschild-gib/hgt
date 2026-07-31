@@ -275,3 +275,38 @@ positivity, or RH claim is yet proved.
   https://arxiv.org/abs/2402.15136
 - F. Déglise, *Notes on Milnor--Witt K-theory* (2023):
   https://deglise.perso.math.cnrs.fr/docs/2023/KMW.pdf
+
+## Lean status (2026-07-31): the item-10 algebra core is formalized
+
+Repo-state survey first: the item-8 no-go (indefinite `p_ε`) was already formalized in
+`RHTower/DeningerArithmeticMilnorWittTransferObstruction.lean` (rank, signature, `not_posDef`,
+prime form), with its card correctly in `5-failed`; the rank-rigidity and hyperbolic
+localization companions (`DeningerArithmeticGammaRankRigidity`,
+`DeningerArithmeticHyperbolicLocalization`) also exist. What was missing is now added:
+
+`RHTower/DeningerPowerMapFiniteFree.lean` — built green, umbrella-registered, zero warnings,
+axiom-clean — the algebraic core of item 10 and of proof obligation 2:
+
+- `coeff_sum_expand_mul_X_pow` — the single-contributor coefficient formula for
+  `Σᵢ gᵢ(Xⁿ)·Xⁱ`;
+- `powerMap_residue_decomposition` — **every `f : ℤ[X]` is uniquely `Σ_{i<n} gᵢ(Xⁿ)·Xⁱ`**:
+  the power map is finite free of rank `n` with basis `1, x, …, x^(n-1)`
+  (`ℤ[y][x]/(xⁿ-y) ≃ ℤ[x]` in residue-decomposition form) — existence AND uniqueness,
+  integrally, all `n ≥ 1` including residue characteristic 2;
+- `powerMap_tower` — the Frobenius composition law `F_m F_n = F_{mn}` in these coordinates;
+- `powerMap_chainRule` — the composite framing scalar `d(x^{mn}) = mn·x^{mn-1}` of the
+  iterated cotangent reduction.
+
+What this does **not** do, stated plainly: it does not lift these framings to coherent paths
+in the framed-correspondence ∞-category (obligation 2's homotopy-coherent half — far beyond
+mathlib's motivic reach), and the card's conjecture (the polarized realization) remains open
+research. The finite-free layer every transfer computation rests on is now unconditional Lean.
+
+## Log (continued)
+
+- 2026-07-31 (Claude): formalized the item-10 finite-free/tower/chain-rule layer
+  (`DeningerPowerMapFiniteFree`, 4 theorems + component construction, axiom-clean). Survey
+  confirmed items 8 (no-go) and the rank/localization companions already formalized. Lean
+  gotchas: `omega` cannot handle `d/n`, `d%n` with variable `n` (supply `Nat.div_add_mod`,
+  `Nat.mul_add_mod`, `Nat.mul_add_div` manually); `Fin.val ⟨…⟩` from statement-level mks stays
+  unreduced for omega (normalize with an `rfl`-rw or `show` first).

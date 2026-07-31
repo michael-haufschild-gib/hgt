@@ -68,7 +68,7 @@ theorem hasDerivAt_suzukiDelayedHingeCompletedGapJet2
   have hfar : HasDerivAt
       (fun u => suzukiDelayedHingeFarCompletedJet2 u wholeMoment z)
       (suzukiDelayedHingeFarCompletedJet3 ell wholeMoment z) ell := by
-    convert (hosc.const_mul (z ^ 2)).mul_const wholeMoment using 1
+    refine ((hosc.const_mul (z ^ 2)).mul_const wholeMoment).congr_deriv ?_
     simp only [suzukiDelayedHingeFarCompletedJet3]
     ring_nf
   exact hnear.sub hfar
@@ -229,8 +229,7 @@ theorem suzukiCriticalEntryWallThirdJetAtom_succ
 theorem summable_suzukiCriticalEntryWallThirdJetAtom
     {h b : ℝ} (hh : 0 < h) (hb : 0 < b) (t : ℝ) (p : Nat.Primes) :
     Summable (suzukiCriticalEntryWallThirdJetAtom h b t p) := by
-  simpa only [suzukiCriticalEntryWallThirdJetAtom] using
-    (summable_suzukiCriticalApertureBoundaryAtom hh hb t p).mul_left ((t : ℂ) ^ 2)
+  exact (summable_suzukiCriticalApertureBoundaryAtom hh hb t p).mul_left ((t : ℂ) ^ 2)
 
 /-- **Completed causal entry current.**  The quarter-shift resolvent is precisely the sum of all
 calibrated prime-power third-jet forcings. -/

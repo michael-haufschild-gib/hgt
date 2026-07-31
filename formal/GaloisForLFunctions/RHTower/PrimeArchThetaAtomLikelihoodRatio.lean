@@ -185,7 +185,7 @@ theorem hasDerivAt_thetaCuspSourceTerm_eq_bornWittenScore
         thetaCuspBornWittenAmplitude n x ^ 2)) x :=
     (hasDerivAt_thetaCuspBornWittenAmplitude_sq hn hx.le).const_mul Real.pi
   have hsource := hamp.congr_of_eventuallyEq heq
-  convert hsource using 1
+  refine hsource.congr_deriv ?_
   rw [thetaCuspSourceTerm_eq_pi_mul_bornWittenAmplitude_sq hn hx.le]
   ring
 
@@ -213,7 +213,7 @@ theorem hasDerivAt_thetaCuspAtomLikelihoodRatio
   have hfirst := thetaCuspSourceTerm_pos_of_pos_of_nat_pos
     (n := 1) hx (by norm_num)
   have hquot := hnDeriv.div hfirstDeriv hfirst.ne'
-  convert hquot using 1
+  refine hquot.congr_deriv ?_
   simp only [thetaCuspAtomLikelihoodRatio]
   field_simp [hfirst.ne']
   ring
@@ -410,9 +410,9 @@ theorem thetaCuspHigherFirst_rawEvenMoment_cross_le (k n : ℕ) :
       (thetaCuspFullSource x - thetaCuspSourceTerm x 1)
   let g : ℝ → ℝ := fun x => x ^ (2 * n)
   have hf : Integrable f mu := by
-    simpa only [f, mu] using integrableOn_pow_mul_thetaCuspSourceTerm k 1
+    exact integrableOn_pow_mul_thetaCuspSourceTerm k 1
   have hh : Integrable h mu := by
-    simpa only [h, mu] using integrableOn_pow_mul_thetaCuspHigherSource k
+    exact integrableOn_pow_mul_thetaCuspHigherSource k
   have hgf : Integrable (fun x => g x * f x) mu := by
     have hbase := integrableOn_pow_mul_thetaCuspSourceTerm (k + n) 1
     apply hbase.congr
@@ -458,7 +458,7 @@ theorem thetaCuspHigherFirst_rawEvenMoment_cross_le (k n : ℕ) :
         ((even_two_mul k).pow_nonneg z.2)
     have hweighted := mul_nonneg hweight hbase
     simp only [g, h, f]
-    convert hweighted using 1 <;> ring
+    convert hweighted using 1 <;> first | rfl | ring
   have hcross := HTGeometry.integral_mul_integral_le_of_monotoneLikelihoodKernel
     hf hh hgf hgh hkernel
   have hgf_eq :

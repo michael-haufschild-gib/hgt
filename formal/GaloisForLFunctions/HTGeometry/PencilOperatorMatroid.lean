@@ -49,6 +49,7 @@ theorem dirDeriv_iterate_sum {ι : Type*} (s : Finset ι) (w : Fin d → ℂ)
 
 /-! ### Linearity of the carrier assignment -/
 
+omit [DecidableEq α] in
 theorem seedCarrierPoly_sum_smul {E : Type*} [AddCommMonoid E] (ω : α → E) (F : E → ℂ)
     {m : ℕ} (c : Fin m → ℂ) (Q : Fin m → MvPolynomial α ℂ) :
     seedCarrierPoly ω F (∑ i : Fin m, c i • Q i)
@@ -64,6 +65,7 @@ theorem seedCarrierPoly_sum_smul {E : Type*} [AddCommMonoid E] (ω : α → E) (
 
 /-! ### The operator combination of a family -/
 
+omit [DecidableEq α] in
 /-- **Collecting powers of the derivation.**  A `ℂ[δ]`-combination of the carriers of a family of
 polynomials is the `δ`-graded carrier of the corresponding coefficient combinations. -/
 theorem operatorFamily_eq (S : PencilSeparation facets (Fin d → ℂ))

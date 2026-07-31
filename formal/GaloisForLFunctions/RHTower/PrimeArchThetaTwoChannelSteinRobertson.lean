@@ -205,7 +205,7 @@ theorem thetaCuspFirstRadialDilationSteinEnergy_integrand_le_majorant
   rw [hamp] at hmul ⊢
   dsimp [thetaCuspFirstRadialDilationSteinEnergyMajorant]
   convert hmul using 1
-  all_goals ring
+  all_goals first | rfl | ring
 
 /-- The dilation channel has finite energy with no new source assumption. -/
 theorem integrableOn_thetaCuspFirstRadialDilationSteinEnergy :
@@ -287,8 +287,8 @@ theorem hasDerivAt_thetaCuspTwoChannelSteinField (a b x : ℝ) :
     HasDerivAt (thetaCuspTwoChannelSteinField a b)
       (thetaCuspTwoChannelSteinFieldDerivative a b x) x := by
   unfold thetaCuspTwoChannelSteinField thetaCuspTwoChannelSteinFieldDerivative
-  convert ((hasDerivAt_id x).const_mul a).add
-    (((hasDerivAt_id x).pow 2).const_mul b) using 1
+  refine (((hasDerivAt_id x).const_mul a).add
+    (((hasDerivAt_id x).pow 2).const_mul b)).congr_deriv ?_
   simp only [id_eq]
   ring
 
@@ -310,7 +310,12 @@ theorem thetaCuspFirstRadialTwoChannelSteinCurrent_tendsto_zero (a b : ℝ) :
     fun_prop
   have h := (hcont.tendsto 0).mono_left
     (inf_le_left : 𝓝[>] (0 : ℝ) ≤ 𝓝 0)
-  simpa [thetaCuspTwoChannelSteinField] using h
+  have hzero : thetaCuspFirstRadialCenteredQuadratic 0 *
+      thetaCuspTwoChannelSteinField a b 0 *
+        thetaCuspBornWittenRadialAmplitude 1 1 0 ^ 2 = 0 := by
+    simp [thetaCuspTwoChannelSteinField]
+  rw [hzero] at h
+  exact h
 
 /-- The same polynomial boundary current vanishes at infinity. -/
 theorem thetaCuspFirstRadialTwoChannelSteinCurrent_tendsto_atTop_zero
@@ -414,11 +419,11 @@ theorem integral_thetaCuspFirstRadialCentered_mul_twoChannelSteinScore
     (W := thetaCuspBornWittenRadialSuperpotential 1 1)
     (fun x _ => by
       unfold f thetaCuspFirstRadialCenteredQuadratic
-      convert (((hasDerivAt_id x).pow 2 |>.const_mul
+      refine ((((hasDerivAt_id x).pow 2 |>.const_mul
         (thetaCuspBornWittenRadialPowerMoment 0 1 1)).sub_const
-          (thetaCuspBornWittenRadialPowerMoment 2 1 1)) using 1
-      all_goals simp only [id_eq]
-      all_goals ring)
+          (thetaCuspBornWittenRadialPowerMoment 2 1 1))).congr_deriv ?_
+      simp only [id_eq]
+      ring)
     (fun x _ => hasDerivAt_thetaCuspTwoChannelSteinField a b x)
     (fun x hx => by
       simpa only [amp] using hasDerivAt_thetaCuspFirstRadialDensity hx)
@@ -605,6 +610,7 @@ theorem twoChannelSteinEnergyCertificate_of_quadraticSteinEnergyCertificate
       apply integral_congr_ae
       filter_upwards [] with x
       rw [thetaCuspFirstRadialTwoChannelSteinScore_one_negHalf]
+    simp only [ThetaCuspFirstRadialQuadraticSteinEnergyCertificate] at hcert
     simpa only [henergy, hcoupling] using hcert
 
 /-- The weaker variational certificate discharges the same open upper

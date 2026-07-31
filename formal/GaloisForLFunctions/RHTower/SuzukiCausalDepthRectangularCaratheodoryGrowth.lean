@@ -97,30 +97,32 @@ private theorem hasDerivAt_causalDepthRadialRealPart
           (-2 * c * (2 * x) * s + c ^ 2 * (4 * x ^ 3))) /
           (1 - 2 * c * x ^ 2 * s + c ^ 2 * x ^ 4) ^ 2) x := by
   have hsub : HasDerivAt (fun y : ℝ => 1 - y) (-1) x := by
-    simpa using (hasDerivAt_const x 1).sub (hasDerivAt_id x)
+    have hd := (hasDerivAt_const x 1).sub (hasDerivAt_id x)
+    simp only [zero_sub] at hd
+    exact hd
   have hsq : HasDerivAt (fun y : ℝ => y ^ 2) (2 * x) x := by
     convert (hasDerivAt_id x).pow 2 using 1
-    all_goals simp only [id_eq]
-    all_goals ring
+    all_goals first | rfl | simp only [id_eq]
+    all_goals first | rfl | ring
   have hfour : HasDerivAt (fun y : ℝ => y ^ 4) (4 * x ^ 3) x := by
     convert (hasDerivAt_id x).pow 4 using 1
-    all_goals simp only [id_eq]
-    all_goals ring
+    all_goals first | rfl | simp only [id_eq]
+    all_goals first | rfl | ring
   have hn : HasDerivAt
       (fun y : ℝ => (1 - y) ^ 2 * (1 - c * y ^ 2 * s))
       ((-2 * (1 - x)) * (1 - c * x ^ 2 * s) +
         (1 - x) ^ 2 * (-c * (2 * x) * s)) x := by
     convert (hsub.pow 2).mul
       ((hasDerivAt_const x 1).sub ((hsq.const_mul c).mul_const s)) using 1
-    all_goals simp only [Pi.pow_apply, Pi.sub_apply]
-    all_goals ring
+    all_goals first | rfl | simp only [Pi.pow_apply, Pi.sub_apply]
+    all_goals first | rfl | ring
   have hd : HasDerivAt
       (fun y : ℝ => 1 - 2 * c * y ^ 2 * s + c ^ 2 * y ^ 4)
       (-2 * c * (2 * x) * s + c ^ 2 * (4 * x ^ 3)) x := by
     convert ((hasDerivAt_const x 1).sub
       ((hsq.const_mul (2 * c)).mul_const s)).add
         (hfour.const_mul (c ^ 2)) using 1
-    all_goals ring_nf
+    all_goals first | rfl | ring_nf
   exact hn.div hd hden
 
 theorem causalDepthRadialRealPart_strictAntiOn

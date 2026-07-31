@@ -59,14 +59,13 @@ theorem tendsto_gammaSewnMobiusJuliaCriticalHardCoefficient_nhdsGT_zero
         xiGammaEulerValuationNat pe = n := by
       have hx := congrArg Subtype.val
         (Nat.Primes.prodNatEquiv.apply_symm_apply ⟨n, hpow⟩)
-      simpa only [pe, xiGammaEulerValuationNat,
-        Nat.Primes.coe_prodNatEquiv_apply] using hx
+      simpa [pe, xiGammaEulerValuationNat] using hx
     have hlim :=
       (tendsto_gammaSewnMobiusJuliaHardHalfWeightTransport_nhdsGT_zero
         (-1 / 2) pe).pow 2
     rw [xiGammaEulerBoundaryRealAmplitude_neg_half_eq_suzukiCriticalEntryWallBareAmplitude,
       sq_suzukiCriticalEntryWallBareAmplitude_eq_vonMangoldt_div_sqrt, hn] at hlim
-    simpa only [gammaSewnMobiusJuliaCriticalHardCoefficient, hpow, pe] using hlim
+    simpa only [gammaSewnMobiusJuliaCriticalHardCoefficient, hpow, pe, dite_true] using hlim
   · have hvm : ArithmeticFunction.vonMangoldt n = 0 :=
       ArithmeticFunction.vonMangoldt_eq_zero_iff.mpr hpow
     simp only [gammaSewnMobiusJuliaCriticalHardCoefficient, hpow, hvm, zero_div]

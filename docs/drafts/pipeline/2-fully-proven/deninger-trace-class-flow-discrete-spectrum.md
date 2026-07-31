@@ -326,3 +326,87 @@ it; what is left is reading the generator off each block, and the trace formula.
   diagonal sum into `∑_j m_j φ̂(-λ_j)` with `m_j` the block multiplicities, and record absolute
   convergence from the corpus's `MemSchattenClass.one_summable_inner_diag`.
 - the tempered multiplicity measure `(3)` and uniqueness, clause 5.
+
+### Clauses 4 and 5 landed
+
+`formal/GaloisForLFunctions/HTGeometry/FlowSmoothingTrace.lean` — the trace formula `(2)`.  Axiom
+audit: `propext, Classical.choice, Quot.sound`.
+
+- `opTrace_flowSmoothing_eq_tsum_characterIntegral` — **if the Hilbert basis consists of flow
+  eigenvectors with characters `χᵢ`, then `Tr K_φ = ∑ᵢ ∫ φ(t) χᵢ(t) dt`**.  This is the composite
+  of `flowSmoothing_eigenvector` (each basis vector is an eigenvector of the smoothing, with
+  eigenvalue the integral of the weight against its character) and `opTrace_eq_tsum_eigenvalues`
+  (the operator trace of a diagonalized operator is the sum of its eigenvalues).
+- `opTrace_flowSmoothing_eq_tsum_fourier` — the same statement with the clause-2 classification
+  `χᵢ(t) = exp (i λᵢ t)` substituted, so the summands are the values `φ̂(-λᵢ)` and the sum is
+  `∑ⱼ mⱼ φ̂(-λⱼ)`, each spectral point appearing once per basis vector carrying it.  This is
+  equation `(2)`.
+
+`formal/GaloisForLFunctions/HTGeometry/FlowMultiplicityMeasure.lean` — the multiplicity measure
+`(3)`.  Axiom audit: `propext, Classical.choice, Quot.sound`.
+
+- `flowCharacter`, `weightTransform` — the character `t ↦ exp (i λ t)` of a `λ`-eigenline and the
+  eigenvalue `φ̂(-λ) = ∫ φ(t) exp (i λ t) dt` of the smoothing on it.
+- `flowSmoothingCLM_eigenvector` — a flow eigenvector with generator `λ` is an eigenvector of
+  `K_φ` with eigenvalue `φ̂(-λ)`.
+- `finite_of_orthonormal_flowEigenvectors_of_window` — **a spectral window on which the weight's
+  transform stays away from zero carries only finitely many orthonormal flow eigenvectors.**  This
+  is clause 1 — finite multiplicity and no finite accumulation point — proved on the compact
+  smoothing operator by `finite_of_orthonormal_eigenvectors_of_le_norm`, i.e. exactly the card's
+  argument with `E_A(I)H` replaced by the eigenvectors themselves.
+- `multiplicityMeasure lam = ∑ᵢ δ_{λᵢ}` — the measure `ν_A` of `(3)`.
+- `multiplicityMeasure_apply` — its mass on a measurable set is the number of spectral points
+  lying there.
+- `multiplicityMeasure_eq_card` — on a window carrying finitely many points the mass is that
+  count, the multiplicity of the window.
+- `multiplicityMeasure_singleton` — the mass of a point is its multiplicity `m(λ)`.
+- `multiplicityMeasure_apply_eq_tsum_atoms` — **`ν_A = ∑_λ m(λ) δ_λ`**: grouping the Dirac masses
+  by the spectral point they sit at (through `Equiv.sigmaFiberEquiv`) turns the family sum into
+  the atomic sum over the spectrum weighted by multiplicities.  This is equation `(3)` itself.
+- `multiplicityMeasure_eq_of_singleton_eq` — **uniqueness**: the multiplicity measure is
+  determined by its multiplicity function, so two spectral families whose points carry the same
+  multiplicities define the same measure.
+- `integral_multiplicityMeasure` — integration against `ν_A` is summation over the spectrum with
+  multiplicity.
+- `opTrace_flowSmoothing_eq_integral_multiplicityMeasure` — **`Tr K_φ = ∫ φ̂(-λ) dν_A(λ)`**: the
+  trace of the smoothing is the pairing of the weight's transform with the multiplicity measure,
+  which is the statement that the trace distribution is the Fourier pairing of `ν_A`.
+
+### Remaining after this
+
+The clause-5 uniqueness now landed is uniqueness *from the multiplicity function*.  What is still
+open is the analytic half: recovering the multiplicity function from the trace distribution alone,
+i.e. injectivity of `ν ↦ (φ ↦ ∫ φ̂(-λ) dν)` on tempered measures.  mathlib has Fourier uniqueness
+only for finite measures (`ext_of_forall_integral_eq_of_IsFiniteMeasure` is Riesz uniqueness, and
+`charFun` determines a finite measure); the locally finite but infinite `ν_A` needs either a
+localization to compact windows — where `finite_of_orthonormal_flowEigenvectors_of_window` makes
+`ν_A` finite — or the Bohr mean-value recovery
+`m(λ₀) = lim_{T→∞} (2T)⁻¹ ∫_{-T}^{T} e^{-iλ₀t} Tr K_{·-t} dt`.  The window localization is the
+route to build next.
+
+Also still open: the temperedness bound `ν_A([x-ε,x+ε]) ≤ C(1+|x|)^N`, which needs the closed
+graph theorem for the map `𝒟_J → 𝒮₁(H)` and polynomial growth of the `𝒟_J`-seminorms of the
+modulated weights `φ_x(t) = e^{-ixt} φ₀(t)`.
+
+### Window localization for clause-5 uniqueness
+
+Added to `FlowMultiplicityMeasure.lean`.  Axiom audit: `propext, Classical.choice, Quot.sound`.
+
+- `measure_eq_of_restrict_Icc_eq` — **a measure on the line is determined by its restrictions to
+  the bounded windows `[-k, k]`**.  Every measurable set is the increasing union of its
+  intersections with the windows, so continuity from below (`tendsto_measure_iUnion_atTop`)
+  transports equality of the restrictions to equality of the measures.
+- `multiplicityMeasure_restrict_isFiniteMeasure` — a window carrying finitely many spectral points
+  carries finite multiplicity mass, so the restricted multiplicity measure is a finite measure.
+  The finiteness hypothesis is exactly what
+  `finite_of_orthonormal_flowEigenvectors_of_window` supplies.
+- `multiplicityMeasure_eq_of_forall_integral_window_eq` — **uniqueness of `ν_A` from its window
+  pairings**: if every bounded window carries finitely many spectral points, `ν_A` is determined
+  by the integrals of bounded continuous functions against its window restrictions.  Each
+  restriction is finite, so mathlib's Riesz uniqueness
+  (`ext_of_forall_integral_eq_of_IsFiniteMeasure`) applies window by window, and the previous
+  lemma glues.
+
+Clause 5 is therefore reduced to a single analytic statement: that the trace pairings
+`φ ↦ ∫ φ̂(-λ) dν_A` determine the pairings against bounded continuous functions on each window.
+That is Fourier inversion on a compact window, the one remaining ingredient.

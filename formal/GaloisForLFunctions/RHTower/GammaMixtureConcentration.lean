@@ -1041,6 +1041,46 @@ theorem tendsto_radialBadSet_fraction_of_pos {s ε : ℝ} (hs : 1 < s) (hε : 0 
     filter_upwards [self_mem_ae_restrict (measurableSet_radialBadSet n s ε')] with t ht
     exact radialMixtureDensity_nonneg hs (le_of_lt (radialBadSet_subset n s ε' ht))
 
+/-- The prime-variable window of equation `(12)`, at relative scale `eps`:
+`x = exp(n/(s(s-1)) + o(n))`. -/
+def radialPrimeWindow (n : ℕ) (s ε : ℝ) : Set ℝ :=
+  Ioo (Real.exp ((1 / (s * (s - 1)) - ε) * (n : ℝ)))
+      (Real.exp ((1 / (s * (s - 1)) + ε) * (n : ℝ)))
+
+/-- The radial bad set is exactly the exponential preimage of the complement of the prime window
+inside `(1, infinity)`: the substitution `x = exp t` matches `t > 0` with `x > 1` and the relative
+radial deviation with the exponential window. -/
+theorem radialBadSet_eq_exp_preimage (n : ℕ) (s ε : ℝ) :
+    radialBadSet n s ε = Real.exp ⁻¹' (Ioi (1:ℝ) \ radialPrimeWindow n s ε) := by
+  ext t
+  have h1 : Real.exp t ∈ Ioi (1:ℝ) ↔ 0 < t := by
+    rw [Set.mem_Ioi, ← Real.exp_zero, Real.exp_lt_exp]
+  have h2 : Real.exp t ∉ radialPrimeWindow n s ε ↔
+      ε * (n : ℝ) ≤ |t - (1 / (s * (s - 1))) * (n : ℝ)| := by
+    rw [radialPrimeWindow, Set.mem_Ioo, Real.exp_lt_exp, Real.exp_lt_exp, not_and_or, not_lt,
+      not_lt, le_abs]
+    constructor
+    · rintro (h | h)
+      · right; nlinarith [h]
+      · left; nlinarith [h]
+    · rintro (h | h)
+      · right; nlinarith [h]
+      · left; nlinarith [h]
+  simp only [radialBadSet, Set.mem_inter_iff, Set.mem_Ioi, Set.mem_setOf_eq, Set.mem_preimage,
+    Set.mem_sdiff]
+  rw [← h1, ← h2]
+  simp only [Set.mem_Ioi]
+
+/-- **Equation (12).**  In the prime variable `x = exp t` the completed radial source mass
+concentrates on the exponential window `x = exp(n/(s(s-1)) + o(n))`: for every relative scale
+`eps > 0` the mass carried outside that window is a vanishing fraction of the total. -/
+theorem tendsto_radialPrimeWindow_fraction {s ε : ℝ} (hs : 1 < s) (hε : 0 < ε) :
+    Filter.Tendsto (fun n : ℕ =>
+        (∫ t in Real.exp ⁻¹' (Ioi (1:ℝ) \ radialPrimeWindow n s ε), radialMixtureDensity n s t) /
+          ∫ t in Ioi (0:ℝ), radialMixtureDensity n s t)
+      Filter.atTop (nhds 0) := by
+  simpa only [radialBadSet_eq_exp_preimage] using tendsto_radialBadSet_fraction_of_pos hs hε
+
 end
 
 end RHTower

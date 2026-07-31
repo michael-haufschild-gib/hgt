@@ -153,9 +153,9 @@ theorem hasSum_xiShiftedReciprocalSquare_pow_sourceMoments
       (-1 : ℂ) ^ r * ((r + m).choose m : ℂ) * (y : ℂ) ^ r *
         z ^ (r + m + 1))
     ((z / (1 + (y : ℂ) * z)) ^ (m + 1))
-  convert hmul using 1
-  · funext r
-    rw [pow_add]
+  convert hmul using 2
+  · exact rfl
+  · rw [pow_add]
     ring
   · rw [div_pow]
     ring

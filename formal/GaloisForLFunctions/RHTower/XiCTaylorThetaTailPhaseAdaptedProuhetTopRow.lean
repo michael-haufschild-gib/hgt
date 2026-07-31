@@ -51,7 +51,8 @@ theorem phaseAdaptedProuhetWeightedTopRowCurrent_tendsto_zero
     have hcast : Tendsto (fun N : ℕ =>
         ((xiCTaylorThetaTailCoreDyadicHaarIntegratedTopRowCurrent
           d z (N + j) : ℝ) : ℂ)) atTop (nhds 0) := by
-      simpa using Complex.continuous_ofReal.continuousAt.tendsto.comp hshift
+      have hc0 := Complex.continuous_ofReal.continuousAt.tendsto.comp hshift
+      simpa only [Function.comp_def, Complex.ofReal_zero] using hc0
     have hmul := (tendsto_const_nhds : Tendsto (fun _ : ℕ =>
       (((q ^ j : ℝ) : ℂ))) atTop (nhds ((q ^ j : ℝ) : ℂ))).mul hcast
     simpa only [B, Complex.ofReal_mul, mul_zero] using hmul

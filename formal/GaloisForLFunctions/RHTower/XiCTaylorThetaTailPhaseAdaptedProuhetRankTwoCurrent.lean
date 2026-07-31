@@ -166,7 +166,7 @@ theorem integral_rankTwoSource_mul_symmetricHermitianPairCurrent_eq
           (∫ x : ℝ, eD x ∂mu) *
             (starRingEnd ℂ) (∫ y : ℝ, aV y ∂mu))).im := by
     rw [← hJint]
-    simpa only [K] using integral_im hJ
+    exact integral_im hJ
   rw [hKint]
   dsimp only [aV, aD, eV, eD, mu]
   unfold symmetricHermitianCrossCurrentData
