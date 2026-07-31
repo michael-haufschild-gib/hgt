@@ -202,11 +202,21 @@ attach Burnol's conductor and address one-sided coercivity.
 - [x] exact residual anomaly isolated
 - [x] exact Lean theorem
 - [x] aperture compatibility inside the principal-relative class falsified
-- [ ] cyclic reader on the enlarged all-prime aperture-layer principal algebra
+- [x] cyclic reader on the enlarged all-prime aperture-layer principal algebra — the aperture
+      defect is a scale-one shell modulo the exact relative ideal
+      (`evenCentralSoninQuadraticCorner_restrictionDefect_principalRelativeEq_shell`), those shells
+      are closed under the normal-state product, and the reader on them is completely explicit:
+      `soninWindowStateCyclicLogTrace_composeScaleOneShells` in `SoninApertureLayerAlgebra.lean`
+      evaluates it as the logarithmic length of the intersection, hence commutative
+      (`..._comm`), not merely cyclic.  The full principal-relative system carries the same reader
+      by `SoninPrincipalRelativeOperator.extendedTrace_compose_comm`.
 - [ ] Burnol-completed coercivity or terminal no-go
 
 ## Log
 
+- 2026-07-31 — stale gate closed.  The enlarged aperture-layer algebra needed no new construction:
+  its elements are scale-one shells, their product is the shell on the intersection, and the reader
+  is the logarithmic length of that intersection — symmetric in the two factors.
 - 2026-07-22 — paper proof closed; residual anomaly isolated as next terminal scalar.
 - 2026-07-22 — Lean formalization closed in
   `SoninPrincipalRelativeTraceSplitting.lean`.  `SoninPrincipalRelativeApertureNoGo.lean` then
