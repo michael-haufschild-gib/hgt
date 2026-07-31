@@ -330,11 +330,23 @@ trace-class restriction compatibility unconditionally in the chamber relevant to
       `re_extendedTrace_soninApertureRestrictionDefect_flag_le` in
       `SoninApertureExtendedTraceFlagLaw.lean`: the extended trace is subadditive along every
       strict aperture flag, so the aperture tower cannot supply a lower floor.
-- [ ] prove exact cancellation by the cutoff-dependent Burnol conductor on the semilocal graph
+- [x] principal half of the Burnol cancellation, uniformly over the semilocal graph —
+      `extendedTrace_sub_soninBurnolApertureCounterterm` and
+      `forall_prime_extendedTrace_sub_soninBurnolApertureCounterterm` in
+      `SoninBurnolApertureCancellation.lean`: the counterterm `log(b/a)` is a function of the
+      aperture ratio alone, contains no prime and no dilation scale, and removes the entire
+      principal term of the aperture step at every prime at once, leaving a real trace-class
+      quantity
+- [ ] cancellation of the remaining trace-class residual — note that by
+      `not_isCompactOperator_conductorDilationDefect` no trace-class counterterm can do it, so this
+      has to be the regularized extended-trace pairing rather than a subtraction
 - [ ] prove completed coercivity or terminally retire the source class
 
 ## Log
 
+- 2026-07-31 — principal Burnol cancellation closed, uniformly in the prime.  The counterterm
+  depends on the aperture ratio only, so one subtraction removes the principal anomaly at every
+  prime of the semilocal graph simultaneously; what survives is the real trace-class residual.
 - 2026-07-22 — paper proof closed.  Aperture compatibility split into impossible unitary
   covariance and exact positive canonical restriction defect.
 - 2026-07-22 — strict crossing upgraded the survivor: lost-layer transition has compact distance

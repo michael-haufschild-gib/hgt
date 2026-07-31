@@ -3604,3 +3604,4 @@ import GaloisForLFunctions.RHTower.SoninBandSupportedDense
 import GaloisForLFunctions.RHTower.SoninApertureFlagChain
 import GaloisForLFunctions.RHTower.SoninAperturePacketCurvatureTrace
 import GaloisForLFunctions.RHTower.SoninApertureLayerAlgebra
+import GaloisForLFunctions.RHTower.SoninBurnolApertureCancellation
