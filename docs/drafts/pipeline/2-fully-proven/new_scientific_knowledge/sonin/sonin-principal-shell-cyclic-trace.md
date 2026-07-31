@@ -377,6 +377,38 @@ indicator of a cell strictly inside `(r^k a, r^(k+1) a)`, hence inside the `m`-t
 What `(27)` does **not** give is the unbounded operator on the whole carrier: that needs density of
 the core in the even carrier, an `L²` exhaustion argument which is not carried out here.
 
+## Theorem P: the band-supported core is dense
+
+Let `B_N = { t : 1/(N+1) < |t| <= N+1 }`.  These bands exhaust the punctured line, so
+
+```text
+(for all N, 1_(B_N) h = 0)  =>  h = 0,                                   (28)
+```
+
+because a nonzero point lies in some band and the origin is null.  Each `1_(B_N)` is an orthogonal
+projection, so for any `h` the truncation `1_(B_N) h` is itself band supported, and
+
+```text
+<1_(B_N) h, 1_(B_N) h> = <1_(B_N) h, h>.                                 (29)
+```
+
+Hence a vector orthogonal to every band-supported vector has every truncation of norm zero, so by
+`(28)` it vanishes:
+
+```text
+h orthogonal to the band-supported core  =>  h = 0,                      (30)
+```
+
+that is, the core is dense.  With Theorem O the truncated logarithms are stationary on that core,
+so the logarithm of position is defined, unambiguously, on a dense domain: the unbounded
+multiplier exists as the common value of the truncations.
+
+### Proof
+
+`(28)` is countable choice of a band per nonzero point plus nullity of the origin.  `(29)` is
+idempotence and symmetry of the cutoff.  No integral estimate and no dominated convergence is
+used: the orthogonal-projection identity replaces the exhaustion estimate entirely.
+
 ## Frontier effect
 
 Closed:
@@ -434,8 +466,8 @@ provisional pending expert/literature review.
 - [x] archimedean defect proved noncompact, hence not absorbable by any trace-class counterterm
       (Theorem N)
 - [x] the truncations are stationary on the band-supported core, which is nonempty (Theorem O)
-- [ ] density of the band-supported core in the even carrier (`L²` exhaustion), giving the
-      unbounded multiplier on the whole carrier
+- [x] density of the band-supported core, hence the logarithm of position on a dense domain
+      (Theorem P)
 - [ ] Burnol completion and completed lower floor
 
 ## Lean
@@ -487,6 +519,8 @@ provisional pending expert/literature review.
 | `(26)` defect not Schatten-1 | `not_memSchattenClass_one_conductorDilationDefect` |
 | `(27)` stationarity on the core | `soninBandLogMultiplier_eq_of_bandSupported` |
 | core is nonempty | `soninBandSupported_logShellUnit` |
+| `(28)` band exhaustion | `eq_zero_of_forall_bandTruncation_eq_zero` |
+| `(30)` density of the core | `eq_zero_of_inner_bandSupported_eq_zero` |
 
 Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninPrincipalRelativeCyclicExtension.lean`,
@@ -496,7 +530,8 @@ Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninBurnolLogShellWeyl.lean`,
 `formal/GaloisForLFunctions/HTGeometry/LpBoundedMultiplier.lean`,
 `formal/GaloisForLFunctions/RHTower/EvenBoundedMultiplier.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninBurnolLogBandComparison.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninBurnolLogBandComparison.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninBandSupportedDense.lean`.
 All declarations depend only on `propext`, `Classical.choice`, `Quot.sound`.
 
 Novelty split for Theorem G: `(7)` was already in the corpus
@@ -507,6 +542,10 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-07-31 — density closed, and the analytic detour avoided.  The `L²` exhaustion estimate was
+  unnecessary: each band truncation is an orthogonal projection, so orthogonality to the core makes
+  every truncation have zero norm, and band exhaustion of the punctured line finishes it.  With
+  stationarity this puts the logarithm of position on a dense domain.
 - 2026-07-31 — stationarity on the core proved: beyond the supporting band the truncations stop
   changing, so they define one operator on the band-supported core, and the shell units lie in it.
   Density of that core is the one analytic step still missing for the unbounded multiplier.
