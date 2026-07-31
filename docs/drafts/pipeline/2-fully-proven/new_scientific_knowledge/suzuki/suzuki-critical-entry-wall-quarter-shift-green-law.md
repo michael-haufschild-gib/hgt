@@ -191,9 +191,40 @@ source-specific synthesis; external priority remains unverified.
 - [x] Lean formalization of differential transport, wall calibration, forcing recursion, and
   uniqueness:
   `formal/GaloisForLFunctions/RHTower/SuzukiCriticalEntryWallQuarterShiftGreenLaw.lean`
-- [ ] explicit integral Green representation `(5)` in Lean
+- [x] explicit integral Green representation `(5)` in Lean:
+  `formal/GaloisForLFunctions/RHTower/SuzukiEntryWallGreenRepresentation.lean`
 - [ ] actual restricted-Weil endpoint realization or bounded residual
 - [ ] rectangular Ward-defect lower bound and RH
+
+## Lean status of the integral representation
+
+`formal/GaloisForLFunctions/RHTower/SuzukiEntryWallGreenRepresentation.lean` formalizes `(5)`
+unconditionally; axiom audits report only `[propext, Classical.choice, Quot.sound]`.
+
+- `entryGreenKernel z x = exp (-I z x) - 1 + I z x` is the bracket of `(5)`, and
+  `entryGreenIntegral z u s = ∫_0^s entryGreenKernel z (s - r) * u r` is the causal convolution.
+  The constant wall phase `exp (i a z)` of `(5)` is the calibration already formalized in the
+  parent module, so it is carried outside the convolution.
+- `entryGreenIntegral_eq` : **the kernel separates.**  Because
+  `exp (-I z (s - r)) = exp (-I z s) * exp (I z r)` and the remaining part of the bracket is
+  affine in `s - r`, the convolution equals an explicit combination of three primitives of the
+  trace, `entryTraceExpMoment`, `entryTracePrimitive` and `entryTraceMoment`, with no `s` left
+  inside any integrand.  Every delay jet is then ordinary calculus; no differentiation under an
+  integral sign and no Fubini on a triangle is needed anywhere in the proof.
+- `hasDerivAt_entryGreenIntegral`, `hasDerivAt_entryGreenJet1`, `hasDerivAt_entryGreenJet2` :
+  the three delay jets, with the endpoint terms cancelling exactly as the bracket's double
+  vanishing predicts -- `entryGreenJet2` carries no `u` term at all.
+- `entryGreen_causal_equation` : `(d/ds + I z) Φ'' = -z ^ 2 * u`, which is `(4)` in entry depth.
+  It is a pure ring identity once the jets are computed; the `I ^ 2 = -1` input enters one step
+  earlier, in the second jet.
+- `entryGreenIntegral_zero`, `entryGreenJet1_zero`, `entryGreenJet2_zero` : the three vanishing
+  wall conditions `G = G' = G'' = 0`.
+- `entryGreenIntegral_unique` : **uniqueness.**  Any third-order causal solution with those three
+  vanishing wall conditions equals the convolution.  The proof integrates the homogeneous
+  equation by the integrating factor `exp (I z s)`, so no ODE existence theory is invoked.
+
+Every `[PAPER-PROVED]` statement of this card is now in Lean.  The two remaining gates are the
+open RH frontier recorded above, not theorems proved here.
 
 ## Subsequent source correction
 

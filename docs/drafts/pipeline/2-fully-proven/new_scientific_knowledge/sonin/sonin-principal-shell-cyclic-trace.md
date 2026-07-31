@@ -608,6 +608,47 @@ with a single, and opposite, dilation branch on each of the two principal terms.
 has to compare an expanding dilation of the vector against a contracting-then-expanding dilation of
 its Fourier band, plus a trace-class remainder.
 
+`(44)` is proved, not merely assembled by hand
+(`evenSoninApertureSuccessiveLayerTransition_apply_annulus_branches`).  It specialises to a
+remainder-free identity on vectors killed by the exact projection correction — but **that
+specialisation may be vacuous**: `C_b` is a nonzero Schatten-1 operator and nothing here shows its
+kernel meets the annulus, so it must not be used as a witness family until inhabitedness is proved.
+
+The usable form is quantitative instead, and needs no hypothesis beyond the annulus.  The aperture
+layer is a self-adjoint idempotent, hence a contraction, and the dilation sum has norm at most two,
+so the remainder in `(44)` is controlled outright:
+
+```text
+|| Z w - [ (Q_a - Q_b) U_r^{-1} w - (Q_a - Q_b) U_r R_b w ] ||
+   <= 2 || C_b w ||.                                                      (45)
+```
+
+So the two opposite branches approximate the coupling on the whole annulus family, with error the
+size of the correction.  A witness now needs only that the branch difference exceed `2||C_b w||`
+for some annulus vector — a comparison between two explicit dilations and one Schatten-1 norm.
+
+**The second branch is trace-class-small.**  On an inner-band vector the forward dilation and the
+Fourier cutoff exchange places, and the physical cutoff at the inner aperture may be inserted for
+free because `U_r` already carries the vector inside `[-a,a]`.  What is left is a finite time-band
+block:
+
+```text
+U_r R_b w = ( R_{r b} A_a ) (U_r w),      R_{r b} A_a  Schatten-1,        (46)
+```
+
+so the second branch obeys `|| (Q_a - Q_b) U_r R_b w || <= || R_{r b} A_a || . || w ||` with a
+*fixed* trace-class constant, uniformly in `w`.
+
+The witness question is therefore concentrated entirely in the **first** branch: it suffices to
+find an annulus vector with
+
+```text
+|| (Q_a - Q_b) U_r^{-1} w ||  >  || R_{r b} A_a || . || w ||  +  2 || C_b w ||,   (47)
+```
+
+both subtracted quantities being fixed trace-class quantities.  Everything else has been
+eliminated.
+
 ### Proof
 
 Induction on the chain length from the three-point law, with the chamber hypothesis inherited
@@ -746,6 +787,13 @@ provisional pending expert/literature review.
 | `(42)` inverse branch only | `evenSoninApertureLayer_evenDilationSum_apply_eq_inverse` |
 | `(43)` inverse branch vanishes | `evenSoninApertureLayer_evenDilationCLM_inv_apply_eq_zero` |
 | `(43)` forward branch only | `evenSoninApertureLayer_evenDilationSum_apply_eq_forward` |
+| `(44)` branch normal form | `evenSoninApertureSuccessiveLayerTransition_apply_annulus_branches` |
+| remainder-free case (possibly vacuous) | `..._apply_annulus_branches_of_correction_eq_zero` |
+| `(45)` two-branch estimate | `norm_evenSoninApertureSuccessiveLayerTransition_sub_branches_le` |
+| layer is a contraction | `norm_evenSoninApertureLayer_apply_le` |
+| `(46)` second branch is a time band | `evenSoninApertureLayer_secondBranch_eq_timeBand` |
+| `(46)` block is Schatten-1 | `memSchattenClass_one_secondBranch_timeBand` |
+| `(47)` second-branch bound | `norm_evenSoninApertureLayer_secondBranch_le` |
 
 Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninPrincipalRelativeCyclicExtension.lean`,
@@ -763,7 +811,10 @@ Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninCouplingInnerBandCriterion.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninOuterBandProjectionSplit.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninForwardBranchVanishing.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninInverseBranchVanishing.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninInverseBranchVanishing.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCouplingBranchNormalForm.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCouplingBranchEstimate.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninSecondBranchTimeBand.lean`.
 All declarations depend only on `propext`, `Classical.choice`, `Quot.sound`.
 
 Novelty split for Theorem G: `(7)` was already in the corpus
@@ -774,6 +825,19 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-07-31 — second branch shown trace-class-small: on an inner-band vector it factors through
+  the fixed time-band block R_(rb) A_a, which is Schatten-1, so it is bounded by a fixed constant
+  times the vector norm.  The witness question is now concentrated entirely in the first branch,
+  against two fixed trace-class quantities.
+- 2026-07-31 — correction-free specialisation flagged as possibly vacuous and replaced by a
+  quantitative estimate: the layer is a contraction and the dilation sum has norm two, so the
+  two-branch difference approximates the coupling on every annulus vector with error at most twice
+  the correction norm.  A witness now needs one explicit comparison, with no hypothesis whose
+  inhabitedness is unknown.
+- 2026-07-31 — branch normal form proved in Lean, closing the gap between the card's assembled
+  equation and the formal corpus.  On a correction-free annulus vector the coupling is exactly the
+  difference of the two opposite dilation branches, so a witness search can be restricted to those
+  vectors and reduces to a single comparison.
 - 2026-07-31 — dual branch elimination.  On the band-limited piece the inverse dilation contracts
   the Fourier band inside the inner aperture, where both projections annihilate, so only the forward
   branch survives there.  With the inner-band statement this leaves one dilation branch on each of

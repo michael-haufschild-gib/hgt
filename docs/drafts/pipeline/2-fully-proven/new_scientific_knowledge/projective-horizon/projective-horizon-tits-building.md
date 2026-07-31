@@ -525,6 +525,24 @@ The rank-one result also fixes the shape of the general-rank count.  Since
 each direction added after the first, giving `(N-1) + (r-1)N = rN-1`; the rank-one base case is now
 proved.
 
+`formal/GaloisForLFunctions/HTGeometry/ProjectiveHorizonExplicitField.lean` combines the exact
+elementary field with the span-to-intersection law into a description of `mathcal I_S` that never
+mentions the observer group: `horizonField_finset_eq` proves
+
+```text
+mathcal I_S = intersection_(i in S) C(X_(i,l) : l)(x_k^(m) : k != i, m >= 1),
+```
+
+with `horizonField_empty` giving `mathcal I_0 = F` and `horizonField_finset_ne_top` that every
+nonempty span has a proper horizon field.  This closes the descriptive half of `(5)--(6)`: the
+horizon field of any covector span is now an explicit intersection of chart fields.
+
+`formal/GaloisForLFunctions/HTGeometry/ProjectiveHorizonJetFrame.lean` sets up the moving frame
+itself.  The initial square block of jets of a span is invertible because its determinant is the
+nonzero jet determinant, so it is a frame: `jetFrame_mulVec_frameCoord` is the frame equation,
+`frameCoord_unique` its uniqueness, and `frameCoord_jetOrder` identifies the frame coordinates at
+the initial orders.  The frame is what absorbs the observer group in the codimension count.
+
 Two limits are worth stating exactly.  The independence is over the horizon algebra rather than the
 horizon field; the two are equivalent, but the field form goes through
 `IntermediateField.algebraicIndependent_adjoin_iff`, whose elaboration on this type exceeds a
@@ -585,7 +603,10 @@ so this currently gives neither a zero-free region nor a critical-line implicati
       field
 - [x] 2 -> 3t: minors with arbitrary jet orders, hence the full family of normalised transverse
       jets
-- [ ] 2 -> 3u: the general-rank transcendence-degree number of `(11)` for `r >= 2`.  Both known
+- [x] 2 -> 3u: the explicit description of `mathcal I_S` for every span, as an intersection of
+      elementary chart fields
+- [x] 2 -> 3v: the jet frame of a span, the frame equation and uniqueness of frame coordinates
+- [ ] 2 -> 3w: the general-rank transcendence-degree number of `(11)` for `r >= 2`.  Both known
       routes are long: Rosenlicht's dimension theorem has no mathlib surface, and the invariant
       route needs the first fundamental theorem for `SL_r` acting on an `r x infinity` jet matrix,
       i.e. that the minors above generate.  Not needed for any other part of the card.
@@ -653,3 +674,7 @@ so this currently gives neither a zero-free region nor a critical-line implicati
   the exact elementary horizon field; `(11)` now holds at rank one in the full jet field.
 - 2026-07-31 — freed the column labelling of the jet minors, giving the full family of normalised
   transverse jets, and identified the inductive shape `(N-1)+(r-1)N = rN-1` of the general count.
+- 2026-07-31 — derived the explicit description of `mathcal I_S` for every covector span as an
+  intersection of elementary chart fields.
+- 2026-07-31 — set up the jet frame of a span, with the frame equation and uniqueness of frame
+  coordinates; re-verified the whole `HTGeometry` umbrella.

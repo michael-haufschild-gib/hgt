@@ -829,6 +829,33 @@ of that set — whose rank `FrequencyRank.frequencyRank_le_card` already bounds 
 This is the concrete instance showing the finite-phase conclusion of eq. (9) is attained rather than
 vacuous.
 
+`formal/GaloisForLFunctions/HTGeometry/LinearOdeBohrSpectrum.lean` proves **eq. (9) in the linear
+autonomous case, unconditionally** — the first genuine piece of the finite-phase conclusion itself
+rather than of its hypotheses.  Applying the coefficient functional to a relation
+`∑_j d_j f⁽ʲ⁾ = 0` with constant `d_j`, and using `a_{f⁽ʲ⁾}(λ) = (iλ)^j a_f(λ)`
+(`bohrCoefficient_iterate`, from the differentiation rule), gives
+
+`(∑_j d_j (iλ)^j) · a_f(λ) = 0`   (`linearOde_char_eq_zero`),
+
+so every Bohr frequency of a solution is a characteristic root.  A nonzero characteristic polynomial
+has finitely many roots and `λ ↦ iλ` is injective, hence the spectrum is finite
+(`bohrSpectrum_finite_of_linearOde`) and the frequency module is finitely generated
+(`bohrFrequencyModule_fg_of_linearOde`).  Supporting linearity lemmas — `bohrCoefficient_finsetSum`,
+`bohrCoefficient_const_mul`, `bohrCoefficient_of_eq_zero` — are proved here as well.
+
+The nonlinear case is what still needs the topological argument (jet embedding, covering dimension,
+Pontryagin duality); the linear case needs none of it.
+
+`formal/GaloisForLFunctions/HTGeometry/GammaLinearStripDerivative.lean` reads the graded collapse on
+the derivatives themselves.  Specializing the differential monomials to `M_j(f) = f⁽ʲ⁾`
+(`diffMonomial_single`) turns the abstract conclusion into a statement about an actual derivative:
+`gradedLinear_strip_iteratedDeriv_eq_zero` says that a holomorphic Bohr almost-periodic `f` on the
+strip satisfying `∑_j F_j(s)·f⁽ʲ⁾(s) = 0`, with graded coefficients and a strictly dominant `F_β`,
+has `f⁽ᵝ⁾ ≡ 0` on the strip; `digammaLinear_strip_iteratedDeriv_eq_zero` is the digamma case, and
+`gradedLinear_strip_deriv_eq_zero` the first-order case, where `f' ≡ 0` and `f` is locally constant.
+This is the concrete, checkable form of eq. (8) for linear relations: such an `f` admits no dominant
+linear Gamma-differential constraint except a degenerate one.
+
 `formal/GaloisForLFunctions/HTGeometry/IsometricRecurrence.lean` abstracts the recurrence to any
 relatively-compact isometric `ℝ`-action (`isometricAction_recurrence`, `isometricAction_return_seq`),
 so it instantiates both to `ℝ →ᵇ ℂ` and to vertical translation of holomorphic functions on a strip.

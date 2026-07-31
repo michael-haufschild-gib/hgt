@@ -2901,3 +2901,49 @@ The valuation-boundary theorems compare two Gamma-rational data through the four
 
 The premise was never about four numbers; it is equality of one invariant of each datum, and naming
 that invariant discharges it.
+
+### The lower-jet Jacobian nondegeneracy, attained
+
+The terminal-linear orbit law is conditional on `(derivationLowerJetJacobian δ n partials A).det ≠ 0`
+and nothing produced it, so the law quantified over a class never shown nonempty.
+`HTGeometry/DerivationLowerJetJacobianWitness.lean` (built, registered, axioms clean):
+
+* `natShiftDerivation` — the shift derivation on `MvPolynomial ℕ ℂ`, `X k ↦ X (k+1)`, built with
+  `mkDerivation`.  Indexing by `ℕ` rather than `Fin` avoids all wrap-around arithmetic;
+* `natShiftDerivation_iterate_X_zero` — its iterates applied to the first coordinate are exactly
+  the coordinates, `δ^[k] (X 0) = X k`;
+* **`derivationLowerJetJacobian_natShift`** — so with the coordinate partial derivatives the
+  lower-jet Jacobian is the **identity matrix**, at every order;
+* **`det_derivationLowerJetJacobian_natShift_ne_zero`** and
+  `exists_det_derivationLowerJetJacobian_ne_zero` — the nondegeneracy hypothesis is therefore
+  attained at every order, by the universal polynomial model.
+
+## Full gate
+
+`lake build GaloisForLFunctions.MainTheorems` — **green**, no errors across all six theorem areas
+with this session's modules in place.  The only warnings are two `<;>` style notes in another
+lane's `BlaschkeLocalizedClockAsymptotic`.
+
+### Two more region premises, produced
+
+`HTGeometry/PointedSupportDisjointness.lean` (built, registered, axioms clean; one theorem needs
+only `propext` and `Quot.sound`):
+
+The superselection theorems compare configurations through disjointness of their pointed supports,
+five times.  The corpus discharged it once *inside* a proof with a bare `simp`, hiding the general
+fact.
+
+* `mem_pointedSupport` — membership is `x i ≠ 1`;
+* **`disjoint_pointedSupport_iff`** — disjointness is pointwise: two configurations have disjoint
+  pointed supports exactly when at every site at least one of them is unpointed;
+* `pointedSupport_one`, **`disjoint_pointedSupport_one`** — the unit configuration has *empty*
+  pointed support, so it is disjoint from everything, which is exactly what the hidden `simp` was
+  proving.
+
+`HTGeometry/ReciprocalGammaBlowUpDiskRegion.lean` (built, registered, axioms clean):
+
+* **`mem_reciprocalGammaBlowUpDisk_iff`** — the disk is the open ball of radius `1/4` about `−1`, so
+  membership is the explicit bound `‖x + 1‖ < 1/4`;
+* `neg_one_mem_reciprocalGammaBlowUpDisk`, `reciprocalGammaBlowUpDisk_nonempty`,
+  `reciprocalGammaBlowUpDisk_mem_nhds` — the centre is in it, it is nonempty, and it is a
+  neighbourhood of the centre, so the local hypertranscendence hypotheses are not vacuous.
