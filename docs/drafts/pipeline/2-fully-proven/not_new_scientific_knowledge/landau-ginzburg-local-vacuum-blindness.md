@@ -174,3 +174,65 @@ axioms `[propext, Classical.choice, Quot.sound]`.
 - 2026-07-11 — paper theorem and algebraic Lean core completed; classified BRIDGE after the
   parent-theory attack. The nonzero-fiber family was then proved isotrivial, leaving only additional
   compactification/growth data at infinity as a possible supersymmetric residue.
+
+## Lean formalization — 2026-07-31 (2 → 3 gate work)
+
+The 2 → 3 gate named one missing item: *"a formal category of matrix factorizations and its
+invariance under analytic coordinate change"*.  That is now built, together with the holomorphic
+upgrade of the algebraic core (the previous `LandauGinzburgConstraint.lean` was polynomial-only and
+its Hessian was a hard-coded expression rather than an actual second-derivative matrix).
+
+All modules build green and every declaration below is `#print axioms`-clean
+(`propext`, `Classical.choice`, `Quot.sound` only).  No hypothesis interfaces.
+
+### `formal/GaloisForLFunctions/HTGeometry/MatrixFactorizationCategory.lean`
+
+| Declaration | Statement |
+|---|---|
+| `MatrixFactorization R w` | two square matrices over `R` of a common size with both products equal to `w • 1` |
+| `MFHom`, `Category` instance | morphisms are pairs of matrices intertwining the differentials |
+| `MatrixFactorization.map` | the functor induced by a ring homomorphism carrying `w` to `w'` |
+| `mapFaithful`, `mapFull`, `mapEssSurj` | a ring isomorphism induces a fully faithful, essentially surjective functor |
+| `MatrixFactorization.mapEquivalence` | **`MF(R,w) ≌ MF(S,w')` for any ring isomorphism carrying `w` to `w'`** |
+
+### `formal/GaloisForLFunctions/HTGeometry/AnalyticGermRing.lean`
+
+| Declaration | Statement |
+|---|---|
+| `analyticGermSubring p`, `AnalyticGerm p` | the germs at `p` with an analytic representative form a subring |
+| `germPullbackHom`, `analyticGermPullback` | pullback of germs along a map analytic at the point, as a ring homomorphism |
+| `analyticGermEquiv` | **an analytic change of coordinates induces a ring isomorphism of the two local rings** |
+
+### `formal/GaloisForLFunctions/RHTower/LandauGinzburgNodeGerm.lean`
+
+| Declaration | Statement |
+|---|---|
+| `lgPotential`, `nodePotential` | `W_F(s,u) = u F(s)` and `x y`, as holomorphic functions on `ℂ²` |
+| `exists_analyticAt_factor_of_simple_zero` | `F = (z − ρ) G` near a simple zero, `G` analytic and `G(ρ) ≠ 0`; proved from `analyticOrderAt F ρ = 1` |
+| `lgCoordChange`, `lgCoordChangeInv` | `(s,u) ↦ (s − ρ, u G(s))` and its inverse, both analytic, mutually inverse near the base points |
+| `lgPotential_eventuallyEq_node_comp` | **`W_F = node ∘ Φ` near `(ρ,0)`** |
+| `lgNodeGermEquiv` | the induced isomorphism of local rings of analytic germs |
+| `lgNodeGermEquiv_node` | it carries the germ of the node to the germ of `W_F` |
+| `lgNodeMatrixFactorizationEquiv`, `exists_lgNodeMatrixFactorizationEquiv` | **the matrix-factorization category of `W_F` at `(ρ,0)` is equivalent to that of the node at the origin, for every `F` and every simple zero `ρ`** |
+
+This is theorem items 4 and 5 of the card, unconditionally, in the local analytic category.
+
+### `formal/GaloisForLFunctions/RHTower/LandauGinzburgHolomorphicCore.lean`
+
+Items 1–3 and 6 in the holomorphic setting, with genuine derivatives.
+
+| Declaration | Statement |
+|---|---|
+| `lgGradient`, `lgGradient_eq` | the gradient is `(u F'(s), F(s))`, computed from `deriv`, not postulated |
+| `lgGradient_eq_zero_iff_of_deriv_ne` | at a point of nonvanishing derivative the critical locus is `F(s) = 0, u = 0` |
+| `lgPotential_eq_zero_of_lgGradient_eq_zero`, `lgPotential_eq_of_lgGradient_eq_zero` | every critical point has critical value zero |
+| `lgHessian`, `lgHessian_eq` | the Hessian assembled from actual iterated partial derivatives equals `!![u F''(s), F'(s); F'(s), 0]` |
+| `det_lgHessian`, `det_lgHessian_ne_zero_of_simple` | **the determinant is `−(F'(s))²`, nonzero at a simple zero** |
+| `lgNonzeroLocusEquiv` | **the part of the total space over the nonzero values is `(U ∖ Z(F)) × ℂ*`** — the isotriviality of item 6, simultaneously in the value, not one fibre at a time |
+
+### Remaining before the gate can be checked
+
+- The Jacobian algebra of the node and its one-dimensionality (Milnor number 1) in the local ring.
+- The exact RH-blind pair `F_on` / `F_off`: both real and even in `z = s − ½`, four simple zeros
+  each, all zeros of `F_on` on `Re s = ½` and all zeros of `F_off` off it, and the resulting equal
+  multisets of local germs.

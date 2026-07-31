@@ -190,15 +190,36 @@ Axioms `[propext, Classical.choice, Quot.sound]` throughout.
 - **`strictConcaveOn_boseLogDensity`** — strict log-concavity of the Bose-log law on all of `ℝ`,
   for every shift `a`.
 
+### `GaloisForLFunctions/HTGeometry/RealAnalyticTransfer.lean`
+
+- **`contDiffAt_re_comp_ofReal`** — a function holomorphic on an open plane set is real-smooth
+  along the real axis inside it.  This is the smoothness supply for `Gamma`, `zeta` and `xi` on
+  their pole-free rays: holomorphy plus scalar restriction, no real-variable estimate.
+
 ### Remaining
 
-Equations `(5)`–`(6)` and `(10)`–`(12)` are iterated-derivative statements.  Their only missing
-input is a local iterated-derivative calculus on an open ray: smoothness of `log Gamma`,
-`log zeta` and `log M` there (all three real-analytic, since the complex functions are holomorphic
-away from their poles) together with additivity of `iteratedDeriv` for locally smooth summands.
-With that, `(5)`–`(6)` are the `(j+1)`-fold derivative of the logarithm of `(4)`, and `(11)`–`(12)`
-are the `r`-fold derivative of `log M a = log Gamma (a+1) + log zeta (a+1)` combined with the
-von Mangoldt Dirichlet series for `-zeta'/zeta`.
+Equations `(5)`–`(6)` and `(10)`–`(12)` are iterated-derivative statements.  The route is now
+fully explicit, with every ingredient either in mathlib or in the modules above:
+
+1. `ContDiffAt ℝ n Real.Gamma x` for `x > 0` and `ContDiffAt ℝ n realZetaSeries x` for `x > 1`,
+   from `contDiffAt_re_comp_ofReal` applied to `Complex.Gamma` on `{re > 0}` and to `riemannZeta`
+   on `{re > 1}` (`Complex.Gamma_ofReal`, `ofReal_realZetaSeries`, and
+   `ContDiffAt.congr_of_eventuallyEq` for the second, which agrees with the complex value only on
+   the ray).
+2. `Real.log` of each, through `ContDiffAt.log` with `boseMellin_pos`, `Real.Gamma_pos_of_pos`
+   and `realZetaSeries_pos`.
+3. `log (xi (1+a)) = log (1+a) - a log 2 - (a/2) log pi + log (M a) - log (Gamma (a/2))`, the
+   logarithm of `(4)`; every factor is a positive real, so `Real.log_mul` / `Real.log_div` /
+   `Real.log_rpow` apply directly.
+4. `iteratedDeriv (j+1) (fun b => Real.log (1+b)) a = (-1)^j j!/(1+a)^(j+1)` by induction, the
+   step being `HasDerivAt.inv` on `(1+b)^(j+1)`.
+5. `iteratedDeriv_add` (mathlib, `ContDiffAt` hypotheses) then assembles `(5)` at order one and
+   `(6)` at every order `j+1 >= 2`, where the two linear terms have already died.  The card's
+   `2^(-(j+1)) polygamma_j (a/2)` is literally
+   `iteratedDeriv (j+1) (fun b => Real.log (Real.Gamma (b/2))) a`.
+6. `(11)` is the same additivity applied to `log (M a) = log Gamma (a+1) + log zeta (a+1)`, and
+   `(12)` needs in addition the von Mangoldt Dirichlet series for `-zeta'/zeta` together with
+   termwise differentiation of that series.
 
 ## Log
 

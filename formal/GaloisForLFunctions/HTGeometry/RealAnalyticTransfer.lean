@@ -1,3 +1,4 @@
+import Mathlib.Analysis.Complex.CauchyIntegral
 import Mathlib.Analysis.Complex.RealDeriv
 
 /-!
@@ -17,12 +18,12 @@ namespace GaloisForLFunctions.HTGeometry
 theorem contDiffAt_re_comp_ofReal {f : ℂ → ℂ} {s : Set ℂ} (hs : IsOpen s)
     (hf : DifferentiableOn ℂ f s) {x : ℝ} (hx : (x : ℂ) ∈ s) (n : WithTop ℕ∞) :
     ContDiffAt ℝ n (fun y : ℝ => (f (y : ℂ)).re) x := by
-  have hC : ContDiffOn ℂ n f s := hf.contDiffOn hs
+  have hC : ContDiffOn ℂ n f s := DifferentiableOn.contDiffOn hf hs
   have hR : ContDiffOn ℝ n f s := hC.restrict_scalars ℝ
   have hat : ContDiffAt ℝ n f ((x : ℂ)) := hR.contDiffAt (hs.mem_nhds hx)
   have h1 : ContDiffAt ℝ n (fun y : ℝ => ((y : ℝ) : ℂ)) x :=
     (Complex.ofRealCLM.contDiff (n := n)).contDiffAt
-  have h2 : ContDiffAt ℝ n (fun z : ℂ => z.re) ((x : ℂ)) :=
+  have h2 : ContDiffAt ℝ n (fun z : ℂ => z.re) (f ((x : ℝ) : ℂ)) :=
     (Complex.reCLM.contDiff (n := n)).contDiffAt
   exact h2.comp x (hat.comp x h1)
 

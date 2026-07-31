@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.SummableWeightedInfinitePhaseQuantile
+import GaloisForLFunctions.HTGeometry.FinitePiProductSummability
 import Mathlib.MeasureTheory.OuterMeasure.BorelCantelli
 
 /-!
@@ -49,5 +50,47 @@ theorem
   apply ae_eventually_not_countableTorusWeightedCoherenceHitUnion
   apply ne_top_of_le_ne_top hbudget
   exact ENNReal.tsum_le_tsum hmeasure
+
+/--
+Reusable Gaussian-budget closure. A polynomial prefactor cannot obstruct
+Borel--Cantelli when the early-hit probability has a strictly negative
+quadratic exponent.
+-/
+theorem
+    ae_eventually_not_countableTorusWeightedCoherenceHitUnion_of_polynomialGaussian
+    (ν : Measure (ℕ → UnitAddCircle)) [IsFiniteMeasure ν]
+    (p : ℕ → ℝ) (N : ℕ → ℕ) (η : ℕ → ℝ)
+    (C : ℝ) (hC : 0 ≤ C) (A : ℕ)
+    {sigma : ℝ} (hsigma : 0 < sigma)
+    (hmeasure : ∀ k,
+      ν.real
+          (countableTorusWeightedCoherenceHitUnion p (N k) (η k)) ≤
+        C * (1 + (k : ℝ)) ^ A *
+          Real.exp (-sigma * (k : ℝ) ^ 2)) :
+    ∀ᵐ x ∂ν, ∀ᶠ k in Filter.atTop,
+      x ∉ countableTorusWeightedCoherenceHitUnion p (N k) (η k) := by
+  let budget : ℕ → NNReal := fun k =>
+    ⟨C * (1 + (k : ℝ)) ^ A *
+        Real.exp (-sigma * (k : ℝ) ^ 2), by positivity⟩
+  apply
+    ae_eventually_not_countableTorusWeightedCoherenceHitUnion_of_le
+      ν p N η (fun k => (budget k : ENNReal))
+  · intro k
+    apply (ENNReal.toReal_le_toReal
+      (by finiteness : ν
+        (countableTorusWeightedCoherenceHitUnion p (N k) (η k)) ≠ ⊤)
+      ENNReal.coe_ne_top).mp
+    change ν.real
+        (countableTorusWeightedCoherenceHitUnion p (N k) (η k)) ≤
+      C * (1 + (k : ℝ)) ^ A *
+        Real.exp (-sigma * (k : ℝ) ^ 2)
+    exact hmeasure k
+  · rw [ENNReal.tsum_coe_ne_top_iff_summable_coe]
+    change Summable (fun k : ℕ =>
+      C * (1 + (k : ℝ)) ^ A *
+        Real.exp (-sigma * (k : ℝ) ^ 2))
+    simpa only [mul_assoc] using
+      (GaloisForLFunctions.summable_one_add_pow_mul_exp_neg_nat_sq
+        A hsigma).mul_left C
 
 end RHTower
