@@ -3,6 +3,7 @@
 - **ID:** `source-exceptional-principal-parts-cartier-bridge`
 - **Stage:** 2-fully-proven / not-new
 - **Type:** THEOREM (paper) / source-landing bridge
+- **Lean:** `formal/GaloisForLFunctions/HTGeometry/SourceExceptionalPrincipalPart.lean`
 - **Source:** `../../3-formalized/bounded-exponent-poisson-strictness-emergence.md`,
   `../../4-publication-ready/riemann-source-modular-superselection/main.tex`
 - **Statement:** The reciprocal exceptional section canonically generates the principal
@@ -82,6 +83,12 @@ This discharges only the algebraic part of the previous source-landing objection
 divisor fibre need not be inserted after choosing `rho`. It arises functorially from the
 source-produced reciprocal section.
 
+The updated ramified-character theorem shows the full divisor output is
+\((m_\rho,\chi_\rho)\), not multiplicity alone. Package `(4)` retains \(m_\rho\), while
+multiplication by the centered prime-transfer function \(q^{1/2-s}\) on `(4)` retains
+\(\chi_\rho\). What remains absent is a source-natural positive norm making that internal action
+conservative.
+
 It does **not** prove:
 
 1. that this package belongs to the proposed oriented rigid Gamma/co-Poisson source category;
@@ -142,7 +149,8 @@ internality theorem.
 
 - [x] 0 -> 1: source reciprocal section and target-feeding boundary identified
 - [x] 1 -> 2: kernel, quotient, local multiplicity, and hostile audit proved
-- [ ] 2 -> 3: Lean theorem and lint
+- [x] Lean code: kernel, quotient equivalence, and element formula directly check
+- [ ] 2 -> 3: repository lint; currently blocked by unrelated newly unreachable modules
 - [ ] RH producer: internal grade-preserving dagger on actual source category
 
 ## Log

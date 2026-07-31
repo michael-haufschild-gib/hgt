@@ -17,7 +17,10 @@ import GaloisForLFunctions.RHTower.XiDyadicDescentLevelUniversalityLaw
 import GaloisForLFunctions.RHTower.XiDefectPersistentLocalLoopUniversalityLaw
 import GaloisForLFunctions.RHTower.XiSpectralApertureConservationUniversalityLaw
 import GaloisForLFunctions.RHTower.XiThetaHeatNodeObstruction
+import GaloisForLFunctions.RHTower.ArithmeticJuliaNormalConeUniversalityLaw
+import GaloisForLFunctions.RHTower.XiHurwitzOrientationEnergy
 import GaloisForLFunctions.HTGeometry.BifilteredScalarizationNoGo
+import GaloisForLFunctions.HTGeometry.PointedFisherCutoffWardTrace
 import GaloisForLFunctions.HTGeometry.PrimeResidueValuationInteractionSuperselection
 import GaloisForLFunctions.HTGeometry.PrimeValuationCoordinateFusionCompletion
 
@@ -395,6 +398,56 @@ theorem norm_centeredComplexModularCharacter_eq_one_iff
     rw [h]
     ring
 
+/-- The canonical positive Xi--Hurwitz energy is exactly the quadratic
+compression of the continuous divisor characters: it vanishes precisely
+when every actual divisor character is unitary on the real unit step. -/
+theorem xiHurwitzOrientationEnergy_eq_zero_iff_unitaryCenteredCharacters :
+    xiHurwitzOrientationEnergy = 0 ↔
+      ∀ rho : XiDivisorSupport,
+        ‖centeredComplexModularCharacter (rho : ℂ) (1 : ℂ)‖ = 1 := by
+  constructor
+  · intro henergy rho
+    have hterm :
+        xiHurwitzOrientationEnergyTerm rho = 0 :=
+      xiHurwitzOrientationEnergy_eq_zero_iff_terms.mp henergy rho
+    have hdefect :
+        xiHurwitzOrientationDefect rho = 0 :=
+      (xiHurwitzOrientationEnergyTerm_eq_zero_iff rho).mp hterm
+    have hre :
+        (rho : ℂ).re = 1 / 2 :=
+      (xiHurwitzOrientationDefect_eq_zero_iff_re_eq_half rho).mp hdefect
+    exact
+      (norm_centeredComplexModularCharacter_eq_one_iff
+        (rho : ℂ) (t := 1) one_ne_zero).2 hre
+  · intro hunitary
+    apply xiHurwitzOrientationEnergy_eq_zero_iff_terms.mpr
+    intro rho
+    apply (xiHurwitzOrientationEnergyTerm_eq_zero_iff rho).mpr
+    apply (xiHurwitzOrientationDefect_eq_zero_iff_re_eq_half rho).mpr
+    exact
+      (norm_centeredComplexModularCharacter_eq_one_iff
+        (rho : ℂ) (t := 1) one_ne_zero).1 (hunitary rho)
+
+/-- **Odd source-orientation transgression.** The pointed Fisher--Ward
+scalar is odd in the unsquared source tangent, and for an orthogonal cutoff
+it is exactly the trace pairing of that tangent connection with double
+cutoff curvature. -/
+theorem pointedFisherWard_orientationTransgression
+    {H : Type*}
+    [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
+    (e T : H →L[ℂ] H) (psi chi : H)
+    (he : ContinuousLinearMap.adjoint e = e) :
+    HTGeometry.pointedCutoffWardTrace e T psi (-chi) =
+        -HTGeometry.pointedCutoffWardTrace e T psi chi ∧
+      HTGeometry.pointedCutoffWardTrace e T psi chi =
+        ContinuousLinearMap.opTrace
+          (HTGeometry.pointedFisherConnection psi chi *
+            HTGeometry.cutoffWardCurvature e T) := by
+  exact ⟨
+    HTGeometry.pointedCutoffWardTrace_neg_tangent e T psi chi,
+    HTGeometry.pointedCutoffWardTrace_eq_opTrace_curvature
+      e T psi chi he⟩
+
 /-- Exact continuous and ramified character data attached to one Xi divisor
 point. The complex character retains the centered point, while the dyadic
 deck tower retains the two-adic divisibility profile of its multiplicity. -/
@@ -655,8 +708,17 @@ structure XiRamifiedSingularBoundaryCertificate : Prop where
         (∀ m : ℕ, 1 ≤ m → m ≠ n →
           F (thetaHeatNode m) = 0) →
         False
+  arithmeticJuliaOrientedAcquisition :
+    ArithmeticJuliaHardySingularCompletion ∧
+      ArithmeticJuliaCellwiseMinimality ∧
+      ArithmeticJuliaMellinKolchinCompletion
   ramifiedDivisorCharacter :
     ∀ rho : ℂ, XiRamifiedDivisorCharacterCertificate rho
+  quadraticCharacterCompression :
+    0 ≤ xiHurwitzOrientationEnergy ∧
+      (xiHurwitzOrientationEnergy = 0 ↔
+        ∀ rho : XiDivisorSupport,
+          ‖centeredComplexModularCharacter (rho : ℂ) (1 : ℂ)‖ = 1)
   dyadicLevelwiseDescent :
     ∀ k : ℕ,
       RHLadder k ↔ XiDyadicDescentLevelUniversalCertificate k
@@ -695,8 +757,15 @@ theorem xiRamifiedSingularBoundary_law :
   noEntireHeatNodeDeltaReader :=
     fun F hF {_n} hn hself hother =>
       no_entire_thetaHeatNode_delta F hF hn hself hother
+  arithmeticJuliaOrientedAcquisition :=
+    ⟨arithmeticJuliaNormalConeUniversality.1,
+      arithmeticJuliaNormalConeUniversality.2.1,
+      arithmeticJuliaNormalConeUniversality.2.2.1⟩
   ramifiedDivisorCharacter :=
     xiRamifiedDivisorCharacter_law
+  quadraticCharacterCompression :=
+    ⟨xiHurwitzOrientationEnergy_nonneg,
+      xiHurwitzOrientationEnergy_eq_zero_iff_unitaryCenteredCharacters⟩
   dyadicLevelwiseDescent :=
     rhLadder_iff_dyadicDescentLevelUniversalCertificate
   allDyadicLevels :=

@@ -108,4 +108,24 @@ theorem lpBoundedMulCLM_congr {φ ψ : α → 𝕜} (hφ : Measurable φ) (hψ :
     lpBoundedMulCLM_coeFn (p := p) (μ := μ) hψ hD0 hD f, hae] with x h1 h2 h3
   rw [h1, h2, h3]
 
+omit [SecondCountableTopology 𝕜] in
+/-- An operator that acts almost everywhere as multiplication by a bounded symbol has operator
+norm at most the symbol bound.  No identification of the operator with a multiplier is needed. -/
+theorem norm_le_of_ae_mul {T : Lp 𝕜 p μ →L[𝕜] Lp 𝕜 p μ} {ψ : α → 𝕜} {K : ℝ}
+    (hK0 : 0 ≤ K) (hK : ∀ x, ‖ψ x‖ ≤ K)
+    (hT : ∀ f : Lp 𝕜 p μ, ((T f : Lp 𝕜 p μ) : α → 𝕜) =ᵐ[μ]
+      fun x => ψ x * (f : α → 𝕜) x) :
+    ‖T‖ ≤ K := by
+  refine ContinuousLinearMap.opNorm_le_bound _ hK0 fun f => ?_
+  rw [Lp.norm_def, Lp.norm_def, eLpNorm_congr_ae (hT f)]
+  have hle := eLpNorm_mul_le_of_bound (p := p) (μ := μ) hK0 hK ((f : α → 𝕜))
+  have hfin : eLpNorm ((f : α → 𝕜)) p μ ≠ ∞ := Lp.eLpNorm_ne_top f
+  have h := ENNReal.toReal_mono
+    (ENNReal.mul_ne_top (by simp [enorm_eq_nnnorm]) hfin) hle
+  refine h.trans ?_
+  rw [ENNReal.toReal_mul]
+  have hnorm : (‖(K : ℝ)‖ₑ).toReal = K := by
+    simp [enorm_eq_nnnorm, Real.norm_eq_abs, abs_of_nonneg hK0]
+  rw [hnorm]
+
 end MeasureTheory

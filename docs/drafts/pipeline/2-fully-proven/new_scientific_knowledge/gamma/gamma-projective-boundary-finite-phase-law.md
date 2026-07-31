@@ -662,6 +662,20 @@ almost periodic.  Its mean is the **Bohr coefficient** `bohrCoefficient f λ`, t
 `bohrFrequencyModule f` is its `ℚ`-span — the object whose rational rank eq. (9) bounds, which until
 now did not exist in the tree at all.
 
+`formal/GaloisForLFunctions/HTGeometry/BohrParseval.lean` makes the almost-periodic functions an
+algebra with an inner product and proves **Bessel's inequality**.  The class is closed under sums,
+differences, complex scalars, conjugation and finite sums; the window average and the mean are
+linear and conjugation-equivariant; and the mean of a character is computed exactly
+(`bohrMean_bohrChar`: `M(e^{-iλt}) = 0` for `λ ≠ 0` and `1` for `λ = 0`), which gives orthonormality
+of the character system (`bohrMean_bohrExp_mul_conj`).  Subtracting the trigonometric polynomial
+`p = ∑_{i∈S} a(i) e^{iit}` from `f` and using `0 ≤ M(|f − p|²)` (`bohrMean_mul_conj_re_nonneg`) with
+the three mixed means then yields
+
+`∑_{λ ∈ S} |a(λ)|² ≤ M(|f|²)`  (`bohr_bessel`)
+
+for every finite set `S` of frequencies.  This is the first structural constraint on the Bohr
+spectrum: above any positive threshold only finitely many frequencies can occur.
+
 `formal/GaloisForLFunctions/HTGeometry/IsometricRecurrence.lean` abstracts the recurrence to any
 relatively-compact isometric `ℝ`-action (`isometricAction_recurrence`, `isometricAction_return_seq`),
 so it instantiates both to `ℝ →ᵇ ℂ` and to vertical translation of holomorphic functions on a strip.

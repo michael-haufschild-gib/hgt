@@ -492,11 +492,22 @@ the reciprocal gaps \(1/(m+1)\) gives the exact actual-first-return law
 This is an exact countably infinite first-return asymptotic at discrete
 logarithmic target scales, not only a two-sided exponent bound.
 
+`BlaschkePhaseHamiltonianRealization.lean` closes the abstract-quantum
+realization.  It constructs a normalized state on \(\ell^2(\mathbb N)\),
+one fixed self-adjoint real-diagonal Hamiltonian for every phase packet,
+and its exact Schrödinger orbit.  The Hilbert-space survival amplitude is
+proved equal to the weighted phase amplitude at every real time; at every
+integer time its coherence predicate and actual first positive return are
+exactly the ones in the asymptotic theorem.  Consequently the same
+almost-sure coefficient is now proved directly as a quantum
+survival-return law for an infinite-dimensional self-adjoint Hamiltonian.
+
 Direct foreground Lean checks pass. `#print axioms` for audited new
 load-bearing theorems reports only `propext`, `Classical.choice`, and
 `Quot.sound`.
 
-Operator construction, anisotropic counting, and interpolation from
-integer logarithmic scales to all target accuracies remain Lean-open.
-Nothing beyond the listed proved claims is manuscript-authorized until
-formalized. Manuscript must not mention the formalization.
+The stronger Blaschke-convolution lattice realization, anisotropic
+counting, and interpolation from integer logarithmic scales to all target
+accuracies remain Lean-open. Nothing beyond the listed proved claims is
+manuscript-authorized until formalized. Manuscript must not mention the
+formalization.

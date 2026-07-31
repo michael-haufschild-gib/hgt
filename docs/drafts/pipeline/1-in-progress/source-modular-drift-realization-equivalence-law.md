@@ -2477,3 +2477,77 @@ Primary references:
   Completing first irreversibly erases the coupling.  The remaining Xi theorem is a strict
   graded-relative boundary descent/Bockstein theorem, not a closed-graph theorem on the ordinary
   Hilbert completion.
+
+## 18. Source-exceptional carrier and conservative-consumer closure
+
+The updated ramified-character manuscript and the source-exceptional principal-parts theorem
+close two previously conflated ends of the source-effective base-change problem.
+
+First, the bounded-exponent source produces \(1/(2\Xi)\) before any zero is selected.  For a
+commutative domain \(R\) and nonzero \(x\), the map
+\[
+ R\longrightarrow R[x^{-1}]/R,\qquad r\longmapsto[r/x]
+ \tag{123}
+\]
+has kernel \(xR\).  Its image is therefore canonically \(R/(x)\).  With \(x=\Xi\), the source
+itself generates the Cartier principal-parts object; at a zero \(\rho\) of order \(m_\rho\), its
+stalk is
+\[
+ {\cal O}_\rho/(\Xi)\cong{\cal O}_\rho/(t^{m_\rho}).
+ \tag{124}
+\]
+This theorem is formalized, without new axioms, in
+`HTGeometry/SourceExceptionalPrincipalPart.lean`.  It solves algebraic carrier generation only.
+It does not provide a topology, norm, adjoint, or conservative action.
+
+Second, the updated manuscript identifies the complete regular divisor output as the ramified
+character
+\[
+ (m_\rho,\chi_\rho),\qquad
+ \chi_\rho(z)=e^{z(\rho-1/2)},
+ \tag{125}
+\]
+and proves the abstract conservative consumer
+\[
+ TU=VT,\quad Ux=e^\nu x,\quad Tx\ne0,\quad
+ \|Vy\|=\|y\|
+ \quad\Longrightarrow\quad \nu=0.
+ \tag{126}
+\]
+The Lean theorem is
+`normConservative_equivariantDescent_forces_zero` in
+`RHTower/XiSourceModularTypeSuperselectionLaw.lean`.
+
+Equations `(123)`--`(126)` compress the frontier but do not bridge it.  Centered prime transfer
+acts on `(124)` by multiplication with \(q^{1/2-s}\).  Its reduced eigenvalue at \(\rho\) has
+modulus \(q^{1/2-\Re\rho}\), while the thickened fibre retains the multiplicity jets.  Thus a
+source-defined equivariant map which preserves the relevant eigenline, lands in a
+norm-conservative action, and does not kill it would force
+\(\Re\rho=1/2\).  No such map or norm is constructed.
+
+`[OPEN CORE: XI_SOURCE_EXCEPTIONAL_RAMIFIED_CONSERVATIVE_BASE_CHANGE]`
+
+> Starting from the literal Euler--Gamma/co-Poisson source and before zero specialization,
+> construct a Hausdorff singular completion of its source-generated principal-parts object and
+> an equivariant descent \(T\) such that:
+>
+> 1. the target prime-transfer action is norm-conservative;
+> 2. \(T\) is nonzero on the reduced transfer eigenline of every nonzero Xi Cartier stalk;
+> 3. \(T\) is strict and faithful on the valuation-depth/prime-breadth bifiltration;
+> 4. \(T\) retains every multiplicity jet, equivalently the full dyadic deck-character tower;
+> 5. the construction preserves raw alternating-tail/Rees grade and is fixed before divisor
+>    evaluation.
+>
+> Then `(126)` applied at any prime forces every nontrivial Xi zero onto the critical line.
+
+This is a typed refinement of `XI_CONTROLLED_CUBICAL_HOMOTOPY_BASE_CHANGE` and
+`XI_BV_TWISTED_CYCLIC_BASE_CHANGE`, not a new universal-law claim.  The generalized-prime
+off-line constructions remain the decisive falsifier: they satisfy source positivity,
+reflection, entire completion, hypertranscendence, and principal-parts localization.  Hence
+those inputs alone cannot imply clauses 1--5.  Any proof must use zeta-specific
+Gamma/co-Poisson source structure to build the conservative descent rather than impose it.
+
+- 2026-07-31 — Integrated the ramified-character update.  Algebraic exceptional-carrier
+  generation and the abstract conservative consumer are now closed and Lean-checked.  The exact
+  unsolved producer is source-native, bifiltration- and ramification-faithful conservative base
+  change, nonannihilating on every reduced exceptional eigenline.
