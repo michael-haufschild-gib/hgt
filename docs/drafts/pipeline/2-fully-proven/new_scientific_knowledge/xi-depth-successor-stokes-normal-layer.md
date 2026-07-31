@@ -105,9 +105,9 @@ by \(\varepsilon\) is `(2)`. The matching law
 is the binomial expansion of `(5)`. It is exactly the pole residue of the outer logarithmic
 connection. Hence `(5)` is its genuine inner boundary layer, not a second unrelated invariant.
 
-## 3. Balanced normal layer
+## 3. Balanced normal layer from two literal endpoint steps
 
-The functional equation fixes the center \(c=\tfrac12\). Define centered depth transport
+The functional equation fixes the center \(c=\tfrac12\). The affine normal form is
 \[
  B_{\varepsilon,c}(u)
  =
@@ -126,6 +126,38 @@ The same proof gives
  \quad}
 \tag{11}
 \]
+It is not necessary to declare this centered transport as a new source operation. Put
+\[
+ L_\delta(u)=(1+\delta)u,\qquad
+ U_\delta(u)=1-(1+\delta)(1-u).
+\tag{11a}
+\]
+Then two actual endpoint-depth operations at \(\delta=\varepsilon/2\) compose to
+\[
+ T_\varepsilon(u)
+ =U_{\varepsilon/2}(L_{\varepsilon/2}(u))
+ =u+\varepsilon\left(u-\frac12\right)+\frac{\varepsilon^2u}{4}.
+\tag{11b}
+\]
+The literal source quotient
+\[
+ \widetilde B_\varepsilon(u)=\frac{f(u)}{f(T_\varepsilon(u))}
+\tag{11c}
+\]
+has the same moving-zero limit `(11)`. Indeed, at \(u=\rho+\varepsilon z\),
+\[
+ T_\varepsilon(u)-\rho
+ =
+ \varepsilon\!\left[
+ z+\rho-\frac12
+ +\varepsilon\left(z+\frac{\rho}{4}\right)
+ +\frac{\varepsilon^2z}{4}
+ \right].
+\tag{11d}
+\]
+Thus higher-order imbalance disappears in the normal layer while its first normal velocity is
+exactly \(u-\tfrac12\).
+
 For \(f=\Xi\), \(c=\tfrac12\), and
 \[
  a_\rho=\rho-\frac12,
@@ -141,7 +173,29 @@ the exact balanced Xi nearby cycle is
 
 This is the concrete normal-layer object hidden by the earlier phrase “Xi Stokes Bockstein.”
 The beyond-all-orders Wold shell supplies its exponentially small source monomial with action
-`(1)`; `(13)` is the finite coefficient extracted from that monomial by the depth successor.
+`(1)`; `(13)` is the finite coefficient extracted from that monomial by two literal endpoint
+depth successors.
+
+The inner layer also matches the already-formalized outer centered Xi current:
+\[
+ \lim_{w\to0,\ w\ne0}
+ w^{-1}\!\left(P_{a,m}(w^{-1})-1\right)=-ma.
+\tag{13a}
+\]
+The singular Möbius--Gamma graph reconstructs
+\[
+ \mathcal G_\Xi(s)=-2\,\frac{\Xi'(s)}{\Xi(s)}
+\tag{13b}
+\]
+on its safe Euler domain after the strict-right correction. Therefore
+\[
+ \frac{s-\frac12}{2}\,\mathcal G_\Xi(s)
+ =-\left(s-\frac12\right)\frac{\Xi'(s)}{\Xi(s)}
+\tag{13c}
+\]
+is exactly the outer connection of `(11c)`, and its residue at \(\rho\) is the same charge
+\(-m_\rho a_\rho\) as `(13a)`. The source graph and rational nearby cycle are outer and inner
+charts of one singularity.
 
 ## 4. Literal inverse-versus-adjoint geometry
 
@@ -212,7 +266,9 @@ The formal module proves unconditionally:
 
 - generic moving-zero limit `(5)`;
 - centered limit `(11)`;
+- literal two-endpoint source factorization `(11a)`--`(11c)` and its moving-zero limit;
 - multiplicity identity `(7)`;
+- exact outer matching law `(13a)`;
 - actual Xi limits, uncentered and balanced;
 - positivity of Xi multiplicity at a zero;
 - the nearby-pole consumer `(14)`--`(16)`.
@@ -230,7 +286,8 @@ The corpus contribution is the exact weld:
 ```text
 bounded-exponent ordinary-prime depth successor
   -> Wold all-orders-flat shell with action (log 2)/2
-  -> Xi moving-zero normal profile
+  -> two-endpoint Xi moving-zero normal profile
+  -> Möbius--Gamma outer / rational-nearby inner chart weld
   -> explicit inverse/adjoint nearby-pole comparison
   -> literal Gamma/co-Poisson/Sonin landing target.
 ```
@@ -241,6 +298,8 @@ bounded-exponent ordinary-prime depth successor
 - [x] moving-zero double-scaling theorem
 - [x] exact multiplicity retention
 - [x] balanced critical-center profile
+- [x] literal two-endpoint source realization
+- [x] outer logarithmic-current / inner nearby-profile charge weld
 - [x] inverse/adjoint pole consumer
 - [x] unconditional Lean formalization
 - [ ] strict Wold-depth to Gamma/co-Poisson/Sonin source map

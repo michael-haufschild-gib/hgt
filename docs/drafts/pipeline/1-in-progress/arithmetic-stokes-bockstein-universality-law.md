@@ -153,6 +153,14 @@ After centering depth at the functional-equation fixed point, its exact nearby c
  \qquad
  a_\rho=\rho-\frac12.
 \]
+This balanced profile is now induced by two literal endpoint source steps, not by declaring a
+centered affine action:
+\[
+ u\mapsto
+ 1-(1+\varepsilon/2)\bigl(1-(1+\varepsilon/2)u\bigr)
+ =
+ u+\varepsilon(u-\tfrac12)+O(\varepsilon^2).
+\]
 The Wold shell supplies the exponentially flat source monomial with action
 \((\log2)/2\); this rational profile is its finite divisor coefficient.  Source inverse and
 analytic adjoint have profiles \(P_{-a_\rho,m_\rho}\) and
@@ -164,6 +172,13 @@ This does not prove clause 5.  It replaces the abstract same-fibre scalar with t
 that the Gamma/co-Poisson/Sonin landing must identify.  The generic, centered, and actual Xi
 normal-layer limits and the nearby-pole consumer are Lean-formalized in
 `XiDepthSuccessorStokesNormalLayer.lean`.
+
+`XiDepthMobiusGammaOuterInnerWeld.lean` now closes normalization against actual singular source
+graph. On Euler domain, Möbius--Gamma graph plus strict-right correction is
+\(-2\Xi'/\Xi\); balanced scaling by \((s-\tfrac12)/2\) yields outer two-endpoint connection.
+Its residue \(-m_\rho a_\rho\) equals exact outer charge of rational nearby profile. Therefore
+source graph and nearby cycle are proved outer/inner charts of one divisor singularity. Remaining
+clause 5 is strict same-fibre dagger naturality, not normalization or multiplicity matching.
 
 ## Hostile audit and falsifiers
 
@@ -222,6 +237,8 @@ Relevant primary framework:
 - [ ] literal co-Poisson chain map and syzygy
 - [ ] strict source-normal completion
 - [x] exact balanced Xi moving-zero nearby cycle with full multiplicity
+- [x] literal two-endpoint source realization
+- [x] Möbius--Gamma outer / rational-nearby inner charge weld
 - [ ] full Xi conormal identification
 - [ ] same-fibre dagger naturality
 - [ ] RH

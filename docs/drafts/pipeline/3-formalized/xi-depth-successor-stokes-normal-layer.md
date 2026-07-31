@@ -24,7 +24,13 @@ Lean proves
 through the punctured complex neighborhood of \(\varepsilon=0\). The centered version replaces
 \(\rho\) by \(\rho-c\).
 
-Specializing to Xi and \(c=\tfrac12\) gives the exact balanced normal layer
+Lean also constructs literal lower- and upper-endpoint depth steps and proves their half-aperture
+composition
+\[
+ u\longmapsto
+ 1-(1+\varepsilon/2)\bigl(1-(1+\varepsilon/2)u\bigr)
+\]
+has same centered moving-zero layer. Specializing to Xi gives exact balanced normal layer
 \[
  \left(
  \frac{z}{z+\rho-\tfrac12}
@@ -32,9 +38,13 @@ Specializing to Xi and \(c=\tfrac12\) gives the exact balanced normal layer
 \qquad
  m_\rho=(\operatorname{ord}_\rho\Xi)>0.
 \]
-The module also proves the denominator identity retaining multiplicity and the conditional
-nearby-pole consumer: equality of source-inverse and analytic-adjoint pole coordinates forces
-\(\Re\rho=\tfrac12\).
+The module also proves denominator identity retaining multiplicity, outer matching law
+\[
+ w^{-1}\bigl(P_{\rho-\frac12,m_\rho}(w^{-1})-1\bigr)
+ \longrightarrow -m_\rho(\rho-\tfrac12),
+\]
+and conditional nearby-pole consumer: equality of source-inverse and analytic-adjoint pole
+coordinates forces \(\Re\rho=\tfrac12\).
 
 ## Boundary
 
