@@ -2518,24 +2518,67 @@ The Lean theorem is
 `normConservative_equivariantDescent_forces_zero` in
 `RHTower/XiSourceModularTypeSuperselectionLaw.lean`.
 
-Equations `(123)`--`(126)` compress the frontier but do not bridge it.  Centered prime transfer
+Third, the latest manuscript revision identifies an actual source-side odd generator.  If
+\(C_x(p)\) is the Gamma-sewn scalar contraction and
+\[
+ \ell_x(p)=\frac{2}{\sqrt3}\frac{\sqrt{1-C_x(p)^2}}x,
+\]
+then
+\[
+ \ell_x(p)\longrightarrow\log p.                           \tag{127}
+\]
+On finite prime packets this is the literal logarithmic clock.  Its graph is dense in the full
+product Hardy space, so every bounded global recovery has diverging norm.  This supplies the
+previously missing odd source coordinate but simultaneously proves that it cannot descend
+through the ordinary scalar Hilbert completion.  The relevant Lean endpoints are
+`primeFiniteTraceClock_graphClosure_eq_top` and
+`tendsto_norm_of_extends_gammaSewnMobiusJuliaFiniteTraceClock`.
+
+Squaring after divisor formation instead gives the finite positive character energy
+\[
+ {\cal E}_\chi
+ =\sum_{\xi(\rho)=0}
+   \frac{m_\rho}{|\rho-\tfrac12|^2}\sin^2(2\pi\Re\rho).
+ \tag{128}
+\]
+It vanishes exactly under RH and is reflection-even.  Thus `(128)` is a complete detector, not a
+source theorem forcing neutrality; it cannot replace the odd clock or the conservative descent.
+
+Equations `(123)`--`(128)` compress the frontier but do not bridge it.  Centered prime transfer
 acts on `(124)` by multiplication with \(q^{1/2-s}\).  Its reduced eigenvalue at \(\rho\) has
 modulus \(q^{1/2-\Re\rho}\), while the thickened fibre retains the multiplicity jets.  Thus a
-source-defined equivariant map which preserves the relevant eigenline, lands in a
-norm-conservative action, and does not kill it would force
-\(\Re\rho=1/2\).  No such map or norm is constructed.
+source-defined equivariant map on the reduced character line which lands in a
+norm-conservative action and does not kill that line would force
+\(\Re\rho=1/2\).  The manuscript proves no strict base change coupling the odd source clock
+`(127)` to this reduced character rate.  No such map or norm is constructed.
 
-`[OPEN CORE: XI_SOURCE_EXCEPTIONAL_RAMIFIED_CONSERVATIVE_BASE_CHANGE]`
+One must not demand that the same conservative action faithfully carry the thickened Cartier
+module.  When \(m_\rho>1\), multiplication by \(q^{1/2-s}\) on
+\({\cal O}_\rho/(t^{m_\rho})\) has a nontrivial unipotent Jordan part even on the critical line.
+A norm-conservative finite-dimensional action has semisimple peripheral spectrum, so such a
+landing would force simplicity in addition to RH.  This obstruction is already formalized in
+the corpus by `xiLocalJordanNormal_iff_multiplicity_one` and
+`exists_conservative_xiThetaMetric_iff_rh_and_simple`.  Continuous displacement and ramification
+must therefore descend through separate but compatible channels, exactly as the pair
+\((m_\rho,\chi_\rho)\) suggests.
+
+`[OPEN CORE: XI_SOURCE_EXCEPTIONAL_SPLIT_RAMIFIED_CONSERVATIVE_BASE_CHANGE]`
 
 > Starting from the literal Euler--Gamma/co-Poisson source and before zero specialization,
 > construct a Hausdorff singular completion of its source-generated principal-parts object and
-> an equivariant descent \(T\) such that:
+> compatible descents \((T_{\rm cont},T_{\rm ram})\) such that:
 >
-> 1. the target prime-transfer action is norm-conservative;
-> 2. \(T\) is nonzero on the reduced transfer eigenline of every nonzero Xi Cartier stalk;
-> 3. \(T\) is strict and faithful on the valuation-depth/prime-breadth bifiltration;
-> 4. \(T\) retains every multiplicity jet, equivalently the full dyadic deck-character tower;
-> 5. the construction preserves raw alternating-tail/Rees grade and is fixed before divisor
+> 1. \(T_{\rm cont}\) is the strict Cartier base change of the explicit singular Julia/log-clock
+>    graph `(127)`, not an arbitrary zero-indexed map;
+> 2. it intertwines that odd source generator with the reduced centered-character action in a
+>    norm-conservative target;
+> 3. \(T_{\rm cont}\) is nonzero on the reduced transfer eigenline of every nonzero Xi Cartier
+>    stalk;
+> 4. the pair is strict and faithful on the valuation-depth/prime-breadth bifiltration;
+> 5. \(T_{\rm ram}\), without an incompatible full-jet conservativity demand, retains every
+>    multiplicity jet or equivalently the complete dyadic deck-character tower;
+> 6. both maps arise from one source comparison, preserve raw alternating-tail/Rees grade, and
+>    are fixed before divisor
 >    evaluation.
 >
 > Then `(126)` applied at any prime forces every nontrivial Xi zero onto the critical line.
@@ -2549,5 +2592,12 @@ Gamma/co-Poisson source structure to build the conservative descent rather than 
 
 - 2026-07-31 — Integrated the ramified-character update.  Algebraic exceptional-carrier
   generation and the abstract conservative consumer are now closed and Lean-checked.  The exact
-  unsolved producer is source-native, bifiltration- and ramification-faithful conservative base
-  change, nonannihilating on every reduced exceptional eigenline.
+  unsolved producer is source-native split base change: conservative and nonannihilating on every
+  reduced exceptional eigenline, but separately faithful to bifiltration and ramification.  A
+  single conservative full-jet landing would overprove simplicity and collides with the corpus
+  Jordan obstruction.
+- 2026-07-31 — Integrated odd Julia/Fisher revision.  The source logarithmic orientation
+  generator is now explicit, while its dense graph rules out bounded recovery after ordinary
+  scalar completion.  The Xi--Hurwitz energy is only a reflection-even RH detector.  Missing
+  theorem is strict singular Cartier descent coupling the odd clock to the reduced character
+  rate before conservative realization.

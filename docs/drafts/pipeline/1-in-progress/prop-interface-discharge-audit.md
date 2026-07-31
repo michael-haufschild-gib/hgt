@@ -2388,3 +2388,64 @@ group, so both gates quantified over data never exhibited.
 So the two gates are simultaneously satisfiable and neither is vacuous: nontriviality of the
 obstruction class and failure of the prime-log integrality gate are compatible, and the witness is
 the universal weld itself.
+
+## The corpus-`Prop` instrument reaches `RHTower`, and the area is almost clean
+
+The mathlib-premise instrument scans premises with a *mathlib* head.  The complementary instrument
+— premises whose head is a **project** `Prop` — had never been run on `RHTower`.  It has now been,
+with the same non-reducing telescope and the inductive-`Prop` filter:
+
+**83 509 project constants scanned, 66 project-`Prop` premise keys consumed inside `RHTower`,
+6 263 produced constants, 3 unproduced.**
+
+(Blind spot of this run, recorded: the `HTGeometry` umbrella olean was missing — another lane was
+mid-rebuild — so only the part of `HTGeometry` inside `RHTower`'s transitive cone supplied
+producers.  Two of the three rows were checked by hand against the full source tree.)
+
+| uses | interface | verdict |
+|---:|---|---|
+| 3 | `IsReflectionTateConservative` | genuine; **classified and closed below** |
+| 1 | `IsRelativeCharacterCarrier` | genuine; **classified and closed below** |
+| 1 | `MatrixDensityClockCyclic` | false positive — `matrixDensityClockCyclic_const` produces it in `HTGeometry/MatrixDensityClockWitnesses`, outside this run's cone |
+
+Combined with the mathlib-premise scan, `RHTower` now has **no undischarged project-`Prop`
+interface**.
+
+### `IsRelativeCharacterCarrier`: the carrier *is* character equality
+
+`RHTower/ReflectedCharacterCarrierClassification.lean` (built, registered, axioms clean):
+
+* `isRelativeCharacterCarrier_zero`, `isRelativeCharacterCarrier_of_eq` — the class always contains
+  zero, and contains everything once the characters agree;
+* **`isRelativeCharacterCarrier_iff_of_ne_zero`** — a *nonzero* vector is a carrier **iff** the two
+  characters coincide.  So "a nonzero internal carrier" is not extra structure; it is `α = β`
+  restated.  `exists_ne_zero_isRelativeCharacterCarrier_iff` says the same for the existence form;
+* **`riemannHypothesis_of_reflectedCharacterNorm_eq`** — the RH consumer needs no module, no
+  carrier and no cohomology class: the scalar equation `‖α q‖ = ‖β q‖` at every Xi zero already
+  gives RH, and `riemannHypothesis_of_nonzero_reflectedCharacterCarrier_via_norm` recovers the
+  original statement as the special case where a nonzero carrier supplies that equation;
+* **`reflectedCharacterNorm_eq_iff_criticalLine`** — and under the two calibrations that scalar
+  equation is *equivalent* to the critical-line conclusion at every zero.  The reflected-character
+  programme therefore **restates** RH at this point; it does not reduce it.
+
+### `IsReflectionTateConservative`: conservativity is fixed-locus support
+
+`RHTower/ReflectionTateConservativeClassification.lean` (built, registered, axioms clean):
+
+* `fixedSupportedCharges` — the charges supported on the reflection fixed locus form a subgroup;
+* `reflectionFixedRestriction`, `reflectionFixedExtension_reflectionFixedRestriction` — restricting
+  a fixed-supported charge to the fixed locus and extending it back is the identity;
+* **`isReflectionTateConservative_iff`** — a charge lattice admits a conservative reflection-Tate
+  reporter **iff** every charge in it is supported on the reflection fixed locus.  The recorded
+  faithful-localization theorem was one direction; the converse builds the reporter by restriction
+  composed with the inverse Tate identification, needing no new input;
+* `isReflectionTateConservative_fixedSupportedCharges` — so the maximal such lattice is
+  unconditionally conservative, and the interface is inhabited nontrivially;
+* **`riemannHypothesis_iff_exists_reflectionTateConservative_landing`** — hence the reduction has an
+  exact converse: a conormal landing lattice with a conservative Tate reporter exists **iff** RH
+  holds.
+
+**Reading.**  Both surviving `RHTower` interfaces were re-encodings, and both are now proved to be
+so rather than suspected.  This is the `rh-criterion-reencoding` pattern in its sharpest form: the
+second clause of the Tate reduction ("a conservative reporter exists") is, after classification,
+the statement that all Xi point charges sit on the reflection fixed locus — which is RH itself.

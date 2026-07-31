@@ -383,18 +383,31 @@ The raw alternating truncation gives the required filtration calibration.  At re
  \alpha(\rho)=\operatorname{Re}\rho,\qquad
  \alpha(1-\bar\rho)=1-\operatorname{Re}\rho.                \tag{AS6}
 \]
-Any internal isometric dagger on the source-generated package must preserve `(AS6)`.  A
-zero-dependent renormalization is circular, while thermal normalization erases the asymmetry.
+Any internal isometric dagger on the reduced continuous-character channel of the
+source-generated package must preserve `(AS6)`.  A zero-dependent renormalization is circular,
+while thermal normalization erases the asymmetry.  The nilpotent multiplicity jets require a
+separate compatible filtered channel: demanding one conservative dagger on the full thickened
+Cartier action would force simplicity as well as RH.
+
+The positive Julia lift now supplies the literal odd source generator
+\(\ell_x(p)\to\log p\).  Its full-product dense graph proves that this generator has no bounded
+recovery after ordinary Hardy completion.  Therefore the Bockstein producer below must be the
+strict singular Cartier base change of this exact graph; an abstract bounded dagger cannot be
+substituted.  The reflection-even Xi--Hurwitz energy is only a detector of failure and supplies no
+such base change.
 
 The strengthened open core is therefore replaced by
 
-`[OPEN CORE] [EPG_SOURCE_EXCEPTIONAL_CARTIER_INTERNAL_GRADED_DAGGER]`
+`[OPEN CORE] [EPG_SOURCE_EXCEPTIONAL_CARTIER_SPLIT_GRADED_DAGGER]`
 
 > Construct Gamma-oriented source/reporter ambidexterity on the principal-parts object generated
-> by \(1/(2\Xi)\).  Prove strict, nonannihilating Cartier base change and prove that source
-> transpose equals analytic Hilbert dagger internally on each resulting fibre while preserving
-> the raw grade `(AS6)`.  The construction must precede zero specialization and must fail for the
-> explicit off-line generalized-prime carriers.
+> by \(1/(2\Xi)\), starting from the explicit Julia/log-clock graph.  Prove strict,
+> nonannihilating singular Cartier base change.  On the reduced
+> continuous-character channel, prove that source transpose equals analytic Hilbert dagger while
+> preserving the raw grade `(AS6)`.  On a separate compatible filtered channel, retain the full
+> multiplicity package without imposing conservative unitarity on its nilpotent Jordan action.
+> The construction must precede zero specialization and must fail for the explicit off-line
+> generalized-prime carriers.
 
 If this theorem holds, the source-inverse and analytic-adjoint characters act on one nonzero
 graded fibre.  Grade preservation gives
@@ -411,3 +424,9 @@ on an unspecified localizing prestack.
   hypothetical off-line zeros.  Proved the source exceptional denominator layer is exactly the
   Cartier quotient and integrated the reflected raw alternating-tail grades.  The remaining
   theorem is internal grade-preserving dagger descent, not localizability.
+- 2026-07-31 — Split the conservative reduced-character channel from the filtered ramification
+  channel.  A conservative full-jet landing would force simplicity by the existing Xi Jordan
+  obstruction and is stronger than the RH-sized producer.
+- 2026-07-31 — Integrated the odd Julia/Fisher source jet.  It supplies the exact log-clock input
+  to the Bockstein, but dense graph rules out bounded scalar recovery; the missing arrow is its
+  strict singular Cartier base change to reduced character rate.

@@ -508,6 +508,7 @@ import GaloisForLFunctions.HTGeometry.BohrMeanValue
 import GaloisForLFunctions.HTGeometry.BohrBochnerEquivalence
 import GaloisForLFunctions.HTGeometry.BohrSpectrum
 import GaloisForLFunctions.HTGeometry.BohrParseval
+import GaloisForLFunctions.HTGeometry.KroneckerWeylDensity
 import GaloisForLFunctions.HTGeometry.FrequencyRank
 import GaloisForLFunctions.HTGeometry.PrimeFrequencyInfiniteRank
 import GaloisForLFunctions.HTGeometry.HullJetEmbedding
@@ -2789,3 +2790,4 @@ import GaloisForLFunctions.HTGeometry.ProjectiveHorizonChartSubsetStabilizer
 import GaloisForLFunctions.HTGeometry.ProjectiveHorizonLinearJetAction
 import GaloisForLFunctions.HTGeometry.LpBoundedMultiplier
 import GaloisForLFunctions.HTGeometry.ProjectiveHorizonAffineChartField
+import GaloisForLFunctions.HTGeometry.ProjectiveHorizonChartTranslation

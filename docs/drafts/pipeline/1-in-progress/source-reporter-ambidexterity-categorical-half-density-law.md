@@ -130,27 +130,31 @@ connected rigid sector of \(G\).
 ## Exact RH consumer
 
 Let \(\rho\) be a nontrivial Xi zero and let \(K_\rho\) be the finite perfect Cartier package of
-its functional-equation/Schwarz orbit, including multiplicity jets. Assume:
+its functional-equation/Schwarz orbit, including multiplicity jets. Let
+\(K_\rho^{\mathrm{red}}\) denote its reduced continuous-character quotient. Assume:
 
 1. strict Cartier base change identifies the realized package with \(G(K_\rho)\);
 2. the \(d_{\rm ar}\)-orientation is nondegenerate and trace-faithful on \(K_\rho\), so
    \(G(K_\rho)\) is nonzero;
-3. Frobenius monoidality preserves dualizability, so \(G(K_\rho)\) is finite-dimensional
-   in Hilbert realization;
-4. `(5)` holds on that package; and
+3. base change is nonzero on \(K_\rho^{\mathrm{red}}\), while a separate compatible filtered
+   reporter retains the multiplicity jets;
+4. Frobenius monoidality and `(5)` make the Hilbert realization of
+   \(G(K_\rho^{\mathrm{red}})\) norm-conservative; and
 5. centered prime pullback has the already-proved conormal character
    \[
      \lambda_{p,\rho}=p^{\rho-1/2}.                     \tag{6}
    \]
 
-Then the finite-dimensional invariant restriction of \(G(\widetilde U_p)\) is unitary. Therefore
+Then the reduced invariant restriction of \(G(\widetilde U_p)\) is unitary. Therefore
 \[
   |p^{\rho-1/2}|=1,
   \qquad
   \operatorname{Re}\rho=\frac12.                        \tag{7}
 \]
-The top associated-graded jet has the same semisimple character, so no simplicity assumption is
-used. Applying `(7)` to every nontrivial zero proves RH.
+The filtered ramification reporter retains the top multiplicity jet without requiring the
+nilpotent thickening itself to be unitary, so no simplicity assumption is used. Applying `(7)` to
+every nontrivial zero proves RH. Requiring unitary transport on all of \(K_\rho\) would instead
+force the Jordan thickening to split and would overprove simplicity.
 
 This consumer is parent categorical/operator theory. It is not the novelty claim.
 
@@ -353,10 +357,19 @@ The raw alternating tail adds a nonnegotiable filtration test. At reflected zero
  \alpha(\rho)=\operatorname{Re}\rho,\qquad
  \alpha(1-\bar\rho)=1-\operatorname{Re}\rho.
 \]
-Therefore `(1)`--`(3)` must induce a filtration-preserving dagger on the unnormalized source
-package. A construction that equalizes the grades by a zero-dependent power, or first divides by
-the thermal partition function, fails the source test. If the genuine internal dagger identifies
-the two classes, grade preservation forces the critical line.
+Therefore `(1)`--`(3)` must induce a filtration-preserving dagger on the unnormalized reduced
+continuous-character channel, together with a compatible filtered reporter for ramification. A
+construction that equalizes the grades by a zero-dependent power, or first divides by the thermal
+partition function, fails the source test. If the genuine internal dagger identifies the two
+reduced classes, grade preservation forces the critical line.
+
+The latest oriented-source refinement supplies the input that this adjunction must transport:
+the positive Julia defect has normalized tangent \(\ell_x(p)\to\log p\), and the corresponding
+prime-clock graph is dense in the full product Hardy space. Hence no bounded ordinary-Hilbert
+reporter can recover the odd generator. The sought ambidextrous functor must first act on this
+singular graph and only then pass to the reduced conservative character channel. The positive
+Xi--Hurwitz energy cannot replace that step because it is reflection-even and is defined after
+divisor acquisition.
 
 ## Fatal falsifiers
 
@@ -436,3 +449,9 @@ falsifier producing a nontrivial orientation cofiber.
   dagger-Frobenius half-density realization.
 - 2026-07-31 — Proved the reciprocal exceptional section generates the Xi Cartier quotient before
   zero enumeration. Added reflected raw tail grades as a falsifier for strict dagger descent.
+- 2026-07-31 — Corrected full-package unitarity overreach. Conservative descent applies to the
+  reduced continuous character; multiplicity jets descend through a separate compatible filtered
+  reporter. One conservative full-Jordan realization would imply simplicity, not merely RH.
+- 2026-07-31 — Added the explicit odd Julia/log-clock graph as mandatory source input. Its dense
+  ordinary-Hilbert graph forces singular-first functorial transport; the quadratic character
+  energy remains a post-divisor detector.

@@ -158,6 +158,98 @@ Audit date: 2026-07-31.
 | Reciprocal-square energy has exact formula and tends to zero | `escapingModularTraceEnergy_eq`; `escapingModularTraceEnergy_tendsto_zero` | same |
 | Bundled separation theorem | `escapingModularCharacterSeparation_law` | same |
 
+## Bifiltered acquisition and analytic-node obstruction
+
+| Manuscript claim | Checked declaration | Module |
+|---|---|---|
+| Same-prime fusion adds shifted valuation depth and unions residue support | `primeResidueValuationObservableColumn_fusion` | `formal/GaloisForLFunctions/HTGeometry/PrimeResidueValuationInteractionSuperselection.lean` |
+| Overlapping residue support makes breadth strictly subadditive while depth remains additive | `primeResidueValuationFusion_depth_breadth_separation` | same |
+| No additive map \(\mathbb N^2\to\mathbb N\) is injective | `natProd_addMonoidHom_not_injective` | `formal/GaloisForLFunctions/HTGeometry/BifilteredScalarizationNoGo.lean` |
+| Two paired transverse degrees are injective | `transverseScalarDegrees_injective` | same |
+| Unpaired marginal degree multisets do not recover pairing | `transverseScalarMarginal_pairing_ambiguity` | same |
+| Theta heat nodes converge to zero | `thetaHeatNode_tendsto_zero` | `formal/GaloisForLFunctions/RHTower/XiThetaHeatNodeObstruction.lean` |
+| No local analytic or entire single-node delta reader exists | `no_analyticOnNhd_thetaHeatNode_delta`; `no_entire_thetaHeatNode_delta` | same |
+
+## Odd Julia/Fisher orientation producer
+
+| Manuscript claim | Checked declaration | Module |
+|---|---|---|
+| Gamma-sewn scalar cell has a unique minimal positive two-channel Julia lift | `gammaSewnMobiusJuliaSourceTransportV_unique_minimal_positive_lift`; definition `ArithmeticJuliaCellwiseMinimality` | `formal/GaloisForLFunctions/RHTower/GammaSewnMobiusJuliaSourceTransport.lean`; `ArithmeticJuliaNormalConeUniversalityLaw.lean` |
+| Normalized positive Julia defect tends to \(\log p\) | `tendsto_gammaSewnMobiusJuliaNormalizedPrimeLog_nhdsGT_zero` | `GammaSewnMobiusJuliaSourceTransport.lean` |
+| Julia packet clock tends to actual prime-log clock | `tendsto_gammaSewnMobiusJuliaFiniteTraceClock_nhdsGT_zero` | `ArithmeticJuliaNormalConeUniversalityLaw.lean` |
+| Prime source/log-clock graph closure is the full product | `primeFiniteTraceClock_graphClosure_eq_top` | `ArithmeticLogClockBoundedCompletionSaturation.lean` |
+| Every bounded packet recovery has diverging operator norm | `tendsto_norm_of_extends_gammaSewnMobiusJuliaFiniteTraceClock` | `ArithmeticJuliaNormalConeUniversalityLaw.lean` |
+| Pointed Fisher--Ward trace is odd in the unsquared tangent | `pointedCutoffWardTrace_neg_tangent`; `pointedFisherWard_orientationTransgression` | `formal/GaloisForLFunctions/HTGeometry/PointedFisherCutoffWardTrace.lean`; capstone |
+| For self-adjoint cutoff, pointed trace is pairing with double-cutoff curvature | `pointedCutoffWardTrace_eq_opTrace_curvature`; `pointedFisherWard_orientationTransgression` | same |
+| Bundled source acquisition law | field `arithmeticJuliaOrientedAcquisition` of `xiRamifiedSingularBoundary_law` | capstone |
+
+## Even-current/odd-orientation parity and finite readers
+
+| Manuscript claim | Checked declaration | Module |
+|---|---|---|
+| Squared completed Xi remains hypertranscendental | `xiRotatedUpperEndCarrier_sq_hypertranscendentalOver` | `formal/GaloisForLFunctions/RHTower/XiRamifiedDifferentialOrientationLaw.lean` |
+| Squaring preserves the complete logarithmic-current differential field | `differentialAdjoin_logDeriv_xiRotatedUpperEndCarrier_sq_eq` | same |
+| Source-selected Cayley coordinate reverses under sharp reflection | `thetaCuspTailSecondDensityReflectionOddCoordinate_sharp` | same |
+| Odd Cayley coordinate vanishes exactly on the regular Xi divisor chart | `thetaCuspTailSecondDensityReflectionOddCoordinate_eq_zero_iff`; `thetaCuspTailSecondDensityReflectionOddCoordinate_eq_zero_at_XiC_zero` | same |
+| Every differentiable even reader loses its first jet at the fixed point | `evenReader_firstJet_zero` | `formal/GaloisForLFunctions/HTGeometry/ReflectedChannelProjectiveFlow.lean` |
+| Every finite-dimensional Xi log-derivative reporter misses a nonzero derivative packet | `exists_xiLogDeriv_nonzero_finiteDerivativeReporterPacket_ker` | `formal/GaloisForLFunctions/RHTower/XiLogDerivFiniteReporterBlindness.lean` |
+| Finite Gibbs dressing does not repair reporter blindness | `exists_xiLogDeriv_add_finiteGibbs_nonzero_finiteDerivativeReporterPacket_ker` | same |
+| No positive-aperture finite local polynomial spectral frame represents the horizontal Xi derivative | `not_XiFiniteLocalPolynomialSpectralFrame_of_pos` | `formal/GaloisForLFunctions/RHTower/XiFiniteLocalSpectralFrameObstruction.lean` |
+| Bundled parity-resolved source law | `xiDifferentialParityResolved_law`; fields `differentialParityResolution` and `noFiniteLocalOrientationFrame` of `xiRamifiedSingularBoundary_law` | capstone |
+
+## Ramified character and quadratic compression
+
+| Manuscript claim | Checked declaration | Module |
+|---|---|---|
+| Centered complex character is additive and has exact real-ray norm | `centeredComplexModularCharacter_add`; `norm_centeredComplexModularCharacter_ofReal` | `formal/GaloisForLFunctions/RHTower/RiemannComplexModularCharacterLaw.lean` |
+| Reflection gives conjugate inverse on the real ray | `centeredComplexModularCharacter_reflection_real` | capstone |
+| Real-step unitarity is exactly the critical-line equalizer | `norm_centeredComplexModularCharacter_eq_one_iff` | capstone |
+| Deck charge is a \(2^k\)-th root of unity and reads \(2^k\)-divisibility of multiplicity | `xiDeckCharge_pow`; `xiDeckCharge_eq_one_iff_toNat_dvd` | `formal/GaloisForLFunctions/RHTower/XiDeckCharge.lean` |
+| Inner profile and outer current have common charge \(-m_\rho(\rho-\tfrac12)\) | `xiDepthNearby_outerCharge_and_affineResidue_match` | `formal/GaloisForLFunctions/RHTower/XiDepthMobiusGammaOuterInnerWeld.lean` |
+| Bundled ramified divisor-character law | `xiRamifiedDivisorCharacter_law` | capstone |
+| Xi--Hurwitz orientation energy is finite and nonnegative | `xiHurwitzOrientationWeight_summable`; `xiHurwitzOrientationEnergy_nonneg` | `formal/GaloisForLFunctions/RHTower/XiHurwitzOrientationEnergy.lean` |
+| Energy is zero exactly when every centered divisor character is unitary | `xiHurwitzOrientationEnergy_eq_zero_iff_unitaryCenteredCharacters` | capstone |
+| Positive energy has an explicit off-line divisor witness | `xiHurwitzOrientationEnergy_pos_iff_exists_offCriticalZero`; `xiHurwitzOrientationWitness_le_energy` | `XiHurwitzOrientationEnergy.lean` |
+| Local quadratic defect is \(\sin^2(2\pi\Re\rho)\) | `xiHurwitzOrientationDefect_eq_sin_sq` | same |
+
+## Hedenmalm, Wold, Sonin/Calkin, and Ward consumers
+
+| Manuscript claim | Checked declaration | Module |
+|---|---|---|
+| Positive momentum-symmetric theta-null forms are divisor-supported atomic Fourier riggings | `universalPositiveForm_thetaNull_iff_canonicalMeasure_support_realDivisor`; `universalPositiveForm_canonicalMeasure_atomic_of_thetaNull` | `formal/GaloisForLFunctions/RHTower/HedenmalmUniversalPositiveFormClassification.lean` |
+| Every nonzero such form has dense nonclosed \(L^2\) radical and is nonclosable | `universalPositiveForm_nonzero_thetaNull_temperedDenseRadicalLaw`; `universalPositiveForm_thetaNull_sequentiallyL2Closable_iff_zero` | `HedenmalmThetaNullTemperedDenseRadicalUniversalityLaw.lean`; `HedenmalmUniversalPositiveFormClassification.lean` |
+| Independent Wold-depth/Poisson-time quadrant boundedness is the zero-rate equalizer | `conjugateTwoClockQuadrantBounded_iff`; `conjugateTwoClockQuadrantBounded_xiSourceRate_iff_boundaryFracture_zero` | `HighExponentShellLeastAtomAsymptotic.lean`; capstone |
+| All-scale prime-seam Sonin/Calkin compactness is the same equalizer | `xiPrimeSeamAllScaleCalkinCertificate_iff_riemannHypothesis`; `xiBoundaryCharacterNeutral_iff_regularBoundaryConsumers` | `XiPrimeSeamCalkinUniversalityLaw.lean`; capstone |
+| Fixed-edge four-unit Ward positivity is the same equalizer; one strict-right zero gives a one-node failure | `continuedXiWardEulerEdgeBoundaryGramLaw_of_riemannHypothesis`; `xiRightUpperHorizontalFailure_law` | `GammaSewnMobiusXiWardEulerEdgeCompleteness.lean`; capstone |
+| All three consumers are bundled by one character-neutrality law | `xiBoundaryCharacterNeutral_iff_regularBoundaryConsumers` | capstone |
+
+## Dyadic ramification and full aperture spectrum
+
+| Manuscript claim | Checked declaration | Module |
+|---|---|---|
+| Each dyadic rung is equivalent across analytic roots, slit roots, circle monodromy, window decks, and Schwarz roots | `rhLadder_iff_dyadicDescentLevelUniversalCertificate` | `formal/GaloisForLFunctions/RHTower/XiDyadicDescentLevelUniversalityLaw.lean` |
+| All dyadic levels are equivalent to RH | `riemannHypothesis_iff_forall_dyadicDescentLevelUniversalCertificate` | same |
+| If RH fails, valid dyadic levels form the exact initial segment through the sharp level | `dyadicDescentLevelUniversalCertificate_iff_le_sharpLevel` | same |
+| Persistent rung-one defect loop is equivalent to odd multiplicity in the right open strip | `xiDefect_persistentLoop_openStrip_oddOrderUniversality` | `XiDefectPersistentLocalLoopUniversalityLaw.lean` |
+| Positive finite first-order density forces \(2qm=1\) | `two_mul_rate_mul_analyticOrderNatAt_eq_one_of_boundaryDensity_pos` | `formal/GaloisForLFunctions/RHTower/CCMFiniteRamifiedBoundaryNoGo.lean` |
+| Finite-sheeted positive density forces even sheet number and sign deck character | `finiteRamified_boundaryDensity_forces_even_and_deckCharacter_neg_one` | same |
+| Full finite deck descent is incompatible with positive density, including four-unit normalization | `not_exists_finiteRamified_deckInvariant_positiveBoundaryDensity`; `ccmFourUnit_not_finiteRamified_deckInvariant` | same |
+| Nontorsion deck descent is incompatible with positive density | `not_exists_analyticRamified_infiniteDeckInvariant_positiveBoundaryDensity`; `ccmFourUnit_not_analyticRamified_infiniteDeckInvariant` | same |
+| Poisson vertical type is equivalent to the divisor half-plane bound | `xiPoissonTraceVerticalTypeAtMost_iff_xiZeroHalfPlaneBound` | `XiSpectralApertureConservationUniversalityLaw.lean` |
+| Full common aperture spectrum is \([\text{projective reflection radius},\infty)\) | `xiSpectralApertureSpectrum_eq_Ici_projectiveReflectionRadius` | same |
+| Original aperture bound implies the same mass-trace exponential type | `xiMassTraceLineGrowth_of_xiZeroStrip` | `XiMassGradedTraceZeroFreeDistortionUniversalityLaw.lean` |
+| Mass-trace type returns original width with factor \((9+a^2)/9\) | `nine_mul_sq_im_xiSpectralPoint_le_of_xiMassTraceLineGrowth` | same |
+| Bundled mass data-processing law | `xiMass_gradedTrace_zeroFreeDistortionUniversality`; field `massTraceDistortion` of `xiRamifiedSingularBoundary_law` | same; capstone |
+| Bundled bifiltered ramified-character boundary law | `xiRamifiedSingularBoundary_law` | capstone |
+
+## Universal conservative descent
+
+| Manuscript claim | Checked declaration | Module |
+|---|---|---|
+| A norm-conservative real-linear action cannot have a nonzero positive eigenvector with eigenvalue other than one | `normConservative_realEigenvector_eigenvalue_eq_one` | capstone |
+| A nonzero exponential eigencharacter in a conservative target has zero real rate | `normConservative_expCharacter_forces_zero` | capstone |
+| Faithful equivariant descent into a conservative target forces zero rate | `normConservative_equivariantDescent_forces_zero` | capstone |
+
 ## Direct verification record
 
 - `lake env lean GaloisForLFunctions/RHTower/RiemannComplexModularCharacterLaw.lean`

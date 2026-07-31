@@ -19,6 +19,11 @@ import GaloisForLFunctions.RHTower.XiSpectralApertureConservationUniversalityLaw
 import GaloisForLFunctions.RHTower.XiThetaHeatNodeObstruction
 import GaloisForLFunctions.RHTower.ArithmeticJuliaNormalConeUniversalityLaw
 import GaloisForLFunctions.RHTower.XiHurwitzOrientationEnergy
+import GaloisForLFunctions.RHTower.XiRamifiedDifferentialOrientationLaw
+import GaloisForLFunctions.RHTower.CCMFiniteRamifiedBoundaryNoGo
+import GaloisForLFunctions.RHTower.XiFiniteLocalSpectralFrameObstruction
+import GaloisForLFunctions.RHTower.XiLogDerivFiniteReporterBlindness
+import GaloisForLFunctions.RHTower.XiMassGradedTraceZeroFreeDistortionUniversalityLaw
 import GaloisForLFunctions.HTGeometry.BifilteredScalarizationNoGo
 import GaloisForLFunctions.HTGeometry.PointedFisherCutoffWardTrace
 import GaloisForLFunctions.HTGeometry.PrimeResidueValuationInteractionSuperselection
@@ -448,6 +453,46 @@ theorem pointedFisherWard_orientationTransgression
     HTGeometry.pointedCutoffWardTrace_eq_opTrace_curvature
       e T psi chi he⟩
 
+/-- The completed-Xi square retains the complete logarithmic-current
+differential field, while the source-selected Cayley coordinate retains the
+odd reflection lift and vanishes on the divisor. -/
+structure XiDifferentialParityResolvedCertificate : Prop where
+  squareHypertranscendental :
+    HypertranscendentalOver upperEndRationalCoordinateField
+      (xiRotatedUpperEndCarrier ^ 2)
+  squareRetainsLogCurrent :
+    differentialAdjoin upperEndRationalCoordinateField
+        ({Differential.logDeriv (xiRotatedUpperEndCarrier ^ 2)} :
+          Set upperEndMeroField) =
+      differentialAdjoin upperEndRationalCoordinateField
+        ({Differential.logDeriv xiRotatedUpperEndCarrier} :
+          Set upperEndMeroField)
+  oddCoordinateSharp :
+    ∀ {z : ℂ}, |z.im| < 1 →
+      (starRingEnd ℂ)
+          (thetaCuspTailSecondDensityReflectionOddCoordinate
+            ((starRingEnd ℂ) z)) =
+        -thetaCuspTailSecondDensityReflectionOddCoordinate z
+  oddCoordinateVanishesOnDivisor :
+    ∀ {z : ℂ}, 0 < z.im → z.im < 1 → XiC z = 0 →
+      thetaCuspTailSecondDensityReflectionOddCoordinate z = 0
+
+/-- **Even-current/odd-orientation splitting.** Squaring retains the
+hypertranscendental logarithmic current, but reflection orientation lives in
+the odd Cayley lift. -/
+theorem xiDifferentialParityResolved_law :
+    XiDifferentialParityResolvedCertificate where
+  squareHypertranscendental :=
+    xiRotatedUpperEndCarrier_sq_hypertranscendentalOver
+  squareRetainsLogCurrent :=
+    differentialAdjoin_logDeriv_xiRotatedUpperEndCarrier_sq_eq
+  oddCoordinateSharp :=
+    fun hz => thetaCuspTailSecondDensityReflectionOddCoordinate_sharp hz
+  oddCoordinateVanishesOnDivisor :=
+    fun hz hz1 hXi =>
+      thetaCuspTailSecondDensityReflectionOddCoordinate_eq_zero_at_XiC_zero
+        hz hz1 hXi
+
 /-- Exact continuous and ramified character data attached to one Xi divisor
 point. The complex character retains the centered point, while the dyadic
 deck tower retains the two-adic divisibility profile of its multiplicity. -/
@@ -712,6 +757,10 @@ structure XiRamifiedSingularBoundaryCertificate : Prop where
     ArithmeticJuliaHardySingularCompletion ∧
       ArithmeticJuliaCellwiseMinimality ∧
       ArithmeticJuliaMellinKolchinCompletion
+  differentialParityResolution :
+    XiDifferentialParityResolvedCertificate
+  noFiniteLocalOrientationFrame :
+    ∀ {a : ℝ}, 0 < a → ¬ XiFiniteLocalPolynomialSpectralFrame a
   ramifiedDivisorCharacter :
     ∀ rho : ℂ, XiRamifiedDivisorCharacterCertificate rho
   quadraticCharacterCompression :
@@ -739,6 +788,15 @@ structure XiRamifiedSingularBoundaryCertificate : Prop where
           1 ≤ n ∧ L ≤ Real.log n / 2) →
         XiSpectralApertureSpectrum tau L N =
           Set.Ici xiProjectiveReflectionRadius
+  massTraceDistortion :
+    ∀ {a lam : ℝ}, (ha : 1 / 2 ≤ a) → 0 ≤ lam →
+      ((∀ q : XiZeroCopy,
+          |(xiSpectralPoint q).im| ≤ lam) →
+        xiMassTraceLineGrowth (a := a) ha lam) ∧
+      (xiMassTraceLineGrowth (a := a) ha lam →
+        ∀ q : XiZeroCopy,
+          9 * (xiSpectralPoint q).im ^ 2 ≤
+            (9 + a ^ 2) * lam ^ 2)
 
 /-- **Bifiltered ramified-character boundary law.** The Riemann source
 cannot be faithfully reduced to one additive grading or one analytic
@@ -761,6 +819,10 @@ theorem xiRamifiedSingularBoundary_law :
     ⟨arithmeticJuliaNormalConeUniversality.1,
       arithmeticJuliaNormalConeUniversality.2.1,
       arithmeticJuliaNormalConeUniversality.2.2.1⟩
+  differentialParityResolution :=
+    xiDifferentialParityResolved_law
+  noFiniteLocalOrientationFrame :=
+    fun ha => not_XiFiniteLocalPolynomialSpectralFrame_of_pos ha
   ramifiedDivisorCharacter :=
     xiRamifiedDivisorCharacter_law
   quadraticCharacterCompression :=
@@ -777,6 +839,9 @@ theorem xiRamifiedSingularBoundary_law :
     exact
       xiSpectralApertureSpectrum_eq_Ici_projectiveReflectionRadius
         htau hL hN
+  massTraceDistortion := by
+    intro a lam ha hlam
+    exact xiMass_gradedTrace_zeroFreeDistortionUniversality ha hlam
 
 /-- Critical activation certificate showing why its divisor transport cannot
 be compressed into a finite recurrence or bounded positive Gram completion. -/

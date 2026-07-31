@@ -115,6 +115,65 @@ theorem integral_sin_mul_exp (h : |gamma.im| < s.re) :
   linear_combination (-(2 * gamma * s ^ 2)) * Complex.I_sq
 
 
+
+/-! ## Shifted sine kernel -/
+
+theorem integrableOn_sin_mul_exp_Ioi (h : |gamma.im| < s.re) (T : ℝ) :
+    IntegrableOn (fun t : ℝ => Complex.sin (gamma * t) * Complex.exp (-s * t))
+      (Ioi T) := by
+  have h1 := integrableOn_exp_mul_complex_Ioi (laplace_exp_re_neg_left h) T
+  have h2 := integrableOn_exp_mul_complex_Ioi (laplace_exp_re_neg_right h) T
+  have hint : IntegrableOn
+      (fun t : ℝ =>
+        (Complex.exp ((-(gamma * Complex.I) - s) * t) -
+          Complex.exp ((gamma * Complex.I - s) * t)) * Complex.I / 2)
+      (Ioi T) := ((h1.sub h2).mul_const Complex.I).div_const 2
+  refine hint.congr_fun ?_ measurableSet_Ioi
+  intro t _
+  exact (sin_mul_exp_eq gamma s t).symm
+
+/-- **Shifted sine Laplace kernel.** Starting the damped sine integral at time `T` keeps the
+resolvent denominator and produces the phase numerator `s sin (gamma T) + gamma cos (gamma T)`,
+which equals `gamma` at the resolvent poles. -/
+theorem integral_sin_mul_exp_Ioi (h : |gamma.im| < s.re) (T : ℝ) :
+    (∫ t in Ioi T, Complex.sin (gamma * t) * Complex.exp (-s * t)) =
+      Complex.exp (-s * T) *
+        (s * Complex.sin (gamma * T) + gamma * Complex.cos (gamma * T)) /
+          (s ^ 2 + gamma ^ 2) := by
+  have hleft := laplace_exp_re_neg_left h
+  have hright := laplace_exp_re_neg_right h
+  have h1 := integrableOn_exp_mul_complex_Ioi hleft T
+  have h2 := integrableOn_exp_mul_complex_Ioi hright T
+  have hcongr : (∫ t in Ioi T, Complex.sin (gamma * t) * Complex.exp (-s * t)) =
+      ∫ t in Ioi T,
+        (Complex.exp ((-(gamma * Complex.I) - s) * t) -
+          Complex.exp ((gamma * Complex.I - s) * t)) * Complex.I / 2 :=
+    setIntegral_congr_fun measurableSet_Ioi (fun t _ => sin_mul_exp_eq gamma s t)
+  rw [hcongr, integral_div, integral_mul_const, integral_sub h1 h2,
+    integral_exp_mul_complex_Ioi hleft, integral_exp_mul_complex_Ioi hright]
+  have hane : (-(gamma * Complex.I) - s) ≠ 0 := fun hz => by
+    rw [hz] at hleft; simp at hleft
+  have hbne : (gamma * Complex.I - s) ≠ 0 := fun hz => by
+    rw [hz] at hright; simp at hright
+  have hsq := sq_add_sq_ne_zero h
+  have hexp1 : Complex.exp ((-(gamma * Complex.I) - s) * T) =
+      Complex.exp (-s * T) * Complex.exp (-(gamma * T) * Complex.I) := by
+    rw [← Complex.exp_add]
+    congr 1
+    ring
+  have hexp2 : Complex.exp ((gamma * Complex.I - s) * T) =
+      Complex.exp (-s * T) * Complex.exp (gamma * T * Complex.I) := by
+    rw [← Complex.exp_add]
+    congr 1
+    ring
+  rw [hexp1, hexp2, Complex.sin, Complex.cos]
+  field_simp
+  ring_nf
+  linear_combination
+    (Complex.exp (-s * T) * Complex.exp (-(gamma * T) * Complex.I) * gamma * s ^ 2 -
+      Complex.exp (-s * T) * Complex.exp (gamma * T * Complex.I) * gamma * s ^ 2) *
+      Complex.I_sq
+
 /-! ## Termwise Laplace transform of the wave trace -/
 
 namespace WaveSpectrum

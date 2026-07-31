@@ -10,7 +10,7 @@
   - `arithmetic-stokes-bockstein-universality-law.md`;
   - `../2-fully-proven/prime-valuation-kakutani-polar-third-completion.md`;
   - `../3-formalized/deninger-unitary-flow-riesz-eigenfunctional-purity.md`;
-  - `../2-fully-proven/not_new_scientific_knowledge/source-exceptional-principal-parts-cartier-bridge.md`.
+  - `../3-formalized/not_new_scientific_knowledge/source-exceptional-principal-parts-cartier-bridge.md`.
 - **Statement:** The ordinary-prime Euler--Gamma/co-Poisson boundary carries a source-defined
   invariant transverse half-density. Its modular cocycle on the exceptional Cartier fibre is the
   conserved Riemann horizontal character. Invariance makes every prime-clock isotropy value one

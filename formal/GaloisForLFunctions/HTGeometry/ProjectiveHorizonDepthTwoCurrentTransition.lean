@@ -450,7 +450,7 @@ theorem projectiveJetCurrentF_freeCoordinate
   split_ifs <;> simp
 
 /-- Every free rational jet coordinate is nonzero. -/
-theorem freeCoordinate_ne_zero
+theorem freeCoordinate_rationalField_ne_zero
     {C σ : Type*} [Field C] (i : σ) :
     freeCoordinate C σ i ≠ 0 := by
   intro h
@@ -482,7 +482,7 @@ theorem projectiveJetCurrentF_zero_schwarzian
     Derivation.leibniz_pow, smul_eq_mul,
     projectiveJetCurrentF_freeCoordinate]
   simp [projectiveJetSquareCoeff, Finset.sum_range_succ, freeCoordinate]
-  field_simp [freeCoordinate_ne_zero (C := C) (σ := ℕ) 1]
+  field_simp [freeCoordinate_rationalField_ne_zero (C := C) (σ := ℕ) 1]
   ring
 
 /-- The third translation current detects the normalized Schwarzian, so it is nonconstant. -/
@@ -495,7 +495,7 @@ theorem projectiveJetCurrentE_three_schwarzian
     (freeCoordinateDerivation C ℕ 3).leibniz_div,
     Derivation.leibniz_pow,
     freeCoordinateDerivation_freeCoordinate_of_ne]
-  field_simp [freeCoordinate_ne_zero (C := C) (σ := ℕ) 1]
+  field_simp [freeCoordinate_rationalField_ne_zero (C := C) (σ := ℕ) 1]
 
 /-- The normalized Schwarzian belongs to both depth-one current fields. -/
 theorem projectiveJetSchwarzian_mem_depthOneCurrentKernel_inf
@@ -534,7 +534,7 @@ theorem projectiveJetDepthOneCurrentKernel_inf_ne_bot
       _ = projectiveJetCurrentE C 3
           (algebraMap C (FreeCoordinateRationalField C ℕ) a) := congrArg _ ha.symm
       _ = 0 := (projectiveJetCurrentE C 3).map_algebraMap a
-  exact (inv_ne_zero (freeCoordinate_ne_zero (C := C) (σ := ℕ) 1)) hdetected
+  exact (inv_ne_zero (freeCoordinate_rationalField_ne_zero (C := C) (σ := ℕ) 1)) hdetected
 
 /-- **Sharp free-current phase transition.**  The depth-one meet contains a nonconstant
 Schwarzian invariant, whereas every equal depth at least two has scalar meet. -/
