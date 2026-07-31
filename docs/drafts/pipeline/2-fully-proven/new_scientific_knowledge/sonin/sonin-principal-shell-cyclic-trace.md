@@ -77,7 +77,7 @@ Let `I_a` be the concrete Sonin principal-relative ideal (exact projection corre
 physical/Fourier time-band blocks; every member is Schatten-1).  Call
 
 ```text
-T = s.operator + K,    s a canonical window state,   K in I_a           (5)
+T = s.operator + K,    s a canonical window state,   K in I_a          (5G)
 ```
 
 a *principal-relative operator*.  Define
@@ -88,7 +88,7 @@ tilde_tau(T) = tau_a(s) + Tr(K).                                        (6)
 
 Then, unconditionally for every aperture `a>0`:
 
-1. **Directness.**  The presentation `(5)` is unique, so `(6)` depends only on `T`.
+1. **Directness.**  The presentation `(5G)` is unique, so `(6)` depends only on `T`.
 2. **Restriction.**  `tilde_tau` is `tau_a` on principal shells and the ordinary trace on `I_a`.
 3. **Closure.**  Principal-relative operators are closed under the genuine operator product; the
    exact residual
@@ -216,6 +216,50 @@ therefore cannot be produced by aperture refinement alone: refining a flag can o
 real extended trace, by exactly the successive-layer coupling energy.  Any surviving weld must
 obtain its lower bound from the archimedean conductor, not from the aperture tower.
 
+## Theorem J: the Burnol conductor as a concrete operator
+
+The Burnol layer in the corpus is stated for an abstract bounded position channel `M` subject to
+`[M, A_a] = 0`, and the only previously available way to satisfy that premise was to replace `M` by
+its Lüders block at one fixed cutoff.  That is aperture-local: the Lüders block is built from the
+very cutoff it commutes with, so a different aperture needs a different channel.
+
+Physical cutoffs commute with each other, so every finite real combination of them commutes with
+the whole cutoff family at once.  Take the combination whose value on the layer between `rᵏa` and
+`rᵏ⁺¹a` is `log(rᵏa)`:
+
+```text
+M(a,r,n) = sum_(k<n) log(r^k a) . (A_(r^(k+1) a) - A_(r^k a)).            (18)
+```
+
+Then, unconditionally:
+
+1. `M(a,r,n)` is bounded and self-adjoint, and `[M(a,r,n), A_c] = 0` for **every** `c`;
+2. `M(a,r,n)` multiplies the shell unit vector of the `k`-th layer by exactly `log(rᵏa)`, so it is
+   a genuine step logarithm of the position, and it is not the zero operator whenever
+   `log a != 0`;
+3. its conductor `H = M + JMJ`, with `J` the cosine-Fourier involution, is therefore a concrete
+   operator, and the Burnol cancellation identity
+   ```text
+   [M, R_c] = J [H, A_c] J                                                (19)
+   ```
+   together with the pointed and finite-rank Burnol Ward reflection laws hold for it at **every**
+   aperture `c` with the single fixed channel `(18)`.
+
+### Proof
+
+Two physical cutoffs multiply to the cutoff at the smaller radius in either order, so they commute
+and `(18)` commutes with every `A_c`; real coefficients and self-adjoint cutoffs give
+self-adjointness.  A shell unit vector of the `k`-th layer is fixed by every cutoff above the layer
+and annihilated by every cutoff below it, so in `(18)` every term with `j<k` and every term with
+`j>k` kills it and the `j=k` term returns it scaled by `log(rᵏa)`; a unit vector is nonzero, so a
+nonzero scalar forces `M != 0`.  Equation `(19)` and the Ward laws are the corpus's abstract
+identities with the premise now discharged by an actual operator.
+
+This makes the Burnol interface inhabited rather than merely consistent.  It does not yet compute
+the archimedean finite part, and it does not prove that the conductor cancels a divergence: `(18)`
+is a bounded truncation, and the unbounded logarithmic multiplier and its commutator bounds are
+still missing.
+
 ## Frontier effect
 
 Closed:
@@ -264,6 +308,9 @@ provisional pending expert/literature review.
 - [x] one-sided aperture flag law for the extended trace (Theorem H)
 - [x] reality of the aperture finite part
 - [x] proof that the aperture tower alone cannot supply the lower floor
+- [x] concrete Burnol conductor: a nonzero self-adjoint channel commuting with the whole cutoff
+      family, discharging the abstract position hypothesis at every aperture at once (Theorem J)
+- [ ] unbounded logarithmic multiplier and its commutator bounds
 - [ ] Burnol completion and completed lower floor
 
 ## Lean
@@ -292,11 +339,21 @@ provisional pending expert/literature review.
 | trace conjugation law | `ContinuousLinearMap.opTrace_adjoint` |
 | real trace of a self-adjoint operator | `ContinuousLinearMap.im_opTrace_eq_zero_of_adjoint_eq` |
 | `(17)` reality | `im_extendedTrace_soninApertureRestrictionDefectPresentation` |
+| `(18)` concrete channel | `evenLogShellChannel` |
+| J.1 universal commutation | `ccmCommutator_evenLogShellChannel_evenIndicatorCutoff` |
+| J.1 self-adjointness | `adjoint_evenLogShellChannel` |
+| J.2 logarithmic eigen-action | `evenLogShellChannel_apply_logShellUnit` |
+| J.2 nonvacuity | `evenLogShellChannel_ne_zero` |
+| J.3 conductor | `soninBurnolLogShellConductor` |
+| `(19)` concrete cancellation | `ccmCommutator_evenLogShellChannel_evenFourierCutoff` |
+| J.3 pointed Ward law | `pointedCutoffWardTrace_evenLogShellChannel_eq_burnolConductor` |
+| J.3 finite-packet Ward law | `finiteRankCutoffWardTrace_evenLogShellChannel_eq_burnolConductor` |
 
 Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninPrincipalRelativeCyclicExtension.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninApertureExtendedTraceFlagLaw.lean`,
-`formal/GaloisForLFunctions/HTGeometry/OperatorTraceAdjoint.lean`.
+`formal/GaloisForLFunctions/HTGeometry/OperatorTraceAdjoint.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninBurnolLogShellChannel.lean`.
 All declarations depend only on `propext`, `Classical.choice`, `Quot.sound`.
 
 Novelty split for Theorem G: `(7)` was already in the corpus
@@ -307,6 +364,11 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-07-31 — Burnol conductor made concrete.  Audit finding: the whole Burnol layer was an
+  uninhabited Prop interface, satisfiable only aperture-locally through Lüders pinching.  A step
+  logarithm built from the shell cutoffs commutes with the entire cutoff family, is self-adjoint,
+  acts on the k-th layer by log(r^k a), and is nonzero; every abstract Burnol identity now has a
+  nontrivial instance with one fixed channel.
 - 2026-07-31 — one-sided aperture flag law proved and formalized.  All three defects of a strict
   flag are presented at one base aperture, the logarithmic weights cancel as a coboundary, and the
   whole scalar defect is minus the successive-layer coupling energy.  Consequence: the aperture
