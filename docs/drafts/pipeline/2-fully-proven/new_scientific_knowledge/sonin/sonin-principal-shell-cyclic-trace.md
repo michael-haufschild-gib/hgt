@@ -539,6 +539,28 @@ that are not algebraic, and neither is in the corpus:
 
 Repeated algebraic restatement past this point produces equivalents, not progress.
 
+**Witness criterion, and the exact obstruction to using it.**  On a vector `w` supported inside
+`[-c,c]` the projection at `c` vanishes exactly, so
+
+```text
+Z w = Y w,        Y = (Q_a - Q_b) D_r Q_b,                                (39)
+```
+
+and hence `Z != 0` as soon as `Y` fails to annihilate some inner-band vector.  This moves the
+search onto `Y`, which the corpus already proves noncompact — so `Y != 0` outright.  What is *not*
+known is whether `Y` is nonzero **on the inner band** specifically.
+
+Tracing the natural candidates shows why that is hard, and names the missing tool.  For `w` a shell
+in the annulus `(b,c)`, `Y w = (Q_a - Q_b) D_r Q_b w`.  If `Q_b w` were still supported in `(b,c)`
+the dilation would send it to `(r b, r c)` or `(b/r, c/r)`, and in the crossing chamber `c < r a`
+neither meets `(a,b)`, so `Y w` would vanish.  But `Q_b w` is a Sonin vector: it is supported
+outside `[-b,b]` with no upper support bound, so the argument does not apply and the value is
+undetermined.
+
+The missing lemma is therefore precise: **support control for `Q_b` applied to an annulus-supported
+vector** — how far outside `(b,c)` the Sonin projection spreads it.  Nothing in the corpus bounds
+that, and it is the single input both a positive and a negative resolution would need.
+
 ### Proof
 
 Induction on the chain length from the three-point law, with the chamber hypothesis inherited
@@ -669,6 +691,8 @@ provisional pending expert/literature review.
 | `(35)` support restatement | `evenSoninApertureSuccessiveLayerTransition_eq_zero_iff_defect_mul_complement` |
 | `(36)` defect carried by `Q_b` | `evenSoninApertureRestrictionDefect_mul_evenCentralSoninProjection` |
 | `(37)` carrier form | `evenSoninApertureSuccessiveLayerTransition_eq_zero_iff_defect_mul_outer` |
+| `(39)` inner-band agreement | `evenSoninApertureSuccessiveLayerTransition_apply_of_indicatorCutoff_eq_self` |
+| witness criterion | `evenSoninApertureSuccessiveLayerTransition_ne_zero_of_lostTransition_apply_ne_zero` |
 
 Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninPrincipalRelativeCyclicExtension.lean`,
@@ -682,7 +706,8 @@ Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninBandSupportedDense.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninApertureFlagChain.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninInnerBandAnnihilation.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninApertureDefectSupport.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninApertureDefectSupport.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCouplingInnerBandCriterion.lean`.
 All declarations depend only on `propext`, `Classical.choice`, `Quot.sound`.
 
 Novelty split for Theorem G: `(7)` was already in the corpus
@@ -693,6 +718,11 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-07-31 — witness criterion proved and the missing analytic tool named.  On the inner band the
+  coupling equals the lost transition, so a nonzero value of the lost transition there settles it;
+  tracing the annulus candidates shows the obstruction is that the Sonin projection of an
+  annulus-supported vector has no upper support bound.  Support control for Q_b on annulus vectors
+  is the one input a resolution needs, either way.
 - 2026-07-31 — algebra exhausted on the coupling.  The closed form of the defect turns the carrier
   condition into Q_b D_r Z = 0, which is equivalent to Z = 0 again: the reduction has closed a loop.
   Further rearrangement yields equivalents, not progress; what is needed is an explicit witness or a
