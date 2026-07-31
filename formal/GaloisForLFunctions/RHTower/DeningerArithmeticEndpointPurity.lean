@@ -46,6 +46,53 @@ theorem deningerTheta2_eq_id_of_theta0_eq_zero_of_endpointPairing
   simp only [htheta0, LinearMap.zero_apply, map_zero, zero_add] at h
   simp only [map_sub, LinearMap.id_apply, h, sub_self]
 
+/-- A pairing whose second-variable transpose is bijective separates the top module. -/
+theorem endpointPairing_separating_of_bijective
+    (pair02 : A0 →ₗ[R] A2 →ₗ[R] R)
+    (hperf : Function.Bijective pair02.flip) :
+    ∀ z : A2, (∀ x : A0, pair02 x z = 0) → z = 0 := by
+  intro z hz
+  have h0 : pair02.flip z = 0 := by
+    ext x
+    simpa using hz x
+  have hz0 : pair02.flip z = pair02.flip 0 := by simpa using h0
+  exact hperf.injective hz0
+
+/-- Perfect endpoint duality identifies the top module with the dual of the bottom module. -/
+noncomputable def endpointTopDualEquiv
+    (pair02 : A0 →ₗ[R] A2 →ₗ[R] R)
+    (hperf : Function.Bijective pair02.flip) :
+    A2 ≃ₗ[R] Module.Dual R A0 :=
+  LinearEquiv.ofBijective pair02.flip hperf
+
+/-- Perfect duality against a rank-one free bottom module makes the top module rank-one free. -/
+noncomputable def endpointTopEquiv
+    (pair02 : A0 →ₗ[R] A2 →ₗ[R] R)
+    (hperf : Function.Bijective pair02.flip)
+    (e : A0 ≃ₗ[R] R) :
+    A2 ≃ₗ[R] R :=
+  (endpointTopDualEquiv pair02 hperf).trans
+    ((e.dualMap).symm.trans (LinearMap.ringLmapEquivSelf R R R))
+
+/-- **Endpoint purity.**  A vanishing bottom generator together with a perfect weight-one endpoint
+pairing against a rank-one free bottom module forces the top module to be rank-one free and its
+generator to be the identity; this is the statement `H² ≃ R(-1)`. -/
+theorem deningerEndpointPurity
+    (theta0 : Module.End R A0)
+    (theta2 : Module.End R A2)
+    (pair02 : A0 →ₗ[R] A2 →ₗ[R] R)
+    (hTheta :
+      ∀ x z,
+        pair02 (theta0 x) z + pair02 x (theta2 z) =
+          pair02 x z)
+    (htheta0 : theta0 = 0)
+    (hperf : Function.Bijective pair02.flip)
+    (e : A0 ≃ₗ[R] R) :
+    theta2 = LinearMap.id ∧ Nonempty (A2 ≃ₗ[R] R) :=
+  ⟨deningerTheta2_eq_id_of_theta0_eq_zero_of_endpointPairing theta0 theta2 pair02 hTheta htheta0
+      (endpointPairing_separating_of_bijective pair02 hperf),
+    ⟨endpointTopEquiv pair02 hperf e⟩⟩
+
 end EndpointPurity
 
 end RHTower

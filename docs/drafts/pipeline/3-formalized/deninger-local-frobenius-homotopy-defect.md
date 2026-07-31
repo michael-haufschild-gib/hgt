@@ -1,7 +1,7 @@
 # Local Frobenius homotopy-defect cocycle
 
 - **ID:** `deninger-local-frobenius-homotopy-defect`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Label:** `DAC_LOCAL_FROBENIUS_HOMOTOPY_DEFECT`
 - **Parent:** `deninger-frobenius-coherence-defect-spectrum`
@@ -13,8 +13,8 @@
 - [x] Dependency-closed paper proof
 - [x] Lean source written:
   `RHTower/DeningerArithmeticFrobeniusHomotopyDefect.lean`
-- [ ] Direct `lake env lean` check after external build saturation clears
-- [ ] Final module build and formal-pipeline lint
+- [x] Direct `lake env lean` check
+- [x] Final module build; equation `(6)` (commutation defect) also formalized
 
 ## Setup
 
@@ -97,10 +97,27 @@ objects that a nonproper invariant-sheaf realization can retain.
 This theorem does not prove that the defects are nonzero or that their
 spectrum is the zeta divisor.
 
-**Verdict:** `FULLY PROVEN ON PAPER; LEAN SOURCE WRITTEN, DIRECT CHECK
-DEFERRED DURING EXTERNAL BUILD SATURATION`.
+**Verdict:** `FULLY PROVEN ON PAPER; UNCONDITIONALLY FORMALIZED IN LEAN`.
 
 ## Log
 
 - 2026-07-26 — Derived from multiplicativity of Frobenius and local
   scalar null-homotopies.  No zeta data or positivity premise occurs.
+
+## Unconditional Lean formalization
+
+`formal/GaloisForLFunctions/RHTower/DeningerArithmeticFrobeniusHomotopyDefect.lean`
+
+- `deningerHomotopyBoundary d h = d h + h d` — the endomorphism-complex boundary of `(2)`.
+- `deningerFrobeniusHomotopyDefect F a h m n = h_{mn} - F_m h_n - a_n h_m` — equation `(3)`.
+- `deningerCompositeHomotopy_boundary` — `δ(F_m h_n + a_n h_m) = F_{mn} - a_{mn}`, the
+  computation at the heart of the Proof section.
+- `deningerFrobeniusHomotopyDefect_boundary` — equation `(4)`, `δc_{m,n} = 0`.
+- `deningerFrobeniusHomotopyDefect_cocycle` — equation `(5)`, the multiplicative two-cocycle law.
+- `deningerFrobeniusCommutationDefect` and `deningerFrobeniusCommutationDefect_boundary` —
+  equation `(6)`: for a commuting pair the two factor orders differ by a closed defect
+  `b_{m,n} = F_m h_n + a_n h_m - F_n h_m - a_m h_n`, obtained as the difference of two
+  homotopies with the same boundary.
+
+Centrality of the scalars and commutation of `F` with `d` appear as explicit hypotheses, so no
+ambient commutativity is assumed.  Axiom audit: `propext` only.

@@ -1,7 +1,7 @@
 # Complex-leaf prime-orbit sign
 
 - **ID:** `deninger-complex-leaf-prime-orbit-sign`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Label:** `DAC_COMPLEX_LEAF_PRIME_ORBIT_SIGN`
 - **Parent:** `deninger-arithmetic-lefschetz-determinant-comparison`
@@ -13,9 +13,10 @@
 - [x] Dependency-closed paper proof
 - [x] Lean scalar determinant core written:
   `RHTower/DeningerArithmeticComplexLeafOrbitSign.lean`
-- [ ] Direct `lake env lean` check after external build saturation clears
-- [ ] Formalize the bridge from complex multiplication to the real
-  two-plane determinant after the arithmetic leaf tangent bundle exists
+- [x] Direct `lake env lean` check and module build
+- [x] Bridge from complex multiplication to the real two-plane determinant
+  (`det_complexLeafReturn`, `det_id_sub_complexLeafReturn`); the arithmetic leaf tangent bundle
+  remains an input of the source gate, not of this computation
 
 ## Theorem
 
@@ -83,3 +84,26 @@ REDUCED TO FOUR GEOMETRIC CHECKS`.
 
 - 2026-07-26 — Extracted from Deninger's leafwise Lefschetz sign formula
   and the one-complex-dimensional Kähler leaf requirement.
+
+## Unconditional Lean formalization
+
+`formal/GaloisForLFunctions/RHTower/DeningerArithmeticComplexLeafOrbitSign.lean`
+
+- `deningerComplexLeaf_returnDet_eq_normSq`, `deningerComplexLeaf_returnDet_pos` — the scalar
+  coordinate identity `(1 - Re a)² + (Im a)² = |1 - a|²` and its positivity for `a ≠ 1`.
+- `complexLeafReturn a : ℂ →ₗ[ℝ] ℂ` — multiplication by `a` as a genuine real-linear
+  endomorphism of the complex line.
+- `det_complexLeafReturn` — **the bridge to the real two-plane determinant**: in the oriented
+  real basis `1, i` the matrix is `[[Re a, -Im a], [Im a, Re a]]` and
+  `LinearMap.det (complexLeafReturn a) = normSq a`.
+- `id_sub_complexLeafReturn`, `det_id_sub_complexLeafReturn` — `1 - A` is again complex-linear
+  and `det_ℝ (1 - A) = (1 - Re a)² + (Im a)²`, which is equation `(1)`.
+- `det_id_sub_complexLeafReturn_pos`, `sign_det_id_sub_complexLeafReturn` — equation `(2)`,
+  `sgn det_ℝ (1 - A) = +1` for every nondegenerate `a ≠ 1`.
+- `complexLeafReturn_pow`, `sign_det_id_sub_complexLeafReturn_pow` — the same for every iterate:
+  the `k`-th iterate is multiplication by `a ^ k`, so `a ^ k ≠ 1` already forces the sign.
+
+The four geometric checks listed under "Exact remaining source gate" are untouched; they are
+inputs to the arithmetic realization, not to this determinant computation.
+
+Axiom audit: `propext, Classical.choice, Quot.sound`.

@@ -1,7 +1,7 @@
 # Diagonal power-relation Leibniz law
 
 - **ID:** `deninger-diagonal-power-relation-leibniz`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Label:** `DAC_DIAGONAL_POWER_RELATION_LEIBNIZ`
 - **Parent:** `deninger-diagonal-arithmetic-localization-descent`
@@ -13,8 +13,8 @@
 - [x] Paper proof
 - [x] Lean source written:
   `RHTower/DeningerArithmeticDiagonalPowerRelation.lean`
-- [ ] Direct `lake env lean` check after external build saturation clears
-- [ ] Final module build and formal-pipeline lint
+- [x] Direct `lake env lean` check
+- [x] Final module build (`lake build GaloisForLFunctions.RHTower.DeningerArithmeticDiagonalPowerRelation`)
 
 ## Statement
 
@@ -92,3 +92,25 @@ HIGHER-SYZYGY OBSTRUCTION TO PRIME-INDEXED DESCENT`.
 
 - 2026-07-26 — Extracted the universal telescoping law for diagonal
   suspension/Frobenius relations.
+
+## Unconditional Lean formalization
+
+`formal/GaloisForLFunctions/RHTower/DeningerArithmeticDiagonalPowerRelation.lean`
+
+- `deningerDiagonalPowerRelation T F n = T n - F n` — equation `(2)`.
+- `deningerDiagonalPowerRelation_mul` — equation `(3)`, the Leibniz law
+  `Δ_{mn} = T_m Δ_n + Δ_m F_n`, with no commutation hypothesis between the two families.
+- `deningerDiagonalPowerRelation_factorOrder_syzygy` — the two factorizations of one composite
+  relation, i.e. the prime–prime syzygy noted in the Consequence section.
+- `deningerPrimeRelationSubgroup T F n` — the additive subgroup of two-sided combinations
+  `a Δ_p b` over primes `p ∣ n`, i.e. the module `∑_{p ∣ n} A Δ_p A` of equation `(4)`.
+- `deningerPrimeRelationSubgroup_mono`, `deningerPrimeRelationSubgroup_mul_left_mem` — the
+  divisor monotonicity and left-ideal property used by the induction.
+- `deningerDiagonalPowerRelation_mem_primeRelationSubgroup` — equation `(4)`: for multiplicative
+  families normalized at `1` (monoid homomorphisms `ℕ →* A`), every positive integer satisfies
+  `Δ_n ∈ ∑_{p ∣ n} A Δ_p A`.  Strong induction on `n`, splitting off one prime factor by the
+  Leibniz law; the `T_p Δ_k` term stays inside the subgroup by the left-ideal property and the
+  `Δ_p F_k` term is a generator.
+
+Axiom audit: `propext, Classical.choice, Quot.sound` (the two Leibniz identities use only
+`propext`).

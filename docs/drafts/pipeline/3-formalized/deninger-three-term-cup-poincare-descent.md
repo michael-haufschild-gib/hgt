@@ -1,7 +1,7 @@
 # Three-term cup product and Poincaré descent
 
 - **ID:** `deninger-three-term-cup-poincare-descent`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Parent:** `deninger-three-term-arithmetic-cohomology`
 - **Statement:** A degree-two cochain pairing satisfying graded differential adjunction descends
@@ -18,8 +18,7 @@ must prove at chain level.
 
 - [x] 0 → 1 in-progress: source-pure statement and falsifiable hypotheses
 - [x] 1 → 2 fully-proven: dependency-closed proof below
-- [ ] 2 → 3 formalized: `DeningerArithmeticThreeTermCupDescent.lean` written; direct Lean
-      check pending shared-process drain
+- [x] 2 → 3 formalized: `DeningerArithmeticThreeTermCupDescent.lean` checks and builds
 - [ ] 3 → 4 publication-ready: instantiate on arithmetic coefficient complex
 
 ## Theorem
@@ -138,3 +137,24 @@ perfectness theorem; nondegeneracy cannot be inferred merely from a nonzero trac
 - 2026-07-26 — unconditional generic Lean module written for endpoint descent, middle
   two-variable quotient descent, skewness, and exact radical/separation equivalence.  No build
   launched while shared Lean load is saturated.
+
+## Unconditional Lean formalization
+
+`formal/GaloisForLFunctions/RHTower/DeningerArithmeticThreeTermCupDescent.lean` checks with
+`lake env lean` and builds; axiom audit `propext, Classical.choice, Quot.sound`.
+
+- `DeningerArithmeticThreeTermCupPairing` — the chain data: `pair02`, `pair11`, the differential
+  adjunction `(1)` and the skewness `(2)`.
+- `boundaries2_le_pair02_ker`, `pairH02`, `pairH02Linear`, `pairH02Linear_mkQ` — clause 1,
+  equation `(3)`: `b₀₂` descends to `H⁰ × H²`.
+- `boundaries1_le_pairCycles11_ker`, `pairH11Left`, `cycles1ToH1Dual`,
+  `boundaries1_le_cycles1ToH1Dual_ker`, `pairH11`, `pairH11_mkQ_mkQ` — clause 2, equation `(4)`,
+  including the two-variable descent through `(5)` `B¹ ⊆ Rad_L ∩ Rad_R`.
+- `pairH11_skew` — clause 3.
+- `radical1`, `pairH11_separating_iff_radical1_eq_boundaries1` — the exact criterion `(6)`:
+  the descended middle pairing separates exactly when the cochain radical equals `B¹`.
+- `DeningerArithmeticThreeTermWeightOneCup`, `endpoint_weight_on_cohomology`,
+  `middle_weight_on_cohomology`, `thetaH2_eq_id` — the flow-compatibility half
+  `DAC_THREE_TERM_CUP_FLOW_DESCENT`, equation `(7)` and its descent.
+
+All four arithmetic obligations remain hypotheses of the Lean statements, as the card requires.

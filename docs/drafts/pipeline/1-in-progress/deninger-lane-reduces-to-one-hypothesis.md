@@ -798,3 +798,44 @@ algebra, and the Δ-vanishing iff. This is the first statement in the lane whose
   (`DeningerDivisorSchwarzMonodromy.lean`, 6 capstone theorems, axiom-clean). Corpus check
   first: `xi_divisor_conj`/`xiZeroConjEquiv` existed; the copy lift, gauges, and monodromy did
   not. Recorded the defect-transported trace Δ(z) as the designed next construction.
+
+## 14. The defect trace is built and it detects RH — §13.1 executed
+
+`RHTower/DeningerDivisorDefectTrace.lean` — built green, umbrella-registered, zero warnings,
+all capstones axiom-clean `[propext, Classical.choice, Quot.sound]`:
+
+- `xiSpectralPoint_sub_conj` — the defect-trace twist factor **is** the Ward displacement factor
+  rotated by `I`: `μ - conj μ = I·(λ_{Rq} - conj λ_q)`. The trace is formally the Ward defect
+  summed against the resolvent-cube test family.
+- `deningerDivisorDefectTerm/Trace` with `summable_norm_/summable_deningerDivisorDefectTerm` —
+  absolutely convergent at **every** `z ∈ ℂ`, unconditionally (the cube is the smallest power
+  the `Σ 1/‖μ‖²` budget affords after the `|μ - conj μ| ≤ 2|μ|` twist).
+- `deningerDivisorDefectTrace_eq_zero_of_riemannHypothesis` — termwise reality on the line.
+- `exists_deningerDivisorDefectTrace_ne_zero_of_offline` — **the pole-extraction detection
+  theorem, in full**: a non-real spectral point `μ₀` is isolated
+  (`exists_xiSpectralPoint_separation`, from local finiteness of the divisor transported through
+  the spectral isometry), the `μ₀`-block contributes `card·(μ₀ - conj μ₀)·(μ₀ - z)⁻³` (block
+  finiteness derived *from summability itself* via `summable_const_iff`, not assumed), every
+  other copy is dominated by one `z`-independent majorant `C/‖μ‖²`, and `z = μ₀ + t` with `t³`
+  below `‖μ₀ - conj μ₀‖/(4(M+1))` makes the block beat the tail.
+- `deningerDivisorDefectTrace_eq_zero_iff_riemannHypothesis` — **`(∀ z, Δ(z) = 0) ⟺ RH`**.
+
+What this adds beyond §12–§13: the Ward debt now has an *analytic carrier* — a single
+everywhere-defined, absolutely convergent trace whose identical vanishing is RH, built from two
+unconditional ingredients (the Ward twist, the resolvent family of the Lefschetz trace). The
+remaining arithmetic step of §13.1 — expressing the *holomorphic half* `Σ' μ(μ-z)⁻³` through
+`T = logDeriv XiC` by partial fractions and hence through the prime side — is bookkeeping on top
+of `deningerResolventLefschetzTrace`; the honest hard step (detection) is done. The wall itself
+is unchanged and stated plainly: nothing here evaluates `Δ`; it locates the debt in one
+concrete analytic object.
+
+## Log (continued)
+
+- 2026-07-31 (Claude, third pass): executed the §13.1 design. Built the defect trace
+  `Δ(z) = Σ'(μ - conj μ)((μ - z)⁻¹)³`: unconditional summability at every base point, the twist
+  = Ward displacement (formal bridge lemma), RH ⟹ Δ ≡ 0 termwise, and the full pole-extraction
+  proof of the converse — spectral separation from divisor local finiteness, block finiteness
+  from summability, uniform complement majorant, explicit test point. Capstone:
+  `(∀ z, Δ z = 0) ⟺ RiemannHypothesis`, axiom-clean. One real slip caught by the compiler: the
+  near-regime ball radius had to be `2‖μ₀‖ + 4`, not `+2` (the compiler's linarith failure was
+  the arithmetic telling the truth).

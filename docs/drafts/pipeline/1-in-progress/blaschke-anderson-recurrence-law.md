@@ -421,12 +421,30 @@ proved in `BlaschkeLocalizedInfinitePhaseQuantile.lean`.  At water level
 `blaschkeDepthWaterEntropy a L` exactly, and the full countable early-hit
 probability pays that exact exponent.
 
+The scale-wise lower clock is now proved in
+`BlaschkeLocalizedEarlyReturnClock.lean`.  For shifted scales
+\(L_k=k+K\), every fixed positive fractional gap below the quadratic
+spectral-depth clock gives a polynomial-times-Gaussian early-hit budget.
+First Borel--Cantelli therefore yields eventual almost-sure avoidance
+without independence across clocks or scales.  The same module proves that
+every finite head of countable product Haar is exactly finite product Haar
+and supplies the explicit integer deadline
+\[
+ \left\lfloor
+ \exp\!\left((1-\delta)
+ \frac{(L_k-c)^2}{4\rho}-L_k\right)
+ \right\rfloor .
+\]
+Thus the lower-clock statement is no longer conditional on an abstract
+finite-marginal domination input in the Haar ensemble.
+
 Direct foreground Lean checks pass. `#print axioms` for audited new
 load-bearing theorems reports only `propext`, `Classical.choice`, and
 `Quot.sound`.
 
 Operator construction, anisotropic counting, the Blaschke asymptotic
-specialization of the canonical constructive ceiling, Borel--Cantelli
-interpolation, and the almost-sure first-return asymptotic remain Lean-open.
-Nothing beyond the listed proved claims is manuscript-authorized until
-formalized. Manuscript must not mention the formalization.
+specialization of the canonical constructive ceiling, interpolation from
+integer logarithmic scales to all target accuracies, and the matching
+almost-sure first-return asymptotic remain Lean-open. Nothing beyond the
+listed proved claims is manuscript-authorized until formalized. Manuscript
+must not mention the formalization.

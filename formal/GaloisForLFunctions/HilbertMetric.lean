@@ -48,6 +48,8 @@ import GaloisForLFunctions.HilbertMetric.HilbertLineCommutatorCurvature
 import GaloisForLFunctions.HilbertMetric.QuadraticGraphFockConnector
 import GaloisForLFunctions.HilbertMetric.CCRCompletionWitness
 import GaloisForLFunctions.HilbertMetric.CharacterIntertwinerObstruction
+import GaloisForLFunctions.HilbertMetric.CCRScaleCalibration
+import GaloisForLFunctions.HilbertMetric.PremiseWitnesses
 
 /-!
 # Hilbert-metric theorem area

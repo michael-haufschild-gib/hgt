@@ -1,7 +1,7 @@
 # Three-term arithmetic cohomology and transverse flow
 
 - **ID:** `deninger-three-term-arithmetic-cohomology`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Parent:** `deninger-derived-mw-rational-witt-coefficient`
 - **Statement:** Every three-term coefficient complex has canonical \(H^0,H^1,H^2\), and
@@ -17,8 +17,8 @@ It does not identify an analytic Xi quotient with arithmetic cohomology.
 
 - [x] 0 → 1 in-progress: source-pure statement and direct proof
 - [x] 1 → 2 fully-proven: dependency-closed proof below
-- [ ] 2 → 3 formalized: direct Lean check of
-  `DeningerArithmeticThreeTermCohomology.lean`
+- [x] 2 → 3 formalized: `DeningerArithmeticThreeTermCohomology.lean` checks and builds; all four
+  preservation items and the three induced generators are Lean declarations
 - [ ] 3 → 4 publication-ready: integrated with coefficient construction
 
 ## Theorem
@@ -97,3 +97,21 @@ exact cohomological output but does not assume it.
 
 - 2026-07-26 — paper proof completed; Lean module written, direct check deferred while other
   workspace tasks occupy Lean processes.
+
+## Unconditional Lean formalization
+
+`formal/GaloisForLFunctions/RHTower/DeningerArithmeticThreeTermCohomology.lean` builds and its
+axiom audit is `propext, Classical.choice, Quot.sound`.
+
+- `DeningerArithmeticThreeTermComplex` — the data of `(1)`, with `d1_comp_d0 : d¹ ∘ d⁰ = 0`.
+- `cycles0`, `cycles1`, `boundaries1`, `boundaries2`, and `boundaries1_le_cycles1` — the
+  well-definedness `im d⁰ ⊆ ker d¹` of `(2)`.
+- `H0`, `H1`, `H2` — the three groups of `(2)`, with `H1_mk_eq_zero_iff`, `H2_mk_eq_zero_iff`.
+- `DeningerArithmeticThreeTermFlow` — the commuting transverse generator of `(3)`.
+- The four preservation claims: `thetaH0` (item 1, `Θ₀ ker d⁰ ⊆ ker d⁰`), `thetaCycles1`
+  (item 2), `thetaCycles1_mem_boundaries` (item 3), `theta2_mem_boundaries` (item 4).
+- `thetaH1`, `thetaH2` (with `thetaH1_mk`, `thetaH2_mk`) — the canonically induced endomorphisms
+  on all three groups.
+
+Everything is stated for an arbitrary commutative ring and arbitrary modules; the arithmetic
+coefficient complex remains a hypothesis, exactly as the card's Goal requires.

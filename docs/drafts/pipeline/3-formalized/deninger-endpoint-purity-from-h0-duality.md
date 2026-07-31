@@ -1,7 +1,7 @@
 # Endpoint purity from \(H^0\) and Poincaré duality
 
 - **ID:** `deninger-endpoint-purity-from-h0-duality`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Parent:** `deninger-three-term-cup-poincare-descent`
 - **Statement:** One-dimensional \(H^0\) with trivial flow and perfect weight-one endpoint
@@ -17,8 +17,8 @@ preserve it and supply perfect endpoint duality.
 
 - [x] 0 → 1 in-progress: exact hypotheses isolated
 - [x] 1 → 2 fully-proven: dependency-closed proof below
-- [ ] 2 → 3 formalized: direct Lean check of
-  `DeningerArithmeticEndpointPurity.lean`
+- [x] 2 → 3 formalized: `DeningerArithmeticEndpointPurity.lean` builds; both halves of the
+  theorem (`Θ₂ = 1` and `H² ≃ R`) are Lean theorems
 - [ ] 3 → 4 publication-ready: instantiate on the arithmetic coefficient complex
 
 ## Theorem
@@ -88,3 +88,23 @@ Once these hold, the expected top cohomology and its generator are consequences.
 ## Log
 
 - 2026-07-26 — endpoint weight reduced to \(H^0\) preservation plus perfect duality.
+
+## Unconditional Lean formalization
+
+`formal/GaloisForLFunctions/RHTower/DeningerArithmeticEndpointPurity.lean`
+
+- `deningerTheta2_eq_id_of_theta0_eq_zero_of_endpointPairing` — equation `(2)`: a vanishing
+  bottom generator and a separating weight-one endpoint pairing force `Θ₂ = 1`.
+- `endpointPairing_separating_of_bijective` — perfectness (bijectivity of the second-variable
+  transpose `pair02.flip`) supplies exactly the separation the forcing argument needs.
+- `endpointTopDualEquiv` — perfect duality identifies the top module with `(H⁰)^∨`.
+- `endpointTopEquiv` — composed with a rank-one bottom module, `H² ≃ R`.
+- `deningerEndpointPurity` — the full statement of the card: `Θ₂ = 1` together with
+  `H² ≃ R`, i.e. `H² ≃ R(-1)`.
+
+Everything is stated for an arbitrary commutative ring `R` and arbitrary `R`-modules; no
+arithmetic input, spectral hypothesis, positivity, or zeta information enters.  The arithmetic
+obligations listed under "Arithmetic input and consequence" remain exactly the hypotheses of the
+Lean theorem, as intended.
+
+Axiom audit: `propext, Classical.choice, Quot.sound`.

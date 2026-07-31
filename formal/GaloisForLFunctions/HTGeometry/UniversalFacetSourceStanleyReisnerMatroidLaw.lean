@@ -111,6 +111,60 @@ theorem UniversalFacetSource.stanleyReisnerLaurentDifferentialFamilyMatroid_eRk
       u d facets N
   exact congrArg (fun M : Matroid ι => M.eRk I) hmat
 
+/-- Every minimal dependence is the Stanley--Reisner one: a subset is a circuit of the
+source-represented matroid exactly when it is a circuit of the quotient-class matroid. -/
+theorem UniversalFacetSource.stanleyReisnerLaurentDifferentialFamilyMatroid_isCircuit_iff
+    (u : UniversalFacetSource)
+    {α ι : Type}
+    [Fintype α] [Fintype ι] [DecidableEq α] [DecidableEq ι]
+    (d : translationSubmonoid (Polynomial ℂ) α)
+    (facets : Finset (Finset α))
+    (N : ι → MvPolynomial α (Polynomial ℂ) ⧸
+      stanleyReisnerIdeal (Polynomial ℂ) facets)
+    (I : Set ι) :
+    let e := finiteVertexNatEmbedding α
+    let source : FiniteFinsuppRowIndex (stanleyReisnerLaurentRows d facets N) →
+        upperEndMeroField := fun q =>
+      boundedGaugeTranslatedPrimeLogUpperEnd universalFacetOrbitShift
+        u.1 (finiteFacetOrbitUniversalIndex e facets q.1)
+    (differentialFamilyMatroid (F := ℂ)
+        (differentialOperatorRowApply
+          (finiteFinsuppOperatorRows (stanleyReisnerLaurentRows d facets N)) source)).IsCircuit I ↔
+      (stanleyReisnerLaurentMatroid d facets N).IsCircuit I := by
+  classical
+  have hmat :=
+    UniversalFacetSource.stanleyReisnerLaurentDifferentialFamilyMatroid_eq
+      u d facets N
+  exact iff_of_eq (congrArg (fun M : Matroid ι => M.IsCircuit I) hmat)
+
+/-- Independence of every selected subfamily is exactly linear independence of the corresponding
+Stanley--Reisner quotient classes, so no source or orientation choice can change a single
+dependence relation. -/
+theorem UniversalFacetSource.stanleyReisnerLaurentDifferentialFamilyMatroid_indep_iff
+    (u : UniversalFacetSource)
+    {α ι : Type}
+    [Fintype α] [Fintype ι] [DecidableEq α] [DecidableEq ι]
+    (d : translationSubmonoid (Polynomial ℂ) α)
+    (facets : Finset (Finset α))
+    (N : ι → MvPolynomial α (Polynomial ℂ) ⧸
+      stanleyReisnerIdeal (Polynomial ℂ) facets)
+    (I : Set ι) :
+    let e := finiteVertexNatEmbedding α
+    let source : FiniteFinsuppRowIndex (stanleyReisnerLaurentRows d facets N) →
+        upperEndMeroField := fun q =>
+      boundedGaugeTranslatedPrimeLogUpperEnd universalFacetOrbitShift
+        u.1 (finiteFacetOrbitUniversalIndex e facets q.1)
+    (differentialFamilyMatroid (F := ℂ)
+        (differentialOperatorRowApply
+          (finiteFinsuppOperatorRows (stanleyReisnerLaurentRows d facets N)) source)).Indep I ↔
+      LinearIndependent (Polynomial ℂ) (fun i : I => N i) := by
+  classical
+  have hmat :=
+    UniversalFacetSource.stanleyReisnerLaurentDifferentialFamilyMatroid_eq
+      u d facets N
+  exact (iff_of_eq (congrArg (fun M : Matroid ι => M.Indep I) hmat)).trans
+    (stanleyReisnerLaurentMatroid_indep_iff d facets N I)
+
 end
 
 end GaloisForLFunctions.HTGeometry

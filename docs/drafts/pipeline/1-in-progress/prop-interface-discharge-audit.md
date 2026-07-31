@@ -1556,3 +1556,78 @@ The freeness argument only needed `Per ⊆ ℤ + ℤτ`; the exact group is now 
 the corpus quasi-periodicity `T_τ Ψ_θ = Ψ_θ − 2πi` iterated over `ℤ` and the nonvanishing of the
 defect off the lattice; and `meromorphicTranslationStabilizer_faceMero_one_surviving` transports it
 to every face with exactly one surviving parameter.
+
+## Re-audit, 2026-07-31: the mathlib-premise instrument re-run on `HilbertMetric`
+
+The instrument (`forallTelescope`, key each `Prop` binder by its head constant together with the set
+of `GaloisForLFunctions` constants occurring in it; a key counts as produced when some conclusion —
+with `∃`/`Nonempty` unwrapped — has the same head over a superset of those constants) was rebuilt
+and run over the built `HilbertMetric` environment: 1 265 project constants, 21 premise keys, 686
+conclusion keys, **13 unproduced**, none with more than two uses.
+
+The head of that list is the **scale calibration pair** of the CCR scale-sandwich law:
+`logarithmicScaleMean F₁ t = ccrMeanEnergy (A t)` and
+`logarithmicScaleVariance F₁ F₂ t = ccrNumberVariance (A t) (B t)`, consumed by four theorems and
+satisfied by nothing.  `HilbertMetric/CCRScaleCalibration.lean` (built, axioms clean, registered):
+
+* **`ccr_calibration_energy_law`** — the two calibrations are **one differential law of the family**.
+  Differentiating `t · F₁ t = ccrMeanEnergy (A t)` on the open half line gives
+  `ccrMeanEnergy (A ·)` the derivative `F₁ t + t F₂ t`, and the variance calibration says exactly
+  that this is `ccrNumberVariance (A t) (B t) / t`.  So a calibrated family is one whose mean energy
+  has logarithmic derivative equal to its number variance, and nothing about the log-volume survives
+  beyond that.
+* **`ccrNumberVariance_scalar_eq_ccrMeanEnergy`** — for scalar compressions with the mode-indexed
+  unit leakage the number variance *equals* the mean energy (both are `|n| · ∑ᵢ cᵢ²`), so the corpus
+  bound `variance ≤ |I| · mean` is attained exactly in one mode.  Sharpness of that bound was not
+  previously recorded.
+* **`exists_calibrated_ccrFamily`**, **`ccr_scaleSandwich_sqrtScalar`** — the `√t`-scaled scalar
+  compressions realize the calibration pair with the linear log-volume `F t = |n| · t`, giving the
+  first unconditional instance of the scale-sandwich law (both the logarithmic convexity and the
+  power-scale concavity), and showing the four consumers are non-vacuous.
+
+Remaining `HilbertMetric` rows, all with one or two uses: two `fullCCR`-block variants of the same
+calibration pair (the same realization should transport through `blockCCRTuple`), four
+inequality-shaped budget hypotheses (`gradedFockTransverseFanoMargin`, `quasiFreeSpectralBandBudget`,
+`quasiFreeSpectralFanoMargin`, `scalarLogCurvatureNumerator`), two non-degeneracy hypotheses
+(`GradedMultiIndex`, `matrixSelfCommutator`), one `LinearIndependent (evaluationRow)`, one
+`Filter.Eventually (finiteExponentialInnerGram)`, and one degree-five index inequality.
+
+### The instrument, corrected and persisted
+
+Two blind spots of the first version were closed, and the instrument now lives in the tree at
+`scripts/lean/audit_mathlib_premises.lean` (run it with the theorem-area umbrella as its import):
+
+- a conclusion contributes atoms through `∧` and through **both sides of an `↔`**, not only through
+  `∃`/`Nonempty`.  Without this, `exists_injective_evaluation_basis` (whose conclusion is
+  `∃ nodes, Injective nodes ∧ LinearIndependent …`) and the Fano strict-defect classification
+  (an `↔`) were invisible, and their premises were reported open;
+- atoms are read **under leading binders**, so a producer of the shape `∃ …, ∀ t, 0 < t → P` counts
+  for `P`.
+
+Both were false alarms of the first run: `LinearIndependent (evaluationRow …)` and
+`LT.lt (gradedFockTransverseFanoMargin …)` are produced.  Recorded so the next run does not
+re-raise them.
+
+**Measurement after the calibration discharge** (umbrella rebuilt, 1 281 project constants): 21
+premise keys, 719 conclusion atoms, **7 unproduced**, each with a single use — all four calibration
+rows are gone, confirmed by the instrument rather than by hand.  What remains in `HilbertMetric`:
+
+| uses | premise |
+|---:|---|
+| 1 | `Ne (GradedMultiIndex …)` |
+| 1 | `Ne (matrixSelfCommutator …)` |
+| 1 | `LT.lt (quasiFreeSpectralFanoMargin …)` (a negative Fano margin) |
+| 1 | `LT.lt (quasiFreeSpectralBandBudget …)` |
+| 1 | `Ne` on the degree-five normalized value matrix |
+| 1 | `LT.lt (scalarLogCurvatureNumerator …)`, i.e. `0 < z z₂ − z₁²` |
+| 1 | `Filter.Eventually (finiteExponentialInnerGram …)` |
+
+All seven are satisfiability rows — each asks for a witness rather than a theorem — and none is
+consumed more than once.
+
+### The full-tuple calibration, also realized
+
+`exists_calibrated_fullCCRTuple` — the invariant block tuple `blockCCRTuple` of the `√t`-scaled
+scalar compression with the mode-indexed unit leakage satisfies every premise of the block-interface
+scale-sandwich law, including both calibrations, via `blockCCRTuple_compressionBlock` and
+`blockCCRTuple_leakageBlock`.  Axioms clean.

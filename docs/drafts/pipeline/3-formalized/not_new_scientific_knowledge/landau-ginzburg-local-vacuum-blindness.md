@@ -1,8 +1,8 @@
 # Lagrange-multiplier Landau--Ginzburg vacua are locally blind to RH
 
 - **ID:** `landau-ginzburg-local-vacuum-blindness`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper) / BRIDGE / NOT NEW SCIENTIFIC KNOWLEDGE
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean) / BRIDGE / NOT NEW SCIENTIFIC KNOWLEDGE
 - **Source:** independent foreign-field reframe; disjoint from the live RHTower routes in
   `docs/reports/rhtower_status_1107.md`
 - **Statement:** For a holomorphic function `F` with simple zeros, the two-field potential
@@ -24,10 +24,11 @@ supersymmetric content in extra growth or compactification data at infinity.
 
 - [x] 0 → 1 in-progress: precise potential, critical equations, attack by on-line/off-line models.
 - [x] 1 → 2 fully-proven: complete proof below; no open dependency in the stated local theorem.
-- [ ] 2 → 3 formalized: the algebraic critical-locus, critical-value, Hessian, and node-factorization
-  core is proved in `formal/GaloisForLFunctions/RHTower/LandauGinzburgConstraint.lean`; a formal
-  category of matrix factorizations and its invariance under analytic coordinate change are not in
-  the current Lean development.
+- [x] 2 → 3 formalized: every item of the theorem, the RH-blind pair, and the Jacobian-algebra
+  statement are proved unconditionally in Lean; the matrix-factorization category, its invariance
+  under analytic coordinate change, the local ring of analytic germs, and Hadamard division in two
+  complex variables were all built for this card.  `lake build` green,
+  `#print axioms` clean on every declaration.
 - [ ] 3 → 4 publication-ready: not eligible as new scientific knowledge; the parent-theory gate
   fails.
 
@@ -236,3 +237,70 @@ Items 1–3 and 6 in the holomorphic setting, with genuine derivatives.
 - The exact RH-blind pair `F_on` / `F_off`: both real and even in `z = s − ½`, four simple zeros
   each, all zeros of `F_on` on `Re s = ½` and all zeros of `F_off` off it, and the resulting equal
   multisets of local germs.
+
+### `formal/GaloisForLFunctions/RHTower/LandauGinzburgRHBlindPair.lean` — the exact RH-blind pair
+
+The card's "Exact RH-blind pair" section, formalized in full and unconditionally.
+
+| Declaration | Statement |
+|---|---|
+| `linearQuartic r₀ r₁ r₂ r₃` | the quartic with four prescribed roots |
+| `deriv_linearQuartic_root₀`, `linearQuartic_swap₁/₂/₃` | the derivative at each root is the product of the three differences |
+| `deriv_linearQuartic_ne_zero` | four distinct prescribed roots are all simple |
+| `onQuartic b₁ b₂`, `offQuartic a b` | `(z²+b₁²)(z²+b₂²)` and `((z−a)²+b²)((z+a)²+b²)` with `z = s − 1/2` |
+| `onQuartic_eq_linearQuartic`, `offQuartic_eq_linearQuartic` | the explicit linear factorizations, via `z² + c² = (z − i c)(z + i c)` |
+| `onQuartic_reflection`, `offQuartic_reflection` | `F(1 − s) = F(s)`: both obey the functional-equation reflection |
+| `onQuartic_conj`, `offQuartic_conj` | `F(conj s) = conj F(s)`: both are Schwarz real |
+| `onQuartic_deriv_ne_zero`, `offQuartic_deriv_ne_zero` | all four zeros of each model are simple |
+| `onQuartic_re_eq` | **every zero of the on-line model has real part `1/2`** |
+| `offQuartic_re_ne` | **no zero of the off-line model has real part `1/2`** |
+| `rhBlind_zero_separation` | the two models are separated by the location of their zeros |
+| `rhBlind_localMatrixFactorization_equiv` | **at any zero of either model the local matrix-factorization categories of the two multiplier potentials are equivalent** |
+
+The last two together are the card's conclusion: the zero locations differ, and the local vacuum
+data does not.
+
+### The Jacobian algebra — built, including the missing analysis
+
+`formal/GaloisForLFunctions/HTGeometry/AnalyticHadamardDivision.lean` proves **Hadamard division in
+two complex variables**, which Mathlib does not have:
+
+| Declaration | Statement |
+|---|---|
+| `curryShiftSeries p e` | the series whose `n`-th term is the `(n+1)`-st term of `p` with `e` fixed in its first slot |
+| `norm_curryShiftSeries_le`, `radius_le_curryShiftSeries` | the shift does not decrease the radius of convergence |
+| `apply_eq_curryShiftSeries_add` | `p (n+1) (v,…,v) = v.1 · qA n (v,…,v) + v.2 · qB n (v,…,v)`, from linearity of `curryLeft` and `v = v.1 • (1,0) + v.2 • (0,1)` |
+| `exists_hadamard_decomposition` | **`f v = f 0 + v.1 · A v + v.2 · B v` near the origin, with `A`, `B` analytic** |
+
+`formal/GaloisForLFunctions/HTGeometry/AnalyticGermMaximalIdeal.lean`:
+
+| Declaration | Statement |
+|---|---|
+| `germValue`, `analyticGermValue` | evaluation at the base point as a surjective ring homomorphism onto `ℂ` |
+| `germCoordFst`, `germCoordSnd` | the two coordinate germs at the origin |
+| `ker_analyticGermValue_eq_span` | **the kernel of evaluation is the coordinate ideal** (the nontrivial inclusion is Hadamard division) |
+| `analyticGermQuotientCoordEquiv` | **the quotient of the local ring by the coordinate ideal is `ℂ`** |
+
+`formal/GaloisForLFunctions/RHTower/LandauGinzburgJacobianAlgebra.lean`:
+
+| Declaration | Statement |
+|---|---|
+| `nodePartialFst`, `nodePartialSnd`, and their `_eq` lemmas | the partial derivatives of the node, computed from `deriv`, are the two coordinates |
+| `nodeJacobianIdeal_eq_coordIdeal` | the Jacobian ideal of the node is the coordinate ideal |
+| `nodeJacobianAlgebraEquiv` | **the Jacobian algebra of the node is `ℂ`: the Milnor number of a simple vacuum is one** |
+| `lgJacobianAlgebraEquiv` | the same at the simple vacuum of any multiplier potential, by transport along `lgNodeGermEquiv` |
+
+This closes item 5 of the theorem.  For the record, the route that was used (all names checked
+against the current Mathlib):
+
+- from `HasFPowerSeriesOnBall f p 0 r`, set `qA n := (p (n+1)).curryLeft (1,0)` and
+  `qB n := (p (n+1)).curryLeft (0,1)` (`ContinuousMultilinearMap.curryLeft` exists, with
+  `curryLeft_apply : (f.curryLeft x) m = f (Fin.cons x m)`);
+- `‖qA n‖ ≤ ‖p (n+1)‖` by `ContinuousMultilinearMap.opNorm_le_bound`, hence
+  `p.radius ≤ qA.radius` by `le_radius_of_bound` together with `norm_mul_pow_le_of_lt_radius`;
+- `A := qA.sum`, `B := qB.sum` are analytic at the origin by
+  `FormalMultilinearSeries.hasFPowerSeriesOnBall`;
+- termwise, `(x,y) = x • (1,0) + y • (0,1)` and linearity of `curryLeft` give
+  `p (n+1) (fun _ ↦ v) = v.1 * qA n (fun _ ↦ v) + v.2 * qB n (fun _ ↦ v)`;
+- summing with `HasFPowerSeriesOnBall.hasSum`, `hasSum_nat_add_iff'` and
+  `HasFPowerSeriesOnBall.coeff_zero` gives `f v − f 0 = v.1 * A v + v.2 * B v` near the origin.

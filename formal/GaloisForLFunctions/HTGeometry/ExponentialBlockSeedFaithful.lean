@@ -109,6 +109,7 @@ theorem coeff_restrictPoly {T : Finset α} (P : MvPolynomial α ℂ) {ν : α �
     subst hdν
     exact hmem (Finset.mem_filter.mp hd).1
 
+omit [DecidableEq α] in
 theorem vars_monomial_subset_support (d : α →₀ ℕ) (a : ℂ) :
     (monomial d a).vars ⊆ d.support := by
   classical
@@ -193,6 +194,250 @@ theorem step_pair_relation {B : Finset α} {step : α → ℂ} (h : StepIndep B 
       simp [hg, hxj, hxk]
   have := h g hsum j hj
   simpa [hg] using this
+
+/-! ### The nodes attached to exponents -/
+
+/-- The ratio character of a block vertex relative to the base vertex `k`. -/
+def stepRatio (step : α → ℂ) (k : α) : α → ℂ :=
+  fun j => Complex.exp (expStepRate (step k) * step j)
+
+/-- The Vandermonde node attached to an exponent. -/
+def stepNode (step : α → ℂ) (k : α) (ν : α →₀ ℕ) : ℂ :=
+  ∏ i ∈ ν.support, stepRatio step k i ^ ν i
+
+omit [DecidableEq α] in
+theorem stepNode_ne_zero (step : α → ℂ) (k : α) (ν : α →₀ ℕ) : stepNode step k ν ≠ 0 := by
+  refine Finset.prod_ne_zero_iff.mpr fun i _ => ?_
+  exact pow_ne_zero _ (Complex.exp_ne_zero _)
+
+omit [DecidableEq α] in
+theorem stepNode_eq_exp (step : α → ℂ) (k : α) (ν : α →₀ ℕ) :
+    stepNode step k ν
+      = Complex.exp (expStepRate (step k) * ∑ i ∈ ν.support, (ν i : ℂ) * step i) := by
+  rw [stepNode, Finset.mul_sum, Complex.exp_sum]
+  refine Finset.prod_congr rfl fun i _ => ?_
+  rw [stepRatio, ← Complex.exp_nat_mul]
+  ring_nf
+
+/-- **The nodes separate exponents supported off the base vertex.** -/
+theorem stepNode_injective_of_stepIndep {B : Finset α} {step : α → ℂ}
+    (hindep : StepIndep B step) {k : α} (hk : k ∈ B) {ν ν' : α →₀ ℕ}
+    (hν : ν.support ⊆ B.erase k) (hν' : ν'.support ⊆ B.erase k)
+    (heq : stepNode step k ν = stepNode step k ν') : ν = ν' := by
+  classical
+  have hk0 : step k ≠ 0 := stepIndep_ne_zero hindep hk
+  rw [stepNode_eq_exp, stepNode_eq_exp] at heq
+  have hexp : Complex.exp (expStepRate (step k) *
+      ((∑ i ∈ ν.support, (ν i : ℂ) * step i) - ∑ i ∈ ν'.support, (ν' i : ℂ) * step i)) = 1 := by
+    rw [mul_sub, Complex.exp_sub, heq, div_self (Complex.exp_ne_zero _)]
+  obtain ⟨n, hn⟩ := Complex.exp_eq_one_iff.mp hexp
+  have hstepk : expStepRate (step k) = 2 * Real.pi * Complex.I / step k := rfl
+  have hrel : (∑ i ∈ ν.support, (ν i : ℂ) * step i)
+      - (∑ i ∈ ν'.support, (ν' i : ℂ) * step i) - (n : ℂ) * step k = 0 := by
+    rw [hstepk] at hn
+    field_simp at hn
+    linear_combination hn
+  set g : α → ℤ := fun v => (ν v : ℤ) - (ν' v : ℤ) - (if v = k then n else 0) with hg
+  have hsupp : ∀ i ∈ B, ((ν i : ℂ) * step i) = if i ∈ ν.support then (ν i : ℂ) * step i else 0 := by
+    intro i _
+    by_cases hi : i ∈ ν.support
+    · rw [if_pos hi]
+    · rw [if_neg hi, Finsupp.notMem_support_iff.mp hi]
+      simp
+  have hsum1 : ∑ i ∈ B, (ν i : ℂ) * step i = ∑ i ∈ ν.support, (ν i : ℂ) * step i := by
+    refine (Finset.sum_subset (hν.trans (Finset.erase_subset k B)) ?_).symm
+    intro x _ hx
+    rw [Finsupp.notMem_support_iff.mp hx]
+    simp
+  have hsum2 : ∑ i ∈ B, (ν' i : ℂ) * step i = ∑ i ∈ ν'.support, (ν' i : ℂ) * step i := by
+    refine (Finset.sum_subset (hν'.trans (Finset.erase_subset k B)) ?_).symm
+    intro x _ hx
+    rw [Finsupp.notMem_support_iff.mp hx]
+    simp
+  have hsum : (∑ v ∈ B, (g v : ℂ) * step v) = 0 := by
+    have hsplit : (∑ v ∈ B, (g v : ℂ) * step v)
+        = (∑ v ∈ B, (ν v : ℂ) * step v) - (∑ v ∈ B, (ν' v : ℂ) * step v)
+          - ∑ v ∈ B, (if v = k then (n : ℂ) else 0) * step v := by
+      rw [← Finset.sum_sub_distrib, ← Finset.sum_sub_distrib]
+      refine Finset.sum_congr rfl fun v _ => ?_
+      rw [hg]
+      by_cases hv : v = k <;> push_cast [hv] <;> ring
+    have hk' : ∑ v ∈ B, (if v = k then (n : ℂ) else 0) * step v = (n : ℂ) * step k := by
+      rw [Finset.sum_eq_single k]
+      · rw [if_pos rfl]
+      · intro b _ hb
+        rw [if_neg hb, zero_mul]
+      · intro hcon
+        exact absurd hk hcon
+    rw [hsplit, hk', hsum1, hsum2, hrel]
+  have hzero := hindep g hsum
+  ext v
+  by_cases hvB : v ∈ B
+  · have hgv := hzero v hvB
+    by_cases hvk : v = k
+    · subst hvk
+      have h1 : ν v = 0 := Finsupp.notMem_support_iff.mp fun hc =>
+        (Finset.notMem_erase v B) (hν hc)
+      have h2 : ν' v = 0 := Finsupp.notMem_support_iff.mp fun hc =>
+        (Finset.notMem_erase v B) (hν' hc)
+      rw [h1, h2]
+    · rw [hg] at hgv
+      simp only [if_neg hvk, sub_zero] at hgv
+      omega
+  · have h1 : ν v = 0 := Finsupp.notMem_support_iff.mp fun hc =>
+      hvB (Finset.mem_of_mem_erase (hν hc))
+    have h2 : ν' v = 0 := Finsupp.notMem_support_iff.mp fun hc =>
+      hvB (Finset.mem_of_mem_erase (hν' hc))
+    rw [h1, h2]
+
+/-! ### Faithfulness of the block seed -/
+
+omit [DecidableEq α] in
+theorem aeval_eq_eval' (y : α → ℂ) (p : MvPolynomial α ℂ) : aeval y p = eval y p := rfl
+
+omit [DecidableEq α] in
+theorem stepRatio_pow (step : α → ℂ) (k j : α) (m : ℕ) :
+    stepRatio step k j ^ m = Complex.exp ((m : ℂ) * expStepRate (step k) * step j) := by
+  rw [stepRatio, ← Complex.exp_nat_mul, mul_assoc]
+
+/-- The ratio character is trivial off the block and at the base vertex. -/
+theorem stepRatio_eq_one {B : Finset α} {step : α → ℂ} (hoff : ∀ v ∉ B, step v = 0)
+    {k : α} (hk0 : step k ≠ 0) {j : α} (hj : j ∉ B.erase k) : stepRatio step k j = 1 := by
+  by_cases hjB : j ∈ B
+  · have hjk : j = k := by
+      by_contra hc
+      exact hj (Finset.mem_erase.mpr ⟨hc, hjB⟩)
+    subst hjk
+    rw [stepRatio, expStepRate, div_mul_cancel₀ _ hk0, Complex.exp_two_pi_mul_I]
+  · rw [stepRatio, hoff j hjB, mul_zero, Complex.exp_zero]
+
+/-- Off the base vertex the ratio characters are not roots of unity. -/
+theorem stepRatio_pow_ne_one {B : Finset α} {step : α → ℂ} (hindep : StepIndep B step)
+    {k j : α} (hk : k ∈ B) (hj : j ∈ B) (hjk : j ≠ k) {m : ℕ} (hm : 1 ≤ m) :
+    stepRatio step k j ^ m ≠ 1 := by
+  intro hone
+  rw [stepRatio_pow] at hone
+  obtain ⟨n, hn⟩ := Complex.exp_eq_one_iff.mp hone
+  have hk0 : step k ≠ 0 := stepIndep_ne_zero hindep hk
+  have hrel : ((m : ℤ) : ℂ) * step j + ((-n : ℤ) : ℂ) * step k = 0 := by
+    rw [expStepRate] at hn
+    field_simp at hn
+    push_cast
+    linear_combination hn
+  have := step_pair_relation hindep hj hk hjk hrel
+  omega
+
+/-- **The block seed is faithful modulo constants.**  A polynomial with a monomial supported inside
+the block and missing a block vertex has a nonconstant carrier. -/
+theorem exists_ne_seedCarrierPoly_blockSeedFun {B : Finset α} {step : α → ℂ}
+    (hoff : ∀ v ∉ B, step v = 0) (hindep : StepIndep B step) (P : MvPolynomial α ℂ)
+    (hP : ∃ d ∈ P.support, d.support ⊆ B ∧ ¬ B ⊆ d.support) :
+    ∃ x y, seedCarrierPoly step (blockSeedFun B step) P x
+      ≠ seedCarrierPoly step (blockSeedFun B step) P y := by
+  classical
+  obtain ⟨d₀, hd₀P, hd₀B, hd₀ns⟩ := hP
+  obtain ⟨k, hkB, hkd₀⟩ := Finset.not_subset.mp hd₀ns
+  by_contra hcontra
+  have hcon : ∀ x y : ℂ, seedCarrierPoly step (blockSeedFun B step) P x
+      = seedCarrierPoly step (blockSeedFun B step) P y := by
+    intro x y
+    by_contra hxy
+    exact hcontra ⟨x, y, hxy⟩
+  have hne : ∀ v ∈ B, step v ≠ 0 := fun v hv => stepIndep_ne_zero hindep hv
+  have hk0 : step k ≠ 0 := hne k hkB
+  set T : Finset α := B.erase k with hT
+  -- every symbol along the progression vanishes
+  have hsymb : ∀ m : ℕ, 1 ≤ m → symb step ((m : ℂ) * expStepRate (step k)) P = 0 := by
+    intro m hm
+    have hvan := blockSeed_symb_vanishing B step hne hkB P hcon hm
+    have hprod : (∏ j ∈ B.erase k,
+        (Complex.exp ((m : ℂ) * expStepRate (step k) * step j) - 1)) ≠ 0 := by
+      refine Finset.prod_ne_zero_iff.mpr fun j hj => ?_
+      obtain ⟨hjk, hjB⟩ := Finset.mem_erase.mp hj
+      intro hzero
+      refine stepRatio_pow_ne_one hindep hkB hjB hjk hm ?_
+      rw [stepRatio_pow]
+      exact sub_eq_zero.mp hzero
+    exact (mul_eq_zero.mp hvan).resolve_left hprod
+  -- transport to the restricted, translated polynomial
+  set Q : MvPolynomial α ℂ := restrictPoly T P with hQ
+  set Qt : MvPolynomial α ℂ := bind₁ (fun j => X j - 1) Q with hQt
+  have hXsub : ∀ i : α, ((X i : MvPolynomial α ℂ) - 1).vars ⊆ ({i} : Finset α) := by
+    intro i
+    have hrw : (X i : MvPolynomial α ℂ) - 1 = X i + C (-1 : ℂ) := by
+      rw [map_neg, map_one]
+      ring
+    rw [hrw]
+    refine (vars_add_subset _ _).trans ?_
+    rw [vars_C, Finset.union_empty, vars_X]
+  have hvarsQt : Qt.vars ⊆ T := by
+    refine (vars_bind₁ _ _).trans ?_
+    refine Finset.biUnion_subset.mpr fun i hi => ?_
+    refine (hXsub i).trans ?_
+    intro x hx
+    rw [Finset.mem_singleton] at hx
+    subst hx
+    exact vars_restrictPoly T P hi
+  have hsuppQt : ∀ ν ∈ Qt.support, ν.support ⊆ T := by
+    intro ν hν x hx
+    exact hvarsQt (mem_vars_iff_mem_support x |>.mpr ⟨ν, hν, hx⟩)
+  have heval : ∀ m : ℕ, 1 ≤ m →
+      ∑ ν ∈ Qt.support, coeff ν Qt * (stepNode step k ν) ^ m = 0 := by
+    intro m hm
+    have h1 : eval (fun j => stepRatio step k j ^ m) Qt
+        = ∑ ν ∈ Qt.support, coeff ν Qt * (stepNode step k ν) ^ m := by
+      rw [MvPolynomial.eval_eq]
+      refine Finset.sum_congr rfl fun ν _ => ?_
+      congr 1
+      rw [stepNode, ← Finset.prod_pow]
+      exact Finset.prod_congr rfl fun i _ => by rw [pow_right_comm]
+    have h2 : eval (fun j => stepRatio step k j ^ m) Qt
+        = eval (fun j => stepRatio step k j ^ m - 1) Q := by
+      rw [hQt, ← aeval_eq_eval', aeval_bind₁]
+      refine congrArg (fun f => (aeval f) Q) ?_
+      funext i
+      rw [map_sub, aeval_X, map_one]
+    have h3 : eval (fun j => stepRatio step k j ^ m - 1) Q
+        = eval (fun j => stepRatio step k j ^ m - 1) P := by
+      refine eval_restrictPoly P ?_
+      intro j hj
+      rw [stepRatio_eq_one hoff hk0 hj, one_pow, sub_self]
+    have h4 : eval (fun j => stepRatio step k j ^ m - 1) P
+        = symb step ((m : ℂ) * expStepRate (step k)) P := by
+      rw [symb, aeval_eq_eval']
+      refine congrArg (fun f => eval f P) ?_
+      funext j
+      rw [stepRatio_pow]
+    rw [← h1, h2, h3, h4, hsymb m hm]
+  -- the Vandermonde argument
+  have hcoeff : ∀ ν ∈ Qt.support, coeff ν Qt = 0 := by
+    refine exponentialSum_coeff_eq_zero (stepNode step k) Qt.support ?_ ?_ _ heval
+    · intro ν hν ν' hν' hzz
+      exact stepNode_injective_of_stepIndep hindep hkB (hsuppQt ν (Finset.mem_coe.mp hν))
+        (hsuppQt ν' (Finset.mem_coe.mp hν')) hzz
+    · intro ν _
+      exact stepNode_ne_zero step k ν
+  have hQt0 : Qt = 0 := by
+    ext ν
+    by_cases hν : ν ∈ Qt.support
+    · rw [hcoeff ν hν, coeff_zero]
+    · rw [MvPolynomial.notMem_support_iff.mp hν, coeff_zero]
+  have hQ0 : Q = 0 := by
+    have hback : bind₁ (fun j => (X j : MvPolynomial α ℂ) + 1) Qt = Q := by
+      rw [hQt, bind₁_bind₁]
+      have hid : (fun i => bind₁ (fun j => (X j : MvPolynomial α ℂ) + 1) (X i - 1))
+          = fun i : α => (X i : MvPolynomial α ℂ) := by
+        funext i
+        simp
+      rw [hid, bind₁_X_left]
+      rfl
+    rw [← hback, hQt0, map_zero]
+  have hd₀T : d₀.support ⊆ T := by
+    intro x hx
+    exact Finset.mem_erase.mpr ⟨fun hc => hkd₀ (hc ▸ hx), hd₀B hx⟩
+  have : coeff d₀ P = 0 := by
+    rw [← coeff_restrictPoly P hd₀T, ← hQ, hQ0, coeff_zero]
+  exact (MvPolynomial.mem_support_iff.mp hd₀P) this
 
 end
 

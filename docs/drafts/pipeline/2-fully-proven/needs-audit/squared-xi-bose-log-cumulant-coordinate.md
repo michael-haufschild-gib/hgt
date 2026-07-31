@@ -196,30 +196,54 @@ Axioms `[propext, Classical.choice, Quot.sound]` throughout.
   along the real axis inside it.  This is the smoothness supply for `Gamma`, `zeta` and `xi` on
   their pole-free rays: holomorphy plus scalar restriction, no real-variable estimate.
 
+### `GaloisForLFunctions/RHTower/BoseCumulantJets.lean`
+
+Smoothness layer:
+
+- **`contDiffAt_realGamma`**, **`contDiffAt_realZetaSeries`** — `Real.Gamma` is smooth on `x > 0`
+  and `realZetaSeries` on `x > 1`.  Neither is in mathlib; both come from holomorphy through
+  `contDiffAt_re_comp_ofReal`, with `ContDiffAt.congr_of_eventuallyEq` for zeta (whose real value
+  agrees with the complex one only on the ray).
+- `contDiffAt_boseMellin`, `contDiffAt_logBoseMellin`, `contDiffAt_logGammaHalf`,
+  `contDiffAt_logOneAdd`, `contDiffAt_linear`.
+
+Elementary jets:
+
+- `onePlusJet`, `hasDerivAt_onePlusJet`, **`iteratedDeriv_logOneAdd`** —
+  `(d/da)^(j+1) log (1+a) = (-1)^j j!/(1+a)^(j+1)`.
+- `iteratedDeriv_const_eq_zero`, `iteratedDeriv_linear_eq_zero` — the affine term dies from order
+  two on.
+
+The decomposition and the jet identities:
+
+- `xiRealRay`, `xi_ofReal_one_add_eq_xiRealRay`, `xiRealRay_pos`, `boseXiLogJetBase`,
+  **`log_xiRealRay`** — `log (xi (1+a)) = log (1+a) - (log 2 + (log pi)/2) a + log (M a)
+  - log (Gamma (a/2))` for `a > 0`.
+- **`iteratedDeriv_one_boseXiLogJetBase`** / **`deriv_boseXiLogJetBase`** — equation `(5)`:
+  `L (1+a) = 1/(1+a) - log (2 sqrt pi) - (half-Gamma jet) + kappa_1 a`.
+- **`iteratedDeriv_boseXiLogJetBase`** — equation `(6)`: for every order `m >= 2`,
+  `(d/da)^m log xi (1+a) = onePlusJet (m-1) a + kappa_m a
+  - (d/da)^m log (Gamma (a/2))`, the last term being exactly `2^(-m) polygamma_(m-1) (a/2)`.
+- **`iteratedDeriv_logBoseMellin`** — equation `(11)`: `kappa_r a =
+  (d/da)^r log (Gamma (a+1)) + (d/da)^r log (zeta (a+1))`.
+
+Here `kappa_r a := iteratedDeriv r (fun b => Real.log (boseMellin b)) a` is the exponential-family
+definition `(3)` of the Bose-log cumulants, so `(5)`, `(6)` and `(11)` are exactly the card's
+identities.
+
 ### Remaining
 
-Equations `(5)`–`(6)` and `(10)`–`(12)` are iterated-derivative statements.  The route is now
-fully explicit, with every ingredient either in mathlib or in the modules above:
+Only equation `(12)`, the von Mangoldt form of the Zipf cumulants
+`kappa_r (log N) = sum_m Lambda m (log m)^(r-1) m^(-(a+1)) > 0`.  Route, all ingredients located:
 
-1. `ContDiffAt ℝ n Real.Gamma x` for `x > 0` and `ContDiffAt ℝ n realZetaSeries x` for `x > 1`,
-   from `contDiffAt_re_comp_ofReal` applied to `Complex.Gamma` on `{re > 0}` and to `riemannZeta`
-   on `{re > 1}` (`Complex.Gamma_ofReal`, `ofReal_realZetaSeries`, and
-   `ContDiffAt.congr_of_eventuallyEq` for the second, which agrees with the complex value only on
-   the ray).
-2. `Real.log` of each, through `ContDiffAt.log` with `boseMellin_pos`, `Real.Gamma_pos_of_pos`
-   and `realZetaSeries_pos`.
-3. `log (xi (1+a)) = log (1+a) - a log 2 - (a/2) log pi + log (M a) - log (Gamma (a/2))`, the
-   logarithm of `(4)`; every factor is a positive real, so `Real.log_mul` / `Real.log_div` /
-   `Real.log_rpow` apply directly.
-4. `iteratedDeriv (j+1) (fun b => Real.log (1+b)) a = (-1)^j j!/(1+a)^(j+1)` by induction, the
-   step being `HasDerivAt.inv` on `(1+b)^(j+1)`.
-5. `iteratedDeriv_add` (mathlib, `ContDiffAt` hypotheses) then assembles `(5)` at order one and
-   `(6)` at every order `j+1 >= 2`, where the two linear terms have already died.  The card's
-   `2^(-(j+1)) polygamma_j (a/2)` is literally
-   `iteratedDeriv (j+1) (fun b => Real.log (Real.Gamma (b/2))) a`.
-6. `(11)` is the same additivity applied to `log (M a) = log Gamma (a+1) + log zeta (a+1)`, and
-   `(12)` needs in addition the von Mangoldt Dirichlet series for `-zeta'/zeta` together with
-   termwise differentiation of that series.
+1. `deriv realZetaSeries s = (deriv riemannZeta s).re` for real `s > 1`, from
+   `HasDerivAt.comp_ofReal` plus `Complex.reCLM`; this is the only complex-to-real bridge needed.
+2. mathlib's `LSeries_vonMangoldt_eq_deriv_riemannZeta_div` at real `s > 1` then gives
+   `deriv (fun b => Real.log (realZetaSeries b)) s = - sum_m Lambda m m^(-s)`.
+3. Termwise differentiation of that real Dirichlet series on `Ioi c` for `1 < c < a+1`, by the
+   same `hasDerivAt_tsum_of_isPreconnected` majorant argument used for the Xi resolvent field,
+   gives `(d/ds)^k` of it as `(-1)^k sum_m Lambda m (log m)^k m^(-s)`.
+4. Composing with `(11)` yields `(12)`; positivity is the `m = 2` term.
 
 ## Log
 

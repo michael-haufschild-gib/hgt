@@ -1,7 +1,7 @@
 # Universal facet-source Stanley–Reisner matroid law
 
 - **ID:** universal-facet-source-stanley-reisner-matroid-law
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Source:** whole-corpus closure of `UniversalFacetSourcePhase` and `LocalizedStanleyReisnerMatroidRank`
 - **Statement:** Every universal facet source represents the complete localized Stanley–Reisner differential matroid, hence every subset rank and circuit, not merely independence of the whole output family.
@@ -15,7 +15,7 @@ entire represented matroid.
 
 - [x] 0 → 1  in-progress: exact missing matroid conclusion identified from Lean statements
 - [x] 1 → 2  fully-proven: dependency-closed restriction-and-application proof
-- [ ] 2 → 3  formalized: exact Lean theorem and final formal gates pending
+- [x] 2 → 3  formalized: exact Lean theorems for matroid equality, rank, circuits, and subset independence
 - [ ] 3 → 4  publication-ready: novelty and exposition audit pending
 
 ## Approach
@@ -37,3 +37,24 @@ set follows by congruence.
 ## Log
 
 - 2026-07-22 — cross-module theorem closure found and paper proof completed
+
+## Unconditional Lean formalization
+
+`formal/GaloisForLFunctions/HTGeometry/UniversalFacetSourceStanleyReisnerMatroidLaw.lean`
+
+- `UniversalFacetSource.stanleyReisnerLaurentDifferentialFamilyMatroid_eq` — the represented
+  differential matroid of the localized Stanley--Reisner outputs of a universal facet source is
+  the Stanley--Reisner quotient-class matroid itself.
+- `UniversalFacetSource.stanleyReisnerLaurentDifferentialFamilyMatroid_eRk` — equal extended rank
+  on every index set.
+- `UniversalFacetSource.stanleyReisnerLaurentDifferentialFamilyMatroid_isCircuit_iff` — equal
+  circuits.
+- `UniversalFacetSource.stanleyReisnerLaurentDifferentialFamilyMatroid_indep_iff` — independence of
+  every selected subfamily is exactly linear independence of the corresponding quotient classes.
+
+The route is the one in the Approach: `UniversalFacetSource.differentialIndependent` composed with
+the injective finite facet-orbit index map, constants restricted from `RatFunc ℂ` to `ℂ` by
+`differentialIndependent_upperEnd_restrictComplex`, then
+`differentialFamilyMatroid_stanleyReisnerLaurentRows_eq`.
+
+Axiom audit: `propext, Classical.choice, Quot.sound`.

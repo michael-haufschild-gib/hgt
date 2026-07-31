@@ -1,7 +1,7 @@
 # Real Arakelov divisor endpoint
 
 - **ID:** `deninger-real-arakelov-divisor-endpoint`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** LITERATURE THEOREM / PAPER SPECIALIZATION
 - **Label:** `DAC_REAL_ARAKELOV_DIVISOR_ENDPOINT`
 - **Parent:** `deninger-coarse-invariant-sheaf-rost-schmid-descent`
@@ -103,7 +103,7 @@ coarse-sheaf/coherence defects.
 - [x] number-field paper proof
 - [x] unconditional Lean source for the \(\mathbb Q\)-coordinate
   exactness core
-- [ ] direct Lean check after external build saturation
+- [x] direct Lean check and module build
 - [ ] analytic invariant-sheaf endpoint comparison
 
 ## References
@@ -117,3 +117,22 @@ coarse-sheaf/coherence defects.
 
 - 2026-07-26 — Combined place-average residues with the
   real-linearized Arakelov divisor exact sequence.
+
+## Unconditional Lean formalization
+
+`formal/GaloisForLFunctions/RHTower/DeningerArithmeticRealArakelovEndpoint.lean` checks with
+`lake env lean` and builds; axiom audit `propext, Classical.choice, Quot.sound`.
+
+- `deningerFiniteDivisorWeight`, `deningerArakelovPrincipal`, `deningerArakelovDegree` —
+  equation `(2)`: `W(d) = ∑_p d_p log p`, `principal(d) = (d, -W(d))`, `deg(d,a) = W(d) + a`.
+- `deningerArakelovDegree_principal` — the product-formula statement `deg ∘ principal = 0`.
+- `deningerArakelovDegree_eq_zero_iff`, `deningerArakelov_exact_principal_degree` —
+  equation `(3)`, `ker deg = range principal`.
+- `deningerArakelovPrincipal_injective`, `deningerArakelovDegree_surjective`, together with the
+  `LinearMap` forms `deningerArakelovPrincipalLinear_injective`,
+  `deningerArakelovDegreeLinear_surjective` — the two outer arrows of the short exact sequence.
+
+The general number-field statement `(1)` rests on Dirichlet's unit theorem and finiteness of the
+class group and is cited literature; the `ℚ`-coordinate model is the source-pure core, which is
+what the Lean gate covers.  The analytic invariant-sheaf endpoint comparison remains open
+research, not a formalization gap.

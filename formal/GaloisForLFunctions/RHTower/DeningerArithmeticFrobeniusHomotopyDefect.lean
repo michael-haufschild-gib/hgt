@@ -137,4 +137,69 @@ theorem deningerFrobeniusHomotopyDefect_cocycle
   rw [hcommF, hcommScalar]
   noncomm_ring
 
+/-- Failure of the two factor orders of a commuting pair to give the same composite homotopy. -/
+def deningerFrobeniusCommutationDefect
+    {M A : Type*} [Mul M] [Ring A]
+    (F scalar homotopy : M → A) (m n : M) : A :=
+  F m * homotopy n + scalar n * homotopy m -
+    F n * homotopy m - scalar m * homotopy n
+
+/-- The commutation defect of a commuting pair is closed in the endomorphism complex: it is the
+difference of two homotopies with the same boundary. -/
+theorem deningerFrobeniusCommutationDefect_boundary
+    {M A : Type*} [Mul M] [Ring A]
+    (d : A) (F scalar homotopy : M → A) (m n : M)
+    (hmn : m * n = n * m)
+    (hdFm : d * F m = F m * d)
+    (hdFn : d * F n = F n * d)
+    (hdam : d * scalar m = scalar m * d)
+    (hdan : d * scalar n = scalar n * d)
+    (hanFm : scalar n * F m = F m * scalar n)
+    (hamFn : scalar m * F n = F n * scalar m)
+    (hanam : scalar n * scalar m = scalar m * scalar n)
+    (hFmn : F (m * n) = F m * F n)
+    (hFnm : F (n * m) = F n * F m)
+    (hamn : scalar (m * n) = scalar m * scalar n)
+    (hanm : scalar (n * m) = scalar n * scalar m)
+    (hhm :
+      deningerHomotopyBoundary d (homotopy m) =
+        F m - scalar m)
+    (hhn :
+      deningerHomotopyBoundary d (homotopy n) =
+        F n - scalar n) :
+    deningerHomotopyBoundary d
+        (deningerFrobeniusCommutationDefect
+          F scalar homotopy m n) = 0 := by
+  have h1 :
+      deningerHomotopyBoundary d
+          (F m * homotopy n + scalar n * homotopy m) =
+        F (m * n) - scalar (m * n) :=
+    deningerCompositeHomotopy_boundary
+      d (F m) (F n) (F (m * n))
+      (scalar m) (scalar n) (scalar (m * n))
+      (homotopy m) (homotopy n)
+      hdFm hdan hanFm hanam hFmn hamn hhm hhn
+  have h2 :
+      deningerHomotopyBoundary d
+          (F n * homotopy m + scalar m * homotopy n) =
+        F (n * m) - scalar (n * m) :=
+    deningerCompositeHomotopy_boundary
+      d (F n) (F m) (F (n * m))
+      (scalar n) (scalar m) (scalar (n * m))
+      (homotopy n) (homotopy m)
+      hdFn hdam hamFn hanam.symm hFnm hanm hhn hhm
+  unfold deningerFrobeniusCommutationDefect
+  unfold deningerHomotopyBoundary at h1 h2 ⊢
+  calc
+    d * (F m * homotopy n + scalar n * homotopy m -
+          F n * homotopy m - scalar m * homotopy n) +
+        (F m * homotopy n + scalar n * homotopy m -
+          F n * homotopy m - scalar m * homotopy n) * d =
+      (d * (F m * homotopy n + scalar n * homotopy m) +
+          (F m * homotopy n + scalar n * homotopy m) * d) -
+        (d * (F n * homotopy m + scalar m * homotopy n) +
+          (F n * homotopy m + scalar m * homotopy n) * d) := by
+            noncomm_ring
+    _ = 0 := by rw [h1, h2, hmn, sub_self]
+
 end GaloisForLFunctions.RHTower
