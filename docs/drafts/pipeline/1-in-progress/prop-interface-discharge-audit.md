@@ -2096,3 +2096,123 @@ one `funext`/instance site remain.
 
 The module is left in a consistent, partially repaired state — better than found (the sin/cos sites
 were failing before) but not green, and that is recorded here rather than implied by a count.
+
+## The `RHTower` mathlib-premise measurement, at last
+
+The area umbrella loads again, so the instrument of
+`scripts/lean/audit_mathlib_premises.lean` ran on `RHTower` with producers collected from all
+three areas: **102 579 project constants scanned, 311 premise keys, 22 983 conclusion atoms,
+114 unproduced**.  Wall time under three minutes; no object-file surgery was needed this round.
+
+Head of the list, classified by hand:
+
+| uses | premise | verdict |
+|---:|---|---|
+| 148 | `2 * h7.m ∣ q ^ 2` (`GelfondSchneiderProof.Setup.m`) | parameter constraint — the capstone `transcendental_cpow_of_isAlgebraic_of_irrational` *chooses* `q := 2·m·(6h·⌈c₁₅⁴⌉)` and discharges it in a `have` |
+| 8 | `u ∈ Fin (m * n q)`, `t ∈ Fin (q*q)` | the same choice, same capstone |
+| 6 | `canonicalFeatureVolume … ≠ 0` | discharged: `gammaSewnFourRateBoundaryFeature_canonicalFeatureVolume_pos` gives `0 < …`, and all six `_of_volume_ne_zero` theorems already have an unconditional sibling |
+| 5 | `ReesOperatorGradeAtMost atTop primeWoldBoundaryVolumeBelow K R` | **genuine — the class was never exhibited**; discharged below |
+| 3 | `…ctorIdx`, `HEq …` rows | recursor artifacts, not premises |
+
+**Two more false-positive classes**, on top of the three already recorded:
+
+4. *A premise discharged by a `let`/`have` inside the capstone.*  The producer is not a theorem at
+   all, so no conclusion-atom scan can see it.  This is the 148-use row, by far the largest in the
+   area, and it is not debt.
+5. *A producer whose conclusion has a different head.*  `0 < X` does not match the premise `X ≠ 0`,
+   although `.ne'` bridges them in one step.  The whole `canonicalFeatureVolume` row is of this
+   kind.
+
+**Namespace hygiene, found while reading the flagged rows.**  Five modules
+(`PrimeValuationHellingerReesJetStability`, `CriticalActivationReesSourceLaw`,
+`AsymptoticTypeSuperselection`, `PrimeValuationHellingerReesReflectionFracture`,
+`XiSourceModularTypeSuperselectionLaw`) declare into the *top-level* namespace `RHTower`, not
+`GaloisForLFunctions.RHTower`.  The instrument's `isProj` test therefore reads their `Prop`
+definitions as mathlib heads.  Not corrected here — the rename touches five modules and their
+dependents while other lanes are editing them — but recorded, since it changes what the scan means
+on that layer.
+
+### The Rees operator-grade row, discharged: a filtration with inhabited levels
+
+`ReesOperatorGradeAtMost l a K R` is the hypothesis of every no-sewing theorem in the Rees layer
+(`no_finiteReesOperator_sews_flat_to_nonflat`,
+`no_finiteReesOperator_sews_reflected_Hellinger_sectors`, and the two Xi-charge specializations).
+Nothing in the corpus ever exhibited an operator family satisfying it, so every one of those no-go
+statements was formally at risk of being vacuous — and a vacuous no-go asserts nothing.
+
+Two new modules close this, both built and axiom-clean
+(`propext, Classical.choice, Quot.sound` only):
+
+`RHTower/ReesGradeFiltrationFlatRadicalLaw.lean` — the abstract law.  Call a scale *contracting*
+when `∀ᶠ x in l, 0 < a x ∧ a x ≤ 1`.  Then
+
+* `reesGradeAtMost_zero_iff` — grade zero **is** boundedness along the filter;
+* `ReesAllOrdersFlat.reesGradeAtMost_zero` — the flat radical sits inside grade zero, hence inside
+  every grade;
+* `reesGradeAtMost_mono`, `reesGradeAtMost_add`, `reesGradeAtMost_const_mul`,
+  `reesGradeAtMost_mul` — the grades are a filtration of an `ℝ`-algebra, and a product **adds**
+  grades;
+* `ReesAllOrdersFlat.add`, `ReesAllOrdersFlat.const_mul`, together with the corpus's
+  `reesAllOrdersFlat_mul_reesGradeAtMost` — the flat germs are an **ideal** of that algebra;
+* `not_reesAllOrdersFlat_one` — on a scale tending to zero along a nontrivial filter the ideal is
+  **proper**;
+* `not_reesGradeAtMost_inv_pow_succ` — and the filtration is **strictly increasing at every step**,
+  so the no-go at grade `K+1` is strictly stronger than at grade `K`;
+* `reesGradeAtMost_of_isBigO_one`, `reesOperatorGradeAtMost_of_isBigO_one`,
+  `reesOperatorGradeAtMost_const`, `reesOperatorGradeAtMost_zero`,
+  `reesOperatorGradeAtMost_smul_const`, `reesOperatorGradeAtMost_inv_pow_smul_const` — every
+  bounded family has **every** finite grade, and a scalar family of prescribed inverse-power growth
+  realizes a grade exactly.  These are the producers the scan wanted.
+* `reesGradeFiltration_law` — the five statements bundled as one law.
+
+`RHTower/ReesGradeFiltrationPrimeWoldWitness.lean` — the same on the arithmetic scale.  The prime
+Wold boundary volume is contracting (`primeWoldBoundaryVolumeBelow_eventually_contracting`: positive
+at every stage, and eventually below one because it tends to zero), so every grade is inhabited on
+it and the filtration is strict there.  The no-go statements then acquire content:
+
+* `no_boundedOperator_sews_primeWold_flat_to_halfNormal` — no **bounded** operator family carries
+  the flat reflected irregular Gamma gauge onto the vacuum half-density;
+* `no_invPowMultiplier_sews_primeWold_flat_to_halfNormal`,
+  `no_invPowOperator_sews_primeWold_flat_to_halfNormal` — nor does any multiplier or operator family
+  of prescribed inverse-power growth `(volume)⁻¹ ^ K`, for every `K`;
+* `no_boundedOperator_sews_reflected_Hellinger_sectors`,
+  `no_invPowMultiplier_sews_reflected_Hellinger_sectors` — the same two witnesses applied to the
+  reflection fracture at an arbitrary charge `0 < c < 1/2`, so the fracture no-go is non-vacuous
+  without any hypothesis about an actual Xi zero;
+* `primeWoldReesFiltration_law` — bundled.
+
+**Reading.**  The scattered no-sewing theorems are one statement: *the all-orders-flat radical is a
+proper ideal of the filtered algebra of finite-Rees-grade germs, and the filtration is exhaustive
+in the bounded direction and strict in the singular one.*  What the corpus had was the ideal
+property alone; what was missing, and is now proved, is that the algebra acting on it is large —
+containing every bounded family — and strictly graded, which is what makes "no finite-grade
+operator sews" a real obstruction rather than an empty quantification.
+
+### The Ising-tree convergence rows: refuted, except one
+
+The `TendstoLocallyUniformly` rows nominated by the `RHTower` scan are not debt but *category (b)*
+— the premise is proved unsatisfiable:
+
+* `balancedPrimeIsingTreePartition → unitCentralXiC` —
+  `not_tendstoLocallyUniformly_balancedPrimeIsingTreePartition_unitCentralXiC`;
+* `centralNormalizedPrimeIsingTreePartition → XiC` and `→ unitCentralXiC` —
+  `not_tendstoLocallyUniformly_centralNormalizedPrimeIsingTreePartition_{XiC,unitCentralXiC}`.
+
+Both go through one universal law,
+`HTGeometry.not_tendstoLocallyUniformly_of_hypertranscendental_of_fixedModalJetWidth`: a sequence
+of entire functions of *uniformly bounded modal jet width* cannot converge locally uniformly to a
+hypertranscendental limit.  The arithmetic input is the second-jet variance bound
+`vertexCount_mul_logTwo_sq_div_four_le_neg_re_iteratedDeriv_two_balanced`, which turns convergence
+of the second jet into an eventual bound on the vertex count, hence a uniform modal width `2 ^ V`.
+
+**The one row not yet closed** is the *unbalanced* partition:
+`riemannHypothesis_of_primeIsingTreePartition_tendstoLocallyUniformly` (and its
+`_mul_XiC` variant) assume `primeIsingTreePartition (T n) → XiC` locally uniformly, and no no-go
+covers that hypothesis.  The obvious route: `XiC 0 ≠ 0`, so locally uniform convergence makes
+`Z_n(0) → XiC 0 ≠ 0`, `Z_n'(0)`, `Z_n''(0)` converge as well, hence the *normalized* second
+cumulant `Z_n''(0)/Z_n(0) − (Z_n'(0)/Z_n(0))²` converges; if that cumulant carries the same
+`vertexCount · (log 2)² / 4` lower bound as the balanced one, the vertex counts are eventually
+bounded and the same modal-width law applies — which would refute the hypothesis and retire the
+unbalanced tree route to RH.  Next step in this lane: check whether the variance bound is stated
+for the normalized cumulant or only for the balanced normalization.  Card:
+`1-in-progress/prime-source-ferromagnetic-ising-lee-yang-limit-rh.md`.

@@ -158,6 +158,55 @@ No zero location, asymptotic estimate, numerical experiment, or RH premise is us
 Hilbert--Schmidt pair `(11)` is the whole mechanism: the two orders of a noncompact cross product
 are recovered from one Hilbert--Schmidt product taken in the two orders.
 
+## Theorem H: one-sided aperture flag law for the extended trace
+
+Fix a strict crossing flag
+
+```text
+0 < a < b < c < r*a,   r > 1.                                          (13)
+```
+
+Each aperture defect `Delta(u,v;r)` is a principal-relative operator whose principal part is the
+scale-one lost shell `S(r*u, r*v)`.  Because `c <= r*a <= r*b`, **all three** defects of the flag
+are presented at the single base aperture `c`, so one extended trace reads all of them.  Then
+
+```text
+tilde_tau(Delta(a,c;r))
+  = tilde_tau(Delta(a,b;r)) + tilde_tau(Delta(b,c;r)) + Tr Kappa(a,b,c;r),  (14)
+```
+
+and, using the already-proved curvature energy law,
+
+```text
+Re tilde_tau(Delta(a,c;r))
+  = Re tilde_tau(Delta(a,b;r)) + Re tilde_tau(Delta(b,c;r))
+      - ||Z(a,b,c;r)||_HS^2,                                            (15)
+```
+
+where `Z` is the coupling between the two successive lost layers.  Hence
+
+```text
+Re tilde_tau(Delta(a,c;r))
+  <= Re tilde_tau(Delta(a,b;r)) + Re tilde_tau(Delta(b,c;r)),            (16)
+```
+
+with equality exactly when `Kappa(a,b,c;r)=0`.
+
+### Proof
+
+The logarithmic weights are `log c - log a`, `log b - log a`, `log c - log b`, an exact
+coboundary, so the principal parts of `(14)` cancel identically.  The shell residuals telescope
+because `S(r*a,r*c) = S(r*a,r*b) + S(r*b,r*c)` holds as an operator identity, leaving exactly
+`Kappa`.  All three residuals and `Kappa` are Schatten-1, so ordinary trace is additive on them.
+Equation `(15)` is `(14)` plus the curvature energy law, and `(16)` is nonnegativity of a squared
+Hilbert--Schmidt norm.
+
+The content of `(16)` is that the completed finite part, **before** any archimedean term, is
+already one-sided along aperture flags — but in the *subadditive* direction.  A uniform lower floor
+therefore cannot be produced by aperture refinement alone: refining a flag can only decrease the
+real extended trace, by exactly the successive-layer coupling energy.  Any surviving weld must
+obtain its lower bound from the archimedean conductor, not from the aperture tower.
+
 ## Frontier effect
 
 Closed:

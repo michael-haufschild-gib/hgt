@@ -1,0 +1,360 @@
+# Arithmetic rig--Stokes anomaly cancellation law
+
+- **ID:** `arithmetic-rig-stokes-anomaly-cancellation-law`
+- **Stage:** 1-in-progress
+- **Type:** UNIVERSAL REINTERPRETATION / RH-BEARING CONJECTURE
+- **Scientific status:** `[BOLD CONJECTURE] [CORPUS-JUMP] [NOVELTY UNVERIFIED] [NOT RH]`
+- **Parents:**
+  - `source-modular-drift-realization-equivalence-law.md`;
+  - `riemann-failure-nerve-cobar-antipode-purity-law.md`;
+  - `arithmetic-stokes-bockstein-universality-law.md`;
+  - `../2-fully-proven/new_scientific_knowledge/gamma/gamma-copoisson-sonin-full-quotient-flatness-syzygy.md`;
+  - `../2-fully-proven/not_new_scientific_knowledge/prime-tail-copoisson-essential-boundary-bockstein.md`;
+  - `../2-fully-proven/new_scientific_knowledge/sonin/sonin-principal-shell-cyclic-trace.md`;
+  - `../3-formalized/new_scientific_knowledge/prime-first-trace-essential-normal-bockstein.md`;
+  - `../3-formalized/new_scientific_knowledge/prime-residue-valuation-interaction-superselection-law.md`.
+- **Statement:** Horizontal displacement of a Riemann divisor point is the anomaly obstructing
+  extension of its multiplicative dilation character to the full additive--multiplicative
+  operation theory of the ordinary-integer source.  The conjectural arithmetic
+  Stokes--Bockstein comparison carries the literal source codiagonal with no anomaly; its Sonin
+  cyclic regulator therefore forces that displacement to vanish.
+
+## Goal
+
+Replace the question
+
+```text
+why is one completed analytic function's zero on a line?
+```
+
+by
+
+```text
+why does every nonzero singular boundary character of the ordinary-integer source
+extend from multiplication to the source's full distributive operation theory?
+```
+
+The proposed answer is not positivity, self-adjointness, factoriality, or another zero-location
+criterion.  It is a source-operation extension theorem at the essential Stokes boundary.
+
+## 1. Exact nonconjectural dictionary
+
+Let \(\rho\) be a nontrivial Xi zero and put \(\sigma=\operatorname{Re}\rho\).  The corpus already
+constructs the centered dilation character
+\[
+ \lambda_\rho(n)=n^{\rho-1/2}.
+\tag{1}
+\]
+Its uncentered dagger dimension is
+\[
+ D_\rho(n)
+ :=n|\lambda_\rho(n)|^2
+ =n^{2\sigma}.
+\tag{2}
+\]
+This is multiplicative:
+\[
+ D_\rho(mn)=D_\rho(m)D_\rho(n).
+\tag{3}
+\]
+The ordinary-integer source has the independently defined cardinal dimension
+\[
+ D_{\rm src}(n)=n,
+\qquad
+ D_{\rm src}(m+n)=D_{\rm src}(m)+D_{\rm src}(n),
+\qquad
+ D_{\rm src}(mn)=D_{\rm src}(m)D_{\rm src}(n).
+\tag{4}
+\]
+
+Define the logarithmic operation-extension anomaly
+\[
+ {\mathfrak a}_\rho(n)
+ :=
+ \log\frac{D_\rho(n)}{D_{\rm src}(n)}
+ =(2\sigma-1)\log n.
+\tag{5}
+\]
+The full-quotient co-Poisson theorem already identifies the same scalar as anti-diagonal
+relative torsion:
+\[
+ {\mathfrak a}_\rho(r)
+ =\log\tau_r(\rho).
+\tag{6}
+\]
+Thus horizontal zero displacement, source-horizon Lyapunov rate, Wold/Hellinger Rees drift,
+relative determinant torsion, and failure of source cardinality descent are one exact scalar.
+
+The elementary consumer is absolute:
+\[
+ D_\rho(2)=D_\rho(1)+D_\rho(1)
+ \quad\Longrightarrow\quad
+ 2^{2\sigma}=2
+ \quad\Longrightarrow\quad
+ \sigma=\frac12.
+\tag{7}
+\]
+More generally, any normalized map
+\[
+ D:\mathbb N\longrightarrow\mathbb R_{\ge0}
+\]
+which preserves both addition and multiplication is the ordinary cardinality map \(D(n)=n\).
+This rigidity is parent mathematics and is already present in the corpus's
+`XI_SOURCE_EXTENSIVE_DIMENSION_DESCENT`.  It is a consumer, not the proposed new theorem.
+
+## 2. Ontological jump
+
+> **A Riemann zero is a singular character of a source-operation theory, not primarily a point
+> of a scalar function.  Its imaginary part is the surviving unitary phase of that character.
+> Its horizontal displacement is the real anomaly produced when meromorphic continuation
+> remembers multiplication but fails to retain source addition.**
+
+The ordinary Euler product exposes multiplication, so arbitrary powers \(n^{2\sigma}\) are
+allowed.  Functional equation replaces an anomaly by its inverse, so it permits
+\(\pm(2\sigma-1)\).  Neither sees the additive codiagonal.  The critical line is the locus where
+the multiplicative boundary character extends to the full source theory.
+
+This also changes the requested “third completion.”  It is not one Hilbert space between
+coefficient \(L^2\) and divisor evaluation.  It is an operation-valued Stokes boundary retaining:
+
+1. external additive and multiplicative source operations;
+2. their finite null-homotopies and distributivity cells;
+3. the all-prime essential completion defect;
+4. principal Xi conormal atoms and multiplicity jets; and
+5. the Sonin dagger/cyclic regulator.
+
+The recently formalized external-fusion law explains why this structure cannot be replaced by a
+differential field.  A finite source rule can create a complete next relatively
+hypertranscendental layer outside the field generated by every previous layer.  Source operations
+must therefore remain external higher morphisms through continuation.
+
+## 3. Proposed source object
+
+Let \(\mathscr R_{\mathbb N}^{\rm EPG}\) denote the source operation category generated before
+divisor localization by:
+
+- finite ordinary-integer packets;
+- disjoint packet union \(\sqcup\);
+- independent Cartesian/multiplicative fusion \(\boxtimes\);
+- the prime-winning Čech and exponent-depth cells;
+- the Gamma/co-Poisson reflection operation;
+- the literal Euler quadrant current and prime-tail interval preclosure; and
+- the source-normal exponential filtration.
+
+The decategorified degree obeys
+\[
+ [m]\sqcup[n]\mapsto m+n,
+ \qquad
+ [m]\boxtimes[n]\mapsto mn.
+\tag{8}
+\]
+No claim is made that a connected degree-\((m+n)\) dilation is automatically isomorphic to the
+disjoint union of degree-\(m\) and degree-\(n\) dilations.  The required source codiagonal must be
+constructed as an explicit correspondence/cell.  Treating equality of degrees as that cell would
+be circular.
+
+Let \(\mathscr B_{\Xi}^{\rm con}\) be the sought source-normal Stokes boundary category whose
+nonzero singular objects are the full principal Xi conormals, with every confluent multiplicity
+jet.  It is not an ordinary Hilbert completion: the all-orders-flat radical and the essential
+first-trace edge must survive.
+
+## 4. Frozen conjecture
+
+`[BOLD CONJECTURE] [ARITHMETIC_RIG_STOKES_ANOMALY_CANCELLATION]`
+
+There is a source-first boundary comparison
+\[
+ \partial_{\rm St}^{\rm src}:
+ \mathscr R_{\mathbb N}^{\rm EPG}
+ \longrightarrow
+ \mathscr B_{\Xi}^{\rm con}
+\tag{9}
+\]
+with the following inseparable properties.
+
+1. **Strict essential construction.**  It is defined on the preclosure
+   rapid/moderate exact couple and remains strict in the source-normal exponential topology.  It
+   does not factor through an ordinary Hilbert closure or any fixed finite Rees order.
+2. **Full conormal landing.**  Action condensation of its Bockstein is \(d\log\Xi\), and no
+   nonzero principal conormal or top multiplicity jet dies.
+3. **Multiplicative character.**  On the conormal at \(\rho\), independent source fusion has
+   dagger dimension \(D_\rho(n)=n^{2\operatorname{Re}\rho}\).
+4. **Source codiagonal.**  The literal finite source cell
+   \[
+   {\mathfrak c}_2:[2]\Longrightarrow[1]\sqcup[1]
+   \tag{10}
+   \]
+   and its source null-homotopy are constructed before divisor localization and transported by
+   `(9)` without a new attainment or boundary term.
+5. **Anomaly index identity.**  The source-normal Bockstein of `(10)`, paired with the canonical
+   principal-relative Sonin cyclic trace, is
+   \[
+   \left\langle\widetilde\tau_{\rm Sonin},
+   \beta_{\rm St}({\mathfrak c}_2)\big|_\rho\right\rangle
+   =
+   \log\frac{D_\rho(2)}{2}
+   =
+   (2\operatorname{Re}\rho-1)\log2.
+   \tag{11}
+   \]
+6. **No-anomaly transport.**  Because `(10)` is a genuine source coherence cell rather than a
+   scalar degree identity, its transported cyclic boundary pairing is zero:
+   \[
+   \left\langle\widetilde\tau_{\rm Sonin},
+   \beta_{\rm St}({\mathfrak c}_2)\big|_\rho\right\rangle=0.
+   \tag{12}
+   \]
+7. **Dagger compatibility.**  Gamma/co-Poisson reflection and Hilbert adjunction are the two
+   realizations of the same source operation on the same relative Bockstein class.
+
+Equations `(11)`--`(12)` imply
+\[
+ (2\operatorname{Re}\rho-1)\log2=0,
+\]
+so every nontrivial Xi zero lies on the critical line.  Clause 2 retains every multiplicity.
+
+Clause 6 is not inferred from ordinary cyclicity alone.  It is the arithmetic theorem: strict
+all-prime continuation transports the explicit source codiagonal null-homotopy without acquiring
+an essential boundary anomaly.  Assuming it after localizing at \(\rho\) would simply assume RH.
+
+## 5. Why this is more universal than the previous formulations
+
+| Corpus theorem or obstruction | Shadow of the proposed law |
+|---|---|
+| Euler product and prime characters permit every radial exponent | restriction to multiplicative fragment forgets source codiagonal |
+| functional equation pairs \(a\) with \(-a\) | dagger duality on fragment inverts anomaly but does not cancel it |
+| generalized-prime off-line systems | multiplicative/reflective models lacking literal ordinary-integer codiagonal transport |
+| finite prime/depth cubes are exact | finite operation coherences before singular totalization |
+| finite truncations leak at infinity | codiagonal null-homotopy may acquire boundary anomaly under non-strict completion |
+| ambient adelic \(L^2\) loses conormal fibres | retains source operations but forgets singular boundary modules |
+| divisor/evaluation completion loses covariance | retains boundary characters but forgets operation theory |
+| all-orders-flat radical | essential obstruction to extending finite operation cells through formal completion |
+| prime first-trace edge \(e_1\mapsto Se_1\) | first local chart of operation-extension Bockstein |
+| prime-tail monodromy \(x^{-\rho}\) | concrete nonzero singular boundary character |
+| Sonin principal-relative cyclic trace | regulator capable of reading operation-extension anomaly |
+| aperture cyclic mass \(\log r\) is conserved | source cardinal dimension survives finite Sonin restriction |
+| relative torsion \(\log\tau_r=(2\sigma-1)\log r\) | exact logarithmic additive-extension anomaly |
+| HT external fusion creates new layers | operations cannot be internalized in any finite differential-field presentation |
+| same-fibre inverse \(=\) adjoint | dagger shadow of one anomaly-free full source character |
+
+The earlier `XI_SOURCE_EXTENSIVE_DIMENSION_DESCENT` states the decategorified consequence.  The
+new content is a proposed producer: the dimension trace is not transported by a generic positive
+map, but by a bimonoidal Stokes exact-couple morphism, and its failure is the already visible
+essential Bockstein measured by the Sonin cyclic regulator.
+
+## 6. Immediate open core
+
+`[OPEN CORE] [XI_DYADIC_CODIAGONAL_STOKES_NO_ANOMALY]`
+
+Before attempting the full category `(9)`, construct the dyadic cell `(10)` on the finite
+ordinary-integer Euler--Gamma/co-Poisson source and prove the following exact square:
+
+\[
+\begin{array}{ccc}
+[2]\Rightarrow[1]\sqcup[1]
+&\longrightarrow&
+\text{first-trace essential normal edge}\\[1mm]
+\downarrow\text{prime-tail condensation}
+&&
+\downarrow\Phi_{\rm src}\\[1mm]
+\text{co-Poisson monodromy cell}
+&\longrightarrow&
+\text{Sonin principal-relative cyclic class}.
+\end{array}
+\tag{13}
+\]
+
+Required clauses:
+
+1. construct `(10)` from literal integer correspondences, not equality of scalar degrees;
+2. identify its finite boundary with the already formalized first-trace edge;
+3. send that edge to the nondivisive Gamma/co-Poisson source-error syzygy;
+4. compute the conormal cyclic pairing and prove `(11)`;
+5. prove the source null-homotopy survives the source-normal all-prime limit, giving `(12)`; and
+6. prove conormal faithfulness and top-jet compatibility.
+
+This is a falsifiable first experiment.  Failure of clause 1 kills the rig interpretation.
+Failure of clause 5 identifies a genuine additive Stokes anomaly rather than a technical
+completion problem.
+
+## 7. Hostile audit
+
+1. **Factoriality is insufficient.**  Infinite tensor-product factor representations can have
+   nontrivial modular spectra.  A factor can support many modular weights.  “The source is a
+   factor” does not imply a one-weight divisor and is retired.
+2. **Initiality is not a proof of landing.**  \(\mathbb N\) is the initial semiring, but a
+   multiplicative boundary character need not extend to it as a semiring character.  Constructing
+   the extension is the whole theorem.
+3. **Degree equality is not a codiagonal.**  A connected two-sheet dilation and two disjoint
+   one-sheet packets are not automatically the same source object.  Clause 1 of the open core is
+   mandatory.
+4. **Cyclicity does not imply additivity.**  A trace kills commutators; the dyadic source cell
+   must first be represented as the relevant relative cyclic boundary.  Otherwise `(12)` is
+   unsupported.
+5. **Finite exactness does not survive automatically.**  The corpus proves that strict infinite
+   Poisson regularity is created only after totalization and that finite contractions can acquire
+   boundary classes.  Clause 5 must control exactly this fracture.
+6. **The identity `(11)` is not enough.**  It is another exact detector until `(12)` is proved
+   source-first.
+7. **The source cannot be fitted to the divisor.**  No \(\rho\)-dependent metric, codiagonal,
+   topology, or cyclic cocycle is allowed.
+8. **Generalized-prime falsifier.**  A Beurling model may reproduce prime-tail asymptotics,
+   functional equation, hypertranscendence, and off-line zeros.  It refutes the conjecture only if
+   it also carries the literal ordinary-integer cell `(10)` and the strict comparison `(13)`.
+9. **Same-fibre dagger cannot be declared.**  Clause 7 must follow from the full source operation
+   comparison.  Ordinary functional equation merely exchanges distinct off-line fibres.
+10. **No finite-Rees replacement.**  Any construction with a fixed finite Rees bound contradicts
+    the formalized flat-radical law.
+
+## 8. Literature and novelty boundary
+
+Parent mathematics includes:
+
+- rig and bimonoidal categories, including Mac Lane cohomological classification of categorical
+  ring coherence;
+- decomposition spaces, incidence coalgebras, and conservative ULF functors;
+- bivariant/analytic cyclic cohomology and excision for bornological algebras;
+- categorical dimensions and the uniqueness of cardinality on finite sets;
+- irregular Riemann--Hilbert/Stokes exact sequences;
+- Burnol's co-Poisson and Sonine completeness theorems; and
+- Deligne-style purity/weight theory as the finite-field model where one source weight controls
+  Frobenius magnitudes.
+
+Preliminary corpus and arXiv searches found these ingredients separately, but not a theorem
+identifying:
+
+```text
+ordinary-integer additive--multiplicative source cell
+  + external HT valuation tower
+  + essential arithmetic Stokes Bockstein
+  + Sonin principal-relative cyclic regulator
+  = horizontal Xi divisor anomaly.
+```
+
+No priority claim is made.  Novelty remains unverified until a specialist audit and, more
+importantly, until clauses `(11)`--`(12)` are proved.
+
+## Gates
+
+- [x] 0 → 1: well-posed source-first conjecture, exact RH consumer, corpus parents, falsifiers,
+  and first construction target
+- [x] distinguish from source factoriality and retire that false shortcut
+- [x] identify exact existing scalar: operation anomaly \(=\) relative torsion
+- [x] identify recent essential edge, prime-tail monodromy, and Sonin cyclic trace as concrete
+  interfaces
+- [ ] construct literal finite dyadic source codiagonal cell
+- [ ] identify its first-trace and co-Poisson boundary images
+- [ ] prove anomaly index identity `(11)`
+- [ ] prove strict no-anomaly transport `(12)`
+- [ ] complete paper proof
+- [ ] formalize dependency-closed theorem in Lean
+- [ ] RH
+
+## Log
+
+- 2026-07-31 — Rejected source factoriality: factor representations can carry nontrivial modular
+  spectra.  Reinterpreted horizontal divisor displacement as failure of a multiplicative
+  conormal character to extend to the full distributive operation theory of the integer source.
+  Identified its exact scalar with existing anti-diagonal relative torsion.  Froze the
+  arithmetic rig--Stokes anomaly cancellation conjecture and the dyadic codiagonal construction
+  as first falsifiable open core.

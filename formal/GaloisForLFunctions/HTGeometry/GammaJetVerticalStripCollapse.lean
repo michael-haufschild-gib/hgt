@@ -26,13 +26,6 @@ noncomputable section
 
 open scoped BigOperators
 
-/-- A vertical translate rewritten through the real coordinates of its base point. -/
-theorem add_mul_I_eq_ofReal_re_add (z : ℂ) (t : ℝ) :
-    z + (t : ℂ) * Complex.I = ((z.re : ℝ) : ℂ) + ((z.im + t : ℝ) : ℂ) * Complex.I := by
-  conv_lhs => rw [← Complex.re_add_im z]
-  push_cast
-  ring
-
 /-- Every derivative of `Γ` is eventually nonzero along an upper vertical line in the open right
 half-plane: `Γ` has no zero there, and the digamma Bell value has leading term `ψⁿ`, which is
 eventually nonzero because `‖ψ‖ → ∞`. -/

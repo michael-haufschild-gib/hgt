@@ -72,7 +72,10 @@ At the divisor, two-endpoint depth transport has the universal inner profile
 \]
 its first coefficient at \(z=\infty\) is the same vector
 \(-m_\rho(\rho-\tfrac12)\).  Thus source graph, outer logarithmic connection, and inner
-moving-zero normal layer are three exact charts of one singularity.
+moving-zero normal layer are three exact charts of one singularity.  The mismatch between the
+source-inverse and analytic-adjoint inner poles is exactly
+\(2(\Rea\rho-\tfrac12)\); every prime-clock seam is the exponential image of those same two
+poles.
 Its real part is not merely a divisor statistic.  It is exactly the asymptotic entropy of a
 positive largest-prime-exponent source:
 \[
@@ -114,7 +117,11 @@ The positive valuation atoms are, moreover, exactly Fisher-damped Gamma coordina
 Gamma sewing preserves prime summability in both directions, so it is not a hidden cutoff; its
 successive boundary symbols instead form weighted Vandermonde systems of arbitrarily large exact
 rank.  The positive object surviving the finite-sewing obstruction is therefore an infinite Rees
-resolution.
+resolution.  The same ordinary-prime geometry is inexhaustible in two other categories:
+tail-complete prime-residue fusion forces a countably free hypertranscendental valuation tower,
+while differentiation at a divisor lowers overlap grade by one and forces inverse-square Gram
+blow-up.  Thus finite differential closure, bounded positive completion, and finite-Rees
+reflection fail at three distinct stages of one source.
 
 These results do not prove the Riemann hypothesis.  They change its source-side formulation:
 horizontal displacement is a conserved asymptotic character, while bounded finite-order
@@ -265,6 +272,14 @@ Kakutani singularity sees both faces only as zero overlap \cite{Kakutani1948}; R
 the orientation erased by that dichotomy.  A universal operator theorem then proves that a
 finite-Rees map preserves the all-orders-flat radical in any dimension.
 
+The finite-Rees obstruction is the last member of a three-stage source-completeness law.  Before
+divisor formation, exact same-prime fusion forces a countably free hypertranscendental
+valuation--residue tower.  At divisor formation, the first score numerator has one less vanishing
+order than its overlap, so bounded positive Gram completion is impossible and singular graph
+division is forced.  After reflection, any exact sewing has essential Rees order.  These are
+differential, positive, and operator shadows of one fact: the ordinary-prime source has no finite
+completion compatible with fusion, divisor transgression, and internal reflection.
+
 \subsection*{Main result}
 
 The paper proves the following closed theorem package.
@@ -281,6 +296,8 @@ Then \(0<c_\rho<\tfrac12\), and:
 \(-2\xi'/\xi\) on its Euler domain; its balanced Euler contraction is \(J_\xi\), and the
 two-endpoint moving-zero profile has first outer coefficient
 \(-m_\rho(\rho-\tfrac12)\);
+\item the additive source-inverse/analytic-adjoint fracture is \(2c_\rho\); prime clocks
+exponentiate its two branches, and the resulting canonical prime seams are not coherent;
 \item the positive exponent-shell entropy equals \(-c_\rho\);
 \item every noncensoring compact BV prime-window residue phase and the principal Hurwitz phase
 equal \(c_\rho\);
@@ -290,6 +307,13 @@ equal \(c_\rho\);
 \item its positive atoms are Fisher-damped Gamma valuation coordinates; canonical Gamma sewing
 preserves prime summability exactly and its first \(N\) Rees symbols separate every \(N\)
 distinct primes;
+\item the reciprocal-prime activation admits no nonzero finite recurrence; divisor
+differentiation lowers overlap order by one, forces inverse-square Gram blow-up, and forbids a
+uniformly bounded positive \(2\times2\) completion;
+\item every tail-complete prime-residue refinement has a strict valuation-depth tower whose next
+analytic layer is relatively hypertranscendental over the complete earlier prefix; exact
+same-prime fusion reaches that excluded layer, so every fusion-complete differential field
+contains a countably free core;
 \item the reflected prime-valuation sector at \(c_\rho\) is all-orders flat, while the sector at
 \(-c_\rho\) is half-normal;
 \item no bounded operator family of fixed finite Rees order sews those sectors, and every exact
@@ -298,10 +322,9 @@ sewing \(R_N\) satisfies
  a_N^{-K}=o(\|R_N\|)\qquad\text{for every }K\in\N.
 \]
 \end{enumerate}
-The carriers, graph, character families, and activation law in
-\textup{(i)}--\textup{(vii)} are functions of a free
-spectral variable and are defined independently of the zero set; \(\rho\) enters only when these
-families are evaluated on the divisor.
+The source graph, character families, activation law, and residue-refined valuation towers in
+\textup{(ii)}--\textup{(x)} are defined before the zero set is read; \(\rho\) enters only when
+their boundary characters are evaluated on the divisor.
 \end{maintheorem}
 
 Theorem~\ref{thm:main} is not an RH equivalence padded with auxiliary notation.  It constructs
@@ -325,11 +348,15 @@ and centered logarithmic current at three scales;
 \item its squarefree score graph reconstructs the outer Xi connection, while balanced
 two-endpoint depth transport supplies the inner rational normal profile, with exact transition
 coefficient;
+\item source inverse and analytic adjoint differ by one additive boundary character, and prime
+clocks exponentiate its two branches;
 \item its cofinal hypertranscendental shell character carries exactly the same signed affine
 residue;
 \item compact prime windows and Hurwitz monodromy recover the same character independently;
 \item Fisher whitening and Gamma sewing retain the valuation source as a summability-rigid
 infinite Rees resolution of unbounded exact rank; and
+\item finite recurrence, finite differential closure, bounded positive Gram completion, and
+finite-Rees reflection all fail at distinct stages of the same source; and
 \item reflected valuation sectors realize its sign as a finite-versus-flat asymptotic
 superselection law.
 \end{enumerate}
@@ -422,6 +449,99 @@ which proves \eqref{eq:J-res}.  Since \(f(0)\ne0\), the numerator of
 \(E_0^{\rm exc}\) is a nonzero constant; \eqref{eq:exceptional-order} follows.
 \end{proof}
 
+\begin{theorem}[Inner--outer boundary-character law]\label{thm:inner-outer}
+Assume that \(f\) is holomorphic near a zero \(\rho\) of multiplicity \(m\ge1\), and define the
+balanced two-endpoint depth transport
+\[
+ B_\varepsilon^f(u)=
+ \frac{f(u)}
+ {f\!\left(1-(1+\varepsilon/2)
+          \left(1-(1+\varepsilon/2)u\right)\right)}.
+\]
+For \(a=\rho-\tfrac12\) and \(z+a\ne0\),
+\[
+ \lim_{\varepsilon\to0,\ \varepsilon\ne0}
+ B_\varepsilon^f(\rho+\varepsilon z)
+ =P_{a,m}(z):=\left(\frac z{z+a}\right)^m.
+ \tag{2.7}\label{eq:inner-profile}
+\]
+The profile and the outer logarithmic current have the same transition coefficient:
+\[
+ \lim_{w\to0,\ w\ne0}
+ w^{-1}\!\left[P_{a,m}(w^{-1})-1\right]
+ =-ma
+ =\Res_{u=\rho}J_f(u).
+ \tag{2.8}\label{eq:inner-outer-charge}
+\]
+\end{theorem}
+
+\begin{proof}
+Write \(f(u)=(u-\rho)^mg(u)\), where \(g\) is continuous at \(\rho\) and
+\(g(\rho)\ne0\).  The denominator argument satisfies the exact identity
+\[
+ 1-(1+\varepsilon/2)
+       \left(1-(1+\varepsilon/2)(\rho+\varepsilon z)\right)-\rho
+ =\varepsilon\!\left[
+ z+a+\varepsilon(z+\rho/4)+\varepsilon^2z/4\right].
+\]
+Substitution into the local factorization gives \eqref{eq:inner-profile}.  In the inverse
+coordinate,
+\[
+ P_{a,m}(w^{-1})=(1+aw)^{-m}=1-maw+O(w^2),
+\]
+which proves the first equality in \eqref{eq:inner-outer-charge}; the second is
+Theorem~\ref{thm:affine-residue}.
+\end{proof}
+
+\begin{theorem}[Additive--multiplicative duality--adjunction fracture]
+\label{thm:duality-fracture}
+The profile with shift \(b\) has pole at \(-b\).  Source inversion applies \(a\mapsto-a\),
+whereas analytic adjunction applies \(a\mapsto\overline a\); their resulting nearby poles are
+\[
+ \pi_{\rm inv}(a)=a,\qquad \pi_{\rm adj}(a)=-\overline a.
+\]
+Their additive fracture is
+\[
+ \Delta(\rho):=\pi_{\rm inv}(a)-\pi_{\rm adj}(a)
+ =a+\overline a=2(\Rea\rho-\tfrac12).
+ \tag{2.9}\label{eq:additive-fracture}
+\]
+Consequently
+\[
+ \Delta(\rho)=0\Longleftrightarrow\Rea\rho=\tfrac12,\qquad
+ \Rea\Res_\rho J_f=-\frac m2\,\Delta(\rho).
+ \tag{2.10}\label{eq:fracture-residue}
+\]
+For every prime \(p\), the corresponding multiplicative fracture is the exponential image of
+the same two poles:
+\[
+ D_p(\rho)
+ =p^{\pi_{\rm inv}(a)}-p^{\pi_{\rm adj}(a)}
+ =p^{\rho-1/2}-p^{1/2-\overline\rho}.
+ \tag{2.11}\label{eq:prime-fracture}
+\]
+Put
+\[
+ \kappa_p(\rho)=-(\log p)p^{-1/2}D_p(\rho).
+ \]
+If \(0<\Rea\rho<1\), then the family \((\kappa_p(\rho))_p\) is constant over the primes if and
+only if \(\Rea\rho=\tfrac12\); in that case every member is zero.
+\end{theorem}
+
+\begin{proof}
+Equations \eqref{eq:additive-fracture}--\eqref{eq:prime-fracture} are direct.  If
+\(\Rea\rho=\tfrac12\), then \(a=-\overline a\), so every fracture vanishes.  Conversely, assume
+all \(\kappa_p(\rho)\) have one value.  The function
+\[
+ \kappa_x(\rho)
+ =(\log x)\left(x^{-\overline\rho}-x^{-(1-\rho)}\right)
+\]
+tends to zero as \(x\to+\infty\) throughout the open strip.  Arbitrarily large primes force the
+common value to be zero.  Its \(p=2\) member vanishes only when the two positive-real
+exponentials have equal moduli, namely when
+\(2^{-\Rea\rho}=2^{-(1-\Rea\rho)}\).  Hence \(\Rea\rho=\tfrac12\).
+\end{proof}
+
 \begin{proposition}[Uniqueness of centered affine orientation]\label{prop:unique-affine}
 Let \(w(u)=au+b\).  Then
 \[
@@ -441,6 +561,17 @@ data: the affine vector in \eqref{eq:J-res} changes sign under reflection.  Squa
 retains divisor location but erases the only affine orientation allowed by
 Proposition~\ref{prop:unique-affine}.
 \end{remark}
+
+\begin{remark}[Why the balanced scalar is not a Herglotz carrier]
+In a centered real coordinate, a reflection-even entire carrier with a nonzero real zero
+\(a>0\) has a paired zero at \(-a\).  The Euler-contracted connection has residues \(-ma\) and
+\(+ma\).  A meromorphic Herglotz coefficient requires one residue sign at every real pole, and an
+anti-Herglotz coefficient requires the opposite sign.  Thus neither convention can contain both
+residues.  The obstruction disappears for the uncontracted one-form \(-d\log f\), whose residues
+all equal \(-m\).  Theorem~\ref{thm:duality-fracture} explains the sign reversal: Euler
+contraction retains the additive fracture rather than making it positive.
+\end{remark}
+
 
 \section{Positive exponent depth and the reciprocal zeta boundary}\label{sec:depth}
 
@@ -1132,11 +1263,211 @@ cannot hide that divergence because it is bounded above and below uniformly.  Wh
 is not a new bounded scalar carrier but every finite prime packet across an unbounded tower of
 Rees grades.  This is the source-side object that finite scalarizations were approximating.
 
+\subsection{Three finite-completion failures of one prime source}
+
+The same critical activation is already infinite before reflection is considered.
+
+\begin{theorem}[Critical activation singular-resolution law]
+\label{thm:critical-resolution}
+At \(q_p=p^{-1}\), the occupancy, fixed-depth tail, and Fisher-whitened Gamma masses satisfy
+\[
+ \sum_p\frac1{p+1}=\infty,\qquad
+ \sum_p\frac1{p^{m-1}(p+1)}<\infty\quad(m\ge2),
+\]
+\[
+ \sum_p\frac{p-1}{p(p+1)}=\infty.
+\]
+No nonzero polynomial vanishes on infinitely many nodes \(p^{-1}\).
+
+At a divisor of multiplicity \(d\ge1\), let the local overlap and first score numerator be
+\[
+ B_d(t)=t^d,\qquad S_d(t)=dt^{d-1}.
+\]
+Then
+\[
+ \frac{|S_d(t)|^2}{|B_d(t)|^2}=\frac{d^2}{|t|^2}.
+ \tag{6.12}\label{eq:gram-blowup}
+\]
+Consequently no uniformly bounded diagonal \(C(t)\) makes
+\[
+ \begin{pmatrix}|B_d(t)|^2&S_d(t)\\
+                 S_d(t)&C(t)\end{pmatrix}
+\]
+positive semidefinite near \(t=0\).
+\end{theorem}
+
+\begin{proof}
+The first and third summands are comparable to \(p^{-1}\); the middle summand is bounded by
+\(p^{-m}\).  The summability statements follow from Euler's divergence of
+\(\sum_pp^{-1}\) and convergence of \(\sum_nn^{-m}\) for \(m\ge2\).  Infinitely many
+distinct reciprocal primes cannot be roots of a nonzero polynomial.  Formula
+\eqref{eq:gram-blowup} is immediate.  Positivity of the displayed matrix would force
+\(|S_d(t)|^2\le |B_d(t)|^2C(t)\), hence \(C(t)\ge d^2/|t|^2\), contradicting uniform
+boundedness.
+\end{proof}
+
+The algebraic completion has an independent infinite frontier.  Let \(I\) be finite, let
+\(A=\prod_{i\in I}A_i\) be a finite product of pointed sets, and let
+\(y:\mathcal P\to A\) be tail-complete, where \(\mathcal P\) is the set of rational primes:
+every state occurs beyond every finite set of primes.
+Let \((b_z)_{z\in A}\) be the anchored tensor basis of \(\C^A\), and put
+\[
+ F_{r,z}(\tau)=\sum_{p\in\mathcal P}b_z(y(p))p^{i(r+1)\tau},
+ \qquad r\ge0.
+ \tag{6.13}\label{eq:ht-grid-carrier}
+\]
+These are upper-half-plane Dirichlet germs.  Same-prime coefficient fusion is
+\[
+ V_e(f)\star V_r(g)=V_{e+r+1}(fg).
+ \tag{6.14}\label{eq:valuation-fusion}
+\]
+
+\begin{theorem}[Neutral-source hypertranscendental creation law]
+\label{thm:ht-creation}
+Over the embedded coordinate field \(E=\C(\tau)\), the complete family
+\((F_{r,z})_{r\ge0,z\in A}\) is countably jointly differentially independent.  If
+\[
+ K_n=E\langle F_{r,z}:0\le r\le n,\ z\in A\rangle_{\rm diff},
+\]
+then
+\[
+ K_0\subsetneq K_1\subsetneq\cdots,
+\]
+and the complete layer \((F_{n+1,z})_{z\in A}\) is differentially independent over \(K_n\) of
+exact rank \(|A|=\prod_i|A_i|\).  Nevertheless
+\[
+ V_n(b_z)\star V_0(1)=V_{n+1}(b_z),
+ \qquad F_{n+1,z}\notin K_n.
+ \tag{6.15}\label{eq:external-creation}
+\]
+Thus every derivation-closed field which contains depth zero and is closed under the exact
+fusion \eqref{eq:valuation-fusion} contains the whole countably free family.
+
+For pairwise coprime moduli \(q_i\), the actual prime profile
+\(y(p)=(p\bmod q_i)_i\) in
+\(\prod_i(\mathbb Z/q_i\mathbb Z)^\times\) is tail-complete, and each frontier has exact rank
+\(\prod_i\varphi(q_i)\).  The all-identity sector is the prime-zeta spine
+\[
+ F_{r,\mathbf1}(\tau)=\sum_pp^{i(r+1)\tau}.
+\]
+\end{theorem}
+
+\begin{proof}
+For any finite carrier packet, tail completeness makes every anchored coefficient pattern recur
+after deletion of the finitely many primes already used by a proposed relation.  Dirichlet-series
+coefficient uniqueness, followed by prime-log derivations, isolates the leading differential
+monomial; the anchored basis then forces its coefficient to vanish.  Repetition gives joint
+differential independence over \(\C(\tau)\).  Applying this to all layers through \(n+1\)
+shows that the last layer is independent over the differential field generated by the complete
+prefix and gives its exact cardinality.
+
+The identity observable has empty support and satisfies \(b_z\cdot1=b_z\).
+Equation \eqref{eq:valuation-fusion} therefore gives
+\eqref{eq:external-creation}, while relative independence gives its nonmembership assertion.
+Induction proves that any fusion-complete field containing depth zero contains every layer.
+For the arithmetic specialization, the Chinese remainder theorem and Dirichlet's theorem on
+primes in progressions give tail completeness; the rank is the product of the unit-group
+cardinalities.
+\end{proof}
+
+Theorems~\ref{thm:critical-resolution} and \ref{thm:ht-creation} expose two different failures.
+Finite differential closure cannot contain the source's own fusion orbit.  Bounded positive
+completion cannot cross its divisor because differentiation lowers overlap grade by one.
+The next theorem identifies the singular quotient forced by the second failure.
+
+\subsection{Exact squarefree graph and the inner--outer weld}
+
+Put
+\[
+ Q(s)=\frac{\zeta(s)}{\zeta(2s)},\qquad
+ \mathcal A(s)=-\frac{\zeta'(s)}{\zeta(s)},\qquad
+ C_{\rm sf}(s)=\mathcal A(s)-2\mathcal A(2s),
+\]
+and let
+\[
+ \gamma_\infty(s)=\frac{s(s-1)}2\pi^{-s/2}\Gamma(s/2).
+\]
+For \(s=\sigma+u\varepsilon\), define the moving overlap and its source score by
+\[
+ O_{\sigma,\varepsilon}(u)=\frac{Q(s)}{Q(\sigma)},\qquad
+ S_{\sigma,\varepsilon}(u)
+ =2\left[\partial_uO_{\sigma,\varepsilon}(u)
+   +\varepsilon C_{\rm sf}(\sigma)O_{\sigma,\varepsilon}(u)\right].
+\]
+The singular squarefree graph is
+\[
+ \mathfrak G_{\rm sf}(\sigma,\varepsilon;u)
+ =2C_{\rm sf}(\sigma)
+  -\frac{S_{\sigma,\varepsilon}(u)}
+         {\varepsilon O_{\sigma,\varepsilon}(u)}
+  -2\frac{\gamma_\infty'(s)}{\gamma_\infty(s)}.
+ \tag{6.16}\label{eq:sf-graph}
+\]
+
+\begin{theorem}[Exact graph/connection/nearby-profile weld]\label{thm:graph-weld}
+If \(\Rea\sigma>1\), \(\Rea s>1\), and \(\varepsilon\ne0\), then
+\[
+ \mathfrak G_{\rm sf}(\sigma,\varepsilon;u)
+ =2\left[C_{\rm sf}(s)
+   -\frac{\gamma_\infty'(s)}{\gamma_\infty(s)}\right].
+ \tag{6.17}\label{eq:sf-graph-current}
+\]
+After the forced strict-right correction,
+\[
+ \mathcal G_\xi(s):=
+ \mathfrak G_{\rm sf}(\sigma,\varepsilon;u)+4\mathcal A(2s)
+ =-2\frac{\xi'(s)}{\xi(s)}.
+ \tag{6.18}\label{eq:xi-graph}
+\]
+Consequently
+\[
+ \frac{s-\tfrac12}{2}\mathcal G_\xi(s)=J_\xi(s).
+ \tag{6.19}\label{eq:graph-euler}
+\]
+At every zero \(\rho\), the residue of the meromorphic right side of
+\eqref{eq:graph-euler} equals the first outer coefficient of the balanced inner profile:
+\[
+ \Res_\rho J_\xi
+ =-m_\rho(\rho-\tfrac12)
+ =\lim_{w\to0,\ w\ne0}w^{-1}
+ \left[
+ \left(\frac{w^{-1}}
+ {w^{-1}+\rho-\tfrac12}\right)^{m_\rho}-1
+ \right].
+ \tag{6.20}\label{eq:graph-inner-outer}
+\]
+\end{theorem}
+
+\begin{proof}
+Logarithmic differentiation of the overlap gives
+\[
+ \frac{\partial_uO_{\sigma,\varepsilon}(u)}
+      {\varepsilon O_{\sigma,\varepsilon}(u)}
+ =-C_{\rm sf}(s).
+\]
+Substitution in \eqref{eq:sf-graph} proves \eqref{eq:sf-graph-current}.
+Since
+\[
+ C_{\rm sf}(s)+2\mathcal A(2s)=\mathcal A(s)
+\quad\text{and}\quad
+\xi=\gamma_\infty\zeta,
+\]
+equation \eqref{eq:xi-graph} follows, and
+\eqref{eq:graph-euler} is its balanced Euler contraction.  Equation
+\eqref{eq:graph-inner-outer} is Theorem~\ref{thm:inner-outer}.
+\end{proof}
+
+The correction \(4\mathcal A(2s)\) is holomorphic on \(\Rea s>\tfrac12\); it changes the
+squarefree current into the completed Xi current without adding a right-half divisor.  More
+importantly, division by \(O_{\sigma,\varepsilon}\) is forced by
+\eqref{eq:gram-blowup}.  The graph is a source-defined singular correspondence, not a bounded
+Fisher tangent disguised by normalization.
+
 For a prime \(p\) and \(c<\tfrac12\), let
 \[
  \mu_{p,c}(k)=(1-r_{p,c})r_{p,c}^{\,k},
  \qquad r_{p,c}=p^{-1+2c},\qquad k\ge0.
- \tag{6.12}\label{eq:geom-law}
+ \tag{6.21}\label{eq:geom-law}
 \]
 This is exactly \eqref{eq:conditional-depth} with
 \(\sigma=1-2c\), after shifting positive valuation \(k=e+1\) to \(e\ge0\).
@@ -1148,13 +1479,13 @@ Compare \(\mu_{p,c}\) with the critical law \(\mu_{p,0}\).  Its squared Hellinge
  h_p(c)^2
  =\frac{(1-p^{-1})(1-p^{-1+2c})}
         {(1-p^{-1+c})^2}.
- \tag{6.13}\label{eq:local-hellinger}
+ \tag{6.22}\label{eq:local-hellinger}
 \]
 For a prime cutoff \(N\), put
 \[
  H_N(c)=\prod_{p<N}h_p(c),\qquad
  a_N=\prod_{p<N}(1-p^{-1}).
- \tag{6.14}\label{eq:HN-aN}
+ \tag{6.23}\label{eq:HN-aN}
 \]
 The scale \(a_N\to0\) is the Wold vacuum mass.
 
@@ -1162,7 +1493,7 @@ The scale \(a_N\to0\) is the Wold vacuum mass.
 A nonnegative germ \(x_N\) is \emph{flat beyond every Rees order} relative to \(a_N\) if
 \[
  x_N=o(a_N^K)\qquad\text{for every }K\in\N.
- \tag{6.15}\label{eq:flat}
+ \tag{6.24}\label{eq:flat}
 \]
 \end{definition}
 
@@ -1174,7 +1505,7 @@ For \(c<\tfrac12\):
  c=0&:&H_N(c)=1,&\text{critical face},\\[2mm]
  0<c<\tfrac12&:&H_N(c)=o(a_N^K)\quad\forall K,&\text{all-orders-flat face}.
  \end{array}
- \tag{6.16}\label{eq:trichotomy}
+ \tag{6.25}\label{eq:trichotomy}
 \]
 \end{theorem}
 
@@ -1393,8 +1724,10 @@ must include a noncompact character coordinate or an equivalent singular boundar
 
 \section{Interpretation for RH}\label{sec:interpretation}
 
-Theorems~\ref{thm:transgression}, \ref{thm:gamma-rees}, \ref{thm:trichotomy}, and
-\ref{thm:essential} identify a common mechanism behind several earlier obstructions.
+Theorems~\ref{thm:inner-outer}, \ref{thm:duality-fracture},
+\ref{thm:critical-resolution}, \ref{thm:ht-creation}, \ref{thm:graph-weld},
+\ref{thm:trichotomy}, and \ref{thm:essential} identify a common mechanism behind several
+earlier obstructions.
 
 \begin{center}
 \begin{tabular}{@{}lll@{}}
@@ -1403,7 +1736,11 @@ Source operation & retained datum & discarded datum\\
 \midrule
 fixed exponent-depth limit & \(\zeta\) bulk & reciprocal divisor\\
 inverse-depth normal cone & \(1/(2\xi)\) & positive coefficient chart\\
-centered logarithmic current & affine residue & absolute normalization\\
+neutral same-prime fusion & exact coefficient law & finite differential closure\\
+score/overlap graph & Xi outer connection & bounded positive completion\\
+two-endpoint normal blow-up & inner pole orientation & global normalization\\
+centered Euler contraction & affine residue & uniform Herglotz sign\\
+prime-character transport & endpoint separation & nontrivial loop holonomy\\
 even scalarization & divisor magnitude & reflection orientation\\
 Kakutani quotient & singularity & finite versus flat face\\
 Gamma sewing & every finite prime packet & bounded Hilbertization\\
@@ -1415,34 +1752,44 @@ finite-Rees transport & each Rees grade & all-orders type crossing\\
 The unifying statement is:
 
 \begin{quote}
-\emph{Horizontal zero displacement is the real weight of a source-generated asymptotic
-character.  Divisor formation conserves that weight at the exceptional normal boundary.
-Even scalarization and bounded finite-Rees transport are quotient operations; once they pass to
-the flat radical, no finite-Rees transport can reconstruct the missing orientation.  Gamma
-whitening retains the source only as an infinite-rank Rees resolution, not as a bounded scalar
-completion.}
+\emph{Horizontal zero displacement is the additive fracture between source inverse and analytic
+adjoint on one inner normal layer.  Prime clocks exponentiate the same two branches, the singular
+squarefree graph carries them to the outer Xi connection, and divisor residue records their
+first transition coefficient.  Before the divisor, fusion forces a countably free
+hypertranscendental tower; at the divisor, grade loss forces singular overlap division; after
+reflection, exact sewing has essential Rees order.  Finite differential closure, bounded positive
+completion, and finite-Rees transport are three quotient shadows of one source-completeness
+boundary.}
 \end{quote}
 
-This statement answers why several attractive routes stall at a positivity or self-adjointness
-condition.  Positivity is often applied after the odd coordinate has been squared, traced, or
-completed in a bounded norm.  At that stage the relevant sign is no longer a small missing
-estimate.  It belongs to a different asymptotic species.
+This statement answers several no-go results without turning them into slogans.  The balanced
+Euler contraction cannot be Herglotz because it retains the additive fracture and therefore has
+opposite residues at reflected real zeros; the uncontracted logarithmic one-form is the
+sign-compatible object.  Prime translation is a faithful detector but a flat coboundary, because
+exponentials of an additive character have trivial closed-orbit holonomy; detection alone cannot
+force the character to vanish.  A uniformly bounded positive Gram completion cannot carry the
+score through a nonzero divisor; the graph crosses that boundary by the explicitly singular
+division whose inverse-square cost is \eqref{eq:gram-blowup}.  Finally, every scalar observer
+depending only on \(a^2\) or \(|a|\) is invariant under \(a\mapsto-a\), so it factors through an
+even quotient of the duality--adjunction fracture.
 
 The result gives a closed categorical restriction on arguments implemented through these
-reflected valuation sectors: work must be performed before scalarization, on an object carrying
-simultaneously
+reflected valuation sectors: work must be performed before scalarization, on the complete chain
 \[
  \begin{aligned}
  \text{positive exponent-depth source}
- &\longrightarrow \text{reciprocal exceptional section}\\
- &\longrightarrow \text{centered logarithmic current}
- \longrightarrow \text{asymptotic character}\\
- &\longrightarrow \text{Fisher--Gamma infinite Rees resolution}.
+ &\longrightarrow \text{countably free valuation--residue fusion tower}\\
+ &\longrightarrow \text{squarefree score/overlap graph}\\
+ &\longrightarrow \text{singular corrected Xi outer connection}\\
+ &\longleftrightarrow \text{rational inner nearby profile}\\
+ &\longrightarrow \text{additive/exponential boundary character}\\
+ &\longrightarrow \text{Fisher--Gamma infinite Rees resolution}\\
+ &\longrightarrow \text{finite-versus-flat reflection type}.
  \end{aligned}
  \tag{9.1}\label{eq:architecture}
 \]
 Theorem~\ref{thm:main} ties every arrow in \eqref{eq:architecture} to the same exponent source and
-identifies the common divisor coordinate in its character charts.
+identifies the common divisor coordinate in its inner, outer, and character charts.
 Corollary~\ref{cor:xi-superselection} proves the exhaustive conclusion for the stated transport
 class: no bounded finite-Rees completion can perform the reflection step.
 
@@ -1453,6 +1800,13 @@ transport observations.  Positive bounded-exponent Euler sources have three dist
 their fixed-scale limit is \(\zeta\), their inverse-depth limit is reciprocal zeta, and their
 depth derivative is the Xi logarithmic current after completion.  The centered residue of that
 current is multiplicity times the full affine displacement from the critical line.
+
+The missing transition has now been identified exactly.  A squarefree Fisher score divided by
+its own overlap, with the forced doubled-zeta correction, reconstructs
+\(-2\xi'/\xi\).  Balanced Euler contraction gives the outer current, while two-endpoint moving-zero
+blow-up gives the inner rational profile.  Their transition coefficient is the same divisor
+charge.  Source inverse and analytic adjoint differ by twice the horizontal displacement, and
+every prime seam is the exponential image of those same inner poles.
 
 The same displacement is the logarithmic modulus of the cofinal character of a positive
 hypertranscendental shell.  Prime two and prime three recover the entire complex coordinate.
@@ -1465,6 +1819,12 @@ canonical Gamma sewing preserves summability exactly, while its boundary symbols
 arbitrarily large weighted-Vandermonde rank.  Gamma is therefore an infinite Rees resolution of
 the source, not an omitted bounded coordinate.
 
+No finite substitute has the same closure properties.  Same-prime neutral fusion forces a
+countably free hypertranscendental valuation--residue tower.  Divisor differentiation lowers
+overlap order and forces inverse-square positive-Gram blow-up.  Reflection sends one sector into
+an asymptotic species inaccessible to every fixed finite Rees order.  These are exact theorems in
+three different categories, anchored to one ordinary-prime source by the squarefree graph.
+
 Reflection then exposes a genuine type fracture.  At every hypothetical right-half Xi zero, the
 corresponding prime-valuation sector is flat beyond all finite Rees orders, while its reflected
 partner is half-normal.  The flat radical is invariant under arbitrary-dimensional bounded
@@ -1472,10 +1832,11 @@ finite-Rees transport, and exact sewing has essential operator norm.
 
 The Riemann hypothesis remains the assertion that every nontrivial divisor charge is neutral.
 The contribution here is to locate that charge before zero selection, prove its conservation,
-prove its complete two-prime observability, and prove the precise class of completions that
-cannot transport it.  Within this source class, the missing mathematical object is therefore
-not another scalar positivity witness.  It is the source-normal asymptotic character together
-with its infinite Rees resolution.
+identify its additive and exponential duality--adjunction forms, prove its complete two-prime
+observability, and classify the finite completions that cannot contain or transport it.  Within
+this source class, the correct object is the singular inner--outer boundary-character
+correspondence together with its countably free hypertranscendental and infinite-Rees
+resolutions.
 
 \begin{thebibliography}{99}
 

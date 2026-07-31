@@ -6,6 +6,11 @@ import GaloisForLFunctions.RHTower.AsymptoticTypeSuperselection
 import GaloisForLFunctions.RHTower.EulerActivationSquarefreeDisintegration
 import GaloisForLFunctions.RHTower.GammaSewnMobiusValuationContraction
 import GaloisForLFunctions.RHTower.XiDepthMobiusGammaOuterInnerWeld
+import GaloisForLFunctions.RHTower.XiPrimeSeamCoherenceCollapse
+import GaloisForLFunctions.RHTower.XiEulerContractionResiduePairing
+import GaloisForLFunctions.RHTower.CriticalActivationReesSourceLaw
+import GaloisForLFunctions.HTGeometry.PrimeResidueValuationInteractionSuperselection
+import GaloisForLFunctions.HTGeometry.PrimeValuationCoordinateFusionCompletion
 
 /-!
 # Xi source-modular type superselection
@@ -56,6 +61,20 @@ theorem xiRightSourceModularCharge_lt_half
     xiRightSourceModularCharge q < 1 / 2 := by
   rw [xiRightSourceModularCharge]
   have hstrip := xi_divisor_support_re_mem_open_unit q.1.1
+  linarith
+
+/-- A genuine right-half Xi divisor copy cannot have a coherent canonical
+prime-seam family. -/
+theorem xiRightPrimeSeamCharges_not_coherent
+    (q : XiRightZeroCopy) :
+    ¬ OrbitwisePrimeSeamChargesCoherent (q.1.1 : ℂ) := by
+  intro hcoh
+  have hstrip := xi_divisor_support_re_mem_open_unit q.1.1
+  have hre :=
+    (orbitwisePrimeSeamChargesCoherent_iff_re_eq_half
+      hstrip).mp hcoh
+  have hpos := xiRightSourceModularCharge_pos q
+  rw [xiRightSourceModularCharge] at hpos
   linarith
 
 /-- The cofinal shell entropy is the negative of the right modular charge. -/
@@ -191,6 +210,152 @@ theorem xiDepthGraphOuterInnerWeld_law :
         hsigma hshift hepsilon
   innerOuterChargeWeld :=
     xiDepthNearby_outerCharge_and_affineResidue_match
+
+/-- Additive normal-layer mismatch between source-inverse and
+analytic-adjoint nearby poles. -/
+def xiNearbyPoleDualityAdjunctionFracture (rho : ℂ) : ℂ :=
+  depthSuccessorNearbyPole (-(rho - 1 / 2)) -
+    depthSuccessorNearbyPole (starRingEnd ℂ (rho - 1 / 2))
+
+/-- The nearby-pole duality--adjunction fracture is exactly twice the
+horizontal centered displacement. -/
+theorem xiNearbyPoleDualityAdjunctionFracture_eq_two_re
+    (rho : ℂ) :
+    xiNearbyPoleDualityAdjunctionFracture rho =
+      ((2 * (rho.re - 1 / 2) : ℝ) : ℂ) := by
+  apply Complex.ext
+  · simp [xiNearbyPoleDualityAdjunctionFracture,
+      depthSuccessorNearbyPole]
+    ring
+  · simp [xiNearbyPoleDualityAdjunctionFracture,
+      depthSuccessorNearbyPole]
+
+/-- The additive fracture vanishes exactly on the critical line. -/
+theorem xiNearbyPoleDualityAdjunctionFracture_eq_zero_iff
+    (rho : ℂ) :
+    xiNearbyPoleDualityAdjunctionFracture rho = 0 ↔
+      rho.re = 1 / 2 := by
+  constructor
+  · intro h
+    have hre := congrArg Complex.re h
+    simp [xiNearbyPoleDualityAdjunctionFracture,
+      depthSuccessorNearbyPole] at hre
+    linarith
+  · intro h
+    apply Complex.ext
+    · simp [xiNearbyPoleDualityAdjunctionFracture,
+        depthSuccessorNearbyPole, h]
+    · simp [xiNearbyPoleDualityAdjunctionFracture,
+        depthSuccessorNearbyPole]
+
+/-- Every prime-clock duality--adjunction fracture is the exponential image
+of the same two nearby-pole branches. -/
+theorem primeCpowDualityAdjunctionFracture_eq_nearbyPoleExponentials
+    (p : ℕ) (rho : ℂ) :
+    primeCpowDualityAdjunctionFracture p rho =
+      (p : ℂ) ^
+          depthSuccessorNearbyPole (-(rho - 1 / 2)) -
+        (p : ℂ) ^
+          depthSuccessorNearbyPole
+            (starRingEnd ℂ (rho - 1 / 2)) := by
+  rw [show depthSuccessorNearbyPole (-(rho - 1 / 2)) =
+      rho - 1 / 2 by simp [depthSuccessorNearbyPole]]
+  rw [show depthSuccessorNearbyPole
+      (starRingEnd ℂ (rho - 1 / 2)) =
+        1 / 2 - starRingEnd ℂ rho by
+    apply Complex.ext
+    · simp [depthSuccessorNearbyPole]
+    · simp [depthSuccessorNearbyPole]]
+  rfl
+
+/-- Exact additive/multiplicative equalizer certificate for the oriented
+boundary character. -/
+structure XiBoundaryCharacterFractureCertificate : Prop where
+  additiveFracture :
+    ∀ rho : ℂ,
+      xiNearbyPoleDualityAdjunctionFracture rho =
+        ((2 * (rho.re - 1 / 2) : ℝ) : ℂ)
+  additiveEqualizer :
+    ∀ rho : ℂ,
+      xiNearbyPoleDualityAdjunctionFracture rho = 0 ↔
+        rho.re = 1 / 2
+  primeExponentiation :
+    ∀ (p : ℕ) (rho : ℂ),
+      primeCpowDualityAdjunctionFracture p rho =
+        (p : ℂ) ^
+            depthSuccessorNearbyPole (-(rho - 1 / 2)) -
+          (p : ℂ) ^
+            depthSuccessorNearbyPole
+              (starRingEnd ℂ (rho - 1 / 2))
+  primeCoherenceEqualizer :
+    ∀ {rho : ℂ}, 0 < rho.re ∧ rho.re < 1 →
+      (OrbitwisePrimeSeamChargesCoherent rho ↔
+        rho.re = 1 / 2)
+
+/-- **Boundary-character duality--adjunction law.** The additive mismatch of
+the two inner nearby-pole branches is twice horizontal displacement. Prime
+clocks exponentiate the same branches, and their canonical seam family is
+coherent exactly on the additive equalizer. -/
+theorem xiBoundaryCharacterFracture_law :
+    XiBoundaryCharacterFractureCertificate where
+  additiveFracture :=
+    xiNearbyPoleDualityAdjunctionFracture_eq_two_re
+  additiveEqualizer :=
+    xiNearbyPoleDualityAdjunctionFracture_eq_zero_iff
+  primeExponentiation :=
+    primeCpowDualityAdjunctionFracture_eq_nearbyPoleExponentials
+  primeCoherenceEqualizer :=
+    fun {rho} hstrip =>
+      orbitwisePrimeSeamChargesCoherent_iff_re_eq_half
+        (rho := rho) hstrip
+
+/-- Critical activation certificate showing why its divisor transport cannot
+be compressed into a finite recurrence or bounded positive Gram completion. -/
+structure CriticalActivationSingularResolutionCertificate : Prop where
+  occupancyNotSummable :
+    ¬ Summable criticalActivationOccupancyMass
+  fixedHigherDepthSummable :
+    ∀ {m : ℕ}, 2 ≤ m →
+      Summable (criticalActivationValuationTailMass m)
+  gammaFibreNotSummable :
+    ¬ Summable criticalActivationGammaFibreMass
+  reciprocalPrimeNodesHaveNoFiniteRecurrence :
+    ∀ (S : Set Nat.Primes), S.Infinite →
+      ∀ Q : Polynomial ℝ,
+        (∀ p ∈ S,
+          Polynomial.eval
+            (xiTransversePrimeApertureDiskNode 1 p) Q = 0) →
+        Q = 0
+  divisorDifferentiationDropsOneGrade :
+    ∀ {d : ℕ}, 0 < d → ∀ {t : ℝ}, t ≠ 0 →
+      monomialDivisorFisherNumerator d t ^ 2 /
+          monomialDivisorOverlap d t ^ 2 =
+        (d : ℝ) ^ 2 / t ^ 2
+  noBoundedPositiveDivisorCompletion :
+    ∀ {d : ℕ}, 0 < d → ∀ M : ℝ,
+      ∃ t : ℝ, 0 < t ∧ ∀ C : ℝ, C ≤ M →
+        ¬ (divisorReesGram
+            (monomialDivisorOverlap d t)
+            (monomialDivisorFisherNumerator d t) C).PosSemidef
+
+/-- **Critical activation singular-resolution law.** Radical occupancy and
+Fisher-whitened Gamma mass remain prime-harmonic, every fixed higher depth is
+summable, reciprocal-prime nodes admit no finite recurrence, and divisor
+differentiation forces inverse-square Gram blow-up. -/
+theorem criticalActivationSingularResolution_law :
+    CriticalActivationSingularResolutionCertificate where
+  occupancyNotSummable :=
+    not_summable_criticalActivationOccupancyMass
+  fixedHigherDepthSummable :=
+    summable_criticalActivationValuationTailMass
+  gammaFibreNotSummable :=
+    not_summable_criticalActivationGammaFibreMass
+  reciprocalPrimeNodesHaveNoFiniteRecurrence :=
+    polynomial_eq_zero_of_vanishes_on_infinite_prime_nodes
+  divisorDifferentiationDropsOneGrade :=
+    monomialDivisorFisher_ratio
+  noBoundedPositiveDivisorCompletion :=
+    no_bounded_positive_divisorReesGram
 
 /-- A finite-Rees-moderate operator cannot sew the reflected valuation
 sectors selected by an actual right Xi divisor charge. -/
@@ -363,6 +528,8 @@ structure XiRightSourceModularTypeSuperselectionCertificate
     0 < xiRightSourceModularCharge q
   chargeBelowHalf :
     xiRightSourceModularCharge q < 1 / 2
+  primeSeamNotCoherent :
+    ¬ OrbitwisePrimeSeamChargesCoherent (q.1.1 : ℂ)
   shellTransgression :
     shellTransferEntropy (q.1.1 : ℂ) =
       -xiRightSourceModularCharge q
@@ -386,6 +553,10 @@ structure XiRightSourceModularTypeSuperselectionCertificate
     GammaSewnActivationReesResolutionCertificate
   depthGraphOuterInnerWeld :
     XiDepthGraphOuterInnerWeldCertificate
+  boundaryCharacterFracture :
+    XiBoundaryCharacterFractureCertificate
+  criticalActivationSingularResolution :
+    CriticalActivationSingularResolutionCertificate
   finiteReesNoSewing :
     ∀ (K : ℕ) (R : ℕ → (ℝ →L[ℝ] ℝ)),
       ReesOperatorGradeAtMost atTop
@@ -439,6 +610,8 @@ theorem xiRightSourceModularTypeSuperselection_law
     XiRightSourceModularTypeSuperselectionCertificate q where
   chargePositive := xiRightSourceModularCharge_pos q
   chargeBelowHalf := xiRightSourceModularCharge_lt_half q
+  primeSeamNotCoherent :=
+    xiRightPrimeSeamCharges_not_coherent q
   shellTransgression :=
     shellTransferEntropy_eq_neg_xiRightSourceModularCharge q
   normalConeResidue :=
@@ -453,6 +626,10 @@ theorem xiRightSourceModularTypeSuperselection_law
     gammaSewnActivationReesResolution_law
   depthGraphOuterInnerWeld :=
     xiDepthGraphOuterInnerWeld_law
+  boundaryCharacterFracture :=
+    xiBoundaryCharacterFracture_law
+  criticalActivationSingularResolution :=
+    criticalActivationSingularResolution_law
   finiteReesNoSewing :=
     fun K R hR =>
       no_finiteReesOperator_sews_xiRightModularSectors q K R hR
