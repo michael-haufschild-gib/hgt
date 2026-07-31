@@ -576,8 +576,19 @@ Z w = (Q_a - Q_b) D_r [ (1 - R_b) w + C_b w ].                            (41)
 So the entire obstruction is the **Fourier band-pass** `1 - R_b`: it is the only term that spreads
 the support, and everything else is trace class.  The remaining question is quantitative and
 classical — how much of `(1 - R_b) w`, for `w` supported in `(b,c)`, the dilation carries into the
-`(a,b)` layer.  That is a time-band estimate of the kind the prolate literature supplies, and it is
-the last input needed.
+`(a,b)` layer.  That is a time-band estimate of the kind the prolate literature supplies.
+
+**Half of it is unnecessary.**  The dilation sum has two branches, and the forward one contributes
+nothing.  A vector supported in `[-c,c]` is carried by `U_r` into `[-c/r, c/r]`, and `c <= r a`
+makes that a subset of `[-a,a]`, where both Sonin projections annihilate exactly.  Hence
+
+```text
+(Q_a - Q_b) U_r w = 0,     so   (Q_a - Q_b) D_r w = (Q_a - Q_b) U_r^{-1} w  (42)
+```
+
+for every inner-band `w` in the chamber.  Only the inverse branch survives, so the estimate has to
+be made in one direction only: how much of the band-pass the *expanding* dilation carries into the
+`(a,b)` layer.
 
 ### Proof
 
@@ -713,6 +724,8 @@ provisional pending expert/literature review.
 | witness criterion | `evenSoninApertureSuccessiveLayerTransition_ne_zero_of_lostTransition_apply_ne_zero` |
 | `(40)` outer-band split | `evenCentralSoninProjection_apply_of_indicatorCutoff_eq_zero` |
 | `(41)` reduced coupling | `evenSoninApertureSuccessiveLayerTransition_apply_annulus` |
+| `(42)` forward branch vanishes | `evenSoninApertureLayer_evenDilationCLM_apply_eq_zero` |
+| `(42)` inverse branch only | `evenSoninApertureLayer_evenDilationSum_apply_eq_inverse` |
 
 Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninPrincipalRelativeCyclicExtension.lean`,
@@ -728,7 +741,8 @@ Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninInnerBandAnnihilation.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninApertureDefectSupport.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninCouplingInnerBandCriterion.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninOuterBandProjectionSplit.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninOuterBandProjectionSplit.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninForwardBranchVanishing.lean`.
 All declarations depend only on `propext`, `Classical.choice`, `Quot.sound`.
 
 Novelty split for Theorem G: `(7)` was already in the corpus
@@ -739,6 +753,10 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-07-31 — forward branch eliminated.  In the chamber the contracting dilation pushes the outer
+  window inside the inner aperture, where both Sonin projections annihilate exactly, so the aperture
+  layer kills that branch outright.  The coupling on the inner band sees only the expanding
+  dilation, halving what the remaining time-band estimate must cover.
 - 2026-07-31 — the support spreading isolated.  On a vector outside the physical window the Sonin
   projection is the Fourier band-pass plus a trace-class correction, so the coupling on an annulus
   vector is the aperture layer applied to the dilated band-pass, up to trace class.  The whole

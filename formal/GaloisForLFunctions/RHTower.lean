@@ -3622,3 +3622,4 @@ import GaloisForLFunctions.RHTower.SoninApertureDefectSupport
 import GaloisForLFunctions.RHTower.AdeleHaarMeasurableWitness
 import GaloisForLFunctions.RHTower.SoninCouplingInnerBandCriterion
 import GaloisForLFunctions.RHTower.SoninOuterBandProjectionSplit
+import GaloisForLFunctions.RHTower.SoninForwardBranchVanishing
