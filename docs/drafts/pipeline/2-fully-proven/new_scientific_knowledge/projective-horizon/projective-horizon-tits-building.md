@@ -298,10 +298,26 @@ translations of the jet coordinates below depth `n` is exactly the depth-`n` tai
 `freeCoordinateCommonKernelField_eq_freeCoordinateField` gives the general rational
 invariant-field identification for coordinate currents.
 
-What remains paper-level is the prolonged `SL(V)` action itself on the projective jet field --
-the `MulAction` instance that turns the abstract invariant laws above into statements about
-`mathcal I_S` -- together with the Rosenlicht transcendence-degree count `(11)`.  Neither is
-represented by an assumption.
+`formal/GaloisForLFunctions/HTGeometry/ProjectiveHorizonLinearJetAction.lean` supplies the
+prolonged algebraic group action.  A projective source is presented by its homogeneous lift, whose
+jets are the free coordinates of `HomogeneousJetField`; a unimodular matrix moves the source point
+linearly and a rational jet observable is pulled back along the inverse:
+
+- `linearJetSubstPoly` and `linearJetSubstPoly_comp` give the linear jet substitution and its
+  composition law, `linearJetSubstEquiv` its automorphism form;
+- `linearJetMulSemiringAction` is the resulting `MulSemiringAction` of `SL(V)` on the homogeneous
+  jet field, so the observer groups act by field automorphisms;
+- `linearJetSubstPoly_deriv` proves that the substitution commutes with the total-derivative jet
+  shift, so the action is by *differential* automorphisms;
+- `horizonField s` is the fixed field of the observer group `G_S`, and `mem_horizonField_iff` is
+  the generator criterion `(6)`: membership is invariance under the chart transvections alone;
+- `horizonField_union` is `(9)` on an actual jet field,
+  `mathcal I_(S+T) = mathcal I_S intersection mathcal I_T`, and `horizonField_antitone` is the
+  order reversal of `(10)`.
+
+What remains paper-level is the identification of `horizonField` with the affine-chart derivative
+horizon `mathcal H_H = C<(u_H)'>` of `(1)` -- a chart computation inside the homogeneous lift --
+and the Rosenlicht transcendence-degree count `(11)`.  Neither is represented by an assumption.
 
 ## RH impact audit
 
@@ -323,8 +339,11 @@ so this currently gives neither a zero-free region nor a critical-line implicati
       injectivity of `S |-> G_S`
 - [x] 2 -> 3e: the generator criterion for `(6)` and the span-to-intersection law `(9)` for every
       `SL(V)`-set; the chart-translation rational fixed field of `(3)`
-- [ ] 2 -> 3f: the prolonged `SL(V)` action on the projective jet field, and the Rosenlicht
-      transcendence-degree count `(11)`
+- [x] 2 -> 3f: the prolonged `SL(V)` action on the homogeneous jet field by differential field
+      automorphisms, the horizon field as its fixed field, and `(6)`, `(9)`, `(10)`-order-reversal
+      on that field
+- [ ] 2 -> 3g: identification of the fixed field with the affine-chart derivative horizon `(1)`,
+      and the Rosenlicht transcendence-degree count `(11)`
 - [ ] 3 -> 4: specialist audit in projective differential invariants and building theory
 
 ## References
@@ -348,3 +367,7 @@ so this currently gives neither a zero-free region nor a critical-line implicati
   observer-group lattice: span-to-join `G_(S+T) = <G_S, G_T>`, order reversal, injectivity of
   `S |-> G_S`, the generator criterion for the horizon field, and the span-to-intersection law
   `(9)` for every `SL(V)`-set.
+- 2026-07-31 — constructed the prolonged `SL(V)` action on the homogeneous jet field, proved it
+  commutes with the total-derivative jet shift, and instantiated the horizon field as its fixed
+  field, giving `(6)`, `(9)` and the order reversal of `(10)` on an actual differential jet
+  field.

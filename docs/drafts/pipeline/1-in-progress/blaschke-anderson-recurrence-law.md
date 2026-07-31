@@ -480,13 +480,23 @@ is at most \(C_a(1+L)e^{-L}\), and
 that defect at most \(e^{-L_k}\) eventually.  Thus the two clocks concern
 the same actual first-return observable and the same target accuracy.
 
+`BlaschkeLocalizedClockAsymptotic.lean` now closes the normalization.  The
+square-root calibration, active-coordinate cost, and integer floor are
+proved subquadratic; intersecting the full-measure lower-clock events over
+the reciprocal gaps \(1/(m+1)\) gives the exact actual-first-return law
+\[
+ \frac{\log\tau(e^{-(k+K)})}{k^2}
+ \longrightarrow \frac{1}{4\rho}
+ \qquad\text{almost surely}.
+\]
+This is an exact countably infinite first-return asymptotic at discrete
+logarithmic target scales, not only a two-sided exponent bound.
+
 Direct foreground Lean checks pass. `#print axioms` for audited new
 load-bearing theorems reports only `propext`, `Classical.choice`, and
 `Quot.sound`.
 
-Operator construction, anisotropic counting, the Blaschke asymptotic
-normalization of the exact two-sided sandwich, interpolation from integer
-logarithmic scales to all target accuracies, and the closed-form
-almost-sure first-return limit remain Lean-open. Nothing beyond the listed
-proved claims is manuscript-authorized until formalized. Manuscript must
-not mention the formalization.
+Operator construction, anisotropic counting, and interpolation from
+integer logarithmic scales to all target accuracies remain Lean-open.
+Nothing beyond the listed proved claims is manuscript-authorized until
+formalized. Manuscript must not mention the formalization.

@@ -2361,3 +2361,30 @@ The module already had both halves — an exact finite identity and an infinites
 no theorem linking them.  The link is now proved, so the finite identity is the global form of the
 infinitesimal one with no remainder at either end, and its hypothesis is a smallness condition
 rather than an assumption.
+
+### The prime-log gate rows: the lattice is proper, and the weld witnesses the gate
+
+Two rows of the obstruction layer: `D.defect g h ∉ primeLogLattice` (the fail-fast prime-log
+gates) and `∃ b, D.defect = twoCoboundary b` (the global-choice hypothesis).  Neither had a
+producer, and — more seriously — the corpus contained **no `SectionDefect` at all** on a concrete
+group, so both gates quantified over data never exhibited.
+
+`RHTower/WeldSectionDefectPrimeLogGate.lean` (built, registered, axioms clean):
+
+* **`not_mem_primeLogLattice_of_isAlgebraic`** — no nonzero algebraic real lies in the prime-log
+  lattice.  This is the contrapositive of the corpus's own `weld_spectrum_transcendental` (every
+  nonzero lattice element is transcendental), which had never been read in this direction;
+* `one_not_mem_primeLogLattice`, **`primeLogLattice_ne_top`** — so `1` is an explicit element
+  outside, and the lattice is a *proper* subgroup of the line.  With the recorded
+  `primeLogLattice_dense` this pins it exactly: dense and proper;
+* `weldSectionDefect θ` — the universal weld cocycle packaged as section-defect data, the first
+  `SectionDefect` on a concrete group in the corpus;
+* `weldSectionDefect_obstruction_ne_zero_iff` — its class is nonzero exactly when the conversion
+  constant is;
+* **`exists_sectionDefect_obstruction_ne_zero_isEmpty_primeLogGates`** — with conversion constant
+  `1` the weld is a genuine, ungaugeable defect (nonzero obstruction class) that nevertheless
+  admits **no** finite prime-log formula and **no** prime-indexed log formula.
+
+So the two gates are simultaneously satisfiable and neither is vacuous: nontriviality of the
+obstruction class and failure of the prime-log integrality gate are compatible, and the witness is
+the universal weld itself.

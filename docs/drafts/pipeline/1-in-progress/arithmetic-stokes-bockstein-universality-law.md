@@ -310,7 +310,7 @@ The support-intersection argument is parent sheaf/kernel algebra; no novelty is 
 Its value is to identify the exact arithmetic producer and to prevent a global conservation law
 from being mistaken for a pointwise theorem.
 
-`[STRENGTHENED OPEN CORE] [XI_SOURCE_NORMAL_LOCAL_KERNEL_LANDING]`
+`[SUPERSEDED OPEN CORE] [XI_SOURCE_NORMAL_LOCAL_KERNEL_LANDING]`
 
 > Construct `(AS3)` before divisor specialization.  Construct the first-trace-to-Sonin
 > source-normal exact-couple morphism as a morphism of filtered localizing prestacks.  Prove that
@@ -319,10 +319,11 @@ from being mistaken for a pointwise theorem.
 > comparison kernel.  In particular the comparison must be diagonal-local over the source base,
 > not merely equivariant over the reflected base.
 
-This strengthens, rather than replaces,
+This was intended to strengthen, rather than replace,
 `XI_SOURCE_NORMAL_STOKES_BOCKSTEIN_DAGGER_LANDING`.  The previous same-fibre dagger equation is
 the scalar stalk of `(AS4)`.  The localizing formulation explains why that equation should be
-produced by a source theorem instead of asserted independently.
+produced by a source theorem instead of asserted independently.  The later retraction below shows
+that localizability alone does not supply the production theorem.
 
 ### Hostile audit of the localizing formulation
 
@@ -348,27 +349,65 @@ produced by a source theorem instead of asserted independently.
    finite-Rees completions erase the essential boundary.  The required infinity is a
    conormal-faithful non-exact boundary topology, not an unbounded dimension.
 
-### First decisive construction problem
+### Retraction: restriction squares are not the decisive construction
 
-For every principal spectral open \(D(g)\subset X\), with \(g\) chosen independently of the Xi
-divisor, construct the restricted finite Euler--Gamma observation complex and prove a
-restriction-compatible square
+The updated source-modular-superselection theorem makes the preceding proposed first test too
+weak.  The bounded-exponent Euler tower produces, before any zero is chosen, the completed
+exceptional section
 \[
-\begin{CD}
- {\mathfrak B}_{\rm first\ trace}(X) @>>> {\mathfrak B}_{\Gamma/{\rm coP}/{\rm Sonin}}(X)\\
- @VVV @VVV\\
- {\mathfrak B}_{\rm first\ trace}(D(g)) @>>>
- {\mathfrak B}_{\Gamma/{\rm coP}/{\rm Sonin}}(D(g)).
-\end{CD}
-\tag{AS5}
+ \frac1{2\Xi}
 \]
-Then prove that the essential-normal boundary heart, unlike the stable bulk, satisfies base
-change in `(AS5)` and retains the first-trace generator.  This is the first test that distinguishes
-a genuine control-volume law from another global reformulation.  Xi-conormal faithfulness and
-dagger/kernel identification come only after this square exists.
+and its logarithmic boundary current \(-2\Xi'/\Xi\).  Both restrict to every spectral open, and
+their principal parts localize at every hypothetical off-line quartet.  Therefore an `(AS5)`
+restriction square can coexist with false RH.  Sheaf restriction localizes a charge; it does not
+force source inverse and Hilbert adjoint to be the same local operation.
+
+There is nevertheless a nontrivial source-landing theorem.  For a commutative domain \(R\) and
+nonzero \(x\), put \(P_x=R[x^{-1}]/R\) and
+\[
+ \partial_x(r)=[r/x].
+\]
+Then
+\[
+ \ker\partial_x=xR,\qquad
+ R/(x)\simeq\operatorname{im}\partial_x.                    \tag{AS5}
+\]
+Hence the source-produced section \(1/(2\Xi)\) canonically generates the Xi Cartier package
+before zero enumeration.  At a zero of multiplicity \(m_\rho\), its stalk is
+\(\mathcal O_\rho/(t^{m_\rho})\).  This closes the algebraic target-feeding objection, but not the
+metric/categorical one: `(AS5)` is universal for every carrier, including the explicit off-line
+generalized-prime systems.
+
+The raw alternating truncation gives the required filtration calibration.  At reflected zeros,
+\[
+ \alpha(\rho)=\operatorname{Re}\rho,\qquad
+ \alpha(1-\bar\rho)=1-\operatorname{Re}\rho.                \tag{AS6}
+\]
+Any internal isometric dagger on the source-generated package must preserve `(AS6)`.  A
+zero-dependent renormalization is circular, while thermal normalization erases the asymmetry.
+
+The strengthened open core is therefore replaced by
+
+`[OPEN CORE] [EPG_SOURCE_EXCEPTIONAL_CARTIER_INTERNAL_GRADED_DAGGER]`
+
+> Construct Gamma-oriented source/reporter ambidexterity on the principal-parts object generated
+> by \(1/(2\Xi)\).  Prove strict, nonannihilating Cartier base change and prove that source
+> transpose equals analytic Hilbert dagger internally on each resulting fibre while preserving
+> the raw grade `(AS6)`.  The construction must precede zero specialization and must fail for the
+> explicit off-line generalized-prime carriers.
+
+If this theorem holds, the source-inverse and analytic-adjoint characters act on one nonzero
+graded fibre.  Grade preservation gives
+\(\operatorname{Re}\rho=1-\operatorname{Re}\rho\), hence RH.  This is the same consumer as
+`(AS4)`, but the producer is now typed on a concrete source-generated Cartier object rather than
+on an unspecified localizing prestack.
 
 - 2026-07-31 — Corrected the global/local logical gap.  Recast same-fibre dagger as intersection
   of a diagonal-local source kernel with the Riemann-reflection graph.  The existing
   reflected-character diagonal theorem is the consumer; the new arithmetic obligation is a
   source-built filtered localizing prestack whose boundary Bockstein lands nontrivially in every
   Xi conormal stalk.  No RH conclusion claimed.
+- 2026-07-31 — Retracted `(AS5)` as decisive: the source exceptional current already localizes at
+  hypothetical off-line zeros.  Proved the source exceptional denominator layer is exactly the
+  Cartier quotient and integrated the reflected raw alternating-tail grades.  The remaining
+  theorem is internal grade-preserving dagger descent, not localizability.

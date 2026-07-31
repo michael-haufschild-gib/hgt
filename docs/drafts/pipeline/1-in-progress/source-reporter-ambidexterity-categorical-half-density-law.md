@@ -333,6 +333,31 @@ If the law is correct, it predicts more than RH:
 5. **General \(L\)-function purity.** Any completed Euler source admitting the same oriented
    ambidextrous realization has divisor spectrum on its half-density symmetry line.
 
+## Source exceptional Cartier landing and grade calibration
+
+The bounded-exponent source now supplies a concrete candidate for the previously unspecified
+finite Cartier object. Its completed exceptional section is \(1/(2\Xi)\). For any domain \(R\)
+and nonzero \(x\), the map
+\[
+ R\longrightarrow R[x^{-1}]/R,\qquad r\longmapsto[r/x]
+\]
+has kernel \(xR\). Hence its image is \(R/(x)\). Applied sheafwise to \(x=\Xi\), the source
+exceptional section generates the finite package \(K_\rho\simeq\mathcal O_\rho/(\Xi)\) before a
+zero is selected. This discharges the bare algebraic-existence part of falsifier 6 below.
+
+It does not show that \(K_\rho\) lies in the oriented rigid source subcategory or that the
+ambidextrous reporter preserves it. Those are the strict Cartier-base-change assertions.
+
+The raw alternating tail adds a nonnegotiable filtration test. At reflected zeros its grades are
+\[
+ \alpha(\rho)=\operatorname{Re}\rho,\qquad
+ \alpha(1-\bar\rho)=1-\operatorname{Re}\rho.
+\]
+Therefore `(1)`--`(3)` must induce a filtration-preserving dagger on the unnormalized source
+package. A construction that equalizes the grades by a zero-dependent power, or first divides by
+the thermal partition function, fails the source test. If the genuine internal dagger identifies
+the two classes, grade preservation forces the critical line.
+
 ## Fatal falsifiers
 
 1. The finite Gamma--Poisson reporter cannot be realized as a right adjoint of any source-natural
@@ -344,8 +369,9 @@ If the law is correct, it predicts more than RH:
    projection-formula/half-density isometry on the finite source complex.
 5. Source transpose and analytic dagger disagree by a nontrivial residual Nakayama/modular
    automorphism after the Gamma half-density twist.
-6. The Xi Cartier package is not an object of the rigid source subcategory before analytic
-   evaluation.
+6. The source exceptional Cartier package fails to lie in the oriented rigid source subcategory
+   before analytic evaluation. Bare algebraic generation is now proved; rigid/oriented membership
+   remains open.
 7. Cartier base change disconnects the diagram `(4)`, sends the package to zero, or converts it
    into a nondualizable Poisson cloud.
 8. A known explicit off-line ordinary-prime or generalized-prime Euler system satisfies the same
@@ -397,6 +423,8 @@ falsifier producing a nontrivial orientation cofiber.
 - [ ] prove finite connected-diagram transport on the actual incidence complex
 - [ ] prove strict cofinal extension of the duality context
 - [ ] prove nonannihilating Xi Cartier base change
+- [x] generate the Xi Cartier package algebraically from the source exceptional section
+- [ ] prove internal descent preserves the raw alternating-tail grade
 - [ ] derive unconditional RH
 - [ ] formalize dependency-closed theorem in Lean
 
@@ -406,3 +434,5 @@ falsifier producing a nontrivial orientation cofiber.
   corpus countermodels. McCurdy--Street connected-diagram preservation and
   Melani--Pourcelot \(d\)-duality identify a possible producer for the previously assumed
   dagger-Frobenius half-density realization.
+- 2026-07-31 — Proved the reciprocal exceptional section generates the Xi Cartier quotient before
+  zero enumeration. Added reflected raw tail grades as a falsifier for strict dagger descent.

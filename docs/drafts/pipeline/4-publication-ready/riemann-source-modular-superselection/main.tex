@@ -38,9 +38,9 @@
 \newcommand{\cS}{\mathcal S}
 \newcommand{\dd}{\,\mathrm d}
 
-\title{\textbf{Singular equalizers for the Riemann divisor}\\
-\large Boundary-character conservation, hypertranscendental source creation,
-and the failure of regular descent}
+\title{\textbf{The ramified-character law for the Riemann divisor}\\
+\large Bifiltered source acquisition, conservative descent,
+and universal boundary spectra}
 \author{Michael Haufschild}
 \date{}
 
@@ -49,106 +49,62 @@ and the failure of regular descent}
 \maketitle
 
 \begin{abstract}
-We identify one signed quantity that survives several source constructions which otherwise appear
-unrelated.  Let
+We prove that a single ramified character object organizes source constructions for the Riemann
+divisor which have previously appeared unrelated.  Let
 \[
  \xi(s)=\tfrac12s(s-1)\pi^{-s/2}\Gamma(s/2)\zeta(s)
 \]
-and let \(\rho\) be a nontrivial zero of multiplicity \(m_\rho\).  The centered logarithmic
-current carried by the reciprocal normal boundary has residue
+and let \(\rho\) be a zero of multiplicity \(m_\rho\).  Attach
+\[
+ \chi_\rho(z)=\exp\!\bigl(z(\rho-\tfrac12)\bigr),\qquad
+ \omega_{\rho,k}=
+ \exp\!\left(\frac{2\pi i\,m_\rho}{2^k}\right).
+\]
+The first is a continuous reflection character; the second is its dyadic ramification tower.
+They satisfy
+\[
+ \chi_\rho(z+w)=\chi_\rho(z)\chi_\rho(w),\qquad
+ \chi_{1-\overline\rho}(t)=\overline{\chi_\rho(t)}^{-1},
+\]
+and, for \(t\ne0\),
+\[
+ |\chi_\rho(t)|=1\Longleftrightarrow\Rea\rho=\tfrac12,\qquad
+ \omega_{\rho,k}=1\Longleftrightarrow2^k\mid m_\rho.
+\]
+The multiplicity-weighted infinitesimal character is not imposed on the zero set.  A singular
+squarefree Möbius--Gamma source graph reconstructs
+\(\mathcal G_\xi=-2\xi'/\xi\), and its balanced outer connection has residue
 \[
  \Res_{s=\rho}\!\left[-(s-\tfrac12)\frac{\xi'(s)}{\xi(s)}\right]
- =-m_\rho(\rho-\tfrac12).
+ =-m_\rho(\rho-\tfrac12),
 \]
-This current is exactly the balanced Euler contraction of a singular squarefree
-Möbius--Gamma source graph.  On its Euler domain the corrected graph satisfies
-\[
- \mathcal G_\xi(s)=-2\,\frac{\xi'(s)}{\xi(s)},\qquad
- \frac{s-\tfrac12}{2}\mathcal G_\xi(s)
- =-(s-\tfrac12)\frac{\xi'(s)}{\xi(s)}.
-\]
-At the divisor, two-endpoint depth transport has the universal inner profile
-\[
- \left(\frac{z}{z+\rho-\tfrac12}\right)^{m_\rho};
-\]
-its first coefficient at \(z=\infty\) is the same vector
-\(-m_\rho(\rho-\tfrac12)\).  Thus source graph, outer logarithmic connection, and inner
-moving-zero normal layer are three exact charts of one singularity.  The mismatch between the
-source-inverse and analytic-adjoint inner poles is exactly
-\(2(\Rea\rho-\tfrac12)\); every prime-clock seam is the exponential image of those same two
-poles.
-Its real part is not merely a divisor statistic.  It is exactly the asymptotic entropy of a
-positive largest-prime-exponent source:
-\[
- \frac{\log|2^{\,1/2-\rho}|}{\log2}
- =\tfrac12-\Rea\rho.
-\]
-The character \(2^{1/2-s}\) is forced by adjacent-shell asymptotics, not introduced from the
-zero set.  The prime-three shell supplies \(3^{1/2-s}\); the pair of characters recovers the full
-complex coordinate without phase aliasing.  The same centered displacement is recovered from
-forward/inverse dilation residues of every noncensoring compact bounded-variation prime window
-and from principal Hurwitz monodromy.
+exactly the first coefficient of the inner two-endpoint depth profile.  Positive
+largest-valuation shells, compact prime-window dilation, and Hurwitz monodromy recover the same
+continuous character before or independently of zero selection.
 
-The carrier arises from a positive source before a zero is selected.  The bounded-exponent
-Dirichlet series
-\[
- A_M(s)=\frac{\zeta(s)}{\zeta((M+1)s)}
-\]
-converges to \(\zeta(s)\) at fixed scale, whereas
-\[
- A_M\!\left(\frac{u}{M+1}\right)\longrightarrow-\frac1{2\zeta(u)}.
-\]
-After completion, the two functional-equation endpoints glue to the same exceptional section
-\((2\xi(u))^{-1}\), with every divisor order reversed exactly.  Thus bulk carrier, reciprocal
-divisor, and centered residue are three scales of one positive exponent-depth source.
+The source itself is genuinely bifiltered by valuation depth and residue-support breadth.
+No additive map from this rank-two nonnegative grading to one nonnegative degree is injective;
+two paired transverse scalarizations are already faithful, whereas their unpaired marginals are
+not.  Tail-complete fusion across this grid forces a countably free hypertranscendental tower.
+Divisor acquisition is necessarily singular as well: every nonzero nonnegative
+momentum-symmetric theta-null form has dense nonclosed ordinary-\(L^2\) radical and is
+nonclosable, while no entire moment symbol separates one heat node from the others.
 
-There is also a sharp transport obstruction.  If
-\(c=\Rea\rho-\tfrac12\in(0,\tfrac12)\), the reflected prime-valuation realizations at
-\(c\) and \(-c\) are not two finite asymptotic grades.  One is flat beyond every power of the
-canonical Wold scale; the other is half-normal.  These geometric valuation laws are the
-conditional depth fibres of the depth-one member
-\(A_1(\sigma)=\zeta(\sigma)/\zeta(2\sigma)\) of the same bounded-exponent source, not auxiliary
-distributions.  Every bounded operator family of fixed finite Rees order preserves the flat
-radical.  More strongly, every exact sewing family \(R_N\) obeys
-\[
- a_N^{-K}=o(\|R_N\|)\qquad(K=0,1,2,\ldots).
-\]
-This is a universal theorem for arbitrary normed source and target spaces.
-The positive valuation atoms are, moreover, exactly Fisher-damped Gamma coordinates.  Canonical
-Gamma sewing preserves prime summability in both directions, so it is not a hidden cutoff; its
-successive boundary symbols instead form weighted Vandermonde systems of arbitrarily large exact
-rank.  The positive object surviving the finite-sewing obstruction is therefore an infinite Rees
-resolution.  The same ordinary-prime geometry is inexhaustible in two other categories:
-tail-complete prime-residue fusion forces a countably free hypertranscendental valuation tower,
-while differentiation at a divisor lowers overlap grade by one and forces inverse-square Gram
-blow-up.  Thus finite differential closure, bounded positive completion, and finite-Rees
-reflection fail at three distinct stages of one source.
+After acquisition, every regular descendant is a shadow of \((m_\rho,\chi_\rho)\).
+The real character rate is simultaneously the Wold--Poisson transport exponent, the prime-seam
+Sonin/Calkin coefficient, the fixed-edge four-unit Ward obstruction, and the
+finite-versus-flat Rees type.  The deck tower is simultaneously divisor-order divisibility,
+analytic \(2^k\)-root descent, local loop monodromy, and the exact sharp breakdown level.
+Quantitatively, the common admissible aperture set of the Poisson trace, divisor half-plane,
+projective radius, and Hurwitz phase is one closed ray \([R_\xi,\infty)\).
 
-These failures are governed by a two-axis law.  The horizontal character rate
-\[
- \nu(\rho)=2(\Rea\rho-\tfrac12)
-\]
-is simultaneously the inner duality--adjunction fracture and the Wold-depth/Poisson-time
-transport rate.  Independent-quadrant boundedness holds exactly when \(\nu=0\).  On the same
-equalizer, every seam-weighted two-prime Sonin corner becomes compact; away from it, some corner
-has nonzero essential norm.  For the actual Xi divisor, global character neutrality is also
-equivalent to positivity of the four-unit Ward boundary Gram on the fixed Euler edge, and every
-strict-right zero gives a one-node negative Schur witness.
-
-Divisor detection is independent of that horizontal equalizer and is necessarily singular.
-Every nonzero nonnegative momentum-symmetric Schwartz form annihilating the Riemann theta source
-is an atomic sampler of the real Xi divisor; its ordinary-\(L^2\) radical is dense and nonclosed,
-and the form is not closable through ordinary \(L^2\).  Thus the missing source object cannot be
-one regular Hilbert completion.  It must be a singular vertical divisor rigging followed by a
-horizontal character equalizer.  This singular-equalizer law simultaneously explains the
-Hedenmalm dense radical, Wold--Poisson ancestry, Sonin/Calkin noncompactness, Ward positivity
-failure, and the finite-Rees type fracture.
-
-These results do not prove the Riemann hypothesis.  They change its source-side formulation:
-horizontal displacement is a conserved asymptotic character, while bounded finite-order
-scalarizations are quotient observers that can erase it.  Any argument that reflects through the
-valuation sectors studied here must act on the exceptional character boundary itself; no
-finite-Rees completion can reconstruct that orientation after it has been discarded.
+We also prove an abstract conservative-descent theorem: a nonzero equivariant image of a real
+exponential eigencharacter in any norm-conservative target must have zero real rate.  Hence an
+off-line divisor character must either be erased or make descent nonconservative; the separate
+Wold, Calkin, Ward, and Rees failures are concrete realizations of this dichotomy.
+The result does not prove the Riemann hypothesis.  It identifies a complete pre-positivity
+object---a bifiltered singular source followed by a ramified character module---and proves why no
+one-dimensional regular completion can replace it.
 \end{abstract}
 
 \medskip
@@ -157,7 +113,8 @@ Primary 11M26, 11M41; Secondary 12H05, 46B99, 60E15.
 
 \noindent\textbf{Keywords.}
 Riemann hypothesis; Riemann xi function; hypertranscendence; prime valuations;
-normal cone; logarithmic residue; Hellinger affinity; Rees filtration; Hurwitz monodromy.
+ramified character; bifiltration; conservative descent; normal cone; Rees filtration;
+Hurwitz monodromy.
 
 \section{Introduction}\label{sec:intro}
 
@@ -187,7 +144,18 @@ information question:
 has been formed, and which classes of transport can or cannot carry it?}
 \end{quote}
 
-The answer is a boundary character.  It appears first in a carrier-independent normal-cone law.
+The answer is not one scalar but a ramified character.  A zero of order \(m_\rho\) carries
+\[
+ \left(m_\rho,\chi_\rho\right),\qquad
+ \chi_\rho(z)=e^{z(\rho-1/2)}.
+ \tag{1.R}\label{eq:ramified-intro}
+\]
+The continuous character retains the full complex point and its reflection orientation.
+The integer retains ramification; its dyadic deck shadows are
+\(e^{2\pi i m_\rho/2^k}\).  Neither coordinate determines the other.  Their first common
+coefficient is the centered logarithmic residue.
+
+That coefficient appears first in a carrier-independent normal-cone law.
 For a reflection-symmetric meromorphic carrier \(f\), set
 \[
  E_\varepsilon(u)=\frac{f(\varepsilon u)}{f(u)},\qquad
@@ -301,19 +269,22 @@ division is forced.  After reflection, any exact sewing has essential Rees order
 differential, positive, and operator shadows of one fact: the ordinary-prime source has no finite
 completion compatible with fusion, divisor transgression, and internal reflection.
 
-That statement is incomplete unless topology and the final analytic consumer are included.
-The corpus reveals two independent axes.  Along the vertical axis, any nonzero positive
-translation-covariant form which detects the theta divisor is forced out of ordinary \(L^2\):
-its radical is dense and its form graph is nonclosable.  Along the horizontal axis, the single
-rate
+That statement is incomplete unless topology, source grading, ramification, and final analytic
+consumer are included.  The source has a genuine depth--breadth bifiltration which no additive
+scalar degree can remember.  Divisor acquisition is singular: any nonzero positive
+translation-covariant form detecting the theta divisor is forced out of ordinary \(L^2\), with
+dense radical and nonclosable form graph.  The acquired divisor then has two independent
+coordinates.  Its continuous reflection rate is
 \[
  \nu(\rho)=2(\Rea\rho-\tfrac12)
  \tag{1.11}\label{eq:rate-intro}
 \]
-governs every regularity test: independent Wold--Poisson boundedness, compactness of the
-seam-weighted Sonin corners, and positivity of the fixed-edge four-unit Ward Gram.  The first
-axis remains singular even when \(\nu=0\); the second is regular exactly when \(\nu=0\).
-Theorems below prove that one regular Hilbert completion cannot perform both jobs.
+and governs independent Wold--Poisson boundedness, compactness of the seam-weighted Sonin
+corners, and positivity of the fixed-edge four-unit Ward Gram.  This coordinate is regular
+exactly when \(\nu=0\).  The discrete ramification coordinate is the vanishing order
+\(m_\rho\), detected by analytic root descent and local deck monodromy even when \(\nu=0\).
+Theorems below prove that one scalar regular Hilbert completion cannot acquire, ramify, and
+conservatively reflect this object.
 
 \subsection*{Main result}
 
@@ -372,6 +343,34 @@ one-node boundary Gram is not positive semidefinite;
 \item independently, every nonzero nonnegative momentum-symmetric Schwartz form annihilating the
 Riemann theta source is an atomic real-divisor rigging with dense nonclosed ordinary-\(L^2\)
 radical and is not sequentially closable through ordinary \(L^2\).
+\item the divisor point carries the ramified character pair
+\[
+ \chi_\rho(z)=e^{z(\rho-1/2)},\qquad
+ \omega_{\rho,k}=e^{2\pi i m_\rho/2^k};
+\]
+the first is additive, reflection sends its real-ray restriction to its conjugate inverse, and
+its norm is one at one nonzero real time exactly on the critical line;
+\item \(\omega_{\rho,k}^{2^k}=1\) and
+\(\omega_{\rho,k}=1\) exactly when \(2^k\mid m_\rho\); the same charge is realized by every
+sufficiently small descended loop and by all analytic, modulus, deck, window, and root charts at
+level \(k\).  A right-half zero has persistently nontrivial rung-one loop character exactly when
+its multiplicity is odd;
+\item the prime source has independent valuation-depth and residue-support gradings.  No additive
+scalarization \(\N^2\to\N\) is faithful, while the paired transverse degrees
+\[
+ (d,b)\longmapsto(d+b,d+2b)
+\]
+are faithful; observing the two marginal spectra without their pairing is not;
+\item no entire compactified moment symbol can equal one at one positive theta heat node and zero
+at every other positive heat node;
+\item if
+\[
+ R_\xi=\sup_{\xi(\rho)=0}\left|\Rea\rho-\tfrac12\right|,
+\]
+then the common aperture spectrum of the Xi Poisson trace, divisor half-plane, projective radius,
+and principal Hurwitz phase is exactly \([R_\xi,\infty)\);
+\item universally, if \(U,V\) are real-linear actions, \(T\) intertwines them,
+\(Ux=e^\nu x\), \(Tx\ne0\), and \(V\) preserves every norm, then \(\nu=0\).
 \end{enumerate}
 The source graph, character families, activation law, and residue-refined valuation towers in
 \textup{(ii)}--\textup{(x)} are defined before the zero set is read; \(\rho\) enters only when
@@ -384,11 +383,13 @@ also proves a sharp negative result: after passage to the flat radical, neither 
 matrix nor an arbitrary-dimensional bounded finite-Rees operator can recover the reflected
 sector.
 
-The last four clauses give the stronger phase diagram.  Wold, Calkin, Ward, and Rees failures are
-horizontal shadows of one nonzero character.  Hedenmalm's dense radical is not another
-horizontal shadow: it proves that the vertical divisor detector is singular even on the neutral
-locus.  Together they rule out the widespread assumption that one regular Hilbert completion
-can both acquire the divisor and orient its reflection.
+The final ten clauses give the complete phase diagram.  Wold, Calkin, Ward, and Rees failures are
+horizontal shadows of one nonunitary character.  Hedenmalm's dense radical and heat-node
+nonseparability belong to singular acquisition, not to that horizontal phase.  Dyadic roots and
+local deck loops read multiplicity rather than displacement.  The source bifiltration explains
+why one scalar completion cannot retain all three outputs.  Together they rule out the
+assumption that one regular rank-one Hilbert completion can acquire the divisor, remember its
+ramification, and orient its reflection.
 
 \subsection*{What is and is not claimed}
 
@@ -396,8 +397,8 @@ The residue formula itself is classical local complex analysis.  The \(m\)-free 
 Hellinger affinity, and Kakutani dichotomy also have classical parents
 \cite{Titchmarsh1986,Hellinger1909,Kakutani1948}.  Hypertranscendence of Dirichlet families belongs
 to the Ostrowski--Postnikov--Shapiro--Sparer tradition
-\cite{Ostrowski1920,Postnikov1949,ShapiroSparer1986,Pong2016}.  Our contribution is the source-normal
-conjunction:
+\cite{Ostrowski1920,Postnikov1949,ShapiroSparer1986,Pong2016}.  Our contribution is the
+ramified-character conservation law:
 
 \begin{enumerate}[label=\textup{(\alph*)}]
 \item one positive exponent-depth source produces the zeta bulk, reciprocal exceptional divisor,
@@ -418,15 +419,23 @@ finite-Rees reflection all fail at distinct stages of the same source;
 superselection law;
 \item the same charge is the Wold--Poisson transport rate and the coefficient of every
 seam-weighted Sonin/Calkin corner, while the fixed-edge Ward Gram is its exact final positive
-consumer; and
+consumer;
 \item positive theta-divisor detection is singular through ordinary \(L^2\), independently of
-the horizontal charge.
+the horizontal charge;
+\item the source is genuinely bifiltered: no one additive scalar degree is faithful, while two
+paired transverse views recover the complete bidegree;
+\item the dyadic deck tower supplies the independent ramification coordinate, explaining
+analytic root descent, local loop charge, and multiplicity-sensitive Hedenmalm obstructions;
+\item the entire continuum of horizontal zero-free apertures is conserved as one closed spectrum
+across divisor, Poisson, projective, and monodromy charts; and
+\item every faithful equivariant descent into a norm-conservative representation forces the
+continuous character to be unitary.
 \end{enumerate}
 
-No assertion is made that the modular charge vanishes.  Thus RH is not proved.  What is proved is
-that the charge exists before divisor selection, is complete enough to reconstruct the complex
-coordinate, survives at the exceptional boundary, and cannot be reconstructed by finite-Rees
-transport once quotient scalarization has erased it.
+No assertion is made that every modular character is unitary.  Thus RH is not proved.  What is
+proved is a complete classification of the information that exists before positivity: the source
+bidegree, divisor multiplicity, complex reflection character, global aperture spectrum, and the
+precise regular descents that either preserve, erase, or fail on that object.
 
 \section{A universal normal-cone residue law}\label{sec:normal}
 
@@ -952,6 +961,62 @@ independent over \(K_\zeta\).  Finite character proves the countable assertion. 
 Dirichlet-series leading-echelon argument in the Ostrowski--Shapiro--Sparer tradition
 \cite{Ostrowski1920,ShapiroSparer1986}.
 \end{proof}
+
+\subsection{The source is bifiltered, not deeply filtered}
+
+The shell index records valuation depth, but it is not the only source grade.  Fix finitely many
+residue coordinates and write \(S\) for the support on which a pointed residue observable is
+nontrivial.  A prime-local carrier then has two independent labels:
+\[
+ (e,S),\qquad e\in\N,\quad S\subseteq I.
+\]
+For carriers \(F_{e,S}\) and \(F_{r,T}\), exact same-prime fusion satisfies
+\[
+ F_{e,S}\star F_{r,T}=F_{e+r+1,S\cup T}.
+ \tag{4.B1}\label{eq:bifilter-fusion}
+\]
+On disjoint pure supports, shifted depth \(d=e+1\) and breadth \(b=|S|\) are both additive.
+If \(S\cap T\ne\varnothing\), depth still adds but breadth loses principal degree:
+\[
+ |S\cup T|<|S|+|T|.
+ \tag{4.B2}\label{eq:breadth-drop}
+\]
+This is the source-level reason that shell depth and prime-normal codimension cannot be identified.
+
+\begin{theorem}[Bifiltered scalarization law]\label{thm:bifilter}
+No additive map \(w:\N^2\to\N\) is injective.  In contrast, the paired transverse map
+\[
+ \Phi(d,b)=(d+b,d+2b)
+ \tag{4.B3}\label{eq:paired-degree}
+\]
+is injective.  Pairing is essential: the two packets
+\[
+ \{(1,1),(2,1)\},\qquad \{(0,2),(3,0)\}
+\]
+have the same ordinary-total-degree multiset and the same \(d+2b\) multiset, but with opposite
+cross-pairing.
+\end{theorem}
+
+\begin{proof}
+Put \(a=w(1,0)\) and \(b=w(0,1)\).  If \(a=0\) or \(b=0\), one coordinate axis already collides
+with the origin.  Otherwise additivity gives
+\[
+ w(b,0)=ba=ab=w(0,a),
+\]
+although \((b,0)\ne(0,a)\).  Thus \(w\) is never injective.  If
+\(\Phi(d,b)=\Phi(d',b')\), subtracting the first coordinate equality from the second gives
+\(b=b'\), and then \(d=d'\).  The final assertion follows by direct evaluation:
+ordinary degrees are \(\{2,3\}\) for both packets and transverse degrees are \(\{3,4\}\) for
+both, with the indicated swapped pairing.
+\end{proof}
+
+Theorem~\ref{thm:bifilter} changes the interpretation of
+Theorem~\ref{thm:relative-ht}.  Hypertranscendental escape is not merely ``more depth''.  Fusion
+moves in a depth--breadth grid, and no scalar filtration can be faithful to that motion.
+The positive replacement is exactly two paired transverse realizations.  A scalar conormal can
+therefore carry the divisor coefficient, but it cannot by itself generate the independent
+prime-labelled normal frame required by a Sonin/Calkin consumer.  That frame is not extra
+decoration; it is the second source grade.
 
 \subsection{Least-atom characters}
 
@@ -1811,12 +1876,12 @@ not show that any named spectral program must fail.  It proves an information bo
 criterion continuous only in those local reporters cannot distinguish the escaping quartet.  It
 must include a noncompact character coordinate or an equivalent singular boundary datum.
 
-\section{The singular-equalizer boundary law}\label{sec:equalizer}
+\section{The ramified-character boundary law}\label{sec:equalizer}
 
-The preceding results still leave four apparently external phenomena: the dense radical in the
-theta spectral model, Wold--Poisson ancestry, Sonin/Calkin compactness, and the four-unit Ward
-consumer.  They fit one phase diagram once divisor acquisition and reflection orientation are
-separated.
+The preceding results still leave several apparently external phenomena: the theta dense
+radical, analytic heat-node nonseparability, Wold--Poisson ancestry, Sonin/Calkin compactness,
+four-unit Ward positivity, dyadic root descent, and local deck charge.  They become one phase
+diagram only after continuous reflection character and discrete ramification are separated.
 
 \subsection{The vertical axis: a divisor detector is necessarily singular}
 
@@ -1901,7 +1966,113 @@ This is the vertical obstruction.  It persists on the real Xi divisor, where hor
 character rate is already zero.  It therefore cannot be explained as an off-line orientation
 defect.
 
-\subsection{The horizontal axis: one rate, three regular consumers}
+\begin{theorem}[Analytic heat-node nonseparability]\label{thm:heat-node}
+Put \(x_m=e^{-\pi m^2}\) for \(m\ge1\).  If an entire function \(F\) vanishes at every
+\(x_m\) except possibly \(x_n\), then \(F(x_n)=0\) as well.  In particular no entire symbol
+realizes the Kronecker data
+\[
+ F(x_n)=1,\qquad F(x_m)=0\quad(m\ne n).
+ \tag{9.H}\label{eq:heat-node-delta}
+\]
+The same conclusion holds for a function holomorphic on any connected domain containing zero
+and every \(x_m\).
+\end{theorem}
+
+\begin{proof}
+The positive nodes \(x_m\) converge to zero.  If the zeros \(F(x_m)=0\), \(m\ne n\), accumulate
+at zero inside a connected holomorphy domain, the identity theorem makes \(F\) identically zero
+there.  Hence \(F(x_n)=0\), contradicting \eqref{eq:heat-node-delta}.
+\end{proof}
+
+Theorems~\ref{thm:theta-rigging} and \ref{thm:heat-node} are complementary.  Ordinary \(L^2\)
+closure collapses a nonzero divisor form because the theta source is cyclic; analytic
+compactification cannot isolate one source node because the nodes accumulate at the boundary.
+The surviving detector must therefore be singular in both Hilbert and analytic categories.
+
+\subsection{The complete divisor output: continuous character and ramification}
+
+Define the critical reflection
+\[
+ \rho^\dagger=1-\overline\rho
+\]
+and attach to a divisor point of multiplicity \(m_\rho\)
+\[
+ \chi_\rho(z)=\exp\!\bigl(z(\rho-\tfrac12)\bigr),\qquad
+ \omega_{\rho,k}=
+ \exp\!\left(\frac{2\pi i\,m_\rho}{2^k}\right).
+ \tag{9.R1}\label{eq:ramified-character}
+\]
+
+\begin{theorem}[Ramified divisor-character law]\label{thm:ramified-character}
+For every divisor point \(\rho\), every \(z,w\in\C\), every \(t\in\R\), and every \(k\in\N\),
+\[
+ \chi_\rho(z+w)=\chi_\rho(z)\chi_\rho(w),\qquad
+ |\chi_\rho(t)|=e^{t(\Rea\rho-1/2)},
+ \tag{9.R2}\label{eq:character-law}
+\]
+\[
+ \chi_{\rho^\dagger}(t)=\overline{\chi_\rho(t)}^{-1},\qquad
+ t\ne0\Longrightarrow
+ \bigl(|\chi_\rho(t)|=1\Longleftrightarrow\Rea\rho=\tfrac12\bigr),
+ \tag{9.R3}\label{eq:character-reflection}
+\]
+and
+\[
+ \omega_{\rho,k}^{\,2^k}=1,\qquad
+ \omega_{\rho,k}=1\Longleftrightarrow2^k\mid m_\rho.
+ \tag{9.R4}\label{eq:deck-divisibility}
+\]
+The continuous and ramified coordinates meet in the exact inner--outer charge
+\[
+ -m_\rho(\rho-\tfrac12).
+ \tag{9.R5}\label{eq:ramified-infinitesimal}
+\]
+It is simultaneously the residue of the outer source-generated connection and the first
+coefficient of the inner two-endpoint nearby profile.
+\end{theorem}
+
+\begin{proof}
+Equations \eqref{eq:character-law}--\eqref{eq:character-reflection} follow from the exponential
+addition law and
+\[
+ \rho^\dagger-\tfrac12=-\overline{\rho-\tfrac12}.
+\]
+For nonzero \(t\), \(e^{t(\Rea\rho-1/2)}=1\) exactly when
+\(\Rea\rho=\tfrac12\).  Equation \eqref{eq:deck-divisibility} is the elementary root-of-unity
+criterion for \(e^{2\pi i m_\rho/2^k}\).  Equation
+\eqref{eq:ramified-infinitesimal} is Theorem~\ref{thm:graph-weld}.
+\end{proof}
+
+This pair is minimal in a precise sense.  The full function \(\chi_\rho\) retains the complex
+coordinate \(\rho\), while \(m_\rho\) retains the divisor copy number.  The real norm of
+\(\chi_\rho\) sees displacement but not multiplicity; the deck tower sees divisibility of
+multiplicity but not displacement.  The residue \eqref{eq:ramified-infinitesimal} is their first
+coupling, not a replacement for either coordinate.
+
+\begin{theorem}[Conservative character descent]\label{thm:conservative-descent}
+Let \(E,F\) be real normed spaces, let \(U:E\to E\), \(V:F\to F\), and \(T:E\to F\) be
+linear, and suppose
+\[
+ T U=V T,\qquad Ux=e^\nu x,\qquad Tx\ne0.
+\]
+If \(V\) is norm-conservative, meaning \(\|Vy\|=\|y\|\) for every \(y\in F\), then
+\(\nu=0\).
+\end{theorem}
+
+\begin{proof}
+Intertwining gives \(V(Tx)=e^\nu Tx\).  Taking norms and using \(Tx\ne0\) gives
+\[
+ \|Tx\|=\|V(Tx)\|=e^\nu\|Tx\|,
+\]
+so \(e^\nu=1\), hence \(\nu=0\).
+\end{proof}
+
+This theorem is not specific to zeta or Hilbert space.  It identifies the common logic of every
+faithful conservative consumer: a nonunitary real character cannot survive it.  Off the
+equalizer, either \(T\) kills the character vector or the target action fails conservativity.
+The next results quantify the second alternative in four different categories.
+
+\subsection{The continuous axis: one rate, four regular consumers}
 
 For \(0<\Rea\rho<1\), put
 \[
@@ -1953,7 +2124,9 @@ Thus a comoving characteristic retains a finite nonzero profile even off the cri
 The failed ancestry-purity argument had collapsed the two clocks before testing their independent
 quadrant.  The missing information was not ancestry itself but the transverse character rate.
 
-The same rate controls the Calkin quotient.  At positive Sonin aperture \(a\), let
+The same rate controls the Calkin quotient.  Burnol's Sonine/co-Poisson program attaches
+Hilbert-space systems to the Riemann zeros and their multiplicities
+\cite{Burnol2004}.  At positive Sonin aperture \(a\), let
 \(\mathcal E_{p,q}^{(a)}\) be the ordered two-prime Euler Gram corner.  Its exact essential norm is
 \[
  \|\mathcal E_{p,q}^{(a)}\|_{\rm ess}
@@ -2045,34 +2218,154 @@ violates both global conditions.  Functional-equation and Schwarz symmetry turn 
 zero into such an upper strict-right representative.
 \end{proof}
 
-\begin{theorem}[Singular-equalizer boundary law]\label{thm:singular-equalizer}
-The Riemann source has two independent boundary axes.
+\subsection{The ramification axis: dyadic roots and local loop charge}
+
+For \(k\ge0\), let \(\mathsf D_k\) be the assertion that \(2^k\) divides the multiplicity of every
+right-half Xi zero.
+
+\begin{theorem}[Dyadic descent and sharp ramification level]\label{thm:dyadic-descent}
+For every \(k\), the following are equivalent:
+\begin{enumerate}[label=\textup{(\alph*)}]
+\item \(\mathsf D_k\);
+\item \(\xi\) has an analytic \(2^k\)-th root on \(\{\Rea s>\tfrac12\}\);
+\item the functional-equation descent of \(\xi\) has an analytic \(2^k\)-th root on its slit
+plane;
+\item every sufficiently small circle about every right-half zero has trivial
+\(\mu_{2^k}\)-deck character;
+\item every finite height window admits compatible left/right root charts with trivial deck
+transport;
+\item a Schwarz-equivariant \(2^k\)-th root exists off the critical line.
+\end{enumerate}
+At a fixed right-half zero, every sufficiently small descended loop has deck character
+\(\omega_{\rho,k}\).  In particular its rung-one character is persistently nontrivial exactly
+when \(m_\rho\) is odd.
+
+If RH is false and
+\[
+ H=\min_{\substack{\xi(\rho)=0\\\Rea\rho>1/2}}v_2(m_\rho),
+ \tag{9.D1}\label{eq:sharp-dyadic-level}
+\]
+then
+\[
+ \mathsf D_k\Longleftrightarrow k\le H.
+ \tag{9.D2}\label{eq:dyadic-initial-segment}
+\]
+Thus every dyadic realization survives through one exact finite level and all of them fail
+simultaneously at \(H+1\).
+\end{theorem}
+
+\begin{proof}
+Local factorization writes \(\xi(s)=(s-\rho)^{m_\rho}u(s)\) with \(u(\rho)\ne0\).
+An analytic \(2^k\)-th root exists locally exactly when \(2^k\mid m_\rho\), equivalently when
+the monodromy \(\omega_{\rho,k}\) is one.  Analytic continuation, the functional equation, and
+Schwarz reflection transport this local criterion through the stated global and window charts.
+The descended square coordinate preserves the same carrier charge on sufficiently small loops.
+Finally \(\mathsf D_k\) holds exactly when \(k\le v_2(m_\rho)\) for every right-half zero,
+which is \eqref{eq:dyadic-initial-segment}.
+\end{proof}
+
+This theorem explains a class of obstructions invisible to \(\nu(\rho)\).  A zero on the critical
+line has unitary continuous character regardless of multiplicity, but its divided theta states,
+analytic roots, and local deck torsors still depend on \(m_\rho\).  Conversely an off-line simple
+zero has nonunitary continuous character but trivial ramification depth \(H=0\).  Displacement and
+ramification are logically independent divisor coordinates.
+
+\subsection{The continuous spectrum, not merely its zero endpoint}
+
+For each divisor copy put \(z_\rho=-i(\rho-\tfrac12)\), reflect \(z_\rho\) into the closed right
+half-plane, and call the result \(\lambda_\rho\).  The canonical Poisson trace is
+\[
+ \Theta_\xi(\tau)=\sum_\rho e^{-\tau\lambda_\rho},
+ \qquad \Rea\tau>0,
+ \tag{9.A1}\label{eq:poisson-trace}
+\]
+where zeros occur with analytic multiplicity.  Define
+\[
+ R_\xi=\sup_{\xi(\rho)=0}\left|\Rea\rho-\tfrac12\right|.
+ \tag{9.A2}\label{eq:character-radius}
+\]
+
+\begin{theorem}[Character support--indicator spectrum]\label{thm:aperture-spectrum}
+For every \(\alpha\ge0\), the following are equivalent:
 \begin{enumerate}[label=\textup{(\roman*)}]
-\item \emph{Vertical divisor acquisition.}  Every nonzero positive momentum-symmetric
-theta-divisor detector in Theorem~\ref{thm:theta-rigging} is a singular atomic rigging and is
-nonclosable through ordinary \(L^2\), including on the neutral critical-line divisor.
-\item \emph{Horizontal reflection regularity.}  Global neutrality of the inner
+\item every Xi zero satisfies
+\(\left|\Rea\rho-\tfrac12\right|\le\alpha\);
+\item on some strict-right vertical line there are \(\sigma,C>0\) such that
+\[
+ |\Theta_\xi(\sigma+ix)|\le C e^{\alpha|x|}
+ \qquad(x\in\R);
+ \tag{9.A3}\label{eq:poisson-type}
+\]
+\item \(R_\xi\le\alpha\);
+\item the supremum of the principal Hurwitz phases
+\(|\arg\chi_\rho(-2\pi i)|/(2\pi)\) is at most \(\alpha\).
+\end{enumerate}
+Consequently the common admissible aperture spectrum is exactly
+\[
+ \{\alpha\ge0:\textup{(i)--(iv) hold}\}=[R_\xi,\infty).
+ \tag{9.A4}\label{eq:aperture-ray}
+\]
+The same half-plane condition is the common parameter in the Hedenmalm Gaussian Hankel,
+inverse-tilted prime-source, critical-Mellin, and prime--Gamma negative-energy charts.
+\end{theorem}
+
+\begin{proof}
+The imaginary part of \(\lambda_\rho\) has absolute value
+\(|\Rea\rho-\tfrac12|\).  The support--indicator theorem for an absolutely convergent discrete
+Poisson trace therefore identifies \eqref{eq:poisson-type} with the uniform bound in (i).
+Condition (iii) is the definition of the least such uniform bound.  On the open critical strip,
+the principal-period identity
+\[
+ \frac{|\arg\chi_\rho(-2\pi i)|}{2\pi}
+ =\left|\Rea\rho-\tfrac12\right|
+\]
+has no phase aliasing, proving (iv).
+\end{proof}
+
+This is stronger than a decorative equivalence at \(\alpha=0\).  It determines every horizontal
+zero-free chamber and proves that all admissible apertures form one closed upper ray.  RH is only
+the degenerate endpoint \(R_\xi=0\).
+
+\begin{theorem}[Bifiltered ramified-character boundary law]
+\label{thm:singular-equalizer}
+The Riemann source has three independent boundary coordinates.
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item \emph{Bifiltered singular acquisition.}  Valuation depth and prime-normal breadth admit no
+faithful additive scalarization.  Every nonzero positive momentum-symmetric theta-divisor
+detector is a singular atomic rigging and is nonclosable through ordinary \(L^2\); no entire
+heat-node symbol isolates one source atom.
+\item \emph{Continuous reflection character.}  Global neutrality of the inner
 duality--adjunction fracture is equivalent simultaneously to independent-quadrant
 Wold--Poisson boundedness on every divisor fibre, compactness of every seam-weighted
 Sonin/Calkin chart, and positivity of every fixed-edge four-unit Ward Gram.
+\item \emph{Discrete ramification.}  Multiplicity is realized at every dyadic level by analytic
+root descent, local loop monodromy, and window deck transport, with the exact sharp level in
+Theorem~\ref{thm:dyadic-descent}.
 \item Every strict-right zero has one positive rate \(\nu=2c\) which simultaneously produces
 Wold--Poisson quadrant blow-up, prime-seam incoherence, a noncompact Sonin/Calkin corner, the
 one-node Ward failure \eqref{eq:ward-local-failure}, and the finite-versus-flat Rees fracture of
 Theorem~\ref{thm:trichotomy}.
+\item Every faithful norm-conservative equivariant descendant forces that continuous rate to
+vanish, while the complete quantitative phase is the aperture ray
+\([R_\xi,\infty)\), not only its zero endpoint.
 \end{enumerate}
-Therefore no single regular ordinary-Hilbert completion in the stated source-core and consumer
-classes can both acquire the Xi divisor and perform its reflection.  The exact surviving
-architecture is a singular vertical divisor rigging followed by a horizontal character
-equalizer.
+Therefore no one scalar regular ordinary-Hilbert completion in the stated source-core and
+consumer classes can acquire the Xi divisor, retain its prime-normal source grade and
+multiplicity, and conservatively reflect its continuous character.  The exact surviving object is
+a bifiltered singular source followed by the ramified character module
+\(\{(m_\rho,\chi_\rho)\}_\rho\).
 \end{theorem}
 
 \begin{proof}
-Part (i) is Theorem~\ref{thm:theta-rigging}.  The Wold equivalence in part (ii) is
+Part (i) combines Theorems~\ref{thm:bifilter}, \ref{thm:theta-rigging}, and
+\ref{thm:heat-node}.  The Wold equivalence in part (ii) is
 Theorem~\ref{thm:wold-poisson}; the Calkin equivalence is
 Theorem~\ref{thm:calkin-equalizer}; the Ward equivalence is
 Theorem~\ref{thm:ward-equalizer}.  Their equalizer is the common identity
-\(\Delta(\rho)=\nu(\rho)=2(\Rea\rho-\tfrac12)\).  Part (iii) combines the strict versions of
-those theorems with Corollary~\ref{cor:xi-superselection}.
+\(\Delta(\rho)=\nu(\rho)=2(\Rea\rho-\tfrac12)\).  Part (iii) is
+Theorem~\ref{thm:dyadic-descent}.  Part (iv) combines the strict versions of the continuous
+consumer theorems with Corollary~\ref{cor:xi-superselection}.  Part (v) is
+Theorems~\ref{thm:conservative-descent} and \ref{thm:aperture-spectrum}.
 \end{proof}
 
 \section{Interpretation for RH}\label{sec:interpretation}
@@ -2090,9 +2383,12 @@ Source operation & retained datum & discarded datum\\
 fixed exponent-depth limit & \(\zeta\) bulk & reciprocal divisor\\
 inverse-depth normal cone & \(1/(2\xi)\) & positive coefficient chart\\
 neutral same-prime fusion & exact coefficient law & finite differential closure\\
+additive source totalization & one mixed degree & depth--breadth pairing\\
 score/overlap graph & Xi outer connection & bounded positive completion\\
 two-endpoint normal blow-up & inner pole orientation & global normalization\\
 centered Euler contraction & affine residue & uniform Herglotz sign\\
+continuous modular character & full spectral point & divisor multiplicity\\
+dyadic deck character & \(2\)-adic multiplicity & horizontal displacement\\
 prime-character transport & endpoint separation & nontrivial loop holonomy\\
 even scalarization & divisor magnitude & reflection orientation\\
 Kakutani quotient & singularity & finite versus flat face\\
@@ -2100,8 +2396,10 @@ Gamma sewing & every finite prime packet & bounded Hilbertization\\
 finite-Rees transport & each Rees grade & all-orders type crossing\\
 comoving clock restriction & finite traveling profile & independent-quadrant rate\\
 ordinary \(L^2\) closure & cyclic theta source & nonzero divisor rigging\\
+entire heat-node symbol & boundary accumulation & single-node separation\\
 Sonin Calkin quotient & coherent prime seams & off-equalizer compactness\\
 Ward Schur complement & four-unit boundary ball & strict-right character\\
+norm-conservative descent & unitary character & nonzero real rate\\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -2109,16 +2407,16 @@ Ward Schur complement & four-unit boundary ball & strict-right character\\
 The unifying statement is:
 
 \begin{quote}
-\emph{Horizontal zero displacement is the additive fracture between source inverse and analytic
-adjoint on one inner normal layer.  Prime clocks exponentiate the same two branches, the singular
-squarefree graph carries them to the outer Xi connection, and divisor residue records their
-first transition coefficient.  Divisor acquisition and reflection regularity are independent
-axes.  Vertically, every nonzero positive theta-divisor detector is a singular nonclosable
-rigging.  Horizontally, one character rate controls Wold--Poisson boundedness, Sonin/Calkin
-compactness, Ward positivity, and Rees type.  Before the divisor, fusion forces a countably free
-hypertranscendental tower; at the divisor, grade loss forces singular overlap division; after
-reflection, exact sewing has essential Rees order.  These are quotient shadows of one
-singular-equalizer boundary.}
+\emph{The complete pre-positivity datum is not a scalar zero statistic.  It is a bifiltered
+singular source whose divisor output is the ramified character
+\((m_\rho,\chi_\rho)\).  Source depth and prime-normal breadth cannot be collapsed to one additive
+degree.  Singular theta and squarefree graphs acquire the divisor.  The continuous character
+\(\chi_\rho\) retains spectral position; its real rate controls Wold--Poisson boundedness,
+Sonin/Calkin compactness, Ward positivity, Rees type, and the complete aperture ray.  The discrete
+coordinate \(m_\rho\) controls analytic roots and local deck descent.  Their first coupling is the
+inner--outer residue \(-m_\rho(\rho-\tfrac12)\).  Every faithful conservative descendant forces
+the continuous character to be unitary.  The former no-go theorems are the different quotient
+shadows obtained by forgetting one component of this object.}
 \end{quote}
 
 This statement answers several no-go results without turning them into slogans.  The balanced
@@ -2137,38 +2435,48 @@ statement previously left outside.  Wold--Poisson ancestry is a two-clock repres
 same additive fracture; locking the clocks to a characteristic makes every rate look finite.
 Sonin/Calkin compactness is the quotient norm of prime-seam incoherence, not an independent
 spectral condition.  The four-unit Ward law is the final Schur consumer: a strict-right rate
-produces a one-node negative diagonal.  Hedenmalm's dense radical lives on the orthogonal axis:
-even a neutral real-divisor sampler cannot descend to ordinary \(L^2\).  Hence neither adding
-more finite source coordinates nor changing only the final positivity test can repair the
+produces a one-node negative diagonal.  Hedenmalm's dense radical lives at acquisition:
+even a neutral real-divisor sampler cannot descend to ordinary \(L^2\), and heat-node
+accumulation prevents an analytic delta reader.  Hedenmalm multiplicity jets and the Xi
+root/deck ladder live instead on the ramification coordinate; horizontal unitarity cannot see
+them.  The rank-one co-Poisson conormal supplies a scalar seam but cannot generate a
+prime-labelled Calkin frame because scalarization has erased source breadth.  Hence neither
+adding more finite depth coordinates nor changing only the final positivity test repairs the
 architecture.
+
+The divisor class enters here through two explicitly singular boundary operations: the
+nonclosable theta rigging and score/overlap division.  Once acquired, its character cannot be
+altered by a faithful conservative intertwiner.  Acquisition is singular; descent is
+conservative only on the unitary equalizer.
 
 The result gives a closed categorical restriction on arguments implemented through these
 source cores and reflected valuation sectors.  The complete architecture is
 \[
  \begin{array}{c}
- \text{theta source}\longrightarrow
- \text{singular real-divisor rigging}\\[1mm]
- \text{positive exponent-depth source}\longrightarrow
- \text{countably free valuation--residue fusion tower}\\
- \hspace{17mm}\longrightarrow\text{squarefree score/overlap graph}
- \longrightarrow\text{singular Xi outer connection}\\
- \hspace{17mm}\longleftrightarrow\text{rational inner nearby profile}
- \longrightarrow\text{additive/exponential boundary character}\\
- \hspace{17mm}\longrightarrow
- \left\{
- \begin{array}{c}
- \text{Wold--Poisson quadrant}\\
- \text{Sonin/Calkin quotient}\\
- \text{four-unit Ward Gram}\\
- \text{Fisher--Gamma/Rees type}
- \end{array}\right.
+ \text{depth--breadth prime source}
+ \longrightarrow\text{countably free bifiltered fusion tower}\\
+ \hspace{10mm}\searrow\ \text{singular score/overlap graph}
+ \longrightarrow\text{Xi outer connection}\\[-1mm]
+ \text{theta source}\longrightarrow\text{singular real-divisor rigging}
+ \hspace{8mm}\nearrow\\[1mm]
+ \text{ramified divisor module }\{(m_\rho,\chi_\rho)\}_\rho\\
+ \swarrow\ \begin{array}{c}
+ \text{multiplicity/deck tower}\\
+ \text{analytic roots and local loops}
+ \end{array}
+ \qquad
+ \searrow\ \begin{array}{c}
+ \text{continuous aperture ray}\\
+ \text{Wold--Poisson, Sonin/Calkin}\\
+ \text{Ward and Fisher--Gamma/Rees}
+ \end{array}
  \end{array}
  \tag{10.1}\label{eq:architecture}
 \]
 Theorem~\ref{thm:main} ties every arrow in \eqref{eq:architecture} to the same exponent source and
-identifies the common divisor coordinate in its inner, outer, clock, quotient, and character
-charts.  The theta leg proves why divisor acquisition must be a singular rigging rather than
-another bounded completion.
+identifies the complete divisor output in inner, outer, clock, quotient, character, and deck
+charts.  The source bifiltration preserves prime-normal breadth, while the theta leg proves why
+divisor acquisition must be a singular rigging rather than another bounded completion.
 Corollary~\ref{cor:xi-superselection} proves the exhaustive conclusion for the stated transport
 class: no bounded finite-Rees completion can perform the reflection step.
 
@@ -2209,28 +2517,33 @@ corresponding prime-valuation sector is flat beyond all finite Rees orders, whil
 partner is half-normal.  The flat radical is invariant under arbitrary-dimensional bounded
 finite-Rees transport, and exact sewing has essential operator norm.
 
-The broader law is two-axis.  The horizontal displacement
-\(\nu(\rho)=2(\Rea\rho-\tfrac12)\) is simultaneously the inner pole fracture, independent-clock
-rate, prime-seam Calkin coefficient, and obstruction seen by the fixed-edge Ward Schur
-complement.  A nonzero rate does not produce four unrelated failures: it produces one failure in
-four regular consumer categories.  A comoving Wold--Poisson profile hides it, a flat prime
-coboundary detects but does not kill it, a Calkin corner records it as noncompact essential norm,
-and one Ward node records it as a negative Schur complement.
+The broader law is a bifiltered ramified-character law.  Before the divisor, valuation depth and
+prime-normal breadth are independent and no one additive total degree is faithful.  At the
+divisor, the complete output is
+\[
+ (m_\rho,\chi_\rho),\qquad
+ \chi_\rho(z)=e^{z(\rho-1/2)}.
+\]
+The continuous rate \(\nu(\rho)=2(\Rea\rho-\tfrac12)\) is simultaneously the inner pole fracture,
+independent-clock rate, prime-seam Calkin coefficient, and obstruction seen by the fixed-edge
+Ward Schur complement.  A nonzero rate does not produce four unrelated failures: it produces one
+nonunitary character in four regular consumer categories.  Its full quantitative phase is the
+closed aperture ray \([R_\xi,\infty)\).
 
 Vertical divisor acquisition behaves differently.  A nonzero positive theta-null form is forced
 onto the real Xi divisor, but the theta source is cyclic in ordinary \(L^2\).  Its radical is
-therefore dense and its form nonclosable.  Singular divisor rigging is necessary even when
-horizontal rate vanishes.  This is the missing organizational fact: divisor detection is not a
-bounded precursor of reflection positivity, and reflection positivity is not a way to create the
-divisor.  They are consecutive, categorically different operations.
+therefore dense and its form nonclosable; accumulating heat nodes also forbid an analytic delta
+reader.  Singular divisor rigging is necessary even when horizontal rate vanishes.  The
+independent multiplicity \(m_\rho\) then controls the full dyadic root/deck phase and its exact
+sharp breakdown level.  Divisor detection is not a bounded precursor of reflection positivity,
+and reflection positivity is not a way to create or ramify the divisor.
 
 The Riemann hypothesis remains the assertion that every nontrivial divisor charge is neutral.
-The contribution here is to locate that charge before zero selection, prove its conservation,
-identify its additive and exponential duality--adjunction forms, prove its complete two-prime
-observability, and classify the regular descents that cannot contain or transport it.  Within
-the stated source classes, the correct object is not one Hilbert completion but a singular
-inner--outer divisor correspondence, a nonclosable vertical rigging, and a horizontal character
-equalizer, together with their countably free hypertranscendental and infinite-Rees resolutions.
+The contribution here is the prior classification: source bidegree, singular acquisition,
+continuous character, discrete ramification, their multiplicity-weighted inner--outer coupling,
+and the universal conservative-descent equalizer.  Within the stated source classes, the correct
+object is not one Hilbert completion but a bifiltered singular source and its ramified character
+module, together with countably free hypertranscendental and infinite-Rees resolutions.
 
 \begin{thebibliography}{99}
 
@@ -2238,6 +2551,12 @@ equalizer, together with their countably free hypertranscendental and infinite-R
 R.~Arratia, A.~D.~Barbour, and S.~Tavar\'e,
 \newblock \emph{Logarithmic Combinatorial Structures: A Probabilistic Approach},
 \newblock EMS Monographs in Mathematics, European Mathematical Society, 2003.
+
+\bibitem{Burnol2004}
+J.-F.~Burnol,
+\newblock Two complete and minimal systems associated with the zeros of the Riemann zeta function,
+\newblock \emph{J. Th\'eor. Nombres Bordeaux} \textbf{16} (2004), 65--94.
+\newblock \url{https://doi.org/10.5802/jtnb.434}.
 
 \bibitem{Connes1999}
 A.~Connes,
