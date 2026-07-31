@@ -409,6 +409,43 @@ multiplier exists as the common value of the truncations.
 idempotence and symmetry of the cutoff.  No integral estimate and no dominated convergence is
 used: the orthogonal-projection identity replaces the exhaustion estimate entirely.
 
+## Theorem Q: refinement loses exactly the accumulated coupling
+
+Theorem H splits one aperture step into two.  Iterating it along a strictly increasing chain
+`x_0 < x_1 < ... < x_m` inside a single crossing chamber `x_m < r x_0` gives, writing
+`rho(u,v) = Tr(Delta(u,v;r) - S(r u, r v))`,
+
+```text
+rho(x_0, x_m) = sum_(i<m) rho(x_i, x_(i+1))
+                  + sum_(1 <= j < m) Tr Kappa(x_0, x_j, x_(j+1)),         (31)
+```
+
+and hence, on real parts,
+
+```text
+Re rho(x_0, x_m) = sum_(i<m) Re rho(x_i, x_(i+1))
+                     - sum_(1 <= j < m) ||Z(x_0, x_j, x_(j+1))||_HS^2.    (32)
+```
+
+The loss accumulates term by term, with no cancellation and no cross terms, so
+
+```text
+Re rho(x_0, x_m) <= sum_(i<m) Re rho(x_i, x_(i+1)).                       (33)
+```
+
+This upgrades the one-step no-go of Theorem H to a quantitative statement: refining an aperture
+step into `m` pieces costs exactly the sum of the `m-1` successive lost-layer coupling energies.
+A floor obtained by refinement would have to survive an arbitrarily long accumulation of
+nonnegative losses, so no refinement schedule can produce one.
+
+### Proof
+
+Induction on the chain length from the three-point law, with the chamber hypothesis inherited
+because the chain is increasing.  The bookkeeping is done on the residual traces alone, so no
+principal-relative presentation appears; the logarithmic weights cancel as a coboundary along the
+chain in any case.  `(32)` is `(31)` plus the curvature energy law at each refinement, and `(33)`
+is nonnegativity of a sum of squared Hilbert--Schmidt norms.
+
 ## Frontier effect
 
 Closed:
@@ -468,6 +505,7 @@ provisional pending expert/literature review.
 - [x] the truncations are stationary on the band-supported core, which is nonempty (Theorem O)
 - [x] density of the band-supported core, hence the logarithm of position on a dense domain
       (Theorem P)
+- [x] quantitative refinement loss along an arbitrary chain (Theorem Q)
 - [ ] Burnol completion and completed lower floor
 
 ## Lean
@@ -521,6 +559,9 @@ provisional pending expert/literature review.
 | core is nonempty | `soninBandSupported_logShellUnit` |
 | `(28)` band exhaustion | `eq_zero_of_forall_bandTruncation_eq_zero` |
 | `(30)` density of the core | `eq_zero_of_inner_bandSupported_eq_zero` |
+| `(31)` chain flag law | `soninApertureResidualTrace_chain` |
+| `(32)` accumulated loss | `re_soninApertureResidualTrace_chain` |
+| `(33)` chain subadditivity | `re_soninApertureResidualTrace_chain_le` |
 
 Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninPrincipalRelativeCyclicExtension.lean`,
@@ -531,7 +572,8 @@ Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
 `formal/GaloisForLFunctions/HTGeometry/LpBoundedMultiplier.lean`,
 `formal/GaloisForLFunctions/RHTower/EvenBoundedMultiplier.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninBurnolLogBandComparison.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninBandSupportedDense.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninBandSupportedDense.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninApertureFlagChain.lean`.
 All declarations depend only on `propext`, `Classical.choice`, `Quot.sound`.
 
 Novelty split for Theorem G: `(7)` was already in the corpus
@@ -542,6 +584,9 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-07-31 — one-step no-go upgraded to a chain law: refining an aperture step into m pieces
+  loses exactly the sum of the m-1 successive coupling energies, with no cancellation.  A floor
+  from refinement would have to survive an unbounded accumulation of nonnegative losses.
 - 2026-07-31 — density closed, and the analytic detour avoided.  The `L²` exhaustion estimate was
   unnecessary: each band truncation is an orthogonal projection, so orthogonality to the core makes
   every truncation have zero norm, and band exhaustion of the punctured line finishes it.  With
