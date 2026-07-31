@@ -246,6 +246,15 @@ def soninBandLogMultiplier (a r : ℝ) (ha : 0 < a) (hr : 1 < r) (n : ℕ) :
     (soninBandLogBound_nonneg a r n) (norm_soninBandLogSymbol_le ha hr n)
     (soninBandLogSymbol_even a r n)
 
+theorem soninBandLogMultiplier_coeFn (a r : ℝ) (ha : 0 < a) (hr : 1 < r) (n : ℕ)
+    (f : evenSubspace) :
+    (((soninBandLogMultiplier a r ha hr n f : evenSubspace) : SoninL2) : ℝ → ℂ) =ᵐ[volume]
+      fun t => soninBandLogSymbol a r n t *
+        (((f : evenSubspace) : SoninL2) : ℝ → ℂ) t :=
+  evenBoundedMul_coeFn (measurable_soninBandLogSymbol a r n)
+    (soninBandLogBound_nonneg a r n) (norm_soninBandLogSymbol_le ha hr n)
+    (soninBandLogSymbol_even a r n) f
+
 /-! ## The approximation theorem -/
 
 /-- **Uniform approximation of the logarithm by the step conductor.**  The step conductor on the
@@ -267,9 +276,7 @@ theorem norm_evenLogShellChannel_sub_soninBandLogMultiplier_le
   filter_upwards [Lp.coeFn_sub ((evenLogShellChannel a r n f : evenSubspace) : SoninL2)
       ((soninBandLogMultiplier a r ha hr n f : evenSubspace) : SoninL2),
     evenLogShellChannel_coeFn a r n f,
-    evenBoundedMul_coeFn (measurable_soninBandLogSymbol a r n)
-      (soninBandLogBound_nonneg a r n) (norm_soninBandLogSymbol_le ha hr n)
-      (soninBandLogSymbol_even a r n) f] with t h1 h2 h3
+    soninBandLogMultiplier_coeFn a r ha hr n f] with t h1 h2 h3
   rw [h1, Pi.sub_apply, h2, h3, sub_mul]
 
 end RHTower

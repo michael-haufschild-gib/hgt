@@ -302,6 +302,38 @@ form: the constant produced by one dilation step is `log r`, independently of th
 aperture, and of the truncation length.  It identifies the conductor channel as a genuine
 logarithm of position rather than an operator that merely takes logarithmic values.
 
+## Theorem L: the truncations approximate the genuine logarithm
+
+The step conductor `(18)` is multiplication by a step symbol; the genuine logarithm of position,
+cut to the same tower band, is multiplication by `log|t|`.  Every point of the band lies in exactly
+one layer, and on the layer between `rᵏa` and `rᵏ⁺¹a`
+
+```text
+0 <= log|t| - log(r^k a) <= log r,                                       (24)
+```
+
+so the two symbols differ by a bounded symbol with bound `log r`.  An operator acting almost
+everywhere as multiplication by a symbol bounded by `K` has operator norm at most `K`, hence
+
+```text
+|| M(a,r,n) - Log_band(a,r,n) || <= log r,                               (25)
+```
+
+uniformly in the truncation length `n` and the base aperture `a`.  Refining the tower therefore
+drives the step conductor to the genuine logarithm of position in operator norm; the truncations
+are not merely logarithm-valued, they converge to the logarithm.
+
+### Proof
+
+Multiplication by a measurable symbol bounded by `C` is a continuous operator on `L^p` of norm at
+most `C` — the pointwise estimate `||phi(x) f(x)|| <= C ||f(x)||` read through the `L^p` seminorm.
+An even symbol commutes with the reflection, so the multiplier preserves the even carrier.  The
+step channel is a finite combination of physical cutoffs, so it acts almost everywhere as
+multiplication by the corresponding step symbol; evaluating that symbol on a layer collapses the
+sum to the single surviving index.  The band logarithm is bounded on the band by
+`|log a| + |log(r^n a)|`, and `(24)` is monotonicity of the logarithm on the layer.  Combining the
+two symbol formulas gives `(25)`.
+
 ## Frontier effect
 
 Closed:
@@ -354,7 +386,9 @@ provisional pending expert/literature review.
       family, discharging the abstract position hypothesis at every aperture at once (Theorem J)
 - [x] exact dilation commutator of the conductor channel: `log r` on the interior band, with the
       two finite-tower edge terms computed exactly (Theorem K)
-- [ ] unbounded logarithmic multiplier obtained as a limit of the truncations
+- [x] genuine logarithm of position on the tower band, and operator-norm convergence of the
+      truncations to it at rate `log r` (Theorem L)
+- [ ] unbounded logarithmic multiplier on the whole carrier (band limit `n -> infinity`)
 - [ ] Burnol completion and completed lower floor
 
 ## Lean
@@ -396,13 +430,22 @@ provisional pending expert/literature review.
 | `(21)` edge decomposition | `shiftedLogShellChannel_eq_sub_edges` |
 | `(22)` Weyl relation | `evenDilationCLM_mul_evenLogShellChannel_eq_shift` |
 | `(23)` unit-base form | `evenDilationCLM_mul_evenLogShellChannel_one` |
+| bounded multiplier on `Lᵖ` | `MeasureTheory.lpBoundedMulCLM`, `norm_lpBoundedMulCLM_le` |
+| symbol-bound norm law | `MeasureTheory.norm_le_of_ae_mul`, `norm_le_of_evenCoeFn_mul` |
+| even-carrier multiplier | `evenBoundedMul` |
+| channel as a multiplier | `evenLogShellChannel_coeFn` |
+| `(24)` pointwise error | `norm_soninStepLogSymbol_sub_soninBandLogSymbol_le` |
+| `(25)` operator error | `norm_evenLogShellChannel_sub_soninBandLogMultiplier_le` |
 
 Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninPrincipalRelativeCyclicExtension.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninApertureExtendedTraceFlagLaw.lean`,
 `formal/GaloisForLFunctions/HTGeometry/OperatorTraceAdjoint.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninBurnolLogShellChannel.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninBurnolLogShellWeyl.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninBurnolLogShellWeyl.lean`,
+`formal/GaloisForLFunctions/HTGeometry/LpBoundedMultiplier.lean`,
+`formal/GaloisForLFunctions/RHTower/EvenBoundedMultiplier.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninBurnolLogBandComparison.lean`.
 All declarations depend only on `propext`, `Classical.choice`, `Quot.sound`.
 
 Novelty split for Theorem G: `(7)` was already in the corpus
@@ -413,6 +456,10 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-07-31 — approximation closed.  Built the missing bounded-multiplier operator on L^p and its
+  even-carrier restriction, identified the step conductor as multiplication by a step symbol, and
+  proved the operator distance to the genuine band logarithm is at most log r, uniformly in the
+  truncation length and the aperture.
 - 2026-07-31 — dilation commutator computed exactly.  The step conductor satisfies the archimedean
   generator relation on the tower: conjugating by the dilation subtracts the constant log r on the
   interior band, with only two edge terms, both explicit.  The channel is a genuine logarithm of
