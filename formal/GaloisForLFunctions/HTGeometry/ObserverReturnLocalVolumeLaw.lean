@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.ObserverReturnTemporalMetricLaw
+import GaloisForLFunctions.HTGeometry.ObserverReturnTemporalCoercivityLaw
 import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
 
 /-!

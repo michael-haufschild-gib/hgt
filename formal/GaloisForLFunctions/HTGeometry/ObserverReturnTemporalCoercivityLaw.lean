@@ -175,6 +175,78 @@ theorem observerTemporalMetricEnergy_two_sided_bounds
     observerTemporalMetricEnergy_upper_bound weight gap
   exact ⟨m, M, hm, hM, fun theta => ⟨hlower theta, hupper theta⟩⟩
 
+/-- Every finite gap-coordinate family has a positive Euclidean radius on
+which all visible actions remain inside the principal phase window. -/
+theorem exists_observerTemporalPrincipalPhaseRadius
+    {J : Type*} [Fintype J] {τ : ℕ}
+    (gap : J → Fin τ → ℝ) :
+    ∃ r : ℝ, 0 < r ∧
+      ∀ theta : EuclideanSpace ℝ (Fin τ),
+        ‖theta‖ < r →
+          ∀ j, |observerTemporalCoordinateAction gap
+            (fun k => theta k) j| ≤ Real.pi := by
+  let B : ℝ := (∑ j : J, ∑ k : Fin τ, gap j k ^ 2) + 1
+  have hsum : 0 ≤ ∑ j : J, ∑ k : Fin τ, gap j k ^ 2 :=
+    Finset.sum_nonneg fun j _ =>
+      Finset.sum_nonneg fun k _ => sq_nonneg _
+  have hB : 0 < B := by
+    dsimp [B]
+    linarith
+  have hsqrtB : 0 < Real.sqrt B := Real.sqrt_pos.2 hB
+  refine ⟨Real.pi / Real.sqrt B, div_pos Real.pi_pos hsqrtB,
+    fun theta htheta j => ?_⟩
+  have hgap :
+      (∑ k : Fin τ, gap j k ^ 2) ≤ B := by
+    have hsingle :
+        (∑ k : Fin τ, gap j k ^ 2) ≤
+          ∑ j' : J, ∑ k : Fin τ, gap j' k ^ 2 :=
+      Finset.single_le_sum
+        (fun j' _hj' => Finset.sum_nonneg fun k _hk =>
+          sq_nonneg (gap j' k))
+        (Finset.mem_univ j)
+    dsimp [B]
+    linarith
+  have hnorm :
+      (∑ k : Fin τ, theta k ^ 2) = ‖theta‖ ^ 2 := by
+    rw [← real_inner_self_eq_norm_sq]
+    rfl
+  have hcauchy :
+      observerTemporalCoordinateAction gap (fun k => theta k) j ^ 2 ≤
+        (∑ k : Fin τ, gap j k ^ 2) *
+          ∑ k : Fin τ, theta k ^ 2 := by
+    exact Finset.sum_mul_sq_le_sq_mul_sq
+      (Finset.univ : Finset (Fin τ))
+      (fun k => gap j k) (fun k => theta k)
+  rw [hnorm] at hcauchy
+  have hmetric :
+      observerTemporalCoordinateAction gap (fun k => theta k) j ^ 2 ≤
+        B * ‖theta‖ ^ 2 := by
+    exact hcauchy.trans
+      (mul_le_mul_of_nonneg_right hgap (sq_nonneg ‖theta‖))
+  have hmul :
+      ‖theta‖ * Real.sqrt B < Real.pi :=
+    (lt_div_iff₀ hsqrtB).mp htheta
+  have hmulNonneg :
+      0 ≤ ‖theta‖ * Real.sqrt B :=
+    mul_nonneg (norm_nonneg theta) hsqrtB.le
+  have hsq :
+      (‖theta‖ * Real.sqrt B) ^ 2 < Real.pi ^ 2 :=
+    (sq_lt_sq₀ hmulNonneg Real.pi_pos.le).2 hmul
+  have hsqrtSq : (Real.sqrt B) ^ 2 = B :=
+    Real.sq_sqrt hB.le
+  have hactionSq :
+      observerTemporalCoordinateAction gap (fun k => theta k) j ^ 2 <
+        Real.pi ^ 2 := by
+    calc
+      observerTemporalCoordinateAction gap (fun k => theta k) j ^ 2 ≤
+          B * ‖theta‖ ^ 2 := hmetric
+      _ = (‖theta‖ * Real.sqrt B) ^ 2 := by
+        rw [mul_pow, hsqrtSq]
+        ring
+      _ < Real.pi ^ 2 := hsq
+  exact ((sq_lt_sq₀ (abs_nonneg _) Real.pi_pos.le).mp
+    (by simpa [sq_abs] using hactionSq)).le
+
 end
 
 end GaloisForLFunctions.HTGeometry

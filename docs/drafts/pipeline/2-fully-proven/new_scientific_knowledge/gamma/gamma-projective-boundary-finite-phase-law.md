@@ -906,6 +906,20 @@ What remains for the approximation theorem — and hence for uniqueness, the gen
 the nonlinear case of eq. (9) — is the uniform convergence of these Fejér means, together with the
 multi-dimensional (rationally independent basis) version of the kernel.
 
+`formal/GaloisForLFunctions/HTGeometry/BohrFejerConcentration.lean` supplies the third
+approximate-identity property, **concentration**.  Summing the geometric series
+(`fejerSum_eq_geom`, `expChar_nat_mul`) gives `D_N(u) = (z^{N+1}−1)/(z−1)` with `z = e^{iβu}` of
+modulus one, so `‖D_N(u)‖ ≤ 2/‖z−1‖` and
+`F_N(u) ≤ 4/((N+1)(2 − 2cos βu))` (`fejerKernel_norm_le`, using
+`norm_expChar_sub_one_sq : ‖e^{iβu} − 1‖² = 2 − 2cos βu`).  Off any neighbourhood of the kernel's
+peaks, `cos(βu) ≤ 1 − δ`, this is at most `2/((N+1)δ)` (`fejerKernel_norm_le_of_cos_le`), a bound
+independent of `u` that tends to zero (`tendsto_fejerBound`).
+
+The Fejér kernel is therefore a genuine approximate identity on the progression `βℤ`: nonnegative,
+of mean one, and uniformly small away from its peaks.  The remaining step is the multi-dimensional
+kernel over a rationally independent frequency basis, whose peaks are almost periods of `f`, and the
+resulting uniform convergence.
+
 `formal/GaloisForLFunctions/HTGeometry/IsometricRecurrence.lean` abstracts the recurrence to any
 relatively-compact isometric `ℝ`-action (`isometricAction_recurrence`, `isometricAction_return_seq`),
 so it instantiates both to `ℝ →ᵇ ℂ` and to vertical translation of holomorphic functions on a strip.

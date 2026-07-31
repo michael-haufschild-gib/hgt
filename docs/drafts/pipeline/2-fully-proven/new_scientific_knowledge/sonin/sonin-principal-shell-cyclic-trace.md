@@ -733,6 +733,21 @@ principal-relative presentation appears; the logarithmic weights cancel as a cob
 chain in any case.  `(32)` is `(31)` plus the curvature energy law at each refinement, and `(33)`
 is nonnegativity of a sum of squared Hilbert--Schmidt norms.
 
+## Theorem R: the aperture layer read by the extended trace
+
+The layer–shell congruence `(51)` makes the aperture layer itself a principal-relative operator:
+principal part the scale-one shell `S(a,b)`, remainder Schatten-1.  The extended trace therefore
+reads the layer directly and
+
+```text
+tilde_tau(Q_a - Q_b) = (log b - log a) + Tr(Q_a - Q_b - S(a,b)).           (54)
+```
+
+Until now only the aperture *defect* had such a reading.  The layer is the more primitive object —
+the defect is built from it — and `(54)` shows it carries the same principal cocycle `log(b/a)`,
+independently of any prime scale.  The cocycle is thus a property of the aperture pair alone, not
+of the source data it acts on.
+
 ## Frontier effect
 
 Closed:
@@ -884,6 +899,8 @@ provisional pending expert/literature review.
 | like-polarization vanishing | `indicatorShell_forward_vanishing`, `fourierShell_inverse_vanishing` |
 | shell product in the ideal | `evenTwoPolarizationShell_mul_evenDilationSum_mul_shell_mem_ideal` |
 | `(53)` coupling in the ideal | `evenSoninApertureSuccessiveLayerTransition_mem_principalRelativeIdeal` |
+| `(54)` layer presentation | `soninApertureLayerPresentation` |
+| `(54)` layer extended trace | `extendedTrace_soninApertureLayerPresentation` |
 
 Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninPrincipalRelativeCyclicExtension.lean`,
@@ -910,7 +927,8 @@ Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninLayerWindowNormalForm.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninLayerShellCongruence.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninCouplingShellProduct.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninShellProductIdeal.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninShellProductIdeal.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninApertureLayerExtendedTrace.lean`.
 All declarations depend only on `propext`, `Classical.choice`, `Quot.sound`.
 
 Novelty split for Theorem G: `(7)` was already in the corpus
@@ -921,6 +939,10 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-07-31 — the aperture layer itself given an extended-trace reading, with principal value the
+  aperture cocycle.  Previously only the defect had one; the layer is more primitive and carries the
+  same cocycle independently of any prime scale, so the cocycle belongs to the aperture pair rather
+  than to the source data.
 - 2026-07-31 — eight-term expansion completed: the four like-polarization terms vanish exactly by
   chamber disjointness, the four mixed ones are time-band blocks, so the shell product and hence the
   coupling lie in the relative ideal.  This is a strengthening of Hilbert--Schmidt, not a proof that

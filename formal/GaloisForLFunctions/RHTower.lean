@@ -3637,3 +3637,4 @@ import GaloisForLFunctions.RHTower.SoninLayerShellCongruence
 import GaloisForLFunctions.RHTower.GammaCoPoissonIntervalKreinNoGo
 import GaloisForLFunctions.RHTower.SoninCouplingShellProduct
 import GaloisForLFunctions.RHTower.SoninShellProductIdeal
+import GaloisForLFunctions.RHTower.SoninApertureLayerExtendedTrace
