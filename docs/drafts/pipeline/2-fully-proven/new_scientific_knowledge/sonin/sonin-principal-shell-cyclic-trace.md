@@ -334,6 +334,25 @@ sum to the single surviving index.  The band logarithm is bounded on the band by
 `|log a| + |log(r^n a)|`, and `(24)` is monotonicity of the logarithm on the layer.  Combining the
 two symbol formulas gives `(25)`.
 
+## Theorem N: the archimedean defect is not trace class
+
+The scalar that dilation extracts from the conductor in `(22)` sits on the interior band
+`A_(r^(n+1) a) - A_(r a)`.  For `n >= 1` that band is a nondegenerate shell projection, hence
+noncompact, and `log r > 0`, so
+
+```text
+log r . (A_(r^(n+1) a) - A_(r a))  is noncompact, hence not Schatten-1.    (26)
+```
+
+Therefore the archimedean scalar is carried on an infinite-rank band.  It cannot be read by the
+ordinary operator trace, and no trace-class counterterm can absorb it: the Burnol completion must
+use the aperture-regularized reading supplied by the extended trace `(6)`, not an ordinary trace.
+
+Together with Theorem H this pins the shape of the remaining problem from both sides.  The
+aperture tower is subadditive, so the floor is not archimedean-free; and the archimedean defect is
+not trace class, so the floor is not obtainable by adding a trace-class counterterm either.  What
+survives is exactly the regularized pairing of the extended trace against the conductor.
+
 ## Frontier effect
 
 Closed:
@@ -388,6 +407,8 @@ provisional pending expert/literature review.
       two finite-tower edge terms computed exactly (Theorem K)
 - [x] genuine logarithm of position on the tower band, and operator-norm convergence of the
       truncations to it at rate `log r` (Theorem L)
+- [x] archimedean defect proved noncompact, hence not absorbable by any trace-class counterterm
+      (Theorem N)
 - [ ] unbounded logarithmic multiplier on the whole carrier (band limit `n -> infinity`)
 - [ ] Burnol completion and completed lower floor
 
@@ -436,6 +457,8 @@ provisional pending expert/literature review.
 | channel as a multiplier | `evenLogShellChannel_coeFn` |
 | `(24)` pointwise error | `norm_soninStepLogSymbol_sub_soninBandLogSymbol_le` |
 | `(25)` operator error | `norm_evenLogShellChannel_sub_soninBandLogMultiplier_le` |
+| `(26)` defect noncompact | `not_isCompactOperator_conductorDilationDefect` |
+| `(26)` defect not Schatten-1 | `not_memSchattenClass_one_conductorDilationDefect` |
 
 Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninPrincipalRelativeCyclicExtension.lean`,
@@ -456,6 +479,10 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-07-31 — archimedean defect proved noncompact.  The scalar log r that dilation extracts sits
+  on a nondegenerate shell band, so it is not Schatten-1 and no trace-class counterterm can absorb
+  it.  With Theorem H this closes both escape routes: the floor is neither aperture-free nor
+  trace-class-repairable, leaving only the regularized extended-trace pairing.
 - 2026-07-31 — approximation closed.  Built the missing bounded-multiplier operator on L^p and its
   even-carrier restriction, identified the step conductor as multiplication by a step symbol, and
   proved the operator distance to the genuine band logarithm is at most log r, uniformly in the

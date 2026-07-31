@@ -1,3 +1,4 @@
+import GaloisForLFunctions.RHTower.SchattenApproximation
 import GaloisForLFunctions.RHTower.SoninBurnolLogShellChannel
 
 /-!
@@ -34,6 +35,11 @@ theorem log_logShellRadius_succ {a r : ℝ} (ha : 0 < a) (hr : 1 < r) (k : ℕ) 
   rw [logShellRadius_succ, Real.log_mul (zero_lt_one.trans hr).ne'
     (logShellRadius_pos ha hr k).ne']
   ring
+
+theorem logShellRadius_strictMono {a r : ℝ} (ha : 0 < a) (hr : 1 < r) {j k : ℕ}
+    (hjk : j < k) : logShellRadius a r j < logShellRadius a r k :=
+  lt_of_lt_of_le (logShellRadius_lt_succ ha hr j)
+    (logShellRadius_mono ha hr (Nat.succ_le_of_lt hjk))
 
 /-- The logarithmic shell channel translated one layer outward. -/
 def shiftedLogShellChannel (a r : ℝ) (n : ℕ) : evenSubspace →L[ℂ] evenSubspace :=
@@ -167,5 +173,52 @@ theorem evenDilationCLM_mul_evenLogShellChannel_one
     simp
   rw [Real.log_one, Complex.ofReal_zero, hz, sub_zero] at h
   exact h
+
+end RHTower
+
+namespace RHTower
+
+open ContinuousLinearMap
+
+/-! ## The dilation defect is not trace class -/
+
+/-- Scaling by a nonzero constant cannot make a noncompact operator compact. -/
+theorem not_isCompactOperator_smul {T : evenSubspace →L[ℂ] evenSubspace} {c : ℂ}
+    (hc : c ≠ 0) (hT : ¬ IsCompactOperator T) : ¬ IsCompactOperator (c • T) := by
+  intro hcpt
+  apply hT
+  have hinv : c⁻¹ • (c • T) = T := by
+    rw [smul_smul, inv_mul_cancel₀ hc, one_smul]
+  rw [← hinv]
+  exact hcpt.smul c⁻¹
+
+/-- **The archimedean defect is not a trace-class correction.**  The interior-band term produced by
+one dilation step of the conductor is a nonzero multiple of a nondegenerate shell projection, hence
+noncompact.  The scalar `log r` that dilation extracts from the conductor therefore sits on an
+infinite-rank band: it cannot be read by the ordinary trace, and the archimedean finite part
+requires the aperture-regularized reading rather than a trace-class counterterm. -/
+theorem not_isCompactOperator_conductorDilationDefect
+    (a r : ℝ) (ha : 0 < a) (hr : 1 < r) (n : ℕ) (hn : 0 < n) :
+    ¬ IsCompactOperator (((Real.log r : ℝ) : ℂ) •
+      (evenIndicatorCutoff (logShellRadius a r (n + 1)) -
+        evenIndicatorCutoff (logShellRadius a r 1))) := by
+  have hlogr : (0 : ℝ) < Real.log r := Real.log_pos hr
+  have hc : ((Real.log r : ℝ) : ℂ) ≠ 0 := by
+    simpa using hlogr.ne'
+  refine not_isCompactOperator_smul hc ?_
+  refine not_isCompactOperator_evenIndicatorShellDiff
+    (logShellRadius a r 1) (logShellRadius a r (n + 1))
+    (logShellRadius_pos ha hr 1) ?_
+  exact logShellRadius_strictMono ha hr (Nat.succ_lt_succ hn)
+
+/-- The dilation defect of the conductor is not Schatten-1. -/
+theorem not_memSchattenClass_one_conductorDilationDefect
+    (a r : ℝ) (ha : 0 < a) (hr : 1 < r) (n : ℕ) (hn : 0 < n) :
+    ¬ MemSchattenClass 1 (((Real.log r : ℝ) : ℂ) •
+      (evenIndicatorCutoff (logShellRadius a r (n + 1)) -
+        evenIndicatorCutoff (logShellRadius a r 1))) := by
+  intro hS
+  exact not_isCompactOperator_conductorDilationDefect a r ha hr n hn
+    (hS.isCompactOperator one_pos)
 
 end RHTower

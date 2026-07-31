@@ -22,13 +22,6 @@ namespace RHTower
 
 open MeasureTheory Set
 
-/-! ## Strict monotonicity of the tower -/
-
-theorem logShellRadius_strictMono {a r : ℝ} (ha : 0 < a) (hr : 1 < r) {j k : ℕ}
-    (hjk : j < k) : logShellRadius a r j < logShellRadius a r k :=
-  lt_of_lt_of_le (logShellRadius_lt_succ ha hr j)
-    (logShellRadius_mono ha hr (Nat.succ_le_of_lt hjk))
-
 /-! ## The two symbols -/
 
 /-- Symbol of the step conductor: the value on the `k`-th layer is `log(rᵏa)`. -/
