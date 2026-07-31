@@ -251,6 +251,46 @@ theorem realWaveTrace_sum {ι : Type*} (u : Finset ι) (Q : ι → Polynomial �
   | insert i u hi ih =>
       rw [Finset.sum_insert hi, Finset.sum_insert hi, S.realWaveTrace_add, ih]
 
+/-! ## Continuity -/
+
+theorem continuous_traceTerm (P : Polynomial ℝ) (g : G) :
+    Continuous fun t : ℝ => S.traceTerm P t g := by
+  unfold traceTerm
+  fun_prop
+
+theorem continuousOn_waveTrace (P : Polynomial ℝ) (A : ℝ) :
+    ContinuousOn (S.waveTrace P) (Set.Icc (-A) A) := by
+  refine continuousOn_tsum
+    (u := fun g => (Real.exp (S.width * A) * polyBallBound P (S.lower⁻¹ ^ 2)) *
+      ‖S.gamma g‖⁻¹ ^ 3)
+    (fun g => (S.continuous_traceTerm P g).continuousOn)
+    (S.summable_inv_cube.mul_left _) (fun g t ht => ?_)
+  refine le_trans (S.norm_traceTerm_le P t g) ?_
+  have habs : |t| ≤ A := abs_le.mpr ⟨ht.1, ht.2⟩
+  have hexp : Real.exp (S.width * |t|) ≤ Real.exp (S.width * A) :=
+    Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_left habs S.width_nonneg)
+  have hC : 0 ≤ polyBallBound P (S.lower⁻¹ ^ 2) := polyBallBound_nonneg P (by positivity)
+  have hg : (0 : ℝ) ≤ ‖S.gamma g‖⁻¹ ^ 3 := by positivity
+  have hmul : Real.exp (S.width * |t|) * polyBallBound P (S.lower⁻¹ ^ 2) ≤
+      Real.exp (S.width * A) * polyBallBound P (S.lower⁻¹ ^ 2) :=
+    mul_le_mul_of_nonneg_right hexp hC
+  exact mul_le_mul_of_nonneg_right hmul hg
+
+theorem continuous_waveTrace (P : Polynomial ℝ) : Continuous (S.waveTrace P) := by
+  rw [continuous_iff_continuousAt]
+  intro t
+  have h1 : -(|t| + 1) < t := by
+    have := neg_abs_le t
+    linarith
+  have h2 : t < |t| + 1 := by
+    have := le_abs_self t
+    linarith
+  have hmem : Set.Icc (-(|t| + 1)) (|t| + 1) ∈ nhds t := Icc_mem_nhds h1 h2
+  exact (S.continuousOn_waveTrace P (|t| + 1)).continuousAt hmem
+
+theorem continuous_realWaveTrace (P : Polynomial ℝ) : Continuous (S.realWaveTrace P) :=
+  Complex.continuous_re.comp (S.continuous_waveTrace P)
+
 end WaveSpectrum
 
 end
