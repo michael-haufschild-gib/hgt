@@ -2947,3 +2947,63 @@ fact.
 * `neg_one_mem_reciprocalGammaBlowUpDisk`, `reciprocalGammaBlowUpDisk_nonempty`,
   `reciprocalGammaBlowUpDisk_mem_nhds` — the centre is in it, it is nonempty, and it is a
   neighbourhood of the centre, so the local hypertranscendence hypotheses are not vacuous.
+
+### The two largest `HTGeometry` rows, produced
+
+`z ∈ positiveHalfPlane` (19 uses) and `0 < jetMonomialDegree n m` (16 uses) head the area's
+nomination list.  Both were classified as parameter constraints on this card and left there; both
+now have named producers.
+
+`HTGeometry/PositiveHalfPlaneRegion.lean` (built, registered, axioms clean):
+
+* `mem_positiveHalfPlane` — membership is `0 < Re s`;
+* `isOpen_positiveHalfPlane`, **`convex_positiveHalfPlane`**, `isPreconnected_positiveHalfPlane` —
+  the region is open, convex and preconnected, which is exactly what the identity-theorem arguments
+  over it need (`identity-theorem-on-convex-halfplane`);
+* `ofReal_mem_positiveHalfPlane`, `one_mem_positiveHalfPlane`, `positiveHalfPlane_nonempty`,
+  `add_mem_positiveHalfPlane` — every positive real is in it, it is nonempty, and it is stable
+  under adding a nonnegative real part.
+
+`HTGeometry/JetMonomialDegreePositive.lean` (built, registered, axioms clean):
+
+* **`jetMonomialDegree_pos_iff`** — positive jet degree says exactly that some *derivative*
+  variable occurs in the monomial.  The card had guessed this reading; it is now proved;
+* `jetMonomialDegree_single`, `jetMonomialDegree_pos_single`, `exists_jetMonomialDegree_pos` — the
+  monomial in a single derivative variable has jet degree one, so the premise is attained at every
+  order.
+
+### The projective-chart prime-ideal premise, produced
+
+The chart incidence and base-change theorems carry `[p.IsPrime]` on the chart coefficient ring —
+38 uses across three keys, the largest class in the area after the half-plane — recorded on this
+card as "parameter constraint; `⊥` is prime in a domain" and left there.  A premise in *instance*
+position still needs a lemma to cite at the use site.
+`HTGeometry/ProjectiveChartPrimeIdealWitness.lean` (built, registered, axioms clean):
+
+* `bot_isPrime_projectiveChart` — the chart ring is a polynomial ring over a field, hence a domain,
+  so the zero ideal is prime: the generic point;
+* **`isPrime_ker_eval_projectiveChart`** — and every *point* of the affine chart gives one, as the
+  kernel of its evaluation map, the values living in a field.  So the layer runs on point ideals,
+  not only on the generic one;
+* `exists_isPrime_projectiveChart`, `exists_isPrime_ker_eval_projectiveChart` — the existence forms.
+
+Toolchain note: `Ideal.bot_prime` is deprecated in favour of `Ideal.isPrime_bot`, and `push_neg` in
+favour of `push Not`; both emit warnings, which the lint gate treats as failures.
+
+### The last two membership rows, and a sixth false-positive class
+
+`HTGeometry/SelectedLayerWitnessSiteNonempty.lean` (built, registered, axioms clean):
+
+* **`SelectedLayerAnalyticRelationWitness.site_nonempty`** and `…exists_mem_site` — the analytic
+  site of a selected-layer witness is nonempty, because the witness structure carries `S.Infinite`
+  as a field.  The producer was inside the interface all along and had never been extracted;
+* `exists_mem_polynomialPatternMinimalCluster` — the minimal pattern cluster has a member, which is
+  the recorded `polynomialPatternMinimalCluster_nonempty` restated existentially.
+
+**Sixth false-positive class, now on record.**  A producer whose conclusion is a *container* of the
+existential — `Finset.Nonempty s`, `Set.Nonempty s`, `s.Infinite` — is invisible to the scan, whose
+`conclAtoms` unfolds `Exists` but not the containers that mean it.  The two rows above were both of
+this kind: the mathematics existed, only the shape the instrument looks for did not.  With the
+"different head" class (`0 < X` versus `X ≠ 0`) and the "general producer that never mentions the
+consumer's constants" class, the instrument now has three distinct ways of hiding a producer that
+is really there — all three fixed the same way, by stating the form the consumer actually needs.

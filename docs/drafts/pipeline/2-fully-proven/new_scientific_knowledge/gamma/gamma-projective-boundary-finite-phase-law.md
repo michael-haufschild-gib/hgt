@@ -856,6 +856,28 @@ has `f⁽ᵝ⁾ ≡ 0` on the strip; `digammaLinear_strip_iteratedDeriv_eq_zero`
 This is the concrete, checkable form of eq. (8) for linear relations: such an `f` admits no dominant
 linear Gamma-differential constraint except a degenerate one.
 
+`formal/GaloisForLFunctions/HTGeometry/BohrProductSpectrum.lean` settles how the spectrum behaves
+under multiplication in the case where it is exact and elementary — a trigonometric-polynomial
+factor.  `bohrCoefficient_mul_expChar` shows modulation translates the coefficient function
+(`a_{f·e^{iμt}}(λ) = a_f(λ−μ)`), and `bohrCoefficient_mul_trigPoly` gives the convolution formula
+`a_{f·g}(λ) = ∑_i c_i a_f(λ−μ_i)` for `g = ∑_i c_i e^{iμ_i t}`.  Hence
+`bohrSpectrum_mul_trigPoly_subset` (`spec(f·g) ⊆ spec f + {μ_i}`) and, most usefully,
+`bohrFrequencyModule_mul_trigPoly_le`: multiplying by a trigonometric polynomial enlarges the
+frequency module by **at most finitely many generators**, the module of the product lying in
+`Γ_B(f) ⊔ span_ℚ{μ_i}`.  This is the multiplicative half of the mechanism behind the finite-rank
+conclusion; the general product rule needs the Bochner–Fejér approximation theorem, which is what
+remains open on this branch.
+
+`formal/GaloisForLFunctions/HTGeometry/BohrMeanInvariance.lean` records the two structural
+properties of the mean that any approximation argument runs on.  It is a **contraction** for the
+supremum norm (`norm_bohrMean_le`), hence the mean and every Bohr coefficient are `1`-Lipschitz in
+the uniform distance (`norm_bohrMean_sub_le`, `norm_bohrCoefficient_sub_le`) — the estimate that will
+transfer facts from trigonometric polynomials to their uniform limits.  And it is **translation
+invariant** (`bohrMean_comp_add_const`: shifting the window changes the integral only by two end
+pieces of bounded size, which the average kills), so translation multiplies each coefficient by the
+unimodular factor `e^{iλa}` (`bohrCoefficient_comp_add_const`) and leaves the spectrum, hence the
+frequency module, unchanged (`bohrSpectrum_comp_add_const`).
+
 `formal/GaloisForLFunctions/HTGeometry/IsometricRecurrence.lean` abstracts the recurrence to any
 relatively-compact isometric `ℝ`-action (`isometricAction_recurrence`, `isometricAction_return_seq`),
 so it instantiates both to `ℝ →ᵇ ℂ` and to vertical translation of holomorphic functions on a strip.

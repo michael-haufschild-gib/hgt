@@ -5,7 +5,7 @@
 
 your task:
 if you are already working on a card, keep going.
-else: pick a card from docs/drafts/pipeline/1-in-progress that starts with "deninger"
+else: pick a card from docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/projective-horizon
 
 do: formalize UNCONDITIONALLY in lean any proven theorem in the chosen card. add missing infrastructure, lean proofs, everything needed to mark the card as fully done - no simplifications.
 
@@ -14,8 +14,8 @@ Lean rules:
 2. Always build in the foreground, 1 process per single agent.
 3. Be efficient, use caching, batch instead of running constant loops of tiny edits and rebuilds
 4. No computations.
-5. Always use  lake env lean <file>  and only lake build <module> for the final audit.
-6. make sure you don't leave stale lean processes running - clean up after yourself
+5. Always use  lake env lean <file>  and only lake build <module> for the final audit. Do not forget to wire new modules into the umbrellas.
+6. make sure you don't leave stale lean processes running - clean up after yourself.
 
 Non-negotiable working mode rules:
 1. If it cannot be done in a single session -> Does not matter. Do it!
@@ -31,7 +31,6 @@ LEAN PROOFS MUST BE UNCONDTIONAL!!! ALWAYS CHECK BEFORE WRITING NEW LEAN CODE WH
 
 where mathematical knowledge is missing use the /hgtl7 skill to create it.
 
-Always use  lake env lean <file>  and only lake build <module> for the final audit. Do not forget to wire new modules into the umbrellas.
 
 ## research loop
 /loop 1m (use the croncreate tool)
@@ -94,7 +93,11 @@ Mandatory:
    2. If it cannot be done in a single context window -> Does not matter. Do it!
    3. If it takes months -> Does not matter. Do it!
 
-BEFORE WRITING ANY LEAN CODE, CHECK WHAT THE LEAN CORPUS ALREADY GIVES YOU AS BUILDING BLOCKS - DO NOT DUPLICATE WORK.
+You are not allowed to change the cron timing.
+
+LEAN PROOFS MUST BE UNCONDTIONAL!!! ALWAYS CHECK BEFORE WRITING NEW LEAN CODE WHAT THE PROJECT LEAN CODE ALREADY CONTAINS AS PROOF OR BUILDING BLOCK YOU SO YOU DO NOT DUPLICATE WORK.
+
+where mathematical knowledge is missing use the /hgtl7 skill to create it.
 
 
 ## loop consolidate

@@ -543,6 +543,13 @@ nonzero jet determinant, so it is a frame: `jetFrame_mulVec_frameCoord` is the f
 `frameCoord_unique` its uniqueness, and `frameCoord_jetOrder` identifies the frame coordinates at
 the initial orders.  The frame is what absorbs the observer group in the codimension count.
 
+`formal/GaloisForLFunctions/HTGeometry/ProjectiveHorizonTransvectionOrbit.lean` records the
+one-parameter orbit law that a density argument would need.  A transvection with row `x` and column
+`j` sends `X_(k,l)` to `X_(k,l) - c X_(j,l)` when `k = x` and fixes it otherwise
+(`linearJetAction_freeCoordinate_transvection`), so the dependence on the transvection coefficient
+is affine linear, and `transvectionSL_mul_same` shows the coefficients compose additively: a
+transvection orbit is a one-parameter additive family.
+
 Two limits are worth stating exactly.  The independence is over the horizon algebra rather than the
 horizon field; the two are equivalent, but the field form goes through
 `IntermediateField.algebraicIndependent_adjoin_iff`, whose elaboration on this type exceeds a
@@ -606,7 +613,8 @@ so this currently gives neither a zero-free region nor a critical-line implicati
 - [x] 2 -> 3u: the explicit description of `mathcal I_S` for every span, as an intersection of
       elementary chart fields
 - [x] 2 -> 3v: the jet frame of a span, the frame equation and uniqueness of frame coordinates
-- [ ] 2 -> 3w: the general-rank transcendence-degree number of `(11)` for `r >= 2`.  Both known
+- [x] 2 -> 3w: the one-parameter transvection orbit law on jet coordinates
+- [ ] 2 -> 3x: the general-rank transcendence-degree number of `(11)` for `r >= 2`.  Both known
       routes are long: Rosenlicht's dimension theorem has no mathlib surface, and the invariant
       route needs the first fundamental theorem for `SL_r` acting on an `r x infinity` jet matrix,
       i.e. that the minors above generate.  Not needed for any other part of the card.
@@ -678,3 +686,5 @@ so this currently gives neither a zero-free region nor a critical-line implicati
   intersection of elementary chart fields.
 - 2026-07-31 — set up the jet frame of a span, with the frame equation and uniqueness of frame
   coordinates; re-verified the whole `HTGeometry` umbrella.
+- 2026-07-31 — formalized the one-parameter transvection orbit law on jet coordinates, the seed of
+  the density step that the general-rank count needs.

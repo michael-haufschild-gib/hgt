@@ -649,6 +649,46 @@ find an annulus vector with
 both subtracted quantities being fixed trace-class quantities.  Everything else has been
 eliminated.
 
+**But the first branch is bounded by a deep-carrier distance.**  Both projections of the layer
+absorb the projection at any larger aperture, so the layer annihilates every deeper carrier and
+
+```text
+|| (Q_a - Q_b) v ||  <=  || v - Q_s v ||     for every  a <= b <= s.       (48)
+```
+
+Applying this with `v = U_r^{-1} w` and any `s` between `b` and the inner radius of the expanded
+support: **a family that is asymptotically inside a deeper Sonin carrier is asymptotically
+invisible to the layer, whatever its support.**  This is the uniform reason every natural test
+family has failed, and it cuts both ways — it also says a witness must be a family that stays a
+definite distance from *every* deeper carrier, which no shell family does.
+
+The two horns are therefore explicit.  Either such a family exists, or `Z = 0` in the crossing
+chamber and the aperture defect is exactly additive.  `(48)` is the tool for the second horn.
+
+**Outer compression form.**  The operator version of `(48)` is that the layer absorbs the
+complement of any deeper carrier, and dually the outer layer absorbs it on the left.  Together:
+
+```text
+Z = (Q_a - Q_b)(1 - Q_c) . D_r . (1 - Q_c)(Q_b - Q_c),                     (49)
+```
+
+so the coupling never sees the dilation on the outer carrier at all — only the part of `D_r`
+acting outside `K_c` contributes, on both sides.  This is the sharpest structural form: the
+question is whether the dilation, compressed to the complement of the deepest carrier in the
+chamber, still connects the two layers.
+
+**The layer itself is elementary modulo the ideal.**  The complement of a Sonin projection is the
+sum of its two forbidden cutoffs up to the exact correction, and each cutoff annihilates its own
+projection, so
+
+```text
+Q_b - Q_c  =  (A_c + R_c) Q_b  -  C_c (Q_b - Q_c),      C_c Schatten-1,    (50)
+```
+
+that is, **the aperture layer is the outer window in both polarizations, restricted to the inner
+carrier, modulo trace class**.  The layer's range was defined by an orthogonality condition; `(50)`
+replaces it by explicit cutoffs, which is what any support or band computation needs.
+
 ### Proof
 
 Induction on the chain length from the three-point law, with the chamber hypothesis inherited
@@ -794,6 +834,13 @@ provisional pending expert/literature review.
 | `(46)` second branch is a time band | `evenSoninApertureLayer_secondBranch_eq_timeBand` |
 | `(46)` block is Schatten-1 | `memSchattenClass_one_secondBranch_timeBand` |
 | `(47)` second-branch bound | `norm_evenSoninApertureLayer_secondBranch_le` |
+| layer kills deeper carriers | `evenSoninApertureLayer_mul_evenCentralSoninProjection_eq_zero` |
+| `(48)` deep-carrier bound | `norm_evenSoninApertureLayer_apply_le_dist_deepCarrier` |
+| `(48)` asymptotic form | `tendsto_norm_evenSoninApertureLayer_apply_of_tendsto_deepCarrier` |
+| `(49)` outer compression | `evenSoninApertureSuccessiveLayerTransition_eq_outerCompression` |
+| `(49)` bound | `norm_evenSoninApertureSuccessiveLayerTransition_apply_le_outerCompression` |
+| `(50)` layer window normal form | `evenSoninApertureLayer_eq_window_sub_correction` |
+| `(50)` modulo the ideal | `evenSoninApertureLayer_principalRelativeEq_window` |
 
 Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninPrincipalRelativeCyclicExtension.lean`,
@@ -814,7 +861,10 @@ Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninInverseBranchVanishing.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninCouplingBranchNormalForm.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninCouplingBranchEstimate.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninSecondBranchTimeBand.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninSecondBranchTimeBand.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLayerDeepCarrierBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCouplingOuterCompression.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLayerWindowNormalForm.lean`.
 All declarations depend only on `propext`, `Classical.choice`, `Quot.sound`.
 
 Novelty split for Theorem G: `(7)` was already in the corpus
@@ -825,6 +875,18 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-07-31 — layer window normal form: the aperture layer is the outer window in both
+  polarizations restricted to the inner carrier, modulo Schatten-1.  This trades the layer's
+  orthogonality definition for explicit cutoffs, which is the form support and band computations
+  can actually use.
+- 2026-07-31 — outer compression form: the coupling is the dilation compressed on both sides by the
+  complement of the outer carrier, so it never sees the dilation on K_c at all.  This is the
+  operator version of the deep-carrier bound and the sharpest structural form of the question.
+- 2026-07-31 — deep-carrier bound proved, giving the uniform reason every test family has failed:
+  the layer annihilates every deeper carrier, so it sees a vector only through its distance to one.
+  Any family asymptotically inside a deeper carrier is asymptotically invisible.  The two horns are
+  now explicit — either a family staying a definite distance from every deeper carrier exists, or
+  the coupling vanishes and the aperture defect is exactly additive.
 - 2026-07-31 — second branch shown trace-class-small: on an inner-band vector it factors through
   the fixed time-band block R_(rb) A_a, which is Schatten-1, so it is bounded by a fixed constant
   times the vector norm.  The witness question is now concentrated entirely in the first branch,

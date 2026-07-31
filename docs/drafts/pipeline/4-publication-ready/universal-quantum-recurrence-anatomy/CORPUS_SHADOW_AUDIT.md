@@ -45,9 +45,13 @@ exact projective orbit closure is
   K_L=\{z:z^k=1\ \text{for every }k\in L\}.
 \]
 Spectral weights pull the ambient phase metric back to \(K_L\), and the
-weighted covering number bounds an actual first return. Thus relation
-kernel, recurrence hull and return clock are successive parts of one
-carrier law.
+weighted covering number bounds an actual return. A finite-head water
+entropy gives a second, explicit clock: at logarithmic resolution \(L\), its
+slope is exactly half the number of weights above \(e^{-L}\). The same
+entropy bounds a genuine survival return after every finite checkpoint,
+not merely a positive hit before the system has exited. Thus relation
+kernel, recurrence hull, resolution-dependent visible dimension and
+post-exit return clock are successive parts of one carrier law.
 
 ## Positive results now explained
 
@@ -67,7 +71,7 @@ carrier law.
 | L-bit temporal-dimension laws | Independent interaction coefficients release character directions coefficient by coefficient. |
 | L-bit boundary doubling | A newly exposed boundary interaction block removes an exact kernel sector of equal rank. |
 | Finite Anderson recurrence/locality separation | Localization bounds spatial transport but does not determine the arithmetic relation kernel. |
-| Countable pure-point recurrence | The full finite-support relation lattice determines the annihilator hull; summable weights supply its return metric. |
+| Countable pure-point recurrence | The full finite-support relation lattice determines the annihilator hull; summable weights supply its return metric, spectral-depth entropy and a survival return after every finite checkpoint. |
 | Finite contraction temporal boundary | Transient amplitude vanishes; the peripheral phase packet is the surviving recurrence carrier. |
 | Dissipative return-information transition | Persistent mass sets attainable return height; peripheral relation geometry controls the surviving return pattern. |
 | Spectral gap-measure completeness | Projective return records depend only on the observer-visible gap law, the measure-level image of the same character carrier. |
@@ -133,7 +137,11 @@ type is part of the carrier and cannot be inferred from finite local data.
    converter, now with the same dimension-free fixed-time Heisenberg bound.
 4. **Countably infinite pure point:** balanced original-energy relations,
    anchored relation lattice, exact projective hull, weighted coherence
-   metric and first-return covering bound are one theorem chain.
+   metric and covering bound are one theorem chain.
+5. **Post-exit infinite clock:** every normalized countable pure-point
+   Hamiltonian has a finite spectral-depth entropy at each resolved head;
+   its running slope is half the visible spectral count, and the same
+   entropy forces a survival return after every finite checkpoint.
 
 ## Claims still outside the proved law
 
@@ -162,7 +170,8 @@ facts but does not expose one cause. Replacement spine:
 2. temporal dimension and relation rank exactly conserve capacity;
 3. interaction releases the kernel;
 4. the relation kernel determines the infinite recurrence hull;
-5. the weighted hull determines an actual return bound;
+5. the weighted hull and spectral-depth profile determine actual post-exit
+   return bounds;
 6. finite contractions reduce asymptotically to the same peripheral carrier.
 
 Every secondary result should appear only as a corollary of this spine.

@@ -20,12 +20,6 @@ variable {ι : Type*} [Fintype ι] {A : ι → Type*} [∀ i, DecidableEq (A i)]
     i ∈ pointedSupport A x ↔ x i ≠ 1 := by
   simp [pointedSupport]
 
-/-- The unit configuration has empty pointed support. -/
-@[simp] theorem pointedSupport_one :
-    pointedSupport A (fun i => (1 : A i)) = ∅ := by
-  ext i
-  simp
-
 /-- **Disjointness is pointwise.**  Two configurations have disjoint pointed supports exactly when
 at every site at least one of them is unpointed. -/
 theorem disjoint_pointedSupport_iff (z w : ∀ i, A i) :
@@ -47,8 +41,9 @@ theorem disjoint_pointedSupport_iff (z w : ∀ i, A i) :
 is always available against it. -/
 theorem disjoint_pointedSupport_one (z : ∀ i, A i) :
     Disjoint (pointedSupport A z) (pointedSupport A (fun i => (1 : A i))) := by
-  rw [pointedSupport_one]
-  exact Finset.disjoint_empty_right _
+  rw [disjoint_pointedSupport_iff]
+  intro i
+  exact Or.inr rfl
 
 /-- Symmetrically. -/
 theorem disjoint_one_pointedSupport (z : ∀ i, A i) :
