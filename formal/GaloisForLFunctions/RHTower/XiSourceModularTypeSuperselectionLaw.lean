@@ -28,6 +28,7 @@ import GaloisForLFunctions.RHTower.PositiveEulerFiniteQuartetOrientationLaw
 import GaloisForLFunctions.RHTower.SourceHorizonEscapeConservationLaw
 import GaloisForLFunctions.RHTower.SuzukiKreinSchurBlockCongruence
 import GaloisForLFunctions.RHTower.LocalGlobalRHTomography
+import GaloisForLFunctions.RHTower.XiApertureCollisionRelativeKOneSimplicityTomographyUniversalityLaw
 import GaloisForLFunctions.HTGeometry.BifilteredScalarizationNoGo
 import GaloisForLFunctions.HTGeometry.PointedFisherCutoffWardTrace
 import GaloisForLFunctions.HTGeometry.PrimeResidueValuationInteractionSuperselection
@@ -945,6 +946,13 @@ structure XiRamifiedSingularBoundaryCertificate : Prop where
           ‖centeredComplexModularCharacter (rho : ℂ) (1 : ℂ)‖ = 1)
   reflectionCharacterCompletion :
     XiReflectionCharacterCompletionCertificate
+  ramificationMultiplicityTomography :
+    ∀ rho : XiDivisorSupport,
+      xiCompletedApertureRegularizedResonantTwoPointDet rho 0 = -4 ↔
+        XiLocalJordanNormal rho ∧
+        localDivisorJetInfinitesimalUnit ℂ
+            (xiSupportMultiplicity rho) = 1 ∧
+        localDivisorJetLogUnit (xiSupportMultiplicity rho) = 0
   dyadicLevelwiseDescent :
     ∀ k : ℕ,
       RHLadder k ↔ XiDyadicDescentLevelUniversalCertificate k
@@ -1007,6 +1015,8 @@ theorem xiRamifiedSingularBoundary_law :
       xiHurwitzOrientationEnergy_eq_zero_iff_unitaryCenteredCharacters⟩
   reflectionCharacterCompletion :=
     xiReflectionCharacterCompletion_law
+  ramificationMultiplicityTomography :=
+    xiCompletedApertureCollision_neg_four_iff_completeLocalSimplicity
   dyadicLevelwiseDescent :=
     rhLadder_iff_dyadicDescentLevelUniversalCertificate
   allDyadicLevels :=

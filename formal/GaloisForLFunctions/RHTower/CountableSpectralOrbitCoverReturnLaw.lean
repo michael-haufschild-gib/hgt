@@ -166,9 +166,6 @@ theorem exists_countableSpectralFirstReturn_le_card_of_orbitCover
     have hreturnDist :
         ‖countableSpectralKetAt p hp hsum x n -
             countableSpectralKet p hp hsum‖ ≤ 2 * r := by
-      change
-        ‖countableSpectralKetAt p hp hsum x (n : ℝ) -
-            countableSpectralKet p hp hsum‖ ≤ 2 * r
       rw [← norm_countableSpectralKetAt_sub_ketAt_eq_timeDifference
         p hp hsum x (Nat.le_of_lt hij_lt)]
       exact hpair
@@ -198,12 +195,7 @@ theorem exists_countableSpectralFirstReturn_le_card_of_orbitCover
           (countableSpectralKet p hp hsum),
         hnormAt, hnormKet, inner_re_symm,
         hinner, hphase]
-      change (2 : ℝ) -
-          (summableWeightedPhaseAmplitude p
-            (fun k => fourier 1 (((n : ℕ) : ℤ) • x k))).re * 2 =
-        2 - 2 *
-          (summableWeightedPhaseAmplitude p
-            (fun k => fourier 1 (((n : ℕ) : ℤ) • x k))).re
+      rw [RCLike.re_eq_complex_re]
       ring
     have hdistBound :
         ‖countableSpectralKetAt p hp hsum x n -

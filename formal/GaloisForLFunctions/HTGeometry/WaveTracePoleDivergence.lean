@@ -200,12 +200,179 @@ theorem poleTransform_eq_head_add_tail [Countable G] (hlf : S.IsLocallyFiniteSpe
       simp only [Function.comp_def]
       linarith [hsplit]
 
+/-! ## The pole domain -/
+
+/-- The resolvent pole divisor of the spectrum. -/
+def poleSet : Set ℂ := {s : ℂ | ∃ g : G, s ^ 2 + S.gamma g ^ 2 = 0}
+
+/-- A locally finite divisor keeps every non-pole at a positive distance from the whole
+resolvent denominator family. -/
+theorem exists_denominator_lower_bound (hlf : S.IsLocallyFiniteSpectrum) {w : ℂ}
+    (hw : w ∉ S.poleSet) :
+    ∃ d : ℝ, 0 < d ∧ ∀ g : G, d ≤ ‖w ^ 2 + S.gamma g ^ 2‖ := by
+  classical
+  set R : ℝ := ‖w‖ + 1 with hR
+  set F : Finset G := (hlf R).toFinset with hF
+  have hfar : ∀ g : G, R < ‖S.gamma g‖ → (1 : ℝ) ≤ ‖w ^ 2 + S.gamma g ^ 2‖ := by
+    intro g hg
+    have h1 : ‖w‖ + 1 < ‖S.gamma g‖ := hg
+    have h2 : (0 : ℝ) ≤ ‖w‖ := norm_nonneg _
+    have hlow : ‖w‖ ^ 2 + 1 ≤ ‖S.gamma g‖ ^ 2 := by nlinarith
+    have hge : ‖S.gamma g‖ ^ 2 - ‖w‖ ^ 2 ≤ ‖w ^ 2 + S.gamma g ^ 2‖ := by
+      have hnn := norm_sub_norm_le (S.gamma g ^ 2) (-(w ^ 2))
+      rw [sub_neg_eq_add, norm_neg, norm_pow, norm_pow] at hnn
+      rw [add_comm (w ^ 2) (S.gamma g ^ 2)]
+      exact hnn
+    linarith
+  by_cases hne : F.Nonempty
+  · set d0 : ℝ := F.inf' hne (fun g => ‖w ^ 2 + S.gamma g ^ 2‖) with hd0
+    have hd0pos : 0 < d0 := by
+      rw [hd0, Finset.lt_inf'_iff]
+      intro g _
+      refine norm_pos_iff.mpr ?_
+      intro hz
+      exact hw ⟨g, hz⟩
+    refine ⟨min d0 1, lt_min hd0pos one_pos, fun g => ?_⟩
+    by_cases hsmall : ‖S.gamma g‖ ≤ R
+    · refine le_trans (min_le_left _ _) (Finset.inf'_le _ ?_)
+      rw [hF, Set.Finite.mem_toFinset]
+      exact hsmall
+    · exact le_trans (min_le_right _ _) (hfar g (lt_of_not_ge hsmall))
+  · refine ⟨1, one_pos, fun g => ?_⟩
+    by_cases hsmall : ‖S.gamma g‖ ≤ R
+    · exact absurd ⟨g, by rw [hF, Set.Finite.mem_toFinset]; exact hsmall⟩ hne
+    · exact hfar g (lt_of_not_ge hsmall)
+
+theorem exists_ball_denominator_bound (hlf : S.IsLocallyFiniteSpectrum) {w : ℂ}
+    (hw : w ∉ S.poleSet) :
+    ∃ ε d : ℝ, 0 < ε ∧ 0 < d ∧
+      ∀ s ∈ Metric.ball w ε, ∀ g : G, d ≤ ‖s ^ 2 + S.gamma g ^ 2‖ := by
+  obtain ⟨d0, hd0, hbound⟩ := S.exists_denominator_lower_bound hlf hw
+  refine ⟨min 1 (d0 / (2 * (2 * ‖w‖ + 1))), d0 / 2, lt_min one_pos (by positivity),
+    by linarith, fun s hs g => ?_⟩
+  set ε : ℝ := min 1 (d0 / (2 * (2 * ‖w‖ + 1))) with hε
+  have hsw : ‖s - w‖ < ε := by
+    rw [← Complex.dist_eq]
+    exact hs
+  have hε1 : ε ≤ 1 := min_le_left _ _
+  have hε2 : ε ≤ d0 / (2 * (2 * ‖w‖ + 1)) := min_le_right _ _
+  have hsnorm : ‖s‖ ≤ ‖w‖ + ε := by
+    have := norm_add_le (s - w) w
+    simp only [sub_add_cancel] at this
+    linarith
+  have hshift : ‖s ^ 2 - w ^ 2‖ ≤ d0 / 2 := by
+    have hfac : s ^ 2 - w ^ 2 = (s - w) * (s + w) := by ring
+    have hsum : ‖s + w‖ ≤ 2 * ‖w‖ + 1 := by
+      refine le_trans (norm_add_le _ _) ?_
+      linarith
+    have hprod : ‖s ^ 2 - w ^ 2‖ ≤ ε * (2 * ‖w‖ + 1) := by
+      rw [hfac, norm_mul]
+      exact mul_le_mul hsw.le hsum (norm_nonneg _) (le_of_lt (lt_of_le_of_lt (norm_nonneg _) hsw))
+    have hpos : (0 : ℝ) < 2 * ‖w‖ + 1 := by positivity
+    have hle : ε * (2 * ‖w‖ + 1) ≤ d0 / 2 := by
+      calc ε * (2 * ‖w‖ + 1) ≤ d0 / (2 * (2 * ‖w‖ + 1)) * (2 * ‖w‖ + 1) :=
+            mul_le_mul_of_nonneg_right hε2 hpos.le
+        _ = d0 / 2 := by field_simp
+    linarith
+  have hsplit : s ^ 2 + S.gamma g ^ 2 = (w ^ 2 + S.gamma g ^ 2) + (s ^ 2 - w ^ 2) := by ring
+  have hlow := hbound g
+  have htri := norm_sub_norm_le (w ^ 2 + S.gamma g ^ 2) (-(s ^ 2 - w ^ 2))
+  rw [sub_neg_eq_add, norm_neg] at htri
+  rw [hsplit]
+  linarith
+
+theorem isOpen_compl_poleSet (hlf : S.IsLocallyFiniteSpectrum) : IsOpen (S.poleSet)ᶜ := by
+  rw [Metric.isOpen_iff]
+  intro w hw
+  obtain ⟨ε, d, hε, hd, hbound⟩ := S.exists_ball_denominator_bound hlf hw
+  refine ⟨ε, hε, fun s hs => ?_⟩
+  intro hmem
+  obtain ⟨g, hg⟩ := hmem
+  have := hbound s hs g
+  rw [hg, norm_zero] at this
+  linarith
+
+theorem differentiableOn_poleTransform_compl (hlf : S.IsLocallyFiniteSpectrum)
+    (P : Polynomial ℝ) (T : ℝ) :
+    DifferentiableOn ℂ (S.poleTransform P T) (S.poleSet)ᶜ := by
+  intro w hw
+  refine DifferentiableAt.differentiableWithinAt ?_
+  obtain ⟨ε, d, hε, hd, hbound⟩ := S.exists_ball_denominator_bound hlf hw
+  have hdiff : DifferentiableOn ℂ (S.poleTransform P T) (Metric.ball w ε) := by
+    refine S.differentiableOn_poleTransform P T Metric.isOpen_ball (M := ‖w‖ + ε) hd
+      (fun s hs => ?_) (fun s hs g => hbound s hs g)
+    have hsw : ‖s - w‖ < ε := by rw [← Complex.dist_eq]; exact hs
+    have := norm_add_le (s - w) w
+    simp only [sub_add_cancel] at this
+    linarith
+  exact hdiff.differentiableAt (Metric.ball_mem_nhds w hε)
+
+theorem countable_poleSet [Countable G] : (S.poleSet).Countable := by
+  have hsub : S.poleSet ⊆ (Set.range fun g : G => Complex.I * S.gamma g) ∪
+      (Set.range fun g : G => -(Complex.I * S.gamma g)) := by
+    rintro s ⟨g, hg⟩
+    have hfac : (s - Complex.I * S.gamma g) * (s + Complex.I * S.gamma g) = 0 := by
+      linear_combination hg - (S.gamma g ^ 2) * Complex.I_sq
+    rcases mul_eq_zero.mp hfac with h | h
+    · exact Or.inl ⟨g, by linear_combination -h⟩
+    · exact Or.inr ⟨g, by linear_combination -h⟩
+  exact Set.Countable.mono hsub ((Set.countable_range _).union (Set.countable_range _))
+
+theorem isPreconnected_compl_poleSet [Countable G] : IsPreconnected (S.poleSet)ᶜ :=
+  ((S.countable_poleSet).isConnected_compl_of_one_lt_rank
+    (by rw [Complex.rank_real_complex]; norm_num)).isPreconnected
+
+/-- **Uniform real-part gap.** A locally finite divisor with no purely imaginary frequency
+keeps every resolvent pole off the real axis by a fixed amount. -/
+theorem exists_re_lower_bound (hlf : S.IsLocallyFiniteSpectrum)
+    (hnoim : ∀ g : G, (S.gamma g).re ≠ 0) :
+    ∃ rho : ℝ, 0 < rho ∧ ∀ g : G, rho ≤ |(S.gamma g).re| := by
+  classical
+  set R : ℝ := S.width + 1 with hR
+  set F : Finset G := (hlf R).toFinset with hF
+  have hnormsq : ∀ g : G, ‖S.gamma g‖ ^ 2 = (S.gamma g).re ^ 2 + (S.gamma g).im ^ 2 := by
+    intro g
+    have := Complex.normSq_eq_norm_sq (S.gamma g)
+    simp only [Complex.normSq_apply] at this
+    nlinarith [this]
+  have hfar : ∀ g : G, R < ‖S.gamma g‖ → (1 : ℝ) ≤ |(S.gamma g).re| := by
+    intro g hg
+    have hw : |(S.gamma g).im| ≤ S.width := S.im_le g
+    have hwnn : 0 ≤ S.width := S.width_nonneg
+    have him : (S.gamma g).im ^ 2 ≤ S.width ^ 2 := by
+      have := sq_abs (S.gamma g).im
+      nlinarith [abs_nonneg (S.gamma g).im]
+    have hgt : S.width + 1 < ‖S.gamma g‖ := hg
+    have hsq : (S.width + 1) ^ 2 < ‖S.gamma g‖ ^ 2 := by nlinarith [norm_nonneg (S.gamma g)]
+    have hre : 1 ≤ (S.gamma g).re ^ 2 := by
+      have := hnormsq g
+      nlinarith
+    have habs := sq_abs (S.gamma g).re
+    nlinarith [abs_nonneg (S.gamma g).re]
+  by_cases hne : F.Nonempty
+  · set d0 : ℝ := F.inf' hne (fun g => |(S.gamma g).re|) with hd0
+    have hd0pos : 0 < d0 := by
+      rw [hd0, Finset.lt_inf'_iff]
+      intro g _
+      exact abs_pos.mpr (hnoim g)
+    refine ⟨min d0 1, lt_min hd0pos one_pos, fun g => ?_⟩
+    by_cases hsmall : ‖S.gamma g‖ ≤ R
+    · refine le_trans (min_le_left _ _) (Finset.inf'_le _ ?_)
+      rw [hF, Set.Finite.mem_toFinset]
+      exact hsmall
+    · exact le_trans (min_le_right _ _) (hfar g (lt_of_not_ge hsmall))
+  · refine ⟨1, one_pos, fun g => ?_⟩
+    by_cases hsmall : ‖S.gamma g‖ ≤ R
+    · exact absurd ⟨g, by rw [hF, Set.Finite.mem_toFinset]; exact hsmall⟩ hne
+    · exact hfar g (lt_of_not_ge hsmall)
+
+
 /-- **Genuine pole.** At the resolvent pole of an active frequency the transform is unbounded
 on every punctured neighbourhood: the reinforced head blows up while the tail stays bounded. -/
 theorem exists_norm_poleTransform_gt [Countable G] (hlf : S.IsLocallyFiniteSpectrum)
     (P : Polynomial ℝ) (T : ℝ) {g₀ : G} (hactive : S.traceCoeff P g₀ ≠ 0)
     (C : ℝ) {r : ℝ} (hr : 0 < r) :
-    ∃ s : ℂ, ‖s - Complex.I * S.gamma g₀‖ < r ∧ s ^ 2 + S.gamma g₀ ^ 2 ≠ 0 ∧
+    ∃ s : ℂ, ‖s - Complex.I * S.gamma g₀‖ < r ∧ s ∉ S.poleSet ∧
       C < ‖S.poleTransform P T s‖ := by
   classical
   set s₀ : ℂ := Complex.I * S.gamma g₀ with hs₀def
@@ -308,7 +475,16 @@ theorem exists_norm_poleTransform_gt [Countable G] (hlf : S.IsLocallyFiniteSpect
   -- split and estimate
   obtain ⟨tail, hsplit, htail⟩ :=
     S.poleTransform_eq_head_add_tail hlf P T (by linarith : (0:ℝ) < d / 2) hsqne hsep hMbound
-  refine ⟨s, by rw [hsnorm]; exact hδr, hsqne, ?_⟩
+  have hnotpole : s ∉ S.poleSet := by
+    rintro ⟨g, hg⟩
+    by_cases hgm : g ∈ S.squareFiber g₀
+    · have hgs : S.gamma g ^ 2 = S.gamma g₀ ^ 2 := hgm
+      rw [hgs] at hg
+      exact hsqne hg
+    · have hb := hsep g hgm
+      rw [hg, norm_zero] at hb
+      linarith
+  refine ⟨s, by rw [hsnorm]; exact hδr, hnotpole, ?_⟩
   -- lower bound for the head
   have hNlow : n / 2 < ‖S.poleNumer T s g₀‖ := by
     have hd' : dist s s₀ < r₁ := by

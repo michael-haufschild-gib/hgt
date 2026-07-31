@@ -7,8 +7,8 @@ Use this as the quick map before opening large proof files.
 
 | Area | Umbrella | Lean modules | Declarations | Capstones |
 |---|---|---:|---:|---|
-| `rh_tower` | `GaloisForLFunctions.RHTower` | 3750 | 44451 | `RHTower.rh_iff_tower`, `RHTower.rh_iff_forall_ladder` |
-| `ht_geometry` | `GaloisForLFunctions.HTGeometry` | 2993 | 31236 | `hypertranscendental_gamma`, `HTGeometry.exists_wedgeFacetSewnUpperEndSystem` |
+| `rh_tower` | `GaloisForLFunctions.RHTower` | 3753 | 44475 | `RHTower.rh_iff_tower`, `RHTower.rh_iff_forall_ladder` |
+| `ht_geometry` | `GaloisForLFunctions.HTGeometry` | 2996 | 31279 | `hypertranscendental_gamma`, `HTGeometry.exists_wedgeFacetSewnUpperEndSystem` |
 | `hurwitz` | `GaloisForLFunctions.Hurwitz` | 58 | 547 | `hurwitz_n2_unconditional` |
 | `u0_pui` | `GaloisForLFunctions.U0` | 74 | 892 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
 | `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 379 | 5391 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
@@ -18,7 +18,7 @@ Use this as the quick map before opening large proof files.
 
 - Root imports `GaloisForLFunctions.MainTheorems`: **yes**.
 - Package-level declarations outside the five theorem areas: **466**.
-- Active proof-debt findings: **2**.
+- Active proof-debt findings: **0**.
 
 ## Local Commands
 
@@ -42,7 +42,7 @@ Use this as the quick map before opening large proof files.
 | 3722 | `formal/GaloisForLFunctions/Bottcher/DeckAnnulusData.lean` |
 | 3711 | `formal/GaloisForLFunctions/HTGeometry/GammaDifferentialFE.lean` |
 | 3644 | `formal/GaloisForLFunctions/U0/U0SliceViableB.lean` |
-| 3603 | `formal/GaloisForLFunctions/RHTower.lean` |
+| 3606 | `formal/GaloisForLFunctions/RHTower.lean` |
 | 3594 | `formal/GaloisForLFunctions/Bottcher/HDiscLoopDeck.lean` |
 | 3468 | `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean` |
-| 2804 | `formal/GaloisForLFunctions/HTGeometry.lean` |
+| 2808 | `formal/GaloisForLFunctions/HTGeometry.lean` |

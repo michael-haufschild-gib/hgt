@@ -2594,3 +2594,47 @@ A recurring Lean pitfall, now hit twice this session: naming a lemma `Foo.congr'
 lemma being defined, and the declaration fails as a non-terminating recursion.  Use a snake_case
 free function name (`hasObserverActionRegime_congr`) when the body needs the underlying
 `Filter.Tendsto.congr'`.
+
+### `BinaryNaturalOperation.Natural`: the classification, as an equivalence
+
+The bare-source no-go proves that a binary operation natural under every map of bare types must be
+a coordinate projection, and concludes that no such operation is commutative.  The *converse* — that
+the projections are natural — was never recorded, so the naturality interface had no producer and
+the no-go quantified over a class never shown to be nonempty.
+
+`HTGeometry/BinaryNaturalOperationClassification.lean` (built, registered, axioms clean; two of its
+theorems need only `Quot.sound`):
+
+* `binaryFirstProjection_natural`, `binarySecondProjection_natural` — both projections are natural,
+  by `rfl`;
+* `binaryFirstProjection_ne_binarySecondProjection` — and they are distinct, evaluated on `Bool` at
+  `(false, true)`;
+* **`binaryNaturalOperation_natural_iff`** — hence the classification is an *equivalence*, not just
+  an implication, and `setOf_binaryNaturalOperation_natural` states it as a set equality: the
+  natural binary operations are exactly `{π₁, π₂}`;
+* **`binaryNaturalOperation_witnesses`** — so the non-commutativity no-go has exactly two witnesses,
+  and is not vacuous.
+
+### `TriangleRelabelInvariantReporter`: invariants exist, and the descent applies
+
+The quadratic-witness descent assumes a scalar reporter blind to every relabeling of the unlabeled
+triangle; nothing produced one, so the descent had no instance.
+`HTGeometry/TriangleRelabelInvariantWitness.lean` (built, registered, axioms clean):
+
+* `triangleRelabelInvariantReporter_const`, `..._trace`, `..._det` — constants, the trace and the
+  determinant are invariant.  Relabeling is the symmetric submatrix reindexing
+  `c ↦ c.submatrix σ⁻¹ σ⁻¹`, so determinant invariance is exactly
+  `Matrix.det_submatrix_equiv_self`;
+* **`triangleRelabelInvariantReporter_sumEntries`** — and so is *every* entrywise sum
+  `∑_{i,j} φ (c i j)`, for an arbitrary `φ`, since relabeling only permutes the index pairs.  This
+  is the general producer;
+* `.add`, `.mul`, `.comp` — invariance is closed under sums, products and post-composition;
+* `triangleSquareSumReport` with `differentiable_triangleResidualReport_squareSum` and
+  **`exists_entire_squareFactor_triangleSquareSumReport`** — the entrywise square sum is an
+  invariant reporter whose orientation restriction is entire and non-constant, so the descent
+  theorem applies to it and returns an explicit entire square factor.  The descent is therefore not
+  vacuous, and not confined to reporters that restrict to constants.
+
+Note on the trace and determinant: both are invariant, but on the orientation residual `a · C` they
+restrict to `0` (the cycle is traceless and singular), so neither witnesses a non-constant descent.
+The entrywise square sum does, which is why it is the exhibited witness.

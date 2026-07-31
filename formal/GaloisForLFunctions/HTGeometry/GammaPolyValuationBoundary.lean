@@ -77,7 +77,6 @@ theorem tendsto_pow_mul_Gamma_pow {σ : ℝ} (hσ : 0 < σ) (n k : ℕ) (hk : 0 
       _ = ((σ + 1) ^ n * (Real.Gamma σ ^ j * Real.Gamma (σ + (n + 1 : ℕ)))) / t := by
           rw [mul_pow, pow_succ]
           field_simp
-          ring
   · exact tendsto_const_nhds.div_atTop tendsto_id
 
 /-- The reciprocal of a positive power of `s` vanishes on a vertical line. -/
@@ -207,7 +206,6 @@ theorem gammaRationalDatum_polyRatio_tendsto_zero_of_gap
   simp only [GammaRationalDatum.fn, GammaRationalDatum.num, GammaRationalDatum.den]
   rw [hfac]
   field_simp
-  ring
 
 /-- **At equal Gamma valuation the `s` exponents decide (eq. 26, second clause).**  With the same
 Gamma valuation, a strictly smaller power of `s` in the numerator sends the normalized ratio to
@@ -238,7 +236,6 @@ theorem gammaRationalDatum_polyRatio_tendsto_zero_of_sPow
     linarith
   rw [polyFn_ratio_eq, hd.1, pow_add]
   field_simp
-  ring
 
 /-- **Equal Gamma valuation and equal `s` power give the residue quotient.** -/
 theorem gammaRationalDatum_polyRatio_tendsto_residue

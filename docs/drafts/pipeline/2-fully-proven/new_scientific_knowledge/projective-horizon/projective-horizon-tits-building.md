@@ -376,8 +376,31 @@ differential genericity itself, rather than assuming it:
   `mathcal H_(ker e_i^*)` and the observer fixed field `mathcal I_({e_i^*})` are **equal**.  This
   is `(3)` in full.
 
-What remains is the Rosenlicht transcendence-degree count `(11)` and the field-level injectivity of
-`S |-> mathcal I_S` that it supplies; the group-level injectivity is already proved.  Neither is represented by an assumption.
+`formal/GaloisForLFunctions/HTGeometry/ProjectiveHorizonFieldSeparation.lean` attacks the
+injectivity of `(10)` at the field level, without Rosenlicht:
+
+- `freeCoordinate_mem_horizonField_self`: the homogeneous jet coordinate `X_(i,l)` is invariant
+  under the observer group of `ker e_i^*`, because every generating transvection has column `i` and
+  therefore leaves row `i` standard;
+- `freeCoordinate_notMem_horizonField_of_ne`: it is moved by the observer group of any other
+  elementary span, since the transvection with row `i` and column `j` subtracts `X_(j,l)`;
+- `horizonField_singleton_injective`: **distinct elementary covector spans have distinct horizon
+  fields**;
+- `horizonField_injective_of_ne_insert`: full injectivity of `S |-> mathcal I_S` follows from the
+  single statement that adding one missing direction always changes the horizon field, the
+  reduction running through the span-to-intersection law `(9)`.
+
+What remains for `(10)` is that one-step strictness for spans of rank at least two.  Its concrete
+route, which avoids Rosenlicht entirely, is the rank-`r` jet determinant
+
+```text
+W_t = det (X_(m,l))_(m in t, l<r),   r = |t|.
+```
+
+Rows indexed by `t` transform under `G_t` by the `t`-block of the inverse matrix, which has
+determinant one and no entries outside `t`, so `W_t` is `G_t`-invariant; and the transvection with
+row `m_0 in t` and column `i` outside `t` replaces one row and changes it by a nonzero modified
+determinant.  The Rosenlicht transcendence-degree count `(11)` itself remains separate.  Neither is represented by an assumption.
 
 ## RH impact audit
 
@@ -410,8 +433,10 @@ so this currently gives neither a zero-free region nor a critical-line implicati
       proved for the universal model
 - [x] 2 -> 3j: the free-jet identification of the chart field, the intertwining of the chart
       unipotent action with coordinate translations, and hence `(3)` in full
-- [ ] 2 -> 3k: the Rosenlicht transcendence-degree count `(11)` and the field-level injectivity of
-      `S |-> mathcal I_S`
+- [x] 2 -> 3k: elementary separation of horizon fields, and the reduction of full injectivity to
+      one-step strictness
+- [ ] 2 -> 3l: one-step strictness for spans of rank at least two, via the rank-`r` jet
+      determinant; and the Rosenlicht transcendence-degree count `(11)`
 - [ ] 3 -> 4: specialist audit in projective differential invariants and building theory
 
 ## References
@@ -450,3 +475,5 @@ so this currently gives neither a zero-free region nor a critical-line implicati
 - 2026-07-31 — embedded the free chart model onto the chart field, intertwined the chart unipotent
   action with independent coordinate translations, and closed `(3)`: inside the chart field the
   derivative horizon and the observer fixed field are equal.
+- 2026-07-31 — separated the horizon fields of distinct elementary spans by an explicit jet
+  coordinate, and reduced full injectivity of `S |-> mathcal I_S` to one-step strictness.

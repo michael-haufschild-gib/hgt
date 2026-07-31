@@ -709,6 +709,22 @@ modulus at least `t`, converts the Euler bound at abscissa `σ+k` into
 `‖Γ(σ+it)‖ ≤ Γ(σ+k)/t^k` for **every** `k` (`norm_Gamma_vertical_le_pow`); consequently
 `t^n Γ(σ+it) → 0` for every `n` (`Gamma_vertical_tendsto_zero_mul_pow`).
 
+`formal/GaloisForLFunctions/HTGeometry/GammaPolyValuationBoundary.lean` formalizes the **lexicographic
+ordering (26)** on the `s`-monomial weighted part of `ℂ(s)(Γ)`, i.e. on coefficients `s^a·P(Γ)/Q(Γ)`.
+`tendsto_pow_mul_Gamma_pow` is the load-bearing fact — on a vertical line of positive abscissa,
+`s^n Γ(s)^k → 0` for every `n` and every `k ≥ 1` — so the Gamma direction beats the polynomial
+direction outright.  The three clauses of (26) are then theorems:
+
+- `gammaRationalDatum_polyRatio_tendsto_zero_of_gap`: a strictly larger Gamma valuation in the
+  numerator sends the normalized ratio to `0` whatever powers of `s` accompany it;
+- `gammaRationalDatum_polyRatio_tendsto_zero_of_sPow`: at equal Gamma valuation, the smaller power of
+  `s` in the numerator sends it to `0`;
+- `gammaRationalDatum_polyRatio_tendsto_residue`: at equal Gamma valuation and equal `s` power the
+  limit is the residue quotient.
+
+`gammaRationalDatum_ratio_vertical_tendsto` is the vertical-line form of the `ℂ(Γ)` boundary used
+throughout, and `tendsto_inv_pow_vertical` supplies the monomial comparison.
+
 `formal/GaloisForLFunctions/HTGeometry/IsometricRecurrence.lean` abstracts the recurrence to any
 relatively-compact isometric `ℝ`-action (`isometricAction_recurrence`, `isometricAction_return_seq`),
 so it instantiates both to `ℝ →ᵇ ℂ` and to vertical translation of holomorphic functions on a strip.
