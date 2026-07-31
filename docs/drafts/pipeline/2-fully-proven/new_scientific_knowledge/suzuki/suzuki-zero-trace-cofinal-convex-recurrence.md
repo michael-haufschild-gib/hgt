@@ -8,7 +8,8 @@
 - **Formal modules (in progress):**
   `formal/GaloisForLFunctions/HTGeometry/CofinalConvexRecurrence.lean`;
   `formal/GaloisForLFunctions/HTGeometry/WaveTraceSpectrum.lean`;
-  `formal/GaloisForLFunctions/HTGeometry/WaveTraceConvexRecurrence.lean`
+  `formal/GaloisForLFunctions/HTGeometry/WaveTraceConvexRecurrence.lean`;
+  `formal/GaloisForLFunctions/HTGeometry/WaveTraceLaplace.lean`
 - **Statement:** Every finite vector of odd inverse-power Xi-zero traces has the origin in the
   interior of the closed convex hull of each cofinal tail; equivalently, finitely many arbitrarily
   late apertures support a positive quadrature annihilating the whole vector exactly.
@@ -332,12 +333,23 @@ uniform horizontal width, and summable inverse squares `(U1)`.
   of every nonzero polynomial weight) the full conclusion follows — at most `K + 1` distinct
   later times with positive probability weights annihilating `H_1, ..., H_K` exactly.
 
+### Elementary Laplace kernel — `HTGeometry/WaveTraceLaplace.lean`
+
+- `sin_mul_exp_eq`, `integrableOn_sin_mul_exp` : the damped sine of a complex frequency splits
+  into two decaying exponentials and is integrable on `(0, ∞)` whenever `|Im gamma| < Re s`.
+- `sq_add_sq_ne_zero` : on that half-plane the resolvent denominator `s ^ 2 + gamma ^ 2` does
+  not vanish, because `s = ± i gamma` would force `Re s = ∓ Im gamma`.
+- `integral_sin_mul_exp` : the exact kernel
+  `∫₀^∞ sin (gamma t) e^{-s t} dt = gamma / (s ^ 2 + gamma ^ 2)`, the single-frequency case of
+  `(U4)`.
+
 ### Remaining formal work
 
 The single analytic input still to be formalized is the Landau half of Section 3: eventual
 one-sidedness of a nonzero wave trace forces a purely imaginary active edge frequency, hence
 `CofinalWaveSignEscape` holds whenever the spectrum contains no purely imaginary frequency.
-The corpus already owns the continuous Landau engine
-(`RHTower/LandauIntegralTransfer.lean`, `landau_complexMGF_integrable_transfer`); what remains
-is the Laplace-transform identity `(U4)` for the wave trace and the genuine-pole argument at
-the convergence abscissa.
+The remaining steps are termwise integration of `(U4)` against the polynomial weight,
+meromorphic continuation of the resulting active-pole sum (tail terms are `O(|gamma|^{-4})`,
+hence locally uniformly convergent off the pole set), the genuine-pole argument at the
+convergence abscissa, and the transfer through the corpus's continuous Landau engine
+`RHTower/LandauIntegralTransfer.lean` (`landau_complexMGF_integrable_transfer`).
