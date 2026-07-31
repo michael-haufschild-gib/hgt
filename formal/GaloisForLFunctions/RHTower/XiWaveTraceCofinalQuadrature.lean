@@ -48,13 +48,16 @@ theorem im_xiSpectralPointSupport (ρ : XiDivisorSupport) :
 /-- The Xi zero ordinates as an admissible wave spectrum. -/
 def xiWaveSpectrum : WaveSpectrum XiDivisorSupport where
   gamma := xiSpectralPointSupport
-  invol := fun ρ => ⟨1 - (starRingEnd ℂ) (ρ : ℂ), mem_xi_divisor_support_of_eq_zero (by
-    rw [xi_one_sub, xi_conj, xi_eq_zero_of_mem_divisor_support ρ, map_zero])⟩
-  invol_invol := by
-    intro ρ
-    apply Subtype.ext
-    simp only [map_sub, map_one, Complex.conj_conj]
-    ring
+  invol := Function.Involutive.toPerm
+    (fun ρ : XiDivisorSupport => (⟨1 - (starRingEnd ℂ) (ρ : ℂ),
+      mem_xi_divisor_support_of_eq_zero (by
+        rw [xi_one_sub, xi_conj, xi_eq_zero_of_mem_divisor_support ρ, map_zero])⟩ :
+        XiDivisorSupport))
+    (by
+      intro ρ
+      apply Subtype.ext
+      simp only [map_sub, map_one, Complex.conj_conj]
+      ring)
   gamma_invol := by
     intro ρ
     show ((1 - (starRingEnd ℂ) (ρ : ℂ)) - 1 / 2) * (-Complex.I) =

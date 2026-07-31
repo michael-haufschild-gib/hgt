@@ -26,7 +26,10 @@ mean curvature.
 
 - [x] 0 -> 1 in-progress: source-pure exact statement, transform attack, hostile alternatives
 - [x] 1 -> 2 fully-proven: complete Landau paper proof, exact normalization and boundary regularity audited
-- [ ] 2 -> 3 formalized: Lean theorem, final module build, axiom audit, lint
+- [x] 2 -> 3 formalized (analytic core, Sections 3--4): `xiScrewPrimitive_cofinal_sign_change`
+      proved unconditionally; module build, axiom audit, and lint pass
+- [ ] 2 -> 3 formalized (Section 1 bookkeeping): `c_Xi = -sum 1/gamma^2` and termwise
+      integration, transferring the sign change to the literal screw average
 - [ ] 3 -> 4 publication-ready: standalone theorem + proof + novelty audit
 
 ## Competing hypotheses
@@ -285,6 +288,48 @@ Primary-source audit:
 - Targeted searches for screw-function Cesaro/mean crossings found no parent statement.
 
 Priority remains **unverified**, not claimed as literature-certified novelty.
+
+## Lean status
+
+- **Formal modules:**
+  `formal/GaloisForLFunctions/RHTower/SuzukiScrewCesaroCurvatureRecurrence.lean` (consumer layers);
+  `formal/GaloisForLFunctions/RHTower/SuzukiScrewCesaroLandauRecurrence.lean` (analytic core).
+
+### The analytic core is closed
+
+Sections 3--4 of the proof -- the exact convergence abscissa and the missing real boundary
+singularity, i.e. the Landau half -- are now formalized unconditionally.  They arrive as the
+constant-weight case of the universal wave-trace recurrence built for
+`suzuki-zero-trace-cofinal-convex-recurrence.md`.
+
+- `xiCopyWaveSpectrum` : the Xi zero ordinates **counted with analytic multiplicity** as an
+  admissible wave spectrum.  Conjugation stability is `xiSpectralPoint_lineConj` (critical-line
+  reflection is ordinary conjugation in centered coordinates); the reciprocal-square condition
+  is the corpus's multiplicity-copy summability `xiSpectralPoint_inv_sq_summable`; the lower
+  modulus bound, horizontal width `1/2`, local finiteness, absence of a purely imaginary
+  ordinate and infinitude of the distinct squares all factor through the support spectrum.
+- `xiCopyWaveSpectrum_waveTrace_one` : the constant weight `P = 1` gives exactly
+  `∑_gamma sin (gamma A) / gamma ^ 3`, which is equation `(4)`.
+- `xiScrewPrimitive_cofinal_sign_change` : **no hypotheses.**  For every aperture bound there
+  are strictly larger apertures at which that primitive is negative and at which it is
+  positive.  This is `(11)`.
+
+The three hostile tests that bear on this half are discharged structurally rather than by
+hand: `delta = 0` needs no separate treatment because the abscissa march never inspects the
+supremum; no attainment of `delta` is used, since the pole-free strip comes from a uniform
+real-part gap; and pole cancellation is impossible because the coefficient of a resolvent term
+depends on the frequency only through its square, so every frequency of a common square fibre
+contributes the identical term.
+
+### What remains
+
+Only the bookkeeping of Section 1, connecting `(4)` to the literal screw objects:
+`c_Xi = -sum 1/gamma^2` (the centered Hadamard second-jet identity `(2)`), the resulting
+`g(t) - c_Xi = sum cos(gamma t)/gamma^2` from the corpus definition `xiScrewDivisor`, and
+termwise integration to `(4)`.  Once those are in place the sign change transfers verbatim to
+`suzukiCurvatureCenteredPrimitive xiSuzukiScrewProfile c_Xi` and, through the existing
+`cofinallyCrosses_suzukiScrewCesaroMean_iff_centeredPrimitive`, to the Cesaro-average crossing
+statement itself.
 
 ## Log
 

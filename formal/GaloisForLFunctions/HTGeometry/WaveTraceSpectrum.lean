@@ -67,9 +67,8 @@ squares. -/
 structure WaveSpectrum (G : Type*) where
   /-- The frequencies. -/
   gamma : G → ℂ
-  /-- Index involution realizing complex conjugation of frequencies. -/
-  invol : G → G
-  invol_invol : ∀ g, invol (invol g) = g
+  /-- Index symmetry realizing complex conjugation of frequencies. -/
+  invol : G ≃ G
   gamma_invol : ∀ g, gamma (invol g) = (starRingEnd ℂ) (gamma g)
   /-- Uniform lower bound on the modulus. -/
   lower : ℝ
@@ -196,7 +195,7 @@ theorem conj_waveTrace (P : Polynomial ℝ) (t : ℝ) :
       (S.summable_traceTerm P t))
   rw [waveTrace, hmap]
   simp_rw [S.conj_traceTerm P t]
-  exact (Function.Involutive.toPerm S.invol S.invol_invol).tsum_eq _
+  exact S.invol.tsum_eq _
 
 theorem waveTrace_im (P : Polynomial ℝ) (t : ℝ) : (S.waveTrace P t).im = 0 := by
   have h := S.conj_waveTrace P t
