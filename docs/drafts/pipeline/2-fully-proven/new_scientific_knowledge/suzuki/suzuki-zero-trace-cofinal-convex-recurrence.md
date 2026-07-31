@@ -3,7 +3,8 @@
 - **ID:** `suzuki-zero-trace-cofinal-convex-recurrence`
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM (paper) / PUBLICATION LANE
-- **Scientific status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED] [NOT AN RH PROOF]`
+- **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [UNCONDITIONAL] [NOVELTY UNVERIFIED]`
+  `[NOT AN RH PROOF]`
 - **Source:** `suzuki-screw-cesaro-curvature-recurrence.md`; Suzuki's Xi screw function and zero expansion
 - **Formal modules (in progress):**
   `formal/GaloisForLFunctions/HTGeometry/CofinalConvexRecurrence.lean`;
@@ -12,7 +13,8 @@
   `formal/GaloisForLFunctions/HTGeometry/WaveTraceLaplace.lean`;
   `formal/GaloisForLFunctions/HTGeometry/WaveTracePoleTransform.lean`;
   `formal/GaloisForLFunctions/HTGeometry/WaveTracePoleDivergence.lean`;
-  `formal/GaloisForLFunctions/RHTower/WaveTraceLandauRecurrence.lean`
+  `formal/GaloisForLFunctions/RHTower/WaveTraceLandauRecurrence.lean`;
+  `formal/GaloisForLFunctions/RHTower/XiWaveTraceCofinalQuadrature.lean`
 - **Statement:** Every finite vector of odd inverse-power Xi-zero traces has the origin in the
   interior of the closed convex hull of each cofinal tail; equivalently, finitely many arbitrarily
   late apertures support a positive quadrature annihilating the whole vector exactly.
@@ -31,9 +33,10 @@ spectral information.
 - [x] 0 -> 1 in-progress: exact source-pure conjecture and Landau/separation attack identified
 - [x] 1 -> 2 fully-proven: convergence, active-pole, scalar half-space escape, convex separation,
       and finite positive quadrature proofs dependency-closed
-- [x] 2 -> 3 formalized (universal theorem): `exists_cofinal_positive_quadrature_of_no_imaginary`
-      proved unconditionally; targeted module build, axiom audit, and lint pass
-- [ ] 2 -> 3 formalized (Xi instantiation): supply the four divisor hypotheses for `XiC`
+- [x] 2 -> 3 formalized: universal theorem
+      (`exists_cofinal_positive_quadrature_of_no_imaginary`) and Xi specialization
+      (`exists_cofinal_positive_quadrature_xiWaveTrace`, hypothesis-free) proved
+      unconditionally; targeted module build, axiom audit, and lint pass
 - [ ] 3 -> 4 publication-ready: standalone theoretical paper, primary-source novelty audit, and
       reproducible Lean certificate
 
@@ -457,11 +460,34 @@ needed (it is what makes the trace real); the sign symmetry is not, because
 `{g : gamma_g ^ 2 = gamma_0 ^ 2}` whether or not `-gamma_0` is present in the family.  The
 universal theorem therefore holds under strictly weaker hypotheses than `(U1)` states.
 
-### Remaining formal work
+### Xi--Suzuki specialization — `RHTower/XiWaveTraceCofinalQuadrature.lean`
 
-Only the Xi--Suzuki instantiation.  Its four hypotheses are classical facts about the
-completed zeta divisor rather than new mathematics: local finiteness of the `XiC` divisor,
-infinitude of the distinct squares, summability of the inverse squares, and absence of a
-purely imaginary ordinate (equivalently, no real zero of `zeta` in `(0,1)`).  Each has to be
-supplied from the corpus's Xi analytic layer before the universal theorem can be applied to
-`XiC`.
+`xiWaveSpectrum` presents the centered spectral coordinates
+`gamma_rho = (rho - 1/2) * (-i)` of the Xi divisor as an admissible wave spectrum.  Every field
+comes from the corpus's existing Xi analytic layer, so no new analysis of `zeta` was needed:
+
+- conjugation stability: the involution is `rho ↦ 1 - conj rho`, well defined on the divisor by
+  `xi_one_sub` and `xi_conj`;
+- lower modulus bound: `‖gamma_rho‖ = ‖rho - 1/2‖ ≥ |Im rho| ≥ eta > 0` from
+  `exists_xiDivisorSupport_abs_im_lower_bound`;
+- horizontal width `1/2`: `Im gamma_rho = 1/2 - Re rho` and
+  `xi_divisor_support_re_mem_open_unit`;
+- inverse-square summability `(U1)`: `xi_zero_multiplicity_centered_inv_sq_summable`, after
+  discarding the multiplicities using `xi_divisor_pos_on_support`.
+
+The three remaining hypotheses:
+
+- `xiWaveSpectrum_locallyFinite` : from the locally finite support of the mathlib divisor;
+- `xiWaveSpectrum_re_ne_zero` : `Re gamma_rho = Im rho`, so no ordinate is purely imaginary
+  exactly because the Xi divisor has no real point (`xi_divisor_support_im_ne_zero`).  This is
+  where the card's `[REAL-EDGE TEST]` is discharged on the actual divisor;
+- `xiWaveSpectrum_squares_infinite` : `gamma_rho ^ 2` is the inverse of
+  `xiCentralReciprocalSquare rho`, so `xiCentralReciprocalSquare_range_infinite` transfers.
+
+Conclusions, with no hypotheses whatsoever:
+
+- `exists_cofinal_positive_quadrature_xiWaveTrace (K T)` : **the card's exact conjecture.**  For
+  every order `K` and every lower aperture bound `T` there are at most `K + 1` distinct later
+  times carrying a positive probability law that annihilates `H_1, ..., H_K` exactly.
+- `exists_neg_and_pos_xiWaveTrace` : every nonzero polynomial Xi wave trace assumes both strict
+  signs after every time.
