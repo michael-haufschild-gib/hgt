@@ -12,6 +12,10 @@ translation and an additive constant.  So a face with exactly one surviving para
 theta coordinate, and its translation stabilizer is the theta lattice.
 
 * **`multipleEllipticGammaLogDerivFaceMero_one_surviving`** — the identification;
+* **`meromorphicTranslationStabilizer_thetaLogDerivMero`** — the period group of the theta
+  logarithmic derivative is exactly the integers;
+* **`meromorphicTranslationStabilizer_faceMero_one_surviving`** — hence so is the period group of
+  such a face;
 * **`exists_lattice_of_fix_one_surviving`** — a translation fixing such a face lies in `ℤ + ℤτ`;
 * `faceShiftLattice_eq_zero_of_theta_lattice` — an external lattice vector of that shape vanishes;
 * **`facePacketDisplacementSlice_injective_one_surviving`** — freeness of the displacement
@@ -29,6 +33,11 @@ open Bottcher HTGeometry
 open MatroidGluing MatroidGluing.Rank MatroidGluing.Meromorphic
 
 noncomputable section
+
+attribute [local instance] ellipticGammaRationalBaseDomain
+  ellipticGammaRationalBaseComplexAlgebraMero ellipticGammaRationalBaseComplexDifferential
+  ellipticGammaRationalBaseMeroDifferential ellipticGammaRationalBaseMeroCharZero
+  ellipticGammaRationalBaseComplexDifferentialAlgebra
 
 variable {ι : Type} [Fintype ι] [DecidableEq ι]
 
@@ -70,33 +79,159 @@ theorem multipleEllipticGammaLogDerivFaceMero_one_surviving
     rw [addTranslationMeroEquiv_add, addTranslationMeroEquiv_add, add_comm]
   rw [hcomm, ← map_sub, hface, map_add, addTranslationMeroEquiv_const]
 
+/-! ## The period group of the theta logarithmic derivative -/
+
+theorem meroConst_eq (c : ℂ) :
+    algebraMap (analyticSubring (Set.univ : Set ℂ)) (meroField (Set.univ : Set ℂ))
+        (constToAnalytic Set.univ c) =
+      algebraMap ℂ (meroField (Set.univ : Set ℂ)) c := rfl
+
+/-- Every integer translation fixes the theta logarithmic derivative. -/
+theorem addTranslationMeroEquiv_intCast_thetaLogDeriv (τ : ℂ) (hτ : 0 < τ.im) (m : ℤ) :
+    addTranslationMeroEquiv (m : ℂ) (thetaLogDerivMero τ hτ) = thetaLogDerivMero τ hτ := by
+  have hone : (1 : ℂ) ∈ meromorphicTranslationStabilizer (thetaLogDerivMero τ hτ) := by
+    show addTranslationMeroEquiv (1 : ℂ) (thetaLogDerivMero τ hτ) = _
+    exact addTranslationMeroEquiv_thetaLogDeriv_one τ hτ
+  have hm := AddSubgroup.zsmul_mem
+    (meromorphicTranslationStabilizer (thetaLogDerivMero τ hτ)) hone m
+  rw [show (m : ℤ) • (1 : ℂ) = (m : ℂ) by simp] at hm
+  exact hm
+
+/-- **Integer multiples of the period shift the theta logarithmic derivative by a constant.**
+Iterating the quasi-periodicity relation in both directions. -/
+theorem addTranslationMeroEquiv_intMul_tau_thetaLogDeriv (τ : ℂ) (hτ : 0 < τ.im) (n : ℤ) :
+    addTranslationMeroEquiv ((n : ℂ) * τ) (thetaLogDerivMero τ hτ) =
+      thetaLogDerivMero τ hτ -
+        algebraMap ℂ (meroField (Set.univ : Set ℂ))
+          ((n : ℂ) * (2 * Real.pi * Complex.I)) := by
+  have hstep : ∀ x : ℂ,
+      addTranslationMeroEquiv τ (thetaLogDerivMero τ hτ -
+          algebraMap ℂ (meroField (Set.univ : Set ℂ)) x) =
+        thetaLogDerivMero τ hτ -
+          algebraMap ℂ (meroField (Set.univ : Set ℂ))
+            (x + 2 * Real.pi * Complex.I) := by
+    intro x
+    rw [map_sub, addTranslationMeroEquiv_thetaLogDeriv_tau,
+      addTranslationMeroEquiv_algebraMap_complex_self, meroConst_eq, map_add]
+    ring
+  induction n using Int.induction_on with
+  | zero => simpa using addTranslationMeroEquiv_zero_apply (thetaLogDerivMero τ hτ)
+  | succ k ih =>
+      have harg : (((k : ℤ) + 1 : ℤ) : ℂ) * τ = τ + (((k : ℤ) : ℂ)) * τ := by push_cast; ring
+      rw [harg, ← addTranslationMeroEquiv_add, ih, hstep]
+      congr 2
+      push_cast
+      ring
+  | pred k ih =>
+      have harg : (((-(k : ℤ)) - 1 : ℤ) : ℂ) * τ =
+          (-τ) + (((-(k : ℤ) : ℤ)) : ℂ) * τ := by push_cast; ring
+      have hinv : addTranslationMeroEquiv (-τ) (thetaLogDerivMero τ hτ) =
+          thetaLogDerivMero τ hτ +
+            algebraMap ℂ (meroField (Set.univ : Set ℂ)) (2 * Real.pi * Complex.I) := by
+        apply (addTranslationMeroEquiv τ).injective
+        rw [addTranslationMeroEquiv_add, add_neg_cancel,
+          addTranslationMeroEquiv_zero_apply, map_add,
+          addTranslationMeroEquiv_thetaLogDeriv_tau,
+          addTranslationMeroEquiv_algebraMap_complex_self, meroConst_eq]
+        ring
+      have hstepinv : ∀ x : ℂ,
+          addTranslationMeroEquiv (-τ) (thetaLogDerivMero τ hτ -
+              algebraMap ℂ (meroField (Set.univ : Set ℂ)) x) =
+            thetaLogDerivMero τ hτ -
+              algebraMap ℂ (meroField (Set.univ : Set ℂ))
+                (x - 2 * Real.pi * Complex.I) := by
+        intro x
+        rw [map_sub, hinv, addTranslationMeroEquiv_algebraMap_complex_self, map_sub]
+        ring
+      rw [harg, ← addTranslationMeroEquiv_add, ih, hstepinv]
+      congr 2
+      push_cast
+      ring
+
+/-- **The period group of the theta logarithmic derivative is exactly the integers.**  A period
+lies in the theta lattice because the defect is nonzero off it, and its lattice component in the
+`τ` direction is killed by the quasi-periodicity constant. -/
+theorem meromorphicTranslationStabilizer_thetaLogDerivMero (τ : ℂ) (hτ : 0 < τ.im) :
+    meromorphicTranslationStabilizer (thetaLogDerivMero τ hτ) =
+      AddSubgroup.zmultiples (1 : ℂ) := by
+  ext h
+  constructor
+  · intro hh
+    have hfix : addTranslationMeroEquiv h (thetaLogDerivMero τ hτ) = thetaLogDerivMero τ hτ := hh
+    obtain ⟨m, n, rfl⟩ : ∃ m n : ℤ, h = (m : ℂ) + (n : ℂ) * τ := by
+      by_contra hcon
+      exact thetaLogDerivDefectMero_ne_zero_of_nonlattice (h := h) hτ hcon
+        (by rw [thetaLogDerivDefectMero, hfix, sub_self])
+    have hsplit : addTranslationMeroEquiv ((m : ℂ) + (n : ℂ) * τ) (thetaLogDerivMero τ hτ) =
+        thetaLogDerivMero τ hτ -
+          algebraMap ℂ (meroField (Set.univ : Set ℂ))
+            ((n : ℂ) * (2 * Real.pi * Complex.I)) := by
+      rw [← addTranslationMeroEquiv_add, addTranslationMeroEquiv_intMul_tau_thetaLogDeriv,
+        map_sub, addTranslationMeroEquiv_intCast_thetaLogDeriv,
+        addTranslationMeroEquiv_algebraMap_complex_self]
+    rw [hsplit, sub_eq_self] at hfix
+    have hzero : (n : ℂ) * (2 * Real.pi * Complex.I) = 0 :=
+      (algebraMap ℂ (meroField (Set.univ : Set ℂ))).injective (by simpa using hfix)
+    have hpi : (2 : ℂ) * Real.pi * Complex.I ≠ 0 :=
+      mul_ne_zero (mul_ne_zero two_ne_zero (mod_cast Real.pi_ne_zero)) Complex.I_ne_zero
+    have hn : (n : ℂ) = 0 := by
+      rcases mul_eq_zero.mp hzero with h0 | h0
+      · exact h0
+      · exact absurd h0 hpi
+    have hn0 : n = 0 := by exact_mod_cast hn
+    exact ⟨m, by simp [hn0]⟩
+  · rintro ⟨m, rfl⟩
+    show addTranslationMeroEquiv (m • (1 : ℂ)) (thetaLogDerivMero τ hτ) = _
+    rw [show (m : ℤ) • (1 : ℂ) = (m : ℂ) by simp]
+    exact addTranslationMeroEquiv_intCast_thetaLogDeriv τ hτ m
+
 /-! ## The stabilizer of such a face -/
 
 set_option synthInstance.maxHeartbeats 800000 in
+/-- **A face with one surviving parameter has the same translation stabilizer as the theta
+coordinate of that parameter.**  The face is a translate of the theta coordinate up to a constant,
+and both a translation and a constant shift leave the stabilizer unchanged. -/
+theorem fix_faceMero_one_surviving_iff
+    (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im) (L : Finset ι) {a b : ι}
+    (haL : a ∈ L) (hbL : b ∉ L) (hL : ∀ i, i ∉ L → i = b) {h : ℂ} :
+    addTranslationMeroEquiv h (multipleEllipticGammaLogDerivFaceMero τ hτ L) =
+        multipleEllipticGammaLogDerivFaceMero τ hτ L ↔
+      addTranslationMeroEquiv h (thetaLogDerivMero (τ b) (hτ b)) =
+        thetaLogDerivMero (τ b) (hτ b) := by
+  classical
+  obtain ⟨c, hform⟩ :=
+    multipleEllipticGammaLogDerivFaceMero_one_surviving τ hτ L haL hbL hL
+  rw [hform, map_add, addTranslationMeroEquiv_const, addTranslationMeroEquiv_add,
+    add_comm h (-(1 + τ b) / 2), ← addTranslationMeroEquiv_add]
+  constructor
+  · intro hfix
+    exact (addTranslationMeroEquiv (-(1 + τ b) / 2)).injective (add_right_cancel hfix)
+  · intro hfix
+    rw [hfix]
+
 /-- **A translation fixing a face with one surviving parameter lies in the theta lattice of that
-parameter.**  The face is a translate of the theta coordinate up to a constant, so a fixing
-translation makes the theta defect vanish, which forces a lattice shift. -/
+parameter.** -/
 theorem exists_lattice_of_fix_one_surviving
     (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im) (L : Finset ι) {a b : ι}
     (haL : a ∈ L) (hbL : b ∉ L) (hL : ∀ i, i ∉ L → i = b) {h : ℂ}
     (hfix : addTranslationMeroEquiv h (multipleEllipticGammaLogDerivFaceMero τ hτ L) =
       multipleEllipticGammaLogDerivFaceMero τ hτ L) :
     ∃ m n : ℤ, h = (m : ℂ) + (n : ℂ) * τ b := by
-  classical
-  obtain ⟨c, hform⟩ :=
-    multipleEllipticGammaLogDerivFaceMero_one_surviving τ hτ L haL hbL hL
-  rw [hform, map_add, addTranslationMeroEquiv_const, addTranslationMeroEquiv_add,
-    add_comm h (-(1 + τ b) / 2), ← addTranslationMeroEquiv_add] at hfix
-  have hstep : addTranslationMeroEquiv (-(1 + τ b) / 2)
-        (addTranslationMeroEquiv h (thetaLogDerivMero (τ b) (hτ b))) =
-      addTranslationMeroEquiv (-(1 + τ b) / 2) (thetaLogDerivMero (τ b) (hτ b)) :=
-    add_right_cancel hfix
-  have htheta : addTranslationMeroEquiv h (thetaLogDerivMero (τ b) (hτ b)) =
-      thetaLogDerivMero (τ b) (hτ b) :=
-    (addTranslationMeroEquiv (-(1 + τ b) / 2)).injective hstep
+  have htheta := (fix_faceMero_one_surviving_iff τ hτ L haL hbL hL).mp hfix
   by_contra hcon
   exact thetaLogDerivDefectMero_ne_zero_of_nonlattice (h := h) (hτ b) hcon
     (by rw [thetaLogDerivDefectMero, htheta, sub_self])
+
+/-- **The period group of a face with one surviving parameter is exactly the integers.**  It equals
+the period group of the theta coordinate of the surviving parameter. -/
+theorem meromorphicTranslationStabilizer_faceMero_one_surviving
+    (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im) (L : Finset ι) {a b : ι}
+    (haL : a ∈ L) (hbL : b ∉ L) (hL : ∀ i, i ∉ L → i = b) :
+    meromorphicTranslationStabilizer (multipleEllipticGammaLogDerivFaceMero τ hτ L) =
+      AddSubgroup.zmultiples (1 : ℂ) := by
+  rw [← meromorphicTranslationStabilizer_thetaLogDerivMero (τ b) (hτ b)]
+  ext h
+  exact fix_faceMero_one_surviving_iff τ hτ L haL hbL hL
 
 /-! ## Clearing an external lattice vector against the theta lattice -/
 
@@ -246,11 +381,6 @@ theorem facePacketDisplacementSlice_injective_iff
       rw [faceShiftLattice_empty τ hmem, addTranslationMeroEquiv_zero_apply]
 
 /-! ## The descending face-lifting lemma without its freeness and period premises -/
-
-attribute [local instance] ellipticGammaRationalBaseDomain
-  ellipticGammaRationalBaseComplexAlgebraMero ellipticGammaRationalBaseComplexDifferential
-  ellipticGammaRationalBaseMeroDifferential ellipticGammaRationalBaseMeroCharZero
-  ellipticGammaRationalBaseComplexDifferentialAlgebra
 
 set_option synthInstance.maxHeartbeats 800000 in
 /-- **Descending face-lifting with only its inductive premise left.**  For an integrally

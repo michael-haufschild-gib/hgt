@@ -212,3 +212,29 @@ remains are the genuinely analytic star inputs (`hfree`, `hStarInj`, `hOffDA`).
 - 2026-07-31 (later) — `HTGeometry/FaceOneSurvivingTheta.lean` created and registered in the
   `HTGeometry` umbrella; `lake env lean` clean, `lake build` of the module green, `#print axioms` on
   all seven capstones `[propext, Classical.choice, Quot.sound]`.
+
+## Spin-off: the exact independence threshold
+
+`HTGeometry/FaceIndependenceDichotomy.lean` — with the terminal and one-surviving faces now
+described exactly, the two halves of the face analysis close into an equivalence:
+`hypertranscendentalOver_facePacket_iff`, `diffIndepOn_multipleEllipticGammaFacePacket_iff`, and
+`diffIndepOn_facePacketUnion_iff` (a family of face packets is jointly differentially independent
+over the constants iff every face in it retains at least two periods).  Axioms clean.
+
+## The named open core, proved in full
+
+`Per(Ψ_L) = ℤ` for a face with exactly one surviving parameter is now a theorem, not just the
+containment the freeness argument needed.  In `HTGeometry/FaceOneSurvivingTheta.lean`:
+
+* `addTranslationMeroEquiv_intCast_thetaLogDeriv` — `ℤ ⊆ Per(thetaLogDerivMero τ)`;
+* **`addTranslationMeroEquiv_intMul_tau_thetaLogDeriv`** — `T_{nτ} Ψ_θ = Ψ_θ − 2πi n` for every
+  integer `n`, by induction in both directions on the corpus quasi-periodicity
+  `addTranslationMeroEquiv_thetaLogDeriv_tau`;
+* **`meromorphicTranslationStabilizer_thetaLogDerivMero`** —
+  `Per(thetaLogDerivMero τ) = AddSubgroup.zmultiples 1`.  A period lies in `ℤ + ℤτ` because the
+  defect is nonzero off the lattice, and its `τ`-component dies against the nonzero constant `2πi`;
+* `fix_faceMero_one_surviving_iff` — a face with one surviving parameter has *the same* stabilizer
+  as the theta coordinate of that parameter (translation and constant shift do not move it);
+* **`meromorphicTranslationStabilizer_faceMero_one_surviving`** — hence `Per(Ψ_L) = ℤ` exactly.
+
+`#print axioms` on all: `[propext, Classical.choice, Quot.sound]`.

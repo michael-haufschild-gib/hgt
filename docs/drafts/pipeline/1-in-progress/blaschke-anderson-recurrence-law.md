@@ -409,15 +409,24 @@ The corpus also contains the anisotropic constructive recurrence ceiling in
 `ProjectiveWeightedCoherenceCeiling.lean`.  This removes the apparent
 factor-two loss produced by uniform phase resolution: the upper deadline
 pays the same water entropy as the early-hit obstruction, plus only a cost
-linear in active depth.  Its countable-head composition and Blaschke
-specialization remain to be proved here.
+linear in active depth.  Its countable-head composition is now proved in
+`SummableWeightedHeadEntropyCeiling.lean`: finite-head coherence implies
+full countable coherence with exact defect
+\(m\eta+2\,\mathrm{tail}\), and every normalized-head canonical
+water-entropy deadline becomes a complete countable deadline.
+
+The exact Blaschke active-head identity and probability specialization are
+proved in `BlaschkeLocalizedInfinitePhaseQuantile.lean`.  At water level
+\(e^L\), active-head water entropy equals
+`blaschkeDepthWaterEntropy a L` exactly, and the full countable early-hit
+probability pays that exact exponent.
 
 Direct foreground Lean checks pass. `#print axioms` for audited new
 load-bearing theorems reports only `propext`, `Classical.choice`, and
 `Quot.sound`.
 
-Operator construction, anisotropic counting, the Blaschke specialization of
-both probability and constructive bounds, Borel--Cantelli interpolation,
-and the almost-sure first-return asymptotic remain Lean-open.
+Operator construction, anisotropic counting, the Blaschke asymptotic
+specialization of the canonical constructive ceiling, Borel--Cantelli
+interpolation, and the almost-sure first-return asymptotic remain Lean-open.
 Nothing beyond the listed proved claims is manuscript-authorized until
 formalized. Manuscript must not mention the formalization.

@@ -100,7 +100,7 @@ def analyticGermPullback {Ψ : E' → E} {q : E'} {p : E} (hΨ : AnalyticAt ℂ 
       rintro ⟨-, f, hf, rfl⟩
       refine ⟨f ∘ Ψ, ?_, ?_⟩
       · exact (hq ▸ hf : AnalyticAt ℂ f (Ψ q)).comp hΨ
-      · exact (germPullbackHom_coe _ f).symm)
+      · exact (germPullbackHom_coe (tendsto_of_analyticAt hΨ hq) f).symm)
 
 @[simp]
 theorem analyticGermPullback_val {Ψ : E' → E} {q : E'} {p : E} (hΨ : AnalyticAt ℂ Ψ q)

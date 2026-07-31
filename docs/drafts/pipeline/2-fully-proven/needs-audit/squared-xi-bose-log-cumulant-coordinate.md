@@ -3,7 +3,9 @@
 - **ID:** squared-xi-bose-log-cumulant-coordinate
 - **Stage:** 2-fully-proven / needs-audit
 - **Type:** THEOREM (paper) / cancellation-preserving source coordinate
-- **Scientific status:** `[PROVED HERE] [NOVELTY UNAUDITED] [NOT FORMALIZED]`
+- **Scientific status:** `[PROVED HERE] [NOVELTY UNAUDITED]`
+  `[MELLIN COORDINATE, POLE-FILLED ZETA, XI FACTORIZATION AND STRICT LOG-CONCAVITY FORMALIZED,`
+  `AXIOMS CLEAN; JET/CUMULANT LAYER IN PROGRESS]`
 - **Parents:** `squared-xi-radial-jet-reverse-bessel-source-alignment.md`; the classical Mellin integral for `Gamma(s) zeta(s)`
 - **Statement:** On the live absolute-Euler ray, every completed Xi jet is an exact difference between cumulants of a strictly log-concave Bose-log distribution and half-Gamma polygamma cumulants, with the polar term already absorbed.
 
@@ -133,13 +135,78 @@ reverse-Bessel cumulant functional strictly.  The sign must be established,
 not inferred from log-concavity alone; ordinary log-concavity has no fixed
 sign for cumulants of order three and above.
 
+## Order-fourteen status update
+
+The `[CONJECTURE]` above is settled, in the RH-compatible direction and without any transport
+inequality.  `../3-formalized/squared-xi-low-order-complete-monotonicity-protected.md` proves
+unconditionally in Lean that `(-1)^n g^(n) y > 0` for every `y > 0` and every `n <= 18`, so
+`Q_14(w) > 0` everywhere on the absolute Euler ray and the order-fourteen certificate cannot exist.
+The live compact order for this coordinate is therefore nineteen, not fourteen.
+
 ## Gates
 
 - [x] exact Mellin probability representation
 - [x] pole-filled Xi factorization
 - [x] all completed jets expressed as cumulant differences
 - [x] strict log-concavity and independent Gamma/Zipf factorization
-- [ ] find a transport order strong enough for the order-fourteen functional
-- [ ] prove the resulting strict sign, whichever direction it has
-- [ ] formalize only the source-bearing inequality and its Xi endpoint
+- [x] find a transport order strong enough for the order-fourteen functional — superseded: the
+  order-fourteen sign is proved directly, with no transport inequality
+- [x] prove the resulting strict sign, whichever direction it has — it is strictly positive
+- [x] formalize the Mellin coordinate `M a = Gamma (a+1) zeta (a+1)`, the pole-filled zeta
+  coordinate, the completed-Xi factorization, and strict log-concavity
+- [ ] formalize the cumulant jet identities `(5)`–`(6)` and the Gamma/Zipf factorization
+  `(10)`–`(12)`
+
+## Lean status
+
+Axioms `[propext, Classical.choice, Quot.sound]` throughout.
+
+### `GaloisForLFunctions/RHTower/BoseMellinCoordinate.lean`
+
+- `realZetaSeries`, `summable_realZetaTerm`, `ofReal_realZetaSeries`, `one_le_realZetaSeries` —
+  the zeta Dirichlet series as a real number at a real abscissa above one.
+- `hasSum_boseKernel` — the geometric expansion `1/(exp t - 1) = sum_{n>=1} exp (-n t)` on `t > 0`.
+- `boseMellin` — the coordinate `M a = ∫_0^∞ t^a/(exp t - 1) dt`.
+- **`ofReal_boseMellin`** — equation `(1)`: `M a = Gamma (a+1) * zeta (a+1)`.  Proved through
+  mathlib's `hasSum_mellin`, which supplies the termwise integration from the geometric expansion
+  and the summability of `Gamma (a+1)/(n+1)^(a+1)`; no separate interchange argument is needed.
+- `boseMellin_eq`, `boseMellin_pos` — the real form and strict positivity.
+- **`realZetaSeries_mul_gamma`, `ofReal_poleFilled_zeta`** — equation `(7)`:
+  `(s-1) zeta s = M (s-1)/Gamma (s-1)`; the pole sits inside the Mellin normalization.
+- `xi_real_factor_identity`, **`xi_ofReal_one_add_eq_boseMellin`** — equation `(4)`:
+  `xi (1+a) = (1+a) 2^(-a) pi^(-a/2) M a / Gamma (a/2)`, from Legendre duplication
+  `Gamma (a/2) Gamma ((a+1)/2) = Gamma a 2^(1-a) sqrt pi`.
+
+### `GaloisForLFunctions/HTGeometry/BoseLogConcavity.lean`
+
+- `boseGrowth`, `boseGrowthDeriv`, `hasDerivAt_boseGrowth` — the growth factor `g t = t/(1-e^{-t})`
+  and its closed-form derivative.
+- **`boseGrowthDeriv_pos`** — `g' > 0` on `t > 0`, from the single inequality `exp t > 1 + t`;
+  `strictMonoOn_boseGrowth`.
+- `boseLogDensity`, `boseLogScore`, `hasDerivAt_boseLogDensity` — equation `(8)` and its score
+  `(a+1) - g (exp X)`.
+- **`hasDerivAt_boseLogScore`, `boseLogCurvature_neg`** — equation `(9)`: the exact curvature
+  `-t g' t` at `t = exp X`, strictly negative.
+- **`strictConcaveOn_boseLogDensity`** — strict log-concavity of the Bose-log law on all of `ℝ`,
+  for every shift `a`.
+
+### Remaining
+
+Equations `(5)`–`(6)` and `(10)`–`(12)` are iterated-derivative statements.  Their only missing
+input is a local iterated-derivative calculus on an open ray: smoothness of `log Gamma`,
+`log zeta` and `log M` there (all three real-analytic, since the complex functions are holomorphic
+away from their poles) together with additivity of `iteratedDeriv` for locally smooth summands.
+With that, `(5)`–`(6)` are the `(j+1)`-fold derivative of the logarithm of `(4)`, and `(11)`–`(12)`
+are the `r`-fold derivative of `log M a = log Gamma (a+1) + log zeta (a+1)` combined with the
+von Mangoldt Dirichlet series for `-zeta'/zeta`.
+
+## Log
+
+- 2026-07-31 — Formalized the Mellin coordinate layer.  The interchange in `(1)` did not need a
+  hand-rolled Tonelli argument: mathlib's `hasSum_mellin` takes exactly the geometric expansion of
+  the Bose kernel plus summability of the Dirichlet coefficients and returns the Mellin transform
+  as a Gamma-weighted Dirichlet series.  `(4)` reduces to Legendre duplication once both sides are
+  recognized as casts of positive reals.  The strict log-concavity `(8)`–`(9)` is exactly the
+  inequality `exp t > 1 + t` after the score is written through the growth factor.  The card's
+  order-fourteen conjecture is no longer live: the sign is positive, by the sibling card.
 

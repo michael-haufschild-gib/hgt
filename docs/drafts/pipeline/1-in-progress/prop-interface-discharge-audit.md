@@ -1530,3 +1530,29 @@ that the backward product has a simple zero at the origin.
 * **`facePacket_differentialIndependent_of_periodsIntegrallyIndependent`** — the descending
   face-lifting lemma with both arithmetic premises discharged; only its inductive independence
   premise remains.
+
+### Universal law: the exact independence threshold of the face hierarchy
+
+`HTGeometry/FaceIndependenceDichotomy.lean` (built, axioms clean, registered).  The corpus had the
+two halves separately — joint independence of all faces retaining two periods, and differential
+algebraicity of every packet below that — but never the equivalence, so "two periods" read as a
+convenient sufficient condition rather than the threshold it is.
+
+* **`hypertranscendentalOver_facePacket_iff`** — an external translate of a face coordinate is
+  hypertranscendental over the constants **iff** the face retains at least two periods;
+* **`diffIndepOn_multipleEllipticGammaFacePacket_iff`** — the same threshold for a whole packet;
+* **`diffIndepOn_facePacketUnion_iff`** — and for an arbitrary family: a family of face packets is
+  jointly differentially independent over the constants **iff** every face in it retains at least
+  two periods.
+
+The negative half is a vacuity check on every downstream statement quantified over faces: below the
+threshold no independence statement can hold, so the hypothesis `2 ≤ (Jᶜ).card` in the layer
+theorems is exactly the right one and cannot be weakened.
+
+### The theta period group, computed
+
+The freeness argument only needed `Per ⊆ ℤ + ℤτ`; the exact group is now proved as well.
+`meromorphicTranslationStabilizer_thetaLogDerivMero : Per(thetaLogDerivMero τ) = zmultiples 1`, from
+the corpus quasi-periodicity `T_τ Ψ_θ = Ψ_θ − 2πi` iterated over `ℤ` and the nonvanishing of the
+defect off the lattice; and `meromorphicTranslationStabilizer_faceMero_one_surviving` transports it
+to every face with exactly one surviving parameter.

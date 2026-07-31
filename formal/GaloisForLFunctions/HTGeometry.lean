@@ -67,6 +67,7 @@ import GaloisForLFunctions.HTGeometry.TrigPolynomialPhaseSelection
 import GaloisForLFunctions.HTGeometry.RealExponentialSumRigidity
 import GaloisForLFunctions.HTGeometry.CommonRealPartTuranDeterminant
 import GaloisForLFunctions.HTGeometry.SectorPowerPositivity
+import GaloisForLFunctions.HTGeometry.BoseLogConcavity
 import GaloisForLFunctions.HTGeometry.SectorPowerMassLower
 import GaloisForLFunctions.HTGeometry.HarmonicOrdinateDivergence
 import GaloisForLFunctions.HTGeometry.AlternatingHarmonicPair
@@ -2700,3 +2701,4 @@ import GaloisForLFunctions.HTGeometry.FaceOneSurvivingTheta
 import GaloisForLFunctions.HTGeometry.EulerContractionResidueSigns
 import GaloisForLFunctions.HTGeometry.MatrixFactorizationCategory
 import GaloisForLFunctions.HTGeometry.FaceIndependenceDichotomy
+import GaloisForLFunctions.HTGeometry.AnalyticGermRing

@@ -742,3 +742,59 @@ and on-line zeros) before formalization.
   "one clause" is therefore a conserved quantity of the gauge orbit — no model choice, weight, or
   Hodge-gauge can shrink it. Formalized axiom-clean in
   `RHTower/DeningerDivisorGaugeWardIdentity.lean` (10 theorems).
+
+## 13. The gauge orbit's two poles and their monodromy, completed in Lean
+
+`RHTower/DeningerDivisorSchwarzMonodromy.lean` — built green, umbrella-registered, axiom-clean —
+completes the two-extremal-gauges picture of §12 as formal mathematics:
+
+- `xiZeroCopyConjEquiv` — Schwarz conjugation lifted to the multiplicity-exact divisor copies
+  (the support-level involution `xiZeroConjEquiv` and `xi_divisor_conj` already existed in
+  `CentralReciprocalMoments`; the copy lift did not).
+- `deningerDivisorSchwarzGauge` + `deningerDivisorSchwarzGauge_comm` — the equivariance-extremal
+  gauge: **commutes with Frobenius unconditionally**, as a full operator identity.
+- `deningerDivisorSchwarzGauge_diag_ne_zero_iff` — its cup diagonal at a copy is nonzero **iff**
+  the zero lies on the critical line (`1` on the line, `0` off it). The Ward invisibility law is
+  realised exactly, not merely bounded, on this gauge.
+- `deningerDivisorMonodromy` (`D = σ_S ∘ σ_R`, linear, `δ_ρ ↦ δ_{1 - conj ρ}`) with
+  `deningerDivisorMonodromy_defect`: `[θ, D]` is diagonal with entry exactly
+  `1 - ρ - conj ρ = -2 (Re ρ - 1/2)` times the monodromy, and
+  `deningerDivisorMonodromy_comm_iff_riemannHypothesis`: **RH ⟺ [θ, D] = 0** — the Riemann
+  hypothesis is the triviality of the interaction between the divisor's two canonical
+  symmetries. This is the operator form of the corpus's re-encoding template
+  (`s ↦ 1 - conj s` fixed exactly on the line), stated and labelled as such.
+- `deningerDivisorMonodromy_diag_eq_zero` — the monodromy's cup diagonal vanishes identically
+  (the divisor has no real point): the total linear-blindness law of §12 is saturated by the
+  canonical monodromy itself.
+
+### 13.1 Recorded next step: the defect-transported trace (design, pre-Lean)
+
+The one remaining direction that is neither re-encoding nor gauge algebra: transport the Ward
+defect to the **prime side** through the unconditional Lefschetz trace. Design, verified on
+paper: with `μ_q = xiSpectralPoint q` (centered coordinate) and `T(z) = logDeriv XiC z` the
+relative resolvent trace (prime-expressible by `deningerResolventLefschetzTrace`),
+
+```text
+twisted sums:  Σ'_q μ_q (μ_q - z)^{-3} = T'(z) + (z/2) T''(z)          (unconditional; μ-twist
+                                                                        costs one convergence
+                                                                        power, cube restores it)
+defect trace:  Δ(z) = Σ'_q (μ_q - conj μ_q)(μ_q - z)^{-3}
+             = 2i Σ'_q Im(μ_q) (μ_q - z)^{-3}
+```
+
+`Δ ≡ 0 ⟺ RH` (leading triple-pole coefficients `mult · Im μ` cannot cancel), and Δ's
+holomorphic half is prime-expressible while its anti-holomorphic half is the mixed object no
+holomorphic trace computes — the exact analytic residue of the debt. Lean obligations:
+differentiated trace identities (`Σ'(μ-z)^{-2} = T'`, needs Weierstrass differentiation of the
+tsum — check corpus for existing XiC log-derivative derivative machinery first), the twisted-sum
+algebra, and the Δ-vanishing iff. This is the first statement in the lane whose two halves are
+*prime data* and *non-holomorphic spectral data* with the debt as their difference.
+
+## Log (continued)
+
+- 2026-07-31 (Claude, second pass): built the Schwarz copy-involution, the unconditionally
+  Frobenius-commuting Schwarz gauge with exact critical-line diagonal detection, and the
+  canonical monodromy with `RH ⟺ [θ,D] = 0` plus unconditional diagonal blindness
+  (`DeningerDivisorSchwarzMonodromy.lean`, 6 capstone theorems, axiom-clean). Corpus check
+  first: `xi_divisor_conj`/`xiZeroConjEquiv` existed; the copy lift, gauges, and monodromy did
+  not. Recorded the defect-transported trace Δ(z) as the designed next construction.
