@@ -530,6 +530,8 @@ import GaloisForLFunctions.HTGeometry.BohrMultiFejerKernel
 import GaloisForLFunctions.HTGeometry.BohrMultiFejerMean
 import GaloisForLFunctions.HTGeometry.BohrMeanTriangle
 import GaloisForLFunctions.HTGeometry.BohrFejerMass
+import GaloisForLFunctions.HTGeometry.BohrHullGroup
+import GaloisForLFunctions.HTGeometry.BohrHullCharacter
 import GaloisForLFunctions.HTGeometry.FrequencyRank
 import GaloisForLFunctions.HTGeometry.PrimeFrequencyInfiniteRank
 import GaloisForLFunctions.HTGeometry.HullJetEmbedding

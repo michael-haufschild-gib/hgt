@@ -3185,3 +3185,41 @@ This is the upper-bound half of step 5.  What remains is the expansion statement
 first `n + 1` coordinate vectors is uniformly expanded by `lam n` for an antitone nonnegative
 multiplier, which feeds `le_approxNumber_of_subspace` and closes
 `approxNumber (diagonalOperator lam) n = lam n`.
+
+### The expansion half
+
+`RHTower/DiagonalEllTwoOperator.lean` extended (built, registered, axioms clean):
+
+* **`le_norm_diagonalOperator_of_support`** — for an antitone nonnegative real multiplier, a vector
+  supported on the first `n + 1` coordinates is expanded by at least `r n`:
+  `r n ‖w‖ ≤ ‖diag r w‖`.  The termwise inequality holds at *every* index — below the cutoff by
+  antitonicity, above it because the vector vanishes there — so the `tsum` comparison needs no case
+  split at the series level, only inside the term bound.
+
+Both halves of step 5 are now in place: the truncation has rank `n`
+(`hasRankLE_diagonalOperator_trunc`) and the low coordinates are expanded by `r n`.  What is left
+to assemble `approxNumber (diagonalOperator r) n = r n` is the two bookkeeping facts that the span
+of the first `n + 1` coordinate vectors has dimension exactly `n + 1` (linear independence, by
+evaluating a vanishing combination at each coordinate) and that its members vanish above the
+cutoff (`Submodule.span_le` into the vanishing-above-`n` submodule).
+
+### The expansion half
+
+`RHTower/DiagonalEllTwoOperator.lean` extended (built, registered, axioms clean):
+
+* **`le_norm_diagonalOperator_of_support`** — for an antitone nonnegative real multiplier, a vector
+  supported on the first `n + 1` coordinates is expanded by at least `r n`:
+  `r n ‖w‖ ≤ ‖diag r w‖`.  The termwise inequality holds at *every* index — below the cutoff by
+  antitonicity, above it because the vector vanishes there — so the `tsum` comparison needs no case
+  split at the series level, only inside the term bound.
+
+Both halves of step 5 are in place: the truncation has rank `n` (`hasRankLE_diagonalOperator_trunc`)
+and the low coordinates are expanded by `r n`.  Left to assemble
+`approxNumber (diagonalOperator r) n = r n`: the span of the first `n + 1` coordinate vectors has
+dimension exactly `n + 1` (linear independence by evaluating a vanishing combination at each
+coordinate), and its members vanish above the cutoff (`Submodule.span_le` into the
+vanishing-above-`n` submodule).
+
+**Session paused here.**  The cron loop was cleared at this point; the tree is green
+(`lake build GaloisForLFunctions.MainTheorems`), every module added is registered and axiom-clean,
+and no work is left half-written.

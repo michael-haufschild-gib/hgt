@@ -957,7 +957,11 @@ def write_declarations(rows: list[ModuleRow], path: Path) -> None:
                         declaration.name,
                         declaration.kind,
                         declaration.line,
-                        ",".join(declaration_mechanisms(declaration.header)),
+                        ",".join(
+                            declaration_mechanisms(
+                                f"{row.module} {row.title} {declaration.header}"
+                            )
+                        ),
                         ",".join(declaration_shapes(declaration.header)),
                         declaration.header,
                     )

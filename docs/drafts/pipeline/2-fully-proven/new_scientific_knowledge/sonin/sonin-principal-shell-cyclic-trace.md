@@ -771,7 +771,7 @@ The two polarizations therefore *cannot* cancel each other; they can only vanish
 the physical one does not vanish:
 
 ```text
-M_phys != 0        whenever 0 < a < b < c and r > 1.                       (58)
+M_phys != 0   and   M_four != 0     whenever 0 < a < b < c and r > 1.      (58)
 ```
 
 Consequently
@@ -781,6 +781,9 @@ M_phys + M_four != 0,                                                      (59)
 ```
 
 so the four-block expansion of `(55)` is a nonzero operator: the blocks do not cancel.
+
+The Fourier half is the same argument with the polarizations exchanged; it is recorded because it
+shows the two halves are *both* live, not merely their sum.
 
 ### Proof of `(58)`
 
@@ -809,6 +812,12 @@ the Fourier transform of a symmetric physical shell vector is a unit vector on w
 acts as the identity, because the Fourier transform preserves evenness and squares to the identity
 there.  Contradiction.
 
+For `M_four` the four steps read the same with `A` and `R` exchanged, and two simplifications: the
+image is *compactly supported* rather than band-limited, so the one-interval uncertainty theorem
+applies to it directly with no involution step, and the band-shrinking iteration is run with the
+expanding dilation `U_{r^2}` instead of the contracting one.  Step 4 is then the physical annulus,
+where the shell vector is the witness with no Fourier transform taken.
+
 ### What `(59)` does and does not settle
 
 It closes the cancellation question that `(55)` opened: **the blocks do not cancel**.  It does not
@@ -816,7 +825,8 @@ by itself give `Z != 0`, because `(55)` is a congruence modulo the relative idea
 What it does give is an exact criterion, replacing a vanishing question by a membership question:
 
 ```text
-Z = 0   =>   M_phys + M_four  in  I_a.                                     (60)
+in the crossing chamber 0 < a < b < c <= r a:
+  Z = 0   =>   M_phys + M_four  in  I_a.                                   (60)
 ```
 
 Equivalently, if the four mixed time-band blocks are *not* in the relative ideal then `Z != 0`.  The
@@ -1011,6 +1021,11 @@ provisional pending expert/literature review.
 | Fourier annulus nonzero | `evenFourierCutoff_sub_ne_zero` |
 | `(57)` polarization split | `soninMixedPhysicalBlock_add_soninMixedFourierBlock_eq_zero_iff` |
 | `(58)` physical block nonzero | `soninMixedPhysicalBlock_ne_zero` |
+| `(58)` Fourier block nonzero | `soninMixedFourierBlock_ne_zero` |
+| `(58)` both halves | `soninMixedBlocks_ne_zero` |
+| compact support vs Fourier shell | `eq_zero_of_evenIndicatorCutoff_eq_self_of_fourierShell_apply_eq_zero` |
+| annulus injectivity, physical | `eq_zero_of_evenDilationSum_apply_eq_zero_of_physicalAnnulus` |
+| physical annulus nonzero | `evenIndicatorCutoff_sub_ne_zero` |
 | `(59)` blocks do not cancel | `soninApertureCouplingMixedTerms_ne_zero` |
 | `(60)` ideal criterion | `evenSoninApertureSuccessiveLayerTransition_ne_zero_of_polarizedBlocks_notMem_ideal` |
 | energy strictly monotone | `hsNormSq_fullTimeBandFourier_lt_of_lt` |
@@ -1047,7 +1062,8 @@ Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninMixedBlockPolarizationSplit.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninBandLimitedShellVanishing.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninDilationSumFourierInjective.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninMixedPhysicalBlockNonvanishing.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninMixedPhysicalBlockNonvanishing.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninMixedFourierBlockNonvanishing.lean`.
 All declarations depend only on `propext`, `Classical.choice`, `Quot.sound`.
 
 Novelty split for Theorem G: `(7)` was already in the corpus
@@ -1058,6 +1074,8 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-07-31 — both polarized halves proved nonzero, not just their sum; the Fourier half needs no
+  involution step because its image is compactly supported outright.
 - 2026-07-31 — Theorem S: the four mixed blocks do **not** cancel.  Range polarization plus the
   qualitative uncertainty principle splits the sum `(57)`, and the physical half is nonzero `(58)`
   by band-limitedness plus one-interval uncertainty plus a band-shrinking iteration that makes the

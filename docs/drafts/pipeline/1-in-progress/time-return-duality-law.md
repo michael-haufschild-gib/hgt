@@ -1,19 +1,53 @@
-# Time–return duality law
+# Recurrence–time conversion law
 
 - **ID:** time-return-duality-law
 - **Stage:** 1-in-progress
 - **Type:** MASTER CONJECTURE / UNIVERSAL STATIONARY RECURRENCE QUOTIENT
 - **Source:** recurrence corpus synthesis
 - **Statement:** Every stationary quantum return experiment factors through one maximal
-  unoriented system--clock quotient.  Uniform long-time sampling then retains exactly the
-  recurrent atomic hull.  In finite rank, the dimension of that hull is twice the
-  small-defect return-volume exponent and the complement of exact relation rank.
+  unoriented system--clock quotient.  On its recurrent carrier, one projective detuning map
+  splits phase capacity exactly into recurrence constraints and observable temporal directions.
+  In finite rank, temporal dimension is twice the small-defect return-volume exponent.
+  Interaction converts constraints into temporal directions one-for-one.
 
 ## Goal
 
 Replace novelty-by-assembly with one operational law whose shadows are the
 existing constraint-conversion, observer-quotient, water-entropy,
 interaction, countable-depth and peripheral-carrier results.
+
+The law is most naturally an exact sequence, not a list:
+\[
+  0\longrightarrow \mathcal C_H
+   \longrightarrow \mathcal X_H
+   \xrightarrow{\;\mathcal D_H\;}
+   \mathcal T_H
+   \longrightarrow 0.                                      \tag{E}
+\]
+Here \(\mathcal X_H\) is projective phase-character capacity,
+\(\mathcal D_H\) evaluates a character on the energy packet,
+\(\mathcal C_H=\ker\mathcal D_H\) is the complete exact-recurrence relation
+space, and \(\mathcal T_H=\operatorname{im}\mathcal D_H\) is the temporal
+gap module visible to completed recurrence.  This formulation survives
+infinite carriers: dimensions may cease to be finite, but the kernel,
+quotient and image remain exact.
+
+For a finite carrier `(E)` yields the scalar conservation law
+\[
+  \boxed{\tau+\rho=C},                                      \tag{C}
+\]
+and the return-volume theorem upgrades it to the operational identity
+\[
+  \boxed{2s_{\rm ret}+\rho=C},\qquad
+  s_{\rm ret}:=
+  \lim_{\eta\downarrow0}
+    \frac{-\log V(\eta)}{\log(1/\eta)}.                    \tag{R}
+\]
+Thus every destroyed recurrence constraint reappears as one temporal
+direction and adds one half to the high-fidelity return-scarcity exponent:
+\[
+  \Delta\tau=-\Delta\rho=2\Delta s_{\rm ret}.              \tag{I}
+\]
 
 The candidate primitive is no longer the finite-dimensional Weyl exponent.
 For an arbitrary probability energy law \(\mu\) and probability clock law
@@ -200,6 +234,55 @@ No connection to RH is authorized for the public manuscript unless a new
 formal theorem explicitly connects an RH carrier to `(URQ)`.  The present
 audit supplies the missing conceptual distinction, not an RH consequence.
 
+## Local many-body generator and physical consequence
+
+The live corpus closes two earlier objections at different proof levels.
+
+1. `FiniteAndersonRecurrenceConstraintConversionLaw.lean` proves that for
+   every fixed finite Hermitian hopping matrix, every onsite packet and every
+   positive control radius, a change of onsite energies inside that radius
+   erases all post-perturbation projective relations, converts the complete
+   initial relation rank into temporal dimension, attains the all-order
+   replica collision floor and obeys the dimension-free finite-time
+   Heisenberg bound.  This is the unconditional local-Hamiltonian transfer
+   already available to the manuscript.
+2. `HermitianLocalExtensionRelationEscape.lean` proves the hard one-step
+   tensor-local generator: a Hermitian nearest-factor extension with
+   connected cross-layer lift can erase every balanced relation
+   simultaneously.  The dependency-closed qudit-chain induction in
+   `nearest-neighbor-qudit-projective-spectral-maximality.md` then predicts
+   generic rank \(q^n-1\), exact return density
+   \[
+     \left(
+       \frac{2\arcsin(\varepsilon/2)}{\pi}
+     \right)^{q^n-1},
+   \]
+   and a jump from \(O(n)\) commuting rank to \(q^n-1\) under generic
+   nearest-neighbour interaction.  The complete chain induction is not yet
+   formalized and therefore remains forbidden in the public paper.
+
+If that final formal bridge closes, the single physical consequence of
+`(E)`--`(I)` is:
+
+> **An arbitrarily weak bounded-range interaction can activate exponentially
+> many independent temporal phases, making complete quantum repetition
+> doubly exponentially rare, while every bounded-time observable remains
+> perturbatively close.**
+
+This is not a claim about spacetime dimension.  “Temporal dimension” is the
+exact rank of the completed relative-phase orbit.  The possible Nature-level
+contribution is the local generator and its noncommutation of weak-coupling
+and completed-time limits, not the classical Kronecker--Weyl or
+rank--nullity parents.
+
+The collision interpretation supplies a second exact face of the same law.
+At fixed positive spectral weights, every nontrivial balanced energy-sum
+relation raises at least one long-time return moment above the permutation
+floor; zero relation rank is equivalent to attaining that floor at every
+order.  Constraint destruction, temporal-rank creation, return scarcity and
+all-order collision extremality are therefore one event, not four assembled
+results.
+
 ## Log
 
 - 2026-07-31 — created in 1-in-progress after rejecting novelty by conjunction.
@@ -233,3 +316,10 @@ audit supplies the missing conceptual distinction, not an RH consequence.
   completion.  The finite recurrence Weyl law is now a corollary.  The audit
   also forbids calling recurrence complete for the source, Hamiltonian or
   arrow of time.
+- 2026-07-31 — recast the master as the exact projective detuning sequence
+  `(E)` and finite recurrence conservation law `(R)`.  Corpus audit found an
+  unconditional fixed-hopping Anderson conversion theorem and a formal
+  one-step Hermitian tensor-local relation-erasure theorem.  The remaining
+  significance gate is the Lean closure of the dependency-closed
+  nearest-neighbour qudit-chain induction and its exact return-scarcity
+  consequence.

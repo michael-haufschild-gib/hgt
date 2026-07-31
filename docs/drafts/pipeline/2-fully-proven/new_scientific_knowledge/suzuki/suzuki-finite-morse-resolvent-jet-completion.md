@@ -21,7 +21,7 @@ full sewn jump Pick positivity and RH by existing pole tomography.
 
 - [x] 0 → 1 in-progress: well-posed, source-pure, attack idea, Door passport sketch
 - [x] 1 → 2 fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3 formalized: Lean theorem, targeted build green, axiom audit PASS
+- [x] 2 → 3 formalized: Lean theorem, targeted build green, axiom audit PASS
 - [ ] 3 → 4 publication-ready: standalone paper + external priority audit
 
 ## Retired conjecture under test
@@ -209,6 +209,8 @@ survivor is finite zero-constant shift jets as complete filters for homogeneous 
 
 ## Lean status
 
+### Finite scalar core
+
 `formal/GaloisForLFunctions/RHTower/SuzukiFiniteMorseResolventJetCompletion.lean` proves without
 RH or added axioms:
 
@@ -223,12 +225,60 @@ Key declarations are
 `suzukiFiniteMorseKreinInterpolant_exact_negativeDebt`,
 `suzukiFiniteMorseKreinDiagonalForm_nonneg`, and
 `suzukiFiniteResolventPolynomial_exactProjector_impossible`.
-Direct Lean check and targeted module build pass.  Axiom audit reports only standard mathlib
-foundations `[propext, Classical.choice, Quot.sound]`.
 
-Card remains Stage 2 because compact self-adjoint functional-calculus lift and actual Suzuki
-source domination `(C)` are not formalized.  Finite algebraic core is formally closed; RH-bearing
-mixed-node source inequality is not.
+### Operator lift
+
+`formal/GaloisForLFunctions/RHTower/SuzukiFiniteMorseResolventOperatorLift.lean` carries the whole
+theorem to the operator level.  The lift uses the continuous functional calculus of the bounded
+self-adjoint resolvent `R`, not a spectral decomposition of the unbounded `A`.  The device is the
+resolvent coordinate `x = 1/(t - rho)`, in which the affine Krein weight becomes the rational
+function
+
+`w(x) = alpha*beta*x^3 / ((rho x + 1)((rho - alpha) x + 1)((rho - beta) x + 1))`,
+
+regular and vanishing at the spectral accumulation point `x = 0`
+(`suzukiKreinResolventWeight_resolventNode`, `suzukiKreinResolventWeight_zero`).  Hence `d(A)` is a
+genuine continuous function of `R` even though `A` is unbounded.
+
+- statement `(2)`: `suzukiResolventJet_isSelfAdjoint`, `suzukiResolventJetSquare_nonneg`,
+  `isCompactOperator_suzukiResolventJet`, `isCompactOperator_suzukiFiniteMorseInterpolant` —
+  the jet is self-adjoint, its square is a positive operator, and zero constant term is exactly
+  what makes the jet compact when the resolvent is;
+- statement `(3)`: `suzukiFiniteMorse_completedWeight_eq_zero` (the completed weight vanishes
+  identically at every negative level) and `suzukiFiniteMorse_kreinResolventWeight_pos` (the bare
+  weight is already strictly positive at every positive level);
+- statement `(T1)`: `suzukiFiniteMorse_operatorCompletion_nonneg` and its energy form
+  `suzukiFiniteMorse_operatorCompletion_re_inner_nonneg`;
+- statement `(T2)`: `suzukiOperatorCompletion_nonneg_iff` — `D + q(R)^2 >= 0` holds exactly when
+  `w + q^2 >= 0` pointwise on `spectrum R`, proved through `cfc_nonneg_iff`;
+- statement `(5)`: `suzukiOperatorResolventJetSquare_exactProjector_impossible`, the operator form
+  of the no-go, obtained from the eigenvector evaluation lemmas `pow_apply_of_eigenvector`,
+  `aeval_apply_of_eigenvector`, `suzukiResolventJetSquare_apply_of_eigenvector`;
+- statement `(T3)`: `formal/GaloisForLFunctions/HTGeometry/ResolventFamilyJet.lean` proves that the
+  first resolvent identity alone forces continuity (`IsResolventFamilyOn.continuousAt`), the
+  derivative law `∂_u R_u = R_u^2` (`IsResolventFamilyOn.hasDerivAt`), and by induction through
+  the product rule the jet law `∂_u^n R_u = n! R_u^{n+1}` (`hasDerivAt_resolventShiftJet`).  The
+  polynomial realization is `aeval_eq_resolventShiftJet_sum`, specialized to the interpolant by
+  `suzukiFiniteMorseInterpolant_eq_resolventShiftJetSum`.  Nothing there needs `A`, its domain, or
+  its spectrum, so it applies verbatim to the resolvent family of an unbounded operator.
+
+The spectral hypothesis of `(T1)` can be stated on eigenvectors rather than on the spectrum:
+`exists_eigenvector_of_mem_spectrum_real` is the Fredholm alternative read in the resolvent
+coordinate (every nonzero real spectral point of a compact operator is an eigenvalue), and
+`suzukiFiniteMorse_operatorCompletion_nonneg_of_eigenvectors` is the resulting form, whose
+hypothesis is exactly the card's "the spectral levels are the `lambda_j` and positive levels".
+
+Targeted module build green.  Axiom audit of every declaration above reports only standard
+mathlib foundations `[propext, Classical.choice, Quot.sound]`.
+
+### What is still not formalized
+
+Actual Suzuki source domination `(C)` is not formalized, and it is not a theorem of this card: the
+2026-07-22 correction retired it as canonical producer, and the card states it as a conjecture.
+The compact-resolvent-to-discrete-spectrum implication itself is used as a hypothesis rather than
+derived — mathlib has no spectral theorem for compact self-adjoint operators in infinite
+dimensions, so the eigenvector form above takes that description as given.  Every proved statement
+of the finite-Morse theorem is now formal.
 
 ## Decisive hostile tests
 
@@ -276,3 +326,6 @@ mixed-node source inequality is not.
   axiom audit pass.  Operator functional-calculus lift and source domination remain open.
 - 2026-07-22 — Projective rank-one corpus theorem superseded linear completion as RH producer.
   Retained valid linear theorem; redirected finite jets to homogeneous Plücker tomography.
+- 2026-07-31 — operator lift formalized: continuous-functional-calculus realization of the Krein
+  defect in the resolvent coordinate, compactness and positivity of the jet square, `(T1)`, `(T2)`,
+  the operator form of the no-go, and the resolvent-jet derivative law `(T3)`.  Gate `2 → 3` closed.

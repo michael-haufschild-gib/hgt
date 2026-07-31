@@ -951,6 +951,46 @@ mean one by `M_u(‖f(u+t) − f(t)‖·k(u))` — exactly the quantity the conc
 controls.  The remaining analytic step is to bound that mean, using that the kernel's peaks are
 almost periods of `f`.
 
+`formal/GaloisForLFunctions/HTGeometry/BohrFejerMass.lean` computes the Fejér kernel's own Bohr
+coefficients and thereby its **mass away from the peaks**, measured by the continuous majorant
+`1 − cos(βu)` rather than by an indicator (which would leave the almost-periodic class).  Expanding
+`F_N` over the square `[0,N]²` gives `bohrCoefficient_fejerKernel`; the fibre `a − b = ±1` is the
+image of `range N` under `b ↦ (b+1,b)` (resp. `a ↦ (a,a+1)`), so
+`bohrCoefficient_fejerKernel_self` and `bohrCoefficient_fejerKernel_neg` both evaluate to
+`N/(N+1)`, and therefore
+
+`M_u( F_N(u)·(1 − cos βu) ) = 1 − N/(N+1) = 1/(N+1)`  (`bohrMean_fejerKernel_mul_one_sub_cos`),
+
+an exact, quantitative concentration statement.
+
+`formal/GaloisForLFunctions/HTGeometry/BohrHullGroup.lean` constructs the **compact abelian phase
+carrier** of the finite-phase law directly, with no dimension theory and no Pontryagin input.  The
+translation distance `d_f(s,t) = sup_x ‖f(x+s) − f(x+t)‖` of a bounded continuous `f` is a
+translation-invariant pseudometric on the additive group `ℝ` (`BohrLine`,
+`BohrLine.dist_add_right`, `dist_neg`, `dist_sub_left`), so subtraction is Lipschitz and the line is
+a uniform additive group for it.  Bochner's criterion is exactly total boundedness of that
+pseudometric (`BohrLine.totallyBounded_univ`), so the Hausdorff completion
+
+`BohrHull f = UniformSpace.Completion (BohrLine f)`
+
+is a **compact Hausdorff abelian topological group** (`compactSpace_bohrHull`) into which the line
+maps by a dense additive homomorphism (`bohrIota_add`, `denseRange_bohrIota`), and `f` itself, being
+`1`-Lipschitz for `d_f`, extends to a continuous function `bohrEval` on it with
+`bohrEval (ι t) = f t`.  This is the carrier the statement of eq. (9) refers to, now a construction
+rather than an assertion.
+
+`formal/GaloisForLFunctions/HTGeometry/BohrHullCharacter.lean` puts the Bohr frequencies **inside the
+character group of that carrier**.  The mode-extraction identity
+`M_u(f(u+t)e^{-iμu}) = e^{iμt}c_μ(f)` has a left-hand side that is `1`-Lipschitz in `t` for `d_f`
+(`dist_expChar_mul_bohrCoefficient_le`, by `norm_bohrMean_sub_le`), so for every frequency in the
+spectrum the exponential `t ↦ e^{iμt}` is Lipschitz for the translation distance
+(`uniformContinuous_expChar_bohrLine`) and extends to the hull.  The extension `bohrHullChar` is a
+continuous character: multiplicativity (`bohrHullChar_add`) and unit modulus (`norm_bohrHullChar`)
+both pass from the dense image of the line.  So `bohrSpectrum f ↪ (BohrHull f)^`, which is the
+Pontryagin half of eq. (9) that does not need the duality theorem.  A continuous almost-periodic
+function is packaged for this machinery by `toBC`, using that a totally bounded translation orbit
+forces boundedness (`exists_norm_le_of_hasTotallyBoundedOrbit`).
+
 `formal/GaloisForLFunctions/HTGeometry/IsometricRecurrence.lean` abstracts the recurrence to any
 relatively-compact isometric `ℝ`-action (`isometricAction_recurrence`, `isometricAction_return_seq`),
 so it instantiates both to `ℝ →ᵇ ℂ` and to vertical translation of holomorphic functions on a strip.
@@ -971,10 +1011,11 @@ whose frequency module is the prime-log module cannot be differentially algebrai
 field (with the finite-phase conclusion as the explicit interface).
 
 Still genuinely open (mathlib-absent, being built incrementally): the *topological heart* of eq. (9)
-— the finite jet-sample embedding `hull ↪ ℂ^N`,
-covering-dimension `≤ 2N`, and Pontryagin–van Kampen (mathlib has only the `PontryaginDual`
-definition, not the duality theorem) — which supplies the finite frequency generators consumed by
-`FrequencyRank`; the analytic Poincaré transfer promoting eq. (19) to unconditional analytic
+— with the carrier group and its characters now constructed (`BohrHullGroup`, `BohrHullCharacter`),
+what remains is the finite jet-sample embedding `hull ↪ ℂ^N`, the covering-dimension bound `≤ 2N`,
+and the identification of covering dimension with the rational rank of the character group
+(Pontryagin–van Kampen; mathlib has only the `PontryaginDual` definition, not the duality theorem) —
+which supplies the finite frequency generators consumed by `FrequencyRank`; the analytic Poincaré transfer promoting eq. (19) to unconditional analytic
 asymptotics for a coefficient with nonconstant digamma-field data (the *jet* coefficients and the
 whole subfield `ℂ(Γ)` are already unconditional, see `GammaJetVerticalStripCollapse` and
 `GammaRationalProjectiveBoundary`); and the relative differential Galois theory for the classical
