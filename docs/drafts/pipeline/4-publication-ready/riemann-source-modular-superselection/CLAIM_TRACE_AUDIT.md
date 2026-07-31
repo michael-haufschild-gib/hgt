@@ -252,22 +252,76 @@ Audit date: 2026-07-31.
 | A nonzero exponential eigencharacter in a conservative target has zero real rate | `normConservative_expCharacter_forces_zero` | capstone |
 | Faithful equivariant descent into a conservative target forces zero rate | `normConservative_equivariantDescent_forces_zero` | capstone |
 
+## Projective source pointing and finite positive collision geometry
+
+| Manuscript claim | Checked declaration | Module |
+|---|---|---|
+| Complete signed-prime shift fields agree iff orientations are eventually equal or opposite | `signedPrimeNaturalShiftPalette_differentialAdjoin_eq_iff` | `formal/GaloisForLFunctions/HTGeometry/PrimeDirichletDifferentialField.lean` |
+| Every projective-tail class is dense; quotient is indiscrete | `booleanProjectiveTailClass_fiber_dense`; `booleanProjectiveTail_coinduced_eq_indiscrete` | `formal/GaloisForLFunctions/HTGeometry/PrimeDirichletTailGroupoid.lean` |
+| Continuous \(T_0\)-valued invariants factoring through projective tail class are constant | `continuous_constant_of_booleanProjectiveTailClass` | same |
+| Signed vertical prime trace is positive definite iff all signs are positive | `signedPrimeVerticalTrace_positiveDefinite_iff_allPositive` | `formal/GaloisForLFunctions/HTGeometry/PrimeDirichletPositiveDefinite.lean` |
+| Bundled projective-tail pointing law | `primeProjectiveTailPositivePointing_law` | capstone |
+| Pairwise transverse Xi carriers have the rooted incidence matroid | `rootedIncidenceMatroid_charZero_eq`; `xiTransverseShiftPairDifferenceUpperEndCarrier_differentialMatroid_base_eq_allValuation` | `formal/GaloisForLFunctions/RHTower/XiPairwiseValuationBaseUniversalityLaw.lean` |
+| Adjoining every scalar valuation layer leaves that matroid unchanged | `xiTransverseShiftPairDifferenceUpperEndCarrier_differentialMatroid_base_eq_allValuation` | same |
+| Rooted-star incidence, valuation, Gaussian, Szegő, cofinite jet, and raw-Xi phases collapse to distinct nonzero labels | `xiRootedStar_incidenceValuationExactMetricFusion_reparam_iff` | `formal/GaloisForLFunctions/RHTower/XiRootedStarIncidenceValuationMetricFusionUniversalityLaw.lean` |
+| Cofinite raw-Xi reconstruction is equivalent to nonzero label injectivity | `xiEvenShiftRawLogDerivDefectCofiniteHilbertReconstruction_iff` | `formal/GaloisForLFunctions/RHTower/XiRootedStarGaussianCurvatureFusionUniversalityLaw.lean` |
+| Every finite resolution has a reporter faithful to Xi jets and blind to a nonzero log-current packet | `exists_injective_xiEvaluationReporter_faithfulXi_blindLogDeriv` | `formal/GaloisForLFunctions/RHTower/XiEvaluationReporterSourceDiscriminationUniversalityLaw.lean` |
+| Isometric encoding preserves positive Xi Gram, blind kernel/rank, and adjoint recovery | `xiCofiniteEvaluationReporter_exactBlindDataProcessingUniversality` | `formal/GaloisForLFunctions/RHTower/XiCofiniteExactBlindDataProcessingUniversalityLaw.lean` |
+| Bundled finite source/current separation | `xiFiniteSourceObservableSeparation_law` | capstone |
+
+## Strict positive-observable hierarchy and quantitative positive survivor
+
+| Manuscript claim | Checked declaration | Module |
+|---|---|---|
+| Any prescribed \(\vartheta\pm ia\) in the right critical strip occurs as zeros of an explicit nonnegative unit-pole Mellin source | `ccm_criticalClock_divisor_blindness` | `formal/GaloisForLFunctions/RHTower/CCMCriticalClockDivisorBlindness.lean` |
+| This witness has the unit exponential critical clock and Schwarz-pair Cauchy energy \(>8\) | `tendsto_blindWitness_criticalClockLaplace`; `schwarzPairCauchyEnergy_gt_eight`; `ccm_criticalClock_divisor_blindness` | same |
+| Four-unit source profile is a critical-clock class invariant but divisor energy is not | `fourUnitBudget_classInvariant_but_divisor_not` | same |
+| Endpoint cross charge is \(c_\rho=\Re(1/[\rho(1-\rho)])\), nonnegative in open critical strip | `xiEndpointCrossCharge`; `endpoint_cross_term_re_eq`; `endpoint_cross_term_re_nonneg` | `formal/GaloisForLFunctions/RHTower/XiEndpointOffLineQuartetHeightGap.lean`; `formal/GaloisForLFunctions/RHTower/XiEndpointQuantitativeNormBudget.lean` |
+| Off-line endpoint charge is nonnegative, bounded by completed endpoint curvature, and vanishes exactly on RH | `xiEndpointOffLineCharge_nonneg`; `xiEndpointOffLineCharge_eq_zero_iff_rh`; `xiEndpointOffLineCharge_le_curvature` | `formal/GaloisForLFunctions/RHTower/XiThermalOffLineChargeSelfCubicBound.lean` |
+| Every hypothetical off-line zero satisfies \((\Im\rho)^2>7907/93\) | `xiZeroCopy_offLine_sevenThousandNineHundredSeven_over_ninetyThree_lt_im_sq` | `formal/GaloisForLFunctions/RHTower/PrimeArchExactOffLineQuartetAccretivity.lean` |
+| Total transverse orientation energy obeys the self-localized cubic budget | `xiThermalOrientationEnergy_le_offLineChargeCubicBudget` | `formal/GaloisForLFunctions/RHTower/XiThermalOffLineChargeSelfCubicBound.lean` |
+| Self-localized budget improves the source-only exact cubic budget | `xiThermalOffLineChargeCubicBudget_le_exactCubicEndpointBudget` | same |
+| Exact source-only cubic budget is below \(1/150000\) | `xiThermalExactCubicEndpointBudget_lt_one_over_oneHundredFiftyThousand` | `formal/GaloisForLFunctions/RHTower/XiThermalQuartetCubicChargeBound.lean` |
+| Off-line charge, cubic budget, transverse energy, and RH have the same zero locus | `xiThermal_offLineCharge_budget_energy_zero_tfae` | `XiThermalOffLineChargeSelfCubicBound.lean` |
+| Thermal/source second-moment gap is exactly transverse energy | `xiThermalSecondMoment_sub_source_eq_orientationEnergy`; `xiThermalSecondMoment_source_absoluteGap` | `XiThermalQuartetCubicChargeBound.lean` |
+| Every off-line atom has a real affine test with zero positive Hilbert response and positive transverse charge | `exists_xiSquaredEulerAperture_atom_charge_without_hilbert` | `formal/GaloisForLFunctions/RHTower/XiSquaredEulerApertureDiagonalControlObstruction.lean` |
+| No finite atomwise comparison constant exists off line; orbitwise bounded control is equivalent to RH | `not_exists_xiSquaredEulerAperture_termwise_bound_of_ne_half`; `xiSquaredEulerApertureOrbitwiseBoundedCharge_iff_riemannHypothesis` | same |
+| The mixed exponential witness is nonnegative on the physical diagonal but its separated cylinder lift is negative | `coneObstruction_nonneg`; `cylinderLift_obstructionPoint` | `formal/GaloisForLFunctions/RHTower/ConePositivstellensatzFailure.lean` |
+| Separated cylinder lift is not a finite sum of squared moduli | `cylinderLift_not_sum_of_squares` | same |
+| Reflected source-only Ward majorant diverges on every fixed source line | `xiWardInteriorSourceArithmeticBound_vertical_tendsto_atTop`; `not_exists_uniform_xiWardInteriorSourceArithmeticBound` | `formal/GaloisForLFunctions/RHTower/XiWardInteriorSourceBudgetDivergence.lean` |
+| No finite-energy half-line source represents the already-scalarized full Xi current | `not_exists_halfLineLaplaceSource_logDeriv_xi_vertical` | same |
+| Every off-axis centered Xi zero is detected by one negative rank-one diagonal Weil value | `exists_neg_weilDiagonal_of_offAxis_zero`; `riemannHypothesis_of_weilDiagonal_nonneg` | `formal/GaloisForLFunctions/RHTower/XiWeilCriterionConverse.lean` |
+| Bundled hierarchy law | `xiPositiveObservableHierarchy_law` | capstone |
+
+## Hyperbolic reflection, quantized debt, and Schur tax
+
+| Manuscript claim | Checked declaration | Module |
+|---|---|---|
+| Reflected rate pair preserves only the hyperbolic quadratic form \(2xy\) up to scale | `reflectedRealCharacter_invariantQuadratic_iff` | capstone |
+| Only positive-semidefinite invariant quadratic form at nonzero rate is zero | `reflectedRealCharacter_no_nonzero_positiveInvariantQuadratic` | capstone |
+| Finite generic quartet Ward charge/\(4\pi\), Euler pole excess, and Weil negative index agree | `finiteQuartet_eulerWardWeil_index_law` | `formal/GaloisForLFunctions/RHTower/PositiveEulerFiniteQuartetOrientationLaw.lean` |
+| Positive two-channel completion requires \(c\ge n+b^2/a\) | `suzukiKreinScalarSchurComplement_posSemidef_iff`; `suzukiKreinScalarWeld_posSemidef_iff_twoChannelForm` | `formal/GaloisForLFunctions/RHTower/SuzukiKreinSchurBlockCongruence.lean` |
+| Bundled reflection-character completion | `xiReflectionCharacterCompletion_law` | capstone |
+
+## Source horizon, local quotient, global tomography, and multiplicity
+
+| Manuscript claim | Checked declaration | Module |
+|---|---|---|
+| Poisson order normalization uniquely converts a source generator into its direct conjugate displacement | `coherentGenerator_duality`; `sourceCayley_inverse_observationTime`; `sourceHorizonEscapeConservation_law` | `formal/GaloisForLFunctions/RHTower/SourceHorizonEscapeConservationLaw.lean` |
+| Critical line is the neutral source horizon | `sourceCayleyTransverseRate_eq_zero_iff`; field `sourceHorizon` of `sourceHorizonEscapeConservation_law` | same |
+| Continuous finite-factor-invariant compact-germ readers are constant on reflected local orbits | `no_continuous_frequencyInvariant_traceHankel_classifier` | `formal/GaloisForLFunctions/RHTower/ReflectedLambertRHBarrier.lean` |
+| One fixed-width logarithmically sampled prime–Gamma tail reconstructs off-line divisor poles and multiplicities | `meromorphicOrderAt_xiRectangularPrimeGammaTailContinuation_eq_neg_one_iff`; `normalizedPrimeGammaTailResidue_eq_xiRightMultiplicity` | `formal/GaloisForLFunctions/RHTower/CCMPrimeGammaSourceDivisorTomography.lean` |
+| Local reflection-odd aperture collision equals \(-4m_\rho^2\) | `xiCompletedApertureRegularizedResonantTwoPointDet_zero` | `formal/GaloisForLFunctions/RHTower/XiCompletedAperturePoleResonance.lean` |
+| Collision value \(-4\) is equivalent to simplicity, Hedenmalm normality, trivial relative \(K_1\) unit, and zero regulator | `xiCompletedApertureCollision_neg_four_iff_completeLocalSimplicity` | same |
+| Final capstone includes pointing, source/current separation, positive hierarchy, reflection completion, global tomography, and multiplicity tomography | `xiRamifiedSingularBoundary_law` | capstone |
+
+## Uniform-annihilator and Cholesky results intentionally not promoted to direct corollaries
+
+| Corpus theorem | Audit disposition |
+|---|---|
+| Uniform-annihilator inverse-limit law and clock-order escape | Structural instance of cofinal singularity: every finite stage can be differentially algebraic while annihilator order escapes every bound. It does not add a new divisor-orientation implication, so manuscript mentions it only in corpus interpretation. |
+| Cofinal inverse-Cholesky carrier selection and divergent repair | Structural analogue of singular acquisition and recovery blow-up. Its general Herglotz setting is not a theorem about the Xi source, so importing it into the main theorem would be collage. |
+
 ## Direct verification record
 
-- `lake env lean GaloisForLFunctions/RHTower/RiemannComplexModularCharacterLaw.lean`
-  passed.
-- `lake env lean GaloisForLFunctions/RHTower/XiSourceModularTypeSuperselectionLaw.lean`
-  passed after caching the checked dependency.
-- `lake env lean /tmp/XiSourceModularAxiomAudit.lean` passed. Every audited
-  theorem, including `gammaSewnActivationReesResolution_law` and the final
-  capstone, depends only on `propext`, `Classical.choice`, and `Quot.sound`.
-- `lake build GaloisForLFunctions.RHTower.XiSourceModularTypeSuperselectionLaw`
-  passed (`10110` jobs).
-- `scripts/formal_tools.py lint` found no proof debt or reachability error in
-  any module used by this paper. It exited nonzero only for 18 unrelated owned
-  modules already absent from their theorem-area umbrellas.
-- Final PDF: 20 A4 pages. Tectonic compilation passed with no overfull box,
-  undefined-reference, or citation warning; all 20 rendered pages were
-  inspected.
-- Final process audit found no stale `lean`, `lake`, or `formal_tools.py`
-  process.
+Pending final audit after manuscript freeze.

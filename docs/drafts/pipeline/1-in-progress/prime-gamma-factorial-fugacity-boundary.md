@@ -167,6 +167,45 @@ and the cell is nonzero on every right Xi divisor point.  Multiplication by this
 cell does not alter the fugacity abscissa.  What remains unproved is that the tomography polar
 class pulls back *linearly, before the square*, to the singular identity fibre of `(PJF4)`.
 
+## `[PAPER-PROVED] [FORMALIZED]` Collapsed-width polar transgression
+
+Varying source width removes the square-root ambiguity without choosing a branch. For a right
+centered Xi zero \(w=\rho-\tfrac12\) of analytic multiplicity \(m\), let
+\[
+ {\mathfrak R}_{m,w}(L)=2mA_L(w)^2.
+\tag{PJF12a}
+\]
+For every real \(L>0\), this is the actual trailing coefficient at \(s=1+w\) of the cutoff-free
+observable tomography continuation. Although that pole disappears at \(L=0\), its polar
+coefficient has the unique entire normal-cone extension `(PJF12a)`. Its collapsed-width jets are
+\[
+ {\mathfrak R}_{m,w}''(0)=4m,
+ \qquad
+ {\mathfrak R}_{m,w}'''(0)=-12mw.
+\tag{PJF12b}
+\]
+Consequently
+\[
+ m=\frac14{\mathfrak R}_{m,w}''(0),
+ \qquad
+ mw=-\frac1{12}{\mathfrak R}_{m,w}'''(0),
+ \qquad
+ w=-\frac{{\mathfrak R}_{m,w}'''(0)}
+              {3{\mathfrak R}_{m,w}''(0)}.
+\tag{PJF12c}
+\]
+
+This is a universal source-defined phase-recovery law. A fixed-width value is a square and is
+reflection-even; the third normal jet of the same squared family is linear in the signed centered
+zero. No square root, zero-dependent exponential multiplier, or post-specialization branch is
+used. The second jet simultaneously recovers multiplicity.
+
+The value at \(L=0\) must not be confused with the ordinary meromorphic trailing coefficient of
+the degenerate continuation. Meromorphic order changes when the pole coefficient vanishes.
+The new object is the polar normal-cone germ across that order jump. This makes the required
+“third completion” precise at each divisor fibre: retain the normal jet of a disappearing pole,
+not merely its value in an ordinary Hilbert or meromorphic fibre.
+
 ## Reflected-character interpretation
 
 Let

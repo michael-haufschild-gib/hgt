@@ -558,8 +558,26 @@ outside `[-b,b]` with no upper support bound, so the argument does not apply and
 undetermined.
 
 The missing lemma is therefore precise: **support control for `Q_b` applied to an annulus-supported
-vector** — how far outside `(b,c)` the Sonin projection spreads it.  Nothing in the corpus bounds
-that, and it is the single input both a positive and a negative resolution would need.
+vector** — how far outside `(b,c)` the Sonin projection spreads it.
+
+That spreading can now be isolated exactly.  The defining identity of the projection correction
+gives `Q_b = 1 - A_b - R_b + C_b`, so on a vector killed by the physical cutoff,
+
+```text
+Q_b w = (1 - R_b) w + C_b w,        C_b Schatten-1,                       (40)
+```
+
+and therefore, for `w` in the annulus between the two apertures,
+
+```text
+Z w = (Q_a - Q_b) D_r [ (1 - R_b) w + C_b w ].                            (41)
+```
+
+So the entire obstruction is the **Fourier band-pass** `1 - R_b`: it is the only term that spreads
+the support, and everything else is trace class.  The remaining question is quantitative and
+classical — how much of `(1 - R_b) w`, for `w` supported in `(b,c)`, the dilation carries into the
+`(a,b)` layer.  That is a time-band estimate of the kind the prolate literature supplies, and it is
+the last input needed.
 
 ### Proof
 
@@ -693,6 +711,8 @@ provisional pending expert/literature review.
 | `(37)` carrier form | `evenSoninApertureSuccessiveLayerTransition_eq_zero_iff_defect_mul_outer` |
 | `(39)` inner-band agreement | `evenSoninApertureSuccessiveLayerTransition_apply_of_indicatorCutoff_eq_self` |
 | witness criterion | `evenSoninApertureSuccessiveLayerTransition_ne_zero_of_lostTransition_apply_ne_zero` |
+| `(40)` outer-band split | `evenCentralSoninProjection_apply_of_indicatorCutoff_eq_zero` |
+| `(41)` reduced coupling | `evenSoninApertureSuccessiveLayerTransition_apply_annulus` |
 
 Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninPrincipalRelativeCyclicExtension.lean`,
@@ -707,7 +727,8 @@ Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninApertureFlagChain.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninInnerBandAnnihilation.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninApertureDefectSupport.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninCouplingInnerBandCriterion.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninCouplingInnerBandCriterion.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOuterBandProjectionSplit.lean`.
 All declarations depend only on `propext`, `Classical.choice`, `Quot.sound`.
 
 Novelty split for Theorem G: `(7)` was already in the corpus
@@ -718,6 +739,11 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-07-31 — the support spreading isolated.  On a vector outside the physical window the Sonin
+  projection is the Fourier band-pass plus a trace-class correction, so the coupling on an annulus
+  vector is the aperture layer applied to the dilated band-pass, up to trace class.  The whole
+  obstruction is now the single classical operator 1 - R_b, and the remaining input is a time-band
+  estimate rather than anything specific to the Sonin construction.
 - 2026-07-31 — witness criterion proved and the missing analytic tool named.  On the inner band the
   coupling equals the lost transition, so a nonzero value of the lost transition there settles it;
   tracing the annulus candidates shows the obstruction is that the Sonin projection of an

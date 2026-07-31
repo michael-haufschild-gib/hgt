@@ -785,6 +785,35 @@ the prefactor ratio converging to `lead c₁ / lead c₂`.  The ordering therefo
 `c(s)·ψ(s)^b·P(Γ)/Q(Γ)` with `c ∈ ℂ[s]` arbitrary nonzero, the lexicographic comparison being run on
 the Gamma valuation and then on `(deg c, b)`.
 
+`formal/GaloisForLFunctions/HTGeometry/GammaSumValuationBoundary.lean` lifts the ordering from single
+monomials to **finite sums** of them, which is the shape an actual coefficient has.  Dividing a sum
+by its dominant term makes every other summand tend to zero
+(`tendsto_polyWeightedTerm_div_dominant`), so the sum is asymptotic to that term
+(`tendsto_polyWeightedSum_div_dominant`).  Three consequences:
+
+- **no cancellation** (`polyWeightedSum_eventually_ne_zero`): a sum of graded monomials with a
+  strictly dominant term is eventually nonvanishing on a vertical line.  For the graded monomial
+  algebra this is a *theorem* — the transfer step of §3 with no appeal to hypertranscendence of the
+  formal Stirling series, which is only needed for coefficients outside this algebra;
+- the leading behaviour of such a sum is computable — it is that of its dominant monomial;
+- `tendsto_polyWeightedSum_ratio`: the projective boundary of two sums is the boundary of their
+  dominant monomials, so eq. (5) extends from monomial coefficients to arbitrary elements of the
+  graded algebra.
+
+`GammaRationalDatum.one` records the trivial datum, so pure `ℂ[s][ψ]` elements are the special case
+with no Gamma factor.
+
+`formal/GaloisForLFunctions/HTGeometry/GammaGradedStripCollapse.lean` is the capstone of this line:
+eq. (8) for the **entire graded coefficient algebra**.  `gradedSum_strip_relation_dominant_monomial_eq_zero`
+takes coefficients `F_α = ∑_q c_{α q}(s)·w(s)^{b_{α q}}·P_{α q}(Γ)/Q_{α q}(Γ)` — arbitrary finite
+sums of graded monomials — with a dominant monomial `m α` inside each `F_α` and the requirement that
+`m β` strictly dominate every `m α`.  Since each sum is asymptotic to its own dominant monomial, the
+projective comparison of coefficients reduces to that of the dominants, and the conclusion is again
+`M_β(f) = 0` identically on the strip.  Its specialization
+`digammaGraded_strip_relation_dominant_monomial_eq_zero` is the statement for the actual digamma
+field.  No analytic input is hypothetical: return times come from almost periodicity, the coefficient
+boundary from the valuation ordering.
+
 `formal/GaloisForLFunctions/HTGeometry/IsometricRecurrence.lean` abstracts the recurrence to any
 relatively-compact isometric `ℝ`-action (`isometricAction_recurrence`, `isometricAction_return_seq`),
 so it instantiates both to `ℝ →ᵇ ℂ` and to vertical translation of holomorphic functions on a strip.

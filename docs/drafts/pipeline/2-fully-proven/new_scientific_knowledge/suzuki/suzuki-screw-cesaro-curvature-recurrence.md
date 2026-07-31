@@ -26,10 +26,10 @@ mean curvature.
 
 - [x] 0 -> 1 in-progress: source-pure exact statement, transform attack, hostile alternatives
 - [x] 1 -> 2 fully-proven: complete Landau paper proof, exact normalization and boundary regularity audited
-- [x] 2 -> 3 formalized (analytic core, Sections 3--4): `xiScrewPrimitive_cofinal_sign_change`
-      proved unconditionally; module build, axiom audit, and lint pass
-- [ ] 2 -> 3 formalized (Section 1 bookkeeping): `c_Xi = -sum 1/gamma^2` and termwise
-      integration, transferring the sign change to the literal screw average
+- [x] 2 -> 3 formalized (theorem): `xiScrewCesaroMean_cofinallyCrosses` proved unconditionally
+      for the divisor form of the centering constant; module build, axiom audit, and lint pass
+- [ ] 2 -> 3 formalized (naming): identify `xiScrewCurvature` with `(XiC''(0)/XiC(0)).re` by
+      termwise second differentiation of the Hadamard product
 - [ ] 3 -> 4 publication-ready: standalone theorem + proof + novelty audit
 
 ## Competing hypotheses
@@ -321,15 +321,35 @@ real-part gap; and pole cancellation is impossible because the coefficient of a 
 depends on the frequency only through its square, so every frequency of a common square fibre
 contributes the identical term.
 
+### Section 1 and the crossing theorem are closed
+
+- `xiScrewCurvature` : the centered curvature constant in its divisor form
+  `-Re sum 1/gamma^2`, equation `(2)`.
+- `xiScrewDivisorTerm_eq`, `xiScrewDivisor_eq` : the corpus screw summand
+  `(cosh (t i gamma) - 1)/(i gamma)^2` is literally `1/gamma^2 - cos (gamma t)/gamma^2`, so the
+  screw divisor splits as `sum 1/gamma^2 - sum cos(gamma t)/gamma^2`.  This is Suzuki's
+  expansion `(1)`.
+- `xiSuzukiScrewProfile_sub_curvature` : hence `g(t) - c_Xi = Re sum cos(gamma t)/gamma^2`,
+  equation `(3)`.
+- `integral_xiScrewCosTerm`, `summable_integral_norm_xiScrewCosTerm`,
+  `suzukiCurvatureCenteredPrimitive_eq_realWaveTrace` : termwise integration on `[0,A]` gives
+  `h(A) = sum sin(gamma A)/gamma^3`, equation `(4)`, identified with the constant-weight wave
+  trace.
+- `continuous_xiScrewCosSum`, `continuous_xiSuzukiScrewProfile` : the interval integrability the
+  Cesaro bridge needs.
+- `xiScrewCesaroMean_cofinallyCrosses` : **the card's theorem.**
+  `CofinallyCrosses (suzukiScrewCesaroMean xiSuzukiScrewProfile) xiScrewCurvature` -- the initial
+  screw average crosses the central Xi curvature strictly in both directions at arbitrarily large
+  apertures.  No hypotheses.
+
 ### What remains
 
-Only the bookkeeping of Section 1, connecting `(4)` to the literal screw objects:
-`c_Xi = -sum 1/gamma^2` (the centered Hadamard second-jet identity `(2)`), the resulting
-`g(t) - c_Xi = sum cos(gamma t)/gamma^2` from the corpus definition `xiScrewDivisor`, and
-termwise integration to `(4)`.  Once those are in place the sign change transfers verbatim to
-`suzukiCurvatureCenteredPrimitive xiSuzukiScrewProfile c_Xi` and, through the existing
-`cofinallyCrosses_suzukiScrewCesaroMean_iff_centeredPrimitive`, to the Cesaro-average crossing
-statement itself.
+One identification: `xiScrewCurvature = (XiC''(0)/XiC(0)).re`, i.e. that the divisor form of the
+constant agrees with the central curvature ratio the card uses to name it.  The unconditional
+Hadamard product `XiC_eq_constant_mul_canonicalProduct` is available in the corpus, so this is a
+termwise second-differentiation of the canonical product at the origin: `P(0) = 1`, `P'(0) = 0`
+by the genus-one reflection cancellation, and `P''(0) = -sum 1/gamma^2` factor by factor.  The
+crossing theorem above does not depend on it -- it only renames the centering constant.
 
 ## Log
 

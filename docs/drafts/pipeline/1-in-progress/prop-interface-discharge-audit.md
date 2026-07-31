@@ -2777,3 +2777,88 @@ common integer denominator — were consumed and produced nowhere.  None is an a
   the compactness hypothesis holds on every finite configuration, so the common-denominator
   theorems are not vacuous.  (Recorded honestly: these two are cheap, and the substantive question
   of whether the *integral* adeles are compact is not settled here.)
+
+**Correction to the entry above, same session.**  The gap I flagged — whether the compactness
+premise has a witness beyond finite sets — is closed, and the corpus already held the answer.
+`FieldOneFiniteAdeleIntegralBruhatTest` proves
+`fieldOneFiniteAdeleIntegralAddSubgroup_isCompact`: the integral adeles are compact, by Tychonoff
+through `RestrictedProduct.range_structureMap` and the local `ℤ_p` compactness supplied by
+`Rat.HeightOneSpectrum.adicCompletionIntegers.padicIntEquiv`.
+
+The reason it was not visible from the `CCMRational…` side is a **naming duplication**:
+`CCMRationalFiniteAdele` (in `CCMRationalFiniteBruhatReal`) and `FieldOneFiniteAdele` (in
+`FieldOneFiniteAdeleWeylCharacter`) are two `abbrev`s for the *same* type,
+`IsDedekindDomain.FiniteAdeleRing ℤ ℚ`, developed in two module families that never cite each
+other.  So `isCompact_integralAdeles_ccmRationalFiniteAdele` is a one-line transport, and
+`exists_commonIntegerDenominator_integralAdeles` applies the common-denominator theorem to an open
+compact subgroup rather than to a finite configuration.
+
+Recorded as a lead: the two adele module families should be checked for further duplicated
+development — the compact-open basis, local compactness, sigma-compactness and the Haar layer all
+exist on the `FieldOne…` side and may be silently re-proved on the `CCMRational…` side.
+
+## A new instrument: duplicate statements across modules
+
+Following the `CCMRationalFiniteAdele` / `FieldOneFiniteAdele` finding, a third instrument was
+written: group every project proposition by the *structural form of its type* (de Bruijn indices
+make the comparison alpha-invariant), keep the groups spanning more than one module.  Script:
+`scratchpad/AuditDuplicateStatements.lean`.
+
+**29 629 project propositions scanned; 46 cross-module duplicate groups.**
+
+The head of the list is not duplicated mathematics but **`local instance` boilerplate**: 38 modules
+separately declare `local instance : IsDomain upperEndAnalyticSubring`, 7 declare
+`CharZero upperEndMeroField` (which `UpperEndDifferentialInstances` already exports as a `scoped`
+instance), 7 declare the same complex/prime scalar tower.  These are re-declarations of a missing —
+or unimported — global instance, not repeated proofs.
+
+Below that the groups are genuine duplicate theorems, mostly pairs, e.g.
+
+* `isOpen_upperTail` (`UpperEndDigammaShift`) vs `upperTail_isOpen` (`UpperEndFilter`)
+* `upperTail_infinite` vs `infinite_upperTail`
+* `finrank_graphCoboundary_range` (`GraphCoboundaryRank`) vs `finrank_range_graphCoboundary`
+  (`CoherenceGraphCapacity`)
+* `differentiallyAlgebraic_exp` (`Hypertranscendence`) vs `differentiallyAlgebraic_complex_exp`
+  (`DerivInvariantObservableWitnesses`)
+* `hypertranscendental_gamma` (`GammaHypertranscendental`) vs
+  `gamma_pointedSource_member_hypertranscendental` (`GammaPointedSourceNonEffectivity`)
+* `taylorPS_polynomial_eval` vs `taylorPS_polynomial_eval_hardy`
+
+**Not acted on here, deliberately.**  Removing a duplicate means editing modules other lanes are
+writing, and the instance boilerplate spans 38 files.  The finding is recorded as a lead with the
+instrument in place, so the dedup can be done as its own pass when the tree is quiet.  The
+direction rule of `dedup-move-direction` applies: check each pair's helpers before deciding which
+side survives.
+
+## `HTGeometry` mathlib-premise scan, head enumerated
+
+The earlier `HTGeometry` mathlib-premise run reported "488 unproduced, no genuine open row above 11
+uses" but never listed the tier below that.  Re-run with the session's modules in place:
+**104 159 constants, 1 364 premise keys, 482 unproduced**.  The head, now enumerated:
+
+| uses | premise | reading |
+|---:|---|---|
+| 19 | `z ∈ positiveHalfPlane` | parameter constraint |
+| 16 | `0 < jetMonomialDegree n anchor` | parameter constraint |
+| 15+15+8 | `Ideal.IsPrime` on the projective chart rings | parameter constraint; `⊥` is prime in a domain |
+| 12 | `IsWeightedHomogeneous gammaPoleSourceDerivativeWeight` | produced by mathlib |
+| 11 | `Function.Injective (…NevanlinnaCarrierFamily.quotient)` | the known open Nevanlinna bundle |
+| 8 | `numOrder = denOrder` on a Gamma rational datum | parameter constraint |
+| **8** | **`DifferentiableOn ℂ f (openVerticalStrip σ η)`** | **genuine — discharged below** |
+| 7 | `x ∈ upperTail` | parameter constraint |
+| 5 | `∃ packet, ObserverSpanningPacket L sites packet` | the existence side of the Steiner layer |
+
+### Holomorphy on a vertical strip, produced
+
+`HTGeometry/VerticalStripHolomorphyWitness.lean` (built, registered, axioms clean):
+
+* `differentiableOn_openVerticalStrip_of_differentiable` — every entire function qualifies, which
+  is the producer the strip-collapse and valuation-boundary theorems needed;
+* **`differentiableOn_openVerticalStrip_iff`** — the strip is open, so the hypothesis is *pointwise*
+  differentiability on it, which is how it is checked in practice;
+* `…_const`, `…_exp` — concrete instances;
+* **`differentiableOn_openVerticalStrip_inv_sub`** and
+  `exists_differentiableOn_openVerticalStrip_with_pole` — and the hypothesis is **strictly weaker
+  than entirety**: a simple pole at the boundary abscissa `σ + η` sits off the open strip, so
+  `z ↦ (z − c)⁻¹` is holomorphic on it.  That is the point of stating the theorems on a strip
+  rather than on `ℂ`, and it is now recorded rather than implied.

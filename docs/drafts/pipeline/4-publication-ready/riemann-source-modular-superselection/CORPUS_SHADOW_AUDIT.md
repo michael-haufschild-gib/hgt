@@ -2,157 +2,180 @@
 
 Audit date: 2026-07-31.
 
-Purpose: test whether manuscript’s final law explains high-value RH, Hedenmalm,
-HTGeometry, and HilbertMetric results, rather than merely placing them beside
-one another.
+Purpose: test whether manuscript explains high-value RHTower, HTGeometry,
+Hedenmalm, Wold–Poisson, Sonin/Calkin, four-unit Ward, and failed-route
+results by one law, rather than listing them.
 
 ## Strongest law recovered
 
-Targeted corpus audit supports a stronger statement than the earlier
-depth/character package:
+Corpus now supports:
 
-> **Parity-resolved bifiltered ramified-character data-processing law.**
-> Arithmetic acquisition has independent valuation-depth and prime-normal
-> breadth, together with an odd prime-log orientation jet. Evenization retains
-> divisor support and full logarithmic current but loses that odd lift.
-> Singular acquisition produces the ramified divisor object
-> \((m_\rho,\chi_\rho)\). Faithful conservative transport forces the real rate
-> of \(\chi_\rho\) to vanish; quadratic transport detects the same equalizer but
-> erases its side; faithful mass transport preserves it with an explicit
-> condition number; positive thermal boundary density couples continuous rate
-> to discrete order by \(2qm=1\) and selects sign monodromy, making full deck
-> descent impossible.
+> **Pointed-observability and ramified-character law.** Arithmetic source
+> orientation is pointing data above a nonseparated projective differential
+> field. Finite positive source kernels represent one collision matroid.
+> Logarithmic-current observability is a strictly stronger matroid, and
+> divisor orientation is an odd lift above both. Singular acquisition sends
+> this data to \((m_\rho,\chi_\rho)\), where multiplicity is ramification and
+> the character rate is transverse displacement. Positive descendants form
+> a strict hierarchy: critical clock, finite collision geometry, global
+> magnitude budget, atomwise diagonal response, and global common-test
+> resolvent positivity are not interchangeable. Conservative descent forces
+> character unitarity; away from it, only a hyperbolic cross pairing is
+> invariant and every Hilbert-positive invariant form vanishes.
 
-This law has four genuinely different information-loss mechanisms:
+This is stronger than the previous “bifiltered ramified-character” statement
+because it explains why a small positive global defect still does not provide
+zero exclusion.
 
-1. scalar grading erases source breadth;
-2. evenization erases the odd orientation lift but not logarithmic current;
-3. regular conservative descent erases or excludes nonunitary character;
-4. full deck descent conflicts with the sign sector selected by positive
-   first-order density.
+## Newly absorbed positive theorems
 
-That distinction is the main new synthesis. Earlier drafts treated all
-failures as “positivity loss” or “finite-order obstruction.”
-
-## Exact shadows now explained
-
-| Corpus theorem/no-go | Place in law | Status |
+| Corpus result | Place in law | Status |
 |---|---|---|
-| Bounded exponent source, inverse-depth normal cone, and centered Xi current | Source-to-divisor singular acquisition | Direct theorem/corollary |
-| Positive largest-valuation shell frame and relative hypertranscendence | Depth axis and tail-complete fusion | Direct theorem |
-| Prime-residue valuation fusion | Independent breadth axis | Direct theorem |
-| No additive \(\mathbb N^2\to\mathbb N\) scalarization; paired transverse recovery | Bifiltered acquisition | Direct theorem |
-| Squarefree activation and conditional geometric valuation fibre | Depth-one source disintegration | Direct theorem |
-| Fisher whitening and Gamma Rees rank | Infinite-grade source completion | Direct theorem |
-| Arithmetic Julia normal derivative \(\ell_x(p)\to\log p\) | Odd orientation producer | Direct theorem |
-| Dense prime-clock graph and bounded-recovery blow-up | Singular global realization of odd jet | Direct theorem |
-| Pointed Fisher--Ward oddness and curvature pairing | Orientation-preserving scalar transgression | Direct theorem |
-| Squared Xi hypertranscendence and logarithmic-current field equality | Even-current/odd-lift parity split | Direct theorem |
-| Source-selected odd Cayley coordinate and Xi divisor zero locus | Odd reflection lift | Direct theorem |
-| Every differentiable even reader has zero first jet | Universal parity no-go | Direct theorem |
-| Finite Xi log-derivative reporter blindness, including finite Gibbs dressing | Finite-dimensional shadow of infinite current tower | Direct corollary |
-| No finite local polynomial spectral frame for horizontal Xi derivative | Global shift-propagation shadow of parity/locality loss | Direct corollary |
-| Hedenmalm divisor-supported metric classification | Singular theta acquisition | Direct theorem |
-| Hedenmalm dense nonclosed radical and nonclosability | Ordinary-\(L^2\) acquisition failure | Direct theorem |
-| No entire theta heat-node delta reader | Analytic acquisition failure | Direct theorem |
-| Wold-depth/Poisson-time ancestry | Continuous character in two independent clocks | Direct theorem |
-| Prime-seam Sonin/Calkin compactness | Quotient-norm consumer of same character | Direct theorem |
-| Fixed-edge four-unit Ward positivity and one-node failure | Final positive consumer of same character | Direct theorem |
-| Prime-valuation finite-versus-flat reflection fracture | Asymptotic type of character sign | Direct theorem |
-| Finite-Rees radical invariance and beyond-all-orders sewing cost | Regular reflection transport boundary | Direct theorem |
-| Dyadic analytic roots, slit roots, local loops, windows, and Schwarz roots | Discrete ramification tower | Direct theorem |
-| Sharp dyadic initial segment and persistent odd loop | Exact \(2\)-adic multiplicity phase | Direct theorem |
-| Finite-ramified CCM boundary no-go | Density selects sign monodromy; descent requires trivial monodromy | Direct theorem |
-| Nontorsion-deck CCM boundary no-go | Infinite-sheet version of same charge law | Direct theorem |
-| Canonical Xi--Hurwitz orientation energy | Faithful reflection-even quadratic compression | Direct theorem |
-| Poisson/divisor/projective/Hurwitz aperture ray | Complete continuous character spectrum | Direct theorem |
-| Mass-graded trace zero-free distortion | Faithful nonconservative data processing | Direct corollary |
-| Escaping quartet, \(8\pi\) escape, compact-jet and bounded-window blindness | Compact consumers can lose fixed character charge | Direct theorem |
-| Outer graph reconstruction and inner nearby profile | Multiplicity-weighted coupling \(-m_\rho(\rho-\tfrac12)\) | Direct theorem |
+| Signed-prime field equality is eventual equality/opposition; projective-tail fibres are dense | Source orientation is pointing above field type | Direct theorem |
+| Positive definiteness selects literal all-positive prime source | Positive source marking before quotient | Direct theorem |
+| Pairwise transverse Xi differential matroid is rooted graphic matroid | Finite positive geometry is source incidence | Direct theorem |
+| All scalar valuation layers leave this matroid unchanged | Depth completion cannot manufacture breadth | Direct theorem |
+| Rooted-star incidence, valuation, Gaussian, Szegő, raw-Xi, and cofinite prime-jet positivity collapse to distinct nonzero labels | Positive finite constructions are collision tests | Direct theorem |
+| Cofinite Xi reporter can be faithful to Xi jets and blind to nonzero log-current packet; isometries preserve both facts | Carrier/current observable-matroid separation | Direct theorem |
+| Completed endpoint charge gives \((\Im\rho)^2>7907/93\) for a hypothetical off-line zero | Quantitative positive source budget | Direct theorem |
+| Self-localized transverse energy law \(\mathcal E_\perp\le4(C_\perp/(4-C_\perp))^3<1/150000\) | Global magnitude level | Direct theorem |
+| Thermal/source second-moment gap equals \(\mathcal E_\perp\) | Exact source/divisor budget identity | Direct theorem |
+| Cofinal theta-shell Ward density is strictly convex | Positive cofinal source geometry | Structural shadow; not needed in headline |
+| Spectral-budget probes give unconditional low-height zero exclusion | Positive divisor budget | Structural shadow; cubic endpoint law is cleaner headline instance |
+| Fixed-width prime–Gamma tail reconstructs full off-line divisor and multiplicity | Global nonlocal positive consumer | Direct theorem |
+| Filled aperture collision equals \(-4m_\rho^2\) and value \(-4\) detects simplicity | Exact ramification tomography | Direct theorem |
 
-## Results explained structurally but not claimed as direct corollaries
+The height floor is not sold as competitive numerical zero verification.
+Its value is conceptual: the same analytic endpoint charge which bounds total
+transverse energy also forces a per-quartet cost without using a zero table.
 
-| Corpus area | Honest relation |
+## Newly absorbed no-go theorems
+
+| Corpus theorem/no-go | Universal explanation | Status |
+|---|---|---|
+| Explicit nonnegative unit-pole Mellin source has any prescribed \(\vartheta\pm ia\) and Cauchy energy \(>8\) | Critical clock/four-unit profile is a source-class quotient blind to divisor | Direct theorem |
+| No implication from critical-clock budget to strict-right Ward bound, independent of operator shape | Missing information occurs before operator choice | Direct theorem |
+| At every off-line Xi atom, a degree-one test kills positive Hilbert response but leaves transverse charge | Diagonal positive response has wrong kernel | Direct theorem |
+| Even nonuniform atomwise finite charge domination is equivalent to RH | Improving local constants cannot close route | Direct theorem |
+| Nonnegative mixed exponential polynomial has negative separated cylinder lift | Physical-line positivity need not admit finite SOS/PSD lift | Direct theorem |
+| Reflected source-only Ward majorant diverges vertically | Real-part absorption discarded cancellation needed for uniform four-unit bound | Direct theorem |
+| No finite-energy half-line source represents already-scalarized full Xi current | Anti-causal projection must precede Gamma/polar scalarization | Direct theorem |
+| Every off-axis zero creates one negative rank-one Weil value | Global common-test resolvent reaches information missing below | Direct theorem |
+| Uniform-annihilator order escapes every finite bound in inverse limit | Cofinal differential information cannot be certified at bounded law order | Structural shadow |
+| Every finite Cholesky frame leaves residual maximal HT, while coherent repair diverges | Finite positivity, carrier selection, and singular closure are distinct levels | Structural shadow |
+| No bounded finite-Rees operator sews reflected valuation sectors | Regular reflection transport preserves all-orders-flat radical | Direct theorem |
+| Positive density forces sign monodromy, incompatible with full deck descent | Continuous rate and discrete order couple through \(2qm=1\) | Direct theorem |
+| Compact finite-factor-invariant germ reader is constant | Local quotient removes global divisor fibre | Direct theorem |
+
+## Previously absorbed shadows
+
+| Corpus family | Place in law |
 |---|---|
-| Twenty-eight-chart Xi--Hurwitz orientation certificate | All charts share zero locus of quadratic character energy. Manuscript does not reprove every chart realization. |
-| Hedenmalm simplicity/conservativity criterion | Ramification coordinate explains why horizontal unitarity cannot see multiplicity. Manuscript does not claim simplicity. |
-| Higher-grade and finite-Euler Calkin rigidity | Bifiltered breadth and prime-seam character explain required frame. Exact higher-grade matrices are not restated. |
-| Finite Euler compression commutators | Same prime-seam orientation survives compression. Not every compression identity is a corollary of main theorem alone. |
-| Xi finite-value, tropical, Arakelov, and rational-Hurwitz certificates | Compatible consumers of character/energy. Omitted to prevent equivalence catalogue from replacing the object theorem. |
-| CCM analytic orbit and shift-spectrum rigidity | Consistent with current/parity/ramification law. Their exact orbit classifications require additional hypotheses and are not subsumed formally. |
-| Sonin/Koplienko semilocal orientation laws | Same signed seam at a different operator ideal. Manuscript proves Calkin consumer, not every semilocal formula. |
-| Mass-family defect and charge conservation identities | Used through quantitative aperture corollary; full mass geometry is not restated. |
-| General HTGeometry orientation, recurrence, QED, elliptic-gamma, and Nevanlinna laws | Outside Riemann source specialization. Name similarity is not evidence of mathematical dependence. |
+| Positive exponent shells and relative hypertranscendence | Depth axis and tail-complete fusion |
+| Prime-residue fusion and scalarization no-go | Independent breadth axis |
+| Squarefree activation, geometric valuation fibre, Fisher whitening, Gamma Rees rank | Source depth resolution |
+| Julia normal derivative \(\ell_x(p)\to\log p\) | Odd orientation producer |
+| Dense prime-clock graph and recovery blow-up | Singular global realization of odd jet |
+| Pointed Fisher–Ward trace | Odd scalar transgression |
+| Squared Xi current-field equality and odd Cayley lift | Even-current/odd-orientation parity |
+| Hedenmalm divisor rigging, dense radical, nonclosability | Singular acquisition |
+| Theta heat-node nonseparability | Analytic acquisition no-go |
+| Wold–Poisson ancestry | Two-clock representation of character rate |
+| Sonin/Calkin compactness | Prime-seam quotient of same rate |
+| Four-unit Ward one-node failure | Final positive consumer of same rate |
+| Hellinger finite/flat fracture and Rees sewing cost | Asymptotic type of reflection sign |
+| Dyadic roots, loops, windows, and deck descent | Multiplicity/ramification coordinate |
+| Xi–Hurwitz energy | Reflection-even quadratic detector |
+| Hyperbolic invariant form, Euler–Ward–Weil index, Schur tax | Conservative metric and completion debt |
+| Source horizon | Inverse generator converted to direct conjugate displacement |
+| Escaping quartets and \(8\pi\) charge escape | Compact consumers lose fixed global charge |
 
-## Corpus results that remain outside the law
+## Antagonistic synthesis tests
 
-These are genuine scope boundaries, not unexplained paper claims:
+### “This is still a collage.”
 
-- no source-derived theorem proves every \(\chi_\rho\) unitary;
-- no theorem proves Xi--Hurwitz orientation energy vanishes;
-- no theorem proves existence of a faithful nonzero conservative
-  source-to-consumer intertwiner;
-- no theorem supplies a source-derived upper bound forcing the \(8\pi\) defect
-  index to vanish;
-- no theorem proves all Xi zeros simple;
-- no theorem proves every Hilbert--Pólya or Connes--Consani implementation lies
-  in the excluded regular classes;
-- no theorem turns the four-unit Ward consumer into a source-side positivity
-  producer.
+No. Exact nontrivial arrows now exist:
 
-The manuscript answers why these missing steps are different:
+\[
+\begin{aligned}
+\text{prime sign source}
+&\to\text{projective field quotient / positive pointing},\\
+\text{source labels}
+&\to\text{collision matroid}
+\to\text{carrier/current separation},\\
+\text{unit pole}
+&\to\text{critical-clock quotient}
+\not\to\text{divisor energy},\\
+\text{endpoint charge}
+&\to\text{cubic global defect budget}
+\not\to\text{atomwise domination},\\
+\text{odd Julia jet}
+&\to\text{ramified character}
+\to\text{regular consumers},\\
+\text{global resolvent}
+&\to\text{rank-one off-axis detection}.
+\end{aligned}
+\]
 
-- unitarity is a continuous-character selection problem;
-- simplicity is a ramification problem;
-- source acquisition is singular;
-- positive scalar energy is an even detector, not an orientation producer;
-- full deck descent is incompatible with positive first-order density;
-- faithful nonconservative consumers retain information only with distortion.
+### “The \(1/150000\) bound is almost RH.”
 
-## Antagonistic synthesis test
+False. A nonnegative quantity can be arbitrarily small and nonzero. The
+atomwise kernel–charge theorem proves a stronger obstruction: no finite local
+comparison constant exists at an off-line atom. The cubic budget controls
+magnitude, not the kernel inclusion needed for vanishing.
 
-### Attack: “This is still a collage.”
+### “Four-unit positivity should propagate from the critical clock.”
 
-Failure of attack: exact arrows now exist between stages:
+False for the entire unit-simple-pole source class. An explicit nonnegative
+one-atom perturbation preserves the limiting clock and creates a prescribed
+off-line pair with energy \(>8\). No downstream operator can recover
+information absent from its source input.
 
-- Gamma contraction \(\to\) Julia odd jet;
-- odd jet \(\to\) pointed Ward curvature pairing;
-- squared carrier \(\leftrightarrow\) unchanged logarithmic-current field;
-- source graph \(\to\) Xi divisor/current;
-- divisor \(\to\) ramified character;
-- character \(\to\) Wold/Calkin/Ward/Rees consumers;
-- character \(\to\) quadratic energy;
-- character aperture \(\to\) mass-trace type with condition number;
-- positive density + analytic order \(\to\) sign monodromy.
+### “A larger semidefinite program should repair the mixed cone.”
 
-### Attack: “Squaring destroyed the only useful information.”
+Not through the natural separated cylinder. The manuscript gives a
+nonnegative physical-line exponential polynomial whose cylinder lift is
+negative. Finite sums of squared moduli are therefore excluded at that level.
 
-Failure of attack: squaring preserves divisor and logarithmic-current
-differential field. It destroys the odd lift only. This sharper parity
-statement explains both successful divisor reconstruction and failed
-orientation recovery.
+### “Global Weil positivity is just another equivalent criterion.”
 
-### Attack: “Ward positivity and deck ramification remain unrelated.”
+Its zero-locus equivalence is classical in spirit, but here it has a precise
+architectural role: a single common-test resolvent detects every off-axis pole
+where source-clock, collision, magnitude, and atomwise-diagonal levels fail to
+determine orientation. The paper does not count the equivalence as novelty.
 
-Failure of attack: positive finite thermal density forces \(2qm=1\). On an
-\(r\)-sheeted branch it selects \(\zeta^m=-1\); full deck descent requires
-\(\zeta^m=1\). The incompatibility is exact and independent of dimension.
+## Results deliberately outside direct scope
 
-### Attack: “Every consumer either works exactly or loses everything.”
+- general HTGeometry recurrence, QED, black-hole, elliptic-gamma, and
+  Nevanlinna models without a proved Xi specialization;
+- full 28-chart and larger RH-equivalence packages;
+- every CCM, Hilbert–Pólya, Sonin, or Deninger realization;
+- numerical zero tables and computation-based verification;
+- conjectural cofinal positivity propagation.
 
-Failure of attack: mass deformation is a third behavior. It is faithful but
-nonisometric, returning width with factor \(\sqrt{(9+a^2)/9}\). This supplies a
-quantitative data-processing law rather than another binary equivalence.
+Uniform-annihilator and Cholesky selection laws are discussed as structural
+analogues, not promoted to Xi corollaries. This avoids claiming thematic
+similarity as mathematical implication.
+
+## Remaining mathematical boundary
+
+No theorem in corpus supplies a source-pointed, incidence-preserving global
+common-test inequality which forces \(\mathcal E_\perp=0\). The paper answers
+why lower positive levels cannot supply it and proves exact positive and
+negative boundaries at each level. It does not prove RH or kill all
+Hilbert–Pólya/CCM routes.
 
 ## Verdict
 
-The strengthened paper explains every high-value targeted no-go named by user
-and every directly adjacent positive survivor found in publication-ready
-papers and relevant RHTower/HTGeometry/HilbertMetric capstones.
+Within Riemann source/orientation corridor, all high-value audited positive
+theorems and no-gos now have an exact place in one hierarchy. Most important
+new synthesis is:
 
-It does not explain the entire 1,000-plus-module research tree, and should not
-claim that. Many modules concern unrelated universal models. Within the
-Riemann source/orientation/ramification/consumer corridor, remaining gap is
-now sharply isolated: no theorem forces the continuous character to be
-unitary. Paper’s contribution is the universal information law around that
-gap, not zero exclusion.
+> positive arithmetic is not one cone. It is a tower of non-faithful
+> quotients, and orientation survives only if source pointing and incidence
+> reach global common-test coupling before scalar clock, diagonal Hilbert,
+> separated-cylinder, or even-character collapse.
+
+This is a coherent new route boundary. Whether it meets flagship-journal
+significance remains a separate referee question, not something corpus
+coverage can establish.

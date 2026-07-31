@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.FieldOneFiniteStageHaarScaling
 import GaloisForLFunctions.RHTower.FieldOneFiniteAdeleCompactOpenBasis
 import GaloisForLFunctions.RHTower.CCMRationalFiniteAdeleDenominator
+import GaloisForLFunctions.RHTower.FieldOneFiniteAdeleIntegralBruhatTest
 
 /-!
 # Adelic structural premises: Haar, measurability, compactness
@@ -66,6 +67,23 @@ large finite configurations. -/
 theorem isCompact_of_finite_ccmRationalFiniteAdele {K : Set CCMRationalFiniteAdele}
     (hK : K.Finite) : IsCompact K :=
   hK.isCompact
+
+/-- **The substantive witness.**  `CCMRationalFiniteAdele` and `FieldOneFiniteAdele` are two names
+for the finite adele ring of `ℚ`, so the recorded compactness of the integral adeles is a
+compactness statement about the former: the compactness hypothesis is satisfied by an open compact
+subgroup, not merely by finite configurations. -/
+theorem isCompact_integralAdeles_ccmRationalFiniteAdele :
+    IsCompact
+      (fieldOneFiniteAdeleIntegralAddSubgroup : Set CCMRationalFiniteAdele) :=
+  fieldOneFiniteAdeleIntegralAddSubgroup_isCompact
+
+/-- The common-denominator theorem applied to the integral adeles. -/
+theorem exists_commonIntegerDenominator_integralAdeles :
+    ∃ d : ℤ, d ≠ 0 ∧
+      (fieldOneFiniteAdeleIntegralAddSubgroup : Set CCMRationalFiniteAdele) ⊆
+        ccmRationalFiniteAdeleIntegerDenominatorSet d :=
+  ccmRationalFiniteAdele_isCompact_exists_commonIntegerDenominator
+    isCompact_integralAdeles_ccmRationalFiniteAdele
 
 end
 

@@ -447,6 +447,46 @@ acting trivially on the homogeneous jet field is the identity, and
 jet coordinates are linearly independent over the constants, so the matrix entries are read off the
 action.  The paper proof of `(11)` therefore now rests only on Rosenlicht's dimension theorem.
 
+`formal/GaloisForLFunctions/HTGeometry/ProjectiveHorizonMinorFamily.lean` records the two families
+of horizon observables that any invariant-theoretic route to the general-rank `(11)` must use, and
+the dual generation statement:
+
+- `jetDet_invariant_of_subset` and `jetDet_mem_horizonField`: the rank-`r` jet determinant of a span
+  is one of its own horizon observables;
+- `jetDet_insert_mem_horizonField`: adjoining one direction outside the span gives a rank-`(r+1)`
+  determinant which is still a horizon observable of the smaller span;
+- `chartAdaptedGenerators_adjoin_eq_top`: dually, one affine chart together with the tower of its
+  denominator generates the whole homogeneous jet field.
+
+`formal/GaloisForLFunctions/HTGeometry/ProjectiveHorizonMinorRatio.lean` adds the normalised
+observables and pins the elementary horizon field between two explicit descriptions:
+
+- `jetMinorRatio_mem_horizonField`: the rank-`(r+1)` minor divided by the rank-`r` minor -- the
+  transverse jet with its span component removed, i.e. the normalised quantity of the moving-frame
+  picture -- is again an observable of the span;
+- `chartHorizonGenerators_adjoin_le_horizonField`: the chart-denominator tower together with the
+  positive-order chart jets are all observables of `ker e_i^*`;
+- `affineCoord_notMem_horizonField` and `horizonField_singleton_ne_top`: the zeroth-order chart
+  coordinates are moved by the chart translations, so the elementary horizon field is a proper
+  subfield.
+
+`formal/GaloisForLFunctions/HTGeometry/ProjectiveHorizonChartBasis.lean` builds the substitution
+that inverts the chart change of variables while keeping the denominator tower:
+`chartBack` sends `X_(k,l)` to `D^l (X_(k,0) X_(i,0))` and fixes every `X_(i,l)`.
+`chartBack_deriv` proves it commutes with the jet shift, and `chartBack_affineNumer` that on
+numerators it reads `chartBack N_(k,l) = X_(k,l) X_(i,0)^(l+1)`.  After inverting `X_(i,0)` this
+sends each affine chart jet back to its homogeneous coordinate and fixes the tower, which is the
+substitution behind the statement that the tower together with the chart jets is a transcendence
+basis of the homogeneous jet field.
+
+`formal/GaloisForLFunctions/HTGeometry/ProjectiveHorizonChartBasisIndependence.lean` lifts that
+substitution to the localization away from the chart denominator (`chartLocBack`) and proves
+`chartLocBack_chartJetLoc`: it returns each affine chart jet to its homogeneous coordinate while
+fixing the tower.  Composing with it gives `algebraicIndependent_chartBasis`: **the tower of the
+chart denominator together with all jets of the affine chart coordinates is algebraically
+independent over the constants**.  With `chartAdaptedGenerators_adjoin_eq_top` supplying generation,
+that family is a transcendence basis of the homogeneous jet field adapted to one chart.
+
 Two limits are worth stating exactly.  The independence is over the horizon algebra rather than the
 horizon field; the two are equivalent, but the field form goes through
 `IntermediateField.algebraicIndependent_adjoin_iff`, whose elaboration on this type exceeds a
@@ -494,9 +534,20 @@ so this currently gives neither a zero-free region nor a critical-line implicati
 - [x] 2 -> 3n: the rank-one instance of `(11)` -- generation, independence and the count `N-1` --
       and the parameter count `(r^2-1)+r(N-r)=rN-1` behind `(8)`
 - [x] 2 -> 3o: faithfulness of the prolonged action, i.e. the generic-freeness input of `(11)`
-- [ ] 2 -> 3p: the general-rank transcendence-degree number of `(11)` for `r >= 2`, which needs
-      either Rosenlicht's dimension theorem or an explicit invariant field for spans of rank at
-      least two (no longer needed for any other part of the card)
+- [x] 2 -> 3p: the rank-`r` and rank-`(r+1)` minor observables of a span, and the chart generation
+      of the whole jet field
+- [x] 2 -> 3q: the normalised minor ratios, and the two-sided pinning of the elementary horizon
+      field between the chart-tower description and the full chart field
+- [x] 2 -> 3r: the inverse chart substitution, its commutation with the jet shift and its action on
+      the affine numerators
+- [x] 2 -> 3s: the chart transcendence basis -- independence of the denominator tower together with
+      all chart jets, matching the chart generation already proved
+- [ ] 2 -> 3s': transporting the translation fixed-field theorem through that basis, giving the
+      exact elementary horizon field and hence `(11)` at rank one in the full jet field
+- [ ] 2 -> 3t: the general-rank transcendence-degree number of `(11)` for `r >= 2`.  Both known
+      routes are long: Rosenlicht's dimension theorem has no mathlib surface, and the invariant
+      route needs the first fundamental theorem for `SL_r` acting on an `r x infinity` jet matrix,
+      i.e. that the minors above generate.  Not needed for any other part of the card.
 - [ ] 3 -> 4: specialist audit in projective differential invariants and building theory
 
 ## References
@@ -545,3 +596,13 @@ so this currently gives neither a zero-free region nor a critical-line implicati
   behind `(8)`.
 - 2026-07-31 — proved faithfulness of the prolonged action, the generic-freeness input of `(11)`;
   the paper proof of `(11)` now rests only on Rosenlicht's dimension theorem.
+- 2026-07-31 — recorded the rank-`r` and rank-`(r+1)` minor observables of a span and the chart
+  generation of the jet field, the standing ingredients for an invariant-theoretic `(11)`.
+- 2026-07-31 — added the normalised minor ratios and pinned the elementary horizon field between
+  the chart-tower description and the full chart field.
+- 2026-07-31 — built the inverse chart substitution and proved its jet-shift commutation and its
+  effect on the affine numerators; verified the whole `HTGeometry` umbrella builds with all
+  projective-horizon modules wired in.
+- 2026-07-31 — lifted the inverse chart substitution to the chart localization and proved the
+  chart transcendence basis: the denominator tower together with all chart jets is algebraically
+  independent.
