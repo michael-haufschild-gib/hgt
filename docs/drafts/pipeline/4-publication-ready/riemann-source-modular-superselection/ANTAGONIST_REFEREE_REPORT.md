@@ -1,247 +1,305 @@
 # Antagonist referee report
 
-Manuscript: **Boundary-character conservation for the Riemann divisor:
-Hypertranscendental prime shells and asymptotic superselection**
+Manuscript: **The ramified-character law for the Riemann divisor:
+Bifiltered source acquisition, conservative descent, and universal boundary
+spectra**
 
-Standard applied: hostile referee at a renowned general mathematics or mathematical-physics
-journal. “Nature/Science level” is assessed separately because it is a materially higher
-editorial threshold.
+Standard: hostile referee at a renowned broad mathematics or mathematical
+physics journal. Nature/Science-level significance is assessed separately
+because it is a substantially higher editorial threshold.
 
 Date: 2026-07-31.
 
-## Decision
+## Recommendation
 
-**Mathematical verdict:** pass.
+**Mathematical verdict:** pass, conditional only on ordinary independent
+checking.
 
-**Publication verdict:** credible submission to a strong broad mathematics or
-mathematical-physics journal, subject to independent specialist priority review.
+**Broad-journal verdict:** publishable in principle, but revise and shorten.
+The manuscript now contains a genuine organizing theorem rather than a chain
+of RH equivalents. A specialist referee must still decide priority and whether
+the 42-page synthesis is proportionate to its core result.
 
-**Nature/Science verdict:** fail. The paper neither proves RH nor excludes any zeros, and no
-honest framing can turn a source-information theorem into a flagship multidisciplinary result.
+**Nature/Science verdict:** fail. The manuscript neither proves RH, excludes a
+new region of zeros, nor closes Hilbert--Pólya or Connes--Consani. Calling it a
+flagship resolution would be false.
 
-This distinction is not cosmetic. The paper now clears the requested general-journal standard
-because it proves a new object theorem and a universal transport theorem, not an RH equivalence.
-It does not clear the later, stronger Nature-level aspiration.
+## Strongest defensible theorem
 
-## Referee's strongest version of the result
+The manuscript proves one parity-resolved data-processing law with four
+different loss mechanisms.
 
-One bounded-exponent Euler source has five rigorously connected manifestations:
+1. The arithmetic source is intrinsically bifiltered: valuation depth and
+   prime-normal breadth cannot be compressed faithfully by an additive scalar
+   grade.
+2. Its Gamma-sewn scalar cell approaches the lossless boundary only to second
+   order. The unique minimal positive Julia lift restores an odd first jet
+   \(\log p\). The global prime-clock graph of this jet is dense, and every
+   bounded finite-packet recovery has diverging norm.
+3. Pointed Fisher--Ward transgression is odd in this unsquared tangent and is
+   exactly a trace pairing with double-cutoff curvature.
+4. Squaring completed Xi preserves hypertranscendence and the full
+   logarithmic-current differential field, yet loses the odd reflected lift:
+   every differentiable even reader has zero first jet.
+5. Singular theta and score/overlap acquisition produce not merely a zero but
+   the ramified character
+   \[
+     (m_\rho,\chi_\rho),\qquad
+     \chi_\rho(z)=e^{z(\rho-\tfrac12)}.
+   \]
+   Its real rate is the continuous orientation coordinate and its dyadic deck
+   tower records multiplicity.
+6. The same continuous rate controls Wold--Poisson boundedness, prime-seam
+   Sonin/Calkin compactness, fixed-edge four-unit Ward positivity, and the
+   finite-versus-flat reflected Rees type.
+7. Positive finite first-order thermal density of an analytic germ forces
+   \(2qm=1\). On a finite \(r\)-sheeted branch this forces \(r=2m\) and sign
+   monodromy, so positive density is incompatible with full deck-invariant
+   descent. The four-unit normalization is one exact instance.
+8. Conservative transport, quadratic compression, and mass transport obey
+   distinct laws: conservative faithful descent forces zero real rate;
+   Xi--Hurwitz energy detects unitarity but erases side; mass transport is
+   faithful but returns horizontal width with an explicit condition factor.
 
-1. fixed-depth bulk limit \(\zeta\);
-2. inverse-depth exceptional section \(1/(2\xi)\);
-3. centered divisor current with affine residue
-   \(-m_\rho(\rho-\tfrac12)\);
-4. positive hypertranscendental exact-exponent shells whose first two prime atoms recover the
-   complete complex spectral coordinate;
-5. depth-one squarefree activation whose occupied state is the reflected geometric valuation
-   fibre.
-
-The fifth manifestation has a positive completion theorem and a negative transport theorem:
-
-- its atoms are exactly Fisher-damped Gamma valuation coordinates;
-- Gamma sewing preserves prime summability in both directions and therefore cannot be a hidden
-  cutoff or “free Hilbertization”;
-- its normalized boundary differences have weighted prime-log Rees symbols;
-- the first \(N\) symbols separate any \(N\) distinct primes by a nonzero Vandermonde determinant;
-- at a hypothetical right-half Xi zero, one reflected valuation sector is flat beyond every
-  Rees order and the other is half-normal;
-- every fixed finite-Rees bounded operator preserves the flat radical in arbitrary dimension;
-- every exact sewing operator grows beyond every inverse Rees power.
-
-Compact BV prime-window residues and Hurwitz monodromy independently recover the same horizontal
-charge. An explicit escaping quartet proves that compact holomorphic jets, bounded Ward windows,
-and reciprocal-square energy can all lose a fixed charge while the asymptotic character retains
-it.
-
-That is the publishable theorem package.
+This is the paper's object theorem. Terminal RH certificates are presented only
+as zero-locus consumers of its reflection-even energy, not as independent
+novelties.
 
 ## Fatal attacks attempted
 
-### 1. “This is a collage of unrelated true statements”
+### 1. “This is a 42-page collage”
 
-**Attack.** Normal cones, hypertranscendence, prime windows, Hellinger products, Gamma factors,
-and Rees filtrations could have been assembled rhetorically around \(\rho-\tfrac12\).
+**Attack.** Hypertranscendental shells, Julia operators, theta riggings,
+Hellinger products, Wold shifts, Sonin spaces, Ward traces, and ramified roots
+belong to different theories. Sharing \(\rho-\tfrac12\) does not make a law.
 
-**Resolution.** The activation identity closes the source chain:
+**Finding.** The manuscript now supplies exact connecting arrows:
+
+- squarefree activation disintegrates primewise into occupancy and a
+  conditional geometric valuation fibre;
+- Möbius shell differences are the fibre atoms, Fisher variance is occupancy
+  variance, and Gamma coordinates are their rare-event whitening;
+- the Julia normal lift recovers the first prime-log jet lost by scalar
+  contraction;
+- pointed Ward trace is an odd functional of that jet;
+- the source graph reconstructs the Xi logarithmic current;
+- singular acquisition turns its residue into the character
+  \(\chi_\rho\), while local analytic order produces the deck tower;
+- Wold, Calkin, Ward, Rees, energy, and mass aperture are proved consumers of
+  those two coordinates.
+
+The attack no longer defeats the mathematics. It remains a serious editorial
+criticism: the manuscript should probably lose secondary examples and retain
+the arrows.
+
+### 2. “Bifiltered scalarization is elementary”
+
+**Attack.** No injective additive map \(\mathbb N^2\to\mathbb N\) is not a
+deep theorem.
+
+**Finding.** Correct. The manuscript does not sell that lemma alone. Its role
+is diagnostic: depth-only source models necessarily erase prime-normal
+breadth, while two paired transverse views recover the joint incidence. The
+significance comes only from following that lost coordinate into the
+prime-log orientation jet and later consumer failures.
+
+**Verdict:** elementary component; nontrivial use.
+
+### 3. “The Julia lift is just a \(2\times2\) rotation”
+
+**Attack.** A positive plane lift of a scalar contraction is standard and
+cannot carry RH significance.
+
+**Finding.** Locally, the construction is elementary. The nontrivial content
+is the exact arithmetic normalization:
 \[
- A_1(\sigma)=\frac{\zeta(\sigma)}{\zeta(2\sigma)}
-             =\prod_p(1+p^{-\sigma}).
+ \ell_x(p)\longrightarrow\log p,
 \]
-Its normalized occupied state disintegrates into the exact conditional geometric valuation law
-used in the Hellinger theorem. Its positive atoms are the Möbius depth differences, their damping
-square is the occupancy Fisher variance, and removing that damping gives the Gamma valuation
-coordinate. Thus shell depth, squarefree occupancy, valuation fibre, Fisher scale, and Gamma
-frame are literal faces of one exponent source.
+followed by the dense graph of the all-prime clock and the quantitative
+divergence of every bounded packet recovery. The lift identifies where the
+orientation jet exists before divisor scalarization and why it has no bounded
+global inverse.
 
-Verdict: attack fails.
+**Verdict:** local novelty weak; global arithmetic theorem substantive.
 
-### 2. “The RH connection is decorative”
+### 4. “Even-current/odd-orientation is dressed-up calculus”
 
-**Attack.** Substituting a zero into a free-variable identity would provide no progress.
+**Attack.** \((\log f^2)'=2f'/f\) and the vanishing of an even first derivative
+are trivial.
 
-**Resolution.** The paper does more than substitute:
+**Finding.** Those identities are classical and excluded from novelty. The
+paper's stronger conjunction is that squaring the completed carrier preserves
+both hypertranscendence and its entire logarithmic-current differential field,
+while the source-selected Cayley lift changes sign under reflection. Hence
+divisor reconstruction can remain complete even though every even
+first-order orientation reader is blind. This resolves the apparent
+contradiction in earlier constructions.
 
-- the positive shell exists and is hypertranscendental relative to the complete zeta
-  differential field before any zero is selected;
-- its two least-prime characters recover the entire complex variable;
-- the reciprocal exceptional section is generated by an independent inverse-depth limit;
-- BV residue dilation and Hurwitz monodromy recover the same charge;
-- the charge becomes a sharp half-normal/all-orders-flat type fracture;
-- exact reflection sewing has a quantitative operator-norm singularity beyond every finite
-  order.
+**Verdict:** useful parity classification, not a standalone breakthrough.
 
-These statements classify what information survives divisor formation and what regular
-transport cannot reconstruct. They are not consequences of assuming RH or its negation.
+### 5. “The thermal law \(2qm=1\) is local asymptotics”
 
-Verdict: attack fails.
+**Attack.** Matching one power of a boundary variable is elementary and says
+nothing about RH.
 
-### 3. “Gamma is merely a relabelled missing source”
+**Finding.** The equality itself is short. Its consequence is sharper:
+finite ramification plus positive first-order density forces sign monodromy,
+whereas full deck descent requires trivial monodromy. This explains the
+finite-ramified and nontorsion-deck CCM no-go theorems by one
+representation-theoretic incompatibility and includes four-unit normalization
+without special pleading.
 
-**Attack.** The manuscript could hide the difficult source step in a Gamma gauge.
+**Verdict:** a genuine universal local law; not zero exclusion.
 
-**Resolution.** The Fisher–Gamma theorem proves the opposite. The multiplier satisfies
-\[
- \frac12<C_x(p)<1
-\]
-uniformly, so multiplying a nonnegative prime energy by \(C_x(p)^2\) preserves summability in
-both directions. Gamma cannot convert a divergent prime-harmonic source into a bounded one. What
-it retains is an unbounded tower of exact prime-log Rees symbols.
+### 6. “Xi--Hurwitz energy is a decorative RH equivalence”
 
-Verdict: attack fails.
+**Attack.** A nonnegative expression vanishing exactly on the critical line
+can be manufactured from the zeros and has no source-side force.
 
-### 4. “Different finite grades are being exaggerated as superselection”
+**Finding.** Correct as a warning. The manuscript uses this energy only as the
+canonical finite quadratic compression of character unitarity. It explicitly
+proves that the compression is reflection-even and therefore cannot select a
+side or supply the missing source orientation. Large terminal certificate
+packages add consumers of its zero locus, not evidence that the energy
+vanishes.
 
-**Attack.** A sufficiently large matrix, jet, or Hilbert space might cross the two sectors.
+**Verdict:** legitimate compression theorem; no RH progress by itself.
 
-**Resolution.** The right-half sector lies in the intersection of every positive Rees grade,
-whereas the reflected sector has half-normal order. The universal theorem applies to arbitrary
-real normed source and target spaces: any operator family with one finite operator-norm Rees
-bound preserves that intersection. Exact sewing forces norm growth beyond every inverse Rees
-power. Matrix size and finite jet order are irrelevant.
+### 7. “Hedenmalm, Sonin/Calkin, Wold, and Ward remain name-dropping”
 
-Verdict: attack fails.
+**Attack.** Stating that several criteria vanish at the same rate is merely
+equivalence inflation.
 
-### 5. “The negative theorem kills Hilbert–Pólya or CCM”
+**Finding.** The continuous character is inserted into each consumer with a
+different exact mechanism:
 
-**Attack.** The paper may be overclaiming a no-go for famous programs.
+- Wold depth and Poisson time give a two-clock quadrant law;
+- the Sonin prime seam becomes a Calkin compactness equalizer;
+- fixed-edge Ward positivity has a one-node witness when the rate is positive;
+- Rees reflection distinguishes finite/half-normal behavior from
+  all-orders-flat behavior;
+- Hedenmalm's theta-null form supplies singular divisor acquisition and a
+  dense nonclosed radical rather than an ordinary Hilbert completion.
 
-**Resolution.** It does not make that claim. It excludes only implementations whose action on
-the displayed reflected valuation sectors is bounded and finite-Rees-moderate. A published
-spectral program may use an essentially singular boundary correspondence or a different source
-category. The manuscript states this boundary.
+These results become shadows of one character only after their maps are
+proved. They are no longer presented as independent evidence for RH.
 
-Verdict: overclaim removed.
+**Verdict:** attack fails for stated consumer classes.
 
-### 6. “The result still has no zero exclusion”
+### 8. “Finite reporters and local spectral frames may simply be bad models”
 
-**Attack.** A source character and a transport obstruction do not force
-\(\Re\rho=\tfrac12\).
+**Attack.** Kernel witnesses for finite derivative packets do not exclude an
+infinite or nonlocal recovery.
 
-**Resolution.** Correct. The paper explicitly says RH is not proved and makes no defect-vanishing
-claim. Its question is the prior information problem: what carries orientation, where is it
-lost, and what completion category survives? Those questions are answered completely. The answer
-is the source-normal character with an infinite Gamma–Rees resolution, not a bounded scalar
-positivity witness.
+**Finding.** Correct, and manuscript says so. It proves blindness of every
+fixed finite reporter, persistence under finite Gibbs dressing, and failure of
+positive-aperture finite local polynomial frames. The dense graph and recovery
+blow-up then identify the needed replacement as singular/infinite, not
+impossible.
 
-Verdict: valid limitation, not a correctness defect. It prevents Nature-level positioning.
+**Verdict:** sharp finite/local boundary, not death of spectral programs.
 
-### 7. “Local observers might still be complete”
+### 9. “Mass deformation contradicts information loss”
 
-**Attack.** Compact jets, Ward windows, or reciprocal energy could perhaps retain orientation
-despite the type theorem.
+**Attack.** If another consumer can recover width, the superselection story is
+incoherent.
 
-**Resolution.** The escaping-quartet theorem constructs completed-symmetric
-hypertranscendental perturbations with a fixed off-line quartet while every fixed jet converges
-locally, Ward density vanishes on every bounded interval with total mass \(8\pi\), and
-reciprocal-square energy tends to zero. The character remains fixed.
+**Finding.** It instead forces a taxonomy. Exact conservative transport
+excludes nonunitary characters; even/quadratic transport loses side; full deck
+transport conflicts with sign monodromy; mass transport remains faithful but
+nonisometric, with returned width enlarged by
+\(\sqrt{(9+a^2)/9}\). The manuscript no longer calls all four effects
+“positivity loss.”
 
-Verdict: attack fails for the stated observer class.
+**Verdict:** quantitative data-processing distinction is a strength.
 
-### 8. “Priority is overstated”
+### 10. “The paper still has no zero exclusion”
 
-**Attack.** Each ingredient has classical parents.
+**Attack.** None of these laws proves \(\Re\rho=\tfrac12\).
 
-**Resolution.** The manuscript concedes the local residue formula, \(m\)-free Euler quotient,
-geometric Hellinger formula, Kakutani dichotomy, Rees terminology, and classical
-hypertranscendence methods. Current targeted searches found no collision for the exact
-source-normal conjunction, Fisher–Gamma infinite Rees resolution, and reflected
-finite-versus-flat no-sewing theorem. Search absence is not proof of priority; external
-specialist review remains required.
+**Finding.** Correct and fatal to any RH-proof or flagship claim. The theorem
+classifies the information that a zero would carry and proves exact
+restrictions on its transport. It does not construct a faithful nonzero
+conservative source intertwiner, prove the Xi--Hurwitz energy vanishes, or
+bound the \(8\pi\) defect index by zero.
 
-Verdict: no present collision, with appropriately qualified priority language.
+**Verdict:** no correctness defect because manuscript excludes these claims;
+major significance ceiling.
 
-## Correctness and proof audit
+### 11. “The paper kills CCM or Hilbert--Pólya”
 
-- Every mathematical assertion in the manuscript has an explicit declaration-level trace.
-- Main capstone and Gamma–Rees certificate use no project axiom or admitted result.
-- Axiom inspection reports only `propext`, `Classical.choice`, and `Quot.sound`.
-- Shell positivity, zero-freeness, relative hypertranscendence, two-prime injectivity, BV
-  residues, Hurwitz phase, Hellinger trichotomy, arbitrary-dimensional flat-radical invariance,
-  essential sewing cost, and escaping-quartet claims are all independently traced.
-- Manuscript contains no mention of proof software or formalization.
-- RH, zero exclusion, bounded positive sewing, and famous-route death claims are explicitly
-  excluded.
-- Paper proof of the Gamma–Rees determinant is a literal weighted Vandermonde factorization.
-- Paper proof of all-orders flatness uses an exact local Hellinger defect and does not assume a
-  zero-free region, zero simplicity, or existence of a rightmost zero.
+**Attack.** The no-go language could be read too broadly.
 
-No mathematical correctness blocker remains.
+**Finding.** The manuscript excludes finite-local frames, finite-Rees-moderate
+reflection sewing, and deck-invariant positive-density realizations. A
+spectral program may use a singular infinite correspondence or a different
+source category. No general death theorem is claimed.
 
-## General-journal quality test
+**Verdict:** scope adequate; famous routes remain open.
 
-### Importance
+### 12. “Priority has not been demonstrated”
 
-Pass, with scope. The theorem identifies a source-defined signed object, proves its conservation
-across independent arithmetic and analytic charts, proves complete two-prime observability,
-classifies its reflected asymptotic types, and identifies the positive infinite-grade object
-surviving the bounded-transport obstruction.
+**Attack.** Each ingredient has classical parents, and exact-string searches
+cannot establish novelty.
 
-### Novelty
+**Finding.** Correct. The paper distinguishes Connes trace/scaling work,
+Meyer spectral realization, Burnol Sonine/co-Poisson theory, Kakutani product
+measures, classical differential transcendence, and Hedenmalm's theta pencil.
+Targeted searches found no collision for the exact parity-resolved
+bifiltered/ramified conjunction or the density--monodromy law. This is
+non-collision evidence only.
 
-Pass provisionally. Novelty lies in the conjunction and the exact Gamma–Rees/type-superselection
-laws, not in classical components. Final priority judgment requires subject-matter referees.
+**Verdict:** provisional novelty; specialist priority review mandatory.
 
-### Universality
+## Correctness audit
 
-Pass. Carrier-independent normal-cone residue law and arbitrary-normed-space finite-Rees
-invariance are genuinely universal. Arithmetic specialization is explicit and source-pure.
+Pending final build, the declaration-level claim trace covers:
 
-### Closure
+- source bifiltration and paired recovery;
+- positive shell and relative hypertranscendence;
+- Julia normal lift, prime-log limit, dense graph, and recovery blow-up;
+- pointed Fisher--Ward oddness and curvature pairing;
+- squared-Xi hypertranscendence, current-field equality, odd Cayley lift, and
+  even-reader zero jet;
+- finite reporter and finite local-frame obstructions;
+- theta singular acquisition and analytic heat-node obstruction;
+- divisor character, ramification tower, and inner--outer charge match;
+- Xi--Hurwitz energy and its exact zero locus;
+- Wold, Sonin/Calkin, Ward, Hellinger--Rees, dyadic, thermal/deck, aperture,
+  and mass-consumer laws;
+- conservative character descent;
+- compact-jet, bounded-window, and reciprocal-energy blindness.
 
-Pass for every question the paper asks:
+No paper theorem assumes RH, simplicity, a zero-free region, a rightmost zero,
+or existence of an off-line zero. Conditional clauses are stated as
+conditionals. The manuscript contains no claim about its verification method.
 
-- orientation carrier: identified;
-- origin in positive arithmetic source: proved;
-- divisor transgression: proved;
-- complete spectral observability: proved;
-- Gamma completion category: classified;
-- finite-Rees transport boundary: proved sharply;
-- compact-observer blindness: proved.
+## General-journal criteria
 
-RH itself is intentionally not posed as a theorem proved by the paper.
-
-### Exposition
-
-Pass. Manuscript is self-contained, separates classical parents from new claims, states scope
-before interpretation, and gives proofs rather than relying on verification artifacts.
-
-## Requested-criteria verdict
-
-| Criterion | Verdict | Reason |
+| Criterion | Verdict | Hostile reason |
 |---|---|---|
-| Only unconditional mathematical claims | Pass | Complete claim trace and standard-axiom audit |
-| Proves RH or high-interest progress / opens a novel route / closes a famous route | Pass under high-interest progress | New pre-divisor character, infinite Gamma–Rees resolution, and sharp transport boundary; not RH and not famous-route death |
-| Quality suitable for a general scientific journal | Pass for strong general mathematics or mathematical physics | Self-contained theorem paper with exact scope and current literature audit |
-| Leaves no internal question unanswered | Pass | Every stated source-information and transport question is closed; RH is excluded from claimed result |
+| Unconditional correctness | Pass after final mechanical audit | Every stated theorem has a declaration-level trace; no RH premise is hidden |
+| Genuine mathematical object | Pass | Ramified character plus odd source lift, not a decorative equivalence |
+| High-interest progress toward RH | Borderline pass | Explains exact information bottleneck across major source/spectral consumers, but provides no zero exclusion |
+| Novel route | Provisional pass | Singular parity-resolved source correspondence is a coherent route class; priority remains externally reviewable |
+| Famous-route death theorem | Fail and not claimed | Excluded classes are narrower than CCM/Hilbert--Pólya |
+| Universality | Pass within stated corridor | Laws are carrier-, dimension-, or consumer-independent where claimed; not a law for all 1,000-plus corpus modules |
+| Internal closure | Pass | Every question posed by paper is answered; RH is explicitly outside theorem |
+| Exposition | Revise | Forty-two pages are likely too long; theorem hierarchy must remain visible |
 
-If “general scientific journal” is intended to mean **Nature or Science**, replace the third
-verdict by **fail**. Zero exclusion or a comparably decisive consequence would be required.
+## Final judgment
 
-## Final recommendation
+The paper is now substantially stronger than the earlier
+source-character/Rees manuscript. Its “wow” claim is not that another
+criterion is equivalent to RH. It is:
 
-Submit after ordinary copy editing and independent priority review. Do not market the paper as an
-RH proof, a zero-free region, or a death theorem for CCM/Hilbert–Pólya. Market it as:
+> the Riemann source carries an odd orientation jet that survives as a
+> continuous character and a discrete ramification charge; every regular
+> consumer in the audited corridor is governed by one of four exact
+> data-processing laws, and the laws explain both successful divisor
+> reconstruction and failed orientation recovery.
 
-> a universal conservation and asymptotic-superselection law for the oriented information
-> carried by the Riemann divisor, together with the infinite Gamma–Rees source resolution that
-> survives every finite-order completion.
+That is credible broad-journal mathematics. It is not an RH proof, a new
+zero-free region, or Nature/Science-level result. Recommendation: shorten,
+obtain independent specialist priority review, and submit without changing
+that scope.

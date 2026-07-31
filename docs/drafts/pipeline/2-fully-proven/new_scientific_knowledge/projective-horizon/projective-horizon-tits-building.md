@@ -347,12 +347,25 @@ group `U_(ker e_i^*)`, and:
 - `chartTailField_le_horizonField` is the resulting inclusion
   `mathcal H_(ker e_i^*) subset mathcal I_({e_i^*})`, one half of `(3)`.
 
-The reverse inclusion of `(3)` needs the algebraic independence of the affine jets, which is the
-concrete form of differential genericity.  Its proof route is fixed: the affine jets have
-numerators satisfying `N_(l+1) = (D N_l) X_(i,0) - (l+1) N_l X_(i,1)` over the denominator
-`X_(i,0)^(l+1)`, and the differential specialization `X_(i,0) -> 1`, `X_(i,l+1) -> 0` sends `N_l`
-to `X_(k,l)`, so it inverts the chart substitution on the localization away from `X_(i,0)`.  The
-Rosenlicht transcendence-degree count `(11)` also remains.  Neither is represented by an assumption.
+`formal/GaloisForLFunctions/HTGeometry/ProjectiveHorizonAffineJetIndependence.lean` proves the
+differential genericity itself, rather than assuming it:
+
+- `affineNumer` and `affineJet_eq_div` exhibit each affine chart jet as
+  `N_(k,l) / X_(i,0)^(l+1)` with `N_(k,l+1) = (D N_(k,l)) X_(i,0) - (l+1) N_(k,l) X_(i,1)`;
+- `chartSpec` is the differential specialization `X_(i,0) -> 1`, `X_(i,l+1) -> 0` fixing every
+  other jet variable; `chartSpec_deriv` proves it commutes with the jet shift and
+  `chartSpec_affineNumer` that it sends `N_(k,l)` to `X_(k,l)`;
+- `chartLocToField` and `chartLocSpec` realise the polynomial ring with `X_(i,0)` inverted both
+  inside the jet field and under the specialization, with `chartLocToField_injective`;
+- `algebraicIndependent_affineJet`: **all jets of all affine coordinates of one chart are
+  algebraically independent over the constants.**  The projective jet field of a chart is
+  therefore a free jet field, and the differential-genericity hypothesis of the set-up is a
+  theorem about the universal model.
+
+What remains is the reverse inclusion of `(3)` -- transporting the corpus theorem
+`freeJetLowTranslationFixedField_eq_tail` across the resulting free-jet identification, which
+matches the chart unipotent action with independent coordinate translations -- and the Rosenlicht
+transcendence-degree count `(11)`.  Neither is represented by an assumption.
 
 ## RH impact audit
 
@@ -381,8 +394,10 @@ so this currently gives neither a zero-free region nor a critical-line implicati
       chart field, its shift-closure and its stability under the whole prolonged action
 - [x] 2 -> 3h: the chart unipotent translation law and the inclusion
       `mathcal H_(ker e_i^*) subset mathcal I_({e_i^*})`, one half of `(3)`
-- [ ] 2 -> 3i: algebraic independence of the affine jets, hence the reverse inclusion of `(3)`,
-      and the Rosenlicht transcendence-degree count `(11)`
+- [x] 2 -> 3i: algebraic independence of the affine chart jets, i.e. differential genericity
+      proved for the universal model
+- [ ] 2 -> 3j: transport of the translation fixed-field theorem across that identification, hence
+      the reverse inclusion of `(3)`, and the Rosenlicht transcendence-degree count `(11)`
 - [ ] 3 -> 4: specialist audit in projective differential invariants and building theory
 
 ## References
@@ -415,3 +430,6 @@ so this currently gives neither a zero-free region nor a critical-line implicati
   generated subfields, and the stability of each chart field under the whole prolonged action.
 - 2026-07-31 — proved the chart unipotent translation law and the inclusion of the chart
   derivative horizon in the observer fixed field, giving one half of `(3)`.
+- 2026-07-31 — proved algebraic independence of all affine chart jets by inverting the chart
+  substitution through a differential specialization on the localization away from the chart
+  denominator; differential genericity is now a theorem, not a hypothesis.

@@ -155,14 +155,15 @@ theorem prod_expChar {ι : Type*} (s : Finset ι) (a : ι → ℝ) (t : ℝ) :
       rw [Finset.prod_insert hi, Finset.sum_insert hi, ih, expChar_add]
 
 /-- The `m`-fold kernel product along the line, expanded as a finite combination of characters. -/
-theorem ofReal_prod_cosKernel_eq_sum {m : ℕ} (lam θ : Fin m → ℝ) (K : ℕ) (t : ℝ) :
-    ((∏ j : Fin m, cosKernel K (lam j * t - θ j) : ℝ) : ℂ)
-      = ∑ v ∈ Fintype.piFinset (fun _ : Fin m => Finset.range (2 * K + 1)),
-          (∏ j : Fin m, ((Nat.choose (2 * K) (v j) : ℂ) / 4 ^ K) *
+theorem ofReal_prod_cosKernel_eq_sum {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (lam θ : ι → ℝ) (K : ℕ) (t : ℝ) :
+    ((∏ j : ι, cosKernel K (lam j * t - θ j) : ℝ) : ℂ)
+      = ∑ v ∈ Fintype.piFinset (fun _ : ι => Finset.range (2 * K + 1)),
+          (∏ j : ι, ((Nat.choose (2 * K) (v j) : ℂ) / 4 ^ K) *
               Complex.exp ((-(((v j : ℝ) - K) * θ j) : ℝ) * Complex.I))
-            * expChar (∑ j : Fin m, ((v j : ℝ) - K) * lam j) t := by
+            * expChar (∑ j : ι, ((v j : ℝ) - K) * lam j) t := by
   classical
-  have hstep : ∀ j : Fin m,
+  have hstep : ∀ j : ι,
       ((cosKernel K (lam j * t - θ j) : ℝ) : ℂ)
         = ∑ r ∈ Finset.range (2 * K + 1),
             (((Nat.choose (2 * K) r : ℂ) / 4 ^ K)
@@ -186,34 +187,35 @@ theorem ofReal_prod_cosKernel_eq_sum {m : ℕ} (lam θ : Fin m → ℝ) (K : ℕ
 
 /-- **The mean of the kernel product is its constant coefficient.**  Rational independence makes the
 zero frequency occur only at the central multi-index. -/
-theorem bohrMean_prod_cosKernel {m : ℕ} {lam : Fin m → ℝ} (hind : LinearIndependent ℚ lam)
-    (θ : Fin m → ℝ) (K : ℕ) :
-    bohrMean (fun t => ((∏ j : Fin m, cosKernel K (lam j * t - θ j) : ℝ) : ℂ))
-      = ((Nat.choose (2 * K) K : ℂ) / 4 ^ K) ^ m := by
+theorem bohrMean_prod_cosKernel {ι : Type*} [Fintype ι] [DecidableEq ι] {lam : ι → ℝ}
+    (hind : LinearIndependent ℚ lam) (θ : ι → ℝ) (K : ℕ) :
+    bohrMean (fun t => ((∏ j : ι, cosKernel K (lam j * t - θ j) : ℝ) : ℂ))
+      = ((Nat.choose (2 * K) K : ℂ) / 4 ^ K) ^ (Fintype.card ι) := by
   classical
-  set Box : Finset (Fin m → ℕ) :=
-    Fintype.piFinset (fun _ : Fin m => Finset.range (2 * K + 1)) with hBox
-  set C : (Fin m → ℕ) → ℂ := fun v =>
-    ∏ j : Fin m, ((Nat.choose (2 * K) (v j) : ℂ) / 4 ^ K) *
+  set Box : Finset (ι → ℕ) :=
+    Fintype.piFinset (fun _ : ι => Finset.range (2 * K + 1)) with hBox
+  set C : (ι → ℕ) → ℂ := fun v =>
+    ∏ j : ι, ((Nat.choose (2 * K) (v j) : ℂ) / 4 ^ K) *
       Complex.exp ((-(((v j : ℝ) - K) * θ j) : ℝ) * Complex.I) with hC
-  set mu : (Fin m → ℕ) → ℝ := fun v => ∑ j : Fin m, ((v j : ℝ) - K) * lam j with hmu
-  have hfun : (fun t : ℝ => ((∏ j : Fin m, cosKernel K (lam j * t - θ j) : ℝ) : ℂ))
+  set mu : (ι → ℕ) → ℝ := fun v => ∑ j : ι, ((v j : ℝ) - K) * lam j with hmu
+  have hfun : (fun t : ℝ => ((∏ j : ι, cosKernel K (lam j * t - θ j) : ℝ) : ℂ))
       = fun t => ∑ v ∈ Box, C v * expChar (mu v) t :=
     funext fun t => ofReal_prod_cosKernel_eq_sum lam θ K t
-  have hcentral : (fun _ : Fin m => K) ∈ Box := by
+  have hcentral : (fun _ : ι => K) ∈ Box := by
     rw [hBox, Fintype.mem_piFinset]
     intro j
     exact Finset.mem_range.mpr (by omega)
-  have hmuzero : mu (fun _ : Fin m => K) = 0 := by
+  have hmuzero : mu (fun _ : ι => K) = 0 := by
     rw [hmu]
     simp
-  have hCcentral : C (fun _ : Fin m => K) = ((Nat.choose (2 * K) K : ℂ) / 4 ^ K) ^ m := by
+  have hCcentral : C (fun _ : ι => K)
+      = ((Nat.choose (2 * K) K : ℂ) / 4 ^ K) ^ (Fintype.card ι) := by
     simp [hC, div_pow]
-  have hindep : ∀ v : Fin m → ℕ, v ∈ Box → mu v = 0 → v = fun _ : Fin m => K := by
+  have hindep : ∀ v : ι → ℕ, v ∈ Box → mu v = 0 → v = fun _ : ι => K := by
     intro v _ hv
     funext j
-    have hq : ∑ i : Fin m, ((v i : ℚ) - (K : ℚ)) • lam i = 0 := by
-      have hcast : ∀ i : Fin m, ((v i : ℚ) - (K : ℚ)) • lam i = ((v i : ℝ) - K) * lam i := by
+    have hq : ∑ i : ι, ((v i : ℚ) - (K : ℚ)) • lam i = 0 := by
+      have hcast : ∀ i : ι, ((v i : ℚ) - (K : ℚ)) • lam i = ((v i : ℝ) - K) * lam i := by
         intro i
         rw [Rat.smul_def]
         push_cast
@@ -225,7 +227,7 @@ theorem bohrMean_prod_cosKernel {m : ℕ} {lam : Fin m → ℝ} (hind : LinearIn
     have hvj : (v j : ℚ) = (K : ℚ) := sub_eq_zero.mp hzero
     exact_mod_cast hvj
   rw [hfun, bohrMean_sum_expChar Box C mu]
-  rw [Finset.sum_eq_single_of_mem (fun _ : Fin m => K) hcentral]
+  rw [Finset.sum_eq_single_of_mem (fun _ : ι => K) hcentral]
   · rw [if_pos hmuzero, hCcentral]
   · intro v hv hne
     rw [if_neg]
@@ -272,11 +274,12 @@ theorem norm_expChar_sub_sq (a b : ℝ) :
 
 /-- **Kronecker's approximation theorem.**  A rationally independent frequency family makes the
 line `t ↦ (e^{iλ_j t})_j` come arbitrarily close to every point of the torus. -/
-theorem kronecker_approx {m : ℕ} {lam : Fin m → ℝ} (hind : LinearIndependent ℚ lam)
-    (θ : Fin m → ℝ) {ε : ℝ} (hε : 0 < ε) :
-    ∃ t : ℝ, ∀ j : Fin m,
+theorem kronecker_approx {ι : Type*} [Fintype ι] [DecidableEq ι] {lam : ι → ℝ}
+    (hind : LinearIndependent ℚ lam) (θ : ι → ℝ) {ε : ℝ} (hε : 0 < ε) :
+    ∃ t : ℝ, ∀ j : ι,
       ‖expChar (lam j) t - Complex.exp ((θ j : ℝ) * Complex.I)‖ < ε := by
   classical
+  set m : ℕ := Fintype.card ι with hm
   by_contra hcon
   push Not at hcon
   set q : ℝ := max 0 (1 - ε ^ 2 / 4) with hqdef
@@ -286,7 +289,7 @@ theorem kronecker_approx {m : ℕ} {lam : Fin m → ℝ} (hind : LinearIndepende
     nlinarith
   -- the pointwise bound along the line
   have hpoint : ∀ (K : ℕ) (t : ℝ),
-      ∏ j : Fin m, cosKernel K (lam j * t - θ j) ≤ q ^ K := by
+      ∏ j : ι, cosKernel K (lam j * t - θ j) ≤ q ^ K := by
     intro K t
     obtain ⟨j₀, hj₀⟩ := hcon t
     have hcos : (1 + Real.cos (lam j₀ * t - θ j₀)) / 2 ≤ q := by
@@ -301,8 +304,8 @@ theorem kronecker_approx {m : ℕ} {lam : Fin m → ℝ} (hind : LinearIndepende
       have hle : (1 + Real.cos (lam j₀ * t - θ j₀)) / 2 ≤ 1 - ε ^ 2 / 4 := by linarith
       exact hle.trans (le_max_right _ _)
     have hbad : cosKernel K (lam j₀ * t - θ j₀) ≤ q ^ K := cosKernel_le_pow hcos
-    calc ∏ j : Fin m, cosKernel K (lam j * t - θ j)
-        ≤ ∏ j : Fin m, (if j = j₀ then q ^ K else 1) := by
+    calc ∏ j : ι, cosKernel K (lam j * t - θ j)
+        ≤ ∏ j : ι, (if j = j₀ then q ^ K else 1) := by
           refine Finset.prod_le_prod (fun j _ => cosKernel_nonneg K _) (fun j _ => ?_)
           by_cases hj : j = j₀
           · subst hj; simpa using hbad
@@ -311,11 +314,11 @@ theorem kronecker_approx {m : ℕ} {lam : Fin m → ℝ} (hind : LinearIndepende
   -- the mean of the kernel product is dominated by the pointwise bound
   have hmeanbound : ∀ K : ℕ, ‖((Nat.choose (2 * K) K : ℂ) / 4 ^ K) ^ m‖ ≤ q ^ K := by
     intro K
-    set g : ℝ → ℂ := fun t => ((∏ j : Fin m, cosKernel K (lam j * t - θ j) : ℝ) : ℂ) with hg
-    have hgsum : g = fun t => ∑ v ∈ Fintype.piFinset (fun _ : Fin m => Finset.range (2 * K + 1)),
-        (∏ j : Fin m, ((Nat.choose (2 * K) (v j) : ℂ) / 4 ^ K) *
+    set g : ℝ → ℂ := fun t => ((∏ j : ι, cosKernel K (lam j * t - θ j) : ℝ) : ℂ) with hg
+    have hgsum : g = fun t => ∑ v ∈ Fintype.piFinset (fun _ : ι => Finset.range (2 * K + 1)),
+        (∏ j : ι, ((Nat.choose (2 * K) (v j) : ℂ) / 4 ^ K) *
             Complex.exp ((-(((v j : ℝ) - K) * θ j) : ℝ) * Complex.I))
-          * expChar (∑ j : Fin m, ((v j : ℝ) - K) * lam j) t :=
+          * expChar (∑ j : ι, ((v j : ℝ) - K) * lam j) t :=
       funext fun t => ofReal_prod_cosKernel_eq_sum lam θ K t
     have hgc : Continuous g := by
       rw [hgsum]

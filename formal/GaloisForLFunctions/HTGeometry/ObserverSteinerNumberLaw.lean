@@ -27,18 +27,21 @@ variable
 
 /-! ## Monotonicity, and the vacuous case -/
 
+omit [Fintype E] [∀ v, Nonempty (A v)] in
 theorem ObserverSteinerLowerBound.mono
     {L : FiniteLocalInteractionFamily V E A} {sites : Finset V} {r r' : ℕ}
     (hr : ObserverSteinerLowerBound L sites r) (hle : r' ≤ r) :
     ObserverSteinerLowerBound L sites r' :=
   fun packet hpacket => hle.trans (hr packet hpacket)
 
+omit [Fintype E] [∀ v, Nonempty (A v)] in
 theorem WeightedObserverSteinerLowerBound.mono
     {L : FiniteLocalInteractionFamily V E A} {sites : Finset V} {weight : E → ℕ} {r r' : ℕ}
     (hr : WeightedObserverSteinerLowerBound L sites weight r) (hle : r' ≤ r) :
     WeightedObserverSteinerLowerBound L sites weight r' :=
   fun packet hpacket => hle.trans (hr packet hpacket)
 
+omit [Fintype E] [∀ v, Nonempty (A v)] in
 /-- With no spanning packet the bound is vacuous at every order. -/
 theorem observerSteinerLowerBound_of_not_exists
     {L : FiniteLocalInteractionFamily V E A} {sites : Finset V}
@@ -53,6 +56,7 @@ noncomputable def observerSteinerNumber
     (L : FiniteLocalInteractionFamily V E A) (sites : Finset V) : ℕ :=
   sInf {n : ℕ | ∃ packet : Finset E, ObserverSpanningPacket L sites packet ∧ packet.card = n}
 
+omit [Fintype E] [∀ v, Nonempty (A v)] in
 /-- The Steiner number is a lower bound, unconditionally. -/
 theorem observerSteinerLowerBound_observerSteinerNumber
     (L : FiniteLocalInteractionFamily V E A) (sites : Finset V) :
@@ -60,6 +64,7 @@ theorem observerSteinerLowerBound_observerSteinerNumber
   intro packet hpacket
   exact Nat.sInf_le ⟨packet, hpacket, rfl⟩
 
+omit [Fintype E] [∀ v, Nonempty (A v)] in
 /-- It is the largest lower bound as soon as one spanning packet exists. -/
 theorem le_observerSteinerNumber
     {L : FiniteLocalInteractionFamily V E A} {sites : Finset V} {r : ℕ}
@@ -73,6 +78,7 @@ theorem le_observerSteinerNumber
   rw [observerSteinerNumber, ← hcard]
   exact hr p hp
 
+omit [Fintype E] [∀ v, Nonempty (A v)] in
 /-- **The unweighted interface, characterized.**  With a spanning packet present, `r` is an
 observer Steiner lower bound exactly when it is at most the Steiner number. -/
 theorem observerSteinerLowerBound_iff
@@ -90,6 +96,7 @@ noncomputable def observerWeightedSteinerNumber
   sInf {n : ℕ | ∃ packet : Finset E, ObserverSpanningPacket L sites packet ∧
     interactionPacketWeight weight packet = n}
 
+omit [Fintype E] [∀ v, Nonempty (A v)] in
 /-- The weighted Steiner number is a weighted lower bound, unconditionally. -/
 theorem weightedObserverSteinerLowerBound_observerWeightedSteinerNumber
     (L : FiniteLocalInteractionFamily V E A) (sites : Finset V) (weight : E → ℕ) :
@@ -98,6 +105,7 @@ theorem weightedObserverSteinerLowerBound_observerWeightedSteinerNumber
   intro packet hpacket
   exact Nat.sInf_le ⟨packet, hpacket, rfl⟩
 
+omit [Fintype E] [∀ v, Nonempty (A v)] in
 /-- It is the largest weighted lower bound as soon as one spanning packet exists. -/
 theorem le_observerWeightedSteinerNumber
     {L : FiniteLocalInteractionFamily V E A} {sites : Finset V} {weight : E → ℕ} {r : ℕ}
@@ -112,6 +120,7 @@ theorem le_observerWeightedSteinerNumber
   rw [observerWeightedSteinerNumber, ← hcost]
   exact hr p hp
 
+omit [Fintype E] [∀ v, Nonempty (A v)] in
 /-- **The weighted interface, characterized.** -/
 theorem weightedObserverSteinerLowerBound_iff
     {L : FiniteLocalInteractionFamily V E A} {sites : Finset V} {weight : E → ℕ} {r : ℕ}
@@ -124,6 +133,7 @@ theorem weightedObserverSteinerLowerBound_iff
 
 /-! ## The weighted bound is implied by the unweighted one -/
 
+omit [Fintype E] [DecidableEq E] in
 /-- A packet's cardinality never exceeds its weight when every interaction costs at least one. -/
 theorem card_le_interactionPacketWeight
     {weight : E → ℕ} (hpos : ∀ e, 1 ≤ weight e) (packet : Finset E) :
@@ -131,6 +141,7 @@ theorem card_le_interactionPacketWeight
   have h := Finset.card_nsmul_le_sum packet weight 1 (fun e _ => hpos e)
   simpa [interactionPacketWeight] using h
 
+omit [Fintype E] [∀ v, Nonempty (A v)] in
 /-- **Weighted from unweighted.**  For a positive switch-on schedule the unweighted observer
 Steiner bound is already a weighted one, so the weighted interface needs no separate input. -/
 theorem weightedObserverSteinerLowerBound_of_observerSteinerLowerBound
@@ -140,6 +151,7 @@ theorem weightedObserverSteinerLowerBound_of_observerSteinerLowerBound
   fun packet hpacket =>
     (hr packet hpacket).trans (card_le_interactionPacketWeight hpos packet)
 
+omit [Fintype E] [∀ v, Nonempty (A v)] in
 /-- Consequently the unweighted Steiner number bounds the weighted one from below. -/
 theorem observerSteinerNumber_le_observerWeightedSteinerNumber
     {L : FiniteLocalInteractionFamily V E A} {sites : Finset V} {weight : E → ℕ}

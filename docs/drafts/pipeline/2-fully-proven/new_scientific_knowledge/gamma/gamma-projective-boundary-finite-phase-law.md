@@ -693,6 +693,22 @@ least `(2K+1)^{-m}` by `four_pow_le_succ_mul_centralBinom`.  If the line avoided
 `θ`, the same product would be at most `(1 − ε²/4)^K` at every time, and an exponentially small
 bound cannot dominate a polynomially small one.
 
+`formal/GaloisForLFunctions/HTGeometry/PrimeTorusKroneckerDensity.lean` instantiates Kronecker at the
+prime aperture and thereby **replaces the density assertion of §7 by a theorem**:
+`primeTorus_kronecker_dense` and its arithmetic form `primeTorus_cpow_dense` state that for every
+aperture `N`, every prescribed phase vector on `{p ≤ N}` and every tolerance, one real time steers all
+the phases `p^{it}` simultaneously into the prescribed neighbourhood.  The rational-independence input
+is `primeAperture_linearIndependent`, already in the carrier module; `expChar_log_eq_cpow` identifies
+the abstract character `e^{it log p}` with the arithmetic phase `p^{it}`.
+
+`formal/GaloisForLFunctions/HTGeometry/GammaSuperPolynomialDecay.lean` sharpens eq. (24) from decay to
+**super-polynomial decay**, which is what §4 actually uses when it opposes the exponential Gamma
+direction to the algebraic-logarithmic size of the digamma-field coefficients.  Iterating the
+functional equation (`Gamma_add_nat_eq`: `Γ(s+k) = Γ(s)∏_{j<k}(s+j)`), whose `k` factors each have
+modulus at least `t`, converts the Euler bound at abscissa `σ+k` into
+`‖Γ(σ+it)‖ ≤ Γ(σ+k)/t^k` for **every** `k` (`norm_Gamma_vertical_le_pow`); consequently
+`t^n Γ(σ+it) → 0` for every `n` (`Gamma_vertical_tendsto_zero_mul_pow`).
+
 `formal/GaloisForLFunctions/HTGeometry/IsometricRecurrence.lean` abstracts the recurrence to any
 relatively-compact isometric `ℝ`-action (`isometricAction_recurrence`, `isometricAction_return_seq`),
 so it instantiates both to `ℝ →ᵇ ℂ` and to vertical translation of holomorphic functions on a strip.

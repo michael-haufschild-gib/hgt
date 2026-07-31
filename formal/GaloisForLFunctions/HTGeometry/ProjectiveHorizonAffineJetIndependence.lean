@@ -45,6 +45,7 @@ theorem affineNumer_succ (i k : n) (l : ℕ) :
       differentialPolynomialDerivation n K (affineNumer i k l) * MvPolynomial.X (i, 0) -
         (l + 1) • (affineNumer i k l * MvPolynomial.X (i, 1)) := rfl
 
+omit [Fintype n] [DecidableEq n] in
 /-- The affine chart jets are the numerators over powers of the chart denominator. -/
 theorem affineJet_eq_div (i k : n) (l : ℕ) :
     affineJet (K := K) i k l =
@@ -68,7 +69,7 @@ theorem affineJet_eq_div (i k : n) (l : ℕ) :
       have hD : homogeneousJetShift n K (x ^ (l + 1)) =
           ((l : ℕ) + 1) • (x ^ l * x1) := by
         rw [hxdef, hx1def, Derivation.leibniz_pow, homogeneousJetShift_freeCoordinate]
-        simp [smul_eq_mul, mul_comm]
+        simp [smul_eq_mul]
       have hcancel : (x ^ (l + 1))⁻¹ ^ 2 * x ^ l * x ^ (l + 2) = 1 := by
         rw [inv_pow, ← pow_mul, mul_assoc, ← pow_add,
           mul_comm ((x ^ ((l + 1) * 2))⁻¹) (x ^ (l + (l + 2))),
@@ -222,15 +223,18 @@ def chartLocSpec (i : n) : ChartLoc i K →ₐ[K] MvPolynomial (n × ℕ) K :=
         IsLocalization.lift_eq]
       exact (chartSpec i).commutes c }
 
+omit [Fintype n] [DecidableEq n] in
 theorem chartLocToField_algebraMap (i : n) (p : MvPolynomial (n × ℕ) K) :
     chartLocToField i (algebraMap (MvPolynomial (n × ℕ) K) (ChartLoc i K) p) =
       algebraMap (MvPolynomial (n × ℕ) K) (HomogeneousJetField n K) p :=
   IsLocalization.lift_eq (isUnit_toField_powers i) p
 
+omit [Fintype n] in
 theorem chartLocSpec_algebraMap (i : n) (p : MvPolynomial (n × ℕ) K) :
     chartLocSpec i (algebraMap (MvPolynomial (n × ℕ) K) (ChartLoc i K) p) = chartSpec i p :=
   IsLocalization.lift_eq (isUnit_spec_powers i) p
 
+omit [Fintype n] [DecidableEq n] in
 theorem chartLocToField_invSelf (i : n) :
     chartLocToField i (IsLocalization.Away.invSelf (S := ChartLoc i K) (chartDenom i K)) =
       (freeCoordinate K (n × ℕ) (i, 0))⁻¹ := by
@@ -239,6 +243,7 @@ theorem chartLocToField_invSelf (i : n) :
   rw [map_mul, chartLocToField_algebraMap, map_one] at hkey
   exact eq_inv_of_mul_eq_one_right hkey
 
+omit [Fintype n] in
 theorem chartLocSpec_invSelf (i : n) :
     chartLocSpec i (IsLocalization.Away.invSelf (S := ChartLoc i K) (chartDenom i K)) = 1 := by
   have hmul := IsLocalization.Away.mul_invSelf (S := ChartLoc i K) (chartDenom i K)
@@ -251,16 +256,19 @@ def chartJetLoc (i k : n) (l : ℕ) : ChartLoc i K :=
   algebraMap (MvPolynomial (n × ℕ) K) (ChartLoc i K) (affineNumer i k l) *
     (IsLocalization.Away.invSelf (S := ChartLoc i K) (chartDenom i K)) ^ (l + 1)
 
+omit [Fintype n] [DecidableEq n] in
 theorem chartLocToField_chartJetLoc (i k : n) (l : ℕ) :
     chartLocToField i (chartJetLoc (K := K) i k l) = affineJet i k l := by
   rw [chartJetLoc, map_mul, map_pow, chartLocToField_algebraMap, chartLocToField_invSelf,
     affineJet_eq_div, div_eq_mul_inv, inv_pow]
 
+omit [Fintype n] in
 theorem chartLocSpec_chartJetLoc {i k : n} (hk : k ≠ i) (l : ℕ) :
     chartLocSpec i (chartJetLoc (K := K) i k l) = MvPolynomial.X (k, l) := by
   rw [chartJetLoc, map_mul, map_pow, chartLocSpec_algebraMap, chartLocSpec_invSelf, one_pow,
     mul_one, chartSpec_affineNumer hk]
 
+omit [Fintype n] [DecidableEq n] in
 theorem chartLocToField_injective (i : n) :
     Function.Injective (chartLocToField (K := K) i) := by
   have hmem : Submonoid.powers (chartDenom i K) ≤
@@ -280,6 +288,7 @@ theorem chartLocToField_injective (i : n) :
 
 /-! ## Independence -/
 
+omit [Fintype n] in
 /-- **Algebraic independence of the affine chart jets.**  All jets of all affine coordinates of one
 chart are algebraically independent over the constants, so the projective jet field of a chart is a
 free jet field.  This is differential genericity, proved for the universal model. -/

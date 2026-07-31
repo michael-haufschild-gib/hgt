@@ -49,7 +49,7 @@ sewing operator has norm beyond every inverse Rees power.
 -/
 
 open Complex Filter Asymptotics
-open scoped Topology ComplexOrder
+open scoped Topology ComplexOrder Differential UpperEndDifferentialInstances
 open GaloisForLFunctions
 open GaloisForLFunctions.HTGeometry
 

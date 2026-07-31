@@ -2501,3 +2501,32 @@ registered, axioms clean):
 
 The hypothesis is therefore a genuine transversality condition, satisfiable on every finite label
 set, and the arithmetic source the corpus already owns supplies the witness.
+
+### The two observer-Steiner rows, discharged by the sharp constant
+
+`ObserverSteinerLowerBound L sites r` (3 uses) and
+`WeightedObserverSteinerLowerBound L sites weight r` (10 uses) are the standing inputs of the
+observer-onset laws — `r` bounds from below the cost of every connected packet spanning the
+queried sites — and neither was ever produced.  Both are now closed, with the canonical inhabitant
+and a complete characterization.  `HTGeometry/ObserverSteinerNumberLaw.lean` (built, registered,
+axioms clean):
+
+* `observerSteinerNumber L sites` — the least cardinality of a spanning packet, as `sInf` over the
+  set of spanning-packet cardinalities;
+* **`observerSteinerLowerBound_observerSteinerNumber`** — it is a lower bound *unconditionally*
+  (`Nat.sInf_le` needs no nonemptiness);
+* `le_observerSteinerNumber` — and it is the largest one as soon as a spanning packet exists;
+* **`observerSteinerLowerBound_iff`** — so with a spanning packet present the interface is exactly
+  `r ≤ observerSteinerNumber`.  `observerSteinerLowerBound_of_not_exists` covers the other case:
+  with no spanning packet every `r` qualifies and the onset laws hold at every order;
+* `observerWeightedSteinerNumber` with the same three statements
+  (`weightedObserverSteinerLowerBound_observerWeightedSteinerNumber`,
+  `le_observerWeightedSteinerNumber`, **`weightedObserverSteinerLowerBound_iff`**);
+* **`weightedObserverSteinerLowerBound_of_observerSteinerLowerBound`** — the weighted interface is
+  not independent: for a positive switch-on schedule an unweighted bound is already a weighted one,
+  since `packet.card ≤ ∑_{e ∈ packet} weight e`.  Hence
+  `observerSteinerNumber_le_observerWeightedSteinerNumber`.
+
+So the ten weighted consumers need no separate analytic input beyond the three unweighted ones, and
+both interfaces are pinned to a sharp, computable-in-principle constant rather than an arbitrary
+`r`.
