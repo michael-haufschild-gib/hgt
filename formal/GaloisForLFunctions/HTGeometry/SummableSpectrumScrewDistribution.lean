@@ -196,6 +196,69 @@ theorem screwValueLaw_support (hpos : ∀ i, 0 ≤ a i) (hsum : Summable a) (ome
       exact screwHaar_pos_of_isOpen hpre hne
     exact lt_of_lt_of_le hposV (measure_mono hVU)
 
+
+/-! ## Uniqueness of the invariant law -/
+
+omit [Countable I] in
+/-- A character with nonzero detuning is nontrivial somewhere on the hull. -/
+theorem exists_screwHull_infiniteTorusFourier_ne_one {omega : I → ℝ} {n : I →₀ ℤ}
+    (hn : infiniteTorusCharacterDetuning n omega ≠ 0) :
+    ∃ z ∈ screwHull omega, infiniteTorusFourier n z ≠ 1 := by
+  set lam : ℝ := infiniteTorusCharacterDetuning n omega with hlam
+  refine ⟨screwPhase omega (Real.pi / lam), screwPhase_mem_screwHull omega _, ?_⟩
+  rw [infiniteTorusFourier_screwPhase]
+  rw [show ((Real.pi / lam * lam : ℝ) : ℂ) = ((Real.pi : ℝ) : ℂ) by field_simp]
+  rw [Complex.exp_pi_mul_I]
+  norm_num
+
+/-- **Uniqueness of the invariant law.** The limit law of uniform time sampling is the only
+probability law carried by the relation hull and invariant under all its translations; it
+is therefore the Haar probability measure of the hull. -/
+theorem screwHaar_unique {omega : I → ℝ} (nu : ProbabilityMeasure (I → UnitAddCircle))
+    (hcarrier : (nu : Measure (I → UnitAddCircle)) (screwHull omega) = 1)
+    (hinv : ∀ z ∈ screwHull omega,
+      Measure.map (fun x : I → UnitAddCircle => x + z)
+          (nu : Measure (I → UnitAddCircle)) =
+        (nu : Measure (I → UnitAddCircle))) :
+    nu = screwHaar omega := by
+  have hnull : (nu : Measure (I → UnitAddCircle)) (screwHull omega)ᶜ = 0 := by
+    rw [measure_compl (isClosed_screwHull omega).measurableSet (measure_ne_top _ _),
+      hcarrier, measure_univ, tsub_self]
+  refine probabilityMeasure_ext_of_infiniteTorusFourier_integral_eq nu (screwHaar omega) ?_
+  intro n
+  rw [screwHaar_fourier]
+  by_cases hd : infiniteTorusCharacterDetuning n omega = 0
+  · rw [if_pos hd]
+    have hae : (fun x => infiniteTorusFourier n x) =ᵐ[(nu : Measure (I → UnitAddCircle))]
+        fun _ => (1 : ℂ) := by
+      rw [Filter.eventuallyEq_iff_exists_mem]
+      refine ⟨screwHull omega, ?_, ?_⟩
+      · rw [mem_ae_iff]
+        exact hnull
+      · intro x hx
+        exact (screwHull_subset_screwAnnihilator omega hx) n hd
+    rw [integral_congr_ae hae, integral_const]
+    simp
+  · rw [if_neg hd]
+    obtain ⟨z, hzK, hzne⟩ := exists_screwHull_infiniteTorusFourier_ne_one hd
+    have hmeas : Measurable (fun x : I → UnitAddCircle => x + z) := by fun_prop
+    have hstep :
+        (∫ x, infiniteTorusFourier n x ∂(nu : Measure (I → UnitAddCircle))) =
+          infiniteTorusFourier n z *
+            ∫ x, infiniteTorusFourier n x ∂(nu : Measure (I → UnitAddCircle)) := by
+      conv_lhs => rw [← hinv z hzK]
+      rw [integral_map hmeas.aemeasurable
+        (infiniteTorusFourier n).continuous.aestronglyMeasurable]
+      simp only [infiniteTorusFourier_add_point]
+      rw [integral_mul_const, mul_comm]
+    have hfactor :
+        (1 - infiniteTorusFourier n z) *
+          (∫ x, infiniteTorusFourier n x ∂(nu : Measure (I → UnitAddCircle))) = 0 := by
+      rw [sub_mul, one_mul, ← hstep, sub_self]
+    rcases mul_eq_zero.mp hfactor with h | h
+    · exact absurd (by linear_combination -h : infiniteTorusFourier n z = 1) hzne
+    · exact h
+
 end
 
 end GaloisForLFunctions.HTGeometry

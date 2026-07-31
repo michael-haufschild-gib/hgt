@@ -2300,3 +2300,39 @@ quantification over a class never shown to be nonempty.
 
 So the `K_R` layer is inhabited in both parities, the odd parity is genuinely quaternionic, and the
 minimal odd model is `ℂ²`.
+
+### The Schatten log-residue row: two analytic inputs collapse to one asymptotic
+
+`HasSchattenLogResidue p T R` — the existence of the honest logarithmic limit of the critical
+energy, i.e. Connes measurability — is assumed by every Gauss-paired endpoint capstone, alongside
+a separate weak endpoint bound `MemWeakSchattenClass p T`.  Neither was ever produced.
+
+The corpus already contained the analytic engine, in the *other* area:
+`HTGeometry/HarmonicResidueTransfer.lean` proves `tendsto_logResidue_of_mul_succ_tendsto` — a
+pointwise law `(n + 1) a_n → R` forces the logarithmic mean `(∑_{n<N} a_n)/log N → R` — together
+with `tendsto_harmonic_div_log`.  It had never been connected to the Schatten layer.
+
+`RHTower/SchattenCriticalAsymptotic.lean` (built, registered, axioms clean):
+
+* `tendsto_log_div_log_natCast_succ` — the two logarithmic normalizations `log N` and `log (N+1)`
+  are asymptotically equal, which is what the Schatten definition needs and the harmonic transfer
+  lemma does not supply;
+* `memWeakSchattenClass_of_tendsto_mul_succ` — the weak endpoint bound is *free*: a convergent
+  sequence is bounded, so `(n+1) a_n^p → R` gives `a_n^p ≤ C/(n+1)` for all `n`;
+* `hasSchattenLogResidue_of_tendsto_mul_succ` — and the residue exists and equals `R`;
+* **`exact_schattenDepth_of_tendsto_mul_succ`** — hence a *single* pointwise asymptotic
+  `(n + 1) · a_n(T)^p → R` with `R > 0` determines the exact critical depth of `T`: no Schatten
+  class at or below `p`, every class strictly above.
+
+`RHTower/GaussPairedChannelCriticalAsymptotic.lean` restates all four consumers with the pair of
+certificates replaced by the one asymptotic:
+`gaussPairedChannel_exact_schattenDepth_of_asymptotic`,
+`gaussPairedFinChannel_exact_schattenDepth_of_asymptotic`,
+`exists_cutoff_not_memSchattenClass_of_asymptotic`, and the census law
+`finitePrimeAperture_cuspDivisorSchattenRankUniversality_of_asymptotic`.
+
+**Reading.**  The layer's remaining debt is no longer "does an honest Dixmier limit exist" — an
+existence-of-limit condition nobody can check — but "what is the exact critical constant of the
+approximation numbers", a single asymptotic.  Connes measurability was never an independent
+hypothesis: on this scale it is implied by the critical asymptotic, and so is the weak endpoint
+bound.

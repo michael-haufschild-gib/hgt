@@ -427,6 +427,8 @@ uses the intermediate value theorem between a sub-level and a super-level visit.
 `screwHaar_pos_of_isOpen` : any open set meeting the hull carries positive invariant mass
 (finitely many hull translates of it cover the hull, and all translates have equal mass).
 `screwHaar_support` : the invariant law is supported exactly on the hull.
+`screwHaar_unique` : it is the only probability law carried by the hull and invariant under
+all its translations, so it is exactly the Haar probability measure `m_K` of `(3.6)`.
 `screwValueLaw` is its pushforward along the energy; `tendsto_timeAverage_screwSeries` is
 the value-distribution law in explicit time-average form, and `screwValueLaw_support` is
 `(3.8)`.

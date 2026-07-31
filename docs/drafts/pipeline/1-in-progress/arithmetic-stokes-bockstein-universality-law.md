@@ -249,3 +249,126 @@ Relevant primary framework:
   cells, Euler quadrant current, Sonin quotient flatness, nonmetricity, first-trace edge, and Xi
   conormals as formal/rapid/moderate shadows of one arithmetic Stokes Bockstein.  Recorded exact
   same-fibre dagger clause needed for RH.
+
+## Mechanism-4 correction: the comparison must exist on every spectral subobject
+
+The global sequence `(AS1)` is not enough.  A global conservation identity can become pointwise
+only by sign rigidity, support rigidity, primewise decoupling, or genuine localization.  The first
+three mechanisms do not supply the missing RH theorem:
+
+1. explicit off-line generalized-prime Euler systems kill sign rigidity;
+2. functional-equation orbits leave two or four unpinned divisor points, not one;
+3. ordinary primes decouple in the source algebra, but Xi zeros do not decouple in the global
+   completed quotient.
+
+Consequently clause 5 must be strengthened from one global equality to a comparison defined on
+all spectral subobjects before the divisor is enumerated.
+
+Let
+\[
+ X=\{s\in\mathbb C:0<\operatorname{Re}s<1\},\qquad
+ \tau(s)=1-\overline{s},
+\]
+viewed as a real-analytic locally ringed space.  The required source object is a filtered
+localizing prestack (or an equivalent cosheaf of boundary complexes)
+\[
+ U\longmapsto {\mathcal B}_{\rm ar}(U)
+\tag{AS3}
+\]
+on a basis of relatively compact spectral opens.  It must be constructed from the ordinary-prime
+Euler--Gamma/co-Poisson source before choosing any zero, commute with restriction and excision,
+and have a non-exact rapid/moderate boundary heart retaining the essential Bockstein.
+
+Put \(z=1-s\).  The source-inverse endpoint character is supported at \(z\), while the
+analytic-adjoint endpoint character is supported at
+\(\overline{s}=1-\overline z=\tau(z)\).  Their comparison may be represented by a kernel on
+\(X\times X\).  Genuine internal source cohomology puts that comparison on the diagonal
+\[
+ \Delta_X=\{(s,s):s\in X\},
+\]
+whereas the two analytic endpoint characters put it on the reflection graph
+\[
+ \Gamma_\tau=\{(s,\tau s):s\in X\}.
+\]
+A single local comparison class typed by both kernels is therefore supported on
+\[
+ \Delta_X\cap\Gamma_\tau
+ =
+ \{(s,s):s=\tau s\}
+ =
+ \{(s,s):\operatorname{Re}s=\tfrac12\}.
+\tag{AS4}
+\]
+Equivalently, for a zero \(\rho\) put \(z=1-\rho\).  If \(z\ne\tau z=\overline\rho\), choose
+disjoint neighbourhoods \(U\ni z\) and \(V\ni\tau z\).  An internal local source class is
+supported over one base point, while its analytic typing is a morphism from the \(U\)-piece to
+the \(V\)-piece.  Disjoint-support orthogonality makes any class with both typings zero.  Thus a
+nonzero top Xi conormal with both typings forces
+\(1-\rho=\overline\rho\), equivalently \(\operatorname{Re}\rho=\tfrac12\).
+
+The support-intersection argument is parent sheaf/kernel algebra; no novelty is claimed for it.
+Its value is to identify the exact arithmetic producer and to prevent a global conservation law
+from being mistaken for a pointwise theorem.
+
+`[STRENGTHENED OPEN CORE] [XI_SOURCE_NORMAL_LOCAL_KERNEL_LANDING]`
+
+> Construct `(AS3)` before divisor specialization.  Construct the first-trace-to-Sonin
+> source-normal exact-couple morphism as a morphism of filtered localizing prestacks.  Prove that
+> its boundary-heart Bockstein is nonzero on every top Xi principal conormal stalk, and that the
+> source-inverse and analytic-adjoint realizations are the two restrictions of one local
+> comparison kernel.  In particular the comparison must be diagonal-local over the source base,
+> not merely equivariant over the reflected base.
+
+This strengthens, rather than replaces,
+`XI_SOURCE_NORMAL_STOKES_BOCKSTEIN_DAGGER_LANDING`.  The previous same-fibre dagger equation is
+the scalar stalk of `(AS4)`.  The localizing formulation explains why that equation should be
+produced by a source theorem instead of asserted independently.
+
+### Hostile audit of the localizing formulation
+
+1. **The target divisor sheaf is not the construction.**  Sheafifying
+   \(\mathcal O_X/(\Xi)\) automatically produces point stalks but imports Xi after the fact.
+   The prestack `(AS3)` must arise from the Euler--Gamma/co-Poisson source and only then admit Xi
+   Cartier specialization.
+2. **Reflection-equivariance is insufficient.**  A \(\tau\)-semilinear duality naturally has
+   graph support \(\Gamma_\tau\) and permits every off-line pair.  The load-bearing assertion is
+   diagonal locality of the source comparison.
+3. **Exact stable base change is insufficient.**  The corpus proves that derived specialization
+   preserves a source contraction.  Therefore the nonzero conormal must be the boundary-heart
+   Tor/Bockstein of a pre-existing attainment defect; an exact localizing category alone produces
+   zero.
+4. **Post-hoc windows are insufficient.**  Restricting a completed global quotient around a
+   chosen zero is target localization, not `(AS3)`.  Restriction/excision must exist for every
+   spectral open before any zero is selected.
+5. **Generalized-prime falsifier remains active.**  If an off-line generalized-prime system
+   admits the same ordinary-integer localizing prestack and diagonal comparison, the conjecture is
+   false.  Matching only functional equation, entire completion, positivity, or
+   hypertranscendence does not instantiate `(AS3)`.
+6. **Infinite rank is insufficient.**  Ordinary Hilbert completion has no divisor stalks, while
+   finite-Rees completions erase the essential boundary.  The required infinity is a
+   conormal-faithful non-exact boundary topology, not an unbounded dimension.
+
+### First decisive construction problem
+
+For every principal spectral open \(D(g)\subset X\), with \(g\) chosen independently of the Xi
+divisor, construct the restricted finite Euler--Gamma observation complex and prove a
+restriction-compatible square
+\[
+\begin{CD}
+ {\mathfrak B}_{\rm first\ trace}(X) @>>> {\mathfrak B}_{\Gamma/{\rm coP}/{\rm Sonin}}(X)\\
+ @VVV @VVV\\
+ {\mathfrak B}_{\rm first\ trace}(D(g)) @>>>
+ {\mathfrak B}_{\Gamma/{\rm coP}/{\rm Sonin}}(D(g)).
+\end{CD}
+\tag{AS5}
+\]
+Then prove that the essential-normal boundary heart, unlike the stable bulk, satisfies base
+change in `(AS5)` and retains the first-trace generator.  This is the first test that distinguishes
+a genuine control-volume law from another global reformulation.  Xi-conormal faithfulness and
+dagger/kernel identification come only after this square exists.
+
+- 2026-07-31 — Corrected the global/local logical gap.  Recast same-fibre dagger as intersection
+  of a diagonal-local source kernel with the Riemann-reflection graph.  The existing
+  reflected-character diagonal theorem is the consumer; the new arithmetic obligation is a
+  source-built filtered localizing prestack whose boundary Bockstein lands nontrivially in every
+  Xi conormal stalk.  No RH conclusion claimed.
