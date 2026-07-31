@@ -676,6 +676,23 @@ the three mixed means then yields
 for every finite set `S` of frequencies.  This is the first structural constraint on the Bohr
 spectrum: above any positive threshold only finitely many frequencies can occur.
 
+`formal/GaloisForLFunctions/HTGeometry/KroneckerWeylDensity.lean` proves **Kronecker's approximation
+theorem** (`kronecker_approx`), which §7 uses when it asserts that rational independence of
+`{log p : p ≤ N}` makes the arithmetic translation orbit dense in the prime torus: for a family
+`λ : Fin m → ℝ` linearly independent over `ℚ`, the line `t ↦ (e^{iλ_j t})_j` enters every
+`ε`-neighbourhood of every point of the torus.  Mathlib has neither Kronecker nor Weyl
+equidistribution.
+
+The proof is by a positive kernel and the Bohr mean.  `cosKernel K x = ((1+cos x)/2)^K` equals
+`(1+z)^{2K}/(4^K z^K)` for `z = e^{ix}`, so `ofReal_cosKernel_eq_sum` expands it as a trigonometric
+polynomial with Fourier coefficients `binom(2K,r)/4^K`.  Expanding the `m`-fold product along the
+line (`Finset.prod_univ_sum`) writes it as a finite combination of characters `e^{i⟨v−K,λ⟩t}`, and
+`bohrMean_sum_expChar` keeps only the terms of zero frequency; rational independence forces
+`v = (K,…,K)`, so `bohrMean_prod_cosKernel` gives the exact value `(binom(2K,K)/4^K)^m`, which is at
+least `(2K+1)^{-m}` by `four_pow_le_succ_mul_centralBinom`.  If the line avoided the `ε`-ball around
+`θ`, the same product would be at most `(1 − ε²/4)^K` at every time, and an exponentially small
+bound cannot dominate a polynomially small one.
+
 `formal/GaloisForLFunctions/HTGeometry/IsometricRecurrence.lean` abstracts the recurrence to any
 relatively-compact isometric `ℝ`-action (`isometricAction_recurrence`, `isometricAction_return_seq`),
 so it instantiates both to `ℝ →ᵇ ℂ` and to vertical translation of holomorphic functions on a strip.

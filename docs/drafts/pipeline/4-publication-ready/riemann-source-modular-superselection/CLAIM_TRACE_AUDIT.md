@@ -211,6 +211,8 @@ Audit date: 2026-07-31.
 | Energy is zero exactly when every centered divisor character is unitary | `xiHurwitzOrientationEnergy_eq_zero_iff_unitaryCenteredCharacters` | capstone |
 | Positive energy has an explicit off-line divisor witness | `xiHurwitzOrientationEnergy_pos_iff_exists_offCriticalZero`; `xiHurwitzOrientationWitness_le_energy` | `XiHurwitzOrientationEnergy.lean` |
 | Local quadratic defect is \(\sin^2(2\pi\Re\rho)\) | `xiHurwitzOrientationDefect_eq_sin_sq` | same |
+| Terminal Xi--Hurwitz chart package is exactly the zero-energy locus | `xiHurwitzOrientationEnergy_eq_zero_iff_universalCertificate` | `formal/GaloisForLFunctions/RHTower/XiHurwitzOrientationUniversalityLaw.lean` |
+| Whole-corpus eighteen-family positive phase and a single Sonin collar have the same zero-energy/RH locus | `riemannHypothesis_iff_wholeCorpusPositivePhaseUniversalCertificate`; `wholeCorpusPositivePhaseUniversalCertificate_iff_singlePositiveSoninAperture`; `riemannHypothesis_iff_xiHurwitzOrientationEnergy_eq_zero` | `XiWholeCorpusPositivePhaseUniversalityLaw.lean`; `XiWholeCorpusPositiveSoninApertureCollapseUniversalityLaw.lean`; `XiHurwitzOrientationEnergy.lean` |
 
 ## Hedenmalm, Wold, Sonin/Calkin, and Ward consumers
 

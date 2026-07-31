@@ -2449,3 +2449,55 @@ interface**.
 so rather than suspected.  This is the `rh-criterion-reencoding` pattern in its sharpest form: the
 second clause of the Tate reduction ("a conservative reporter exists") is, after classification,
 the statement that all Xi point charges sit on the reflection fixed locus — which is RH itself.
+
+## `HilbertMetric` and `HTGeometry` under the corpus-`Prop` instrument
+
+**`HilbertMetric`**: 1 313 project constants, 7 project-`Prop` premise keys, **0 unproduced**.  The
+area is clean under both instruments.
+
+**A fourth area-wide name collision, repaired.**  `lake build GaloisForLFunctions.HTGeometry`
+failed outright: `GaloisForLFunctions.HTGeometry.freeCoordinate_ne_zero` was declared both in
+`ProjectiveHorizonAffineChartField` (a chart-specific specialization, in a module another lane was
+editing minutes earlier) and in `ProjectiveHorizonDepthTwoCurrentTransition` (the *general*
+statement, untouched since 26 July, with all four of its uses inside its own module).  The stable
+module's name was changed to `freeCoordinate_rationalField_ne_zero`, which resolves the collision
+without touching the in-flight file; the area builds again.  As with the previous three, no
+ordinary build sees these — only an audit that imports a whole area at once.
+
+**`HTGeometry`**: 103 306 project constants, 319 project-`Prop` premise keys, **12 unproduced**.
+Worklist, by use count:
+
+| uses | interface | status |
+|---:|---|---|
+| 12 | `ComponentProjectivelyIndependent` | **discharged below** |
+| 10 | `FiniteLocalInteractionFamily.WeightedObserverSteinerLowerBound` | open |
+| 5 | `CoordinateLocalOn` | open |
+| 4 | `HasComplexBirthProfile` | open |
+| 3 | `FiniteLocalInteractionFamily.ObserverSteinerLowerBound` | open |
+| 2 | `HasSemigroupObserverActionRegime` | open |
+| 2 | `TriangleRelabelInvariantReporter` | open |
+| 2 | `BinaryNaturalOperation.Natural` | open |
+| 2 | `WaveSpectrum.CofinalWaveSignEscape` | open |
+| 1 | `HasObserverActionRegime` | open |
+| 1 | `IsRelativeCharacterCarrier` | already closed this session (stale umbrella olean in this run) |
+| 1 | `IsVerticalBohrAP` | open |
+
+### `ComponentProjectivelyIndependent`, discharged by prime logarithms
+
+The standing hypothesis of the component-histogram and replica-factorization laws — every balanced
+rational relation among all component energies is componentwise trivial — was assumed twelve times
+and exhibited nowhere.  `HTGeometry/ComponentProjectiveIndependenceWitness.lean` (built,
+registered, axioms clean):
+
+* **`componentProjectivelyIndependent_of_linearIndependent`** — ordinary integer linear
+  independence of the *joint* energy family implies it, and the balanced-relation (zero row sum)
+  clause is then not even used.  The proof is `Fintype.linearIndependent_iff` after regrouping the
+  sigma sum;
+* **`componentProjectivelyIndependent_primeLog`** — labelling the joint index set by distinct
+  primes and taking logarithms gives such a family, by the corpus's own
+  `logPrime_linearIndependent_int`;
+* **`exists_componentProjectivelyIndependent`** — hence for *every* finite family of finite
+  component label sets a projectively independent energy family exists.
+
+The hypothesis is therefore a genuine transversality condition, satisfiable on every finite label
+set, and the arithmetic source the corpus already owns supplies the witness.
