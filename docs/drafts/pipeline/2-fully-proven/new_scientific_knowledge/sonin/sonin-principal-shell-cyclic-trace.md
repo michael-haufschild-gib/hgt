@@ -260,6 +260,48 @@ the archimedean finite part, and it does not prove that the conductor cancels a 
 is a bounded truncation, and the unbounded logarithmic multiplier and its commutator bounds are
 still missing.
 
+## Theorem K: the dilation commutator is exactly `log r`
+
+A position channel is a *logarithm* only if conjugation by the dilation shifts it by a constant.
+For the step channel `(18)` this holds exactly on the finite tower.  Write `U` for the normalized
+dilation by `r⁻¹` and `A_s` for the physical cutoff at radius `s`.  Since `U A_s = A_(r s) U`, the
+dilation carries each layer of the tower to the next, so
+
+```text
+U . M(a,r,n) = Mshift(a,r,n) . U,
+Mshift(a,r,n) = sum_(k<n) log(r^k a) . (A_(r^(k+2) a) - A_(r^(k+1) a)).   (20)
+```
+
+Peeling the first term of `M(a,r,n+1)`, using `log(r^(k+1)a) = log(r^k a) + log r`, and
+telescoping the resulting band sum gives
+
+```text
+Mshift(a,r,n)
+  = M(a,r,n+1) - log a . (A_(r a) - A_a) - log r . (A_(r^(n+1) a) - A_(r a)),  (21)
+```
+
+hence the exact relation
+
+```text
+U . M(a,r,n)
+  = ( M(a,r,n+1) - log a . (A_(ra) - A_a)
+        - log r . (A_(r^(n+1) a) - A_(ra)) ) . U.                          (22)
+```
+
+Only two terms survive, one at each end of the finite tower.  Between them, on the interior band,
+dilation conjugation subtracts exactly the scalar `log r`.  At base aperture `a=1` the lower edge
+term vanishes identically and `(22)` reads
+
+```text
+U . M(1,r,n)
+  = ( M(1,r,n+1) - log r . (A_(r^(n+1)) - A_r) ) . U.                      (23)
+```
+
+This is the archimedean generator relation `[log t, dilation] = log r . dilation` in exact finite
+form: the constant produced by one dilation step is `log r`, independently of the layer, of the
+aperture, and of the truncation length.  It identifies the conductor channel as a genuine
+logarithm of position rather than an operator that merely takes logarithmic values.
+
 ## Frontier effect
 
 Closed:
@@ -310,7 +352,9 @@ provisional pending expert/literature review.
 - [x] proof that the aperture tower alone cannot supply the lower floor
 - [x] concrete Burnol conductor: a nonzero self-adjoint channel commuting with the whole cutoff
       family, discharging the abstract position hypothesis at every aperture at once (Theorem J)
-- [ ] unbounded logarithmic multiplier and its commutator bounds
+- [x] exact dilation commutator of the conductor channel: `log r` on the interior band, with the
+      two finite-tower edge terms computed exactly (Theorem K)
+- [ ] unbounded logarithmic multiplier obtained as a limit of the truncations
 - [ ] Burnol completion and completed lower floor
 
 ## Lean
@@ -348,12 +392,17 @@ provisional pending expert/literature review.
 | `(19)` concrete cancellation | `ccmCommutator_evenLogShellChannel_evenFourierCutoff` |
 | J.3 pointed Ward law | `pointedCutoffWardTrace_evenLogShellChannel_eq_burnolConductor` |
 | J.3 finite-packet Ward law | `finiteRankCutoffWardTrace_evenLogShellChannel_eq_burnolConductor` |
+| `(20)` dilation intertwining | `evenDilationCLM_mul_evenLogShellChannel` |
+| `(21)` edge decomposition | `shiftedLogShellChannel_eq_sub_edges` |
+| `(22)` Weyl relation | `evenDilationCLM_mul_evenLogShellChannel_eq_shift` |
+| `(23)` unit-base form | `evenDilationCLM_mul_evenLogShellChannel_one` |
 
 Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninPrincipalRelativeCyclicExtension.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninApertureExtendedTraceFlagLaw.lean`,
 `formal/GaloisForLFunctions/HTGeometry/OperatorTraceAdjoint.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninBurnolLogShellChannel.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninBurnolLogShellChannel.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninBurnolLogShellWeyl.lean`.
 All declarations depend only on `propext`, `Classical.choice`, `Quot.sound`.
 
 Novelty split for Theorem G: `(7)` was already in the corpus
@@ -364,6 +413,10 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-07-31 — dilation commutator computed exactly.  The step conductor satisfies the archimedean
+  generator relation on the tower: conjugating by the dilation subtracts the constant log r on the
+  interior band, with only two edge terms, both explicit.  The channel is a genuine logarithm of
+  position, not merely an operator with logarithmic values.
 - 2026-07-31 — Burnol conductor made concrete.  Audit finding: the whole Burnol layer was an
   uninhabited Prop interface, satisfiable only aperture-locally through Lüders pinching.  A step
   logarithm built from the shell cutoffs commutes with the entire cutoff family, is self-adjoint,

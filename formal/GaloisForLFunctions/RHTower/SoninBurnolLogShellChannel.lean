@@ -33,13 +33,13 @@ open MeasureTheory Set
 open ContinuousLinearMap
 
 /-- Scalars pull out of a left product of operators on the even carrier. -/
-private theorem smul_mul_even (c : ℂ) (X Y : evenSubspace →L[ℂ] evenSubspace) :
+theorem smul_mul_even (c : ℂ) (X Y : evenSubspace →L[ℂ] evenSubspace) :
     (c • X) * Y = c • (X * Y) := by
   ext x
   simp
 
 /-- Scalars pull out of a right product of operators on the even carrier. -/
-private theorem mul_smul_even (c : ℂ) (X Y : evenSubspace →L[ℂ] evenSubspace) :
+theorem mul_smul_even (c : ℂ) (X Y : evenSubspace →L[ℂ] evenSubspace) :
     X * (c • Y) = c • (X * Y) := by
   ext x
   simp
