@@ -487,6 +487,24 @@ Note also that `Z` commutes with the cosine Fourier involution
 (`evenFourierTransform_evenSoninApertureSuccessiveLayerTransition`), so any such argument may
 assume Fourier evenness throughout.
 
+**Restatement now available.**  The coupling question is equivalent to a support question about
+the defect itself:
+
+```text
+Z(a,b,c;r) = 0   <->   Delta(a,b;r) . (1 - Q_c) = 0,                      (35)
+```
+
+that is, the coupling vanishes exactly when the aperture defect between `a` and `b` is annihilated
+by the complement of the carrier at `c` — exactly when the defect is *carried* by the outer
+aperture.  Both directions are immediate from `Delta = Y* Y` and `Z = Y (1 - Q_c)`: forward by
+associativity, backward because `Z* Z = (1-Q_c) Delta (1-Q_c)`.
+
+This is the form to attack.  It is an identity between two explicitly constructed operators with no
+compact error and no limit, so the question "is the coupling nonzero?" has become "does the
+`a`-to-`b` defect see anything outside the `c`-carrier?".  Since the defect is relative-ideal equal
+to the shell `S(r a, r b)` and `c < r a`, the defect is supported outside the `c`-window *modulo
+the ideal*; whether that survives exactly is precisely what `(35)` asks.
+
 ### Proof
 
 Induction on the chain length from the three-point law, with the chamber hypothesis inherited
@@ -614,6 +632,7 @@ provisional pending expert/literature review.
 | chain equality characterization | `re_soninApertureResidualTrace_chain_eq_iff` |
 | exact physical-band annihilation | `evenCentralSoninProjection_eq_zero_of_indicatorCutoff_eq_self` |
 | exact Fourier-band annihilation | `evenCentralSoninProjection_eq_zero_of_fourierCutoff_eq_self` |
+| `(35)` support restatement | `evenSoninApertureSuccessiveLayerTransition_eq_zero_iff_defect_mul_complement` |
 
 Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninPrincipalRelativeCyclicExtension.lean`,
@@ -626,7 +645,8 @@ Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninBurnolLogBandComparison.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninBandSupportedDense.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninApertureFlagChain.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninInnerBandAnnihilation.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninInnerBandAnnihilation.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninApertureDefectSupport.lean`.
 All declarations depend only on `propext`, `Classical.choice`, `Quot.sound`.
 
 Novelty split for Theorem G: `(7)` was already in the corpus
@@ -637,6 +657,11 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-07-31 — coupling question restated as a support question: the coupling vanishes exactly when
+  the aperture defect is annihilated by the complement of the outer carrier.  No compact error and
+  no limit remains in the statement, and the modulo-ideal picture (defect = shell above r a, with
+  c < r a) says the answer is yes modulo the ideal — so the whole question is whether that survives
+  exactly.
 - 2026-07-31 — full-tree verification: both area umbrellas build (`RHTower` 14191 jobs,
   `HTGeometry` 12086 jobs) and `formal_tools.py lint` passes, so this session's modules integrate
   cleanly.  Also found the corpus's own nonvanishing technique (vanishing -> commutation -> zero
