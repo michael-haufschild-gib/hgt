@@ -1,7 +1,7 @@
 # Poisson strictness emerges only after infinite exponent depth
 
 - **ID:** `bounded-exponent-poisson-strictness-emergence`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / INFINITE SOURCE TOTALIZATION / MOVING-POLE FLUX
 - **Source:** `prime-winning-cech-divisor-resolution.md`;
   `deninger-meyer-strict-nuclear-radial-angular-comparison.md`;
@@ -661,7 +661,7 @@ that:
 - [x] balanced-scalar Herglotz route killed by opposite residues
 - [x] uncontracted DNC logarithmic connection identified as correct criterion object
 - [x] relation to prime-winning/depth double resolution
-- [ ] unconditional Lean formalization
+- [x] unconditional Lean formalization
 - [ ] locally convex graph/Tate completion
 - [ ] Gamma/Fourier adjoint
 - [ ] Xi determinant and conormal purity
@@ -673,3 +673,121 @@ that:
   `https://arxiv.org/abs/math/0412277`.
 - Standard Euler product for \((M+1)\)-free integers.
 - Standard functional equation and trivial-zero derivative formula for \(\zeta\).
+
+## Unconditional Lean formalization
+
+All paper-proved statements of this card are now unconditional Lean 4 theorems.  Axiom audit for
+every item below: `propext, Classical.choice, Quot.sound`.
+
+### New infrastructure
+
+`formal/GaloisForLFunctions/RHTower/TrivialZeroFirstDerivative.lean`
+
+- `RHTower.deriv_riemannZeta_neg_two` — `ζ'(-2) = -ζ(3)/(4π²)`, obtained by differentiating the
+  reflection formula at `s = 3`, where its cosine factor has a simple zero.
+- `RHTower.deriv_riemannZeta_neg_two_ne_zero` — the first trivial zero is simple.
+- `RHTower.riemannZeta_ne_zero_of_neg_one_le_of_lt_zero` — `ζ` has no zero on `[-1, 0)`.
+
+`formal/GaloisForLFunctions/HTGeometry/GaussianMellinMoments.lean`
+
+- `mellin_gaussianKernel` — `∫₀^∞ t^{z-1} e^{-π t²} dt = Γ_ℝ(z)/2` for `Re z > 0`.
+- `mellinConvergent_gaussianKernel`, `integral_Ioi_rpow_mul_gaussian`,
+  `integral_Ioi_sq_gaussian` (`= 1/(4π)`), `integral_Ioi_pow_four_gaussian` (`= 3/(8π²)`).
+
+### `(3)` bounded-exponent Euler multiplier
+
+Already in the corpus: `RHTower.LSeries_mFree_eq_riemannZeta_div`, `RHTower.tsum_mFree_cpow`
+(`formal/GaloisForLFunctions/RHTower/MFreeLadder.lean`) and
+`RHTower.boundedExponentEulerSource_eq_LSeries`.
+
+### `(6)`–`(7)` forced moving pole and residue
+
+`formal/GaloisForLFunctions/RHTower/BoundedExponentMovingPole.lean`
+
+- `RHTower.movingPolePoint M = -2/(M+1)`, `RHTower.movingPoleResidue`.
+- `RHTower.riemannZeta_movingPolePoint_ne_zero` — the numerator survives at `s_M` for `M ≥ 1`.
+- `RHTower.tendsto_movingPole_residue` — `(s - s_M) A_M(s) → ζ(s_M)/((M+1) ζ'(-2))`.
+- `RHTower.movingPoleResidue_ne_zero`, `RHTower.tendsto_norm_boundedExponentEulerSource_atTop`
+  (`‖A_M‖ → ∞` at `s_M`), and
+  `RHTower.meromorphicOrderAt_boundedExponentEulerSource = -1` (a genuine simple pole).
+
+### `(9)`–`(11)` the explicit Meyer test
+
+`formal/GaloisForLFunctions/RHTower/MeyerPoissonTest.lean`
+
+- `RHTower.meyerPoissonTest x = x²(x² - 3/(2π)) e^{-πx²}`.
+- `RHTower.meyerPoissonTest_even`, `RHTower.meyerPoissonTest_zero` (`f(0) = 0`),
+  `RHTower.integral_meyerPoissonTest` (`f̂(0) = ∫ f = 0`).
+- `RHTower.mellin_meyerPoissonTest` — `ℳf(s) = (s-1)/4 · π^{-(s+4)/2} Γ((s+2)/2)` on `Re s > -2`.
+- `RHTower.mellin_meyerPoissonTest_ne_zero` — nonvanishing away from `s = 1`, hence at every `s_M`.
+
+### `(13)` finite nonlanding theorem
+
+`formal/GaloisForLFunctions/RHTower/BoundedExponentDilationOperator.lean`
+
+- `RHTower.mFreeDilationSum m g x = ∑_{n : m-free} g(nx)`.
+- `RHTower.mellin_mFreeDilationSum` — `ℳ(Z_m g)(s) = (ζ(s)/ζ(ms)) ℳg(s)` on `Re s > 1`, by
+  term-by-term Mellin transform with the exact dilation rescaling of the ray norm integral.
+
+`formal/GaloisForLFunctions/RHTower/BoundedExponentPoissonNonlanding.lean`
+
+- `RHTower.RapidDecayRay` — decay faster than every power at both multiplicative ends.
+- `RHTower.differentiable_mellin_of_rapidDecayRay` — such a function has an entire Mellin
+  transform.
+- `RHTower.zetaEntire` — the entire function agreeing with `(s-1)ζ(s)` off the pole.
+- `RHTower.not_rapidDecayRay_boundedExponentPoissonImage` — **for every `M ≥ 1`,
+  `Z_{≤M} f ∉ H_-`.**  The cleared identity `ℳ(Z_{≤M}f)(s)·((M+1)s-1)ζ((M+1)s)
+  = (s-1)ζ(s)·((M+1)s-1)·π^{-(s+4)/2}Γ((s+2)/2)/4` holds on `Re s > 1`; both sides are
+  holomorphic on the convex half-plane `Re s > -2`, so the identity propagates to `s_M`, where
+  the left side vanishes (the depth dilation carries `s_M` to the trivial zero `-2`) and the right
+  side does not.
+
+### `(15)`–`(16)` infinite-depth totalization and the fracture
+
+`formal/GaloisForLFunctions/RHTower/InfiniteDepthDilationLimit.lean`
+
+- `RHTower.mFree_of_lt_two_pow`, `RHTower.eventually_mFree` — every positive integer is
+  eventually `m`-free.
+- `RHTower.tendsto_mFreeDilationSum_atTop` — dominated pointwise totalization.
+- `RHTower.summable_norm_meyerPoissonTest_dilate`, `RHTower.tendsto_meyerPoissonTest_dilation` —
+  the hypothesis is discharged for the explicit source test at every ray point.
+- `RHTower.boundedExponentPoissonFracture` — both halves of `(16)` in one statement: no finite
+  depth lands in the target space, while the truncations converge pointwise to the complete
+  dilation sum.  (That the complete sum lies in `H_-` is Meyer's Poisson theorem, cited parent
+  mathematics, not a claim of this card.)
+
+### `(19)`–`(20)` boundary flux
+
+`formal/GaloisForLFunctions/RHTower/BoundedExponentMovingPole.lean`
+
+- `RHTower.tendsto_succ_mul_movingPoleResidue` — `(M+1) Res_{s_M} A_M → 2π²/ζ(3)`.
+- `RHTower.tendsto_movingPoleResidue_div_dist` — `Res_{s_M} A_M / |s_M| → π²/ζ(3)`.
+
+### `(41)`–`(42)` the balanced scalar is neither Herglotz nor anti-Herglotz
+
+`formal/GaloisForLFunctions/HTGeometry/EulerContractionResidueSigns.lean`
+
+- `eulerContraction f z = -z (log f)'(z)`; `logDeriv_neg_of_even`, `eulerContraction_even` — an
+  even carrier has an odd logarithmic derivative and an even Euler contraction.
+- `tendsto_eulerContraction_residue` / `tendsto_eulerContraction_residue_reflected` — residues
+  `-n a` at `a` and `+n a` at `-a`.
+- `not_exists_uniform_eulerContraction_residue_sign` — for real `a > 0` and order `n ≥ 1` no fixed
+  sign convention admits both, so the contracted scalar is neither Herglotz nor anti-Herglotz.
+
+`formal/GaloisForLFunctions/RHTower/XiEulerContractionResiduePairing.lean`
+
+- `xiEulerContraction_residues_opposite` — the specialization to the centered completed zeta
+  function, using the corpus's `XiC_even` and `XiC_differentiable`.  The obstruction needs only a
+  nonzero real zero, not its location.
+
+### `(25)`–`(43)` normal-cone, Gamma gluing, depth connection
+
+Already in the corpus:
+`formal/GaloisForLFunctions/RHTower/XiSourceNormalConeDivisorConservation.lean`
+(`tendsto_boundedExponentEulerSource_fixedScale`, `tendsto_boundedExponentEulerSource_normalScale`,
+`xiEndpointNormalChart_eq_reflected`, `tendsto_xiEndpointNormalChart_zero`,
+`hasDerivAt_xiDepthSuccessorTransport_zero`, `tendsto_xiDepthSuccessorTransport_differenceQuotient`,
+`xiExceptionalAffineDivisorCurrent_reflection`, `xiExceptionalAffineDivisorCurrent_residue`,
+`meromorphicOrderAt_xiExceptionalBoundarySection`) and
+`formal/GaloisForLFunctions/RHTower/PrimeDilationTropicalBoundaryTomography.lean` for the
+horizontal prime-winning Čech resolution.

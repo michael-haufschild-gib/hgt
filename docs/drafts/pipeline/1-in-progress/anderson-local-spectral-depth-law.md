@@ -30,6 +30,30 @@ centres \(c_j\).  For a fixed observation site \(x\), define
  \tag{1}
 \]
 
+### Spectral-window normalization correction
+
+The weights in (1) sum to
+\[
+ \sum_{E_j\in I}p_j(x)
+ =\langle\delta_x,P_I\delta_x\rangle,
+\]
+which is generally smaller than one. They therefore do not directly define
+the survival amplitude of the original site state. The physical site-state
+target must take \(I\) to contain the complete spectral support of
+\(\delta_x\). In the one-dimensional iid Anderson model, the preferred
+version takes \(I\) to be the full almost-sure spectrum.
+
+For a proper subwindow, the only valid recurrence statement concerns the
+normalized projected state
+\[
+ \psi_{x,I}=\frac{P_I\delta_x}{\|P_I\delta_x\|},\qquad
+ p_j^I(x)=
+ \frac{|\psi_j(x)|^2}{\langle\delta_x,P_I\delta_x\rangle}.
+\]
+This constant normalization does not change the leading logarithmic depth
+count, but it changes the physical state whose return is measured. No
+manuscript may silently pass from (1) to a probability sequence.
+
 Then almost surely
 \[
  \boxed{

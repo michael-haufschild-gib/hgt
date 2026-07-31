@@ -1,11 +1,14 @@
 # Squared-Xi order-fourteen witnesses are confined to a compact window
 
 - **ID:** squared-xi-order-fourteen-compact-witness-window
-- **Stage:** 2-fully-proven / needs-audit
-- **Type:** THEOREM (paper) / RH-disproof route discriminator
-- **Scientific status:** `[PROVED HERE] [NOVELTY UNAUDITED] [NOT FORMALIZED]`
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean 4, fully unconditional) / RH-disproof route discriminator
+- **Scientific status:** `[PROVED HERE] [NOVELTY UNAUDITED]`
+  `[FORMALIZED IN LEAN, AXIOMS CLEAN, WINDOW SHOWN EMPTY]`
 - **Sources:** `XiEndpointOffLineQuartetHeightGap.lean`; the genus-zero squared-Xi canonical product
 - **Statement:** The first squared-seam order not protected by the reciprocal-square sector, derivative order fourteen, still has the RH-compatible strict sign for every `y>=8`.  Any order-fourteen RH-disproof witness must lie in `1/4<y<8`.
+- **Formalized strengthening:** the sign holds for **every** `y>0`, so the compact window
+  `1/4<y<8` is empty and no order-fourteen witness exists at all.
 
 ## Theorem
 
@@ -105,18 +108,19 @@ divisor.  Summing (9) proves (1).  `QED`
 
 ## Consequence for the live source attack
 
-The order-fourteen search no longer has a far-right regime.  It is the
-compact symbolic sign problem
+The paper argument confines the order-fourteen search to the compact symbolic
+sign problem
 
 ```text
 g^(14)(y) < 0 for some 1/4<y<8.                           (10)
 ```
 
-Through `s=1/2+sqrt(y)`, this is a compact interval in the absolute Euler
-half-plane, where the rational, digamma, and von Mangoldt source expansions
-all converge.  Any proof of (10) must preserve the exact pole/Euler
-cancellation; separating their large derivatives before cancellation is not
-valid.
+The Lean formalization closes that window.  The shifted kernel
+`mu_y = (A - b i)^{-1}` has `A = y + t` with `t = v - u > 0` at every Xi zero, so
+`A > t` and every sector ratio `N b^2 < t^2` proved at `y = 0` holds a fortiori
+at every `y > 0`.  The corner-exclusion sector for reciprocal-square power
+fifteen is exactly such a ratio, hence `Re(mu_y^15) > 0` for every `y>0`, hence
+`g^(14)(y) > 0` for every `y>0` and (10) has no solution.
 
 ## Gates
 
@@ -124,6 +128,33 @@ valid.
 - [x] Order-fifteen orbit angle bounded without zero computation.
 - [x] Canonical-product assembly completed on paper.
 - [x] First live derivative order confined to `1/4<y<8`.
-- [ ] Independent audit of product normalization and strict summation.
-- [ ] Lean formalization only if this compactness theorem is reused by the final proof.
+- [x] Independent audit of product normalization and strict summation: both are machine-checked
+  in `RHTower.SquaredXiCompleteMonotonicity`.
+- [x] Lean formalization, unconditional and end to end.
+- [x] 2 -> 3 formalized.
+- [ ] 3 -> 4 publication-ready.
+
+## Lean status
+
+`formal/GaloisForLFunctions/RHTower/SquaredXiCompleteMonotonicity.lean`, axioms
+`[propext, Classical.choice, Quot.sound]`.
+
+- `RHTower.alternating_iteratedDeriv_squaredXiRadialField_pos_orderFourteen` —
+  `0 < g^(14)(y)` for every `y > 0`, with no lower cutoff at all.
+- `RHTower.re_xiShiftedReciprocalSquare_pow_fifteen_pos` — the atomwise input: the shifted
+  order-fifteen reciprocal power is positive at every Xi multiplicity copy and every `y>0`.
+- `RHTower.re_xiShiftedReciprocalSquare_pow_pos_of_sector`,
+  `RHTower.xiCenteredSectorRatio_of_window_empty` — the shift-monotonicity of the sector ratio
+  and its supply from an empty failure window; these are what remove the `y>=8` restriction.
+- `RHTower.squaredXiRadialField_eq` — the identification of the formalized field with the card's
+  `g(y) = xi'(1/2+sqrt y)/(2 sqrt y xi(1/2+sqrt y))`.
+
+## Log
+
+- 2026-07-31 — Formalized, and the compact window proved empty.  The card's `y>=8` came from
+  re-deriving the angle bound at the shifted point with the crude estimate `b^2 = 4uv < v` and
+  `A > v + 31/4`.  That is unnecessary: the shift is monotone in `A`, so the existing
+  order-fifteen corner exclusion already gives the sign at every `y>0`.  The order-fourteen
+  RH-disproof route is therefore closed rather than localized; the first unprotected squared-seam
+  order is nineteen.  See `squared-xi-low-order-complete-monotonicity-protected.md`.
 

@@ -316,6 +316,17 @@ It does not prove:
 ## Novelty and hostile gate
 
 The weight small-deviation exponent collides with Rozovsky and Aurzada.
+Campos Venuti (2015) studies average recurrence-time densities under
+rational independence and a Gaussian approximation, including a formal
+countable-discrete extension.  It does not prove an almost-sure first
+positive return at vanishing target size, an exact depth-entropy constant,
+or a localization-geometry transfer.  Grünbaum--Velázquez--Werner--Werner
+and subsequent work study monitored first detection, whose repeated
+projections change the dynamics and whose return law is a different
+observable.  Kotowski--Oszmaniec (2026) prove tight finite-dimensional
+closed-system bounds and random-Hamiltonian saturation, but not the
+countably infinite localization-depth law.
+
 No direct literature collision was found for the following conjunction:
 
 - explicit ergodic infinite self-adjoint random Hamiltonian;
@@ -348,10 +359,65 @@ spectral-weight law.
 
 ## Formal status
 
-The scalar kernel normalization, exact positive-shift absolute overlap, and
-exact positive-shift signed orthogonality are proved in
-`formal/GaloisForLFunctions/RHTower/BlaschkeLocalizedKernelLaw.lean`.
-Operator construction, anisotropic counting, product-Haar probability, and
-almost-sure return claims remain Lean-open.  Nothing beyond the kernel claims
-is manuscript-authorized until formalized.  Manuscript must not mention the
-formalization.
+The following claims are now proved in
+`formal/GaloisForLFunctions/RHTower/BlaschkeLocalizedKernelLaw.lean`:
+
+- scalar kernel normalization;
+- exact positive-shift absolute overlap;
+- exact positive-shift signed orthogonality;
+- strict positivity of every nonorigin local spectral weight;
+- positive logarithmic decay slope;
+- the exact affine logarithmic-depth progression;
+- the exact infinite geometric tail;
+- the exact quadratic finite integrated-depth formula;
+- exact floor-based active-depth radius and membership classification;
+- an explicit two-sided quadratic integrated-depth law with a complete
+  linear remainder.
+
+The following infinite-system consequences are proved in
+`formal/GaloisForLFunctions/RHTower/BlaschkeLocalizedSurvivalRecurrenceLaw.lean`:
+
+- exact identification of the countable survival tail;
+- a deterministic positive survival return for every phase packet, with
+  visible-head deadline and exact infinite-tail budget;
+- the exhaustive never-exits/post-exit-return alternative with the same
+  exact tail budget.
+
+The arbitrary-water finite-head estimate is now proved in
+`formal/GaloisForLFunctions/RHTower/ProjectiveWeightedBoundedDensityQuantile.lean`.
+It retains full water entropy, pays only the exact half-logarithmic
+worst-pivot loss, propagates through all clocks up to \(N\), and allows a
+correlated phase law dominated by a finite multiple of Haar measure.
+
+The deterministic countable-to-finite event bridge is proved in
+`formal/GaloisForLFunctions/RHTower/SummableWeightedHeadReduction.lean`.
+An amplitude return of the complete countable packet forces an amplitude
+return of every positive-mass normalized finite head, with the exact defect
+amplification \(\eta/m\), where \(m\) is head mass.
+
+The measurable infinite-phase lift is proved in
+`formal/GaloisForLFunctions/RHTower/SummableWeightedInfinitePhaseQuantile.lean`.
+The complete countable early-hit event is measurable, is contained in the
+pullback of the normalized-head event, and inherits the finite-head
+full-water-entropy bound from any dominated finite marginal.  No
+independence or distributional assumption on the discarded tail is used.
+The same module proves the exact rescaling from normalized-head entropy back
+to the original unnormalized local spectral weights.
+
+The corpus also contains the anisotropic constructive recurrence ceiling in
+`ProjectiveWeightedHaarQuantileActiveSupport.lean` and
+`ProjectiveWeightedCoherenceCeiling.lean`.  This removes the apparent
+factor-two loss produced by uniform phase resolution: the upper deadline
+pays the same water entropy as the early-hit obstruction, plus only a cost
+linear in active depth.  Its countable-head composition and Blaschke
+specialization remain to be proved here.
+
+Direct foreground Lean checks pass. `#print axioms` for audited new
+load-bearing theorems reports only `propext`, `Classical.choice`, and
+`Quot.sound`.
+
+Operator construction, anisotropic counting, the Blaschke specialization of
+both probability and constructive bounds, Borel--Cantelli interpolation,
+and the almost-sure first-return asymptotic remain Lean-open.
+Nothing beyond the listed proved claims is manuscript-authorized until
+formalized. Manuscript must not mention the formalization.

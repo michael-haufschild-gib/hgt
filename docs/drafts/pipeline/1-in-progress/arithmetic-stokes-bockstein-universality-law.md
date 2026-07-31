@@ -134,6 +134,37 @@ Thus the rapid-decay side of `(AS1)` has an actual complex Hardy realization.  T
 fracture is exactly continuation across its growth wall and landing in the literal Burnol
 co-Poisson quotient.
 
+## Evidence added 2026-07-31: exact Xi Stokes normal layer
+
+`xi-depth-successor-stokes-normal-layer.md` removes an ambiguity in clauses 3 and 5.  The
+source-generated exponent-depth successor has a nonuniform layer at every Xi zero.  If
+\(\Xi(u)=(u-\rho)^{m_\rho}g(u)\), then
+\[
+ \frac{\Xi(\rho+\varepsilon z)}
+ {\Xi((1+\varepsilon)(\rho+\varepsilon z))}
+ \longrightarrow
+ \left(\frac{z}{z+\rho}\right)^{m_\rho}.
+\]
+After centering depth at the functional-equation fixed point, its exact nearby cycle is
+\[
+ P_{a_\rho,m_\rho}(z)
+ =
+ \left(\frac{z}{z+a_\rho}\right)^{m_\rho},
+ \qquad
+ a_\rho=\rho-\frac12.
+\]
+The Wold shell supplies the exponentially flat source monomial with action
+\((\log2)/2\); this rational profile is its finite divisor coefficient.  Source inverse and
+analytic adjoint have profiles \(P_{-a_\rho,m_\rho}\) and
+\(P_{\bar a_\rho,m_\rho}\), whose poles are \(a_\rho\) and \(-\bar a_\rho\).
+Same-fibre dagger therefore means literal equality of these two pole divisors and forces
+\(a_\rho=-\bar a_\rho\), equivalently \(\Re\rho=1/2\).
+
+This does not prove clause 5.  It replaces the abstract same-fibre scalar with the exact object
+that the Gamma/co-Poisson/Sonin landing must identify.  The generic, centered, and actual Xi
+normal-layer limits and the nearby-pole consumer are Lean-formalized in
+`XiDepthSuccessorStokesNormalLayer.lean`.
+
 ## Hostile audit and falsifiers
 
 1. **Not irregular-RH vocabulary alone.**  General irregular Riemann--Hilbert theory supplies
@@ -190,6 +221,7 @@ Relevant primary framework:
 - [ ] first-trace boundary identification
 - [ ] literal co-Poisson chain map and syzygy
 - [ ] strict source-normal completion
+- [x] exact balanced Xi moving-zero nearby cycle with full multiplicity
 - [ ] full Xi conormal identification
 - [ ] same-fibre dagger naturality
 - [ ] RH

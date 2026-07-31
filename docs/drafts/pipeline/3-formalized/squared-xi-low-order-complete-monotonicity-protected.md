@@ -1,11 +1,14 @@
 # Squared-Xi low-order complete monotonicity is unconditionally protected
 
 - **ID:** squared-xi-low-order-complete-monotonicity-protected
-- **Stage:** 2-fully-proven / needs-audit
-- **Type:** THEOREM (paper) / RH-disproof route discriminator
-- **Scientific status:** `[PROVED HERE] [NOVELTY UNAUDITED] [SIGNIFICANT ROUTE KILL] [NOT FORMALIZED]`
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean 4, fully unconditional) / RH-disproof route discriminator
+- **Scientific status:** `[PROVED HERE] [NOVELTY UNAUDITED] [SIGNIFICANT ROUTE KILL]`
+  `[FORMALIZED IN LEAN, AXIOMS CLEAN, STRICTLY STRONGER THAN THE CARD]`
 - **Sources:** `XiEndpointStrongHeightGap.lean`; `PrimeArchScaledHausdorffDivisorValueRelation.lean`; the genus-zero canonical product of centered Xi in the squared variable; the critical-strip theorem
 - **Statement:** For `y>1/4`, the squared-variable logarithmic derivative of centered Xi has the complete-monotonicity signs through derivative order thirteen, unconditionally.  Hence the first possible squared-seam derivative witness against RH has order at least fourteen.
+- **Formalized strengthening:** the same signs hold for every `y>0` and every order through
+  **eighteen**, so the first possible squared-seam derivative witness has order at least nineteen.
 
 ## Theorem
 
@@ -191,19 +194,27 @@ and (2) follows from the `n=1` case.  `QED`
 ## Sharpness of this discriminator
 
 The height-only chamber proves positivity through derivative order six.  The
-stronger formal reciprocal-square sector proves it through order thirteen.
-That sector does not control the next power: its argument budget becomes
-`1500/913`, which is larger than `pi/2`.  This does not produce a Xi witness;
-it only shows that the first order not protected by the current exact sector
-is derivative order fourteen.
+reciprocal-square sector `84 B^2 <= t^2` proves it through order thirteen: its
+argument budget at the next power is `1500/913 > pi/2`.
+
+That is not the true boundary.  The shift `A = y + t` is strictly larger than the
+unshifted `t`, so **every** sector ratio the corpus proves for the unshifted
+reciprocal-square atoms transfers to the shifted kernel at every `y>0`.  The
+corner-exclusion sectors already formalized for reciprocal-square powers
+fifteen through nineteen therefore protect derivative orders fourteen through
+eighteen as well, at every positive `y`, and the first unprotected order is
+**nineteen**, not fourteen.
 
 ## Consequence
 
-Fixed orders `n=1,...,13` cannot disprove RH anywhere on the absolute Euler
-ray `w>1/2`.  A surviving squared-seam attack must either:
+Fixed orders `n=0,...,18` cannot disprove RH anywhere on `y>0`, hence nowhere on
+the absolute Euler ray `w>1/2`.  In particular the compact witness window
+`1/4<y<8` claimed for order fourteen is empty.  A surviving squared-seam attack
+must either:
 
-1. prove the order-fourteen sign violation from the completed source;
-2. use still higher order with a source-controlled order/base-point coupling;
+1. prove an order-nineteen-or-higher sign violation from the completed source;
+2. use a source-controlled order/base-point coupling that outruns the corner
+   exclusions;
 3. leave the one-point complete-monotonicity test for a different exact
    RH-false witness.
 
@@ -215,5 +226,62 @@ ray `w>1/2`.  A surviving squared-seam attack must either:
 - [x] Existing reciprocal-square sector transported to every shifted kernel.
 - [x] Derivative protection extended through order thirteen.
 - [x] Canonical-product assembly completed on paper.
-- [ ] Independent audit of the squared-variable product normalization and differentiation.
-- [ ] Lean formalization only if the protected-order theorem becomes a reused dependency.
+- [x] Independent audit of the squared-variable product normalization and differentiation:
+  both are now machine-checked in Lean.  The normalization is the paired reflection identity
+  `xiRelativeResolventTrace_eq_reciprocalSquareResolvent` composed with the completed Hadamard
+  factorization, and the differentiation is termwise with an explicit uniform reciprocal-square
+  majorant on the whole positive base ray.
+- [x] Lean formalization, unconditional and end to end
+  (`RHTower.SquaredXiCompleteMonotonicity`), axioms `[propext, Classical.choice, Quot.sound]`.
+- [x] 2 -> 3 formalized.
+- [ ] 3 -> 4 publication-ready.
+
+## Lean status
+
+`formal/GaloisForLFunctions/RHTower/SquaredXiCompleteMonotonicity.lean`, axioms
+`[propext, Classical.choice, Quot.sound]` throughout.  The Lean theorem is **strictly stronger than
+this card in two independent directions**: the base ray is the whole of `y > 0` rather than
+`y > 1/4`, and the protected derivative range reaches order eighteen rather than thirteen.
+
+- `xiSquaredNode` — the squared centered spectral coordinate `alpha_q^2 = (v - u) - 2 i a b` in the
+  zero coordinates `u = (Re rho - 1/2)^2`, `v = (Im rho)^2`; `xiSquaredNode_re`,
+  `xiSquaredNode_im`, `xiSquaredNode_re_pos` (open critical strip plus the endpoint height gap).
+- `xiShiftedReciprocalSquare_eq_inv` / `xiShiftedReciprocalSquare_eq_coordinate` — the corpus's
+  Möbius-translated atom `lambda/(1 + y lambda)` is exactly the shifted resolvent kernel
+  `(y + alpha_q^2)^{-1} = ((y + v - u) - (2 a b) i)^{-1}`.
+- `eightyFour_mul_xiSquaredNode_im_sq_lt` — the shifted eighty-four sector `84 B^2 < A^2`, from
+  `u < 1/4` and the off-line quartet gap `85 < v`; `re_xiShiftedReciprocalSquare_pow_pos` turns it
+  into atomwise positivity of all fourteen powers through the tangent-`1/9` budget
+  `14/9 < pi/2`.
+- `re_xiShiftedReciprocalSquare_pow_pos_of_sector`, `xiCenteredSectorRatio_of_window_empty` —
+  a strict unshifted sector ratio survives every positive shift, and an empty sector-failure
+  window supplies that ratio.  Composed with the existing corner exclusions this gives
+  `re_xiShiftedReciprocalSquare_pow_{fifteen,...,nineteen}_pos` and hence
+  `re_xiShiftedReciprocalSquare_pow_pos_of_le_nineteen`.
+- `xiShiftedReciprocalMoment_im_eq_zero` — the field is real: conjugation of the divisor acts on
+  the squared nodes by complex conjugation (`xiSquaredNode_copyConj`).
+- `hasDerivAt_xiShiftedReciprocalSquare_pow`, `hasDerivAt_xiShiftedReciprocalMoment`,
+  `hasDerivAt_re_xiShiftedReciprocalMoment` — termwise differentiation of the moment tower on
+  `(0, infinity)`, with the uniform majorant `(n+1) * ||lambda_q||^{n+2}`.
+- `squaredXiRadialField`, `iteratedDeriv_squaredXiRadialField` — the closed form
+  `g^(n)(y) = (-1)^n n!/2 * sum_q (y + alpha_q^2)^{-(n+1)}`.
+- `xiShiftedReciprocalMoment_zero_eq`, `squaredXiRadialField_eq` — the exact identification with
+  the card's `g`: `squaredXiRadialField y = xi'(1/2 + sqrt y)/(2 sqrt y xi(1/2 + sqrt y))`.
+- **`alternating_iteratedDeriv_squaredXiRadialField_pos`** — `(-1)^n g^(n)(y) > 0` for every
+  `y > 0` and every `n <= 18`; `alternating_iteratedDeriv_squaredXiRadialField_pos_of_le_thirteen`
+  is this card's statement (1), and
+  `alternating_iteratedDeriv_squaredXiRadialField_pos_orderFourteen` is `g^(14)(y) > 0`.
+- `xiRealLogDeriv`, `hasDerivAt_xiRealLogDeriv`, `squaredXiRadialField_sq_eq`,
+  **`xiRealLogDeriv_radial_gap_neg`** — statement (2), `w L'(1/2+w) - L(1/2+w) < 0` for `w > 0`.
+
+## Log
+
+- 2026-07-31 — Formalized unconditionally.  The whole card is one identity plus one sector: the
+  reflection-paired Hadamard trace makes `2 g(y)` the tsum of `(y + alpha_q^2)^{-1}`, whose atoms
+  are `(A - B i)^{-1}` with `A = y + v - u` and `B = 2 a b`.  Since the shift only enlarges `A`,
+  every sector ratio proved at `y = 0` in the corpus transfers verbatim, so the protected range is
+  not thirteen but eighteen, and the compact window `1/4 < y < 8` of the order-fourteen card
+  disappears entirely.  The `1/4` of the card is likewise unnecessary: `xi(1/2 + w) != 0` for every
+  real `w` by the source-pure zero-free band, so the field is defined and the sign holds on all of
+  `y > 0`.  Termwise differentiation needed no new analytic input beyond
+  `hasDerivAt_tsum_of_isPreconnected` and the corpus majorant `||mu_y|| <= ||lambda||`.

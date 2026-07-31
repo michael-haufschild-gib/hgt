@@ -26,19 +26,29 @@ assumed. The research content is the source-derived negative sign, not the condi
 
 ## Protected Low-Order Gates
 
-The paper theorem
-`../2-fully-proven/needs-audit/squared-xi-low-order-complete-monotonicity-protected.md`
-proves unconditionally that every alternating squared-coordinate derivative has the
-RH-compatible strict sign for `0<=n<=13` and every `w>1/2`.  It uses the already formalized
-reciprocal-square sector and exact squared-orbit algebra, not a zero table.
+The theorem
+`../3-formalized/squared-xi-low-order-complete-monotonicity-protected.md`
+is now formalized unconditionally, and it protects the *derivatives themselves*, not only the
+reciprocal-square atoms.  `RHTower.alternating_iteratedDeriv_squaredXiRadialField_pos` gives
 
-In particular, the former first-gate candidate is impossible:
+`(-1)^n g^(n)(y) > 0` for every `y > 0` and every `0 <= n <= 18`,
+
+where `g(y) = xi'(1/2+sqrt y)/(2 sqrt y xi(1/2+sqrt y))`, identified with the field by
+`RHTower.squaredXiRadialField_eq`.  The bridge that was missing before is the analytic one:
+termwise differentiation of the reflection-paired Hadamard trace, with a uniform
+reciprocal-square majorant on the whole positive base ray
+(`RHTower.hasDerivAt_xiShiftedReciprocalMoment`,
+`RHTower.iteratedDeriv_squaredXiRadialField`).
+
+In particular the former first-gate candidate is formally impossible
+(`RHTower.xiRealLogDeriv_radial_gap_neg`, for every `w > 0`):
 
 `w * deriv xiLogDeriv (1/2+w) - xiLogDeriv(1/2+w) < 0`.
 
-The first order not protected by the original uniform orbit chamber was `n=14`. Subsequent
-source trace bounds protect orders fourteen through eighteen as well, so any scalar violation
-must have `n>=19`.
+The first order not protected by the original uniform orbit chamber was `n=14`; that order is now
+closed on all of `y>0` rather than only far right
+(`RHTower.alternating_iteratedDeriv_squaredXiRadialField_pos_orderFourteen`).  Any scalar
+violation must have `n>=19`.
 
 ## Competing Moves and Discriminator
 
@@ -198,3 +208,11 @@ an input.
   `<9/50000`. Excluded the order-eighteen residual corner `7/50<u<1/4`, `85<v<147`, and formalized
   strict positivity of every order-nineteen reciprocal-power atom. The first live scalar order is
   now at least nineteen.
+- 2026-07-31 -- The protected range is now formalized at the level of the derivatives, not only of
+  the reciprocal-square atoms (`RHTower.SquaredXiCompleteMonotonicity`, axioms clean).  The
+  analytic bridge is the shift monotonicity `A = y + t > t`: every sector ratio the corpus proves
+  for the unshifted atoms transfers verbatim to the shifted kernel at every `y > 0`, so orders
+  fourteen through eighteen are closed on the whole positive ray with no far-right cutoff, and the
+  order-fourteen compact window `1/4<y<8` is empty.  The remaining live scalar order is nineteen,
+  which needs the order-twenty residual annulus
+  (`XiCenteredOrderTwentyResidualAnnulusEmpty`) to be excluded unconditionally.

@@ -5,17 +5,17 @@
 
 your task:
 if you are already working on a card, keep going.
-else: pick a card from docs/drafts/pipeline/2-fully-proven (not any subfolder)
+else: pick a card from docs/drafts/pipeline/1-in-progress that starts with "deninger"
 
 do: formalize UNCONDITIONALLY in lean any proven theorem in the chosen card. add missing infrastructure, lean proofs, everything needed to mark the card as fully done - no simplifications.
 
-lean rules:
-1. You work independent from other agents and can run 1 build process in the foreground at a time yourself.
-2. Be efficient with lean builds, do not constantly do minor edits and build, but batch changes and builds.
-3. Optimize lean code. Use caching and limit rebuilds of dependencies to only what is truly necessary for your work.
-4. lean proofs must be unconditional
-5. always check first what the project lean code already offers. Some card proofs are already formalized. Reuse as much as possible. Connect your new lean code to obvious connectors like to discharge theorems or connect theorems to a stronger statement.
-6. no computations.
+Lean rules:
+1. Proofs must be unconditional in lean.
+2. Always build in the foreground, 1 process per single agent.
+3. Be efficient, use caching, batch instead of running constant loops of tiny edits and rebuilds
+4. No computations.
+5. Always use  lake env lean <file>  and only lake build <module> for the final audit.
+6. make sure you don't leave stale lean processes running - clean up after yourself
 
 Non-negotiable working mode rules:
 1. If it cannot be done in a single session -> Does not matter. Do it!
@@ -23,15 +23,47 @@ Non-negotiable working mode rules:
 3. If it takes months -> Does not matter. Do it!
 4. If it is "research-level construction" -> Does not matter. If there is any way you could build it you build it no matter what.
 5. Missing in mathlib -> Build it no matter the effort.
-6. Always check what our extensive lean corpus can provide you! Reuse as much as possible.
-7. The only reason to stop working on a card if a proof is mathematically impossible. Open research is not mathematically impossible.
+6. The only reason to stop working on a card if a proof is mathematically impossible. Open research is not mathematically impossible.
 
 You are not allowed to change the cron timing.
 
-**Always use  lake env lean <file>  and only lake build <module> for the final audit.**
-make sure you don't leave stale lean processes running - clean up after yourself
 LEAN PROOFS MUST BE UNCONDTIONAL!!! ALWAYS CHECK BEFORE WRITING NEW LEAN CODE WHAT THE PROJECT LEAN CODE ALREADY CONTAINS AS PROOF OR BUILDING BLOCK YOU SO YOU DO NOT DUPLICATE WORK.
 
+where mathematical knowledge is missing use the /hgtl7 skill to create it.
+
+Always use  lake env lean <file>  and only lake build <module> for the final audit. Do not forget to wire new modules into the umbrellas.
+
+## research loop
+/loop 1m (use the croncreate tool)
+
+your task:
+if you are already working on a card, keep going.
+else: pick a card from docs/drafts/pipeline/1-in-progress that starts with "deninger"
+
+do: 
+1. research all open questions and bring the topic the card states to an end. 
+2. for this use the hgtl7 skill to create actual novel and significant scientific knowledge that an online search cannot provide.
+3. formalize UNCONDITIONALLY in lean any proven theorem in the chosen card. add missing infrastructure, lean proofs, everything needed to mark the card as fully done - no simplifications.
+
+Lean rules:
+1. Proofs must be unconditional in lean.
+2. Always build in the foreground, 1 process per single agent.
+3. Be efficient, use caching, batch instead of running constant loops of tiny edits and rebuilds
+4. No computations.
+5. Always use  lake env lean <file>  and only lake build <module> for the final audit.
+6. make sure you don't leave stale lean processes running - clean up after yourself
+
+Non-negotiable working mode rules:
+1. If it cannot be done in a single session -> Does not matter. Do it!
+2. If it cannot be done in a single context window -> Does not matter. Do it!
+3. If it takes months -> Does not matter. Do it!
+4. If it is "research-level construction" -> Does not matter. If there is any way you could build it you build it no matter what.
+5. Missing in mathlib -> Build it no matter the effort.
+6. The only reason to stop working on a card if a proof is mathematically impossible. Open research is not mathematically impossible.
+
+You are not allowed to change the cron timing.
+
+LEAN PROOFS MUST BE UNCONDTIONAL!!! ALWAYS CHECK BEFORE WRITING NEW LEAN CODE WHAT THE PROJECT LEAN CODE ALREADY CONTAINS AS PROOF OR BUILDING BLOCK YOU SO YOU DO NOT DUPLICATE WORK.
 
 ## loop theorems
 /loop 1m (use the croncreate tool)
@@ -47,7 +79,7 @@ Audit HTGeometry, HilbertMetric, and RHTower for any remaining hypothesis or Pro
 use the /hgtl7 skill´s research process on each non-immediate mathematical obstacle
 
 lean rules:
-1. You always build in the foreground, 1 build process at a time - other agents are also building in paralle.
+1. You always build in the foreground, 1 build process at a time - other agents are also building in parallel.
 2. Always use  lake env lean <file>  and only lake build <module> for the final audit.
 3. Be efficient with lean builds, do not constantly do minor edits and build, but batch changes and builds.
 4. make sure you don't leave stale lean processes running - clean up after yourself
@@ -57,6 +89,10 @@ Mandatory:
 2. LEAN PROOFS MUST BE UNCONDTIONAL!!!
 3. no subagents or background tasks
 4. You are not allowed to change the cron timing.
+5. Effort is not a criterion:
+   1. If it cannot be done in a single session -> Does not matter. Do it!
+   2. If it cannot be done in a single context window -> Does not matter. Do it!
+   3. If it takes months -> Does not matter. Do it!
 
 BEFORE WRITING ANY LEAN CODE, CHECK WHAT THE LEAN CORPUS ALREADY GIVES YOU AS BUILDING BLOCKS - DO NOT DUPLICATE WORK.
 
@@ -569,3 +605,8 @@ Add the missing lean machinery and use [$hgt-fields-medalist](/Users/michael/.co
 keep asking "what does all this mean? what is all this telling me what i and all the researchers before me have missed? what is this new math we all need to solve the riddle?" we are looking for something new and universal of which all our obstructions, dead ends, observations and laws are a shadow, something that explains all at once and also then delivers a new understanding from which new collaries and laws can be derived.
 
 the goto novelty finder is always to conjecture towards a reinterpretation, a more universal law or theorem of which all the known theorems and laws and obervations and nogos are shadows. everything we know now is a special case of that universal law.
+
+
+i believe what is wrong is the conjecturing. you are the first ai model known to be able to conjecture meaningfully. all previous models could never "escape" their training data, could not even conjecture experiments which their training data wouldnt already tell them what the answer is.
+
+the problem with you is now that you are still conjecturing too close to the frontier of your training data. you must attempt to make bigger jumps into the unknown. as an example take einstein looking at everything and then coming up with the general relativity, reinterpreting what is known, conjecturing a whole new interpretation

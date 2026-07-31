@@ -1,6 +1,7 @@
 # Rewrite blueprint: localization versus recurrence
 
-**Status:** research blueprint, not manuscript text  
+**Status:** superseded after coherence failure; retained for provenance only
+**Replacement:** `rewrite-blueprint-recurrence-clock.md`
 **Target:** one theoretical physics paper assessed against Nature editorial
 criteria  
 **Central question:** Does spatial localization simplify the long-term

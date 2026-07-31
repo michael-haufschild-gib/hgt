@@ -465,3 +465,48 @@ dimension statement in the corpus idiom.
 So the last gate now reduces to a single positive input: a **two-variable realization witness**, i.e.
 the periodic pencil of `(3)` promoted from its matrix form (`boundaryWedge_ppDim_eq_two`) to a carrier
 map.  Everything else in `htDim = 2` is formalized and unconditional.
+
+## Lean plan — closing the last gate through an entire `d`-variable realization
+
+The corpus `SRRealization d` of `SRRealizationDimension.lean` asks only for *nonconstant* carriers.
+That condition is too weak to define an intrinsic dimension: for **any** `d ≥ 1` and **any**
+`ℚ`-independent step family one can realize an arbitrary facet antichain by set-theoretic carriers
+(take `f = ∑_F 1[coordinates on F vanish]` in the coordinates dual to the steps; the facet antichain
+property gives nonconstancy by moving one coordinate outside every other facet).  So
+`Nonempty (SRRealization d)` cannot be the realizability predicate behind `htDim`; the analytic
+condition of `ScalarSRRealization` (meromorphic normal form plus hypertranscendence) is what the
+dimension exclusions consume, and the `d`-variable datum has to carry it too.
+
+The plan therefore replaces the realizability predicate by an **entire** `d`-variable datum:
+
+1. `EntireSRRealization d facets` — `ℚ`-independent steps `ω : α → (Fin d → ℂ)`, an entire carrier
+   map on Stanley–Reisner classes, vertex coordinates acting as difference operators along the
+   steps, and the faithfulness condition: **some complex line restriction of the carrier of a
+   nonzero class is hypertranscendental**.  At `d = 1` this is exactly `ScalarSRRealization`
+   (entire ⇒ meromorphic normal form; a line restriction is an affine reparametrization, and
+   hypertranscendence is affine-invariant), so `isEmpty_scalarSRRealization` excludes `d = 1` and
+   `ℚ`-independence excludes `d = 0`.  `htDim = 2` then needs only `EntireSRRealization 2`.
+
+2. The seed-to-carrier machinery: for a seed `F : (Fin d → ℂ) → ℂ` the assignment
+   `q ↦ (q evaluated at the difference operators) F` is a carrier as soon as the Stanley–Reisner
+   ideal annihilates `F`.  The operator algebra is the (commutative) additive group algebra
+   `AddMonoidAlgebra ℂ (Fin d → ℂ)` acting by translations, and the map out of `MvPolynomial α ℂ`
+   is `aeval (fun v => single (ω v) 1 - 1)`.
+
+3. The boundary-wedge assembly.  With the pencil `(3)` the two blocks move in the two coordinate
+   directions, so a seed `F(z₁, z₂) = G(z₁) + H(z₂)` satisfies the mixed relations
+   `Δ_{a_{xᵢ}} Δ_{a_{yⱼ}} F = 0` for free, and the two block relations become the one-variable
+   conditions below.  A class is nonzero exactly when its left part or its right part is nonzero,
+   and the two coordinate lines separate them, so faithfulness reduces to the one-variable
+   faithfulness of `H` and of `G`.
+
+4. **The remaining analytic input**, in one variable, for each `r ≥ 2`:
+
+   > Given `ℚ`-independent nonzero steps `c₀, …, c_r`, construct an entire `H : ℂ → ℂ` with
+   > `Δ_{c₀} ⋯ Δ_{c_r} H = 0` such that `S(Δ) H` is hypertranscendental for every polynomial
+   > `S ∈ ℂ[X₀, …, X_r]` not divisible by `X₀ ⋯ X_r`.
+
+   Writing `H = ∑_k H_k` with `H_k` `c_k`-periodic makes the annihilation immediate and turns
+   faithfulness into differential independence of the translation orbits of the `H_k`, which is the
+   parent card's periodic-pencil orbit lemma.
+

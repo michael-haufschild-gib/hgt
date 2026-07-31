@@ -1,9 +1,9 @@
 # Meromorphic pole-jet finite certificate law
 
 - **ID:** meromorphic-pole-jet-finite-certificate-law
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper) · STRUCTURAL BRIDGE
-- **Status:** `[PROVED HERE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean) · STRUCTURAL BRIDGE
+- **Status:** `[PROVED HERE] [LEAN-VERIFIED] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Statement:** Differential transcendence of a meromorphic function is equivalent to the
   existence, at every finite ADE complexity, of one nonzero finite determinant made from Laurent
   coefficients of its differential monomials at any chosen pole.
@@ -105,9 +105,92 @@ finite-dimensional linear algebra.  It is therefore a structural bridge, not new
 knowledge.  Its value is that it makes every bounded ADE claim decidable by one finite determinant
 and identifies the exact entries supplied by the factorial pole-cluster law.
 
+## Lean formalization — unconditional, axiom-clean
+
+Three new modules, all `lake build` green and `#print axioms`-clean
+(`propext`, `Classical.choice`, `Quot.sound` only).  Nothing is carried as a hypothesis interface:
+the Laurent-coefficient functional and the determinant criterion are both constructed.
+
+### `formal/GaloisForLFunctions/HTGeometry/LinearIndependentMinorCertificate.lean`
+
+The determinant criterion, for an arbitrary coordinate space over a field.
+
+| Declaration | Statement |
+|---|---|
+| `coordinateMinor v φ` | the square matrix `(v j (φ i))` of a column family read along a selection `φ` of coordinates |
+| `linearIndependent_of_coordinateMinor_det_ne_zero` | one nonvanishing minor forces independence |
+| `exists_coordinateMinor_det_ne_zero_fin` | a linearly independent `Fin n`-family admits a nonvanishing minor; induction adding one column at a time, the bordered determinant with free last row being a linear functional whose last coefficient is the previous minor |
+| `exists_coordinateMinor_det_ne_zero` | the same for any finite index type |
+| `linearIndependent_iff_forall_finset_exists_coordinateMinor_det_ne_zero` | independence over an arbitrary index type is decided by the finite minors |
+
+This is the `(2) ⟺ (3)` half of the theorem, and is absent from mathlib
+(`Matrix.rank` exists, but no minor characterisation of column independence).
+
+### `formal/GaloisForLFunctions/HTGeometry/MeromorphicLaurentCoefficient.lean`
+
+The missing Laurent infrastructure.  Mathlib has `MeromorphicAt` and analytic orders but no Laurent
+coefficient functional for meromorphic functions.
+
+| Declaration | Statement |
+|---|---|
+| `laurentShift f a k` | the clearing shift `t ↦ t ^ k * f (a + t)` |
+| `laurentCoeff f a ℓ` | the `ℓ`-th Laurent coefficient, defined as the eventual value along `k → ∞` of the shifted Taylor coefficients — canonical, no choice of clearing exponent |
+| `taylorCoeffZero_pow_mul` | multiplying by `t ^ j` shifts Taylor indices by `j` (one Leibniz expansion); the `k`-independence |
+| `meromorphicAt_iff_exists_analyticAt_laurentShift` | meromorphy is exactly the existence of a clearing exponent |
+| `laurentCoeff_eq_taylorCoeffZero` | evaluation through any admissible `k` |
+| `laurentCoeff_sum` | `ℂ`-linearity on finite families meromorphic at `a` |
+| `eventuallyEq_zero_nhdsNE_iff_forall_laurentCoeff_eq_zero` | **injectivity of the Laurent transform**: the coefficients vanish exactly when the function vanishes on a punctured neighbourhood |
+
+The last item is the formal content of "the Laurent expansion is injective on meromorphic
+functions" used in the paper proof; it is proved from `analyticOrderAt` and the vanishing of all
+iterated derivatives, not assumed.
+
+### `formal/GaloisForLFunctions/HTGeometry/MeromorphicPoleJetCertificate.lean`
+
+The theorem itself.
+
+| Declaration | Statement |
+|---|---|
+| `jetVector f n z` | `(z, f z, f' z, …, f⁽ⁿ⁾ z)`, in the variable order of `DifferentiallyAlgebraic` |
+| `jetMonomial f n m` | the differential monomial `z ^ m₀ * ∏ⱼ (f⁽ʲ⁾ z) ^ mⱼ₊₁` — the card's `F_{q,α}` |
+| `jetLaurentRow f a n m` | its row of Laurent coefficients at `a` — the card's matrix `M` |
+| `DifferentiallyAlgebraicNear` / `HypertranscendentalNear` | the ADE notions read on a punctured neighbourhood of `a`, where the derivatives of a meromorphic function are honest |
+| `meromorphicAt_jetMonomial` | every differential monomial of a function meromorphic at `a` is meromorphic at `a` |
+| `eventuallyEq_zero_iff_forall_jetLaurentRow` | a finite linear relation among monomials holds near `a` exactly when it holds among their Laurent rows |
+| `hypertranscendentalNear_iff_forall_linearIndependent_jetLaurentRow` | **`(1) ⟺ (2)`** |
+| `hypertranscendentalNear_iff_forall_exists_jetLaurentMinor_det_ne_zero` | **`(1) ⟺ (3)`**, the finite determinant certificate |
+| `hypertranscendentalNear_iff_forall_bounded_exists_jetLaurentMinor_det_ne_zero` | the same in the card's bounded shape `(r, D, E)`, via `BoundedJetExponent` and `exists_boundedJetExponent` |
+| `hypertranscendental_of_forall_exists_jetLaurentMinor_det_ne_zero` | the certificate at a single point implies `Hypertranscendental f` in the global corpus sense |
+| `differentiallyAlgebraicNear_iff_of_isPreconnected` | **pole independence**: on a preconnected set of meromorphy the local notion, hence the certificate, does not depend on the chosen point — the card's "any nonempty family of poles" clause |
+
+Two points of fidelity worth recording.
+
+1. The Lean statement of `(2)` and `(3)` quantifies over *every* finite family of differential
+   monomials rather than over the truncations `C_{r,D,E}`.  This is equivalent — linear independence
+   of a family is linear independence of every finite subfamily, and every finite family is bounded
+   (`exists_boundedJetExponent`) — and the card's exact bounded shape is recorded separately as
+   `hypertranscendentalNear_iff_forall_bounded_exists_jetLaurentMinor_det_ne_zero`.
+2. The ADE relation is taken on the punctured-neighbourhood filter rather than pointwise on all of
+   `ℂ`.  This is forced: the pointwise reading is sensitive to the junk values that `deriv` and
+   division assign at poles (`z · (1/z) − 1` is the zero function off the origin but takes the value
+   `−1` at it).  The global corpus notion is recovered in the useful direction by
+   `differentiallyAlgebraicNear_of_differentiallyAlgebraic`, so the certificate still proves
+   `Hypertranscendental f`.
+
 ## Gates
 
 - [x] 0 → 1: coefficient matrix and ADE bounds defined
 - [x] 1 → 2: equivalence and finite-minor proof complete
-- [ ] 2 → 3: formal Laurent-series infrastructure and determinant criterion
-- [ ] 3 → 4: include only as a supporting lemma in a publication
+- [x] 2 → 3: formal Laurent infrastructure and determinant criterion built and proved
+  unconditionally; `lake build GaloisForLFunctions.HTGeometry.MeromorphicPoleJetCertificate` green,
+  `#print axioms` clean on every theorem listed above
+- [ ] 3 → 4: include only as a supporting lemma in a publication (no standalone pre-print: the
+  result is classified as not new scientific knowledge)
+
+## Log
+
+- 2026-07-31 — formalized in Lean 4.  Built the two missing pieces named by the 2 → 3 gate
+  (a Laurent-coefficient functional for meromorphic functions, and the minor characterisation of
+  linear independence), then assembled the full equivalence, the bounded-complexity form, the
+  bridge to the corpus's global `Hypertranscendental`, and pole independence on preconnected
+  domains.  Moved to `3-formalized/not_new_scientific_knowledge`.

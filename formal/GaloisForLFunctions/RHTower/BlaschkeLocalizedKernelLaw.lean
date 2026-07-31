@@ -1,4 +1,5 @@
 import Mathlib.Analysis.SpecificLimits.Basic
+import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Topology.Algebra.InfiniteSum.Group
 import Mathlib.Topology.Algebra.InfiniteSum.NatInt
 
@@ -404,5 +405,283 @@ theorem bilateralBlaschkeKernel_signed_corr_succ
   rw [tsum_of_nat_of_neg_add_one hpos hneg, hposfun, hnegfun,
     blaschkeLocalizedKernel_signed_corr_succ a ha0 ha1 r, tsum_zero,
     add_zero]
+
+/-! ## Exact local spectral depth and tail -/
+
+/-- Positive logarithmic spacing between consecutive nonorigin Blaschke
+local spectral weights. -/
+def blaschkeSpectralSlope (a : ℝ) : ℝ :=
+  -Real.log (a ^ 2)
+
+/-- Logarithmic depth of the first nonorigin Blaschke local spectral
+weight. -/
+def blaschkeSpectralOffset (a : ℝ) : ℝ :=
+  -2 * Real.log (1 - a ^ 2)
+
+/-- Logarithmic depth of the nonorigin local weight indexed by `n`. -/
+def blaschkeSpectralDepth (a : ℝ) (n : ℕ) : ℝ :=
+  -Real.log (blaschkeLocalizedWeight a (n + 1))
+
+/-- Every nonorigin Blaschke local spectral weight is strictly positive. -/
+theorem blaschkeLocalizedWeight_succ_pos
+    (a : ℝ) (ha0 : 0 < a) (ha1 : a < 1) (n : ℕ) :
+    0 < blaschkeLocalizedWeight a (n + 1) := by
+  rw [blaschkeLocalizedWeight_succ]
+  have ha2lt : a ^ 2 < 1 := by nlinarith
+  positivity
+
+/-- The logarithmic spacing of the geometric spectral tail is positive. -/
+theorem blaschkeSpectralSlope_pos
+    (a : ℝ) (ha0 : 0 < a) (ha1 : a < 1) :
+    0 < blaschkeSpectralSlope a := by
+  rw [blaschkeSpectralSlope]
+  have ha2pos : 0 < a ^ 2 := sq_pos_of_pos ha0
+  have ha2lt : a ^ 2 < 1 := by nlinarith
+  linarith [Real.log_neg ha2pos ha2lt]
+
+/-- The nonorigin local spectral depths form an exact arithmetic
+progression. -/
+theorem blaschkeSpectralDepth_eq_affine
+    (a : ℝ) (ha0 : 0 < a) (ha1 : a < 1) (n : ℕ) :
+    blaschkeSpectralDepth a n =
+      blaschkeSpectralOffset a + (n : ℝ) * blaschkeSpectralSlope a := by
+  have hbase : 0 < 1 - a ^ 2 := by nlinarith
+  rw [blaschkeSpectralDepth, blaschkeLocalizedWeight_succ,
+    Real.log_mul (pow_ne_zero 2 hbase.ne')
+      (pow_ne_zero n (sq_pos_of_pos ha0).ne'),
+    Real.log_pow, Real.log_pow]
+  simp only [blaschkeSpectralOffset, blaschkeSpectralSlope]
+  push_cast
+  ring
+
+/-- Exact probability mass beyond the first `M` nonorigin coordinates. -/
+theorem blaschkeLocalizedWeight_tail
+    (a : ℝ) (ha0 : 0 < a) (ha1 : a < 1) (M : ℕ) :
+    ∑' n : ℕ, blaschkeLocalizedWeight a (n + M + 1) =
+      (1 - a ^ 2) * (a ^ 2) ^ M := by
+  have ha2nonneg : 0 ≤ a ^ 2 := sq_nonneg a
+  have ha2lt : a ^ 2 < 1 := by nlinarith
+  have hfun :
+      (fun n : ℕ => blaschkeLocalizedWeight a (n + M + 1)) =
+        (fun n : ℕ =>
+          ((1 - a ^ 2) ^ 2 * (a ^ 2) ^ M) * (a ^ 2) ^ n) := by
+    funext n
+    rw [show n + M + 1 = (n + M) + 1 by omega,
+      blaschkeLocalizedWeight_succ, pow_add]
+    ring
+  rw [hfun, tsum_mul_left,
+    tsum_geometric_of_lt_one ha2nonneg ha2lt]
+  have hne : 1 - a ^ 2 ≠ 0 := ne_of_gt (sub_pos.mpr ha2lt)
+  field_simp
+
+/-- Integrated logarithmic depth of the first `M` nonorigin coordinates at
+water level `L`. This definition is used only when those coordinates are
+known to lie above the water line. -/
+def blaschkeFiniteDepthEntropy (a L : ℝ) (M : ℕ) : ℝ :=
+  (1 / 2 : ℝ) * ∑ n ∈ Finset.range M,
+    (L - blaschkeSpectralDepth a n)
+
+/-- Exact quadratic formula for finite integrated Blaschke spectral
+depth. -/
+theorem blaschkeFiniteDepthEntropy_eq
+    (a : ℝ) (ha0 : 0 < a) (ha1 : a < 1) (L : ℝ) (M : ℕ) :
+    blaschkeFiniteDepthEntropy a L M =
+      (1 / 2 : ℝ) *
+        ((M : ℝ) * (L - blaschkeSpectralOffset a) -
+          blaschkeSpectralSlope a * ((M : ℝ) * (M - 1) / 2)) := by
+  rw [blaschkeFiniteDepthEntropy]
+  simp_rw [blaschkeSpectralDepth_eq_affine a ha0 ha1]
+  rw [Finset.sum_sub_distrib, Finset.sum_add_distrib]
+  simp only [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
+  rw [← Finset.sum_mul]
+  have hsum : ∀ K : ℕ,
+      (∑ x ∈ Finset.range K, (x : ℝ)) =
+        (K : ℝ) * (K - 1) / 2 := by
+    intro K
+    induction K with
+    | zero => simp
+    | succ K ih =>
+        rw [Finset.sum_range_succ, ih]
+        push_cast
+        ring
+  rw [hsum M]
+  ring
+
+/-- Number of geometric tail steps visible above logarithmic depth `L`.
+This is defined only algebraically; the accompanying theorems state the
+large-depth hypotheses under which it is the exact active radius. -/
+def blaschkeActiveTailRadius (a L : ℝ) : ℕ :=
+  ⌊(L - blaschkeSpectralOffset a) / blaschkeSpectralSlope a⌋₊
+
+/-- The active Blaschke tail radius brackets logarithmic depth within one
+exact spectral spacing. -/
+theorem blaschkeActiveTailRadius_bracket
+    (a : ℝ) (ha0 : 0 < a) (ha1 : a < 1)
+    {L : ℝ} (hL : blaschkeSpectralOffset a ≤ L) :
+    blaschkeSpectralSlope a *
+        (blaschkeActiveTailRadius a L : ℝ) ≤
+      L - blaschkeSpectralOffset a ∧
+    L - blaschkeSpectralOffset a <
+      blaschkeSpectralSlope a *
+        ((blaschkeActiveTailRadius a L : ℝ) + 1) := by
+  have hrho : 0 < blaschkeSpectralSlope a :=
+    blaschkeSpectralSlope_pos a ha0 ha1
+  have hY : 0 ≤ L - blaschkeSpectralOffset a := sub_nonneg.mpr hL
+  have hratio :
+      0 ≤ (L - blaschkeSpectralOffset a) / blaschkeSpectralSlope a :=
+    div_nonneg hY hrho.le
+  have hfloor :
+      (blaschkeActiveTailRadius a L : ℝ) ≤
+        (L - blaschkeSpectralOffset a) / blaschkeSpectralSlope a := by
+    exact Nat.floor_le hratio
+  have hfloorUp :
+      (L - blaschkeSpectralOffset a) / blaschkeSpectralSlope a <
+        (blaschkeActiveTailRadius a L : ℝ) + 1 := by
+    exact Nat.lt_floor_add_one _
+  constructor
+  · have := (le_div_iff₀ hrho).mp hfloor
+    nlinarith
+  · have := (div_lt_iff₀ hrho).mp hfloorUp
+    nlinarith
+
+/-- A nonorigin Blaschke local mode is visible at logarithmic depth `L`
+exactly when its tail index does not exceed the active radius. -/
+theorem blaschkeSpectralDepth_le_iff_le_activeTailRadius
+    (a : ℝ) (ha0 : 0 < a) (ha1 : a < 1)
+    {L : ℝ} (hL : blaschkeSpectralOffset a ≤ L) (n : ℕ) :
+    blaschkeSpectralDepth a n ≤ L ↔
+      n ≤ blaschkeActiveTailRadius a L := by
+  have hrho : 0 < blaschkeSpectralSlope a :=
+    blaschkeSpectralSlope_pos a ha0 ha1
+  have hY : 0 ≤ L - blaschkeSpectralOffset a := sub_nonneg.mpr hL
+  have hratio :
+      0 ≤ (L - blaschkeSpectralOffset a) / blaschkeSpectralSlope a :=
+    div_nonneg hY hrho.le
+  rw [blaschkeSpectralDepth_eq_affine a ha0 ha1]
+  constructor
+  · intro hn
+    apply (Nat.le_floor_iff hratio).mpr
+    apply (le_div_iff₀ hrho).2
+    nlinarith
+  · intro hn
+    have hn' :
+        (n : ℝ) ≤
+          (L - blaschkeSpectralOffset a) / blaschkeSpectralSlope a :=
+      (Nat.le_floor_iff hratio).mp hn
+    have := (le_div_iff₀ hrho).mp hn'
+    nlinarith
+
+/-- Exact integrated depth of the visible Blaschke coordinates. The origin
+contributes its exceptional weight `a²`; the visible geometric tail ends at
+`blaschkeActiveTailRadius`. -/
+def blaschkeDepthWaterEntropy (a L : ℝ) : ℝ :=
+  (1 / 2 : ℝ) * (L - blaschkeSpectralSlope a) +
+    blaschkeFiniteDepthEntropy a L
+      (blaschkeActiveTailRadius a L + 1)
+
+/-- Closed finite formula for integrated visible Blaschke depth. -/
+theorem blaschkeDepthWaterEntropy_eq
+    (a : ℝ) (ha0 : 0 < a) (ha1 : a < 1) (L : ℝ) :
+    blaschkeDepthWaterEntropy a L =
+      (1 / 2 : ℝ) *
+        ((L - blaschkeSpectralSlope a) +
+          ((blaschkeActiveTailRadius a L : ℝ) + 1) *
+            (L - blaschkeSpectralOffset a) -
+          blaschkeSpectralSlope a *
+            (((blaschkeActiveTailRadius a L : ℝ) + 1) *
+              (blaschkeActiveTailRadius a L : ℝ) / 2)) := by
+  rw [blaschkeDepthWaterEntropy,
+    blaschkeFiniteDepthEntropy_eq a ha0 ha1]
+  push_cast
+  ring
+
+/--
+The visible-depth entropy has a quadratic leading term. The complete error
+is explicit and linear in logarithmic depth; no asymptotic notation is used.
+-/
+theorem blaschkeDepthWaterEntropy_shifted_quadratic_bounds
+    (a : ℝ) (ha0 : 0 < a) (ha1 : a < 1)
+    {L : ℝ}
+    (hLtail : blaschkeSpectralOffset a ≤ L)
+    (hLzero : blaschkeSpectralSlope a ≤ L) :
+    (L - blaschkeSpectralOffset a) ^ 2 /
+          (4 * blaschkeSpectralSlope a) ≤
+        blaschkeDepthWaterEntropy a L ∧
+      blaschkeDepthWaterEntropy a L ≤
+        (L - blaschkeSpectralOffset a) ^ 2 /
+            (4 * blaschkeSpectralSlope a) +
+          (L - blaschkeSpectralSlope a) / 2 +
+          (L - blaschkeSpectralOffset a) / 2 +
+          blaschkeSpectralSlope a / 4 := by
+  let rho : ℝ := blaschkeSpectralSlope a
+  let c : ℝ := blaschkeSpectralOffset a
+  let R : ℝ := (blaschkeActiveTailRadius a L : ℝ)
+  let Y : ℝ := L - c
+  let delta : ℝ := Y - rho * R
+  let S : ℝ := (R + 1) * Y - rho * ((R + 1) * R / 2)
+  have hrho : 0 < rho := by
+    simpa only [rho] using blaschkeSpectralSlope_pos a ha0 ha1
+  have hR : 0 ≤ R := by positivity
+  have hY : 0 ≤ Y := by
+    simpa only [Y, c] using sub_nonneg.mpr hLtail
+  obtain ⟨hfloor, hfloorUp⟩ :=
+    blaschkeActiveTailRadius_bracket a ha0 ha1 hLtail
+  have hfloor' : rho * R ≤ Y := by
+    simpa only [rho, R, Y, c] using hfloor
+  have hfloorUp' : Y < rho * (R + 1) := by
+    simpa only [rho, R, Y, c] using hfloorUp
+  have hdelta0 : 0 ≤ delta := by
+    dsimp only [delta]
+    linarith
+  have hdeltarho : delta < rho := by
+    dsimp only [delta]
+    nlinarith
+  have hdeltaProduct : 0 ≤ delta * (2 * rho - delta) :=
+    mul_nonneg hdelta0 (by linarith)
+  have hRterm : 0 ≤ rho ^ 2 * R :=
+    mul_nonneg (sq_nonneg rho) hR
+  have hcoreLower : Y ^ 2 ≤ 2 * rho * S := by
+    dsimp only [delta, S] at hdeltaProduct ⊢
+    nlinarith
+  have hcoreUpper :
+      2 * rho * S ≤ Y ^ 2 + 2 * rho * Y + rho ^ 2 := by
+    have hdeltaSq : 0 ≤ delta ^ 2 := sq_nonneg delta
+    dsimp only [delta, S] at hdeltaSq ⊢
+    nlinarith
+  have hH :
+      blaschkeDepthWaterEntropy a L =
+        (1 / 2 : ℝ) * ((L - rho) + S) := by
+    rw [blaschkeDepthWaterEntropy_eq a ha0 ha1 L]
+    dsimp only [rho, c, R, Y, S]
+    ring
+  have hfourrho : 0 < 4 * rho := by positivity
+  have htailLower : Y ^ 2 / (4 * rho) ≤ S / 2 := by
+    have hdiv :=
+      (div_le_div_iff_of_pos_right hfourrho).2 hcoreLower
+    calc
+      Y ^ 2 / (4 * rho) ≤ (2 * rho * S) / (4 * rho) := hdiv
+      _ = S / 2 := by
+        field_simp [hrho.ne']
+        ring
+  have htailUpper :
+      S / 2 ≤ Y ^ 2 / (4 * rho) + Y / 2 + rho / 4 := by
+    have hdiv :=
+      (div_le_div_iff_of_pos_right hfourrho).2 hcoreUpper
+    calc
+      S / 2 = (2 * rho * S) / (4 * rho) := by
+        field_simp [hrho.ne']
+        ring
+      _ ≤ (Y ^ 2 + 2 * rho * Y + rho ^ 2) / (4 * rho) := hdiv
+      _ = Y ^ 2 / (4 * rho) + Y / 2 + rho / 4 := by
+        field_simp [hrho.ne']
+        ring
+  constructor
+  · rw [hH]
+    have horigin : 0 ≤ L - rho := by
+      simpa only [rho] using sub_nonneg.mpr hLzero
+    nlinarith
+  · rw [hH]
+    dsimp only [rho, c, Y] at htailUpper ⊢
+    nlinarith
 
 end RHTower

@@ -1485,3 +1485,48 @@ case proved and the hyperbolic case already in the corpus (`hurwitz_triple_sum_l
 
 The Hurwitz bound was an isolated inequality in the corpus; it is now the third branch of a
 classification, and the parabolic signatures are the boundary case between the two.
+
+## Iteration: the face-packet freeness row, re-scoped
+
+`Function.Injective (facePacketDisplacementSlice τ hτ J hq)` — the largest row of the
+mathlib-`Prop` scan — is no longer a single open statement.  New card:
+`face-packet-displacement-freeness.md`; new module
+`HTGeometry/FacePacketDisplacementFreeness.lean` (built, axioms clean, registered).
+
+* **`facePacketDisplacementSlice_injective_iff_period`** — freeness *is* a comparison of
+  translation stabilizers, with no side condition:
+  `Injective ↔ ∀ h ∈ faceShiftLattice τ J, T_h Ψ_{J∪{q}} = Ψ_{J∪{q}} → T_h Ψ_J = Ψ_J`.
+  The card's earlier "named open core" (a `τ q`-invariant difference of translates must vanish) is
+  this statement, and the pole-orbit route it proposed is not needed to *state* it.
+* `addTranslationMeroEquiv_intCast_multipleEllipticGammaLogDerivFaceMero` — every integer
+  translation fixes every face coordinate, so the comparison only has to reach `ℤ`.
+* The `d ≥ 2` case (at least two parameters surviving the deeper face) was closed by a concurrent
+  lane in `FaceTranslateInjective`; read through the equivalence it gives the period statement
+  `multipleEllipticGammaLogDerivFaceMero_period_comparison`.
+* **The premise is unsatisfiable at the terminal face.**  With `insert q J = univ` the deeper
+  coordinate is the constant `−2πi`, the labelling is constant on the packet, and
+  `Injective ↔ Subsingleton (packet J) ↔ faceShiftLattice τ J ⊆ Per(Ψ_J)`.  So the freeness
+  hypothesis there is not freeness but triviality of the external action.
+
+Remaining open core, now isolated to one face: `Per(Ψ_L) = ℤ` for a face with exactly one surviving
+parameter.  `ℤ ⊆ Per` is proved; the gap is `Per ⊆ ℤ + ℤσ`, whose single missing analytic input is
+that the backward product has a simple zero at the origin.
+
+### The face-packet freeness row is closed
+
+`HTGeometry/FaceOneSurvivingTheta.lean` (built, axioms clean, registered) finishes the row:
+
+* `multipleEllipticGammaLogDerivFaceMero_one_surviving` — a face with exactly one surviving
+  parameter is a translated `thetaLogDerivMero` plus a constant.  The rank-one face is a *coface* of
+  a rank-two face, and the corpus already crosses the product hierarchy to the series-side theta at
+  rank two (`ellipticGammaLogDerivMero_source_face_sigma`), so no product formula for `jacobiTheta₂`
+  is needed — the Jacobi triple product, which the earlier note called the missing input, is not.
+* `exists_lattice_of_fix_one_surviving` — hence `Per(Ψ_L) ⊆ ℤ + ℤ(τ b)`, from
+  `thetaLogDerivDefectMero_ne_zero_of_nonlattice`.
+* **`facePacketDisplacementSlice_injective_iff`** — the exact criterion: for an integrally
+  independent period family, freeness holds **iff** `insert q J ≠ univ ∨ J = ∅`.  Positive in the
+  one-surviving regime, negative at the terminal face with nonempty `J` — an unsatisfiability proof,
+  so the consumers there are vacuous and the hypothesis must exclude that face.
+* **`facePacket_differentialIndependent_of_periodsIntegrallyIndependent`** — the descending
+  face-lifting lemma with both arithmetic premises discharged; only its inductive independence
+  premise remains.
