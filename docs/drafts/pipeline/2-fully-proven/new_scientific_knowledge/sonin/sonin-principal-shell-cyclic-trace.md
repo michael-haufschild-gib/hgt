@@ -353,6 +353,30 @@ aperture tower is subadditive, so the floor is not archimedean-free; and the arc
 not trace class, so the floor is not obtainable by adding a trace-class counterterm either.  What
 survives is exactly the regularized pairing of the extended trace against the conductor.
 
+## Theorem O: stationarity on the core of the logarithm
+
+Let `f` be supported in the `m`-th tower band.  For `n >= m` the two band symbols agree on that
+band, so
+
+```text
+Log_band(a,r,n) f = Log_band(a,r,m) f      for all n >= m.                (27)
+```
+
+The truncations are therefore *eventually constant* on every band-supported vector, not merely
+convergent: they define one operator on the union of the band-supported subspaces, which is the
+natural core of the logarithm of position.  The shell units of the tower lie in that core, so it
+is not the zero subspace.
+
+### Proof
+
+Both symbols equal `log|t|` at every point of the smaller band, and `f` vanishes almost everywhere
+off it, so the two products agree almost everywhere.  A shell unit of layer `k` is the normalized
+indicator of a cell strictly inside `(r^k a, r^(k+1) a)`, hence inside the `m`-th band whenever
+`k+1 <= m`.
+
+What `(27)` does **not** give is the unbounded operator on the whole carrier: that needs density of
+the core in the even carrier, an `L²` exhaustion argument which is not carried out here.
+
 ## Frontier effect
 
 Closed:
@@ -409,7 +433,9 @@ provisional pending expert/literature review.
       truncations to it at rate `log r` (Theorem L)
 - [x] archimedean defect proved noncompact, hence not absorbable by any trace-class counterterm
       (Theorem N)
-- [ ] unbounded logarithmic multiplier on the whole carrier (band limit `n -> infinity`)
+- [x] the truncations are stationary on the band-supported core, which is nonempty (Theorem O)
+- [ ] density of the band-supported core in the even carrier (`L²` exhaustion), giving the
+      unbounded multiplier on the whole carrier
 - [ ] Burnol completion and completed lower floor
 
 ## Lean
@@ -459,6 +485,8 @@ provisional pending expert/literature review.
 | `(25)` operator error | `norm_evenLogShellChannel_sub_soninBandLogMultiplier_le` |
 | `(26)` defect noncompact | `not_isCompactOperator_conductorDilationDefect` |
 | `(26)` defect not Schatten-1 | `not_memSchattenClass_one_conductorDilationDefect` |
+| `(27)` stationarity on the core | `soninBandLogMultiplier_eq_of_bandSupported` |
+| core is nonempty | `soninBandSupported_logShellUnit` |
 
 Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninPrincipalRelativeCyclicExtension.lean`,
@@ -479,6 +507,9 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-07-31 — stationarity on the core proved: beyond the supporting band the truncations stop
+  changing, so they define one operator on the band-supported core, and the shell units lie in it.
+  Density of that core is the one analytic step still missing for the unbounded multiplier.
 - 2026-07-31 — archimedean defect proved noncompact.  The scalar log r that dilation extracts sits
   on a nondegenerate shell band, so it is not Schatten-1 and no trace-class counterterm can absorb
   it.  With Theorem H this closes both escape routes: the floor is neither aperture-free nor

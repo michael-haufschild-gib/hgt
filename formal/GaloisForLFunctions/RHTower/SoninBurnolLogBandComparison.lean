@@ -273,3 +273,77 @@ theorem norm_evenLogShellChannel_sub_soninBandLogMultiplier_le
   rw [h1, Pi.sub_apply, h2, h3, sub_mul]
 
 end RHTower
+
+namespace RHTower
+
+open MeasureTheory Set
+
+/-! ## Stationarity of the band logarithm on its natural core -/
+
+/-- A vector of the even carrier supported inside the `m`-th tower band. -/
+def SoninBandSupported (a r : ℝ) (m : ℕ) (f : evenSubspace) : Prop :=
+  ∀ᵐ t ∂(volume : Measure ℝ),
+    t ∉ (fun s : ℝ => |s|) ⁻¹'
+        Set.Ioc (logShellRadius a r 0) (logShellRadius a r m) →
+      (((f : evenSubspace) : SoninL2) : ℝ → ℂ) t = 0
+
+/-- Enlarging the truncation does not change the band logarithm inside the smaller band. -/
+theorem soninBandLogSymbol_eq_of_mem_smaller {a r : ℝ} (ha : 0 < a) (hr : 1 < r)
+    {m n : ℕ} (hmn : m ≤ n) {t : ℝ}
+    (ht : t ∈ (fun s : ℝ => |s|) ⁻¹'
+      Set.Ioc (logShellRadius a r 0) (logShellRadius a r m)) :
+    soninBandLogSymbol a r n t = soninBandLogSymbol a r m t := by
+  have hmem : logShellRadius a r 0 < |t| ∧ |t| ≤ logShellRadius a r m := by
+    simpa [Set.mem_preimage, Set.mem_Ioc] using ht
+  have htn : t ∈ (fun s : ℝ => |s|) ⁻¹'
+      Set.Ioc (logShellRadius a r 0) (logShellRadius a r n) := by
+    simp only [Set.mem_preimage, Set.mem_Ioc]
+    exact ⟨hmem.1, hmem.2.trans (logShellRadius_mono ha hr hmn)⟩
+  unfold soninBandLogSymbol
+  rw [Set.indicator_of_mem htn, Set.indicator_of_mem ht]
+
+/-- **Stationarity on the core.**  On a vector supported in the `m`-th band, every truncation
+beyond `m` gives the same value.  The band logarithms therefore define a single operator on the
+union of the band-supported subspaces — the natural core of the logarithm of position. -/
+theorem soninBandLogMultiplier_eq_of_bandSupported {a r : ℝ} (ha : 0 < a) (hr : 1 < r)
+    {m n : ℕ} (hmn : m ≤ n) {f : evenSubspace} (hf : SoninBandSupported a r m f) :
+    soninBandLogMultiplier a r ha hr n f = soninBandLogMultiplier a r ha hr m f := by
+  apply Subtype.ext
+  apply Lp.ext
+  filter_upwards [soninBandLogMultiplier_coeFn a r ha hr n f,
+    soninBandLogMultiplier_coeFn a r ha hr m f, hf] with t h1 h2 h3
+  rw [h1, h2]
+  by_cases hmem : t ∈ (fun s : ℝ => |s|) ⁻¹'
+      Set.Ioc (logShellRadius a r 0) (logShellRadius a r m)
+  · rw [soninBandLogSymbol_eq_of_mem_smaller ha hr hmn hmem]
+  · rw [h3 hmem, mul_zero, mul_zero]
+
+/-- The shell units of the tower belong to the core. -/
+theorem soninBandSupported_logShellUnit (a r : ℝ) (ha : 0 < a) (hr : 1 < r)
+    {k m : ℕ} (hk : k + 1 ≤ m) :
+    SoninBandSupported a r m (logShellUnit a r ha hr k) := by
+  filter_upwards [normalizedIndicator_ae
+    (evenShellCell (logShellRadius a r k) (logShellRadius a r (k + 1)) 0)
+    (measurableSet_evenShellCell (logShellRadius a r k)
+      (logShellRadius a r (k + 1)) 0)
+    (evenShellCell_measure_ne_top (logShellRadius_lt_succ ha hr k) 0)] with t hval
+  intro hnot
+  have hcell : t ∉ evenShellCell (logShellRadius a r k)
+      (logShellRadius a r (k + 1)) 0 := by
+    intro hmem
+    apply hnot
+    have hlow : logShellRadius a r k < |t| :=
+      (lt_shellLeft (logShellRadius_lt_succ ha hr k) 0).trans hmem.1
+    have hhigh : |t| < logShellRadius a r (k + 1) :=
+      hmem.2.trans_lt (shellRight_lt (logShellRadius_lt_succ ha hr k) 0)
+    simp only [Set.mem_preimage, Set.mem_Ioc]
+    exact ⟨lt_of_le_of_lt (logShellRadius_mono ha hr (Nat.zero_le k)) hlow,
+      hhigh.le.trans (logShellRadius_mono ha hr hk)⟩
+  change (logShellUnit a r ha hr k : SoninL2) t = 0
+  rw [logShellUnit]
+  change evenShellVector (logShellRadius a r k) (logShellRadius a r (k + 1))
+    (logShellRadius_lt_succ ha hr k) 0 t = 0
+  rw [evenShellVector]
+  rw [hval, Set.indicator_of_notMem hcell, mul_zero]
+
+end RHTower
