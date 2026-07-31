@@ -300,7 +300,7 @@ theorem eventually_polynomialPatternPower_gap_of_signature_lt
       (c₀ / 2) * x ^ (β - j) :=
     mul_le_mul_of_nonneg_left hpow (by positivity)
   have hx' : (c₀ / 2) * x ^ (β - j) ≤ polynomialPowerFiniteDifference β d x := by
-    convert hx using 1 <;> ring
+    convert hx using 1 ; ring
   have hstep := hmul.trans hx'
   simpa [c₀, d] using hstep
 

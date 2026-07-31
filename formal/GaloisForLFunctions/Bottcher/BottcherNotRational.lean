@@ -463,7 +463,7 @@ theorem bottcherCoord_not_rational {c : ℂ} (hc : c ≠ 0) (p q : Polynomial �
   -- pick a good evaluation point and contradict ‖φ‖ > 1
   have hbad : ({w : ℂ | q.IsRoot w} ∪ {w : ℂ | (q.comp fpoly).IsRoot w}).Finite :=
     (finite_setOf_isRoot hq).union (finite_setOf_isRoot hqcomp)
-  obtain ⟨w, hw⟩ := ((escapeOpen_infinite c).diff hbad).nonempty
+  obtain ⟨w, hw⟩ := ((escapeOpen_infinite c).sdiff hbad).nonempty
   have hwesc : w ∈ escapeOpen c := hw.1
   have hwgood : w ∉ ({w : ℂ | q.IsRoot w} ∪ {w : ℂ | (q.comp fpoly).IsRoot w}) := hw.2
   have hqw : q.eval w ≠ 0 := fun h => hwgood (Or.inl h)

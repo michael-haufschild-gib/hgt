@@ -112,6 +112,7 @@ def finiteStepMeshEnergy
     (cells : Finset ι) (cellLength cellValue : ι → ℝ) : ℝ :=
   ∑ i ∈ cells, cellLength i * (cellValue i) ^ 2
 
+omit [DecidableEq ι] in
 theorem finiteStepMeshEnergy_nonneg
     (cells : Finset ι) (cellLength cellValue : ι → ℝ)
     (hlength : ∀ i ∈ cells, 0 ≤ cellLength i) :

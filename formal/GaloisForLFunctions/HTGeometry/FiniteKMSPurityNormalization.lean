@@ -276,7 +276,6 @@ theorem finiteTransitionPassiveResponse_finiteKMS_add_const
   apply Finset.sum_congr rfl
   intro b hb
   congr 3
-  push_cast
   ring
 
 /-! ## Independent-system tensor factorization -/

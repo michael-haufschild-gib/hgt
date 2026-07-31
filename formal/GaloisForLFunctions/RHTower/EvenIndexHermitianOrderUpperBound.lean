@@ -24,14 +24,14 @@ theorem norm_additiveConvolutionPower_succ_le_pow {a : ℕ → ℂ} (ha : ∀ n,
 
 theorem norm_mixedAdditiveConvolutionPower_le_pow {a : ℕ → ℂ} (ha : ∀ n, ‖a n‖ ≤ 1) (j N : ℕ) :
     ‖mixedAdditiveConvolutionPower a (j + 1) N‖ ≤ ((N : ℝ) + 1) ^ (2 * j + 1) := by
-  show ‖∑ ab ∈ Finset.antidiagonal N, additiveConvolutionPower a (j + 1) ab.1 *
+  show ‖∑ ab ∈ Finset.HasAntidiagonal.antidiagonal N, additiveConvolutionPower a (j + 1) ab.1 *
     (starRingEnd ℂ) (additiveConvolutionPower a (j + 1) ab.2)‖ ≤ _
   refine (norm_sum_le _ _).trans ?_
-  have hstep : ∀ ab ∈ Finset.antidiagonal N,
+  have hstep : ∀ ab ∈ Finset.HasAntidiagonal.antidiagonal N,
       ‖additiveConvolutionPower a (j + 1) ab.1 *
           (starRingEnd ℂ) (additiveConvolutionPower a (j + 1) ab.2)‖ ≤ ((N : ℝ) + 1) ^ (2 * j) := by
     intro ab hab
-    rw [Finset.mem_antidiagonal] at hab
+    rw [Finset.HasAntidiagonal.mem_antidiagonal] at hab
     rw [norm_mul, RCLike.norm_conj]
     have hb1 : ((ab.1 : ℝ) + 1) ^ j ≤ ((N : ℝ) + 1) ^ j := by
       apply pow_le_pow_left₀ (by positivity)

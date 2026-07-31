@@ -763,7 +763,7 @@ theorem ccmPositivePairedCauchyKernel_eq_reduced
   have hpair (A H : ℂ) :
       A - (-H) - (starRingEnd ℂ) (-H) + (starRingEnd ℂ) A =
         (((2 * (A + H).re : ℝ)) : ℂ) := by
-    apply Complex.ext <;> simp <;> ring
+    apply Complex.ext <;> simp ; ring
   simpa only [ccmPositivePairedReducedKernel, neg_div] using
     hpair
       (((starRingEnd ℂ) (continuedPrimeArchSourceRelativeTrace w) -

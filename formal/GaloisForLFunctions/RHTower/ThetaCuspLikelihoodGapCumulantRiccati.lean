@@ -179,8 +179,9 @@ theorem three_mul_thetaCuspLikelihoodTailProbability_le_mean
     {B : ℝ} (hB : 0 < B) :
     3 * thetaCuspLikelihoodTailProbability B ≤
       thetaCuspLikelihoodMean B := by
-  simpa only [thetaCuspLikelihoodNormalizedMoment_one_eq_mean] using
-    three_mul_thetaCuspLikelihoodNormalizedMoment_le_succ hB 0
+  have h := three_mul_thetaCuspLikelihoodNormalizedMoment_le_succ hB 0
+  simp only [zero_add, thetaCuspLikelihoodNormalizedMoment_one_eq_mean] at h
+  exact h
 
 /-- **Strict support-gap overdispersion.**  On the theta-source half-line, variance exceeds twice
 the mean. -/
@@ -282,7 +283,7 @@ theorem hasDerivAt_thetaCuspLikelihoodNormalizedMoment
   have hpart := hasDerivAt_thetaCuspLikelihoodPartition hB
   have hpartPos := thetaCuspLikelihoodPartition_pos hB
   unfold thetaCuspLikelihoodNormalizedMoment
-  convert hm.div hpart hpartPos.ne' using 1
+  refine (hm.div hpart hpartPos.ne').congr_deriv ?_
   simp only [thetaCuspLikelihoodMean]
   field_simp [hpartPos.ne']
   ring
@@ -309,6 +310,7 @@ theorem hasDerivAt_thetaCuspLikelihoodThirdCumulant
   unfold thetaCuspLikelihoodThirdCumulant
     thetaCuspLikelihoodFourthCumulant
   convert hraw using 1
+  any_goals rfl
   · funext q
     simp only [thetaCuspLikelihoodNormalizedMoment, Pi.add_apply, Pi.sub_apply,
       Pi.mul_apply, Pi.pow_apply]
@@ -419,6 +421,7 @@ theorem hasDerivAt_thetaCuspLikelihoodSourceLogPartitionJetThree
     ((((hscale.pow 3).mul hthird).const_mul (-8)).add
         (((hscale.pow 2).mul hvariance).const_mul 24)).sub
       ((hscale.mul hmean).const_mul 8) using 1
+  any_goals rfl
   · funext y
     simp only [Function.comp_apply, Pi.add_apply, Pi.sub_apply, Pi.mul_apply,
       Pi.pow_apply]

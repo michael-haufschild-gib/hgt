@@ -79,6 +79,7 @@ theorem quantumPairWedge_linearIndependent :
 
 variable [CharZero K]
 
+omit [CharZero K] in
 /-- Injectivity of the complete exterior commutator forces independence of all coordinate
 principal brackets. -/
 theorem principalBracketPair_linearIndependent_of_endomorphismCommutatorMap_injective
@@ -102,6 +103,7 @@ theorem principalBracketPair_linearIndependent_of_endomorphismCommutatorMap_inje
   rw [hmap] at himage
   exact himage
 
+omit [CharZero K] in
 /-- Full exterior commutator injectivity is equivalent to coordinate principal-bracket
 independence. -/
 theorem principalBracketPair_linearIndependent_iff_endomorphismCommutatorMap_injective

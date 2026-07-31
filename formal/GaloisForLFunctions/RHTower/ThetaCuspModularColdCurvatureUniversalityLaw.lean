@@ -61,7 +61,7 @@ theorem thetaCuspModularColdSignedSlope_strictFluctuation (j : ℕ) :
   have hscaled := mul_lt_mul_of_pos_right
     thetaCuspLikelihoodModularSeam_strictFluctuation
     (sq_pos_of_pos (thetaCuspModularColdCurvatureFactor_pos j))
-  convert hscaled using 1 <;> ring
+  convert hscaled using 1 <;> first | rfl | ring
 
 end
 

@@ -26,7 +26,7 @@ theorem key_total_count {D : ℕ} (h : Fin D → ℕ) :
   have hlift : (key h).sum (fun _ v => v)
       = Finsupp.liftAddHom (fun _ : ℕ => AddMonoidHom.id ℕ) (key h) := rfl
   rw [hlift, key, map_sum]
-  simp [Finsupp.liftAddHom_apply_single]
+  simp
 
 /-- Index-weighted sum of an atom key: `∑ₙ n · (key h) n = ∑ₜ h t`. -/
 theorem key_weighted_sum {D : ℕ} (h : Fin D → ℕ) :
@@ -35,7 +35,7 @@ theorem key_weighted_sum {D : ℕ} (h : Fin D → ℕ) :
       = Finsupp.liftAddHom (fun n : ℕ => (AddMonoidHom.mulLeft n)) (key h) := rfl
   rw [hlift, key, map_sum]
   refine Finset.sum_congr rfl fun t _ => ?_
-  simp [Finsupp.liftAddHom_apply_single]
+  simp
 
 /-- The canonical flattening realizes the total differential order: `∑ₜ flatOrder e t = ∑ⱼ j · e j`. -/
 theorem flatOrder_sum {n : ℕ} (e : Fin (n + 1) → ℕ) :

@@ -232,7 +232,7 @@ theorem Homeomorph.isGdelta_image
     · intro hy
       exact ⟨e.symm y, hy, e.apply_symm_apply y⟩
   rw [himage]
-  exact isGδ_induced e.symm.continuous hS
+  exact IsGδ.preimage e.symm.continuous hS
 
 /-- A homeomorphism sends a dense set to a dense set. -/
 theorem Homeomorph.dense_image

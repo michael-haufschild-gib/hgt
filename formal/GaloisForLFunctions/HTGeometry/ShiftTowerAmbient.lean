@@ -26,7 +26,7 @@ variable (sigma : K ≃+* K) (S : IntermediateField ℂ K)
 noncomputable def restrictEquiv (h : ∀ u : K, sigma u ∈ S ↔ u ∈ S) : S ≃+* S where
   toFun u := ⟨sigma u.1, (h u.1).mpr u.2⟩
   invFun v := ⟨sigma.symm v.1, by
-    have := (h (sigma.symm v.1)).mp (by simpa using v.2)
+    have := (h (sigma.symm v.1)).mp (by simp)
     exact this⟩
   left_inv u := by ext; simp
   right_inv v := by ext; simp
@@ -52,7 +52,7 @@ noncomputable def subVal (S : IntermediateField ℂ K) : S →ₗ[ℂ] K :=
 constant multiple of `c`, no element with defect `c` is algebraic over `S`. -/
 theorem transcendental_ambient
     (hstab : ∀ u : K, sigma u ∈ S ↔ u ∈ S)
-    (hsigmaC : ∀ a : ℂ, sigma (algebraMap ℂ K a) = algebraMap ℂ K a)
+    (_hsigmaC : ∀ a : ℂ, sigma (algebraMap ℂ K a) = algebraMap ℂ K a)
     {y c : K} (hcS : c ∈ S) (hsy : sigma y = y + c)
     {T W : Submodule ℂ K}
     (hdefect : ∀ u ∈ S, ∀ v ∈ T, sigma u - u = v → v ∈ W)

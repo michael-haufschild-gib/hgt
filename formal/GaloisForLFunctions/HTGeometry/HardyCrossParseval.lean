@@ -29,8 +29,6 @@ theorem circleAverage_poly_mul_conj
           conj (∑ j ∈ Finset.range M, d j * z theta ^ j) =
         ∑ k ∈ Finset.range M, ∑ j ∈ Finset.range M,
           c k * conj (d j) * (z theta ^ k * conj (z theta ^ j)) := by
-    change (∑ k ∈ Finset.range M, c k * z theta ^ k) *
-        (starRingEnd ℂ) (∑ j ∈ Finset.range M, d j * z theta ^ j) = _
     rw [map_sum, Finset.sum_mul]
     apply Finset.sum_congr rfl
     intro k _

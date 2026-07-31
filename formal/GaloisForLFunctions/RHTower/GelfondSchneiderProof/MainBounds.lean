@@ -81,7 +81,7 @@ lemma abs_Rb : norm ((h7.R q hq0 h2mq) z) ≤ (q * q) * ((h7.c₄ ^ (h7.r q hq0 
     · simp
     · apply mul_nonneg
       · exact Real.rpow_nonneg (le_trans zero_le_one (h7.one_le_c₄)) _
-      · exact Real.rpow_nonneg (by simpa using (Nat.cast_nonneg (h7.n q))) _
+      · exact Real.rpow_nonneg (by simp) _
   · apply sum_le_sum
     intros i hi
     apply mul_le_mul
@@ -532,7 +532,7 @@ lemma c12_nonneg : 0 ≤ h7.c₁₂ := by
 
 
 
-lemma S_norm_bound : ∀ (hz : z ∈ Metric.sphere 0 (h7.m * (1 + (h7.r q hq0 h2mq : ℝ) / (q : ℝ)))),
+lemma S_norm_bound : ∀ (_hz : z ∈ Metric.sphere 0 (h7.m * (1 + (h7.r q hq0 h2mq : ℝ) / (q : ℝ)))),
   norm (h7.S q hq0 h2mq z) ≤ (h7.c₁₂)^(h7.r q hq0 h2mq : ℝ)*
     (h7.r q hq0 h2mq : ℝ) ^
               ((((h7.r q hq0 h2mq : ℝ)* ( ( (3 : ℝ) - (h7.m: ℝ))/2 : ℝ)) + (3 / 2 : ℝ))) := by
@@ -700,7 +700,7 @@ lemma S_norm_bound : ∀ (hz : z ∈ Metric.sphere 0 (h7.m * (1 + (h7.r q hq0 h2
       · exact c10_nonneg h7
     · apply c11_nonneg
 
-def systemCoeffsff_foo_S : ρᵣ h7 q hq0 h2mq =
+theorem systemCoeffsff_foo_S : ρᵣ h7 q hq0 h2mq =
   Complex.log (h7.α) ^ (-(h7.r q hq0 h2mq : ℤ)) *
    (h7.S q hq0 h2mq) (↑↑(h7.l₀' q hq0 h2mq) + 1) := by
   dsimp [ρᵣ]
@@ -746,14 +746,12 @@ def systemCoeffsff_foo_S : ρᵣ h7 q hq0 h2mq =
     nth_rw 2 [← mul_one
       (a := (h7.R' q hq0 h2mq (h7.l₀' q hq0 h2mq) (↑↑(h7.l₀' q hq0 h2mq) + 1)) *
       ↑(h7.r q hq0 h2mq).factorial) ]
-    congr
     simp only [mul_one, sub_self, zero_mul, add_zero]
     nth_rw 2 [← mul_one (a:= h7.R' q hq0 h2mq (h7.l₀' q hq0 h2mq)
       ((h7.l₀' q hq0 h2mq : ℂ) + 1) * ↑(h7.r q hq0 h2mq).factorial)]
     congr
     have H1 :  ∏ x ∈ Finset.range h7.m \ {↑(h7.l₀' q hq0 h2mq)}, 1 = (1 : ℂ) := by
       simp only [prod_const_one]
-    congr
     rw [← H1]
     apply Finset.prod_congr
     rfl
@@ -769,7 +767,7 @@ def systemCoeffsff_foo_S : ρᵣ h7 q hq0 h2mq =
     rw [sub_eq_zero] at HC
     norm_cast at HC
 
-lemma eq7 (l' : Fin (h7.m)) :
+lemma eq7 (_l' : Fin (h7.m)) :
     ρᵣ h7 q hq0 h2mq = Complex.log (h7.α) ^ (-(h7.r q hq0 h2mq) : ℤ) * ((2 * ↑Real.pi * I)⁻¹ *
     (∮ z in C(0, h7.m * (1 + (h7.r q hq0 h2mq / q))), (z - (h7.l₀' q hq0 h2mq + 1))⁻¹ *
     (h7.S q hq0 h2mq) z)) :=
@@ -981,7 +979,6 @@ def c₁₄ : ℝ := (h7.c₈^((h7.h-1)) * h7.c₁₃)
 lemma c14_nonneg : 1 ≤ h7.c₁₄ :=
   one_le_mul_of_one_le_of_one_le (one_le_pow₀ h7.c8_geq_one) h7.one_le_c13
 
-include u t in
 lemma use6and8 : norm ((Algebra.norm ℚ (rho h7 q hq0 h2mq))) ≤ (h7.c₁₄)^(h7.r q hq0 h2mq : ℝ) *
     (h7.r q hq0 h2mq : ℝ)^((-(h7.r q hq0 h2mq : ℝ))/2 + 3 * (h7.h)/2) := by
 
@@ -1101,7 +1098,6 @@ lemma norm_algebraNorm_rho_gtinv :
   · simp only [Real.rpow_neg_natCast, zpow_neg, zpow_natCast, inv_pos]
     apply pow_pos (c5nonneg h7)
 
-include u t in
 lemma use5 : (h7.r q hq0 h2mq : ℝ) ^ (((h7.r q hq0 h2mq : ℝ) - 3 * h7.h) / 2) <
   (h7.c₁₅) ^ (h7.r q hq0 h2mq : ℝ) := by
   let r : ℝ := h7.r q hq0 h2mq
@@ -1119,7 +1115,7 @@ lemma use5 : (h7.r q hq0 h2mq : ℝ) ^ (((h7.r q hq0 h2mq : ℝ) - 3 * h7.h) / 2
 
   have h68 : N ≤ h7.c₁₄ ^ r * B := by
     dsimp [N, r, B]
-    simpa using (use6and8 h7 q hq0 u t h2mq)
+    simpa using (use6and8 h7 q hq0 h2mq)
 
   have htmp :
         N * B⁻¹ ≤ (h7.c₁₄ ^ r * B) * B⁻¹ :=

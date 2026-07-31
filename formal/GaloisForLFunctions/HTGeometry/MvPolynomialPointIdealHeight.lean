@@ -88,7 +88,7 @@ theorem pointTailIdeal_strictMono {n : ℕ} (x : Fin n → ℂ) {k : ℕ} (hk : 
   have hsingle' : (0 : pointTail n k →₀ ℕ) ≠
       Finsupp.single (⟨i, hkself⟩ : pointTail n k) 1 := Ne.symm hsingle
   have hone : (1 : ℂ) = 0 := by
-    simpa [i, hsingle, hsingle'] using hcoeff
+    simp [i, hsingle'] at hcoeff
   exact one_ne_zero hone
 
 theorem natCast_le_pointTailIdeal_height {n : ℕ} (x : Fin n → ℂ) :

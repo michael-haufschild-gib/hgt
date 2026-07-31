@@ -24,6 +24,7 @@ variable {K : Type u} {ι : Type v} [Field K] [Fintype ι]
 def projectiveWordExponent {n : ℕ} (w : Fin n → ι) : ι →₀ ℕ :=
   ∑ r, Finsupp.single (w r) 1
 
+omit [Fintype ι] in
 /-- Turning the exponent vector back into a multiset forgets exactly the ordering of the word. -/
 theorem toMultiset_projectiveWordExponent : ∀ {n : ℕ} (w : Fin n → ι),
     Finsupp.toMultiset (projectiveWordExponent w) = (List.ofFn w : Multiset ι) := by
@@ -41,6 +42,7 @@ theorem toMultiset_projectiveWordExponent : ∀ {n : ℕ} (w : Fin n → ι),
       rw [ih (Fin.tail w), List.ofFn_cons]
       rfl
 
+omit [Fintype ι] in
 /-- The total degree of a word exponent is its word length. -/
 @[simp]
 theorem projectiveWordExponent_sum {n : ℕ} (w : Fin n → ι) :
@@ -48,6 +50,7 @@ theorem projectiveWordExponent_sum {n : ℕ} (w : Fin n → ι) :
   have hcard := congrArg Multiset.card (toMultiset_projectiveWordExponent w)
   simpa using! hcard
 
+omit [Fintype ι] in
 /-- The commutative monomial attached to a word is the monomial of its exponent vector. -/
 theorem projectiveWordMonomial_eq_monomial {n : ℕ} (w : Fin n → ι) :
     (∏ r, MvPolynomial.X (w r) : MvPolynomial ι K) =
@@ -65,6 +68,8 @@ theorem projectiveWordMonomial_eq_monomial {n : ℕ} (w : Fin n → ι) :
       rw [MvPolynomial.monomial_add_single]
       simp [mul_comm]
 
+omit [Fintype ι] in
+omit [Fintype ι] in
 /-- Every finite-support exponent vector of total degree `n` is represented by an ordered word of
 length `n`. -/
 theorem exists_projectiveWordExponent_eq

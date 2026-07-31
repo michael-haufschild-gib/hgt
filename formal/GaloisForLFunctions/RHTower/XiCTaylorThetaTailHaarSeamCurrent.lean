@@ -166,7 +166,6 @@ theorem expNegHalfCoreDerivativePacket_eq
         exact_mod_cast Nat.factorial_ne_zero (2 * (d + 1) + 2)
       push_cast
       field_simp
-      push_cast
       let A : ℂ := (-1 : ℂ) ^ d * (4 : ℂ) ^ d * z ^ (2 * d)
       have hqd : (-(z ^ 2 * 4)) ^ d = A := by
         dsimp only [A]
@@ -246,8 +245,8 @@ theorem expNegHalfCore_current
     rw [pow_succ]
   have hw : w * (starRingEnd ℂ) w = (Complex.normSq w : ℂ) := by
     apply Complex.ext
-    · simp [Complex.normSq_apply, Complex.mul_re, Complex.mul_im]
-    · simp [Complex.normSq_apply, Complex.mul_re, Complex.mul_im]
+    · simp [Complex.normSq_apply, Complex.mul_re]
+    · simp [Complex.normSq_apply, Complex.mul_im]
       ring
   have hzq : (z * (starRingEnd ℂ) q).im =
       4 * z.im * Complex.normSq z := by

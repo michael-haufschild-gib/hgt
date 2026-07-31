@@ -489,7 +489,7 @@ theorem projectiveDelayPanelField_differentialMatroid_eRk_eq_entries
     [Differential F] [Differential E] [DifferentialAlgebra F E] [CharZero E]
     {n : ℕ} (iota : F) (hiota : iota * iota = -1)
     (Q : Matrix (Fin (n + 1)) (Fin (n + 1)) E)
-    (htrace : Matrix.trace Q = 0) (hn : 0 < n) :
+    (htrace : Matrix.trace Q = 0) (_hn : 0 < n) :
     (differentialMatroid F E).eRk
         (Set.range (projectiveDelayPanelField iota Q)) =
       (differentialMatroid F E).eRk

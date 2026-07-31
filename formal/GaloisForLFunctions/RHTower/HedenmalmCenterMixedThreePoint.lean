@@ -35,8 +35,7 @@ private theorem hasDerivAt_thetaCuspReflectionLogProduct (u t : ℝ) :
     ((hasDerivAt_id t).const_add u)
   have hminus := (hasDerivAt_thetaCuspLogSource_deriv (u - t)).comp t
     ((hasDerivAt_id t).const_sub u)
-  convert hplus.add hminus using 1
-  all_goals simp [sub_eq_add_neg]
+  exact (hplus.add hminus).congr_deriv (by ring)
 
 /-- For every source center, the reflected theta product is strictly decreasing with the
 nonnegative displacement. -/
@@ -53,10 +52,9 @@ theorem strictAntiOn_thetaCuspFullSource_mul_reflect (u : ℝ) :
     · have hlogContinuous : Continuous thetaCuspLogSource :=
         contDiff_thetaCuspFullSource.continuous.log fun x =>
           (thetaCuspFullSource_pos_all x).ne'
-      have hcontinuous : Continuous (thetaCuspReflectionLogProduct u) := by
-        simpa [thetaCuspReflectionLogProduct] using
-          (hlogContinuous.comp (continuous_const.add continuous_id)).add
-            (hlogContinuous.comp (continuous_const.sub continuous_id))
+      have hcontinuous : Continuous (thetaCuspReflectionLogProduct u) :=
+        (hlogContinuous.comp (continuous_const.add continuous_id)).add
+          (hlogContinuous.comp (continuous_const.sub continuous_id))
       exact hcontinuous.continuousOn
     · intro t ht
       have ht0 : 0 < t := by simpa using ht
@@ -88,8 +86,8 @@ theorem antitoneOn_thetaCuspCenterMixedDensity
   intro s hs t ht hst
   unfold thetaCuspCenterMixedDensity
   apply MeasureTheory.integral_mono_ae
-  · simpa using integrableOn_thetaCuspCenterMixedIntegrand ha0 ha t
-  · simpa using integrableOn_thetaCuspCenterMixedIntegrand ha0 ha s
+  · exact integrableOn_thetaCuspCenterMixedIntegrand ha0 ha t
+  · exact integrableOn_thetaCuspCenterMixedIntegrand ha0 ha s
   · filter_upwards [ae_restrict_mem measurableSet_Ioi] with r hr
     have hweight : 0 ≤ r * Real.sinh (a * r) :=
       mul_nonneg hr.le (Real.sinh_nonneg_iff.mpr (mul_nonneg ha0 hr.le))
@@ -110,9 +108,10 @@ theorem thetaCuspCenterMixedDensity_lt_zero
     r * Real.sinh (a * r) *
       (thetaCuspFullSource (r / 2 + t) * thetaCuspFullSource (r / 2 - t))
   have hf0 : Integrable f0 mu := by
-    simpa [f0, mu] using integrableOn_thetaCuspCenterMixedIntegrand ha0.le ha 0
-  have hft : Integrable ft mu := by
-    simpa [ft, mu] using integrableOn_thetaCuspCenterMixedIntegrand ha0.le ha t
+    simpa [MeasureTheory.IntegrableOn, f0, mu] using
+      integrableOn_thetaCuspCenterMixedIntegrand ha0.le ha 0
+  have hft : Integrable ft mu :=
+    integrableOn_thetaCuspCenterMixedIntegrand ha0.le ha t
   have hnonneg : 0 ≤ᵐ[mu] fun r => f0 r - ft r := by
     filter_upwards [ae_restrict_mem measurableSet_Ioi] with r hr
     have hweight : 0 ≤ r * Real.sinh (a * r) :=

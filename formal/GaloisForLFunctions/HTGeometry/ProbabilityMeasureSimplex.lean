@@ -134,7 +134,7 @@ theorem exists_measurableSet_measure_ne_zero_ne_one_of_not_dirac
   haveI : NeZero (mu : Measure X) :=
     ⟨fun hzero => by
       have huniv := congrArg (fun m : Measure X => m Set.univ) hzero
-      simpa [mu.prop.measure_univ] using huniv⟩
+      simp at huniv⟩
   obtain ⟨x, hx⟩ := IsZeroOneMeasure.exists_eq_dirac (μ := (mu : Measure X))
   exact hmu x (ProbabilityMeasure.toMeasure_injective hx)
 

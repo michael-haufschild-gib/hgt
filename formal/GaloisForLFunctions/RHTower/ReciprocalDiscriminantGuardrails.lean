@@ -105,7 +105,7 @@ theorem seamReciprocalAtom_eq_neg_inv_sq (a gamma : ℝ)
   apply Complex.ext <;>
     simp [seamReciprocalAtom, Complex.inv_re, Complex.inv_im,
       Complex.normSq_apply, pow_two, Complex.mul_re, Complex.mul_im] <;>
-    field_simp [hden] <;>
+    field_simp [hden] ;
     ring
 
 theorem seamOfflineQuartet_det_zero (a gamma : ℝ)
@@ -257,9 +257,10 @@ theorem offCenterReciprocalAtom_zero_criticalLine {gamma : ℝ} (hgamma : gamma 
     have hden : (0 : ℝ) ^ 2 + gamma ^ 2 ≠ 0 := by simpa using hgamma2
     rw [offCenterReciprocalAtom_criticalLine_eq_seam 0 gamma hden]
     apply Complex.ext
-    · simp [seamReciprocalAtom, ← Complex.ofReal_pow]
+    · simp [seamReciprocalAtom]
       field_simp [hgamma]
-    · simp [seamReciprocalAtom, ← Complex.ofReal_pow]
+      rw [← Complex.ofReal_pow, Complex.ofReal_re]
+    · simp [seamReciprocalAtom, -Complex.ofReal_pow]
   · exact inv_pos.mpr (sq_pos_of_ne_zero hgamma)
 
 end

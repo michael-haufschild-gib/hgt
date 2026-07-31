@@ -140,8 +140,7 @@ theorem summable_thetaCuspLikelihoodAtomWeight_shift :
     ((summable_pow_mul_exp_neg_nat_sq 4 (by norm_num : (0 : ℝ) < 3 / 2)).comp_injective
       (fun _ _ h => Nat.add_right_cancel h))
   have hscaled := h4.mul_left (Real.exp (3 / 2 : ℝ))
-  convert hscaled using 1
-  funext k
+  refine hscaled.congr fun k => ?_
   unfold thetaCuspLikelihoodAtomWeight thetaCuspLikelihoodGap
   rw [show -(3 / 2 : ℝ) * (((k + 2 : ℕ) : ℝ) ^ 2 - 1) =
       3 / 2 + (-(3 / 2 : ℝ) * ((k + 2 : ℕ) : ℝ) ^ 2) by ring,
@@ -162,8 +161,7 @@ theorem summable_thetaCuspLikelihoodRayWeight_shift :
       (fun _ _ h => Nat.add_right_cancel h))
   have hscaled := (h4.sub h2).mul_left
     (Real.exp (3 / 2 : ℝ) * (3 / 2 : ℝ))
-  convert hscaled using 1
-  funext k
+  refine hscaled.congr fun k => ?_
   unfold thetaCuspLikelihoodRayWeight thetaCuspLikelihoodGap
   rw [show -(3 / 2 : ℝ) * (((k + 2 : ℕ) : ℝ) ^ 2 - 1) =
       3 / 2 + (-(3 / 2 : ℝ) * ((k + 2 : ℕ) : ℝ) ^ 2) by ring,
@@ -314,7 +312,7 @@ theorem tendsto_thetaCuspLikelihoodScaledPrimeMassShellPhase_div_nhdsGT_zero
       (𝓝[>] 0)
       (𝓝 ((thetaCuspLikelihoodRayWeight k : ℂ) *
         thetaCuspLikelihoodMassShellPhase k z)) := by
-    simpa using hcont.tendsto.mono_left inf_le_left
+    simpa [nhdsWithin] using hcont.tendsto.mono_left inf_le_left
   apply hlim.congr'
   filter_upwards [self_mem_nhdsWithin] with B hB
   exact (thetaCuspLikelihoodScaledPrimeMassShellPhase_div_boundaryCoordinate
@@ -341,7 +339,7 @@ theorem tendsto_thetaCuspLikelihoodScaledPrimeMassShellPhaseDerivative_div_nhdsG
       (𝓝[>] 0)
       (𝓝 ((thetaCuspLikelihoodRayWeight k : ℂ) *
         thetaCuspLikelihoodMassShellPhaseDerivative k z)) := by
-    simpa using hcont.tendsto.mono_left inf_le_left
+    simpa [nhdsWithin] using hcont.tendsto.mono_left inf_le_left
   apply hlim.congr'
   filter_upwards [self_mem_nhdsWithin] with B hB
   exact (thetaCuspLikelihoodScaledPrimeMassShellPhaseDerivative_div_boundaryCoordinate
@@ -547,7 +545,8 @@ theorem tendsto_thetaCuspLikelihoodScaledBoundaryResponse_nhdsGT_zero :
         (fun B : ℝ => thetaCuspLikelihoodScaledBoundaryTerm (k + 2) B) 0 := by
       unfold thetaCuspLikelihoodScaledBoundaryTerm
       fun_prop
-    simpa [thetaCuspLikelihoodScaledBoundaryTerm] using hcont.tendsto.mono_left inf_le_left
+    simpa [thetaCuspLikelihoodScaledBoundaryTerm, nhdsWithin]
+      using hcont.tendsto.mono_left inf_le_left
   have hupper : ∀ᶠ B : ℝ in 𝓝[>] 0, B < 1 :=
     Filter.Eventually.filter_mono inf_le_left
       (Iio_mem_nhds (show (0 : ℝ) < 1 by norm_num))
@@ -587,9 +586,8 @@ theorem tendsto_thetaCuspLikelihoodScaledBoundaryResponse_nhdsGT_zero :
         _ ≤ thetaCuspLikelihoodAtomWeight (k + 2) +
             thetaCuspLikelihoodRayWeight (k + 2) := by simpa using hinside
     · exact mul_nonneg (Real.exp_pos _).le hinside0
-  simpa [thetaCuspLikelihoodScaledBoundaryResponse,
-    thetaCuspLikelihoodRayBoundaryResidue] using
-    tendsto_tsum_of_dominated_convergence hmajor hpoint hbound
+  unfold thetaCuspLikelihoodScaledBoundaryResponse thetaCuspLikelihoodRayBoundaryResidue
+  exact tendsto_tsum_of_dominated_convergence hmajor hpoint hbound
 
 /-- The unscaled likelihood response cannot have a finite right-boundary limit. -/
 theorem not_exists_tendsto_thetaCuspHigherLikelihoodSpectralResponse_nhdsGT_zero :

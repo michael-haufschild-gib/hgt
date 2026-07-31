@@ -32,7 +32,7 @@ theorem eval_num_ne_zero_of_isCoprime {A B : ℂ[X]} (hcop : IsCoprime A B)
   intro hA
   have := congrArg (fun p : ℂ[X] => p.eval b) huv
   simp only [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_one, hA, hb,
-    mul_zero, zero_add, add_zero] at this
+    mul_zero, add_zero] at this
   exact one_ne_zero this.symm
 
 /-- **The extremal shift-orbit obstruction, general shift.**  If the `h`-shift defect of `A / B` has
@@ -90,7 +90,7 @@ theorem denom_eq_one_of_shift_defect_pole_at_zero_gen
   have hEvalBeta := congrArg (fun p : ℂ[X] => p.eval beta) hid
   simp only [Polynomial.eval_mul, Polynomial.eval_sub, Polynomial.eval_pow,
     Polynomial.eval_comp, Polynomial.eval_add, Polynomial.eval_X, Polynomial.eval_C,
-    hbetaRoot, mul_zero, zero_mul, zero_sub, sub_zero, mul_one] at hEvalBeta
+    hbetaRoot, mul_zero, zero_sub] at hEvalBeta
   have hbeta0 : beta = 0 := by
     have hzero : A.eval beta * B.eval (beta + h) * beta ^ m = 0 := by
       linear_combination -hEvalBeta
@@ -104,7 +104,7 @@ theorem denom_eq_one_of_shift_defect_pole_at_zero_gen
   have hEvalGamma := congrArg (fun p : ℂ[X] => p.eval (gamma - h)) hid
   simp only [Polynomial.eval_mul, Polynomial.eval_sub, Polynomial.eval_pow,
     Polynomial.eval_comp, Polynomial.eval_add, Polynomial.eval_X, Polynomial.eval_C,
-    hgammaShift, mul_zero, zero_mul, sub_zero, mul_one] at hEvalGamma
+    hgammaShift, mul_zero, zero_mul, sub_zero] at hEvalGamma
   have hgamma0 : gamma - h = 0 := by
     have hzero : A.eval ((gamma - h) + h) * B.eval (gamma - h) * (gamma - h) ^ m = 0 := by
       linear_combination hEvalGamma
@@ -175,7 +175,7 @@ theorem denom_eq_one_of_shift_defect_pole_at_zero
   have hEvalBeta := congrArg (fun p : ℂ[X] => p.eval beta) hid
   simp only [Polynomial.eval_mul, Polynomial.eval_sub, Polynomial.eval_pow,
     Polynomial.eval_comp, Polynomial.eval_add, Polynomial.eval_X, Polynomial.eval_one,
-    hbetaRoot, mul_zero, zero_mul, zero_sub, sub_zero, mul_one] at hEvalBeta
+    hbetaRoot, mul_zero, zero_sub] at hEvalBeta
   have hbeta0 : beta = 0 := by
     have hzero : A.eval beta * B.eval (beta + 1) * beta ^ m = 0 := by
       linear_combination -hEvalBeta
@@ -190,7 +190,7 @@ theorem denom_eq_one_of_shift_defect_pole_at_zero
   have hEvalGamma := congrArg (fun p : ℂ[X] => p.eval (gamma - 1)) hid
   simp only [Polynomial.eval_mul, Polynomial.eval_sub, Polynomial.eval_pow,
     Polynomial.eval_comp, Polynomial.eval_add, Polynomial.eval_X, Polynomial.eval_one,
-    hgammaShift, mul_zero, zero_mul, sub_zero, mul_one] at hEvalGamma
+    hgammaShift, mul_zero, zero_mul, sub_zero] at hEvalGamma
   have hgamma0 : gamma - 1 = 0 := by
     have hzero : A.eval ((gamma - 1) + 1) * B.eval (gamma - 1) * (gamma - 1) ^ m = 0 := by
       linear_combination hEvalGamma
@@ -222,7 +222,7 @@ theorem no_rational_shift_antiderivative
     False := by
   have hB1 : B = 1 := denom_eq_one_of_shift_defect_pole_at_zero hB hcop m hid
   subst hB1
-  simp only [Polynomial.one_comp, mul_one, one_mul] at hid
+  simp only [Polynomial.one_comp, mul_one] at hid
   rcases eq_or_ne (A.comp (X + 1) - A) 0 with h0 | h0
   · rw [h0, zero_mul] at hid
     exact hq hid.symm
@@ -281,7 +281,7 @@ theorem no_rational_shift_antiderivative_gen
     False := by
   have hB1 : B = 1 := denom_eq_one_of_shift_defect_pole_at_zero_gen hh hB hcop m hid
   subst hB1
-  simp only [Polynomial.one_comp, mul_one, one_mul] at hid
+  simp only [Polynomial.one_comp, mul_one] at hid
   rcases eq_or_ne (A.comp (X + Polynomial.C h) - A) 0 with h0 | h0
   · rw [h0, zero_mul] at hid
     exact hq hid.symm

@@ -177,7 +177,7 @@ private theorem cubic_sine_integral_ibp
             Complex.sin ((2 * (Real.pi : ℂ)) * (u : ℂ)) /
               (s - lam * (u : ℂ))) =
         (2 * (Real.pi : ℂ)) * (1 / s - 1 / (s - lam)) := by
-    convert hFTC using 1 <;> ring
+    convert hFTC using 1 ; ring
   have hcoef : 2 * lam ^ 2 ≠ 0 :=
     mul_ne_zero (by norm_num) (pow_ne_zero 2 hlam)
   rw [show 1 / (2 * lam ^ 2) *
@@ -229,7 +229,7 @@ theorem ccmFirstClockLaplaceContinuationAtom_ibp
       s - (-I * z) * (u : ℂ) ≠ 0 := by
     intro u hu
     have h := ccmFirstClockLaplaceCone_add_ne_zero hsre hscone q hu.1
-    convert h using 1 <;> ring
+    convert h using 1 ; ring
   have hminus := cubic_sine_integral_ibp
     (s := s) (lam := I * z) (mul_ne_zero I_ne_zero hz) hminusDen
   have hplus := cubic_sine_integral_ibp

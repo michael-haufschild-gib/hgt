@@ -176,7 +176,7 @@ theorem norm_mixedAdditiveConvolutionPower_partialSumSeq_le_pow {a : ℕ → ℂ
           (starRingEnd ℂ) (additiveConvolutionPower (partialSumSeq a) (j + 1) ab.2)‖
         ≤ ((M : ℝ) + 1) ^ ((4 * j + 2 : ℕ) : ℝ) := by
     intro ab hab
-    rw [Finset.mem_antidiagonal] at hab
+    rw [Finset.HasAntidiagonal.mem_antidiagonal] at hab
     rw [norm_mul, RCLike.norm_conj]
     have hb1 : ((ab.1 : ℝ) + 1) ^ ((2 * j + 1 : ℕ) : ℝ) ≤ ((M : ℝ) + 1) ^ ((2 * j + 1 : ℕ) : ℝ) := by
       refine Real.rpow_le_rpow (by positivity) ?_ (by positivity)

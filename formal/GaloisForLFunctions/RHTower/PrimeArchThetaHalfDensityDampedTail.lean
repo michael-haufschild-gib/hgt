@@ -140,7 +140,7 @@ theorem thetaCuspSourceTerm_le_first_mul_exp_damping
               (Real.exp (-2 * Real.pi * ((n : ℝ) ^ 2 - 1) * x) *
                 Real.exp (-Real.pi * u ^ 2)))) := by
       gcongr
-    _ = _ := by ring
+    _ = _ := by ring_nf
 
 /-- The extra Gaussian damping absorbs the reflected half-density weight for every higher atom. -/
 theorem cosh_half_mul_exp_neg_thetaCuspSourceAtomDampingRate_le_one
@@ -265,7 +265,7 @@ theorem thetaCuspHigherHalfDensityBudget_le_dominationWeight_mul_firstAtomZero :
   have hfirst := integrableOn_pow_mul_thetaCuspSourceTerm 0 1
   have hright : IntegrableOn (fun x : ℝ =>
       thetaCuspHigherAtomDominationWeight * thetaCuspSourceTerm x 1) (Ioi 0) := by
-    simpa only [Nat.mul_zero, pow_zero, one_mul] using
+    simpa only [IntegrableOn, Nat.mul_zero, pow_zero, one_mul] using
       hfirst.const_mul thetaCuspHigherAtomDominationWeight
   have hmono :
       (∫ x : ℝ in Ioi 0, Real.cosh (x / 2) *

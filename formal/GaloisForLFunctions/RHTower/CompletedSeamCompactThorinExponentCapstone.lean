@@ -51,7 +51,9 @@ theorem hasDerivAt_compactThorinLogKernel
       funext w
       simp [compactThorinLogKernel]
     rw [hk]
-    simpa using hasDerivAt_id z
+    have h0 := hasDerivAt_id z
+    rw [show ((1 : ℂ)) = (1 - ((0 : ℝ) : ℂ) * z)⁻¹ by norm_num] at h0
+    exact h0
   · change HasDerivAt (fun w : ℂ => if x = 0 then w else
       -Complex.log (1 - (x : ℂ) * w) / (x : ℂ)) _ z
     simp only [if_neg hx0]
@@ -61,12 +63,14 @@ theorem hasDerivAt_compactThorinLogKernel
         Complex.mem_slitPlane_of_norm_lt_one (z := -((x : ℂ) * z))
           (by simpa using hu.trans (by norm_num))
     have hbase : HasDerivAt (fun w : ℂ => 1 - (x : ℂ) * w) (-(x : ℂ)) z := by
-      simpa using (hasDerivAt_const z (1 : ℂ)).sub
+      have hsub := (hasDerivAt_const z (1 : ℂ)).sub
         ((hasDerivAt_id z).const_mul (x : ℂ))
+      have hval : (0 : ℂ) - (x : ℂ) * 1 = -(x : ℂ) := by ring
+      rw [hval] at hsub
+      exact hsub
     have h := (hbase.clog hslit).neg.div_const (x : ℂ)
-    convert h using 1
     have hden : 1 - (x : ℂ) * z ≠ 0 := Complex.slitPlane_ne_zero hslit
-    field_simp [hx0, hden]
+    exact h.congr_deriv (by field_simp [hx0, hden])
 
 theorem norm_compactThorinLogKernel
     {B x : ℝ} (hB : 0 < B) (hx : |x| ≤ B)
@@ -197,7 +201,7 @@ private theorem analyticAt_negTwoCassiniShiftLogDeriv :
     exact hsource.deriv.div hsource xiSquaredSeamCassiniSource_one_ne
   have hshift : AnalyticAt ℂ (fun z : ℂ =>
       logDeriv xiSquaredSeamCassiniSource (1 + z)) 0 := by
-    exact hlog.comp_of_eq' (analyticAt_const.add analyticAt_id) (by norm_num)
+    exact hlog.fun_comp_of_eq (analyticAt_const.add analyticAt_id) (by norm_num)
   exact analyticAt_const.mul hshift
 
 theorem completedSeamMomentGerm_eventuallyEq_negTwoCassiniShiftLogDeriv :
@@ -275,9 +279,16 @@ theorem hasDerivAt_completedSeamSourceLogExponent
       xiSquaredSeamCassiniSource (1 + w))
       (deriv xiSquaredSeamCassiniSource (1 + z)) z := by
     have hinner : HasDerivAt (fun w : ℂ => 1 + w) 1 z := by
-      simpa using (hasDerivAt_const z (1 : ℂ)).add (hasDerivAt_id z)
-    simpa using
+      have hadd := (hasDerivAt_const z (1 : ℂ)).add (hasDerivAt_id z)
+      have hval : (0 : ℂ) + 1 = 1 := by ring
+      rw [hval] at hadd
+      exact hadd
+    have hcomp :=
       differentiable_xiSquaredSeamCassiniSource.differentiableAt.hasDerivAt.comp z hinner
+    have hval : deriv xiSquaredSeamCassiniSource (1 + z) * 1 =
+        deriv xiSquaredSeamCassiniSource (1 + z) := mul_one _
+    rw [hval] at hcomp
+    exact hcomp
   have hratio := hshift.div_const (xiSquaredSeamCassiniSource 1)
   have hlog := hratio.clog hslit
   have hsource : xiSquaredSeamCassiniSource (1 + z) ≠ 0 := by
@@ -288,9 +299,9 @@ theorem hasDerivAt_completedSeamSourceLogExponent
   change HasDerivAt (fun y : ℂ => -2 * Complex.log
       (xiSquaredSeamCassiniSource (1 + y) / xiSquaredSeamCassiniSource 1))
     (-2 * logDeriv xiSquaredSeamCassiniSource (1 + z)) z
-  convert h using 1
-  rw [logDeriv_apply]
-  field_simp [xiSquaredSeamCassiniSource_one_ne, hsource]
+  exact h.congr_deriv (by
+    rw [logDeriv_apply]
+    field_simp [xiSquaredSeamCassiniSource_one_ne, hsource])
 
 /-- The source exponent has exactly the completed-seam moment germ as its local derivative. -/
 theorem deriv_completedSeamSourceLogExponent_eventuallyEq_momentGerm :

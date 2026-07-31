@@ -239,7 +239,7 @@ theorem tailCoefficientIndependent_iff_cofiniteWeightedGramStrict
     have hinf : {p | ∑ j, q j * c j p ≠ 0}.Infinite := by
       intro hfinite
       exact hq (htail q hfinite)
-    obtain ⟨p, hp, hpF⟩ := (hinf.diff F.finite_toSet).nonempty
+    obtain ⟨p, hp, hpF⟩ := (hinf.sdiff F.finite_toSet).nonempty
     refine (hsummable F q).tsum_pos (fun r => ?_) p ?_
     · by_cases hrF : r ∈ F
       · simp [hrF]

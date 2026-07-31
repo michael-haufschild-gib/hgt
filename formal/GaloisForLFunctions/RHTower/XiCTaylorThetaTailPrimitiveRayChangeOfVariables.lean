@@ -98,15 +98,25 @@ theorem hasFDerivAt_thetaCuspPrimitiveRayCartesianMap
     have hlog := (Real.hasDerivAt_log hu).comp_hasFDerivAt q hsnd
     have hraw := hfst.add (hlog.const_mul (1 / 2 : ℝ)) |>.sub_const
       (Real.log (a : ℝ))
-    convert hraw using 1
-    · funext p
+    have hfun : (fun p : ℝ × ℝ => p.1 + Real.log p.2 / 2 - Real.log (a : ℝ)) =
+        fun x : ℝ × ℝ =>
+          ((fun p : ℝ × ℝ => p.1) +
+            fun y : ℝ × ℝ => 1 / 2 * (Real.log ∘ Prod.snd) y) x -
+            Real.log (a : ℝ) := by
+      funext p
       simp only [Pi.add_apply, Function.comp_apply]
       ring
-    · apply ContinuousLinearMap.ext
+    have hclm : (ContinuousLinearMap.fst ℝ ℝ ℝ +
+          (1 / (2 * q.2)) • ContinuousLinearMap.snd ℝ ℝ ℝ) =
+        ContinuousLinearMap.fst ℝ ℝ ℝ +
+          (1 / 2 : ℝ) • q.2⁻¹ • ContinuousLinearMap.snd ℝ ℝ ℝ := by
+      apply ContinuousLinearMap.ext
       intro p
       simp [smul_smul]
       left
       ring
+    rw [hfun, hclm]
+    exact hraw
   have hy : HasFDerivAt
       (fun p : ℝ × ℝ =>
         thetaCuspPrimitiveRayArithmeticPolarY b p.1 p.2)
@@ -115,22 +125,50 @@ theorem hasFDerivAt_thetaCuspPrimitiveRayCartesianMap
     unfold thetaCuspPrimitiveRayArithmeticPolarY
     have hsub : HasFDerivAt (fun p : ℝ × ℝ => 1 - p.2)
         (-ContinuousLinearMap.snd ℝ ℝ ℝ) q := by
-      simpa using (hasFDerivAt_const (1 : ℝ) q).sub hsnd
+      have h2 : HasFDerivAt (fun p : ℝ × ℝ => 1 - p.2)
+          ((0 : (ℝ × ℝ) →L[ℝ] ℝ) - ContinuousLinearMap.snd ℝ ℝ ℝ) q :=
+        (hasFDerivAt_const (1 : ℝ) q).sub hsnd
+      simpa using h2
     have hlog := (Real.hasDerivAt_log hOneSub).comp_hasFDerivAt q hsub
     have hraw := hfst.add (hlog.const_mul (1 / 2 : ℝ)) |>.sub_const
       (Real.log (b : ℝ))
-    convert hraw using 1
-    · funext p
+    have hfun : (fun p : ℝ × ℝ =>
+          p.1 + Real.log (1 - p.2) / 2 - Real.log (b : ℝ)) =
+        fun x : ℝ × ℝ =>
+          ((fun p : ℝ × ℝ => p.1) +
+            fun y : ℝ × ℝ =>
+              1 / 2 * (Real.log ∘ fun p : ℝ × ℝ => 1 - p.2) y) x -
+            Real.log (b : ℝ) := by
+      funext p
       simp only [Pi.add_apply, Function.comp_apply]
       ring
-    · apply ContinuousLinearMap.ext
+    have hclm : (ContinuousLinearMap.fst ℝ ℝ ℝ +
+          (-(1 / (2 * (1 - q.2)))) • ContinuousLinearMap.snd ℝ ℝ ℝ) =
+        ContinuousLinearMap.fst ℝ ℝ ℝ +
+          (1 / 2 : ℝ) • (1 - q.2)⁻¹ • -ContinuousLinearMap.snd ℝ ℝ ℝ := by
+      apply ContinuousLinearMap.ext
       intro p
       simp [smul_smul]
       left
       ring
+    rw [hfun, hclm]
+    exact hraw
   unfold thetaCuspPrimitiveRayCartesianFDeriv
   rw [Matrix.toLin_finTwoProd_toContinuousLinearMap]
-  simpa only [thetaCuspPrimitiveRayCartesianMap, one_smul] using hx.prodMk hy
+  have hpair : HasFDerivAt
+      (fun x : ℝ × ℝ =>
+        (thetaCuspPrimitiveRayArithmeticPolarX a x.1 x.2,
+          thetaCuspPrimitiveRayArithmeticPolarY b x.1 x.2))
+      ((ContinuousLinearMap.fst ℝ ℝ ℝ +
+          (1 / (2 * q.2)) • ContinuousLinearMap.snd ℝ ℝ ℝ).prod
+        (ContinuousLinearMap.fst ℝ ℝ ℝ +
+          (-(1 / (2 * (1 - q.2)))) • ContinuousLinearMap.snd ℝ ℝ ℝ)) q :=
+    hx.prodMk hy
+  have hfun : thetaCuspPrimitiveRayCartesianMap a b = fun x : ℝ × ℝ =>
+      (thetaCuspPrimitiveRayArithmeticPolarX a x.1 x.2,
+        thetaCuspPrimitiveRayArithmeticPolarY b x.1 x.2) := rfl
+  rw [hfun]
+  simpa only [one_smul] using hpair
 
 theorem det_thetaCuspPrimitiveRayCartesianFDeriv
     {q : ℝ × ℝ} (hu0 : 0 < q.2) (hu1 : q.2 < 1) :

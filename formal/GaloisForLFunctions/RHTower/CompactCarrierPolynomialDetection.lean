@@ -56,7 +56,7 @@ theorem map_compactExponentialSlope_pow_eq_zero
             (1 : C(K, ℂ)) ^ (N - m) * (N.choose m : C(K, ℂ))) =
           c • q ^ m := by
       ext k
-      simp [c, mul_assoc, mul_comm, mul_left_comm]
+      simp [c, mul_assoc, mul_comm]
     rw [hterm, map_smul, hqpow, smul_zero]
   have hslope : compactExponentialSlope s t = t⁻¹ • (q - 1) := by
     simp [compactExponentialSlope, q, hq0]

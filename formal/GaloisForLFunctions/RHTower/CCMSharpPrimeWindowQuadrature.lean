@@ -120,8 +120,8 @@ theorem dyadicSharpPrimeWindowIntegralMain_eq_sum_cells
   have hsum := intervalIntegral.sum_integral_adjacent_intervals
     (f := fun x : ℝ => (x : ℂ) ^ (-s)) (a := a) (n := k)
     (fun j _ => by
-      convert intervalIntegrable_ofReal_cpow_neg_on_natCell (j := j) hk s using 1 <;>
-        simp only [a, Nat.cast_add, Nat.cast_one] <;> ring)
+      convert intervalIntegrable_ofReal_cpow_neg_on_natCell (j := j) hk s using 1 ;
+        simp only [a, Nat.cast_add, Nat.cast_one] ; ring)
   have ha0 : a 0 = (k : ℝ) := by simp [a]
   have hak : a k = (2 * k : ℝ) := by
     simp only [a]
@@ -129,7 +129,7 @@ theorem dyadicSharpPrimeWindowIntegralMain_eq_sum_cells
     ring
   rw [ha0, hak] at hsum
   rw [dyadicSharpPrimeWindowIntegralMain]
-  convert hsum.symm using 1 <;> simp only [a, Nat.cast_add, Nat.cast_one] <;> ring
+  convert hsum.symm using 1 ; simp only [a, Nat.cast_add, Nat.cast_one] ; ring
 
 /-- Exact cell-error expansion. -/
 theorem dyadicSharpPrimeWindowError_eq_sum_cellErrors
@@ -250,7 +250,7 @@ theorem norm_dyadicSharpPrimeWindowError_le
             (k : ℝ) ^ (-s.re - 1)) := by rw [Real.rpow_one]
         _ = ‖s‖ * (k : ℝ) ^ ((1 : ℝ) + (-s.re - 1)) := by
           rw [Real.rpow_add hkpos]
-        _ = ‖s‖ * (k : ℝ) ^ (-s.re) := by congr 2 <;> ring
+        _ = ‖s‖ * (k : ℝ) ^ (-s.re) := by congr 2 ; ring
 
 /-- One von-Mangoldt-weighted dyadic quadrature remainder. -/
 def dyadicSharpPrimeWindowErrorSummand (s : ℂ) (k : ℕ) : ℂ :=

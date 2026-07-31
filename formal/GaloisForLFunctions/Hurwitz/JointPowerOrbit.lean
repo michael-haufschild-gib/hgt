@@ -296,7 +296,7 @@ theorem linearIndependent_iff_monomialValue_monoScalar_injective
         (exponentWeight s d - exponentWeight s e))) = 1 := by
       rw [hweight]
       have hk := Complex.exp_int_mul_two_pi_mul_I (g none)
-      convert hk using 1 <;> ring
+      convert hk using 1 ; ring
     have hdeVal : monomialValue (fun j => monoScalar (s j)) d =
         monomialValue (fun j => monoScalar (s j)) e := by
       rw [monomialValue_monoScalar, monomialValue_monoScalar]

@@ -381,7 +381,7 @@ theorem tendsto_gammaFactorialThirdJetProjectiveDefect_div_harmonicScale_sq
       filter_upwards [hane] with n hn
       field_simp [hn]
       ring
-    convert h.congr' heq using 1 <;> ring
+    convert h.congr' heq using 1 ; ring
   have hproduct := (hg.pow 2).mul hbracket
   have hsx : Tendsto (fun n : ℕ => reciprocalGammaFactorialScale n * x)
       atTop (𝓝 0) := by

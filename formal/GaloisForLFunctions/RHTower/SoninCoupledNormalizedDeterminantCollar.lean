@@ -56,11 +56,16 @@ theorem soninCoupledEndpointBernsteinMismatch_eq_defectPurity
     (a : SoninCoupledNondegenerateAperture) (n : ℕ) :
     soninCoupledEndpointBernsteinMismatch a n =
       bernsteinCoefficientPurity (soninCoupledEndpointMomentDefect a) n := by
-  simpa only [soninCoupledEndpointBernsteinMismatch,
-    soninCoupledEndpointMomentDefect] using
-    bernsteinCoefficientSquareDiscrepancy_eq_purity_sub_sequence
-      (radiusNormalizedMoment primeArchEndpointHausdorffRadius normalizedPrimeArchMoment)
-      (soninCoupledNormalizedReplicaMoment a.1) n
+  have h2 : soninCoupledEndpointBernsteinMismatch a n =
+      bernsteinCoefficientPurity (fun k =>
+        radiusNormalizedMoment primeArchEndpointHausdorffRadius
+            normalizedPrimeArchMoment k -
+          soninCoupledNormalizedReplicaMoment a.1 k) n := by
+    simpa only [soninCoupledEndpointBernsteinMismatch] using
+      bernsteinCoefficientSquareDiscrepancy_eq_purity_sub_sequence
+        (radiusNormalizedMoment primeArchEndpointHausdorffRadius normalizedPrimeArchMoment)
+        (soninCoupledNormalizedReplicaMoment a.1) n
+  exact h2
 
 /-- The coefficient of `z^(k+1)` in the positive logarithmic exponent attached to a moment
 sequence.  The corresponding determinant has the negative of this exponent. -/

@@ -555,45 +555,37 @@ theorem unbounded_one_coordinate_monodromy_obstruction_card
 
 /-- Abstract q62 mixed-case endpoint: one disconnected coordinate's unbounded dyadic monodromy
 already gives `NoRelation`, so the mixed branch does not consume the E-vS hRigid input. -/
-def q62_mixed_unbounded_monodromy_formal_proof :=
-  @Bottcher.q62_mixed
+alias q62_mixed_unbounded_monodromy_formal_proof := Bottcher.q62_mixed
 
 /-- Abstract q62 both-connected reduction: after `φ_{c₂}` transcendence, the remaining hRigid analytic
 input is exactly `TranscendentalOverAdjoin φ_{c₁} φ_{c₂}`. -/
-def q62_both_connected_transcendentalOverAdjoin_formal_proof :=
-  @Bottcher.q62_both_connected
+alias q62_both_connected_transcendentalOverAdjoin_formal_proof := Bottcher.q62_both_connected
 
 /-- Symmetry of the q62 relation target, used by the assembled hRigid branch when the disconnected
 coordinate is the second parameter. -/
-def q62_noRelation_symm_formal_proof :=
-  @Bottcher.noRelation_symm
+alias q62_noRelation_symm_formal_proof := Bottcher.noRelation_symm
 
 /-- Assembled hRigid slot for top-level q62: mixed cases are discharged by monodromy, while the
 both-connected case is isolated as `TranscendentalOverAdjoin`. -/
-def q62_hRigid_assemble_formal_proof :=
-  @Bottcher.hRigid_assemble
+alias q62_hRigid_assemble_formal_proof := Bottcher.hRigid_assemble
 
 /-- Final abstract q62 join from separated data: `hDisc` supplies the both-disconnected branch, and
 `hRigid_assemble` supplies mixed plus both-connected branches. -/
-def q62_independence_of_hDisc_hRigidData_formal_proof :=
-  @Bottcher.q62_independence_of_hDisc_hRigidData
+alias q62_independence_of_hDisc_hRigidData_formal_proof := Bottcher.q62_independence_of_hDisc_hRigidData
 
 /-- Concrete connected q62 bridge: direct `phiMero` transcendence plus
 `TranscendentalOverAdjoin (phiMero c₁) (phiMero c₂)` closes the connected case. -/
-def q62_connected_phiMero_transcendentalOverAdjoin_formal_proof :=
-  @Bottcher.q62_independence_connected_phiMero_of_transcendentalOverAdjoin
+alias q62_connected_phiMero_transcendentalOverAdjoin_formal_proof := Bottcher.q62_independence_connected_phiMero_of_transcendentalOverAdjoin
 
 /-- Top-level q62 case split: hDisc discharges both-disconnected parameters and the assembled hRigid
 slot discharges all cases where at least one parameter is connected. -/
-def q62_top_case_split_formal_proof :=
-  @Bottcher.q62_independence
+alias q62_top_case_split_formal_proof := Bottcher.q62_independence
 
 /-- Card-name proof object for `q62-bottcher-independence-n2-all-parameters.md`.
 
 This is the abstract all-parameter case-split theorem: hDisc supplies the disconnected branch and the
 hRigid slot supplies the connected/mixed branch. -/
-def q62_bottcher_independence_n2_all_parameters_formal_proof :=
-  @Bottcher.q62_independence
+alias q62_bottcher_independence_n2_all_parameters_formal_proof := Bottcher.q62_independence
 
 /-- Order-only target for
 `not-new-but-required/bottcher-dyadic-monodromy-finite-type-absence.md`. -/
@@ -705,304 +697,241 @@ theorem q62_hdisc_fixed_inverse_tower_support (c₁ c₂ : ℂ) :
 
 /-- Constructed uniform two-direction z-fixing root-deck towers. This is support below the
 unresolved fixed-continuation-cover construction, not the q62 disconnected close. -/
-def q62_hdisc_uniform_two_zfixing_deck_towers_formal_proof :=
-  @Bottcher.exteriorAnnulus_loop_and_uniform_two_zfixing_deck_towers
+alias q62_hdisc_uniform_two_zfixing_deck_towers_formal_proof := Bottcher.exteriorAnnulus_loop_and_uniform_two_zfixing_deck_towers
 
 /-- Constructed hDisc full per-depth z-fixing/monoFG package with nonzero moving coordinates. -/
-def q62_hdisc_full_zfixing_monoFG_steps_formal_proof :=
-  @Bottcher.exteriorAnnulus_loop_and_full_zfixing_monoFG_steps
+alias q62_hdisc_full_zfixing_monoFG_steps_formal_proof := Bottcher.exteriorAnnulus_loop_and_full_zfixing_monoFG_steps
 
 /-- Conditional deep-data reduction for the q62 disconnected lane. -/
-def q62_hdisc_deep_data_escape_support :=
-  @Bottcher.q62_disconnected_of_deepData_escape
+alias q62_hdisc_deep_data_escape_support := Bottcher.q62_disconnected_of_deepData_escape
 
 /-- Conditional image-winding deep-data reduction for the q62 disconnected lane. -/
-def q62_hdisc_image_winding_deep_data_escape_support :=
-  @Bottcher.q62_disconnected_of_imageWindingDeepData_escape
+alias q62_hdisc_image_winding_deep_data_escape_support := Bottcher.q62_disconnected_of_imageWindingDeepData_escape
 
 /-- Conditional additive loop/deck reduction for the q62 disconnected lane. -/
-def q62_hdisc_additive_loop_deck_support :=
-  @Bottcher.q62_independence_disconnected_of_dyadic_additive_loop_and_two_zfixing_decks
+alias q62_hdisc_additive_loop_deck_support := Bottcher.q62_independence_disconnected_of_dyadic_additive_loop_and_two_zfixing_decks
 
 /-- Conditional vertical-strip loop/deck reduction for the q62 disconnected lane. -/
-def q62_hdisc_vertical_strip_loop_deck_support :=
-  @Bottcher.q62_independence_disconnected_of_dyadic_verticalStrip_loop_and_two_zfixing_decks
+alias q62_hdisc_vertical_strip_loop_deck_support := Bottcher.q62_independence_disconnected_of_dyadic_verticalStrip_loop_and_two_zfixing_decks
 
 /-! ## q62 connected / hRigid branch surfaces -/
 
 /-- Connected rightmost geometry brick: every quadratic filled Julia set has a rightmost frontier
 point whose strict right-half-plane slices are preconnected basin-side sectors. This is a seed for
 the hRigid local-topology lane, not the full local-tip conclusion. -/
-def q62_connected_rightmost_frontier_rightHalfplane_basin_sector_formal_proof :=
-  @Bottcher.exists_rightmost_frontier_rightHalfplane_basin_sector
+alias q62_connected_rightmost_frontier_rightHalfplane_basin_sector_formal_proof := Bottcher.exists_rightmost_frontier_rightHalfplane_basin_sector
 
 /-- Connected q62 geometry seed: distinct parameters give, after possible swap, a Julia-frontier point
 off the other filled Julia set, plus an other-basin ball and a nontrivial frontier-side basin filter. -/
-def q62_connected_frontier_off_other_basin_seed_formal_proof :=
-  @Bottcher.exists_frontier_filledJulia_off_other_with_basin_ball
+alias q62_connected_frontier_off_other_basin_seed_formal_proof := Bottcher.exists_frontier_filledJulia_off_other_with_basin_ball
 
 /-- Local-radius natural-boundary obstruction for a separable algebraic relation: continuation only
 needs one positive preconnected lens radius. -/
-def q62_connected_no_separable_relation_naturalBoundary_localLens_formal_proof :=
-  @BottcherIndep.no_separable_relation_of_natural_boundary_localLens
+alias q62_connected_no_separable_relation_naturalBoundary_localLens_formal_proof := BottcherIndep.no_separable_relation_of_natural_boundary_localLens
 
 /-- Local-radius `ℂ(z)[g]` natural-boundary obstruction for the Böttcher capstone. -/
-def q62_connected_no_phi_relation_naturalBoundary_localLens_formal_proof :=
-  @BottcherIndep.no_phi_relation_of_natural_boundary_localLens
+alias q62_connected_no_phi_relation_naturalBoundary_localLens_formal_proof := BottcherIndep.no_phi_relation_of_natural_boundary_localLens
 
 /-- Local-radius countable-avoidance Böttcher capstone with an explicit bad-locus countability input. -/
-def q62_connected_phi_indep_capstone_countableAvoidance_localLens_formal_proof :=
-  @BottcherIndep.phi_indep_capstone_countableAvoidance_localLens
+alias q62_connected_phi_indep_capstone_countableAvoidance_localLens_formal_proof := BottcherIndep.phi_indep_capstone_countableAvoidance_localLens
 
 /-- Local-radius uncountable-target Böttcher capstone with an explicit bad-locus countability input. -/
-def q62_connected_phi_indep_capstone_uncountable_bad_localLens_formal_proof :=
-  @BottcherIndep.phi_indep_capstone_uncountable_bad_localLens
+alias q62_connected_phi_indep_capstone_uncountable_bad_localLens_formal_proof := BottcherIndep.phi_indep_capstone_uncountable_bad_localLens
 
 /-- Local-radius countable-avoidance Böttcher capstone whose analytic bad locus is generated
 internally from one full-degree separable witness in the analytic region. -/
-def q62_connected_phi_indep_capstone_countableAvoidance_localLens_analyticBad_formal_proof :=
-  @Bottcher.phi_indep_capstone_countableAvoidance_localLens_of_analytic_bad_locus
+alias q62_connected_phi_indep_capstone_countableAvoidance_localLens_analyticBad_formal_proof := Bottcher.phi_indep_capstone_countableAvoidance_localLens_of_analytic_bad_locus
 
 /-- Local-radius uncountable-target Böttcher capstone whose analytic bad locus is generated internally
 from one full-degree separable witness in the analytic region. -/
-def q62_connected_phi_indep_capstone_uncountable_localLens_analyticBad_formal_proof :=
-  @Bottcher.phi_indep_capstone_uncountable_localLens_of_analytic_bad_locus
+alias q62_connected_phi_indep_capstone_uncountable_localLens_analyticBad_formal_proof := Bottcher.phi_indep_capstone_uncountable_localLens_of_analytic_bad_locus
 
 /-- Natural-boundary connected `NoRelation` endpoint using countable-avoidance sparse crossing and
 common-basin geometry. -/
-def q62_connected_noRelation_naturalBoundary_gamma_offOther_countableAvoidance_formal_proof :=
-  @Bottcher.noRelation_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance
+alias q62_connected_noRelation_naturalBoundary_gamma_offOther_countableAvoidance_formal_proof := Bottcher.noRelation_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance
 
 /-- hRigid endpoint using countable-avoidance sparse crossing and common-basin geometry. -/
-def hrig_phiMero_naturalBoundary_gamma_offOther_countableAvoidance_formal_proof :=
-  @Bottcher.hrig_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance
+alias hrig_phiMero_naturalBoundary_gamma_offOther_countableAvoidance_formal_proof := Bottcher.hrig_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance
 
 /-- Connected q62 endpoint using countable-avoidance sparse crossing and common-basin geometry. -/
-def q62_connected_naturalBoundary_gamma_offOther_countableAvoidance_formal_proof :=
-  @Bottcher.q62_independence_connected_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance
+alias q62_connected_naturalBoundary_gamma_offOther_countableAvoidance_formal_proof := Bottcher.q62_independence_connected_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance
 
 /-- Natural-boundary connected `NoRelation` endpoint using countable-avoidance sparse crossing and
 local-radius common-basin geometry. -/
-def q62_connected_noRelation_naturalBoundary_gamma_offOther_countableAvoidance_localTip_formal_proof :=
-  @Bottcher.noRelation_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_localTip
+alias q62_connected_noRelation_naturalBoundary_gamma_offOther_countableAvoidance_localTip_formal_proof := Bottcher.noRelation_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_localTip
 
 /-- hRigid endpoint using countable-avoidance sparse crossing and local-radius common-basin geometry. -/
-def hrig_phiMero_naturalBoundary_gamma_offOther_countableAvoidance_localTip_formal_proof :=
-  @Bottcher.hrig_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_localTip
+alias hrig_phiMero_naturalBoundary_gamma_offOther_countableAvoidance_localTip_formal_proof := Bottcher.hrig_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_localTip
 
 /-- Connected q62 endpoint using countable-avoidance sparse crossing and local-radius common-basin geometry. -/
-def q62_connected_naturalBoundary_gamma_offOther_countableAvoidance_localTip_formal_proof :=
-  @Bottcher.q62_independence_connected_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_localTip
+alias q62_connected_naturalBoundary_gamma_offOther_countableAvoidance_localTip_formal_proof := Bottcher.q62_independence_connected_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_localTip
 
 /-- Natural-boundary `NoRelation` endpoint using countable avoidance, carrier-closure contact, and
 punctured-sector preconnectedness; the common-basin component is built internally. -/
-def q62_connected_noRelation_naturalBoundary_gamma_offOther_countableAvoidance_carrierClosure_formal_proof :=
-  @Bottcher.noRelation_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_carrierClosure
+alias q62_connected_noRelation_naturalBoundary_gamma_offOther_countableAvoidance_carrierClosure_formal_proof := Bottcher.noRelation_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_carrierClosure
 
 /-- Natural-boundary hRigid endpoint using countable avoidance, carrier-closure contact, and
 punctured-sector preconnectedness; the common-basin component is built internally. -/
-def hrig_phiMero_naturalBoundary_gamma_offOther_countableAvoidance_carrierClosure_formal_proof :=
-  @Bottcher.hrig_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_carrierClosure
+alias hrig_phiMero_naturalBoundary_gamma_offOther_countableAvoidance_carrierClosure_formal_proof := Bottcher.hrig_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_carrierClosure
 
 /-- Natural-boundary connected q62 endpoint using countable avoidance, carrier-closure contact, and
 punctured-sector preconnectedness; the common-basin component is built internally. -/
-def q62_connected_naturalBoundary_gamma_offOther_countableAvoidance_carrierClosure_formal_proof :=
-  @Bottcher.q62_independence_connected_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_carrierClosure
+alias q62_connected_naturalBoundary_gamma_offOther_countableAvoidance_carrierClosure_formal_proof := Bottcher.q62_independence_connected_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_carrierClosure
 
 /-- Natural-boundary `NoRelation` endpoint using countable avoidance, carrier-closure contact, and
 local-radius punctured-sector preconnectedness; the common-basin component is built internally. -/
-def q62_connected_noRelation_naturalBoundary_gamma_offOther_countableAvoidance_carrierClosureLocalTip_formal_proof :=
-  @Bottcher.noRelation_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_carrierClosureLocalTip
+alias q62_connected_noRelation_naturalBoundary_gamma_offOther_countableAvoidance_carrierClosureLocalTip_formal_proof := Bottcher.noRelation_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_carrierClosureLocalTip
 
 /-- Natural-boundary hRigid endpoint using countable avoidance, carrier-closure contact, and
 local-radius punctured-sector preconnectedness; the common-basin component is built internally. -/
-def hrig_phiMero_naturalBoundary_gamma_offOther_countableAvoidance_carrierClosureLocalTip_formal_proof :=
-  @Bottcher.hrig_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_carrierClosureLocalTip
+alias hrig_phiMero_naturalBoundary_gamma_offOther_countableAvoidance_carrierClosureLocalTip_formal_proof := Bottcher.hrig_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_carrierClosureLocalTip
 
 /-- Natural-boundary connected q62 endpoint using countable avoidance, carrier-closure contact, and
 local-radius punctured-sector preconnectedness; the common-basin component is built internally. -/
-def q62_connected_naturalBoundary_gamma_offOther_countableAvoidance_carrierClosureLocalTip_formal_proof :=
-  @Bottcher.q62_independence_connected_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_carrierClosureLocalTip
+alias q62_connected_naturalBoundary_gamma_offOther_countableAvoidance_carrierClosureLocalTip_formal_proof := Bottcher.q62_independence_connected_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_carrierClosureLocalTip
 
 /-- Natural-boundary `NoRelation` endpoint using countable-avoidance translated-slit sector targets;
 the punctured-sector preconnectedness input is derived internally. -/
-def q62_connected_noRelation_naturalBoundary_gamma_offOther_countableAvoidance_carrierClosureSlitSector_formal_proof :=
-  @Bottcher.noRelation_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_carrierClosureSlitSector
+alias q62_connected_noRelation_naturalBoundary_gamma_offOther_countableAvoidance_carrierClosureSlitSector_formal_proof := Bottcher.noRelation_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_carrierClosureSlitSector
 
 /-- Natural-boundary hRigid endpoint using countable-avoidance translated-slit sector targets; the
 punctured-sector preconnectedness input is derived internally. -/
-def hrig_phiMero_naturalBoundary_gamma_offOther_countableAvoidance_carrierClosureSlitSector_formal_proof :=
-  @Bottcher.hrig_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_carrierClosureSlitSector
+alias hrig_phiMero_naturalBoundary_gamma_offOther_countableAvoidance_carrierClosureSlitSector_formal_proof := Bottcher.hrig_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_carrierClosureSlitSector
 
 /-- Natural-boundary connected q62 endpoint using countable-avoidance translated-slit sector targets;
 the punctured-sector preconnectedness input is derived internally. -/
-def q62_connected_naturalBoundary_gamma_offOther_countableAvoidance_carrierClosureSlitSector_formal_proof :=
-  @Bottcher.q62_independence_connected_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_carrierClosureSlitSector
+alias q62_connected_naturalBoundary_gamma_offOther_countableAvoidance_carrierClosureSlitSector_formal_proof := Bottcher.q62_independence_connected_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_carrierClosureSlitSector
 
 /-- Natural-boundary `NoRelation` endpoint with countable avoidance and local-radius rotated slit sectors. -/
-def q62_connected_noRelation_naturalBoundary_gamma_offOther_countableAvoidance_carrierClosureRotatedSlitSectorLocalTip_formal_proof :=
-  @Bottcher.noRelation_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_carrierClosureRotatedSlitSectorLocalTip
+alias q62_connected_noRelation_naturalBoundary_gamma_offOther_countableAvoidance_carrierClosureRotatedSlitSectorLocalTip_formal_proof := Bottcher.noRelation_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_carrierClosureRotatedSlitSectorLocalTip
 
 /-- Natural-boundary hRigid endpoint with countable avoidance and local-radius rotated slit sectors. -/
-def hrig_phiMero_naturalBoundary_gamma_offOther_countableAvoidance_carrierClosureRotatedSlitSectorLocalTip_formal_proof :=
-  @Bottcher.hrig_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_carrierClosureRotatedSlitSectorLocalTip
+alias hrig_phiMero_naturalBoundary_gamma_offOther_countableAvoidance_carrierClosureRotatedSlitSectorLocalTip_formal_proof := Bottcher.hrig_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_carrierClosureRotatedSlitSectorLocalTip
 
 /-- Natural-boundary connected q62 endpoint with countable avoidance and local-radius rotated slit sectors. -/
-def q62_connected_naturalBoundary_gamma_offOther_countableAvoidance_carrierClosureRotatedSlitSectorLocalTip_formal_proof :=
-  @Bottcher.q62_independence_connected_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_carrierClosureRotatedSlitSectorLocalTip
+alias q62_connected_naturalBoundary_gamma_offOther_countableAvoidance_carrierClosureRotatedSlitSectorLocalTip_formal_proof := Bottcher.q62_independence_connected_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_carrierClosureRotatedSlitSectorLocalTip
 
 /-- Natural-boundary `NoRelation` endpoint using uncountably many all-scale rotated-slit-good frontier
 targets. -/
-def q62_connected_noRelation_naturalBoundary_gamma_offOther_countableAvoidance_localFrontierRotatedSlitUncountable_formal_proof :=
-  @Bottcher.noRelation_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_localFrontierRotatedSlitUncountable
+alias q62_connected_noRelation_naturalBoundary_gamma_offOther_countableAvoidance_localFrontierRotatedSlitUncountable_formal_proof := Bottcher.noRelation_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_localFrontierRotatedSlitUncountable
 
 /-- Natural-boundary hRigid endpoint using uncountably many all-scale rotated-slit-good frontier targets. -/
-def hrig_phiMero_naturalBoundary_gamma_offOther_countableAvoidance_localFrontierRotatedSlitUncountable_formal_proof :=
-  @Bottcher.hrig_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_localFrontierRotatedSlitUncountable
+alias hrig_phiMero_naturalBoundary_gamma_offOther_countableAvoidance_localFrontierRotatedSlitUncountable_formal_proof := Bottcher.hrig_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_localFrontierRotatedSlitUncountable
 
 /-- Natural-boundary connected q62 endpoint using uncountably many all-scale rotated-slit-good frontier
 targets. -/
-def q62_connected_naturalBoundary_gamma_offOther_countableAvoidance_localFrontierRotatedSlitUncountable_formal_proof :=
-  @Bottcher.q62_independence_connected_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_localFrontierRotatedSlitUncountable
+alias q62_connected_naturalBoundary_gamma_offOther_countableAvoidance_localFrontierRotatedSlitUncountable_formal_proof := Bottcher.q62_independence_connected_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_localFrontierRotatedSlitUncountable
 
 /-- Natural-boundary `NoRelation` endpoint using uncountably many local-radius rotated-slit-good frontier
 targets. -/
-def q62_connected_noRelation_naturalBoundary_gamma_offOther_countableAvoidance_localFrontierRotatedSlitUncountableLocalTip_formal_proof :=
-  @Bottcher.noRelation_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_localFrontierRotatedSlitUncountableLocalTip
+alias q62_connected_noRelation_naturalBoundary_gamma_offOther_countableAvoidance_localFrontierRotatedSlitUncountableLocalTip_formal_proof := Bottcher.noRelation_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_localFrontierRotatedSlitUncountableLocalTip
 
 /-- Natural-boundary hRigid endpoint using uncountably many local-radius rotated-slit-good frontier targets. -/
-def hrig_phiMero_naturalBoundary_gamma_offOther_countableAvoidance_localFrontierRotatedSlitUncountableLocalTip_formal_proof :=
-  @Bottcher.hrig_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_localFrontierRotatedSlitUncountableLocalTip
+alias hrig_phiMero_naturalBoundary_gamma_offOther_countableAvoidance_localFrontierRotatedSlitUncountableLocalTip_formal_proof := Bottcher.hrig_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_localFrontierRotatedSlitUncountableLocalTip
 
 /-- Natural-boundary connected q62 endpoint using uncountably many local-radius rotated-slit-good frontier
 targets. -/
-def q62_connected_naturalBoundary_gamma_offOther_countableAvoidance_localFrontierRotatedSlitUncountableLocalTip_formal_proof :=
-  @Bottcher.q62_independence_connected_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_localFrontierRotatedSlitUncountableLocalTip
+alias q62_connected_naturalBoundary_gamma_offOther_countableAvoidance_localFrontierRotatedSlitUncountableLocalTip_formal_proof := Bottcher.q62_independence_connected_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_localFrontierRotatedSlitUncountableLocalTip
 
 /-- Natural-boundary `NoRelation` endpoint using uncountably many translated-slit-good local frontier
 targets; countable avoidance and punctured-sector preconnectedness are built internally. -/
-def q62_connected_noRelation_naturalBoundary_gamma_offOther_countableAvoidance_localFrontierSlitUncountable_formal_proof :=
-  @Bottcher.noRelation_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_localFrontierSlitUncountable
+alias q62_connected_noRelation_naturalBoundary_gamma_offOther_countableAvoidance_localFrontierSlitUncountable_formal_proof := Bottcher.noRelation_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_localFrontierSlitUncountable
 
 /-- Natural-boundary hRigid endpoint using uncountably many translated-slit-good local frontier targets;
 countable avoidance and punctured-sector preconnectedness are built internally. -/
-def hrig_phiMero_naturalBoundary_gamma_offOther_countableAvoidance_localFrontierSlitUncountable_formal_proof :=
-  @Bottcher.hrig_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_localFrontierSlitUncountable
+alias hrig_phiMero_naturalBoundary_gamma_offOther_countableAvoidance_localFrontierSlitUncountable_formal_proof := Bottcher.hrig_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_localFrontierSlitUncountable
 
 /-- Natural-boundary connected q62 endpoint using uncountably many translated-slit-good local frontier
 targets; countable avoidance and punctured-sector preconnectedness are built internally. -/
-def q62_connected_naturalBoundary_gamma_offOther_countableAvoidance_localFrontierSlitUncountable_formal_proof :=
-  @Bottcher.q62_independence_connected_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_localFrontierSlitUncountable
+alias q62_connected_naturalBoundary_gamma_offOther_countableAvoidance_localFrontierSlitUncountable_formal_proof := Bottcher.q62_independence_connected_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_localFrontierSlitUncountable
 
 /-- Empty-interior `NoRelation` endpoint using countable avoidance, carrier-closure contact, and
 punctured-sector preconnectedness; the common-basin component is built internally. -/
-def q62_connected_noRelation_emptyInterior_gamma_offOther_countableAvoidance_carrierClosure_formal_proof :=
-  @Bottcher.noRelation_phiMero_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_carrierClosure
+alias q62_connected_noRelation_emptyInterior_gamma_offOther_countableAvoidance_carrierClosure_formal_proof := Bottcher.noRelation_phiMero_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_carrierClosure
 
 /-- Empty-interior hRigid endpoint using countable avoidance, carrier-closure contact, and
 punctured-sector preconnectedness; the common-basin component is built internally. -/
-def hrig_phiMero_emptyInterior_gamma_offOther_countableAvoidance_carrierClosure_formal_proof :=
-  @Bottcher.hrig_phiMero_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_carrierClosure
+alias hrig_phiMero_emptyInterior_gamma_offOther_countableAvoidance_carrierClosure_formal_proof := Bottcher.hrig_phiMero_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_carrierClosure
 
 /-- Empty-interior connected q62 endpoint using countable avoidance, carrier-closure contact, and
 punctured-sector preconnectedness; the common-basin component is built internally. -/
-def q62_connected_emptyInterior_gamma_offOther_countableAvoidance_carrierClosure_formal_proof :=
-  @Bottcher.q62_independence_connected_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_carrierClosure
+alias q62_connected_emptyInterior_gamma_offOther_countableAvoidance_carrierClosure_formal_proof := Bottcher.q62_independence_connected_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_carrierClosure
 
 /-- Empty-interior `NoRelation` endpoint using countable-avoidance slit-sector targets; the
 punctured-sector preconnectedness input is derived internally. -/
-def q62_connected_noRelation_emptyInterior_gamma_offOther_countableAvoidance_carrierClosureSlitSector_formal_proof :=
-  @Bottcher.noRelation_phiMero_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_carrierClosureSlitSector
+alias q62_connected_noRelation_emptyInterior_gamma_offOther_countableAvoidance_carrierClosureSlitSector_formal_proof := Bottcher.noRelation_phiMero_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_carrierClosureSlitSector
 
 /-- Empty-interior hRigid endpoint using countable-avoidance slit-sector targets; the
 punctured-sector preconnectedness input is derived internally. -/
-def hrig_phiMero_emptyInterior_gamma_offOther_countableAvoidance_carrierClosureSlitSector_formal_proof :=
-  @Bottcher.hrig_phiMero_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_carrierClosureSlitSector
+alias hrig_phiMero_emptyInterior_gamma_offOther_countableAvoidance_carrierClosureSlitSector_formal_proof := Bottcher.hrig_phiMero_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_carrierClosureSlitSector
 
 /-- Empty-interior connected q62 endpoint using countable-avoidance slit-sector targets; the
 punctured-sector preconnectedness input is derived internally. -/
-def q62_connected_emptyInterior_gamma_offOther_countableAvoidance_carrierClosureSlitSector_formal_proof :=
-  @Bottcher.q62_independence_connected_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_carrierClosureSlitSector
+alias q62_connected_emptyInterior_gamma_offOther_countableAvoidance_carrierClosureSlitSector_formal_proof := Bottcher.q62_independence_connected_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_carrierClosureSlitSector
 
 /-- Empty-interior `NoRelation` endpoint using a local perfect-frontier
 countable-avoidance target set, with the common-basin component built internally. -/
-def q62_connected_noRelation_emptyInterior_gamma_offOther_countableAvoidance_localFrontierTarget_formal_proof :=
-  @Bottcher.noRelation_phiMero_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_localFrontierTarget
+alias q62_connected_noRelation_emptyInterior_gamma_offOther_countableAvoidance_localFrontierTarget_formal_proof := Bottcher.noRelation_phiMero_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_localFrontierTarget
 
 /-- Empty-interior hRigid endpoint using a local perfect-frontier countable-avoidance
 target set, with the common-basin component built internally. -/
-def hrig_phiMero_emptyInterior_gamma_offOther_countableAvoidance_localFrontierTarget_formal_proof :=
-  @Bottcher.hrig_phiMero_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_localFrontierTarget
+alias hrig_phiMero_emptyInterior_gamma_offOther_countableAvoidance_localFrontierTarget_formal_proof := Bottcher.hrig_phiMero_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_localFrontierTarget
 
 /-- Empty-interior connected q62 endpoint using a local perfect-frontier
 countable-avoidance target set, with the common-basin component built internally. -/
-def q62_connected_emptyInterior_gamma_offOther_countableAvoidance_localFrontierTarget_formal_proof :=
-  @Bottcher.q62_independence_connected_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_localFrontierTarget
+alias q62_connected_emptyInterior_gamma_offOther_countableAvoidance_localFrontierTarget_formal_proof := Bottcher.q62_independence_connected_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_localFrontierTarget
 
 /-- Empty-interior `NoRelation` endpoint using uncountably many local translated-slit-good frontier
 targets; countable avoidance and punctured-sector preconnectedness are built internally. -/
-def q62_connected_noRelation_emptyInterior_gamma_offOther_countableAvoidance_localFrontierSlitUncountable_formal_proof :=
-  @Bottcher.noRelation_phiMero_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_localFrontierSlitUncountable
+alias q62_connected_noRelation_emptyInterior_gamma_offOther_countableAvoidance_localFrontierSlitUncountable_formal_proof := Bottcher.noRelation_phiMero_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_localFrontierSlitUncountable
 
 /-- Empty-interior hRigid endpoint using uncountably many local translated-slit-good frontier targets;
 countable avoidance and punctured-sector preconnectedness are built internally. -/
-def hrig_phiMero_emptyInterior_gamma_offOther_countableAvoidance_localFrontierSlitUncountable_formal_proof :=
-  @Bottcher.hrig_phiMero_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_localFrontierSlitUncountable
+alias hrig_phiMero_emptyInterior_gamma_offOther_countableAvoidance_localFrontierSlitUncountable_formal_proof := Bottcher.hrig_phiMero_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_localFrontierSlitUncountable
 
 /-- Empty-interior connected q62 endpoint using uncountably many local translated-slit-good frontier
 targets; countable avoidance and punctured-sector preconnectedness are built internally. -/
-def q62_connected_emptyInterior_gamma_offOther_countableAvoidance_localFrontierSlitUncountable_formal_proof :=
-  @Bottcher.q62_independence_connected_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_localFrontierSlitUncountable
+alias q62_connected_emptyInterior_gamma_offOther_countableAvoidance_localFrontierSlitUncountable_formal_proof := Bottcher.q62_independence_connected_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_localFrontierSlitUncountable
 
 /-- Formal obstruction to the all-scale translated-slit supply interface: among points of a carrier
 `K`, the all-scale translated-slit basin condition is subsingleton. -/
-def q62_connected_allScaleTranslatedSlitSupply_subsingleton_obstruction_formal_proof :=
-  @Bottcher.subsingleton_mem_all_scale_translated_slitPlane_subset_compl
+alias q62_connected_allScaleTranslatedSlitSupply_subsingleton_obstruction_formal_proof := Bottcher.subsingleton_mem_all_scale_translated_slitPlane_subset_compl
 
 /-- Card-facing obstruction to the current uncountable local-frontier translated-slit supply: after
 intersecting with any local set, off-other condition, and analytic region, the all-scale slit-good
 filled-Julia frontier targets are countable. -/
-def q62_connected_localFrontierSlitUncountable_allScale_obstruction_formal_proof :=
-  @Bottcher.countable_local_frontier_offOther_all_scale_translated_slitPlane_subset_compl_filledJulia
+alias q62_connected_localFrontierSlitUncountable_allScale_obstruction_formal_proof := Bottcher.countable_local_frontier_offOther_all_scale_translated_slitPlane_subset_compl_filledJulia
 
 /-- Rotated translated-slit local topology brick: a unit-rotated slit-sector basin inclusion at every
 scale gives the full local `htip` preconnectedness. -/
-def q62_connected_rotatedSlitSector_localTip_formal_proof :=
-  @Bottcher.local_tip_preconnected_of_rotated_translated_slitPlane_subset_compl
+alias q62_connected_rotatedSlitSector_localTip_formal_proof := Bottcher.local_tip_preconnected_of_rotated_translated_slitPlane_subset_compl
 
 /-- Local-radius rotated translated-slit topology brick: a unit-rotated slit-sector basin inclusion
 below a radius gives `htip` below that radius, avoiding the all-scale ray obstruction. -/
-def q62_connected_rotatedSlitSector_localRadiusTip_formal_proof :=
-  @Bottcher.local_tip_preconnected_of_rotated_translated_slitPlane_subset_compl_le
+alias q62_connected_rotatedSlitSector_localRadiusTip_formal_proof := Bottcher.local_tip_preconnected_of_rotated_translated_slitPlane_subset_compl_le
 
 /-- Local-radius branch-continuation bridge: branch-family continuation only needs `htip` below some
 positive radius, not at all scales. -/
-def q62_connected_branchContinuation_localRadiusTip_formal_proof :=
-  @Bottcher.continuesAcross_of_global_basin_branch_analytic_localTip
+alias q62_connected_branchContinuation_localRadiusTip_formal_proof := Bottcher.continuesAcross_of_global_basin_branch_analytic_localTip
 
 /-- Cross-ratio/Montel source brick: differentiability of the cross-ratio iterate on the local patch. -/
-def hrig_differentiableOn_crossRatio_iterate_formal_proof :=
-  @Bottcher.differentiableOn_crossRatio_iterate
+alias hrig_differentiableOn_crossRatio_iterate_formal_proof := Bottcher.differentiableOn_crossRatio_iterate
 
 /-- Cross-ratio/Montel algebra brick: a genuine cross-ratio value has nonzero inverse-Möbius
 denominator. -/
-def hrig_crossRatio_solve_den_ne_zero_formal_proof :=
-  @Bottcher.crossRatio_solve_den_ne_zero
+alias hrig_crossRatio_solve_den_ne_zero_formal_proof := Bottcher.crossRatio_solve_den_ne_zero
 
 /-- Cross-ratio/Montel algebra brick: the inverse-Möbius transform recovers the target value from
 its cross-ratio. -/
-def hrig_crossRatio_solve_w_formal_proof :=
-  @Bottcher.crossRatio_solve_w
+alias hrig_crossRatio_solve_w_formal_proof := Bottcher.crossRatio_solve_w
 
 /-- Cross-ratio/Montel algebra brick: the inverse-Möbius transform recovers the quadratic iterate
 from its cross-ratio value. -/
-def hrig_crossRatio_iterate_solve_formal_proof :=
-  @Bottcher.crossRatio_iterate_solve
+alias hrig_crossRatio_iterate_solve_formal_proof := Bottcher.crossRatio_iterate_solve
 
 /-- Cross-ratio/Montel algebra brick: the inverse-Möbius denominator is nonzero for a quadratic
 iterate cross-ratio value. -/
-def hrig_crossRatio_iterate_solve_den_ne_zero_formal_proof :=
-  @Bottcher.crossRatio_iterate_solve_den_ne_zero
+alias hrig_crossRatio_iterate_solve_den_ne_zero_formal_proof := Bottcher.crossRatio_iterate_solve_den_ne_zero
 
 /-- Cross-ratio/Montel bridge: the inverse-Möbius transform used to pass from cross-ratio values
 back to iterate values. -/
@@ -1011,424 +940,338 @@ def hrig_crossRatioInverse_formal_proof :=
 
 /-- Cross-ratio/Montel bridge: on a local patch where `R` is the genuine iterate cross-ratio, the
 inverse-Möbius transform recovers the iterate. -/
-def hrig_eqOn_iterate_eq_crossRatioInverse_formal_proof :=
-  @Bottcher.eqOn_iterate_eq_crossRatioInverse
+alias hrig_eqOn_iterate_eq_crossRatioInverse_formal_proof := Bottcher.eqOn_iterate_eq_crossRatioInverse
 
 /-- Cross-ratio/Montel bridge: the inverse-Möbius denominator is nonzero on such a local patch. -/
-def hrig_eqOn_crossRatioInverse_den_ne_zero_formal_proof :=
-  @Bottcher.eqOn_crossRatioInverse_den_ne_zero
+alias hrig_eqOn_crossRatioInverse_den_ne_zero_formal_proof := Bottcher.eqOn_crossRatioInverse_den_ne_zero
 
 /-- Cross-ratio/Montel bridge: family form of the local-patch iterate recovery theorem. -/
-def hrig_forall_eqOn_iterate_eq_crossRatioInverse_formal_proof :=
-  @Bottcher.forall_eqOn_iterate_eq_crossRatioInverse
+alias hrig_forall_eqOn_iterate_eq_crossRatioInverse_formal_proof := Bottcher.forall_eqOn_iterate_eq_crossRatioInverse
 
 /-- Cross-ratio/Montel bridge: family form of the local-patch denominator nonzero theorem. -/
-def hrig_forall_crossRatioInverse_den_ne_zero_formal_proof :=
-  @Bottcher.forall_crossRatioInverse_den_ne_zero
+alias hrig_forall_crossRatioInverse_den_ne_zero_formal_proof := Bottcher.forall_crossRatioInverse_den_ne_zero
 
 /-- Cross-ratio/Montel source brick: absence of a period-`n` fixed point makes the cross-ratio
 iterate avoid `1`. -/
-def hrig_crossRatio_iterate_ne_one_of_not_periodic_formal_proof :=
-  @Bottcher.crossRatio_iterate_ne_one_of_not_periodic
+alias hrig_crossRatio_iterate_ne_one_of_not_periodic_formal_proof := Bottcher.crossRatio_iterate_ne_one_of_not_periodic
 
 /-- Cross-ratio/Montel source brick: the local avoidance hypotheses make the cross-ratio iterate
 avoid `0`. -/
-def hrig_crossRatio_iterate_ne_zero_of_avoids_formal_proof :=
-  @Bottcher.crossRatio_iterate_ne_zero_of_avoids
+alias hrig_crossRatio_iterate_ne_zero_of_avoids_formal_proof := Bottcher.crossRatio_iterate_ne_zero_of_avoids
 
 /-- Cross-ratio/Montel source brick: the local patch map omits both `0` and `1`. -/
-def hrig_crossRatio_iterate_omits_zero_one_on_formal_proof :=
-  @Bottcher.crossRatio_iterate_omits_zero_one_on
+alias hrig_crossRatio_iterate_omits_zero_one_on_formal_proof := Bottcher.crossRatio_iterate_omits_zero_one_on
 
 /-- Rotated translated-slit local topology brick: every positive-radius tip ball contains
 a point of the rotated slit sector. -/
-def q62_connected_rotatedSlitSector_nonempty_formal_proof :=
-  @Bottcher.nonempty_ball_inter_rotated_translated_slitPlane
+alias q62_connected_rotatedSlitSector_nonempty_formal_proof := Bottcher.nonempty_ball_inter_rotated_translated_slitPlane
 
 /-- Dense-approach hRigid obstruction bridge: a local-radius rotated slit-sector basin inclusion
 supplies the dense preconnected approach model directly, without first proving full punctured-basin
 preconnectedness. -/
-def q62_connected_rotatedSlitSector_denseApproach_contradiction_formal_proof :=
-  @Bottcher.false_of_global_basin_branch_analytic_rotatedSlitDenseApproach
+alias q62_connected_rotatedSlitSector_denseApproach_contradiction_formal_proof := Bottcher.false_of_global_basin_branch_analytic_rotatedSlitDenseApproach
 
 /-- Dense-approach `NoRelation` endpoint: countable avoidance plus a common-basin dense approach
 model at the selected target gives the connected relative relation obstruction. -/
-def q62_connected_noRelation_commonBasin_gamma_offOther_countableAvoidance_denseApproach_formal_proof :=
-  @Bottcher.noRelation_phiMero_of_commonBasin_gamma_offOther_countableAvoidance_denseApproach
+alias q62_connected_noRelation_commonBasin_gamma_offOther_countableAvoidance_denseApproach_formal_proof := Bottcher.noRelation_phiMero_of_commonBasin_gamma_offOther_countableAvoidance_denseApproach
 
 /-- Dense-approach hRigid endpoint: countable avoidance plus a common-basin dense approach model
 at the selected target gives the relative hRigid proof object. -/
-def hrig_phiMero_commonBasin_gamma_offOther_countableAvoidance_denseApproach_formal_proof :=
-  @Bottcher.hrig_phiMero_of_commonBasin_gamma_offOther_countableAvoidance_denseApproach
+alias hrig_phiMero_commonBasin_gamma_offOther_countableAvoidance_denseApproach_formal_proof := Bottcher.hrig_phiMero_of_commonBasin_gamma_offOther_countableAvoidance_denseApproach
 
 /-- Dense-approach connected q62 endpoint: countable avoidance plus a common-basin dense approach
 model at the selected target gives the connected q62 relation obstruction. -/
-def q62_connected_commonBasin_gamma_offOther_countableAvoidance_denseApproach_formal_proof :=
-  @Bottcher.q62_independence_connected_of_commonBasin_gamma_offOther_countableAvoidance_denseApproach
+alias q62_connected_commonBasin_gamma_offOther_countableAvoidance_denseApproach_formal_proof := Bottcher.q62_independence_connected_of_commonBasin_gamma_offOther_countableAvoidance_denseApproach
 
 /-- Rotated-slit dense-approach `NoRelation` endpoint: countable avoidance plus a local
 common-basin rotated slit sector supplies the dense approach model internally. -/
-def q62_connected_noRelation_commonBasin_gamma_offOther_countableAvoidance_rotatedSlitDenseApproach_formal_proof :=
-  @Bottcher.noRelation_phiMero_of_commonBasin_gamma_offOther_countableAvoidance_rotatedSlitDenseApproach
+alias q62_connected_noRelation_commonBasin_gamma_offOther_countableAvoidance_rotatedSlitDenseApproach_formal_proof := Bottcher.noRelation_phiMero_of_commonBasin_gamma_offOther_countableAvoidance_rotatedSlitDenseApproach
 
 /-- Rotated-slit dense-approach hRigid endpoint: countable avoidance plus a local common-basin
 rotated slit sector supplies the dense approach model internally. -/
-def hrig_phiMero_commonBasin_gamma_offOther_countableAvoidance_rotatedSlitDenseApproach_formal_proof :=
-  @Bottcher.hrig_phiMero_of_commonBasin_gamma_offOther_countableAvoidance_rotatedSlitDenseApproach
+alias hrig_phiMero_commonBasin_gamma_offOther_countableAvoidance_rotatedSlitDenseApproach_formal_proof := Bottcher.hrig_phiMero_of_commonBasin_gamma_offOther_countableAvoidance_rotatedSlitDenseApproach
 
 /-- Rotated-slit dense-approach connected q62 endpoint: countable avoidance plus a local
 common-basin rotated slit sector supplies the dense approach model internally. -/
-def q62_connected_commonBasin_gamma_offOther_countableAvoidance_rotatedSlitDenseApproach_formal_proof :=
-  @Bottcher.q62_independence_connected_of_commonBasin_gamma_offOther_countableAvoidance_rotatedSlitDenseApproach
+alias q62_connected_commonBasin_gamma_offOther_countableAvoidance_rotatedSlitDenseApproach_formal_proof := Bottcher.q62_independence_connected_of_commonBasin_gamma_offOther_countableAvoidance_rotatedSlitDenseApproach
 
 /-- Empty-interior `NoRelation` endpoint with countable avoidance and carrier-closure local-tip geometry. -/
-def q62_connected_noRelation_emptyInterior_gamma_offOther_countableAvoidance_carrierClosureLocalTip_formal_proof :=
-  @Bottcher.noRelation_phiMero_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_carrierClosureLocalTip
+alias q62_connected_noRelation_emptyInterior_gamma_offOther_countableAvoidance_carrierClosureLocalTip_formal_proof := Bottcher.noRelation_phiMero_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_carrierClosureLocalTip
 
 /-- Empty-interior hRigid endpoint with countable avoidance and carrier-closure local-tip geometry. -/
-def hrig_phiMero_emptyInterior_gamma_offOther_countableAvoidance_carrierClosureLocalTip_formal_proof :=
-  @Bottcher.hrig_phiMero_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_carrierClosureLocalTip
+alias hrig_phiMero_emptyInterior_gamma_offOther_countableAvoidance_carrierClosureLocalTip_formal_proof := Bottcher.hrig_phiMero_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_carrierClosureLocalTip
 
 /-- Empty-interior connected q62 endpoint with countable avoidance and carrier-closure local-tip geometry. -/
-def q62_connected_emptyInterior_gamma_offOther_countableAvoidance_carrierClosureLocalTip_formal_proof :=
-  @Bottcher.q62_independence_connected_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_carrierClosureLocalTip
+alias q62_connected_emptyInterior_gamma_offOther_countableAvoidance_carrierClosureLocalTip_formal_proof := Bottcher.q62_independence_connected_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_carrierClosureLocalTip
 
 /-- Empty-interior `NoRelation` endpoint with countable avoidance and local-radius rotated slit sectors. -/
-def q62_connected_noRelation_emptyInterior_gamma_offOther_countableAvoidance_carrierClosureRotatedSlitSectorLocalTip_formal_proof :=
-  @Bottcher.noRelation_phiMero_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_carrierClosureRotatedSlitSectorLocalTip
+alias q62_connected_noRelation_emptyInterior_gamma_offOther_countableAvoidance_carrierClosureRotatedSlitSectorLocalTip_formal_proof := Bottcher.noRelation_phiMero_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_carrierClosureRotatedSlitSectorLocalTip
 
 /-- Empty-interior hRigid endpoint with countable avoidance and local-radius rotated slit sectors. -/
-def hrig_phiMero_emptyInterior_gamma_offOther_countableAvoidance_carrierClosureRotatedSlitSectorLocalTip_formal_proof :=
-  @Bottcher.hrig_phiMero_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_carrierClosureRotatedSlitSectorLocalTip
+alias hrig_phiMero_emptyInterior_gamma_offOther_countableAvoidance_carrierClosureRotatedSlitSectorLocalTip_formal_proof := Bottcher.hrig_phiMero_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_carrierClosureRotatedSlitSectorLocalTip
 
 /-- Empty-interior connected q62 endpoint with countable avoidance and local-radius rotated slit sectors. -/
-def q62_connected_emptyInterior_gamma_offOther_countableAvoidance_carrierClosureRotatedSlitSectorLocalTip_formal_proof :=
-  @Bottcher.q62_independence_connected_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_carrierClosureRotatedSlitSectorLocalTip
+alias q62_connected_emptyInterior_gamma_offOther_countableAvoidance_carrierClosureRotatedSlitSectorLocalTip_formal_proof := Bottcher.q62_independence_connected_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_carrierClosureRotatedSlitSectorLocalTip
 
 /-- Empty-interior `NoRelation` endpoint using uncountably many local all-scale rotated-slit-good
 frontier targets; countable avoidance and punctured-sector preconnectedness are built internally. -/
-def q62_connected_noRelation_emptyInterior_gamma_offOther_countableAvoidance_localFrontierRotatedSlitUncountable_formal_proof :=
-  @Bottcher.noRelation_phiMero_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_localFrontierRotatedSlitUncountable
+alias q62_connected_noRelation_emptyInterior_gamma_offOther_countableAvoidance_localFrontierRotatedSlitUncountable_formal_proof := Bottcher.noRelation_phiMero_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_localFrontierRotatedSlitUncountable
 
 /-- Empty-interior hRigid endpoint using uncountably many local all-scale rotated-slit-good frontier
 targets; countable avoidance and punctured-sector preconnectedness are built internally. -/
-def hrig_phiMero_emptyInterior_gamma_offOther_countableAvoidance_localFrontierRotatedSlitUncountable_formal_proof :=
-  @Bottcher.hrig_phiMero_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_localFrontierRotatedSlitUncountable
+alias hrig_phiMero_emptyInterior_gamma_offOther_countableAvoidance_localFrontierRotatedSlitUncountable_formal_proof := Bottcher.hrig_phiMero_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_localFrontierRotatedSlitUncountable
 
 /-- Empty-interior connected q62 endpoint using uncountably many local all-scale rotated-slit-good
 frontier targets; countable avoidance and punctured-sector preconnectedness are built internally. -/
-def q62_connected_emptyInterior_gamma_offOther_countableAvoidance_localFrontierRotatedSlitUncountable_formal_proof :=
-  @Bottcher.q62_independence_connected_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_localFrontierRotatedSlitUncountable
+alias q62_connected_emptyInterior_gamma_offOther_countableAvoidance_localFrontierRotatedSlitUncountable_formal_proof := Bottcher.q62_independence_connected_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_localFrontierRotatedSlitUncountable
 
 /-- Empty-interior `NoRelation` endpoint using uncountably many local-radius rotated-slit-good frontier
 targets. -/
-def q62_connected_noRelation_emptyInterior_gamma_offOther_countableAvoidance_localFrontierRotatedSlitUncountableLocalTip_formal_proof :=
-  @Bottcher.noRelation_phiMero_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_localFrontierRotatedSlitUncountableLocalTip
+alias q62_connected_noRelation_emptyInterior_gamma_offOther_countableAvoidance_localFrontierRotatedSlitUncountableLocalTip_formal_proof := Bottcher.noRelation_phiMero_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_localFrontierRotatedSlitUncountableLocalTip
 
 /-- Empty-interior hRigid endpoint using uncountably many local-radius rotated-slit-good frontier targets. -/
-def hrig_phiMero_emptyInterior_gamma_offOther_countableAvoidance_localFrontierRotatedSlitUncountableLocalTip_formal_proof :=
-  @Bottcher.hrig_phiMero_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_localFrontierRotatedSlitUncountableLocalTip
+alias hrig_phiMero_emptyInterior_gamma_offOther_countableAvoidance_localFrontierRotatedSlitUncountableLocalTip_formal_proof := Bottcher.hrig_phiMero_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_localFrontierRotatedSlitUncountableLocalTip
 
 /-- Empty-interior connected q62 endpoint using uncountably many local-radius rotated-slit-good frontier
 targets. -/
-def q62_connected_emptyInterior_gamma_offOther_countableAvoidance_localFrontierRotatedSlitUncountableLocalTip_formal_proof :=
-  @Bottcher.q62_independence_connected_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_localFrontierRotatedSlitUncountableLocalTip
+alias q62_connected_emptyInterior_gamma_offOther_countableAvoidance_localFrontierRotatedSlitUncountableLocalTip_formal_proof := Bottcher.q62_independence_connected_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_localFrontierRotatedSlitUncountableLocalTip
 
 /-- Empty-interior `NoRelation` endpoint using a local translated-slit basin sector; the
 punctured-sector preconnectedness input is derived internally. -/
-def q62_connected_noRelation_emptyInterior_gamma_offOther_countableAvoidance_localFrontierSlitModel_formal_proof :=
-  @Bottcher.noRelation_phiMero_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_localFrontierSlitModel
+alias q62_connected_noRelation_emptyInterior_gamma_offOther_countableAvoidance_localFrontierSlitModel_formal_proof := Bottcher.noRelation_phiMero_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_localFrontierSlitModel
 
 /-- Empty-interior hRigid endpoint using a local translated-slit basin sector; the
 punctured-sector preconnectedness input is derived internally. -/
-def hrig_phiMero_emptyInterior_gamma_offOther_countableAvoidance_localFrontierSlitModel_formal_proof :=
-  @Bottcher.hrig_phiMero_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_localFrontierSlitModel
+alias hrig_phiMero_emptyInterior_gamma_offOther_countableAvoidance_localFrontierSlitModel_formal_proof := Bottcher.hrig_phiMero_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_localFrontierSlitModel
 
 /-- Empty-interior connected q62 endpoint using a local translated-slit basin sector; the
 punctured-sector preconnectedness input is derived internally. -/
-def q62_connected_emptyInterior_gamma_offOther_countableAvoidance_localFrontierSlitModel_formal_proof :=
-  @Bottcher.q62_independence_connected_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_localFrontierSlitModel
+alias q62_connected_emptyInterior_gamma_offOther_countableAvoidance_localFrontierSlitModel_formal_proof := Bottcher.q62_independence_connected_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_localFrontierSlitModel
 
 /-- Natural-boundary `NoRelation` endpoint using pointwise local-radius rotated slit-sector frontier
 models; the countable-avoidance target set and local-tip geometry are built internally. -/
-def q62_connected_noRelation_naturalBoundary_gamma_offOther_countableAvoidance_localFrontierRotatedSlitModelLocalTip_formal_proof :=
-  @Bottcher.noRelation_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_localFrontierRotatedSlitModelLocalTip
+alias q62_connected_noRelation_naturalBoundary_gamma_offOther_countableAvoidance_localFrontierRotatedSlitModelLocalTip_formal_proof := Bottcher.noRelation_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_localFrontierRotatedSlitModelLocalTip
 
 /-- Natural-boundary hRigid endpoint using pointwise local-radius rotated slit-sector frontier models. -/
-def hrig_phiMero_naturalBoundary_gamma_offOther_countableAvoidance_localFrontierRotatedSlitModelLocalTip_formal_proof :=
-  @Bottcher.hrig_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_localFrontierRotatedSlitModelLocalTip
+alias hrig_phiMero_naturalBoundary_gamma_offOther_countableAvoidance_localFrontierRotatedSlitModelLocalTip_formal_proof := Bottcher.hrig_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_localFrontierRotatedSlitModelLocalTip
 
 /-- Natural-boundary connected q62 endpoint using pointwise local-radius rotated slit-sector frontier
 models. -/
-def q62_connected_naturalBoundary_gamma_offOther_countableAvoidance_localFrontierRotatedSlitModelLocalTip_formal_proof :=
-  @Bottcher.q62_independence_connected_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_localFrontierRotatedSlitModelLocalTip
+alias q62_connected_naturalBoundary_gamma_offOther_countableAvoidance_localFrontierRotatedSlitModelLocalTip_formal_proof := Bottcher.q62_independence_connected_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance_localFrontierRotatedSlitModelLocalTip
 
 /-- Empty-interior `NoRelation` endpoint using pointwise local-radius rotated slit-sector frontier
 models; the countable-avoidance target set and local-tip geometry are built internally. -/
-def q62_connected_noRelation_emptyInterior_gamma_offOther_countableAvoidance_localFrontierRotatedSlitModelLocalTip_formal_proof :=
-  @Bottcher.noRelation_phiMero_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_localFrontierRotatedSlitModelLocalTip
+alias q62_connected_noRelation_emptyInterior_gamma_offOther_countableAvoidance_localFrontierRotatedSlitModelLocalTip_formal_proof := Bottcher.noRelation_phiMero_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_localFrontierRotatedSlitModelLocalTip
 
 /-- Empty-interior hRigid endpoint using pointwise local-radius rotated slit-sector frontier models. -/
-def hrig_phiMero_emptyInterior_gamma_offOther_countableAvoidance_localFrontierRotatedSlitModelLocalTip_formal_proof :=
-  @Bottcher.hrig_phiMero_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_localFrontierRotatedSlitModelLocalTip
+alias hrig_phiMero_emptyInterior_gamma_offOther_countableAvoidance_localFrontierRotatedSlitModelLocalTip_formal_proof := Bottcher.hrig_phiMero_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_localFrontierRotatedSlitModelLocalTip
 
 /-- Empty-interior connected q62 endpoint using pointwise local-radius rotated slit-sector frontier
 models. -/
-def q62_connected_emptyInterior_gamma_offOther_countableAvoidance_localFrontierRotatedSlitModelLocalTip_formal_proof :=
-  @Bottcher.q62_independence_connected_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_localFrontierRotatedSlitModelLocalTip
+alias q62_connected_emptyInterior_gamma_offOther_countableAvoidance_localFrontierRotatedSlitModelLocalTip_formal_proof := Bottcher.q62_independence_connected_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_localFrontierRotatedSlitModelLocalTip
 
 /-- Empty-interior `NoRelation` endpoint using pointwise local-radius rotated slit-sector frontier
 models through the dense-approach obstruction, so the local target set is selected internally. -/
-def q62_connected_noRelation_emptyInterior_gamma_offOther_countableAvoidance_localFrontierRotatedSlitModelDenseApproach_formal_proof :=
-  @Bottcher.noRelation_phiMero_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_localFrontierRotatedSlitModelDenseApproach
+alias q62_connected_noRelation_emptyInterior_gamma_offOther_countableAvoidance_localFrontierRotatedSlitModelDenseApproach_formal_proof := Bottcher.noRelation_phiMero_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_localFrontierRotatedSlitModelDenseApproach
 
 /-- Empty-interior hRigid endpoint using pointwise local-radius rotated slit-sector frontier models
 through the dense-approach obstruction. -/
-def hrig_phiMero_emptyInterior_gamma_offOther_countableAvoidance_localFrontierRotatedSlitModelDenseApproach_formal_proof :=
-  @Bottcher.hrig_phiMero_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_localFrontierRotatedSlitModelDenseApproach
+alias hrig_phiMero_emptyInterior_gamma_offOther_countableAvoidance_localFrontierRotatedSlitModelDenseApproach_formal_proof := Bottcher.hrig_phiMero_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_localFrontierRotatedSlitModelDenseApproach
 
 /-- Empty-interior connected q62 endpoint using pointwise local-radius rotated slit-sector frontier
 models through the dense-approach obstruction. -/
-def q62_connected_emptyInterior_gamma_offOther_countableAvoidance_localFrontierRotatedSlitModelDenseApproach_formal_proof :=
-  @Bottcher.q62_independence_connected_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_localFrontierRotatedSlitModelDenseApproach
+alias q62_connected_emptyInterior_gamma_offOther_countableAvoidance_localFrontierRotatedSlitModelDenseApproach_formal_proof := Bottcher.q62_independence_connected_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_localFrontierRotatedSlitModelDenseApproach
 
 /-- Strongest current natural-boundary connected q62 endpoint: square-root level
 branches plus off-other crossing data, with the repelling second-map witnesses
 promoted to eventual support input. -/
-def q62_connected_naturalBoundary_sqrt_family_offOther_crossing_eventualG_formal_proof :=
-  @Bottcher.q62_independence_connected_of_naturalBoundary_commonBasin_sqrt_family_offOther_crossing_eventualG
+alias q62_connected_naturalBoundary_sqrt_family_offOther_crossing_eventualG_formal_proof := Bottcher.q62_independence_connected_of_naturalBoundary_commonBasin_sqrt_family_offOther_crossing_eventualG
 
 /-- Empty-interior counterpart of the connected q62 endpoint, derived through
 the natural-boundary bridge. -/
-def q62_connected_emptyInterior_sqrt_family_offOther_crossing_eventualG_formal_proof :=
-  @Bottcher.q62_independence_connected_of_emptyInterior_commonBasin_sqrt_family_offOther_crossing_eventualG
+alias q62_connected_emptyInterior_sqrt_family_offOther_crossing_eventualG_formal_proof := Bottcher.q62_independence_connected_of_emptyInterior_commonBasin_sqrt_family_offOther_crossing_eventualG
 
 /-- Natural-boundary connected q62 endpoint consuming the newer return-order hRigid payload. -/
-def q62_connected_naturalBoundary_sqrt_family_offOther_crossing_returnOrderG_formal_proof :=
-  @Bottcher.q62_independence_connected_of_naturalBoundary_commonBasin_sqrt_family_offOther_crossing_returnOrderG
+alias q62_connected_naturalBoundary_sqrt_family_offOther_crossing_returnOrderG_formal_proof := Bottcher.q62_independence_connected_of_naturalBoundary_commonBasin_sqrt_family_offOther_crossing_returnOrderG
 
 /-- Empty-interior connected q62 endpoint consuming the newer return-order hRigid payload. -/
-def q62_connected_emptyInterior_sqrt_family_offOther_crossing_returnOrderG_formal_proof :=
-  @Bottcher.q62_independence_connected_of_emptyInterior_commonBasin_sqrt_family_offOther_crossing_returnOrderG
+alias q62_connected_emptyInterior_sqrt_family_offOther_crossing_returnOrderG_formal_proof := Bottcher.q62_independence_connected_of_emptyInterior_commonBasin_sqrt_family_offOther_crossing_returnOrderG
 
 /-- Natural-boundary connected q62 endpoint consuming the root-of-unity-safe multiplier-one-period
 hRigid payload. -/
-def q62_connected_naturalBoundary_sqrt_family_offOther_crossing_multiplierOnePeriodG_formal_proof :=
-  @Bottcher.q62_independence_connected_of_naturalBoundary_commonBasin_sqrt_family_offOther_crossing_multiplierOnePeriodG
+alias q62_connected_naturalBoundary_sqrt_family_offOther_crossing_multiplierOnePeriodG_formal_proof := Bottcher.q62_independence_connected_of_naturalBoundary_commonBasin_sqrt_family_offOther_crossing_multiplierOnePeriodG
 
 /-- Empty-interior connected q62 endpoint consuming the root-of-unity-safe multiplier-one-period
 hRigid payload. -/
-def q62_connected_emptyInterior_sqrt_family_offOther_crossing_multiplierOnePeriodG_formal_proof :=
-  @Bottcher.q62_independence_connected_of_emptyInterior_commonBasin_sqrt_family_offOther_crossing_multiplierOnePeriodG
+alias q62_connected_emptyInterior_sqrt_family_offOther_crossing_multiplierOnePeriodG_formal_proof := Bottcher.q62_independence_connected_of_emptyInterior_commonBasin_sqrt_family_offOther_crossing_multiplierOnePeriodG
 
 /-- Natural-boundary connected q62 endpoint consuming eventual bounds on exact multiplier-one periods
 and non-strong-root cardinality. -/
-def q62_connected_naturalBoundary_sqrt_family_offOther_crossing_exactMultiplierOnePeriodBoundCardG_formal_proof :=
-  @Bottcher.q62_independence_connected_of_naturalBoundary_commonBasin_sqrt_family_offOther_crossing_exactMultiplierOnePeriodBoundCardG
+alias q62_connected_naturalBoundary_sqrt_family_offOther_crossing_exactMultiplierOnePeriodBoundCardG_formal_proof := Bottcher.q62_independence_connected_of_naturalBoundary_commonBasin_sqrt_family_offOther_crossing_exactMultiplierOnePeriodBoundCardG
 
 /-- Card-name proof object for `q62-bottcher-independence-natural-boundary.md`.
 
 This records the strongest current natural-boundary connected branch endpoint exposed in Lean. -/
-def q62_bottcher_independence_natural_boundary_formal_proof :=
-  @Bottcher.q62_independence_connected_of_naturalBoundary_commonBasin_sqrt_family_offOther_crossing_exactMultiplierOnePeriodBoundCardG
+alias q62_bottcher_independence_natural_boundary_formal_proof := Bottcher.q62_independence_connected_of_naturalBoundary_commonBasin_sqrt_family_offOther_crossing_exactMultiplierOnePeriodBoundCardG
 
 /-- Card-name proof object for `q62a-bottcher-independence-hyperbolic.md`.
 
 The hyperbolic card is represented by the same current natural-boundary connected branch endpoint;
 the theorem name below is the stable card-facing handle. -/
-def q62a_bottcher_independence_hyperbolic_formal_proof :=
-  @Bottcher.q62_independence_connected_of_naturalBoundary_commonBasin_sqrt_family_offOther_crossing_exactMultiplierOnePeriodBoundCardG
+alias q62a_bottcher_independence_hyperbolic_formal_proof := Bottcher.q62_independence_connected_of_naturalBoundary_commonBasin_sqrt_family_offOther_crossing_exactMultiplierOnePeriodBoundCardG
 
 /-- Empty-interior connected q62 endpoint consuming eventual bounds on exact multiplier-one periods
 and non-strong-root cardinality. -/
-def q62_connected_emptyInterior_sqrt_family_offOther_crossing_exactMultiplierOnePeriodBoundCardG_formal_proof :=
-  @Bottcher.q62_independence_connected_of_emptyInterior_commonBasin_sqrt_family_offOther_crossing_exactMultiplierOnePeriodBoundCardG
+alias q62_connected_emptyInterior_sqrt_family_offOther_crossing_exactMultiplierOnePeriodBoundCardG_formal_proof := Bottcher.q62_independence_connected_of_emptyInterior_commonBasin_sqrt_family_offOther_crossing_exactMultiplierOnePeriodBoundCardG
 
 /-- Absolute connected `φ_c` hRigid bridge from the root-of-unity-safe multiplier-one-period support
 predicate.  This is the general parabolic-support input now targeted by the connected q62 route. -/
-def hrig_phiMero_multiplierOnePeriod_support_formal_proof :=
-  @Bottcher.phiMero_transcendental_of_repelling_eventually_multiplierOnePeriod_contentDenominator_noExtra_input
+alias hrig_phiMero_multiplierOnePeriod_support_formal_proof := Bottcher.phiMero_transcendental_of_repelling_eventually_multiplierOnePeriod_contentDenominator_noExtra_input
 
 /-- Absolute connected `φ_c` hRigid bridge from an eventual bound on exact multiplier-one periods
 plus finite eventual non-strong support. -/
-def hrig_phiMero_exactMultiplierOnePeriodBound_formal_proof :=
-  @Bottcher.phiMero_transcendental_of_repelling_eventually_exactMultiplierOnePeriodBound_contentDenominator_noExtra_input
+alias hrig_phiMero_exactMultiplierOnePeriodBound_formal_proof := Bottcher.phiMero_transcendental_of_repelling_eventually_exactMultiplierOnePeriodBound_contentDenominator_noExtra_input
 
 /-- Absolute connected `φ_c` hRigid bridge from eventual bounds on exact multiplier-one periods and
 the cardinality of non-strong roots. -/
-def hrig_phiMero_exactMultiplierOnePeriodBound_cardBound_formal_proof :=
-  @Bottcher.phiMero_transcendental_of_repelling_eventually_exactMultiplierOnePeriodBound_cardBound_contentDenominator_noExtra_input
+alias hrig_phiMero_exactMultiplierOnePeriodBound_cardBound_formal_proof := Bottcher.phiMero_transcendental_of_repelling_eventually_exactMultiplierOnePeriodBound_cardBound_contentDenominator_noExtra_input
 
 /-- Strong-root source bridge: frequent unbounded cardinality of strong fixed-point roots yields an
 infinite global strong-periodic target set. -/
-def hrig_infinite_strongFixedPointRoots_union_of_frequently_card_gt_formal_proof :=
-  @Bottcher.infinite_strongFixedPointRoots_union_of_frequently_card_gt
+alias hrig_infinite_strongFixedPointRoots_union_of_frequently_card_gt_formal_proof := Bottcher.infinite_strongFixedPointRoots_union_of_frequently_card_gt
 
 /-- Strong-root source bridge: frequent unbounded strong fixed-point roots yield a Julia-frontier
 accumulation point for the global strong-periodic target set. -/
-def hrig_frontier_accumulation_of_frequently_strongFixedPointRoots_card_gt_formal_proof :=
-  @Bottcher.exists_frontier_accumulation_of_frequently_strongFixedPointRoots_card_gt
+alias hrig_frontier_accumulation_of_frequently_strongFixedPointRoots_card_gt_formal_proof := Bottcher.exists_frontier_accumulation_of_frequently_strongFixedPointRoots_card_gt
 
 /-- Localizer bridge: a strong-periodic accumulation point in the interior of a target region yields
 an infinite closed-ball strong-periodic supply inside that region. -/
-def hrig_closedBall_strongly_repelling_periodic_set_of_accPt_in_interior_formal_proof :=
-  @Bottcher.exists_closedBall_strongly_repelling_periodic_set_of_accPt_in_interior
+alias hrig_closedBall_strongly_repelling_periodic_set_of_accPt_in_interior_formal_proof := Bottcher.exists_closedBall_strongly_repelling_periodic_set_of_accPt_in_interior
 
 /-- Localizer bridge: perfect Julia frontier plus dense strong fixed roots yields an infinite
 closed-ball strong-periodic supply inside an interior target region. -/
-def hrig_closedBall_strongFixedPointRoots_supply_of_perfect_frontier_dense_formal_proof :=
-  @Bottcher.exists_closedBall_strongFixedPointRoots_supply_of_perfect_frontier_dense
+alias hrig_closedBall_strongFixedPointRoots_supply_of_perfect_frontier_dense_formal_proof := Bottcher.exists_closedBall_strongFixedPointRoots_supply_of_perfect_frontier_dense
 
 /-- Localizer bridge: connected empty-interior Julia set plus dense strong fixed roots yields an
 infinite closed-ball strong-periodic supply inside an interior target region. -/
-def hrig_closedBall_strongFixedPointRoots_supply_of_frontier_dense_formal_proof :=
-  @Bottcher.exists_closedBall_strongFixedPointRoots_supply_of_frontier_dense
+alias hrig_closedBall_strongFixedPointRoots_supply_of_frontier_dense_formal_proof := Bottcher.exists_closedBall_strongFixedPointRoots_supply_of_frontier_dense
 
 /-- Localizer bridge: connected empty-interior Julia set plus dense strong fixed roots yields an
 infinite closed-ball strong-periodic supply inside an open target region. -/
-def hrig_closedBall_strongFixedPointRoots_supply_of_frontier_dense_open_formal_proof :=
-  @Bottcher.exists_closedBall_strongFixedPointRoots_supply_of_frontier_dense_open
+alias hrig_closedBall_strongFixedPointRoots_supply_of_frontier_dense_open_formal_proof := Bottcher.exists_closedBall_strongFixedPointRoots_supply_of_frontier_dense_open
 
 /-- Localizer bridge: perfect Julia frontier plus dense strong fixed roots yields an infinite
 closed-ball strong-periodic supply inside an open target region. -/
-def hrig_closedBall_strongFixedPointRoots_supply_of_perfect_frontier_dense_open_formal_proof :=
-  @Bottcher.exists_closedBall_strongFixedPointRoots_supply_of_perfect_frontier_dense_open
+alias hrig_closedBall_strongFixedPointRoots_supply_of_perfect_frontier_dense_open_formal_proof := Bottcher.exists_closedBall_strongFixedPointRoots_supply_of_perfect_frontier_dense_open
 
 /-- Localizer bridge: connected empty-interior Julia set plus natural orbit-product density of
 strongly repelling periodic points yields an open-region closed-ball supply. -/
-def hrig_closedBall_strongly_repelling_periodic_supply_of_frontier_dense_open_formal_proof :=
-  @Bottcher.exists_closedBall_strongly_repelling_periodic_supply_of_frontier_dense_open
+alias hrig_closedBall_strongly_repelling_periodic_supply_of_frontier_dense_open_formal_proof := Bottcher.exists_closedBall_strongly_repelling_periodic_supply_of_frontier_dense_open
 
 /-- Localizer bridge: perfect Julia frontier plus natural orbit-product density of strongly
 repelling periodic points yields an open-region closed-ball supply. -/
-def hrig_closedBall_strongly_repelling_periodic_supply_of_perfect_frontier_dense_open_formal_proof :=
-  @Bottcher.exists_closedBall_strongly_repelling_periodic_supply_of_perfect_frontier_dense_open
+alias hrig_closedBall_strongly_repelling_periodic_supply_of_perfect_frontier_dense_open_formal_proof := Bottcher.exists_closedBall_strongly_repelling_periodic_supply_of_perfect_frontier_dense_open
 
 /-- Global β/γ frontier endpoint for connected q62.  This is the canonical
 nonresonance branch currently exposed before the local hRigid completion
 removes the remaining branch hypotheses. -/
-def q62_connected_repelling_global_betaGamma_frontier_derivNonres_separable_repellingG_formal_proof :=
-  @Bottcher.q62_independence_connected_of_repelling_global_modulus_auto_betaGamma_frontierAnalytic_frontier_derivNonres_separable_repellingG
+alias q62_connected_repelling_global_betaGamma_frontier_derivNonres_separable_repellingG_formal_proof := Bottcher.q62_independence_connected_of_repelling_global_modulus_auto_betaGamma_frontierAnalytic_frontier_derivNonres_separable_repellingG
 
 /-- Global β/γ hRigid crossing endpoint where frontier membership and canonical nonresonance are
 derived from an accumulating strong-repelling periodic target supply. -/
-def hrig_phiMero_repelling_global_betaGamma_crossing_orbitNorm_autoFrontierNonres_formal_proof :=
-  @Bottcher.hrig_phiMero_of_repelling_global_modulus_auto_betaGamma_frontierAnalytic_crossing_orbitNorm_autoFrontierNonres
+alias hrig_phiMero_repelling_global_betaGamma_crossing_orbitNorm_autoFrontierNonres_formal_proof := Bottcher.hrig_phiMero_of_repelling_global_modulus_auto_betaGamma_frontierAnalytic_crossing_orbitNorm_autoFrontierNonres
 
 /-- Connected q62 endpoint from global β/γ crossing where the hRigid-side callback only supplies an
 accumulating strong-repelling periodic target supply. -/
-def q62_connected_repelling_global_betaGamma_crossing_orbitNorm_autoFrontierNonres_repellingG_formal_proof :=
-  @Bottcher.q62_independence_connected_of_repelling_global_modulus_auto_betaGamma_frontierAnalytic_crossing_orbitNorm_autoFrontierNonres_repellingG
+alias q62_connected_repelling_global_betaGamma_crossing_orbitNorm_autoFrontierNonres_repellingG_formal_proof := Bottcher.q62_independence_connected_of_repelling_global_modulus_auto_betaGamma_frontierAnalytic_crossing_orbitNorm_autoFrontierNonres_repellingG
 
 /-- Global β/γ hRigid endpoint where a local infinite strong-periodic supply in a closed ball
 creates the required accumulating target internally. -/
-def hrig_phiMero_repelling_global_betaGamma_closedBallStrongOrbitNorm_autoAccum_formal_proof :=
-  @Bottcher.hrig_phiMero_of_repelling_global_modulus_auto_betaGamma_frontierAnalytic_closedBallStrongOrbitNorm_autoAccum
+alias hrig_phiMero_repelling_global_betaGamma_closedBallStrongOrbitNorm_autoAccum_formal_proof := Bottcher.hrig_phiMero_of_repelling_global_modulus_auto_betaGamma_frontierAnalytic_closedBallStrongOrbitNorm_autoAccum
 
 /-- Connected q62 endpoint from global β/γ branches and a local infinite strong-periodic supply in a
 closed ball; the accumulated hRigid target is created internally. -/
-def q62_connected_repelling_global_betaGamma_closedBallStrongOrbitNorm_autoAccum_repellingG_formal_proof :=
-  @Bottcher.q62_independence_connected_of_repelling_global_modulus_auto_betaGamma_frontierAnalytic_closedBallStrongOrbitNorm_autoAccum_repellingG
+alias q62_connected_repelling_global_betaGamma_closedBallStrongOrbitNorm_autoAccum_repellingG_formal_proof := Bottcher.q62_independence_connected_of_repelling_global_modulus_auto_betaGamma_frontierAnalytic_closedBallStrongOrbitNorm_autoAccum_repellingG
 
 /-- Global β/γ hRigid endpoint where the callback supplies an interior accumulation point of
 strong-periodic targets, and Lean shrinks it to the closed-ball supply internally. -/
-def hrig_phiMero_repelling_global_betaGamma_accumulationInteriorStrongOrbitNorm_closedBall_formal_proof :=
-  @Bottcher.hrig_phiMero_of_repelling_global_modulus_auto_betaGamma_frontierAnalytic_accumulationInteriorStrongOrbitNorm_closedBall
+alias hrig_phiMero_repelling_global_betaGamma_accumulationInteriorStrongOrbitNorm_closedBall_formal_proof := Bottcher.hrig_phiMero_of_repelling_global_modulus_auto_betaGamma_frontierAnalytic_accumulationInteriorStrongOrbitNorm_closedBall
 
 /-- Connected q62 endpoint from global β/γ branches and an interior accumulation point of
 strong-periodic targets; the closed-ball hRigid supply is constructed internally. -/
-def q62_connected_repelling_global_betaGamma_accumulationInteriorStrongOrbitNorm_closedBall_repellingG_formal_proof :=
-  @Bottcher.q62_independence_connected_of_repelling_global_modulus_auto_betaGamma_frontierAnalytic_accumulationInteriorStrongOrbitNorm_closedBall_repellingG
+alias q62_connected_repelling_global_betaGamma_accumulationInteriorStrongOrbitNorm_closedBall_repellingG_formal_proof := Bottcher.q62_independence_connected_of_repelling_global_modulus_auto_betaGamma_frontierAnalytic_accumulationInteriorStrongOrbitNorm_closedBall_repellingG
 
 /-- Global β/γ hRigid endpoint where perfect Julia frontier plus dense strong roots create the
 closed-ball strong-periodic supply internally. -/
-def hrig_phiMero_repelling_global_betaGamma_perfectFrontierDenseStrongRoots_autoClosedBall_formal_proof :=
-  @Bottcher.hrig_phiMero_of_repelling_global_modulus_auto_betaGamma_frontierAnalytic_perfectFrontierDenseStrongRoots_autoClosedBall
+alias hrig_phiMero_repelling_global_betaGamma_perfectFrontierDenseStrongRoots_autoClosedBall_formal_proof := Bottcher.hrig_phiMero_of_repelling_global_modulus_auto_betaGamma_frontierAnalytic_perfectFrontierDenseStrongRoots_autoClosedBall
 
 /-- Connected q62 endpoint from global β/γ branches where perfect Julia frontier plus dense strong
 roots create the closed-ball hRigid supply internally. -/
-def q62_connected_repelling_global_betaGamma_perfectFrontierDenseStrongRoots_autoClosedBall_repellingG_formal_proof :=
-  @Bottcher.q62_independence_connected_of_repelling_global_modulus_auto_betaGamma_frontierAnalytic_perfectFrontierDenseStrongRoots_autoClosedBall_repellingG
+alias q62_connected_repelling_global_betaGamma_perfectFrontierDenseStrongRoots_autoClosedBall_repellingG_formal_proof := Bottcher.q62_independence_connected_of_repelling_global_modulus_auto_betaGamma_frontierAnalytic_perfectFrontierDenseStrongRoots_autoClosedBall_repellingG
 
 /-- Global β/γ hRigid endpoint where connected empty-interior Julia geometry plus dense strong roots
 create the closed-ball strong-periodic supply internally. -/
-def hrig_phiMero_repelling_global_betaGamma_connectedEmptyInteriorDenseStrongRoots_autoClosedBall_formal_proof :=
-  @Bottcher.hrig_phiMero_of_repelling_global_modulus_auto_betaGamma_frontierAnalytic_connectedEmptyInteriorDenseStrongRoots_autoClosedBall
+alias hrig_phiMero_repelling_global_betaGamma_connectedEmptyInteriorDenseStrongRoots_autoClosedBall_formal_proof := Bottcher.hrig_phiMero_of_repelling_global_modulus_auto_betaGamma_frontierAnalytic_connectedEmptyInteriorDenseStrongRoots_autoClosedBall
 
 /-- Connected q62 endpoint from global β/γ branches where connected empty-interior Julia geometry plus
 dense strong roots create the closed-ball hRigid supply internally. -/
-def q62_connected_repelling_global_betaGamma_connectedEmptyInteriorDenseStrongRoots_autoClosedBall_repellingG_formal_proof :=
-  @Bottcher.q62_independence_connected_of_repelling_global_modulus_auto_betaGamma_frontierAnalytic_connectedEmptyInteriorDenseStrongRoots_autoClosedBall_repellingG
+alias q62_connected_repelling_global_betaGamma_connectedEmptyInteriorDenseStrongRoots_autoClosedBall_repellingG_formal_proof := Bottcher.q62_independence_connected_of_repelling_global_modulus_auto_betaGamma_frontierAnalytic_connectedEmptyInteriorDenseStrongRoots_autoClosedBall_repellingG
 
 /-- Global β/γ hRigid endpoint where perfect Julia frontier plus dense strong roots create the
 closed-ball strong-periodic supply from an open crossing region. -/
-def hrig_phiMero_repelling_global_betaGamma_perfectFrontierDenseStrongRoots_openRegion_autoClosedBall_formal_proof :=
-  @Bottcher.hrig_phiMero_of_repelling_global_modulus_auto_betaGamma_frontierAnalytic_perfectFrontierDenseStrongRoots_openRegion_autoClosedBall
+alias hrig_phiMero_repelling_global_betaGamma_perfectFrontierDenseStrongRoots_openRegion_autoClosedBall_formal_proof := Bottcher.hrig_phiMero_of_repelling_global_modulus_auto_betaGamma_frontierAnalytic_perfectFrontierDenseStrongRoots_openRegion_autoClosedBall
 
 /-- Global β/γ hRigid endpoint where connected empty-interior Julia geometry plus dense strong roots
 create the closed-ball strong-periodic supply from an open crossing region. -/
-def hrig_phiMero_repelling_global_betaGamma_connectedEmptyInteriorDenseStrongRoots_openRegion_autoClosedBall_formal_proof :=
-  @Bottcher.hrig_phiMero_of_repelling_global_modulus_auto_betaGamma_frontierAnalytic_connectedEmptyInteriorDenseStrongRoots_openRegion_autoClosedBall
+alias hrig_phiMero_repelling_global_betaGamma_connectedEmptyInteriorDenseStrongRoots_openRegion_autoClosedBall_formal_proof := Bottcher.hrig_phiMero_of_repelling_global_modulus_auto_betaGamma_frontierAnalytic_connectedEmptyInteriorDenseStrongRoots_openRegion_autoClosedBall
 
 /-- Connected q62 endpoint where perfect Julia frontier plus dense strong roots create the hRigid
 supply from an open crossing region. -/
-def q62_connected_repelling_global_betaGamma_perfectFrontierDenseStrongRoots_openRegion_autoClosedBall_repellingG_formal_proof :=
-  @Bottcher.q62_independence_connected_of_repelling_global_modulus_auto_betaGamma_frontierAnalytic_perfectFrontierDenseStrongRoots_openRegion_autoClosedBall_repellingG
+alias q62_connected_repelling_global_betaGamma_perfectFrontierDenseStrongRoots_openRegion_autoClosedBall_repellingG_formal_proof := Bottcher.q62_independence_connected_of_repelling_global_modulus_auto_betaGamma_frontierAnalytic_perfectFrontierDenseStrongRoots_openRegion_autoClosedBall_repellingG
 
 /-- Connected q62 endpoint where connected empty-interior Julia geometry plus dense strong roots
 create the hRigid supply from an open crossing region. -/
-def q62_connected_repelling_global_betaGamma_connectedEmptyInteriorDenseStrongRoots_openRegion_autoClosedBall_repellingG_formal_proof :=
-  @Bottcher.q62_independence_connected_of_repelling_global_modulus_auto_betaGamma_frontierAnalytic_connectedEmptyInteriorDenseStrongRoots_openRegion_autoClosedBall_repellingG
+alias q62_connected_repelling_global_betaGamma_connectedEmptyInteriorDenseStrongRoots_openRegion_autoClosedBall_repellingG_formal_proof := Bottcher.q62_independence_connected_of_repelling_global_modulus_auto_betaGamma_frontierAnalytic_connectedEmptyInteriorDenseStrongRoots_openRegion_autoClosedBall_repellingG
 
 /-- Global β/γ hRigid endpoint where perfect Julia frontier plus natural orbit-product density create
 the closed-ball strong-periodic supply from an open crossing region. -/
-def hrig_phiMero_repelling_global_betaGamma_perfectFrontierDenseStrongOrbitNorm_openRegion_autoClosedBall_formal_proof :=
-  @Bottcher.hrig_phiMero_of_repelling_global_modulus_auto_betaGamma_frontierAnalytic_perfectFrontierDenseStrongOrbitNorm_openRegion_autoClosedBall
+alias hrig_phiMero_repelling_global_betaGamma_perfectFrontierDenseStrongOrbitNorm_openRegion_autoClosedBall_formal_proof := Bottcher.hrig_phiMero_of_repelling_global_modulus_auto_betaGamma_frontierAnalytic_perfectFrontierDenseStrongOrbitNorm_openRegion_autoClosedBall
 
 /-- Global β/γ hRigid endpoint where connected empty-interior Julia geometry plus natural
 orbit-product density create the closed-ball strong-periodic supply from an open crossing region. -/
-def hrig_phiMero_repelling_global_betaGamma_connectedEmptyInteriorDenseStrongOrbitNorm_openRegion_autoClosedBall_formal_proof :=
-  @Bottcher.hrig_phiMero_of_repelling_global_modulus_auto_betaGamma_frontierAnalytic_connectedEmptyInteriorDenseStrongOrbitNorm_openRegion_autoClosedBall
+alias hrig_phiMero_repelling_global_betaGamma_connectedEmptyInteriorDenseStrongOrbitNorm_openRegion_autoClosedBall_formal_proof := Bottcher.hrig_phiMero_of_repelling_global_modulus_auto_betaGamma_frontierAnalytic_connectedEmptyInteriorDenseStrongOrbitNorm_openRegion_autoClosedBall
 
 /-- Connected q62 endpoint where perfect Julia frontier plus natural orbit-product density create the
 hRigid supply from an open crossing region. -/
-def q62_connected_repelling_global_betaGamma_perfectFrontierDenseStrongOrbitNorm_openRegion_autoClosedBall_repellingG_formal_proof :=
-  @Bottcher.q62_independence_connected_of_repelling_global_modulus_auto_betaGamma_frontierAnalytic_perfectFrontierDenseStrongOrbitNorm_openRegion_autoClosedBall_repellingG
+alias q62_connected_repelling_global_betaGamma_perfectFrontierDenseStrongOrbitNorm_openRegion_autoClosedBall_repellingG_formal_proof := Bottcher.q62_independence_connected_of_repelling_global_modulus_auto_betaGamma_frontierAnalytic_perfectFrontierDenseStrongOrbitNorm_openRegion_autoClosedBall_repellingG
 
 /-- Connected q62 endpoint where connected empty-interior Julia geometry plus natural orbit-product
 density create the hRigid supply from an open crossing region. -/
-def q62_connected_repelling_global_betaGamma_connectedEmptyInteriorDenseStrongOrbitNorm_openRegion_autoClosedBall_repellingG_formal_proof :=
-  @Bottcher.q62_independence_connected_of_repelling_global_modulus_auto_betaGamma_frontierAnalytic_connectedEmptyInteriorDenseStrongOrbitNorm_openRegion_autoClosedBall_repellingG
+alias q62_connected_repelling_global_betaGamma_connectedEmptyInteriorDenseStrongOrbitNorm_openRegion_autoClosedBall_repellingG_formal_proof := Bottcher.q62_independence_connected_of_repelling_global_modulus_auto_betaGamma_frontierAnalytic_connectedEmptyInteriorDenseStrongOrbitNorm_openRegion_autoClosedBall_repellingG
 
 /-- Level-root hRigid crossing endpoint where frontier membership is derived from an accumulating
 strong-repelling periodic target supply. -/
-def hrig_phiMero_level_roots_crossing_orbitNorm_autoFrontier_formal_proof :=
-  @Bottcher.hrig_phiMero_of_level_roots_modulus_auto_gamma_frontierAnalytic_crossing_orbitNorm_autoFrontier
+alias hrig_phiMero_level_roots_crossing_orbitNorm_autoFrontier_formal_proof := Bottcher.hrig_phiMero_of_level_roots_modulus_auto_gamma_frontierAnalytic_crossing_orbitNorm_autoFrontier
 
 /-- Connected q62 endpoint from the level-root crossing route, with the hRigid-side frontier condition
 derived from strong periodic repulsion. -/
-def q62_connected_level_roots_crossing_orbitNorm_autoFrontier_repellingG_formal_proof :=
-  @Bottcher.q62_independence_connected_of_level_roots_modulus_auto_gamma_frontierAnalytic_crossing_orbitNorm_autoFrontier_repellingG
+alias q62_connected_level_roots_crossing_orbitNorm_autoFrontier_repellingG_formal_proof := Bottcher.q62_independence_connected_of_level_roots_modulus_auto_gamma_frontierAnalytic_crossing_orbitNorm_autoFrontier_repellingG
 
 /-- Absolute connected `φ_c` transcendence through the index route, with the exceptional-mass
 smallness period chosen internally from eventual bulk data. -/
-def hrig_phiMero_absolute_index_eventual_formal_proof :=
-  @Bottcher.phiMero_transcendental_via_index_eventual
+alias hrig_phiMero_absolute_index_eventual_formal_proof := Bottcher.phiMero_transcendental_via_index_eventual
 
 /-- Absolute connected `φ_c` transcendence through the index route, with both fixed-root membership and
 exceptional-mass smallness derived internally from a fixed repelling exceptional set. -/
-def hrig_phiMero_absolute_index_eventual_fixedB_formal_proof :=
-  @Bottcher.phiMero_transcendental_via_index_eventual_fixedB
+alias hrig_phiMero_absolute_index_eventual_fixedB_formal_proof := Bottcher.phiMero_transcendental_via_index_eventual_fixedB
 
 /-- Relative connected hRigid input through the index route, with the exceptional-mass smallness
 period chosen internally from eventual bulk data. -/
-def hrig_phiMero_relative_index_eventual_formal_proof :=
-  @Bottcher.hrig_phiMero_via_index_eventual
+alias hrig_phiMero_relative_index_eventual_formal_proof := Bottcher.hrig_phiMero_via_index_eventual
 
 /-- Relative connected hRigid input through the index route, with both fixed-root membership and
 exceptional-mass smallness derived internally from a fixed repelling exceptional set. -/
-def hrig_phiMero_relative_index_eventual_fixedB_formal_proof :=
-  @Bottcher.hrig_phiMero_via_index_eventual_fixedB
+alias hrig_phiMero_relative_index_eventual_fixedB_formal_proof := Bottcher.hrig_phiMero_via_index_eventual_fixedB
 
 end FullyProvenNewTargets
 
@@ -2472,8 +2315,7 @@ theorem u0_open_unitCircle_accumulation_card : U0OpenUnitCircleAccumulationTarge
 
 /-- Card proof object for the U0 Step-3 continuation contradiction after the Step-2 output has been
 reduced to a single open-basin unit-circle crossing point. -/
-def u0_phi_no_relation_3var_open_crossing_formal_proof :=
-  @U0PhiCard.u0_phi_no_relation_3var_open_crossing
+alias u0_phi_no_relation_3var_open_crossing_formal_proof := U0PhiCard.u0_phi_no_relation_3var_open_crossing
 
 end FullyProvenNewTargets
 
@@ -2500,8 +2342,7 @@ namespace FullyProvenNewTargets
 
 /-- Strengthened disconnected Kummer close: the `φ₂` transcendence input is derived internally from its
 own radical tower, leaving nonzero coordinates plus the two radical input towers. -/
-def q62_disconnected_kummer_with_radical_transcendence_formal_proof :=
-  @Bottcher.q62_disconnected_kummer_with_radical_transcendence
+alias q62_disconnected_kummer_with_radical_transcendence_formal_proof := Bottcher.q62_disconnected_kummer_with_radical_transcendence
 
 end FullyProvenNewTargets
 
@@ -2509,8 +2350,7 @@ namespace FullyProvenNewTargets
 
 /-- Disconnected q62 radical close with no separate `φ₂` transcendence input: both coordinates are
 supplied by non-square radical towers. -/
-def q62_disconnected_two_radical_data_formal_proof :=
-  @Bottcher.q62_disconnected_of_two_radical_data
+alias q62_disconnected_two_radical_data_formal_proof := Bottcher.q62_disconnected_of_two_radical_data
 
 end FullyProvenNewTargets
 
@@ -2518,12 +2358,10 @@ namespace FullyProvenNewTargets
 
 /-- Deep-data q62 disconnected close where both coordinates carry their own non-square radical data, so
 no separate `φ₂` transcendence input remains. -/
-def q62_disconnected_deep_data_two_radical_formal_proof :=
-  @Bottcher.q62_disconnected_of_deepData_two_radical
+alias q62_disconnected_deep_data_two_radical_formal_proof := Bottcher.q62_disconnected_of_deepData_two_radical
 
 /-- Image-winding version of the two-radical deep-data q62 close. -/
-def q62_disconnected_image_winding_deep_data_two_radical_formal_proof :=
-  @Bottcher.q62_disconnected_of_imageWindingDeepData_two_radical
+alias q62_disconnected_image_winding_deep_data_two_radical_formal_proof := Bottcher.q62_disconnected_of_imageWindingDeepData_two_radical
 
 end FullyProvenNewTargets
 
@@ -2531,12 +2369,10 @@ namespace FullyProvenNewTargets
 
 /-- Escape-form deep-data q62 disconnected close where `φ₂` compatibility and transcendence are both
 built from supplied escape/radical data rather than separate premises. -/
-def q62_disconnected_deep_data_escape_two_radical_formal_proof :=
-  @Bottcher.q62_disconnected_of_deepData_escape_two_radical
+alias q62_disconnected_deep_data_escape_two_radical_formal_proof := Bottcher.q62_disconnected_of_deepData_escape_two_radical
 
 /-- Image-winding version of the escape-form two-radical deep-data q62 close. -/
-def q62_disconnected_image_winding_deep_data_escape_two_radical_formal_proof :=
-  @Bottcher.q62_disconnected_of_imageWindingDeepData_escape_two_radical
+alias q62_disconnected_image_winding_deep_data_escape_two_radical_formal_proof := Bottcher.q62_disconnected_of_imageWindingDeepData_escape_two_radical
 
 end FullyProvenNewTargets
 

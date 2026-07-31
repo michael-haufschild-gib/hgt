@@ -65,6 +65,7 @@ theorem cyclicClockLift_pow_apply {ι : Type w}
         map_smul, smul_smul, pow_succ]
       rfl
 
+omit [CharZero K] [Fact (1 < d)] in
 /-- The cyclic clock lift preserves every scalar `d`th-power identity. -/
 theorem cyclicClockLift_pow_degree {ι : Type w}
     (q : K) (hq : q ^ d = 1) (A : Module.End K M) (F : K)

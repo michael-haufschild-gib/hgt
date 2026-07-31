@@ -533,7 +533,7 @@ theorem Polynomial.natDegree_eq_one_of_derivative_eq_C
     have hPdegree : P.natDegree = 0 := Nat.eq_zero_of_not_pos h
     rw [Polynomial.derivative_of_natDegree_zero hPdegree] at hderiv
     exact hc (Polynomial.C_injective (by simpa using hderiv.symm))
-  have hdegree := Polynomial.degree_derivative_eq P hPpos
+  have hdegree := Polynomial.degree_derivative (p := P) hPpos.ne'
   rw [hderiv, Polynomial.degree_C hc] at hdegree
   have hsub : P.natDegree - 1 = 0 := by
     exact_mod_cast hdegree.symm

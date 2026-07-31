@@ -24,6 +24,7 @@ def columnSlice {L : ℕ} (d : (ι × Fin L) →₀ ℕ) (n : Fin L) : ι →₀
   Finsupp.comapDomain.addMonoidHom
     (f := fun j : ι => (j, n)) (fun _ _ h => congrArg Prod.fst h) d
 
+omit [Fintype ι] [DecidableEq ι] in
 @[simp]
 theorem columnSlice_apply {L : ℕ} (d : (ι × Fin L) →₀ ℕ) (n : Fin L) (j : ι) :
     columnSlice d n j = d (j, n) := by
@@ -38,21 +39,25 @@ def columnMonomialValue {L : ℕ} (q : ι → ℂ) (n : Fin L)
 def columnDegree {L : ℕ} (d : (ι × Fin L) →₀ ℕ) (n : Fin L) : ℕ :=
   (columnSlice d n).degree
 
+omit [Fintype ι] [DecidableEq ι] in
 theorem columnDegree_eq_zero_iff {L : ℕ} (d : (ι × Fin L) →₀ ℕ) (n : Fin L) :
     columnDegree d n = 0 ↔ columnSlice d n = 0 := by
   rw [columnDegree, Finsupp.degree_eq_zero_iff]
 
+omit [Fintype ι] [DecidableEq ι] in
 theorem columnMonomialValue_of_columnDegree_eq_zero {L : ℕ} (q : ι → ℂ)
     (d : (ι × Fin L) →₀ ℕ) (n : Fin L) (h : columnDegree d n = 0) :
     columnMonomialValue q n d = 1 := by
   rw [columnMonomialValue, (columnDegree_eq_zero_iff d n).mp h]
   simp [monomialValue]
 
+omit [Fintype ι] [DecidableEq ι] in
 theorem exists_columnSlice_eq_single_of_columnDegree_eq_one {L : ℕ}
     (d : (ι × Fin L) →₀ ℕ) (n : Fin L) (h : columnDegree d n = 1) :
     ∃ j : ι, columnSlice d n = Finsupp.single j 1 := by
   exact (Finsupp.sum_eq_one_iff (columnSlice d n)).mp h
 
+omit [Fintype ι] [DecidableEq ι] in
 theorem columnMonomialValue_of_columnSlice_eq_single {L : ℕ} (q : ι → ℂ)
     (d : (ι × Fin L) →₀ ℕ) (n : Fin L) (j : ι)
     (h : columnSlice d n = Finsupp.single j 1) :
@@ -60,6 +65,7 @@ theorem columnMonomialValue_of_columnSlice_eq_single {L : ℕ} (q : ι → ℂ)
   rw [columnMonomialValue, h, monomialValue]
   simp
 
+omit [DecidableEq ι] in
 theorem degree_eq_sum_columnDegree {L : ℕ} (d : (ι × Fin L) →₀ ℕ) :
     d.degree = ∑ n : Fin L, columnDegree d n := by
   classical
@@ -75,6 +81,7 @@ theorem degree_eq_sum_columnDegree {L : ℕ} (d : (ι × Fin L) →₀ ℕ) :
   rw [Fintype.sum_prod_type]
   rw [Finset.sum_comm]
 
+omit [DecidableEq ι] in
 /-- A monomial on a product power grid factors into its column characters. -/
 theorem monomialValue_powerGrid {L : ℕ} (q : ι → ℂ) (m : Fin L → ℕ)
     (d : (ι × Fin L) →₀ ℕ) :
@@ -96,6 +103,7 @@ theorem monomialValue_powerGrid {L : ℕ} (q : ι → ℂ) (m : Fin L → ℕ)
       simpa using
         (Finset.prod_pow Finset.univ (m n) (fun j : ι => q j ^ d (j, n)))
 
+omit [DecidableEq ι] in
 theorem monomialValue_powerGrid_update_succ {L : ℕ} (q : ι → ℂ)
     (m : Fin L → ℕ) (n : Fin L) (d : (ι × Fin L) →₀ ℕ) :
     monomialValue
@@ -133,6 +141,7 @@ def columnDifferenceSet {L : ℕ} (q : ι → ℂ) (S : Finset (Fin L))
   (AddMonoidAlgebra.coeff P).sum fun d c =>
     MvPolynomial.monomial d (c * ∏ n ∈ S, (columnMonomialValue q n d - 1))
 
+omit [Fintype ι] in
 theorem coeff_columnDifferenceSet {L : ℕ} (q : ι → ℂ) (S : Finset (Fin L))
     (P : MvPolynomial (ι × Fin L) ℂ) (d : (ι × Fin L) →₀ ℕ) :
     MvPolynomial.coeff d (columnDifferenceSet q S P) =
@@ -142,7 +151,7 @@ theorem coeff_columnDifferenceSet {L : ℕ} (q : ι → ℂ) (S : Finset (Fin L)
   simp only [MvPolynomial.coeff_monomial]
   by_cases hd : d ∈ P.support
   · rw [Finset.sum_eq_single d]
-    · simp [hd]
+    · simp
     · intro e heP hed
       simp [hed]
     · simp [hd]
@@ -153,6 +162,7 @@ theorem coeff_columnDifferenceSet {L : ℕ} (q : ι → ℂ) (S : Finset (Fin L)
     intro e he
     simp [show e ≠ d from fun h => hd (h ▸ he)]
 
+omit [Fintype ι] in
 @[simp]
 theorem columnDifferenceSet_empty {L : ℕ} (q : ι → ℂ)
     (P : MvPolynomial (ι × Fin L) ℂ) :
@@ -161,6 +171,7 @@ theorem columnDifferenceSet_empty {L : ℕ} (q : ι → ℂ)
   intro d
   simp [coeff_columnDifferenceSet]
 
+omit [Fintype ι] in
 theorem columnDifferenceSet_insert {L : ℕ} (q : ι → ℂ) (S : Finset (Fin L))
     (n : Fin L) (hn : n ∉ S) (P : MvPolynomial (ι × Fin L) ℂ) :
     columnDifferenceSet q (insert n S) P =
@@ -172,6 +183,7 @@ theorem columnDifferenceSet_insert {L : ℕ} (q : ι → ℂ) (S : Finset (Fin L
   simp only [Finset.prod_singleton]
   ring
 
+omit [DecidableEq ι] in
 /-- A one-column coefficientwise difference is the forward finite difference of the power-grid
 evaluation in that column. -/
 theorem eval_columnDifferenceSet_singleton {L : ℕ} (q : ι → ℂ) (n : Fin L)
@@ -308,6 +320,7 @@ theorem columnDegree_eq_one_of_coeff_columnDifferenceSet_univ_ne_zero {L : ℕ}
   apply eq_one_of_one_le_of_sum_le_card (fun n => columnDegree d n) hpos
   rwa [← degree_eq_sum_columnDegree]
 
+omit [DecidableEq ι] in
 /-- Vandermonde separation for a finite index type rather than an explicitly enumerated `Fin`. -/
 theorem power_sum_coeff_zero_fintype (b c : ι → ℂ) (hb : Function.Injective b)
     (h : ∀ m : ℕ, ∑ i : ι, c i * b i ^ m = 0) : c = 0 := by
@@ -323,6 +336,7 @@ theorem power_sum_coeff_zero_fintype (b c : ι → ℂ) (hb : Function.Injective
   have hi := congrFun hc' (e i)
   simpa [c'] using hi
 
+omit [DecidableEq ι] in
 /-- Tensor Vandermonde separation.  Independent column times and pairwise distinct nodes separate
 every coefficient indexed by one label in each column. -/
 theorem tensor_power_sum_coeff_zero (q : ι → ℂ) (hq : Function.Injective q) :
@@ -386,6 +400,7 @@ theorem tensor_power_sum_coeff_zero (q : ι → ℂ) (hq : Function.Injective q)
 def columnTuple {L : ℕ} (f : Fin L → ι) : (ι × Fin L) →₀ ℕ :=
   ∑ n : Fin L, Finsupp.single (f n, n) 1
 
+omit [Fintype ι] in
 @[simp]
 theorem columnTuple_apply {L : ℕ} (f : Fin L → ι) (j : ι) (n : Fin L) :
     columnTuple f (j, n) = if j = f n then 1 else 0 := by
@@ -409,11 +424,13 @@ theorem columnTuple_apply {L : ℕ} (f : Fin L → ι) (j : ι) (n : Fin L) :
       simp [show f n ≠ j from fun h => hj h.symm]
     · simp [Prod.ext_iff, hr]
 
+omit [Fintype ι] in
 theorem columnSlice_columnTuple {L : ℕ} (f : Fin L → ι) (n : Fin L) :
     columnSlice (columnTuple f) n = Finsupp.single (f n) 1 := by
   ext j
   simp [columnTuple_apply, Finsupp.single_apply, eq_comm]
 
+omit [Fintype ι] in
 theorem columnDegree_columnTuple {L : ℕ} (f : Fin L → ι) (n : Fin L) :
     columnDegree (columnTuple f) n = 1 := by
   rw [columnDegree, columnSlice_columnTuple]
@@ -424,6 +441,7 @@ theorem degree_columnTuple {L : ℕ} (f : Fin L → ι) :
   rw [degree_eq_sum_columnDegree]
   simp [columnDegree_columnTuple]
 
+omit [Fintype ι] in
 theorem columnTuple_injective {L : ℕ} :
     Function.Injective (columnTuple : (Fin L → ι) → (ι × Fin L) →₀ ℕ) := by
   intro f g h
@@ -433,8 +451,9 @@ theorem columnTuple_injective {L : ℕ} :
   rw [columnSlice_columnTuple, columnSlice_columnTuple] at hs
   by_contra hne
   have hv := congrFun (congrArg DFunLike.coe hs) (f n)
-  simpa [Finsupp.single_apply, hne] using hv
+  simp [hne] at hv
 
+omit [Fintype ι] in
 theorem eq_columnTuple_of_columnDegree_eq_one {L : ℕ}
     (d : (ι × Fin L) →₀ ℕ) (h : ∀ n : Fin L, columnDegree d n = 1) :
     ∃ f : Fin L → ι, d = columnTuple f := by
@@ -518,6 +537,7 @@ theorem columnMultilinear_powerGrid_zero {L : ℕ} (q : ι → ℂ)
   simp only [c, Pi.zero_apply] at hf
   rw [hf, MvPolynomial.monomial_zero]
 
+omit [Fintype ι] in
 theorem support_columnDifferenceSet_subset {L : ℕ} (q : ι → ℂ)
     (S : Finset (Fin L)) (P : MvPolynomial (ι × Fin L) ℂ) :
     (columnDifferenceSet q S P).support ⊆ P.support := by
@@ -526,6 +546,7 @@ theorem support_columnDifferenceSet_subset {L : ℕ} (q : ι → ℂ)
   rw [coeff_columnDifferenceSet] at hd
   exact fun h => hd (by rw [h, zero_mul])
 
+omit [Fintype ι] in
 theorem totalDegree_columnDifferenceSet_le {L : ℕ} (q : ι → ℂ)
     (S : Finset (Fin L)) (P : MvPolynomial (ι × Fin L) ℂ) :
     (columnDifferenceSet q S P).totalDegree ≤ P.totalDegree :=

@@ -52,7 +52,6 @@ theorem essentialNorm_anchoredCommutator_le_two_mul_corner
     finiteArchimedeanEulerOrientationGram_eq_neg_compression_commutator
       a (fun i ↦ (p i : ℝ))
         (fun i ↦ by
-          change (1 : ℝ) < (p i : ℝ)
           exact_mod_cast (hp i).one_lt) u
   have hEN :
       essentialNorm
@@ -98,7 +97,6 @@ theorem essentialNorm_corner_le_anchoredCommutator
     finiteArchimedeanEulerOrientationGram_eq_neg_compression_commutator
       a (fun i ↦ (p i : ℝ))
         (fun i ↦ by
-          change (1 : ℝ) < (p i : ℝ)
           exact_mod_cast (hp i).one_lt) u
   have hEN :
       essentialNorm

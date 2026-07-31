@@ -80,14 +80,14 @@ theorem isPreconnected_halfplane_punctured :
   have hx₂ : (2 - Complex.I) ∈ ({z : ℂ | 1 < z.re}
         ∪ ({z : ℂ | 0 < z.re} ∩ {z : ℂ | 0 < z.im}))
       ∩ ({z : ℂ | 0 < z.re} ∩ {z : ℂ | z.im < 0}) := by
-    refine ⟨Or.inl ?_, ⟨?_, ?_⟩⟩ <;> simp <;> norm_num
+    refine ⟨Or.inl ?_, ⟨?_, ?_⟩⟩ <;> simp
   have hABC := IsPreconnected.union (2 - Complex.I) hx₂.1 hx₂.2
     hAB hC.isPreconnected
   have hx₃ : ((1 / 2 : ℝ) + Complex.I) ∈ (({z : ℂ | 1 < z.re}
         ∪ ({z : ℂ | 0 < z.re} ∩ {z : ℂ | 0 < z.im}))
         ∪ ({z : ℂ | 0 < z.re} ∩ {z : ℂ | z.im < 0}))
       ∩ ({z : ℂ | 0 < z.re} ∩ {z : ℂ | z.re < 1}) := by
-    refine ⟨Or.inl (Or.inr ⟨?_, ?_⟩), ⟨?_, ?_⟩⟩ <;> simp <;> norm_num
+    refine ⟨Or.inl (Or.inr ⟨?_, ?_⟩), ⟨?_, ?_⟩⟩ <;> simp ; norm_num
   exact IsPreconnected.union ((1 / 2 : ℝ) + Complex.I) hx₃.1 hx₃.2
     hABC hD.isPreconnected
 

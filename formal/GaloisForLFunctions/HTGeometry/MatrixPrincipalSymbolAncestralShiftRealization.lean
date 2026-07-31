@@ -27,6 +27,7 @@ def ancestralShiftPrincipalSymbol
     (characters : ι → h →ₗ[K] K) (A : h) (n : ℕ) : Matrix ι ι K :=
   Matrix.diagonal fun i ↦ (characters i A) ^ n
 
+omit [Fintype ι] [DecidableEq ι] in
 /-- Iterating a character-weighted shift produces the corresponding character power. -/
 theorem selectedDerivationJet_ancestralShift
     (ancestor : ℕ → ι → L)

@@ -132,7 +132,7 @@ theorem integral_rankTwoSource_mul_symmetricHermitianPairCurrent_eq
       Prod.swap_prod_mk]
     convert rankTwoSource_mul_symmetricHermitianPair_eq
         (A x) (A y) (E x) (E y)
-        (V x) (V y) (D x) (D y) using 1 <;> ring
+        (V x) (V y) (D x) (D y) using 1 ; ring
   rw [hpoint, hsymm]
   have hADVEint :
       (∫ p : ℝ × ℝ, aD p.1 * (starRingEnd ℂ) (eV p.2) ∂mu.prod mu) =

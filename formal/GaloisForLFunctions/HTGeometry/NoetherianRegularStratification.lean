@@ -30,7 +30,7 @@ theorem finiteRegularStratification_of_wellFounded_peel
       · obtain ⟨R, hRne, hRZ, hRreg, hrem⟩ := peel Z.1 Z.2 hZ
         let T : {Z : Set Y // Algebraic Z} := ⟨Z.1 \ R, hrem⟩
         have hTZ : T.1 ⊂ Z.1 := by
-          refine Set.ssubset_iff_exists.mpr ⟨diff_subset, ?_⟩
+          refine Set.ssubset_iff_exists.mpr ⟨sdiff_subset, ?_⟩
           obtain ⟨r, hrR⟩ := hRne
           exact ⟨r, hRZ hrR, fun hrT => hrT.2 hrR⟩
         obtain ⟨tail⟩ := ih T hTZ

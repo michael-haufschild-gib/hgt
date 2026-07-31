@@ -78,9 +78,9 @@ theorem hasDerivAt_thetaCuspCenterMixedDerivativeProduct
     ((hasDerivAt_const t (r / 2)).sub (hasDerivAt_id t))
   have h := (hplus.mul hminus).const_mul w
   unfold thetaCuspCenterMixedDerivativeProduct
-  convert h using 1
-  all_goals dsimp [w]
-  all_goals ring
+  refine h.congr_deriv ?_
+  dsimp [w]
+  ring
 
 /-- Uniform radial-and-center majorant for every derivative product. -/
 theorem abs_thetaCuspCenterMixedDerivativeProduct_le
@@ -252,7 +252,11 @@ theorem hasDerivAt_thetaCuspCenterMixedDerivativeProductIntegral
       (integrable_thetaCuspCenterMixedDerivativeProduct ha0 ha (m + 1) n)
       (integrable_thetaCuspCenterMixedDerivativeProduct ha0 ha m (n + 1))]
     rfl
-  simpa only [thetaCuspCenterMixedDerivativeProductIntegral, F, mu, hsub] using hresult.2
+  have h2 : HasDerivAt
+      (fun s : ℝ => ∫ r : ℝ in Ioi 0, thetaCuspCenterMixedDerivativeProduct m n a r s)
+      (∫ r : ℝ, F' t r ∂mu) t := hresult.2
+  rw [hsub] at h2
+  exact h2
 
 theorem thetaCuspCenterMixedDensity_eq_derivativeProductIntegral (a t : ℝ) :
     thetaCuspCenterMixedDensity a t =
@@ -263,9 +267,7 @@ theorem hasDerivAt_thetaCuspCenterMixedDensity
     {a : ℝ} (ha0 : 0 ≤ a) (ha : a < 1 / 2) (t : ℝ) :
     HasDerivAt (thetaCuspCenterMixedDensity a)
       (thetaCuspCenterMixedDensityFirstJet a t) t := by
-  simpa [thetaCuspCenterMixedDensity_eq_derivativeProductIntegral,
-    thetaCuspCenterMixedDensityFirstJet] using
-    hasDerivAt_thetaCuspCenterMixedDerivativeProductIntegral ha0 ha 0 0 t
+  exact hasDerivAt_thetaCuspCenterMixedDerivativeProductIntegral ha0 ha 0 0 t
 
 theorem hasDerivAt_thetaCuspCenterMixedDensityFirstJet
     {a : ℝ} (ha0 : 0 ≤ a) (ha : a < 1 / 2) (t : ℝ) :
@@ -274,8 +276,7 @@ theorem hasDerivAt_thetaCuspCenterMixedDensityFirstJet
   have h10 := hasDerivAt_thetaCuspCenterMixedDerivativeProductIntegral ha0 ha 1 0 t
   have h01 := hasDerivAt_thetaCuspCenterMixedDerivativeProductIntegral ha0 ha 0 1 t
   unfold thetaCuspCenterMixedDensityFirstJet thetaCuspCenterMixedDensitySecondJet
-  convert h10.sub h01 using 1
-  all_goals ring
+  exact (h10.sub h01).congr_deriv (by ring)
 
 theorem continuous_thetaCuspCenterMixedDensitySecondJet
     {a : ℝ} (ha0 : 0 ≤ a) (ha : a < 1 / 2) :
@@ -298,7 +299,7 @@ theorem thetaCuspCenterMixedDerivativeProductIntegral_tendsto_zero
   have hrad : IntegrableOn (fun r : ℝ => C * r * Real.exp (-c * r)) (Ioi 0) := by
     have h := integrableOn_rpow_mul_exp_neg_mul_rpow
       (p := 1) (s := 1) (b := c) (by norm_num) (by norm_num) hc
-    simpa [Real.rpow_one, mul_assoc] using h.const_mul C
+    simpa [MeasureTheory.IntegrableOn, Real.rpow_one, mul_assoc] using h.const_mul C
   have hK : 0 ≤ K := by
     dsimp [K]
     apply MeasureTheory.integral_nonneg_of_ae
@@ -340,8 +341,7 @@ theorem thetaCuspCenterMixedDerivativeProductIntegral_tendsto_zero
 theorem thetaCuspCenterMixedDensity_tendsto_zero
     {a : ℝ} (ha0 : 0 ≤ a) (ha : a < 1 / 2) :
     Tendsto (thetaCuspCenterMixedDensity a) atTop (𝓝 0) := by
-  simpa [thetaCuspCenterMixedDensity_eq_derivativeProductIntegral] using
-    thetaCuspCenterMixedDerivativeProductIntegral_tendsto_zero ha0 ha 0 0
+  exact thetaCuspCenterMixedDerivativeProductIntegral_tendsto_zero ha0 ha 0 0
 
 theorem thetaCuspCenterMixedDensityFirstJet_tendsto_zero
     {a : ℝ} (ha0 : 0 ≤ a) (ha : a < 1 / 2) :

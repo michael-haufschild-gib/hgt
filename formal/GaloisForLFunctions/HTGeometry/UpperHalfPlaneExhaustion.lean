@@ -91,7 +91,6 @@ theorem upperPatch_subset_interior_succ (m : ℕ) :
         apply one_div_lt_one_div_of_lt <;> [positivity; linarith]
       exact lt_of_lt_of_le h1 hz.1
     · have := hz.2
-      push_cast at this ⊢
       linarith
   refine Filter.mem_of_superset (hopen.mem_nhds hmem) ?_
   intro w hw

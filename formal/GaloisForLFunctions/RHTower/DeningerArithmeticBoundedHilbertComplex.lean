@@ -26,6 +26,7 @@ variable [NormedAddCommGroup E] [InnerProductSpace 𝕜 E] [CompleteSpace E]
 def deningerBoundedHarmonic (Q : E →L[𝕜] E) : Submodule 𝕜 E :=
   Q.ker ⊓ Q.adjoint.ker
 
+omit [CompleteSpace E] in
 /-- Nilpotence puts every boundary in the cocycle subspace. -/
 theorem deningerBoundedHilbertComplex_range_le_ker
     (Q : E →L[𝕜] E) (hQ : Q * Q = 0) :
@@ -34,6 +35,7 @@ theorem deningerBoundedHilbertComplex_range_le_ker
   have hx := DFunLike.congr_fun hQ x
   simpa [ContinuousLinearMap.mul_def] using hx
 
+omit [CompleteSpace E] in
 /-- The closure of the boundary subspace remains inside the cocycle subspace. -/
 theorem deningerBoundedHilbertComplex_closure_range_le_ker
     (Q : E →L[𝕜] E) (hQ : Q * Q = 0) :

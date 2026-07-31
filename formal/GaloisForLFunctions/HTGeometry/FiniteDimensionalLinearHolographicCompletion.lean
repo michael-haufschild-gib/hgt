@@ -49,6 +49,8 @@ theorem coordinateFreeLinearWidthPrincipalSymbolCompletion_pow
     (linearWidthPrincipalSymbolCompletion_pow
       q hq hd (A₀.comp e.symm.toLinearMap) (fun c ↦ F (e.symm c)) hcoord (e v))
 
+omit [Fact (1 < d)] in
+omit [CharZero K] in
 /-- Coordinate transport preserves maximal exterior principal-symbol rank. -/
 theorem coordinateFreeLinearWidthPrincipalSymbolCompletion_endomorphismCommutatorMap_injective
     (q : K) (hq : IsPrimitiveRoot q d)
@@ -120,6 +122,8 @@ theorem finiteDimensionalLinearHolographicCompletion_pow
   coordinateFreeLinearWidthPrincipalSymbolCompletion_pow
     q hq hd finiteDimensionalLawCoordinates A₀ F hA₀ v
 
+omit [Fact (1 < d)] in
+omit [CharZero K] in
 /-- The basis-free completion has injective exterior commutator symbol. -/
 theorem finiteDimensionalLinearHolographicCompletion_endomorphismCommutatorMap_injective
     (q : K) (hq : IsPrimitiveRoot q d)
@@ -131,6 +135,8 @@ theorem finiteDimensionalLinearHolographicCompletion_endomorphismCommutatorMap_i
   coordinateFreeLinearWidthPrincipalSymbolCompletion_endomorphismCommutatorMap_injective
     q hq finiteDimensionalLawCoordinates A₀ m hm
 
+omit [CharZero K] [FiniteDimensional K V] in
+omit [Fact (1 < d)] in
 /-- The exact detector-coordinate count for a finite-dimensional law space. -/
 theorem finiteDimensionalLinearHolographicCompletionCoordinate_card :
     Fintype.card

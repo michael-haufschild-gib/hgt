@@ -48,6 +48,7 @@ private theorem projection_norm_sq_add_complement
   rw [← heq, Submodule.starProjection_orthogonal', ← heq] at hdecomp
   linarith
 
+omit [CompleteSpace H] in
 private theorem norm_apply_le_of_norm_le_one
     {D : H →L[ℂ] H} (hD : ‖D‖ ≤ 1) (x : H) :
     ‖D x‖ ≤ ‖x‖ := by

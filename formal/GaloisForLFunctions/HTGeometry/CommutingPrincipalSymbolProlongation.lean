@@ -23,6 +23,7 @@ universe u v w
 variable {K : Type u} {L : Type v} {ι η : Type w}
   [Field K] [Field L] [Algebra K L] [Fintype ι] [Fintype η]
 
+omit [Fintype ι] in
 /-- **First principal-symbol prolongation law.**  If the boundary derivative of `z` in direction
 `i` is the terminal linear form with coefficient row `a i`, then pairwise commutativity forces the
 displayed cross-derivative identity on every pair of rows. -/

@@ -84,6 +84,7 @@ theorem thetaCuspShellHalfLineTransform_eq_gammaIntegral
     dsimp [f, f', thetaCuspShellGammaMap]
     convert ((Real.hasDerivAt_exp (2 * x)).comp x
       ((hasDerivAt_id x).const_mul 2)).const_mul ((n : ℝ) ^ 2) using 1
+    all_goals try rfl
     all_goals ring
   have hff' : ∀ x ∈ Ioi (0 : ℝ),
       HasDerivWithinAt f (f' x) (Ioi x) x := by
@@ -702,9 +703,10 @@ theorem hasDerivAt_thetaCuspUniversalGammaCore
   have hdamp :
       HasDerivAt (fun u : ℝ => Real.exp (-Real.pi * u))
         (Real.exp (-Real.pi * t) * (-Real.pi)) t := by
-    simpa only [mul_one] using
-      (Real.hasDerivAt_exp (-Real.pi * t)).comp t
-        ((hasDerivAt_id t).const_mul (-Real.pi))
+    have h9 := (Real.hasDerivAt_exp (-Real.pi * t)).comp t
+      ((hasDerivAt_id t).const_mul (-Real.pi))
+    simp only [mul_one] at h9
+    exact h9
   have hreal :
       HasDerivAt
         (fun u : ℝ =>
@@ -712,6 +714,7 @@ theorem hasDerivAt_thetaCuspUniversalGammaCore
         (Real.exp (Real.log t / 4) * Real.exp (-Real.pi * t) *
           (1 / t / 4 - Real.pi)) t := by
     convert hquarter.mul hdamp using 1
+    all_goals try rfl
     all_goals ring
   have hcoord : HasDerivAt (fun u : ℝ => Real.log u / 2) (1 / t / 2) t :=
     hlog.div_const 2
@@ -730,11 +733,14 @@ theorem hasDerivAt_thetaCuspUniversalGammaCore
           (fun u : ℝ => (((Real.log u / 2 : ℝ) : ℂ) * I) * z)
           (((1 / t / 2 : ℝ) : ℂ) * I * z) t :=
       (hcoordC.mul_const I).mul_const z
-    simpa only [Function.comp_apply, mul_comm] using
-      (Complex.hasDerivAt_exp _).comp t hinner
+    have h9 := (Complex.hasDerivAt_exp _).comp t hinner
+    simp only [mul_comm] at h9 ⊢
+    exact h9
   unfold thetaCuspUniversalGammaCore
-  convert hreal.ofReal_comp.mul hphase using 1 <;> push_cast <;>
-    field_simp [ht.ne'] <;> ring
+  convert hreal.ofReal_comp.mul hphase using 1 <;>
+    first
+      | rfl
+      | (push_cast; (try field_simp [ht.ne']); ring)
 
 /-- Pointwise integration-by-parts identity: source polynomial equals a total derivative plus one
 base incomplete-Gamma channel. -/
@@ -771,6 +777,7 @@ theorem hasDerivAt_thetaCuspUniversalGammaPrimitive
     Complex.ofRealCLM.hasDerivAt
   unfold thetaCuspUniversalGammaPrimitive
   convert hid.mul (hasDerivAt_thetaCuspUniversalGammaCore z ht) using 1
+  all_goals try rfl
   field_simp [ht.ne']
   ring
 
@@ -810,8 +817,10 @@ theorem hasDerivAt_thetaCuspUniversalGammaCore_spectral
     (hasDerivAt_spectralTranslationPhase (Real.log t / 2) z).const_mul
       (((Real.exp (Real.log t / 4) *
         Real.exp (-Real.pi * t) : ℝ) : ℂ)) using 1 <;>
-    simp [thetaCuspUniversalGammaCoreSpectralDerivative,
-      thetaCuspUniversalGammaCore] <;> ring
+    first
+      | rfl
+      | ((try simp [thetaCuspUniversalGammaCoreSpectralDerivative,
+            thetaCuspUniversalGammaCore]); ring)
 
 /-- Spectral derivative tail of the base incomplete-Gamma channel. -/
 def thetaCuspUniversalGammaCoreTailSpectralDerivative
@@ -1043,9 +1052,10 @@ theorem norm_thetaCuspUniversalGammaCoreTail_le
 theorem integrableOn_thetaCuspUniversalGammaPrimitive
     {z : ℂ} (hz : |z.im| < 1) :
     IntegrableOn (thetaCuspUniversalGammaPrimitive z) (Ioi 0) := by
-  simpa only [thetaCuspUniversalGammaPrimitive, Nat.cast_one,
-    Real.rpow_one] using
-      (integrableOn_rpow_mul_thetaCuspUniversalGammaCore 1 hz)
+  have h9 := (integrableOn_rpow_mul_thetaCuspUniversalGammaCore 1 hz)
+  simp only [Nat.cast_one,
+    Real.rpow_one] at h9 ⊢
+  exact h9
 
 theorem integrableOn_thetaCuspUniversalGammaPhaseIntegrand
     {z : ℂ} (hz : |z.im| < 1) :
@@ -1184,7 +1194,7 @@ theorem thetaCuspShellGammaPrefactor_mul_primitive_cut
   have hnR : 0 < (n : ℝ) := by exact_mod_cast hn
   have hlogSq :
       Real.log ((n : ℝ) ^ 2) = 2 * Real.log (n : ℝ) := by
-    simpa using Real.log_pow (n : ℝ) 2
+    simp
   have hamp :
       Real.exp (-Real.log (n : ℝ) / 2) *
           Real.exp (Real.log ((n : ℝ) ^ 2) / 4) = 1 := by
@@ -1254,8 +1264,9 @@ theorem hasDerivAt_thetaCuspShellGammaCoreRemainder
   have ht :=
     hasDerivAt_thetaCuspUniversalGammaCoreTail hz hn1
   convert hp.mul ht using 1 <;>
-    simp [thetaCuspShellGammaCoreRemainder,
-      thetaCuspShellGammaCoreRemainderSpectralDerivative] <;> ring
+    first
+      | rfl
+      | ((try simp [thetaCuspShellGammaCoreRemainderSpectralDerivative]); ring)
 
 /-- Uniform far-shell bound: all dependence on horizontal frequency disappears from the norm. -/
 theorem norm_thetaCuspShellGammaCoreRemainder_le
@@ -1365,10 +1376,10 @@ theorem hasDerivAt_thetaCuspShellWardPhaseTransform
         rw [thetaCuspWardGibbsAtom_apply]
         positivity)
       (fun _ hq => by
-        simpa only [thetaCuspWardGibbsAtom] using
+        exact
           integrableOn_exp_mul_thetaCuspPolynomialAtom_of_lt_one (X ^ 2) hn hq)
       (by
-        simpa only [thetaCuspWardGibbsAtom] using
+        exact
           integrableOn_thetaCuspPolynomialAtom_mul_phase_of_neg_one_lt_im (X ^ 2) hn hz₀)
 
 theorem tendsto_thetaCuspWardGibbsAtom_mul_phase_atTop_zero
@@ -1449,12 +1460,13 @@ theorem thetaCuspShellPhaseTransform_eq_gammaBoundary_add_ward
         unfold spectralTranslationPhase
         fun_prop
       exact hphase.mul (Complex.continuous_ofReal.comp hW)
-    simpa [u, v, spectralTranslationPhase] using
-      (hcont.continuousAt :
-        Tendsto (u * v) (𝓝 (0 : ℝ))
-          (𝓝 ((u * v) 0))).mono_left inf_le_left
+    have h9 : Tendsto (u * v) (𝓝 (0 : ℝ)) (𝓝 ((u * v) 0)) := hcont.continuousAt
+    have h0 : (u * v) 0 = (thetaCuspWardGibbsAtom n 0 : ℂ) := by
+      simp [u, v, spectralTranslationPhase]
+    rw [h0] at h9
+    exact h9.mono_left inf_le_left
   have hinfty : Tendsto (u * v) atTop (𝓝 0) := by
-    simpa only [u, v, Pi.mul_apply, mul_comm] using
+    exact
       tendsto_thetaCuspWardGibbsAtom_mul_phase_atTop_zero hn hz
   have hibp := integral_Ioi_mul_deriv_eq_deriv_mul
     (a := (0 : ℝ)) (u := u) (u' := u')
@@ -1509,7 +1521,7 @@ theorem thetaCuspShellPhaseTransform_eq_gammaBoundary_add_ward
           (thetaCuspPolynomialAtom
             (thetaCuspLogDerivativeStep (X ^ 2)) n x : ℂ))
       (Ioi 0) := by
-    simpa only [u, v', Pi.mul_apply] using huv'
+    exact huv'
   have hsecond : IntegrableOn
       (fun x : ℝ =>
         (thetaCuspWardGibbsAtom n x : ℂ) *
@@ -1613,9 +1625,11 @@ theorem hasDerivAt_thetaCuspTiltedWardDensity
       (a * Real.exp (a * x)) x := by
     convert (Real.hasDerivAt_exp (a * x)).comp x
       ((hasDerivAt_id x).const_mul a) using 1
+    all_goals try rfl
     ring
   have hW := hasDerivAt_thetaCuspWardGibbsAtom n x
   convert he.mul hW using 1
+  all_goals try rfl
   rw [thetaCuspWardGibbsAtom_step_eq_score]
   simp only [thetaCuspTiltedWardDensity,
     thetaCuspTiltedWardScore]
@@ -1654,10 +1668,11 @@ theorem hasDerivAt_thetaCuspTiltedWardDensityDerivative
         ((-2 * Real.pi * (n : ℝ) ^ 2) *
           (Real.exp (2 * x) * (2 * 1))) x := by
       simpa only [Function.comp_apply] using hraw
-    convert hraw' using 1 <;> ring
+    convert hraw' using 1 <;> first | rfl | ring
   have hdensity :=
     hasDerivAt_thetaCuspTiltedWardDensity a n x
   convert hscore.mul hdensity using 1
+  all_goals try rfl
   unfold thetaCuspTiltedWardCurvature
   ring
 
@@ -1696,7 +1711,7 @@ theorem hasDerivAt_thetaCuspTiltedWardDensitySecondDerivative
         ((-2 * Real.pi * (n : ℝ) ^ 2) *
           (Real.exp (2 * x) * (2 * 1))) x := by
       simpa only [Function.comp_apply] using hraw
-    convert hraw' using 1 <;> ring
+    convert hraw' using 1 <;> first | rfl | ring
   have htail : HasDerivAt
       (fun y : ℝ =>
         4 * Real.pi * (n : ℝ) ^ 2 * Real.exp (2 * y))
@@ -1713,17 +1728,18 @@ theorem hasDerivAt_thetaCuspTiltedWardDensitySecondDerivative
         ((4 * Real.pi * (n : ℝ) ^ 2) *
           (Real.exp (2 * x) * (2 * 1))) x := by
       simpa only [Function.comp_apply] using hraw
-    convert hraw' using 1 <;> ring
+    convert hraw' using 1 ; first | rfl | ring
   have hcurvature : HasDerivAt
       (thetaCuspTiltedWardCurvature a n)
       (-8 * Real.pi * (n : ℝ) ^ 2 * Real.exp (2 * x) *
           thetaCuspTiltedWardScore a n x -
         8 * Real.pi * (n : ℝ) ^ 2 * Real.exp (2 * x)) x := by
     unfold thetaCuspTiltedWardCurvature
-    convert (hscore.pow 2).sub htail using 1 <;> ring
+    convert (hscore.pow 2).sub htail using 1 <;> first | rfl | ring
   have hdensity :=
     hasDerivAt_thetaCuspTiltedWardDensity a n x
   convert hcurvature.mul hdensity using 1
+  all_goals try rfl
   unfold thetaCuspTiltedWardThirdDerivativeCoefficient
     thetaCuspTiltedWardCurvature
   ring
@@ -2234,9 +2250,11 @@ theorem hasDerivAt_exp_mul_thetaCuspPolynomialAtom
       (a * Real.exp (a * x)) x := by
     convert (Real.hasDerivAt_exp (a * x)).comp x
       ((hasDerivAt_id x).const_mul a) using 1
+    all_goals try rfl
     ring
   have hP := hasDerivAt_thetaCuspPolynomialAtom P n x
   convert he.mul hP using 1
+  all_goals try rfl
   unfold thetaCuspTiltedLogDerivativeStep thetaCuspPolynomialAtom
   simp only [eval_add, eval_mul, eval_C]
   ring
@@ -2333,9 +2351,10 @@ def thetaCuspTiltedWardDensityDeriv (k : ℕ) (a : ℝ) (n : ℕ) (x : ℝ) : �
 theorem hasDerivAt_thetaCuspTiltedWardDensityDeriv (k : ℕ) (a : ℝ) (n : ℕ) (x : ℝ) :
     HasDerivAt (thetaCuspTiltedWardDensityDeriv k a n)
       (thetaCuspTiltedWardDensityDeriv (k + 1) a n x) x := by
-  simpa only [thetaCuspTiltedWardDensityDeriv, Function.iterate_succ_apply'] using
-    hasDerivAt_exp_mul_thetaCuspPolynomialAtom a
-      ((thetaCuspTiltedLogDerivativeStep a)^[k] (X ^ 2)) n x
+  have h9 := hasDerivAt_exp_mul_thetaCuspPolynomialAtom a
+    ((thetaCuspTiltedLogDerivativeStep a)^[k] (X ^ 2)) n x
+  simp only [thetaCuspTiltedWardDensityDeriv, Function.iterate_succ_apply']
+  exact h9
 
 /-- Fourth derivative of the tilted Ward density in the native polynomial-Gaussian coordinate. -/
 def thetaCuspTiltedWardDensityFourthDerivative
@@ -2406,7 +2425,7 @@ theorem hasDerivAt_thetaCuspTiltedWardThirdDerivativeCoefficient
         ((-2 * Real.pi * (n : ℝ) ^ 2) *
           (Real.exp (2 * x) * (2 * 1))) x := by
       simpa only [Function.comp_apply] using hraw
-    convert hraw' using 1 <;> ring
+    convert hraw' using 1 <;> first | rfl | ring
   have hq : HasDerivAt q
       (4 * Real.pi * (n : ℝ) ^ 2 * Real.exp (2 * x)) x := by
     dsimp only [q]
@@ -2422,11 +2441,12 @@ theorem hasDerivAt_thetaCuspTiltedWardThirdDerivativeCoefficient
         ((2 * Real.pi * (n : ℝ) ^ 2) *
           (Real.exp (2 * x) * (2 * 1))) x := by
       simpa only [Function.comp_apply] using hraw
-    convert hraw' using 1 <;> ring
+    convert hraw' using 1 ; first | rfl | ring
   have hraw :=
     (hscore.pow 3).sub ((hq.mul hscore).const_mul 6)
       |>.sub (hq.const_mul 4)
   convert hraw using 1
+  all_goals try rfl
   · funext y
     unfold thetaCuspTiltedWardThirdDerivativeCoefficient
     dsimp only [q]
@@ -2469,8 +2489,7 @@ theorem hasDerivAt_thetaCuspTiltedWardDensityFourthDerivative
     HasDerivAt
       (thetaCuspTiltedWardDensityFourthDerivative a n)
       (thetaCuspTiltedWardDensityFifthDerivative a n x) x := by
-  simpa only [thetaCuspTiltedWardDensityFourthDerivative_eq_deriv,
-    thetaCuspTiltedWardDensityFifthDerivative_eq_deriv] using
+  exact
     hasDerivAt_thetaCuspTiltedWardDensityDeriv 4 a n x
 
 theorem thetaCuspTiltedWardDensityFourthDerivative_eq_coefficient
@@ -2826,6 +2845,7 @@ theorem hasDerivAt_thetaCuspGroundFifthShiftPolynomial_comp
       (hu.const_mul (-16 + 200 * c - 60 * c ^ 2))).add_const
       (80 * c ^ 2)).sub_const (16 * c)
   convert h using 1
+  all_goals try rfl
   unfold thetaCuspGroundFifthShiftPolynomialDerivative
   ring
 
@@ -2871,6 +2891,7 @@ theorem thetaCuspTiltedWardDensityFifthDerivative_ground_eq_shiftPolynomial
       |>.const_mul (2 * Real.pi))
       |>.sub_const c
     convert hraw using 1
+    all_goals try rfl
     dsimp only [r, rfun]
     ring
   have hfourthShift :
@@ -2885,6 +2906,7 @@ theorem thetaCuspTiltedWardDensityFifthDerivative_ground_eq_shiftPolynomial
         (hrfun.const_mul (40 * c - 8))).add_const
         (12 * c ^ 2)).sub_const (8 * c)
     convert h using 1
+    all_goals try rfl
     unfold thetaCuspGroundFourthShiftPolynomialDerivative
     ring
   have hdensity :=
@@ -2898,6 +2920,7 @@ theorem thetaCuspTiltedWardDensityFifthDerivative_ground_eq_shiftPolynomial
         (thetaCuspGroundFifthShiftPolynomial c r *
           thetaCuspTiltedWardDensity a 1 x) x := by
     convert hrightRaw using 1
+    all_goals try rfl
     have hscore :
         thetaCuspTiltedWardScore a 1 x = -r := by
       unfold thetaCuspTiltedWardScore
@@ -3199,6 +3222,7 @@ theorem hasDerivAt_thetaCuspGroundThirdShiftPolynomial_comp
     (((hu.pow 3).neg.add ((hu.pow 2).const_mul 6)).add
       (hu.const_mul (6 * c - 4))).sub_const (4 * c)
   convert h using 1
+  all_goals try rfl
   unfold thetaCuspGroundThirdShiftPolynomialDerivative
   ring
 
@@ -3213,6 +3237,7 @@ theorem hasDerivAt_thetaCuspGroundFourthShiftPolynomial_comp
       ((hu.pow 2).const_mul (28 - 12 * c))).add
       (hu.const_mul (40 * c - 8))).add_const (12 * c ^ 2)).sub_const (8 * c)
   convert h using 1
+  all_goals try rfl
   unfold thetaCuspGroundFourthShiftPolynomialDerivative
   ring
 
@@ -3245,6 +3270,7 @@ private theorem thetaCuspGroundCoordinate_data {a x : ℝ} (ha0 : 0 < a) (ha : a
     |>.const_mul (2 * Real.pi))
     |>.sub_const (a + 5 / 2)
   convert hraw using 1
+  all_goals try rfl
   ring
 
 
@@ -3257,6 +3283,7 @@ private theorem hasDerivAt_two_add_const_mul_div
       (2 + k * (dp * q x - p x * dq) / q x ^ 2) x := by
   have h := ((hasDerivAt_id x).const_mul 2).add ((hp.div hq hq0).const_mul k)
   convert h using 1
+  all_goals try rfl
   ring
 
 
@@ -3330,8 +3357,7 @@ theorem deriv_thetaCuspGroundFourthOrderRootPhase_pos
     have h := hasDerivAt_two_add_const_mul_div (k := 8) hthird hfourthDeriv hfourth
     convert h using 1
     funext y
-    simp only [thetaCuspGroundFourthOrderRootPhase,
-      Pi.add_apply, Pi.div_apply, id_eq]
+    simp only [thetaCuspGroundFourthOrderRootPhase]
     ring
   rw [hphase'.deriv]
   have hthirdValue :
@@ -3400,6 +3426,7 @@ theorem deriv_thetaCuspGroundFifthOrderRootPhase_pos
       (2 * (r + c) *
         thetaCuspGroundFifthShiftPolynomialDerivative c r) x := by
     convert hfifthShift using 1
+    all_goals try rfl
   have hphase' : HasDerivAt
       (thetaCuspGroundFifthOrderRootPhase a)
       (2 +
@@ -3414,8 +3441,7 @@ theorem deriv_thetaCuspGroundFifthOrderRootPhase_pos
     have h := hasDerivAt_two_add_const_mul_div (k := 10) hfourthDeriv hfifthDeriv hfifth
     convert h using 1
     funext y
-    simp only [thetaCuspGroundFifthOrderRootPhase,
-      Pi.add_apply, Pi.div_apply, id_eq]
+    simp only [thetaCuspGroundFifthOrderRootPhase]
     ring
   rw [hphase'.deriv]
   have hfourthValue :
@@ -3589,7 +3615,7 @@ theorem thetaCuspGroundFourthShiftPolynomial_strictAntiOn_to_critical
   · intro u hu
     rw [interior_Icc] at hu
     have hlinear : HasDerivAt (fun y : ℝ => 3 + y) 1 u := by
-      convert (hasDerivAt_const u (3 : ℝ)).add (hasDerivAt_id u) using 1 <;> ring
+      convert (hasDerivAt_const u (3 : ℝ)).add (hasDerivAt_id u) using 1 <;> first | rfl | ring
     have hderiv :=
       hasDerivAt_thetaCuspGroundFourthShiftPolynomial_comp
         (c := c) hlinear
@@ -3616,7 +3642,7 @@ theorem thetaCuspGroundFourthShiftPolynomial_strictMonoOn_from_critical
   · intro u hu
     rw [interior_Ici] at hu
     have hlinear : HasDerivAt (fun y : ℝ => 3 + y) 1 u := by
-      convert (hasDerivAt_const u (3 : ℝ)).add (hasDerivAt_id u) using 1 <;> ring
+      convert (hasDerivAt_const u (3 : ℝ)).add (hasDerivAt_id u) using 1 <;> first | rfl | ring
     have hderiv :=
       hasDerivAt_thetaCuspGroundFourthShiftPolynomial_comp
         (c := c) hlinear
@@ -4061,7 +4087,7 @@ theorem continuous_unique_zero_signs
     {F : ℝ → ℝ} {left zero right : ℝ}
     (hcont : ContinuousOn F (Icc left right))
     (hzeroMem : zero ∈ Ioo left right)
-    (hleft : 0 < F left) (hzero : F zero = 0) (hright : F right < 0)
+    (hleft : 0 < F left) (_hzero : F zero = 0) (hright : F right < 0)
     (hunique : ∀ {x : ℝ}, x ∈ Ioo left right → F x = 0 → x = zero) :
     (∀ {x : ℝ}, left ≤ x → x < zero → 0 < F x) ∧
     (∀ {x : ℝ}, zero < x → x ≤ right → F x < 0) := by
@@ -4183,7 +4209,6 @@ theorem exists_two_thetaCuspGroundFourthOrderRemainderCoefficient_zeros_and_sign
         intro x hx hxZero
         exact hsigma₂Unique x
           ⟨hx, by
-            dsimp only at hxZero
             have : F x = 0 := by linarith
             simpa only [F] using this⟩)
   have hleftSign :
@@ -4251,6 +4276,7 @@ theorem hasDerivAt_thetaCuspGroundFourthOrderPrimitive
   have hraw :=
     (hf₂.const_mul 3).add ((hasDerivAt_id x).mul hf₃)
   convert hraw using 1
+  all_goals try rfl
   rw [← thetaCuspGroundFourthOrderRemainder_eq_coefficient]
   dsimp only [f₃, f₄]
   simp only [id_eq]
@@ -4294,7 +4320,7 @@ under a subcritical tilt. -/
 theorem tendsto_thetaCuspTiltedWardDensityDeriv_atTop_zero (k : ℕ) {a : ℝ} (ha : a < 1)
     {n : ℕ} (hn : 0 < n) :
     Tendsto (thetaCuspTiltedWardDensityDeriv k a n) atTop (𝓝 0) := by
-  simpa only [thetaCuspTiltedWardDensityDeriv] using
+  exact
     exp_mul_thetaCuspPolynomialAtom_tendsto_atTop_zero_of_lt_one
       ((thetaCuspTiltedLogDerivativeStep a)^[k] (X ^ 2)) hn ha
 
@@ -4303,7 +4329,7 @@ on the half line as soon as the tilt is subcritical. -/
 theorem integrableOn_thetaCuspTiltedWardDensityDeriv (k : ℕ) {a : ℝ} (ha : a < 1)
     {n : ℕ} (hn : 0 < n) :
     IntegrableOn (thetaCuspTiltedWardDensityDeriv k a n) (Ioi 0) := by
-  simpa only [thetaCuspTiltedWardDensityDeriv] using
+  exact
     integrableOn_exp_mul_thetaCuspPolynomialAtom_of_lt_one
       ((thetaCuspTiltedLogDerivativeStep a)^[k] (X ^ 2)) hn ha
 
@@ -4312,7 +4338,7 @@ theorem integrableOn_thetaCuspTiltedWardDensityFourthDerivative
     IntegrableOn
       (thetaCuspTiltedWardDensityFourthDerivative a n)
       (Ioi 0) := by
-  simpa only [thetaCuspTiltedWardDensityFourthDerivative_eq_deriv] using
+  exact
     integrableOn_thetaCuspTiltedWardDensityDeriv 4 ha hn
 
 theorem integrableOn_thetaCuspTiltedWardDensityFifthDerivative
@@ -4320,7 +4346,7 @@ theorem integrableOn_thetaCuspTiltedWardDensityFifthDerivative
     IntegrableOn
       (thetaCuspTiltedWardDensityFifthDerivative a n)
       (Ioi 0) := by
-  simpa only [thetaCuspTiltedWardDensityFifthDerivative_eq_deriv] using
+  exact
     integrableOn_thetaCuspTiltedWardDensityDeriv 5 ha hn
 
 theorem tendsto_thetaCuspTiltedWardDensityDerivative_atTop_zero
@@ -4471,8 +4497,7 @@ theorem tendsto_id_mul_exp_mul_thetaCuspPolynomialAtom_atTop_zero_of_lt_one
 theorem integrableOn_thetaCuspTiltedWardDensity
     {a : ℝ} (ha : a < 1) {n : ℕ} (hn : 0 < n) :
     IntegrableOn (thetaCuspTiltedWardDensity a n) (Ioi 0) := by
-  simpa only [thetaCuspTiltedWardDensity,
-    thetaCuspWardGibbsAtom] using
+  exact
     integrableOn_exp_mul_thetaCuspPolynomialAtom_of_lt_one
       (X ^ 2) hn ha
 
@@ -4491,7 +4516,7 @@ theorem integrableOn_thetaCuspTiltedWardDensityDerivative
   filter_upwards with x
   simp only [Pi.add_apply]
   rw [thetaCuspWardGibbsAtom_step_eq_score]
-  simp only [Pi.add_apply, thetaCuspTiltedWardDensity,
+  simp only [thetaCuspTiltedWardDensity,
     thetaCuspTiltedWardScore, thetaCuspWardGibbsAtom]
   ring
 
@@ -4499,8 +4524,7 @@ theorem tendsto_thetaCuspTiltedWardDensity_atTop_zero
     {a : ℝ} (ha : a < 1) {n : ℕ} (hn : 0 < n) :
     Tendsto (thetaCuspTiltedWardDensity a n)
       atTop (𝓝 0) := by
-  simpa only [thetaCuspTiltedWardDensity,
-    thetaCuspWardGibbsAtom] using
+  exact
     exp_mul_thetaCuspPolynomialAtom_tendsto_atTop_zero_of_lt_one
       (X ^ 2) hn ha
 
@@ -4774,7 +4798,7 @@ theorem thetaCuspTiltedWardDensity_quarter_fifth_lower_bound :
     have he1 := Real.exp_one_lt_d9
     have hsmall : (1 + 1 / 250 : ℝ) < Real.exp (1 / 250) := by
       convert Real.add_one_lt_exp
-        (by norm_num : (1 / 250 : ℝ) ≠ 0) using 1 <;> ring
+        (by norm_num : (1 / 250 : ℝ) ≠ 0) using 1 ; ring
     have hprod :
         (369 / 1000 : ℝ) * Real.exp 1 < Real.exp (1 / 250) := by
       have h :
@@ -4882,10 +4906,10 @@ theorem hasDerivAt_thetaCuspTiltedWardDerivativeRotationCoefficient
         ((-2 * Real.pi * (n : ℝ) ^ 2) *
           (Real.exp (2 * x) * (2 * 1))) x := by
       simpa only [Function.comp_apply] using hraw
-    convert hraw' using 1 <;> ring
+    convert hraw' using 1 <;> first | rfl | ring
   unfold thetaCuspTiltedWardDerivativeRotationCoefficient
   convert ((hasDerivAt_id x).mul hscore.neg).sub_const 1
-    using 1 <;> simp only [id_eq, Pi.neg_apply] <;> ring
+    using 1 <;> first | rfl | (simp only [id_eq, Pi.neg_apply] ; ring)
 
 theorem thetaCuspTiltedWardDerivativeRotationCoefficient_deriv_pos
     {a : ℝ} (ha : a < 1 / 2)
@@ -5058,7 +5082,7 @@ theorem hasDerivAt_thirdOrderSineKernel
     ((hasDerivAt_id u).mul
       ((hasDerivAt_const u 2).add (Real.hasDerivAt_cos u))).sub
         ((Real.hasDerivAt_sin u).const_mul 3) using 1 <;>
-    simp only [id_eq, Pi.add_apply] <;> ring
+    first | rfl | (simp only [id_eq, Pi.add_apply]; ring)
 
 theorem hasDerivAt_thirdOrderSineKernelFirstDerivative
     (u : ℝ) :
@@ -5070,7 +5094,7 @@ theorem hasDerivAt_thirdOrderSineKernelFirstDerivative
     ((hasDerivAt_const u 2).sub
       ((Real.hasDerivAt_cos u).const_mul 2)).sub
         ((hasDerivAt_id u).mul (Real.hasDerivAt_sin u)) using 1 <;>
-    simp only [id_eq] <;> ring
+    first | rfl | (simp only [id_eq]; ring)
 
 theorem hasDerivAt_thirdOrderSineKernelSecondDerivative
     (u : ℝ) :
@@ -5080,7 +5104,7 @@ theorem hasDerivAt_thirdOrderSineKernelSecondDerivative
   convert
     (Real.hasDerivAt_sin u).sub
       ((hasDerivAt_id u).mul (Real.hasDerivAt_cos u)) using 1 <;>
-    simp only [id_eq] <;> ring
+    first | rfl | (simp only [id_eq]; ring)
 
 /-- **Universal strict kernel law.** The third-order sine kernel is positive at every positive
 argument.  Below `3` this follows from three successive derivative sign propagations; above `3`
@@ -5208,21 +5232,21 @@ theorem integral_id_mul_thetaCuspTiltedWardDensity_mul_sin_thirdOrder_identity
     convert
       (hasDerivAt_thirdOrderSineKernel (b * x)).comp x
         ((hasDerivAt_id x).const_mul b) using 1 <;>
-      (try simp only [Function.comp_apply, id_eq]) <;> ring
+      first | rfl | (ring)
   have hk₁ (x : ℝ) : HasDerivAt k₁ (k₂ x) x := by
     dsimp only [k₁, k₂]
     convert
       ((hasDerivAt_thirdOrderSineKernelFirstDerivative
         (b * x)).comp x
           ((hasDerivAt_id x).const_mul b)).const_mul b using 1 <;>
-      (try simp only [Function.comp_apply, id_eq]) <;> ring
+      first | rfl | (ring)
   have hk₂ (x : ℝ) : HasDerivAt k₂ (k₃ x) x := by
     dsimp only [k₂, k₃]
     convert
       ((hasDerivAt_thirdOrderSineKernelSecondDerivative
         (b * x)).comp x
           ((hasDerivAt_id x).const_mul b)).const_mul (b ^ 2) using 1 <;>
-      (try simp only [Function.comp_apply, id_eq]) <;> ring
+      first | rfl | (ring)
   have hsinInt :
       ∀ (g : ℝ → ℝ), IntegrableOn g (Ioi 0) →
         IntegrableOn
@@ -5288,7 +5312,7 @@ theorem integral_id_mul_thetaCuspTiltedWardDensity_mul_sin_thirdOrder_identity
     filter_upwards with x
     dsimp only [f₁, k₂, thirdOrderSineKernelSecondDerivative,
       Pi.mul_apply]
-    simp only [Pi.sub_apply, Pi.add_apply, Pi.mul_apply]
+    simp only [Pi.sub_apply]
     ring
   have hf₂k₁ : IntegrableOn (f₂ * k₁) (Ioi 0) := by
     have hcos := hcosInt f₂ hf₂Int
@@ -5300,7 +5324,7 @@ theorem integral_id_mul_thetaCuspTiltedWardDensity_mul_sin_thirdOrder_identity
     filter_upwards with x
     dsimp only [f₂, k₁, thirdOrderSineKernelFirstDerivative,
       Pi.mul_apply]
-    simp only [Pi.sub_apply, Pi.add_apply, Pi.mul_apply]
+    simp only [Pi.sub_apply]
     ring
   have hf₃k₀ : IntegrableOn (f₃ * k₀) (Ioi 0) := by
     have hxbase := hxf₃Int.const_mul 2
@@ -5311,7 +5335,7 @@ theorem integral_id_mul_thetaCuspTiltedWardDensity_mul_sin_thirdOrder_identity
     apply h.congr
     filter_upwards with x
     dsimp only [f₃, k₀, thirdOrderSineKernel, Pi.mul_apply]
-    simp only [Pi.sub_apply, Pi.add_apply, Pi.mul_apply]
+    simp only [Pi.sub_apply, Pi.add_apply]
     ring
   have hboundedMulZero :
       ∀ (φ g : ℝ → ℝ),
@@ -5392,25 +5416,31 @@ theorem integral_id_mul_thetaCuspTiltedWardDensity_mul_sin_thirdOrder_identity
       exact
         (continuous_iff_continuousAt.mpr fun x => (hf₀ x).continuousAt).mul
           (continuous_iff_continuousAt.mpr fun x => (hk₂ x).continuousAt)
-    simpa [f₀, k₂, thirdOrderSineKernelSecondDerivative] using
-      (hcont.continuousAt :
-        Tendsto (f₀ * k₂) (𝓝 (0 : ℝ)) _).mono_left inf_le_left
+    have h9 : Tendsto (f₀ * k₂) (𝓝 (0 : ℝ)) (𝓝 ((f₀ * k₂) 0)) := hcont.continuousAt
+    have h0 : (f₀ * k₂) 0 = 0 := by
+      simp [f₀, k₂, thirdOrderSineKernelSecondDerivative]
+    rw [h0] at h9
+    exact h9.mono_left inf_le_left
   have hf₁k₁Right : Tendsto (f₁ * k₁) (𝓝[>] 0) (𝓝 0) := by
     have hcont : Continuous (f₁ * k₁) := by
       exact
         (continuous_iff_continuousAt.mpr fun x => (hf₁ x).continuousAt).mul
           (continuous_iff_continuousAt.mpr fun x => (hk₁ x).continuousAt)
-    simpa [f₁, k₁, thirdOrderSineKernelFirstDerivative] using
-      (hcont.continuousAt :
-        Tendsto (f₁ * k₁) (𝓝 (0 : ℝ)) _).mono_left inf_le_left
+    have h9 : Tendsto (f₁ * k₁) (𝓝 (0 : ℝ)) (𝓝 ((f₁ * k₁) 0)) := hcont.continuousAt
+    have h0 : (f₁ * k₁) 0 = 0 := by
+      simp [f₁, k₁, thirdOrderSineKernelFirstDerivative]
+    rw [h0] at h9
+    exact h9.mono_left inf_le_left
   have hf₂k₀Right : Tendsto (f₂ * k₀) (𝓝[>] 0) (𝓝 0) := by
     have hcont : Continuous (f₂ * k₀) := by
       exact
         (continuous_iff_continuousAt.mpr fun x => (hf₂ x).continuousAt).mul
           (continuous_iff_continuousAt.mpr fun x => (hk₀ x).continuousAt)
-    simpa [f₂, k₀, thirdOrderSineKernel] using
-      (hcont.continuousAt :
-        Tendsto (f₂ * k₀) (𝓝 (0 : ℝ)) _).mono_left inf_le_left
+    have h9 : Tendsto (f₂ * k₀) (𝓝 (0 : ℝ)) (𝓝 ((f₂ * k₀) 0)) := hcont.continuousAt
+    have h0 : (f₂ * k₀) 0 = 0 := by
+      simp [f₂, k₀, thirdOrderSineKernel]
+    rw [h0] at h9
+    exact h9.mono_left inf_le_left
   have hibp₀ := integral_Ioi_mul_deriv_eq_deriv_mul
     (a := (0 : ℝ)) (u := f₀) (u' := f₁)
     (v := k₂) (v' := k₃)
@@ -5499,7 +5529,7 @@ theorem integrableOn_thetaCuspTiltedWardThirdDerivative_mul_thirdOrderSineKernel
       (hsin.const_mul 3)
   apply hInt.congr
   filter_upwards with x
-  simp only [Pi.sub_apply, Pi.add_apply, Pi.mul_apply]
+  simp only [Pi.sub_apply, Pi.add_apply]
   dsimp only [f₃, thirdOrderSineKernel]
   ring
 
@@ -5554,7 +5584,7 @@ theorem integral_id_mul_thetaCuspTiltedWardDensity_mul_sin_pos_of_two_le
     apply hInt.congr
     filter_upwards with x
     dsimp only [f₃, k₀, thirdOrderSineKernel, Pi.mul_apply]
-    simp only [Pi.sub_apply, Pi.add_apply, Pi.mul_apply]
+    simp only [Pi.sub_apply, Pi.add_apply]
     ring
   have hhInt : IntegrableOn h (Ioi 0) := by
     exact hf₃k₀.neg.congr
@@ -6021,8 +6051,9 @@ theorem integral_Ioi_id_mul_thetaCuspTiltedWardDensityThirdDerivative_eq
     simpa only [f₂, f₃] using
       hasDerivAt_thetaCuspTiltedWardDensitySecondDerivative a n x
   have hF (x : ℝ) : HasDerivAt F (F' x) x := by
-    simpa only [F, F', one_mul, id_eq, mul_comm] using
-      (hasDerivAt_id x).mul (hf₂ x)
+    have h9 := (hasDerivAt_id x).mul (hf₂ x)
+    simp only [F, F', one_mul, id_eq] at h9 ⊢
+    exact h9
   have hf₂Int : IntegrableOn f₂ (Ioi tau) := by
     exact
       (show IntegrableOn f₂ (Ioi 0) by
@@ -6057,7 +6088,7 @@ theorem integral_Ioi_id_mul_thetaCuspTiltedWardDensityThirdDerivative_eq
           ∫ x : ℝ in Ioi tau, x * f₃ x := by
     exact integral_add hf₂Int hxf₃Int
   rw [hsplit] at hfundamental
-  simp only [F, F', f₁, f₂, f₃, zero_sub] at hfundamental hf₂Value ⊢
+  simp only [F, f₂, f₃, zero_sub] at hfundamental hf₂Value ⊢
   linarith
 
 /-- Exact compact mass before a positive cut point. -/
@@ -6331,9 +6362,10 @@ theorem tendsto_thetaCuspGroundFourthOrderPrimitive_atTop_zero
             (thetaCuspTiltedWardCurvature a 1 x *
               thetaCuspTiltedWardDensity a 1 x))
         atTop (𝓝 0) := by
-    convert tendsto_const_nhds.mul hsecond using 1 <;> ring
-  simpa only [thetaCuspGroundFourthOrderPrimitive, zero_add] using
-    hscaled.add hthird
+    convert tendsto_const_nhds.mul hsecond using 1 ; first | rfl | ring
+  have h9 := hscaled.add hthird
+  rw [add_zero] at h9
+  exact h9
 
 theorem integral_Ioi_thetaCuspGroundFourthOrderRemainder_eq
     {a cut : ℝ} (ha : a < 1) (hcut : 0 ≤ cut) :
@@ -6704,6 +6736,7 @@ private theorem integral_mul_sin_rung {b : ℝ} {u u' : ℝ → ℝ}
       simpa using (hasDerivAt_id x).const_mul b
     have h := ((Real.hasDerivAt_cos (b * x)).comp x hlin).neg
     convert h using 1
+    all_goals try rfl
     dsimp only [U']
     ring
   have hucont : Continuous u :=
@@ -6767,6 +6800,7 @@ private theorem integral_mul_cos_rung {b : ℝ} {u u' : ℝ → ℝ}
       simpa using (hasDerivAt_id x).const_mul b
     have h := (Real.hasDerivAt_sin (b * x)).comp x hlin
     convert h using 1
+    all_goals try rfl
     dsimp only [U']
     ring
   have hucont : Continuous u :=
@@ -6846,8 +6880,9 @@ theorem integral_id_mul_thetaCuspTiltedWardDensity_mul_sin_fourthOrderBoundary_i
     simpa only [f₃, f₄] using
       hasDerivAt_thetaCuspTiltedWardDensityThirdDerivative a n x
   have hu (x : ℝ) : HasDerivAt u (u' x) x := by
-    simpa only [u, u', one_mul, id_eq, mul_comm] using
-      (hasDerivAt_id x).mul (hf₃ x)
+    have h9 := (hasDerivAt_id x).mul (hf₃ x)
+    simp only [u, u', one_mul, id_eq] at h9 ⊢
+    exact h9
   have hf₃Int : IntegrableOn f₃ (Ioi 0) := by
     simpa only [f₃] using
       integrableOn_thetaCuspTiltedWardDensityThirdDerivative ha hn
@@ -7043,12 +7078,12 @@ theorem integral_id_mul_thetaCuspTiltedWardDensity_mul_sin_fifthOrderBoundary_id
     have hraw :=
       (hf₃ x).const_mul 4 |>.add ((hasDerivAt_id x).mul (hf₄ x))
     convert hraw using 1 <;>
-      simp only [u, u', one_mul, id_eq] <;> ring
+      first | rfl | (simp only [u', one_mul, id_eq]; ring)
   have hv (x : ℝ) : HasDerivAt v (v' x) x := by
     dsimp only [v, v']
     convert (Real.hasDerivAt_cos (b * x)).comp x
       ((hasDerivAt_id x).const_mul b) using 1 <;>
-      (try simp only [Function.comp_apply, id_eq]) <;> ring
+      first | rfl | (ring)
   have hf₃Int : IntegrableOn f₃ (Ioi 0) := by
     simpa only [f₃] using
       integrableOn_thetaCuspTiltedWardDensityThirdDerivative ha hn
@@ -7559,6 +7594,7 @@ private theorem integral_mul_sin_eq_neg_integral_deriv_mul_one_sub_cos
     dsimp only [u, u']
     convert (Real.hasDerivAt_cos (b * x)).comp x
       ((hasDerivAt_id x).const_mul b) |>.neg.const_add 1 using 1
+    all_goals try rfl
     ring
   have huv' : IntegrableOn (u * v') (Ioi 0) := by
     have h := integrableOn_mul_one_sub_cos (b := b) hv'Int
@@ -7592,9 +7628,11 @@ private theorem integral_mul_sin_eq_neg_integral_deriv_mul_one_sub_cos
       exact
         (continuous_const.sub (Real.continuous_cos.comp
           (continuous_const.mul continuous_id))).mul hvcont
-    simpa [u] using
-      (hcont.continuousAt :
-        Tendsto (u * v) (𝓝 (0 : ℝ)) _).mono_left inf_le_left
+    have h9 : Tendsto (u * v) (𝓝 (0 : ℝ)) (𝓝 ((u * v) 0)) := hcont.continuousAt
+    have h0 : (u * v) 0 = 0 := by
+      simp [u]
+    rw [h0] at h9
+    exact h9.mono_left inf_le_left
   have hinfty : Tendsto (u * v) atTop (𝓝 0) := by
     have hcos0 :
         Tendsto (fun x => Real.cos (b * x) * v x)
@@ -7650,8 +7688,8 @@ theorem integral_thetaCuspTiltedWardDerivativeRotationDensity_mul_one_sub_cos
     intro x
     convert (hasDerivAt_id x).mul
       (hasDerivAt_thetaCuspTiltedWardDensity a n x) using 1
-    simp only [id_eq]
-    ring
+    all_goals try rfl
+    all_goals ((try simp only [id_eq]); ring)
   have hkey := integral_mul_sin_eq_neg_integral_deriv_mul_one_sub_cos (b := b) hv
     (integrableOn_id_mul_thetaCuspTiltedWardDensity ha hn)
     ((integrableOn_thetaCuspTiltedWardDensity ha hn).add
@@ -7955,11 +7993,13 @@ theorem integral_thetaCuspTiltedWardDensity_mul_cos_pos_of_two_le
     dsimp only [s, s']
     convert (Real.hasDerivAt_sin (b * x)).comp x
       ((hasDerivAt_id x).const_mul b) using 1
+    all_goals try rfl
     ring
   have hu (x : ℝ) : HasDerivAt u (u' x) x := by
     dsimp only [u, u']
     convert (Real.hasDerivAt_cos (b * x)).comp x
       ((hasDerivAt_id x).const_mul b) |>.neg.const_add 1 using 1
+    all_goals try rfl
     ring
   have hfInt : IntegrableOn f (Ioi 0) := by
     simpa only [f] using
@@ -8008,9 +8048,11 @@ theorem integral_thetaCuspTiltedWardDensity_mul_cos_pos_of_two_le
       exact
         (Real.continuous_sin.comp
           (continuous_const.mul continuous_id)).mul hfcont
-    simpa [s, f] using
-      (hcont.continuousAt :
-        Tendsto (s * f) (𝓝 (0 : ℝ)) _).mono_left inf_le_left
+    have h9 : Tendsto (s * f) (𝓝 (0 : ℝ)) (𝓝 ((s * f) 0)) := hcont.continuousAt
+    have h0 : (s * f) 0 = 0 := by
+      simp [s, f]
+    rw [h0] at h9
+    exact h9.mono_left inf_le_left
   have hsf_atTop : Tendsto (s * f) atTop (𝓝 0) := by
     have hf0 : Tendsto f atTop (𝓝 0) := by
       simpa only [f] using
@@ -8104,9 +8146,11 @@ theorem integral_thetaCuspTiltedWardDensity_mul_cos_pos_of_two_le
       exact
         (continuous_const.sub (Real.continuous_cos.comp
           (continuous_const.mul continuous_id))).mul hf'cont
-    simpa [u, f'] using
-      (hcont.continuousAt :
-        Tendsto (u * f') (𝓝 (0 : ℝ)) _).mono_left inf_le_left
+    have h9 : Tendsto (u * f') (𝓝 (0 : ℝ)) (𝓝 ((u * f') 0)) := hcont.continuousAt
+    have h0 : (u * f') 0 = 0 := by
+      simp [u]
+    rw [h0] at h9
+    exact h9.mono_left inf_le_left
   have huf'_atTop : Tendsto (u * f') atTop (𝓝 0) := by
     have hf'0 : Tendsto f' atTop (𝓝 0) := by
       simpa only [f'] using
@@ -8301,7 +8345,7 @@ theorem thetaCuspWard_phase_im_pointwise
         ring
   rw [hexp, Complex.exp_im]
   simp only [add_re, ofReal_re, mul_re, mul_im,
-    ofReal_im, I_re, I_im, mul_zero, zero_mul,
+    ofReal_im, I_re, I_im, mul_zero,
     sub_zero, mul_one, add_im, zero_add,
     thetaCuspTiltedWardDensity]
   ring
@@ -8331,7 +8375,7 @@ theorem thetaCuspWard_phase_re_pointwise
         ring
   rw [hexp, Complex.exp_re]
   simp only [add_re, ofReal_re, mul_re, mul_im,
-    ofReal_im, I_re, I_im, mul_zero, zero_mul,
+    ofReal_im, I_re, I_im, mul_zero,
     sub_zero, mul_one, add_im, zero_add,
     thetaCuspTiltedWardDensity]
   ring
@@ -8840,7 +8884,7 @@ theorem thetaCuspShellGammaCoreRemainder_reflected_re_pos_of_two_le
   have hz : |z.im| < 1 := by
     dsimp only [z]
     simp only [sub_im, ofReal_im, mul_im, ofReal_re,
-      I_re, I_im, zero_sub, zero_mul, mul_one, neg_neg]
+      I_re, I_im, zero_sub, zero_mul, mul_one]
     rw [abs_lt]
     constructor <;> linarith
   have hcoeff : I * z - 1 / 2 ≠ 0 := by
@@ -8867,7 +8911,7 @@ theorem thetaCuspShellGammaCoreRemainder_reflected_re_pos_of_two_le
     exact hcos
   dsimp only [z]
   norm_num [Complex.mul_re]
-  convert hW using 1 <;> push_cast <;> ring
+  convert hW using 1 <;> first | rfl | (push_cast ; ring)
 
 /-- The reflected higher-shell remainder lies in the lower half-plane. -/
 theorem thetaCuspShellGammaCoreRemainder_reflected_im_neg
@@ -8885,7 +8929,7 @@ theorem thetaCuspShellGammaCoreRemainder_reflected_im_neg
   have hz : |z.im| < 1 := by
     dsimp only [z]
     simp only [sub_im, ofReal_im, mul_im, ofReal_re,
-      I_re, I_im, zero_sub, zero_mul, mul_one, neg_neg]
+      I_re, I_im, zero_sub, zero_mul, mul_one]
     rw [abs_lt]
     constructor <;> linarith
   have hcoeff : I * z - 1 / 2 ≠ 0 := by
@@ -8924,7 +8968,7 @@ theorem thetaCuspShellGammaCoreRemainder_reflected_im_neg
   have hW' :
       (thetaCuspShellWardPhaseTransform
         (-(b : ℂ) + (a : ℂ) * I) n).im < 0 := by
-    convert hW using 1 <;> push_cast <;> ring
+    convert hW using 1 ; push_cast ; ring
   norm_num [Complex.mul_im]
   nlinarith
 
@@ -9077,6 +9121,7 @@ theorem upperHalfPlane_local_derivative_bound
     have hdenDeriv :=
       hderiv.sub_const ((starRingEnd ℂ) c)
     convert hnum.div hdenDeriv (hden u hu) using 1
+    all_goals try rfl
     · dsimp only [c]
       simp only [sub_self, zero_mul, sub_zero]
       field_simp [hden u hu]
@@ -9085,7 +9130,7 @@ theorem upperHalfPlane_local_derivative_bound
       ‖c - (starRingEnd ℂ) c‖ = 2 * c.im := by
     rw [show c - (starRingEnd ℂ) c =
         (2 * c.im : ℝ) * I by
-      apply Complex.ext <;> simp <;> ring]
+      apply Complex.ext <;> simp ; ring]
     rw [norm_mul, Complex.norm_real, Real.norm_eq_abs,
       abs_of_pos (mul_pos (by norm_num) hc),
       norm_I, mul_one]
@@ -9112,8 +9157,8 @@ theorem thetaCuspShellGammaCoreRemainder_shift_im_pos
         ((u.re : ℝ) : ℂ) -
           (((1 / 2 : ℝ) - u.im : ℝ) : ℂ) * I := by
     apply Complex.ext
-    · simp [Complex.mul_re, Complex.div_re]
-    · simp [Complex.mul_im, Complex.div_im]
+    · simp [Complex.mul_re]
+    · simp [Complex.mul_im]
   rw [hz]
   exact thetaCuspShellGammaCoreRemainder_im_pos_of_neg_one_lt
     (by linarith) (by linarith) hre hn
@@ -9150,7 +9195,7 @@ theorem norm_thetaCuspShellGammaCoreRemainderSpectralDerivative_le_im
       (b : ℂ) - (a : ℂ) * I := by
     dsimp only [u, r]
     apply Complex.ext <;>
-      simp [Complex.mul_re, Complex.mul_im] <;> ring
+      simp [Complex.mul_re, Complex.mul_im]
   have hball (v : ℂ) (hv : v ∈ Metric.ball u r) :
       0 < v.re ∧ 0 < v.im ∧ v.im < 1 := by
     have hdist : ‖v - u‖ < r := by
@@ -9186,15 +9231,15 @@ theorem norm_thetaCuspShellGammaCoreRemainderSpectralDerivative_le_im
     have hzstrip : |(v - I / 2).im| < 1 := by
       have himshift :
           (v - I / 2).im = v.im - 1 / 2 := by
-        simp [Complex.div_im]
+        simp
       rw [himshift]
       rw [abs_lt]
       constructor <;> linarith
     have hshift : HasDerivAt
         (fun w : ℂ => w - I / 2) 1 v := by
       convert (hasDerivAt_id v).sub_const (I / 2)
-        using 1 <;> ring
-    simpa only [Function.comp_apply] using
+        using 1 <;> rfl
+    exact
       ((hasDerivAt_thetaCuspShellGammaCoreRemainder
         hzstrip hn).comp v hshift).differentiableAt.differentiableWithinAt
   have hderiv : HasDerivAt f f' u := by
@@ -9207,15 +9252,16 @@ theorem norm_thetaCuspShellGammaCoreRemainderSpectralDerivative_le_im
     have hshift : HasDerivAt
         (fun w : ℂ => w - I / 2) 1 u := by
       convert (hasDerivAt_id u).sub_const (I / 2)
-        using 1 <;> ring
+        using 1 <;> rfl
     have hzstripU : |(u - I / 2).im| < 1 := by
       rw [hub]
       exact hzstrip
     have hcomp :=
       (hasDerivAt_thetaCuspShellGammaCoreRemainder
         hzstripU hn).comp u hshift
-    simpa only [f, f', Function.comp_apply, hub,
-      mul_one] using hcomp
+    have h9 := hcomp
+    simp only [hub, mul_one] at h9
+    exact h9
   have hbound :=
     upperHalfPlane_local_derivative_bound
       hr hpos hdiff hderiv
@@ -9282,12 +9328,11 @@ theorem thetaCuspShellEvenPhaseValue_eq_gammaRemainders
         funext x
         simp only [Pi.add_apply]
         ring]
-    simpa only [Pi.add_apply] using integral_add hplus hminus
+    exact integral_add hplus hminus
   rw [hsplit,
     thetaCuspShellPhaseTransform_eq_gammaBoundary_add hz hn,
     thetaCuspShellPhaseTransform_eq_gammaBoundary_add
       (z := -z) (by simpa only [neg_im, abs_neg] using hz) hn]
-  push_cast
   ring
 
 /-- The existing shell spectral-derivative value is the actual derivative of the existing shell
@@ -9314,11 +9359,11 @@ theorem hasDerivAt_thetaCuspShellEvenPhaseValue
           simpa only [neg_im] using
             neg_lt_neg (abs_lt.mp hz).2) hn
   have hneg : HasDerivAt (fun w : ℂ => -w) (-1) z := by
-    convert (hasDerivAt_id z).neg using 1 <;> ring
+    convert (hasDerivAt_id z).neg using 1 <;> rfl
   have hsum :
       HasDerivAt (fun w => S w + S (-w))
         (D z - D (-z)) z := by
-    convert hplus.add (hminusBase.comp z hneg) using 1 <;> ring
+    convert hplus.add (hminusBase.comp z hneg) using 1 <;> first | rfl | ring
   have hD :
       thetaCuspShellEvenPhaseSpectralDerivativeValue z n =
         D z - D (-z) := by
@@ -9350,7 +9395,7 @@ theorem hasDerivAt_thetaCuspShellEvenPhaseValue
         funext x
         simp only [Pi.sub_apply]
         ring]
-    simpa only [Pi.sub_apply, thetaCuspShellHalfLineTransform] using
+    exact
       integral_sub hDplus hDminus
   rw [hD]
   apply hsum.congr_of_eventuallyEq
@@ -9396,7 +9441,7 @@ theorem hasDerivAt_thetaCuspShellEvenPhaseValue
         funext x
         simp only [Pi.add_apply]
         ring]
-  simpa only [Pi.add_apply] using integral_add hwplus hwminus
+  exact integral_add hwplus hwminus
 
 /-- Explicit Gamma-coordinate derivative of one actual even shell. -/
 def thetaCuspShellEvenGammaSpectralDerivative
@@ -9478,17 +9523,17 @@ theorem thetaCuspShellEvenPhaseSpectralDerivativeValue_eq_gamma
     hasDerivAt_thetaCuspShellGammaCoreRemainder
       (z := -z) (by simpa only [neg_im, abs_neg] using hz) hn
   have hneg : HasDerivAt (fun w : ℂ => -w) (-1) z := by
-    convert (hasDerivAt_id z).neg using 1 <;> ring
+    convert (hasDerivAt_id z).neg using 1 <;> rfl
   have hRminus :=
     hRminusBase.comp z hneg
   have hcplus :
       HasDerivAt (fun w : ℂ => I * w - 1 / 2) I z := by
     convert ((hasDerivAt_id z).const_mul I).sub_const
-      (1 / 2 : ℂ) using 1 <;> ring
+      (1 / 2 : ℂ) using 1 <;> first | rfl | (ring)
   have hcminus :
       HasDerivAt (fun w : ℂ => I * (-w) - 1 / 2) (-I) z := by
     convert (hneg.const_mul I).sub_const (1 / 2 : ℂ)
-      using 1 <;> ring
+      using 1 <;> first | rfl | (ring)
   have hright :
       HasDerivAt
         (fun w : ℂ =>
@@ -9508,8 +9553,9 @@ theorem thetaCuspShellEvenPhaseSpectralDerivativeValue_eq_gamma
     have hm :=
       (hcminus.mul hRminus).const_mul (Real.pi : ℂ)
     convert hconst.add (hp.add hm) using 1
+    all_goals try rfl
     · funext w
-      simp [thetaCuspShellEvenGammaSpectralDerivative]
+      simp
       ring
     · simp [thetaCuspShellEvenGammaSpectralDerivative]
       ring
@@ -9605,14 +9651,14 @@ theorem hasDerivAt_thetaCuspSourceProductFiberHermitianEnergy
             thetaCuspShellEvenPhaseValue
               ((b : ℂ) - (α : ℂ) * I) (q.1 + 1))
           (D q.1 * (-I)) a := by
-      simpa only [z, D] using hleft0.comp a hline
+      exact hleft0.comp a hline
     have hright :
         HasDerivAt
           (fun α : ℝ =>
             thetaCuspShellEvenPhaseValue
               ((b : ℂ) - (α : ℂ) * I) (q.2 + 1))
           (D q.2 * (-I)) a := by
-      simpa only [z, D] using hright0.comp a hline
+      exact hright0.comp a hline
     have hconj :
         HasDerivAt
           (fun α : ℝ =>
@@ -9624,6 +9670,7 @@ theorem hasDerivAt_thetaCuspSourceProductFiberHermitianEnergy
     have hprod := hleft.mul hconj
     have hre := Complex.reCLM.hasFDerivAt.comp_hasDerivAt a hprod
     convert hre using 1
+    all_goals try rfl
     change
       (D q.1 * (starRingEnd ℂ) (V q.2)).im +
           (D q.2 * (starRingEnd ℂ) (V q.1)).im =
@@ -9655,6 +9702,7 @@ theorem hasDerivAt_thetaCuspSourceProductFiberHermitianEnergy
         (D q.1 * (starRingEnd ℂ) (V q.2)).im +
           (D q.2 * (starRingEnd ℂ) (V q.1)).im)
       (fun q _hq => hterm q) using 1
+    all_goals try rfl
     funext α
     simp
   have hswap :
@@ -9680,8 +9728,9 @@ theorem hasDerivAt_thetaCuspSourceProductFiberHermitianEnergy
         exact Prod.swap_swap q
       · intro q _hq
         rw [Prod.swap_swap]
-    simpa only [s, Prod.swap_prod_mk] using h
+    exact h
   convert hsum using 1
+  all_goals try rfl
   unfold thetaCuspSourceProductFiberHedenmalmCurrent
     thetaCuspPositiveShellPairHedenmalmCurrent
     thetaCuspShellPairHedenmalmCurrent
@@ -9710,7 +9759,7 @@ theorem summable_thetaCuspSourceProductFiberHermitianEnergy
     simpa only [C] using
       (summable_mul_of_summable_norm hV.norm hstar)
   have hCre : Summable (fun q : ℕ × ℕ => (C q).re) := by
-    simpa only [Function.comp_apply] using
+    exact
       hC.map Complex.reCLM Complex.reCLM.continuous
   have hfiber := hCre.hasSum.tsum_fiberwise thetaPositivePairProduct
   apply Summable.congr hfiber.summable
@@ -9749,7 +9798,7 @@ theorem tsum_thetaCuspSourceProductFiberHermitianEnergy_eq_normSq_XiC
     simpa only [C] using
       (summable_mul_of_summable_norm hV.norm hstar)
   have hCre : Summable (fun q : ℕ × ℕ => (C q).re) := by
-    simpa only [Function.comp_apply] using
+    exact
       hC.map Complex.reCLM Complex.reCLM.continuous
   change
     (∑' k : ℕ, ∑ q ∈ thetaPositiveFactorPairs k, (C q).re) =
@@ -9793,7 +9842,9 @@ theorem hasDerivAt_normSq_XiC_transverse_eq_centerMixedFourierCurrent
       HasDerivAt
         (fun α : ℝ => XiC ((b : ℂ) - (α : ℂ) * I))
         (deriv XiC z * (-I)) a := by
-    simpa only [z] using hXiBase.comp a hline
+    have hbase : HasDerivAt XiC (deriv XiC z) ((b : ℂ) - (a : ℂ) * I) := hXiBase
+    exact (hbase.comp a hline :
+      HasDerivAt (XiC ∘ fun α : ℝ => (b : ℂ) - (α : ℂ) * I) (deriv XiC z * -I) a)
   have hXiRe :
       HasDerivAt
         (fun α : ℝ =>
@@ -9819,6 +9870,7 @@ theorem hasDerivAt_normSq_XiC_transverse_eq_centerMixedFourierCurrent
     ring
   rw [hcurrent]
   convert hnorm using 1
+  all_goals try rfl
   dsimp only [z]
   simp only [Complex.mul_re, Complex.mul_im, Complex.conj_re,
     Complex.conj_im, Complex.neg_re, Complex.neg_im, I_re, I_im]

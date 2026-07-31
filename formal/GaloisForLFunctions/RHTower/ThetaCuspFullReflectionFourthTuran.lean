@@ -144,7 +144,7 @@ private theorem thetaCuspReflectionJetTailWeight_two_tail_le_geometric (k : ℕ)
   have hk : (3 : ℝ) ≤ (k + 3 : ℕ) := by exact_mod_cast (by omega : 3 ≤ k + 3)
   have hd : 0 ≤ (((k + 3 : ℕ) : ℝ) ^ 2 - 1) := by nlinarith
   have hdle : (((k + 3 : ℕ) : ℝ) ^ 2 - 1) ^ 2 ≤
-      (((k + 3 : ℕ) : ℝ) ^ 2) ^ 2 := by gcongr <;> nlinarith
+      (((k + 3 : ℕ) : ℝ) ^ 2) ^ 2 := by gcongr; nlinarith
   calc
     (((k + 3 : ℕ) : ℝ) ^ 4) *
           (((k + 3 : ℕ) : ℝ) ^ 2 - 1) ^ 2 *
@@ -174,7 +174,7 @@ private theorem thetaCuspReflectionJetTailWeight_three_tail_le_geometric (k : �
   have hk : (3 : ℝ) ≤ (k + 3 : ℕ) := by exact_mod_cast (by omega : 3 ≤ k + 3)
   have hd : 0 ≤ (((k + 3 : ℕ) : ℝ) ^ 2 - 1) := by nlinarith
   have hdle : (((k + 3 : ℕ) : ℝ) ^ 2 - 1) ^ 3 ≤
-      (((k + 3 : ℕ) : ℝ) ^ 2) ^ 3 := by gcongr <;> nlinarith
+      (((k + 3 : ℕ) : ℝ) ^ 2) ^ 3 := by gcongr; nlinarith
   calc
     (((k + 3 : ℕ) : ℝ) ^ 4) *
           (((k + 3 : ℕ) : ℝ) ^ 2 - 1) ^ 3 *
@@ -203,7 +203,7 @@ theorem tsum_thetaCuspReflectionJetTailWeight_two_lt :
     unfold thetaCuspReflectionJetTailWeight
     norm_num
     have hexp : Real.exp (-(Real.pi * 3)) < (1 : ℝ) / 12000 := by
-      convert thetaCusp_exp_neg_three_pi_lt using 1 <;> ring
+      convert thetaCusp_exp_neg_three_pi_lt using 1; ring
     nlinarith
   have htailsum :
       (∑' k : ℕ, thetaCuspReflectionJetTailWeight 2 (k + 1)) ≤
@@ -231,7 +231,7 @@ theorem tsum_thetaCuspReflectionJetTailWeight_three_lt :
     unfold thetaCuspReflectionJetTailWeight
     norm_num
     have hexp : Real.exp (-(Real.pi * 3)) < (1 : ℝ) / 12000 := by
-      convert thetaCusp_exp_neg_three_pi_lt using 1 <;> ring
+      convert thetaCusp_exp_neg_three_pi_lt using 1; ring
     nlinarith
   have htailsum :
       (∑' k : ℕ, thetaCuspReflectionJetTailWeight 3 (k + 1)) ≤
@@ -262,7 +262,7 @@ private theorem scale_pow_two_mul_exp_tail_le_pi_pow
     dsimp [y] at hprod ⊢
     nlinarith
   have htauPow : tau ^ 2 ≤ Real.pi ^ 2 * (1 + y / 3) ^ 2 := by
-    convert pow_le_pow_left₀ (le_trans Real.pi_pos.le htau) htauBase 2 using 1 <;> ring
+    convert pow_le_pow_left₀ (le_trans Real.pi_pos.le htau) htauBase 2 using 1 <;> first | rfl | ring
   have hTaylor0 := Real.sum_le_exp_of_nonneg hz 3
   have hTaylor : 1 + z + z ^ 2 / 2 ≤ Real.exp z := by
     norm_num [Finset.sum_range_succ] at hTaylor0 ⊢
@@ -296,7 +296,7 @@ private theorem scale_pow_three_mul_exp_tail_le_pi_pow
     dsimp [y] at hprod ⊢
     nlinarith
   have htauPow : tau ^ 3 ≤ Real.pi ^ 3 * (1 + y / 3) ^ 3 := by
-    convert pow_le_pow_left₀ (le_trans Real.pi_pos.le htau) htauBase 3 using 1 <;> ring
+    convert pow_le_pow_left₀ (le_trans Real.pi_pos.le htau) htauBase 3 using 1 <;> first | rfl | ring
   have hTaylor0 := Real.sum_le_exp_of_nonneg hz 4
   have hTaylor : 1 + z + z ^ 2 / 2 + z ^ 3 / 6 ≤ Real.exp z := by
     norm_num [Finset.sum_range_succ] at hTaylor0 ⊢
@@ -332,7 +332,7 @@ private theorem scale_pow_four_mul_exp_tail_le_pi_pow
     dsimp [y] at hprod ⊢
     nlinarith
   have htauPow : tau ^ 4 ≤ Real.pi ^ 4 * (1 + y / 3) ^ 4 := by
-    convert pow_le_pow_left₀ (le_trans Real.pi_pos.le htau) htauBase 4 using 1 <;> ring
+    convert pow_le_pow_left₀ (le_trans Real.pi_pos.le htau) htauBase 4 using 1 <;> first | rfl | ring
   have hTaylor0 := Real.sum_le_exp_of_nonneg hz 5
   have hTaylor : 1 + z + z ^ 2 / 2 + z ^ 3 / 6 + z ^ 4 / 24 ≤ Real.exp z := by
     norm_num [Finset.sum_range_succ] at hTaylor0 ⊢
@@ -556,7 +556,7 @@ theorem hasDerivAt_thetaCuspHigherToFirstAtomLikelihoodRatio
       thetaCuspHigherToFirstAtomLikelihoodRatio := by
     filter_upwards [Ioi_mem_nhds hx] with y hy
     exact (thetaCuspHigherToFirstAtomLikelihoodRatio_eq_tsum y).symm
-  simpa only [thetaCuspHigherLikelihoodJetOne] using key.congr_of_eventuallyEq heq.symm
+  exact key.congr_of_eventuallyEq heq.symm
 
 theorem hasDerivAt_thetaCuspHigherLikelihoodJetOne
     {x : ℝ} (hx : 0 < x) :
@@ -573,8 +573,7 @@ theorem hasDerivAt_thetaCuspHigherLikelihoodJetOne
         (n := k + 2) (by omega) hy).1]
       exact thetaCuspAtomLikelihoodRatioJetTwo_majorant k hy)
     hx (summable_thetaCuspHigherLikelihoodJetOne hx) hx
-  simpa only [thetaCuspHigherLikelihoodJetOne,
-    thetaCuspHigherLikelihoodJetTwo] using key
+  exact key
 
 theorem hasDerivAt_thetaCuspHigherLikelihoodJetTwo
     {x : ℝ} (hx : 0 < x) :
@@ -590,8 +589,7 @@ theorem hasDerivAt_thetaCuspHigherLikelihoodJetTwo
       rw [Real.norm_eq_abs]
       exact thetaCuspAtomLikelihoodRatioJetThree_majorant k hy)
     hx (summable_thetaCuspHigherLikelihoodJetTwo hx) hx
-  simpa only [thetaCuspHigherLikelihoodJetTwo,
-    thetaCuspHigherLikelihoodJetThree] using key
+  exact key
 
 theorem hasDerivAt_thetaCuspHigherLikelihoodJetThree
     {x : ℝ} (hx : 0 < x) :
@@ -607,8 +605,7 @@ theorem hasDerivAt_thetaCuspHigherLikelihoodJetThree
       rw [Real.norm_eq_abs]
       exact thetaCuspAtomLikelihoodRatioJetFour_majorant k hy)
     hx (summable_thetaCuspHigherLikelihoodJetThree hx) hx
-  simpa only [thetaCuspHigherLikelihoodJetThree,
-    thetaCuspHigherLikelihoodJetFour] using key
+  exact key
 
 end
 
@@ -865,7 +862,7 @@ theorem thetaCuspFirstAtomLogFourthTuran_gt_four_hundred
     unfold thetaCuspBornWittenLogFourthDerivative
     rw [thetaCuspBornWittenWeight_eq, hscale]
     dsimp [B]
-    field_simp [hB.ne'] <;> ring
+    field_simp [hB.ne']; ring
   have hdecomp :
       4 * thetaCuspBornWittenLogCurvature 1 x ^ 2 -
           thetaCuspBornWittenLogFourthDerivative 1 x =
@@ -873,7 +870,7 @@ theorem thetaCuspFirstAtomLogFourthTuran_gt_four_hundred
           24 * A * (8 * A - 1) / B ^ 2 -
           72 * A ^ 2 / B ^ 4 := by
     rw [hc, hv4]
-    field_simp [hB.ne'] <;> ring
+    field_simp [hB.ne']; ring
   have hfrac : A / B ^ 4 < (16 / 27 : ℝ) := by
     apply (div_lt_iff₀ (pow_pos hB 4)).2
     let y := A - 3
@@ -896,7 +893,7 @@ theorem thetaCuspFirstAtomLogFourthTuran_gt_four_hundred
     have hA0 : 0 < A := by linarith
     nlinarith [mul_lt_mul_of_pos_left hfrac (mul_pos (by norm_num : (0 : ℝ) < 72) hA0)]
   have htailIdentity : 72 * A ^ 2 / B ^ 4 = 72 * A * (A / B ^ 4) := by
-    field_simp [hB.ne'] <;> ring
+    field_simp [hB.ne']
   have htailLinear : 72 * A ^ 2 / B ^ 4 < (128 / 3 : ℝ) * A := by
     rw [htailIdentity]
     exact htailProduct
@@ -1016,13 +1013,13 @@ theorem neg_seventeen_lt_thetaCuspHigherLikelihoodLogJetFour
   have hcrossTerm :
       -4 * |r1| * |r3| ≤ -4 * r1 * r3 / s ^ 2 := by
     have h := mul_le_mul_of_nonpos_left hcrossDiv (by norm_num : (-4 : ℝ) ≤ 0)
-    convert h using 1 <;> ring
+    convert h using 1 <;> first | rfl | ring
   have hr2Term : -3 * r2 ^ 2 ≤ -3 * r2 ^ 2 / s ^ 2 := by
     have h := mul_le_mul_of_nonpos_left hr2Div (by norm_num : (-3 : ℝ) ≤ 0)
-    convert h using 1 <;> ring
+    convert h using 1 <;> first | rfl | ring
   have hr1FourTerm : -6 * |r1| ^ 4 ≤ -6 * r1 ^ 4 / s ^ 4 := by
     have h := mul_le_mul_of_nonpos_left hr1FourDiv (by norm_num : (-6 : ℝ) ≤ 0)
-    convert h using 1 <;> ring
+    convert h using 1 <;> first | rfl | ring
   have hcrossLower : (-58 / 5 : ℝ) < -4 * r1 * r3 / s ^ 2 := by
     nlinarith
   have hr2Lower : (-507 / 100 : ℝ) < -3 * r2 ^ 2 / s ^ 2 := by
@@ -1107,8 +1104,7 @@ theorem hasDerivAt_thetaCuspHigherLikelihoodLog
   have hspos : 0 < 1 + thetaCuspHigherToFirstAtomLikelihoodRatio x := by
     have h := thetaCuspHigherToFirstAtomLikelihoodRatio_nonneg hx
     linarith
-  simpa only [thetaCuspHigherLikelihoodLog, thetaCuspHigherLikelihoodLogJetOne] using
-    hs.log hspos.ne'
+  exact hs.log hspos.ne'
 
 /-- Exact second derivative of the complete higher likelihood log-factor. -/
 theorem hasDerivAt_thetaCuspHigherLikelihoodLogJetOne
@@ -1123,6 +1119,7 @@ theorem hasDerivAt_thetaCuspHigherLikelihoodLogJetOne
     linarith
   have hquot := h1.div hs hspos.ne'
   convert hquot using 1
+  any_goals rfl
   unfold thetaCuspHigherLikelihoodLogJetTwo
   field_simp [hspos.ne']
 
@@ -1141,8 +1138,9 @@ theorem hasDerivAt_thetaCuspHigherLikelihoodLogJetTwo
   have hraw := (h2.div hs hspos.ne').sub
     ((h1.pow 2).div (hs.pow 2) (pow_ne_zero 2 hspos.ne'))
   convert hraw using 1
+  any_goals rfl
   unfold thetaCuspHigherLikelihoodLogJetThree
-  simp only [Pi.pow_apply, Pi.mul_apply, Nat.cast_ofNat, Nat.reduceSubDiff, pow_one]
+  simp only [Pi.pow_apply, Nat.cast_ofNat, Nat.reduceSubDiff, pow_one]
   field_simp [hspos.ne']
   ring
 
@@ -1163,6 +1161,7 @@ theorem hasDerivAt_thetaCuspHigherLikelihoodLogJetThree
       (((h1.mul h2).const_mul 3).div (hs.pow 2) (pow_ne_zero 2 hspos.ne'))).add
     (((h1.pow 3).const_mul 2).div (hs.pow 3) (pow_ne_zero 3 hspos.ne'))
   convert hraw using 1
+  any_goals rfl
   · funext y
     simp only [thetaCuspHigherLikelihoodLogJetThree, Pi.add_apply, Pi.sub_apply,
       Pi.mul_apply, Pi.div_apply, Pi.pow_apply]
@@ -1197,6 +1196,7 @@ private theorem hasDerivAt_thetaCuspFirstAtomLog
     (n := 1) hx (by norm_num)
   have hlog := hsource.log hpos.ne'
   convert hlog using 1
+  any_goals rfl
   unfold thetaCuspFirstAtomLogJetOne
   field_simp [hpos.ne']
 
@@ -1206,22 +1206,21 @@ private theorem hasDerivAt_thetaCuspFirstAtomLogJetOne
   have h := (hasDerivAt_thetaCuspBornWittenSuperpotential
     (n := 1) (by norm_num) hx.le).const_mul (-2)
   convert h using 1
+  any_goals rfl
   simp only [thetaCuspFirstAtomLogJetTwo, thetaCuspBornWittenLogCurvature]
   ring
 
 private theorem hasDerivAt_thetaCuspFirstAtomLogJetTwo
     {x : ℝ} (hx : 0 < x) :
     HasDerivAt thetaCuspFirstAtomLogJetTwo (thetaCuspFirstAtomLogJetThree x) x := by
-  simpa only [thetaCuspFirstAtomLogJetTwo, thetaCuspFirstAtomLogJetThree] using
-    (hasDerivAt_thetaCuspBornWittenLogCurvature
-      (n := 1) (by norm_num) hx.le).neg
+  exact (hasDerivAt_thetaCuspBornWittenLogCurvature
+    (n := 1) (by norm_num) hx.le).neg
 
 private theorem hasDerivAt_thetaCuspFirstAtomLogJetThree
     {x : ℝ} (hx : 0 < x) :
     HasDerivAt thetaCuspFirstAtomLogJetThree (thetaCuspFirstAtomLogJetFour x) x := by
-  simpa only [thetaCuspFirstAtomLogJetThree, thetaCuspFirstAtomLogJetFour] using
-    (hasDerivAt_thetaCuspBornWittenLogThirdDerivative
-      (n := 1) (by norm_num) hx.le).neg
+  exact (hasDerivAt_thetaCuspBornWittenLogThirdDerivative
+    (n := 1) (by norm_num) hx.le).neg
 
 /-- Local factorization of the complete source by its first atom and the exact higher tail. -/
 theorem thetaCuspFullSource_eq_firstAtom_mul_higherFactor
@@ -1252,30 +1251,26 @@ private def thetaCuspFullLogFactorFour (x : ℝ) : ℝ :=
 private theorem hasDerivAt_thetaCuspFullLogFactorZero
     {x : ℝ} (hx : 0 < x) :
     HasDerivAt thetaCuspFullLogFactorZero (thetaCuspFullLogFactorOne x) x := by
-  simpa only [thetaCuspFullLogFactorZero, thetaCuspFullLogFactorOne] using
-    (hasDerivAt_thetaCuspFirstAtomLog hx).add
-      (hasDerivAt_thetaCuspHigherLikelihoodLog hx)
+  exact (hasDerivAt_thetaCuspFirstAtomLog hx).add
+    (hasDerivAt_thetaCuspHigherLikelihoodLog hx)
 
 private theorem hasDerivAt_thetaCuspFullLogFactorOne
     {x : ℝ} (hx : 0 < x) :
     HasDerivAt thetaCuspFullLogFactorOne (thetaCuspFullLogFactorTwo x) x := by
-  simpa only [thetaCuspFullLogFactorOne, thetaCuspFullLogFactorTwo] using
-    (hasDerivAt_thetaCuspFirstAtomLogJetOne hx).add
-      (hasDerivAt_thetaCuspHigherLikelihoodLogJetOne hx)
+  exact (hasDerivAt_thetaCuspFirstAtomLogJetOne hx).add
+    (hasDerivAt_thetaCuspHigherLikelihoodLogJetOne hx)
 
 private theorem hasDerivAt_thetaCuspFullLogFactorTwo
     {x : ℝ} (hx : 0 < x) :
     HasDerivAt thetaCuspFullLogFactorTwo (thetaCuspFullLogFactorThree x) x := by
-  simpa only [thetaCuspFullLogFactorTwo, thetaCuspFullLogFactorThree] using
-    (hasDerivAt_thetaCuspFirstAtomLogJetTwo hx).add
-      (hasDerivAt_thetaCuspHigherLikelihoodLogJetTwo hx)
+  exact (hasDerivAt_thetaCuspFirstAtomLogJetTwo hx).add
+    (hasDerivAt_thetaCuspHigherLikelihoodLogJetTwo hx)
 
 private theorem hasDerivAt_thetaCuspFullLogFactorThree
     {x : ℝ} (hx : 0 < x) :
     HasDerivAt thetaCuspFullLogFactorThree (thetaCuspFullLogFactorFour x) x := by
-  simpa only [thetaCuspFullLogFactorThree, thetaCuspFullLogFactorFour] using
-    (hasDerivAt_thetaCuspFirstAtomLogJetThree hx).add
-      (hasDerivAt_thetaCuspHigherLikelihoodLogJetThree hx)
+  exact (hasDerivAt_thetaCuspFirstAtomLogJetThree hx).add
+    (hasDerivAt_thetaCuspHigherLikelihoodLogJetThree hx)
 
 private theorem thetaCuspLogSource_eventuallyEq_fullLogFactorZero
     {x : ℝ} (hx : 0 < x) :
@@ -1402,9 +1397,7 @@ private theorem hasDerivAt_thetaCuspFullLogExponentialJetZero
     {x : ℝ} (hx : 0 < x) :
     HasDerivAt thetaCuspFullLogExponentialJetZero
       (thetaCuspFullLogExponentialJetOne x) x := by
-  simpa only [thetaCuspFullLogExponentialJetZero,
-    thetaCuspFullLogExponentialJetOne] using
-      (hasDerivAt_thetaCuspFullLogFactorZero hx).exp
+  exact (hasDerivAt_thetaCuspFullLogFactorZero hx).exp
 
 private theorem hasDerivAt_thetaCuspFullLogExponentialJetOne
     {x : ℝ} (hx : 0 < x) :
@@ -1413,8 +1406,10 @@ private theorem hasDerivAt_thetaCuspFullLogExponentialJetOne
   have h := (hasDerivAt_thetaCuspFullLogExponentialJetZero hx).mul
     (hasDerivAt_thetaCuspFullLogFactorOne hx)
   unfold thetaCuspFullLogExponentialJetOne thetaCuspFullLogExponentialJetTwo
-  convert h using 1 <;> (try funext y) <;>
-    simp only [thetaCuspFullLogExponentialJetOne] <;> ring
+  convert h using 1 <;>
+    first
+      | rfl
+      | (simp only [thetaCuspFullLogExponentialJetOne]; ring)
 
 private theorem hasDerivAt_thetaCuspFullLogExponentialJetTwo
     {x : ℝ} (hx : 0 < x) :
@@ -1425,9 +1420,11 @@ private theorem hasDerivAt_thetaCuspFullLogExponentialJetTwo
   have h2 := hasDerivAt_thetaCuspFullLogFactorTwo hx
   have hcoeff := (h1.pow 2).add h2
   unfold thetaCuspFullLogExponentialJetTwo thetaCuspFullLogExponentialJetThree
-  convert h0.mul hcoeff using 1 <;> (try funext y) <;>
-    simp only [thetaCuspFullLogExponentialJetOne, Pi.add_apply, Pi.mul_apply,
-      Pi.pow_apply] <;> ring
+  convert h0.mul hcoeff using 1 <;>
+    first
+      | rfl
+      | (simp only [thetaCuspFullLogExponentialJetOne, Pi.add_apply,
+          Pi.pow_apply]; ring)
 
 private theorem hasDerivAt_thetaCuspFullLogExponentialJetThree
     {x : ℝ} (hx : 0 < x) :
@@ -1439,9 +1436,11 @@ private theorem hasDerivAt_thetaCuspFullLogExponentialJetThree
   have h3 := hasDerivAt_thetaCuspFullLogFactorThree hx
   have hcoeff := ((h1.pow 3).add ((h1.mul h2).const_mul 3)).add h3
   unfold thetaCuspFullLogExponentialJetThree thetaCuspFullLogExponentialJetFour
-  convert h0.mul hcoeff using 1 <;> (try funext y) <;>
-    simp only [thetaCuspFullLogExponentialJetOne, Pi.add_apply, Pi.mul_apply,
-      Pi.pow_apply] <;> ring
+  convert h0.mul hcoeff using 1 <;>
+    first
+      | rfl
+      | ((try funext y); simp only [thetaCuspFullLogExponentialJetOne, Pi.add_apply,
+          Pi.mul_apply, Pi.pow_apply]; ring)
 
 private theorem thetaCuspFullSource_eventuallyEq_logExponentialJetZero
     {x : ℝ} (hx : 0 < x) :

@@ -756,10 +756,7 @@ theorem exists_polynomialTaylorProuhetPhaseLock
     refine ⟨hWne, fun q hq => ?_⟩
     rw [aevalWeight_shiftedAtomPatternKey_eq_eval_poly n D K τ Q p
       (hcountS p hp) hq, ← hmap]
-    simpa [W] using
-      (Polynomial.eval_map_apply
-        (p := polynomialPatternWeightPolyInt n D K τ Q cint p)
-        (f := Int.castRingHom ℂ) (x := (q : ℤ)))
+    simp [W]
   have hcluster : ∀ p ∈ C, ∀ r ∈ C,
       (∀ j < Nat.ceil β,
         polynomialPatternMoment p j = polynomialPatternMoment r j) ∧

@@ -122,7 +122,7 @@ open scoped NNReal ENNReal
 explicit variation bound.  The estimate is stated for complex-valued functions on a compact real
 interval because this is the exact form used by Mellin weights. -/
 theorem eVariationOn_mul_le_of_norm_le_of_lipschitzOn
-    {f h : ℝ → ℂ} {a b Mf Mh : ℝ} {C : ℝ≥0} (hab : a ≤ b)
+    {f h : ℝ → ℂ} {a b Mf Mh : ℝ} {C : ℝ≥0} (_hab : a ≤ b)
     (hfvar : BoundedVariationOn f (Set.Icc a b))
     (hMf : 0 ≤ Mf) (hMh : 0 ≤ Mh)
     (hfnorm : ∀ x ∈ Set.Icc a b, ‖f x‖ ≤ Mf)

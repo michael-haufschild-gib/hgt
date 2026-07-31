@@ -52,20 +52,29 @@ private theorem integral_sq_mul_cexp_neg
     have hexp : HasDerivAt
         (fun x : ℝ => Complex.exp (-a * (x : ℂ)))
         (-a * Complex.exp (-a * (L : ℂ))) L := by
-      simpa only [Function.comp_apply, mul_comm] using
-        (Complex.hasDerivAt_exp _).comp L harg
+      have h := (Complex.hasDerivAt_exp (-a * (L : ℂ))).comp L harg
+      have hval : Complex.exp (-a * (L : ℂ)) * -a =
+          -a * Complex.exp (-a * (L : ℂ)) := by
+        ring
+      rw [hval] at h
+      exact h
     have hP : HasDerivAt P
         (2 * (L : ℂ) / a + 2 / a ^ 2) L := by
       dsimp only [P]
       have hsq := (hcast.pow 2).div_const a
       have hlin := (hcast.const_mul 2).div_const (a ^ 2)
       have hconst := hasDerivAt_const L (2 / a ^ 3)
-      convert (hsq.add hlin).add hconst using 1 <;> ring
+      convert (hsq.add hlin).add hconst using 1 <;> first | rfl | ring
     dsimp only [A]
-    convert (hexp.mul hP).neg using 1
-    dsimp only [P]
-    field_simp [ha0]
-    ring
+    have h := (hexp.mul hP).neg
+    have hval : -(-a * Complex.exp (-a * (L : ℂ)) * P L +
+        Complex.exp (-a * (L : ℂ)) * (2 * (L : ℂ) / a + 2 / a ^ 2)) =
+        (L : ℂ) ^ 2 * Complex.exp (-a * (L : ℂ)) := by
+      dsimp only [P]
+      field_simp
+      ring
+    rw [hval] at h
+    exact h
   have htendPow (k : ℕ) :
       Tendsto (fun L : ℝ =>
         (L : ℂ) ^ k * Complex.exp (-a * (L : ℂ)))
@@ -216,7 +225,7 @@ theorem norm_cos_real_mul_le_exp_abs_im
         Real.exp (L * z.im * u)) / 2 := by
           rw [Complex.norm_exp, Complex.norm_exp, hrePlus, hreMinus]
     _ ≤ (Real.exp (|z.im| * L) + Real.exp (|z.im| * L)) / 2 := by
-          gcongr <;> exact Real.exp_le_exp.mpr (by assumption)
+          gcongr
     _ = Real.exp (|z.im| * L) := by ring
 
 private theorem integral_exp_mul_compact_firstClock_eq_atom
@@ -239,7 +248,7 @@ private theorem integral_exp_mul_compact_firstClock_eq_atom
   have heta : 0 < eta := by dsimp only [eta]; linarith
   have hg : Integrable g mu := by
     dsimp only [g, mu]
-    simpa only [Real.rpow_two, Real.rpow_one, neg_mul] using
+    simpa only [MeasureTheory.IntegrableOn, Real.rpow_two, Real.rpow_one, neg_mul] using
       (integrableOn_rpow_mul_exp_neg_mul_rpow
         (p := (1 : ℝ)) (s := (2 : ℝ)) (b := eta)
         (by norm_num) (by norm_num) heta)

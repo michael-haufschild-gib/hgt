@@ -60,7 +60,7 @@ theorem hasDerivAt_thetaCuspTailSecondDensityDeBrangesE
   have hF := hasDerivAt_thetaCuspTailSecondDensityPhaseValue (z₀ := z) hz
   unfold thetaCuspTailSecondDensityDeBrangesE
     thetaCuspTailSecondDensityDeBrangesEDerivative
-  convert (hq.mul hF).sub_const (1 / 4) using 1
+  exact (hq.mul hF).sub_const (1 / 4)
 
 theorem hasDerivAt_thetaCuspTailSecondDensityDeBrangesESharp
     {z : ℂ} (hz : z.im < 1) :
@@ -74,9 +74,9 @@ theorem hasDerivAt_thetaCuspTailSecondDensityDeBrangesESharp
   have hF := hF0.comp z hneg
   unfold thetaCuspTailSecondDensityDeBrangesESharp
     thetaCuspTailSecondDensityDeBrangesESharpDerivative
-  convert (hq.mul hF).sub_const (1 / 4) using 1
-  simp only [Function.comp_apply]
-  ring
+  exact ((hq.mul hF).sub_const (1 / 4)).congr_deriv (by
+    simp only [Function.comp_apply]
+    ring)
 
 /-- Differentiating the completed reflection identity preserves its exact completion seam. -/
 theorem thetaCuspTailSecondDensityDeBrangesDerivative_add_sharp
@@ -126,9 +126,7 @@ theorem hasDerivAt_thetaCuspTailSecondDensityDeBrangesProjectiveRatio
     (z := z) (abs_lt.mp hzstrip).2
   have hE' := hasDerivAt_thetaCuspTailSecondDensityDeBrangesE
     (z := z) (abs_lt.mp hzstrip).1
-  simpa only [thetaCuspTailSecondDensityDeBrangesProjectiveRatio,
-    thetaCuspTailSecondDensityDeBrangesProjectiveWronskian] using
-    hS.div hE' hE
+  exact hS.div hE' hE
 
 /-- Exact flow law: the derivative of the ratio along its division-free projective flow is the
 nonnegative Wronskian norm-square.  It is strictly positive exactly at regular points. -/

@@ -82,7 +82,7 @@ complete characterwise Fourier wall-crossing law. -/
 theorem countableTemporalPhase_completeFourierLaw
     {I : Type*} [Countable I]
     (omega : ℝ → I → ℝ)
-    (hcomplete : HasCompleteCountableCharacterBirthProfiles omega)
+    (_hcomplete : HasCompleteCountableCharacterBirthProfiles omega)
     (r : ℕ) {τ : ℝ} (hτ : 0 < τ)
     (μ : ProbabilityMeasure (I → UnitAddCircle))
     (hμ :
@@ -125,7 +125,7 @@ theorem countableTemporalPhase_completeFourierLaw
       rw [countablePhaseLawFourierCoefficient,
         infiniteTorusPhaseProbabilityMeasure_fourier_integral,
         hgzero]
-      simp [coefficient, countablePhaseLawFourierCoefficient]
+      simp
     exact tendsto_nhds_unique hcoefficient hone
   · intro b c hprofile
     have hwall := spectralCharacterReporter_wallCrossing hprofile hτ

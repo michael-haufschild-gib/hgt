@@ -130,7 +130,6 @@ theorem exists_m_gain_window {δ ρ κ : ℝ} {Q Y N : ℕ}
       nlinarith [h11, h5, h6, h7, hNR]
     have hnat : (Y + 1) * (w₀ + 1) ≤ N := by
       have := hkey
-      push_cast at this
       exact_mod_cast this
     have : Y + 1 ≤ A := by
       rw [hA]

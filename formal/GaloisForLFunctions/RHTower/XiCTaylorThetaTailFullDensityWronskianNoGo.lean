@@ -301,9 +301,12 @@ theorem tendsto_xiCTaylorFullDensityTransferValue
   have hvalue :=
     xiCTaylorApprox_tendstoLocallyUniformly.tendstoLocallyUniformlyOn.tendsto_at
       (Set.mem_univ z) |>.comp tendsto_xiCTaylorOddIndex
-  simpa only [xiCTaylorFullDensityTransferValue, xiFullDensityQuotientValue,
-    xiCTaylorPolynomial_eval] using
+  have h2 : Tendsto (fun d : ℕ =>
+      xiCTaylorApprox (2 * d + 3) z / thetaCuspTailSecondDensityPhaseValue z)
+      atTop (nhds (XiC z / thetaCuspTailSecondDensityPhaseValue z)) :=
     hvalue.div_const (thetaCuspTailSecondDensityPhaseValue z)
+  simpa only [xiCTaylorFullDensityTransferValue, xiFullDensityQuotientValue,
+    xiCTaylorPolynomial_eval] using h2
 
 /-- Canonical transfer derivatives converge pointwise to the derivative of `XiC / F`. -/
 theorem tendsto_xiCTaylorFullDensityTransferDerivative
@@ -325,8 +328,13 @@ theorem tendsto_xiCTaylorFullDensityTransferCurrent
   have hc := Complex.continuous_conj.continuousAt.tendsto.comp hv
   have hm := hd.mul hc
   have hi := Complex.continuous_im.continuousAt.tendsto.comp hm
+  have h2 : Tendsto (fun d : ℕ =>
+      (xiCTaylorFullDensityTransferDerivative d z *
+        (starRingEnd ℂ) (xiCTaylorFullDensityTransferValue d z)).im)
+      atTop (nhds ((xiFullDensityQuotientDerivative z *
+        (starRingEnd ℂ) (xiFullDensityQuotientValue z)).im)) := hi
   simpa only [xiCTaylorFullDensityTransferCurrent,
-    xiFullDensityQuotientCurrent] using hi
+    xiFullDensityQuotientCurrent] using h2
 
 end
 

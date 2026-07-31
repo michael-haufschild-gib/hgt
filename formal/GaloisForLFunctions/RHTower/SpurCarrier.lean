@@ -147,7 +147,7 @@ inductive SpurROneSidedFarStep (S₀ S₁ : ℝ) : Type 2
   | endpointSDouble (data : EndpointSDoubleCarrierStep S₀ S₁)
 
 /-- Any intended-carrier step certificate produces the S-mono step certificate. -/
-def SpurROneSidedFarStep.toSMonoStepCert {S₀ S₁ : ℝ} :
+theorem SpurROneSidedFarStep.toSMonoStepCert {S₀ S₁ : ℝ} :
     SpurROneSidedFarStep S₀ S₁ → SMonoStepCert S₀ S₁
   | .deepSumTail data =>
       smonoStepCert_of_deep_sum_tail data.core.idx data.core.a data.core.hC0
@@ -186,7 +186,7 @@ inductive SpurROneSidedFarChain : List ℝ → Type 2
       SpurROneSidedFarChain (S₀ :: S₁ :: rest)
 
 /-- The intended-carrier step chain realizes the abstract S-mono certificate chain. -/
-def smonoStepCerts_of_spurROneSidedFarChain :
+theorem smonoStepCerts_of_spurROneSidedFarChain :
     {S : List ℝ} → SpurROneSidedFarChain S → SMonoStepCerts S
   | [], .nil => trivial
   | [_], .singleton _ => trivial

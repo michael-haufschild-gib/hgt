@@ -184,7 +184,7 @@ theorem two_mul_thetaCuspLiouvilleGibbsMorseMoment_eq
 
 /-- The Morse coordinate dominates its affine tangent at the half-line endpoint. -/
 theorem thetaCuspMorseScale_affine_lower
-    (n : ℕ) {x : ℝ} (hx : 0 ≤ x) :
+    (n : ℕ) {x : ℝ} (_hx : 0 ≤ x) :
     Real.pi * (n : ℝ) ^ 2 * (1 + 2 * x) ≤ thetaCuspMorseScale n x := by
   have hexp : 1 + 2 * x ≤ Real.exp (2 * x) := by
     simpa [add_comm] using Real.add_one_le_exp (2 * x)

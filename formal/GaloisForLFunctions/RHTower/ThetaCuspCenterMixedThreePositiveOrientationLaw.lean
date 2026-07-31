@@ -86,32 +86,32 @@ theorem thetaCuspCenterMixedGramThree_posSemidef
       · let e : Fin 3 ≃ Fin 3 := Equiv.swap 1 2
         apply thetaCuspCenterMixedGramThree_posSemidef_of_permuted_order
           ha0 ha x e
-        · simpa [e] using h02
-        · simpa [e] using h21
+        · exact h02
+        · exact h21
       · let e : Fin 3 ≃ Fin 3 :=
           (Equiv.swap 1 2).trans (Equiv.swap 0 2)
         apply thetaCuspCenterMixedGramThree_posSemidef_of_permuted_order
           ha0 ha x e
-        · simpa [e] using h20
-        · simpa [e] using h01
+        · exact h20
+        · exact h01
   · rcases le_total (x 0) (x 2) with h02 | h20
     · let e : Fin 3 ≃ Fin 3 := Equiv.swap 0 1
       apply thetaCuspCenterMixedGramThree_posSemidef_of_permuted_order
         ha0 ha x e
-      · simpa [e] using h10
-      · simpa [e] using h02
+      · exact h10
+      · exact h02
     · rcases le_total (x 1) (x 2) with h12 | h21
       · let e : Fin 3 ≃ Fin 3 :=
           (Equiv.swap 1 2).trans (Equiv.swap 0 1)
         apply thetaCuspCenterMixedGramThree_posSemidef_of_permuted_order
           ha0 ha x e
-        · simpa [e] using h12
-        · simpa [e] using h20
+        · exact h12
+        · exact h20
       · let e : Fin 3 ≃ Fin 3 := Equiv.swap 0 2
         apply thetaCuspCenterMixedGramThree_posSemidef_of_permuted_order
           ha0 ha x e
-        · simpa [e] using h21
-        · simpa [e] using h10
+        · exact h21
+        · exact h10
 
 /-- No three-atom real test measure can have negative energy against the
 center-mixed theta density. -/

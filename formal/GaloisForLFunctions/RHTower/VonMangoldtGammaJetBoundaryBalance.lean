@@ -67,7 +67,7 @@ theorem twoBoundaryCauchyJetPolynomial_natDegree (k : ℕ) (a : ℂ) :
   have hplusDegree : (X - C a : Polynomial ℂ).natDegree = 1 :=
     natDegree_X_sub_C a
   have hminusDegree : (X + C a : Polynomial ℂ).natDegree = 1 := by
-    simpa [sub_neg_eq_add] using natDegree_X_sub_C (-a)
+    simp
   rw [twoBoundaryCauchyJetPolynomial_factor]
   rw [(hplusMonic.pow k).natDegree_mul (hminusMonic.pow k)]
   rw [hplusMonic.natDegree_pow, hminusMonic.natDegree_pow,

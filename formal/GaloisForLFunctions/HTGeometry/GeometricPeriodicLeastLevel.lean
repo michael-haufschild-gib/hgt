@@ -194,7 +194,7 @@ theorem isAlgebraic_of_periodicGeometric_integerADE
         have hrp : r = p := by
           by_contra hne
           exact hnot ⟨r, hr, hne⟩
-        simpa [hrp]
+        simp [hrp]
       · intro hr
         have hrp : r = p := by simpa using hr
         simpa [hrp] using hpFace

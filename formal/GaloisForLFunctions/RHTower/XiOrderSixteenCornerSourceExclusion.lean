@@ -94,7 +94,7 @@ theorem seven_over_oneHundredThousand_lt_xiFourthReciprocalTraceAtom_of_orderSix
         0 < 100000 * w ^ 2 - 7 * w ^ 4 - 800000 * (u * v) :=
       hbase.trans huvShift
     rw [hN]
-    convert htarget using 1 <;> ring
+    convert htarget using 1 ; ring
   have hformula :
       (xiZeroCopyReciprocalSquare q ^ 2).re =
         (v ^ 2 - 6 * u * v + u ^ 2) / w ^ 4 := by

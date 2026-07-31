@@ -83,8 +83,7 @@ theorem mem_projectiveChartFlatIncidenceSet_iff
     MvPolynomial.eval₂Hom (MvPolynomial.eval (w ∘ Sum.inr)) (w ∘ Sum.inl)
   rw [projectiveChartFlatIncidenceSet, MvPolynomial.mem_zeroLocus_iff]
   constructor
-  · intro hw
-    intro b
+  · intro hw b
     let p := E.symm (projectiveChartGlobalRowPolynomial q n z j exponent b)
     have hp : p ∈ projectiveChartFlatIncidenceIdeal q n z j exponent := by
       change E p ∈ projectiveChartGlobalIncidenceIdeal q n z j exponent

@@ -268,7 +268,7 @@ theorem sigNeg_finiteVonMangoldtSuccessorPrincipalRelativeMatrix_unbounded
     exact Nat.infinite_setOf_prime_and_modEq
       (q := 4) (a := 3) (by norm_num) (by norm_num)
   have hAlarge : (A \ Set.Iic 3).Infinite :=
-    hA.diff (Set.finite_Iic 3)
+    hA.sdiff (Set.finite_Iic 3)
   obtain ⟨S, hSA, hScard⟩ :=
     hAlarge.exists_subset_card_eq (K + 1)
   let M : ℕ := S.sum id

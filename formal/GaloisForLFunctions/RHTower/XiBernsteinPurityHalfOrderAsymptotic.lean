@@ -61,7 +61,7 @@ theorem exists_positive_halfOrder_primeArchEndpointBernsteinPurity_of_not_rh
       summable_xiZeroCopyReciprocalSquare
       (lt_trans zero_lt_one hB) (zero_le_one.trans hbeta1.le) hbeta
       (fun q hq => (hD q hq).le) hDsub (by
-        simpa only [xiEndpointCoordinateSet, xiEndpointCoordinateWeight, L] using hmax)
+        exact hmax)
   have hpurity : Tendsto
       (fun n : ℕ => Real.sqrt n * primeArchEndpointBernsteinPurity n /
         (B ^ 2) ^ n)

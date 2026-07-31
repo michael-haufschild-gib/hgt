@@ -75,7 +75,7 @@ theorem normSq_coeff_partialSum_sub_inv {w : ℝ → ℝ}
     split <;> simp
   have hcoeff : (q - p).coeff k = q.coeff k - p.coeff k := by
     show ((q - p) k) (1 : Fin k → ℂ) = (q k) 1 - (p k) 1
-    exact ContinuousMultilinearMap.sub_apply (q k) (p k) 1
+    exact sub_apply (q k) (p k) 1
   rw [hcoeff, hqcoeff]
   by_cases hk : k < n
   · rw [if_pos hk, if_pos hk, sub_self, norm_zero]; norm_num

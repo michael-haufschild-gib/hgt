@@ -172,7 +172,7 @@ theorem suzukiCriticalWallPositiveLightAmplitude_eq_ray
   rw [suzukiCriticalWallPositiveLightAmplitude,
     suzukiCriticalWallField_neg_eq_star]
   apply Complex.ext <;>
-    simp [Complex.mul_re, Complex.mul_im] <;>
+    simp [Complex.mul_re, Complex.mul_im] ;
     ring
 
 /-- Negative amplitude lies on opposite fixed light ray. -/
@@ -184,8 +184,7 @@ theorem suzukiCriticalWallNegativeLightAmplitude_eq_ray
   rw [suzukiCriticalWallNegativeLightAmplitude,
     suzukiCriticalWallField_neg_eq_star]
   apply Complex.ext <;>
-    simp [Complex.mul_re, Complex.mul_im] <;>
-    ring
+    simp [Complex.mul_re, Complex.mul_im]
 
 /-- FE reflection on the actual wall plane is negative height reflection. -/
 theorem weldFEReflectionLinear_suzukiCriticalWallPlaneVector
@@ -238,7 +237,7 @@ theorem suzukiCriticalWallReflectedCurrentKernel_eq_weldFEKreinQ
     suzukiCriticalWallField_neg_eq_star u p e]
   apply Complex.ext <;>
     simp [weldFEKreinQ_apply, suzukiCriticalWallPlaneVector,
-      Complex.mul_re, Complex.mul_im] <;>
+      Complex.mul_re, Complex.mul_im] ;
     ring
 
 /-! ## Diagonal delayed-hinge completion -/

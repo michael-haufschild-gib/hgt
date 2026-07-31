@@ -65,7 +65,10 @@ theorem constrainedProlateGroundHermiteFirstAtom_fixedGamma_reversedEquipartitio
   have hscaled :=
     mul_le_mul_of_nonpos_left hrec constrainedProlateGroundHermiteXiScale_neg.le
   simp only [constrainedProlateGroundHermiteFirstAtomGibbsGammaCoordinate]
-  convert hscaled using 1 <;> ring
+  convert hscaled using 1
+  · rfl
+  · ring
+  · ring
 
 /-- Rational shadow of the reversed equipartition recurrence. -/
 theorem constrainedProlateGroundHermiteFirstAtom_fixedGamma_reversedRationalRecurrence
@@ -77,7 +80,10 @@ theorem constrainedProlateGroundHermiteFirstAtom_fixedGamma_reversedRationalRecu
   have hscaled :=
     mul_le_mul_of_nonpos_left hrec constrainedProlateGroundHermiteXiScale_neg.le
   simp only [constrainedProlateGroundHermiteFirstAtomGibbsGammaCoordinate]
-  convert hscaled using 1 <;> ring
+  convert hscaled using 1
+  · rfl
+  · ring
+  · ring
 
 /-- The half-density upper budget becomes a lower budget in normalized source-Gamma
 coordinates. -/

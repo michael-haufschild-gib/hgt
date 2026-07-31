@@ -85,7 +85,7 @@ theorem coeff_bernsteinScalePurityPolynomial_closed (m : ℕ → ℝ) (N r : ℕ
   rw [Finset.mul_sum]
   apply Finset.sum_congr rfl
   intro ab hab
-  have hrab : ab.1 + ab.2 = r := Finset.mem_antidiagonal.mp hab
+  have hrab : ab.1 + ab.2 = r := Finset.HasAntidiagonal.mem_antidiagonal.mp hab
   by_cases haN : ab.1 ≤ N
   · by_cases hbN : ab.2 ≤ N
     · calc
@@ -186,7 +186,7 @@ theorem bernsteinScalePurityPolynomial_coeff_dividedPower_square (m : ℕ → �
   rw [Finset.mul_sum]
   apply Finset.sum_congr rfl
   intro ab hab
-  have hrab : ab.1 + ab.2 = r := Finset.mem_antidiagonal.mp hab
+  have hrab : ab.1 + ab.2 = r := Finset.HasAntidiagonal.mem_antidiagonal.mp hab
   rw [coeff_bernsteinDividedPowerRoot, coeff_bernsteinDividedPowerRoot]
   by_cases haN : ab.1 ≤ N
   · by_cases hbN : ab.2 ≤ N

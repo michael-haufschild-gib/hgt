@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.DeningerArithmeticOrientedHodge
+import GaloisForLFunctions.RHTower.DeningerDivisorSchwarzMonodromy
 import GaloisForLFunctions.RHTower.DeningerCompactOpenGradedRealJetUniversalityLaw
 import GaloisForLFunctions.RHTower.XiWeilPolarization
 
@@ -52,28 +53,6 @@ theorem deningerArithmeticNormalizedCompactOpenJet_sigma
   simp only [map_mul, map_pow, conj_I]
   rw [← mul_assoc, ← mul_pow]
   simp
-
-/-- Conjugation lifted to multiplicity copies is an involution. -/
-@[simp]
-theorem xiZeroCopyConjEquiv_apply_apply (q : XiZeroCopy) :
-    xiZeroCopyConjEquiv (xiZeroCopyConjEquiv q) = q := by
-  have hfst :
-      (xiZeroCopyConjEquiv (xiZeroCopyConjEquiv q)).1 = q.1 := by
-    apply Subtype.ext
-    simp [xiZeroCopyConjEquiv, xiZeroConjEquiv, Equiv.sigmaCongr,
-      Equiv.sigmaCongrRight, Equiv.sigmaCongrLeft]
-  apply Sigma.ext hfst
-  apply (Fin.heq_ext_iff (congrArg (fun rho : XiDivisorSupport =>
-    Int.toNat ((MeromorphicOn.divisor xi Set.univ) (rho : ℂ))) hfst)).2
-  simp [xiZeroCopyConjEquiv, xiZeroConjEquiv, Equiv.sigmaCongr,
-    Equiv.sigmaCongrRight, Equiv.sigmaCongrLeft]
-  exact Fin.val_eq_val_of_heq (cast_heq _ q.2)
-
-theorem xiZeroCopyConjEquiv_symm_apply (q : XiZeroCopy) :
-    xiZeroCopyConjEquiv.symm q = xiZeroCopyConjEquiv q := by
-  apply xiZeroCopyConjEquiv.injective
-  rw [xiZeroCopyConjEquiv.apply_symm_apply,
-    xiZeroCopyConjEquiv_apply_apply]
 
 /-- Rephased source Real structure on multiplicity-exact semisimplified `H¹`. -/
 def deningerArithmeticGradedSourceReal :

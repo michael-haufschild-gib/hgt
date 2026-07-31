@@ -77,7 +77,7 @@ theorem hasDerivAt_thetaCuspAtomLikelihoodLogJetZero
   have h1 := hasDerivAt_thetaCuspBornWittenSuperpotential (n := 1) (by norm_num) hx
   unfold thetaCuspAtomLikelihoodLogJetZero thetaCuspAtomLikelihoodLogJetOne
     thetaCuspBornWittenLogCurvature
-  convert (hn'.sub h1).const_mul (-2) using 1 <;> ring
+  convert (hn'.sub h1).const_mul (-2) using 1 <;> first | rfl | ring
 
 theorem hasDerivAt_thetaCuspAtomLikelihoodLogJetOne
     {n : ℕ} (hn : 0 < n) {x : ℝ} (hx : 0 ≤ x) :
@@ -105,7 +105,7 @@ theorem hasDerivAt_thetaCuspAtomLikelihoodRatioJetOne
         thetaCuspAtomLikelihoodRatio n x) x := by
     simpa [thetaCuspAtomLikelihoodLogJetZero] using hr
   unfold thetaCuspAtomLikelihoodRatioJetOne thetaCuspAtomLikelihoodRatioJetTwo
-  convert hq.mul hr' using 1 <;> ring
+  convert hq.mul hr' using 1 <;> first | rfl | ring
 
 theorem hasDerivAt_thetaCuspAtomLikelihoodRatioJetTwo
     {n : ℕ} (hn : 0 < n) {x : ℝ} (hx : 0 < x) :
@@ -121,7 +121,9 @@ theorem hasDerivAt_thetaCuspAtomLikelihoodRatioJetTwo
   have hcoeff := (hq.pow 2).add hq1
   unfold thetaCuspAtomLikelihoodRatioJetTwo thetaCuspAtomLikelihoodRatioJetThree
   convert hcoeff.mul hr' using 1 <;>
-    simp only [Pi.add_apply, Pi.mul_apply, Pi.pow_apply] <;> ring
+    first
+      | rfl
+      | (simp only [Pi.add_apply, Pi.pow_apply]; ring)
 
 theorem hasDerivAt_thetaCuspAtomLikelihoodRatioJetThree
     {n : ℕ} (hn : 0 < n) {x : ℝ} (hx : 0 < x) :
@@ -137,8 +139,10 @@ theorem hasDerivAt_thetaCuspAtomLikelihoodRatioJetThree
     simpa [thetaCuspAtomLikelihoodLogJetZero] using hr
   have hcoeff := ((hq.pow 3).add ((hq.mul hq1).const_mul 3)).add hq2
   unfold thetaCuspAtomLikelihoodRatioJetThree thetaCuspAtomLikelihoodRatioJetFour
-  convert hcoeff.mul hr' using 1 <;> (try funext y) <;>
-    simp only [Pi.add_apply, Pi.mul_apply, Pi.pow_apply] <;> ring
+  convert hcoeff.mul hr' using 1 <;>
+    first
+      | rfl
+      | ((try funext y); simp only [Pi.add_apply, Pi.mul_apply, Pi.pow_apply]; ring)
 
 theorem iteratedDeriv_one_thetaCuspAtomLikelihoodRatio_eq
     {n : ℕ} (hn : 0 < n) {x : ℝ} (hx : 0 < x) :
@@ -278,7 +282,7 @@ private theorem scale_div_sub_four_lt_sixteen_twentysevenths
   positivity
 
 private theorem thetaCuspBornWittenLogCurvature_eq_scaleProfile
-    {n : ℕ} (hn : 0 < n) {x : ℝ} (hx : 0 ≤ x) :
+    {n : ℕ} (_hn : 0 < n) {x : ℝ} (_hx : 0 ≤ x) :
     thetaCuspBornWittenLogCurvature n x =
       4 * thetaCuspMorseScale n x +
         6 * thetaCuspMorseScale n x /
@@ -299,7 +303,7 @@ private theorem thetaCuspBornWittenLogThirdDerivative_eq_scaleProfile
   rw [thetaCuspBornWittenWeight_eq] at hweight
   unfold thetaCuspBornWittenLogThirdDerivative
   rw [thetaCuspBornWittenWeight_eq]
-  field_simp [hweight.ne'] <;> ring
+  field_simp [hweight.ne']; ring
 
 private theorem thetaCuspBornWittenLogFourthDerivative_eq_scaleProfile
     {n : ℕ} (hn : 0 < n) {x : ℝ} (hx : 0 ≤ x) :
@@ -315,7 +319,7 @@ private theorem thetaCuspBornWittenLogFourthDerivative_eq_scaleProfile
   rw [thetaCuspBornWittenWeight_eq] at hweight
   unfold thetaCuspBornWittenLogFourthDerivative
   rw [thetaCuspBornWittenWeight_eq]
-  field_simp [hweight.ne'] <;> ring
+  field_simp [hweight.ne']; ring
 
 private theorem thetaCuspLikelihoodScaleFacts
     {n : ℕ} (hn : 2 ≤ n) {x : ℝ} (hx : 0 ≤ x) :
@@ -622,7 +626,7 @@ theorem thetaCuspAtomLikelihoodRatioJetThree_neg_abs_le
   have hcoeffLower : -(12 * z ^ 3) ≤ -p ^ 3 + 3 * p * alpha - beta := by
     have hp3 : p ^ 3 < (20 / 9 : ℝ) ^ 3 * z ^ 3 := by
       have hp3' := pow_lt_pow_left₀ hpUpper hp0.le (by norm_num : (3 : ℕ) ≠ 0)
-      convert hp3' using 1 <;> ring
+      convert hp3' using 1 <;> first | rfl | ring
     have hcubic : 8 * z + 48 < (1 / 6 : ℝ) * z ^ 3 := by
       let y := z - 9
       have hy : 0 < y := by dsimp [y, z]; linarith
@@ -751,7 +755,7 @@ theorem thetaCuspAtomLikelihoodRatioJetFour_abs_le
   have hz3 : z ^ 3 ≤ z ^ 4 := by
     calc
       z ^ 3 = z ^ 3 * 1 := by ring
-      _ ≤ z ^ 3 * z := by gcongr <;> linarith
+      _ ≤ z ^ 3 * z := by gcongr; linarith
       _ = z ^ 4 := by ring
   have hcoeff :
       |p ^ 4 - 6 * p ^ 2 * alpha + 3 * alpha ^ 2 + 4 * p * beta +

@@ -81,7 +81,7 @@ subpower loss over the two coefficient `ℓ²` masses. -/
 theorem integral_bourgainPairedTripleCloud_gaussian_subpower_of_perturbation
     {ε : ℝ} (hε : 0 < ε) :
     ∃ C : ℝ, 0 < C ∧
-      ∀ (H : ℕ) (hH : 0 < H)
+      ∀ (H : ℕ) (_hH : 0 < H)
         (p₁ p₂ : Fin H → BourgainPhaseSpace) {δ : ℝ},
       0 ≤ δ →
       δ ≤ 1 / 24 →

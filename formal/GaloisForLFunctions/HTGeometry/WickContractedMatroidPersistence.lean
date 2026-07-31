@@ -34,7 +34,7 @@ theorem contract_indep_of_contract_indep_of_subset
     {C C' I : Set α} (hCC' : C ⊆ C') (h : (M ／ C').Indep I) :
     (M ／ C).Indep I := by
   have h2 : ((M ／ C) ／ (C' \ C)).Indep I := by
-    rw [Matroid.contract_contract, Set.union_diff_cancel hCC']
+    rw [Matroid.contract_contract, Set.union_sdiff_cancel hCC']
     exact h
   exact h2.of_contract
 

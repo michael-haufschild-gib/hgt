@@ -143,7 +143,7 @@ three absolute jet bounds. -/
 theorem reflectionFourthCurvatureJet_one_add_lower
     {r₀ r₁ r₂ r₃ r₄ R₁ R₂ R₃ : ℝ}
     (hr₀ : 0 ≤ r₀) (hr₂ : 0 ≤ r₂) (hr₄ : 0 ≤ r₄)
-    (hR₁ : 0 ≤ R₁) (hR₂ : 0 ≤ R₂) (hR₃ : 0 ≤ R₃)
+    (hR₁ : 0 ≤ R₁) (_hR₂ : 0 ≤ R₂) (hR₃ : 0 ≤ R₃)
     (hr₁ : |r₁| ≤ R₁) (hr₂R : r₂ ≤ R₂) (hr₃ : |r₃| ≤ R₃) :
     -(4 * R₁ * R₃ + 3 * R₂ ^ 2 + 6 * R₁ ^ 4) ≤
       reflectionFourthCurvatureJet (1 + r₀) r₁ r₂ r₃ r₄ := by

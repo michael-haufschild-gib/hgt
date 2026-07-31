@@ -40,7 +40,7 @@ theorem analyticAt_analyticOrbitGerm
     {gamma : ℂ → A} (hgamma : AnalyticAt ℂ gamma 0) (hgamma0 : gamma 0 = 0)
     {F : A → E} (hF : AnalyticAt ℂ F 0) :
     AnalyticAt ℂ (analyticOrbitGerm gamma F) 0 := by
-  exact hF.comp_of_eq' hgamma hgamma0
+  exact hF.fun_comp_of_eq hgamma hgamma0
 
 omit [NormedAddCommGroup A] [NormedSpace ℂ A] [NormedSpace ℂ E] in
 /-- Physical orbit evaluation is fixed-shift evaluation of the composite germ. -/

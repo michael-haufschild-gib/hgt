@@ -55,7 +55,7 @@ theorem mvTranslate_add {σ : Type*} (v w : σ → ℂ) (P : MvPolynomial σ ℂ
 theorem mvTranslate_zero {σ : Type*} (P : MvPolynomial σ ℂ) :
     mvTranslate (fun _ => 0) P = P := by
   rw [mvTranslate]
-  simpa using MvPolynomial.bind₁_X_left P
+  simp
 
 /-- Translation directions fixing a polynomial, initially as an additive subgroup. -/
 def translationInvariantAddSubgroup {σ : Type*} (P : MvPolynomial σ ℂ) :
@@ -359,6 +359,7 @@ def orbitIncrement (u : β → ℕ → σ → ℂ) (b : β) (m : ℕ) : σ → �
 def survivingIncrementSet (u : β → ℕ → σ → ℂ) (S : Finset β) : Set (σ → ℂ) :=
   {v | ∃ b : β, b ∉ S ∧ ∃ m : ℕ, v = orbitIncrement u b m}
 
+omit [Fintype σ] [DecidableEq σ] in
 theorem additiveGridPoint_update (base : σ → ℂ) (u : β → ℕ → σ → ℂ)
     (m : β → ℕ) (b : β) (r : ℕ) :
     additiveGridPoint base u (Function.update m b r) =
@@ -378,6 +379,7 @@ theorem additiveGridPoint_update (base : σ → ℂ) (u : β → ℕ → σ → 
   rw [Finset.sum_eq_add_sum_sdiff_singleton_of_mem (Finset.mem_univ b)]
   ring
 
+omit [Fintype σ] [DecidableEq σ] in
 theorem additiveGridPoint_zeroColumn (base : σ → ℂ) (u : β → ℕ → σ → ℂ)
     (b : β) (r : ℕ) (m : β → ℕ) :
     additiveGridPoint (fun i => base i + u b r i)

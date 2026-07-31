@@ -85,7 +85,7 @@ theorem exists_good_line_center {ρ : ℂ} (Z : Finset ℂ) :
       intro h1 h2
       exact absurd ⟨h1, h2⟩ hqual
   have hIoo : (Set.Ioo (ρ.im - 1) (ρ.im + 1)).Infinite := Set.Ioo_infinite (by linarith)
-  obtain ⟨y, hyIoo, hyBad⟩ := (hIoo.diff hfin).nonempty
+  obtain ⟨y, hyIoo, hyBad⟩ := (hIoo.sdiff hfin).nonempty
   refine ⟨y, hyIoo.1, hyIoo.2, ?_⟩
   intro w hwZ hw1 hw2 heq
   exact hyBad (Set.mem_biUnion hwZ ⟨hw1, hw2, heq⟩)

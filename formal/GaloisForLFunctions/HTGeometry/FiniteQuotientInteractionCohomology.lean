@@ -555,7 +555,7 @@ theorem cofiniteTailDenseOn_primeObservableSubspaceShiftField_inf
     ← primeObservableSubspaceShiftField_sup, hABsup, hACsup] at hmeet
   exact hmeet
 
-@[reducible] noncomputable def classInvariantRestrictedFiniteDimensional
+theorem classInvariantRestrictedFiniteDimensional
     (r : Setoid W) [Fintype (FiniteQuotientType r)] :
     FiniteDimensional ℂ (ClassInvariantRestricted r) := by
   rw [← finiteClassDeltaRestricted_span_eq_invariant r]

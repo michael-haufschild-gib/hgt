@@ -226,22 +226,22 @@ theorem integral_thetaCuspColdTaylorResidualIntegrand
     (iteratedDeriv 6 thetaCuspFullSource 0 / 720) *
       (x ^ (2 * (j + 3)) * Real.exp (-L * x ^ 2))
   have h0 : IntegrableOn f0 (Ioi 0) := by
-    simpa only [f0] using hg0.const_mul (thetaCuspFullSource 0)
+    simpa only [MeasureTheory.IntegrableOn, f0] using hg0.const_mul (thetaCuspFullSource 0)
   have h1 : IntegrableOn f1 (Ioi 0) := by
-    simpa only [f1] using
+    simpa only [MeasureTheory.IntegrableOn, f1] using
       hg1.const_mul (iteratedDeriv 2 thetaCuspFullSource 0 / 2)
   have h2 : IntegrableOn f2 (Ioi 0) := by
-    simpa only [f2] using
+    simpa only [MeasureTheory.IntegrableOn, f2] using
       hg2.const_mul (iteratedDeriv 4 thetaCuspFullSource 0 / 24)
   have h3 : IntegrableOn f3 (Ioi 0) := by
-    simpa only [f3] using
+    simpa only [MeasureTheory.IntegrableOn, f3] using
       hg3.const_mul (iteratedDeriv 6 thetaCuspFullSource 0 / 720)
   have h01 := h0.add h1
   have h012 := h01.add h2
   have h01' : IntegrableOn (fun x => f0 x + f1 x) (Ioi 0) := by
-    simpa only [Pi.add_apply] using h01
+    exact h01
   have h012' : IntegrableOn (fun x => f0 x + f1 x + f2 x) (Ioi 0) := by
-    simpa only [Pi.add_apply] using h012
+    exact h012
   have hp :
       IntegrableOn
         (fun x : ℝ =>
@@ -254,7 +254,7 @@ theorem integral_thetaCuspColdTaylorResidualIntegrand
             (iteratedDeriv 6 thetaCuspFullSource 0 / 720) *
               (x ^ (2 * (j + 3)) * Real.exp (-L * x ^ 2)))
         (Ioi 0) :=
-    by simpa only [f0, f1, f2, f3, Pi.add_apply] using h012.add h3
+    by exact h012.add h3
   have hpolyint :
       (∫ x : ℝ in Ioi 0,
           thetaCuspFullSource 0 *
@@ -763,7 +763,9 @@ theorem tendsto_thetaCuspColdNormalizedMoment_quotient_sub_ratioJet_scaled
                     thetaCuspColdRatioJet L j)) /
             thetaCuspColdNormalizedMoment L j)
         atTop (nhds 0) := by
-    simpa using hquot
+    have hval : (0 - 0 * 1 + 0 : ℝ) / 1 = 0 := by norm_num
+    rw [hval] at hquot
+    exact hquot
   apply hquot'.congr'
   filter_upwards [eventually_ge_atTop (1 : ℝ)] with L hL
   have hL0 : 0 < L := by linarith

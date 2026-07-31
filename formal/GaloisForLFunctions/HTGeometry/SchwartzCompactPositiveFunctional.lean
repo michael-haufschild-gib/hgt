@@ -174,7 +174,7 @@ theorem CompactContinuousSchwartzApproximation.cutoffMass_nonnegative
   have hsupp : tsupport (realCompactIntervalCutoff A.radius) ⊆
       {t : ℝ | |t| ≤ A.radius + 2} := by
     rw [realCompactIntervalCutoff_tsupport]
-    simpa [abs_of_nonneg A.radius_nonneg]
+    simp [abs_of_nonneg A.radius_nonneg]
   have hpos := Q.compactIntervalDiagonalFunctional_nonnegative_real hQ hQnonneg
     (realCompactIntervalCutoff A.radius)
     (realCompactIntervalCutoff_nonnegative A.radius)
@@ -260,7 +260,7 @@ theorem CompactContinuousSchwartzApproximation.cauchySeq_diagonalSequence
     have heq : (2 * δ) * (C + 1) = ε / 2 := by
       dsimp [δ]
       field_simp
-      <;> ring
+      ; ring
     rw [heq] at hle
     linarith
   rw [Real.dist_eq]
@@ -314,7 +314,7 @@ theorem CompactContinuousSchwartzApproximation.tendsto_diagonalSequence_sub_zero
   have hCsupp : tsupport (realCompactIntervalCutoff T) ⊆
       {t : ℝ | |t| ≤ T + 2} := by
     rw [realCompactIntervalCutoff_tsupport]
-    simpa [abs_of_nonneg hT]
+    simp [abs_of_nonneg hT]
   have hCpos := Q.compactIntervalDiagonalFunctional_nonnegative_real hQ hQnonneg
     (realCompactIntervalCutoff T) (realCompactIntervalCutoff_nonnegative T)
     (show 0 ≤ T + 2 by linarith) hCsupp
@@ -412,7 +412,7 @@ theorem CompactContinuousSchwartzApproximation.tendsto_diagonalSequence_sub_zero
     have heq : (2 * δ) * (C + 1) = ε / 2 := by
       dsimp [δ]
       field_simp
-      <;> ring
+      ; ring
     rw [heq] at hle
     linarith
   rw [Real.dist_eq, sub_zero]
@@ -474,7 +474,7 @@ def CompactContinuousSchwartzApproximation.smul
   tendsto_uniform ε hε := by
     by_cases hc : c = 0
     · subst c
-      simp only [zero_smul, sub_self, abs_zero]
+      simp only [zero_smul]
       exact Filter.Eventually.of_forall (fun _n _t => by simpa using hε)
     · have hcabs : 0 < |c| := abs_pos.mpr hc
       have hδ : 0 < ε / |c| := div_pos hε hcabs
@@ -681,7 +681,6 @@ theorem CompactContinuousSchwartzApproximation.diagonalLimit_nonnegative
   have hηeq : 2 * η * (C + 1) = -A.diagonalLimit Q hQ hQnonneg := by
     dsimp [η]
     field_simp
-    <;> ring
   have hηC : η * C ≤ η * (C + 1) := by
     gcongr
     linarith

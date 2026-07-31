@@ -171,7 +171,7 @@ theorem X_pow_not_dvd_one {m : ℕ} (hm : 0 < m) : ¬ (X : ℚ[X]) ^ m ∣ (1 : 
     · simp
   have : (1 : ℚ) = 0 := by
     have hco := congrArg (fun p : ℚ[X] => Polynomial.coeff p 0) hq
-    simpa [Polynomial.coeff_one, hR] using hco
+    simp [Polynomial.coeff_one, hR] at hco
   exact one_ne_zero this
 
 /-! ### §4 Combined fakeness ⇔ Fitting zero -/

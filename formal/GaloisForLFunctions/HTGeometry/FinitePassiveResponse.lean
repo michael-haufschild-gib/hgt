@@ -90,8 +90,6 @@ theorem finiteTransitionPassiveResponse_im {α : Type*} [Fintype α]
   rw [map_sum]
   apply Finset.sum_congr rfl
   intro a _
-  change Complex.imCLM (∑ b, (intensity a b : ℂ) /
-    (z - ((energy a - energy b : ℝ) : ℂ))) = _
   rw [map_sum]
   apply Finset.sum_congr rfl
   intro b _

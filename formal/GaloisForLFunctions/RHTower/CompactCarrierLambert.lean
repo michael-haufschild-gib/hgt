@@ -141,7 +141,6 @@ theorem compactExponentialTest_pow
   simp only [ContinuousMap.pow_apply, compactExponentialTest_apply]
   rw [← Complex.exp_nat_mul]
   congr 1
-  push_cast
   ring
 
 /-- Pointwise, the Banach-algebra Lambert kernel is the usual geometric
@@ -199,7 +198,7 @@ theorem positiveLambertDerivative_compactFourierBorel
       have hmap : ((n + 1 : ℕ) : ℂ) * L q = L ((n + 1 : C(K, ℂ)) * q) := by
         calc
         ((n + 1 : ℕ) : ℂ) * L q = L (((n + 1 : ℕ) : ℂ) • q) := by
-          simpa [smul_eq_mul] using (L.map_smul (((n + 1 : ℕ) : ℂ)) q).symm
+          simp [smul_eq_mul]
         _ = L ((n + 1 : C(K, ℂ)) * q) := by
           congr 1
           ext k

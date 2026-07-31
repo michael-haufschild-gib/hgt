@@ -942,7 +942,7 @@ theorem riemannHypothesis_of_ccmXiScrew_all_exponential_moments
   riemannHypothesis_of_upper_logDeriv_extension
     ccmXiLogDerivContinuation
     (analyticOnNhd_ccmXiLogDerivContinuation_upperHalf hMom)
-    (fun w hw => ccmXiLogDerivContinuation_eq_logDeriv hw)
+    (fun _w hw => ccmXiLogDerivContinuation_eq_logDeriv hw)
 
 /-- Conjugating one first-clock rational atom is implemented exactly by the conjugate
 divisor-copy equivalence. -/

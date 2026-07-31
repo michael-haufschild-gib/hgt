@@ -53,7 +53,7 @@ lemma exists_analyticOn_factor_R_at_add_one (l' : Fin h7.m) :
       _ = (z - (l' + 1)) ^ (h7.r q hq0 h2mq) *
         ((z - (l' + 1)) ^ (o - h7.r q hq0 h2mq) * R'' z) := by
         rw [← Nat.add_sub_of_le ho, pow_add]
-        simp [mul_assoc, mul_left_comm, mul_comm]
+        simp [mul_left_comm, mul_comm]
   · intro z hz
     have hpow : AnalyticAt ℂ (fun z : ℂ => (z - (l' + 1)) ^ (o - h7.r q hq0 h2mq)) z := by
       exact (AnalyticAt.sub analyticAt_id analyticAt_const).pow (o - h7.r q hq0 h2mq)
@@ -165,6 +165,7 @@ lemma R_eq_pow_mul_R' (l' : Fin h7.m) (z : ℂ) :
 def evaluationPoints : Finset ℂ :=
    Finset.image (fun (k': ℕ) ↦ (k' + 1 : ℂ)) (Finset.range h7.m)
 
+omit [DecidableEq (h7.K →+* ℂ)] in
 lemma mem_evaluationPoints_iff {z : ℂ} :
     z ∈ h7.evaluationPoints ↔ ∃ k : Fin h7.m, z = k + 1 := by
   simp [evaluationPoints, Finset.mem_image, Fin.exists_iff]
@@ -173,14 +174,17 @@ lemma mem_evaluationPoints_iff {z : ℂ} :
 def evaluationPoints_compl : Set ℂ := (h7.evaluationPoints)ᶜ
 
 
+omit [DecidableEq (h7.K →+* ℂ)] in
 lemma S_U_isOpen : IsOpen (evaluationPoints_compl h7) :=
   isOpen_compl_iff.mpr (Finset.isClosed _)
 
 
+omit [DecidableEq (h7.K →+* ℂ)] in
 lemma S.U_nhds :
   ∀ z, z ∈ evaluationPoints_compl h7 → (evaluationPoints_compl h7) ∈ nhds z :=
-  fun z hz ↦ IsOpen.mem_nhds (S_U_isOpen h7) hz
+  fun _z hz ↦ IsOpen.mem_nhds (S_U_isOpen h7) hz
 
+omit [DecidableEq (h7.K →+* ℂ)] in
 lemma sub_ne_zero_of_mem_evaluationPoints_compl {z : ℂ}
     (hz : z ∈ h7.evaluationPoints_compl) (k : Fin h7.m) :
     z - (k + 1 : ℂ) ≠ 0 := by
@@ -270,7 +274,7 @@ lemma SR_eq_SRl0 {z : ℂ} :
       ∏ k' ∈ Finset.range h7.m \ {↑(h7.l₀' q hq0 h2mq)},
         (((h7.l₀' q hq0 h2mq + 1) - (k' + 1)) / (z - (k' + 1 : ℂ))) ^
         (h7.r q hq0 h2mq)) := by
-    simp [hpow]
+    simp
     grind
   _ =
     ((z - a) ^ (h7.r q hq0 h2mq) *
@@ -520,7 +524,7 @@ lemma holS :
         by_cases hw0 : w = (h7.l₀' q hq0 h2mq : ℂ) + 1
         · unfold S
           let Hw : ∃ k' : Fin h7.m, w = (k' : ℂ) + 1 := ⟨h7.l₀' q hq0 h2mq, hw0⟩
-          simp [Hw, hw0]
+          simp [hw0]
         · have hwCompl : w ∈ evaluationPoints_compl h7 := by
             intro hwEval
             rcases (h7.mem_evaluationPoints_iff).1 hwEval with ⟨k, rfl⟩
@@ -530,7 +534,7 @@ lemma holS :
               simpa [dist_add_right] using this
             have hk : (k : ℕ) = (h7.l₀' q hq0 h2mq : ℕ) :=
               (dist_nat_cast_lt_one (k : ℕ) (h7.l₀' q hq0 h2mq : ℕ)).1 hdist
-            exact hw0 (by simpa [hk])
+            exact hw0 (by simp [hk])
           exact (h7.SR_eq_SRl0 q hq0 h2mq hwCompl).trans
             (h7.S_eq_restricted_of_mem_compl q hq0 h2mq hwCompl)
       · have hU :
@@ -562,7 +566,7 @@ lemma holS :
             apply Hzl0
             calc
               z = (l' : ℂ) + 1 := hl'
-              _ = w := by simpa [hw1]
+              _ = w := by simp [hw1]
               _ = (h7.l₀' q hq0 h2mq : ℂ) + 1 := hw0
           have hchoose : Hw.choose = l' := by
             apply Fin.ext
@@ -584,11 +588,11 @@ lemma holS :
               simpa [dist_add_right] using this
             have hk : (k : ℕ) = (l' : ℕ) :=
               (dist_nat_cast_lt_one (k : ℕ) (l' : ℕ)).1 hdist
-            exact hw1 (by simpa [hk])
+            exact hw1 (by simp [hk])
           have hl_ne : l' ≠ h7.l₀' q hq0 h2mq := by
             intro hEq
             apply Hzl0
-            simpa [hl', hEq]
+            simp [hl', hEq]
           exact (h7.SR_eq_SRl q hq0 h2mq l' hl_ne hwCompl).trans
             (h7.S_eq_restricted_of_mem_compl q hq0 h2mq hwCompl)
       · have hl_ne : l' ≠ h7.l₀' q hq0 h2mq := by
@@ -621,7 +625,7 @@ lemma hcauchy :
     (h7.S q hq0 h2mq) (h7.l₀' q hq0 h2mq + 1) := by
   apply two_pi_I_inv_smul_circleIntegral_sub_inv_smul_of_differentiable_on_off_countable
     (s := (∅ : Set ℂ))
-  · simpa using (Set.countable_empty : Set.Countable (∅ : Set ℂ))
+  · exact Set.countable_empty
   · have hmpos : (0 : ℝ) < h7.m := by
       simp only [Nat.cast_pos]
       exact Nat.zero_lt_succ (2 * h7.h + 1)
@@ -643,7 +647,7 @@ lemma hcauchy :
   · intro x hx
     simpa using AnalyticAt.differentiableAt (holS h7 q hq0 h2mq x)
 
-lemma S_eq_SR_on_circle : ∀ (z : ℂ) (hz : z ∈ Metric.sphere 0
+lemma S_eq_SR_on_circle : ∀ (z : ℂ) (_hz : z ∈ Metric.sphere 0
     (h7.m * (1 + (h7.r q hq0 h2mq : ℝ) / (q : ℝ)))),
   h7.S q hq0 h2mq z = h7.SR q hq0 h2mq z := by
   intros z hz

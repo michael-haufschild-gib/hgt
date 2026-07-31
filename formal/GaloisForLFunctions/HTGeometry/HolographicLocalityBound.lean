@@ -143,6 +143,7 @@ def completeBinaryMembraneSupport
     (h : Set.powersetCard I 2) : Finset I :=
   h
 
+omit [Fintype I] in
 theorem completeBinaryMembraneSupport_valence :
     MembraneValenceAtMost (completeBinaryMembraneSupport (I := I)) 2 := by
   intro h

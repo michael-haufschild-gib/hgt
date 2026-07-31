@@ -132,10 +132,13 @@ theorem thetaCuspTailSecondDensity_sine_identity (t : ℝ) :
   let v : ℝ → ℝ := thetaCuspTailSecondDensity
   let v' : ℝ → ℝ := fun x => 4 * thetaCuspTailDerivative 3 x
   have hu (x : ℝ) : HasDerivAt u (u' x) x := by
-    dsimp [u, u']
-    convert (hasDerivAt_const x 1).sub
-      ((Real.hasDerivAt_cos (t * x)).comp x ((hasDerivAt_id x).const_mul t)) using 1
-    ring
+    have h := (hasDerivAt_const x 1).sub
+      ((Real.hasDerivAt_cos (t * x)).comp x ((hasDerivAt_id x).const_mul t))
+    have hval : (0 : ℝ) - -Real.sin (t * x) * (t * 1) = u' x := by
+      dsimp [u']
+      ring
+    rw [hval] at h
+    exact h
   have hv (x : ℝ) : HasDerivAt v (v' x) x := by
     simpa only [v, v'] using hasDerivAt_thetaCuspTailSecondDensity_fromAtoms x
   have huv' : IntegrableOn (u * v') (Ioi 0) := by
@@ -161,11 +164,16 @@ theorem thetaCuspTailSecondDensity_sine_identity (t : ℝ) :
       ((continuous_const.sub (Real.continuous_cos.comp
         (continuous_const.mul continuous_id)))).mul
           (continuous_iff_continuousAt.mpr fun x => (hv x).continuousAt)
-    simpa [u, v] using (hc.continuousAt : Tendsto (u * v) (𝓝 (0 : ℝ)) _).mono_left inf_le_left
+    have h2 : Tendsto (u * v) (𝓝 0 ⊓ 𝓟 (Ioi 0)) (𝓝 0) := by
+      simpa [u, v] using
+        (hc.continuousAt : Tendsto (u * v) (𝓝 (0 : ℝ)) _).mono_left inf_le_left
+    exact h2
   have hinfty : Tendsto (u * v) atTop (𝓝 0) := by
     have hv0 : Tendsto v atTop (𝓝 0) := by
-      simpa [v, thetaCuspTailSecondDensity] using
-        (thetaCuspTailDerivative_tendsto_atTop_zero 2).const_mul 4
+      have h2 : Tendsto (fun x : ℝ => 4 * thetaCuspTailDerivative 2 x)
+          atTop (𝓝 0) := by
+        simpa using (thetaCuspTailDerivative_tendsto_atTop_zero 2).const_mul 4
+      exact h2
     have hcos0 : Tendsto
         (fun x : ℝ => Real.cos (t * x) * v x) atTop (𝓝 0) := by
       have h : Tendsto
@@ -275,7 +283,7 @@ theorem thetaCuspTailSecondDensityPhaseValue_im_ofReal_eq_sine
       rw [Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im,
         zero_mul, add_zero, hphaseIm]
       congr 1
-      ring
+      ring_nf
 
 theorem thetaCuspTailSecondDensityPhaseValue_im_ofReal_pos
     {t : ℝ} (ht : 0 < t) :
@@ -343,8 +351,11 @@ theorem integrableOn_thetaCuspTailSecondDensity_mul_exp_neg
     integrableOn_thetaCuspTailSecondDensity_mul_phase_of_neg_one_lt_im
       (z := I * (v : ℂ)) (by simpa using hv)
   have hre := h.re
-  simpa only [spectralTranslationPhase_I_mul, ← Complex.ofReal_mul,
-    ofReal_re] using hre
+  have h2 : Integrable (fun x : ℝ =>
+      RCLike.re ((thetaCuspTailSecondDensity x * Real.exp (-v * x) : ℝ) : ℂ))
+      (volume.restrict (Ioi 0)) := by
+    simpa only [spectralTranslationPhase_I_mul, ← Complex.ofReal_mul] using hre
+  exact h2
 
 /-- Strict orientation of the two full-density Laplace channels. -/
 theorem thetaCuspTailSecondDensityRealLaplace_lt_neg

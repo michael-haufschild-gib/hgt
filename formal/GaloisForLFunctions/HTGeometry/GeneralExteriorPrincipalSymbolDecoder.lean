@@ -44,6 +44,7 @@ def principalBracketDecoder
     Module.End K M →ₗ[K] ⋀[K]^2 (ι → K) :=
   Classical.choose (LinearMap.exists_extend (principalBracketSpanDecoder symbol hLI))
 
+omit [CharZero K] in
 theorem principalBracketDecoder_apply
     (symbol : (ι → K) →ₗ[K] Module.End K M)
     (hLI : LinearIndependent K (principalBracketPair symbol))
@@ -75,6 +76,7 @@ def decodedPrincipalBracketMap
     (⋀[K]^2 (ι → K)) →ₗ[K] ⋀[K]^2 (ι → K) :=
   (principalBracketDecoder symbol hLI).comp (endomorphismCommutatorMap symbol)
 
+omit [CharZero K] in
 /-- Independent coordinate commutators give a literal left inverse on the full exterior square. -/
 theorem decodedPrincipalBracketMap_eq_id
     (symbol : (ι → K) →ₗ[K] Module.End K M)
@@ -97,6 +99,7 @@ theorem decodedPrincipalBracketMap_eq_id
   simpa [principalBracketPair, quantumPairWedge, p] using
     (principalBracketDecoder_apply symbol hLI p)
 
+omit [CharZero K] in
 /-- **General principal-symbol theorem.**  Linear independence of the coordinate commutators is
 exactly sufficient for injectivity of the full exterior commutator map. -/
 theorem endomorphismCommutatorMap_injective_of_principalBracketPair_linearIndependent

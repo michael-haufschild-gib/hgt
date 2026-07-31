@@ -237,7 +237,7 @@ theorem integral_bourgainRealGaussianL2Integrand_le
       intro j hj
       have hstar :
           ‖(starRingEnd ℂ) (b j)‖ = ‖b j‖ := by
-        simpa using norm_star (b j)
+        simp
       rw [norm_mul, norm_mul, hstar, Complex.norm_real,
         Real.norm_eq_abs, abs_of_pos (Real.exp_pos _)]
       ring

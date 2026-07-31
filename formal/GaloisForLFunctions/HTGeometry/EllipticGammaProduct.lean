@@ -291,10 +291,10 @@ theorem logDeriv_ellipticGammaForwardFactor
       (-(2 * Real.pi * I) * (c / X z)) z := by
     convert! (hasDerivAt_const z c).div hX hX0 using 1
     simp only [X] at hX0 ⊢
-    field_simp [hX0] <;> ring
+    field_simp [hX0] ; ring
   have hfac : HasDerivAt (ellipticGammaForwardFactor σ τ jk)
       (2 * Real.pi * I * (c / X z)) z := by
-    convert! (hasDerivAt_const z 1).sub harg using 1 <;> ring
+    convert! (hasDerivAt_const z 1).sub harg using 1 ; ring
   rw [logDeriv_apply, hfac.deriv]
   rw [ellipticGammaForwardFactor, ellipticGammaForwardArgument,
     ellipticGammaLogAtom]
@@ -314,10 +314,10 @@ theorem logDeriv_ellipticGammaBackwardFactor
   have hX := hasDerivAt_ellipticThetaCoordinate τ z
   have harg : HasDerivAt (fun w => c * X w)
       (2 * Real.pi * I * (c * X z)) z := by
-    convert! hX.const_mul c using 1 <;> ring
+    convert! hX.const_mul c using 1 ; ring
   have hfac : HasDerivAt (ellipticGammaBackwardFactor σ τ jk)
       (-(2 * Real.pi * I) * (c * X z)) z := by
-    convert! (hasDerivAt_const z 1).sub harg using 1 <;> ring
+    convert! (hasDerivAt_const z 1).sub harg using 1 ; ring
   rw [logDeriv_apply, hfac.deriv]
   rw [ellipticGammaBackwardFactor, ellipticGammaBackwardArgument,
     ellipticGammaLogAtom]

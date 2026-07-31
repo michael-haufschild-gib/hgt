@@ -303,7 +303,7 @@ theorem thetaCuspRawEvenMoment_cross_le (k n : ℕ) :
     | zero => simp
     | succ n ih =>
         exact ih.trans (by
-          convert thetaCuspRawEvenMoment_ratio_mono (k + n) using 1 <;> first | rfl | omega)
+          convert thetaCuspRawEvenMoment_ratio_mono (k + n) using 1 <;> rfl)
   rw [div_le_div_iff₀ (thetaCuspRawEvenMoment_pos k)
     (thetaCuspRawEvenMoment_pos (k + n))] at hratio
   nlinarith

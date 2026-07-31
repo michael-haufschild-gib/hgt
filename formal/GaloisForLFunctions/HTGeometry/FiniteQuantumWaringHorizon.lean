@@ -51,12 +51,13 @@ theorem finiteQuantumTorusSymbol_pow
   rw [← Finset.sum_smul]
   rfl
 
+omit [Fact (1 < d)] in
 /-- The phase-space delta at the origin is nonzero. -/
 theorem finiteQuantumRoot_ne_zero :
     (finiteQuantumRoot (K := K) (ι := Fin n) (d := d)) ≠ 0 := by
   intro h
   have h0 := congrFun h (0 : FiniteQuantumState (Fin n) d)
-  simpa [finiteQuantumRoot] using h0
+  simp [finiteQuantumRoot] at h0
 
 /-- **Exact all-degree finite quantum horizon.**  Complete differential dependence in the
 rational observable field occurs exactly on the diagonal degree-`d` hypersurface. -/
@@ -106,6 +107,7 @@ theorem finiteQuantumWaringField_dependenceHorizon_eq
   intro v
   exact finiteQuantumTorusSymbol_pow q hq (L v)
 
+omit [CharZero K] in
 /-- An injective family of Waring linear forms retains every bivector of the law space after
 shift suspension: no two-plane incompatibility is lost by scalarization. -/
 theorem finiteQuantumWaring_derivationCommutatorMap_injective

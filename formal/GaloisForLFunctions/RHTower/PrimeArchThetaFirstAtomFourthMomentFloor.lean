@@ -122,7 +122,7 @@ theorem exp_one_quarter_lt_thetaCuspQuarterExpMajorant :
 
 theorem exp_nat_quarter_le_thetaCuspQuarterExpMajorant_pow (j : ℕ) :
     Real.exp ((j : ℝ) / 4) ≤ thetaCuspQuarterExpMajorant ^ j := by
-  rw [show (j : ℝ) / 4 = (j : ℕ) * (1 / 4 : ℝ) by push_cast; ring,
+  rw [show (j : ℝ) / 4 = (j : ℕ) * (1 / 4 : ℝ) by ring,
     Real.exp_nat_mul]
   exact pow_le_pow_left₀ (Real.exp_pos _).le
     exp_one_quarter_lt_thetaCuspQuarterExpMajorant.le j
@@ -224,7 +224,7 @@ theorem three_div_seventy_lt_exp_neg_pi :
   have he114 : Real.exp (1 / 14 : ℝ) ≤ 14 / 13 := by
     have h := Real.exp_bound_div_one_sub_of_interval
       (x := (1 / 14 : ℝ)) (by norm_num) (by norm_num)
-    convert h using 1 <;> norm_num
+    convert h using 1 ; norm_num
   have he17 : Real.exp (1 / 7 : ℝ) ≤ (14 / 13 : ℝ) ^ 2 := by
     rw [show (1 / 7 : ℝ) = (2 : ℕ) * (1 / 14 : ℝ) by norm_num,
       Real.exp_nat_mul]
@@ -488,7 +488,6 @@ theorem intervalIntegral_pow_mul_sub_pow_eq_thetaCuspIntervalPowSubMass
     apply Finset.sum_congr rfl
     intro q hq
     rw [pow_add]
-    push_cast
     ring]
   rw [intervalIntegral.integral_finsetSum]
   · apply Finset.sum_congr rfl
@@ -533,14 +532,14 @@ theorem intervalIntegral_thetaCuspFirstAtomFourthTaylorShape_eq_mass
     rw [thetaCuspExpTaylorFive_eq_sum (2 * x),
       thetaCuspExpTaylorFive_eq_sum (k * (b - x))]
     simp_rw [mul_pow, pow_add]
-    simp only [Finset.mul_sum, Finset.sum_mul]
+    simp only [Finset.mul_sum]
     rw [Finset.sum_comm]
     simp only [mul_sub, sub_mul]
     rw [Finset.sum_sub_distrib]
     simp only [Finset.mul_sum, Finset.sum_mul]
     congr 3 <;> ring
     funext y
-    congr 2 <;> ring
+    congr 2 ; ring
     funext n
     ring
   rw [hfun]

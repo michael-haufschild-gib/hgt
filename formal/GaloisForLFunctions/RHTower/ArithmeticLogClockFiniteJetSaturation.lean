@@ -423,7 +423,7 @@ theorem hardyPrependZeroVec_add (x y : PrimeHardy) :
   | zero => simp
   | succ n =>
       have hxy := congrFun (lp.coeFn_add x y) n
-      simpa using hxy
+      simp
 
 theorem hardyPrependZeroVec_smul (c : ℝ) (x : PrimeHardy) :
     hardyPrependZeroVec (c • x) = c • hardyPrependZeroVec x := by

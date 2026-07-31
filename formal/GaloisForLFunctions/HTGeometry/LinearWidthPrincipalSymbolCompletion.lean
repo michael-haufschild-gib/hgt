@@ -29,6 +29,7 @@ variable {K : Type u} [Field K] [CharZero K]
 abbrev LinearPrincipalCompletionState (M : Type v) (n d : ℕ) :=
   CyclicClockState M (LinearWidthDetectorIndex n) d
 
+omit [Fact (1 < d)] in
 /-- The completed boundary has exactly `d(2n+1)` scalar coordinate slots. -/
 theorem linearPrincipalCompletionCoordinate_card :
     Fintype.card (LinearWidthDetectorIndex n × ZMod d) = (2 * n + 1) * d := by
@@ -59,6 +60,8 @@ def linearCompletionDetectorSymbol :
   quantumGeneratorSymbol
     (fun i : Fin n ↦ linearCompletionDetectorGenerator (K := K) (M := M) (d := d) i)
 
+omit [NeZero d] [Fact (1 < d)] in
+omit [CharZero K] in
 @[simp]
 theorem linearCompletionDetectorSymbol_basisFun (i : Fin n) :
     linearCompletionDetectorSymbol (K := K) (M := M) (d := d)
@@ -67,6 +70,7 @@ theorem linearCompletionDetectorSymbol_basisFun (i : Fin n) :
   exact quantumGeneratorSymbol_basisFun
     (fun j : Fin n ↦ linearCompletionDetectorGenerator (K := K) (M := M) (d := d) j) i
 
+omit [CharZero K] [NeZero d] [Fact (1 < d)] in
 /-- A clocked detector value is the unclocked detector applied to the preceding clock slice. -/
 theorem linearCompletionDetectorSymbol_apply
     (c : Fin n → K) (f : LinearPrincipalCompletionState M n d)
@@ -79,6 +83,7 @@ theorem linearCompletionDetectorSymbol_apply
     quantumGeneratorSymbol, Fintype.linearCombination_apply,
     linearCompletionDetectorGenerator]
 
+omit [CharZero K] [NeZero d] [Fact (1 < d)] in
 /-- Clock shifting does not alter the three-step nilpotence of the aggregate detector pencil. -/
 theorem linearCompletionDetectorSymbol_cube_zero
     (c : Fin n → K) :
@@ -94,16 +99,18 @@ theorem linearCompletionDetectorSymbol_cube_zero
   simpa [pow_succ, Module.End.mul_apply,
     linearCompletionDetectorSymbol_apply, slice] using hx
 
+omit [CharZero K] [NeZero d] [Fact (1 < d)] in
 /-- At every degree `d ≥ 3`, the clocked detector contributes zero to the scalar law. -/
 theorem linearCompletionDetectorSymbol_pow_degree_zero
     (hd : 3 ≤ d) (c : Fin n → K) :
     (linearCompletionDetectorSymbol (K := K) (M := M) (d := d) c) ^ d = 0 := by
   let D := linearCompletionDetectorSymbol (K := K) (M := M) (d := d) c
   calc
-    D ^ d = D ^ (3 + (d - 3)) := by congr 1 <;> omega
+    D ^ d = D ^ (3 + (d - 3)) := by congr 1 ; omega
     _ = D ^ 3 * D ^ (d - 3) := pow_add D 3 (d - 3)
     _ = 0 := by rw [linearCompletionDetectorSymbol_cube_zero]; simp
 
+omit [CharZero K] in
 /-- Internal endomorphisms commute through the coordinate-only membrane action. -/
 theorem map_linearWidthDetectorGenerator
     (A : Module.End K M) (i : Fin n)
@@ -116,6 +123,7 @@ theorem map_linearWidthDetectorGenerator
   | membrane => simp
   | upper j => by_cases hji : j = i <;> simp [hji]
 
+omit [CharZero K] [Fact (1 < d)] in
 /-- The scalar clock `q`-commutes with every clocked membrane generator. -/
 theorem linearCompletionClockLift_mul_detectorGenerator
     (q : K) (hq : q ^ d = 1) (A : Module.End K M) (i : Fin n) :
@@ -141,6 +149,7 @@ theorem linearCompletionClockLift_mul_detectorGenerator
   rw [map_smul]
   simp [smul_smul, mul_comm]
 
+omit [CharZero K] [Fact (1 < d)] in
 /-- The scalar clock `q`-commutes with the entire membrane detector pencil. -/
 theorem linearCompletionClockLift_mul_detectorSymbol
     (q : K) (hq : q ^ d = 1) (A : Module.End K M) (c : Fin n → K) :
@@ -197,6 +206,8 @@ theorem linearWidthPrincipalSymbolCompletion_pow
     linearCompletionDetectorSymbol_pow_degree_zero hd]
   simp
 
+omit [Fact (1 < d)] in
+omit [CharZero K] in
 @[simp]
 theorem linearWidthPrincipalSymbolCompletion_basisFun
     (q : K) (hq : q ^ d = 1)
@@ -216,6 +227,7 @@ def linearPrincipalCompletionRoot (m : M) :
     LinearPrincipalCompletionState M n d :=
   Pi.single .membrane (Pi.single 0 m)
 
+omit [NeZero d] [Fact (1 < d)] in
 theorem linearPrincipalCompletionRoot_ne_zero
     (m : M) (hm : m ≠ 0) :
     linearPrincipalCompletionRoot (n := n) (d := d) m ≠ 0 := by
@@ -244,6 +256,8 @@ def linearPrincipalCompletionPairReadout (m : M) :
     funext p k
     simp
 
+omit [NeZero d] [Fact (1 < d)] in
+omit [CharZero K] in
 /-- The clocked detector bracket has one private pair coefficient at clock degree two. -/
 theorem linearPrincipalCompletionPairReadout_detectorBracket
     (m : M) (r : QuantumLawPair (Fin n)) :
@@ -276,7 +290,7 @@ theorem linearPrincipalCompletionPairReadout_detectorBracket
         simp [linearPrincipalCompletionPairInput,
           linearWidthDetectorLowerState, htwo]
       · simp [linearPrincipalCompletionPairInput,
-          linearWidthDetectorLowerState, Pi.single_apply, htwo, hy]
+          linearWidthDetectorLowerState, htwo, hy]
     rw [hslice]
     have hbracket :
         (linearWidthDetectorGenerator (K := K) (M := M) r.lower *
@@ -304,14 +318,15 @@ theorem linearPrincipalCompletionPairReadout_detectorBracket
       funext y
       by_cases hy : y = (.lower p.upper : LinearWidthDetectorIndex n)
       · subst y
-        simp [linearPrincipalCompletionPairInput, Pi.single_apply, hclock]
-      · simp [linearPrincipalCompletionPairInput, Pi.single_apply, hy]
+        simp [linearPrincipalCompletionPairInput, hclock]
+      · simp [linearPrincipalCompletionPairInput, hy]
     rw [hslice]
     by_cases hpr : p = r
     · subst p
-      simp [Pi.single_apply, hk, Ne.symm hk]
-    · simp [Pi.single_apply, hpr]
+      simp [hk]
+    · simp [hpr]
 
+omit [CharZero K] [Fact (1 < d)] in
 theorem linearPrincipalCompletionPairReadout_clock_mul_clock
     (q : K) (hq : q ^ d = 1) (m : M) (A B : Module.End K M) :
     linearPrincipalCompletionPairReadout (K := K) (n := n) (d := d) m
@@ -321,6 +336,7 @@ theorem linearPrincipalCompletionPairReadout_clock_mul_clock
   simp [linearPrincipalCompletionPairReadout, Module.End.mul_apply,
     cyclicClockLift, linearPrincipalCompletionPairInput]
 
+omit [CharZero K] [Fact (1 < d)] in
 theorem linearPrincipalCompletionPairReadout_clock_mul_detector
     (q : K) (hq : q ^ d = 1) (m : M) (A : Module.End K M) (i : Fin n) :
     linearPrincipalCompletionPairReadout (K := K) (n := n) (d := d) m
@@ -331,6 +347,7 @@ theorem linearPrincipalCompletionPairReadout_clock_mul_detector
     cyclicClockLift, linearCompletionDetectorGenerator,
     linearWidthDetectorGenerator, linearPrincipalCompletionPairInput]
 
+omit [CharZero K] [Fact (1 < d)] in
 theorem linearPrincipalCompletionPairReadout_detector_mul_clock
     (q : K) (hq : q ^ d = 1) (m : M) (A : Module.End K M) (i : Fin n) :
     linearPrincipalCompletionPairReadout (K := K) (n := n) (d := d) m
@@ -341,6 +358,8 @@ theorem linearPrincipalCompletionPairReadout_detector_mul_clock
     cyclicClockLift, linearCompletionDetectorGenerator,
     linearWidthDetectorGenerator, linearPrincipalCompletionPairInput]
 
+omit [Fact (1 < d)] in
+omit [CharZero K] in
 theorem linearPrincipalCompletionPairReadout_principalBracketPair
     (q : K) (hq : q ^ d = 1)
     (A₀ : (Fin n → K) →ₗ[K] Module.End K M) (m : M)
@@ -362,6 +381,8 @@ theorem linearPrincipalCompletionPairReadout_principalBracketPair
   simpa using linearPrincipalCompletionPairReadout_detectorBracket
     (K := K) (n := n) (d := d) m r
 
+omit [Fact (1 < d)] in
+omit [CharZero K] in
 theorem linearWidthPrincipalSymbolCompletion_principalBracketPair_linearIndependent
     (q : K) (hq : IsPrimitiveRoot q d)
     (A₀ : (Fin n → K) →ₗ[K] Module.End K M)
@@ -384,6 +405,8 @@ theorem linearWidthPrincipalSymbolCompletion_principalBracketPair_linearIndepend
   simpa [Function.comp_def,
     linearPrincipalCompletionPairReadout_principalBracketPair] using hsingle
 
+omit [Fact (1 < d)] in
+omit [CharZero K] in
 /-- **Linear-width universal principal-symbol theorem above degree two.** -/
 theorem linearWidthPrincipalSymbolCompletion_endomorphismCommutatorMap_injective
     (q : K) (hq : IsPrimitiveRoot q d)

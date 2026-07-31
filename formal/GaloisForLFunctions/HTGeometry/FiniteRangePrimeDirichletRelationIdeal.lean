@@ -196,7 +196,7 @@ theorem PrimeCoefficientTailPivotPresentation.differentialBasis
 /-- The labelled differential basis has the exact rectangular rank `card(A) * card(B)`. -/
 theorem PrimeCoefficientTailPivotPresentation.differentialBasis_card
     {B R A : Type*} [Fintype B] [Fintype A]
-    (P : PrimeCoefficientTailPivotPresentation B R) :
+    (_P : PrimeCoefficientTailPivotPresentation B R) :
     Fintype.card (B × A) = Fintype.card A * Fintype.card B := by
   rw [Fintype.card_prod, Nat.mul_comm]
 

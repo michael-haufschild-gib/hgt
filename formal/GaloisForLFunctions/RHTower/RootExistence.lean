@@ -83,7 +83,7 @@ theorem exists_root_of_finite {n : ℕ} (hn : 0 < n) (k : ℕ) :
           rw [hx0] at this
           exact (mul_eq_zero.mp this.symm).resolve_left hne
       have hZh : {s ∈ U | h s = 0}.Finite := by
-        rw [hZh_eq]; exact hZ.diff
+        rw [hZh_eq]; exact hZ.sdiff
       have hZh_card : hZh.toFinset.card ≤ k := by
         have hsub : hZh.toFinset = hZ.toFinset.erase ρ := by
           ext x

@@ -119,7 +119,7 @@ theorem fieldOneFiniteAdeleIntegralBruhatTest_ne_zero :
     fieldOneFiniteAdeleIntegralBruhatTest ≠ 0 := by
   intro h
   have hz := congrArg (fun f : FieldOneFiniteBruhatSchwartz => f.1 0) h
-  simpa using hz
+  simp at hz
 
 /-- Every finite Weyl multiplier fixes the value at zero of the canonical
 integral test. -/

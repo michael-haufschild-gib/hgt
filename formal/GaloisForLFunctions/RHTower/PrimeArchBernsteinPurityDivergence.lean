@@ -30,18 +30,23 @@ theorem exists_maximalAmplitude_unit_xiCentralBernsteinPencil_eventually_exponen
   have hu : Tendsto u cofinite (nhds 0) := by
     have hzero : Tendsto xiZeroCopyReciprocalSquare cofinite (nhds 0) :=
       summable_xiZeroCopyReciprocalSquare.tendsto_cofinite_zero
-    simpa [u, xiEndpointNormalizedReciprocalSquare, R] using
-      hzero.div_const (primeArchEndpointHausdorffRadius : ℂ)
+    have h2 : Tendsto (fun q : XiZeroCopy =>
+        xiZeroCopyReciprocalSquare q / (primeArchEndpointHausdorffRadius : ℂ))
+        cofinite (nhds 0) := by
+      simpa using hzero.div_const (primeArchEndpointHausdorffRadius : ℂ)
+    exact h2
   have hA : Tendsto A cofinite (nhds 1) := by
     have hone : Tendsto (fun _ : XiZeroCopy => (1 : ℂ)) cofinite (nhds 1) :=
       tendsto_const_nhds
     have h := hu.norm.add (hone.sub hu).norm
-    simpa only [A, xiEndpointBernsteinAtomAmplitudeBase, u, norm_zero,
-      sub_zero, norm_one, zero_add] using h
+    have h2 : Tendsto (fun q : XiZeroCopy => ‖u q‖ + ‖1 - u q‖)
+        cofinite (nhds 1) := by
+      simpa only [norm_zero, sub_zero, norm_one, zero_add] using h
+    exact h2
   have ha : Tendsto a cofinite (nhds 1) := by
     have h := Complex.continuous_ofReal.tendsto 1
     have := h.comp hA
-    simpa only [a, Complex.ofReal_one] using this
+    exact this
   obtain ⟨q₀, hq₀im0⟩ :=
     exists_xiZeroCopyReciprocalSquare_im_ne_zero_of_not_riemannHypothesis hRH
   have hq₀uim : (u q₀).im ≠ 0 := by

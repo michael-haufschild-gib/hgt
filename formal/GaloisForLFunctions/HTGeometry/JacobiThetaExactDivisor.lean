@@ -104,7 +104,7 @@ theorem thetaRectangle_zero_count_one {τ z₁ : ℂ} (hτ : 0 < τ.im)
   have hcodK : ((jacobiTheta₂ · τ) ⁻¹' {0}ᶜ) ∈ codiscreteWithin K :=
     Filter.codiscreteWithin_mono (Set.subset_univ _) hcod
   have hZ : Z.Finite := by
-    refine (hKcompact.finite_diff_of_mem_codiscreteWithin hcodK).subset ?_
+    refine (hKcompact.finite_sdiff_of_mem_codiscreteWithin hcodK).subset ?_
     intro z hz
     rw [Set.mem_sep_iff] at hz
     exact ⟨hz.1, by simp [Set.mem_preimage, hz.2]⟩

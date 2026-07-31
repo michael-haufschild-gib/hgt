@@ -1108,11 +1108,11 @@ theorem phaseAdaptedTwoEndpointProuhetPolynomial_eq_zero_add_smul_slope
     ext n
     cases n with
     | zero =>
-        simpa [halpha]
+        simp [halpha]
     | succ n =>
         cases n with
         | zero =>
-            simpa [hbeta]
+            simp [hbeta]
         | succ n =>
             simp
   change B * (C (alpha tau) + C (beta tau) * X) =
@@ -1161,7 +1161,7 @@ theorem realPolynomialComplexCoefficientPairing_tendsto_atTop_zero
     Tendsto (fun N : ℕ =>
       realPolynomialComplexCoefficientPairing P (B N)) atTop (nhds 0) := by
   unfold realPolynomialComplexCoefficientPairing Polynomial.sum
-  have hsum := tendsto_finset_sum P.support (fun j _hj =>
+  have hsum := tendsto_finsetSum P.support (fun j _hj =>
     (hB j).const_mul (P.coeff j : ℂ))
   simpa using hsum
 
@@ -1815,7 +1815,6 @@ theorem realPolynomialComplexCoefficientPairing_geometric
   rw [Finset.sum_mul]
   apply Finset.sum_congr rfl
   intro j _hj
-  push_cast
   ring
 
 /-- A fixed real polynomial converts geometric pointwise limits into evaluation at the
@@ -2142,7 +2141,7 @@ theorem dyadicAffineCancellationEndpoint_tendsto_zero
   have hden := dyadicAffineCurrentDenominator_tendsto Jₛ Q hJₛ
   have hlimit : Q / 2 ≠ 0 := div_ne_zero hQ (by norm_num)
   have hdiv := hnum.div hden hlimit
-  simp only [Pi.div_apply, zero_div] at hdiv
+  simp only [zero_div] at hdiv
   exact hdiv
 
 def phaseAdaptedReturnedSourceBaseCurrent

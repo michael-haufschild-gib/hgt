@@ -195,13 +195,13 @@ theorem finiteBoundaryOneEnded_of_subsingleton_end
     SimpleGraph.ComponentCompl.lift
       (fun {v} (_ : v ∉ (K : Set V)) => cutLabel A v)
       (fun {v w} hv hw hadj => hinvariant hv hw hadj)
-  have hTAinf : (A \ (K : Set V)).Infinite := hAinf.diff hK
+  have hTAinf : (A \ (K : Set V)).Infinite := hAinf.sdiff hK
   have hTAK : A \ (K : Set V) ⊆ (K : Set V)ᶜ := by
     intro x hx
     exact hx.2
   obtain ⟨C_A, hC_Ainf, x_A, hx_A, hx_Acomp⟩ :=
     exists_infinite_component_meeting G K (A \ (K : Set V)) hTAinf hTAK
-  have hTcinf : (Aᶜ \ (K : Set V)).Infinite := hAcinf.diff hK
+  have hTcinf : (Aᶜ \ (K : Set V)).Infinite := hAcinf.sdiff hK
   have hTcK : Aᶜ \ (K : Set V) ⊆ (K : Set V)ᶜ := by
     intro x hx
     exact hx.2

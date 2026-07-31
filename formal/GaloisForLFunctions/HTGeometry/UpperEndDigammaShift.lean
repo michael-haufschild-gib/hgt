@@ -273,7 +273,6 @@ theorem defectJetMero_mul_coordMero_pow (n : ℕ) :
         = (Germ.coeRingHom upperEndFilter
             (fun _ : ℂ => ((-1 : ℂ) ^ n * (n.factorial : ℂ)))) := Germ.coe_eq.mpr hev
       _ = ((-1 : Germ upperEndFilter ℂ) ^ n * (n.factorial : Germ upperEndFilter ℂ)) := by
-          push_cast
           rfl
   rw [hmul]
   push_cast
@@ -308,7 +307,7 @@ theorem infinite_upperTail (H : ℝ) : (upperTail H).Infinite := by
   · intro n
     show H < (Complex.I * (((H + n + 1 : ℝ)) : ℂ)).im
     simp only [Complex.mul_im, Complex.I_re, Complex.I_im, Complex.ofReal_re,
-      Complex.ofReal_im, one_mul, zero_mul, add_zero]
+      Complex.ofReal_im, one_mul, zero_mul]
     have : (0 : ℝ) ≤ n := Nat.cast_nonneg n
     linarith
 
@@ -377,7 +376,7 @@ theorem defectJetMero_not_mem_span (n : ℕ) :
       · have hnk : n - k ≠ 0 := by
           simp only [Set.mem_Iio] at hk
           omega
-        simp [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, Ne.symm hnk]
+        simp [Polynomial.coeff_X_pow, Ne.symm hnk]
       · simp only [Set.mem_Iio] at hk
         have hsplit : (n : ℕ) + 1 = (k + 1) + (n - k) := by omega
         rw [hsplit, pow_add, ← mul_assoc, defectJetMero_mul_pow_eq_const]
@@ -512,7 +511,7 @@ theorem upperEndTranslate_aeval_coordMero (P : Polynomial ℂ) :
     · show upperEndTranslationMeroEquiv 1 (Polynomial.aeval coordMero (Polynomial.C a))
         = Polynomial.aeval coordMero
             (Polynomial.aeval (Polynomial.X + Polynomial.C 1) (Polynomial.C a))
-      simp only [Polynomial.aeval_C, Algebra.algebraMap_self_apply, Polynomial.aeval_C]
+      simp only [Polynomial.aeval_C, Polynomial.aeval_C]
       rw [show ((algebraMap ℂ (Polynomial ℂ)) a) = Polynomial.C a from rfl,
         Polynomial.aeval_C]
       exact upperEndTranslate_algebraMap_complex a

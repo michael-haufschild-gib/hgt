@@ -90,18 +90,21 @@ def linearWidthDetectorGenerator (i : Fin n) :
     | membrane => simp
     | upper j => by_cases hji : j = i <;> simp [hji]
 
+omit [CharZero K] in
 @[simp]
 theorem linearWidthDetectorGenerator_lower_apply
     (i j : Fin n) (f : LinearWidthDetectorState M n) :
     linearWidthDetectorGenerator (K := K) i f (.lower j) = 0 :=
   rfl
 
+omit [CharZero K] in
 @[simp]
 theorem linearWidthDetectorGenerator_membrane_apply
     (i : Fin n) (f : LinearWidthDetectorState M n) :
     linearWidthDetectorGenerator (K := K) i f .membrane = f (.lower i) :=
   rfl
 
+omit [CharZero K] in
 @[simp]
 theorem linearWidthDetectorGenerator_upper_apply
     (i j : Fin n) (f : LinearWidthDetectorState M n) :
@@ -114,6 +117,7 @@ def linearWidthDetectorSymbol :
     (Fin n → K) →ₗ[K] Module.End K (LinearWidthDetectorState M n) :=
   quantumGeneratorSymbol (fun i : Fin n ↦ linearWidthDetectorGenerator (K := K) (M := M) i)
 
+omit [CharZero K] in
 @[simp]
 theorem linearWidthDetectorSymbol_basisFun (i : Fin n) :
     linearWidthDetectorSymbol (K := K) (M := M) (Pi.basisFun K (Fin n) i) =
@@ -121,6 +125,7 @@ theorem linearWidthDetectorSymbol_basisFun (i : Fin n) :
   exact quantumGeneratorSymbol_basisFun
     (fun j : Fin n ↦ linearWidthDetectorGenerator (K := K) (M := M) j) i
 
+omit [CharZero K] in
 @[simp]
 theorem linearWidthDetectorSymbol_lower_apply
     (c : Fin n → K) (f : LinearWidthDetectorState M n) (j : Fin n) :
@@ -129,6 +134,7 @@ theorem linearWidthDetectorSymbol_lower_apply
   simp [linearWidthDetectorSymbol, quantumGeneratorSymbol,
     Fintype.linearCombination_apply]
 
+omit [CharZero K] in
 @[simp]
 theorem linearWidthDetectorSymbol_membrane_apply
     (c : Fin n → K) (f : LinearWidthDetectorState M n) :
@@ -138,6 +144,7 @@ theorem linearWidthDetectorSymbol_membrane_apply
   simp [linearWidthDetectorSymbol, quantumGeneratorSymbol,
     Fintype.linearCombination_apply]
 
+omit [CharZero K] in
 @[simp]
 theorem linearWidthDetectorSymbol_upper_apply
     (c : Fin n → K) (f : LinearWidthDetectorState M n) (j : Fin n) :
@@ -147,6 +154,7 @@ theorem linearWidthDetectorSymbol_upper_apply
   simp [linearWidthDetectorSymbol, quantumGeneratorSymbol,
     Fintype.linearCombination_apply]
 
+omit [CharZero K] in
 /-- Every value of the membrane pencil is three-step nilpotent. -/
 theorem linearWidthDetectorSymbol_cube_zero
     (c : Fin n → K) :
@@ -163,6 +171,7 @@ theorem linearWidthDetectorSymbol_cube_zero
   | upper j =>
       simp [pow_succ, Module.End.mul_apply]
 
+omit [CharZero K] in
 /-- Cubic nilpotence supplies every higher-degree zero law. -/
 theorem linearWidthDetectorSymbol_pow_zero
     {d : ℕ} (hd : 3 ≤ d) (c : Fin n → K) :
@@ -171,6 +180,7 @@ theorem linearWidthDetectorSymbol_pow_zero
     linearWidthDetectorSymbol_cube_zero]
   simp
 
+omit [CharZero K] in
 /-- Read one private lower-to-upper matrix coefficient for each increasing pair. -/
 def linearWidthDetectorPairReadout (m : M) :
     Module.End K (LinearWidthDetectorState M n) →ₗ[K]
@@ -184,6 +194,7 @@ def linearWidthDetectorPairReadout (m : M) :
     funext p
     simp
 
+omit [CharZero K] in
 /-- A coordinate bracket is read as its own pair basis state. -/
 theorem linearWidthDetectorPairReadout_principalBracketPair
     (m : M) (r : QuantumLawPair (Fin n)) :
@@ -199,8 +210,7 @@ theorem linearWidthDetectorPairReadout_principalBracketPair
   · subst p
     simp [linearWidthDetectorPairReadout,
       linearWidthDetectorLowerState,
-      Module.End.mul_apply, Pi.single_apply, ne_of_lt r.isLt,
-      (ne_of_lt r.isLt).symm]
+      Module.End.mul_apply, ne_of_lt r.isLt]
   · have hcoordinates : p.lower ≠ r.lower ∨ p.upper ≠ r.upper := by
       by_contra h
       push Not at h
@@ -214,13 +224,14 @@ theorem linearWidthDetectorPairReadout_principalBracketPair
       exact (not_lt_of_ge (le_of_lt p.isLt)) hback
     simp [linearWidthDetectorPairReadout,
       linearWidthDetectorLowerState,
-      Module.End.mul_apply, Pi.single_apply, hpr, hcoordinates, hreverse]
+      Module.End.mul_apply, Pi.single_apply, hpr]
     by_cases h₁ : p.lower = r.lower <;>
       by_cases h₂ : r.upper = p.upper <;>
       by_cases h₃ : p.lower = r.upper <;>
       by_cases h₄ : r.lower = p.upper <;>
       simp_all
 
+omit [CharZero K] in
 /-- The coordinate brackets of the linear-width detector are linearly independent. -/
 theorem linearWidthDetector_principalBracketPair_linearIndependent
     (m : M) (hm : m ≠ 0) :
@@ -237,6 +248,7 @@ theorem linearWidthDetector_principalBracketPair_linearIndependent
   simpa [Function.comp_def,
     linearWidthDetectorPairReadout_principalBracketPair] using hsingle
 
+omit [CharZero K] in
 /-- **Linear-width maximal principal-symbol theorem.**  A `2n+1`-coordinate, cube-zero packet
 already detects the entire exterior square of an `n`-coordinate law space. -/
 theorem linearWidthDetector_endomorphismCommutatorMap_injective

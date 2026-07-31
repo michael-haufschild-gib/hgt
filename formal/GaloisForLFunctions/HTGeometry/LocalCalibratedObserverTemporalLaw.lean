@@ -45,6 +45,7 @@ noncomputable def weightedInteractionShiftBranch
   L.weightedProductEigenvalueBranch onsite hinj weight z config g -
     onsiteProductEnergy (complexOnsite onsite) config
 
+omit [∀ (v : V), Nonempty (A v)] in
 /-- Every calibrated weighted product-energy branch is analytic at zero. -/
 theorem weightedInteractionShiftBranch_analyticAt
     (L : FiniteLocalInteractionFamily V E A)
@@ -76,6 +77,7 @@ noncomputable def weightedInteractionShiftSeries
     (L.weightedInteractionShiftBranch_analyticAt
       onsite hinj weight hpos z config)
 
+omit [∀ (v : V), Nonempty (A v)] in
 /-- The canonical calibrated series represents its interaction-picture
 energy branch. -/
 theorem weightedInteractionShiftSeries_spec
@@ -156,6 +158,7 @@ def characterLineObserver
   map_add' q p := by simp [add_smul]
   map_smul' q p := by simp [mul_smul]
 
+omit [∀ (v : V), Nonempty (A v)] in
 /-- The projective-character response of a local site-Möbius observer on
 the calibrated spectrum is exactly the weighted local observer ray. -/
 theorem projectiveCharacterResponse_weightedInteractionShift_siteMobius

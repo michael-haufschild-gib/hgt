@@ -28,7 +28,7 @@ theorem mem_appearingAtoms_of_aevalWeight_ne_zero
       obtain ⟨hxSigma, hkey⟩ := Finset.mem_filter.mp hx
       exact (hν (Finset.mem_image.mpr ⟨x, hxSigma, hkey⟩)).elim
     · intro hx
-      simpa using hx
+      simp at hx
   rw [hempty]
   simp
 

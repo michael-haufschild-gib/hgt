@@ -170,18 +170,18 @@ theorem thetaCuspAtomRawEvenMoment_one_eq_gammaIntegral (j : ℕ) :
     have he54 : Real.exp (2 * x * (5 / 4 : ℝ)) = Real.exp (x / 2) ^ 5 := by
       calc
         Real.exp (2 * x * (5 / 4 : ℝ)) =
-            Real.exp ((5 : ℝ) * (x / 2)) := by congr 1 <;> ring
+            Real.exp ((5 : ℝ) * (x / 2)) := by congr 1 ; ring
         _ = Real.exp (x / 2) ^ 5 := Real.exp_nat_mul (x / 2) 5
     have he14 : Real.exp (2 * x * (1 / 4 : ℝ)) = Real.exp (x / 2) := by
       congr 1
       ring
     have he2 : Real.exp (2 * x) = Real.exp (x / 2) ^ 4 := by
       calc
-        Real.exp (2 * x) = Real.exp ((4 : ℝ) * (x / 2)) := by congr 1 <;> ring
+        Real.exp (2 * x) = Real.exp ((4 : ℝ) * (x / 2)) := by congr 1 ; ring
         _ = Real.exp (x / 2) ^ 4 := Real.exp_nat_mul (x / 2) 4
     have hex : Real.exp x = Real.exp (x / 2) ^ 2 := by
       calc
-        Real.exp x = Real.exp ((2 : ℝ) * (x / 2)) := by congr 1 <;> ring
+        Real.exp x = Real.exp ((2 : ℝ) * (x / 2)) := by congr 1 ; ring
         _ = Real.exp (x / 2) ^ 2 := Real.exp_nat_mul (x / 2) 2
     have hpow : (4 : ℝ) ^ j = 2 ^ (2 * j) := by
       rw [show (4 : ℝ) = 2 ^ 2 by norm_num, ← pow_mul]

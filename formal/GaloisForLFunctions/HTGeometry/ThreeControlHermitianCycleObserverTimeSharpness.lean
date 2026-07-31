@@ -117,7 +117,7 @@ noncomputable def threeControlCycleBranch (z : Fin 3 → ℂ) : ℂ :=
 
 theorem threeControlCycleBranch_analyticAt :
     AnalyticAt ℂ threeControlCycleBranch 0 := by
-  exact threeControlCycleMatrixBranch_spec.1.comp_of_eq'
+  exact threeControlCycleMatrixBranch_spec.1.fun_comp_of_eq
     threeControlCycleMatrix_analyticAt threeControlCycleMatrix_zero
 
 @[simp]

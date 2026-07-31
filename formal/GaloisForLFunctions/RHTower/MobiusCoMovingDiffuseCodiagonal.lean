@@ -1240,7 +1240,7 @@ theorem tendsto_inv_squarefreeMobiusTotal_div_sub_one :
     hquot.congr' heq.symm
   have hre :=
     Complex.continuous_re.continuousAt.tendsto.comp hcast
-  convert hre using 1 <;> rfl
+  convert hre using 1 ; rfl
 
 theorem tendsto_mobiusDiffuseCollisionParameter
     (u : ℝ) :

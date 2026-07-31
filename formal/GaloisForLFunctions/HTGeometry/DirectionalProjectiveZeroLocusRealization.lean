@@ -25,7 +25,7 @@ variable {K : Type u} {ι η : Type v} [Field K] [Fintype ι] [Fintype η]
 def commonDegreeLiftDegree (d : η → ℕ) : ℕ := 1 + ∑ j, d j
 
 /-- An original equation together with an ordered monomial of its complementary degree. -/
-abbrev CommonDegreeEquationIndex (ι : Type v) (d : η → ℕ) [Fintype η] :=
+abbrev CommonDegreeEquationIndex (ι : Type v) (d : η → ℕ) :=
   Σ j : η, Fin (commonDegreeLiftDegree d - d j) → ι
 
 /-- Multiply one equation by one law monomial to reach the common degree. -/
@@ -33,6 +33,7 @@ def commonDegreeLift (P : η → MvPolynomial ι K) (d : η → ℕ)
     (q : CommonDegreeEquationIndex ι d) : MvPolynomial ι K :=
   (∏ r, MvPolynomial.X (q.2 r)) * P q.1
 
+omit [Fintype ι] in
 /-- Every lifted equation has the same positive homogeneous degree. -/
 theorem commonDegreeLift_isHomogeneous
     (P : η → MvPolynomial ι K) (d : η → ℕ)
@@ -53,6 +54,7 @@ theorem commonDegreeLift_isHomogeneous
   have hmul := hmon.mul (hP q.1)
   simpa [commonDegreeLift, Nat.sub_add_cancel hdle] using hmul
 
+omit [Fintype ι] in
 /-- At every nonzero law direction, the lifted common-degree family and the original family have
 exactly the same simultaneous zero locus. -/
 theorem commonDegreeLift_zero_iff

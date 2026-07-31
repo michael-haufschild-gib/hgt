@@ -98,7 +98,7 @@ theorem secondQuantizationMultilinear_apply_eigen {r k : ℕ}
     secondQuantizationMultilinear A v =
       (∑ i, lam i) • exteriorPower.ιMulti ℂ k v := by
   unfold secondQuantizationMultilinear
-  rw [MultilinearMap.sum_apply]
+  rw [sum_apply]
   rw [Finset.sum_smul]
   apply Finset.sum_congr rfl
   intro i _hi

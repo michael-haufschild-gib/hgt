@@ -117,7 +117,7 @@ theorem exists_separable_fibre_witness_of_separable_over_field
   -- the three surviving factors, as a single nonzero bivariate polynomial
   have hP_ne : P ≠ 0 := fun h => by rw [h, natDegree_zero] at hdeg; exact absurd hdeg (by norm_num)
   have hderiv_ne : derivative P ≠ 0 := by
-    intro h; have := natDegree_eq_zero_of_derivative_eq_zero h; omega
+    intro h; have := derivative_eq_zero.mp h; omega
   have hlc1 : P.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hP_ne
   have hlc2 : (derivative P).leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hderiv_ne
   have hres : resultant P (derivative P) ≠ 0 :=

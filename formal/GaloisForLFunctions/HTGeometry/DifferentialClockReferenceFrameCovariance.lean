@@ -128,6 +128,7 @@ variable {F E L : Type*} [Field F] [Field E] [Field L]
   [Algebra F E] [Algebra F L]
   [DifferentialAlgebra F E] [DifferentialAlgebra F L]
 
+omit [DifferentialAlgebra F L] in
 /-- **Reference-frame covariance of the HT clock boundary.**  Surviving `r` clock tests at
 resolution `N+r` in one presentation is equivalent to the transformed observable belonging to
 the order-`N` field in every derivation-preserving presentation. -/

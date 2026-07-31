@@ -157,8 +157,8 @@ theorem exists_thetaRectangleBoundaryRegular {τ : ℂ} (hτ : 0 < τ.im) :
   have hBadX : BadX.Finite := hZ.image _
   have hBadY : BadY.Finite := hZ.image _
   have hI : (Ioo ((1 : ℝ) / 4) (1 / 3)).Infinite := Set.Ioo_infinite (by norm_num)
-  obtain ⟨x₀, hxI, hxBad⟩ := (hI.diff hBadX).nonempty
-  obtain ⟨y₀, hyI, hyBad⟩ := (hI.diff hBadY).nonempty
+  obtain ⟨x₀, hxI, hxBad⟩ := (hI.sdiff hBadX).nonempty
+  obtain ⟨y₀, hyI, hyBad⟩ := (hI.sdiff hBadY).nonempty
   have hx0 : 0 ≤ x₀ := by linarith [hxI.1]
   have hx1 : x₀ ≤ 1 := by linarith [hxI.2]
   have hy0 : 0 ≤ y₀ := by linarith [hyI.1]

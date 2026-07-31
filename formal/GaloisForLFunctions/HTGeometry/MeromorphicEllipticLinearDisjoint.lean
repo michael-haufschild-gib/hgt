@@ -156,7 +156,7 @@ theorem ellipticMeroFields_linearDisjoint
       ambientTranslation i ((A.val ∘ b) k) = (A.val ∘ b) k := by
     intro i k
     have hk : ((b k : A) : meroField Set.univ) ∈ ellipticMeroField sigma := by
-      simpa [A] using (b k).2
+      simp [A]
     change addTranslationMeroEquiv sigma ((b k : A) : meroField Set.univ) =
       ((b k : A) : meroField Set.univ)
     exact ((mem_ellipticMeroField_iff sigma _).mp hk).2

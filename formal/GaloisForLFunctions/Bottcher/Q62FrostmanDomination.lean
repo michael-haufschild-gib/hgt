@@ -222,7 +222,7 @@ theorem filledJulia_subset_frontier_of_interior_empty {c : ℂ}
     (h : interior (filledJulia c) = ∅) :
     filledJulia c ⊆ frontier (filledJulia c) := by
   have hf : frontier (filledJulia c) = filledJulia c := by
-    rw [frontier, (isClosed_filledJulia c).closure_eq, h, Set.diff_empty]
+    rw [frontier, (isClosed_filledJulia c).closure_eq, h, Set.sdiff_empty]
   rw [hf]
 
 /-- `K_c` has empty interior for `‖c‖ ≥ 4` (Cantor regime). -/

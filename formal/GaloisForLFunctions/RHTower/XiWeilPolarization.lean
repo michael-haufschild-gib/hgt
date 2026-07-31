@@ -1,3 +1,4 @@
+import GaloisForLFunctions.RHTower.DeningerDivisorSchwarzMonodromy
 import GaloisForLFunctions.RHTower.XiHadamardFactorization
 import GaloisForLFunctions.Bottcher.ArgumentPrinciple
 
@@ -20,14 +21,6 @@ open Complex
 namespace RHTower
 
 noncomputable section
-
-/-- Conjugation lifted to the exact multiplicity-copy index of the Xi divisor. -/
-def xiZeroCopyConjEquiv : XiZeroCopy ≃ XiZeroCopy :=
-  Equiv.sigmaCongr xiZeroConjEquiv (fun ρ => Equiv.cast (by
-    change Fin (Int.toNat ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ))) =
-      Fin (Int.toNat ((MeromorphicOn.divisor xi Set.univ)
-        ((starRingEnd ℂ) (ρ : ℂ))))
-    rw [xi_divisor_conj]))
 
 /-- Conjugating a Xi zero sends its centered spectral coordinate to minus its conjugate. -/
 theorem xiSpectralPoint_copyConj (q : XiZeroCopy) :

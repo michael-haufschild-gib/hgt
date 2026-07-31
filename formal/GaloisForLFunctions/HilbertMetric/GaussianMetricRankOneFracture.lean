@@ -33,7 +33,7 @@ theorem gaussianMetricRankOneExtensionGram_eq_rankOneSchurGaussianPath {n d : �
       rankOneSchurGaussianPath (finiteGaussianDistanceGram y 1) a t := by
   ext i j
   simp only [gaussianMetricRankOneExtensionGram, rankOneSchurGaussianPath,
-    finiteGaussianDistanceGram, one_mul]
+    finiteGaussianDistanceGram]
   rw [← Real.exp_add]
   congr 1
   ring
@@ -57,7 +57,7 @@ theorem finiteGaussianDistanceGram_one_posDef_of_injective {n d : ℕ}
       finiteHalfGaussianDistanceGram z 1 := by
     ext i j
     simp only [finiteGaussianDistanceGram, finiteHalfGaussianDistanceGram,
-      one_mul, one_div, z]
+      one_div, z]
     congr 1
     rw [Finset.sum_congr rfl (fun k _ => show
       (Real.sqrt 2 * y i k - Real.sqrt 2 * y j k) ^ 2 =

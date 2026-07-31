@@ -621,17 +621,17 @@ theorem differentiableAt_mellin_mobiusDiscreteLaplaceTransform_of_base
   have hminus : Integrable
       (mobiusLaplaceLogMellinLineSource (s.re - 2 * v)) := by
     convert integrable_mobiusLaplaceLogMellinLineSource_of_base
-      (sigma := sigma) (r := (s.re - 2 * v) - sigma) hbase hminusShift using 1 <;>
+      (sigma := sigma) (r := (s.re - 2 * v) - sigma) hbase hminusShift using 1 ;
       ring_nf
   have hplus : Integrable
       (mobiusLaplaceLogMellinLineSource (s.re + 2 * v)) := by
     convert integrable_mobiusLaplaceLogMellinLineSource_of_base
-      (sigma := sigma) (r := (s.re + 2 * v) - sigma) hbase hplusShift using 1 <;>
+      (sigma := sigma) (r := (s.re + 2 * v) - sigma) hbase hplusShift using 1 ;
       ring_nf
   have hcenter : Integrable
       (mobiusLaplaceLogMellinLineSource s.re) := by
     convert integrable_mobiusLaplaceLogMellinLineSource_of_base
-      (sigma := sigma) (r := s.re - sigma) hbase hcenterShift using 1 <;>
+      (sigma := sigma) (r := s.re - sigma) hbase hcenterShift using 1 ;
       ring_nf
   let bound : ℝ → ℝ := fun u =>
     (1 / v) *
@@ -1133,7 +1133,7 @@ theorem mobiusLaplaceStrictRightEnergyFinite_of_cofinalStrictRightEnergyFinite
   have hbaseSigma : base < sigma := by linarith
   have hshift : 0 < sigma - base := sub_pos.mpr hbaseSigma
   convert mobiusLaplaceLogMellinLineSource_memLp_two_of_base
-    (sigma := base) (r := sigma - base) hbase hshift using 1 <;>
+    (sigma := base) (r := sigma - base) hbase hshift using 1 ;
     ring_nf
 
 /-- **Cofinal energy compression law.**  Sparse finite-energy control arbitrarily close to the

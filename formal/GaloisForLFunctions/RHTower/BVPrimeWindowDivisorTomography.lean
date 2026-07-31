@@ -270,8 +270,7 @@ theorem meromorphicOrderAt_continuedSource_eq_neg_one_iff_mellin_ne_zero
         ((-1 : ℤ) : WithTop ℤ) ↔
       W.mellinTransform (rho + 1 / 2) ≠ 0 := by
   constructor
-  · intro horder
-    intro hMzero
+  · intro horder hMzero
     have hpHalf : 1 / 2 < (rho + 1 / 2).re := by
       norm_num [Complex.add_re]
       linarith

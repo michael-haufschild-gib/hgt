@@ -124,7 +124,7 @@ theorem symmetricHermitianCurrent_two_mul_sq_completion
         8 * Complex.normSq z * z.im *
           (V₁ * (starRingEnd ℂ) V₂).re := by
   rw [Complex.normSq_apply]
-  simp only [map_mul, map_pow, map_ofNat, pow_two, Complex.add_im,
+  simp only [map_mul, map_ofNat, pow_two, Complex.add_im,
     Complex.mul_im, Complex.mul_re, Complex.conj_re, Complex.conj_im]
   norm_num
   ring

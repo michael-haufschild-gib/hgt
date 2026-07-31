@@ -163,7 +163,7 @@ theorem exists_polynomial_hardy_coefficients_with_convolution_all (p : ℂ[X]) :
       simp
     have hzeroMem : Memℓp (fun _ : ℕ => (0 : ℂ)) 2 := by
       apply memℓp_gen
-      simpa using (summable_zero : Summable (fun _ : ℕ => (0 : ℝ)))
+      simp
     refine ⟨fun _ => 0, fun _ => 0, analyticOnNhd_const, analyticOnNhd_const, ?_, ?_, ?_,
       ?_, ?_, ?_⟩
     · simp

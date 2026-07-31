@@ -84,7 +84,6 @@ theorem summable_norm_gaussDigammaSeriesTerm
       div_le_div_of_nonneg_left (norm_nonneg _) (by positivity) hden
     _ = (‖s - 1‖ / c) * (1 / ((n : ℝ) + 1) ^ 2) := by
       field_simp
-      <;> ring
 
 theorem summable_gaussDigammaSeriesTerm
     {s : ℂ} (hs : 0 < s.re) :
@@ -125,7 +124,7 @@ private theorem tendsto_gaussDigammaSeries_partial
       (fun n : ℕ => (harmonic (n + 1) : ℝ) - Real.log n)
       atTop (nhds Real.eulerMascheroniConstant) := by
     convert hcorrR.add_const Real.eulerMascheroniConstant using 1 <;>
-      simp <;> ring
+      simp
   have hcorr : Tendsto
       (fun n : ℕ =>
         (((harmonic (n + 1) : ℝ) - Real.log n : ℝ) : ℂ))

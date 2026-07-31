@@ -31,17 +31,17 @@ theorem norm_finiteContraction_pow_apply_peripheralProjection
   have horth := finiteContractionPeripheralEigenspaces_orthogonal T hT
   have hbefore := horth.norm_sum
     (fun μ : FiniteContractionPeripheralEigenvalue T =>
-      (finiteContractionPeripheralEigenspace T μ).orthogonalProjection x)
+      (finiteContractionPeripheralEigenspace T μ).orthogonalProjectionOnto x)
     Finset.univ
   have hafter := horth.norm_sum
     (fun μ : FiniteContractionPeripheralEigenvalue T =>
       ((μ : ℂ) ^ n) •
-        (finiteContractionPeripheralEigenspace T μ).orthogonalProjection x)
+        (finiteContractionPeripheralEigenspace T μ).orthogonalProjectionOnto x)
     Finset.univ
   have hbeforeSum :
       (∑ μ : FiniteContractionPeripheralEigenvalue T,
         (finiteContractionPeripheralEigenspace T μ).subtypeₗᵢ
-          ((finiteContractionPeripheralEigenspace T μ).orthogonalProjection x)) =
+          ((finiteContractionPeripheralEigenspace T μ).orthogonalProjectionOnto x)) =
         (finiteContractionPeripheralSubspace T).starProjection x := by
     change
       (∑ μ : FiniteContractionPeripheralEigenvalue T,
@@ -52,7 +52,7 @@ theorem norm_finiteContraction_pow_apply_peripheralProjection
       (∑ μ : FiniteContractionPeripheralEigenvalue T,
         (finiteContractionPeripheralEigenspace T μ).subtypeₗᵢ
           (((μ : ℂ) ^ n) •
-            (finiteContractionPeripheralEigenspace T μ).orthogonalProjection x)) =
+            (finiteContractionPeripheralEigenspace T μ).orthogonalProjectionOnto x)) =
         (T ^ n) ((finiteContractionPeripheralSubspace T).starProjection x) := by
     rw [← hbeforeSum, map_sum]
     apply Finset.sum_congr rfl

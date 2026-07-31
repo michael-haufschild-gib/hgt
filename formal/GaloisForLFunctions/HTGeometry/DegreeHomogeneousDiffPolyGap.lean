@@ -46,7 +46,7 @@ theorem exists_threshold_degHom_diffPoly_gap_ne_zero {bnat : ℕ → ℕ}
   refine ⟨max (max (S.sup Nfun) Nw) (N2 + maxJS), fun f hsupp hinf => ?_⟩
   set Nstar := max (max (S.sup Nfun) Nw) (N2 + maxJS) with hNstar
   have hs' : {M | coeff (bnat M) f ≠ 0 ∧ Nstar ≤ M}.Infinite :=
-    (hinf.diff (Set.finite_Iio Nstar)).mono (by rintro M ⟨h1, h2⟩; exact ⟨h1, not_lt.mp h2⟩)
+    (hinf.sdiff (Set.finite_Iio Nstar)).mono (by rintro M ⟨h1, h2⟩; exact ⟨h1, not_lt.mp h2⟩)
   obtain ⟨M, ⟨hMne, hMge⟩, hLM⟩ :=
     exists_mem_eval_ne_zero (b := fun n => (bnat n : ℂ)) (Nat.cast_injective.comp hbinj) hLead hs'
   have hNfM : S.sup Nfun ≤ M := le_trans (le_trans (le_max_left _ _) (le_max_left _ _)) hMge

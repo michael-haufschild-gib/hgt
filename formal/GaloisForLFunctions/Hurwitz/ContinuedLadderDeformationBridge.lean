@@ -91,7 +91,7 @@ theorem continuedDmodel_shift (s : ℂ) {M : ℕ} (c : Fin (M + 1) → ℂ)
         -(2 * (Real.pi : ℂ) * Complex.I * k) by ring]
   rw [Complex.exp_add, Complex.exp_add, hq]
   have hk : Complex.exp (-(2 * (Real.pi : ℂ) * Complex.I * k)) = 1 := by
-    convert Complex.exp_int_mul_two_pi_mul_I (-(k : ℤ)) using 1 <;> push_cast <;> ring
+    convert Complex.exp_int_mul_two_pi_mul_I (-(k : ℤ)) using 1 ; push_cast ; ring
   rw [hk, mul_one]
   ring
 

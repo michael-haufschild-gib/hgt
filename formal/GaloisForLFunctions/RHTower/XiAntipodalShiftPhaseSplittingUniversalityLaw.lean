@@ -42,7 +42,7 @@ theorem xiPairwiseShiftRawLogDerivDifference_antipodal_star
       xiPairwiseShiftRawLogDerivDifference (a : ℂ) (b : ℂ) (I * (t : ℂ)) := by
   rw [star_xiPairwiseShiftRawLogDerivDifference_ofReal]
   have habc : (a : ℂ) + (b : ℂ) = 1 := by exact_mod_cast hab
-  convert xiPairwiseShiftRawLogDerivDifference_neg habc (I * (t : ℂ)) using 1 <;> ring
+  convert xiPairwiseShiftRawLogDerivDifference_neg habc (I * (t : ℂ)) using 1 ; ring
 
 /-- Every real antipodal shift-difference channel is real-valued on the imaginary observation
 axis. -/
@@ -67,7 +67,7 @@ theorem xi_antipodalShift_phaseSplittingUniversality
       (logDeriv xi ((1 / 2 : ℂ) + I * (t : ℂ))).re = 0 := by
   have habc : (a : ℂ) + (b : ℂ) = 1 := by exact_mod_cast hab
   refine ⟨?_, xiPairwiseShiftRawLogDerivDifference_antipodal_im hab t, ?_⟩
-  · convert xiPairwiseShiftRawLogDerivDifference_neg habc (I * (t : ℂ)) using 1 <;> ring
+  · convert xiPairwiseShiftRawLogDerivDifference_neg habc (I * (t : ℂ)) using 1 ; ring
   · simpa [logDeriv_apply] using re_logDeriv_xi_criticalLine t
 
 end

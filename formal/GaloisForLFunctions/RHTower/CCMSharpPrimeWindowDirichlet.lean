@@ -51,7 +51,7 @@ private theorem summable_norm_dyadicSharpPrimeWindowDoubleTerm
     simp only [Function.mem_support] at hj
     simp only [mem_coe, Finset.mem_range]
     by_contra hnot
-    simp only [dyadicSharpPrimeWindowDoubleTerm, Prod.fst, Prod.snd,
+    simp only [dyadicSharpPrimeWindowDoubleTerm,
       if_neg hnot, norm_zero] at hj
     exact hj rfl
   · let z : ℂ := ((s.re - 1 / 2 : ℝ) : ℂ)
@@ -71,7 +71,7 @@ private theorem summable_norm_dyadicSharpPrimeWindowDoubleTerm
       have hkreal : (0 : ℝ) < k := by exact_mod_cast hk
       rw [tsum_eq_sum (s := range k) (fun j hj => by
         simp only [Finset.mem_range] at hj
-        simp only [dyadicSharpPrimeWindowDoubleTerm, Prod.fst, Prod.snd,
+        simp only [dyadicSharpPrimeWindowDoubleTerm,
           if_neg hj, norm_zero])]
       calc
         (∑ j ∈ range k, ‖dyadicSharpPrimeWindowDoubleTerm s (k, j)‖) ≤

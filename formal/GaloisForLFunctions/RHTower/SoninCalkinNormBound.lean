@@ -197,9 +197,9 @@ theorem isCompactOperator_starProjection_of_finiteDimensional
     (isCompact_closedBall 0 1).image continuous_subtype_val, ?_⟩
   refine Filter.mem_of_superset (Metric.ball_mem_nhds 0 one_pos) ?_
   intro x hx
-  refine ⟨V.orthogonalProjection x, ?_, (V.starProjection_apply x).symm⟩
+  refine ⟨V.orthogonalProjectionOnto x, ?_, (V.starProjection_apply x).symm⟩
   rw [mem_closedBall_zero_iff]
-  calc ‖V.orthogonalProjection x‖ = ‖V.starProjection x‖ := rfl
+  calc ‖V.orthogonalProjectionOnto x‖ = ‖V.starProjection x‖ := rfl
     _ ≤ ‖x‖ := V.norm_starProjection_apply_le x
     _ ≤ 1 := le_of_lt (mem_ball_zero_iff.mp hx)
 

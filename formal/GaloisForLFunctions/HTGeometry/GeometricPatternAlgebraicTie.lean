@@ -70,7 +70,7 @@ theorem isAlgebraic_of_nonempty_exactGeometricPattern_cascade
         have hba : b = a := by
           by_contra hne
           exact hnot ⟨b, hb, hne⟩
-        simpa [hba]
+        simp [hba]
       · intro hb
         have hba : b = a := by simpa using hb
         simpa [hba] using haFace

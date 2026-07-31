@@ -35,7 +35,7 @@ theorem exists_preconnected_basin_nhd_of_oneSided {c₁ z₀ : ℂ} (hos : OneSi
       IsPreconnected (V ∩ (filledJulia c₁)ᶜ) ∧ (V ∩ (filledJulia c₁)ᶜ).Nonempty := by
   obtain ⟨_hfront, ρ₀, hρ₀, hconn⟩ := hos
   have h := hconn ρ₀ hρ₀ le_rfl
-  rw [Set.diff_eq] at h
+  rw [Set.sdiff_eq] at h
   exact ⟨Metric.ball z₀ ρ₀, ρ₀, hρ₀, rfl, Metric.isOpen_ball, Metric.mem_ball_self hρ₀,
     h.isPreconnected, h.nonempty⟩
 
@@ -72,7 +72,7 @@ theorem continuesAcross_of_smoothBranch_oneSided
     (Metric.ball_subset_ball (min_le_right _ _)).trans hrV₀
   -- the one-sided basin neighbourhood, as a ball inside `V₀`
   have hcball : IsConnected (Metric.ball z₀ ρ \ filledJulia c₁) := hconn ρ hρpos (min_le_left _ _)
-  rw [Set.diff_eq] at hcball
+  rw [Set.sdiff_eq] at hcball
   set V : Set ℂ := Metric.ball z₀ ρ with hVdef
   have hsub : V ∩ (filledJulia c₁)ᶜ ⊆ V₀ ∩ (filledJulia c₁)ᶜ :=
     Set.inter_subset_inter_left _ hballV₀

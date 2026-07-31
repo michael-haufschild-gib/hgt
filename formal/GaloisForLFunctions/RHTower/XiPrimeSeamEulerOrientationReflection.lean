@@ -154,7 +154,6 @@ theorem orbitwiseFinitePrimeEulerOrientationGram_eq_neg_compressionCommutator
       -orbitwiseFinitePrimeEulerCompressionCommutator a p rho := by
   exact finiteArchimedeanEulerOrientationGram_eq_neg_compression_commutator
     a (fun i ↦ (p i : ℝ)) (fun i ↦ by
-      change (1 : ℝ) < (p i : ℝ)
       exact_mod_cast (hp i).one_lt)
       (fun i ↦ orbitwiseNatPrimeSeamCharge (p i) rho)
 

@@ -38,7 +38,7 @@ theorem DifferentialAlgEquiv.fixed_on_scalarLogCurrentField_of_fixed_logDeriv
     rw [map_inv₀, ha]
   · intro a b _ _ ha hb
     rw [map_mul, ha, hb]
-  · simpa using z.2
+  · simp
 
 /-- Rebase a differential automorphism over the logarithmic-current field once it fixes the
 current. -/
@@ -80,7 +80,7 @@ theorem DifferentialAlgEquiv.logDeriv_fixed_of_unit_eigenvector
     (hq : sigma.toAlgEquiv q = q * algebraMap F T (u : F)) :
     sigma.toAlgEquiv (Differential.logDeriv q) = Differential.logDeriv q := by
   have hu0 : algebraMap F T (u : F) ≠ 0 :=
-    by simpa using (algebraMap F T).injective.ne u.ne_zero
+    by simp
   have hu' : (algebraMap F T (u : F))′ = 0 := by
     rw [deriv_algebraMap, hconst]
     exact map_zero (algebraMap F T)

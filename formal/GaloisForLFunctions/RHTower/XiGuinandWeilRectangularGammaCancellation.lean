@@ -293,7 +293,7 @@ theorem integrable_rectangularEulerDigammaIntegrand (L a : ℝ) :
   filter_upwards with xi
   rw [rectangularEulerDigammaIntegrand,
     digamma_rectangularEulerDigammaPoint_eq_arch]
-  simp only [rectangularEulerArchIntegrand, F, s, one_div, div_eq_mul_inv]
+  simp only [rectangularEulerArchIntegrand, F, s, div_eq_mul_inv]
   ring
 
 def rectangularEulerGaussPartialMajorant (L a : ℝ) (xi : ℝ) : ℝ :=
@@ -698,7 +698,7 @@ theorem integrableOn_rectangularGammaCancellationKernel
       dsimp only [C]
       exact div_nonneg (by positivity) hd.le
     have hexp : IntegrableOn (fun t : ℝ => Real.exp (-(t / 4))) (Ioi 1) := by
-      convert (integrableOn_exp_mul_Ioi (a := (-1 / 4 : ℝ)) (by norm_num) 1) using 1 <;>
+      convert (integrableOn_exp_mul_Ioi (a := (-1 / 4 : ℝ)) (by norm_num) 1) using 1 ;
         ring
     have hmajor : IntegrableOn (fun t : ℝ => C * Real.exp (-(t / 4))) (Ioi 1) :=
       hexp.const_mul C
@@ -729,7 +729,7 @@ theorem integrableOn_rectangularEulerGaussResolventTimeIntegrand
     IntegrableOn (rectangularEulerGaussResolventTimeIntegrand L a n) (Ioi 0) := by
   have hg : Integrable (fun t : ℝ => rectangularEulerAutocorrelation L a (t / 2)) := by
     convert (integrable_rectangularEulerAutocorrelation L a).comp_mul_left'
-      (by norm_num : (1 / 2 : ℝ) ≠ 0) using 1 <;> ring
+      (by norm_num : (1 / 2 : ℝ) ≠ 0) using 1 ; ring
   have hexpMeas : AEStronglyMeasurable (fun t : ℝ =>
       Complex.exp (-(((n : ℝ) + 3 / 4 : ℝ) : ℂ) * (t : ℂ))) :=
     (Complex.continuous_exp.comp (by fun_prop)).aestronglyMeasurable
@@ -1039,7 +1039,6 @@ theorem integrable_rectangularPolarHalfTilt (L a : ℝ) :
   convert integrable_rectangularTwoEdgeProfile_mul_exp L a (1 / 2) using 1
   funext x
   congr 2
-  push_cast
   ring
 
 theorem integrable_rectangularPolarHalfReflectedTilt (L a : ℝ) :
@@ -1075,7 +1074,6 @@ theorem rectangularPolarHalfAutocorrelation_eq_convolution (L a h : ℝ) :
           Complex.exp (h / 2) := by
         rw [← Complex.exp_add]
         congr 1
-        push_cast
         ring
       calc
         _ = (rectangularTwoEdgeProfile L a (t + h) : ℂ) *
@@ -1117,7 +1115,6 @@ theorem integral_rectangularPolarHalfTilt
         Complex.exp ((1 / 2 : ℂ) * x) by
     funext x
     congr 2
-    push_cast
     ring]
   change rectangularTwoEdgeLaplaceIntegral L a (1 / 2 : ℂ) = _
   rw [rectangularTwoEdgeLaplaceIntegral_eq_transform hL,
@@ -1451,7 +1448,7 @@ def rectangularGammaPolarUniformBound (L : ℝ) : ℝ :=
 theorem integrableOn_rectangularGammaCancellationTailMajorant (L : ℝ) :
     IntegrableOn (rectangularGammaCancellationTailMajorant L) (Ioi 1) := by
   have hexp : IntegrableOn (fun t : ℝ => Real.exp (-(t / 4))) (Ioi 1) := by
-    convert (integrableOn_exp_mul_Ioi (a := (-1 / 4 : ℝ)) (by norm_num) 1) using 1 <;>
+    convert (integrableOn_exp_mul_Ioi (a := (-1 / 4 : ℝ)) (by norm_num) 1) using 1 ;
       ring_nf
   exact hexp.const_mul _
 

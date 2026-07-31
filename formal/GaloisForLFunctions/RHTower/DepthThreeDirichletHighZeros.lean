@@ -151,7 +151,7 @@ lemma exists_depthThree_phase_subsequence :
   refine ⟨k, hk, ?_⟩
   have hminus : (Circle.exp (-Real.pi) : ℂ) = -1 := by
     rw [Circle.coe_exp]
-    simpa using Complex.exp_neg_pi_mul_I
+    simp
   rw [hminus] at hcoe
   convert hcoe using 1
   funext n
@@ -203,7 +203,7 @@ lemma depthThree_two_phase (k : ℕ) :
       Complex.exp_nat_mul_two_pi_mul_I]
     simp
   rw [hperiod, mul_one]
-  simpa using Complex.exp_neg_pi_mul_I
+  simp
 
 end
 end RHTower
@@ -347,7 +347,7 @@ lemma depthThreeTranslatedApprox_tendstoLocallyUniformly
   have hcoeff : Tendsto
       (fun n => a3 * (3 : ℂ) ^ (-(I * (depthThreeHeight (k n) : ℂ))))
       atTop (𝓝 (-a3)) := by
-    convert tendsto_const_nhds.mul hphase using 1 <;> ring
+    convert tendsto_const_nhds.mul hphase using 1 ; ring
   have hcoeffLU : TendstoLocallyUniformly
       (fun n (_ : ℂ) => a3 * (3 : ℂ) ^ (-(I * (depthThreeHeight (k n) : ℂ))))
       (fun _ : ℂ => -a3) atTop :=
@@ -467,15 +467,15 @@ theorem exists_depthThreeDirichletFactor_zero_high (B : ℝ) :
   have hwim : |w.im| ≤ r := (Complex.abs_im_le_norm w).trans hwnorm
   refine ⟨s, ?_, ?_, ?_, ?_⟩
   · dsimp [s]
-    simp only [add_re, ofReal_re, mul_re, I_re, ofReal_im, I_im, zero_mul, mul_zero,
-      sub_zero, zero_add]
+    simp only [ofReal_re, mul_re, I_re, ofReal_im, I_im, zero_mul, mul_zero,
+      sub_zero]
     linarith [abs_le.mp hwre]
   · dsimp [s]
-    simp only [add_re, ofReal_re, mul_re, I_re, ofReal_im, I_im, zero_mul, mul_zero,
-      sub_zero, zero_add]
+    simp only [ofReal_re, mul_re, I_re, ofReal_im, I_im, zero_mul, mul_zero,
+      sub_zero]
     linarith [abs_le.mp hwre]
   · dsimp [s]
-    simp only [add_im, ofReal_im, mul_im, I_re, ofReal_re, I_im, zero_mul, one_mul, zero_add]
+    simp only [ofReal_im, mul_im, I_re, ofReal_re, I_im, zero_mul, one_mul, zero_add]
     linarith [abs_le.mp hwim]
   · rw [← depthThreeTranslatedApprox_eq_factor σ (k n) w]
     exact hwzero

@@ -266,7 +266,7 @@ theorem affineLaw_jet_algebraicIndependent
   let N : ℕ := s.toFinset.sup id + 1
   let e : s → Fin N := fun i =>
     ⟨i.1, Nat.lt_succ_of_le (Finset.le_sup (f := id)
-      (show i.1 ∈ s.toFinset by simpa using i.2))⟩
+      (show i.1 ∈ s.toFinset by simp))⟩
   have he : Function.Injective e := by
     intro i j hij
     apply Subtype.ext
@@ -378,7 +378,7 @@ theorem affineLaw_jet_algebraicIndependent_baseChange
   let N : ℕ := s.toFinset.sup id + 1
   let e : s → Fin N := fun i =>
     ⟨i.1, Nat.lt_succ_of_le (Finset.le_sup (f := id)
-      (show i.1 ∈ s.toFinset by simpa using i.2))⟩
+      (show i.1 ∈ s.toFinset by simp))⟩
   have he : Function.Injective e := by
     intro i j hij
     apply Subtype.ext

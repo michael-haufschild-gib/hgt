@@ -70,7 +70,7 @@ private theorem deriv_bernsteinPurityJet_zero_slice
     rw [coeff_zero_bernsteinScalePurityPolynomial]
     simp
   rw [hfun]
-  simpa using ((hasDerivAt_id (m 0)).pow 2).deriv
+  simp
 
 /-- The diagonal partial derivative in every positive degree. -/
 private theorem deriv_bernsteinPurityJet_positive_slice
@@ -108,7 +108,7 @@ theorem bernsteinPurityJetJacobian_diagonal
   by_cases hr0 : (r : ℕ) = 0
   · have hr : r = (0 : Fin (N + 1)) := Fin.ext hr0
     subst r
-    simpa using deriv_bernsteinPurityJet_zero_slice N m
+    simp
   · exact deriv_bernsteinPurityJet_positive_slice N m
       (Nat.pos_of_ne_zero hr0) (Nat.le_of_lt_succ r.isLt)
 

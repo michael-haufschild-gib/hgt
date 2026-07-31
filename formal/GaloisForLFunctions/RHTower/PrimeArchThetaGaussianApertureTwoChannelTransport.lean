@@ -47,7 +47,7 @@ theorem hasDerivAt_thetaCuspGaussianApertureCorrectionChannelWeight (lambda x : 
       (2 * Real.exp (2 * x)) x := by
     convert (Real.hasDerivAt_exp (2 * x)).comp x
       ((hasDerivAt_id x).const_mul 2) using 1
-    all_goals ring
+    all_goals first | rfl | ring
   have harg : HasDerivAt
       (fun y : ℝ => lambda * y ^ 2 + 5 * y / 2 - Real.pi * Real.exp (2 * y))
       (2 * lambda * x + 5 / 2 - 2 * Real.pi * Real.exp (2 * x)) x := by
@@ -55,15 +55,21 @@ theorem hasDerivAt_thetaCuspGaussianApertureCorrectionChannelWeight (lambda x : 
     have hlin := ((hasDerivAt_id x).const_mul 5).div_const 2
     have htail := hexp.const_mul Real.pi
     convert (hquad.add hlin).sub htail using 1
-    all_goals simp only [id_eq]
-    all_goals ring
+    all_goals first | rfl | (simp only [id_eq]; ring)
   change HasDerivAt
     (fun y : ℝ => Real.exp
       (lambda * y ^ 2 + 5 * y / 2 - Real.pi * Real.exp (2 * y)))
     ((2 * lambda * x + 5 / 2 - 2 * Real.pi * Real.exp (2 * x)) *
       Real.exp (lambda * x ^ 2 + 5 * x / 2 - Real.pi * Real.exp (2 * x))) x
-  simpa only [Function.comp_apply, mul_comm] using
-    (Real.hasDerivAt_exp _).comp x harg
+  have h := (Real.hasDerivAt_exp
+      (lambda * x ^ 2 + 5 * x / 2 - Real.pi * Real.exp (2 * x))).comp x harg
+  have hval : Real.exp (lambda * x ^ 2 + 5 * x / 2 - Real.pi * Real.exp (2 * x)) *
+      (2 * lambda * x + 5 / 2 - 2 * Real.pi * Real.exp (2 * x)) =
+      (2 * lambda * x + 5 / 2 - 2 * Real.pi * Real.exp (2 * x)) *
+        Real.exp (lambda * x ^ 2 + 5 * x / 2 - Real.pi * Real.exp (2 * x)) := by
+    ring
+  rw [hval] at h
+  exact h
 
 private theorem exp_two_mul_thetaCuspPolynomialAtom_two_eq_four (x : ℝ) :
     Real.exp (2 * x) * thetaCuspPolynomialAtom (X ^ 2) 1 x =
@@ -137,7 +143,11 @@ theorem thetaCuspGaussianApertureCorrectionChannelCurrent_tendsto_zero
         (hasDerivAt_thetaCuspGaussianApertureCorrectionChannelWeight lambda x).continuousAt)
   have h := (hcont.tendsto 0).mono_left
     (inf_le_left : 𝓝[>] (0 : ℝ) ≤ 𝓝 0)
-  simpa using h
+  have h2 : Tendsto (fun x : ℝ =>
+      x ^ (2 * j + 1) * thetaCuspGaussianApertureCorrectionChannelWeight lambda x)
+      (𝓝 0 ⊓ 𝓟 (Ioi 0)) (𝓝 0) := by
+    simpa using h
+  exact h2
 
 theorem thetaCuspGaussianApertureCorrectionChannelCurrent_tendsto_atTop_zero
     {lambda : ℝ} (hlambda : lambda ≤ 0) (j : ℕ) :
@@ -179,7 +189,7 @@ theorem thetaCuspGaussianApertureCorrectionChannelNaturalScoreMoment_eq
     intro x _hx
     dsimp only [u, u']
     convert hasDerivAt_pow (2 * j + 1) x using 1
-    norm_num
+    all_goals first | rfl | (push_cast [Nat.add_sub_cancel]; norm_num)
   have hvderiv : ∀ x ∈ Ioi (0 : ℝ), HasDerivAt v (v' x) x := by
     intro x _hx
     simpa only [v, v'] using hasDerivAt_thetaCuspGaussianApertureCorrectionChannelWeight lambda x
@@ -204,10 +214,8 @@ theorem thetaCuspGaussianApertureCorrectionChannelNaturalScoreMoment_eq
     (a := (0 : ℝ)) (a' := (0 : ℝ)) (b' := (0 : ℝ))
     (u := u) (u' := u') (v := v) (v' := v')
     huderiv hvderiv huv' hu'v
-    (by simpa only [u, v, Pi.mul_apply] using
-      (@thetaCuspGaussianApertureCorrectionChannelCurrent_tendsto_zero lambda j))
-    (by simpa only [u, v, Pi.mul_apply] using
-      (@thetaCuspGaussianApertureCorrectionChannelCurrent_tendsto_atTop_zero lambda hlambda j))
+    (thetaCuspGaussianApertureCorrectionChannelCurrent_tendsto_zero j)
+    (thetaCuspGaussianApertureCorrectionChannelCurrent_tendsto_atTop_zero hlambda j)
   have hleft : (∫ x : ℝ in Ioi 0, u x * v' x) =
       -2 * thetaCuspGaussianApertureCorrectionChannelNaturalScoreMoment lambda j := by
     rw [thetaCuspGaussianApertureCorrectionChannelNaturalScoreMoment, ← integral_const_mul]
@@ -250,7 +258,7 @@ theorem thetaCuspGaussianApertureTwoChannel_scoreTransport
   let gf : ℝ → ℝ := fun x => K x * f x
   let gh : ℝ → ℝ := fun x => K x * h x
   have hf : Integrable f mu := by
-    simpa only [f, mu] using
+    simpa only [MeasureTheory.IntegrableOn, f, mu] using
       integrableOn_pow_mul_thetaCuspGaussianApertureLeadingChannelWeight
         hlambda (2 * j)
   have hh : Integrable h mu := by
@@ -706,7 +714,7 @@ theorem thetaCuspGaussianApertureTailCorrectionRatio_relativeDecrement
     field_simp [hC0.ne', hC1.ne', hA0.ne']
   have hmul : (3 * Real.pi) * (rho * (r4 - r2)) ≤ rho * s := by
     convert mul_le_mul_of_nonneg_left hcore hrho.le using 1
-    all_goals ring
+    all_goals first | rfl | ring
   rw [← hid] at hmul
   have hcancel : s * ((3 * Real.pi) * s * (rho - rho')) ≤ s * rho := by
     rw [show s * ((3 * Real.pi) * s * (rho - rho')) =

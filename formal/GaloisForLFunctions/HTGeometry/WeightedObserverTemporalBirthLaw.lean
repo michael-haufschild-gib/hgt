@@ -65,6 +65,7 @@ noncomputable def weightedSpectralObserverRay
     x alternative sites
       (fun e => g ^ weight e * z e)
 
+omit [∀ (v : V), Nonempty (A v)] in
 /-- Every weighted local observer ray is analytic at zero. -/
 theorem weightedSpectralObserverRay_analyticAt
     (L : FiniteLocalInteractionFamily V E A)
@@ -118,6 +119,7 @@ noncomputable def weightedSpectralObserverRaySeries
     (L.weightedSpectralObserverRay_analyticAt onsite hinj
       x alternative sites weight hpos z)
 
+omit [∀ (v : V), Nonempty (A v)] in
 /-- Canonical weighted observer series represents its ray. -/
 theorem weightedSpectralObserverRaySeries_spec
     (L : FiniteLocalInteractionFamily V E A)

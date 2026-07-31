@@ -210,7 +210,7 @@ theorem sum_integral_cells_le {δ A B : ℝ} (hδ : 0 < δ) {g : ℝ → ℝ}
       = ∑ x ∈ P, ∫ u in Set.Ioc x (x + δ), g u :=
     integral_biUnion_finset P hmeas (pairwise_disjoint_cells hδ hPsep) hintOn
   rw [← hsum]
-  refine setIntegral_mono_set hgint ?_ (HasSubset.Subset.eventuallyLE hUsub)
+  refine setIntegral_mono_set hgint ?_ (LE.le.eventuallyLE hUsub)
   exact Filter.Eventually.of_forall hg0
 
 

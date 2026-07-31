@@ -106,7 +106,7 @@ theorem finiteKrylovBasis_eq_gramSchmidtNormed {r : ℕ}
   have hnorm :=
     InnerProductSpace.gramSchmidtNormed_unit_length i
       (finiteKrylovVector_linearIndependent henergy hweight)
-  exact (norm_ne_zero_iff.mp (by simpa [hnorm]))
+  exact (norm_ne_zero_iff.mp (by simp [hnorm]))
 
 /-- The first Krylov basis vector is the original normalized weight ket. -/
 theorem finiteKrylovBasis_zero {r : ℕ} [NeZero r]

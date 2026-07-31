@@ -301,7 +301,7 @@ theorem criticalSchwarzAverage_mem_real_span
     apply Finset.sum_congr rfl
     intro a ha
     have hc : ((2 : ℂ)⁻¹ * (c a + conj (c a))) = ((c a).re : ℂ) := by
-      apply Complex.ext <;> simp <;> ring
+      apply Complex.ext <;> simp ; ring
     calc
       (2 : ℂ)⁻¹ * (c a * a z) +
           (2 : ℂ)⁻¹ * (conj (c a) * a z) =

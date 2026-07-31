@@ -55,7 +55,7 @@ theorem cofinitePrimeProfileJetPacket_of_infinite_prime_support {g : ArithmeticF
     CofinitePrimeProfileJetPacket (fun _ : Unit => g) := by
   classical
   intro m forbidden hfin
-  obtain ⟨qq, hqinj, hqmem⟩ := exists_injective_primes_mem m (hg.diff hfin)
+  obtain ⟨qq, hqinj, hqmem⟩ := exists_injective_primes_mem m (hg.sdiff hfin)
   refine ⟨fun x => qq x.2, fun _ => 0, ?_, ?_, ?_⟩
   · rintro ⟨u, i⟩ ⟨v, j⟩ h
     exact Prod.ext (Subsingleton.elim u v) (hqinj h)

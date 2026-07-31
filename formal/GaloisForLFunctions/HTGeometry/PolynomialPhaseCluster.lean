@@ -100,7 +100,7 @@ theorem eventually_polynomialPatternPower_gap_of_sourceSum_lt
   refine ⟨c₀ / 2, by positivity, ?_⟩
   filter_upwards [hhalf] with x hx
   rw [polynomialPatternPowerValuation_sub β x p₀ p hcount₀ hcount]
-  convert hx using 1 <;> ring
+  convert hx using 1 ; ring
 
 theorem exists_uniform_eventually_finset_rpow_gap {α : Type*}
     [DecidableEq α] (T : Finset α) (η : ℝ) (V : α → ℝ → ℝ)
@@ -307,8 +307,7 @@ theorem eventually_abs_polynomialPatternPower_sub_le_of_same_signature
     have hpoch : (descPochhammer ℝ μ).eval β ≠ 0 := by
       rw [descPochhammer_eval_eq_prod_range]
       apply Finset.prod_ne_zero_iff.mpr
-      intro j hj
-      intro hzero
+      intro j hj hzero
       have hβj : β = (j : ℝ) := sub_eq_zero.mp hzero
       apply hβnat
       rw [hβj, Nat.ceil_natCast]

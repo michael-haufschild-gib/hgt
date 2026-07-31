@@ -42,8 +42,8 @@ theorem integrableOn_neg_thetaCuspTailSecondDensityDerivative_mul_one_sub_phase
     have hbase := (integrableOn_pow_mul_thetaCuspTailDerivative 0 3).const_mul 4
     have hderiv : IntegrableOn (fun t : ℝ => 4 * thetaCuspTailDerivative 3 t)
         (Ioi 0) := by
-      simpa only [pow_zero, one_mul] using hbase
-    simpa only [h] using hderiv.neg
+      simpa only [IntegrableOn, pow_zero, one_mul] using hbase
+    exact hderiv.neg
   have hh : Integrable (fun t => (h t : ℂ)) (volume.restrict (Ioi 0)) :=
     hhReal.ofReal
   have hmajor : Integrable (fun t => (2 : ℂ) * (h t : ℂ))
@@ -86,9 +86,9 @@ theorem integrableOn_neg_thetaCuspTailSecondDensityDerivative_mul_phaseDerivativ
     have hbase := (integrableOn_pow_mul_thetaCuspTailDerivative 1 3).const_mul 4
     have hderiv : IntegrableOn
         (fun t : ℝ => t * (4 * thetaCuspTailDerivative 3 t)) (Ioi 0) := by
-      simpa only [pow_one, mul_assoc, mul_left_comm, mul_comm] using hbase
+      simpa only [IntegrableOn, pow_one, mul_assoc, mul_left_comm, mul_comm] using hbase
     have hneg := hderiv.neg
-    simpa only [h, Pi.neg_apply, mul_neg] using hneg
+    simpa only [h, Pi.neg_def, mul_neg] using hneg
   have hth : Integrable (fun t => ((t * h t : ℝ) : ℂ))
       (volume.restrict (Ioi 0)) := hthReal.ofReal
   apply Integrable.mono hth
@@ -96,8 +96,8 @@ theorem integrableOn_neg_thetaCuspTailSecondDensityDerivative_mul_phaseDerivativ
       have hbase := (integrableOn_pow_mul_thetaCuspTailDerivative 0 3).const_mul 4
       have hderiv : IntegrableOn (fun t : ℝ => 4 * thetaCuspTailDerivative 3 t)
           (Ioi 0) := by
-        simpa only [pow_zero, one_mul] using hbase
-      simpa only [h] using hderiv.neg
+        simpa only [IntegrableOn, pow_zero, one_mul] using hbase
+      exact hderiv.neg
     have hh : Integrable (fun t => (h t : ℂ)) (volume.restrict (Ioi 0)) :=
       hhReal.ofReal
     have hphase : Continuous (fun t : ℝ =>
@@ -142,7 +142,7 @@ theorem positiveTailCompletion_neg_thetaCuspTailSecondDensityDerivative_eq
     hasDerivAt_spectralTranslationPhase_source z t
   have hg'int : IntegrableOn g' (Ioi 0) := by
     have hbase := (integrableOn_pow_mul_thetaCuspTailDerivative 0 3).const_mul 4
-    simpa only [g', pow_zero, one_mul] using hbase
+    simpa only [IntegrableOn, g', pow_zero, one_mul] using hbase
   have hgint : IntegrableOn g (Ioi 0) := by
     simpa only [g, pow_zero, one_mul] using
       integrableOn_pow_mul_thetaCuspTailSecondDensity 0
@@ -175,7 +175,8 @@ theorem positiveTailCompletion_neg_thetaCuspTailSecondDensityDerivative_eq
     (fun t _ht => (hg t).ofReal_comp)
     (by
       change IntegrableOn (fun t : ℝ => (1 : ℂ) * (g' t : ℂ)) (Ioi 0)
-      simpa using hg'int.ofReal)
+      have h : IntegrableOn (fun t : ℝ => (g' t : ℂ)) (Ioi 0) := hg'int.ofReal
+      simpa only [IntegrableOn, one_mul] using h)
     (by
       have hzero : IntegrableOn (fun _t : ℝ => (0 : ℂ)) (Ioi 0) :=
         integrableOn_zero
@@ -207,7 +208,8 @@ theorem positiveTailCompletion_neg_thetaCuspTailSecondDensityDerivative_eq
   have hpgzero : Tendsto (fun t : ℝ => p t * (g t : ℂ))
       (𝓝[>] 0) (nhds (g 0 : ℂ)) := by
     have h := (hp 0).continuousAt.mul (hg 0).ofReal_comp.continuousAt
-    simpa [p, spectralTranslationPhase] using h.tendsto.mono_left inf_le_left
+    simpa [p, spectralTranslationPhase, Pi.mul_def, nhdsWithin]
+      using h.tendsto.mono_left inf_le_left
   have hphase := integral_Ioi_mul_deriv_eq_deriv_mul
     (a := (0 : ℝ)) (a' := (g 0 : ℂ)) (b' := (0 : ℂ))
     (u := p) (u' := p')
@@ -224,7 +226,7 @@ theorem positiveTailCompletion_neg_thetaCuspTailSecondDensityDerivative_eq
         fun t => (I * z) * ((g t : ℂ) * p t) by
       funext t; simp only [p']; ring,
       integral_const_mul] at hphase
-    simpa only [zero_sub] using hphase
+    simpa only [Pi.mul_def, zero_sub] using hphase
   unfold positiveTailCompletion
   rw [show (fun t : ℝ =>
       ((-(4 * thetaCuspTailDerivative 3 t) : ℝ) : ℂ) *
@@ -261,20 +263,24 @@ theorem positiveTailCompletionDerivative_neg_thetaCuspTailSecondDensityDerivativ
     simpa only [g, g'] using hasDerivAt_thetaCuspTailSecondDensity_fromAtoms t
   have hq (t : ℝ) : HasDerivAt q (q' t) t := by
     have hlin : HasDerivAt (fun u : ℝ => -((u : ℂ) * I)) (-I) t := by
-      convert ((Complex.ofRealCLM.hasDerivAt.mul_const I).neg) using 1
-      simp [Complex.ofRealCLM_apply]
+      have h := ((Complex.ofRealCLM.hasDerivAt (x := t)).mul_const I).neg
+      have hval : -((Complex.ofRealCLM 1 : ℂ) * I) = -I := by
+        simp [Complex.ofRealCLM_apply]
+      rw [hval] at h
+      exact h
     have hp := hasDerivAt_spectralTranslationPhase_source z t
-    convert hlin.mul hp using 1
-    dsimp only [q, q']
-    ring_nf
-    rw [I_sq]
-    ring
+    have hval : q' t = -I * spectralTranslationPhase t z +
+        -((t : ℂ) * I) * (I * z * spectralTranslationPhase t z) := by
+      simp only [q']
+      linear_combination ((t : ℂ) * z * spectralTranslationPhase t z) * I_sq
+    rw [hval]
+    exact hlin.mul hp
   have hg'int : IntegrableOn g' (Ioi 0) := by
     have hbase := (integrableOn_pow_mul_thetaCuspTailDerivative 0 3).const_mul 4
-    simpa only [g', pow_zero, one_mul] using hbase
+    simpa only [IntegrableOn, g', pow_zero, one_mul] using hbase
   have ht_g'int : IntegrableOn (fun t : ℝ => t * g' t) (Ioi 0) := by
     have hbase := (integrableOn_pow_mul_thetaCuspTailDerivative 1 3).const_mul 4
-    simpa only [g', pow_one, mul_assoc, mul_left_comm, mul_comm] using hbase
+    simpa only [IntegrableOn, g', pow_one, mul_assoc, mul_left_comm, mul_comm] using hbase
   have hgint : IntegrableOn g (Ioi 0) := by
     simpa only [g, pow_zero, one_mul] using
       integrableOn_pow_mul_thetaCuspTailSecondDensity 0
@@ -308,8 +314,12 @@ theorem positiveTailCompletionDerivative_neg_thetaCuspTailSecondDensityDerivativ
   have hqgzero : Tendsto (fun t : ℝ => q t * (g t : ℂ))
       (𝓝[>] 0) (nhds 0) := by
     have hcont := (hq 0).continuousAt.mul (hg 0).ofReal_comp.continuousAt
-    convert hcont.tendsto.mono_left inf_le_left using 1
-    simp [Pi.mul_apply, q, spectralTranslationPhase]
+    have ht : Tendsto (fun t : ℝ => q t * (g t : ℂ)) (𝓝 0)
+        (nhds (q 0 * (g 0 : ℂ))) := hcont.tendsto
+    have h0 : q 0 * (g 0 : ℂ) = 0 := by
+      simp [q]
+    rw [h0] at ht
+    exact ht.mono_left inf_le_left
   have hqgtop : Tendsto (fun t : ℝ => q t * (g t : ℂ)) atTop (nhds 0) := by
     rw [tendsto_zero_iff_norm_tendsto_zero]
     have hmajor : Tendsto (fun t : ℝ => ((t * g t : ℝ) : ℂ)) atTop (nhds 0) := by
@@ -427,7 +437,7 @@ theorem positiveTailCompletion_neg_thetaCuspTailSecondDensityDerivative_re_pos
     (h t : ℂ) * (1 - spectralTranslationPhase t z)
   let mu : Measure ℝ := volume.restrict (Ioi 0)
   have hf : Integrable f mu := by
-    simpa only [f, h, mu] using
+    simpa only [IntegrableOn, f, h, mu] using
       integrableOn_neg_thetaCuspTailSecondDensityDerivative_mul_one_sub_phase hz.le
   have hfre : Integrable (fun t => (f t).re) mu := hf.re
   have hnonneg : 0 ≤ᵐ[mu] fun t => (f t).re := by
@@ -836,7 +846,10 @@ theorem xiCTaylorFullDensityTransferCurrentSublinearUpper_of_riemannHypothesis
     xiCTaylor_orientedCurrent_eq_fullDensity_add_transfer d hz
   have hP' : orientedPolynomialCurrent P z <
       (delta * (((n + 1 : ℕ) : ℝ))) * Complex.normSq (P.eval z) := by
-    simpa only [P, d, z, xiCTaylorOddDegreeSchedule] using hP
+    have harith : 2 * (D (xiCTaylorAnisotropicScheduleStage sigma n) + 1) + 1 =
+        2 * D (xiCTaylorAnisotropicScheduleStage sigma n) + 3 := by
+      ring
+    simpa only [P, d, z, xiCTaylorOddDegreeSchedule, harith] using hP
   have htransferMul : Complex.normSq F * Jt <
       (epsilon * (((n + 1 : ℕ) : ℝ))) * Complex.normSq (P.eval z) := by
     have heq : Complex.normSq F * Jt =

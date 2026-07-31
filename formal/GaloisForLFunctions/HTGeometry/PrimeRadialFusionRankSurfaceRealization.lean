@@ -88,7 +88,7 @@ theorem primeRadialMonomialProfile_ne_zero
   intro hzero
   have hcoeff := congrArg
     (fun u : PrimeRadialProfile => PowerSeries.coeff n (u : PowerSeries ℂ)) hzero
-  simpa [primeRadialMonomialProfile, PowerSeries.coeff_monomial] using hcoeff
+  simp [primeRadialMonomialProfile] at hcoeff
 
 theorem primeRadialMonomialProfile_order
     (n : Nat) (hn : 0 < n) :

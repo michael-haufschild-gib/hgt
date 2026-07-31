@@ -47,7 +47,6 @@ theorem thetaCuspLikelihoodModularSeam_strictFluctuation :
     simpa [HTGeometry.momentHankelMatrix, Matrix.det_fin_two] using hdet
   have hbary := thetaCuspHigherLikelihoodSpectralMoment_seam_barycenter
   have hsq := congrArg (fun x : ℝ => x ^ 2) hbary
-  dsimp only at hsq
   have hpi : 0 < (2 * Real.pi) ^ 2 := by positivity
   have hscaled := mul_pos hpi hdet'
   nlinarith

@@ -41,7 +41,7 @@ def ccmMatrixCLM (T : Matrix n n ℂ) :
 
 /-- Orthogonal projection of a boundary vector onto the metric radical. -/
 def ccmRadicalProjection (T : Matrix n n ℂ) (alpha : n → ℂ) : n → ℂ :=
-  ((ccmMatrixCLM T).ker.orthogonalProjection (WithLp.toLp 2 alpha) :
+  ((ccmMatrixCLM T).ker.orthogonalProjectionOnto (WithLp.toLp 2 alpha) :
     EuclideanSpace ℂ n).ofLp
 
 /-- Canonically normalized active radical projection. -/
@@ -60,9 +60,9 @@ def ccmCanonicalSourceResponseCompletion
 
 theorem ccmRadicalProjection_mulVec_eq_zero (T : Matrix n n ℂ) (alpha : n → ℂ) :
     T *ᵥ ccmRadicalProjection T alpha = 0 := by
-  have hp := ((ccmMatrixCLM T).ker.orthogonalProjection (WithLp.toLp 2 alpha)).property
+  have hp := ((ccmMatrixCLM T).ker.orthogonalProjectionOnto (WithLp.toLp 2 alpha)).property
   change ccmMatrixCLM T
-      ((ccmMatrixCLM T).ker.orthogonalProjection (WithLp.toLp 2 alpha)) = 0 at hp
+      ((ccmMatrixCLM T).ker.orthogonalProjectionOnto (WithLp.toLp 2 alpha)) = 0 at hp
   change WithLp.toLp 2 (T *ᵥ ccmRadicalProjection T alpha) = 0 at hp
   exact WithLp.toLp_injective 2 hp
 

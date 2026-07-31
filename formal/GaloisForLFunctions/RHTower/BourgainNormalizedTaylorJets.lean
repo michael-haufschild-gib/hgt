@@ -22,7 +22,7 @@ theorem iteratedDeriv_bourgainAffineRpow_one
   have haffine :
       HasDerivAt (fun y : ℝ => 1 + q * y) q t := by
     convert! (hasDerivAt_const t (1 : ℝ)).add
-      ((hasDerivAt_id t).const_mul q) using 1 <;> ring_nf
+      ((hasDerivAt_id t).const_mul q) using 1 ; ring_nf
   convert! (haffine.rpow_const (p := r) (Or.inl hbase.ne')).deriv using 1
 
 /-- Second derivative of a translated and scaled real power. -/
@@ -57,8 +57,8 @@ theorem iteratedDeriv_bourgainThreeHalvesTaylorPolynomial_one
     (((hasDerivAt_const t (1 : ℝ)).add
       ((hasDerivAt_id t).const_mul ((3 / 2 : ℝ) * q))).add
         (((hasDerivAt_id t).pow 2).const_mul
-          ((3 / 8 : ℝ) * q ^ (2 : ℕ)))).deriv using 1 <;>
-    simp only [id_eq] <;> ring
+          ((3 / 8 : ℝ) * q ^ (2 : ℕ)))).deriv using 1 ;
+    simp only [id_eq] ; ring
 
 theorem iteratedDeriv_bourgainThreeHalvesTaylorPolynomial_two
     (q t : ℝ) :
@@ -81,7 +81,7 @@ theorem iteratedDeriv_bourgainThreeHalvesTaylorPolynomial_two
   convert!
     ((hasDerivAt_const t ((3 / 2 : ℝ) * q)).add
       ((hasDerivAt_id t).const_mul
-        ((3 / 4 : ℝ) * q ^ (2 : ℕ)))).deriv using 1 <;> ring
+        ((3 / 4 : ℝ) * q ^ (2 : ℕ)))).deriv using 1 ; ring
 
 /-- Exact first jet of the normalized cubic phase. -/
 theorem iteratedDeriv_bourgainNormalizedCubicRemainder_one
@@ -142,8 +142,8 @@ theorem iteratedDeriv_bourgainHalfTaylorPolynomial_one
     (((hasDerivAt_const t (1 : ℝ)).add
       ((hasDerivAt_id t).const_mul ((1 / 2 : ℝ) * q))).sub
         (((hasDerivAt_id t).pow 2).const_mul
-          ((1 / 8 : ℝ) * q ^ (2 : ℕ)))).deriv using 1 <;>
-    simp only [id_eq] <;> ring
+          ((1 / 8 : ℝ) * q ^ (2 : ℕ)))).deriv using 1 ;
+    simp only [id_eq] ; ring
 
 theorem iteratedDeriv_bourgainHalfTaylorPolynomial_two
     (q t : ℝ) :
@@ -165,7 +165,7 @@ theorem iteratedDeriv_bourgainHalfTaylorPolynomial_two
   convert!
     ((hasDerivAt_const t ((1 / 2 : ℝ) * q)).sub
       ((hasDerivAt_id t).const_mul
-        ((1 / 4 : ℝ) * q ^ (2 : ℕ)))).deriv using 1 <;> ring
+        ((1 / 4 : ℝ) * q ^ (2 : ℕ)))).deriv using 1 ; ring
 
 /-- Exact first jet of the normalized quartic phase. -/
 theorem iteratedDeriv_bourgainNormalizedQuarticRemainder_one

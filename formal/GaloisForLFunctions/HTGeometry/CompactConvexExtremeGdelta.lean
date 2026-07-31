@@ -113,7 +113,7 @@ theorem extremePoints_eq_diff_iUnion {K : Set E} (hK : Convex ℝ K) :
 /-- **Extreme points of a compact convex set are `Gδ`.** -/
 theorem isGδ_extremePoints {K : Set E} (hK : IsCompact K) (hKconv : Convex ℝ K) :
     IsGδ (K.extremePoints ℝ) := by
-  rw [extremePoints_eq_diff_iUnion hKconv, Set.diff_eq, Set.compl_iUnion]
+  rw [extremePoints_eq_diff_iUnion hKconv, Set.sdiff_eq, Set.compl_iUnion]
   exact hK.isClosed.isGδ.inter
     (IsGδ.iInter_of_isOpen (fun n => (isClosed_nonExtremeWitness hK n).isOpen_compl))
 

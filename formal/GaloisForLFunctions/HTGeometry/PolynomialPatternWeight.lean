@@ -659,9 +659,7 @@ theorem exists_intPolynomial_aevalWeight_shiftedAtomPatternKey
   rw [aevalWeight_shiftedAtomPatternKey_eq_eval_poly n D K τ Q p hcount hlarge]
   have hmap := map_polynomialPatternWeightPolyInt n D K τ Q c hc p
   rw [← hmap]
-  simpa [W] using
-    (Polynomial.eval_map_apply (p := polynomialPatternWeightPolyInt n D K τ Q c p)
-      (f := Int.castRingHom ℂ) (x := (q : ℤ)))
+  simp [W]
 
 theorem exists_nonzero_intPolynomial_aevalWeight_shiftedAtomPatternKey
     (n D K τ : ℕ) (Q : MvPolynomial (Fin (n + 2)) ℂ)
@@ -693,8 +691,7 @@ theorem intPolynomial_eventually_eval_ne_zero (W : Polynomial ℤ) (hW : W ≠ 0
   calc
     (W.map (Int.castRingHom ℂ)).eval (q : ℂ) =
         ((W.eval (q : ℤ) : ℤ) : ℂ) := by
-      simpa using (Polynomial.eval_map_apply (p := W)
-        (f := Int.castRingHom ℂ) (x := (q : ℤ)))
+      simp
     _ = 0 := by rw [hzero]; simp
 
 end

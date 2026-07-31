@@ -304,7 +304,6 @@ theorem preimage_projectiveWaterBox_subset_coherenceTarget
   have hlower :=
     one_sub_half_projectiveWeightedPivotEnergy_le_amplitudeNorm
       w (fun j => fourier 1 (z j)) k hmass (fun j => by
-        change ‖fourier 1 (z j)‖ = 1
         rw [fourier_apply, Circle.norm_coe])
   exact (by nlinarith : 1 - eta ≤
     1 - (1 / 2 : ℝ) *

@@ -172,7 +172,7 @@ theorem thetaCuspInwardFlux_eq_hyperbolicFlux
       -(∫ x : ℝ in Ioi 0, p x) := by
     calc
       (∫ x : ℝ in Iic 0, m x) = ∫ x : ℝ in Ioi 0, m (-x) := by
-        simpa using (integral_comp_neg_Ioi 0 m).symm
+        simp
       _ = ∫ x : ℝ in Ioi 0, -p x := by rw [hm_reflect]
       _ = -(∫ x : ℝ in Ioi 0, p x) := by rw [integral_neg]
   calc

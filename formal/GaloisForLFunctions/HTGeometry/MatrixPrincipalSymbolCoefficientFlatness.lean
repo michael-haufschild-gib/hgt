@@ -31,6 +31,7 @@ def MatrixCoefficientPrincipalSymbolFlat
     symbol n B * symbol (n + 1) A =
       symbol n A * symbol (n + 1) B
 
+omit [DecidableEq ι] in
 /-- Coefficient flatness is exactly vanishing of the matrix coefficient curvature. -/
 theorem matrixCoefficientPrincipalSymbolFlat_iff_curvature_zero
     (symbol : ℕ → g → Matrix ι ι K) :
@@ -39,6 +40,7 @@ theorem matrixCoefficientPrincipalSymbolFlat_iff_curvature_zero
   simp only [MatrixCoefficientPrincipalSymbolFlat, matrixCoefficientPrincipalCurvature,
     sub_eq_zero]
 
+omit [DecidableEq ι] in
 /-- Coefficient-row flatness is geometric-arrow flatness after transposing every symbol. -/
 theorem matrixCoefficientPrincipalSymbolFlat_iff_transpose_flat
     (symbol : ℕ → g → Matrix ι ι K) :

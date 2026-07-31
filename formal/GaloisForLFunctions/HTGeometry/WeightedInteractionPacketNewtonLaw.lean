@@ -55,6 +55,7 @@ theorem analyticAt_replicatedProductCoupling
           (ReplicatedInteractionLabel packet weight → ℂ) →L[ℂ] ℂ).analyticAt 0)
   · exact analyticAt_const
 
+omit [Fintype E] in
 /-- Positive weights make the replicated origin collapse to the original
 decoupled point. -/
 theorem replicatedProductCoupling_zero
@@ -85,6 +86,7 @@ noncomputable def canonicalReplicatedInteractionDirection
   fun label =>
     if label.2.val = 0 then z label.1.1 else 1
 
+omit [Fintype E] in
 /-- Canonical replication recovers the original direction on the packet. -/
 theorem replicatedInteractionAmplitude_canonical
     (packet : Finset E) (weight : E → ℕ)
@@ -111,6 +113,7 @@ theorem replicatedInteractionAmplitude_canonical
   · simp [replicatedInteractionAmplitude,
       restrictInteractionPacket, he]
 
+omit [Fintype E] in
 /-- A scalar ray in replica space becomes the weighted monomial switch-on
 `g ↦ g^(weight e)` in the original coupling space. -/
 theorem replicatedProductCoupling_smul
@@ -128,6 +131,7 @@ theorem replicatedProductCoupling_smul
     simp
   · simp [replicatedProductCoupling, replicatedInteractionAmplitude, he]
 
+omit [Fintype E] in
 /-- Omitting one virtual label forces at least one required original
 interaction coordinate to zero. -/
 theorem replicatedProductCoupling_eq_zero_of_missing
@@ -182,14 +186,14 @@ theorem spectralPacketResponse_replicatedProductCoupling_eq_zero_of_missing
   rw [if_neg]
   intro hsub
   have he := hsub hepacket
-  simpa [originalActive] using he
+  simp [originalActive] at he
 
 /-- The replica-space full packet projector returns the original packet
 response after product collapse. -/
 theorem spectralPacketResponse_full_replicated_eq
     (branch : (E → ℂ) → ℂ)
     (packet : Finset E) (weight : E → ℕ)
-    (hpos : ∀ e ∈ packet, 0 < weight e)
+    (_hpos : ∀ e ∈ packet, 0 < weight e)
     (direction : ReplicatedInteractionLabel packet weight → ℂ) :
     spectralPacketResponse
         (fun y => spectralPacketResponse branch packet

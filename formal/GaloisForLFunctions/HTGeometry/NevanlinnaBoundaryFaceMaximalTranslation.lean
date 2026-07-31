@@ -216,7 +216,7 @@ theorem boundaryCarrierFace_maximalTranslationPhase_dense_residual
     exact F.boundaryCarrierFace_subset_closure_maximalTranslationDifferentialFree
       inputs K hKclosed hK
   refine ⟨hdense, residual_of_dense_Gδ ?_ hdense⟩
-  exact isGδ_induced continuous_subtype_val inputs.phase_isGδ
+  exact IsGδ.preimage continuous_subtype_val inputs.phase_isGδ
 
 end ClassicalAnalyticNevanlinnaCarrierFamily
 

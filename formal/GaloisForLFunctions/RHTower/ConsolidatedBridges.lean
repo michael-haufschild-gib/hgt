@@ -125,6 +125,7 @@ def finiteRHLike (zeros : Finset Zero) : Prop :=
 def finiteOffLineCount (zeros : Finset Zero) : ℕ :=
   (zeros.filter OffLine).card
 
+omit [DecidableEq Zero] in
 /-- A finite set has no off-line elements exactly when its off-line count is zero. -/
 @[aesop norm simp]
 theorem finiteRHLike_iff_offLineCount_eq_zero (zeros : Finset Zero) :
@@ -141,6 +142,7 @@ theorem finiteRHLike_iff_offLineCount_eq_zero (zeros : Finset Zero) :
     rw [finiteOffLineCount] at hCount
     omega
 
+omit [DecidableEq Zero] in
 /-- The finite faithful-index route:
 if the faithful index is exactly the off-line count, and the source construction
 forces that index to vanish, then the finite carrier satisfies the RH-like

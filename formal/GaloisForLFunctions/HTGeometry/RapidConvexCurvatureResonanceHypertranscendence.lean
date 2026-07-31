@@ -203,7 +203,6 @@ theorem admissibleLogWeibullProfile_rapidlyVarying
     simpa [mul_comm] using hnlarge
   have hfloor : c₀ * (n : ℝ) < (⌊c * (n : ℝ)⌋₊ : ℝ) := by
     have hfloorUpper := Nat.lt_floor_add_one (c * (n : ℝ))
-    push_cast at hfloorUpper
     linarith
   have hfloorPos : 0 < ⌊c * (n : ℝ)⌋₊ := by
     have : (0 : ℝ) < (⌊c * (n : ℝ)⌋₊ : ℝ) :=

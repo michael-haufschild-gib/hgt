@@ -144,7 +144,7 @@ theorem exists_fg_right_subalgebra_lifts_pair
 
 /-- A finitely generated subalgebra carries the finite-type instance required by algebraic
 specialization. -/
-@[reducible] def finiteTypeOfSubalgebraFG
+theorem finiteTypeOfSubalgebraFG
     {C B : Type*} [CommSemiring C] [CommSemiring B] [Algebra C B]
     (R : Subalgebra C B) (hR : R.FG) : Algebra.FiniteType C R :=
   ⟨(Subalgebra.fg_top R).mpr hR⟩

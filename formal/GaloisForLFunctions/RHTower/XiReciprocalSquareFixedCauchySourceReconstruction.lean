@@ -22,8 +22,6 @@ theorem xiReciprocalSquareCauchyAdjointResponseTest_squareSummable
   intro q
   rw [xiWeilLineConjLp_apply, xiReciprocalSquareOperator_apply]
   symm
-  change ‖xiReciprocalSquareCauchyAdjointResponseTest
-    (z : ℂ) (xiSpectralPoint q)‖ ^ 2 = _
   simp only [xiReciprocalSquareCauchyAdjointResponseTest,
     xiSpectralPoint_lineConj, xiZeroCopyReciprocalSquare,
     xiWeilContinuedCauchyLp, xiWeilCauchyLp_apply, xiWeilCauchyTest]
@@ -57,8 +55,6 @@ theorem xiReciprocalSquareCauchyHolomorphicResponseTest_squareSummable
   intro q
   rw [xiReciprocalSquareOperator_apply]
   symm
-  change ‖xiReciprocalSquareCauchyHolomorphicResponseTest
-    (z : ℂ) (xiSpectralPoint q)‖ ^ 2 = _
   simp only [xiReciprocalSquareCauchyHolomorphicResponseTest,
     xiZeroCopyReciprocalSquare, xiWeilContinuedCauchyLp,
     xiWeilCauchyLp_apply, xiWeilCauchyTest]
@@ -216,8 +212,6 @@ theorem xiReciprocalSquareCauchySourcePlusTest_squareSummable
   apply hsum.congr
   intro q
   symm
-  change ‖xiReciprocalSquareCauchySourcePlusTest
-    (z : ℂ) (xiSpectralPoint q)‖ ^ 2 = _
   change ‖xiWeilCauchyTest (z : ℂ) (xiSpectralPoint q) +
     I * xiReciprocalSquareCauchyAdjointResponseTest
       (z : ℂ) (xiSpectralPoint q)‖ ^ 2 = _
@@ -235,8 +229,6 @@ theorem xiReciprocalSquareCauchySourceMinusTest_squareSummable
   apply hsum.congr
   intro q
   symm
-  change ‖xiReciprocalSquareCauchySourceMinusTest
-    (z : ℂ) (xiSpectralPoint q)‖ ^ 2 = _
   change ‖xiWeilCauchyTest (z : ℂ) (xiSpectralPoint q) -
     I * xiReciprocalSquareCauchyAdjointResponseTest
       (z : ℂ) (xiSpectralPoint q)‖ ^ 2 = _

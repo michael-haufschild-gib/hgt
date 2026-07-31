@@ -374,10 +374,9 @@ theorem integral_xiCTaylorThetaTailCoreAtomPairCorrelationKernel_eq_momentPacket
     rcases p with ⟨x, y⟩
     unfold xiCTaylorThetaTailCoreAtomPairCorrelationKernel
       xiCTaylorThetaTailCorePairCurrent H₁ H₂ f₁ f₂ g₁ g₂
-    simp only [Prod.fst, Prod.snd, map_mul, Complex.conj_ofReal,
+    simp only [map_mul, Complex.conj_ofReal,
       Complex.mul_im, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
-      zero_mul, add_zero, zero_sub, mul_zero]
-    push_cast
+      zero_mul, add_zero]
     ring]
   rw [show (fun p : ℝ × ℝ => (H₁ p + H₂ p) / 2) =
       fun p : ℝ × ℝ => (1 / 2 : ℝ) * (H₁ p + H₂ p) by

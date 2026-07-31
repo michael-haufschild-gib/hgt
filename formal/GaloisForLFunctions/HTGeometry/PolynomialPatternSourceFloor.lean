@@ -26,7 +26,6 @@ theorem atomValuation_shiftedAtomPatternKey
           (q : ℝ) - K + (r : ℝ) := by
         rw [windowShift, Nat.cast_add, Nat.cast_sub hKq]
       rw [hcast]
-      push_cast
       ring
     · simp
   · intro a

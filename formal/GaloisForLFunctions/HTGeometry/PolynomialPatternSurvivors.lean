@@ -73,10 +73,7 @@ theorem exists_nonzero_intPolynomial_of_mem_polynomialPatternSurvivors
   rw [aevalWeight_shiftedAtomPatternKey_eq_eval_poly n D K τ Q p
     (polynomialPatternSurvivors_count hp) hlarge]
   rw [← hmap]
-  simpa [W] using
-    (Polynomial.eval_map_apply
-      (p := polynomialPatternWeightPolyInt n D K τ Q c p)
-      (f := Int.castRingHom ℂ) (x := (q : ℤ)))
+  simp [W]
 
 theorem polynomialPatternSurvivors_eventually_weight_ne_zero
     {n D K τ M : ℕ} (Q : MvPolynomial (Fin (n + 2)) ℂ) :

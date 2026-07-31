@@ -95,7 +95,7 @@ theorem integral_Ioi_log_div_cube {a : ℝ} (ha : 0 < a) :
     rw [Real.log_div (ha.trans hx).ne' ha.ne']
   rw [hrewrite, hmain]
   dsimp [F]
-  simp only [sub_self, mul_zero, zero_div, neg_zero, zero_sub]
+  simp only [sub_self, mul_zero, zero_div, zero_sub]
   field_simp
 
 open Complex
@@ -151,7 +151,7 @@ theorem lintegral_xiRadialJensenKernel (q : XiZeroCopy) :
         by_cases hle : ‖xiSpectralPoint q‖ ≤ r
         · have heq : r = ‖xiSpectralPoint q‖ := le_antisymm (not_lt.mp hlt) hle
           subst r
-          simp [xiRadialJensenKernel, ha.le]
+          simp [xiRadialJensenKernel]
         · simp [xiRadialJensenKernel, hle]
     _ = ENNReal.ofReal (∫ r : ℝ in Ioi ‖xiSpectralPoint q‖, f r) := by
       exact (ofReal_integral_eq_lintegral_ofReal hint hnn).symm
@@ -204,7 +204,7 @@ def xiRadialJensenSupportTerm (r : ℝ) (rho : XiDivisorSupport) : ℝ :=
 def xiRadialJensenSupportProfile (r : ℝ) : ℝ :=
   ∑' rho : XiDivisorSupport, xiRadialJensenSupportTerm r rho
 
-private theorem finite_xiDivisorSupport_centered_norm_le {r : ℝ} (hr : 0 < r) :
+private theorem finite_xiDivisorSupport_centered_norm_le {r : ℝ} (_hr : 0 < r) :
     {rho : XiDivisorSupport | ‖(rho : ℂ) - 1 / 2‖ ≤ r}.Finite := by
   apply Set.Finite.of_finite_image _ Subtype.val_injective.injOn
   apply (xi_zeros_finite_ball (1 / 2 : ℂ) (r + 1)).subset

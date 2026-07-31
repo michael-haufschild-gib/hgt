@@ -207,7 +207,7 @@ theorem scalarReplicatedPrimeProfile_clockIndependent_iff_arbitrary
         intro z hz
         have : z.1 ∈ t := by
           exact Finset.mem_image.mpr ⟨z, hz, rfl⟩
-        simpa [ht] using this
+        simp [ht] at this
       subst s
       simp
     · letI : Nonempty t := Finset.nonempty_coe_sort.mpr
@@ -336,7 +336,7 @@ theorem primeRadialSource_clockClass_mem_basisClockSubmodule_iff
       rw [linearIndependent_unique_iff]
       intro huzero
       apply hu
-      simpa [z, huzero] using W.zero_mem
+      simp [z, huzero]
     have hdis : Disjoint
         (Submodule.span ℂ (Set.range b))
         (Submodule.span ℂ (Set.range z)) := by

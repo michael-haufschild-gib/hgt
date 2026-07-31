@@ -106,7 +106,6 @@ theorem exists_complex_zero_formallySmooth_of_radicalIdeal
       ((MvPolynomial σ ℂ) ⧸ I) p hpsmooth
   refine ⟨p, x, ?_, hx, hlocal⟩
   rw [← Set.singleton_subset_iff]
-  change ({x} : Set (σ → ℂ)) ≤ MvPolynomial.zeroLocus ℂ I
   rw [MvPolynomial.le_zeroLocus_iff_le_vanishingIdeal, ← hx]
   intro r hr
   change Ideal.Quotient.mk I r ∈ p.asIdeal

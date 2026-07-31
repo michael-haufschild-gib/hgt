@@ -157,7 +157,7 @@ theorem exists_pairwiseConjSeparatedContinuedCauchyPacketLp_tendsto
     exists_pairwiseConjSeparatedContinuedCauchyPacket_tendsto z
   refine ⟨w, hwsep, ?_⟩
   unfold xiWeilContinuedCauchyPacketLp
-  apply tendsto_finset_sum
+  apply tendsto_finsetSum
   intro i _hi
   exact (tendsto_xiWeilCauchyLp (hw i)).const_smul (c i)
 

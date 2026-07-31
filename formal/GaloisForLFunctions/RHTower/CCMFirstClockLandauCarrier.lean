@@ -56,7 +56,7 @@ theorem integrableOn_ccmFirstClockLandauDensity
         ((ccmFirstClockXiRationalDivisor L).re : ℂ) := by
     apply Complex.ext
     · simp
-    · simpa [hQim]
+    · simp [hQim]
   rw [hQcast]
   rw [show -(r : ℂ) * (L : ℂ) = ((-r * L : ℝ) : ℂ) by
     push_cast
@@ -163,7 +163,8 @@ theorem differentiable_ccmFirstClockHeadLaplace :
       (volume.restrict (Ioc (0 : ℝ) A)) := by
     have hQ : Integrable ccmFirstClockXiRationalDivisor
         (volume.restrict (Ioc (0 : ℝ) A)) := by
-      simpa only [A] using integrableOn_ccmFirstClockXiRationalDivisor_head
+      simpa only [MeasureTheory.IntegrableOn, A] using
+        integrableOn_ccmFirstClockXiRationalDivisor_head
     have hboundExp : Filter.Eventually
         (fun L : ℝ => ‖Complex.exp (-s₀ * (L : ℂ))‖ ≤
           Real.exp (|s₀.re| * A))
@@ -196,7 +197,8 @@ theorem differentiable_ccmFirstClockHeadLaplace :
       (volume.restrict (Ioc (0 : ℝ) A)) := by
     have hQ : Integrable ccmFirstClockXiRationalDivisor
         (volume.restrict (Ioc (0 : ℝ) A)) := by
-      simpa only [A] using integrableOn_ccmFirstClockXiRationalDivisor_head
+      simpa only [MeasureTheory.IntegrableOn, A] using
+        integrableOn_ccmFirstClockXiRationalDivisor_head
     exact hQ.norm.const_mul _
   have hbound : ∀ᵐ L ∂volume.restrict (Ioc (0 : ℝ) A),
       ∀ s ∈ Metric.ball s₀ 1, ‖F' s L‖ ≤ bound L := by
@@ -232,9 +234,8 @@ theorem differentiable_ccmFirstClockHeadLaplace :
     (μ := volume.restrict (Ioc (0 : ℝ) A)) (F := F) (F' := F')
     (x₀ := s₀) (s := Metric.ball s₀ 1) (bound := bound)
     hball hFmeas hFint hF'meas hbound hboundInt hdiff
-  exact (by
-    simpa only [ccmFirstClockHeadLaplace, A, F] using
-      hmain.2.differentiableAt)
+  have hdiffAt := hmain.2.differentiableAt
+  exact hdiffAt
 
 /-- Holomorphic continuation of the positive physical tail, obtained by deleting the compact
 unsigned head from the complete first-clock continuation. -/
@@ -265,7 +266,7 @@ theorem integral_tail_exp_mul_ccmFirstClockXiRationalDivisor_eq_continuation
     rw [Set.disjoint_left]
     intro L hheadL htailL
     exact (not_lt_of_ge hheadL.2) htailL
-  have hsplit := integral_union_ae hdisj.aedisjoint
+  have hsplit := setIntegral_union₀ hdisj.aedisjoint
     measurableSet_Ioi.nullMeasurableSet hhead htail
   rw [Set.Ioc_union_Ioi_eq_Ioi hA0] at hsplit
   have hfullEq :=
@@ -305,7 +306,7 @@ theorem complexMGF_id_ccmFirstClockLandauMeasure_eq_tailContinuation
         ((ccmFirstClockXiRationalDivisor L).re : ℂ) := by
     apply Complex.ext
     · simp
-    · simpa [hQim]
+    · simp [hQim]
   unfold ccmFirstClockLandauDensity
   rw [hQcast]
   rw [Complex.real_smul]

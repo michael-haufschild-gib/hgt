@@ -71,8 +71,7 @@ theorem hasSum_thetaCuspShellHalfLineTransform
   have hBoundIntegrable :
       Integrable (fun x => ∑' n, ‖F n x‖) mu := by
     have hfull' : Integrable
-        (fun x : ℝ => (thetaCuspFullSource x : ℂ) * P x) mu := by
-      simpa only [mu] using hfull
+        (fun x : ℝ => (thetaCuspFullSource x : ℂ) * P x) mu := hfull
     exact hfull'.norm.congr (hNormEq.mono fun _ hx => hx.symm)
   have hLim : ∀ᵐ x ∂mu,
       HasSum (fun n => F n x)
@@ -83,15 +82,23 @@ theorem hasSum_thetaCuspShellHalfLineTransform
     have hAsumC : Summable (fun n => (thetaCuspSourceTerm x n : ℂ)) :=
       (Complex.ofRealCLM : ℝ →L[ℝ] ℂ).summable hAsum
     have h := hAsumC.hasSum.mul_right (P x)
-    convert h using 1
-    unfold thetaCuspFullSource
-    push_cast
-    rfl
+    have hval : ((thetaCuspFullSource x : ℝ) : ℂ) * P x =
+        (∑' n, (thetaCuspSourceTerm x n : ℂ)) * P x := by
+      unfold thetaCuspFullSource
+      push_cast
+      rfl
+    rw [hval]
+    exact h
   have h := hasSum_integral_of_dominated_convergence
     (fun n x => ‖F n x‖) hFmeas
     (fun n => Filter.Eventually.of_forall fun x => le_rfl)
     hBoundSummable hBoundIntegrable hLim
-  simpa only [mu, F, thetaCuspShellHalfLineTransform] using h
+  have h2 : HasSum (fun n => ∫ x, F n x ∂mu)
+      (∫ x, (thetaCuspFullSource x : ℂ) * P x ∂mu) := h
+  have h3 : HasSum
+      (fun n => ∫ x : ℝ in Ioi 0, (thetaCuspSourceTerm x n : ℂ) * P x)
+      (∫ x : ℝ in Ioi 0, (thetaCuspFullSource x : ℂ) * P x) := h2
+  exact h3
 
 def thetaCuspShellEvenPhaseValue (z : ℂ) (n : ℕ) : ℂ :=
   thetaCuspShellHalfLineTransform

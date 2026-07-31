@@ -33,7 +33,7 @@ def momentScalePolynomial (m : ℕ → ℝ) (p : Polynomial ℝ) : Polynomial �
   rw [momentScalePolynomial, Polynomial.sum_def, Polynomial.finsetSum_coeff]
   by_cases hr : r ∈ p.support
   · rw [Finset.sum_eq_single r]
-    · simp [hr]
+    · simp
     · intro b hb hbr
       simp [Polynomial.coeff_monomial, hbr]
     · simp [hr]
@@ -113,9 +113,9 @@ theorem coeff_bernsteinPolynomial_zero (N r : ℕ) :
     (bernsteinPolynomial ℝ N 0).coeff r = (-1 : ℝ) ^ r * N.choose r := by
   classical
   rw [bernsteinPolynomial]
-  simp only [Nat.choose_zero_right, Nat.cast_one, C_1, one_mul, pow_zero, one_mul,
+  simp only [Nat.choose_zero_right, Nat.cast_one, one_mul, pow_zero, one_mul,
     Nat.sub_zero]
-  rw [show (1 - X : Polynomial ℝ) = -(X + C (-1 : ℝ)) by ext n <;> simp [sub_eq_add_neg]]
+  rw [show (1 - X : Polynomial ℝ) = -(X + C (-1 : ℝ)) by ext n ; simp [sub_eq_add_neg]]
   rw [neg_pow]
   have hC : (-1 : Polynomial ℝ) ^ N = C ((-1 : ℝ) ^ N) := by simp
   rw [hC, Polynomial.coeff_C_mul]
@@ -188,7 +188,7 @@ theorem coeff_bernsteinScalePurityPolynomial_congr_prefix
 /-- Exact triangular coefficient law.  No moment above `r` occurs, and the only dependence on
 `m r` is the displayed cross term with the pointed mass `m 0`. -/
 theorem coeff_bernsteinScalePurityPolynomial_eq_leading_add_lower
-    (m : ℕ → ℝ) (N : ℕ) {r : ℕ} (hr0 : 0 < r) (hr : r ≤ N) :
+    (m : ℕ → ℝ) (N : ℕ) {r : ℕ} (hr0 : 0 < r) (_hr : r ≤ N) :
     (bernsteinScalePurityPolynomial m N).coeff r =
       2 * (-1 : ℝ) ^ r * N.choose r * m 0 * m r +
         bernsteinScalePurityLower m N r := by
@@ -252,7 +252,7 @@ theorem coeff_bernsteinScalePurityPolynomial_eq_leading_add_lower
             ((bernsteinPolynomial ℝ N k).coeff 0 *
               (bernsteinPolynomial ℝ N k).coeff r) := by
           by_cases hk0 : k = 0 <;>
-            simp [bernsteinPurityCoefficientKernel, hk0] <;> ring
+            simp [bernsteinPurityCoefficientKernel, hk0] ; ring
   have hkernel := sum_bernstein_constant_mul_coeff N r
   rw [hkernel] at hsplit
   linarith

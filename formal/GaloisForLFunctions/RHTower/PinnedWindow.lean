@@ -232,7 +232,7 @@ theorem completedGN_simple_zero_factorization_of_close
     have hK : IsCompact (closedBall ρ₀ r₀) := isCompact_closedBall _ _
     have hmem : {x | completedGN N x ≠ 0} ∈ codiscreteWithin (closedBall ρ₀ r₀) :=
       Filter.codiscreteWithin_mono (closedBall_subset_ball hrR) hcod
-    refine (hK.finite_diff_of_mem_codiscreteWithin hmem).subset ?_
+    refine (hK.finite_sdiff_of_mem_codiscreteWithin hmem).subset ?_
     rintro x ⟨hxb, hx0⟩
     refine ⟨?_, by simpa using hx0⟩
     rw [mem_closedBall, Complex.dist_eq]

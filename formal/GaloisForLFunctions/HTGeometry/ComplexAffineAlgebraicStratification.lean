@@ -149,7 +149,7 @@ theorem complexAffineAlgebraic_finiteRegularStratification_of_krullDim
   · simpa [hzero] using hRsub
   · have hrem' : IsComplexAffineAlgebraic (T \ R) := by
       simpa [hzero] using hrem
-    exact IsComplexAffineAlgebraicOfCodimAtLeast.mono hT hrem' diff_subset
+    exact IsComplexAffineAlgebraicOfCodimAtLeast.mono hT hrem' sdiff_subset
 
 end
 

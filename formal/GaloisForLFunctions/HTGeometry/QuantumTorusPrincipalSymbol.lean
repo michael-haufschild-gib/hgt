@@ -47,6 +47,7 @@ def quantumGeneratorSymbol (G : ι → Module.End K M) :
     (ι → K) →ₗ[K] Module.End K M :=
   Fintype.linearCombination K G
 
+omit [CharZero K] in
 @[simp]
 theorem quantumGeneratorSymbol_basisFun
     (G : ι → Module.End K M) (i : ι) :
@@ -70,6 +71,7 @@ def quantumPairDecoder
     Module.End K M →ₗ[K] ⋀[K]^2 (ι → K) :=
   Classical.choose (LinearMap.exists_extend (quantumPairSpanDecoder q G hLI))
 
+omit [CharZero K] in
 theorem quantumPairDecoder_apply
     (q : K) (G : ι → Module.End K M)
     (hLI : LinearIndependent K (quantumPairOperator G))
@@ -93,6 +95,7 @@ theorem quantumPairDecoder_apply
       rw [LinearMap.comp_apply, hrepr]
       simp
 
+omit [CharZero K] [Fintype ι] in
 /-- A `q`-commuting pair has commutator `(q-1)` times its ordered quadratic monomial. -/
 theorem quantumGenerator_commutator_of_lt
     (q : K) (G : ι → Module.End K M)
@@ -112,6 +115,7 @@ def decodedQuantumCommutatorMap
   (quantumPairDecoder q G hLI).comp
     (endomorphismCommutatorMap (quantumGeneratorSymbol G))
 
+omit [CharZero K] in
 /-- The ordered-monomial decoder is a left inverse to the canonical commutator symbol. -/
 theorem decodedQuantumCommutatorMap_eq_id
     (q : K) (G : ι → Module.End K M)
@@ -139,6 +143,7 @@ theorem decodedQuantumCommutatorMap_eq_id
     quantumPairWedge (K := K) p
   rw [smul_smul, mul_inv_cancel₀ (sub_ne_zero.mpr hq), one_smul]
 
+omit [CharZero K] in
 /-- **Canonical quantum-torus principal-symbol theorem.**  Independent ordered quadratic
 monomials make the complete exterior commutator symbol injective. -/
 theorem quantumGenerator_endomorphismCommutatorMap_injective
@@ -157,6 +162,8 @@ theorem quantumGenerator_endomorphismCommutatorMap_injective
     _ = decodedQuantumCommutatorMap q G hLI z' := hdecoded
     _ = z' := hleft z'
 
+omit [Fintype ι] [LinearOrder ι] in
+omit [CharZero K] in
 /-- Exterior commutator symbols are natural under linear changes of law coordinates. -/
 theorem endomorphismCommutatorMap_comp
     (symbol : (ι → K) →ₗ[K] Module.End K M)
@@ -178,6 +185,7 @@ theorem endomorphismCommutatorMap_comp
   rw [hLf, endomorphismCommutatorMap_wedge]
   rfl
 
+omit [CharZero K] in
 /-- **Coordinate-free quantum principal-symbol theorem.**  An injective linear family of
 coefficients transports the canonical maximal commutator rank to any law space. -/
 theorem quantumTorus_endomorphismCommutatorMap_injective
@@ -192,6 +200,7 @@ theorem quantumTorus_endomorphismCommutatorMap_injective
   exact (quantumGenerator_endomorphismCommutatorMap_injective q G hq hComm hLI).comp
     (exteriorPower.map_injective_field (n := 2) hL)
 
+omit [CharZero K] in
 /-- Shift suspension preserves the maximal quantum principal-symbol rank exactly. -/
 theorem quantumTorus_derivationCommutatorMap_injective
     (q : K) (G : ι → Module.End K M)

@@ -192,10 +192,10 @@ omit [CompleteSpace E] in
 /-- Orthogonal compression cannot increase a finite-rank bound. -/
 theorem HasRankLE.orthogonalCompression {F : E →L[ℂ] E} {n : ℕ}
     (hF : HasRankLE F n) :
-    HasRankLE (S.orthogonalProjection ∘L F ∘L S.subtypeL) n := by
+    HasRankLE (S.orthogonalProjectionOnto ∘L F ∘L S.subtypeL) n := by
   obtain ⟨V, hVfd, hVrank, hFV⟩ := hF
   haveI : Module.Finite ℂ V := hVfd
-  refine ⟨V.map S.orthogonalProjection.toLinearMap, inferInstance,
+  refine ⟨V.map S.orthogonalProjectionOnto.toLinearMap, inferInstance,
     (Submodule.finrank_map_le _ V).trans hVrank, ?_⟩
   intro x
   exact Submodule.mem_map_of_mem (hFV x)
@@ -204,22 +204,22 @@ omit [CompleteSpace E] in
 /-- Restriction to an invariant closed subspace equals orthogonal compression. -/
 theorem restrict_eq_orthogonalCompression
     (T : E →L[ℂ] E) (hmap : Set.MapsTo T S S) :
-    T.restrict hmap = S.orthogonalProjection ∘L T ∘L S.subtypeL := by
+    T.restrict hmap = S.orthogonalProjectionOnto ∘L T ∘L S.subtypeL := by
   apply ContinuousLinearMap.ext
   intro x
-  change (⟨T x, hmap x.property⟩ : S) = S.orthogonalProjection (T x)
-  exact (S.orthogonalProjection_mem_subspace_eq_self
+  change (⟨T x, hmap x.property⟩ : S) = S.orthogonalProjectionOnto (T x)
+  exact (S.orthogonalProjectionOnto_mem_subspace_eq_self
     (⟨T x, hmap x.property⟩ : S)).symm
 
 omit [CompleteSpace E] in
 /-- Orthogonal compression is contractive in operator norm. -/
 theorem norm_orthogonalCompression_le (T : E →L[ℂ] E) :
-    ‖S.orthogonalProjection ∘L T ∘L S.subtypeL‖ ≤ ‖T‖ := by
-  apply (S.orthogonalProjection ∘L T ∘L S.subtypeL).opNorm_le_bound
+    ‖S.orthogonalProjectionOnto ∘L T ∘L S.subtypeL‖ ≤ ‖T‖ := by
+  apply (S.orthogonalProjectionOnto ∘L T ∘L S.subtypeL).opNorm_le_bound
     (norm_nonneg T)
   intro x
-  change ‖S.orthogonalProjection (T (x : E))‖ ≤ ‖T‖ * ‖x‖
-  exact (S.norm_orthogonalProjection_apply_le (T (x : E))).trans (T.le_opNorm x)
+  change ‖S.orthogonalProjectionOnto (T (x : E))‖ ≤ ‖T‖ * ‖x‖
+  exact (S.norm_orthogonalProjectionOnto_apply_le (T (x : E))).trans (T.le_opNorm x)
 
 omit [CompleteSpace E] in
 /-- Approximation numbers do not increase under restriction to an invariant closed subspace. -/
@@ -228,20 +228,21 @@ theorem approxNumber_restrict_le
     approxNumber (T.restrict hmap) n ≤ approxNumber T n := by
   refine le_csInf (approxNumber_set_nonempty T n) ?_
   rintro r ⟨F, hF, rfl⟩
-  let G : S →L[ℂ] S := S.orthogonalProjection ∘L F ∘L S.subtypeL
+  let G : S →L[ℂ] S := S.orthogonalProjectionOnto ∘L F ∘L S.subtypeL
   have hG : HasRankLE G n := hF.orthogonalCompression S
   refine (approxNumber_le (T.restrict hmap) n G hG).trans ?_
   rw [restrict_eq_orthogonalCompression S T hmap]
-  have heq : S.orthogonalProjection ∘L T ∘L S.subtypeL - G =
-      S.orthogonalProjection ∘L (T - F) ∘L S.subtypeL := by
+  have heq : S.orthogonalProjectionOnto ∘L T ∘L S.subtypeL - G =
+      S.orthogonalProjectionOnto ∘L (T - F) ∘L S.subtypeL := by
     apply ContinuousLinearMap.ext
     intro x
-    change S.orthogonalProjection (T x) - S.orthogonalProjection (F x) =
-      S.orthogonalProjection (T x - F x)
+    change S.orthogonalProjectionOnto (T x) - S.orthogonalProjectionOnto (F x) =
+      S.orthogonalProjectionOnto (T x - F x)
     rw [map_sub]
   rw [heq]
   exact norm_orthogonalCompression_le S (T - F)
 
+omit [CompleteSpace E] in
 /-- Schatten-1 membership descends to every invariant closed Hilbert subspace. -/
 theorem memSchattenClass_one_restrict
     (T : E →L[ℂ] E) (hmap : Set.MapsTo T S S)

@@ -42,6 +42,8 @@ def quadraticCompletionDetectorGenerator
     rw [map_smul]
     rfl
 
+omit [NeZero d] [Fact (1 < d)] in
+omit [CharZero K] in
 /-- Clocked quadratic detector generators retain ordered `q`-commutation. -/
 theorem quadraticCompletionDetectorGenerator_mul_of_lt
     (q : K) {i j : Fin n} (hij : i < j) :
@@ -58,6 +60,8 @@ theorem quadraticCompletionDetectorGenerator_mul_of_lt
   have hx := congrFun hqcomm x
   simpa [quadraticCompletionDetectorGenerator, Module.End.mul_apply, slice] using hx
 
+omit [NeZero d] [Fact (1 < d)] in
+omit [CharZero K] in
 /-- Every clocked quadratic detector generator remains square-zero. -/
 theorem quadraticCompletionDetectorGenerator_sq
     (q : K) (i : Fin n) :
@@ -71,6 +75,8 @@ theorem quadraticCompletionDetectorGenerator_sq
   have hx := congrFun hsq x
   simpa [quadraticCompletionDetectorGenerator, Module.End.mul_apply, pow_two, slice] using hx
 
+omit [NeZero d] in
+omit [CharZero K] in
 /-- Every clocked quadratic detector generator has zero `d`th power. -/
 theorem quadraticCompletionDetectorGenerator_pow_degree
     (q : K) (i : Fin n) :
@@ -92,6 +98,7 @@ def quadraticCompletionDetectorSymbol (q : K) :
   quantumGeneratorSymbol
     (fun i : Fin n ↦ quadraticCompletionDetectorGenerator (M := M) (d := d) q i)
 
+omit [NeZero d] in
 /-- Every value of the clocked quadratic detector pencil has zero `d`th power. -/
 theorem quadraticCompletionDetectorSymbol_pow_degree_zero
     (q : K) (hq : IsPrimitiveRoot q d) (c : Fin n → K) :
@@ -104,6 +111,7 @@ theorem quadraticCompletionDetectorSymbol_pow_degree_zero
       (fun i j hij ↦ quadraticCompletionDetectorGenerator_mul_of_lt q hij)]
   simp [quadraticCompletionDetectorGenerator_pow_degree]
 
+omit [CharZero K] in
 /-- Internal endomorphisms commute through the purely coordinatewise quadratic detector action. -/
 theorem map_quadraticQuantumDetectorGenerator
     (q : K) (A : Module.End K M) (i : Fin n)
@@ -120,9 +128,10 @@ theorem map_quadraticQuantumDetectorGenerator
       · simp [quadraticQuantumDetectorGenerator, hil, map_smul]
       · by_cases hiu : i = p.upper
         · subst i
-          simp [quadraticQuantumDetectorGenerator, hil, hne]
+          simp [quadraticQuantumDetectorGenerator, hil]
         · simp [quadraticQuantumDetectorGenerator, hil, hiu]
 
+omit [CharZero K] [Fact (1 < d)] in
 /-- The clock sector `q`-commutes with every quadratic detector generator. -/
 theorem quadraticCompletionClockLift_mul_detectorGenerator
     (q : K) (hq : q ^ d = 1) (A : Module.End K M) (i : Fin n) :
@@ -148,6 +157,7 @@ theorem quadraticCompletionClockLift_mul_detectorGenerator
   rw [map_smul]
   simp [smul_smul, mul_comm]
 
+omit [CharZero K] [Fact (1 < d)] in
 /-- The clock sector `q`-commutes with every quadratic detector-pencil value. -/
 theorem quadraticCompletionClockLift_mul_detectorSymbol
     (q : K) (hq : q ^ d = 1) (A : Module.End K M) (c : Fin n → K) :
@@ -203,6 +213,7 @@ theorem quadraticWidthPrincipalSymbolCompletion_pow
     quadraticCompletionDetectorSymbol_pow_degree_zero q hq]
   simp
 
+omit [CharZero K] [Fact (1 < d)] in
 @[simp]
 theorem quadraticWidthPrincipalSymbolCompletion_basisFun
     (q : K) (hq : q ^ d = 1)
@@ -220,6 +231,7 @@ def quadraticPrincipalCompletionRoot (m : M) :
     QuadraticPrincipalCompletionState M n d :=
   Pi.single .root (Pi.single 0 m)
 
+omit [NeZero d] [Fact (1 < d)] in
 theorem quadraticPrincipalCompletionRoot_ne_zero
     (m : M) (hm : m ≠ 0) :
     quadraticPrincipalCompletionRoot (n := n) (d := d) m ≠ 0 := by
@@ -229,6 +241,7 @@ theorem quadraticPrincipalCompletionRoot_ne_zero
   have hclock := congrFun hgrade (0 : ZMod d)
   exact hm (by simpa [quadraticPrincipalCompletionRoot] using hclock)
 
+omit [CharZero K] [NeZero d] [Fact (1 < d)] in
 /-- Two clocked detector shifts send the vacuum to the corresponding pair at clock degree two. -/
 theorem quadraticCompletionDetectorPairOperator_root
     (q : K) (m : M) (p : QuantumLawPair (Fin n)) :
@@ -254,12 +267,12 @@ theorem quadraticCompletionDetectorPairOperator_root
       · subst y
         simp [quadraticPrincipalCompletionRoot, quadraticQuantumDetectorRoot, htwo]
       · simp [quadraticPrincipalCompletionRoot, quadraticQuantumDetectorRoot,
-          Pi.single_apply, htwo, hy]
+          htwo, hy]
     rw [hslice, quadraticQuantumDetectorPairOperator_root]
     by_cases hx : x = (.pair p : QuadraticQuantumDetectorIndex n)
     · subst x
-      simp [quadraticQuantumDetectorPairState, Pi.single_apply]
-    · simp [quadraticQuantumDetectorPairState, Pi.single_apply, hx]
+      simp [quadraticQuantumDetectorPairState]
+    · simp [quadraticQuantumDetectorPairState, hx]
   · have hclock : k - 1 - 1 ≠ 0 := fun h ↦
       hk ((zmod_sub_one_sub_one_eq_zero_iff k).mp h)
     have hslice :
@@ -267,13 +280,13 @@ theorem quadraticCompletionDetectorPairOperator_root
       funext y
       by_cases hy : y = (.root : QuadraticQuantumDetectorIndex n)
       · subst y
-        simp [quadraticPrincipalCompletionRoot, Pi.single_apply, hclock]
-      · simp [quadraticPrincipalCompletionRoot, Pi.single_apply, hy]
+        simp [quadraticPrincipalCompletionRoot, hclock]
+      · simp [quadraticPrincipalCompletionRoot, hy]
     rw [hslice, map_zero]
     by_cases hx : x = (.pair p : QuadraticQuantumDetectorIndex n)
     · subst x
-      simp [Pi.single_apply, hk]
-    · simp [Pi.single_apply, hx]
+      simp [hk]
+    · simp [hx]
 
 /-- Read an endomorphism on the completed vacuum at every pair grade and clock degree. -/
 def quadraticPrincipalCompletionPairReadout (m : M) :
@@ -287,6 +300,7 @@ def quadraticPrincipalCompletionPairReadout (m : M) :
     funext p k
     simp
 
+omit [CharZero K] [NeZero d] [Fact (1 < d)] in
 theorem quadraticPrincipalCompletionPairReadout_detectorPair
     (q : K) (m : M) (r : QuantumLawPair (Fin n)) :
     quadraticPrincipalCompletionPairReadout (n := n) (d := d) m
@@ -308,8 +322,9 @@ theorem quadraticPrincipalCompletionPairReadout_detectorPair
       apply hpr
       injection h with hrp
       exact hrp.symm
-    simp [Pi.single_apply, hpr, hindex.symm]
+    simp [hpr, hindex.symm]
 
+omit [CharZero K] [Fact (1 < d)] in
 theorem quadraticPrincipalCompletionPairReadout_clock_mul_clock
     (q : K) (hq : q ^ d = 1) (m : M) (A B : Module.End K M) :
     quadraticPrincipalCompletionPairReadout (n := n) (d := d) m
@@ -319,6 +334,7 @@ theorem quadraticPrincipalCompletionPairReadout_clock_mul_clock
   simp [quadraticPrincipalCompletionPairReadout, Module.End.mul_apply,
     cyclicClockLift, quadraticPrincipalCompletionRoot]
 
+omit [CharZero K] [Fact (1 < d)] in
 theorem quadraticPrincipalCompletionPairReadout_clock_mul_detector
     (q : K) (hq : q ^ d = 1) (m : M) (A : Module.End K M) (i : Fin n) :
     quadraticPrincipalCompletionPairReadout (n := n) (d := d) m
@@ -329,6 +345,7 @@ theorem quadraticPrincipalCompletionPairReadout_clock_mul_detector
     cyclicClockLift, quadraticCompletionDetectorGenerator,
     quadraticQuantumDetectorGenerator, quadraticPrincipalCompletionRoot]
 
+omit [CharZero K] [Fact (1 < d)] in
 theorem quadraticPrincipalCompletionPairReadout_detector_mul_clock
     (q : K) (hq : q ^ d = 1) (m : M) (A : Module.End K M) (i : Fin n) :
     quadraticPrincipalCompletionPairReadout (n := n) (d := d) m
@@ -339,6 +356,8 @@ theorem quadraticPrincipalCompletionPairReadout_detector_mul_clock
     cyclicClockLift, quadraticCompletionDetectorGenerator,
     quadraticQuantumDetectorGenerator, quadraticPrincipalCompletionRoot]
 
+omit [NeZero d] [Fact (1 < d)] in
+omit [CharZero K] in
 theorem quadraticPrincipalCompletionPairReadout_detectorBracket
     (q : K) (m : M) (r : QuantumLawPair (Fin n)) :
     quadraticPrincipalCompletionPairReadout (n := n) (d := d) m
@@ -358,6 +377,8 @@ theorem quadraticPrincipalCompletionPairReadout_detectorBracket
   rw [quadraticPrincipalCompletionPairReadout_detectorPair]
   module
 
+omit [Fact (1 < d)] in
+omit [CharZero K] in
 theorem quadraticPrincipalCompletionPairReadout_principalBracketPair
     (q : K) (hq : q ^ d = 1)
     (A₀ : (Fin n → K) →ₗ[K] Module.End K M) (m : M)
@@ -379,6 +400,7 @@ theorem quadraticPrincipalCompletionPairReadout_principalBracketPair
   simpa using quadraticPrincipalCompletionPairReadout_detectorBracket
     (d := d) q m r
 
+omit [CharZero K] in
 theorem quadraticWidthPrincipalSymbolCompletion_principalBracketPair_linearIndependent
     (q : K) (hq : IsPrimitiveRoot q d)
     (A₀ : (Fin n → K) →ₗ[K] Module.End K M)
@@ -418,6 +440,7 @@ theorem quadraticWidthPrincipalSymbolCompletion_principalBracketPair_linearIndep
   simpa [Function.comp_def,
     quadraticPrincipalCompletionPairReadout_principalBracketPair] using hstandard
 
+omit [CharZero K] in
 /-- **Quadratic-width universal principal-symbol theorem.** -/
 theorem quadraticWidthPrincipalSymbolCompletion_endomorphismCommutatorMap_injective
     (q : K) (hq : IsPrimitiveRoot q d)

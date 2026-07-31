@@ -164,7 +164,6 @@ theorem isPreconnected_chartLA (a : ℂ) {r₀ R : ℝ} (h0 : 0 ≤ r₀) :
         have hnormeq : ‖z - a‖ = ‖-(z - a)‖ := (norm_neg _).symm
         rw [hnormeq]
         have := Complex.norm_mul_exp_arg_mul_I (-(z - a))
-        push_cast at this ⊢
         rw [mul_neg, this]
         ring
     · rintro ⟨⟨ρ, θ⟩, ⟨⟨hρ₁, hρ₂⟩, ⟨hθ₁, hθ₂⟩⟩, rfl⟩

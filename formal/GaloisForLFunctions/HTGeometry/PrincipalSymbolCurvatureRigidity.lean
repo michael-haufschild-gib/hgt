@@ -85,6 +85,7 @@ theorem coefficient_eq_zero_of_smul_source_mem_principalFiltration
   exact hu.linearIndependent.eq_zero_of_smul_mem_span n c
     ((Submodule.span_mono hsubset) hc)
 
+omit [IsScalarTower k K L] in
 /-- The principal two-layer term of a composite filtered law is the product of its consecutive
 layer symbols. -/
 theorem law_comp_sub_consecutiveSymbol_smul_mem
@@ -120,8 +121,9 @@ theorem law_comp_sub_consecutiveSymbol_smul_mem
   have hrEq : law B (u n) = r + symbol n B • u (n + 1) := by
     exact (sub_add_cancel _ _).symm
   rw [hrEq, map_add, Algebra.smul_def, Derivation.leibniz, hcompat]
-  convert hsum using 1 <;> simp [Algebra.smul_def] <;> ring
+  convert hsum using 1 ; simp [Algebra.smul_def] ; ring
 
+omit [IsScalarTower k K L] in
 /-- The two-layer principal coefficient of the commutator is exactly the consecutive-symbol
 curvature. -/
 theorem law_commutator_sub_principalSymbolCurvature_smul_mem
@@ -142,9 +144,10 @@ theorem law_commutator_sub_principalSymbolCurvature_smul_mem
   have hBA := law_comp_sub_consecutiveSymbol_smul_mem
     law coefficientLaw symbol u hcompat hstep B A n
   have hsub := (principalFiltration (K := K) u (n + 2)).sub_mem hAB hBA
-  convert hsub using 1 <;>
-    simp [principalSymbolCurvature, Algebra.smul_def] <;> ring
+  convert hsub using 1 ;
+    simp [principalSymbolCurvature, Algebra.smul_def] ; ring
 
+omit [IsScalarTower k K L] in
 /-- First-order commutator closure forces the consecutive-symbol curvature to vanish. -/
 theorem principalSymbolCurvature_eq_zero_of_commutatorClosure
     (law : g →ₗ[k] Derivation k L L)
@@ -176,10 +179,11 @@ theorem principalSymbolCurvature_eq_zero_of_commutatorClosure
   have hlead := (principalFiltration (K := K) u (n + 2)).sub_mem hlaw hcurv
   have hlead' : principalSymbolCurvature symbol n A B • u (n + 2) ∈
       principalFiltration (K := K) u (n + 2) := by
-    convert hlead using 1 <;> abel
+    convert hlead using 1 ; abel
   exact coefficient_eq_zero_of_smul_source_mem_principalFiltration
     u hu (n + 2) (principalSymbolCurvature symbol n A B) hlead'
 
+omit [IsScalarTower k K L] in
 /-- A nonzero curvature value is an unconditional obstruction to closing the candidate laws under
 commutator inside the same first-order filtered law space. -/
 theorem no_commutatorClosure_of_principalSymbolCurvature_ne_zero
@@ -244,6 +248,7 @@ theorem all_layerSymbol_kernels_eq_first_of_curvature_zero
       exact (consecutiveSymbol_ker_eq_of_curvature_zero symbol n
         (hcurv n) (hsymbol n) (hsymbol (n + 1))).symm.trans ih
 
+omit [IsScalarTower k K L] in
 /-- The curvature is intrinsic whenever two proposed symbol sequences describe the same filtered
 law action on an algebraically free source. -/
 theorem principalSymbolCurvature_unique
@@ -269,6 +274,7 @@ theorem principalSymbolCurvature_unique
   subst symbol₂
   simp
 
+omit [IsScalarTower k K L] in
 /-- If one layer symbol vanishes identically, every law direction is characteristic. -/
 theorem characteristicSet_eq_univ_of_layerSymbol_eq_zero
     (law : g →ₗ[k] Derivation k L L)
@@ -292,6 +298,7 @@ theorem characteristicSet_eq_univ_of_layerSymbol_eq_zero
   apply hnonzero
   simp [hm]
 
+omit [IsScalarTower k K L] in
 /-- **Flat rank-one horizon rigidity.** If every layer symbol is nonzero and the law space closes
 under commutator, the entire differential-algebraic law spectrum is one kernel, not a countable
 arrangement. -/
@@ -316,7 +323,7 @@ theorem characteristicSet_eq_first_ker_of_commutatorClosure
     law coefficientLaw symbol u hcompat hstep hu bracket hclosure
   have hk := all_layerSymbol_kernels_eq_first_of_curvature_zero symbol hcurv hsymbol
   ext A
-  simp only [Set.mem_setOf_eq, LinearMap.mem_ker]
+  simp only [Set.mem_setOf_eq]
   have hiff := gradedPrincipalJet_algebraicIndependent_iff
     (coefficientLaw A) (law A) u (fun n ↦ symbol n A)
     (hcompat A) (hstep A) hu
@@ -334,6 +341,7 @@ theorem characteristicSet_eq_first_ker_of_commutatorClosure
   · intro hzero hAI
     exact (hiff.mp hAI 0) hzero
 
+omit [IsScalarTower k K L] in
 /-- Complete integrable rank-one dichotomy: either one layer symbol vanishes and every direction is
 characteristic, or all layer symbols are nonzero and the characteristic spectrum is the single
 first-symbol kernel. -/

@@ -585,7 +585,6 @@ theorem finitePrimeReciprocalL2Norm_le_norm_archimedeanEulerCorners_sub_compact
     exact_mod_cast hij
   exact finiteReciprocalScaleL2Norm_le_norm_finiteArchimedeanPrimeEulerCorners_sub_compact
     a ha (fun i => (p i : ℝ)) (fun i => by
-      change (1 : ℝ) < (p i : ℝ)
       exact_mod_cast (hp i).one_lt) hinjR K hK
 
 /-- **Prime-coefficient constraint.** If every injective finite prime section with coefficients
@@ -615,7 +614,6 @@ theorem summable_primeEulerCoefficientEnergy_of_uniform_sub_compact_bound
   have hlower :=
     finiteEulerCoefficientL2Norm_le_norm_finiteArchimedeanPrimeEulerCorners_sub_compact
       a ha (fun i => (p i : ℝ)) (fun i => by
-        change (1 : ℝ) < (p i : ℝ)
         exact_mod_cast (hp i).one_lt) (fun i j hij => by
           apply hinj
           change (p i : ℝ) = (p j : ℝ) at hij

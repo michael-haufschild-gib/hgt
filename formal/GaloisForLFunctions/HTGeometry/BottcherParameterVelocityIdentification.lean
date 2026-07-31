@@ -89,13 +89,13 @@ theorem deriv_reciprocalOrbit_parameter_zero (t : ℂ) (k : ℕ) :
       simpa [u, ih] using huan.differentiableAt.hasDerivAt
     have hnum : HasDerivAt (fun c => (u c) ^ 2)
         (2 * t ^ (2 ^ k) * reciprocalOrbitFirstJet t k) 0 := by
-      convert! hu.pow 2 using 1 <;> simp [u, reciprocalOrbit_zero_parameter] <;> ring
+      convert! hu.pow 2 using 1 ; simp [u, reciprocalOrbit_zero_parameter]
     have hden : HasDerivAt (fun c => 1 + c * (u c) ^ 2)
         (t ^ (2 ^ (k + 1))) 0 := by
       have hprod := (hasDerivAt_id' (0 : ℂ)).mul (hu.pow 2)
-      convert! (hasDerivAt_const (x := (0 : ℂ)) (c := (1 : ℂ))).add hprod using 1 <;>
-        simp [u, reciprocalOrbit_zero_parameter] <;>
-        try { rw [← pow_mul]; congr 1 <;> omega }
+      convert! (hasDerivAt_const (x := (0 : ℂ)) (c := (1 : ℂ))).add hprod using 1 ;
+        simp [u, reciprocalOrbit_zero_parameter] ;
+        try { rw [← pow_mul]; congr 1  }
     have hquot := hnum.div hden (by simp [u, reciprocalOrbit_zero_parameter] :
       1 + (0 : ℂ) * (u 0) ^ 2 ≠ 0)
     rw [show (fun c => reciprocalOrbit c t (k + 1)) =
@@ -132,12 +132,12 @@ theorem deriv_reciprocalBottcherLogTerm_parameter_zero (t : ℂ) (k : ℕ) :
   have hu : HasDerivAt u (reciprocalOrbitFirstJet t k) 0 := by
     simpa [u, deriv_reciprocalOrbit_parameter_zero] using huan.differentiableAt.hasDerivAt
   have hw : HasDerivAt (fun c => c * (u c) ^ 2) (t ^ (2 ^ (k + 1))) 0 := by
-    convert! (hasDerivAt_id' (0 : ℂ)).mul (hu.pow 2) using 1 <;>
-      simp [u, reciprocalOrbit_zero_parameter] <;>
-      try { rw [← pow_mul]; congr 1 <;> omega }
+    convert! (hasDerivAt_id' (0 : ℂ)).mul (hu.pow 2) using 1 ;
+      simp [u, reciprocalOrbit_zero_parameter] ;
+      try { rw [← pow_mul]; congr 1  }
   have hlog : HasDerivAt (fun c => Complex.log (1 + c * (u c) ^ 2))
       (t ^ (2 ^ (k + 1))) 0 := by
-    convert! (hasDerivAt_const (x := (0 : ℂ)) (c := (1 : ℂ))).add hw |>.clog using 1 <;> simp
+    convert! (hasDerivAt_const (x := (0 : ℂ)) (c := (1 : ℂ))).add hw |>.clog using 1 ; simp
   unfold reciprocalBottcherLogTerm
   simpa [u] using (hlog.const_mul (2 ^ (k + 1) : ℂ)⁻¹).deriv
 
@@ -157,17 +157,17 @@ theorem iteratedDeriv_two_reciprocalBottcherLogTerm_parameter_zero
   have hu : HasDerivAt u (reciprocalOrbitFirstJet t k) 0 := by
     simpa [u, deriv_reciprocalOrbit_parameter_zero] using huan.differentiableAt.hasDerivAt
   have hw : HasDerivAt w (t ^ (2 ^ (k + 1))) 0 := by
-    convert! (hasDerivAt_id' (0 : ℂ)).mul (hu.pow 2) using 1 <;>
-      simp [w, u, reciprocalOrbit_zero_parameter] <;>
-      try { rw [← pow_mul]; congr 1 <;> omega }
+    convert! (hasDerivAt_id' (0 : ℂ)).mul (hu.pow 2) using 1 ;
+      simp [u, reciprocalOrbit_zero_parameter] ;
+      try { rw [← pow_mul]; congr 1  }
   have hdu : HasDerivAt (deriv u) (deriv (deriv u) 0) 0 :=
     huan.deriv.differentiableAt.hasDerivAt
   have hwd : HasDerivAt wd
       (4 * t ^ (2 ^ k) * reciprocalOrbitFirstJet t k) 0 := by
     have hv := (hu.const_mul 2).mul hdu
-    convert! (hu.pow 2).add ((hasDerivAt_id' (0 : ℂ)).mul hv) using 1 <;>
-      simp [wd, u, reciprocalOrbit_zero_parameter,
-        deriv_reciprocalOrbit_parameter_zero] <;> ring
+    convert! (hu.pow 2).add ((hasDerivAt_id' (0 : ℂ)).mul hv) using 1 ;
+      simp [u, reciprocalOrbit_zero_parameter,
+        deriv_reciprocalOrbit_parameter_zero] ; ring
   have hargan : AnalyticAt ℂ (fun c => 1 + w c) 0 := by
     exact analyticAt_const.add (analyticAt_id.mul (huan.pow 2))
   have hslit : ∀ᶠ c in nhds (0 : ℂ), 1 + w c ∈ Complex.slitPlane := by
@@ -178,8 +178,8 @@ theorem iteratedDeriv_two_reciprocalBottcherLogTerm_parameter_zero
       fun c => (2 ^ (k + 1) : ℂ)⁻¹ * (wd c / (1 + w c)) := by
     filter_upwards [huan.eventually_analyticAt, hslit] with c hc hmem
     have hwc : HasDerivAt w (wd c) c := by
-      convert! (hasDerivAt_id' c).mul (hc.differentiableAt.hasDerivAt.pow 2) using 1 <;>
-        simp [w, wd] <;> ring
+      convert! (hasDerivAt_id' c).mul (hc.differentiableAt.hasDerivAt.pow 2) using 1 ;
+        simp [wd]
     have hlog := ((hasDerivAt_const (x := c) (c := (1 : ℂ))).add hwc).clog hmem
     unfold reciprocalBottcherLogTerm
     simpa [w] using (hlog.const_mul (2 ^ (k + 1) : ℂ)⁻¹).deriv
@@ -219,7 +219,7 @@ theorem mem_bottcherParameterDisk_iff {c : ℂ} :
   simp [bottcherParameterDisk]
 
 theorem norm_parameter_mul_reciprocalOrbit_sq_le_quarter {c t : ℂ}
-    (hc : ‖c‖ < 1) (ht : ‖t‖ ≤ 1 / 2) (k : ℕ)
+    (hc : ‖c‖ < 1) (_ht : ‖t‖ ≤ 1 / 2) (k : ℕ)
     (horbit : ‖reciprocalOrbit c t k‖ ≤ 1 / 2) :
     ‖c * (reciprocalOrbit c t k) ^ 2‖ ≤ 1 / 4 := by
   rw [norm_mul, norm_pow]
@@ -280,7 +280,7 @@ theorem analyticAt_reciprocalOrbit_parameter {c t : ℂ}
         calc
           (1 : ℝ) = ‖(1 : ℂ)‖ := by simp
           _ = ‖(1 + c * (reciprocalOrbit c t k) ^ 2) -
-              c * (reciprocalOrbit c t k) ^ 2‖ := by congr 1 <;> ring
+              c * (reciprocalOrbit c t k) ^ 2‖ := by congr 1 ; ring
           _ ≤ ‖1 + c * (reciprocalOrbit c t k) ^ 2‖ +
               ‖c * (reciprocalOrbit c t k) ^ 2‖ := norm_sub_le _ _
       rw [hnorm] at htri
@@ -881,7 +881,7 @@ theorem norm_reciprocalOrbitFirstJet_le {t : ℂ} (ht : ‖t‖ ≤ 1 / 2) (k : 
             ≤ ‖2 * t ^ (2 ^ k) * reciprocalOrbitFirstJet t k‖ +
               ‖t ^ (2 ^ (k + 2))‖ := norm_sub_le _ _
         _ = 2 * ‖t‖ ^ (2 ^ k) * ‖reciprocalOrbitFirstJet t k‖ +
-              ‖t‖ ^ (2 ^ (k + 2)) := by simp [norm_mul, norm_pow]
+              ‖t‖ ^ (2 ^ (k + 2)) := by simp [norm_pow]
         _ ≤ 2 * 1 * ((2 : ℝ) ^ k - 1) + 1 := by
           nlinarith
         _ = (2 : ℝ) ^ (k + 1) - 1 := by rw [pow_succ]; ring
@@ -930,7 +930,7 @@ theorem norm_bottcherSecondLogVelocityTerm_le {t : ℂ}
           ≤ ‖4 * t ^ (2 ^ k) * reciprocalOrbitFirstJet t k‖ +
             ‖t ^ (2 ^ (k + 2))‖ := norm_sub_le _ _
       _ = 4 * ‖t‖ ^ (2 ^ k) * ‖reciprocalOrbitFirstJet t k‖ +
-            ‖t‖ ^ (2 ^ (k + 2)) := by simp [norm_mul, norm_pow]
+            ‖t‖ ^ (2 ^ (k + 2)) := by simp [norm_pow]
       _ ≤ 3 := by nlinarith
   unfold bottcherSecondLogVelocityTerm
   rw [norm_mul, norm_inv, norm_pow, Complex.norm_ofNat]
@@ -1029,7 +1029,7 @@ theorem hasSum_iteratedDeriv_bottcherSecondLogVelocityTerm (n : ℕ) :
         ∑ k ∈ s, iteratedDeriv m (bottcherSecondLogVelocityTerm k) 0 := by
     intro m s
     induction s using Finset.induction with
-    | empty => simp [partials, iteratedDeriv_const]
+    | empty => simp [partials]
     | @insert k s hk ih =>
         rw [show partials (insert k s) = bottcherSecondLogVelocityTerm k + partials s by
           funext z
@@ -1055,7 +1055,7 @@ theorem dyadicSubst_X_pow (n : ℕ) :
     (if 2 ∣ m then (coeff (m / 2)) (X ^ n : PowerSeries ℂ) else 0) from by
       rw [dyadicSubst, coeff_mk]]
   rw [coeff_X_pow, coeff_X_pow]
-  split_ifs with h₁ h₂ h₃ <;> simp_all <;> omega
+  split_ifs with h₁ h₂ h₃ <;> simp_all ; omega
 
 theorem dyadicSubst_C (a : ℂ) :
     dyadicSubst (PowerSeries.C a) = PowerSeries.C a := by
@@ -1065,7 +1065,7 @@ theorem dyadicSubst_C (a : ℂ) :
     (if 2 ∣ n then (coeff (n / 2)) (PowerSeries.C a) else 0) from by
       rw [dyadicSubst, coeff_mk]]
   rw [coeff_C, coeff_C]
-  split_ifs with h₁ h₂ h₃ <;> simp_all <;> omega
+  split_ifs with h₁ h₂ h₃ <;> simp_all ; omega
 
 /-- The orbit-jet polynomials transform triangularly under `t ↦ t²`. -/
 theorem dyadicSubst_reciprocalOrbitFirstJetSeries (k : ℕ) :
@@ -1097,7 +1097,7 @@ theorem dyadicSubst_reciprocalOrbitFirstJetSeries (k : ℕ) :
           X ^ (2 ^ (k + 3)) from rfl]
       rw [show 2 * 2 ^ (k + 2) = 2 ^ (k + 3) by ring]
       rw [show X ^ (2 * 2 ^ k) = (X ^ (2 ^ (k + 1)) : PowerSeries ℂ) by
-        congr 1 <;> omega]
+        congr 1 ; omega]
       rw [show 2 ^ (k + 1 + 1) = 2 ^ (k + 2) by congr 1]
       ring_nf
 
@@ -1359,7 +1359,7 @@ theorem dyadicSubst_bottcherSecondLogVelocityTaylor :
         rw [two_mul, map_add, two_mul]] at hsum
   rw [coeff_X_pow] at hsum
   have hshift := ha.sum_add_tsum_nat_add 1
-  simp only [Finset.sum_range_one, Nat.zero_add] at hshift
+  simp only [Finset.sum_range_one] at hshift
   rw [map_sub, map_add,
     show (coeff n) (2 * bottcherSecondLogVelocityTaylor) =
       2 * (coeff n) bottcherSecondLogVelocityTaylor by

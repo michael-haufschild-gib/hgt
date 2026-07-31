@@ -1007,7 +1007,7 @@ theorem prescribedPositiveInnovationFrame_capacity {N : ℕ} (eta : Fin N → �
   apply Finset.sum_congr rfl
   intro i hi
   rw [prescribedPositiveInnovationFrame_amplitude]
-  simpa [Real.norm_eq_abs, abs_of_pos (heta i)]
+  simp [Real.norm_eq_abs, abs_of_pos (heta i)]
 
 /-- Coherent diagonal clock tower with an arbitrary prescribed positive innovation sequence. -/
 def prescribedPositiveInnovationTower (eta : ℕ → ℝ) (N : ℕ) :

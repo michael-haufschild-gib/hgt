@@ -12,8 +12,7 @@ theorem differentiable_mvPolynomial_eval_complex {n : ℕ}
     (P : MvPolynomial (Fin n) ℂ) :
     Differentiable ℂ (fun x : Fin n → ℂ => MvPolynomial.eval x P) := by
   induction P using MvPolynomial.induction_on with
-  | C c => simpa using (differentiable_const c :
-      Differentiable ℂ (fun _ : Fin n → ℂ => c))
+  | C c => simp
   | add P Q hP hQ => simpa using! hP.add hQ
   | mul_X P i hP =>
       simpa using! hP.mul (differentiable_apply (𝕜 := ℂ) i)
@@ -27,7 +26,7 @@ theorem fderiv_mvPolynomial_eval_complex_apply {n : ℕ}
   have hcurveCoord : ∀ j, HasDerivAt (fun t => curve t j) (v j) 0 := by
     intro j
     convert! (hasDerivAt_const (x := 0) (x j)).add
-      ((hasDerivAt_id 0).mul_const (v j)) using 1 <;> simp [curve]
+      ((hasDerivAt_id 0).mul_const (v j)) using 1 ; simp
   have hcurveValue : curve 0 = x := by
     funext j
     simp [curve]
@@ -117,7 +116,7 @@ theorem matrix_mulVec_surjective_iff_linearIndependent_rows
       LinearMap.range_eq_top.mpr h
     have hrank : A.rank = Fintype.card (Fin m) := by
       rw [Matrix.rank, hrange]
-      simp [Module.finrank_pi_fintype]
+      simp
     rw [linearIndependent_iff_card_eq_finrank_span]
     rw [Set.finrank, ← A.rank_eq_finrank_span_row, hrank]
   · intro h
@@ -178,7 +177,7 @@ theorem matrix_exists_submatrix_det_ne_zero_of_mulVec_surjective
   letI : Fintype s := Fintype.ofFinite s
   have hcard : Fintype.card s = m := by
     rw [← Module.finrank_eq_card_basis b]
-    simp [Module.finrank_pi_fintype]
+    simp
   let e : Fin m ≃ s := Fintype.equivOfCardEq (by simpa using hcard.symm)
   let cols : Fin m → Fin n := fun i => (e i).1
   refine ⟨cols, ?_⟩

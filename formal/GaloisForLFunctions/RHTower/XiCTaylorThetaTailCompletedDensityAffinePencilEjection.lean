@@ -222,22 +222,24 @@ theorem exists_affinePencil_zero_branch_ejected_upper_of_deriv_re_neg
     have htwo : AnalyticAt ℂ (fun _ : ℂ => (2 : ℂ)) (t : ℂ) := analyticAt_const
     have hprod := htwo.mul
       ((analyticAt_id.pow 2).mul (XiC_analytic (t : ℂ) (Set.mem_univ _)))
-    convert hprod using 1
-    funext z
-    change 2 * z ^ 2 * XiC z = 2 * (z ^ 2 * XiC z)
-    ring
+    have hfun : H = fun z : ℂ => (2 : ℂ) * (z ^ 2 * XiC z) := by
+      funext z
+      show 2 * z ^ 2 * XiC z = 2 * (z ^ 2 * XiC z)
+      ring
+    rw [hfun]
+    exact hprod
   have hHroot : H (t : ℂ) = 0 := by simp [H, hz]
   have hXiDer : HasDerivAt XiC X (t : ℂ) := by
     simpa [X] using (XiC_analytic (t : ℂ) (Set.mem_univ _)).differentiableAt.hasDerivAt
   have hHder : HasDerivAt H D (t : ℂ) := by
     have hprod := ((hasDerivAt_id (t : ℂ)).pow 2).mul hXiDer
     have hscaled := hprod.const_mul (2 : ℂ)
-    convert hscaled using 1
-    · funext w
-      simp [H]
+    have hfun : H = fun w : ℂ => (2 : ℂ) * (w ^ 2 * XiC w) := by
+      funext w
+      show 2 * w ^ 2 * XiC w = 2 * (w ^ 2 * XiC w)
       ring
-    · simp [D, hz]
-      ring
+    rw [hfun]
+    exact hscaled.congr_deriv (by simp [D, hz]; ring)
   have hHderiv : deriv H (t : ℂ) = D := hHder.deriv
   have hHsimple : deriv H (t : ℂ) ≠ 0 := by rw [hHderiv]; exact hDne
   obtain ⟨g, hgan, hg0, hrelH, hgV0⟩ :=
@@ -284,7 +286,8 @@ theorem exists_affinePencil_zero_branch_ejected_upper_of_deriv_re_neg
   have hposSlope : ∀ᶠ c : ℝ in 𝓝[>] 0,
       0 < c⁻¹ * ((g ((0 + c : ℝ) : ℂ)).im - (g (0 : ℂ)).im) := by
     have hlim := himDer.tendsto_slope_zero_right
-    simpa only [smul_eq_mul] using hlim.eventually (Ioi_mem_nhds hVim)
+    simpa only [smul_eq_mul, Complex.ofReal_zero] using
+      hlim.eventually (Ioi_mem_nhds hVim)
   have hpos : ∀ᶠ c : ℝ in 𝓝[>] 0, 0 < (g (c : ℂ)).im := by
     filter_upwards [self_mem_nhdsWithin, hposSlope] with c hc hslope
     have hcpos : 0 < c := hc

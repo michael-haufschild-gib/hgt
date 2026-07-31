@@ -123,8 +123,7 @@ theorem primeRadialOrderOccurs_add_modulus_iff_eventually
   refine ⟨c, ?_⟩
   intro n hn
   rw [hc (n + primeRadialConductorModulus A) (hn.trans (Nat.le_add_right n _)), hc n hn]
-  simpa [Nat.add_comm] using
-    (Nat.dvd_add_iff_left (dvd_refl (primeRadialConductorModulus A)))
+  simp
 
 /-- **Fusion-field conductor capstone.**  Every formal-profile subalgebra gives an exact embedded
 fusion-closed differential field, and its nonzero valuation channels obey the conductor law. -/

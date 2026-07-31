@@ -27,7 +27,7 @@ theorem measure_eq_fiberMeasure_of_carried (μ : Measure ℝ) [IsFiniteMeasure �
   have hdiff : μ (A \ F) = 0 :=
     le_antisymm (le_trans (measure_mono (Set.sdiff_subset_compl A F)) (le_of_eq hcar)) zero_le
   have hsplit : μ (A ∩ F) = μ A := by
-    have := measure_inter_add_diff (μ := μ) A hFm
+    have := measure_inter_add_sdiff (μ := μ) A hFm
     rw [hdiff, add_zero] at this
     exact this
   have hAF : (A ∩ F).Countable := hF.mono Set.inter_subset_right

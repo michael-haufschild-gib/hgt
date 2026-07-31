@@ -745,8 +745,6 @@ theorem evenIndicatorCutoff_mul_evenCentralSoninProjection (a : ℝ) :
   rw [indicatorCutoff_eq_physicalForbidden_starProjection]
   apply (Submodule.starProjection_apply_eq_zero_iff
     (K := centralPhysicalForbidden a)).mpr
-  change centralSoninProjection a (f : SoninL2) ∈
-    (centralPhysicalForbidden a).orthogonal
   exact ((centralSoninCarrier a).starProjection_apply_mem (f : SoninL2)).1
 
 theorem evenFourierCutoff_mul_evenCentralSoninProjection (a : ℝ) :
@@ -759,8 +757,6 @@ theorem evenFourierCutoff_mul_evenCentralSoninProjection (a : ℝ) :
   rw [fourierCutoff_eq_fourierForbidden_starProjection]
   apply (Submodule.starProjection_apply_eq_zero_iff
     (K := centralFourierForbidden a)).mpr
-  change centralSoninProjection a (f : SoninL2) ∈
-    (centralFourierForbidden a).orthogonal
   exact ((centralSoninCarrier a).starProjection_apply_mem (f : SoninL2)).2
 
 theorem evenCentralSoninProjection_mul_evenIndicatorCutoff (a : ℝ) :

@@ -285,7 +285,7 @@ theorem coeff_eq_zero_of_forall_prime_root {J : ℕ} (c : ℕ → ℂ) (S : Fins
   have hP0 : P = 0 := by
     apply Polynomial.eq_zero_of_infinite_isRoot
     have hinf : ({q : ℕ | q.Prime} \ ↑S).Infinite :=
-      Nat.infinite_setOf_prime.diff S.finite_toSet
+      Nat.infinite_setOf_prime.sdiff S.finite_toSet
     have himg : ((fun q : ℕ => ((Real.log q : ℝ) : ℂ)) '' ({q : ℕ | q.Prime} \ ↑S)).Infinite := by
       apply Set.Infinite.image _ hinf
       rintro a ⟨ha, -⟩ b ⟨hb, -⟩ hab

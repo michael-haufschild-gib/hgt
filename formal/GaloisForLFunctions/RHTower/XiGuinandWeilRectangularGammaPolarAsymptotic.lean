@@ -230,7 +230,7 @@ theorem integral_rectangularGammaMovingKernel_le_exp
       measure_Ioo_lt_top hpoint
     rw [Measure.real, Real.volume_Ioo, ENNReal.toReal_ofReal] at hnorm
     · rw [Real.norm_eq_abs, abs_of_nonneg] at hnorm
-      · convert hnorm using 1 <;> ring
+      · convert hnorm using 1 ; ring
       · apply integral_nonneg_of_ae
         filter_upwards [self_mem_ae_restrict measurableSet_Ioo] with t ht
         have hlo : 0 < 4 * (a - L) := by linarith

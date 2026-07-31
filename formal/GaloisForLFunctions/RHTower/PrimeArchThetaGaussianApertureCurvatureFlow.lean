@@ -138,10 +138,10 @@ theorem hasDerivAt_thetaCuspGaussianApertureTailSaddleDegree (x : ℝ) :
       (2 * Real.exp (2 * x)) x := by
     convert (Real.hasDerivAt_exp (2 * x)).comp x
       ((hasDerivAt_id x).const_mul 2) using 1
-    all_goals ring
+    all_goals first | rfl | ring
   convert ((hasDerivAt_id x).const_mul Real.pi).mul hexp using 1
-  simp only [id_eq]
-  ring
+  all_goals try simp only [id_eq]
+  all_goals first | rfl | ring
 
 theorem hasDerivAt_thetaCuspGaussianApertureTailSaddleRatio (x : ℝ) :
     HasDerivAt thetaCuspGaussianApertureTailSaddleRatio
@@ -150,12 +150,13 @@ theorem hasDerivAt_thetaCuspGaussianApertureTailSaddleRatio (x : ℝ) :
       (2 * Real.exp (2 * x)) x := by
     convert (Real.hasDerivAt_exp (2 * x)).comp x
       ((hasDerivAt_id x).const_mul 2) using 1
-    all_goals ring
+    all_goals first | rfl | ring
   have hden := hexp.const_mul Real.pi
   have hquot := (hasDerivAt_id x).div hden (by positivity)
   convert hquot using 1
-  simp only [id_eq]
-  field_simp [Real.pi_ne_zero, Real.exp_ne_zero]
+  any_goals rfl
+  all_goals try simp only [id_eq]
+  all_goals try field_simp [Real.pi_ne_zero, Real.exp_ne_zero]
 
 /-- The displayed slope is literally `dr/dj` along the theta tail saddle. -/
 theorem deriv_thetaCuspGaussianApertureTailSaddleRatio_div_degree
@@ -181,21 +182,22 @@ theorem hasDerivAt_thetaCuspGaussianApertureTailSaddleRatioDegreeSlope
         (Real.pi * Real.exp (2 * x) * (1 + 2 * x))) x := by
   have hnum : HasDerivAt (fun y : ℝ => 1 - 2 * y) (-2) x := by
     convert (hasDerivAt_const x 1).sub ((hasDerivAt_id x).const_mul 2) using 1
-    all_goals ring
+    all_goals first | rfl | ring
   have hexp : HasDerivAt (fun y : ℝ => Real.exp (4 * y))
       (4 * Real.exp (4 * x)) x := by
     convert (Real.hasDerivAt_exp (4 * x)).comp x
       ((hasDerivAt_id x).const_mul 4) using 1
-    all_goals ring
+    all_goals first | rfl | ring
   have hlin : HasDerivAt (fun y : ℝ => 1 + 2 * y) 2 x := by
     convert (hasDerivAt_const x 1).add ((hasDerivAt_id x).const_mul 2) using 1
-    all_goals ring
+    all_goals first | rfl | ring
   have hden := (hexp.const_mul (Real.pi ^ 2)).mul hlin
   have hlinNe : 1 + 2 * x ≠ 0 := by positivity
   have hdenNe : Real.pi ^ 2 * Real.exp (4 * x) * (1 + 2 * x) ≠ 0 := by
     positivity
   have hquot := hnum.div hden hdenNe
   convert hquot using 1
+  any_goals rfl
   simp only [thetaCuspGaussianApertureTailSaddleRatioDegreeCurvature, Pi.mul_apply]
   have hexp6 : Real.exp (6 * x) = Real.exp (4 * x) * Real.exp (2 * x) := by
     rw [← Real.exp_add]
@@ -579,11 +581,11 @@ theorem thetaCuspGaussianApertureTailChannel_two_succ_mul_four_le
       thetaCuspPolynomialAtom (X ^ 2) 1 x
   let g : ℝ → ℝ := fun x => x ^ 2
   have hf : Integrable f mu := by
-    simpa only [f, mu] using
+    simpa only [MeasureTheory.IntegrableOn, f, mu] using
       integrableOn_thetaCuspGaussianApertureTailChannelMomentIntegrand
         hlambda 4 j
   have hh : Integrable h mu := by
-    simpa only [h, mu] using
+    simpa only [MeasureTheory.IntegrableOn, h, mu] using
       integrableOn_thetaCuspGaussianApertureTailChannelMomentIntegrand
         hlambda 2 j
   have hgf : Integrable (fun x => g x * f x) mu := by
@@ -986,21 +988,22 @@ theorem hasDerivAt_thetaCuspGaussianApertureExactTailSaddleDegree
       (2 * Real.exp (2 * x)) x := by
     convert (Real.hasDerivAt_exp (2 * x)).comp x
       ((hasDerivAt_id x).const_mul 2) using 1
-    all_goals ring
+    all_goals first | rfl | ring
   have htail := ((hasDerivAt_id x).const_mul Real.pi).mul hexp
   have haperture := ((hasDerivAt_id x).pow 2).const_mul lambda
   have hamplitude := ((hasDerivAt_id x).const_mul 9).div_const 4
   convert (htail.sub haperture).sub hamplitude using 1
-  all_goals
-    simp only [thetaCuspGaussianApertureExactTailSaddleDegreeSlope, id_eq]
-    ring
+  all_goals first
+    | rfl
+    | (simp only [thetaCuspGaussianApertureExactTailSaddleDegreeSlope, id_eq]
+       ring)
 
 theorem hasDerivAt_thetaCuspGaussianApertureExactTailSaddleGammaScale
     (lambda x : ℝ) :
     HasDerivAt (thetaCuspGaussianApertureExactTailSaddleGammaScale lambda)
       (thetaCuspGaussianApertureExactTailSaddleDegreeSlope lambda x) x := by
-  convert (hasDerivAt_thetaCuspGaussianApertureExactTailSaddleDegree lambda x).add_const
-    (1 / 2 : ℝ) using 1
+  exact (hasDerivAt_thetaCuspGaussianApertureExactTailSaddleDegree lambda x).add_const
+    (1 / 2 : ℝ)
 
 theorem hasDerivAt_thetaCuspGaussianApertureExactTailSaddleDegreeSlope
     (lambda x : ℝ) :
@@ -1010,16 +1013,17 @@ theorem hasDerivAt_thetaCuspGaussianApertureExactTailSaddleDegreeSlope
       (2 * Real.exp (2 * x)) x := by
     convert (Real.hasDerivAt_exp (2 * x)).comp x
       ((hasDerivAt_id x).const_mul 2) using 1
-    all_goals ring
+    all_goals first | rfl | ring
   have hA := hexp.const_mul Real.pi
   have hlin : HasDerivAt (fun y : ℝ => 1 + 2 * y) 2 x := by
     convert (hasDerivAt_const x 1).add ((hasDerivAt_id x).const_mul 2) using 1
-    all_goals ring
+    all_goals first | rfl | ring
   have haperture := (hasDerivAt_id x).const_mul (2 * lambda)
   convert ((hA.mul hlin).sub haperture).sub_const (9 / 4 : ℝ) using 1
-  all_goals
-    simp only [thetaCuspGaussianApertureExactTailSaddleDegreeCurvature]
-    ring
+  all_goals first
+    | rfl
+    | (simp only [thetaCuspGaussianApertureExactTailSaddleDegreeCurvature]
+       ring)
 
 theorem hasDerivAt_thetaCuspGaussianApertureExactTailSaddleRatio
     {lambda x : ℝ}
@@ -1032,10 +1036,10 @@ theorem hasDerivAt_thetaCuspGaussianApertureExactTailSaddleRatio
   have hden :=
     hasDerivAt_thetaCuspGaussianApertureExactTailSaddleGammaScale lambda x
   convert hnum.div hden hG using 1
-  all_goals
-    simp only [Pi.pow_apply, id_eq]
-    field_simp [hG]
-    ring
+  any_goals rfl
+  all_goals try simp only [Pi.pow_apply, id_eq]
+  all_goals try field_simp [hG]
+  all_goals try ring
 
 /-- The displayed exact slope is literally `dr/dj` along the physical leading-channel saddle. -/
 theorem deriv_thetaCuspGaussianApertureExactTailSaddleRatio_div_degree
@@ -1071,14 +1075,15 @@ theorem hasDerivAt_thetaCuspGaussianApertureExactTailSaddleRatioDegreeSlope
     have hleft := ((hasDerivAt_id x).const_mul 2).mul hGderiv
     have hright := ((hasDerivAt_id x).pow 2).mul hpderiv
     convert hleft.sub hright using 1
-    all_goals
-      simp only [G, q, Pi.pow_apply, id_eq]
-      ring
+    any_goals rfl
+    all_goals try simp only [G, q, Pi.pow_apply, id_eq]
+    all_goals try ring
   have hV : HasDerivAt (fun y : ℝ =>
       thetaCuspGaussianApertureExactTailSaddleGammaScale lambda y ^ 2 *
         thetaCuspGaussianApertureExactTailSaddleDegreeSlope lambda y)
       (2 * G * p ^ 2 + G ^ 2 * q) x := by
     convert (hGderiv.pow 2).mul hpderiv using 1
+    any_goals rfl
     all_goals
       simp only [G, p, q, Pi.pow_apply]
       ring
@@ -1087,8 +1092,9 @@ theorem hasDerivAt_thetaCuspGaussianApertureExactTailSaddleRatioDegreeSlope
     exact mul_ne_zero (pow_ne_zero _ hG) hp
   have hquot := hU.div hV hVne
   convert hquot using 1
+  any_goals rfl
   all_goals
-    dsimp [thetaCuspGaussianApertureExactTailSaddleRatioDegreeSlope,
+    try dsimp [thetaCuspGaussianApertureExactTailSaddleRatioDegreeSlope,
       thetaCuspGaussianApertureExactTailSaddleRatioDegreeCurvature,
       thetaCuspGaussianApertureExactTailSaddleCurvatureNumerator,
       thetaCuspGaussianApertureExactTailSaddleDefect, G, p, q]
@@ -1169,7 +1175,7 @@ private theorem thetaCusp_exactTailSaddleCurvatureNumerator_pos_of_chamber
     have hnegD : K ≤ -D := by linarith
     have hnegD0 : 0 ≤ -D := hK.le.trans hnegD
     convert (sq_le_sq₀ hK.le hnegD0).2 hnegD using 1
-    ring
+    all_goals first | rfl | ring
   have hGsq : G ^ 2 ≤ B ^ 2 :=
     (sq_le_sq₀ hG0.le hB.le).2 hG
   have hPD : P * K ^ 2 < p * D ^ 2 := by
@@ -1327,7 +1333,7 @@ theorem hasDerivAt_thetaCuspGaussianApertureHalfMoment
     exact Continuous.aestronglyMeasurable
       (continuous_thetaCuspGaussianApertureMomentIntegrand eta j) (μ := mu)
   have hFint : Integrable (F lambda) mu := by
-    simpa only [F, mu] using
+    simpa only [MeasureTheory.IntegrableOn, F, mu] using
       integrableOn_thetaCuspGaussianApertureMomentIntegrand hlambda.le j
   have hF'meas : AEStronglyMeasurable (F' lambda) mu := by
     exact Continuous.aestronglyMeasurable
@@ -1349,17 +1355,23 @@ theorem hasDerivAt_thetaCuspGaussianApertureHalfMoment
     rw [abs_of_nonneg (mul_nonneg hpow (mul_nonneg hexpNonneg hsource))]
     nlinarith [mul_nonneg hpow hsource]
   have hboundInt : Integrable bound mu := by
-    simpa only [bound, mu] using integrableOn_thetaCuspRawMoment (2 * (j + 1))
+    simpa only [MeasureTheory.IntegrableOn, bound, mu] using
+      integrableOn_thetaCuspRawMoment (2 * (j + 1))
   have hdiff : ∀ᵐ x : ℝ ∂mu, ∀ eta ∈ Iio (lambda / 2),
       HasDerivAt (fun z => F z x) (F' eta x) eta := by
     filter_upwards [] with x eta heta
     have hexp : HasDerivAt (fun z : ℝ => Real.exp (z * x ^ 2))
         (Real.exp (eta * x ^ 2) * x ^ 2) eta := by
-      simpa only [one_mul] using
-        (Real.hasDerivAt_exp (eta * x ^ 2)).comp eta
-          ((hasDerivAt_id eta).mul_const (x ^ 2))
+      have h := (Real.hasDerivAt_exp (eta * x ^ 2)).comp eta
+        ((hasDerivAt_id eta).mul_const (x ^ 2))
+      have hval : Real.exp (eta * x ^ 2) * (1 * x ^ 2) =
+          Real.exp (eta * x ^ 2) * x ^ 2 := by
+        ring
+      rw [hval] at h
+      exact h
     have hscaled := hexp.const_mul (x ^ (2 * j) * thetaCuspFullSource x)
     convert hscaled using 1
+    any_goals rfl
     · funext z
       simp only [F, thetaCuspGaussianApertureDensity]
       ring
@@ -1406,6 +1418,7 @@ theorem hasDerivAt_thetaCuspGaussianApertureRatioCurvature
   have h1 := (hasDerivAt_thetaCuspGaussianApertureGammaRatio hlambda (j + 1)).const_mul 2
   have h2 := hasDerivAt_thetaCuspGaussianApertureGammaRatio hlambda (j + 2)
   convert (h0.sub h1).add h2 using 1
+  any_goals rfl
 
 /-- The completed theta curvature flow is the literal source specialization of the universal
 affine-Gamma moment-curvature theorem.  This stronger `HasDerivAt` form supplies both the closed
@@ -1433,13 +1446,16 @@ theorem hasDerivAt_thetaCuspGaussianApertureRatioCurvature_affineGamma
       (by simp [thetaCuspGaussianApertureGammaShape, Nat.cast_add]; ring)
       (by simp [thetaCuspGaussianApertureGammaShape, Nat.cast_add]; ring)
   convert hgeneric using 1
-  simp only [HTGeometry.normalizedMomentRatio, HTGeometry.ratioSecondCurvature,
-    thetaCuspGaussianApertureGammaRatio,
-    thetaCuspGaussianApertureRatioCurvature,
-    thetaCuspGaussianApertureRatioCurvatureReaction,
-    thetaCuspGaussianApertureGammaShape]
-  push_cast
-  ring
+  all_goals
+    try funext eta
+    simp only [HTGeometry.normalizedMomentRatioCurvature,
+      HTGeometry.normalizedMomentRatio, HTGeometry.ratioSecondCurvature,
+      thetaCuspGaussianApertureGammaRatio,
+      thetaCuspGaussianApertureRatioCurvature,
+      thetaCuspGaussianApertureRatioCurvatureReaction,
+      thetaCuspGaussianApertureGammaShape]
+    try push_cast
+    try ring
 
 /-- **Discrete parabolic-reaction law.**  The curvature velocity is a positive square, transport
 from the next curvature level, and a reaction multiple of the current curvature. -/
@@ -1544,6 +1560,7 @@ theorem hasDerivAt_thetaCuspGaussianApertureBalance
     (hasDerivAt_thetaCuspGaussianApertureRatioCurvature hlambda 0).const_mul
       (15 / 2 : ℝ)
   convert hcurv using 1
+  any_goals rfl
   funext eta
   exact thetaCuspGaussianApertureBalance_eq_ratioCurvature eta
 

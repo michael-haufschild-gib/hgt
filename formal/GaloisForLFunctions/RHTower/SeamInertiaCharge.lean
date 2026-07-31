@@ -70,7 +70,7 @@ theorem exists_offpole_nodes {ι' : Type*} [Fintype ι'] {k : ℕ} (t : Fin k �
         Complex.add_re, Complex.one_re, Complex.natCast_re, zero_mul, one_mul, zero_add]
       positivity
   have hInf : ({w : ℂ | 0 < w.im} \
-      (Set.range t ∪ Set.range (fun i => star (t i)))).Infinite := hUHP.diff hforb
+      (Set.range t ∪ Set.range (fun i => star (t i)))).Infinite := hUHP.sdiff hforb
   haveI : Infinite ({w : ℂ | 0 < w.im} \
       (Set.range t ∪ Set.range (fun i => star (t i))) : Set ℂ) := hInf.to_subtype
   set emb : ι' ↪ ({w : ℂ | 0 < w.im} \

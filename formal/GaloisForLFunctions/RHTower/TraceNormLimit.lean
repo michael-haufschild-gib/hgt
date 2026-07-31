@@ -1,3 +1,4 @@
+import GaloisForLFunctions.RHTower.NuclearRankOneSchatten
 import GaloisForLFunctions.RHTower.TraceClassOperatorTrace
 
 /-!
@@ -29,18 +30,6 @@ open ContinuousLinearMap
 open scoped ComplexOrder
 
 variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
-
-/-- Rank bounds add: the sum of a rank-`≤ m` and a rank-`≤ n` operator has rank
-`≤ m + n`. -/
-theorem HasRankLE.add {F G : H →L[ℂ] H} {m n : ℕ}
-    (hF : HasRankLE F m) (hG : HasRankLE G n) : HasRankLE (F + G) (m + n) := by
-  obtain ⟨V, hVfd, hVrk, hV⟩ := hF
-  obtain ⟨W, hWfd, hWrk, hW⟩ := hG
-  refine ⟨V ⊔ W, inferInstance, ?_, fun x => ?_⟩
-  · have h := Submodule.finrank_sup_add_finrank_inf_eq V W
-    have hnn : 0 ≤ Module.finrank ℂ ↥(V ⊓ W) := Nat.zero_le _
-    omega
-  · exact Submodule.add_mem_sup (hV x) (hW x)
 
 /-- **Ky Fan subadditivity of approximation numbers**:
 `a_{m+n}(S + T) ≤ a_m(S) + a_n(T)`. -/

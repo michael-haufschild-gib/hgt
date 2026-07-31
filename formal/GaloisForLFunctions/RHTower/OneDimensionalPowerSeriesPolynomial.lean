@@ -30,7 +30,7 @@ theorem fmlsPolynomial_eval
   rw [eval_mul, eval_C, eval_pow, eval_X]
   have h := (p n).map_smul_univ (fun _ : Fin n => z) (fun _ => (1 : ℂ))
   have hp : p n (fun _ => z) = z ^ n * p n (fun _ => 1) := by
-    simpa using h
+    simp
   rw [hp]
   ring
 

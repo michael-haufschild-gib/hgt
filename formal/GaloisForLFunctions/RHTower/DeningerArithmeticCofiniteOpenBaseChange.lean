@@ -28,6 +28,7 @@ image in the coarse quotient. -/
 def DeningerSaturatedOpen (q : X → Y) (V : Set X) : Prop :=
   q ⁻¹' (q '' V) = V
 
+omit [TopologicalSpace X] [TopologicalSpace Y] in
 /-- Membership constant on every fibre makes a subset saturated. -/
 theorem deningerSaturatedOpen_of_fiberwise
     (q : X → Y) (V : Set X)
@@ -62,6 +63,7 @@ def deningerSaturatedOpenDomainHomeomorph
     ↥(q ⁻¹' (q '' V)) ≃ₜ ↥V :=
   Homeomorph.setCongr hV
 
+omit [TopologicalSpace Y] in
 @[simp]
 theorem deningerSaturatedOpenDomainHomeomorph_apply
     {q : X → Y} {V : Set X} (hV : DeningerSaturatedOpen q V)
@@ -69,6 +71,7 @@ theorem deningerSaturatedOpenDomainHomeomorph_apply
     (deningerSaturatedOpenDomainHomeomorph hV x : X) = x :=
   rfl
 
+omit [TopologicalSpace Y] in
 @[simp]
 theorem deningerSaturatedOpenDomainHomeomorph_symm_apply
     {q : X → Y} {V : Set X} (hV : DeningerSaturatedOpen q V)

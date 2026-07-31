@@ -48,6 +48,7 @@ theorem hasDerivAt_thetaCuspCofinalWardDensity (x : ℝ) :
   unfold thetaCuspCofinalWardDensity
   convert (((hasDerivAt_thetaCuspTailDerivative 0 x).const_mul (1 / 2 : ℝ)).sub
     (hasDerivAt_thetaCuspTailDerivative 1 x)).div_const (2 * Real.pi) using 1
+  all_goals rfl
 
 /-- Exact cofinal Ward equation
 `W' + W/2 = -thetaCuspFullSource/(2*pi)`. -/
@@ -67,9 +68,10 @@ theorem hasDerivAt_thetaCuspCofinalTiltedWardDensity (a x : ℝ) :
       (a * Real.exp (a * x)) x := by
     convert (Real.hasDerivAt_exp (a * x)).comp x
       ((hasDerivAt_id x).const_mul a) using 1
-    ring
+    all_goals first | rfl | ring
   have hW := hasDerivAt_thetaCuspCofinalWardDensity x
   convert he.mul hW using 1
+  any_goals rfl
   have hode := thetaCuspCofinalWard_ode x
   have hderivative :
       ((1 / 2 : ℝ) * thetaCuspTailDerivative 1 x -
@@ -91,7 +93,7 @@ theorem hasDerivAt_thetaCuspCofinalTiltedWardDerivative (a x : ℝ) :
       (a * Real.exp (a * x)) x := by
     convert (Real.hasDerivAt_exp (a * x)).comp x
       ((hasDerivAt_id x).const_mul a) using 1
-    ring
+    all_goals first | rfl | ring
   have hR : HasDerivAt R
       ((a * Real.exp (a * x) * thetaCuspFullSource x +
           Real.exp (a * x) * iteratedDeriv 1 thetaCuspFullSource x) /
@@ -99,9 +101,11 @@ theorem hasDerivAt_thetaCuspCofinalTiltedWardDerivative (a x : ℝ) :
     dsimp only [R]
     convert (he.mul (hasDerivAt_thetaCuspFullSource_iterate_zero x)).div_const
       (2 * Real.pi) using 1
+    all_goals rfl
   have hF := hasDerivAt_thetaCuspCofinalTiltedWardDensity a x
   have hraw := (hF.const_mul (a - 1 / 2 : ℝ)).sub hR
   convert hraw using 1
+  any_goals rfl
   unfold thetaCuspCofinalTiltedWardSecondDerivative
     thetaCuspCofinalTiltedWardDerivative
   have hlog := (hasDerivAt_thetaCuspLogSource x).deriv
@@ -341,7 +345,7 @@ theorem integrableOn_thetaCuspCofinalTiltedWardDerivative
     (hsource.const_mul ((2 * Real.pi)⁻¹))
   apply hraw.congr
   filter_upwards with x
-  simp only [Pi.sub_apply, Pi.mul_apply, iteratedDeriv_zero]
+  simp only [Pi.sub_apply, iteratedDeriv_zero]
   ring
 
 theorem integrableOn_thetaCuspCofinalTiltedWardSecondDerivative
@@ -373,7 +377,7 @@ theorem integrableOn_thetaCuspCofinalTiltedWardSecondDerivative
     (hsource1.const_mul ((2 * Real.pi)⁻¹))
   apply hraw.congr
   filter_upwards with x
-  simp only [Pi.add_apply, Pi.sub_apply, Pi.mul_apply, iteratedDeriv_zero]
+  simp only [Pi.add_apply, Pi.sub_apply, iteratedDeriv_zero]
   ring
 
 theorem thetaCuspCofinalTiltedWardDensity_tendsto_atTop_zero

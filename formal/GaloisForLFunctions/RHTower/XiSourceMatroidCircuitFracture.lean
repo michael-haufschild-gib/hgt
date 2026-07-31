@@ -42,7 +42,7 @@ theorem XiC_xiSpectralPointSupport_eq_zero_sourceCircuit
   have hI : (-I : ℂ) * I = 1 := by
     rw [neg_mul, I_mul_I, neg_neg]
   rw [XiC, xiSpectralPointSupport, mul_assoc, hI, mul_one]
-  convert xi_eq_zero_of_mem_divisor_support rho using 1 <;> ring
+  convert xi_eq_zero_of_mem_divisor_support rho using 1; ring
 
 /-- The coefficient-bearing completed-density relation at an Xi divisor point.  It is called a
 relation rather than a matroid circuit because minimality and nonvanishing of the two coordinates

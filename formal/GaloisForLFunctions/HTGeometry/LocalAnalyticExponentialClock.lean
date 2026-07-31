@@ -151,7 +151,7 @@ theorem meroField_deriv_ratfuncToMero_on
           (GaloisForLFunctions.HTGeometry.ratFuncCoordinateDerivation ℂ r) := hdr
 
 /-- The canonical `C(z)`-algebra structure on a local meromorphic chart is differential. -/
-@[reducible] def meroFieldRatFuncDifferentialAlgebra
+theorem meroFieldRatFuncDifferentialAlgebra
     {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
     (hUne : U.Nonempty) (hUinf : U.Infinite) :
     letI := Bottcher.isDomain_analyticSubring U hUo hUc hUne

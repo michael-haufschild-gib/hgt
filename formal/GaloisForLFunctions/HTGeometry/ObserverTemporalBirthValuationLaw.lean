@@ -132,8 +132,8 @@ theorem packetRaySeries_coeff_eq_interactionMobiusTaylorCoefficient
         unfold FormalMultilinearSeries.coeff at ih ⊢
         rw [FormalMultilinearSeries.add_apply,
           FormalMultilinearSeries.smul_apply,
-          ContinuousMultilinearMap.add_apply,
-          ContinuousMultilinearMap.smul_apply]
+          _root_.add_apply,
+          _root_.smul_apply]
         rw [FormalMultilinearSeries.compContinuousLinearMap_apply]
         simp only [smul_eq_mul]
         have hone :

@@ -78,10 +78,15 @@ def thetaCompletedValuationDomain : Submodule ℂ ThetaCompletedValuationRaw whe
   zero_mem' := by exact ⟨summable_zero, summable_zero⟩
   add_mem' := by
     intro a b ha hb
-    exact ⟨by simpa using ha.1.add hb.1, by simpa using ha.2.add hb.2⟩
+    exact ⟨by simpa [Pi.add_def] using ha.1.add hb.1,
+      by simpa [Pi.add_def] using ha.2.add hb.2⟩
   smul_mem' := by
     intro c a ha
-    exact ⟨by simpa using ha.1.mul_left c, by simpa using ha.2.mul_left c⟩
+    refine ⟨?_, ?_⟩
+    · have h : Summable (fun i => c * a.1 i) := ha.1.mul_left c
+      simpa [Pi.smul_def, smul_eq_mul] using h
+    · have h : Summable (fun i => c * a.2 i) := ha.2.mul_left c
+      simpa [Pi.smul_def, smul_eq_mul] using h
 
 /-- Infinite value synthesis on the completed valuation domain. -/
 def thetaCompletedValuationValue : thetaCompletedValuationDomain →ₗ[ℂ] ℂ where

@@ -39,6 +39,7 @@ def endpointShearedDoubleTransform
   ∑ m, ∑ n,
     χ (a * residue m + b * (residue n - residue m)) * inner ℂ (x m) (x n)
 
+omit [Fintype R] in
 /-- Separated-frequency form of the sheared phase. -/
 theorem endpointShearedDoubleTransform_eq_separated
     (χ : AddChar R ℂ) (residue : ι → R) (x : ι → E) (a b : R) :
@@ -54,6 +55,7 @@ theorem endpointShearedDoubleTransform_eq_separated
   rw [show a * residue m + b * (residue n - residue m) =
       (a - b) * residue m + b * residue n by ring]
 
+omit [Fintype R] in
 /-- **Sheared Gram identity.**  With mathlib's conjugate-linear-first convention, the raw double
 transform is the inner product of the packets at frequencies `b - a` and `b`. -/
 theorem endpointShearedDoubleTransform_eq_inner_frequencyPacket
@@ -85,6 +87,7 @@ theorem endpointShearedDoubleTransform_eq_inner_frequencyPacket
   rw [hphase, starRingEnd_apply]
   ac_rfl
 
+omit [Fintype R] in
 /-- The zero-shear diagonal is exactly the squared norm of one frequency packet. -/
 theorem endpointShearedDoubleTransform_zero_eq_norm_sq
     (χ : AddChar R ℂ) (residue : ι → R) (x : ι → E)
@@ -96,6 +99,7 @@ theorem endpointShearedDoubleTransform_zero_eq_norm_sq
   rw [inner_self_eq_norm_sq_to_K]
   norm_cast
 
+omit [Fintype R] in
 /-- Cauchy--Schwarz in the original sheared coordinates. -/
 theorem norm_endpointShearedDoubleTransform_le
     (χ : AddChar R ℂ) (residue : ι → R) (x : ι → E)
@@ -111,6 +115,7 @@ def endpointShearedGramMatrix
     (χ : AddChar R ℂ) (residue : ι → R) (x : ι → E) : Matrix R R ℂ :=
   fun j k => endpointShearedDoubleTransform χ residue x (k - j) k
 
+omit [Fintype R] in
 /-- Every entry of the unsheared matrix is the corresponding frequency-packet inner product. -/
 theorem endpointShearedGramMatrix_apply
     (χ : AddChar R ℂ) (residue : ι → R) (x : ι → E)
@@ -122,6 +127,7 @@ theorem endpointShearedGramMatrix_apply
     endpointShearedDoubleTransform_eq_inner_frequencyPacket χ residue x hχstar]
   rw [show k - (k - j) = j by ring]
 
+omit [Fintype R] in
 /-- The unsheared matrix is literally mathlib's Gram matrix. -/
 theorem endpointShearedGramMatrix_eq_gram
     (χ : AddChar R ℂ) (residue : ι → R) (x : ι → E)
@@ -212,6 +218,7 @@ theorem sum_endpointSwapOdd_mul_even_eq_zero
       ∑ b, weight b * response b := hneg.symm.trans hreindex
   exact neg_eq_self.mp hself
 
+omit [Fintype R] in
 /-- **Full real-Gram ridge parity.**  If all source Gram entries are real (equivalently, the
 Hermitian Gram is also symmetric), then the complete sheared response is invariant under the
 endpoint swap `b -> a - b`. -/
@@ -243,6 +250,7 @@ theorem endpointShearedDoubleTransform_endpointSwap
     _ = endpointShearedDoubleTransform χ residue x a (a - b) :=
       (endpointShearedDoubleTransform_eq_separated χ residue x a (a - b)).symm
 
+omit [Fintype R] in
 /-- The two endpoint ridges are equal under the real-Gram hypothesis. -/
 theorem endpointShearedDoubleTransform_left_ridge_eq_right_ridge
     (χ : AddChar R ℂ) (residue : ι → R) (x : ι → E)

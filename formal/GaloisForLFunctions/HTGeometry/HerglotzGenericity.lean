@@ -39,6 +39,7 @@ theorem exp_gauged_parameter_ae (μ : Measure ℝ) (u₀ h : Lp ℝ ⊤ μ)
   rw [hlog]
   exact exp_add_log_one_add habs
 
+omit [DecidableEq ι] in
 /-- **Reachability for the Herglotz chart.**  The jets of a multiplicatively gauged parameter are
 exactly the base jets plus the weighted control applied to the gauge. -/
 theorem herglotzJetMap_gauged (μ : Measure ℝ)

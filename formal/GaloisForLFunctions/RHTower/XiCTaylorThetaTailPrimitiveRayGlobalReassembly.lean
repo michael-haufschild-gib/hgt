@@ -45,8 +45,8 @@ theorem summable_thetaCuspPrimitiveDirectionDensityPair (p : ℝ × ℝ) :
       f (thetaCuspPrimitiveRayIndexToPositivePair q)) :=
     (thetaCuspPrimitiveRayIndexEquivPositivePair.summable_iff).mpr hpair
   have hdir := hray.prod
-  simpa only [thetaCuspPrimitiveDirectionDensityPair, f,
-    thetaCuspPrimitiveRayIndexToPositivePair] using hdir
+  simp only [thetaCuspPrimitiveDirectionDensityPair]
+  exact hdir
 
 /-- Pointwise, the full canonical density product is the absolutely convergent sum of its
 complete coprime-direction densities. -/
@@ -75,7 +75,8 @@ theorem thetaCuspTailSecondDensity_mul_eq_tsum_primitiveDirection
     _ = ∑' q : ThetaCuspPrimitiveDirection, ∑' g : ℕ+,
           thetaCuspTailSecondDensityAtom (q.1.1 * g) p.1 *
             thetaCuspTailSecondDensityAtom (q.1.2 * g) p.2 := by
-      simpa only [f, thetaCuspPrimitiveRayIndexToPositivePair] using hray.tsum_prod
+      simp only [thetaCuspPrimitiveRayIndexToPositivePair]
+      exact hray.tsum_prod
     _ = _ := rfl
 
 /-- The positive-natural and ordinary-natural presentations of one common-scale ray agree. -/
@@ -266,8 +267,9 @@ theorem integral_thetaCuspPrimitiveDirectionCoreIntegrand_eq_globalJoint
     dsimp only [thetaCuspPositiveQuadrantSet]
     rw [Measure.prod_restrict, Measure.volume_eq_prod]
   rw [← hmeasure]
-  simpa only [thetaCuspPrimitiveDirectionCoreIntegrand,
-    thetaCuspPrimitiveDirectionDensityPair_eq_rayDensityPair] using
+  simp only [thetaCuspPrimitiveDirectionCoreIntegrand,
+    thetaCuspPrimitiveDirectionDensityPair_eq_rayDensityPair]
+  exact
     integral_thetaCuspPrimitiveRayDensityPair_mul_coreCurrent_eq_globalJoint_unconditional
       q.1.1.pos q.1.2.pos d z
 

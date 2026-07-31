@@ -71,7 +71,7 @@ theorem carrierRange_maximalTranslationPhase_isGdelta
     IsGδ ({nu : F.base.toBoundaryFamily.carrierRange |
       MaximalTranslationDifferentialFree nu.1} :
         Set F.base.toBoundaryFamily.carrierRange) := by
-  exact isGδ_induced continuous_subtype_val inputs.phase_isGδ
+  exact IsGδ.preimage continuous_subtype_val inputs.phase_isGδ
 
 /-- The singular-continuous maximal-translation phase is dense `G_delta`, hence residual, in the
 entire canonical Nevanlinna carrier simplex. -/

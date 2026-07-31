@@ -33,16 +33,19 @@ theorem quantumChoose_zero (q : K) (n : ℕ) :
     quantumChoose q n 0 = 1 := by
   simp [quantumChoose, quantumChooseNumerator, quantumChooseDenominator]
 
+omit [CharZero K] in
 theorem quantumChooseNumerator_succ_right (q : K) (n k : ℕ) :
     quantumChooseNumerator q n (k + 1) =
       quantumChooseNumerator q n k * (1 - q ^ (n - k)) := by
   simp [quantumChooseNumerator, Finset.prod_range_succ]
 
+omit [CharZero K] in
 theorem quantumChooseDenominator_succ (q : K) (k : ℕ) :
     quantumChooseDenominator q (k + 1) =
       quantumChooseDenominator q k * (1 - q ^ (k + 1)) := by
   simp [quantumChooseDenominator, Finset.prod_range_succ]
 
+omit [CharZero K] in
 theorem quantumChooseNumerator_succ_succ
     (q : K) (n k : ℕ) :
     quantumChooseNumerator q (n + 1) (k + 1) =
@@ -62,6 +65,7 @@ theorem quantumChooseNumerator_succ_succ
     (1 - q ^ (n + 1)) * quantumChooseNumerator q n k
   ring
 
+omit [CharZero K] in
 theorem quantumChooseDenominator_ne_zero
     {q : K} {d k : ℕ} (hq : IsPrimitiveRoot q d) (hk : k < d) :
     quantumChooseDenominator q k ≠ 0 := by
@@ -72,12 +76,14 @@ theorem quantumChooseDenominator_ne_zero
   have hrlt : r + 1 < d := lt_of_le_of_lt (Nat.succ_le_iff.mpr hrk) hk
   exact sub_ne_zero.mpr (Ne.symm (hq.pow_ne_one_of_pos_of_lt hrpos hrlt))
 
+omit [CharZero K] in
 theorem quantumChoose_step_ne_zero
     {q : K} {d k : ℕ} (hq : IsPrimitiveRoot q d) (hk : k + 1 < d) :
     1 - q ^ (k + 1) ≠ 0 :=
   sub_ne_zero.mpr (Ne.symm
     (hq.pow_ne_one_of_pos_of_lt (Nat.succ_ne_zero k) hk))
 
+omit [CharZero K] in
 /-- Below the primitive order, product-form Gaussian coefficients satisfy quantum Pascal. -/
 theorem quantumChoose_pascal
     {q : K} {d n k : ℕ} (hq : IsPrimitiveRoot q d)
@@ -102,6 +108,7 @@ theorem quantumChoose_pascal
   rw [hterm]
   ring
 
+omit [CharZero K] in
 /-- Adjacent Gaussian coefficients satisfy the cancellation ratio below the primitive order. -/
 theorem quantumChoose_adjacent_ratio
     {q : K} {d n k : ℕ} (hq : IsPrimitiveRoot q d)
@@ -119,6 +126,7 @@ theorem quantumChoose_adjacent_ratio
   simp only [Nat.succ_eq_add_one, Nat.add_sub_cancel]
   field_simp [hD, hE]
 
+omit [CharZero K] in
 /-- Every interior coefficient created in the primitive row is zero. -/
 theorem quantumChoose_primitive_final_coefficient_zero
     {q : K} {d k : ℕ} (hq : IsPrimitiveRoot q d)
@@ -154,6 +162,7 @@ theorem quantumChoose_primitive_final_coefficient_zero
           quantumChoose q (d - 1) (k - 1) := by ring
     _ = 0 := by rw [hcancel]; simp
 
+omit [CharZero K] in
 theorem quantumChooseNumerator_self (q : K) :
     ∀ n : ℕ, quantumChooseNumerator q n n = quantumChooseDenominator q n
   | 0 => by simp [quantumChooseNumerator, quantumChooseDenominator]
@@ -162,6 +171,7 @@ theorem quantumChooseNumerator_self (q : K) :
         quantumChooseDenominator_succ, quantumChooseNumerator_self q n]
       ring
 
+omit [CharZero K] in
 @[simp]
 theorem quantumChoose_self
     {q : K} {d n : ℕ} (hq : IsPrimitiveRoot q d) (hn : n < d) :
@@ -177,6 +187,7 @@ def quantumBinomialSum (q : K) (X Y : Module.End K M) (n : ℕ) :
   ∑ k ∈ Finset.range (n + 1),
     quantumChoose q n k • (Y ^ k * X ^ (n - k))
 
+omit [CharZero K] in
 /-- Moving one `X` through `k` copies of `Y` produces the phase `q^k`. -/
 theorem quantumCommute_left_pow
     (q : K) (X Y : Module.End K M)
@@ -366,6 +377,7 @@ theorem quantumBinomial_pow_primitive
   rw [show sx + x0 + (sy + yd) = (sx + sy) + x0 + yd by abel,
     hcombine, zero_add, hx0, hyd]
 
+omit [CharZero K] in
 /-- A generator that `q`-commutes with every entry of a finite list also `q`-commutes with
 the list sum.  This is the additive closure needed to pass from the binary quantum binomial
 law to an arbitrary finite horizon. -/

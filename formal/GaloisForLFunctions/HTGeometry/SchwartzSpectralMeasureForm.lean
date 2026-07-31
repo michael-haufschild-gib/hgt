@@ -31,8 +31,6 @@ def spectralMeasureForm (μ : Measure ℝ) [μ.HasTemperateGrowth] :
             (pointwiseMulConj ((fourierTransformCLM ℂ) u) ((fourierTransformCLM ℂ) w) +
               pointwiseMulConj ((fourierTransformCLM ℂ) v) ((fourierTransformCLM ℂ) w)) := by
         congr 1
-        change pointwiseMulConj ((fourierTransformCLM ℂ) (u + v))
-          ((fourierTransformCLM ℂ) w) = _
         rw [map_add, pointwiseMulConj_add_left]
       _ = _ := map_add (integralCLM ℂ μ) _ _
   map_smul_left c u v := by
@@ -42,8 +40,6 @@ def spectralMeasureForm (μ : Measure ℝ) [μ.HasTemperateGrowth] :
           (integralCLM ℂ μ) (c • pointwiseMulConj
             ((fourierTransformCLM ℂ) u) ((fourierTransformCLM ℂ) v)) := by
         congr 1
-        change pointwiseMulConj ((fourierTransformCLM ℂ) (c • u))
-          ((fourierTransformCLM ℂ) v) = _
         rw [map_smul, pointwiseMulConj_smul_left]
       _ = c * (integralCLM ℂ μ) (pointwiseMulConj
           ((fourierTransformCLM ℂ) u) ((fourierTransformCLM ℂ) v)) := by
@@ -57,8 +53,6 @@ def spectralMeasureForm (μ : Measure ℝ) [μ.HasTemperateGrowth] :
             (pointwiseMulConj ((fourierTransformCLM ℂ) u) ((fourierTransformCLM ℂ) v) +
               pointwiseMulConj ((fourierTransformCLM ℂ) u) ((fourierTransformCLM ℂ) w)) := by
         congr 1
-        change pointwiseMulConj ((fourierTransformCLM ℂ) u)
-          ((fourierTransformCLM ℂ) (v + w)) = _
         rw [map_add, pointwiseMulConj_add_right]
       _ = _ := map_add (integralCLM ℂ μ) _ _
   map_smul_right c u v := by
@@ -69,8 +63,6 @@ def spectralMeasureForm (μ : Measure ℝ) [μ.HasTemperateGrowth] :
             ((starRingEnd ℂ) c • pointwiseMulConj
               ((fourierTransformCLM ℂ) u) ((fourierTransformCLM ℂ) v)) := by
         congr 1
-        change pointwiseMulConj ((fourierTransformCLM ℂ) u)
-          ((fourierTransformCLM ℂ) (c • v)) = _
         rw [map_smul, pointwiseMulConj_smul_right]
       _ = (starRingEnd ℂ) c *
           (integralCLM ℂ μ) (pointwiseMulConj

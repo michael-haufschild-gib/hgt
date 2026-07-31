@@ -136,7 +136,7 @@ theorem tendsto_sourceDepthQuotient_finiteRenormalizedDepth
         sourceDepthQuotient f (depth n) (eps n * u))
       atTop (𝓝 (f 0 / f (lam * u))) := by
   have harg0 : Tendsto (fun n => eps n * u) atTop (𝓝 0) := by
-    convert heps.mul_const u using 1 <;> simp
+    convert heps.mul_const u using 1 ; simp
   have harglam :
       Tendsto (fun n => (depth n * eps n) * u)
         atTop (𝓝 (lam * u)) :=
@@ -448,7 +448,7 @@ theorem tendsto_sourceDepthQuotient_zeta_infiniteRenormalizedDepth
         sourceDepthQuotient riemannZeta (depth n) (eps n * u))
       atTop (𝓝 (-1 / 2 : ℂ)) := by
   have harg0 : Tendsto (fun n => eps n * u) atTop (𝓝 0) := by
-    convert heps.mul_const u using 1 <;> simp
+    convert heps.mul_const u using 1 ; simp
   have hzeta0 : ContinuousAt riemannZeta 0 :=
     (differentiableAt_riemannZeta (by norm_num)).continuousAt
   have hnum := hzeta0.tendsto.comp harg0
@@ -518,7 +518,7 @@ theorem tendsto_boundedExponentEulerSource_mesoscopicScale
   have harg :
       Tendsto (fun M : ℕ => (((M + 1 : ℕ) : ℂ)⁻¹) * u)
         atTop (𝓝 0) := by
-    convert hinv.mul_const u using 1 <;> simp
+    convert hinv.mul_const u using 1 ; simp
   have hzeta0 : ContinuousAt riemannZeta 0 :=
     (differentiableAt_riemannZeta (by norm_num)).continuousAt
   have hnum :=
@@ -558,12 +558,12 @@ theorem tendsto_boundedExponentEulerSource_microscopicScale
       Tendsto
         (fun M : ℕ => ((((M + 1 : ℕ) : ℂ)⁻¹) ^ 2) * u)
         atTop (𝓝 0) := by
-    convert (hinv.pow 2).mul_const u using 1 <;> simp
+    convert (hinv.pow 2).mul_const u using 1 ; simp
   have hargDen :
       Tendsto
         (fun M : ℕ => (((M + 1 : ℕ) : ℂ)⁻¹) * u)
         atTop (𝓝 0) := by
-    convert hinv.mul_const u using 1 <;> simp
+    convert hinv.mul_const u using 1 ; simp
   have hzeta0 : ContinuousAt riemannZeta 0 :=
     (differentiableAt_riemannZeta (by norm_num)).continuousAt
   have hnum := hzeta0.tendsto.comp hargNum

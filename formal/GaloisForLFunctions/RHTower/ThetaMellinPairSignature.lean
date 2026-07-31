@@ -132,7 +132,6 @@ def thetaMellinPairPhase (b u v : ℝ) : ℂ :=
 theorem thetaMellinPairPhase_mul_swap (b u v : ℝ) :
     thetaMellinPairPhase b u v * thetaMellinPairPhase b v u = 1 := by
   rw [thetaMellinPairPhase, thetaMellinPairPhase, ← Complex.exp_add]
-  congr 1
   push_cast
   ring_nf
   simp

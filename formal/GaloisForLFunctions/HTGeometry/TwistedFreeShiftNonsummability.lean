@@ -146,7 +146,7 @@ theorem coeff_freeShiftOneSlice (c : (α × ℕ) →₀ K) (j : α × ℕ) :
             MvPolynomial.X ((i.1, ((0 : ℤ), i.2)) : FreeShiftJetIndex α)) =
         if i = j then c i else 0 := by
     intro i _
-    rw [coeff_C_mul, coeff_X']
+    rw [coeff_C_mul, coeff_X]
     have hiff :
         ((Finsupp.single ((i.1, ((0 : ℤ), i.2)) : FreeShiftJetIndex α) 1) =
           Finsupp.single ((j.1, ((0 : ℤ), j.2)) : FreeShiftJetIndex α) 1) ↔ i = j := by

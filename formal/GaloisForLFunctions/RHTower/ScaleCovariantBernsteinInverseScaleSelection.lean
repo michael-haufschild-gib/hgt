@@ -21,7 +21,9 @@ theorem tendsto_inverseScaleAtomicNode_cofinite_zero
     Tendsto (inverseScaleAtomicNode z R) cofinite (nhds 0) := by
   have hscale : Tendsto (fun _ : I => (R⁻¹ : ℂ)) cofinite (nhds (R⁻¹ : ℂ)) :=
     tendsto_const_nhds
-  simpa only [inverseScaleAtomicNode, mul_zero] using hscale.mul hz0
+  have h2 : Tendsto (fun i : I => (R⁻¹ : ℂ) * z i) cofinite (nhds 0) := by
+    simpa only [mul_zero] using hscale.mul hz0
+  exact h2
 
 /-- Nonzero inverse radial scaling preserves injectivity. -/
 theorem inverseScaleAtomicNode_injective
@@ -31,7 +33,6 @@ theorem inverseScaleAtomicNode_injective
   intro i j hij
   apply hzinj
   have hscalar : (R⁻¹ : ℂ) ≠ 0 := by
-    change (R : ℂ)⁻¹ ≠ 0
     exact inv_ne_zero (Complex.ofReal_ne_zero.mpr hR.ne')
   exact mul_left_cancel₀ hscalar hij
 
@@ -80,7 +81,7 @@ theorem inverseScaleAtomicNode_re_nonneg_of_im_eq_zero
         (mul_ne_zero hR.ne' hR.ne')
     exact (mul_eq_zero.mp hnum).resolve_right hR.ne'
   rw [inverseScaleAtomicNode_eq_div, Complex.div_re]
-  simp only [Complex.ofReal_re, Complex.ofReal_im, mul_zero, add_zero,
+  simp only [Complex.ofReal_re, Complex.ofReal_im, mul_zero,
     Complex.normSq_ofReal]
   simpa only [zero_div, add_zero] using
     div_nonneg (mul_nonneg (hreal i hzim) hR.le)

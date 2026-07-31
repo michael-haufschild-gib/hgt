@@ -154,7 +154,7 @@ theorem aeval_survives {n : ℕ} {F : ℂ⟦X⟧} {bnat : ℕ → ℕ} {r W : �
       hdist_max (MvPolynomial.mem_support_iff.mp hm₀supp)
   obtain ⟨NB, hNB⟩ := Filter.eventually_atTop.mp (hbtop.eventually_ge_atTop (2 * W))
   have hGsetinf : {i : ℕ | coeff (bnat i) F ≠ 0 ∧ NB ≤ i}.Infinite := by
-    apply (hinf.diff (Set.finite_Iio NB)).mono
+    apply (hinf.sdiff (Set.finite_Iio NB)).mono
     intro i hi; exact ⟨hi.1, not_lt.mp hi.2⟩
   have hTinf : ((fun i => (bnat i : ℂ)) '' {i : ℕ | coeff (bnat i) F ≠ 0 ∧ NB ≤ i}).Infinite :=
     hGsetinf.image (fun a _ b _ h => hbnatinj (by exact_mod_cast h))

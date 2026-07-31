@@ -29,6 +29,7 @@ noncomputable def semimetricQuotientCompression
     Matrix m m ℂ :=
   B * A * R
 
+omit [DecidableEq n] in
 /-- **Semimetric quotient law.** A right inverse turns metric adjointness for `Bᴴ B` into ordinary
 Hermiticity after compression. -/
 theorem semimetricQuotientCompression_isHermitian
@@ -54,6 +55,7 @@ theorem semimetricQuotientCompression_isHermitian
         _ = 1 * ((B * A) * R) := by rw [hRB]
         _ = B * A * R := by rw [Matrix.one_mul]
 
+omit [DecidableEq n] in
 /-- Every characteristic zero of a semimetric quotient compression is real. -/
 theorem semimetricQuotientCompression_charpoly_zero_im_eq_zero
     (B : Matrix m n ℂ) (A : Matrix n n ℂ) (R : Matrix n m ℂ)
@@ -65,6 +67,7 @@ theorem semimetricQuotientCompression_charpoly_zero_im_eq_zero
   exact hermitian_charpoly_zero_im_eq_zero
     (semimetricQuotientCompression_isHermitian B A R hBR hmetric) hz
 
+omit [DecidableEq m] in
 /-- Full-radical preservation makes the complex Hermitian compression the honest quotient
 operator. -/
 theorem semimetricQuotientCompression_intertwines
@@ -127,6 +130,7 @@ noncomputable def realSemimetricQuotientCompression
     Matrix m m ℝ :=
   B * A * R
 
+omit [DecidableEq n] in
 /-- Real form of the semimetric quotient law. -/
 theorem realSemimetricQuotientCompression_transpose
     (B : Matrix m n ℝ) (A : Matrix n n ℝ) (R : Matrix n m ℝ)
@@ -155,6 +159,7 @@ theorem realSemimetricQuotientCompression_transpose
         _ = 1 * ((B * A) * R) := by rw [hRB]
         _ = B * A * R := by rw [Matrix.one_mul]
 
+omit [DecidableEq m] [DecidableEq n] in
 /-- A real rectangular frame and its Gram matrix have the same kernel. -/
 theorem realGram_mulVec_eq_zero_iff
     (B : Matrix m n ℝ) (x : n → ℝ) :
@@ -167,6 +172,7 @@ theorem realGram_mulVec_eq_zero_iff
     x ∈ LinearMap.ker B.mulVecLin
   rw [hker']
 
+omit [DecidableEq m] in
 /-- Full-radical preservation makes the real symmetric compression the honest quotient
 operator. -/
 theorem realSemimetricQuotientCompression_intertwines
@@ -182,6 +188,7 @@ theorem realSemimetricQuotientCompression_intertwines
     (B * A * R) * B = (B * A) * (R * B) := by simp only [Matrix.mul_assoc]
     _ = B * A := hBA
 
+omit [Fintype m] [DecidableEq m] in
 /-- The complexification of a real symmetric matrix is Hermitian. -/
 theorem realSymmetric_complexification_isHermitian
     (C : Matrix m m ℝ) (hC : C.transpose = C) :

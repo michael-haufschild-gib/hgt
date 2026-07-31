@@ -32,7 +32,7 @@ theorem deningerXiSupport_closedBall_finite (R : ℝ) :
   have hzeroFinite :
       {z ∈ Metric.closedBall (0 : ℂ) R | XiC z = 0}.Finite := by
     refine
-      ((isCompact_closedBall (0 : ℂ) R).finite_diff_of_mem_codiscreteWithin
+      ((isCompact_closedBall (0 : ℂ) R).finite_sdiff_of_mem_codiscreteWithin
         hcodK).subset ?_
     intro z hz
     rw [Set.mem_sep_iff] at hz

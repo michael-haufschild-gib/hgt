@@ -78,7 +78,7 @@ theorem suzukiCriticalEntryWallEndpointAmplitude_zero_eq_coherentWeight
     rw [hdenform]
     exact div_div_div_cancel_right₀ hpne 1 ((p : ℝ) + 1)
   rw [hq]
-  ring
+  ring_nf
 
 /-- Explicit logarithmic `p^(-5/4)` majorant for one undivided prime endpoint. -/
 def suzukiCriticalEntryWallCoherentMajorant (h : ℝ) (p : Nat.Primes) : ℝ :=
@@ -147,8 +147,9 @@ theorem summable_suzukiCriticalEntryWallCoherentMajorant (h : ℝ) :
     have hn : Summable (fun n : ℕ =>
         |Real.log n| ^ 0 * (n : ℝ) ^ (-(5 / 4 : ℝ))) :=
       summable_abs_log_natCast_pow_mul_rpow_neg 0 (5 / 4) hbeta
-    simpa using hn.comp_injective (i := fun p : Nat.Primes => (p : ℕ))
-      Subtype.val_injective
+    simpa [Function.comp_def] using
+      hn.comp_injective (i := fun p : Nat.Primes => (p : ℕ))
+        Subtype.val_injective
   have h1 : Summable (fun p : Nat.Primes =>
       Real.log (p : ℝ) * (p : ℝ) ^ (-(5 / 4 : ℝ))) := by
     have hn : Summable (fun n : ℕ =>

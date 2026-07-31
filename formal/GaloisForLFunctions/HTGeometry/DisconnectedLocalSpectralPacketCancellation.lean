@@ -60,7 +60,7 @@ theorem disconnectedPacketBranch_mobius_germ_eq_zero
   let branchP : (P → ℂ) → ℂ :=
     fun z => branch (relabelCoupling q z)
   have hbranchP : AnalyticAt ℂ branchP 0 := by
-    exact hbranch.comp_of_eq' (relabelCoupling_analyticAt q) rfl
+    exact hbranch.fun_comp_of_eq (relabelCoupling_analyticAt q) rfl
   have hbranchP0 :
       branchP 0 = onsiteProductEnergy onsite x := by
     simpa [branchP] using hbranch0

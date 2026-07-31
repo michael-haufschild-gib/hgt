@@ -76,15 +76,15 @@ theorem deningerArithmeticFEOrientation_reflect (q : XiZeroCopy) :
     · have hnrepos : 0 < -a.re := by linarith
       simp [a, hrepos, hrelt, hnrepos]
     · have hre : a.re = 0 := by linarith
-      have him0 : a.im ≠ 0 := hcoords.resolve_left (by simpa [hre])
+      have him0 : a.im ≠ 0 := hcoords.resolve_left (by simp [hre])
       by_cases himpos : 0 < a.im
       · have hnimpos : ¬0 < -a.im := by linarith
         have hnimlt : -a.im < 0 := by linarith
-        simp [a, hre, himpos, hnimpos, hnimlt]
+        simp [a, hre, himpos, hnimpos]
       · have himlt : a.im < 0 := lt_of_le_of_ne
           (le_of_not_gt himpos) him0
         have hnimpos : 0 < -a.im := by linarith
-        simp [a, hre, himpos, himlt, hnimpos]
+        simp [a, hre, himpos, hnimpos]
 
 /-- Functional-equation reflection has no fixed multiplicity copy. -/
 theorem xiZeroCopyReflectEquiv_ne (q : XiZeroCopy) :

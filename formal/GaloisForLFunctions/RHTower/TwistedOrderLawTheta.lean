@@ -93,16 +93,16 @@ theorem norm_mixedAdditiveConvolutionPower_le_of_subpower {a : ℕ → ℂ} {A �
     congr 2
     push_cast
     ring
-  show ‖∑ ab ∈ Finset.antidiagonal M, additiveConvolutionPower a (j + 1) ab.1 *
+  show ‖∑ ab ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) M, additiveConvolutionPower a (j + 1) ab.1 *
     (starRingEnd ℂ) (additiveConvolutionPower a (j + 1) ab.2)‖ ≤ _
   refine (norm_sum_le _ _).trans ?_
   have hAp : (0 : ℝ) ≤ A ^ (j + 1) := by positivity
-  have hstep : ∀ ab ∈ Finset.antidiagonal M,
+  have hstep : ∀ ab ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) M,
       ‖additiveConvolutionPower a (j + 1) ab.1 *
           (starRingEnd ℂ) (additiveConvolutionPower a (j + 1) ab.2)‖
         ≤ A ^ (2 * (j + 1)) * ((M : ℝ) + 1) ^ (2 * (((j : ℝ) + 1) * α + (j : ℝ))) := by
     intro ab hab
-    rw [Finset.mem_antidiagonal] at hab
+    rw [Finset.HasAntidiagonal.mem_antidiagonal] at hab
     rw [norm_mul, RCLike.norm_conj]
     have hb1 : ((ab.1 : ℝ) + 1) ^ (((j : ℝ) + 1) * α + (j : ℝ))
         ≤ ((M : ℝ) + 1) ^ (((j : ℝ) + 1) * α + (j : ℝ)) := by

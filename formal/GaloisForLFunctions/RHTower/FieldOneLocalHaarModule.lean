@@ -141,8 +141,7 @@ theorem fieldOneAdicUnits_distribHaarChar_eq_nnnorm
       e (algebraMap ℚ (v.adicCompletion ℚ)
         (Rat.HeightOneSpectrum.primesEquiv v : ℚ)) =
         (q : ℚ_[q])
-    simpa [q] using
-      e.commutes (Rat.HeightOneSpectrum.primesEquiv v : ℚ)
+    simp [q]
   have hPzpow :
       e ((P : v.adicCompletion ℚ) ^ (-n)) =
         (q : ℚ_[q]) ^ (-n) := by

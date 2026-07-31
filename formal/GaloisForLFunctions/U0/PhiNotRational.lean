@@ -80,7 +80,7 @@ theorem bottcher_not_rational {c : ℂ} (hc : c ≠ 0) {p q : ℂ[X]}
         linear_combination hfe
       simp only [Set.mem_setOf_eq, eval_mul, eval_pow, eval_comp, hσz]
       linear_combination hcrossval
-    exact Set.Infinite.mono hgood ((escapeOpen_infinite c).diff (hqfin.union hqσfin))
+    exact Set.Infinite.mono hgood ((escapeOpen_infinite c).sdiff (hqfin.union hqσfin))
   exact MahlerPolynomial.no_coprime_mahler_rational hc hpq hp hq hcross hncc
 
 end PhiNotRational

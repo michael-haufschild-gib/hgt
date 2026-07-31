@@ -255,8 +255,6 @@ theorem xiSquaredSeam_tsum_cassiniZero_eq_two_mul_sourceZeroCopy
       2 * ∑' c : XiSquaredSeamCassiniZeroCopy, F c.1.1 := by
   rw [xiSquaredSeam_tsum_eq_two_mul_positive
     (fun q => F (xiSquaredSeamCassiniZero q)) (fun q => by
-      change F (xiSquaredSeamCassiniZero (xiZeroCopyReflectEquiv.symm q)) =
-        F (xiSquaredSeamCassiniZero q)
       rw [xiSquaredSeamCassiniZero_reflect_symm]),
     xiSquaredSeamPositive_tsum_eq_cassiniZeroCopy]
 

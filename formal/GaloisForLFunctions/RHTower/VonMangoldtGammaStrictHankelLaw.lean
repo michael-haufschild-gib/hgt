@@ -36,7 +36,7 @@ theorem exponentialRemainderMeasure_infiniteSupport
         Ioc (0 : ℝ) 1 \ (↑F : Set ℝ) := by
       ext u
       simp [and_comm]
-    rw [hset, measure_diff_null hFzero]
+    rw [hset, measure_sdiff_null hFzero]
     norm_num
   have hmeas : Measurable
       (fun u : ℝ ↦ ((exponentialRemainderDensity rate u : NNReal) : ENNReal)) := by

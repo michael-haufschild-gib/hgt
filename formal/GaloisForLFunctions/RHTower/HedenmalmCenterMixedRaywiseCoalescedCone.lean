@@ -43,7 +43,7 @@ theorem hasDerivAt_thetaCuspCenterMixedDensityFifthJet
   unfold thetaCuspCenterMixedDensityFifthJet thetaCuspCenterMixedDensitySixthJet
   convert (((((h50.sub (h41.const_mul 5)).add (h32.const_mul 10)).sub
     (h23.const_mul 10)).add (h14.const_mul 5)).sub h05) using 1
-  all_goals ring
+  all_goals first | rfl | ring
 
 theorem continuous_thetaCuspCenterMixedDensitySixthJet
     {a : ℝ} (ha0 : 0 ≤ a) (ha : a < 1 / 2) :

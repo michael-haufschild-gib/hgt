@@ -51,6 +51,7 @@ theorem coordinateFreeQuadraticWidthPrincipalSymbolCompletion_pow
     (quadraticWidthPrincipalSymbolCompletion_pow
       q hq (A₀.comp e.symm.toLinearMap) (fun c ↦ F (e.symm c)) hcoord (e v))
 
+omit [CharZero K] in
 /-- Coordinate transport preserves maximal quadratic exterior principal-symbol rank. -/
 theorem
     coordinateFreeQuadraticWidthPrincipalSymbolCompletion_endomorphismCommutatorMap_injective

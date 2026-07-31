@@ -235,7 +235,7 @@ theorem criticalMellinPrimeMass_adjacent_eq_movingTentSum
   rw [Real.sqrt_eq_rpow]
   have hpow : (k : ℝ) ^ (-1 / 2 : ℝ) =
       ((k : ℝ) ^ (1 / 2 : ℝ))⁻¹ := by
-    convert Real.rpow_neg hkpos.le (1 / 2 : ℝ) using 1 <;> ring
+    convert Real.rpow_neg hkpos.le (1 / 2 : ℝ) using 1 ; ring
   rw [hpow]
   change max 0 (L - |Real.log k - (x - L)|) *
       (((k : ℝ) ^ (1 / 2 : ℝ))⁻¹ * ArithmeticFunction.vonMangoldt k) =

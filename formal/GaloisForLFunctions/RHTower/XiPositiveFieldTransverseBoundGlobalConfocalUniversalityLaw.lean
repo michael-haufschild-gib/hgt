@@ -28,8 +28,12 @@ theorem tendsto_xiZeroCopyReciprocalSquare_transverseDefect_cofinite_zero :
     summable_xiZeroCopyReciprocalSquare.tendsto_cofinite_zero
   have hnorm := hzero.norm
   have hre := Complex.continuous_re.continuousAt.tendsto.comp hzero
-  simpa only [HTGeometry.transverseDefect, norm_zero, Complex.zero_re, sub_zero]
-    using hnorm.sub hre
+  have h2 : Tendsto (fun q : XiZeroCopy =>
+      ‖xiZeroCopyReciprocalSquare q‖ - (xiZeroCopyReciprocalSquare q).re)
+      cofinite (nhds 0) := by
+    simpa only [Function.comp_apply, norm_zero, Complex.zero_re, sub_zero]
+      using hnorm.sub hre
+  simpa only [HTGeometry.transverseDefect] using h2
 
 /-- The prime--Gamma moments are the exact atomic power moments of the Xi reciprocal-square
 source when each atom also carries its own reciprocal-square weight. -/

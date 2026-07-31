@@ -26,6 +26,10 @@ noncomputable section
 
 namespace RHTower
 
+/- `State` and `Effect` carry independent universes: a theory may have small
+states and large effects.  The `checkUnivs` heuristic sees only their `max` in
+the structure universe and cannot see the fields that separate them. -/
+set_option linter.checkUnivs false in
 /-- An operational physical theory: states, effects, and effect
 probabilities.  Probability bounds are the only numerical structure used. -/
 structure OperationalTheory where

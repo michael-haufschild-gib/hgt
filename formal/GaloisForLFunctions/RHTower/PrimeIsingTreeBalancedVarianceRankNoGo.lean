@@ -195,7 +195,7 @@ theorem iteratedDeriv_two_centeredClusterFactor_zero (mass : ℝ) :
   dsimp
   simp only [mul_zero]
   have h : iteratedDeriv 2 Complex.cos 0 = -1 := by
-    simpa using congrFun (Complex.iteratedDeriv_even_cos 1) 0
+    simp
   rw [h]
   ring
 
@@ -232,7 +232,6 @@ theorem iteratedDeriv_two_centeredClusterProduct_zero (masses : List ℝ) :
         iteratedDeriv_two_centeredClusterFactor_zero,
         iteratedDeriv_one_centeredClusterFactor_zero,
         iteratedDeriv_one_centeredClusterProduct_zero, ih]
-      push_cast
       ring
 
 mutual
@@ -825,7 +824,7 @@ theorem vertexCount_mul_logTwo_sq_div_four_le_neg_re_iteratedDeriv_two_balanced
       -(iteratedDeriv 2 (balancedPrimeIsingTreePartition T) 0).re := by
   rw [neg_re_iteratedDeriv_two_balancedPrimeIsingTreePartition_zero]
   apply (le_div_iff₀ (mul_pos (by norm_num) (bondMixtureWeight_pos T))).2
-  convert! vertexCount_mul_logTwo_sq_mul_bondMixtureWeight_le_sqMassWeight T using 1 <;>
+  convert! vertexCount_mul_logTwo_sq_mul_bondMixtureWeight_le_sqMassWeight T using 1 ;
     ring
 
 /-! ## Critical rescaling law

@@ -34,6 +34,7 @@ def spectralObserverCouplingRay
   L.productSpectralInteractionShiftSiteContrast
     onsite hinj x alternative sites (g • z)
 
+omit [∀ (v : V), Nonempty (A v)] in
 /-- Every local spectral-observer coupling ray is analytic at zero. -/
 theorem spectralObserverCouplingRay_analyticAt
     (L : FiniteLocalInteractionFamily V E A)
@@ -81,6 +82,7 @@ def spectralObserverCouplingRaySeries
           L onsite hinj x alternative sites z) 0 /
           n.factorial)
 
+omit [∀ (v : V), Nonempty (A v)] in
 theorem spectralObserverCouplingRay_hasFPowerSeriesAt
     (L : FiniteLocalInteractionFamily V E A)
     (onsite : ∀ v, A v → ℂ)

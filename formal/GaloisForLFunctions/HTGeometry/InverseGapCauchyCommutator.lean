@@ -129,7 +129,7 @@ theorem orderedInverseGapEnergy_eq_zero_iff_of_injective {N : ℕ}
   constructor
   · intro hzero i j
     by_cases hij : i = j
-    · simpa [hij]
+    · simp [hij]
     · have hterm_nonneg (k l : Fin N) :
           0 ≤ ‖v l - v k‖ ^ 2 / (x k - x l) ^ 2 :=
         div_nonneg (sq_nonneg _) (sq_nonneg _)

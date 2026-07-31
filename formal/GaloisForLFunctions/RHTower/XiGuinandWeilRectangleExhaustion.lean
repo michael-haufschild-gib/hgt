@@ -67,7 +67,7 @@ theorem XiExplicitAdmissible_of_im_lt_half_of_ne_one_of_XiC_ne_zero
 private theorem exists_Ioo_not_mem_finset {a b : ℝ} (hab : a < b) (F : Finset ℝ) :
     ∃ x ∈ Set.Ioo a b, x ∉ F := by
   have hinf : (Set.Ioo a b).Infinite := Set.Ioo_infinite hab
-  have hdiff : (Set.Ioo a b \ (F : Set ℝ)).Infinite := hinf.diff F.finite_toSet
+  have hdiff : (Set.Ioo a b \ (F : Set ℝ)).Infinite := hinf.sdiff F.finite_toSet
   obtain ⟨x, hxI, hxF⟩ := hdiff.nonempty
   exact ⟨x, hxI, by simpa using hxF⟩
 

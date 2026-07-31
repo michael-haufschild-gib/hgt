@@ -86,7 +86,6 @@ theorem gammaMertensShiftTwoCoboundaryCriterion_iff_riemannHypothesis :
     refine ⟨0, ?_⟩
     have hhalf := xi_zero_re_eq_half_of_RH hRH hzero
     have hsupports : -rho = starRingEnd ℂ rho - 1 := by
-      change -rho = conj rho - 1
       apply Complex.ext
       · simp only [neg_re, Complex.conj_re, sub_re, one_re]
         linarith

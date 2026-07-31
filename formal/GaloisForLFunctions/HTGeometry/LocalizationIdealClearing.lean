@@ -51,7 +51,7 @@ theorem exists_denominator_mul_le_of_localized_ideal_le
     rw [hc, mul_assoc]
     convert J.mul_mem_left c (hdenJ g') using 1
     ring
-  · change (s : R) * 0 ∈ J
+  ·
     rw [mul_zero]
     exact J.zero_mem
   · intro y z _ _ hy hz

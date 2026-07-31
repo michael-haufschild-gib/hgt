@@ -146,7 +146,7 @@ theorem shiftTwist_coeff_sub_one_monic {sigma : E ≃+* E} {c : E} {P : E[X]} (h
     shiftTwist (RingEquiv.refl E) c P = P.comp (X + C c) := by
   rw [shiftTwist]
   congr 1
-  simpa using Polynomial.map_id (p := P)
+  simp
 
 /-- The twist transports the leading coefficient by `sigma`. -/
 theorem shiftTwist_leadingCoeff (sigma : E ≃+* E) (c : E) (P : E[X]) :

@@ -38,6 +38,7 @@ noncomputable def weightedProductEigenvalueBranch
   L.productEigenvalueBranch (complexOnsite onsite) hinj config
     (fun e => g ^ weight e * z e)
 
+omit [∀ (v : V), Nonempty (A v)] in
 /-- Every weighted product-energy branch is analytic at zero. -/
 theorem weightedProductEigenvalueBranch_analyticAt
     (L : FiniteLocalInteractionFamily V E A)
@@ -80,6 +81,7 @@ noncomputable def weightedProductEigenvalueSeries
     (L.weightedProductEigenvalueBranch_analyticAt
       onsite hinj weight hpos z config)
 
+omit [∀ (v : V), Nonempty (A v)] in
 /-- The canonical weighted series represents its energy branch. -/
 theorem weightedProductEigenvalueSeries_spec
     (L : FiniteLocalInteractionFamily V E A)

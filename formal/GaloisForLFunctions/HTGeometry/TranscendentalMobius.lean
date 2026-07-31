@@ -35,7 +35,7 @@ theorem ratFuncEval_injective (y : E) (hy : Transcendental C y) :
 
 @[simp] theorem ratFuncEval_X (y : E) (hy : Transcendental C y) :
     ratFuncEval y hy RatFunc.X = y := by
-  rw [ratFuncEval, AlgHom.comp_apply, AlgEquiv.coe_algHom]
+  rw [ratFuncEval, AlgHom.comp_apply, AlgEquiv.coe_toAlgHom]
   exact RatFunc.algEquivOfTranscendental_X y hy
 
 @[simp] theorem ratFuncEval_C (y : E) (hy : Transcendental C y) (c : C) :
@@ -53,7 +53,7 @@ theorem adjoin_generator_mobius {y z : E} (hy : Transcendental C y)
   set φ := RatFunc.algEquivOfTranscendental y hy with hφ
   set g : RatFunc C := φ.symm ⟨z, hz⟩ with hgdef
   have hevg : ratFuncEval y hy g = z := by
-    simp only [ratFuncEval, AlgHom.comp_apply, AlgEquiv.coe_algHom,
+    simp only [ratFuncEval, AlgHom.comp_apply, AlgEquiv.coe_toAlgHom,
       hgdef, hφ, AlgEquiv.apply_symm_apply]
     rfl
   -- `g` generates `RatFunc C`

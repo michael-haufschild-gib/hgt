@@ -69,7 +69,7 @@ def quadraticQuantumDetectorGenerator (q : K) (i : Fin n) :
         · simp [hil, smul_add]
         · by_cases hiu : i = p.upper
           · subst i
-            simp [hil, hne]
+            simp [hil]
           · simp [hil, hiu]
   map_smul' c f := by
     funext x
@@ -82,9 +82,10 @@ def quadraticQuantumDetectorGenerator (q : K) (i : Fin n) :
         · simp [hil, smul_smul, mul_comm]
         · by_cases hiu : i = p.upper
           · subst i
-            simp [hil, hne]
+            simp [hil]
           · simp [hil, hiu]
 
+omit [CharZero K] in
 @[simp]
 theorem quadraticQuantumDetectorGenerator_root
     (q : K) (i : Fin n) (m : M) :
@@ -100,13 +101,14 @@ theorem quadraticQuantumDetectorGenerator_root
       by_cases hji : j = i
       · subst j
         simp [quadraticQuantumDetectorGenerator, quadraticQuantumDetectorRoot,
-          quadraticQuantumDetectorSingleState, Pi.single_apply]
+          quadraticQuantumDetectorSingleState]
       · simp [quadraticQuantumDetectorGenerator, quadraticQuantumDetectorRoot,
-          quadraticQuantumDetectorSingleState, Pi.single_apply, hji]
+          quadraticQuantumDetectorSingleState, hji]
   | pair p =>
       simp [quadraticQuantumDetectorGenerator, quadraticQuantumDetectorRoot,
         quadraticQuantumDetectorSingleState]
 
+omit [CharZero K] in
 /-- Applying a lower generator after a higher one records `q` times their pair state. -/
 theorem quadraticQuantumDetectorGenerator_singleState_of_lt
     (q : K) {i j : Fin n} (hij : i < j) (m : M) :
@@ -120,14 +122,12 @@ theorem quadraticQuantumDetectorGenerator_singleState_of_lt
       quadraticQuantumDetectorSingleState, quadraticQuantumDetectorPairState]
   | single k =>
       simp [quadraticQuantumDetectorGenerator,
-        quadraticQuantumDetectorSingleState, quadraticQuantumDetectorPairState,
-        Pi.single_apply]
+        quadraticQuantumDetectorSingleState, quadraticQuantumDetectorPairState]
   | pair p =>
       by_cases hp : p = ⟨i, j, hij⟩
       · subst p
         simp [quadraticQuantumDetectorGenerator,
-          quadraticQuantumDetectorSingleState, quadraticQuantumDetectorPairState,
-          Pi.single_apply, ne_of_lt hij]
+          quadraticQuantumDetectorSingleState, quadraticQuantumDetectorPairState]
       · have hindex :
             (QuadraticQuantumDetectorIndex.pair ⟨i, j, hij⟩ :
                 QuadraticQuantumDetectorIndex n) ≠ .pair p := by
@@ -144,7 +144,7 @@ theorem quadraticQuantumDetectorGenerator_singleState_of_lt
             cases p
             simp_all
           simp [quadraticQuantumDetectorGenerator,
-            quadraticQuantumDetectorSingleState, Pi.single_apply, hil, hupper]
+            quadraticQuantumDetectorSingleState, hil, hupper]
         · by_cases hiu : i = p.upper
           · have hlower : p.lower ≠ j := by
               intro hl
@@ -152,10 +152,11 @@ theorem quadraticQuantumDetectorGenerator_singleState_of_lt
               exact (not_lt_of_ge (le_of_lt p.isLt)) hback
             have hne : p.upper ≠ p.lower := ne_of_gt p.isLt
             simp [quadraticQuantumDetectorGenerator,
-              quadraticQuantumDetectorSingleState, Pi.single_apply, hil, hiu, hlower, hne]
+              quadraticQuantumDetectorSingleState, hiu, hlower, hne]
           · simp [quadraticQuantumDetectorGenerator,
-              quadraticQuantumDetectorSingleState, Pi.single_apply, hil, hiu]
+              quadraticQuantumDetectorSingleState, hil, hiu]
 
+omit [CharZero K] in
 /-- Applying a higher generator after a lower one records their unscaled pair state. -/
 theorem quadraticQuantumDetectorGenerator_singleState_of_gt
     (q : K) {i j : Fin n} (hij : i < j) (m : M) :
@@ -169,14 +170,13 @@ theorem quadraticQuantumDetectorGenerator_singleState_of_gt
       quadraticQuantumDetectorSingleState, quadraticQuantumDetectorPairState]
   | single k =>
       simp [quadraticQuantumDetectorGenerator,
-        quadraticQuantumDetectorSingleState, quadraticQuantumDetectorPairState,
-        Pi.single_apply, ne_of_lt hij]
+        quadraticQuantumDetectorSingleState, quadraticQuantumDetectorPairState]
   | pair p =>
       by_cases hp : p = ⟨i, j, hij⟩
       · subst p
         simp [quadraticQuantumDetectorGenerator,
           quadraticQuantumDetectorSingleState, quadraticQuantumDetectorPairState,
-          Pi.single_apply, ne_of_lt hij, (ne_of_lt hij).symm]
+          (ne_of_lt hij).symm]
       · have hindex :
             (QuadraticQuantumDetectorIndex.pair ⟨i, j, hij⟩ :
                 QuadraticQuantumDetectorIndex n) ≠ .pair p := by
@@ -192,7 +192,7 @@ theorem quadraticQuantumDetectorGenerator_singleState_of_gt
             have hback : p.upper < p.lower := by simpa [hjl, hu] using hij
             exact (not_lt_of_ge (le_of_lt p.isLt)) hback
           simp [quadraticQuantumDetectorGenerator,
-            quadraticQuantumDetectorSingleState, Pi.single_apply, hjl, hupper]
+            quadraticQuantumDetectorSingleState, hjl, hupper]
         · by_cases hju : j = p.upper
           · have hlower : p.lower ≠ i := by
               intro hl
@@ -201,10 +201,11 @@ theorem quadraticQuantumDetectorGenerator_singleState_of_gt
               simp_all
             have hne : p.upper ≠ p.lower := ne_of_gt p.isLt
             simp [quadraticQuantumDetectorGenerator,
-              quadraticQuantumDetectorSingleState, Pi.single_apply, hjl, hju, hlower, hne]
+              quadraticQuantumDetectorSingleState, hju, hlower, hne]
           · simp [quadraticQuantumDetectorGenerator,
-              quadraticQuantumDetectorSingleState, Pi.single_apply, hjl, hju]
+              quadraticQuantumDetectorSingleState, hjl, hju]
 
+omit [CharZero K] in
 /-- The product of two distinct generators depends only on the vacuum coordinate. -/
 theorem quadraticQuantumDetectorGenerator_mul_of_lt
     (q : K) {i j : Fin n} (hij : i < j) :
@@ -239,13 +240,13 @@ theorem quadraticQuantumDetectorGenerator_mul_of_lt
     funext x
     cases x with
     | root => simp [quadraticQuantumDetectorGenerator]
-    | single k => simp [quadraticQuantumDetectorGenerator, htail]
+    | single k => simp [quadraticQuantumDetectorGenerator]
     | pair p =>
-        simp [quadraticQuantumDetectorGenerator, quadraticQuantumDetectorRoot,
-          Pi.single_apply]
+        simp [quadraticQuantumDetectorGenerator, quadraticQuantumDetectorRoot]
   rw [hdouble i j, hdouble j i]
   simp
 
+omit [CharZero K] in
 /-- Every quadratic detector generator is square-zero. -/
 theorem quadraticQuantumDetectorGenerator_sq
     (q : K) (i : Fin n) :
@@ -263,14 +264,15 @@ theorem quadraticQuantumDetectorGenerator_sq
       by_cases hil : i = p.lower
       · subst i
         simp [quadraticQuantumDetectorGenerator, Module.End.mul_apply, pow_two,
-          Pi.single_apply, hne, hne.symm]
+          hne.symm]
       · by_cases hiu : i = p.upper
         · subst i
           simp [quadraticQuantumDetectorGenerator, Module.End.mul_apply, pow_two,
-            Pi.single_apply, hil, hne, hne.symm]
+            hil, hne]
         · simp [quadraticQuantumDetectorGenerator, Module.End.mul_apply, pow_two,
-            Pi.single_apply, hil, hiu, hne, hne.symm]
+            hil, hiu]
 
+omit [NeZero d] [CharZero K] in
 /-- Every generator has zero `d`th power for every `d > 1`. -/
 theorem quadraticQuantumDetectorGenerator_pow_degree
     (q : K) (i : Fin n) :
@@ -287,6 +289,7 @@ def quadraticQuantumDetectorSymbol (q : K) :
   quantumGeneratorSymbol
     (fun i : Fin n ↦ quadraticQuantumDetectorGenerator (M := M) q i)
 
+omit [NeZero d] in
 /-- Every value of the quadratic detector pencil has zero `d`th power. -/
 theorem quadraticQuantumDetectorSymbol_pow_degree_zero
     (q : K) (hq : IsPrimitiveRoot q d) (c : Fin n → K) :
@@ -299,6 +302,7 @@ theorem quadraticQuantumDetectorSymbol_pow_degree_zero
       (fun i j hij ↦ quadraticQuantumDetectorGenerator_mul_of_lt q hij)]
   simp [quadraticQuantumDetectorGenerator_pow_degree]
 
+omit [CharZero K] in
 /-- Ordered quadratic monomials send the vacuum to distinct pair states. -/
 theorem quadraticQuantumDetectorPairOperator_root
     (q : K) (m : M) (p : QuantumLawPair (Fin n)) :
@@ -310,6 +314,7 @@ theorem quadraticQuantumDetectorPairOperator_root
     quadraticQuantumDetectorGenerator_root,
     quadraticQuantumDetectorGenerator_singleState_of_gt q p.isLt]
 
+omit [CharZero K] in
 /-- For a nonzero vacuum amplitude, the quadratic monomials are linearly independent. -/
 theorem quadraticQuantumDetectorPairOperator_linearIndependent
     (q : K) (m : M) (hm : m ≠ 0) :
@@ -337,6 +342,8 @@ theorem quadraticQuantumDetectorPairOperator_linearIndependent
       rfl)
   simpa [Function.comp_def, quadraticQuantumDetectorPairOperator_root] using hsingle
 
+omit [NeZero d] in
+omit [CharZero K] in
 /-- The three-grade zero-form detector already has a faithful full exterior commutator symbol. -/
 theorem quadraticQuantumDetector_endomorphismCommutatorMap_injective
     (q : K) (hq : IsPrimitiveRoot q d) (m : M) (hm : m ≠ 0) :

@@ -113,10 +113,10 @@ noncomputable def boundaryWedgeFacet {r s : ℕ} (B : BoundaryWedgeFacetIndex r 
     Finset (PPBoundaryWedgeVertex r s) :=
   Finset.univ.filter fun v =>
     match B, v with
-    | Sum.inl u, none => True
+    | Sum.inl _u, none => True
     | Sum.inl u, some (Sum.inl i) => i ≠ u
     | Sum.inl _, some (Sum.inr _) => False
-    | Sum.inr u, none => True
+    | Sum.inr _u, none => True
     | Sum.inr u, some (Sum.inr i) => i ≠ u
     | Sum.inr _, some (Sum.inl _) => False
 

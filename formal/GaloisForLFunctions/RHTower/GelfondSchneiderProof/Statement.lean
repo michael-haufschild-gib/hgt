@@ -126,7 +126,7 @@ theorem transcendental_cpow_of_isAlgebraic_of_irrational (α β : ℂ)
     simp only [Nat.cast_le]
     exact n_le_r h7 q hq0 h2mq
 
-  apply absurd (use5 h7 q hq0 u t h2mq) ?_
+  apply absurd (use5 h7 q hq0 h2mq) ?_
   · simp only [Real.rpow_natCast, not_lt]
     rw [← Real.rpow_le_rpow_iff (z:= ( ((↑(h7.r q hq0 h2mq) - 3 * ↑h7.h) / 2) : ℝ)⁻¹)]
     rw [← Real.rpow_mul, mul_inv_cancel₀]

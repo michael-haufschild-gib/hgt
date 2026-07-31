@@ -34,6 +34,7 @@ variable {K : Type u} [Field K] [CharZero K]
   {ι : Type*} [Fintype ι] [LinearOrder ι]
   {d : ℕ} [NeZero d] [Fact (1 < d)]
 
+omit [CharZero K] [Fact (1 < d)] in
 /-- Iterating the additive character on a coordinate is multiplication by the natural
 scalar. -/
 theorem finiteQuantumCharacter_val_pow
@@ -53,6 +54,7 @@ theorem finiteQuantumCharacter_ne_zero
   rw [finiteQuantumCharacter, AddChar.zmodChar_apply]
   exact pow_ne_zero _ hq0
 
+omit [NeZero d] [Fact (1 < d)] in
 /-- Shifting coordinate `i` does not change the tail charge above `j ≥ i`. -/
 theorem finiteQuantumTailCharge_shiftN_of_le
     {i j : ι} (hij : i ≤ j) (n : ℕ) (a : FiniteQuantumState ι d) :
@@ -65,6 +67,7 @@ theorem finiteQuantumTailCharge_shiftN_of_le
   have hki : k ≠ i := ne_of_gt (lt_of_le_of_lt hij hjk)
   simp [finiteQuantumShiftN, hki]
 
+omit [Fintype ι] [NeZero d] [Fact (1 < d)] in
 /-- An `n`-fold coordinate shift is subtraction of a single vector. -/
 theorem finiteQuantumShiftN_eq_sub_single
     (n : ℕ) (i : ι) (a : FiniteQuantumState ι d) :
@@ -75,6 +78,7 @@ theorem finiteQuantumShiftN_eq_sub_single
     simp [finiteQuantumShiftN, Pi.single_eq_same]
   · simp [finiteQuantumShiftN, hki, Pi.single_eq_of_ne]
 
+omit [Fintype ι] [NeZero d] [Fact (1 < d)] in
 /-- A single coordinate shift is subtraction of a unit vector. -/
 theorem finiteQuantumShift_eq_sub_single
     (i : ι) (a : FiniteQuantumState ι d) :
@@ -85,6 +89,7 @@ theorem finiteQuantumShift_eq_sub_single
     simp [finiteQuantumShift, Pi.single_eq_same]
   · simp [finiteQuantumShift, hki, Pi.single_eq_of_ne]
 
+omit [NeZero d] [Fact (1 < d)] in
 /-- The tail charge is additive in the state. -/
 theorem finiteQuantumTailCharge_sub
     (i : ι) (a b : FiniteQuantumState ι d) :
@@ -101,6 +106,8 @@ def finiteQuantumMonomial
   ((Finset.univ.sort (· ≤ ·)).map fun i ↦
     (finiteQuantumGenerator d q hq i) ^ (a i).val).prod
 
+omit [CharZero K] in
+omit [Fact (1 < d)] in
 /-- **Crux: ordered products act diagonally-phase times translation.**  Along any weakly
 increasing list of generators, no translation disturbs a later tail charge, so the phase
 factors stay coordinate-separated. -/
@@ -147,12 +154,15 @@ theorem finiteQuantumMonomial_sort_sum
     ← Finset.sort_eq Finset.univ (· ≤ ·)]
   rfl
 
+omit [NeZero d] [Fact (1 < d)] in
 /-- The single vectors decompose every state. -/
 theorem finiteQuantumState_sum_single (a : ι → ZMod d) :
     (∑ i, Pi.single i (a i)) = a := by
   funext j
   simp [Pi.single_apply]
 
+omit [CharZero K] in
+omit [Fact (1 < d)] in
 /-- **Normal-form action formula.**  The ordered monomial `g^a` is a nonzero
 coordinate-separated phase times translation by `a`. -/
 theorem finiteQuantumMonomial_apply
@@ -167,6 +177,8 @@ theorem finiteQuantumMonomial_apply
     finiteQuantumMonomial_sort_prod, finiteQuantumMonomial_sort_sum,
     finiteQuantumState_sum_single]
 
+omit [CharZero K] in
+omit [Fact (1 < d)] in
 /-- The ordered monomial at exponent zero is the identity. -/
 theorem finiteQuantumMonomial_zero (q : K) (hq : q ^ d = 1) :
     finiteQuantumMonomial q hq (0 : ι → ZMod d) = 1 := by
@@ -176,6 +188,8 @@ theorem finiteQuantumMonomial_zero (q : K) (hq : q ^ d = 1) :
   rw [finiteQuantumMonomial_apply]
   simp
 
+omit [CharZero K] in
+omit [Fact (1 < d)] in
 /-- The ordered monomial at a unit exponent vector is the corresponding generator. -/
 theorem finiteQuantumMonomial_single (q : K) (hq : q ^ d = 1) (i : ι) :
     finiteQuantumMonomial q hq (Pi.single i 1) = finiteQuantumGenerator d q hq i := by
@@ -198,6 +212,8 @@ theorem finiteQuantumMonomial_single (q : K) (hq : q ^ d = 1) (i : ι) :
   rw [hphase, ← finiteQuantumShift_eq_sub_single]
   simp only [finiteQuantumGenerator, LinearMap.coe_mk, AddHom.coe_mk]
 
+omit [CharZero K] in
+omit [Fact (1 < d)] in
 /-- **Twisted normal-form product law.**  Ordered monomials multiply by the 2-cocycle
 `g^a g^b = χ(-⟨b,a⟩) • g^(a+b)` with `⟨b,a⟩ = ∑_i b_i · (tail charge of a above i)`. -/
 theorem finiteQuantumMonomial_mul (q : K) (hq : q ^ d = 1) (a b : ι → ZMod d) :

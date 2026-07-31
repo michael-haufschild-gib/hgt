@@ -87,7 +87,7 @@ noncomputable def twoControlIndependentBranch (z : Fin 2 → ℂ) : ℂ :=
 
 theorem twoControlIndependentBranch_analyticAt :
     AnalyticAt ℂ twoControlIndependentBranch 0 := by
-  exact twoControlSharpMatrixBranch_spec.1.comp_of_eq'
+  exact twoControlSharpMatrixBranch_spec.1.fun_comp_of_eq
     twoControlIndependentMatrix_analyticAt
     twoControlIndependentMatrix_zero
 

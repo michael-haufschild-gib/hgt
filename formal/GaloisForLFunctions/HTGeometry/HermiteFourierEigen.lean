@@ -156,7 +156,7 @@ theorem creationCLM_eq (f : 𝓢(ℝ, ℂ)) :
 @[simp] theorem creationCLM_apply (f : 𝓢(ℝ, ℂ)) (x : ℝ) :
     creationCLM f x = 2 * (π : ℂ) * (x : ℂ) * f x - deriv (f : ℝ → ℂ) x := by
   rw [creationCLM_eq]
-  simp only [SchwartzMap.sub_apply, _root_.smul_apply, mulXCLM_apply, derivSCLM_apply,
+  simp only [sub_apply, _root_.smul_apply, mulXCLM_apply, derivSCLM_apply,
     smul_eq_mul]
   ring
 

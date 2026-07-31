@@ -40,7 +40,7 @@ theorem rayPeriodFactor_ne_zero (lam : ℝ) (hlam : 0 < lam) :
   exact one_ne_zero hcoe
 
 theorem translationChar_rayPeriodFactor_eq_zero
-    (lam : ℝ) (hlam : 0 < lam) (m : ℕ) (hm : 1 ≤ m) :
+    (lam : ℝ) (hlam : 0 < lam) (m : ℕ) (_hm : 1 ≤ m) :
     translationChar ((m : ℝ) * lam) (rayPeriodFactor lam) = 0 := by
   have hlamC : (lam : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hlam.ne'
   rw [rayPeriodFactor, map_sub, translationChar_single, map_one]

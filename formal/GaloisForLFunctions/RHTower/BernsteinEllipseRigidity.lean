@@ -127,7 +127,7 @@ lemma bernsteinEllipsePhase_eq_of_norm_affine_eq_amplitude
       rw [hmax, norm_mul, hw, mul_one])
   have hrel :
       (‖u‖ : ℂ) * (1 - u) = (‖1 - u‖ : ℂ) * (u * w) := by
-    simpa only [norm_mul, hw, mul_one, smul_eq_mul] using hparallel
+    simpa only [norm_mul, hw, mul_one, Complex.real_smul] using hparallel
   have hcanonical := bernsteinEllipsePhase_mul_relation huim
   have hscalar : (‖1 - u‖ : ℂ) ≠ 0 :=
     Complex.ofReal_ne_zero.mpr (norm_ne_zero_iff.mpr hsub)
@@ -216,7 +216,8 @@ theorem eq_or_eq_one_sub_conj_of_bernsteinEllipsePhase_eq_of_amplitude_eq
     have huStar :
         (a : ℂ) * (1 - star u) = (b : ℂ) * (star u * star w) := by
       have h := congrArg (starRingEnd ℂ) huRel
-      simpa only [map_mul, map_sub, map_one, Complex.conj_ofReal] using h
+      simp only [map_mul, map_sub, map_one, Complex.conj_ofReal] at h
+      exact h
     have haw : ((a : ℂ) * w) * (1 - star u) = (b : ℂ) * star u := by
       calc
         ((a : ℂ) * w) * (1 - star u) =

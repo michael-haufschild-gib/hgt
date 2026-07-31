@@ -820,7 +820,7 @@ lemma tendsto_rpow_mul_exp_nat_mul_sub_rpow_zero
     have htpos : 0 < t := by linarith
     have hpowSplit : t ^ γ = t ^ (γ - 1) * t := by
       calc
-        t ^ γ = t ^ ((γ - 1) + 1) := by congr 1 <;> ring
+        t ^ γ = t ^ ((γ - 1) + 1) := by congr 1 ; ring
         _ = t ^ (γ - 1) * t ^ (1 : ℝ) := Real.rpow_add htpos _ _
         _ = t ^ (γ - 1) * t := by rw [Real.rpow_one]
     have hexponent : (m : ℝ) * t - t ^ γ ≤ -(1 / 2) * t ^ γ := by

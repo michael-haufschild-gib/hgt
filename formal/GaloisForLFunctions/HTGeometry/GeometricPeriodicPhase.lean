@@ -111,7 +111,7 @@ theorem arithmeticProgressionPolynomial_ne_zero
   rcases Polynomial.comp_eq_zero_iff.mp hzero with h | h
   · exact hW h
   · have hcoeff := congrArg (fun Q : ℂ[X] => Q.coeff 1) h.2
-    simp [arithmeticProgressionPolynomial] at hcoeff
+    simp at hcoeff
     exact_mod_cast (show p ≠ 0 by omega) hcoeff
 
 /-- Along a late period progression, the intrinsic phase of every translated bounded atom is the

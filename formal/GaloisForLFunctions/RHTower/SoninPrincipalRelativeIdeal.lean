@@ -712,7 +712,6 @@ theorem finitePrimeSoninQuadraticCornerCombination_eq_finiteEvenDilationGramComb
     finitePrimeSoninQuadraticCornerCombination a p hp A =
       finiteEvenDilationGramCombination a (fun i => (p i : ℝ))
         (fun i => by
-          change (1 : ℝ) < (p i : ℝ)
           exact_mod_cast (show 1 < p i from (hp i).one_lt)) A := by
   classical
   unfold finitePrimeSoninQuadraticCornerCombination

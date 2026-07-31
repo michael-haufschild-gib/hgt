@@ -190,7 +190,7 @@ theorem tendsto_scaled_completedOddLogDerivPolynomial_sum
           symm
           rw [show 2 * k + 1 = (2 * d + 1) + 2 * (k - d) by omega, pow_add]
           rw [inv_pow]
-          field_simp <;> ring
+          field_simp ; ring
         have ht := hscaled.congr' hevent
         simpa [A, heq] using ht
   have hsum := tendsto_finsetSum (Finset.range (q.natDegree + 1)) hterms

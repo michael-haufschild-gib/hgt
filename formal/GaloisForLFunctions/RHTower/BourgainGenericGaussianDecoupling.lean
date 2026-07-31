@@ -24,7 +24,7 @@ theorem integral_bourgainGenericExactPaired_gaussian_subpower
     ∃ C : ℝ, 0 < C ∧
       ∀ (H : ℕ) (hH : 0 < H)
         (φ₃ φ₄ : ℝ → ℝ) {D a b ρ : ℝ}
-        (hD : 0 < D) (hρ : 0 ≤ ρ)
+        (hD : 0 < D) (_hρ : 0 ≤ ρ)
         (hunit :
           IsUnit (bourgainGenericPhaseCoordinateMatrix φ₃ φ₄ a b)),
       let hscale : (H : ℝ) / D ≠ 0 :=

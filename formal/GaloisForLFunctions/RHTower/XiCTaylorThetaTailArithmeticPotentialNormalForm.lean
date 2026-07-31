@@ -162,7 +162,7 @@ theorem criticalNormalized_densityPhaseTailDerivative_eq_endpoint_sub_sq_potenti
     refine (h1.sub h0).congr (Eventually.of_forall fun u => ?_)
     dsimp [g, f'', thetaCuspTailSecondDensityAtom]
     push_cast
-    simp only [pow_one, Pi.mul_apply]
+    simp only [pow_one]
     ring
   have hg'f' : IntegrableOn (g' * f') (Ioi a) := by
     have h0i := (hmoment 1 0).const_mul I
@@ -171,7 +171,7 @@ theorem criticalNormalized_densityPhaseTailDerivative_eq_endpoint_sub_sq_potenti
     refine ((h0i.sub h1z).add h0az).congr (Eventually.of_forall fun u => ?_)
     dsimp [g', f']
     push_cast
-    simp only [pow_one, Pi.mul_apply]
+    simp only [pow_one]
     ring
   have hg''f : IntegrableOn (g'' * f) (Ioi a) := by
     have h0z := (hmoment 0 0).const_mul (-2 * z)
@@ -180,7 +180,7 @@ theorem criticalNormalized_densityPhaseTailDerivative_eq_endpoint_sub_sq_potenti
     refine ((h0z.add h1z).add h0az).congr (Eventually.of_forall fun u => ?_)
     dsimp [g'', f]
     push_cast
-    simp only [pow_one, Pi.mul_apply]
+    simp only [pow_one]
     ring
   have hzero1 : Tendsto (g * f') (nhdsWithin a (Ioi a)) (nhds 0) := by
     have h := (hg a).continuousAt.mul (hf' a).continuousAt
@@ -214,7 +214,7 @@ theorem criticalNormalized_densityPhaseTailDerivative_eq_endpoint_sub_sq_potenti
     · funext u
       dsimp [g, f']
       push_cast
-      simp only [pow_one, Pi.mul_apply]
+      simp only [pow_one]
       ring
     · simp
   have hinfty2 : Tendsto (g' * f) atTop (nhds 0) := by
@@ -225,7 +225,7 @@ theorem criticalNormalized_densityPhaseTailDerivative_eq_endpoint_sub_sq_potenti
     · funext u
       dsimp [g', f]
       push_cast
-      simp only [pow_one, Pi.mul_apply]
+      simp only [pow_one]
       ring
     · simp
   have hibp := integral_Ioi_secondDerivative_mul_eq_boundary_add
@@ -292,7 +292,7 @@ theorem criticalNormalized_densityPhaseTailDerivative_eq_endpoint_sub_sq_potenti
     thetaCuspTailPotentialAtomNormalizedPhaseTailDerivative
     thetaCuspTailPotentialAtomOnePhaseTail
   dsimp only [f]
-  simp only [sub_zero, zero_sub, neg_neg, zero_add]
+  simp only [sub_zero, zero_sub, neg_neg]
   have hendpoint :
       (Real.exp (-a / 2) : ℂ) * spectralTranslationPhase (-a) z *
           (I * spectralTranslationPhase a z *
@@ -309,7 +309,6 @@ theorem criticalNormalized_densityPhaseTailDerivative_eq_endpoint_sub_sq_potenti
           ((4 * thetaCuspPolynomialAtom
             (thetaCuspTailDerivativePolynomial 0) 1 a : ℝ) : ℂ)) by ring,
       hphase]
-    norm_num only [one_mul]
     rw [show (Real.exp (-a / 2) : ℂ) *
         ((4 * thetaCuspPolynomialAtom
           (thetaCuspTailDerivativePolynomial 0) 1 a : ℝ) : ℂ) =

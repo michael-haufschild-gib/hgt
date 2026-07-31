@@ -53,7 +53,7 @@ theorem hasDerivAt_thetaCuspCenterMixedDensitySecondJet
   have h02 := hasDerivAt_thetaCuspCenterMixedDerivativeProductIntegral ha0 ha 0 2 t
   unfold thetaCuspCenterMixedDensitySecondJet thetaCuspCenterMixedDensityThirdJet
   convert (h20.sub (h11.const_mul 2)).add h02 using 1
-  all_goals ring
+  all_goals first | rfl | ring
 
 theorem hasDerivAt_thetaCuspCenterMixedDensityThirdJet
     {a : ℝ} (ha0 : 0 ≤ a) (ha : a < 1 / 2) (t : ℝ) :
@@ -65,7 +65,7 @@ theorem hasDerivAt_thetaCuspCenterMixedDensityThirdJet
   have h03 := hasDerivAt_thetaCuspCenterMixedDerivativeProductIntegral ha0 ha 0 3 t
   unfold thetaCuspCenterMixedDensityThirdJet thetaCuspCenterMixedDensityFourthJet
   convert (((h30.sub (h21.const_mul 3)).add (h12.const_mul 3)).sub h03) using 1
-  all_goals ring
+  all_goals first | rfl | ring
 
 theorem hasDerivAt_thetaCuspCenterMixedDensityFourthJet
     {a : ℝ} (ha0 : 0 ≤ a) (ha : a < 1 / 2) (t : ℝ) :
@@ -79,7 +79,7 @@ theorem hasDerivAt_thetaCuspCenterMixedDensityFourthJet
   unfold thetaCuspCenterMixedDensityFourthJet thetaCuspCenterMixedDensityFifthJet
   convert ((((h40.sub (h31.const_mul 4)).add (h22.const_mul 6)).sub
     (h13.const_mul 4)).add h04) using 1
-  all_goals ring
+  all_goals first | rfl | ring
 
 theorem continuous_thetaCuspCenterMixedDensityFifthJet
     {a : ℝ} (ha0 : 0 ≤ a) (ha : a < 1 / 2) :

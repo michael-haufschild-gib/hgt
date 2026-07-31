@@ -121,7 +121,7 @@ theorem reindex_splitPacketAffineFamily_eq_kroneckerSum
         coupling) = _
   rw [affineMatrixFamily, map_add, map_sum]
   dsimp only [e, S]
-  simp_rw [map_smul, Matrix.reindexAlgEquiv_apply,
+  simp_rw [map_smul, Matrix.coe_reindexAlgEquiv,
     L.reindex_splitPacketGlobalInteraction left right hdisj]
   rw [reindex_diagonal_onsiteProductEnergy_eq_kroneckerSum]
   exact affineMatrixFamily_splitAffineInteraction_eq_kroneckerSum

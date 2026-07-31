@@ -31,21 +31,33 @@ theorem hasDerivAt_thetaCuspTailSecondDensityEvenPhase (z : ℂ) (x : ℝ) :
     HasDerivAt (thetaCuspTailSecondDensityEvenPhase z) (thetaCuspTailSecondDensityEvenPhaseDerivative z x) x := by
   have hp := hasDerivAt_spectralTranslationPhase_source z x
   have hn := hasDerivAt_spectralTranslationPhase_source (-z) x
-  convert hp.add hn using 1 <;>
-    simp [thetaCuspTailSecondDensityEvenPhase, thetaCuspTailSecondDensityEvenPhaseDerivative] <;> ring
+  have hval : thetaCuspTailSecondDensityEvenPhaseDerivative z x =
+      I * z * spectralTranslationPhase x z +
+        I * -z * spectralTranslationPhase x (-z) := by
+    simp only [thetaCuspTailSecondDensityEvenPhaseDerivative]
+    ring
+  rw [hval]
+  exact hp.add hn
 
 theorem hasDerivAt_thetaCuspTailSecondDensityEvenPhaseDerivative (z : ℂ) (x : ℝ) :
     HasDerivAt (thetaCuspTailSecondDensityEvenPhaseDerivative z)
       (thetaCuspTailSecondDensityEvenPhaseSecondDerivative z x) x := by
   have hp := hasDerivAt_spectralTranslationPhase_sourceDerivative z x
   have hn := hasDerivAt_spectralTranslationPhase_sourceDerivative (-z) x
-  have h := hp.add hn
-  convert h using 1
-  · funext u
-    simp [thetaCuspTailSecondDensityEvenPhaseDerivative]
+  have hfun : thetaCuspTailSecondDensityEvenPhaseDerivative z =
+      (fun u : ℝ => I * z * spectralTranslationPhase u z) +
+        fun u : ℝ => I * -z * spectralTranslationPhase u (-z) := by
+    funext u
+    simp only [thetaCuspTailSecondDensityEvenPhaseDerivative, Pi.add_apply]
     ring
-  · simp [thetaCuspTailSecondDensityEvenPhase, thetaCuspTailSecondDensityEvenPhaseSecondDerivative]
+  have hval : thetaCuspTailSecondDensityEvenPhaseSecondDerivative z x =
+      -z ^ 2 * spectralTranslationPhase x z +
+        -(-z) ^ 2 * spectralTranslationPhase x (-z) := by
+    simp only [thetaCuspTailSecondDensityEvenPhaseSecondDerivative,
+      thetaCuspTailSecondDensityEvenPhase]
     ring
+  rw [hfun, hval]
+  exact hp.add hn
 
 theorem integrableOn_evenPhase_mul_thetaCuspTailDerivative
     (m : ℕ) {z : ℂ} (hz0 : 0 ≤ z.im) (hz1 : z.im < 1) :
@@ -232,8 +244,8 @@ theorem integral_tail_second_mul_evenPhase_eq_boundary_sub_sq_tail
     unfold thetaCuspTailSecondDensityEvenPhase
     dsimp
     ring
-  have hgf'' : IntegrableOn (g * f'') (Ioi 0) := by
-    simpa [g, f''] using integrableOn_evenPhase_mul_thetaCuspTailDerivative 2 hz0 hz1
+  have hgf'' : IntegrableOn (g * f'') (Ioi 0) :=
+    integrableOn_evenPhase_mul_thetaCuspTailDerivative 2 hz0 hz1
   have hg'f' : IntegrableOn (g' * f') (Ioi 0) := by
     have h := (hoddInt 1).const_mul (I * z)
     refine h.congr ?_
@@ -282,8 +294,8 @@ theorem integral_tail_second_mul_evenPhase_eq_boundary_sub_sq_tail
       (nhds (g' 0 * f 0)) := by
     exact ((hg' 0).continuousAt.mul (hf 0).continuousAt).tendsto.mono_left
       inf_le_left
-  have hinfty1 : Tendsto (g * f') atTop (nhds 0) := by
-    simpa [g, f'] using tendsto_evenPhase_mul_thetaCuspTailDerivative 1 hz0 hz1
+  have hinfty1 : Tendsto (g * f') atTop (nhds 0) :=
+    tendsto_evenPhase_mul_thetaCuspTailDerivative 1 hz0 hz1
   have hinfty2 : Tendsto (g' * f) atTop (nhds 0) := by
     have h := (hoddTend 0).const_mul (I * z)
     have h0 : Tendsto (fun x : ℝ => (I * z) *
@@ -326,7 +338,7 @@ theorem integral_tail_second_mul_evenPhase_eq_boundary_sub_sq_tail
         funext x
         ring] at h
   norm_num at h
-  convert h using 1 <;> ring
+  convert h using 1; ring
 
 theorem integral_fullSource_mul_evenPhase_eq_XiC
     {z : ℂ} (hz : |z.im| < 1) :
@@ -344,7 +356,6 @@ theorem integral_fullSource_mul_evenPhase_eq_XiC
   filter_upwards with x
   unfold thetaCuspFourierLaplaceIntegrand thetaCuspTailSecondDensityEvenPhase spectralTranslationPhase
   rw [thetaCuspFullSource_neg]
-  congr 1
   push_cast
   ring
 
@@ -475,7 +486,7 @@ theorem integrableOn_thetaCuspTailSecondDensity_mul_phase_of_neg_one_lt_im
   let c := (1 : ℝ) + z.im
   have hc : 0 < c := by dsimp only [c]; linarith
   have hmajor : IntegrableOn (fun x : ℝ => C * Real.exp (-c * x)) (Ioi 0) := by
-    simpa only [pow_zero, one_mul] using
+    simpa only [IntegrableOn, pow_zero, one_mul] using
       (integrableOn_pow_mul_exp_neg_real 0 hc).const_mul C
   change Integrable (fun x : ℝ =>
     (thetaCuspTailSecondDensity x : ℂ) * spectralTranslationPhase x z)
@@ -640,15 +651,16 @@ theorem hasDerivAt_thetaCuspTailSecondDensityPhaseValue
     intro z _hz
     dsimp only [F, F']
     convert (hasDerivAt_spectralTranslationPhase x z).const_mul
-      (thetaCuspTailSecondDensity x : ℂ) using 1 <;> ring
+      (thetaCuspTailSecondDensity x : ℂ) using 1
   have hresult := hasDerivAt_integral_of_dominated_loc_of_deriv_le
     (F := F) (F' := F') (x₀ := z₀) (s := Metric.ball z₀ ε) (bound := bound)
     (Metric.ball_mem_nhds z₀ hε)
     (Eventually.of_forall hFmeas)
     (integrableOn_thetaCuspTailSecondDensity_mul_phase_of_neg_one_lt_im hz₀)
     hF'meas hdom hbound hdiff
-  simpa only [thetaCuspTailSecondDensityPhaseValue,
-    thetaCuspTailSecondDensityPhaseDerivative, F, F'] using hresult.2
+  have hkey : HasDerivAt (fun z : ℂ => ∫ x : ℝ in Ioi 0, F z x)
+      (∫ x : ℝ in Ioi 0, F' z₀ x) z₀ := hresult.2
+  exact hkey
 
 theorem thetaCuspTailSecondDensityPhaseValue_twoSided_derivative_crossed
     {z : ℂ} (hz : |z.im| < 1) :
@@ -664,25 +676,37 @@ theorem thetaCuspTailSecondDensityPhaseValue_twoSided_derivative_crossed
   have hFneg := hasDerivAt_thetaCuspTailSecondDensityPhaseValue (z₀ := -z) (by
     simp only [neg_im]
     exact neg_lt_neg hzstrip.2)
-  have hneg : HasDerivAt (fun w : ℂ => -w) (-1) z := by
-    convert (hasDerivAt_id z).neg using 1 <;> ring
+  have hneg : HasDerivAt (fun w : ℂ => -w) (-1) z :=
+    (hasDerivAt_id z).neg
   have hFnegComp := hFneg.comp z hneg
   have hsum : HasDerivAt (fun w : ℂ =>
       thetaCuspTailSecondDensityPhaseValue w +
         thetaCuspTailSecondDensityPhaseValue (-w))
       (thetaCuspTailSecondDensityPhaseDerivative z -
         thetaCuspTailSecondDensityPhaseDerivative (-z)) z := by
-    convert hFz.add hFnegComp using 1 <;> ring
+    have hval : thetaCuspTailSecondDensityPhaseDerivative z -
+        thetaCuspTailSecondDensityPhaseDerivative (-z) =
+        thetaCuspTailSecondDensityPhaseDerivative z +
+          thetaCuspTailSecondDensityPhaseDerivative (-z) * -1 := by
+      ring
+    rw [hval]
+    exact hFz.add hFnegComp
   have hp : HasDerivAt (fun w : ℂ => w ^ 2 + 1 / 4)
       (2 * z) z := by
-    convert ((hasDerivAt_id z).pow 2).add_const (1 / 4 : ℂ) using 1 <;>
-      simp only [id_eq] <;> ring
+    have hval : (2 : ℂ) * z = ↑(2 : ℕ) * z ^ (2 - 1) := by
+      push_cast
+      ring
+    rw [hval]
+    exact (hasDerivAt_pow 2 z).add_const (1 / 4 : ℂ)
   have hleft := hp.mul hsum
   have hXi : HasDerivAt XiC (deriv XiC z) z :=
     (XiC_analytic z (Set.mem_univ z)).differentiableAt.hasDerivAt
   have hsq : HasDerivAt (fun w : ℂ => 4 * w ^ 2) (8 * z) z := by
-    convert ((hasDerivAt_id z).pow 2).const_mul (4 : ℂ) using 1 <;>
-      simp only [id_eq] <;> ring
+    have hval : (8 : ℂ) * z = 4 * (↑(2 : ℕ) * z ^ (2 - 1)) := by
+      push_cast
+      ring
+    rw [hval]
+    exact (hasDerivAt_pow 2 z).const_mul (4 : ℂ)
   have hright := (hasDerivAt_const z (1 / 2 : ℂ)).add (hsq.mul hXi)
   have hmem : z ∈ thetaCuspFourierLaplaceStrip := by
     rw [thetaCuspFourierLaplaceStrip]
@@ -697,7 +721,7 @@ theorem thetaCuspTailSecondDensityPhaseValue_twoSided_derivative_crossed
     rw [thetaCuspFourierLaplaceStrip] at hw
     exact abs_lt.mpr hw
   have huniq := (hleft.congr_of_eventuallyEq heq.symm).unique hright
-  convert huniq using 1 <;> ring
+  convert huniq using 1; ring
 
 
 end

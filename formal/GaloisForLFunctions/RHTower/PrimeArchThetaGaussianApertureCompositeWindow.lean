@@ -228,7 +228,7 @@ theorem hasDerivAt_thetaCuspGaussianApertureMomentPrefix
   have h := intervalIntegral.integral_hasDerivAt_right
     (hfcont.intervalIntegrable 0 t)
     (hfcont.stronglyMeasurableAtFilter volume (nhds t)) hfcont.continuousAt
-  simpa only [thetaCuspGaussianApertureMomentPrefix, f] using h
+  exact h
 
 /-- Exact derivative of one positive crossing window. -/
 theorem hasDerivAt_thetaCuspGaussianApertureCrossingWindow
@@ -241,12 +241,26 @@ theorem hasDerivAt_thetaCuspGaussianApertureCrossingWindow
     (thetaCuspGaussianApertureHalfMoment lambda (m + 1))
   have h₁ := (hasDerivAt_thetaCuspGaussianApertureMomentPrefix lambda (m + 1) t).const_mul
     (thetaCuspGaussianApertureHalfMoment lambda m)
-  convert h₀.sub h₁ using 1
-  · funext y
-    simp only [thetaCuspGaussianApertureCrossingWindow, Pi.sub_apply]
+  have hfun : (fun y : ℝ =>
+      thetaCuspGaussianApertureHalfMoment lambda (m + 1) *
+          thetaCuspGaussianApertureMomentPrefix lambda m y -
+        thetaCuspGaussianApertureHalfMoment lambda m *
+          thetaCuspGaussianApertureMomentPrefix lambda (m + 1) y) =
+      thetaCuspGaussianApertureCrossingWindow lambda m := by
+    funext y
+    simp only [thetaCuspGaussianApertureCrossingWindow]
     ring
-  · rw [show 2 * (m + 1) = 2 * m + 2 by omega, pow_add]
+  have hval : thetaCuspGaussianApertureHalfMoment lambda (m + 1) *
+        (t ^ (2 * m) * thetaCuspGaussianApertureDensity lambda t) -
+      thetaCuspGaussianApertureHalfMoment lambda m *
+        (t ^ (2 * (m + 1)) * thetaCuspGaussianApertureDensity lambda t) =
+      thetaCuspGaussianApertureDensity lambda t * t ^ (2 * m) *
+        (thetaCuspGaussianApertureHalfMoment lambda (m + 1) -
+          t ^ 2 * thetaCuspGaussianApertureHalfMoment lambda m) := by
+    rw [show 2 * (m + 1) = 2 * m + 2 by omega, pow_add]
     ring
+  rw [← hfun, ← hval]
+  exact h₀.sub h₁
 
 /-- **Exact derivative collapse.**  The forced two-window composite has a quadratic height
 derivative; no separate estimate on either component remains. -/
@@ -259,22 +273,31 @@ theorem hasDerivAt_thetaCuspGaussianApertureCompositeWindow
     (thetaCuspGaussianApertureMoment lambda 2)
   have h₂ := (hasDerivAt_thetaCuspGaussianApertureCrossingWindow lambda 2 t).const_mul
     (thetaCuspGaussianApertureMoment lambda 0 / 5)
-  convert h₁.sub h₂ using 1
-  rw [thetaCuspGaussianApertureMoment_eq_two_mul_halfMoment,
-    thetaCuspGaussianApertureMoment_eq_two_mul_halfMoment]
-  simp only [thetaCuspGaussianApertureWindowDerivativePolynomial,
-    Nat.reduceMul, Nat.reduceAdd, pow_two]
-  ring
+  have hval : thetaCuspGaussianApertureMoment lambda 2 *
+        (thetaCuspGaussianApertureDensity lambda t * t ^ (2 * 1) *
+          (thetaCuspGaussianApertureHalfMoment lambda (1 + 1) -
+            t ^ 2 * thetaCuspGaussianApertureHalfMoment lambda 1)) -
+      thetaCuspGaussianApertureMoment lambda 0 / 5 *
+        (thetaCuspGaussianApertureDensity lambda t * t ^ (2 * 2) *
+          (thetaCuspGaussianApertureHalfMoment lambda (2 + 1) -
+            t ^ 2 * thetaCuspGaussianApertureHalfMoment lambda 2)) =
+      2 * thetaCuspGaussianApertureDensity lambda t * t ^ 2 *
+        thetaCuspGaussianApertureWindowDerivativePolynomial lambda (t ^ 2) := by
+    rw [thetaCuspGaussianApertureMoment_eq_two_mul_halfMoment,
+      thetaCuspGaussianApertureMoment_eq_two_mul_halfMoment]
+    simp only [thetaCuspGaussianApertureWindowDerivativePolynomial,
+      Nat.reduceMul, Nat.reduceAdd, pow_two]
+    ring
+  rw [← hval]
+  exact h₁.sub h₂
 
 /-- Every moment prefix converges to its full half moment as the height tends to infinity. -/
 theorem tendsto_thetaCuspGaussianApertureMomentPrefix_atTop
     {lambda : ℝ} (hlambda : lambda ≤ 0) (j : ℕ) :
     Tendsto (thetaCuspGaussianApertureMomentPrefix lambda j) atTop
       (nhds (thetaCuspGaussianApertureHalfMoment lambda j)) := by
-  simpa only [thetaCuspGaussianApertureMomentPrefix,
-    thetaCuspGaussianApertureHalfMoment] using
-      (MeasureTheory.intervalIntegral_tendsto_integral_Ioi 0
-        (integrableOn_thetaCuspGaussianApertureMomentIntegrand hlambda j) tendsto_id)
+  exact MeasureTheory.intervalIntegral_tendsto_integral_Ioi 0
+    (integrableOn_thetaCuspGaussianApertureMomentIntegrand hlambda j) tendsto_id
 
 /-- Each crossing window vanishes at the far endpoint. -/
 theorem tendsto_thetaCuspGaussianApertureCrossingWindow_atTop
@@ -290,11 +313,12 @@ theorem tendsto_thetaCuspGaussianApertureCrossingWindow_atTop
     hcNext
   have h₁ := (tendsto_thetaCuspGaussianApertureMomentPrefix_atTop hlambda (m + 1)).mul
     hc
-  convert h₀.sub h₁ using 1
+  have h := h₀.sub h₁
   rw [show thetaCuspGaussianApertureHalfMoment lambda m *
         thetaCuspGaussianApertureHalfMoment lambda (m + 1) -
       thetaCuspGaussianApertureHalfMoment lambda (m + 1) *
-        thetaCuspGaussianApertureHalfMoment lambda m = 0 by ring]
+        thetaCuspGaussianApertureHalfMoment lambda m = 0 by ring] at h
+  exact h
 
 /-- The forced composite also vanishes at the far endpoint. -/
 theorem tendsto_thetaCuspGaussianApertureCompositeWindow_atTop
@@ -308,7 +332,10 @@ theorem tendsto_thetaCuspGaussianApertureCompositeWindow_atTop
     (tendsto_thetaCuspGaussianApertureCrossingWindow_atTop hlambda 1)
   have h₂ := hc₀.mul
     (tendsto_thetaCuspGaussianApertureCrossingWindow_atTop hlambda 2)
-  simpa only [thetaCuspGaussianApertureCompositeWindow, mul_zero, sub_self] using h₁.sub h₂
+  have h := h₁.sub h₂
+  rw [show thetaCuspGaussianApertureMoment lambda 2 * 0 -
+      thetaCuspGaussianApertureMoment lambda 0 / 5 * 0 = 0 by ring] at h
+  exact h
 
 /-- The forced composite starts at zero. -/
 theorem thetaCuspGaussianApertureCompositeWindow_zero (lambda : ℝ) :

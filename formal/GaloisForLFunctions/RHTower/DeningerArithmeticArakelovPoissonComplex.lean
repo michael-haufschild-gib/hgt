@@ -167,7 +167,7 @@ theorem deningerArakelovPoisson_thetaH2_eq_id
 The concrete Arakelov endpoint and a source alternating pairing obey
 the weight-one cup law.
 -/
-def deningerArakelovPoissonWeightOneCup
+theorem deningerArakelovPoissonWeightOneCup
     (Z : Hcap →ₗ[R] Hminus)
     (weight : Places → R)
     (psi : Hminus →ₗ[R] Hminus →ₗ[R] R)

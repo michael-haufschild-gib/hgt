@@ -43,7 +43,7 @@ theorem exists_arc_avoiding_finite {F : Set ℂ} (hF : F.Finite) :
       ∀ ζ, ‖ζ‖ = 1 → ζ ∈ Metric.ball ζ₀ r → ζ ∉ F := by
   rcases F.eq_empty_or_nonempty with rfl | hne
   · exact ⟨1, 1, by simp, one_pos, fun ζ _ _ => Set.notMem_empty ζ⟩
-  · obtain ⟨ζ₀, hζ₀s, hζ₀F⟩ := (infinite_sphere_one.diff hF).nonempty
+  · obtain ⟨ζ₀, hζ₀s, hζ₀F⟩ := (infinite_sphere_one.sdiff hF).nonempty
     have hζ₀norm : ‖ζ₀‖ = 1 := by simpa [mem_sphere_iff_norm, sub_zero] using hζ₀s
     refine ⟨ζ₀, Metric.infDist ζ₀ F, hζ₀norm,
       (hF.isClosed.notMem_iff_infDist_pos hne).mp hζ₀F, ?_⟩

@@ -46,7 +46,7 @@ theorem hasDerivAt_compactMobiusFlux_one
       (Ring.inverse (1 - q) * q * Ring.inverse (1 - q))) 1
   convert! hprod using 1
   ext k
-  simp [compactMobiusFlux, u, ContinuousLinearMap.mulLeftRight_apply,
+  simp [u, ContinuousLinearMap.mulLeftRight_apply,
     NormedRing.inverse_one_sub q hq]
   have hunit : (↑u⁻¹ : C(K, ℂ)) * (1 - q) = 1 := by
     rw [← hu]
@@ -80,6 +80,7 @@ def compactEulerUnitIncrement
   compactDegreeOneEulerLocalFlux q p (1 + b) -
     compactDegreeOneEulerLocalFlux q p 1
 
+omit [CompactSpace K] in
 @[simp]
 theorem compactEulerUnitIncrement_zero (q : C(K, ℂ)) (p : ℕ) :
     compactEulerUnitIncrement q p 0 = 0 := by
@@ -103,7 +104,7 @@ theorem hasDerivAt_compactEulerUnitIncrement_zero
     (ContinuousLinearMap.toSpanSingleton ℂ (compactEulerTangentFromQ q p)) 0
   convert! hsub using 1
   ext c
-  simp [compactEulerUnitIncrement]
+  simp
 
 /-- The FE-paired genuine local increment. -/
 def compactEulerUnitFEIncrement
@@ -116,6 +117,7 @@ def compactEulerFETangentFromQ
     (q : C(K, ℂ)) (tau : C(K, K)) (p : ℕ) : C(K, ℂ) :=
   compactEulerTangentFromQ q p - compactEulerTangentFromQ (q.comp tau) p
 
+omit [CompactSpace K] in
 @[simp]
 theorem compactEulerUnitFEIncrement_zero
     (q : C(K, ℂ)) (tau : C(K, K)) (p : ℕ) :

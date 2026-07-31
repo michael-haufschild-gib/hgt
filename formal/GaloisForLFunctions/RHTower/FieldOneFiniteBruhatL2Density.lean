@@ -41,9 +41,9 @@ theorem fieldOneFiniteAdele_exists_compactOpen_symmDiff_lt
         ((fieldOneFiniteAdeleAddHaar :
           Measure FieldOneFiniteAdele) (C ∆ s)) < ε := by
   have hhalf : ε / 2 ≠ 0 := (ENNReal.half_pos hε).ne'
-  rcases hs.exists_isCompact_diff_lt hμs hhalf with
+  rcases hs.exists_isCompact_sdiff_lt hμs hhalf with
     ⟨K, hKs, hKc, hμK⟩
-  rcases hs.exists_isOpen_diff_lt hμs hhalf with
+  rcases hs.exists_isOpen_sdiff_lt hμs hhalf with
     ⟨U, hsU, hUo, hμUtop, hμU⟩
   rcases fieldOneFiniteAdele_exists_compactOpen_between
       hKc hUo (hKs.trans hsU) with
@@ -54,9 +54,9 @@ theorem fieldOneFiniteAdele_exists_compactOpen_symmDiff_lt
   rw [← ENNReal.add_halves ε]
   exact ENNReal.add_lt_add
     (lt_of_le_of_lt
-      (measure_mono (diff_subset_diff_left hCU)) hμU)
+      (measure_mono (sdiff_subset_sdiff_left hCU)) hμU)
     (lt_of_le_of_lt
-      (measure_mono (diff_subset_diff_right hKC)) hμK)
+      (measure_mono (sdiff_subset_sdiff_right hKC)) hμK)
 
 /-- The finite-adele Bruhat--Schwartz realization as a complex-linear map. -/
 def fieldOneFiniteBruhatToL2Linear :

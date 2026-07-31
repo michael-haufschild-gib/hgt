@@ -26,7 +26,7 @@ theorem exists_mem_eval_ne_zero {b : ℕ → ℂ} (hb : Function.Injective b) {Q
     exact Multiset.mem_toFinset.mpr (Polynomial.mem_roots'.mpr ⟨hQ, hx⟩)
   have hfin : {M | Q.eval (b M) = 0}.Finite :=
     (h1.preimage hb.injOn).subset (fun M hM => hM)
-  obtain ⟨M, hMs, hM0⟩ := (hs.diff hfin).nonempty
+  obtain ⟨M, hMs, hM0⟩ := (hs.sdiff hfin).nonempty
   exact ⟨M, hMs, hM0⟩
 
 end GaloisForLFunctions

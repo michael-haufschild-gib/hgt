@@ -83,7 +83,7 @@ private theorem analyticAt_eisensteinSeries_E2_comp_ofComplex
     AnalyticAt ℂ (EisensteinSeries.E2 ∘ UpperHalfPlane.ofComplex) τ := by
   have hdiff : DifferentiableOn ℂ
       (EisensteinSeries.E2 ∘ UpperHalfPlane.ofComplex) {z : ℂ | 0 < z.im} :=
-    UpperHalfPlane.mdifferentiable_iff.mp E₂_holo'
+    UpperHalfPlane.mdifferentiable_iff.mp E2_mdifferentiable
   exact hdiff.analyticAt
     ((isOpen_lt continuous_const Complex.continuous_im).mem_nhds hτ)
 
@@ -141,8 +141,7 @@ private theorem contDiff_thetaModularH :
   have hR : ContDiffAt ℝ ∞ thetaModularHC (x : ℂ) :=
     hC.restrict_scalars ℝ
   have hc := hR.comp x (Complex.ofRealCLM.contDiff.contDiffAt)
-  simpa [thetaModularH, thetaModularHC, thetaModularTau,
-    thetaModularTauC, Function.comp_def] using hc
+  exact hc
 
 private theorem contDiff_thetaModularZ :
     ContDiff ℝ ∞ thetaModularZ := by
@@ -153,8 +152,7 @@ private theorem contDiff_thetaModularZ :
   have hR : ContDiffAt ℝ ∞ thetaModularZC (x : ℂ) :=
     hC.restrict_scalars ℝ
   have hc := hR.comp x (Complex.ofRealCLM.contDiff.contDiffAt)
-  simpa [thetaModularZ, thetaModularZC, thetaModularTau,
-    thetaModularTauC, Function.comp_def] using hc
+  exact hc
 
 private theorem contDiff_thetaModularR :
     ContDiff ℝ ∞ thetaModularR := by
@@ -170,18 +168,24 @@ private theorem contDiff_thetaModularP :
   have hR : ContDiffAt ℝ ∞ thetaModularPC (x : ℂ) :=
     hC.restrict_scalars ℝ
   have hc := hR.comp x (Complex.ofRealCLM.contDiff.contDiffAt)
-  simpa [thetaModularP, thetaModularPC, thetaModularTau,
-    thetaModularTauC, Function.comp_def] using hc
+  exact hc
 
 private theorem hasDerivAt_thetaModularTauC (w : ℂ) :
     HasDerivAt thetaModularTauC (2 * thetaModularTauC w) w := by
   have hlin :
       HasDerivAt (fun u : ℂ => 2 * u) 2 w := by
-    convert (hasDerivAt_id w).const_mul (2 : ℂ) using 1 <;> ring
+    have h := (hasDerivAt_id w).const_mul (2 : ℂ)
+    rw [mul_one] at h
+    exact h
   have hexp :=
     (Complex.hasDerivAt_exp (2 * w)).scomp w hlin
   have h := hexp.const_mul I
-  convert h using 1 <;> simp [thetaModularTauC] <;> ring
+  simp only [smul_eq_mul] at h
+  have hval : I * (2 * Complex.exp (2 * w)) = 2 * thetaModularTauC w := by
+    unfold thetaModularTauC
+    ring
+  rw [hval] at h
+  exact h
 
 private theorem hasDerivAt_thetaModularHC (x : ℝ) :
     HasDerivAt thetaModularHC
@@ -194,8 +198,14 @@ private theorem hasDerivAt_thetaModularHC (x : ℝ) :
   have hexp :
       HasDerivAt (fun w : ℂ => Complex.exp (w / 2))
         (Complex.exp ((x : ℂ) / 2) / 2) (x : ℂ) := by
-    convert (Complex.hasDerivAt_exp ((x : ℂ) / 2)).scomp
-      (x : ℂ) ((hasDerivAt_id (x : ℂ)).div_const 2) using 1 <;> ring
+    have h := (Complex.hasDerivAt_exp ((x : ℂ) / 2)).scomp
+      (x : ℂ) ((hasDerivAt_id (x : ℂ)).div_const 2)
+    simp only [smul_eq_mul] at h
+    have hval : 1 / 2 * Complex.exp ((x : ℂ) / 2) =
+        Complex.exp ((x : ℂ) / 2) / 2 := by
+      ring
+    rw [hval] at h
+    exact h
   have htheta :
       HasDerivAt
         (fun w : ℂ => Bottcher.thetaThree (thetaModularTauC w))
@@ -209,10 +219,16 @@ private theorem hasDerivAt_thetaModularHC (x : ℝ) :
         (thetaModularTau_im_pos x)).differentiableAt.hasDerivAt
     have hcomp := hbase.scomp (x : ℂ)
       (hasDerivAt_thetaModularTauC (x : ℂ))
-    convert hcomp using 1 <;>
-      simp [thetaModularTau_eq_tauC, Function.comp_def] <;> ring
-  simpa [thetaModularHC, thetaModularTau_eq_tauC] using
-    hexp.mul htheta
+    simp only [smul_eq_mul] at hcomp
+    have hval : 2 * thetaModularTauC (x : ℂ) *
+        deriv Bottcher.thetaThree (thetaModularTau x) =
+        deriv Bottcher.thetaThree (thetaModularTau x) *
+          (2 * thetaModularTau x) := by
+      rw [thetaModularTau_eq_tauC]
+      ring
+    rw [hval] at hcomp
+    exact hcomp
+  exact hexp.mul htheta
 
 private theorem hasDerivAt_thetaModularH_raw (x : ℝ) :
     HasDerivAt thetaModularH
@@ -221,15 +237,15 @@ private theorem hasDerivAt_thetaModularH_raw (x : ℝ) :
         Complex.exp ((x : ℂ) / 2) *
           (deriv Bottcher.thetaThree (thetaModularTau x) *
             (2 * thetaModularTau x))) x := by
-  simpa [thetaModularH, thetaModularHC, thetaModularTau,
-    thetaModularTauC] using
-      (hasDerivAt_thetaModularHC x).comp_ofReal
+  exact (hasDerivAt_thetaModularHC x).comp_ofReal
 
 private theorem thetaModularH_pow_four (x : ℝ) :
     thetaModularH x ^ 4 =
       Complex.exp (2 * (x : ℂ)) *
         Bottcher.thetaThree (thetaModularTau x) ^ 4 := by
   rw [thetaModularH, mul_pow, ← Complex.exp_nat_mul]
+  congr 1
+  push_cast
   congr 1
   ring
 
@@ -313,9 +329,16 @@ private theorem hasDerivAt_thetaModularZ_raw (x : ℝ) :
   have hcomp := hbase.scomp (x : ℂ)
     (hasDerivAt_thetaModularTauC (x : ℂ))
   have hreal := hcomp.comp_ofReal
+  simp only [smul_eq_mul] at hreal
   have hlin := (hreal.const_mul (2 : ℂ)).sub_const (1 : ℂ)
-  convert hlin using 1 <;>
-    simp [thetaModularZ, thetaModularTau, thetaModularTauC] <;> ring
+  have hval : 2 * (2 * thetaModularTauC (x : ℂ) *
+      deriv Bottcher.modularLambda (thetaModularTau x)) =
+      2 * (deriv Bottcher.modularLambda (thetaModularTau x) *
+        (2 * thetaModularTau x)) := by
+    rw [thetaModularTau_eq_tauC]
+    ring
+  rw [hval] at hlin
+  exact hlin
 
 private theorem deriv_thetaModularZ (x : ℝ) :
     deriv thetaModularZ x =
@@ -348,7 +371,7 @@ private theorem deriv_thetaModularR (x : ℝ) :
       HasDerivAt thetaModularR
         ((Real.pi : ℂ) *
           (4 * thetaModularH x ^ 3 * deriv thetaModularH x)) x := by
-    convert hR using 1 <;> simp [thetaModularR] <;> ring
+    exact hR
   rw [hR'.deriv]
   rw [deriv_thetaModularH]
   unfold thetaModularR
@@ -414,9 +437,13 @@ private theorem hasDerivAt_thetaModularPC (x : ℝ) :
         (2 * Complex.exp (2 * (x : ℂ))) (x : ℂ) := by
     have hlin :
         HasDerivAt (fun w : ℂ => 2 * w) 2 (x : ℂ) := by
-      convert (hasDerivAt_id (x : ℂ)).const_mul (2 : ℂ) using 1 <;> ring
-    convert (Complex.hasDerivAt_exp (2 * (x : ℂ))).scomp
-      (x : ℂ) hlin using 1 <;> ring
+      have h := (hasDerivAt_id (x : ℂ)).const_mul (2 : ℂ)
+      rw [mul_one] at h
+      exact h
+    have h := (Complex.hasDerivAt_exp (2 * (x : ℂ))).scomp
+      (x : ℂ) hlin
+    simp only [smul_eq_mul] at h
+    exact h
   have hEbase :
       HasDerivAt
         (EisensteinSeries.E2 ∘ UpperHalfPlane.ofComplex)
@@ -428,15 +455,40 @@ private theorem hasDerivAt_thetaModularPC (x : ℝ) :
       (thetaModularTau_im_pos x)).differentiableAt.hasDerivAt
   have hEcomp := hEbase.scomp (x : ℂ)
     (hasDerivAt_thetaModularTauC (x : ℂ))
+  simp only [smul_eq_mul] at hEcomp
   have hprod := hexp.mul hEcomp
   have hfull :=
     (hprod.const_mul (Real.pi : ℂ)).sub_const (3 : ℂ)
-  convert hfull using 1
-  · funext w
-    simp [thetaModularPC, Function.comp_def]
+  have hfn : thetaModularPC = fun y : ℂ =>
+      (Real.pi : ℂ) * (Complex.exp (2 * y) *
+        (EisensteinSeries.E2 ∘ UpperHalfPlane.ofComplex)
+          (thetaModularTauC y)) - 3 := by
+    funext y
+    simp only [thetaModularPC, Function.comp_apply]
     ring
-  · simp [thetaModularTau_eq_tauC, Function.comp_def]
+  rw [hfn]
+  have hval : (Real.pi : ℂ) *
+      (2 * Complex.exp (2 * (x : ℂ)) *
+          ((EisensteinSeries.E2 ∘ UpperHalfPlane.ofComplex) ∘
+            thetaModularTauC) (x : ℂ) +
+        Complex.exp (2 * (x : ℂ)) *
+          (2 * thetaModularTauC (x : ℂ) *
+            deriv (EisensteinSeries.E2 ∘ UpperHalfPlane.ofComplex)
+              (thetaModularTau x))) =
+      (Real.pi : ℂ) *
+        (2 * Complex.exp (2 * (x : ℂ)) *
+            (EisensteinSeries.E2 ∘ UpperHalfPlane.ofComplex)
+              (thetaModularTau x) +
+          Complex.exp (2 * (x : ℂ)) *
+            (deriv
+                (EisensteinSeries.E2 ∘ UpperHalfPlane.ofComplex)
+                (thetaModularTau x) *
+              (2 * thetaModularTau x))) := by
+    rw [thetaModularTau_eq_tauC]
+    simp only [Function.comp_apply]
     ring
+  rw [hval] at hfull
+  exact hfull
 
 private theorem hasDerivAt_thetaModularP_raw (x : ℝ) :
     HasDerivAt thetaModularP
@@ -673,7 +725,7 @@ theorem thetaCuspGaussianApertureSixthSeamNumerator_eq_modularClosure :
     completedThetaProfile_sourceJet 2,
     completedThetaProfile_sourceJet 4,
     completedThetaProfile_sourceJet 6] at h
-  simpa only [thetaCuspGaussianApertureSixthSeamNumerator,
+  simpa only [thetaCuspGaussianApertureSixthSeamNumerator, iteratedDeriv_zero,
     Complex.ofReal_add, Complex.ofReal_sub, Complex.ofReal_mul,
     Complex.ofReal_pow, Complex.ofReal_ofNat] using h
 

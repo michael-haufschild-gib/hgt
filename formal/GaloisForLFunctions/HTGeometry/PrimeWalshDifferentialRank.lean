@@ -43,7 +43,6 @@ local instance complexFinitePrimeRationalAmbientScalarTower :
 def boundedPrimeFiniteAbscissa (c : Nat.Primes → ℂ) (hc : ∀ p, ‖c p‖ ≤ 1) :
     finiteAbscissaArithmeticSubalgebra := by
   refine ⟨arithmeticOfPrimeColumn c, 1, ?_⟩
-  change ∀ y : ℝ, 1 < y → LSeriesSummable (fun n => arithmeticOfPrimeColumn c n) (y : ℂ)
   intro y hy
   apply LSeriesSummable_of_bounded_of_one_lt_re (m := 1)
   · intro n hn

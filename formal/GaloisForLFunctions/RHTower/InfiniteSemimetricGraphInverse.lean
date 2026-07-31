@@ -99,7 +99,7 @@ theorem closedSupportInverse_domain (T : E →L[ℝ] E) :
     letI : CompleteSpace S := (Submodule.isClosed_orthogonal T.ker).completeSpace_coe
     letI : S.HasOrthogonalProjection :=
       Submodule.HasOrthogonalProjection.ofCompleteSpace S
-    let sx : S := S.orthogonalProjection x
+    let sx : S := S.orthogonalProjectionOnto x
     refine ⟨sx, ?_⟩
     change T (S.starProjection x) = T x
     have hdiff : x - S.starProjection x ∈ T.ker := by

@@ -176,7 +176,7 @@ theorem deningerPoissonZeta_boundaries1_le_quotientKer
   rw [deningerPoissonZeta_mem_boundaries1_iff Z principal] at hx
   obtain ⟨f, hf⟩ := hx
   change (LinearMap.range Z).mkQ (x : Hminus × P).1 = 0
-  rw [show (x : Hminus × P).1 = Z f by simpa [hf]]
+  rw [show (x : Hminus × P).1 = Z f by simp [hf]]
   exact
     (Submodule.Quotient.mk_eq_zero (LinearMap.range Z)).2
       ⟨f, rfl⟩
@@ -304,7 +304,7 @@ def deningerPoissonZetaPair02
         simp [mul_add]
       map_smul' := by
         intro c d
-        simp [mul_comm, mul_left_comm, mul_assoc] }
+        simp [mul_left_comm] }
   map_add' x y := by
     apply LinearMap.ext
     intro d
@@ -312,7 +312,7 @@ def deningerPoissonZetaPair02
   map_smul' c x := by
     apply LinearMap.ext
     intro d
-    simp [mul_comm, mul_left_comm, mul_assoc]
+    simp [mul_assoc]
 
 /-- Middle cup--trace ignores the contractible endpoint coordinate. -/
 def deningerPoissonZetaPair11
@@ -432,7 +432,7 @@ def deningerPoissonZetaFlow
     exact LinearMap.congr_fun hprincipal x.2
 
 /-- Weight-one cup law for the assembled flow. -/
-def deningerPoissonZetaWeightOneCup
+theorem deningerPoissonZetaWeightOneCup
     (Z : Hcap →ₗ[R] Hminus)
     (principal : P →ₗ[R] D)
     (degree : D →ₗ[R] R)

@@ -264,8 +264,7 @@ theorem timeChangeInverseAlgHom_sourceDerivation
   | mul_X P p hP =>
       rw [Derivation.leibniz]
       simp only [smul_eq_mul, map_add, map_mul, hP,
-        timeChangeInverseAlgHom_X,
-        timeChangeTargetInverseDerivation_inverseVariable]
+        timeChangeInverseAlgHom_X]
       rw [Derivation.leibniz]
       simp only [smul_eq_mul]
       rw [timeChangeSourceDerivation, MvPolynomial.mkDerivation_X,
@@ -582,8 +581,7 @@ theorem timeChangeFiniteSourceEmbedding_stepDerivation
         timeChangeFiniteSourceStepDerivation, MvPolynomial.mkDerivation_X,
         timeChangeFiniteSourceEmbedding_stepShift,
         timeChangeFiniteSourceEmbedding_stepEmbedding]
-      simp only [timeChangeFiniteSourceStepEmbedding,
-        timeChangeFiniteSourceEmbedding, MvPolynomial.rename_X]
+      simp only [timeChangeFiniteSourceEmbedding, MvPolynomial.rename_X]
       rw [timeChangeSourceDerivation, MvPolynomial.mkDerivation_X]
 
 def timeChangeFiniteSourceScaleVariable

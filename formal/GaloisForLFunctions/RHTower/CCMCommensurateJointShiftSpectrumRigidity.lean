@@ -54,7 +54,7 @@ theorem analyticAt_commensurateJointShiftGerm
     {k : ι → ℕ} (hk : ∀ i, 0 < k i) {F : (ι → ℂ) → E}
     (hF : AnalyticAt ℂ F 0) :
     AnalyticAt ℂ (commensurateJointShiftGerm k F) 0 := by
-  exact hF.comp_of_eq' (analyticAt_commensurateJointShiftCurve k)
+  exact hF.fun_comp_of_eq (analyticAt_commensurateJointShiftCurve k)
     (commensurateJointShiftCurve_zero hk)
 
 omit [Fintype ι] [NormedSpace ℂ E] in

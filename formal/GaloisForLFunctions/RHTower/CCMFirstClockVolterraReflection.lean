@@ -273,7 +273,7 @@ theorem integral_ccmFirstClockMellinKernel_tail_lt_one :
         intro x hx
         convert (hasDerivAt_id x).sub
           (((hasDerivAt_id x).pow 2).div_const 2) using 1 <;>
-            simp only [id_eq] <;> ring
+            first | rfl | (simp only [id_eq]; ring)
       have hint : IntervalIntegrable (fun x : ℝ => 1 - x)
           volume ccmFirstClockReflectionRatio 1 :=
         (by fun_prop : Continuous (fun x : ℝ => 1 - x)).intervalIntegrable _ _
@@ -666,15 +666,16 @@ private theorem integrable_weightedDilation_rectangle
       Real.exp (-a * p.1) *
         ‖ccmFirstClockDilationKernel p.2‖ *
           ‖xiScrewDivisor (p.1 * p.2)‖) := by
-    simpa only [Function.comp_apply, mul_assoc] using
-      ((by fun_prop : Measurable (fun p : ℝ × ℝ =>
-      Real.exp (-a * p.1))).mul
-        ((by
-          unfold ccmFirstClockDilationKernel
-          fun_prop : Measurable (fun p : ℝ × ℝ =>
-            ‖ccmFirstClockDilationKernel p.2‖)).mul
-          (measurable_xiScrewDivisor.comp
-            (measurable_fst.mul measurable_snd)).norm))
+    have h1 : Measurable (fun p : ℝ × ℝ => Real.exp (-a * p.1)) := by
+      fun_prop
+    have h2 : Measurable (fun p : ℝ × ℝ =>
+        ‖ccmFirstClockDilationKernel p.2‖) := by
+      unfold ccmFirstClockDilationKernel
+      fun_prop
+    have h3 : Measurable (fun p : ℝ × ℝ => ‖xiScrewDivisor (p.1 * p.2)‖) :=
+      (measurable_xiScrewDivisor.comp
+        (measurable_fst.mul measurable_snd)).norm
+    exact (h1.mul h2).mul h3
   apply Integrable.of_bound hfunMeas.aestronglyMeasurable M
   rw [MeasureTheory.Measure.ae_prod_iff_ae_ae
     (measurableSet_le (Measurable.norm hfunMeas) measurable_const)]

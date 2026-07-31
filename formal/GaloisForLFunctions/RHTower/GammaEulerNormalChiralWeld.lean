@@ -51,7 +51,7 @@ private theorem gamma_symmetric_endpoint_mul (u : ℂ)
         (Complex.Gamma u * Complex.Gamma (-u)) = -(Real.pi : ℂ) := by
   have hrec :
       Complex.Gamma (1 - u) = (-u) * Complex.Gamma (-u) := by
-    convert Complex.Gamma_add_one (-u) (neg_ne_zero.mpr hu) using 1 <;> ring
+    convert Complex.Gamma_add_one (-u) (neg_ne_zero.mpr hu) using 1 ; ring
   have href := Complex.Gamma_mul_Gamma_one_sub u
   rw [hrec] at href
   have href' :

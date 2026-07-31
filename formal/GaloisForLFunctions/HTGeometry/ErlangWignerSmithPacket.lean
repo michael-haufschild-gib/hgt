@@ -62,7 +62,7 @@ theorem integral_Ioi_erlangThreeKernel_eq_one {ε : ℝ} (hε : 0 < ε) :
           (1 / ε⁻¹) ^ (3 : ℝ) * Real.Gamma 3 := by simpa using h
       _ = 2 * ε ^ 3 := by
         have hgamma : Real.Gamma 3 = 2 := by
-          simpa using Real.Gamma_nat_eq_factorial 2
+          simp
         rw [hgamma]
         norm_num [one_div, hε.ne']
         ring

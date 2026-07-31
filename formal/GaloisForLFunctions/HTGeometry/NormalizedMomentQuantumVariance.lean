@@ -161,8 +161,7 @@ theorem momentNormalizedExpectation_X_pow_sizeBiased
     (s : ℕ → ℝ) (k n : ℕ) :
     momentNormalizedExpectation (momentSizeBiasedSequence s k) (X ^ n) =
       s (k + n) / s k := by
-  simpa [momentSizeBiasedSequence] using
-    momentNormalizedExpectation_X_pow (momentSizeBiasedSequence s k) n
+  simp [momentSizeBiasedSequence]
 
 /-- The susceptibility of `X` in the `k`-th size-biased state is the adjacent normalized
 moment determinant.  In equilibrium statistical mechanics this variance is the static linear

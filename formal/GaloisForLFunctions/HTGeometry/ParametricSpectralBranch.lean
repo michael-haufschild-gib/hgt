@@ -276,7 +276,7 @@ theorem analyticMatrixFamily_eigenvalueBranch
     have hcont := hH.continuousAt
     change Tendsto H (𝓝 p₀) (𝓝 (H p₀)) at hcont
     simpa only [hbase] using! hcont
-  refine ⟨fun p => r (H p), hr.comp_of_eq' hH hbase, ?_, ?_⟩
+  refine ⟨fun p => r (H p), hr.fun_comp_of_eq hH hbase, ?_, ?_⟩
   · simpa [hbase] using hr0
   · exact hHt.eventually hrroot
 

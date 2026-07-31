@@ -27,6 +27,7 @@ def coefficientNormalizedPrincipalEnd
     Module.End K (ι → K) :=
   Matrix.toLin' (coefficientNormalizedMatrixPrincipalSymbol symbol e n A)
 
+omit [IsAlgClosed K] in
 /-- Normalized principal endomorphisms commute pairwise in a regular flat tower. -/
 theorem coefficientNormalizedPrincipalEnd_commute
     (symbol : ℕ → g → Matrix ι ι K)
@@ -50,6 +51,7 @@ def normalizedPrincipalJointMaxGenEigenspace
     Submodule K (ι → K) :=
   ⨅ A : g, (coefficientNormalizedPrincipalEnd symbol e n A).maxGenEigenspace (χ A)
 
+omit [IsAlgClosed K] in
 /-- Joint generalized eigenspaces of a regular flat tower are independent. -/
 theorem normalizedPrincipalJointMaxGenEigenspace_iSupIndep
     (symbol : ℕ → g → Matrix ι ι K)
@@ -83,6 +85,7 @@ theorem coefficientNormalizedPrincipalEnd_jointMaxGenEigenspaces_eq_top
 
 /-! ## Fiberwise joint spectral decomposition -/
 
+omit [IsAlgClosed K] in
 /-- Fiberwise simultaneous triangularization.  For a compatible triangularizable family, the
 maximal generalized `φ`-eigenspace of one member is exactly the sum of the joint generalized
 eigenspaces whose character takes the value `φ` on that member. -/
@@ -147,7 +150,7 @@ theorem coefficientNormalizedPrincipalEnd_jointFiber_eq
       (coefficientNormalizedPrincipalEnd symbol e n B)
 
 /-- The finite type of nonzero joint generalized eigencharacters. -/
-noncomputable def normalizedPrincipalJointCharacterFintype
+@[reducible] noncomputable def normalizedPrincipalJointCharacterFintype
     (symbol : ℕ → g → Matrix ι ι K)
     (hflat : MatrixCoefficientPrincipalSymbolFlat symbol)
     (e : g) (he : ∀ n, (symbol n e).det ≠ 0)
@@ -156,6 +159,7 @@ noncomputable def normalizedPrincipalJointCharacterFintype
       normalizedPrincipalJointMaxGenEigenspace symbol e n χ ≠ ⊥} :=
   (normalizedPrincipalJointMaxGenEigenspace_iSupIndep symbol hflat e he n).fintypeNeBotOfFiniteDimensional
 
+omit [IsAlgClosed K] in
 /-- A rank-`r` regular flat tower has at most `r` nonzero joint generalized eigencharacters. -/
 theorem normalizedPrincipalJointCharacter_card_le_rank
     (symbol : ℕ → g → Matrix ι ι K)
@@ -188,6 +192,7 @@ def jointGeneralizedEigencharacterLinearMap
     Module.End.map_smul_of_iInf_genEigenspace_ne_bot
       f χ ⊤ hne t A
 
+omit [IsAlgClosed K] in
 @[simp]
 theorem jointGeneralizedEigencharacterLinearMap_apply
     (f : h →ₗ[K] Module.End K V) (χ : h → K)
@@ -203,6 +208,7 @@ def coefficientNormalizedPrincipalEndLinear
   Matrix.toLin'.toLinearMap.comp <|
     (LinearMap.mulLeft K (S e)⁻¹).comp S
 
+omit [IsAlgClosed K] in
 @[simp]
 theorem coefficientNormalizedPrincipalEndLinear_apply
     (S : h →ₗ[K] Matrix ι ι K) (e A : h) :
@@ -236,6 +242,7 @@ def coefficientNormalizedPrincipalJointCharacterLinearMap
     rw [← hend A, ← hend B]
     exact coefficientNormalizedPrincipalEnd_commute symbol hflat e he n A B
 
+omit [IsAlgClosed K] in
 @[simp]
 theorem coefficientNormalizedPrincipalJointCharacterLinearMap_apply
     (symbol : ℕ → h → Matrix ι ι K)

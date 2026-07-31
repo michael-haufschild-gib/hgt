@@ -153,7 +153,7 @@ theorem tan_not_algebraic (p : Polynomial (Polynomial ℂ)) (hp : p ≠ 0) :
           linear_combination 2 * hab
         have h3 : (2 * (a : ℂ) + 1) = 2 * (b : ℂ) + 1 := mul_right_cancel₀ hpi h2
         have h4 : (a : ℂ) = b := by linear_combination h3 / 2
-        exact_mod_cast h4) (fun k => ⟨k, by push_cast; ring⟩))
+        exact_mod_cast h4) (fun k => ⟨k, by ring⟩))
     (fun z ⟨k, hk⟩ => by
       have hcz : Complex.cos z = 0 := Complex.cos_eq_zero_iff.mpr ⟨k, hk⟩
       simp only [Complex.tan_eq_sin_div_cos, inv_div]

@@ -120,6 +120,6 @@ theorem infinite_primeLogComplex_privatePrimes (H : Finset ℂ) (h : ℂ) :
     (primeLogComplexBadPrimes H h)ᶜ.Infinite := by
   rw [show (primeLogComplexBadPrimes H h)ᶜ =
       Set.univ \ primeLogComplexBadPrimes H h by ext; simp]
-  exact Set.infinite_univ.diff (primeLogComplexBadPrimes_finite H h)
+  exact Set.infinite_univ.sdiff (primeLogComplexBadPrimes_finite H h)
 
 end GaloisForLFunctions.HTGeometry

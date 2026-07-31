@@ -197,12 +197,18 @@ theorem tsum_abs_primeArchShiftMoment_tail_le (s : ℕ) :
     have hbase :
         HasSum (fun n : ℕ => (2 / 41 : ℝ) ^ n) (1 - (2 / 41 : ℝ))⁻¹ :=
       hasSum_geometric_of_lt_one (by norm_num) (by norm_num)
-    convert ((hbase.mul_left (2 / 41 : ℝ)).mul_right
-      (xiShiftAbsoluteMass s)) using 1
-    · funext n
+    have h := (hbase.mul_left (2 / 41 : ℝ)).mul_right (xiShiftAbsoluteMass s)
+    have hfun : (fun n : ℕ =>
+        2 / 41 * (2 / 41 : ℝ) ^ n * xiShiftAbsoluteMass s) =
+        fun n : ℕ => (2 / 41 : ℝ) ^ (n + 1) * xiShiftAbsoluteMass s := by
+      funext n
       rw [pow_succ]
       ring
-    · norm_num
+    have hval : 2 / 41 * (1 - (2 / 41 : ℝ))⁻¹ * xiShiftAbsoluteMass s =
+        (2 / 39 : ℝ) * xiShiftAbsoluteMass s := by
+      norm_num
+    rw [hfun, hval] at h
+    exact h
   calc
     (∑' n : ℕ, |primeArchShiftMoment s (n + 1)|) ≤
         ∑' n : ℕ,

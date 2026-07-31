@@ -131,8 +131,6 @@ theorem deningerCompactOpenH1Jets_separating
         deningerCompactOpenH1Jet rho k x = 0) :
     x = 0 := by
   apply deningerCompactOpenH1AllJets_injective
-  change deningerCompactOpenH1AllJets x =
-    deningerCompactOpenH1AllJets 0
   rw [map_zero]
   funext rho k
   rw [deningerCompactOpenH1AllJets_apply]

@@ -303,7 +303,7 @@ theorem finiteBoundaryEndClopen_eq_iff_symmDiff_finite
     have hDinf : (A.1 ∆ B.1).Infinite := hnotfinite
     let L : Finset V := finiteBoundarySupport G A ∪ finiteBoundarySupport G B
     have hLfinite : ((L : Finset V) : Set V).Finite := L.finite_toSet
-    have hTinf : ((A.1 ∆ B.1) \ (L : Set V)).Infinite := hDinf.diff hLfinite
+    have hTinf : ((A.1 ∆ B.1) \ (L : Set V)).Infinite := hDinf.sdiff hLfinite
     have hTsub : (A.1 ∆ B.1) \ (L : Set V) ⊆ (L : Set V)ᶜ := by
       intro x hx
       exact hx.2

@@ -105,9 +105,9 @@ theorem abs_iteratedDeriv_modulatedWeight_le {phi : ℝ → ℝ} (hphi : ContDif
         rw [Finset.sum_mul]
     _ = (1 + |x|) ^ m * B := by
         congr 1
-        rw [add_pow]
+        rw [add_comm (1 : ℝ) |x|, add_pow]
         refine Finset.sum_congr rfl fun i _ => ?_
-        rw [one_pow, one_mul]
+        rw [one_pow, mul_one]
         ring
 
 end GaloisForLFunctions.HTGeometry

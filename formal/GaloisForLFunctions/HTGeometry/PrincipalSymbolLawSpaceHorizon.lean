@@ -17,6 +17,7 @@ variable {k K L g : Type*} [Field k] [Field K] [Field L]
   [Algebra k K] [Algebra k L] [Algebra K L] [IsScalarTower k K L]
   [AddCommMonoid g] [Module k g]
 
+omit [IsScalarTower k K L] in
 /-- The law-space principal symbol is forced by the law action and its algebraically free source
 filtration.  In particular, two proposed linear symbols satisfying the same filtered law agree. -/
 theorem principalSymbolLawSpace_unique
@@ -34,6 +35,7 @@ theorem principalSymbolLawSpace_unique
   exact principalSymbol_unique (law A) u (symbol₁ A) (symbol₂ A)
     (hstep₁ A) (hstep₂ A) hu
 
+omit [IsScalarTower k K L] in
 /-- Exact law-space horizon: the directions whose complete jet tower fails to be algebraically
 independent are precisely the characteristic directions in the kernel of the principal symbol. -/
 theorem principalSymbolLawSpace_characteristicSet_eq_ker
@@ -53,6 +55,7 @@ theorem principalSymbolLawSpace_characteristicSet_eq_ker
     (coefficientLaw A) (law A) u (symbol A) (hcompat A) (hstep A) hu
   simpa using not_congr hiff
 
+omit [IsScalarTower k K L] in
 /-- The complementary cone of hypertranscendental laws is exactly the complement of the
 characteristic kernel. -/
 theorem principalSymbolLawSpace_hypertranscendentalSet_eq_compl_ker

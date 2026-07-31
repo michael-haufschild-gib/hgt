@@ -303,7 +303,7 @@ theorem degHom_survives_complex {bnat : ℕ → ℕ} (hmono : Monotone bnat) {r 
   obtain ⟨NB, hNB⟩ := Filter.eventually_atTop.mp (hbtop.eventually_ge_atTop B)
   set G := {n : ℕ | coeff (bnat n) f ≠ 0 ∧ NB ≤ n} with hGdef
   have hGinf : G.Infinite := by
-    apply (hinf.diff (Set.finite_Iio NB)).mono
+    apply (hinf.sdiff (Set.finite_Iio NB)).mono
     intro n hn
     exact ⟨hn.1, not_lt.mp hn.2⟩
   have hTinf : ((fun n => (bnat n : ℂ)) '' G).Infinite :=
@@ -526,7 +526,7 @@ theorem diffPoly_fixedDegree_survives_complex {bnat : ℕ → ℕ} (hmono : Mono
   obtain ⟨NB, hNB⟩ := Filter.eventually_atTop.mp (hbtop.eventually_ge_atTop W)
   set G := {n : ℕ | coeff (bnat n) f ≠ 0 ∧ NB ≤ n} with hGdef
   have hGinf : G.Infinite := by
-    apply (hinf.diff (Set.finite_Iio NB)).mono
+    apply (hinf.sdiff (Set.finite_Iio NB)).mono
     intro n hn; exact ⟨hn.1, not_lt.mp hn.2⟩
   have hTinf : ((fun n => (bnat n : ℂ)) '' G).Infinite :=
     hGinf.image (fun a _ b _ h => hbnatinj (by exact_mod_cast h))

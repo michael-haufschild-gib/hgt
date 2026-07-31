@@ -27,7 +27,7 @@ theorem xi_zeros_closedBall_finite (c : ℂ) (R : ℝ) :
       (x := 2) (xi_ne_zero_of_one_le_re (by norm_num)) (Set.mem_univ 2) isConnected_univ
   have hcodK : (xi ⁻¹' {0}ᶜ) ∈ codiscreteWithin (Metric.closedBall c R) :=
     Filter.codiscreteWithin_mono (Set.subset_univ _) hcod
-  refine ((isCompact_closedBall c R).finite_diff_of_mem_codiscreteWithin hcodK).subset ?_
+  refine ((isCompact_closedBall c R).finite_sdiff_of_mem_codiscreteWithin hcodK).subset ?_
   intro z hz
   rw [Set.mem_sep_iff] at hz
   exact ⟨hz.1, by simp [Set.mem_preimage, hz.2]⟩

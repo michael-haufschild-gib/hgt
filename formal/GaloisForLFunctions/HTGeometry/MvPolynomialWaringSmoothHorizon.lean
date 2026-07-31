@@ -39,15 +39,18 @@ def MvPolynomialProjectivelySmooth
   ∀ v : Fin m → K, v ≠ 0 → MvPolynomial.eval v P = 0 →
     ∃ j, MvPolynomial.eval v (MvPolynomial.pderiv j P) ≠ 0
 
+omit [CharZero K] in
 @[simp]
 theorem eval_mvWaringLinearPolynomial
     (a : Matrix (Fin n) (Fin m) K) (i : Fin n) (v : Fin m → K) :
     MvPolynomial.eval v (mvWaringLinearPolynomial a i) =
       a.mulVecLin v i := by
   classical
-  simp [mvWaringLinearPolynomial, Matrix.mulVecLin_apply,
+  simp [mvWaringLinearPolynomial,
     Matrix.mulVec, dotProduct]
 
+omit [NeZero d] [Fact (1 < d)] in
+omit [CharZero K] in
 /-- Evaluation of the Waring polynomial is exactly the scalar potential used by the finite
 quantum packet. -/
 theorem eval_mvWaringPolynomial
@@ -58,6 +61,8 @@ theorem eval_mvWaringPolynomial
   simp [mvWaringPolynomial, finiteQuantumWaringPotential,
     finiteQuantumDiagonalPotential, eval_mvWaringLinearPolynomial]
 
+omit [NeZero d] in
+omit [CharZero K] in
 /-- Any vector killed by every Waring linear form kills every partial derivative of the Waring
 polynomial. -/
 theorem eval_pderiv_mvWaringPolynomial_eq_zero_of_mem_ker
@@ -78,6 +83,7 @@ theorem eval_pderiv_mvWaringPolynomial_eq_zero_of_mem_ker
   have hdsub : d - 1 ≠ 0 := by omega
   simp [hdsub]
 
+omit [CharZero K] in
 /-- **Smoothness forces Waring concision.**  If the Waring hypersurface is projectively smooth,
 its linear forms separate every vector. -/
 theorem mvWaring_mulVecLin_injective_of_projectivelySmooth

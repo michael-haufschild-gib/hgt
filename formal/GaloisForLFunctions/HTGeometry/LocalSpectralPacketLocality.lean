@@ -194,12 +194,12 @@ theorem restrictedBranches_iteratedFDeriv_eq_of_positive
       AnalyticAt ℂ
         (fun coupling =>
           branchX (extendCouplingFromPacket packet coupling)) 0 :=
-    hbranchX.comp_of_eq' hext hext0
+    hbranchX.fun_comp_of_eq hext hext0
   have hYa :
       AnalyticAt ℂ
         (fun coupling =>
           branchY (extendCouplingFromPacket packet coupling)) 0 :=
-    hbranchY.comp_of_eq' hext hext0
+    hbranchY.fun_comp_of_eq hext hext0
   change iteratedFDeriv ℂ n
       ((fun coupling =>
         branchX (extendCouplingFromPacket packet coupling)) -

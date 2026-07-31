@@ -51,7 +51,7 @@ theorem rot_ne_negNat {z : ℂ} (hz : z ∈ upperTail 0) (n : ℕ) :
   linarith
 
 theorem analyticOnNhd_rot : AnalyticOnNhd ℂ (fun z : ℂ => -Complex.I * z) (upperTail 0) :=
-  fun z _ => (analyticAt_const.mul analyticAt_id)
+  fun _z _ => (analyticAt_const.mul analyticAt_id)
 
 theorem rightHalf_ne_negNat {w : ℂ} (hw : 0 < w.re) (n : ℕ) : w ≠ -(n : ℂ) := by
   intro h
@@ -70,7 +70,7 @@ theorem analyticOnNhd_Gamma_rightHalf :
   exact (Complex.differentiableAt_Gamma w (rightHalf_ne_negNat hw)).differentiableWithinAt
 
 theorem rot_maps_rightHalf : ∀ z ∈ upperTail 0, (-Complex.I * z) ∈ {w : ℂ | 0 < w.re} :=
-  fun z hz => rot_re_pos hz
+  fun _z hz => rot_re_pos hz
 
 theorem analyticOnNhd_rotDigamma : AnalyticOnNhd ℂ rotDigammaFun (upperTail 0) := by
   have hG := analyticOnNhd_Gamma_rightHalf

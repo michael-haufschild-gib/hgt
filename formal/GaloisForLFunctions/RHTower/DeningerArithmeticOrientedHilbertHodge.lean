@@ -42,7 +42,7 @@ def deningerArithmeticOrientedHodgeLp (a : XiDivisorL2) : XiDivisorL2 :=
     HilbertSchmidt.memℓp_of_sq
       ((xiZeroCopyReflectEquiv.summable_iff.mpr
         (HilbertSchmidt.summable_coe_sq a)).congr fun q => by
-          simp [norm_mul])⟩
+          simp)⟩
 
 @[simp]
 theorem deningerArithmeticOrientedHodgeLp_apply
@@ -116,7 +116,7 @@ theorem norm_deningerArithmeticOrientedHodgeLp (a : XiDivisorL2) :
           ∑' q : XiZeroCopy, ‖a (xiZeroCopyReflectEquiv q)‖ ^ 2 := by
         apply tsum_congr
         intro q
-        simp [norm_mul]
+        simp
       _ = ∑' q : XiZeroCopy, ‖a q‖ ^ 2 :=
         xiZeroCopyReflectEquiv.tsum_eq (fun q => ‖a q‖ ^ 2)
   nlinarith [norm_nonneg (deningerArithmeticOrientedHodgeLp a), norm_nonneg a]
@@ -361,7 +361,7 @@ private theorem norm_deningerDivisorTheta_orientedHodge_apply
         deningerDivisorThetaEigen (xiZeroCopyReflectEquiv q) *
           (x : XiDivisorL2) (xiZeroCopyReflectEquiv q)‖
   rw [hcoord]
-  simp [norm_mul, mul_assoc]
+  simp
 
 /-- The completed odd Hodge operator preserves the maximal diagonal Frobenius domain. -/
 theorem deningerArithmeticOrientedHodgeLp_mem_domain
@@ -471,9 +471,9 @@ theorem riemannHypothesis_of_deningerDivisorClosedTheta_orientedHodge
       deningerDivisorClosedTheta_apply,
       deningerArithmeticOrientedHodgeDomain,
       deningerDivisorClosedThetaEigenvector,
-      lpBasis_apply, if_pos,
+      lpBasis_apply,
       xiZeroCopyReflectEquiv_apply_apply,
-      map_mul, map_one] at hq
+      map_mul] at hq
     simp at hq
     have horient :=
       deningerArithmeticFEOrientation_ne_zero

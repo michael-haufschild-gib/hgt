@@ -154,11 +154,11 @@ theorem splits_of_forall_aeval_im_eq_zero :
   induction N with
   | zero =>
       intro Q hQ _
-      exact splits_of_natDegree_eq_zero (Nat.le_zero.mp hQ)
+      exact Splits.of_natDegree_eq_zero (Nat.le_zero.mp hQ)
   | succ N ih =>
       intro Q hQ hroot
       rcases Nat.eq_zero_or_pos Q.natDegree with h0 | hpos
-      · exact splits_of_natDegree_eq_zero h0
+      · exact Splits.of_natDegree_eq_zero h0
       have hQ0 : Q ≠ 0 := by
         intro hzq
         rw [hzq] at hpos

@@ -70,9 +70,7 @@ theorem finsupp_sum_primeKroneckerCoefficient
   classical
   unfold primeKroneckerCoefficient
   by_cases hp : p ∈ u.support
-  · simpa [hp] using
-      (Finsupp.sum_eq_single p (f := u)
-        (g := fun q z ↦ z * if p = q then 1 else 0))
+  · simp [hp]
   · have hup : u p = 0 := by
       by_contra hne
       exact hp (Finsupp.mem_support_iff.mpr hne)
@@ -84,7 +82,7 @@ theorem finsupp_sum_primeKroneckerCoefficient
       intro h
       subst q
       exact hp hq
-    simp [hqp, hqp.symm]
+    simp [hqp.symm]
 
 /-- A finite-prime carrier is exactly the corresponding finite linear combination of the
 single-prime generators. -/
@@ -191,7 +189,6 @@ theorem differentialJet_analyticPrimeObservableShiftCarrier_sub_mem_eulerBase_of
       (finitePrimeSource_norm_le_bound u)
       (by
         intro p
-        change u p = _
         rw [hu]
         simp [Fin.sum_univ_two, sub_eq_add_neg]) a
     simpa [analyticFinitePrimeShiftCarrier, Fin.sum_univ_two, sub_eq_add_neg] using hlin

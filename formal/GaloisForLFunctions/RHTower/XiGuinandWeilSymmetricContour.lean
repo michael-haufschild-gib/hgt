@@ -134,14 +134,12 @@ theorem rectIntegral_symmetric_eq_two_bottom_add_vertical
         ∫ x in -R..R, f (-(c * I) + (x : ℂ)) := by
     apply intervalIntegral.integral_congr
     intro x _
-    congr 1
     ring
   have hbottomNeg :
       (∫ x in -R..R, f ((x : ℂ) + (-c : ℂ) * I)) =
         ∫ x in -R..R, f ((x : ℂ) - c * I) := by
     apply intervalIntegral.integral_congr
     intro x _
-    congr 1
     ring
   unfold rectIntegral
   rw [hz₁re, hz₁im, hz₂re, hz₂im]

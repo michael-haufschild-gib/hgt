@@ -80,7 +80,6 @@ theorem multiplierAtiyahKernel_mk_mem_projectiveDirectionalFiniteLawLocus_one
   let D0c : equivariantDerivations rhoK hfix := ∑ i, c i • D0 i
   let D : Derivation k L L := directionalDerivation δ c
   have hD0c_apply (y : K) : D0c.1 y = ∑ i, c i • (D0 i).1 y := by
-    change (D0c.1 y) = Finset.sum Finset.univ (fun i ↦ c i • (D0 i).1 y)
     change ((Finset.sum Finset.univ (fun i ↦ c i • D0 i) :
       equivariantDerivations rhoK hfix).1 y) = _
     induction (Finset.univ : Finset ι) using Finset.induction_on with

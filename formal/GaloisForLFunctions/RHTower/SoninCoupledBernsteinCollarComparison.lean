@@ -165,7 +165,12 @@ theorem soninCoupledEndpointBernsteinMismatch_le_two_add_two_primeArchEndpointPu
     (soninCoupledNormalizedReplicaMoment a.1) n ha
   rw [soninCoupledNormalizedReplicaMoment_zero_eq_one a] at h
   change soninCoupledEndpointBernsteinMismatch a n ≤ _ at h
-  simpa only [one_pow, mul_one, add_comm] using h
+  have h2 : soninCoupledEndpointBernsteinMismatch a n ≤
+      2 + 2 * bernsteinCoefficientPurity
+        (radiusNormalizedMoment primeArchEndpointHausdorffRadius
+          normalizedPrimeArchMoment) n := by
+    simpa only [one_pow, mul_one, add_comm] using h
+  exact h2
 
 /-- The direct `C_ε(1+ε)^n` formulation of zero exponential growth. -/
 def UnitCollarExponentialEnvelope (E : ℕ → ℝ) : Prop :=

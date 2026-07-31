@@ -192,10 +192,14 @@ theorem thetaCuspCenterMixedThreePointMatrix_posSemidef_of_sourceAngle_subadditi
         HilbertMetric.threePointCorrelationMatrix,
         thetaCuspReflectedSourceProduct] <;>
       first
-      | simpa using integrableOn_thetaCuspCenterMixedIntegrand ha0.le ha 0
-      | simpa using integrableOn_thetaCuspCenterMixedIntegrand ha0.le ha x
-      | simpa using integrableOn_thetaCuspCenterMixedIntegrand ha0.le ha y
-      | simpa using integrableOn_thetaCuspCenterMixedIntegrand ha0.le ha (x + y)
+      | simpa [MeasureTheory.IntegrableOn] using
+          integrableOn_thetaCuspCenterMixedIntegrand ha0.le ha 0
+      | simpa [MeasureTheory.IntegrableOn] using
+          integrableOn_thetaCuspCenterMixedIntegrand ha0.le ha x
+      | simpa [MeasureTheory.IntegrableOn] using
+          integrableOn_thetaCuspCenterMixedIntegrand ha0.le ha y
+      | simpa [MeasureTheory.IntegrableOn] using
+          integrableOn_thetaCuspCenterMixedIntegrand ha0.le ha (x + y)
   have hkernel : ∀ r, Matrix.PosSemidef (kernel r) := by
     intro r
     have hweight : 0 ≤ r * Real.sinh (a * r) := by

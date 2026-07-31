@@ -78,7 +78,7 @@ theorem summable_norm_realize {f : DirFormal} {d : ℕ} {C A : ℝ}
       ((d : ℝ) + 1) * C * s ^ d * (1 / (m : ℝ) ^ (2 : ℝ))) := Summable.mul_left _ hp
   refine Summable.of_nonneg_of_le (fun m => norm_nonneg _) (fun m => ?_) hmaj
   rcases Nat.eq_zero_or_pos m with rfl | hm
-  · simp [Real.zero_rpow]
+  · simp
   have hm1 : (1 : ℝ) ≤ (m : ℝ) := by exact_mod_cast hm
   have hmpos : (0 : ℝ) < (m : ℝ) := by linarith
   have hcoef := norm_eval_le_of_isBoundedBy h m hs1
@@ -259,8 +259,8 @@ theorem realize_add {f g : DirFormal} {d e : ℕ} {C C' A A' : ℝ}
     (hf : IsBoundedBy f d C A) (hg : IsBoundedBy g e C' A')
     {s : ℝ} (hs : max A A' + 2 ≤ s) :
     realize (f + g) s = realize f s + realize g s := by
-  have hsf : A + 2 ≤ s := le_trans (by simp [le_max_left]) hs
-  have hsg : A' + 2 ≤ s := le_trans (by simp [le_max_right]) hs
+  have hsf : A + 2 ≤ s := le_trans (by simp) hs
+  have hsg : A' + 2 ≤ s := le_trans (by simp) hs
   rw [realize, realize, realize, ← Summable.tsum_add (summable_realize hf hsf) (summable_realize hg hsg)]
   refine tsum_congr fun m => ?_
   have : ((f + g) m) = f m + g m := rfl

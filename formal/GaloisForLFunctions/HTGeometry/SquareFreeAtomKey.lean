@@ -222,8 +222,7 @@ theorem famWeight_keySplit_shift (q : ι → ℂ) (n : ℕ) (m : Option (ι × F
   rw [Finset.prod_congr rfl (fun s (_ : s ∈ Finset.univ) => hfac s), Finset.prod_mul_distrib]
   congr 1
   rw [← Finset.prod_pow]
-  congr 1
-  exact Equiv.prod_comp σ.symm (fun t => q (famSlot n m t).1)
+  exact Equiv.prod_comp σ.symm (fun t => q (famSlot n m t).1 ^ K)
 
 end
 

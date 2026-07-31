@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.DeningerDivisorFlow
+import GaloisForLFunctions.RHTower.DeningerDivisorGaugeWardIdentity
 import Mathlib.Data.Finsupp.Order
 
 /-!
@@ -50,12 +51,6 @@ def deningerArithmeticGradedHodgeStar :
       DeningerArithmeticGradedH1 :=
   (Finsupp.mapRange.linearEquiv (starLinearEquiv ℂ)).trans
     (Finsupp.domLCongr xiZeroCopyReflectEquiv)
-
-theorem xiZeroCopyReflectEquiv_symm_apply (q : XiZeroCopy) :
-    xiZeroCopyReflectEquiv.symm q = xiZeroCopyReflectEquiv q := by
-  apply xiZeroCopyReflectEquiv.injective
-  rw [xiZeroCopyReflectEquiv.apply_symm_apply,
-    xiZeroCopyReflectEquiv_apply_apply]
 
 @[simp]
 theorem deningerArithmeticGradedHodgeStar_apply

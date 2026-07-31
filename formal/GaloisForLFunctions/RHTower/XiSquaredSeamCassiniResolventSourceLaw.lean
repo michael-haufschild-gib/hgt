@@ -37,9 +37,7 @@ theorem logDeriv_XiC_eq_two_mul_xiSquaredSeamCassiniSource
     logDeriv XiC z =
       2 * z * logDeriv xiSquaredSeamCassiniSource (1 + z ^ 2) := by
   have hinner : HasDerivAt (fun w : ℂ => 1 + w ^ 2) (2 * z) z := by
-    convert (hasDerivAt_const (x := z) (c := (1 : ℂ))).add
-      (hasDerivAt_pow 2 z) using 1
-    all_goals norm_num [pow_two]
+    simpa using (hasDerivAt_pow 2 z).const_add 1
   have houter :=
     differentiable_xiSquaredSeamCassiniSource.differentiableAt.hasDerivAt
       |>.comp z hinner
@@ -274,9 +272,8 @@ theorem xiSquaredSeamCassiniMomentGerm_eq_resolvent
         (fun n => tsum_nonneg fun _ =>
           mul_nonneg (pow_nonneg hratio0 _) (norm_nonneg _))
         (fun n => le_rfl)
-      convert hgeom.mul_right (∑' q : XiZeroCopy, ‖mu q‖) using 1
-      funext n
-      rw [← tsum_mul_left]
+      exact (hgeom.mul_right (∑' q : XiZeroCopy, ‖mu q‖)).congr
+        fun n => tsum_mul_left.symm
   have huncurry : Summable (Function.uncurry
       (fun (n : ℕ) (q : XiZeroCopy) => u ^ n * mu q ^ (n + 1))) := by
     apply Summable.of_norm_bounded hnorm
@@ -327,7 +324,8 @@ theorem iteratedDeriv_xiSquaredSeamCassiniMomentGerm (n : ℕ) :
   rw [xiSquaredSeamCassiniMomentPowerSeries,
     FormalMultilinearSeries.ofScalars_apply_eq, one_pow, smul_eq_mul,
     mul_one] at hfac
-  simpa only [nsmul_eq_mul] using hfac.symm
+  simpa only [xiSquaredSeamCassiniMomentGerm,
+    xiSquaredSeamCassiniMomentPowerSeries, nsmul_eq_mul] using hfac.symm
 
 /-- Near the Euler-safe center, the source moment germ is exactly twice the negative logarithmic
 derivative of the same Cassini entire source. -/
@@ -472,19 +470,22 @@ theorem xiSquaredSeamOneCoordinate_pow_thirtyTwo_im_eq_zero_iff
   · intro h32
     have h16 : (z ^ 16).im = 0 := by
       apply complex_im_eq_zero_of_re_pos_of_sq_im_eq_zero
-        (by simpa only [z] using xiSquaredSeamDyadic_rung_four_pos q)
+        (by simpa only [z, show (2 : ℕ) ^ 4 = 16 by norm_num] using
+          xiSquaredSeamDyadic_rung_four_pos q)
       simpa only [show (z ^ 16) ^ 2 = z ^ 32 by ring] using h32
     have h8 : (z ^ 8).im = 0 := by
       apply complex_im_eq_zero_of_re_pos_of_sq_im_eq_zero
-        (by simpa only [z] using xiSquaredSeamDyadic_rung_three_pos q)
+        (by simpa only [z, show (2 : ℕ) ^ 3 = 8 by norm_num] using
+          xiSquaredSeamDyadic_rung_three_pos q)
       simpa only [show (z ^ 8) ^ 2 = z ^ 16 by ring] using h16
     have h4 : (z ^ 4).im = 0 := by
       apply complex_im_eq_zero_of_re_pos_of_sq_im_eq_zero
-        (by simpa only [z] using xiSquaredSeamDyadic_rung_two_pos q)
+        (by simpa only [z, show (2 : ℕ) ^ 2 = 4 by norm_num] using
+          xiSquaredSeamDyadic_rung_two_pos q)
       simpa only [show (z ^ 4) ^ 2 = z ^ 8 by ring] using h8
     have h2 : (z ^ 2).im = 0 := by
       apply complex_im_eq_zero_of_re_pos_of_sq_im_eq_zero
-        (by simpa only [z] using xiSquaredSeamDyadic_rung_one_pos q)
+        (by simpa only [z, pow_one] using xiSquaredSeamDyadic_rung_one_pos q)
       simpa only [show (z ^ 2) ^ 2 = z ^ 4 by ring] using h4
     apply complex_im_eq_zero_of_re_pos_of_sq_im_eq_zero
       (by simpa [z] using xiSquaredSeamDyadic_rung_zero_pos q)
@@ -493,9 +494,9 @@ theorem xiSquaredSeamOneCoordinate_pow_thirtyTwo_im_eq_zero_iff
     have hz : z = ((z.re : ℝ) : ℂ) := by
       apply Complex.ext
       · simp
-      · simpa only [z] using him
+      · simpa only [z, Complex.ofReal_im] using him
     rw [show xiSquaredSeamOneCoordinate q = z by rfl, hz]
-    simpa only [← Complex.ofReal_pow, Complex.ofReal_im]
+    simp only [← Complex.ofReal_pow, Complex.ofReal_im]
 
 /-- The degree-32 Cassini power and the unshifted reciprocal-square coordinate have exactly the
 same pointwise real fibre. -/

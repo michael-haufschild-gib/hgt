@@ -173,7 +173,7 @@ theorem exists_nhds_dimH_parameter_image_preimage_stratum_lt
     refine ⟨y, ⟨hyN.1, ?_⟩, rfl⟩
     have hgy : g (F y) = 0 := (hS (F y) hyN.2).mp hyS
     have hgx : g (F x) = 0 := (hS (F x) hxV).mp hxS
-    simpa only [mem_preimage, mem_singleton_iff, phi, hgy, hgx]
+    simp only [mem_preimage, mem_singleton_iff, phi, hgy, hgx]
   have hkerle : Module.finrank ℝ (fderiv ℝ phi x).ker ≤
       Module.finrank ℝ P - 1 := by omega
   have hkerle' :

@@ -188,12 +188,12 @@ theorem disconnectedAffineEigenvalueBranch_crossPacket_eq_zero
       AnalyticAt ℂ
         (fun coupling : Sum E₁ E₂ → ℂ =>
           branchLeft (leftSplitCoupling coupling)) 0 := by
-    exact hleft.comp_of_eq' leftSplitCoupling_analyticAt rfl
+    exact hleft.fun_comp_of_eq leftSplitCoupling_analyticAt rfl
   have hrightLift :
       AnalyticAt ℂ
         (fun coupling : Sum E₁ E₂ → ℂ =>
           branchRight (rightSplitCoupling coupling)) 0 := by
-    exact hright.comp_of_eq' rightSplitCoupling_analyticAt rfl
+    exact hright.fun_comp_of_eq rightSplitCoupling_analyticAt rfl
   have htotal : AnalyticAt ℂ totalBranch 0 :=
     hleftLift.add hrightLift
   have hleftTendsto :

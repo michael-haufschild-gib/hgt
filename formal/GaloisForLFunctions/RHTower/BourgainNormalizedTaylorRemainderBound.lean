@@ -53,7 +53,7 @@ theorem abs_sub_quadraticJet_le
       (uniqueDiffOn_Icc hablt) ((hf a hbase).of_le (by norm_num)) hbase]
       at hrem
   norm_num [Real.norm_eq_abs] at hrem ⊢
-  convert hrem using 1 <;> ring
+  convert hrem using 1 ; ring
 
 theorem contDiffAt_bourgainNormalizedQuarticRemainder
     {q t : ℝ} {n : ℕ} (hbase : 0 < 1 + q * t) :

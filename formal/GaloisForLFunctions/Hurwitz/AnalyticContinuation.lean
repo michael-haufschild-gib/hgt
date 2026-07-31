@@ -367,7 +367,7 @@ lemma rawTerm_hasDerivAt {s a : ℂ} (ha : a ∈ UHP) (m : ℕ) :
   have hb : ((m : ℂ) + a) ∈ Complex.slitPlane := natCast_add_mem_slitPlane ha m
   have h := (Complex.hasStrictDerivAt_cpow_const (c := -s) hb).hasDerivAt.comp a
     ((hasDerivAt_const a (m : ℂ)).add (hasDerivAt_id a))
-  convert! h using 1 <;> ring
+  convert! h using 1 ; ring
 
 /-- Derivative of a finite Taylor packet. -/
 lemma taylorPoly_succ_hasDerivAt (K : ℕ) (s a : ℂ) (m : ℕ) :
@@ -699,7 +699,6 @@ lemma regularizationOrder_adequate (s : ℂ) :
   · simp [regularizationOrder, hs]
   · rw [regularizationOrder, if_neg hs]
     have h := Nat.find_spec (exists_nat_gt (-s.re))
-    norm_num at h ⊢
     linarith
 
 /-- Once a Taylor degree is adequate, every larger degree defines the same continued value. -/

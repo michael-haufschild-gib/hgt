@@ -29,6 +29,7 @@ variable {K : Type u} {M : Type v} {V : Type w}
   [AddCommGroup M] [Module K M]
   [AddCommGroup V] [Module K V]
 
+omit [CharZero K] in
 /-- The degree-one embedding into a symmetric algebra is faithful over a field. -/
 theorem symmetricAlgebra_ι_injective :
     Function.Injective (SymmetricAlgebra.ι K M) := by
@@ -40,8 +41,9 @@ theorem symmetricAlgebra_ι_injective :
   have hAI := symmetricAlgebra_ι_algebraicIndependent_of_linearIndependent
     (fun _ : Unit ↦ x - y) hli
   apply hAI.ne_zero Unit.unit
-  simpa only [map_sub, hxy, sub_self]
+  simp only [map_sub, hxy, sub_self]
 
+omit [CharZero K] in
 /-- The symmetric-observable lift preserves Lie brackets exactly. -/
 theorem symmetricAlgebraDerivation_commutator
     (T U : Module.End K M) :
@@ -71,7 +73,7 @@ theorem symmetricAlgebraDerivation_commutator
     rw [hDU, hDT]
     rw [symmetricPolynomialDerivation_on_ι,
       symmetricPolynomialDerivation_on_ι]
-    simp [DC, symmetricPolynomialDerivation, e, b,
+    simp [DC, symmetricPolynomialDerivation, b,
       LieRing.of_associative_ring_bracket, Module.End.mul_apply]
   exact DFunLike.congr_fun hpoly (e x)
 
@@ -85,6 +87,7 @@ def generalizedCliffordObservableFieldDerivation
       (GeneralizedCliffordShiftField K M)).compDer
         (symmetricAlgebraDerivation T))
 
+omit [CharZero K] in
 /-- The arbitrary state-action lift agrees with its action on polynomial observables. -/
 theorem generalizedCliffordObservableFieldDerivation_embedding
     (T : Module.End K (ℕ → M)) (x : SymmetricAlgebra K (ℕ → M)) :
@@ -97,6 +100,7 @@ theorem generalizedCliffordObservableFieldDerivation_embedding
     fractionRingDerivation_algebraMap]
   rfl
 
+omit [CharZero K] in
 /-- The existing one-step Clifford law is the arbitrary observable lift of its state action. -/
 theorem generalizedCliffordShiftFieldDerivation_eq_observableLift
     (A : Module.End K M) :
@@ -104,6 +108,7 @@ theorem generalizedCliffordShiftFieldDerivation_eq_observableLift
       generalizedCliffordObservableFieldDerivation
         (generalizedCliffordShiftOperator A) := rfl
 
+omit [CharZero K] in
 theorem generalizedCliffordObservableFieldDerivation_add
     (T U : Module.End K (ℕ → M)) :
     generalizedCliffordObservableFieldDerivation (T + U) =
@@ -123,6 +128,7 @@ theorem generalizedCliffordObservableFieldDerivation_add
     generalizedCliffordObservableFieldDerivation_embedding,
     symmetricAlgebraDerivation_add, Derivation.add_apply, map_add]
 
+omit [CharZero K] in
 theorem generalizedCliffordObservableFieldDerivation_smul
     (c : K) (T : Module.End K (ℕ → M)) :
     generalizedCliffordObservableFieldDerivation (c • T) =
@@ -147,6 +153,7 @@ def generalizedCliffordObservableFieldDerivationLinearMap :
   map_add' := generalizedCliffordObservableFieldDerivation_add
   map_smul' := generalizedCliffordObservableFieldDerivation_smul
 
+omit [CharZero K] in
 @[simp]
 theorem generalizedCliffordObservableFieldDerivation_zero :
     generalizedCliffordObservableFieldDerivation
@@ -154,6 +161,7 @@ theorem generalizedCliffordObservableFieldDerivation_zero :
   exact (generalizedCliffordObservableFieldDerivationLinearMap
     (K := K) (M := M)).map_zero
 
+omit [CharZero K] in
 /-- The rational observable lift preserves Lie brackets. -/
 theorem generalizedCliffordObservableFieldDerivation_commutator
     (T U : Module.End K (ℕ → M)) :
@@ -191,6 +199,7 @@ def generalizedCliffordObservableFieldLieHom :
     intro T U
     exact (generalizedCliffordObservableFieldDerivation_commutator T U).symm
 
+omit [CharZero K] in
 /-- No state-action information is lost by passage to the rational observable field. -/
 theorem generalizedCliffordObservableFieldLieHom_injective :
     Function.Injective
@@ -236,6 +245,7 @@ def endomorphismCommutatorMap
   exteriorPower.alternatingMapLinearEquiv
     (endomorphismCommutatorAlternatingMap symbol)
 
+omit [CharZero K] in
 @[simp]
 theorem endomorphismCommutatorMap_wedge
     (symbol : V →ₗ[K] Module.End K M) (v w : V) :
@@ -248,6 +258,7 @@ def generalizedCliffordDoubleShiftOperator (C : Module.End K M) :
     Module.End K (ℕ → M) :=
   periodicUnilateralShift.comp (generalizedCliffordShiftOperator C)
 
+omit [CharZero K] in
 /-- The commutator of one-step suspensions is exactly the double shift of the internal
 commutator. -/
 theorem generalizedCliffordShiftOperator_commutator
@@ -305,12 +316,14 @@ def generalizedCliffordDoubleShiftOperatorLinearMap :
           generalizedCliffordShiftOperator, periodicUnilateralShift,
           periodicPointwiseEnd]
 
+omit [CharZero K] in
 @[simp]
 theorem generalizedCliffordDoubleShiftOperator_zero :
     generalizedCliffordDoubleShiftOperator (0 : Module.End K M) = 0 := by
   exact (generalizedCliffordDoubleShiftOperatorLinearMap
     (K := K) (M := M)).map_zero
 
+omit [CharZero K] in
 /-- Two unilateral shifts do not erase any internal endomorphism. -/
 theorem generalizedCliffordDoubleShiftOperatorLinearMap_injective :
     Function.Injective
@@ -324,6 +337,7 @@ theorem generalizedCliffordDoubleShiftOperatorLinearMap_injective :
     generalizedCliffordShiftOperator, periodicUnilateralShift,
     periodicPointwiseEnd, periodicLevel] using! hcoord
 
+omit [CharZero K] in
 /-- **General principal-symbol factorization.**  The exterior commutator law on the rational
 observable field factors exactly through the internal endomorphism commutator, followed by a
 faithful double shift and a faithful observable-field lift. -/
@@ -353,6 +367,7 @@ theorem generalizedCliffordField_derivationCommutatorMap_factorization
     generalizedCliffordShiftOperator_commutator]
   rfl
 
+omit [CharZero K] in
 /-- **General principal-symbol kernel theorem.**  Shift suspension and passage to the rational
 observable field preserve the entire exterior commutator kernel exactly. -/
 theorem generalizedCliffordField_derivationCommutatorMap_ker_eq
@@ -377,6 +392,7 @@ theorem generalizedCliffordField_derivationCommutatorMap_ker_eq
     rw [h]
     simp
 
+omit [CharZero K] in
 /-- The differential-field law has maximal exterior commutator rank exactly when its internal
 principal-symbol representation does. -/
 theorem generalizedCliffordField_derivationCommutatorMap_injective_iff
@@ -388,6 +404,7 @@ theorem generalizedCliffordField_derivationCommutatorMap_injective_iff
   rw [← LinearMap.ker_eq_bot, ← LinearMap.ker_eq_bot,
     generalizedCliffordField_derivationCommutatorMap_ker_eq]
 
+omit [CharZero K] in
 /-- Pairwise commutativity is reflected, not only preserved, by the generalized-Clifford field
 construction. -/
 theorem generalizedCliffordShiftFieldDerivation_commute_iff

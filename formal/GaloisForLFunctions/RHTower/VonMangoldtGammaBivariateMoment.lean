@@ -104,7 +104,8 @@ theorem expNegOrientedRemainder_eq_unitIntervalIntegral
           (rate - t) ^ n / (n.factorial : ℝ) * Real.exp (-t)) =
         ∫ v : ℝ in 0..rate,
           v ^ n / (n.factorial : ℝ) * Real.exp (-(rate - v)) := by
-    convert hreflect using 1 <;> ring
+    convert hreflect using 1
+    ring_nf
   have hscale := intervalIntegral.mul_integral_comp_mul_right
     (f := fun v : ℝ => v ^ n / (n.factorial : ℝ) * Real.exp (-(rate - v)))
     (a := 0) (b := 1) rate
@@ -122,14 +123,13 @@ theorem expNegOrientedRemainder_eq_unitIntervalIntegral
             congr 1
             apply intervalIntegral.integral_congr
             intro u _
-            congr 1 <;> ring
+            ring
       _ = ∫ v : ℝ in 0..rate,
           v ^ n / (n.factorial : ℝ) * Real.exp (v - rate) := hscale
       _ = ∫ v : ℝ in 0..rate,
           v ^ n / (n.factorial : ℝ) * Real.exp (-(rate - v)) := by
             apply intervalIntegral.integral_congr
             intro v _
-            congr 1
             ring
   rw [hreflect', ← hscale']
   rw [← hnm]

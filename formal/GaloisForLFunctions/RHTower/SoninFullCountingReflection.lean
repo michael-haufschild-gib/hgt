@@ -156,17 +156,17 @@ theorem centralSoninExteriorOverlap_mul_adjoint_eq_exteriorCompression (a : ℝ)
     rw [ContinuousLinearMap.adjoint_comp,
       ContinuousLinearMap.adjoint.map_sub, ContinuousLinearMap.adjoint_one, hRadj,
       ContinuousLinearMap.adjoint.map_sub, ContinuousLinearMap.adjoint_one, hPadj,
-      hZadj] <;>
-      ext x <;> rfl
+      hZadj] ;
+      ext x ; rfl
   change HTGeometry.twoProjectionExteriorOverlap R P Z *
       ContinuousLinearMap.adjoint
         (HTGeometry.twoProjectionExteriorOverlap R P Z) =
         HTGeometry.twoProjectionExteriorCompression P R Z
   rw [hAdj, HTGeometry.twoProjectionExteriorOverlap,
     HTGeometry.twoProjectionExteriorCompression]
-  noncomm_ring <;>
+  noncomm_ring ;
     simp only [← mul_assoc, hPP, hRR, hZZ, hPZ, hZP, hRZ, hZR,
-      zero_mul, mul_zero, add_zero, zero_add] <;>
+      zero_mul, mul_zero, zero_add] ;
     module
 
 /-- Both Sonin full-counting Hamiltonians are trace class by their explicit positive
@@ -225,8 +225,8 @@ theorem opTrace_centralSoninAlternatingBlock_eq_exteriorCompression
     change ContinuousLinearMap.adjoint
         ((centralPhysicalForbidden a).starProjection ∘L
           (centralFourierForbidden a).starProjection) = _
-    rw [ContinuousLinearMap.adjoint_comp, hFourierAdj, hPhysicalAdj] <;>
-      ext x <;> rfl
+    rw [ContinuousLinearMap.adjoint_comp, hFourierAdj, hPhysicalAdj] ;
+      ext x ; rfl
   have hSnorm : hsNormSq S = 4 * a ^ 2 := by
     calc
       hsNormSq S = hsNormSq (ContinuousLinearMap.adjoint S) :=

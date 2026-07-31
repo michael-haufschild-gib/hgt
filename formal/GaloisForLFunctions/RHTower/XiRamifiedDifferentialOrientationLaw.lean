@@ -1,4 +1,6 @@
+import GaloisForLFunctions.HTGeometry.ProjectiveHorizonComplementarity
 import GaloisForLFunctions.HTGeometry.ReflectedChannelProjectiveFlow
+import GaloisForLFunctions.HTGeometry.UpperEndDifferentialInstances
 import GaloisForLFunctions.HTGeometry.ScalarFiniteDifferentialTorsor
 import GaloisForLFunctions.RHTower.XiCTaylorThetaTailCompletedDensityTransversePick
 import GaloisForLFunctions.RHTower.XiHypertranscendenceUnconditional
@@ -26,7 +28,8 @@ open scoped Differential
 
 namespace RHTower
 
-open GaloisForLFunctions
+open GaloisForLFunctions GaloisForLFunctions.HTGeometry
+open scoped UpperEndDifferentialInstances
 
 noncomputable section
 
@@ -36,7 +39,7 @@ noncomputable section
 theorem xiRotatedUpperEndCarrier_ne_zero :
     xiRotatedUpperEndCarrier ≠ 0 := by
   simpa only [differentialJet_zero] using
-    (HTGeometry.hypertranscendentalOver_differentialJet_ne_zero
+    (hypertranscendentalOver_differentialJet_ne_zero
       xiRotatedUpperEndCarrier_hypertranscendentalOver 0)
 
 /-- Squaring the actual completed-Xi carrier preserves hypertranscendence over the rational
@@ -128,8 +131,8 @@ theorem thetaCuspTailSecondDensityReflectionOddCoordinate_den_ne_zero_at_XiC_zer
       thetaCuspTailSecondDensityDeBrangesESharp z =
         -thetaCuspTailSecondDensityDeBrangesE z := by
     linear_combination hsum
-  rw [hsharp]
-  exact mul_ne_zero (by norm_num)
+  rw [hsharp, sub_neg_eq_add, ← two_mul]
+  exact mul_ne_zero two_ne_zero
     (thetaCuspTailSecondDensityDeBrangesE_ne_zero hz)
 
 /-- On every regular noncentral theta chart, the odd coordinate vanishes exactly on the Xi

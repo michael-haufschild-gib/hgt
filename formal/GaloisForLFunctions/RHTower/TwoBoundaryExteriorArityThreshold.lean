@@ -29,7 +29,7 @@ theorem twoBoundaryOrthogonalProjection_mem_source
     (hSU : S ≤ U) {x : E} (hx : x ∈ U) :
     Sᗮ.starProjection x ∈ U := by
   rw [S.starProjection_orthogonal_val]
-  exact U.sub_mem hx (hSU (S.orthogonalProjection x).property)
+  exact U.sub_mem hx (hSU (S.orthogonalProjectionOnto x).property)
 
 /-- **Four-direction threshold.**  If two independent vectors survive after removing a
 two-dimensional boundary subspace, then the source subspace before compression has dimension at
@@ -42,10 +42,10 @@ theorem twoBoundaryExterior_nonzero_forces_four_sourceDirections
     4 ≤ Module.finrank ℂ U := by
   let T : Submodule ℂ E := Sᗮ ⊓ U
   have hxT : Sᗮ.starProjection x ∈ T := ⟨
-    (Sᗮ.orthogonalProjection x).property,
+    (Sᗮ.orthogonalProjectionOnto x).property,
     twoBoundaryOrthogonalProjection_mem_source S U hSU hx⟩
   have hyT : Sᗮ.starProjection y ∈ T := ⟨
-    (Sᗮ.orthogonalProjection y).property,
+    (Sᗮ.orthogonalProjectionOnto y).property,
     twoBoundaryOrthogonalProjection_mem_source S U hSU hy⟩
   let v : Fin 2 → T := ![
     ⟨Sᗮ.starProjection x, hxT⟩,

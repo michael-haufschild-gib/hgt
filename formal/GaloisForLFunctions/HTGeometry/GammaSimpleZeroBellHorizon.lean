@@ -358,7 +358,6 @@ theorem algebraicIndependent_gammaSimpleZeroCovariantResidueGerm :
     algebraicIndependent_gammaPoleReciprocalUnitCoefficientGerm
       (c := fun j => ((j + 2).factorial : ℂ)) (by
         intro j
-        change ((j + 2).factorial : ℂ) ≠ 0
         exact_mod_cast Nat.factorial_ne_zero (j + 2))
   have heq : gammaSimpleZeroCovariantResidueGerm =
       fun j => algebraMap ℂ NatGerm ((j + 2).factorial : ℂ) *

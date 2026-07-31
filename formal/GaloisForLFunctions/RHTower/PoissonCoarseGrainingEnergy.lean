@@ -213,8 +213,7 @@ lemma lorentz_neg {a : ℝ} (x : ℝ) : lorentz a (-x) = lorentz a x := by
 theorem poissonEnergy_mirror_pair (m d : ℝ) {a : ℝ} (ha : a ≠ 0) :
     poissonEnergy (Finset.univ : Finset (Fin 2)) (fun _ => m) (![d, -d]) a
       = 2 * m ^ 2 * (1 + lorentz a (2 * d)) := by
-  simp only [poissonEnergy, Fin.sum_univ_two, Matrix.cons_val_zero, Matrix.cons_val_one,
-    Matrix.head_cons]
+  simp only [poissonEnergy, Fin.sum_univ_two, Matrix.cons_val_zero, Matrix.cons_val_one]
   rw [show d - d = 0 by ring, show -d - -d = 0 by ring, show d - -d = 2 * d by ring,
     show -d - d = -(2 * d) by ring, lorentz_self ha, lorentz_neg]
   ring
@@ -244,7 +243,7 @@ theorem poissonEnergy_mirror_pair_gap (m d : ℝ) {a : ℝ} (ha : a ≠ 0) :
 /-- **The resolution threshold.**  At least half the merged energy of the pair is visible at
 resolution `a` exactly when `a ≤ 2 d`: a splitting of size `d` cannot be detected at any coarser
 resolution. -/
-theorem poissonEnergy_gap_ge_iff (m d : ℝ) {a : ℝ} (ha : a ≠ 0) (hm : m ≠ 0) (hd : d ≠ 0) :
+theorem poissonEnergy_gap_ge_iff (m d : ℝ) {a : ℝ} (ha : a ≠ 0) (hm : m ≠ 0) (_hd : d ≠ 0) :
     m ^ 2 ≤ 8 * m ^ 2 * d ^ 2 / (a ^ 2 + 4 * d ^ 2) ↔ a ^ 2 ≤ 4 * d ^ 2 := by
   have hpos : (0:ℝ) < a ^ 2 + 4 * d ^ 2 := by
     have h1 : 0 < a ^ 2 := by positivity

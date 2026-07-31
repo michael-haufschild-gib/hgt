@@ -34,8 +34,7 @@ def deningerHermitianLineHodge (z : ℝ × ℝ) : ℝ × ℝ :=
 theorem deningerHermitianLineRadius_scale (s : ℝ) (z : ℝ × ℝ) :
     deningerHermitianLineRadius (deningerHermitianLineScale s z) =
       s ^ 2 * deningerHermitianLineRadius z := by
-  simp only [deningerHermitianLineRadius, deningerHermitianLineScale,
-    Prod.fst, Prod.snd]
+  simp only [deningerHermitianLineRadius, deningerHermitianLineScale]
   ring
 
 /-- The Kähler area has the same weight as squared radius. -/
@@ -45,8 +44,7 @@ theorem deningerHermitianLineArea_scale
         (deningerHermitianLineScale s z)
         (deningerHermitianLineScale s w) =
       s ^ 2 * deningerHermitianLineArea z w := by
-  simp only [deningerHermitianLineArea, deningerHermitianLineScale,
-    Prod.fst, Prod.snd]
+  simp only [deningerHermitianLineArea, deningerHermitianLineScale]
   ring
 
 /-- On degree one, Hodge star squares to minus the identity. -/
@@ -60,7 +58,7 @@ theorem deningerHermitianLineArea_hodge_self (z : ℝ × ℝ) :
     deningerHermitianLineArea z (deningerHermitianLineHodge z) =
       deningerHermitianLineRadius z := by
   simp only [deningerHermitianLineArea, deningerHermitianLineHodge,
-    deningerHermitianLineRadius, Prod.fst, Prod.snd]
+    deningerHermitianLineRadius]
   ring
 
 /-- The source Hodge metric is strictly positive away from zero. -/
@@ -69,7 +67,7 @@ theorem deningerHermitianLineHodge_positive
     0 < deningerHermitianLineArea z (deningerHermitianLineHodge z) := by
   rw [deningerHermitianLineArea_hodge_self]
   rcases z with ⟨x, y⟩
-  simp only [deningerHermitianLineRadius, Prod.fst, Prod.snd] at hz ⊢
+  simp only [deningerHermitianLineRadius] at hz ⊢
   by_cases hx : x = 0
   · have hy : y ≠ 0 := by
       intro hy

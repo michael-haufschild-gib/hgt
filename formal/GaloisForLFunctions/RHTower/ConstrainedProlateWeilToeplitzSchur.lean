@@ -214,7 +214,7 @@ def constrainedProlateWeilTwoModeSchurCorrection
   -(D1 * a0) / (D0 * a1)
 
 theorem constrainedProlateWeilTwoModeSchurCorrection_cancels
-    {D0 D1 a0 a1 : ℝ} (hD0 : D0 ≠ 0) (ha1 : a1 ≠ 0) :
+    {D0 D1 a0 a1 : ℝ} (hD0 : D0 ≠ 0) (_ha1 : a1 ≠ 0) :
     D1 * a0 * a1 + D0 * a1 ^ 2 *
       constrainedProlateWeilTwoModeSchurCorrection D0 D1 a0 a1 = 0 := by
   unfold constrainedProlateWeilTwoModeSchurCorrection

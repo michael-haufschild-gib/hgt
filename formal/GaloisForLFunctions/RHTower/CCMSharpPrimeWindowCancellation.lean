@@ -216,6 +216,6 @@ theorem analyticOrderAt_dyadicSharpPrimeCancelledSource_eq_pred
   | coe n =>
       simp only [ENat.map_coe] at hcancelMeroOrder
       have hnm : n = m := by exact_mod_cast hcancelMeroOrder
-      simpa [hnm]
+      simp [hnm]
 
 end RHTower

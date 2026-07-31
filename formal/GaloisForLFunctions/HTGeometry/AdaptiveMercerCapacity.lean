@@ -174,7 +174,6 @@ theorem adaptiveMercerFiniteResidualKernel_quadraticForm_eq_sum_sq
           z i * adaptiveMercerResidualFeature a capacity i n) ^ 2) := by
       apply Finset.sum_congr rfl
       intro n hn
-      change F.sum (fun i => F.sum (fun j => b i n * b j n)) = _
       rw [show F.sum (fun i => F.sum (fun j => b i n * b j n)) =
           (F.sum fun i => b i n) * (F.sum fun j => b j n) by
         rw [Finset.sum_mul]

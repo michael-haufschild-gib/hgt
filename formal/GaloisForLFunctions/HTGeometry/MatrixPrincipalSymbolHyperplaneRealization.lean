@@ -39,6 +39,7 @@ def diagonalCharacterPrincipalSymbolLinear
       simp [diagonalCharacterPrincipalSymbol]
     · simp [diagonalCharacterPrincipalSymbol, hij]
 
+omit [Fintype ι] in
 @[simp]
 theorem diagonalCharacterPrincipalSymbolLinear_apply
     (characters : ι → h →ₗ[K] K) (A : h) :
@@ -51,6 +52,7 @@ def diagonalCharacterPrincipalSymbolTower
     (characters : ι → h →ₗ[K] K) : ℕ → h → Matrix ι ι K :=
   fun _ A ↦ diagonalCharacterPrincipalSymbol characters A
 
+omit [Fintype ι] in
 @[simp]
 theorem diagonalCharacterPrincipalSymbolTower_apply
     (characters : ι → h →ₗ[K] K) (n : ℕ) (A : h) :

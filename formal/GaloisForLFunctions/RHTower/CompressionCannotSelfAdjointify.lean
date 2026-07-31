@@ -71,7 +71,7 @@ theorem compression_norm_lower_bound (H P : E →L[ℂ] E) {x : E}
     (hPx : P x = x) (hPHx : P (H x) = H x) :
     ‖H x‖ ≤ ‖P ∘L (H ∘L P)‖ * ‖x‖ := by
   have hval : (P ∘L (H ∘L P)) x = H x := by
-    simp only [coe_comp', Function.comp_apply, hPx, hPHx]
+    simp only [coe_comp, Function.comp_apply, hPx, hPHx]
   calc ‖H x‖ = ‖(P ∘L (H ∘L P)) x‖ := by rw [hval]
     _ ≤ ‖P ∘L (H ∘L P)‖ * ‖x‖ := le_opNorm _ _
 

@@ -48,7 +48,6 @@ def inverseScaleAtomicNode {I : Type*} (z : I → ℂ) (R : ℝ) : I → ℂ :=
     {I : Type*} (z : I → ℂ) (R : ℝ) (i : I) :
     inverseScaleAtomicNode z R i = z i / (R : ℂ) := by
   rw [inverseScaleAtomicNode, div_eq_mul_inv]
-  push_cast
   ring
 
 /-- Bounded atomic weights have absolutely summable power moments. -/

@@ -439,8 +439,7 @@ theorem eventually_exists_canonicalThetaTailFiniteArithmeticHaarCurrent_lt_scale
   have hzero : Tendsto (fun n : ℕ =>
       (0 : ℝ) * (((n + 1 : ℕ) : ℝ) ^
         (2 * (analyticOrderAt xi sigma).toNat))) atTop (nhds 0) := by
-    simpa using (tendsto_const_nhds :
-      Tendsto (fun _ : ℕ => (0 : ℝ)) atTop (nhds 0))
+    simp
   have hpositive :=
     eventually_remainder_lt_scaled_xiCTaylor_normSq_of_tendsto_localOrder
       hD sigma (fun _ : ℕ => (0 : ℝ)) hzero hepsilon

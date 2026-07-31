@@ -272,7 +272,7 @@ theorem oneSidedAtCofinalNbhd_of_locOneSided {c z : ℂ}
   intro ε hε
   obtain ⟨V, hVo, hzV, hVsub, hVpre, hVne⟩ := hbasis ε hε
   refine ⟨V, hVo, hzV, hVsub, ?_⟩
-  rw [Set.diff_eq]
+  rw [Set.sdiff_eq]
   exact ⟨hVne, hVpre⟩
 
 /-- Density of neighbourhood-cofinal one-sided points on the Julia frontier. -/
@@ -683,9 +683,9 @@ theorem locOneSided_of_oneSidedAtCofinalNbhd {c z : ℂ}
   intro ε hε
   obtain ⟨V, hVo, hzV, hVsub, hVconn⟩ := hbasis ε hε
   refine ⟨V, hVo, hzV, hVsub, ?_, ?_⟩
-  · rw [Set.diff_eq] at hVconn
+  · rw [Set.sdiff_eq] at hVconn
     exact hVconn.2
-  · rw [Set.diff_eq] at hVconn
+  · rw [Set.sdiff_eq] at hVconn
     exact hVconn.1
 
 /-- Support-form Brolin pullback with a neighbourhood-cofinal base point rather

@@ -34,6 +34,7 @@ def scalarLogCurrentField (F : Type*) {T : Type*} [Field F] [Field T]
     [Algebra F T] [Differential T] (q : T) : IntermediateField F T :=
   differentialAdjoin F ({Differential.logDeriv q} : Set T)
 
+omit [CharZero T] in
 /-- Multiplying a differential generator by a nonzero base scalar does not change its generated
 differential field. -/
 theorem differentialAdjoin_mul_algebraMap_eq (q : T) (u : Fˣ) :
@@ -74,7 +75,7 @@ private def scalarDifferentialScaleEquivRaw (q : T) (hq : HypertranscendentalOve
   have hyHT : HypertranscendentalOver F (q * algebraMap F T (u : F)) :=
     (hypertranscendentalOver_mul_differentialAlgebraic_iff
       (differentialAlgebraicOver_algebraMap (F := F) (E := T) (u : F))
-      (by simpa using (algebraMap F T).injective.ne u.ne_zero)).2 hq
+      (by simp)).2 hq
   have hy : DifferentialIndependent F y := by
     simpa [y] using
       (GaloisForLFunctions.hypertranscendentalOver_iff_differentialIndependent_singleton F
@@ -99,7 +100,7 @@ private theorem scalarDifferentialScaleEquivRaw_apply_q (q : T)
   have hyHT : HypertranscendentalOver F (q * algebraMap F T (u : F)) :=
     (hypertranscendentalOver_mul_differentialAlgebraic_iff
       (differentialAlgebraicOver_algebraMap (F := F) (E := T) (u : F))
-      (by simpa using (algebraMap F T).injective.ne u.ne_zero)).2 hq
+      (by simp)).2 hq
   have hy : DifferentialIndependent F y := by
     simpa [y] using
       (GaloisForLFunctions.hypertranscendentalOver_iff_differentialIndependent_singleton F
@@ -124,7 +125,7 @@ private theorem scalarDifferentialScaleEquivRaw_deriv (q : T)
   have hyHT : HypertranscendentalOver F (q * algebraMap F T (u : F)) :=
     (hypertranscendentalOver_mul_differentialAlgebraic_iff
       (differentialAlgebraicOver_algebraMap (F := F) (E := T) (u : F))
-      (by simpa using (algebraMap F T).injective.ne u.ne_zero)).2 hq
+      (by simp)).2 hq
   have hy : DifferentialIndependent F y := by
     simpa [y] using
       (GaloisForLFunctions.hypertranscendentalOver_iff_differentialIndependent_singleton F
@@ -170,6 +171,7 @@ theorem scalarDifferentialScaleEquiv_deriv (q : T)
       (scalarDifferentialScaleEquiv q hq hgen u z)′ :=
   (exists_scalarDifferentialScaleEquiv q hq hgen u).choose_spec.2 z
 
+omit [CharZero T] in
 /-- The scalar differential field is generated as an ordinary field by its logarithmic-current
 field and the one amplitude coordinate. -/
 theorem scalarLogCurrentField_adjoin_amplitude_eq_top (q : T) (hq0 : q ≠ 0)
@@ -211,7 +213,7 @@ theorem scalarDifferentialScaleEquiv_logDeriv (q : T)
     scalarDifferentialScaleEquiv q hq hgen u (Differential.logDeriv q) =
       Differential.logDeriv q := by
   have hu0 : algebraMap F T (u : F) ≠ 0 := by
-    simpa using (algebraMap F T).injective.ne u.ne_zero
+    simp
   have hu' : (algebraMap F T (u : F))′ = 0 := by
     rw [deriv_algebraMap, hconst]
     exact map_zero (algebraMap F T)
@@ -219,7 +221,7 @@ theorem scalarDifferentialScaleEquiv_logDeriv (q : T)
     scalarDifferentialScaleEquiv_deriv,
     scalarDifferentialScaleEquiv_apply_q]
   rw [Derivation.leibniz, hu']
-  simp only [smul_eq_mul, mul_zero, add_zero]
+  simp only [smul_eq_mul, mul_zero]
   field_simp [hu0, hq0]
   ring
 
@@ -259,7 +261,7 @@ theorem scalarDifferentialScaleEquiv_fixed_on_currentField (q : T)
     rw [map_inv₀, ha]
   · intro a b _ _ ha hb
     rw [map_mul, ha, hb]
-  · simpa using z.2
+  · simp
 
 /-- The scalar action, re-based over the logarithmic-current field. -/
 def scalarDifferentialScaleEquivCurrent (q : T)
@@ -429,7 +431,7 @@ theorem scalar_amplitude_transcendental_over_currentField (q : T)
       hqroot.map
     have hmap : P.map sigma.toRingEquiv.toRingHom = P := by
       ext k
-      simp only [P, Polynomial.coeff_map, Function.comp_apply]
+      simp only [P, Polynomial.coeff_map]
       exact sigma.commutes (p.coeff k)
     rw [hmap] at hsroot
     simpa [r, sigma] using hsroot
@@ -480,10 +482,12 @@ theorem ratFunc_algHom_ext {K E : Type*} [Field K] [Field E] [Algebra K E]
 def scalarLogCurrentUnit (q : T) : Fˣ →* (scalarLogCurrentField F q)ˣ :=
   Units.map (algebraMap F (scalarLogCurrentField F q)).toMonoidHom
 
+omit [Differential F] [DifferentialAlgebra F T] [CharZero T] in
 theorem scalarLogCurrentUnit_injective (q : T) :
     Function.Injective (scalarLogCurrentUnit (F := F) q) :=
   Units.map_injective (algebraMap F (scalarLogCurrentField F q)).injective
 
+omit [Differential F] [DifferentialAlgebra F T] [CharZero T] in
 theorem orderOf_scalarLogCurrentUnit (q : T) (u : Fˣ) :
     orderOf (scalarLogCurrentUnit (F := F) q u) = orderOf u :=
   orderOf_injective (scalarLogCurrentUnit (F := F) q)
@@ -519,6 +523,7 @@ theorem scalarTorsorRatFuncEquiv_scale (q : T)
     ring
   exact DFunLike.congr_fun heq z
 
+omit [CharZero T] in
 /-- The amplitude solves the rank-one linear equation `Y' = JY`. -/
 theorem deriv_eq_logDeriv_mul (q : T) (hq0 : q ≠ 0) :
     q′ = Differential.logDeriv q * q := by
@@ -719,7 +724,7 @@ theorem derivationPreservingAut_eq_scaleAction_of_apply_q
     sigma = scalarDifferentialScaleAction q hq hq0 hgen hconst u := by
   apply Subtype.ext
   apply scalarCurrentAlgEquiv_ext q hq0 hgen
-  simpa [hsigma]
+  simp [hsigma]
 
 /-- Finite-order fixed field for an arbitrary differential automorphism satisfying
 `sigma(q) = u q`. -/

@@ -119,7 +119,7 @@ noncomputable def twoControlSharpBranch (z : Fin 2 → ℂ) : ℂ :=
 
 theorem twoControlSharpBranch_analyticAt :
     AnalyticAt ℂ twoControlSharpBranch 0 := by
-  exact twoControlSharpMatrixBranch_spec.1.comp_of_eq'
+  exact twoControlSharpMatrixBranch_spec.1.fun_comp_of_eq
     twoControlSharpMatrix_analyticAt twoControlSharpMatrix_zero
 
 @[simp]

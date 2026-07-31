@@ -92,8 +92,8 @@ def primeRadialPrefixKernelNewCoordinate
     (W : Submodule ℂ PrimeRadialProfile) (N : Nat) :
     LinearMap.ker (primeRadialPrefixRestriction W N) →ₗ[ℂ] ℂ where
   toFun q := q.1.1 (Fin.last N)
-  map_add' q z := rfl
-  map_smul' a q := rfl
+  map_add' _q _z := rfl
+  map_smul' _a _q := rfl
 
 theorem primeRadialPrefixKernelNewCoordinate_injective
     (W : Submodule ℂ PrimeRadialProfile) (N : Nat) :
@@ -242,7 +242,7 @@ theorem primeRadialVisibleOrderCount_succ
   unfold primeRadialOrderJump
   by_cases hoccurs : PrimeRadialSubspaceOrderOccurs W (N + 1) <;>
     simp [primeRadialVisibleOrderCount, Finset.range_add_one,
-      Finset.filter_insert, Finset.notMem_range_self, hoccurs]
+      Finset.filter_insert, hoccurs]
 
 /-- **Order-census theorem.**  Prefix dimension equals the number of attainable leading orders. -/
 theorem primeRadialPrefixRange_finrank_eq_visibleOrderCount

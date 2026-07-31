@@ -73,9 +73,7 @@ theorem hasDerivAt_thetaCuspHigherLikelihoodSpectralMoment
       simpa [Function.comp_def, mul_comm] using
         (Real.hasDerivAt_exp (-z * t)).comp z hinner
     have hmul := (hasDerivAt_const z (t ^ m)).mul hexp
-    convert hmul using 1
-    rw [pow_succ]
-    ring
+    exact hmul.congr_deriv (by rw [pow_succ]; ring)
   have hmain := hasDerivAt_integral_of_dominated_loc_of_deriv_le
     (μ := thetaCuspHigherLikelihoodSpectralMeasure)
     (F := fun z t : ℝ => t ^ m * Real.exp (-z * t))
@@ -83,13 +81,17 @@ theorem hasDerivAt_thetaCuspHigherLikelihoodSpectralMoment
     (bound := bound) hs hFmeas
     (integrable_pow_mul_exp_neg_thetaCuspHigherLikelihoodSpectralMeasure m hB)
     hF'meas hdom hboundInt hdiff
-  convert hmain.2 using 1
-  · funext q
+  have hfun : (fun q => thetaCuspHigherLikelihoodSpectralMoment q m) = fun n =>
+      ∫ (a : ℝ), a ^ m * Real.exp (-n * a)
+        ∂thetaCuspHigherLikelihoodSpectralMeasure := by
+    funext q
     exact thetaCuspHigherLikelihoodSpectralMoment_eq_integral q m
-  · rw [thetaCuspHigherLikelihoodSpectralMoment_eq_integral, ← integral_neg]
+  rw [hfun]
+  exact hmain.2.congr_deriv (by
+    rw [thetaCuspHigherLikelihoodSpectralMoment_eq_integral, ← integral_neg]
     apply integral_congr_ae
     filter_upwards with t
-    ring
+    ring)
 
 /-- Mean of the total likelihood state, including the first-atom mass at spectral coordinate
 zero. -/
@@ -127,11 +129,11 @@ theorem hasDerivAt_thetaCuspLikelihoodMean
   have hpartPos := thetaCuspLikelihoodPartition_pos hB
   have hmOne :=
     hasDerivAt_thetaCuspHigherLikelihoodSpectralMoment 1 hB
-  unfold thetaCuspLikelihoodMean thetaCuspLikelihoodVariance
-  convert hmOne.div hpart hpartPos.ne' using 1
-  simp only [thetaCuspLikelihoodMean]
-  field_simp [hpartPos.ne']
-  ring
+  exact (hmOne.div hpart hpartPos.ne').congr_deriv (by
+    norm_num
+    unfold thetaCuspLikelihoodVariance thetaCuspLikelihoodMean
+    field_simp [hpartPos.ne']
+    ring)
 
 theorem hasDerivAt_thetaCuspLikelihoodVariance
     {B : ℝ} (hB : 0 < B) :
@@ -142,12 +144,12 @@ theorem hasDerivAt_thetaCuspLikelihoodVariance
   have hmTwo :=
     hasDerivAt_thetaCuspHigherLikelihoodSpectralMoment 2 hB
   have hmean := hasDerivAt_thetaCuspLikelihoodMean hB
-  unfold thetaCuspLikelihoodVariance thetaCuspLikelihoodThirdCumulant
-  convert (hmTwo.div hpart hpartPos.ne').sub (hmean.pow 2) using 1
-  simp only [thetaCuspLikelihoodMean, thetaCuspLikelihoodVariance]
-  norm_num
-  field_simp [hpartPos.ne']
-  ring
+  exact ((hmTwo.div hpart hpartPos.ne').sub (hmean.pow 2)).congr_deriv (by
+    norm_num
+    unfold thetaCuspLikelihoodThirdCumulant thetaCuspLikelihoodVariance
+      thetaCuspLikelihoodMean
+    field_simp [hpartPos.ne']
+    ring)
 
 /-- First logarithmic partition jet in likelihood temperature. -/
 def thetaCuspLikelihoodLogPartitionJetOne (B : ℝ) : ℝ :=
@@ -173,9 +175,9 @@ theorem hasDerivAt_thetaCuspLikelihoodLogPartitionJetOne
     {B : ℝ} (hB : 0 < B) :
     HasDerivAt thetaCuspLikelihoodLogPartitionJetOne
       (thetaCuspLikelihoodLogPartitionJetTwo B) B := by
-  unfold thetaCuspLikelihoodLogPartitionJetOne
-    thetaCuspLikelihoodLogPartitionJetTwo
-  simpa using (hasDerivAt_thetaCuspLikelihoodMean hB).neg
+  have h := (hasDerivAt_thetaCuspLikelihoodMean hB).neg
+  rw [neg_neg] at h
+  exact h
 
 theorem hasDerivAt_thetaCuspLikelihoodLogPartitionJetTwo
     {B : ℝ} (hB : 0 < B) :
@@ -215,23 +217,21 @@ theorem hasDerivAt_thetaCuspLikelihoodCoordinate (x : ℝ) :
       (2 * thetaCuspSingleAtomReflectionScale 1 x) x := by
   unfold thetaCuspLikelihoodCoordinate thetaCuspSingleAtomReflectionScale
   simp only [Nat.cast_one, one_pow]
-  convert (((Real.hasDerivAt_exp x).pow 2).const_mul Real.pi).sub_const
-    (3 / 2) using 1
-  rw [show Real.exp (2 * x) = Real.exp x ^ 2 by
-    rw [show 2 * x = x + x by ring, Real.exp_add]
-    ring]
-  ring
+  exact ((((Real.hasDerivAt_exp x).pow 2).const_mul Real.pi).sub_const
+    (3 / 2)).congr_deriv (by
+      rw [show Real.exp (2 * x) = Real.exp x ^ 2 by
+        rw [show 2 * x = x + x by ring, Real.exp_add]
+        ring]
+      ring)
 
 theorem hasDerivAt_thetaCuspSingleAtomReflectionScale_one (x : ℝ) :
     HasDerivAt (thetaCuspSingleAtomReflectionScale 1)
       (2 * thetaCuspSingleAtomReflectionScale 1 x) x := by
   unfold thetaCuspSingleAtomReflectionScale
-  simp only [Nat.cast_one, one_pow]
-  convert (Real.hasDerivAt_exp (2 * x)).comp x
-    ((hasDerivAt_id x).const_mul 2) |>.const_mul Real.pi using 1
-  · funext y
-    simp [Function.comp_apply, mul_comm]
-  · ring
+  simp only [Nat.cast_one, one_pow, mul_one]
+  refine (((Real.hasDerivAt_exp (2 * x)).comp x
+    ((hasDerivAt_id x).const_mul 2)).const_mul Real.pi).congr_deriv ?_
+  ring
 
 theorem hasDerivAt_thetaCuspLikelihoodSourceLogPartition
     {x : ℝ} (hB : 0 < thetaCuspLikelihoodCoordinate x) :
@@ -239,11 +239,10 @@ theorem hasDerivAt_thetaCuspLikelihoodSourceLogPartition
       (thetaCuspLikelihoodSourceLogPartitionJetOne x) x := by
   have hlog := hasDerivAt_log_thetaCuspLikelihoodPartition_cumulant hB
   have hcoord := hasDerivAt_thetaCuspLikelihoodCoordinate x
-  unfold thetaCuspLikelihoodSourceLogPartition
-    thetaCuspLikelihoodSourceLogPartitionJetOne
-    thetaCuspLikelihoodLogPartitionJetOne at *
-  convert hlog.comp x hcoord using 1
-  ring
+  exact (hlog.comp x hcoord).congr_deriv (by
+    unfold thetaCuspLikelihoodSourceLogPartitionJetOne
+      thetaCuspLikelihoodLogPartitionJetOne
+    ring)
 
 theorem hasDerivAt_thetaCuspLikelihoodSourceLogPartitionJetOne
     {x : ℝ} (hB : 0 < thetaCuspLikelihoodCoordinate x) :
@@ -252,14 +251,17 @@ theorem hasDerivAt_thetaCuspLikelihoodSourceLogPartitionJetOne
   have hscale := hasDerivAt_thetaCuspSingleAtomReflectionScale_one x
   have hmean := (hasDerivAt_thetaCuspLikelihoodMean hB).comp x
     (hasDerivAt_thetaCuspLikelihoodCoordinate x)
-  unfold thetaCuspLikelihoodSourceLogPartitionJetOne
-    thetaCuspLikelihoodSourceLogPartitionJetTwo
-  convert (hscale.mul hmean).const_mul (-2) using 1
-  · funext y
-    simp only [Function.comp_apply, Pi.mul_apply]
+  have hfun : thetaCuspLikelihoodSourceLogPartitionJetOne = fun y =>
+      -2 * (thetaCuspSingleAtomReflectionScale 1 y *
+        thetaCuspLikelihoodMean (thetaCuspLikelihoodCoordinate y)) := by
+    funext y
+    unfold thetaCuspLikelihoodSourceLogPartitionJetOne
     ring
-  · simp only [Function.comp_apply]
-    ring
+  rw [hfun]
+  exact ((hscale.mul hmean).const_mul (-2)).congr_deriv (by
+    simp only [Function.comp_apply]
+    unfold thetaCuspLikelihoodSourceLogPartitionJetTwo
+    ring)
 
 theorem hasDerivAt_thetaCuspLikelihoodSourceLogPartitionJetTwo
     {x : ℝ} (hB : 0 < thetaCuspLikelihoodCoordinate x) :
@@ -272,14 +274,19 @@ theorem hasDerivAt_thetaCuspLikelihoodSourceLogPartitionJetTwo
     (hasDerivAt_thetaCuspLikelihoodCoordinate x)
   have hfirst := ((hscale.pow 2).mul hvariance).const_mul 4
   have hsecond := (hscale.mul hmean).const_mul 4
-  unfold thetaCuspLikelihoodSourceLogPartitionJetTwo
-    thetaCuspLikelihoodSourceLogPartitionJetThree
-  convert hfirst.sub hsecond using 1
-  · funext y
-    simp only [Function.comp_apply, Pi.mul_apply, Pi.pow_apply, Pi.sub_apply]
+  have hfun : thetaCuspLikelihoodSourceLogPartitionJetTwo = fun y =>
+      4 * (thetaCuspSingleAtomReflectionScale 1 y ^ 2 *
+          thetaCuspLikelihoodVariance (thetaCuspLikelihoodCoordinate y)) -
+        4 * (thetaCuspSingleAtomReflectionScale 1 y *
+          thetaCuspLikelihoodMean (thetaCuspLikelihoodCoordinate y)) := by
+    funext y
+    unfold thetaCuspLikelihoodSourceLogPartitionJetTwo
     ring
-  · simp only [Function.comp_apply, Pi.pow_apply]
-    ring
+  rw [hfun]
+  exact (hfirst.sub hsecond).congr_deriv (by
+    norm_num
+    unfold thetaCuspLikelihoodSourceLogPartitionJetThree
+    ring)
 
 /-- Reflected likelihood action written entirely in source-coordinate cumulant variables. -/
 def thetaCuspReflectedLikelihoodCumulantAction (u t : ℝ) : ℝ :=
@@ -338,11 +345,9 @@ theorem hasDerivAt_thetaCuspReflectedLikelihoodCumulantAction
   have hm := (hasDerivAt_thetaCuspLikelihoodSourceLogPartition hminus).comp t
     ((hasDerivAt_id t).const_sub u)
   have hconst := hasDerivAt_const t (2 * thetaCuspLikelihoodSourceLogPartition u)
-  unfold thetaCuspReflectedLikelihoodCumulantAction
-    thetaCuspReflectedLikelihoodCumulantJetOne
-  convert (hconst.sub hp).sub hm using 1
-  all_goals simp [sub_eq_add_neg]
-  all_goals ring
+  exact ((hconst.sub hp).sub hm).congr_deriv (by
+    unfold thetaCuspReflectedLikelihoodCumulantJetOne
+    ring)
 
 theorem hasDerivAt_thetaCuspReflectedLikelihoodCumulantJetOne
     {u t : ℝ}
@@ -354,11 +359,9 @@ theorem hasDerivAt_thetaCuspReflectedLikelihoodCumulantJetOne
     ((hasDerivAt_id t).const_add u)
   have hm := (hasDerivAt_thetaCuspLikelihoodSourceLogPartitionJetOne hminus).comp t
     ((hasDerivAt_id t).const_sub u)
-  unfold thetaCuspReflectedLikelihoodCumulantJetOne
-    thetaCuspReflectedLikelihoodCumulantJetTwo
-  convert hm.sub hp using 1
-  all_goals simp [sub_eq_add_neg]
-  all_goals ring
+  exact (hm.sub hp).congr_deriv (by
+    unfold thetaCuspReflectedLikelihoodCumulantJetTwo
+    ring)
 
 theorem hasDerivAt_thetaCuspReflectedLikelihoodCumulantJetTwo
     {u t : ℝ}
@@ -370,11 +373,9 @@ theorem hasDerivAt_thetaCuspReflectedLikelihoodCumulantJetTwo
     ((hasDerivAt_id t).const_add u)
   have hm := (hasDerivAt_thetaCuspLikelihoodSourceLogPartitionJetTwo hminus).comp t
     ((hasDerivAt_id t).const_sub u)
-  unfold thetaCuspReflectedLikelihoodCumulantJetTwo
-    thetaCuspReflectedLikelihoodCumulantJetThree
-  convert hp.neg.sub hm using 1
-  all_goals simp [sub_eq_add_neg]
-  all_goals ring
+  exact (hp.neg.sub hm).congr_deriv (by
+    unfold thetaCuspReflectedLikelihoodCumulantJetThree
+    ring)
 
 /-- Exact completed reflected logarithmic action in atom-plus-cumulant coordinates. -/
 def thetaCuspCompletedReflectedCumulantAction (u t : ℝ) : ℝ :=

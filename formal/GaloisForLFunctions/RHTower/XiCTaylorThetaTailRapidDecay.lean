@@ -200,9 +200,8 @@ theorem norm_xiCTaylorThetaTailTopDefectPolynomial_derivative_eval
           ‖z‖ ^ (2 * (d + 1) - 1) := by
   simp only [xiCTaylorThetaTailTopDefectPolynomial, derivative_mul, derivative_C,
     zero_mul, derivative_X_pow, eval_mul, eval_C,
-    eval_pow, eval_X, zero_add, norm_mul, norm_pow, Complex.norm_real,
-    abs_mul]
-  simp only [Real.norm_eq_abs, abs_pow, abs_neg, abs_one, one_pow, one_mul]
+    eval_pow, eval_X, zero_add, norm_mul, norm_pow, Complex.norm_real]
+  simp only [Real.norm_eq_abs, abs_neg, abs_one, one_pow, one_mul]
   rw [abs_of_nonneg (by norm_num : (0 : ℝ) ≤ 1 / 4)]
   rw [Complex.norm_natCast]
   push_cast

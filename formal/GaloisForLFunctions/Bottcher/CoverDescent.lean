@@ -616,7 +616,6 @@ theorem precompAnalyticMap_coverSectionPhiAnalytic {c₁ c₂ : ℂ} (k : ℕ) {
   · rfl
   · rfl
   · intro z hz
-    change bottcherCoord c₂ (pfn (bottcherCoord c₁ ((quadratic c₁)^[k] z))) = bottcherCoord c₂ z
     rw [hsec z hz]
 
 /-- **Cover-section descent with the second coordinate fixed to `φ_{c₂} ∘ pfn`.**  The first coordinate
@@ -753,7 +752,6 @@ theorem coverSectionPhiAnalytic_compTendsto_fix_of_pfn_fixed {U : Set ℂ} {g pf
     (coverSectionPhiAnalytic c pfn hpan hpmaps) coverSectionPhiAnalytic_germ
     coverSectionPhiAnalytic_germ ?_
   intro z hz
-  change bottcherCoord c (pfn (g z)) = bottcherCoord c (pfn z)
   rw [hfix z hz]
 
 /-- A pointwise multiplier action on `φ_c ∘ pfn` is exactly the corresponding germ scaling action. -/

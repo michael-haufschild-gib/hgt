@@ -30,7 +30,7 @@ theorem exists_cofinal_irreducible_combinedResidualTwoEisenstein_negativeTraceHa
                   (primeArchSourceTraceHankel
                     (p.map (Int.castRingHom ℝ))).re < 0 := by
   let Dtail : Set ℕ := D \ Set.Iic N
-  have hDtail : Dtail.Infinite := hD.diff (Set.finite_Iic N)
+  have hDtail : Dtail.Infinite := hD.sdiff (Set.finite_Iic N)
   obtain ⟨p, hmonic, heisenstein, hdegree, hresidual, hnegative⟩ :=
     exists_combinedResidualTwoEisenstein_negativeTraceHankel_of_not_riemannHypothesis
       hDtail hRH

@@ -109,7 +109,7 @@ theorem productEigenvalueBranch_im_eq_zero_eventually_realCoupling
           AnalyticAt ℝ (fun r : ℝ => (r : ℂ)) 0 :=
         Complex.ofRealCLM.analyticAt 0
       simpa [complexCoupling] using
-        hout.comp_of_eq' hproj rfl
+        hout.fun_comp_of_eq hproj rfl
     have hcont := ha.continuousAt
     have hz : complexCoupling (0 : E → ℝ) = 0 := by
       funext e

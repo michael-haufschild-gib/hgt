@@ -393,8 +393,8 @@ theorem deterministicFullRevivalClock_constraintSpace_eq_top :
     rw [charFun_deterministicClockProbabilityMeasure,
       unitGapTwoLevelSpectrum_detuning]
     convert
-      Complex.exp_int_mul_two_pi_mul_I (k.1 1) using 1 <;>
-        push_cast <;> ring
+      Complex.exp_int_mul_two_pi_mul_I (k.1 1) using 1 ;
+        push_cast ; ring
   rw [hall, Set.image_univ]
   exact span_projectiveCharacterToRational_range_eq_top
 

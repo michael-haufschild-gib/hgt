@@ -26,7 +26,7 @@ noncomputable def addCircleCircleEquiv : AddCircle (1 : ℝ) ≃ᵐ Circle :=
   (AddCircle.homeomorphCircle (T := (1 : ℝ)) one_ne_zero).toMeasurableEquiv
 
 /-- The additive-to-multiplicative circle equivalence preserves normalized Haar probability. -/
-noncomputable def addCircleCircleMeasurePreserving :
+theorem addCircleCircleMeasurePreserving :
     MeasurePreserving addCircleCircleEquiv
       (@AddCircle.haarAddCircle (1 : ℝ) inferInstance) circleLebesgue :=
   ⟨addCircleCircleEquiv.measurable, rfl⟩

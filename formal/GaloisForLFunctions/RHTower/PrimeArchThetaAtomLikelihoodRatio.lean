@@ -417,14 +417,14 @@ theorem thetaCuspHigherFirst_rawEvenMoment_cross_le (k n : ℕ) :
     have hbase := integrableOn_pow_mul_thetaCuspSourceTerm (k + n) 1
     apply hbase.congr
     filter_upwards [] with x
-    simp only [g, f, mu]
+    simp only [g, f]
     rw [show 2 * (k + n) = 2 * n + 2 * k by omega, pow_add]
     ring
   have hgh : Integrable (fun x => g x * h x) mu := by
     have hbase := integrableOn_pow_mul_thetaCuspHigherSource (k + n)
     apply hbase.congr
     filter_upwards [] with x
-    simp only [g, h, mu]
+    simp only [g, h]
     rw [show 2 * (k + n) = 2 * n + 2 * k by omega, pow_add]
     ring
   have hgmono : MonotoneOn g (Ioi 0) := by
@@ -452,7 +452,7 @@ theorem thetaCuspHigherFirst_rawEvenMoment_cross_le (k n : ℕ) :
       · exact thetaCuspHigherFirst_monotoneObservableKernel_nonneg hgmono hx hxy
       · have hswap := thetaCuspHigherFirst_monotoneObservableKernel_nonneg
           hgmono hy hyx
-        convert hswap using 1 <;> ring
+        convert hswap using 1 ; ring
     have hweight : 0 ≤ z.1 ^ (2 * k) * z.2 ^ (2 * k) :=
       mul_nonneg ((even_two_mul k).pow_nonneg z.1)
         ((even_two_mul k).pow_nonneg z.2)
@@ -467,7 +467,7 @@ theorem thetaCuspHigherFirst_rawEvenMoment_cross_le (k n : ℕ) :
           x ^ (2 * (k + n)) * thetaCuspSourceTerm x 1 := by
     apply integral_congr_ae
     filter_upwards [] with x
-    simp only [g, f, mu]
+    simp only [g, f]
     rw [show 2 * (k + n) = 2 * n + 2 * k by omega, pow_add]
     ring
   have hgh_eq :
@@ -477,7 +477,7 @@ theorem thetaCuspHigherFirst_rawEvenMoment_cross_le (k n : ℕ) :
             (thetaCuspFullSource x - thetaCuspSourceTerm x 1) := by
     apply integral_congr_ae
     filter_upwards [] with x
-    simp only [g, h, mu]
+    simp only [g, h]
     rw [show 2 * (k + n) = 2 * n + 2 * k by omega, pow_add]
     ring
   rw [hgf_eq, hgh_eq] at hcross

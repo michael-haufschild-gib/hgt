@@ -179,10 +179,7 @@ theorem exists_residueProuhetCluster
     refine ⟨hWne, fun q hq => ?_⟩
     rw [aevalWeight_shiftedAtomPatternKey_eq_eval_poly n D K τ Q p
       (hcount p hp) hq, ← hmap]
-    simpa [W] using
-      (Polynomial.eval_map_apply
-        (p := polynomialPatternWeightPolyInt n D K τ Q cint p)
-        (f := Int.castRingHom ℂ) (x := (q : ℤ)))
+    simp [W]
   refine ⟨K, M, S, C, W, hS, hC, ?_, hW, ?_⟩
   · exact (polynomialPatternMinimalCluster_subset T hT).trans
       (polynomialPatternLeastSourceClass_subset S hS)

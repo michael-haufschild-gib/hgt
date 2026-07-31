@@ -291,7 +291,7 @@ theorem withDensityV_complex_sub_eq_of_forall_zpow_integral_eq
     mu nu rho hf.im hg.im hq.im himMom
   apply VectorMeasure.ext
   intro s hs
-  rw [VectorMeasure.sub_apply, withDensityᵥ_apply hf hs,
+  rw [sub_apply, withDensityᵥ_apply hf hs,
     withDensityᵥ_apply hg hs, withDensityᵥ_apply hq hs]
   apply Complex.ext
   · have hres := congrArg (fun v : SignedMeasure Circle => v s) hre

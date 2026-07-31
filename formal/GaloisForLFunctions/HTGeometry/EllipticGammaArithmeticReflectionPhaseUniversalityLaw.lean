@@ -74,7 +74,6 @@ theorem not_linearIndependent_ellipticGammaSourcePeriods_iff_positiveCommensurab
         Matrix.cons_val_two, Matrix.tail_cons, Rat.smul_def, mul_one] using hg
     have him : (g 1 : ℝ) * sigma.im + (g 2 : ℝ) * tau.im = 0 := by
       have h := congrArg Complex.im hrel
-      push_cast at h
       simpa using h
     have hg1 : g 1 ≠ 0 := by
       intro hg10

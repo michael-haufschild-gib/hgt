@@ -44,8 +44,7 @@ def multivariateEntireSubmodule (d : ℕ) :
   carrier := {f | LineEntire f}
   zero_mem' := by
     intro x v
-    simpa using (differentiable_const (c := (0 : ℂ)) :
-      Differentiable ℂ (fun _ : ℂ => 0))
+    simp
   add_mem' := by
     intro f g hf hg x v
     simpa using! (hf x v).add (hg x v)
@@ -61,10 +60,7 @@ theorem differentiable_affineComplexLine {d : ℕ}
     Differentiable ℂ (affineComplexLine x v) := by
   rw [differentiable_pi]
   intro i
-  simpa [affineComplexLine, Pi.add_apply, Pi.smul_apply, smul_eq_mul] using
-    (differentiable_const (c := x i)).add
-      ((differentiable_id : Differentiable ℂ (fun z : ℂ => z)).mul
-        (differentiable_const (c := v i)))
+  simp [affineComplexLine, Pi.add_apply, Pi.smul_apply, smul_eq_mul]
 
 /-- Fréchet-holomorphic functions are line-entire. -/
 theorem lineEntire_of_differentiable {d : ℕ}
@@ -84,8 +80,7 @@ def mvPolynomialMultivariateEntire {d : ℕ}
 /-- Line-entire sources are sequentially closed under compact-open convergence. -/
 theorem isSeqClosed_lineEntire (d : ℕ) :
     IsSeqClosed {f : C(Fin d → ℂ, ℂ) | LineEntire f} := by
-  intro u f hu huf
-  intro x v
+  intro u f hu huf x v
   let line := affineComplexLine x v
   have hcomp : Tendsto (fun n => (u n).comp line) atTop (𝓝 (f.comp line)) :=
     ((ContinuousMap.uniformContinuous_comp_left line).continuous.tendsto f).comp huf

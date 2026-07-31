@@ -311,8 +311,8 @@ theorem iteratedDeriv_threePointCorrelationDeterminantRay_zero_of_lt_six
   rw [iteratedDeriv_threePointCorrelationDeficitDeterminant_zero hP hQ hR]
   interval_cases n <;>
     norm_num [scalarJetProductAtZero, scalarJetTripleAtZero, Finset.sum_range_succ,
-      Nat.choose, P, Q, R, hdef0, hdef1, hdef2, hdef3, hdef4, hdef5] <;>
-    simp_all <;> ring_nf <;> simp
+      Nat.choose, P, Q, R, hdef0, hdef1, hdef2, hdef3, hdef4, hdef5] ;
+    simp_all ; ring_nf ; simp
 
 /-- A negative center second jet and a strict fourth Hankel gap make every fixed positive
 aspect-ratio ray enter the strict three-point determinant chamber. -/

@@ -203,7 +203,7 @@ theorem gammaOppositeShiftIntensityMero_one_sub_reflectionNormalForm (a : ℂ) :
   simp [Fin.prod_univ_four]
   have harg : a + (1 - 2 * a) = 1 - a := by ring
   rw [harg]
-  ring_nf <;> simp
+  ring_nf ; simp
 
 private theorem hypertranscendentalOver_gammaOppositeShiftIntensityMero_one_sub
     (a : ℂ) (ha : ∀ k : ℤ, 1 - 2 * a ≠ (k : ℂ)) :

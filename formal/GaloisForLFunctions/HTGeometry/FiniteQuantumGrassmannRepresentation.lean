@@ -41,6 +41,7 @@ def finiteQuantumGrassmannGenerator
     · simp [h]
       ring
 
+omit [CharZero K] [Fact (1 < d)] in
 /-- Boundary killing does not disturb the ordered quantum-torus commutation law. -/
 theorem finiteQuantumGrassmannGenerator_mul_of_lt
     (q : K) (hq : q ^ d = 1) {i j : ι} (hij : i < j) :
@@ -91,6 +92,7 @@ theorem finiteQuantumGrassmannGenerator_mul_of_lt
           rw [← hphase]
           ring
 
+omit [Fintype ι] in
 theorem finiteQuantumShift_val_sub_one
     (i : ι) (a : FiniteQuantumState ι d) (hi : a i ≠ 0) :
     (finiteQuantumShift i a i).val = (a i).val - 1 := by
@@ -103,6 +105,7 @@ theorem finiteQuantumShift_val_sub_one
   rw [ZMod.val_sub hone]
   simp only [ZMod.val_one]
 
+omit [CharZero K] in
 /-- At a state of height `r`, `r+1` applications of the boundary-killed generator vanish. -/
 theorem finiteQuantumGrassmannGenerator_pow_succ_val_apply
     (q : K) (hq : q ^ d = 1) (i : ι)
@@ -132,6 +135,7 @@ theorem finiteQuantumGrassmannGenerator_pow_succ_val_apply
             (finiteQuantumShift i a) = 0
         rw [hzero, mul_zero]
 
+omit [CharZero K] in
 /-- Every boundary-killed generator has `d`th power zero. -/
 theorem finiteQuantumGrassmannGenerator_pow_degree
     (q : K) (hq : q ^ d = 1) (i : ι) :
@@ -149,6 +153,7 @@ theorem finiteQuantumGrassmannGenerator_pow_degree
   rw [hpow, pow_add, Module.End.mul_apply]
   exact finiteQuantumGrassmannGenerator_pow_succ_val_apply q hq i _ a
 
+omit [CharZero K] in
 /-- Ordered quadratic Grassmann monomials retain the same exact pair-state vacuum readout as the
 cyclic quantum-torus packet. -/
 theorem finiteQuantumGrassmannPairOperator_root
@@ -182,6 +187,7 @@ theorem finiteQuantumGrassmannPairOperator_root
       exact (finiteQuantumPair_doubleShift_eq_zero_iff (d := d) p a).2 hap
     simp [finiteQuantumRoot, ha, ha']
 
+omit [CharZero K] in
 /-- Ordered quadratic monomials of the nilpotent detector are linearly independent. -/
 theorem finiteQuantumGrassmannPairOperator_linearIndependent
     (q : K) (hq : q ^ d = 1) :
@@ -211,6 +217,7 @@ theorem finiteQuantumGrassmannSymbol_pow_degree_zero
         finiteQuantumGrassmannGenerator_mul_of_lt q hq.pow_eq_one hij)]
   simp [finiteQuantumGrassmannGenerator_pow_degree]
 
+omit [CharZero K] in
 /-- The nilpotent packet is an information-complete exterior detector despite carrying the zero
 scalar degree-`d` form. -/
 theorem finiteQuantumGrassmann_endomorphismCommutatorMap_injective

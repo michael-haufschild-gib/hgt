@@ -30,8 +30,9 @@ theorem tendsto_atomicBernsteinAmplitude_cofinite_one
   have hone : Tendsto (fun _ : I => (1 : ℂ)) cofinite (nhds 1) :=
     tendsto_const_nhds
   have h := hu.norm.add (hone.sub hu).norm
-  simpa only [atomicBernsteinAmplitude, norm_zero, sub_zero, norm_one,
-    zero_add] using h
+  have h2 : Tendsto (fun x : I => ‖u x‖ + ‖1 - u x‖) cofinite (nhds 1) := by
+    simpa only [norm_zero, sub_zero, norm_one, zero_add] using h
+  exact h2
 
 /-- In the unit disk, a nonnegative real node has neutral affine amplitude.  Hence every
 superunit node is nonreal. -/
@@ -122,8 +123,7 @@ theorem exists_positive_halfOrder_atomicBernsteinPacket_of_neutral_amplitude
   let A : I → ℝ := atomicBernsteinAmplitude u
   let a : I → ℂ := fun i => (A i : ℂ)
   have ha : Tendsto a cofinite (nhds 1) := by
-    simpa only [a, Complex.ofReal_one] using
-      Complex.continuous_ofReal.tendsto 1 |>.comp hA
+    exact (Complex.continuous_ofReal.tendsto 1).comp hA
   have hAnonneg (i : I) : 0 ≤ A i :=
     add_nonneg (norm_nonneg _) (norm_nonneg _)
   have hnorma (i : I) : ‖a i‖ = A i := by

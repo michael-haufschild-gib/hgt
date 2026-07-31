@@ -41,7 +41,6 @@ theorem angle_span {ψ : ℕ → ℝ} {θmax : ℝ}
   | succ j ih =>
     have h := hhi (M + j)
     push_cast
-    push_cast at ih
     have : ψ (M + j + 1) ≤ ψ (M + j) + θmax := by linarith
     calc ψ (M + (j + 1)) = ψ (M + j + 1) := by ring_nf
       _ ≤ ψ (M + j) + θmax := this

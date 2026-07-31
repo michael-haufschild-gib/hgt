@@ -49,7 +49,7 @@ theorem hasDerivAt_mvPolynomial_eval_curve_complex {n : ℕ}
         funext s
         simp
       rw [hf]
-      convert! hp.add hq using 1 <;>
+      convert! hp.add hq using 1 ;
         simp only [map_add, add_mul, Finset.sum_add_distrib]
   | mul_X p i hp =>
       have hfun : (fun s => MvPolynomial.eval (fun j => g j s) (p * MvPolynomial.X i)) =
@@ -57,7 +57,7 @@ theorem hasDerivAt_mvPolynomial_eval_curve_complex {n : ℕ}
         funext s
         simp [MvPolynomial.eval_mul, MvPolynomial.eval_X]
       rw [hfun]
-      convert! hp.mul (hg i) using 1 <;>
+      convert! hp.mul (hg i) using 1 ;
         simp only [MvPolynomial.pderiv_mul, map_add, MvPolynomial.eval_mul,
           MvPolynomial.eval_X, MvPolynomial.pderiv_X, Pi.single_apply, mul_ite,
           mul_one, mul_zero, add_mul, Finset.sum_add_distrib]

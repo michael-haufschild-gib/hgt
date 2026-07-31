@@ -30,7 +30,7 @@ theorem exists_mem_eval_ne_zero_of_infinite_domain {R : Type*} [CommRing R] [IsD
     intro x hx
     rw [Finset.mem_coe, Multiset.mem_toFinset, Polynomial.mem_roots']
     exact ⟨hp, hx⟩
-  obtain ⟨x, hxS, hx⟩ := (hS.diff hfin).nonempty
+  obtain ⟨x, hxS, hx⟩ := (hS.sdiff hfin).nonempty
   exact ⟨x, hxS, hx⟩
 
 /-- **Injective non-vanishing evaluation over an integral domain.**  A nonzero
@@ -67,7 +67,7 @@ theorem exists_injective_eval_ne_zero_domain {R : Type*} [CommRing R] [IsDomain 
     have hQ'k : Q'.coeff k ≠ 0 := by rw [hQ'def, Polynomial.coeff_map]; exact ha'ne
     have hQ' : Q' ≠ 0 := fun h => hQ'k (by rw [h]; simp)
     -- choose the first coordinate in T avoiding the used values and the roots
-    have hTinf : (T \ Set.range a').Infinite := hT.diff (Set.finite_range a')
+    have hTinf : (T \ Set.range a').Infinite := hT.sdiff (Set.finite_range a')
     obtain ⟨y, hyT, hyne⟩ := exists_mem_eval_ne_zero_of_infinite_domain Q' hQ' hTinf
     refine ⟨Fin.cons y a', ?_, ?_, ?_⟩
     · intro i j hij

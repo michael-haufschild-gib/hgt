@@ -727,11 +727,9 @@ theorem inner_finiteSoninRatioOutput_prime_offDiagonal
     inner ℂ
       (finiteSoninRatioOutput c d (fun x => (p x : ℝ))
         (fun x => by
-          change (1 : ℝ) < (p x : ℝ)
           exact_mod_cast (hp x).one_lt) hcd i l m)
       (finiteSoninRatioOutput c d (fun x => (p x : ℝ))
         (fun x => by
-          change (1 : ℝ) < (p x : ℝ)
           exact_mod_cast (hp x).one_lt) hcd j k m) =
       if i = l ∧ j = k then 1 else 0 := by
   let r : Fin n → ℝ := fun x => (p x : ℝ)
@@ -783,7 +781,6 @@ theorem finiteGramShellCoefficient_prime_offDiagonal_eq
     (A : Matrix (Fin n) (Fin n) ℂ) (k l : Fin n) (hkl : k ≠ l) (m : ℕ) :
     finiteGramShellCoefficient c d (fun i => (p i : ℝ))
       (fun i => by
-        change (1 : ℝ) < (p i : ℝ)
         exact_mod_cast (hp i).one_lt) hcd A k l m = A l k := by
   classical
   unfold finiteGramShellCoefficient
@@ -811,7 +808,6 @@ theorem norm_matrixEntry_le_norm_finitePrimeEvenDilationGram_sub_compact
     ‖A l k‖ ≤
       ‖finiteEvenDilationGramCombination a (fun i => (p i : ℝ))
         (fun i => by
-          change (1 : ℝ) < (p i : ℝ)
           exact_mod_cast (hp i).one_lt) A - K‖ := by
   letI : Nonempty (Fin n) := ⟨k⟩
   let r : Fin n → ℝ := fun i => (p i : ℝ)
@@ -1021,11 +1017,9 @@ theorem inner_finiteSoninRatioOutput_prime_diagonal
     inner ℂ
       (finiteSoninRatioOutput c d (fun x => (p x : ℝ))
         (fun x => by
-          change (1 : ℝ) < (p x : ℝ)
           exact_mod_cast (hp x).one_lt) hcd i k m)
       (finiteSoninRatioOutput c d (fun x => (p x : ℝ))
         (fun x => by
-          change (1 : ℝ) < (p x : ℝ)
           exact_mod_cast (hp x).one_lt) hcd j k m) =
       if i = j ∧ p k ≤ p i then 1 else 0 := by
   let r : Fin n → ℝ := fun x => (p x : ℝ)
@@ -1086,7 +1080,6 @@ theorem finiteGramShellCoefficient_prime_diagonal_eq
     (A : Matrix (Fin n) (Fin n) ℂ) (k : Fin n) (m : ℕ) :
     finiteGramShellCoefficient c d (fun i => (p i : ℝ))
       (fun i => by
-        change (1 : ℝ) < (p i : ℝ)
         exact_mod_cast (hp i).one_lt) hcd A k k m =
       finitePrimeDiagonalTail p A k := by
   classical
@@ -1115,7 +1108,6 @@ theorem norm_finitePrimeDiagonalTail_le_norm_finitePrimeEvenDilationGram_sub_com
     ‖finitePrimeDiagonalTail p A k‖ ≤
       ‖finiteEvenDilationGramCombination a (fun i => (p i : ℝ))
         (fun i => by
-          change (1 : ℝ) < (p i : ℝ)
           exact_mod_cast (hp i).one_lt) A - K‖ := by
   letI : Nonempty (Fin n) := ⟨k⟩
   let r : Fin n → ℝ := fun i => (p i : ℝ)
@@ -1143,7 +1135,6 @@ theorem finitePrimeEvenDilationGram_not_isCompactOperator_of_ne_zero
     ¬ IsCompactOperator
       (finiteEvenDilationGramCombination a (fun i => (p i : ℝ))
         (fun i => by
-          change (1 : ℝ) < (p i : ℝ)
           exact_mod_cast (hp i).one_lt) A) := by
   classical
   let r : Fin n → ℝ := fun i => (p i : ℝ)
@@ -1212,7 +1203,6 @@ theorem finitePrimeEvenDilationGram_isCompactOperator_iff
     IsCompactOperator
       (finiteEvenDilationGramCombination a (fun i => (p i : ℝ))
         (fun i => by
-          change (1 : ℝ) < (p i : ℝ)
           exact_mod_cast (hp i).one_lt) A) ↔ A = 0 := by
   constructor
   · intro hcompact
@@ -1281,14 +1271,12 @@ theorem finitePrimeEvenPositiveEulerGram_not_isCompactOperator_of_ne_zero
     ¬ IsCompactOperator
       (finiteEvenPositiveEulerGramCombination a (fun i => (p i : ℝ))
         (fun i => by
-          change (1 : ℝ) < (p i : ℝ)
           exact_mod_cast (hp i).one_lt) A) := by
   rw [finiteEvenPositiveEulerGramCombination_eq_dilation]
   exact finitePrimeEvenDilationGram_not_isCompactOperator_of_ne_zero
     a ha p hp hinj (finiteEulerGramRescale (fun i => (p i : ℝ)) A)
       (finiteEulerGramRescale_ne_zero (fun i => (p i : ℝ))
         (fun i => by
-          change (1 : ℝ) < (p i : ℝ)
           exact_mod_cast (hp i).one_lt) A hA)
 
 theorem unitaryPush_fintype_sum

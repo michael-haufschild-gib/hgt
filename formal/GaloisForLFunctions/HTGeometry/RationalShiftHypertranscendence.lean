@@ -80,7 +80,7 @@ theorem algebraicIndependent_rationalShiftJet_prefix
     change MvPolynomial.eval₂ _ _ G = 0 at hG
     change MvPolynomial.eval₂ _ _ H = 0 at hH
     change MvPolynomial.eval₂ _ _ (G - H) = 0
-    simpa only [MvPolynomial.eval₂_sub, hG, hH, sub_zero]
+    simp only [MvPolynomial.eval₂_sub, hG, hH, sub_zero]
   have hsmul : ∀ (k : RatFunc ℂ) G, G ∈ I → MvPolynomial.C k * G ∈ I := by
     intro k G hG
     change MvPolynomial.eval₂ _ _ G = 0 at hG

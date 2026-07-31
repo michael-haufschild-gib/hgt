@@ -539,7 +539,7 @@ private theorem thetaCuspHigherLikelihoodTiltedMeasure_cofinite_pos
   have hset : {t : ℝ |
       ((thetaCuspHigherLikelihoodTiltDensity B t : NNReal) : ENNReal) ≠ 0} = Set.univ := by
     ext t
-    simp [thetaCuspHigherLikelihoodTiltDensity, ENNReal.coe_ne_zero,
+    simp [thetaCuspHigherLikelihoodTiltDensity,
       Real.toNNReal_eq_zero, not_le, Real.exp_pos]
   rw [hset, Set.univ_inter] at hbaseZero
   exact (ne_of_gt (thetaCuspHigherLikelihoodSpectralMeasure_cofinite_pos F)) hbaseZero

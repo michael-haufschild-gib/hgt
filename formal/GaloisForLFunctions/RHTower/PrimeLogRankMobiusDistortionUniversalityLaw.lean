@@ -17,7 +17,7 @@ noncomputable section
 
 /-- Prime-harmonic mass below `X+1` dominates prime-counting rank divided by `X`. -/
 theorem primeCounting_div_le_primesBelow_primeHarmonicSum
-    (X : ℕ) (hX : 2 ≤ X) :
+    (X : ℕ) (_hX : 2 ≤ X) :
     (Nat.primeCounting' (X + 1) : ℝ) / (X : ℝ) ≤
       ∑ p ∈ Nat.primesBelow (X + 1), ((p : ℝ))⁻¹ := by
   let S := Nat.primesBelow (X + 1)
@@ -38,7 +38,7 @@ theorem primeCounting_div_le_primesBelow_primeHarmonicSum
     (Nat.primeCounting' (X + 1) : ℝ) / (X : ℝ) =
         ∑ _p ∈ S, ((X : ℝ))⁻¹ := by
           rw [Finset.sum_const, nsmul_eq_mul, hcard]
-          simp only [Nat.cast_ofNat, div_eq_mul_inv]
+          simp only [div_eq_mul_inv]
     _ ≤ ∑ p ∈ S, ((p : ℝ))⁻¹ := hsum
     _ = ∑ p ∈ Nat.primesBelow (X + 1), ((p : ℝ))⁻¹ := by rfl
 

@@ -252,10 +252,6 @@ theorem summable_mobiusAdditiveTriangle_mul_exp_neg
     have hs := h2.add ((h1.mul_left 2).add h0)
     convert hs using 1
     funext N
-    change (((N : ℝ) + 1) ^ 2) * Real.exp (-((N : ℝ) * x)) =
-      (N : ℝ) ^ 2 * Real.exp (-((N : ℝ) * x)) +
-        (2 * ((N : ℝ) ^ 1 * Real.exp (-((N : ℝ) * x))) +
-          (N : ℝ) ^ 0 * Real.exp (-((N : ℝ) * x)))
     ring
   apply Summable.of_norm
   refine Summable.of_nonneg_of_le (fun N => norm_nonneg _) (fun N => ?_) hmajor

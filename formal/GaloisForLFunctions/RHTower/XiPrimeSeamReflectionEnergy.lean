@@ -52,8 +52,6 @@ theorem orbitwiseNatSeamCharge_weighted_norm_sq_eq_reflectionSecondDifference
     simp
   have hcross : u * (starRingEnd ℂ) v = (((n : ℝ)⁻¹ : ℝ) : ℂ) := by
     dsimp [u, v]
-    change (((n : ℕ) : ℂ) ^ (-(starRingEnd ℂ) rho)) *
-      (starRingEnd ℂ) ((((n : ℕ) : ℂ) ^ (-(1 - rho)))) = _
     rw [star_nat_cpow n hn0]
     rw [← Complex.cpow_add _ _ (by exact_mod_cast Nat.ne_of_gt hn0)]
     have hexp : -(starRingEnd ℂ) rho +

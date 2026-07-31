@@ -309,7 +309,7 @@ theorem tendsto_opTrace_pow_add_two_zero_of_isHilbertSchmidt_norm_lt_one
         simpa only [ContinuousLinearMap.mul_def] using hT.comp_left (T ^ n)
       have hEq : T ^ (n + 2) = (T ^ n * T) ∘L T := by
         change T ^ (n + 2) = (T ^ n * T) * T
-        simp only [pow_succ, Nat.add_assoc]
+        simp only [pow_succ]
       rw [hEq]
       exact norm_opTrace_comp_le hPow hT
   · simpa only [zero_mul] using hhsNorm.mul_const (hsNorm T)
@@ -390,12 +390,12 @@ theorem norm_fullFourierRieszVector_sq (x c d : ℝ) (hcd : c ≤ d) :
       filter_upwards [fullFourierRieszVector_coeFn x c d] with y hy
       rw [hy]
       by_cases hymem : y ∈ Set.Icc c d
-      · simp only [Set.indicator_of_mem hymem, norm_pow]
+      · simp only [Set.indicator_of_mem hymem]
         rw [Complex.norm_exp]
         simp
       · simp [hymem]
     _ = d - c := by
-      simp [setIntegral_const, measureReal_def, Real.volume_Icc,
+      simp [measureReal_def, Real.volume_Icc,
         ENNReal.toReal_ofReal (sub_nonneg.mpr hcd)]
 
 /-- Every Fourier functional in the output interval has the same squared norm: the length of the

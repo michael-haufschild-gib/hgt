@@ -73,7 +73,14 @@ private theorem hasDerivAt_inv_sub_cube
   have hi' : HasDerivAt
       (fun w : ℂ => 1 / (w - a) ^ 3)
       (-(3 * (s - a) ^ 2) / ((s - a) ^ 3) ^ 2) s := by
-    simpa [one_div, id_eq, div_eq_mul_inv] using hi
+    have hfun : (fun w : ℂ => 1 / (w - a) ^ 3) =
+        fun w : ℂ => ((w - a) ^ 3)⁻¹ := by
+      funext w
+      rw [one_div]
+    rw [hfun]
+    refine hi.congr_deriv ?_
+    norm_num [id_eq]
+    try ring
   convert hi' using 1
   field_simp [hne]
 

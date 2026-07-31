@@ -91,7 +91,7 @@ theorem rankThree_boundaryFingerprint_not_injective
   · intro q
     exact (rankThreeMeromorphicDifferenceDifferentialField v).aut_algebraMap q 1
   · change algebraMap ℂ (meroField Set.univ) 1 ≠ 0
-    simpa using (one_ne_zero : (1 : meroField Set.univ) ≠ 0)
+    simp
 
 /-- **Pointed rank-three source reconstruction.**  The translation boundary together with any
 additive source calibration reconstructs every meromorphic primitive as soon as that calibration
@@ -199,7 +199,7 @@ theorem rankThree_generator_boundaryFingerprint_not_injective
   · intro i
     exact (rankThreeGeneratorMeromorphicDifferenceDifferentialField v).aut_algebraMap i 1
   · change algebraMap ℂ (meroField Set.univ) 1 ≠ 0
-    simpa using (one_ne_zero : (1 : meroField Set.univ) ≠ 0)
+    simp
 
 /-- **Finite-source reconstruction.**  The three source defects plus a calibration injective on
 constants reconstruct the meromorphic primitive.  No boundary values outside the source

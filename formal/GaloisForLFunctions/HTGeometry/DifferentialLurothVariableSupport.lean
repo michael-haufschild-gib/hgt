@@ -45,7 +45,7 @@ theorem mvPolynomialPolynomialEquivAt_X_self
     mvPolynomialPolynomialEquivAt (K := R) i (MvPolynomial.X i) = Polynomial.X := by
   classical
   unfold mvPolynomialPolynomialEquivAt
-  simp [Equiv.optionSubtypeNe_symm_self]
+  simp
 
 /-- A polynomial supported away from the distinguished variable becomes a constant polynomial.
 This is the exact inverse-coordinate statement used to expose a factor as a common coefficient
@@ -135,7 +135,7 @@ theorem exists_polynomial_fraction_clear_ne_zero
   · have hd' : algebraMap R K (d : R) = 0 := by
       simpa using congrArg (fun T : Polynomial K ↦ T.coeff 0) hd
     exact (nonZeroDivisors.ne_zero d.2)
-      (IsFractionRing.injective R K (by simpa using hd'))
+      (IsFractionRing.injective R K (by simp at hd'))
   · exact hP hP0
 
 /-- Primitive denominator clearing for a univariate polynomial.  The primitive numerator differs
@@ -155,8 +155,7 @@ theorem exists_primitive_polynomial_fraction_clear
     intro hc
     exact hA0 (Polynomial.content_eq_zero_iff.mp hc)
   have hdK : algebraMap R K (d : R) ≠ 0 := by
-    simpa using
-      (IsFractionRing.injective R K).ne (nonZeroDivisors.ne_zero d.2)
+    simp
   have hcK : algebraMap R K A.content ≠ 0 := by
     simpa using (IsFractionRing.injective R K).ne hc0
   let a : Kˣ := Units.mk0

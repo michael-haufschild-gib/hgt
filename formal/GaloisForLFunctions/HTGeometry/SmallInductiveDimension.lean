@@ -223,7 +223,7 @@ theorem isSeparator_frontier {X : Type*} [TopologicalSpace X] {V : Set X} (hV : 
   refine ⟨isClosed_frontier, V, (closure V)ᶜ, hV, isClosed_closure.isOpen_compl, ?_,
     subset_rfl, subset_rfl, ?_⟩
   · rw [Set.disjoint_compl_right_iff_subset]; exact subset_closure
-  · rw [frontier, hV.interior_eq, Set.diff_eq, Set.compl_inter, compl_compl, Set.union_comm]
+  · rw [frontier, hV.interior_eq, Set.sdiff_eq, Set.compl_inter, compl_compl, Set.union_comm]
 
 /-- The frontier of an **arbitrary** set separates its interior from the complement of its closure.
 This is the separator produced directly by a neighbourhood `V` in the small-inductive-dimension
@@ -233,7 +233,7 @@ theorem isSeparator_frontier_interior {X : Type*} [TopologicalSpace X] (V : Set 
   refine ⟨isClosed_frontier, interior V, (closure V)ᶜ, isOpen_interior,
     isClosed_closure.isOpen_compl, ?_, subset_rfl, subset_rfl, ?_⟩
   · rw [Set.disjoint_compl_right_iff_subset]; exact interior_subset.trans subset_closure
-  · rw [frontier, Set.diff_eq, Set.compl_inter, compl_compl, Set.union_comm]
+  · rw [frontier, Set.sdiff_eq, Set.compl_inter, compl_compl, Set.union_comm]
 
 /-- A separator stays a separator when its two sides shrink. -/
 theorem IsSeparator.mono {X : Type*} [TopologicalSpace X] {L C D C' D' : Set X}

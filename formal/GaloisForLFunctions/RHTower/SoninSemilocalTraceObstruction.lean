@@ -191,7 +191,7 @@ theorem norm_soninSemilocalGeometricTraceResponse_le_area
       Real.sqrt (8 * a ^ 2) * Real.sqrt (8192 * a ^ 2) := by
   have h := norm_soninSemilocalGeometricTraceResponse_le a ha pk
   rw [hsNormSq_centralSoninProjectionCorrection_eq_eight_mul_sq a ha] at h
-  convert h using 1 <;> ring
+  convert h using 1 ; ring
 
 /-- The same semilocal obstruction bound in the compressed-Hamiltonian coordinates supplied by
 the finite Witten-index partition.  The only mixed-sector contribution is the already-identified

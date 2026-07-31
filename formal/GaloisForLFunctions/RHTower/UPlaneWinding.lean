@@ -125,7 +125,7 @@ theorem xiDescent_zeros_finite_ball (a : ℂ) (R : ℝ) :
   have hK : IsCompact (Metric.closedBall a R) := isCompact_closedBall _ _
   have hmem : {x | xiDescent x ≠ 0} ∈ codiscreteWithin (Metric.closedBall a R) :=
     Filter.codiscreteWithin_mono (subset_univ _) xiDescent_ne_zero_codiscrete
-  refine (hK.finite_diff_of_mem_codiscreteWithin hmem).subset ?_
+  refine (hK.finite_sdiff_of_mem_codiscreteWithin hmem).subset ?_
   rintro x ⟨hxb, hx0⟩
   exact ⟨ball_subset_closedBall hxb, by simpa using hx0⟩
 

@@ -51,13 +51,11 @@ theorem summable_thetaCuspLogConcavityTailWeight (m : ℕ) :
     (Real.exp Real.pi)
   have hfull : Summable (fun n : ℕ =>
       (n : ℝ) ^ m * Real.exp (-Real.pi * ((n : ℝ) ^ 2 - 1))) := by
-    convert hbase using 1
-    funext n
+    refine hbase.congr fun n => ?_
     rw [show -Real.pi * ((n : ℝ) ^ 2 - 1) =
       Real.pi + (-Real.pi * (n : ℝ) ^ 2) by ring, Real.exp_add]
     ring
-  simpa only [thetaCuspLogConcavityTailWeight] using
-    hfull.comp_injective (fun _ _ h => Nat.add_right_cancel h)
+  exact hfull.comp_injective (fun _ _ h => Nat.add_right_cancel h)
 
 private theorem thetaCusp_nat_add_two_pow_six_le (k : ℕ) :
     (((k + 2 : ℕ) : ℝ) ^ 6) ≤ 64 * (64 : ℝ) ^ k := by
@@ -967,9 +965,8 @@ private theorem hasDerivAt_thetaCuspFullSource_iterate_one (x : ℝ) :
 theorem hasDerivAt_thetaCuspLogSource (x : ℝ) :
     HasDerivAt thetaCuspLogSource
       (iteratedDeriv 1 thetaCuspFullSource x / thetaCuspFullSource x) x := by
-  simpa only [thetaCuspLogSource] using
-    (hasDerivAt_thetaCuspFullSource_iterate_zero x).log
-      (thetaCuspFullSource_pos_all x).ne'
+  exact (hasDerivAt_thetaCuspFullSource_iterate_zero x).log
+    (thetaCuspFullSource_pos_all x).ne'
 
 /-- The second derivative of the logarithm is exactly the normalized log-concavity numerator. -/
 theorem iteratedDeriv_two_thetaCuspLogSource_eq (x : ℝ) :
@@ -1102,7 +1099,7 @@ theorem thetaCuspCenterMixedDensity_le_zero
       (mul_nonneg hr.le (Real.sinh_nonneg_iff.mpr (mul_nonneg ha0 hr.le)))
       (mul_nonneg (thetaCuspFullSource_pos_all _).le
         (thetaCuspFullSource_pos_all _).le)
-  · simpa using integrableOn_thetaCuspCenterMixedIntegrand ha0 ha 0
+  · exact integrableOn_thetaCuspCenterMixedIntegrand ha0 ha 0
   · filter_upwards [ae_restrict_mem measurableSet_Ioi] with r hr
     have hweight : 0 ≤ r * Real.sinh (a * r) :=
       mul_nonneg hr.le (Real.sinh_nonneg_iff.mpr (mul_nonneg ha0 hr.le))

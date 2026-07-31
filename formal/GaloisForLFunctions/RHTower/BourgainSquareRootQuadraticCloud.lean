@@ -146,7 +146,7 @@ theorem bourgainParabolaTripleMoment_eq_of_quadraticSample_near
     have hzero := hnear (0 : Fin 4)
     rw [bourgainTripleCloud_quadraticSample_zero,
       bourgainTripleCloud_quadraticSample_zero] at hzero
-    convert hzero using 1 <;> ring
+    convert hzero using 1 ; ring
   · have hfirst :
         (bourgainParabolaTripleMoment h).1 =
           (bourgainParabolaTripleMoment h').1 := by
@@ -154,12 +154,12 @@ theorem bourgainParabolaTripleMoment_eq_of_quadraticSample_near
       have hzero := hnear (0 : Fin 4)
       rw [bourgainTripleCloud_quadraticSample_zero,
         bourgainTripleCloud_quadraticSample_zero] at hzero
-      convert hzero using 1 <;> ring
+      convert hzero using 1 ; ring
     apply nat_eq_of_scaled_div_near (sq_pos_of_pos hD) hY1
     have hone := hnear (1 : Fin 4)
     rw [bourgainTripleCloud_quadraticSample_one,
       bourgainTripleCloud_quadraticSample_one, hfirst] at hone
-    convert hone using 1 <;> ring
+    convert hone using 1 ; ring
 
 end
 

@@ -84,7 +84,7 @@ def gammaHorizonPoleWordExtension :
 def gammaHorizonPoleWordLast :
     (d : Nat) -> GammaHorizonPoleWords d -> Nat
   | 0, w => (show {n : Nat // gammaThinSchedule 0 <= n} from w).1
-  | d + 1, w => w.2.1
+  | _d + 1, w => w.2.1
 
 /-- The extension realizes the last prescribed pole label exactly. -/
 theorem gammaCodeLabel_gammaHorizonPoleWordExtension_last :

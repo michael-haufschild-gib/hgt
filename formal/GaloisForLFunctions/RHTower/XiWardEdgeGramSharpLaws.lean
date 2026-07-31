@@ -65,7 +65,7 @@ theorem riemannHypothesis_iff_continuedXiWardEdgeQuadEnergyLaw_sharp
       (le_refl 0) (by positivity : (0 : ℝ) ≤ 4 * π)).mp hRH
     unfold ContinuedXiWardEdgeQuadEnergyLaw at h0 ⊢
     rw [ENNReal.ofReal_zero] at h0
-    exact h0.trans zero_le'
+    exact h0.trans zero_le
 
   · intro hlaw
     by_contra hRH

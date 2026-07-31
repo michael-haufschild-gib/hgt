@@ -21,6 +21,7 @@ noncomputable section
 variable {k E : Type*} [RCLike k]
   [NormedAddCommGroup E] [InnerProductSpace k E] [CompleteSpace E]
 
+omit [CompleteSpace E] in
 /-- The Born expectation of an orthogonal projection is the squared norm retained by that
 projection. -/
 theorem re_inner_starProjection_eq_norm_sq
@@ -38,6 +39,7 @@ theorem re_inner_starProjection_eq_norm_sq
       rw [← S.inner_starProjection_left_eq_right]
     _ = ‖S.starProjection psi‖ ^ 2 := inner_self_eq_norm_sq _
 
+omit [CompleteSpace E] in
 /-- Exact defect-survival balance for an arbitrary state.  The squared distance from `psi` to
 its projected component is the total squared norm minus the Born expectation of the projection. -/
 theorem norm_starProjection_sub_sq_eq_norm_sq_sub_re_inner
@@ -51,6 +53,7 @@ theorem norm_starProjection_sub_sq_eq_norm_sq_sub_re_inner
     norm_neg]
   nlinarith [hpythagoras]
 
+omit [CompleteSpace E] in
 /-- **Born survival law.**  For a unit pure state, projective-measurement survival is exactly one
 minus the squared projection defect. -/
 theorem bornSurvivalProbability_eq_one_sub_projectionDefectSq
@@ -62,6 +65,7 @@ theorem bornSurvivalProbability_eq_one_sub_projectionDefectSq
   rw [hpsi, one_pow] at hbalance
   linarith
 
+omit [CompleteSpace E] in
 /-- A projection-defect upper bound is, without loss of constants, a Born-survival lower bound. -/
 theorem one_sub_le_bornSurvivalProbability_of_projectionDefectSq_le
     (S : Submodule k E) [S.HasOrthogonalProjection] (psi : E)

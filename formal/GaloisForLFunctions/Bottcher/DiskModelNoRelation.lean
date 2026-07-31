@@ -66,7 +66,7 @@ theorem h_separable_no_relation {h : ℂ → ℂ} {c : ℂ}
   have hP_ne : P ≠ 0 := fun h' => by rw [h', natDegree_zero] at hdeg; omega
   have hderiv_ne : derivative P ≠ 0 := by
     intro h'
-    have := natDegree_eq_zero_of_derivative_eq_zero h'
+    have := derivative_eq_zero.mp h'
     omega
   have hlc1 : P.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hP_ne
   have hlc2 : (derivative P).leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hderiv_ne

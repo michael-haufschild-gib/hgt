@@ -44,6 +44,7 @@ def quantumCompletionDetectorGenerator
     · simp [hi, smul_smul]
       ring
 
+omit [CharZero K] [Fact (1 < d)] in
 /-- The clocked detector retains ordered `q`-commutation. -/
 theorem quantumCompletionDetectorGenerator_mul_of_lt
     (q : K) (hq : q ^ d = 1) {i j : Fin n} (hij : i < j) :
@@ -83,6 +84,7 @@ theorem quantumCompletionDetectorGenerator_mul_of_lt
       rw [← hphase]
       module
 
+omit [CharZero K] in
 /-- At coordinate height `r`, the clocked detector is killed after `r+1` applications. -/
 theorem quantumCompletionDetectorGenerator_pow_succ_val_apply
     (q : K) (hq : q ^ d = 1) (i : Fin n)
@@ -113,6 +115,7 @@ theorem quantumCompletionDetectorGenerator_pow_succ_val_apply
             (finiteQuantumShift i a) (k - 1) = 0
         rw [hzero, smul_zero]
 
+omit [CharZero K] in
 /-- Every clocked detector generator has `d`th power zero. -/
 theorem quantumCompletionDetectorGenerator_pow_degree
     (q : K) (hq : q ^ d = 1) (i : Fin n) :
@@ -151,6 +154,7 @@ theorem quantumCompletionDetectorSymbol_pow_degree_zero
         quantumCompletionDetectorGenerator_mul_of_lt q hq.pow_eq_one hij)]
   simp [quantumCompletionDetectorGenerator_pow_degree]
 
+omit [CharZero K] [Fact (1 < d)] in
 /-- The clock sector `q`-commutes with every detector generator. -/
 theorem quantumCompletionClockLift_mul_detectorGenerator
     (q : K) (hq : q ^ d = 1) (A : Module.End K M) (i : Fin n) :
@@ -171,6 +175,7 @@ theorem quantumCompletionClockLift_mul_detectorGenerator
     rw [← hclock]
     module
 
+omit [CharZero K] [Fact (1 < d)] in
 /-- The clock sector `q`-commutes with every value of the detector pencil. -/
 theorem quantumCompletionClockLift_mul_detectorSymbol
     (q : K) (hq : q ^ d = 1) (A : Module.End K M) (c : Fin n → K) :
@@ -207,6 +212,7 @@ def quantumPrincipalSymbolCompletion
   (cyclicClockLiftLinear (ι := FiniteQuantumState (Fin n) d) q hq).comp A₀ +
     quantumCompletionDetectorSymbol (M := M) q hq
 
+omit [CharZero K] [Fact (1 < d)] in
 @[simp]
 theorem quantumPrincipalSymbolCompletion_basisFun
     (q : K) (hq : q ^ d = 1)
@@ -243,6 +249,7 @@ def quantumPrincipalCompletionRoot (m : M) :
     QuantumPrincipalCompletionState M n d :=
   Pi.single 0 (Pi.single 0 m)
 
+omit [NeZero d] [Fact (1 < d)] in
 theorem quantumPrincipalCompletionRoot_ne_zero
     (m : M) (hm : m ≠ 0) :
     quantumPrincipalCompletionRoot (n := n) (d := d) m ≠ 0 := by
@@ -252,6 +259,7 @@ theorem quantumPrincipalCompletionRoot_ne_zero
   have hclock := congrFun hstate (0 : ZMod d)
   exact hm (by simpa [quantumPrincipalCompletionRoot] using hclock)
 
+omit [NeZero d] [Fact (1 < d)] in
 theorem zmod_sub_one_sub_one_eq_zero_iff (k : ZMod d) :
     k - 1 - 1 = 0 ↔ k = 2 := by
   have htwo : (2 : ZMod d) = 1 + 1 := by norm_num
@@ -265,6 +273,7 @@ theorem zmod_sub_one_sub_one_eq_zero_iff (k : ZMod d) :
     apply (sub_eq_iff_eq_add).mpr
     exact h.trans htwo
 
+omit [CharZero K] in
 /-- The two detector shifts send the completed vacuum to the pair state at clock degree two. -/
 theorem quantumCompletionDetectorPairOperator_root
     (q : K) (hq : q ^ d = 1) (m : M) (p : QuantumLawPair (Fin n)) :
@@ -318,12 +327,14 @@ def quantumPrincipalCompletionPairReadout (m : M) :
     funext p k
     simp
 
+omit [NeZero d] in
 theorem finiteQuantumPairState_ne_zero (p : QuantumLawPair (Fin n)) :
     finiteQuantumPairState (d := d) p ≠ 0 := by
   intro h
   have hl := congrFun h p.lower
   simp at hl
 
+omit [NeZero d] in
 theorem finiteQuantumShift_pairState_ne_zero_of_apply_ne_zero
     (p : QuantumLawPair (Fin n)) (i : Fin n)
     (hi : finiteQuantumPairState (d := d) p i ≠ 0) :
@@ -341,6 +352,7 @@ theorem finiteQuantumShift_pairState_ne_zero_of_apply_ne_zero
         simp [finiteQuantumPairState, hil, hiu]
       exact hi this
 
+omit [CharZero K] in
 /-- Pair readout of one detector quadratic monomial is the corresponding standard pair state. -/
 theorem quantumPrincipalCompletionPairReadout_detectorPair
     (q : K) (hq : q ^ d = 1) (m : M) (r : QuantumLawPair (Fin n)) :
@@ -363,6 +375,7 @@ theorem quantumPrincipalCompletionPairReadout_detectorPair
       fun h ↦ hpr (finiteQuantumPairState_injective h)
     simp [hpr, hstate]
 
+omit [CharZero K] in
 /-- The scalar clock sector has no degree-two detector readout. -/
 theorem quantumPrincipalCompletionPairReadout_clock_mul_clock
     (q : K) (hq : q ^ d = 1) (m : M) (A B : Module.End K M) :
@@ -374,6 +387,7 @@ theorem quantumPrincipalCompletionPairReadout_clock_mul_clock
     cyclicClockLift, quantumPrincipalCompletionRoot,
     finiteQuantumPairState_ne_zero]
 
+omit [CharZero K] in
 /-- A clock-then-detector cross term has no degree-two detector readout. -/
 theorem quantumPrincipalCompletionPairReadout_clock_mul_detector
     (q : K) (hq : q ^ d = 1) (m : M) (A : Module.End K M) (i : Fin n) :
@@ -389,6 +403,7 @@ theorem quantumPrincipalCompletionPairReadout_clock_mul_detector
       cyclicClockLift, quantumCompletionDetectorGenerator,
       quantumPrincipalCompletionRoot, hi, hshift]
 
+omit [CharZero K] in
 /-- A detector-then-clock cross term has no degree-two detector readout. -/
 theorem quantumPrincipalCompletionPairReadout_detector_mul_clock
     (q : K) (hq : q ^ d = 1) (m : M) (A : Module.End K M) (i : Fin n) :
@@ -404,6 +419,7 @@ theorem quantumPrincipalCompletionPairReadout_detector_mul_clock
       cyclicClockLift, quantumCompletionDetectorGenerator,
       quantumPrincipalCompletionRoot, hi, hshift]
 
+omit [CharZero K] in
 /-- The pair readout sees the detector commutator as one nonzero coordinate vector. -/
 theorem quantumPrincipalCompletionPairReadout_detectorBracket
     (q : K) (hq : q ^ d = 1) (m : M) (r : QuantumLawPair (Fin n)) :
@@ -425,6 +441,7 @@ theorem quantumPrincipalCompletionPairReadout_detectorBracket
   rw [quantumPrincipalCompletionPairReadout_detectorPair]
   module
 
+omit [CharZero K] in
 /-- Every completed coordinate commutator has a detector-only standard-coordinate readout. -/
 theorem quantumPrincipalCompletionPairReadout_principalBracketPair
     (q : K) (hq : q ^ d = 1)
@@ -447,6 +464,7 @@ theorem quantumPrincipalCompletionPairReadout_principalBracketPair
   simpa using quantumPrincipalCompletionPairReadout_detectorBracket
     (d := d) q hq m r
 
+omit [CharZero K] in
 /-- The coordinate commutators of the universal completion are linearly independent. -/
 theorem quantumPrincipalSymbolCompletion_principalBracketPair_linearIndependent
     (q : K) (hq : IsPrimitiveRoot q d)
@@ -491,6 +509,7 @@ theorem quantumPrincipalSymbolCompletion_principalBracketPair_linearIndependent
   simpa [Function.comp_def,
     quantumPrincipalCompletionPairReadout_principalBracketPair] using hstandard
 
+omit [CharZero K] in
 /-- **Universal principal-symbol completion theorem.**  Every finite scalar pencil on a nonzero
 state space admits an exact scalar-preserving completion whose full exterior commutator symbol is
 injective.  No smoothness, Waring decomposition, or prior commutation law for the scalar pencil is

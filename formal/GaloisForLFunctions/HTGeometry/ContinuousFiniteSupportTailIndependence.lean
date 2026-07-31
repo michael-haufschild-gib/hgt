@@ -43,7 +43,7 @@ theorem continuous_finsuppMonomial
 coordinate can be held fixed while the first coordinate moves inside every product neighborhood.
 This is exposed as a reducible constructor rather than a global instance so callers control which
 factor supplies the absence of isolated points. -/
-@[reducible] def perfectSpace_prod_left
+theorem perfectSpace_prod_left
     (X Y : Type*) [TopologicalSpace X] [TopologicalSpace Y] [PerfectSpace X] :
     PerfectSpace (X × Y) where
   univ_preperfect := by

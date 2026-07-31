@@ -42,7 +42,7 @@ private theorem hasDerivAt_mellinWeight_coordinate
     (c := (W.mellinBase x : ℂ))
     (Or.inl (by exact_mod_cast (W.mellinBase_pos x).ne'))
   rw [← Complex.ofReal_log (W.mellinBase_pos x).le] at h
-  convert h using 1 <;> simp [mellinWeight, Function.id_def] <;> ring
+  convert h using 1 <;> simp [mellinWeight, Function.id_def] ; ring
 
 /-- The compactly supported BV Mellin transform is entire. -/
 theorem differentiable_mellinTransform (W : CompactBVPrimeWindow) :

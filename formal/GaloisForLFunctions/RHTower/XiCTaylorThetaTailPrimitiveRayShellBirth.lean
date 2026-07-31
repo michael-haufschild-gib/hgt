@@ -56,7 +56,11 @@ theorem hasDerivAt_thetaCuspTailSecondSectionSourceSpectralDerivative_zero
     (A' := fun (_k : ℕ) => (0 : ℂ))
     (fun k _hk => by
       have hbase : HasDerivAt (fun t : ℝ => (t : ℂ)) 1 0 := by
-        simpa using Complex.ofRealCLM.hasDerivAt
+        have h := Complex.ofRealCLM.hasDerivAt (x := (0 : ℝ))
+        have hval : (Complex.ofRealCLM 1 : ℂ) = 1 := by
+          simp [Complex.ofRealCLM_apply]
+        rw [hval] at h
+        exact h
       have hpow := hbase.pow (2 * k + 1)
       have hscaled :=
         (HasDerivAt.const_mul
@@ -64,6 +68,7 @@ theorem hasDerivAt_thetaCuspTailSecondSectionSourceSpectralDerivative_zero
             ((2 * k + 2 : ℕ) : ℂ)) hpow).mul_const
               (((2 * k + 2).factorial : ℂ)⁻¹)
       convert hscaled using 1
+      · rfl
       · funext y
         simp only [Pi.pow_apply, div_eq_mul_inv]
         ring
@@ -74,6 +79,7 @@ theorem hasDerivAt_thetaCuspTailSecondSectionSourceSpectralDerivative_zero
           rw [show 2 * k + 1 - 1 = 2 * k by omega]
           simp [zero_pow hkpos.ne'])
   convert hsum using 1
+  · rfl
   · funext t
     simp only [Finset.sum_apply]
   · simp
@@ -93,7 +99,10 @@ theorem hasDerivAt_thetaCuspTailSecondCoreAtomSourceSpectralDerivative_zero
     hasDerivAt_thetaCuspTailSecondSectionSourceSpectralDerivative_zero d z
   unfold thetaCuspTailSecondCoreAtomSourceSpectralDerivative
   convert (hsource.const_mul (-2 * z)).sub
-    (hspectral.const_mul (z ^ 2 + 1 / 4)) using 1 <;> ring
+    (hspectral.const_mul (z ^ 2 + 1 / 4)) using 1
+  · rfl
+  · rfl
+  · ring
 
 theorem thetaCuspTailSecondCoreAtomDerivative_sourceSecondDerivative_zero
     (d : ℕ) (z : ℂ) :
@@ -113,7 +122,11 @@ theorem hasDerivAt_xiCTaylorThetaTailCorePairCurrent_zero_right
     funext t
     exact xiCTaylorThetaTailCorePairCurrent_zero_right d z t]
   have h := hasDerivAt_thetaCuspTailSecondCoreAtomDerivative_source d z x
-  convert ((hasDerivAt_const x Complex.imCLM).clm_apply h).div_const 2 using 1 <;> simp
+  convert ((hasDerivAt_const x Complex.imCLM).clm_apply h).div_const 2 using 1
+  · rfl
+  · rfl
+  · rfl
+  · simp
 
 /-- **Favorable shell-birth orientation.**  The endpoint pair current is zero to first order and
 its second source derivative is exactly `-z.im`, independent of the Taylor depth. -/
@@ -132,7 +145,7 @@ theorem xiCTaylorThetaTailCorePairCurrent_zero_right_sourceSecondDerivative_zero
   have h := hasDerivAt_thetaCuspTailSecondCoreAtomSourceSpectralDerivative_zero d z
   have him := (hasDerivAt_const 0 Complex.imCLM).clm_apply h
   have hhalf := him.div_const 2
-  convert hhalf.deriv using 1 <;> simp [Complex.mul_im] <;> ring
+  convert hhalf.deriv using 1 <;> simp [Complex.mul_im]; ring
 
 theorem xiCTaylorThetaTailCorePairCurrent_zero_right_sourceSecondDerivative_neg
     (d : ℕ) {z : ℂ} (hz : 0 < z.im) :

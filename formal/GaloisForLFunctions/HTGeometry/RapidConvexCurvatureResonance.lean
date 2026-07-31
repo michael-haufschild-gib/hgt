@@ -164,7 +164,7 @@ theorem polynomialShiftOperator_const_one (R : Polynomial ℤ) (n : ℕ) :
   have hevalR : ((R.eval 1 : ℤ) : ℝ) =
       ∑ k ∈ Finset.range (R.natDegree + 1), (R.coeff k : ℝ) := by
     exact_mod_cast heval
-  simpa [hevalR]
+  simp [hevalR]
 
 theorem polynomialShiftOperator_const_two (R : Polynomial ℤ) (n : ℕ) :
     polynomialShiftOperator R (fun _ => (2 : ℝ)) n =
@@ -1498,13 +1498,13 @@ set_option maxHeartbeats 800000 in
 in the lower-degree separation and least-source confinement providers. -/
 theorem exists_eventually_profile_bend_pair_of_positiveJetDegree
     {b : ℕ → ℝ}
-    (hdegree : ∀ {D : ℕ} (hD : 0 < D) (δ : Fin D → ℕ) (J A : ℕ),
+    (hdegree : ∀ {D : ℕ} (_hD : 0 < D) (δ : Fin D → ℕ) (J A : ℕ),
       ∀ᶠ q : ℕ in atTop, ∀ (d : ℕ), 0 < d → d < D → ∀ t : Fin d → ℕ,
         D * q ≤ (∑ i, t i) + J →
         tupleProfileValuation b (fun i => q + δ i) +
             (A : ℝ) * Real.log ((q : ℝ) + 2) <
           tupleProfileValuation b t)
-    (hconfine : ∀ {D : ℕ} (hD : 0 < D) (δ : Fin D → ℕ) (A C : ℕ),
+    (hconfine : ∀ {D : ℕ} (_hD : 0 < D) (δ : Fin D → ℕ) (A C : ℕ),
       ∃ K : ℕ, ∀ᶠ q : ℕ in atTop, ∀ s : Fin D → ℕ,
         D * q + (∑ i, δ i) ≤ ∑ i, s i →
         (∑ i, s i) ≤ D * q + (∑ i, δ i) + C →

@@ -202,7 +202,7 @@ theorem tendsto_omega_mul_riemannZeta_re_one_add_two_mul :
     · have hcont : Tendsto (fun ω : ℝ => (1 : ℝ) + 2 * ω) (𝓝 0) (𝓝 1) := by
         convert! (tendsto_const_nhds.add
           (tendsto_const_nhds.mul (tendsto_id : Tendsto (fun x : ℝ => x) (𝓝 0) (𝓝 0))))
-          using 1 <;> norm_num
+          using 1 ; norm_num
       have hcomp := (Complex.continuous_ofReal.tendsto 1).comp hcont
       exact hcomp.mono_left nhdsWithin_le_nhds
     · exact eventually_of_mem self_mem_nhdsWithin fun ω hω => by
@@ -243,7 +243,7 @@ theorem suzukiMainTerm_tendsto_ratio (X : ℕ) (hX : 1 ≤ X) :
     have h1 : Tendsto (fun ω : ℝ => Real.log X * (1 + ω)) (𝓝 0) (𝓝 (Real.log X)) := by
       convert! (tendsto_const_nhds.mul
         (tendsto_const_nhds.add
-          (tendsto_id : Tendsto (fun x : ℝ => x) (𝓝 0) (𝓝 0)))) using 1 <;>
+          (tendsto_id : Tendsto (fun x : ℝ => x) (𝓝 0) (𝓝 0)))) using 1 ;
         norm_num
     have h2 : Tendsto (fun ω : ℝ => Real.exp (Real.log X * (1 + ω)))
         (𝓝 0) (𝓝 (Real.exp (Real.log X))) :=
@@ -251,7 +251,7 @@ theorem suzukiMainTerm_tendsto_ratio (X : ℕ) (hX : 1 ≤ X) :
     rw [Real.exp_log hX0] at h2
     refine (h2.mono_left nhdsWithin_le_nhds).congr'
       (Filter.Eventually.of_forall fun ω => ?_)
-    simpa only [Real.rpow_def_of_pos hX0]
+    simp only [Real.rpow_def_of_pos hX0]
   have hone : Tendsto (fun ω : ℝ => (1 : ℝ) + ω) (𝓝[>] 0) (𝓝 1) := by
     have hconst : Tendsto (fun _ : ℝ => (1 : ℝ)) (𝓝 0) (𝓝 1) :=
       tendsto_const_nhds

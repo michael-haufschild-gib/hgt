@@ -44,7 +44,7 @@ theorem exists_threshold_homogeneous_diffPoly_gap_ne_zero {bnat : ℕ → ℕ}
     have : {M | coeff (bnat M) f ≠ 0} \ Set.Iio Nstar ⊆
         {M | coeff (bnat M) f ≠ 0 ∧ Nstar ≤ M} := by
       rintro M ⟨h1, h2⟩; exact ⟨h1, not_lt.mp h2⟩
-    exact (hinf.diff (Set.finite_Iio Nstar)).mono this
+    exact (hinf.sdiff (Set.finite_Iio Nstar)).mono this
   obtain ⟨M, ⟨hMne, hMge⟩, hLM⟩ :=
     exists_mem_eval_ne_zero (b := fun n => (bnat n : ℂ)) (Nat.cast_injective.comp hbinj) hLead hs'
   have hNfM : S.sup Nfun ≤ M := le_trans (le_max_left _ _) hMge

@@ -234,7 +234,7 @@ theorem exists_mvPolynomial_fraction_clear_ne_zero
   · have hd' : algebraMap R K (d : R) = 0 := by
       simpa using congrArg (MvPolynomial.coeff (0 : σ →₀ ℕ)) hd
     exact (nonZeroDivisors.ne_zero d.2)
-      (IsFractionRing.injective R K (by simpa using hd'))
+      (IsFractionRing.injective R K (by simp at hd'))
   · exact hP hP0
 
 /-- Primitive common-denominator clearing.  The primitive numerator differs from the original
@@ -262,7 +262,7 @@ theorem exists_primitive_mvPolynomial_fraction_clear
   have hdK : algebraMap R K (d : R) ≠ 0 := by
     intro hzero
     exact (nonZeroDivisors.ne_zero d.2)
-      (IsFractionRing.injective R K (by simpa using hzero))
+      (IsFractionRing.injective R K (by simp at hzero))
   have hgK : algebraMap R K pp.content ≠ 0 := by
     intro hzero
     exact hg0 (IsFractionRing.injective R K (by simpa using hzero))
@@ -361,7 +361,7 @@ theorem differentialIndependentAdjoinParametrization_algebraMap_val
       have hx := congrArg Subtype.val
         (differentialIndependentAdjoinParametrization_X
           (fun _ : Unit ↦ y) hy () n)
-      simpa [A, e, differentialPolynomialEval_X] using hx
+      simp [A, e, differentialPolynomialEval_X]
   exact RingHom.congr_fun hring U
 
 /-- A relation over the intermediate field remains a relation after replacing the free element by
@@ -393,7 +393,7 @@ theorem mapped_differentialRelation_eval_freeJet_eq_zero
       differentialJet_mem_differentialAdjoin F (Set.mem_range_self ()) j.2⟩
   have hcoeff (g : G) :
       e (differentialIntermediateToJetFraction G hG hy g) = inc g := by
-    simp [e, inc, differentialIntermediateToJetFraction, hG']
+    simp [e, inc, differentialIntermediateToJetFraction]
   have hjet (j : Unit × ℕ) : e (x j) = jetA j := by
     rcases j with ⟨u, n⟩
     obtain rfl : u = () := Subsingleton.elim _ _
@@ -1188,7 +1188,7 @@ theorem differentialPolynomialGeneralComponentJets_eval_iterate_succ_eq_zero
         (x top - MvPolynomial.eval₂ f x D / MvPolynomial.eval₂ f x S)) D = 0
   rw [MvPolynomial.eval₂_update_of_degreeOf_le_one f x top _ D hdegree.le,
     hpartial]
-  field_simp [hSeval] <;> ring
+  field_simp [hSeval] ; ring
 
 /-- All iterates up to the chosen cutoff vanish at the finite general-component point. -/
 theorem differentialPolynomialGeneralComponentJets_eval_iterate_eq_zero

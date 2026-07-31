@@ -103,9 +103,10 @@ theorem primeArchDegreeSevenEndpointPolynomial_monic :
 theorem primeArchDegreeSevenEndpointPolynomial_twoEisenstein :
     primeArchDegreeSevenEndpointPolynomial.IsEisensteinAt
       primeArchTwoEisensteinIdeal := by
-  simpa only [primeArchDegreeSevenEndpointPolynomial,
-    show (4 * (3 : ℤ)) = 12 by norm_num] using
-      primeArch_twoEisenstein_plus (X ^ 6 : Polynomial ℤ) 7 3 (by simp)
+  have h := primeArch_twoEisenstein_plus (X ^ 6 : Polynomial ℤ) 7 3 (by simp)
+  have hval : (4 * ((3 : ℕ) : ℤ)) = 12 := by norm_num
+  rw [hval] at h
+  exact h
 
 /-- The new source theorem removes a genuine monic two-Eisenstein degree-seven test from the
 combined Sonin residual. -/
@@ -144,9 +145,10 @@ theorem primeArchDegreeEightSquareCoeffPolynomial_monic :
 theorem primeArchDegreeEightSquareCoeffPolynomial_twoEisenstein :
     primeArchDegreeEightSquareCoeffPolynomial.IsEisensteinAt
       primeArchTwoEisensteinIdeal := by
-  simpa only [primeArchDegreeEightSquareCoeffPolynomial,
-    show (4 * (3 : ℤ)) = 12 by norm_num] using
-      primeArch_twoEisenstein_plus (X ^ 7 : Polynomial ℤ) 8 3 (by simp)
+  have h := primeArch_twoEisenstein_plus (X ^ 7 : Polynomial ℤ) 8 3 (by simp)
+  have hval : (4 * ((3 : ℕ) : ℤ)) = 12 := by norm_num
+  rw [hval] at h
+  exact h
 
 /-- The source theorem removes a genuine monic two-Eisenstein degree-eight test from the
 combined Sonin residual. -/
@@ -183,9 +185,10 @@ theorem primeArchDegreeNineSquareCoeffPolynomial_monic :
 theorem primeArchDegreeNineSquareCoeffPolynomial_twoEisenstein :
     primeArchDegreeNineSquareCoeffPolynomial.IsEisensteinAt
       primeArchTwoEisensteinIdeal := by
-  simpa only [primeArchDegreeNineSquareCoeffPolynomial,
-    show (4 * (3 : ℤ)) = 12 by norm_num] using
-      primeArch_twoEisenstein_plus (X ^ 8 : Polynomial ℤ) 9 3 (by simp)
+  have h := primeArch_twoEisenstein_plus (X ^ 8 : Polynomial ℤ) 9 3 (by simp)
+  have hval : (4 * ((3 : ℕ) : ℤ)) = 12 := by norm_num
+  rw [hval] at h
+  exact h
 
 /-- The source theorem removes a genuine monic two-Eisenstein degree-nine test from the
 combined Sonin residual. -/
@@ -220,9 +223,10 @@ theorem primeArchDegreeTenSquareCoeffPolynomial_monic :
 theorem primeArchDegreeTenSquareCoeffPolynomial_twoEisenstein :
     primeArchDegreeTenSquareCoeffPolynomial.IsEisensteinAt
       primeArchTwoEisensteinIdeal := by
-  simpa only [primeArchDegreeTenSquareCoeffPolynomial,
-    show (4 * (3 : ℤ)) = 12 by norm_num] using
-      primeArch_twoEisenstein_plus (X ^ 9 : Polynomial ℤ) 10 3 (by simp)
+  have h := primeArch_twoEisenstein_plus (X ^ 9 : Polynomial ℤ) 10 3 (by simp)
+  have hval : (4 * ((3 : ℕ) : ℤ)) = 12 := by norm_num
+  rw [hval] at h
+  exact h
 
 /-- The source-annulus result removes a genuine monic two-Eisenstein degree-ten test from the
 degree-ten combined Sonin residual. -/

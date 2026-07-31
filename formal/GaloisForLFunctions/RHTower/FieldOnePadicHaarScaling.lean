@@ -93,7 +93,7 @@ theorem fieldOnePadicResidueKernel_index :
         (PadicInt.toZMod (p := p)).toAddMonoidHom :=
     ZMod.ringHom_surjective (PadicInt.toZMod (p := p))
   rw [AddMonoidHom.range_eq_top.mpr hsurj]
-  simpa using Nat.card_zmod p
+  simp
 
 /-- The residue kernel is measurable. -/
 theorem fieldOnePadicResidueKernel_measurableSet :
@@ -222,10 +222,6 @@ theorem fieldOnePadicPrimeUnit_distribHaarChar :
       _ = μ s := by
         congr 1
         ext x
-        change
-          x ∈ ((↑) : ℤ_[p] → ℚ_[p]) ''
-              (Set.univ : Set ℤ_[p]) ↔
-            x ∈ s
         rw [show x ∈ s ↔ ‖x‖ ≤ 1 by
           simp [s]]
         constructor
@@ -289,8 +285,7 @@ theorem fieldOneRationalPrimeUnit_localDistribHaarChar_self
         (Rat.HeightOneSpectrum.primesEquiv v : ℚ_[p]) * e x
     rw [map_mul]
     congr 1
-    simpa using
-      e.commutes (Rat.HeightOneSpectrum.primesEquiv v : ℚ)
+    simp
   have himage_t : e '' t = s := by
     simp [t]
   have himage_smul :

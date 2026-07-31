@@ -199,7 +199,7 @@ private theorem summable_norm_doubleTerm
   constructor
   · intro k
     rcases k.eq_zero_or_pos with rfl | hk
-    · simpa [doubleTerm] using (summable_zero : Summable (fun _ : ℕ => (0 : ℝ)))
+    · simp [doubleTerm]
     · apply summable_of_hasFiniteSupport
       apply Set.Finite.subset (Finset.finite_toSet (range (W.gridCount k + 1)))
       intro n hn
@@ -321,7 +321,7 @@ theorem tsum_doubleTerm_right
     exact W.doubleTerm_eq_zero_of_gridCount_lt s hk hlt)]
   rw [Finset.sum_range_succ']
   simp only [doubleTerm, hk.ne', Nat.add_eq_zero_iff, one_ne_zero, and_false,
-    or_false, if_false, Nat.cast_add, Nat.cast_one, zero_div, or_true, if_true, add_zero,
+    or_false, if_false, Nat.cast_add, Nat.cast_one, or_true, if_true, add_zero,
     discreteMellinKernel, Finset.mul_sum]
   apply Finset.sum_congr rfl
   intro i hi

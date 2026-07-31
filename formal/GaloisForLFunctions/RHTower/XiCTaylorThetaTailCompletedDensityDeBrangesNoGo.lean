@@ -42,7 +42,7 @@ private theorem completedDensityNoGo_hasDerivAt_E {z : ℂ} (hz : -1 < z.im) :
     simpa [mul_comm] using ((hasDerivAt_id z).pow 2).add_const (1 / 4)
   have hF := hasDerivAt_thetaCuspTailSecondDensityPhaseValue (z₀ := z) hz
   unfold thetaCuspTailSecondDensityDeBrangesE
-  convert (hq.mul hF).sub_const (1 / 4) using 1 <;> ring
+  exact (hq.mul hF).sub_const (1 / 4)
 
 private theorem completedDensityNoGo_hasDerivAt_ESharp {z : ℂ} (hz : z.im < 1) :
     HasDerivAt thetaCuspTailSecondDensityDeBrangesESharp
@@ -55,8 +55,9 @@ private theorem completedDensityNoGo_hasDerivAt_ESharp {z : ℂ} (hz : z.im < 1)
     (z₀ := -z) (by simpa using neg_lt_neg hz)
   have hF := hF0.comp z hneg
   unfold thetaCuspTailSecondDensityDeBrangesESharp
-  convert (hq.mul hF).sub_const (1 / 4) using 1 <;>
-    simp only [Function.comp_apply] <;> ring
+  exact ((hq.mul hF).sub_const (1 / 4)).congr_deriv (by
+    simp only [Function.comp_apply]
+    ring)
 
 private theorem completedDensityNoGo_vertical_gap_derivative (t : ℝ) :
     HasDerivAt
@@ -97,10 +98,10 @@ private theorem completedDensityNoGo_vertical_gap_derivative (t : ℝ) :
           (thetaCuspTailSecondDensityDeBrangesE
             ((t : ℂ) - (y : ℂ) * I))) ((starRingEnd ℂ E') * I) 0 := by
       have hc := Complex.conjCLE.hasFDerivAt.comp_hasDerivAt 0 hEneg
-      convert hc using 1
-      change (starRingEnd ℂ E') * I = starRingEnd ℂ (E' * -I)
-      rw [map_mul, map_neg, conj_I]
-      ring
+      exact hc.congr_deriv (by
+        simp only [ContinuousLinearEquiv.coe_coe, Complex.conjCLE_apply,
+          map_mul, map_neg, Complex.conj_I]
+        ring)
     apply hconj.congr_of_eventuallyEq
     have hev : ∀ᶠ y : ℝ in 𝓝 0, |y| < 1 := by
       filter_upwards [isOpen_Ioo.mem_nhds (show (0 : ℝ) ∈ Ioo (-1) 1 by norm_num)] with y hy
@@ -122,12 +123,11 @@ private theorem completedDensityNoGo_vertical_gap_derivative (t : ℝ) :
         (thetaCuspTailSecondDensityDeBrangesE ((t : ℂ) + (y : ℂ) * I)))
       (-2 * (E' * starRingEnd ℂ
         (thetaCuspTailSecondDensityDeBrangesE (t : ℂ))).im) 0 := by
-    convert hnormE using 1
-    simp only [Function.comp_apply, Pi.add_apply, Pi.mul_apply,
-      Complex.normSq_apply, Complex.reCLM_apply, Complex.imCLM_apply,
-      mul_re, mul_im, I_re, I_im, mul_zero, mul_one, zero_mul, add_zero,
-      Complex.conj_re, Complex.conj_im, Complex.ofReal_zero]
-    ring
+    exact hnormE.congr_deriv (by
+      simp only [Function.comp_apply, Complex.reCLM_apply, Complex.imCLM_apply,
+        mul_re, mul_im, I_re, I_im, mul_zero, mul_one, zero_mul, add_zero,
+        Complex.conj_re, Complex.conj_im, Complex.ofReal_zero]
+      ring)
   have hsharp0 := thetaCuspTailSecondDensityDeBrangesE_sharp
     (z := (t : ℂ)) (by simp)
   have hsharp : starRingEnd ℂ
@@ -139,15 +139,14 @@ private theorem completedDensityNoGo_vertical_gap_derivative (t : ℝ) :
         (thetaCuspTailSecondDensityDeBrangesESharp ((t : ℂ) + (y : ℂ) * I)))
       (2 * (E' * starRingEnd ℂ
         (thetaCuspTailSecondDensityDeBrangesE (t : ℂ))).im) 0 := by
-    convert hnormS using 1
-    simp only [Function.comp_apply, Pi.add_apply, Pi.mul_apply,
-      Complex.normSq_apply, Complex.reCLM_apply, Complex.imCLM_apply,
-      mul_re, mul_im, I_re, I_im, mul_zero, mul_one, zero_mul, add_zero,
-      Complex.conj_re, Complex.conj_im, Complex.ofReal_zero]
-    rw [← hsharp]
-    simp only [Complex.conj_re, Complex.conj_im]
-    ring
-  convert hnormE'.sub hnormS' using 1 <;> dsimp [E'] <;> ring
+    exact hnormS.congr_deriv (by
+      simp only [Function.comp_apply, Complex.reCLM_apply, Complex.imCLM_apply,
+        mul_re, mul_im, I_re, I_im, mul_zero, mul_one, zero_mul, add_zero,
+        Complex.conj_re, Complex.conj_im, Complex.ofReal_zero]
+      rw [← hsharp]
+      simp only [Complex.conj_re, Complex.conj_im]
+      ring)
+  exact (hnormE'.sub hnormS').congr_deriv (by dsimp [E']; ring)
 
 private theorem completedDensityNoGo_gap_ofReal (t : ℝ) :
     thetaCuspTailSecondDensityDeBrangesGap (t : ℂ) = 0 := by
@@ -247,7 +246,7 @@ private theorem completedDensityNoGo_fourier_thetaDensityDropFull_re (t : ℝ) :
         change (Complex.exp (↑(-(t * x)) * I) *
           ((-4 * thetaCuspTailDerivative 3 x : ℝ) : ℂ)).re = _
         rw [Complex.mul_re]
-        simp only [Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero,
+        simp only [Complex.ofReal_re, Complex.ofReal_im,
           Complex.exp_ofReal_mul_I_re, Real.cos_neg]
         ring
       · unfold completedDensityNoGo_thetaDensityDropFull
@@ -313,7 +312,7 @@ private theorem completedDensityNoGo_density_sine_scaled_eq_mass_sub_cos (t : �
     (integrableOn_thetaCuspTailDerivative_Ioi 3).const_mul (-4)
   have hqcos : IntegrableOn (fun x : ℝ =>
       (-4 * thetaCuspTailDerivative 3 x) * Real.cos (t * x)) (Ioi 0) := by
-    simpa only [mul_assoc, mul_comm, mul_left_comm] using
+    simpa only [MeasureTheory.IntegrableOn, mul_assoc, mul_comm, mul_left_comm] using
       (integrableOn_cos_mul_thetaCuspTailDerivative 3 t).const_mul (-4)
   rw [← integral_sub hq hqcos]
   apply integral_congr_ae
@@ -429,7 +428,7 @@ theorem tendsto_thetaCuspTailSecondDensityDeBrangesE_re_div_im_atTop_zero :
       (2 * (t * (XiC (t : ℂ)).re)) /
         ((thetaCuspTailSecondDensityDeBrangesE (t : ℂ)).im / t))
       atTop (𝓝 0) := by
-    simpa only [zero_div] using hquot
+    simpa only [Pi.div_def, zero_div] using hquot
   apply hquot'.congr'
   filter_upwards [eventually_gt_atTop (0 : ℝ)] with t ht
   exact (completedDensityNoGo_E_re_div_im_eq ht).symm
@@ -495,17 +494,17 @@ private theorem completedDensityNoGo_hasDerivAt_E_re_div_im
   have himne : (thetaCuspTailSecondDensityDeBrangesE (t : ℂ)).im ≠ 0 :=
     (thetaCuspTailSecondDensityDeBrangesE_im_ofReal_pos ht).ne'
   have hratio := hre.div him himne
-  convert hratio using 1
-  change
-    (-4 * (E' * starRingEnd ℂ
-        (thetaCuspTailSecondDensityDeBrangesE (t : ℂ))).im) /
-        (4 * (thetaCuspTailSecondDensityDeBrangesE (t : ℂ)).im ^ 2) =
-      (E'.re * (thetaCuspTailSecondDensityDeBrangesE (t : ℂ)).im -
-        (thetaCuspTailSecondDensityDeBrangesE (t : ℂ)).re * E'.im) /
-        (thetaCuspTailSecondDensityDeBrangesE (t : ℂ)).im ^ 2
-  simp only [mul_im, Complex.conj_re, Complex.conj_im]
-  field_simp
-  ring
+  exact hratio.congr_deriv (by
+    have hE'eq : ((2 * (t : ℂ) * thetaCuspTailSecondDensityPhaseValue (t : ℂ) * 4 +
+        ((t : ℂ) ^ 2 * 4 + 1) * thetaCuspTailSecondDensityPhaseDerivative (t : ℂ)) / 4 : ℂ) =
+        E' := by
+      dsimp only [E']
+      ring
+    clear_value E'
+    simp only [mul_im, Complex.conj_re, Complex.conj_im]
+    field_simp
+    rw [hE'eq]
+    ring)
 
 private theorem completedDensityNoGo_monotoneOn_E_re_div_im_of_gap_pos
     (hgap : ∀ z : ℂ, 0 < z.im → z.im < 1 / 2 →

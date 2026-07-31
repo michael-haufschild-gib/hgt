@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.DeningerDivisorTwistedTraceReduction
 import GaloisForLFunctions.RHTower.RHLadderTheory
+import GaloisForLFunctions.RHTower.XiWardSpectralBudgetSumRule
 
 /-!
 # Three-point detection: the defect trace of the prime-side reduction detects RH
@@ -28,15 +29,6 @@ noncomputable section
 open Complex
 
 namespace RHTower
-
-/-- Every spectral point of the divisor flow has imaginary part strictly inside `(-1/2, 1/2)`:
-the divisor lies in the open critical strip. -/
-theorem abs_im_xiSpectralPoint_lt_half (q : XiZeroCopy) :
-    |(xiSpectralPoint q).im| < 1 / 2 := by
-  have hre := xi_divisor_support_re_mem_open_unit q.1
-  rw [xiSpectralPoint_im]
-  rw [abs_lt]
-  constructor <;> linarith [hre.1, hre.2]
 
 /-- On the Euler half-plane the centered completed zeta does not vanish. -/
 theorem XiC_ne_zero_of_one_lt_re {z : ℂ} (hz : 1 < (1 / 2 + z * Complex.I).re) :

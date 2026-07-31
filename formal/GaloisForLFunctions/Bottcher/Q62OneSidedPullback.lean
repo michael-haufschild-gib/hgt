@@ -45,9 +45,9 @@ theorem locOneSided_of_oneSidedAt {c z : ℂ} (h : OneSidedAt c z) : LocOneSided
   refine ⟨hzf, fun ε hε => ⟨Metric.ball z (min ρ₀ ε), Metric.isOpen_ball,
     Metric.mem_ball_self (lt_min hρ₀ hε), Metric.ball_subset_ball (min_le_right _ _), ?_, ?_⟩⟩
   · have hc := hconn (min ρ₀ ε) (lt_min hρ₀ hε) (min_le_left _ _)
-    rw [Set.diff_eq] at hc; exact hc.isPreconnected
+    rw [Set.sdiff_eq] at hc; exact hc.isPreconnected
   · have hc := hconn (min ρ₀ ε) (lt_min hρ₀ hε) (min_le_left _ _)
-    rw [Set.diff_eq] at hc; exact hc.nonempty
+    rw [Set.sdiff_eq] at hc; exact hc.nonempty
 
 /-- **`LocOneSided` feeds the branch route.**  It yields the open preconnected basin neighbourhood
 `continuesAcross_of_smoothBranch` consumes. -/

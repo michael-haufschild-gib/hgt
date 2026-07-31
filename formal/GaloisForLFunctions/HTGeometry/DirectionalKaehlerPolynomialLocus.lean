@@ -167,6 +167,7 @@ theorem directionalWordPacketMonomial_isHomogeneous
       _ = n * (n + 1) / 2 := by rw [Nat.mul_comm (n + 1) n]
   simpa [directionalWordPacketMonomial, hsum] using houter
 
+omit [CharZero K] in
 /-- The finite directional Kähler locus is cut out by finitely many homogeneous scalar
 polynomials of the exact triangular degree. -/
 theorem exists_directionalKaehlerCoordinatePolynomials

@@ -193,7 +193,7 @@ theorem continuousOn_projectiveWaterMass
     (ha : 0 < a) :
     ContinuousOn (projectiveWaterMass w k) (Set.Icc a b) := by
   unfold projectiveWaterMass
-  apply continuousOn_finset_sum
+  apply continuousOn_finsetSum
   intro j _hj
   by_cases hj : j = k
   · subst j

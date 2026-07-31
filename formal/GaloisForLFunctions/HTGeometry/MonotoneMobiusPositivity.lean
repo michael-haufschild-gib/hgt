@@ -93,7 +93,7 @@ theorem mobiusLogInversion_ge {g : ℝ → ℝ} (hg0 : ∀ x, 0 ≤ g x) (hmono 
   have hBle : ∀ k, B k ≤ g u / (k : ℝ) ^ 2 := by
     intro k
     by_cases hk : k = 1
-    · simp only [hB, if_pos hk, hk]
+    · simp only [hB, hk]
       have : 0 ≤ g u := hg0 u
       positivity
     · simp [hB, if_neg hk]

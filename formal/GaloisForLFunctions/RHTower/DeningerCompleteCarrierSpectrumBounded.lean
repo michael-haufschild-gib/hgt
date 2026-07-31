@@ -54,7 +54,7 @@ theorem theta_continuous [CompleteSpace H] (P : DeningerWeightOnePolarization H)
   have hshift : Continuous (P.shiftedTheta : H → H) := by
     have h := hsym.const_smul (-(Complex.I : ℂ))
     refine h.congr fun x => ?_
-    simp [LinearMap.smul_apply, smul_smul, Complex.I_mul_I]
+    simp [smul_smul, Complex.I_mul_I]
   have hid : Continuous fun x : H => ((1 : ℂ) / 2) • x := continuous_const_smul _
   have := hshift.add hid
   refine this.congr fun x => ?_

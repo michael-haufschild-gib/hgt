@@ -182,7 +182,7 @@ theorem descentStep [CharZero Cst]
     | 1 => simp
     | (k + 2) =>
         have hk : N.natDegree < k + 2 := by omega
-        simp [Polynomial.coeff_eq_zero_of_natDegree_lt hk, Polynomial.coeff_C]
+        simp [Polynomial.coeff_eq_zero_of_natDegree_lt hk]
   have htN : shiftTwist sigmaE c N
       = Polynomial.C (sigmaE (N.coeff 1)) * X
         + Polynomial.C (sigmaE (N.coeff 1) * c + sigmaE (N.coeff 0)) := by

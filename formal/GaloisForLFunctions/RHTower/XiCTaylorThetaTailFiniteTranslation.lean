@@ -158,7 +158,7 @@ theorem finiteCosinePolynomial_add_eq_trunc_product
     change PowerSeries.trunc (2 * d + 1) (PowerSeries.C 2 * f) = _
     rw [PowerSeries.trunc_C_mul]
     have hc : Polynomial.C (2 : ℂ) = (2 : Polynomial ℂ) := by
-      simpa only [map_ofNat] using Polynomial.C_eq_algebraMap (2 : ℂ)
+      simp only [map_ofNat]
     rw [hc]
   have hprod (f g : PowerSeries ℂ) :
       PowerSeries.trunc (2 * d + 1) (f * g) =
@@ -449,7 +449,7 @@ theorem finiteSinePolynomial_add_eq_trunc_product
     change PowerSeries.trunc (2 * d + 1) (PowerSeries.C 2 * f) = _
     rw [PowerSeries.trunc_C_mul]
     have hc : Polynomial.C (2 : ℂ) = (2 : Polynomial ℂ) := by
-      simpa only [map_ofNat] using Polynomial.C_eq_algebraMap (2 : ℂ)
+      simp only [map_ofNat]
     rw [hc]
   have hprod (f g : PowerSeries ℂ) :
       PowerSeries.trunc (2 * d + 1) (f * g) =

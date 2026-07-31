@@ -208,7 +208,6 @@ theorem projectiveChartLocalIncidenceRing_evaluationCodimension
       (ringKrullDim (projectiveChartLocalIncidenceRing q n z j exponent p) +
         (e : WithBot ℕ∞)) + (P - 1 : ℕ) ≤
       (R * n : WithBot ℕ∞) + (P - 1 : ℕ) := by
-    change _ ≤ _
     simpa [R, P, hid, add_assoc, add_comm, add_left_comm] using hbase
   exact (ENat.WithBot.add_le_add_natCast_right_iff).mp hcancel
 

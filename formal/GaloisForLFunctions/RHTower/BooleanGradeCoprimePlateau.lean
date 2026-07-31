@@ -106,6 +106,7 @@ def gradeResolventTrace
     (s : Finset ι) (gradeValue diagonal : ι → ℝ) (lam : ℝ) : ℝ :=
   ∑ i ∈ s, gradeValue i / (lam + diagonal i)
 
+omit [DecidableEq ι] in
 /-- Proportional whole-grade traces stay proportional after every scalar grade resolvent. -/
 theorem gradeResolventTrace_eq_scale
     (s : Finset ι) (mass unitValue diagonal : ι → ℝ) (lam scale : ℝ)
@@ -133,6 +134,7 @@ def booleanGradeCoprimeValue
     (sign volume sqrtQ : ℝ) (phi : ι → ℝ) (i : ι) : ℝ :=
   sign * volume / (sqrtQ * phi i)
 
+omit [DecidableEq ι] in
 /-- On every whole Boolean grade, the coprime value is the same fixed multiple of the squared
 carrier mass. -/
 theorem booleanGradeCoprimeValue_eq_scale_mass
@@ -145,6 +147,7 @@ theorem booleanGradeCoprimeValue_eq_scale_mass
   · simp [hphi]
   · field_simp [hvolume, hsqrtQ, hphi]
 
+omit [DecidableEq ι] in
 /-- **Universal coprime plateau.** For any selected family of whole Boolean grades and any scalar
 diagonal weights, a secularly normalized positive-line candidate has the same coprime trace
 `sign / (volume * sqrtQ)`.  The theorem is conditional only on the exact secular equation, so the
@@ -204,6 +207,7 @@ def residueNonunitCounterflow
     (lowWeight : Ω → ℝ) (source : Ω → E) : E :=
   ∑ x, if isUnit x then 0 else lowWeight x • source x
 
+omit [DecidableEq Ω] in
 /-- **Low-channel normal form.** If the low Boolean weight is the constant `headMass` on every
 unit residue, then its full source amplitude is the positive unit fraction plus one canonical
 nonunit counterflow. -/
@@ -228,6 +232,7 @@ theorem residueLowChannel_counterflowNormalForm
           ∑ x, if isUnit x then 0 else lowWeight x • source x := by
       rw [Finset.sum_add_distrib, Finset.smul_sum]
 
+omit [DecidableEq Ω] in
 /-- **High-channel normal form.** If low and high weights join to the unit indicator, the high
 channel contains the complementary positive unit fraction and the exact negative of the same
 nonunit counterflow. -/
@@ -262,6 +267,7 @@ theorem residueHighChannel_counterflowNormalForm
           ∑ x, if isUnit x then 0 else lowWeight x • source x := by
       rw [Finset.sum_sub_distrib, Finset.smul_sum]
 
+omit [DecidableEq Ω] in
 /-- **Prime/composite counterflow cancellation.** Joined low and high Boolean channels discard
 the entire nonunit counterflow and recover exactly the unit carrier.  In the square-root sieve
 range the unit carrier is the ordinary-prime endpoint, so the cutoff has only reallocated that

@@ -45,7 +45,7 @@ theorem abs_cosInt_le_window (L A U : ℝ) (hU : 0 ≤ U) :
     |cosInt L A U| ≤ U := by
   by_cases hL : L = 0
   · subst L
-    simpa [cosInt_zero, abs_of_nonneg hU]
+    simp [cosInt_zero, abs_of_nonneg hU]
   · rw [cosInt, if_neg hL, abs_div]
     have hnum := Real.abs_sin_sub_sin_le (L * (A + U)) (L * A)
     have hdiff : |L * (A + U) - L * A| = |L| * U := by

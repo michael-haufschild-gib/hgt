@@ -57,7 +57,7 @@ theorem cup_hodge_ne_zero {x : H} (hx : x ≠ 0) : D.cup x (D.hodge x) ≠ 0 := 
   simp at hpos
 
 /-- **Hodge purity.**  Every eigenvalue of the transverse flow has real part one half. -/
-theorem eigenvalue_re_eq_half {x : H} {lam : ℂ} (hx : x ≠ 0)
+theorem theta_eigenvalue_re_eq_half {x : H} {lam : ℂ} (hx : x ≠ 0)
     (heig : D.theta x = lam • x) :
     lam.re = 1 / 2 := by
   have hBne : D.cup x (D.hodge x) ≠ 0 := cup_hodge_ne_zero D hx
@@ -78,7 +78,7 @@ theorem eigenvalue_re_eq_half {x : H} {lam : ℂ} (hx : x ≠ 0)
 theorem eigenvalue_eq_half_add_I_mul {x : H} {lam : ℂ} (hx : x ≠ 0)
     (heig : D.theta x = lam • x) :
     lam = 1 / 2 + Complex.I * (lam.im : ℂ) := by
-  have hre := eigenvalue_re_eq_half D hx heig
+  have hre := theta_eigenvalue_re_eq_half D hx heig
   apply Complex.ext <;> simp [hre]
 
 /-- **One-way spectral comparison.**  If every nontrivial zero of the Riemann zeta function is
@@ -90,7 +90,7 @@ theorem riemannHypothesis_of_zetaZero_eigenvector
     RiemannHypothesis := by
   intro s hs htriv hone
   obtain ⟨x, hx, heig⟩ := hspec s hs htriv hone
-  exact eigenvalue_re_eq_half D hx heig
+  exact theta_eigenvalue_re_eq_half D hx heig
 
 end DeningerArithmeticThreeTermHodge
 

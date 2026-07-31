@@ -240,6 +240,7 @@ theorem matrixCoefficientPrincipalCurvature_eq_zero_of_commutatorClosure
     u hu (n + 2) _ hcomb
   simpa using hzero jj
 
+omit [DecidableEq ι] in
 /-- Commutator closure forces coefficient flatness of the matrix symbol tower. -/
 theorem matrixCoefficientPrincipalSymbolFlat_of_commutatorClosure
     (law : g → Derivation k L L) (coefficientLaw : g → Derivation k K K)

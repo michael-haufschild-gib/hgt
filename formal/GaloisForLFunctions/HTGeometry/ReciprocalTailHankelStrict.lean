@@ -55,7 +55,7 @@ theorem reciprocalTailMeasure_infiniteSupport (F : Finset ℝ) :
   have hset : (↑F : Set ℝ)ᶜ ∩ Icc 0 1 = Icc 0 1 \ (↑F : Set ℝ) := by
     ext x
     simp [and_comm]
-  rw [hset, measure_diff_null hFzero]
+  rw [hset, measure_sdiff_null hFzero]
   norm_num
 
 /-- **All-order strict Hankel law.**  Every finite reciprocal-tail Hankel determinant is positive. -/

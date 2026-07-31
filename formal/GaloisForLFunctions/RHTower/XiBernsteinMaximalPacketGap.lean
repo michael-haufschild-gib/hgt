@@ -22,13 +22,19 @@ theorem tendsto_xiEndpointBernsteinAtomAmplitudeBase_cofinite_one :
   have hzero : Tendsto xiZeroCopyReciprocalSquare cofinite (nhds 0) :=
     summable_xiZeroCopyReciprocalSquare.tendsto_cofinite_zero
   have hu : Tendsto xiEndpointNormalizedReciprocalSquare cofinite (nhds 0) := by
-    simpa [xiEndpointNormalizedReciprocalSquare] using
-      hzero.div_const (primeArchEndpointHausdorffRadius : ℂ)
+    have h2 : Tendsto (fun q : XiZeroCopy =>
+        xiZeroCopyReciprocalSquare q / (primeArchEndpointHausdorffRadius : ℂ))
+        cofinite (nhds 0) := by
+      simpa using hzero.div_const (primeArchEndpointHausdorffRadius : ℂ)
+    exact h2
   have hone : Tendsto (fun _ : XiZeroCopy => (1 : ℂ)) cofinite (nhds 1) :=
     tendsto_const_nhds
   have h := hu.norm.add (hone.sub hu).norm
-  simpa only [xiEndpointBernsteinAtomAmplitudeBase, norm_zero, sub_zero, norm_one,
-    zero_add] using h
+  have h2 : Tendsto (fun q : XiZeroCopy =>
+      ‖xiEndpointNormalizedReciprocalSquare q‖ +
+        ‖1 - xiEndpointNormalizedReciprocalSquare q‖) cofinite (nhds 1) := by
+    simpa only [norm_zero, sub_zero, norm_one, zero_add] using h
+  exact h2
 
 /-- Failure of RH supplies one strictly superunit endpoint amplitude. -/
 theorem exists_one_lt_xiEndpointBernsteinAtomAmplitudeBase_of_not_rh
@@ -62,7 +68,7 @@ theorem exists_uniformlySeparated_maximal_xiEndpointAmplitudePacket_of_not_rh
     tendsto_xiEndpointBernsteinAtomAmplitudeBase_cofinite_one
   have ha : Tendsto a cofinite (nhds 1) := by
     have h := Complex.continuous_ofReal.tendsto 1
-    simpa only [a, Complex.ofReal_one] using h.comp hA
+    exact h.comp hA
   obtain ⟨q0, hq0⟩ := exists_one_lt_xiEndpointBernsteinAtomAmplitudeBase_of_not_rh hRH
   have hAnonneg (q : XiZeroCopy) : 0 ≤ A q :=
     add_nonneg (norm_nonneg _) (norm_nonneg _)

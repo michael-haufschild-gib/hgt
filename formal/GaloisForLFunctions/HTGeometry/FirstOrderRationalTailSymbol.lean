@@ -31,7 +31,7 @@ theorem verticalTransportPolynomialRingHom_injective
   apply verticalTransportPolynomial_ne_zero σ ha hpq0
   rw [← verticalTransportPolynomialRingHom_apply, map_sub, hpq, sub_self]
 
-def verticalTransportNonZeroDivisors
+theorem verticalTransportNonZeroDivisors
     {K₀ K₁ : Type*} [Field K₀] [Field K₁]
     (σ : K₁ →+* K₀) {a : K₀} (ha : a ≠ 0) :
     nonZeroDivisors K₁[X] ≤

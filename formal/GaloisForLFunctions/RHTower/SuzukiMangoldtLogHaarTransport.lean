@@ -142,7 +142,6 @@ theorem sum_log_ge_with_endpoint (n : ℕ) (hn : 1 ≤ n) :
               nlinarith
             _ = 1 := by rw [mul_sub, hkk]; ring
         push_cast
-        push_cast at ih'
         nlinarith
 
 /-- The cumulative Mangoldt lag mass never trails its logarithmic node by more than two. -/

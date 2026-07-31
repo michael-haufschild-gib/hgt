@@ -44,6 +44,7 @@ def contractionGramDefect {ι : Type*}
     (T : H →L[ℂ] K) (v : ι → H) : Matrix ι ι ℂ :=
   Matrix.gram ℂ v - Matrix.gram ℂ (T ∘ v)
 
+omit [CompleteSpace H] [CompleteSpace K] in
 /-- **Universal contraction Gram-loss law.**  Every finite packet loses a
 positive-semidefinite Gram matrix under a contraction. -/
 theorem contractionGramDefect_posSemidef

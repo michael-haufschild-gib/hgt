@@ -85,8 +85,8 @@ theorem differentialIntermediateToJetFraction_deriv
   apply e.injective
   rw [differentialIndependentJetFraction_deriv]
   apply Subtype.ext
-  simp [e, φ, A, differentialIntermediateToJetFraction,
-    differentialAdjoin.instDifferential, derivationClosedDifferential_apply]
+  simp [e, A, differentialIntermediateToJetFraction,
+    derivationClosedDifferential_apply]
   rfl
 
 /-! ## Total derivatives commute with coefficient embeddings -/
@@ -143,8 +143,7 @@ theorem map_mem_differentialPolynomialIterateIdeal_of_commutes
   · rintro _ ⟨n, rfl⟩
     rw [map_differentialPolynomialIterateOver_of_commutes f hf]
     exact differentialPolynomialIterateOver_mem_iterateIdeal _ _
-  · simpa using (Ideal.zero_mem
-      (differentialPolynomialIterateIdeal (MvPolynomial.map f P)))
+  · simp
   · intro A B _ _ hA hB
     simpa using (Ideal.add_mem _ hA hB)
   · intro a A _ hA
@@ -167,7 +166,7 @@ theorem differentialPolynomialOverDerivation_mem_iterateIdeal
   · rintro _ ⟨n, rfl⟩
     simpa only [differentialPolynomialIterateOver_succ] using
       differentialPolynomialIterateOver_mem_iterateIdeal P (n + 1)
-  · simpa using (Ideal.zero_mem (differentialPolynomialIterateIdeal P))
+  · simp
   · intro A B _ _ hA hB
     simpa using (differentialPolynomialIterateIdeal P).add_mem hA hB
   · intro a A hA hDA
@@ -302,7 +301,7 @@ theorem differentialPolynomialFamilyOverDerivation_mem_iterateIdeal
   · rintro _ ⟨n, rfl⟩
     simpa only [differentialPolynomialFamilyIterateOver_succ] using
       differentialPolynomialFamilyIterateOver_mem_iterateIdeal P (n + 1)
-  · simpa using (Ideal.zero_mem (differentialPolynomialFamilyIterateIdeal P))
+  · simp
   · intro A B _ _ hA hB
     simpa using (differentialPolynomialFamilyIterateIdeal P).add_mem hA hB
   · intro a A hA hDA
@@ -363,9 +362,7 @@ theorem differentialPolynomialTwoBlockSwap_mem_iterateIdeal
   · rintro _ ⟨n, rfl⟩
     rw [differentialPolynomialTwoBlockSwap_iterate]
     exact differentialPolynomialFamilyIterateOver_mem_iterateIdeal _ _
-  · simpa using (Ideal.zero_mem
-      (differentialPolynomialFamilyIterateIdeal
-        (differentialPolynomialTwoBlockSwap F P)))
+  · simp
   · intro A B _ _ hA hB
     simpa using (Ideal.add_mem _ hA hB)
   · intro a A _ hA
@@ -542,7 +539,7 @@ theorem exists_mvPolynomial_bezout_clear_away_from_variable
             (mvPolynomialPolynomialEquivAt_apply x N).symm
         _ = (Polynomial.C n).natDegree := by rw [heN]
         _ = 0 := by simp
-    simpa [MvPolynomial.mem_vars_iff_degreeOf_ne_zero, hdegree]
+    simp [MvPolynomial.mem_vars_iff_degreeOf_ne_zero, hdegree]
   refine ⟨U, V, N, hN0, hNx, ?_⟩
   apply e.injective
   simpa [U, V, N] using! hbezout

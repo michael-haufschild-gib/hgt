@@ -20,6 +20,7 @@ open Submodule
 variable {K g ι : Type*} [Field K] [IsAlgClosed K]
   [Fintype ι] [DecidableEq ι]
 
+omit [IsAlgClosed K] in
 /-- A maximal generalized eigenspace is nonzero exactly when its scalar is an eigenvalue. -/
 theorem maxGenEigenspace_ne_bot_iff_hasEigenvalue
     {V : Type*} [AddCommGroup V] [Module K V]

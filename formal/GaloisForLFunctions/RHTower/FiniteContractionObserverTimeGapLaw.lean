@@ -33,6 +33,7 @@ def finiteContractionPeripheralObserverSpectrum
     (finiteContractionPeripheralWeight T x)
     (finiteContractionPeripheralPhase T)
 
+omit [CompleteSpace H] in
 theorem finiteContractionPeripheralObserverSpectrum_isProbabilityMeasure
     (T : H →L[ℂ] H) (x : H)
     (hpersistent : 0 < finiteContractionPersistentMass T x) :
@@ -44,6 +45,7 @@ theorem finiteContractionPeripheralObserverSpectrum_isProbabilityMeasure
     (finiteContractionPeripheralWeight_nonneg T x hpersistent)
     (sum_finiteContractionPeripheralWeight T x hpersistent)
 
+omit [CompleteSpace H] in
 /-- Integer samples of the peripheral characteristic function are exactly
 the normalized persistent Floquet return amplitude. -/
 theorem charFun_finiteContractionPeripheralObserverSpectrum
@@ -101,6 +103,7 @@ theorem finiteContraction_transientStrippedFidelity_eq_gapRecord
   rw [Complex.normSq_mul, Complex.normSq_ofReal]
   ring
 
+omit [CompleteSpace H] in
 /-- The peripheral observer-time gap measure is the complete invariant of
 the persistent projective return record. -/
 theorem finiteContraction_peripheralGapMeasure_complete

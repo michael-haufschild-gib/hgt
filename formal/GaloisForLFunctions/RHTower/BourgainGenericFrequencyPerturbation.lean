@@ -128,7 +128,7 @@ theorem bourgainGenericFrequencyPerturbationSize_nonneg
 bound whenever their vector Taylor remainders are bounded by `ρ`. -/
 theorem bourgainGenericExactFrequencies_scaledPerturbation
     {H : ℕ} (hH : 0 < H) (φ₃ φ₄ : ℝ → ℝ)
-    {D a b ρ : ℝ} (hD : 0 < D) (hρ : 0 ≤ ρ)
+    {D a b ρ : ℝ} (hD : 0 < D) (_hρ : 0 ≤ ρ)
     (hunit : IsUnit (bourgainGenericPhaseCoordinateMatrix φ₃ φ₄ a b))
     (hleft :
       ∀ n : Fin H,

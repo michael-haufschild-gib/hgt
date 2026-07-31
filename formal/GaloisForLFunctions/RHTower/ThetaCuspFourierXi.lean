@@ -158,7 +158,7 @@ theorem integral_Ioi_thetaCuspFullSource_mul_cos (t : ℝ) :
       funext x
       ring
     rw [hshape, integral_const_mul, hsinIdentity] at hcosIBP
-    convert hcosIBP using 1 <;> ring
+    convert hcosIBP using 1 ; ring
   rw [show (fun x : ℝ => thetaCuspFullSource x * Real.cos (t * x)) =
       fun x => Real.cos (t * x) * thetaCuspTailDerivative 2 x -
         (1 / 4 : ℝ) * (Real.cos (t * x) * thetaCuspTailDerivative 0 x) by

@@ -320,8 +320,6 @@ theorem det_dirichletInitialTopMatrix (q N : ℕ) (σ : Equiv.Perm (Fin q)) :
       (dirichletLogNode (σ j) : ℂ) ^ (j : ℕ) * (-1 : ℂ) ^ N) =
       (∏ j : Fin q, (dirichletLogNode (σ j) : ℂ) ^ (j : ℕ)) *
         (-1 : ℂ) ^ (q * N) := by
-    change (∏ j ∈ (Finset.univ : Finset (Fin q)),
-      (dirichletLogNode (σ j) : ℂ) ^ (j : ℕ) * (-1 : ℂ) ^ N) = _
     rw [Finset.prod_mul_distrib]
     simp only [Finset.prod_const, Finset.card_univ, Fintype.card_fin]
     rw [← pow_mul]

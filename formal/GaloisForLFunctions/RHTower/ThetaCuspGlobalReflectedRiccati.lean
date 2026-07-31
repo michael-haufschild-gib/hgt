@@ -112,7 +112,7 @@ theorem hasDerivAt_thetaCuspReflectedLogAction (u t : ℝ) :
   unfold thetaCuspReflectedLogAction thetaCuspReflectedLogJetOne
     thetaCuspLogDecaySlope
   convert ((hasDerivAt_const t (2 * thetaCuspLogSource u)).sub hp).sub hm using 1
-  all_goals simp [sub_eq_add_neg]
+  all_goals first | rfl | simp [sub_eq_add_neg]
 
 /-- The first reflected-action jet differentiates to the second. -/
 theorem hasDerivAt_thetaCuspReflectedLogJetOne (u t : ℝ) :
@@ -127,7 +127,7 @@ theorem hasDerivAt_thetaCuspReflectedLogJetOne (u t : ℝ) :
   unfold thetaCuspReflectedLogJetOne thetaCuspReflectedLogJetTwo
     thetaCuspLogDecaySlope thetaCuspLogCurvature
   convert hp.neg.sub hm.neg using 1
-  all_goals simp [sub_eq_add_neg]
+  all_goals first | rfl | simp [sub_eq_add_neg]
 
 /-- The second reflected-action jet differentiates to the third. -/
 theorem hasDerivAt_thetaCuspReflectedLogJetTwo (u t : ℝ) :
@@ -142,7 +142,7 @@ theorem hasDerivAt_thetaCuspReflectedLogJetTwo (u t : ℝ) :
   unfold thetaCuspReflectedLogJetTwo thetaCuspReflectedLogJetThree
     thetaCuspLogCurvature thetaCuspLogCurvatureJet
   convert hp.neg.add hm.neg using 1
-  all_goals simp [sub_eq_add_neg]
+  all_goals first | rfl | simp [sub_eq_add_neg]
 
 /-- Intrinsic reflected action equals the negative logarithm of the normalized source product. -/
 theorem thetaCuspReflectedLogAction_eq_neg_log_normalized
@@ -394,6 +394,7 @@ theorem hasDerivAt_thetaCuspCenterLogRiccatiMargin (x : ℝ) :
   have h3 := hasDerivAt_iteratedDeriv_thetaCuspLogSource 3 x
   unfold thetaCuspCenterLogRiccatiMargin
   convert ((h1.mul h2).const_mul 4).add h3 using 1
+  any_goals rfl
   · funext y
     simp only [Pi.add_apply, Pi.mul_apply]
     ring

@@ -281,8 +281,8 @@ theorem rectangleIntegerCharacter_ne_zero
   intro hzero
   have h :=
     congrFun hzero (rectangleDistinguished j)
-  simpa [rectangleIntegerCharacter,
-    rectangleContrastRelation_apply_distinguished] using h
+  simp [rectangleIntegerCharacter,
+    rectangleContrastRelation_apply_distinguished] at h
 
 /-- Every rectangle character annihilates every uncoupled tensor-sum
 energy, independently of its one-body spectra. -/

@@ -348,7 +348,7 @@ theorem tendsto_fixedEuler_oneCornerGammaXiWard_sub_continuedSource
             (fixedEulerCofinalSigma s n) (fixedEulerCofinalDamping n) -
           GaloisForLFunctions.completedSquarefreeFixedCurrent (s : ℂ)))
       atTop (𝓝 (-I * (fixedEulerMobiusCollisionAnomaly s : ℂ))) := by
-    convert h using 1 <;> ring
+    convert h using 1 ; ring
   apply h'.congr'
   filter_upwards with n
   simpa only [fixedEulerCofinal_boundaryParameter] using

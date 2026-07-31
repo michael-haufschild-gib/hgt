@@ -190,7 +190,6 @@ theorem primeCubeCoefficientPolynomial_roots_unit
       rw [abs_le]
       constructor <;> dsimp [c] <;> linarith
     apply GaloisForLFunctions.diagonal_zeros_on_circle hc
-    change z ^ 2 + 2 * (c : ℂ) * z + 1 = 0
     have hcoef : (2 : ℂ) * (c : ℂ) = ((r - 1 : ℝ) : ℂ) := by
       dsimp [c]
       push_cast
@@ -229,10 +228,12 @@ theorem hasDerivAt_primeCubeExponentialMode (omega : ℝ) (z : ℂ) :
     HasDerivAt (primeCubeExponentialMode omega)
       ((Complex.I * (omega : ℂ)) * primeCubeExponentialMode omega z) z := by
   let c : ℂ := Complex.I * (omega : ℂ)
-  convert (Complex.hasDerivAt_exp (c * z)).comp z
-      ((hasDerivAt_id z).const_mul c) using 1
-  all_goals dsimp [c, primeCubeExponentialMode]
-  all_goals ring
+  have h := (Complex.hasDerivAt_exp (c * z)).comp z
+      ((hasDerivAt_id z).const_mul c)
+  have hval : Complex.exp (c * z) * (c * 1) = c * Complex.exp (c * z) := by
+    ring
+  rw [hval] at h
+  exact h
 
 theorem hasDerivAt_primeCubeCoefficientPhase (L a b : ℝ) (z : ℂ) :
     HasDerivAt (primeCubeCoefficientPhase L a b)
@@ -243,7 +244,7 @@ theorem hasDerivAt_primeCubeCoefficientPhase (L a b : ℝ) (z : ℂ) :
   have hp1 := hasDerivAt_primeCubeExponentialMode (L / 2) z
   have h := ((hm3.add hp3).const_mul (a : ℂ)).add
     ((hm1.add hp1).const_mul (b : ℂ))
-  convert h using 1
+  exact h
 
 theorem centeredUnitCirclePolynomialPhase_primeCubeCoefficientPolynomial
     (r L : ℝ) (z : ℂ) :

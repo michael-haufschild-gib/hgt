@@ -116,7 +116,7 @@ theorem xiThetaDividedChain_local_order
     have hlt : k < p.order := by simpa only [hpm] using hk
     rw [← (hp.has_fpower_series_iterate_dslope_fslope k).coeff_zero 1,
       ← coeff, coeff_iterate_fslope, zero_add, coeff,
-      p.apply_eq_zero_of_lt_order hlt, ContinuousMultilinearMap.zero_apply]
+      p.apply_eq_zero_of_lt_order hlt, _root_.zero_apply]
   constructor
   · simpa only [hpm, xiThetaDividedChain] using
       hp.iterate_dslope_fslope_ne_zero hpne

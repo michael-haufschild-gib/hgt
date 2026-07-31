@@ -51,7 +51,7 @@ theorem linearIndependent_powers_iff_transcendental (x : A) :
           T, LinearMap.mulLeft_apply, Algebra.smul_def]
   rw [← hpow, Polynomial.linearIndependent_powers_iff_aeval]
   rw [transcendental_iff]
-  simpa [haeval]
+  simp [haeval]
 
 /-- **Power-observable principle.**  Passing a power orbit to canonical degree-one observables in
 the symmetric algebra turns state linear independence into observable algebraic independence. -/

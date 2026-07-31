@@ -38,16 +38,16 @@ def atomicAggregateCoefficient {I : Type*} (c z : I → ℂ) :
 theorem summable_atomicAggregateWeight
     {I : Type*} {c z : I → ℂ} (hc : Summable c) :
     Summable (atomicAggregateWeight c z) := by
-  simpa only [atomicAggregateWeight] using
+  have h : Summable (fun u : ℂ => ∑' i : z ⁻¹' {u}, c i.1) :=
     (hc.hasSum.tsum_fiberwise z).summable
+  exact h
 
 /-- The nonzero aggregate coefficients form an absolutely summable intrinsic source. -/
 theorem summable_atomicAggregateCoefficient
     {I : Type*} {c z : I → ℂ} (hc : Summable c) :
     Summable (atomicAggregateCoefficient c z) := by
-  simpa only [AtomicAggregateSupport, atomicAggregateCoefficient] using
-    (summable_atomicAggregateWeight hc).subtype
-      (fun u => atomicAggregateWeight c z u ≠ 0)
+  exact (summable_atomicAggregateWeight hc).subtype
+    (fun u => atomicAggregateWeight c z u ≠ 0)
 
 /-- A nonzero aggregate fibre contains at least one raw source index. -/
 theorem exists_eq_of_atomicAggregateWeight_ne_zero
@@ -68,7 +68,7 @@ def atomicAggregateRepresentative {I : Type*} (c z : I → ℂ)
     (u : AtomicAggregateSupport c z) : I :=
   Classical.choose (exists_eq_of_atomicAggregateWeight_ne_zero u.property)
 
-@[simp] theorem atomicAggregateRepresentative_spec
+theorem atomicAggregateRepresentative_spec
     {I : Type*} (c z : I → ℂ) (u : AtomicAggregateSupport c z) :
     z (atomicAggregateRepresentative c z u) = atomicAggregateNode c z u :=
   Classical.choose_spec (exists_eq_of_atomicAggregateWeight_ne_zero u.property)
@@ -164,10 +164,9 @@ theorem atomicPowerMoment_eq_atomicAggregatePowerMoment
   have hsupp : Function.support (fun u : ℂ =>
       atomicAggregateWeight c z u * u ^ n) ⊆
       {u : ℂ | atomicAggregateWeight c z u ≠ 0} := by
-    intro u hu
-    intro hzero
+    intro u hu hzero
     apply hu
-    simp only [Function.mem_support]
+    show atomicAggregateWeight c z u * u ^ n = 0
     rw [hzero, zero_mul]
   rw [atomicPowerMoment, atomicPowerMoment, ← hfiber.tsum_eq]
   calc
@@ -243,8 +242,10 @@ theorem scaleCovariantBernsteinAbel_tomography_of_aggregate
       cofinite (nhds 0) := by
     have hnorm := hz0.norm
     have hre := Complex.continuous_re.continuousAt.tendsto.comp hz0
-    simpa only [HTGeometry.transverseDefect, norm_zero, Complex.zero_re, sub_zero]
-      using hnorm.sub hre
+    have h2 : Tendsto (fun i => ‖z i‖ - (z i).re) cofinite (nhds 0) := by
+      simpa only [Function.comp_apply, norm_zero, Complex.zero_re, sub_zero]
+        using hnorm.sub hre
+    simpa only [HTGeometry.transverseDefect] using h2
   exact scaleCovariantBernsteinAbel_tomography_of_aggregate_transverse_neutral
     c z m hc htrans hM hbound hreal hmoment hm0
 

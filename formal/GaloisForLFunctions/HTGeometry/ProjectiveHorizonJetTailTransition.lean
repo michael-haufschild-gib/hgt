@@ -320,26 +320,21 @@ theorem projectiveHorizonJetParametrization_symm_mem_freeJetRawTailField
       rw [hpre]
       exact IntermediateField.subset_adjoin C _ ⟨m, hm, rfl⟩)
     (fun c => by
-      change phi (⟨algebraMap C E c, _⟩ : jetTailField C x n) ∈
-        freeJetRawTailField C n
       have hsub : (⟨algebraMap C E c, _⟩ : jetTailField C x n) =
           algebraMap C (jetTailField C x n) c := Subtype.ext rfl
       rw [hsub, phi.commutes]
       exact (freeJetRawTailField C n).algebraMap_mem c)
     (fun a b ha hb hpa hpb => by
-      change phi (⟨a + b, _⟩ : jetTailField C x n) ∈ freeJetRawTailField C n
       have hsub : (⟨a + b, _⟩ : jetTailField C x n) =
           (⟨a, ha⟩ : jetTailField C x n) + ⟨b, hb⟩ := Subtype.ext rfl
       rw [hsub, map_add]
       exact (freeJetRawTailField C n).add_mem hpa hpb)
     (fun a ha hpa => by
-      change phi (⟨a⁻¹, _⟩ : jetTailField C x n) ∈ freeJetRawTailField C n
       have hsub : (⟨a⁻¹, _⟩ : jetTailField C x n) =
           (⟨a, ha⟩ : jetTailField C x n)⁻¹ := Subtype.ext rfl
       rw [hsub, map_inv₀]
       exact (freeJetRawTailField C n).inv_mem hpa)
     (fun a b ha hb hpa hpb => by
-      change phi (⟨a * b, _⟩ : jetTailField C x n) ∈ freeJetRawTailField C n
       have hsub : (⟨a * b, _⟩ : jetTailField C x n) =
           (⟨a, ha⟩ : jetTailField C x n) * ⟨b, hb⟩ := Subtype.ext rfl
       rw [hsub, map_mul]
@@ -387,29 +382,21 @@ theorem projectiveHorizonJetParametrization_symm_mem_freeJetReciprocalTailField
       rw [hpre]
       exact IntermediateField.subset_adjoin C _ ⟨m, hm, rfl⟩)
     (fun c => by
-      change phi (⟨algebraMap C E c, _⟩ : jetTailField C x⁻¹ n) ∈
-        freeJetReciprocalTailField C n
       have hsub : (⟨algebraMap C E c, _⟩ : jetTailField C x⁻¹ n) =
           algebraMap C (jetTailField C x⁻¹ n) c := Subtype.ext rfl
       rw [hsub, phi.commutes]
       exact (freeJetReciprocalTailField C n).algebraMap_mem c)
     (fun a b ha hb hpa hpb => by
-      change phi (⟨a + b, _⟩ : jetTailField C x⁻¹ n) ∈
-        freeJetReciprocalTailField C n
       have hsub : (⟨a + b, _⟩ : jetTailField C x⁻¹ n) =
           (⟨a, ha⟩ : jetTailField C x⁻¹ n) + ⟨b, hb⟩ := Subtype.ext rfl
       rw [hsub, map_add]
       exact (freeJetReciprocalTailField C n).add_mem hpa hpb)
     (fun a ha hpa => by
-      change phi (⟨a⁻¹, _⟩ : jetTailField C x⁻¹ n) ∈
-        freeJetReciprocalTailField C n
       have hsub : (⟨a⁻¹, _⟩ : jetTailField C x⁻¹ n) =
           (⟨a, ha⟩ : jetTailField C x⁻¹ n)⁻¹ := Subtype.ext rfl
       rw [hsub, map_inv₀]
       exact (freeJetReciprocalTailField C n).inv_mem hpa)
     (fun a b ha hb hpa hpb => by
-      change phi (⟨a * b, _⟩ : jetTailField C x⁻¹ n) ∈
-        freeJetReciprocalTailField C n
       have hsub : (⟨a * b, _⟩ : jetTailField C x⁻¹ n) =
           (⟨a, ha⟩ : jetTailField C x⁻¹ n) * ⟨b, hb⟩ := Subtype.ext rfl
       rw [hsub, map_mul]

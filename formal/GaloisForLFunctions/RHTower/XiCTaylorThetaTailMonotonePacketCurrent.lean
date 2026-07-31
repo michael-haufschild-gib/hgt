@@ -253,7 +253,7 @@ theorem tendsto_criticalLogPhaseTranslatedDensityProfile_atTop_zero
     (L : ℝ) (N : ℕ) :
     Tendsto (criticalLogPhaseTranslatedDensityProfile L N) atTop (nhds 0) := by
   unfold criticalLogPhaseTranslatedDensityProfile
-  have hsum := tendsto_finset_sum (Finset.range N) (fun j _hj =>
+  have hsum := tendsto_finsetSum (Finset.range N) (fun j _hj =>
     ((thetaCuspPolynomialAtom_tendsto_atTop_zero_of_pos
       (thetaCuspTailDerivativePolynomial 2) Nat.zero_lt_one).comp
         (tendsto_atTop_add_const_right atTop ((j : ℝ) * L) tendsto_id)).const_mul
@@ -263,7 +263,7 @@ theorem tendsto_criticalLogPhaseTranslatedDensityProfile_atTop_zero
     apply Finset.sum_congr rfl
     intro j _hj
     unfold thetaCuspTailSecondDensityAtom
-    simp only [Function.comp_apply, id_eq, add_comm]
+    simp only [Function.comp_apply, id_eq]
     ring
   · simp
 
@@ -298,7 +298,7 @@ theorem tendsto_mul_criticalLogPhaseTranslatedDensityProfile_atTop_zero
           (tendsto_atTop_add_const_right atTop a tendsto_id)
       convert h.const_mul 4 using 1 <;>
         simp [Function.comp_apply, id_eq, pow_one,
-          thetaCuspTailSecondDensityAtom, mul_comm, mul_left_comm, mul_assoc]
+          thetaCuspTailSecondDensityAtom, mul_comm, mul_left_comm]
     have hbase0 : Tendsto (fun t : ℝ =>
         thetaCuspTailSecondDensityAtom 1 (t + a)) atTop (nhds 0) := by
       have h := (thetaCuspPolynomialAtom_tendsto_atTop_zero_of_pos
@@ -306,7 +306,7 @@ theorem tendsto_mul_criticalLogPhaseTranslatedDensityProfile_atTop_zero
           (tendsto_atTop_add_const_right atTop a tendsto_id)
       convert h.const_mul 4 using 1 <;>
         simp [Function.comp_apply, id_eq,
-          thetaCuspTailSecondDensityAtom, mul_comm, mul_left_comm, mul_assoc]
+          thetaCuspTailSecondDensityAtom, mul_comm]
     have hdiff := hshift0.sub (hbase0.const_mul a)
     have ht : Tendsto (fun t : ℝ =>
         t * thetaCuspTailSecondDensityAtom 1 (t + a)) atTop (nhds 0) := by
@@ -316,7 +316,7 @@ theorem tendsto_mul_criticalLogPhaseTranslatedDensityProfile_atTop_zero
       · simp
     simpa only [a, mul_zero] using
       ht.const_mul (Real.exp (-((j : ℝ) * L) / 2))
-  simpa using tendsto_finset_sum (Finset.range N) hterm
+  simpa using tendsto_finsetSum (Finset.range N) hterm
 
 theorem integrableOn_neg_profileDerivative_mul_one_sub_phase
     {L : ℝ} (hL : 0 ≤ L) (N : ℕ) {z : ℂ} (hz : 0 ≤ z.im) :
@@ -641,8 +641,7 @@ theorem positiveTailCompletionDerivative_neg_profileDerivative_eq
     filter_upwards [eventually_ge_atTop (0 : ℝ)] with t ht
     dsimp only [q]
     rw [norm_mul, norm_mul, norm_neg, norm_mul]
-    simp only [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg ht, norm_I,
-      one_mul]
+    simp only [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg ht, norm_I]
     have hp := norm_spectralTranslationPhase_le_one ht hz
     calc
       t * 1 * ‖spectralTranslationPhase t z‖ * |g t| ≤
@@ -669,7 +668,6 @@ theorem positiveTailCompletionDerivative_neg_profileDerivative_eq
           z * ((g t : ℂ) * ((t : ℂ) * spectralTranslationPhase t z)) by
       funext t
       simp only [q']
-      push_cast
       ring,
       integral_add, integral_const_mul, integral_const_mul] at hibp
     · calc
@@ -820,7 +818,6 @@ theorem norm_derivative_le_two_div_im_of_completion_contraction
         _ ≤ (‖z‖ / z.im) * ‖F‖ + ‖F‖ := by gcongr
         _ = ‖z‖ * (‖F‖ / z.im + ‖F‖ / ‖z‖) := by
           field_simp [ne_of_gt hzNormPos, ne_of_gt hz]
-          <;> ring
     exact (mul_le_mul_iff_of_pos_left hzNormPos).mp hmul
   calc
     ‖D‖ ≤ ‖F‖ / z.im + ‖F‖ / ‖z‖ := hdiv
@@ -882,7 +879,6 @@ theorem orientedCurrent_le_two_div_im_of_completion_contraction
           _ ≤ (‖z‖ / z.im) * ‖F‖ + ‖F‖ := by gcongr
           _ = ‖z‖ * (‖F‖ / z.im + ‖F‖ / ‖z‖) := by
             field_simp [ne_of_gt hzNormPos, ne_of_gt hz]
-            <;> ring
       exact (mul_le_mul_iff_of_pos_left hzNormPos).mp hmul
     calc
       ‖D‖ ≤ ‖F‖ / z.im + ‖F‖ / ‖z‖ := hdiv

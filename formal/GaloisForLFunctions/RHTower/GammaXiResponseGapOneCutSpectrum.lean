@@ -354,11 +354,11 @@ theorem gammaXiResponseSpectralRatio_even (s : ℝ) :
   have hhalf :
       (1 : ℂ) / 2 + (-(s : ℂ)) / 2 * Complex.I =
         starRingEnd ℂ ((1 : ℂ) / 2 + (s : ℂ) / 2 * Complex.I) := by
-    apply Complex.ext <;> simp [Complex.div_re, Complex.div_im] <;> ring
+    apply Complex.ext <;> simp [Complex.div_re, Complex.div_im] ; ring
   have hquarter :
       (1 : ℂ) / 4 + (-(s : ℂ)) / 2 * Complex.I =
         starRingEnd ℂ ((1 : ℂ) / 4 + (s : ℂ) / 2 * Complex.I) := by
-    apply Complex.ext <;> simp [Complex.div_re, Complex.div_im] <;> ring
+    apply Complex.ext <;> simp [Complex.div_re, Complex.div_im] ; ring
   push_cast
   rw [hhalf, hquarter, Complex.Gamma_conj, Complex.Gamma_conj]
   simp [Complex.normSq_apply]

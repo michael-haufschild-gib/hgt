@@ -910,7 +910,7 @@ private theorem integrable_positiveQuadrant_comp_mul_fst
     change IntegrableOn (fun u : ℝ => f (c * u, t)) (Set.Ioi 0)
     rw [MeasureTheory.integrableOn_Ioi_comp_mul_left_iff
       (fun u : ℝ => f (u, t)) 0 hc]
-    simpa only [mul_zero] using ht
+    simpa only [MeasureTheory.IntegrableOn, mul_zero] using ht
   · have hnorm := hf.integral_norm_prod_right
     have heq :
         (fun t : ℝ => ∫ u : ℝ, ‖g (u, t)‖ ∂mu) =
@@ -999,8 +999,7 @@ theorem integrable_thetaCuspPositiveQuadrantCoupledKernel
       unfold thetaCuspPositiveQuadrantCenterMixKernel
       fun_prop)
     (show (0 : ℝ) < 2 by norm_num)
-  simpa only [thetaCuspPositiveQuadrantCoupledKernel] using
-    hcomp.const_mul (1 / 2 : ℝ)
+  exact hcomp.const_mul (1 / 2 : ℝ)
 
 /-- Strict lower triangle in the positive quadrant.  Positivity of both coordinates is carried
 by the ambient restricted product measure. -/
@@ -1082,12 +1081,10 @@ private theorem integral_thetaCuspPositiveUpperCone_eq_swap_lowerCone
   by_cases hp : p ∈ thetaCuspPositiveLowerCone
   · rw [indicator_of_mem hp]
     rw [indicator_of_mem]
-    simpa only [thetaCuspPositiveLowerCone,
-      thetaCuspPositiveUpperCone, mem_setOf_eq] using hp
+    exact hp
   · rw [indicator_of_notMem hp]
     rw [indicator_of_notMem]
-    simpa only [thetaCuspPositiveLowerCone,
-      thetaCuspPositiveUpperCone, mem_setOf_eq] using hp
+    exact hp
 
 private theorem integral_positiveQuadrant_eq_lowerCone_add_swap
     (f : ℝ × ℝ → ℝ)
@@ -1132,7 +1129,7 @@ private theorem integral_positiveQuadrant_eq_lowerCone_add_swap
   have hfswap :
       IntegrableOn (fun p : ℝ × ℝ => f p.swap)
         thetaCuspPositiveLowerCone m := by
-    simpa only [Function.comp_apply, m] using hf.swap.integrableOn
+    exact hf.swap.integrableOn
   rw [← integral_add hflower hfswap]
 
 /-- The two triangle contributions obtained after exchanging center and transverse coordinates. -/

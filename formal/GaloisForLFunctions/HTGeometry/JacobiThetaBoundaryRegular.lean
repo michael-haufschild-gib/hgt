@@ -100,7 +100,7 @@ theorem jacobiTheta₂_zeros_closedBall_finite {τ : ℂ} (hτ : 0 < τ.im) (c :
       (Set.mem_univ 0) isConnected_univ
   have hcodK : ((jacobiTheta₂ · τ) ⁻¹' {0}ᶜ) ∈ codiscreteWithin (closedBall c R) :=
     Filter.codiscreteWithin_mono (Set.subset_univ _) hcod
-  refine ((isCompact_closedBall c R).finite_diff_of_mem_codiscreteWithin hcodK).subset ?_
+  refine ((isCompact_closedBall c R).finite_sdiff_of_mem_codiscreteWithin hcodK).subset ?_
   intro z hz
   rw [Set.mem_sep_iff] at hz
   exact ⟨hz.1, by simp [Set.mem_preimage, hz.2]⟩
@@ -116,7 +116,7 @@ theorem exists_thetaParallelogramBoundaryRegular {τ : ℂ} (hτ : 0 < τ.im) :
     (fun z : ℂ ↦ -tauCoordY τ z) '' Z ∪ (fun z : ℂ ↦ -tauCoordX τ z) '' Z
   have hBad : Bad.Finite := (hZ.image _).union (hZ.image _)
   have hI : (Ioo ((1 : ℝ) / 4) (1 / 3)).Infinite := Set.Ioo_infinite (by norm_num)
-  obtain ⟨s, hsI, hsBad⟩ := (hI.diff hBad).nonempty
+  obtain ⟨s, hsI, hsBad⟩ := (hI.sdiff hBad).nonempty
   have hs : (1 : ℝ) / 4 < s ∧ s < 1 / 3 := hsI
   have hs0 : 0 ≤ s := by linarith
   have hs1 : s ≤ 1 := by linarith

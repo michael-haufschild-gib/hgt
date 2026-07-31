@@ -84,7 +84,7 @@ noncomputable def algebraicSupportRangeEquiv (T : E →L[ℝ] E) :
   have hfsurj : Function.Surjective f := by
     intro y
     rcases y.property with ⟨x, hx⟩
-    let sx : S := S.orthogonalProjection x
+    let sx : S := S.orthogonalProjectionOnto x
     refine ⟨sx, Subtype.ext ?_⟩
     change T (S.starProjection x) = y
     rw [hTPapply]
@@ -280,7 +280,7 @@ theorem exists_symmetricSupportInverse_of_isClosed_range
     intro y
     have hyRange : (y : E) ∈ T.range := hrange.ge y.property
     rcases hyRange with ⟨x, hx⟩
-    let sx : S := S.orthogonalProjection x
+    let sx : S := S.orthogonalProjectionOnto x
     refine ⟨sx, Subtype.ext ?_⟩
     change T (S.starProjection x) = y
     rw [hTPapply]
@@ -290,7 +290,7 @@ theorem exists_symmetricSupportInverse_of_isClosed_range
   let e : S ≃L[ℝ] S := ContinuousLinearEquiv.ofBijective f hfker hfrange
   let P : E →L[ℝ] E := S.starProjection
   let G : E →L[ℝ] E :=
-    S.subtypeL ∘L e.symm.toContinuousLinearMap ∘L S.orthogonalProjection
+    S.subtypeL ∘L e.symm.toContinuousLinearMap ∘L S.orthogonalProjectionOnto
   have hPself : IsSelfAdjoint P := by
     dsimp [P]
     exact isSelfAdjoint_starProjection S
@@ -299,8 +299,8 @@ theorem exists_symmetricSupportInverse_of_isClosed_range
     exact S.isIdempotentElem_starProjection
   have hTG : T * G = P := by
     ext x
-    change T (e.symm (S.orthogonalProjection x)) = S.starProjection x
-    have he := e.apply_symm_apply (S.orthogonalProjection x)
+    change T (e.symm (S.orthogonalProjectionOnto x)) = S.starProjection x
+    have he := e.apply_symm_apply (S.orthogonalProjectionOnto x)
     exact congrArg Subtype.val he
   have hPT : P * T = T := by
     ext x
@@ -312,8 +312,8 @@ theorem exists_symmetricSupportInverse_of_isClosed_range
     exact hTPapply x
   have hPG : P * G = G := by
     ext x
-    change S.starProjection ((e.symm (S.orthogonalProjection x) : S) : E) =
-      ((e.symm (S.orthogonalProjection x) : S) : E)
+    change S.starProjection ((e.symm (S.orthogonalProjectionOnto x) : S) : E) =
+      ((e.symm (S.orthogonalProjectionOnto x) : S) : E)
     exact Submodule.starProjection_mem_subspace_eq_self _
   have hGself : IsSelfAdjoint G := by
     apply LinearMap.IsSymmetric.isSelfAdjoint

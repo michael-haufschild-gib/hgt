@@ -267,7 +267,7 @@ theorem dist_gammaCodeApprox_succ_code_le
     (gammaCodeApprox_tendsto hN).comp (tendsto_add_atTop_nat 1)
   have htail := dist_le_of_le_geometric_of_tendsto
     (1 / 2 : ℝ) (1 / 2 : ℝ) (by norm_num) hstep htend d
-  convert htail using 1 <;> ring
+  convert htail using 1 ; ring
 
 /-- A finite approximation depends only on its finite code prefix. -/
 theorem gammaCodePrefix_congr

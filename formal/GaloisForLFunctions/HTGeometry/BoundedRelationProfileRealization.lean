@@ -246,10 +246,10 @@ theorem boundedRelationShiftedPolynomialProfile_firstDifference_isEquivalent
     Filter.tendsto_atTop_add_const_right atTop 1 tendsto_natCast_atTop_atTop
   have hbase := (polynomialPower_firstDifference_isEquivalent_of_one_lt hβ).comp_tendsto hshift
   have hmul := IsEquivalent.mul (IsEquivalent.refl (u := fun _ : ℕ => B)) hbase
-  convert! hmul using 1 <;>
-    ext n <;>
+  convert! hmul using 1 ;
+    ext n ;
     simp [boundedRelationFirstDifference, boundedRelationShiftedPolynomialProfile,
-      Function.comp_apply, Nat.cast_add, Pi.mul_apply] <;>
+      Function.comp_apply, Nat.cast_add, Pi.mul_apply] ;
     ring
 
 /-- Second differences of the positive shifted polynomial profile have their expected leading
@@ -263,10 +263,10 @@ theorem boundedRelationShiftedPolynomialProfile_secondDifference_isEquivalent
     Filter.tendsto_atTop_add_const_right atTop 1 tendsto_natCast_atTop_atTop
   have hbase := (polynomialPower_secondDifference_isEquivalent_of_one_lt hβ).comp_tendsto hshift
   have hmul := IsEquivalent.mul (IsEquivalent.refl (u := fun _ : ℕ => B)) hbase
-  convert! hmul using 1 <;>
-    ext n <;>
+  convert! hmul using 1 ;
+    ext n ;
     simp [boundedRelationSecondDifference, boundedRelationShiftedPolynomialProfile,
-      Function.comp_apply, Nat.cast_add, Pi.mul_apply] <;>
+      Function.comp_apply, Nat.cast_add, Pi.mul_apply] ;
     ring
 
 /-- Pointwise approximation errors give the exact induced first-difference error bound. -/

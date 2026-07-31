@@ -420,11 +420,10 @@ theorem reindex_affine_liftLocalMatrix_eq_kroneckerSum
         coupling) = _
   rw [affineMatrixFamily, map_add, map_sum]
   simp_rw [map_smul]
-  rw [Matrix.reindexAlgEquiv_apply,
+  rw [Matrix.coe_reindexAlgEquiv,
     reindex_diagonal_onsiteProductEnergy_eq_kroneckerSum]
   dsimp only [e]
-  simp_rw [Matrix.reindexAlgEquiv_apply,
-    reindex_liftLocalMatrix_eq_kronecker_one]
+  simp_rw [reindex_liftLocalMatrix_eq_kronecker_one]
   ext ⟨x, xout⟩ ⟨y, yout⟩
   by_cases hout : xout = yout
   · subst yout

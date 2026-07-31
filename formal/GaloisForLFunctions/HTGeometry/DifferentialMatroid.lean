@@ -40,12 +40,12 @@ theorem differentialClosure_exists_finite_subset_of_indep
     apply diffIndepOn_of_forall_finite
     intro t ht htfin
     let u : Set E := t \ {x}
-    have hufin : u.Finite := htfin.diff
+    have hufin : u.Finite := htfin.sdiff
     have hus : u ⊆ s := by
       intro z hz
       have hzt := ht hz.1
       rcases Set.mem_insert_iff.mp hzt with hzx | hzs
-      · exact (hz.2 (by simpa [hzx])).elim
+      · exact (hz.2 (by simp [hzx])).elim
       · exact hzs
     have hxu : x ∉ u := by simp [u]
     have hu : DiffIndepOn F u := hs.subset hus
@@ -55,8 +55,8 @@ theorem differentialClosure_exists_finite_subset_of_indep
     exact hi.subset (by
       intro z hzt
       by_cases hzx : z = x
-      · simpa [hzx]
-      · exact Set.mem_insert_of_mem x ⟨hzt, by simpa [hzx]⟩)
+      · simp [hzx]
+      · exact Set.mem_insert_of_mem x ⟨hzt, by simp [hzx]⟩)
   exact ((diffIndepOn_insert_iff hxs).mp hall).2 hx
 
 set_option maxHeartbeats 600000 in

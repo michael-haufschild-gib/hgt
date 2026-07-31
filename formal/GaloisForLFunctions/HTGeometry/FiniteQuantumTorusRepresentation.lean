@@ -31,16 +31,19 @@ def finiteQuantumShift (i : ι) (a : FiniteQuantumState ι d) :
     FiniteQuantumState ι d :=
   Function.update a i (a i - 1)
 
+omit [Fintype ι] [NeZero d] [Fact (1 < d)] in
 theorem finiteQuantumShift_apply_same
     (i : ι) (a : FiniteQuantumState ι d) :
     finiteQuantumShift i a i = a i - 1 := by
   simp [finiteQuantumShift]
 
+omit [Fintype ι] [NeZero d] [Fact (1 < d)] in
 theorem finiteQuantumShift_apply_of_ne
     {i j : ι} (hij : j ≠ i) (a : FiniteQuantumState ι d) :
     finiteQuantumShift i a j = a j := by
   simp [finiteQuantumShift, hij]
 
+omit [Fintype ι] [NeZero d] [Fact (1 < d)] in
 theorem finiteQuantumShift_comm
     {i j : ι} (hij : i ≠ j) (a : FiniteQuantumState ι d) :
     finiteQuantumShift i (finiteQuantumShift j a) =
@@ -54,6 +57,7 @@ theorem finiteQuantumShift_comm
       simp [finiteQuantumShift, hij, hki]
     · simp [finiteQuantumShift, hki, hkj]
 
+omit [NeZero d] [Fact (1 < d)] in
 theorem finiteQuantumTailCharge_shift_lower
     {i j : ι} (hij : i < j) (a : FiniteQuantumState ι d) :
     finiteQuantumTailCharge j (finiteQuantumShift i a) =
@@ -65,6 +69,7 @@ theorem finiteQuantumTailCharge_shift_lower
   have hki : k ≠ i := ne_of_gt (lt_trans hij hjk)
   exact finiteQuantumShift_apply_of_ne hki a
 
+omit [NeZero d] [Fact (1 < d)] in
 theorem finiteQuantumTailCharge_shift_member
     {i j : ι} (hij : i < j) (a : FiniteQuantumState ι d) :
     finiteQuantumTailCharge i (finiteQuantumShift j a) =
@@ -93,12 +98,14 @@ def finiteQuantumCharacter (d : ℕ) [NeZero d] (q : K) (hq : q ^ d = 1) :
     AddChar (ZMod d) K :=
   AddChar.zmodChar d hq
 
+omit [CharZero K] [Fact (1 < d)] in
 @[simp]
 theorem finiteQuantumCharacter_zero
     (q : K) (hq : q ^ d = 1) :
     finiteQuantumCharacter d q hq 0 = 1 := by
   exact AddChar.map_zero_eq_one _
 
+omit [CharZero K] [Fact (1 < d)] in
 @[simp]
 theorem finiteQuantumCharacter_one
     (q : K) (hq : q ^ d = 1) :
@@ -106,6 +113,7 @@ theorem finiteQuantumCharacter_one
   simpa [finiteQuantumCharacter] using
     (AddChar.zmodChar_apply' (C := K) hq 1)
 
+omit [CharZero K] [Fact (1 < d)] in
 theorem finiteQuantumCharacter_sub_one_mul
     (q : K) (hq : q ^ d = 1) (x : ZMod d) :
     finiteQuantumCharacter d q hq (x - 1) * q =
@@ -129,6 +137,7 @@ def finiteQuantumGenerator
     simp
     ring
 
+omit [CharZero K] [Fact (1 < d)] in
 /-- The finite generators satisfy the required ordered `q`-commutation law. -/
 theorem finiteQuantumGenerator_mul_of_lt
     (q : K) (hq : q ^ d = 1) {i j : ι} (hij : i < j) :
@@ -162,16 +171,19 @@ theorem finiteQuantumGenerator_mul_of_lt
 def finiteQuantumPairState (p : QuantumLawPair ι) : FiniteQuantumState ι d :=
   Function.update (Function.update 0 p.lower 1) p.upper 1
 
+omit [Fintype ι] [NeZero d] [Fact (1 < d)] in
 @[simp]
 theorem finiteQuantumPairState_lower (p : QuantumLawPair ι) :
     finiteQuantumPairState (d := d) p p.lower = 1 := by
   simp [finiteQuantumPairState, ne_of_lt p.isLt]
 
+omit [Fintype ι] [NeZero d] [Fact (1 < d)] in
 @[simp]
 theorem finiteQuantumPairState_upper (p : QuantumLawPair ι) :
     finiteQuantumPairState (d := d) p p.upper = 1 := by
   simp [finiteQuantumPairState]
 
+omit [Fintype ι] [NeZero d] in
 theorem finiteQuantumPairState_eq_one_iff
     (p : QuantumLawPair ι) (k : ι) :
     finiteQuantumPairState (d := d) p k = 1 ↔
@@ -184,6 +196,7 @@ theorem finiteQuantumPairState_eq_one_iff
       simp
     · simp [finiteQuantumPairState, hku, hkl]
 
+omit [Fintype ι] [NeZero d] in
 theorem finiteQuantumPairState_injective :
     Function.Injective (finiteQuantumPairState (d := d) :
       QuantumLawPair ι → FiniteQuantumState ι d) := by
@@ -208,6 +221,7 @@ theorem finiteQuantumPairState_injective :
 def finiteQuantumRoot : FiniteQuantumState ι d → K :=
   Pi.basisFun K (FiniteQuantumState ι d) 0
 
+omit [Fintype ι] [NeZero d] [Fact (1 < d)] in
 theorem finiteQuantumPair_doubleShift_eq_zero_iff
     (p : QuantumLawPair ι) (a : FiniteQuantumState ι d) :
     finiteQuantumShift p.lower (finiteQuantumShift p.upper a) = 0 ↔
@@ -241,6 +255,7 @@ theorem finiteQuantumPair_doubleShift_eq_zero_iff
         simp [finiteQuantumShift, (ne_of_lt p.isLt).symm]
       · simp [finiteQuantumShift, finiteQuantumPairState, hkl, hku]
 
+omit [NeZero d] [Fact (1 < d)] in
 theorem finiteQuantumTailCharge_pairState_upper
     (p : QuantumLawPair ι) :
     finiteQuantumTailCharge p.upper (finiteQuantumPairState (d := d) p) = 0 := by
@@ -252,6 +267,7 @@ theorem finiteQuantumTailCharge_pairState_upper
   have hku : k ≠ p.upper := ne_of_gt huk
   simp [finiteQuantumPairState, hkl, hku]
 
+omit [NeZero d] [Fact (1 < d)] in
 theorem finiteQuantumTailCharge_shiftUpper_pairState_lower
     (p : QuantumLawPair ι) :
     finiteQuantumTailCharge p.lower
@@ -266,6 +282,8 @@ theorem finiteQuantumTailCharge_shiftUpper_pairState_lower
   · have hkl : k ≠ p.lower := ne_of_gt hlk
     simp [finiteQuantumShift, finiteQuantumPairState, hkl, hku]
 
+omit [CharZero K] in
+omit [Fact (1 < d)] in
 /-- An ordered quadratic monomial sends the origin delta state to its distinct pair state. -/
 theorem finiteQuantumPairOperator_root
     (q : K) (hq : q ^ d = 1) (p : QuantumLawPair ι) :
@@ -290,6 +308,7 @@ theorem finiteQuantumPairOperator_root
       exact (finiteQuantumPair_doubleShift_eq_zero_iff (d := d) p a).2 hap
     simp [finiteQuantumRoot, ha, ha']
 
+omit [CharZero K] in
 /-- The ordered quadratic monomials of the finite representation are linearly independent. -/
 theorem finiteQuantumPairOperator_linearIndependent
     (q : K) (hq : q ^ d = 1) :
@@ -306,6 +325,7 @@ theorem finiteQuantumPairOperator_linearIndependent
       (finiteQuantumPairState (d := d)) finiteQuantumPairState_injective
   simpa [Function.comp_def, finiteQuantumPairOperator_root] using hbasis
 
+omit [CharZero K] in
 /-- **Unconditional finite quantum principal symbol.**  Every injective coefficient family has a
 finite cyclic quantum realization with injective internal exterior commutator symbol. -/
 theorem finiteQuantumTorus_endomorphismCommutatorMap_injective
@@ -321,6 +341,7 @@ theorem finiteQuantumTorus_endomorphismCommutatorMap_injective
     (fun i j hij ↦ finiteQuantumGenerator_mul_of_lt q hqpow hij)
     (finiteQuantumPairOperator_linearIndependent q hqpow)
 
+omit [CharZero K] in
 /-- The same finite packet gives maximal exterior commutator rank after rational-field shift
 suspension. -/
 theorem finiteQuantumTorus_derivationCommutatorMap_injective
@@ -342,6 +363,7 @@ def finiteQuantumShiftN (n : ℕ) (i : ι) (a : FiniteQuantumState ι d) :
     FiniteQuantumState ι d :=
   Function.update a i (a i - n)
 
+omit [Fintype ι] [NeZero d] [Fact (1 < d)] in
 @[simp]
 theorem finiteQuantumShiftN_zero (i : ι) (a : FiniteQuantumState ι d) :
     finiteQuantumShiftN 0 i a = a := by
@@ -351,6 +373,7 @@ theorem finiteQuantumShiftN_zero (i : ι) (a : FiniteQuantumState ι d) :
     simp [finiteQuantumShiftN]
   · simp [finiteQuantumShiftN, hki]
 
+omit [Fintype ι] [NeZero d] [Fact (1 < d)] in
 theorem finiteQuantumShift_shiftN
     (n : ℕ) (i : ι) (a : FiniteQuantumState ι d) :
     finiteQuantumShift i (finiteQuantumShiftN n i a) =
@@ -362,6 +385,7 @@ theorem finiteQuantumShift_shiftN
     ring
   · simp [finiteQuantumShift, finiteQuantumShiftN, hki]
 
+omit [NeZero d] [Fact (1 < d)] in
 theorem finiteQuantumTailCharge_shiftN
     (n : ℕ) (i : ι) (a : FiniteQuantumState ι d) :
     finiteQuantumTailCharge i (finiteQuantumShiftN n i a) =
@@ -373,6 +397,8 @@ theorem finiteQuantumTailCharge_shiftN
   have hki : k ≠ i := ne_of_gt hik
   simp [finiteQuantumShiftN, hki]
 
+omit [CharZero K] in
+omit [Fact (1 < d)] in
 /-- Closed formula for every power of one finite quantum generator. -/
 theorem finiteQuantumGenerator_pow_apply
     (q : K) (hqpow : q ^ d = 1) (i : ι) (n : ℕ)
@@ -390,9 +416,10 @@ theorem finiteQuantumGenerator_pow_apply
               (finiteQuantumTailCharge i (finiteQuantumShiftN n i a)) *
               f (finiteQuantumShift i (finiteQuantumShiftN n i a))) = _
       rw [finiteQuantumTailCharge_shiftN, finiteQuantumShift_shiftN]
-      simp only [Nat.succ_eq_add_one, pow_succ]
+      simp only [pow_succ]
       ring
 
+omit [CharZero K] [Fact (1 < d)] in
 theorem finiteQuantumCharacter_pow_degree
     (q : K) (hqpow : q ^ d = 1) (x : ZMod d) :
     (finiteQuantumCharacter d q hqpow x) ^ d = 1 := by
@@ -403,6 +430,7 @@ theorem finiteQuantumCharacter_pow_degree
     _ = (q ^ d) ^ x.val := by rw [pow_mul]
     _ = 1 := by rw [hqpow, one_pow]
 
+omit [Fintype ι] [NeZero d] [Fact (1 < d)] in
 @[simp]
 theorem finiteQuantumShiftN_degree
     (i : ι) (a : FiniteQuantumState ι d) :
@@ -413,6 +441,8 @@ theorem finiteQuantumShiftN_degree
     simp [finiteQuantumShiftN]
   · simp [finiteQuantumShiftN, hki]
 
+omit [CharZero K] in
+omit [Fact (1 < d)] in
 /-- Every finite generator has exact order dividing `d`. -/
 theorem finiteQuantumGenerator_pow_degree
     (q : K) (hqpow : q ^ d = 1) (i : ι) :

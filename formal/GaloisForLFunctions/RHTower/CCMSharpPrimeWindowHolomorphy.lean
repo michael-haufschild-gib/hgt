@@ -24,7 +24,7 @@ private theorem hasDerivAt_ofReal_const_cpow_neg
   have h := ((hasDerivAt_id s).neg).const_cpow
     (c := (x : ℂ)) (Or.inl (by exact_mod_cast hx.ne'))
   rw [← Complex.ofReal_log hx.le] at h
-  convert h using 1 <;> simp [Function.id_def] <;> ring
+  convert h using 1 <;> simp [Function.id_def] ; ring
 
 private theorem dyadicSharpPrimeWindowIntegralMain_differentiableAt
     {k : ℕ} (hk : 1 ≤ k) (s₀ : ℂ) :

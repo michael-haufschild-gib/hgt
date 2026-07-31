@@ -147,7 +147,7 @@ theorem exists_split_of_finite_zeros_aux {ρ : ℂ} {r₀ R : ℝ} :
           · exact hne' hw0
       have hfin' : {z | z ∈ ball ρ R ∧ h z = 0}.Finite := by
         rw [hzset]
-        exact hfin.diff
+        exact hfin.sdiff
       have hcard' : hfin'.toFinset.card = k := by
         have htf : hfin'.toFinset = hfin.toFinset.erase z₀ := by
           ext w

@@ -214,8 +214,10 @@ theorem scaleCovariantBernsteinAbel_tomography
       cofinite (nhds 0) := by
     have hnorm := hz0.norm
     have hre := Complex.continuous_re.continuousAt.tendsto.comp hz0
-    simpa only [HTGeometry.transverseDefect, norm_zero, Complex.zero_re, sub_zero]
-      using hnorm.sub hre
+    have h2 : Tendsto (fun i => ‖z i‖ - (z i).re) cofinite (nhds 0) := by
+      simpa only [Function.comp_apply, norm_zero, Complex.zero_re, sub_zero]
+        using hnorm.sub hre
+    simpa only [HTGeometry.transverseDefect] using h2
   exact scaleCovariantBernsteinAbel_tomography_of_transverse_neutral
     c z m hc htrans hzinj hcne hM hbound hreal hmoment hm0
 

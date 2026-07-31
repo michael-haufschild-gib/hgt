@@ -121,7 +121,7 @@ theorem setLIntegral_bourgainA6PhysicalBlockSum_translatedCell_gaussian_power
     {ε : ℝ} (hε : 0 < ε) :
     ∃ C : ℝ, 0 < C ∧
       ∀ (N M q₁ q₂ : ℕ) (hN : 0 < N) (hM : 0 < M)
-        (hq₁ : 0 < q₁) (hq : q₁ + M ≤ q₂) (hq₂N : q₂ ≤ N),
+        (hq₁ : 0 < q₁) (hq : q₁ + M ≤ q₂) (_hq₂N : q₂ ≤ N),
       let a : ℝ := Real.sqrt ((q₁ : ℝ) / (N : ℝ))
       let b : ℝ := Real.sqrt ((q₂ : ℝ) / (N : ℝ))
       let hq' : q₁ < q₂ := by omega

@@ -284,7 +284,7 @@ theorem id_mul_density_mul_coreAtom_tendsto_atTop_zero
           (4 * (z ^ 2 + 1 / 4) * (-1 : ℂ) ^ k * z ^ (2 * k) /
             ((2 * k + 2).factorial : ℂ)))
     simpa using h
-  convert hfirst.sub hsum using 1 <;> simp
+  convert hfirst.sub hsum using 1 ; simp
 
 theorem integral_Ioi_density_id_mul_coreAtomSourceDerivative_eq_neg_score
     (d : ℕ) (z : ℂ) :

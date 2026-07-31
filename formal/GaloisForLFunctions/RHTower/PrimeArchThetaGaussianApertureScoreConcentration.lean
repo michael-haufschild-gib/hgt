@@ -35,25 +35,23 @@ theorem hasDerivAt_thetaCuspGaussianApertureLeadingChannelWeight
         thetaCuspGaussianApertureLeadingChannelWeight lambda x) x := by
   have hexp : HasDerivAt (fun y : ℝ => Real.exp (2 * y))
       (2 * Real.exp (2 * x)) x := by
-    convert (Real.hasDerivAt_exp (2 * x)).comp x
-      ((hasDerivAt_id x).const_mul 2) using 1
-    all_goals ring
+    exact ((Real.hasDerivAt_exp (2 * x)).comp x
+      ((hasDerivAt_id x).const_mul 2)).congr_deriv (by ring)
   have harg : HasDerivAt
       (fun y : ℝ => lambda * y ^ 2 + 9 * y / 2 - Real.pi * Real.exp (2 * y))
       (2 * lambda * x + 9 / 2 - 2 * Real.pi * Real.exp (2 * x)) x := by
     have hquad := ((hasDerivAt_id x).pow 2).const_mul lambda
     have hlin := ((hasDerivAt_id x).const_mul 9).div_const 2
     have htail := hexp.const_mul Real.pi
-    convert (hquad.add hlin).sub htail using 1
-    all_goals simp only [id_eq]
-    all_goals ring
+    exact ((hquad.add hlin).sub htail).congr_deriv (by
+      simp only [id_eq]
+      ring)
   change HasDerivAt
     (fun y : ℝ => Real.exp
       (lambda * y ^ 2 + 9 * y / 2 - Real.pi * Real.exp (2 * y)))
     ((2 * lambda * x + 9 / 2 - 2 * Real.pi * Real.exp (2 * x)) *
       Real.exp (lambda * x ^ 2 + 9 * x / 2 - Real.pi * Real.exp (2 * x))) x
-  simpa only [Function.comp_apply, mul_comm] using
-    (Real.hasDerivAt_exp _).comp x harg
+  exact ((Real.hasDerivAt_exp _).comp x harg).congr_deriv (by ring)
 
 theorem integrableOn_pow_mul_exp_aperture_mul_thetaCuspPolynomialAtom
     {lambda : ℝ} (hlambda : lambda ≤ 0) (m : ℕ) (P : ℝ[X]) :
@@ -148,7 +146,11 @@ theorem thetaCuspGaussianApertureLeadingChannelCurrent_tendsto_zero
         (hasDerivAt_thetaCuspGaussianApertureLeadingChannelWeight lambda x).continuousAt)
   have h := (hcont.tendsto 0).mono_left
     (inf_le_left : 𝓝[>] (0 : ℝ) ≤ 𝓝 0)
-  simpa using h
+  have h2 : Tendsto (fun x : ℝ =>
+      x ^ (2 * j + 1) * thetaCuspGaussianApertureLeadingChannelWeight lambda x)
+      (𝓝 0 ⊓ 𝓟 (Ioi 0)) (𝓝 0) := by
+    simpa using h
+  exact h2
 
 theorem thetaCuspGaussianApertureLeadingChannelCurrent_tendsto_atTop_zero
     {lambda : ℝ} (hlambda : lambda ≤ 0) (j : ℕ) :
@@ -189,8 +191,10 @@ theorem thetaCuspGaussianApertureLeadingChannelScoreMoment_eq
   have huderiv : ∀ x ∈ Ioi (0 : ℝ), HasDerivAt u (u' x) x := by
     intro x _hx
     dsimp only [u, u']
-    convert hasDerivAt_pow (2 * j + 1) x using 1
-    norm_num
+    exact (hasDerivAt_pow (2 * j + 1) x).congr_deriv (by
+      simp only [Nat.add_sub_cancel]
+      push_cast
+      ring)
   have hvderiv : ∀ x ∈ Ioi (0 : ℝ), HasDerivAt v (v' x) x := by
     intro x _hx
     simpa only [v, v'] using
@@ -219,11 +223,11 @@ theorem thetaCuspGaussianApertureLeadingChannelScoreMoment_eq
     (by
       have hz := @thetaCuspGaussianApertureLeadingChannelCurrent_tendsto_zero
         lambda j
-      simpa only [u, v, Pi.mul_apply] using hz)
+      exact hz)
     (by
       have hz := @thetaCuspGaussianApertureLeadingChannelCurrent_tendsto_atTop_zero
         lambda hlambda j
-      simpa only [u, v, Pi.mul_apply] using hz)
+      exact hz)
   have hleft : (∫ x : ℝ in Ioi 0, u x * v' x) =
       -2 * thetaCuspGaussianApertureLeadingChannelScoreMoment lambda j := by
     rw [thetaCuspGaussianApertureLeadingChannelScoreMoment,
@@ -292,11 +296,10 @@ theorem hasDerivAt_thetaCuspGaussianApertureLeadingChannelScoreResidual
     HasDerivAt (thetaCuspGaussianApertureLeadingChannelScoreResidual lambda)
       (thetaCuspGaussianApertureExactTailSaddleDegreeSlope lambda x -
         6 * Real.pi * x) x := by
-  convert (hasDerivAt_thetaCuspGaussianApertureExactTailSaddleDegree lambda x).sub
-    (((hasDerivAt_id x).pow 2).const_mul (3 * Real.pi)) using 1
-  all_goals
-    simp only [id_eq]
-    ring
+  exact ((hasDerivAt_thetaCuspGaussianApertureExactTailSaddleDegree lambda x).sub
+    (((hasDerivAt_id x).pow 2).const_mul (3 * Real.pi))).congr_deriv (by
+      simp only [id_eq]
+      ring)
 
 theorem thetaCuspGaussianApertureLeadingChannelScoreResidualSlope_pos
     {lambda x : ℝ} (hlambda : lambda ≤ 0) (hx : 0 < x) :
@@ -358,7 +361,7 @@ theorem thetaCuspGaussianApertureLeadingChannelMoment_variance_le_score
   let f : ℝ → ℝ := fun x => K x * h x
   let g : ℝ → ℝ := fun x => x ^ 2
   have hh : Integrable h mu := by
-    simpa only [h, mu] using
+    simpa only [MeasureTheory.IntegrableOn, h, mu] using
       integrableOn_pow_mul_thetaCuspGaussianApertureLeadingChannelWeight
         hlambda (2 * j)
   have hscorej :=
@@ -599,7 +602,7 @@ theorem thetaCuspGaussianApertureExactTailSaddleDegree_bijOn_Ici_zero
     obtain ⟨z, hz, hzy⟩ := intermediate_value_Icc hx0
       (fun _ _ =>
         (hasDerivAt_thetaCuspGaussianApertureExactTailSaddleDegree lambda _).continuousAt.continuousWithinAt)
-      (mem_Icc.mpr ⟨by simpa only [hzero] using hy, hyx⟩)
+      (mem_Icc.mpr ⟨by simp only [hzero]; exact hy, hyx⟩)
     exact ⟨z, hz.1, hzy⟩
 
 /-- Every gamma-shape degree has one unique positive response-centered physical saddle. -/
@@ -769,12 +772,12 @@ theorem thetaCuspGaussianApertureLeadingChannel_centeredSaddleError_le
           thetaCuspGaussianApertureLeadingChannelWeight lambda x)
     have hA : IntegrableOn A (Ioi 0) := by simpa only [A] using hscore1
     have hB : IntegrableOn B (Ioi 0) := by
-      simpa only [B] using hm1.const_mul
+      simpa only [MeasureTheory.IntegrableOn, B] using hm1.const_mul
         (thetaCuspGaussianApertureExactTailSaddleDegree lambda s)
     have hC : IntegrableOn C (Ioi 0) := by
-      simpa only [C] using hscore0.const_mul (s ^ 2)
+      simpa only [MeasureTheory.IntegrableOn, C] using hscore0.const_mul (s ^ 2)
     have hD : IntegrableOn D (Ioi 0) := by
-      simpa only [D] using hm0.const_mul
+      simpa only [MeasureTheory.IntegrableOn, D] using hm0.const_mul
         (s ^ 2 * thetaCuspGaussianApertureExactTailSaddleDegree lambda s)
     have hdecomp : rhs = (A - B - C) + D := by
       funext x

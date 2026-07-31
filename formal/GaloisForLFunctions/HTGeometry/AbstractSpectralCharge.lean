@@ -119,7 +119,7 @@ theorem summable_weight_mul_charge {σ : ℝ} (hσ : 0 < σ) :
 /-- **Charge neutrality.**  For every admissible family and every real time the weighted total
 displacement charge vanishes.  Linear functionals of the displacement are therefore identically
 zero: no first-order statistic of an admissible spectrum can distinguish it from a real one. -/
-theorem tsum_weight_mul_charge_eq_zero {σ : ℝ} (hσ : 0 < σ) :
+theorem tsum_weight_mul_charge_eq_zero {σ : ℝ} (_hσ : 0 < σ) :
     ∑' i : ι, F.weight σ i * F.charge i = 0 := by
   refine F.tsum_eq_zero_of_inv_odd fun i => ?_
   rw [F.weight_inv σ i, F.charge_inv i]

@@ -25,7 +25,7 @@ theorem eventually_eq_zero_of_finite_range_tendsto_zero
     ∀ᶠ p in l, q p = 0 := by
   let bad : Set R := Set.range q \ {0}
   have hbadfinite : bad.Finite := by
-    exact hfinite.diff
+    exact hfinite.sdiff
   have hbad : IsClosed bad := hbadfinite.isClosed
   have hzero : 0 ∈ badᶜ := by simp [bad]
   have hnhds : badᶜ ∈ nhds 0 := hbad.isOpen_compl.mem_nhds hzero

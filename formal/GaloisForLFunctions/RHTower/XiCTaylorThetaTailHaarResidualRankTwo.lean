@@ -397,7 +397,7 @@ theorem half_hermitianCrossCurrent_centered_eq_normalizedSquareDifference
   have h := hermitianCrossCurrent_centeredSquareDifference A A' E E' c
   rw [h]
   field_simp [hc]
-  <;> ring
+  ; ring
 
 /-- Dyadic specialization of the normalized square-difference law.  The complete off-diagonal
 cross at depth `N > 0` is exactly the difference of the uncompleted and half-completed aggregate
@@ -448,7 +448,7 @@ theorem spectralTranslationPhase_mul_conj_neg_re
   unfold spectralTranslationPhase
   rw [← Complex.exp_conj, ← Complex.exp_add]
   rw [Complex.exp_re]
-  simp only [map_mul, Complex.conj_ofReal, map_neg, Complex.conj_I]
+  simp only [map_mul, Complex.conj_ofReal, Complex.conj_I]
   norm_num
   ring_nf
 

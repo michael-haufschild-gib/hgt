@@ -85,15 +85,14 @@ theorem complexMGF_id_ccmFirstClockLandauMeasure_eq_tailLaplace
   apply integral_congr_ae
   filter_upwards [ae_restrict_mem measurableSet_Ioi, hnonneg] with L hL hden
   rw [ENNReal.toReal_ofReal hden, Complex.real_smul]
-  push_cast
-  simp only [id_eq, Complex.ofReal_re]
+  simp only [id_eq]
   have hQim := ccmFirstClockXiRationalDivisor_im_eq_zero L
   have hQcast :
       ccmFirstClockXiRationalDivisor L =
         ((ccmFirstClockXiRationalDivisor L).re : ℂ) := by
     apply Complex.ext
     · simp
-    · simpa [hQim]
+    · simp [hQim]
   rw [hQcast]
   unfold ccmFirstClockLandauDensity
   push_cast
@@ -139,7 +138,7 @@ theorem analyticOnNhd_ccmFirstClockTailLaplace_of_momentsAbove
         congr 1
         ring)
   rw [← heq]
-  simpa only [Function.comp_apply] using hcomp
+  exact hcomp
 
 /-- Narrow convex strip on which the normally convergent continuation is locally represented
 by its half-radius positive-axis disks. -/

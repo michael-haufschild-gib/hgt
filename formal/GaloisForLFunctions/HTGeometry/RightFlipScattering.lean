@@ -260,7 +260,7 @@ noncomputable def threeParticleLeg12 :
       (Matrix.kronecker A (1 : Matrix κ κ ℂ))
   map_one' := by simp
   map_mul' A B := by
-    rw [← Matrix.reindexAlgEquiv_mul]
+    rw [← map_mul]
     congr 1
     simpa using
       (Matrix.mul_kronecker_mul A B

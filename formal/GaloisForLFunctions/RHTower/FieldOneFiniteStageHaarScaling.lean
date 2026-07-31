@@ -339,7 +339,7 @@ theorem fieldOneFiniteStage_measure_smul
     (S : Finset (HeightOneSpectrum ℤ))
     (u : FieldOneFiniteStageIdele S)
     (μ : Measure (FieldOneFiniteStageAdele S))
-    [IsAddHaarMeasure μ] [Regular μ]
+    [IsAddHaarMeasure μ]
     (s : Set (FieldOneFiniteStageAdele S)) :
     μ (u • s) =
       (fieldOneFiniteStageModule S u : ℝ≥0∞) * μ s := by
@@ -352,7 +352,7 @@ theorem fieldOneFiniteStageSUnitImage_measure_smul
     (S : Finset (HeightOneSpectrum ℤ))
     (h : fieldOneFiniteStageSUnitImage S)
     (μ : Measure (FieldOneFiniteStageAdele S))
-    [IsAddHaarMeasure μ] [Regular μ]
+    [IsAddHaarMeasure μ]
     (s : Set (FieldOneFiniteStageAdele S)) :
     μ ((h : FieldOneFiniteStageIdele S) • s) = μ s := by
   have hh :=

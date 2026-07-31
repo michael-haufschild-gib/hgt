@@ -100,9 +100,9 @@ private theorem tendsto_neg_evenGap_add_nhdsNE (n : ℕ) :
         Tendsto (fun epsilon : ℂ => -(2 * (n : ℂ) + epsilon))
           (𝓝 (0 : ℂ)) (𝓝 (-(2 * (n : ℂ)))) := by
         convert (by fun_prop :
-          ContinuousAt (fun epsilon : ℂ => -(2 * (n : ℂ) + epsilon)) 0).tendsto using 1 <;>
+          ContinuousAt (fun epsilon : ℂ => -(2 * (n : ℂ) + epsilon)) 0).tendsto using 1 ;
           ring
-    convert hc.mono_left nhdsWithin_le_nhds using 1 <;> push_cast <;> ring
+    convert hc.mono_left nhdsWithin_le_nhds using 1 ; push_cast ; ring
   · filter_upwards [self_mem_nhdsWithin] with epsilon hepsilon
     simp only [mem_compl_iff, mem_singleton_iff] at hepsilon ⊢
     intro h
@@ -134,8 +134,8 @@ theorem ads2NeutralScalarGammaNormalizationEvenResidue_ne_zero
     omega
   have hlower : ∀ m : ℕ, (1 / 2 - (n : ℂ)) ≠ -(m : ℂ) := by
     intro m
-    convert ads2NeutralScalarStaticDenominatorArgument_even_ne_neg_nat n m using 1 <;>
-      unfold ads2NeutralScalarStaticDenominatorArgument <;> ring
+    convert ads2NeutralScalarStaticDenominatorArgument_even_ne_neg_nat n m using 1 ;
+      unfold ads2NeutralScalarStaticDenominatorArgument ; ring
   unfold ads2NeutralScalarGammaNormalizationEvenResidue
   exact div_ne_zero
     (mul_ne_zero
@@ -175,7 +175,6 @@ theorem tendsto_ads2NeutralScalarGammaNormalization_even_residue
           (fun epsilon : ℂ =>
             epsilon * Complex.Gamma (-(2 * (n : ℂ) + epsilon))) :=
       Filter.Eventually.of_forall (fun epsilon : ℂ => by
-        simp only [Function.comp_apply]
         push_cast
         ring)
     have hneg' := hneg.congr' heqPole
@@ -199,26 +198,26 @@ theorem tendsto_ads2NeutralScalarGammaNormalization_even_residue
     omega
   have hlowerPole : ∀ m : ℕ, (1 / 2 - (n : ℂ)) ≠ -(m : ℂ) := by
     intro m
-    convert ads2NeutralScalarStaticDenominatorArgument_even_ne_neg_nat n m using 1 <;>
-      unfold ads2NeutralScalarStaticDenominatorArgument <;> ring
+    convert ads2NeutralScalarStaticDenominatorArgument_even_ne_neg_nat n m using 1 ;
+      unfold ads2NeutralScalarStaticDenominatorArgument ; ring
   have hupperArg :
       Tendsto (fun epsilon : ℂ => (1 + (2 * (n : ℂ) + epsilon)) / 2)
         (𝓝[≠] (0 : ℂ)) (𝓝 (1 / 2 + (n : ℂ))) := by
     have hc := (by fun_prop :
       ContinuousAt (fun epsilon : ℂ => (1 + (2 * (n : ℂ) + epsilon)) / 2) 0)
-    convert hc.tendsto.mono_left nhdsWithin_le_nhds using 1 <;> ring
+    convert hc.tendsto.mono_left nhdsWithin_le_nhds using 1 ; ring
   have hgapArg :
       Tendsto (fun epsilon : ℂ => 2 * (n : ℂ) + epsilon)
         (𝓝[≠] (0 : ℂ)) (𝓝 (2 * (n : ℂ))) := by
     have hc := (by fun_prop :
       ContinuousAt (fun epsilon : ℂ => 2 * (n : ℂ) + epsilon) 0)
-    convert hc.tendsto.mono_left nhdsWithin_le_nhds using 1 <;> ring
+    convert hc.tendsto.mono_left nhdsWithin_le_nhds using 1 ; ring
   have hlowerArg :
       Tendsto (fun epsilon : ℂ => (1 - (2 * (n : ℂ) + epsilon)) / 2)
         (𝓝[≠] (0 : ℂ)) (𝓝 (1 / 2 - (n : ℂ))) := by
     have hc := (by fun_prop :
       ContinuousAt (fun epsilon : ℂ => (1 - (2 * (n : ℂ) + epsilon)) / 2) 0)
-    convert hc.tendsto.mono_left nhdsWithin_le_nhds using 1 <;> ring
+    convert hc.tendsto.mono_left nhdsWithin_le_nhds using 1 ; ring
   have hupperGamma :=
     (Complex.continuousAt_Gamma (1 / 2 + (n : ℂ)) hupperPole).tendsto.comp hupperArg
   have hgapGamma :=
@@ -267,7 +266,7 @@ theorem ads2NeutralScalarGammaNormalizationEvenExtension_zero (n : ℕ) :
     ring
   rw [harg, gammaExtension_apply_neg]
   simp only [pow_mul, neg_one_sq, one_pow]
-  congr 1 <;> push_cast <;> ring
+  congr 1  <;> ring
 
 /-- The pole-removed even-gap normalization is differentiable through the resonance. -/
 theorem differentiableAt_ads2NeutralScalarGammaNormalizationEvenExtension
@@ -314,8 +313,8 @@ theorem differentiableAt_ads2NeutralScalarGammaNormalizationEvenExtension
   have hlowerPole :
       ∀ m : ℕ, (1 - (2 * (n : ℂ) + (0 : ℂ))) / 2 ≠ -(m : ℂ) := by
     intro m
-    convert ads2NeutralScalarStaticDenominatorArgument_even_ne_neg_nat n m using 1 <;>
-      unfold ads2NeutralScalarStaticDenominatorArgument <;> ring
+    convert ads2NeutralScalarStaticDenominatorArgument_even_ne_neg_nat n m using 1 ;
+      unfold ads2NeutralScalarStaticDenominatorArgument ; ring
   have hupper :
       DifferentiableAt ℂ
         (fun epsilon : ℂ =>
@@ -439,7 +438,7 @@ theorem hasDerivAt_ads2ScalarGammaGapQuotient
     Complex.Gamma_ne_zero hlower
   have hlower0' :
       Complex.Gamma (1 / 2 + z + gap * (-1 / 2)) ≠ 0 := by
-    convert hlower0 using 1 <;> ring
+    convert hlower0 using 1 ; ring
   have hdu :
       deriv Complex.Gamma (z + (1 + gap) / 2) =
         Complex.digamma (z + (1 + gap) / 2) *
@@ -686,7 +685,7 @@ theorem hypertranscendentalOver_evenResonantAdS2DigammaClockCoreMero
         (digammaShiftMero (1 / 2 + (n : ℂ)) -
           digammaShiftMero (1 / 2 - (n : ℂ))) := by
     rw [kerrNewmanChargedScalarLogResponseClockMero_eq_digammaDifference] at hclockDA
-    convert hclockDA using 1 <;> ring
+    convert hclockDA using 1 ; ring
   have htwoDA :
       DifferentialAlgebraicOver (RatFunc ℂ) (2 : meroField Set.univ) := by
     simpa only [map_ofNat] using
@@ -804,8 +803,8 @@ private theorem tendsto_neg_oddGap_add_nhdsNE (n : ℕ) :
           (𝓝 (0 : ℂ)) (𝓝 (-(2 * (n : ℂ) + 1))) := by
         convert (by fun_prop :
           ContinuousAt (fun epsilon : ℂ => -(2 * (n : ℂ) + 1 + epsilon)) 0).tendsto
-          using 1 <;> ring
-    convert hc.mono_left nhdsWithin_le_nhds using 1 <;> push_cast <;> ring
+          using 1 ; ring
+    convert hc.mono_left nhdsWithin_le_nhds using 1 ; push_cast ; ring
   · filter_upwards [self_mem_nhdsWithin] with epsilon hepsilon
     simp only [mem_compl_iff, mem_singleton_iff] at hepsilon ⊢
     intro h
@@ -829,7 +828,7 @@ private theorem tendsto_oddStaticDenominator_add_nhdsNE (n : ℕ) :
           ContinuousAt
             (fun epsilon : ℂ =>
               (1 - (2 * (n : ℂ) + 1 + epsilon)) / 2) 0).tendsto
-          using 1 <;> ring
+          using 1 ; ring
     exact hc.mono_left nhdsWithin_le_nhds
   · filter_upwards [self_mem_nhdsWithin] with epsilon hepsilon
     simp only [mem_compl_iff, mem_singleton_iff] at hepsilon ⊢
@@ -885,7 +884,7 @@ theorem tendsto_ads2NeutralScalarGammaNormalization_odd_limit (n : ℕ) :
         rw [harg]
         ring)
     have hscaled' := hscaled.congr' heq
-    convert hscaled' using 1 <;> ring
+    convert hscaled' using 1 ; ring
   have hlowerMap := tendsto_oddStaticDenominator_add_nhdsNE n
   have hlowerRaw := (gamma_residue n).comp hlowerMap
   have hlower :
@@ -962,14 +961,14 @@ theorem tendsto_ads2NeutralScalarGammaNormalization_odd_limit (n : ℕ) :
       ContinuousAt
         (fun epsilon : ℂ =>
           (1 + (2 * (n : ℂ) + 1 + epsilon)) / 2) 0)
-    convert hc.tendsto.mono_left nhdsWithin_le_nhds using 1 <;> ring
+    convert hc.tendsto.mono_left nhdsWithin_le_nhds using 1 ; ring
   have hgapArg :
       Tendsto
         (fun epsilon : ℂ => 2 * (n : ℂ) + 1 + epsilon)
         (𝓝[≠] (0 : ℂ)) (𝓝 (((2 * n + 1 : ℕ) : ℂ))) := by
     have hc := (by fun_prop :
       ContinuousAt (fun epsilon : ℂ => 2 * (n : ℂ) + 1 + epsilon) 0)
-    convert hc.tendsto.mono_left nhdsWithin_le_nhds using 1 <;> push_cast <;> ring
+    convert hc.tendsto.mono_left nhdsWithin_le_nhds using 1 ; push_cast ; ring
   have hupperGamma :=
     (Complex.continuousAt_Gamma ((n : ℂ) + 1) hupperPole).tendsto.comp hupperArg
   have hgapGamma :=
@@ -998,7 +997,7 @@ theorem tendsto_ads2NeutralScalarGammaNormalization_odd_limit (n : ℕ) :
             ((1 - (2 * (n : ℂ) + 1 + epsilon)) / 2))
   rw [mul_div_mul_left _ _ hepsilon0]
   rw [div_mul_div_comm]
-  congr 1 <;> ring
+  congr 1 ; ring
 
 /-- The odd-resonance cancellation coefficient is finite and nonzero. -/
 theorem ads2NeutralScalarGammaNormalizationOddLimit_ne_zero (n : ℕ) :
@@ -1084,7 +1083,6 @@ theorem ads2NeutralScalarGammaNormalization_ne_zero_of_noninteger
     intro m h
     apply hnoninteger (-Int.ofNat (2 * m + 1))
     norm_num [Int.cast_ofNat]
-    push_cast
     linear_combination 2 * h
   have hgap : ∀ m : ℕ, gap ≠ -(m : ℂ) := by
     intro m h
@@ -1095,7 +1093,6 @@ theorem ads2NeutralScalarGammaNormalization_ne_zero_of_noninteger
     intro m h
     apply hnoninteger (Int.ofNat (2 * m + 1))
     norm_num [Int.cast_ofNat]
-    push_cast
     linear_combination -2 * h
   unfold ads2NeutralScalarGammaNormalization
   exact div_ne_zero

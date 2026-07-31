@@ -31,7 +31,7 @@ theorem xiC_zeros_closedRectangle_finite (z₁ z₂ : ℂ) :
   have hcodK : (XiC ⁻¹' {0}ᶜ) ∈ codiscreteWithin
       (uIcc z₁.re z₂.re ×ℂ uIcc z₁.im z₂.im) :=
     Filter.codiscreteWithin_mono (Set.subset_univ _) hcod
-  refine ((isCompact_uIcc.reProdIm isCompact_uIcc).finite_diff_of_mem_codiscreteWithin
+  refine ((isCompact_uIcc.reProdIm isCompact_uIcc).finite_sdiff_of_mem_codiscreteWithin
     hcodK).subset ?_
   intro z hz
   rw [Set.mem_sep_iff] at hz

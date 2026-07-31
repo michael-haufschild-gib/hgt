@@ -42,7 +42,7 @@ theorem centeredDepthSuccessorTransport_eq_translated
     centeredDepthSuccessorTransport center f ε u =
       depthSuccessorTransport (fun v => f (center + v)) ε (u - center) := by
   rw [centeredDepthSuccessorTransport, depthSuccessorTransport]
-  congr 2 <;> ring
+  congr 2 ; ring
 
 private theorem factorized_depth_ratio
     {ε z shift g₀ g₁ : ℂ} {m : ℕ}

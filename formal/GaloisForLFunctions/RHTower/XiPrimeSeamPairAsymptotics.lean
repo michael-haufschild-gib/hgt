@@ -365,10 +365,8 @@ theorem orbitwisePrimeSeamPairEnergySubmass_of_re_eq_half
       orbitwiseNatPrimeSeamCharge (p : ℕ) rho = 0 := by
     intro p
     exact (hcoh (p : ℕ) 2 p.prop (by norm_num)).trans htwo
-  simpa [OrbitwisePrimeSeamPairEnergySubmass, primePairDifferenceEnergy,
-    primePairDifferenceRow, hzero] using
-      (tendsto_const_nhds : Filter.Tendsto (fun _ : Finset Nat.Primes => (0 : ℝ))
-        Filter.atTop (nhds 0))
+  simp [OrbitwisePrimeSeamPairEnergySubmass, primePairDifferenceEnergy,
+    primePairDifferenceRow, hzero]
 
 /-- Exact fiberwise endpoint of the weakened source interface. -/
 theorem orbitwisePrimeSeamPairEnergySubmass_iff_re_eq_half

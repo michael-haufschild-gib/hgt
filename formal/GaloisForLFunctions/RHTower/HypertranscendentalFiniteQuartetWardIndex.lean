@@ -142,8 +142,7 @@ theorem finiteQuartetGauge_logDeriv_zero_eq_neg_two_weight
   classical
   have hne : ∀ i ∈ Finset.univ,
       centeredQuartetGauge (a i) (b i) 0 ≠ 0 := by
-    intro i _
-    intro hzero
+    intro i _ hzero
     have hre := congrArg Complex.re hzero
     simp only [Complex.zero_re] at hre
     exact (ne_of_gt

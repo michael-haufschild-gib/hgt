@@ -98,7 +98,7 @@ theorem fullBranch_restrictedToPacket_germ_eq_packetBranch
   have hpullAnalytic :
       AnalyticAt ℂ
         (fun coupling => branch (extendCouplingFromPacket packet coupling)) 0 :=
-    hbranch.comp_of_eq' hext hext0
+    hbranch.fun_comp_of_eq hext hext0
   have hextTendsto :
       Tendsto
         (extendCouplingFromPacket packet :

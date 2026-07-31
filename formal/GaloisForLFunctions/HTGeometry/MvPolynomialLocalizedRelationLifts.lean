@@ -122,8 +122,6 @@ theorem exists_originalRelations_of_localized_generators
           algebraMap (MvPolynomial σ ℂ) P (relation i)))) ?_
         (Ideal.zero_mem _) ?_ ?_ hzspan
       · rintro _ ⟨i, rfl⟩
-        change (u i : P) ∈ Ideal.span (Set.range (fun i ↦
-          algebraMap (MvPolynomial σ ℂ) P (relation i)))
         rw [huval i]
         exact Ideal.subset_span ⟨i, rfl⟩
       · intro a b _ _ ha hb

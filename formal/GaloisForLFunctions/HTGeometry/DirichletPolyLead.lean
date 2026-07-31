@@ -53,7 +53,7 @@ theorem coeffPoly_one (m : ℕ) :
   have h1 : (1 : DirPoly) = Polynomial.monomial 0 (1 : ArithmeticFunction ℂ) := by
     simp [Polynomial.monomial_zero_left]
   rw [h1, coeffPoly_monomial]
-  by_cases h : m = 1 <;> simp [h, ArithmeticFunction.one_apply]
+  by_cases h : m = 1 <;> simp [h]
 
 /-- **The comparison map is multiplicative.** -/
 theorem coeffPoly_mul (P Q : DirPoly) (m : ℕ) :
@@ -175,7 +175,7 @@ noncomputable def sigmaDirPoly : DirPoly ≃+* DirPoly where
   toFun P := (P.map (dshift : ArithmeticFunction ℂ →+* ArithmeticFunction ℂ)).comp (X + 1)
   invFun P := (P.map (dshift.symm : ArithmeticFunction ℂ →+* ArithmeticFunction ℂ)).comp (X - 1)
   left_inv P := by
-    simp only [Polynomial.map_comp, Polynomial.map_map, Polynomial.map_add, Polynomial.map_sub,
+    simp only [Polynomial.map_comp, Polynomial.map_map, Polynomial.map_add,
       Polynomial.map_X, Polynomial.map_one]
     rw [show ((dshift.symm : ArithmeticFunction ℂ →+* ArithmeticFunction ℂ).comp
       (dshift : ArithmeticFunction ℂ →+* ArithmeticFunction ℂ))
@@ -185,7 +185,7 @@ noncomputable def sigmaDirPoly : DirPoly ≃+* DirPoly where
       simp only [Polynomial.add_comp, Polynomial.X_comp, Polynomial.one_comp]
       ring, Polynomial.comp_X]
   right_inv P := by
-    simp only [Polynomial.map_comp, Polynomial.map_map, Polynomial.map_add, Polynomial.map_sub,
+    simp only [Polynomial.map_comp, Polynomial.map_map, Polynomial.map_sub,
       Polynomial.map_X, Polynomial.map_one]
     rw [show ((dshift : ArithmeticFunction ℂ →+* ArithmeticFunction ℂ).comp
       (dshift.symm : ArithmeticFunction ℂ →+* ArithmeticFunction ℂ))
@@ -257,7 +257,7 @@ theorem coeffPoly_comp_X_add_one (P : DirPoly) (m : ℕ) :
               = ((Polynomial.monomial j a : DirPoly).comp (X + 1)) * (X + 1) := by
             rw [← Polynomial.C_mul_X_pow_eq_monomial, ← Polynomial.C_mul_X_pow_eq_monomial]
             simp only [pow_succ, Polynomial.mul_comp, Polynomial.C_comp,
-              Polynomial.X_pow_comp, Polynomial.X_comp, Polynomial.one_comp]
+              Polynomial.X_pow_comp, Polynomial.X_comp]
             ring
           rw [hstep, coeffPoly_mul_X_add_one, ih, pow_succ]
           ring

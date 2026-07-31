@@ -522,7 +522,7 @@ theorem dissipativeWeightedReturnAmplitude_exactAsymptoticCeiling_allDimensions
       have hdne : d ≠ 0 := by
         intro hd0
         subst d
-        simpa using hmass
+        simp at hmass
       have hd1 : d = 1 := Nat.le_antisymm hdle (Nat.one_le_iff_ne_zero.mpr hdne)
       subst d
       have hwzero : w 0 = 1 := by simpa using hmass
@@ -685,6 +685,7 @@ def finiteContractionPeripheralSubspace (T : H →L[ℂ] H) :
   ⨆ μ : FiniteContractionPeripheralEigenvalue T,
     finiteContractionPeripheralEigenspace T μ
 
+omit [FiniteDimensional ℂ H] in
 /-- Distinct peripheral eigenspaces of a contraction are orthogonal. -/
 theorem finiteContractionPeripheralEigenspaces_orthogonal
     (T : H →L[ℂ] H) (hT : ‖T‖ ≤ 1) :
@@ -701,6 +702,7 @@ theorem finiteContractionPeripheralEigenspaces_orthogonal
     apply hμν
     exact Subtype.ext (Subtype.ext h)
 
+omit [CompleteSpace H] [FiniteDimensional ℂ H] in
 /-- The contraction preserves its peripheral span. -/
 theorem finiteContractionPeripheralSubspace_invariant
     (T : H →L[ℂ] H) :
@@ -714,11 +716,11 @@ theorem finiteContractionPeripheralSubspace_invariant
       rw [Module.End.mem_eigenspace_iff] at hx ⊢
       exact (congrArg T hx).trans (map_smul T _ _)
   | zero =>
-      simpa using (Submodule.zero_mem
-        (finiteContractionPeripheralSubspace T))
+      simp
   | add x y _ _ hx hy =>
       simpa only [map_add] using Submodule.add_mem _ hx hy
 
+omit [FiniteDimensional ℂ H] in
 /-- The adjoint preserves the peripheral span. -/
 theorem finiteContractionPeripheralSubspace_adjoint_invariant
     (T : H →L[ℂ] H) (hT : ‖T‖ ≤ 1) :
@@ -734,8 +736,7 @@ theorem finiteContractionPeripheralSubspace_adjoint_invariant
       rw [hadj]
       exact Submodule.smul_mem _ _ hx
   | zero =>
-      simpa using (Submodule.zero_mem
-        (finiteContractionPeripheralSubspace T))
+      simp
   | add x y _ _ hx hy =>
       simpa only [map_add] using Submodule.add_mem _ hx hy
 
@@ -744,6 +745,7 @@ def finiteContractionTransientSubspace (T : H →L[ℂ] H) :
     Submodule ℂ H :=
   (finiteContractionPeripheralSubspace T)ᗮ
 
+omit [FiniteDimensional ℂ H] in
 /-- The orthogonal transient complement is invariant under the
 contraction. -/
 theorem finiteContractionTransientSubspace_invariant
@@ -765,6 +767,7 @@ def finiteContractionTransientRestriction
       finiteContractionTransientSubspace T :=
   T.restrict (finiteContractionTransientSubspace_invariant T hT)
 
+omit [FiniteDimensional ℂ H] in
 @[simp]
 theorem finiteContractionTransientRestriction_apply_coe
     (T : H →L[ℂ] H) (hT : ‖T‖ ≤ 1)
@@ -861,6 +864,7 @@ theorem tendsto_pow_finiteContractionTransientRestriction_zero
     rw [hconstant]
     exact tendsto_const_nhds
 
+omit [FiniteDimensional ℂ H] in
 /-- Restriction and taking powers commute after inclusion into the ambient
 Hilbert space. -/
 @[simp]
@@ -933,7 +937,7 @@ theorem sum_finiteContractionPeripheralComponent
   let y := P.starProjection x
   have hy : y ∈ P := by
     change P.starProjection x ∈ P
-    exact (P.orthogonalProjection x).property
+    exact (P.orthogonalProjectionOnto x).property
   have hsum :=
     (finiteContractionPeripheralEigenspaces_orthogonal T hT)
       |>.sum_projection_of_mem_iSup y hy
@@ -952,6 +956,7 @@ theorem sum_finiteContractionPeripheralComponent
       le_iSup (fun ν : FiniteContractionPeripheralEigenvalue T =>
         finiteContractionPeripheralEigenspace T ν) μ) x).symm
 
+omit [CompleteSpace H] in
 /-- Each peripheral component is an eigenvector, allowing the zero
 component. -/
 theorem finiteContractionPeripheralComponent_eigen
@@ -962,8 +967,9 @@ theorem finiteContractionPeripheralComponent_eigen
   apply Module.End.mem_eigenspace_iff.mp
   change (finiteContractionPeripheralEigenspace T μ).starProjection x ∈
     finiteContractionPeripheralEigenspace T μ
-  exact ((finiteContractionPeripheralEigenspace T μ).orthogonalProjection x).property
+  exact ((finiteContractionPeripheralEigenspace T μ).orthogonalProjectionOnto x).property
 
+omit [CompleteSpace H] in
 /-- Exact evolution of each peripheral component. -/
 theorem finiteContraction_pow_apply_peripheralComponent
     (T : H →L[ℂ] H) (x : H)
@@ -981,6 +987,7 @@ theorem finiteContraction_pow_apply_peripheralComponent
         finiteContractionPeripheralComponent_eigen]
       rw [pow_succ, mul_smul]
 
+omit [CompleteSpace H] in
 /-- A peripheral component's overlap with the initial vector is its
 nonnegative squared norm. -/
 theorem inner_finiteContractionPeripheralComponent
@@ -990,15 +997,16 @@ theorem inner_finiteContractionPeripheralComponent
       (‖finiteContractionPeripheralComponent T x μ‖ ^ 2 : ℝ) := by
   let E := finiteContractionPeripheralEigenspace T μ
   have hproj :=
-    E.inner_orthogonalProjection_eq_of_mem_right
-      (E.orthogonalProjection x) x
+    E.inner_orthogonalProjectionOnto_eq_of_mem_right
+      (E.orthogonalProjectionOnto x) x
   change inner ℂ x (E.starProjection x) =
     (‖E.starProjection x‖ ^ 2 : ℝ)
-  rw [show E.starProjection x = (E.orthogonalProjection x : H) by rfl]
+  rw [show E.starProjection x = (E.orthogonalProjectionOnto x : H) by rfl]
   rw [← hproj]
   rw [inner_self_eq_norm_sq_to_K]
   norm_cast
 
+omit [CompleteSpace H] [FiniteDimensional ℂ H] in
 /-- Unit-modulus peripheral eigenvalues admit real phase coordinates
 compatible with every natural power. -/
 theorem finiteContractionPeripheralEigenvalue_pow_eq_exp_arg
@@ -1102,12 +1110,12 @@ theorem finiteContractionPersistentMass_eq_norm_sq_projection
   have hnorm :=
     (finiteContractionPeripheralEigenspaces_orthogonal T hT).norm_sum
       (fun μ : FiniteContractionPeripheralEigenvalue T =>
-        (finiteContractionPeripheralEigenspace T μ).orthogonalProjection x)
+        (finiteContractionPeripheralEigenspace T μ).orthogonalProjectionOnto x)
       Finset.univ
   have hsum :
       (∑ μ : FiniteContractionPeripheralEigenvalue T,
         (finiteContractionPeripheralEigenspace T μ).subtypeₗᵢ
-          ((finiteContractionPeripheralEigenspace T μ).orthogonalProjection x)) =
+          ((finiteContractionPeripheralEigenspace T μ).orthogonalProjectionOnto x)) =
         (finiteContractionPeripheralSubspace T).starProjection x := by
     change
       (∑ μ : FiniteContractionPeripheralEigenvalue T,
@@ -1130,6 +1138,7 @@ theorem finiteContractionPersistentMass_le_norm_sq
     ((finiteContractionPeripheralSubspace T).starProjection x),
     norm_nonneg x]
 
+omit [CompleteSpace H] in
 /-- Persistent mass is nonnegative. -/
 theorem finiteContractionPersistentMass_nonneg
     (T : H →L[ℂ] H) (x : H) :
@@ -1165,6 +1174,7 @@ def finiteContractionPeripheralWeight
   finiteContractionPeripheralRawWeight T x i /
     finiteContractionPersistentMass T x
 
+omit [CompleteSpace H] in
 /-- Canonical enumeration preserves total persistent mass. -/
 theorem sum_finiteContractionPeripheralRawWeight
     (T : H →L[ℂ] H) (x : H) :
@@ -1175,6 +1185,7 @@ theorem sum_finiteContractionPeripheralRawWeight
     (fun μ : FiniteContractionPeripheralEigenvalue T =>
       ‖finiteContractionPeripheralComponent T x μ‖ ^ 2)
 
+omit [CompleteSpace H] in
 /-- Canonical normalized weights are nonnegative. -/
 theorem finiteContractionPeripheralWeight_nonneg
     (T : H →L[ℂ] H) (x : H)
@@ -1183,6 +1194,7 @@ theorem finiteContractionPeripheralWeight_nonneg
   intro i
   exact div_nonneg (sq_nonneg _) hpersistent.le
 
+omit [CompleteSpace H] in
 /-- Canonical normalized weights have total mass one. -/
 theorem sum_finiteContractionPeripheralWeight
     (T : H →L[ℂ] H) (x : H)
@@ -1194,6 +1206,7 @@ theorem sum_finiteContractionPeripheralWeight
     sum_finiteContractionPeripheralRawWeight]
   exact div_self hpersistent.ne'
 
+omit [CompleteSpace H] in
 /-- The canonical normalized Floquet packet is exactly the persistent
 autocorrelation of the finite contraction. -/
 theorem finiteContraction_persistentSum_eq_scaledWeightedFloquet
@@ -1544,6 +1557,7 @@ def finiteMixedEvolution {m : ℕ}
     (evolution : Fin m → H →L[ℂ] H) : H →L[ℂ] H :=
   ∑ i, (probability i : ℂ) • evolution i
 
+omit [CompleteSpace H] [FiniteDimensional ℂ H] in
 /-- A convex mixture of arbitrary contractions is again a contraction.
 This includes random-unitary channels as the isometric special case. -/
 theorem norm_finiteMixedEvolution_le_one
