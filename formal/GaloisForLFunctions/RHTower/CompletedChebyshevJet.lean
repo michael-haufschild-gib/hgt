@@ -48,6 +48,12 @@ theorem radialJet_add {n : ℕ} {s : ℝ} {f g : ℝ → ℝ}
   rw [hfun, iteratedDeriv_add (hf j) (hg j)]
   ring
 
+theorem radialJet_congr_of_eventuallyEq {n : ℕ} {s : ℝ} {f g : ℝ → ℝ} (h : f =ᶠ[nhds s] g) :
+    radialJet n s f = radialJet n s g := by
+  rw [radialJet, radialJet]
+  refine Finset.sum_congr rfl fun j _ => ?_
+  rw [Filter.EventuallyEq.iteratedDeriv_eq j h]
+
 /-! ### The polar half -/
 
 /-- The `j`-fold derivative of the simple pole at `1`. -/

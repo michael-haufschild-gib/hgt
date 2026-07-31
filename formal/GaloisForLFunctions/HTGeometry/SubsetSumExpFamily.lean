@@ -73,7 +73,7 @@ theorem subsetSumFamily_invariant (N : ℤ) (n s : ℕ) (e : Equiv.Perm (Fin n))
       = (scaledSubsetSum N) ∘ (fun S : Finset (Fin n) => S.image e) := by
     funext S
     exact rename_scaledSubsetSum N e S
-  rw [hcomp, ← Multiset.map_map, subsetSumFamily]
+  rw [hcomp, ← Multiset.map_map]
   congr 1
   rw [← Finset.image_val_of_injOn (fun a _ b _ h => hinj h), himg]
 
@@ -104,20 +104,20 @@ theorem exists_monic_subsetSum_poly {m : ℤ[X]} (hm : m.Monic) {n : ℕ} (hn : 
 theorem exists_monic_nonzero_const_factor {F : ℤ[X]} (hF : F.Monic) :
     ∃ (z : ℕ) (H : ℤ[X]), H.Monic ∧ H.eval 0 ≠ 0 ∧ F = X ^ z * H ∧ z ≤ F.natDegree := by
   classical
+  set z := Polynomial.rootMultiplicity (0 : ℤ) F with hzdef
+  set H := F /ₘ (Polynomial.X - Polynomial.C (0 : ℤ)) ^ z with hHdef
+  have key : (Polynomial.X - Polynomial.C (0 : ℤ)) ^ z * H = F :=
+    Polynomial.pow_mul_divByMonic_rootMultiplicity_eq F 0
   have hXC : (Polynomial.X - Polynomial.C (0 : ℤ)) = Polynomial.X := by simp
-  refine ⟨Polynomial.rootMultiplicity 0 F,
-    F /ₘ (Polynomial.X - Polynomial.C (0 : ℤ)) ^ Polynomial.rootMultiplicity 0 F, ?_, ?_, ?_, ?_⟩
-  · refine Polynomial.Monic.of_mul_monic_left (p := Polynomial.X ^ Polynomial.rootMultiplicity 0 F)
-      (Polynomial.monic_X_pow _) ?_
-    rw [← hXC, Polynomial.pow_mul_divByMonic_rootMultiplicity_eq]
-    exact hF
-  · exact Polynomial.eval_divByMonic_pow_rootMultiplicity_ne_zero 0 hF.ne_zero
-  · rw [← hXC, Polynomial.pow_mul_divByMonic_rootMultiplicity_eq]
-  · have hdvd : (Polynomial.X : ℤ[X]) ^ Polynomial.rootMultiplicity 0 F ∣ F := by
-      rw [← hXC]
-      exact Polynomial.pow_rootMultiplicity_dvd F 0
-    have := Polynomial.natDegree_le_of_dvd hdvd hF.ne_zero
-    rwa [Polynomial.natDegree_X_pow] at this
+  rw [hXC] at key
+  have hHeval : H.eval 0 ≠ 0 :=
+    Polynomial.eval_divByMonic_pow_rootMultiplicity_ne_zero 0 hF.ne_zero
+  have hHmonic : H.Monic :=
+    Polynomial.Monic.of_mul_monic_left (Polynomial.monic_X_pow z) (by rw [key]; exact hF)
+  refine ⟨z, H, hHmonic, hHeval, key.symm, ?_⟩
+  have hdvd : (Polynomial.X : ℤ[X]) ^ z ∣ F := ⟨H, key.symm⟩
+  have := Polynomial.natDegree_le_of_dvd hdvd hF.ne_zero
+  rwa [Polynomial.natDegree_X_pow] at this
 
 /-- Splitting off `Xᶻ` contributes exactly `z` to the sum of `exp` over the complex roots. -/
 theorem sum_exp_aroots_of_eq_X_pow_mul {F H : ℤ[X]} (hF : F.Monic) {z : ℕ}

@@ -24,6 +24,7 @@ and the trace of the smoothing is the pairing of `ν` with the weight's transfor
 namespace GaloisForLFunctions.HTGeometry
 
 open MeasureTheory ContinuousLinearMap
+open scoped ContDiff
 
 /-- The character of a unitary flow on a `λ`-eigenline, `t ↦ exp (i λ t)`. -/
 noncomputable def flowCharacter (lam t : ℝ) : ℂ :=
@@ -338,6 +339,56 @@ theorem multiplicityMeasure_eq_of_sum_flowCharacter_eq (lam : ι → ℝ) (mu : 
     simp only [hcl, hcm] at hx
     exact_mod_cast hx
   rw [hnl, hnr, hnat]
+
+/-- The **character function** of a finite spectral family, `F(t) = ∑ⱼ mⱼ exp (i λⱼ t)`. -/
+noncomputable def flowCharacterSum (lam : ι → ℝ) (t : ℝ) : ℂ := ∑ i, flowCharacter (lam i) t
+
+theorem continuous_flowCharacter (lam : ℝ) : Continuous (flowCharacter lam) := by
+  unfold flowCharacter
+  fun_prop
+
+theorem continuous_flowCharacterSum (lam : ι → ℝ) : Continuous (flowCharacterSum lam) :=
+  continuous_finsetSum _ fun i _ => continuous_flowCharacter (lam i)
+
+/-- The trace pairing is the integral of the weight against the character function. -/
+theorem sum_weightTransform_eq_integral (lam : ι → ℝ) {phi : ℝ → ℝ}
+    (hphi : Continuous phi) (hsupp : HasCompactSupport phi) :
+    ∑ i, weightTransform phi (lam i) = ∫ t, phi t • flowCharacterSum lam t := by
+  have hint : ∀ i : ι, Integrable (fun t => phi t • flowCharacter (lam i) t) := by
+    intro i
+    refine Continuous.integrable_of_hasCompactSupport
+      (hphi.smul (continuous_flowCharacter (lam i))) ?_
+    exact hsupp.smul_right
+  have hsum : ∀ t : ℝ, phi t • flowCharacterSum lam t
+      = ∑ i, phi t • flowCharacter (lam i) t := by
+    intro t
+    rw [flowCharacterSum, Finset.smul_sum]
+  rw [integral_congr_ae (Filter.Eventually.of_forall hsum),
+    integral_finsetSum _ fun i _ => hint i]
+  rfl
+
+/-- **Uniqueness of the multiplicity measure from the trace distribution.**  If two finite spectral
+families give the same trace `∑ⱼ mⱼ φ̂(-λⱼ)` for every smooth compactly supported weight, they
+define the same multiplicity measure `ν_A`.  The trace pairing is the integral of the weight
+against the character function, so the fundamental lemma of the calculus of variations identifies
+the two character functions almost everywhere, continuity makes them equal, and linear
+independence of the characters turns that into equality of the multiplicities.  This is clause 5's
+uniqueness assertion. -/
+theorem multiplicityMeasure_eq_of_forall_sum_weightTransform_eq (lam : ι → ℝ) (mu : κ → ℝ)
+    (h : ∀ phi : ℝ → ℝ, ContDiff ℝ ∞ phi → HasCompactSupport phi →
+      ∑ i, weightTransform phi (lam i) = ∑ j, weightTransform phi (mu j)) :
+    multiplicityMeasure lam = multiplicityMeasure mu := by
+  have hae : ∀ᵐ t, flowCharacterSum lam t = flowCharacterSum mu t := by
+    refine ae_eq_of_integral_contDiff_smul_eq
+      (continuous_flowCharacterSum lam).locallyIntegrable
+      (continuous_flowCharacterSum mu).locallyIntegrable fun g hg hgsupp => ?_
+    rw [← sum_weightTransform_eq_integral lam hg.continuous hgsupp,
+      ← sum_weightTransform_eq_integral mu hg.continuous hgsupp]
+    exact h g hg hgsupp
+  have heq : flowCharacterSum lam = flowCharacterSum mu :=
+    (Continuous.ae_eq_iff_eq (μ := MeasureTheory.volume)
+      (continuous_flowCharacterSum lam) (continuous_flowCharacterSum mu)).1 hae
+  exact multiplicityMeasure_eq_of_sum_flowCharacter_eq lam mu fun t => congrFun heq t
 
 end CharacterUniqueness
 

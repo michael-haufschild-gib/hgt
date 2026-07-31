@@ -86,22 +86,25 @@ theorem hasDerivAt_thetaCuspSourceTerm_one_zero :
   have hhalf : HasDerivAt (fun x : ℝ => Real.exp (x / 2)) (1 / 2) 0 := by
     convert (Real.hasDerivAt_exp (0 / 2)).comp 0
       ((hasDerivAt_id (x := (0 : ℝ))).div_const 2) using 1
-    all_goals norm_num
+    all_goals first | rfl | norm_num
   have ht2 := ht.pow 2
   have ht4 := ht.pow 4
   have hpoly := (ht4.const_mul (2 * Real.pi)).sub (ht2.const_mul 3)
   have hinner : HasDerivAt
       (fun x : ℝ => -Real.pi * Real.exp x ^ 2) (-2 * Real.pi) 0 := by
     convert ht2.const_mul (-Real.pi) using 1
-    all_goals norm_num
-    all_goals ring
+    all_goals first | rfl | norm_num
+    all_goals first | rfl | ring
   have hgauss : HasDerivAt
       (fun x : ℝ => Real.exp (-Real.pi * Real.exp x ^ 2))
         (Real.exp (-Real.pi) * (-2 * Real.pi)) 0 := by
-    convert HasDerivAt.comp_of_eq (x := (0 : ℝ)) (y := -Real.pi)
-      (Real.hasDerivAt_exp (-Real.pi)) hinner (by norm_num) using 1
+    refine (HasDerivAt.comp_of_eq (x := (0 : ℝ)) (y := -Real.pi)
+      (Real.hasDerivAt_exp (-Real.pi)) hinner (by norm_num)).congr_deriv ?_
+    ring
   have hsource := ((hhalf.mul hpoly).mul hgauss).const_mul (2 * Real.pi)
   convert hsource using 1
+  · exact rfl
+  · exact rfl
   · funext x
     simp [thetaCuspSourceTerm, thetaCuspSeed]
     ring

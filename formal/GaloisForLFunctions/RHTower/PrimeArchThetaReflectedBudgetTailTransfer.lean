@@ -190,7 +190,7 @@ theorem thetaCuspRelaxedFourthMomentConcentration_of_reflectedBudget
     _ ≤ a1 * (45 * m1 ^ 2) := by
       have hfactor : 0 ≤ 45 * a1 * m1 :=
         mul_nonneg (mul_nonneg (by norm_num) ha1.le) hm1
-      convert mul_le_mul_of_nonneg_left ha1m1 hfactor using 1 <;> ring
+      convert mul_le_mul_of_nonneg_left ha1m1 hfactor using 1 <;> first | rfl | ring
 
 /-- The two reflected-budget first-atom conditions discharge every real linear prime--Gamma
 Hankel test. -/

@@ -200,9 +200,10 @@ private theorem integrable_exp_neg_mul_atomSpectralMeasure
       (Measure.dirac (thetaCuspLikelihoodGap n)) := integrable_dirac (by simp)
   have hray : Integrable (fun t : ℝ => Real.exp (-B * t))
       (volume.restrict (Ioi (thetaCuspLikelihoodGap n))) := by
-    simpa only [neg_mul] using
-      (integrableOn_exp_mul_Ioi (a := -B) (neg_neg_iff_pos.mpr hB)
-        (thetaCuspLikelihoodGap n))
+    have hI := integrableOn_exp_mul_Ioi (a := -B) (neg_neg_iff_pos.mpr hB)
+      (thetaCuspLikelihoodGap n)
+    simp only [neg_mul] at hI ⊢
+    exact hI
   exact (hdirac.smul_measure (by simp)).add_measure (hray.smul_measure (by simp))
 
 /-- **One-atom Laplace law.**  Integration against the mixed positive measure is exactly the
@@ -223,9 +224,10 @@ theorem integral_exp_neg_mul_thetaCuspAtomLikelihoodSpectralMeasure
         volume.restrict (Ioi (thetaCuspLikelihoodGap n))) := by
     have hbase : Integrable (fun t : ℝ => Real.exp (-B * t))
         (volume.restrict (Ioi (thetaCuspLikelihoodGap n))) := by
-      simpa only [neg_mul] using
-        (integrableOn_exp_mul_Ioi (a := -B) (neg_neg_iff_pos.mpr hB)
-          (thetaCuspLikelihoodGap n))
+      have hI := integrableOn_exp_mul_Ioi (a := -B) (neg_neg_iff_pos.mpr hB)
+        (thetaCuspLikelihoodGap n)
+      simp only [neg_mul] at hI ⊢
+      exact hI
     exact hbase.smul_measure (by simp)
   rw [thetaCuspAtomLikelihoodSpectralMeasure,
     integral_add_measure hdirac hray,
@@ -272,6 +274,7 @@ theorem summable_thetaCuspAtomLikelihoodSpectralTerm
     (h4.mul_left (Real.exp c * (1 + (3 / 2 : ℝ) / B))).add
       (h2.mul_left (-(Real.exp c * ((3 / 2 : ℝ) / B))))
   convert hsum using 1
+  · exact rfl
   funext k
   let n : ℕ := k + 2
   have hexp :

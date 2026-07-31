@@ -2023,3 +2023,18 @@ derivative as `0 - 1` rather than `-1` (`simp only [zero_sub]` on the hypothesis
 
 Thirty-three modules green over seven rounds.  Still no new mathematics anywhere in the wave;
 `RHTower` premise measurement remains deferred.
+
+### Repair wave, round eight: thirty-six modules green
+
+`PrimeArchThetaReflectedBudgetTailTransfer`, `PrimeArchThetaGaussianApertureBalance`,
+`ThetaCuspLikelihoodSpectralMeasure`.
+
+Nothing new in kind — all three were the `convert` goal-order and `IntegrableOn`/`Integrable`
+classes.  Two practical notes worth keeping:
+
+* when a `convert … using 1` has **no** following tactic (the old elaborator closed the value goal
+  itself), the repair is `refine (…).congr_deriv ?_` followed by `ring`, not an added bullet;
+* the `IntegrableOn` repair sometimes needs the normalization applied to *both* sides
+  (`simp only [neg_mul] at hI ⊢`) before `exact`, because the goal carries the un-normalized form.
+
+Thirty-six modules over eight rounds.  The wave is still entirely mechanical.

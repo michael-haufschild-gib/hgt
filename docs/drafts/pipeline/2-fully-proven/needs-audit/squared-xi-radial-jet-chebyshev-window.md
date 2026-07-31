@@ -4,8 +4,8 @@
 - **Stage:** 2-fully-proven / needs-audit
 - **Type:** THEOREM (paper) / cancellation-preserving moving-source reduction
 - **Scientific status:** `[PROVED HERE] [NOVELTY UNAUDITED]`
-  `[EQUATIONS (2), (3), (4), THE MODAL SCALE (8)-(10), THE CONCENTRATION (11) AND THE`
-  `WINDOW (12) FORMALIZED, AXIOMS CLEAN; ONLY THE OPEN CORE REMAINS]`
+  `[EQUATIONS (2)-(6), THE MODAL SCALE (8)-(10), THE CONCENTRATION (11) AND THE WINDOW (12)`
+  `FORMALIZED, AXIOMS CLEAN; ONLY THE OPEN CORE REMAINS]`
 - **Parents:** `squared-xi-radial-jet-reverse-bessel-source-alignment.md`; `reverse-bessel-fixed-frequency-blindness.md`
 - **Statement:** The polar jet and the sign-aligned von Mangoldt jet are the Lebesgue and Chebyshev--Stieltjes integrals of one positive reverse-Bessel kernel; at fixed Euler base point, its normalized polar mass concentrates at `log x = n/(s(s-1))`.
 
@@ -315,6 +315,25 @@ logarithmic derivative, not merely as a difference of two integrals in closed fo
   `radialJet n s (1/(s-1) + zeta'/zeta) = ∫_1^∞ f_{n,s} dx - ∫_[1,∞) f_{n,s} d psi`.
   No estimate and no separation of divergent boundary pieces occurs.
 
+### `GaloisForLFunctions/RHTower/CompletedRadialSourcePolynomial.lean`
+
+Equations `(5)` and `(6)`: the completed source polynomial as archimedean correction plus one
+smoothed prime-counting discrepancy.
+
+- `xiRayLogDeriv`, `archimedeanRayLogDeriv` — the real traces on the Euler ray of `xi'/xi` and of
+  the archimedean correction `1/s - (log pi)/2 + (1/2) psi (s/2)` of equation `(5)`.
+- **`xiRayLogDeriv_split`** — **equation `(5)`**: on the ray, `xi'/xi` is the archimedean
+  correction plus `1/(s-1) + zeta'/zeta`.  This is the real trace of the corpus's complex
+  logarithmic-derivative weld.
+- **`contDiffAt_xiRayLogDeriv`** — `xi'/xi` is real-smooth at every order on the ray, because `xi`
+  is entire and does not vanish for `Re z > 1`, so `xi'/xi` is holomorphic there and its real trace
+  transfers.  `contDiffAt_archimedeanRayLogDeriv` follows by subtraction; together they license the
+  splitting of the jet.
+- **`radialJet_xiRayLogDeriv`** — **equation `(6)`**:
+  `radialJet n s (xi'/xi) = C_n s + (∫_1^∞ f_{n,s} dx - ∫_[1,∞) f_{n,s} d psi)`.
+  The exact source object of the card, machine-checked as the sum of the archimedean jet and one
+  smoothed prime-counting discrepancy.
+
 The remaining gates are the card's own open core: the completed signed asymptotic on the window
 `(12)` and the strict negative source witness.
 
@@ -367,3 +386,11 @@ The remaining gates are the card's own open core: the completed signed asymptoti
   splits because `zeta'/zeta` is the real trace of a function holomorphic on `Re z > 1`.  Every
   proved statement of this card is now formalized unconditionally with clean axioms; the two
   remaining gates are the declared open core.
+- 2026-07-31 — Equations `(5)` and `(6)` formalized.  The corpus already carried the complex
+  logarithmic-derivative weld `xi'/xi = 1/s + 1/(s-1) - (log pi)/2 + (1/2) psi (s/2) + zeta'/zeta`
+  on the half plane of absolute convergence, so `(5)` is its real trace on the ray and needed no
+  new analysis.  The only genuinely new input was smoothness: `xi'/xi` is real-smooth at every
+  order because `xi` is entire and zero-free to the right of `Re z = 1`, and the archimedean
+  correction is then the difference of two smooth functions.  With that, `(6)` is the jet of `(5)`
+  plus `(4)`.  Every proved equation of the card, `(2)` through `(12)`, is now formalized
+  unconditionally with clean axioms.

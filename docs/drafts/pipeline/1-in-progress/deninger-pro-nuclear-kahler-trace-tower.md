@@ -193,3 +193,32 @@ uniform heat bounds, the trace-norm Cauchy estimate, and archimedean convergence
   (`TraceNormLimit`, 8 theorems, axiom-clean) on top of the corpus's existing Schatten
   framework — the corpus search prevented a duplicate multi-fire Schatten build. Card's
   provable layer: DONE. Remaining: the source conjecture (tower construction), open by design.
+
+## Lean status (2026-07-31, third pass): the first arithmetic trace-class operator
+
+`RHTower/XiDivisorDiagonalTraceClass.lean` — built green, umbrella-registered, zero warnings,
+axiom-clean — joins the divisor Hilbert carrier to the Schatten framework for the first time
+and produces the tower's first concrete arithmetic consumer:
+
+- `xiDivisorHilbertBasis` — the canonical Hilbert basis of `XiDivisorL2 = ℓ²(XiZeroCopy)`;
+- `xiDivisorDiagonal` — bounded diagonal operators from uniformly bounded weight families,
+  Hilbert–Schmidt when the weights are square-summable;
+- `exists_uniform_norm_xiSpectralPoint_lowerBound` — the spectral points are uniformly
+  bounded away from zero (divisor separation at the origin), so the inverse-spectral diagonal
+  `diag(μ_q⁻¹)` is bounded — and Hilbert–Schmidt by the corpus's `Σ 1/‖μ‖² < ∞`;
+- `xiDivisorResolventSquare_memSchattenClass_one` — **`diag(μ_q⁻²)` is trace class**: the
+  first concrete Schatten-1 operator in the corpus whose spectrum is honest (reciprocal-
+  square) Xi divisor data, obtained as a product of two Hilbert–Schmidt diagonals.
+
+Next constructive rung recorded: the finite-stage truncations of this diagonal, their
+trace-norm convergence via `tsum_approxNumber_comp_le` on tail-supported factors, and the
+resulting instantiation of `traceTower_limit` with the trace value tied to the corpus's
+central reciprocal moments — the full divisor-side witness of the tower.
+
+## Log (continued)
+
+- 2026-07-31 (Claude, third pass): built the divisor⟷Schatten bridge
+  (`XiDivisorDiagonalTraceClass`, basis + diagonal CLM machinery + HS certification +
+  trace-class resolvent square, axiom-clean). Patterns reused from
+  `CCMRationalWeightedShiftReal`/`CCMRationalHilbertOperatorRealStructure` (HilbertBasis.ofRepr,
+  Memℓp.mono' comparison, mkContinuous) — corpus recon again avoided reinventing machinery.
