@@ -104,3 +104,31 @@ Riemann bilinear relation of the would-be arithmetic Hodge structure.
   arithmetic cup pairing. Checked whether `DeningerWeightOnePolarization` is ever constructed; it is
   not. Built a witness rather than report the gap, because a gap in an unwitnessed interface is not
   a finding until you know the interface can be satisfied.
+
+## Gate closure (2026-07-31)
+
+Repo-state verification (per the standing rule: verify modules, not card text): the gate
+"an infinite-dimensional witness with unbounded spectrum" was completed in
+`RHTower/DeningerPreHilbertUnboundedWitness.lean` (umbrella-registered, axiom-clean):
+the pre-Hilbert carrier `⨁_n ℂ²` with `exists_polarization_with_prescribed_spectrum`
+(a polarization package for **every** real spectrum sequence) and `not_completeSpace_carrier`
+(incompleteness derived from the unbounded-spectrum no-go). See
+`deninger-complete-carrier-forbids-zeta-spectrum.md` §6–§7, which also proves the sharper
+statement this card's gate asked for: the axioms constrain the spectrum to exactly
+"critical line, conjugation-closed" and nothing else.
+
+Updated gates:
+
+- [x] witness constructed and axiom-clean
+- [x] witness feeds `eigenvalue_re_eq_half` (type-checked)
+- [x] non-scalar `theta` with eigenvalues `1/2 ± i t` for arbitrary real `t`
+- [x] even-dimensionality of the carrier forced by `sigma^2 = -1`
+- [x] an infinite-dimensional witness with unbounded spectrum — DONE
+      (`DeningerPreHilbertUnboundedWitness`, prescribed-spectrum form)
+- [ ] the arithmetic realisation — this is RH (programme-wide wall, tracked by
+      `deninger-two-halves-do-not-compose`)
+- [ ] independent audit (Codex; external)
+
+The card's own topic — non-vacuity of the corpus's RH-bearing polarization interface — is
+complete and fully formalized. Moving to `3-formalized/not_new_scientific_knowledge` per its
+own `[NOT NEW MATHEMATICS]` self-grade.

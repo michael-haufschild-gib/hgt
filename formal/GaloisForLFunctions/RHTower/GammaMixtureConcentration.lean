@@ -804,6 +804,243 @@ theorem integral_radialMixtureDensity_le_blocks {n : ℕ} {s R : ℝ} (hs : 1 < 
     rw [mul_add, Finset.mul_sum, Finset.mul_sum]
   linarith [hlow, hmid, hmid', hhigh, hcollect]
 
+/-! ### The radial concentration law -/
+
+/-- The bad radial set at relative scale `eps`: points of the positive ray at distance at least
+`eps * n` from the modal location `L n = n / (s (s-1))`. -/
+def radialBadSet (n : ℕ) (s ε : ℝ) : Set ℝ :=
+  Ioi (0:ℝ) ∩ {t : ℝ | ε * (n : ℝ) ≤ |t - (1 / (s * (s - 1))) * (n : ℝ)|}
+
+theorem measurableSet_radialBadSet (n : ℕ) (s ε : ℝ) :
+    MeasurableSet (radialBadSet n s ε) := by
+  refine measurableSet_Ioi.inter ?_
+  have hcont : Continuous fun t : ℝ => |t - (1 / (s * (s - 1))) * (n : ℝ)| := by fun_prop
+  exact measurableSet_le measurable_const hcont.measurable
+
+theorem radialBadSet_subset (n : ℕ) (s ε : ℝ) : radialBadSet n s ε ⊆ Ioi (0:ℝ) :=
+  Set.inter_subset_left
+
+/-- **The bad radial mass is bounded by the two index tails plus a Chebyshev term.**  The index
+cutoffs are the relative offsets `1/s ± eps a / 4` and the Chebyshev radius is `eps n / 2`. -/
+theorem radialBadSet_mass_le {n : ℕ} {s ε : ℝ} (hs : 1 < s) (hε : 0 < ε)
+    (hup : 1 / s + ε * (s - 1) / 4 ≤ 1) (hlo : 0 ≤ 1 / s - ε * (s - 1) / 4)
+    (hn : 4 / (ε * (s - 1)) ≤ (n : ℝ)) :
+    ∫ t in radialBadSet n s ε, radialMixtureDensity n s t
+      ≤ (s - 1)⁻¹ *
+          (∑ j ∈ Finset.range (⌊(1 / s - ε * (s - 1) / 4) * (n : ℝ)⌋₊ + 1),
+              radialMixtureWeight n s j
+            + ∑ j ∈ Finset.Icc ⌈(1 / s + ε * (s - 1) / 4) * (n : ℝ)⌉₊ n,
+              radialMixtureWeight n s j)
+        + ((n : ℝ) + 1) / ((s - 1) ^ 2 * (ε * (n : ℝ) / 2) ^ 2) *
+            ((s - 1)⁻¹ * ∑ j ∈ Finset.range (n + 1), radialMixtureWeight n s j) := by
+  have ha : (0:ℝ) < s - 1 := by linarith
+  have hs0 : (0:ℝ) < s := by linarith
+  have hεa : (0:ℝ) < ε * (s - 1) := mul_pos hε ha
+  have hnpos : (0:ℝ) < (n : ℝ) := by
+    have h4 : (0:ℝ) < 4 / (ε * (s - 1)) := by positivity
+    linarith
+  have hquart : (1:ℝ) ≤ ε * (s - 1) / 4 * (n : ℝ) := by
+    rw [div_le_iff₀ hεa] at hn
+    nlinarith [hn]
+  set θl : ℝ := 1 / s - ε * (s - 1) / 4 with hθl
+  set θu : ℝ := 1 / s + ε * (s - 1) / 4 with hθu
+  have hθln : (0:ℝ) ≤ θl * (n : ℝ) := mul_nonneg hlo hnpos.le
+  have hj₀n : ⌈θu * (n : ℝ)⌉₊ ≤ n := by
+    refine Nat.ceil_le.mpr ?_
+    nlinarith [hnpos, hup]
+  have hj₁n : ⌊θl * (n : ℝ)⌋₊ ≤ n := by
+    have hle : θl * (n : ℝ) ≤ (n : ℝ) := by nlinarith [hnpos, hup, hεa]
+    calc ⌊θl * (n : ℝ)⌋₊ ≤ ⌊(n : ℝ)⌋₊ := Nat.floor_le_floor hle
+      _ = n := Nat.floor_natCast n
+  have hj₁j₀ : ⌊θl * (n : ℝ)⌋₊ + 1 ≤ ⌈θu * (n : ℝ)⌉₊ := by
+    have h1 : ((⌊θl * (n : ℝ)⌋₊ : ℕ) : ℝ) ≤ θl * (n : ℝ) := Nat.floor_le hθln
+    have h2 : θu * (n : ℝ) ≤ ((⌈θu * (n : ℝ)⌉₊ : ℕ) : ℝ) := Nat.le_ceil _
+    have hgap : θl * (n : ℝ) + 1 ≤ θu * (n : ℝ) := by
+      rw [hθl, hθu]
+      nlinarith [hquart]
+    have : ((⌊θl * (n : ℝ)⌋₊ : ℕ) : ℝ) + 1 ≤ ((⌈θu * (n : ℝ)⌉₊ : ℕ) : ℝ) := by linarith
+    exact_mod_cast this
+  have hgood : ∀ j, ⌊θl * (n : ℝ)⌋₊ < j → j < ⌈θu * (n : ℝ)⌉₊ →
+      ∀ t ∈ radialBadSet n s ε, ε * (n : ℝ) / 2 ≤ |t - ((j : ℝ) + 1) / (s - 1)| := by
+    intro j hjl hju t ht
+    have htmem : ε * (n : ℝ) ≤ |t - (1 / (s * (s - 1))) * (n : ℝ)| := ht.2
+    have hjlow : θl * (n : ℝ) < (j : ℝ) := (Nat.floor_lt hθln).mp hjl
+    have hjhigh : (j : ℝ) < θu * (n : ℝ) := (Nat.lt_ceil).mp hju
+    have hnum : |((j : ℝ) + 1) - (n : ℝ) / s| < ε * (s - 1) / 2 * (n : ℝ) := by
+      have hsn : (1 / s) * (n : ℝ) = (n : ℝ) / s := by field_simp
+      rw [hθl, sub_mul, hsn] at hjlow
+      rw [hθu, add_mul, hsn] at hjhigh
+      rw [abs_lt]
+      constructor <;> linarith [hquart]
+    have hsplit : ((j : ℝ) + 1) / (s - 1) - (1 / (s * (s - 1))) * (n : ℝ)
+        = (((j : ℝ) + 1) - (n : ℝ) / s) / (s - 1) := by
+      field_simp
+    have hML : |((j : ℝ) + 1) / (s - 1) - (1 / (s * (s - 1))) * (n : ℝ)| < ε * (n : ℝ) / 2 := by
+      rw [hsplit, abs_div, abs_of_pos ha, div_lt_iff₀ ha]
+      nlinarith [hnum]
+    have htri : |t - (1 / (s * (s - 1))) * (n : ℝ)|
+        ≤ |t - ((j : ℝ) + 1) / (s - 1)| + |((j : ℝ) + 1) / (s - 1) - (1 / (s * (s - 1))) * (n : ℝ)| :=
+      abs_sub_le _ _ _
+    linarith
+  exact integral_radialMixtureDensity_le_blocks hs (by positivity)
+    (measurableSet_radialBadSet n s ε) (radialBadSet_subset n s ε) hj₁j₀
+    (by omega) (by omega) hgood
+
+theorem tendsto_chebyshevTerm {s ε : ℝ} (hs : 1 < s) (hε : 0 < ε) :
+    Filter.Tendsto
+      (fun n : ℕ => ((n : ℝ) + 1) / ((s - 1) ^ 2 * (ε * (n : ℝ) / 2) ^ 2))
+      Filter.atTop (nhds 0) := by
+  have ha : (0:ℝ) < s - 1 := by linarith
+  have hinv : Filter.Tendsto (fun n : ℕ => (1:ℝ) / (n : ℝ)) Filter.atTop (nhds 0) :=
+    tendsto_one_div_atTop_nhds_zero_nat
+  have hbase : Filter.Tendsto
+      (fun n : ℕ => (4 / ((s - 1) ^ 2 * ε ^ 2)) * ((1:ℝ) / (n : ℝ) + (1 / (n : ℝ)) * (1 / (n : ℝ))))
+      Filter.atTop (nhds 0) := by
+    have h := (hinv.add (hinv.mul hinv)).const_mul (4 / ((s - 1) ^ 2 * ε ^ 2))
+    simpa using h
+  refine hbase.congr' ?_
+  filter_upwards [Filter.eventually_gt_atTop 0] with n hn
+  have hn0 : (0:ℝ) < (n : ℝ) := by exact_mod_cast hn
+  field_simp
+  ring
+
+/-- **Equation (11).**  The normalized radial mixture concentrates at `L = 1/(s(s-1))`: the mass at
+relative distance at least `eps` from `L n` is a vanishing fraction of the total. -/
+theorem tendsto_radialBadSet_fraction {s ε : ℝ} (hs : 1 < s) (hε : 0 < ε)
+    (hup : 1 / s + ε * (s - 1) / 4 ≤ 1) (hlo : 0 ≤ 1 / s - ε * (s - 1) / 4) :
+    Filter.Tendsto (fun n : ℕ =>
+        (∫ t in radialBadSet n s ε, radialMixtureDensity n s t) /
+          ∫ t in Ioi (0:ℝ), radialMixtureDensity n s t)
+      Filter.atTop (nhds 0) := by
+  have ha : (0:ℝ) < s - 1 := by linarith
+  have hs0 : (0:ℝ) < s := by linarith
+  have hεa : (0:ℝ) < ε * (s - 1) := mul_pos hε ha
+  have hainv : (0:ℝ) < (s - 1)⁻¹ := inv_pos.mpr ha
+  have hup8 : 1 / s + ε * (s - 1) / 8 ≤ 1 := by linarith [hup, hεa]
+  have hone : (1 / s) * s = 1 := by field_simp
+  have hsinv1 : (1:ℝ) / s ≤ 1 := by rw [div_le_one hs0]; linarith
+  have hsinv0 : (0:ℝ) < 1 / s := by positivity
+  have hεas : (0:ℝ) < ε * (s - 1) / 8 * s := by positivity
+  have hle8m : 1 / s - ε * (s - 1) / 8 ≤ 1 := by linarith [hεa]
+  have hplus0 : (0:ℝ) ≤ 1 / s + ε * (s - 1) / 8 := by linarith [hεa]
+  have hlowS : (1 / s - ε * (s - 1) / 8) * s < 1 := by
+    rw [sub_mul, hone]
+    linarith [hεas]
+  have hhighS : 1 < (1 / s + ε * (s - 1) / 8) * s := by
+    rw [add_mul, hone]
+    linarith [hεas]
+  -- the three vanishing pieces
+  have hlow := tendsto_lower_tail_fraction (s := s) (θ := 1 / s - ε * (s - 1) / 4)
+    (θ' := 1 / s - ε * (s - 1) / 8) hs hlo hle8m hlowS (by linarith [hεa])
+  have hhigh := tendsto_upper_tail_fraction (s := s) (θ := 1 / s + ε * (s - 1) / 4)
+    (θ' := 1 / s + ε * (s - 1) / 8) hs hplus0 hup8 hhighS (by linarith [hεa]) hup
+  have hcheb := tendsto_chebyshevTerm hs hε
+  have hmaj := (hlow.add hhigh).add hcheb
+  simp only [add_zero] at hmaj
+  refine squeeze_zero' ?_ ?_ hmaj
+  · filter_upwards with n
+    have htot : 0 < ∫ t in Ioi (0:ℝ), radialMixtureDensity n s t := by
+      rw [integral_radialMixtureDensity_Ioi hs]
+      refine mul_pos hainv (lt_of_lt_of_le (radialMixtureWeight_pos (Nat.zero_le n) hs)
+        (radialMixtureWeight_le_total hs (Nat.zero_le n)))
+    refine div_nonneg ?_ htot.le
+    refine setIntegral_nonneg (measurableSet_radialBadSet n s ε) (fun t ht => ?_)
+    exact radialMixtureDensity_nonneg hs (le_of_lt (radialBadSet_subset n s ε ht))
+  · filter_upwards [(tendsto_natCast_atTop_atTop (R := ℝ)).eventually_ge_atTop
+      (4 / (ε * (s - 1)))] with n hn
+    have hcpos : 0 < ∑ j ∈ Finset.range (n + 1), radialMixtureWeight n s j :=
+      lt_of_lt_of_le (radialMixtureWeight_pos (Nat.zero_le n) hs)
+        (radialMixtureWeight_le_total hs (Nat.zero_le n))
+    have htot : (∫ t in Ioi (0:ℝ), radialMixtureDensity n s t)
+        = (s - 1)⁻¹ * ∑ j ∈ Finset.range (n + 1), radialMixtureWeight n s j :=
+      integral_radialMixtureDensity_Ioi hs
+    have htotpos : 0 < ∫ t in Ioi (0:ℝ), radialMixtureDensity n s t := by
+      rw [htot]; exact mul_pos hainv hcpos
+    have hb := radialBadSet_mass_le hs hε hup hlo hn
+    rw [div_le_iff₀ htotpos, htot]
+    have hexp : ((∑ j ∈ Finset.range (⌊(1 / s - ε * (s - 1) / 4) * (n : ℝ)⌋₊ + 1),
+            radialMixtureWeight n s j) /
+          ∑ j ∈ Finset.range (n + 1), radialMixtureWeight n s j
+        + (∑ j ∈ Finset.Icc ⌈(1 / s + ε * (s - 1) / 4) * (n : ℝ)⌉₊ n,
+            radialMixtureWeight n s j) /
+          ∑ j ∈ Finset.range (n + 1), radialMixtureWeight n s j
+        + ((n : ℝ) + 1) / ((s - 1) ^ 2 * (ε * (n : ℝ) / 2) ^ 2)) *
+        ((s - 1)⁻¹ * ∑ j ∈ Finset.range (n + 1), radialMixtureWeight n s j)
+      = (s - 1)⁻¹ *
+          (∑ j ∈ Finset.range (⌊(1 / s - ε * (s - 1) / 4) * (n : ℝ)⌋₊ + 1),
+              radialMixtureWeight n s j
+            + ∑ j ∈ Finset.Icc ⌈(1 / s + ε * (s - 1) / 4) * (n : ℝ)⌉₊ n,
+              radialMixtureWeight n s j)
+        + ((n : ℝ) + 1) / ((s - 1) ^ 2 * (ε * (n : ℝ) / 2) ^ 2) *
+            ((s - 1)⁻¹ * ∑ j ∈ Finset.range (n + 1), radialMixtureWeight n s j) := by
+      field_simp
+    rw [hexp]
+    exact hb
+
+theorem integrableOn_radialMixtureDensity {n : ℕ} {s : ℝ} (hs : 1 < s) :
+    IntegrableOn (radialMixtureDensity n s) (Ioi (0:ℝ)) :=
+  MeasureTheory.integrable_finsetSum _ (fun j _ => integrableOn_radialMixtureLeg hs j)
+
+theorem radialBadSet_mono {n : ℕ} {s ε ε' : ℝ} (hle : ε' ≤ ε) :
+    radialBadSet n s ε ⊆ radialBadSet n s ε' := by
+  rintro t ⟨ht0, ht⟩
+  refine ⟨ht0, ?_⟩
+  have hn0 : (0:ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n
+  exact le_trans (mul_le_mul_of_nonneg_right hle hn0) ht
+
+/-- **Equation (11), for every relative scale.**  The normalized radial mixture concentrates at
+`L = 1/(s(s-1))`: for every `eps > 0` the mass at relative distance at least `eps` from `L n`
+vanishes as a fraction of the total. -/
+theorem tendsto_radialBadSet_fraction_of_pos {s ε : ℝ} (hs : 1 < s) (hε : 0 < ε) :
+    Filter.Tendsto (fun n : ℕ =>
+        (∫ t in radialBadSet n s ε, radialMixtureDensity n s t) /
+          ∫ t in Ioi (0:ℝ), radialMixtureDensity n s t)
+      Filter.atTop (nhds 0) := by
+  have ha : (0:ℝ) < s - 1 := by linarith
+  have hs0 : (0:ℝ) < s := by linarith
+  have hainv : (0:ℝ) < (s - 1)⁻¹ := inv_pos.mpr ha
+  have hsinv0 : (0:ℝ) < 1 / s := by positivity
+  have hsinv1 : (1:ℝ) / s < 1 := by rw [div_lt_one hs0]; linarith
+  set δ : ℝ := min (4 * (1 - 1 / s) / (s - 1)) (4 * (1 / s) / (s - 1)) with hδ
+  have hδpos : 0 < δ := by
+    rw [hδ]
+    refine lt_min ?_ ?_
+    · apply div_pos (by linarith) ha
+    · apply div_pos (by linarith) ha
+  set ε' : ℝ := min ε δ with hε'
+  have hε'pos : 0 < ε' := lt_min hε hδpos
+  have hε'le : ε' ≤ ε := min_le_left _ _
+  have hε'δ : ε' ≤ δ := min_le_right _ _
+  have hup : 1 / s + ε' * (s - 1) / 4 ≤ 1 := by
+    have h1 : ε' ≤ 4 * (1 - 1 / s) / (s - 1) := le_trans hε'δ (by rw [hδ]; exact min_le_left _ _)
+    rw [le_div_iff₀ ha] at h1
+    linarith
+  have hlo : (0:ℝ) ≤ 1 / s - ε' * (s - 1) / 4 := by
+    have h1 : ε' ≤ 4 * (1 / s) / (s - 1) := le_trans hε'δ (by rw [hδ]; exact min_le_right _ _)
+    rw [le_div_iff₀ ha] at h1
+    linarith
+  have hmain := tendsto_radialBadSet_fraction hs hε'pos hup hlo
+  refine squeeze_zero' ?_ ?_ hmain
+  · filter_upwards with n
+    have htot : 0 < ∫ t in Ioi (0:ℝ), radialMixtureDensity n s t := by
+      rw [integral_radialMixtureDensity_Ioi hs]
+      exact mul_pos hainv (lt_of_lt_of_le (radialMixtureWeight_pos (Nat.zero_le n) hs)
+        (radialMixtureWeight_le_total hs (Nat.zero_le n)))
+    refine div_nonneg ?_ htot.le
+    refine setIntegral_nonneg (measurableSet_radialBadSet n s ε) (fun t ht => ?_)
+    exact radialMixtureDensity_nonneg hs (le_of_lt (radialBadSet_subset n s ε ht))
+  · filter_upwards with n
+    have htot : 0 < ∫ t in Ioi (0:ℝ), radialMixtureDensity n s t := by
+      rw [integral_radialMixtureDensity_Ioi hs]
+      exact mul_pos hainv (lt_of_lt_of_le (radialMixtureWeight_pos (Nat.zero_le n) hs)
+        (radialMixtureWeight_le_total hs (Nat.zero_le n)))
+    refine div_le_div_of_nonneg_right ?_ htot.le
+    refine setIntegral_mono_set
+      ((integrableOn_radialMixtureDensity hs).mono_set (radialBadSet_subset n s ε'))
+      ?_ (Filter.Eventually.of_forall (radialBadSet_mono hε'le))
+    filter_upwards [self_mem_ae_restrict (measurableSet_radialBadSet n s ε')] with t ht
+    exact radialMixtureDensity_nonneg hs (le_of_lt (radialBadSet_subset n s ε' ht))
+
 end
 
 end RHTower

@@ -159,7 +159,7 @@ reconstructs the cancelled pole.
 - [x] logarithmic-window concentration
 - [x] formalize the Lebesgue side `(2)` and the exact modal scale `(8)`–`(10)`
 - [x] formalize the Chebyshev--Stieltjes side `(3)`/`(4)`
-- [ ] formalize the concentration `(11)`
+- [x] formalize the concentration `(11)`
 - [ ] completed signed asymptotic on the window `(12)`
 - [ ] strict negative source witness
 
@@ -261,14 +261,33 @@ The two mechanisms of the concentration `(11)`, both unconditional.
   normalization of `(7)` is exactly the mixture-weight sum of `(8)`.
 - **`integral_radialMixtureLeg_le`** — each leg contributes at most its whole mass `(1/a) c_{n,j}`
   over any subset.  This is the crude bound used on the bad indices.
+- `radialMixtureLeg_mass`, **`integral_radialMixtureLeg_good_le`** — a leg whose mean `(j+1)/a`
+  stays at distance `R` from the set contributes at most an `(n+1)/(a^2 R^2)` fraction of its own
+  mass; this is `gammaLeg_chebyshev` transported to the mixture normalization.
+- **`integral_radialMixtureDensity_le_blocks`** — the block split: cutting the leg sum at `j1` and
+  `j0`, the two outer blocks are bounded by their whole mass and the middle block by Chebyshev,
+  giving
+  `∫_S density <= (1/a)(lower tail + upper tail) + ((n+1)/(a^2 R^2)) * (total mass)`.
+  **This is the last mathematical step of `(11)`.**
 
-What is not formalized: the final assembly of `(11)`.  Every ingredient is now in place — split the
-leg sum at `j1 = floor(theta- n)` and `j0 = ceil(theta+ n)`, bound the two outer blocks by
-`integral_radialMixtureLeg_le` and the middle block by `gammaLeg_chebyshev` at radius `R = eps n/2`
-(legal because a good index keeps the leg mean `(j+1)/a` within `eps n/2` of `L n`), divide by the
-total mass computed by `integral_radialMixtureDensity_Ioi`, and take the limit using the two tail
-theorems together with `(n+1)/(a^2 R^2) = O(1/n)`.  The remaining gates after that are the
-card's own open core.
+- `radialBadSet`, `measurableSet_radialBadSet`, `radialBadSet_subset`, `radialBadSet_mono` — the
+  bad set `{t > 0 : |t - L n| >= eps n}` at relative scale `eps` around the modal ray
+  `L = 1/(s(s-1))`; it shrinks as `eps` grows.
+- **`radialBadSet_mass_le`** — the `eps`-instantiation of the block split, with
+  `theta± = 1/s ± eps a/4`, `j1 = floor(theta- n)`, `j0 = ceil(theta+ n)` and `R = eps n / 2`:
+  a good index keeps the leg mean `(j+1)/a` within `eps n/2` of `L n`, so the middle block is
+  controlled by Chebyshev and the two outer blocks by their whole mass.
+- `tendsto_chebyshevTerm` — the Chebyshev term `(n+1)/(a^2 (eps n/2)^2)` is `O(1/n)` and vanishes.
+- **`tendsto_radialBadSet_fraction`** — equation `(11)` at small relative scale: the bad mass is a
+  vanishing fraction of the total.  The three pieces of `radialBadSet_mass_le` are sent to zero by
+  the two tail theorems (at the intermediate cutoffs `1/s ± eps a/8`, strictly inside the outer
+  ones) and by `tendsto_chebyshevTerm`, and the fraction is squeezed between zero and their sum.
+- `integrableOn_radialMixtureDensity`, **`tendsto_radialBadSet_fraction_of_pos`** — equation `(11)`
+  **for every** `eps > 0`: the bad set is monotone in `eps`, so the small-scale statement transfers
+  to all scales.  **The concentration `(11)` is complete and unconditional.**
+
+The remaining gates are the card's own open core: the completed signed asymptotic on the window
+`(12)` and the strict negative source witness.
 
 ## Log
 
@@ -296,8 +315,17 @@ card's own open core.
   the leg decomposition of its integral.
 - 2026-07-31 — The radial mixture density, its leg decomposition, its total mass in terms of the
   mixture weights, and the crude per-leg bound are formalized.  Every ingredient of `(11)` is now
-  in the corpus; what is left is the block split of the leg sum and the limit.  `(9)`/`(10)` are pure algebra on the corpus's
+  in the corpus; what is left is the block split of the leg sum and the limit.
+- 2026-07-31 — Block split proved.  Every mathematical step of `(11)` is now machine-checked: the
+  mixture mass on a far set is bounded by the two index tails plus a Chebyshev term of relative
+  size `(n+1)/(a^2 R^2)`.  What remains is the `eps`-instantiation, which is arithmetic.  `(9)`/`(10)` are pure algebra on the corpus's
   reverse-Bessel closed form `b(n,j) = (2n-j)!/(2^(n-j)(n-j)! j!)`: the adjacent ratio reduces to
   `(j+1) b_{n,j+1}(2n-j) = 2(n-j) b_{n,j}`, and the threshold `j < n/s` follows because
   `(2n-j)(s-1) < 2(n-j)(s-1/2)` is equivalent to `j s < n`.
-
+- 2026-07-31 — Concentration `(11)` closed.  The `eps`-instantiation is exactly the block split at
+  `theta± = 1/s ± eps a/4` with radius `eps n/2`; the two tail theorems are then applied at the
+  *intermediate* cutoffs `1/s ± eps a/8`, which sit strictly inside the outer ones, so the index
+  gaps grow linearly and the geometric factors vanish.  The arbitrary-`eps` form follows from
+  monotonicity of the bad set in `eps` with no further analysis.  The normalized radial mixture
+  therefore concentrates unconditionally at the modal ray `L = 1/(s(s-1))`; only the card's two
+  open-core gates remain.

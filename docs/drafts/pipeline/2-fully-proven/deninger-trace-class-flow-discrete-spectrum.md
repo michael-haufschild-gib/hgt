@@ -232,6 +232,10 @@ block decomposition.  Axiom audit: `propext, Classical.choice, Quot.sound`.
   compact symmetric smoothing the eigenspaces have trivial orthogonal complement, so the
   finite-dimensional flow-invariant blocks exhaust the space.  This is clause 1 together with the
   spanning half of clause 2.
+- `norm_eq_one_of_unitary_eigenvector` — eigenvalues of a unitary are unimodular.
+- `exists_unimodular_eigenvector` — on a nonzero finite-dimensional complex block a unitary has an
+  eigenvector with unimodular eigenvalue.  Each block therefore contributes flow characters on the
+  unit circle.
 
 ### Route correction
 
@@ -251,7 +255,64 @@ the blocks, finiteness of the number of blocks above any spectral threshold, and
 blocks span.  Clause 1 is complete and clause 3 (compactness of the resolvent) is immediate from
 it; what is left is reading the generator off each block, and the trace formula.
 
-- diagonalizing a unitary on a finite-dimensional complex inner-product space, to read the real
-  generator eigenvalue off each block — clause 2;
-- trace class (Schatten one), which mathlib lacks entirely, for the trace formula `(2)`;
+- the last step of clause 2: turning the unimodular block characters into a *real* generator
+  eigenvalue.  On a common eigenvector line the flow gives a continuous homomorphism
+  `ℝ → Circle`, and one needs `s ↦ exp (i λ s)` for a real `λ`.  **mathlib does not have the
+  classification of continuous characters of `ℝ`** (no continuity-plus-Cauchy-functional-equation
+  result for `AddChar ℝ Circle`), so this has to be built; it also needs a common eigenvector for
+  the whole one-parameter family on a block, not just for a single time.
+
+  `formal/GaloisForLFunctions/HTGeometry/ExponentialCharacter.lean` supplies steps 2 and 3 below.
+  Axiom audit: `propext, Classical.choice, Quot.sound`.
+
+  - `hasDerivAt_cexp_const_mul` — the derivative of `x ↦ exp (c x)` along the real line.
+  - `eq_cexp_of_hasDerivAt` — **uniqueness for `f' = c f`**: a solution normalized at the origin
+    is `x ↦ exp (c x)`.  Proved by differentiating `f(x) · exp(-c x)`, whose derivative vanishes,
+    so it is constant; this sidesteps the missing mathlib lemma entirely.
+  - `re_eq_zero_of_norm_cexp_eq_one` — a unimodular exponential has purely imaginary exponent,
+    i.e. `c = i λ` with `λ` real: the generator eigenvalue.
+  - `hasDerivAt_of_multiplicative` — the group law upgrades differentiability at the origin to
+    differentiability everywhere, with `f' = c · f`.
+  - `eq_cexp_of_multiplicative` — a character differentiable at the origin is `x ↦ exp (c x)`.
+  - `exists_real_generator_of_unimodular_character` — **a unimodular character differentiable at
+    the origin is `x ↦ exp (i λ x)` for a real `λ`**.  This is the generator eigenvalue of a
+    block, i.e. the whole of the remaining clause-2 step apart from item 1 below.
+
+  `formal/GaloisForLFunctions/HTGeometry/ContinuousCharacterDifferentiable.lean` removes the
+  differentiability hypothesis, completing the classification.  Axiom audit:
+  `propext, Classical.choice, Quot.sound`.
+
+  - `hasDerivAt_charPrimitive` — the primitive `F a = ∫ t in 0..a, f t` of a continuous function
+    has derivative `f`.
+  - `exists_charPrimitive_ne_zero` — `F` cannot vanish identically, since its derivative at the
+    origin is `f 0 = 1`.
+  - `charPrimitive_smul_eq` — the averaging identity `A · f s = F (s + a) - F s`, from
+    multiplicativity and additivity of the interval integral.
+  - `exists_hasDerivAt_of_continuous_character` — **continuity alone forces differentiability**:
+    `f` is a difference of translates of the differentiable `F`, divided by `A ≠ 0`.
+  - `exists_real_generator_of_continuous_unimodular_character` — **the classification**: a
+    continuous multiplicative unimodular function on `ℝ` is `x ↦ exp (i λ x)` for a real `λ`.
+    mathlib has no such statement; `λ` is the generator eigenvalue of a block.
+
+  With this, the clause-2 generator step is complete.
+- clause 4, the trace formula `(2)`.  **Correction to an earlier note on this card: trace class is
+  not missing.**  mathlib lacks it, but the corpus already has a full development —
+  `RHTower/SchattenApproximation.lean` (`approxNumber`, `MemSchattenClass`),
+  `HTGeometry/OperatorAbsoluteValue.lean` (`absOp`), `HTGeometry/HilbertSchmidtTrace.lean`
+  (`opTrace`, basis independence on products), `RHTower/TraceNorm.lean`,
+  `RHTower/TraceClassOperatorTrace.lean` (summable diagonal, trace-norm bound, linearity) and
+  `RHTower/TraceClassCyclicity.lean` (`Tr(AT) = Tr(TA)`).  Clause 4 is to be built on those.
+
+  `formal/GaloisForLFunctions/HTGeometry/EigenbasisTrace.lean` starts it.  Axiom audit:
+  `propext, Classical.choice, Quot.sound`.
+
+  - `inner_diag_eq_eigenvalue` — a diagonal entry against an eigenvector is the eigenvalue.
+  - `tsum_inner_diag_eq_tsum_eigenvalues` — **the diagonal sum in an eigenbasis is the sum of the
+    eigenvalues**, i.e. the eigenvalue list with multiplicities.
+  - `opTrace_eq_tsum_eigenvalues` — if the canonical Hilbert basis diagonalizes `T`, its operator
+    trace is that sum.
+
+  What remains for `(2)` is to feed the block eigenbasis into this and identify the eigenvalues of
+  `K_φ` with `φ̂(-λ_j)`, which needs the Fourier transform of the weight against the block
+  characters.
 - the tempered multiplicity measure `(3)` and uniqueness, clause 5.

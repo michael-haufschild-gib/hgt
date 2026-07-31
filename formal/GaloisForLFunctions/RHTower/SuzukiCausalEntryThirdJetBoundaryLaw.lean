@@ -120,7 +120,7 @@ theorem hasDerivAt_suzukiDelayedHingeNearCompletedJet0
           (suzukiOscillatoryKernel z (a - ell) * endpointTrace) =
         suzukiOscillatoryKernel z a * endpointTrace := by
     rw [← mul_assoc, suzukiOscillatoryKernel_mul_sub]
-  convert hLow.sub hTail using 1
+  refine (hLow.sub hTail).congr_deriv ?_
   rw [hEntryPhase]
   simp only [suzukiDelayedHingeNearCompletedJet1,
     suzukiDelayedHingeEntryCurrent]
@@ -146,7 +146,7 @@ theorem hasDerivAt_suzukiDelayedHingeEntryCurrent
           (suzukiOscillatoryKernel z (a - ell) * endpointTrace) =
         suzukiOscillatoryKernel z a * endpointTrace := by
     rw [← mul_assoc, suzukiOscillatoryKernel_mul_sub]
-  convert hMassTerm.add hTail using 1
+  refine (hMassTerm.add hTail).congr_deriv ?_
   rw [hEntryPhase]
   ring
 
@@ -163,7 +163,8 @@ theorem hasDerivAt_suzukiDelayedHingeNearCompletedJet1
       (suzukiDelayedHingeNearCompletedJet2 ell (highMoment ell) z) ell := by
   have hCurrent := hasDerivAt_suzukiDelayedHingeEntryCurrent
     a ell z endpointTrace highMoment mass hMass hHigh
-  convert hCurrent.const_mul (-I * z) using 1
+  refine (hCurrent.const_mul (-I * z)).congr_deriv ?_
+  symm
   simp only [suzukiDelayedHingeNearCompletedJet2]
   calc
     z ^ 2 * suzukiOscillatoryKernel z ell * highMoment ell =
@@ -185,15 +186,19 @@ theorem hasDerivAt_suzukiDelayedHingeNearCompletedJet2
         (highMoment ell) endpointTrace z) ell := by
   have hOsc := hasDerivAt_suzukiOscillatoryKernel z ell
   have hProduct := hOsc.mul hHigh
-  convert hProduct.const_mul (z ^ 2) using 1
-  · ext u
+  have hfun : (fun u => suzukiDelayedHingeNearCompletedJet2 u (highMoment u) z) =
+      fun y => z ^ 2 * ((suzukiOscillatoryKernel z * highMoment) y) := by
+    funext u
     simp only [suzukiDelayedHingeNearCompletedJet2, Pi.mul_apply]
     ring
-  · rw [← mul_assoc (suzukiOscillatoryKernel z ell)
-      (suzukiOscillatoryKernel z (a - ell)) endpointTrace,
-      suzukiOscillatoryKernel_mul_sub]
-    simp only [suzukiDelayedHingeNearCompletedJet3]
-    ring
+  rw [hfun]
+  refine (hProduct.const_mul (z ^ 2)).congr_deriv ?_
+  symm
+  rw [← mul_assoc (suzukiOscillatoryKernel z ell)
+    (suzukiOscillatoryKernel z (a - ell)) endpointTrace,
+    suzukiOscillatoryKernel_mul_sub]
+  simp only [suzukiDelayedHingeNearCompletedJet3]
+  ring
 
 /-! ## Entry-wall classification -/
 

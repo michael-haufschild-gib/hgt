@@ -1,5 +1,4 @@
 import GaloisForLFunctions.RHTower.DirichletLMixedAdditiveZeroAbscissaLaw
-import Mathlib.Data.Finset.NatAntidiagonal
 import Mathlib.RingTheory.PowerSeries.WellKnown
 
 /-!
@@ -66,7 +65,7 @@ multiplies the Hermitian mixed `2(k+1)`-fold convolution by the binomial kernel 
 `(1 - X)^{-(2k+2)}`. -/
 theorem mixedAdditiveConvolutionPower_partialSumSeq (a : ℕ → ℂ) (k N : ℕ) :
     mixedAdditiveConvolutionPower (partialSumSeq a) (k + 1) N =
-      ∑ ij ∈ Finset.antidiagonal N,
+      ∑ ij ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) N,
         mixedAdditiveConvolutionPower a (k + 1) ij.1 *
           ((Nat.choose (2 * k + 1 + ij.2) (2 * k + 1) : ℂ)) := by
   have hconj : (PowerSeries.mk fun n => (starRingEnd ℂ) (partialSumSeq a n)) =
@@ -109,7 +108,7 @@ relates the even convolution of the partial sums to that of the coefficients. -/
 theorem additiveConvolutionPower_partialSumSeq_of_real {a : ℕ → ℂ}
     (ha : ∀ N, (a N).im = 0) (k N : ℕ) :
     additiveConvolutionPower (partialSumSeq a) (2 * (k + 1)) N =
-      ∑ ij ∈ Finset.antidiagonal N,
+      ∑ ij ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) N,
         additiveConvolutionPower a (2 * (k + 1)) ij.1 *
           ((Nat.choose (2 * k + 1 + ij.2) (2 * k + 1) : ℂ)) := by
   rw [← mixedAdditiveConvolutionPower_eq_additiveConvolutionPower_two_mul_of_real

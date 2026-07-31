@@ -98,7 +98,7 @@ theorem complex_shifted_polynomial_pairing_eq_zero_of_sub_one_pow_dvd
     (R := ℂ) (G := G.map (algebraMap ℝ ℂ)) (p := p) N hdivC hp
   have hinj : Function.Injective (algebraMap ℝ ℂ) := Complex.ofReal_injective
   rw [support_map_of_injective G hinj] at h
-  simpa only [coeff_map] using h
+  simpa only [coeff_map, Complex.coe_algebraMap] using h
 
 /-- An order-`m` phase-adapted packet kills the entire value vector of every degree-`2d` finite
 positive phase section along an affine dyadic translate, provided `2d < m`. -/

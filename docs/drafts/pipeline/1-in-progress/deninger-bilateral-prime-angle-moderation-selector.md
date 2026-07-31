@@ -553,3 +553,44 @@ all capstones axiom-clean — passes the moderation selector to the strict all-p
   Every provable gate of this card that does not require the arithmetic source is now
   theorem-backed. What remains is exactly the card's declared open research: sewing the
   *arithmetic* (Xi/Euler-Gamma) source into this rigid moderate skeleton (§6, clauses 3–4).
+
+## 14. Lean status update (2026-07-31, fourth pass): the selector meets the actual divisor
+
+`RHTower/BilateralModerationXiDivisorBridge.lean` — built green, umbrella-registered, zero
+warnings, axiom-clean — joins the bilateral machinery to the multiplicity-exact Xi divisor:
+
+- `riemannHypothesis_iff_forall_xiZero_bilateralModerate` — for any fixed prime `p ≥ 2` and
+  grade `k`, the bilateral jet family of **every actual Xi zero** is moderate iff RH.
+- `riemannHypothesis_iff_forall_xiZero_exists_moderate_eigen` — **conormal conservativity at
+  the divisor ⟺ RH**: every Xi zero carries a nonzero moderate bilateral sewing eigenfamily
+  with its own half-density character iff the Riemann hypothesis holds. Backward: the
+  canonical conormal `e ↦ λ^(-e)` (nonzero, unimodular, exact sewing solution). Forward: the
+  moderation selector per zero, then the divisor endgame.
+
+Both are labelled re-encodings. Their role on this card: the §6 sewing conjecture's clauses
+3–4 assert that the completed arithmetic source construction *supplies* the left-hand sides;
+these equivalences prove that the supply would be exactly RH, with no loss at any single zero,
+any prime, or any grade. The conjecture's target is now a fully formalized interface.
+
+### What remains open on this card (final ledger)
+
+1. **§6, clauses 1–5**: the arithmetic sewing conjecture itself — constructing the moderate
+   boundary functor from the positive prime-power source/Gamma/Poisson data and proving its
+   two chiral restrictions sew with conormal conservativity. This is the card's declared open
+   research core (`[SOURCE SEWING CONJECTURAL]`), the same wall as every RH lane.
+2. **§9, second half**: the strict all-prime *arithmetic* gauge defect — the Ind-limit gauge
+   trivializations against the actual completed Xi (the moderate skeleton is now provably
+   rigid, so this defect must live in the enhanced sector).
+3. Independent audit of Fourier/reflection conventions (external).
+
+Every layer of this card that is provable without the arithmetic source is now formalized,
+axiom-clean, across four modules: `BilateralPrimeAngleModeration`,
+`BilateralPrimeAnglePacketSewing`, `BilateralAllPrimeIndLimit`,
+`BilateralModerationXiDivisorBridge`.
+
+## Log (continued)
+
+- 2026-07-31 (Claude, fourth pass): bridged the selector to the actual divisor
+  (`BilateralModerationXiDivisorBridge.lean`, 2 capstone equivalences + conormal witness
+  lemmas, axiom-clean). The sewing conjecture's target interface is fully formalized; the
+  card now rests exactly on its declared conjectural core.

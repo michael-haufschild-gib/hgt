@@ -24,8 +24,8 @@ theorem summable_evenIndex_mixedAdditive (a : ℕ → ℂ) {r : ℝ}
     Summable (fun q : ℕ => mixedAdditiveConvolutionPower a k (2 * q) * (r : ℂ) ^ (2 * q)) := by
   have hc : Summable (fun N : ℕ => mixedAdditiveConvolutionPower a k N * (r : ℂ) ^ N) :=
     (summable_norm_mixedAdditiveConvolutionPower_mul_pow a (r : ℂ) ha k).of_norm
-  simpa only [Function.comp_apply] using
-    hc.comp_injective (fun x y h => Nat.mul_left_cancel (by norm_num) h)
+  exact hc.comp_injective (i := fun x : ℕ => 2 * x)
+    (fun x y h => Nat.mul_left_cancel (by norm_num) h)
 
 /-- **Radial Hermitian upper bound.**  The squared Hermitian modulus of the `k`-th Cauchy power at
 radius `r` is at most twice the even-index Abel series of the real parts of the mixed additive

@@ -133,7 +133,7 @@ theorem xiBernsteinAffineBase_tendsto_cofinite_one
       1 - xiZeroCopyReciprocalSquare q / (R : ℂ) +
         xiZeroCopyReciprocalSquare q / (R : ℂ) * w)
     cofinite (nhds 1)
-  exact h
+  simpa using h
 
 /-- Above every threshold larger than one, only finitely many affine Bernstein modes remain. -/
 theorem xiBernsteinAffineBase_finite_norm_ge

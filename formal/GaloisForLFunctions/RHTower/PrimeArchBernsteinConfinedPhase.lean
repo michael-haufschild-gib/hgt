@@ -304,7 +304,8 @@ theorem primeArchEndpointBernsteinTotalVariation_le_of_atomAmplitudeBase
               (xiEndpointNormalizedReciprocalSquare q)‖) := by
         rw [Summable.tsum_finsetSum]
         intro i hi
-        simpa only [norm_mul, Real.norm_eq_abs, abs_norm] using
+        simpa only [norm_mul, Real.norm_eq_abs, abs_norm,
+          xiEndpointNormalizedReciprocalSquare] using
           (summable_xiCentralRadiusNormalizedPolynomialTerm
             primeArchEndpointHausdorffRadius
             (bernsteinPolynomial ℝ n i)).norm

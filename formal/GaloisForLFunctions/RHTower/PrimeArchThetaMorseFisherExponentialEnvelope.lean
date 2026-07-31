@@ -151,7 +151,8 @@ theorem thetaCuspFirstAtom_morseScale_div_weight_le_quadratic
         1 + thetaCuspFirstAtomMorseFisherDecayFactor * Real.exp (-2 * x) := hdecay
     _ ≤ 1 + thetaCuspFirstAtomMorseFisherDecayFactor *
         (1 - 2 * x + (2 * x) ^ 2 / 2) := by
-          convert add_le_add_left hfactor 1 using 1 <;> ring
+          rw [show (-2 : ℝ) * x = -(2 * x) by ring]
+          linarith [hfactor]
     _ = thetaCuspFirstAtomMorseFisherQuadraticEnvelope x := by
       unfold thetaCuspFirstAtomMorseFisherQuadraticEnvelope
       ring

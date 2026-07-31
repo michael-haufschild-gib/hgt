@@ -249,3 +249,32 @@ The same theorem also removes the one scope note on
 `3-formalized/not_new_scientific_knowledge/frobenius-collapse-linear-vs-algebraic.md` (where `π`
 transcendental was unavailable, and a Liouville witness was used instead), so it is worth building
 once and reusing.
+
+### Progress 2026-07-31 (later): Step 1 complete, Step 2 scoped
+
+**Step 1 is done and green.**  `formal/GaloisForLFunctions/HTGeometry/TranscendentalExpOne.lean`
+proves `transcendental_exp_one_int : Transcendental ℤ (Real.exp 1)` and
+`transcendental_exp_one : Transcendental ℚ (Real.exp 1)` — Hermite's theorem, which Mathlib does not
+have — `lake build` green and `#print axioms` clean.  It contains the whole reusable skeleton: the
+auxiliary polynomial `expWitnessPoly n = ∏_{j=1}^{n}(X − j)` with `mem_aroots_expWitnessPoly` (each
+`(k : ℂ)` is a root via `Polynomial.mem_aroots`, so the root *set* never has to be computed), the
+prime choice past every bound, the factorial decay via
+`FloorSemiring.tendsto_pow_div_factorial_atTop`, and the mod-`p` contradiction.
+
+**Step 2 scoped, one plumbing obstacle identified.**  The statement wanted is
+
+> for monic `h : ℤ[X]` and any `g : ℤ[X]`, `((h.aroots ℂ).map (fun r ↦ aeval r g)).sum` is an integer.
+
+The mathematical route is settled and every Mathlib ingredient has been located:
+`MvPolynomial.esymmAlgHom_surjective` (fundamental theorem of symmetric polynomials),
+`MvPolynomial.aeval_esymm_eq_multiset_esymm` (the bridge from the `MvPolynomial` elementary symmetric
+functions to the multiset ones), and `Polynomial.coeff_eq_esymm_roots_of_card` (Vieta, giving
+`esymm_j(roots) = ±h.coeff` for monic `h`).  Note also that Mathlib has **no** companion matrix and
+**no** Newton identities file, so those two alternative routes are not available.
+
+The one obstacle is Lean plumbing, not mathematics: indexing the root multiset by `Fin h.natDegree`
+so that `h.aroots ℂ = Multiset.map ρ univ.val`.  `Finset.univ_val_map_eq_ofFn` does not exist under
+that name; the working route is `List.finRange_map_get` together with
+`Multiset.coe_toList` and `Multiset.map_coe`, which is what the next iteration should use.  A first
+attempt at the module was written and removed rather than left broken in the tree; nothing else in
+the repository was touched.

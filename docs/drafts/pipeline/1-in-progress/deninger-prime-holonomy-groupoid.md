@@ -148,3 +148,62 @@ pushout; it is not the arithmetic-cohomology construction.
   the source-defined Poisson--zeta complex and Meyer quotient.
 - 2026-07-27 — Retired the compact adelic two-solenoid globalization:
   dense rational suspension is nonproper on any compact transversal.
+
+## Lean status (2026-07-31): the falsified-item-1 obstruction is formalized
+
+`HTGeometry/PrimeLogPeriodGroupNoGo.lean` — built green, umbrella-registered, zero warnings,
+axiom-clean — formalizes the mathematical core of falsified item 1 unconditionally:
+
+- `exists_primeLog_not_mem_of_fg` — every finitely generated additive subgroup of `ℝ` misses
+  the logarithm of some prime (a f.g. subgroup lies in the `ℚ`-span of its generators; any
+  `n+1` prime logarithms are `ℚ`-independent by `linearIndependent_log_primes`, which the
+  corpus already carried in `Core`).
+- `not_forall_primeLog_mem_of_fg` — hence **no finitely generated period group realizes every
+  prime length**: an ordinary compact finite-dimensional dynamical system, whose closed-orbit
+  lengths lie in a finitely generated period group, cannot carry Deninger's flow. The
+  arithmetic lamination is forced to have non-finitely-generated period structure — the
+  noncompact rational-Witt transversal is load-bearing, as item 5 concluded geometrically.
+
+Corpus-check note: the independence itself was already formalized
+(`Core.linearIndependent_log_primes`, exported via `HTGeometry/OrbitFreeness`); what was
+missing and is now added is the period-group no-go that the card's falsification chain rests
+on. The card's conjecture (the holonomy groupoid construction) remains open research; its
+falsified perimeter is now theorem-backed at items 1 (this module) and 5 (geometric argument,
+paper-level).
+
+## Log (continued)
+
+- 2026-07-31 (Claude): formalized the item-1 obstruction (`PrimeLogPeriodGroupNoGo`,
+  2 theorems, axiom-clean, first-pass compile). Deep corpus check first prevented a duplicate
+  build of the prime-log independence.
+
+## Lean status (2026-07-31, second pass): the item-5 obstruction is formalized, strengthened
+
+`HTGeometry/RationalScalingReturnNoGo.lean` — built green, umbrella-registered, zero warnings,
+axiom-clean — formalizes the mathematical core of falsified item 5, abstracted so that **no
+choice of compact solenoid can evade it**:
+
+- `rationalScaling_interval_meets_iff` — the exact return window this card displays: for
+  `q > 0`, the scaled block `q·[1,2]` meets `[1,2]` iff `q ∈ [1/2, 2]`.
+- `infinite_rationalScaling_returns` — infinitely many positive rationals lie in the window
+  (`1 + 1/(n+1)`).
+- `compactFactor_rationalScaling_returns_infinite` — for **any** nonempty compact space `X`,
+  the diagonal rational scaling on `X × ℝ` returns the compact block `X × [1,2]` to itself for
+  infinitely many positive rationals: the finite-return condition of proper discontinuity
+  fails on a single compact witness. The card's specific `(𝔸_ℚ/ℚ)²` two-solenoid is one
+  instance; the abstraction proves the stronger moral — the scaling direction dooms
+  properness regardless of the compact factor, so the noncompact rational-Witt transversal is
+  load-bearing.
+
+The card's falsified perimeter is now theorem-backed at items 1 (`PrimeLogPeriodGroupNoGo`:
+no f.g. period group holds every prime length) and 5 (this module). Together they pin the
+conjecture's shape from both sides: the period structure cannot be finitely generated, and
+the scaling direction cannot be compactified away. The construction conjecture itself
+(`DAC_PRIME_HOLONOMY_GROUPOID`) remains the programme's open core.
+
+## Log (continued)
+
+- 2026-07-31 (Claude, second pass): formalized the item-5 non-properness core
+  (`RationalScalingReturnNoGo`, 3 theorems, axiom-clean), strengthened to arbitrary compact
+  factors. The two formalizable no-gos of the falsification chain are now both in Lean; the
+  remaining card content is the construction conjecture (open research).

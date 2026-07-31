@@ -71,22 +71,22 @@ theorem xiSquaredSeamDyadicHalfPlane_of_tailFromSix
     (GaloisForLFunctions.complexDyadicHalfPlane_iff_nonnegativeReal
       (z ^ 64)).mp h64tail
   have h16re : 0 < (z ^ 16).re := by
-    simpa only [z] using xiSquaredSeamDyadic_rung_four_pos q
+    have hr := xiSquaredSeamDyadic_rung_four_pos q; norm_num at hr; simpa only [z] using hr
   have h16im : (z ^ 16).im = 0 := by
     apply complex_im_eq_zero_of_re_pos_of_pow_four_nonnegativeReal h16re
     · simpa only [show (z ^ 16) ^ 4 = z ^ 64 by ring] using h64real.1
     · simpa only [show (z ^ 16) ^ 4 = z ^ 64 by ring] using h64real.2
   have h8im : (z ^ 8).im = 0 := by
     apply complex_im_eq_zero_of_re_pos_of_sq_im_eq_zero
-      (by simpa only [z] using xiSquaredSeamDyadic_rung_three_pos q)
+      (by have hr := xiSquaredSeamDyadic_rung_three_pos q; norm_num at hr; simpa only [z] using hr)
     simpa only [show (z ^ 8) ^ 2 = z ^ 16 by ring] using h16im
   have h4im : (z ^ 4).im = 0 := by
     apply complex_im_eq_zero_of_re_pos_of_sq_im_eq_zero
-      (by simpa only [z] using xiSquaredSeamDyadic_rung_two_pos q)
+      (by have hr := xiSquaredSeamDyadic_rung_two_pos q; norm_num at hr; simpa only [z] using hr)
     simpa only [show (z ^ 4) ^ 2 = z ^ 8 by ring] using h8im
   have h2im : (z ^ 2).im = 0 := by
     apply complex_im_eq_zero_of_re_pos_of_sq_im_eq_zero
-      (by simpa only [z] using xiSquaredSeamDyadic_rung_one_pos q)
+      (by have hr := xiSquaredSeamDyadic_rung_one_pos q; norm_num at hr; simpa only [z] using hr)
     simpa only [show (z ^ 2) ^ 2 = z ^ 4 by ring] using h4im
   have him : z.im = 0 := by
     apply complex_im_eq_zero_of_re_pos_of_sq_im_eq_zero

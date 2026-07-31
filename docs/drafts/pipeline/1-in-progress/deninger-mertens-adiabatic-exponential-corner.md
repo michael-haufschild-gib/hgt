@@ -490,3 +490,22 @@ imports.
   cycles are parent theory.  Replaced the redundant “new coefficient
   sheaf” target by an enhanced lift of the already-constructed
   Tate--Milnor/Calderón derived intersection.
+
+## Cross-card discharge note (2026-07-31)
+
+The gate "construct its strict countable-prime Ind-limit" is discharged **at the moderate
+level** by the moderation-selector card's formalized layer
+(`RHTower/BilateralAllPrimeIndLimit.lean`): the strict countable-prime Ind-limit of the
+bilateral gauge structure exists, suffers no countable-product moderation loss
+(`allPrimeModerate_conormalFamily_iff`), and is rigid — the simultaneous sewing solution
+space is one-dimensional (`allPrimeSewing_rigidity`), so the cofinal gauge trivializations
+create no spurious moderate classes. What this card's rung still demands beyond that is the
+**enhanced** (exponential/transseries) sector lift of the Tate–Milnor/Calderón intersection —
+the part that must carry the flat-but-nonzero WKB data of face D, which the moderate sector
+provably cannot see. The remaining ladder (moderate/rapid boundary, conservativity,
+Green–Stokes residue, dilation isometry, RH) is the programme's declared conjectural core,
+shared with `deninger-bilateral-prime-angle-moderation-selector` §6 and
+`deninger-two-halves-do-not-compose` §10.
+
+- 2026-07-31 — Cross-linked the moderate-sector Ind-limit discharge; verified
+  `DeningerMertensAdiabaticCorner.lean` present, umbrella-registered (12 theorems).

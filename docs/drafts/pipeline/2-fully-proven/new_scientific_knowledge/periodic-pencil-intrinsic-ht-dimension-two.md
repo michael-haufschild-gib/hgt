@@ -735,3 +735,69 @@ With these, an operator `𝒟 = ∑_r δ^r P_r(T)` can be pushed through the fac
 sum over `r` splits, and each summand is a `phaseComp` to which
 `dirDeriv_iterate_phaseComp` applies.  The remaining step is the coefficient bookkeeping that feeds
 `expPolySum_eq_zero`.
+
+## Lean progress — iterated derivations of a pencil carrier
+
+Two further modules (both axiom-clean, build green, umbrella-registered).
+
+`GaloisForLFunctions/HTGeometry/PencilIteratedDerivation.lean`:
+
+- `contDiff_eulerOp_iterate` — iterates of the Euler operator stay smooth;
+- `differentiable_linearMap`, `differentiable_phaseComp` — a linear form on `ℂ^d` is differentiable
+  (through `LinearMap.toContinuousLinearMap`), hence so is every phase composite;
+- `dirDeriv_phaseComp_scaled` — one derivation step on an already scaled composite, obtained from
+  the iteration lemma rather than by repeating its computation;
+- **`dirDeriv_iterate_sum_phaseComp`** — an `r`-fold derivation of a *finite sum* of phase
+  composites is again such a sum, with inner functions `(L_i w)^r · Θ^r`.
+
+`GaloisForLFunctions/HTGeometry/PencilOperatorKernelCore.lean`:
+
+- `iteratedDeriv_finset_sum` — iterated derivatives commute with finite sums;
+- **`seedCarrierPoly_eq_sum_phaseComp`** — a pencil carrier *is* a sum of phase composites, one per
+  facet, with inner function the dilate combination of the polynomial's operator;
+- **`dirDeriv_iterate_seedCarrierPoly`** — hence every iterated derivative of a carrier is again
+  such a sum, explicitly;
+- `differentiable_dirDeriv_iterate_seedCarrierPoly` — consequently every iterated derivative of a
+  carrier is entire.  This is the fact that makes the next step legitimate without any
+  several-variable analyticity theory: the iterates are *explicitly* sums of composites, not merely
+  abstract derivatives;
+- **`dirDeriv_iterate_shiftAlgHom`** — iterated derivations commute with the whole shift algebra.
+
+Together these let the facet isolation of `PencilSRRealization` be applied to an operator
+`𝒟 = ∑_r δ^r P_r(T)`: the isolating difference operator can be moved across every `δ^r`, and after
+isolation the object is a single phase composite whose inner function is
+`∑_r (L_A w)^r · Θ^r (Ψ_{A, D·P_r})`.  Its `m`-th derivative at the origin is
+`∑_r ((m·L_A w))^r · symb_A(m, D·P_r)`, which is what `expPolySum_eq_zero` consumes.
+
+## Lean progress — the operator symbol identity
+
+`GaloisForLFunctions/HTGeometry/PencilOperatorSymbol.lean` (axiom-clean, build green,
+umbrella-registered) runs the facet isolation with a full operator
+`𝒟 = ∑_{r<n} δ^r P_r(T)` and extracts the symbol identity.
+
+- `inner_iteratedDeriv_eq_zero_of_const` — if a phase composite `Ψ ∘ exp ∘ L` is constant and `L` is
+  onto, then `exp ∘ L` covers `ℂ∖{0}`, so `Ψ` is constant on the punctured plane, hence entire and
+  constant, hence all its Taylor coefficients of positive order vanish.
+- **`symbHom_combination_eq_zero`** — if
+  `∑_{r<n} δ_w^r (P_r(T) F)` is constant, then for every facet `A` and every `m ≥ 1`
+
+  ```text
+  ∑_{r<n} (m · L_A w)^r · symb_A(m, P_r) = 0.
+  ```
+
+The proof chains the whole apparatus built above: choose one escaping vertex per other facet
+(antichain) and multiply by their product `D`; the shift operator commutes with every `δ^r`
+(`dirDeriv_iterate_shiftAlgHom`, whose differentiability side condition is supplied by
+`differentiable_dirDeriv_iterate_seedCarrierPoly`), so the shifted operator carrier is still
+constant; isolation collapses it to a single phase composite with inner function
+`∑_r (L_A w)^r · Θ^r (Ψ_{A, D·P_r})`; the coefficient extraction uses `iteratedDeriv_finset_sum`,
+`iteratedDeriv_const_mul'`, `iteratedDeriv_eulerOp_iterate_zero` and
+`iteratedDeriv_dilateSumHom_zero`; and finally the symbol of `D` — a product of factors
+`exp(m·L_A(ω(sel B))) − 1` with `sel B ∈ A` — is nonzero by `ratio_pow_ne_one`, so it divides out.
+
+This is the `ℂ[δ]`-coefficient analogue of the symbol vanishing that drove `(8)`.  What remains for
+the `ℂ[δ]`-kernel is purely polynomial bookkeeping: substitute
+`symb_A(m, P_r) = ∑_ν coeff ν (Qt_r) · Z_ν^m` over a common exponent set, so the identity becomes
+`∑_ν p_ν(m) Z_ν^m = 0` with `p_ν(X) = ∑_r coeff ν (Qt_r) (L_A w)^r X^r`, and apply
+`expPolySum_eq_zero`; with `L_A w ≠ 0` this forces every `coeff ν (Qt_r) = 0`, i.e. every
+`P_r ∈ I_Δ`.

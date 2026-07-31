@@ -219,6 +219,22 @@ theorem exists_unimodular_eigenvector {F : Type*} [NormedAddCommGroup F]
   have heig : V x = mu • x := Module.End.mem_eigenspace_iff.mp hx.1
   exact ⟨x, mu, hx.2, heig, norm_eq_one_of_unitary_eigenvector V hx.2 heig⟩
 
+/-! ## The smoothing acts on a flow character by the weight's transform -/
+
+/-- **Eigenvalue of the smoothing on a flow eigenvector.**  If the flow acts on `x` through a
+scalar character `χ`, then `x` is an eigenvector of every smoothing, with eigenvalue the integral
+of the weight against the character.  For `χ t = exp (i λ t)` this is the Fourier transform of the
+weight at the spectral point. -/
+theorem flowSmoothing_eigenvector [IsScalarTower ℝ 𝕜 H] (U : UnitaryFlow 𝕜 H) (phi : ℝ → ℝ)
+    {x : H} {chi : ℝ → 𝕜} (hchar : ∀ t, U.op t x = chi t • x) :
+    flowSmoothing U phi x = (∫ t, phi t • chi t) • x := by
+  rw [flowSmoothing]
+  have hpt : ∀ t : ℝ, phi t • U.op t x = (phi t • chi t) • x := by
+    intro t
+    rw [hchar t, smul_assoc]
+  rw [integral_congr_ae (Filter.Eventually.of_forall hpt)]
+  exact integral_smul_const _ x
+
 /-! ## Block decomposition from a compact commuting smoothing -/
 
 omit [NormedSpace ℝ H] in

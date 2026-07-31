@@ -1843,3 +1843,54 @@ successive rounds of dropping modules reporting `incompatible header` did not co
 concurrent builds are rewriting the large `RHTower` object files while the scan reads them.  The
 area-wide `RHTower` measurement is therefore deferred rather than reported; nothing about it is
 claimed here.
+
+### `RHTower` is unbuildable: a systematic post-bump repair wave
+
+The `RHTower` umbrella fails, and not because of one lane's edit.  Four distinct modules were
+repaired this round, each a different mechanical failure class, and the chain continues:
+
+* `MobiusBinaryExcursion`, `HermitianMertensIntegrationLaw` — **name shadowing**.  `Finset.antidiagonal`
+  in these files resolves to the Hahn-series `Set.IsPWO` antidiagonal, not the `ℕ` one; the sibling
+  `MobiusLaplaceAdditiveTriangle` already writes the qualified
+  `Finset.HasAntidiagonal.antidiagonal (A := ℕ)`, which is the fix.  Adding
+  `Mathlib.Data.Finset.NatAntidiagonal` does **not** help — the ambiguity, not a missing instance, is
+  the cause.
+* `EvenIndexHermitianAbelBound` — **instance path**.  `Summable.comp_injective` now lands on
+  `addCommGroup.toAddCommMonoid` while the goal carries `instAddCommMonoid`; `simpa only` cannot
+  cross that, `exact` can (the two are defeq).  Same shape as the recorded `HasDerivAt` workaround.
+* `XiSquaredSeamTailFromSixtyFour` — **numeral normalization**.  The dyadic rung lemmas state
+  exponents as `2 ^ k` while the goals carry `16`, `8`, `4`, `2`; `simp only` no longer reduces the
+  power, so each use needs a `norm_num` pass on the hypothesis first.
+
+Still failing after those four: `XiCTaylorThetaTailPhaseAdaptedProuhetFiniteEdge`,
+`PrimeArchBernsteinExponentialPhase`, `SuzukiCausalEntryThirdJetBoundaryLaw`, and whatever the build
+reaches after them.  The failures are all of the same three mechanical kinds, which points at a
+toolchain or mathlib bump rather than at in-progress research edits.
+
+**Consequence for this card**: the `RHTower` premise scan cannot run until the area builds, and the
+earlier attempt to scan from object files instead failed on a moving target.  The `RHTower`
+measurement stays deferred; no figure is claimed.
+
+### Repair wave, round two: six modules green, one left standing
+
+Three more classes fixed, each verified with `lake env lean`:
+
+* `XiCTaylorThetaTailPhaseAdaptedProuhetFiniteEdge` — **coercion spelling**.  `coeff_map` now leaves
+  `algebraMap ℝ ℂ (G.coeff x)` where the goal carries `↑(G.coeff i)`; adding
+  `Complex.coe_algebraMap` to the `simpa only` set closes it.
+* `PrimeArchBernsteinExponentialPhase` — the limit point `1 - 0 + 0 * w` is no longer reduced to `1`
+  by `exact`; `simpa using h` is.
+* `SuzukiCausalEntryThirdJetBoundaryLaw` — **not fixed**, and deliberately restored to its original
+  text.  `convert … using 1` on a `HasDerivAt` now emits an instance goal
+  `addCommGroup = instNormedAddCommGroup.toAddCommGroup` *before* the value goal, so the following
+  `rw` lands on the wrong goal.  Two of its four sites adjust only the derivative value and are fixed
+  by `HasDerivAt.congr_deriv`; the other two adjust the *function* as well, and rewriting those needs
+  the intended function identity written out, which is more than a mechanical edit.  Rather than
+  leave a half-converted file, every edit was reverted: the module is exactly as it was found.
+
+Running total for the wave: `MobiusBinaryExcursion`, `HermitianMertensIntegrationLaw`,
+`EvenIndexHermitianAbelBound`, `XiSquaredSeamTailFromSixtyFour`,
+`XiCTaylorThetaTailPhaseAdaptedProuhetFiniteEdge`, `PrimeArchBernsteinExponentialPhase` — six green.
+`SuzukiCausalEntryThirdJetBoundaryLaw` is the next module to take, with the diagnosis above; after it
+the build will reveal the rest.  The four failure classes now on record — name shadowing, instance
+path, numeral normalization, `convert` goal order — cover everything seen so far.
