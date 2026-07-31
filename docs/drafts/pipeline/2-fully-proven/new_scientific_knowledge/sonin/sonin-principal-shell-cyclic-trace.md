@@ -468,6 +468,25 @@ The dual annihilation law supplies the first handle on that side: vectors *band-
 spectral family whose physical support is unconstrained.  Whether the dilation moves that family
 into the `(a,b)` layer is the next thing to test.
 
+**Method to use.**  Do not look for a witness vector.  The corpus already contains a working proof
+of exactly this kind of nonvanishing, for the bilateral aperture holonomy
+(`evenSoninBilateralApertureHolonomy_ne_zero`), and its shape is:
+
+1. assume the operator vanishes;
+2. turn that into a *commutation* of the Sonin projection with a dilation;
+3. a commuting projection has zero dilation cross-boundary;
+4. contradict `evenCentralSoninDilationCorner_not_isCompactOperator`, since `0` is compact.
+
+Step 2 is the whole problem for `Z`: the holonomy is a one-aperture object and gives `Q` commuting
+with the dilation by `r²` directly, whereas `Z = 0` is a three-aperture statement
+`Q_a D_r Q_b - Q_a D_r Q_c - Q_b D_r Q_b + Q_b D_r Q_c = 0` with no evident commutator form.
+Finding a specialization of the chamber in which it collapses to a commutation is the concrete
+next task, and it is elementary algebra, not analysis.
+
+Note also that `Z` commutes with the cosine Fourier involution
+(`evenFourierTransform_evenSoninApertureSuccessiveLayerTransition`), so any such argument may
+assume Fourier evenness throughout.
+
 ### Proof
 
 Induction on the chain length from the three-point law, with the chamber hypothesis inherited
@@ -618,6 +637,11 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-07-31 — full-tree verification: both area umbrellas build (`RHTower` 14191 jobs,
+  `HTGeometry` 12086 jobs) and `formal_tools.py lint` passes, so this session's modules integrate
+  cleanly.  Also found the corpus's own nonvanishing technique (vanishing -> commutation -> zero
+  cross-boundary -> contradiction with a noncompact corner) and recorded it as the method for the
+  coupling question, replacing the vaguer "needs a Fourier-tail estimate" note.
 - 2026-07-31 — dual annihilation added and a self-duplication corrected: the physical-band
   annihilation is one line from the corpus's `Q_c A_c = 0`, which the previous session's thirty-line
   proof had not used.  The Fourier dual then comes free from `Q_c R_c = 0` and opens the spectral
