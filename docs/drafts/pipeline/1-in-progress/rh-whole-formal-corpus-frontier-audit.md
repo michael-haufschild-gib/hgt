@@ -443,3 +443,100 @@ have edge accumulation or lose uniform almost periodicity/remainder separation.
 Status: `[CONJECTURE; PAPER PROOF SKETCH; NOVELTY AND EXACT RHT INSTANTIATION UNAUDITED]`.  Retained
 as a positive survivor while the remaining mechanism/wall matrix is audited; not selected as the
 main route.
+
+## Whole-declaration transfer census and correction
+
+The first 471-interface count was not the complete RH-equivalence census.  It counted only exact
+RH-equivalent interfaces for which the initial capability vocabulary found at least one typed HT
+producer.  The complete source parse contains 686 RH-equivalent interfaces in 340 RHTower
+modules; 441 of those interfaces required expansion of at least one named `Prop` definition before
+their source content became visible.
+
+The compiler-derived 19 minimal cuts were then quotiented by mathematical source content, rather
+than declaration names, to ten primitive families:
+
+1. completed prime--Gamma sign;
+2. prime--archimedean source positive form;
+3. Hedenmalm/Weil positive form;
+4. Möbius critical cancellation;
+5. Sonin-to-prime--archimedean value transfer;
+6. dyadic sharp prime-window subpower;
+7. Suzuki/Hermite--Biehler;
+8. moving-polynomial even factorization;
+9. Xi Taylor raw core current;
+10. Arakelov integral/contractive divisor mirror.
+
+This quotient is a current compiled-cache frontier, not a claim that later source-defined walls
+such as the concrete Hedenmalm center-mixed current or Connes ground-state construction are
+subsumed.  Those source locks must be added explicitly in the next registry revision.
+
+The audit now retains every HTGeometry declaration before asking about RHTower use.  At the
+2026-07-31 moving-worktree snapshot it records 35,288 declarations:
+
+| declaration kind | count |
+|---|---:|
+| theorem | 26,294 |
+| lemma | 271 |
+| definition | 7,659 |
+| abbreviation | 307 |
+| instance | 591 |
+| structure | 149 |
+| inductive | 17 |
+
+Only after normalizing each declaration's binders, conclusion, and direct definition body does the
+audit attach compatible primitive walls.  Only after that relevance pass does it annotate direct
+RHT evidence:
+
+| direct RHT evidence | declarations |
+|---|---:|
+| exact identifier mentioned | 2,480 |
+| module directly imported but identifier not mentioned | 5,039 |
+| no direct use evidence | 27,769 |
+
+There are 4,412 theorem/lemma declarations with a typed primitive-wall capability and no direct
+RHT use evidence, spread across all fourteen HT mechanism lanes.  This is a search reservoir, not
+4,412 candidate proofs: generic positivity, compactness, or factorization consumers dominate it.
+The application audit must discharge exact source instantiation and hypothesis direction theorem
+by theorem.  Imports and novelty never decide relevance.
+
+## Xi Taylor divisor-orientation hostile closure
+
+The complete HT unit-circle/divisor mechanism is already instantiated on the actual Xi Taylor
+product fibres.  `XiCTaylorThetaTailProductFiberPhaseOrientation` identifies every fixed positive
+product fibre with a complete divisor antidiagonal and imports
+`MultiplicativeCenteredDivisorOrientation` to prove strict negative upper current for every
+nontrivial fibre.
+
+This does not orient the raw Taylor core.  The exact RHT decomposition proceeds further:
+
+```text
+J(core)
+ = (1/4) * sum_k C_k,
+
+C_k
+ = sum_(mn=k) Im(D_m * conjugate(V_n)),
+```
+
+with absolute convergence and divisor-reflection collapse to the unsymmetrized product-fibre
+coefficient.  Positive-half-line translation then produces nested swept windows.  Abel/Prouhet/
+Haar refinements control all diagonal fibre currents and finite translation edges, but the
+off-diagonal Hermitian block current survives.  The final conservation theorem proves that every
+attempt to make the Haar top row small transfers the same current into the surviving translation
+term:
+
+```text
+finiteArithmeticRemainderJointSublinearUpper
+  <-> XiCTaylorThetaTailCoreCurrentSublinearUpper
+  <-> RiemannHypothesis.
+```
+
+Therefore no unused consequence of finitePhase fidelity, mixture log-concavity, unit-circle root
+orientation, or complete divisor factorization closes this route.  Static phase dispersion does
+not sign a derivative cross-current; termwise negative current is not preserved by summation.
+
+Positive survivor: the full continuous theta-density completion is upper-zero-free and has
+unconditional current contraction, so the entire arithmetic product-fibre current cancels in
+aggregate.  Exact transfer by this zero-free factor localizes the only remaining divisor to the
+quotient `XiC/F`; the hostile Wronskian limit proves that quotient retains exactly the Xi divisor.
+This is a sharp gauge-localization theorem, not a proof shortcut.  Status:
+`[FORMALIZED IN RHTOWER; DIRECT HT DIVISOR BRIDGE EXHAUSTED]`.

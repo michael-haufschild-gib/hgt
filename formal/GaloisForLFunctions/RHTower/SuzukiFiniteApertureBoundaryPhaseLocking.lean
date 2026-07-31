@@ -148,6 +148,90 @@ theorem tendsto_apertureResolvent_of_phaseLock
     Tendsto (fun i => (c • (P i - Ca i)) x) atTop (𝓝 (cayleyResolvent c C x)) :=
   tendsto_cayleyResolvent c hP hC x
 
+/-! ## Theorem 4.2: necessity of the phase lock -/
+
+/-- The finite boundary block in transported coordinates. -/
+theorem apertureBoundaryBlock_apply (Ep Em : ι → E →L[ℂ] E) (ep em : E) (zeta : ι → ℂ) (i : ι)
+    (y : E) :
+    apertureBoundaryBlock Ep Em ep em zeta i y
+      = (zeta i * inner ℂ (lineTransport (Ep i) ep) y) • lineTransport (Em i) em := by
+  rw [apertureBoundaryBlock, smul_apply, rankOneTransport_apply, smul_smul]
+
+theorem inner_self_eq_one {v : E} (hv : ‖v‖ = 1) : (inner ℂ v v : ℂ) = 1 := by
+  rw [inner_self_eq_norm_sq_to_K, hv]
+  norm_num
+
+/-- **Theorem 4.2, necessity.**  If the boundary parts of arbitrary finite self-adjoint extensions
+converge to the global boundary part, their phases converge to the global phase.  The identity is
+read off at the deficiency image of the global transported vector, so only finite boundary data is
+tested. -/
+theorem tendsto_phase_of_tendsto_apertureBoundary
+    {Ep Em : ι → E →L[ℂ] E} {ep em : E} {zeta : ι → ℂ} {z : ℂ}
+    (hep : ‖ep‖ = 1) (hem : ‖em‖ = 1) (hbound : ∀ i, ‖zeta i‖ ≤ 1)
+    (hEp : Tendsto (fun i => Ep i ep) atTop (𝓝 ep))
+    (hum : Tendsto (fun i => lineTransport (Em i) em) atTop (𝓝 em))
+    (hlim : Tendsto (fun i => apertureBoundaryBlock Ep Em ep em zeta i (Ep i ep)) atTop
+      (𝓝 (globalBoundaryBlock ep em z ep))) :
+    Tendsto zeta atTop (𝓝 z) := by
+  have hup : Tendsto (fun i => lineTransport (Ep i) ep) atTop (𝓝 ep) :=
+    tendsto_lineTransport (𝕜 := ℂ) Ep hep hEp
+  have hglobal : globalBoundaryBlock ep em z ep = z • em := by
+    rw [globalBoundaryBlock, smul_apply, rankOneTransport_apply, inner_self_eq_one hep, one_smul]
+  rw [hglobal] at hlim
+  have hfin : Tendsto (fun i => (zeta i * inner ℂ (lineTransport (Ep i) ep) (Ep i ep))
+      • lineTransport (Em i) em) atTop (𝓝 (z • em)) := by
+    refine hlim.congr fun i => ?_
+    rw [apertureBoundaryBlock_apply]
+  -- pair against the global minus vector
+  have hpair := Filter.Tendsto.inner (𝕜 := ℂ) (tendsto_const_nhds (x := em)) hfin
+  have hrhs : (inner ℂ em (z • em) : ℂ) = z := by
+    rw [inner_smul_right, inner_self_eq_one hem, mul_one]
+  rw [hrhs] at hpair
+  have hprod : Tendsto (fun i => zeta i * (inner ℂ (lineTransport (Ep i) ep) (Ep i ep)
+      * inner ℂ em (lineTransport (Em i) em))) atTop (𝓝 z) := by
+    refine hpair.congr fun i => ?_
+    rw [inner_smul_right]
+    ring
+  -- the correction factor tends to one
+  have hc : Tendsto (fun i => (inner ℂ (lineTransport (Ep i) ep) (Ep i ep) : ℂ)) atTop (𝓝 1) := by
+    have := Filter.Tendsto.inner (𝕜 := ℂ) hup hEp
+    rwa [inner_self_eq_one hep] at this
+  have hw : Tendsto (fun i => (inner ℂ em (lineTransport (Em i) em) : ℂ)) atTop (𝓝 1) := by
+    have := Filter.Tendsto.inner (𝕜 := ℂ) (tendsto_const_nhds (x := em)) hum
+    rwa [inner_self_eq_one hem] at this
+  have hcorr : Tendsto (fun i => (inner ℂ (lineTransport (Ep i) ep) (Ep i ep) : ℂ)
+      * inner ℂ em (lineTransport (Em i) em)) atTop (𝓝 1) := by
+    simpa using hc.mul hw
+  -- split off the correction
+  have hsplit : ∀ i, zeta i - z
+      = (zeta i * ((inner ℂ (lineTransport (Ep i) ep) (Ep i ep) : ℂ)
+          * inner ℂ em (lineTransport (Em i) em)) - z)
+        + zeta i * (1 - (inner ℂ (lineTransport (Ep i) ep) (Ep i ep) : ℂ)
+          * inner ℂ em (lineTransport (Em i) em)) := by
+    intro i
+    ring
+  have h1 : Tendsto (fun i => zeta i * ((inner ℂ (lineTransport (Ep i) ep) (Ep i ep) : ℂ)
+      * inner ℂ em (lineTransport (Em i) em)) - z) atTop (𝓝 0) := by
+    simpa using hprod.sub (tendsto_const_nhds (x := z))
+  have h2 : Tendsto (fun i => zeta i * (1 - (inner ℂ (lineTransport (Ep i) ep) (Ep i ep) : ℂ)
+      * inner ℂ em (lineTransport (Em i) em))) atTop (𝓝 0) := by
+    have hgap : Tendsto (fun i => ‖1 - (inner ℂ (lineTransport (Ep i) ep) (Ep i ep) : ℂ)
+        * inner ℂ em (lineTransport (Em i) em)‖) atTop (𝓝 0) := by
+      have := (tendsto_const_nhds (x := (1 : ℂ))).sub hcorr
+      simpa using this.norm
+    refine tendsto_zero_iff_norm_tendsto_zero.mpr ?_
+    refine squeeze_zero (fun i => norm_nonneg _) (fun i => ?_) hgap
+    rw [norm_mul]
+    have := mul_le_mul_of_nonneg_right (hbound i)
+      (norm_nonneg (1 - (inner ℂ (lineTransport (Ep i) ep) (Ep i ep) : ℂ)
+        * inner ℂ em (lineTransport (Em i) em)))
+    simpa using this
+  have hzero : Tendsto (fun i => zeta i - z) atTop (𝓝 0) := by
+    have := h1.add h2
+    rw [add_zero] at this
+    exact this.congr fun i => (hsplit i).symm
+  simpa using hzero.add_const z
+
 end
 
 end GaloisForLFunctions.RHTower

@@ -54,6 +54,22 @@ hat O_alpha(z)=-i z F(z)/(alpha^2-z^2).                   (4)
 Both quotients are entire: the apparent poles at `z=alpha` and `z=-alpha` are removed by
 `F(alpha)=F(-alpha)=0`.
 
+## Theorem: each parity channel retains the first conormal
+
+The centered origin is not a Xi zero.  Hence, at any zero `alpha`, the reflected point
+`-alpha` is distinct from `alpha`.  Evaluation of `(3)` at the base divisor point gives
+
+```text
+hat E_alpha(alpha)=hat O_alpha(alpha)
+  = i XiC'(alpha)/2.                                    (4a)
+```
+
+Indeed, the based quotient has removable value `i XiC'(alpha)`, while the quotient based at
+`-alpha` vanishes at the distinct zero `alpha`.  Consequently, if `alpha` is simple, both the
+even and odd folds are separately nonzero and each retains exactly half of the first Xi conormal.
+Reflection folding therefore does not pay for internal reflection by erasing the local divisor
+normal.
+
 ## Theorem: folded Dirac defect
 
 For every Xi zero `alpha`,
@@ -126,6 +142,39 @@ This also explains why merely squaring the spectral parameter does not solve the
 `D^2-alpha^2` is self-adjoint in the ordinary ambient `L^2`, but `(6)` is a forced resolvent
 equation, not an eigenvalue equation.
 
+## Minimal invariant homogenization
+
+There is one algebraic way to remove the affine term without adding a channel.  Let
+
+```text
+C_k=span{D^n k:n>=0}.
+```
+
+This is the least `D`-invariant subspace containing `k`.  On the algebraic quotient by `C_k`, the
+two equations `(5)` become the homogeneous Dirac eigenproblem
+
+```text
+D [E_alpha]=-alpha [O_alpha],
+D [O_alpha]=-alpha [E_alpha].                            (9a)
+```
+
+No smaller quotient can both annihilate `k` and carry a descended `D`: invariance forces it to
+annihilate every `D^n k`.  On the Fourier side this is the quotient by the polynomial module
+
+```text
+XiC(z) C[z].
+```
+
+The Hedenmalm divided quotient is not in that module.  At a zero of multiplicity `m`, it has
+vanishing order exactly `m-1`, whereas every polynomial multiple of `XiC` has order at least `m`.
+Thus the algebraic quotient retains every divisor mode and every multiplicity-first conormal.
+
+This quotient is the exact algebraic skeleton of a self-adjoint realization, but not its Hilbert
+completion.  Since the real translates of `k` are cyclic in ordinary `L^2`, the ordinary Hilbert
+closure of `C_k` is the whole ambient space.  Hence its ordinary `L^2` quotient is zero.  Any
+Hausdorff completion retaining `(9a)` must be discontinuous relative to ordinary `L^2`; the
+essential singularity is forced before positivity is discussed.
+
 ## Exact finite-dilation obstruction
 
 Consider the most direct one-channel Hilbert dilation on `L^2(R) direct_sum C`,
@@ -183,6 +232,59 @@ If such a dilation is self-adjoint, its folded eigenvalue is `alpha^2`. Since Xi
 the centered imaginary segment corresponding to real `0<s<1`, reality of `alpha^2` forces
 `alpha` real and proves RH.
 
+## Collision with the prime-tail conormal chart
+
+The later source theorem
+`prime-tail-reflection-folded-second-order-resolvent.md` constructs, from the literal
+ordinary-integer prime-power forcing before zero specialization, the reflection-folded monodromy
+modes
+
+```text
+2 pi i m_rho cosh(lambda_rho L),
+2 pi i m_rho sinh(lambda_rho L)/lambda_rho,
+lambda_rho=rho-1/2.                                     (13)
+```
+
+They are nonzero homogeneous solutions of
+
+```text
+(partial_L^2-lambda_rho^2)u=0
+```
+
+with source-fixed Neumann/Dirichlet Cauchy data.  Equations `(4a)` and `(13)` now give two
+unconditional charts of the same divisor conormal:
+
+```text
+theta chart:       all-orders-flat forced mode retaining XiC'(alpha);
+prime-tail chart:  homogeneous indicial mode retaining m_rho.
+```
+
+This removes “produce the conormal,” “make reflection internal,” and “retain multiplicity” from
+the open list.  The exact missing map is a source-defined boundary transgression from the
+prime-tail indicial chart to the Hedenmalm flat quotient which:
+
+1. is nonzero on every conormal before zero specialization;
+2. intertwines the folded second-order generators;
+3. commutes with source reflection as Hilbert adjunction;
+4. is invariant under every nonreal resolvent of one self-adjoint realization.
+
+If such a map exists, the prime-tail mode is a nonzero transpose eigenfunctional of a
+self-adjoint operator.  Nonreal resolvent surjectivity forces its eigenvalue
+`lambda_rho^2` to be real, and the open critical strip then forces `Re rho=1/2`.
+
+The corpus rules out all currently explicit regular candidates for this map:
+
+- ordinary `L^2` closure kills the cyclic quotient;
+- analytic compactification cannot isolate one accumulating theta heat node;
+- every fixed finite-Rees map preserves the all-orders-flat radical and cannot sew it to the
+  half-normal reflected sector;
+- the explicit smooth essential-phase Sonin corona is nonzero and partially unitary, but every
+  fixed Mellin/Xi conormal is all-orders invisible there.
+
+Therefore “infinite rank” is no longer an adequate description.  The unresolved object must mix
+the nonsmooth ordinary-prime jump face with the theta flat face through an essential-singular,
+resolvent-stable boundary operation.  No such operation is constructed here.
+
 ## Hostile audit
 
 1. Equations `(5)`--`(8)` are unconditional but do not make `alpha` real.
@@ -198,9 +300,10 @@ the centered imaginary segment corresponding to real `0<s<1`, reality of `alpha^
    restrictions, Friedrichs models, nonradiating-source transmission problems, and singular
    canonical systems.
 
-## Lean target
+## Lean status
 
-Formalize the entire Fourier-side fold:
+The entire Fourier-side fold and first-conormal retention are formalized in
+`formal/GaloisForLFunctions/RHTower/XiHedenmalmReflectionFoldedDirac.lean`:
 
 ```text
 xiHedenmalmEvenFold
@@ -209,9 +312,13 @@ xiHedenmalmEvenFold_equation
 xiHedenmalmOddFold_equation
 xiHedenmalmEvenFold_quadratic
 xiHedenmalmOddFold_quadratic
+xiHedenmalmEvenFold_self
+xiHedenmalmOddFold_self
+xiHedenmalmFolds_self_ne_zero_of_deriv_ne_zero
+xiHedenmalmEvenFold_ne_zero
 ```
 
-using the existing unconditional equation
-`xiThetaEigenFourier_equation` and `XiC_even`. The operator-dilation obstruction remains a paper
-theorem until the project has an unbounded self-adjoint block-operator API.
-
+The proofs use the existing unconditional equation `xiThetaEigenFourier_equation`, Xi evenness,
+and the multiplicity-sensitive removable-quotient laws.  The operator-dilation obstruction and
+the prime-tail/Hedenmalm transgression remain paper-level because no such positive source
+operation is known; an abstract unbounded-operator API would not supply it.

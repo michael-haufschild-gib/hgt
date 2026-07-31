@@ -276,6 +276,13 @@ DECLARATION_SHAPES: dict[str, re.Pattern[str]] = {
 # patterns are applied, so an assumed positivity hypothesis is not counted as a
 # produced positivity theorem.
 DECLARATION_CAPABILITIES: dict[str, re.Pattern[str]] = {
+    # Generic comparison is deliberately separate from sign orientation.
+    # Source walls such as the reduced CCM clock compare two nonzero energies;
+    # treating them as positivity would erase the mathematical obligation.
+    "comparative-order": re.compile(
+        r"≤|≥|(?<![-=])<(?![-=])|(?<![-=])>(?![-=])"
+        r"|\b(?:LE|LT|GE|GT)\b|(?:_le|_lt|_ge|_gt)"
+    ),
     "sign-orientation": re.compile(
         r"\b(?:StrictAnti|StrictMono|Monotone|Antitone|Accretive|Dissipative)\b"
         r"|(?:_pos|_neg|_nonneg|_nonpos|_sign|Orientation|orientation)"
@@ -419,6 +426,31 @@ PRIMITIVE_RH_OBSTRUCTIONS: tuple[
         ("HedenmalmXiPositiveFormWall",),
     ),
     (
+        "hedenmalm-center-mixed-fourier-sign",
+        "concrete-source-wall",
+        ("ThetaCuspCenterMixedFourierNonnegative",),
+    ),
+    (
+        "ccm-continued-two-pole-source-passivity",
+        "concrete-source-wall",
+        ("CCMContinuedTwoPoleSourcePassivity",),
+    ),
+    (
+        "ccm-first-clock-reduced-tower-dominance",
+        "concrete-source-wall",
+        ("CCMFirstClockReducedTowerDominance",),
+    ),
+    (
+        "completed-seam-compact-thorin-representation",
+        "concrete-source-wall",
+        ("PrimeArchCompactThorinExponentRepresentation",),
+    ),
+    (
+        "connes-unstructured-real-zero-limit",
+        "rh-equivalent-consumer-mirror",
+        ("ConnesXiGroundStateLimitWall",),
+    ),
+    (
         "mobius-critical-cancellation",
         "source-wall-family",
         (
@@ -429,6 +461,11 @@ PRIMITIVE_RH_OBSTRUCTIONS: tuple[
             "MobiusLaplaceCofinalGammaHankelOffDiagonalFrequentlyUpperBounded",
             "MobiusDiscreteLaplaceHalfPolylogDecay",
         ),
+    ),
+    (
+        "mobius-discrete-laplace-half-decay",
+        "one-way-source-wall",
+        ("MobiusDiscreteLaplaceHalfDecay",),
     ),
     (
         "sonin-prime-arch-value-transfer",

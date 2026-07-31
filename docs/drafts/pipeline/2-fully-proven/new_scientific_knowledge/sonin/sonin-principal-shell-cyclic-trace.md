@@ -856,6 +856,33 @@ dilation sum is injective on the bands that surround them.  It remains open, but
 statement to attack, and it is the first form of the question that mentions neither the relative
 ideal nor any approximation.
 
+**One Sonin space carries the whole question.**  The dilation sum does not preserve the aperture
+tower but it does not leave it either — it only loses a factor `r` of aperture:
+
+```text
+D_r K_a  subset  K_{a/r},   equivalently   Q_{a/r} D_r Q_a = D_r Q_a.      (62)
+```
+
+In the crossing chamber `b/r < a`, so both layers already live inside `K_{b/r}`, and `(62)` says the
+dilated inner layer does too.  The coupling is therefore exactly the *compression* of the dilation
+sum to that single Sonin space, cut between two of its orthogonal sublayers:
+
+```text
+Z = (Q_a - Q_b) . C . (Q_b - Q_c),   C = Q_{b/r} D_r Q_{b/r}  self-adjoint. (63)
+```
+
+So the coupling never sees the dilation sum itself, only its Sonin compression `C`, and `Z = 0` says
+`C` has no matrix element between `K_a ⊖ K_b` and `K_b ⊖ K_c` — a block-diagonality of `C` against
+the aperture tower.
+
+**A trap recorded, because it looks like a proof.**  The tower is *not* dilation covariant.  One is
+tempted to write `U_r Q_s U_r^{-1} = Q_{s/r}` and then compute `(Q_a - Q_b)(Q_{b/r} - Q_{c/r}) = 0`
+and `(Q_a - Q_b)(Q_{rb} - Q_{rc}) = 0` from nesting alone, concluding `Z = 0` outright.  The
+covariance is false: dilation scales the physical constraint by `r` and the Fourier constraint by
+`1/r`, so `U_r K_s` is the *asymmetric* Sonin space with physical aperture `s/r` and Fourier aperture
+`rs`, and only the inclusion `U_r K_s subset K_{s/r}` survives.  `(62)` is the correct residue, and
+it is an inclusion, not an identity of projections.
+
 ### Proof
 
 Induction on the chain length from the three-point law, with the chamber hypothesis inherited
@@ -1052,6 +1079,12 @@ provisional pending expert/literature review.
 | `(60)` ideal criterion (vacuous) | `evenSoninApertureSuccessiveLayerTransition_ne_zero_of_polarizedBlocks_notMem_ideal` |
 | `(61)` orthogonality criterion | `evenSoninApertureSuccessiveLayerTransition_eq_zero_iff_layers_orthogonal` |
 | `(61)` on the projections | `evenSoninApertureSuccessiveLayerTransition_eq_zero_iff_projection_orthogonal` |
+| `(62)` tower absorption | `evenCentralSoninProjection_mul_evenDilationSum_mul_evenCentralSoninProjection` |
+| `(62)` on a whole layer | `evenCentralSoninProjection_mul_evenDilationSum_mul_evenSoninApertureLayer` |
+| `(63)` compressed dilation | `evenSoninCompressedDilation` |
+| `(63)` self-adjoint | `adjoint_evenSoninCompressedDilation` |
+| `(63)` compression form | `evenSoninApertureSuccessiveLayerTransition_eq_compression` |
+| `(63)` as a vanishing test | `evenSoninApertureSuccessiveLayerTransition_eq_zero_iff_compression_orthogonal` |
 | energy strictly monotone | `hsNormSq_fullTimeBandFourier_lt_of_lt` |
 
 Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
@@ -1088,7 +1121,8 @@ Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninDilationSumFourierInjective.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninMixedPhysicalBlockNonvanishing.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninMixedFourierBlockNonvanishing.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninCouplingLayerOrthogonality.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninCouplingLayerOrthogonality.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCouplingSoninCompression.lean`.
 All declarations depend only on `propext`, `Classical.choice`, `Quot.sound`.
 
 Novelty split for Theorem G: `(7)` was already in the corpus
@@ -1099,6 +1133,9 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-08-01 — compression form `(63)`: the coupling is the Sonin-compressed dilation cut between
+  two layers of one Sonin space, via the tower absorption `(62)`.  Recorded the dilation-covariance
+  trap that would otherwise "prove" `Z = 0`: `U_r K_s` is asymmetric, so only an inclusion holds.
 - 2026-08-01 — correction to the previous entry: `(60)` is vacuous.  `M_phys + M_four` is the shell
   product, which is already known to lie in `I_a`, so no congruence-level statement can separate
   `Z` from zero.  Replaced by `(61)`, the exact orthogonality criterion on the two Sonin layers —

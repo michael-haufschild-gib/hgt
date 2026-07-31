@@ -535,6 +535,7 @@ import GaloisForLFunctions.HTGeometry.BohrHullCharacter
 import GaloisForLFunctions.HTGeometry.BohrHullTorusQuotient
 import GaloisForLFunctions.HTGeometry.BohrHullPullback
 import GaloisForLFunctions.HTGeometry.BohrHullFrequency
+import GaloisForLFunctions.HTGeometry.CompactAbelianHaar
 import GaloisForLFunctions.HTGeometry.FrequencyRank
 import GaloisForLFunctions.HTGeometry.PrimeFrequencyInfiniteRank
 import GaloisForLFunctions.HTGeometry.HullJetEmbedding

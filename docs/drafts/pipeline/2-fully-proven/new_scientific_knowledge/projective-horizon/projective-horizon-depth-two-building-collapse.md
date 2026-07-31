@@ -291,9 +291,24 @@ The combinatorial observability determinant `(15)` was already present in
 The cached module therefore supplies the nonvanishing Pascal core without duplicate code or a new
 build.
 
-The general rational fixed-field step and the specialization from the free projective jet field to
-the concrete Cramer system `(14)` remain paper-level because the tree has no infinite free-jet
-rational invariant interface; neither is represented by an assumption.
+`formal/GaloisForLFunctions/HTGeometry/ProjectiveHorizonJetLoopCurrent.lean` supplies the missing
+representation of that current algebra on the infinite free projective jet field, so the interface
+the general rational fixed-field step needs now exists.  The depth-`k` current attached to a matrix
+of constants is `jetLoopDerivation`: it sends the jet of order `l` to the jet of order `l-k`, with
+the falling-factorial coefficient `l(l-1)...(l-k+1)`, which is exactly the action of an observer
+whose parameter depends polynomially on the source parameter.  Depth zero is the infinitesimal
+observer of the parent theorem (`jetLoopDerivation_zero`), and the total-derivative jet shift
+descends the grading: `jetLoopDerivation_lie_shift` proves that its bracket with the depth-`k`
+current is `-k` times the depth-`(k-1)` current, whence `jetDerivation_lie_shift`, that the
+constant observers commute with the shift.  The underlying falling-factorial identity is
+`succ_descFactorial_succ_eq`.
+
+Together with the parent card's horizon fields on the same jet field -- their explicit description,
+their injectivity, and their exact transcendence degree -- this closes the gap that previously made
+the general rational fixed-field step paper-level for want of an interface.  What still remains is
+the fixed-field computation itself: that a jet observable annihilated by two distinct charts'
+depth-two current families is constant, and the specialization to the concrete Cramer system `(14)`.
+Neither is represented by an assumption.
 
 ## RH impact audit
 
@@ -314,8 +329,10 @@ zero-free region, positivity statement, or critical-line implication.
 - [x] 0 -> 1: all-rank candidate and the normal-rank threshold isolated
 - [x] 1 -> 2: gauge, perfectness, current generation, triangular invariant collapse, and all-depth
       join proved
-- [ ] 2 -> 3: exact polynomial current generation and the Pascal determinant are formalized;
-      the general free-jet fixed field and concrete Cramer specialization remain
+- [x] 2 -> 3a: exact polynomial current generation and the Pascal determinant are formalized
+- [x] 2 -> 3b: the representation of the polynomial current algebra on the infinite free projective
+      jet field -- the depth-graded loop currents and the descent of the grading by the jet shift
+- [ ] 2 -> 3: the general free-jet fixed field and concrete Cramer specialization remain
 - [ ] 3 -> 4: independent differential-invariant and algebraic-group specialist audit
 
 ## References checked
@@ -334,3 +351,7 @@ zero-free region, positivity statement, or critical-line implication.
   invariant collapse.
 - 2026-07-15 — proved pairwise all-depth reconstruction by the Pascal observability determinant.
 - 2026-07-15 — formalized the complete `P^2` current-algebra generation and annihilation engine.
+- 2026-08-01 — formalized the representation of the polynomial current algebra on the infinite free
+  projective jet field: the depth-graded loop currents, their identification with the infinitesimal
+  observers at depth zero, and the descent of the grading by the total-derivative jet shift.  The
+  interface whose absence made the general rational fixed-field step paper-level now exists.
