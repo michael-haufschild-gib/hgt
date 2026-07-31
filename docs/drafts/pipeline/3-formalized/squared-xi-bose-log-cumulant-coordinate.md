@@ -1,11 +1,10 @@
 # Squared-Xi completion is a Bose-log cumulant difference
 
 - **ID:** squared-xi-bose-log-cumulant-coordinate
-- **Stage:** 2-fully-proven / needs-audit
-- **Type:** THEOREM (paper) / cancellation-preserving source coordinate
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean 4, fully unconditional) / cancellation-preserving source coordinate
 - **Scientific status:** `[PROVED HERE] [NOVELTY UNAUDITED]`
-  `[MELLIN COORDINATE, POLE-FILLED ZETA, XI FACTORIZATION AND STRICT LOG-CONCAVITY FORMALIZED,`
-  `AXIOMS CLEAN; JET/CUMULANT LAYER IN PROGRESS]`
+  `[FULLY FORMALIZED IN LEAN, AXIOMS CLEAN]`
 - **Parents:** `squared-xi-radial-jet-reverse-bessel-source-alignment.md`; the classical Mellin integral for `Gamma(s) zeta(s)`
 - **Statement:** On the live absolute-Euler ray, every completed Xi jet is an exact difference between cumulants of a strictly log-concave Bose-log distribution and half-Gamma polygamma cumulants, with the polar term already absorbed.
 
@@ -154,8 +153,10 @@ The live compact order for this coordinate is therefore nineteen, not fourteen.
 - [x] prove the resulting strict sign, whichever direction it has — it is strictly positive
 - [x] formalize the Mellin coordinate `M a = Gamma (a+1) zeta (a+1)`, the pole-filled zeta
   coordinate, the completed-Xi factorization, and strict log-concavity
-- [ ] formalize the cumulant jet identities `(5)`–`(6)` and the Gamma/Zipf factorization
+- [x] formalize the cumulant jet identities `(5)`–`(6)` and the Gamma/Zipf factorization
   `(10)`–`(12)`
+- [x] 2 -> 3 formalized
+- [ ] 3 -> 4 publication-ready
 
 ## Lean status
 
@@ -231,19 +232,39 @@ Here `kappa_r a := iteratedDeriv r (fun b => Real.log (boseMellin b)) a` is the 
 definition `(3)` of the Bose-log cumulants, so `(5)`, `(6)` and `(11)` are exactly the card's
 identities.
 
-### Remaining
+### `GaloisForLFunctions/RHTower/BoseZipfCumulants.lean`
 
-Only equation `(12)`, the von Mangoldt form of the Zipf cumulants
-`kappa_r (log N) = sum_m Lambda m (log m)^(r-1) m^(-(a+1)) > 0`.  Route, all ingredients located:
+- `vonMangoldtLogSeries`, `vonMangoldtLogTerm_nonneg`, **`summable_vonMangoldtLogTerm`** — the
+  log-weighted real von Mangoldt Dirichlet series and its convergence on every ray `s > 1`.  The
+  majorant uses `Real.log_le_rpow_div` with exponent `(c-d)/(k+1)`, so the log weight is absorbed
+  into an arbitrarily small power.
+- `hasDerivAt_vonMangoldtLogTerm`, **`hasDerivAt_vonMangoldtLogSeries`**,
+  **`iteratedDeriv_vonMangoldtLogSeries`** — termwise differentiation of that series on
+  `(c, infinity)`, giving `(d/ds)^j = (-1)^j` times the next log weight.
+- `hasDerivAt_realZetaSeries`, **`deriv_log_realZetaSeries`** — the single arithmetic input, the
+  order-one link `(log zeta)' (s) = - sum_m Lambda m m^(-s)`.  This is the only place where the
+  complex `zeta` is used, through `LSeries_vonMangoldt_eq_deriv_riemannZeta_div` and
+  `HasDerivAt.comp_ofReal`.
+- **`iteratedDeriv_log_realZetaSeries`**, **`zipfCumulant_eq_vonMangoldtLogSeries`** — equation
+  `(12)`: `(-1)^r (d/da)^r log (zeta (a+1)) = sum_m Lambda m (log m)^(r-1) m^(-(a+1))`.
+- **`vonMangoldtLogSeries_pos`**, **`zipfCumulant_pos`** — every Zipf cumulant is strictly
+  positive, the `m = 2` term already forcing it.  This is the card's all-order prime sign
+  alignment, in probability-law form.
+- **`hasSum_gammaZipfMixture`** — equation `(10)`: mixing the scaled Gamma densities against the
+  Zipf weights reproduces the Bose density `t^a/((exp t - 1) M a)` exactly.  The mixture identity
+  is the same geometric expansion of the Bose kernel that evaluates the Mellin coordinate.
 
-1. `deriv realZetaSeries s = (deriv riemannZeta s).re` for real `s > 1`, from
-   `HasDerivAt.comp_ofReal` plus `Complex.reCLM`; this is the only complex-to-real bridge needed.
-2. mathlib's `LSeries_vonMangoldt_eq_deriv_riemannZeta_div` at real `s > 1` then gives
-   `deriv (fun b => Real.log (realZetaSeries b)) s = - sum_m Lambda m m^(-s)`.
-3. Termwise differentiation of that real Dirichlet series on `Ioi c` for `1 < c < a+1`, by the
-   same `hasDerivAt_tsum_of_isPreconnected` majorant argument used for the Xi resolvent field,
-   gives `(d/ds)^k` of it as `(-1)^k sum_m Lambda m (log m)^k m^(-s)`.
-4. Composing with `(11)` yields `(12)`; positivity is the `m = 2` term.
+### Scope of the formalization
+
+`(10)` is formalized as the **density** identity — the Zipf-weighted mixture of scaled Gamma
+densities sums to the Bose density — not as a measure-level statement about the law of a quotient
+of independent random variables.  That density identity is the whole content used by `(11)` and
+`(12)`; promoting it to a statement about `ProbabilityTheory` measures would need a quotient
+change-of-variables that adds nothing to the cumulant identities.
+
+Likewise `kappa_r` is the exponential-family definition `(3)`, `kappa_r a = (d/da)^r log (M a)`,
+which is how `(5)`, `(6)` and `(11)` use it; the equivalent characterization as the `r`-th cumulant
+of `log t` under `mu_a` is not separately formalized.
 
 ## Log
 
@@ -254,4 +275,13 @@ Only equation `(12)`, the von Mangoldt form of the Zipf cumulants
   recognized as casts of positive reals.  The strict log-concavity `(8)`–`(9)` is exactly the
   inequality `exp t > 1 + t` after the score is written through the growth factor.  The card's
   order-fourteen conjecture is no longer live: the sign is positive, by the sibling card.
+- 2026-07-31 — Jet and cumulant layer formalized, closing the card.  The smoothness of `Gamma` and
+  `zeta` on the real ray is not in mathlib and was built from holomorphy
+  (`contDiffAt_re_comp_ofReal`).  `(5)`/`(6)` are then the logarithm of `(4)` differentiated with
+  `iteratedDeriv_add`, the affine term surviving only at order one.  `(11)` is the same additivity
+  applied to `log M = log Gamma + log zeta`.  For `(12)` only the order-one arithmetic link needed
+  the complex `zeta`; all higher orders are real termwise differentiation of the von Mangoldt
+  series with the `log_le_rpow_div` majorant, and positivity is the `m = 2` term.  `(10)` turned
+  out to be the same geometric expansion as `(1)`: the Gamma/Zipf mixture density collapses to the
+  Bose density because `m^(-(a+1)) * m * m^a = 1`.
 

@@ -438,13 +438,31 @@ and supplies the explicit integer deadline
 Thus the lower-clock statement is no longer conditional on an abstract
 finite-marginal domination input in the Haar ensemble.
 
+The matching constructive water clock is proved in
+`SummableWeightedHeadFixedWaterCeiling.lean` and
+`BlaschkeLocalizedUpperReturnClock.lean`.  Any feasible normalized-head
+water level produces a complete countable return while paying the exact
+unnormalized head entropy.  For the active Blaschke head this specializes
+without slack to
+\[
+ \log T_L\le {\cal H}_a(L)
+ +(R_a(L)+1)\log C_{\rm phase},
+\]
+at the exact full-packet defect
+\[
+ \eta_L^{+}=(R_a(L)+1)e^{-L}
+ +2(1-a^2)(a^2)^{R_a(L)+1}.
+\]
+Hence lower obstruction and constructive upper return now have the same
+quadratic depth-entropy coefficient; their remaining costs are linear in
+active depth or logarithmic in target reparameterization.
+
 Direct foreground Lean checks pass. `#print axioms` for audited new
 load-bearing theorems reports only `propext`, `Classical.choice`, and
 `Quot.sound`.
 
 Operator construction, anisotropic counting, the Blaschke asymptotic
-specialization of the canonical constructive ceiling, interpolation from
-integer logarithmic scales to all target accuracies, and the matching
-almost-sure first-return asymptotic remain Lean-open. Nothing beyond the
-listed proved claims is manuscript-authorized until formalized. Manuscript
-must not mention the formalization.
+interpolation from integer logarithmic scales to all target accuracies, and
+the matching almost-sure first-return asymptotic remain Lean-open. Nothing
+beyond the listed proved claims is manuscript-authorized until formalized.
+Manuscript must not mention the formalization.

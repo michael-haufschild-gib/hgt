@@ -839,3 +839,44 @@ concrete analytic object.
   `(∀ z, Δ z = 0) ⟺ RiemannHypothesis`, axiom-clean. One real slip caught by the compiler: the
   near-regime ball radius had to be `2‖μ₀‖ + 4`, not `+2` (the compiler's linarith failure was
   the arithmetic telling the truth).
+
+## 15. The holomorphic half is prime data — §14's remaining bookkeeping done, without derivatives
+
+`RHTower/DeningerDivisorTwistedTraceReduction.lean` — built green, umbrella-registered, zero
+warnings, axiom-clean. Instead of differentiating the trace (Weierstrass machinery), three
+pairwise distinct base points and partial fractions do everything:
+
+- `twisted_triple_partial_fraction` — `x·Π(x-zᵢ)⁻¹ = -Σᵢ cᵢ·(x⁻¹ - (x-zᵢ)⁻¹)`,
+  `cᵢ = zᵢ/Πⱼ≠ᵢ(zᵢ-zⱼ)`; the coefficients sum to zero, which is exactly why the divergent
+  single resolvents recombine into the corpus's absolutely convergent *relative* terms.
+- `deningerDivisorTwistedResolventTrace_eq_logDeriv` — the μ-twisted triple resolvent trace is
+  `-Σᵢ cᵢ·logDeriv XiC zᵢ`, unconditionally.
+- `deningerDivisorTwistedResolventTrace_eq_primeArchSource` — on admissible base points this is
+  `-Σᵢ cᵢ · continuedPrimeArchSourceRelativeTrace zᵢ`: **the twisted spectral sum is computed
+  by the primes** (von Mangoldt + Γ-flux), through the corpus's Lefschetz formula.
+- `deningerDivisorTwistedResolventTerm_sub_mixed` — twisted − mixed = three-point Ward defect,
+  termwise and unconditionally.
+- `deningerDivisorMixedResolventTrace_eq_primeArchSource_of_riemannHypothesis` — **under RH the
+  non-holomorphic (conjugate-twisted) spectral trace equals the prime expression**;
+  unconditionally the gap is exactly the three-point defect trace.
+
+Together with §14 the analytic picture of the debt is now complete and two-sided: the
+holomorphic half of every twisted trace is unconditional prime data; the anti-holomorphic half
+differs from it by the defect trace; and the defect trace's identical vanishing **is** RH
+(cube version, §14). Numerically pre-certified (partial-fraction identity, zero-sum of
+coefficients, and the trace identity on an FE/conj-closed off-line configuration) before
+formalization.
+
+Remaining recorded next steps: (i) the three-point detection iff (mirror of §14's pole
+extraction, simple pole in z₁); (ii) the von-Mangoldt LSeries form on the Euler half-plane
+(`primeArchSourceRelativeTrace` variant — one-line swap of the Lefschetz theorem); (iii) the
+open wall, unchanged: a mechanism evaluating the defect.
+
+## Log (continued)
+
+- 2026-07-31 (Claude, fourth pass): closed §14's prime-side bookkeeping via the three-point
+  partial-fraction route (no tsum differentiation needed — the zero-sum of the partial-fraction
+  coefficients lands the expansion in relative resolvent terms). Twisted trace = log-derivative
+  data = prime data, unconditionally; mixed trace = prime data ⟺-shaped under RH with the
+  three-point Ward defect as the exact unconditional discrepancy.
+  `DeningerDivisorTwistedTraceReduction.lean`, 5 capstone theorems, axiom-clean.

@@ -1,7 +1,7 @@
 # Source three-term Hodge purity
 
 - **ID:** `deninger-source-three-term-hodge-purity`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Parent:** `deninger-arithmetic-cohomology-construction`
 - **Statement:** A positive flow-natural anti-linear Hodge operator on the middle
@@ -20,8 +20,8 @@ final one-way spectral comparison.
 
 - [x] 0 → 1 in-progress: source-pure statement, attack, falsifiers
 - [x] 1 → 2 fully-proven: dependency-closed paper proof
-- [ ] 2 → 3 formalized: Lean theorem
-  `DeningerArithmeticThreeTermHodge.eigenvalue_re_eq_half` and RH corollary
+- [x] 2 → 3 formalized: `DeningerArithmeticThreeTermHodge.eigenvalue_re_eq_half` and the RH
+  corollary `riemannHypothesis_of_zetaZero_eigenvector` build unconditionally
 - [ ] 3 → 4 publication-ready: standalone theorem and Lean certificate
 
 ## Theorem
@@ -123,3 +123,23 @@ Any of the following breaks the proof:
 
 - 2026-07-26 — dependency-closed paper proof extracted from the generic
   three-term source formalism; Xi-defined quotient removed from hypotheses.
+
+## Unconditional Lean formalization
+
+`formal/GaloisForLFunctions/RHTower/DeningerArithmeticThreeTermHodge.lean`
+(namespace `RHTower.DeningerArithmeticThreeTermHodge`), wired into the `RHTower` umbrella.
+Axiom audit: `propext, Classical.choice, Quot.sound`.
+
+- `HodgeData H` — the source data of the theorem: a flow `theta`, a cup–trace pairing `cup`, an
+  anti-linear `hodge : H →ₗ⋆[ℂ] H`, and the hypotheses `weightOne` `(1)`, `hodgeSq`, `commutes`
+  and `positive` `(2)`.  Nothing is constructed; all four are fields.
+- `theta_hodge_eigenvector` — conjugate-linearity turns a `λ`-eigenvector into a
+  `conj λ`-eigenvector: `Θ (J x) = conj λ • J x`.
+- `cup_hodge_ne_zero` — positivity gives `B(x, Jx) ≠ 0`.
+- `eigenvalue_re_eq_half` — equation `(3)`: `λ + conj λ = 1`, hence `Re λ = 1/2`.
+- `eigenvalue_eq_half_add_I_mul` — the centered coordinate form `λ = 1/2 + i z`.
+- `riemannHypothesis_of_zetaZero_eigenvector` — the one-way comparison `(4)`: realizing every
+  nontrivial zeta zero as an eigenvalue of `theta` yields mathlib's `RiemannHypothesis`.
+
+`hodgeSq` is carried as a field but, as the card's audit notes, the scalar cancellation does not
+use it; only `commutes`, `weightOne` and `positive` enter the proof.

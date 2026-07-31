@@ -115,7 +115,7 @@ rational--digamma--von-Mangoldt inequality or an exact integral representation f
 least nineteen that preserves pole/Euler cancellation.
 
 Two further source coordinates now constrain that discriminator.  The paper theorem
-`../2-fully-proven/needs-audit/squared-xi-bose-log-cumulant-coordinate.md` rewrites every completed
+`../3-formalized/squared-xi-bose-log-cumulant-coordinate.md` rewrites every completed
 jet as a half-Gamma polygamma term minus/plus cumulants of one strictly log-concave Bose-log law,
 with the zeta pole retained inside its Mellin normalization.  This is the live compact-order
 coordinate.

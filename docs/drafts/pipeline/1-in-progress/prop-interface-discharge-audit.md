@@ -1631,3 +1631,56 @@ consumed more than once.
 scalar compression with the mode-indexed unit leakage satisfies every premise of the block-interface
 scale-sandwich law, including both calibrations, via `blockCCRTuple_compressionBlock` and
 `blockCCRTuple_leakageBlock`.  Axioms clean.
+
+### Residual `HilbertMetric` premises: 7 → 4
+
+`HilbertMetric/PremiseWitnesses.lean` (built, axioms clean, registered).  Three of the seven
+single-use rows are closed, each measured by re-running the instrument rather than asserted:
+
+* **`eventually_finiteExponentialInnerGram_det_ne_zero`** — the eventual-nonvanishing premise of
+  `finiteHalfGaussianDistance_logDet_secondDerivative_eq` existed only as an anonymous `have` inside
+  one long argument, at the single bandwidth `1`.  Named and generalized to every point: the
+  determinant is differentiable in the bandwidth, so pointwise nonvanishing spreads.
+* **`finiteExponentialInnerGram_posDef_of_coordinate_injective`** — and the pointwise premise is
+  itself discharged.  `finiteExponentialInnerGram x t` is the coherent Gaussian Gram of the
+  coordinates scaled by `√t`, so the corpus's
+  `gaussianCoherentGram_posDef_of_coordinate_injective` makes it positive definite at every positive
+  bandwidth on a configuration separated by one coordinate; hence
+  **`finiteHalfGaussianDistance_logDet_secondDerivative_eq_of_coordinate_injective`**, the gauge
+  invariance of second log-determinant curvature with no determinant hypothesis at all.
+* **`matrixSelfCommutator_ne_zero_iff_mul_transpose_ne`** with the nilpotent Jordan block — the
+  strict Fano defect `squareEnergy < trace (columnEnergy²)` is *attained*, so the strictness theorem
+  is not vacuous.
+* **`scalarLogCurvatureNumerator_pos_iff`** (`0 < z z₂ − z₁²` is strict log-convexity of the 2-jet)
+  and **`eventually_pos_scalarLogCurvatureNumerator_of_tendsto_unit`** — persistence of strict
+  log-curvature holds for every 2-jet converging to the unit jet, with no positivity premise.
+
+Remaining, one use each: two quasi-free sign conditions (`quasiFreeSpectralFanoMargin < 0`,
+`0 < quasiFreeSpectralBandBudget`), which need a witness carrying an orthonormal frame and its
+energy bounds simultaneously; and two instrument false positives now documented in the script header
+— `q ≠ r` between two elements of a corpus index type is a parameter constraint, and the
+degree-five determinant row is produced by a theorem that specializes the amplitude, which the
+constant-superset test cannot see.
+
+### `HilbertMetric` mathlib-premise layer: closed
+
+The two quasi-free sign conditions are the last genuine rows, and one configuration settles both.
+On the diagonal two-orbital frame with one half-occupied level at energy `4` and one empty level at
+the band floor (`PremiseWitnesses.lean`):
+
+* `quasiFreeSpectralFanoMargin_twoMode = -2` — mean `2`, variance `4`, so the Fano margin is
+  negative and `twoMode_filling_failure` is the filling-failure consequence on an actual
+  configuration;
+* `quasiFreeSpectralBandBudget_twoMode = 4` on the band `[0, 4]` — positive, so
+  `twoMode_support_rank_lower_bound` is the tomography-free support-rank certificate on an actual
+  configuration.
+
+Both consumers previously carried a sign hypothesis satisfied by nothing.
+
+**Closing measurement** (1 313 project constants, 22 premise keys, 742 conclusion atoms):
+**2 unproduced rows**, and both are the documented false-positive classes — `q ≠ r` between two
+elements of a corpus index type, and a determinant row produced by a theorem that specializes the
+amplitude.  The trajectory over this sweep was **13 → 11 → 7 → 5 → 4 → 2**, every step re-measured.
+No genuine unproduced mathlib-`Prop` premise remains in `HilbertMetric`.
+
+Next scope for the instrument: `GaloisForLFunctions.HTGeometry`.

@@ -1,8 +1,8 @@
 # Holonomicity is not closed under the border inverse limit (BRIDGE structural theorem; C7-native ⟺ C5★)
 
 - **ID:** holonomicity-limit-nonclosure
-- **Stage:** 0-backlog-lean
-- **Type:** THEOREM (paper) — Door grade **BRIDGE**
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean) — Door grade **BRIDGE**
 - **Priority:** FOUNDATIONAL
 - **Source:** arose from C6 §1 Theorem B (`../2-fully-proven/c6-specialization-functors.md`); couples to
   C7 (`../0-backlog/c7-autonomy-foundational-core.md`) and G3
@@ -139,13 +139,17 @@ joint-`σ_p` theorem closes C3, C6 (native), and C7 together. This sharpens "C5 
   `𝓜 ≠ lim 𝓓_T` non-reconstruction proven (§5, comparison functor does not reflect holonomicity); Door
   grade decided (**BRIDGE**, §6); C7 fed with a definite verdict (bridge-level only; **C7-native ⟺ C5★**,
   §7). Not a G3-reframe (§2, §5 are new functor-family content) ⟹ banked, not failed.
-- [ ] 2 → 3  formalized — Lean targets: Lemma 1 monotonicity `c_T ≤ c_{T'}` and
-  `corank(Λ_M)=sup_T c_T` over the directed `ℤ^T`-system; the `M_ζ` witness slices
-  (`finitePrimeLogAnnihilator_eq_singleton`, `linearIndependent_log_primes`, both ledgered). The new
-  fragment is the directed-sup corank identity. Lean anchor **DONE** for the integer-valued stabilization
-  corollary: `monotoneNat_eventually_constant_of_bddAbove` in
-  `formal/GaloisForLFunctions/HTGeometry/HolonomicityLimit.lean` proves that a monotone bounded natural-number
-  sequence is eventually constant, matching §2's `sup c_T < ∞ ⟹ c_T` stabilizes step.
+- [x] 2 → 3  formalized — every Lean target named by this gate is now proved unconditionally and
+  `#print axioms`-clean (see "Lean formalization" below): Lemma 1 monotonicity (`coordCorank_mono`),
+  the directed-sup corank identity in its correct form (`finrank_quotient_eq_sSup_coordCorank`
+  together with `finiteDimensional_quotient_iff_bddAbove_coordCorank`), Lemma 2
+  (`coordCorank_le_card`), the corank identity `c_T + rank(Λ ∩ ℤ^T) = |T|`
+  (`coordCorank_add_finrank_inf`), stabilization (`coordCorank_eq_finrank_quotient_of_subset`), and
+  the `M_ζ` witness slices (`coordCorank_primeLog`, `not_finiteDimensional_quotient_primeLog`, built
+  on the ledgered `primeLog_diagonalRelationLattice_eq_singleton` / `linearIndependent_log_primes`).
+  The earlier anchor `monotoneNat_eventually_constant_of_bddAbove` in
+  `formal/GaloisForLFunctions/HTGeometry/HolonomicityLimit.lean` remains as the integer-valued
+  stabilization step.
 - [ ] 3 → 4  publication-ready — standalone note: the inverse system, the two lemmas, the dichotomy, the
   non-reconstruction corollary, the Door/C7 passport.
 
@@ -188,3 +192,58 @@ paper-proof defect. This is a **paper-proven BRIDGE theorem** whose proof legiti
 those imports are to be carried as hypotheses/axioms (or formalized separately) at the Lean stage — not a reason to
 reject the paper proof. The card's stated theorem is proved at its 1→2 gate; any co-located open conjecture
 (C5★ / ω=0 / Schanuel / apex) is explicitly a SEPARATE open core, not part of this theorem. Re-banked for Lean re-attempt.
+
+
+## Lean formalization — 2026-07-31
+
+Two new modules, both `lake build` green and `#print axioms`-clean (`propext`, `Classical.choice`,
+`Quot.sound` only).  Nothing is carried as a hypothesis.
+
+### `formal/GaloisForLFunctions/HTGeometry/CoordinateCorankDirectedSup.lean`
+
+The lattice content of §2–§5, over an arbitrary index type.  The relation lattice enters through its
+rational span, which is exactly what corank sees (`rank(ℤ^{(P)}/Λ) = dim_ℚ(ℚ^{(P)}/Λ⊗ℚ)`), so the
+whole development is a statement about a subspace `V ≤ P →₀ ℚ`.
+
+| Declaration | Statement |
+|---|---|
+| `coordSpace T` | the coordinate subspace `ℚ^T`, with `finrank_coordSpace : finrank = |T|` and `iSup_coordSpace : ⨆_T ℚ^T = ⊤` |
+| `coordCorank V T` | `c_T`, the dimension of the image of `ℚ^T` in the quotient by `V` |
+| `coordCorank_add_finrank_inf` | **`c_T + rank(V ∩ ℚ^T) = |T|`** — the card's defining formula, obtained by rank–nullity for `ℚ^T → ℚ^{(P)}/V` |
+| `coordCorank_le_card` | **Lemma 2: every finite slice has finite corank, `c_T ≤ |T|`** |
+| `coordCorank_mono` | **Lemma 1 (monotonicity): `T ⊆ T' ⟹ c_T ≤ c_{T'}`** |
+| `exists_map_eq_top_of_bddAbove` | a slice realizing the supremum already spans the quotient |
+| `finiteDimensional_quotient_iff_bddAbove_coordCorank` | **the dichotomy: the limit corank is finite exactly when the slice coranks are bounded** |
+| `finrank_quotient_eq_sSup_coordCorank` | **`corank(Λ) = sup_T c_T` in the finite case** |
+| `coordCorank_eq_finrank_quotient_of_subset`, `exists_coordCorank_stabilizes` | **§2's corollary: in the bounded case the coranks stabilize at the corank of the limit** |
+| `coordCorank_bot`, `not_bddAbove_coordCorank_bot`, `not_finiteDimensional_quotient_bot` | the zero lattice over an infinite index type: every slice has corank `|T|`, the coranks are unbounded, the limit is infinite |
+| `exists_slicewise_finite_limit_infinite` | **§5 in lattice form: a subspace whose every slice has finite corank and whose limit does not** |
+
+### `formal/GaloisForLFunctions/HTGeometry/RelationLatticeCorank.lean`
+
+The arithmetic instance — the `M_ζ` witness.
+
+| Declaration | Statement |
+|---|---|
+| `relationSpan S` | the rational span of a set of integer relation vectors |
+| `relationSpan_primeLog_eq_bot` | **`Λ_{M_ζ} = {0}`, hence spans `⊥`** — from the ledgered `primeLog_diagonalRelationLattice_eq_singleton` (unique factorization / `linearIndependent_log_primes`) |
+| `coordCorank_primeLog` | **`c_T = |T|` for every finite set of primes** |
+| `not_bddAbove_coordCorank_primeLog` | the prime coranks are unbounded |
+| `not_finiteDimensional_quotient_primeLog` | **the arithmetic limit has infinite corank while every finite prime slice has finite corank** |
+
+### One correction to §2 recorded
+
+The card states Lemma 1 as `corank(Λ_M) = sup_T c_T`, justified by "rank of a directed union of
+free-abelian quotients is the sup of the ranks of the pieces".  As an identity of cardinals that is
+false for an uncountable index set: for `P = ℝ` and `Λ = 0` the quotient has rank `2^ℵ₀` while every
+`c_T` is finite, so the supremum is `ℵ₀`.  What is true in general — and what the card actually uses
+— is the finite/infinite dichotomy (`finiteDimensional_quotient_iff_bddAbove_coordCorank`) together
+with the equality in the finite case (`finrank_quotient_eq_sSup_coordCorank`).  Over the prime
+index set, which is countable, the card's literal statement is correct.  Both are formalized in the
+correct form; no step of §3, §4 or §5 is affected.
+
+### Outside this card's Lean scope
+
+The equivalence `M` holonomic `⟺ corank(Λ_M) < ∞` is **G3**'s statement, not this card's; its `(⟸)`
+direction is the Lipshitz 1988 import.  It is not formalized here, and this gate does not claim it —
+the gate's own Lean targets are the corank content and the witness, all of which are now proved.

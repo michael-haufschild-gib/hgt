@@ -1,6 +1,9 @@
 import GaloisForLFunctions.HilbertMetric.DegreeFiveGaussianCurvature
+import GaloisForLFunctions.HilbertMetric.GaussianJetPositivity
 import GaloisForLFunctions.HilbertMetric.FanoCommutator
 import GaloisForLFunctions.HilbertMetric.GramCurvaturePersistence
+import GaloisForLFunctions.HilbertMetric.QuasiFreeFillingFano
+import GaloisForLFunctions.HilbertMetric.QuasiFreeRankVarianceDiscriminant
 
 /-!
 # Discharging the residual analytic premises of the Hilbert-metric area
@@ -46,6 +49,49 @@ theorem finiteHalfGaussianDistance_logDet_secondDerivative_eq_of_det_ne_zero {ι
       deriv (deriv (fun t => Real.log (finiteExponentialInnerGram x t).det)) s :=
   finiteHalfGaussianDistance_logDet_secondDerivative_eq x s
     (eventually_finiteExponentialInnerGram_det_ne_zero x hs)
+
+/-- The exponential inner Gram at bandwidth `t` is the coherent Gaussian Gram of the coordinates
+scaled by `√t`. -/
+theorem finiteExponentialInnerGram_eq_gaussianCoherentGram {d n : ℕ}
+    (x : Fin n → Fin d → ℝ) {t : ℝ} (ht : 0 ≤ t) :
+    finiteExponentialInnerGram x t =
+      gaussianCoherentGram (fun i a => Real.sqrt t * x i a) := by
+  funext i j
+  show Real.exp (t * ∑ a, x i a * x j a) =
+    Real.exp (coordinateDot (fun i a => Real.sqrt t * x i a) i j)
+  congr 1
+  rw [coordinateDot, Finset.mul_sum]
+  refine Finset.sum_congr rfl fun a _ => ?_
+  rw [show Real.sqrt t * x i a * (Real.sqrt t * x j a) =
+      Real.sqrt t * Real.sqrt t * (x i a * x j a) by ring, Real.mul_self_sqrt ht]
+
+/-- **A separating coordinate makes the exponential inner Gram positive definite** at every
+positive bandwidth. -/
+theorem finiteExponentialInnerGram_posDef_of_coordinate_injective {d n : ℕ}
+    (x : Fin n → Fin d → ℝ) (k : Fin d) (hx : Function.Injective fun i => x i k)
+    {t : ℝ} (ht : 0 < t) :
+    (finiteExponentialInnerGram x t).PosDef := by
+  rw [finiteExponentialInnerGram_eq_gaussianCoherentGram x ht.le]
+  refine gaussianCoherentGram_posDef_of_coordinate_injective _ k ?_
+  intro i j hij
+  exact hx (mul_left_cancel₀ (Real.sqrt_pos.mpr ht).ne' hij)
+
+/-- Hence its determinant never vanishes on a separated configuration. -/
+theorem finiteExponentialInnerGram_det_ne_zero_of_coordinate_injective {d n : ℕ}
+    (x : Fin n → Fin d → ℝ) (k : Fin d) (hx : Function.Injective fun i => x i k)
+    {t : ℝ} (ht : 0 < t) :
+    (finiteExponentialInnerGram x t).det ≠ 0 :=
+  ne_of_gt (finiteExponentialInnerGram_posDef_of_coordinate_injective x k hx ht).det_pos
+
+/-- **Gauge invariance of second log-determinant curvature on a separated configuration**, with no
+determinant hypothesis at all. -/
+theorem finiteHalfGaussianDistance_logDet_secondDerivative_eq_of_coordinate_injective
+    {d n : ℕ} (x : Fin n → Fin d → ℝ) (k : Fin d) (hx : Function.Injective fun i => x i k)
+    {s : ℝ} (hs : 0 < s) :
+    deriv (deriv (fun t => Real.log (finiteHalfGaussianDistanceGram x t).det)) s =
+      deriv (deriv (fun t => Real.log (finiteExponentialInnerGram x t).det)) s :=
+  finiteHalfGaussianDistance_logDet_secondDerivative_eq_of_det_ne_zero x s
+    (finiteExponentialInnerGram_det_ne_zero_of_coordinate_injective x k hx hs)
 
 /-! ## The self-commutator -/
 
@@ -101,6 +147,78 @@ theorem eventually_pos_scalarLogCurvatureNumerator_of_tendsto_unit {α : Type*} 
     ∀ᶠ x in l, 0 < scalarLogCurvatureNumerator (f x) (f₁ x) (f₂ x) :=
   eventually_pos_scalarLogCurvatureNumerator hf hf₁ hf₂
     (by rw [scalarLogCurvatureNumerator_unit]; norm_num)
+
+/-! ## The quasi-free sign conditions -/
+
+/-- The diagonal frame of two orbitals. -/
+def twoModeFrame : Fin 2 → Fin 2 → ℝ := fun i k => if i = k then 1 else 0
+
+/-- One high spectral level and one at the band floor. -/
+def twoModeEnergy : Fin 2 → ℝ := ![4, 0]
+
+/-- A single half-occupied high orbital. -/
+def twoModeOccupation : Fin 2 → ℝ := ![1 / 2, 0]
+
+theorem twoModeFrame_isOrthonormal : IsOrthonormalCoordinateFrame twoModeFrame := by
+  intro i j
+  fin_cases i <;> fin_cases j <;> simp [twoModeFrame]
+
+theorem twoModeOccupation_nonneg : ∀ i, 0 ≤ twoModeOccupation i := by
+  intro i
+  fin_cases i <;> norm_num [twoModeOccupation]
+
+theorem twoModeEnergy_lower : ∀ k, (0 : ℝ) ≤ twoModeEnergy k := by
+  intro k
+  fin_cases k <;> norm_num [twoModeEnergy]
+
+theorem twoModeEnergy_upper : ∀ k, twoModeEnergy k ≤ (4 : ℝ) := by
+  intro k
+  fin_cases k <;> norm_num [twoModeEnergy]
+
+theorem quasiFreeSpectralFanoMargin_twoMode :
+    quasiFreeSpectralFanoMargin twoModeFrame twoModeEnergy twoModeOccupation = -2 := by
+  simp [quasiFreeSpectralFanoMargin, quasiFreeSpectralMean, quasiFreeSpectralVariance,
+    quasiFreeCompressedSpectralEnergy, orbitalSpectralMean, orbitalSpectralSecondMoment,
+    twoModeFrame, twoModeEnergy, twoModeOccupation, Fin.sum_univ_two]
+  norm_num
+
+/-- **A negative quasi-free Fano margin is attained.** -/
+theorem quasiFreeSpectralFanoMargin_twoMode_neg :
+    quasiFreeSpectralFanoMargin twoModeFrame twoModeEnergy twoModeOccupation < 0 := by
+  rw [quasiFreeSpectralFanoMargin_twoMode]
+  norm_num
+
+/-- The filling-failure consequence, on the explicit configuration. -/
+theorem twoMode_filling_failure :
+    4 * ((0 : ℝ) * 4) * (∑ i, twoModeOccupation i) <
+      (Fintype.card (Fin 2) : ℝ) * ((0 : ℝ) + 4 - 1) ^ 2 :=
+  quasiFreeSpectralFanoMargin_negative_forces_filling_failure
+    twoModeFrame twoModeEnergy twoModeOccupation twoModeFrame_isOrthonormal
+    twoModeOccupation_nonneg 0 4 twoModeEnergy_lower twoModeEnergy_upper
+    quasiFreeSpectralFanoMargin_twoMode_neg
+
+theorem quasiFreeSpectralBandBudget_twoMode :
+    quasiFreeSpectralBandBudget twoModeFrame twoModeEnergy twoModeOccupation 0 4 = 4 := by
+  simp [quasiFreeSpectralBandBudget, quasiFreeSpectralMean, quasiFreeSpectralVariance,
+    quasiFreeCompressedSpectralEnergy, orbitalSpectralMean, orbitalSpectralSecondMoment,
+    twoModeFrame, twoModeEnergy, twoModeOccupation, Fin.sum_univ_two]
+  norm_num
+
+/-- **A positive quasi-free band budget is attained.** -/
+theorem quasiFreeSpectralBandBudget_twoMode_pos :
+    0 < quasiFreeSpectralBandBudget twoModeFrame twoModeEnergy twoModeOccupation 0 4 := by
+  rw [quasiFreeSpectralBandBudget_twoMode]
+  norm_num
+
+/-- The tomography-free support-rank certificate, on the explicit configuration. -/
+theorem twoMode_support_rank_lower_bound :
+    quasiFreeSpectralMean twoModeFrame twoModeEnergy twoModeOccupation ^ 2 /
+        quasiFreeSpectralBandBudget twoModeFrame twoModeEnergy twoModeOccupation 0 4 ≤
+      (Fintype.card (Fin 2) : ℝ) :=
+  quasiFreeSpectral_support_rank_lower_bound
+    twoModeFrame twoModeEnergy twoModeOccupation twoModeFrame_isOrthonormal
+    twoModeOccupation_nonneg 0 4 twoModeEnergy_lower twoModeEnergy_upper
+    quasiFreeSpectralBandBudget_twoMode_pos
 
 end
 

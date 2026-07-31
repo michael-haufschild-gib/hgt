@@ -11,7 +11,11 @@ compares against the conclusion atoms of every project constant.  A conclusion c
 through `∃`, `Nonempty`, `∧`, both sides of `↔`, and under leading binders; a premise key counts as
 produced when some atom has the same head over a superset of its corpus constants.  Anything left is
 a nomination, not a verdict: producers whose conclusion is a container of the target, or an instance,
-remain invisible.
+remain invisible, as do producers that *specialize* a parameter (their conclusion drops the
+constants the general premise mentions).  Two further false-positive classes, both seen in practice:
+a premise `x ≠ y` between two elements of a corpus *type* is a parameter constraint, not debt; and a
+premise satisfied only by a specialized producer shows up because the superset test is on constants,
+not on unification.
 -/
 import GaloisForLFunctions.HilbertMetric
 

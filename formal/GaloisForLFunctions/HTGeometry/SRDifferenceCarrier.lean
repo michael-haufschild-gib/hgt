@@ -148,6 +148,31 @@ theorem seedCarrierPoly_prod_X (ω : α → E) (F : E → ℂ) (J : Finset α) :
   rw [map_prod]
   simp
 
+/-- The carrier of a sum of seeds is the sum of the carriers. -/
+theorem seedCarrierPoly_sum {ι : Type*} (ω : α → E) (s : Finset ι) (F : ι → (E → ℂ))
+    (P : MvPolynomial α ℂ) (z : E) :
+    seedCarrierPoly ω (fun w => ∑ i ∈ s, F i w) P z
+      = ∑ i ∈ s, seedCarrierPoly ω (F i) P z := by
+  have hfun : (fun w => ∑ i ∈ s, F i w) = ∑ i ∈ s, F i := by
+    funext w
+    rw [Finset.sum_apply]
+  show shiftAlgHom (polyShift ω P) (fun w => ∑ i ∈ s, F i w) z = _
+  rw [hfun, map_sum, Finset.sum_apply]
+  rfl
+
+/-- A shift operator sends constants to constants. -/
+theorem shiftAlgHom_const (A : AddMonoidAlgebra ℂ E) (C : ℂ) :
+    shiftAlgHom A (fun _ : E => C) = fun _ => (∑ γ ∈ A.coeff.support, A.coeff γ) * C := by
+  funext z
+  rw [shiftAlgHom_apply, Finset.sum_mul]
+
+/-- The carrier of a product is the outer operator applied to the inner carrier. -/
+theorem seedCarrierPoly_mul (ω : α → E) (F : E → ℂ) (P Q : MvPolynomial α ℂ) :
+    seedCarrierPoly ω F (P * Q) = shiftAlgHom (polyShift ω P) (seedCarrierPoly ω F Q) := by
+  show shiftAlgHom (polyShift ω (P * Q)) F = _
+  rw [map_mul, map_mul, Module.End.mul_apply]
+  rfl
+
 /-! ### Descent to the Stanley–Reisner ring -/
 
 variable [DecidableEq α]

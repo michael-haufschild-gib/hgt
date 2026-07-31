@@ -30,34 +30,6 @@ noncomputable section
 
 variable {α : Type*} [DecidableEq α]
 
-/-! ### Linearity of the carrier in the seed -/
-
-omit [DecidableEq α] in
-theorem seedCarrierPoly_sum {ι : Type*} (step : α → ℂ) (s : Finset ι) (F : ι → (ℂ → ℂ))
-    (P : MvPolynomial α ℂ) (z : ℂ) :
-    seedCarrierPoly step (fun w => ∑ i ∈ s, F i w) P z
-      = ∑ i ∈ s, seedCarrierPoly step (F i) P z := by
-  have hfun : (fun w => ∑ i ∈ s, F i w) = ∑ i ∈ s, F i := by
-    funext w
-    rw [Finset.sum_apply]
-  show shiftAlgHom (polyShift step P) (fun w => ∑ i ∈ s, F i w) z = _
-  rw [hfun, map_sum, Finset.sum_apply]
-  rfl
-
-/-- A shift operator sends constants to constants. -/
-theorem shiftAlgHom_const (A : AddMonoidAlgebra ℂ ℂ) (C : ℂ) :
-    shiftAlgHom A (fun _ => C) = fun _ => (∑ γ ∈ A.coeff.support, A.coeff γ) * C := by
-  funext z
-  rw [shiftAlgHom_apply, Finset.sum_mul]
-
-omit [DecidableEq α] in
-/-- The carrier of a product is the outer operator applied to the inner carrier. -/
-theorem seedCarrierPoly_mul (step : α → ℂ) (F : ℂ → ℂ) (P Q : MvPolynomial α ℂ) :
-    seedCarrierPoly step F (P * Q) = shiftAlgHom (polyShift step P) (seedCarrierPoly step F Q) := by
-  show shiftAlgHom (polyShift step (P * Q)) F = _
-  rw [map_mul, map_mul, Module.End.mul_apply]
-  rfl
-
 /-! ### The block seed -/
 
 /-- The exponential rate whose seed has period `c`. -/
