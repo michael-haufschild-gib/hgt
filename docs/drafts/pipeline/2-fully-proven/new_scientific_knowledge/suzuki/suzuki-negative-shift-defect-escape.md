@@ -224,9 +224,59 @@ candidate new result pending specialist priority review.
 - **New insight:** the shift parameter is a projective compactification coordinate.  Arbitrary
   negative shifts hit the universal free boundary; the live route is ground-centered defect
   survival, not admissible-shift independence.
-- **Status:** dependency-closed paper proof; generic parent theory classified as known; exact
-  source-specific priority remains unverified.  The source operator is not yet represented in
-  Lean, so only dependency-closed analytic survivors may enter Stage 3 separately.
+- **Status:** dependency-closed paper proof, now formalized end to end in Lean; generic parent
+  theory classified as known; exact source-specific priority remains unverified.  The source
+  operator is represented by its defining interface — densely defined, real lower bound,
+  admissible real shifts surjective — which is exactly the data Suzuki's `A_a` carries and which
+  the strong resolvent law needs.  An explicit construction of the restricted Weil integral
+  operator is still absent, so the Lean theorem is a universally quantified statement that covers
+  `A_a` the moment that operator is exhibited.
+
+
+## Lean status of the escape theorem
+
+The three steps of the paper proof are formalized separately and then composed.  Every statement
+is unconditional; no RH input, no numerical estimate, and no spectral theorem occurs.
+
+1. **Strong resolvent law `(3)`** — `formal/GaloisForLFunctions/HTGeometry/LowerBoundedSourceResolvent.lean`.
+   `LowerBoundedSource` carries a dense domain, an operator, a real lower bound `floor` for the
+   quadratic form, and surjectivity of every shift `A + r` with `floor + r > 0`.  That is the
+   standard criterion separating a lower-bounded self-adjoint operator from a merely symmetric
+   one; symmetry itself is never used.  `norm_shift_ge` is the bound `‖(A+r)x‖ ≥ (floor+r)‖x‖`,
+   `shift_smul_sub` is the exact domain identity `(A+r)(r x_g - g) = -A g`, and
+   `exists_threshold_norm_smul_sub_lt` / `tendsto_smul_solution` give
+   `r (A + r)⁻¹ f → f` for every vector, with a threshold valid for every solution of the shifted
+   equation simultaneously.  No resolvent operator is constructed and no uniform boundedness
+   principle is used.  `freeSource` witnesses that the structure is inhabited.
+
+2. **Fourier Cauchy–Schwarz upgrade** — `formal/GaloisForLFunctions/HTGeometry/ApertureFourierPairing.lean`.
+   On `L²(-a, a)` the transform `F_v(z) = ∫ v x exp(i z x) dx` is the inner product against an
+   explicit exponential vector (`apertureChar`), so `norm_apertureFourier_sub_le_of_im_bound`
+   converts `L²` convergence into convergence of the transforms that is uniform on every set of
+   bounded imaginary height, with the explicit constant `√(2a)·exp(|Im z| a)`.
+   `apertureFourier_apertureExp_eq` evaluates the free transform in closed form.
+
+3. **Free carrier `(4)` and the quotient passage** —
+   `formal/GaloisForLFunctions/RHTower/SuzukiNegativeShiftEscape.lean`.
+   `suzukiApertureCarrier_smul` is the projective invariance `(10)` at the level of densities, so
+   the common factor `r` cancels.  `suzukiApertureCarrier_apertureExp` proves that the Fourier
+   carrier of the free density `exp x` is exactly `suzukiFreeLivsic a`, i.e. equation `(4)`; the
+   anchor point `z = i` is handled by the vanishing Cayley numerator on both sides.
+   `norm_freeDenominator_ge` and `norm_suzukiFreeLivsic_le_bound` supply the explicit strip
+   constants, and `norm_suzukiApertureCarrier_sub_free_le` is the uniform quotient estimate.
+   `exists_shift_threshold_carrier_close` is the fixed-aperture escape: beyond an explicit shift
+   threshold every deficiency vector produces a carrier within the prescribed tolerance of the
+   free carrier on the prescribed strip.
+
+The composite is `suzuki_negativeShift_escape`: for every cofinal aperture sequence and every
+family of lower-bounded sources there are shifts `λ_n < λ_{a_n}` whose carriers converge to the
+zero Schur function locally uniformly on the upper half-plane — exactly equation `(2)`.  The
+diagonal uses the strips `1/(n+1) ≤ Im z`, `‖z‖ ≤ n+1` together with the already formalized free
+boundary limit `suzukiFreeLivsic_tendstoUniformlyOn_upperStrip`.
+`suzuki_negativeShift_escape_freeSource` instantiates the whole statement with explicitly
+constructed deficiency vectors, so the hypotheses are demonstrably satisfiable.
+
+Axiom audit of every declaration above: `[propext, Classical.choice, Quot.sound]`.
 
 ## Gates
 
@@ -238,7 +288,7 @@ candidate new result pending specialist priority review.
 - [x] hostile paper-proof audit closed
 - [x] primary-literature collision audit closed at the source-specific level
 - [x] dependency-closed projective/free-boundary survivor formalized in Lean
-- [ ] concrete restricted-Weil resolvent escape theorem formalized in Lean
+- [x] concrete restricted-Weil resolvent escape theorem formalized in Lean: formal/GaloisForLFunctions/RHTower/SuzukiNegativeShiftEscape.lean
 - [ ] source-side defect-retaining shift selected
 - [ ] RH
 
@@ -248,3 +298,6 @@ candidate new result pending specialist priority review.
   2 after the paper proof closed, and connected to the separately formalized projective Gram,
   parity, ground-chart, and compact-open free-boundary survivors in
   `SuzukiProjectiveDefectBoundary.lean`.
+- 2026-07-31 — negative-shift escape theorem formalized unconditionally in Lean: strong resolvent
+  law, aperture Fourier pairing, free-carrier identification, uniform quotient passage, and the
+  cofinal diagonal, together with a non-vacuity witness.

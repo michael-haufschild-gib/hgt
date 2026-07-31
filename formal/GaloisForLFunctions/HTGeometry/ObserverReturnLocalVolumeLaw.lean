@@ -10,7 +10,7 @@ the allowed return defect, and so is the outer radius. This is the
 finite-dimensional volume brick behind the recurrence Weyl exponent.
 -/
 
-open scoped BigOperators
+open scoped BigOperators ENNReal
 open Set
 open MeasureTheory
 
@@ -143,6 +143,71 @@ theorem observerReturnLocalTarget_volume_ball_sandwich
     measure_mono
       (observerReturnLocalTarget_subset_closedBall
         weight gap hweight hε hm hmetricLower hphase)⟩
+
+/-- **Automatic local recurrence Weyl law.** For every finite separating
+positively weighted gap family there are positive chart and metric constants
+for which every sufficiently small return target is trapped between balls
+of radii proportional to `√ε`. No coercivity or chart hypothesis remains:
+both follow from observer separation and finiteness. -/
+theorem exists_observerReturnLocalTarget_volume_ball_sandwich
+    {J : Type*} [Fintype J] {τ : ℕ}
+    (weight : J → ℝ) (gap : J → Fin τ → ℝ)
+    (hweight : ∀ j, 0 < weight j)
+    (hnondegenerate : ObserverTemporalMetricNondegenerate gap) :
+    ∃ r m M : ℝ, 0 < r ∧ 0 < m ∧ 0 < M ∧
+      ∀ ε : ℝ, 0 < ε → Real.sqrt (ε / M) ≤ r →
+        volume (Metric.ball (0 : EuclideanSpace ℝ (Fin τ))
+            (Real.sqrt (ε / M))) ≤
+          volume (observerReturnLocalTarget weight gap r ε) ∧
+        volume (observerReturnLocalTarget weight gap r ε) ≤
+          volume (Metric.closedBall
+            (0 : EuclideanSpace ℝ (Fin τ))
+            (Real.sqrt ((Real.pi ^ 2 / 4) * ε / m))) := by
+  obtain ⟨m, M, hm, hM, hbounds⟩ :=
+    observerTemporalMetricEnergy_two_sided_bounds
+      weight gap hweight hnondegenerate
+  obtain ⟨r, hr, hphase⟩ :=
+    exists_observerTemporalPrincipalPhaseRadius gap
+  refine ⟨r, m, M, hr, hm, hM, fun ε hε hradius => ?_⟩
+  exact observerReturnLocalTarget_volume_ball_sandwich
+    weight gap (fun j => (hweight j).le) hε hm hM
+    (fun theta => (hbounds theta).1)
+    (fun theta => (hbounds theta).2)
+    hphase hradius
+
+/-- Euclidean unit-ball volume in observer temporal dimension `τ`. -/
+def observerTemporalUnitBallVolume (τ : ℕ) : ℝ≥0∞ :=
+  ENNReal.ofReal
+    (Real.sqrt Real.pi ^ τ /
+      Real.Gamma ((τ : ℝ) / 2 + 1))
+
+/-- **Explicit local recurrence Weyl bounds.** In every positive temporal
+dimension, the complete local target is bounded by exact multiples of the
+`τ`-th power of `√ε`. Thus the high-fidelity return exponent is `τ / 2`,
+with no dimension-linear error term in the exponent. -/
+theorem exists_observerReturnLocalTarget_weyl_bounds
+    {J : Type*} [Fintype J] {τ : ℕ} (hτ : 0 < τ)
+    (weight : J → ℝ) (gap : J → Fin τ → ℝ)
+    (hweight : ∀ j, 0 < weight j)
+    (hnondegenerate : ObserverTemporalMetricNondegenerate gap) :
+    ∃ r m M : ℝ, 0 < r ∧ 0 < m ∧ 0 < M ∧
+      ∀ ε : ℝ, 0 < ε → Real.sqrt (ε / M) ≤ r →
+        ENNReal.ofReal (Real.sqrt (ε / M)) ^ τ *
+              observerTemporalUnitBallVolume τ ≤
+          volume (observerReturnLocalTarget weight gap r ε) ∧
+        volume (observerReturnLocalTarget weight gap r ε) ≤
+          ENNReal.ofReal
+              (Real.sqrt ((Real.pi ^ 2 / 4) * ε / m)) ^ τ *
+            observerTemporalUnitBallVolume τ := by
+  letI : Nonempty (Fin τ) := Fin.pos_iff_nonempty.mp hτ
+  obtain ⟨r, m, M, hr, hm, hM, hbounds⟩ :=
+    exists_observerReturnLocalTarget_volume_ball_sandwich
+      weight gap hweight hnondegenerate
+  refine ⟨r, m, M, hr, hm, hM, fun ε hε hradius => ?_⟩
+  have h := hbounds ε hε hradius
+  simpa [EuclideanSpace.volume_ball,
+    EuclideanSpace.volume_closedBall,
+    observerTemporalUnitBallVolume] using h
 
 end
 

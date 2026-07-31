@@ -725,6 +725,35 @@ property.  Note carefully what this is not: `Z in I_a` does **not** give `Z = 0`
 remaining gap between the two is the gap that has been open since the sharpness question was first
 isolated.
 
+**What actually carries the coupling.**  The like-polarization terms vanish *identically*, not just
+modulo the ideal, so the shell product is not merely congruent to the mixed terms — it equals their
+sum exactly:
+
+```text
+S(a,b) D_r S(b,c)
+  = (A_b - A_a) U_r (R_c - R_b)  +  (A_b - A_a) U_r^{-1} (R_c - R_b)
+  + (R_b - R_a) U_r (A_c - A_b)  +  (R_b - R_a) U_r^{-1} (A_c - A_b).      (55)
+```
+
+So `Z` is congruent to a sum of exactly four finite time-band blocks, each a physical band composed
+with a Fourier band across a dilation, and the vanishing question is precisely **whether those four
+blocks cancel**.
+
+This is evidence against vanishing rather than for it, and the individual nonvanishing is now
+proved rather than argued.  The corpus computes the squared Hilbert--Schmidt norm of a finite time
+band as the exact rectangle area, so for a nondegenerate rectangle
+
+```text
+|| timeBand(a,b;c,d) ||_HS^2 = (b-a)(d-c) > 0,   hence  timeBand != 0.     (56)
+```
+
+Each of the four blocks in `(55)` is therefore individually nonzero.  Cancellation of four nonzero
+time-band blocks would be a coincidence rather than a structural identity — but it is not excluded,
+and the ideal-valued corrections in the congruence are of the same size, so nothing here decides
+it.  What `(56)` supplies is the missing input any non-cancellation argument must start from, and
+the energy is strictly monotone in the rectangle, so the four blocks have genuinely different
+sizes.
+
 ### Proof
 
 Induction on the chain length from the three-point law, with the chamber hypothesis inherited
@@ -901,6 +930,11 @@ provisional pending expert/literature review.
 | `(53)` coupling in the ideal | `evenSoninApertureSuccessiveLayerTransition_mem_principalRelativeIdeal` |
 | `(54)` layer presentation | `soninApertureLayerPresentation` |
 | `(54)` layer extended trace | `extendedTrace_soninApertureLayerPresentation` |
+| `(55)` exact mixed-term form | `evenTwoPolarizationShell_mul_evenDilationSum_mul_shell_eq_mixed` |
+| `(55)` coupling form | `evenSoninApertureSuccessiveLayerTransition_principalRelativeEq_mixed` |
+| `(56)` time band nonzero | `fullTimeBandFourier_ne_zero` |
+| `(56)` positive energy | `hsNormSq_fullTimeBandFourier_pos` |
+| energy strictly monotone | `hsNormSq_fullTimeBandFourier_lt_of_lt` |
 
 Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninPrincipalRelativeCyclicExtension.lean`,
@@ -928,7 +962,9 @@ Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninLayerShellCongruence.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninCouplingShellProduct.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninShellProductIdeal.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninApertureLayerExtendedTrace.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninApertureLayerExtendedTrace.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellProductMixedTerms.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninTimeBandNonvanishing.lean`.
 All declarations depend only on `propext`, `Classical.choice`, `Quot.sound`.
 
 Novelty split for Theorem G: `(7)` was already in the corpus
@@ -939,6 +975,13 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-07-31 — time-band nonvanishing proved from the corpus's rectangle-area formula, so the four
+  blocks carrying the coupling are individually nonzero and of strictly different sizes.  This is
+  the input a non-cancellation argument needs; it does not by itself exclude cancellation.
+- 2026-07-31 — exact mixed-term form: the like-polarization terms vanish identically, so the shell
+  product equals the sum of exactly four time-band blocks and the vanishing question is whether
+  those four cancel.  Each is individually nonzero by analyticity of band-limited functions, which
+  is evidence against vanishing without deciding it.
 - 2026-07-31 — the aperture layer itself given an extended-trace reading, with principal value the
   aperture cocycle.  Previously only the defect had one; the layer is more primitive and carries the
   same cocycle independently of any prime scale, so the cocycle belongs to the aperture pair rather

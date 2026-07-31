@@ -184,22 +184,79 @@ constrain candidates 2--3:
    pointed radical. By the outside-strip criterion, that assertion is
    equivalent to RH, so it cannot be inserted as a completion axiom.
 
+## Critical completion trilemma
+
+The local Krein obstruction collides with an independently formalized
+critical-boundary theorem.  Let
+\[
+ a_p=\left(\frac{\Lambda(p)}{\sqrt p}\right)^{1/2}.
+\]
+This is not a fitted auxiliary vector: it is the canonical uniquely
+renormalized Gamma-conormal rooted coordinate at inverse displacement
+\(-1/2\).  Euler's prime harmonic theorem gives
+\[
+ \sum_p a_p^2
+ =\sum_p\frac{\Lambda(p)}{\sqrt p}
+ =+\infty,
+\qquad
+ \sum_p(ca_p)^2<\infty\iff c=0.                       \tag{K4}
+\]
+Combining `(K2)` with `(K4)` gives the exact scalar critical-completion
+trilemma:
+
+\[
+\boxed{
+\begin{array}{c}
+\text{retain the reflected interval cell}
+   \Longrightarrow \text{a strict negative packet};\\[2mm]
+\text{activate its canonical rooted critical channel by }c\ne0
+   \Longrightarrow \text{divergent cofinal Hilbert mass};\\[2mm]
+c=0
+   \Longrightarrow \text{the strict negative packet remains.}
+\end{array}}
+\tag{K5}
+\]
+
+Thus no prime-independent scalar subtraction, rescaling, finite-dimensional
+border, or unrenormalized orthogonal prime sum can be the requested
+factorization.  This is stronger than saying one proposed Gram failed:
+ordinary Hilbert completion and exact local reflection are mutually
+incompatible at critical weight.  The only surviving category is a
+division-free, cross-prime/Gamma correspondence in which the leading rooted
+coordinate cancels before the cofinal norm is formed.  Its positive output
+cannot be obtained by completing the individual source legs and subtracting
+afterward.
+
+Lean certificate:
+
+- `GammaCoPoissonIntervalKreinNoGo.lean`:
+  `gammaCoPoissonSymmetricPacketValue_re_neg`,
+  `gammaCoPoissonSymmetricPacketDeterminant_re_neg`;
+- `SuzukiCriticalRootedBianchiCofinalNoGo.lean`:
+  `not_summable_sq_suzukiCriticalRootedBianchiPrimeAmplitude`,
+  `summable_const_mul_sq_suzukiCriticalRootedBianchiPrimeAmplitude_iff`;
+- `GammaCoPoissonCriticalCompletionTrilemma.lean`:
+  `gammaCoPoissonCriticalCompletionTrilemma`,
+  `gammaCoPoisson_no_nonzero_scalarCriticalHilbertCompletion`.
+
 ## No-go closure
 
 - **Exact killing theorem/mechanism:** each individual logarithmic action has
   the strict negative determinant `(K2)`. Orthogonal primewise completely
   positive factorization is impossible already on two tests.
 - **Strongest positive survivor:** the exact reflected/Krein common-test
-  factorization `(K1)` and its absolutely convergent all-action codiagonal
-  `(K3)`.
+  factorization `(K1)`, its absolutely convergent all-action codiagonal
+  `(K3)`, and the exact classification `(K5)` forcing any positive replacement
+  to cancel cross-prime/Gamma leading coordinates before completion.
 - **New insight:** singularity is forced before continuation. Arithmetic decay
   lives jointly at opposite interval endpoints; neither canonical feature leg
-  is Hilbert-summable by itself. The missing positivity is therefore global
-  annihilation/shorting of a reflected negative sector, not construction of
-  more local positive features.
-- **Status:** Stage 1. Paper proof of `(K1)`--`(K3)` complete; Lean
-  formalization of the local determinant theorem is authorized. The
-  RH-bearing global shorting theorem remains open.
+  is Hilbert-summable by itself, and the canonical rooted critical repair is
+  itself non-Hilbert for every nonzero scalar. The missing positivity is
+  therefore a pre-Hilbert cross-prime cancellation/shorting of a reflected
+  negative sector, not construction of more local positive features.
+- **Status:** Stage 1. Local determinant and scalar critical-completion
+  trilemma are formalized unconditionally. The RH-bearing global shorting
+  theorem remains open.
 
 ## Log
 
@@ -210,3 +267,8 @@ constrain candidates 2--3:
   codiagonal. This rules out every orthogonal primewise CP construction and
   identifies global Gamma-coupled shorting as the only surviving positive
   mechanism.
+- 2026-07-31 — Combined local Krein negativity with the canonical critical
+  rooted-coordinate divergence.  Formalized the scalar completion trilemma:
+  zero correction leaves negativity; every nonzero scalar correction is not
+  cofinally square-summable.  This forces cancellation before Hilbert
+  completion.

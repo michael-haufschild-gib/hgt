@@ -3054,3 +3054,57 @@ has left the list.
 **Reading of the number.**  98 is still not a debt count — it contains the capstone-`let` class and
 the recursor artifacts, which no unfolding can remove.  But it is now ~13% smaller than the raw
 figure purely from calibration, and the classes that remain are documented rather than guessed.
+
+### Remedial check: none of this session's modules duplicates anything
+
+After the `pointedSupport_one` collision, the duplicate-statement instrument was re-run over the
+whole corpus and filtered for this session's 35 new modules: **29 857 propositions, 46 cross-module
+duplicate groups, none of them involving any module added this session.**  The collision was the
+only one, and it is fixed.  The 46 groups are the pre-existing ones already recorded above
+(`local instance` boilerplate at the head, genuine duplicate theorem pairs in the tail).
+
+### The missing half of the approximation-number theory
+
+The last genuinely open row of `RHTower` is the critical asymptotic
+`(n+1) · a_n(T)^p → gaussPairedChannelResidue` — the single analytic input the Schatten collapse
+left standing.  Producing it needs an operator whose approximation numbers are *known*, and the
+corpus could only bound them from **above**: `approxNumber_le` says a rank-`≤ n` operator bounds
+`a_n`, and nothing bounded it from below, so no approximation number could be computed at all.
+
+`RHTower/ApproximationNumberLowerBound.lean` (built, registered, axioms clean) supplies the other
+half:
+
+* **`le_approxNumber_of_subspace`** — if `T` uniformly expands an `(n+1)`-dimensional subspace,
+  `c ‖w‖ ≤ ‖T w‖` for every `w` in it, then `c ≤ a_n(T)`.  The proof is a dimension count: an
+  operator of rank at most `n` maps that subspace into a space of dimension at most `n`, so by
+  rank-nullity it kills a nonzero vector of it, on which `T − F` still expands by `c`;
+* **`approxNumber_eq_of_subspace_of_hasRankLE`** — with a matching truncation the approximation
+  number is pinned *exactly*: exhibit one rank-`≤ n` operator at distance `c` and one expanded
+  `(n+1)`-dimensional subspace.
+
+This is the reusable connector the Gauss-channel row needs.  What remains for that row is the
+concrete model — a diagonal operator on a Hilbert space with an orthonormal basis, whose truncation
+and expanded subspace are the obvious ones — and that is now a construction rather than a missing
+theory.  Recorded as the next step in this lane.
+
+### An algebra of finite-rank operators
+
+The other side of the same gap: `HasRankLE` was defined but the only operator ever shown to have
+finite rank was `0`, so the upper bound `a_n ≤ ‖T − F‖` had nothing to be applied to either.
+`RHTower/FiniteRankOperatorAlgebra.lean` (built, registered, axioms clean):
+
+* `HasRankLE.comp_left`, `.comp_right`, `.smul`, `.neg` — finite rank is preserved by composition on
+  either side, by scalar multiples and by negation.  Post-composition uses
+  `Submodule.finrank_map_le`; the others keep the same containing subspace;
+* **`hasRankLE_starProjection`** — the orthogonal projection onto a finite-dimensional subspace has
+  rank its dimension;
+* **`approxNumber_eq_of_projection`** — the two-sided pin, assembled: a projection realizing the
+  distance and an expanded subspace of one higher dimension determine `a_n(T)` exactly.
+
+Toolchain note: mathlib has renamed this API.  `orthogonalProjection` is deprecated in favour of
+`Submodule.orthogonalProjectionOnto : E →L[𝕜] K`, and the self-map version is
+`Submodule.starProjection : E →L[𝕜] E`; the module lives at
+`Mathlib.Analysis.InnerProductSpace.Projection.Basic`.
+
+With the lower bound of the previous entry, approximation numbers are now computable in principle:
+what the Gauss-channel asymptotic still needs is one concrete diagonal model, not more theory.

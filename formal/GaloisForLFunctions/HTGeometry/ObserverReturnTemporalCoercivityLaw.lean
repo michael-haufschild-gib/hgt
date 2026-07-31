@@ -209,7 +209,8 @@ theorem exists_observerTemporalPrincipalPhaseRadius
   have hnorm :
       (∑ k : Fin τ, theta k ^ 2) = ‖theta‖ ^ 2 := by
     rw [← real_inner_self_eq_norm_sq]
-    rfl
+    rw [EuclideanSpace.inner_eq_star_dotProduct]
+    simp [dotProduct, pow_two]
   have hcauchy :
       observerTemporalCoordinateAction gap (fun k => theta k) j ^ 2 ≤
         (∑ k : Fin τ, gap j k ^ 2) *

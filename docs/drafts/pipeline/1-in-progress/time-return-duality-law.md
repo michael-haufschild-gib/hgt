@@ -109,3 +109,15 @@ decay.
   radii proportional to `√ε`, and its measure is trapped between their
   exact volumes. This proves the local `ε^(τ/2)` Weyl scale without a
   Gaussian or randomness premise.
+- 2026-07-31 — removed the remaining local hypotheses in
+  `ObserverReturnTemporalCoercivityLaw.lean`: every finite separating
+  positively weighted gap family has a positive-definite Gram matrix,
+  automatic two-sided quadratic bounds, and an automatic positive principal
+  phase radius. `ObserverReturnLocalVolumeLaw.lean` now contains an
+  assumption-free local ball sandwich for every such family.
+- 2026-07-31 — proved the compact global localization step in
+  `ObserverReturnGlobalLocalizationLaw.lean`: on any compact orbit carrier,
+  the complete sufficiently small return sublevel lies in any prescribed
+  neighborhood of the exact-return set. Foreground compiles passed; axiom
+  audit of the new coercivity and automatic local-volume theorems uses only
+  `propext`, `Classical.choice`, and `Quot.sound`.
