@@ -333,7 +333,15 @@ theorem exists_norm_poleTransform_gt [Countable G] (hlf : S.IsLocallyFiniteSpect
     have hnum : ‖S.traceCoeff P g₀‖ * (n / 2) ≤
         ((S.squareFiber_finite hlf g₀).toFinset.card : ℝ) *
           (‖S.traceCoeff P g₀‖ * ‖S.poleNumer T s g₀‖) := by
-      nlinarith [hkpos, hcnorm, hNlow, hnpos]
+      have h1 : ‖S.traceCoeff P g₀‖ * (n / 2) ≤
+          ‖S.traceCoeff P g₀‖ * ‖S.poleNumer T s g₀‖ :=
+        mul_le_mul_of_nonneg_left hNlow.le hcnorm.le
+      have hxnn : 0 ≤ ‖S.traceCoeff P g₀‖ * ‖S.poleNumer T s g₀‖ := by positivity
+      have h2 : ‖S.traceCoeff P g₀‖ * ‖S.poleNumer T s g₀‖ ≤
+          ((S.squareFiber_finite hlf g₀).toFinset.card : ℝ) *
+            (‖S.traceCoeff P g₀‖ * ‖S.poleNumer T s g₀‖) :=
+        le_mul_of_one_le_left hxnn hkpos
+      linarith
     have hden : 0 < ‖s ^ 2 + S.gamma g₀ ^ 2‖ := norm_pos_iff.mpr hsqne
     rw [lt_div_iff₀ hden]
     have hAd : A * ‖s ^ 2 + S.gamma g₀ ^ 2‖ ≤ A * (3 * n * δ) :=

@@ -10,7 +10,8 @@
   `formal/GaloisForLFunctions/HTGeometry/WaveTraceSpectrum.lean`;
   `formal/GaloisForLFunctions/HTGeometry/WaveTraceConvexRecurrence.lean`;
   `formal/GaloisForLFunctions/HTGeometry/WaveTraceLaplace.lean`;
-  `formal/GaloisForLFunctions/HTGeometry/WaveTracePoleTransform.lean`
+  `formal/GaloisForLFunctions/HTGeometry/WaveTracePoleTransform.lean`;
+  `formal/GaloisForLFunctions/HTGeometry/WaveTracePoleDivergence.lean`
 - **Statement:** Every finite vector of odd inverse-power Xi-zero traces has the origin in the
   interior of the closed convex hull of each cofinal tail; equivalently, finitely many arbitrarily
   late apertures support a positive quadrature annihilating the whole vector exactly.
@@ -368,17 +369,37 @@ Note the majorant needs no local finiteness of the divisor: a positive uniform d
 pole divisor suffices.  Local finiteness is needed only to produce such a distance and to
 isolate a single pole.
 
+### Genuine pole — `HTGeometry/WaveTracePoleDivergence.lean`
+
+This discharges the `[POLE-CANCELLATION TEST]` of the hostile audit exactly as the audit
+demands: the active frontier is recomputed after deleting the frequencies the polynomial
+weight kills, and the surviving residues are shown to reinforce rather than cancel.
+
+- `IsLocallyFiniteSpectrum`, `squareFiber`, `squareFiber_finite`, `exists_square_separation` :
+  a locally finite divisor keeps every other frequency square at a positive distance `d` from
+  a given one.  Only this separation is needed later, not local finiteness itself.
+- `traceCoeff_mul_poleNumer_eq_of_mem_squareFiber` : the reinforcement.  Both the trace
+  coefficient and the phase numerator change sign under `gamma ↦ -gamma` — the coefficient
+  because of the odd power `gamma ^ 3`, the numerator because `sin` is odd and `cos` is even —
+  so their product is invariant.  Every frequency of the fibre therefore contributes the
+  *identical* resolvent term; cancellation is impossible and the residue is `card` times the
+  single-frequency one.
+- `poleNumer_at_pole` : at `s = i gamma` the phase numerator collapses to `gamma` itself, by
+  Euler's formula.  It is nonzero, so the head is an honest simple pole.
+- `poleTransform_eq_head_add_tail` : off the pole the series splits into the reinforced finite
+  head over the square fibre and a tail bounded by the summable majorant.
+- `exists_norm_poleTransform_gt` : consequently, on every punctured neighbourhood of the pole
+  of an active frequency the transform exceeds any prescribed bound.  The pole is genuine.
+
 ### Remaining formal work
 
-Two steps remain in the Landau half of Section 3:
+One step remains: the Landau transfer itself, through the corpus's continuous engine
+`RHTower/LandauIntegralTransfer.lean` (`landau_complexMGF_integrable_transfer`).  Eventual
+one-sidedness makes the wave trace the density of a positive measure whose complex
+moment-generating function is `poleTransform` composed with a reflection; holomorphy of
+`poleTransform` on balls centred on the real axis (available because no frequency is purely
+imaginary, so no pole is real) pushes the convergence abscissa left indefinitely, and the
+resulting entire Laplace transform contradicts `exists_norm_poleTransform_gt`.
 
-1. the genuine-pole argument — at an active `gamma_0` the terms with `gamma ^ 2 = gamma_0 ^ 2`
-   all carry the same coefficient (it depends on `gamma` only through `gamma ^ 2`), so their
-   residues reinforce and cannot cancel; the rest of the series is holomorphic there;
-2. the Landau transfer itself, through the corpus's continuous engine
-   `RHTower/LandauIntegralTransfer.lean` (`landau_complexMGF_integrable_transfer`), pushing the
-   convergence abscissa left past every real point and contradicting the pole.
-
-Together these give `CofinalWaveSignEscape` for any spectrum without a purely imaginary
-frequency, which is the last hypothesis of
-`exists_cofinal_positive_quadrature_waveTrace`.
+That gives `CofinalWaveSignEscape` for any spectrum without a purely imaginary frequency,
+which is the last hypothesis of `exists_cofinal_positive_quadrature_waveTrace`.
