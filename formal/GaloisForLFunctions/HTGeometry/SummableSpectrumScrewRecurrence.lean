@@ -258,6 +258,120 @@ theorem screwSeries_limsup_eq_screwHullMax (hpos : ∀ i, 0 ≤ a i) (hsum : Sum
 
 end Extremes
 
+
+/-! ## Syndetic return times -/
+
+section Syndetic
+
+variable [Countable I] {a omega : I → ℝ}
+
+omit [Countable I] in
+theorem screwSeries_continuous (hpos : ∀ i, 0 ≤ a i) (hsum : Summable a) :
+    Continuous (screwSeries a omega) := by
+  have hcomp : screwSeries a omega = screwValue a ∘ screwPhase omega := by
+    funext t
+    exact screwSeries_eq_screwValue a omega t
+  rw [hcomp]
+  exact (screwValue_continuous hpos hsum).comp (screwPhase_continuous omega)
+
+/-- **Bounded-gap phase returns.** Every open set meeting the relation hull is entered by
+the screw line within one fixed time window from any starting time. -/
+theorem exists_window_screwPhase_mem_of_isOpen {U : Set (I → UnitAddCircle)}
+    (hU : IsOpen U) (hne : (U ∩ screwHull omega).Nonempty) :
+    ∃ L : ℝ, 0 < L ∧ ∀ tau : ℝ, ∃ t ∈ Set.Icc tau (tau + L), screwPhase omega t ∈ U := by
+  classical
+  obtain ⟨u, huU, huK⟩ := hne
+  set c : ℝ → Set (I → UnitAddCircle) := fun s => {x | x + screwPhase omega s ∈ U} with hc
+  have hcopen : ∀ s : ℝ, IsOpen (c s) := fun s => hU.preimage (by fun_prop)
+  have hcover : screwHull omega ⊆ ⋃ s ∈ Set.Ici (0 : ℝ), c s := by
+    intro x hx
+    have hdiff : u - x ∈ screwHull omega := sub_mem_screwHull huK hx
+    rw [← closure_screwPhase_image_Ici omega 0] at hdiff
+    have hopen : IsOpen ((fun w : I → UnitAddCircle => x + w) ⁻¹' U) :=
+      hU.preimage (by fun_prop)
+    have hmem : u - x ∈ (fun w : I → UnitAddCircle => x + w) ⁻¹' U := by
+      simp only [Set.mem_preimage]
+      rwa [add_sub_cancel]
+    obtain ⟨w, hw1, ⟨s, hs, rfl⟩⟩ := mem_closure_iff.mp hdiff _ hopen hmem
+    exact Set.mem_biUnion hs hw1
+  obtain ⟨F, hFsub, hFfin, hFcover⟩ :=
+    (isCompact_screwHull omega).elim_finite_subcover_image (fun s _ => hcopen s) hcover
+  obtain ⟨L0, hL0⟩ := hFfin.bddAbove
+  refine ⟨max L0 1, lt_of_lt_of_le zero_lt_one (le_max_right _ _), fun tau => ?_⟩
+  have hmem : screwPhase omega tau ∈ screwHull omega := screwPhase_mem_screwHull omega tau
+  obtain ⟨s, hsF, hsmem⟩ := Set.mem_iUnion₂.mp (hFcover hmem)
+  have hs0 : 0 ≤ s := hFsub hsF
+  have hsL : s ≤ max L0 1 := le_trans (hL0 hsF) (le_max_left _ _)
+  refine ⟨tau + s, ⟨by linarith, by linarith⟩, ?_⟩
+  rw [screwPhase_add]
+  exact hsmem
+
+/-- **Relatively dense approximate returns.** Every value of `[0, M]` is approximated to
+any accuracy within one fixed time window from any starting time. -/
+theorem exists_window_screwSeries_near (hpos : ∀ i, 0 ≤ a i) (hsum : Summable a)
+    {y : ℝ} (hy : y ∈ Set.Icc 0 (screwHullMax a omega)) {ε : ℝ} (hε : 0 < ε) :
+    ∃ L : ℝ, 0 < L ∧
+      ∀ tau : ℝ, ∃ t ∈ Set.Icc tau (tau + L), |screwSeries a omega t - y| < ε := by
+  have hUopen : IsOpen (screwValue a ⁻¹' Set.Ioo (y - ε) (y + ε)) :=
+    isOpen_Ioo.preimage (screwValue_continuous hpos hsum)
+  have hUne : ((screwValue a ⁻¹' Set.Ioo (y - ε) (y + ε)) ∩ screwHull omega).Nonempty := by
+    rw [← screwValue_image_screwHull hpos hsum] at hy
+    obtain ⟨z, hz, hzval⟩ := hy
+    refine ⟨z, ?_, hz⟩
+    simp only [Set.mem_preimage, Set.mem_Ioo, hzval]
+    constructor <;> linarith
+  obtain ⟨L, hL, hwin⟩ := exists_window_screwPhase_mem_of_isOpen hUopen hUne
+  refine ⟨L, hL, fun tau => ?_⟩
+  obtain ⟨t, ht, hmem⟩ := hwin tau
+  refine ⟨t, ht, ?_⟩
+  rw [screwSeries_eq_screwValue]
+  simp only [Set.mem_preimage, Set.mem_Ioo] at hmem
+  rw [abs_lt]
+  constructor <;> linarith [hmem.1, hmem.2]
+
+/-- **Relatively dense exact level sets.** Every interior value is attained exactly within
+one fixed time window from any starting time. -/
+theorem exists_window_screwSeries_eq (hpos : ∀ i, 0 ≤ a i) (hsum : Summable a)
+    {y : ℝ} (hy0 : 0 < y) (hyM : y < screwHullMax a omega) :
+    ∃ L : ℝ, 0 < L ∧ ∀ tau : ℝ, ∃ t ∈ Set.Icc tau (tau + L), screwSeries a omega t = y := by
+  have himg := screwValue_image_screwHull (a := a) (omega := omega) hpos hsum
+  have hlow : (screwValue a ⁻¹' Set.Iio y ∩ screwHull omega).Nonempty := by
+    have h0 : (0 : ℝ) ∈ Set.Icc 0 (screwHullMax a omega) := ⟨le_refl 0, by linarith⟩
+    rw [← himg] at h0
+    obtain ⟨z, hz, hzval⟩ := h0
+    exact ⟨z, by simp only [Set.mem_preimage, Set.mem_Iio, hzval]; exact hy0, hz⟩
+  have hhigh : (screwValue a ⁻¹' Set.Ioi y ∩ screwHull omega).Nonempty := by
+    have h0 : screwHullMax a omega ∈ Set.Icc 0 (screwHullMax a omega) :=
+      ⟨screwHullMax_nonneg hpos hsum, le_refl _⟩
+    rw [← himg] at h0
+    obtain ⟨z, hz, hzval⟩ := h0
+    exact ⟨z, by simp only [Set.mem_preimage, Set.mem_Ioi, hzval]; exact hyM, hz⟩
+  obtain ⟨L1, hL1, hwin1⟩ :=
+    exists_window_screwPhase_mem_of_isOpen
+      (isOpen_Iio.preimage (screwValue_continuous hpos hsum)) hlow
+  obtain ⟨L2, hL2, hwin2⟩ :=
+    exists_window_screwPhase_mem_of_isOpen
+      (isOpen_Ioi.preimage (screwValue_continuous hpos hsum)) hhigh
+  refine ⟨L1 + L2, by linarith, fun tau => ?_⟩
+  obtain ⟨t1, ht1, hm1⟩ := hwin1 tau
+  obtain ⟨t2, ht2, hm2⟩ := hwin2 t1
+  have hv1 : screwSeries a omega t1 < y := by
+    rw [screwSeries_eq_screwValue]; exact hm1
+  have hv2 : y < screwSeries a omega t2 := by
+    rw [screwSeries_eq_screwValue]; exact hm2
+  have hle : t1 ≤ t2 := ht2.1
+  have hiv :=
+    intermediate_value_Icc hle
+      (screwSeries_continuous (a := a) (omega := omega) hpos hsum).continuousOn
+  obtain ⟨t, htmem, htval⟩ := hiv ⟨hv1.le, hv2.le⟩
+  refine ⟨t, ⟨le_trans ht1.1 htmem.1, ?_⟩, htval⟩
+  have h1 := htmem.2
+  have h2 := ht2.2
+  have h3 := ht1.2
+  linarith
+
+end Syndetic
+
 end
 
 end GaloisForLFunctions.HTGeometry

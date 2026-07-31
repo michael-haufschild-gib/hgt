@@ -609,6 +609,28 @@ eventually nonzero on an upper vertical line of positive abscissa (`Γ` has no z
 Bell value has leading term `ψʳ` with `‖ψ‖ → ∞`), which supplies the dominant-coefficient
 nonvanishing.  This is the first fully unconditional instance of eq. (8) in the tree.
 
+`formal/GaloisForLFunctions/HTGeometry/GammaVerticalDecay.lean` proves **eq. (24) unconditionally**:
+`Γ(σ + it) → 0` as `t → +∞`, for every `σ > 0`.  The mechanism is elementary and avoids Stirling
+entirely.  Euler's integral gives the phase-loss bound `‖Γ(s)‖ ≤ Γ(Re s)` on the right half-plane
+(`norm_Gamma_le_real_Gamma_re`); applying it one step to the right and pulling back through the
+recursion `Γ(s+1) = sΓ(s)`, whose factor has modulus at least `t`, converts the bound into decay
+`‖Γ(σ+it)‖ ≤ Γ(σ+1)/t` (`norm_Gamma_vertical_le`).  Since `Γ` has no zeros, the limit is taken inside
+the punctured neighbourhood of the origin, which is the form the monomial valuation needs; this makes
+`gamma_monomial_valuation_residue` unconditional
+(`gamma_monomial_valuation_residue_vertical`).
+
+`formal/GaloisForLFunctions/HTGeometry/GammaRationalProjectiveBoundary.lean` proves **eq. (5) for the
+subfield `ℂ(Γ) ⊆ K_Γ`** and the collapse it implies.  A `GammaRationalDatum` records `P = X^u R`,
+`Q = X^v S` with `R(0), S(0) ≠ 0`; `gammaRational_ratio_eq` separates the exponential valuation
+exactly, `(P₁/Q₁)/(P₂/Q₂) = Γⁿ · (R₁S₂)/(S₁R₂)` with `u₁+v₂ = n + (u₂+v₁)`, and
+`gammaRationalDatum_ratio_tendsto` takes the limit along a vertical return sequence: the ratio tends
+to `0ⁿ · (residue₁/residue₂)`, i.e. to `0` when the first valuation is strictly larger and to the
+residue quotient when the valuations agree.  That is exactly the one-point projective boundary with
+the ordering (26) restricted to the `k`-grading.  `gammaRational_vertical_recurrence_collapse` then
+gives the second fully unconditional instance of eq. (8): a holomorphic Bohr almost-periodic `f` on
+the strip satisfying `∑_α (P_α/Q_α)(Γ)·M_α(f) = 0`, with `β` of minimal valuation, satisfies the
+autonomous relation with coefficients `0^{n_α}·(residue_α/residue_β)` and `β`-entry `1`.
+
 `formal/GaloisForLFunctions/HTGeometry/IsometricRecurrence.lean` abstracts the recurrence to any
 relatively-compact isometric `ℝ`-action (`isometricAction_recurrence`, `isometricAction_return_seq`),
 so it instantiates both to `ℝ →ᵇ ℂ` and to vertical translation of holomorphic functions on a strip.
@@ -632,9 +654,10 @@ Still genuinely open (mathlib-absent, being built incrementally): the mean value
 the hull; the *topological heart* of eq. (9) — the finite jet-sample embedding `hull ↪ ℂ^N`,
 covering-dimension `≤ 2N`, and Pontryagin–van Kampen (mathlib has only the `PontryaginDual`
 definition, not the duality theorem) — which supplies the finite frequency generators consumed by
-`FrequencyRank`; the analytic Poincaré transfer promoting eq. (19)/(3) to unconditional analytic
-asymptotics for a general Gamma-field coefficient (the *jet* coefficients are already unconditional,
-see `GammaJetVerticalStripCollapse`); and the relative differential Galois theory for the classical
+`FrequencyRank`; the analytic Poincaré transfer promoting eq. (19) to unconditional analytic
+asymptotics for a coefficient with nonconstant digamma-field data (the *jet* coefficients and the
+whole subfield `ℂ(Γ)` are already unconditional, see `GammaJetVerticalStripCollapse` and
+`GammaRationalProjectiveBoundary`); and the relative differential Galois theory for the classical
 eq. (32) (Wang–Yao).
 
 `formal/GaloisForLFunctions/HTGeometry/GammaProjectivePrimeTorusCarrier.lean` proves the §7

@@ -2216,3 +2216,87 @@ bounded and the same modal-width law applies — which would refute the hypothes
 unbalanced tree route to RH.  Next step in this lane: check whether the variance bound is stated
 for the normalized cumulant or only for the balanced normalization.  Card:
 `1-in-progress/prime-source-ferromagnetic-ising-lee-yang-limit-rh.md`.
+
+### The unbalanced Ising row, closed: a central mass floor
+
+The remaining `TendstoLocallyUniformly` row — the *unnormalized* partition, hypothesis of
+`riemannHypothesis_of_primeIsingTreePartition_tendstoLocallyUniformly` — is now category (b) as
+well, and by a shorter route than the variance/modal-width argument sketched above.
+
+`RHTower/PrimeIsingTreeCentralMassFloorLaw.lean` (built, registered, axioms clean):
+
+* `deriv_primeIsingTreePartition_zero` — the unnormalized partition satisfies
+  `Z'(0) = Z(0) · (−m(T)·i/2)`, where `m(T) = treePrimeLeeYangMass T`.  This is the scalar
+  normalization identity read backwards: the corpus already had
+  `deriv_centralNormalizedPrimeIsingTreePartition_zero`, and `Z = Z(0) · N` with `Z(0) ≠ 0`;
+* `logTwo_div_two_le_norm_logDeriv_primeIsingTreePartition` — hence `|Z'(0)/Z(0)| = m(T)/2 ≥
+  log 2 / 2`, since `log 2 ≤ m(T)` for **every** finite tree;
+* **`logTwo_div_two_le_norm_logDeriv_of_tendstoLocallyUniformly_primeIsingTreePartition`** — the
+  floor survives the limit: any locally uniform limit `f` with `f 0 ≠ 0` has
+  `|f'(0)/f(0)| ≥ log 2 / 2`.  Both jets converge by
+  `HTGeometry.iteratedDeriv_tendsto_of_locallyUniform` at orders `0` and `1`, and `f 0 ≠ 0` makes
+  the quotient converge;
+* `not_tendstoLocallyUniformly_primeIsingTreePartition_XiC`,
+  `…_unitCentralXiC` — the completed Xi germ and its unit-pointed version are even, so their
+  central derivative vanishes and the floor excludes them.  **The unbalanced tree route to RH is
+  therefore refuted**, exactly as the balanced and scalar-normalized ones already were.
+
+The remaining variant, `riemannHypothesis_of_primeIsingTreePartition_tendstoLocallyUniformly_mul_XiC`,
+is *not* refuted, and the law says precisely why:
+
+* **`logTwo_div_two_le_norm_logDeriv_normalization_mul_XiC`** — if the limit is `E · XiC` with `E`
+  entire and zero free, then `|E'(0)/E(0)| ≥ log 2 / 2`.  The Xi factor contributes nothing to the
+  central logarithmic derivative, so the zero-free normalization must carry the *entire* mass
+  floor by itself.
+
+**Reading.**  Four scattered no-gos (balanced, central-normalized to `XiC`, central-normalized to
+`unitCentralXiC`, unnormalized) are one inequality: the central logarithmic derivative of a finite
+prime Ising tree partition is bounded away from zero by `log 2 / 2`, uniformly in the tree, and
+that bound is closed under locally uniform limits.  What used to look like four separate parity or
+modal-width obstructions is a single mass floor, and the only surviving formulation of the route is
+the one that pays for it in the normalization.
+
+### The Suzuki transport-derivative row, discharged by the inverse function theorem
+
+`HasDerivAt (suzukiPhaseTransport φₛ φᵣ) transportSpeed x` is a hypothesis of the conjugacy
+Jacobian layer (phase speed, Clark atom mass, Donoghue probability mass).  It is not an
+independent assumption at all: the transport **is** `φₛ⁻¹ ∘ φᵣ`.
+
+`RHTower/SuzukiPhaseTransportDerivative.lean` (built, registered, axioms clean):
+
+* **`hasDerivAt_suzukiPhaseTransport`** — if `φᵣ` is differentiable at `x` and `φₛ` has nonzero
+  speed at the transported point, the transport is differentiable at `x` with speed
+  `phaseSpeedₛ⁻¹ * phaseSpeedᵣ`.  The inverse branch comes from
+  `HasDerivAt.of_local_left_inverse` with `φₛ.symm.continuous.continuousAt`, the idiom the corpus
+  already uses in `hasDerivAt_suzukiCenteredInversePhase`;
+* `suzukiPhaseTransport_phaseSpeed_of_phases`, `suzukiPhaseTransport_atomMass_of_phases` — the two
+  Jacobian theorems restated with the transport hypothesis removed and the transport speed given
+  explicitly as the ratio;
+* `affineOrderIso`, `hasDerivAt_affineOrderIso`, `hasDerivAt_suzukiPhaseTransport_affine` — the
+  layer is inhabited, and increasing affine phases realize **every** positive transport speed
+  `a₁⁻¹ a₂`, so the Jacobian statements are not about an empty class.
+
+This is the cleanest kind of row on the list: the premise was a theorem, not an input.
+
+### The `K_R` continuity row, discharged by realizing both parities
+
+`Continuous KW.sigma` is the standing hypothesis of the `KRealClosedCokernel` layer, and the
+corpus exhibited no `KRealStructure` at all — in either parity.  The whole layer was a
+quantification over a class never shown to be nonempty.
+
+`RHTower/KRealStructureRealization.lean` (built, registered, axioms clean):
+
+* `conjSemilinear`, `kRealConjugation`, `continuous_kRealConjugation_sigma` — complex conjugation
+  on `ℂ` is an **even** structure, and it is continuous;
+* `quaternionicSemilinear`, `kRealQuaternionic`, `continuous_kRealQuaternionic_sigma` — the
+  quaternionic map `(x, y) ↦ (−conj y, conj x)` on `ℂ × ℂ` is an **odd** structure, and it is
+  continuous;
+* `KRealStructure.eq_zero_of_sigma_eq_self` — an odd structure has no nonzero fixed vector;
+* `KRealStructure.sigma_sigma` — an even structure map is an involution;
+* **`not_nonempty_kRealStructure_true_complex`** — and the odd realization is *minimal*: `ℂ`
+  carries no odd structure at all.  Every conjugate-linear endomorphism of `ℂ` is `z ↦ conj z · c`
+  with `c = σ 1`, so `σ² = normSq c ≥ 0` and can never be `−1`.  Two complex dimensions are
+  necessary.
+
+So the `K_R` layer is inhabited in both parities, the odd parity is genuinely quaternionic, and the
+minimal odd model is `ℂ²`.

@@ -279,4 +279,54 @@ theorem closure_chartTransvectionSet_eq_transverseStabilizer :
     obtain ⟨L, hL⟩ := isChartProduct_of_fromBlocks A C hA
     exact mem_closure_of_chartListProd L g (by rw [hACg, hL])
 
+
+/-! ## Block parametrisation of the transverse stabiliser -/
+
+/-- The chart block of a transverse-stabilising map, as a unimodular matrix. -/
+def transverseChartBlock (g : transverseStabilizer ι κ K) : SpecialLinearGroup ι K :=
+  ⟨((g : SpecialLinearGroup (ι ⊕ κ) K) : Matrix (ι ⊕ κ) (ι ⊕ κ) K).toBlocks₁₁,
+    det_toBlocks₁₁_of_mem_transverseStabilizer
+      (coe_eq_fromBlocks_of_mem_transverseStabilizer g.2)⟩
+
+/-- The transverse shear block of a transverse-stabilising map. -/
+def transverseShearBlock (g : transverseStabilizer ι κ K) : Matrix κ ι K :=
+  ((g : SpecialLinearGroup (ι ⊕ κ) K) : Matrix (ι ⊕ κ) (ι ⊕ κ) K).toBlocks₂₁
+
+/-- The transverse-stabilising map assembled from a unimodular chart block and an arbitrary
+transverse shear. -/
+def transverseOfBlocks (A : SpecialLinearGroup ι K) (C : Matrix κ ι K) :
+    transverseStabilizer ι κ K :=
+  ⟨⟨Matrix.fromBlocks (A : Matrix ι ι K) 0 C 1, by
+      rw [Matrix.det_fromBlocks_zero₁₂, Matrix.det_one, mul_one]; exact A.2⟩,
+    mem_transverseStabilizer_of_coe_eq_fromBlocks rfl⟩
+
+/-- **Block parametrisation of the projective observer group.**  Fixing the transverse subspace
+pointwise is exactly the data of a unimodular chart block together with an arbitrary transverse
+shear, so the stabiliser is `SL(K^ι) × Hom(K^ι, K^κ)` as a set. -/
+def transverseStabilizerEquiv :
+    transverseStabilizer ι κ K ≃ SpecialLinearGroup ι K × Matrix κ ι K where
+  toFun g := (transverseChartBlock g, transverseShearBlock g)
+  invFun p := transverseOfBlocks p.1 p.2
+  left_inv g :=
+    Subtype.ext (Subtype.ext (coe_eq_fromBlocks_of_mem_transverseStabilizer g.2).symm)
+  right_inv p := by
+    refine Prod.ext (Subtype.ext ?_) ?_
+    · show (Matrix.fromBlocks (p.1 : Matrix ι ι K) 0 p.2 1).toBlocks₁₁ = _
+      rw [Matrix.toBlocks_fromBlocks₁₁]
+    · show (Matrix.fromBlocks (p.1 : Matrix ι ι K) 0 p.2 1).toBlocks₂₁ = _
+      rw [Matrix.toBlocks_fromBlocks₂₁]
+
+/-- **Semidirect-product law.**  Composition of transverse stabilisers multiplies chart blocks and
+twists the shear by the second chart block: `(A,C)·(A',C') = (A A', C A' + C')`. -/
+theorem transverseOfBlocks_mul (A A' : SpecialLinearGroup ι K) (C C' : Matrix κ ι K) :
+    transverseOfBlocks A C * transverseOfBlocks A' C' =
+      transverseOfBlocks (A * A') (C * (A' : Matrix ι ι K) + C') := by
+  refine Subtype.ext (Subtype.ext ?_)
+  show Matrix.fromBlocks (A : Matrix ι ι K) 0 C 1 *
+      Matrix.fromBlocks (A' : Matrix ι ι K) 0 C' 1 = _
+  rw [Matrix.fromBlocks_multiply]
+  show _ = Matrix.fromBlocks ((A : Matrix ι ι K) * (A' : Matrix ι ι K)) 0
+    (C * (A' : Matrix ι ι K) + C') 1
+  simp
+
 end GaloisForLFunctions.HTGeometry

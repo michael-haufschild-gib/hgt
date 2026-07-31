@@ -9,6 +9,10 @@ import GaloisForLFunctions.RHTower.XiDepthMobiusGammaOuterInnerWeld
 import GaloisForLFunctions.RHTower.XiPrimeSeamCoherenceCollapse
 import GaloisForLFunctions.RHTower.XiEulerContractionResiduePairing
 import GaloisForLFunctions.RHTower.CriticalActivationReesSourceLaw
+import GaloisForLFunctions.RHTower.HypertranscendentalDivisorInformationLocalizationLaw
+import GaloisForLFunctions.RHTower.HedenmalmThetaNullTemperedDenseRadicalUniversalityLaw
+import GaloisForLFunctions.RHTower.XiPrimeSeamCalkinUniversalityLaw
+import GaloisForLFunctions.RHTower.GammaSewnMobiusXiWardEulerEdgeCompleteness
 import GaloisForLFunctions.HTGeometry.PrimeResidueValuationInteractionSuperselection
 import GaloisForLFunctions.HTGeometry.PrimeValuationCoordinateFusionCompletion
 
@@ -32,7 +36,7 @@ sewing operator has norm beyond every inverse Rees power.
 -/
 
 open Complex Filter Asymptotics
-open scoped Topology
+open scoped Topology ComplexOrder
 open GaloisForLFunctions
 open GaloisForLFunctions.HTGeometry
 
@@ -308,6 +312,186 @@ theorem xiBoundaryCharacterFracture_law :
     fun {rho} hstrip =>
       orbitwisePrimeSeamChargesCoherent_iff_re_eq_half
         (rho := rho) hstrip
+
+/-- Global neutrality of the inner duality--adjunction boundary character. -/
+def XiBoundaryCharacterNeutral : Prop :=
+  ∀ rho : XiDivisorSupport,
+    xiNearbyPoleDualityAdjunctionFracture (rho : ℂ) = 0
+
+/-- Global independent-quadrant regularity of the Wold-depth/Poisson-time
+character carried by every Xi divisor fibre. -/
+def XiWoldPoissonQuadrantRegular : Prop :=
+  ∀ rho : XiDivisorSupport,
+    ConjugateTwoClockQuadrantBounded
+      (sourceCayleyTransverseRate 1 (rho : ℂ))
+
+/-- The Wold--Poisson rate is the real form of the same inner boundary
+fracture. Hence independent-quadrant boundedness is exactly its equalizer. -/
+theorem conjugateTwoClockQuadrantBounded_xiSourceRate_iff_boundaryFracture_zero
+    (rho : ℂ) :
+    ConjugateTwoClockQuadrantBounded
+        (sourceCayleyTransverseRate 1 rho) ↔
+      xiNearbyPoleDualityAdjunctionFracture rho = 0 := by
+  rw [conjugateTwoClockQuadrantBounded_iff,
+    sourceCayleyTransverseRate_eq_zero_iff,
+    xiNearbyPoleDualityAdjunctionFracture_eq_zero_iff]
+  norm_num
+
+/-- Global Wold--Poisson independent-quadrant regularity is exactly global
+boundary-character neutrality. -/
+theorem xiBoundaryCharacterNeutral_iff_woldPoissonQuadrantRegular :
+    XiBoundaryCharacterNeutral ↔ XiWoldPoissonQuadrantRegular := by
+  constructor
+  · intro hneutral rho
+    exact
+      (conjugateTwoClockQuadrantBounded_xiSourceRate_iff_boundaryFracture_zero
+        (rho : ℂ)).2 (hneutral rho)
+  · intro hregular rho
+    exact
+      (conjugateTwoClockQuadrantBounded_xiSourceRate_iff_boundaryFracture_zero
+        (rho : ℂ)).1 (hregular rho)
+
+/-- Boundary-character neutrality is the divisor-level form of RH. -/
+theorem xiBoundaryCharacterNeutral_iff_riemannHypothesis :
+    XiBoundaryCharacterNeutral ↔ RiemannHypothesis := by
+  rw [← xiPrimeSeamChargesCoherent_iff_riemannHypothesis]
+  constructor
+  · intro hneutral rho
+    apply (orbitwisePrimeSeamChargesCoherent_iff_re_eq_half
+      (xi_divisor_support_re_mem_open_unit rho)).2
+    exact
+      (xiNearbyPoleDualityAdjunctionFracture_eq_zero_iff
+        (rho : ℂ)).1 (hneutral rho)
+  · intro hcoherent rho
+    apply (xiNearbyPoleDualityAdjunctionFracture_eq_zero_iff
+      (rho : ℂ)).2
+    exact (orbitwisePrimeSeamChargesCoherent_iff_re_eq_half
+      (xi_divisor_support_re_mem_open_unit rho)).1 (hcoherent rho)
+
+/-- The global boundary equalizer is simultaneously the Wold--Poisson,
+Sonin--Calkin, and fixed-edge Ward regularity phase. -/
+theorem xiBoundaryCharacterNeutral_iff_regularBoundaryConsumers :
+    XiBoundaryCharacterNeutral ↔
+      XiWoldPoissonQuadrantRegular ∧
+      XiPrimeSeamAllScaleCalkinCertificate ∧
+      ContinuedXiWardEulerEdgeBoundaryGramLaw := by
+  constructor
+  · intro hneutral
+    have hRH :=
+      xiBoundaryCharacterNeutral_iff_riemannHypothesis.mp hneutral
+    exact ⟨
+      xiBoundaryCharacterNeutral_iff_woldPoissonQuadrantRegular.mp hneutral,
+      xiPrimeSeamAllScaleCalkinCertificate_iff_riemannHypothesis.mpr hRH,
+      continuedXiWardEulerEdgeBoundaryGramLaw_of_riemannHypothesis hRH⟩
+  · rintro ⟨hwold, _hcalkin, _hward⟩
+    exact xiBoundaryCharacterNeutral_iff_woldPoissonQuadrantRegular.mpr hwold
+
+/-- One strict-right upper Xi divisor fibre makes every regular horizontal
+consumer fail: its two-clock character is quadrant-unbounded, its prime-seam
+Calkin phase is noncompact, and its adapted Ward boundary Gram is not
+positive. -/
+structure XiRightUpperHorizontalFailureCertificate
+    (q : XiRightUpperZeroCopy) : Prop where
+  sourceRatePositive :
+    0 < sourceCayleyTransverseRate 1 (q.1.1.1 : ℂ)
+  woldPoissonNotQuadrantRegular :
+    ¬ ConjugateTwoClockQuadrantBounded
+      (sourceCayleyTransverseRate 1 (q.1.1.1 : ℂ))
+  primeSeamNotCoherent :
+    ¬ OrbitwisePrimeSeamChargesCoherent (q.1.1.1 : ℂ)
+  soninCalkinNotCompact :
+    ∀ a : ℝ, 0 < a →
+      ¬ OrbitwisePrimeSeamCalkinGramCompact a (q.1.1.1 : ℂ)
+  wardFourUnitViolation :
+    4 <
+      Complex.normSq
+        (continuedXiAntiCausalWardResponse
+          (xiWardEulerEdgeAdaptedNode q))
+  wardBoundaryGramNotPositive :
+    ¬ (continuedXiWardFourUnitBoundaryGram
+      (fun _ : Fin 1 => xiWardEulerEdgeAdaptedNode q)).PosSemidef
+
+/-- **Strict-right horizontal failure law.** All regular consumer failures
+are forced by one positive boundary-character rate on the same divisor
+fibre. -/
+theorem xiRightUpperHorizontalFailure_law
+    (q : XiRightUpperZeroCopy) :
+    XiRightUpperHorizontalFailureCertificate q := by
+  have hrate :
+      0 < sourceCayleyTransverseRate 1 (q.1.1.1 : ℂ) := by
+    have hpos := xiRightSourceModularCharge_pos q.1
+    rw [xiRightSourceModularCharge] at hpos
+    rw [sourceCayleyTransverseRate]
+    simp only [Complex.sub_re, Complex.one_re]
+    linarith
+  exact {
+    sourceRatePositive := hrate
+    woldPoissonNotQuadrantRegular := by
+      intro hbounded
+      have hzero :=
+        (conjugateTwoClockQuadrantBounded_iff
+          (sourceCayleyTransverseRate 1 (q.1.1.1 : ℂ))).mp hbounded
+      linarith
+    primeSeamNotCoherent :=
+      xiRightPrimeSeamCharges_not_coherent q.1
+    soninCalkinNotCompact := by
+      intro a ha hcompact
+      have hre :=
+        (orbitwisePrimeSeamCalkinGramCompact_iff_re_eq_half
+          a (q.1.1.1 : ℂ) ha
+          (xi_divisor_support_re_mem_open_unit q.1.1.1)).mp hcompact
+      have hpos := xiRightSourceModularCharge_pos q.1
+      rw [xiRightSourceModularCharge] at hpos
+      linarith
+    wardFourUnitViolation :=
+      normSq_continuedXiAntiCausalWardResponse_at_eulerEdge_gt_four q
+    wardBoundaryGramNotPositive :=
+      continuedXiWardFourUnitBoundaryGram_eulerEdge_adapted_not_posSemidef q
+  }
+
+/-- Exact two-axis certificate for the Riemann boundary. Vertically, every
+nonzero positive theta-null divisor detector is singular through ordinary
+`L²`; horizontally, regular Wold--Poisson, Sonin--Calkin, and Ward descent is
+exactly the boundary-character equalizer. -/
+structure XiSingularEqualizerBoundaryCertificate : Prop where
+  verticalThetaClosureClassification :
+    ∀ (Q : SchwartzMap.ContinuousSchwartzSesquilinearForm),
+      Q.MomentumSymmetric →
+      Q.IsNonnegative →
+      Q xiThetaSchwartzSource xiThetaSchwartzSource = 0 →
+      (Q.IsSequentiallyClosableThrough xiThetaSchwartzToL2 ↔
+        ∀ u v : SchwartzMap ℝ ℂ, Q u v = 0)
+  verticalThetaDenseRadical :
+    ∀ (Q : SchwartzMap.ContinuousSchwartzSesquilinearForm),
+      Q.MomentumSymmetric →
+      Q.IsNonnegative →
+      Q xiThetaSchwartzSource xiThetaSchwartzSource = 0 →
+      (∃ u v : SchwartzMap ℝ ℂ, Q u v ≠ 0) →
+      Dense (xiThetaL2RadicalImage Q : Set XiThetaL2) ∧
+        ¬ IsClosed (xiThetaL2RadicalImage Q : Set XiThetaL2) ∧
+        ¬ Q.IsSequentiallyClosableThrough xiThetaSchwartzToL2
+  horizontalRegularityEqualizer :
+    XiBoundaryCharacterNeutral ↔
+      XiWoldPoissonQuadrantRegular ∧
+      XiPrimeSeamAllScaleCalkinCertificate ∧
+      ContinuedXiWardEulerEdgeBoundaryGramLaw
+
+/-- **Singular-equalizer boundary law.** Divisor detection and orientation
+selection occupy different completion axes: the former forces a singular
+vertical rigging even at the neutral boundary, while every regular
+horizontal consumer factors through the same character equalizer. -/
+theorem xiSingularEqualizerBoundary_law :
+    XiSingularEqualizerBoundaryCertificate where
+  verticalThetaClosureClassification :=
+    universalPositiveForm_thetaNull_sequentiallyL2Closable_iff_zero
+  verticalThetaDenseRadical := by
+    intro Q hQ hQnonneg hnull hNonzero
+    have h :=
+      universalPositiveForm_nonzero_thetaNull_temperedDenseRadicalLaw
+        Q hQ hQnonneg hnull hNonzero
+    exact ⟨h.2.1, h.2.2.1, h.2.2.2.2⟩
+  horizontalRegularityEqualizer :=
+    xiBoundaryCharacterNeutral_iff_regularBoundaryConsumers
 
 /-- Critical activation certificate showing why its divisor transport cannot
 be compressed into a finite recurrence or bounded positive Gram completion. -/

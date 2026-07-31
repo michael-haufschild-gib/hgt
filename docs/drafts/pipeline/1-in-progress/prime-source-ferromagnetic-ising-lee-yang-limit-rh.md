@@ -448,3 +448,34 @@ convergence is weaker than locally uniform.
 - [x] arbitrary tree partitions decomposed as convex FK mixtures of synchronized cluster products
 - [ ] balanced prime-field local-uniform comparison with `XiC(0)^(-1)XiC`
 - [x] RH capstone formalized from the balanced tree comparison
+
+## Central mass floor: the unnormalized route is closed, and what the normalizer must pay
+
+`RHTower/PrimeIsingTreeCentralMassFloorLaw.lean` proves, unconditionally:
+
+> For every finite prime-labelled ferromagnetic Ising tree `T`,
+> `Z_T'(0) / Z_T(0) = −m(T)·i/2` with `m(T) = treePrimeLeeYangMass T ≥ log 2`; hence
+> `|Z_T'(0)/Z_T(0)| ≥ log 2 / 2`, and the bound passes to every locally uniform limit that does not
+> vanish at the origin.
+
+Consequences for this card:
+
+1. `riemannHypothesis_of_primeIsingTreePartition_tendstoLocallyUniformly` has an **impossible**
+   premise: `XiC` is even, so `XiC'(0) = 0`, and the floor excludes it
+   (`not_tendstoLocallyUniformly_primeIsingTreePartition_XiC`).  The same for `unitCentralXiC`.
+   The unnormalized route joins the balanced and scalar-normalized routes in `5-failed` territory.
+2. The one surviving formulation is the factored one,
+   `…_tendstoLocallyUniformly_mul_XiC`, and its price is now explicit:
+   `logTwo_div_two_le_norm_logDeriv_normalization_mul_XiC` shows the zero-free entire normalizer
+   `E` must satisfy `|E'(0)/E(0)| ≥ log 2 / 2`.  The Xi factor contributes **nothing** at the
+   centre, so the entire mass floor is charged to `E`.
+3. Therefore the open question of this card is no longer "do prime Ising trees approximate Xi"
+   but "**is there a zero-free entire `E` with central logarithmic derivative at least `log 2 / 2`
+   in modulus for which `E · XiC` is a locally uniform limit of finite prime Ising trees**".  A
+   natural candidate shape is `E = exp(c z)` with `|c| ≥ log 2 / 2` — precisely the half-cocycle
+   the balanced normalization removes, which is why balancing killed the route and why the
+   unbalanced version cannot be rescued by pointing alone.
+
+Kill condition to test next: whether the *second* central jet admits a matching floor.  If
+`|Z''(0)/Z(0)|` also carries a tree-uniform lower bound not attainable by `exp(cz)·XiC`, the
+factored route closes too and the whole Lee--Yang tree lane retires.

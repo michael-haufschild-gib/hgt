@@ -1,3 +1,4 @@
+import GaloisForLFunctions.HTGeometry.OperatorTraceAdjoint
 import GaloisForLFunctions.RHTower.SoninApertureCurvatureTrace
 import GaloisForLFunctions.RHTower.SoninApertureCyclicMassConservation
 import GaloisForLFunctions.RHTower.SoninPrincipalRelativeCyclicExtension
@@ -227,5 +228,68 @@ theorem re_extendedTrace_soninApertureRestrictionDefect_flag_eq_iff
       (hsNormSq_eq_zero_iff hZ).mpr (hrigid.mp hzero)
     rw [hflag, hnorm]
     ring
+
+end RHTower
+
+namespace RHTower
+
+open ContinuousLinearMap
+open SoninPrincipalRelativeOperator
+
+section Reality
+
+/-- The strict aperture defect is self-adjoint: it is the Gram square of the lost-layer
+transition. -/
+theorem adjoint_evenSoninApertureRestrictionDefect
+    {a b r : ℝ} (hab : a ≤ b) (hr : 1 < r) :
+    ContinuousLinearMap.adjoint (evenSoninApertureRestrictionDefect a b r hr) =
+      evenSoninApertureRestrictionDefect a b r hr := by
+  have hfac : evenSoninApertureRestrictionDefect a b r hr =
+      ContinuousLinearMap.adjoint (evenSoninApertureLostTransition a b r hr) *
+        evenSoninApertureLostTransition a b r hr := by
+    simpa only [evenSoninApertureRestrictionDefect] using
+      evenCentralSoninQuadraticCorner_restrictionDefect_eq_adjoint_mul hab hr
+  set Y := evenSoninApertureLostTransition a b r hr with hY
+  rw [hfac]
+  change ContinuousLinearMap.adjoint (ContinuousLinearMap.adjoint Y ∘L Y) =
+    ContinuousLinearMap.adjoint Y * Y
+  rw [ContinuousLinearMap.adjoint_comp, ContinuousLinearMap.adjoint_adjoint]
+  rfl
+
+/-- The Schatten-1 shell residual of a strict aperture defect is self-adjoint, so its ordinary
+trace is a real number. -/
+theorem adjoint_soninApertureShellResidual
+    {a b r : ℝ} (hab : a ≤ b) (hr : 1 < r) :
+    ContinuousLinearMap.adjoint (evenSoninApertureRestrictionDefect a b r hr -
+        evenTwoPolarizationShell (r * a) (r * b)) =
+      evenSoninApertureRestrictionDefect a b r hr -
+        evenTwoPolarizationShell (r * a) (r * b) := by
+  rw [ContinuousLinearMap.adjoint.map_sub,
+    adjoint_evenSoninApertureRestrictionDefect hab hr,
+    adjoint_evenTwoPolarizationShell]
+
+/-- **Reality of the aperture finite part.**  The extended trace of a strict aperture defect is a
+real number: its logarithmic weight is real and its Schatten-1 residual is self-adjoint. -/
+theorem im_extendedTrace_soninApertureRestrictionDefectPresentation
+    (e a b r : ℝ) (ha : 0 < a) (hab : a < b) (hr : 1 < r)
+    (hbr : b < r * a) (hea : e ≤ r * a) :
+    (extendedTrace
+      (soninApertureRestrictionDefectPresentation e a b r ha hab hr hbr hea)).im = 0 := by
+  rw [extendedTrace_soninApertureRestrictionDefectPresentation]
+  simp only [Complex.add_im, Complex.ofReal_im, zero_add]
+  exact ContinuousLinearMap.im_opTrace_eq_zero_of_adjoint_eq
+    (adjoint_soninApertureShellResidual hab.le hr)
+
+/-- The extended trace of a strict aperture defect equals the real scalar it reads. -/
+theorem extendedTrace_soninApertureRestrictionDefectPresentation_eq_re
+    (e a b r : ℝ) (ha : 0 < a) (hab : a < b) (hr : 1 < r)
+    (hbr : b < r * a) (hea : e ≤ r * a) :
+    extendedTrace (soninApertureRestrictionDefectPresentation e a b r ha hab hr hbr hea) =
+      (((extendedTrace
+        (soninApertureRestrictionDefectPresentation e a b r ha hab hr hbr hea)).re : ℝ) : ℂ) := by
+  refine Complex.ext rfl ?_
+  simp [im_extendedTrace_soninApertureRestrictionDefectPresentation e a b r ha hab hr hbr hea]
+
+end Reality
 
 end RHTower

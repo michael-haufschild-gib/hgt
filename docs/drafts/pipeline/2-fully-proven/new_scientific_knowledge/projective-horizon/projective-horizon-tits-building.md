@@ -242,8 +242,41 @@ one reconstruction identity.
 
 `formal/GaloisForLFunctions/HTGeometry/ProjectiveHorizonBuilding.lean` formalises the exact
 two-chart reconstruction core `(12)--(13)` for an arbitrary family of transverse coordinates
-inside any derivation-closed intermediate field. The Tits-building fixed-field theorem awaits formal
-algebraic group actions and rational invariant fields; it is not represented by assumptions.
+inside any derivation-closed intermediate field.
+
+`formal/GaloisForLFunctions/HTGeometry/SpecialLinearTransvectionGeneration.lean` supplies the
+missing linear-algebra engine: over an arbitrary field the elementary transvections generate the
+whole special linear group (`transvectionSubgroup_eq_top`), obtained by removing the diagonal
+factor from the mathlib pivot decomposition through the four-transvection identity
+
+```text
+E_(ij)(1) E_(ji)(a-1) E_(ij)(-a^-1) E_(ji)(a-a^2)
+  = diag(a at i, a^-1 at j, 1 elsewhere)
+```
+
+(`transvection_prod_eq_elementaryDiagonal`) and clearing one nonunit diagonal entry at a time.
+
+`formal/GaloisForLFunctions/HTGeometry/ProjectiveHorizonChartUnipotentGeneration.lean` formalises
+the group-generation law `(14)` itself. For a coordinate splitting `V=K^iota (+) K^kappa` with
+transverse subspace `W=K^kappa`:
+
+- `transverseStabilizer` is the group `G_S` of unimodular maps fixing `W` pointwise;
+- `coe_eq_fromBlocks_of_mem_transverseStabilizer` and `det_toBlocks_11_of_mem_transverseStabilizer`
+  prove that `G_S` is exactly the block set `(14)`, `[[A,0],[B,I]]` with `det A=1`;
+- `transverseStabilizerEquiv` gives the parametrisation `G_S ~ SL(K^iota) x Hom(K^iota,K^kappa)`
+  and `transverseOfBlocks_mul` its semidirect-product law `(A,C)(A',C')=(AA',CA'+C')`, which is the
+  exact content behind the dimension count `(8)`;
+- `closure_chartTransvectionSet_eq_transverseStabilizer` proves that the chart transvections
+  attached to the directions `iota` — the elementary members of the groups `U_(ker e_i^*)` —
+  generate precisely `G_S`. The shear block is cleared by transverse transvections and the residual
+  `SL(K^iota)` factor is a transvection product.
+
+All four theorems are unconditional; their axiom audit is `propext`, `Classical.choice`,
+`Quot.sound`.
+
+The remaining paper-level layers are the rational invariant field `(3)`, `(6)`, the Rosenlicht
+transcendence-degree count `(11)`, and the injectivity of `S |-> mathcal I_S`; they await formal
+rational invariant fields for algebraic group actions and are not represented by assumptions.
 
 ## RH impact audit
 
@@ -257,7 +290,11 @@ so this currently gives neither a zero-free region nor a critical-line implicati
 
 - [x] 0 -> 1: higher-rank projective candidate separated from the scalar Schwarzian case
 - [x] 1 -> 2: fixed-field, complementarity, group-generation, rank, and building laws proved
-- [ ] 2 -> 3: two-chart core formalized; general invariant-field/building theorem remains
+- [x] 2 -> 3a: two-chart reconstruction core `(12)--(13)` formalized
+- [x] 2 -> 3b: elementary transvections generate `SL(V)` over any field (new infrastructure)
+- [x] 2 -> 3c: unipotent generation law `(14)`, the block description of `G_S`, its
+      `SL_r x Hom(K^r,W)` parametrisation, and its semidirect-product law formalized
+- [ ] 2 -> 3d: rational invariant fields `(3)`, `(6)` and the Rosenlicht rank count `(11)`
 - [ ] 3 -> 4: specialist audit in projective differential invariants and building theory
 
 ## References
@@ -273,3 +310,7 @@ so this currently gives neither a zero-free region nor a critical-line implicati
   complementarity.
 - 2026-07-15 — proved pairwise reconstruction, the unipotent group-generation law, the
   span/intersection identity, and rank recovery.
+- 2026-07-31 — formalized the unipotent group-generation law `(14)` unconditionally in Lean,
+  together with the block description of `G_S`, its `SL_r x Hom(K^r,W)` parametrisation, its
+  semidirect-product law, and the general theorem that elementary transvections generate `SL(V)`
+  over any field.

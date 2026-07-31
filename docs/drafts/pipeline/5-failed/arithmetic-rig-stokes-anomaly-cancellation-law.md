@@ -1,9 +1,9 @@
-# Arithmetic rig--Stokes anomaly cancellation law
+# Arithmetic rig--Stokes anomaly cancellation law (retired)
 
 - **ID:** `arithmetic-rig-stokes-anomaly-cancellation-law`
-- **Stage:** 1-in-progress
-- **Type:** UNIVERSAL REINTERPRETATION / RH-BEARING CONJECTURE
-- **Scientific status:** `[BOLD CONJECTURE] [CORPUS-JUMP] [NOVELTY UNVERIFIED] [NOT RH]`
+- **Stage:** 5-failed
+- **Type:** RETIRED UNIVERSAL REINTERPRETATION / INVALID RH PRODUCER
+- **Scientific status:** `[KILLED BY NONSELECTIVE SOURCE SPLITTING] [SUPERSEDED BY AMBIDEXTERITY] [NOT RH]`
 - **Parents:**
   - `source-modular-drift-realization-equivalence-law.md`;
   - `riemann-failure-nerve-cobar-antipode-purity-law.md`;
@@ -13,11 +13,13 @@
   - `../2-fully-proven/new_scientific_knowledge/sonin/sonin-principal-shell-cyclic-trace.md`;
   - `../3-formalized/new_scientific_knowledge/prime-first-trace-essential-normal-bockstein.md`;
   - `../3-formalized/new_scientific_knowledge/prime-residue-valuation-interaction-superselection-law.md`.
-- **Statement:** Horizontal displacement of a Riemann divisor point is the anomaly obstructing
-  extension of its multiplicative dilation character to the full additive--multiplicative
-  operation theory of the ordinary-integer source.  The conjectural arithmetic
-  Stokes--Bockstein comparison carries the literal source codiagonal with no anomaly; its Sonin
-  cyclic regulator therefore forces that displacement to vanish.
+- **Statement:** Retired proposal that horizontal displacement is killed by transporting an
+  additive source codiagonal. Literal even/odd decomposition is compatible with every complex
+  exponent, so additive splitting is nonselective. The valid connected degree relation is the
+  already-frozen source--reporter ambidexterity mechanism, not this proposed codiagonal.
+
+> **Retirement warning.** Sections 1--8 preserve the conjecture and audit trail. They must not be
+> cited as a live RH route. Exact no-go closure and positive survivor are recorded at EOF.
 
 ## Goal
 
@@ -358,3 +360,46 @@ importantly, until clauses `(11)`--`(12)` are proved.
   Identified its exact scalar with existing anti-diagonal relative torsion.  Froze the
   arithmetic rig--Stokes anomaly cancellation conjecture and the dyadic codiagonal construction
   as first falsifiable open core.
+
+## No-go closure
+
+The proposed producer fails before any infinite-completion issue. The literal parity
+decomposition gives
+\[
+ \zeta(s)=2^{-s}\zeta(s)+(1-2^{-s})\zeta(s)
+\]
+for every complex \(s\) where the identity is initially defined, hence everywhere by
+continuation. Additive splitting of one source packet therefore does not impose
+\[
+ 2^{2\operatorname{Re}s}=2.
+\]
+The false step was to identify a decomposition of a Dirichlet source with additivity of the
+dagger dimension \(D_\rho(n)=n^{2\operatorname{Re}\rho}\). They are different typed operations.
+
+The correct finite connected relation is
+\[
+ F_nV_n=n\,\mathrm{id},
+\]
+together with projection-formula adjunction and Gamma/Hodge naturality. Its half-density
+normalization \(n^{-1/2}V_n\) is isometric. This is already proved on paper in
+`deninger-polarized-transfer-half-density.md` and frozen as an RH producer in
+`source-reporter-ambidexterity-categorical-half-density-law.md`. Recasting it as a source
+codiagonal would be rediscovery and would erase the load-bearing orientation wire.
+
+### Positive survivor
+
+For every divisor point \(\rho\),
+\[
+ {\mathfrak a}_\rho(n)
+ =\log\frac{n^{2\operatorname{Re}\rho}}{n}
+ =(2\operatorname{Re}\rho-1)\log n
+ =\log\tau_n(\rho).
+\]
+Thus anti-diagonal relative torsion is exactly the scalar defect between the conormal dilation
+dimension and ambidextrous categorical degree. This is a useful dictionary for the live
+ambidexterity/Stokes comparison, but not a producer.
+
+`NO INDEPENDENT POSITIVE RH PRODUCER SURVIVES.`
+
+- 2026-07-31 — Retired after literal parity hostile test and collision with existing
+  source--reporter ambidexterity corpus.
