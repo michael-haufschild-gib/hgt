@@ -58,4 +58,36 @@ theorem l2_fourier_reflection (f : FourierRealL2) :
     · exact l2Reflection.continuous.comp (Lp.fourierTransformₗᵢ ℝ ℂ).continuous
   · exact fourier_l2Reflection_toLp
 
+private theorem negSchwartz_negSchwartz (g : SchwartzMap ℝ ℂ) :
+    negSchwartz (negSchwartz g) = g := by
+  ext x
+  show g (-(-x)) = g x
+  rw [neg_neg]
+
+private theorem fourier_fourier_schwartz (g : SchwartzMap ℝ ℂ) :
+    𝓕 (𝓕 g) = negSchwartz g := by
+  have h : 𝓕⁻ (𝓕 g) = g := fourierInv_fourier_eq g
+  rw [SchwartzMap.fourierInv_apply_eq] at h
+  calc 𝓕 (𝓕 g) = negSchwartz (negSchwartz (𝓕 (𝓕 g))) :=
+        (negSchwartz_negSchwartz _).symm
+    _ = negSchwartz g := congrArg negSchwartz h
+
+private theorem fourier_fourier_toLp (g : SchwartzMap ℝ ℂ) :
+    𝓕 (𝓕 (g.toLp 2)) = l2Reflection (g.toLp 2) := by
+  rw [SchwartzMap.toLp_fourier_eq, SchwartzMap.toLp_fourier_eq, l2Reflection_toLp,
+    fourier_fourier_schwartz]
+
+/-- **The unitary Fourier transform on `L²(ℝ)` squares to reflection.**  Fourier inversion on
+Schwartz functions, extended by density. -/
+theorem l2_fourier_fourier (f : FourierRealL2) :
+    (Lp.fourierTransformₗᵢ ℝ ℂ) ((Lp.fourierTransformₗᵢ ℝ ℂ) f) = l2Reflection f := by
+  let p : FourierRealL2 → Prop := fun f =>
+    (Lp.fourierTransformₗᵢ ℝ ℂ) ((Lp.fourierTransformₗᵢ ℝ ℂ) f) = l2Reflection f
+  apply DenseRange.induction_on (p := p)
+    (SchwartzMap.denseRange_toLpCLM (p := 2) ENNReal.ofNat_ne_top) f
+  · apply isClosed_eq
+    · exact (Lp.fourierTransformₗᵢ ℝ ℂ).continuous.comp (Lp.fourierTransformₗᵢ ℝ ℂ).continuous
+    · exact l2Reflection.continuous
+  · exact fourier_fourier_toLp
+
 end RHTower

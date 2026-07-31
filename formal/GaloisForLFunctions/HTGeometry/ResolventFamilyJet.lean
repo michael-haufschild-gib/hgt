@@ -1,5 +1,7 @@
 import Mathlib.Analysis.Calculus.Deriv.Mul
 import Mathlib.Analysis.Calculus.Deriv.Slope
+import Mathlib.Algebra.Polynomial.AlgebraMap
+import Mathlib.Algebra.Polynomial.Eval.Degree
 
 /-!
 # Jets of a resolvent family
@@ -157,5 +159,38 @@ theorem hasDerivAt_jet (hS : IsResolventFamilyOn S s) (hs : IsOpen s) (hv : v �
   rwa [hval] at h
 
 end IsResolventFamilyOn
+
+/-! ## Polynomials in a resolvent as combinations of shift jets -/
+
+/-- The normalized `n`-th shift jet of a resolvent family, `n! S^{n+1}`. -/
+def resolventShiftJet (S : ℝ → A) (n : ℕ) (u : ℝ) : A := ((n ! : ℝ)) • S u ^ (n + 1)
+
+@[simp] theorem resolventShiftJet_zero (S : ℝ → A) (u : ℝ) : resolventShiftJet S 0 u = S u := by
+  simp [resolventShiftJet]
+
+/-- Each shift jet differentiates to the next one. -/
+theorem hasDerivAt_resolventShiftJet {S : ℝ → A} {s : Set ℝ} {v : ℝ}
+    (hS : IsResolventFamilyOn S s) (hs : IsOpen s) (hv : v ∈ s) (n : ℕ) :
+    HasDerivAt (resolventShiftJet S n) (resolventShiftJet S (n + 1) v) v :=
+  hS.hasDerivAt_jet hs hv n
+
+/-- **Polynomials in a resolvent are combinations of its shift jets.**  A polynomial with zero
+constant term, evaluated at one resolvent, is exactly the corresponding normalized combination of
+the shift derivatives of the resolvent family. -/
+theorem aeval_eq_resolventShiftJet_sum (S : ℝ → A) (v : ℝ) (q : Polynomial ℝ)
+    (hq : q.coeff 0 = 0) :
+    Polynomial.aeval (S v) q
+      = ∑ n ∈ Finset.range q.natDegree,
+          (q.coeff (n + 1) / (n ! : ℝ)) • resolventShiftJet S n v := by
+  classical
+  have hsum : Polynomial.aeval (S v) q
+      = ∑ i ∈ Finset.range (q.natDegree + 1), q.coeff i • S v ^ i :=
+    Polynomial.aeval_eq_sum_range (S v)
+  rw [hsum, Finset.sum_range_succ']
+  have hzero : q.coeff 0 • S v ^ 0 = 0 := by rw [hq]; simp
+  rw [hzero, add_zero]
+  refine Finset.sum_congr rfl fun n _ => ?_
+  have hfac : ((n ! : ℝ)) ≠ 0 := Nat.cast_ne_zero.mpr (Nat.factorial_ne_zero n)
+  rw [resolventShiftJet, smul_smul, div_mul_cancel₀ _ hfac]
 
 end GaloisForLFunctions.HTGeometry

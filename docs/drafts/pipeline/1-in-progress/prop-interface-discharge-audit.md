@@ -3108,3 +3108,30 @@ Toolchain note: mathlib has renamed this API.  `orthogonalProjection` is depreca
 
 With the lower bound of the previous entry, approximation numbers are now computable in principle:
 what the Gauss-channel asymptotic still needs is one concrete diagonal model, not more theory.
+
+### Diagonal operators on `ℓ²`: the first half
+
+`RHTower/DiagonalEllTwoOperator.lean` (built, registered, axioms clean) starts the concrete model:
+
+* **`memℓp_diagonal`** — multiplying a square-summable sequence by a bounded one keeps it square
+  summable, by comparison with the multiplier bound;
+* `diagonalLinearMap`, `diagonalLinearMap_apply` — the diagonal multiplication as a linear map on
+  `lp (fun _ : ℕ => ℂ) 2`.
+
+Nothing in the corpus had constructed a bounded operator on that space, so this is groundwork, not
+a restatement.
+
+**Stopped deliberately short.**  The operator-norm bound `‖diag f‖ ≤ C ‖f‖` needs
+`lp.norm_rpow_eq_tsum` with the `ENNReal.toReal 2` versus literal `2` mismatch resolved, and a
+base-monotonicity step (`pow_le_pow_iff_left` on natural powers, not the `Real.rpow_le_rpow_iff_left`
+that does not exist).  Three further steps, none conceptual.  Rather than leave a fragile proof in
+the tree the module was trimmed to the part that is finished; the bound and the promotion to
+`EllTwo →L[ℂ] EllTwo` are the next increment.
+
+Sequence of increments for the Gauss-channel row, for whoever continues:
+1. approximation-number **lower** bound — done (`le_approxNumber_of_subspace`);
+2. finite-rank **algebra** and the two-sided pin — done (`approxNumber_eq_of_projection`);
+3. diagonal `ℓ²` multiplier, square-summability and linearity — done (this module);
+4. the operator-norm bound and the `ContinuousLinearMap` — next;
+5. `approxNumber (diagonalOperator lam) n = lam n` for antitone nonnegative `lam`, via 1 + 2;
+6. choose `lam n = (R/(n+1))^{1/p}` and the Gauss-channel asymptotic premise is produced.

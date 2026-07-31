@@ -3643,3 +3643,5 @@ import GaloisForLFunctions.RHTower.SoninShellProductMixedTerms
 import GaloisForLFunctions.RHTower.ApproximationNumberLowerBound
 import GaloisForLFunctions.RHTower.SoninTimeBandNonvanishing
 import GaloisForLFunctions.RHTower.FiniteRankOperatorAlgebra
+import GaloisForLFunctions.RHTower.DiagonalEllTwoOperator
+import GaloisForLFunctions.RHTower.SoninMixedBlockPolarizationSplit
