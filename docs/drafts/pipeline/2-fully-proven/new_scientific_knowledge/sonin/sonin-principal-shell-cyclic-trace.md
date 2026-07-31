@@ -190,7 +190,13 @@ Re tilde_tau(Delta(a,c;r))
   <= Re tilde_tau(Delta(a,b;r)) + Re tilde_tau(Delta(b,c;r)),            (16)
 ```
 
-with equality exactly when `Kappa(a,b,c;r)=0`.
+with equality exactly when `Kappa(a,b,c;r)=0`.  Moreover each of the three values is **real**:
+
+```text
+Im tilde_tau(Delta(u,v;r)) = 0,                                         (17)
+```
+
+so `(15)` and `(16)` are statements about the values themselves, not merely about real parts.
 
 ### Proof
 
@@ -199,7 +205,10 @@ coboundary, so the principal parts of `(14)` cancel identically.  The shell resi
 because `S(r*a,r*c) = S(r*a,r*b) + S(r*b,r*c)` holds as an operator identity, leaving exactly
 `Kappa`.  All three residuals and `Kappa` are Schatten-1, so ordinary trace is additive on them.
 Equation `(15)` is `(14)` plus the curvature energy law, and `(16)` is nonnegativity of a squared
-Hilbert--Schmidt norm.
+Hilbert--Schmidt norm.  For `(17)`: the logarithmic weight is real, the defect is the Gram square
+`X*X` of the lost-layer transition and the shell is a sum of orthogonal projections, so the
+Schatten-1 residual is self-adjoint; and the diagonal sum defining the ordinary trace sends the
+adjoint to the conjugate termwise, so a self-adjoint trace-class operator has real trace.
 
 The content of `(16)` is that the completed finite part, **before** any archimedean term, is
 already one-sided along aperture flags — but in the *subadditive* direction.  A uniform lower floor
@@ -253,6 +262,7 @@ provisional pending expert/literature review.
 - [x] relative-ideal trace extension
 - [x] unconditional Lean formalization of `(1)`--`(4)` and Theorem G
 - [x] one-sided aperture flag law for the extended trace (Theorem H)
+- [x] reality of the aperture finite part
 - [x] proof that the aperture tower alone cannot supply the lower floor
 - [ ] Burnol completion and completed lower floor
 
@@ -279,10 +289,14 @@ provisional pending expert/literature review.
 | `(15)` exact scalar defect | `re_extendedTrace_soninApertureRestrictionDefect_flag` |
 | `(16)` one-sided law | `re_extendedTrace_soninApertureRestrictionDefect_flag_le` |
 | equality case | `re_extendedTrace_soninApertureRestrictionDefect_flag_eq_iff` |
+| trace conjugation law | `ContinuousLinearMap.opTrace_adjoint` |
+| real trace of a self-adjoint operator | `ContinuousLinearMap.im_opTrace_eq_zero_of_adjoint_eq` |
+| `(17)` reality | `im_extendedTrace_soninApertureRestrictionDefectPresentation` |
 
 Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninPrincipalRelativeCyclicExtension.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninApertureExtendedTraceFlagLaw.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninApertureExtendedTraceFlagLaw.lean`,
+`formal/GaloisForLFunctions/HTGeometry/OperatorTraceAdjoint.lean`.
 All declarations depend only on `propext`, `Classical.choice`, `Quot.sound`.
 
 Novelty split for Theorem G: `(7)` was already in the corpus
