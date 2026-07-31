@@ -150,6 +150,7 @@ theorem tendsto_apertureResolvent_of_phaseLock
 
 /-! ## Theorem 4.2: necessity of the phase lock -/
 
+omit [Preorder ι] in
 /-- The finite boundary block in transported coordinates. -/
 theorem apertureBoundaryBlock_apply (Ep Em : ι → E →L[ℂ] E) (ep em : E) (zeta : ι → ℂ) (i : ι)
     (y : E) :

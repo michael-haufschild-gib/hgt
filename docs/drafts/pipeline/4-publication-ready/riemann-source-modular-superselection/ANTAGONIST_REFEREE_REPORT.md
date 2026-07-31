@@ -8,7 +8,7 @@ Standard: hostile referee at a renowned broad mathematics or mathematical
 physics journal. Nature/Science-level significance is assessed separately
 because it is a substantially higher editorial threshold.
 
-Date: 2026-07-31.
+Date: 2026-08-01.
 
 ## Recommendation
 
@@ -38,7 +38,9 @@ Manuscript proves one strict positive-observability hierarchy.
 2. Every finite Xi source metric in audited construction realizes same rooted
    collision matroid; adjoining complete scalar valuation field adds no
    incidence information. Positive carrier faithfulness still need not see
-   logarithmic current.
+   logarithmic current. More generally, a bounded response on any finite
+   source-sign cube has at most \(B^2/\eta^2\) Walsh modes visible at
+   resolution \(\eta\), independent of cube dimension.
 3. Critical clock is divisor-blind in strongest explicit sense. For every
    \(1/2<\vartheta<1\), \(a>0\), one-atom nonnegative Mellin source has unit
    simple pole and same exponential clock but zeros at
@@ -63,14 +65,21 @@ Manuscript proves one strict positive-observability hierarchy.
    separated continued-source packets whose explicit source energies converge
    to its quadratic value. One target-selected packet sequence converges to
    canonical orientation vector with energy limit \(-\mathcal E_H\).
-9. Hedenmalm reflection folds into one nonzero two-component source system
+9. The complete source moment tower admits a positive representing measure
+   if and only if RH holds. In the compact Thorin-type subclass, any witness
+   is unique and equals the canonical multiplicity-exact Xi atomic carrier.
+   Thus the positive branch is neither an unspecified ambient space nor a
+   tunable producer.
+10. Hedenmalm reflection folds into one nonzero two-component source system
    with sole affine defect \(i\Xi\). Exact Gamma/co-Poisson interval reflection
    has negative two-point determinant, while canonical critical rooted
    coordinate has nonzero scalar cofinal norm divergence.
-10. Before these quotients, Gamma--Julia lift restores odd prime-log jet and
+11. Before these quotients, Gamma--Julia lift restores odd prime-log jet and
    Fisher--Ward trace remains odd. Squaring preserves logarithmic-current
-   differential field and hypertranscendence while erasing orientation.
-11. Singular acquisition packages remaining divisor data as
+   differential field and hypertranscendence while erasing orientation. The
+   full projective loop-current atlas is jointly faithful modulo constants,
+   locating blindness at finite reporting rather than current formation.
+12. Singular acquisition packages remaining divisor data as
    \[
      (m_\rho,\chi_\rho),\qquad
      \chi_\rho(z)=e^{z(\rho-\tfrac12)},
@@ -180,6 +189,33 @@ selection theorem.
 
 **Verdict:** material strengthening; zero-exclusion/sign remains hard ceiling.
 
+### G. “Positive-carrier rigidity is another decorative RH equivalence”
+
+**Attack.** Positive moment representation is equivalent to Hankel
+nonnegativity; compact moment determinacy is classical; Polson already put Xi
+in the Thorin/GGC framework. The new theorem therefore repackages known
+machinery around an RH criterion.
+
+**Finding.** The attack succeeds against standalone novelty. The manuscript
+now disclaims novelty of the Thorin/GGC reformulation, the bare RH
+equivalence, and compact moment determinacy. Its defensible contribution is
+the exact placement of this branch inside the source-completion law:
+
+- singular prime--Gamma common-test density exists unconditionally but gives
+  no sign;
+- any positive measure carrying all source moments already contains the full
+  RH obstruction;
+- within the compact logarithmic class the source fixes the carrier uniquely;
+- regular actionwise reflected repair is Krein-indefinite or non-Hilbert.
+
+This removes a genuine route ambiguity: neither “choose a better positive
+measure” nor “complete in another compact space” supplies missing source
+positivity. It does not make the moment criterion itself new.
+
+**Verdict:** useful closure theorem and stronger universal synthesis; weak
+standalone novelty. It cannot carry the paper without singular source
+completion and the orientation hierarchy.
+
 ### 1. “This is a 55-page collage”
 
 **Attack.** Hypertranscendental shells, Julia operators, theta riggings,
@@ -194,8 +230,12 @@ belong to different theories. Sharing \(\rho-\tfrac12\) does not make a law.
   variance, and Gamma coordinates are their rare-event whitening;
 - the Julia normal lift recovers the first prime-log jet lost by scalar
   contraction;
+- Walsh Parseval bounds fixed-resolution visibility of finite source breadth,
+  while the complete loop-current atlas remains faithful modulo constants;
 - pointed Ward trace is an odd functional of that jet;
 - the source graph reconstructs the Xi logarithmic current;
+- the complete source moment tower has a positive carrier exactly on the RH
+  fibre, and any compact Thorin carrier is canonical;
 - singular acquisition turns its residue into the character
   \(\chi_\rho\), while local analytic order produces the deck tower;
 - Wold, Calkin, Ward, Rees, energy, and mass aperture are proved consumers of
@@ -214,7 +254,11 @@ deep theorem.
 is diagnostic: depth-only source models necessarily erase prime-normal
 breadth, while two paired transverse views recover the joint incidence. The
 significance comes only from following that lost coordinate into the
-prime-log orientation jet and later consumer failures.
+prime-log orientation jet and later consumer failures. Likewise, the Walsh
+capacity bound is Parseval plus threshold counting, and highest-jet loop
+descent is elementary chain-rule algebra. Their role is the exact positive
+counterpart: bounded scalar visibility is dimension-free while the infinite
+vector-current family is faithful.
 
 **Verdict:** elementary component; nontrivial use.
 
@@ -370,7 +414,7 @@ evidence only.
 
 ## Correctness audit
 
-Pending final build, the declaration-level claim trace covers:
+The declaration-level claim trace covers:
 
 - same-clock positive Mellin witness with prescribed right-strip zero pair;
 - projective-tail positive source pointing and dense fibres;
@@ -384,10 +428,14 @@ Pending final build, the declaration-level claim trace covers:
 - exact finite Deninger source-cup/Weil polarization identity;
 - universal separated prime--Gamma source completion of every square-summable
   Weil test and one target-selected orientation sequence;
+- equivalence between any positive source-moment representation and RH,
+  plus uniqueness and canonical classification of the compact Thorin carrier;
 - reflection-folded Hedenmalm source system;
 - Gamma/co-Poisson negative interval determinant and scalar critical
   completion trilemma;
 - source bifiltration and paired recovery;
+- dimension-free Walsh source-observation capacity;
+- full projective loop-current faithfulness modulo constants;
 - positive shell and relative hypertranscendence;
 - Julia normal lift, prime-log limit, dense graph, and recovery blow-up;
 - pointed Fisher--Ward oddness and curvature pairing;
@@ -410,8 +458,8 @@ conditionals. The manuscript contains no claim about its verification method.
 
 | Criterion | Verdict | Hostile reason |
 |---|---|---|
-| Unconditional correctness | Provisional pass after final mechanical audit | One notation error was caught and corrected; every remaining theorem has declaration-level trace, but independent proof reading remains necessary |
-| Genuine mathematical object | Pass | Singular source completion of full Weil form plus reflected source-defect normal form, strict hierarchy, ramified character, and odd source lift |
+| Unconditional correctness | Provisional pass | One notation error and one exceptional-branch proof defect were caught and corrected; the new capstone module builds, and the key new theorem surfaces use only standard foundational axioms, but independent proof reading remains necessary |
+| Genuine mathematical object | Pass | Singular source completion of full Weil form, positive-completion separation with compact rigidity, reflected source-defect normal form, strict hierarchy, ramified character, and odd source lift |
 | High-interest progress toward RH | Borderline | Gives unconditional global defect budget and exact obstruction to local positivity closure, but no zero exclusion |
 | Novel route | Provisional pass | Global common-test transgression is now constructed as singular prime--Gamma source completion; source-only selector and sign inequality remain absent |
 | Famous-route death theorem | Fail and not claimed | Excluded classes are narrower than CCM/Hilbert--Pólya |
@@ -429,8 +477,9 @@ manuscript. Its “wow” claim is:
 > forces cubic global defect smallness; every atomwise positive comparison
 > fails off line; finite prime--Gamma packets nevertheless complete the full
 > common-test Weil form; one target-selected sequence reaches canonical
-> orientation sector; regular scalar reflection is either Krein or divergent;
-> odd source pointing is exact datum erased between lower levels.
+> orientation sector; positive moment completion is exactly RH and its compact
+> carrier is forced; regular scalar reflection is either Krein or divergent;
+> odd source pointing is the exact datum erased between lower levels.
 
 This is materially closer to credible broad-journal mathematics, but still
 not an honest accept recommendation. Central theorem remains buried in a

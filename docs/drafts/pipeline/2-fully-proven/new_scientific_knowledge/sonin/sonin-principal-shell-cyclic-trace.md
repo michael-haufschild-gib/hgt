@@ -875,6 +875,15 @@ So the coupling never sees the dilation sum itself, only its Sonin compression `
 `C` has no matrix element between `K_a ⊖ K_b` and `K_b ⊖ K_c` — a block-diagonality of `C` against
 the aperture tower.
 
+**Already answered on paper, at large scale.**  The sibling card
+`cofinal-essential-phase-sonin-coupling-nonannihilation.md` proves unconditionally that for every
+fixed strict flag `0 < a < q < b < c` there is a cofinal family of frequency-locked annular Meyer
+wavepackets `w_r` with `|| Z_r w_r - U_{1/r} w_r || -> 0`, hence `|| Z_r || -> 1` and `Z_r != 0` for
+all large `r`.  So `(61)` fails — the layers are *not* dilation-orthogonal — and the successive-layer
+curvature is strictly negative, not merely nonpositive.  What remains here is only the Lean
+certificate of that construction, which is being built on that card; do not re-attack `(61)` as if
+it were open.
+
 **A trap recorded, because it looks like a proof.**  The tower is *not* dilation covariant.  One is
 tempted to write `U_r Q_s U_r^{-1} = Q_{s/r}` and then compute `(Q_a - Q_b)(Q_{b/r} - Q_{c/r}) = 0`
 and `(Q_a - Q_b)(Q_{rb} - Q_{rc}) = 0` from nesting alone, concluding `Z = 0` outright.  The

@@ -162,8 +162,15 @@ theorem xiHedenmalmEvenFold_self
   have hcross : xiThetaEigenFourier (-alpha) alpha = 0 := by
     apply xiThetaEigenFourier_eq_zero_of_XiC_eq_zero hneg halpha
     intro heq
+    have htwo : alpha + alpha = 0 := by
+      calc
+        alpha + alpha = -alpha + alpha :=
+          congrArg (fun z : ℂ => z + alpha) heq
+        _ = 0 := neg_add_cancel alpha
     apply ne_zero_of_XiC_eq_zero halpha
-    linear_combination heq
+    calc
+      alpha = (1 / 2 : ℂ) * (alpha + alpha) := by ring
+      _ = 0 := by rw [htwo]; ring
   rw [xiHedenmalmEvenFold, xiThetaEigenFourier_self, hcross]
   ring
 
@@ -177,8 +184,15 @@ theorem xiHedenmalmOddFold_self
   have hcross : xiThetaEigenFourier (-alpha) alpha = 0 := by
     apply xiThetaEigenFourier_eq_zero_of_XiC_eq_zero hneg halpha
     intro heq
+    have htwo : alpha + alpha = 0 := by
+      calc
+        alpha + alpha = -alpha + alpha :=
+          congrArg (fun z : ℂ => z + alpha) heq
+        _ = 0 := neg_add_cancel alpha
     apply ne_zero_of_XiC_eq_zero halpha
-    linear_combination heq
+    calc
+      alpha = (1 / 2 : ℂ) * (alpha + alpha) := by ring
+      _ = 0 := by rw [htwo]; ring
   rw [xiHedenmalmOddFold, xiThetaEigenFourier_self, hcross]
   ring
 

@@ -442,8 +442,52 @@ tendsto_norm_evenSoninApertureSuccessiveLayerTransition_apply
     (𝓝 1)
 ```
 
+## Lean progress
+
+Formalized so far (all unconditional, `#print axioms` clean, wired into `GaloisForLFunctions.RHTower`):
+
+| plan step | content | Lean |
+|---|---|---|
+| 1 | even smooth bump strictly inside the annulus `b < |x| < c` | `soninAnnulusBump` |
+| 1 | evenness, nonnegativity, smoothness, strict support, value 1 at the midpoint, compact support | `soninAnnulusBump_even`, `soninAnnulusBump_nonneg`, `contDiff_soninAnnulusBump`, `soninAnnulusBump_support_subset`, `soninAnnulusBump_midpoint`, `hasCompactSupport_soninAnnulusBump` |
+| 1 | positive total mass, so the mean in `(1)` is well defined | `integral_soninAnnulusBump_pos` |
+| 2 | the modulated zero-mean packet `u` of `(1)`, with the frequency carried as one parameter | `soninPacketMean`, `soninPacket` |
+| 2 | **first Meyer condition** `u(0) = 0` | `soninPacket_zero` |
+| 2 | **second Meyer condition** `\hat u(0) = \int u = 0` | `integral_soninPacket` |
+| 2 | evenness, smoothness, strict annulus support, compact support, integrability | `soninPacket_even`, `contDiff_soninPacket`, `soninPacket_support_subset`, `hasCompactSupport_soninPacket`, `integrable_soninPacket` |
+
+| 3 | Riemann--Lebesgue for real cosine modulation, from mathlib's `Real.zero_at_infty_fourier` | `tendsto_integral_mul_cos_atTop`, `tendsto_integral_mul_cos_freq_atTop` |
+| 3 | the mean correction dies, `mu -> 0` | `tendsto_soninPacketMean_atTop` |
+| 3 | the oscillatory energy moments die | `tendsto_integral_soninAnnulusBump_sq_mul_cos_atTop`, `tendsto_integral_soninAnnulusBump_sq_mul_cos_two_atTop` |
+| 3 | exact expansion of the packet energy | `integral_soninPacket_sq_eq` |
+| 3 | **normalisation `(6)`**: the packet energy tends to half the profile energy | `tendsto_integral_soninPacket_sq_atTop` |
+| 3 | the limit is positive, so the normalisation never degenerates | `integral_soninAnnulusBump_sq_pos` |
+
+| 3 | Riemann--Lebesgue upgraded to merely *integrable* weights, real and complex | `tendsto_integral_mul_cos_atTop`, `tendsto_integral_complex_mul_cos_atTop`, `tendsto_integral_complex_mul_cos_freq_atTop` |
+| 3 | **weak escape `(7)`**: every fixed weight integrable against the profile pairs to zero with the packet | `tendsto_integral_mul_soninPacket_atTop` |
+
+Files: `formal/GaloisForLFunctions/RHTower/SoninAnnulusBump.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninAnnulusPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCosineRiemannLebesgue.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninAnnulusPacketAsymptotics.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninPacketWeakEscape.lean`.
+
+Still to formalize: `(8)` (compact corrections vanish — the corpus already has
+`IsCompactOperator.norm_apply_tendsto_zero_of_bounded_weakly_null`, so this needs the packet family
+read as an `L²` sequence plus Fréchet--Riesz), Fourier escape `(10)`, the scaled packet estimates
+`(11)`--`(15)`, and the combination with
+`norm_evenSoninApertureSuccessiveLayerTransition_sub_branches_le` (already in the corpus).
+
 ## Log
 
+- 2026-08-01 — weak escape `(7)` proved in Lean, after upgrading the cosine Riemann--Lebesgue
+  lemma from continuous-compactly-supported to merely integrable weights (real and complex), which
+  is what pairing against an arbitrary `L²` vector needs.
+- 2026-08-01 — Lean plan step 3 half done: cosine Riemann--Lebesgue built on mathlib's
+  `Real.zero_at_infty_fourier`, and the normalisation `(6)` proved — the packet energy tends to
+  half the profile energy, which is positive, so the family is cofinal and not degenerate.
+- 2026-08-01 — Lean plan steps 1 and 2 done: the annular bump and the modulated zero-mean packet
+  exist in the corpus with both exact Meyer conditions proved unconditionally.
 - 2026-07-31 — Constructed the frequency-locked annular Meyer wavepacket, proved asymptotic
   isometric nonannihilation, identified the phase-space/scattering corona boundary, and isolated
   the remaining Xi indicial-grade landing theorem.

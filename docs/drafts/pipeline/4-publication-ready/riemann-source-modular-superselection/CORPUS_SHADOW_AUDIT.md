@@ -1,6 +1,6 @@
 # Corpus-shadow audit
 
-Audit date: 2026-07-31.
+Audit date: 2026-08-01.
 
 Purpose: test whether manuscript explains high-value RHTower, HTGeometry,
 Hedenmalm, Wold–Poisson, Sonin/Calkin, four-unit Ward, and failed-route
@@ -26,6 +26,29 @@ Corpus now supports:
 > character unitarity; away from it, only a hyperbolic cross pairing is
 > invariant and every Hilbert-positive invariant form vanishes.
 
+The post-freeze corpus sharpens this to a **completion separation law**.
+Three properties previously conflated under ``completion'' are independent:
+
+1. common-test density exists unconditionally through singular finite-source
+   packet completion;
+2. positive moment completion exists if and only if RH; within the compact
+   Thorin-type class it is rigid, because the exact completed source germ
+   determines one canonical Xi atomic carrier;
+3. regular actionwise scalar completion is excluded by the exact
+   Krein/summability trilemma.
+
+Thus representation is no longer the open problem.  Positivity and a
+source-only section of the forced representation are.
+
+The live HTGeometry delta adds an **observation-capacity dichotomy** inside
+the same law.  The full projective loop-current atlas is jointly faithful
+modulo constants, so current formation loses no nonconstant rational jet.
+By contrast, a response bounded by \(B\) on any finite source-sign cube has
+at most \(B^2/\eta^2\) Walsh modes visible above resolution \(\eta\),
+independently of cube dimension.  Infinite vector-current faithfulness and
+bounded scalar observability are therefore not competing claims: finite
+reporting is the precise information bottleneck.
+
 This is stronger than the previous “bifiltered ramified-character” statement
 because it explains why a small positive global defect still does not provide
 zero exclusion.
@@ -50,7 +73,46 @@ zero exclusion.
 | Every finite Deninger prime--Gamma source cup equals the multiplicity-exact Xi--Weil polarization | Exact finite common-test source factorization | Direct theorem |
 | Every square-summable Weil test is a Hilbert limit of finite separated continued-source packets with convergent source energies | Singular infinite completion of whole common-test form | Direct theorem |
 | One separated packet sequence converges to Xi--Hurwitz orientation vector with energy limit \(-\mathcal E_H\) | Exact one-sequence source gate; selection remains target-side | Direct theorem |
+| Any positive Borel measure representing the complete source moment tower exists iff RH | Positive scalar completion contains the whole zero-location obstruction, regardless of support choice | Direct theorem |
+| Under RH the canonical compact Xi atomic measure realizes every source moment | Explicit positive branch; no unspecified ambient measure is needed | Direct theorem |
+| Any two compact completed-seam Thorin witnesses coincide, and every witness is canonical | Compact positive completion is rigid rather than tunable | Direct theorem |
 | Hedenmalm reflected quotients fold into one nonzero two-component system with sole affine defect \(i\Xi\) | Reflection is internal; missing datum is source-defect completion | Direct theorem |
+
+## Post-freeze 21-module delta audit
+
+The regenerated 2026-08-01 census contains 6,885 modules and 83,995 directly
+parsed declarations.  It is 21 modules ahead of the previous manifest.  No
+module in this delta is omitted below.
+
+| New module family | Strongest exact content | Disposition for this paper |
+|---|---|---|
+| `BohrHullFrequency`, `BohrHullPullback`, `BohrHullTorusQuotient` | Every finite rationally independent hull-frequency packet realizes the whole target torus | Positive phase-carrier theorem: finite phases are fully realizable and therefore do not select arithmetic orientation; structural shadow, not an Xi producer |
+| `CompactAbelianHaar`, `CompactAbelianConvolution` | Haar probability and continuous convolution on compact abelian carriers | General analytic infrastructure; no Xi specialization and no new paper claim |
+| `FiniteRankTransportUnitary`, `NestedExhaustionCayleyLimit`, `StrongResolventSpectralInclusion`, `SuzukiFiniteApertureBoundaryPhaseLocking` | Deficiency transport is automatic at rank one; boundary blocks converge exactly when their phases converge; phase-locked Cayley/resolvent limits and spectral inclusion follow | Strong positive survivor for operator routes: transport is not missing, the source-selected phase is. Mention as route boundary, not as a source theorem |
+| `FreeCoordinateChainRule`, `FreeCoordinateConstantKernel`, `ProjectiveHorizonJetLoopCurrent` | Every rational function uses finitely many free coordinates; all coordinate derivatives jointly have constants as common kernel; loop currents obey exact Lie-shift law | Full current family is faithful modulo constants, supporting vector rather than scalar source observability. No proved Xi specialization, so excluded from headline |
+| `NormalResolventDistance` | Resolvent blow-up forces spectral proximity for normal elements | Standard operator bridge; consumed by spectral-inclusion family, not independently significant here |
+| `CompletedSeamCompactThorinRigidity` | Exact completed-seam exponent fixes every compact witness moment; any two positive compact witnesses coincide; every witness equals the canonical atomic Xi measure | Direct strengthening: closes the tunable-positive-carrier escape and supplies compact branch of completion separation law. Compiled object is current; final isolated axiom audit remains pending |
+| `DeningerDivisibleFiberFiniteCoverInvariance` | A surjection with divisible/no-finite-quotient kernel induces equivalence on finite actions and an isomorphism on profinite completions | Exact finite-consumer blindness theorem: finite covers cannot see a divisible source fibre. Structural Deninger shadow |
+| `SoninAnnulusBump`, `SoninAnnulusPacket` | Nonzero even smooth annular Poisson tests with zero value and zero integral | Source-test infrastructure only; the cofinal nonannihilation/Mellin-flat theorem remains paper-proved but not yet Lean-proved and is excluded |
+| `SoninCouplingLayerOrthogonality`, `SoninCouplingSoninCompression` | Successive-layer coupling is a cut of one compressed dilation and vanishes exactly by cross-layer dilation orthogonality | Exact reformulation of the remaining Sonin producer: compactness algebra is finished, nonorthogonality is the open source input |
+| `StationaryRecurrenceCompletionLaw`, `StationaryRecurrencePointSpectrumLaw` | Uniform completed-time return laws exist; atomless spectra collapse to zero fidelity; equality of point masses determines the entire completed recurrence law | Generic consumer theorem: recurrence forgets all continuous and singular-continuous spectrum. No Xi specialization, so used only to delimit meaning of ``complete'' |
+| pre-existing but newly unreachable `StationaryRecurrenceQuotientLaw` | Every sampled return distribution factors through the energy-difference law and reflection-even clock quotient | Maximal quotient statement behind the recurrence shadow; currently absent from umbrella and not promoted |
+
+The two current umbrella misses are `HTGeometry.NormalResolventDistance` and
+`RHTower.StationaryRecurrenceQuotientLaw`.  This is an index/reachability fact,
+not a mathematical gap in the paper.
+
+## Live post-census five-module audit
+
+Five modules appeared after the 6,885-module census; all are classified here.
+
+| New module | Strongest exact content | Disposition |
+|---|---|---|
+| HTGeometry.CompactAbelianConvOperator | Constructs and bounds the \(L^2\) convolution operator through continuous functions | Infrastructure only. Despite module prose, no compactness theorem is declared, so manuscript makes no compactness claim from it |
+| HTGeometry.FiniteWalshObservationCapacityLaw | Exact normalized Walsh Parseval law and dimension-free threshold bound \(\eta^2N_\eta\le B^2\) | Direct strengthening: quantitative bounded-observer side of source observability |
+| HTGeometry.ProjectiveHorizonJetLoopDescent | Annihilation by one complete loop-current family per row forces a rational jet observable to be constant | Direct strengthening: positive full-current survivor paired with finite-reporter no-go |
+| RHTower.SoninCosineRiemannLebesgue | Compactly supported cosine moments vanish at high frequency | Analytic infrastructure |
+| RHTower.SoninAnnulusPacketAsymptotics | Sonin annular packet mean vanishes and its squared norm tends to half the positive profile energy | Nondegenerate cofinal packet normalization is now proved; cross-layer nonorthogonality and source-to-Sonin value coupling remain absent, so no headline promotion |
 
 The height floor is not sold as competitive numerical zero verification.
 Its value is conceptual: the same analytic endpoint charge which bounds total

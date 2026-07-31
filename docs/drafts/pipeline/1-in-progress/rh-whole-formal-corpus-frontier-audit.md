@@ -540,3 +540,56 @@ aggregate.  Exact transfer by this zero-free factor localizes the only remaining
 quotient `XiC/F`; the hostile Wronskian limit proves that quotient retains exactly the Xi divisor.
 This is a sharp gauge-localization theorem, not a proof shortcut.  Status:
 `[FORMALIZED IN RHTOWER; DIRECT HT DIVISOR BRIDGE EXHAUSTED]`.
+
+## Corrected whole-theory criterion and first exact transfer
+
+User correction: HTGeometry is an independent mathematical theory, not a bag of declarations
+ranked by whether RHTower already imports them.  Existing application evidence is therefore
+historical metadata only.  Selection order is now:
+
+1. normalize the complete HTGeometry theorem supply;
+2. normalize exact RHTower source obstructions independently;
+3. test mathematical instantiation;
+4. only afterward record whether the transfer was already applied.
+
+The first exact underapplied transfer found by this criterion is compact moment determinacy.
+`HTGeometry.CarriedConclusion.measure_eq_of_moments_eq_of_one_carried` had not been applied to the
+completed-seam compact Thorin producer wall.
+
+Let `mu` and `nu` be two finite positive compactly supported measures whose Thorin logarithmic
+exponents both equal the exact normalized completed Cassini source exponent near zero.
+Differentiating the source identity gives equality of both Markov transforms with
+`completedSeamMomentGerm`.  Taking every derivative at zero forces
+
+```text
+integral x^n dmu(x)
+  = normalizedPrimeArchMoment(n)
+  = integral x^n dnu(x)
+```
+
+for every `n`.  Compact carriage of `mu` and HTGeometry moment determinacy then imply `mu=nu`.
+This produces a new source-wall rigidity statement:
+
+> The critical-seam compact Thorin carrier, if it exists, is canonical; changing carrier or
+> support radius cannot evade the missing positivity theorem.
+
+Formalized card:
+`../3-formalized/not_new_scientific_knowledge/completed-seam-compact-thorin-carrier-rigidity.md`.
+Lean module:
+`RHTower/CompletedSeamCompactThorinRigidity.lean`.
+Status:
+`[PAPER-PROVED] [LEAN-FORMALIZED] [AXIOM-CLEAN] [NOT CLAIMED NOVEL] [NOT RH]`.
+
+The stronger classification uses the already formalized RH consequence and canonical Xi compact
+measure.  Any compact Thorin witness implies RH.  Under RH the atomic measure
+
+```text
+primeArchXiCompactMomentMeasure
+  = sum_j lambda_j delta_(lambda_j)
+```
+
+has exactly the normalized prime--archimedean moments.  Applying compact determinacy again proves
+that every witness measure equals this canonical Xi-divisor pushforward.  Therefore the compact
+Thorin wall has no alternative-carrier freedom: a source-side construction must reconstruct this
+exact measure without reading Xi zeros.  This is the positive classification exposed by the
+generic measure-existence no-go.

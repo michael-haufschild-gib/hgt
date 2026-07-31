@@ -1024,6 +1024,29 @@ translation distance of `t ↦ F(ι t)` is dominated by that of `f`
 which is exactly eq. (25): a continuous translation-equivariant observable — the divisor observable
 included — creates no phase beyond the carrier's character group.
 
+`formal/GaloisForLFunctions/HTGeometry/CompactAbelianHaar.lean` and
+`…/CompactAbelianConvolution.lean` begin the harmonic analysis of the carrier itself.  The first
+normalizes Haar measure on a compact Hausdorff abelian group to a probability measure
+(`haarProb`) and records translation and reflection invariance of its integral.  The second proves
+the tube-lemma form of uniform continuity — one neighbourhood `V` of `0` with
+`‖k(x+v) − k x‖ < ε` for *all* `x` and all `v ∈ V` (`exists_nhds_zero_norm_sub_lt`) — and uses it to
+show that convolution with a continuous kernel maps an integrable function to a continuous one with
+a modulus of continuity depending only on the kernel and on `‖u‖_{L¹}`
+(`norm_convFun_le`, `norm_convFun_sub_le`, `continuous_convFun`).
+
+`formal/GaloisForLFunctions/HTGeometry/CompactAbelianConvOperator.lean` and
+`…/CompactAbelianConvCompact.lean` complete the first, analytic half of the Peter–Weyl argument.
+On a probability space `‖u‖_{L¹} ≤ ‖u‖_{L²}` (`integral_norm_le_norm`), so convolution factors as
+`L²(G) → C(G) → L²(G)` with `‖k * u‖_∞ ≤ ‖k‖_∞‖u‖₂` (`convOp`).  **That operator is compact**
+(`isCompactOperator_convOp`), proved without Arzelà–Ascoli: a finite measurable partition
+subordinate to a cover by translates of a small neighbourhood
+(`exists_finite_partition_subordinate`, by disjointifying a finite subcover) lets one replace
+`k(x − z)` by `k(x − y i)` on each piece, which changes the convolution by at most `ε‖u‖`
+(`norm_convC_sub_rebuild_le`) and is a finite-rank operator because it factors through `ℂⁿ`
+(`sampleCLM`, `rebuildCLM`, `isCompactOperator_approxOp`).  So the convolution operator is a norm
+limit of compact operators.  Compactness is exactly what makes the eigenspaces finite-dimensional,
+which is the step that produces characters.
+
 `formal/GaloisForLFunctions/HTGeometry/IsometricRecurrence.lean` abstracts the recurrence to any
 relatively-compact isometric `ℝ`-action (`isometricAction_recurrence`, `isometricAction_return_seq`),
 so it instantiates both to `ℝ →ᵇ ℂ` and to vertical translation of holomorphic functions on a strip.
@@ -1043,12 +1066,30 @@ finite frequency packet is `ℚ`-linearly independent.
 whose frequency module is the prime-log module cannot be differentially algebraic over the Gamma
 field (with the finite-phase conclusion as the explicit interface).
 
-Still genuinely open (mathlib-absent, being built incrementally): the *topological heart* of eq. (9)
-— with the carrier group and its characters now constructed (`BohrHullGroup`, `BohrHullCharacter`),
-what remains is the finite jet-sample embedding `hull ↪ ℂ^N`, the covering-dimension bound `≤ 2N`,
-and the identification of covering dimension with the rational rank of the character group
-(Pontryagin–van Kampen; mathlib has only the `PontryaginDual` definition, not the duality theorem) —
-which supplies the finite frequency generators consumed by `FrequencyRank`; the analytic Poincaré transfer promoting eq. (19) to unconditional analytic
+The remaining formalization gap has now been isolated to two named classical theorems, neither of
+them in mathlib.
+
+1. **Peter–Weyl for compact abelian groups** (characters separate points).  Everything in the
+   approximation circle — the Bochner–Fejér approximation theorem, the uniqueness theorem, Parseval,
+   and the product rule `spec(fg) ⊆ spec f + spec g` — is *equivalent* to it, and each attempt to
+   route around it closes back on itself: the Fejér mass estimate needs a Bohr set inside the
+   almost periods, which is the statement that the characters generate the hull topology; the
+   autocorrelation route needs `φ(0) = ∑ c_λ(φ)`, which is Parseval.  The operator-theoretic proof
+   is available: mathlib has the spectral theorem for compact self-adjoint operators
+   (`ContinuousLinearMap.orthogonalComplement_iSup_eigenspaces_eq_bot`,
+   `finite_dimensional_eigenspace`) and simultaneous diagonalization of commuting symmetric
+   operators (`JointEigenspace.iSup_iInf_eq_top_of_commute`); the missing links are compactness of
+   the convolution operator on `L²` (Arzelà–Ascoli, whose modulus estimate is now proved) and the
+   identification of a common eigenvector of the translations with a character.
+2. **The dimension identity** `dim X = rank_ℚ X̂` for compact abelian groups, in the direction
+   needed here: an embedding `X ↪ ℂ^N` forbids a surjection onto `𝕋^r` for `r > 2N`.  The surjection
+   itself is now a theorem (`exists_bohrHull_charPacket_eq`), and the character injection
+   `Γ(f) ↪ X̂` is a theorem (`BohrHullCharacter`), so this is the only step of the eq. (9) chain
+   still missing, together with the finite jet-sample embedding `hull ↪ ℂ^N` it consumes.  Note that
+   plain continuity is *not* enough for the dimension step (Peano curves; and open maps can raise
+   dimension, by Keldysh's example): the group structure of the fibres is load-bearing.
+
+Also still open: the analytic Poincaré transfer promoting eq. (19) to unconditional analytic
 asymptotics for a coefficient with nonconstant digamma-field data (the *jet* coefficients and the
 whole subfield `ℂ(Γ)` are already unconditional, see `GammaJetVerticalStripCollapse` and
 `GammaRationalProjectiveBoundary`); and the relative differential Galois theory for the classical

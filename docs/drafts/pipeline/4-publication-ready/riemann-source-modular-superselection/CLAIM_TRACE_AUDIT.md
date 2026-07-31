@@ -192,6 +192,8 @@ Audit date: 2026-07-31.
 | Source-selected Cayley coordinate reverses under sharp reflection | `thetaCuspTailSecondDensityReflectionOddCoordinate_sharp` | same |
 | Odd Cayley coordinate vanishes exactly on the regular Xi divisor chart | `thetaCuspTailSecondDensityReflectionOddCoordinate_eq_zero_iff`; `thetaCuspTailSecondDensityReflectionOddCoordinate_eq_zero_at_XiC_zero` | same |
 | Every differentiable even reader loses its first jet at the fixed point | `evenReader_firstJet_zero` | `formal/GaloisForLFunctions/HTGeometry/ReflectedChannelProjectiveFlow.lean` |
+| One projective loop-current family per row has only constants in its joint kernel | `exists_algebraMap_of_forall_jetLoopDerivation` | `formal/GaloisForLFunctions/HTGeometry/ProjectiveHorizonJetLoopDescent.lean` |
+| Loop-current annihilation descends from the highest jet to every coordinate derivative | `freeCoordinateDerivation_eq_zero_of_forall_jetLoopDerivation` | same |
 | Every finite-dimensional Xi log-derivative reporter misses a nonzero derivative packet | `exists_xiLogDeriv_nonzero_finiteDerivativeReporterPacket_ker` | `formal/GaloisForLFunctions/RHTower/XiLogDerivFiniteReporterBlindness.lean` |
 | Finite Gibbs dressing does not repair reporter blindness | `exists_xiLogDeriv_add_finiteGibbs_nonzero_finiteDerivativeReporterPacket_ker` | same |
 | No positive-aperture finite local polynomial spectral frame represents the horizontal Xi derivative | `not_XiFiniteLocalPolynomialSpectralFrame_of_pos` | `formal/GaloisForLFunctions/RHTower/XiFiniteLocalSpectralFrameObstruction.lean` |
@@ -260,6 +262,8 @@ Audit date: 2026-07-31.
 | Every projective-tail class is dense; quotient is indiscrete | `booleanProjectiveTailClass_fiber_dense`; `booleanProjectiveTail_coinduced_eq_indiscrete` | `formal/GaloisForLFunctions/HTGeometry/PrimeDirichletTailGroupoid.lean` |
 | Continuous \(T_0\)-valued invariants factoring through projective tail class are constant | `continuous_constant_of_booleanProjectiveTailClass` | same |
 | Signed vertical prime trace is positive definite iff all signs are positive | `signedPrimeVerticalTrace_positiveDefinite_iff_allPositive` | `formal/GaloisForLFunctions/HTGeometry/PrimeDirichletPositiveDefinite.lean` |
+| Normalized Walsh coefficients obey exact Parseval on every finite source-sign cube | `sum_norm_sq_inverseWalshCoefficient` | `formal/GaloisForLFunctions/HTGeometry/FiniteWalshObservationCapacityLaw.lean` |
+| A pointwise response bound gives the dimension-free threshold count `eta^2 N_eta <= B^2` | `sq_mul_walshThresholdCount_le_bound_sq` | same |
 | Bundled projective-tail pointing law | `primeProjectiveTailPositivePointing_law` | capstone |
 | Pairwise transverse Xi carriers have the rooted incidence matroid | `rootedIncidenceMatroid_charZero_eq`; `xiTransverseShiftPairDifferenceUpperEndCarrier_differentialMatroid_base_eq_allValuation` | `formal/GaloisForLFunctions/RHTower/XiPairwiseValuationBaseUniversalityLaw.lean` |
 | Adjoining every scalar valuation layer leaves that matroid unchanged | `xiTransverseShiftPairDifferenceUpperEndCarrier_differentialMatroid_base_eq_allValuation` | same |
@@ -301,6 +305,13 @@ Audit date: 2026-07-31.
 | Every square-summable Xi-divisor evaluation is a norm limit of pairwise-separated finite continued-source packets and source energies converge to its Weil value | xiWeilPolarization_separatedContinuedSource_reconstruction | formal/GaloisForLFunctions/RHTower/CCMUniversalWeilSourceReconstruction.lean |
 | One separated source sequence converges to the Xi--Hurwitz orientation vector with source energies tending to negative orientation energy | xiHurwitzOrientationEnergy_separatedContinuedSource_reconstruction | formal/GaloisForLFunctions/RHTower/XiHurwitzOrientationSeparatedSourceReconstruction.lean |
 | Eventual nonnegativity of that target-selected sequence is equivalent to RH | exists_separatedContinuedSource_sequence_eventually_nonnegative_iff_riemannHypothesis | same |
+| A positive Borel measure represents every completed source moment exactly iff RH | `primeArchMomentRepresentation_iff_riemannHypothesis` | `formal/GaloisForLFunctions/RHTower/PrimeArchMomentMeasureRH.lean` |
+| Any positive representing measure makes every source trace--Hankel form nonnegative | `primeArchSourceTraceHankelIntNonnegative_of_momentRepresentation` | same |
+| Under RH the canonical compact atomic Xi measure represents every completed source moment | `integral_primeArchXiCompactMomentMeasure_eq_of_riemannHypothesis` | `formal/GaloisForLFunctions/RHTower/PrimeArchXiCompactThorinRH.lean` |
+| Exact completed-seam exponent fixes every moment of any compact positive Thorin witness | `IsPrimeArchCompactThorinWitness.normalizedPrimeArchMoment_eq_integral_pow` | `formal/GaloisForLFunctions/RHTower/CompletedSeamCompactThorinRigidity.lean` |
+| Any two compact positive witnesses, even with different support radii, are the same measure | `primeArchCompactThorinWitness_measure_unique` | same |
+| Every compact witness is the canonical multiplicity-exact atomic Xi measure | `IsPrimeArchCompactThorinWitness.eq_primeArchXiCompactMomentMeasure` | same |
+| A compact positive witness exists exactly on the RH fibre | `primeArchCompactThorinExponentRepresentation_iff_riemannHypothesis`; `primeArchCompactThorinExponentRepresentation_iff_exists_witness` | `formal/GaloisForLFunctions/RHTower/PrimeArchXiCompactThorinRH.lean`; `formal/GaloisForLFunctions/RHTower/CompletedSeamCompactThorinRigidity.lean` |
 | Hedenmalm reflection folds into the exact two-component first-order source system | xiHedenmalmEvenFold_equation; xiHedenmalmOddFold_equation | formal/GaloisForLFunctions/RHTower/XiHedenmalmReflectionFoldedDirac.lean |
 | Folded components satisfy the forced quadratic equations and the even fold is nonzero | xiHedenmalmEvenFold_quadratic; xiHedenmalmOddFold_quadratic; xiHedenmalmEvenFold_ne_zero; ne_zero_of_XiC_eq_zero | same |
 | Exact Gamma/co-Poisson reflected interval packet has a negative quadratic direction and determinant | gammaCoPoissonSymmetricPacketValue_re_neg; gammaCoPoissonSymmetricPacketDeterminant_re_neg | formal/GaloisForLFunctions/RHTower/GammaCoPoissonIntervalKreinNoGo.lean |
@@ -337,4 +348,18 @@ Audit date: 2026-07-31.
 
 ## Direct verification record
 
-Pending final audit after manuscript freeze.
+Final targeted audit after manuscript freeze:
+
+- `lake build GaloisForLFunctions.RHTower.XiHedenmalmReflectionFoldedDirac`
+  completed successfully (8,932 jobs);
+- a single `lake env lean` audit imported the exact source-cup, universal
+  reconstruction, orientation-sequence, Hedenmalm-fold, and critical-trilemma
+  modules and printed axioms for their promoted declarations;
+- every promoted declaration depends only on `propext`, `Classical.choice`,
+  and `Quot.sound`;
+- manuscript static audit found no verification-method references, duplicate
+  labels, stale conjugated coefficient, or whitespace error;
+- Tectonic completed both TeX passes but PDF generation could not be refreshed
+  because the sandboxed engine lacked `rsfs10.pfb` and font download approval
+  was not granted.  The existing PDF therefore predates this revision and is
+  not claimed as the final rendered artifact.

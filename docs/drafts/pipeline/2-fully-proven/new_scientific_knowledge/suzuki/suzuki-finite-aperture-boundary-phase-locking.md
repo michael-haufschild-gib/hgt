@@ -478,21 +478,27 @@ isometry between spaces of equal finite dimension, hence unitary.
   times a rank-one transport, and norm convergence of the blocks is *equivalent* to convergence of
   the scalar phase.  This is `(4.12) <-> (4.14)`.
 
-**Module 4 (DONE, elementary form)** spectral inclusion `(5.1)`:
-`formal/GaloisForLFunctions/HTGeometry/StrongResolventSpectralInclusion.lean`.
+**Module 4 (DONE)** spectral inclusion `(5.1)`:
+`formal/GaloisForLFunctions/HTGeometry/StrongResolventSpectralInclusion.lean` together with
+`formal/GaloisForLFunctions/HTGeometry/NormalResolventDistance.lean`.
 
 - `eventually_norm_sub_smul_lt`: strong convergence transports approximate eigenvectors.
 - `one_div_lt_norm_resolvent`: a unit vector moved less than `epsilon` by `T - mu` forces
   `mu` into the spectrum or the resolvent norm above `1/epsilon`; the resolvent recovers the vector
   from its own image.
-- `eventually_mem_spectrum_or_norm_resolvent_gt`: the combination — near every spectral point of the
-  limit, every sufficiently late approximant either has `mu` in its spectrum or an exploding
-  resolvent there.
+- `isStarNormal_algebraMap_sub`: a scalar shift of a normal element is normal, the scalar part
+  being central.
+- `norm_inverse_le_of_spectrum_far`: for a normal element whose spectrum stays at distance at least
+  `epsilon` from `mu`, the resolvent at `mu` has norm at most `1/epsilon`.  Proof: the norm of a
+  normal element is its spectral radius, and the spectrum of the resolvent is the pointwise inverse
+  of the translated spectrum.  This is the mathlib-gap lemma that converts an exploding resolvent
+  into a nearby spectral point.
+- `eventually_exists_mem_spectrum_norm_sub_lt`: the full spectral inclusion `(5.1)` — for a
+  strongly convergent family of normal operators, every sufficiently late member has a spectral
+  point within `epsilon` of `mu`.
 
-This is the target-spectral-inclusion content of `(5.1)` without any functional calculus.  Turning
-"exploding resolvent" into "the spectrum meets every neighbourhood" needs the normal-element
-identity `‖(T - mu)^(-1)‖ = dist(mu, spectrum T)^(-1)`, which mathlib does not yet carry; that
-identity is the one remaining step of Module 4.
+Only inclusion of the target spectrum is obtained; nothing here excludes additional finite-aperture
+spectral pollution away from the target spectrum, exactly as the paper states.
 
 **Module 5 (DONE)** Suzuki-facing assembly:
 `formal/GaloisForLFunctions/RHTower/SuzukiFiniteApertureBoundaryPhaseLocking.lean`.
@@ -505,14 +511,19 @@ identity is the one remaining step of Module 4.
   density, the two deficiency lines, and a converging phase schedule, the embedded finite Cayley
   transforms converge strongly.
 - `tendsto_apertureResolvent_of_phaseLock`: the generalized strong resolvent limit `(4.5)`.
+- `apertureBoundaryBlock_apply`, `tendsto_phase_of_tendsto_apertureBoundary`: Theorem 4.2's
+  necessity direction — if the boundary parts converge, the phases converge to the global phase.
+  The identity is read off at the deficiency image of the global transported vector, so only finite
+  boundary data is tested; together with `tendsto_opNorm_apertureBoundaryBlock_iff` this closes the
+  classification `(4.11) <-> (4.12) <-> (4.14)`.
 
 All modules wired into the area umbrellas, targeted builds green, axiom audit
 `[propext, Classical.choice, Quot.sound]` for every declaration listed.
 
-**Remaining Lean work.**  (i) the general-`k` polar factor of Module 2; (ii) the normal-element
-resolvent-distance identity closing Module 4; (iii) the last step of the Theorem 4.2 converse,
-which tests the boundary convergence on the transported vectors to upgrade strong convergence of
-`Z_a E_a` to norm convergence of the transported blocks.
+**Remaining Lean work.**  Only the general-`k` polar factor of Module 2.  Everything else in
+Sections 2-5 is formalized: Theorem 3.1, Theorem 4.1, Theorem 4.2 in both directions, the Cayley
+resolvent transfer, and Theorem 5.1.  At deficiency index `(1,1)` — the index of Suzuki's
+finite-aperture operators, and the only index the source application uses — the chain is complete.
 
 **Explicitly out of scope for the Lean gate.**  Section 6 is `[PROVED FROM RH]` and stays out: the
 global positive Weil space and the target self-adjoint generator are downstream of RH, and the
@@ -542,3 +553,6 @@ universal law of Sections 2-5.
   its convergence, the base-subtraction converse, the Cayley resolvent transfer, the deficiency-one
   phase-lock equivalence, elementary spectral inclusion, and the aperture-chain statement of
   Theorems 4.1 and 4.2.
+- 2026-08-01 — Theorem 4.2's necessity direction and the normal-element resolvent-distance identity
+  formalized; Module 4 closed with the full spectral-inclusion statement.  The only remaining Lean
+  item is the general-`k` polar factor of Module 2.

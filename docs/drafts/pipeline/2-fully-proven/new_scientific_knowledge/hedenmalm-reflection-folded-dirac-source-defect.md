@@ -322,3 +322,24 @@ The proofs use the existing unconditional equation `xiThetaEigenFourier_equation
 and the multiplicity-sensitive removable-quotient laws.  The operator-dilation obstruction and
 the prime-tail/Hedenmalm transgression remain paper-level because no such positive source
 operation is known; an abstract unbounded-operator API would not supply it.
+
+## 2026-07-31 refinement: the regular transgression is explicit
+
+The claim above that the exact prime-tail/Hedenmalm map is wholly missing is now too coarse.
+`prime-tail-hedenmalm-wiener-hopf-transgression.md` constructs the source-defined bounded maps
+
+```text
+T_-f(x)=integral_0^infinity k(x-L)f(L)dL,
+T_+f(x)=integral_0^infinity k(x+L)f(L)dL.
+```
+
+For `lambda=rho-1/2=i alpha` and `Re lambda>0`, their even/odd folds send
+`exp(-lambda L)` exactly to `(E_alpha,O_alpha)`.  Their endpoint trace is precisely the affine
+theta defect in `(5)`.
+
+What remains missing is not the regular transgression but its singular boundary-cohomology lift.
+Ordinary `L^2` admits the decaying exponential for hypothetical right off-line zeros and excludes
+the oscillatory critical-line input.  The required completion must reverse that bulk--boundary
+polarity: kill regular resolvent primitives, retain tempered threshold classes, and prove from
+the ordinary-integer source that every Xi conormal lands nontrivially.  That nonannihilation
+statement, not construction of another formal differential operator, is the RH-bearing core.

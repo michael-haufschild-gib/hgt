@@ -111,34 +111,25 @@ The present theorem survives that objection because the same coefficients
   boundary; and
 - pay the diameter-weighted spatial-locality budget across that boundary.
 
-Remaining objection: thresholding individual coefficient magnitudes is
-not yet an operationally stable dimension of the nonlinear finite-time
-response. The theorem is therefore not a Nature-level headline by itself.
+The coefficient-threshold objection is closed by the finite-time nonlinear
+phase theorem in `operational-boundary-time-capacity-law.md`.
 
-## Open operational core
+## Operational closure
 
-`[CONJECTURE]` Let \(\mathcal R_{r,T}\) be the finite-time
-\(0\)-to-\(r+1\) commutator response projected onto the Walsh algebra of
-\(F_r\), and let \(d_\eta(\mathcal R_{r,T})\) be an operational stable
-dimension at measurement resolution \(\eta\). Then
+Let \(\mathcal R_{r,t}\) be the exact demodulated double-endpoint-flip
+phase response and let \(N_\eta(r,t)\) count its normalized Walsh
+coefficients of magnitude at least \(\eta\). Walsh--Parseval, the
+unit-circle chord bound and the same-packet locality budget prove
 \[
- d_\eta(\mathcal R_{r,T})
- \le
- \min\left\{
-   D_r,\frac{2KT}{\eta D_r}
- \right\},
+  \eta^2 N_\eta(r,t)D_r^2\le 4K^2t^2.
 \]
-with matching examples up to a universal constant. In particular,
-resolving all \(D_r\) boundary directions would require
+If all \(D_r\) directions are resolved, then
 \[
- T\ge\frac{\eta D_r^2}{2K}.
+  \eta^2D_r^3\le4K^2t^2.
 \]
-
-`[OPEN CORE]` Define stable dimension through singular values or metric
-packing and prove that nonlinear phases cannot evade the coefficient
-budget through cancellations or near-collisions. A matching lower bound
-also requires quantitative frequency separation; rational independence
-alone supplies no Diophantine margin.
+This is an unconditional nonlinear-response capacity law. It does not claim
+a matching lower bound or retain the earlier unsupported \(D_r^2\) time
+exponent.
 
 ## Formalization
 
@@ -163,4 +154,4 @@ only `propext`, `Classical.choice`, and `Quot.sound`.
 - [x] hostile disjoint-packet audit
 - [ ] external priority audit
 - [x] exact Lean formalization and axiom audit
-- [ ] operational finite-time strengthening
+- [x] operational finite-time strengthening

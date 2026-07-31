@@ -23,6 +23,7 @@ noncomputable section
 variable {G : Type*} [TopologicalSpace G] [AddCommGroup G] [IsTopologicalAddGroup G]
   [CompactSpace G] [T2Space G] [MeasurableSpace G] [BorelSpace G]
 
+omit [T2Space G] [MeasurableSpace G] [BorelSpace G] in
 /-- **Uniform continuity on a compact group.**  One neighbourhood of the origin works at every
 point. -/
 theorem exists_nhds_zero_norm_sub_lt (k : G → ℂ) (hk : Continuous k) {ε : ℝ} (hε : 0 < ε) :
@@ -39,7 +40,8 @@ theorem exists_nhds_zero_norm_sub_lt (k : G → ℂ) (hk : Continuous k) {ε : �
   obtain ⟨U, V, -, hVopen, hUuniv, hVzero, hUV⟩ :=
     generalized_tube_lemma isCompact_univ isCompact_singleton hWopen hsub
   refine ⟨V, hVopen.mem_nhds (hVzero rfl), fun x v hv => ?_⟩
-  exact hUV ⟨hUuniv (Set.mem_univ x), hv⟩
+  have hmem : (x, v) ∈ U ×ˢ V := Set.mk_mem_prod (hUuniv (Set.mem_univ x)) hv
+  exact hUV hmem
 
 /-- Convolution of a function with a kernel on a compact abelian group. -/
 def convFun (k u : G → ℂ) (x : G) : ℂ := ∫ y, u y * k (x - y) ∂(haarProb G)
@@ -48,9 +50,11 @@ omit [T2Space G] in
 theorem integrable_mul_kernel {k u : G → ℂ} (hk : Continuous k) {C : ℝ} (hC : ∀ z, ‖k z‖ ≤ C)
     (hu : Integrable u (haarProb G)) (x : G) :
     Integrable (fun y => u y * k (x - y)) (haarProb G) := by
-  refine hu.bdd_mul' (c := C) ?_ ?_
-  · exact (hk.comp (continuous_const.sub continuous_id)).aestronglyMeasurable
-  · exact Filter.Eventually.of_forall fun y => hC _
+  have h : Integrable (fun y => k (x - y) * u y) (haarProb G) :=
+    hu.bdd_mul (c := C) (hk.comp (continuous_const.sub continuous_id)).aestronglyMeasurable
+      (Filter.Eventually.of_forall fun y => hC _)
+  refine h.congr (Filter.Eventually.of_forall fun y => ?_)
+  ring
 
 omit [T2Space G] in
 /-- The convolution is bounded by the sup norm of the kernel times the `L¹` size of the function. -/
@@ -63,8 +67,8 @@ theorem norm_convFun_le {k u : G → ℂ} (hk : Continuous k) {C : ℝ} (hC : �
     _ ≤ ∫ y, C * ‖u y‖ ∂(haarProb G) := by
         refine integral_mono (integrable_mul_kernel hk hC hu x).norm (hu.norm.const_mul C) ?_
         intro y
-        rw [norm_mul]
-        exact mul_le_mul_of_nonneg_left (hC _) (norm_nonneg _) |>.trans_eq (mul_comm _ _)
+        simp only [norm_mul]
+        exact (mul_le_mul_of_nonneg_left (hC _) (norm_nonneg (u y))).trans_eq (mul_comm _ _)
     _ = C * ∫ y, ‖u y‖ ∂(haarProb G) := integral_const_mul _ _
 
 omit [T2Space G] in
@@ -95,6 +99,7 @@ theorem norm_convFun_sub_le {k u : G → ℂ} (hk : Continuous k) {C : ℝ} (hC 
           _ = ε * ‖u y‖ := mul_comm _ _
     _ = ε * ∫ y, ‖u y‖ ∂(haarProb G) := integral_const_mul _ _
 
+omit [T2Space G] in
 /-- The convolution of an integrable function with a continuous kernel is continuous. -/
 theorem continuous_convFun {k u : G → ℂ} (hk : Continuous k) {C : ℝ} (hC : ∀ z, ‖k z‖ ≤ C)
     (hu : Integrable u (haarProb G)) : Continuous (convFun k u) := by

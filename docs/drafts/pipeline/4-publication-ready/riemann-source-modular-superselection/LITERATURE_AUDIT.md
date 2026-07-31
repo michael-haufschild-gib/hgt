@@ -1,6 +1,6 @@
 # Literature and novelty audit
 
-Audit date: 2026-07-31.  
+Audit date: 2026-08-01.
 Posture: skeptical non-collision search, not proof of worldwide priority.
 
 ## Candidate contribution after corpus-wide revision
@@ -51,7 +51,13 @@ positive hierarchy, not any ingredient alone:
     Gamma/co-Poisson interval cell is Krein-indefinite and its canonical
     critical scalar correction is square-summable only when the scalar is
     zero;
-13. singular acquisition turns divisor into ramified character
+13. positive completion separates sharply from singular density: any positive
+    measure representing the complete source moment tower exists iff RH, and
+    an exact compact Thorin witness, if it exists, is unique and is the
+    canonical atomic Xi carrier; this sharpens the boundary but is not claimed
+    as novelty of moment theory, the RH equivalence, or the Thorin/GGC
+    reformulation itself;
+14. singular acquisition turns divisor into ramified character
     \((m_\rho,\chi_\rho)\), whose continuous rate and dyadic deck tower govern
     Wold, Sonin/Calkin, Ward, Rees, density, monodromy, and mass consumers.
 
@@ -78,6 +84,7 @@ pointed, and cross-prime before diagonal/even/cylinder quotienting.
 | Source | What it establishes | Boundary relative to this paper |
 |---|---|---|
 | A. Connes, “Trace formula in noncommutative geometry and the zeros of the Riemann zeta function,” *Selecta Math.* 5 (1999), 29--106, [DOI](https://doi.org/10.1007/s000290050042) | Trace-formula and spectral framework for zeta zeros | No bifiltered source, odd Julia orientation jet, parity-resolved current law, or density--monodromy charge theorem |
+| N. G. Polson, “Riemann, Thorin, van Dantzig Pairs, Wald Couples and Hadamard Factorisation,” [arXiv:1804.10043](https://arxiv.org/abs/1804.10043), and “Riemann Hypothesis: a GGC factorisation,” [arXiv:1806.07964](https://arxiv.org/abs/1806.07964) | Thorin/GGC interpretation of Xi through Hadamard factorization | Establishes Thorin/GGC as prior literature. Manuscript's narrower residue is completion separation: unconditional singular density versus RH-equivalent positive moment completion, with exact completed-seam compact-carrier rigidity. It does not claim novelty of the probabilistic reformulation or bare equivalence |
 | A. Connes and C. Consani, “The scaling Hamiltonian,” [arXiv:1910.14368](https://arxiv.org/abs/1910.14368) | Arithmetic scaling dynamics, semi-local trace framework, and operator-theoretic semi-local approach to Weil positivity | Closest dilation/thermal context; no exact finite prime--Gamma cup, universal separated-source completion, source-only selection boundary, or reflected finite-versus-flat Rees classification |
 | A. Connes, “The Riemann hypothesis: past, present and a letter through time,” [arXiv:2602.04022](https://arxiv.org/abs/2602.04022) | Current survey of finite Euler information, Weil form, and spectral approaches | Closest current overview; no source-clock blindness witness, global cubic source budget, or atomwise-versus-common-test hierarchy |
 | R. Meyer, “A spectral interpretation for the zeros of the Riemann zeta function,” [arXiv:math/0412277](https://arxiv.org/abs/math/0412277) | Nuclear Fréchet-space spectral realization and explicit formula as character formula | Spectral realization, but no source-normal odd lift or conservative-character descent theorem |
@@ -135,6 +142,9 @@ Revision searches added:
 - `site:arxiv.org Hedenmalm Riemann zeta reflection Dirac source theta fold`
 - `site:arxiv.org Riemann zeta Weil form source completion Cauchy packets`
 - `site:arxiv.org Deninger Riemann zeta Weil form cup product prime Gamma`
+- `"Thorin" "Riemann hypothesis" xi`
+- `"compact Thorin" "Riemann" xi`
+- `Nicholas Polson Riemann Xi Thorin measure canonical measure uniqueness`
 
 Searches found adjacent trace, zero-free-region, spectral, and ramification
 literature, Li/Weil positivity criteria, and computational zero verification,
@@ -158,6 +168,10 @@ is evidence of non-collision, never proof of priority.
 - existence of symmetry-preserving perturbations;
 - RH equivalences assembled by transitivity;
 - classical Weil positivity criterion itself;
+- Thorin/GGC reformulations of RH and general uniqueness of compactly
+  supported measures from all moments;
+- finite Walsh Parseval, threshold counting, and highest-jet triangular
+  descent in a rational function field;
 - elementary local pole expansion of a logarithmic derivative;
 - numerical significance of height floor \(\gamma^2>7907/93\), which is
   vastly weaker than existing rigorous zero verification.
@@ -169,9 +183,12 @@ Strongest defensible pitch:
 > The common-test Weil form of the Riemann divisor is the singular completion
 > of explicit finite prime--Gamma source cups. This completion reaches every
 > square-summable divisor test and one canonical orientation sequence, but the
-> known section is target-selected; regular scalar/reflected completions are
-> excluded by exact Krein and summability obstructions. Ramified character
-> records the orientation information that survives every later descent.
+> known section is target-selected. Any positive measure representing the
+> complete source moments already contains the whole RH obstruction; within
+> the compact Thorin-type class its carrier is uniquely canonical. Regular
+> scalar/reflected completions are excluded by exact Krein and summability
+> obstructions. Ramified character records the orientation information that
+> survives every later descent.
 
 This is stronger than decorative RH equivalence, route-specific obstruction,
 or catalogue of positive criteria. Most distinctive exact conjunction is:

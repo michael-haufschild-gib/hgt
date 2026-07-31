@@ -346,3 +346,16 @@ results.
   corresponding additive gap-collision probability.  The same module proves
   the full atomless collapse to `δ₀`, including singular-continuous spectra.
   Foreground `lake env lean` verification passed.
+- 2026-07-31 — proved point-spectrum universality in
+  `StationaryRecurrencePointSpectrumLaw.lean`.  If two arbitrary probability
+  energy laws have the same mass at every singleton, then every convolution
+  power of their energy-difference laws has the same zero collision mass and
+  their complete stationary recurrence laws are identical.  Thus the
+  centered-time completed fidelity distribution depends only on atom
+  locations and weights; absolutely continuous and singular-continuous
+  sectors are recurrence-invisible, and the atomless phase is exactly
+  `δ₀`.  Foreground `lake env lean` verification and a capstone axiom audit
+  passed with only `propext`, `Classical.choice`, and `Quot.sound`.  This is a
+  stronger arbitrary-spectrum spine, but Nature-level novelty remains open:
+  a hostile referee may view it as an all-moment Wiener corollary unless it
+  yields a new local or open-system physical law.
