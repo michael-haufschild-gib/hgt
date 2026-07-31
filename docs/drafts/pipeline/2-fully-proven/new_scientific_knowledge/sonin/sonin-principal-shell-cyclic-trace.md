@@ -521,7 +521,23 @@ Z(a,b,c;r) = 0   <->   Delta(a,b;r) Q_c = Delta(a,b;r).                   (37)
 So the whole question is a *carrier* question about one explicit positive operator: the defect
 always lives on `K_b`; does it in fact already live on the smaller `K_c`?  Nothing analytic remains
 in the statement — `(37)` is an equality of two products of explicitly defined projections and
-dilations.
+dilations.  Writing the defect in its closed form
+(`evenCentralSoninQuadraticCorner_restrictionDefect`), `(37)` reads
+
+```text
+Q_b D_r (Q_a - Q_b) D_r (Q_b - Q_c) = 0.                                  (38)
+```
+
+**Algebra is exhausted here.**  `(38)` is `Q_b D_r Z = 0`, so the reduction has closed a loop: every
+further rearrangement returns an equivalent of `Z = 0` itself.  Settling it needs one of two things
+that are not algebraic, and neither is in the corpus:
+
+- a vector in `K_b (-) K_c` whose `D_r`-image has nonzero component in `K_a (-) K_b` — an explicit
+  construction, since the physical-support families provably fail; or
+- a structural theorem on how the Sonin projections at two apertures interact under dilation,
+  strong enough to force the triple product to vanish.
+
+Repeated algebraic restatement past this point produces equivalents, not progress.
 
 ### Proof
 
@@ -677,6 +693,10 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-07-31 — algebra exhausted on the coupling.  The closed form of the defect turns the carrier
+  condition into Q_b D_r Z = 0, which is equivalent to Z = 0 again: the reduction has closed a loop.
+  Further rearrangement yields equivalents, not progress; what is needed is an explicit witness or a
+  structural theorem on two-aperture projections under dilation.
 - 2026-07-31 — sharpest form reached.  The defect is a Gram square ending on Q_b, so it absorbs the
   inner projection on both sides and always lives on the carrier at b.  The coupling then vanishes
   exactly when it already lives on the smaller carrier at c: a carrier question about one explicit
