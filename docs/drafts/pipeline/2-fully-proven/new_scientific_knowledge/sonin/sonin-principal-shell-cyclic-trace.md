@@ -505,6 +505,24 @@ compact error and no limit, so the question "is the coupling nonzero?" has becom
 to the shell `S(r a, r b)` and `c < r a`, the defect is supported outside the `c`-window *modulo
 the ideal*; whether that survives exactly is precisely what `(35)` asks.
 
+**Sharpest form.**  The defect is a Gram square `Delta = Y* Y` with `Y = (Q_a - Q_b) D_r Q_b`, so it
+absorbs the inner projection on both sides:
+
+```text
+Q_b Delta(a,b;r) = Delta(a,b;r) = Delta(a,b;r) Q_b.                       (36)
+```
+
+The defect therefore always lives on the carrier at `b`.  Combining with `(35)`:
+
+```text
+Z(a,b,c;r) = 0   <->   Delta(a,b;r) Q_c = Delta(a,b;r).                   (37)
+```
+
+So the whole question is a *carrier* question about one explicit positive operator: the defect
+always lives on `K_b`; does it in fact already live on the smaller `K_c`?  Nothing analytic remains
+in the statement — `(37)` is an equality of two products of explicitly defined projections and
+dilations.
+
 ### Proof
 
 Induction on the chain length from the three-point law, with the chamber hypothesis inherited
@@ -633,6 +651,8 @@ provisional pending expert/literature review.
 | exact physical-band annihilation | `evenCentralSoninProjection_eq_zero_of_indicatorCutoff_eq_self` |
 | exact Fourier-band annihilation | `evenCentralSoninProjection_eq_zero_of_fourierCutoff_eq_self` |
 | `(35)` support restatement | `evenSoninApertureSuccessiveLayerTransition_eq_zero_iff_defect_mul_complement` |
+| `(36)` defect carried by `Q_b` | `evenSoninApertureRestrictionDefect_mul_evenCentralSoninProjection` |
+| `(37)` carrier form | `evenSoninApertureSuccessiveLayerTransition_eq_zero_iff_defect_mul_outer` |
 
 Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninPrincipalRelativeCyclicExtension.lean`,
@@ -657,6 +677,10 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-07-31 — sharpest form reached.  The defect is a Gram square ending on Q_b, so it absorbs the
+  inner projection on both sides and always lives on the carrier at b.  The coupling then vanishes
+  exactly when it already lives on the smaller carrier at c: a carrier question about one explicit
+  positive operator, with nothing analytic left in the statement.
 - 2026-07-31 — coupling question restated as a support question: the coupling vanishes exactly when
   the aperture defect is annihilated by the complement of the outer carrier.  No compact error and
   no limit remains in the statement, and the modulo-ideal picture (defect = shell above r a, with

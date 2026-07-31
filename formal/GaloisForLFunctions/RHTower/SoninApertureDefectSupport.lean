@@ -79,3 +79,82 @@ theorem evenSoninApertureSuccessiveLayerTransition_eq_zero_iff_defect_mul_comple
     rw [hexpand, h, mul_zero]
 
 end RHTower
+
+namespace RHTower
+
+open ContinuousLinearMap
+
+/-! ## The defect already lives on the inner carrier -/
+
+/-- The lost-layer transition is unchanged by the carrier it ends on. -/
+theorem evenSoninApertureLostTransition_mul_evenCentralSoninProjection
+    (a b r : ℝ) (hr : 1 < r) :
+    evenSoninApertureLostTransition a b r hr * evenCentralSoninProjection b =
+      evenSoninApertureLostTransition a b r hr := by
+  have hQ : evenCentralSoninProjection b * evenCentralSoninProjection b =
+      evenCentralSoninProjection b := by
+    rw [evenCentralSoninProjection_eq_starProjection]
+    exact (evenCentralSoninCarrier b).isIdempotentElem_starProjection
+  unfold evenSoninApertureLostTransition
+  rw [mul_assoc, hQ]
+
+/-- **The aperture defect is carried by the inner aperture.**  It is unchanged on the right by the
+projection at `b`. -/
+theorem evenSoninApertureRestrictionDefect_mul_evenCentralSoninProjection
+    {a b r : ℝ} (hab : a ≤ b) (hr : 1 < r) :
+    evenSoninApertureRestrictionDefect a b r hr * evenCentralSoninProjection b =
+      evenSoninApertureRestrictionDefect a b r hr := by
+  have hdef : evenSoninApertureRestrictionDefect a b r hr =
+      ContinuousLinearMap.adjoint (evenSoninApertureLostTransition a b r hr) *
+        evenSoninApertureLostTransition a b r hr := by
+    simpa only [evenSoninApertureRestrictionDefect] using
+      evenCentralSoninQuadraticCorner_restrictionDefect_eq_adjoint_mul hab hr
+  rw [hdef, mul_assoc,
+    evenSoninApertureLostTransition_mul_evenCentralSoninProjection a b r hr]
+
+/-- The same on the left, by self-adjointness of the Gram square. -/
+theorem evenCentralSoninProjection_mul_evenSoninApertureRestrictionDefect
+    {a b r : ℝ} (hab : a ≤ b) (hr : 1 < r) :
+    evenCentralSoninProjection b * evenSoninApertureRestrictionDefect a b r hr =
+      evenSoninApertureRestrictionDefect a b r hr := by
+  have hdef : evenSoninApertureRestrictionDefect a b r hr =
+      ContinuousLinearMap.adjoint (evenSoninApertureLostTransition a b r hr) *
+        evenSoninApertureLostTransition a b r hr := by
+    simpa only [evenSoninApertureRestrictionDefect] using
+      evenCentralSoninQuadraticCorner_restrictionDefect_eq_adjoint_mul hab hr
+  have hadj : evenCentralSoninProjection b *
+      ContinuousLinearMap.adjoint (evenSoninApertureLostTransition a b r hr) =
+        ContinuousLinearMap.adjoint (evenSoninApertureLostTransition a b r hr) := by
+    have h := congrArg ContinuousLinearMap.adjoint
+      (evenSoninApertureLostTransition_mul_evenCentralSoninProjection a b r hr)
+    change ContinuousLinearMap.adjoint
+        (evenSoninApertureLostTransition a b r hr ∘L
+          evenCentralSoninProjection b) = _ at h
+    rw [ContinuousLinearMap.adjoint_comp, adjoint_evenCentralSoninProjection] at h
+    exact h
+  rw [hdef, ← mul_assoc, hadj]
+
+/-- **Sharpest form of the coupling question.**  The aperture defect always lives on the carrier at
+`b`; its layer coupling vanishes exactly when it in fact lives on the smaller carrier at `c`. -/
+theorem evenSoninApertureSuccessiveLayerTransition_eq_zero_iff_defect_mul_outer
+    {a b c r : ℝ} (hab : a ≤ b) (hbc : b ≤ c) (hr : 1 < r) :
+    evenSoninApertureSuccessiveLayerTransition a b c r hr = 0 ↔
+      evenSoninApertureRestrictionDefect a b r hr *
+          evenCentralSoninProjection c =
+        evenSoninApertureRestrictionDefect a b r hr := by
+  rw [evenSoninApertureSuccessiveLayerTransition_eq_zero_iff_defect_mul_complement
+    hab hbc hr]
+  constructor
+  · intro h
+    have hexp : evenSoninApertureRestrictionDefect a b r hr *
+        (1 - evenCentralSoninProjection c) =
+          evenSoninApertureRestrictionDefect a b r hr -
+            evenSoninApertureRestrictionDefect a b r hr *
+              evenCentralSoninProjection c := by
+      rw [mul_sub, mul_one]
+    rw [hexp] at h
+    exact (sub_eq_zero.mp h).symm
+  · intro h
+    rw [mul_sub, mul_one, h, sub_self]
+
+end RHTower
