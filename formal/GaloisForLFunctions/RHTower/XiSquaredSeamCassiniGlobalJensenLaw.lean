@@ -70,9 +70,10 @@ theorem xiSquaredSeamCassiniSourceKernel_tsum_eq_jensenExcess
   have hcoe :
       (∑ᶠ b : {u : ℂ // xiSquaredSeamCassiniSource u = 0}, G b.1) =
         ∑ᶠ (u : ℂ) (_h : xiSquaredSeamCassiniSource u = 0), G u := by
-    simpa only [Set.mem_setOf_eq] using
-      (finsum_set_coe_eq_finsum_mem
-        (f := G) {u : ℂ | xiSquaredSeamCassiniSource u = 0})
+    have hmem := finsum_set_coe_eq_finsum_mem
+      (f := G) {u : ℂ | xiSquaredSeamCassiniSource u = 0}
+    simp only [Set.mem_setOf_eq] at hmem
+    exact hmem
   rw [hcoe]
   let B : ℂ → ℝ := fun u =>
     (D u : ℝ) * Real.log (r * ‖u‖⁻¹) / r ^ 65

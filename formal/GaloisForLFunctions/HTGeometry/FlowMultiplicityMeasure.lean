@@ -223,6 +223,52 @@ theorem opTrace_flowSmoothing_eq_integral_multiplicityMeasure
 end TraceMeasure
 
 
+/-! ## The spectral counting bound -/
+
+/-- **The spectral counting bound.**  If a nonnegative weight symbol is bounded below by `c` on a
+window and its total mass over the spectrum is at most `M`, then the window carries at most `M/c`
+spectral points.  Applied to `g = φ̂(-·)` for a weight whose transform is a square — hence
+nonnegative — and to `M` a bound on the trace `Tr K_φ`, this is the growth estimate
+`ν_A([x-ε, x+ε]) ≤ C(1+|x|)^N` of clause 5, with the trace bound as its analytic input. -/
+theorem finite_and_card_le_of_forall_sum_le {ι : Type*} (lam : ι → ℝ) {g : ℝ → ℝ}
+    {S : Set ℝ} {c M : ℝ} (hc : 0 < c) (hgS : ∀ x ∈ S, c ≤ g x)
+    (hsum : ∀ u : Finset ι, ∑ i ∈ u, g (lam i) ≤ M) :
+    {i | lam i ∈ S}.Finite ∧ (Nat.card {i // lam i ∈ S} : ℝ) ≤ M / c := by
+  classical
+  have hkey : ∀ u : Finset ι, (∀ i ∈ u, lam i ∈ S) → (u.card : ℝ) ≤ M / c := by
+    intro u hu
+    have hlow : (u.card : ℝ) * c ≤ ∑ i ∈ u, g (lam i) := by
+      calc (u.card : ℝ) * c = ∑ _i ∈ u, c := by rw [Finset.sum_const, nsmul_eq_mul]
+        _ ≤ ∑ i ∈ u, g (lam i) := Finset.sum_le_sum fun i hi => hgS _ (hu i hi)
+    have hM : (u.card : ℝ) * c ≤ M := le_trans hlow (hsum u)
+    rw [le_div_iff₀ hc]
+    exact hM
+  have hfin : {i | lam i ∈ S}.Finite := by
+    by_contra hinf
+    rw [Set.not_finite] at hinf
+    obtain ⟨n, hn⟩ := exists_nat_gt (M / c)
+    obtain ⟨t, hts, htc⟩ := hinf.exists_subset_card_eq n
+    have hbound := hkey t fun i hi => hts hi
+    rw [htc] at hbound
+    exact absurd hbound (not_le.2 hn)
+  refine ⟨hfin, ?_⟩
+  have hcard : Nat.card {i // lam i ∈ S} = hfin.toFinset.card :=
+    Set.ncard_eq_toFinset_card {i | lam i ∈ S} hfin
+  rw [hcard]
+  exact hkey hfin.toFinset fun i hi => (Set.Finite.mem_toFinset hfin).1 hi
+
+/-- The counting bound as a bound on the multiplicity mass of a window. -/
+theorem multiplicityMeasure_le_of_forall_sum_le {ι : Type*} (lam : ι → ℝ) {g : ℝ → ℝ}
+    {S : Set ℝ} (hS : MeasurableSet S) {c M : ℝ} (hc : 0 < c)
+    (hgS : ∀ x ∈ S, c ≤ g x) (hsum : ∀ u : Finset ι, ∑ i ∈ u, g (lam i) ≤ M) :
+    multiplicityMeasure lam S ≤ ENNReal.ofReal (M / c) := by
+  obtain ⟨hfin, hcard⟩ := finite_and_card_le_of_forall_sum_le lam hc hgS hsum
+  rw [multiplicityMeasure_eq_card lam hS hfin]
+  calc ((Nat.card {i // lam i ∈ S} : ℕ) : ENNReal)
+      = ENNReal.ofReal ((Nat.card {i // lam i ∈ S} : ℝ)) := by
+        rw [ENNReal.ofReal_natCast]
+    _ ≤ ENNReal.ofReal (M / c) := ENNReal.ofReal_le_ofReal hcard
+
 /-! ## The character function determines the multiplicity measure -/
 
 /-- The flow character is the unit-modulus exponential with real frequency. -/

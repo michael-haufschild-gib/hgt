@@ -88,6 +88,7 @@ theorem aeval_familyJets_monomial (n : ℕ) (f : ι → ℂ⟦X⟧)
     Finsupp.prod_fintype _ _ (fun _ => pow_zero _), Fintype.prod_option]
   rfl
 
+omit [DecidableEq ι] in
 /-- The `N`-th coefficient of a family jet monomial, shifted by its `X`-degree. -/
 theorem coeff_aeval_familyJets_monomial_shift (n N : ℕ) (f : ι → ℂ⟦X⟧)
     (m : Option (ι × Fin (n + 1)) →₀ ℕ) :

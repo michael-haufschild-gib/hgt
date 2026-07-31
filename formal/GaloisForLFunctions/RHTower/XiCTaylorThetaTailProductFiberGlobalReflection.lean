@@ -78,7 +78,9 @@ theorem integral_thetaCuspTailSecondDensity_mul_cos_eq_tail_add_fullSource
     ring]
   rw [integral_add]
   · rw [integral_const_mul]
-  · simpa only [mul_comm] using integrableOn_cos_mul_thetaCuspTailDerivative 0 t
+  · have hI := integrableOn_cos_mul_thetaCuspTailDerivative 0 t
+    simp only [mul_comm] at hI ⊢
+    exact hI
   · exact (integrableOn_thetaCuspFullSource_mul_cos t).const_mul 4
 
 /-- **Exact boundary reflection value relation.**  The even boundary channel of the full canonical

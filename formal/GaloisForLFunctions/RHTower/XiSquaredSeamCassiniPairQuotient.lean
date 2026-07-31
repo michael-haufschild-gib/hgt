@@ -108,7 +108,10 @@ theorem xiSquaredSeamPositiveSupportToCassiniZeroSupport_surjective :
       change xiSquaredSeamCassiniZeroSupport (xiZeroReflectEquiv q.1) = u.1
       rw [xiSquaredSeamCassiniZeroSupport, xiSpectralPointSupport_reflect,
         neg_sq]
-      simpa only [xiSquaredSeamCassiniZero_eq_support] using hq
+      have hq' := hq
+      simp only [xiSquaredSeamCassiniZero_eq_support,
+        xiSquaredSeamCassiniZeroSupport] at hq' ⊢
+      exact hq'
 
 def xiSquaredSeamPositiveSupportEquivCassiniZeroSupport :
     XiSquaredSeamPositiveSupport ≃ XiSquaredSeamCassiniZeroSupport :=

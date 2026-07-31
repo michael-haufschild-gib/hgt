@@ -48,16 +48,16 @@ private theorem cubic_sine_integral_ibp
     have hsin : HasDerivAt
         (fun v : ℝ => Complex.sin (c * (v : ℂ)))
         (Complex.cos (c * (u : ℂ)) * c) u := by
-      simpa only [Function.comp_apply] using
-        (Complex.hasDerivAt_sin _).comp u hcline
+      have hc := (Complex.hasDerivAt_sin _).comp u hcline
+      simpa only [Function.comp_def] using hc
     have hcos : HasDerivAt
         (fun v : ℝ => Complex.cos (c * (v : ℂ)))
         (-Complex.sin (c * (u : ℂ)) * c) u := by
-      simpa only [Function.comp_apply] using
-        (Complex.hasDerivAt_cos _).comp u hcline
+      have hc := (Complex.hasDerivAt_cos _).comp u hcline
+      simpa only [Function.comp_def] using hc
     have hdenDeriv : HasDerivAt
         (fun v : ℝ => s - lam * (v : ℂ)) (-lam) u := by
-      convert (hasDerivAt_const u s).sub (hcast.const_mul lam) using 1 <;> ring
+      convert (hasDerivAt_const u s).sub (hcast.const_mul lam) using 1 <;> first | rfl | ring
     have hdenSqInv : HasDerivAt
         (fun v : ℝ => 1 / (s - lam * (v : ℂ)) ^ 2)
         (2 * lam / (s - lam * (u : ℂ)) ^ 3) u := by
@@ -71,9 +71,17 @@ private theorem cubic_sine_integral_ibp
             (-(2 * (s - lam * (u : ℂ))) /
               ((s - lam * (u : ℂ)) ^ 2) ^ 2)
             (s - lam * (u : ℂ)) := by
-          simpa [id_eq, div_eq_mul_inv] using hi
-        convert hi' using 1 <;> field_simp [hne] <;> ring
-      convert hout.comp u hdenDeriv using 1 <;> field_simp [hne] <;> ring
+          have hi' := hi
+          norm_num [Pi.inv_apply, Pi.pow_apply, id_eq] at hi'
+          have hfun : (fun z : ℂ => 1 / z ^ 2) = fun z : ℂ => (z ^ 2)⁻¹ := by
+            funext z
+            rw [one_div]
+          rw [hfun]
+          exact hi'
+        convert hi' using 1
+        all_goals first | rfl | (field_simp [hne]; try ring)
+      convert hout.comp u hdenDeriv using 1
+      all_goals first | rfl | (field_simp [hne]; try ring)
     have hdenInv : HasDerivAt
         (fun v : ℝ => 1 / (s - lam * (v : ℂ)))
         (lam / (s - lam * (u : ℂ)) ^ 2) u := by
@@ -82,12 +90,18 @@ private theorem cubic_sine_integral_ibp
           (-1 / (s - lam * (u : ℂ)) ^ 2)
           (s - lam * (u : ℂ)) := by
         have hi := (hasDerivAt_id (s - lam * (u : ℂ))).inv hne
-        simpa [one_div, id_eq, div_eq_mul_inv] using hi
-      convert hout.comp u hdenDeriv using 1 <;> field_simp [hne] <;> ring
+        have hfun : (fun z : ℂ => 1 / z) = fun z : ℂ => z⁻¹ := by
+          funext z
+          rw [one_div]
+        rw [hfun, div_eq_mul_inv]
+        exact hi
+      convert hout.comp u hdenDeriv using 1
+      all_goals first | rfl | (field_simp [hne]; try ring)
     dsimp only [J, J', f, g]
     have hfirst := hsin.mul (hdenSqInv.const_mul lam)
     have hsecond := (hcos.const_mul c).mul hdenInv
     convert hfirst.sub hsecond using 1
+    · exact rfl
     · funext v
       simp only [Pi.sub_apply, Pi.mul_apply, div_eq_mul_inv]
       ring

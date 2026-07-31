@@ -274,7 +274,7 @@ theorem tendsto_canonicalThetaTailCoreFiniteArithmeticSurvivingTranslationCurren
       canonicalThetaTailCoreFiniteArithmeticTopRowCurrent d N M z)
       atTop (nhds 0) := by
     have hre := Complex.continuous_re.continuousAt.tendsto.comp htopComplex
-    simpa only [canonicalThetaTailCoreFiniteArithmeticTopRowCurrent,
+    simpa only [Function.comp_def, canonicalThetaTailCoreFiniteArithmeticTopRowCurrent,
       Complex.zero_re] using hre
   have hlimit : Tendsto (fun N : ℕ =>
       L - canonicalThetaTailCoreFiniteArithmeticTopRowCurrent d N M z)

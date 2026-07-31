@@ -553,7 +553,7 @@ theorem hasDerivAt_thetaCuspHigherLikelihoodSpectralResponse
       (fun q : ℝ => ∫ t : ℝ, Real.exp (-q * t)
         ∂thetaCuspHigherLikelihoodSpectralMeasure)
       (-thetaCuspHigherLikelihoodSpectralMoment B 1) B := by
-    convert hmain.2 using 1
+    refine hmain.2.congr_deriv ?_
     rw [thetaCuspHigherLikelihoodSpectralMoment_eq_integral]
     simp only [pow_one]
     rw [← integral_neg]
@@ -602,8 +602,8 @@ theorem thetaCuspHigherLikelihoodSpectralMoment_seam_barycenter :
   have hcoord : HasDerivAt thetaCuspLikelihoodCoordinate (2 * Real.pi) 0 := by
     unfold thetaCuspLikelihoodCoordinate
     convert (((Real.hasDerivAt_exp 0).pow 2).const_mul Real.pi).sub_const (3 / 2) using 1
-    all_goals norm_num
-    all_goals ring
+    all_goals first | rfl | norm_num
+    all_goals first | rfl | ring
   have hresponse :=
     (hasDerivAt_thetaCuspHigherLikelihoodSpectralResponse hB0).comp 0 hcoord
   have hresponse' : HasDerivAt

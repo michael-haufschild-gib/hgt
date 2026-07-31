@@ -130,7 +130,8 @@ theorem analyticAt_finset_sum_apply {ι : Type*} (s : Finset ι) (F : ι → ℂ
   rwa [hfun] at hsum
 
 /-- Jets of a finite sum of functions analytic at the point. -/
-theorem iteratedDeriv_finset_sum {ι : Type*} (s : Finset ι) (F : ι → ℂ → ℂ) (x : ℂ) (k : ℕ)
+theorem iteratedDeriv_finset_sum_of_analyticAt {ι : Type*} (s : Finset ι) (F : ι → ℂ → ℂ)
+    (x : ℂ) (k : ℕ)
     (h : ∀ i ∈ s, AnalyticAt ℂ (F i) x) :
     iteratedDeriv k (fun z => ∑ i ∈ s, F i z) x = ∑ i ∈ s, iteratedDeriv k (F i) x := by
   classical
@@ -179,7 +180,7 @@ theorem principalJet_finset_sum {ι : Type*} (s : Finset ι) (g : ι → (ℂ �
   have hjet := iteratedDeriv_congr_of_eventuallyEq_nhdsNE k heq hAS.continuousAt
     hAcomb.continuousAt
   rw [principalJet, hjet,
-    iteratedDeriv_finset_sum s (fun i z => c i * poleClear (g i) p d z) p k
+    iteratedDeriv_finset_sum_of_analyticAt s (fun i z => c i * poleClear (g i) p d z) p k
       (fun i hi => analyticAt_const.mul (hAi i hi))]
   exact Finset.sum_congr rfl (fun i _ => iteratedDeriv_const_mul_field (c i) (poleClear (g i) p d))
 

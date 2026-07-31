@@ -982,3 +982,59 @@ proof, now determine the shape of the remaining work.
 The single remaining core is therefore: run the corpus's magnitude-dominance capstone on the jet
 ring of a *family* of dilated sources, with `expPolySumMulti_eq_zero` supplying the nonvanishing of
 the surviving coefficient.  Everything else `(11)` needs is now in the tree.
+
+### Lean progress — magnitude survival for a family of dilated sources
+
+Three modules (axiom-clean, build green, umbrella-registered) build the jet apparatus that the joint
+orbit lemma needs.  The corpus's magnitude machinery is written for the jets of a *single* series;
+these lift it to the dilates `H(q_i X)` of one source, which is exactly the shape of a translation
+orbit `h(u(z)+alpha)` after the substitution `xi = e^(2 pi i u(z))`, `q_alpha = e^(2 pi i alpha)`.
+
+**`FamilyJetFlattening.lean`.**  `flatIndex` flattens an exponent profile on *any* finite variable
+type, remembering which variable each slot came from — the corpus's `flatOrder` is the case of a
+single series, where only the derivative order needs remembering.  `prod_pow_eq_flatIndex` and
+`coeff_prod_iterate_deriv_family` (the antidiagonal convolution for a product of derivatives of
+*different* series) then give `familyJets` and the shifted coefficient of one of its monomials.
+
+**`FamilyDilatedMagnitude.lean`.**  For `f_i = rescale q_i H` the whole expansion goes through with
+the *same* atom keys as the single-series case:
+
+```text
+coeff N (aeval (familyJets n f) Q)
+  = sum_nu (prod_i (coeff i H)^(nu i)) · famAevalWeight q n N Q nu.              (F1)
+```
+
+The reason is structural and is the point of the module: `coeff k (rescale q H) = q^k · coeff k H`,
+so a split's dilation data contributes only the scalar `prod_t q_(i_t)^(e_t)`, which lands in the
+*weight*, while the valuation still depends on the multiset of `H`-indices alone.  Hence
+`famAeval_coeff_ne_zero_of_dominant` — a dominant atom key with nonzero weight defeats the relation
+— is proved by feeding `(F1)` to the corpus's `weighted_sum_ne_zero_of_min_valuation_complex`
+verbatim, with the profile of the single source `H`.
+
+**`SquareFreeAtomKey.lean`.**  The keys that separate a relation are the square-free ones.
+`key_eq_iff_exists_perm`: a slot-order tuple has the key of an *injective* tuple `k` exactly when it
+is `k` composed with a permutation.  Consequently, for a monomial with `D` jet slots and any
+injective `k : Fin D -> N` with all `k s > n`,
+
+```text
+sum over splits with key(k) of famWeight = sum over sigma in Sym(D) of
+   prod_s [ descFactorial(k_s, j_(sigma^-1 s)) · q_(i_(sigma^-1 s))^(k_s) ]     (F2)
+```
+
+(`sum_famWeight_over_squareFreeKey`, `famWeight_keySplit`), the split attached to `sigma` being
+`l_t = k_(sigma t) - j_t`.
+
+`(F2)` is the exact input of `expPolySumMulti_eq_zero`: as a function of the `D` free integer
+parameters `k_1,...,k_D` it is a multi-node exponential sum whose node tuple is
+`(q_(i_(sigma^-1 1)),...,q_(i_(sigma^-1 D)))` and whose polynomial part is the product of falling
+factorials `descFactorial(k_s, j)`.  Since the falling factorials of distinct orders are a basis of
+`C[k]`, a vanishing node-tuple coefficient forces each monomial coefficient of `Q` to vanish — this
+is the orbit separation that no growth argument can perform.
+
+**What remains for `(11)`.**  (i) assemble `famAevalWeight` at a square-free key as the sum over
+pairs `(monomial, permutation)` — the `X`-degree and total derivative order of a monomial enter only
+through `m(none) - ord(m)`, so for a fixed degree `N = c + sum_s k_s` exactly the monomials of one
+class contribute; (ii) run `expPolySumMulti_eq_zero` on it; (iii) design the profile so that a
+prescribed square-free key is strictly dominant with a gap beating both the coefficient mass and the
+dilation ratios; (iv) bridge from the formal statement to `DifferentialIndependent` of the analytic
+orbit.

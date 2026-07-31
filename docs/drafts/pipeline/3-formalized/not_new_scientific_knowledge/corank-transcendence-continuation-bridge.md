@@ -96,7 +96,10 @@ framing.)*
 - [x] 1 → 2  fully-proven: FF `trdeg = 1` proven exactly (§1, Lindemann + Weil-algebraicity); feeding
   mechanism proven (§2); the polynomial-case upper bound `trdeg ≤ corank` proven (§3); the ℚ identity
   isolated as the sharpened conjecture (§3). BRIDGE with content beyond imports (§4).
-- [ ] 2 → 3  formalized — Lean anchor **DONE** for the elementary feeding identity
+- [x] 2 → 3  formalized — all three proven claims are unconditional, axiom-clean Lean theorems:
+  `trdeg_adjoin_le_rank_span` (§3 bound), `trdeg_continuationBlock_eq_one` with
+  `transcendental_log_natCast` (§1 exact `F_q` value, via a from-scratch Hermite–Lindemann),
+  `log_nat_eq_sum_factorization` (§2 feeding).  Earlier note: Lean anchor **DONE** for the elementary feeding identity
   `log_nat_eq_sum_factorization` (`log k = ∑ v_p(k) log p`) in
   `formal/GaloisForLFunctions/RHTower/SmoothNumbers.lean`, axiom-audited. Remaining targets: `\ln q`
   transcendental (Lindemann, likely import-gap in mathlib — check), transcendence-degree/corank
@@ -385,3 +388,64 @@ which preserves integrality and makes the constant term nonzero.
 Remaining: assemble the coefficients into `H_s : ℤ[X]`, divide out `X^{z_s}`, verify the expansion
 `∏_i (exp(Nρ_i) − Q^N) = 0` via `Finset.prod_add` and `Complex.exp_sum`, choose `N` with
 `Q^N > 2^n` so the constant term is nonzero, and apply `no_int_grouped_exp_relation`.
+
+### Hermite–Lindemann built, and §1 closed exactly (2026-07-31)
+
+The card's last open item — `ln q` transcendental — is now an unconditional Lean theorem, and with
+it the exact function-field value `trdeg = corank = 1`.  All three proven claims of the rescoped
+ticket are formalized; nothing of the claim is left open.  Every declaration below is `lake build`
+green and `#print axioms`-clean (`propext, Classical.choice, Quot.sound` only).
+
+**`formal/GaloisForLFunctions/HTGeometry/SubsetSumExpFamily.lean`** — the symmetrisation carrier.
+
+| Declaration | Statement |
+|---|---|
+| `scaledSubsetSum`, `subsetSumFamily` | the formal subset sums `N · ∑_{i ∈ S} Xᵢ` and their multiset over the subsets of a fixed size |
+| `subsetSumFamily_invariant` | renaming the variables permutes the subsets, so the multiset is invariant |
+| `exists_monic_subsetSum_poly` | **the numbers `N γ_S` with `|S| = s` are exactly the complex roots of a monic integer polynomial** of degree `C(n,s)` |
+| `exists_monic_nonzero_const_factor` | splitting off `Xᶻ`: every monic `F` is `Xᶻ · H` with `H` monic and `H(0) ≠ 0` |
+| `sum_exp_aroots_of_eq_X_pow_mul` | that splitting contributes exactly `z` to `∑_r exp r` |
+
+**`formal/GaloisForLFunctions/HTGeometry/HermiteLindemann.lean`** — the theorem.
+
+> `exp_ne_intCast_of_monic_root (hm : m.Monic) (hroot : aeval α m = 0) (hQ : 2 ≤ Q) :`
+> `Complex.exp α ≠ (Q : ℂ)`
+>
+> `exp_ne_intCast_of_isAlgebraic (hα : IsAlgebraic ℤ α) (hQ : 2 ≤ Q) : Complex.exp α ≠ (Q : ℂ)`
+>
+> `transcendental_log_natCast (hq : 2 ≤ q) : Transcendental ℚ (Real.log q)`
+
+Proof.  With `α` a root of monic `m` of degree `n`, roots `ρ₁, …, ρₙ`, and `exp α = Q`, the product
+`∏ᵢ (exp (n ρᵢ) − Qⁿ)` vanishes at the factor belonging to `α`.  `Finset.prod_add` and
+`Complex.exp_sum` expand it to `∑_{S} (−Qⁿ)^{n−|S|} exp (n γ_S)`; grouping by `|S|` and applying
+`exists_monic_subsetSum_poly`, then `exists_monic_nonzero_const_factor` to separate the vanishing
+subset sums, gives a relation `b + ∑_s β_s ∑_r exp r = 0` in the shape `no_int_grouped_exp_relation`
+forbids.  The scaling by `n` is what makes `b` nonzero: the `S = ∅` term has size `Q^{n·n}`, the at
+most `2ⁿ` others at most `Q^{n(n−1)}`, and `Qⁿ ≥ 2ⁿ` makes the first dominate.  The general case
+scales `α` to an algebraic integer with `Polynomial.integralNormalization` (`exp (dα) = Q^d`), and
+`log q` follows because `exp (log q) = q`.
+
+This is the algebraic half of Hermite–Lindemann, which Mathlib does not contain: it has only
+`LindemannWeierstrass.exp_polynomial_approx`, the analytic estimate.
+
+**`formal/GaloisForLFunctions/RHTower/FunctionFieldContinuationTrdeg.lean`** — §1 exactly.
+
+| Declaration | Statement |
+|---|---|
+| `trdeg_adjoin_log_natCast_eq_one` | `trdeg_ℚ ℚ[ln q] = 1` for an integer `q ≥ 2` |
+| `trdeg_continuationBlock_eq_one` | **the identity**: a family of continuation data contained in `ℚ[ln q]` and containing `ln q` generates an algebra of transcendence degree exactly `1` — the corank of the relation lattice |
+
+The upper bound is `trdeg_adjoin_le_one_of_subset_adjoin_singleton` (the containment supplied by
+`PowerSeriesCoeffSubalgebra`), the lower bound is the transcendence of `ln q`.  So over `F_q`,
+`trdeg = corank = 1` is proved, not assumed.
+
+### Status of the three proven claims
+
+| Card claim | Lean |
+|---|---|
+| §3 upper bound `trdeg ≤ corank` | `trdeg_adjoin_le_rank_span` (`LinearVersusAlgebraicCollapse`) |
+| §1 exact `F_q` value `trdeg = corank = 1` | `trdeg_continuationBlock_eq_one` + `transcendental_log_natCast` |
+| §2 `{log p}` feeding of the Stieltjes block | `log_nat_eq_sum_factorization` (`RHTower/SmoothNumbers.lean`) |
+
+The ℚ identity `trdeg {γₙ} = ∞` is, as the Repair note records, **not** part of this ticket's claim;
+it stays isolated as `baker-for-stieltjes` / `dss-cross`.

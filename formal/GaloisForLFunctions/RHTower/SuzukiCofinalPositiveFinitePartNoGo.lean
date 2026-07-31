@@ -194,8 +194,7 @@ theorem suzukiCriticalSharpPrimeMass_nonneg (p : Nat.Primes) :
 
 theorem not_summable_suzukiCriticalSharpPrimeMass :
     ¬ Summable suzukiCriticalSharpPrimeMass := by
-  simpa [suzukiCriticalSharpPrimeMass] using
-    not_summable_sq_suzukiCriticalEntryWallBareAmplitude_zero
+  exact not_summable_sq_suzukiCriticalEntryWallBareAmplitude_zero
 
 /-- Exact finite-cutoff source-value requirement for a proposed Suzuki cofinal finite part. -/
 def ExtendsSuzukiCriticalSharpPrimeSource

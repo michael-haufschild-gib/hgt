@@ -1,7 +1,7 @@
 # Squared-Xi radial jets are completed Chebyshev windows
 
 - **ID:** squared-xi-radial-jet-chebyshev-window
-- **Stage:** 2-fully-proven / needs-audit
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / cancellation-preserving moving-source reduction
 - **Scientific status:** `[PROVED HERE] [NOVELTY UNAUDITED]`
   `[EQUATIONS (2)-(6), THE MODAL SCALE (8)-(10), THE CONCENTRATION (11) AND THE WINDOW (12)`

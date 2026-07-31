@@ -2038,3 +2038,61 @@ classes.  Two practical notes worth keeping:
   (`simp only [neg_mul] at hI ⊢`) before `exact`, because the goal carries the un-normalized form.
 
 Thirty-six modules over eight rounds.  The wave is still entirely mechanical.
+
+### Repair wave, round nine: thirty-nine modules green
+
+`XiCTaylorThetaTailProductFiberGlobalCurrent`, `SuzukiCofinalPositiveFinitePartNoGo`,
+`XiSquaredSeamCassiniPairQuotient`.
+
+The `whnf` timeout trap struck a second time, so the rule is now firm: **never reach for bare
+`exact` when the definitional gap sits under a big `Summable`/`Integrable` statement.**  Three safe
+alternatives, in order of preference:
+
+1. `Summable.congr` (or the analogous `.congr`) with a pointwise `rfl` — cheap, because the
+   definitional check happens one argument at a time rather than on the whole statement;
+2. `simp only [Function.comp_def, Complex.imCLM_apply]` and friends, to make the two sides
+   syntactically equal;
+3. bare `exact`, only for genuinely small gaps such as `IntegrableOn` versus `Integrable … restrict`
+   or a partially applied definition (`¬ Summable suzukiCriticalSharpPrimeMass`), where `simp only`
+   cannot delta-unfold and `exact` is cheap.
+
+Note also that `simp only [someDef]` will not unfold a **partially applied** definition — that case
+always needs `exact`, which is the exact opposite of the rule above; the discriminator is the size of
+the term, not the shape of the mismatch.
+
+Thirty-nine modules over nine rounds.
+
+### Repair wave, round ten: forty-four modules green
+
+`ThetaCuspLikelihoodModularSeam`, `ThetaCuspFiniteShellSeamCancellation`,
+`XiCTaylorThetaTailCoreCurrentCapstone`, `XiCTaylorThetaTailProductFiberGlobalReflection`,
+`CCMFirstClockLandauNormal` (partial — see below).
+
+One diagnostic lesson worth recording: an error message that names a *lemma application* rather than
+a tactic (`Type mismatch: … integrableOn_cos_mul_thetaCuspTailDerivative 0 t`) points at the place
+that term is **consumed**, which need not be the line the error cites.  Here the real site was a
+`simpa only [mul_comm] using …` several lines down, and editing the cited line changed nothing.
+Read the surrounding tactic block, not just the reported line.
+
+Still open in `CCMFirstClockLandauNormal`: three sites at lines 74–85 involving `(id ^ 2)⁻¹`
+(`Pi.inv` of `Pi.pow`) against an explicit lambda, plus a `field_simp` that no longer fires.  Same
+classes, not yet applied.
+
+Forty-four modules over ten rounds.
+
+### Repair wave, round eleven: `CCMFirstClockLandauNormal`, partly
+
+The two `Complex.hasDerivAt_sin/cos … comp` sites and the two inverse-power sites are fixed.  The
+inverse-power repair needed a shape not used before: the goal function had to be rewritten with a
+`funext` lemma (`(fun z => 1 / z ^ 2) = fun z => (z ^ 2)⁻¹`) *before* `exact`, because
+`(id ^ 2)⁻¹` is `Pi.inv` of `Pi.pow` and no `simp only` set bridges it to `1 * (z ^ 2)⁻¹`; the
+derivative value additionally needed `norm_num` to reduce the exponent `2 - 1`.
+
+Still failing in that module: `convert … using 1` blocks whose trailing combinator leaves
+"No goals to be solved" — `<;> tac` runs `tac` on goals `convert` has already closed, and replacing
+it with `all_goals first | rfl | …` moves the error rather than removing it, so those blocks need
+their bullets written out explicitly against the goals actually produced.  One further `hi` site and
+one `funext`/instance site remain.
+
+The module is left in a consistent, partially repaired state — better than found (the sin/cos sites
+were failing before) but not green, and that is recorded here rather than implied by a count.

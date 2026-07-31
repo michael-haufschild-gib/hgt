@@ -101,6 +101,8 @@ theorem hasDerivAt_thetaCuspFiniteShellPrefix (N : ℕ) :
     (fun n _hn => hasDerivAt_iteratedDeriv_thetaCuspSourceTerm 0 n 0)
   simp only [iteratedDeriv_zero, zero_add] at h
   convert h using 1
+  · exact rfl
+  · exact rfl
   funext x
   simp only [thetaCuspFiniteShellPrefix, Finset.sum_apply]
 
@@ -164,8 +166,8 @@ theorem thetaCuspFiniteShellPrefix_not_even
       (fun x : ℝ => thetaCuspFiniteShellPrefix N (-x))
       (-(∑ n ∈ Finset.range (N + 1),
         iteratedDeriv 1 (fun x : ℝ => thetaCuspSourceTerm x n) 0)) 0 := by
-    simpa only [Function.comp_apply, neg_zero, mul_neg, mul_one] using
-      hderNegZero.comp (0 : ℝ) (hasDerivAt_neg (0 : ℝ))
+    have hc := hderNegZero.comp (0 : ℝ) (hasDerivAt_neg (0 : ℝ))
+    simpa only [Function.comp_def, neg_zero, mul_neg, mul_one] using hc
   have heq : (fun x : ℝ => thetaCuspFiniteShellPrefix N (-x)) =
       thetaCuspFiniteShellPrefix N := by
     funext x

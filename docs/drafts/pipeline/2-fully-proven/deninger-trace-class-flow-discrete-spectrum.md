@@ -410,3 +410,65 @@ Added to `FlowMultiplicityMeasure.lean`.  Axiom audit: `propext, Classical.choic
 Clause 5 is therefore reduced to a single analytic statement: that the trace pairings
 `φ ↦ ∫ φ̂(-λ) dν_A` determine the pairings against bounded continuous functions on each window.
 That is Fourier inversion on a compact window, the one remaining ingredient.
+
+### Clause 3 landed: compact resolvent
+
+`formal/GaloisForLFunctions/HTGeometry/DiagonalCompactOperator.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `norm_sq_sum_smul_orthonormal` — Pythagoras for a finite orthonormal combination,
+  `‖∑ lᵢ vᵢ‖² = ∑ ‖lᵢ‖²`.
+- `norm_sub_hsTruncation_diag_le` — **the truncation defect of a diagonal operator is bounded by
+  its tail eigenvalues**: off a finite set the operator acts as an orthogonal combination with
+  coefficients `⟨bᵢ, x⟩ cᵢ`, so Pythagoras and Bessel give `‖T - Tₛ‖ ≤ ε` whenever `‖cᵢ‖ ≤ ε`
+  outside `s`.
+- `isCompactOperator_of_diag_tendsto_cofinite` — **a diagonal operator whose eigenvalues tend to
+  zero along the cofinite filter is compact.**  Every threshold is exceeded only finitely often, so
+  the finite-rank truncations converge in operator norm and the compact operators are norm closed.
+  mathlib has no diagonal-operator compactness criterion; the finite-rank truncation machinery is
+  the corpus's `hsTruncation` from `HilbertSchmidtCompact.lean`.
+- `isCompactOperator_resolvent_of_tendsto_cofinite` — **clause 3**: if the spectral points leave
+  every bounded window, i.e. `|λᵢ| → ∞` cofinitely, the operator diagonal in the eigenbasis with
+  eigenvalues `(λᵢ - i)⁻¹` is compact.  This is `(A - i)⁻¹` compact for the discrete spectrum
+  produced by clauses 1 and 2.
+
+### The counting bound
+
+Added to `FlowMultiplicityMeasure.lean`.  Axiom audit: `propext, Classical.choice, Quot.sound`.
+
+- `finite_and_card_le_of_forall_sum_le` — **the spectral counting bound**: a window on which the
+  weight symbol is bounded below by `c`, inside a spectrum whose total symbol mass is at most `M`,
+  carries at most `M/c` spectral points, and in particular finitely many.
+- `multiplicityMeasure_le_of_forall_sum_le` — the same as a bound on the multiplicity mass,
+  `ν_A(S) ≤ M/c`.
+
+Applied with `g = φ̂(-·)` for a weight whose transform is a square (hence nonnegative) and with
+`M` a bound on `Tr K_φ`, this is the mechanism of the growth estimate
+`ν_A([x-ε, x+ε]) ≤ C(1+|x|)^N`.
+
+### Clause status
+
+1. finite-dimensional spectral windows — **done**
+   (`finite_of_orthonormal_flowEigenvectors_of_window`, `flowBlock_finiteDimensional_and_invariant`).
+2. pure discrete real spectrum, finite multiplicities, no finite accumulation — **done**
+   (blocks span, `exists_real_generator_of_continuous_unimodular_character`, window finiteness).
+3. compact resolvent — **done** (`isCompactOperator_resolvent_of_tendsto_cofinite`).
+4. the trace formula `(2)` — **done** (`opTrace_flowSmoothing_eq_tsum_fourier`).
+5. the multiplicity measure `(3)` and uniqueness — **done**
+   (`multiplicityMeasure_apply_eq_tsum_atoms`, `multiplicityMeasure_eq_of_singleton_eq`,
+   `multiplicityMeasure_eq_of_forall_sum_weightTransform_eq`,
+   `multiplicityMeasure_eq_of_forall_integral_window_eq`).
+
+### The one remaining ingredient
+
+Temperedness of `ν_A` in clause 5.  The counting bound reduces it to a single analytic input: a
+polynomial bound on `Tr K_{φₓ}` for the modulated weights `φₓ(t) = e^{-ixt} φ₀(t)`, all supported
+in one fixed compact `J`.  On paper that input comes from the closed graph theorem for the Fréchet
+space `𝒟_J → 𝒮₁(H)`; mathlib has the closed graph theorem only for Banach spaces, and no `𝒟_J`.
+The next Lean step is therefore the implication with that continuity as an explicit hypothesis:
+
+  if `∃ C k, ∀ φ smooth supported in J, |Tr K_φ| ≤ C · maxₘ≤ₖ ‖φ⁽ᵐ⁾‖_∞`,
+  then `∃ C' N, ∀ x, ν_A([x-ε, x+ε]) ≤ C'(1+|x|)^N`,
+
+whose content is the Leibniz seminorm estimate for the modulations together with the counting
+bound above.  After that, the F-space closed graph theorem itself.

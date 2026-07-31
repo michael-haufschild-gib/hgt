@@ -222,3 +222,66 @@ central reciprocal moments — the full divisor-side witness of the tower.
   trace-class resolvent square, axiom-clean). Patterns reused from
   `CCMRationalWeightedShiftReal`/`CCMRationalHilbertOperatorRealStructure` (HilbertBasis.ofRepr,
   Memℓp.mono' comparison, mkContinuous) — corpus recon again avoided reinventing machinery.
+
+## Lean status (2026-07-31, fourth pass): the divisor-side witness is COMPLETE
+
+`RHTower/XiDivisorTraceTowerWitness.lean` — built green, umbrella-registered, zero warnings,
+all capstones axiom-clean — realizes the card's limit passage on a concrete arithmetic
+carrier:
+
+- the inverse-spectral diagonal, its finite-packet stages, and tails, all Hilbert–Schmidt;
+- **exact tail factorization** `K − K_s = tail_s ∘ tail_s`;
+- **the trace-norm tail bound** `‖K − K_s‖₁ ≤ Σ_{q∉s} 1/‖μ_q‖²` (composite HS estimate +
+  the Hilbert–Schmidt norm of the tail computed as the tail sum);
+- **trace-norm convergence of the stages** (squeeze against the vanishing tail of the
+  convergent `Σ 1/‖μ‖²`);
+- `xiDivisorResolventSquare_traceTower` — **`traceTower_limit` instantiated**: the
+  finite-packet stage traces converge to the trace of the Schatten-1 limit `diag(μ_q⁻²)`.
+
+The card's tower ledger after four passes: the abstract limit theorem is fully formalized
+(trace-norm half + compact-support orbit stabilization), and it now has a complete
+divisor-side realization — finite packets exhaust the spectrum with summable trace-norm
+error, exactly the convergence pattern the conjectural source-side Kähler–Riemann tower must
+reproduce. What remains is the card's declared open research, unchanged: constructing the
+**source-side** tower (arithmetic stages built from primes, not from the divisor) with the
+uniform heat bounds and the trace-norm Cauchy estimate — the point where this card meets the
+programme's wall.
+
+## Log (continued)
+
+- 2026-07-31 (Claude, fourth pass): completed the divisor witness
+  (`XiDivisorTraceTowerWitness`, 12 theorems, axiom-clean): tail factorization, trace-norm
+  tail bound, stage convergence, and the instantiation of `traceTower_limit` on honest Xi
+  divisor data. Card's formalizable programme: exhausted; the open core is the source-side
+  construction.
+
+## Lean status (2026-07-31, fifth pass): the witness trace is an arithmetic constant — the constructive programme closes
+
+`RHTower/XiDivisorTraceMomentIdentity.lean` — built green first pass, umbrella-registered,
+zero warnings, axiom-clean:
+
+- `xiDivisorResolventSquare_basis` — the resolvent square is diagonal with reciprocal-square
+  entries;
+- `opTrace_xiDivisorResolventSquare` — its trace is `Σ' μ_q⁻²`, by the corpus's
+  basis-independence of the trace on Hilbert–Schmidt products, evaluated on the divisor
+  basis;
+- `opTrace_xiDivisorResolventSquare_eq_moment` — **the witness trace equals
+  `xiCentralReciprocalMoment 0`**: the trace-tower limit is the corpus's first central
+  reciprocal moment — a Li/Keiper-type arithmetic constant already proved real
+  unconditionally.
+
+The card's complete formalized ledger: abstract limit theorem (Ky Fan subadditivity,
+Schatten-1 group closure, trace-norm limit continuity), compact-support orbit stabilization,
+the divisor realization (Hilbert basis, diagonal Schatten calculus, tail factorization,
+trace-norm convergence, `traceTower_limit` instantiated), and now the arithmetic
+identification of the limit trace. **The operator-theoretic tower and the moment/
+log-derivative layer meet in one number, unconditionally.** The card rests exactly on its
+declared open research — the source-side (prime-built) tower — and nothing else.
+
+## Log (final for this pass)
+
+- 2026-07-31 (Claude, fifth pass): closed the constructive programme with the trace-moment
+  identification (`XiDivisorTraceMomentIdentity`, 3 theorems, first-pass compile,
+  axiom-clean). Five modules on this card in one loop; every provable clause of its
+  `[PROVED HERE]` theorem and its divisor realization is now Lean, axiom-clean, with the
+  limit trace tied to `xiCentralReciprocalMoment 0`.

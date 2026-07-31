@@ -143,27 +143,29 @@ and `(5)` may be applied directly to the four terms in `(13)`.  This is an exact
 the polar and Euler jets before any inequality is taken.  It remains analytic through `s=1`, so
 it is the correct compact-window coordinate.
 
-## Order-fourteen reduction
+## Order-fourteen reduction `[REFUTED]`
 
-The prior protected-sector theorems leave only
-
-```text
-n=14,                  1/2<w<sqrt(8).                   (14)
-```
-
-At this order the required certificate is
+The reduction formerly left the single target
 
 ```text
-Q_14(w)<0.                                                 (15)
+n=14,                  1/2<w<sqrt(8),                   (14)
+Q_14(w)<0.                                              (15)
 ```
 
-Equations `(5)` and `(13)` reduce `(15)` to a finite order-fourteen jet inequality for
-`log Zreg`, the elementary `1/s` term, and the half-argument digamma term.  No zero location and
-no numerical evaluation enter this reduction.
+`(15)` is **false**.  The sector-power positivity of the shifted reciprocal square is free in the
+shift parameter, so it protects every order through eighteen at every positive radius, with no
+far-right cutoff.  Transported through `(7)` this gives, unconditionally,
 
-`[OPEN CORE]` Prove `(15)` at one exact `w` in `(14)`, or prove a growing-order analogue, using
-an exact integral or alternating expansion for the regularized-zeta logarithmic jet.  A termwise
-comparison of `1/(s-1)` with the von Mangoldt series is not admissible because it destroys `(12)`.
+```text
+Q_n(w)>0   for all n<=18 and all w>0.                   (16)
+```
+
+In particular the order-fourteen window `(14)` is empty and no exact `w` can satisfy `(15)`.
+
+`[OPEN CORE]` The witness frontier is therefore `n>=19`: prove `Q_n(w)<0` for some order
+`n>=19` and some `w>0`, or prove a growing-order analogue, using an exact integral or alternating
+expansion for the regularized-zeta logarithmic jet.  A termwise comparison of `1/(s-1)` with the
+von Mangoldt series is not admissible because it destroys `(12)`.
 
 ## Lean certificate
 
@@ -202,6 +204,50 @@ The exact coefficient theory of equation (1) is now formalized unconditionally i
 the analytic radial-derivative identity (4)/(5), which requires the differentiability/analyticity of
 `xiLogDeriv` on `Re(s) > 1` and the iterated-derivative shift; and the `[OPEN CORE]` `Q_14(w) < 0`.
 
+### `GaloisForLFunctions/RHTower/SquaredXiRadialJetXiSpecialization.lean`
+
+The abstract radial-jet identity specialized to the genuine completed Xi, and the squared-coordinate
+bridge `(7)`.
+
+- `xi_ofReal_ne_zero`, **`contDiff_xiRayLogDeriv`** — `xi` is entire and has no zero on the real
+  axis, so `xi'/xi` is holomorphic on an open neighbourhood of `ℝ` and its real trace is smooth at
+  every order on all of `ℝ`.  This is exactly the hypothesis the abstract identity needed, and it
+  removes the card's "once `xiLogDeriv` smoothness is available" caveat.
+- `xiRayLogDeriv_shift`, `radialProfile_xiRayLogDeriv` — the radial profile of `xi'/xi` is twice the
+  squared-coordinate field at `w^2`.
+- `radialOp_iterate_congr_of_pos`, `radialOp_iterate_const_mul`,
+  **`hasDerivAt_iteratedDeriv_squaredXiRadialField`**, **`radialOp_iterate_comp_sq`** — the radial
+  operator `D = (2w)^{-1} d/dw` is the pullback of `d/dy` under `y = w^2`, so its `n`-th iterate on
+  a squared-coordinate composite is the `n`-th `y`-derivative at `w^2`.
+- **`radialOp_iterate_radialProfile_xi`** — **equation `(4)` for the completed Xi**:
+  `D^n F w = 2 g^(n)(w^2)`.
+- `completedSourceJet` — the card's `Q_n w = sum_j (-1)^j b_{n,j} w^j L^(j)(1/2+w)`.
+- **`completedSourceJet_eq`** — **equations `(5)` and `(7)` for the completed Xi**:
+  `Q_n w = (-1)^n 2^{n+1} w^{2n+1} g^(n)(w^2)`, so `Q_n w < 0` and `(-1)^n g^(n)(w^2) < 0` are the
+  same statement.
+- **`completedSourceJet_pos`**, **`completedSourceJet_orderFourteen_pos`**,
+  `not_completedSourceJet_neg_of_le_eighteen` — **equation `(16)`**: `Q_n w > 0` for every `n <= 18`
+  and every `w > 0`, unconditionally.  The order-fourteen witness window is empty.
+
+### `GaloisForLFunctions/RHTower/SquaredXiSourceJetRHWiring.lean`
+
+The discriminator: a strictly negative completed source jet disproves RH.
+
+- **`xiSquaredNode_im_eq_zero_of_riemannHypothesis`** — under RH every centered spectral point is
+  real, so the squared node is real.  Unconditionally its real part is already positive, so under
+  RH the node is a *positive real*.
+- **`re_xiShiftedReciprocalSquare_pow_pos_of_riemannHypothesis`** — hence every shifted reciprocal
+  power is a positive real, at **every** order: the sector restriction that caps the unconditional
+  argument at order nineteen disappears.
+- **`re_xiShiftedReciprocalMoment_pos_of_riemannHypothesis`**,
+  **`alternating_iteratedDeriv_squaredXiRadialField_pos_of_riemannHypothesis`** — the
+  squared-coordinate field is completely monotone at every order under RH.
+- **`completedSourceJet_pos_of_riemannHypothesis`** — `Q_n w > 0` for every `n` and every `w > 0`
+  under RH.
+- **`not_riemannHypothesis_of_completedSourceJet_neg`** — the contrapositive: one strictly negative
+  completed source jet at one positive radius disproves the Riemann hypothesis.  Combined with
+  `(16)`, any such witness must have order `n >= 19`.
+
 ## Gates
 
 - [x] Exact radial-jet coefficients and recurrence proved (closed form + positivity now formalized:
@@ -212,8 +258,13 @@ the analytic radial-derivative identity (4)/(5), which requires the differentiab
 - [ ] Independent audit of the reverse-Bessel normalization.
 - [x] Formalize the recursive weights and source split `(10)`.
 - [x] Formalize the analytic radial-derivative identity `(4)` and its positive rescaling `(5)` (abstract smooth `L`, `RHTower/SquaredXiRadialJetIdentity.lean`)
-- [ ] Prove a strict negative completed source jet.
-- [ ] Wire the negative jet to `not RiemannHypothesis` in Lean.
+- [x] Formalize the specialization of `(4)`/`(5)` to `L = xi'/xi` and the squared-coordinate
+  bridge `(7)` (`RHTower/SquaredXiRadialJetXiSpecialization.lean`).
+- [x] Strict negative completed source jet at order fourteen: **refuted**, `(16)`
+  (`RHTower.completedSourceJet_orderFourteen_pos`); the witness frontier is `n >= 19`.
+- [ ] Prove a strict negative completed source jet at some order `n >= 19`.
+- [x] Wire the negative jet to `not RiemannHypothesis` in Lean
+  (`RHTower.not_riemannHypothesis_of_completedSourceJet_neg`).
 
 ## Log
 
@@ -290,3 +341,19 @@ the analytic radial-derivative identity (4)/(5), which requires the differentiab
   Specializing to `L = xiLogDeriv` (once its `Re(s)>1` smoothness is available) yields the card's exact
   `D^n F` identity.  Remaining Lean gate is the `[OPEN CORE]` `Q_14(w) < 0` (RH-discriminator, open
   research); the strict-sign and RH-wiring gates are RH-level.
+- 2026-07-31 — **Order-fourteen target refuted; specialization to the genuine Xi completed.**  The
+  abstract identity `(4)`/`(5)` needed a globally smooth profile, and the completed Xi supplies one:
+  `xi` is entire with no real zero, so `xi'/xi` is holomorphic on an open neighbourhood of the real
+  axis and its real trace is smooth at every order.  With that, `D` is recognized as the exact
+  pullback of `d/dy` under `y = w^2`, which turns `(5)` into the card's `(7)`:
+  `Q_n w = (-1)^n 2^{n+1} w^{2n+1} g^(n)(w^2)`.  The squared-Xi complete-monotonicity theorem then
+  gives `Q_n w > 0` for every `n <= 18` and every `w > 0`, unconditionally, so the reduction's
+  order-fourteen certificate `Q_14(w) < 0` is false and the window `(14)` is empty.  The witness
+  frontier moves to `n >= 19`; the RH-wiring gate is unchanged.
+- 2026-07-31 — **RH wiring closed.**  Under RH the centered spectral points are real, so the squared
+  node is a positive real and every shifted reciprocal power is a positive real at every order —
+  the sector bound that caps the unconditional argument at order nineteen is not needed.  Hence the
+  squared-coordinate field is completely monotone at all orders under RH, `Q_n w > 0` for every `n`
+  and `w > 0`, and contrapositively one strictly negative completed source jet disproves RH.  With
+  `(16)` this locates the discriminator exactly: a witness exists only at order `n >= 19`, and the
+  card's remaining gate is that single open inequality.

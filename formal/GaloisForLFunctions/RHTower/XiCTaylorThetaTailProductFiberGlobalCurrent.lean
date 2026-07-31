@@ -237,17 +237,17 @@ theorem summable_thetaCuspTailSecondDensityAtomPhasePairCorrelation
   have hstar : Summable (fun n : ℕ =>
       ‖(starRingEnd ℂ) (thetaCuspTailSecondDensityAtomPhase (n + 1) z)‖) := by
     simpa using hV.norm
-  simpa only [thetaCuspTailSecondDensityAtomPhasePairCorrelation] using
-    (summable_mul_of_summable_norm hD.norm hstar)
+  refine (summable_mul_of_summable_norm hD.norm hstar).congr fun q => ?_
+  rfl
 
 theorem summable_thetaProductFiberActualPhaseCurrent
     {z : ℂ} (hz : 0 ≤ z.im) :
     Summable (fun k : ℕ => thetaProductFiberActualPhaseCurrent k z) := by
   have hpair : Summable (fun q : ℕ × ℕ =>
       (thetaCuspTailSecondDensityAtomPhasePairCorrelation z q).im) := by
-    simpa only [Function.comp_apply] using
-      (summable_thetaCuspTailSecondDensityAtomPhasePairCorrelation hz).map
-        Complex.imCLM Complex.imCLM.continuous
+    have hm := (summable_thetaCuspTailSecondDensityAtomPhasePairCorrelation hz).map
+      Complex.imCLM Complex.imCLM.continuous
+    simpa only [Function.comp_def, Complex.imCLM_apply] using hm
   have hfiber := hpair.hasSum.tsum_fiberwise thetaPositivePairProduct
   rw [show (fun k : ℕ => thetaProductFiberActualPhaseCurrent k z) =
       fun k : ℕ => ∑' q : thetaPositivePairProduct ⁻¹' {k},
@@ -282,8 +282,8 @@ theorem thetaCuspTailSecondDensityPhase_current_eq_tsum_productFiberActualPhaseC
     (fun q : ℕ × ℕ =>
       (thetaCuspTailSecondDensityAtomPhasePairCorrelation z q).im)
     (by
-      simpa only [Function.comp_apply] using
-        hpair.map Complex.imCLM Complex.imCLM.continuous)
+      have hm := hpair.map Complex.imCLM Complex.imCLM.continuous
+      simpa only [Function.comp_def, Complex.imCLM_apply] using hm)
 
 end
 
