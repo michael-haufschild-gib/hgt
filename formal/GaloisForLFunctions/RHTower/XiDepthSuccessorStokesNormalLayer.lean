@@ -63,7 +63,8 @@ theorem reflectedDepthSuccessorTransport_eq_reflected
     reflectedDepthSuccessorTransport f ε u =
       depthSuccessorTransport (fun v => f (1 - v)) ε (1 - u) := by
   rw [reflectedDepthSuccessorTransport, depthSuccessorTransport]
-  congr 2 <;> ring
+  congr 2
+  ring
 
 /-- The balanced quotient factors through the two actual endpoint source steps.
 The intermediate nonvanishing hypothesis is exactly what quotient cancellation
@@ -76,7 +77,8 @@ theorem twoEndpointBalancedDepthSuccessorTransport_eq_mul
         reflectedDepthSuccessorTransport f (ε / 2)
           ((1 + ε / 2) * u) := by
   have hmid' : f (u * (ε + 2) / 2) ≠ 0 := by
-    convert hmid using 1 <;> ring
+    convert hmid using 2
+    ring
   rw [twoEndpointBalancedDepthSuccessorTransport,
     depthSuccessorTransport, reflectedDepthSuccessorTransport]
   ring_nf
@@ -212,7 +214,7 @@ theorem tendsto_centeredDepthSuccessorTransport_movingZero
         Tendsto (fun v : ℂ => center + v)
           (𝓝 (rho - center)) (𝓝 (center + (rho - center))) :=
       (continuousAt_const.add continuousAt_id).tendsto
-    convert hraw using 1
+    convert hraw using 2
     ring
   have hfacF :
       F =ᶠ[𝓝 (rho - center)]

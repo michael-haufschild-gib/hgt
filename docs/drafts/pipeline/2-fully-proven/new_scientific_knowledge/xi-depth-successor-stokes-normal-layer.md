@@ -10,8 +10,9 @@
   - `../../1-in-progress/reflected-character-singular-splitting-bockstein-law.md`;
   - `gamma-copoisson-sonin-full-quotient-flatness-syzygy.md`;
   - `../../../3-formalized/new_scientific_knowledge/prime-first-trace-essential-normal-bockstein.md`.
-- **Formal module:**
-  `formal/GaloisForLFunctions/RHTower/XiDepthSuccessorStokesNormalLayer.lean`.
+- **Formal modules:**
+  `formal/GaloisForLFunctions/RHTower/XiDepthSuccessorStokesNormalLayer.lean`;
+  `formal/GaloisForLFunctions/RHTower/XiDepthMobiusGammaOuterInnerWeld.lean`.
 
 ## 1. Frontier
 

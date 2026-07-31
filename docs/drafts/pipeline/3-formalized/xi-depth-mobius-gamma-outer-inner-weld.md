@@ -96,7 +96,7 @@ with analytic adjoint nearby divisor on same nonzero top class.
 ## Verification
 
 - [x] direct `lake env lean GaloisForLFunctions/RHTower/XiDepthMobiusGammaOuterInnerWeld.lean`
-- [ ] targeted final build
-- [ ] axiom audit
+- [x] targeted `lake build GaloisForLFunctions.RHTower.XiDepthMobiusGammaOuterInnerWeld`
+- [x] axiom audit: only `propext`, `Classical.choice`, `Quot.sound`
 - [ ] same-fibre dagger landing
 - [ ] RH
