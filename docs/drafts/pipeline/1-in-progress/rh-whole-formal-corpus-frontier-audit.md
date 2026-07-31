@@ -318,3 +318,128 @@ orients `a` relative to `c/2`.  This follows from the already proved strict hori
 monotonicity of `Im psi`.  Its Xi archimedean specialization (`c=1/2`, `a=Re(s)/2`) would match the
 actual completed-zeta coordinates exactly.  Status: `[CONJECTURE; PAPER PROOF IMMEDIATE FROM
 EXISTING LEAN MASTER; RH TRANSFER UNDER HOSTILE AUDIT]`.
+
+## Conclusion-capability normalization
+
+The independent pass now splits each exact Lean header at its top-level result colon.  Binder
+hypotheses and conclusions are classified separately, so a theorem which assumes positivity is
+not counted as a positivity producer.  Current moving-worktree snapshot:
+
+| area | modules | declarations | theorems/lemmas |
+|---|---:|---:|---:|
+| HTGeometry | 3,062 | 35,223 | 26,509 |
+| RHTower | 3,799 | 48,549 | 38,424 |
+
+HTGeometry conclusions which supply a capability not syntactically present in their binders:
+
+| produced capability | theorems/lemmas |
+|---|---:|
+| quantitative bound | 1,107 |
+| sign/orientation | 883 |
+| limit/compactness | 873 |
+| differential transcendence | 802 |
+| arithmetic source | 801 |
+| reflection/phase | 728 |
+| rigidity/classification | 597 |
+| positive kernel/form | 582 |
+| spectral reality | 518 |
+| analytic continuation | 440 |
+| factorization/decomposition | 417 |
+| rank/dimension/support | 364 |
+| zero location/exclusion | 340 |
+| measure representation | 263 |
+| recurrence/almost periodicity | 196 |
+
+The labels overlap and remain syntactic over-approximations.  They are used to exclude impossible
+type matches, never as proofs of compatibility.
+
+The first exhaustive cross-match compared every such HT producer against every current exact
+RHT theorem whose conclusion is RH-equivalent.  It scored shared conclusion capabilities and
+normalized exact-type vocabulary only; imports, recency, and pipeline status were not inputs.
+The pass covered 471 exact RHT interfaces and returned 5,652 top matches drawn from 1,626 distinct
+HT declarations.  This is a complete search surface at the chosen capability vocabulary, not a
+mathematical ranking.  Exact hypotheses, source instantiation, and equivalence-quotient status
+remain mandatory manual checks.
+
+## Prime-occupation/Gamma versus Euler-source audit
+
+`PrimeOccupationPolarizedGammaPhaseSurvival` identifies inverse-prime occupations with all positive
+integers and hence the genus-one occupation product with reciprocal Gamma.  Combining this with
+the exact arithmetic identity
+
+```text
+vonMangoldt * zeta = log
+```
+
+does not yield a new positive inverse transfer.  The corpus already contains both directions of
+the relevant source algebra:
+
+- `ArithmeticFunction.vonMangoldt_mul_zeta`: the all-integer logarithmic stream is the positive
+  divisor smoothing of the prime-power von Mangoldt stream;
+- `ArithmeticFunction.moebius_mul_log_eq_vonMangoldt` and
+  `RHTower.weightedVonMangoldt_eq_mobiusLogDivisorParaproduct`: recovering the von Mangoldt stream
+  is Möbius-signed deconvolution.
+
+Therefore positivity or regularity of the Gamma/all-integer occupation carrier cannot be pulled
+back to the Euler prime-power source without a new variation, contractivity, or compensation
+theorem for the Möbius inverse.  `eta-mobius-reciprocal-gamma-xi-sewing.md` already proves that the
+ordinary plethystic repair returns the RH-equivalent Möbius continuation wall.  No new bridge is
+present here.
+
+Positive survivor: the Gamma occupation generator is exactly the zeta-convolution smoothing of
+the von Mangoldt generator, while Euler recovery is its signed Möbius deconvolution.  This gives a
+sharp structural reason Gamma positivity is easier and identifies the only possible new input:
+a source-specific signed-inverse estimate.  Status: `[KNOWN IDENTITIES; NEW COMBINATION NOT
+PROMOTED; DIRECT BRIDGE CLOSED]`.
+
+## First whole-match hostile audit
+
+High-coverage matches were checked after scoring, irrespective of whether RHTower imports them.
+
+- `PrimeClockAnalyticEulerCompletion` and
+  `AnalyticEulerTailExactFaithfulnessUniversalityLaw` faithfully realize the Euler logarithm and
+  bounded prime-tail quotient in analytic differential fields.  RHTower already transfers their
+  source consequences to the Xi shift defect and Gamma-sewn Julia boundary.  They prove
+  faithfulness/hypertranscendence, not the missing sign, domination, or continuation estimate.
+- `PrimeLogKMSRealization` and the Gibbs-limit modules construct the positive prime-log Herglotz
+  response.  The live RHT gate is equality of a source-defined thermodynamic limit with the
+  *combined prime--archimedean* trace.  Prime passivity alone does not supply this value comparison.
+- `TailEventualOrder` classifies eventual positivity and two-stage pointing but does not create an
+  eventually positive representative.
+- `MomentFiberPickSchurPhase` consumes the RH-to-singular-measure identification; its Xi capstone
+  assumes the decisive source criterion.
+- `RectangularKreinInertia`, `ConfluentDarboux`, and paraorthogonal root laws give exact finite
+  inertia/root geometry only after surjectivity, interlacing, or positive-measure inputs.  Those
+  inputs are the RHT source walls.
+- maximal-isodivisorial, finite-gauge-tail, and residue-rigidity modules are negative
+  identifiability/classification results: they restrict possible selectors but do not orient the
+  actual Xi source.
+
+## Bohr-edge rigidity survivor
+
+The full HT Bohr corpus contains mean existence, translation invariance, Parseval/Bessel control,
+compact hulls, and recurrence.  It can strengthen the finite-rank rigidity theorem in
+`ccm-critical-clock-divisor-blindness.md`:
+
+```text
+If h(u) = exp(alpha*u) (Q(u) + o(1)),
+Q is a real uniformly almost-periodic function,
+h(u) >= 0 eventually,
+and the alpha-edge spectrum has no zero frequency,
+then Q = 0.
+```
+
+Reason: translation recurrence transfers eventual nonnegativity to `Q >= 0` everywhere; absence of
+zero frequency gives Bohr mean zero; a nonnegative continuous Bohr almost-periodic function with
+zero mean must vanish.  Thus a nonzero separated leading edge forces a zero-frequency term, which
+in the completed-source application is a real pole.  Entirety forbids that pole.
+
+This extends the prior trigonometric-polynomial/finite-rank argument to uniformly almost-periodic
+edge spectra.  It does not yet constrain the actual zeta source, whose dominant real pole is an
+allowed zero-frequency top layer.  Its RH-facing consequence is a sharper no-go: an admissible
+off-critical correction cannot have an isolated nonzero almost-periodic spectral edge; it must
+have edge accumulation or lose uniform almost periodicity/remainder separation.
+
+Status: `[CONJECTURE; PAPER PROOF SKETCH; NOVELTY AND EXACT RHT INSTANTIATION UNAUDITED]`.  Retained
+as a positive survivor while the remaining mechanism/wall matrix is audited; not selected as the
+main route.

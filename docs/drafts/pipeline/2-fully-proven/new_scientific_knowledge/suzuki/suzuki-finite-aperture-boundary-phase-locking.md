@@ -411,6 +411,51 @@ the automatic nested-exhaustion phase-locking theorem, its converse classificati
 spaces, and resolution of Suzuki's stated spectral-limit conjecture.  Independent priority review
 is still required.
 
+## 9b. Lean formalization: plan and status
+
+The universal theorem `(2.1)-(5.1)` is entirely bounded-operator geometry once it is read in the
+Cayley picture, which is exactly how the paper proof is organized: unbounded operators appear only
+in motivating the closed subspaces `M_(a,+/-)`, `M_(+/-)` and the partial Cayley isometry.  The
+formalization is therefore split by proof phase and does not require an unbounded-operator library.
+
+**Module 1 (DONE)** `formal/GaloisForLFunctions/HTGeometry/NestedProjectionConvergence.lean`.
+
+- `starProjection_inf_orthogonal_apply` / `starProjection_inf_orthogonal`: for nested closed
+  subspaces `M <= K`, the projection onto `K` orthogonal-minus `M` is exactly the difference of the
+  two projections.  This is equation `(3.7)`.
+- `tendsto_deficiency_starProjection`: for monotone families `M_a <= H_a` with
+  `closure(sup H_a) = top`, the deficiency projections converge strongly to the projection onto the
+  orthogonal complement of `closure(sup M_a)`.  This is `(3.1)-(3.2)`, obtained from mathlib's
+  `starProjection_tendsto_closure_iSup` plus the relative-complement identity.  The closed-range
+  hypothesis `(3.5)` and the monotone-range statement `closure(union M_a) = M` enter as the
+  hypotheses of the theorem, which is where the unbounded operator would otherwise appear.
+
+Targeted build green; axiom audit `[propext, Classical.choice, Quot.sound]`.
+
+**Module 2 (NEXT)** finite-rank transport unitary, i.e. `(3.3)-(3.4)`.
+
+Required content: for a fixed `k`-dimensional `N` and `k`-dimensional `N_a` whose projections
+converge strongly, the compression `T_a = E_a|N : N -> N_a` converges to the inclusion in operator
+norm (finite-dimensional domain upgrades pointwise to uniform), is invertible for large `a`, and
+its polar factor `J_a = T_a (T_a^* T_a)^(-1/2)` is a unitary `N -> N_a` converging in norm to the
+inclusion.  Route settled: `A_a = T_a^* T_a` is a positive invertible element of the C*-algebra
+`N ->L N` with `A_a -> 1` in norm, so mathlib's `continuousOn_cfc` applied to `t |-> t^(-1/2)` on a
+compact neighbourhood of `1` gives `A_a^(-1/2) -> 1` in norm.  At deficiency `(1,1)` this reduces to
+normalizing `E_a e_+`, which is elementary and suffices for the Suzuki application.
+
+**Module 3** Cayley assembly `(4.1)-(4.14)`.  Pure algebra given Modules 1-2: the embedded finite
+Cayley transform is `V Q_(a,+) + W_a E_(a,+)`, both summands converge strongly, and the resolvent
+identity `(A+i)^(-1) = (1/2i)(I - C_A)` transports the conclusion.  The converse `(4.12)` subtracts
+the automatic base convergence and tests on `J_(a,+)x -> x`.  The `k = 1` specialization is the
+scalar phase lock `(4.13)-(4.14)`.
+
+**Module 4** spectral inclusion `(5.1)` from generalized strong resolvent convergence.
+
+**Explicitly out of scope for the Lean gate.**  Section 6 is `[PROVED FROM RH]` and stays out: the
+global positive Weil space and the target self-adjoint generator are downstream of RH, and the
+current gate forbids importing them.  The Lean work above formalizes only the unconditional
+universal law of Sections 2-5.
+
 ## 10. Gates
 
 - [x] central Suzuki 2026 open conjecture identified
@@ -421,3 +466,9 @@ is still required.
 - [ ] manuscript completed
 - [ ] exact Lean formalization
 - [ ] independent specialist novelty review
+
+## Log
+
+- 2026-08-01 — Lean formalization started.  Module 1 (deficiency-projection convergence, equations
+  `(3.1)`, `(3.2)`, `(3.7)`) is formalized, wired, built, and axiom-audited.  Modules 2-4 are
+  specified above with their proof routes settled.

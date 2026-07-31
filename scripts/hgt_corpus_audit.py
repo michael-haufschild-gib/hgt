@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 import collections
 import csv
+import math
 import re
 from dataclasses import dataclass
 from pathlib import Path
@@ -47,6 +48,7 @@ CARD_TOKEN_RE = re.compile(
     r"(?:[/.])([A-Z][A-Za-z0-9_/.]*?)(?:\.lean)?\b"
     r"|`([A-Z][A-Za-z0-9_/]*)(?:\.lean)?`"
 )
+IDENTIFIER_RE = re.compile(r"[A-Za-z][A-Za-z0-9_'.]*")
 
 SOURCE_SYMBOL_RE = re.compile(
     r"\b(?:riemannZeta|RHTower\.xi|xi|XiC|xiC|vonMangoldt|"
@@ -267,6 +269,119 @@ DECLARATION_SHAPES: dict[str, re.Pattern[str]] = {
         r"rank|Rank|finrank|support|Support|dimension|Dimension|card|Card"
     ),
     "membership-span": re.compile(r"∈|∉|SetLike|span|Span|range|Range"),
+}
+
+# These labels describe what a declaration can supply, not merely its subject.
+# `declaration_parts` separates binder hypotheses from the result before these
+# patterns are applied, so an assumed positivity hypothesis is not counted as a
+# produced positivity theorem.
+DECLARATION_CAPABILITIES: dict[str, re.Pattern[str]] = {
+    "sign-orientation": re.compile(
+        r"\b(?:StrictAnti|StrictMono|Monotone|Antitone|Accretive|Dissipative)\b"
+        r"|(?:_pos|_neg|_nonneg|_nonpos|_sign|Orientation|orientation)"
+        r"|(?:0\s*[<≤]\s*|[<≤]\s*0\b)"
+    ),
+    "positive-kernel-form": re.compile(
+        r"PositiveDefinite|PosSemidef|posSemidef|Nonnegative|"
+        r"Hankel|Toeplitz|Gram|Loewner|Pick|Herglotz|Nevanlinna"
+    ),
+    "quantitative-bound": re.compile(
+        r"\b(?:IsBigO|IsLittleO|Bounded|Semibounded|Summable|"
+        r"PolynomiallyModerate|Subpower|Decay|Coercive)\b"
+        r"|(?:_le|_lt|_ge|_gt|Bound|bound|estimate|Estimate)"
+    ),
+    "limit-compactness": re.compile(
+        r"Tendsto|CauchySeq|Compact|Precompact|Tight|closure|Closure|"
+        r"ClusterPt|Cofinal|WeakConvergence|Converges"
+    ),
+    "analytic-continuation": re.compile(
+        r"Analytic|Holomorphic|Meromorphic|Entire|Continuation|"
+        r"poleFree|PoleFree|zeroFree|ZeroFree"
+    ),
+    "zero-location-exclusion": re.compile(
+        r"\bzero(?:s|Set|Free)?\b|\bZero(?:s|Set|Free)?\b|"
+        r"vanish|Vanish|root|Root|divisor|Divisor"
+    ),
+    "spectral-reality": re.compile(
+        r"Spectrum|spectrum|Spectral|spectral|SelfAdjoint|selfAdjoint|"
+        r"Unitary|unitary|Eigen|eigen|Resolvent|resolvent|Krein|Fredholm"
+    ),
+    "measure-representation": re.compile(
+        r"\bMeasure\b|RepresentingMeasure|momentFunctional|"
+        r"IntegralRepresentation|Bochner|RieszRepresentation|Stieltjes"
+    ),
+    "factorization-decomposition": re.compile(
+        r"Factorization|factorization|Decomposition|decomposition|"
+        r"_mul_eq|_eq_mul|prod|Prod|convolution|Convolution|"
+        r"DirectSum|Orthogonal"
+    ),
+    "rigidity-classification": re.compile(
+        r"\b(?:Unique|unique|Injective|Surjective|Bijective|Equiv|Embedding)\b"
+        r"|(?:_iff|classification|Classification|Rigidity|rigidity|"
+        r"determines|Determines)"
+    ),
+    "rank-dimension-support": re.compile(
+        r"\b(?:rank|Rank|finrank|dimension|Dimension|support|Support|"
+        r"FiniteRank|corank|Corank)\b"
+    ),
+    "recurrence-almost-periodic": re.compile(
+        r"Bohr|AlmostPeriodic|almostPeriodic|Recurrence|recurrence|"
+        r"relativelyDense|ReturnTime|Orbit"
+    ),
+    "reflection-phase": re.compile(
+        r"Reflection|reflection|Reflected|reflected|FunctionalEquation|"
+        r"phase|Phase|involution|Involution|conj|Conj"
+    ),
+    "differential-transcendence": re.compile(
+        r"Hypertranscend|hypertranscend|DifferentiallyAlgebraic|"
+        r"AlgebraicIndependent|DifferentialIndependent|Kolchin"
+    ),
+    "arithmetic-source": re.compile(
+        r"Prime|prime|Euler|Dirichlet|vonMangoldt|Mobius|mobius|"
+        r"Mertens|Valuation|valuation|divisor|Divisor"
+    ),
+}
+
+MATCH_STOPWORDS = {
+    "a",
+    "an",
+    "and",
+    "at",
+    "by",
+    "class",
+    "def",
+    "exists",
+    "false",
+    "fin",
+    "for",
+    "forall",
+    "fun",
+    "have",
+    "iff",
+    "if",
+    "in",
+    "instance",
+    "is",
+    "lemma",
+    "let",
+    "nat",
+    "of",
+    "on",
+    "or",
+    "prop",
+    "real",
+    "riemann",
+    "hypothesis",
+    "riemannhypothesis",
+    "set",
+    "structure",
+    "the",
+    "theorem",
+    "then",
+    "to",
+    "true",
+    "type",
+    "with",
 }
 RH_RE = re.compile(r"\bRiemannHypothesis\b")
 RH_IFF_RE = re.compile(
@@ -619,6 +734,34 @@ def declaration_header(segment: str) -> str:
     return re.sub(r"\s+", " ", segment).strip()
 
 
+def declaration_parts(header: str) -> tuple[str, str]:
+    """Split a declaration header into binder/premise text and result text.
+
+    Lean binder type colons occur inside `()`, `{}`, or `[]`; the first
+    top-level colon after the declaration name introduces the result.
+    """
+    match = re.match(
+        r"(?:(?:@\[[^\]]*\]|private|protected|noncomputable|local|scoped|unsafe)\s+)*"
+        r"(?:theorem|lemma|def|structure|class|abbrev|inductive|instance)\s+"
+        r"[A-Za-z_][A-Za-z0-9_'.]*",
+        header,
+    )
+    if not match:
+        return header, ""
+    depths = {"(": 0, "{": 0, "[": 0}
+    closing = {")": "(", "}": "{", "]": "["}
+    for index in range(match.end(), len(header)):
+        char = header[index]
+        if char in depths:
+            depths[char] += 1
+        elif char in closing:
+            opener = closing[char]
+            depths[opener] = max(0, depths[opener] - 1)
+        elif char == ":" and not any(depths.values()):
+            return header[match.end() : index].strip(), header[index + 1 :].strip()
+    return header[match.end() :].strip(), ""
+
+
 def declarations(source: str) -> list[Declaration]:
     code = strip_comments_and_strings(source)
     matches = list(DECL_RE.finditer(code))
@@ -651,6 +794,27 @@ def declaration_shapes(header: str) -> tuple[str, ...]:
         shape for shape, pattern in DECLARATION_SHAPES.items() if pattern.search(header)
     )
     return shapes or ("other",)
+
+
+def declaration_capabilities(text: str) -> tuple[str, ...]:
+    """Overlapping mathematical capabilities visible in exact Lean text."""
+    return tuple(
+        capability
+        for capability, pattern in DECLARATION_CAPABILITIES.items()
+        if pattern.search(text)
+    )
+
+
+def match_tokens(text: str) -> set[str]:
+    """Normalize Lean identifiers for theorem-interface matching."""
+    tokens: set[str] = set()
+    for identifier in IDENTIFIER_RE.findall(text):
+        for component in re.split(r"[._']", identifier):
+            for token in TOKEN_RE.findall(component):
+                lowered = token.lower()
+                if len(lowered) > 1 and lowered not in MATCH_STOPWORDS:
+                    tokens.add(lowered)
+    return tokens
 
 
 def title_of(source: str, fallback: str) -> str:
@@ -945,11 +1109,14 @@ def write_declarations(rows: list[ModuleRow], path: Path) -> None:
                 "line",
                 "mechanisms",
                 "shapes",
+                "premise_capabilities",
+                "conclusion_capabilities",
                 "statement",
             )
         )
         for row in rows:
             for declaration in row.declarations:
+                premises, conclusion = declaration_parts(declaration.header)
                 writer.writerow(
                     (
                         row.area,
@@ -963,7 +1130,149 @@ def write_declarations(rows: list[ModuleRow], path: Path) -> None:
                             )
                         ),
                         ",".join(declaration_shapes(declaration.header)),
+                        ",".join(declaration_capabilities(premises)),
+                        ",".join(declaration_capabilities(conclusion)),
                         declaration.header,
+                    )
+                )
+
+
+def write_crossmatches(rows: list[ModuleRow], path: Path, limit: int) -> None:
+    """Match every RH-equivalent interface against every HT theorem producer.
+
+    Selection uses exact conclusion capability and normalized type vocabulary,
+    never import reachability or whether RHTower already cites the HT module.
+    Output is a search surface; exact hypothesis compatibility still requires
+    mathematical audit.
+    """
+    ht_entries: list[
+        tuple[ModuleRow, Declaration, set[str], set[str], set[str]]
+    ] = []
+    document_frequency: collections.Counter[str] = collections.Counter()
+    for row in rows:
+        if row.area != "HTGeometry":
+            continue
+        for declaration in row.declarations:
+            if declaration.kind not in ("theorem", "lemma"):
+                continue
+            premises, conclusion = declaration_parts(declaration.header)
+            premise_capabilities = set(declaration_capabilities(premises))
+            conclusion_capabilities = set(declaration_capabilities(conclusion))
+            produced = conclusion_capabilities - premise_capabilities
+            if not produced:
+                continue
+            tokens = match_tokens(
+                f"{row.module} {row.title} {declaration.name} {conclusion}"
+            )
+            document_frequency.update(tokens)
+            ht_entries.append((row, declaration, produced, conclusion_capabilities, tokens))
+
+    walls: list[tuple[ModuleRow, Declaration, set[str], set[str]]] = []
+    for row in rows:
+        if row.area != "RHTower":
+            continue
+        for declaration in row.declarations:
+            if declaration.kind not in ("theorem", "lemma"):
+                continue
+            if not RH_IFF_RE.search(declaration.header):
+                continue
+            _, conclusion = declaration_parts(declaration.header)
+            capabilities = set(declaration_capabilities(conclusion))
+            tokens = match_tokens(
+                f"{row.module} {row.title} {declaration.name} {conclusion}"
+            )
+            walls.append((row, declaration, capabilities, tokens))
+
+    corpus_size = max(1, len(ht_entries))
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.writer(handle, delimiter="\t", lineterminator="\n")
+        writer.writerow(
+            (
+                "wall_module",
+                "wall_declaration",
+                "wall_line",
+                "wall_capabilities",
+                "rank",
+                "score",
+                "shared_capabilities",
+                "shared_tokens",
+                "ht_module",
+                "ht_declaration",
+                "ht_line",
+                "ht_produced_capabilities",
+                "ht_statement",
+                "wall_statement",
+            )
+        )
+        for wall_row, wall_declaration, wall_capabilities, wall_tokens in walls:
+            scored: list[
+                tuple[
+                    float,
+                    tuple[str, ...],
+                    tuple[str, ...],
+                    ModuleRow,
+                    Declaration,
+                    set[str],
+                ]
+            ] = []
+            for (
+                ht_row,
+                ht_declaration,
+                produced,
+                _conclusion_capabilities,
+                ht_tokens,
+            ) in ht_entries:
+                shared_capabilities = tuple(sorted(wall_capabilities & produced))
+                if not shared_capabilities:
+                    continue
+                shared_tokens = tuple(sorted(wall_tokens & ht_tokens))
+                token_score = sum(
+                    math.log((corpus_size + 1) / (document_frequency[token] + 1))
+                    for token in shared_tokens
+                )
+                score = 4.0 * len(shared_capabilities) + token_score
+                scored.append(
+                    (
+                        score,
+                        shared_capabilities,
+                        shared_tokens,
+                        ht_row,
+                        ht_declaration,
+                        produced,
+                    )
+                )
+            scored.sort(
+                key=lambda item: (
+                    -item[0],
+                    item[3].module,
+                    item[4].name,
+                )
+            )
+            for rank, (
+                score,
+                shared_capabilities,
+                shared_tokens,
+                ht_row,
+                ht_declaration,
+                produced,
+            ) in enumerate(scored[:limit], start=1):
+                writer.writerow(
+                    (
+                        wall_row.module,
+                        wall_declaration.name,
+                        wall_declaration.line,
+                        ",".join(sorted(wall_capabilities)),
+                        rank,
+                        f"{score:.6f}",
+                        ",".join(shared_capabilities),
+                        ",".join(shared_tokens),
+                        ht_row.module,
+                        ht_declaration.name,
+                        ht_declaration.line,
+                        ",".join(sorted(produced)),
+                        ht_declaration.header,
+                        wall_declaration.header,
                     )
                 )
 
@@ -1020,6 +1329,8 @@ def main() -> int:
     parser.add_argument("--manifest", type=Path)
     parser.add_argument("--declarations", type=Path)
     parser.add_argument("--rh-declarations", type=Path)
+    parser.add_argument("--crossmatches", type=Path)
+    parser.add_argument("--crossmatch-limit", type=int, default=12)
     parser.add_argument("--summary", type=Path)
     args = parser.parse_args()
     rows = audit_rows()
@@ -1029,6 +1340,8 @@ def main() -> int:
         write_declarations(rows, args.declarations)
     if args.rh_declarations:
         write_rh_declarations(rows, args.rh_declarations)
+    if args.crossmatches:
+        write_crossmatches(rows, args.crossmatches, args.crossmatch_limit)
     rendered = summary(rows)
     if args.summary:
         args.summary.parent.mkdir(parents=True, exist_ok=True)

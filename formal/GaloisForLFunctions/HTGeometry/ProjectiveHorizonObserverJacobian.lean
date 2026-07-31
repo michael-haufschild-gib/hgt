@@ -24,14 +24,21 @@ variable {n : Type*} [Fintype n] [DecidableEq n] {K : Type*} [Field K]
 /-! ## Infinitesimal observers on jet coordinates -/
 
 omit [DecidableEq n] in
-theorem jetDerivation_neg (M : Matrix n n K) : jetDerivation (-M) = -jetDerivation M := by
-  have h : (-M : Matrix n n K) = (-1 : K) • M := by rw [neg_smul, one_smul]
-  rw [h, jetDerivation_smul, neg_smul, one_smul]
+theorem jetDerivationPoly_sub (M M' : Matrix n n K) :
+    jetDerivationPoly (M - M') = jetDerivationPoly M - jetDerivationPoly M' := by
+  apply MvPolynomial.derivation_ext
+  rintro ⟨k, l⟩
+  rw [jetDerivationPoly_X, Derivation.sub_apply, jetDerivationPoly_X, jetDerivationPoly_X,
+    ← Finset.sum_sub_distrib]
+  exact Finset.sum_congr rfl fun m _ => by rw [Matrix.sub_apply, map_sub, sub_mul]
 
 omit [DecidableEq n] in
 theorem jetDerivation_sub (M M' : Matrix n n K) :
     jetDerivation (M - M') = jetDerivation M - jetDerivation M' := by
-  rw [sub_eq_add_neg, jetDerivation_add, jetDerivation_neg, ← sub_eq_add_neg]
+  refine GaloisForLFunctions.fractionRing_derivation_ext
+    (A := MvPolynomial (n × ℕ) K) _ _ fun p => ?_
+  rw [jetDerivation_algebraMap, jetDerivationPoly_sub, Derivation.sub_apply, map_sub,
+    Derivation.sub_apply, jetDerivation_algebraMap, jetDerivation_algebraMap]
 
 /-- An elementary infinitesimal transvection moves the jet coordinate of its row to the jet
 coordinate of its column. -/
@@ -59,6 +66,7 @@ def reducedGen (t : Finset n) (m₀ : ↥t) (p : n × ↥t) : Matrix n n K :=
     Matrix.single (p.2 : n) (p.2 : n) (1 : K) - Matrix.single (m₀ : n) (m₀ : n) (1 : K)
   else Matrix.single p.1 (p.2 : n) (1 : K)
 
+omit [Fintype n] in
 theorem reducedGen_mem_span (t : Finset n) (m₀ : ↥t) {p : n × ↥t}
     (hp : p ≠ ((m₀ : n), m₀)) :
     reducedGen t m₀ p ∈ Submodule.span K (observerGenerators (↑t : Set n) K) := by
