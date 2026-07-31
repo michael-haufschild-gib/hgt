@@ -135,46 +135,7 @@ You work independent from other agents and can run 1 build process in the foregr
 make sure you don't leave stale lean processes running - clean up after yourself
 LEAN PROOFS MUST BE UNCONDTIONAL!!!
 
-## research and formalize
-/goal
 
-perform exhaustive research and use the hgt-fields-medalist skill and iterative conjecturing to develop step by step the "field with one element": docs/the field with one element.md.
-
-do not favor one method. do not attempt to proof rh but focus on that field construction itself.
-
-rules:
-1. limit lean builds to the absolute necessary. be as memory and cpu efficient as possible. each agent can run max 1 process at a time so agents can build in parallel without clogging the system. always build in foreground. there are more agents active not just you.
-2. aim for the smallest lean build possible and use caching heavily for lean. write lean code in batches instead of building after every edit.
-3. lean proofs must be unconditional
-4. always check first what the project lean code already offers
-5. effort estimation are not a criterion. if it is missing in mathlib -> you build it. if it takes months -> you build it.
-6. no computations.
-
-**Always use  lake env lean <file>  and only lake build <module> for the final audit.**
-make sure you don't leave stale lean processes running - clean up after yourself
-
-goal is met when the field is fully developed and formalized.
-
-## physics
-/goal
-use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill and conjecturing to create a sufficiently broad theory or solve a central problem in the field of hypertranscendental functions. your approach is the lense of a physicist - we assume that the landscape of hypertranscendental functions is the mathematics of a fundamental physical process or phenomen.
-
-lean rules:
-1. limit lean builds to the absolute necessary. be as memory and cpu efficient as possible. each agent can run max 1 process at a time so agents can build in parallel without clogging the system. always build in foreground. there are more agents active not just you.
-2. aim for the smallest lean build possible and use caching heavily for lean. write lean code in batches instead of building after every edit.
-3. lean proofs must be unconditional
-4. always check first what the project lean code already offers
-5. effort estimation are not a criterion. if it is missing in mathlib -> you build it. if it takes months -> you build it.
-6. no computations.
-
-folders:
-- formal/GaloisForLFunctions/HTGeometry for lean about hypertranscendental functions in general
-- formal/GaloisForLFunctions/RHTower for lean about the riemann zeta function
-
-research rules:
-- check from time to time the lean code for new additions and pipeline cards for new additions that aren't yet formalized
-- for any nogo always try to find an interesting significant positive statement
-- you can use subagents for read-only research into literature and our own research corpus
 
 ## ht
 
@@ -197,28 +158,6 @@ folders:
 - formal/GaloisForLFunctions/HTGeometry for lean about hypertranscendental functions in general
 - formal/GaloisForLFunctions/RHTower for lean about the riemann zeta function
 
-## ht to rh
-
-use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to research and formalize a proof that the riemann hypothesis is false.
-
-lean rules:
-1. limit lean builds to the absolute necessary. be as memory and cpu efficient as possible. each agent can run max 1 process at a time so agents can build in parallel without clogging the system. always build in foreground. there are more agents active not just you.
-2. aim for the smallest lean build possible and use caching heavily for lean. write lean code in batches instead of building after every edit.
-3. lean proofs must be unconditional
-4. always check first what the project lean code already offers
-5. effort estimation are not a criterion. if it is missing in mathlib -> you build it. if it takes months -> you build it.
-6. no computations.
-
-folders:
-- formal/GaloisForLFunctions/HTGeometry for lean about hypertranscendental functions in general
-- formal/GaloisForLFunctions/RHTower for lean about the riemann zeta function
-
-research rules:
-- constraint vs flow rule is softened - whatever brings the proof is acceptable
-- novelty gate is softened - it does not matter if it is new or not, if it delivers the proof
-- check from time to time the lean code for new additions and pipeline cards for new additions that aren't yet formalized
-- for any nogo always try to find an interesting significant positive statement
-- you can use subagents for read-only research into literature and our own research corpus
 
 ## physics
 
@@ -249,86 +188,35 @@ for any nogo always try to find an interesting significant positive statement
 do this until nothing new can be found
 
 
-## grouping
 
-Use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to research this topic:
-
-Our RH proof research so far always cumulated into the question "we need one object that combines a lot of different constraints". But what if the zeros on the critical line are not a combined class, they just appear like it. In fact the zeta zeros divide into different groups of zeros that are all forced onto the critical line for different reasons.
-
-Your task is to follow this rabbit hole and find possible groups and prove the RH for single groups of zeros instead of all zeros.
-
-lean rules:
-1. limit lean builds to the absolute necessary. be as memory and cpu efficient as possible. each agent can run max 1 process at a time so agents can build in parallel without clogging the system. always build in foreground. there are more agents active not just you.
-2. aim for the smallest lean build possible and use caching heavily for lean. write lean code in batches instead of building after every edit.
-3. lean proofs must be unconditional
-4. always check first what the project lean code already offers
-5. effort estimation are not a criterion. if it is missing in mathlib -> you build it. if it takes months -> you build it.
-6. no computations.
-
-- for any nogo always try to find an interesting significant positive statement
-- you can use subagents for read-only research into literature and our own research corpus
-
-
-## new research
-
-Based on the current status report of our research in docs/reports/rh-status-1707.md, use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to research the research programme number 3 outlined in docs/reports/rh-status-1707.md
-
-lean rules:
-1. limit lean builds to the absolute necessary. be as memory and cpu efficient as possible. each agent can run max 1 process at a time so agents can build in parallel without clogging the system. always build in foreground. there are more agents active not just you.
-2. aim for the smallest lean build possible and use caching heavily for lean. write lean code in batches instead of building after every edit.
-3. lean proofs must be unconditional
-4. always check first what the project lean code already offers
-5. effort estimation are not a criterion. if it is missing in mathlib -> you build it. if it takes months -> you build it.
-6. no computations.
-
-other rules:
-- for any nogo always try to find an interesting significant positive statement
-- you can use subagents for read-only research into literature and our own research corp
-
-
-Research and create progress and new knowledge and ultimately create the RH proof following this program: docs/reports/rh-proof-shape-1707.md
-
-lean rules:
-1. limit lean builds to the absolute necessary. be as memory and cpu efficient as possible. each agent can run max 1 process at a time so agents can build in parallel without clogging the system. always build in foreground. there are more agents active not just you.
-2. aim for the smallest lean build possible and use caching heavily for lean. write lean code in batches instead of building after every edit.
-3. lean proofs must be unconditional
-4. always check first what the project lean code already offers
-5. effort estimation are not a criterion. if it is missing in mathlib -> you build it. if it takes months -> you build it.
-6. no computations.
-
-
-the goal is met when no further proof or conjecture is possible and no meaningful contribution or pivot can be made
 
 
 ## proof
 
-Advance the research body towards finding a formal proof for RH.
+Create frontier-moving novel scientific knowledge in our research corpus towards finding a formal proof for RH.
 
 Work rules:
 1. Use the extensive research we have in the lean project folders:
 - formal/GaloisForLFunctions/HTGeometry for lean about hypertranscendental functions in general
 - formal/GaloisForLFunctions/RHTower for lean about the riemann zeta function
-2. Use the $hgt-fields-medalist skill to develop novel knowledge and formalize it.
-3. Do no waste time on rediscovering known knowledge. Conjecture boldly, test, proof, formalize.
-4. Pivot whenever you hit a dead end.
-5. For every nogo find a positive statement that is significant and delivers new insights.
-6. Approach the task from the perspective of a Fields-medalist mathematician: How would they approach this task? What questions would they ask? What topics would they research? How would they proceed to develop the new mathematics needed for this proof?
-7. Avoid getting stuck on one chain or "classic" proof routes. Be open-minded to what the proof chain could look like and be open to pivot also into unconvential chains.
+1. Use the $hgt-fields-medalist skill to develop novel knowledge and formalize it.
+2. Do no waste time on rediscovering known knowledge. Conjecture boldly, test, proof, formalize.
+3. Pivot whenever you hit a dead end.
+4. For every nogo find a positive statement that is significant and delivers new insights.
+5. Approach the task from the perspective of a Fields-medalist mathematician: How would they approach this task? What questions would they ask? What topics would they research? How would they proceed to develop the new mathematics needed for this proof?
+6. Avoid getting stuck on one chain or "classic" proof routes. Be open-minded to what the proof chain could look like and be open to pivot also into unconvential chains.
 
-Use subagents as you please, but be mindful of resource limitations of this laptop when it comes to lean builds - there are several other agents also working on the lean codebase (this is a competition between claude fable, openai gtp 5.6 sol and moonshot kimi k3, all having the same instructions to test who gets the farthest in discovering new scientific knowledge or even delivering the proof).
+Lean rules:
+1. Proofs must be unconditional in lean.
+2. Always build in the foreground, 1 process per single agent.
+3. Be efficient, use caching, batch instead of running constant loops of tiny edits and rebuilds
+4. No computations.
+5. Always use  lake env lean <file>  and only lake build <module> for the final audit. Do not forget to wire new modules into the umbrellas.
+6. make sure you don't leave stale lean processes running - clean up after yourself.e project lean code already offers
 
-lean rules:
-1. You work independent from other agents and can run 1 build process in the foreground at a time yourself.
-2. Be efficient with lean, do not constantly do minor edits and build, but batch changes and builds.
-3. Optimize lean code. Use caching and limit rebuilds of dependencies to only what is truly necessary for your work.
-4. lean proofs must be unconditional
-5. always check first what the project lean code already offers
-6. no computations.
+Keep a working log to retain important information across the automatic context window compactions.
 
-keep a working log to retain important information across the automatic context window compactions.
-
-Non-negotiable: This is a multi-month research task with unclear outcome. Never use effort estimation to decide against doing something. Nothing here can be done in one session. Keep going. Never stop.
-
+Goal is met when RH is proven or disproven.
 
 ## Lean work
 Use the hgt-fields-medalist skill and scientific method to research this topic:
@@ -507,109 +395,3 @@ limit your updates. do not give a status update every 2 minutes. only report whe
 
 
 
-## CHAT
-/goal
-
-Your chat name is "Codex". The chat channel is "rh". If not done already, join the chat.
-
-There is another agent "Claude" from Anthropic. 
-
-Your task:
-- Discuss and research together with Claude how to create the proof for the Riemann Hypothesis.
-- Base your discussion on what our research corpus has already uncovered or ruled out.
-- Be critical of your own claims and the claims of the other agent.
-- Be open minded: let the lean research corpus guide you, your training data is biased towards a few classic routes, while our research body may lead to completely new routes.
-- Heavily use and stay up to date on what our lean research corpus already offers in terms of proofs, routes, open cores.
-- Use the hgt-fields-medalist skill´s research process on each non-immediate mathematical obstacle
-
-Lean rules:
-1. Proofs must be unconditional in lean.
-2. Always build in the foreground, 1 process per single agent.
-3. Be efficient, use caching, batch instead of running constant loops of tiny edits and rebuilds
-4. No computations.
-5. Always use  lake env lean <file>  and only lake build <module> for the final audit.
-6. make sure you don't leave stale lean processes running - clean up after yourself
-
-Anti-theatre protocol:
-- Be hypercritical of your own and the other agents claims, suggestions and results.
-- Any action that does not lead to truly novel and significant mathematical knowledge is theatre.
-- Novelty criterion is that you cannot find it via literature research (including arxiv) nor in our research body. 
-- Any action must aim towards creating truly novel and significant knowledge, nothing the literature or our research already know or that is trivial.
-
-Check the chat frequently. Communicate! The core tool here is joint research, honest critique, and communication.
-
-Goal is met when RH proof is formalized.
-
-## CHAT
-/goal
-
-Your chat name is "Claude". The chat channel is "rh". If not done already, join the chat.
-
-There is another agent "Codex" from OpenAI. 
-
-Your task:
-- Discuss and research together with Claude how to create the proof for the Riemann Hypothesis.
-- Base your discussion on what our research corpus has already uncovered or ruled out.
-- Be critical of your own claims and the claims of the other agent.
-- Be open minded: let the lean research corpus guide you, your training data is biased towards a few classic routes, while our research body may lead to completely new routes.
-- Heavily use and stay up to date on what our lean research corpus already offers in terms of proofs, routes, open cores.
-- use the hgtl7 skill´s research process on each non-immediate mathematical obstacle
-
-Lean rules:
-1. Proofs must be unconditional in lean.
-2. Always build in the foreground, 1 process per single agent.
-3. Be efficient, use caching, batch instead of running constant loops of tiny edits and rebuilds
-4. No computations.
-5. Always use  lake env lean <file>  and only lake build <module> for the final audit.
-6. make sure you don't leave stale lean processes running - clean up after yourself
-
-Anti-theatre protocol:
-- Be hypercritical of your own and the other agents claims, suggestions and results.
-- Any action that does not lead to truly novel and significant mathematical knowledge is theatre.
-- Novelty criterion is that you cannot find it via literature research (including arxiv) nor in our research body. 
-- Any action must aim towards creating truly novel and significant knowledge, nothing the literature or our research already know or that is trivial.
-  
-Check the chat frequently. Communicate! The core tool here is joint research, honest critique, and communication.
-
-Goal is met when RH proof is formalized.
-
-## paper
-/goal 
-
-Do scientific research and then write a paper that is likely to be published in Nature.
-
-The paper must:
-- Be accepted by a hostile journal reviewer based on https://www.nature.com/nature/for-authors/editorial-criteria-and-processes
-- Present a headline law or discovery that "wows" people even if they do not understand the math behind it
-- Is bold and present a universal law or theorem about physical reality, not just math
-- Any mathematical claim must be unconditionally proven in lean
-  
-Topic present a worldview shattering new universal law, preferably about time or causality in the broader sense.
-
-Lean rules:
-1. Proofs must be unconditional in lean.
-2. Always build in the foreground, 1 process per single agent.
-3. Be efficient, use caching, batch instead of running constant loops of tiny edits and rebuilds.
-4. No computations.
-5. Always use  lake env lean <file>  and only lake build <module> for the final audit.
-6. make sure you don't leave stale lean processes running - clean up after yourself.
-
-lean folders:
-- formal/GaloisForLFunctions/HTGeometry for lean about hypertranscendental functions in general
-- formal/GaloisForLFunctions/RHTower for lean about the riemann zeta function
-- formal/GaloisForLFunctions/HilbertMetric for lean about hilber spaces and metrics
-
-prior papers: docs/drafts/pipeline/4-publication-ready
-
-Add the missing lean machinery and use [$hgt-fields-medalist](/Users/michael/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to do research and fill the scientific gap for dicovering Nature-level physics.
-
-
-
-keep asking "what does all this mean? what is all this telling me what i and all the researchers before me have missed? what is this new math we all need to solve the riddle?" we are looking for something new and universal of which all our obstructions, dead ends, observations and laws are a shadow, something that explains all at once and also then delivers a new understanding from which new collaries and laws can be derived.
-
-the goto novelty finder is always to conjecture towards a reinterpretation, a more universal law or theorem of which all the known theorems and laws and obervations and nogos are shadows. everything we know now is a special case of that universal law.
-
-
-i believe what is wrong is the conjecturing. you are the first ai model known to be able to conjecture meaningfully. all previous models could never "escape" their training data, could not even conjecture experiments which their training data wouldnt already tell them what the answer is.
-
-the problem with you is now that you are still conjecturing too close to the frontier of your training data. you must attempt to make bigger jumps into the unknown. as an example take einstein looking at everything and then coming up with the general relativity, reinterpreting what is known, conjecturing a whole new interpretation

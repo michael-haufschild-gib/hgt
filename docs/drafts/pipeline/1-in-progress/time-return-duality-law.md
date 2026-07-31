@@ -97,3 +97,15 @@ decay.
 ## Log
 
 - 2026-07-31 — created in 1-in-progress after rejecting novelty by conjunction.
+- 2026-07-31 — proved and formalized local temporal-metric brick in
+  `ObserverReturnTemporalMetricLaw.lean`: exact phase defect is bounded above
+  by observer Gram energy and, on the principal chart, bounds it below up to
+  `π²/4`; positive visible weights make the metric nondegenerate exactly
+  when gaps separate temporal coordinates. Foreground compile passed; axiom
+  audit uses only `propext`, `Classical.choice`, `Quot.sound`.
+- 2026-07-31 — proved and formalized
+  `ObserverReturnLocalVolumeLaw.lean`: under positive coercivity constants,
+  the local high-fidelity target is trapped between Euclidean balls with
+  radii proportional to `√ε`, and its measure is trapped between their
+  exact volumes. This proves the local `ε^(τ/2)` Weyl scale without a
+  Gaussian or randomness premise.

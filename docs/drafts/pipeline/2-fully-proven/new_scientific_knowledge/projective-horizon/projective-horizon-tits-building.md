@@ -550,6 +550,36 @@ one-parameter orbit law that a density argument would need.  A transvection with
 is affine linear, and `transvectionSL_mul_same` shows the coefficients compose additively: a
 transvection orbit is a one-parameter additive family.
 
+`formal/GaloisForLFunctions/HTGeometry/ProjectiveHorizonBaseChange.lean` and
+`formal/GaloisForLFunctions/HTGeometry/ProjectiveHorizonTransvectionDensity.lean` carry out the
+density step.  Base change along a field extension of the constants embeds the jet field
+(`jetBaseChange`, injective, carrying each jet coordinate to the corresponding one) and the
+unimodular group (`slBaseChange`), and `jetBaseChange_smul` shows the two are compatible with the
+prolonged action, so an identity of observers over the small field of constants can be read over
+any larger one.  The density itself is polynomial: `transvectionOrbitPoly` records the orbit of a
+jet polynomial under the one-parameter transvection family as a genuine polynomial in the
+transvection coefficient, and `transvectionOrbitPoly_eval` says that evaluating at a constant
+returns the substitution by that constant.  Over an infinite field of constants the constants are
+therefore dense in the family: `transvectionOrbitPoly_eq_C_of_forall` shows a jet polynomial fixed
+by every constant transvection has constant orbit polynomial, and
+`transvectionOrbitPoly_cross_of_forall` gives the rational form, that the numerator and denominator
+orbit families of a fixed rational observable are proportional as one-parameter families.  Both go
+through the finiteness of the root set of a nonzero polynomial over the jet polynomial domain, so
+they need no algebraic geometry.
+
+`formal/GaloisForLFunctions/HTGeometry/ProjectiveHorizonGenericCoefficient.lean` removes the
+obstruction that a moving-frame normalisation runs into.  The normalising element of a moving frame
+has entries in the jet field, not in the constants, so the shear by it is not an element of the
+observer group and invariance under the observer group does not transfer to it directly.
+`transvectionSubstAt` is the shear by an arbitrary jet coefficient, `transvectionSubstAt_eq_eval`
+identifies it with the orbit polynomial evaluated at that coefficient, and
+`transvectionSubstAt_algebraMap` checks that a constant coefficient returns the observer
+substitution.  Density then transfers invariance: `transvectionSubstAt_eq_of_forall` and
+`transvectionSubstAt_cross_of_forall` show that a jet observable fixed by every constant
+transvection of a fixed row and column is fixed by the shear with *any* jet coefficient, and
+`horizonField_transvectionSubstAt_cross` states this for a horizon observable of a covector span.
+A normalisation with entries in the jet field is therefore legitimate.
+
 Two limits are worth stating exactly.  The independence is over the horizon algebra rather than the
 horizon field; the two are equivalent, but the field form goes through
 `IntermediateField.algebraicIndependent_adjoin_iff`, whose elaboration on this type exceeds a
@@ -614,7 +644,11 @@ so this currently gives neither a zero-free region nor a critical-line implicati
       elementary chart fields
 - [x] 2 -> 3v: the jet frame of a span, the frame equation and uniqueness of frame coordinates
 - [x] 2 -> 3w: the one-parameter transvection orbit law on jet coordinates
-- [ ] 2 -> 3x: the general-rank transcendence-degree number of `(11)` for `r >= 2`.  Both known
+- [x] 2 -> 3x: base change of the jet field along an extension of the constants, and density of
+      the constant transvection coefficients in the one-parameter orbit family
+- [x] 2 -> 3y: shearing by a jet coefficient, and the transfer of observer invariance to it --
+      the step that legitimises a moving-frame normalisation whose entries are not constants
+- [ ] 2 -> 3z: the general-rank transcendence-degree number of `(11)` for `r >= 2`.  Both known
       routes are long: Rosenlicht's dimension theorem has no mathlib surface, and the invariant
       route needs the first fundamental theorem for `SL_r` acting on an `r x infinity` jet matrix,
       i.e. that the minors above generate.  Not needed for any other part of the card.
@@ -688,3 +722,10 @@ so this currently gives neither a zero-free region nor a critical-line implicati
   coordinates; re-verified the whole `HTGeometry` umbrella.
 - 2026-07-31 — formalized the one-parameter transvection orbit law on jet coordinates, the seed of
   the density step that the general-rank count needs.
+- 2026-07-31 — formalized base change of the jet field along an extension of the constants,
+  compatibly with the prolonged action, and the density of constant transvection coefficients: a
+  jet observable fixed by every constant transvection is fixed by the whole one-parameter family,
+  in polynomial and in cross-multiplied rational form.
+- 2026-07-31 — formalized the shear by a transvection coefficient taken from the jet field itself,
+  and proved that observer invariance transfers to it; the moving-frame normalisation is no longer
+  blocked by its normalising element having non-constant entries.

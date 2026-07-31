@@ -3007,3 +3007,50 @@ this kind: the mathematics existed, only the shape the instrument looks for did 
 "different head" class (`0 < X` versus `X ≠ 0`) and the "general producer that never mentions the
 consumer's constants" class, the instrument now has three distinct ways of hiding a producer that
 is really there — all three fixed the same way, by stating the form the consumer actually needs.
+
+## The instrument, calibrated — and a collision I caused
+
+### A name collision of my own making
+
+`lake build GaloisForLFunctions.HTGeometry` failed on
+`GaloisForLFunctions.HTGeometry.pointedSupport_one`: my `PointedSupportDisjointness` module declared
+a lemma that already existed, with the same statement, in `PrimeValuationFusionCompletionLaw`.  The
+single-module `lake env lean` had passed because the colliding module is not in its import cone —
+only the area-wide build sees it.  This is the fifth such collision found by an area-wide import
+this session, and the first one I introduced.  Fixed by deleting my duplicate and deriving
+`disjoint_pointedSupport_one` from `disjoint_pointedSupport_iff` instead, which also avoids a
+universe mismatch (the existing lemma binds `ι` and `A` in the *same* universe).
+
+**Rule for this card:** run the duplicate-statement instrument over your own additions before
+registering them; `lake env lean <file>` cannot see a collision, and neither can `rg` if the name is
+buried in a large module.
+
+### The calibrated instrument
+
+`scripts/lean/audit_mathlib_premises_calibrated.lean`.  Three bridges added to the conclusion side,
+each for a producer-hiding class measured this session:
+
+* **containers** — `Finset.Nonempty s`, `Set.Nonempty s`, `Set.Infinite s` now also emit
+  `Membership.mem` and `Exists` keys over the same constants;
+* **heads** — `0 < X` now also emits `Ne` and `≤` keys, so a positivity producer discharges a
+  nonvanishing premise;
+* **existentials** — unfolding `∃` into its body used to *destroy* the `Exists` key, so an
+  `Exists`-headed premise could never be matched; the key is now kept alongside the unfolded body.
+
+`RHTower`, same environment, three measurements:
+
+| instrument | unproduced |
+|---|---:|
+| original | 113 |
+| container + head bridges | 101 |
+| plus the `Exists` fix | **98** |
+
+The head of the corrected list is: the 148-use Gelfond–Schneider capstone constraint (discharged in
+its own capstone by a `let`), its 8-use companion, five uses of a `TendstoLocallyUniformly`
+hypothesis introduced by this session's own mass-floor theorems (general limit `f`), recursor
+artifacts (`ctorIdx`, `HEq`), and small parameter constraints.  Every row this session discharged
+has left the list.
+
+**Reading of the number.**  98 is still not a debt count — it contains the capstone-`let` class and
+the recursor artifacts, which no unfolding can remove.  But it is now ~13% smaller than the raw
+figure purely from calibration, and the classes that remain are documented rather than guessed.

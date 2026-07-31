@@ -878,6 +878,34 @@ pieces of bounded size, which the average kills), so translation multiplies each
 unimodular factor `e^{iλa}` (`bohrCoefficient_comp_add_const`) and leaves the spectrum, hence the
 frequency module, unchanged (`bohrSpectrum_comp_add_const`).
 
+`formal/GaloisForLFunctions/HTGeometry/BohrConvolution.lean` proves the **Fourier-mode extraction
+identity**, the mechanism the Bochner–Fejér construction runs on.  Averaging a translate of `f`
+against a character extracts exactly that mode,
+`M_u(f(u+t)·e^{-iμu}) = a_f(μ)·e^{iμt}` (`bohrMean_translate_mul_bohrChar`, an immediate consequence
+of translation invariance), and against a trigonometric kernel `K = ∑_i c_i e^{-iμ_i u}` the same
+computation returns the corresponding weighted partial sum of the Bohr–Fourier series,
+`M_u(f(u+t)·K(u)) = ∑_i c_i a_f(μ_i) e^{iμ_i t}` (`bohrMean_translate_mul_trigKernel`).  Every such
+convolution is therefore a trigonometric polynomial with exactly the right coefficients
+(`bohrCoefficient_trigKernel_convolution`); what remains for the approximation theorem is only the
+choice of weights making these polynomials converge uniformly to `f`.  In particular
+`bohrMean_translate_mul_trigKernel_eq_zero`: if every Bohr coefficient vanishes then every such
+convolution vanishes identically — the uniqueness theorem is exactly the missing approximation step
+away.
+
+`formal/GaloisForLFunctions/HTGeometry/BohrFejerKernel.lean` constructs the **Fejér kernel on an
+arithmetic frequency progression** `βℤ`, the summation kernel the Bochner–Fejér approximation runs
+on.  Realized as `|D_N|²/(N+1)` with `D_N(u) = ∑_{k≤N} e^{ikβu}`, it is a nonnegative real
+(`fejerKernel_eq_ofReal`, `fejerKernel_nonneg`), a trigonometric polynomial with frequencies in `βℤ`
+(`fejerKernel_eq_sum`), and has mean exactly one (`bohrMean_fejerKernel` — only the diagonal terms of
+the double sum carry zero frequency, and there are `N+1` of them).  Convolving `f` against it
+(`bohrMean_translate_mul_fejerKernel`) therefore returns the **Fejér mean of the Bohr–Fourier series
+of `f` along `βℤ`**: a genuine trigonometric polynomial whose coefficients are the Bohr coefficients
+of `f` at the frequencies `(j−k)β`, weighted by `1/(N+1)`.
+
+What remains for the approximation theorem — and hence for uniqueness, the general product rule and
+the nonlinear case of eq. (9) — is the uniform convergence of these Fejér means, together with the
+multi-dimensional (rationally independent basis) version of the kernel.
+
 `formal/GaloisForLFunctions/HTGeometry/IsometricRecurrence.lean` abstracts the recurrence to any
 relatively-compact isometric `ℝ`-action (`isometricAction_recurrence`, `isometricAction_return_seq`),
 so it instantiates both to `ℝ →ᵇ ℂ` and to vertical translation of holomorphic functions on a strip.

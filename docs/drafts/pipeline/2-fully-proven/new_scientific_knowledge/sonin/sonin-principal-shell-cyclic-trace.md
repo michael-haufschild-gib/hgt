@@ -689,6 +689,42 @@ that is, **the aperture layer is the outer window in both polarizations, restric
 carrier, modulo trace class**.  The layer's range was defined by an orthogonality condition; `(50)`
 replaces it by explicit cutoffs, which is what any support or band computation needs.
 
+**And the layer is simply a shell.**  Substituting the formal complement `1 - A_a - R_a` for the
+inner projection in `(50)` leaves only elementary cutoffs.  The like-polarization products collapse
+by the minimum law and the two mixed products are finite time-band blocks, so
+
+```text
+Q_a - Q_b  =_r  S(a,b)  =  (A_b - A_a) + (R_b - R_a).                      (51)
+```
+
+The aperture layer *is* the two-polarization shell, modulo the ideal.  This is the layer analogue
+of the corpus's Theorem E for the defect, and it makes the coupling elementary: modulo the ideal,
+
+```text
+Z  =_r  S(a,b) . D_r . S(b,c),                                             (52)
+```
+
+a product of two explicit shells with a dilation between them.  `(52)` is proved, not assembled by
+hand (`evenSoninApertureSuccessiveLayerTransition_principalRelativeEq_shellProduct`).
+
+Expanding it gives eight terms.  The four mixed-polarization ones are finite time-band blocks,
+hence in the ideal.  The four like-polarization ones vanish **exactly**: by the intertwining
+`U_x A_C = A_{x^-1 C} U_x` each pairs the annulus `(a,b]` against `(b/r, c/r]` or `(r b, r c]`, and
+in the chamber `c < r a` the first lies entirely below `a` while the second lies entirely above `b`,
+so the disjoint-shell laws apply.  The Fourier duals of those laws are supplied here; the physical
+ones were already in the corpus.
+
+The expansion is now carried out in Lean, and it gives
+
+```text
+Z  in  I_a,                                                                (53)
+```
+
+the coupling lies in the concrete relative ideal — a strengthening of its Hilbert--Schmidt
+property.  Note carefully what this is not: `Z in I_a` does **not** give `Z = 0`.  The whole
+remaining gap between the two is the gap that has been open since the sharpness question was first
+isolated.
+
 ### Proof
 
 Induction on the chain length from the three-point law, with the chamber hypothesis inherited
@@ -841,6 +877,13 @@ provisional pending expert/literature review.
 | `(49)` bound | `norm_evenSoninApertureSuccessiveLayerTransition_apply_le_outerCompression` |
 | `(50)` layer window normal form | `evenSoninApertureLayer_eq_window_sub_correction` |
 | `(50)` modulo the ideal | `evenSoninApertureLayer_principalRelativeEq_window` |
+| `(51)` layer is a shell | `evenSoninApertureLayer_principalRelativeEq_twoPolarizationShell` |
+| projection is its complement | `evenCentralSoninProjection_principalRelativeEq_formalComplement` |
+| `(52)` shell product form | `evenSoninApertureSuccessiveLayerTransition_principalRelativeEq_shellProduct` |
+| Fourier disjoint shells | `evenFourierShell_mul_eq_zero_of_left_ceiling_le_right_floor` |
+| like-polarization vanishing | `indicatorShell_forward_vanishing`, `fourierShell_inverse_vanishing` |
+| shell product in the ideal | `evenTwoPolarizationShell_mul_evenDilationSum_mul_shell_mem_ideal` |
+| `(53)` coupling in the ideal | `evenSoninApertureSuccessiveLayerTransition_mem_principalRelativeIdeal` |
 
 Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninPrincipalRelativeCyclicExtension.lean`,
@@ -864,7 +907,10 @@ Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninSecondBranchTimeBand.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninLayerDeepCarrierBound.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninCouplingOuterCompression.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninLayerWindowNormalForm.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninLayerWindowNormalForm.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLayerShellCongruence.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCouplingShellProduct.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellProductIdeal.lean`.
 All declarations depend only on `propext`, `Classical.choice`, `Quot.sound`.
 
 Novelty split for Theorem G: `(7)` was already in the corpus
@@ -875,6 +921,17 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-07-31 — eight-term expansion completed: the four like-polarization terms vanish exactly by
+  chamber disjointness, the four mixed ones are time-band blocks, so the shell product and hence the
+  coupling lie in the relative ideal.  This is a strengthening of Hilbert--Schmidt, not a proof that
+  the coupling vanishes; the gap between ideal membership and zero is what remains open.
+- 2026-07-31 — shell product form of the coupling proved in Lean, closing the gap between the
+  card's hand computation and the corpus, and the Fourier duals of the disjoint-shell vanishing laws
+  added.  What remains of this line is the eight-term expansion itself.
+- 2026-07-31 — layer-shell congruence: the aperture layer is the two-polarization shell modulo the
+  ideal, the layer analogue of Theorem E for the defect.  The coupling therefore reduces modulo the
+  ideal to a product of two explicit shells around a dilation, whose terms are annulus-disjoint in
+  the chamber — so the coupling lies in the relative ideal.  Still short of Z = 0.
 - 2026-07-31 — layer window normal form: the aperture layer is the outer window in both
   polarizations restricted to the inner carrier, modulo Schatten-1.  This trades the layer's
   orthogonality definition for explicit cutoffs, which is the form support and band computations
