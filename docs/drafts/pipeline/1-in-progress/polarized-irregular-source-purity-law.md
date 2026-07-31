@@ -504,3 +504,137 @@ cannot be fitted after inspecting zeros.
   raw squared norm.  Both modules pass direct Lean checking; the generic module also passes its
   targeted module build.  This closes finite-stage Step 1 only.  Cofinal polarization and
   source-defined Xi conormal landing remain open.
+
+## 2026-07-30 hostile correction: orbit polarization does not imply factor purity
+
+The argument from `(16)` to `(17)` needs a source-calibrated metric identification.  Abstract
+polarizability of the whole reflected orbit is insufficient.
+
+Indeed, let \(G_x\ne0\) be an arbitrary scalar, including
+\[
+ G_x=\exp(2t/a_x)
+\]
+with \(\operatorname{Re}t\ne0\).  Give two complex lines \(L_x^+\) and \(L_x^-\) the norms
+\[
+ \|z\|_+=|z|,
+ \qquad
+ \|w\|_- = |G_x|^{-1}|w|.
+\]
+Then
+\[
+ R_x:L_x^+\longrightarrow L_x^-,
+ \qquad
+ R_xz=G_xz
+\]
+is unitary, and its inverse is unitary as well.  Thus every real essential growth rate can be
+absorbed by the metric of the reflected line.  A polarized two-fibre orbit need not satisfy
+\(-\phi=\bar\phi\) on either individual factor.  Wild polarization pairs factors; it does not
+force a factor to be fixed by duality-conjugation.
+
+This is the irregular analogue of the earlier support-intersection and source-square errors.
+Declaring the \(\rho\) and \(1-\bar\rho\) fibres to be a polarized pair allows every off-line
+quartet.  The critical-line deduction is valid only if the two fibre metrics are restrictions of
+one metric fixed by the ordinary-integer source before \(\rho\) is known, with no
+\(\rho\)-dependent exponential recalibration.
+
+The RH-bearing identity must therefore be literal.  Let \(R_x^{\rm Pois}\) be the finite-aperture
+Poisson/co-Poisson reflection on the source metric, and let \(v_{\rho,x}\) be the landed top Xi
+conormal jet.  The required comparison has the form
+\[
+ \frac{\|R_x^{\rm Pois}v_{\rho,x}\|_{\rm src}^2}
+      {\|v_{\rho,x}\|_{\rm src}^2}
+ =
+ \exp\!\left(\frac{4(\operatorname{Re}\rho-\tfrac12)}{a_x}\right)
+ M_{\rho,x},
+ \tag{19}
+\]
+where:
+
+1. \(R_x^{\rm Pois}\) is source-isometric before divisor specialization;
+2. \(v_{\rho,x}\) is obtained by strict Xi Cartier base change, not chosen after reading \(\rho\);
+3. \(v_{\rho,x}\) and its top multiplicity coordinate remain nonzero cofinally; and
+4. \(M_{\rho,x}\) and \(M_{\rho,x}^{-1}\) have fixed finite Rees order.
+
+If `(19)` holds, its left side is one.  Taking real logarithms, multiplying by \(a_x\), and using
+\(a_x\log |M_{\rho,x}|\to0\) gives
+\[
+ 4(\operatorname{Re}\rho-\tfrac12)=0.
+\]
+This proves the critical-line conclusion without assuming individual self-polarization.
+
+`[REVISED OPEN CORE: XI_POISSON_WOLD_STOKES_METRIC_IDENTITY]`
+
+Construct \(R_x^{\rm Pois}\), the occupation norm/determinant torsor, and the Xi conormal landing
+inside one finite-aperture source diagram, then prove `(19)` with a bi-finite-Rees remainder
+uniformly on each fixed multiplicity packet.  The finite-prime polarized irregular triples prove
+the right-hand anomaly factor.  Poisson unitarity proves the prospective left-hand value on the
+ambient additive carrier.  What is not proved is that both are restrictions of the same
+source-defined map on the same nonzero conormal jet.
+
+This correction changes the status of the former conjecture:
+
+- abstract wild polarization is a container, not an RH provider;
+- essential singularity is required and already present through \(\exp(2t/a_x)\);
+- the missing theorem is anomaly matching between additive Poisson unitarity and the
+  multiplicative Wold--Gamma Stokes metric;
+- generalized-prime countermodels are not excluded until the literal ordinary-integer source
+  diagram and strict conormal landing are constructed.
+
+No Lean theorem is warranted for `(19)` until the actual analytic source maps exist.  Formalizing
+the scalar implication from an assumed metric identity would only repackage the open theorem.
+
+## 2026-07-30 strengthening: essentiality is not the remaining criterion
+
+The arbitrary-dimensional flat-radical theorem proves only that off-line sewing cannot have fixed
+finite Rees order.  The standard Weyl channel and the exact Gamma gauge show that essentially
+singular sewing exists.  Therefore the dichotomy
+
+```text
+finite Rees versus essential
+```
+
+does not select the critical line.
+
+`source-linear-essential-superselection-no-sewing.md` supplies the sharper invariant.  The
+ordinary-prime product-Poisson representations at \(s\) and
+\(\tau(s)=1-\overline s\) are disjoint off the critical line.  Consequently every closed densely
+defined operator which is linear over the same ordinary-prime cylinder algebra is zero, regardless
+of its Rees or essential growth.  The polar partial isometry would otherwise be a forbidden
+bounded intertwiner between disjoint representations.
+
+Thus `(19)` is one sufficient scalar shadow, but no longer the minimal open core.  The structural
+target is:
+
+`[REVISED OPEN CORE: XI_CLOSED_SOURCE_MODULE_GRAPH_LANDING]`
+
+Construct the Euler--Gamma/co-Poisson producer--reporter **round trip** before zero specialization
+and prove that every Xi principal conormal lands in a nonzero closed graph which is linear over the
+fixed ordinary-prime cylinder algebra.  The individual Fourier leg need not be multiplication
+linear; the completed round trip must be.  Off-line essential Weyl transport escapes precisely by
+twisting that algebra action, while a nonclosable relation escapes by having no polar operator.
+
+This replaces finite-Rees moderation by source-linear closedness.  It uses no positivity and
+allows arbitrary essential norm growth.
+
+## 2026-07-30 correction: closed relations do not supply the singular escape
+
+The preceding final sentence remains too permissive if “relation” means a closed
+\(C(\mathbb T^{\mathbb P})\)-submodule of the reflected direct-sum sectors.  Such a relation is
+automatically reducing.  Disjointness makes its projection block diagonal, so it splits into
+uncoupled source and target parts.  The theorem is recorded in
+`../2-fully-proven/not_new_scientific_knowledge/source-linear-essential-superselection-no-sewing.md`.
+
+Thus the source escape is narrower:
+
+```text
+closed boundary operator: impossible off line;
+closed boundary relation: split, hence no sewing;
+essential source class: must remain relative to the Wold--Gamma/BV ideal,
+                        or lose closed spatial descent at the boundary.
+```
+
+Meyer's nuclear quotient does not already carry the required prime-cylinder
+\(C^*\)-representation.  Supplying one while preserving every generalized zero jet is the
+RH-bearing tempered/Hodge landing, not a consequence of strict nuclearity.  The viable open core
+is therefore an anomaly-ideal relative transgression whose boundary descent is derived rather
+than assumed.

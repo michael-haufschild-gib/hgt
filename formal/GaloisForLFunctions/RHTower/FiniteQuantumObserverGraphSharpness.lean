@@ -180,9 +180,11 @@ theorem exists_uniformPureObserver_avoiding_return_until
         (((k.1 + 1 : ℕ) : ℝ)) energy)‖ - (1 - η))]
 
 /--
-For every visible phase rank `r`, a complete `r + 1` sector observer realizes
-that rank and has deterministic spectra attaining the Haar-avoidance exponent
-`r`.  Thus no universal theorem depending only on visible rank can replace
+For every graph phase capacity `r`, a complete `r + 1` sector observer
+realizes that graph-coboundary rank and has deterministic spectra attaining
+the Haar-avoidance exponent `r`.  The conclusion does not assert rational
+independence or arithmetic projective rank of the returned energy packet.
+Thus no universal theorem depending only on graph phase capacity can replace
 the graph-recurrence exponent by a smaller one.
 -/
 theorem exists_rankSharp_uniformPureObserver_avoiding_return_until

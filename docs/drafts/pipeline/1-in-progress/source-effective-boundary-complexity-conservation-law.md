@@ -848,3 +848,56 @@ The exact Poisson-state/Kadison/Stokes identity and the sharpened producer are r
 - 2026-07-30 — Retracted the finite-order-bilateral-record implication.  Replaced it by the exact
   multiplicative-domain criterion `(C1)`--`(C3)`: off-line conormals are smooth positive mixed
   Poisson states, while critical-line conormals are precisely the pure characters.
+
+## Correction: source duality need not be finite-Rees, but its round trip must be source-linear
+
+Clause 5 of the frozen conjecture is too strong if “order zero” is read as finite Rees order.
+The actual Wold--Gamma reflection gauge is essentially singular away from the critical line, and
+the full-norm flat-radical theorem proves that no finite-Rees operator can cross the reflected
+sector fracture.  Essentiality is therefore required, not forbidden.
+
+Essentiality alone is also insufficient: standard Weyl transport crosses the fracture by
+retuning the source modular action.  The invariant which survives both corrections is the module
+action of the fixed ordinary-prime cylinder algebra.
+
+The theorem in
+`../2-fully-proven/not_new_scientific_knowledge/source-linear-essential-superselection-no-sewing.md`
+proves that reflected off-line product-Poisson representations are disjoint and hence admit no
+nonzero closed densely defined source-linear intertwiner, regardless of essential norm growth.
+The polar partial isometry would be a bounded intertwiner and must vanish.
+
+Accordingly, replace “source self-duality is order zero” by:
+
+> The producer--reporter round trip of source self-duality is a nonzero closed graph linear over
+> the fixed source cylinder algebra on every effective principal conormal.
+
+Individual Fourier and Mellin legs may exchange polarizations and may have essential growth.  The
+completed round trip may not retune the source algebra, depend on the selected zero, or become
+nonclosable.  Together with strict Xi conormal landing, this revised clause forces the critical
+line without positivity, finite-order distributionality, or a finite-Rees estimate.
+
+- 2026-07-30 — Replaced order-zero/finite-Rees source duality by closed source-module graph
+  conservation.  This removes both false extremes: finite-Rees sewing is impossible for the
+  actual Wold fracture, while arbitrary essential Weyl sewing is external modular retuning.
+
+## Correction: the closed boundary graph is a consumer, not a source construction
+
+The reflected-sector theorem extends from graphs to all closed module relations: disjoint
+\(C(\mathbb T^{\mathbb P})\)-representations admit only block-split invariant closed subspaces.
+Hence multivalued closedness does not rescue off-line sewing.
+
+However, Meyer's \(M_\zeta\) is a nuclear Fréchet dilation quotient, not a Hilbert
+\(*\)-representation of the prime-cylinder \(C^*\)-algebra.  Its strong dual intentionally
+retains nonunitary generalized characters.  Constructing the \(C^*\)-module or
+prime-Schwartz-tempered landing needed by the graph theorem is already RH-equivalent.  The
+displayed graph clause must therefore be read only as the final consumer of a prior relative
+Euler--Gamma/co-Poisson transgression, not as the next independently available construction.
+
+The remaining source problem is to construct that relative class over
+\[
+0\longrightarrow J_\Gamma\longrightarrow T_\Gamma
+\longrightarrow C(\mathbb T^{\mathbb P})\longrightarrow0
+\]
+and prove that its Xi conormal survives boundary descent.  Essential singularity is the
+nontrivial \(J_\Gamma\)-transgression/non-spatial descent, not unrestricted boundary-operator
+growth.

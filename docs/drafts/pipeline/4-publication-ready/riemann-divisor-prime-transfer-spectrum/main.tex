@@ -15,26 +15,28 @@
 \newtheorem{proposition}[theorem]{Proposition}
 \newtheorem{lemma}[theorem]{Lemma}
 \newtheorem{corollary}[theorem]{Corollary}
-\newtheorem*{maintheorem}{Divisor--transfer localization theorem}
+\newtheorem*{maintheorem}{Prime-valuation realization theorem}
 \theoremstyle{definition}
 \newtheorem{definition}[theorem]{Definition}
 \theoremstyle{remark}
 \newtheorem{remark}[theorem]{Remark}
 
 \newcommand{\C}{\mathbb C}
+\newcommand{\R}{\mathbb R}
 \newcommand{\N}{\mathbb N}
-\newcommand{\cA}{\mathcal A}
-\newcommand{\cD}{\mathcal D}
-\newcommand{\cE}{\mathcal E}
+\newcommand{\cF}{\mathcal F}
 \newcommand{\cH}{\mathcal H}
-\newcommand{\cK}{\mathcal K}
-\newcommand{\cU}{\mathcal U}
+\newcommand{\cP}{\mathcal P}
+\newcommand{\cD}{\mathcal D}
+\newcommand{\cR}{\mathcal R}
+\newcommand{\cZ}{\mathcal Z}
 \newcommand{\ord}{\operatorname{ord}}
-\newcommand{\Res}{\operatorname{Res}}
-\newcommand{\trdeg}{\operatorname{trdeg}}
+\newcommand{\supp}{\operatorname{supp}}
+\newcommand{\Span}{\operatorname{span}}
+\newcommand{\Thetaas}{\mathop{\Theta}}
 
-\title{Prime-Atom Tomography and an Information-Localization Law\\
-for the Riemann Divisor}
+\title{A Universal Asymptotic-Type Superselection Law\\
+\large Prime-Valuation Reflection and the Riemann Boundary}
 \author{Michael Haufschild}
 \date{}
 
@@ -43,1014 +45,1721 @@ for the Riemann Divisor}
 \maketitle
 
 \begin{abstract}
-We construct a positive arithmetic resolution of the Riemann divisor and determine where
-spectral location is stored inside it.  Let
+Let \(a_N\to0\).  An all-orders-flat germ \(x_N=o(a_N^m)\) for every \(m\)
+cannot be sewn to a nonzero finite-grade germ \(y_N=\Theta(a_N^d)\) by any bounded
+operator family of fixed finite Rees order, in any dimension.  More sharply, every exact
+sewing \(R_Nx_N=y_N\) satisfies
 \[
- H_n(s)=\zeta((n+1)s)^{-1}-\zeta(ns)^{-1},
- \qquad S_n(s)=\zeta(s)H_n(s).
+ a_N^{-K}=o(\|R_N\|)\qquad\text{for every }K.
 \]
-The Dirichlet coefficients of \(S_n\) are the indicators of integers whose largest prime
-exponent is \(n\).  Thus the \(S_n\) have nonnegative, pairwise disjoint coefficient supports
-which fuse exactly to the zeta stream away from \(1\).  For \(n\geq12\), \(H_n\) is
-holomorphic and zero-free on \(\Re s>1/2\), so every \(S_n\) carries the complete zeta zero
-divisor there, with multiplicity.  Nevertheless the entire family \((H_n)_{n\geq2}\) is
-jointly differentially algebraically independent over
-\(\C(s)\langle\zeta\rangle\).
+This asymptotic-type superselection law is independent of arithmetic, rank, and choice of
+normed spaces.
 
-The missing spectral coordinate occurs at the opposite, cofinal end of the resolution.
-For every fixed \(s\) with \(\Re s>0\),
+The prime-valuation Euler source gives a canonical arithmetic realization in which reflection
+about the Riemann critical line creates the two required types before any zero is selected.  Let
 \[
- 2^{ns}H_n(s)\longrightarrow1-2^{-s},
+ \mu_{p,\varepsilon}(k)=
+ (1-p^{-1+2\varepsilon})p^{-k(1-2\varepsilon)}
+ \qquad(k\geq0)
 \]
-and, after exact removal of this leading layer,
+be the geometric prime-valuation law, and let \(\mathcal R_N(c)\) be the Hellinger affinity
+between the reflected product states
+\(\bigotimes_{p\leq N}\mu_{p,c/\log N}\) and
+\(\bigotimes_{p\leq N}\mu_{p,-c/\log N}\).  We prove
 \[
- 3^{ns}\!\left[H_n(s)-2^{-ns}(1-2^{-s})\right]
- \longrightarrow1-3^{-s}.
+ \mathcal R_N(c)^2\longrightarrow e^{-\Phi(c)},\qquad
+ \Phi(c)=4\int_0^1\frac{\sinh^2(cu)}u\,du .
 \]
-The half-density-normalized adjacent transfers therefore converge to
-\(2^{1/2-s}\) and \(3^{1/2-s}\).  Their ordered pair is injective on \(\C\): its common
-radial slope determines \(\Re s\), while the incommensurable prime phases determine
-\(\Im s\).  This tomography rank is minimal, and two arbitrary atom scales work exactly when
-their logarithms are incommensurable.  At a zero \(\rho\) of the completed zeta function of
-multiplicity \(d_\rho\),
-the same horizontal coordinate appears locally as
+The local squared factor is exactly
 \[
- \Re\Res_{s=\rho}\!
- \left[-(s-\tfrac12)\frac{\Xi'(s)}{\Xi(s)}\right]
- =
- d_\rho\,\frac{\log|q^{1/2-\rho}|}{\log q}
- =
- d_\rho(\tfrac12-\Re\rho)
- \qquad(q>1).
+ 1-\frac{4p^{-1}\sinh^2(c\log p/\log N)}{(1-p^{-1})^2}.
 \]
-This identifies the local divisor current and the cofinal prime-transfer entropy as two
-base-independent charts of one signed modular charge.  A two-clock theorem then proves
-exactly why co-moving scalarization loses this charge although the independent clock
-quadrant detects it.  The resulting localization law is unconditional: common-divisor
-replication, finite differential structure, and spectral position occupy three distinct
-levels of the same positive arithmetic object.
+The same \(\Phi\) is the limit of the symmetric prime-log Poisson/Wick cumulant
+\[
+ K_N(2c/\log N)=
+ \sum_{p\leq N}\frac{2\{\cosh(2c\log p/\log N)-1\}}p ,
+\]
+and in fact \(\mathcal R_N(c)^2e^{K_N(2c/\log N)}\to1\).  Thus one nonlinear
+profile is simultaneously the Hellinger action of reflected valuation states and the
+L\'evy--Wick cumulant of their prime clock.
+
+The critical window has asymmetric outer faces.  Comparing a fixed displaced state with the
+critical state gives the exact Euler-partition curvature
+\[
+ A_N(c)^2=\frac{Z_N(1-c)^2}{Z_N(1)Z_N(1-2c)},\qquad
+ Z_N(\beta)=\prod_{p\leq N}(1-p^{-\beta})^{-1}.
+\]
+With \(a_N=Z_N(1)^{-1}\), one face has
+\(A_N(c)^2/a_N\to\zeta(1-c)^2/\zeta(1-2c)\), whereas its reflection is flat
+beyond every power of \(a_N\).  These are not two finite grades: they are different asymptotic
+species.  Kakutani singularity collapses them; their Rees type recovers the lost orientation.
+
+The profile \(\Phi\) is even, so its scalar action cannot itself carry side.  We prove the
+complementary signed law: a rank-two pointed Fisher connection is odd under tangent reversal,
+and its canonical cutoff Ward trace equals its pairing with the double-cutoff curvature.  This
+identifies an exact pre-divisor carrier of orientation rather than squaring it away.
+
+The abstract theorem now applies: no finite-Rees-moderate operator can sew an off-line reflected
+pair, and every exact sewing has an essential scale singularity.  Standard Weyl reflection
+escapes only by modular retuning; divisor differentiation escapes only through a singular graded
+correspondence.  For the completed zeta current, finite-aperture transport is already four-unit
+nonexpansive, while the RH-complete condition is exactly the corresponding zero-aperture
+Ward-tangent bound.  These unconditional results do not prove the Riemann hypothesis.  They
+identify a previously missing pre-divisor invariant and reduce the viable source-internal route
+to transport of this valuation type through a singular boundary tangent.
 \end{abstract}
 
 \medskip
 \noindent\textbf{2020 Mathematics Subject Classification.}
-Primary 11M26, 11J91; Secondary 12H05, 11M41, 11A51.
+Primary 11M26, 60E15; Secondary 11M41, 46B99, 12H05.
 
 \noindent\textbf{Keywords.}
-Riemann zeta function; Riemann divisor; hypertranscendence; Dirichlet series;
-prime-atom asymptotics; modular transfer; spectral tomography.
+Riemann zeta function; prime valuations; Hellinger affinity; Kakutani dichotomy;
+Rees filtration; Weyl intertwiner; modular drift; singular transport; hypertranscendence.
 
-\section{Introduction}
+\section{Introduction}\label{sec:introduction}
 
-The zeros of the Riemann zeta function are global cancellation data.  Two recurrent
-difficulties in attempts to localize those data are that a common divisor need not identify
-its arithmetic source, and reflection symmetry does not retain the side of the critical line.
-This paper exhibits one object in which both losses can be seen and separated exactly.
-
-For \(m\geq1\), let \(a_m(k)\) be the indicator that the largest exponent in the prime
-factorization of \(k\) is \(m\), and set
-\[
- S_m(s)=\sum_{k\geq1}a_m(k)k^{-s},\qquad
- H_m(s)=\frac1{\zeta((m+1)s)}-\frac1{\zeta(ms)}.
- \tag{1.1}\label{eq:intro-shell}
-\]
-The elementary factorization \(S_m=\zeta H_m\) is only the entry point.  The family has
-three sharply different information layers:
-\[
-\boxed{
-\begin{array}{c}
-\text{the divisor is replicated longitudinally through all high shells},\\[2mm]
-\text{the transverse factors have maximal finite differential rank},\\[2mm]
-\text{the spectral coordinate is recovered from ordered cofinal prime atoms}.
-\end{array}}
-\tag{1.2}\label{eq:three-layers}
-\]
-Neither divisor replication nor finite differential algebra can replace the last layer.
-
-The new feature is visible only after the shell depth tends to infinity.  The first
-M\"obius atom of \(1/\zeta(ns)\) is \(2^{-ns}\).  It gives the adjacent transfer
-\(2^{-s}\), or \(2^{1/2-s}\) after half-density normalization.  Removing that atom exactly
-reveals a second transfer \(3^{1/2-s}\).  One transfer has periodic phase and therefore
-aliases height.  The pair does not: \(\log 2\) and \(\log 3\) are incommensurable.
-Consequently the first two cofinal layers of the same positive isodivisorial frame recover the
-entire complex point.
-
-The radial part has a second, local description.  For the completed function
-\[
- \Xi(s)=\frac12s(s-1)\pi^{-s/2}\Gamma(s/2)\zeta(s),
- \qquad \Xi(1-s)=\Xi(s),
- \tag{1.3}\label{eq:xi}
-\]
-consider the reflection-balanced divisor current
-\[
- J_\Xi(s)=-(s-\tfrac12)\frac{\Xi'(s)}{\Xi(s)}.
- \tag{1.4}\label{eq:current}
-\]
-At a zero \(\rho\), its residue retains the full centered affine displacement.  Its real part
-is exactly the logarithmic radial slope of every transfer character \(q^{1/2-s}\), after
-normalization by \(\log q\).  This is not a criterion obtained by attaching a decorative
-function to the zeros: both charts arise from the same dilation-depth geometry, one at a local
-divisor point and the other at the cofinal end of an explicit positive arithmetic resolution.
-
-The following theorem collects the result.  A family is \emph{jointly differentially
-algebraically independent} over a differential field \(K\) if all derivatives of all its
-members are algebraically independent over \(K\).
-
-\begin{maintheorem}\label{thm:main}
-The exponent-shell resolution \((S_m,H_m)\) has the following properties.
-\begin{enumerate}[label=\textup{(\roman*)}]
-\item The coefficients of the \(S_m\) lie in \(\{0,1\}\), distinct shells have disjoint
-supports, and
-\[
- \sum_{m\geq1}a_m(k)=1-\mathbf1_{\{1\}}(k)
-\]
-coefficientwise.
-\item For \(m\geq12\), \(H_m\) is holomorphic and zero-free on \(\Re s>1/2\).
-Hence \(S_m^\#=\zeta H_m\) and \(\zeta\) have the same zero divisor there, with
-multiplicity, away from \(s=1\).
-\item The larger transverse family \((H_m)_{m\geq2}\) is jointly differentially
-algebraically independent over \(\C(s)\langle\zeta\rangle\).
-\item For every \(s\) with \(\Re s>0\),
-\begin{align}
- 2^{ms}H_m(s)&\longrightarrow1-2^{-s},\label{eq:first-atom-main}\\
- 3^{ms}R_m(s)&\longrightarrow1-3^{-s},\label{eq:second-atom-main}
-\end{align}
-where
-\[
- R_m(s)=H_m(s)-2^{-ms}(1-2^{-s}).
-\]
-Consequently, wherever the ratios are defined,
-\[
- \sqrt2\,\frac{H_{m+1}(s)}{H_m(s)}\longrightarrow2^{1/2-s},
- \qquad
- \sqrt3\,\frac{R_{m+1}(s)}{R_m(s)}\longrightarrow3^{1/2-s}.
- \tag{1.5}\label{eq:transfer-main}
-\]
-The first normalization can equivalently be made from the actual positive source masses
-\(h_m=H_m(1)\):
-\[
- \sqrt{\frac{h_m}{h_{m+1}}}\,
- \frac{H_{m+1}(s)}{H_m(s)}
- \longrightarrow2^{1/2-s}.
- \tag{1.6}\label{eq:source-normalized}
-\]
-\item The two-prime transfer spectrum
-\[
- \cU(s)=\bigl(2^{1/2-s},3^{1/2-s}\bigr)
- \tag{1.7}\label{eq:spectrum}
-\]
-is injective on \(\C\).  More generally, no single \(q^{c/2-s}\) is injective, while
-the pair \((q^{c/2-s},r^{c/2-s})\) is injective if and only if
-\(\log r/\log q\) is irrational.  Thus unrestricted modular tomography has exact minimal
-rank two.  For every \(q>1\), its normalized radial entropy
-\[
- \mathfrak e_q(s)=\frac{\log|q^{1/2-s}|}{\log q}
- \tag{1.8}\label{eq:entropy}
-\]
-is independent of \(q\), equals \(1/2-\Re s\), and changes sign under
-\(s\mapsto1-\bar s\).
-\item If \(\rho\) is a zero of \(\Xi\) of multiplicity \(d_\rho\), then
-\[
- \Re\Res_{s=\rho}J_\Xi(s)
- =d_\rho\mathfrak e_q(\rho)
- =d_\rho(\tfrac12-\Re\rho)
- \qquad(q>1).
- \tag{1.9}\label{eq:transgression-main}
-\]
-For \(d_\rho\ne0\), this charge vanishes exactly when \(\Re\rho=1/2\).
-\end{enumerate}
-\end{maintheorem}
-
-Parts (iv)--(vi) form the \emph{prime-atom tomography and local--cofinal transgression
-law}.  Sections 5 and 9 establish its two observer boundaries: unit scalar label erasure is
-nonclosable, and identifying the two clocks before testing boundedness removes precisely the
-signed transverse rate.  Together these statements answer a structural RH question.  Spectral
-location is not absent from the positive isodivisorial resolution; it is encoded in labeled,
-ordered, cofinal transitions.  Divisor-only, finite differential, reflection-even, and
-co-moving scalar observers each forget a specified part of that encoding.
-
-The theorem does not prove zero exclusion.  It gives a more restrictive target for a new RH
-argument: an arithmetic estimate must control the independent transfer directions before
-reflection pairing or characteristic scalarization.  A diagonal finite profile cannot supply
-such control, because Theorem \ref{thm:two-clock} holds on and off the critical line.
-
-Equality of zero divisors under modified Euler factors is classical
-\cite{GrosswaldSchnitzer1978}.  Differential transcendence of Dirichlet series begins with
-Ostrowski \cite{Ostrowski1920}; system and Jacobian methods appear in
-\cite{Postnikov1949,ShapiroSparer1986,Pong2016}, and broad \(L\)-function
-hypertranscendence in \cite{Nagoshi2016}.  None of those facts alone is claimed as new.
-The contribution is their conjunction with a positive coefficient-disjoint divisor resolution,
-successive prime-atom transfer recovery, exact minimal-rank-two modular tomography, and the
-local--cofinal charge identity.
-
-The location information here is also different from the global zero statistics in Li's
-criterion and its multiset extension \cite{Li1997,BombieriLagarias1999}, and from the
-large-order exponential signatures studied by Voros \cite{Voros2014}: our order parameter is
-shell depth, and the readout comes from successive M\"obius atoms of one positive divisor
-frame.  Functional-equation-preserving perturbations show that symmetry alone does not control
-off-line zeros \cite{GauthierXarles2009}.  Scaling and spectral language also occurs in the
-operator-theoretic program of Connes and Consani \cite{ConnesConsani2021}; no identification
-with that program is asserted here.  Our operator statement is only the explicit codiagonal
-boundary in Proposition \ref{prop:nonclosable}.
-
-\section{Positive exponent shells}
-
-For \(k\geq2\), write
-\[
- M(k)=\max_{p\mid k}v_p(k),\qquad M(1)=0,
-\]
-and set \(a_m(k)=\mathbf1_{\{M(k)=m\}}\).  Let \(b_r(k)\) be the indicator that
-\(k\) is \(r\)-free, with \(b_1=\mathbf1_{\{1\}}\).  Then
-\[
- a_m=b_{m+1}-b_m.
- \tag{2.1}\label{eq:shell-diff}
-\]
-
-\begin{proposition}[Positive fusion]\label{prop:fusion}
-For \(m\ne n\), \(a_m(k)a_n(k)=0\), and
-\[
- \sum_{m=1}^{N}a_m(k)=b_{N+1}(k)-b_1(k).
- \tag{2.2}\label{eq:finite-fusion}
-\]
-Thus \(\sum_{m\geq1}a_m(k)=1-\mathbf1_{\{1\}}(k)\), with only finitely many
-nonzero summands for each \(k\).
-\end{proposition}
-
-\begin{proof}
-An integer \(k\geq2\) is \((m+1)\)-free but not \(m\)-free exactly when
-\(M(k)=m\).  This proves disjointness.  Equation \eqref{eq:finite-fusion} is the
-telescoping sum of \eqref{eq:shell-diff}; taking \(N\geq M(k)\) gives the last claim.
-\end{proof}
-
-The Euler product of the \(r\)-free indicator gives, on \(\Re s>1\),
-\[
- \sum_{k\geq1}\frac{b_r(k)}{k^s}
- =\prod_p(1+p^{-s}+\cdots+p^{-(r-1)s})
- =\frac{\zeta(s)}{\zeta(rs)}.
- \tag{2.3}\label{eq:rfree}
-\]
-Subtracting consecutive values of \(r\) proves
-\[
- S_m(s)=\zeta(s)H_m(s),\qquad
- H_m(s)=\zeta((m+1)s)^{-1}-\zeta(ms)^{-1}.
- \tag{2.4}\label{eq:factor}
-\]
-Moreover,
-\[
- \sum_{m\geq1}S_m(s)=\zeta(s)-1,\qquad \Re s>1,
- \tag{2.5}\label{eq:analytic-fusion}
-\]
-and the double series is absolutely summable there.
-
-\section{Exact divisor replication}
-
-The transverse factor in \eqref{eq:factor} must be controlled before the common divisor has
-content.  The following elementary estimate is sufficient.
-
-\begin{lemma}[Prime-two domination]\label{lem:prime-two-domination}
-Let \(m\geq12\), \(s=\sigma+it\), and \(\sigma>1/2\).  Write
-\[
- \zeta(ms)-\zeta((m+1)s)=A+T,
-\]
-where
-\[
- A=2^{-ms}-2^{-(m+1)s},\qquad
- T=\sum_{k\geq3}\bigl(k^{-ms}-k^{-(m+1)s}\bigr).
-\]
-Then
-\[
- |A|>2^{-m\sigma}\frac{29}{100},
- \qquad
- |T|<2^{-m\sigma}\frac{21}{100}.
- \tag{3.1}\label{eq:domination}
-\]
-\end{lemma}
-
-\begin{proof}
-Since \(2^{-\sigma}<2^{-1/2}<71/100\),
-\[
- |A|=2^{-m\sigma}|1-2^{-s}|
- >2^{-m\sigma}\frac{29}{100}.
-\]
-Put \(x=m\sigma>6\).  For \(k\geq3\),
-\[
- |k^{-ms}-k^{-(m+1)s}|
- \leq k^{-x}(1+k^{-\sigma})<\frac85k^{-x}.
-\]
-Also \(k^{-x}\leq2^{-x}64k^{-6}\).  Hence
-\[
- |T|
- \leq2^{-m\sigma}\frac{512}{5}\sum_{k\geq3}k^{-6}.
-\]
-The integral estimate
-\[
- \sum_{k\geq3}k^{-6}
- \leq3^{-6}+4^{-6}+\frac1{2500}
-\]
-makes the last constant smaller than \(21/100\).
-\end{proof}
-
-\begin{theorem}[Isodivisorial positive frame]\label{thm:divisor-frame}
-For \(m\geq12\), \(H_m\) is holomorphic and zero-free on \(\Re s>1/2\).
-Consequently, at every \(s\ne1\) in this half-plane,
-\[
- \ord_s(\zeta H_m)=\ord_s\zeta.
- \tag{3.2}\label{eq:order-replication}
-\]
-\end{theorem}
-
-\begin{proof}
-Both dilated zeta functions are holomorphic and nonzero because their arguments have real
-part greater than one.  Lemma \ref{lem:prime-two-domination} shows that
-\(\zeta(ms)-\zeta((m+1)s)\ne0\).  Therefore
-\[
- H_m(s)=
- \frac{\zeta(ms)-\zeta((m+1)s)}
- {\zeta(ms)\zeta((m+1)s)}
-\]
-is holomorphic and nonzero.  The order formula follows from additivity of analytic order.
-\end{proof}
-
-Thus a hypothetical zero \(\rho\) with \(\Re\rho>1/2\) is reproduced, with unchanged
-multiplicity, in every positive coefficient stream
-\[
- \{k:M(k)=12\},\{k:M(k)=13\},\ldots .
- \tag{3.3}\label{eq:disjoint-streams}
-\]
-This statement concerns meromorphic continuation; it does not assert termwise convergence of
-the positive series in the critical strip.
-
-\section{Maximal transverse differential rank}
-
-We give the algebraic argument because it rules out a large class of hidden finite
-explanations for the common divisor.
-
-Let \(\cA\) be the integral domain of arithmetic functions under Dirichlet convolution.
-For a prime \(q\), define
-\[
- (\partial_qf)(k)=v_q(kq)f(kq).
- \tag{4.1}\label{eq:prime-derivation}
-\]
-Then \(\partial_q(f*g)=(\partial_qf)*g+f*(\partial_qg)\).  Put
-\(\Omega(k)=\sum_pv_p(k)\) and \(L^jf(k)=(-\log k)^jf(k)\).
-
-\begin{theorem}[\(\Omega\)-leading-echelon criterion]\label{thm:omega}
-Let \(R\) be finite, let \(\ell:R\to\N_{>0}\) be injective, and let \(f_r\in\cA\).
-Assume that for every \(r\in R\), prime \(q\), and \(j,k\geq0\),
-\begin{align}
- \Omega(k)<\ell(r)-1
- &\Longrightarrow \partial_q(L^jf_r)(k)=0,\label{eq:below-grade}\\
- \Omega(k)=\ell(r)-1
- &\Longrightarrow \partial_q(L^jf_r)(k)
- =\ell(r)(-\ell(r)\log q)^j
- \mathbf1_{\{q^{\ell(r)-1}\}}(k).\label{eq:leading-grade}
-\end{align}
-Then every finite jet rectangle \(\{L^jf_r:r\in R,0\leq j\leq J\}\) is
-algebraically independent over \(\C\).  If the sources have a finite half-plane of absolute
-Dirichlet convergence, their Dirichlet transforms are jointly differentially algebraically
-independent over \(\C(s)\).
-\end{theorem}
-
-\begin{proof}
-Index columns by \(I=R\times\{0,\ldots,J\}\), choose distinct primes \(q_i\), and form
-the \(\cA\)-valued Jacobian
-\[
- \mathcal J_{i,(r,j)}=\partial_{q_i}(L^jf_r).
-\]
-Extract from its determinant the coefficient at
-\[
- N=\prod_{i=(r,t)\in I}q_i^{\ell(r)-1}.
-\]
-No determinant term can enter below the sum of the prescribed grades.  At the minimal grade,
-unique factorization forces every permutation to preserve each \(\ell(r)\)-block.
-Up to nonzero row and column factors, that block is
-\[
- \left[(-\ell(r)\log q_{(r,t)})^j\right]_{0\leq t,j\leq J}.
-\]
-Its determinant is the nonzero Vandermonde product
-\[
- (-\ell(r))^{J(J+1)/2}
- \prod_{0\leq t<u\leq J}
- \bigl(\log q_{(r,u)}-\log q_{(r,t)}\bigr).
-\]
-The full Jacobian is therefore nonzero.  The characteristic-zero Jacobian criterion over
-\(\operatorname{Frac}(\cA)\) proves algebraic independence.
-
-The Dirichlet transform is an injective algebra homomorphism and sends \(L^j\) to the
-\(j\)-th derivative.  To adjoin \(s\), suppose after clearing denominators that a nonzero
-relation has coefficients in \(\C[s]\).  Expanding it gives a Dirichlet series
-\[
- \sum_{k\geq1}Q_k(s)k^{-s}=0
-\]
-whose coefficient polynomials have uniformly bounded degree.  Choose the least \(k\) with
-\(Q_k\ne0\), multiply by \(k^s\), and let \(s=\sigma\to+\infty\).  Exponential separation
-dominates polynomial growth, a contradiction.  Thus no relation over \(\C(s)\) exists.
-\end{proof}
-
-\begin{theorem}[Relative hypertranscendence]\label{thm:relative}
-Let \(K_\zeta=\C(s)\langle\zeta\rangle\).  Then
-\[
- (H_m)_{m\geq2}
-\quad\text{is jointly differentially algebraically independent over }K_\zeta.
- \tag{4.4}\label{eq:relative}
-\]
-For distinct \(m_1,\ldots,m_r\geq2\) and \(J_i\geq0\),
-\[
- \trdeg_{K_\zeta}
- K_\zeta\bigl(H_{m_i}^{(j)}:1\leq i\leq r,\ 0\leq j\leq J_i\bigr)
- =\sum_{i=1}^r(J_i+1).
- \tag{4.5}\label{eq:rank}
-\]
-\end{theorem}
-
-\begin{proof}
-If \(a_m(k)\ne0\), then \(\Omega(k)\geq m\); equality holds only for a pure prime
-power \(k=p^m\).  Consequently the sources \(a_m\) satisfy
-\eqref{eq:below-grade}--\eqref{eq:leading-grade} with \(\ell(m)=m\).  The constant zeta
-source satisfies the same criterion at level one.  Theorem \ref{thm:omega} therefore makes
-\(\{\zeta\}\cup\{S_m:m\geq2\}\) jointly differentially algebraically independent over
-\(\C(s)\).
-
-Adjoining all derivatives of \(\zeta\) to the base preserves independence of the \(S_m\).
-Multiplication by the nonzero element \(\zeta^{-1}\) is an invertible triangular change of
-jet coordinates over \(K_\zeta\).  Since \(H_m=\zeta^{-1}S_m\), this proves
-\eqref{eq:relative}; \eqref{eq:rank} is its finite transcendence-degree form.
-\end{proof}
-
-Theorem \ref{thm:relative} is stronger than separate hypertranscendence.  Even after the entire
-differential data of the common divisor carrier have been placed in the coefficient field,
-every new shell jet contributes one new algebraically independent coordinate.
-
-\section{The Hilbert scalar-assembly boundary}
-
-Disjoint coefficients make the shell label a genuine orthogonal coordinate.  Let
-\(c_{00}(\N)\) be the finitely supported real sequences, let
-\(j:c_{00}(\N)\to\ell^2(\N)\) be the coordinate inclusion, and define the unit
-codiagonal
-\[
- \Sigma x=\sum_{m\geq0}x(m).
- \tag{5.1}\label{eq:codiagonal}
-\]
-
-\begin{proposition}[Nonclosable label erasure]\label{prop:nonclosable}
-There is no closable operator on \(\ell^2(\N)\) whose restriction along \(j\) is
-\(\Sigma\).
-\end{proposition}
-
-\begin{proof}
-Set
-\[
- x_N=\frac1{N+1}\sum_{m=0}^{N}e_m.
-\]
-Then
-\[
- \|j(x_N)\|_2^2=\frac1{N+1}\longrightarrow0,
- \qquad
- \Sigma x_N=1.
-\]
-This is a graph-null sequence with nonzero image, which contradicts closability.
-\end{proof}
-
-The proposition is deliberately narrow.  It is not a no-go theorem for Hilbert--P\'olya,
-trace formulae, or weighted operator constructions.  It identifies the exact failed
-operation: unit-weight scalar erasure of infinitely many orthogonal shell labels.  Any viable
-operator assembly must retain the label, change the topology, or introduce a controlled
-weight.
-
-\section{Successive cofinal prime atoms}
-
-We now locate the information which the divisor and finite differential structure do not
-contain.  On \(\Re w>1\),
-\[
- F(w):=\frac1{\zeta(w)}=\sum_{k\geq1}\frac{\mu(k)}{k^w}.
- \tag{6.1}\label{eq:moebius}
-\]
-
-\begin{lemma}[Two effective atom extractions]\label{lem:atom-bounds}
-If \(\sigma=\Re w>1\), then
-\begin{align}
- \left|2^w(F(w)-1)+1\right|
- &\leq\frac{2}{\sigma-1},\label{eq:two-tail}\\
- \left|3^w(F(w)-1+2^{-w})+1\right|
- &\leq\frac{3}{\sigma-1}.\label{eq:three-tail}
-\end{align}
-\end{lemma}
-
-\begin{proof}
-After extracting \(1-2^{-w}\) from \eqref{eq:moebius}, the remaining absolute tail is at
-most
-\[
- \sum_{k\geq3}k^{-\sigma}
- \leq\int_2^\infty x^{-\sigma}\,dx
- =\frac{2^{1-\sigma}}{\sigma-1}.
-\]
-Multiplication by \(|2^w|=2^\sigma\) proves \eqref{eq:two-tail}.  After also extracting
-\(-3^{-w}\), the same argument beginning at \(4\) gives
-\[
- \sum_{k\geq4}k^{-\sigma}
- \leq\frac{3^{1-\sigma}}{\sigma-1},
-\]
-which proves \eqref{eq:three-tail}.
-\end{proof}
-
-\begin{theorem}[First two prime layers]\label{thm:two-layers}
-For every fixed \(s\) with \(\Re s>0\),
-\begin{align}
- 2^{ms}H_m(s)&\longrightarrow1-2^{-s},\label{eq:two-layer}\\
- 3^{ms}R_m(s)&\longrightarrow1-3^{-s},\label{eq:three-layer}
-\end{align}
-where \(R_m(s)=H_m(s)-2^{-ms}(1-2^{-s})\).
-Both limiting amplitudes are nonzero.
-\end{theorem}
-
-\begin{proof}
-Put
-\[
- B_m^{(2)}=2^{ms}\bigl(F(ms)-1\bigr).
-\]
-By \eqref{eq:two-tail}, \(B_m^{(2)}\to-1\).  Since
-\[
- 2^{ms}H_m(s)=2^{-s}B_{m+1}^{(2)}-B_m^{(2)},
-\]
-\eqref{eq:two-layer} follows.
-
-Next put
-\[
- B_m^{(3)}=3^{ms}\bigl(F(ms)-1+2^{-ms}\bigr).
-\]
-Equation \eqref{eq:three-tail} gives \(B_m^{(3)}\to-1\), while exact cancellation of the
-prime-two term gives
-\[
- 3^{ms}R_m(s)=3^{-s}B_{m+1}^{(3)}-B_m^{(3)}.
-\]
-This proves \eqref{eq:three-layer}.  Finally
-\(|p^{-s}|=p^{-\Re s}<1\), so \(1-p^{-s}\ne0\) for \(p=2,3\).
-\end{proof}
-
-\begin{corollary}[Adjacent transfer spectrum]\label{cor:adjacent}
-For \(\Re s>0\), the denominators below are nonzero for all sufficiently large \(m\), and
-\begin{align}
- \frac{H_{m+1}(s)}{H_m(s)}&\longrightarrow2^{-s},\label{eq:ratio-two}\\
- \frac{R_{m+1}(s)}{R_m(s)}&\longrightarrow3^{-s}.\label{eq:ratio-three}
-\end{align}
-Thus the half-density-normalized limits are \(2^{1/2-s}\) and \(3^{1/2-s}\).
-If \(h_m=H_m(1)\), then \(h_m>0\),
-\[
- 2^mh_m\longrightarrow\frac12,\qquad
- \frac{h_m}{h_{m+1}}\longrightarrow2,
- \tag{6.6}\label{eq:mass-ratio}
-\]
-and the source-normalized limit \eqref{eq:source-normalized} follows.
-\end{corollary}
-
-\begin{proof}
-If \(p^{ms}X_m(s)\to A(s)\ne0\), then
-\[
- \frac{X_{m+1}(s)}{X_m(s)}
- =p^{-s}\frac{p^{(m+1)s}X_{m+1}(s)}{p^{ms}X_m(s)}
- \longrightarrow p^{-s}.
-\]
-Apply this observation to Theorem \ref{thm:two-layers}.  At \(s=1\), the first limit gives
-\(2^mh_m\to1/2\).  Positivity follows from
-\(\zeta(m+1)<\zeta(m)\) for \(m>1\), hence
-\(\zeta(m+1)^{-1}>\zeta(m)^{-1}\).  The remaining claims follow by taking ratios and square
-roots.
-\end{proof}
-
-The order of operations matters.  Squaring, summing over reflection partners, or discarding
-the shell label before extracting the cofinal ratios preserves divisor location but can erase
-the orientation carried by their moduli.  The next section makes the retained information
-exact.
-
-\section{Minimal two-scale tomography and modular phases}
-
-For a scale \(q>1\) and a real source center \(c\), define
-\[
- U_{q,c}(s)=q^{c/2-s},\qquad
- \mathfrak e_{q,c}(s)=\frac{\log|U_{q,c}(s)|}{\log q}.
- \tag{7.1}\label{eq:universal-character}
-\]
-
-\begin{theorem}[Universal least-atom modular law]\label{thm:modular-law}
-For every \(q>1\),
-\[
- |U_{q,c}(s)|=q^{c/2-\Re s},
- \qquad
- \mathfrak e_{q,c}(s)=\frac c2-\Re s.
- \tag{7.2}\label{eq:modulus-entropy}
-\]
-Hence the entropy is independent of \(q\).  Moreover,
-\[
- U_{q,c}(s)\,
- \overline{U_{q,c}(c-\bar s)}=1.
- \tag{7.3}\label{eq:reflection-pair}
-\]
-The character is contractive, unitary, or expansive according as
-\(\Re s>c/2\), \(\Re s=c/2\), or \(\Re s<c/2\).
-\end{theorem}
-
-\begin{proof}
-For positive \(q\),
-\[
- q^{c/2-s}
- =e^{(c/2-\Re s)\log q}e^{-i(\Im s)\log q}.
-\]
-This proves \eqref{eq:modulus-entropy} and the phase trichotomy.  Substitution in
-\eqref{eq:reflection-pair} makes the exponents add to zero.
-\end{proof}
-
-Equation \eqref{eq:reflection-pair} is strictly weaker than pointwise unitarity.  Reflection
-pairs reciprocal moduli at every point; ordinary unitarity occurs only on the self-dual line.
-This distinction is the signed orientation which a reflection-even observer loses.
-
-\begin{theorem}[Exact two-scale tomography classification]\label{thm:tomography}
-Let \(q,r>1\) and \(c\in\mathbb R\).  The map
-\[
- \cU_{q,r,c}:\C\longrightarrow\C^2,\qquad
- \cU_{q,r,c}(s)=\bigl(U_{q,c}(s),U_{r,c}(s)\bigr)
-\]
-is injective if and only if \(\log r/\log q\) is irrational.  No single map
-\(s\mapsto U_{q,c}(s)\) is injective on \(\C\).
-\end{theorem}
-
-\begin{proof}
-First suppose that \(\log r/\log q\) is irrational and
-\(\cU_{q,r,c}(s)=\cU_{q,r,c}(t)\).  Equality of the first moduli and
-\eqref{eq:modulus-entropy} give \(\Re s=\Re t\).  Cancelling the common radial factors
-then gives
-\[
- e^{-i(\Im s)\log q}=e^{-i(\Im t)\log q},
-\qquad
- e^{-i(\Im s)\log r}=e^{-i(\Im t)\log r}.
-\]
-For \(\delta=\Im s-\Im t\), there are \(a,b\in\mathbb Z\) with
-\[
- \delta\log q=2\pi a,\qquad \delta\log r=2\pi b.
-\]
-If \(\delta\ne0\), then \(\log r/\log q=b/a\) is rational, contrary to the
-hypothesis.  Thus \(\delta=0\), and \(s=t\).
-
-Conversely, suppose \(\log r/\log q=A/B\) with nonzero integers \(A,B\).  On the
-self-dual vertical line \(s_t=c/2-it\),
-\[
- U_{q,c}(s_t)=e^{it\log q},\qquad
- U_{r,c}(s_t)=e^{it\log r}.
-\]
-The nonzero time \(T=2\pi B/\log q\) is a common period: the first phase makes
-\(B\) turns and the second makes \(A\) turns.  Hence
-\(\cU_{q,r,c}(s_T)=\cU_{q,r,c}(s_0)\) although \(s_T\ne s_0\).
-Taking only the first component gives the same conclusion for a single scale, with period
-\(2\pi/\log q\).
-\end{proof}
-
-\begin{corollary}[Prime-two/prime-three shell tomography]\label{cor:two-three}
-The actual shell transfer spectrum
-\[
- \cU(s)=\bigl(2^{1/2-s},3^{1/2-s}\bigr)
-\]
-is injective on \(\C\).
-\end{corollary}
-
-\begin{proof}
-The ratio \(\log3/\log2\) is irrational: a rational relation would imply
-\(3^A=2^B\) for nonzero positive integers \(A,B\), contrary to unique factorization.
-Apply Theorem \ref{thm:tomography} with \(q=2\), \(r=3\), and \(c=1\).
-\end{proof}
-
-One atom clock determines the horizontal coordinate but aliases height modulo
-\(2\pi/\log q\).  A second logarithmically incommensurable atom is not a redundant
-refinement: it removes the entire aliasing kernel.  Rank two is both sufficient and necessary.
-The same shell realizes this universal law with its first two successive atom extractions.
-
-\section{Local--cofinal divisor transgression}
-
-We now compare the cofinal transfer with the local geometry of a zero.  Let \(\rho\) be a zero
-of \(\Xi\) of multiplicity \(d_\rho\).  Locally,
-\[
- \Xi(s)=(s-\rho)^{d_\rho}g(s),\qquad g(\rho)\ne0.
-\]
-
-\begin{theorem}[Modular-residue transgression]\label{thm:transgression}
-The current \(J_\Xi\) from \eqref{eq:current} has residue
-\[
- \Res_{s=\rho}J_\Xi(s)=-d_\rho(\rho-\tfrac12).
- \tag{8.1}\label{eq:complex-residue}
-\]
-For every \(q>1\),
-\[
- \Re\Res_{s=\rho}J_\Xi(s)
- =d_\rho\mathfrak e_{q,1}(\rho)
- =d_\rho(\tfrac12-\Re\rho).
- \tag{8.2}\label{eq:real-transgression}
-\]
-If \(d_\rho\ne0\), these quantities vanish exactly on the critical line.
-\end{theorem}
-
-\begin{proof}
-The local factorization gives
-\[
- \frac{\Xi'(s)}{\Xi(s)}
- =\frac{d_\rho}{s-\rho}+\frac{g'(s)}{g(s)}.
-\]
-Multiplication by \(-(s-\tfrac12)\) proves \eqref{eq:complex-residue}.  Taking real parts
-and applying \eqref{eq:modulus-entropy} with \(c=1\) proves
-\eqref{eq:real-transgression}.  The final assertion follows because \(d_\rho\ne0\).
-\end{proof}
-
-Define the signed modular charge
-\[
- Q(\rho,d_\rho)=d_\rho(\tfrac12-\Re\rho).
- \tag{8.3}\label{eq:charge}
-\]
-Theorem \ref{thm:transgression} gives two exact charts:
-\[
- \boxed{
- Q(\rho,d_\rho)
- =
- \underbrace{\Re\Res_\rho J_\Xi}_{\text{local divisor chart}}
- =
- \underbrace{d_\rho\,
- \frac{\log|U_{q,1}(\rho)|}{\log q}}_{\text{cofinal transfer chart}}.}
- \tag{8.4}\label{eq:two-charts}
-\]
-The right-hand side does not depend on which atom base reports it.  For the actual shell, the
-first two reports are \(q=2\) and \(q=3\), and their phases jointly recover \(\rho\), not merely
-its horizontal charge.
-
-The functional equation pairs \(\rho\) with \(1-\bar\rho\).  Their entropies are opposite:
-\[
- \mathfrak e_{q,1}(1-\bar\rho)=-\mathfrak e_{q,1}(\rho).
- \tag{8.5}\label{eq:odd-charge}
-\]
-Thus every reflection-even aggregation cancels the signed charge of an off-line pair.  It may
-retain a nonnegative defect count or a squared displacement, but it cannot recover which member
-lies on which side.  This explains, at the level of an exact invariant, why divisor location
-survives reflection while orientation does not.
-
-\section{The two-clock observer theorem}
-
-The local rate associated with \(\rho\) is
-\[
- \nu_\rho=2\Re\rho-1=-2\mathfrak e_{q,1}(\rho).
- \tag{9.1}\label{eq:rate-charge}
-\]
-The same rate occurs with opposite signs in source evolution and shell depth.  This produces a
-traveling wave rather than a line-selecting scalar.
-
-\begin{theorem}[Characteristic conservation]\label{thm:two-clock}
-Let \(h_m=H_m(1)\), \(\Re\rho>0\), and \(\alpha\in\C\).  Then
+The completed Riemann function
 \[
- \cE_{\alpha,\rho}(\tau,m)
- =|\alpha|^2\frac{|H_m(\rho)|^2}{h_m}e^{\nu_\rho\tau}
+ \Xi(s)=\frac12s(s-1)\pi^{-s/2}\Gamma(s/2)\zeta(s)
 \]
 satisfies
 \[
- \lim_{m\to\infty}
- \cE_{\alpha,\rho}(m\log2+u,m)
+ \Xi(s)=\Xi(1-s).
+ \tag{1.1}\label{eq:functional-equation}
+\]
+At the level of zeros this pairs
+\(\rho=\tfrac12+c+i\gamma\) with \(1-\rho=\tfrac12-c-i\gamma\).  The pairing is exact,
+but its scalar statement is orientation-free: after the pair has been formed, it does not say
+which member came from the right face \(c>0\) and which from the left face \(c<0\).
+
+Many spectral and positivity approaches attempt to recover this missing sign after passing to a
+Hilbert space, a trace, a determinant, a positive kernel, or a divisor count.  The present paper
+starts one stage earlier.  An Euler product is first a product of local valuation laws.  We ask
+whether reflection already changes the \emph{asymptotic type} of those laws before they are
+assembled into a scalar meromorphic function.
+
+The answer is unexpectedly rigid and has two scales.  For a prime \(p\) and a real radial
+displacement \(|\varepsilon|<\tfrac12\), consider the geometric law
+\[
+ \mu_{p,\varepsilon}(k)=(1-r_p(\varepsilon))r_p(\varepsilon)^k,
+ \qquad r_p(\varepsilon)=p^{-(1-2\varepsilon)}.
+ \tag{1.2}\label{eq:valuation-law-intro}
+\]
+Reflection sends \(\varepsilon\) to \(-\varepsilon\).  At the shrinking displacement
+\(\varepsilon_N=c/\log N\), let
+\[
+ \mathcal R_N(c)=\prod_{\substack{p\leq N\\p\ {\rm prime}}}
+ \sum_{k\geq0}
+ \sqrt{\mu_{p,c/\log N}(k)\mu_{p,-c/\log N}(k)}
+ \tag{1.3}\label{eq:hellinger-intro}
+\]
+be the reflected Hellinger affinity.  The central theorem is the nonlinear crossover
+\[
+ \boxed{\quad
+ \mathcal R_N(c)^2\longrightarrow e^{-\Phi(c)},\qquad
+ \Phi(c)=4\int_0^1\frac{\sinh^2(cu)}u\,du .
+ \quad}
+ \tag{1.4}\label{eq:critical-profile-intro}
+\]
+The local squared factor is \(1-x_{p,N}(c)\), where
+\[
+ x_{p,N}(c)=
+ \frac{4p^{-1}\sinh^2(c\log p/\log N)}{(1-p^{-1})^2}.
+ \tag{1.5}\label{eq:local-defect-intro}
+\]
+The denominator is asymptotically invisible in aggregate, while Mertens's first theorem sends
+the numerator sum to \(\Phi(c)\).  Uniformly \(x_{p,N}(c)\to0\), so logarithmic
+tensorization turns addition into multiplication.
+
+This profile already exists elsewhere in the source.  The symmetric prime-log cumulant
+\[
+ K_N(z)=\sum_{p\leq N}\frac{2\{\cosh(z\log p)-1\}}p
+ \tag{1.6}\label{eq:wick-cumulant-intro}
+\]
+satisfies \(K_N(2c/\log N)\to\Phi(c)\), hence
+\[
+ \mathcal R_N(c)^2e^{K_N(2c/\log N)}\longrightarrow1.
+ \tag{1.7}\label{eq:hellinger-wick-intro}
+\]
+This Hellinger--Wick reciprocity is the arithmetic finite-size law of the paper: information distance
+between the reflected valuation sectors and fluctuation of the prime clock are two
+representations of one action.
+
+Here and below, ``universal'' refers first to the asymptotic-type theorem, which holds for
+arbitrary asymptotic germs and real normed source and target spaces, and second to its cutoff-stable
+realization inside the rational-prime valuation source.  It is not a claim that the displayed
+prime profile holds for arbitrary Euler products or arbitrary reflection mechanisms.
+
+The outer law is oriented.  Compare a fixed displaced state with the critical state:
+\[
+ A_N(c)=\prod_{p\leq N}
+ \sum_{k\geq0}\sqrt{\mu_{p,0}(k)\mu_{p,c}(k)},\qquad
+ a_N=\prod_{p\leq N}(1-p^{-1}).
+ \tag{1.8}\label{eq:fixed-sector-intro}
+\]
+Then reflection does not merely change a finite exponent; it crosses a type boundary:
+\[
+ \boxed{\quad
+ c<0:\ A_N(c)\asymp a_N^{1/2},\qquad
+ c=0:\ A_N(c)=1,\qquad
+ c>0:\ A_N(c)=o(a_N^m)\ \ \forall m.
+ \quad}
+ \tag{1.9}\label{eq:three-phase-intro}
+\]
+Writing \(Z_N(\beta)=\prod_{p\leq N}(1-p^{-\beta})^{-1}\), the exact curvature identity
+\[
+ A_N(c)^2=\frac{Z_N(1-c)^2}{Z_N(1)Z_N(1-2c)}
+ \tag{1.10}\label{eq:partition-curvature-intro}
+\]
+gives \(A_N(c)^2/a_N\to\zeta(1-c)^2/\zeta(1-2c)\) for \(c<0\).
+Thus every off-line reflected pair consists of one finite half-normal sector and one sector
+flat beyond every finite Rees order.
+
+There are four reasons this is more than another equivalent reformulation of the Riemann
+hypothesis.
+
+First, the critical-window theorem identifies an object that exists before the zeta divisor:
+the same nonlinear action controls both information loss under reflection and fluctuation of an
+infinitely divisible prime-log field.  Neither side is defined through zeros, and their
+asymptotic reciprocity is an equality of source laws, not an RH criterion.
+
+Second, it refines a classical theorem rather than decorating a divisor.  Kakutani's product
+measure theorem~\cite{Kakutani1948} says that the infinite product laws for \(c=0\) and
+\(c\neq0\) are mutually singular precisely when the Hellinger product vanishes.  In the present
+family the product vanishes on \emph{both} off-critical faces.  The ordinary dichotomy therefore
+collapses the two answers to the same symbol.  Formula \eqref{eq:three-phase-intro} recovers the
+discarded orientation by resolving the rate at which singularity is reached.
+
+Third, asymptotic type obeys an arithmetic-independent superselection law.  Suppose
+\(a_N\to0\), \(x_N\) is flat beyond every power of \(a_N\),
+\(\|y_N\|=\Theta(a_N^d)\) is nonzero of finite grade, and \(R_N:E\to F\) is a
+family of bounded linear maps between arbitrary real normed spaces satisfying
+\[
+ R_Nx_N=y_N.
+ \tag{1.11}\label{eq:moderate-intro}
+\]
+Then
+\[
+ a_N^{-K}=o(\|R_N\|)\qquad\text{for every }K.
+ \tag{1.12}\label{eq:operator-invariance-intro}
+\]
+In particular, every operator family with one fixed finite Rees bound preserves the
+all-orders-flat radical and cannot map it to a finite-grade germ.  A larger matrix, an
+infinite-rank Hilbert space, or a bounded dilation does not alter the conclusion.  The
+obstruction is not a missing finite renormalization but an essential scale singularity.
+
+In the prime realization, if
+\[
+ S_N(c)=\frac{H_N(-c)}{H_N(c)}
+\]
+is the scalar sewing multiplier for \(0<c<\tfrac12\), then
+\[
+ a_N^{-K}=o\!\left(S_N(c)\right)
+ \qquad\text{for every fixed }K.
+\]
+Every exact bounded linear sewing family has operator norm at least this costly in asymptotic
+type.
+
+Fourth, the theorem identifies a positive escape from that obstruction.  The rank-one rational
+Weyl block has complementary eigenvalue
+\[
+ \lambda_p(z)=\frac{pz^2-1}{p-z^2}.
+ \tag{1.13}\label{eq:weyl-intro}
+\]
+Its modulus defect factors exactly through \(|z|^4-1\).  It is unitary only on the unit circle;
+away from it, reflection remains possible by changing modular class.  The no-sewing theorem
+therefore separates \emph{internal type preservation} from \emph{external modular retuning}; it
+does not mistake a regularity class for all possible reflection.
+
+The universal action is even, and this exposes rather than solves the orientation problem at the
+critical tangent.  A second exact law supplies the missing polarization.  The rank-two pointed
+Fisher connection \(F_{\psi,\chi}\) changes sign with the source tangent \(\chi\), and its
+cutoff Ward trace satisfies
+\[
+ \operatorname{Tr}\bigl([F_{\psi,\chi},e]^*[T,e]\bigr)
  =
- 2|\alpha|^2|1-2^{-\rho}|^2e^{\nu_\rho u}.
- \tag{9.2}\label{eq:energy-limit}
+ \operatorname{Tr}\bigl(F_{\psi,\chi}[[T,e],e^*]\bigr).
+ \tag{1.14}\label{eq:signed-transgression-intro}
 \]
-For \(\alpha\ne0\), the limit is positive for every \(u\in\mathbb R\), including when
-\(\Re\rho\ne1/2\).
-\end{theorem}
+Thus the prime action determines size, while an odd Fisher--Ward polarization can carry side
+without waiting for a zero or squaring a normal coordinate.
+
+Internal transport still forces a precise change of category.  The diagonal activation
+\(\zeta(s)/\zeta(2s)\) has a local probability law whose nonzero event is squarefree occupancy
+and whose conditional positive valuation is geometric.  At the critical exponent, occupancy is
+prime-harmonic, all fixed tails of depth at least two are summable, and Fisher whitening returns
+the fibre to prime-harmonic size.  Thus the archimedean Gamma gauge is not a missing bounded
+source coordinate; it is the singular whitening of a rare event.
+
+The same grade loss appears at a zero.  If a source overlap has local form \(B(t)=t^d\), then its
+first numerator has form \(S(t)=dt^{d-1}\).  Positivity of
+\[
+ \begin{pmatrix}B(t)^2&S(t)\\S(t)&C(t)\end{pmatrix}
+ \tag{1.15}\label{eq:gram-intro}
+\]
+forces \(C(t)\geq d^2/t^2\).  A bounded positive completion is impossible.  Division by the
+overlap, often rejected as an unbounded defect, is exactly the operation required by the divisor
+grade.
+
+The paper closes the resulting circle.  The positive squarefree source supplies an explicit
+M\"obius--Gamma graph: its unnormalized Fisher numerator divided by its own overlap reconstructs
+the completed squarefree logarithmic current exactly.  A strict-right correction then gives the
+continued \(\Xi\)-current.  This is a genuine pre-divisor transport and not an RH equivalence.
+It establishes the singular category demanded by the no-sewing law, while making clear that a
+separate zero-exclusion input is still not present.
+
+The exact missing input can nevertheless be named without conjectural language.  A canonical
+finite-aperture \(\Xi\) phase is contractive on every right-half-plane Hardy packet, and its
+associated transport is four-unit nonexpansive.  Its derivative at zero aperture is the
+continued anti-causal Ward column.  The derivative satisfies the four-unit scalar bound on
+\(\Re w=\tfrac12\) exactly when there are no strict-right \(\Xi\) zeros.  Positive-aperture
+contractivity is therefore already complete; the unresolved zero-exclusion step is
+boundary-tangent control across the source-type fracture.
+
+Independent geometric prime valuations are classical in probabilistic number theory
+\cite{ArratiaBarbourTavare1997,ArratiaBarbourTavare2003}, Hellinger tensorization and Kakutani's
+dichotomy are classical, and the Euler and Mertens products are classical.  Weighted-prime
+test-function limits of the form used to obtain \(\Phi\) are also standard; for example,
+Jana's Lemma~5.2 treats the same Mertens--Stieltjes mechanism
+\cite{Jana2021}.  Negligible nets and their preservation under moderate multiplication are
+classical in Colombeau theory; the same ideal mechanism and its functoriality for continuous
+linear maps are reviewed in \cite{KhelifScarpalezos2021}.  We therefore claim no novelty for
+the weighted-prime limit, the profile viewed in isolation, or the abstract ideal argument by
+itself.  The new theorem package is the exact reflected Hellinger defect and Hellinger--Wick
+reciprocity, the realization of opposite negligible/finite types by reflected zeta exponents
+with a sharp essential sewing cost, and the signed pre-divisor carrier forced to cross that
+fracture through a singular divisor grade.
+
+\section{The prime-valuation product source}\label{sec:source}
+
+Let \(\cP\) denote the rational primes.  For \(\alpha>0\), define a probability measure on
+\(\N_0\) by
+\[
+ \mu_{p,\alpha}(k)=(1-p^{-\alpha})p^{-\alpha k}.
+ \tag{2.1}\label{eq:mu-alpha}
+\]
+This is the geometric law of a prime valuation.  At \(\alpha=1\), the independent random
+integer
+\[
+ M_N=\prod_{p\leq N}p^{V_p},
+ \qquad V_p\sim\mu_{p,1},
+ \tag{2.2}\label{eq:random-integer}
+\]
+has reciprocal mass on the integers supported by primes below \(N\):
+\[
+ \Pr(M_N=n)=\frac{a_N}{n}.
+ \tag{2.3}\label{eq:reciprocal-mass}
+\]
+This model and its relation to prime factorization are standard
+\cite{ArratiaBarbourTavare1997}.
+
+We center the exponent at \(\alpha=1\) by writing
+\[
+ \alpha(c)=1-2c,\qquad |c|<\frac12,
+ \tag{2.4}\label{eq:alpha-c}
+\]
+and abbreviate
+\[
+ \mu_{p,c}=\mu_{p,\alpha(c)}.
+\]
+Reflection \(c\mapsto-c\) sends \(\alpha(c)\) to \(2-\alpha(c)\), the radial exponent paired
+about \(1\).
+
+\begin{definition}[Finite-prime Hellinger sector]\label{def:hellinger}
+For \(p\in\cP\), set
+\[
+ h_p(c)=\sum_{k\geq0}\sqrt{\mu_{p,0}(k)\mu_{p,c}(k)}.
+ \tag{2.5}\label{eq:local-affinity-definition}
+\]
+For \(N\geq2\), define
+\[
+ A_N(c)=\prod_{p\leq N}h_p(c),\qquad H_N(c)=A_N(c)^2.
+ \tag{2.6}\label{eq:global-affinity}
+\]
+\end{definition}
+
+The local sum is elementary but decisive.
+
+\begin{lemma}[Exact local affinity]\label{lem:local-affinity}
+Put
+\[
+ q_p=p^{-1},\qquad
+ r_p(c)=p^{-(1-2c)},\qquad
+ u_p(c)=p^{-(1-c)}.
+ \tag{2.7}\label{eq:qru}
+\]
+Then \(u_p(c)^2=q_pr_p(c)\), and
+\[
+ h_p(c)=
+ \frac{\sqrt{(1-q_p)(1-r_p(c))}}{1-u_p(c)},
+ \tag{2.8}\label{eq:local-affinity}
+\]
+\[
+ h_p(c)^2=
+ \frac{(1-q_p)(1-r_p(c))}{(1-u_p(c))^2}.
+ \tag{2.9}\label{eq:local-squared-affinity}
+\]
+\end{lemma}
 
 \begin{proof}
-Theorem \ref{thm:two-layers} and \eqref{eq:mass-ratio} give
+Substitution into \eqref{eq:local-affinity-definition} gives
 \[
- |H_m(\rho)|^2
- =2^{-2m\Re\rho}
- \bigl(|1-2^{-\rho}|^2+o(1)\bigr),
- \qquad
- h_m=2^{-m}\bigl(\tfrac12+o(1)\bigr).
+ \sqrt{(1-q_p)(1-r_p)}
+ \sum_{k\geq0}(q_pr_p)^{k/2}.
 \]
-At \(\tau=m\log2+u\),
-\[
- e^{\nu_\rho\tau}
- =2^{m(2\Re\rho-1)}e^{\nu_\rho u}.
-\]
-All powers of \(2\) cancel, leaving \eqref{eq:energy-limit}.  Since
-\(|2^{-\rho}|<1\), the atom amplitude is nonzero; positivity follows.
+Since \((q_pr_p)^{1/2}=u_p<1\), the geometric series is
+\((1-u_p)^{-1}\).  Squaring gives \eqref{eq:local-squared-affinity}.
 \end{proof}
 
-\begin{theorem}[Independent-quadrant detection]\label{thm:quadrant}
-For
+\begin{lemma}[Local order inequalities]\label{lem:local-order}
+For \(0\leq q,r\leq1\), \(0\leq u<1\), and \(u^2=qr\), put
 \[
- \chi_\nu(\tau,d)=e^{\nu(\tau-d)}
+ D(q,r,u)=\frac{(1-q)(1-r)}{(1-u)^2}.
 \]
-the following hold.
-\begin{enumerate}[label=\textup{(\alph*)}]
-\item On every characteristic line \(\tau=d+u\),
-\(\chi_\nu(d+u,d)=e^{\nu u}\), for every \(\nu\in\mathbb R\).
-\item There is a constant \(C\) with
-\[
- \chi_\nu(\tau,d)\leq C\qquad(\tau,d\geq0)
- \]
-if and only if \(\nu=0\).
-\end{enumerate}
-\end{theorem}
-
-\begin{proof}
-Part (a) is substitution.  If \(\nu>0\), then
-\(\chi_\nu(\tau,0)\to\infty\) as \(\tau\to\infty\).  If \(\nu<0\), then
-\(\chi_\nu(0,d)\to\infty\) as \(d\to\infty\).  If \(\nu=0\), the character is
-identically one.
-\end{proof}
-
-Theorem \ref{thm:quadrant} isolates the observer error.  Restriction to a characteristic line
-does not establish neutrality; it makes every rate conservative by forcing the growing and
-decaying directions to cancel.  In the Riemann setting, \eqref{eq:energy-limit} is therefore
-not evidence that \(\Re\rho=1/2\).  The full independent quadrant detects the line exactly.
-
-\section{The information-localization law}
-
-The preceding results can now be read as one theorem rather than as a list of phenomena.
-
-\begin{theorem}[Divisor--transfer information localization]\label{thm:localization}
-In the exponent-shell resolution, the following data occupy distinct and provably
-noninterchangeable levels.
-\begin{enumerate}[label=\textup{(\alph*)}]
-\item \emph{Longitudinal divisor data:} every high positive shell carries the same Riemann
-divisor with multiplicity.
-\item \emph{Finite transverse structure:} after the common divisor and all its derivatives are
-adjoined, the shell multipliers have maximal differential rank.
-\item \emph{Cofinal spectral data:} the first two ordered atom transitions recover the entire
-spectral point; their base-normalized radial part equals the local centered divisor charge.
-\item \emph{Observer boundary:} unit scalar label erasure is nonclosable, reflection-even
-aggregation cancels charge orientation, and co-moving clock restriction makes every transverse
-rate conservative.
-\end{enumerate}
-\end{theorem}
-
-\begin{proof}
-Parts (a)--(d) are respectively Theorems \ref{thm:divisor-frame} and
-\ref{thm:relative}, Theorems \ref{thm:two-layers}, \ref{thm:tomography}, and
-\ref{thm:transgression}, and Proposition \ref{prop:nonclosable} together with
-\eqref{eq:odd-charge} and Theorem \ref{thm:quadrant}.
-\end{proof}
-
-This law gives a precise answer to the question ``what did divisor-preserving constructions
-miss?''  They did not lose the zeros.  They lost the ordered transfer coordinate which says
-where a zero sits.  The loss occurs in three recognizable ways:
-\[
-\begin{array}{c|c}
-\text{operation} & \text{information destroyed}\\ \hline
-\text{finite differential closure} & \text{cannot couple the transverse shell directions}\\
-\text{unit scalar codiagonal} & \text{cannot continuously forget infinitely many labels}\\
-\text{reflection-even or co-moving reduction} & \text{cancels the signed transverse rate}.
-\end{array}
-\tag{10.1}\label{eq:loss-table}
-\]
-The cofinal spectrum survives all three only while prime order, shell label, and independent
-clock directions remain visible.
-
-\section{Exact consequence for the RH route}
-
-For \(m\geq12\), zero-freeness of \(S_m^\#\) in
-\(1/2<\Re s<1\) is equivalent to RH, by Theorem \ref{thm:divisor-frame} and the functional
-equation.  That equivalence is not the contribution of this paper.  The new content is that a
-hypothetical off-line zero has a completely determined signature inside the resolution:
-
+Then:
 \begin{enumerate}[label=\textup{(\roman*)}]
-\item it occurs with the same multiplicity in every high positive shell;
-\item no finite differential identity over the full zeta differential field accounts for the
-shared occurrence;
-\item the two cofinal transitions recover the zero exactly;
-\item its signed horizontal displacement equals both the local Xi-current residue per
-multiplicity and every base-normalized cofinal entropy;
-\item reflection pairing and characteristic scalarization erase that sign by exact algebraic
-cancellation, not by lack of precision.
+\item if \(r\leq u\), then \(1-q\leq D(q,r,u)\);
+\item if \(u\leq\tfrac12\), then
+\[
+ \frac1{(1-u)^2}\leq1+6u\leq e^{6u};
+ \tag{2.10}\label{eq:exp-local-bound}
+\]
+\item if \(8u\leq3r\), then \(D(q,r,u)\leq1-r/4\);
+\item if, in addition, \(4Lq\leq r\) for \(L\in\N\), then
+\[
+ D(q,r,u)\leq(1-q)^L.
+ \tag{2.11}\label{eq:wold-power-local}
+\]
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+For (i), after multiplying by the positive denominator it is enough to show
+\(1-r\geq(1-u)^2\), or \(2u-u^2\geq r\).  Since \(u^2=qr\leq r\) and
+\(r\leq u\), one has \(2u-u^2\geq u\geq r\).
+
+For (ii), multiplication by \((1-u)^2\) reduces the first inequality to
+\[
+ u(2u-1)(3u-4)\geq0,
+\]
+which holds on \(0\leq u\leq\tfrac12\); the second is \(1+x\leq e^x\).
+
+For (iii), the difference between the right and left sides after multiplication by
+\((1-u)^2\) is
+\[
+ q+\frac{3r-8u}{4}+\frac{ru(2-u)}4,
+\]
+which is nonnegative under the displayed hypotheses.  Finally,
+\[
+ D\leq1-\frac r4\leq1-Lq\leq(1-q)^L,
+\]
+where the last inequality is Bernoulli's inequality.
+\end{proof}
+
+\section{The universal Hellinger reflection law}\label{sec:phase-law}
+
+\subsection{Critical window: Hellinger--Wick reciprocity}
+
+For fixed \(c\in\R\), put \(\varepsilon_N=c/\log N\) and define
+\[
+ \mathfrak h_{p,N}(c)=
+ \sum_{k\geq0}
+ \sqrt{\mu_{p,\varepsilon_N}(k)\mu_{p,-\varepsilon_N}(k)},
+ \qquad
+ \mathcal R_N(c)=\prod_{p\leq N}\mathfrak h_{p,N}(c).
+ \tag{3.1}\label{eq:reflected-critical-affinity}
+\]
+Also set
+\[
+ \Phi(c)=4\int_0^1\frac{\sinh^2(cu)}u\,du,
+ \tag{3.2}\label{eq:universal-profile}
+\]
+where the integrand is continuously extended by \(0\) at \(u=0\), and let
+\[
+ K_N(z)=\sum_{p\leq N}\frac{2\{\cosh(z\log p)-1\}}p .
+ \tag{3.3}\label{eq:prime-wick-cumulant}
+\]
+For real \(z\), \(K_N(z)\) is the cumulant of the finite symmetric Poisson prime-jump
+field with atoms \(\pm\log p\), each of intensity \(1/p\).
+
+\begin{maintheorem}[Universal critical-window law]\label{thm:critical-window}
+For every \(c\in\R\):
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item the exact local identity is
+\[
+ \mathfrak h_{p,N}(c)^2
+ =1-x_{p,N}(c),\qquad
+ x_{p,N}(c)=
+ \frac{4p^{-1}\sinh^2(c\log p/\log N)}{(1-p^{-1})^2};
+ \tag{3.4}\label{eq:exact-reflected-local-defect}
+\]
+\item the additive action and exact Hellinger defect have the same limit:
+\[
+ \sum_{p\leq N}\frac{4\sinh^2(c\log p/\log N)}p
+ \longrightarrow\Phi(c),\qquad
+ \sum_{p\leq N}x_{p,N}(c)\longrightarrow\Phi(c);
+ \tag{3.5}\label{eq:additive-profile-limits}
+\]
+\item the multiplicative affinity satisfies
+\[
+ \mathcal R_N(c)^2\longrightarrow e^{-\Phi(c)};
+ \tag{3.6}\label{eq:critical-hellinger-limit}
+\]
+\item the prime-log cumulant is asymptotically reciprocal to the Hellinger partition:
+\[
+ K_N(2c/\log N)\longrightarrow\Phi(c),\qquad
+ \mathcal R_N(c)^2e^{K_N(2c/\log N)}\longrightarrow1.
+ \tag{3.7}\label{eq:hellinger-wick-reciprocity}
+\]
+\end{enumerate}
+\end{maintheorem}
+
+\begin{proof}
+The geometric sum in Lemma~\ref{lem:local-affinity}, now applied to the pair
+\(\varepsilon_N,-\varepsilon_N\), has cross ratio \(p^{-1}\).  Hence
+\[
+ \mathfrak h_{p,N}(c)^2
+ =
+ \frac{(1-p^{-1+2\varepsilon_N})(1-p^{-1-2\varepsilon_N})}
+      {(1-p^{-1})^2}.
+\]
+Subtracting this expression from \(1\), and using
+\(e^{2y}+e^{-2y}-2=4\sinh^2y\), proves
+\eqref{eq:exact-reflected-local-defect}.
+
+For the limit, put \(L=\log N\) and introduce the finite measure
+\[
+ \nu_N=\frac1L\sum_{p\leq N}\frac{\log p}{p}\,
+ \delta_{\log p/L}
+\]
+on \([0,1]\).  Mertens's first theorem in prime form
+\[
+ \sum_{p\leq x}\frac{\log p}{p}=\log x+O(1)
+\]
+implies \(\nu_N\Rightarrow du\) on \([0,1]\)
+\cite{Mertens1874}.  The function
+\[
+ g_c(u)=
+ \begin{cases}
+ 4\sinh^2(cu)/u,&u>0,\\
+ 0,&u=0,
+ \end{cases}
+\]
+is continuous.  Therefore
+\[
+ \sum_{p\leq N}\frac{4\sinh^2(c\log p/L)}p
+ =\int_0^1g_c(u)\,d\nu_N(u)
+ \longrightarrow\int_0^1g_c(u)\,du=\Phi(c).
+\]
+
+The vacuum denominator changes no mass in this window.  For every prime \(p\),
+\[
+ 0\leq\frac1{(1-p^{-1})^2}-1\leq\frac8p,
+\]
+and, for \(0\leq u\leq1\),
+\[
+ \sinh^2(cu)\leq c^2u^2\cosh^2|c|.
+\]
+Consequently
+\[
+ 0\leq
+ \sum_{p\leq N}x_{p,N}(c)-
+ \sum_{p\leq N}\frac{4\sinh^2(c\log p/L)}p
+ \leq
+ \frac{32c^2\cosh^2|c|}{L^2}
+ \sum_{p\leq N}\left(\frac{\log p}{p}\right)^2.
+\]
+The series on the right converges, proving the second limit in
+\eqref{eq:additive-profile-limits}.
+
+Moreover \((\log p)^2/p\leq4\) and the same estimates give
+\[
+ 0\leq x_{p,N}(c)\leq
+ \frac{80c^2\cosh^2|c|}{L^2}
+\]
+uniformly for \(p\leq N\).  Thus \(\max_{p\leq N}x_{p,N}(c)\to0\).  The elementary
+bound
+\[
+ 0\leq-\log(1-x)-x\leq2x^2
+ \qquad(0\leq x\leq\tfrac12)
+\]
+then yields
+\[
+ \log\mathcal R_N(c)^2
+ =\sum_{p\leq N}\log(1-x_{p,N}(c))
+ =-\sum_{p\leq N}x_{p,N}(c)+o(1).
+\]
+This proves \eqref{eq:critical-hellinger-limit}.  Finally,
+\[
+ K_N(2c/L)
+ =\sum_{p\leq N}\frac{4\sinh^2(c\log p/L)}p
+\]
+exactly, so \eqref{eq:hellinger-wick-reciprocity} follows from the two limits already proved.
+\end{proof}
+
+\begin{corollary}[One action, two representations]\label{cor:one-action}
+The profile \(\Phi\) is even, real analytic, vanishes only at \(0\), and
+\[
+ \Phi(c)=2c^2+\frac13c^4+O(c^6)\qquad(c\to0).
+\]
+It is simultaneously the limiting L\'evy cumulant of the symmetric prime-log field and minus
+the logarithm of the reflected valuation affinity.
+\end{corollary}
+
+\begin{proof}
+All assertions follow from \eqref{eq:universal-profile}, the power series for \(\sinh\), and
+Theorem~\ref{thm:critical-window}.
+\end{proof}
+
+\subsection{Fixed displacement: oriented Rees phases}
+
+\begin{definition}[Rees type]\label{def:rees-type}
+Let \(a_N>0\) with \(a_N\to0\).  A scalar or normed-space-valued germ \(x_N\) is
+\emph{flat beyond every Rees order} if
+\[
+ \|x_N\|=o(a_N^m)
+ \qquad\text{for every }m\in\N.
+ \tag{3.8}\label{eq:all-orders-flat}
+\]
+The set of such germs is denoted \(\cF_\infty(a)\).  Two nonnegative germs have the
+same finite Rees type if they are comparable up to positive constants.
+\end{definition}
+
+\begin{maintheorem}\label{thm:main}
+Let \(A_N(c)\), \(H_N(c)\), and \(a_N\) be given by
+\eqref{eq:global-affinity} and \eqref{eq:fixed-sector-intro}.  For \(|c|<\tfrac12\):
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item If \(c<0\), then
+\[
+ a_N\leq H_N(c)\leq C(c)a_N
+ \tag{3.9}\label{eq:negative-comparison}
+\]
+for all \(N\), where
+\[
+ C(c)=\exp\!\left(6\sum_{n\geq1}n^{-(1-c)}\right)<\infty.
+ \tag{3.10}\label{eq:correction-constant}
+\]
+Consequently
+\[
+ H_N(c)=\Thetaas(a_N),\qquad
+ A_N(c)=\Thetaas(a_N^{1/2}).
+ \tag{3.11}\label{eq:negative-half-normal}
+\]
+More sharply, with \(Z_N\) from \eqref{eq:partition-curvature-intro},
+\[
+ H_N(c)=
+ \frac{Z_N(1-c)^2}{Z_N(1)Z_N(1-2c)}
+ \tag{3.12}\label{eq:exact-euler-hellinger}
+\]
+for every \(c\), and
+\[
+ \frac{H_N(c)}{a_N}\longrightarrow
+ \frac{\zeta(1-c)^2}{\zeta(1-2c)}
+ \qquad(c<0).
+ \tag{3.13}\label{eq:exact-negative-limit}
+\]
+\item If \(c=0\), then \(H_N(0)=A_N(0)=1\) for every \(N\).
+\item If \(c>0\), then
+\[
+ H(c)\in\cF_\infty(a),\qquad A(c)\in\cF_\infty(a).
+ \tag{3.14}\label{eq:positive-flat}
+\]
+\item For every \(c\neq0\), reflection exchanges distinct types:
+\[
+ c\mapsto-c:
+ \quad
+ \Thetaas(a_N^{1/2})
+ \longleftrightarrow
+ \cF_\infty(a).
+ \tag{3.15}\label{eq:type-fracture}
+\]
+\end{enumerate}
+\end{maintheorem}
+
+\begin{proof}
+Suppose first that \(c<0\).  Then
+\[
+ r_p(c)\leq u_p(c)\leq q_p\leq\frac12.
+\]
+Lemma~\ref{lem:local-order}(i) gives \(h_p(c)^2\geq1-q_p\), hence
+\[
+ H_N(c)\geq\prod_{p\leq N}(1-q_p)=a_N.
+\]
+For the upper bound, \eqref{eq:local-squared-affinity} and
+Lemma~\ref{lem:local-order}(ii) give
+\[
+ h_p(c)^2
+ \leq(1-q_p)\exp(6u_p(c)).
+\]
+Therefore
+\[
+ H_N(c)
+ \leq a_N\exp\!\left(6\sum_{p\leq N}p^{-(1-c)}\right)
+ \leq C(c)a_N.
+\]
+The series in \eqref{eq:correction-constant} converges because \(1-c>1\).
+Taking square roots proves \eqref{eq:negative-half-normal}.
+
+Independently of sign, multiplying the local identity
+\eqref{eq:local-squared-affinity} gives
+\[
+ H_N(c)=
+ \prod_{p\leq N}
+ \frac{(1-p^{-1})(1-p^{-(1-2c)})}
+      {(1-p^{-(1-c)})^2}
+ =
+ \frac{Z_N(1-c)^2}{Z_N(1)Z_N(1-2c)}.
+\]
+Since \(a_N=Z_N(1)^{-1}\), for \(c<0\) both remaining Euler products converge
+absolutely:
+\[
+ \frac{H_N(c)}{a_N}
+ =\frac{Z_N(1-c)^2}{Z_N(1-2c)}
+ \longrightarrow
+ \frac{\zeta(1-c)^2}{\zeta(1-2c)}.
+\]
+This proves \eqref{eq:exact-euler-hellinger}--\eqref{eq:exact-negative-limit}.
+
+If \(c=0\), then \(q_p=r_p(0)=u_p(0)\), so every local affinity is \(1\).
+
+Now let \(c>0\) and fix \(L\in\N\).  Since
+\[
+ \frac{u_p(c)}{r_p(c)}=p^{-c}\longrightarrow0,
+ \qquad
+ \frac{q_p}{r_p(c)}=p^{-2c}\longrightarrow0,
+\]
+there is \(P=P(c,L)\) such that, for every prime \(p\geq P\),
+\[
+ 8u_p(c)\leq3r_p(c),\qquad4Lq_p\leq r_p(c).
+\]
+Lemma~\ref{lem:local-order}(iv) yields
+\[
+ h_p(c)^2\leq(1-q_p)^L\qquad(p\geq P).
+\]
+The omitted finite prefix contributes a constant \(C_{c,L}\), so
+\[
+ H_N(c)\leq C_{c,L}a_N^L.
+\]
+Given \(m\), choose \(L=m+1\).  Since \(a_N\to0\), this implies
+\(H_N(c)=o(a_N^m)\).  Applying the same argument to the square, with exponent
+\(2m+1\), gives \(A_N(c)=o(a_N^m)\).  Reflection now gives
+\eqref{eq:type-fracture}.
+\end{proof}
+
+The theorem reveals a genuine chirality.  Both off-critical faces approach zero, but their
+orders belong to different asymptotic categories.  The negative face differs from the vacuum
+half-density only by a bounded nonzero correction product.  The positive face is invisible in
+every finite associated grade.
+
+\begin{corollary}[Kakutani singularity with recovered orientation]\label{cor:kakutani}
+Let
+\[
+ \boldsymbol\mu_c=\bigotimes_{p\in\cP}\mu_{p,c}
+\]
+be the product measure on \(\N_0^\cP\).  For every \(c\neq0\) with
+\(|c|<\tfrac12\),
+\[
+ \boldsymbol\mu_c\perp\boldsymbol\mu_0.
+ \tag{3.16}\label{eq:kakutani-singular}
+\]
+The ordinary equivalence--singularity dichotomy gives the same answer on both faces, while the
+finite-product rate determines the sign of \(c\) by
+\eqref{eq:type-fracture}.
+\end{corollary}
+
+\begin{proof}
+Kakutani's theorem identifies the Hellinger integral of the product measures with
+\(\lim_N A_N(c)\).  For \(c<0\), this limit is zero because \(a_N\to0\).  For \(c>0\),
+it is zero by \eqref{eq:positive-flat}.  The rate classification is
+Theorem~\ref{thm:main}.
+\end{proof}
+
+\begin{remark}[Why the infinite product space matters]\label{rem:infinite-product}
+At the critical exponent, infinitely many primes are occupied almost surely, so the product
+measure is not a probability law on finite integers.  It remains a perfectly well-defined
+probability measure on the full valuation space \(\N_0^\cP\).  The critical boundary does not
+destroy the source; it changes its support category.
+\end{remark}
+
+\section{All-orders type superselection under finite-Rees transport}\label{sec:no-sewing}
+
+The phase distinction is stable under a much larger class than finite matrices.
+
+\begin{definition}[Finite-Rees-moderate transport]\label{def:moderate}
+Let \(E,F\) be real normed spaces.  A family of bounded linear maps
+\(R_N:E\to F\) has finite Rees order if, for some \(K\in\N\),
+\[
+ \|R_N\|=O(a_N^{-K}).
+ \tag{4.1}\label{eq:operator-grade}
+\]
+\end{definition}
+
+\begin{theorem}[All-orders type-superselection law]\label{thm:flat-invariance}
+If \(R_N:E\to F\) has finite Rees order and \(x\in\cF_\infty(a;E)\), then
+\[
+ (R_Nx_N)_N\in\cF_\infty(a;F).
+ \tag{4.2}\label{eq:flat-invariance}
+\]
+This holds in arbitrary dimension.
+\end{theorem}
+
+\begin{proof}
+Choose \(K\) as in \eqref{eq:operator-grade}.  For every \(m\),
+\[
+ \|R_Nx_N\|
+ \leq\|R_N\|\,\|x_N\|
+ =O(a_N^{-K})\,o(a_N^{m+K})
+ =o(a_N^m).
+\]
+\end{proof}
+
+\begin{theorem}[Universal essential sewing law]\label{thm:essential-sewing}
+Let \(a_N>0\) with \(a_N\to0\), let \(E,F\) be arbitrary real normed spaces, and let
+\(x_N\in E\), \(y_N\in F\).  Suppose \(x_N\neq0\) eventually,
+\[
+ x\in\cF_\infty(a;E),
+ \qquad
+ \|y_N\|=\Thetaas(a_N^d)
+ \tag{4.3}\label{eq:abstract-types}
+\]
+for some finite \(d\in\N\).  If bounded linear maps \(R_N:E\to F\) satisfy
+\[
+ R_Nx_N=y_N
+\]
+at every cutoff, then, for every \(K\in\N\),
+\[
+ a_N^{-K}=o(\|R_N\|).
+ \tag{4.4}\label{eq:essential-sewing}
+\]
+\end{theorem}
+
+\begin{proof}
+Fix \(K\).  All-orders flatness at order \(K+d\) and the finite-grade lower bound give
+\[
+ a_N^{-K}\|x_N\|=o(a_N^d),
+ \qquad
+ a_N^d=O(\|y_N\|),
+\]
+and hence \(a_N^{-K}\|x_N\|=o(\|y_N\|)\).
+Exact sewing gives
+\[
+ \|y_N\|\leq\|R_N\|\,\|x_N\|.
+\]
+After division by the eventually nonzero norms, the ratio
+\(a_N^{-K}/\|R_N\|\) is bounded above by
+\(a_N^{-K}\|x_N\|/\|y_N\|\), which tends to zero.  This proves
+\eqref{eq:essential-sewing}.
+\end{proof}
+
+\begin{corollary}[Essential prime-reflection sewing cost]\label{cor:no-sewing}
+Let \(0<c<\tfrac12\), and set
+\[
+ S_N(c)=\frac{H_N(-c)}{H_N(c)}.
+\]
+Then
+\[
+ a_N^{-K}=o\!\left(S_N(c)\right)
+ \qquad\text{for every }K\in\N.
+ \tag{4.5}\label{eq:prime-essential-sewing}
+\]
+Every exact bounded linear sewing between normed-space realizations of the positive and negative
+prime sectors has the same essential operator-norm singularity.  In particular, no
+finite-Rees-moderate operator family can satisfy
+\[
+ R_NH_N(c)=H_N(-c)
+ \qquad\text{for every }N.
+ \tag{4.6}\label{eq:scalar-no-sewing}
+\]
+\end{corollary}
+
+\begin{proof}
+Every finite-prime Hellinger factor is strictly positive.
+Theorem~\ref{thm:main} gives
+\[
+ H_N(c)\in\cF_\infty(a),\qquad H_N(-c)=\Thetaas(a_N).
+\]
+Apply Theorem~\ref{thm:essential-sewing} with \(d=1\).  The scalar quotient is \(S_N(c)\);
+the operator statement and the no-sewing conclusion follow from the same theorem.
+\end{proof}
+
+\begin{corollary}[Finite packets and invertible changes of frame]\label{cor:finite-packets}
+All-orders flatness of a finite vector packet is equivalent to coordinatewise all-orders
+flatness.  Every finite matrix whose entries have one uniform finite Rees order preserves the
+flat radical.  If the matrix and its inverse are both finite-Rees-moderate, they preserve and
+reflect the radical exactly.
+\end{corollary}
+
+\begin{proof}
+All norms on a finite product are equivalent, so a finite packet is flat exactly when all of its
+coordinates are flat.  Each output coordinate is a finite sum of products of a finite-grade
+coefficient and a flat input.  Applying the same argument to the inverse proves the last claim.
+\end{proof}
+
+The conclusion is narrower and stronger than a slogan about unbounded operators.  The reflected
+faces do not have merely unequal finite grades: one is half-normal and the other belongs to the
+intersection of every positive Rees grade.  That intersection is an invariant radical.
+Unboundedness at one cutoff is irrelevant; the theorem distinguishes every fixed polynomial
+order from growth beyond all finite Rees orders.  Likewise, infinite rank is irrelevant unless
+it changes the full operator-norm type.  Theorem~\ref{thm:essential-sewing} quantifies the only
+possible change: exact sewing forces the full norm to dominate every inverse Rees power.
+
+\section{Reflection versus modular retuning}\label{sec:modular-retuning}
+
+The no-sewing theorem would be uninformative if it merely ruled out a small class and said
+nothing about how reflection escapes.  A rank-one Weyl block gives the exact positive answer.
+Consider
+\[
+ \lambda_p(z)=\frac{pz^2-1}{p-z^2},
+ \qquad p>1,\quad p-z^2\neq0.
+ \tag{5.1}\label{eq:weyl-eigenvalue}
+\]
+Calegari and Venkatesh give an explicit two-channel level-changing scattering block
+\(N(z,s)\) induced by the standard rank-one intertwiner~\cite[\S6.6.1]{CalegariVenkatesh}.
+At \(s=0\), its eigenvalues are \(1\) and \(\lambda_p(z)\).  We need only the following
+algebraic law of the second eigenvalue.
+
+\begin{theorem}[Exact modular-retuning law]\label{thm:weyl-retuning}
+For every \(p>1\) and \(z\in\C\) with \(p-z^2\neq0\),
+\[
+ |pz^2-1|^2-|p-z^2|^2
+ =(p^2-1)(|z|^4-1).
+ \tag{5.2}\label{eq:weyl-modulus-defect}
+\]
+Consequently
+\[
+ |\lambda_p(z)|=1\quad\Longleftrightarrow\quad |z|=1.
+ \tag{5.3}\label{eq:weyl-unitary-locus}
+\]
+If \(z=p^c\) with \(0<c<\tfrac12\), then
+\[
+ p^{2c}<
+ \frac{p\,p^{2c}-1}{p-p^{2c}}
+ =\lambda_p(p^c).
+ \tag{5.4}\label{eq:weyl-radial-cost}
+\]
+Finally, for every nonzero scalar gauge \(g\),
+\[
+ \frac{g\lambda_p(z)}{g}=\lambda_p(z);
+ \tag{5.5}\label{eq:weyl-gauge-ratio}
+\]
+scalar normalization can move the growth between the two channels but cannot remove their
+ratio.
+\end{theorem}
+
+\begin{proof}
+Writing \(w=z^2\), direct expansion gives
+\[
+ |pw-1|^2=p^2|w|^2-2p\Re w+1,
+ \qquad
+ |p-w|^2=p^2-2p\Re w+|w|^2,
+\]
+whose difference is \eqref{eq:weyl-modulus-defect}.  Since \(p^2-1>0\), equality of the two
+moduli is equivalent to \(|z|=1\), proving \eqref{eq:weyl-unitary-locus}.
+
+For \(r=p^{2c}\), one has \(1<r<p\).  Hence
+\[
+ \frac{pr-1}{p-r}>r
+ \quad\Longleftrightarrow\quad
+ pr-1>pr-r^2
+ \quad\Longleftrightarrow\quad r^2>1.
+\]
+This proves \eqref{eq:weyl-radial-cost}; \eqref{eq:weyl-gauge-ratio} is cancellation of a
+nonzero scalar.
+\end{proof}
+
+The theorem separates two notions that scalar functional equations conflate:
+\[
+ \boxed{\quad
+ \begin{array}{c}
+ \text{source-internal reflection}\\[-1mm]
+ \text{with fixed modular class}
+ \end{array}
+ \quad\text{versus}\quad
+ \begin{array}{c}
+ \text{external Weyl joining}\\[-1mm]
+ \text{with modular retuning}.
+ \end{array}
+ \quad}
+ \tag{5.6}\label{eq:reflection-categories}
+\]
+The first category is constrained by Theorem~\ref{thm:flat-invariance}; the second can cross the
+fracture by carrying the missing growth in its complementary channel.  Criticality is the unique
+locus on which the retuning cost vanishes locally.  Thus the finite-Rees result is not a no-go
+for adelic reflection.  It is a conservation theorem for reflection that remains internal to
+the fixed ordinary-prime source.
+
+\section{Diagonal activation and the critical source boundary}\label{sec:activation}
+
+The Wold scale in Theorem~\ref{thm:main} is not an external normalization.  It arises from an
+exact probability disintegration of the diagonal Euler activation.
+
+For \(\Re s>1\),
+\[
+ \cZ_\infty(s,s)=\prod_p(1+p^{-s})
+ =\frac{\zeta(s)}{\zeta(2s)}.
+ \tag{6.1}\label{eq:diagonal-activation}
+\]
+At a local node \(q=p^{-\sigma}\), normalize the positive coefficients by \(1+q\).
+The resulting valuation law is
+\[
+ \nu_q(0)=\frac1{1+q},
+ \qquad
+ \nu_q(k)=\frac{(1-q)q^k}{1+q}\quad(k\geq1).
+ \tag{6.2}\label{eq:activation-law}
+\]
+
+\begin{proposition}[Occupancy--fibre disintegration]\label{prop:disintegration}
+For the law \(\nu_q\):
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item the radical occupancy \(B=\mathbf1_{\{V>0\}}\) is Bernoulli with
+\[
+ \Pr(B=1)=\frac q{1+q};
+ \tag{6.3}\label{eq:occupancy}
+\]
+\item conditional on \(B=1\), the positive valuation is geometric:
+\[
+ \Pr(V=k\mid B=1)=(1-q)q^{k-1},\qquad k\geq1;
+ \tag{6.4}\label{eq:conditional-geometric}
+\]
+\item
+\[
+ \Pr(V\geq m)=\frac{q^m}{1+q},\qquad m\geq1;
+ \tag{6.5}\label{eq:valuation-tail}
+\]
+\item the occupancy variance is
+\[
+ \operatorname{Var}(B)=\frac q{(1+q)^2}.
+ \tag{6.6}\label{eq:fisher-variance}
+\]
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+Summing the positive geometric tail gives
+\[
+ \sum_{k\geq1}\frac{(1-q)q^k}{1+q}=\frac q{1+q}.
+\]
+Division by this mass gives \eqref{eq:conditional-geometric}; the same summation starting at
+\(m\) gives \eqref{eq:valuation-tail}.  Formula \eqref{eq:fisher-variance} is the Bernoulli
+variance.
+\end{proof}
+
+At the critical node \(q=1/p\), the decomposition becomes arithmetically sharp.
+
+\begin{theorem}[Critical occupancy law]\label{thm:critical-occupancy}
+At \(q=1/p\):
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item occupancy mass is \((p+1)^{-1}\) and is not summable over primes;
+\item for every fixed \(m\geq2\),
+\[
+ \Pr(V\geq m)=\frac1{p^{m-1}(p+1)}
+\tag{6.7}\label{eq:critical-tail}
+\]
+is summable over primes;
+\item the Fisher-whitened Gamma fibre has mass
+\[
+ \frac{p-1}{p(p+1)}
+\tag{6.8}\label{eq:gamma-fibre}
+\]
+and is again not summable over primes;
+\item no nonzero polynomial vanishes on infinitely many critical nodes \(1/p\).
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+The first three formulas follow from
+\eqref{eq:occupancy}--\eqref{eq:fisher-variance}.  The first and third terms are bounded below
+by positive constant multiples of \(p^{-1}\), while
+\eqref{eq:critical-tail} is bounded by \(p^{-m}\).  Euler's divergence of
+\(\sum_pp^{-1}\) and convergence of the \(p\)-series for \(m\geq2\) give the summability
+claims.  The nodes \(1/p\) are infinitely many distinct roots, so a polynomial vanishing on
+infinitely many of them is zero.
+\end{proof}
+
+This theorem isolates the critical source:
+\[
+ \boxed{\begin{gathered}
+ \text{prime-harmonic occupancy}
+ \ \times\
+ \text{summable conditional depth fibre}\\
+ \xrightarrow{\text{Fisher whitening}}
+ \text{prime-harmonic Gamma fibre}
+ \end{gathered}}
+ \tag{6.9}\label{eq:source-box}
+\]
+Whitening must amplify a rare event.  Its divergent recovery gauge is therefore forced by the
+source law; it is not evidence that an additional bounded coordinate has been omitted.
+
+\section{Depth--support superselection}\label{sec:superselection}
+
+The valuation source has a second filtration independent of Rees type.  It explains why finite
+differential closure cannot replace the missing singular transport.
+
+Let \(I\) be finite, let \(A_i\) be finite pointed sets, and set
+\[
+ A=\prod_{i\in I}A_i.
+\]
+Let \(y:\cP\to A\) visit every state on every cofinite prime tail.  The anchored tensor basis
+\((b_z)_{z\in A}\) of \(\C^A\) separates the exact coordinate support
+\[
+ \supp(z)=\{i:z_i\neq1\}.
+\]
+For valuation depth \(r\geq0\), form the prime-supported Dirichlet carrier
+\[
+ F_{r,z}(s)=\sum_{p\in\cP}b_z(y(p))p^{-(r+1)s}
+\tag{7.1}\label{eq:carrier}
+\]
+in its half-plane of convergence.
+
+There is an exact same-prime fusion on coefficient columns:
+\[
+ V_e(f)\star V_r(g)=V_{e+r+1}(fg).
+\tag{7.2}\label{eq:fusion}
+\]
+Thus depth adds, while coordinate support unions.
+
+\begin{theorem}[Depth--support superselection]\label{thm:superselection}
+For every \(d>0\) and \(S\subseteq I\), the family
+\[
+ \{F_{r,z}:0\leq r<d,\ \supp(z)=S\}
+\tag{7.3}\label{eq:support-sector}
+\]
+is differentially algebraically independent over the differential field generated by
+\(\C(s)\) and its complete complement in the depth-\(d\) rectangle.  Its exact relative rank is
+\[
+ d\prod_{i\in S}(|A_i|-1).
+\tag{7.4}\label{eq:support-rank}
+\]
+The complete layer \(d\) is relatively hypertranscendental over all earlier layers.  Nevertheless
+fusion of two carriers in the earlier prefix can land exactly in that excluded next layer.
+\end{theorem}
+
+\begin{proof}
+Tail completeness makes the coefficient patterns of the anchored basis linearly independent
+after deletion of any finite prime set.  Applying successive logarithmic derivatives multiplies
+the depth-\(r\) prime coefficient by powers of \((r+1)\log p\).  At any finite differential
+order these form Vandermonde blocks of full rank.  Uniqueness of Dirichlet series then gives joint
+differential independence of every finite depth--state rectangle over \(\C(s)\).
+
+The exact-support sector contains
+\(\prod_{i\in S}(|A_i|-1)\) anchored states, and the depth interval contributes \(d\), proving
+\eqref{eq:support-rank}.  Relative independence from the complete complement follows by splitting
+a jointly independent family.
+
+Finally, \eqref{eq:fusion} sends depths \(e,r\) to \(e+r+1\).  On disjoint anchored supports,
+pointwise basis multiplication reaches the union support exactly.  Taking one input in the top
+prefix layer and the neutral depth-zero source produces a carrier in the next layer, which the
+preceding independence statement excludes from the differential field of the complete prefix.
+\end{proof}
+
+The two filtrations are independent:
+\[
+ \begin{array}{c|c|c}
+ \text{filtration}&\text{finite operation}&\text{invariant obstruction}\\ \hline
+ \text{valuation depth}&\text{differential-rational closure}&
+   \text{new HT layer}\\
+ \text{interaction support}&\text{polynomial multiplication}&
+   \text{support cannot exceed a union}\\
+ \text{Rees type}&\text{finite-order bounded transport}&
+   \text{flat radical is preserved}.
+ \end{array}
+\tag{7.5}\label{eq:three-filtrations}
+\]
+This is the source-level reason that adding finitely many derivatives, residue channels, jets,
+or Hilbert coordinates cannot manufacture the reflected half-normal face.
+
+\section{Divisor differentiation forces singular completion}\label{sec:divisor}
+
+The no-sewing theorem identifies what regular transport cannot do.  The next result identifies
+the exact singularity required at a divisor.
+
+\begin{proposition}[Universal divisor grade drop]\label{prop:divisor-drop}
+Let \(d\geq1\), \(B(t)=t^d\), and \(S(t)=dt^{d-1}\).  For \(t\neq0\),
+\[
+ \frac{S(t)^2}{B(t)^2}=\frac{d^2}{t^2}.
+\tag{8.1}\label{eq:inverse-square}
+\]
+If
+\[
+ G(t)=
+ \begin{pmatrix}
+ B(t)^2&S(t)\\
+ S(t)&C(t)
+ \end{pmatrix}
+\tag{8.2}\label{eq:divisor-gram}
+\]
+is positive semidefinite, then
+\[
+ C(t)\geq\frac{d^2}{t^2}.
+\tag{8.3}\label{eq:diagonal-blowup}
+\]
+Consequently no uniformly bounded positive completion exists near a nonzero divisor.
+\end{proposition}
+
+\begin{proof}
+Equation \eqref{eq:inverse-square} is immediate.  Positivity of a real symmetric
+\(2\times2\) matrix implies nonnegative determinant:
+\[
+ B(t)^2C(t)-S(t)^2\geq0.
+\]
+Division by \(B(t)^2>0\) gives \eqref{eq:diagonal-blowup}.
+\end{proof}
+
+The conclusion is independent of the multiplicity \(d\): multiplicity changes the coefficient,
+but differentiation always drops exactly one divisor grade and positivity always squares that
+loss.  A bounded completely positive extension is therefore in the wrong category at every
+zero.  The natural object is a divisor-graded graph or Rees correspondence in which division by
+the overlap is part of the domain.
+
+\section{An exact singular source graph to the \(\Xi\)-current}\label{sec:singular-graph}
+
+The exceptional category forced by Proposition~\ref{prop:divisor-drop} is not empty.  The
+squarefree activation supplies an exact singular graph before the divisor is selected.
+
+Write
+\[
+ Z_\square(s)=\frac{\zeta(s)}{\zeta(2s)},\qquad
+ C_\square(s)=-\frac{d}{ds}\log Z_\square(s).
+\tag{9.1}\label{eq:squarefree-current}
+\]
+For \(\Re\sigma>1\), \(\varepsilon\neq0\), and
+\(s=\sigma+u\varepsilon\) with \(\Re s>1\), define the moving overlap
+\[
+ B_{\sigma,\varepsilon}(u)=
+ \frac{Z_\square(\sigma+u\varepsilon)}{Z_\square(\sigma)}
+\tag{9.2}\label{eq:moving-overlap}
+\]
+and the unnormalized pointed Fisher numerator
+\[
+ S_{\sigma,\varepsilon}(u)=
+ 2\left(
+ \frac{d}{du}B_{\sigma,\varepsilon}(u)
+ +
+ \varepsilon C_\square(\sigma)B_{\sigma,\varepsilon}(u)
+ \right).
+\tag{9.3}\label{eq:fisher-numerator}
+\]
+
+\begin{proposition}[Exact overlap graph]\label{prop:overlap-graph}
+On the Euler domain,
+\[
+ S_{\sigma,\varepsilon}(u)
+ =2\varepsilon B_{\sigma,\varepsilon}(u)
+ \bigl(C_\square(\sigma)-C_\square(s)\bigr).
+\tag{9.4}\label{eq:score-identity}
+\]
+Hence the singular graph transform
+\[
+ \mathfrak G_{\sigma,\varepsilon}[S](u)=
+ 2C_\square(\sigma)
+ -\frac{S(u)}{\varepsilon B_{\sigma,\varepsilon}(u)}
+ -2\frac{d}{ds}\log A_\infty(s),
+\tag{9.5}\label{eq:graph-transform}
+\]
+where
+\[
+ A_\infty(s)=\frac12s(s-1)\pi^{-s/2}\Gamma(s/2),
+\]
+satisfies
+\[
+ \mathfrak G_{\sigma,\varepsilon}
+ [S_{\sigma,\varepsilon}](u)
+ =
+ 2\left(C_\square(s)-\frac{d}{ds}\log A_\infty(s)\right).
+\tag{9.6}\label{eq:completed-squarefree}
+\]
+Adding the strict-right correction \(4(-\zeta'/\zeta)(2s)\) yields the completed
+\(\Xi\)-logarithmic current exactly.
+\end{proposition}
+
+\begin{proof}
+Logarithmic differentiation of \eqref{eq:moving-overlap} gives
+\[
+ B'_{\sigma,\varepsilon}(u)
+ =-\varepsilon B_{\sigma,\varepsilon}(u)C_\square(s).
+\]
+Substitution into \eqref{eq:fisher-numerator} proves \eqref{eq:score-identity}; substitution of
+\eqref{eq:score-identity} into \eqref{eq:graph-transform} proves
+\eqref{eq:completed-squarefree}.
+
+Since
+\[
+ C_\square(s)
+ =-\frac{\zeta'(s)}{\zeta(s)}
+ +2\frac{\zeta'(2s)}{\zeta(2s)},
+\]
+the correction \(4(-\zeta'/\zeta)(2s)\) cancels the doubled squarefree subtraction and leaves
+the completed \(\Xi\)-current with the stated normalization.
+\end{proof}
+
+\begin{corollary}[The singularity is source-forced]\label{cor:source-forced}
+If \(Z_\square(s)\) has a zero of order \(d\), then the overlap
+\(B_{\sigma,\varepsilon}\) has order \(d\) while the numerator
+\(S_{\sigma,\varepsilon}\) has order \(d-1\).  The quotient in
+\eqref{eq:graph-transform} has a first-order pole, and every positive Gram realization of it
+requires the inverse-square diagonal growth of Proposition~\ref{prop:divisor-drop}.
+\end{corollary}
+
+\begin{proof}
+The derivative of a function with a zero of order \(d\) has order \(d-1\).
+Equation \eqref{eq:fisher-numerator} adds a term divisible by the overlap, so it does not cancel
+the leading derivative grade.  The remaining statements are
+Proposition~\ref{prop:divisor-drop}.
+\end{proof}
+
+The graph is the first positive survivor of the bounded no-go.  It divides before scalar
+continuation loses the source grade, incorporates the Gamma completion, and reaches the
+\(\Xi\)-current without enumerating zeros.  It is not a bounded dagger map and is not claimed to
+be one.
+
+\section{Four-unit contractivity and the boundary-tangent fracture}
+\label{sec:ward-boundary}
+
+The critical profile \(\Phi\) is even.  It measures reflection cost but, like every squared
+distance, cannot retain the sign of the tangent.  The relevant HT-geometric scalarization is
+instead a polarization.
+
+Let \(\mathcal H\) be a complex Hilbert space, let \(e,T\) be bounded operators, and use the
+commutator convention \([T,e]=Te-eT\).  For \(\psi,\chi\in\mathcal H\), define the pointed
+Fisher connection
+\[
+ F_{\psi,\chi}=\frac1{\sqrt2}
+ \bigl(|\chi\rangle\langle\psi|+|\psi\rangle\langle\chi|\bigr)
+ \tag{10.1}\label{eq:pointed-fisher}
+\]
+and the cutoff Ward pairing
+\[
+ \mathfrak W_{e,T}(\psi,\chi)=
+ \operatorname{Tr}\bigl([F_{\psi,\chi},e]^*[T,e]\bigr).
+ \tag{10.2}\label{eq:pointed-ward}
+\]
+The trace is well defined although \(e\) and \(T\) need not be Hilbert--Schmidt, because
+\(F_{\psi,\chi}\) has rank at most two.
+
+\begin{theorem}[Signed Fisher--Ward transgression]\label{thm:signed-transgression}
+For arbitrary bounded \(e,T\):
+\[
+ \mathfrak W_{e,T}(\psi,-\chi)
+ =-\mathfrak W_{e,T}(\psi,\chi),
+ \tag{10.3}\label{eq:ward-odd}
+\]
+and
+\[
+ \begin{aligned}
+ \mathfrak W_{e,T}(\psi,\chi)
+ &=\operatorname{Tr}\!\left(
+ F_{\psi,\chi}\,[[T,e],e^*]\right)\\
+ &=\frac1{\sqrt2}\left(
+ \langle\psi,[[T,e],e^*]\chi\rangle+
+ \langle\chi,[[T,e],e^*]\psi\rangle\right).
+ \end{aligned}
+ \tag{10.4}\label{eq:signed-transgression}
+\]
+If \(e=e^*\), the curvature is the ordinary double commutator \([[T,e],e]\).
+\end{theorem}
+
+\begin{proof}
+The connection is linear in \(\chi\), hence changes sign under
+\(\chi\mapsto-\chi\); so does \eqref{eq:pointed-ward}.  Expanding both commutators,
+passing bounded factors cyclically across the finite-rank connection, and regrouping gives
+\[
+ \operatorname{Tr}\bigl([F,e]^*[T,e]\bigr)
+ =\operatorname{Tr}\bigl(F[[T,e],e^*]\bigr).
+\]
+The trace of \(|x\rangle\langle y|B\) is \(\langle y,Bx\rangle\).  Applying this
+rank-one identity to the two summands of \(F_{\psi,\chi}\) proves the second line.
+\end{proof}
+
+Theorem~\ref{thm:signed-transgression} isolates what squaring had removed.  The universal
+Hellinger--Wick action supplies the size of the prime tangent; its pointed Fisher polarization
+supplies the sign.  Both are defined before divisor selection.  A source-internal RH route must
+therefore transport the pointed connection, or an equivalent odd object, through the singular
+graded graph.  Transporting only \(\Phi\), a norm, an affinity, or a divisor count cannot recover
+orientation after the fact.
+
+The singular current has an exact Hardy-space consumer.  Let \(\cD_R^+\) be the upper
+Schwarz representatives of strict-right centered \(\Xi\) zeros.  For \(\Re w>0\) and
+\(\alpha\geq0\), define the canonical-product phase
+\[
+ \Phi_\alpha(w)=
+ \prod_{\lambda\in\cD_R^+}
+ \frac{w+\lambda-\alpha}{w+\lambda+\alpha}\,
+ \frac{w+\bar\lambda-\alpha}{w+\bar\lambda+\alpha},
+ \qquad
+ V_\alpha(w)=1-\Phi_\alpha(w),
+ \tag{10.5}\label{eq:ward-phase}
+\]
+where the product is taken in the canonical Schwarz-paired normalization.  Each factor is a
+right-half-plane Cayley contraction.
+
+\begin{theorem}[Finite aperture versus boundary tangent]\label{thm:ward-fracture}
+Let \(K(w,z)=(w+\bar z)^{-1}\) be the right-half-plane Hardy kernel.
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item For every \(\alpha\geq0\), \(|\Phi_\alpha(w)|\leq1\) and
+\[
+ |V_\alpha(w)|\leq2.
+ \tag{10.6}\label{eq:ward-pointwise}
+\]
+\item On every finite packet \(w_1,\dots,w_n\) in the right half-plane,
+\[
+ \left[
+ 4K(w_i,w_j)
+ -V_\alpha(w_i)K(w_i,w_j)\overline{V_\alpha(w_j)}
+ \right]_{i,j=1}^n
+ \succeq0.
+ \tag{10.7}\label{eq:ward-four-unit-pick}
+\]
+\item The zero-aperture derivative is the continued anti-causal Ward response:
+\[
+ \left.\frac{\partial}{\partial\alpha}V_\alpha(w)\right|_{\alpha=0}
+ =\cR_\Xi(w).
+ \tag{10.8}\label{eq:ward-derivative}
+\]
+\item On the fixed Euler edge,
+\[
+ \boxed{\quad
+ \text{\rm RH}
+ \quad\Longleftrightarrow\quad
+ |\cR_\Xi(\tfrac12+it)|^2\leq4
+ \quad\text{for every }t\in\R.
+ \quad}
+ \tag{10.9}\label{eq:ward-rh-consumer}
+\]
+If \(\lambda=a+ib\) is a strict-right centered zero, then the adapted node
+\(w=\tfrac12-ib\) satisfies
+\[
+ |\cR_\Xi(w)|^2>4.
+ \tag{10.10}\label{eq:ward-adapted-violation}
+\]
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+For \(\Re w,\Re\lambda,\alpha>0\),
+\[
+ \left|\frac{w+\lambda-\alpha}{w+\lambda+\alpha}\right|\leq1.
+\]
+Schwarz pairing, convergence of the canonical product, and passage to the limit give
+\(|\Phi_\alpha|\leq1\).  The affine Schur transform
+\((1-\Phi_\alpha)/2\) is again a Schur multiplier; its Pick matrix is positive, which is
+\eqref{eq:ward-four-unit-pick}.  The pointwise bound is its one-node consequence.
+Differentiating the normalized canonical-product ratio at \(\alpha=0\) gives the absolutely
+convergent Schwarz-paired Cauchy response, proving \eqref{eq:ward-derivative}.
+
+If there are no strict-right zeros, the product is empty and
+\(\cR_\Xi=0\).  Conversely, let \(\lambda=a+ib\) with \(0<a<\tfrac12\).  At
+\(w=\tfrac12-ib\), the selected Schwarz pair contributes real part
+strictly larger than \(2\); every other pair contributes positive real part.  Hence
+\(\Re\cR_\Xi(w)>2\), which implies \eqref{eq:ward-adapted-violation}.  This proves
+\eqref{eq:ward-rh-consumer}.
+\end{proof}
+
+The theorem prevents a common category error.  The four-unit inequality is already true at every
+positive aperture; differentiating it at the boundary does not preserve the same bound.  Under
+false RH the failure is not hidden in a large packet: one zero-adapted node witnesses it.
+Accordingly, additional finite-aperture positivity cannot solve the problem.  The exact missing
+operation is a source-controlled passage from the finite-aperture contraction to its
+zero-aperture tangent.
+
+\section{Consequences for Riemann-hypothesis proof architecture}\label{sec:rh}
+
+The results answer structural questions that are often conflated.
+
+\subsection{What is the universal object behind the separate obstructions?}
+
+It is not a scalar zeta value or a zero count.  It is the reflected valuation tangent equipped
+with four pieces of structure:
+\[
+ \boxed{
+ \begin{gathered}
+ \text{even action }\Phi
+ \;+\;
+ \text{odd pointed Fisher polarization}\\
+ {}+\;
+ \text{depth--support filtration}
+ \;+\;
+ \text{Rees asymptotic type}
+ \end{gathered}}
+\tag{11.1}\label{eq:universal-source-object}
+\]
+The critical-window theorem identifies the first term simultaneously as Hellinger loss and
+prime-log fluctuation.  The signed transgression theorem proves that the second retains tangent
+orientation and couples canonically to Ward curvature.  Hypertranscendence proves that the
+depth--support filtration cannot be synthesized by finite differential closure.
+Type superselection proves independently that the all-orders-flat radical cannot be erased by
+finite-Rees-moderate transport; exact sewing has norm beyond every inverse Rees power.  The
+M\"obius--Gamma graph supplies the singular divisor-grade change, and the four-unit Ward response
+is the final consumer.
+
+This explains why the previous scalar shadows were individually insufficient.  Hellinger
+affinity and prime-clock energy see magnitude but are even.  Rees type sees the outer side but
+does not by itself control a boundary derivative.  Differential independence prevents a finite
+jet surrogate.  The pointed Fisher--Ward pairing is the first object in the chain that is both
+source-defined and odd.  The remaining RH problem is now a specific compatibility estimate:
+carry that odd, graded source tangent through the exact singular graph while retaining the
+four-unit boundary norm.
+
+\subsection{Where is the side of the critical line stored?}
+
+It is stored in the rate class of the prime-valuation Hellinger sector.  The sign of \(c\) is
+equivalent to a source-side asymptotic distinction:
+\[
+ c<0\iff A_N(c)=\Thetaas(a_N^{1/2}),
+ \qquad
+ c>0\iff A(c)\in\cF_\infty(a).
+\tag{11.2}\label{eq:orientation-answer}
+\]
+This information exists before a zero is chosen.
+
+\subsection{Why does ordinary product-measure singularity not orient reflection?}
+
+Kakutani's theorem records only whether \(\lim_NA_N(c)\) is zero.  It is zero for both
+signs.  The dichotomy is therefore a quotient of the finer type space:
+\[
+ \{\text{half-normal},\text{all-orders-flat}\}
+ \longrightarrow
+ \{\text{singular}\}.
+\tag{11.3}\label{eq:kakutani-quotient}
+\]
+The missing sign is lost by this quotient, not absent from the Euler source.
+
+\subsection{Why do bounded Hilbert and finite-jet completions fail to sew the pair?}
+
+They preserve \(\cF_\infty(a)\) whenever their full norm has fixed finite Rees order.
+This statement is independent of dimension and of the chosen coordinate frame.  It applies to a
+large class of bounded Hilbert-space, finite-matrix, and polynomially renormalized realizations.
+It does \emph{not} rule out every conceivable Hilbert--P\'olya or trace-formula construction; it
+rules out exactly those whose source reflection is finite-Rees-moderate.
+
+\subsection{How can reflection cross the fracture?}
+
+By paying modular drift in a complementary channel.  Theorem~\ref{thm:weyl-retuning} gives an
+explicit rank-one model: the reflection block is unitary precisely on \(|z|=1\), while the radial
+parameter \(z=p^c\) forces a local cost larger than \(p^{2c}\) for \(c>0\).  Scalar gauge cannot
+remove that channel ratio.  This answers the escape question positively and prevents the
+finite-Rees obstruction from being misread as a no-go for the standard adelic Weyl mechanism.
+
+\subsection{What object survives the obstruction?}
+
+The overlap graph \eqref{eq:graph-transform} survives.  Its division by
+\(B_{\sigma,\varepsilon}\) is precisely the divisor-grade singularity demanded by
+Proposition~\ref{prop:divisor-drop}.  The activation law shows why Fisher/Gamma whitening is
+unbounded, and Theorem~\ref{thm:superselection} shows why no finite differential field of
+valuation layers can replace the graph.
+
+\subsection{Where does zero exclusion remain?}
+
+At the zero-aperture derivative.  Theorem~\ref{thm:ward-fracture} proves four-unit
+nonexpansiveness at every finite aperture and identifies the derivative with the continued Ward
+response.  The sharp derivative bound is RH-complete, and one off-line pair violates it at one
+adapted Euler-edge node.  Thus the remaining task is neither another positivity construction nor
+another scalar equivalence: it is a source-derived tangent estimate that survives the
+divisor-grade and reflection-type fractures.
+
+These answers combine into one conservation law:
+
+\begin{theorem}[Source-type conservation law]\label{thm:conservation}
+Every transport whose source action is represented by a finite valuation/residue packet followed
+by a bounded operator family of fixed finite Rees order preserves the all-orders-flat radical.
+It cannot convert a positive reflected prime-valuation sector into its negative reflected
+sector.  Independently, no finite differential prefix of the valuation grid is closed under
+the exact source fusion.  A reflection architecture must therefore declare which of two
+mathematically distinct operations it performs:
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item \emph{source-internal transport}, which retains the ordinary-prime modular class and must
+use a divisor-graded correspondence whose exact reflected sewing cost is beyond every finite
+Rees order; or
+\item \emph{external modular retuning}, which can cross the fracture by carrying the drift in a
+complementary Weyl channel.
+\end{enumerate}
+The squarefree M\"obius--Gamma graph realizes the singular internal category on the Euler domain
+and reconstructs the continued \(\Xi\)-current.  The rank-one Weyl block realizes the external
+retuning category.  The finite-aperture Ward transport is contractive, but its RH-complete
+boundary tangent is not controlled by either fact alone.
+\end{theorem}
+
+\begin{proof}
+Finite channel enlargement preserves flatness coordinatewise by
+Corollary~\ref{cor:finite-packets}, and
+Theorem~\ref{thm:flat-invariance} handles the bounded operator stage.  The reflected sectors have
+opposite types by Theorem~\ref{thm:main}, so such a regular transport cannot sew them.
+Theorem~\ref{thm:superselection} separately excludes fusion closure inside every finite
+differential prefix.  Proposition~\ref{prop:overlap-graph} supplies the stated singular
+realization, and Theorem~\ref{thm:weyl-retuning} supplies the complementary modular-retuning
+realization.  Theorem~\ref{thm:ward-fracture} identifies the exact boundary consumer.
+\end{proof}
+
+\section{Scope and logical boundary}\label{sec:scope}
+
+The paper proves an unconditional source law, not the Riemann hypothesis.  The distinction is
+exact:
+
+\begin{enumerate}[label=\textup{(\arabic*)}]
+\item The reflected Hellinger critical-window law is a theorem for the actual rational primes:
+its exact profile is \(\Phi(c)\), and its product is asymptotically reciprocal to the
+prime-log Poisson/Wick cumulant.
+\item The Hellinger--Rees outer trichotomy is exact for the reflected zeta exponents; its
+negative-face normalization is the zeta ratio
+\(\zeta(1-c)^2/\zeta(1-2c)\).
+\item The all-orders type-superselection and essential-sewing theorems are unconditional,
+arithmetic-independent, and arbitrary-dimensional.  The prime-valuation sectors realize their
+flat and finite-grade inputs exactly.
+\item The pointed Fisher--Ward pairing is an unconditional finite-rank trace, is odd in the
+source tangent, and transgresses exactly to double-cutoff curvature.
+\item The Weyl modulus identity and its unitary locus are exact.  Their role is to exhibit
+modular retuning as a positive escape, not to infer RH from local unitarity.
+\item The occupancy/fibre disintegration, differential superselection, divisor grade drop, and
+singular squarefree-to-\(\Xi\) graph are exact identities or theorems.
+\item Finite-aperture four-unit nonexpansiveness, identification of its boundary derivative with
+the Ward response, and the Euler-edge four-unit zero-exclusion criterion are exact.
+\item No statement here proves that every nontrivial zero must be represented by a
+finite-Rees-moderate sewing operator.  Indeed the singular graph shows why such an assumption
+would be unnatural.
+\item The graph reconstructs the completed logarithmic current on its safe source domain.  It
+does not prove that the continued current has no off-line poles.
 \end{enumerate}
 
-Accordingly, the missing zero-exclusion input is now localized.  It cannot be obtained from
-divisor replication, finite differential closure, unit scalar assembly, or a bounded
-characteristic profile.  It must be an arithmetic estimate which controls the independent
-transfer directions before those reductions.  Theorem \ref{thm:quadrant} fixes the required
-form: a genuine bound on the full two-clock quadrant forces the rate to vanish; a bound only
-after \(\tau-d\) has been fixed does not.
+Thus the contribution is neither a decorative RH equivalence nor a hidden conditional proof.
+It changes and sharply localizes the proof target.  The source supplies a universal even action,
+an odd orientation carrier, a depth--support filtration, and an asymptotic type.  Standard
+external reflection can cross the type fracture only by modular retuning; internal transport
+must retain the pointed tangent through a singular divisor grade.  The remaining zero-exclusion
+statement is precisely the
+four-unit estimate for the zero-aperture Ward tangent.  Theorems
+\ref{thm:critical-window}, \ref{thm:signed-transgression}, \ref{thm:main},
+\ref{thm:flat-invariance}, and \ref{thm:weyl-retuning} classify the source data and reflection
+categories, Proposition~\ref{prop:overlap-graph} gives an explicit internal singular graph, and
+Theorem~\ref{thm:ward-fracture} gives the exact analytic consumer.
 
-This is a closed structural conclusion rather than an asserted proof of RH.  It supplies a new
-local--cofinal realization of the signed modular divisor charge and proves where that charge is
-preserved, where it is recoverable, and where the specified reductions destroy it.
+\section{Conclusion}\label{sec:conclusion}
 
-\section{Conclusion}
+The universal theorem is an asymptotic superselection law: an all-orders-flat germ and a
+nonzero finite-grade germ cannot be connected by finite-order bounded transport, in any
+dimension, and every exact connection has an essential scale singularity.  Prime-valuation
+reflection supplies a canonical arithmetic realization of its two asymptotic species.
 
-The largest-exponent partition of the integers produces more than a family of positive zeta
-subseries.  It is an information-resolving frame.  Its high channels reproduce the Riemann
-divisor exactly, its normalized transverse directions are maximally free over the zeta
-differential field, and its first two cofinal prime atoms reconstruct the complete spectral
-coordinate.
-
-The central identity is
+At the shrinking critical window, reflection is governed by the finite-size action
 \[
-\boxed{
-\Re\Res_{s=\rho}\!
-\left[-(s-\tfrac12)\frac{\Xi'(s)}{\Xi(s)}\right]
-=
-d_\rho\frac{\log|q^{1/2-\rho}|}{\log q}
-=
-d_\rho(\tfrac12-\Re\rho).}
-\tag{12.1}\label{eq:final-law}
+ \Phi(c)=4\int_0^1\frac{\sinh^2(cu)}u\,du.
 \]
-It identifies local divisor geometry and cofinal arithmetic transfer without dependence on the
-chosen atom scale.  The prime-two and prime-three phases then recover the missing vertical
-coordinate as the arithmetic instance of the exact minimal-rank-two modular tomography law
-realized by the first two shell atoms.
+Its exponential is the limiting reflected prime-valuation affinity, while \(\Phi\) itself is
+the limiting cumulant of the symmetric prime-log field.  The reciprocity
+\(\mathcal R_N(c)^2e^{K_N(2c/\log N)}\to1\) identifies information loss and prime-clock
+fluctuation as two representations of one source law.
 
-The resulting universal law is an information-localization principle: common-divisor data,
-finite differential structure, and spectral position are different kinds of information, even
-when they inhabit one explicit positive arithmetic object.  Within this resolution,
-critical-line selection demands an isometry of the last kind.  Reflection symmetry supplies
-reciprocal pairing but not isometry; diagonal
-two-clock conservation supplies a traveling wave but not neutrality.  Those distinctions are
-now exact theorems rather than heuristic warnings.
+Because this action is even, it cannot orient the critical tangent.  The complementary universal
+law is the pointed Fisher--Ward transgression: its trace is odd in the source tangent and equals
+the pairing of that tangent with double-cutoff curvature.  This is the pre-divisor orientation
+carrier that scalar affinities, squared normal coordinates, and divisor counts erase.
 
+At fixed displacement the same valuation family changes asymptotic type.  The negative face has
+the canonical half-normal Wold grade, the critical face has unit affinity, and the positive face
+is flat beyond every finite Rees order.  The negative normalization is not merely bounded: its
+ratio to the Wold volume converges exactly to
+\(\zeta(1-c)^2/\zeta(1-2c)\), because Hellinger affinity is the midpoint Jensen ratio of the
+finite Euler partition.
+
+This three-phase law refines Kakutani singularity by recovering the orientation that ordinary
+product-measure equivalence forgets.  More generally, all-orders flatness is a universal
+superselection radical: every fixed finite-Rees operator preserves it in arbitrary dimension,
+and every exact sewing to a nonzero finite-grade germ has norm beyond all inverse Rees powers.
+The prime source is an arithmetic realization of that theorem, not an assumption built into it.
+The same source has an independent depth--support superselection law: finite differential closure
+cannot manufacture the complete valuation tower, and fusion escapes every finite prefix.
+
+At a divisor, the only compatible escape is singular.  Differentiation drops one overlap grade,
+positivity forces an inverse-square diagonal blow-up, and the exact M\"obius--Gamma overlap graph
+uses that singularity to reconstruct the completed squarefree current and then the continued
+\(\Xi\)-current.
+
+The resulting universal lesson is precise.  Scalar reflection, finite jets, bounded
+finite-order operators, and finite differential closures are shadows of a finer source geometry:
+even action, odd tangent, depth--support filtration, and Rees asymptotic type.  Reflection either
+preserves that typed tangent internally or pays modular drift in a complementary Weyl channel;
+criticality is the unique zero-retuning locus.  At finite aperture the \(\Xi\) transport is
+already four-unit nonexpansive.  Zero exclusion sits exactly at its singular boundary derivative.  A viable
+source-internal RH architecture must therefore carry the pointed, divisor-graded valuation
+tangent to that Ward boundary before scalarization erases its sign or grade.
+
+\small
 \begin{thebibliography}{99}
 
-\bibitem{BombieriLagarias1999}
-E.~Bombieri and J.~C.~Lagarias,
-\newblock Complements to Li's criterion for the Riemann hypothesis,
-\newblock \emph{J. Number Theory} \textbf{77} (1999), 274--287.
-\newblock \href{https://doi.org/10.1006/jnth.1999.2392}
-{doi:10.1006/jnth.1999.2392}.
+\bibitem{ArratiaBarbourTavare1997}
+R.~Arratia, A.~D.~Barbour, and S.~Tavar\'e,
+\emph{Random combinatorial structures and prime factorizations},
+Notices Amer. Math. Soc. \textbf{44} (1997), 903--910.
 
-\bibitem{ConnesConsani2021}
-A.~Connes and C.~Consani,
-\newblock The scaling Hamiltonian,
-\newblock \emph{J. Operator Theory} \textbf{85} (2021), 257--276.
-\newblock \href{https://arxiv.org/abs/1910.14368}{arXiv:1910.14368}.
+\bibitem{ArratiaBarbourTavare2003}
+R.~Arratia, A.~D.~Barbour, and S.~Tavar\'e,
+\emph{Logarithmic Combinatorial Structures: A Probabilistic Approach},
+EMS Monographs in Mathematics, European Mathematical Society, 2003.
 
-\bibitem{GauthierXarles2009}
-P.~M.~Gauthier and X.~Xarles,
-\newblock Perturbations of \(L\)-functions with or without non-trivial zeros off the
-critical line,
-\newblock \href{https://arxiv.org/abs/0911.5135}{arXiv:0911.5135}.
+\bibitem{CalegariVenkatesh}
+F.~Calegari and A.~Venkatesh,
+\emph{A torsion Jacquet--Langlands correspondence},
+preprint, \S6.6.1,
+\url{https://arxiv.org/abs/1212.3847}.
 
-\bibitem{GrosswaldSchnitzer1978}
-E.~Grosswald and F.~J.~Schnitzer,
-\newblock A class of modified \(\zeta\) and \(L\)-functions,
-\newblock \emph{Pacific J. Math.} \textbf{74} (1978), 357--364.
-\newblock \href{https://doi.org/10.2140/pjm.1978.74.357}
-{doi:10.2140/pjm.1978.74.357}.
+\bibitem{Connes1999}
+A.~Connes,
+\emph{Trace formula in noncommutative geometry and the zeros of the Riemann zeta function},
+Selecta Math. (N.S.) \textbf{5} (1999), 29--106.
 
-\bibitem{Kolchin1973}
-E.~R.~Kolchin,
-\newblock \emph{Differential Algebra and Algebraic Groups},
-\newblock Academic Press, New York, 1973.
+\bibitem{Edwards1974}
+H.~M.~Edwards,
+\emph{Riemann's Zeta Function},
+Academic Press, 1974.
 
-\bibitem{Li1997}
-X.-J.~Li,
-\newblock The positivity of a sequence of numbers and the Riemann hypothesis,
-\newblock \emph{J. Number Theory} \textbf{65} (1997), 325--333.
-\newblock \href{https://doi.org/10.1006/jnth.1997.2137}
-{doi:10.1006/jnth.1997.2137}.
+\bibitem{Hellinger1909}
+E.~Hellinger,
+\emph{Neue Begr\"undung der Theorie quadratischer Formen von unendlichvielen Ver\"anderlichen},
+J. Reine Angew. Math. \textbf{136} (1909), 210--271.
 
-\bibitem{Nagoshi2016}
-H.~Nagoshi,
-\newblock The hypertranscendence of \(L\)-functions for
-\(\mathrm{GL}_m(\mathbb A_{\mathbb Q})\),
-\newblock \emph{Bull. Aust. Math. Soc.} \textbf{93} (2016), 388--399.
-\newblock \href{https://doi.org/10.1017/S000497271500129X}
-{doi:10.1017/S000497271500129X}.
+\bibitem{Kakutani1948}
+S.~Kakutani,
+\emph{On equivalence of infinite product measures},
+Ann. of Math. (2) \textbf{49} (1948), 214--224.
+
+\bibitem{Jana2021}
+S.~Jana,
+\emph{Applications of analytic newvectors for \(\mathrm{GL}(n)\)},
+Math. Ann. \textbf{380} (2021), 915--952.
+
+\bibitem{KhelifScarpalezos2021}
+A.~Khelif and D.~Scarpalezos,
+\emph{Maximal closed ideals of the Colombeau algebra of generalized functions},
+Monatsh. Math. \textbf{194} (2021), 119--150.
+
+\bibitem{Mertens1874}
+F.~Mertens,
+\emph{Ein Beitrag zur analytischen Zahlentheorie},
+J. Reine Angew. Math. \textbf{78} (1874), 46--62.
 
 \bibitem{Ostrowski1920}
 A.~Ostrowski,
-\newblock \"Uber Dirichletsche Reihen und algebraische Differentialgleichungen,
-\newblock \emph{Math. Z.} \textbf{8} (1920), 241--298.
-\newblock \href{https://doi.org/10.1007/BF01206523}
-{doi:10.1007/BF01206523}.
+\emph{\"Uber Dirichletsche Reihen und algebraische Differentialgleichungen},
+Math. Z. \textbf{8} (1920), 241--298.
 
 \bibitem{Pong2016}
-W.~Y.~Pong,
-\newblock Applications of differential algebra to algebraic independence of arithmetic
-functions,
-\newblock \emph{Acta Arith.} \textbf{172} (2016), 149--173.
-\newblock \href{https://doi.org/10.4064/aa8112-12-2015}
-{doi:10.4064/aa8112-12-2015}.
+W.-Y.~Pong,
+\emph{Applications of differential algebra to algebraic independence of arithmetic functions},
+Acta Arith. \textbf{172} (2016), 149--173.
 
-\bibitem{Postnikov1949}
-A.~G.~Postnikov,
-\newblock On the differential independence of Dirichlet series,
-\newblock \emph{Dokl. Akad. Nauk SSSR} \textbf{66} (1949), 561--564
-\newblock (in Russian).
+\bibitem{Riemann1859}
+B.~Riemann,
+\emph{\"Uber die Anzahl der Primzahlen unter einer gegebenen Gr\"osse},
+Monatsber. K\"onigl. Preuss. Akad. Wiss. Berlin (1859), 671--680.
 
 \bibitem{ShapiroSparer1986}
-H.~N.~Shapiro and G.~H.~Sparer,
-\newblock On algebraic independence of Dirichlet series,
-\newblock \emph{Comm. Pure Appl. Math.} \textbf{39} (1986), 695--745.
-\newblock \href{https://doi.org/10.1002/cpa.3160390602}
-{doi:10.1002/cpa.3160390602}.
+H.~N.~Shapiro and G.~Sparer,
+\emph{On algebraic independence of Dirichlet series},
+Comm. Pure Appl. Math. \textbf{39} (1986), 695--745.
 
 \bibitem{Titchmarsh1986}
 E.~C.~Titchmarsh,
-\newblock \emph{The Theory of the Riemann Zeta-Function}, 2nd ed.,
-revised by D.~R.~Heath-Brown,
-\newblock Oxford University Press, Oxford, 1986.
-
-\bibitem{Voros2014}
-A.~Voros,
-\newblock Zeta functions over zeros of zeta functions and an exponential-asymptotic view of
-the Riemann hypothesis,
-\newblock \href{https://arxiv.org/abs/1403.4558}{arXiv:1403.4558}.
+\emph{The Theory of the Riemann Zeta-Function}, 2nd ed.,
+revised by D.~R.~Heath-Brown, Oxford University Press, 1986.
 
 \end{thebibliography}
 

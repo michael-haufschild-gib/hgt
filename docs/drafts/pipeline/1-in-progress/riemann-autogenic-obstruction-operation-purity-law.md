@@ -766,9 +766,29 @@ At a zero \(\rho\) of order \(d\),
 Horizontal zero displacement is therefore the radial residue of the source-generated
 exponent-depth successor law.
 
-`[OPEN CORE] [SOURCE_DEPTH_CONNECTION_HERGLOTZ_PURITY]`
+The balanced scalar cannot be Herglotz. In centered coordinate
+\(u=1/2+iz\), \(\Phi(z)=\Xi(1/2+iz)\), it is
+\[
+ -z\frac{\Phi'(z)}{\Phi(z)}.
+\]
+At paired real zeros \(a,-a\), its residues are \(-da,+da\). Thus it has incompatible Herglotz
+residue orientations even under RH. It is the Euler contraction
+\[
+ \iota_{z\partial_z}\!\left(-d\log\Phi\right),
+\]
+not the logarithmic connection coefficient itself. The DNC exceptional fibre instead supplies
+\[
+ d_u\log\mathscr X_0(0,u)
+ =
+ -\frac{\Xi'(u)}{\Xi(u)}\,du,
+\]
+whose centered coefficient has residue \(-d\) at every real zero. Its Herglotz property is the
+existing criterion equivalent to RH. See
+`docs/drafts/pipeline/5-failed/source-depth-euler-contraction-herglotz-no-go.md`.
 
-Construct a matrix-positive operator realization of the same depth transitions, compatible with
-prime-winning Čech incidence and Gamma reflection, and prove its centered logarithmic derivative
-is Herglotz after Xi conormal base change. Herglotz poles in centered coordinate are real, which
-would force every \(\rho\) onto the critical line. Real-half-line scalar positivity is not enough.
+`[REVISED OPEN CORE] [SOURCE_DEPTH_LOG_CONNECTION_FORM_REALIZATION]`
+
+Construct an explicit finite-rectangle source Green identity whose boundary Weyl form
+differentiates to the uncontracted DNC connection and whose matrix positivity is stable under
+prime-face enlargement, exponent-depth enlargement, and strict Xi conormal base change. Without
+this divisor-free source realization, the statement merely renames the known RH criterion.

@@ -337,6 +337,47 @@ The first genuinely open estimate is therefore not “purity” or “conservati
 for the explicit vectors `(GS14)` and explicit maps `(GS5)`, derived uniformly from the
 prime--Gamma/co-Poisson source before enumerating its annihilator characters.
 
+## Full labelled-history and adjoint-mate refinement
+
+The companion card
+`../not_new_scientific_knowledge/boolean-sonin-full-history-mate-fracture-law.md`
+iterates the two literal maps `(GS5)` without imposing \(p=q\).  The normalized map to all
+\(2^N\) labelled forward/inverse histories is a contraction, and on the boundary section its
+exact squared energy is
+\[
+ \left(\frac{|\lambda|^2+|\lambda|^{-2}}2\right)^N\|y_{\rho,0}\|^2.
+\tag{GS26}
+\]
+This constructs the finite coupled Boolean--Sonin carrier left open by the scalar diagonal
+analysis.  It does not prove `(GS24)`: the parent one-face bound `(GS17)` is still the stronger
+growth lower bound.
+
+The refinement identifies a different exact obstruction.  If algebraic inverse lifts in the two
+orientations are compared with the actual Hilbert adjoints of \(T_j^\pm\), then every off-unitary
+character forces one conormal-line projection of the adjoint-mate defects to be at least
+\[
+ \left||\lambda|^2-|\lambda|^{-2}\right|.
+\tag{GS27}
+\]
+More exactly, if \(d_j^\pm\) are the two projected scalar coefficients, then
+\[
+ \lambda^{-1}d_j^+-\lambda d_j^-
+ =
+ |\lambda|^2-|\lambda|^{-2}.
+\tag{GS28}
+\]
+The unknown evaluation-kernel norm growth and every orthogonal aperture leak cancel from
+`(GS28)`.  Thus the missing Gamma/co-Poisson reporter mate is not merely uncontrolled at infinity:
+off line, its signed radial curvature is macroscopically nonzero at every finite stage.
+
+The later card `burnol-sonin-off-axis-aperture-type-rigidity.md` closes `(GS24)` as an ambient
+estimate strategy.  On every off-axis annihilator fibre, the evaluation norm has exactly the
+exponential aperture type forced by `(GS17)`, and the independent-face lower bounds are sharp up
+to constants.  Moreover, raw subexponential growth of critical-line evaluators is not supplied, so
+`(GS24)` may be stronger than RH.  The logically smaller surviving target is therefore the
+same-fibre radial mate equality obtained by setting the left side of `(GS28)` to zero from an
+off-divisor ordinary-prime source comparison.
+
 ## Hostile audit
 
 1. **No boundedness sleight of hand.**  The raw critical-line evaluation norm may still grow with
@@ -349,9 +390,11 @@ prime--Gamma/co-Poisson source before enumerating its annihilator characters.
 4. **No zero-fitted norm.**  The Hilbert spaces, projections, Gamma completion, co-Poisson
    subspaces, and bonding maps are fixed before \(\rho\).  The scalar factors in `(GS14)` are
    boundary eigencharacters, not a definition of a new target norm.
-5. **No false commutation claim.**  \(T_j^+\) and \(T_j^-\) need not commute on the whole quotient.
-   Equation `(GS16)` asserts path independence only on the co-Poisson boundary section, where the
-   off-divisor error in `(GS10)` vanishes.
+5. **No commutation from one section alone.**  Equation `(GS16)` by itself asserts path
+   independence only on the co-Poisson boundary section.  The later theorem
+   `gamma-copoisson-sonin-full-quotient-flatness-syzygy.md` upgrades this to an operator identity
+   on the whole quotient by using every confluent zero jet and Burnol completeness.  That upgrade
+   is not a formal consequence of the two zeroth-section identities alone.
 6. **No hidden RH proof.**  `(GS24)` is unproved and RH-bearing.  The theorem's unconditional
    advance is the literal comparison, two independent contractions, exact boundary section, and
    charge-calibrated escape lower bound.
@@ -408,7 +451,10 @@ those analytic interfaces exist.
 - [x] 0 → 1: exact source spaces, maps, boundary ideal, and falsifiers specified
 - [x] 1 → 2: `(GS10)`--`(GS23)` dependency-closed on paper
 - [x] direct Lean verification of the local/cofinal charge parent
-- [ ] prove the literal source upper estimate `(GS24)`
+- [x] full labelled binary-history contraction and adjoint-mate fracture proved in companion card
+- [x] full-quotient square flatness and all finite higher coherence proved in companion card
+- [x] generic Sonin-estimate route to `(GS24)` closed by exact aperture-type theorem
+- [ ] prove the off-divisor same-fibre radial mate equality `(GS28)=0`
 - [ ] add Burnol evaluation/co-Poisson interfaces to Lean
 - [ ] formalize `(GS10)`--`(GS23)` after those interfaces exist
 - [ ] use `(GS25)` only after `(GS24)` has an unconditional source proof

@@ -5072,3 +5072,119 @@ condition.  At present this is a sharper interpretation of
   coercive physical-learning results.  Extracted internal-adjoint purity plus cofinal coercivity as
   the exact surviving arithmetic design constraint; rejected local goodness, Cauchy first mode,
   time-reversal rhetoric, and generic augmented variationality as RH producers.
+
+## 21. Literal Sonin quotient is flat; horizontal defect is relative torsion
+
+The paper theorem
+`../2-fully-proven/new_scientific_knowledge/gamma-copoisson-sonin-full-quotient-flatness-syzygy.md`
+closes one ambiguity in Sections 13, 19, and 20.  For the actual Gamma-completed co-Poisson
+quotient maps
+\[
+ T_j^+=E_jU_r^*|_{Y_{j+1}},
+ \qquad
+ T_j^-=E_jU_r|_{Y_{j+1}},
+\]
+Burnol completeness upgrades zero-section square commutation to the operator identity
+\[
+ T_j^+T_{j+1}^-=T_j^-T_{j+1}^+
+ \quad:Y_{j+2}\to Y_j.
+\tag{212}
+\]
+All finite higher quadrant coherence follows.  Off the divisor, the two co-Poisson error
+reporters satisfy an exact vector-valued first syzygy; after cancelling their common local Xi
+factor, that syzygy remains nondivisive at every conormal point.
+
+Thus the literal Sonin connection is already strict and flat on the full source quotient.
+Neither generic \(A_\infty\) curvature nor failure of independent-quadrant commutation is the
+remaining RH obstruction in this chart.
+
+On the one-dimensional top conormal line, compare the determinants of the two edge maps in
+orthonormal bases.  Their common unknown evaluator-norm ratio cancels, leaving
+\[
+ \tau_r(\rho)
+ =
+ {|\det T_j^+|\over|\det T_j^-|}
+ =
+ |\lambda_r(\rho)|^2
+ =
+ r^{2\operatorname{Re}\rho-1},
+\tag{213}
+\]
+and
+\[
+ \log\tau_r(\rho)
+ =
+ -{2Q_\rho\over m_\rho}\log r.
+\tag{214}
+\]
+The determinant character factors through the anti-diagonal
+\(\mathbb Z^2/\langle(1,1)\rangle\).  Diagonal restriction kills it.  The finite Sonin
+adjoint-mate curvature is
+\[
+ \tau_r(\rho)-\tau_r(\rho)^{-1}.
+\tag{215}
+\]
+
+This identifies the invariant in `(146)` more precisely:
+
+```text
+finite bulk connection:
+  flat and strictly coherent;
+
+secondary boundary anomaly:
+  anti-diagonal relative determinant torsion;
+
+Hermitian reader:
+  nonmetricity / adjoint-mate curvature;
+
+critical line:
+  unimodular relative torsion.
+```
+
+The correction is hostile to several possible overclaims.
+
+1. Flatness cannot imply RH; reciprocal rank-one characters are flat for every nonzero
+   \(\lambda\).
+2. Self-duality of a reflected orbit sends \(\tau\) to \(\tau^{-1}\) and permits off-line pairs.
+   The missing theorem must be same-source, same-fibre determinant unitarity, not orbitwise
+   reciprocity.
+3. Ordinary Reidemeister or analytic torsion language does not construct the essential
+   completion.  A source lattice alone is also insufficient: the integral Laurent class
+   \(t\) specializes under \(t\mapsto p^\alpha\) to determinant modulus \(p^\alpha\) for arbitrary
+   real \(\alpha\).  Integrality quantizes Laurent exponent, not horizontal regulator.  See
+   `../5-failed/xi-relative-torsion-integral-degree-quantization.md`.
+4. The new theorem discharges finite Sonin square and higher coherence only.  It does not prove
+   the prime-subset, Gamma/BV, positive-star, or reduced-Tor assembly required by `(195)`--`(205)`.
+
+The exact surviving producer is therefore not a scalar unimodularity assertion:
+
+`[OPEN CORE] [XI_SOURCE_NORMAL_STOKES_BOCKSTEIN_DAGGER_LANDING]`
+
+> Construct before ordinary closure one strict source-normal exact-couple morphism from the
+> computed prime first-trace essential normal edge to the nondivisive Gamma/co-Poisson/Sonin
+> source-error syzygy underlying `(212)`.  Prove that its Bockstein is the full reduced Xi
+> principal conormal, including top multiplicity jets, and that the same morphism identifies
+> Riemann inverse duality with Hilbert adjunction.
+
+On a nonzero conormal line, inverse duality acts by
+\(\lambda_r(\rho)^{-1}\), while adjunction acts by
+\(\overline{\lambda_r(\rho)}\).  Their equality gives
+\(|\lambda_r(\rho)|=1\), and `(213)` gives
+\(\operatorname{Re}\rho=\tfrac12\).  Full-quotient flatness means no separate higher-cube
+strictification remains: once the morphism respects generating edges, all finite higher
+coherence follows from `(212)`.  Proving only orbitwise torsion reciprocity, finite determinant
+identities, integral source-lattice existence, or a determinant after enumerating zeros does not
+meet the target.
+
+- 2026-07-31 — Burnol confluent-evaluator completeness upgraded independent-quadrant path
+  commutation to full-quotient operator flatness and all finite coherence.  Computed the
+  norm-independent anti-diagonal relative torsion and identified Julia residue, shell entropy,
+  Sonin Lyapunov exponent, and mate curvature as its logarithmic and Hermitian charts.  Moved the
+  frontier from connection strictification to source-derived same-fibre torsion unimodularity in
+  the essential determinant completion.
+- 2026-07-31 — Killed integral-degree quantization by the universal Laurent-module base-change
+  counterexample: an integral determinant class has arbitrary real archimedean regulator after
+  spectral specialization.  Replaced scalar “torsion unimodularity” with the literal
+  first-trace-to-Sonin source-normal Bockstein morphism and dagger landing.  Equation `(212)`
+  discharges all finite higher coherence; strict construction, Xi-conormal identification, and
+  dagger naturality are the remaining RH-bearing theorem.

@@ -1864,18 +1864,127 @@ The revised exact open core is:
 
 `[OPEN CORE: XI_CONTROLLED_CUBICAL_HOMOTOPY_BASE_CHANGE]`
 
-Construct the higher homotopies extending `(105)` on every finite Kummer/BV prime cube; attach
-their literal Gamma, first-trace, Möbius-phase, and Poisson/Tate records; prove source-uniform
-estimates in the critical Gevrey--Rees/bornological scale; and form the strict all-prime
-totalization.  Then prove that Xi Cartier base change is conservative on this controlled
-homotopy and that its gauge-diagonal positive functional is the same specialization, not an
-independently fitted Poisson state.  Failure must produce a specific uncontrolled higher
-homotopy, nonstrict cofinal boundary, lost multiplicity jet, or mismatch between cyclic and
-positive restrictions.
+Use the canonical separability diagonal of every finite Boolean prime algebra to extend `(105)`
+in all Hochschild degrees; attach its literal Gamma, first-trace, Möbius-phase, and Poisson/Tate
+records; and form a strict all-prime totalization despite the exact cofinal diagonal fracture
+below.  Then prove that Xi Cartier base change is conservative on this controlled homotopy and
+that its gauge-diagonal functional is the same specialization, not an independently fitted
+Poisson state.  Failure must produce a nonstrict cofinal boundary, lost essential record, lost
+multiplicity jet, or mismatch between cyclic and boundary restrictions.
 
 This is where genuinely new mathematics is required.  Algebraic bar/Koszul comparison maps are
 parent theory; the candidate-new theorem is their source-canonical controlled all-prime
 Euler--Gamma/Poisson totalization and conservative Xi conormal base change.
+
+### All-degree finite closure and exact cofinal fracture
+
+The later theorem
+`../2-fully-proven/not_new_scientific_knowledge/finite-boolean-hochschild-diagonal-cofinal-fracture.md`
+removes the unspecified finite higher-homotopy clause.  For
+\(A_P=C(\{\pm1\}^P)\), the separability diagonal
+\[
+ D_P=\sum_\omega\delta_\omega\otimes\delta_\omega
+ =2^{-|P|}\sum_{\chi}\chi\otimes\bar\chi
+\]
+has projective norm one and supplies an all-degree Hochschild contraction of norm at most one,
+independent of \(|P|\).  Hence finite braid and higher-cube fillers carry no hidden growth.
+
+Infinity nevertheless fails strictly.  Under unit-extension from \(P\) to
+\(P\cup\{q\}\),
+\[
+ \|D_{P\cup\{q\}}-\widetilde D_P\|_\pi=1.
+\]
+Thus the canonical finite contractions are bounded but never Cauchy.  A virtual diagonal in a
+bidual is still finite-Rees and, by the arbitrary-dimensional flat-radical theorem, cannot sew
+the actual Wold irregular/half-normal fracture.
+
+The later theorem
+`../2-fully-proven/not_new_scientific_knowledge/wold-boolean-diagonal-renormalization-mismatch.md`
+also kills scalar essential renormalization.  In the infinite Boolean prime cube, \(D_P\) is the
+indicator that the two coordinates agree on \(P\).  Its unique nonzero finite-measure
+normalization is \(2^{|P|}\), of saturated accelerated type.  Every scalar family with
+\(\log^+c_x=O(a_x^{-K})\) for fixed \(K\), including the Gamma gauge \(\exp(C/a_x)\), gives the
+zero measure.  The open core is therefore narrower:
+
+1. construct a non-scalar coupled Boolean--Wold totalization whose distributional/Iwahori channel
+   retains the equality diagonal while its Wold marginal retains the ordinary-prime modular class;
+2. retain that coupling in a strict all-prime Tate/irregular totalization; and
+3. prove the explicit Gamma/co-Poisson/Sonin Xi boundary section is the specialization of the
+   same coupled class, not a scalar renormalization or an independently fitted Weyl record.
+
+The same mismatch card constructs the first non-scalar carrier: the Wold-weighted thermofield
+vectors factor exactly under prime enlargement and define a strict incomplete all-prime tensor
+product.  Their overlap is the Hellinger/Kakutani product, so off-line reflection is precisely a
+sector change in this carrier.  This is a standard-form vector for the diagonal multiplication
+correspondence, not a Hochschild separability diagonal or contracting homotopy.  What remains in
+item 1 is not existence of a product Hilbert vector; it is coupling that standard-form carrier
+to the complete Boolean Hochschild/Tate/Gamma source complex without losing its fixed Wold
+marginal.
+
+Essential singularity is therefore necessary, but external essential intertwiners remain
+nonselective.  The RH-bearing datum is source identity of the coupled Boolean--Wold class before
+and after Xi boundary specialization.
+
+### Exact essential action of exponent-depth reporting
+
+The later theorem
+`../2-fully-proven/not_new_scientific_knowledge/wold-depth-xi-essential-amplification-law.md`
+removes the phrase “essential singularity” as an unspecified escape.  The step
+\(M\mapsto M+1\) adds the Wold maximum shell
+\[
+ \delta_{M+1},
+ \qquad
+ \|\delta_{M+1}\|
+ \sim2^{-(M+2)/2},
+\]
+while the completed bounded-exponent reporter changes by
+\[
+ {1\over M+1}
+ \left(-u{\Xi'(u)\over\Xi(u)}+o(1)\right).
+\]
+Consequently any bounded linear realization of that literal source-depth successor has
+\[
+ \|T_M\|
+ \gtrsim {2^{(M+2)/2}\over M+1},
+ \qquad
+ \liminf_{M\to\infty}{\log\|T_M\|\over M+1}
+ \geq{\log2\over2}.
+\]
+The action \((\log2)/2\) is source-fixed by the least integer \(2^{M+1}\), and is the same
+half-density action appearing in the positive shell conormal and the \(r=2\) Sonin character.
+
+The companion theorem
+`../2-fully-proven/not_new_scientific_knowledge/prime-log-action-condensation-normal-cone-law.md`
+shows that this leading action is only the first face of a complete system.  At fixed spectral
+coordinate,
+\[
+ {1\over\zeta((m+1)s)}-{1\over\zeta(ms)}
+ =
+ \sum_{n\geq2}\mu(n)(n^{-s}-1)e^{-ms\log n},
+\]
+and successive asymptotic deflation recovers every squarefree action \(\log n\).  Under the
+diagonal normal blow-up \(s=u/(m+1)\), all these exponentially separated sectors condense into
+the reciprocal-zeta germ, while the normalized shell difference tends to
+\(-u\zeta'(u)/\zeta(u)\); Gamma completion gives \(-u\Xi'(u)/\Xi(u)\).  The required essential
+connection must therefore retain the full prime-log action system, not merely amplify its leading
+dyadic sector.
+
+The algebraic carrier for these actions is not missing:
+`HTGeometry.DirFormal = ArithmeticFunction (ℂ[X])` already gives the complete formal Dirichlet
+ring, its least-action valuation, and its spectral-shift automorphism in Lean.  What remains is
+the analytic graph completing that carrier simultaneously toward reciprocal Xi, Gamma/co-Poisson,
+and the reflected Laurent half.  This prevents the new conjecture from degenerating into “name a
+Hahn field”: coefficient completion is available; the source-continuation dagger is not.
+
+This sharpens the open core but does not solve it.  A fitted rank-one map attains the lower bound
+for any reporter, so essential growth alone is completely nonselective.  The missing comparison
+must be one source-global irregular connection, compatible across every depth and prime cutoff,
+whose associated boundary section is the literal Gamma/co-Poisson/Sonin section and whose
+independent quadrant growth is subexponential after the source-fixed Stokes action is retained.
+Equivalently: construct the operation, do not fit its norm.  The all-orders-flat theorem excludes
+finite-Rees realizations; the disjoint-sector theorem excludes closed source-linear off-line
+realizations after ordinary boundary descent; the only live site is the source-normal relative
+class before closure.
 
 ## 15. New infinite invariant: positive-shell conormal activation rate
 
@@ -2342,3 +2451,29 @@ Primary references:
   provide finite symmetric falsifiers, but do not provide compatible or uniformly separated
   cofinal lifts. Isolated `HERMITIAN_CLOCK_COFINAL_PERSISTENCE` as the only bridge by which the
   physics theorem could support Xi source saturation.
+- 2026-07-30 — Removed finite Gevrey--Rees bidegree as the decisive sewing requirement.
+  Reflected ordinary-prime product-Poisson representations are disjoint off line, so every
+  nonzero closed densely defined map linear over the same source cylinder algebra is impossible,
+  even with arbitrary essential norm growth.  Polar decomposition reduces any such map to a
+  forbidden bounded partial-isometry intertwiner.  The narrowed target is a nonzero closed
+  source-linear producer--reporter round-trip graph carrying each Xi conormal; external Weyl
+  joining evades it only by modular retuning, and a singular relation only by nonclosability.
+- 2026-07-30 — Closed the multivalued loophole: every closed subspace relation invariant under
+  two disjoint \(C^*\)-representations is reducing, and its projection has block-diagonal
+  commutant form; hence the relation splits into pure input and pure output parts.  Arbitrary
+  essential growth and closed multivaluedness therefore do not sew off-line prime-Poisson
+  sectors.  Hostile type audit also retired the closed \(C(\mathbb T^{\mathbb P})\)-module graph
+  as a direct Meyer target: \(M_\zeta\) carries only a locally convex dilation action, and
+  upgrading its generalized zero characters to a unitary/tempered prime boundary is already the
+  RH-bearing Hodge theorem.  The surviving object must be a relative class for the
+  Wold--Toeplitz extension before boundary descent; essentiality is non-descent of the anomaly
+  ideal, not merely operator blow-up.
+- 2026-07-30 — Tested the correction on the literal first-trace source graph.  Lean already
+  proves that its ordinary closure is the full source space times the zero-vacuum response
+  hyperplane, hence exactly the maximally split relation predicted above.  The coupled algebraic
+  graph survives only through its exponential normal data
+  \(a_p(-\log b_p)\to1\), invisible at every finite Rees order.  This forces the construction
+  order: take the source-normal/exponential associated graded before strict completion.
+  Completing first irreversibly erases the coupling.  The remaining Xi theorem is a strict
+  graded-relative boundary descent/Bockstein theorem, not a closed-graph theorem on the ordinary
+  Hilbert completion.

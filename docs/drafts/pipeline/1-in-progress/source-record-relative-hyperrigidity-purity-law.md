@@ -381,3 +381,35 @@ source-compatible dilation.
 - 2026-07-29 — Reinterpreted completion fractures as nonmaximal representations and their
   complementary dilation records.  Isolated relative hyperrigidity of the explicit source
   reporter system, not generic HT or a bare \(C^*\)-boundary, as the RH-bearing theorem.
+
+## 2026-07-30 boundary-relation sharpening
+
+The reflected prime-Poisson sectors add an exact categorical reason why the word “relative” is
+load-bearing.  Off the critical line their \(C(\mathbb T^{\mathbb P})\)-representations are
+disjoint.  Every closed module relation between disjoint representations is a reducing subspace
+of their direct sum; its orthogonal projection lies in the commutant, whose off-diagonal
+intertwiner blocks vanish.  Hence every such relation splits into uncoupled source and target
+parts.
+
+Therefore no closed operator, unbounded graph, or closed multivalued relation on the plain
+\(C^*\)-boundary can realize the missing reflection, regardless of essential norm growth.  A
+nonzero coupling must act through \(J_\Gamma\), twist the boundary algebra, or fail closed spatial
+descent.  The standard Weyl intertwiner uses the second escape.  The actual first-trace and
+source-normal graphs exhibit the third.
+
+This sharpens conjecture `(9)`: source relative hyperrigidity must prove that the literal
+Euler--Gamma/co-Poisson class has a nonzero anomaly-ideal transgression whose critical boundary
+descent becomes spatial.  It must not postulate a \(C^*\)-module structure on Meyer's nuclear
+quotient; constructing such a unitary/tempered structure while retaining every zero jet is
+already the missing RH-bearing Hodge theorem.
+
+The actual-prime first-trace graph supplies the concrete order-of-operations warning.  Its
+ordinary closure is already
+\[
+H_{\rm source}\oplus H_{{\rm response},0},
+\]
+so it is maximally split and retains no source--response coupling.  Its arithmetic null sequence
+nevertheless has nonzero exponential rate-distortion grade one.  Hence source-record maximality
+cannot be imposed after ordinary graph closure.  The exponential/source-normal associated
+graded and anomaly pointing must be formed first; only then may one ask for strict completion and
+boundary descent.

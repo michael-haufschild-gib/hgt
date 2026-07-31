@@ -68,10 +68,12 @@ Balancing endpoint 0 and 1 yields reflection-invariant connection
 `G_bal(u)=-(u-1/2) Xi'(u)/Xi(u)`.
 At zero ρ order d, `Res_ρ G_bal=-d(ρ-1/2)`. Horizontal displacement is radial residue of source-generated depth successor law.
 
-## Current exact open core
+## Corrected open core after hostile residue audit
 
-`[SOURCE_DEPTH_CONNECTION_HERGLOTZ_PURITY]`: construct a matrix-positive operator realization of the same depth transitions, compatible with prime-winning Čech incidence, Meyer Poisson strictness, and Gamma reflection; prove centered logarithmic derivative is Herglotz after conservative Xi conormal base change. Herglotz poles in centered coordinate would force RH.
+The scalar `G_bal(u)=-(u-1/2) Xi'(u)/Xi(u)` is the Euler contraction of the DNC logarithmic connection, not a possible Herglotz coefficient. In centered coordinate it is `-z Phi'/Phi`; paired real Xi zeros at `±a` give residues `-ma,+ma`, so the scalar is neither Herglotz nor anti-Herglotz even under RH.
 
-This is not RH. Scalar positivity on real half-line is insufficient; generalized-prime/rational-gauge countermodels remain hostile falsifiers. Need common source class and matrix positivity before specialization.
+`[SOURCE_DEPTH_LOG_CONNECTION_FORM_REALIZATION]`: construct a divisor-free matrix-valued Green/Weyl realization of the uncontracted DNC form `-d log Xi_C`, compatible with prime-winning Čech incidence, Meyer Poisson strictness, Gamma reflection, and strict Xi conormal base change. This survives the residue attack but remains only the already formalized Xi Herglotz criterion until the source producer is proved.
+
+Exact failure card: `docs/drafts/pipeline/5-failed/source-depth-euler-contraction-herglotz-no-go.md`. Need common source class and matrix positivity before specialization.
 
 Active synthesis card: `docs/drafts/pipeline/1-in-progress/riemann-autogenic-obstruction-operation-purity-law.md`.

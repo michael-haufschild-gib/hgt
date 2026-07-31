@@ -3,8 +3,8 @@
 - **ID:** `universal-half-entropy-phase-coherence-time-law`
 - **Stage:** 3-formalized
 - **Type:** THEOREM / HIGH-DIMENSIONAL KRONECKER MINIMAX LAW / PHASE-CAPACITY LAW
-- **Scientific status:** `[PROVED HERE] [NEW SCIENTIFIC KNOWLEDGE]`
-  `[TARGETED NOVELTY AUDIT PASSED 2026-07-19] [LEAN FORMALIZED]`
+- **Scientific status:** `[LEAN-PROVED] [EXTERNAL PRIORITY COLLISION]`
+  `[REDISCOVERED/CONCURRENT BRIDGE]`
 - **Statement:** The least worst-frequency clock at recurrence resolution `Q+1` satisfies the
   explicit universal law
   `((d-1)log(Q+1)-O(d)-log d)<log T_(d,Q)<=d log(Q+1)`.
@@ -284,7 +284,32 @@ coherence exponent is forced before any zeta-specific input enters.  The Connes 
 at `log T=o(pi(X))`; proving that the prime-log orbit obeys the positive entropy law would exclude
 phase escape there.
 
-## 8. Novelty and anti-theatre audit
+## 8. Revised novelty and anti-theatre audit
+
+### 2026-07-31 correction
+
+The earlier targeted audit missed Kotowski--Oszmaniec,
+*Tight bounds on recurrence time in closed quantum systems*,
+arXiv:2601.10409v2 (27 June 2026).  Their deterministic pure-state bound
+\[
+ t_{\rm rec}(\varepsilon)\le
+ t_{\rm exit}(\varepsilon)
+ \left(\frac{2\pi}{\varepsilon}+1\right)^{d-1}
+\]
+and random-Hamiltonian lower bound
+\[
+ t_{\rm rec}(\varepsilon)\gtrsim(1/\varepsilon)^d
+\]
+already contain the same dimension--resolution exponent.  Since trace
+distance \(\varepsilon\) corresponds quadratically to the amplitude defect,
+their result also contains the leading half-entropy conversion.  They
+additionally prove an effective-support refinement and show that inverse
+purity need not control first recurrence.
+
+The exact constants, discrete minimax definition, Haar target estimate and
+Lean formalization below remain mathematically valid.  They no longer support
+a claim of external scientific novelty.  This theorem is supporting
+infrastructure for the countably infinite local-spectral-weight problem.
 
 Targeted searches through 2026-07-19 covered:
 
@@ -320,6 +345,8 @@ Closest comparison sources:
   arXiv:2405.20552, v2 (2026).
 - M. Hauke, A. Shubin, E. Stefanescu, and A. Zafeiropoulos, *Circle coverings driven by arithmetic
   sequences*, arXiv:2604.02005.
+- M. Kotowski and M. Oszmaniec, *Tight bounds on recurrence time in closed
+  quantum systems*, arXiv:2601.10409v2.
 
 ## 9. Formal theorem map
 

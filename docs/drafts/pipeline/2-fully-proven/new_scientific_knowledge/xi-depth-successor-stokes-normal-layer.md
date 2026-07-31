@@ -1,0 +1,249 @@
+# Xi depth-successor Stokes normal layer
+
+- **ID:** `xi-depth-successor-stokes-normal-layer`
+- **Stage:** 2-fully-proven
+- **Type:** EXACT DOUBLE-SCALING THEOREM / SOURCE-NORMAL RH INTERFACE
+- **Scientific status:** `[PAPER-PROVED] [LEAN-FORMALIZED] [CORPUS-NEW SYNTHESIS]`
+  `[NO EXTERNAL NOVELTY CLAIM] [NOT RH]`
+- **Parents:**
+  - `../not_new_scientific_knowledge/wold-depth-xi-essential-amplification-law.md`;
+  - `../../1-in-progress/reflected-character-singular-splitting-bockstein-law.md`;
+  - `gamma-copoisson-sonin-full-quotient-flatness-syzygy.md`;
+  - `../../../3-formalized/new_scientific_knowledge/prime-first-trace-essential-normal-bockstein.md`.
+- **Formal module:**
+  `formal/GaloisForLFunctions/RHTower/XiDepthSuccessorStokesNormalLayer.lean`.
+
+## 1. Frontier
+
+The all-orders-flat theorem proves that no operator family of one fixed finite Rees norm order can
+sew the reflected irregular sector to the vacuum half-density sector, in any dimension. The
+Wold-depth theorem then identifies the first required essential action:
+\[
+ {\cal A}_2=\frac{\log 2}{2}.
+\tag{1}
+\]
+Essential growth alone is not selective: diagonal gauges and standard Weyl transport cross
+off-line sectors by changing the source action.
+
+What was still missing was an explicit nonperturbative divisor profile carried by the same depth
+successor whose fixed-spectral-point limit is
+\[
+ -u\,\frac{\Xi'(u)}{\Xi(u)}.
+\tag{2}
+\]
+The limit `(2)` is nonuniform at a zero. Blowing up that boundary layer gives a finite universal
+profile which retains both zero location and full multiplicity.
+
+## 2. Universal moving-zero theorem
+
+Let \(f\) be analytic near \(\rho\), with a zero of finite order \(m\):
+\[
+ f(u)=(u-\rho)^m g(u),\qquad g(\rho)\ne0.
+\tag{3}
+\]
+Define one depth-successor step
+\[
+ B_\varepsilon(u)
+ =\frac{f(u)}{f((1+\varepsilon)u)}.
+\tag{4}
+\]
+For fixed \(z\ne-\rho\), put \(u=\rho+\varepsilon z\). Then
+\[
+ \boxed{\quad
+ \lim_{\varepsilon\to0,\ \varepsilon\ne0}
+ B_\varepsilon(\rho+\varepsilon z)
+ =
+ P_{\rho,m}(z)
+ :=
+ \left(\frac{z}{z+\rho}\right)^m.
+ \quad}
+\tag{5}
+\]
+
+### Proof
+
+The two local arguments are
+\[
+\begin{aligned}
+ u-\rho&=\varepsilon z,\\
+ (1+\varepsilon)u-\rho
+ &=\varepsilon(z+\rho+\varepsilon z).
+\end{aligned}
+\]
+Using `(3)`,
+\[
+ B_\varepsilon(\rho+\varepsilon z)
+ =
+ \left(\frac{z}{z+\rho+\varepsilon z}\right)^m
+ \frac{g(\rho+\varepsilon z)}
+ {g(\rho+\varepsilon(z+\rho+\varepsilon z))}.
+\tag{6}
+\]
+The cofactor ratio tends to one, proving `(5)`. `QED`
+
+The algebraic identity
+\[
+ (z+\rho)^mP_{\rho,m}(z)=z^m
+\tag{7}
+\]
+shows that the profile has a zero of order \(m\) at \(z=0\) and a pole of order \(m\) at
+\(z=-\rho\). Thus the double-scaling limit retains the complete principal multiplicity; it is
+not a zeroth-order detector.
+
+For the actual depth defect
+\[
+ R_\varepsilon(u)=B_\varepsilon(u)-1,
+\tag{8}
+\]
+the moving-zero layer is \(P_{\rho,m}(z)-1\), whereas its outer, fixed-\(u\) limit after division
+by \(\varepsilon\) is `(2)`. The matching law
+\[
+ z\bigl(P_{\rho,m}(z)-1\bigr)\longrightarrow-m\rho
+ \qquad (z\to\infty)
+\tag{9}
+\]
+is the binomial expansion of `(5)`. It is exactly the pole residue of the outer logarithmic
+connection. Hence `(5)` is its genuine inner boundary layer, not a second unrelated invariant.
+
+## 3. Balanced normal layer
+
+The functional equation fixes the center \(c=\tfrac12\). Define centered depth transport
+\[
+ B_{\varepsilon,c}(u)
+ =
+ \frac{f(u)}
+ {f\!\left(c+(1+\varepsilon)(u-c)\right)}.
+\tag{10}
+\]
+The same proof gives
+\[
+ \boxed{\quad
+ B_{\varepsilon,c}(\rho+\varepsilon z)
+ \longrightarrow
+ P_{\rho-c,m}(z)
+ =
+ \left(\frac{z}{z+\rho-c}\right)^m.
+ \quad}
+\tag{11}
+\]
+For \(f=\Xi\), \(c=\tfrac12\), and
+\[
+ a_\rho=\rho-\frac12,
+\tag{12}
+\]
+the exact balanced Xi nearby cycle is
+\[
+ P_{a_\rho,m_\rho}(z)
+ =
+ \left(\frac{z}{z+a_\rho}\right)^{m_\rho}.
+\tag{13}
+\]
+
+This is the concrete normal-layer object hidden by the earlier phrase “Xi Stokes Bockstein.”
+The beyond-all-orders Wold shell supplies its exponentially small source monomial with action
+`(1)`; `(13)` is the finite coefficient extracted from that monomial by the depth successor.
+
+## 4. Literal inverse-versus-adjoint geometry
+
+For a centered shift \(a\), the source-inverse profile is \(P_{-a,m}\), while complex Hilbert
+adjunction sends the shift to \(\bar a\), hence gives \(P_{\bar a,m}\). Their pole coordinates are
+\[
+ \operatorname{pole}(P_{-a,m})=a,
+ \qquad
+ \operatorname{pole}(P_{\bar a,m})=-\bar a.
+\tag{14}
+\]
+Because \(m>0\) at an actual zero, equality of these meromorphic nearby cycles forces equality of
+their pole divisors:
+\[
+ a=-\bar a.
+\tag{15}
+\]
+For \(a=a_\rho\), `(15)` is
+\[
+ \rho-\frac12
+ =
+ -\left(\bar\rho-\frac12\right),
+\qquad\text{hence}\qquad
+ \boxed{\Re\rho=\frac12.}
+\tag{16}
+\]
+
+This is the same algebra as inverse-character \(=\) adjoint-character, but no longer as an
+abstract scalar slogan. It is equality of two explicit source-generated normal-layer poles.
+
+## 5. What theorem remains
+
+The RH-bearing theorem is now narrower:
+
+`[OPEN CORE — GAMMA_COPOISSON_SONIN_BALANCED_NEARBY_DAGGER_LANDING]`
+
+> Construct the strict source-normal map from the Wold depth-successor shell to the literal
+> Gamma/co-Poisson/Sonin source-error syzygy and prove that, after Xi Cartier specialization, its
+> nonzero top class identifies the source-inverse profile \(P_{-a_\rho,m_\rho}\) with the
+> analytic-adjoint profile \(P_{\bar a_\rho,m_\rho}\) on the same fibre.
+
+The target connection, all finite higher coherence, local factorial confluence jets, depth
+successor, essential source action, and exact normal-layer profile are now closed. The missing
+content is strict cross-landing and same-fibre dagger.
+
+## 6. Hostile audit
+
+1. **Not RH.** The theorem constructs the two profiles and proves what their equality would
+   imply. It does not prove the Gamma/co-Poisson/Sonin landing identifies them.
+2. **Not another essential-growth criterion.** Every off-line zero has the profile `(13)`.
+   External essential transport can carry it after retuning the source horizon.
+3. **Not divisor data inserted by hand.** The family \(B_\varepsilon\) is the already-proved
+   exponent-depth successor of the bounded-exponent source. The zero enters only when taking its
+   normal layer.
+4. **Not multiplicity loss.** Equation `(7)` retains exact order \(m_\rho\).
+5. **Not a generic irregular-RH proof.** Local analytic factorization and rational normal
+   profiles are standard. Arithmetic content still required is the literal ordinary-prime
+   source landing into Burnol's quotient.
+6. **Generalized-prime falsifier survives until landing.** A fitted generalized-prime carrier
+   has the same local profile at any off-line zero. Only source-first ordinary-integer
+   Gamma/co-Poisson/Sonin cross-landing can distinguish it.
+7. **No finite-Rees fallback.** The Wold shell producing `(13)` is exponentially flat with action
+   `(1)`; every fixed finite-Rees realization kills it.
+
+## 7. Lean status
+
+The formal module proves unconditionally:
+
+- generic moving-zero limit `(5)`;
+- centered limit `(11)`;
+- multiplicity identity `(7)`;
+- actual Xi limits, uncentered and balanced;
+- positivity of Xi multiplicity at a zero;
+- the nearby-pole consumer `(14)`--`(16)`.
+
+The module uses no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declaration. The Burnol
+co-Poisson/Sonin landing remains outside the formal tree because its analytic source interfaces
+have not yet been constructed.
+
+## 8. Literature boundary
+
+Finite-order analytic factorization, deformation to the normal cone, and nearby-cycle/Stokes
+language are established mathematics. No external novelty is claimed for `(5)` in isolation.
+The corpus contribution is the exact weld:
+
+```text
+bounded-exponent ordinary-prime depth successor
+  -> Wold all-orders-flat shell with action (log 2)/2
+  -> Xi moving-zero normal profile
+  -> explicit inverse/adjoint nearby-pole comparison
+  -> literal Gamma/co-Poisson/Sonin landing target.
+```
+
+## Gates
+
+- [x] fixed-point Xi depth connection
+- [x] moving-zero double-scaling theorem
+- [x] exact multiplicity retention
+- [x] balanced critical-center profile
+- [x] inverse/adjoint pole consumer
+- [x] unconditional Lean formalization
+- [ ] strict Wold-depth to Gamma/co-Poisson/Sonin source map
+- [ ] nonzero top Xi Cartier landing
+- [ ] same-fibre inverse/adjoint identification
+- [ ] RH

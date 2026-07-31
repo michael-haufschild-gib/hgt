@@ -1,0 +1,1543 @@
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[a4paper,margin=27mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,mathrsfs}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage[colorlinks=true,linkcolor=blue!45!black,citecolor=blue!45!black,
+  urlcolor=blue!55!black]{hyperref}
+\setlength{\emergencystretch}{2em}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem*{maintheorem}{Source-modular superselection theorem}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\C}{\mathbb C}
+\newcommand{\R}{\mathbb R}
+\newcommand{\N}{\mathbb N}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\Res}{\operatorname*{Res}}
+\newcommand{\ord}{\operatorname{ord}}
+\newcommand{\supp}{\operatorname{supp}}
+\newcommand{\Rea}{\operatorname{Re}}
+\newcommand{\Ima}{\operatorname{Im}}
+\newcommand{\cF}{\mathcal F}
+\newcommand{\cH}{\mathcal H}
+\newcommand{\cR}{\mathcal R}
+\newcommand{\cS}{\mathcal S}
+\newcommand{\dd}{\,\mathrm d}
+
+\title{\textbf{Boundary-character conservation for the Riemann divisor}\\
+\large Hypertranscendental prime shells and asymptotic superselection}
+\author{Michael Haufschild}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+We identify one signed quantity that survives several source constructions which otherwise appear
+unrelated.  Let
+\[
+ \xi(s)=\tfrac12s(s-1)\pi^{-s/2}\Gamma(s/2)\zeta(s)
+\]
+and let \(\rho\) be a nontrivial zero of multiplicity \(m_\rho\).  The centered logarithmic
+current carried by the reciprocal normal boundary has residue
+\[
+ \Res_{s=\rho}\!\left[-(s-\tfrac12)\frac{\xi'(s)}{\xi(s)}\right]
+ =-m_\rho(\rho-\tfrac12).
+\]
+Its real part is not merely a divisor statistic.  It is exactly the asymptotic entropy of a
+positive largest-prime-exponent source:
+\[
+ \frac{\log|2^{\,1/2-\rho}|}{\log2}
+ =\tfrac12-\Rea\rho.
+\]
+The character \(2^{1/2-s}\) is forced by adjacent-shell asymptotics, not introduced from the
+zero set.  The prime-three shell supplies \(3^{1/2-s}\); the pair of characters recovers the full
+complex coordinate without phase aliasing.  The same centered displacement is recovered from
+forward/inverse dilation residues of every noncensoring compact bounded-variation prime window
+and from principal Hurwitz monodromy.
+
+The carrier arises from a positive source before a zero is selected.  The bounded-exponent
+Dirichlet series
+\[
+ A_M(s)=\frac{\zeta(s)}{\zeta((M+1)s)}
+\]
+converges to \(\zeta(s)\) at fixed scale, whereas
+\[
+ A_M\!\left(\frac{u}{M+1}\right)\longrightarrow-\frac1{2\zeta(u)}.
+\]
+After completion, the two functional-equation endpoints glue to the same exceptional section
+\((2\xi(u))^{-1}\), with every divisor order reversed exactly.  Thus bulk carrier, reciprocal
+divisor, and centered residue are three scales of one positive exponent-depth source.
+
+There is also a sharp transport obstruction.  If
+\(c=\Rea\rho-\tfrac12\in(0,\tfrac12)\), the reflected prime-valuation realizations at
+\(c\) and \(-c\) are not two finite asymptotic grades.  One is flat beyond every power of the
+canonical Wold scale; the other is half-normal.  These geometric valuation laws are the
+conditional depth fibres of the depth-one member
+\(A_1(\sigma)=\zeta(\sigma)/\zeta(2\sigma)\) of the same bounded-exponent source, not auxiliary
+distributions.  Every bounded operator family of fixed finite Rees order preserves the flat
+radical.  More strongly, every exact sewing family \(R_N\) obeys
+\[
+ a_N^{-K}=o(\|R_N\|)\qquad(K=0,1,2,\ldots).
+\]
+This is a universal theorem for arbitrary normed source and target spaces.
+The positive valuation atoms are, moreover, exactly Fisher-damped Gamma coordinates.  Canonical
+Gamma sewing preserves prime summability in both directions, so it is not a hidden cutoff; its
+successive boundary symbols instead form weighted Vandermonde systems of arbitrarily large exact
+rank.  The positive object surviving the finite-sewing obstruction is therefore an infinite Rees
+resolution.
+
+These results do not prove the Riemann hypothesis.  They change its source-side formulation:
+horizontal displacement is a conserved asymptotic character, while bounded finite-order
+scalarizations are quotient observers that can erase it.  Any argument that reflects through the
+valuation sectors studied here must act on the exceptional character boundary itself; no
+finite-Rees completion can reconstruct that orientation after it has been discarded.
+\end{abstract}
+
+\medskip
+\noindent\textbf{2020 Mathematics Subject Classification.}
+Primary 11M26, 11M41; Secondary 12H05, 46B99, 60E15.
+
+\noindent\textbf{Keywords.}
+Riemann hypothesis; Riemann xi function; hypertranscendence; prime valuations;
+normal cone; logarithmic residue; Hellinger affinity; Rees filtration; Hurwitz monodromy.
+
+\section{Introduction}\label{sec:intro}
+
+The functional equation
+\[
+ \xi(s)=\xi(1-s)
+ \tag{1.1}\label{eq:fe}
+\]
+pairs a zero \(\rho=\tfrac12+c+i\gamma\) with
+\(1-\rho=\tfrac12-c-i\gamma\).  The pairing preserves the divisor, but its scalar form is even:
+it records the orbit and forgets which member has \(c>0\).  This loss is easy to underestimate.
+Squaring an odd normal coordinate preserves the zero set.  Taking a determinant preserves
+multiplicity.  A positive energy can detect that an off-line pair is present.  None of these
+operations retains the sign of \(c\).
+
+Spectral and trace-formula programs seek an operator realization from which the critical line
+would follow.  Connes's trace framework and Meyer's nuclear-space realization make the
+source-to-spectrum problem precise \cite{Connes1999,Meyer2005}; the scaling Hamiltonian gives a
+particularly explicit arithmetic dilation picture \cite{ConnesConsani2021}.  Hedenmalm's recent
+theta differential pencil isolates a related missing sesquilinear structure
+\cite{Hedenmalm2026}, while Connes's recent survey emphasizes finite-to-infinite Euler
+information and the Weil quadratic form \cite{Connes2026}.  The present work addresses a prior
+information question:
+
+\begin{quote}
+\emph{Which source quantity still knows the transverse orientation after the completed divisor
+has been formed, and which classes of transport can or cannot carry it?}
+\end{quote}
+
+The answer is a boundary character.  It appears first in a carrier-independent normal-cone law.
+For a reflection-symmetric meromorphic carrier \(f\), set
+\[
+ E_\varepsilon(u)=\frac{f(\varepsilon u)}{f(u)},\qquad
+ T_\varepsilon(u)=\frac{f(u)}{f((1+\varepsilon)u)}.
+\]
+Then \(E_\varepsilon\) exposes the reciprocal exceptional section \(f(0)/f(u)\), while
+\[
+ \left.\frac{\partial}{\partial\varepsilon}T_\varepsilon(u)\right|_{\varepsilon=0}
+ =-u\,\frac{f'(u)}{f(u)}.
+\]
+Centering at the reflection fixed point yields
+\[
+ J_f(u)=-(u-\tfrac12)\frac{f'(u)}{f(u)}.
+ \tag{1.2}\label{eq:current-intro}
+\]
+At a divisor point of order \(m\), its residue is the full affine vector
+\(-m(\rho-\tfrac12)\).  This is the unique affine reflection-odd weight, up to scale, whose
+product with the odd logarithmic derivative is reflection invariant.
+
+For \(\xi\), the same vector is generated from arithmetic in two independent ways.  The first is
+normal to exponent depth.  Integers whose prime valuations are at most \(M\) have Dirichlet
+series
+\[
+ A_M(s)=\frac{\zeta(s)}{\zeta((M+1)s)}.
+ \tag{1.3}\label{eq:AM-intro}
+\]
+At fixed \(s\) this tends to \(\zeta(s)\).  At inverse depth it tends to
+\(-1/(2\zeta(u))\).  Completion identifies the normal cones at \(0\) and \(1\) exactly, with
+exceptional section \(1/(2\xi(u))\).
+
+The second source is tangential to exponent depth.  Let
+\[
+ H_n(s)=\frac1{\zeta((n+1)s)}-\frac1{\zeta(ns)}.
+ \tag{1.4}\label{eq:Hn-intro}
+\]
+Multiplying by \(\zeta(s)\) gives the positive Dirichlet series supported on integers with
+largest prime-valuation exponent exactly \(n\).  The leading prime-two atom gives
+\[
+ 2^{ns}H_n(s)\longrightarrow1-2^{-s},
+ \qquad
+ \sqrt2\,\frac{H_{n+1}(s)}{H_n(s)}
+ \longrightarrow2^{1/2-s}
+ \tag{1.5}\label{eq:shell-intro}
+\]
+for every \(\Rea s>0\).  Hence
+\[
+ \frac{\log|2^{1/2-s}|}{\log2}=\frac12-\Rea s.
+ \tag{1.6}\label{eq:entropy-intro}
+\]
+This is precisely the real part of the normalized residue in
+\eqref{eq:current-intro}.  It is important that \eqref{eq:shell-intro} precedes divisor
+specialization: the character is forced by a positive coefficient shell.
+
+Prime two alone aliases imaginary parts modulo \(2\pi/\log2\).  Removing its exact leading atom
+from the same shell exposes prime three, producing \(3^{1/2-s}\).  Since
+\(\log3/\log2\notin\mathbb Q\), the pair
+\[
+ s\longmapsto\bigl(2^{1/2-s},3^{1/2-s}\bigr)
+ \tag{1.7}\label{eq:two-prime-intro}
+\]
+is injective.  The source boundary therefore retains not only horizontal displacement but the
+entire complex spectral coordinate.
+
+The third realization is local and windowed.  Dilation and inverse dilation of any
+noncensoring compact bounded-variation prime window multiply the residue indexed by \(\rho\)
+(at the shifted source pole \(\rho+\tfrac12\)) by
+\(r^{\rho-1/2}\) and \(r^{1/2-\rho}\).  Therefore
+\[
+ \frac1{2\log r}\log
+ \frac{|\mathcal R_{W^{\rightarrow r}}(\rho)|}
+      {|\mathcal R_{W^{\leftarrow r}}(\rho)|}
+ =\Rea\rho-\frac12.
+ \tag{1.8}\label{eq:bv-intro}
+\]
+Before continuation the two windows are related by literal square-index decimation.  The
+orientation is consequently source-defined, not a sign attached after locating \(\rho\).
+
+The last part of the paper shows why finite-order completions cannot repair the loss.  The
+geometric prime-valuation law at displacement \(c\) produces a Hellinger product.  Relative to
+the Wold vacuum scale \(a_N=\prod_{p<N}(1-p^{-1})\), its two reflected faces satisfy
+\[
+ \begin{array}{c|c}
+ c>0 & \text{flat beyond every power of }a_N,\\
+ c<0 & \text{comparable to }a_N^{1/2}.
+ \end{array}
+ \tag{1.9}\label{eq:type-intro}
+\]
+The geometric law here is forced by source disintegration: it is the conditional positive-depth
+fibre of the depth-one activation partition
+\(A_1(\sigma)=\zeta(\sigma)/\zeta(2\sigma)\), with \(\sigma=1-2c\).
+Kakutani singularity sees both faces only as zero overlap \cite{Kakutani1948}; Rees type recovers
+the orientation erased by that dichotomy.  A universal operator theorem then proves that a
+finite-Rees map preserves the all-orders-flat radical in any dimension.
+
+\subsection*{Main result}
+
+The paper proves the following closed theorem package.
+
+\begin{maintheorem}\label{thm:main}
+Let \(\rho\) be a right-half nontrivial zero of \(\xi\), of multiplicity \(m_\rho\), and put
+\[
+ c_\rho=\Rea\rho-\frac12.
+\]
+Then \(0<c_\rho<\tfrac12\), and:
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item the real normal-cone residue equals \(-m_\rho c_\rho\);
+\item the positive exponent-shell entropy equals \(-c_\rho\);
+\item every noncensoring compact BV prime-window residue phase and the principal Hurwitz phase
+equal \(c_\rho\);
+\item the prime-two/prime-three shell spectrum recovers \(\rho\) uniquely;
+\item the valuation law is the conditional geometric fibre of the depth-one squarefree member
+\(A_1\) of the same exponent source;
+\item its positive atoms are Fisher-damped Gamma valuation coordinates; canonical Gamma sewing
+preserves prime summability exactly and its first \(N\) Rees symbols separate every \(N\)
+distinct primes;
+\item the reflected prime-valuation sector at \(c_\rho\) is all-orders flat, while the sector at
+\(-c_\rho\) is half-normal;
+\item no bounded operator family of fixed finite Rees order sews those sectors, and every exact
+sewing \(R_N\) satisfies
+\[
+ a_N^{-K}=o(\|R_N\|)\qquad\text{for every }K\in\N.
+\]
+\end{enumerate}
+The carriers, character families, and activation law in \textup{(i)}--\textup{(vi)} are functions of a free
+spectral variable and are defined independently of the zero set; \(\rho\) enters only when these
+families are evaluated on the divisor.
+\end{maintheorem}
+
+Theorem~\ref{thm:main} is not an RH equivalence padded with auxiliary notation.  It constructs
+the missing oriented object and proves its conservation across independent source charts.  It
+also proves a sharp negative result: after passage to the flat radical, neither a larger finite
+matrix nor an arbitrary-dimensional bounded finite-Rees operator can recover the reflected
+sector.
+
+\subsection*{What is and is not claimed}
+
+The residue formula itself is classical local complex analysis.  The \(m\)-free Euler quotient,
+Hellinger affinity, and Kakutani dichotomy also have classical parents
+\cite{Titchmarsh1986,Hellinger1909,Kakutani1948}.  Hypertranscendence of Dirichlet families belongs
+to the Ostrowski--Postnikov--Shapiro--Sparer tradition
+\cite{Ostrowski1920,Postnikov1949,ShapiroSparer1986,Pong2016}.  Our contribution is the source-normal
+conjunction:
+
+\begin{enumerate}[label=\textup{(\alph*)}]
+\item one positive exponent-depth source produces the zeta bulk, reciprocal exceptional divisor,
+and centered logarithmic current at three scales;
+\item its cofinal hypertranscendental shell character carries exactly the same signed affine
+residue;
+\item compact prime windows and Hurwitz monodromy recover the same character independently;
+\item Fisher whitening and Gamma sewing retain the valuation source as a summability-rigid
+infinite Rees resolution of unbounded exact rank; and
+\item reflected valuation sectors realize its sign as a finite-versus-flat asymptotic
+superselection law.
+\end{enumerate}
+
+No assertion is made that the modular charge vanishes.  Thus RH is not proved.  What is proved is
+that the charge exists before divisor selection, is complete enough to reconstruct the complex
+coordinate, survives at the exceptional boundary, and cannot be reconstructed by finite-Rees
+transport once quotient scalarization has erased it.
+
+\section{A universal normal-cone residue law}\label{sec:normal}
+
+This section is independent of zeta.  Let \(f\) be meromorphic on a domain stable under
+\(s\mapsto1-s\), assume \(f(1-s)=f(s)\), and suppose \(f(0)\ne0\).
+
+\begin{definition}
+Define the endpoint charts, exceptional section, depth transport, and centered current by
+\[
+ E_\varepsilon(u)=\frac{f(\varepsilon u)}{f(u)},\qquad
+ E_\varepsilon^\sharp(u)=\frac{f(1-\varepsilon u)}{f(u)},
+\]
+\[
+ E_0^{\rm exc}(u)=\frac{f(0)}{f(u)},\qquad
+ T_\varepsilon(u)=\frac{f(u)}{f((1+\varepsilon)u)},\qquad
+ J_f(u)=-(u-\tfrac12)\frac{f'(u)}{f(u)}.
+\]
+\end{definition}
+
+\begin{theorem}[Endpoint gluing and depth differentiation]\label{thm:endpoint}
+Where the quotients are defined,
+\[
+ E_\varepsilon=E_\varepsilon^\sharp.
+ \tag{2.1}\label{eq:endpoint-glue}
+\]
+If \(f\) is continuous at \(0\), then
+\[
+ E_\varepsilon(u)\longrightarrow E_0^{\rm exc}(u)
+ \qquad(\varepsilon\to0).
+ \tag{2.2}\label{eq:endpoint-limit}
+\]
+If \(f\) is differentiable at \(u\) and \(f(u)\ne0\), then
+\[
+ T_0(u)=1,\qquad
+ \left.\partial_\varepsilon T_\varepsilon(u)\right|_{\varepsilon=0}
+ =-u\,\frac{f'(u)}{f(u)}.
+ \tag{2.3}\label{eq:depth-derivative}
+\]
+\end{theorem}
+
+\begin{proof}
+Equation \eqref{eq:endpoint-glue} is the functional equation applied to
+\(1-\varepsilon u\).  Equation \eqref{eq:endpoint-limit} follows from
+\(f(\varepsilon u)\to f(0)\).  Finally, quotient differentiation gives
+\[
+ \partial_\varepsilon\frac{f(u)}{f((1+\varepsilon)u)}
+ =-\frac{f(u)f'((1+\varepsilon)u)u}{f((1+\varepsilon)u)^2},
+\]
+whose value at zero is \eqref{eq:depth-derivative}.
+\end{proof}
+
+\begin{theorem}[Affine residue conservation]\label{thm:affine-residue}
+The current \(J_f\) is reflection invariant:
+\[
+ J_f(1-u)=J_f(u).
+ \tag{2.4}\label{eq:J-even}
+\]
+If \(f\) has divisor order \(m\in\Z\) at \(\rho\), then
+\[
+ \Res_{u=\rho}J_f(u)=-m(\rho-\tfrac12).
+ \tag{2.5}\label{eq:J-res}
+\]
+The exceptional section reverses divisor order and logarithmic connection:
+\[
+ \ord_\rho E_0^{\rm exc}=-m,\qquad
+ \frac{(E_0^{\rm exc})'}{E_0^{\rm exc}}=-\frac{f'}f.
+ \tag{2.6}\label{eq:exceptional-order}
+\]
+\end{theorem}
+
+\begin{proof}
+Differentiating \(f(1-u)=f(u)\) gives
+\[
+ \frac{f'(1-u)}{f(1-u)}=-\frac{f'(u)}{f(u)}.
+\]
+Multiplication by the centered affine factor proves \eqref{eq:J-even}.  Write
+\(f(u)=(u-\rho)^m v(u)\), where \(v(\rho)\ne0\).  Then
+\[
+ \frac{f'(u)}{f(u)}=\frac{m}{u-\rho}+\frac{v'(u)}{v(u)},
+\]
+which proves \eqref{eq:J-res}.  Since \(f(0)\ne0\), the numerator of
+\(E_0^{\rm exc}\) is a nonzero constant; \eqref{eq:exceptional-order} follows.
+\end{proof}
+
+\begin{proposition}[Uniqueness of centered affine orientation]\label{prop:unique-affine}
+Let \(w(u)=au+b\).  Then
+\[
+ w(1-u)=-w(u)\quad\text{for all }u
+\]
+if and only if \(b=-a/2\).  Hence every affine reflection-odd weight is a scalar multiple of
+\(u-\tfrac12\).
+\end{proposition}
+
+\begin{proof}
+Substitute \(u=\tfrac12\) to obtain \(a/2+b=0\).  The converse is immediate.
+\end{proof}
+
+\begin{remark}
+The current \(J_f\) is even because it is a product of two odd factors.  Its residue is not even
+data: the affine vector in \eqref{eq:J-res} changes sign under reflection.  Squaring that vector
+retains divisor location but erases the only affine orientation allowed by
+Proposition~\ref{prop:unique-affine}.
+\end{remark}
+
+\section{Positive exponent depth and the reciprocal zeta boundary}\label{sec:depth}
+
+For \(M\ge0\), let \(b_M(n)\) be the indicator that every prime exponent of \(n\) is at most
+\(M\).  Equivalently, \(n\) is \((M+1)\)-free.
+
+\begin{proposition}[Bounded-exponent Euler source]\label{prop:bounded-euler}
+For \(\Rea s>1\),
+\[
+ A_M(s):=\sum_{n\ge1}\frac{b_M(n)}{n^s}
+ =\prod_p\frac{1-p^{-(M+1)s}}{1-p^{-s}}
+ =\frac{\zeta(s)}{\zeta((M+1)s)}.
+ \tag{3.1}\label{eq:bounded-euler}
+\]
+\end{proposition}
+
+\begin{proof}
+At each prime the allowed valuations are \(0,\dots,M\), so the local sum is
+\[
+ 1+p^{-s}+\cdots+p^{-Ms}
+ =\frac{1-p^{-(M+1)s}}{1-p^{-s}}.
+\]
+Absolute convergence permits multiplication over primes.
+\end{proof}
+
+\begin{theorem}[Three-scale source law]\label{thm:three-scale}
+The same positive source has the following limits.
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item If \(\Rea s>0\) and \(s\ne1\), then, for the meromorphic continuation of
+\(A_M\),
+\[
+ A_M(s)\longrightarrow\zeta(s).
+ \tag{3.2}\label{eq:fixed-limit}
+\]
+\item For every \(u\in\C\), in the meromorphic sense,
+\[
+ A_M\!\left(\frac{u}{M+1}\right)
+ =\frac{\zeta(u/(M+1))}{\zeta(u)}
+ \longrightarrow-\frac1{2\zeta(u)}.
+ \tag{3.3}\label{eq:normal-limit}
+\]
+\item If the observation scale is \(u/(M+1)^2\), then
+\[
+ A_M\!\left(\frac{u}{(M+1)^2}\right)\longrightarrow1.
+ \tag{3.4}\label{eq:micro-limit}
+\]
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+For \eqref{eq:fixed-limit}, \(\Rea((M+1)s)\to+\infty\), so
+\(\zeta((M+1)s)\to1\).  Equation \eqref{eq:normal-limit} is exact before taking the
+limit; use \(\zeta(0)=-1/2\).  In \eqref{eq:micro-limit}, both the numerator argument and the
+denominator argument tend to zero, and their limiting values are the same nonzero number
+\(-1/2\).
+\end{proof}
+
+\begin{corollary}[Completed endpoint normal cone]\label{cor:completed-normal}
+Put
+\[
+ X_\varepsilon(u)=\frac{\xi(\varepsilon u)}{\xi(u)},\qquad
+ X_\varepsilon^\sharp(u)=\frac{\xi(1-\varepsilon u)}{\xi(u)}.
+\]
+Then
+\[
+ X_\varepsilon=X_\varepsilon^\sharp,\qquad
+ X_\varepsilon(u)\longrightarrow\frac1{2\xi(u)}.
+ \tag{3.5}\label{eq:completed-normal}
+\]
+At a zero \(\rho\) of multiplicity \(m_\rho\), the exceptional section has a pole of order
+\(m_\rho\).
+\end{corollary}
+
+\begin{proof}
+Apply Theorems~\ref{thm:endpoint} and \ref{thm:affine-residue} to \(f=\xi\), using
+\(\xi(0)=\xi(1)=1/2\).
+\end{proof}
+
+\begin{corollary}[Source-generated Xi current]\label{cor:xi-current}
+Consecutive completed depths generate the Xi logarithmic current:
+\[
+ \left.\partial_\varepsilon
+ \frac{\xi(u)}{\xi((1+\varepsilon)u)}\right|_{\varepsilon=0}
+ =-u\,\frac{\xi'(u)}{\xi(u)}.
+ \tag{3.6}\label{eq:xi-depth-current}
+\]
+The reflection-balanced current
+\[
+ J_\xi(u)=-(u-\tfrac12)\frac{\xi'(u)}{\xi(u)}
+ \]
+has residue \(-m_\rho(\rho-\tfrac12)\) at every zero \(\rho\).
+\end{corollary}
+
+The point of Corollary~\ref{cor:xi-current} is structural.  The determinant and its logarithmic
+connection are not introduced after enumerating zeros.  They are the exceptional state and
+infinitesimal depth generator of the literal bounded-exponent source \eqref{eq:bounded-euler}.
+
+\section{Positive hypertranscendental shells}\label{sec:shells}
+
+Let
+\[
+ M(n)=\max_p v_p(n),\qquad n\ge2,
+\]
+and put \(M(1)=0\).  Write \(a_m(n)=1_{\{M(n)=m\}}\).  Then the \(a_m\) are pairwise disjoint
+\(0/1\)-valued sources and
+\[
+ \sum_{m\ge1}a_m(n)=1\qquad(n\ge2).
+ \tag{4.1}\label{eq:shell-partition}
+\]
+
+\begin{proposition}[Shell factorization]\label{prop:shell-factor}
+For \(\Rea s>1\),
+\[
+ S_m(s):=\sum_{n\ge1}\frac{a_m(n)}{n^s}
+ =\zeta(s)H_m(s),
+ \qquad
+ H_m(s)=\frac1{\zeta((m+1)s)}-\frac1{\zeta(ms)}.
+ \tag{4.2}\label{eq:shell-factor}
+\]
+For every \(m\ge12\), \(H_m\) is holomorphic and zero-free on
+\(\Rea s>\tfrac12\).
+\end{proposition}
+
+\begin{proof}
+The identity \(a_m=b_m-b_{m-1}\), with the indexing translated to
+Proposition~\ref{prop:bounded-euler}, gives \eqref{eq:shell-factor}.  It remains to prove
+nonvanishing.  Write \(s=\sigma+it\), \(x=m\sigma>6\), and
+\[
+ \zeta(ms)-\zeta((m+1)s)=A+T,
+\]
+\[
+ A=2^{-ms}-2^{-(m+1)s},\qquad
+ T=\sum_{n\ge3}\bigl(n^{-ms}-n^{-(m+1)s}\bigr).
+\]
+Since \(2^{-\sigma}<2^{-1/2}<71/100\),
+\[
+ |A|=2^{-m\sigma}|1-2^{-s}|
+ >\frac{29}{100}\,2^{-m\sigma}.
+\]
+For \(n\ge3\),
+\[
+ |n^{-ms}-n^{-(m+1)s}|
+ \le n^{-x}(1+n^{-\sigma})<\frac85n^{-x}
+ \le\frac85\,2^{-x}\frac{64}{n^6}.
+\]
+The integral estimate
+\[
+ \sum_{n\ge3}\frac1{n^6}
+ \le\frac1{3^6}+\frac1{4^6}+\frac1{2500}
+\]
+therefore gives
+\[
+ |T|<\frac{21}{100}\,2^{-m\sigma}<|A|.
+\]
+Thus \(\zeta(ms)\ne\zeta((m+1)s)\).  Both zeta factors are holomorphic and nonzero because
+their arguments have real part greater than one, and
+\[
+ H_m(s)=
+ \frac{\zeta(ms)-\zeta((m+1)s)}
+      {\zeta(ms)\zeta((m+1)s)}.
+\]
+\end{proof}
+
+\begin{remark}
+The threshold \(12\) is an explicit uniform threshold, not an optimality claim.
+\end{remark}
+
+\subsection{Differential freeness}
+
+We give the algebraic argument because ordinary independence of the shells would not suffice:
+the common zeta factor must be removed before significance is measured.
+
+Let \(\mathcal A\) be the \(\C\)-algebra of arithmetic functions under Dirichlet convolution.
+It is an integral domain.  Write
+\[
+ \Omega(n)=\sum_pv_p(n).
+\]
+For a prime \(q\), define
+\[
+ (\partial_q f)(n)=v_q(nq)f(nq),\qquad
+ (L^kf)(n)=(-\log n)^k f(n).
+ \tag{4.3}\label{eq:prime-derivation}
+\]
+A coefficient check gives
+\(\partial_q(f*g)=(\partial_qf)*g+f*(\partial_qg)\), while Dirichlet transformation sends
+\(L^k\) to the \(k\)-th analytic derivative.
+
+\begin{theorem}[\(\Omega\)-leading-echelon criterion]\label{thm:omega}
+Let \(R\) be finite and nonempty, let \(\ell:R\to\N_{>0}\) be injective, and let
+\(f_r\in\mathcal A\).  Suppose that for every \(r\in R\), prime \(q\), and \(k,n\ge0\),
+\begin{align}
+ \Omega(n)<\ell(r)-1
+ &\Longrightarrow \partial_q(L^kf_r)(n)=0,
+ \tag{4.4}\label{eq:omega-below}\\
+ \Omega(n)=\ell(r)-1
+ &\Longrightarrow
+ \partial_q(L^kf_r)(n)
+ =\ell(r)(-\ell(r)\log q)^k
+ \mathbf1_{\{q^{\ell(r)-1}\}}(n).
+ \tag{4.5}\label{eq:omega-leading}
+\end{align}
+Then, for every \(J\ge0\), the rectangle
+\[
+ \{L^kf_r:r\in R,\ 0\le k\le J\}
+ \tag{4.6}\label{eq:omega-rectangle}
+\]
+is algebraically independent over \(\C\) in \(\mathcal A\).  If all \(f_r\) have a finite
+half-plane of absolute Dirichlet convergence, their transforms are jointly differentially
+algebraically independent over \(\C(s)\).
+\end{theorem}
+
+\begin{proof}
+Index the columns by \(I=R\times\{0,\ldots,J\}\).  For every \(i=(r,t)\), choose a distinct
+prime \(q_i\) and form the \(\mathcal A\)-valued Jacobian
+\[
+ \mathcal J_{i,(u,k)}=\partial_{q_i}(L^kf_u).
+\]
+Put \(e(u,k)=\ell(u)-1\) and
+\[
+ N=\prod_{i=(r,t)\in I}q_i^{e(r,t)}.
+\]
+Every convolution term contributing to \(\det(\mathcal J)(N)\) has total
+\(\Omega\)-grade \(\sum_i e(i)\).  By \eqref{eq:omega-below}, no factor lies below its column
+grade.  Consequently every factor lies in its lowest possible grade, where
+\eqref{eq:omega-leading} computes it exactly.
+
+Unique factorization forces each contributing permutation to preserve equal-\(e\) blocks.
+Injectivity of \(\ell\) identifies these with the blocks belonging to one \(u\in R\).
+Up to a nonzero scalar, the \(u\)-block is
+\[
+ \left[(-\ell(u)\log q_{(u,t)})^k\right]_{0\le t,k\le J}.
+\]
+Its determinant is the nonzero Vandermonde product
+\[
+ (-\ell(u))^{J(J+1)/2}
+ \prod_{0\le t<v\le J}
+ \bigl(\log q_{(u,v)}-\log q_{(u,t)}\bigr).
+\]
+Thus \(\det\mathcal J\ne0\) in \(\mathcal A\).  The characteristic-zero Jacobian criterion
+implies algebraic independence: a polynomial relation of least total degree would put all of
+its nonzero partial derivatives in the kernel of an invertible Jacobian over
+\(\operatorname{Frac}(\mathcal A)\).
+
+It remains to justify the coefficient field \(\C(s)\).  After clearing denominators, a relation
+over \(\C(s)\) has the form
+\[
+ \sum_{n\ge1}Q_n(s)n^{-s}=0,
+ \tag{4.7}\label{eq:polynomial-dirichlet}
+\]
+where the degrees of the polynomials \(Q_n\) are uniformly bounded.  Choose the least \(n\)
+with \(Q_n\ne0\), multiply by \(n^s\), and let \(s=\sigma\to+\infty\).
+Exponential separation dominates fixed polynomial growth, forcing \(Q_n=0\), a contradiction.
+Comparing powers of \(s\) then returns a relation in \(\mathcal A\), already excluded.
+\end{proof}
+
+\begin{remark}
+Only the lowest nonzero \(\Omega\)-layer enters the proof.  Arbitrary higher support can be
+added without altering the conclusion.  This upper-tail immunity is the reason the theorem
+applies to complete exponent shells rather than isolated prime powers.
+\end{remark}
+
+\begin{lemma}[Prime-ray leading layer]\label{lem:prime-ray}
+If \(a_m(n)\ne0\), then \(\Omega(n)\ge m\), and equality forces
+\(n=p^m\) for a unique prime \(p\).  Consequently, for every prime \(q\),
+\[
+ \Omega(n)<m-1\Longrightarrow\partial_q(L^ka_m)(n)=0,
+\]
+whereas at grade \(m-1\),
+\[
+ \partial_q(L^ka_m)(n)
+ =m(-m\log q)^k\mathbf1_{\{q^{m-1}\}}(n).
+ \tag{4.8}\label{eq:prime-ray}
+\]
+\end{lemma}
+
+\begin{proof}
+If \(a_m(n)\ne0\), some \(p^m\) divides \(n\), giving \(\Omega(n)\ge m\).
+Equality in \(n=p^mu\) forces \(\Omega(u)=0\), hence \(u=1\).  If
+\(\partial_q(L^ka_m)(n)\ne0\), then \(a_m(nq)\ne0\), so
+\(m\le\Omega(n)+1\).  At equality, \(nq=p^m\); divisibility forces \(p=q\) and
+\(n=q^{m-1}\), where direct substitution gives \eqref{eq:prime-ray}.
+\end{proof}
+
+\begin{theorem}[Relative shell hypertranscendence]\label{thm:relative-ht}
+Let
+\[
+ K_\zeta=\C(s)\bigl(\zeta,\zeta',\zeta'',\ldots\bigr).
+\]
+The countable family \((H_m)_{m\ge2}\) is differentially algebraically independent over
+\(K_\zeta\).  Equivalently, no nonzero polynomial differential relation involving finitely many
+shell multipliers survives after rational functions of \(s\), \(\zeta\), and all derivatives of
+\(\zeta\) are admitted as coefficients.
+\end{theorem}
+
+\begin{proof}
+Take any finite family and derivative rectangle.  Assign level \(1\) to the constant coefficient
+source of \(\zeta\), and level \(m\) to \(a_m\).  The level-one source satisfies
+\[
+ \partial_q(L^k\mathbf1)(n)
+ =(-\log q)^k\mathbf1_{\{1\}}(n)
+ \quad\text{when }\Omega(n)=0,
+\]
+and Lemma~\ref{lem:prime-ray} handles every shell level.  Theorem~\ref{thm:omega} proves joint
+differential independence of \(\zeta\) and the \(S_m\) over \(\C(s)\).
+
+By the tower property, the \(S_m\) remain jointly differentially independent after adjoining the
+complete differential field generated by \(\zeta\).  Multiplication by
+\(\zeta^{-1}\in K_\zeta^\times\) is an invertible triangular change of jet coordinates:
+\[
+ (\zeta^{-1}S_m)^{(k)}
+ =\zeta^{-1}S_m^{(k)}
+  +\sum_{j<k}\binom{k}{j}(\zeta^{-1})^{(k-j)}S_m^{(j)}.
+\]
+Since \(\zeta^{-1}S_m=H_m\) as meromorphic germs, the \(H_m\) are jointly differentially
+independent over \(K_\zeta\).  Finite character proves the countable assertion.  This is a
+Dirichlet-series leading-echelon argument in the Ostrowski--Shapiro--Sparer tradition
+\cite{Ostrowski1920,ShapiroSparer1986}.
+\end{proof}
+
+\subsection{Least-atom characters}
+
+\begin{lemma}[Prime-two extraction]\label{lem:prime-two}
+If \(\Rea w>1\), then
+\[
+ \left|2^w(\zeta(w)-1)-1\right|
+ \le\frac2{\Rea w-1}.
+ \tag{4.9}\label{eq:two-bound}
+\]
+\end{lemma}
+
+\begin{proof}
+Separate \(2^{-w}\) from the Dirichlet series and bound the remaining sum by the integral test:
+\[
+ \left|\sum_{n\ge3}n^{-w}\right|
+ \le\sum_{n\ge3}n^{-\Rea w}
+ \le\frac{2^{1-\Rea w}}{\Rea w-1}.
+\]
+Multiplication by \(|2^w|=2^{\Rea w}\) gives \eqref{eq:two-bound}.
+\end{proof}
+
+\begin{theorem}[Shell-transfer character]\label{thm:shell-character}
+For every \(s\) with \(\Rea s>0\),
+\[
+ 2^{ns}H_n(s)\longrightarrow1-2^{-s},
+ \tag{4.10}\label{eq:first-atom}
+\]
+\[
+ \frac{H_{n+1}(s)}{H_n(s)}\longrightarrow2^{-s},
+ \qquad
+ \sqrt2\,\frac{H_{n+1}(s)}{H_n(s)}
+ \longrightarrow\chi_2(s):=2^{1/2-s}.
+ \tag{4.11}\label{eq:adjacent-shell}
+\]
+Moreover,
+\[
+ \frac{\log|\chi_2(s)|}{\log2}=\frac12-\Rea s,
+ \qquad
+ |\chi_2(s)|=1\iff\Rea s=\frac12.
+ \tag{4.12}\label{eq:shell-entropy}
+\]
+\end{theorem}
+
+\begin{proof}
+Lemma~\ref{lem:prime-two}, applied to \(w=ns\), gives
+\[
+ 2^{ns}\bigl(\zeta(ns)-1\bigr)\to1.
+\]
+Since \(\zeta(ns)^{-1}\to1\),
+\[
+ 2^{ns}\bigl(\zeta(ns)^{-1}-1\bigr)\to-1.
+\]
+Taking the adjacent difference in \(n\) yields \eqref{eq:first-atom}.  The limit
+\(1-2^{-s}\) is nonzero for \(\Rea s>0\), so the ratio of consecutive normalized
+expressions gives \eqref{eq:adjacent-shell}.  Finally
+\[
+ |\chi_2(s)|=2^{1/2-\Rea s},
+\]
+which proves \eqref{eq:shell-entropy}.
+\end{proof}
+
+Remove the exact prime-two asymptotic atom and repeat the argument with prime three.  Define
+\[
+ \widetilde H_n(s)
+ =H_n(s)-2^{-ns}(1-2^{-s}).
+\]
+
+\begin{theorem}[Two-prime shell tomography]\label{thm:two-prime}
+For \(\Rea s>0\),
+\[
+ 3^{ns}\widetilde H_n(s)\longrightarrow1-3^{-s},
+ \qquad
+ \sqrt3\,\frac{\widetilde H_{n+1}(s)}{\widetilde H_n(s)}
+ \longrightarrow\chi_3(s):=3^{1/2-s}.
+ \tag{4.13}\label{eq:three-character}
+\]
+The map
+\[
+ s\longmapsto(\chi_2(s),\chi_3(s))
+ \tag{4.14}\label{eq:two-prime-map}
+\]
+is injective on \(\C\).
+\end{theorem}
+
+\begin{proof}
+The first two statements follow from the same tail estimate after extracting the \(2^{-w}\) and
+\(3^{-w}\) terms of \(\zeta(w)^{-1}\).  If the two character pairs agree at \(s\) and \(t\),
+their norms give \(\Rea s=\Rea t\).  Their phases give
+\[
+ (\Ima s-\Ima t)\log2\in2\pi\Z,\qquad
+ (\Ima s-\Ima t)\log3\in2\pi\Z.
+\]
+If \(\Ima s\ne\Ima t\), division would imply \(\log3/\log2\in\mathbb Q\), hence
+\(3^a=2^b\) for nonzero integers \(a,b\), impossible by unique factorization.  Thus
+\(\Ima s=\Ima t\).
+\end{proof}
+
+\section{Transgression to the Xi divisor}\label{sec:transgression}
+
+Apply Section~\ref{sec:normal} to \(f=\xi\).
+
+\begin{theorem}[Normal-to-cofinal modular transgression]\label{thm:transgression}
+Let \(\rho\) be a zero of \(\xi\) of multiplicity \(m_\rho\).  Then
+\[
+ \Rea\Res_{s=\rho}J_\xi(s)
+ =m_\rho\,\frac{\log|\chi_q(\rho)|}{\log q}
+ =m_\rho\left(\frac12-\Rea\rho\right)
+ \tag{5.1}\label{eq:transgression}
+\]
+for every \(q>1\), where \(\chi_q(s)=q^{1/2-s}\).
+For \(m_\rho\ne0\), the following are equivalent:
+\[
+ \Rea\Res_{\rho}J_\xi=0,\qquad
+ |\chi_q(\rho)|=1,\qquad
+ \Rea\rho=\frac12.
+ \tag{5.2}\label{eq:neutral}
+\]
+\end{theorem}
+
+\begin{proof}
+Theorem~\ref{thm:affine-residue} gives
+\[
+ \Rea\Res_\rho J_\xi=-m_\rho(\Rea\rho-\tfrac12).
+\]
+For \(q>1\),
+\[
+ \log|q^{1/2-\rho}|=(\tfrac12-\Rea\rho)\log q.
+\]
+This proves \eqref{eq:transgression} and \eqref{eq:neutral}.
+\end{proof}
+
+\begin{remark}
+Equation \eqref{eq:transgression} is independent of the atom base.  What is nontrivial in the
+arithmetic realization is that \(q=2\) and \(q=3\) are not freely chosen coordinates: they are
+the first two cofinal atoms extracted from the same positive hypertranscendental shell source.
+\end{remark}
+
+\subsection{Compact prime-window recovery}
+
+Let \(W:\R\to\C\) have bounded variation and compact support in
+\([a,b]\subset(0,\infty)\), and put
+\[
+ I_W(s)=\int_0^\infty W(x)x^{-s}\,\dd x.
+ \tag{5.3}\label{eq:window-mellin}
+\]
+The associated moving-prime and prime--polar coefficients are
+\[
+ P_W(n)=\sum_{k\ge1}\frac{\Lambda(k)}{\sqrt{k}}W(n/k),\qquad
+ C_W(n)=2I_W(\tfrac32)\sqrt n-2P_W(n).
+ \tag{5.4}\label{eq:window-coefficients}
+\]
+The Dirichlet series of \(C_W\) is absolutely convergent for \(\Rea s>3/2\) and has a canonical
+meromorphic continuation.  At a nontrivial zeta zero \(\rho\) of multiplicity \(m_\rho\), its
+Laurent residue at \(\rho+\tfrac12\) is
+\[
+ \mathcal R_W(\rho)=2m_\rho I_W(\rho+\tfrac12).
+ \tag{5.5}\label{eq:window-base-residue}
+\]
+When this value is nonzero, the continued source has a simple pole there; we then call \(W\)
+noncensoring at \(\rho\).  For \(r>1\), define
+\[
+ W^{\rightarrow r}(x)=W(rx),\qquad
+ W^{\leftarrow r}(x)=W(x/r).
+\]
+
+\begin{theorem}[Window-independent residue phase]\label{thm:bv-phase}
+The continued residues satisfy
+\[
+ \mathcal R_{W^{\rightarrow r}}(\rho)
+ =r^{\rho-1/2}\mathcal R_W(\rho),\qquad
+ \mathcal R_{W^{\leftarrow r}}(\rho)
+ =r^{1/2-\rho}\mathcal R_W(\rho).
+ \tag{5.6}\label{eq:window-residues}
+\]
+Consequently
+\[
+ \frac1{2\log r}\log
+ \frac{|\mathcal R_{W^{\rightarrow r}}(\rho)|}
+      {|\mathcal R_{W^{\leftarrow r}}(\rho)|}
+ =\Rea\rho-\frac12.
+ \tag{5.7}\label{eq:window-phase}
+\]
+The value is independent of \(W\) and \(r\).
+\end{theorem}
+
+\begin{proof}
+The substitutions \(y=rx\) and \(y=x/r\) give
+\[
+ I_{W^{\rightarrow r}}(s)=r^{s-1}I_W(s),\qquad
+ I_{W^{\leftarrow r}}(s)=r^{1-s}I_W(s).
+\]
+Evaluate at \(s=\rho+\tfrac12\) in \eqref{eq:window-base-residue}.  This gives
+\eqref{eq:window-residues}; taking norms and logarithms gives \eqref{eq:window-phase}.
+\end{proof}
+
+For integer \(r>1\), both coefficient streams satisfy square-index decimation before
+continuation:
+\[
+ P_{W^{\rightarrow r}}(n)=P_{W^{\leftarrow r}}(r^2n),\qquad
+ C_{W^{\rightarrow r}}(n)=C_{W^{\leftarrow r}}(r^2n).
+ \tag{5.8}\label{eq:square-decimation}
+\]
+Thus \eqref{eq:window-phase} is not a divisor-defined normalization.
+
+\subsection{Hurwitz monodromy}
+
+The centered complex dilation character at \(\rho\) is
+\[
+ \chi_\rho(z)=e^{z(\rho-1/2)}.
+ \]
+Its real ray gives the Mellin norm growth, while its imaginary period gives
+\[
+ \chi_\rho(-2\pi i)
+ =-e^{-2\pi i\rho}.
+ \tag{5.9}\label{eq:hurwitz}
+\]
+For \(0<\Rea\rho<1\), the principal argument has no aliasing in the transverse coordinate:
+\[
+ \frac{|\arg\chi_\rho(-2\pi i)|}{2\pi}
+ =\left|\Rea\rho-\frac12\right|.
+ \tag{5.10}\label{eq:hurwitz-phase}
+\]
+For a right-half zero, \eqref{eq:window-phase}, \eqref{eq:hurwitz-phase}, and the negative of
+the shell entropy \eqref{eq:shell-entropy} all equal the same positive number
+\[
+ c_\rho=\Rea\rho-\frac12.
+ \tag{5.11}\label{eq:charge}
+\]
+
+\section{Prime-valuation type fracture}\label{sec:fracture}
+
+The previous sections identify the charge.  We now show that its sign is an asymptotic type, not
+a finite grading choice.  The valuation sector is not an auxiliary model: it is the conditional
+depth fibre of the same Euler source.
+
+For \(\sigma>1\), diagonal activation has the squarefree partition
+\[
+ \mathcal Z(\sigma)
+ =A_1(\sigma)=\frac{\zeta(\sigma)}{\zeta(2\sigma)}
+ =\prod_p(1+p^{-\sigma}).
+ \tag{6.1}\label{eq:activation}
+\]
+Write \(q=p^{-\sigma}\).  Normalizing one local factor gives vacant/occupied masses
+\(1/(1+q)\) and \(q/(1+q)\).  Disintegrating the occupied state by its geometric valuation depth
+gives
+\[
+ \nu_q(0)=\frac1{1+q},\qquad
+ \nu_q(k)=\frac{(1-q)q^k}{1+q}\quad(k\ge1).
+ \tag{6.2}\label{eq:activation-law}
+\]
+Its occupancy probability and conditional positive-depth law are
+\[
+ \mathbb P(k\ge1)=\frac q{1+q},\qquad
+ \mathbb P(k=e+1\mid k\ge1)=(1-q)q^e.
+ \tag{6.3}\label{eq:conditional-depth}
+\]
+Thus squarefree occupancy is the Bernoulli base and valuation depth is its geometric fibre.
+This lies in the classical probabilistic Euler-product setting \cite{ArratiaBarbourTavare2003};
+the use below is the reflected Rees classification of that exact fibre.
+The occupancy Fisher variance is \(q/(1+q)^2\); at a prime, the unnormalized positive-depth atoms
+are exactly the Möbius shell differences.  Identities \eqref{eq:activation-law}--%
+\eqref{eq:conditional-depth} remain literal finite-prime probability laws for every
+\(0<q<1\), whether or not the global Euler product converges.
+
+\subsection{Fisher whitening is an infinite Rees resolution}
+
+At the critical node \(q_p=p^{-1}\), put
+\[
+ b_{p,e}=\frac{(1-q_p)q_p^{e+1}}{1+q_p},\qquad
+ \delta_p=\frac{\sqrt{q_p}}{1+q_p},\qquad
+ g_{p,e}=\sqrt{q_p}(1-q_p)q_p^e.
+ \tag{6.4}\label{eq:fisher-gamma}
+\]
+Thus \(b_{p,e}\) is the positive atom in \eqref{eq:activation-law},
+\(\delta_p^2=q_p/(1+q_p)^2\) is the occupancy Fisher variance, and \(g_{p,e}\) is the
+half-shifted Gamma valuation coordinate.
+
+For aperture \(x>0\), set \(q_{x,p}=p^{-x}\) and
+\(\phi_\infty(t)=\cosh(t)^{-1/2}\).  The source-normalized doubled-frequency Gamma multiplier is
+\[
+ C_x(p)=\frac12\,\phi_\infty(2x\log p)^{1/2}
+             \frac{1+q_{x,p}}{\sqrt{q_{x,p}}}.
+ \tag{6.5}\label{eq:gamma-multiplier}
+\]
+Define the sewn valuation ray
+\[
+ F_{x,p}(e)=C_x(p)\frac{q_p}{1+q_p}(1-q_{x,p})q_{x,p}^e,
+ \qquad e\in\N.
+ \tag{6.6}\label{eq:gamma-ray}
+\]
+Write \(\Delta f(e)=f(e+1)-f(e)\).
+
+\begin{theorem}[Fisher--Gamma Rees resolution]\label{thm:gamma-rees}
+The activation and Gamma coordinates obey:
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item \(b_{p,e}=\delta_p g_{p,e}\), and
+\[
+ \sum_{e\ge0}g_{p,e}^2
+ =\frac{q_p(1-q_p)}{1+q_p}
+ =\frac{p-1}{p(p+1)}.
+ \tag{6.7}\label{eq:gamma-mass}
+\]
+Consequently the Fisher-whitened fibre has divergent total mass over the primes.
+\item The exact Gamma law is
+\[
+ C_x(p)^4=\frac{(1+q_{x,p})^4}{8(1+q_{x,p}^4)},\qquad
+ \frac12<C_x(p)<1.
+ \tag{6.8}\label{eq:gamma-fourth}
+\]
+For every nonnegative prime energy \(a_p\),
+\[
+ \sum_p C_x(p)^2a_p<\infty
+ \quad\Longleftrightarrow\quad
+ \sum_p a_p<\infty.
+ \tag{6.9}\label{eq:no-free-hilbertization}
+\]
+\item For every \(k,e\ge0\),
+\[
+ \lim_{x\downarrow0}
+ \frac{(-1)^k\Delta^kF_{x,p}(e)}{x^{k+1}}
+ =\Sigma_k(p):=\frac{q_p}{1+q_p}(\log p)^{k+1}.
+ \tag{6.10}\label{eq:rees-symbol}
+\]
+If \(p_0,\ldots,p_{N-1}\) are distinct primes, then
+\[
+ \det\!\bigl[\Sigma_k(p_j)\bigr]_{0\le k,j<N}\ne0.
+ \tag{6.11}\label{eq:rees-rank}
+\]
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+The identity \(b_{p,e}=\delta_pg_{p,e}\) is direct, and summing the geometric square gives
+\[
+ \sum_{e\ge0}g_{p,e}^2
+ =\frac{q_p(1-q_p)^2}{1-q_p^2}
+ =\frac{q_p(1-q_p)}{1+q_p}.
+\]
+The last expression is comparable to \(p^{-1}\), so its prime sum diverges.
+
+Formula \eqref{eq:gamma-fourth} follows from
+\(\cosh(2x\log p)=(q_{x,p}^{-2}+q_{x,p}^{2})/2\).
+For \(0<q<1\),
+\[
+ 8(1+q^4)-(1+q)^4=(1-q)^2(7q^2+10q+7)>0,
+\]
+while \(1+q^4<(1+q)^4\); positivity gives the stated bounds.  Hence
+\(\tfrac14a_p<C_x(p)^2a_p<a_p\), which proves \eqref{eq:no-free-hilbertization}.
+
+Iteration of the forward difference in \eqref{eq:gamma-ray} gives
+\[
+ \Delta^kF_{x,p}(e)
+ =(-1)^k C_x(p)\frac{q_p}{1+q_p}
+   (1-q_{x,p})^{k+1}q_{x,p}^e.
+\]
+As \(x\downarrow0\), \(C_x(p)\to1\),
+\((1-p^{-x})/x\to\log p\), and \(p^{-xe}\to1\), proving
+\eqref{eq:rees-symbol}.  Finally
+\[
+ \det\!\bigl[\Sigma_k(p_j)\bigr]
+ =\left(\prod_{j=0}^{N-1}\frac{q_{p_j}}{1+q_{p_j}}\log p_j\right)
+   \prod_{0\le i<j<N}(\log p_j-\log p_i),
+\]
+up to the harmless choice of Vandermonde orientation.  Every factor is nonzero.
+\end{proof}
+
+The theorem identifies the positive survivor of the finite-completion obstruction exposed by
+the source disintegration.  Fisher whitening necessarily restores prime-harmonic size, and Gamma sewing
+cannot hide that divergence because it is bounded above and below uniformly.  What Gamma retains
+is not a new bounded scalar carrier but every finite prime packet across an unbounded tower of
+Rees grades.  This is the source-side object that finite scalarizations were approximating.
+
+For a prime \(p\) and \(c<\tfrac12\), let
+\[
+ \mu_{p,c}(k)=(1-r_{p,c})r_{p,c}^{\,k},
+ \qquad r_{p,c}=p^{-1+2c},\qquad k\ge0.
+ \tag{6.12}\label{eq:geom-law}
+\]
+This is exactly \eqref{eq:conditional-depth} with
+\(\sigma=1-2c\), after shifting positive valuation \(k=e+1\) to \(e\ge0\).
+Critical reflection \(c\mapsto-c\) therefore compares the two conditional valuation fibres at
+the exponents \(1-2c\) and \(1+2c\).
+
+Compare \(\mu_{p,c}\) with the critical law \(\mu_{p,0}\).  Its squared Hellinger affinity is
+\[
+ h_p(c)^2
+ =\frac{(1-p^{-1})(1-p^{-1+2c})}
+        {(1-p^{-1+c})^2}.
+ \tag{6.13}\label{eq:local-hellinger}
+\]
+For a prime cutoff \(N\), put
+\[
+ H_N(c)=\prod_{p<N}h_p(c),\qquad
+ a_N=\prod_{p<N}(1-p^{-1}).
+ \tag{6.14}\label{eq:HN-aN}
+\]
+The scale \(a_N\to0\) is the Wold vacuum mass.
+
+\begin{definition}[All-orders flatness]
+A nonnegative germ \(x_N\) is \emph{flat beyond every Rees order} relative to \(a_N\) if
+\[
+ x_N=o(a_N^K)\qquad\text{for every }K\in\N.
+ \tag{6.15}\label{eq:flat}
+\]
+\end{definition}
+
+\begin{theorem}[Hellinger--Rees trichotomy]\label{thm:trichotomy}
+For \(c<\tfrac12\):
+\[
+ \begin{array}{rcll}
+ c<0&:&H_N(c)=\Theta(a_N^{1/2}),&\text{half-normal face},\\[2mm]
+ c=0&:&H_N(c)=1,&\text{critical face},\\[2mm]
+ 0<c<\tfrac12&:&H_N(c)=o(a_N^K)\quad\forall K,&\text{all-orders-flat face}.
+ \end{array}
+ \tag{6.16}\label{eq:trichotomy}
+\]
+\end{theorem}
+
+\begin{proof}
+The middle line is immediate.  Suppose \(c<0\).  Since
+\(p^{-1+2c}\le p^{-1+c}\le p^{-1}\), the local factor
+\eqref{eq:local-hellinger} is bounded below by \(1-p^{-1}\).  Conversely,
+\[
+ h_p(c)^2\le(1-p^{-1})\exp(C_c p^{-1+c})
+\]
+with a constant \(C_c\) independent of \(p\).  The correction product converges because
+\(\sum_pp^{-1+c}<\infty\).  Hence \(H_N(c)^2=\Theta(a_N)\).
+
+Now suppose \(c>0\).  For every fixed \(K\), the ratio
+\(p^{-1+2c}/p^{-1}=p^{2c}\) tends to infinity.  Direct subtraction in
+\eqref{eq:local-hellinger} gives
+\[
+ 1-h_p(c)^2
+ =\frac{p^{-1}(p^c-1)^2}{(1-p^{-1+c})^2}.
+\]
+For all sufficiently large \(p\), this is at least
+\(\tfrac14p^{-1+2c}\), hence at least \((2K+2)p^{-1}\).
+Bernoulli's inequality therefore yields
+\[
+ h_p(c)^2\le(1-p^{-1})^{2K+2}.
+\]
+The finite exceptional product contributes only a constant, so
+\[
+ H_N(c)^2=O(a_N^{2K+2})=o(a_N^{2K}).
+\]
+Taking square roots gives \(H_N(c)=o(a_N^K)\).
+\end{proof}
+
+\begin{remark}
+Both off-critical faces have \(H_N(c)\to0\), so the infinite products are mutually singular by
+Kakutani's theorem.  The ordinary singular/nonsingular dichotomy identifies the two faces.
+Equation \eqref{eq:trichotomy} resolves the orientation discarded by that quotient.
+\end{remark}
+
+\section{Universal asymptotic superselection}\label{sec:superselection}
+
+Let \(E,F\) be real normed spaces and \(a_N>0\) with \(a_N\to0\).
+
+\begin{theorem}[Essential sewing cost]\label{thm:essential}
+Suppose
+\[
+ \|x_N\|=o(a_N^m)\quad\text{for every }m,\qquad
+ \|y_N\|=\Theta(a_N^d)
+ \tag{7.1}\label{eq:types}
+\]
+for some \(d\in\N\), with \(x_N\ne0\) eventually.  If bounded linear operators
+\(R_N:E\to F\) satisfy
+\[
+ R_Nx_N=y_N,
+ \tag{7.2}\label{eq:sewing}
+\]
+then
+\[
+ a_N^{-K}=o(\|R_N\|)
+ \qquad\text{for every }K\in\N.
+ \tag{7.3}\label{eq:essential-cost}
+\]
+\end{theorem}
+
+\begin{proof}
+Fix \(K\).  Flatness with order \(K+d\) and finite grade \(d\) give
+\[
+ \frac{\|x_N\|}{a_N^{K+d}}\longrightarrow0,\qquad
+ \|y_N\|\asymp a_N^d.
+\]
+Therefore
+\[
+ a_N^{-K}=o\!\left(\frac{\|y_N\|}{\|x_N\|}\right).
+\]
+The operator norm inequality and \eqref{eq:sewing} imply
+\[
+ \frac{\|y_N\|}{\|x_N\|}\le\|R_N\|,
+\]
+which proves \eqref{eq:essential-cost}.
+\end{proof}
+
+\begin{corollary}[Flat-radical invariance]\label{cor:flat-invariant}
+If \(\|R_N\|=O(a_N^{-K})\) for one finite \(K\), then \(R_N\) maps every all-orders-flat germ
+to an all-orders-flat germ.  The conclusion holds in arbitrary dimension and for finite matrices
+whose entries share one finite Rees bound.
+\end{corollary}
+
+\begin{proof}
+For every \(m\), apply the operator bound to flatness at order \(m+K\).
+\end{proof}
+
+\begin{corollary}[Xi-charge superselection]\label{cor:xi-superselection}
+Let \(\rho\) be a right-half zero of \(\xi\), and put
+\(c_\rho=\Rea\rho-\tfrac12\).  No finite-Rees-moderate operator family sews
+\[
+ H_N(c_\rho)\longmapsto H_N(-c_\rho).
+ \]
+Every exact sewing family has norm satisfying \eqref{eq:essential-cost}.
+\end{corollary}
+
+\begin{proof}
+The critical strip gives \(0<c_\rho<\tfrac12\).
+Theorem~\ref{thm:trichotomy} makes the source germ all-orders flat and the target half-normal,
+so Corollary~\ref{cor:flat-invariant} already rules out finite-Rees sewing.  For the quantitative
+claim, apply Theorem~\ref{thm:essential} to the squared affinities:
+\[
+ H_N(c_\rho)^2=o(a_N^m)\quad(\forall m),\qquad
+ H_N(-c_\rho)^2=\Theta(a_N).
+\]
+It follows that
+\[
+ a_N^{-2K}
+ =o\!\left(\frac{H_N(-c_\rho)^2}{H_N(c_\rho)^2}\right).
+\]
+All quantities are positive; taking square roots gives
+\[
+ a_N^{-K}
+ =o\!\left(\frac{H_N(-c_\rho)}{H_N(c_\rho)}\right).
+\]
+The operator-norm inequality finishes the proof.
+\end{proof}
+
+\begin{remark}
+This is stronger than saying that the two faces have different finite grades.  One face lies in
+the intersection of every positive Rees grade.  That intersection is an invariant radical.
+Increasing matrix size, Hilbert-space dimension, or finite jet order does not cross it.  Exact
+sewing requires a singularity beyond every finite Rees order.
+\end{remark}
+
+\section{Why local scalar observers miss the same charge}\label{sec:optimality}
+
+Functional-equation-preserving perturbative instability is known
+\cite{GauthierXarles2009}.  The boundary character is optimal in the following stronger,
+quantified compact-open sense.
+
+\begin{theorem}[Escaping-quartet separation]\label{thm:escape}
+Fix \(0<c<\tfrac12\).  For \(T>0\), set
+\[
+ G_{c,T}(s)=
+ \left(1+\frac{((s-\tfrac12)-c)^2}{T^2}\right)
+ \left(1+\frac{((s-\tfrac12)+c)^2}{T^2}\right),
+ \qquad F_{c,T}=G_{c,T}\xi.
+ \tag{8.1}\label{eq:quartet-gauge}
+\]
+Then:
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item \(F_{c,T}\) is entire, obeys both completed symmetries, is hypertranscendental, and has the
+added quartet \(\tfrac12\pm c\pm iT\);
+\item as \(T\to\infty\), \(F_{c,T}\) and every fixed derivative converge locally uniformly to
+\(\xi\);
+\item the nonnegative Ward density
+\[
+ \mathcal W_{c,T}(t)=
+ 2\left[
+ \frac{2(c+\tfrac12)}{(c+\tfrac12)^2+(t+T)^2}
+ \frac{2(c+\tfrac12)}{(c+\tfrac12)^2+(t-T)^2}
+ \right]
+ \tag{8.2}\label{eq:ward-density}
+\]
+converges uniformly to zero on every bounded interval, but
+\[
+ \int_{\R}\mathcal W_{c,T}(t)\,\dd t=8\pi;
+ \tag{8.3}\label{eq:ward-mass}
+\]
+\item the reciprocal-square energy
+\[
+ \mathcal E_{c,T}
+ =\frac{\sin^2(2\pi c)}{c^2+T^2}
+ \tag{8.4}\label{eq:trace-energy}
+\]
+tends to zero, whereas the centered character of
+\(\rho_T=\tfrac12+c+iT\) satisfies, for every real \(t\),
+\[
+ \left|e^{t(\rho_T-1/2)}\right|=e^{tc},
+ \qquad
+ \frac{|\arg e^{-2\pi i(\rho_T-1/2)}|}{2\pi}=c.
+ \tag{8.5}\label{eq:escape-character}
+\]
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+The polynomial \(G_{c,T}\) is invariant under \(s\mapsto1-s\) and conjugation, and its four zeros
+are the displayed quartet.  It is nonzero as a polynomial.  To recall why \(\xi\) is
+hypertranscendental, put \(L=\xi'/\xi\).  On \(\Rea s>1\), the Gamma recurrence and Euler series
+give
+\[
+ L(s+2)-L(s)
+ -\left(\frac1{s+2}+\frac1{s+1}-\frac1{s-1}\right)
+ =\sum_{n\ge1}\frac{\Lambda(n)(1-n^{-2})}{n^s}.
+\]
+The coefficient at every prime \(p\) is \(\log p(1-p^{-2})\ne0\), while the support is contained
+in the prime powers.  Ostrowski's Dirichlet-series theorem makes the right side
+hypertranscendental \cite{Ostrowski1920,Nagoshi2016}.  Differential algebraicity of \(\xi\)
+would pass to \(L\), its translate, and their rationally corrected difference, a contradiction.
+If \(F_{c,T}\) were differentially algebraic, division by
+\(G_{c,T}\in\C(s)^\times\) would now make \(\xi\) differentially algebraic.  On each compact
+set, \(G_{c,T}\to1\) together with every fixed derivative; Leibniz's rule proves the asserted jet
+convergence.
+
+Put \(a=c+\tfrac12>0\).  Each summand \(2a/(a^2+(t\pm T)^2)\) is nonnegative and has integral
+\(2\pi\).  This proves \eqref{eq:ward-mass}.  If \(|t|\le R<T\), then
+\[
+ 0\le\mathcal W_{c,T}(t)\le\frac8{(T-R)^2},
+\]
+which proves uniform compact-window escape.  Equation \eqref{eq:trace-energy} tends to zero
+directly.  Finally, taking the norm and the principal argument of the exponential gives
+\eqref{eq:escape-character}; the condition \(0<c<1/2\) prevents phase aliasing.
+\end{proof}
+
+Thus compact holomorphic jets, bounded Ward windows, and reciprocal energies can simultaneously
+lose a fixed off-critical displacement.  The asymptotic character retains it exactly.  This does
+not show that any named spectral program must fail.  It proves an information boundary: any
+criterion continuous only in those local reporters cannot distinguish the escaping quartet.  It
+must include a noncompact character coordinate or an equivalent singular boundary datum.
+
+\section{Interpretation for RH}\label{sec:interpretation}
+
+Theorems~\ref{thm:transgression}, \ref{thm:gamma-rees}, \ref{thm:trichotomy}, and
+\ref{thm:essential} identify a common mechanism behind several earlier obstructions.
+
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+\toprule
+Source operation & retained datum & discarded datum\\
+\midrule
+fixed exponent-depth limit & \(\zeta\) bulk & reciprocal divisor\\
+inverse-depth normal cone & \(1/(2\xi)\) & positive coefficient chart\\
+centered logarithmic current & affine residue & absolute normalization\\
+even scalarization & divisor magnitude & reflection orientation\\
+Kakutani quotient & singularity & finite versus flat face\\
+Gamma sewing & every finite prime packet & bounded Hilbertization\\
+finite-Rees transport & each Rees grade & all-orders type crossing\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The unifying statement is:
+
+\begin{quote}
+\emph{Horizontal zero displacement is the real weight of a source-generated asymptotic
+character.  Divisor formation conserves that weight at the exceptional normal boundary.
+Even scalarization and bounded finite-Rees transport are quotient operations; once they pass to
+the flat radical, no finite-Rees transport can reconstruct the missing orientation.  Gamma
+whitening retains the source only as an infinite-rank Rees resolution, not as a bounded scalar
+completion.}
+\end{quote}
+
+This statement answers why several attractive routes stall at a positivity or self-adjointness
+condition.  Positivity is often applied after the odd coordinate has been squared, traced, or
+completed in a bounded norm.  At that stage the relevant sign is no longer a small missing
+estimate.  It belongs to a different asymptotic species.
+
+The result gives a closed categorical restriction on arguments implemented through these
+reflected valuation sectors: work must be performed before scalarization, on an object carrying
+simultaneously
+\[
+ \begin{aligned}
+ \text{positive exponent-depth source}
+ &\longrightarrow \text{reciprocal exceptional section}\\
+ &\longrightarrow \text{centered logarithmic current}
+ \longrightarrow \text{asymptotic character}\\
+ &\longrightarrow \text{Fisher--Gamma infinite Rees resolution}.
+ \end{aligned}
+ \tag{9.1}\label{eq:architecture}
+\]
+Theorem~\ref{thm:main} ties every arrow in \eqref{eq:architecture} to the same exponent source and
+identifies the common divisor coordinate in its character charts.
+Corollary~\ref{cor:xi-superselection} proves the exhaustive conclusion for the stated transport
+class: no bounded finite-Rees completion can perform the reflection step.
+
+\section{Conclusion}
+
+One source law now explains the previously separate bulk, divisor, monodromy, shell, window, and
+transport observations.  Positive bounded-exponent Euler sources have three distinct scales:
+their fixed-scale limit is \(\zeta\), their inverse-depth limit is reciprocal zeta, and their
+depth derivative is the Xi logarithmic current after completion.  The centered residue of that
+current is multiplicity times the full affine displacement from the critical line.
+
+The same displacement is the logarithmic modulus of the cofinal character of a positive
+hypertranscendental shell.  Prime two and prime three recover the entire complex coordinate.
+Compact prime-window dilation and Hurwitz monodromy recover the same charge independently.
+These are exact identities between source constructions, not zero-set definitions.
+
+The depth-one source also identifies its own completion.  Its positive valuation atoms are
+Fisher-damped Gamma coordinates.  Removing that damping restores prime-harmonic divergence;
+canonical Gamma sewing preserves summability exactly, while its boundary symbols have
+arbitrarily large weighted-Vandermonde rank.  Gamma is therefore an infinite Rees resolution of
+the source, not an omitted bounded coordinate.
+
+Reflection then exposes a genuine type fracture.  At every hypothetical right-half Xi zero, the
+corresponding prime-valuation sector is flat beyond all finite Rees orders, while its reflected
+partner is half-normal.  The flat radical is invariant under arbitrary-dimensional bounded
+finite-Rees transport, and exact sewing has essential operator norm.
+
+The Riemann hypothesis remains the assertion that every nontrivial divisor charge is neutral.
+The contribution here is to locate that charge before zero selection, prove its conservation,
+prove its complete two-prime observability, and prove the precise class of completions that
+cannot transport it.  Within this source class, the missing mathematical object is therefore
+not another scalar positivity witness.  It is the source-normal asymptotic character together
+with its infinite Rees resolution.
+
+\begin{thebibliography}{99}
+
+\bibitem{ArratiaBarbourTavare2003}
+R.~Arratia, A.~D.~Barbour, and S.~Tavar\'e,
+\newblock \emph{Logarithmic Combinatorial Structures: A Probabilistic Approach},
+\newblock EMS Monographs in Mathematics, European Mathematical Society, 2003.
+
+\bibitem{Connes1999}
+A.~Connes,
+\newblock Trace formula in noncommutative geometry and the zeros of the Riemann zeta function,
+\newblock \emph{Selecta Math. (N.S.)} \textbf{5} (1999), 29--106.
+\newblock \url{https://doi.org/10.1007/s000290050042}.
+
+\bibitem{ConnesConsani2021}
+A.~Connes and C.~Consani,
+\newblock The scaling Hamiltonian,
+\newblock \emph{J. Operator Theory} \textbf{85} (2021), 257--276.
+\newblock \url{https://arxiv.org/abs/1910.14368}.
+
+\bibitem{Connes2026}
+A.~Connes,
+\newblock The Riemann hypothesis: past, present and a letter through time,
+\newblock arXiv:2602.04022 (2026).
+\newblock \url{https://arxiv.org/abs/2602.04022}.
+
+\bibitem{GauthierXarles2009}
+P.~M. Gauthier and X.~Xarles,
+\newblock Perturbations of \(L\)-functions with or without non-trivial zeros off the critical
+line,
+\newblock arXiv:0911.5135 (2009).
+\newblock \url{https://arxiv.org/abs/0911.5135}.
+
+\bibitem{Hedenmalm2026}
+H.~Hedenmalm,
+\newblock Spectral interpretation of Riemann zeta zeros,
+\newblock arXiv:2606.17494 (2026).
+\newblock \url{https://arxiv.org/abs/2606.17494}.
+
+\bibitem{Hellinger1909}
+E.~Hellinger,
+\newblock Neue Begr\"undung der Theorie quadratischer Formen von unendlichvielen
+Ver\"anderlichen,
+\newblock \emph{J. Reine Angew. Math.} \textbf{136} (1909), 210--271.
+
+\bibitem{Kakutani1948}
+S.~Kakutani,
+\newblock On equivalence of infinite product measures,
+\newblock \emph{Ann. of Math. (2)} \textbf{49} (1948), 214--224.
+\newblock \url{https://doi.org/10.2307/1969123}.
+
+\bibitem{Meyer2005}
+R.~Meyer,
+\newblock A spectral interpretation for the zeros of the Riemann zeta function,
+\newblock in \emph{Seminars Winter Term 2004/2005}, Universit\"atsdrucke G\"ottingen,
+2005, pp.~117--137.
+\newblock \url{https://arxiv.org/abs/math/0412277}.
+
+\bibitem{Nagoshi2016}
+H.~Nagoshi,
+\newblock The hypertranscendence of \(L\)-functions for
+\(\mathrm{GL}_m(\mathbb A_{\mathbb Q})\),
+\newblock \emph{Bull. Aust. Math. Soc.} \textbf{93} (2016), 388--399.
+\newblock \url{https://doi.org/10.1017/S000497271500129X}.
+
+\bibitem{Ostrowski1920}
+A.~Ostrowski,
+\newblock \"Uber Dirichletsche Reihen und algebraische Differentialgleichungen,
+\newblock \emph{Math. Z.} \textbf{8} (1920), 241--298.
+\newblock \url{https://doi.org/10.1007/BF01206523}.
+
+\bibitem{Pong2016}
+W.-Y.~Pong,
+\newblock Applications of differential algebra to algebraic independence of arithmetic
+functions,
+\newblock \emph{Acta Arith.} \textbf{172} (2016), 149--173.
+\newblock \url{https://doi.org/10.4064/aa8112-12-2015}.
+
+\bibitem{Postnikov1949}
+A.~G.~Postnikov,
+\newblock On the differential independence of Dirichlet series,
+\newblock \emph{Dokl. Akad. Nauk SSSR} \textbf{66} (1949), 561--564
+\newblock (in Russian).
+
+\bibitem{ShapiroSparer1986}
+H.~N.~Shapiro and G.~H.~Sparer,
+\newblock On algebraic independence of Dirichlet series,
+\newblock \emph{Comm. Pure Appl. Math.} \textbf{39} (1986), 695--745.
+\newblock \url{https://doi.org/10.1002/cpa.3160390602}.
+
+\bibitem{Titchmarsh1986}
+E.~C.~Titchmarsh,
+\newblock \emph{The Theory of the Riemann Zeta-Function}, 2nd ed.,
+\newblock revised by D.~R.~Heath-Brown, Oxford University Press, 1986.
+
+\end{thebibliography}
+
+\end{document}

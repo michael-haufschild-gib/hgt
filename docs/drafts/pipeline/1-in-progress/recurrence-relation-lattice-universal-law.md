@@ -150,6 +150,15 @@ constraint object rather than adjacent theorems:
    though every bounded-time operator observable remains uniformly close;
    moreover, the perturbation erases an explicit independent sector of
    \((d_A-1)(d_B-1)\) product rectangle relations.
+9. the exact l-bit/Walsh law identifies temporal dimension with the rational
+   rank of nonconstant localized interaction coefficients, so a finite-order
+   localized Hamiltonian has a coefficient-count ceiling while the complete
+   hierarchy can attain \(2^{|I|}-1\) without changing its eigenbasis or
+   unfreezing any l-bit charge;
+10. one fixed countable l-bit coefficient assignment attains
+    \(2^{|I|}-1\) on every finite restriction simultaneously, giving
+    unbounded finite-window temporal dimension without asserting an
+    infinite-volume recurrence measure.
 
 ## What would make this “wow” rather than formal
 
@@ -205,7 +214,17 @@ The candidate-new exact object is the joined completeness theorem:
    \((d_A-1)(d_B-1)\)-dimensional product rectangle sector by an
    arbitrarily weak joint perturbation, while all bounded-time operator
    probes obey the dimension-free Duhamel bound and all replica collision
-   laws jump to their permutation floors.
+   laws jump to their permutation floors;
+9. the exact l-bit/Walsh identity
+   \[
+     \tau(J)=\dim_{\mathbb Q}\operatorname{span}_{\mathbb Q}
+       \{J_S:S\ne\varnothing\},
+   \]
+   its finite-order ceiling, its full exponential realization under
+   arbitrarily small diagonal perturbations, and the exact conservation of
+   every l-bit charge throughout;
+10. the exact identification of mixed two-block l-bit sectors with the
+    \((2^{|A|}-1)(2^{|B|}-1)\) rectangle-sector multiplication law.
 
 Preliminary searches found no source stating this full chain. Exact priority
 remains unverified. A source containing the ensemble--lattice equivalence
@@ -222,7 +241,13 @@ coupling, or additive rectangle tests kills only that ingredient.
   subsystem ontology is derived from a blind spectrum.
 - Scalar SFF moments aggregate relations and need not reconstruct the
   lattice; the theorem requires resolved Fourier characters.
-- Infinite-volume recurrence is not asserted.
+- No infinite-volume recurrence measure, \(L^2\) multiplication operator or
+  Hilbert-space self-adjointness is asserted. The infinite theorem gives one
+  absolutely summable countable coefficient field with exponential spatial
+  envelope, a bounded continuous infinite-configuration energy, uniform
+  physical-window convergence, a strongly continuous group of
+  uniform-norm isometries on continuous amplitudes, and full temporal rank
+  on every finite embedded restriction.
 - No black-hole, cosmological or arrow-of-time conclusion follows without a
   model-specific bridge.
 - Formal verification contributes truth control only, never novelty or
@@ -288,6 +313,233 @@ The primary Nature rejection gates exposed by this audit are:
    recurrence literature. Novelty must rest on the exact relation
    classification and sharp additive-to-multiplicative law.
 
+## Anderson locality and many-body localization bridge (2026-07-30)
+
+A bare Anderson-localization merger is a category error. One-particle
+Anderson regions combine by direct sum, whereas the temporal multiplication
+law concerns tensor-product many-body composition. The exact bridge is the
+l-bit representation
+\[
+  H_J=\sum_{S\subseteq I}J_S Z_S.
+\]
+Walsh inversion now proves, for every finite coefficient family,
+\[
+  \boxed{
+  \tau(H_J)=
+  \dim_{\mathbb Q}\operatorname{span}_{\mathbb Q}
+  \{J_S:S\ne\varnothing\}.}
+\]
+The arbitrary-index anchored conservation theorem upgrades this to an exact
+recurrence budget:
+\[
+  \boxed{
+  \tau(H_J)+
+  \operatorname{rank}_{\mathbb Q}L_{E_J}^{\mathrm{proj}}
+  =2^{|I|}-1.}
+\]
+Hence every noninteracting localized Fock fixed point with rationally
+independent one-body coefficients has exactly
+\[
+  \tau=|I|,\qquad
+  \operatorname{rank}_{\mathbb Q}L_{E_J}^{\mathrm{proj}}
+  =2^{|I|}-1-|I|
+\]
+and therefore carries exactly \(2^{|I|}-1-|I|\) independent exact
+projective recurrence constraints, while a full-rank localized fixed point
+carries none.
+
+Therefore:
+
+1. a noninteracting localized Fock fixed point with singleton coefficients
+   has \(\tau\le |I|\), with equality under rational independence;
+2. a \(k\)-body l-bit truncation has
+   \[
+     \tau\le\sum_{j=0}^{k}\binom{|I|}{j}-1;
+   \]
+3. the full all-order hierarchy can attain
+   \[
+     \tau=2^{|I|}-1;
+   \]
+4. every \(Z_i\) remains exactly conserved and the Hamiltonian remains
+   diagonal in the same configuration basis;
+5. for every finite-order model and every \(\varepsilon>0\), a full-rank
+   coefficient family exists within coefficient \(L^1\) distance
+   \(\varepsilon\), with every energy level uniformly
+   \(\varepsilon\)-close;
+6. the mixed-support count for two blocks is exactly
+   \[
+     (2^{|A|}-1)(2^{|B|}-1),
+   \]
+   the same multiplicative sector exposed by the rectangle law;
+7. one fixed countable assignment is full-rank on every finite restriction;
+8. that same countable field is absolutely summable and obeys
+   \[
+     |J_S|\le
+     2^{-(|S|+\max S+\operatorname{diam}S)}
+   \]
+   for every finite support.
+
+The surviving physical statement is:
+
+> Matter can remain frozen in space while its completed recurrence future
+> becomes exponentially dimensional.
+
+This does not claim the first connection between localization and spectral
+statistics. Prakash--Pixley--Kulkarni already show numerically that truncated
+l-bit and microscopic MBL models can reproduce Poisson spectral-form-factor
+behavior at accessible times. Huse--Nandkishore--Oganesyan already supply the
+all-order l-bit phenomenology, and Riddell--Bertini expose higher-order
+spectral correlations in rationally independent free fermions. The candidate
+new result is exact, non-ensemble and all-orders: it identifies the complete
+rational relation lattice, proves the finite-order obstruction, and shows
+that full temporal completion is compatible with exact charge localization.
+
+Interaction order is now also operationally resolved. For every nonempty
+\(N\)-mode l-bit packet, the alternating character on the complete Boolean
+configuration cube has exact replica height \(2^{N-1}\), and
+\[
+  \sum_x(-1)^{|x|}E_J(x)=2^N J_I.
+\]
+Therefore its recurrence relation survives at the first possible replica
+order exactly when the \(N\)-body coefficient vanishes. This proves, on the
+exact localized fixed-point class,
+\[
+  \boxed{
+  \text{interaction coefficient}
+  \longleftrightarrow
+  \text{cube-relation fracture}
+  \longleftrightarrow
+  \text{minimum replica depth}.}
+\]
+
+The same recurrence character now has an exact finite-window response:
+\[
+  \boxed{
+  \mathcal W_I(A)=\operatorname{sinc}(A\,2^N J_I).}
+\]
+For \(J_I\ne0\), the calibrated horizon
+\[
+  A_*=\pi/|2^N J_I|
+\]
+is positive and gives \(\mathcal W_I(A_*)=0\), whereas deleting the
+top-order interaction gives response \(1\) at the same horizon. Complex
+measurement errors below \(1/2\) leave these two cases disjoint. A certified
+detuning floor \(\delta\le|2^N J_I|\) gives \(A_*\le\pi/\delta\).
+
+This robustness is required but not itself a novelty claim. Bergamaschi
+et al. already prove noise-robust dynamic discrimination of multi-spin
+interactions with inverse-coupling observation time, and Menke et al.
+experimentally estimate a tunable three-body coupling by multi-qubit Ramsey
+interferometry. The surviving candidate novelty is the exact combined law
+linking a localized coefficient to one recurrence relation, its exact
+minimum replica height, and its finite-window response. Even that synthesis
+must survive a dedicated priority audit.
+
+Geometric locality introduces a second, essential dichotomy. Within the
+commuting diagonal l-bit class, let \(\mathcal S_{n,R}\) be the nonempty
+supports of active-site diameter at most \(R\). Exact formal results give
+\[
+  \tau(J)\le|\mathcal S_{n,R}|,
+\]
+with equality for rationally independent allowed coefficients; arbitrarily
+small exactly \(R\)-local families attain this ceiling while every l-bit
+charge remains conserved. Every range-\(R\) support lies in one of \(n\)
+windows with at most \(R+1\) sites, giving the unconditional explicit law
+\[
+  \boxed{
+  |\mathcal S_{n,R}|\le n\,2^{R+1},
+  \qquad
+  \tau(J)\le n\,2^{R+1}.}
+\]
+The sharper elementary closed count
+\[
+  |\mathcal S_{n,R}|=(n-R+1)2^R-1\qquad(R<n)
+\]
+is not yet formalized and cannot enter the manuscript as a theorem.
+Intrinsic support counting already proves that bounded commuting locality
+limits the available clock directions. Conversely, one single absolutely
+summable field with exponential decay in support cardinality, extent and
+diameter defines a bounded continuous energy on the infinite Boolean
+configuration space, is the uniform limit of its nested
+first-\(n\)-site energies, generates a reversible strongly continuous
+Schrödinger phase evolution on continuous amplitudes, and attains full
+\(2^n-1\) rank on every finite embedded window. Therefore quasi-locality
+itself does not impose the finite-range ceiling.
+
+Scale resolution now admits an exact second law. Assign each nonempty
+support a spectral-jet birth order \(w(S)\), and let \(\tau_r\) be the
+rational dimension of all projective spectral jets below order \(r\).
+Walsh extraction proves unconditionally
+\[
+  \boxed{
+  \tau_r=
+  \sum_{m<r}
+  \dim_{\mathbb Q}\operatorname{span}_{\mathbb Q}
+  \{J_S:w(S)=m\}.}
+\]
+No rational independence between different layers is needed because the
+layers occupy distinct jet coordinates. Under rational independence only
+within each layer, \(\tau_r\) is exactly the number of supports born before
+\(r\). For birth order equal to support diameter,
+\[
+  \boxed{\tau_r\le n\,2^{r+1}.}
+\]
+This is an exact spectral-resolution theorem, not an identification of jet
+order with laboratory elapsed time. That interpretation is now exact for
+the ideal monomially scaled diagonal family: every nonempty support \(S\)
+defines a balanced integer Walsh character with detuning
+\[
+  \Delta_S(g)=2^n J_S g^{w(S)}.
+\]
+At the centered elapsed-time horizon \(T=\tau g^{-w(S)}\), its actual
+Fourier response is exactly
+\[
+  \operatorname{sinc}(\tau 2^nJ_S),
+\]
+independent of \(g\ne0\); shorter inverse-power horizons converge to one
+and longer horizons converge to zero. Uniform finite-parameter remainder
+bounds for general analytic microscopic families and a bounded-height noisy
+classifier remain open.
+
+The full-rank law is also visible to one concrete state. The normalized
+uniform l-bit product state has nonzero weight on all \(2^n\)
+configurations, so its rational visible-gap space equals the complete
+Hamiltonian gap space and its visible temporal rank equals \(\tau(H_J)\).
+Maximal rank is equivalent to every completed survival-fidelity moment of
+this single state attaining its unavoidable permutation collision floor.
+This removes state-support invisibility at the exact l-bit fixed point, but
+not the difficulty of preparing dressed l-bits in microscopic coordinates.
+
+Exact spatial symmetry supplies a separate obstruction. Maximal l-bit rank
+is equivalent to rational linear independence of every nonempty-support
+coefficient. Hence one coefficient collision \(J_S=J_T\) for distinct
+nonempty supports forces strict rank loss. In particular, any
+coefficient-preserving nontrivial site permutation that moves one support
+precludes maximal rank. The full-rank countable construction is necessarily
+inhomogeneous; disorder is part of the recurrence mechanism, not a cosmetic
+choice.
+Locality alone is not expected to impose this ceiling: the paper proof in
+`../2-fully-proven/nearest-neighbor-qudit-projective-spectral-maximality.md`
+claims that a generic noncommuting nearest-neighbour qdit chain already has
+full rank \(q^n-1\). A new formal theorem now proves a related finite
+tensor-local extension result: once one maximally projective witness exists
+under the connected lifted-transition hypothesis, maximal projective rank
+is dense, residual and full measure throughout the complete real
+onsite-plus-edge slice. It does not yet identify the required spectral
+transition with a physical endpoint operator of a standard path Hamiltonian.
+The stronger microscopic nearest-neighbour claim therefore remains
+manuscript unauthorized.
+
+The remaining hard boundary is model-specific. No theorem here proves
+maximal temporal rank almost surely for a standard random-field XXZ or
+Anderson--Hubbard ensemble throughout a rigorous localization regime, nor
+does it transfer the finite tensor-local slice to a physical endpoint
+operator under the microscopic diagonalizing unitary. That would require a
+model-specific analytic or spectral-Galois theorem showing that every
+nonzero balanced integer eigenvalue relation is a nonidentically-zero
+disorder function while localization persists. Until then the paper must
+say “exact l-bit localization,” not “Anderson localization.”
+
 ## Nature gate
 
 Current hostile verdict: **mathematically cohesive and potentially
@@ -299,17 +551,140 @@ Required before promotion:
    polyspectral completeness, Hamiltonian learning and SFF moments;
 2. show a nontrivial physical question or inference enabled by `(U)`--`(I)`
    that existing methods do not answer;
-3. formalize the generic local-generator capstone or remove every generic
-   local claim;
+3. use the proved l-bit capstone for exact localized fixed points; either
+   prove a separate microscopic finite-range/disorder transfer theorem or
+   remove every stronger Anderson/MBL-stability claim;
 4. rewrite the paper around equation `(U)`, not the previous recurrence
    anatomy collage;
 5. obtain a hostile review concluding that the synthesis changes physical
    interpretation rather than merely renaming standard harmonic analysis.
 
+## Observer-localized recurrence and Anderson transfer
+
+`[PROVED + LEAN: DETERMINISTIC LOCALIZATION-VOLUME ESCAPE--RETURN LAW]`
+
+Let a finite pure-point Hamiltonian have eigenmodes labelled by centres
+\(c_k\), and let a site-local state or projector at \(x\) have normalized
+spectral weights \(p_k(x)\).  For
+\[
+  S_R(x)=\{k:\operatorname{dist}(c_k,x)\le R\},\qquad
+  \alpha_R(x)=\sum_{k\notin S_R(x)}p_k(x),
+\]
+the clique on \(S_R(x)\), with every omitted mode isolated, gives the
+non-vacuous alternative
+\[
+  \text{the local survival history never leaves radius }B_{R,Q},
+  \quad\text{or it later returns inside }B_{R,Q},
+\]
+where
+\[
+  B_{R,Q}\le
+  4\alpha_R(x)+\frac{4\pi}{Q+1},
+  \qquad
+  t_{\rm return}\le
+  (t_{\rm exit}+t_{\rm guard})(Q+1)^{|S_R(x)|-1}.
+\]
+The exact constants are for the scalar survival-history normalization and
+must not be transferred to the squared Hilbert--Schmidt record without
+changing them.
+
+The formalized exponential-tail transfer uses the explicit inputs
+\[
+  p_k(x)\le C e^{-2\mu r_k},\qquad
+  \#\{k:r_k=m\}\le AB^m,\qquad
+  B e^{-2\mu}<1
+\]
+and proves
+\[
+  \alpha_R(x)\le
+  AC\frac{(B e^{-2\mu})^{R+1}}{1-B e^{-2\mu}}.
+\]
+Consequently local recurrence is controlled by localization volume and
+experimental resolution, not ambient Hilbert-space dimension. Any supplied
+volume bound \(|S_R(x)|\le V_{\rm eff}(R)\) gives the proved deadline
+\[
+  t_{\rm return}\le
+  (t_{\rm exit}+t_{\rm guard})(Q+1)^{V_{\rm eff}(R)-1}.
+\]
+
+`[PROVED + LEAN: EXPLICIT RESOLUTION-SCALE LAW]`
+
+If one further formalizes
+\[
+  \alpha_R(x)\le C'e^{-\mu'R},
+  \qquad
+  |S_R(x)|\le A'(R+1)^\nu,
+\]
+then locking radius and phase resolution to one integer scale \(N\), with
+\(Q=2^N-1\), gives the explicit error and deadline
+\[
+ \varepsilon_N=
+ 4C'e^{-\mu'N}
+ 2\left(\frac{2\pi}{2^N}\right)^2,
+ \qquad
+ t_{\rm return}\le
+ (t_{\rm exit}+t_{\rm guard})
+ 2^{N(V(N+1)^\nu-1)}.
+\]
+Thus error falls exponentially in \(N\), while the binary logarithm of the
+certified deadline has degree \(\nu+1\), independently of total system
+size. This is formalized in
+`FiniteAndersonLocalizedResolutionScaleLaw.lean`.
+
+This is the only Anderson-locality merger presently strong enough to alter
+the paper's physics: localization compresses the coherence network that a
+local observer must resynchronize.  Bare real-space locality, weak hopping
+on a finite observation horizon, or maximal global spectral rank do not
+imply the bound.
+
+The escape--return principle is also proved for every countably infinite
+nonnegative summable pure-point phase packet. A finite resolved head sets
+the deadline \((Q+1)^M\), while the complete infinite complement contributes
+exactly through a summable-tail distortion bound. Thus finiteness of ambient
+spectrum is not part of the master law; pure-point summability is the current
+infinite boundary.
+
+Closed formal cores:
+
+1. replace energy-basis vertices by distinct spectral sectors and prove the
+   projector-block trace identity, so degeneracies cannot change capacity;
+2. prove the clique rank, selected-mass and omitted-tail bounds;
+3. identify the scalar coefficient packet \(p_i(x)p_j(x)\) with local
+   survival probability;
+4. compose exponential eigensystem tails and volume growth with the
+   escape--return theorem;
+
+Remaining open core:
+
+5. either prove a model-specific finite Anderson localization event or call
+   the result a universal localized-eigensystem law, not an Anderson-model
+   theorem;
+
+The separate finite Anderson theorem
+`exists_finiteAnderson_maximalProjective_finiteHorizon_survivalTarget`
+also proves that the same nonzero-hopping Hamiltonian may have maximal
+global projective rank while every site-survival history remains within any
+prescribed tolerance throughout any prescribed finite horizon. This closes
+the finite-horizon exact--local separation, but not the missing
+infinite-volume localization event.
+
 ## Formal status
 
 Unconditional Lean theorems currently prove:
 
+- `exists_finiteQuantumExpectationSector_graph_rateDistortion`;
+- `finiteQuantumExpectationSector_neverExits_or_postExit_return`;
+- `finiteQuantumExpectationSectorDisplacement_traceCoefficient_eq_trace_sub`;
+- `finiteQuantumExpectationSectorTraceCoefficient_similarityInvariant`;
+- `finiteQuantumExpectationTotalDeviation_survivalCoefficient_normalized`;
+- `finiteLocalizedSpectralSupportGraph_rank`;
+- `finiteLocalizedSpectral_omittedMass_le_two_tail`;
+- `finiteLocalizedSpectralSupport_neverExits_or_postExit_return`;
+- `finiteAndersonLocalizationTailLaw`;
+- `exists_finiteAndersonLocalizedSurvival_volume_recurrence`;
+- `finiteAndersonLocalizedSurvival_neverExits_or_postExit_return`;
+- `exists_summablePhaseEnergyAt_postExit_recurrence_quantitative`;
+- `summablePhaseEnergyAt_neverExits_or_postExit_return`;
 - `existsUnique_spectralRelationPhaseEnsemble`;
 - `spectralRelationLattice_eq_iff_phaseEnsemble_eq`;
 - `resolvedReplicaDetects_iff_relation_and_height_le`;
@@ -326,7 +701,81 @@ Unconditional Lean theorems currently prove:
 - `projectiveTemporalRank_le`;
 - `projectiveTemporalRank_eq`;
 - `bipartiteProduct_projectiveTemporalRank_le`;
+- `bipartiteProduct_projectiveGapSubspace_eq`;
+- `bipartiteProduct_temporalRank_add_sharedRank`;
+- `bipartiteProduct_temporalRank_eq_sub_sharedRank`;
 - `exists_arbitrarilyWeak_temporalDimensionMultiplication`;
+- `exists_smallSeparableInteraction_temporalDimensionMultiplication`;
+- `lbitGapSubspace_eq_coefficientSubspace`;
+- `lbitTemporalRank_eq`;
+- `lbitTemporalRank_le_order`;
+- `lbitTemporalRank_add_relationRank`;
+- `lbitNoninteracting_relationRank_lower_bound`;
+- `lbitCoefficientSubspace_eq_singletonSpan`;
+- `lbitNoninteracting_temporalRank_eq`;
+- `lbitNoninteracting_relationRank_eq`;
+- `lbitFullTemporalRank_relationRank_eq_zero`;
+- `lbitTemporalRank_le_geometricSupports`;
+- `lbitTemporalRank_eq_geometricSupports_card`;
+- `exists_small_geometricLBit_maximalLocalRank`;
+- `card_lbitGeometricSupports_le_linear`;
+- `lbitTemporalRank_le_geometric_linear`;
+- `lbitTemporalRank_eq_maximal_iff_linearIndependent`;
+- `lbitTemporalRank_lt_maximal_of_coefficient_collision`;
+- `lbitTemporalRank_lt_maximal_of_permutation_symmetry_movedSite`;
+- `quasiLocalInfiniteLBitCoefficient_linearIndependent`;
+- `summable_abs_quasiLocalInfiniteLBitCoefficient`;
+- `quasiLocalInfiniteLBitRestriction_fullRank`;
+- `summable_quasiLocalInfiniteLBitEnergyTerm`;
+- `abs_quasiLocalInfiniteLBitEnergy_sub_window_le_tail`;
+- `tendstoUniformly_quasiLocalInfiniteLBitWindowEnergy`;
+- `continuous_quasiLocalInfiniteLBitEnergy`;
+- `quasiLocalInfiniteLBitEvolutionLinearIsometryEquiv`;
+- `continuous_quasiLocalInfiniteLBitEvolution_time`;
+- `temporalDimension_scaledLBitSpectralJet_eq_sum_layerRank`;
+- `temporalDimension_scaledLBitSpectralJet_eq_card_bornBefore`;
+- `temporalDimension_scaledLBitSpectralJet_le_card_bornBefore`;
+- `temporalDimension_diameterScaledLBitSpectralJet_le_linear_unconditional`;
+- `temporalDimension_diameterScaledLBitSpectralJet_le_linear`;
+- `lbitSupportIntegerCharacter_detuning`;
+- `lbitSupport_scaled_finitePhaseResponse_birth_exact`;
+- `lbitSupport_scaled_finitePhaseResponse_wallCrossing`;
+- `lbitUniformStateVisibleGapSubspace_eq`;
+- `lbitUniformStateVisibleTemporalRank_eq`;
+- `lbitUniformState_all_survivalFidelityMoments_extremal_iff`;
+- `hermitianLocalExtensionSliceMatrix_eq_realAffineMatrix`;
+- `hermitianLocalExtensionSliceMaximalSet_dense_residual_fullMeasure_of_family`;
+- `exists_lbitEnergy_maximal_uniformly_close`;
+- `lbitChargeMatrix_commutes`;
+- `exists_localizedTemporalDimensionExplosion`;
+- `card_mixedLBitSupports`;
+- `universalLBitFiniteRestriction_fullRank`;
+- `relationPhaseEnsemble_constraint_iff`;
+- `relationPhaseEnsemble_constraintSpace_eq`;
+- `relationPhaseEnsemble_constraint_iff_detected`;
+- `relationPhaseEnsemble_resolvedReplica_iff`;
+- `phaseLawTemporalDimension_add_constraintRank`;
+- `relationPhaseEnsemble_temporalDimension_add_relationRank`;
+- `projectiveEnergyDetuning_ker_eq_relationSpace`;
+- `projectiveEnergyDetuning_range_eq_gapSubspace`;
+- `projectiveTemporalRank_add_relationRank`;
+- `projectiveEnergyDetuning_range_eq_anchoredGapSubspace`;
+- `anchoredTemporalRank_add_relationRank`;
+- `relationPhaseEnsemble_temporalDimension_eq_projectiveRank`;
+- `finiteProjectiveRecurrence_universalLaw`;
+- `lbitFullCubeCharacter_positiveMass`;
+- `lbitFullCubeCharacter_detuning`;
+- `lbitFullCubeCharacter_minimumReplica`;
+- `lbitTopInteraction_relation_iff`;
+- `lbitTopInteraction_fracture_iff`;
+- `lbitNoninteracting_temporalRank_le`;
+- `lbitTwoMode_noninteracting_rectangleRelation`;
+- `lbitTwoMode_interaction_fractures_rectangle`;
+- `lbitFullCube_finitePhaseResponse`;
+- `lbitFullCube_finitePhaseResponse_eq_one_iff`;
+- `lbitFullCube_calibratedPhaseResponse`;
+- `lbitFullCube_calibratedHorizon_le`;
+- `lbitFullCube_measurementsSeparated`;
 - `universalRecurrenceSwap_iff_additivelySeparableAcross`;
 - Boolean closure of recurrence masks;
 - atom disjointness, coverage and unique site assignment;
@@ -370,7 +819,17 @@ and observer probes. The required dependency spine is:
 | additive interaction reconstruction | new inverse layer | Boolean algebra of recurrence-preserving controlled swaps |
 | arbitrarily weak joint-interaction singularity | proved physical layer | erases \((d_A-1)(d_B-1)\) independent product relations and changes \(G_E\) to the full projective torus while bounded-time probes remain close |
 | temporal-dimension multiplication | proved universal finite-pair law | every uncoupled \(d_A\times d_B\) tensor-sum has rank at most \(d_A+d_B-2\), while an arbitrarily weak joint perturbation attains \(d_A d_B-1\), a gain of at least \((d_A-1)(d_B-1)\) |
-| generic local-interaction singularity | required headline upgrade | physical local connectivity must force the same completion growth without an eigenbasis-engineered joint perturbation |
+| exact uncoupled temporal composition | proved universal finite-pair identity | \(V_{A\boxplus B}=V_A+V_B\) and \(\tau(A\boxplus B)+\dim(V_A\cap V_B)=\tau(A)+\tau(B)\); shared rational clock directions are the only obstruction to additivity |
+| rank-one separable interaction | proved finite-pair strengthening | one operator-Schmidt-rank-one diagonal interaction already attains the full product temporal dimension; geometric locality inside each block remains separate |
+| l-bit localization--temporal-dimension separation | proved many-body fixed-point law | exact Walsh inversion identifies \(\tau\) with rational rank of nonconstant LIOM coefficients; finite-order truncations have a coefficient-count ceiling, while arbitrarily close all-order diagonal models attain \(2^{|I|}-1\) with every l-bit charge conserved |
+| completed-law constraint conversion | proved capstone bridge | almost-sure completed-phase constraints are exactly balanced integer spectral relations; the replica hierarchy detects the same relation at its exact minimum height; temporal dimension plus relation rank equals projective character capacity |
+| universal finite projective capstone | proved master theorem | one projective detuning map has exact-relation kernel and anchored-gap image; its image rank equals operational completed-law dimension, its kernel is replica-tomographed by exact minimum height, and \(\tau(E)+\operatorname{rank}L_E^{\rm proj}=d\) for every finite spectrum |
+| localized interaction-fracture hierarchy | proved exact l-bit layer | the full Boolean \(N\)-cube character isolates the \(N\)-body coefficient, has exact replica height \(2^{N-1}\), and survives as a recurrence relation iff that coefficient vanishes |
+| countable quasi-local all-window realization | proved infinite energy, evolution and finite-window law | one origin-dependent, absolutely summable, exponentially decaying coefficient assignment defines a bounded continuous infinite-configuration energy, is uniformly approximated by nested site windows, generates strongly continuous uniform-norm isometries of continuous amplitudes, and has full rank on every finite embedded restriction; \(L^2\) self-adjoint/unitary dynamics remains separate |
+| scale-resolved l-bit dimension cascade | proved spectral-jet law | resolved temporal dimension is exactly the sum of rational coefficient ranks in birth layers below the resolution; under layerwise independence it equals the number of visible supports, and diameter birth gives \(\tau_r\le n2^{r+1}\); no elapsed-time identification is claimed |
+| support-resolved elapsed-time cascade | proved ideal scaled-family law | every support character extracts \(2^nJ_Sg^{w(S)}\); its actual finite-time Fourier response crosses from one through an exact sinc profile to zero at inverse-power horizon \(g^{-w(S)}\); full-configuration replica cost and general analytic remainders remain open |
+| uniform-state visibility | proved state-observable bridge | the normalized uniform l-bit product state sees the complete Hamiltonian gap span, and maximal rank is equivalent to extremality of every completed survival-fidelity moment; microscopic dressed-state preparation remains open |
+| generic tensor-local interaction singularity | partially proved headline upgrade | maximal rank is dense, residual and full measure in the complete finite onsite-plus-edge extension slice once the connected transition witness exists; physical endpoint conjugacy and a standard disordered-chain slice remain open |
 | finite contraction return threshold | dissipative extension | transient/peripheral decomposition followed by recurrence completion of the peripheral packet |
 
 This table is a manuscript gate, not an outline suggestion. A section may
@@ -383,7 +842,10 @@ The central theorem still needs one formal capstone that packages:
 2. the peripheral packet's compact recurrence completion;
 3. completion--relation duality;
 4. target geometry and observer pushforwards;
-5. generic local-interaction growth of completion dimension.
+5. exact l-bit localization--temporal-dimension separation and its
+   all-window countable realization;
+6. generic microscopic local-interaction growth of completion dimension, or
+   an explicit manuscript boundary excluding that transfer.
 
 Until that capstone exists, the project has a collection of compatible
 theorems, not one earned universal law.

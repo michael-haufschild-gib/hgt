@@ -249,6 +249,142 @@ theorem bipartiteProduct_projectiveTemporalRank_le
       at hconservation
   omega
 
+/-- The complete projective gap space of an uncoupled tensor-sum is
+exactly the join of the two component gap spaces. -/
+theorem bipartiteProduct_projectiveGapSubspace_eq
+    {m n : ℕ}
+    (left : Fin (m + 1) → ℝ)
+    (right : Fin (n + 1) → ℝ) :
+    visibleGapSubspace
+        (projectiveGapPacket
+          (reindexedBipartiteProductEnergy left right)) =
+      visibleGapSubspace (projectiveGapPacket left) ⊔
+        visibleGapSubspace (projectiveGapPacket right) := by
+  apply le_antisymm
+  · apply Submodule.span_le.2
+    rintro x ⟨i, rfl⟩
+    let p : Fin (m + 1) × Fin (n + 1) :=
+      (@finProdFinEquiv (m + 1) (n + 1)).symm
+        (finCongr (by ring) i.succ)
+    have hleft :
+        left p.1 - left 0 ∈
+          visibleGapSubspace (projectiveGapPacket left) :=
+      anchoredGap_mem_projectiveGapSubspace left p.1
+    have hright :
+        right p.2 - right 0 ∈
+          visibleGapSubspace (projectiveGapPacket right) :=
+      anchoredGap_mem_projectiveGapSubspace right p.2
+    have hadd :
+        (left p.1 - left 0) + (right p.2 - right 0) ∈
+          visibleGapSubspace (projectiveGapPacket left) ⊔
+            visibleGapSubspace (projectiveGapPacket right) :=
+      Submodule.add_mem _
+        ((show
+          visibleGapSubspace (projectiveGapPacket left) ≤
+            visibleGapSubspace (projectiveGapPacket left) ⊔
+              visibleGapSubspace (projectiveGapPacket right) from
+            le_sup_left) hleft)
+        ((show
+          visibleGapSubspace (projectiveGapPacket right) ≤
+            visibleGapSubspace (projectiveGapPacket left) ⊔
+              visibleGapSubspace (projectiveGapPacket right) from
+            le_sup_right) hright)
+    change
+      reindexedBipartiteProductEnergy left right i.succ -
+          reindexedBipartiteProductEnergy left right 0 ∈
+        visibleGapSubspace (projectiveGapPacket left) ⊔
+          visibleGapSubspace (projectiveGapPacket right)
+    rw [show
+      reindexedBipartiteProductEnergy left right i.succ =
+        left p.1 + right p.2 by rfl,
+      reindexedBipartiteProductEnergy_zero]
+    convert hadd using 1
+    ring
+  · apply sup_le
+    · apply Submodule.span_le.2
+      rintro x ⟨i, rfl⟩
+      let qProduct : Fin ((m + 1) * (n + 1)) :=
+        @finProdFinEquiv (m + 1) (n + 1) (i.succ, 0)
+      let q :
+          Fin (m * n + m + n + 1) :=
+        (finCongr (by ring)).symm qProduct
+      have hq :=
+        anchoredGap_mem_projectiveGapSubspace
+          (reindexedBipartiteProductEnergy left right) q
+      change left i.succ - left 0 ∈
+        visibleGapSubspace
+          (projectiveGapPacket
+            (reindexedBipartiteProductEnergy left right))
+      change
+        reindexedBipartiteProductEnergy left right q -
+            reindexedBipartiteProductEnergy left right 0 ∈
+          visibleGapSubspace
+            (projectiveGapPacket
+              (reindexedBipartiteProductEnergy left right)) at hq
+      rw [reindexedBipartiteProductEnergy_zero] at hq
+      simpa [q, qProduct, reindexedBipartiteProductEnergy,
+        bipartiteProductEnergy] using hq
+    · apply Submodule.span_le.2
+      rintro x ⟨j, rfl⟩
+      let qProduct : Fin ((m + 1) * (n + 1)) :=
+        @finProdFinEquiv (m + 1) (n + 1) (0, j.succ)
+      let q :
+          Fin (m * n + m + n + 1) :=
+        (finCongr (by ring)).symm qProduct
+      have hq :=
+        anchoredGap_mem_projectiveGapSubspace
+          (reindexedBipartiteProductEnergy left right) q
+      change right j.succ - right 0 ∈
+        visibleGapSubspace
+          (projectiveGapPacket
+            (reindexedBipartiteProductEnergy left right))
+      change
+        reindexedBipartiteProductEnergy left right q -
+            reindexedBipartiteProductEnergy left right 0 ∈
+          visibleGapSubspace
+            (projectiveGapPacket
+              (reindexedBipartiteProductEnergy left right)) at hq
+      rw [reindexedBipartiteProductEnergy_zero] at hq
+      simpa [q, qProduct, reindexedBipartiteProductEnergy,
+        bipartiteProductEnergy] using hq
+
+/-- **Exact uncoupled temporal composition law.** Component temporal
+dimensions add except for their shared rational gap directions. -/
+theorem bipartiteProduct_temporalRank_add_sharedRank
+    {m n : ℕ}
+    (left : Fin (m + 1) → ℝ)
+    (right : Fin (n + 1) → ℝ) :
+    projectiveTemporalRank
+          (reindexedBipartiteProductEnergy left right) +
+        Module.finrank ℚ ↥
+          (visibleGapSubspace (projectiveGapPacket left) ⊓
+            visibleGapSubspace (projectiveGapPacket right)) =
+      projectiveTemporalRank left +
+        projectiveTemporalRank right := by
+  have hconservation :=
+    observerTemporalDimension_conservation
+      (projectiveGapPacket left)
+      (projectiveGapPacket right)
+  rw [← bipartiteProduct_projectiveGapSubspace_eq] at hconservation
+  exact hconservation
+
+/-- Equivalent subtraction form of exact uncoupled temporal
+composition. -/
+theorem bipartiteProduct_temporalRank_eq_sub_sharedRank
+    {m n : ℕ}
+    (left : Fin (m + 1) → ℝ)
+    (right : Fin (n + 1) → ℝ) :
+    projectiveTemporalRank
+        (reindexedBipartiteProductEnergy left right) =
+      projectiveTemporalRank left +
+          projectiveTemporalRank right -
+        Module.finrank ℚ ↥
+          (visibleGapSubspace (projectiveGapPacket left) ⊓
+            visibleGapSubspace (projectiveGapPacket right)) := by
+  have h :=
+    bipartiteProduct_temporalRank_add_sharedRank left right
+  omega
+
 /-- **Temporal-dimension multiplication law.** For every pair of nonempty
 finite spectra and every positive norm budget, there is a joint perturbation
 inside that budget whose temporal dimension is the maximum product
