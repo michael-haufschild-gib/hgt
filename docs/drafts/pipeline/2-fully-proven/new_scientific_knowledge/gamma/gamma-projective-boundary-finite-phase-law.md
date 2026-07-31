@@ -583,6 +583,32 @@ supplying theories are
 `AlmostPeriodicHull` (return sequence) and the Gamma monomial valuation / prime-torus law
 (projective boundary).
 
+`formal/GaloisForLFunctions/HTGeometry/VerticalStripBohrHull.lean` **discharges the capstone's
+almost-periodicity hypothesis**.  Vertical translation is made an isometric additive `ℝ`-action on
+`S →ᵇ ℂ` for every vertically invariant `S` (`bcfVerticalAction`); `IsVerticalBohrAP` is Bochner's
+criterion for it, and `hasVerticalUniformReturn_of_isVerticalBohrAP` converts a relatively compact
+orbit into arbitrarily late times at which the underlying function returns *uniformly on `S`*.
+`exists_return_seq_tendstoLocallyUniformlyOn_openVerticalStrip` then performs the diagonal choice
+over the exhausting substrips of half-widths `η - η/(l+2) ↑ η` with tolerances `1/(l+2) ↓ 0` and
+produces a **single** sequence `T l → +∞` along which the vertical translates converge to `f`
+locally uniformly on the whole open strip — exactly the `TendstoLocallyUniformlyOn` input of the
+capstone.  `verticalStrip_recurrence_collapse` packages the result: from holomorphy on the strip
+plus almost periodicity alone, the return sequence exists, and the only surviving input of the
+collapse is the coefficient projective boundary.  (`GammaFinitePhaseCapstone` gained the eventual
+form `holomorphic_recurrence_collapse_eventually`, of which the original is the specialization.)
+
+`formal/GaloisForLFunctions/HTGeometry/GammaJetVerticalStripCollapse.lean` closes the loop for the
+canonical Gamma jet tuple, with **no analytic hypothesis left**:
+`gammaJet_vertical_relation_top_monomial_eq_zero` states that a function holomorphic on the open
+strip of half-width `η ≤ σ` about `σ` and Bohr almost periodic there, satisfying
+`∑_{i≤r} Γ⁽ⁱ⁾ · M_i(f) = 0`, has `M_r(f) = 0` identically on the strip.  Both remaining inputs are
+now theorems: the return sequence from `VerticalStripBohrHull`, and the one-point projective
+boundary `(0,…,0,1)` of the jet tuple from `iteratedDeriv_Gamma_div_higher_vertical_tendsto_zero`.
+The auxiliary `eventually_iteratedDeriv_Gamma_vertical_ne_zero` proves that every `Γ⁽ʳ⁾` is
+eventually nonzero on an upper vertical line of positive abscissa (`Γ` has no zeros, and the digamma
+Bell value has leading term `ψʳ` with `‖ψ‖ → ∞`), which supplies the dominant-coefficient
+nonvanishing.  This is the first fully unconditional instance of eq. (8) in the tree.
+
 `formal/GaloisForLFunctions/HTGeometry/IsometricRecurrence.lean` abstracts the recurrence to any
 relatively-compact isometric `ℝ`-action (`isometricAction_recurrence`, `isometricAction_return_seq`),
 so it instantiates both to `ℝ →ᵇ ℂ` and to vertical translation of holomorphic functions on a strip.
@@ -602,13 +628,14 @@ finite frequency packet is `ℚ`-linearly independent.
 whose frequency module is the prime-log module cannot be differentially algebraic over the Gamma
 field (with the finite-phase conclusion as the explicit interface).
 
-Still genuinely open (mathlib-absent, being built incrementally): the vertical-strip a.p. hull
-instantiation feeding the capstone's local-uniform translate return; the mean value / Bohr spectrum
-on the hull; the *topological heart* of eq. (9) — the finite jet-sample embedding `hull ↪ ℂ^N`,
+Still genuinely open (mathlib-absent, being built incrementally): the mean value / Bohr spectrum on
+the hull; the *topological heart* of eq. (9) — the finite jet-sample embedding `hull ↪ ℂ^N`,
 covering-dimension `≤ 2N`, and Pontryagin–van Kampen (mathlib has only the `PontryaginDual`
 definition, not the duality theorem) — which supplies the finite frequency generators consumed by
 `FrequencyRank`; the analytic Poincaré transfer promoting eq. (19)/(3) to unconditional analytic
-asymptotics; and the relative differential Galois theory for the classical eq. (32) (Wang–Yao).
+asymptotics for a general Gamma-field coefficient (the *jet* coefficients are already unconditional,
+see `GammaJetVerticalStripCollapse`); and the relative differential Galois theory for the classical
+eq. (32) (Wang–Yao).
 
 `formal/GaloisForLFunctions/HTGeometry/GammaProjectivePrimeTorusCarrier.lean` proves the §7
 finite-aperture prime-torus carrier law (eq. 34) unconditionally:

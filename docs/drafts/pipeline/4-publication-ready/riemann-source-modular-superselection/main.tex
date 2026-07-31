@@ -39,7 +39,7 @@
 \newcommand{\dd}{\,\mathrm d}
 
 \title{\textbf{Boundary-character conservation for the Riemann divisor}\\
-\large Hypertranscendental prime shells and asymptotic superselection}
+\large An inner--outer source law, hypertranscendental shells, and asymptotic superselection}
 \author{Michael Haufschild}
 \date{}
 
@@ -59,6 +59,20 @@ current carried by the reciprocal normal boundary has residue
  \Res_{s=\rho}\!\left[-(s-\tfrac12)\frac{\xi'(s)}{\xi(s)}\right]
  =-m_\rho(\rho-\tfrac12).
 \]
+This current is exactly the balanced Euler contraction of a singular squarefree
+Möbius--Gamma source graph.  On its Euler domain the corrected graph satisfies
+\[
+ \mathcal G_\xi(s)=-2\,\frac{\xi'(s)}{\xi(s)},\qquad
+ \frac{s-\tfrac12}{2}\mathcal G_\xi(s)
+ =-(s-\tfrac12)\frac{\xi'(s)}{\xi(s)}.
+\]
+At the divisor, two-endpoint depth transport has the universal inner profile
+\[
+ \left(\frac{z}{z+\rho-\tfrac12}\right)^{m_\rho};
+\]
+its first coefficient at \(z=\infty\) is the same vector
+\(-m_\rho(\rho-\tfrac12)\).  Thus source graph, outer logarithmic connection, and inner
+moving-zero normal layer are three exact charts of one singularity.
 Its real part is not merely a divisor statistic.  It is exactly the asymptotic entropy of a
 positive largest-prime-exponent source:
 \[
@@ -165,12 +179,23 @@ At a divisor point of order \(m\), its residue is the full affine vector
 \(-m(\rho-\tfrac12)\).  This is the unique affine reflection-odd weight, up to scale, whose
 product with the odd logarithmic derivative is reflection invariant.
 
+The residue is also the transition coefficient between an inner and an outer chart.  Composing
+literal depth steps from the two functional-equation endpoints and blowing up a moving zero
+\(u=\rho+\varepsilon z\) gives
+\[
+ \left(\frac{z}{z+\rho-\tfrac12}\right)^m.
+ \tag{1.3}\label{eq:nearby-intro}
+\]
+At \(z=\infty\), its first defect from the vacuum \(1\) is
+\(-m(\rho-\tfrac12)z^{-1}\), exactly the residue of \(J_f\).  For \(\xi\), an actual
+squarefree source graph reconstructs the outer connection \(J_\xi\) with the same normalization.
+
 For \(\xi\), the same vector is generated from arithmetic in two independent ways.  The first is
 normal to exponent depth.  Integers whose prime valuations are at most \(M\) have Dirichlet
 series
 \[
  A_M(s)=\frac{\zeta(s)}{\zeta((M+1)s)}.
- \tag{1.3}\label{eq:AM-intro}
+ \tag{1.4}\label{eq:AM-intro}
 \]
 At fixed \(s\) this tends to \(\zeta(s)\).  At inverse depth it tends to
 \(-1/(2\zeta(u))\).  Completion identifies the normal cones at \(0\) and \(1\) exactly, with
@@ -179,7 +204,7 @@ exceptional section \(1/(2\xi(u))\).
 The second source is tangential to exponent depth.  Let
 \[
  H_n(s)=\frac1{\zeta((n+1)s)}-\frac1{\zeta(ns)}.
- \tag{1.4}\label{eq:Hn-intro}
+ \tag{1.5}\label{eq:Hn-intro}
 \]
 Multiplying by \(\zeta(s)\) gives the positive Dirichlet series supported on integers with
 largest prime-valuation exponent exactly \(n\).  The leading prime-two atom gives
@@ -188,12 +213,12 @@ largest prime-valuation exponent exactly \(n\).  The leading prime-two atom give
  \qquad
  \sqrt2\,\frac{H_{n+1}(s)}{H_n(s)}
  \longrightarrow2^{1/2-s}
- \tag{1.5}\label{eq:shell-intro}
+ \tag{1.6}\label{eq:shell-intro}
 \]
 for every \(\Rea s>0\).  Hence
 \[
  \frac{\log|2^{1/2-s}|}{\log2}=\frac12-\Rea s.
- \tag{1.6}\label{eq:entropy-intro}
+ \tag{1.7}\label{eq:entropy-intro}
 \]
 This is precisely the real part of the normalized residue in
 \eqref{eq:current-intro}.  It is important that \eqref{eq:shell-intro} precedes divisor
@@ -204,7 +229,7 @@ from the same shell exposes prime three, producing \(3^{1/2-s}\).  Since
 \(\log3/\log2\notin\mathbb Q\), the pair
 \[
  s\longmapsto\bigl(2^{1/2-s},3^{1/2-s}\bigr)
- \tag{1.7}\label{eq:two-prime-intro}
+ \tag{1.8}\label{eq:two-prime-intro}
 \]
 is injective.  The source boundary therefore retains not only horizontal displacement but the
 entire complex spectral coordinate.
@@ -218,7 +243,7 @@ noncensoring compact bounded-variation prime window multiply the residue indexed
  \frac{|\mathcal R_{W^{\rightarrow r}}(\rho)|}
       {|\mathcal R_{W^{\leftarrow r}}(\rho)|}
  =\Rea\rho-\frac12.
- \tag{1.8}\label{eq:bv-intro}
+ \tag{1.9}\label{eq:bv-intro}
 \]
 Before continuation the two windows are related by literal square-index decimation.  The
 orientation is consequently source-defined, not a sign attached after locating \(\rho\).
@@ -231,7 +256,7 @@ the Wold vacuum scale \(a_N=\prod_{p<N}(1-p^{-1})\), its two reflected faces sat
  c>0 & \text{flat beyond every power of }a_N,\\
  c<0 & \text{comparable to }a_N^{1/2}.
  \end{array}
- \tag{1.9}\label{eq:type-intro}
+ \tag{1.10}\label{eq:type-intro}
 \]
 The geometric law here is forced by source disintegration: it is the conditional positive-depth
 fibre of the depth-one activation partition
@@ -252,6 +277,10 @@ Let \(\rho\) be a right-half nontrivial zero of \(\xi\), of multiplicity \(m_\rh
 Then \(0<c_\rho<\tfrac12\), and:
 \begin{enumerate}[label=\textup{(\roman*)}]
 \item the real normal-cone residue equals \(-m_\rho c_\rho\);
+\item the corrected singular squarefree source graph is exactly
+\(-2\xi'/\xi\) on its Euler domain; its balanced Euler contraction is \(J_\xi\), and the
+two-endpoint moving-zero profile has first outer coefficient
+\(-m_\rho(\rho-\tfrac12)\);
 \item the positive exponent-shell entropy equals \(-c_\rho\);
 \item every noncensoring compact BV prime-window residue phase and the principal Hurwitz phase
 equal \(c_\rho\);
@@ -269,7 +298,8 @@ sewing \(R_N\) satisfies
  a_N^{-K}=o(\|R_N\|)\qquad\text{for every }K\in\N.
 \]
 \end{enumerate}
-The carriers, character families, and activation law in \textup{(i)}--\textup{(vi)} are functions of a free
+The carriers, graph, character families, and activation law in
+\textup{(i)}--\textup{(vii)} are functions of a free
 spectral variable and are defined independently of the zero set; \(\rho\) enters only when these
 families are evaluated on the divisor.
 \end{maintheorem}
@@ -292,6 +322,9 @@ conjunction:
 \begin{enumerate}[label=\textup{(\alph*)}]
 \item one positive exponent-depth source produces the zeta bulk, reciprocal exceptional divisor,
 and centered logarithmic current at three scales;
+\item its squarefree score graph reconstructs the outer Xi connection, while balanced
+two-endpoint depth transport supplies the inner rational normal profile, with exact transition
+coefficient;
 \item its cofinal hypertranscendental shell character carries exactly the same signed affine
 residue;
 \item compact prime windows and Hurwitz monodromy recover the same character independently;

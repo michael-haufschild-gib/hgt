@@ -46,10 +46,35 @@ holomorphic on a vertically-invariant open `U`, satisfying a finite differential
 `M_α = diffMonomial f α`.  Suppose:
 * the vertical translates `f(· + iT_l)` return to `f` locally uniformly on `U` (almost periodicity);
 * the coefficients have the one-point projective boundary `F_α/F_β → d_α` (eq. 5), with `F_β`
-  nonvanishing along the return times.
+  eventually nonvanishing along the return times.
 
 Then the constant-coefficient relation `∑_α d_α · M_α(z₀) = 0` holds with a nonzero coefficient
 vector (`d_β = 1`): `f` satisfies a nontrivial autonomous algebraic differential relation. -/
+theorem holomorphic_recurrence_collapse_eventually {ι : Type*} (E : Finset ι)
+    {U : Set ℂ} (hU : IsOpen U) (f : ℂ → ℂ) (exps : ι → (ℕ →₀ ℕ))
+    (F : ι → ℂ → ℂ) (β : ι) (hβ : β ∈ E) {z₀ : ℂ} (hz₀ : z₀ ∈ U) (T : ℕ → ℝ) (d : ι → ℂ)
+    (hFdiff : ∀ᶠ l in atTop,
+      DifferentiableOn ℂ (fun z => f (z + (T l : ℂ) * Complex.I)) U)
+    (hFconv : TendstoLocallyUniformlyOn
+      (fun l z => f (z + (T l : ℂ) * Complex.I)) f atTop U)
+    (hrel : ∀ s : ℂ, ∑ α ∈ E, F α s * diffMonomial f (exps α) s = 0)
+    (hFβ : ∀ᶠ l in atTop, F β (z₀ + (T l : ℂ) * Complex.I) ≠ 0)
+    (hcoeff : ∀ α ∈ E, Tendsto
+      (fun l => F α (z₀ + (T l : ℂ) * Complex.I) / F β (z₀ + (T l : ℂ) * Complex.I))
+      atTop (nhds (d α))) :
+    (∑ α ∈ E, d α * diffMonomial f (exps α) z₀ = 0) ∧ d β = 1 := by
+  have hjet : ∀ j : ℕ, Tendsto (fun l => iteratedDeriv j f (z₀ + (T l : ℂ) * Complex.I))
+      atTop (nhds (iteratedDeriv j f z₀)) := by
+    intro j
+    have hbridge := iteratedDeriv_tendsto_of_locallyUniform hU hFconv hFdiff j hz₀
+    refine hbridge.congr (fun l => ?_)
+    exact congrFun
+      (_root_.iteratedDeriv_comp_add_const j f ((T l : ℂ) * Complex.I)) z₀
+  exact recurrence_collapse_to_autonomous_eventually E F (fun α => diffMonomial f (exps α)) β hβ z₀
+    T d hrel hFβ hcoeff (fun α _ => diffMonomial_return (exps α) hjet)
+
+/-- Specialization of `holomorphic_recurrence_collapse_eventually` to a dominant coefficient which is
+nonzero at every return time. -/
 theorem holomorphic_recurrence_collapse {ι : Type*} (E : Finset ι)
     {U : Set ℂ} (hU : IsOpen U) (f : ℂ → ℂ) (exps : ι → (ℕ →₀ ℕ))
     (F : ι → ℂ → ℂ) (β : ι) (hβ : β ∈ E) {z₀ : ℂ} (hz₀ : z₀ ∈ U) (T : ℕ → ℝ) (d : ι → ℂ)
@@ -62,16 +87,9 @@ theorem holomorphic_recurrence_collapse {ι : Type*} (E : Finset ι)
     (hcoeff : ∀ α ∈ E, Tendsto
       (fun l => F α (z₀ + (T l : ℂ) * Complex.I) / F β (z₀ + (T l : ℂ) * Complex.I))
       atTop (nhds (d α))) :
-    (∑ α ∈ E, d α * diffMonomial f (exps α) z₀ = 0) ∧ d β = 1 := by
-  have hjet : ∀ j : ℕ, Tendsto (fun l => iteratedDeriv j f (z₀ + (T l : ℂ) * Complex.I))
-      atTop (nhds (iteratedDeriv j f z₀)) := by
-    intro j
-    have hbridge := iteratedDeriv_tendsto_of_locallyUniform hU hFconv hFdiff j hz₀
-    refine hbridge.congr (fun l => ?_)
-    exact congrFun
-      (_root_.iteratedDeriv_comp_add_const j f ((T l : ℂ) * Complex.I)) z₀
-  exact recurrence_collapse_to_autonomous E F (fun α => diffMonomial f (exps α)) β hβ z₀ T d
-    hrel hFβ hcoeff (fun α _ => diffMonomial_return (exps α) hjet)
+    (∑ α ∈ E, d α * diffMonomial f (exps α) z₀ = 0) ∧ d β = 1 :=
+  holomorphic_recurrence_collapse_eventually E hU f exps F β hβ hz₀ T d hFdiff hFconv hrel
+    (Filter.Eventually.of_forall hFβ) hcoeff
 
 end
 

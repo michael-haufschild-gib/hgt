@@ -5,6 +5,7 @@ import GaloisForLFunctions.RHTower.RiemannComplexModularCharacterLaw
 import GaloisForLFunctions.RHTower.AsymptoticTypeSuperselection
 import GaloisForLFunctions.RHTower.EulerActivationSquarefreeDisintegration
 import GaloisForLFunctions.RHTower.GammaSewnMobiusValuationContraction
+import GaloisForLFunctions.RHTower.XiDepthMobiusGammaOuterInnerWeld
 
 /-!
 # Xi source-modular type superselection
@@ -26,7 +27,9 @@ sewing operator has norm beyond every inverse Rees power.
 -/
 
 open Complex Filter Asymptotics
+open scoped Topology
 open GaloisForLFunctions
+open GaloisForLFunctions.HTGeometry
 
 namespace RHTower
 
@@ -146,6 +149,48 @@ theorem gammaSewnActivationReesResolution_law :
   unboundedExactReesRank :=
     fun hp =>
       gammaSewnMobiusReesPrincipalSymbolMatrix_det_ne_zero hp
+
+/-- Exact certificate that the corrected singular squarefree source graph is
+the outer balanced Xi connection and that its divisor residue is the first
+outer coefficient of the two-endpoint depth nearby cycle. -/
+structure XiDepthGraphOuterInnerWeldCertificate : Prop where
+  sourceGraphOuterConnection :
+    ∀ {sigma epsilon u : ℂ},
+      1 < sigma.re →
+      1 < (sigma + u * epsilon).re →
+      epsilon ≠ 0 →
+      xiExceptionalAffineDivisorCurrent (sigma + u * epsilon) =
+        ((sigma + u * epsilon - 1 / 2) / 2) *
+          (squarefreeMobiusGammaCurrentTransportV sigma epsilon
+              (squarefreeFisherScore sigma epsilon) u +
+            4 * infinitePrimeFlux (2 * (sigma + u * epsilon)))
+  innerOuterChargeWeld :
+    ∀ rho : ℂ,
+      let m := (analyticOrderAt xi rho).toNat
+      Tendsto
+          (fun w : ℂ =>
+            w⁻¹ *
+              (depthSuccessorNearbyCycle (rho - 1 / 2) m w⁻¹ - 1))
+          (𝓝[≠] 0)
+          (𝓝 (-((rho - 1 / 2) * (m : ℂ)))) ∧
+        Tendsto
+          (fun s : ℂ =>
+            (s - rho) * xiExceptionalAffineDivisorCurrent s)
+          (𝓝[≠] rho)
+          (𝓝 (-((rho - 1 / 2) * (m : ℂ))))
+
+/-- **Xi depth-graph outer/inner weld.** The actual squarefree
+Möbius--Gamma graph, including its doubled-zeta correction, is the outer
+balanced Xi connection. Its divisor charge is exactly the first outer
+coefficient of the rational two-endpoint depth nearby cycle. -/
+theorem xiDepthGraphOuterInnerWeld_law :
+    XiDepthGraphOuterInnerWeldCertificate where
+  sourceGraphOuterConnection :=
+    fun hsigma hshift hepsilon =>
+      xiExceptionalAffineDivisorCurrent_eq_scaled_mobiusGammaGraph
+        hsigma hshift hepsilon
+  innerOuterChargeWeld :=
+    xiDepthNearby_outerCharge_and_affineResidue_match
 
 /-- A finite-Rees-moderate operator cannot sew the reflected valuation
 sectors selected by an actual right Xi divisor charge. -/
@@ -339,6 +384,8 @@ structure XiRightSourceModularTypeSuperselectionCertificate
           xiRightSourceModularCharge q
   gammaReesResolution :
     GammaSewnActivationReesResolutionCertificate
+  depthGraphOuterInnerWeld :
+    XiDepthGraphOuterInnerWeldCertificate
   finiteReesNoSewing :
     ∀ (K : ℕ) (R : ℕ → (ℝ →L[ℝ] ℝ)),
       ReesOperatorGradeAtMost atTop
@@ -404,6 +451,8 @@ theorem xiRightSourceModularTypeSuperselection_law
         W hr q hres
   gammaReesResolution :=
     gammaSewnActivationReesResolution_law
+  depthGraphOuterInnerWeld :=
+    xiDepthGraphOuterInnerWeld_law
   finiteReesNoSewing :=
     fun K R hR =>
       no_finiteReesOperator_sews_xiRightModularSectors q K R hR
