@@ -1,3 +1,4 @@
+import GaloisForLFunctions.RHTower.SoninApertureRestrictionDefect
 import GaloisForLFunctions.RHTower.SoninPrincipalRelativeTraceSplitting
 
 /-!
@@ -46,24 +47,6 @@ end SchattenHilbertSchmidt
 
 section Bands
 
-/-- A physical band is idempotent. -/
-theorem evenIndicatorBand_mul_self {C F : ℝ} (hFC : F ≤ C) :
-    (evenIndicatorCutoff C - evenIndicatorCutoff F) *
-        (evenIndicatorCutoff C - evenIndicatorCutoff F) =
-      evenIndicatorCutoff C - evenIndicatorCutoff F := by
-  rw [evenIndicatorCutoff_generalShellProduct F C F C hFC hFC]
-  simp only [min_self, max_self]
-  rw [min_eq_left hFC]
-
-/-- A Fourier band is idempotent. -/
-theorem evenFourierBand_mul_self {C F : ℝ} (hFC : F ≤ C) :
-    (evenFourierCutoff C - evenFourierCutoff F) *
-        (evenFourierCutoff C - evenFourierCutoff F) =
-      evenFourierCutoff C - evenFourierCutoff F := by
-  rw [evenFourierCutoff_generalShellProduct F C F C hFC hFC]
-  simp only [min_self, max_self]
-  rw [min_eq_left hFC]
-
 /-- The physical band of a physical window translation is a left unit for it. -/
 theorem evenIndicatorBand_mul_physicalWindowTranslation
     (a C F x : ℝ) (hFC : F ≤ C) (hx : 0 < x) :
@@ -71,7 +54,7 @@ theorem evenIndicatorBand_mul_physicalWindowTranslation
         evenPhysicalWindowTranslation a C F x hx =
       evenPhysicalWindowTranslation a C F x hx := by
   unfold evenPhysicalWindowTranslation
-  rw [← mul_assoc, ← mul_assoc, evenIndicatorBand_mul_self hFC]
+  rw [← mul_assoc, ← mul_assoc, evenIndicatorShell_mul_self F C hFC]
 
 /-- The Fourier band of a Fourier window translation is a left unit for it. -/
 theorem evenFourierBand_mul_fourierWindowTranslation
@@ -80,7 +63,7 @@ theorem evenFourierBand_mul_fourierWindowTranslation
         evenFourierWindowTranslation a C F x hx =
       evenFourierWindowTranslation a C F x hx := by
   unfold evenFourierWindowTranslation
-  rw [← mul_assoc, ← mul_assoc, evenFourierBand_mul_self hFC]
+  rw [← mul_assoc, ← mul_assoc, evenFourierShell_mul_self F C hFC]
 
 end Bands
 
@@ -398,48 +381,11 @@ theorem soninWindowStateResidual_live_eq_cross {a : ℝ} (d e : SoninLiveWindow 
   rw [hsame]
   abel
 
-/-- The residual of any state composition lies in the exact relative ideal. -/
+/-- The residual of any state composition lies in the exact relative ideal.  This is the corpus's
+relative-ideal composition law read as a statement about the residual operator. -/
 theorem soninWindowStateResidual_mem {a : ℝ} (ha : 0 < a) (s t : SoninWindowState a) :
-    IsSoninPrincipalRelativeIdeal (soninWindowStateResidual s t) := by
-  cases s with
-  | zero =>
-      apply IsSoninPrincipalRelativeIdeal.zero.of_eq
-      simp [soninWindowStateResidual, composeSoninWindowStates,
-        SoninWindowState.operator]
-  | live d =>
-      cases t with
-      | zero =>
-          apply IsSoninPrincipalRelativeIdeal.zero.of_eq
-          simp [soninWindowStateResidual, composeSoninWindowStates,
-            SoninWindowState.operator]
-      | live e =>
-          have hdF : 0 < d.floor := lt_of_lt_of_le ha d.base_le_floor
-          have hdC : 0 < d.ceiling := hdF.trans d.floor_lt_ceiling
-          have heF : 0 < e.floor := lt_of_lt_of_le ha e.base_le_floor
-          have heC : 0 < e.ceiling := heF.trans e.floor_lt_ceiling
-          have hPF : IsSoninPrincipalRelativeIdeal
-              (evenPhysicalWindowTranslation a d.ceiling d.floor d.scale d.scale_pos *
-                evenFourierWindowTranslation a e.ceiling e.floor e.scale e.scale_pos) := by
-            simpa only [evenPhysicalWindowTranslation, evenFourierWindowTranslation] using
-              physicalWindow_mul_fourierWindow_mem_principalRelativeIdeal
-                a d.ceiling d.floor e.ceiling e.floor d.scale e.scale⁻¹ ha hdC hdF
-                d.scale_pos (inv_pos.mpr e.scale_pos)
-          have hFP : IsSoninPrincipalRelativeIdeal
-              (evenFourierWindowTranslation a d.ceiling d.floor d.scale d.scale_pos *
-                evenPhysicalWindowTranslation a e.ceiling e.floor e.scale e.scale_pos) := by
-            simpa only [evenPhysicalWindowTranslation, evenFourierWindowTranslation] using
-              fourierWindow_mul_physicalWindow_mem_principalRelativeIdeal
-                a d.ceiling d.floor e.ceiling e.floor d.scale⁻¹ e.scale ha hdC hdF
-                (inv_pos.mpr d.scale_pos) e.scale_pos
-          apply (hPF.add hFP).of_eq
-          exact (soninWindowStateResidual_live_eq_cross d e).symm
-
-/-- Canonical state composition realizes operator multiplication modulo the exact relative ideal,
-not merely modulo compact operators. -/
-theorem soninWindowState_operator_mul_principalRelativeEq
-    {a : ℝ} (ha : 0 < a) (s t : SoninWindowState a) :
-    s.operator * t.operator =ᵣ (composeSoninWindowStates s t).operator :=
-  soninWindowStateResidual_mem ha s t
+    IsSoninPrincipalRelativeIdeal (soninWindowStateResidual s t) :=
+  soninWindowState_operator_mul_principalRelativeEq ha s t
 
 /-- **Residual trace symmetry.**  The exact composition residual carries the same ordinary trace in
 both orders, even though its two summands are individually order dependent. -/

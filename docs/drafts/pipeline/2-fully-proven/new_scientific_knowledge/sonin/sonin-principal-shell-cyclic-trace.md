@@ -207,7 +207,7 @@ provisional pending expert/literature review.
 | `(2)` state cyclicity | `soninWindowStateCyclicLogTrace_compose_comm` |
 | `(3)` Gram diagonalization | `soninGramFactorPrincipalCyclicTrace_eq_ite` |
 | `(4)` prime-power flux | `soninPrimePowerPrincipalCyclicTraceDensity_eq_fluxCoefficient` |
-| `(7)` relative-ideal closure | `soninWindowState_operator_mul_principalRelativeEq` |
+| `(7)` relative-ideal closure | `soninWindowState_operator_mul_principalRelativeEq` (pre-existing) |
 | `(9)` exact cross residual | `soninWindowStateResidual_live_eq_cross` |
 | `(10)` cross-trace symmetry | `opTrace_physicalWindow_mul_fourierWindow_comm` |
 | residual trace symmetry | `opTrace_soninWindowStateResidual_comm` |
@@ -221,6 +221,12 @@ provisional pending expert/literature review.
 Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninPrincipalRelativeCyclicExtension.lean`.
 All declarations depend only on `propext`, `Classical.choice`, `Quot.sound`.
+
+Novelty split for Theorem G: `(7)` was already in the corpus
+(`SoninApertureRestrictionDefect.lean`) and is reused, not reproved.  New here are the exact
+cross-polarization identity `(9)`, the cross-trace symmetry `(10)` and its Hilbert--Schmidt band
+mechanism `(11)`--`(12)`, the directness/uniqueness of the presentation, the glued functional, its
+cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
