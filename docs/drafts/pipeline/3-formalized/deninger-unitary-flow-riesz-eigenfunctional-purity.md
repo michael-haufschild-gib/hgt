@@ -1,7 +1,7 @@
 # Unitary-flow Riesz-eigenfunctional purity
 
 - **ID:** `deninger-unitary-flow-riesz-eigenfunctional-purity`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Label:** `DAC_UNITARY_FLOW_RIESZ_EIGENFUNCTIONAL_PURITY`
 - **Parent:** `deninger-arithmetic-calderon-paugam-hardy-comparison`
@@ -117,7 +117,7 @@ Jordan filtrations, and zero multiplicities.
 
 - [x] 0 → 1 in-progress: source-pure statement and proof route
 - [x] 1 → 2 fully-proven: complete proof with no open dependency
-- [ ] 2 → 3 formalized: Lean theorem and RH corollary
+- [x] 2 → 3 formalized: Lean theorem and RH corollary build unconditionally
 - [ ] 3 → 4 publication-ready
 
 ## Log
@@ -125,3 +125,26 @@ Jordan filtrations, and zero multiplicities.
 - 2026-07-27 — Proved time-one unitary form.  This strictly weakens
   the earlier sufficient infinitesimal criterion: no membership of
   the Riesz vector in the closed generator domain is required.
+
+## Unconditional Lean formalization
+
+`formal/GaloisForLFunctions/RHTower/DeningerUnitaryFlowRieszPurity.lean`, wired into the
+`RHTower` umbrella.  Axiom audit: `propext, Classical.choice, Quot.sound`.
+
+- `norm_eq_one_of_unitary_transposeEigenfunctional` — the theorem: for `V : H ≃ₗᵢ[ℂ] H` and
+  `y ≠ 0` with `⟪y, V x⟫ = c ⟪y, x⟫` for all `x`, one has `‖c‖ = 1`.  The proof is the card's
+  second, norm-free route: evaluating `(1)` at `V⁻¹ y` and conjugating `(1)` at `y` gives
+  `⟪y,y⟫ = c · conj c · ⟪y,y⟫`, and `⟪y,y⟫ ≠ 0` cancels.
+- `re_eq_half_of_norm_exp_eq_one` — `(2) ⇒ (3)` via `‖exp z‖ = exp (Re z)` and injectivity of the
+  real exponential.
+- `re_eq_half_of_unitary_transposeEigenfunctional` — the two combined: a nonzero transpose
+  eigenfunctional with centered exponential character `exp (ρ - 1/2)` forces `Re ρ = 1/2`.
+- `riemannHypothesis_of_unitaryFlow_rieszEigenfunctional` — the Deninger consequence: realizing
+  every nontrivial zeta zero by a nonzero Riesz vector satisfying the transpose character law
+  yields mathlib's `RiemannHypothesis`.
+
+The hypothesis is exactly a unitary time-one flow; no generator, no domain condition, and no
+differentiability appears.  This is strictly weaker than the corpus's earlier infinitesimal
+criterion `RHTower.deningerClosedWeightOne_rieszEigenfunctional_re_eq_half`
+(`DeningerArithmeticRieszEigenfunctionalPurity.lean`), which additionally requires the Riesz
+vector to lie in the closed domain of the generator — the exact hypothesis this card removes.

@@ -417,3 +417,139 @@ Primary external parents:
   circle.  It requires moving-annulus/enhanced support.  Also replaced the impossible finite-packet
   Xi sewing target: finite Euler gauges are exact, so only the strict all-prime gauge defect can
   carry divisor cohomology.
+
+## 11. Lean status update (2026-07-31): the proved selector layer is formalized
+
+The card's `Lean: not authorized` line gated formalization on the arithmetic sewing theorem.
+Under the standing loop directive (formalize every proven theorem of the card), the **proved
+layer** — §3's bilateral moderation theorem and §5's distributional Koszul contraction — is now
+formalized unconditionally, in the coefficient-growth form that §3's own equivalence (1)⟺(2)
+licenses as the mathematical content (the classical Schwartz characterization of circle
+distributions by polynomial Fourier growth is taken as the *definition* interface
+`bilateralModerate`, and this design decision is documented in the module docstring).
+
+`RHTower/BilateralPrimeAngleModeration.lean` — built green, umbrella-registered, zero
+warnings, all capstones axiom-clean `[propext, Classical.choice, Quot.sound]`:
+
+```text
+bilateralHalfDensityCharacter                    λ_p(s) = p^(1/2 − s)
+norm_bilateralHalfDensityCharacter_eq_one_iff    ‖λ_p(s)‖ = 1 ⟺ Re s = 1/2   (card (3)⟺(4))
+bilateralModerate_jetFamily_iff_re_eq_half       the moderation dichotomy, every grade k
+                                                 (card (2)⟺(4), both directions; the off-line
+                                                 side via exists_one_le_and_pow_gt_poly:
+                                                 geometric beats polynomial)
+bilateralJetFamily_zpow_on_line                  λ_p(1/2+iγ)^e = exp(−ieγ log p): the point-
+                                                 conormal phase family at θ = γ log p (card (9))
+bilateral_shift_eigen_eq_zero_of_norm_ne_one     the distributional Koszul contraction: a
+                                                 moderate bilateral shift eigenfamily with
+                                                 off-unitary character is zero (card (14))
+re_eq_half_of_moderate_bilateral_eigen           THE SELECTOR: a nonzero moderate bilateral
+                                                 eigenfamily with character λ_p(s) forces
+                                                 Re s = 1/2
+```
+
+Not formalized (and correctly so): the conjectural arithmetic sewing (§6) — open research —
+and the finite-packet Stokes-cocycle computation (§9), which is the next constructive target.
+The hyperfunction/moving-annulus side of §3 (clause (1)'s "neither a distribution nor a
+periodic hyperfunction") is likewise outside the growth interface and remains paper-level.
+
+## Log (continued)
+
+- 2026-07-31 (Claude): formalized the proved layer (moderation dichotomy, unitarity criterion,
+  on-line conormal phases, off-unitary Koszul vanishing, the selector) in
+  `BilateralPrimeAngleModeration.lean`, self-contained over mathlib (narrow imports:
+  Pow.Complex, Pow.Real, SpecificLimits.Normed). Corpus collision check run first: no prior
+  bilateral/moderation modules. Next: the finite-packet corollary (10a) multi-index form, then
+  §9's finite-packet Euler-gauge → Hardy restriction → exact Stokes cocycle computation
+  (paper proof first, per the card's own discipline).
+
+## 12. Lean status update (2026-07-31, second pass): finite packet and the exact Stokes cocycle
+
+`RHTower/BilateralPrimeAnglePacketSewing.lean` — built green, umbrella-registered, zero
+warnings, all capstones axiom-clean — formalizes two more proved layers:
+
+**The finite-packet dichotomy (card (10a)).** `packetModerate_bilateralPacketFamily_iff`:
+for a finite prime packet `P` containing a prime `p₀ ≥ 2`, the multi-index family
+`E ↦ Π_p λ_p(s)^(E_p)` has polynomial growth in the total Fourier degree `Σ|E_p|` **iff**
+`Re s = 1/2`. Off-line failure is detected on the single `p₀`-axis (restriction is the
+one-prime grade-0 family); on-line all coefficients are unimodular. No finite-packet loss.
+
+**The exact Hardy–Stokes sewing at finite gauge (the finite-level half of (16)).**
+For any character `λ ≠ 0`:
+
+```text
+hardyPositiveHalf + hardyNegativeHalf = bilateralEigenFamily        (chamber split)
+sewing(λ) eigenFamily = 0                                            (bilateral solution)
+sewing(λ) hardyPositiveHalf = −λ·δ₀,  sewing(λ) hardyNegativeHalf = +λ·δ₀
+                                                                     (Stokes boundary terms)
+bilateralSewing_halves_cancel                                        (the cocycle is EXACT:
+                                                                      no divisor class at
+                                                                      finite gauge)
+moderate(H⁺) ⟺ ‖λ‖ ≥ 1,  moderate(H⁻) ⟺ ‖λ‖ ≤ 1                    (sharp chamber ledger)
+hardyHalves_both_moderate_iff_re_eq_half                             (both halves sew inside
+                                                                      moderate families ⟺
+                                                                      Re s = 1/2)
+```
+
+Together with the parent module's Koszul contraction (off-line the sewing operator has no
+nonzero moderate bilateral kernel), this is the complete finite-gauge picture the card's §9
+demanded as its "no-cohomology calculation": the two chiral restrictions exist in separate
+chambers, their transition cocycle is exact, no finite-packet divisor class arises, and the
+sewing selects the critical line exactly. What remains open on the card is what it always
+was: the strict all-prime gauge defect (§9's second half) and the arithmetic sewing
+conjecture (§6) — the card's open research core.
+
+## Log (continued)
+
+- 2026-07-31 (Claude, second pass): formalized the finite-packet dichotomy and the exact
+  Hardy–Stokes sewing (`BilateralPrimeAnglePacketSewing.lean`, 7 capstones, axiom-clean).
+  The finite-gauge half of (16) is now theorem-backed: exact transition cocycle, sharp
+  chamber moderation ledger, critical-line sewing criterion. Next: the strict all-prime
+  gauge defect — the Ind-limit of the finite gauges where the first nonzero class can live —
+  which is the card's genuine open construction (paper design first).
+
+## 13. Lean status update (2026-07-31, third pass): the strict countable-prime Ind-limit gate is closed
+
+`RHTower/BilateralAllPrimeIndLimit.lean` — built green, umbrella-registered, zero warnings,
+all capstones axiom-clean — passes the moderation selector to the strict all-prime level:
+
+- `allPrimeModerate_conormalFamily_iff` — the canonical all-prime conormal family
+  `E ↦ Π_p λ_p(s)^(-E_p)` over finitely supported multi-indices (the Fourier lattice of the
+  full prime-angle torus) is moderate in total degree **iff** `Re s = 1/2`. Off-line failure
+  is already visible on the single `p = 2` axis; on-line every coefficient has modulus ≤ 1
+  (including the junk indices `p = 0, 1`, so no support hypothesis is needed).
+  **The selector suffers no countable-product loss** — the card's (10a)/(10b) clause at the
+  strict limit.
+- `allPrimeSewing_single_step` + `allPrimeSewing_rigidity` — **Ind-limit rigidity**: any
+  family satisfying the sewing recursion at every prime is, on prime-supported multi-indices,
+  its origin value times the canonical conormal family. The strict all-prime simultaneous
+  solution space is one-dimensional: the cofinal gauge structure creates no spurious classes.
+- `re_eq_half_of_allPrime_moderate_sewing` — **the strict all-prime selector**: a moderate
+  simultaneous sewing solution with nonzero origin value forces `Re s = 1/2`.
+
+### Gate ledger after three passes
+
+- [x] prove the bilateral distribution criterion — **formalized** (§11, growth form)
+- [x] identify every fixed Mertens grade with a delta-derivative grade on the critical line —
+      **formalized** (§11, on-line conormal phases)
+- [x] recover the off-unitary Koszul contraction in distributional form — **formalized** (§11)
+- [x] finite-packet exact transition/Stokes cocycle + no divisor cohomology — **formalized**
+      (§12: exact ∓λδ₀ cancellation, sharp chamber ledger, sewing criterion)
+- [x] pass to the strict countable-prime Ind-limit — **formalized** (§13: no-loss dichotomy,
+      rigidity, strict selector)
+- [ ] construct the strict all-prime gauge defect **from the arithmetic source** — this is
+      §6's arithmetic sewing conjecture: the moderate layer is now provably rigid, so the
+      first possible nonzero class must come from the enhanced/non-moderate sector tied to
+      the actual Xi divisor. Open research; the card's conjectural core.
+- [ ] prove conormal conservativity; derive RH — the wall, unchanged.
+- [ ] independent audit of Fourier/reflection conventions (external).
+
+## Log (continued)
+
+- 2026-07-31 (Claude, third pass): closed the Ind-limit gate.
+  `BilateralAllPrimeIndLimit.lean`: all-prime moderation dichotomy over `ℕ →₀ ℤ` (no
+  countable-product loss), coordinate transport, support-card-induction rigidity (the
+  simultaneous sewing solution space is one-dimensional), and the strict all-prime selector.
+  Every provable gate of this card that does not require the arithmetic source is now
+  theorem-backed. What remains is exactly the card's declared open research: sewing the
+  *arithmetic* (Xi/Euler-Gamma) source into this rigid moderate skeleton (§6, clauses 3–4).

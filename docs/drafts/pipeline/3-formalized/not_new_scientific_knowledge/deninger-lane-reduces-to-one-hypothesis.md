@@ -880,3 +880,90 @@ open wall, unchanged: a mechanism evaluating the defect.
   data = prime data, unconditionally; mixed trace = prime data ⟺-shaped under RH with the
   three-point Ward defect as the exact unconditional discrepancy.
   `DeningerDivisorTwistedTraceReduction.lean`, 5 capstone theorems, axiom-clean.
+
+## 16. The circle closes: mixed trace = prime data ⟺ RH, at every scale
+
+`RHTower/DeningerDivisorThreePointDetection.lean` — built green, umbrella-registered, zero
+warnings, axiom-clean — executes both remaining recorded steps of §15:
+
+- `abs_im_xiSpectralPoint_lt_half` — every spectral point lies in the open horizontal strip
+  `|Im μ| < 1/2` (the divisor lives in the open critical strip). This makes `μ₀ ± I`
+  automatically non-spectral auxiliary base points.
+- `XiC_ne_zero_of_one_lt_re` + `deningerDivisorTwistedResolventTrace_eq_primeSeries` — the
+  honest Euler-half-plane form: the twisted trace equals the von-Mangoldt
+  `primeArchSourceRelativeTrace` combination on `Re(1/2 + zI) > 1`.
+- `threePointDefectTrace_eq_zero_iff_riemannHypothesis` — **the three-point defect trace
+  vanishes at all base-point triples iff RH**, via simple-pole extraction: the auxiliary points
+  `μ₀ ± I` have resolvent product exactly `1` on the `μ₀`-block, the strip gap
+  `g = 1/2 − |Im μ₀|` uniformly bounds their resolvents on the whole divisor, and the simple
+  `z₁`-pole beats the same `C/‖μ‖²`-majorized tail as in §14 — with no cube-root bookkeeping,
+  since the pole is simple.
+
+Combined statement of §12–§16, and the card's topic is now at its honest terminus: the
+Deninger lane's single debt is (i) gauge-invariant — no Hodge-gauge, weight, or completion
+choice shrinks it (§12–§13); (ii) carried by one absolutely convergent analytic object in two
+equivalent shapes (cube §14, three-point §15–§16), each vanishing identically iff RH; and
+(iii) exactly the discrepancy between the non-holomorphic spectral trace and its unconditional
+prime-side expression (§15–§16). What remains is the wall itself, stated in its sharpest form
+yet: **evaluate the defect trace from arithmetic input.** Every reformulation lane the card
+opened is now closed by a proved theorem.
+
+## Log (continued)
+
+- 2026-07-31 (Claude, fifth pass): closed §15's two recorded steps. Strip lemma, Euler-plane
+  nonvanishing, LSeries form of the reduction, and the three-point detection iff via
+  simple-pole extraction with strip-gap auxiliary points `μ₀ ± I` (their block resolvent
+  product is exactly 1 — no separation constant needed for them). Module
+  `DeningerDivisorThreePointDetection.lean`, 5 capstones, axiom-clean. The card's stated topic
+  — "the lane needs exactly one thing" — is now fully theorem-backed from every side the
+  corpus can reach; the one thing is the evaluation of the defect, and it is untouched.
+
+## 17. Terminus: the wall-evaluation attempt, its exact form, and why it closes this card
+
+One full conjecture cycle was run against the remaining gate ("evaluate the defect trace from
+arithmetic input"). Its outcome, recorded so it is never re-derived:
+
+**The central-point shadow of the mixed trace evaluates exactly.** With `w = ρ - 1/2`:
+
+```text
+Σ_ρ 1/(ρ conj(ρ)) - Σ_ρ 1/(ρ(1-ρ)) = Σ_{quadruples} 2(2β-1)² / |ρ(1-ρ)|²  ≥ 0,  = 0 iff RH,
+```
+
+per-quadruple (`{ρ, conj ρ, 1-ρ, 1-conj ρ}`, `β = Re ρ`), by direct algebra
+(`|ρ|²|1-ρ|² = |ρ(1-ρ)|²`), with `Σ 1/(ρ(1-ρ)) = 2 + γ - log 4π` classical. So "evaluate the
+defect" at the central point is precisely: *show a manifestly nonnegative sum of squares
+vanishes* — the Weil-positivity shape, in the corpus's own classification a nonnegative
+per-zero-family criterion (group 2: closed ground; see `nonnegative-sum-criteria-are-never-weaker`,
+`weil-carrier-is-sum-of-complex-squares`). And the structural reason the wall stands is now
+visible inside this card's own theorems: the anti-holomorphic coupling `ρ·conj ρ` cannot be
+produced by any holomorphic manipulation of L-data — products/quotients of shifted `ξ`'s only
+ever yield single-zero resolvents (the mixed trace's Schwarz symmetry
+`conj Y(z⃗) = Y(-conj z⃗)` is free and empty, consistent with
+`conjugation-symmetry-gives-no-positivity`). Verdict of the cycle: REDISCOVERED — the
+evaluation exists and is the wall itself.
+
+**Card status: topic complete.** The card's stated topic — the lane needs exactly one thing,
+and no audit instrument sees it — is established, sharpened, and fully Lean-backed:
+- the one thing is gauge-invariant (§12–13: Ward identity, Schwarz gauge, monodromy);
+- it has an analytic carrier vanishing iff RH, in two shapes (§14 cube, §16 three-point);
+- it is exactly the gap between the mixed spectral trace and its unconditional prime-side
+  expression (§15–16);
+- its central-point evaluation is the classical sum-of-squares wall (§17).
+
+Six Lean modules, all axiom-clean, umbrella-registered, zero warnings:
+`DeningerDivisorGaugeWardIdentity`, `DeningerDivisorSchwarzMonodromy`,
+`DeningerDivisorDefectTrace`, `DeningerDivisorTwistedTraceReduction`,
+`DeningerDivisorThreePointDetection` (+ the §12.1 audit of the two pre-existing models).
+Remaining open items are not this card's topic: the independent Codex audit (external), and
+the programme-wide RH core, which `deninger-two-halves-do-not-compose` §10 already tracks as
+"a mechanism for the positivity". Further reformulation inside this lane is provably theatre;
+the card moves to the formalized stage.
+
+## Log (final)
+
+- 2026-07-31 (Claude, sixth pass): ran the conjecture cycle against the wall; obtained the
+  exact central-point evaluation of the defect as a per-quadruple sum of squares; classified
+  it against the corpus's own criterion taxonomy as closed ground; declared the card's topic
+  complete and moved it to `3-formalized/not_new_scientific_knowledge` (honest grade: the
+  new laws are corpus-new structural mathematics about a corpus model, elementary externally;
+  the RH-iffs are labelled re-encodings).

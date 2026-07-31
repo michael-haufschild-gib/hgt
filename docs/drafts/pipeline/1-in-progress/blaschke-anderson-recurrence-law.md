@@ -457,12 +457,36 @@ Hence lower obstruction and constructive upper return now have the same
 quadratic depth-entropy coefficient; their remaining costs are linear in
 active depth or logarithmic in target reparameterization.
 
+The measurable hit event is now identified with the actual first positive
+return in `CountableWeightedFirstReturn.lean`, using an extended-natural
+clock so nonexistence cannot be hidden by a default value.  The complete
+same-target capstone is proved in
+`BlaschkeLocalizedFirstReturnSandwich.lean`: for almost every product-Haar
+phase packet and every fixed \(\delta>0\), eventually
+\[
+ \lfloor e^{(1-\delta)Q_k-L_k}\rfloor
+ <\tau(e^{-L_k})\le T_k,
+\]
+where
+\[
+ \log T_k\le
+ {\cal H}_a(L_k+\sqrt{k})
+ +(R_a(L_k+\sqrt{k})+1)\log C_{\rm phase}.
+\]
+The target calibration is unconditional:
+`BlaschkeLocalizedReturnDefect.lean` proves the exact constructive defect
+is at most \(C_a(1+L)e^{-L}\), and
+`BlaschkeLocalizedReturnDefectLimit.lean` proves the square-root shift makes
+that defect at most \(e^{-L_k}\) eventually.  Thus the two clocks concern
+the same actual first-return observable and the same target accuracy.
+
 Direct foreground Lean checks pass. `#print axioms` for audited new
 load-bearing theorems reports only `propext`, `Classical.choice`, and
 `Quot.sound`.
 
 Operator construction, anisotropic counting, the Blaschke asymptotic
-interpolation from integer logarithmic scales to all target accuracies, and
-the matching almost-sure first-return asymptotic remain Lean-open. Nothing
-beyond the listed proved claims is manuscript-authorized until formalized.
-Manuscript must not mention the formalization.
+normalization of the exact two-sided sandwich, interpolation from integer
+logarithmic scales to all target accuracies, and the closed-form
+almost-sure first-return limit remain Lean-open. Nothing beyond the listed
+proved claims is manuscript-authorized until formalized. Manuscript must
+not mention the formalization.

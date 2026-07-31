@@ -27,6 +27,7 @@ variable {V A : Type*} [Fintype V] [Fintype A] [DecidableEq V] [DecidableEq A]
 
 /-! ### Necessity -/
 
+omit [Fintype A] [DecidableEq A] in
 /-- **A one-dimensional periodic pencil omits at most one vertex per facet.**  The facet form is
 multiplication by one nonzero scalar, so two omitted vertices have steps in a common `ℤ`-line,
 contradicting `ℚ`-independence. -/
@@ -66,7 +67,6 @@ theorem card_sdiff_le_one_of_ppAdmissible_one (faces : A → Finset V)
       rw [hgv, hgv']
       have hcancel : U B 0 * ((n' : ℂ) * a v 0 + ((-n : ℤ) : ℂ) * a v' 0) = 0 := by
         push_cast
-        push_cast at hn hn'
         linear_combination (n' : ℂ) * hn - (n : ℂ) * hn'
       have := mul_eq_zero.mp hcancel
       rcases this with h | h
@@ -77,7 +77,6 @@ theorem card_sdiff_le_one_of_ppAdmissible_one (faces : A → Finset V)
       have hxv : x ≠ v := fun hcx => hx (by rw [hcx]; simp)
       have hxv' : x ≠ v' := fun hcx => hx (by rw [hcx]; simp)
       simp [hg, hxv, hxv']
-      rfl
   have hzero := Fintype.linearIndependent_iff.mp hindep g hsum
   have hn'0 : (n' : ℚ) = 0 := by
     have := hzero v
@@ -94,6 +93,7 @@ theorem card_sdiff_le_one_of_ppAdmissible_one (faces : A → Finset V)
   subst hi
   exact hav'
 
+omit [Fintype A] [DecidableEq A] in
 /-- The necessity in the corpus's combinatorial vocabulary. -/
 theorem facetComplementRankOne_of_ppAdmissible_one (faces : A → Finset V)
     (hne : ∀ B, (faces B).Nonempty) {a : V → Fin 1 → ℂ} (hindep : LinearIndependent ℚ a)
@@ -102,5 +102,113 @@ theorem facetComplementRankOne_of_ppAdmissible_one (faces : A → Finset V)
     FacetComplementRankOne (Finset.univ : Finset V) (Set.range faces) := by
   rintro F ⟨B, rfl⟩
   exact ⟨Finset.subset_univ _, card_sdiff_le_one_of_ppAdmissible_one faces hne hindep hadm B⟩
+
+/-! ### Sufficiency -/
+
+/-- A positive injective exponent labelling of a finite vertex type. -/
+noncomputable def vertexExponent (v : V) : ℕ := (Fintype.equivFin V v : ℕ) + 1
+
+omit [DecidableEq V] in
+theorem vertexExponent_injective : Function.Injective (vertexExponent (V := V)) := by
+  intro x y hxy
+  have h : (Fintype.equivFin V x : ℕ) = (Fintype.equivFin V y : ℕ) := by
+    rw [vertexExponent, vertexExponent] at hxy
+    omega
+  exact (Fintype.equivFin V).injective (Fin.ext h)
+
+omit [DecidableEq V] in
+theorem vertexExponent_ne_zero (v : V) : vertexExponent v ≠ 0 := by
+  rw [vertexExponent]
+  omega
+
+/-- The one-dimensional translation configuration built from a transcendental number. -/
+noncomputable def onePencilVector (τ : ℂ) (v : V) : Fin 1 → ℂ := fun _ => τ ^ vertexExponent v
+
+omit [DecidableEq V] [Fintype A] [DecidableEq A] in
+theorem onePencilVector_linearIndependent {τ : ℂ} (hτ : Transcendental ℚ τ) :
+    LinearIndependent ℚ (onePencilVector (V := V) τ) := by
+  have hbase : LinearIndependent ℚ fun v : V => τ ^ vertexExponent v :=
+    linearIndependent_of_mul_eq_transcendental_powers hτ vertexExponent
+      vertexExponent_injective _ fun _ => one_mul _
+  have hmap : LinearIndependent ℚ fun v : V =>
+      (LinearEquiv.funUnique (Fin 1) ℚ ℂ).symm (τ ^ vertexExponent v) :=
+    hbase.map' (LinearEquiv.funUnique (Fin 1) ℚ ℂ).symm.toLinearMap (LinearEquiv.ker _)
+  exact hmap
+
+omit [Fintype A] [DecidableEq A] in
+/-- **The deletion family is realized in dimension one.** -/
+theorem ppDim_le_one_deletion (faces : A → Finset V) (u : A → V)
+    (hface : ∀ B, faces B = (Finset.univ : Finset V).erase (u B)) : ppDim faces ≤ 1 := by
+  classical
+  obtain ⟨τ, hτ⟩ := exists_transcendental_complex
+  have hτ0 : τ ≠ 0 := fun h => hτ (by rw [h]; exact isAlgebraic_zero)
+  refine Nat.sInf_le ⟨onePencilVector τ, onePencilVector_linearIndependent hτ,
+    fun B _ => (τ ^ vertexExponent (u B))⁻¹, fun B => ⟨?_, ?_⟩⟩
+  · intro v hv
+    refine ⟨1, ?_⟩
+    have hvu : v = u B := by
+      rw [hface B] at hv
+      by_contra hcon
+      exact hv (Finset.mem_erase.mpr ⟨hcon, Finset.mem_univ v⟩)
+    show ∑ i : Fin 1, (τ ^ vertexExponent (u B))⁻¹ * onePencilVector τ v i = ((1 : ℤ) : ℂ)
+    rw [Fin.sum_univ_one]
+    show (τ ^ vertexExponent (u B))⁻¹ * τ ^ vertexExponent v = ((1 : ℤ) : ℂ)
+    rw [hvu, inv_mul_cancel₀ (pow_ne_zero _ hτ0)]
+    norm_num
+  · refine linearIndependent_of_mul_eq_transcendental_powers (c := τ ^ vertexExponent (u B)) hτ
+      (fun i : Option (faces B) => i.elim (vertexExponent (u B)) fun v => vertexExponent (v : V))
+      ?_ _ ?_
+    · intro x y hxy
+      rcases x with _ | ⟨x, hx⟩ <;> rcases y with _ | ⟨y, hy⟩
+      · rfl
+      · rw [hface B] at hy
+        exact absurd (vertexExponent_injective hxy.symm)
+          (Finset.ne_of_mem_erase hy)
+      · rw [hface B] at hx
+        exact absurd (vertexExponent_injective hxy) (Finset.ne_of_mem_erase hx)
+      · have : x = y := vertexExponent_injective hxy
+        subst this
+        rfl
+    · intro i
+      rcases i with _ | ⟨v, hv⟩
+      · show τ ^ vertexExponent (u B) * 1 = τ ^ vertexExponent (u B)
+        rw [mul_one]
+      · show τ ^ vertexExponent (u B)
+          * ∑ j : Fin 1, (τ ^ vertexExponent (u B))⁻¹ * onePencilVector τ (v : V) j
+          = τ ^ vertexExponent (v : V)
+        rw [Fin.sum_univ_one]
+        show τ ^ vertexExponent (u B)
+          * ((τ ^ vertexExponent (u B))⁻¹ * τ ^ vertexExponent (v : V)) = _
+        rw [← mul_assoc, mul_inv_cancel₀ (pow_ne_zero _ hτ0), one_mul]
+
+omit [Fintype A] [DecidableEq V] [DecidableEq A] in
+/-- **The full simplex is realized in dimension one.** -/
+theorem ppDim_le_one_simplex (faces : A → Finset V)
+    (hface : ∀ B, faces B = (Finset.univ : Finset V)) : ppDim faces ≤ 1 := by
+  classical
+  obtain ⟨τ, hτ⟩ := exists_transcendental_complex
+  refine Nat.sInf_le ⟨onePencilVector τ, onePencilVector_linearIndependent hτ,
+    fun _ _ => 1, fun B => ⟨?_, ?_⟩⟩
+  · intro v hv
+    rw [hface B] at hv
+    exact absurd (Finset.mem_univ v) hv
+  · refine linearIndependent_of_mul_eq_transcendental_powers (c := 1) hτ
+      (fun i : Option (faces B) => i.elim 0 fun v => vertexExponent (v : V)) ?_ _ ?_
+    · intro x y hxy
+      rcases x with _ | ⟨x, hx⟩ <;> rcases y with _ | ⟨y, hy⟩
+      · rfl
+      · exact absurd hxy.symm (vertexExponent_ne_zero y)
+      · exact absurd hxy (vertexExponent_ne_zero x)
+      · have : x = y := vertexExponent_injective hxy
+        subst this
+        rfl
+    · intro i
+      rcases i with _ | ⟨v, hv⟩
+      · show (1 : ℂ) * 1 = τ ^ 0
+        rw [mul_one, pow_zero]
+      · show (1 : ℂ) * ∑ j : Fin 1, 1 * onePencilVector τ (v : V) j = τ ^ vertexExponent (v : V)
+        rw [Fin.sum_univ_one]
+        show (1 : ℂ) * (1 * τ ^ vertexExponent (v : V)) = _
+        rw [one_mul, one_mul]
 
 end GaloisForLFunctions

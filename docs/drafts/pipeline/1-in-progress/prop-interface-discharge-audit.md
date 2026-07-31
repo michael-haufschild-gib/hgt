@@ -1684,3 +1684,162 @@ amplitude.  The trajectory over this sweep was **13 → 11 → 7 → 5 → 4 →
 No genuine unproduced mathlib-`Prop` premise remains in `HilbertMetric`.
 
 Next scope for the instrument: `GaloisForLFunctions.HTGeometry`.
+
+## The instrument moves to `HTGeometry`
+
+### A collision had made the area unbuildable
+
+`lake build GaloisForLFunctions.HTGeometry` failed outright: `GaloisForLFunctions.HTGeometry.shiftEnd`
+was declared both in `SRDifferenceCarrier` (translation of functions on `E`, as a `Module.End`) and
+in `ShiftStableLatticeStructure` (its restriction to a translation-stable subspace), and both are
+registered in the umbrella.  This is the **third** collision of this kind found by an audit that
+imports a whole area at once — no ordinary build does.  The newer module's name is used nowhere
+outside it, so it was renamed `translationEnd`/`translationEnd_apply`; the area builds again
+(11 979 modules).
+
+### First measurement: 49 155 constants, 496 unproduced premise keys
+
+Two refinements were needed before the list was readable:
+
+- **instance-only keys are dropped.**  A premise such as `Set.Infinite S` whose only corpus constant
+  is a measurable-space *instance* is a mathlib hypothesis in a corpus-instrumented type, not a
+  premise about a corpus object.  Four such rows accounted for 202 uses.
+
+### The largest premise class in the area, discharged
+
+`Function.Injective (onsiteProductEnergy onsite)` — the total energy `x ↦ ∑ v, onsite v (x v)`
+separates configurations — is carried by **133 statements** of the local-spectral observer layer
+(85 real, 48 complexified) and was exhibited nowhere.
+`HTGeometry/OnsiteEnergySeparation.lean` (built, axioms clean, registered):
+
+* **`injective_onsiteProductEnergy_complexOnsite_iff`** — complexification is inert: the complex
+  total energy is the cast of the real one, so the 48 complex consumers carry the *same* hypothesis
+  as the 85 real ones, not a stronger one;
+* `injective_onsite_of_injective_onsiteProductEnergy` — separation is inherited at every site, so it
+  is a genuine strengthening of sitewise injectivity;
+* **`injective_onsiteProductEnergy_digitOnsite`** — and it is attained: reading a configuration of
+  `n` sites with `m` states as a base-`m` numeral gives a real on-site energy whose total energy is
+  the numeral, hence separates (`finFunctionFinEquiv`).  With the equivalence above, the complex
+  layer inherits the witness.
+
+### Current `HTGeometry` frontier
+
+After the discharge and the instance filter: 1 351 premise keys, **487 unproduced**.  The head of the
+list, by use count:
+
+| uses | premise | reading |
+|---:|---|---|
+| 20 | `MutuallySingular (…, circleLebesgue)` | genuine — the singular-continuous layer |
+| 19 | `z ∈ positiveHalfPlane` | parameter constraint, not debt |
+| 38 | `Ideal.IsPrime p` on the projective chart rings (three keys) | parameter constraint; the layer is non-vacuous because `⊥` is prime in a domain |
+| 16 | `LT.lt (jetMonomialDegree …)` | degree bound, likely a constraint |
+| 12 | `IsWeightedHomogeneous (gammaPoleSourceDerivativeWeight …)` | genuine candidate |
+| 11 | `Function.Injective (ClassicalAnalyticNevanlinnaCarrierFamily.quotient …)` | part of the known open Nevanlinna bundle |
+
+`HilbertMetric` remains clear (2 documented false positives).
+
+### The circle singularity premise, discharged
+
+`mu ⟂ₘ circleLebesgue` — carried by the F. and M. Riesz layer and the pure-singular carrier
+trichotomy (20 statements) — was satisfied by nothing.  `HTGeometry/CircleSingularWitness.lean`
+(built, axioms clean, registered):
+
+* **`circleLebesgue_singleton`** — circle Lebesgue measure has no atoms.  It is the transport of the
+  additive Haar probability measure along `AddCircle.homeomorphCircle`, and the preimage of a point
+  is a point, whose Haar measure is the volume of a closed ball of radius zero;
+* the `NullSingletonClass` instance, hence
+  **`mutuallySingular_circleLebesgue_of_countable`** — *every* measure carried by a countable set is
+  singular to circle Lebesgue measure.  This is the reusable criterion: singularity to Lebesgue is
+  free for purely atomic carriers;
+* **`mutuallySingular_dirac_circleLebesgue`** and `oneSidedFourierRigid_dirac` — the point masses are
+  witnesses, so the F. and M. Riesz conclusion holds on an explicit finite circle measure.
+
+Note on the neighbouring row: the pure-singular *trichotomy* additionally requires
+`mu.support.Infinite`, which the instrument does not nominate because it mentions no corpus constant
+(only the measurable-space instance).  A joint witness therefore needs a countably-supported measure
+on infinitely many points — the criterion above already gives its singularity, so only the finiteness
+of the total mass remains.  Recorded as the next step in this lane.
+
+**Concurrent-lane note.**  `lake build GaloisForLFunctions.HTGeometry` currently fails on
+`HTGeometry/CompactOperatorBoundedBelow` (unknown constant, unsynthesized instances) — a module
+another lane is mid-edit on, registered in the umbrella while broken.  It is unrelated to this work;
+the modules here build and were axiom-checked directly.  The area-wide re-measurement is blocked
+until that module compiles.
+
+### The pure-singular carrier hypotheses, jointly realized
+
+The trichotomy needs a finite circle measure that is *simultaneously* singular to `circleLebesgue`
+and of infinite support; the previous entry gave only the singular half (point masses have finite
+support).  `HTGeometry/CircleAtomicCarrier.lean` (module built, axioms clean, registered):
+
+* **`support_infinite_of_injective`** — a measure with infinitely many atoms of positive mass has
+  infinite support.  Every neighbourhood of an atom has measure at least that atom's, so the range
+  of the atom sequence sits inside the support;
+* `circleAtomPoint n = Circle.exp (1/(n+1))` with `circleAtomPoint_injective` — the angles lie in
+  the principal branch, where `Circle.arg_exp` inverts the exponential, so distinct indices give
+  distinct points;
+* `circleAtomicMeasure` — mass `2⁻ⁿ⁻¹` on the `n`-th point; a probability measure by the geometric
+  series, singular by the countable-carrier criterion of the previous entry, and with every atom of
+  positive mass;
+* **`exists_pureSingularCarrier_circle`** — the joint witness: a probability measure on the circle,
+  singular to Lebesgue, with infinite support.  The pure-singular carrier trichotomy is therefore
+  not vacuous.
+
+The area umbrella still does not build (`HTGeometry/CompactOperatorBoundedBelow`, another lane's
+work in progress), so these modules were built and axiom-checked directly rather than through the
+umbrella, and the area-wide re-measurement remains deferred.
+
+### `HTGeometry` re-measured, and what the residue actually is
+
+The area umbrella builds again (another lane's `CompactOperatorBoundedBelow` was repaired), so the
+scan could be re-run with the three new modules in place: 49 254 constants, 1 355 premise keys,
+**488 unproduced**.  The `MutuallySingular … circleLebesgue` row is gone.
+
+The head of the list was then checked by hand, and none of it is debt:
+
+| uses | premise | verdict |
+|---:|---|---|
+| 19 | `z ∈ positiveHalfPlane` | parameter constraint |
+| 16 | `0 < jetMonomialDegree n anchor` | parameter constraint — the anchor monomial must involve a derivative variable |
+| 38 | `Ideal.IsPrime p` on the projective chart rings (3 keys) | parameter constraint; `⊥` is prime in a domain |
+| 12 | `IsWeightedHomogeneous gammaPoleSourceDerivativeWeight P W` | **produced by mathlib** — `MvPolynomial.weightedHomogeneousComponent_isWeightedHomogeneous`, used exactly so inside `gammaPoleSymbolicPolynomialJetLaurentEval_maximalWeight_coeff_ne_zero` |
+| 11 | `Function.Injective (ClassicalAnalyticNevanlinnaCarrierFamily.quotient …)` | the known open Nevanlinna bundle, already classified on this card |
+
+That last line is a **third false-positive class**, now documented alongside the other two: a premise
+whose producer is a *mathlib* theorem applied to a corpus object is invisible to a scan that looks
+for corpus producers only.  Reversing the constant-set test to catch it would make every `Eq` premise
+match every `Eq` conclusion, so the instrument keeps its current direction.
+
+**Reading of the number.**  `488` is not a debt count.  At this scale the scan's value is that it
+surfaces *large* premise classes — the 133-use `onsiteProductEnergy` separation and the 20-use circle
+singularity, both genuinely open and both now discharged — not that it enumerates gaps.  Above 11
+uses there is no genuine open row left in `HTGeometry`, and the one at 11 is the Nevanlinna bundle
+whose obstruction (an indeterminate Hamburger moment problem with its Nevanlinna parametrization) is
+recorded above.
+
+Next scope for the instrument: `GaloisForLFunctions.RHTower`.
+
+### The atom-dominant integrability premise, discharged
+
+`Integrable (atomDominant a R) ν` — the dominating-function hypothesis of the atom-limit and
+chamber-bound layers (7 statements) — was assumed everywhere and proved nowhere, although the module
+defining `atomDominant` already supplied the decomposition its proof needs.
+`HTGeometry/AtomDominantIntegrable.lean` (built, axioms clean, registered):
+
+* `measurableSet_atomBall` — the near-node set is open;
+* **`integrable_atomDominant`** — the dominant is integrable under exactly the two standing
+  conditions of a Herglotz measure: finite mass on the bounded set `{|t − a| < R}`, and an integrable
+  Herglotz weight `1/(1+t²)`.  Near the node the dominant is the constant one on a finite-measure
+  set; away from it, a constant multiple of the Herglotz weight;
+* `integrable_herglotzWeight_of_isFiniteMeasure` and
+  **`integrable_atomDominant_of_isFiniteMeasure`** — the Herglotz weight is bounded by one, so on a
+  finite measure both conditions are automatic and the premise disappears entirely.
+
+### `RHTower` scan: blocked this round
+
+The area umbrella does not build — `RHTower/MobiusBinaryExcursion` is another lane's work in
+progress — and a scan assembled from the built object files failed on a moving target: fourteen
+successive rounds of dropping modules reporting `incompatible header` did not converge, because
+concurrent builds are rewriting the large `RHTower` object files while the scan reads them.  The
+area-wide `RHTower` measurement is therefore deferred rather than reported; nothing about it is
+claimed here.

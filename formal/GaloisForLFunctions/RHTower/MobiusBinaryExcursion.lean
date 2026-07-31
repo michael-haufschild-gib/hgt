@@ -17,7 +17,7 @@ namespace RHTower
 
 /-- The binary additive Möbius self-convolution as an integer. -/
 def mobiusIntConvolution (N : ℕ) : ℤ :=
-  ∑ ab ∈ Finset.antidiagonal N,
+  ∑ ab ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) N,
     ArithmeticFunction.moebius ab.1 * ArithmeticFunction.moebius ab.2
 
 /-- The complex Möbius coefficient of this development is the corpus one. -/

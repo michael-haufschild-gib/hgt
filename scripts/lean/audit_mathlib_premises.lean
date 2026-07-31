@@ -23,6 +23,13 @@ open Lean Meta Elab Command
 
 def isProj (n : Name) : Bool := (`GaloisForLFunctions).isPrefixOf n
 
+/-- Instance names enter a premise through the *type* of its arguments, not through a corpus
+object, so a key whose corpus constants are all instances is not corpus-specific. -/
+def isInstName (n : Name) : Bool :=
+  n.components.any fun c => c.toString.startsWith "inst"
+
+def allInstance (cs : List Name) : Bool := cs.all isInstName
+
 def projConsts (e : Expr) : List Name :=
   (e.getUsedConstants.foldl
     (fun (s : NameSet) n => if isProj n then s.insert n else s) {}).toList
@@ -70,7 +77,7 @@ def scanOne (ty : Expr) (isInside : Bool) :
           | some h =>
               if !isProj h then
                 let cs := projConsts t
-                if !cs.isEmpty then ps := ps.push (h, cs)
+                if !cs.isEmpty && !allInstance cs then ps := ps.push (h, cs)
           | none => pure ()
     let atoms ← conclAtoms body
     let mut pr : Array (Name × List Name) := #[]

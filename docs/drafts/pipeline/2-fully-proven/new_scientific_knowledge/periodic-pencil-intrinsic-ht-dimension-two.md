@@ -543,3 +543,195 @@ formula over `D = ℂ(z₁,…,z_d)` with the derivation `δ = D_w` — is untou
 lemma `(11)` in its full joint-differential-independence form, not only the annihilator.  The
 explicit source above is differentially algebraic (`exp∘exp` satisfies `y y'' − y y' − y'² = 0`), so
 it cannot serve `(9)`; what it shows is that `(8)` never needed genericity.
+
+## Lean progress — the exact dimension-one phase law `(D1)`
+
+`GaloisForLFunctions/HTGeometry/PPDimensionOnePhaseLaw.lean` (axiom-clean, build green,
+umbrella-registered) formalizes both directions of the `ppDim = 1` equivalence, for the corpus's
+`ppDim` of `PPMatrixRankFormula.lean`.
+
+**Necessity `(D2)`.**  `card_sdiff_le_one_of_ppAdmissible_one`: a one-dimensional admissible
+configuration forces every facet complement to have at most one vertex.  In dimension one the facet
+form is multiplication by a single scalar `c = U B 0`; a nonempty facet makes `c ≠ 0`, because the
+`ℚ`-independent family of `(3)` contains `c · a_{v₀}` and hence cannot vanish.  Two distinct omitted
+vertices `v, v'` then satisfy `c·a_v = n`, `c·a_{v'} = n'` with `n, n' ∈ ℤ`, and the rational
+combination `n' a_v − n a_{v'}` vanishes; `ℚ`-independence of the steps forces `n = n' = 0`, whence
+`a_{v'} = 0`, contradicting independence again.
+
+`facetComplementRankOne_of_ppAdmissible_one` restates this as
+`FacetComplementRankOne univ (Set.range faces)`, which is exactly the hypothesis of the corpus's
+`facetAntichain_eq_singleton_or_deletionFacets`; composing the two gives the classification
+`(iii) ⇒ (iv)`: the family is `{V}` or a deletion family `{V∖{u} : u ∈ U}`.
+
+**Sufficiency.**  Both surviving families are realized in dimension one by the powers of one
+transcendental number, with the injective positive labelling `vertexExponent` of the vertex type:
+
+- `ppDim_le_one_deletion` — for `faces B = V∖{u B}` take `a_v = τ^{e(v)}` and the facet form
+  `(τ^{e(u B)})⁻¹`.  The single omitted vertex evaluates to `1 ∈ ℤ`, and multiplying the family
+  `{1} ∪ {τ^{e(v)−e(u B)} : v ≠ u B}` by `τ^{e(u B)}` turns it into distinct powers of `τ`, so it is
+  `ℚ`-independent.
+- `ppDim_le_one_simplex` — for the sole facet `V` take the same steps and the facet form `1`; the
+  complement is empty and the family `{τ⁰} ∪ {τ^{e(v)}}` is again a family of distinct powers
+  because `e` is positive.
+
+This closes `(D1)` in the form the corpus's `ppDim` expresses, uniformly in the vertex and facet
+index types.  What `(D1)` still borrows from paper level is only the chain
+`peDim ≤ htDim ≤ ppDim`, i.e. the equivalences `(i) ⟺ (ii) ⟺ (iii)`, which quantify over the
+analytic dimensions rather than the pencil one.
+
+## Lean progress — a pencil realizes its complex, and `htDim <= ppDim`
+
+`GaloisForLFunctions/HTGeometry/PencilFromPPAdmissible.lean` (axiom-clean, build green,
+umbrella-registered) closes the loop between the matrix form of `ppDim` and the analytic realization.
+
+An admissible configuration `(a, U)` of `PPMatrixRankFormula` *is* a periodic-pencil separation:
+
+- `facetForm (U B) z = 2πi ∑ᵢ U B i · zᵢ` is the additive phase of the facet, `ℂ`-linear, entire, and
+  surjective whenever `U B ≠ 0` — which the `ℚ`-independence of `(3)` forces as soon as the facet is
+  nonempty, since the family it constrains contains the value `M B v₀`;
+- the integrality condition `(2)` says exactly `exp (L_B (a v)) = 1` for `v ∉ B`;
+- the `ℚ`-independence `(3)` of `{1} ∪ {M B v : v ∈ B}` says exactly that
+  `exp (∑_{v ∈ B} g_v L_B (a v)) = 1` with integer `g` forces `g = 0`: exponentiating turns the
+  relation into `∑_v g_v M B v = k ∈ ℤ`, which is a rational relation of the constrained family with
+  the coefficient `−k` on the entry `1`.
+
+`pencilOfPPAdmissible` assembles this into a `PencilSeparation` on the facet family
+`facetFinset faces = image faces univ`, choosing one representing index per facet.  Feeding it to
+`PencilSeparation.entireSRRealization` gives:
+
+- **`entireSRRealization_of_ppAdmissible`** — a periodic-pencil separation in dimension `d` produces
+  an entire `d`-variable Stanley–Reisner realization of the complex, for every facet antichain with
+  nonempty facets;
+- **`srDim_le_of_ppAdmissible`** and **`srDim_le_ppDim`** — hence the intrinsic realization
+  dimension `srDim = sInf {d | realizable}` satisfies `srDim ≤ d` for every admissible dimension `d`,
+  and `srDim ≤ ppDim` whenever the periodic-pencil dimension is attained.
+
+This is the card's `htDim ≤ ppDim` for **every** complex, in the entire/nonconstant realization
+sense, with no genericity: the source is the explicit facet-indexed exponential seed of `(21)`.
+
+## Lean progress — the linear layer of the differential matroid `(9)`
+
+`GaloisForLFunctions/HTGeometry/PencilLinearMatroid.lean` (axiom-clean, build green,
+umbrella-registered) records what the exact kernel gives at the level of `ℂ`-coefficients.
+
+Since the carrier assignment is `ℂ`-linear and, by the kernel theorem, only the zero class has
+constant carrier, the induced map
+
+```text
+ℂ[x_v]/I_Δ  ⟶  {functions}/{constants},   q ↦ P(T)F  mod constants
+```
+
+is injective (`seedCarrierQuot_ker_eq_bot`, `seedCarrierQuot_injective`).  Consequently
+`linearIndependent_seedCarrierQuot`: a `ℂ`-linearly independent family of Stanley--Reisner classes
+has `ℂ`-linearly independent carriers modulo constants, so the span of finitely many carriers has
+exactly the dimension of the span of their classes.  `eq_of_seedCarrier_sub_const` is the pointwise
+form: two classes whose carriers differ by a constant are equal.
+
+That is `(9)` with `ℂ` in place of `ℂ(δ)`.  The differential layer does **not** follow from this
+source and cannot: `exp∘exp` satisfies `y y'' − y y' − y'² = 0`, so every carrier built here is
+differentially algebraic and the differential transcendence degree of any finite family of them is
+zero, whereas `(9)` predicts `dim span{P̄ᵢ}`.  The genuine remaining content of `(9)` is therefore
+exactly the orbit lemma `(11)`: a source whose translation orbit is differentially independent.  The
+kernel `(8)`, the dimension comparison `htDim ≤ ppDim`, the dimension-one phase law `(D1)`, and the
+linear matroid are now all independent of it.
+
+## Lean progress — exponential sums with polynomial coefficients
+
+`GaloisForLFunctions/HTGeometry/ExponentialPolynomialVandermonde.lean` (axiom-clean, build green,
+umbrella-registered) proves the separation theorem that upgrades the symbol argument from `ℂ` to
+`ℂ[δ]` coefficients:
+
+> **`expPolySum_eq_zero`.**  If `∑_{i ∈ S} p_i(m) · z_i^m = 0` for every `m ≥ 1`, with the nodes
+> `z_i` pairwise distinct and nonzero and the `p_i` polynomials, then every `p_i = 0`.
+
+Mechanism.  Subtracting `z_a` times the `m`-th equation from the `(m+1)`-st replaces `p_i` by
+`vandermondeStep p_i z_i z_a = p_i(X+1)·z_i − z_a·p_i`.  Off the distinguished node this preserves
+the degree, because the leading coefficient is scaled by `z_i − z_a ≠ 0`
+(`polyWeight_vandermondeStep_of_ne`); at the distinguished node the leading terms cancel and the
+degree strictly drops (`polyWeight_vandermondeStep_self_lt`, via `degree_sub_lt` applied to
+`p(X+1)` and `p`, which share degree and leading coefficient).  So the weight
+`∑_i (deg p_i + 1)`, with the zero polynomial weighing nothing, strictly decreases and the induction
+closes; the surviving distinguished polynomial then vanishes at every positive integer, hence is
+zero.
+
+Why this is the right tool for `(9)`.  The directional derivation `δ = D_w` acts on the pencil
+carrier `Ψ(exp(L_A z))` by `Ψ'(exp(L_A z))·exp(L_A z)·L_A(w)`, i.e. it multiplies the `m`-th Taylor
+coefficient of `Ψ` by `m·L_A(w)` — diagonally.  So an operator `𝒟 ∈ ℂ[δ][x_v]` multiplies that
+coefficient by `∑_r c_r (m L_A(w))^r · symb_A(m, P_r)`, a *polynomial in `m`* times the node power.
+The theorem above is exactly what turns the vanishing of all those coefficients into the vanishing
+of each `P_r`, which is the `ℂ[δ]`-row-rank statement inside the card's Smith-normal-form argument
+for `(9)`.  Only the last step of `(9)` — "the leading jet of each nonzero diagonal operator
+preserves differential transcendence" — then still needs the orbit lemma `(11)`.
+
+## Lean progress — the derivation acts diagonally
+
+`GaloisForLFunctions/HTGeometry/EulerOperatorDiagonal.lean` (axiom-clean, build green,
+umbrella-registered) supplies the second half of the `ℂ[δ]` upgrade: the fact that the pencil's
+directional derivation is *diagonal* on the inner Taylor coefficients.
+
+Along a facet phase the carrier is `Ψ(exp (L z))`, and the chain rule turns `δ = D_w` into
+`L(w)` times the Euler operator `Θ Ψ (u) = u · Ψ'(u)` on the inner variable.  On coefficients `Θ` is
+multiplication by the index:
+
+- **`iteratedDeriv_id_mul`** — the Leibniz identity `(u·g)⁽ⁿ⁺¹⁾ = u·g⁽ⁿ⁺¹⁾ + (n+1)·g⁽ⁿ⁾`, proved by
+  induction with `HasDerivAt` (the `fun`-shaped product and sum rules, since the `Pi`-shaped
+  `deriv_mul`/`deriv_add` do not match the required syntactic form);
+- **`iteratedDeriv_eulerOp_zero`** — hence `(ΘΨ)⁽ᵐ⁾(0) = m · Ψ⁽ᵐ⁾(0)`, the first term of the Leibniz
+  identity dying at the origin;
+- **`iteratedDeriv_eulerOp_iterate_zero`** — hence `(Θ^r Ψ)⁽ᵐ⁾(0) = m^r · Ψ⁽ᵐ⁾(0)`;
+- `contDiff_iteratedDeriv`, `differentiable_iteratedDeriv`, `contDiff_eulerOp` — the smoothness
+  bookkeeping that lets the induction and the iteration run.
+
+Together with `expPolySum_eq_zero` this is the complete toolkit for the `ℂ[δ]`-coefficient kernel: an
+operator `𝒟 = ∑_r δ^r P_r(T)` multiplies the `m`-th inner coefficient of the isolated facet carrier
+by `∑_r (m·L_A(w))^r · symb_A(m, P_r)`, which is a polynomial in `m` against the node power `Z_ν^m`,
+and the separation theorem then forces each `P_r` into the ideal — provided `L_A(w) ≠ 0`, i.e. the
+card's requirement that `w` lie outside every `ker ell_A`.
+
+## Lean progress — the directional derivation of a pencil carrier
+
+`GaloisForLFunctions/HTGeometry/PencilDirectionalDerivation.lean` (axiom-clean, build green,
+umbrella-registered) is the bridge between the card's derivation `δ = D_w` and the diagonal action
+established in the previous module.
+
+- `dirDeriv w f z = deriv (fun t => f (z + t·w)) 0` — the derivation of `(9)`;
+- `phaseComp L Ψ = fun z => Ψ (exp (L z))` — the shape of every pencil carrier along a facet phase;
+- **`dirDeriv_phaseComp`** — `D_w (Ψ ∘ exp ∘ L) = (L w) · (Θ Ψ) ∘ exp ∘ L`.  Writing
+  `L (z + t·w) = L z + t·(L w)` splits the inner exponential as
+  `exp (L z) · exp (t · L w)`, whose `t`-derivative at `0` is `exp (L z) · L w`; the chain rule then
+  produces exactly `L w` times the Euler operator;
+- **`dirDeriv_iterate_phaseComp`** — iterating gives `(L w)^r · Θ^r`, using that scaling passes
+  through the Euler operator (`eulerOp_const_mul`);
+- **`iteratedDeriv_inner_dirDeriv_iterate`** — hence the `m`-th inner Taylor coefficient of an
+  `r`-fold directional derivative is `(m · L w)^r` times the original one.
+
+The two halves of the `ℂ[δ]` symbol calculus are therefore in place: `δ` acts on the inner
+coefficient of index `m` by the scalar `m · L_A(w)`, and `expPolySum_eq_zero` separates node powers
+carrying polynomial-in-`m` coefficients.  The remaining assembly is bookkeeping: run the facet
+isolation of `PencilSRRealization` with an operator `𝒟 = ∑_r δ^r P_r(T)` in place of a single
+polynomial, read off the coefficient identity `∑_ν p_ν(m) Z_ν^m = 0` with
+`p_ν(X) = ∑_r c_{r,ν} (L_A w)^r X^r`, and conclude `P_r ∈ I_Δ` for every `r` — valid exactly when
+`L_A(w) ≠ 0`, the card's condition that `w` avoid every `ker ell_A`.
+
+## Lean progress — the derivation against the shift algebra
+
+`GaloisForLFunctions/HTGeometry/PencilDerivationPlumbing.lean` (axiom-clean, build green,
+umbrella-registered) supplies the structural facts about `δ = D_w` that the `ℂ[δ]`-coefficient
+argument consumes.
+
+- `differentiable_line`, `differentiableAt_comp_line` — restricting an entire function to a line in
+  a fixed direction is differentiable, which is the side condition every derivative rule below
+  needs;
+- `dirDeriv_const`, `dirDeriv_add`, `dirDeriv_const_mul`, `dirDeriv_sum` — the derivation kills
+  constants and is `ℂ`-linear, including over finite sums;
+- **`dirDeriv_shiftAlgHom`** — `D_w` commutes with every element of the difference-operator algebra.
+  Writing `shiftAlgHom a f z = ∑_γ a_γ f (z + γ)` and reassociating `z + t·w + γ = (z + γ) + t·w`,
+  the derivative passes through the finite sum term by term;
+- `contDiff_dilateSumHom`, `differentiable_dilateSumHom'` — a dilate combination is smooth, being a
+  finite sum of `c · exp (g · u)`.
+
+With these, an operator `𝒟 = ∑_r δ^r P_r(T)` can be pushed through the facet isolation of
+`PencilSRRealization`: the difference operator that isolates a facet commutes past every `δ^r`, the
+sum over `r` splits, and each summand is a `phaseComp` to which
+`dirDeriv_iterate_phaseComp` applies.  The remaining step is the coefficient bookkeeping that feeds
+`expPolySum_eq_zero`.

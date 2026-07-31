@@ -48,7 +48,9 @@ theorem norm_eq_one_of_unitary_transposeEigenfunctional
     rw [inner_conj_symm, map_mul, inner_conj_symm] at hc
     exact hc
   have hkey : (inner ℂ y y : ℂ) = c * ((starRingEnd ℂ) c * inner ℂ y y) := by
-    rw [h1, h2, h3]
+    calc (inner ℂ y y : ℂ) = c * inner ℂ y (V.symm y) := h1
+      _ = c * inner ℂ (V y) y := by rw [h2]
+      _ = c * ((starRingEnd ℂ) c * inner ℂ y y) := by rw [h3]
   have hcc : c * (starRingEnd ℂ) c = 1 := by
     refine mul_right_cancel₀ hyy ?_
     rw [one_mul]

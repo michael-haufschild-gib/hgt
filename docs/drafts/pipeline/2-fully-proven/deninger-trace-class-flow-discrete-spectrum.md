@@ -1,7 +1,7 @@
 # Trace-class unitary flow has discrete faithful spectrum
 
 - **ID:** `deninger-trace-class-flow-discrete-spectrum`
-- **Stage:** 2-fully-proven
+- **Stage:** 2-fully-proven (Lean build in progress)
 - **Type:** THEOREM (paper)
 - **Label:** `DAC_TRACE_CLASS_UNITARY_FLOW_DISCRETE_SPECTRUM`
 - **Parent:** `deninger-arithmetic-lefschetz-determinant-comparison`
@@ -152,3 +152,106 @@ character with the prime/archimedean Lefschetz distribution.
 - 2026-07-26 — Removed faithful discrete spectrum as an independent
   determinant conjecture once Hodge unitarity and smoothed trace class
   hold.
+
+## Lean formalization: status and first landed piece
+
+This card is a genuine mathlib-scale build.  The proof needs four ingredients that mathlib does
+**not** currently have: trace-class (Schatten-one) operators, Stone's theorem for strongly
+continuous one-parameter unitary groups, the Borel functional calculus / spectral theorem for
+unbounded self-adjoint operators with its spectral projections, and the identification of the
+character distribution with a tempered multiplicity measure.  mathlib does have compact operators
+(`IsCompactOperator`), Riesz's lemma, and `FiniteDimensional.of_isCompactOperator_id`.
+
+### Landed
+
+`formal/GaloisForLFunctions/HTGeometry/CompactOperatorBoundedBelow.lean` — the engine of clause 1,
+which mathlib lacks.  Axiom audit: `propext, Classical.choice, Quot.sound`.
+
+- `totallyBounded_closedBall_of_isCompactOperator_of_bounded_below` — if a compact operator `K` is
+  bounded below by `c > 0` on a subspace `S`, the closed unit ball of `S` is totally bounded: it
+  is contained in the preimage, under the antilipschitz restriction of `K`, of the (compact,
+  hence totally bounded) closure of the image of the ambient ball.
+- `finiteDimensional_of_isCompactOperator_of_bounded_below` — **a compact operator cannot be
+  bounded below on an infinite-dimensional closed subspace**.  Completeness turns the totally
+  bounded ball into a compact neighbourhood of the origin, and a locally compact normed space over
+  a nontrivially normed complete field is finite dimensional.
+- `finite_of_orthonormal_eigenvectors_of_le_norm` — **a compact operator admits only finitely many
+  orthonormal eigenvectors whose eigenvalues are bounded away from zero**.  Cauchy--Schwarz against
+  one eigenvector gives pairwise `ε`-separation of the images inside a compact set, so the
+  subsequence supplied by compactness cannot be Cauchy.  This is clause 2's "finite multiplicities
+  and no finite accumulation point", transported to the compact smoothing operator.
+
+This is exactly the step the card's proof uses on the spectral subspace `E_A(I)H`, where
+`|φ̂(-λ)| ≥ c` makes `K_φ` bounded below.
+
+`formal/GaloisForLFunctions/HTGeometry/CompactCommutingFlowDecomposition.lean` — the assembly
+step.  Axiom audit: `propext, Classical.choice, Quot.sound`.
+
+- `mapsTo_eigenspace_of_commute` — an endomorphism commuting with another preserves its
+  eigenspaces.
+- `symm_comm_of_comm` — a unitary commuting with `K` has an inverse commuting with `K`.
+- `mapsTo_eigenspace_of_unitary_comm`, `mapsTo_eigenspace_of_unitary_symm_comm` — hence both the
+  flow and its inverse preserve every eigenspace of `K`.
+- `unitaryEigenspaceRestrict` — **the flow restricts to a genuine unitary
+  (`≃ₗᵢ`) of each eigenspace of `K`.**
+- `finiteDimensional_eigenspace_of_isCompactOperator` — for compact `K` and a nonzero eigenvalue
+  the eigenspace is finite dimensional (mathlib's compact spectral theorem).
+
+Together: a flow commuting with a compact smoothing operator decomposes into finite-dimensional
+unitary blocks, which is the block structure clauses 1--3 assert.
+
+`formal/GaloisForLFunctions/HTGeometry/UnitaryFlowSmoothing.lean` — the smoothing operator and the
+block decomposition.  Axiom audit: `propext, Classical.choice, Quot.sound`.
+
+- `UnitaryFlow` — a strongly continuous one-parameter unitary group (group law plus strong
+  continuity), the card's `U_t`.
+- `flowSmoothing U φ x = ∫ φ(t) • U t x dt` — equation `(1)`, as a vector-valued Bochner integral.
+- `integrable_flowSmoothing_integrand` — compactly supported continuous `φ` makes the integrand
+  integrable.
+- `flowSmoothing_comm` — **the smoothing commutes with the flow**: both `U s (K_φ x)` and
+  `K_φ (U s x)` equal `∫ φ(t) • U (s+t) x dt`.  No change of variables is needed; a continuous
+  linear map passes through the Bochner integral and the group law is symmetric.
+- `flowBlock_finiteDimensional_and_invariant` — **the block statement**: if an operator commuting
+  with the flow is compact, each eigenspace for a nonzero eigenvalue is finite dimensional and is
+  preserved by the entire flow.
+- `flowBlockUnitary`, `flowBlockUnitary_add` — the restricted flow on each block is again a
+  one-parameter unitary group.
+- `op_zero`, `op_neg`, `inner_op_left` — time reversal: `U 0 = id`, `U (-t) = (U t)⁻¹`, and
+  unitarity moves the flow across the inner product as time reversal,
+  `⟪U t x, y⟫ = ⟪x, U (-t) y⟫`.
+- `flowSmoothing_inner_symm` — **self-adjointness of the smoothing for a real even weight**:
+  `⟪K_φ x, y⟫ = ⟪x, K_φ y⟫`.  Time reversal moves the flow across the inner product, and
+  evenness of `φ` absorbs the resulting `t ↦ -t` change of variables
+  (`Measure.measurePreserving_neg`).  This is what makes mathlib's compact **self-adjoint**
+  spectral theorem applicable, so the blocks span.
+- `flowSmoothingLinear`, `norm_flowSmoothing_le`, `flowSmoothingCLM` — the smoothing packaged as a
+  genuine bounded operator `H →L[𝕜] H`, with the bound `‖K_φ x‖ ≤ (∫|φ|) ‖x‖`.
+- `isSymmetric_flowSmoothingCLM` — the bounded smoothing is `LinearMap.IsSymmetric` for a real
+  even weight.
+- `orthogonalComplement_iSup_eigenspaces_flowSmoothing_eq_bot` — **the blocks span**: for a
+  compact symmetric smoothing the eigenspaces have trivial orthogonal complement, so the
+  finite-dimensional flow-invariant blocks exhaust the space.  This is clause 1 together with the
+  spanning half of clause 2.
+
+### Route correction
+
+mathlib does have the spectral theorem for **compact self-adjoint** operators
+(`ContinuousLinearMap.orthogonalComplement_iSup_eigenspaces_eq_bot`,
+`ContinuousLinearMap.finite_dimensional_eigenspace`).  This removes the need to build the
+unbounded spectral theorem for clauses 1--3: the discreteness statement can be carried by the
+compact smoothing operators themselves, whose eigenspaces are finite dimensional and span, are
+invariant under the flow, and on each of which the flow is a finite-dimensional unitary group with
+real generator eigenvalues.
+
+### Remaining
+
+Done so far: the smoothing `(1)` as a Bochner integral and as a bounded operator, its commutation
+with the flow, its symmetry for real even weights, finite dimensionality and flow invariance of
+the blocks, finiteness of the number of blocks above any spectral threshold, and the fact that the
+blocks span.  Clause 1 is complete and clause 3 (compactness of the resolvent) is immediate from
+it; what is left is reading the generator off each block, and the trace formula.
+
+- diagonalizing a unitary on a finite-dimensional complex inner-product space, to read the real
+  generator eigenvalue off each block — clause 2;
+- trace class (Schatten one), which mathlib lacks entirely, for the trace formula `(2)`;
+- the tempered multiplicity measure `(3)` and uniqueness, clause 5.

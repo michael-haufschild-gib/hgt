@@ -3,7 +3,9 @@
 - **ID:** squared-xi-radial-jet-chebyshev-window
 - **Stage:** 2-fully-proven / needs-audit
 - **Type:** THEOREM (paper) / cancellation-preserving moving-source reduction
-- **Scientific status:** `[PROVED HERE] [NOVELTY UNAUDITED] [NOT FORMALIZED]`
+- **Scientific status:** `[PROVED HERE] [NOVELTY UNAUDITED]`
+  `[EQUATIONS (2), (3), (4) AND THE MODAL SCALE (8)-(10) FORMALIZED, AXIOMS CLEAN;`
+  `CONCENTRATION (11) NOT YET FORMALIZED]`
 - **Parents:** `squared-xi-radial-jet-reverse-bessel-source-alignment.md`; `reverse-bessel-fixed-frequency-blindness.md`
 - **Statement:** The polar jet and the sign-aligned von Mangoldt jet are the Lebesgue and Chebyshev--Stieltjes integrals of one positive reverse-Bessel kernel; at fixed Euler base point, its normalized polar mass concentrates at `log x = n/(s(s-1))`.
 
@@ -155,7 +157,147 @@ reconstructs the cancelled pole.
 - [x] full completed radial source formula
 - [x] exact mixture ratio and modal index
 - [x] logarithmic-window concentration
+- [x] formalize the Lebesgue side `(2)` and the exact modal scale `(8)`–`(10)`
+- [x] formalize the Chebyshev--Stieltjes side `(3)`/`(4)`
+- [ ] formalize the concentration `(11)`
 - [ ] completed signed asymptotic on the window `(12)`
 - [ ] strict negative source witness
-- [ ] Lean formalization only after the signed asymptotic is proved
+
+## Lean status
+
+`formal/GaloisForLFunctions/RHTower/SquaredXiChebyshevWindow.lean`, axioms
+`[propext, Classical.choice, Quot.sound]`.
+
+- `exp_image_Ioi_zero`, `integral_Ioi_one_comp_exp` — the substitution `x = exp t` as a measure
+  statement, `∫_{x>1} g = ∫_{t>0} e^t g(e^t)`, from mathlib's
+  `integral_image_eq_integral_abs_deriv_smul`.
+- `integrableOn_pow_mul_exp_neg_mul_Ioi`, `integral_pow_mul_exp_neg_mul_Ioi` — the scaled Gamma
+  integral `∫_0^∞ t^j e^{-r t} dt = j!/r^(j+1)`, with its integrability, obtained from
+  `Real.GammaIntegral_convergent` and `Real.integral_rpow_mul_exp_neg_mul_Ioi` by rate scaling.
+- `radialBesselKernel` — the kernel `f_{n,s} x = x^(-s) B_n((s-1/2) log x)`.
+- **`integral_radialBesselKernel`** — equation `(2)`:
+  `∫_1^∞ f_{n,s} = sum_j b_{n,j} j! w^j / a^(j+1)`.  The substitution turns the kernel into the
+  finite Gamma mixture, and the finite sum passes through the integral by termwise integrability.
+- `radialMixtureWeight` — equation `(8)`, `c_{n,j} = b_{n,j} j! (w/a)^j`, with positivity on the
+  triangular range.
+- `squaredRadialJetWeight_adjacent` — the exact factorial recurrence
+  `(j+1) b_{n,j+1} (2n-j) = 2(n-j) b_{n,j}`, from the corpus reverse-Bessel closed form.
+- **`radialMixtureWeight_adjacent`** — equation `(9)` in cleared form:
+  `c_{n,j+1} (2n-j) a = c_{n,j} 2(n-j) w`.
+- **`radialMixtureWeight_lt_succ_iff`** — equation `(10)`: `c_{n,j} < c_{n,j+1}` exactly when
+  `j s < n`, so the Gamma-mixture index is unimodal at the integers adjacent to `n/s`.
+
+### `GaloisForLFunctions/RHTower/ChebyshevStieltjesMeasure.lean`
+
+The Stieltjes layer for `psi`, which the corpus did not have (`chebyshevPsi` existed only as a
+function of a natural argument).
+
+- `chebyshevPsiReal`, `chebyshevPsiReal_mono`, `chebyshevPsiReal_rightContinuous`,
+  `chebyshevPsiStieltjes` — Chebyshev's `psi` as a real-variable monotone right-continuous step
+  function, hence a `StieltjesFunction`.  Right-continuity is the observation that `psi` is
+  constant on `[x, floor x + 1)`, which also covers `x < 0` since `Nat.floor` is `0` there.
+- `vonMangoldtAtomMeasure` — the atomic measure with mass `Lambda m` at each natural `m`.
+- `vonMangoldtAtomMeasure_Ioc` — its value on `Ioc a b` is `psi (floor b) - psi (floor a)`.  The
+  only subtlety is `m = 0`, which the `Ioc (floor a) (floor b)` index set omits when `a < 0`; that
+  term vanishes because `Lambda 0 = 0`.
+- **`chebyshevPsiStieltjes_measure_eq`** — `d psi = sum_m Lambda m * delta_m`, by
+  `Measure.ext_of_Ioc`.
+- **`integral_chebyshevPsiStieltjes`** — every Chebyshev--Stieltjes integral is the von Mangoldt
+  series of the integrand at the naturals.
+- `integrable_chebyshevPsiStieltjes`, `vonMangoldt_mul_norm_radialBesselKernel`,
+  `summable_vonMangoldt_mul_norm_radialBesselKernel` — the integrability side: the von Mangoldt
+  weight of the radial kernel is a finite combination of the log-weighted von Mangoldt series of
+  `BoseZipfCumulants`, hence summable above the Euler abscissa.
+- **`integral_radialBesselKernel_chebyshev`** — equation `(3)`:
+  `∫ f_{n,s} d psi = sum_m Lambda m f_{n,s}(m)`, which is the card's
+  `sum_{m>=2} Lambda m m^(-s) B_n(w log m)` since `Lambda 0 = Lambda 1 = 0`.
+- **`integral_radialBesselKernel_discrepancy`** — equation `(4)`: the completed radial discrepancy
+  `∫ f d(x - psi)` with both sides in closed form.
+
+### `GaloisForLFunctions/RHTower/GammaMixtureConcentration.lean`
+
+The two mechanisms of the concentration `(11)`, both unconditional.
+
+- `integral_gammaLeg`, `integrableOn_sq_sub_mul_gammaLeg` — the unnormalized Gamma leg
+  `t^j exp(-a t)` on the positive ray and its integrability against a quadratic weight.
+- **`integral_sq_sub_mean_gammaLeg`** — the exact second moment about the mean,
+  `∫_0^∞ (t - (j+1)/a)^2 t^j exp(-a t) dt = ((j+1)/a^2) * (j!/a^(j+1))`: the leg has mean `(j+1)/a`
+  and variance `(j+1)/a^2` times its mass.
+- **`gammaLeg_chebyshev`** — Chebyshev's inequality for a leg: any measurable subset of the positive
+  ray at distance at least `R` from the mean carries at most `(j+1)/(a^2 R^2)` of the leg mass.
+  This is the card's "Chebyshev's inequality, uniformly for `0 <= j <= n`" step; the bound depends
+  on `j` only through `j+1`, so it is uniform once `j <= n`.
+- `radialMixtureRatio`, `radialMixtureRatio_lt_one` — the fixed relative ratio
+  `r theta = 2(1-theta) w / ((2-theta) a)`, strictly below one exactly when `theta s > 1`.
+- **`radialMixtureWeight_succ_le`** — beyond `theta n` the adjacent mixture ratio never exceeds
+  `r theta`.  The inequality is *equivalent* to `theta n <= j`, because the ratio depends on `j`
+  only through `j/n`.
+- **`radialMixtureWeight_le_pow`** — the resulting geometric decay
+  `c_{n, j0+k} <= r theta ^ k * c_{n, j0}` above a fixed relative index.
+- `radialMixtureRatio_one_lt`, **`radialMixtureWeight_le_succ`**,
+  **`radialMixtureWeight_pow_le`** — the mirror statements below the modal ratio: for
+  `theta s < 1` the ratio exceeds one and the weights grow geometrically up to `theta n`.
+- `geomSum_range_le`, **`sum_Icc_radialMixtureWeight_le`**,
+  **`sum_range_radialMixtureWeight_le`** — both tail sums are bounded by a fixed multiple of the
+  boundary weight: `sum_{j >= j0} c_j <= c_{j0}/(1 - r theta+)` above, and
+  `sum_{j <= j1} c_j <= c_{j1}/(1 - 1/r theta-)` below.
+- `radialMixtureWeight_nonneg`, `radialMixtureWeight_le_total`,
+  **`sum_Icc_radialMixtureWeight_le_total`**, **`sum_range_radialMixtureWeight_le_total`** — the
+  modal-weight comparison: against a comparison index `jm` strictly on the far side of the modal
+  ratio, each tail is at most `C * r ^ |j - jm|` times the *total* mixture mass, with `C` and `r`
+  depending only on `s` and the relative offset.  This is the whole `n`-uniform content of the
+  index concentration.
+- `tendsto_pow_of_tendsto_atTop`, `tendsto_ceil_sub_ceil_atTop`, `tendsto_floor_sub_floor_atTop`,
+  **`tendsto_upper_tail_fraction`**, **`tendsto_lower_tail_fraction`** — the limit: for relative
+  cutoffs strictly on either side of the modal ratio `1/s`, the mixture mass beyond them is a
+  vanishing fraction of the total.  With `theta' < theta` the index gap
+  `ceil (theta n) - ceil (theta' n)` grows linearly, so the geometric factor vanishes; the
+  fractions are then squeezed to zero.  **The index concentration of `(11)` is complete.**
+- `radialMixtureDensity`, `radialMixtureDensity_nonneg`, `integrableOn_radialMixtureLeg` — the
+  unnormalized radial density `e^{-a t} B_n(w t)` of equation `(7)`, as a finite sum of Gamma legs.
+- **`integral_radialMixtureDensity_eq`** — the leg decomposition: on any measurable subset of the
+  positive ray the mixture integral is the finite sum of the leg integrals.
+- **`integral_radialMixtureDensity_Ioi`** — the total mass is `(1/a) * sum_j c_{n,j}`, so the
+  normalization of `(7)` is exactly the mixture-weight sum of `(8)`.
+- **`integral_radialMixtureLeg_le`** — each leg contributes at most its whole mass `(1/a) c_{n,j}`
+  over any subset.  This is the crude bound used on the bad indices.
+
+What is not formalized: the final assembly of `(11)`.  Every ingredient is now in place — split the
+leg sum at `j1 = floor(theta- n)` and `j0 = ceil(theta+ n)`, bound the two outer blocks by
+`integral_radialMixtureLeg_le` and the middle block by `gammaLeg_chebyshev` at radius `R = eps n/2`
+(legal because a good index keeps the leg mean `(j+1)/a` within `eps n/2` of `L n`), divide by the
+total mass computed by `integral_radialMixtureDensity_Ioi`, and take the limit using the two tail
+theorems together with `(n+1)/(a^2 R^2) = O(1/n)`.  The remaining gates after that are the
+card's own open core.
+
+## Log
+
+- 2026-07-31 — Lebesgue side and modal scale formalized.  `(2)` needed only the exponential
+  substitution plus the scaled Gamma integral; mathlib has both ingredients but not the scaled
+  integral itself, which was built here.  `(3)`/`(4)` needed the Stieltjes layer for `psi`, built
+  the same day: the whole content is that `psi` is a right-continuous step function whose jump at
+  `m` is `Lambda m`, so its Lebesgue--Stieltjes measure is the atomic measure `sum Lambda m delta_m`
+  and every Stieltjes integral collapses to the von Mangoldt series.
+- 2026-07-31 — Both mechanisms of `(11)` formalized.  The conditional step is an exact
+  second-moment computation, which the scaled Gamma integral built for `(2)` makes immediate, plus
+  Chebyshev as a pointwise comparison against the indicator.  The index step is sharper than the
+  card's sketch: because the adjacent ratio `2(n-j)w/((2n-j)a)` depends on `j` only through `j/n`,
+  the bound `c_{j+1} <= r(theta) c_j` above `theta n` is not merely uniform in `n` but *equivalent*
+  to `theta n <= j`, so the geometric decay needs no asymptotics at all.  Both tails are now
+  bounded by a fixed multiple of the boundary weight, on each side of the modal ratio; what remains
+  is the comparison of those boundary weights with a modal weight and the limit in `n`.
+- 2026-07-31 — Modal-weight comparison formalized on both sides: each index tail is at most a
+  geometric fraction of the *total* mixture mass, with constants free of `n`.  Everything in `(11)`
+  that is uniform in `n` is now machine-checked; the residue is the ceiling/floor bookkeeping and
+  the limit.
+- 2026-07-31 — Index concentration of `(11)` completed.  Both tail fractions tend to zero, for any
+  relative cutoffs strictly bracketing the modal ratio `1/s`.  The only step left in `(11)` is the
+  passage from the index law to the radial variable, which needs the normalized mixture measure and
+  the leg decomposition of its integral.
+- 2026-07-31 — The radial mixture density, its leg decomposition, its total mass in terms of the
+  mixture weights, and the crude per-leg bound are formalized.  Every ingredient of `(11)` is now
+  in the corpus; what is left is the block split of the leg sum and the limit.  `(9)`/`(10)` are pure algebra on the corpus's
+  reverse-Bessel closed form `b(n,j) = (2n-j)!/(2^(n-j)(n-j)! j!)`: the adjacent ratio reduces to
+  `(j+1) b_{n,j+1}(2n-j) = 2(n-j) b_{n,j}`, and the threshold `j < n/s` follows because
+  `(2n-j)(s-1) < 2(n-j)(s-1/2)` is equivalent to `j s < n`.
 
