@@ -102,3 +102,53 @@ theorem re_soninApertureResidualTrace_chain_le {r : ℝ} (hr : 1 < r) (x : ℕ �
   linarith
 
 end RHTower
+
+namespace RHTower
+
+open ContinuousLinearMap
+
+/-! ## When is the chain law an equality? -/
+
+/-- **Chain equality characterization.**  The refinement is lossless exactly when every successive
+lost-layer coupling of the chain vanishes.  This isolates the sharpness question for the chain
+subadditivity law: the inequality is strict as soon as one coupling is nonzero. -/
+theorem re_soninApertureResidualTrace_chain_eq_iff {r : ℝ} (hr : 1 < r) (x : ℕ → ℝ)
+    (hx0 : 0 < x 0) (hstep : ∀ i, x i < x (i + 1)) (m : ℕ) (hm : 1 ≤ m)
+    (hcham : x m < r * x 0) :
+    (soninApertureResidualTrace (x 0) (x m) r hr).re =
+        (∑ i ∈ Finset.range m, (soninApertureResidualTrace (x i) (x (i + 1)) r hr).re) ↔
+      ∀ j ∈ Finset.Ico 1 m,
+        evenSoninApertureSuccessiveLayerTransition (x 0) (x j) (x (j + 1)) r hr = 0 := by
+  have hmono : StrictMono x := strictMono_nat_of_lt_succ hstep
+  have hchain := re_soninApertureResidualTrace_chain hr x hx0 hstep m hm hcham
+  have hHS : ∀ j ∈ Finset.Ico 1 m,
+      (evenSoninApertureSuccessiveLayerTransition (x 0) (x j) (x (j + 1)) r hr).IsHilbertSchmidt := by
+    intro j hj
+    rw [Finset.mem_Ico] at hj
+    have h0j : x 0 < x j := hmono (by omega)
+    have hjm : x (j + 1) ≤ x m := hmono.le_iff_le.mpr (by omega)
+    exact evenSoninApertureSuccessiveLayerTransition_isHilbertSchmidt
+      hx0 h0j (hstep j) hr (lt_of_le_of_lt hjm hcham)
+  constructor
+  · intro heq
+    rw [hchain] at heq
+    have hsum : ∑ j ∈ Finset.Ico 1 m,
+        hsNormSq (evenSoninApertureSuccessiveLayerTransition
+          (x 0) (x j) (x (j + 1)) r hr) = 0 := by
+      linarith
+    intro j hj
+    have hzero := (Finset.sum_eq_zero_iff_of_nonneg
+      (fun k _ => hsNormSq_nonneg
+        (evenSoninApertureSuccessiveLayerTransition (x 0) (x k) (x (k + 1)) r hr))).mp
+      hsum j hj
+    exact (hsNormSq_eq_zero_iff (hHS j hj)).mp hzero
+  · intro hall
+    rw [hchain]
+    have hsum : ∑ j ∈ Finset.Ico 1 m,
+        hsNormSq (evenSoninApertureSuccessiveLayerTransition
+          (x 0) (x j) (x (j + 1)) r hr) = 0 := by
+      refine Finset.sum_eq_zero fun j hj => ?_
+      exact (hsNormSq_eq_zero_iff (hHS j hj)).mpr (hall j hj)
+    rw [hsum, sub_zero]
+
+end RHTower

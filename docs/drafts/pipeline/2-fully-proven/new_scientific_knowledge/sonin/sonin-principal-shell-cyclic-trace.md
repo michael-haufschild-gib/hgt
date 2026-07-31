@@ -435,8 +435,21 @@ Re rho(x_0, x_m) <= sum_(i<m) Re rho(x_i, x_(i+1)).                       (33)
 
 This upgrades the one-step no-go of Theorem H to a quantitative statement: refining an aperture
 step into `m` pieces costs exactly the sum of the `m-1` successive lost-layer coupling energies.
-A floor obtained by refinement would have to survive an arbitrarily long accumulation of
-nonnegative losses, so no refinement schedule can produce one.
+Since every term is nonnegative, no refinement schedule can raise the value, so none can produce a
+floor that the unrefined step does not already have.
+
+**Sharpness is open.**  Equality in `(33)` holds exactly when every coupling of the chain vanishes:
+
+```text
+Re rho(x_0,x_m) = sum_i Re rho(x_i,x_(i+1))
+  <->  Z(x_0, x_j, x_(j+1)) = 0 for every 1 <= j < m.                     (34)
+```
+
+Whether `Z` is ever nonzero in a crossing chamber is **not proved here**.  The corpus's
+noncompactness witness is built for the pair `(a,b)` and lives in `ran Q_b` with no control of
+`Q_c`, so it does not transfer; a witness family inside `K_b (-) K_c` would be a new construction.
+Until that is settled, `(32)` and `(33)` are exact identities and valid inequalities, but the loss
+they describe is not known to be positive.
 
 ### Proof
 
@@ -562,6 +575,7 @@ provisional pending expert/literature review.
 | `(31)` chain flag law | `soninApertureResidualTrace_chain` |
 | `(32)` accumulated loss | `re_soninApertureResidualTrace_chain` |
 | `(33)` chain subadditivity | `re_soninApertureResidualTrace_chain_le` |
+| chain equality characterization | `re_soninApertureResidualTrace_chain_eq_iff` |
 
 Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninPrincipalRelativeCyclicExtension.lean`,
@@ -584,6 +598,10 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-07-31 — sharpness isolated.  Equality in the chain law holds exactly when every coupling of
+  the chain vanishes.  Whether any coupling is nonzero is open: the corpus's noncompactness witness
+  is built for the wrong pair and lives in `ran Q_b` with no control of `Q_c`.  Recorded so the
+  chain no-go is not read as asserting a positive loss.
 - 2026-07-31 — one-step no-go upgraded to a chain law: refining an aperture step into m pieces
   loses exactly the sum of the m-1 successive coupling energies, with no cancellation.  A floor
   from refinement would have to survive an unbounded accumulation of nonnegative losses.
