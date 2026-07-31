@@ -20,7 +20,12 @@ has maximal projective rational rank. Consequently:
 1. the temporal-dimension gain from \(v_0\) to \(v_1\) is exactly the
    complete projective recurrence-relation rank at \(v_0\);
 2. the projective relation rank at \(v_1\) is zero; and
-3. every positive full-support replica collision moment at \(v_1\) equals
+3. every fixed-time Heisenberg probe satisfies the dimension-free bound
+   \[
+     \|\alpha_t^{v_1}(O)-\alpha_t^{v_0}(O)\|
+     \le 2|t|\varepsilon\|O\|;
+   \]
+4. every positive full-support replica collision moment at \(v_1\) equals
    its universal permutation floor.
 
 The hopping graph and hopping amplitudes are unchanged. Only onsite
@@ -29,6 +34,8 @@ controls vary.
 ## Formal declaration
 
 - `exists_finiteAnderson_onsite_fullConstraintConversion`.
+- `norm_finiteAndersonHamiltonian_sub_eq_onsiteDist`;
+- `finiteAnderson_heisenbergEvolution_norm_sub_le_onsiteDist`;
 
 ## Verification
 

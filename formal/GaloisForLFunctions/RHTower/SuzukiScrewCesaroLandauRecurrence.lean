@@ -1,6 +1,8 @@
 import GaloisForLFunctions.RHTower.XiWaveTraceCofinalQuadrature
 import GaloisForLFunctions.RHTower.XiWeilPolarization
 import GaloisForLFunctions.RHTower.SuzukiScrewCesaroCurvatureRecurrence
+import GaloisForLFunctions.RHTower.XiRelativeResolventTrace
+import GaloisForLFunctions.RHTower.XiLaguerrePolya
 
 /-!
 # Cofinal sign change of the curvature-centered Suzuki screw primitive
@@ -288,6 +290,139 @@ theorem xiScrewCesaroMean_cofinallyCrosses :
     rw [suzukiCurvatureCenteredPrimitive_eq_realWaveTrace
       (le_of_lt (lt_of_le_of_lt (le_max_right A0 0) hA))]
     exact hpos
+
+/-! ## The centering constant is the central Xi curvature -/
+
+/-- The paired reciprocal-square resolvent sum. -/
+def xiSquareResolventSum (z : ℂ) : ℂ := ∑' q : XiZeroCopy, xiReciprocalSquareResolventTerm z q
+
+theorem norm_xiZeroCopyReciprocalSquare_le (q : XiZeroCopy) :
+    ‖xiZeroCopyReciprocalSquare q‖ ≤ (xiHeightLowerBound)⁻¹ ^ 2 := by
+  rw [xiZeroCopyReciprocalSquare, norm_pow, norm_inv]
+  have hlow : xiHeightLowerBound ≤ ‖xiSpectralPoint q‖ := xiCopyWaveSpectrum.lower_le q
+  have hpos : 0 < xiHeightLowerBound := xiHeightLowerBound_pos
+  refine pow_le_pow_left₀ (by positivity) ?_ 2
+  gcongr
+
+theorem continuousAt_xiSquareResolventSum_zero : ContinuousAt xiSquareResolventSum 0 := by
+  set r : ℝ := xiHeightLowerBound / 2 with hr
+  have hpos : 0 < xiHeightLowerBound := xiHeightLowerBound_pos
+  have hrpos : 0 < r := by rw [hr]; linarith
+  have hden : ∀ z ∈ Metric.ball (0 : ℂ) r, ∀ q : XiZeroCopy,
+      (3 : ℝ) / 4 ≤ ‖1 - z ^ 2 * xiZeroCopyReciprocalSquare q‖ := by
+    intro z hz q
+    have hznorm : ‖z‖ < r := by simpa [Complex.dist_eq] using hz
+    have hR := norm_xiZeroCopyReciprocalSquare_le q
+    have hprod : ‖z ^ 2 * xiZeroCopyReciprocalSquare q‖ ≤ 1 / 4 := by
+      rw [norm_mul, norm_pow]
+      have h1 : ‖z‖ ^ 2 ≤ r ^ 2 := by
+        refine pow_le_pow_left₀ (norm_nonneg z) hznorm.le 2
+      have h2 : r ^ 2 * (xiHeightLowerBound)⁻¹ ^ 2 = 1 / 4 := by
+        rw [hr]
+        field_simp
+        ring
+      calc ‖z‖ ^ 2 * ‖xiZeroCopyReciprocalSquare q‖
+          ≤ r ^ 2 * (xiHeightLowerBound)⁻¹ ^ 2 :=
+            mul_le_mul h1 hR (norm_nonneg _) (by positivity)
+        _ = 1 / 4 := h2
+    have htri := norm_sub_norm_le (1 : ℂ) (z ^ 2 * xiZeroCopyReciprocalSquare q)
+    rw [norm_one] at htri
+    linarith
+  have hcontOn : ContinuousOn xiSquareResolventSum (Metric.ball (0 : ℂ) r) := by
+    refine continuousOn_tsum
+      (u := fun q : XiZeroCopy => (4 / 3 : ℝ) * ‖xiZeroCopyReciprocalSquare q‖)
+      (fun q => ?_) (summable_xiZeroCopyReciprocalSquare.norm.mul_left _) (fun q z hz => ?_)
+    · refine ContinuousOn.div continuousOn_const (by fun_prop) (fun z hz => ?_)
+      intro hzero
+      have := hden z hz q
+      rw [hzero, norm_zero] at this
+      linarith
+    · rw [xiReciprocalSquareResolventTerm, norm_div]
+      have hd := hden z hz q
+      have hRnn : (0 : ℝ) ≤ ‖xiZeroCopyReciprocalSquare q‖ := norm_nonneg _
+      rw [div_le_iff₀ (by linarith)]
+      nlinarith [hd, hRnn]
+  exact hcontOn.continuousAt (Metric.ball_mem_nhds 0 hrpos)
+
+theorem xiSquareResolventSum_zero :
+    xiSquareResolventSum 0 = ∑' q : XiZeroCopy, xiZeroCopyReciprocalSquare q := by
+  refine tsum_congr fun q => ?_
+  simp [xiReciprocalSquareResolventTerm]
+
+theorem hasDerivAt_logDeriv_canonical_zero :
+    HasDerivAt (logDeriv xiCanonicalProduct)
+      (-(∑' q : XiZeroCopy, xiZeroCopyReciprocalSquare q)) 0 := by
+  have hXiC0 : XiC 0 ≠ 0 := XiC_zero_ne
+  have hne : ∀ᶠ z : ℂ in nhds 0, XiC z ≠ 0 :=
+    ((XiC_analytic 0 (Set.mem_univ 0)).continuousAt).eventually_ne hXiC0
+  have hval : ∀ᶠ z : ℂ in nhds 0,
+      logDeriv xiCanonicalProduct z = -z * xiSquareResolventSum z := by
+    filter_upwards [hne] with z hz
+    rw [logDeriv_xiCanonicalProduct_eq_relativeResolventTrace hz,
+      xiRelativeResolventTrace_eq_reciprocalSquareResolvent hz, xiSquareResolventSum]
+  have hzero : logDeriv xiCanonicalProduct 0 = 0 := by
+    rw [logDeriv_xiCanonicalProduct_eq_relativeResolventTrace hXiC0,
+      xiRelativeResolventTrace_eq_reciprocalSquareResolvent hXiC0]
+    ring
+  rw [hasDerivAt_iff_tendsto_slope]
+  have hslope : ∀ᶠ z : ℂ in nhdsWithin 0 {(0 : ℂ)}ᶜ,
+      slope (logDeriv xiCanonicalProduct) 0 z = -xiSquareResolventSum z := by
+    filter_upwards [nhdsWithin_le_nhds hval, self_mem_nhdsWithin] with z hzv hz0
+    have hz : z ≠ 0 := hz0
+    rw [slope_def_field, hzero, hzv]
+    field_simp
+    ring
+  refine Filter.Tendsto.congr' (EventuallyEq.symm hslope) ?_
+  have hcont := continuousAt_xiSquareResolventSum_zero
+  have : Filter.Tendsto (fun z : ℂ => -xiSquareResolventSum z) (nhds 0)
+      (nhds (-xiSquareResolventSum 0)) := (hcont.neg)
+  rw [xiSquareResolventSum_zero] at this
+  exact this.mono_left nhdsWithin_le_nhds
+
+theorem deriv_xiCanonicalProduct_zero : deriv xiCanonicalProduct 0 = 0 := by
+  have hXiC0 : XiC 0 ≠ 0 := XiC_zero_ne
+  have hzero : logDeriv xiCanonicalProduct 0 = 0 := by
+    rw [logDeriv_xiCanonicalProduct_eq_relativeResolventTrace hXiC0,
+      xiRelativeResolventTrace_eq_reciprocalSquareResolvent hXiC0]
+    ring
+  rw [logDeriv, Pi.div_apply, xiCanonicalProduct_zero, div_one] at hzero
+  exact hzero
+
+theorem secondDeriv_xiCanonicalProduct_zero :
+    deriv (deriv xiCanonicalProduct) 0 = -(∑' q : XiZeroCopy, xiZeroCopyReciprocalSquare q) := by
+  have hP0 : xiCanonicalProduct 0 = 1 := xiCanonicalProduct_zero
+  have hP0ne : xiCanonicalProduct 0 ≠ 0 := by rw [hP0]; exact one_ne_zero
+  have hd1 : HasDerivAt xiCanonicalProduct (deriv xiCanonicalProduct 0) 0 :=
+    ((xiCanonicalProduct_analytic 0 (Set.mem_univ 0)).differentiableAt).hasDerivAt
+  have hd2 : HasDerivAt (deriv xiCanonicalProduct) (deriv (deriv xiCanonicalProduct) 0) 0 := by
+    have hana := (xiCanonicalProduct_analytic 0 (Set.mem_univ 0)).deriv
+    exact hana.differentiableAt.hasDerivAt
+  have hdiv := hd2.div hd1 hP0ne
+  have hrepr : logDeriv xiCanonicalProduct =
+      fun z => deriv xiCanonicalProduct z / xiCanonicalProduct z := rfl
+  rw [hrepr] at *
+  have huniq := hdiv.unique hasDerivAt_logDeriv_canonical_zero
+  rw [hP0, deriv_xiCanonicalProduct_zero] at huniq
+  simpa using huniq
+
+/-- **The centering constant is the central Xi curvature.** -/
+theorem xiScrewCurvature_eq_central_curvature :
+    xiScrewCurvature = (deriv (deriv XiC) 0 / XiC 0).re := by
+  have hXiC0 : XiC 0 ≠ 0 := XiC_zero_ne
+  rw [XiC_secondDeriv_eq_constant_mul_canonicalProduct 0, mul_comm, mul_div_assoc,
+    div_self hXiC0, mul_one, secondDeriv_xiCanonicalProduct_zero, xiScrewCurvature]
+  congr 2
+  refine tsum_congr fun q => ?_
+  rw [xiZeroCopyReciprocalSquare, inv_pow]
+
+/-- **Suzuki screw Cesaro curvature recurrence.** The initial screw average crosses the central
+Xi curvature `(XiC''(0)/XiC(0)).re` strictly in both directions at arbitrarily large apertures.
+No Riemann hypothesis, simplicity, or rational-independence premise is used. -/
+theorem xiScrewCesaroMean_cofinallyCrosses_centralCurvature :
+    CofinallyCrosses (suzukiScrewCesaroMean xiSuzukiScrewProfile)
+      ((deriv (deriv XiC) 0 / XiC 0).re) := by
+  rw [← xiScrewCurvature_eq_central_curvature]
+  exact xiScrewCesaroMean_cofinallyCrosses
 
 end
 

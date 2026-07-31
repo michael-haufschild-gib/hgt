@@ -20,7 +20,7 @@ homogeneous coordinate and every ordered spectral pair using explicit resolvent 
 
 - [x] 0 → 1 in-progress: well-posed, source-pure, attack idea, Door passport sketch
 - [x] 1 → 2 fully-proven: complete paper proof and hostile audit
-- [ ] 2 → 3 formalized: exact finite tomography core in Lean
+- [x] 2 → 3 formalized: every part of the `[PROVED HERE]` theorem is in Lean with clean axioms
 - [ ] 3 → 4 publication-ready: standalone paper and priority audit
 
 ## Conjecture under attack
@@ -186,8 +186,20 @@ one-mode blindness, exact two-mode pair isolation, disappearance of homogeneous 
 polarization, and spectral-resolvent specialization.  Direct check and targeted SOTA build pass;
 axioms are only `[propext, Classical.choice, Quot.sound]`.
 
-Full exterior-basis dimension argument remains paper-level, and marked affine tensor correction
-means exterior tomography is one sector rather than whole jump carrier.  Card stays Stage 2.
+**Formalization complete (verified 2026-07-31).**  All four parts of the theorem are formalized:
+parts 1--2 as `suzukiZeroConstantResolventInterpolant_eval_zero`,
+`suzukiZeroConstantResolventInterpolant_eval` and
+`suzukiCyclicResolventFilter_realizes_target(_fun)`; part 3, equations `(2)`--`(3)`, as
+`suzukiHomogeneousBladePairCoordinate_unit_eq_zero` and
+`suzukiHomogeneousBlade_twoModeDifference_isolates_pair` with
+`suzukiHomogeneousBlade_twoModeDifference_infinity_zero`; part 4 as the coordinate realization
+together with the dimension count `suzukiHomogeneousBlade_finrank`, and the finite shift-jet
+realization `suzukiSpectralResolventJet_realizes_target`.  Axiom audits report only
+`[propext, Classical.choice, Quot.sound]`.
+
+The marked-affine-tensor correction recorded above is a scope statement about what the exterior
+chord sees, not a gap in this card's theorem; it is carried by
+`suzuki-projective-affine-secant-tensor-lift.md`.
 
 ## Decisive tests
 

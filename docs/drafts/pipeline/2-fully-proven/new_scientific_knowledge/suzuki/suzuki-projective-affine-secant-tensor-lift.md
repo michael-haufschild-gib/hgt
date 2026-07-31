@@ -23,7 +23,7 @@ I_(alpha,beta)q=[beta q_alpha-alpha q_beta]/(beta-alpha).
 
 - [x] 0 → 1 in-progress: well-posed, source-pure, attack idea, Door passport sketch
 - [x] 1 → 2 fully-proven: exact algebra, gauge no-go, spectral decomposition, hostile audit
-- [ ] 2 → 3 formalized: Lean theorem and no-go
+- [x] 2 → 3 formalized: every `[PROVED HERE]` theorem of this card is in Lean with clean axioms
 - [ ] 3 → 4 publication-ready: standalone note and priority audit
 
 ## Conjecture under test
@@ -226,8 +226,20 @@ unverified.
   boundary observations.
 
 Direct Lean check and targeted SOTA build pass.  Axiom audit reports only standard mathlib
-foundations `[propext, Classical.choice, Quot.sound]`.  Actual Volterra boundary factorization and
-full finite spectral sum remain paper/source-level, so card remains Stage 2.
+foundations `[propext, Classical.choice, Quot.sound]`.
+
+**Formalization complete (verified 2026-07-31).**  Every `[PROVED HERE]` statement of this card is
+formalized: Theorem A `(1)`--`(3)` as `suzukiProjectiveAffineSecant_cross_identity` and
+`suzukiProjectiveAffineSecant_quotient_identity`; Theorem B `(4)`--`(6)` as
+`suzukiProjectiveMinor_affineGauge_invariant`, `suzukiProjectiveResponse_affineGauge_shift` and
+`suzukiProjectiveAffineSecantTensor_gauge_covariance`, with the explicit witness
+`suzukiProjectiveMinor_same_affineTensor_different`; Theorem C `(7)` as
+`suzukiProjectiveAffineSecant_twoMode_pair_decomposition`,
+`suzukiProjectiveAffineSecant_oppositeShift_pair_is_symmetric` and
+`suzukiProjectiveAffineSecant_finite_spectral_sum`; the rank-one check `(8)` as
+`suzukiProjectiveAffineSecant_rankOne_recovers_intercept`.  The Volterra boundary factorization
+belongs to the successor conjecture `SUZUKI-MARKED-SECANT-CD-WELD`, not to any theorem stated
+here, so it does not gate this card.
 
 ## Decisive tests
 

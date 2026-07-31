@@ -5,6 +5,7 @@
 - **Type:** THEOREM (paper)
 - **Source:** Suzuki 2023 screw profile; Suzuki 2026 finite-aperture operator; corpus one-sided Carleman/Stieltjes selector
 - **Statement:** Suzuki's initial screw average crosses the central Xi curvature strictly in both directions at arbitrarily large apertures.
+- **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [UNCONDITIONAL] [NOVELTY UNVERIFIED]`
 
 ## Goal
 
@@ -26,10 +27,9 @@ mean curvature.
 
 - [x] 0 -> 1 in-progress: source-pure exact statement, transform attack, hostile alternatives
 - [x] 1 -> 2 fully-proven: complete Landau paper proof, exact normalization and boundary regularity audited
-- [x] 2 -> 3 formalized (theorem): `xiScrewCesaroMean_cofinallyCrosses` proved unconditionally
-      for the divisor form of the centering constant; module build, axiom audit, and lint pass
-- [ ] 2 -> 3 formalized (naming): identify `xiScrewCurvature` with `(XiC''(0)/XiC(0)).re` by
-      termwise second differentiation of the Hadamard product
+- [x] 2 -> 3 formalized: `xiScrewCesaroMean_cofinallyCrosses_centralCurvature` proved
+      unconditionally with the centering constant identified as `(XiC''(0)/XiC(0)).re`;
+      module build, axiom audit, and lint pass
 - [ ] 3 -> 4 publication-ready: standalone theorem + proof + novelty audit
 
 ## Competing hypotheses
@@ -342,14 +342,28 @@ contributes the identical term.
   screw average crosses the central Xi curvature strictly in both directions at arbitrarily large
   apertures.  No hypotheses.
 
-### What remains
+### The centering constant is the central Xi curvature
 
-One identification: `xiScrewCurvature = (XiC''(0)/XiC(0)).re`, i.e. that the divisor form of the
-constant agrees with the central curvature ratio the card uses to name it.  The unconditional
-Hadamard product `XiC_eq_constant_mul_canonicalProduct` is available in the corpus, so this is a
-termwise second-differentiation of the canonical product at the origin: `P(0) = 1`, `P'(0) = 0`
-by the genus-one reflection cancellation, and `P''(0) = -sum 1/gamma^2` factor by factor.  The
-crossing theorem above does not depend on it -- it only renames the centering constant.
+Equation `(2)` is now proved, so the theorem holds with the constant named exactly as the card
+names it.
+
+- `xiSquareResolventSum`, `continuousAt_xiSquareResolventSum_zero`,
+  `xiSquareResolventSum_zero` : the paired reciprocal-square resolvent sum is continuous at the
+  origin, where it equals `sum 1/gamma^2`.  Continuity is all that is needed -- the corpus's
+  paired identity already exhibits the relative resolvent trace as `-z` times this sum, so the
+  derivative at the origin is a *slope* limit, not a differentiation under the sum.
+- `hasDerivAt_logDeriv_canonical_zero` : hence
+  `(logDeriv P)'(0) = -sum 1/gamma^2`, using the corpus identities
+  `logDeriv_xiCanonicalProduct_eq_relativeResolventTrace` and
+  `xiRelativeResolventTrace_eq_reciprocalSquareResolvent`.
+- `deriv_xiCanonicalProduct_zero`, `secondDeriv_xiCanonicalProduct_zero` : `P'(0) = 0` and
+  therefore `P''(0) = -sum 1/gamma^2`.
+- `xiScrewCurvature_eq_central_curvature` : with the unconditional Hadamard product
+  `XiC_eq_constant_mul_canonicalProduct`, `XiC''(0)/XiC(0) = P''(0)`, so
+  `xiScrewCurvature = (XiC''(0)/XiC(0)).re`.
+- `xiScrewCesaroMean_cofinallyCrosses_centralCurvature` : **the card's theorem verbatim.**
+  `CofinallyCrosses (suzukiScrewCesaroMean xiSuzukiScrewProfile) ((XiC''(0)/XiC(0)).re)`.
+  No hypotheses.
 
 ## Log
 

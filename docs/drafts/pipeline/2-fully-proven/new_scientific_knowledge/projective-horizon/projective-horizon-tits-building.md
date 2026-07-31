@@ -487,6 +487,44 @@ chart denominator together with all jets of the affine chart coordinates is alge
 independent over the constants**.  With `chartAdaptedGenerators_adjoin_eq_top` supplying generation,
 that family is a transcendence basis of the homogeneous jet field adapted to one chart.
 
+`formal/GaloisForLFunctions/HTGeometry/ProjectiveHorizonChartCoordinateEquiv.lean` turns that basis
+into an isomorphism.  Evaluation at the chart basis is injective by independence and surjective by
+chart generation, so `chartBasisEquiv` is an isomorphism over the constants
+
+```text
+FreeCoordinateRationalField K (n x N) ~ HomogeneousJetField n K,
+```
+
+carrying the denominator tower to itself and every other coordinate to the corresponding affine
+chart jet.  This is the exact sense in which one affine chart is a coordinate system for the
+projective source.
+
+`formal/GaloisForLFunctions/HTGeometry/ProjectiveHorizonElementaryField.lean` completes the
+rank-one case.  Under the chart coordinate isomorphism the chart unipotent group translates the
+zeroth-order chart coordinates and fixes everything else
+(`linearJetAction_chartBasis_chartUnitTranslation`), the isomorphism intertwines the two actions
+(`basisEval_translation`), and transporting the translation fixed-field theorem gives
+`horizonField_singleton_eq`:
+
+```text
+mathcal H_(ker e_i^*) = C(X_(i,l) : l)(x_k^(m) : k != i, m >= 1).
+```
+
+The complementary directions are exactly the `N-1` zeroth-order chart coordinates, which is the
+rank-one codimension `1·N-1` of `(11)` in the full jet field rather than only inside one chart.
+
+`formal/GaloisForLFunctions/HTGeometry/ProjectiveHorizonGeneralMinor.lean` frees the column
+labelling.  Invariance of a jet determinant uses only how the rows transform, so it holds for any
+injective choice of jet orders: `jetArrayGen_det_ne_zero`, `jetDetGen_invariant`,
+`jetDetGen_mem_horizonField_of_subset` and `jetGenRatio_mem_horizonField`.  With rows a span
+together with one outside direction, and columns an initial block together with one further jet
+order, these ratios are exactly the normalised transverse jets of the moving-frame picture.
+
+The rank-one result also fixes the shape of the general-rank count.  Since
+`mathcal I_S = intersection_(i in S) mathcal I_({e_i^*})`, the codimension should grow by `N` for
+each direction added after the first, giving `(N-1) + (r-1)N = rN-1`; the rank-one base case is now
+proved.
+
 Two limits are worth stating exactly.  The independence is over the horizon algebra rather than the
 horizon field; the two are equivalent, but the field form goes through
 `IntermediateField.algebraicIndependent_adjoin_iff`, whose elaboration on this type exceeds a
@@ -542,9 +580,12 @@ so this currently gives neither a zero-free region nor a critical-line implicati
       the affine numerators
 - [x] 2 -> 3s: the chart transcendence basis -- independence of the denominator tower together with
       all chart jets, matching the chart generation already proved
-- [ ] 2 -> 3s': transporting the translation fixed-field theorem through that basis, giving the
-      exact elementary horizon field and hence `(11)` at rank one in the full jet field
-- [ ] 2 -> 3t: the general-rank transcendence-degree number of `(11)` for `r >= 2`.  Both known
+- [x] 2 -> 3s': the chart coordinate isomorphism of the jet field with a free coordinate field
+- [x] 2 -> 3s'': the exact elementary horizon field, hence `(11)` at rank one in the full jet
+      field
+- [x] 2 -> 3t: minors with arbitrary jet orders, hence the full family of normalised transverse
+      jets
+- [ ] 2 -> 3u: the general-rank transcendence-degree number of `(11)` for `r >= 2`.  Both known
       routes are long: Rosenlicht's dimension theorem has no mathlib surface, and the invariant
       route needs the first fundamental theorem for `SL_r` acting on an `r x infinity` jet matrix,
       i.e. that the minors above generate.  Not needed for any other part of the card.
@@ -606,3 +647,9 @@ so this currently gives neither a zero-free region nor a critical-line implicati
 - 2026-07-31 — lifted the inverse chart substitution to the chart localization and proved the
   chart transcendence basis: the denominator tower together with all chart jets is algebraically
   independent.
+- 2026-07-31 — upgraded the chart basis to an isomorphism of the homogeneous jet field with a free
+  rational coordinate field.
+- 2026-07-31 — transported the translation fixed-field theorem across that isomorphism and proved
+  the exact elementary horizon field; `(11)` now holds at rank one in the full jet field.
+- 2026-07-31 — freed the column labelling of the jet minors, giving the full family of normalised
+  transverse jets, and identified the inductive shape `(N-1)+(r-1)N = rN-1` of the general count.

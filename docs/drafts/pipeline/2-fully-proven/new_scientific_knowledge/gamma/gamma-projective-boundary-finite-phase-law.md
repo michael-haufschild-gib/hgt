@@ -814,6 +814,21 @@ projective comparison of coefficients reduces to that of the dominants, and the 
 field.  No analytic input is hypothetical: return times come from almost periodicity, the coefficient
 boundary from the valuation ordering.
 
+`formal/GaloisForLFunctions/HTGeometry/BohrDerivativeSpectrum.lean` supplies the two spectral
+computations any differential-algebraic argument over the Bohr spectrum needs.
+`bohrCoefficient_deriv` proves the differentiation rule `a_{f'}(λ) = iλ·a_f(λ)`: integrating by parts
+against the character moves the derivative onto `e^{-iλt}` and leaves a boundary term of size `O(1)`,
+which the window average kills.  Its corollaries are `bohrMean_deriv_eq_zero` (the mean of a
+derivative vanishes) and `bohrSpectrum_deriv_subset` (`spec f' ⊆ spec f`), the closure property that
+a relation `∑ d_α ∏_j (f⁽ʲ⁾)^{α_j} = 0` acts on.
+
+Dually, `bohrCoefficient_sum_expChar` computes the coefficients of a trigonometric polynomial to be
+its own coefficients, so `bohrSpectrum_sum_expChar_subset` puts its spectrum inside its finite
+frequency set and `bohrFrequencyModule_sum_expChar_le` puts its frequency module inside the `ℚ`-span
+of that set — whose rank `FrequencyRank.frequencyRank_le_card` already bounds by the number of terms.
+This is the concrete instance showing the finite-phase conclusion of eq. (9) is attained rather than
+vacuous.
+
 `formal/GaloisForLFunctions/HTGeometry/IsometricRecurrence.lean` abstracts the recurrence to any
 relatively-compact isometric `ℝ`-action (`isometricAction_recurrence`, `isometricAction_return_seq`),
 so it instantiates both to `ℝ →ᵇ ℂ` and to vertical translation of holomorphic functions on a strip.

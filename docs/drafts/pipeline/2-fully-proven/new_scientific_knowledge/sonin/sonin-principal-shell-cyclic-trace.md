@@ -586,9 +586,27 @@ makes that a subset of `[-a,a]`, where both Sonin projections annihilate exactly
 (Q_a - Q_b) U_r w = 0,     so   (Q_a - Q_b) D_r w = (Q_a - Q_b) U_r^{-1} w  (42)
 ```
 
-for every inner-band `w` in the chamber.  Only the inverse branch survives, so the estimate has to
-be made in one direction only: how much of the band-pass the *expanding* dilation carries into the
-`(a,b)` layer.
+for every inner-band `w` in the chamber.  Only the inverse branch survives.
+
+**The dual holds for the band-limited piece.**  Dilation acts inversely on frequency, so the
+inverse branch *contracts* a Fourier band: `U_{r^-1}` carries band `[-b,b]` to `[-b/r, b/r]`, and
+`b <= r a` puts that inside `[-a,a]`, where both projections annihilate band-limited vectors.  Hence
+
+```text
+(Q_a - Q_b) U_r^{-1} v = 0   whenever  R_b v = v,                         (43)
+```
+
+so on the band-limited piece only the *forward* branch survives.  Applying `(42)` to `w` and `(43)`
+to `R_b w` in the split `(41)` leaves
+
+```text
+Z w = (Q_a - Q_b) U_r^{-1} w  -  (Q_a - Q_b) U_r R_b w
+        + (Q_a - Q_b) D_r C_b w,                                          (44)
+```
+
+with a single, and opposite, dilation branch on each of the two principal terms.  The estimate now
+has to compare an expanding dilation of the vector against a contracting-then-expanding dilation of
+its Fourier band, plus a trace-class remainder.
 
 ### Proof
 
@@ -726,6 +744,8 @@ provisional pending expert/literature review.
 | `(41)` reduced coupling | `evenSoninApertureSuccessiveLayerTransition_apply_annulus` |
 | `(42)` forward branch vanishes | `evenSoninApertureLayer_evenDilationCLM_apply_eq_zero` |
 | `(42)` inverse branch only | `evenSoninApertureLayer_evenDilationSum_apply_eq_inverse` |
+| `(43)` inverse branch vanishes | `evenSoninApertureLayer_evenDilationCLM_inv_apply_eq_zero` |
+| `(43)` forward branch only | `evenSoninApertureLayer_evenDilationSum_apply_eq_forward` |
 
 Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninPrincipalRelativeCyclicExtension.lean`,
@@ -742,7 +762,8 @@ Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninApertureDefectSupport.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninCouplingInnerBandCriterion.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninOuterBandProjectionSplit.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninForwardBranchVanishing.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninForwardBranchVanishing.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninInverseBranchVanishing.lean`.
 All declarations depend only on `propext`, `Classical.choice`, `Quot.sound`.
 
 Novelty split for Theorem G: `(7)` was already in the corpus
@@ -753,6 +774,10 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-07-31 — dual branch elimination.  On the band-limited piece the inverse dilation contracts
+  the Fourier band inside the inner aperture, where both projections annihilate, so only the forward
+  branch survives there.  With the inner-band statement this leaves one dilation branch on each of
+  the two principal terms of the coupling, and they are opposite branches.
 - 2026-07-31 — forward branch eliminated.  In the chamber the contracting dilation pushes the outer
   window inside the inner aperture, where both Sonin projections annihilate exactly, so the aperture
   layer kills that branch outright.  The coupling on the inner band sees only the expanding

@@ -15,6 +15,14 @@ zero-dependent normalization.
 This file proves the exact local width-normal algebra.  It does not prove
 that width differentiation commutes with the cutoff-free global Dirichlet
 continuation; that distributional continuation theorem remains open.
+
+It also proves a stronger collapsed-width law for the actual observable
+polar coefficient.  The pole vanishes at width zero, but its unique entire
+polar normal-cone germ has second jet `4m` and third jet `-12mw`.  Thus the
+source-width germ recovers multiplicity and signed centered zero without a
+square root or zero-dependent normalization.  This is a theorem about the
+polar normal cone across a meromorphic-order jump, not about the ordinary
+trailing coefficient at the degenerate width.
 -/
 
 open Complex

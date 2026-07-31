@@ -2862,3 +2862,42 @@ uses" but never listed the tier below that.  Re-run with the session's modules i
   than entirety**: a simple pole at the boundary abscissa `σ + η` sits off the open strip, so
   `z ↦ (z − c)⁻¹` is holomorphic on it.  That is the point of stating the theorems on a strip
   rather than on `ℂ`, and it is now recorded rather than implied.
+
+### The spanning-packet existence premise, produced
+
+The sharp form of the observer Steiner law is conditional on `∃ packet, ObserverSpanningPacket L
+sites packet`, and that existence had no producer — including in the module I added earlier this
+session, which is why the row appeared at 5 uses in the re-measurement.
+`HTGeometry/ObserverSpanningPacketExistence.lean` (built, registered, axioms clean):
+
+* **`not_spatiallyDisconnectedPacket_singleton`** — a one-interaction packet is *never* spatially
+  disconnected, because a singleton is not the disjoint union of two nonempty sets.  No hypothesis
+  on the family is needed;
+* **`observerSpanningPacket_singleton`** — so a single interaction touching every queried site is
+  already a spanning packet, and `exists_observerSpanningPacket_of_subset_support` discharges the
+  existence hypothesis;
+* `observerSteinerNumber_le_one_of_subset_support` — the Steiner number is then at most one, i.e.
+  the observer contrast can appear already at first order;
+* `exists_subset_support_of_observerSpanningPacket_card_le_one` — and conversely a spanning packet
+  of at most one interaction *is* such a singleton, so the bound is sharp: Steiner number `≤ 1`
+  exactly when one interaction covers the queried sites.
+
+### The Gamma-rational balance premise is one integer invariant
+
+The valuation-boundary theorems compare two Gamma-rational data through the four-term relation
+`n₁ + d₂ = n₂ + d₁`, or its shifted form with an offset — eight consumer sites, no producer.
+`HTGeometry/GammaRationalOrderDefect.lean` (built, registered, axioms clean):
+
+* `GammaRationalDatum.orderDefect` — each datum carries a single integer,
+  `numOrder − denOrder`, and `orderDefect_one = 0`;
+* **`balanced_iff_orderDefect_eq`** — the four-term relation says *exactly* that the two defects
+  agree, and **`shifted_iff_orderDefect_sub_eq`** — the shifted form says their difference is the
+  offset.  Both are one `omega` call once the invariant is named;
+* `ofOrders` and **`exists_orderDefect_eq`** — every integer occurs as a defect, so the premise is a
+  genuine one-parameter condition rather than a coincidence;
+* `balanced_of_orderDefect_eq`, `balanced_self`, `exists_balanced_pair_orderDefect_eq`,
+  `exists_shifted_pair` — the producers: pairs realizing the balance at every defect, and the
+  shifted premise at every offset.
+
+The premise was never about four numbers; it is equality of one invariant of each datum, and naming
+that invariant discharges it.

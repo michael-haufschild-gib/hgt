@@ -241,14 +241,17 @@ fibre with a supercritical exterior fibre.
 > 2. a Hausdorff logarithmic conormal fibre at \(\lambda=1\), obtained as the Julia-aperture
 >    boundary and carrying the defect measure of the critical factorial incidence;
 > 3. the complete finite cyclic jet gradings as its trace-class boundary characters;
-> 4. a linear fixed-width-tomography/Gamma-interval pullback which sends every Xi polar class
->    nontrivially into that conormal fibre before squaring; and
+> 4. a source-continuous map from the collapsed-width tomography polar normal cone into the
+>    factorial-fugacity conormal, carrying the universal jets `(PJF12b)` before any regular
+>    consumer squares or traces them; and
 > 5. the source reflection/Sonin involution extending as an internal bounded dagger on the image
 >    of every Xi polar class.
 
-Clauses 1--3 are explicit and unconditional.  Clause 4 is the current comparison problem.
-Clause 5 is the RH-bearing theorem.  Given 4--5, `(PJF13)` and preservation of the abscissa
-stratum force \(q=0\) for every nontrivial zero, hence RH.
+Clauses 1--3 and the divisor-fibre polar transgression underlying clause 4 are explicit and
+unconditional. The unresolved part of clause 4 is global conormal landing in the
+factorial-fugacity source topology. Clause 5 is the RH-bearing theorem. Given the remaining
+part of 4 and clause 5, `(PJF13)` and preservation of the abscissa stratum force \(q=0\) for every
+nontrivial zero, hence RH.
 
 The intended provider for boundedness is not an assumed metric.  At every positive aperture the
 Julia lift is an explicit isometry and Sonin/Fourier reflection is contractive.  The required
@@ -314,23 +317,30 @@ critical line
 6. **Zero-fitting falsifier.** Neither \(\mathcal F\), its topology, nor its dagger may depend on
    \(\rho\).  Zeros enter only by evaluation of the already-constructed tomography class.
 7. **Square-root falsifier.** Choosing a branch of the squared tomography residue after zero
-   specialization is not a linear source pullback.
+   specialization is not a linear source pullback. The universal width-normal jets `(PJF12b)`
+   are the required calibration: any replacement must recover both \(4m\) and \(-12mw\).
+8. **Degenerate-order falsifier.** At \(L=0\) the pole disappears. Treating the ordinary
+   trailing coefficient there as the limit polar coefficient ignores the meromorphic-order jump.
+   The valid extension lives in the polar normal cone.
 
 ## Exact next obstacle
 
-`XI_TOMOGRAPHY_FUGACITY_LINEAR_PULLBACK`
+`XI_WIDTH_NORMAL_JET_TO_FACTORIAL_CONORMAL_DAGGER`
 
-Construct one pre-divisor linear transform from the arithmetic fixed-width sequence to the
-Julia-regularized fugacity field and prove:
+Construct one source-continuous transform from the all-width arithmetic tomography family to the
+Julia-regularized factorial-fugacity conormal and prove:
 
 1. it factors through the exact interval-cell identity `(PJF11)`;
-2. it is nonzero on every tomography polar class;
-3. it has a uniform contractive Sonin/Julia realization for positive aperture;
-4. its limit lands in the logarithmic conormal at \(\lambda=1\);
-5. reflection is dagger-natural on that limit.
+2. on every disappearing polar fibre it sends the universal second and third normal jets to
+   \(4m\) and \(-12mw\), so is nonzero and orientation-faithful;
+3. it is defined before zero specialization from the arithmetic all-width family, not by fitting
+   a separate map to each extracted pole;
+4. it has a uniform contractive Sonin/Julia realization for positive aperture;
+5. its limit lands in the logarithmic conormal at \(\lambda=1\);
+6. reflection is dagger-natural on that limit.
 
-Items 1--2 must not use a square root after residue extraction.  Items 3--5 are the load-bearing
-source theorem.
+The divisor-fibre version of items 1--2 is `(PJF12a)--(PJF12c)`. Items 3--6 are the load-bearing
+global source theorem.
 
 ## Gates
 
@@ -338,9 +348,10 @@ source theorem.
 - [x] exact critical abscissa classification
 - [x] circle-character and parity/supertrace consequences
 - [x] fixed-width tomography interval-cell bridge
+- [x] construct branch-free collapsed-width polar normal-cone jets recovering \(m\) and \(mw\)
 - [x] formalize the dependency-closed real-fugacity abscissa theorem, parity cancellation, and
       conditional RH consumer
-- [ ] construct the linear tomography-to-fugacity pullback
+- [ ] construct the global width-normal-jet-to-fugacity conormal transform
 - [ ] prove uniform Sonin/Julia contractivity and dagger naturality
 - [ ] specialist external novelty audit
 
@@ -351,3 +362,8 @@ source theorem.
   \(\lambda=1\), all nontrivial circle twists trace-class, and canonical even--odd relative
   cancellation.  Isolated why scalar supertrace is a dead consumer and why a signed
   same-fibre dagger must act before that cancellation.
+- 2026-07-31 — Proved and formalized collapsed-width polar transgression for the actual
+  cutoff-free tomography residue. Its second source-normal jet is \(4m\), and its third is
+  \(-12mw\). This canonically recovers multiplicity and oriented centered zero from the squared
+  family while exposing the meromorphic-order jump at zero width as the precise normal-cone
+  completion.
