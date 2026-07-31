@@ -134,3 +134,19 @@ holonomy in a non-homogeneous arithmetic groupoid/lamination.
 ## Log
 
 - 2026-07-26 — `[PAPER-PROVED] [BRIDGE]`; exact proof closed, Lean formalization pending.
+
+## Gate closure (2026-07-31)
+
+Repo-state verification: the "2 → 3 formalized" gate was stale. The named module
+`RHTower/DeningerArithmeticRectangularHalfDensity.lean` exists, is umbrella-registered, and
+covers the exact theorem: `deningerRectangularJ_sq` (J² = −1 on the moving rectangular
+tangent plane), `deningerRectangularScale_intertwines_J`, `deningerRectangularMetric_self_pos`
+(positivity), `deningerRectangularMetric_scale` (conformal weight q under r ↦ qr),
+`deningerRectangularArea_scale`, `deningerRectangularScale_mul` (holonomy group law), and the
+rigidity `deningerRectangularCoefficient_eq_const_div` (the 1/r coefficient forced). All
+axiom-clean `[propext, Classical.choice, Quot.sound]`. Gate updated:
+
+- [x] 2 → 3  formalized: `DeningerArithmeticRectangularHalfDensity.lean`, verified 2026-07-31
+
+Card moves to `3-formalized/not_new_scientific_knowledge` per its own `[BRIDGE]` /
+"no novelty claim" self-grade.

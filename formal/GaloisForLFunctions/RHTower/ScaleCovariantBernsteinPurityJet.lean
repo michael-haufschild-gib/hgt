@@ -90,7 +90,7 @@ def bernsteinPurityCoefficientKernel (N k a b : ℕ) : ℝ :=
 theorem coeff_bernsteinScalePurityPolynomial (m : ℕ → ℝ) (N r : ℕ) :
     (bernsteinScalePurityPolynomial m N).coeff r =
       ∑ k ∈ Finset.range (N + 1),
-        ∑ ab ∈ Finset.antidiagonal r,
+        ∑ ab ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) r,
           bernsteinPurityCoefficientKernel N k ab.1 ab.2 * m ab.1 * m ab.2 := by
   classical
   rw [bernsteinScalePurityPolynomial, Polynomial.finsetSum_coeff]
@@ -153,9 +153,14 @@ def eraseMoment (m : ℕ → ℝ) (r : ℕ) : ℕ → ℝ :=
 def bernsteinScalePurityLower (m : ℕ → ℝ) (N r : ℕ) : ℝ :=
   (bernsteinScalePurityPolynomial (eraseMoment m r) N).coeff r
 
+private theorem sum_eq_add_sum_diff_singleton' {ι M : Type*} [AddCommMonoid M]
+    [DecidableEq ι] {s : Finset ι} {i : ι} (h : i ∈ s) (f : ι → M) :
+    ∑ x ∈ s, f x = f i + ∑ x ∈ s \ {i}, f x := by
+  rw [Finset.sdiff_singleton_eq_erase, Finset.add_sum_erase s f h]
+
 private theorem antidiagonal_index_le {a b r : ℕ}
-    (h : (a, b) ∈ Finset.antidiagonal r) : a ≤ r ∧ b ≤ r := by
-  have hab : a + b = r := Finset.mem_antidiagonal.mp h
+    (h : (a, b) ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) r) : a ≤ r ∧ b ≤ r := by
+  have hab : a + b = r := Finset.HasAntidiagonal.mem_antidiagonal.mp h
   omega
 
 /-- The constant purity coefficient is exactly the square of the pointed mass. -/
@@ -193,10 +198,10 @@ theorem coeff_bernsteinScalePurityPolynomial_eq_leading_add_lower
   have hrne : r ≠ 0 := hr0.ne'
   have hsplit :
       (∑ k ∈ Finset.range (N + 1),
-          ∑ ab ∈ Finset.antidiagonal r,
+          ∑ ab ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) r,
             bernsteinPurityCoefficientKernel N k ab.1 ab.2 * m ab.1 * m ab.2) -
         (∑ k ∈ Finset.range (N + 1),
-          ∑ ab ∈ Finset.antidiagonal r,
+          ∑ ab ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) r,
             bernsteinPurityCoefficientKernel N k ab.1 ab.2 *
               eraseMoment m r ab.1 * eraseMoment m r ab.2) =
         2 * m 0 * m r *
@@ -208,20 +213,20 @@ theorem coeff_bernsteinScalePurityPolynomial_eq_leading_add_lower
       intro k hk
       rw [← Finset.sum_sub_distrib]
       calc
-        ∑ ab ∈ Finset.antidiagonal r,
+        ∑ ab ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) r,
             (bernsteinPurityCoefficientKernel N k ab.1 ab.2 * m ab.1 * m ab.2 -
               bernsteinPurityCoefficientKernel N k ab.1 ab.2 *
                 eraseMoment m r ab.1 * eraseMoment m r ab.2) =
             (bernsteinPurityCoefficientKernel N k 0 r * m 0 * m r - 0) +
               (bernsteinPurityCoefficientKernel N k r 0 * m r * m 0 - 0) := by
-          rw [Finset.sum_eq_add_sum_diff_singleton (s := Finset.antidiagonal r)
+          rw [sum_eq_add_sum_diff_singleton' (s := Finset.HasAntidiagonal.antidiagonal (A := ℕ) r)
             (i := (0, r))]
-          · rw [Finset.sum_eq_add_sum_diff_singleton
-                (s := Finset.antidiagonal r \ {(0, r)}) (i := (r, 0))]
+          · rw [sum_eq_add_sum_diff_singleton'
+                (s := Finset.HasAntidiagonal.antidiagonal (A := ℕ) r \ {(0, r)}) (i := (r, 0))]
             · rw [Finset.sum_eq_zero]
               · simp [eraseMoment, bernsteinPurityCoefficientKernel]
               · intro ab hab
-                have habAnti : ab ∈ Finset.antidiagonal r :=
+                have habAnti : ab ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) r :=
                   (Finset.mem_sdiff.mp (Finset.mem_sdiff.mp hab).1).1
                 have hab0 : ab ≠ (0, r) := by
                   simpa using (Finset.mem_sdiff.mp (Finset.mem_sdiff.mp hab).1).2
@@ -231,13 +236,13 @@ theorem coeff_bernsteinScalePurityPolynomial_eq_leading_add_lower
                 have ha : ab.1 ≠ r := by
                   intro h
                   have hb : ab.2 = 0 := by
-                    have := Finset.mem_antidiagonal.mp habAnti
+                    have := Finset.HasAntidiagonal.mem_antidiagonal.mp habAnti
                     omega
                   exact habr (Prod.ext h hb)
                 have hb : ab.2 ≠ r := by
                   intro h
                   have ha0 : ab.1 = 0 := by
-                    have := Finset.mem_antidiagonal.mp habAnti
+                    have := Finset.HasAntidiagonal.mem_antidiagonal.mp habAnti
                     omega
                   exact hab0 (Prod.ext ha0 h)
                 simp [eraseMoment, ha, hb]

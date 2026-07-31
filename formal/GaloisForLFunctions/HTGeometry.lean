@@ -2741,3 +2741,4 @@ import GaloisForLFunctions.HTGeometry.PencilOperatorSymbol
 import GaloisForLFunctions.HTGeometry.ContinuousCharacterDifferentiable
 import GaloisForLFunctions.HTGeometry.EigenbasisTrace
 import GaloisForLFunctions.HTGeometry.PencilOperatorKernel
+import GaloisForLFunctions.HTGeometry.SymmetricSumOverRoots

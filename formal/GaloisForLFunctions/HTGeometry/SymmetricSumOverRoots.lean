@@ -43,11 +43,13 @@ theorem isSymmetric_sumEvalPoly (n : ℕ) (g : ℤ[X]) : (sumEvalPoly n g).IsSym
   intro e
   rw [sumEvalPoly, map_sum]
   have hcomp : ∀ i : Fin n,
-      (MvPolynomial.rename e) (Polynomial.aeval (MvPolynomial.X i) g)
-        = Polynomial.aeval (MvPolynomial.X (e i)) g := by
+      (MvPolynomial.rename e)
+          (Polynomial.aeval (MvPolynomial.X i : MvPolynomial (Fin n) ℤ) g)
+        = Polynomial.aeval (MvPolynomial.X (e i) : MvPolynomial (Fin n) ℤ) g := by
     intro i
-    have hEq : (MvPolynomial.rename (R := ℤ) e).comp (Polynomial.aeval (MvPolynomial.X i))
-        = Polynomial.aeval (MvPolynomial.X (e i)) :=
+    have hEq : (MvPolynomial.rename (R := ℤ) e).comp
+          (Polynomial.aeval (MvPolynomial.X i : MvPolynomial (Fin n) ℤ))
+        = Polynomial.aeval (MvPolynomial.X (e i) : MvPolynomial (Fin n) ℤ) :=
       Polynomial.algHom_ext_iff.mpr (by simp)
     exact congrArg (fun F : Polynomial ℤ →ₐ[ℤ] MvPolynomial (Fin n) ℤ => F g) hEq
   rw [Finset.sum_congr rfl fun i _ => hcomp i]
@@ -57,7 +59,8 @@ theorem aeval_sumEvalPoly {n : ℕ} (g : ℤ[X]) (ρ : Fin n → ℂ) :
     MvPolynomial.aeval ρ (sumEvalPoly n g) = ∑ i : Fin n, Polynomial.aeval (ρ i) g := by
   rw [sumEvalPoly, map_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
-  have hEq : (MvPolynomial.aeval ρ).comp (Polynomial.aeval (MvPolynomial.X i))
+  have hEq : (MvPolynomial.aeval ρ).comp
+        (Polynomial.aeval (MvPolynomial.X i : MvPolynomial (Fin n) ℤ))
       = Polynomial.aeval (ρ i) :=
     Polynomial.algHom_ext_iff.mpr (by simp)
   exact congrArg (fun F : Polynomial ℤ →ₐ[ℤ] ℂ => F g) hEq
@@ -72,7 +75,7 @@ theorem sum_aeval_aroots_isInt {h : ℤ[X]} (hm : h.Monic) (g : ℤ[X]) :
   have hmapdeg : (h.map (algebraMap ℤ ℂ)).natDegree = n := hm.natDegree_map (algebraMap ℤ ℂ)
   have hcardmap : Multiset.card (h.aroots ℂ) = (h.map (algebraMap ℤ ℂ)).natDegree := by
     rw [Polynomial.aroots]
-    exact Polynomial.splits_iff_card_roots.mp (IsAlgClosed.splits_codomain _)
+    exact Polynomial.splits_iff_card_roots.mp (IsAlgClosed.splits _)
   have hcard : Multiset.card (h.aroots ℂ) = n := by rw [hcardmap, hmapdeg]
   obtain ⟨ρ, hρ⟩ := exists_index_of_multiset (h.aroots ℂ) n hcard
   have hsum : ((h.aroots ℂ).map (fun r => Polynomial.aeval r g)).sum
@@ -116,9 +119,9 @@ theorem sum_aeval_aroots_isInt {h : ℤ[X]} (hm : h.Monic) (g : ℤ[X]) :
           MvPolynomial (Fin n) ℤ →ₐ[ℤ] ℂ)
         = (Algebra.ofId ℤ ℂ).comp (MvPolynomial.aeval c) := by
       refine MvPolynomial.algHom_ext fun j => ?_
-      simp [Algebra.ofId_apply]
+      simp
     rw [hEq]
-    simp [Algebra.ofId_apply]
+    simp
   rw [hsum, ← aeval_sumEvalPoly g ρ, ← hQ', ← AlgHom.comp_apply, hcomp, hcast]
 
 end GaloisForLFunctions.HTGeometry

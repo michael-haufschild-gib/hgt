@@ -312,7 +312,17 @@ it; what is left is reading the generator off each block, and the trace formula.
   - `opTrace_eq_tsum_eigenvalues` — if the canonical Hilbert basis diagonalizes `T`, its operator
     trace is that sum.
 
-  What remains for `(2)` is to feed the block eigenbasis into this and identify the eigenvalues of
-  `K_φ` with `φ̂(-λ_j)`, which needs the Fourier transform of the weight against the block
-  characters.
+  `flowSmoothing_eigenvector` (in `UnitaryFlowSmoothing.lean`) supplies the other half: if the flow
+  acts on `x` through a scalar character `χ`, then
+
+  `K_φ x = (∫ φ(t) χ(t) dt) • x`,
+
+  so `x` is an eigenvector of every smoothing with eigenvalue the integral of the weight against
+  the character.  Composed with the clause-2 classification `χ t = exp (i λ t)`, that eigenvalue is
+  exactly `φ̂(-λ)`, the spectral value appearing in `(2)`.
+
+  What remains for `(2)` is the bookkeeping: assemble a Hilbert basis out of the blocks (each block
+  finite dimensional, the blocks spanning), so that `opTrace_eq_tsum_eigenvalues` turns the
+  diagonal sum into `∑_j m_j φ̂(-λ_j)` with `m_j` the block multiplicities, and record absolute
+  convergence from the corpus's `MemSchattenClass.one_summable_inner_diag`.
 - the tempered multiplicity measure `(3)` and uniqueness, clause 5.

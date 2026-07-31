@@ -57,7 +57,7 @@ theorem tsum_partialSumSeq_mul_pow {a : ℕ → ℂ} {q : ℂ} (hq : ‖q‖ < 1
     simpa [norm_pow] using summable_geometric_of_lt_one (norm_nonneg q) hq
   have hcauchy := tsum_mul_tsum_eq_tsum_sum_antidiagonal_of_summable_norm ha hgeo
   have hinner : ∀ M : ℕ,
-      (∑ ij ∈ Finset.antidiagonal M, (a ij.1 * q ^ ij.1) * q ^ ij.2)
+      (∑ ij ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) M, (a ij.1 * q ^ ij.1) * q ^ ij.2)
         = partialSumSeq a M * q ^ M := by
     intro M
     rw [partialSumSeq, Finset.sum_mul, Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk]
@@ -168,10 +168,10 @@ theorem norm_mixedAdditiveConvolutionPower_partialSumSeq_le_pow {a : ℕ → ℂ
     congr 1
     push_cast
     ring
-  show ‖∑ ab ∈ Finset.antidiagonal M, additiveConvolutionPower (partialSumSeq a) (j + 1) ab.1 *
+  show ‖∑ ab ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) M, additiveConvolutionPower (partialSumSeq a) (j + 1) ab.1 *
     (starRingEnd ℂ) (additiveConvolutionPower (partialSumSeq a) (j + 1) ab.2)‖ ≤ _
   refine (norm_sum_le _ _).trans ?_
-  have hstep : ∀ ab ∈ Finset.antidiagonal M,
+  have hstep : ∀ ab ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) M,
       ‖additiveConvolutionPower (partialSumSeq a) (j + 1) ab.1 *
           (starRingEnd ℂ) (additiveConvolutionPower (partialSumSeq a) (j + 1) ab.2)‖
         ≤ ((M : ℝ) + 1) ^ ((4 * j + 2 : ℕ) : ℝ) := by

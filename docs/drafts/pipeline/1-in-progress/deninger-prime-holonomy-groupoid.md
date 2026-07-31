@@ -207,3 +207,28 @@ the scaling direction cannot be compactified away. The construction conjecture i
   (`RationalScalingReturnNoGo`, 3 theorems, axiom-clean), strengthened to arbitrary compact
   factors. The two formalizable no-gos of the falsification chain are now both in Lean; the
   remaining card content is the construction conjecture (open research).
+
+## Perimeter status (2026-07-31): fully theorem-backed; the card rests on its open core
+
+Every formalizable piece of this card's perimeter is now in Lean, axiom-clean:
+
+- falsified item 1 → `HTGeometry/PrimeLogPeriodGroupNoGo.lean` (no f.g. period group holds
+  every prime length);
+- falsified item 5 → `HTGeometry/RationalScalingReturnNoGo.lean` (no compact transversal
+  makes the rational suspension proper — strengthened to arbitrary compact factors);
+- paper-proved item 4 (the local atom) → `RHTower/DeningerArithmeticRectangularHalfDensity.lean`
+  (verified this session; its card's stale gate closed and moved to 3-formalized) together
+  with `RHTower/DeningerArithmeticRectangularQuaternionicHodge.lean` (the positive anti-linear
+  star on the complexified atom).
+
+What remains is exactly the `[OPEN CORE]`: construct the additive/Steinberg descent complex
+`𝒦_arith` on the prime-holonomy groupoid (primary candidate mechanism:
+`deninger-milnor-witt-hodge-realization` — arithmetic finite Milnor–Witt correspondences
+before real/analytic realization) and the cup-isometric comparison with `C•_PZ` — with the
+hostile-verdict guard that declaring the comparison isometric imports the missing Hodge
+theorem. This is the programme's construction wall; the perimeter now pins its shape from
+both sides (period group not finitely generated; transversal not compactifiable; local atom
+exact and rigid).
+
+- 2026-07-31 — perimeter closed: no-gos 1 and 5 formalized this session; local-atom modules
+  verified; isogeny bridge card's stale gate closed and moved to 3-formalized.

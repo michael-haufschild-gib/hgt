@@ -77,7 +77,7 @@ theorem sum_choose_mul_choose_eq_choose_add (a b N : ℕ) (hb : b ≤ N) :
 theorem coeff_bernsteinScalePurityPolynomial_closed (m : ℕ → ℝ) (N r : ℕ) :
     (bernsteinScalePurityPolynomial m N).coeff r =
       (-1 : ℝ) ^ r *
-        ∑ ab ∈ Finset.antidiagonal r,
+        ∑ ab ∈ Finset.HasAntidiagonal.antidiagonal (A := ℕ) r,
           (N.choose ab.1 : ℝ) * N.choose ab.2 * r.choose ab.1 *
             m ab.1 * m ab.2 := by
   rw [coeff_bernsteinScalePurityPolynomial]

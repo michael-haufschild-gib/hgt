@@ -278,3 +278,28 @@ that name; the working route is `List.finRange_map_get` together with
 `Multiset.coe_toList` and `Multiset.map_coe`, which is what the next iteration should use.  A first
 attempt at the module was written and removed rather than left broken in the tree; nothing else in
 the repository was touched.
+
+### Step 2 complete (2026-07-31)
+
+`formal/GaloisForLFunctions/HTGeometry/SymmetricSumOverRoots.lean`, `lake build` green and
+`#print axioms` clean on all four declarations.
+
+| Declaration | Statement |
+|---|---|
+| `exists_index_of_multiset` | a multiset of cardinality `n` is `Multiset.map ρ univ.val` for some `ρ : Fin n → α` — the indexing step, via `Finset.val_univ_fin`, `Multiset.map_coe` and `List.ext_getElem` |
+| `sumEvalPoly n g = ∑ᵢ g(Xᵢ)`, `isSymmetric_sumEvalPoly` | the symmetric polynomial and its symmetry, by transporting a permutation through `Polynomial.algHom_ext_iff` |
+| `aeval_sumEvalPoly` | evaluating it at a family gives `∑ᵢ g(ρ i)` |
+| `sum_aeval_aroots_isInt` | **for monic `h : ℤ[X]` and any `g : ℤ[X]`, `((h.aroots ℂ).map (fun r ↦ aeval r g)).sum` is an integer** |
+
+The proof is the route recorded above: index the roots by `Fin n`; write `∑ᵢ g(Xᵢ)` through the
+elementary symmetric functions using `MvPolynomial.esymmAlgHom_surjective`; evaluate with
+`MvPolynomial.aeval_esymm_eq_multiset_esymm`; and identify the elementary symmetric functions of the
+roots with `± h.coeff` by Vieta (`Polynomial.coeff_eq_esymm_roots_of_card`), which are integers
+because `h` is monic.
+
+**Steps 1 and 2 are now both done.**  What remains for this card is Step 3, the symmetrization: from
+`e^α = q` with `α = log q` algebraic (and, after scaling `α` by a denominator, an algebraic integer,
+so that the auxiliary polynomial can be taken monic), expand `∏_{i}(e^{α_i} − q) = 0` — which holds
+because the `i = 1` factor vanishes — into a relation `b + ∑_{r ∈ h.aroots ℂ} e^r = 0` with `b ∈ ℤ`,
+`b ≠ 0`, `h ∈ ℤ[X]` monic and `h(0) ≠ 0`.  Steps 1 and 2 then close it: Step 1's skeleton supplies
+the prime argument and Step 2 supplies the integrality of `∑_r g_p(r)`.

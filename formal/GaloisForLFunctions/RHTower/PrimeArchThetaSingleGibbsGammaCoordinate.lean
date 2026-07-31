@@ -100,7 +100,7 @@ theorem thetaCuspLiouvilleGibbsMoment_eq_singleGammaIntegral (m : ℕ) :
     have hlin : HasDerivAt (fun y : ℝ => 2 * y) 2 x :=
       by simpa using (hasDerivAt_id x).const_mul 2
     have h := (Real.hasDerivAt_exp (2 * x)).comp x hlin
-    convert h.hasDerivWithinAt using 1
+    refine h.hasDerivWithinAt.congr_deriv ?_
     simp only [f']
     ring
   have himageIoi : f '' Ioi (0 : ℝ) ⊆ Ioi 1 := by

@@ -1894,3 +1894,31 @@ Running total for the wave: `MobiusBinaryExcursion`, `HermitianMertensIntegratio
 `SuzukiCausalEntryThirdJetBoundaryLaw` is the next module to take, with the diagnosis above; after it
 the build will reveal the rest.  The four failure classes now on record — name shadowing, instance
 path, numeral normalization, `convert` goal order — cover everything seen so far.
+
+### Repair wave, round three: eleven modules green, two new classes
+
+`SuzukiCausalEntryThirdJetBoundaryLaw` is fixed.  Its four `convert … using 1` sites split in two:
+the two that adjust only the derivative value take `HasDerivAt.congr_deriv` (with `symm`, since
+`congr_deriv` wants `hValue = goalValue` while `convert` produced the reverse); the one that also
+adjusts the *function* needs the function identity written out as a `funext` lemma and rewritten
+into the goal first, after which `congr_deriv` applies.  That is the general recipe for this class.
+
+Also fixed this round:
+
+* `PrimeArchBernsteinConfinedPhase` — `simpa only` no longer unfolds
+  `xiEndpointNormalizedReciprocalSquare`; adding the definition to the simp set closes it.
+* `PrimeArchThetaMorseFisherExponentialEnvelope` — **`ring` cannot see inside `Real.exp`**:
+  `exp (-2 * x)` and `exp (-(2 * x))` are distinct atoms, so the old `convert … <;> ring` fails.
+  Rewriting the exponent first and finishing with `linarith` is the fix.
+* `ScaleCovariantBernsteinPurityJet`, `ScaleCovariantBernsteinDividedPowerStability`,
+  `TwistedMertensOrderLowerBound` — the antidiagonal shadowing again, and two follow-on classes it
+  exposed: `Finset.mem_antidiagonal` needs the same `HasAntidiagonal` qualification, and
+  **`Finset.sum_eq_add_sum_diff_singleton` no longer exists**.  Its modern replacement is
+  `Finset.add_sum_erase` together with `Finset.sdiff_singleton_eq_erase`; a three-line private lemma
+  restores the old statement so the surrounding proof structure is untouched.
+
+Eleven modules green so far.  Six failure classes are now on record: name shadowing, instance path,
+numeral normalization, `convert` goal order, `ring`-through-`exp`, and renamed `Finset` lemmas.
+
+Next failure named by the build: `PrimeArchThetaSingleGibbsGammaCoordinate` (`simp` made no
+progress).  The `RHTower` premise measurement remains deferred until the area builds.
