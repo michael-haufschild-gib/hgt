@@ -29,10 +29,23 @@ import GaloisForLFunctions.RHTower.SourceHorizonEscapeConservationLaw
 import GaloisForLFunctions.RHTower.SuzukiKreinSchurBlockCongruence
 import GaloisForLFunctions.RHTower.LocalGlobalRHTomography
 import GaloisForLFunctions.RHTower.XiApertureCollisionRelativeKOneSimplicityTomographyUniversalityLaw
+import GaloisForLFunctions.RHTower.XiPairwiseValuationBaseUniversalityLaw
+import GaloisForLFunctions.RHTower.XiRootedStarIncidenceValuationMetricFusionUniversalityLaw
+import GaloisForLFunctions.RHTower.XiCofiniteExactBlindDataProcessingUniversalityLaw
+import GaloisForLFunctions.RHTower.XiEvaluationReporterSourceDiscriminationUniversalityLaw
+import GaloisForLFunctions.RHTower.CCMCriticalClockDivisorBlindness
+import GaloisForLFunctions.RHTower.XiSquaredEulerDiagonalCorrelationUniversalityLaw
+import GaloisForLFunctions.RHTower.XiThermalOffLineChargeSelfCubicBound
+import GaloisForLFunctions.RHTower.XiWardInteriorSourceBudgetDivergence
+import GaloisForLFunctions.RHTower.ConePositivstellensatzFailure
+import GaloisForLFunctions.RHTower.XiWeilCriterionConverse
 import GaloisForLFunctions.HTGeometry.BifilteredScalarizationNoGo
 import GaloisForLFunctions.HTGeometry.PointedFisherCutoffWardTrace
 import GaloisForLFunctions.HTGeometry.PrimeResidueValuationInteractionSuperselection
 import GaloisForLFunctions.HTGeometry.PrimeValuationCoordinateFusionCompletion
+import GaloisForLFunctions.HTGeometry.PrimeDirichletDifferentialField
+import GaloisForLFunctions.HTGeometry.PrimeDirichletTailGroupoid
+import GaloisForLFunctions.HTGeometry.PrimeDirichletPositiveDefinite
 
 /-!
 # Xi source-modular type superselection
@@ -53,10 +66,11 @@ Consequently no finite-Rees-moderate operator can sew them, and every exact
 sewing operator has norm beyond every inverse Rees power.
 -/
 
-open Complex Filter Asymptotics
-open scoped Topology ComplexOrder Differential UpperEndDifferentialInstances
+open Complex Filter Asymptotics MeasureTheory Set
+open scoped Topology ComplexOrder Differential UpperEndDifferentialInstances BigOperators
 open GaloisForLFunctions
 open GaloisForLFunctions.HTGeometry
+open HTGeometry Module
 
 namespace RHTower
 
@@ -913,6 +927,200 @@ theorem xiSingularEqualizerBoundary_law :
   horizontalRegularityEqualizer :=
     xiBoundaryCharacterNeutral_iff_regularBoundaryConsumers
 
+/-- Exact finite-source separation beneath the singular character boundary.
+Every finite positive realization of a collision-free Xi source packet is a
+representation of the same pointed incidence matroid.  The matroid is
+unchanged by adjoining all scalar valuation layers, and the full metric
+package collapses to literal nonzero label injectivity.  This source
+faithfulness does not imply logarithmic-current faithfulness: one and the same
+cofinite evaluation reporter is positive definite on the Xi jet carrier but
+has an exact nonzero blind packet for the logarithmic current, even after
+isometric encoding. -/
+structure XiFiniteSourceObservableSeparationCertificate : Prop where
+  pairwiseMatroidValuationInvariant :
+    ∀ {V E : Type} [Fintype V] [Fintype E]
+        [DecidableEq V] [DecidableEq E]
+        (root : V) (shift : V → ℕ) (_hroot : shift root = 0)
+        (_hinj : Function.Injective shift) (tail head : E → V),
+      differentialFamilyMatroid
+          (F := upperEndRationalCoordinateField)
+          (xiTransverseShiftPairDifferenceUpperEndCarrier shift tail head) =
+        differentialFamilyMatroid
+          (F := analyticScalarValuationLayerDifferentialField)
+          (xiTransverseShiftPairDifferenceUpperEndCarrier shift tail head)
+  finitePositiveMetricFusion :
+    ∀ {d : ℕ} (grade : Fin d → ℕ) (embed : ℕ → ℕ),
+      Function.Injective embed → embed 0 = 0 →
+      ∀ (p : Nat.Primes) (m : ℕ),
+        XiEvenShiftRawLogDerivDefectCofiniteHilbertReconstruction grade ↔
+          XiRootedStarIncidenceValuationExactMetricFusionCertificate
+            grade embed p m
+  carrierCurrentSeparation :
+    ∀ N : ℕ,
+      ∃ points : Fin N → ℂ,
+        Function.Injective points ∧
+        (finiteDerivativeReporterGram N xi
+          (finiteEvaluationReporter points)).PosDef ∧
+        ∃ k : ℕ, k ≤ N ∧
+          finiteDerivativeReporterConditionalInformation k (logDeriv xi)
+              (finiteEvaluationReporter points) = 0 ∧
+          finiteEvaluationReporter points (iteratedDeriv k (logDeriv xi)) ∈
+            finiteDerivativeReporterPreviousSpace k (logDeriv xi)
+              (finiteEvaluationReporter points) ∧
+          iteratedDeriv k (logDeriv xi) ∉ Submodule.span ℂ
+            (Set.range fun i : Fin k =>
+              iteratedDeriv (i : ℕ) (logDeriv xi))
+
+/-- **Finite positivity / current-separation law.**  Valuation completion and
+all finite positive Hilbert realizations preserve only the pointed source
+incidence matroid.  Faithfulness of that carrier is strictly weaker than
+faithfulness of its logarithmic current. -/
+theorem xiFiniteSourceObservableSeparation_law :
+    XiFiniteSourceObservableSeparationCertificate where
+  pairwiseMatroidValuationInvariant :=
+    fun root shift hroot hinj tail head =>
+      xiTransverseShiftPairDifferenceUpperEndCarrier_differentialMatroid_base_eq_allValuation
+        root shift hroot hinj tail head
+  finitePositiveMetricFusion :=
+    fun grade embed hinj hzero p m =>
+      xiRootedStar_incidenceValuationExactMetricFusion_reparam_iff
+        grade embed hinj hzero p m
+  carrierCurrentSeparation :=
+    exists_injective_xiEvaluationReporter_faithfulXi_blindLogDeriv
+
+/-- Positive Euler orientation is a source-level pointing above, rather than
+an invariant of, the projective differential-field quotient.  The complete
+signed-prime shift field remembers an orientation only modulo finite changes
+and global sign; every such fibre is dense; positive definiteness of the
+vertical trace nevertheless singles out the literal all-positive source. -/
+structure PrimeProjectiveTailPositivePointingCertificate : Prop where
+  projectiveFieldClassification :
+    ∀ epsilon delta : Nat.Primes → Bool,
+      differentialAdjoin finitePrimeRationalCoefficientField
+          (Set.range (signedPrimeNaturalShiftPalette epsilon)) =
+        differentialAdjoin finitePrimeRationalCoefficientField
+          (Set.range (signedPrimeNaturalShiftPalette delta)) ↔
+        PrimeOrientationsEventuallyEqual epsilon delta ∨
+          PrimeOrientationsEventuallyOpposite epsilon delta
+  projectiveTailFibresDense :
+    ∀ epsilon : ℕ → Bool,
+      Dense
+        (booleanProjectiveTailClass ⁻¹'
+          {booleanProjectiveTailClass epsilon})
+  uniquePositiveSourcePointing :
+    ∀ (epsilon : Nat.Primes → Bool) {sigma : ℝ}, 1 < sigma →
+      (PositiveDefiniteOnReal (signedPrimeVerticalTrace epsilon sigma) ↔
+        PrimeOrientationAllPositive epsilon)
+
+/-- **Projective-tail positive-pointing law.** Differential-field type loses
+global source sign and has dense nonseparated fibres, whereas positivity
+selects one literal Euler representative and therefore cannot descend to that
+field quotient. -/
+theorem primeProjectiveTailPositivePointing_law :
+    PrimeProjectiveTailPositivePointingCertificate where
+  projectiveFieldClassification :=
+    signedPrimeNaturalShiftPalette_differentialAdjoin_eq_iff
+  projectiveTailFibresDense :=
+    booleanProjectiveTailClass_fiber_dense
+  uniquePositiveSourcePointing :=
+    signedPrimeVerticalTrace_positiveDefinite_iff_allPositive
+
+/-- Positive information occurs at strictly different observable levels.
+The critical clock is blind to a prescribed off-line divisor, finite source
+Grams see the collision matroid, an off-line atom separates diagonal Hilbert
+response from transverse charge, and the full resolvent Weil form detects the
+off-axis divisor.  The endpoint source still gives a sharp unconditional
+cubic budget for the total transverse defect. -/
+structure XiPositiveObservableHierarchyCertificate : Prop where
+  criticalClockDivisorBlindness :
+    ∀ {theta a : ℝ}, 1 / 2 < theta → theta < 1 → 0 < a →
+      ∃ m L : ℝ, 0 < m ∧ 0 < L ∧
+        (∀ sigma : ℝ, 1 < sigma →
+          blindWitnessMellinReal m L sigma =
+            ∫ x, x ^ (-sigma) ∂(blindWitnessMeasure m L)) ∧
+        Tendsto
+          (fun sigma : ℝ =>
+            (sigma - 1) * blindWitnessMellinReal m L sigma)
+          (𝓝[>] 1) (𝓝 1) ∧
+        (∀ u : ℝ, 0 ≤ u →
+          Tendsto
+            (criticalClockLaplace (blindWitnessMellinReal m L) u)
+            (𝓝[>] 1) (𝓝 (1 / (1 + u)))) ∧
+        blindWitnessMellin m L ((theta : ℂ) + (a : ℂ) * I) = 0 ∧
+        blindWitnessMellin m L ((theta : ℂ) - (a : ℂ) * I) = 0 ∧
+        8 < schwarzPairCauchyEnergy
+          ((theta - 1 / 2 : ℝ) + (a : ℝ) * I)
+  unconditionalCubicDefectBudget :
+    0 ≤ xiThermalOrientationEnergy ∧
+      xiThermalOrientationEnergy ≤
+        xiThermalOffLineChargeCubicBudget ∧
+      xiThermalOffLineChargeCubicBudget ≤
+        xiThermalExactCubicEndpointBudget ∧
+      xiThermalExactCubicEndpointBudget < 1 / 150000
+  cubicBudgetExactZeroLocus :
+    [xiEndpointOffLineCharge = 0,
+      xiThermalOffLineChargeCubicBudget = 0,
+      xiThermalOrientationEnergy = 0,
+      RiemannHypothesis].TFAE
+  offLineAtomDiagonalSeparation :
+    ∀ (q : XiZeroCopy), (q.1 : ℂ).re ≠ 1 / 2 →
+      ∃ p : Polynomial ℝ,
+        p.natDegree ≤ 1 ∧
+        xiSquaredEulerApertureHilbertTerm p q = 0 ∧
+        0 < xiSquaredEulerApertureTransverseTerm p q
+  orbitwiseDiagonalControlExactBoundary :
+    XiSquaredEulerApertureOrbitwiseBoundedCharge ↔
+      RiemannHypothesis
+  mixedReflectionConePositive :
+    ∀ u : ℝ, 0 ≤ coneObstruction u
+  mixedReflectionConeNotSumOfSquares :
+    ∀ {n : ℕ} (q : Fin n → ℝ → ℝ → ℂ),
+      (∀ s phi, cylinderLift s phi =
+        ∑ k, ‖q k s phi‖ ^ 2) → False
+  sourceMajorantDiverges :
+    ∀ {h : ℝ}, 1 / 2 < h →
+      Tendsto
+        (fun t : ℝ =>
+          xiWardInteriorSourceArithmeticBound
+            ((h : ℂ) + I * (t : ℂ)))
+        atTop atTop
+  rankOneGlobalWeilDetection :
+    ∀ {pt : ℂ}, XiC pt = 0 → pt.im ≠ 0 → pt ≠ 0 →
+      ∃ z : ℂ,
+        XiC z ≠ 0 ∧ XiC ((starRingEnd ℂ) z) ≠ 0 ∧
+        z ≠ 0 ∧ z.im ≠ 0 ∧
+        (xiWeilPolarization (xiCauchyRegularizedKernel z)
+          (xiCauchyRegularizedKernel z)).re < 0
+
+/-- **Positive-observable hierarchy law.**  Source-clock positivity, finite
+source-Gram positivity, atomwise diagonal response, mixed reflection-cone
+positivity, and global resolvent positivity are not interchangeable
+certificates.  The exact failure witnesses and the unconditional cubic defect
+budget coexist in one theorem. -/
+theorem xiPositiveObservableHierarchy_law :
+    XiPositiveObservableHierarchyCertificate where
+  criticalClockDivisorBlindness :=
+    ccm_criticalClock_divisor_blindness
+  unconditionalCubicDefectBudget :=
+    ⟨xiThermalOrientationEnergy_nonneg,
+      xiThermalOrientationEnergy_le_offLineChargeCubicBudget,
+      xiThermalOffLineChargeCubicBudget_le_exactCubicEndpointBudget,
+      xiThermalExactCubicEndpointBudget_lt_one_over_oneHundredFiftyThousand⟩
+  cubicBudgetExactZeroLocus :=
+    xiThermal_offLineCharge_budget_energy_zero_tfae
+  offLineAtomDiagonalSeparation :=
+    exists_xiSquaredEulerAperture_atom_charge_without_hilbert
+  orbitwiseDiagonalControlExactBoundary :=
+    xiSquaredEulerApertureOrbitwiseBoundedCharge_iff_riemannHypothesis
+  mixedReflectionConePositive :=
+    coneObstruction_nonneg
+  mixedReflectionConeNotSumOfSquares :=
+    cylinderLift_not_sum_of_squares
+  sourceMajorantDiverges :=
+    xiWardInteriorSourceArithmeticBound_vertical_tendsto_atTop
+  rankOneGlobalWeilDetection :=
+    exists_neg_weilDiagonal_of_offAxis_zero
+
 /-- Complete boundary architecture after restoring the independent source
 bigrading and the divisor's ramification coordinate. -/
 structure XiRamifiedSingularBoundaryCertificate : Prop where
@@ -946,6 +1154,12 @@ structure XiRamifiedSingularBoundaryCertificate : Prop where
           ‖centeredComplexModularCharacter (rho : ℂ) (1 : ℂ)‖ = 1)
   reflectionCharacterCompletion :
     XiReflectionCharacterCompletionCertificate
+  finiteSourceObservableSeparation :
+    XiFiniteSourceObservableSeparationCertificate
+  sourceProjectiveTailPositivePointing :
+    PrimeProjectiveTailPositivePointingCertificate
+  positiveObservableHierarchy :
+    XiPositiveObservableHierarchyCertificate
   ramificationMultiplicityTomography :
     ∀ rho : XiDivisorSupport,
       xiCompletedApertureRegularizedResonantTwoPointDet rho 0 = -4 ↔
@@ -1015,6 +1229,12 @@ theorem xiRamifiedSingularBoundary_law :
       xiHurwitzOrientationEnergy_eq_zero_iff_unitaryCenteredCharacters⟩
   reflectionCharacterCompletion :=
     xiReflectionCharacterCompletion_law
+  finiteSourceObservableSeparation :=
+    xiFiniteSourceObservableSeparation_law
+  sourceProjectiveTailPositivePointing :=
+    primeProjectiveTailPositivePointing_law
+  positiveObservableHierarchy :=
+    xiPositiveObservableHierarchy_law
   ramificationMultiplicityTomography :=
     xiCompletedApertureCollision_neg_four_iff_completeLocalSimplicity
   dyadicLevelwiseDescent :=

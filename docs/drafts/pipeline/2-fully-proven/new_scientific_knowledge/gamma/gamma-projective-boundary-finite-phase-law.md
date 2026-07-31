@@ -725,6 +725,66 @@ direction outright.  The three clauses of (26) are then theorems:
 `gammaRationalDatum_ratio_vertical_tendsto` is the vertical-line form of the `ℂ(Γ)` boundary used
 throughout, and `tendsto_inv_pow_vertical` supplies the monomial comparison.
 
+`formal/GaloisForLFunctions/HTGeometry/GammaLogValuationBoundary.lean` adds the **logarithmic
+coordinate** of eq. (19)/(26), so the ordering is now formalized on the full algebraic-logarithmic
+scale `s^a (log s)^b` attached to a Gamma-rational factor.  Two estimates carry it:
+`norm_log_le_of_one_le` (`‖log s‖ ≤ log‖s‖ + π` on the vertical line) gives
+`tendsto_log_pow_div_pow_vertical` — the logarithm is dominated by every positive power of `s` — and
+`tendsto_norm_log_vertical_atTop` gives `‖log s‖ → ∞`.  Consequently:
+
+- `tendsto_pow_mul_log_pow_mul_Gamma_pow`: `s^n (log s)^b Γ(s)^k → 0` for every `n`, `b` and every
+  `k ≥ 1`, so the Gamma direction still beats the whole algebraic-logarithmic scale;
+- `tendsto_logMonomial_ratio_zero`: the monomials `s^a (log s)^b` are ordered lexicographically —
+  smaller `a` wins, and at equal `a` smaller `b` wins;
+- `gammaRationalDatum_logRatio_tendsto_zero_of_lex` and
+  `gammaRationalDatum_logRatio_tendsto_residue`: at equal Gamma valuation, a strictly smaller
+  algebraic-logarithmic monomial sends the normalized ratio to `0`, and equal monomials give the
+  residue quotient.
+
+`formal/GaloisForLFunctions/HTGeometry/GammaLogStripCollapse.lean` assembles the ordering and the
+Bohr hull into the **widest unconditional instance of eq. (8) so far**.  `StrictlySubordinateAt` is
+exactly the lexicographic relation of (26) — strictly larger Gamma valuation, or equal valuation with
+a lexicographically smaller monomial `s^a(log s)^b` — and
+`gammaRationalDatum_logRatio_tendsto_zero_of_subordinate` proves that subordination sends the
+normalized coefficient ratio to `0` (its gap branch is the new
+`gammaRationalDatum_logRatio_tendsto_zero_of_gap`, where the whole algebraic-logarithmic monomial is
+absorbed by `tendsto_pow_mul_log_pow_mul_Gamma_pow`).  With `logFn_eventually_ne_zero` supplying
+dominant-coefficient nonvanishing and `tendsto_vertical_along_returns` transporting vertical-line
+limits to a return sequence based at any point of the strip,
+`gammaLog_strip_relation_dominant_monomial_eq_zero` states: a holomorphic Bohr almost-periodic `f` on
+the strip of half-width `η ≤ σ` satisfying
+`∑_α s^{a α}(log s)^{b α}·(P_α/Q_α)(Γ)·M_α(f) = 0`, with the coefficient at `β` strictly dominating
+all the others, has `M_β(f) = 0` identically on the strip.  No analytic input remains hypothetical.
+
+`formal/GaloisForLFunctions/HTGeometry/DigammaValuationBoundary.lean` frees the ordering from the
+auxiliary logarithm and lands it on the **actual generator of the digamma field**.  What the ordering
+really uses is isolated as `IsVerticalLogWeight w σ`: the weight grows without bound and is dominated
+by every positive power of `s`.  Both `Complex.log` (`isVerticalLogWeight_log`) and `Complex.digamma`
+(`isVerticalLogWeight_digamma`) satisfy it — for `ψ` the domination comes from the corpus vertical
+asymptotic `ψ(σ+it) − (log t + iπ/2) → 0`, which gives `‖ψ‖ ≤ 2 log t` eventually
+(`norm_digamma_vertical_le_two_log`), hence `ψ^b/s^d → 0` for every `d ≥ 1`
+(`tendsto_digamma_pow_div_pow_vertical`), while `Re ψ → +∞` gives the growth.
+
+The whole ordering is then reproved for an arbitrary weight — `tendsto_pow_mul_weight_pow_mul_Gamma_pow`
+(a positive power of `Γ` annihilates every weighted monomial), `tendsto_weightedMonomial_ratio_zero`
+(lexicographic comparison), `weightedRatio_tendsto_zero_of_subordinate` — and
+`weighted_strip_relation_dominant_monomial_eq_zero` is the corresponding unconditional collapse.  Its
+specialization `digamma_strip_relation_dominant_monomial_eq_zero` is eq. (8) for coefficients
+`s^a ψ(s)^b · P(Γ)/Q(Γ)`: monomials of the genuine field `ℂ(s)⟨ψ⟩(Γ)`, no auxiliary scale involved.
+
+`formal/GaloisForLFunctions/HTGeometry/PolynomialWeightedValuationBoundary.lean` removes the last
+artificial restriction on the `s`-part: the coefficient's algebraic factor may be an **arbitrary
+polynomial**, not a monomial.  `tendsto_polynomial_eval_div_pow_vertical` proves that on a vertical
+line a polynomial is asymptotically its leading monomial, `c(s)/s^{deg c} → lead c` (expand
+`c.eval s / s^{deg c} = ∑_{i≤deg} c_i (s^{deg-i})⁻¹` and use `tendsto_inv_pow_vertical` termwise), so
+`polyWeightedFn_ratio_eq` factors every normalized ratio as (prefactor ratio)·(monomial ratio) with
+the prefactor ratio converging to `lead c₁ / lead c₂`.  The ordering therefore transfers verbatim:
+`polyWeightedRatio_tendsto_zero_of_subordinate`, and the collapse
+`polyWeighted_strip_relation_dominant_monomial_eq_zero` — with its digamma specialization
+`digammaPoly_strip_relation_dominant_monomial_eq_zero` — hold for coefficients
+`c(s)·ψ(s)^b·P(Γ)/Q(Γ)` with `c ∈ ℂ[s]` arbitrary nonzero, the lexicographic comparison being run on
+the Gamma valuation and then on `(deg c, b)`.
+
 `formal/GaloisForLFunctions/HTGeometry/IsometricRecurrence.lean` abstracts the recurrence to any
 relatively-compact isometric `ℝ`-action (`isometricAction_recurrence`, `isometricAction_return_seq`),
 so it instantiates both to `ℝ →ᵇ ℂ` and to vertical translation of holomorphic functions on a strip.

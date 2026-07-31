@@ -38,9 +38,9 @@
 \newcommand{\cS}{\mathcal S}
 \newcommand{\dd}{\,\mathrm d}
 
-\title{\textbf{The ramified-character law for the Riemann divisor}\\
-\large Bifiltered source acquisition, conservative descent,
-and universal boundary spectra}
+\title{\textbf{The pointed-observability law for the Riemann divisor}\\
+\large Bifiltered source acquisition, a strict positive hierarchy,
+and ramified-character descent}
 \author{Michael Haufschild}
 \date{}
 
@@ -49,8 +49,10 @@ and universal boundary spectra}
 \maketitle
 
 \begin{abstract}
-We prove that a single ramified character object organizes source constructions for the Riemann
-divisor which have previously appeared unrelated.  Let
+We prove a pointed-observability law for the Riemann divisor: source orientation, finite positive
+collision geometry, logarithmic-current observability, global defect magnitude, and divisor
+orientation are strictly different levels, and a single ramified character object organizes
+their exact descent.  Let
 \[
  \xi(s)=\tfrac12s(s-1)\pi^{-s/2}\Gamma(s/2)\zeta(s)
 \]
@@ -86,6 +88,37 @@ The source itself is genuinely bifiltered by valuation depth and residue-support
 No additive map from this rank-two nonnegative grading to one nonnegative degree is injective;
 two paired transverse scalarizations are already faithful, whereas their unpaired marginals are
 not.  Tail-complete fusion across this grid forces a countably free hypertranscendental tower.
+At the first-prime layer, the complete signed-shift differential field remembers a prime
+orientation only modulo finite changes and global sign; every projective-tail fibre is dense.
+Positive definiteness nevertheless selects the literal all-positive Euler source.  Hence
+positive source marking is lift data above the differential-field quotient, not an invariant
+that can be recovered from it.
+More strongly, the differential matroid of every finite packet of pairwise transverse Xi shifts
+is the rooted graphic matroid of its source labels, and it is unchanged after adjoining the
+complete scalar prime-valuation field.  On a rooted star, all finite positive realizations in
+the construction---incidence, valuation, Gaussian, Szeg\H{o}, and deletion-robust prime-jet
+Grams---collapse to the same condition: the integral labels are distinct and nonzero.  This
+positive source faithfulness is still strictly weaker than current observability: one cofinite
+evaluation packet can be positive definite on the Xi jet carrier while annihilating a genuinely
+new logarithmic-current packet, and exact isometric recoding preserves both facts.
+This separation continues after divisor formation.  Every nonnegative Mellin source with a
+unit simple pole has the same exponential critical clock, yet an explicit one-atom perturbation
+can place a prescribed conjugate zero pair anywhere in the open right critical strip and make
+its Schwarz-paired Cauchy energy exceed eight.  At an actual off-line Xi atom, a real affine
+test annihilates the positive diagonal Hilbert response while leaving strictly positive
+transverse charge, so even atom-dependent finite diagonal domination is equivalent to RH.
+Nevertheless the completed prime--Gamma source gives the unconditional global law
+\[
+ 0\le\mathcal E_\perp
+ \le4\left(\frac{C_\perp}{4-C_\perp}\right)^3
+ <\frac1{150000}.
+\]
+Here \(C_\perp\) is the total positive endpoint charge of the off-line divisor and
+\(\mathcal E_\perp\) is its reciprocal-square transverse energy; each vanishes exactly on the
+RH fibre.
+Thus source clock, finite collision positivity, global defect magnitude, atomwise orientation,
+and global resolvent positivity form a strict observable hierarchy.  A rank-one resolvent test
+detects every off-axis zero, but no lower positive quotient determines that test.
 Divisor acquisition is necessarily singular as well: every nonzero nonnegative
 momentum-symmetric theta-null form has dense nonclosed ordinary-\(L^2\) radical and is
 nonclosable, while no entire moment symbol separates one heat node from the others.
@@ -448,6 +481,35 @@ scalarization \(\N^2\to\N\) is faithful, while the paired transverse degrees
  (d,b)\longmapsto(d+b,d+2b)
 \]
 are faithful; observing the two marginal spectra without their pairing is not;
+\item for every finite directed source graph with injective integral vertex labels and rooted
+label zero, the differential matroid of its pairwise transverse Xi carriers is exactly its
+rooted graphic matroid, over both the rational-coordinate field and the differential field
+obtained by adjoining every scalar prime-valuation layer;
+\item the complete natural-shift differential fields of two signed prime sources coincide
+exactly when their orientations are eventually equal or eventually opposite.  Every resulting
+projective-tail fibre is dense, but on each convergence line the signed vertical trace is
+positive definite exactly for the literal all-positive source;
+\item on a rooted star, cofinite raw-Xi reconstruction, the unit incidence Gram, canonical
+one-prime coefficient recovery, finite valuation positivity, completed Szeg\H{o} positivity,
+first-coordinate Gaussian separation with zero excluded, and exact prime-jet recovery after
+every finite prime deletion are all equivalent to distinct nonzero labels.  Nevertheless, for
+every finite resolution there is a cofinite evaluation packet that is faithful to the Xi jet
+carrier but blind to a nonzero logarithmic-current packet; isometric encoding preserves the
+positive Xi Gram, the blind kernel, and its rank;
+\item positive information forms a strict observable hierarchy: the unit simple-pole critical
+clock admits an explicit nonnegative one-atom source with any prescribed conjugate off-line zero
+pair and Schwarz-paired Cauchy energy \(>8\); the actual Xi endpoint source nevertheless bounds
+its total reciprocal-square transverse energy by
+\[
+ 0\le\mathcal E_\perp
+ \le4\left(\frac{C_\perp}{4-C_\perp}\right)^3
+ <\frac1{150000};
+\]
+at every hypothetical off-line Xi atom a real affine test kills the positive diagonal Hilbert
+response while leaving positive transverse charge, so even atom-dependent finite diagonal
+domination is equivalent to RH; a mixed reflection-positive exponential polynomial has a
+negative separated cylinder lift and no finite sum-of-squares lift; while one global rank-one
+resolvent test detects every off-axis zero by a negative Weil value;
 \item no entire compactified moment symbol can equal one at one positive theta heat node and zero
 at every other positive heat node;
 \item if
@@ -532,6 +594,12 @@ consumer;
 the horizontal charge;
 \item the source is genuinely bifiltered: no one additive scalar degree is faithful, while two
 paired transverse views recover the complete bidegree;
+\item positive Euler orientation is a source-level pointing above a dense, nonseparated
+projective differential-field quotient and cannot be reconstructed as a continuous invariant
+of field type;
+\item every finite positive source metric in the Xi shift construction represents one pointed
+collision matroid, unchanged by adjoining all scalar valuation layers; carrier faithfulness and
+logarithmic-current observability are nevertheless different matroidal questions;
 \item the dyadic deck tower supplies the independent ramification coordinate, explaining
 analytic root descent, local loop charge, and multiplicity-sensitive Hedenmalm obstructions;
 \item positive thermal boundary density couples continuous rate to discrete order by
@@ -1130,10 +1198,401 @@ ordinary degrees are \(\{2,3\}\) for both packets and transverse degrees are \(\
 both, with the indicated swapped pairing.
 \end{proof}
 
+\begin{theorem}[Positive source pointing does not descend to field type]
+\label{thm:projective-pointing}
+Let \(\varepsilon:\mathcal P\to\{\pm1\}\) and
+\[
+ P_\varepsilon(s)=\sum_{p\in\mathcal P}\varepsilon(p)p^{-s},
+ \qquad \Rea s>1.
+\]
+Write \(\mathcal E_{\rm fin}\) for the rational-coordinate differential field generated by
+finite-prime Dirichlet data and put
+\[
+ \mathcal F_\varepsilon
+ =\mathcal E_{\rm fin}
+   \bigl\langle P_\varepsilon(s+n):n\in\N\bigr\rangle_\partial.
+ \tag{4.B4}\label{eq:signed-shift-field}
+\]
+Then
+\[
+ \begin{aligned}
+ \mathcal F_\varepsilon=\mathcal F_\delta
+ \quad\Longleftrightarrow\quad&
+ \varepsilon(p)=\delta(p)\ \text{for all but finitely many }p,\\[-1mm]
+ &\text{or }\ 
+ \varepsilon(p)=-\delta(p)\ \text{for all but finitely many }p.
+ \end{aligned}
+ \tag{4.B5}\label{eq:projective-field}
+\]
+Every fibre of this projective-tail classification is dense in the prime sign cube with its
+product topology; its quotient topology is indiscrete, and every continuous invariant into a
+\(T_0\) space that factors through \(\mathcal F_\varepsilon\) is constant.
+
+In contrast, for every \(\sigma>1\), the vertical trace
+\[
+ t\longmapsto P_\varepsilon(\sigma+it)
+ \tag{4.B6}\label{eq:signed-vertical}
+\]
+is positive definite on \(\R\) if and only if \(\varepsilon(p)=+1\) for every prime \(p\).
+In particular \(\mathcal F_+=\mathcal F_-\), while positive definiteness distinguishes the two
+literal sources.  Positive Euler orientation is therefore a pointing above the projective
+differential-field quotient and cannot descend to field type.
+\end{theorem}
+
+\begin{proof}
+The coefficient columns \(\varepsilon,\delta\) have finite joint range.  The finite-range
+prime-tail criterion identifies differential dependence of every finite shift--jet rectangle
+with linear dependence of these columns modulo finite prime support.  Two nonzero sign columns
+are projectively dependent in that quotient exactly when they are eventually equal or eventually
+opposite.  Equality of the complete embedded shift fields is equivalent to that projective
+dependence, proving \eqref{eq:projective-field}.
+
+Any cylinder in the prime sign cube prescribes only finitely many coordinates.  Overwrite those
+coordinates in an arbitrary representative of a fixed tail class; the result remains in the
+same class and lies in the cylinder.  Thus every fibre is dense.  A quotient with all fibres
+dense is indiscrete, and continuity into a \(T_0\) space forces a fibre-invariant map to be
+constant.
+
+Finally,
+\[
+ P_\varepsilon(\sigma+it)
+ =\sum_p \varepsilon(p)p^{-\sigma}e^{-it\log p}
+\]
+is an absolutely convergent atomic Fourier transform with distinct frequencies
+\(-\log p\).  Positive definiteness forces every atomic weight
+\(\varepsilon(p)p^{-\sigma}\) to be nonnegative; conversely nonnegative weights give a
+positive-definite transform.  Since every weight has magnitude \(p^{-\sigma}>0\), this occurs
+exactly for the all-positive orientation.
+\end{proof}
+
+\begin{theorem}[Finite positivity is the pointed collision matroid]
+\label{thm:finite-positive-collapse}
+For \(a\in\N\), put
+\[
+ X_a(s)=\sum_{n\ge1}\frac{\Lambda(n)(1-n^{-a})}{n^s}
+ =-\frac{\zeta'(s)}{\zeta(s)}
+   +\frac{\zeta'(s+a)}{\zeta(s+a)}
+ \qquad(\Rea s>1),
+ \tag{4.B7}\label{eq:shift-carrier}
+\]
+so \(X_0=0\).  Let \(G=(V,E)\) be a finite directed graph, choose \(o\in V\), and let
+\(\lambda:V\to\N\) be injective with \(\lambda(o)=0\).  For
+\[
+ Y_e=X_{\lambda(h(e))}-X_{\lambda(t(e))},
+ \]
+the complete differential matroid of \((Y_e)_{e\in E}\) is the rooted incidence matroid:
+\[
+ \mathfrak M_\partial^{K_0}(Y)
+ =\mathfrak M_\partial^{K_{\rm val}}(Y)
+ =\mathfrak M_{\rm inc}(G,o).
+ \tag{4.B8}\label{eq:matroid-base-change}
+\]
+Here \(K_0=\C(s)\) in the meromorphic germ field and
+\[
+ K_{\rm val}
+ =K_0\bigl\langle P((r+1)s):r\ge0\bigr\rangle_\partial,
+ \qquad P(s)=\sum_p p^{-s},
+ \]
+is the differential field generated by every scalar prime-valuation layer.  Thus adjoining the
+complete depth field creates no new differential dependence among the labelled edge carriers.
+
+For the rooted star on labels \(a_1,\ldots,a_d\), the following conditions are equivalent.
+\begin{enumerate}[label=\textup{(\alph*)}]
+\item \(a_1,\ldots,a_d\) are pairwise distinct and nonzero.
+\item The canonical rooted incidence Gram is \(I_d\), equivalently its real Kirchhoff kernel is
+zero and every edge coefficient is recovered by the occupied leaf coordinates.
+\item At any prime \(p\), with \(q_j=p^{-a_j}\), the finite valuation matrix
+\[
+ V_p(e,j)=(1-q_j)q_j^e,\qquad 0\le e<d,
+ \tag{4.B9}\label{eq:valuation-vandermonde}
+\]
+has positive-definite Gram \(V_p^*V_p\).
+\item At any prime \(p\), the completed valuation--Szeg\H{o} matrix
+\[
+ S_p(i,j)=\frac{(1-q_i)(1-q_j)}{1-q_iq_j}
+ \tag{4.B10}\label{eq:valuation-szego}
+\]
+is positive definite.
+\item At any prime and any positive Gaussian bandwidth, the Gaussian distance Gram of the first
+valuation increments is positive definite, and no label is zero.
+\item After deletion of any finite set of primes and at every fixed jet depth, surviving
+prime-jet evaluations admit a positive-definite square Gram and exact dual coefficient recovery.
+\item The raw even-shift Xi defect family admits cofinite analytic reconstruction.
+\end{enumerate}
+
+This common positive phase still does not make a finite reporter faithful to the logarithmic
+current.  For every \(N\) and every finite forbidden set \(F\subset\C\), there are \(N\) distinct
+evaluation points outside \(F\) whose reporter is positive definite on the first \(N\) Xi jets
+but annihilates a nonzero finite packet of derivatives of \(\xi'/\xi\).  Every isometric encoding
+preserves the positive Xi Gram and preserves exactly the blind packet's kernel and rank; its
+adjoint recovers the original reporter.  Every subsequent target of complex dimension below
+\(N\) erases a nonzero Xi packet.
+\end{theorem}
+
+\begin{proof}
+At a prime power \(p^{r+1}\), the coefficient of \(X_a\), after removing the common
+\(\log p\) factor, is \(1-p^{-(r+1)a}\).  Distinct positive labels therefore give a
+differentially independent vertex family, with the rooted label giving the zero carrier.
+Pairwise subtraction sends the oriented edge \(e\) to the column
+\(\mathbf e_{h(e)}-\mathbf e_{t(e)}\) of the incidence matrix with the root row deleted.
+Consequently every differential dependence is exactly an incidence dependence.  These columns
+have entries in \(\{0,\pm1\}\).  Linear independence of any selected columns is therefore
+unchanged by extension between characteristic-zero coefficient fields.  The same vertex
+independence remains valid after adjoining all \(P((r+1)s)\), which proves
+\eqref{eq:matroid-base-change}.
+
+For a rooted star, the deleted-root incidence columns are the standard coordinate vectors if
+and only if the leaf labels are distinct and avoid zero; this proves (a)\(\Leftrightarrow\)(b)
+and the Kirchhoff and dual-recovery assertions.  The factorization
+\[
+ V_p=\operatorname{Vand}(q_1,\ldots,q_d)^{\mathsf T}
+       \operatorname{diag}(1-q_1,\ldots,1-q_d)
+ \tag{4.B11}\label{eq:valuation-factorization}
+\]
+shows that \(V_p\) is invertible exactly when the \(q_j\) are distinct and different from one.
+Since \(a\mapsto p^{-a}\) is injective and \(p^{-a}=1\) exactly for \(a=0\), this proves
+(a)\(\Leftrightarrow\)(c).
+
+For \(a_j>0\), the \(j\)-th completed feature is the square-summable sequence
+\(((1-q_j)q_j^e)_{e\ge0}\); its inner products are exactly
+\eqref{eq:valuation-szego}.  Its first \(d\) coordinates already form \(V_p\), so completion
+introduces no new radical and (c)\(\Leftrightarrow\)(d).  Strict positive definiteness of the
+Gaussian kernel on distinct real nodes gives (e).  Dirichlet-series tail independence supplies
+unisolvent prime-jet evaluations after any finite prime deletion, while the zero-jet slice
+detects both a repeated label and label zero.  This proves (f).  The same leading-coefficient
+criterion is equivalent to cofinite analytic reconstruction of the raw Xi defects, proving (g).
+
+Finally, the first \(N\) Xi derivatives are linearly independent, so unisolvent evaluation
+points can be chosen outside any prescribed finite set and their Gram is positive definite.
+The logarithmic current has infinite constant-coefficient differential rank.  Its first
+\(N+1\) reported jets lie in an \(N\)-dimensional target, hence have a reported dependence;
+infinite differential rank makes the corresponding source packet nonzero.  An isometry
+preserves inner products, kernels, and ranks, and its adjoint is a left inverse on the encoded
+range.  The last assertion is rank--nullity.  These observations prove the exact
+carrier/current separation.
+\end{proof}
+
+\begin{theorem}[Positive information is a strict observable hierarchy]
+\label{thm:positive-hierarchy}
+Positive source data, finite source Grams, atomwise divisor response, and global divisor
+positivity carry strictly different information.
+
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item Let \(\tfrac12<\vartheta<1\) and \(a>0\).  There are \(m,L>0\) such that
+\[
+ Z_{\vartheta,a}(s)=\frac1{s-1}+m e^{-Ls}
+ \tag{4.B12}\label{eq:clock-blind-witness}
+\]
+is the Mellin transform of the nonnegative measure
+\[
+ \mathbf 1_{(1,\infty)}(x)\,\dd x+m\delta_{e^L},
+\]
+has a simple pole at \(1\) with residue one, and has the same unit-rate critical clock
+\[
+ \lim_{\sigma\downarrow1}
+ \frac{Z_{\vartheta,a}(\sigma+(\sigma-1)u)}
+      {Z_{\vartheta,a}(\sigma)}
+ =\frac1{1+u}\qquad(u\ge0)
+ \tag{4.B13}\label{eq:unit-clock}
+\]
+as the squarefree M\"obius source.  Nevertheless
+\[
+ Z_{\vartheta,a}(\vartheta+ia)
+ =Z_{\vartheta,a}(\vartheta-ia)=0
+ \tag{4.B14}\label{eq:clock-blind-zero}
+\]
+and the Schwarz-paired Cauchy energy of this pair is
+\[
+ 4\left\{\frac1{\vartheta-\frac12}
+ +\frac{\vartheta-\frac12}
+ {(\vartheta-\frac12)^2+a^2}\right\}>8.
+ \tag{4.B15}\label{eq:clock-blind-energy}
+\]
+Thus no functional of the critical clock alone---including its four-unit or eight-unit
+cutoff profile---determines a strict-right divisor bound.
+
+\item For the actual completed Riemann divisor, counted with multiplicity, put
+\[
+ C=2+\gamma_E-\log(4\pi),\qquad
+ c_\rho=\Rea\frac1{\rho(1-\overline\rho)},\qquad
+ C_\perp=\sum_{\Rea\rho\ne1/2}c_\rho,
+ \tag{4.B16}\label{eq:endpoint-charges}
+\]
+and
+\[
+ \lambda_\rho=-\frac4{(2\rho-1)^2},\qquad
+ \mathcal E_\perp=\sum_\rho(\Ima\lambda_\rho)^2.
+ \tag{4.B17}\label{eq:transverse-energy}
+\]
+Then all sums converge absolutely,
+\[
+ 0\le C_\perp\le C,\qquad
+ C_\perp=0\Longleftrightarrow\mathcal E_\perp=0
+ \Longleftrightarrow\mathrm{RH},
+ \tag{4.B18}\label{eq:cubic-zero-locus}
+\]
+and unconditionally
+\[
+ 0\le\mathcal E_\perp
+ \le4\left(\frac{C_\perp}{4-C_\perp}\right)^3
+ \le4\left(\frac{C}{4-C}\right)^3
+ <\frac1{150000}.
+ \tag{4.B19}\label{eq:self-cubic-budget}
+\]
+Equivalently, the second centered thermal divisor moment exceeds the completed
+prime--Gamma source moment by exactly \(\mathcal E_\perp\).  The source therefore controls
+the total transverse magnitude sharply, but the positive scalar budget does not force it to
+vanish.
+
+\item At a divisor copy \(q\), write \(\lambda=\lambda_q\), so \(\Rea\lambda>0\), and for a
+real polynomial \(p\) put
+\[
+ \begin{aligned}
+ H_q(p)
+ &=\Rea\lambda
+ \left(\Rea p(\lambda)
+ -\frac{\Ima\lambda}{\Rea\lambda}\Ima p(\lambda)\right)^2,\\
+ T_q(p)
+ &=\frac{|\lambda|^2}{\Rea\lambda}\,
+   \bigl(\Ima p(\lambda)\bigr)^2.
+ \end{aligned}
+ \tag{4.B20}\label{eq:diagonal-hilbert-charge}
+\]
+If \(q\) is off the critical line, there is a real affine \(p\) with
+\[
+ H_q(p)=0<T_q(p).
+ \tag{4.B21}\label{eq:atomic-separation}
+\]
+Consequently no finite constant \(K_q\), even chosen separately at every atom, can satisfy
+\[
+ T_q(p)\le K_qH_q(p)\qquad\text{for every real }p.
+ \tag{4.B22}\label{eq:no-diagonal-bound}
+\]
+Conversely, existence of such an atomwise finite bound at every divisor copy is equivalent to
+RH.  Any noncircular positive proof through this aperture must therefore couple the divisor
+copies globally through a common test family; diagonal domination cannot close the estimate.
+
+\item Positivity on the physical reflection line need not admit a positive separated lift.
+The exponential polynomial
+\[
+ h(u)=\frac12\cosh(2u)-5\cosh u-\cos u+\frac{15}{2}
+ \tag{4.B23}\label{eq:mixed-cone-witness}
+\]
+is nonnegative for every real \(u\).  Its hyperbolic--oscillatory cylinder lift
+\[
+ \widetilde h(s,\phi)
+ =\frac12\cosh(2s)-5\cosh s-\cos\phi+\frac{15}{2}
+ \tag{4.B24}\label{eq:cylinder-lift}
+\]
+satisfies \(\widetilde h(u,u)=h(u)\), but
+\[
+ \widetilde h\!\left(
+ \log\frac{5+\sqrt{21}}2,0\right)=-\frac14.
+ \tag{4.B25}\label{eq:cylinder-negative}
+\]
+It is therefore not a finite sum of squared moduli on the separated cylinder.  Mixed
+hyperbolic--oscillatory reflection positivity is not recovered by a finite
+sum-of-squares lift from its physical diagonal.
+
+\item The global resolvent algebra does detect every off-axis zero.  If the centered completed
+function vanishes at \(z_0\ne0\) with \(\Ima z_0\ne0\), then some regular base point \(z\)
+makes the rank-one diagonal Weil value
+\[
+ \mathcal W\!\left(K_z,K_z\right)<0,\qquad
+ K_z(w)=w^{-1}-(w-z)^{-1}.
+ \tag{4.B26}\label{eq:rank-one-weil}
+\]
+Equivalently, nonnegativity of these values for all admissible \(z\) forces RH.
+\end{enumerate}
+
+Hence the implications between these levels are one-way:
+\[
+ \boxed{
+ \begin{array}{c}
+ \text{source pointing}\\
+ \downarrow\\[-1mm]
+ \text{finite collision geometry}\\
+ \downarrow\\[-1mm]
+ \text{global magnitude budget}
+ \end{array}}
+ \qquad\not\Longrightarrow\qquad
+ \boxed{\text{atomwise orientation control}},
+ \tag{4.B27}\label{eq:positive-hierarchy}
+\]
+whereas global common-test resolvent coupling can see the missing divisor orientation.
+\end{theorem}
+
+\begin{proof}
+For (i), choose
+\[
+ L=\frac{2\pi-\arg(1-\vartheta-ia)^{-1}}a,\qquad
+ m=|(1-\vartheta-ia)^{-1}|e^{\vartheta L}.
+\]
+Then \(L,m>0\), and direct substitution gives
+\(me^{-L(\vartheta+ia)}=(1-\vartheta-ia)^{-1}\), proving
+\eqref{eq:clock-blind-zero}; conjugation gives the second zero.  The atom is bounded at
+\(\sigma=1\), so the pole term alone determines both the residue and the scaled clock
+\eqref{eq:unit-clock}.  Formula \eqref{eq:clock-blind-energy} is the half-plane
+Szeg\H{o}-kernel norm of the Schwarz pair.  Its first term is strictly larger than \(8\)
+because \(0<\vartheta-\tfrac12<\tfrac12\), and its second term is nonnegative.
+
+For (ii), Schwarz and functional-equation symmetry put every off-line copy into a four-element
+orbit of equal positive endpoint charge.  The completed endpoint logarithmic derivative gives
+\(\sum_\rho c_\rho=C\).  For
+\(x=(\Rea\rho-\tfrac12)^2\) and \(v=(\Ima\rho)^2\), direct calculation gives
+\[
+ (\Ima\lambda_\rho)^2=\frac{4xv}{(x+v)^4}\le v^{-3}.
+\]
+The endpoint charge gives \(v^{-1}\le
+\frac4{4-C_\perp}c_\rho\), while fourfold symmetry gives
+\(c_\rho\le C_\perp/4\).  Cubing the first inequality, using the second, and summing proves
+the self-localized estimate in \eqref{eq:self-cubic-budget}.  The final rational bound follows
+from \(C<93/2000\).  Every summand in \(C_\perp\) and
+\(\mathcal E_\perp\) is nonnegative and vanishes exactly on the line, proving
+\eqref{eq:cubic-zero-locus}.  The source-gap identity is the real/imaginary decomposition of
+the second reciprocal-square moment.
+
+For (iii), off the line \(\Ima\lambda\ne0\), and evaluation of real affine polynomials at
+\(\lambda\) is onto \(\C\).  Choose \(p(\lambda)=\Ima\lambda/\Rea\lambda+i\).
+Then the sheared real response in \(H_q\) vanishes while \(T_q>0\), proving
+\eqref{eq:atomic-separation} and ruling out \eqref{eq:no-diagonal-bound}.  On RH every
+\(\lambda_q\) is positive real and every \(T_q\) vanishes; the converse follows from the
+separator at any off-line copy.
+
+For (iv), use
+\[
+ h(u)=(1-\cos u)+(\cosh u-2)(\cosh u-3).
+\]
+Outside \(2<\cosh u<3\) both terms are nonnegative.  Inside that interval,
+\(1<|u|<2\), and
+\[
+ 1-\cos u=2\sin^2(u/2)>2(7/15)^2>\frac14
+ \ge\left|(\cosh u-2)(\cosh u-3)\right|.
+\]
+Thus \(h\ge0\).  At the point in \eqref{eq:cylinder-negative},
+\(\cosh s=5/2\), giving \(-1/4\).  A finite sum of squared moduli is
+nonnegative everywhere, so no such cylinder representation exists.
+
+For (v), near an off-axis zero the centered logarithmic derivative is
+\(r/(z-z_0)\) plus an analytic remainder, with positive integer residue \(r\).
+The diagonal Weil value is an explicit real affine functional of this logarithmic derivative.
+Approaching \(z_0\) along the ray selected by its nonzero coefficient sends that value to
+\(-\infty\), and therefore produces \eqref{eq:rank-one-weil}.  This also proves the stated
+positivity implication.
+\end{proof}
+
 Theorem~\ref{thm:bifilter} changes the interpretation of
-Theorem~\ref{thm:relative-ht}.  Hypertranscendental escape is not merely ``more depth''.  Fusion
+Theorems~\ref{thm:relative-ht}, \ref{thm:projective-pointing}, and
+\ref{thm:finite-positive-collapse}.  Theorem~\ref{thm:positive-hierarchy} then identifies
+which of those positive levels can carry divisor orientation.
+Hypertranscendental escape is not merely ``more depth''.  Fusion
 moves in a depth--breadth grid, and no scalar filtration can be faithful to that motion.
-The positive replacement is exactly two paired transverse realizations.  A scalar conormal can
+The complete scalar valuation field leaves the edge-incidence matroid unchanged, so depth
+adjunction cannot manufacture the missing breadth.  Finite positivity then represents that
+same collision matroid in several kernels; it does not add a zero-orientation law.  The signed
+prime theorem shows the complementary fact: positivity can select the physical Euler source,
+but only as a marking above a projective field class which has already identified opposite
+orientations.  A scalar conormal can
 therefore carry the divisor coefficient, but it cannot by itself generate the independent
 prime-labelled normal frame required by a Sonin/Calkin consumer.  That frame is not extra
 decoration; it is the second source grade.
@@ -3115,6 +3574,7 @@ Theorems~\ref{thm:inner-outer}, \ref{thm:duality-fracture},
 mechanism behind several earlier obstructions.
 
 \begin{center}
+{\small
 \begin{tabular}{@{}lll@{}}
 \toprule
 Source operation & retained datum & discarded datum\\
@@ -3123,6 +3583,10 @@ fixed exponent-depth limit & \(\zeta\) bulk & reciprocal divisor\\
 inverse-depth normal cone & \(1/(2\xi)\) & positive coefficient chart\\
 neutral same-prime fusion & exact coefficient law & finite differential closure\\
 additive source totalization & one mixed degree & depth--breadth pairing\\
+projective prime-tail field & shift--jet constraints & literal Euler sign\\
+scalar valuation adjunction & pointed incidence matroid & new breadth relations\\
+finite positive source kernels & collision-free labels & divisor orientation\\
+faithful Xi evaluation panel & finite Xi jet carrier & logarithmic-current circuit\\
 Gamma scalar contraction & quadratic contact & prime-log first jet\\
 positive Julia lift & oriented prime-log jet & bounded global recovery\\
 pointed Fisher--Ward trace & signed cutoff curvature & quadratic energy\\
@@ -3154,6 +3618,7 @@ fixed-width global tail & off-line divisor & compact locality\\
 mass deformation & conserved charge & exact aperture metric\\
 \bottomrule
 \end{tabular}
+}
 \end{center}
 
 The unifying statement is:
@@ -3162,7 +3627,15 @@ The unifying statement is:
 \emph{The complete pre-positivity datum is not a scalar zero statistic.  It is a bifiltered
 singular source with an odd orientation jet, whose divisor output is the ramified character
 \((m_\rho,\chi_\rho)\).  Source depth and prime-normal breadth cannot be collapsed to one additive
-degree.  The Julia normal derivative and pointed Fisher--Ward transgression retain the
+degree.  Every finite Xi source metric is a representation of one pointed collision matroid,
+unchanged by adjoining the complete scalar valuation field; yet a reporter faithful to the Xi
+carrier can have an exact logarithmic-current circuit.  Carrier faithfulness, current
+observability, and divisor orientation are therefore three distinct levels.  Already at the
+first-prime layer, differential-field type identifies opposite tail orientations while positive
+definiteness selects the literal all-positive source above that quotient.  Source orientation is
+pointing data before completion, just as divisor orientation is lift data before evenization.
+The Julia normal
+derivative and pointed Fisher--Ward transgression retain the
 unsquared prime-log direction; its even square retains the logarithmic current but not the
 reflection lift.  Singular theta and squarefree graphs acquire the divisor.  The continuous character
 \(\chi_\rho\) retains spectral position; its real rate controls Wold--Poisson boundedness,
@@ -3206,6 +3679,45 @@ them.  The rank-one co-Poisson conormal supplies a scalar seam but cannot genera
 prime-labelled Calkin frame because scalarization has erased source breadth.  Hence neither
 adding more finite depth coordinates nor changing only the final positivity test repairs the
 architecture.
+
+Theorem~\ref{thm:projective-pointing} supplies the source-level half of the orientation law.
+The full signed-shift differential field classifies a prime orientation only projectively:
+finite changes and global sign are invisible.  Positive definiteness does distinguish the
+all-positive Euler representative, but this marking cannot descend because the projective-tail
+fibres are dense.  Thus positivity is useful before quotienting and powerless to reconstruct
+the representative afterward.  The divisor-side parity theorem has the same direction:
+the odd lift must be retained before passing to the reflection-even energy.
+
+Theorem~\ref{thm:finite-positive-collapse} sharpens that conclusion.  The finite incidence,
+valuation, Gaussian, Szeg\H{o}, and cofinite jet constructions are not independent confirmations of
+an RH mechanism.  They are faithful representations of the same pointed collision matroid.
+Their common strict-positive phase says exactly that source labels neither collide nor hit the
+root.  Because adjoining every scalar valuation layer leaves the complete edge matroid
+unchanged, no amount of scalar depth data creates the missing prime-normal incidence.  This
+explains both the abundance and the limitation of positive finite Xi Grams.
+
+Theorem~\ref{thm:positive-hierarchy} identifies the next, previously missing fracture.
+Critical-clock positivity is a residue-class invariant: an explicit nonnegative source can keep
+the entire exponential clock and its four-unit profile while carrying a prescribed off-line zero
+pair whose Cauchy energy overspends eight.  On the actual Xi divisor, endpoint charge does much
+more---it gives a self-localized cubic bound below \(1/150000\) for the total transverse
+energy---but it still supplies magnitude rather than annihilation.  The atomwise separator proves
+why improving that scalar constant cannot close RH: off the line, the positive diagonal response
+has a kernel direction on which transverse charge remains positive, so there is no finite local
+comparison constant to improve.  The mixed cylinder witness separately excludes a finite
+sum-of-squares repair of physical-line positivity.  Global resolvent coupling succeeds at
+detection because one common meromorphic test sees the pole across the complete divisor.
+The missing route is therefore not ``more positivity.''  It is a source-pointed,
+incidence-preserving global transgression which reaches the common-test resolvent level before
+the clock, diagonal, cylinder, or even-character quotient discards its input.
+
+The carrier/current clause prevents the opposite overstatement.  Finite positivity is not
+``blind to everything'': the same evaluation panel can be fully faithful to the chosen Xi jet
+carrier.  What it misses is a genuinely new packet in the logarithmic-current tower, and an
+exactly recoverable isometric recoding preserves that mismatch.  Thus the obstruction is not
+poor numerical conditioning or an unfortunate basis.  The source carrier, its logarithmic
+current, and its reflection orientation have different observable matroids.  This is the
+finite-dimensional shadow of the later parity and hyperbolic superselection laws.
 
 The Julia and pointed-Fisher clauses identify what those negative results were missing.
 The Gamma contraction reaches the lossless boundary only to second order; its positive
@@ -3266,7 +3778,10 @@ source cores and reflected valuation sectors.  The complete architecture is
 \[
  \begin{array}{c}
  \text{depth--breadth prime source}
- \longrightarrow\text{countably free bifiltered fusion tower}\\
+ \longrightarrow\text{pointed collision matroid}\\
+ \swarrow\ \text{countably free fusion tower}
+ \qquad\searrow\ \text{finite positive / critical-clock chamber}\\
+ \hspace{24mm}\downarrow\ \text{carrier/current and diagonal-charge separation}\\
 \hspace{8mm}\downarrow\ \text{positive Julia lift / odd Fisher--Ward jet}\\
  \hspace{10mm}\searrow\ \text{singular score/overlap graph}
  \longrightarrow\text{Xi outer connection}\\[-1mm]
@@ -3282,6 +3797,7 @@ source cores and reflected valuation sectors.  The complete architecture is
  \text{continuous aperture ray}\\
  \text{Wold--Poisson, Sonin/Calkin}\\
  \text{Ward, energy, Fisher--Gamma/Rees}\\
+ \text{cubic magnitude budget / global resolvent}\\
  \text{hyperbolic pair / Krein debt}\\
  \text{source clock / fixed-width global tail}
  \end{array}
@@ -3326,6 +3842,30 @@ countably free hypertranscendental valuation--residue tower.  Divisor differenti
 overlap order and forces inverse-square positive-Gram blow-up.  Reflection sends one sector into
 an asymptotic species inaccessible to every fixed finite Rees order.  These are exact theorems in
 three different categories, anchored to one ordinary-prime source by the squarefree graph.
+
+At finite resolution, the positive geometry itself has now been completely classified.
+The complete signed-prime shift field first forms a projective-tail quotient: eventual global
+sign is invisible and every quotient fibre is dense, while positive definiteness uniquely points
+to the all-positive representative.
+Pairwise transverse Xi shifts carry the rooted graphic matroid of their source labels, and
+adjoining every scalar prime-valuation layer leaves that differential matroid unchanged.
+Incidence, valuation, Gaussian, Szeg\H{o}, and cofinite prime-jet positivity are all representations
+of the same collision-free phase.  Yet a cofinite evaluation reporter can be faithful to the Xi
+jet carrier and simultaneously blind to a nonzero logarithmic-current packet, with the mismatch
+unchanged by exact isometric recoding.  Finite source positivity, current observability, and
+reflection orientation are therefore provably distinct layers, not competing formulations of
+one missing inequality.
+
+The same strictness persists through positivity.  Critical-clock data depend only on the unit
+pole and admit nonnegative sources with arbitrary prescribed off-line conjugate zeros.
+Completed endpoint charge nevertheless bounds the actual Xi transverse energy cubically and
+unconditionally below \(1/150000\).  This is real global information, but the atomwise
+kernel--charge separator proves that no finite local constant can turn it into orientation
+vanishing.  Physical-line positivity also need not possess a finite sum-of-squares cylinder
+lift.  A global rank-one resolvent test does detect every off-axis zero.  Hence source clock,
+collision geometry, defect magnitude, diagonal response, and global divisor positivity are a
+strict observable hierarchy.  The surviving proof architecture must transport pointing and
+incidence to the global common-test level before positive scalarization.
 
 The source also supplies the orientation that its even quotients conceal.  The Gamma scalar
 contraction approaches its lossless edge quadratically; the positive Julia lift restores the
@@ -3390,7 +3930,9 @@ the information which the compact finite-factor quotient provably discards.
 
 The Riemann hypothesis remains the assertion that every nontrivial divisor charge is neutral.
 The contribution here is the prior classification: source bidegree, singular acquisition,
-odd orientation jet, continuous character, discrete ramification, their
+projective positive pointing, pointed collision matroid, finite-positive/current separation,
+strict positive-observable hierarchy, unconditional cubic defect budget, odd orientation jet,
+continuous character, discrete ramification, their
 multiplicity-weighted inner--outer coupling, parity split, thermal charge relation, quadratic
 detector, hyperbolic conservation law, exact completion debt, source horizon, nonlocal
 tomography, and universal conservative-descent equalizer.  Within the stated source classes,

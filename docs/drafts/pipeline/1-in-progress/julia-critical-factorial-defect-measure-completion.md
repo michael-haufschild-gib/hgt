@@ -366,6 +366,47 @@ Thus critical completion locks factorial jet order to prime logarithm.  The boun
 source-defined Lagrangian graph \(2j\sim\log p\), not a product of an arbitrary jet completion
 with an arbitrary Euler completion.
 
+## `[FORMALIZED]` Fixed-width tomography is the same interval cell
+
+The updated source-modular paper proves cutoff-free divisor tomography from the fixed-width
+window
+\[
+ A_L(w)=\frac{1-e^{-Lw}}{w},
+\]
+with the removable value \(A_L(0)=L\).  The Gamma/co-Poisson bridge uses
+\[
+ \Theta_L(z,w_0)
+ =e^{(w_0-1/2)L}L\,C((z-w_0)L).
+\]
+These are not merely analogous kernels.  They satisfy the exact entire identity
+\[
+ A_L(w)=\Theta_L\!\left(\frac12,\frac12-w\right)
+\tag{JFD-T1}
+\]
+for every real \(L\) and complex \(w\), including \(w=0\).
+
+Consequently the already-proved cutoff-free tomography residue at a centered right Xi zero \(w\)
+is
+\[
+ \operatorname{Res}_{s=1+w}\mathcal D_L(s)
+ =2m(w)\,
+   \Theta_L\!\left(\frac12,\frac12-w\right)^2.
+\tag{JFD-T2}
+\]
+For \(L>0\) and \(\Re w>0\), the cell is nonzero.  Thus every right Xi divisor class already has
+a nonzero landing in the fixed-width Dirichlet-meromorphic chart, with exact analytic
+multiplicity.
+
+This removes ``construct some nonzero Xi conormal landing'' as the open problem.  It does not
+prove RH: tomography observes the square of the interval cell and hence does not itself retain
+the signed dagger comparison.  Taking a square root of the residue after specializing to a zero
+would be branch-dependent and is not an admissible source construction.  The remaining task is
+a source-defined linear comparison, before squaring, from this fixed-width interval cocycle to
+the signed Julia-factorial defect boundary.
+
+Lean file:
+`formal/GaloisForLFunctions/RHTower/RectangularGammaIntervalCellBridge.lean`.
+
 ## Conditional reflected-character consumer
 
 For a divisor point \(\rho\), source inverse and analytic adjoint differ on a prime coordinate by
@@ -426,16 +467,25 @@ audit, not a priority claim.
 
 ## Exact next obstacle
 
-`XI_JULIA_FACTORIAL_DEFECT_MEASURE_DAGGER_LANDING`
+`XI_TOMOGRAPHY_FUGACITY_LINEAR_PULLBACK`
 
-1. lift the energy graph `(JFD27)` to the signed factorial interval cocycle, not only its squared
-   coefficient measure;
-2. transport that signed object through the literal Gamma/co-Poisson/Sonin boundary syzygy;
-3. prove the strict Xi Cartier base change of every top conormal is nonzero;
-4. prove source inverse and analytic adjoint act as one invertible dagger on that same fibre.
+The defect measure is the identity-character boundary of the larger factorial-fugacity field
+developed in `prime-gamma-factorial-fugacity-boundary.md`.  That field has sharp abscissa
+\(\lambda=1\); reflected rates occupy \(\lambda=1\pm2(\Re\rho-1/2)\).  The pullback must therefore
+land before parity projection and preserve this abscissa stratum.
 
-Items 3--4 are RH-bearing.  Theorems `(JFD17)` and `(JFD27)` construct the energy-level third
-completion; items 1--2 retain the phase/cohomology needed by the Bockstein consumer.
+1. construct a source-defined linear coefficient object whose quadratic observable is the
+   fixed-width tomography sequence;
+2. pull its signed interval cocycle through `(JFD-T1)` into the Julia-factorial defect-measure
+   completion, before the jet sum and before squaring;
+3. prove the pullback preserves the already-nonzero Xi polar class `(JFD-T2)`;
+4. prove source inverse and analytic adjoint act as one bounded invertible dagger on that same
+   signed fibre, with no zero-dependent renormalization.
+
+Item 3 is now a comparison theorem, not a fresh nonvanishing theorem.  Item 4 is RH-bearing:
+on the escaped scales of `(JFD27)`, the reflected ratio
+\(p^{2\operatorname{Re}\rho-1}\) is bounded above and below only when
+\(\operatorname{Re}\rho=1/2\).
 
 ## Gates
 
@@ -444,8 +494,11 @@ completion; items 1--2 retain the phase/cohomology needed by the Bockstein consu
 - [x] dependency-closed paper proof of `(JFD5)`--`(JFD13)`
 - [x] prove the uniform defect-measure limit `(JFD17)`
 - [x] prove the joint prime--factorial concentration law `(JFD27)`
+- [x] identify and formalize the fixed-width tomography kernel as the same Gamma/co-Poisson
+      interval cell
 - [ ] prove signed factorial interval concatenation survives in the defect-measure topology
-- [ ] prove literal Sonin transport and nonzero Xi Cartier landing
+- [ ] prove the source-defined tomography-to-defect-measure signed pullback
+- [ ] prove dagger naturality of that pullback on every Xi polar class
 - [ ] formalize only the dependency-closed core after paper status is audited
 - [ ] specialist external novelty audit
 
@@ -457,3 +510,8 @@ completion; items 1--2 retain the phase/cohomology needed by the Bockstein consu
   \(x\log p\asymp x^{1/3}\), proved the canonical uniform defect measure on
   \(a\in[1/3,1]\), and proved joint concentration on \(2j/\log p=1\).  Kept the signed
   Sonin/Bockstein and Xi conormal/dagger landing explicit and unproved.
+- 2026-07-31 — The updated source-modular fixed-width tomography and the prior Gamma/co-Poisson
+  bridge were found to use exactly the same unsquared interval cell `(JFD-T1)`.  Formalized the
+  identity and its tomography-residue consequence `(JFD-T2)`.  This supplies unconditional
+  nonzero Xi landing in the meromorphic chart and sharpens the RH-bearing gap to a signed,
+  dagger-natural pullback into the Julia-factorial defect boundary.

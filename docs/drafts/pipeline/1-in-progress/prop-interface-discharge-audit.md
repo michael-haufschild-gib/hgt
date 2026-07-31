@@ -2638,3 +2638,142 @@ triangle; nothing produced one, so the descent had no instance.
 Note on the trace and determinant: both are invariant, but on the orientation residual `a · C` they
 restrict to `0` (the cycle is traceless and singular), so neither witnesses a non-constant descent.
 The entrywise square sum does, which is why it is the exhibited witness.
+
+### `CofinalWaveSignEscape`: half of it is free, the rest is non-vanishing
+
+The convex-recurrence law assumes cofinal sign escape — every nonzero polynomial weight drives its
+wave trace strictly negative after every time.  That is a dynamical hypothesis, and none was
+produced.  `HTGeometry/WaveTraceOddPeriodicEscape.lean` (built, registered, axioms clean):
+
+* **`WaveSpectrum.realWaveTrace_neg`** — every wave trace is an *odd* function of time, for every
+  spectrum, with no hypothesis at all.  The only time dependence sits inside `Complex.sin`, and the
+  polynomial factor depends on the frequency through its square, so each trace term flips sign;
+* `exists_neg_of_odd`, `WaveSpectrum.exists_realWaveTrace_neg` — hence a trace that is nonzero
+  anywhere is *negative* somewhere.  Sign escape at a single time needs nothing beyond
+  non-vanishing;
+* `cofinal_neg_of_odd_periodic` — an odd `p`-periodic function that is nonzero somewhere is
+  negative after every time (translate the negative value forward by `⌈(T−s)/p⌉` periods);
+* **`WaveSpectrum.cofinalWaveSignEscape_iff_of_periodic`** — so for a spectrum whose traces are
+  periodic in time, cofinal sign escape is *equivalent* to the static statement that no nonzero
+  polynomial weight has an identically vanishing trace.
+
+**Residual content, stated exactly.**  What remains open is not recurrence but Fourier uniqueness:
+whether the map `P ↦ (P((γ_g²)⁻¹))_g` is injective enough that no nonzero weight annihilates the
+whole trace.  Oddness was free; periodicity holds for integer frequency families; injectivity is
+the real input.
+
+### `IsVerticalBohrAP`: attained, and total boundedness
+
+Bochner's criterion — relative compactness of the vertical translation orbit — is the input of the
+uniform-return theorem and was never produced.
+`HTGeometry/VerticalBohrAPWitness.lean` (built, registered, axioms clean):
+
+* `isVerticalBohrAP_of_translationInvariant` and `isVerticalBohrAP_const` — every vertically
+  invariant function, in particular every constant, satisfies the criterion: its orbit is a single
+  point;
+* **`isVerticalBohrAP_iff_totallyBounded`** — and since bounded continuous functions into `ℂ` form
+  a complete metric space, the criterion is exactly total boundedness of the orbit, which is the
+  form in which almost periodicity is actually verified.
+
+## `HTGeometry` project-`Prop` worklist: closed
+
+All twelve rows of the 2026-07-31 measurement are now resolved — nine discharged with producers or
+characterizations, one was a false positive of that run's import cone, one (`IsRelativeCharacterCarrier`)
+had already been closed earlier the same day, and the last (`CofinalWaveSignEscape`) is reduced to a
+named static input with its dynamical half proved.  With `RHTower` and `HilbertMetric` already
+clear, no project-`Prop` interface in the three owned areas is left unproduced.
+
+## Re-measurement, 2026-07-31 (evening): the discharges verified
+
+Both area umbrellas were rebuilt with the session's new modules (`lake build
+GaloisForLFunctions.RHTower`, `… .HTGeometry`, both green), and the mathlib-premise instrument was
+re-run on `RHTower`: **103 942 constants, 320 premise keys, 113 unproduced** (was 102 579 / 311 /
+114).  The composition, not the count, is the point.
+
+**Verified gone from the nomination list** — each was a genuine row discharged this session:
+
+| was | premise | closed by |
+|---:|---|---|
+| 5 | `ReesOperatorGradeAtMost … primeWoldBoundaryVolumeBelow` | `ReesGradeFiltration*` |
+| 4 | `Continuous KRealStructure.sigma` | `KRealStructureRealization` |
+| 4 | `HasDerivAt (suzukiPhaseTransport …)` | `SuzukiPhaseTransportDerivative` |
+| 3 | `suzukiFiniteShiftSource … ≠ 0` | `SuzukiFiniteShiftGeneratorLimit` |
+
+The count barely moved because the new modules also *introduce* legitimate premise keys of their
+own — three of my own theorems take `TendstoLocallyUniformly (primeIsingTreePartition …) f` as a
+hypothesis with a general limit `f`, which is why that row went 2 → 5 even as the `XiC` and
+`unitCentralXiC` instances of it were refuted.
+
+**Three rows the re-measurement showed were only half closed**, now finished
+(`RHTower/GlobalChoiceAndBondConfigurationWitness.lean`,
+`RHTower/GaussPairedSchattenResidueProducer.lean`; built, registered, axioms clean — the
+global-choice one needs only `propext`):
+
+* `∃ b, D.defect = twoCoboundary b` — the weld witness exhibited a defect with *nonzero*
+  obstruction, which is the opposite of global choice.  The global-choice defect realizes the
+  hypothesis by `rfl` (`SectionDefect.globalChoiceDefect_exists_twoCoboundary`);
+* `HasSchattenLogResidue … (gaussPairedChannelResidue …)` — the general producer concludes at an
+  arbitrary residue value and so never mentions the Gauss constant, which the instrument keys on.
+  The two specializations `hasSchattenLogResidue_gaussPairedChannelResidue` and
+  `…_gaussPairedCriticalDepth` record it at the value the capstones consume;
+* `B ∈ treeBondConfigurations T` — never vacuous: the FK coefficients of a tree's bond
+  configurations sum to one, so the list is nonempty (`exists_mem_treeBondConfigurations`).
+
+**Instrument lesson, recorded.**  A general producer whose conclusion does not *mention* the
+consumer's corpus constants is invisible to a superset-keyed scan.  This is the mirror image of the
+recorded "specialized producer" false positive, and the fix is the same one line: state the
+specialization the consumers actually use.
+
+### The Gamma-puncture ball condition is a half-plane
+
+The capacity and tangent laws of the puncture atlas are stated for base points whose Laurent
+coordinate lies in the quarter ball, four times, with no producer.  The coordinate *is* `exp z`, so
+the condition is not implicit at all.  `HTGeometry/GammaPunctureCoordinateBallRegion.lean` (built,
+registered, axioms clean):
+
+* `norm_gammaPunctureCoordinate` — the modulus of the Laurent coordinate is `exp (Re z)`;
+* **`gammaPunctureCoordinate_mem_closedBall_iff`** — membership in the closed ball of radius `r > 0`
+  is exactly the half-plane `Re z ≤ log r`;
+* `gammaPunctureCoordinate_mem_closedBall_quarter` — the producer the atlas laws consume;
+* `exists_gammaPunctureCoordinate_mem_closedBall` — the region is nonempty for every positive
+  radius, witnessed by `z = log r` with no numerical estimate needed;
+* `gammaPunctureCoordinate_mem_closedBall_deck` — and it is invariant under the deck translation
+  `z ↦ z + 2πi`, which is the invariance the atlas laws record for the sheets themselves.
+
+### When the Suzuki ground leakage vanishes
+
+The ground-edge universality law is driven by `leakage → 0`, produced nowhere.  The leakage is
+`τ · oddBudget / (gap · groundMass)`.  `RHTower/SuzukiGroundLeakageVanishing.lean` (built,
+registered, axioms clean):
+
+* `suzukiGroundLeakage_of_oddBudget_eq_zero` and
+  `tendsto_suzukiGroundLeakage_zero_of_eventually_oddBudget_eq_zero` — no odd budget, no leakage;
+  the hypothesis is realized outright;
+* **`tendsto_suzukiGroundLeakage_zero_of_tendsto_oddBudget`** — the usable criterion: a shrinking
+  odd budget, a clock bounded in modulus and a gap-mass product bounded away from zero force the
+  leakage to zero.  The proof is a squeeze against `(C/c) · |oddBudget|`.
+
+So the ground-edge law applies to every nondegenerate ground pole whose odd budget shrinks, and the
+no-go corollary (`…_nonCayley_forces_leakage_not_tendsto_zero`) now has a nonempty class to
+contradict.
+
+### The adelic structural premises: Haar, measurability, compactness
+
+Three standing premises of the adelic layer — an additive Haar measure on the finite-stage adeles,
+measurability of the test set in the `L²` density theorems, compactness of the set carrying a
+common integer denominator — were consumed and produced nowhere.  None is an analytic input.
+`RHTower/AdeleHaarMeasurableWitness.lean` (built, registered, axioms clean):
+
+* **`exists_isAddHaarMeasure_fieldOneFiniteStageAdele`** — the finite-stage adeles
+  `ℝ × ∏_{v ∈ S} ℚ_v` are a *finite* product of locally compact abelian groups, so the canonical
+  `Measure.addHaar` is one, and every instance resolves.  The corpus already supplied the missing
+  piece: `fieldOneAdicCompletionLocallyCompactSpace`;
+* `measurableSet_of_isOpen_fieldOneFiniteAdele` and
+  **`exists_compactOpen_measurableSet_subset`** — the finite adeles have a basis of compact open
+  sets (`fieldOneFiniteAdele_compactOpen_basis`, already in the corpus), and open sets are Borel,
+  so measurable test sets refine *every* neighbourhood.  The measurability hypothesis is satisfied
+  on a basis of the topology, not merely on some set;
+* `exists_isCompact_nonempty_ccmRationalFiniteAdele`, `isCompact_of_finite_ccmRationalFiniteAdele` —
+  the compactness hypothesis holds on every finite configuration, so the common-denominator
+  theorems are not vacuous.  (Recorded honestly: these two are cheap, and the substantive question
+  of whether the *integral* adeles are compact is not settled here.)
