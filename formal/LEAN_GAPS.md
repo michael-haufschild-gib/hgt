@@ -5,7 +5,10 @@ This is an agent worklist aid, not a mathematical ledger.
 
 ## Proof Debt
 
-No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
+| Kind | Location | Context | Text |
+|---|---|---|---|
+| proof-debt | `formal/GaloisForLFunctions/HTGeometry/GammaPolyValuationBoundary.lean:152` | `theorem gammaRationalDatum_polyRatio_tendsto_zero_of_gap` | `sorry` |
+| proof-debt | `formal/GaloisForLFunctions/HTGeometry/GammaPolyValuationBoundary.lean:154` | `theorem gammaRationalDatum_polyRatio_tendsto_zero_of_gap` | `sorry` |
 
 ## Large Files
 
@@ -19,10 +22,10 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 3722 | `formal/GaloisForLFunctions/Bottcher/DeckAnnulusData.lean` |
 | 3711 | `formal/GaloisForLFunctions/HTGeometry/GammaDifferentialFE.lean` |
 | 3644 | `formal/GaloisForLFunctions/U0/U0SliceViableB.lean` |
-| 3600 | `formal/GaloisForLFunctions/RHTower.lean` |
+| 3603 | `formal/GaloisForLFunctions/RHTower.lean` |
 | 3594 | `formal/GaloisForLFunctions/Bottcher/HDiscLoopDeck.lean` |
 | 3468 | `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean` |
-| 2797 | `formal/GaloisForLFunctions/HTGeometry.lean` |
+| 2804 | `formal/GaloisForLFunctions/HTGeometry.lean` |
 | 2721 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranch.lean` |
 | 2671 | `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean` |
 | 2627 | `formal/GaloisForLFunctions/RHTower/DpolyBallFloor.lean` |

@@ -24,6 +24,10 @@ import GaloisForLFunctions.RHTower.CCMFiniteRamifiedBoundaryNoGo
 import GaloisForLFunctions.RHTower.XiFiniteLocalSpectralFrameObstruction
 import GaloisForLFunctions.RHTower.XiLogDerivFiniteReporterBlindness
 import GaloisForLFunctions.RHTower.XiMassGradedTraceZeroFreeDistortionUniversalityLaw
+import GaloisForLFunctions.RHTower.PositiveEulerFiniteQuartetOrientationLaw
+import GaloisForLFunctions.RHTower.SourceHorizonEscapeConservationLaw
+import GaloisForLFunctions.RHTower.SuzukiKreinSchurBlockCongruence
+import GaloisForLFunctions.RHTower.LocalGlobalRHTomography
 import GaloisForLFunctions.HTGeometry.BifilteredScalarizationNoGo
 import GaloisForLFunctions.HTGeometry.PointedFisherCutoffWardTrace
 import GaloisForLFunctions.HTGeometry.PrimeResidueValuationInteractionSuperselection
@@ -403,6 +407,177 @@ theorem norm_centeredComplexModularCharacter_eq_one_iff
     rw [h]
     ring
 
+/-! ## Reflected-character conservative geometry -/
+
+/-- The real two-channel action carried by a reflected pair of centered
+characters with rates `q` and `-q`. -/
+def reflectedRealCharacterAction
+    (q t : ℝ) (v : ℝ × ℝ) : ℝ × ℝ :=
+  (Real.exp (q * t) * v.1, Real.exp (-(q * t)) * v.2)
+
+/-- A general real symmetric quadratic form on the reflected character
+pair. -/
+def reflectedRealCharacterQuadraticForm
+    (a b c : ℝ) (v : ℝ × ℝ) : ℝ :=
+  a * v.1 ^ 2 + 2 * b * v.1 * v.2 + c * v.2 ^ 2
+
+private theorem exp_sq_ne_one_of_ne_zero
+    {q : ℝ} (hq : q ≠ 0) :
+    Real.exp q ^ 2 ≠ 1 := by
+  intro hsq
+  have hpos := Real.exp_pos q
+  have heq : Real.exp q = 1 := by nlinarith
+  exact hq ((Real.exp_eq_one_iff q).mp heq)
+
+/-- **Hyperbolic uniqueness law.** For a nonzero real character rate,
+the invariant symmetric quadratic forms are exactly the multiples of the
+cross pairing `2xy`. -/
+theorem reflectedRealCharacter_invariantQuadratic_iff
+    {q a b c : ℝ} (hq : q ≠ 0) :
+    (∀ t : ℝ, ∀ v : ℝ × ℝ,
+      reflectedRealCharacterQuadraticForm a b c
+          (reflectedRealCharacterAction q t v) =
+        reflectedRealCharacterQuadraticForm a b c v) ↔
+      a = 0 ∧ c = 0 := by
+  constructor
+  · intro hinv
+    have haInv := hinv 1 (1, 0)
+    have hcInv := hinv 1 (0, 1)
+    have hqa : Real.exp q ^ 2 ≠ 1 :=
+      exp_sq_ne_one_of_ne_zero hq
+    have hnq : -q ≠ 0 := neg_ne_zero.mpr hq
+    have hqc : Real.exp (-q) ^ 2 ≠ 1 :=
+      exp_sq_ne_one_of_ne_zero hnq
+    have haEq : a * Real.exp q ^ 2 = a := by
+      simpa [reflectedRealCharacterAction,
+        reflectedRealCharacterQuadraticForm] using haInv
+    have hcEq : c * Real.exp (-q) ^ 2 = c := by
+      simpa [reflectedRealCharacterAction,
+        reflectedRealCharacterQuadraticForm] using hcInv
+    have haMul : a * (Real.exp q ^ 2 - 1) = 0 := by
+      nlinarith [haEq]
+    have hcMul : c * (Real.exp (-q) ^ 2 - 1) = 0 := by
+      nlinarith [hcEq]
+    refine
+      ⟨(mul_eq_zero.mp haMul).resolve_right (sub_ne_zero.mpr hqa), ?_⟩
+    exact
+      (mul_eq_zero.mp hcMul).resolve_right (sub_ne_zero.mpr hqc)
+  · rintro ⟨rfl, rfl⟩ t v
+    have hcancel :
+        Real.exp (q * t) * Real.exp (-(q * t)) = 1 := by
+      rw [← Real.exp_add]
+      simp
+    have hp :
+        (Real.exp (q * t) * v.1) *
+            (Real.exp (-(q * t)) * v.2) =
+          v.1 * v.2 := by
+      calc
+        (Real.exp (q * t) * v.1) *
+              (Real.exp (-(q * t)) * v.2) =
+            (Real.exp (q * t) * Real.exp (-(q * t))) *
+              (v.1 * v.2) := by ring
+        _ = v.1 * v.2 := by rw [hcancel]; ring
+    simp only [reflectedRealCharacterAction,
+      reflectedRealCharacterQuadraticForm, zero_mul, zero_add, add_zero]
+    simpa only [mul_assoc] using
+      congrArg (fun z : ℝ => 2 * b * z) hp
+
+/-- A nonzero reflected character pair has both positive and negative
+directions for its canonical invariant cross pairing. -/
+theorem reflectedRealCharacter_hyperbolic_witness :
+    0 < reflectedRealCharacterQuadraticForm 0 1 0 (1, 1) ∧
+      reflectedRealCharacterQuadraticForm 0 1 0 (1, -1) < 0 := by
+  norm_num [reflectedRealCharacterQuadraticForm]
+
+/-- **Positive conservative metric no-go.** A nonzero reflected real
+character has no nonzero positive-semidefinite invariant quadratic form.
+Exact conservation exists only in the hyperbolic cross pairing. -/
+theorem reflectedRealCharacter_no_nonzero_positiveInvariantQuadratic
+    {q a b c : ℝ} (hq : q ≠ 0)
+    (hinv : ∀ t : ℝ, ∀ v : ℝ × ℝ,
+      reflectedRealCharacterQuadraticForm a b c
+          (reflectedRealCharacterAction q t v) =
+        reflectedRealCharacterQuadraticForm a b c v)
+    (hpos : ∀ v : ℝ × ℝ,
+      0 ≤ reflectedRealCharacterQuadraticForm a b c v) :
+    a = 0 ∧ b = 0 ∧ c = 0 := by
+  have hac :=
+    (reflectedRealCharacter_invariantQuadratic_iff hq).mp hinv
+  rcases hac with ⟨rfl, rfl⟩
+  have hp := hpos (1, 1)
+  have hn := hpos (1, -1)
+  simp [reflectedRealCharacterQuadraticForm] at hp hn
+  exact ⟨rfl, by linarith, rfl⟩
+
+/-- The reflected-character geometry, its exact finite-packet charge
+conversion, its sharp positive-completion tax, and its nonlocal
+prime--Gamma tomography form one completion law. -/
+structure XiReflectionCharacterCompletionCertificate : Prop where
+  invariantQuadraticClassification :
+    ∀ {q a b c : ℝ}, q ≠ 0 →
+      ((∀ t : ℝ, ∀ v : ℝ × ℝ,
+        reflectedRealCharacterQuadraticForm a b c
+            (reflectedRealCharacterAction q t v) =
+          reflectedRealCharacterQuadraticForm a b c v) ↔
+        a = 0 ∧ c = 0)
+  noPositiveConservativeMetric :
+    ∀ {q a b c : ℝ}, q ≠ 0 →
+      (∀ t : ℝ, ∀ v : ℝ × ℝ,
+        reflectedRealCharacterQuadraticForm a b c
+            (reflectedRealCharacterAction q t v) =
+          reflectedRealCharacterQuadraticForm a b c v) →
+      (∀ v : ℝ × ℝ,
+        0 ≤ reflectedRealCharacterQuadraticForm a b c v) →
+      a = 0 ∧ b = 0 ∧ c = 0
+  finitePacketChargeConversion :
+    ∀ n : ℕ,
+      finiteQuartetPoleExcess (Fin n) =
+          finiteQuartetWeilBlockIndex (Fin n) ∧
+      finiteQuartetWardCharge (Fin n) =
+        (4 * Real.pi) * finiteQuartetWeilBlockIndex (Fin n)
+  sharpScalarCompletionTax :
+    ∀ (a b c n : ℝ), 0 < a →
+      ((∀ x y : ℝ,
+          0 ≤ suzukiTwoChannelKreinCompletionForm a b c n x y) ↔
+        n + b ^ 2 / a ≤ c)
+  sourceHorizonResolution :
+    SourceHorizonEscapeConservationCertificate
+  fixedWidthGlobalTomography :
+    ∀ {L : ℝ}, 0 < L → ∀ {N : ℕ},
+      (∀ n : ℕ, N ≤ n →
+        1 ≤ n ∧ L ≤ Real.log n / 2) →
+      (RiemannHypothesis ↔
+        ∀ s : ℂ, 1 < s.re →
+          AnalyticAt ℂ
+            (xiRectangularPrimeGammaTailContinuation L N) s)
+
+/-- **Reflected-character completion law.** Off-axis reflected characters
+are exactly conservative in a hyperbolic plane, never in a nonzero positive
+metric. Their finite packet charge is simultaneously Euler pole excess,
+Weil negative index, and Ward charge divided by `4π`; positive Krein
+completion pays the exact Schur tax; inverse-drift source time and a
+nonlocal fixed-width prime--Gamma tail provide the two faithful positive
+resolutions. -/
+theorem xiReflectionCharacterCompletion_law :
+    XiReflectionCharacterCompletionCertificate where
+  invariantQuadraticClassification :=
+    fun hq => reflectedRealCharacter_invariantQuadratic_iff hq
+  noPositiveConservativeMetric :=
+    fun hq hinv hpos =>
+      reflectedRealCharacter_no_nonzero_positiveInvariantQuadratic
+        hq hinv hpos
+  finitePacketChargeConversion :=
+    fun n => finiteQuartet_eulerWardWeil_index_law (Fin n)
+  sharpScalarCompletionTax :=
+    fun _ _ _ _ ha =>
+      suzukiTwoChannelKreinCompletionForm_nonneg_iff_schurDebt ha
+  sourceHorizonResolution :=
+    sourceHorizonEscapeConservation_law
+  fixedWidthGlobalTomography :=
+    fun {_L} hL {_N} hN =>
+      riemannHypothesis_iff_primeGammaTailContinuation_analytic_rightOne
+        hL hN
+
 /-- The canonical positive Xi--Hurwitz energy is exactly the quadratic
 compression of the continuous divisor characters: it vanishes precisely
 when every actual divisor character is unitary on the real unit step. -/
@@ -768,6 +943,8 @@ structure XiRamifiedSingularBoundaryCertificate : Prop where
       (xiHurwitzOrientationEnergy = 0 ↔
         ∀ rho : XiDivisorSupport,
           ‖centeredComplexModularCharacter (rho : ℂ) (1 : ℂ)‖ = 1)
+  reflectionCharacterCompletion :
+    XiReflectionCharacterCompletionCertificate
   dyadicLevelwiseDescent :
     ∀ k : ℕ,
       RHLadder k ↔ XiDyadicDescentLevelUniversalCertificate k
@@ -828,6 +1005,8 @@ theorem xiRamifiedSingularBoundary_law :
   quadraticCharacterCompression :=
     ⟨xiHurwitzOrientationEnergy_nonneg,
       xiHurwitzOrientationEnergy_eq_zero_iff_unitaryCenteredCharacters⟩
+  reflectionCharacterCompletion :=
+    xiReflectionCharacterCompletion_law
   dyadicLevelwiseDescent :=
     rhLadder_iff_dyadicDescentLevelUniversalCertificate
   allDyadicLevels :=

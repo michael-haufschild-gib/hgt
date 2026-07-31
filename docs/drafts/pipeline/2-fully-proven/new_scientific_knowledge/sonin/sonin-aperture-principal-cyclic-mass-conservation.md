@@ -157,12 +157,20 @@ weld.  This theorem itself does neither.
 - [x] exact compressed operator cocycle
 - [x] principal-relative flatness and Schatten-1 curvature
 - [x] dependency-closed Lean formalization
-- [ ] compute the ordinary trace of the curvature on actual finite source packets
+- [x] compute the ordinary trace of the curvature on actual finite source packets —
+      `re_opTrace_soninAperturePacketCurvature` in `SoninAperturePacketCurvatureTrace.lean`: for a
+      finite weighted family of prime scales the real curvature trace is minus the weighted total
+      coupling energy, and `re_opTrace_soninAperturePacketCurvature_nonpos` shows no nonnegative
+      reweighting can make it positive
 - [ ] prove Burnol cancellation or construct an exact unbounded-below source sequence
 - [ ] prove RH or terminally retire surviving Suzuki--Burnol weld
 
 ## Log
 
+- 2026-07-31 — packet curvature trace computed.  The relative ideal is closed under finite sums, so
+  the ordinary trace is additive over a weighted family of prime scales and the real trace is minus
+  the weighted total coupling energy.  Nonnegative weights therefore cannot make the aperture
+  curvature positive: the sign survives arbitrary finite source packets, not just single scales.
 - 2026-07-22 — cyclic-extension falsifier failed; exact aperture mass conservation proved.
 - 2026-07-22 — principal aperture quotient shown flat; remaining anomaly isolated in Schatten-1
   curvature.

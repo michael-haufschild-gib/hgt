@@ -2530,3 +2530,67 @@ axioms clean):
 So the ten weighted consumers need no separate analytic input beyond the three unweighted ones, and
 both interfaces are pinned to a sharp, computable-in-principle constant rather than an arbitrary
 `r`.
+
+### `CoordinateLocalOn`: locality is factorization
+
+The spectral-causality contrast theorems all take "the term depends only on the coordinates in
+`S`" as a hypothesis; five sites consume it and nothing produced it.  It is an entirely structural
+condition.  `HTGeometry/CoordinateLocalityLaw.lean` (built, registered, axioms clean — two of its
+theorems need no `Classical.choice` at all):
+
+* `coordinateLocalOn_univ`, `coordinateLocalOn_const`, `coordinateLocalOn_apply` — the canonical
+  inhabitants: every function is local on everything, constants on nothing, and evaluation at `i`
+  on `{i}`;
+* `CoordinateLocalOn.mono`, `.comp`, `.add`, `.mul`, `.neg`, `.sub`, and
+  `coordinateLocalOn_finsetSum` — monotone in the coordinate set, and closed under
+  post-composition, the ring operations and finite sums.  The last one matches the shape the
+  causality theorems consume (`∀ c ∈ s, CoordinateLocalOn (support c) (term c)`);
+* `coordinateLocalOn_of_factor` and **`coordinateLocalOn_iff_exists_factor`** — the sharp
+  statement: a configuration function is local on `S` **iff** it factors through the restriction of
+  the configuration to `S`.  The forward direction extends a partial configuration by an arbitrary
+  default outside `S`; this is what makes the interface constructive, since a producer now only has
+  to exhibit the factored function.
+
+### `HasComplexBirthProfile`: attained, and an invariant
+
+The wall-crossing regimes are stated for a mode with an exact birth profile `c g^b` on the
+positive-coupling ray; four sites consume it, none produced it.
+`HTGeometry/ComplexBirthProfileInvariance.lean` (built, registered, axioms clean):
+
+* **`hasComplexBirthProfile_monomial`** — the monomial `c g^b` has profile `(b, c)` for `c ≠ 0`, so
+  the interface is attained at every order;
+* `HasComplexBirthProfile.congr'` — eventual equality along the ray preserves it;
+* **`HasComplexBirthProfile.leadingCoeff_eq_zero_of_lt`** — a profile at a strictly smaller order
+  forces the higher-order leading coefficient to vanish.  The mechanism is one line of filter
+  algebra: `(mode / g^{b'}) · g^{b'-b} = mode / g^b` on the ray, and the left side tends to
+  `c' · 0 = 0`;
+* **`HasComplexBirthProfile.order_unique`** and **`.unique`** — hence the order and the leading
+  coefficient are both invariants of the mode.  The nonvanishing clause `c ≠ 0` in the definition
+  is exactly what makes the profile well defined, and this proves it.
+
+### The two observer-action regimes: attained, invariant, and one law
+
+`HasObserverActionRegime` (1 use) and `HasSemigroupObserverActionRegime` (2 uses) say that an
+action family *realizes* a regime — a finite limit, or a dephasing escape.  Neither was produced.
+`HTGeometry/ObserverActionRegimeInvariance.lean` (built, registered, axioms clean):
+
+* `hasObserverActionRegime_const`, `hasObserverActionRegime_id_dephased`,
+  `hasSemigroupObserverActionRegime_const` — both regimes are attained, the dephased one by the
+  identity action along `atTop`;
+* `hasObserverActionRegime_congr` — eventual equality preserves the realized regime;
+* **`HasObserverActionRegime.unique`** and **`HasSemigroupObserverActionRegime.unique`** — along a
+  nontrivial filter an action realizes *at most one* regime.  A convergent family has convergent
+  magnitude, which cannot also tend to `atTop`; so the regime is an invariant of the action, not a
+  choice;
+* **`hasSemigroupObserverActionRegime_mul_I_finite`** and **`..._mul_I_dephased`** — the two
+  interfaces are not independent.  Multiplying a real character action by `i` gives a contractive
+  semigroup action: its real part is zero, so it lies in the closed contractive half-plane, and its
+  magnitude is unchanged.  The character observer-action law is therefore the purely imaginary case
+  of the contractive semigroup law at the level of regimes, and the dephased coefficients agree
+  (both are zero).
+
+A recurring Lean pitfall, now hit twice this session: naming a lemma `Foo.congr'` or `Foo.add` when
+`Foo` is a `def` unfolding to a mathlib structure makes the proof body's dot-notation resolve to the
+lemma being defined, and the declaration fails as a non-terminating recursion.  Use a snake_case
+free function name (`hasObserverActionRegime_congr`) when the body needs the underlying
+`Filter.Tendsto.congr'`.
