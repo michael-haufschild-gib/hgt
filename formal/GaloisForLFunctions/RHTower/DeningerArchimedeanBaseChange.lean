@@ -49,11 +49,12 @@ section BaseChange
 
 variable {K L : Type*} [Field K] [Field L] [NumberField K] [NumberField L] [Algebra K L]
 
+open scoped Classical in
 /-- **The fibres of restriction of complex embeddings.**  For every complex embedding `φ` of `K`
 there are exactly `[L : K]` complex embeddings of `L` restricting to it. -/
 theorem deningerEmbeddingFibre_card (φ : K →+* ℂ) :
-    Fintype.card {ψ : L →+* ℂ // ψ.comp (algebraMap K L) = φ} = finrank K L := by
-  classical
+    (Finset.univ.filter fun ψ : L →+* ℂ => ψ.comp (algebraMap K L) = φ).card
+      = finrank K L := by
   letI : Algebra K ℂ := φ.toAlgebra
   have hmap : ∀ r : K, algebraMap K ℂ r = φ r := fun _ => rfl
   have e : {ψ : L →+* ℂ // ψ.comp (algebraMap K L) = φ} ≃ (L →ₐ[K] ℂ) :=
@@ -65,12 +66,10 @@ theorem deningerEmbeddingFibre_card (φ : K →+* ℂ) :
       invFun := fun f =>
         ⟨f.toRingHom, by
           ext r
-          have := f.commutes r
-          simp [hmap] at this ⊢
-          exact this⟩
+          exact f.commutes r⟩
       left_inv := fun _ => rfl
       right_inv := fun _ => rfl }
-  rw [Fintype.card_congr e, AlgHom.card]
+  rw [← Fintype.card_subtype, Fintype.card_congr e, AlgHom.card]
 
 /-- **The archimedean base-change law for embedding sums.** -/
 theorem deningerEmbeddingSum_baseChange (F : ℝ → ℝ) (x : K) :
@@ -86,8 +85,8 @@ theorem deningerEmbeddingSum_baseChange (F : ℝ → ℝ) (x : K) :
     intro ψ hψ
     rw [← (Finset.mem_filter.mp hψ).2]
     rfl
-  rw [Finset.sum_congr rfl hconst, Finset.sum_const, Fintype.card_subtype.symm.trans
-    (deningerEmbeddingFibre_card (L := L) φ), nsmul_eq_mul]
+  rw [Finset.sum_congr rfl hconst, Finset.sum_const, deningerEmbeddingFibre_card (L := L) φ,
+    nsmul_eq_mul]
 
 /-- **The archimedean base-change law for place sums.**  Every archimedean place sum, weighted by
 multiplicity, multiplies by `[L : K]` when the field of definition is enlarged.  This is the

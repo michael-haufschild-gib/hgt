@@ -77,7 +77,7 @@ noncomputable def digammaJetLine (σ : ℝ) (j : ℕ) (t : ℝ) : ℂ :=
 theorem tendsto_tail_prod (hσ : 0 < σ) (ex : Fin (n + 1) → ℕ) :
     Tendsto (fun t : ℝ => ∏ j : Fin n, (digammaJetLine σ ((j.succ : Fin (n + 1)) : ℕ) t) ^ (ex j.succ))
       atTop (nhds (∏ j : Fin n, (0 : ℂ) ^ (ex j.succ))) := by
-  refine tendsto_finset_prod _ fun j _ => ?_
+  refine tendsto_finsetProd _ fun j _ => ?_
   have hval : ((j.succ : Fin (n + 1)) : ℕ) = (j : ℕ) + 1 := by simp
   have hbase : Tendsto (fun t : ℝ => digammaJetLine σ ((j.succ : Fin (n + 1)) : ℕ) t)
       atTop (nhds 0) := by

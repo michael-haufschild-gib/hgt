@@ -383,7 +383,46 @@ probability measures.  The normalization, and the degenerate case it needs exclu
 Stating the mass at the measure level rather than as an integral is what makes the degenerate case
 free; as an integral identity it would have needed a separate vanishing argument.
 
-What remains is the limit itself and the transfer to the half-plane with support on the ray.
+The test function is formal too.  Weak convergence pairs measures against bounded continuous
+functions, so the kernel must be presented as one, and on the unit circle both properties are
+explicit:
+
+- `poissonKernel_circleMap_one`: on the unit circle the numerator is the **constant** `1 - ‖w‖²`, so
+  only the denominator varies with the angle.
+- `one_sub_norm_le_norm_circleMap_sub`: a boundary point is separated from an interior point by at
+  least `1 - ‖w‖`.
+- `poissonKernel_circleMap_one_nonneg`, `poissonKernel_circleMap_one_le`,
+  `continuous_poissonKernel_circleMap`: hence the kernel is nonnegative, continuous, and bounded by
+  `(1 - ‖w‖²)/(1 - ‖w‖)²` — a bound depending only on the distance to the boundary.
+- `unitPoissonTest`: the kernel packaged as a `BoundedContinuousFunction`.
+
+Tightness and the degenerate case are formal on the unit disc:
+
+- `isTightMeasureSet_of_forall_compl_eq_zero`: **a family of measures all carried by one compact set
+  is tight**, with no estimate — the general lemma behind the free tightness above.
+- `isTightMeasureSet_poissonBoundaryMeasure`: hence the boundary measures of every radius form a
+  tight family, which is Prokhorov's hypothesis.
+- `closedBall_subset_ball_one`, `harmonicContOnCl_of_lt_one`: the shared intermediate-radius
+  argument, factored out.
+- `eq_zero_of_center_eq_zero_ball`: **the minimum principle on the unit disc**, from the disc version
+  at any intermediate radius.
+
+The limit step needs no subsequences.  In
+`formal/GaloisForLFunctions/HTGeometry/CompactClusterLimit.lean`:
+
+- `exists_mem_of_tendsto_of_isCompact`: **the limit is attained at a cluster point** — if a family
+  lies in a compact set and a continuous functional of it converges along the index filter, the limit
+  is that functional evaluated at some point of the set.
+- `exists_mem_closure_of_tendsto_of_isCompact`: the same for a family in a set with compact closure,
+  which is the form Prokhorov delivers.
+
+This replaces "extract a convergent subsequence" and requires no metrizability, countability, or
+sequences — only compactness where the family lives and a Hausdorff target.  The cluster filter
+refines both the neighbourhood filter of the cluster point and the image of the index filter, so the
+two limits computed along it must agree.
+
+What remains is applying this to the boundary family and the transfer to the half-plane with support
+on the ray.
 
 What remains for the representation is the limit itself and the transfer to the half-plane with
 support on the ray.
@@ -641,3 +680,29 @@ what makes them distinct.  Degree `n` and `n` roots then leave no freedom.
   isolated, `isProbabilityMeasure_poissonBoundaryMeasure_smul` normalizes the rest to probability
   measures by a divisor independent of the radius, which is the exact form Prokhorov consumes.  Four
   new declarations, targeted build green, axioms `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — the Poisson kernel packaged as a bounded continuous test function (`unitPoissonTest`),
+  which is the form weak convergence pairs measures against.  Both properties are explicit rather
+  than abstract: on the unit circle the numerator is the *constant* `1 - ‖w‖²`
+  (`poissonKernel_circleMap_one`), so only the denominator moves, and it is bounded below by
+  `(1 - ‖w‖)²` because a boundary point is at least `1 - ‖w‖` from an interior one
+  (`one_sub_norm_le_norm_circleMap_sub`).  The resulting bound `(1 - ‖w‖²)/(1 - ‖w‖)²` depends only
+  on the distance to the boundary — no compactness or periodicity argument needed.  Six new
+  declarations, targeted build green, axioms `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — tightness and the degenerate case formal on the unit disc.
+  `isTightMeasureSet_of_forall_compl_eq_zero` states the general fact that a family carried by one
+  compact set is tight, so `isTightMeasureSet_poissonBoundaryMeasure` discharges Prokhorov's
+  hypothesis for the whole radius family at once.  `eq_zero_of_center_eq_zero_ball` lifts the minimum
+  principle to the unit disc via an intermediate radius, and the shared radius argument is factored
+  into `closedBall_subset_ball_one` and `harmonicContOnCl_of_lt_one`, which the fixed-kernel theorem
+  now reuses rather than repeating.  Every hypothesis Prokhorov needs is now discharged; what remains
+  is the subsequence extraction, the limit, and the half-plane transfer.  Five new declarations,
+  targeted build green, axioms `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — the limit step abstracted, and it needs no subsequences.
+  `exists_mem_of_tendsto_of_isCompact` (new module `CompactClusterLimit.lean`) says the limit of a
+  continuous functional along the index filter is attained at a cluster point of the family.  This
+  replaces the usual "extract a convergent subsequence" and drops the metrizability, countability and
+  sequence machinery entirely: the cluster filter refines both the neighbourhood filter of the
+  cluster point and the image of the index filter, so the two limits along it agree.  Only
+  compactness where the family lives and a Hausdorff target are used, so it applies to
+  `ProbabilityMeasure` with its weak topology without needing Lévy–Prokhorov metrizability.  Two new
+  declarations, targeted build green, axioms `[propext, Classical.choice, Quot.sound]`.

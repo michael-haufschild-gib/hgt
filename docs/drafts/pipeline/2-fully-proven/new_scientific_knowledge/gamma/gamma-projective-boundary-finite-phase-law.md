@@ -2121,6 +2121,77 @@ The missing analytic input for eq. (19) with nonconstant digamma-field data is t
 derivatives vanishing, a jet polynomial in the digamma tower has leading term the pure `ψ^d`
 monomial, which is eq. (19) with `b = d`.  That is the next construction.
 
+### Eq. (19) for the digamma field: the analytic transfer, constant-coefficient case
+
+Two new modules close the constant-coefficient half of the analytic Poincaré transfer.
+
+`HTGeometry/PolygammaVerticalDecay.lean` supplies the missing decay.  The corpus's vertical trigamma
+bound `‖ψ′(σ+it)‖ ≤ 1/t² + π/(2t)` holds on a whole disc of fixed radius `σ/2` around the point, so
+Cauchy's estimate for iterated derivatives transfers it to every higher order:
+
+> `norm_iteratedDeriv_succ_digamma_vertical_le`:
+> `‖ψ^{(m+1)}(σ+it)‖ ≤ m! (1/(t−σ/2)² + π/(2(t−σ/2))) / (σ/2)^m`,
+> hence **`tendsto_iteratedDeriv_succ_digamma_vertical`**: every positive-order polygamma vanishes
+> along vertical lines.
+
+`HTGeometry/DigammaFieldValuation.lean` then reads off the valuation.  With
+`L(t) = log t + iπ/2` the corpus's vertical asymptotic gives `ψ/L → 1`
+(`tendsto_digamma_div_vertLog`), while all derivative factors vanish.  So a jet monomial normalized
+by `L^D` converges — to its tail limit when its digamma degree is exactly `D`, to zero when it is
+smaller (`tendsto_monomial_div`) — and summing:
+
+> **`tendsto_jetPoly_digamma_div`**: for a jet polynomial in the digamma tower whose pure monomial
+> `ψ^D` occurs with coefficient `d β`, and whose every other monomial either has smaller digamma
+> degree or carries a derivative factor,
+> `P(ψ, ψ′, …, ψ^{(n)})(σ+it) / L(t)^D → d β`.
+
+That is eq. (19) with `b = D`, `a = 0`, `c = d β`, proved unconditionally for constant coefficients.
+What remains for the full statement is the `ℂ(s)`-coefficient case, where the `s^a` factors enter and
+the leading monomial is chosen lexicographically in `(degree in ψ, degree in s)`.
+
+### Eq. (19) with rational coefficients
+
+`HTGeometry/DigammaFieldValuationRational.lean` extends the valuation from constant to `ℂ(s)`
+coefficients.
+
+- `tendsto_eval_div_pow_natDegree_of_norm_atTop` — a complex polynomial divided by the power of its
+  own degree tends to its leading coefficient along *any* filter on which the argument escapes
+  (proved by the reverse polynomial at `1/z`).  The corpus previously had two copies of the special
+  case where the argument runs along the real axis; this covers both and the vertical case at once.
+- `tendsto_ratio_eval_vertical` — hence on a vertical line, `p(s)·s^{deg q} / (q(s)·s^{deg p})` tends
+  to `lead p / lead q`: the projective boundary of a rational coefficient.
+- **`tendsto_ratCoeff_jetPoly_vertical`** — multiplying by the digamma valuation, for an element
+  `R(s)·P(ψ, ψ′, …, ψ^{(n)})` of `ℂ(s)⟨ψ⟩`,
+
+  > `R(s)·P(jets) · s^{deg q} / (s^{deg p} · L(t)^D) → (lead p / lead q) · d β`,
+
+  where `d β` is the coefficient of the pure monomial `ψ^D`.  This is eq. (19) with
+  `a = deg p − deg q`, `b = D`, and `c = (lead p / lead q)·d β`, proved unconditionally.
+
+What remains of §3 is the bookkeeping that selects the dominant `(a, b)` pair inside a finite sum of
+such elements — a lexicographic comparison on top of these limits, with no new analytic input.
+
+### Eq. (5) for the digamma field
+
+`HTGeometry/DigammaFieldRatio.lean` completes the projective-boundary statement for the elements
+`R(s)·ψ^D` of `ℂ(s)⟨ψ⟩`.
+
+- `tendsto_norm_digamma_vertical` — `‖ψ(σ+it)‖ → ∞`, from the vertical asymptotic and the growth of
+  the leading logarithm;
+- `tendsto_digamma_pow_ratio` — hence `ψ^{D_α}/ψ^{D_β} → 1` when the exponents agree and `→ 0` when
+  the numerator's is smaller;
+- `tendsto_ratio_poly_le` — a quotient of polynomials of no larger degree tends to the quotient of
+  the leading coefficients when the degrees agree, and to zero otherwise;
+- **`tendsto_ratio_digammaField`** — multiplying the two, the normalized ratio of two monomial
+  elements converges whenever the numerator is dominated componentwise, with limit
+  `(lead(p_α q_β)/lead(q_α p_β)) · [D_α = D_β]` — nonzero exactly when both the degree datum and the
+  digamma exponent agree.
+
+This is eq. (5) for the digamma field: a finite family normalized by a componentwise-minimal member
+has a constant projective limit.  Together with `tendsto_ratCoeff_jetPoly_vertical` (eq. 19) the
+digamma layer of §3 is unconditional; what is left is only the passage from a componentwise to a
+lexicographic dominance order, which needs the comparison `L(t)^k / s → 0` and no new analytic input.
+
 *(b) The Euclidean side reduces to fine covers of small order.*  For a compact metric space, a
 Lebesgue number turns any finite open cover into a mesh condition, so `dim X ≤ n` follows from: for
 every `δ > 0` there is a finite open cover of mesh `< δ` and order `≤ n + 1`.  For a subset of `ℝ^M`

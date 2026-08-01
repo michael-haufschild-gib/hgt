@@ -23,7 +23,11 @@
   `GaloisForLFunctions.RHTower.DeningerHeightZeroKummer`
   (the height-zero theorem, the injectivity of `(2)`, and `(4)` ⟹ `(5)`),
   `GaloisForLFunctions.RHTower.DeningerKummerPlaceIsometry`
-  (the place isometry `‖f_α‖₁ = 2h(α)` behind `(1)`--`(2)`)
+  (the place isometry `‖f_α‖₁ = 2h(α)` behind `(1)`--`(2)`),
+  `GaloisForLFunctions.RHTower.DeningerArchimedeanBaseChange`,
+  `GaloisForLFunctions.RHTower.DeningerFinitePlaceBaseChange`,
+  `GaloisForLFunctions.RHTower.DeningerFinitePlaceSumBaseChange`
+  (the gluing of the place tower)
 
 ## Source Hilbert space
 
@@ -434,10 +438,86 @@ the product formula.  That is exactly the data `(Y, λ)` needs at one level of t
   "dense real span" true by construction rather than by citation, and `ℓ_P` is then genuinely
   unique on `H_Kum`.
 
+### The archimedean half of the gluing landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerArchimedeanBaseChange.lean`.  Axiom audit on all four
+declarations: `propext, Classical.choice, Quot.sound`.
+
+What the tower needs is that the place model of `K` sits inside the place model of `L` with a
+uniform factor `[L : K]`, so that the normalized functions `f_α` agree at every level and glue.
+The archimedean half of that is now proved:
+
+- `deningerEmbeddingSum_eq_placeSum` — summing a function of `‖φ x‖` over all complex embeddings
+  equals summing over infinite places weighted by `mult`, because the embeddings inducing a given
+  place number exactly `mult` (`InfinitePlace.card_filter_mk_eq`).
+- `deningerEmbeddingFibre_card` — **the fibres of restriction have constant size `[L : K]`**.
+  Making `ℂ` a `K`-algebra through `φ`, the embeddings of `L` restricting to `φ` are exactly the
+  `K`-algebra maps `L → ℂ`, and an algebraically closed target admits `[L : K]` of them
+  (`AlgHom.card`).  The equivalence between the fibre and `L →ₐ[K] ℂ` is the identity on
+  underlying ring maps: the fibre condition *is* the `commutes'` field.
+- `deningerEmbeddingSum_baseChange`, `deningerArchPlaceSum_baseChange` — **the base-change law**:
+  for `x ∈ K`,
+
+  `∑_{w : InfinitePlace L} mult(w) · F(w(x)) = [L : K] · ∑_{v : InfinitePlace K} mult(v) · F(v(x))`
+
+  for every `F`.  Fibrewise summation plus the constant fibre size.  Taking `F = log⁺` gives the
+  archimedean part of the height, and `F = |log ·|` the archimedean part of the Kummer norm; both
+  scale by exactly `[L : K]`, which is the compatibility the tower needs.
+
+### The local-degree scaling law landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerFinitePlaceBaseChange.lean`.  Axiom audit on all three
+declarations: `propext, Classical.choice, Quot.sound`.
+
+- `deningerToNNReal_congr` — the value of `WithZeroMulInt.toNNReal` depends only on the base, not
+  on the proof that it is nonzero.  Needed because the two absolute values are built from
+  *different* nonvanishing proofs for what turns out to be the same base.
+- `deningerToNNReal_base_pow` — **raising the base raises the value**: `toNNReal` with base `e^f`
+  is the `f`-th power of `toNNReal` with base `e`.  This is the exact point where the residue
+  degree enters an absolute value: `‖·‖_w` and `‖·‖_v` are the same construction with bases
+  `N(w)` and `N(v)`, and `N(w) = N(v)^f`.
+- `deningerAdicAbv_liesOver` — **the local-degree scaling law**: for `x` in the base field and a
+  height-one prime `w` of `𝓞 L` above `v` of `𝓞 K`,
+
+  `‖x‖_w = ‖x‖_v ^ (e(w|v) · f(w|v))`.
+
+  The valuation contributes the ramification index
+  (`IsDedekindDomain.HeightOneSpectrum.valuation_liesOver`) and the base contributes the inertia
+  degree (`Ideal.absNorm_eq_pow_inertiaDeg'_of_liesOver`); the two combine through the base-power
+  lemma.  Nonvanishing of the inertia degree is `Ideal.inertiaDeg'_ne_zero`, which needs
+  `v.asIdeal` maximal — supplied by `HeightOneSpectrum.isMaximal`.
+
+### The fibrewise sum law landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerFinitePlaceSumBaseChange.lean`.  Axiom audit on all
+four declarations: `propext, Classical.choice, Quot.sound`.
+
+- `deningerSpectrumOfMem` — a prime of `𝓞 L` in the fibre `primesOverFinset v.asIdeal (𝓞 L)`,
+  packaged as a point of the height-one spectrum.  Primality comes from
+  `IsDedekindDomain.mem_primesOverFinset_iff` and nonvanishing from
+  `Ideal.ne_bot_of_mem_primesOver`; `deningerSpectrumOfMem_liesOver` records that it does lie
+  over `v`.
+- `deningerFinitePlaceSum_baseChange` — **the fibrewise base-change law**: for any `F` with
+  `F(t^n) = n·F(t)` and any `x` in the base field,
+
+  `∑_{w | v} F(‖x‖_w) = [L : K] · F(‖x‖_v)`.
+
+  Each term contributes the local degree by `deningerAdicAbv_liesOver`, and
+  `Ideal.sum_ramification_inertia` — the fundamental identity `∑_{w|v} e·f = [L : K]` — turns the
+  sum of local degrees into the global one.
+- `deningerFinitePlaceSum_posLog` and `deningerFinitePlaceSum_absLog` — the two instances that are
+  actually used: `F = log⁺` computes the finite part of the logarithmic height, and
+  `F = |log ·|` the finite part of the Kummer norm.  Both hypotheses are one line
+  (`Real.posLog_pow`, and `Real.log_pow` plus `Nat.abs_cast`).
+
+This is the exact non-archimedean counterpart of `deningerArchPlaceSum_baseChange`.  Both halves
+of the base-change law are now proved.
+
 ### Remaining
 
-The only input still quoted is the *global* Allcock--Vaaler construction: that the level-wise
-place models glue, compatibly with field extension, into one measure space `(Y, λ)` over all of
-`Q̄` carrying every `f_α` at once.  Each level of that tower is now fully proved — the isometry,
-the injectivity, and the extension — and every statement the card derives is formalized
-unconditionally.
+Only the assembly: `logHeight₁` is the archimedean place sum plus a `finsum` over `FinitePlace L`,
+so combining the two halves into `h_L(x) = [L : K] · h_K(x)` needs the fibration
+`FinitePlace L → FinitePlace K` (through `equivHeightOneSpectrum` and `Ideal.under`) together with
+the finiteness of the multiplicative support, to rewrite that `finsum` as a double sum over the
+base places and their fibres.  The fibre condition matches `primesOverFinset` on the nose, since
+`LiesOver p P` is by definition `p = P.under A`.

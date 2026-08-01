@@ -76,4 +76,59 @@ theorem fourierIntegral_comp_add_right (f : ℝ → E) (a : ℝ) (ξ : ℝ) :
   push_cast
   ring
 
+/-- Multiplying by a unimodular character preserves integrability. -/
+theorem integrable_exp_mul {f : ℝ → ℂ} (hf : Integrable f) (a : ℝ) :
+    Integrable fun x : ℝ => Complex.exp ((↑(2 * π * a * x) : ℂ) * Complex.I) * f x := by
+  refine hf.bdd_mul (c := 1) ?_ ?_
+  · exact (Complex.continuous_exp.comp
+      ((Complex.continuous_ofReal.comp (by fun_prop)).mul continuous_const)).aestronglyMeasurable
+  · filter_upwards with x
+    rw [Complex.norm_exp]
+    have harg : ((↑(2 * π * a * x) : ℂ) * Complex.I).re = 0 := by simp
+    rw [harg, Real.exp_zero]
+
+/-- **Scalar rule.**  The Fourier integral is homogeneous. -/
+theorem fourierIntegral_const_mul (f : ℝ → ℂ) (r : ℂ) (ξ : ℝ) :
+    𝓕 (fun x : ℝ => r * f x) ξ = r * 𝓕 f ξ := by
+  rw [Real.fourier_real_eq_integral_exp_smul, Real.fourier_real_eq_integral_exp_smul,
+    ← MeasureTheory.integral_const_mul]
+  refine integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
+  show Complex.exp ((↑(-2 * π * x * ξ) : ℂ) * Complex.I) • (r * f x) =
+    r * (Complex.exp ((↑(-2 * π * x * ξ) : ℂ) * Complex.I) • f x)
+  rw [smul_eq_mul, smul_eq_mul]
+  ring
+
+/-- **Modulation rule.**  Multiplying by a character shifts the transform. -/
+theorem fourierIntegral_exp_mul (f : ℝ → ℂ) (a ξ : ℝ) :
+    𝓕 (fun x : ℝ => Complex.exp ((↑(2 * π * a * x) : ℂ) * Complex.I) * f x) ξ =
+      𝓕 f (ξ - a) := by
+  rw [Real.fourier_real_eq_integral_exp_smul, Real.fourier_real_eq_integral_exp_smul]
+  refine integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
+  show Complex.exp ((↑(-2 * π * x * ξ) : ℂ) * Complex.I) •
+      (Complex.exp ((↑(2 * π * a * x) : ℂ) * Complex.I) * f x) =
+    Complex.exp ((↑(-2 * π * x * (ξ - a)) : ℂ) * Complex.I) • f x
+  rw [smul_eq_mul, smul_eq_mul, ← mul_assoc, ← Complex.exp_add, ← add_mul]
+  congr 3
+  push_cast
+  ring
+
+/-- **The cosine modulation rule.**  Multiplying by a real cosine splits the transform into the
+average of two shifts. -/
+theorem fourierIntegral_mul_cos {f : ℝ → ℂ} (hf : Integrable f) (w₀ ξ : ℝ) :
+    𝓕 (fun x : ℝ => f x * ((Real.cos (2 * π * w₀ * x) : ℝ) : ℂ)) ξ =
+      (2 : ℂ)⁻¹ * 𝓕 f (ξ - w₀) + (2 : ℂ)⁻¹ * 𝓕 f (ξ + w₀) := by
+  have hplus := integrable_exp_mul hf w₀
+  have hminus := integrable_exp_mul hf (-w₀)
+  have hsplit : (fun x : ℝ => f x * ((Real.cos (2 * π * w₀ * x) : ℝ) : ℂ)) =
+      fun x : ℝ =>
+        (2 : ℂ)⁻¹ * (Complex.exp ((↑(2 * π * w₀ * x) : ℂ) * Complex.I) * f x) +
+          (2 : ℂ)⁻¹ * (Complex.exp ((↑(2 * π * -w₀ * x) : ℂ) * Complex.I) * f x) := by
+    funext x
+    rw [Complex.ofReal_cos, Complex.cos]
+    push_cast
+    ring_nf
+  rw [hsplit, fourierIntegral_add (hplus.const_mul _) (hminus.const_mul _) ξ,
+    fourierIntegral_const_mul _ (2 : ℂ)⁻¹ ξ, fourierIntegral_const_mul _ (2 : ℂ)⁻¹ ξ,
+    fourierIntegral_exp_mul f w₀ ξ, fourierIntegral_exp_mul f (-w₀) ξ, sub_neg_eq_add]
+
 end GaloisForLFunctions.HTGeometry

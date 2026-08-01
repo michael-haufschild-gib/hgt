@@ -1,6 +1,7 @@
 import Mathlib.Analysis.Complex.Harmonic.Poisson
 import Mathlib.Analysis.Complex.Harmonic.MeanValue
 import Mathlib.Analysis.InnerProductSpace.Harmonic.Constructions
+import Mathlib.MeasureTheory.Measure.Tight
 
 /-!
 # Boundary positivity of the Poisson representation
@@ -175,6 +176,20 @@ theorem circleMap_zero_eq_mul (r θ : ℝ) :
     circleMap 0 r θ = (r : ℂ) * circleMap 0 1 θ := by
   simp [circleMap]
 
+/-- A closed disc of radius below one sits inside the unit disc. -/
+theorem closedBall_subset_ball_one {r : ℝ} (hr1 : r < 1) :
+    closedBall (0 : ℂ) r ⊆ ball (0 : ℂ) 1 := fun x hx => by
+  rw [mem_closedBall_zero_iff] at hx
+  rw [mem_ball_zero_iff]
+  linarith
+
+/-- A function harmonic on the unit disc is harmonic-up-to-the-boundary on every smaller disc. -/
+theorem harmonicContOnCl_of_lt_one {u : ℂ → ℝ} (hu : HarmonicOnNhd u (ball 0 1))
+    {r : ℝ} (hr : 0 < r) (hr1 : r < 1) : HarmonicContOnCl u (ball (0 : ℂ) r) := by
+  refine HarmonicOnNhd.harmonicContOnCl ?_
+  rw [closure_ball (0 : ℂ) hr.ne']
+  exact hu.mono (closedBall_subset_ball_one hr1)
+
 /-- **The fixed-kernel family.**  For a nonnegative harmonic function on the unit disc, the boundary
 measures of every radius represent the dilated values of the function against one and the same
 kernel on the unit circle.  With `integral_one_poissonBoundaryMeasure` pinning every total mass to
@@ -184,14 +199,8 @@ theorem integral_unitPoissonKernel_poissonBoundaryMeasure {u : ℂ → ℝ}
     {r : ℝ} (hr : 0 < r) (hr1 : r < 1) {w : ℂ} (hw : w ∈ ball (0 : ℂ) 1) :
     ∫ θ, poissonKernel 0 w (circleMap 0 1 θ) ∂(poissonBoundaryMeasure u 0 r)
       = u ((r : ℂ) * w) := by
-  have hsub : closedBall (0 : ℂ) r ⊆ ball (0 : ℂ) 1 := fun x hx => by
-    rw [mem_closedBall_zero_iff] at hx
-    rw [mem_ball_zero_iff]
-    linarith
-  have hur : HarmonicContOnCl u (ball (0 : ℂ) r) := by
-    refine HarmonicOnNhd.harmonicContOnCl ?_
-    rw [closure_ball (0 : ℂ) hr.ne']
-    exact hu.mono hsub
+  have hsub := closedBall_subset_ball_one hr1
+  have hur := harmonicContOnCl_of_lt_one hu hr hr1
   have hnnr : ∀ z ∈ sphere (0 : ℂ) r, 0 ≤ u z := fun z hz =>
     hnn z (hsub (sphere_subset_closedBall hz))
   have hwr : (r : ℂ) * w ∈ ball (0 : ℂ) r := by
@@ -281,5 +290,98 @@ theorem isProbabilityMeasure_poissonBoundaryMeasure_smul {u : ℂ → ℝ} {c : 
   refine ⟨?_⟩
   rw [Measure.smul_apply, smul_eq_mul, poissonBoundaryMeasure_univ hR hu hnn]
   exact ENNReal.inv_mul_cancel (by simpa using h0) ENNReal.ofReal_ne_top
+
+/-! ## The kernel as a bounded continuous test function
+
+Weak convergence of measures is tested against bounded continuous functions, so the Poisson kernel
+on the unit circle must be presented as one.  Both properties are explicit: on the unit circle the
+numerator is the constant `1 - ‖w‖²`, and the denominator is bounded below by `(1 - ‖w‖)²` because a
+boundary point and an interior point are separated by at least that distance. -/
+
+/-- The Poisson kernel on the unit circle, with the numerator constant. -/
+theorem poissonKernel_circleMap_one (w : ℂ) (θ : ℝ) :
+    poissonKernel 0 w (circleMap 0 1 θ) = (1 - ‖w‖ ^ 2) / ‖circleMap 0 1 θ - w‖ ^ 2 := by
+  simp only [poissonKernel_def, sub_zero, norm_circleMap_zero, abs_one, one_pow]
+
+/-- A point of the unit circle is separated from an interior point. -/
+theorem one_sub_norm_le_norm_circleMap_sub (w : ℂ) (θ : ℝ) :
+    1 - ‖w‖ ≤ ‖circleMap 0 1 θ - w‖ := by
+  have h := norm_sub_norm_le (circleMap 0 1 θ) w
+  rwa [norm_circleMap_zero, abs_one] at h
+
+theorem poissonKernel_circleMap_one_nonneg {w : ℂ} (hw : ‖w‖ < 1) (θ : ℝ) :
+    0 ≤ poissonKernel 0 w (circleMap 0 1 θ) := by
+  rw [poissonKernel_circleMap_one]
+  have : ‖w‖ ^ 2 < 1 := by nlinarith [norm_nonneg w]
+  positivity
+
+theorem continuous_poissonKernel_circleMap {w : ℂ} (hw : ‖w‖ < 1) :
+    Continuous fun θ : ℝ => poissonKernel 0 w (circleMap 0 1 θ) := by
+  simp only [poissonKernel_circleMap_one]
+  refine continuous_const.div (((continuous_circleMap 0 1).sub continuous_const).norm.pow 2)
+    fun θ => ?_
+  have h1 : (0 : ℝ) < 1 - ‖w‖ := by linarith
+  exact ne_of_gt (pow_pos (lt_of_lt_of_le h1 (one_sub_norm_le_norm_circleMap_sub w θ)) 2)
+
+/-- **The explicit bound.**  The kernel on the unit circle is bounded by a constant depending only on
+the distance of the evaluation point from the boundary. -/
+theorem poissonKernel_circleMap_one_le {w : ℂ} (hw : ‖w‖ < 1) (θ : ℝ) :
+    poissonKernel 0 w (circleMap 0 1 θ) ≤ (1 - ‖w‖ ^ 2) / (1 - ‖w‖) ^ 2 := by
+  rw [poissonKernel_circleMap_one]
+  have h1 : (0 : ℝ) < 1 - ‖w‖ := by linarith
+  have hnum : (0 : ℝ) ≤ 1 - ‖w‖ ^ 2 := by nlinarith [norm_nonneg w]
+  exact div_le_div_of_nonneg_left hnum (pow_pos h1 2)
+    (pow_le_pow_left₀ h1.le (one_sub_norm_le_norm_circleMap_sub w θ) 2)
+
+/-- The Poisson kernel on the unit circle as a bounded continuous function of the angle — the test
+function weak convergence of the boundary measures is paired against. -/
+noncomputable def unitPoissonTest {w : ℂ} (hw : ‖w‖ < 1) : BoundedContinuousFunction ℝ ℝ :=
+  BoundedContinuousFunction.ofNormedAddCommGroup
+    (fun θ => poissonKernel 0 w (circleMap 0 1 θ))
+    (continuous_poissonKernel_circleMap hw)
+    ((1 - ‖w‖ ^ 2) / (1 - ‖w‖) ^ 2)
+    fun θ => by
+      rw [Real.norm_eq_abs, abs_of_nonneg (poissonKernel_circleMap_one_nonneg hw θ)]
+      exact poissonKernel_circleMap_one_le hw θ
+
+@[simp]
+theorem unitPoissonTest_apply {w : ℂ} (hw : ‖w‖ < 1) (θ : ℝ) :
+    unitPoissonTest hw θ = poissonKernel 0 w (circleMap 0 1 θ) := rfl
+
+/-! ## Tightness and the degenerate case on the unit disc
+
+A family of measures all carried by one compact set is tight with no estimate, which is the
+hypothesis of Prokhorov's theorem.  On the unit disc the degenerate case is settled by the minimum
+principle applied on an intermediate radius. -/
+
+/-- **Tightness for free.**  A family of measures all carried by one compact set is tight. -/
+theorem isTightMeasureSet_of_forall_compl_eq_zero {S : Set (Measure ℝ)} (K : Set ℝ)
+    (hK : IsCompact K) (hS : ∀ μ ∈ S, μ Kᶜ = 0) : IsTightMeasureSet S := by
+  rw [isTightMeasureSet_iff_exists_isCompact_measure_compl_le]
+  exact fun ε hε => ⟨K, hK, fun μ hμ => by simp [hS μ hμ]⟩
+
+/-- The boundary measures of a nonnegative harmonic function on the unit disc form a tight family:
+every one of them is carried by the same compact interval of angles. -/
+theorem isTightMeasureSet_poissonBoundaryMeasure (u : ℂ → ℝ) (c : ℂ) (T : Set ℝ) :
+    IsTightMeasureSet {μ : Measure ℝ | ∃ R ∈ T, μ = poissonBoundaryMeasure u c R} := by
+  refine isTightMeasureSet_of_forall_compl_eq_zero (Set.Icc 0 (2 * π)) isCompact_Icc ?_
+  rintro μ ⟨R, -, rfl⟩
+  exact poissonBoundaryMeasure_compl_Icc_eq_zero
+
+/-- **The minimum principle on the unit disc.**  A nonnegative harmonic function on the unit disc
+vanishing at the origin vanishes identically: apply the disc version at any intermediate radius. -/
+theorem eq_zero_of_center_eq_zero_ball {u : ℂ → ℝ} (hu : HarmonicOnNhd u (ball 0 1))
+    (hnn : ∀ z ∈ ball (0 : ℂ) 1, 0 ≤ u z) (h0 : u 0 = 0) {w : ℂ} (hw : w ∈ ball (0 : ℂ) 1) :
+    u w = 0 := by
+  have hwn : ‖w‖ < 1 := by rwa [mem_ball_zero_iff] at hw
+  have hw0 : (0 : ℝ) ≤ ‖w‖ := norm_nonneg w
+  set r := (‖w‖ + 1) / 2 with hrdef
+  have hr : 0 < r := by rw [hrdef]; linarith
+  have hr1 : r < 1 := by rw [hrdef]; linarith
+  have hwr : w ∈ ball (0 : ℂ) r := by
+    rw [mem_ball_zero_iff, hrdef]
+    linarith
+  exact eq_zero_of_center_eq_zero hr (harmonicContOnCl_of_lt_one hu hr hr1)
+    (fun z hz => hnn z (closedBall_subset_ball_one hr1 (sphere_subset_closedBall hz))) h0 hwr
 
 end GaloisForLFunctions.HTGeometry

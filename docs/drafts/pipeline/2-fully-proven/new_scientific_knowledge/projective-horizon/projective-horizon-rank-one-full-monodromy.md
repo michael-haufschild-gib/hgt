@@ -1358,3 +1358,43 @@ dividing the discriminant.
   the parameter it introduces, with everything else in the earlier parameters — the form that lets
   the parameters be solved for one at a time.  `tailCoeff_zero` is the card's `(8)`:
   `c_0 = p_1^n` up to sign.  Axioms `[propext, Classical.choice, Quot.sound]`.
+
+- 2026-08-01 — `TailParameterField.lean` proves the field-theoretic half of the card's `(10)`.
+  `tailParamField` is the field generated over the constants by the tail coefficients together with
+  the first parameter, and `tailParamField_eq_top` says it is everything: `K(p_1, ..., p_n) =
+  K(c_0, ..., c_{n-1})(p_1)`.  The induction is exactly the card's triangular solve — the `i`-th
+  tail coefficient is `tailLead i * p_{i+1} + tailRemainder i` with `tailLead i` a nonzero power of
+  `p_1` and `tailRemainder i` free of `p_{i+1}` and everything after it, so `p_{i+1}` is a quotient
+  of elements already known to lie in the field.  The transport step is
+  `algebraMap_mem_of_vars_subset`: a polynomial whose variables lie in a set maps into any
+  intermediate field containing the images of that set, proved by pushing `Algebra.adjoin` through
+  the algebra map.  Axioms `[propext, Classical.choice, Quot.sound]`.
+  With `algebraicIndependent_tailCoeff` this settles `(10)` apart from the Kummer relation
+  `p_1^n = (-1)^n c_0`, which is `tailCoeff_zero`.
+
+- 2026-08-01 — the deck transformation of the Kummer covering, which is what will give the degree
+  `[K(p) : E_0] = n` from below without any irreducibility criterion.  Scaling the `i`-th parameter
+  by the `(i+1)`-st power of a scalar rescales the tail polynomial by that scalar **and** rescales
+  its variable by the same amount; raising to the power `n - j` and reading the `j`-th coefficient
+  multiplies the `j`-th tail coefficient by the scalar to the power `(n - j) + j = n`.  So an
+  `n`-th root of unity fixes **every** tail coefficient while multiplying the first parameter by it:
+  `varScaleHom_tailCoeff_of_pow_eq_one` and `varScaleHom_X_zero`.
+  Two modules: `PolynomialScaleVariable.lean` (`scaleVar`, substituting a scalar multiple of the
+  variable, and `coeff_scaleVar`, the coefficient rescaling law — absent from mathlib) and
+  `TailScalingAutomorphism.lean` (`varScale`, the automorphism, and the invariance).  Axioms
+  `[propext, Classical.choice, Quot.sound]`.
+  This replaces the Eisenstein route: `n` distinct automorphisms fixing `E_0` pointwise bound the
+  degree from below directly, and no primality of `c_0` in the coefficient ring is needed.
+
+- 2026-08-01 — `TailScalingAction.lean` packages the deck transformations as a group.  The scalings
+  compose by multiplying their scalars (`varScaleHom_comp`), giving `varScaleAut : Kˣ →* RingAut`,
+  and restricting to the `n`-th roots of unity gives `rootsOfUnityScale`, which fixes every tail
+  coefficient (`rootsOfUnityScale_tailCoeff`) and is injective (`rootsOfUnityScale_injective`, from
+  the first parameter alone).  Axioms `[propext, Classical.choice, Quot.sound]`.
+  One design note worth recording, because it cost a detour: the polynomial ring already carries a
+  scalar action of `Kˣ` by multiplication, so declaring a second `MulSemiringAction` of the roots of
+  unity on the same type is shadowed by the existing instance and its defining equation is not
+  definitional.  The scalings are therefore recorded as a homomorphism into the automorphism group
+  rather than as an action instance — which is also the form the fixed-field theorem consumes.
+  Next: the fixed field of the image subgroup, Artin's `FixedPoints.finrank_eq_card` for the degree
+  `n`, and the sandwich `E_0 <= fixed field <= top` with `[top : E_0] <= n` from `p_1^n in E_0`.
