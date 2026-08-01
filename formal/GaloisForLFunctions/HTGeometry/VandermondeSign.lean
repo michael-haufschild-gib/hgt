@@ -38,6 +38,15 @@ theorem vandermondeProd_comp (v : Fin n → R) (e : Equiv.Perm (Fin n)) :
   rw [← det_vandermonde_eq_vandermondeProd, ← det_vandermonde_eq_vandermondeProd,
     vandermonde_comp, Matrix.det_permute, zsmul_eq_mul]
 
+/-- **The Vandermonde product is unchanged by translating the family.**  Differences do not see a
+common shift. -/
+theorem vandermondeProd_sub_const (v : Fin n → R) (t : R) :
+    vandermondeProd (fun i => v i - t) = vandermondeProd v := by
+  rw [vandermondeProd, vandermondeProd]
+  refine Finset.prod_congr rfl fun i _ => ?_
+  refine Finset.prod_congr rfl fun j _ => ?_
+  ring
+
 /-! ## The alternating group is the exact stabiliser -/
 
 /-- **A permutation fixes the Vandermonde product exactly when it is even**, provided the product

@@ -34,6 +34,46 @@ theorem separable_centeredMonicL [CharZero K] : (centeredMonicL K d).Separable :
   exact (Polynomial.separable_prod_X_sub_C_iff (f := centeredRootIn K d)).2
     centeredRootIn_injective
 
+/-- **Centering does not change the Vandermonde product.**  So the square root of the discriminant
+of the centered polynomial is the one of the uncentered polynomial. -/
+theorem vandermondeProd_centeredRoot_eq [CharZero K] :
+    vandermondeProd (centeredRoot K d) = vandermondeProd (genericRoot K d) := by
+  have hshift : (centeredRoot K d) = fun i => genericRoot K d i - genericAverage K d := by
+    funext i
+    rw [centeredRoot]
+  rw [hshift, vandermondeProd_sub_const]
+
+/-- **The Vandermonde product of the generic roots changes by the sign.** -/
+theorem smul_vandermondeProd_genericRoot (e : Equiv.Perm (Fin d)) :
+    e • vandermondeProd (genericRoot K d) =
+      (Equiv.Perm.sign e : ℤ) • vandermondeProd (genericRoot K d) := by
+  have hsmul : e • vandermondeProd (genericRoot K d) =
+      vandermondeProd (genericRoot K d ∘ e) := by
+    rw [vandermondeProd, vandermondeProd, Finset.smul_prod']
+    refine Finset.prod_congr rfl fun i _ => ?_
+    rw [Finset.smul_prod']
+    refine Finset.prod_congr rfl fun j _ => ?_
+    rw [smul_sub, smul_genericRoot, smul_genericRoot]
+    rfl
+  rw [hsmul, vandermondeProd_comp]
+
+/-- **The discriminant is symmetric.**  The square of the Vandermonde product of the generic roots
+lies in the symmetric part, hence is a rational function of the coefficients. -/
+theorem sq_vandermondeProd_genericRoot_mem :
+    vandermondeProd (genericRoot K d) * vandermondeProd (genericRoot K d) ∈
+      symmetricPart K d := by
+  have hfix : ∀ e : Equiv.Perm (Fin d),
+      e • (vandermondeProd (genericRoot K d) * vandermondeProd (genericRoot K d)) =
+        vandermondeProd (genericRoot K d) * vandermondeProd (genericRoot K d) := by
+    intro e
+    rw [smul_mul', smul_vandermondeProd_genericRoot]
+    rcases Int.units_eq_one_or (Equiv.Perm.sign e) with h1 | h1
+    · rw [h1]
+      simp
+    · rw [h1]
+      simp only [Units.coe_neg_one, neg_smul, one_smul, neg_mul_neg]
+  exact hfix
+
 /-! ## The discriminant square root is not a coefficient -/
 
 theorem smul_centeredRootIn [CharZero K] (e : Equiv.Perm (Fin d)) (i : Fin d) :

@@ -1139,6 +1139,8 @@ provisional pending expert/literature review.
 | packets on disjoint annuli are exactly orthogonal | `inner_soninPacketEven_eq_zero_of_disjoint` |
 | **`N` disjoint annuli force coupling energy above `N - 1`**, the uniform subdivision that supplies them, and hence **the coupling energy tends to infinity** | `eventually_sub_one_le_hsNormSq_of_disjointAnnuli`, `soninUniformAnnulusFloor`, `exists_disjoint_annulus_family`, `tendsto_hsNormSq_soninApertureCoupling_atTop` |
 | **no completion bounded above restores the floor**, at any strict flag | `not_bddBelow_soninCompletedPacketValueVar_of_bddAbove` |
+| **the general necessary condition**: a completion with a floor must send the source packets to vectors of unbounded norm | `soninClockPacket`, `soninChannelFamilyContribution`, `norm_soninBumpL2_pos`, `tendsto_norm_apply_soninClockPacket_atTop_of_bddBelow` |
+| on a fixed annulus the channel is bounded independently of the tower height, so **no height schedule** makes the log-shell channel restore the floor | `evenLogShellChannel_layer_apply_eq_zero`, `exists_bound_norm_evenLogShellChannel_of_annulus`, `not_bddBelow_soninCompletedPacketValueVar_logShellChannelFamily` |
 | the channel norm dominates every layer logarithm below the height, so the channel norms **diverge** with the tower — the surviving completion class is inhabited | `log_logShellRadius`, `le_norm_evenLogShellChannel`, `tendsto_norm_evenLogShellChannel_atTop`, `exists_norm_atTop_channel_family` |
 | pairing against any **fixed bounded operator** is bounded above, hence no floor; the concrete conductor channel at fixed aperture and height is such an operator | `soninFixedChannelContribution`, `soninFixedChannelContribution_le`, `not_bddBelow_soninCompletedPacketValueVar_fixedChannel`, `not_bddBelow_soninCompletedPacketValueVar_logShellConductor` |
 | the scalar Burnol counterterm, and every prime-independent scalar, leaves the channel unbounded below; a working completion must diverge along the scales | `not_bddBelow_soninCompletedPacketValueVar_burnolCounterterm`, `not_bddBelow_soninCompletedPacketValueVar_const`, `tendsto_atTop_of_bddBelow_soninCompletedPacketValueVar` |
@@ -1190,7 +1192,9 @@ Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninCouplingEnergyGrowth.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninBurnolCompletionNoFloor.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninFixedChannelNoFloor.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninLogShellChannelGrowth.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninLogShellChannelGrowth.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninChannelAnnulusBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCompletionBlowUpRequirement.lean`.
 All declarations depend only on `propext`, `Classical.choice`, `Quot.sound`.
 
 Novelty split for Theorem G: `(7)` was already in the corpus
@@ -1201,27 +1205,49 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-08-01 — the constraint stated once, for completions of arbitrary shape: the contribution at a
+  scale is at most the packet norm times the norm of the operator *applied to that packet*, and the
+  packet norms are uniformly bounded, so a completion restoring the floor must satisfy
+  `||T_i w_i|| -> infinity`.  Being large somewhere is not enough — the operators must be large
+  exactly where the source packets live.  Each earlier no-go is an instance: constants, bounded
+  contributions, fixed operators, and the log-shell tower under any height schedule all keep
+  `||T_i w_i||` bounded.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninCompletionBlowUpRequirement.lean`.
+- 2026-08-01 — and the inhabitant does not in fact help.  The channel norms diverge only because the
+  tower reaches far out in position; the source packets never leave a fixed annulus, and on that
+  annulus all but finitely many layers cancel between their two cutoffs, so the channel's pairing
+  with the packets is bounded independently of the height.  Hence no schedule of tower heights
+  restores the floor.  The surviving class is now narrower still: a completion must grow *on the
+  fixed annulus where the packets live*, which the logarithm of position cannot do.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninChannelAnnulusBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCompletionBlowUpRequirement.lean`.
 - 2026-08-01 — checked that the elimination has not emptied the space.  The channel acts on the
   `k`-th layer unit by `log(r^k a)`, so its norm is at least that for every layer below the tower
   height, and the norms therefore diverge with the height.  So the one surviving class — channel
   families whose norms grow with the scale — contains the corpus's own conductor tower, and the no-go
   chain constrains the weld without refuting it.  A no-go over an empty class would have asserted
   nothing; this one does not.
-  Lean: `formal/GaloisForLFunctions/RHTower/SoninLogShellChannelGrowth.lean`.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninLogShellChannelGrowth.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninChannelAnnulusBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCompletionBlowUpRequirement.lean`.
 - 2026-08-01 — extended from scalars to operators: pairing the source packets against any *fixed*
   bounded operator is bounded above, because the packet energy is uniform in the frequency, so no
   fixed channel restores the floor — the concrete Burnol conductor at one aperture and one tower
   height included.  The surviving completion must be a channel family whose norms diverge with the
   scale.
   Lean: `formal/GaloisForLFunctions/RHTower/SoninFixedChannelNoFloor.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninLogShellChannelGrowth.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninLogShellChannelGrowth.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninChannelAnnulusBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCompletionBlowUpRequirement.lean`.
 - 2026-08-01 — applied to the actual Burnol term: it is `log(b/a)`, one constant per scale, so the
   completed channel is unbounded below at every strict flag.  Any completion that restores the
   floor must tend to infinity along the scales.  The scalar-counterterm form of the weld is closed;
   the regularized pairing is what remains.
   Lean: `formal/GaloisForLFunctions/RHTower/SoninBurnolCompletionNoFloor.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninFixedChannelNoFloor.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninLogShellChannelGrowth.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninLogShellChannelGrowth.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninChannelAnnulusBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCompletionBlowUpRequirement.lean`.
 - 2026-08-01 — **the coupling energy is unbounded, and that closes the bounded completion class.**
   Cutting the aperture window into `N` disjoint annuli gives `N` exactly orthogonal packets; the
   coupling carries each to its own dilate without losing norm, so after normalisation the coupling
@@ -1236,7 +1262,9 @@ cyclicity, and the single-corner formula `(8)`.
   Lean: `formal/GaloisForLFunctions/RHTower/SoninCouplingEnergyGrowth.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninBurnolCompletionNoFloor.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninFixedChannelNoFloor.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninLogShellChannelGrowth.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninLogShellChannelGrowth.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninChannelAnnulusBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCompletionBlowUpRequirement.lean`.
 - 2026-08-01 — both ingredients of the growth argument are now in place.  The transition chain never
   used the packet annulus as such, only two support facts — vanishing inside the inner aperture and
   support inside the outer one — so it restates verbatim for a packet on any sub-annulus of `(b,c)`;
@@ -1250,7 +1278,9 @@ cyclicity, and the single-corner formula `(8)`.
 `formal/GaloisForLFunctions/RHTower/SoninCouplingEnergyGrowth.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninBurnolCompletionNoFloor.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninFixedChannelNoFloor.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninLogShellChannelGrowth.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninLogShellChannelGrowth.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninChannelAnnulusBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCompletionBlowUpRequirement.lean`.
 - 2026-08-01 — set up the growth question, which is what the summability criterion now turns on.
   `sum_norm_sq_apply_le_hsNormSq` generalises the corpus's one-vector domination to a finite
   orthonormal family, so `N` orthonormal vectors that the coupling does not contract force
@@ -1266,7 +1296,9 @@ cyclicity, and the single-corner formula `(8)`.
 `formal/GaloisForLFunctions/RHTower/SoninCouplingEnergyGrowth.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninBurnolCompletionNoFloor.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninFixedChannelNoFloor.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninLogShellChannelGrowth.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninLogShellChannelGrowth.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninChannelAnnulusBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCompletionBlowUpRequirement.lean`.
 - 2026-08-01 — the last gate is now an exact summability criterion, for completions of arbitrary
   shape: the completed packet channel is bounded below **iff** the sequence
   `min(contribution - coupling energy, 0)` is summable.  Consequently any completion that restores
@@ -1279,7 +1311,9 @@ cyclicity, and the single-corner formula `(8)`.
 `formal/GaloisForLFunctions/RHTower/SoninCouplingEnergyGrowth.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninBurnolCompletionNoFloor.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninFixedChannelNoFloor.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninLogShellChannelGrowth.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninLogShellChannelGrowth.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninChannelAnnulusBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCompletionBlowUpRequirement.lean`.
 - 2026-08-01 — the last gate, for extensive completions, is now a single inequality: contribution
   per scale versus coupling energy per scale.  Above every scale's energy the completed channel is
   bounded below by zero; below the uniform floor `1/4` it is unbounded below.  The aperture
@@ -1292,7 +1326,9 @@ cyclicity, and the single-corner formula `(8)`.
 `formal/GaloisForLFunctions/RHTower/SoninCouplingEnergyGrowth.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninBurnolCompletionNoFloor.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninFixedChannelNoFloor.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninLogShellChannelGrowth.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninLogShellChannelGrowth.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninChannelAnnulusBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCompletionBlowUpRequirement.lean`.
 - 2026-08-01 — the last gate is now a property of the archimedean side alone.  Since the packet
   channel is unbounded below, any counterterm bounded above on the packet family — packet-dependent
   or not — leaves it unbounded below, so a completion with a lower floor must be unbounded above
@@ -1306,7 +1342,9 @@ cyclicity, and the single-corner formula `(8)`.
 `formal/GaloisForLFunctions/RHTower/SoninCouplingEnergyGrowth.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninBurnolCompletionNoFloor.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninFixedChannelNoFloor.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninLogShellChannelGrowth.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninLogShellChannelGrowth.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninChannelAnnulusBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCompletionBlowUpRequirement.lean`.
 - 2026-08-01 — Theorem G items 1--2 upgraded from *properties* of the glued functional to a
   *characterization* of it.  Directness said the presentation is unique and the restrictions said
   what the value is on each part, but nothing said the extended trace is the only assignment with
@@ -1326,7 +1364,9 @@ cyclicity, and the single-corner formula `(8)`.
 `formal/GaloisForLFunctions/RHTower/SoninCouplingEnergyGrowth.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninBurnolCompletionNoFloor.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninFixedChannelNoFloor.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninLogShellChannelGrowth.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninLogShellChannelGrowth.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninChannelAnnulusBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCompletionBlowUpRequirement.lean`.
 - 2026-08-01 — `(38)`, the card's own terminus, is now a theorem *and* is false.  The explicit
   carrier equation `Q_b D_r (Q_a - Q_b) D_r (Q_b - Q_c) = 0` had never been stated in Lean — only
   its predecessors `(35)`--`(37)` had — so it is now `..._eq_zero_iff_tripleProduct`, derived from
@@ -1344,7 +1384,9 @@ cyclicity, and the single-corner formula `(8)`.
 `formal/GaloisForLFunctions/RHTower/SoninCouplingEnergyGrowth.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninBurnolCompletionNoFloor.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninFixedChannelNoFloor.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninLogShellChannelGrowth.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninLogShellChannelGrowth.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninChannelAnnulusBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCompletionBlowUpRequirement.lean`.
 - 2026-08-01 — added a worked numerical instance of the whole chain at `1 < 3/2 < 2 < 3`.  Every
   no-go here is stated over a hypothesis class, and a no-go over an empty class asserts nothing;
   the instance module makes non-vacuity checkable at a glance rather than by inspection.

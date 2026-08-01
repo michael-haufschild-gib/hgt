@@ -554,7 +554,25 @@ subextension, so any extension containing it has even degree.  Since `delta^2` l
 
 Everything in the proof of `(3)` is formal except one divisibility, and only for even `n`.  Writing
 `delta` for the Vandermonde product of the roots, the argument needs `delta` to stay outside `M`.
-For `n` odd this is now proved: `delta` in `M` would make `n` even.  For `n` even its
+For `n` odd this is now proved: `delta` in `M` would make `n` even.
+
+For even `n` the reduction runs through
+`GaloisForLFunctions/HTGeometry/QuadraticRepresentation.lean`:
+
+```text
+exists_repr_of_mem_adjoin_sqrt
+sq_mul_eq_sq_of_mem_adjoin_sqrt
+```
+
+Every element of a square-root extension is a scalar plus a scalar multiple of the root, by
+reducing a polynomial in the root modulo its quadratic relation.  Applying this to `delta` inside
+the quadratic subextension `E_0(sqrt(c_0))` and using that `delta^2` lies in `E_0` forces the
+scalar part to vanish, so `delta^2 * c_0` is a square in `E_0`.  That implication is
+`sq_mul_eq_sq_of_mem_adjoin_sqrt`, so the entire card is now reduced to one statement: for even `n`,
+`delta^2 * c_0` is not a square in `E_0`.  Equivalently, the `c_0`-adic valuation of the
+discriminant is even, and since the discriminant is a polynomial in the coefficients that amounts
+to `c_0` not dividing it -- the centered equation with vanishing constant term still having
+distinct roots.  For `n` even its
 unique quadratic subextension is `E_0(sqrt(c_0))`, so what must be excluded is
 `delta^2 * c_0` being a square in `E_0`; since `E_0` is a rational function field with `c_0` among
 its variables, this is the `c_0`-adic valuation of `delta^2` being even, equivalently `c_0` not
@@ -713,3 +731,14 @@ dividing the discriminant.
   its presence in `M` would force the degree `n` to be even.  For odd `n` the base change therefore
   preserves the full symmetric group with no discriminant computation at all, and the remaining gap
   is confined to even `n`.
+
+- 2026-08-01 — proved the representation lemma for square-root extensions, reducing a polynomial in
+  the root modulo its quadratic relation.  This is the step that turns `delta` lying in the Kummer
+  extension into the square-class identity `delta^2 * c_0` being a square, which is the form the
+  remaining even-`n` gap now takes.
+
+- 2026-08-01 — completed the even-`n` reduction.  Inside the quadratic subextension the
+  discriminant square root must be a scalar multiple of the Kummer root, because its own square
+  lies in the base; so its presence there forces `delta^2 * c_0` to be a square.  The card is now
+  one statement away from complete: that this square-class identity fails, equivalently that `c_0`
+  does not divide the discriminant.

@@ -418,6 +418,21 @@ Equation `(1)`, the Cayley inversion `m = i (1 + Theta) / (1 - Theta)`, is now f
 - `herglotzOfCayley`, `herglotzOfCayley_cayleyOfHerglotz`: **`(1)`** itself.
 - `cayleyOfHerglotz_herglotzOfCayley`: the converse, so the Cayley correspondence between the upper
   half plane and the punctured disc is a bijection in both directions.
+- `im_herglotzOfCayley`, `im_herglotzOfCayley_pos`: the inverse carries the *disc into the upper
+  half plane*, since `Im (i(1+w)/(1-w)) = (1 - |w|^2)/|1-w|^2`.  With the Schur bound this makes the
+  correspondence a bijection between the two domains, not merely between values.
+
+**`(8)`, the Blaschke bound** — same module.  The factorization `Theta = b_i S` asks that
+`S = Theta / b_i` be inner, which is exactly `|Theta| <= |b_i|`:
+
+- `cayleyOfHerglotz_I`, `herglotzOfCayley_zero`: the Blaschke factor of `(8)` *is* the Cayley
+  transform, anchored at `i`, and `i` is the inverse Cayley image of `0`.
+- `norm_le_norm_cayleyOfHerglotz_of_mapsTo`: **an inner function of the upper half plane anchored at
+  `i` is dominated by `b_i`.**  Transferring by the inverse Cayley transform turns the half-plane
+  statement into the Schwarz lemma at the origin.
+
+So the analytic content of `(8)` is formal; what is left of it is the construction of `S` as a
+meromorphic object, which is bookkeeping on top of this bound.
 
 Equation `(12)` has three lines, and its *first* — the reflection normalization
 `phi(-x) = 2 pi - phi(x)` — is derived here from oddness of `m` via `m = -cot(phi/2)`.  The corpus
@@ -479,6 +494,14 @@ part below it.
 - `labelled_add_residual`: **`(22)`** — the limit is the labelled atomic survivor plus the residual.
 - `residual_eq_zero_iff`: the residual vanishes exactly when the labelled masses exhaust the total,
   which is the criterion the Corollary's `(24)` uses.
+- `tight_criterion_failure_iff`: **`(26)`** — failure of `(24)` is exactly one of two defects,
+  unlabelled residual mass or a label reaching the boundary.  The separation is sharp because the
+  two standing constraints (total mass at most one, labels in the closed window) are each saturated
+  in exactly one failure mode.
+- `two_defects_independent`: neither defect implies the other, so `(26)` is a genuine dichotomy and
+  not a disjunction with a redundant branch.
+- `coalescence_not_injective`: coalescence is the third, separate failure the card notes — the
+  labelled divisor stops being simple with no mass lost and no label escaping.
 
 **The Corollary's `l^1` step** —
 `formal/GaloisForLFunctions/HTGeometry/ScheffeCounting.lean`.  The Corollary's proof opens with
@@ -609,3 +632,16 @@ remain paper-level until Suzuki's operator and Clark measure are represented in 
   convergence of tested sums, so this needs no measure constructed — the head/tail split with the
   uniform tail bound does it.  With this the Corollary is formal apart from naming the limit as a
   measure.  Targeted build green, axiom audit `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — `(26)` formalized (`tight_criterion_failure_iff`), with `two_defects_independent`
+  checking the dichotomy is genuine (neither branch implies the other, so neither is redundant) and
+  `coalescence_not_injective` recording the third failure the card names.  With this every numbered
+  statement of the card is formal except `(15)`/`(20)`, which identify the spectral measure as the
+  labelled sum, and `(8)`/`(9)`'s Blaschke inner factor.  Targeted build green, axiom audit
+  `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — `(8)`'s analytic content formalized
+  (`norm_le_norm_cayleyOfHerglotz_of_mapsTo`): an inner function of the upper half plane anchored at
+  `i` is dominated by the Blaschke factor `b_i`, which is exactly the assertion that `Theta / b_i`
+  is Schur.  The half-plane Schwarz--Pick statement needed no new analysis: the inverse Cayley
+  transform carries the disc to the half plane (`im_herglotzOfCayley_pos`) and sends `0` to the
+  anchor `i`, so mathlib's Schwarz lemma at the origin transfers directly.  Targeted build green,
+  axiom audit `[propext, Classical.choice, Quot.sound]`.

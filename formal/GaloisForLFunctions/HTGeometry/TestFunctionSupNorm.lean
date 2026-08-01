@@ -2,6 +2,7 @@ import GaloisForLFunctions.HTGeometry.SmoothUniformLimit
 import Mathlib.Analysis.Calculus.ContDiff.Basic
 import Mathlib.Topology.Algebra.Support
 import Mathlib.Topology.Order.Compact
+import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 
 /-!
 # Smooth functions supported in a fixed compact set, and their derivative sup-norms
@@ -105,8 +106,7 @@ theorem norm_iteratedDeriv_le_supNorm (hJ : IsCompact J) {phi : ℝ → ℂ}
     ‖iteratedDeriv m phi t‖ ≤ deningerTestSupNorm m phi :=
   le_csSup (bddAbove_norm_iteratedDeriv hJ h m) (Set.mem_range_self t)
 
-theorem deningerTestSupNorm_le (hJ : IsCompact J) {phi : ℝ → ℂ}
-    (h : phi ∈ deningerTestSpace J) (m : ℕ) {c : ℝ}
+theorem deningerTestSupNorm_le {phi : ℝ → ℂ} (m : ℕ) {c : ℝ}
     (hc : ∀ t, ‖iteratedDeriv m phi t‖ ≤ c) : deningerTestSupNorm m phi ≤ c := by
   refine csSup_le (Set.range_nonempty _) ?_
   rintro y ⟨t, rfl⟩
@@ -117,8 +117,7 @@ theorem deningerTestSupNorm_add_le (hJ : IsCompact J) {phi psi : ℝ → ℂ}
     (hphi : phi ∈ deningerTestSpace J) (hpsi : psi ∈ deningerTestSpace J) (m : ℕ) :
     deningerTestSupNorm m (phi + psi)
       ≤ deningerTestSupNorm m phi + deningerTestSupNorm m psi := by
-  have hsum : phi + psi ∈ deningerTestSpace J := (deningerTestSpace J).add_mem hphi hpsi
-  refine deningerTestSupNorm_le hJ hsum m fun t => ?_
+  refine deningerTestSupNorm_le m fun t => ?_
   have hderiv : iteratedDeriv m (phi + psi) t
       = iteratedDeriv m phi t + iteratedDeriv m psi t := by
     refine iteratedDeriv_add ?_ ?_
@@ -141,14 +140,15 @@ theorem deningerTestSupNorm_smul (hJ : IsCompact J) {phi : ℝ → ℂ}
     intro t
     rw [hderiv t, norm_smul, Real.norm_eq_abs]
   refine le_antisymm ?_ ?_
-  · refine deningerTestSupNorm_le hJ hsmul m fun t => ?_
+  · refine deningerTestSupNorm_le m fun t => ?_
     rw [hnorm t]
     exact mul_le_mul_of_nonneg_left (norm_iteratedDeriv_le_supNorm hJ hphi m t) (abs_nonneg a)
   · rcases eq_or_ne a 0 with rfl | ha
-    · simp [deningerTestSupNorm_nonneg hJ hsmul m]
+    · rw [abs_zero, zero_mul, zero_smul]
+      exact deningerTestSupNorm_nonneg hJ (deningerTestSpace J).zero_mem m
     · have habs : 0 < |a| := abs_pos.mpr ha
       rw [← le_div_iff₀' habs]
-      refine deningerTestSupNorm_le hJ hphi m fun t => ?_
+      refine deningerTestSupNorm_le m fun t => ?_
       rw [le_div_iff₀' habs, ← hnorm t]
       exact norm_iteratedDeriv_le_supNorm hJ hsmul m t
 

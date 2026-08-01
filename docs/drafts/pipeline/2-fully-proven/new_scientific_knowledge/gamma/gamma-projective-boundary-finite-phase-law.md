@@ -1810,6 +1810,30 @@ substitution `x = e^v/(1+e^v)`, whose basics are established here (`sigmoid_pos`
 the integrand is `e^{itv} · (e^v/(1+e^v)²)^σ`, an `L¹` density times a character.  The decay of `Γ` on
 vertical lines is then the Riemann–Lebesgue lemma, which mathlib has — that step is next.
 
+### The last analytic input of eq. (3): Gamma decays on vertical lines
+
+`HTGeometry/GammaVerticalDecay.lean` now proves it, without Stirling and without the Beta route.
+
+Substituting `x = e^u` in the Gamma integral turns it into a Fourier integral:
+
+> **`Gamma_vertical_eq_fourier`**: `Γ(σ + it) = ∫_ℝ e^{itu} · e^{σu − e^u} du` for `σ > 0`.
+
+The density `u ↦ e^{σu − e^u}` is integrable — doubly exponentially small at `+∞`, exponentially at
+`−∞` — so the Riemann–Lebesgue lemma applies directly, giving
+
+> **`Gamma_vertical_tendsto_zero`**: `Γ(σ + it) → 0` as `t → +∞`, and
+> **`Gamma_vertical_tendsto_nhdsWithin_zero`**: the same within `ℂ \ {0}`, since `Γ` has no zeros.
+
+That is exactly the hypothesis `hΓ0` of `gamma_monomial_valuation_residue`, so eq. (3)'s projective
+normalization is now unconditional.  The companion bound **`norm_Gamma_le_real_Gamma_re`**
+(`‖Γ(s)‖ ≤ Γ(Re s)`, from the integral representation) is also proved; together they were the two
+declarations that four Gamma modules of this corpus referenced but which no module supplied, so those
+modules now compile.
+
+The squared-modulus route through the Beta integral (`normSq_Gamma_vertical`, plus the logistic
+substitution `sigmoid`) is kept as well: it expresses `‖Γ(σ+it)‖²` as `Γ(2σ)` times a Beta integral,
+which is the shape the reflection-formula arguments of §4 use.
+
 *(b) The Euclidean side reduces to fine covers of small order.*  For a compact metric space, a
 Lebesgue number turns any finite open cover into a mesh condition, so `dim X ≤ n` follows from: for
 every `δ > 0` there is a finite open cover of mesh `< δ` and order `≤ n + 1`.  For a subset of `ℝ^M`

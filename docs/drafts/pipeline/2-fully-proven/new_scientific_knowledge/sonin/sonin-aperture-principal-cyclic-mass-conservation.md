@@ -196,7 +196,14 @@ weld.  This theorem itself does neither.
       conductor channel's norms diverge with the tower height, since it acts on the `k`-th layer
       unit by `log(r^k a)`.  So the remaining question is quantitative — whether the tower can be
       tied to the clock so that the contribution tracks the coupling energy with summable excess —
-      not whether any candidate survives — sharpened:
+      not whether any candidate survives.  **Settled negatively for this channel**:
+      `not_bddBelow_soninCompletedPacketValueVar_logShellChannelFamily` in
+      `SoninChannelAnnulusBound.lean`.  The tower norms diverge, but the source packets all live in
+      one *fixed* annulus — the frequency runs, the support does not — and on a fixed annulus only
+      the finitely many layers meeting it contribute, every higher layer cancelling between its two
+      cutoffs.  So the channel's pairing with the packets is bounded independently of the height,
+      and no schedule of heights restores the floor.  A surviving completion must grow *on the
+      fixed annulus*, which the logarithm of position cannot do — sharpened:
       `not_exists_lower_bound_soninAperturePacketCurvature_add_bounded` in
       `SoninCompletionUnboundedRequirement.lean` shows no counterterm that is bounded above on the
       packet family can restore a floor, even one depending on the packet.  So by
@@ -229,6 +236,12 @@ weld.  This theorem itself does neither.
 
 ## Log
 
+- 2026-08-01 — the logarithmic shell channel is closed as a completion, height schedule included.
+  Its norms do diverge with the tower, but that divergence lives far out in position while the
+  source packets stay in a fixed annulus; on that annulus the channel is a step multiplier with
+  finitely many contributing layers, bounded independently of the height.  So the divergence the
+  no-go demands cannot be supplied by the logarithm of position.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninChannelAnnulusBound.lean`.
 - 2026-08-01 — the fixed-channel form is dead too.  A completion given by pairing the packets
   against one bounded operator is bounded above by `||T||` times the packet energy, which is
   uniform in the frequency, so the divergent coupling energy beats it.  The Burnol conductor read

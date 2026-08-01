@@ -172,6 +172,68 @@ theorem cayleyOfHerglotz_herglotzOfCayley {Θ : ℂ} (h : Θ ≠ 1) :
   field_simp
   ring
 
+/-- **Exact imaginary part of the inverse Cayley transform.**  `Im (i(1+w)/(1-w))` is
+`Re ((1+w)/(1-w))`, which is `(1 - |w|²)/|1-w|²`. -/
+theorem im_herglotzOfCayley {w : ℂ} (hw : w ≠ 1) :
+    (herglotzOfCayley w).im = (1 - Complex.normSq w) / Complex.normSq (1 - w) := by
+  have hne : (1 : ℂ) - w ≠ 0 := sub_ne_zero.mpr (Ne.symm hw)
+  have hns : Complex.normSq ((1 : ℂ) - w) ≠ 0 := ne_of_gt (Complex.normSq_pos.mpr hne)
+  rw [herglotzOfCayley, Complex.div_im]
+  simp only [Complex.mul_im, Complex.mul_re, Complex.I_re, Complex.I_im,
+    Complex.add_re, Complex.add_im, Complex.one_re, Complex.one_im,
+    Complex.sub_re, Complex.sub_im, Complex.normSq_apply]
+  field_simp
+  ring
+
+/-- **The inverse Cayley transform carries the disc into the upper half plane.**  Together with the
+Schur bound this makes the correspondence a bijection between the two domains, not merely between
+values. -/
+theorem im_herglotzOfCayley_pos {w : ℂ} (hw : Complex.normSq w < 1) :
+    0 < (herglotzOfCayley w).im := by
+  have hne : w ≠ 1 := by
+    intro h
+    rw [h] at hw
+    simp at hw
+  rw [im_herglotzOfCayley hne]
+  exact div_pos (by linarith) (Complex.normSq_pos.mpr (sub_ne_zero.mpr (Ne.symm hne)))
+
+/-- The anchor: the Cayley transform vanishes exactly at `i`, which is the point the Blaschke factor
+of `(8)` is anchored at. -/
+theorem cayleyOfHerglotz_I : cayleyOfHerglotz Complex.I = 0 := by
+  rw [cayleyOfHerglotz, sub_self, zero_div]
+
+theorem herglotzOfCayley_zero : herglotzOfCayley 0 = Complex.I := by
+  rw [herglotzOfCayley]
+  norm_num
+
+/-- **`(8)`, the Blaschke bound.**  An inner function of the upper half plane anchored at `i` is
+dominated by the Blaschke factor `b_i = (z-i)/(z+i)`.  Transferring to the disc by the inverse
+Cayley transform turns the statement into the Schwarz lemma at the origin, since the anchor `i` is
+the inverse Cayley image of `0`.
+
+This is what makes the quotient `Theta / b_i` of `(8)` a Schur function: it is exactly the
+inequality `|Theta| <= |b_i|`. -/
+theorem norm_le_norm_cayleyOfHerglotz_of_mapsTo {Θ : ℂ → ℂ}
+    (hd : DifferentiableOn ℂ (fun w => Θ (herglotzOfCayley w)) (Metric.ball 0 1))
+    (hmaps : Set.MapsTo (fun w => Θ (herglotzOfCayley w))
+      (Metric.ball 0 1) (Metric.closedBall 0 1))
+    (hanchor : Θ Complex.I = 0) {z : ℂ} (hz : 0 < z.im) :
+    ‖Θ z‖ ≤ ‖cayleyOfHerglotz z‖ := by
+  have hden : z + Complex.I ≠ 0 := by
+    intro hc
+    have him : (z + Complex.I).im = 0 := by rw [hc]; simp
+    simp only [Complex.add_im, Complex.I_im] at him
+    linarith
+  have hball : ‖cayleyOfHerglotz z‖ < 1 := by
+    have hsq := normSq_cayleyOfHerglotz_lt_one hz
+    have hnn : 0 ≤ ‖cayleyOfHerglotz z‖ := norm_nonneg _
+    nlinarith [Complex.normSq_eq_norm_sq (cayleyOfHerglotz z)]
+  have hzero : (fun w => Θ (herglotzOfCayley w)) 0 = 0 := by
+    simp only [herglotzOfCayley_zero]
+    exact hanchor
+  have hschwarz := Complex.norm_le_norm_of_mapsTo_ball hd hmaps hzero hball
+  rwa [herglotzOfCayley_cayleyOfHerglotz hden] at hschwarz
+
 /-! ## The middle links of the rigidity chain -/
 
 /-- Equal spectral probabilities give equal Herglotz transforms: the `sigma -> m` link. -/

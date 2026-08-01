@@ -238,9 +238,8 @@ theorem finiteIndexUnitaryEvolution_mem_unitary
     .restrictScalars ℚ ℂ _
   unfold finiteIndexUnitaryEvolution
   apply NormedSpace.exp_mem_unitary_of_mem_skewAdjoint
-  rw [skewAdjoint.mem_iff, star_smul,
-    (finiteIndexDiagonalHamiltonian_isSelfAdjoint energy).star_eq]
-  module
+  exact (finiteIndexDiagonalHamiltonian_isSelfAdjoint energy).smul_mem_skewAdjoint
+    (by simp [skewAdjoint.mem_iff])
 
 /-- Integer powers of the one-step unitary are the continuous Hamiltonian
 evolution at integer times. -/
@@ -258,14 +257,96 @@ theorem finiteIndexUnitaryEvolution_pow_eq
   congr 1
   module
 
+/-- Operator algebra of a finite spectral packet. -/
+abbrev FiniteRecurrenceAlgebra (d : ℕ) :=
+  RHTower.FiniteIndexClockSpace (Fin (d + 1)) →L[ℂ]
+    RHTower.FiniteIndexClockSpace (Fin (d + 1))
+
+/-- Heisenberg conjugation by one carrier. -/
+def heisenbergConjugation {B : Type*} [CStarAlgebra B]
+    (U O : B) : B :=
+  U * O * star U
+
+/-- Reference Heisenberg evolution of a finite diagonal Hamiltonian. -/
+def finiteIndexHeisenbergEvolution
+    {d : ℕ} (energy : Fin (d + 1) → ℝ) (t : ℝ)
+    (O : FiniteRecurrenceAlgebra d) : FiniteRecurrenceAlgebra d :=
+  heisenbergConjugation
+    (exp (t • ((-Complex.I) •
+      RHTower.finiteIndexDiagonalHamiltonian energy))) O
+
+/-- Integer samples of continuous Heisenberg evolution equal conjugation by
+powers of the one-step unitary. -/
+theorem finiteIndexHeisenbergEvolution_natCast
+    {d : ℕ} (energy : Fin (d + 1) → ℝ) (n : ℕ)
+    (O : FiniteRecurrenceAlgebra d) :
+    finiteIndexHeisenbergEvolution energy (n : ℝ) O =
+      heisenbergConjugation ((finiteIndexUnitaryEvolution energy) ^ n) O := by
+  rw [finiteIndexHeisenbergEvolution,
+    ← finiteIndexUnitaryEvolution_pow_eq energy n]
+
+/-- A radially damped branch matches the reference record through `N`. -/
+def FiniteIndexRadialApproximation
+    {d : ℕ} (energy : Fin (d + 1) → ℝ)
+    (r : ℝ) (N : ℕ) (η : ℝ) : Prop :=
+  ∀ n ≤ N, ∀ O : FiniteRecurrenceAlgebra d, ‖O‖ ≤ 1 →
+    ‖heisenbergConjugation
+          (((r : ℂ) • finiteIndexUnitaryEvolution energy) ^ n) O -
+        finiteIndexHeisenbergEvolution energy (n : ℝ) O‖ < η
+
+/-- Every observable of a radially damped branch vanishes at late time. -/
+def FiniteIndexRadialExtinction
+    {d : ℕ} (energy : Fin (d + 1) → ℝ) (r : ℝ) : Prop :=
+  ∀ O : FiniteRecurrenceAlgebra d,
+    Tendsto
+      (fun n => heisenbergConjugation
+        (((r : ℂ) • finiteIndexUnitaryEvolution energy) ^ n) O)
+      atTop (𝓝 0)
+
+/-- An angular branch matches the reference record throughout `[-H,H]`. -/
+def FiniteIndexAngularApproximation
+    {d : ℕ} (energy perturbed : Fin (d + 1) → ℝ)
+    (H η : ℝ) : Prop :=
+  ∀ (O : FiniteRecurrenceAlgebra d) (t : ℝ),
+    ‖O‖ ≤ 1 → |t| ≤ H →
+    ‖finiteIndexHeisenbergEvolution perturbed t O -
+      finiteIndexHeisenbergEvolution energy t O‖ < η
+
+/-- A finite diagonal unitary record always has a strict-contraction
+completion that is uniformly indistinguishable through the chosen horizon
+and asymptotically extinct. -/
+theorem exists_finiteIndexRadialCompletion
+    {d : ℕ} (energy : Fin (d + 1) → ℝ)
+    (N : ℕ) (η : ℝ) (hη : 0 < η) :
+    ∃ r : ℝ, 0 < r ∧ r < 1 ∧
+      ‖(r : ℂ) • finiteIndexUnitaryEvolution energy‖ < 1 ∧
+      FiniteIndexRadialApproximation energy r N η ∧
+      FiniteIndexRadialExtinction energy r := by
+  obtain ⟨r, hr0, hr1, hdamped, hclose, hextinct⟩ :=
+    exists_scalarDampedUnitary_heisenberg_finiteHorizon_close_extinct
+      (finiteIndexUnitaryEvolution energy)
+      (finiteIndexUnitaryEvolution_mem_unitary energy) N η hη
+  refine ⟨r, hr0, hr1, hdamped, ?_, ?_⟩
+  · intro n hn O hO
+    rw [finiteIndexHeisenbergEvolution_natCast]
+    change
+      ‖(((r : ℂ) • finiteIndexUnitaryEvolution energy) ^ n) * O *
+          star (((r : ℂ) • finiteIndexUnitaryEvolution energy) ^ n) -
+        (finiteIndexUnitaryEvolution energy) ^ n * O *
+          star ((finiteIndexUnitaryEvolution energy) ^ n)‖ < η
+    exact hclose n hn O hO
+  · intro O
+    change Tendsto
+      (fun n =>
+        (((r : ℂ) • finiteIndexUnitaryEvolution energy) ^ n) * O *
+          star (((r : ℂ) • finiteIndexUnitaryEvolution energy) ^ n))
+      atTop (𝓝 0)
+    exact hextinct O
+
 /-- **Radial--angular future fan.** From one finite diagonal unitary record,
-the same positive tolerance and finite horizons admit both:
-
-* a strict-contraction completion whose every Heisenberg observable vanishes;
-* a unitary completion of every prescribed positive temporal dimension.
-
-Both branches are compared with the same reference Hamiltonian evolution in
-operator norm, uniformly over every normalized observable. -/
+the same positive tolerance and finite horizons admit both an extinct strict
+contraction and a unitary completion of every prescribed positive temporal
+dimension.  Both branches use the same operator-normalized observables. -/
 theorem exists_finiteQuantumRecurrenceFutureFan
     {d k : ℕ} (hk : 0 < k) (hkd : k ≤ d)
     (energy : Fin (d + 1) → ℝ)
@@ -273,50 +354,20 @@ theorem exists_finiteQuantumRecurrenceFutureFan
     ∃ (r : ℝ) (perturbed : Fin (d + 1) → ℝ),
       0 < r ∧ r < 1 ∧
       ‖(r : ℂ) • finiteIndexUnitaryEvolution energy‖ < 1 ∧
-      (∀ n ≤ N,
-        ∀ O : RHTower.FiniteIndexClockSpace (Fin (d + 1)) →L[ℂ]
-          RHTower.FiniteIndexClockSpace (Fin (d + 1)),
-        ‖O‖ ≤ 1 →
-        ‖(((r : ℂ) • finiteIndexUnitaryEvolution energy) ^ n) * O *
-              star (((r : ℂ) • finiteIndexUnitaryEvolution energy) ^ n) -
-            exp ((n : ℝ) • ((-Complex.I) •
-              RHTower.finiteIndexDiagonalHamiltonian energy)) * O *
-              star (exp ((n : ℝ) • ((-Complex.I) •
-                RHTower.finiteIndexDiagonalHamiltonian energy)))‖ < η) ∧
-      (∀ O : RHTower.FiniteIndexClockSpace (Fin (d + 1)) →L[ℂ]
-          RHTower.FiniteIndexClockSpace (Fin (d + 1)),
-        Tendsto
-          (fun n =>
-            (((r : ℂ) • finiteIndexUnitaryEvolution energy) ^ n) * O *
-              star (((r : ℂ) • finiteIndexUnitaryEvolution energy) ^ n))
-          atTop (𝓝 0)) ∧
+      FiniteIndexRadialApproximation energy r N η ∧
+      FiniteIndexRadialExtinction energy r ∧
       projectiveTemporalRank perturbed = k ∧
       (∀ i, dist (perturbed i) (energy i) < η / (2 * (H + 1))) ∧
-      ∀ (O : RHTower.FiniteIndexClockSpace (Fin (d + 1)) →L[ℂ]
-            RHTower.FiniteIndexClockSpace (Fin (d + 1)))
-          (t : ℝ),
-        ‖O‖ ≤ 1 → |t| ≤ H →
-        ‖exp (t • ((-Complex.I) •
-              RHTower.finiteIndexDiagonalHamiltonian perturbed)) * O *
-              star (exp (t • ((-Complex.I) •
-                RHTower.finiteIndexDiagonalHamiltonian perturbed))) -
-            exp (t • ((-Complex.I) •
-              RHTower.finiteIndexDiagonalHamiltonian energy)) * O *
-              star (exp (t • ((-Complex.I) •
-                RHTower.finiteIndexDiagonalHamiltonian energy)))‖ < η := by
-  let U := finiteIndexUnitaryEvolution energy
-  have hU := finiteIndexUnitaryEvolution_mem_unitary energy
+      FiniteIndexAngularApproximation energy perturbed H η := by
   obtain ⟨r, hr0, hr1, hdamped, hradial, hextinct⟩ :=
-    exists_scalarDampedUnitary_heisenberg_finiteHorizon_close_extinct
-      U hU N η hη
+    exists_finiteIndexRadialCompletion energy N η hη
   obtain ⟨perturbed, hrank, henergy, angular⟩ :=
     exists_finiteHorizonIndistinguishable_exactProjectiveTemporalRank
       hk hkd energy H η hH hη
-  refine ⟨r, perturbed, hr0, hr1, hdamped, ?_, hextinct,
-    hrank, henergy, angular⟩
-  intro n hn O hO
-  rw [← finiteIndexUnitaryEvolution_pow_eq energy n]
-  exact hradial n hn O hO
+  refine ⟨r, perturbed, hr0, hr1, hdamped, hradial, hextinct,
+    hrank, henergy, ?_⟩
+  simpa [FiniteIndexAngularApproximation,
+    finiteIndexHeisenbergEvolution, heisenbergConjugation] using angular
 
 end
 

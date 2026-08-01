@@ -3774,3 +3774,4 @@ import GaloisForLFunctions.RHTower.SoninBurnolCompletionNoFloor
 import GaloisForLFunctions.RHTower.SoninFixedChannelNoFloor
 import GaloisForLFunctions.RHTower.SoninLogShellChannelGrowth
 import GaloisForLFunctions.RHTower.SoninChannelAnnulusBound
+import GaloisForLFunctions.RHTower.SoninCompletionBlowUpRequirement
