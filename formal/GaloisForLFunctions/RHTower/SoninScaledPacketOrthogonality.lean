@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.OrthonormalNormalize
 import GaloisForLFunctions.RHTower.SoninScaledPacketBandFraction
+import GaloisForLFunctions.RHTower.SoninScaledPacketSupport
 
 /-!
 # Rescaled packets on disjoint annuli are orthogonal

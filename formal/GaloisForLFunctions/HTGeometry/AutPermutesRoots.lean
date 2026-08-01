@@ -46,4 +46,16 @@ theorem exists_perm_of_root_enumeration {d : ℕ} {p : Polynomial F} (v : Fin d 
   refine ⟨Equiv.ofBijective f ⟨hfinj, Finite.injective_iff_surjective.1 hfinj⟩, fun i => ?_⟩
   exact (hf i).symm
 
+/-- **A surjective action on the roots contains an odd element.**  With at least two roots, a
+transposition is realised, and a transposition is odd. -/
+theorem exists_odd_aut_of_surjective {d : ℕ} (hd : 2 ≤ d) (v : Fin d → E)
+    (hsurj : ∀ e : Equiv.Perm (Fin d), ∃ σ : E ≃ₐ[F] E, ∀ i, σ (v i) = v (e i)) :
+    ∃ (σ : E ≃ₐ[F] E) (e : Equiv.Perm (Fin d)),
+      (∀ i, σ (v i) = v (e i)) ∧ Equiv.Perm.sign e = -1 := by
+  have hne : (⟨0, by omega⟩ : Fin d) ≠ (⟨1, by omega⟩ : Fin d) := by
+    intro hcon
+    exact absurd (congrArg Fin.val hcon) (by norm_num)
+  obtain ⟨σ, hσ⟩ := hsurj (Equiv.swap (⟨0, by omega⟩ : Fin d) (⟨1, by omega⟩ : Fin d))
+  exact ⟨σ, _, hσ, Equiv.Perm.sign_swap hne⟩
+
 end GaloisForLFunctions.HTGeometry

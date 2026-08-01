@@ -85,4 +85,13 @@ theorem notMem_bot_of_notMem_bot_coe {S : IntermediateField F E} {x : S}
     rw [← hy]
     exact (IsScalarTower.algebraMap_apply F S E y).symm)
 
+/-- **The Vandermonde product commutes with any ring homomorphism.** -/
+theorem map_vandermondeProd_ringHom {A B : Type*} [CommRing A] [CommRing B] (f : A →+* B)
+    (v : Fin d → A) : f (vandermondeProd v) = vandermondeProd (fun i => f (v i)) := by
+  rw [vandermondeProd, vandermondeProd, map_prod]
+  refine Finset.prod_congr rfl fun i _ => ?_
+  rw [map_prod]
+  refine Finset.prod_congr rfl fun j _ => ?_
+  rw [map_sub]
+
 end GaloisForLFunctions.HTGeometry

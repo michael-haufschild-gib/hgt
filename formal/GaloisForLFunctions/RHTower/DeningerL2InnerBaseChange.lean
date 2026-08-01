@@ -9,6 +9,7 @@ one difference: the summand involves two elements, so its support sits in the un
 multiplicative supports rather than in a single one.
 
 * `deningerL2InnerFinsumBaseChange` : base change for the finite part.
+* `deningerArchPlaceSum_baseChange₂` : the two-variable archimedean base-change law.
 * `deningerL2Inner_baseChange` : base change for the inner product.
 * `deningerNormalizedL2Inner_baseChange` : independence of the field of definition.
 -/
@@ -115,17 +116,56 @@ theorem deningerL2InnerFinsumBaseChange {x y : K} (hx : x ≠ 0) (hy : y ≠ 0) 
   refine Finset.sum_congr rfl fun v hv => ?_
   rw [hfib v hv, deningerL2FibreSumProd v x y]
 
+/-- Two-variable embedding sums are place sums weighted by multiplicity. -/
+theorem deningerEmbeddingSum_eq_placeSum₂ (G : ℝ → ℝ → ℝ) (x y : K) :
+    ∑ φ : K →+* ℂ, G ‖φ x‖ ‖φ y‖
+      = ∑ w : InfinitePlace K, (w.mult : ℝ) * G (w x) (w y) := by
+  classical
+  have hmaps : ∀ φ ∈ (Finset.univ : Finset (K →+* ℂ)),
+      (InfinitePlace.mk φ) ∈ (Finset.univ : Finset (InfinitePlace K)) :=
+    fun _ _ => Finset.mem_univ _
+  rw [← Finset.sum_fiberwise_of_maps_to hmaps]
+  refine Finset.sum_congr rfl fun w _ => ?_
+  have hconst : ∀ φ ∈ Finset.univ.filter (fun φ : K →+* ℂ => InfinitePlace.mk φ = w),
+      G ‖φ x‖ ‖φ y‖ = G (w x) (w y) := by
+    intro φ hφ
+    rw [← (Finset.mem_filter.mp hφ).2]
+    rfl
+  rw [Finset.sum_congr rfl hconst, Finset.sum_const, InfinitePlace.card_filter_mk_eq,
+    nsmul_eq_mul]
+
+/-- **The two-variable archimedean base-change law for embedding sums.** -/
+theorem deningerEmbeddingSum_baseChange₂ (G : ℝ → ℝ → ℝ) (x y : K) :
+    ∑ ψ : L →+* ℂ, G ‖ψ (algebraMap K L x)‖ ‖ψ (algebraMap K L y)‖
+      = (finrank K L : ℝ) * ∑ φ : K →+* ℂ, G ‖φ x‖ ‖φ y‖ := by
+  classical
+  have hmaps : ∀ ψ ∈ (Finset.univ : Finset (L →+* ℂ)),
+      ψ.comp (algebraMap K L) ∈ (Finset.univ : Finset (K →+* ℂ)) := fun _ _ => Finset.mem_univ _
+  rw [← Finset.sum_fiberwise_of_maps_to hmaps, Finset.mul_sum]
+  refine Finset.sum_congr rfl fun φ _ => ?_
+  have hconst : ∀ ψ ∈ Finset.univ.filter (fun ψ : L →+* ℂ => ψ.comp (algebraMap K L) = φ),
+      G ‖ψ (algebraMap K L x)‖ ‖ψ (algebraMap K L y)‖ = G ‖φ x‖ ‖φ y‖ := by
+    intro ψ hψ
+    rw [← (Finset.mem_filter.mp hψ).2]
+    rfl
+  rw [Finset.sum_congr rfl hconst, Finset.sum_const, deningerEmbeddingFibre_card (L := L) φ,
+    nsmul_eq_mul]
+
+/-- **The two-variable archimedean base-change law for place sums.** -/
+theorem deningerArchPlaceSum_baseChange₂ (G : ℝ → ℝ → ℝ) (x y : K) :
+    ∑ w : InfinitePlace L, (w.mult : ℝ) * G (w (algebraMap K L x)) (w (algebraMap K L y))
+      = (finrank K L : ℝ) * ∑ v : InfinitePlace K, (v.mult : ℝ) * G (v x) (v y) := by
+  rw [← deningerEmbeddingSum_eq_placeSum₂ G (algebraMap K L x) (algebraMap K L y),
+    ← deningerEmbeddingSum_eq_placeSum₂ G x y]
+  exact deningerEmbeddingSum_baseChange₂ G x y
+
 /-- **Base change for the `L²` inner product.** -/
 theorem deningerL2Inner_baseChange {x y : K} (hx : x ≠ 0) (hy : y ≠ 0) :
     deningerL2Inner (algebraMap K L x) (algebraMap K L y)
       = (finrank K L : ℝ) * deningerL2Inner x y := by
   rw [deningerL2Inner, deningerL2Inner, mul_add,
-    ← deningerL2InnerFinsumBaseChange hx hy]
-  congr 1
-  have harch := deningerArchPlaceSum_baseChange (K := K) (L := L)
-    (fun t => Real.log t * Real.log (0 : ℝ)) x
-  clear harch
-  exact deningerArchInnerBaseChange hx hy
+    ← deningerL2InnerFinsumBaseChange hx hy,
+    ← deningerArchPlaceSum_baseChange₂ (fun s t => Real.log s * Real.log t) x y]
 
 /-- **The normalized inner product does not depend on the field of definition.** -/
 theorem deningerNormalizedL2Inner_baseChange {x y : K} (hx : x ≠ 0) (hy : y ≠ 0) :

@@ -633,12 +633,13 @@ def xiUnitaryPolarAtlasEquiv : XiUnitaryPolarAtlasCopy ≃ XiZeroCopy where
   left_inv := by
     intro a
     rcases a with q | q
-    · simp [xiUnitaryPolarAtlasToZeroCopy, xiZeroCopyToUnitaryPolarAtlas, q.2]
+    · change xiZeroCopyToUnitaryPolarAtlas q.1 = Sum.inl q
+      rw [xiZeroCopyToUnitaryPolarAtlas, dif_pos q.2]
     · rcases q with q | q
       · have hnotright : ¬ 0 < (I * xiSpectralPoint q.1).re := by
-          rw [q.2]
-        simp [xiUnitaryPolarAtlasToZeroCopy, xiZeroCopyToUnitaryPolarAtlas,
-          hnotright, q.2]
+          linarith [q.2]
+        change xiZeroCopyToUnitaryPolarAtlas q.1 = Sum.inr (Sum.inl q)
+        rw [xiZeroCopyToUnitaryPolarAtlas, dif_neg hnotright, dif_pos q.2]
       · have hleft :
             (I * xiSpectralPoint (xiRightLeftReflectEquiv q).1).re < 0 :=
           (xiRightLeftReflectEquiv q).2
@@ -648,8 +649,16 @@ def xiUnitaryPolarAtlasEquiv : XiUnitaryPolarAtlasCopy ≃ XiZeroCopy where
         have hnotcritical :
             (I * xiSpectralPoint (xiRightLeftReflectEquiv q).1).re ≠ 0 :=
           hleft.ne
-        simp [xiUnitaryPolarAtlasToZeroCopy, xiZeroCopyToUnitaryPolarAtlas,
-          hnotright, hnotcritical]
+        change xiZeroCopyToUnitaryPolarAtlas
+            (xiRightLeftReflectEquiv q).1 = Sum.inr (Sum.inr q)
+        rw [xiZeroCopyToUnitaryPolarAtlas, dif_neg hnotright,
+          dif_neg hnotcritical]
+        have hsub :
+            (⟨(xiRightLeftReflectEquiv q).1,
+                lt_of_le_of_ne (le_of_not_gt hnotright) hnotcritical⟩ :
+              XiLeftZeroCopy) = xiRightLeftReflectEquiv q :=
+          Subtype.ext rfl
+        rw [hsub, xiRightLeftReflectEquiv.symm_apply_apply]
   right_inv := by
     intro q
     unfold xiZeroCopyToUnitaryPolarAtlas

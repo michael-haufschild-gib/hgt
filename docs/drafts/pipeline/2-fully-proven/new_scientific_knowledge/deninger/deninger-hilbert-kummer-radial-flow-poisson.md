@@ -38,7 +38,9 @@
   `GaloisForLFunctions.RHTower.DeningerPlaceDegree`,
   `GaloisForLFunctions.RHTower.DeningerL2PlaceSum`,
   `GaloisForLFunctions.RHTower.DeningerL2Norm`,
-  `GaloisForLFunctions.RHTower.DeningerL2Inner`
+  `GaloisForLFunctions.RHTower.DeningerL2Inner`,
+  `GaloisForLFunctions.RHTower.DeningerL2InnerBaseChange`,
+  `GaloisForLFunctions.RHTower.DeningerAbsL2Inner`
   (the gluing of the place tower, the absolute height on `Q̄`, the
   normed Kummer group `𝒢`, the normed `ℚ`-vector space `𝒢 ⊗ ℚ`, its
   completion, and the local-degree normalization of the place space)
@@ -801,12 +803,60 @@ factorization of the local degree together with the fundamental identity.
   contribute a factor `d_{w/v}` and the weight contributes `1/(d_v·d_{w/v})`, leaving `d_{w/v}`,
   whose fibre sum is the degree.
 
+### Base change for the `L²` inner product landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerL2InnerBaseChange.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerL2InnerFinsumBaseChange` — the finite part.  Same support-and-fibration argument as for
+  the norm, with the summand now involving two elements: its support sits in the *union* of the two
+  multiplicative supports, the restriction maps that union into the corresponding union downstairs
+  because a value equal to one upstairs forces one downstairs, and a place in a fibre over a place
+  in the union is itself in the union because `t ≠ 1` gives `t^d ≠ 1`.
+- `deningerEmbeddingSum_eq_placeSum₂`, `deningerEmbeddingSum_baseChange₂`,
+  `deningerArchPlaceSum_baseChange₂` — **the two-variable archimedean base-change law**.  The
+  one-variable versions do not apply, because the archimedean summand of the inner product depends
+  on two elements; the proof is the same fibrewise argument, since on the fibre over `φ` both
+  values are those of `φ`.
+- `deningerL2Inner_baseChange` — **`⟨x, y⟩` computed in an extension is `[L : K]` times its value
+  in the base field**.
+- `deningerNormalizedL2Inner_baseChange` — **the normalized inner product does not depend on the
+  field of definition**.
+
+With this the whole `p = 2` structure of the card's `(1)`--`(2)` is proved: the `L²` inner product
+of algebraic numbers is an invariant of the numbers alone, its diagonal is the `L²` Kummer norm,
+and the norm's null set is the torsion (`deningerAllPlaces_one_isOfFinOrder`).
+
+### The absolute `L²` inner product landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerAbsL2Inner.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+The `L²` inner product is now an invariant of the algebraic numbers themselves, in the same sense
+and by the same mechanism as the absolute height.
+
+- `deningerNormalizedL2Inner K x y = ⟨x, y⟩ / [K : ℚ]`, and `deningerNormalizedL2Inner_ringHom` —
+  **preserved by every ring homomorphism between number fields**, with no compatibility hypothesis,
+  because such a map is automatically a `ℚ`-algebra map.
+- `deningerAbsL2Inner α β` — **the absolute `L²` inner product**: the normalized inner product
+  computed in `ℚ⟮α, β⟯`.
+- `deningerAbsL2Inner_intermediateField` — **any** finite intermediate field containing both
+  elements computes it, via the explicit inclusion ring hom.
+- `deningerAbsL2Inner_comm` — symmetry.
+
+Together with `deningerAbsHeight` this gives both structures the card's `H_Kum` needs — the `L¹`
+height and the `L²` inner product — as invariants on the algebraic numbers, each independent of
+the field of definition, each proved from the place tower rather than quoted.
+
 ### Remaining
 
-Base change for the inner product itself, then the Hilbert structure.  The fibre law is proved;
-what is left is to run the same support-and-fibration argument as
-`deningerL2FinsumBaseChange` for the finite part — the only new point being that the support of
-`(log v x)(log v y)/d_v` is contained in the *union* of the two multiplicative supports rather
-than in one — together with `deningerArchPlaceSum_baseChange` for the archimedean part.  That
-gives `⟨·,·⟩` as an invariant of the algebraic numbers alone, and with it the completion of
-`𝒢 ⊗ ℚ` becomes the Hilbert space `H_Kum` of the card's `(1)`.
+Transport of `deningerAbsL2Inner` along the Kummer class map, so that the completion
+`deningerKummerCompletion` carries an `InnerProductSpace ℝ` structure and not only a norm.  This is
+bookkeeping over what is already proved: the form is symmetric
+(`deningerAbsL2Inner_comm`), additive in each argument under multiplication of algebraic numbers
+(the logarithm of a place is additive), it kills the torsion that `𝒢` quotients out
+(`deningerAllPlaces_one_isOfFinOrder`), and it is field-independent
+(`deningerNormalizedL2Inner_ringHom`).  With that structure `deningerKummerCompletion` *is* the
+`H_Kum` of the card's `(1)`, and `(2)` is `deningerKummerClass` with its injectivity
+(`deningerKummerClass_eq_zero_iff_isOfFinOrder`) and dense span
+(`deningerKummerClass_dense_completion`) already proved.

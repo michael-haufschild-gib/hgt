@@ -1698,3 +1698,45 @@ dividing the discriminant.
   existence statements cannot be done with `obtain`, because the result is data (an equivalence of
   groups) and a `Prop` may not be eliminated into a type.  `Classical.choose` with `choose_spec`,
   and `.1`/`.2` projections rather than destructuring, is the way through.
+
+- 2026-08-01 — `AutPermutesRoots.lean` derives the permutation hypothesis of the previous entry.
+  An automorphism over the base commutes with evaluating a polynomial with base coefficients
+  (`aeval_algEquiv_eq_zero`), so it maps the root set into itself (`mem_rootSet_algEquiv`); and if a
+  finite family enumerates the roots injectively, the induced map on indices is injective, hence a
+  permutation (`exists_perm_of_root_enumeration`).  So `hvperm` is not data either — it follows from
+  the family enumerating the roots.  Axioms `[propext, Classical.choice, Quot.sound]`.
+  Of the from-roots capstone's inputs, what is left that is genuinely data: the two polynomials, the
+  model identification, an injective enumeration of the first factor's roots, one automorphism
+  acting oddly, the degree of the radical generator, and the square class.
+
+- 2026-08-01 — `exists_odd_aut_of_surjective` removes the last piece of `beta` data.  If the Galois
+  action on the roots is surjective onto the permutations — which for the card is how
+  `centeredGaloisEquiv` is built, out of `centeredRootPerm` — then with at least two roots a
+  transposition is realised, and a transposition is odd.  So the odd automorphism the discriminant
+  argument needs is a consequence of full symmetric monodromy rather than an extra assumption.
+  Axioms `[propext, Classical.choice, Quot.sound]`.
+  The genuine data of the from-roots capstone is now: the two polynomials, the model identification,
+  an injective enumeration of the first factor's roots with the surjectivity of the action on them,
+  the degree of the radical generator, and the square class.
+
+- 2026-08-01 — `radicalBaseChangeEvenFromEnumeration` is the minimal form of the card's `(3)`.  Its
+  hypotheses are: the two polynomials nonzero, the ambient a splitting field of their product, a
+  symmetric-group identification in a model splitting field, a primitive root of unity, an injective
+  enumeration of the first factor's roots that hits exactly the root set, surjectivity of the Galois
+  action on those roots, the degree of the radical generator, and the square class.  Nothing else.
+  Axioms `[propext, Classical.choice, Quot.sound]`.
+  Every one of these is a proved theorem for the card's centered polynomial: `centeredMonicE` with
+  `X^n - c_0`; `isSplittingField_centeredMonicE`; `centeredRootFieldPermEquiv`; the algebraically
+  closed constants; `centeredRootIn` with `centeredRootIn_injective` and `rootSet_centeredMonicE`;
+  `centeredRootPerm` for surjectivity; `finrank_tailCoeffField`; and
+  `not_exists_sq_disc_mul_centeredConstant`.
+
+- 2026-08-01 — `RootEnumerationTransport.lean` closes the last frame mismatch between the model and
+  the base change.  The capstone wants the roots enumerated inside the **ambient's** root field,
+  while the corpus proves everything inside `centeredField`.  An isomorphism over the base matches
+  the two root sets (`mem_rootSet_algEquiv_iff`), so an enumeration pulls back
+  (`rootEnumeration_algEquiv`) and a surjective action pushes across by conjugation
+  (`rootAction_surjective_algEquiv`).  Axioms `[propext, Classical.choice, Quot.sound]`.
+  The isomorphism itself is `splittingFieldAutEquiv`'s ingredient: both fields are splitting fields
+  of the centered polynomial over the coefficient field, by `isSplittingField_centeredMonicE` and
+  `isSplittingField_rootField`.

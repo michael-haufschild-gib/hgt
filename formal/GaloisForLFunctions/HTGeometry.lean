@@ -3166,3 +3166,6 @@ import GaloisForLFunctions.HTGeometry.HyperbolicModulus
 import GaloisForLFunctions.HTGeometry.GammaFieldDominantIndex
 import GaloisForLFunctions.HTGeometry.RadicalBaseChangeFromRoots
 import GaloisForLFunctions.HTGeometry.AutPermutesRoots
+import GaloisForLFunctions.HTGeometry.OrthonormalNormalize
+import GaloisForLFunctions.HTGeometry.GammaFieldNoCancellation
+import GaloisForLFunctions.HTGeometry.RootEnumerationTransport

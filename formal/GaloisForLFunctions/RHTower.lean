@@ -3860,3 +3860,6 @@ import GaloisForLFunctions.RHTower.DeningerL2Norm
 import GaloisForLFunctions.RHTower.SoninScaledPacketBandFraction
 import GaloisForLFunctions.RHTower.GammaJacobiTailConnectionTransgression
 import GaloisForLFunctions.RHTower.DeningerL2Inner
+import GaloisForLFunctions.RHTower.DeningerL2InnerBaseChange
+import GaloisForLFunctions.RHTower.SoninScaledPacketOrthogonality
+import GaloisForLFunctions.RHTower.DeningerAbsL2Inner

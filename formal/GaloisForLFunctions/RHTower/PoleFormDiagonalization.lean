@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.ArchimedeanConcentrationGain
+import GaloisForLFunctions.HTGeometry.HyperbolicBounds
 
 /-!
 # Exact diagonalization of the pole form, and the baseline dichotomy
@@ -64,34 +65,13 @@ theorem pole_diagonalize (P Q : ℝ) : 2 * (P + Q) * (P - Q) = 2 * P ^ 2 - 2 * Q
 
 /-- `sinh²(u/2) = (cosh u - 1)/2`. -/
 theorem sinh_half_sq (u : ℝ) : Real.sinh (u / 2) ^ 2 = (Real.cosh u - 1) / 2 := by
-  have h := Real.cosh_two_mul (u / 2)
-  have hs := Real.cosh_sq_sub_sinh_sq (u / 2)
-  have e : 2 * (u / 2) = u := by ring
-  rw [e] at h
-  linarith
+  exact HTGeometry.sinh_half_sq u
 
 /-- `sinh x ≤ x cosh x` for `x ≥ 0`: the difference has derivative `x sinh x ≥ 0` and vanishes at
 the origin. -/
 theorem sinh_le_self_mul_cosh {x : ℝ} (hx : 0 ≤ x) :
     Real.sinh x ≤ x * Real.cosh x := by
-  have hmono : MonotoneOn (fun t : ℝ => t * Real.cosh t - Real.sinh t) (Set.Ici (0 : ℝ)) := by
-    have hderiv : ∀ t : ℝ, HasDerivAt (fun t : ℝ => t * Real.cosh t - Real.sinh t)
-        (t * Real.sinh t) t := by
-      intro t
-      have h := ((hasDerivAt_id t).mul (Real.hasDerivAt_cosh t)).sub (Real.hasDerivAt_sinh t)
-      convert! h using 1 ; simp
-    refine monotoneOn_of_deriv_nonneg (convex_Ici 0) (by fun_prop)
-      (fun t _ => (hderiv t).differentiableAt.differentiableWithinAt) ?_
-    intro t ht
-    rw [interior_Ici] at ht
-    rw [(hderiv t).deriv]
-    have h1 : (0 : ℝ) ≤ t := le_of_lt ht
-    have h2 : (0 : ℝ) ≤ Real.sinh t := Real.sinh_nonneg_iff.mpr h1
-    positivity
-  have h0 : (0 : ℝ) * Real.cosh 0 - Real.sinh 0 = 0 := by simp
-  have := hmono (Set.self_mem_Ici) hx hx
-  simp only [h0] at this
-  linarith [this]
+  exact HTGeometry.sinh_le_self_mul_cosh hx
 
 /-- The negative direction of the pole form is nonnegative in size and vanishes at `ℓ = 0`:
 `sinh ℓ ≥ ℓ`. -/
@@ -114,24 +94,7 @@ theorem sinh_sub_self_nonneg {ℓ : ℝ} (hℓ : 0 ≤ ℓ) : 0 ≤ Real.sinh �
 /-- **Cubic smallness.**  `cosh t - 1 ≤ (t²/2)·cosh t`, the pointwise input to
 `sinh ℓ - ℓ ≤ (ℓ³/6)cosh ℓ`. -/
 theorem cosh_sub_one_le {t : ℝ} (ht : 0 ≤ t) : Real.cosh t - 1 ≤ t ^ 2 / 2 * Real.cosh t := by
-  have hs : Real.sinh (t / 2) ^ 2 = (Real.cosh t - 1) / 2 := sinh_half_sq t
-  have hhalf : (0 : ℝ) ≤ t / 2 := by linarith
-  have hb := sinh_le_self_mul_cosh hhalf
-  have hsn : (0 : ℝ) ≤ Real.sinh (t / 2) := Real.sinh_nonneg_iff.mpr hhalf
-  have hsq : Real.sinh (t / 2) ^ 2 ≤ (t / 2) ^ 2 * Real.cosh (t / 2) ^ 2 := by
-    have hcn : (0 : ℝ) ≤ (t / 2) * Real.cosh (t / 2) := by
-      have := Real.cosh_pos (t / 2); positivity
-    nlinarith [hb, hsn, hcn]
-  have hdouble : Real.cosh t = 2 * Real.cosh (t / 2) ^ 2 - 1 := by
-    have h := Real.cosh_two_mul (t / 2)
-    have hss := Real.cosh_sq_sub_sinh_sq (t / 2)
-    have e : 2 * (t / 2) = t := by ring
-    rw [e] at h
-    linarith
-  have hone : (1 : ℝ) ≤ Real.cosh (t / 2) ^ 2 := by
-    have := Real.one_le_cosh (t / 2)
-    nlinarith
-  nlinarith [hs, hsq, hdouble, hone]
+  exact HTGeometry.cosh_sub_one_le ht
 
 /-- **The baseline dichotomy.**  Either the even functional carries mass, in which case the pole form
 contributes `2P²`, or it does not, in which case the high-frequency fraction is near one and the

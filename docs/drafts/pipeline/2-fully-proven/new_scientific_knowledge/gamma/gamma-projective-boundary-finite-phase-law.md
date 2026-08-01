@@ -2372,6 +2372,23 @@ reversed, the degree `deg p − deg q` of the rational factor, and the digamma e
 This is the existential in eq. (5) (“there is an index `j` such that …”): the normalizing member can
 always be chosen, so the dominance hypothesis of the collapse costs no generality.
 
+### No cancellation at the dominant datum
+
+`HTGeometry/GammaFieldNoCancellation.lean` discharges the last numerical hypothesis.  Two monomials
+contribute to the same limit constant only when both their `Γ`-exponents and their digamma exponents
+agree, so:
+
+> **`sum_gammaMonomialLimit_eq_one`**: if the monomials of the normalizing coefficient carry pairwise
+> distinct `(Γ-exponent, digamma exponent)` pairs — the normal form obtained by collecting monomials
+> with equal exponents — only the normalizing monomial contributes and the limit constant is exactly
+> `1`.
+
+Hence **`rank_finite_of_gammaFieldSum_distinct`**: eq. (9) with no numerical assumption on the
+coefficients at all, only their monomial expansion in normal form.  Together with
+`exists_dominant_monomial_family` (the dominant index is free) the hypotheses of the finite-phase law
+are now exactly: the solution is strip almost periodic and holomorphic, the coefficients are written
+in Gamma-field monomial normal form, and the jet monomials of the relation are distinct.
+
 *(b) The Euclidean side reduces to fine covers of small order.*  For a compact metric space, a
 Lebesgue number turns any finite open cover into a mesh condition, so `dim X ≤ n` follows from: for
 every `δ > 0` there is a finite open cover of mesh `< δ` and order `≤ n + 1`.  For a subset of `ℝ^M`

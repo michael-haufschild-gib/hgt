@@ -1,6 +1,7 @@
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 
 /-!
 # The modulus of a hyperbolic sine on a vertical line
@@ -96,5 +97,82 @@ theorem freeClockWeight_eq_coth {a : ℝ} (ha : a ≠ 0) (hs : Real.sinh a ≠ 0
   have hc : Real.cosh a ≠ 0 := ne_of_gt (Real.cosh_pos a)
   field_simp
   ring
+
+/-! ## The free-model deficiency transform
+
+For the free model the deficiency transform is a symmetric exponential integral, which evaluates to
+a hyperbolic sine over the spectral factor.  Its squared modulus against `1 + x²` is then the
+constant of the previous section, so the free clock's weights are flat by computation, not by
+assumption. -/
+
+/-- The symmetric exponential integral is a hyperbolic sine over the exponent. -/
+theorem integral_exp_mul_symm {w : ℂ} (hw : w ≠ 0) (a : ℝ) :
+    ∫ s in (-a)..a, Complex.exp (w * s) = 2 * Complex.sinh (w * (a : ℂ)) / w := by
+  rw [integral_exp_mul_complex hw, show ((-a : ℝ) : ℂ) = -(a : ℂ) by push_cast; ring,
+    show w * -(a : ℂ) = -(w * (a : ℂ)) by ring]
+  have hsinh : Complex.sinh (w * (a : ℂ))
+      = (Complex.exp (w * (a : ℂ)) - Complex.exp (-(w * (a : ℂ)))) / 2 := Complex.ext rfl rfl
+  rw [hsinh]
+  field_simp
+
+/-- **The free-model weight is flat.**  At a quarter-period frequency the squared modulus of the
+deficiency transform, against the factor `1 + x²`, is `4 cosh²a` — independent of the mode. -/
+theorem normSq_freeDeficiencyTransform {a x : ℝ} (h : Real.cos (x * a) = 0) :
+    (1 + x ^ 2) *
+        Complex.normSq (2 * Complex.sinh ((1 - (x : ℂ) * Complex.I) * (a : ℂ)) /
+          (1 - (x : ℂ) * Complex.I))
+      = 4 * Real.cosh a ^ 2 := by
+  have harg : (1 - (x : ℂ) * Complex.I) * (a : ℂ)
+      = (a : ℂ) - ((x * a : ℝ) : ℂ) * Complex.I := by
+    push_cast
+    ring
+  rw [harg, Complex.normSq_div, Complex.normSq_mul]
+  have h2 : Complex.normSq (2 : ℂ) = 4 := by
+    simp
+    norm_num
+  rw [h2, show (4 : ℝ) * Complex.normSq (Complex.sinh ((a : ℂ) - ((x * a : ℝ) : ℂ) * Complex.I)) /
+      Complex.normSq (1 - (x : ℂ) * Complex.I)
+      = 4 * (Complex.normSq (Complex.sinh ((a : ℂ) - ((x * a : ℝ) : ℂ) * Complex.I)) /
+        Complex.normSq (1 - (x : ℂ) * Complex.I)) by ring]
+  rw [show (1 + x ^ 2) * (4 * (Complex.normSq (Complex.sinh ((a : ℂ) -
+      ((x * a : ℝ) : ℂ) * Complex.I)) / Complex.normSq (1 - (x : ℂ) * Complex.I)))
+      = 4 * ((1 + x ^ 2) * (Complex.normSq (Complex.sinh ((a : ℂ) -
+        ((x * a : ℝ) : ℂ) * Complex.I)) / Complex.normSq (1 - (x : ℂ) * Complex.I))) by ring,
+    quarterPeriod_weight_const h]
+
+/-! ## The free model's even pencil
+
+The even characteristic pencil of the free model is the sum of the two deficiency transforms, and
+the sum of hyperbolic sines at conjugate arguments collapses to a hyperbolic sine times a cosine.
+Since the hyperbolic sine of a nonzero aperture never vanishes, the pencil's zeros are exactly the
+zeros of the cosine — the quarter-period frequencies. -/
+
+/-- **Conjugate hyperbolic sines add to a cosine.**  The odd parts cancel, leaving `2 sinh a` times
+`cos(z a)`. -/
+theorem sinh_add_sinh_conj (a : ℝ) (z : ℂ) :
+    Complex.sinh ((a : ℂ) + Complex.I * z * a) + Complex.sinh ((a : ℂ) - Complex.I * z * a)
+      = 2 * Complex.sinh (a : ℂ) * Complex.cos (z * a) := by
+  rw [Complex.sinh_add, Complex.sinh_sub,
+    show Complex.I * z * (a : ℂ) = (z * a) * Complex.I by ring,
+    Complex.cosh_mul_I, Complex.sinh_mul_I]
+  ring
+
+/-- **The free model's even spectrum.**  For a nonzero aperture the even pencil vanishes exactly at
+the zeros of `cos(z a)`, which are the quarter-period frequencies `(k + 1/2)π/a`. -/
+theorem freeEvenPencil_eq_zero_iff {a : ℝ} (ha : a ≠ 0) (z : ℂ) :
+    Complex.sinh ((a : ℂ) + Complex.I * z * a) + Complex.sinh ((a : ℂ) - Complex.I * z * a) = 0
+      ↔ ∃ k : ℤ, z * a = (2 * (k : ℂ) + 1) * (Real.pi : ℂ) / 2 := by
+  rw [sinh_add_sinh_conj]
+  have hsinh : Complex.sinh (a : ℂ) ≠ 0 := by
+    rw [← Complex.ofReal_sinh, Ne, Complex.ofReal_eq_zero]
+    exact _root_.Real.sinh_ne_zero.mpr ha
+  have h2 : (2 : ℂ) * Complex.sinh (a : ℂ) ≠ 0 := mul_ne_zero two_ne_zero hsinh
+  rw [mul_eq_zero]
+  constructor
+  · rintro (hbad | h)
+    · exact absurd hbad h2
+    · exact Complex.cos_eq_zero_iff.mp h
+  · intro h
+    exact Or.inr (Complex.cos_eq_zero_iff.mpr h)
 
 end GaloisForLFunctions.HTGeometry

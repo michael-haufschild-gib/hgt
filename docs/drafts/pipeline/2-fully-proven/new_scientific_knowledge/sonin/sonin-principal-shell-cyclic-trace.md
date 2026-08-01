@@ -1085,9 +1085,15 @@ backwards for it.  What saves the term is that its gap to the carrier, `delta r 
 this trade is expressible: the fraction is `16 t delta A^2 / I`, linear in the band and quadratic in
 the tail at the gap.
 
-What remains is purely the instantiation: build the `N(r)` rescaled packets on disjoint sub-annuli,
-normalise them, take the unit targets to be their dilates, and feed the three band terms and the
-ideal errors into `card_sub_le_hsNormSq_of_ideal_errors`.  With `N` about `r/K` this gives coupling
+The family itself is now built: `orthonormal_soninScaledPacketEven` takes any ordered index type,
+half-widths, centres with pairwise gaps, and *arbitrary* carriers, and returns an orthonormal family
+of normalized rescaled packets.  Only the supports enter the orthogonality, so the carriers need no
+relation to each other — which matters, since the schedule gives all annuli the same carrier `r q`
+and a proof that leaned on distinct carriers would not apply.
+
+What remains is the instantiation: cut the shell into `N(r)` separated annuli, take the unit targets
+to be the dilates, and feed the three band terms and the ideal errors into
+`card_sub_le_hsNormSq_of_ideal_errors`.  With `N` about `r/K` this gives coupling
 energy of order `r`, against the `log r` cap, closing the shortfall test.  Then feed that through the two-branch estimate to get `N` of
 order `r` packets at scale `r`.
 
@@ -1293,6 +1299,7 @@ family is abstract, so two widths have unrelated profiles.
 | **energy from nearly preserved modes**: an operator carrying each of `N` orthonormal vectors to within `η` of *some* unit vector has energy at least `N (1-η)²`, with no relation required between the targets | `sum_finset_norm_sq_apply_le_hsNormSq`, `card_mul_sq_le_hsNormSq_of_le_norm_apply`, `card_mul_sq_le_hsNormSq_of_near_unit` |
 | **survivor energy**: an operator estimated on an orthonormal family by a unit target up to finitely many relative-ideal errors and a fixed slack has energy at least `(N - ∑ₖ hsNormSq Tₖ/ε²)(1-η)²` — both discounts independent of `N` | `card_sub_le_hsNormSq_of_ideal_errors`, `card_sub_le_hsNormSq_of_one_ideal_error` |
 | **the band fraction**, not merely a threshold: the share of a packet's energy inside a band of radius `t` below its carrier is at most `16 t δ A² / I`, with `A` the tail bound at the gap — so a *wide* band is harmless provided its gap to the carrier is large | `soninRefTailSup_antitone`, `norm_sq_soninScaledPacketEven_ge_half`, `norm_sq_evenFourierCutoff_le_fraction_mul_norm_sq` |
+| **the orthonormal family**: separated annuli give packets vanishing on each other's supports, hence orthogonal for *arbitrary unrelated carriers*; the energy floor makes each nonzero, so normalizing gives an orthonormal family as large as the shell can be cut | `orthonormal_normalize`, `inner_soninScaledPacketEven_eq_zero_of_disjoint`, `soninScaledPacketEven_ne_zero`, `orthonormal_soninScaledPacketEven` |
 | **rapid decay of the reference profile**, and hence of every lobe in the rescaled variable `δξ` | `contDiff_soninUnitBumpC`, `hasCompactSupport_soninUnitBumpC`, `tendsto_pow_mul_norm_fourier_soninUnitBumpC_atTop`, `tendsto_pow_mul_norm_fourier_soninOneSidedBump` |
 | **the lobe profile's transform is centre free**: a phase times `δ` times the reference transform at `δξ`, so its magnitude is `δ‖𝓕φ_ref(δξ)‖` | `soninUnitBumpC`, `soninOneSidedBump_eq_comp`, `fourier_soninOneSidedBump`, `norm_fourier_soninOneSidedBump` |
 | the two hypotheses the two-branch estimate consumes, for the rescaled family: a cutoff at or below `m-δ` annihilates it, one at or above `m+δ` fixes it | `soninScaledPacket_eq_zero_of_abs_le`, `soninScaledPacket_eq_zero_of_le_abs`, `evenIndicatorCutoff_soninScaledPacketEven_eq_zero`, `evenIndicatorCutoff_soninScaledPacketEven_eq_self` |
@@ -1409,6 +1416,17 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-08-01 — the orthonormal family is constructed for the rescaled packets.  The corpus had
+  disjoint-annulus orthogonality only for the *fixed-profile* family, and that proof does not
+  transfer by instantiation because the two packet constructions are different objects; but its
+  mechanism does, since both vanish outside their annuli.  Two facts had to be added around it: the
+  energy floor makes each packet nonzero (needed to divide by the norm), and a general
+  `orthonormal_normalize` turning a nonzero pairwise-orthogonal family into an orthonormal one,
+  which mathlib does not provide.  Worth recording that orthogonality here uses *only* the supports:
+  the carriers are unrelated, and in the intended schedule they are in fact all equal to `r q`, so
+  any argument that separated them would have been useless.
+  Lean: `formal/GaloisForLFunctions/HTGeometry/OrthonormalNormalize.lean`,
+  `formal/GaloisForLFunctions/RHTower/SoninScaledPacketOrthogonality.lean`.
 - 2026-08-01 — checking the error budget against the escape threshold found a term the threshold
   cannot take.  The layer defect on the dilated packet contributes `||R_{a0} v||`, which is the
   frequency cutoff at radius `r a0` on the packet, because dilation conjugates cutoffs; its

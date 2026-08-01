@@ -218,9 +218,17 @@ The two normalizations and the final value are formal in the same module:
 - `freeClockWeight_eq_coth`: **`(15)`'s value** — `4 cosh^2 a / (2a sinh 2a) = coth(a)/a`, by the
   double-angle identity.
 
-So `(15)`'s constant is formal end to end: constant modulus, two elementary integrals, one
-double-angle identity.  Only the identification of the free model's `v_+` and `v_x` with the explicit
-exponentials remains, and that is the same operator identification the rest of the card waits on.
+The deficiency transform itself is formal too:
+
+- `integral_exp_mul_symm`: the symmetric exponential integral `int_{-a}^{a} e^{w s} ds` is
+  `2 sinh(w a)/w`, so the free model's `F` is an explicit hyperbolic sine over the spectral factor.
+- `normSq_freeDeficiencyTransform`: **the free-model weight is flat** — at a quarter-period frequency
+  the squared modulus against `1 + x^2` is `4 cosh^2 a`, independent of the mode.
+
+So `(15)`'s constant is formal end to end: the deficiency transform, its constant modulus, the two
+normalizing integrals, and the double-angle identity.  Only the identification of the free model's
+`v_+` and `v_x` with the explicit exponentials remains, and that is the same operator identification
+the rest of the card waits on.
 
 ## 6. Consequences for the live RH route
 
@@ -466,3 +474,11 @@ Section 4's identification of the two divisors is algebra on the two-angle quoti
   card waits on.  The card calls `(15)` a symbolic specialization that fixes all signs and the factor
   `1+x^2`; that role is now discharged by proof rather than by inspection.  Three new declarations,
   targeted build green, axioms `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — the free model's deficiency transform formalized: `integral_exp_mul_symm` evaluates
+  the symmetric exponential integral to `2 sinh(w a)/w`, and `normSq_freeDeficiencyTransform` then
+  gives `(1+x^2)|F(-x)|^2 = 4 cosh^2 a` at every quarter-period frequency.  With the two normalizing
+  integrals and the double-angle identity this makes `(15)`'s value `coth(a)/a` a proved computation
+  rather than a stated specialization — the flatness of the free clock is now established, not
+  assumed, which is what section 6 needs if deviation from flatness is to serve as the non-clock
+  observable.  Two new declarations, targeted build green, axioms
+  `[propext, Classical.choice, Quot.sound]`.

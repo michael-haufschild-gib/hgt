@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.RadicalBaseChangeEvenCapstone
 import GaloisForLFunctions.HTGeometry.RadicalRootExists
 import GaloisForLFunctions.HTGeometry.VandermondeFixed
+import GaloisForLFunctions.HTGeometry.AutPermutesRoots
 
 /-!
 # Base change from the roots of the first factor
@@ -68,5 +69,33 @@ noncomputable def radicalBaseChangeEvenFromRoots {p : Polynomial F} {c : F} {m :
     rfl
   · exact notMem_bot_of_notMem_bot_coe
       (vandermondeProd_notMem_bot v hvinj σ₀ e₀ hσ₀ hsign)
+
+/-- **Base change along an even radical extension, from an enumeration of the roots.**  Both the
+permutation action and the odd automorphism are consequences of the enumeration and the surjectivity
+of the action, so neither is assumed. -/
+noncomputable def radicalBaseChangeEvenFromEnumeration {p : Polynomial F} {c : F} {m : ℕ}
+    (hp : p ≠ 0) (hm : 0 < m)
+    [Polynomial.IsSplittingField F L (p * (Polynomial.X ^ (2 * m) - Polynomial.C c))]
+    {γ : Type*} [Fintype γ] [DecidableEq γ] [Nontrivial γ]
+    {L₀ : Type*} [Field L₀] [Algebra F L₀] [Polynomial.IsSplittingField F L₀ p]
+    (ψ : (L₀ ≃ₐ[F] L₀) ≃* Equiv.Perm γ)
+    (hζ : (primitiveRoots (2 * m) F).Nonempty)
+    {dd : ℕ} (hdd : 2 ≤ dd) (v : Fin dd → rootField F (L := L) p)
+    (hvinj : Function.Injective v)
+    (hrange : ∀ x : rootField F (L := L) p,
+      x ∈ p.rootSet (rootField F (L := L) p) ↔ ∃ i, v i = x)
+    (hsurj : ∀ e : Equiv.Perm (Fin dd),
+      ∃ σ : rootField F (L := L) p ≃ₐ[F] rootField F (L := L) p, ∀ i, σ (v i) = v (e i))
+    (hdeg : ∀ α : L, α ^ (2 * m) = algebraMap F L c → 2 * m ≤ Module.finrank F F⟮α⟯)
+    (hclass : ∀ e : F,
+      algebraMap F (rootField F (L := L) p) e = vandermondeProd v * vandermondeProd v →
+      ¬ ∃ t : F, e * c = t * t) :
+    (L ≃ₐ[rootField F (L := L) (Polynomial.X ^ (2 * m) - Polynomial.C c)] L) ≃* Equiv.Perm γ := by
+  have hodd := exists_odd_aut_of_surjective (F := F) (E := rootField F (L := L) p) hdd v hsurj
+  exact radicalBaseChangeEvenFromRoots hp hm ψ hζ v hvinj
+    (fun σ => exists_perm_of_root_enumeration v hvinj hrange σ)
+    (Classical.choose hodd) (Classical.choose (Classical.choose_spec hodd))
+    (Classical.choose_spec (Classical.choose_spec hodd)).1
+    (Classical.choose_spec (Classical.choose_spec hodd)).2 hdeg hclass
 
 end GaloisForLFunctions.HTGeometry
