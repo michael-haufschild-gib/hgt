@@ -1437,3 +1437,15 @@ dividing the discriminant.
   records that the extension is finite.  Axioms `[propext, Classical.choice, Quot.sound]`.
   With `finrank_deckFixedField` and `card_deckGroup` this leaves only the tower identity
   `[top : E_0] = [Fix : E_0] * [top : Fix]`, which forces `[top : E_0] = n` and `Fix = E_0`.
+
+- 2026-08-01 — `TailCoefficientTower.lean` closes the sandwich and with it the card's `(10)`.
+  The fixed field seen over the coefficient field (`deckFixedOverCoeff`) has trivial degree
+  (`finrank_deckFixedOverCoeff_eq_one`), because the tower identity multiplies it by the Artin
+  degree `n` and the result is bounded by `n`.  Hence `tailCoeffField_eq_deckFixedField` — the
+  coefficient field **is** the fixed field of the deck transformations — and
+  `finrank_tailCoeffField`: the parameter field has degree exactly `n` over the coefficient field.
+  Axioms `[propext, Classical.choice, Quot.sound]`.
+  Step `(10)` is now complete in Lean: the `c_j` are algebraically independent, the parameter field
+  is `E_0(p_1)`, `p_1^n` is `c_0`, the degree is exactly `n`, and `E_0` is intrinsically
+  characterised as the fixed field of the `n`-th roots of unity acting by
+  `p_i |-> zeta^i p_i`.

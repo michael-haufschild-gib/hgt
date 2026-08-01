@@ -89,12 +89,25 @@ theorem norm_sq_soninScaledPacketEven_eq_expansion (m δ w : ℝ) (hδ : 0 < δ)
           rw [soninScaledPacket]
           ring
       _ = _ := by rw [hc]; ring
+  have hI1 : Integrable (fun x : ℝ => 2⁻¹ * soninScaledAnnulusBump m δ x ^ 2) volume :=
+    hsq.const_mul _
+  have hI2 : Integrable (fun x : ℝ => 2⁻¹ * (soninScaledAnnulusBump m δ x ^ 2 *
+      Real.cos (2 * Real.pi * (2 * w) * x))) volume := hcos2.const_mul _
+  have hI3 : Integrable (fun x : ℝ => -(2 * μ) * (soninScaledAnnulusBump m δ x ^ 2 *
+      Real.cos (2 * Real.pi * w * x))) volume := hcos1.const_mul _
+  have hI4 : Integrable (fun x : ℝ => μ ^ 2 * soninScaledAnnulusBump m δ x ^ 2) volume :=
+    hsq.const_mul _
+  have hI12 : Integrable (fun x : ℝ => 2⁻¹ * soninScaledAnnulusBump m δ x ^ 2 +
+      2⁻¹ * (soninScaledAnnulusBump m δ x ^ 2 *
+        Real.cos (2 * Real.pi * (2 * w) * x))) volume := hI1.add hI2
+  have hI123 : Integrable (fun x : ℝ => 2⁻¹ * soninScaledAnnulusBump m δ x ^ 2 +
+      2⁻¹ * (soninScaledAnnulusBump m δ x ^ 2 *
+        Real.cos (2 * Real.pi * (2 * w) * x)) +
+      -(2 * μ) * (soninScaledAnnulusBump m δ x ^ 2 *
+        Real.cos (2 * Real.pi * w * x))) volume := hI12.add hI3
   rw [norm_sq_soninScaledPacketEven m δ (2 * Real.pi * w) hδ,
     integral_congr_ae (Filter.Eventually.of_forall hsplit),
-    integral_add (((hsq.const_mul _).add (hcos2.const_mul _)).add (hcos1.const_mul _))
-      (hsq.const_mul _),
-    integral_add ((hsq.const_mul _).add (hcos2.const_mul _)) (hcos1.const_mul _),
-    integral_add (hsq.const_mul _) (hcos2.const_mul _),
+    integral_add hI123 hI4, integral_add hI12 hI3, integral_add hI1 hI2,
     integral_const_mul, integral_const_mul, integral_const_mul, integral_const_mul]
 
 /-- **The packet's energy floor.**  Up to reference-square tails, the packet keeps the half-width
@@ -126,13 +139,14 @@ theorem norm_sq_soninScaledPacketEven_ge (m δ w : ℝ) (hδ : 0 < δ) (hm : δ 
   have hnegB : -|B| ≤ B := neg_abs_le B
   have habsC : |2 * μ * C| = 2 * (|μ| * |C|) := by
     rw [abs_mul, abs_mul, abs_two]
-  have hnegC : -(2 * μ * C) ≤ 2 * (|μ| * |C|) := by
+    ring
+  have hnegC : 2 * μ * C ≤ 2 * (|μ| * |C|) := by
     rw [← habsC]
-    exact neg_le_abs _
+    exact le_abs_self _
   have hmuC : |μ| * |C| ≤ |μ| * (4 * δ * S) :=
     mul_le_mul_of_nonneg_left hCbound (abs_nonneg μ)
   have hmean : 0 ≤ μ ^ 2 * (2 * δ * I) := by positivity
-  rw [norm_sq_soninScaledPacketEven_eq_expansion m δ w hδ, hA]
+  rw [norm_sq_soninScaledPacketEven_eq_expansion m δ w hδ, hA, ← hB, ← hC, ← hμ]
   linarith [hBbound, hnegB, hnegC, hmuC, hmean]
 
 end RHTower

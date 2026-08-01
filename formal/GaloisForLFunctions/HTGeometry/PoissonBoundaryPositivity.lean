@@ -489,4 +489,151 @@ theorem exists_poissonRepresentation {u : ℂ → ℝ} (hu : HarmonicOnNhd u (ba
     rw [integral_smul_measure, ENNReal.toReal_ofReal hc.le, smul_eq_mul, hkey,
       mul_inv_cancel_left₀ hc.ne']
 
+/-! ## Harnack's inequality
+
+The representation immediately bounds a nonnegative harmonic function above and below by its value
+at the centre.  Both bounds are the corresponding bounds on the kernel, integrated: the kernel's
+numerator is constant on the circle, so the only variation is the denominator, which the triangle
+inequality pins between `(1 - ‖w‖)²` and `(1 + ‖w‖)²`. -/
+
+/-- At the centre the Poisson kernel is one. -/
+theorem poissonKernel_circleMap_one_center (θ : ℝ) : poissonKernel 0 0 (circleMap 0 1 θ) = 1 := by
+  rw [poissonKernel_circleMap_one, sub_zero, norm_circleMap_zero, abs_one]
+  norm_num
+
+/-- A point of the unit circle is within `1 + ‖w‖` of an interior point. -/
+theorem norm_circleMap_sub_le (w : ℂ) (θ : ℝ) : ‖circleMap 0 1 θ - w‖ ≤ 1 + ‖w‖ := by
+  refine (norm_sub_le _ _).trans ?_
+  rw [norm_circleMap_zero, abs_one]
+
+/-- **The lower kernel bound.** -/
+theorem le_poissonKernel_circleMap_one {w : ℂ} (hw : ‖w‖ < 1) (θ : ℝ) :
+    (1 - ‖w‖) / (1 + ‖w‖) ≤ poissonKernel 0 w (circleMap 0 1 θ) := by
+  rw [poissonKernel_circleMap_one]
+  have h0 : (0 : ℝ) ≤ ‖w‖ := norm_nonneg w
+  have h1 : (0 : ℝ) < 1 - ‖w‖ := by linarith
+  have h2 : (0 : ℝ) < 1 + ‖w‖ := by linarith
+  have hlow : (0 : ℝ) < ‖circleMap 0 1 θ - w‖ :=
+    lt_of_lt_of_le h1 (one_sub_norm_le_norm_circleMap_sub w θ)
+  rw [div_le_div_iff₀ h2 (pow_pos hlow 2)]
+  have hup : ‖circleMap 0 1 θ - w‖ ^ 2 ≤ (1 + ‖w‖) ^ 2 :=
+    pow_le_pow_left₀ hlow.le (norm_circleMap_sub_le w θ) 2
+  nlinarith
+
+/-- **Harnack's inequality on the disc.**  A nonnegative harmonic function on the unit disc is
+pinned between two multiples of its value at the centre, the factors depending only on the distance
+to the boundary. -/
+theorem harnack {u : ℂ → ℝ} (hu : HarmonicOnNhd u (ball 0 1))
+    (hnn : ∀ z ∈ ball (0 : ℂ) 1, 0 ≤ u z) {w : ℂ} (hw : w ∈ ball (0 : ℂ) 1) :
+    (1 - ‖w‖) / (1 + ‖w‖) * u 0 ≤ u w ∧ u w ≤ (1 + ‖w‖) / (1 - ‖w‖) * u 0 := by
+  obtain ⟨ν, hfin, hrep⟩ := exists_poissonRepresentation hu hnn
+  have hwn : ‖w‖ < 1 := by rwa [mem_ball_zero_iff] at hw
+  have hzero : (0 : ℂ) ∈ ball (0 : ℂ) 1 := by simp
+  have h0 : (0 : ℝ) ≤ ‖w‖ := norm_nonneg w
+  have h1 : (1 : ℝ) - ‖w‖ ≠ 0 := by intro hc; nlinarith
+  have hmass : u 0 = ν.real Set.univ := by
+    rw [← hrep 0 hzero]
+    simp only [poissonKernel_circleMap_one_center]
+    rw [integral_const, smul_eq_mul, mul_one]
+  have hint : Integrable (fun θ : ℝ => poissonKernel 0 w (circleMap 0 1 θ)) ν :=
+    (unitPoissonTest hwn).integrable ν
+  constructor
+  · have hle := integral_mono (integrable_const _) hint
+      (fun θ => le_poissonKernel_circleMap_one hwn θ)
+    rw [integral_const, smul_eq_mul, hrep w hw] at hle
+    rw [hmass, mul_comm]
+    exact hle
+  · have hle := integral_mono hint (integrable_const _)
+      (fun θ => poissonKernel_circleMap_one_le hwn θ)
+    rw [integral_const, smul_eq_mul, hrep w hw] at hle
+    rw [hmass]
+    refine hle.trans (le_of_eq ?_)
+    field_simp
+    ring
+
+/-! ## Locating the measure: atoms and radial growth
+
+The Poisson kernel evaluated on the radius through a boundary angle blows up like `(1+r)/(1-r)`.
+So an atom of the representing measure forces the function to blow up along that radius, and
+conversely a function bounded along a radius has no atom at its endpoint.  This is the first half of
+localizing the measure: where the function stays bounded, the measure puts no point mass. -/
+
+/-- **The kernel on the radius.**  At the endpoint angle its value is exactly `(1+r)/(1-r)`. -/
+theorem poissonKernel_radial {r : ℝ} (hr : 0 ≤ r) (hr1 : r < 1) (θ₀ : ℝ) :
+    poissonKernel 0 ((r : ℂ) * circleMap 0 1 θ₀) (circleMap 0 1 θ₀) = (1 + r) / (1 - r) := by
+  have hnw : ‖(r : ℂ) * circleMap 0 1 θ₀‖ = r := by
+    rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hr, norm_circleMap_zero,
+      abs_one, mul_one]
+  have hsub : circleMap 0 1 θ₀ - (r : ℂ) * circleMap 0 1 θ₀
+      = ((1 - r : ℝ) : ℂ) * circleMap 0 1 θ₀ := by push_cast; ring
+  have hd : ‖circleMap 0 1 θ₀ - (r : ℂ) * circleMap 0 1 θ₀‖ = 1 - r := by
+    rw [hsub, norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (by linarith),
+      norm_circleMap_zero, abs_one, mul_one]
+  rw [poissonKernel_circleMap_one, hnw, hd]
+  have h1 : (1 : ℝ) - r ≠ 0 := by intro hc; nlinarith
+  field_simp
+  ring
+
+/-- **An atom forces radial growth.**  The mass at a boundary angle, amplified by `(1+r)/(1-r)`, is
+a lower bound for the function on the radius through that angle. -/
+theorem measureReal_singleton_mul_le {ν : Measure ℝ} [IsFiniteMeasure ν] {u : ℂ → ℝ}
+    (hrep : ∀ w ∈ ball (0 : ℂ) 1, ∫ θ, poissonKernel 0 w (circleMap 0 1 θ) ∂ν = u w)
+    (θ₀ : ℝ) {r : ℝ} (hr : 0 ≤ r) (hr1 : r < 1) :
+    ν.real {θ₀} * ((1 + r) / (1 - r)) ≤ u ((r : ℂ) * circleMap 0 1 θ₀) := by
+  have hnw : ‖(r : ℂ) * circleMap 0 1 θ₀‖ = r := by
+    rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hr,
+      norm_circleMap_zero, abs_one, mul_one]
+  have hwmem : (r : ℂ) * circleMap 0 1 θ₀ ∈ ball (0 : ℂ) 1 := by
+    rw [mem_ball_zero_iff, hnw]; exact hr1
+  have hwn : ‖(r : ℂ) * circleMap 0 1 θ₀‖ < 1 := by rw [hnw]; exact hr1
+  have hint : Integrable
+      (fun θ : ℝ => poissonKernel 0 ((r : ℂ) * circleMap 0 1 θ₀) (circleMap 0 1 θ)) ν :=
+    (unitPoissonTest hwn).integrable ν
+  have hind : Integrable (Set.indicator {θ₀}
+      fun _ : ℝ => poissonKernel 0 ((r : ℂ) * circleMap 0 1 θ₀) (circleMap 0 1 θ₀)) ν :=
+    (integrable_const _).indicator (measurableSet_singleton θ₀)
+  have hle : ∀ θ : ℝ,
+      Set.indicator {θ₀}
+          (fun _ : ℝ => poissonKernel 0 ((r : ℂ) * circleMap 0 1 θ₀) (circleMap 0 1 θ₀)) θ
+        ≤ poissonKernel 0 ((r : ℂ) * circleMap 0 1 θ₀) (circleMap 0 1 θ) := by
+    intro θ
+    by_cases h : θ = θ₀
+    · rw [Set.indicator_of_mem (by simp [h] : θ ∈ ({θ₀} : Set ℝ))]
+      exact le_of_eq (by rw [h])
+    · rw [Set.indicator_of_notMem (by simpa using h)]
+      exact poissonKernel_circleMap_one_nonneg hwn θ
+  have hmono := integral_mono hind hint hle
+  rw [integral_indicator_const _ (measurableSet_singleton θ₀), hrep _ hwmem,
+    poissonKernel_radial hr hr1 θ₀, smul_eq_mul] at hmono
+  exact hmono
+
+/-- **Bounded on a radius means no atom.**  If the function stays bounded along the radius through a
+boundary angle, the representing measure has no mass at that angle. -/
+theorem measureReal_singleton_eq_zero_of_bddAbove {ν : Measure ℝ} [IsFiniteMeasure ν] {u : ℂ → ℝ}
+    (hrep : ∀ w ∈ ball (0 : ℂ) 1, ∫ θ, poissonKernel 0 w (circleMap 0 1 θ) ∂ν = u w)
+    (θ₀ : ℝ) {M : ℝ} (hM : ∀ r : ℝ, 0 ≤ r → r < 1 → u ((r : ℂ) * circleMap 0 1 θ₀) ≤ M) :
+    ν.real {θ₀} = 0 := by
+  by_contra hne
+  have hpos : 0 < ν.real {θ₀} := lt_of_le_of_ne measureReal_nonneg (Ne.symm hne)
+  have hbase := (measureReal_singleton_mul_le hrep θ₀ le_rfl (by norm_num)).trans
+    (hM 0 le_rfl (by norm_num))
+  norm_num at hbase
+  have hMpos : 0 < M := lt_of_lt_of_le hpos hbase
+  have hane : ν.real {θ₀} ≠ 0 := hpos.ne'
+  have hMne : (2 : ℝ) * M ≠ 0 := by positivity
+  have hfrac : 0 < ν.real {θ₀} / (2 * M) := div_pos hpos (by linarith)
+  have hfrac1 : ν.real {θ₀} / (2 * M) ≤ 1 := by
+    rw [div_le_one (by linarith)]; linarith
+  have hr0 : 0 ≤ 1 - ν.real {θ₀} / (2 * M) := by linarith
+  have hr1 : 1 - ν.real {θ₀} / (2 * M) < 1 := by linarith
+  have hkey := (measureReal_singleton_mul_le hrep θ₀ hr0 hr1).trans (hM _ hr0 hr1)
+  have hone : (1 : ℝ) - (1 - ν.real {θ₀} / (2 * M)) = ν.real {θ₀} / (2 * M) := by ring
+  rw [hone] at hkey
+  have hprod : ν.real {θ₀} *
+      ((1 + (1 - ν.real {θ₀} / (2 * M))) / (ν.real {θ₀} / (2 * M)))
+      = (1 + (1 - ν.real {θ₀} / (2 * M))) * (2 * M) := by
+    field_simp
+  rw [hprod] at hkey
+  nlinarith [hkey, hr0, hMpos]
+
 end GaloisForLFunctions.HTGeometry

@@ -458,6 +458,19 @@ invariance of the kernel, and the limit from continuity of `u` along radii.  The
   one finite positive measure represents the negated imaginary part at every point of the upper half
   plane.
 
+Harnack's inequality follows at once from the representation, and is the standard tool for the
+remaining support argument:
+
+- `poissonKernel_circleMap_one_center`: at the centre the kernel is one, so the total mass *is* the
+  centre value.
+- `norm_circleMap_sub_le`, `le_poissonKernel_circleMap_one`: the matching lower kernel bound.
+- `harnack`: **Harnack's inequality on the disc** — a nonnegative harmonic function is pinned between
+  `(1-‖w‖)/(1+‖w‖)` and `(1+‖w‖)/(1-‖w‖)` times its value at the centre.
+
+Both bounds are the same computation as the boundedness of the test function: the numerator is
+constant on the circle, so only the denominator varies, and the triangle inequality pins it between
+`(1-‖w‖)²` and `(1+‖w‖)²`.
+
 What remains of Theorem B's last sentence is only the *support* claim: that under the stated decay
 and analyticity off `[lambda_a, infinity)` the measure is carried by that ray.
 
@@ -774,3 +787,11 @@ what makes them distinct.  Degree `n` and `n` roots then leave no freedom.
   of Theorem B's last sentence is only the support claim — that the measure is carried by
   `[lambda_a, infinity)` under the stated decay and analyticity.  Four new declarations, targeted
   build green, axioms `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — Harnack's inequality on the disc proved (`harnack`), directly from the representation:
+  a nonnegative harmonic function is pinned between `(1-‖w‖)/(1+‖w‖)` and `(1+‖w‖)/(1-‖w‖)` times its
+  centre value.  Both bounds are the same computation that bounded the test function — the kernel's
+  numerator is constant on the circle, so only the denominator varies and the triangle inequality
+  pins it on both sides.  `poissonKernel_circleMap_one_center` also records that the kernel is one at
+  the centre, which is why the total mass equals the centre value rather than merely being bounded by
+  it.  Harnack is the standard tool for the remaining support localization.  Four new declarations,
+  targeted build green, axioms `[propext, Classical.choice, Quot.sound]`.

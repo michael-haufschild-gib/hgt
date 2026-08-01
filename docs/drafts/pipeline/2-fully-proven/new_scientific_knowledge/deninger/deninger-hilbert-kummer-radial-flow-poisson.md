@@ -29,8 +29,11 @@
   `GaloisForLFunctions.RHTower.DeningerFinitePlaceSumBaseChange`,
   `GaloisForLFunctions.RHTower.DeningerPlaceRestriction`,
   `GaloisForLFunctions.RHTower.DeningerHeightBaseChange`,
-  `GaloisForLFunctions.RHTower.DeningerAbsoluteHeight`
-  (the gluing of the place tower and the absolute height on `Q̄`)
+  `GaloisForLFunctions.RHTower.DeningerAbsoluteHeight`,
+  `GaloisForLFunctions.RHTower.DeningerAbsoluteHeightSeminorm`,
+  `GaloisForLFunctions.RHTower.DeningerKummerGroupNorm`
+  (the gluing of the place tower, the absolute height on `Q̄`, and the
+  normed Kummer group `𝒢`)
 
 ## Source Hilbert space
 
@@ -589,12 +592,45 @@ former.  The fix is to transport once, at the `NumberField ℚ⟮α⟯` instance
 `Subsingleton (Module ℚ M)`, and to state everything downstream on a *type variable* carrying
 `[NumberField K]` so that only the canonical structure is ever mentioned.
 
+### The normed Kummer group `𝒢` landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerAbsoluteHeightSeminorm.lean` and
+`formal/GaloisForLFunctions/RHTower/DeningerKummerGroupNorm.lean`.  Axiom audit on all
+declarations: `propext, Classical.choice, Quot.sound` (the units/finite-order transfer needs only
+`propext, Quot.sound`).
+
+**The height is a seminorm.**
+
+- `deningerAbsHeight_mul_le` — **subadditivity** `h(αβ) ≤ h(α) + h(β)`.  This is the only statement
+  that needs two elements at once; it is proved inside `ℚ⟮α, β⟯`, which is finite over `ℚ`
+  (`IntermediateField.finiteDimensional_adjoin_pair`) and contains `α`, `β` and `αβ`, where it is
+  mathlib's `Height.logHeight₁_mul_le` divided by the degree.
+- `deningerAbsHeight_inv`, `deningerAbsHeight_zpow`, `deningerAbsHeight_one` — invariance under
+  inversion, `h(α^n) = |n|·h(α)` for `n ∈ ℤ`, and `h(1) = 0`.  Each is proved in `ℚ⟮α⟯`, which is
+  closed under all three operations.
+
+**The Kummer group.**
+
+- `deningerKummerSeminorm` — the height as a bundled `GroupSeminorm Fˣ`.
+- `deningerKummerSeminorm_eq_zero_iff` — **its null set is exactly the torsion subgroup**
+  `CommGroup.torsion Fˣ`.  This is the height-zero theorem on `Q̄` transported to units, using that
+  a unit has finite order exactly when its value does.
+- `deningerKummerGroup F = Fˣ ⧸ CommGroup.torsion Fˣ` — **the Kummer group `𝒢 = Q̄ˣ/μ_∞`** of the
+  card's `(1)`.
+- `deningerKummerSeminorm_mul_torsion`, `deningerKummerNormFun` — the height is unchanged by a
+  torsion factor (both inequalities from subadditivity), so it descends to `𝒢`.
+- `deningerKummerNorm` — **the height is a genuine `GroupNorm` on `𝒢`**: positive definite,
+  because its null set is precisely what has been divided out.
+
+So `𝒢` and its Weil-height norm now exist as Lean objects, and the injectivity of the card's `(2)`
+is the positive-definiteness of that norm rather than a citation.
+
 ### Remaining
 
-The Hilbert--Kummer space itself: `𝒢 = Q̄ˣ/μ_∞` tensored with `ℚ`, normed by the absolute height,
-and completed.  The three inputs are in place — the height is defined on all of `Q̄`
-(`deningerAbsHeight`), it vanishes exactly on the torsion that is quotiented out
-(`deningerAbsHeight_eq_zero_iff`), and it is homogeneous (`deningerAbsHeight_pow`) — so what
-remains is subadditivity `h(αβ) ≤ h(α) + h(β)`, which makes it a seminorm on the group, and then
-the completion.  With `H_Kum` defined as that completion, `(2)` is injective by the height-zero
-theorem and has dense span by construction.
+Two structural steps to `H_Kum` itself: the `ℚ`-vector space `𝒢 ⊗ ℚ` — `𝒢` is written
+multiplicatively and torsion-free, so the tensor is its divisible hull, on which the height norm
+extends by `deningerAbsHeight_zpow` — and its metric completion.  Both are constructions on top of
+`deningerKummerNorm`, with no unproved mathematical input.  The remaining genuinely analytic point
+is that the card's `H_Kum` is an `L²` space rather than the `L¹`-type height completion; the `L²`
+structure is carried by the place space `(Y, λ)` and is what the `p = 2` Allcock--Vaaler theorem
+supplies.

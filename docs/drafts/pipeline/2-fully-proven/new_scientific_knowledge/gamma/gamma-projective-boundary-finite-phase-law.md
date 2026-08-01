@@ -2231,6 +2231,28 @@ logarithmic datum: the valuation is lexicographic in `(Γ-exponent, degree, diga
 first two levels are now proved.  What remains is only the assembly of the three-level ratio
 statement, which needs no new analytic input.
 
+### Eq. (5) for the full Gamma field
+
+`HTGeometry/GammaFieldProjectiveBoundary.lean` assembles the three valuation directions.  An element
+in monomial form is `gammaFieldElt m j p q D t = Γ(s)^j · (p/q)(s) · ψ(s)^D` on the line
+`Re s = 1/2 + m`, with boundary datum `(j, deg, D)`.
+
+- **`tendsto_ratio_gammaFieldElt_of_gamma_lt`** — a strictly larger `Γ`-exponent in the numerator
+  makes the ratio vanish whatever the rational and digamma data: decompose the ratio as
+  `(Γ^c s^{deg} ψ^D) · (u/s^{deg}) · (1/v) · (1/ψ^{D'})`, whose first factor vanishes by the
+  super-polynomial decay and whose remaining factors converge.
+- **`tendsto_ratio_gammaFieldElt_lex`** — hence, ordering the datum lexicographically, a dominated
+  numerator has a convergent normalized ratio:
+
+  > limit `= lead(p_α q_β)/lead(q_α p_β)` when all three data agree, and `0` otherwise.
+
+  When the `Γ`-exponents agree the `Γ` factors cancel and the digamma-field comparison of the
+  previous file takes over.
+
+This is eq. (5) for `K_Γ = ℂ(s)⟨Γ⟩` in monomial form: every finite family, normalized by a
+lexicographically minimal member, has a constant projective limit — the one-point projective boundary
+of §1, proved unconditionally along vertical lines `Re s = 1/2 + m`.
+
 *(b) The Euclidean side reduces to fine covers of small order.*  For a compact metric space, a
 Lebesgue number turns any finite open cover into a mesh condition, so `dim X ≤ n` follows from: for
 every `δ > 0` there is a finite open cover of mesh `< δ` and order `≤ n + 1`.  For a subset of `ℝ^M`
